@@ -7,13 +7,13 @@ import { removeArrayDuplicates } from "../utils/basic/arrays";
 import { LoadingAnimation } from "../components/LoadingAnimation.sc";
 import LocalStorage from "../assorted/LocalStorage";
 import { timeToHumanReadable } from "../utils/misc/readableTime";
-import { ExerciseCountContext } from "./ExerciseCountContext";
 import CollapsablePanel from "../components/CollapsablePanel";
 import Pluralize from "../utils/text/pluralize";
 import BackArrow from "../pages/Settings/settings_pages_shared/BackArrow";
 import useScreenWidth from "../hooks/useScreenWidth";
 import { MOBILE_WIDTH } from "../components/MainNav/screenSize";
 import { StyledButton } from "../components/allButtons.sc";
+import { APIContext } from "../contexts/APIContext";
 
 export default function Congratulations({
   articleID,
@@ -23,13 +23,13 @@ export default function Congratulations({
   articleURL,
   correctBookmarks,
   incorrectBookmarks,
-  api,
   backButtonAction,
   keepExercisingAction,
   toScheduledExercises,
   source,
   exerciseSessionTimer,
 }) {
+  const api = useContext(APIContext);
   const [checkpointTime] = useState(exerciseSessionTimer);
   const [correctBookmarksToDisplay, setCorrectBookmarksToDisplay] = useState(
     removeArrayDuplicates(correctBookmarks),
@@ -58,6 +58,7 @@ export default function Congratulations({
       incorrectBookmarksToDisplay.length + correctBookmarksToDisplay.length,
     );
     api.logUserActivity(api.COMPLETED_EXERCISES, articleID, "", source);
+    // eslint-disable-next-line
   }, []);
 
   if (username === undefined || isOutOfWordsToday === undefined) {
@@ -168,7 +169,6 @@ export default function Congratulations({
                   key={each.id}
                   bookmark={each}
                   notifyDelete={deleteBookmark}
-                  api={api}
                   source={source}
                 />
               </s.ContentOnRow>
@@ -186,7 +186,6 @@ export default function Congratulations({
                   key={each.id}
                   bookmark={each}
                   notifyDelete={deleteBookmark}
-                  api={api}
                   source={source}
                 />
               </s.ContentOnRow>

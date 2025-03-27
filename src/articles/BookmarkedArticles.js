@@ -1,15 +1,17 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import LoadingAnimation from "../components/LoadingAnimation";
 import { setTitle } from "../assorted/setTitle";
-import strings from "../i18n/definitions"
+import strings from "../i18n/definitions";
 
 import ArticlePreview from "./ArticlePreview";
 
 import SortingButtons from "./SortingButtons";
 
 import * as s from "../components/TopMessage.sc";
+import { APIContext } from "../contexts/APIContext";
 
-export default function BookmarkedArticles({ api }) {
+export default function BookmarkedArticles() {
+  const api = useContext(APIContext);
   const [articleList, setArticleList] = useState(null);
 
   let originalList = articleList;

@@ -25,7 +25,7 @@ export default function ExplainBookmarkSelectionModal({
           {" "}
           <img
             style={{ height: "2em" }}
-            src={APP_DOMAIN + "/static/icons/" + "info-icon.png"}
+            src={APP_DOMAIN + "/static/icons/info-icon.png"}
             alt=""
           />
         </p>

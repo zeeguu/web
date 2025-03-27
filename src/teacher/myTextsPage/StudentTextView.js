@@ -4,7 +4,7 @@ import * as s from "../../components/ColumnWidth.sc";
 import * as sc from "../../components/TopTabs.sc";
 import ArticleReader from "../../reader/ArticleReader";
 
-export default function StudentsTextView({ api }) {
+export default function StudentsTextView() {
   const articleID = useParams().articleID;
 
   return (
@@ -12,7 +12,7 @@ export default function StudentsTextView({ api }) {
       <sc.TopTabs>
         <h1>{strings.viewText}</h1>
       </sc.TopTabs>
-      <ArticleReader api={api} teacherArticleID={articleID} />
+      <ArticleReader teacherArticleID={articleID} />
     </s.NarrowColumn>
   );
 }

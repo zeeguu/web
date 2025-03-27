@@ -1,12 +1,14 @@
-import React, { useEffect, useState, Fragment } from "react";
+import React, { useEffect, useState, Fragment, useContext } from "react";
 import LoadingAnimation from "../../../components/LoadingAnimation";
 import CohortList from "./CohortList";
 import strings from "../../../i18n/definitions";
 import { setTitle } from "../../../assorted/setTitle";
 import * as s from "../../../components/ColumnWidth.sc";
 import { PageTitle } from "../../../components/PageTitle";
+import { APIContext } from "../../../contexts/APIContext";
 
-function Home({ api }) {
+function Home() {
+  const api = useContext(APIContext);
   const [cohorts, setCohorts] = useState();
   const [forceUpdate, setForceUpdate] = useState(0);
   setTitle(strings.myClasses);
@@ -21,11 +23,7 @@ function Home({ api }) {
       <s.NarrowColumn>
         {cohorts ? (
           <div>
-            <CohortList
-              api={api}
-              setForceUpdate={setForceUpdate}
-              cohorts={cohorts}
-            />
+            <CohortList setForceUpdate={setForceUpdate} cohorts={cohorts} />
           </div>
         ) : (
           <LoadingAnimation />

@@ -5,13 +5,12 @@ import LoadingAnimation from "../../../components/LoadingAnimation";
 import InteractiveText from "../../../reader/InteractiveText.js";
 import { TranslatableText } from "../../../reader/TranslatableText.js";
 import { EXERCISE_TYPES } from "../../ExerciseTypeConstants.js";
-import NextNavigation from "../NextNavigation";
 import strings from "../../../i18n/definitions.js";
 import shuffle from "../../../assorted/fisherYatesShuffle";
 import { removePunctuation } from "../../../utils/text/preprocessing";
 import { SpeechContext } from "../../../contexts/SpeechContext.js";
-import useSubSessionTimer from "../../../hooks/useSubSessionTimer.js";
 import BookmarkProgressBar from "../../progressBars/BookmarkProgressBar.js";
+import { APIContext } from "../../../contexts/APIContext.js";
 
 // The user has to select the correct L1 translation out of three. The L2 word is marked in bold in the context.
 // This tests the user's passive knowledge.
@@ -19,7 +18,6 @@ import BookmarkProgressBar from "../../progressBars/BookmarkProgressBar.js";
 const EXERCISE_TYPE = EXERCISE_TYPES.multipleChoiceL2toL1;
 
 export default function MultipleChoiceL2toL1({
-  api,
   bookmarksToStudy,
   exerciseMessageToAPI,
   setExerciseMessageToAPI,
@@ -31,6 +29,7 @@ export default function MultipleChoiceL2toL1({
   isExerciseOver,
   resetSubSessionTimer,
 }) {
+  const api = useContext(APIContext);
   const [incorrectAnswer, setIncorrectAnswer] = useState("");
   const [buttonOptions, setButtonOptions] = useState(null);
   const [interactiveText, setInteractiveText] = useState();
@@ -66,6 +65,7 @@ export default function MultipleChoiceL2toL1({
         ]),
       );
     }
+    // eslint-disable-next-line
   }, [interactiveText]);
 
   function notifyChoiceSelection(selectedChoice) {

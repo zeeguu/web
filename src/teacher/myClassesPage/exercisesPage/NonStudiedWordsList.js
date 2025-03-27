@@ -1,20 +1,22 @@
-import { Fragment, useEffect, useState } from "react";
+import { Fragment, useContext, useEffect, useState } from "react";
 import { useParams } from "react-router";
 import { v4 as uuid } from "uuid";
 import LocalStorage from "../../../assorted/LocalStorage";
 import NonStudiedWordCard from "./NonStudiedWordCard";
 import strings from "../../../i18n/definitions";
+import { APIContext } from "../../../contexts/APIContext";
 
-const NonStudiedWordsList = ({ api }) => {
+const NonStudiedWordsList = () => {
+  const api = useContext(APIContext);
   const selectedTimePeriod = LocalStorage.selectedTimePeriod();
   const studentID = useParams().studentID;
   const cohortID = useParams().cohortID;
   const [nonStudiedWords, setNonStudiedWords] = useState([]);
   const wordsNotYetScheduled = nonStudiedWords.filter(
-    (word) => word.fit_for_study === 1
+    (word) => word.fit_for_study === 1,
   );
   const wordsExcludedByAlgorithm = nonStudiedWords.filter(
-    (word) => word.fit_for_study === null
+    (word) => word.fit_for_study === null,
   );
 
   useEffect(() => {
@@ -27,7 +29,7 @@ const NonStudiedWordsList = ({ api }) => {
       },
       (error) => {
         console.log(error);
-      }
+      },
     );
     //eslint-disable-next-line
   }, [selectedTimePeriod]);

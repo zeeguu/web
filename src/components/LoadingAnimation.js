@@ -1,5 +1,4 @@
 import * as s from "./LoadingAnimation.sc";
-import strings from "../i18n/definitions";
 import React from "react";
 import { StyledGreyButton } from "../exercises/exerciseTypes/Exercise.sc";
 import { useState, useEffect } from "react";
@@ -8,12 +7,10 @@ import { FEEDBACK_OPTIONS } from "./FeedbackConstants";
 import isInTeacherWebsite from "../utils/misc/isTeacherWebsite";
 
 export default function LoadingAnimation({
-  text,
   specificStyle,
   delay = 1000,
   children,
 }) {
-  let _text = text ? text : strings.loadingMsg;
   const [showLoadingScreen, setShowLoadingScreen] = useState(false);
   const [showReportButton, setShowReportButton] = useState(false);
   const [showFeedbackModal, setShowFeedbackModal] = useState(false);
@@ -31,6 +28,7 @@ export default function LoadingAnimation({
       clearTimeout(loadingTimer);
       clearTimeout(showReportButtonTimer);
     };
+    // eslint-disable-next-line
   }, []);
 
   return (

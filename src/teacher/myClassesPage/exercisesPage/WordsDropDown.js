@@ -1,13 +1,13 @@
 import PractisedWordsList from "./PractisedWordsList";
 import LearnedWordsList from "./LearnedWordsList";
 import NonStudiedWordsList from "./NonStudiedWordsList";
-import InfoOutlinedIcon from "@material-ui/icons/InfoOutlined";
+import { InfoOutlined } from "@mui/icons-material";
 import strings from "../../../i18n/definitions";
 import * as s from "../../styledComponents/WordsDropDown.sc";
 import { StyledTooltip } from "../../styledComponents/StyledTooltip.sc";
 import { IconExplanation } from "./AttemptIcons";
 
-const WordsDropDown = ({ api, card }) => {
+const WordsDropDown = ({ card }) => {
   const setHeadline = () => {
     switch (card) {
       case "non-studied":
@@ -26,14 +26,14 @@ const WordsDropDown = ({ api, card }) => {
           <h3 className="exercise-drop-down-headlines">{setHeadline()}</h3>
           {card === "practised" && (
             <StyledTooltip label={IconExplanation()}>
-              <InfoOutlinedIcon className="information-icon" />
+              <InfoOutlined className="information-icon" />
             </StyledTooltip>
           )}
         </div>
         <div className="exercise-drop-down-container">
-          {card === "practised" && <PractisedWordsList api={api} />}
-          {card === "learned" && <LearnedWordsList api={api} />}
-          {card === "non-studied" && <NonStudiedWordsList api={api} />}
+          {card === "practised" && <PractisedWordsList />}
+          {card === "learned" && <LearnedWordsList />}
+          {card === "non-studied" && <NonStudiedWordsList />}
         </div>
       </div>
     </s.StyledWordsDropDown>

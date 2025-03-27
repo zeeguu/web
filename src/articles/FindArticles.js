@@ -62,15 +62,19 @@ export default function FindArticles({
     }
   }
 
+  function updateOnPagination(newUpdatedList) {
+    setArticleList(newUpdatedList);
+    setOriginalList(newUpdatedList);
+  }
+
   const [
     handleScroll,
     isWaitingForNewArticles,
     noMoreArticlesToShow,
     resetPagination,
   ] = useArticlePagination(
-    api,
     articleList,
-    setArticleList,
+    updateOnPagination,
     searchQuery ? "Article Search" : strings.titleHome,
     getNewArticlesForPage,
   );
@@ -92,6 +96,7 @@ export default function FindArticles({
     return () => {
       window.removeEventListener("scroll", handleScroll, true);
     };
+    // eslint-disable-next-line
   }, []);
 
   useEffect(() => {
@@ -130,6 +135,7 @@ export default function FindArticles({
         window.removeEventListener("scroll", handleScroll, true);
       };
     }
+    // eslint-disable-next-line
   }, [searchPublishPriority, searchDifficultyPriority]);
 
   if (articleList == null) {
@@ -141,7 +147,7 @@ export default function FindArticles({
       {!searchQuery && (
         <>
           <s.SearchHolder>
-            <SearchField api={api} query={searchQuery} />
+            <SearchField query={searchQuery} />
           </s.SearchHolder>
           <div style={{ marginBottom: "1.5rem", padding: "0.5rem" }}>
             <span>
@@ -175,7 +181,7 @@ export default function FindArticles({
 
       {searchQuery && (
         <s.SearchHolder>
-          <SearchField api={api} query={searchQuery} />
+          <SearchField query={searchQuery} />
         </s.SearchHolder>
       )}
 
@@ -187,7 +193,6 @@ export default function FindArticles({
           <ArticlePreview
             key={each.id}
             article={each}
-            api={api}
             hasExtension={isExtensionAvailable}
             doNotShowRedirectionModal_UserPreference={
               doNotShowRedirectionModal_UserPreference

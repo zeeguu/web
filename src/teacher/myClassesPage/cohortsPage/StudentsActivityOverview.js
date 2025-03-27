@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useState } from "react";
+import React, { Fragment, useContext, useEffect, useState } from "react";
 import strings from "../../../i18n/definitions";
 import { useParams, useHistory } from "react-router-dom";
 import LocalStorage from "../../../assorted/LocalStorage";
@@ -13,8 +13,10 @@ import * as s from "../../../components/ColumnWidth.sc";
 import LoadingAnimation from "../../../components/LoadingAnimation";
 import StudentsActivityOverviewContent from "./StudentsActivityOverviewContent";
 import { PageTitle } from "../../../components/PageTitle";
+import { APIContext } from "../../../contexts/APIContext";
 
-export default function StudentsActivityOverview({ api }) {
+export default function StudentsActivityOverview() {
+  const api = useContext(APIContext);
   const cohortID = useParams().cohortID;
   const [cohort, setCohort] = useState("");
   const [students, setStudents] = useState(null);
@@ -81,7 +83,6 @@ export default function StudentsActivityOverview({ api }) {
             <NoStudents inviteCode={cohort.inv_code} />
           ) : (
             <StudentsActivityOverviewContent
-              api={api}
               cohortID={cohortID}
               students={students}
               setForceUpdate={setForceUpdate}

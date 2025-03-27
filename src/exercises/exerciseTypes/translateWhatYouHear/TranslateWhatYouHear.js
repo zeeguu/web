@@ -13,13 +13,13 @@ import { SpeechContext } from "../../../contexts/SpeechContext.js";
 import DisableAudioSession from "../DisableAudioSession.js";
 import useSubSessionTimer from "../../../hooks/useSubSessionTimer.js";
 import BookmarkProgressBar from "../../progressBars/BookmarkProgressBar.js";
+import { APIContext } from "../../../contexts/APIContext.js";
 
 // The user has to translate the word they hear into their L1.
 // This tests the user's passive knowledge.
 
 const EXERCISE_TYPE = EXERCISE_TYPES.translateWhatYouHear;
 export default function TranslateWhatYouHear({
-  api,
   bookmarksToStudy,
   exerciseMessageToAPI,
   setExerciseMessageToAPI,
@@ -85,7 +85,6 @@ export default function TranslateWhatYouHear({
           <s.CenteredRowTall>
             <SpeakButton
               bookmarkToStudy={exerciseBookmark}
-              api={api}
               styling="large"
               parentIsSpeakingControl={isButtonSpeaking}
             />

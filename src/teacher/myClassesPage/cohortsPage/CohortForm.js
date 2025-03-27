@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import strings from "../../../i18n/definitions";
-import { FormControl } from "@material-ui/core";
+import { FormControl } from "@mui/material";
 import LoadingAnimation from "../../../components/LoadingAnimation";
 import { Error } from "../../sharedComponents/Error";
 import {
@@ -18,14 +18,10 @@ import {
 import DeleteCohortWarning from "./DeleteCohortWarning";
 import { StyledDialog } from "../../styledComponents/StyledDialog.sc";
 import * as s from "../../styledComponents/CohortForm.sc";
+import { APIContext } from "../../../contexts/APIContext";
 
-const CohortForm = ({
-  api,
-  cohort,
-  setForceUpdate,
-  setShowCohortForm,
-  cohorts,
-}) => {
+const CohortForm = ({ cohort, setForceUpdate, setShowCohortForm, cohorts }) => {
+  const api = useContext(APIContext);
   const [isLoading, setIsLoading] = useState(false);
   const [showWarning, setShowWarning] = useState(false);
   const [isError, setIsError] = useState(false);
@@ -105,14 +101,14 @@ const CohortForm = ({
 
   const invalidClassName = () => {
     const invalid = cohorts.filter(
-      (cohort) => cohort.name === state.cohort_name
+      (cohort) => cohort.name === state.cohort_name,
     );
     return invalid.length > 0;
   };
 
   const invalidInviteCode = () => {
     const invalid = cohorts.filter(
-      (cohort) => cohort.inv_code === state.invite_code
+      (cohort) => cohort.inv_code === state.invite_code,
     );
     return invalid.length > 0;
   };
@@ -178,7 +174,6 @@ const CohortForm = ({
               className="form-control"
             >
               <LanguageSelector
-                api={api}
                 value={state.language_code}
                 onChange={handleLanguageChange}
               >
@@ -207,7 +202,6 @@ const CohortForm = ({
         </PopupButtonWrapper>
         {showWarning && (
           <DeleteCohortWarning
-            api={api}
             cohort={cohort}
             setShowWarning={setShowWarning}
             deleteCohort={deleteCohort}

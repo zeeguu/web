@@ -11,11 +11,11 @@ import { EXERCISE_TYPES } from "../../ExerciseTypeConstants.js";
 import BookmarkProgressBar from "../../progressBars/BookmarkProgressBar.js";
 import { removePunctuation } from "../../../utils/text/preprocessing";
 import useShadowRef from "../../../hooks/useShadowRef";
+import { APIContext } from "../../../contexts/APIContext.js";
 
 const EXERCISE_TYPE = EXERCISE_TYPES.multipleChoiceContext;
 
 export default function MultipleChoiceContext({
-  api,
   bookmarksToStudy,
   notifyCorrectAnswer,
   notifyIncorrectAnswer,
@@ -29,6 +29,7 @@ export default function MultipleChoiceContext({
   exerciseSessionId,
   activeSessionDuration,
 }) {
+  const api = useContext(APIContext);
   const [messageToAPI, setMessageToAPI] = useState("");
   const [exerciseBookmarks, setExerciseBookmarks] = useState(null);
   const [interactiveText, setInteractiveText] = useState(null);
@@ -54,9 +55,11 @@ export default function MultipleChoiceContext({
       else initExerciseBookmarks[i].isExercise = false;
     }
     setExerciseBookmarks(shuffle(initExerciseBookmarks));
+    // eslint-disable-next-line
   }, []);
 
   useEffect(() => {
+    console.log(bookmarksToStudy);
     setInteractiveText(
       new InteractiveText(
         exerciseBookmark.context_tokenized,
@@ -70,7 +73,8 @@ export default function MultipleChoiceContext({
         speech,
       ),
     );
-  }, [isBookmarkChanged]);
+    // eslint-disable-next-line
+  }, [isBookmarkChanged, bookmarksToStudy]);
 
   function handleShowSolution() {
     let message = messageToAPI + "S";
@@ -155,7 +159,8 @@ export default function MultipleChoiceContext({
             notifyChoiceSelection(option.id, option.context, index, e)
           }
         >
-          <div
+          {option.left_ellipsis && <>...</>}
+          <span
             dangerouslySetInnerHTML={{
               __html: showSolution
                 ? option.isExercise
@@ -167,13 +172,13 @@ export default function MultipleChoiceContext({
                 : option.context.replace(option.from, "_____"),
             }}
           />
+          {option.right_ellipsis && <>...</>}
         </s.MultipleChoiceContext>
       ))}
 
       <NextNavigation
         exerciseType={EXERCISE_TYPE}
         message={messageToAPI}
-        api={api}
         exerciseBookmark={bookmarksToStudy[0]}
         moveToNextExercise={moveToNextExercise}
         reload={reload}

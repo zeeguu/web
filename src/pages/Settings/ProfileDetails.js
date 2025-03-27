@@ -1,7 +1,9 @@
 import { useHistory } from "react-router-dom";
-import { useState, useEffect, useContext } from "react";
+import { useState, useEffect, useContext, useRef } from "react";
 import { UserContext } from "../../contexts/UserContext";
 import { saveUserInfoIntoCookies } from "../../utils/cookies/userInfo";
+import { setTitle } from "../../assorted/setTitle";
+import { APIContext } from "../../contexts/APIContext";
 import LocalStorage from "../../assorted/LocalStorage";
 import strings from "../../i18n/definitions";
 import Form from "../_pages_shared/Form.sc";
@@ -15,7 +17,6 @@ import Heading from "../_pages_shared/Heading.sc";
 import Main from "../_pages_shared/Main.sc";
 import BackArrow from "./settings_pages_shared/BackArrow";
 import FullWidthErrorMsg from "../../components/FullWidthErrorMsg.sc";
-
 import LoadingAnimation from "../../components/LoadingAnimation";
 import LogOutButton from "./LogOutButton";
 import useFormField from "../../hooks/useFormField";
@@ -24,10 +25,14 @@ import {
   NonEmptyValidator,
 } from "../../utils/ValidatorRule/Validator";
 import validateRules from "../../assorted/validateRules";
-import { setTitle } from "../../assorted/setTitle";
 
-export default function ProfileDetails({ api, setUser }) {
-  const [userDetails, setUserDetails] = useState("");
+export default function ProfileDetails() {
+  const api = useContext(APIContext);
+  const [errorMessage, setErrorMessage] = useState("");
+  const { userDetails, setUserDetails } = useContext(UserContext);
+  const history = useHistory();
+  const isPageMounted = useRef(true);
+
   const [
     userName,
     setUserName,
@@ -46,38 +51,37 @@ export default function ProfileDetails({ api, setUser }) {
     EmailValidator,
   ]);
 
-  const [errorMessage, setErrorMessage] = useState("");
-
-  const user = useContext(UserContext);
-  const history = useHistory();
-
   useEffect(() => {
     setTitle(strings.profileDetails);
   }, []);
 
   useEffect(() => {
-    api.getUserDetails((data) => {
-      setUserDetails(data);
-      setUserEmail(data.email);
-      setUserName(data.name);
-    });
-  }, [user.session, api]);
+    isPageMounted.current = true;
+    if (isPageMounted.current) {
+      setUserEmail(userDetails.email);
+      setUserName(userDetails.name);
+    }
 
-  function updateUserInfo(info) {
-    LocalStorage.setUserInfo(info);
-    setUser({
-      ...user,
-      name: info.name,
-    });
-    saveUserInfoIntoCookies(info);
-  }
+    return () => {
+      isPageMounted.current = false;
+    };
+    // eslint-disable-next-line
+  }, [userDetails, api]);
 
   function handleSave(e) {
     e.preventDefault();
     setErrorMessage("");
     if (!validateRules([validateUserName, validateEmail])) return;
-    api.saveUserDetails(userDetails, setErrorMessage, () => {
-      updateUserInfo(userDetails);
+
+    const newUserDetails = {
+      ...userDetails,
+      name: userName,
+      email: userEmail,
+    };
+    api.saveUserDetails(newUserDetails, setErrorMessage, () => {
+      setUserDetails(newUserDetails);
+      LocalStorage.setUserInfo(newUserDetails);
+      saveUserInfoIntoCookies(newUserDetails);
       history.goBack();
     });
   }
@@ -108,7 +112,6 @@ export default function ProfileDetails({ api, setUser }) {
               isError={!isUserNameValid}
               errorMessage={userErrorMessage}
               onChange={(e) => {
-                setUserDetails({ ...userDetails, name: e.target.value });
                 setUserName(e.target.value);
               }}
             />
@@ -122,7 +125,6 @@ export default function ProfileDetails({ api, setUser }) {
               isError={!isEmailValid}
               errorMessage={emailErrorMessage}
               onChange={(e) => {
-                setUserDetails({ ...userDetails, email: e.target.value });
                 setUserEmail(e.target.value);
               }}
             />

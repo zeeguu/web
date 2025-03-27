@@ -11,6 +11,7 @@ import useSubSessionTimer from "../../../hooks/useSubSessionTimer.js";
 import { toast } from "react-toastify";
 import isBookmarkExpression from "../../../utils/misc/isBookmarkExpression.js";
 import useBookmarkAutoPronounce from "../../../hooks/useBookmarkAutoPronounce.js";
+import { APIContext } from "../../../contexts/APIContext.js";
 
 // The user has to match three L1 words to their correct L2 translations.
 // This tests the user's passive knowledge.
@@ -18,7 +19,6 @@ import useBookmarkAutoPronounce from "../../../hooks/useBookmarkAutoPronounce.js
 const EXERCISE_TYPE = EXERCISE_TYPES.match;
 
 export default function Match({
-  api,
   bookmarksToStudy,
   notifyCorrectAnswer,
   notifyIncorrectAnswer,
@@ -30,6 +30,7 @@ export default function Match({
   setReload,
   resetSubSessionTimer,
 }) {
+  const api = useContext(APIContext);
   // ML: TODO: this duplicates a bit the information in bookmarksToStudy
   // It should be possible to implement with a simple array of messageToAPI that will
   // always be in sync with bookmarksToStudy, i.e. messageToAPI[0] refers to the state of bookmarksToStudy[0], etc.
@@ -91,9 +92,11 @@ export default function Match({
   useEffect(() => {
     for (let i = 0; i < bookmarksToStudy.length; i++) {
       let currentBookmarkLog = exerciseAttemptsLog[i];
-      if (selectedBookmark == currentBookmarkLog.bookmark)
+      if (selectedBookmark === currentBookmarkLog.bookmark)
         setSelectedBookmarkMessage(currentBookmarkLog.messageToAPI);
     }
+
+    // eslint-disable-next-line
   }, [selectedBookmark]);
 
   useEffect(() => {});

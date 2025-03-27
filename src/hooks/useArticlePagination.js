@@ -4,7 +4,6 @@ import { setTitle } from "../assorted/setTitle";
 import useShadowRef from "./useShadowRef";
 
 export default function useArticlePagination(
-  api,
   articleList,
   setArticleList,
   pageTitle,

@@ -18,7 +18,7 @@ import ResetPasswordStep2 from "./ResetPasswordStep2";
 import strings from "../i18n/definitions";
 import { setTitle } from "../assorted/setTitle";
 
-export default function ResetPassword({ api }) {
+export default function ResetPassword() {
   const [email, setEmail, validateEmail, isEmailValid, emailErrorMsg] =
     useFormField("", [
       NonEmptyValidator("Please provide an email."),
@@ -42,7 +42,6 @@ export default function ResetPassword({ api }) {
       <Main>
         {!codeSent && (
           <ResetPasswordStep1
-            api={api}
             email={email}
             setEmail={setEmail}
             validateEmail={validateEmail}
@@ -52,7 +51,7 @@ export default function ResetPassword({ api }) {
           />
         )}
 
-        {codeSent && <ResetPasswordStep2 api={api} email={email} />}
+        {codeSent && <ResetPasswordStep2 email={email} />}
       </Main>
       <Footer>
         <p className="centered">

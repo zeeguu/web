@@ -1,7 +1,4 @@
-import {
-  PopupButtonWrapper,
-  StyledButton,
-} from "../teacher/styledComponents/TeacherButtons.sc";
+import { StyledButton } from "../teacher/styledComponents/TeacherButtons.sc";
 import { Link } from "react-router-dom";
 import strings from "../i18n/definitions";
 
@@ -16,6 +13,7 @@ import ToolbarButtons from "./ToolbarButtons";
 import BackArrow from "../pages/Settings/settings_pages_shared/BackArrow";
 import useScreenWidth from "../hooks/useScreenWidth";
 import { MOBILE_WIDTH } from "../components/MainNav/screenSize";
+import { APIContext } from "../contexts/APIContext";
 
 function userIsTesterForAudio(user) {
   let testers = [
@@ -27,7 +25,8 @@ function userIsTesterForAudio(user) {
     "Geertje",
     "Pieter",
   ];
-  return testers.some((tester) => user.name.startsWith(tester));
+  // return testers.some((tester) => user.name.startsWith(tester));
+  return false;
 }
 
 export function toggle(state, togglerFunction) {
@@ -38,7 +37,6 @@ export default function TopToolbar({
   user,
   teacherArticleID,
   articleID,
-  api,
   interactiveText,
   translating,
   pronouncing,
@@ -47,6 +45,7 @@ export default function TopToolbar({
   articleProgress,
   timer,
 }) {
+  const api = useContext(APIContext);
   const { screenWidth } = useScreenWidth();
   const history = useHistory();
   const { setReturnPath } = useContext(RoutingContext); //This to be able to use Cancel correctly in EditText.
@@ -102,7 +101,7 @@ export default function TopToolbar({
             )}
             {userIsTesterForAudio(user) && (
               <s.PlayerControl>
-                <SoundPlayer api={api} interactiveText={interactiveText} />
+                <SoundPlayer interactiveText={interactiveText} />
               </s.PlayerControl>
             )}
           </div>

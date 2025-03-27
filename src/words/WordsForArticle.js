@@ -1,6 +1,6 @@
 import { useParams, useHistory } from "react-router-dom";
 import { UMR_SOURCE } from "../reader/ArticleReader";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import LoadingAnimation from "../components/LoadingAnimation";
 import WordsToReview from "./WordsToReview";
 import { NarrowColumn, CenteredContent } from "../components/ColumnWidth.sc";
@@ -11,12 +11,14 @@ import Tooltip from "@mui/material/Tooltip";
 import BackArrow from "../pages/Settings/settings_pages_shared/BackArrow";
 import useScreenWidth from "../hooks/useScreenWidth";
 import { isDesktopScreenWidth } from "../components/MainNav/screenSize";
+import { APIContext } from "../contexts/APIContext.js";
 
 function fit_for_study(words) {
   return words.filter((b) => b.fit_for_study || b.starred).length > 0;
 }
 
-export default function WordsForArticle({ api }) {
+export default function WordsForArticle() {
+  const api = useContext(APIContext);
   let { articleID } = useParams();
   const history = useHistory();
   const [words, setWords] = useState(null);
@@ -94,7 +96,6 @@ export default function WordsForArticle({ api }) {
         words={words}
         deleteBookmark={deleteBookmark}
         articleInfo={articleInfo}
-        api={api}
         notifyWordChanged={notifyWordChanged}
         source={UMR_SOURCE}
       />

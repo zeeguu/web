@@ -11,7 +11,6 @@ export default function MultipleChoiceAudioBottomInput({
   const [isIncorrect, setIsIncorrect] = useState(false);
 
   function checkResult() {
-    console.log(currentChoice);
     let bookmarkSelected = bookmarksToStudy[currentChoice];
     if (currentChoice === true) {
       notifyCorrectAnswer(bookmarkSelected);

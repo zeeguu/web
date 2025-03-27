@@ -1,11 +1,11 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import * as s from "./Search.sc";
 import useQuery from "../hooks/useQuery";
 import SubscribeSearchButton from "./SubscribeSearchButton";
 import FindArticles from "./FindArticles";
 import CustomizeSearchToolbar from "./CustomizeSearchToolbar";
 
-export default function Search({ api }) {
+export default function Search() {
   const searchQuery = useQuery().get("search");
   const [searchPublishPriority, setSearchPublishPriority] = useState(false);
   const [searchDifficultyPriority, setSearchDifficultyPriority] =
@@ -24,7 +24,7 @@ export default function Search({ api }) {
                 <s.HeadlineSearch>{searchQuery}</s.HeadlineSearch>
               </s.ContainerH1Subscribe>
             </s.RowHeadlineSearch>
-            <SubscribeSearchButton api={api} query={searchQuery} />
+            <SubscribeSearchButton query={searchQuery} />
           </s.ContainerTitleSubscribe>
           <CustomizeSearchToolbar
             searchPublishPriority={searchPublishPriority}

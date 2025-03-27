@@ -1,7 +1,6 @@
-import { useEffect, useState, useContext } from "react";
+import { useEffect, useContext } from "react";
 import { UserContext } from "../../contexts/UserContext";
 import { setTitle } from "../../assorted/setTitle";
-import LocalStorage from "../../assorted/LocalStorage";
 import strings from "../../i18n/definitions";
 import { PageTitle } from "../../components/PageTitle";
 import SettingsItem from "./settings_pages_shared/SettingsItem";
@@ -10,15 +9,10 @@ import ListOfSettingsItems from "./settings_pages_shared/ListOfSettingsItems";
 import * as s from "./Settings.sc";
 
 export default function Settings() {
-  const user = useContext(UserContext);
-
-  const [uiLanguage, setUiLanguage] = useState();
+  const { userDetails } = useContext(UserContext);
 
   useEffect(() => {
-    const language = LocalStorage.getUiLanguage();
-    setUiLanguage(language);
     setTitle(strings.settings);
-    // eslint-disable-next-line
   }, []);
 
   return (
@@ -33,7 +27,7 @@ export default function Settings() {
           {strings.languageSettings}
         </SettingsItem>
 
-        {!user.is_teacher && (
+        {!userDetails.is_teacher && (
           <SettingsItem path={"/account_settings/my_classrooms"}>
             {strings.myClassrooms}
           </SettingsItem>

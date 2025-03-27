@@ -1,10 +1,12 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import * as s from "./SubscribeSearchButton.sc";
 import useSelectInterest from "../hooks/useSelectInterest";
 import { toast } from "react-toastify";
 import SubscribeToEmailNotificationsButton from "./SubscribeToEmailNotificationsButton";
+import { APIContext } from "../contexts/APIContext";
 
-export default function SubscribeSearchButton({ api, query }) {
+export default function SubscribeSearchButton({ query }) {
+  const api = useContext(APIContext);
   const { subscribedSearches, removeSearch, subscribeToSearch } =
     useSelectInterest(api);
   const [buttonText, setButtonText] = useState("");
@@ -13,7 +15,7 @@ export default function SubscribeSearchButton({ api, query }) {
   useEffect(() => {
     if (subscribedSearches) {
       const isSubscribed = subscribedSearches.some(
-        (search) => search.search === query,
+        (search) => search.search.toLowerCase() === query.toLowerCase(),
       );
       setIsSubscribedToSearch(isSubscribed);
       setButtonText(
@@ -48,10 +50,7 @@ export default function SubscribeSearchButton({ api, query }) {
       </s.AddRemoveButton>
 
       {isSubscribedToSearch && (
-        <SubscribeToEmailNotificationsButton
-          api={api}
-          subscribedSearch={query}
-        />
+        <SubscribeToEmailNotificationsButton subscribedSearch={query} />
       )}
     </>
   );

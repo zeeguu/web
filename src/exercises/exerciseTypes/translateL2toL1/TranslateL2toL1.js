@@ -11,6 +11,7 @@ import useSubSessionTimer from "../../../hooks/useSubSessionTimer.js";
 import BottomInput from "../BottomInput.js";
 import BookmarkProgressBar from "../../progressBars/BookmarkProgressBar.js";
 import { removePunctuation } from "../../../utils/text/preprocessing";
+import { APIContext } from "../../../contexts/APIContext.js";
 
 // The user has to translate the L2 word in bold to their L1.
 // This tests the user's active knowledge.
@@ -18,7 +19,6 @@ import { removePunctuation } from "../../../utils/text/preprocessing";
 const EXERCISE_TYPE = EXERCISE_TYPES.translateL2toL1;
 
 export default function TranslateL2toL1({
-  api,
   bookmarksToStudy,
   setSelectedExerciseBookmark,
   notifyCorrectAnswer,

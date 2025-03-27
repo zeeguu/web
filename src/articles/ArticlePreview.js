@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { isMobile } from "../utils/misc/browserDetection";
 import * as s from "./ArticlePreview.sc";
 import RedirectionNotificationModal from "../components/redirect_notification/RedirectionNotificationModal";
@@ -15,17 +15,20 @@ import { darkBlue } from "../components/colors";
 import ExplainTopicsModal from "../pages/ExplainTopicsModal";
 import { TopicOriginType } from "../appConstants";
 import extractDomain from "../utils/web/extractDomain";
+import ReadingCompletionProgress from "./ReadingCompletionProgress";
+import { APIContext } from "../contexts/APIContext";
 
 export default function ArticlePreview({
   article,
   dontShowPublishingTime,
   dontShowSourceIcon,
+  showArticleCompletion,
   hasExtension,
-  api,
   doNotShowRedirectionModal_UserPreference,
   setDoNotShowRedirectionModal_UserPreference,
   onArticleClick,
 }) {
+  const api = useContext(APIContext);
   // Store which topic was clicked to show in the Modal
   const [infoTopicClick, setInfoTopicClick] = useState("");
   const [showInfoTopics, setShowInfoTopics] = useState(false);
@@ -67,7 +70,6 @@ export default function ArticlePreview({
       //list and can be deactivated when they select "Do not show again" and proceed.
       <>
         <RedirectionNotificationModal
-          api={api}
           hasExtension={hasExtension}
           article={article}
           open={isRedirectionModalOpen}
@@ -127,15 +129,20 @@ export default function ArticlePreview({
           />
         </sweetM.TagsOfInterests>
       )}
-
       <SmallSaveArticleButton
-        api={api}
         article={article}
         isArticleSaved={isArticleSaved}
         setIsArticleSaved={setIsArticleSaved}
       />
+      <s.TitleContainer>
+        <s.Title className={article.opened ? "opened" : ""}>
+          {titleLink(article)}{" "}
+        </s.Title>
+        <ReadingCompletionProgress
+          last_reading_percentage={article.reading_completion}
+        ></ReadingCompletionProgress>
+      </s.TitleContainer>
 
-      <s.Title>{titleLink(article)}</s.Title>
       {article.feed_id ? (
         <ArticleSourceInfo
           articleInfo={article}
@@ -188,6 +195,7 @@ export default function ArticlePreview({
         </div>
         <ArticleStatInfo articleInfo={article}></ArticleStatInfo>
       </s.BottomContainer>
+
       {article.video ? (
         <img
           alt=""

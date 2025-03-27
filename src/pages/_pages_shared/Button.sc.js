@@ -10,6 +10,9 @@ import {
   zeeguuDarkOrange,
   zeeguuOrange,
   zeeguuRed,
+  orange600,
+  orange500,
+  orange800,
 } from "../../components/colors";
 
 const Button = styled.button`
@@ -25,13 +28,17 @@ const Button = styled.button`
   font-size: 1.2rem;
   padding: 1rem 2.8rem;
   border-radius: 4em;
-  background-color: ${zeeguuOrange};
   font-weight: 600;
-  box-shadow: 0px 0.2rem ${zeeguuDarkOrange};
+  background-color: ${orange500};
+  box-shadow: 0px 0.2rem ${orange800};
   transition: all ease-in 0.08s;
   overflow: hidden;
   white-space: nowrap;
   margin-bottom: 0.2em;
+
+  &:hover {
+    background-color: ${orange600};
+  }
 
   &.small {
     padding: 0.7em 2em;

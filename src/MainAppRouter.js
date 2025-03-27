@@ -24,120 +24,68 @@ import SettingsRouter from "./pages/Settings/_SettingsRouter";
 import ExercisesForArticle from "./exercises/ExercisesForArticle";
 import { UMR_SOURCE } from "./reader/ArticleReader";
 
-export default function MainAppRouter({
-  api,
-  setUser,
-  hasExtension,
-  handleSuccessfulLogIn,
-}) {
+export default function MainAppRouter({ hasExtension, handleSuccessfulLogIn }) {
   return (
     <Switch>
       <Route
         path="/log_in"
-        render={() => (
-          <LogIn api={api} handleSuccessfulLogIn={handleSuccessfulLogIn} />
-        )}
+        render={() => <LogIn handleSuccessfulLogIn={handleSuccessfulLogIn} />}
       />
 
       <Route
         path="/account_details"
         render={() => (
-          <CreateAccount
-            api={api}
-            handleSuccessfulLogIn={handleSuccessfulLogIn}
-            setUser={setUser}
-          />
+          <CreateAccount handleSuccessfulLogIn={handleSuccessfulLogIn} />
         )}
       />
 
-      <Route
-        path="/create_account"
-        render={() => <LanguagePreferences api={api} />}
-      />
+      <Route path="/create_account" render={() => <LanguagePreferences />} />
 
       <Route
         path="/language_preferences"
-        render={() => <LanguagePreferences api={api} />}
+        render={() => <LanguagePreferences />}
       />
 
       <Route path="/" exact render={() => <LandingPage />} />
       <Route
         path="/extension_installed"
-        render={() => <ExtensionInstalled api={api} />}
+        render={() => <ExtensionInstalled />}
       />
       <Route path="/install_extension" render={() => <InstallExtension />} />
-      <Route path="/reset_pass" render={() => <ResetPassword api={api} />} />
-      <Route path="/render" render={() => <NoSidebarRouter api={api} />} />
+      <Route path="/reset_pass" render={() => <ResetPassword />} />
+      <Route path="/render" render={() => <NoSidebarRouter />} />
 
-      <PrivateRoute
-        path="/account_deletion"
-        api={api}
-        component={DeleteAccount}
-      />
+      <PrivateRoute path="/account_deletion" component={DeleteAccount} />
 
       <PrivateRoute
         path="/select_interests"
-        api={api}
         hasExtension={hasExtension}
         component={SelectInterests}
       />
 
       <PrivateRoute
         path="/exclude_words"
-        api={api}
         hasExtension={hasExtension}
         component={ExcludeWords}
       />
 
-      <PrivateRouteWithMainNav
-        path="/articles"
-        api={api}
-        component={ArticlesRouter}
-      />
-      <PrivateRouteWithMainNav
-        path="/exercises"
-        api={api}
-        component={ExercisesRouter}
-      />
-      <PrivateRouteWithMainNav
-        path="/words"
-        api={api}
-        component={WordsRouter}
-      />
-      <PrivateRouteWithMainNav
-        path="/history"
-        api={api}
-        component={ReadingHistory}
-      />
+      <PrivateRouteWithMainNav path="/articles" component={ArticlesRouter} />
+      <PrivateRouteWithMainNav path="/exercises" component={ExercisesRouter} />
+      <PrivateRouteWithMainNav path="/words" component={WordsRouter} />
+      <PrivateRouteWithMainNav path="/history" component={ReadingHistory} />
       <PrivateRouteWithMainNav
         path="/account_settings"
-        api={api}
-        setUser={setUser}
         component={SettingsRouter}
       />
-      <PrivateRouteWithMainNav
-        path="/teacher"
-        api={api}
-        component={TeacherRouter}
-      />
-      <PrivateRouteWithMainNav
-        path="/read/article"
-        api={api}
-        component={ArticleReader}
-      />
+      <PrivateRouteWithMainNav path="/teacher" component={TeacherRouter} />
+      <PrivateRouteWithMainNav path="/read/article" component={ArticleReader} />
       <PrivateRouteWithMainNav
         path="/user_dashboard"
-        api={api}
         component={UserDashboard}
       />
-      <PrivateRouteWithMainNav
-        path="/search"
-        api={api}
-        component={ArticlesRouter}
-      />
+      <PrivateRouteWithMainNav path="/search" component={ArticlesRouter} />
       <PrivateRouteWithMainNav
         path="/articleWordReview/:articleID"
-        api={api}
         component={ExercisesForArticle}
         source={UMR_SOURCE}
       />

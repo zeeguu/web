@@ -1,11 +1,13 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import LoadingAnimation from "../components/LoadingAnimation";
 import { setTitle } from "../assorted/setTitle";
 import strings from "../i18n/definitions";
 import Word from "./Word";
 import * as s from "../components/TopMessage.sc";
+import { APIContext } from "../contexts/APIContext";
 
-export default function Learned({ api }) {
+export default function Learned() {
+  const api = useContext(APIContext);
   const [words, setWords] = useState(null);
   const [totalWordsLearned, setTotalWordsLearned] = useState(0);
 
@@ -70,7 +72,6 @@ export default function Learned({ api }) {
                     key={each.id}
                     notifyDelete={onNotifyDelete}
                     bookmark={each}
-                    api={api}
                     hideStar={true}
                   />
                 );

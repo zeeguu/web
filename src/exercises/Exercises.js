@@ -34,17 +34,17 @@ import useScreenWidth from "../hooks/useScreenWidth";
 import { MOBILE_WIDTH } from "../components/MainNav/screenSize";
 import { NarrowColumn } from "../components/ColumnWidth.sc";
 import useSubSessionTimer from "../hooks/useSubSessionTimer";
+import { APIContext } from "../contexts/APIContext";
 
 const BOOKMARKS_DUE_REVIEW = false;
-const NEW_BOOKMARKS_TO_STUDY = true;
 
 export default function Exercises({
-  api,
   articleID,
   backButtonAction,
   toScheduledExercises,
   source,
 }) {
+  const api = useContext(APIContext);
   const [countBookmarksToPractice, setCountBookmarksToPractice] = useState();
   const [hasKeptExercising, setHasKeptExercising] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -125,11 +125,15 @@ export default function Exercises({
     setTitle("Exercises");
     startExercising();
     return () => {
+      // eslint-disable-next-line react-hooks/exhaustive-deps
       if (currentIndexRef.current > 0 || hasKeptExercisingRef.current) {
         // Do not report if there were no exercises
         // performed
+
         api.reportExerciseSessionEnd(
+          // eslint-disable-next-line react-hooks/exhaustive-deps
           dbExerciseSessionIdRef.current,
+          // eslint-disable-next-line react-hooks/exhaustive-deps
           activeSessionDurationRef.current,
         );
       }
@@ -255,7 +259,6 @@ export default function Exercises({
           totalPracticedBookmarksInSession={totalPracticedBookmarksInSession}
           correctBookmarks={correctBookmarks}
           incorrectBookmarks={incorrectBookmarks}
-          api={api}
           backButtonAction={backButtonAction}
           keepExercisingAction={() => {
             startExercising(BOOKMARKS_DUE_REVIEW);
@@ -274,7 +277,6 @@ export default function Exercises({
   if (isOutOfWordsToday) {
     return (
       <OutOfWordsMessage
-        api={api}
         totalInLearning={totalBookmarksInPipeline}
         goBackAction={backButtonAction}
       />
@@ -450,9 +452,6 @@ export default function Exercises({
             setExerciseMessageToAPI={setExerciseMessageToAPI}
             notifyCorrectAnswer={correctAnswerNotification}
             notifyIncorrectAnswer={incorrectAnswerNotification}
-            notifyExerciseCompleted={exerciseCompletedNotification}
-            notifyShowSolution={showSolutionNotification}
-            api={api}
             setExerciseType={setCurrentExerciseType}
             isCorrect={isCorrect}
             isExerciseOver={isExerciseOver}

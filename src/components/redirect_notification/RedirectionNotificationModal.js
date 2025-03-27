@@ -5,12 +5,11 @@ import {
 import MobileNotification from "./MobileNotification";
 import UnsupportedNotification from "./UnsupportedNotification";
 import SupportedNotification from "./SupportedNotification";
-import SupportedNotification_NotInstalled from "./SupportedNotification_NotInstalled";
+import SupportedNotificationNotInstalled from "./SupportedNotificationNotInstalled";
 
 //This modal is used in the ArticlePreview component
 
 export default function RedirectionNotificationModal({
-  api,
   hasExtension,
   article,
   open,
@@ -21,7 +20,6 @@ export default function RedirectionNotificationModal({
   const MOBILE_NOTIFICATION = (
     <MobileNotification
       article={article}
-      api={api}
       setIsArticleSaved={setIsArticleSaved}
       handleCloseRedirectionModal={handleCloseRedirectionModal}
       setDoNotShowRedirectionModal_UserPreference={
@@ -43,7 +41,7 @@ export default function RedirectionNotificationModal({
   );
 
   const SUPPORTED_NOT_INSTALLED = (
-    <SupportedNotification_NotInstalled
+    <SupportedNotificationNotInstalled
       handleCloseRedirectionModal={handleCloseRedirectionModal}
       open={open}
     />
@@ -52,7 +50,6 @@ export default function RedirectionNotificationModal({
   const UNSUPPORTED_NOTIFICATION = (
     <UnsupportedNotification
       article={article}
-      api={api}
       setIsArticleSaved={setIsArticleSaved}
       handleCloseRedirectionModal={handleCloseRedirectionModal}
       setDoNotShowRedirectionModal_UserPreference={

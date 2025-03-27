@@ -108,6 +108,7 @@ export default function BottomInput({
       return;
     }
     setFeedbackMessage("");
+    // eslint-disable-next-line
   }, [
     distanceToCorrect,
     isSameLengthAsSolution,

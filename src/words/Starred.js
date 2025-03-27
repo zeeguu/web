@@ -36,7 +36,6 @@ export default function Starred({ api }) {
         <Word
           key={bookmark.id}
           bookmark={bookmark}
-          api={api}
           notifyUnstar={bookmarkHasBeenUnstared}
           source={UMR_SOURCE}
         />

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import strings from "../../../i18n/definitions";
 import { Link } from "react-router-dom";
 import { MdHighlightOff } from "react-icons/md/";
@@ -9,14 +9,15 @@ import * as s from "../../styledComponents/StudentInfoLine.sc";
 import LocalStorage from "../../../assorted/LocalStorage";
 import { StyledTooltip } from "../../styledComponents/StyledTooltip.sc";
 import LoadingAnimation from "../../../components/LoadingAnimation";
+import { APIContext } from "../../../contexts/APIContext";
 
 export default function StudentInfoLine({
-  api,
   cohortID,
   student,
   removeStudentFromCohort,
   isFirst,
 }) {
+  const api = useContext(APIContext);
   const [showDeleteStudentWarning, setShowDeleteStudentWarning] =
     useState(false);
   const selectedTimePeriod = LocalStorage.selectedTimePeriod();

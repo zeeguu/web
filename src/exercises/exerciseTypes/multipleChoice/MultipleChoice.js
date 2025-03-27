@@ -13,6 +13,7 @@ import shuffle from "../../../assorted/fisherYatesShuffle";
 import { removePunctuation } from "../../../utils/text/preprocessing";
 import { SpeechContext } from "../../../contexts/SpeechContext.js";
 import useSubSessionTimer from "../../../hooks/useSubSessionTimer.js";
+import { APIContext } from "../../../contexts/APIContext.js";
 
 // The user has to select the correct L2 translation of a given L1 word out of three.
 // This tests the user's active knowledge.
@@ -20,7 +21,6 @@ import useSubSessionTimer from "../../../hooks/useSubSessionTimer.js";
 const EXERCISE_TYPE = EXERCISE_TYPES.multipleChoice;
 
 export default function MultipleChoice({
-  api,
   bookmarksToStudy,
   setSelectedExerciseBookmark,
   exerciseMessageToAPI,
@@ -33,6 +33,7 @@ export default function MultipleChoice({
   setIsCorrect,
   resetSubSessionTimer,
 }) {
+  const api = useContext(APIContext);
   const [incorrectAnswer, setIncorrectAnswer] = useState("");
   const [buttonOptions, setButtonOptions] = useState(null);
   const [interactiveText, setInteractiveText] = useState();

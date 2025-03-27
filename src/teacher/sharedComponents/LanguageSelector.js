@@ -1,13 +1,15 @@
-import { Fragment, useState, useEffect } from "react";
+import { Fragment, useState, useEffect, useContext } from "react";
 import strings from "../../i18n/definitions";
 import { Listbox, ListboxOption } from "@reach/listbox";
 import * as s from "../styledComponents/LabeledInputFields.sc";
+import { APIContext } from "../../contexts/APIContext";
 
 export function LanguageSelector(props) {
+  const api = useContext(APIContext);
   const [languages, setLanguages] = useState([]);
   useEffect(() => {
-    props.api.getSystemLanguages((languages) =>
-      setLanguages(languages.learnable_languages)
+    api.getSystemLanguages((languages) =>
+      setLanguages(languages.learnable_languages),
     );
     //eslint-disable-next-line
   }, []);

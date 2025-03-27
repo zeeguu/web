@@ -4,14 +4,12 @@ import strings from "../i18n/definitions";
 import useUnwantedContentPreferences from "../hooks/useUnwantedContentPreferences";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { zeeguuOrange } from "../components/colors";
+import { APIContext } from "../contexts/APIContext";
 
-export default function TagsOfFilters({
-  visible,
-  api,
-  articlesListShouldChange,
-}) {
+export default function TagsOfFilters({ visible, articlesListShouldChange }) {
+  const api = useContext(APIContext);
   const {
     topicsAvailableForExclusion,
     toggleTopicExclusion,

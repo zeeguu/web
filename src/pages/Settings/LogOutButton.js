@@ -4,12 +4,12 @@ import { zeeguuOrange } from "../../components/colors";
 import { useContext } from "react";
 import { UserContext } from "../../contexts/UserContext";
 
-export default function LogOutButton({}) {
-  const user = useContext(UserContext);
+export default function LogOutButton() {
+  const { logoutMethod } = useContext(UserContext);
   return (
     <LogOutButtonStyle
       onClick={() => {
-        user.logoutMethod();
+        logoutMethod();
       }}
     >
       Log Out{" "}

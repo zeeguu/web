@@ -1,21 +1,29 @@
 import styled from "styled-components";
-import { alertGreen, zeeguuOrange, errorRed } from "../../components/colors";
+import {
+  alertGreen,
+  zeeguuOrange,
+  errorRed,
+  zeeguuDarkOrange,
+} from "../../components/colors";
 
 export const StyledAttemptIcons = styled.div`
+  margin: 0px 1px;
   .correct-attempt-icon {
     color: ${alertGreen};
-    font-size: 18px;
+    font-size: 15px;
+    font-smooth: always;
   }
 
   .wrong-attempt-icon {
     color: ${errorRed};
-    margin: 0 -3px;
-    font-size: 18px;
+    font-size: 15px;
+    font-smooth: always;
   }
 
   .solution-shown-icon {
-    margin: 0 -3px;
+    color: ${zeeguuDarkOrange};
     font-size: 15px;
+    font-smooth: always;
   }
 
   .used-attempt-icon {
@@ -25,9 +33,8 @@ export const StyledAttemptIcons = styled.div`
 
   .hint-used-icon {
     color: ${zeeguuOrange};
-    font-weight: 600;
-    margin: 0 2px;
-    font-size: 14px;
+    font-size: 15px;
+    font-smooth: always;
   }
 
   .student-feedback {
@@ -41,19 +48,7 @@ export const StyledAttemptIcons = styled.div`
     align-items: center;
   }
 
-  .wrong-attempt-string {
-    margin-left: 1em;
-  }
-
-  .correct-attempt-string {
-    margin-left: 0.5em;
-  }
-
-  .hint-used-string {
-    margin-left: 0.5em;
-  }
-
-  .solution-shown-string {
+  .info-attempt-string {
     margin-left: 0.5em;
   }
 

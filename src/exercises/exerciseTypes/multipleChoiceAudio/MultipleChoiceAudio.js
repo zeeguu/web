@@ -2,7 +2,6 @@ import { useState, useEffect, useContext } from "react";
 import * as s from "../Exercise.sc.js";
 import SpeakButton from "../SpeakButton.js";
 import strings from "../../../i18n/definitions.js";
-import NextNavigation from "../NextNavigation.js";
 import LoadingAnimation from "../../../components/LoadingAnimation.js";
 import InteractiveText from "../../../reader/InteractiveText.js";
 import shuffle from "../../../assorted/fisherYatesShuffle.js";
@@ -10,11 +9,10 @@ import { removePunctuation } from "../../../utils/text/preprocessing.js";
 import { TranslatableText } from "../../../reader/TranslatableText.js";
 import AudioTwoBotInput from "./MultipleChoiceAudioBottomInput.js";
 import { EXERCISE_TYPES } from "../../ExerciseTypeConstants.js";
-import DisableAudioSession from "../DisableAudioSession.js";
 import SessionStorage from "../../../assorted/SessionStorage.js";
-import useSubSessionTimer from "../../../hooks/useSubSessionTimer.js";
 import { SpeechContext } from "../../../contexts/SpeechContext.js";
 import BookmarkProgressBar from "../../progressBars/BookmarkProgressBar.js";
+import { APIContext } from "../../../contexts/APIContext.js";
 
 // The user has to select the correct spoken L2 translation of a given L1 word out of three.
 // This tests the user's active knowledge.
@@ -22,7 +20,6 @@ import BookmarkProgressBar from "../../progressBars/BookmarkProgressBar.js";
 const EXERCISE_TYPE = EXERCISE_TYPES.multipleChoiceAudio;
 
 export default function MultipleChoiceAudio({
-  api,
   bookmarksToStudy,
   exerciseMessageToAPI,
   notifyCorrectAnswer,
@@ -33,10 +30,10 @@ export default function MultipleChoiceAudio({
   handleDisabledAudio,
   reload,
 }) {
+  const api = useContext(APIContext);
   const [interactiveText, setInteractiveText] = useState();
   const [choiceOptions, setChoiceOptions] = useState(null);
   const [currentChoice, setCurrentChoice] = useState("");
-  const [firstTypeTime, setFirstTypeTime] = useState();
   const [selectedButtonId, setSelectedButtonId] = useState("");
   const exerciseBookmark = bookmarksToStudy[0];
   const speech = useContext(SpeechContext);
@@ -61,23 +58,6 @@ export default function MultipleChoiceAudio({
     if (!SessionStorage.isAudioExercisesEnabled()) handleDisabledAudio();
   }, [reload, exerciseBookmark]);
 
-  function notifyChoiceSelection(selectedChoice) {
-    console.log("checking result...");
-    if (
-      selectedChoice === removePunctuation(exerciseBookmark.from.toLowerCase())
-    ) {
-      notifyCorrectAnswer(exerciseBookmark);
-    } else {
-      notifyIncorrectAnswer(exerciseBookmark);
-    }
-  }
-
-  function inputKeyPress() {
-    if (firstTypeTime === undefined) {
-      setFirstTypeTime(new Date());
-    }
-  }
-
   function consolidateChoice() {
     // Index 0 is the correct bookmark and index 1 and 2 are incorrect
     let listOfchoices = [0, 1, 2];
@@ -98,7 +78,6 @@ export default function MultipleChoiceAudio({
 
   function handleClick(id) {
     setSelectedButtonId(id);
-    console.log(id + " selected");
   }
 
   return (

@@ -25,7 +25,6 @@ export default function NextNavigation({
   exerciseBookmark,
   exerciseAttemptsLog, // Used for exercises like Match which test multiple bookmarks
   moveToNextExercise,
-  api,
   reload,
   setReload,
   isReadContext,
@@ -55,11 +54,8 @@ export default function NextNavigation({
 
   const isLastInCycle = exerciseBookmark.is_last_in_cycle;
   const isLearningCycleOne = learningCycle === 1;
-  const isLearningCycleTwo = learningCycle === 2;
   const learningCycleFeature = Feature.merle_exercises();
   const isMatchExercise = exerciseType === EXERCISE_TYPES.match;
-  const isMultiExerciseType =
-    EXERCISE_TYPES.isMultiBookmarkExercise(exerciseType);
   const isCorrectMatch = ["CCC"].includes(messageForAPI);
 
   // TODO: Let's make sure that these two are named as clearly as possible;
@@ -122,6 +118,7 @@ export default function NextNavigation({
     if (isDeleted) {
       moveToNextExercise();
     }
+    // eslint-disable-next-line
   }, [isDeleted]);
 
   useEffect(() => {

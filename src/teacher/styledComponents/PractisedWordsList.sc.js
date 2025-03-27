@@ -2,10 +2,20 @@ import styled from "styled-components";
 import { darkBlue, darkGrey, lightBlue } from "../../components/colors";
 
 export const StyledPractisedWordsList = styled.div`
-  p {
-    margin: 0;
+  margin: 0 0.5rem;
+  .table {
+    width: 100%;
+    margin-left: 0.5rem;
+    text-align: left;
   }
 
+  .table > * {
+    display: table-row;
+  }
+
+  .table .col {
+    display: table-cell;
+  }
   .practised-words-container {
     border-left: solid 3px ${darkBlue};
     min-width: 340px;
@@ -14,24 +24,19 @@ export const StyledPractisedWordsList = styled.div`
   }
 
   .word-practised {
-    margin: 0 0 0 1em;
+    margin: 0 0 0 0.8rem;
   }
 
   .translation-of-practised-word {
     color: ${lightBlue};
     font-size: smaller;
-    margin: 0 0 1em 1.2em;
-  }
-
-  .practised-word-date-and-icons {
-    display: flex;
-    flex-direction: row;
-    margin: 0 0 0 1.2em;
-    font-size: small;
+    font-weight: 500;
+    margin: 0 0 0.5rem 0.8rem;
   }
 
   .word-practised-date {
     color: ${darkGrey};
     min-width: 85px;
+    font-size: small;
   }
 `;

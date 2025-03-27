@@ -42,11 +42,21 @@ export function TranslatableText({
         </div>
       )),
     );
-  }, [paragraphs, translationCount, translating, pronouncing, isCorrect]);
+    //eslint-disable-next-line
+  }, [
+    paragraphs,
+    translationCount,
+    translating,
+    pronouncing,
+    isCorrect,
+    bookmarkToStudy,
+    rightEllipsis,
+    leftEllipsis,
+  ]);
 
   useEffect(() => {
     if (setIsRendered) setIsRendered(true);
-  }, [renderedText]);
+  }, [setIsRendered]);
 
   function wordUpdated() {
     setTranslationCount(translationCount + 1);

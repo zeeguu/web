@@ -20,9 +20,11 @@ import LeaveClassroomModal from "./LeaveClassroomModal";
 import useFormField from "../../../hooks/useFormField";
 import { NonEmptyValidator } from "../../../utils/ValidatorRule/Validator";
 import { setTitle } from "../../../assorted/setTitle";
+import { APIContext } from "../../../contexts/APIContext";
 
-export default function MyClassrooms({ api }) {
-  const user = useContext(UserContext);
+export default function MyClassrooms() {
+  const api = useContext(APIContext);
+  const { session } = useContext(UserContext);
 
   const [isLoading, setIsLoading] = useState(true);
   const [
@@ -52,7 +54,8 @@ export default function MyClassrooms({ api }) {
 
   useEffect(() => {
     updateValues();
-  }, [user.session, api]);
+    // eslint-disable-next-line
+  }, [session, api]);
 
   function handleOpenLeaveClassroomModal(classroom) {
     setCurrentClassroom(classroom);

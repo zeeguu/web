@@ -11,6 +11,7 @@ let zeeguuDarkOrange = "#9c7130";
 let lightBlue = "#54cdff";
 let lighterBlue = "#CCDEFF";
 let darkBlue = "#2f77ad";
+let transparentDarkGreen = "rgb(0 80 20 / 50%)";
 
 /* 
   A NEW APPROACH TO DEFINING AND NAMING COLORS:
@@ -85,7 +86,7 @@ export {
   zeeguuVeryLightOrange,
   zeeguuTransparentLightYellow,
   zeeguuLightYellow,
-  zeeguuWarmYellow as zeeguuWarmYellow,
+  zeeguuWarmYellow,
   zeeguuSalmonOrange,
   zeeguuTransparentLightOrange,
   zeeguuTransparentMediumOrange,
@@ -114,6 +115,7 @@ export {
   orange800,
   orange900,
   orange600_transparent,
+  transparentDarkGreen,
   veryLightGrey,
   lightGrey,
   darkGrey,

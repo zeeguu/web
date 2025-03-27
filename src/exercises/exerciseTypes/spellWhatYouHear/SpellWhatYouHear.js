@@ -12,6 +12,7 @@ import { SpeechContext } from "../../../contexts/SpeechContext.js";
 import useSubSessionTimer from "../../../hooks/useSubSessionTimer.js";
 import BookmarkProgressBar from "../../progressBars/BookmarkProgressBar.js";
 import { removePunctuation } from "../../../utils/text/preprocessing.js";
+import { APIContext } from "../../../contexts/APIContext.js";
 
 // The user has to write the word they hear. A context with the word omitted is shown.
 // This tests the user's active knowledge.
@@ -19,7 +20,6 @@ import { removePunctuation } from "../../../utils/text/preprocessing.js";
 const EXERCISE_TYPE = EXERCISE_TYPES.spellWhatYouHear;
 
 export default function SpellWhatYouHear({
-  api,
   bookmarksToStudy,
   setSelectedExerciseBookmark,
   exerciseMessageToAPI,
@@ -94,7 +94,6 @@ export default function SpellWhatYouHear({
           <s.CenteredRowTall>
             <SpeakButton
               bookmarkToStudy={exerciseBookmark}
-              api={api}
               styling="large"
               parentIsSpeakingControl={isButtonSpeaking}
             />

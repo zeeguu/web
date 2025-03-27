@@ -16,9 +16,11 @@ import BackArrow from "./settings_pages_shared/BackArrow";
 import Checkbox from "../../components/modal_shared/Checkbox";
 import strings from "../../i18n/definitions";
 import { setTitle } from "../../assorted/setTitle";
+import { APIContext } from "../../contexts/APIContext";
 
-export default function ExerciseTypePreferences({ api }) {
-  const user = useContext(UserContext);
+export default function ExerciseTypePreferences() {
+  const api = useContext(APIContext);
+  const { session } = useContext(UserContext);
   const history = useHistory();
 
   const [audioExercises, setAudioExercises] = useState(true);
@@ -41,7 +43,7 @@ export default function ExerciseTypePreferences({ api }) {
           SessionStorage.isAudioExercisesEnabled(),
       );
     });
-  }, [user.session, api]);
+  }, [session, api]);
 
   function handleAudioExercisesChange(e) {
     setAudioExercises((state) => !state);

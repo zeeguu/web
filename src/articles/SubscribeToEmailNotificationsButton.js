@@ -1,12 +1,13 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import * as s from "./SubscribeSearchButton.sc";
 import useSelectInterest from "../hooks/useSelectInterest";
 import { toast } from "react-toastify";
+import { APIContext } from "../contexts/APIContext";
 
 export default function SubscribeToEmailNotificationsButton({
-  api,
   subscribedSearch,
 }) {
+  const api = useContext(APIContext);
   const { subscribedSearches, subscribeToEmail, unsubscribeFromEmail } =
     useSelectInterest(api);
   const [buttonText, setButtonText] = useState("");

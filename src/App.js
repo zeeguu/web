@@ -37,16 +37,19 @@ function App() {
 
   useUILanguage();
 
-  const [userData, setUserData] = useState();
+  const [userDetails, setUserDetails] = useState();
+  const [userPreferences, setUserPreferences] = useState();
+
   const [isExtensionAvailable] = useExtensionCommunication();
   const [zeeguuSpeech, setZeeguuSpeech] = useState(false);
   let { handleRedirectLinkOrGoTo } = useRedirectLink();
 
   useEffect(() => {
-    if (userData && userData.learned_language) {
-      setZeeguuSpeech(new ZeeguuSpeech(api, userData.learned_language));
+    if (userDetails && userDetails.learned_language) {
+      setZeeguuSpeech(new ZeeguuSpeech(api, userDetails.learned_language));
     }
-  }, [userData]);
+    // eslint-disable-next-line
+  }, [userDetails]);
 
   useEffect(() => {
     console.log("Got the API URL:" + API_ENDPOINT);
@@ -65,16 +68,10 @@ function App() {
       api.isValidSession(
         () => {
           console.log("valid sesison... getting user details...");
-          api.getUserDetails((data) => {
-            LocalStorage.setUserInfo(data);
-            api.getUserPreferences((preferences) => {
-              LocalStorage.setUserPreferences(preferences);
-
-              let userDict = {
-                session: getSessionFromCookies(),
-                ...LocalStorage.userInfo(),
-              };
-              console.log("Session: " + api.session);
+          api.getUserDetails((userDetails) => {
+            LocalStorage.setUserInfo(userDetails);
+            api.getUserPreferences((userPreferences) => {
+              LocalStorage.setUserPreferences(userPreferences);
 
               if (userHasNotExercisedToday())
                 api.getUserBookmarksToStudy(1, (scheduledBookmaks) => {
@@ -87,8 +84,11 @@ function App() {
                 exerciseNotification.setHasExercises(false);
                 exerciseNotification.updateReactState();
               }
-              setZeeguuSpeech(new ZeeguuSpeech(api, userDict.learned_language));
-              setUserData(userDict);
+              setZeeguuSpeech(
+                new ZeeguuSpeech(api, userDetails.learned_language),
+              );
+              setUserDetails(userDetails);
+              setUserPreferences(userPreferences);
             });
           });
         },
@@ -101,7 +101,8 @@ function App() {
     //logs out user on zeeguu.org if they log out of the extension
     const interval = setInterval(() => {
       if (!getSessionFromCookies()) {
-        setUserData({});
+        setUserDetails({});
+        setUserPreferences({});
       }
     }, 1000);
     return () => clearInterval(interval);
@@ -112,7 +113,8 @@ function App() {
   function logout() {
     LocalStorage.deleteUserInfo();
     LocalStorage.deleteUserPreferences();
-    setUserData({});
+    setUserDetails({});
+    setUserPreferences({});
 
     removeUserInfoFromCookies();
   }
@@ -149,14 +151,14 @@ function App() {
     setUser(newUserValue);
 
     /* If a redirect link exists, uses it to redirect the user,
-                            otherwise, uses the location from the function argument. */
+                                                                            otherwise, uses the location from the function argument. */
     handleRedirectLinkOrGoTo("/articles");
   }
 
   //Setting up the routing context to be able to use the cancel-button in EditText correctly
   const [returnPath, setReturnPath] = useState("");
 
-  if (userData === undefined) {
+  if (userDetails === undefined) {
     return <LoadingAnimation />;
   }
 
@@ -164,13 +166,20 @@ function App() {
     <SpeechContext.Provider value={zeeguuSpeech}>
       <BrowserRouter>
         <RoutingContext.Provider value={{ returnPath, setReturnPath }}>
-          <UserContext.Provider value={{ ...userData, logoutMethod: logout }}>
+          <UserContext.Provider
+            value={{
+              userDetails,
+              setUserDetails,
+              userPreferences,
+              setUserPreferences,
+              session: getSessionFromCookies(),
+              logoutMethod: logout,
+            }}
+          >
             <ExerciseCountContext.Provider value={exerciseNotification}>
               <APIContext.Provider value={api}>
                 {/* Routing*/}
                 <MainAppRouter
-                  api={api}
-                  setUser={setUserData}
                   hasExtension={isExtensionAvailable}
                   handleSuccessfulLogIn={handleSuccessfulLogIn}
                 />

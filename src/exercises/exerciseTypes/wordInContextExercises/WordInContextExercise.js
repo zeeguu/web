@@ -10,6 +10,7 @@ import { SpeechContext } from "../../../contexts/SpeechContext.js";
 import useSubSessionTimer from "../../../hooks/useSubSessionTimer.js";
 import BookmarkProgressBar from "../../progressBars/BookmarkProgressBar.js";
 import { removePunctuation } from "../../../utils/text/preprocessing.js";
+import { APIContext } from "../../../contexts/APIContext.js";
 
 //shared code for ClickWordInContext and FindWordInContext exercises
 //The difference between the two is that in FindWordInContext the user can choose to either click on the word or type the word.
@@ -21,7 +22,6 @@ export default function WordInContextExercise({
   showBottomInput,
   notifyExerciseCompleted,
   notifyShowSolution,
-  api,
   reload,
   bookmarksToStudy,
   notifyCorrectAnswer,
@@ -32,6 +32,7 @@ export default function WordInContextExercise({
   setIsCorrect,
   resetSubSessionTimer,
 }) {
+  const api = useContext(APIContext);
   const [messageToAPI, setMessageToAPI] = useState("");
   const [interactiveText, setInteractiveText] = useState();
   const [translatedWords, setTranslatedWords] = useState([]);
@@ -67,8 +68,8 @@ export default function WordInContextExercise({
 
   function equalAfterRemovingSpecialCharacters(a, b) {
     // from: https://stackoverflow.com/a/4328546
-    let first = a.replace(/[^\w\s\']|_/g, "").replace(/\s+/g, " ");
-    let second = b.replace(/[^\w\s\']|_/g, "").replace(/\s+/g, " ");
+    let first = a.replace(/[^\w\s']|_/g, "").replace(/\s+/g, " ");
+    let second = b.replace(/[^\w\s']|_/g, "").replace(/\s+/g, " ");
     return first === second;
   }
 

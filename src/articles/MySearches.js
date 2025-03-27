@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import LoadingAnimation from "../components/LoadingAnimation";
 import strings from "../i18n/definitions";
-
+import { APIContext } from "../contexts/APIContext.js";
 import * as s from "../components/TopMessage.sc";
 import * as d from "./MySearches.sc";
 import ArticlePreview from "./ArticlePreview";
@@ -11,7 +11,8 @@ import redirect from "../utils/routing/routing.js";
 import SubscribeSearchButton from "./SubscribeSearchButton.js";
 import SearchField from "./SearchField.js";
 
-export default function MySearches({ api }) {
+export default function MySearches() {
+  const api = useContext(APIContext);
   const { subscribedSearches } = useSelectInterest(api);
   const [articlesBySearchTerm, setArticlesBySearchTerm] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -25,6 +26,7 @@ export default function MySearches({ api }) {
     return () => {
       setIsLoading(true);
     };
+    // eslint-disable-next-line
   }, [subscribedSearches]);
 
   async function topArticlesForSearchTerm(searchTerm) {
@@ -58,7 +60,7 @@ export default function MySearches({ api }) {
     return (
       <>
         <div>
-          <SearchField api={api} />
+          <SearchField />
         </div>
         <s.TopMessage>{strings.NoSavedSearches}</s.TopMessage>
       </>
@@ -67,16 +69,16 @@ export default function MySearches({ api }) {
 
   return (
     <>
-      <SearchField api={api} />
+      <SearchField />
       {articlesBySearchTerm.map(({ searchTerm, articles }) => (
         <div key={searchTerm}>
           <d.HeadlineSavedSearches>{searchTerm}</d.HeadlineSavedSearches>
-          <SubscribeSearchButton api={api} query={searchTerm} />
+          <SubscribeSearchButton query={searchTerm} />
           {articles.length === 0 && (
             <p>No recent articles were found for this keyword.</p>
           )}
           {articles.map((each) => (
-            <ArticlePreview key={each.id} api={api} article={each} />
+            <ArticlePreview key={each.id} article={each} />
           ))}
           <d.buttonMoreArticles
             onClick={(e) => redirect(`/search?search=${searchTerm}`)}
