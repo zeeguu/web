@@ -335,47 +335,71 @@ export default class InteractiveText {
       return [contextBuilder, hasRightEllipsis, count > 0];
     }
 
-    let [leftContext, paragraph_i, sent_i, token_i] = [
-      "",
-      word.token.paragraph_i,
-      word.token.sent_i,
-      word.token.token_i,
-    ];
+    function radialExpansionContext(startingWord) {
+      /**
+       * Expands the context from the starting word. It adds words by alternating between
+       * left and right until we reach a start/end of sentence or run out of budget.
+       *
+       * We do this to avoid situations where the user might click a final word in an
+       * exercise and we end up creating a new BookmarkContext + Text pair.
+       *
+       * I reused the methods we had defined for left and right, though here they are
+       * exclusively used to expand 1 token to left and right.
+       */
 
-    let budget = MAX_WORD_EXPANSION_COUNT;
-    let leftEllipsis;
-    let rightContext, rightEllipsis;
+      let [leftContext, paragraph_i, sent_i, token_i] = [
+        "",
+        startingWord.token.paragraph_i,
+        startingWord.token.sent_i,
+        startingWord.token.token_i,
+      ];
 
-    let leftWord = word;
-    let rightWord = word.next;
-    let context = word.word;
-    while (budget > 0) {
-      console.log("Current budget: ", budget);
-      let rightUpdated = false;
-      let leftUpdated = false;
-      if (leftWord.prev && !leftWord.token.is_sent_start) {
-        [leftContext, paragraph_i, sent_i, token_i, leftUpdated] =
-          getLeftContextAndStartIndex(leftWord, 1);
-        if (!wordShouldSkipCount(leftWord)) budget -= 1;
-        leftWord = leftWord.prev;
-        context = leftContext + context;
+      let budget = MAX_WORD_EXPANSION_COUNT;
+      let leftEllipsis;
+      let rightContext, rightEllipsis;
+
+      let leftWord = startingWord;
+      let rightWord = startingWord.next;
+      let context = startingWord.word;
+      while (budget > 0) {
+        let rightUpdated = false;
+        let leftUpdated = false;
+
+        if (leftWord.prev && !leftWord.token.is_sent_start) {
+          [leftContext, paragraph_i, sent_i, token_i, leftUpdated] =
+            getLeftContextAndStartIndex(leftWord, 1);
+          if (!wordShouldSkipCount(leftWord)) budget -= 1;
+          leftWord = leftWord.prev;
+          context = leftContext + context;
+        }
+
+        if (budget > 0 && rightWord) {
+          [rightContext, rightEllipsis, rightUpdated] = getRightContext(
+            rightWord,
+            1,
+          );
+          if (!wordShouldSkipCount(rightWord)) budget -= 1;
+          if (rightUpdated) rightWord = rightWord.next;
+          context += rightContext;
+        }
+
+        // We have captured the sentence in its entirety.
+        if (!rightUpdated & !leftUpdated) break;
       }
-
-      if (budget > 0 && rightWord) {
-        [rightContext, rightEllipsis, rightUpdated] = getRightContext(
-          rightWord,
-          1,
-        );
-        if (!wordShouldSkipCount(rightWord)) budget -= 1;
-        rightWord = rightWord.next;
-        context += rightContext;
-      }
-      if (!rightUpdated & !leftUpdated) break;
-      // We have captured the sentence in its entirety.
+      leftEllipsis = token_i !== 0;
+      console.log("Budget: ", budget);
+      console.log("Final context: ", context);
+      console.log(paragraph_i, sent_i, token_i, leftEllipsis, rightEllipsis);
+      return [
+        context,
+        paragraph_i,
+        sent_i,
+        token_i,
+        leftEllipsis,
+        rightEllipsis,
+      ];
     }
-    leftEllipsis = token_i !== 0;
-    console.log("Final context: ", context);
-    console.log(paragraph_i, sent_i, token_i, leftEllipsis, rightEllipsis);
-    return [context, paragraph_i, sent_i, token_i, leftEllipsis, rightEllipsis];
+
+    return radialExpansionContext(word);
   }
 }
