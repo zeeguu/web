@@ -80,7 +80,7 @@ export default function AlterMenu({
       {word.alternatives !== undefined && (
         <>
           <input
-            autocomplete="off"
+            autoComplete="off"
             className="ownTranslationInput matchWidth"
             type="text"
             id="#userAlternative"

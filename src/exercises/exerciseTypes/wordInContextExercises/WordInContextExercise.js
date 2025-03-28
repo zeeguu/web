@@ -48,14 +48,14 @@ export default function WordInContextExercise({
     setInteractiveText(
       new InteractiveText(
         exerciseBookmark.context_tokenized,
-        exerciseBookmark.article_id,
-        exerciseBookmark.context_in_content,
+        exerciseBookmark.source_id,
         api,
         [],
         "TRANSLATE WORDS IN EXERCISE",
         exerciseBookmark.from_lang,
         exerciseType,
         speech,
+        exerciseBookmark.context_identifier,
       ),
     );
 

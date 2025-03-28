@@ -77,6 +77,7 @@ Zeeguu_API.prototype.logUserActivity = function (
   article_id = "",
   value = "",
   extra_data = "",
+  source_id = "",
 ) {
   let event_information = {
     time: new Date().toJSON(),
@@ -84,6 +85,7 @@ Zeeguu_API.prototype.logUserActivity = function (
     value: value,
     extra_data: extra_data,
     article_id: article_id,
+    source_id: source_id,
   };
 
   const currentDate = new Date();
@@ -110,8 +112,18 @@ Zeeguu_API.prototype.logReaderActivity = function (
   article_id = "",
   value = "",
   extra_data = "",
+  source_id = "",
 ) {
-  return this.logUserActivity(event, article_id, value, extra_data);
+  /**
+   * Logs an activity that occurred in the text reader.
+   *
+   * @param {string} event - The type of event that occurred.
+   * @param {string} [article_id=""] - The ID of the article associated with the event.
+   * @param {string} [value=""] - Additional information about the event.
+   * @param {string} [extra_data=""] - Extra data related to the event.
+   * @param {string} [source_id=""] - The ID of source associated with the event.
+   */
+  return this.logUserActivity(event, article_id, value, extra_data, source_id);
 };
 
 Zeeguu_API.prototype.daysSinceLastUse = function (callback) {

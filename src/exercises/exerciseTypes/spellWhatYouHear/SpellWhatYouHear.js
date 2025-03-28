@@ -55,14 +55,14 @@ export default function SpellWhatYouHear({
     setInteractiveText(
       new InteractiveText(
         exerciseBookmark.context_tokenized,
-        exerciseBookmark.article_id,
-        exerciseBookmark.context_in_content,
+        exerciseBookmark.source_id,
         api,
         [],
         "TRANSLATE WORDS IN EXERCISE",
         exerciseBookmark.from_lang,
         EXERCISE_TYPE,
         speech,
+        exerciseBookmark.context_identifier,
       ),
     );
     if (!SessionStorage.isAudioExercisesEnabled()) handleDisabledAudio();

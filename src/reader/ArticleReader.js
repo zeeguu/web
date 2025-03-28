@@ -60,8 +60,9 @@ export default function ArticleReader({ teacherArticleID }) {
 
   const [articleInfo, setArticleInfo] = useState();
 
-  const [interactiveText, setInteractiveText] = useState();
+  const [interactiveText] = useState();
   const [interactiveTitle, setInteractiveTitle] = useState();
+  const [interactiveFragments, setInteractiveFragments] = useState();
   const {
     translateInReader,
     pronounceInReader,
@@ -156,7 +157,7 @@ export default function ArticleReader({ teacherArticleID }) {
   };
 
   useEffect(() => {
-    if (interactiveText !== undefined) {
+    if (interactiveFragments !== undefined) {
       setTimeout(() => {
         try {
           let scrollElement = document.getElementById("scrollHolder");
@@ -187,7 +188,7 @@ export default function ArticleReader({ teacherArticleID }) {
         }
       }, 250);
     }
-  }, [interactiveText, last_reading_percentage]);
+  }, [interactiveFragments, last_reading_percentage]);
 
   function onCreate() {
     scrollEvents.current = [];
@@ -195,30 +196,37 @@ export default function ArticleReader({ teacherArticleID }) {
     setScrollPosition(0);
 
     api.getArticleInfo(articleID, (articleInfo) => {
-      setInteractiveText(
-        new InteractiveText(
-          articleInfo.tokenized_paragraphs,
-          articleInfo.id,
-          true,
-          api,
-          articleInfo.translations,
-          api.TRANSLATE_TEXT,
-          articleInfo.language,
-          UMR_SOURCE,
-          speech,
+      console.log("Here is the article info!");
+      console.dir(articleInfo);
+      setInteractiveFragments(
+        articleInfo.tokenized_fragments.map(
+          (each) =>
+            new InteractiveText(
+              each.tokens,
+              articleInfo.source_id,
+              api,
+              each.past_bookmarks,
+              api.TRANSLATE_TEXT,
+              articleInfo.language,
+              UMR_SOURCE,
+              speech,
+              each.context_identifier,
+              each.formatting,
+            ),
         ),
       );
+      const articleTitleData = articleInfo.tokenized_title_new;
       setInteractiveTitle(
         new InteractiveText(
-          articleInfo.tokenized_title,
-          articleInfo.id,
-          false,
+          articleTitleData.tokens,
+          articleInfo.source_id,
           api,
-          articleInfo.translations,
+          articleTitleData.past_bookmarks,
           api.TRANSLATE_TEXT,
           articleInfo.language,
           UMR_SOURCE,
           speech,
+          articleTitleData.context_identifier,
         ),
       );
       setArticleInfo(articleInfo);
@@ -263,7 +271,7 @@ export default function ArticleReader({ teacherArticleID }) {
     }
   }
 
-  if (!articleInfo || !interactiveText) {
+  if (!articleInfo || !interactiveFragments) {
     return <LoadingAnimation />;
   }
 
@@ -273,7 +281,7 @@ export default function ArticleReader({ teacherArticleID }) {
       setAnswerSubmitted(true);
       setArticleInfo(newArticleInfo);
     });
-    api.logReaderActivity(api.LIKE_ARTICLE, articleInfo.id, state, UMR_SOURCE);
+    api.logReaderActivity(api.LIKE_ARTICLE, articleID, state, UMR_SOURCE);
   };
 
   const updateArticleDifficultyFeedback = (answer) => {
@@ -287,12 +295,11 @@ export default function ArticleReader({ teacherArticleID }) {
     );
     api.logReaderActivity(
       api.DIFFICULTY_FEEDBACK,
-      articleInfo.id,
+      articleID,
       answer,
       UMR_SOURCE,
     );
   };
-
   return (
     <>
       <TopToolbar
@@ -361,12 +368,16 @@ export default function ArticleReader({ teacherArticleID }) {
           )}
 
           <s.MainText>
-            <TranslatableText
-              interactiveText={interactiveText}
-              translating={translateInReader}
-              pronouncing={pronounceInReader}
-              updateBookmarks={fetchBookmarks}
-            />
+            {interactiveFragments &&
+              interactiveFragments.map((interactiveText) => (
+                <TranslatableText
+                  interactiveText={interactiveText}
+                  translating={translateInReader}
+                  pronouncing={pronounceInReader}
+                  setIsRendered={setReaderReady}
+                  updateBookmarks={fetchBookmarks}
+                />
+              ))}
           </s.MainText>
         </div>
 

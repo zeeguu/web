@@ -72,6 +72,7 @@ export class Word extends Item {
     this.mergedTokens = [...this.prev.mergedTokens];
 
     this.token = this.prev.token;
+    this.total_tokens += this.prev.total_tokens;
 
     this.prev.detach();
     return this;

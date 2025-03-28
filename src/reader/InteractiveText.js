@@ -6,26 +6,28 @@ import isNullOrUndefinied from "../utils/misc/isNullOrUndefinied";
 
 // We try to capture about a full sentence around a word.
 const MAX_WORD_EXPANSION_COUNT = 14;
+
 function wordShouldSkipCount(word) {
   //   When building context, we do not count for the context limit punctuation,
   // symbols, and numbers.
   return word.token.is_punct || word.token.is_symbol || word.token.is_like_num;
 }
+
 export default class InteractiveText {
   constructor(
     tokenizedParagraphs,
-    articleID,
-    isArticleContent,
+    sourceId,
     api,
     previousBookmarks,
     translationEvent = api.TRANSLATE_TEXT,
     language,
     source = "",
     zeeguuSpeech,
+    contextIdentifier,
+    formatting,
   ) {
     function _updateTokensWithBookmarks(bookmarks, paragraphs) {
       function areCoordinatesInParagraphMatrix(
-        target_p_i,
         target_s_i,
         target_t_i,
         paragraphs,
@@ -33,43 +35,42 @@ export default class InteractiveText {
         // This can happen when we update the tokenizer, but do not update the bookmarks.
         // They might become misaligned and point to a non existing token.
         return (
-          target_p_i < paragraphs.length &&
-          target_s_i < paragraphs[target_p_i].length &&
-          target_t_i < paragraphs[target_p_i][target_s_i].length
+          target_s_i < paragraphs[0].length &&
+          target_t_i < paragraphs[0][target_s_i].length
         );
       }
+
+      if (!bookmarks) return;
 
       for (let i = 0; i < bookmarks.length; i++) {
         let bookmark = bookmarks[i];
         let target_p_i, target_s_i, target_t_i;
         let target_token;
-        target_p_i = bookmark["context_paragraph"];
+        target_p_i = 0;
         target_s_i = bookmark["context_sent"] + bookmark["t_sentence_i"];
         target_t_i = bookmark["context_token"] + bookmark["t_token_i"];
 
         // If any the coordinates are null / undefined, we skip.
+        console.log(bookmark);
         if (
-          isNullOrUndefinied(target_p_i) ||
           isNullOrUndefinied(target_s_i) ||
           isNullOrUndefinied(target_t_i) ||
-          !areCoordinatesInParagraphMatrix(
-            target_p_i,
-            target_s_i,
-            target_t_i,
-            paragraphs,
-          )
-        )
+          !areCoordinatesInParagraphMatrix(target_s_i, target_t_i, paragraphs)
+        ) {
+          console.log("Skupped!");
           continue;
+        }
+
         target_token = paragraphs[target_p_i][target_s_i][target_t_i];
         /*
-        Before we update the target token we want to check two cases:
-         1. The bookmark isn't defined. 
-         If the bookmark is defined it means a bookmark is trying to override another
-         previous bookmark.
-         2. The bookmark text, doesn't match the token.
-         In this case, we might have an error in the coordinates, and for that reason
-         we don't update the original text.
-         */
+                Before we update the target token we want to check two cases:
+                 1. The bookmark isn't defined. 
+                 If the bookmark is defined it means a bookmark is trying to override another
+                 previous bookmark.
+                 2. The bookmark text, doesn't match the token.
+                 In this case, we might have an error in the coordinates, and for that reason
+                 we don't update the original text.
+                 */
         if (target_token.bookmark) {
           continue;
         }
@@ -83,6 +84,12 @@ export default class InteractiveText {
             bookmarkTokensSimplified[bookmark_i],
           );
           // If token is empty, due to removing punctuation, skip.
+          console.log(
+            bookmark_word,
+            paragraphs[target_p_i][target_s_i][
+              target_t_i + text_i + bookmark_i
+            ],
+          );
           if (bookmark_word.length === 0) {
             bookmark_i++;
             continue;
@@ -102,6 +109,7 @@ export default class InteractiveText {
             continue;
           }
           // If the tokens don't match, we break and skip this bookmark.
+          console.log(bookmark_word, text_word);
           if (bookmark_word !== text_word) {
             shouldSkipBookmarkUpdate = true;
             break;
@@ -119,13 +127,13 @@ export default class InteractiveText {
           bookmark.total_tokens = text_i + bookmark_i;
         target_token.bookmark = bookmark;
         /*
-          When rendering the words in the frontend, we alter the word object to be composed
-          of multiple tokens.
-          In case of deleting a bookmark, we need to make sure that all the tokens are 
-          available to re-render the original text. 
-          To do this, we need to ensure that the stored token is stored without a bookmark,
-          so when those are retrieved the token is seen as a token rather than a bookmark. 
-         */
+                  When rendering the words in the frontend, we alter the word object to be composed
+                  of multiple tokens.
+                  In case of deleting a bookmark, we need to make sure that all the tokens are 
+                  available to re-render the original text. 
+                  To do this, we need to ensure that the stored token is stored without a bookmark,
+                  so when those are retrieved the token is seen as a token rather than a bookmark. 
+                 */
         target_token.mergedTokens = [{ ...target_token, bookmark: null }];
         for (let i = 1; i < bookmark["t_total_token"]; i++) {
           target_token.mergedTokens.push({
@@ -135,20 +143,18 @@ export default class InteractiveText {
         }
       }
     }
+
     this.api = api;
-    this.article_id = articleID;
+    this.sourceId = sourceId;
     this.language = language;
-    this.isArticleContent = articleID && isArticleContent;
     this.translationEvent = translationEvent;
     this.source = source;
+    this.formatting = formatting;
+    this.contextIdentifier = contextIdentifier;
 
     // Might be worth to store a flag to keep track of wether or not the
     // bookmark / text are part of the content or stand by themselves.
-    this.previousBookmarks = previousBookmarks.filter(
-      (each) =>
-        (isArticleContent && each.in_content) ||
-        (!isArticleContent && !each.in_content),
-    );
+    this.previousBookmarks = previousBookmarks;
     this.paragraphs = tokenizedParagraphs;
     _updateTokensWithBookmarks(this.previousBookmarks, this.paragraphs);
     this.paragraphsAsLinkedWordLists = this.paragraphs.map(
@@ -182,12 +188,12 @@ export default class InteractiveText {
         [wordSent_i, wordToken_i, word.total_tokens],
         context,
         [cParagraph_i, cSent_i, cToken_i],
-        this.article_id,
-        this.isArticleContent,
+        this.sourceId,
         leftEllipsis,
         rightEllipsis,
+        this.contextIdentifier,
       )
-      .then((response) => response.json())
+      .then((response) => response.data)
       .then((data) => {
         word.updateTranslation(
           data.translation,
@@ -197,14 +203,16 @@ export default class InteractiveText {
         onSuccess();
       })
       .catch((e) => {
+        console.error(e);
         console.log("could not retreive translation");
       });
 
     this.api.logReaderActivity(
       this.translationEvent,
-      this.article_id,
+      null,
       word.word,
       this.source,
+      this.sourceId,
     );
   }
 
@@ -216,7 +224,7 @@ export default class InteractiveText {
       word.word,
       alternative,
       context,
-      this.isArticleContent,
+      this.contextIdentifier["context_type"],
     );
     word.translation = alternative;
     word.service_name = "Own alternative selection";
@@ -224,9 +232,10 @@ export default class InteractiveText {
     let alternative_info = `${word.translation} => ${alternative} (${preferredSource})`;
     this.api.logReaderActivity(
       this.api.SEND_SUGGESTION,
-      this.article_id,
+      null,
       alternative_info,
       this.source,
+      this.sourceId,
     );
 
     onSuccess();
@@ -244,7 +253,7 @@ export default class InteractiveText {
         -1,
         word.service_name,
         word.translation,
-        this.article_id,
+        this.sourceId,
       )
       .then((response) => response.json())
       .then((data) => {
@@ -255,7 +264,7 @@ export default class InteractiveText {
 
   playAll() {
     console.log("playing all");
-    this.zeeguuSpeech.playAll(this.article_id);
+    this.zeeguuSpeech.playAll(this.sourceId);
   }
 
   pause() {
@@ -273,9 +282,10 @@ export default class InteractiveText {
 
     this.api.logReaderActivity(
       this.api.SPEAK_TEXT,
-      this.article_id,
+      null,
       word.word,
       this.source,
+      this.sourceId,
     );
   }
 
