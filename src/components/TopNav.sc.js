@@ -14,11 +14,16 @@ const TopNavWrapper = styled.div`
   background-color: white;
   justify-content: center;
   background: white;
+  padding: 0 3rem;
+
+  @media (max-width: 576px) {
+    padding: 0 1rem;
+  }
 `;
 
 const TopNav = styled.nav`
   ${_navbarShared};
-  max-width: 76.25rem;
+  max-width: 80rem;
 `;
 
 const NavList = styled.ul`
@@ -27,8 +32,7 @@ const NavList = styled.ul`
   justify-content: flex-end;
   color: white;
   font-size: 18px;
-  max-width: 76.25rem;
-  margin: 0 1rem;
+  max-width: 80rem;
   gap: 2rem;
 `;
 

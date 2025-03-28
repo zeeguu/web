@@ -12,9 +12,10 @@ const PageWrapper = styled.div`
 const Header = styled.header``;
 
 const Main = styled.main`
-  position: absolute;
   width: 100%;
-  left: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 `;
 
 const _mainHeader = css`
@@ -31,18 +32,20 @@ const _mainHeader = css`
 const HeroSection = styled.section`
   height: auto;
   max-width: 52rem;
-  padding: 6rem 1rem;
-  margin-left: auto;
-  margin-right: auto;
-  text-align: center;
+  padding: 6rem 3rem;
   display: flex;
   flex-direction: row;
   align-items: flex-start;
-  max-width: 76.25rem;
+  max-width: 80rem;
   gap: 1.5rem;
+
+  @media (max-width: 992px) {
+    flex-direction: column;
+  }
 
   @media (max-width: 576px) {
     padding: 3rem 1rem;
+    justify-content: flex-start;
   }
 
   h1 {
@@ -51,8 +54,20 @@ const HeroSection = styled.section`
     font-size: 2.5rem;
     margin: 0;
 
-    @media (max-width: 768px) {
+    @media (max-width: 1200px) {
+      font-size: 2rem;
+    }
+
+    @media (max-width: 992px) {
       font-size: 2.5rem;
+    }
+
+    @media (max-width: 768px) {
+      font-size: 2rem;
+    }
+
+    @media (max-width: 576px) {
+      font-size: 1.7rem;
     }
   }
 
@@ -71,6 +86,11 @@ const HeroLeftColumn = styled.section`
   text-align: left;
   gap: 1.5rem;
   flex: 1;
+
+  @media (max-width: 992px) {
+    align-items: center;
+    text-align: center;
+  }
 `;
 
 const HeroRightColumn = styled.div`
@@ -81,7 +101,17 @@ const HeroRightColumn = styled.div`
   gap: 0.75rem;
   flex: 1;
   height: 100%;
-  padding: 3rem;
+  padding: 3rem 0 3rem 2rem;
+  height: 17rem;
+
+  @media (max-width: 992px) {
+    padding: 3rem 0;
+    justify-content: center;
+  }
+
+  @media (max-width: 576px) {
+    padding: 2rem 0 0 0;
+  }
 `;
 
 const AdaptableColumn = styled.div`

@@ -11,7 +11,7 @@ export default function LandingPageTopNav() {
   return (
     <TopNav>
       <TopNavLink logo to="/">
-        <Logo size={"1.9rem"} />
+        <Logo size={"1.7rem"} />
         Zeeguu
       </TopNavLink>
       <TopNavLink to="/log_in">{strings.login}</TopNavLink>

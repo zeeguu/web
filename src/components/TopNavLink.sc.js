@@ -17,7 +17,7 @@ const TopNavLink = styled(Link)`
   font-size: 1rem;
   display: flex;
   flex-direction: row;
-  gap: 0.5rem;
+  gap: 0.7rem;
   align-items: center;
   color: ${orange600};
   font-weight: 700;
@@ -54,7 +54,7 @@ const TopNavLink = styled(Link)`
   ${({ $logo }) =>
     $logo &&
     css`
-      font-size: 1.25em;
+      font-size: 1.6rem;
       font-weight: 600;
       &:hover {
         color: ${orange600};

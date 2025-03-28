@@ -51,13 +51,13 @@ export default function LandingPage() {
         <s.HeroSection>
           <s.HeroLeftColumn>
             <h1>
-              Read what you love in your target language and improve your
-              vocabulary
+              Read what you love in your target language and improve
+              your&nbsp;vocabulary
             </h1>
             <p className="hero-paragraph">
               {/* {strings.projectDescription_UltraShort} */}
-              Find interesting articles, translate words as you read, and use
-              spaced repetition to remember them
+              Find interesting articles, translate words as&nbsp;you read,
+              and&nbsp;use&nbsp;spaced repetition to&nbsp;remember&nbsp;them
             </p>
             <Button onClick={() => handleRegisterClick()}>
               {strings.getStarted}
