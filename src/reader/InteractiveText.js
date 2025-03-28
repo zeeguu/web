@@ -290,13 +290,13 @@ export default class InteractiveText {
           currentWord.word +
           (currentWord.token.has_space ? " " : "") +
           contextBuilder;
+        count++;
         if (
           currentWord.token.is_sent_start ||
           currentWord.token.token_i === 0
         ) {
           break;
         }
-        count++;
       }
       return [
         contextBuilder,
@@ -357,21 +357,18 @@ export default class InteractiveText {
       let budget = MAX_WORD_EXPANSION_COUNT;
       let leftEllipsis;
       let rightContext, rightEllipsis;
-
       let leftWord = startingWord;
       let rightWord = startingWord.next;
       let context = startingWord.word;
+
       while (budget > 0) {
         let rightUpdated = false;
         let leftUpdated = false;
 
-        if (leftWord.prev && !leftWord.token.is_sent_start) {
-          [leftContext, paragraph_i, sent_i, token_i, leftUpdated] =
-            getLeftContextAndStartIndex(leftWord, 1);
-          if (!wordShouldSkipCount(leftWord)) budget -= 1;
-          leftWord = leftWord.prev;
-          context = leftContext + context;
-        }
+        [leftContext, paragraph_i, sent_i, token_i, leftUpdated] =
+          getLeftContextAndStartIndex(leftWord, 1);
+        if (!wordShouldSkipCount(leftWord)) budget -= 1;
+        context = leftContext + context;
 
         if (budget > 0 && rightWord) {
           [rightContext, rightEllipsis, rightUpdated] = getRightContext(
@@ -379,17 +376,24 @@ export default class InteractiveText {
             1,
           );
           if (!wordShouldSkipCount(rightWord)) budget -= 1;
-          if (rightUpdated) rightWord = rightWord.next;
           context += rightContext;
         }
 
         // We have captured the sentence in its entirety.
         if (!rightUpdated & !leftUpdated) break;
+
+        // If we update one of the sides, we keep going.
+        if (leftUpdated) leftWord = leftWord.prev;
+        if (rightUpdated) rightWord = rightWord.next;
       }
+
+      // If we are not at the start of the sentence, we need leftEllipsis.
       leftEllipsis = token_i !== 0;
+
       console.log("Budget: ", budget);
       console.log("Final context: ", context);
       console.log(paragraph_i, sent_i, token_i, leftEllipsis, rightEllipsis);
+
       return [
         context,
         paragraph_i,
@@ -399,7 +403,6 @@ export default class InteractiveText {
         rightEllipsis,
       ];
     }
-
     return radialExpansionContext(word);
   }
 }
