@@ -1,9 +1,19 @@
 import { useState, useEffect, useContext } from "react";
 import { useHistory } from "react-router-dom/cjs/react-router-dom";
+import { Link } from "react-router-dom/cjs/react-router-dom";
 
+import { CEFR_LEVELS } from "../../assorted/cefrLevels";
+import { setTitle } from "../../assorted/setTitle";
+
+import { scrollToTop } from "../../utils/misc/scrollToTop";
+import { Validator } from "../../utils/ValidatorRule/Validator";
+import useShadowRef from "../../hooks/useShadowRef";
+import { APIContext } from "../../contexts/APIContext";
 import LocalStorage from "../../assorted/LocalStorage";
-
 import useFormField from "../../hooks/useFormField";
+import validateRules from "../../assorted/validateRules";
+import { NonEmptyValidator } from "../../utils/ValidatorRule/Validator";
+import strings from "../../i18n/definitions";
 
 import PreferencesPage from "../_pages_shared/PreferencesPage";
 import Header from "../_pages_shared/Header";
@@ -15,19 +25,7 @@ import Selector from "../../components/Selector";
 import ButtonContainer from "../_pages_shared/ButtonContainer.sc";
 import Button from "../_pages_shared/Button.sc";
 import RoundedForwardArrow from "@mui/icons-material/ArrowForwardRounded";
-
-import validateRules from "../../assorted/validateRules";
-import { NonEmptyValidator } from "../../utils/ValidatorRule/Validator";
-import strings from "../../i18n/definitions";
 import LoadingAnimation from "../../components/LoadingAnimation";
-
-import { CEFR_LEVELS } from "../../assorted/cefrLevels";
-import { setTitle } from "../../assorted/setTitle";
-
-import { scrollToTop } from "../../utils/misc/scrollToTop";
-import { Validator } from "../../utils/ValidatorRule/Validator";
-import useShadowRef from "../../hooks/useShadowRef";
-import { APIContext } from "../../contexts/APIContext";
 
 export default function LanguagePreferences() {
   const history = useHistory();
@@ -187,9 +185,9 @@ export default function LanguagePreferences() {
           </ButtonContainer>
           <p className="centered">
             {strings.alreadyHaveAccount + " "}
-            <a className="bold underlined-link" href="/log_in">
+            <Link className="bold underlined-link" to="/log_in">
               {strings.login}
-            </a>
+            </Link>
           </p>
         </Form>
       </Main>
