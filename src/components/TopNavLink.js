@@ -6,10 +6,12 @@ export default function TopNavLink({
   onClick,
   logo = false,
   callToAction = false,
+  ariaLabel,
 }) {
   return (
     <s.ListItem $logo={logo}>
       <s.TopNavLink
+        aria-label={ariaLabel}
         $logo={logo}
         $callToAction={callToAction}
         to={to}

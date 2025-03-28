@@ -57,7 +57,7 @@ export default function LandingPage() {
             <p className="hero-paragraph">
               {/* {strings.projectDescription_UltraShort} */}
               Find interesting articles, translate words as&nbsp;you read,
-              and&nbsp;use&nbsp;spaced repetition to&nbsp;remember&nbsp;them
+              and&nbsp;use&nbsp;spaced repetition to&nbsp;remember&nbsp;them.
             </p>
             <Button onClick={() => handleRegisterClick()}>
               {strings.getStarted}

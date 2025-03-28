@@ -16,7 +16,7 @@ export default function LandingPageTopNav() {
   }
   return (
     <TopNav>
-      <TopNavLink logo to="/">
+      <TopNavLink ariaLabel="Zeeguu" logo to="/">
         <Logo size={"1.7rem"} />
         {(isDesktopScreenWidth(screenWidth) ||
           isMediumScreenWidth(screenWidth)) &&
