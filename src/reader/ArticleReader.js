@@ -219,7 +219,7 @@ export default function ArticleReader({ teacherArticleID }) {
       setInteractiveTitle(
         new InteractiveText(
           articleTitleData.tokens,
-          articleInfo.id,
+          articleInfo.source_id,
           api,
           articleTitleData.past_bookmarks,
           api.TRANSLATE_TEXT,
