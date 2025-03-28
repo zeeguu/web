@@ -103,10 +103,6 @@ export function TranslatableText({
       : [];
     const isWordBold = boldWords.includes(removePunctuation(word.word));
 
-    if (isWordBold) {
-      return <span style={{ fontWeight: "bold" }}>{word.word + " "}</span>;
-    }
-
     if (isCorrect) {
       if (word.id === firstWordID && overrideBookmarkHighlightText) {
         // In case we want to override the highlighted bookmark
@@ -148,6 +144,9 @@ export function TranslatableText({
         );
       }
     } else {
+      if (isWordBold) {
+        return <span style={{ fontWeight: "bold" }}>{word.word + " "}</span>;
+      }
       if (!bookmarkToStudy || translatedWords) {
         return (
           <TranslatableWord
