@@ -9,6 +9,7 @@ export default function RadioGroup({
   optionLabel,
   optionValue,
   optionId,
+  dynamicIcon,
 }) {
   return (
     <s.StyledRadioGroup role="radiogroup" aria-labelledby={`${name}-label`}>
@@ -26,6 +27,7 @@ export default function RadioGroup({
             checked={selectedValue === optionValue(option)}
           />
           <s.OptionLabel htmlFor={optionId(option)}>
+            {dynamicIcon && dynamicIcon(option)}
             {optionLabel(option)}
           </s.OptionLabel>
         </div>
