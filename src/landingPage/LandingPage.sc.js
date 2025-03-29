@@ -105,7 +105,7 @@ const HeroRightColumn = styled.div`
   height: 17rem;
 
   @media (max-width: 992px) {
-    padding: 3rem 0;
+    padding: 3rem 0 0 0;
     justify-content: center;
   }
 

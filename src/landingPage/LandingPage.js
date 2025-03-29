@@ -60,7 +60,8 @@ export default function LandingPage() {
               and&nbsp;use&nbsp;spaced repetition to&nbsp;remember&nbsp;them.
             </p>
             <Button onClick={() => handleRegisterClick()}>
-              {strings.getStarted}
+              {/* {strings.getStarted} */}
+              Start Learning
               <RoundedForwardArrow />
             </Button>
           </s.HeroLeftColumn>
