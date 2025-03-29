@@ -11,6 +11,7 @@ import Button from "../pages/_pages_shared/Button.sc";
 import RoundedForwardArrow from "@mui/icons-material/ArrowForwardRounded";
 import LocalStorage from "../assorted/LocalStorage.js";
 import LandingPageTopNav from "./LandingPageTopNav.js";
+import DecorativeFlagImage from "../components/DecorativeFlagImage.js";
 import * as s from "./LandingPage.sc.js";
 
 export default function LandingPage() {
@@ -22,8 +23,6 @@ export default function LandingPage() {
     setTitle(strings.landingPageTitle);
 
     api.getSystemLanguages((languages) => {
-      languages.learnable_languages.sort((a, b) => (a.name > b.name ? 1 : -1));
-      languages.native_languages.sort((a, b) => (a.name > b.name ? 1 : -1));
       setSystemLanguages(languages);
     });
   }, [api]);
@@ -73,6 +72,7 @@ export default function LandingPage() {
                   key={language.code}
                   onClick={() => handleLanguageSelect(language.code)}
                 >
+                  <DecorativeFlagImage languageCode={language.code} />
                   {language.name}
                 </Button>
               ))}
