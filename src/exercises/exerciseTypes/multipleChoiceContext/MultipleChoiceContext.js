@@ -1,11 +1,9 @@
 import { useState, useEffect, useContext } from "react";
 import * as s from "../Exercise.sc.js";
 import strings from "../../../i18n/definitions";
-import NextNavigation from "../NextNavigation";
 import LoadingAnimation from "../../../components/LoadingAnimation.js";
 import InteractiveText from "../../../reader/InteractiveText.js";
 import { SpeechContext } from "../../../contexts/SpeechContext.js";
-import useSubSessionTimer from "../../../hooks/useSubSessionTimer.js";
 import shuffle from "../../../assorted/fisherYatesShuffle";
 import { EXERCISE_TYPES } from "../../ExerciseTypeConstants.js";
 import BookmarkProgressBar from "../../progressBars/BookmarkProgressBar.js";
@@ -18,36 +16,28 @@ const EXERCISE_TYPE = EXERCISE_TYPES.multipleChoiceContext;
 export default function MultipleChoiceContext({
   bookmarksToStudy,
   notifyCorrectAnswer,
+  notifyExerciseCompleted,
   notifyIncorrectAnswer,
   setExerciseType,
-  isCorrect,
-  setIsCorrect,
-  moveToNextExercise,
-  toggleShow,
+  isExerciseOver,
   reload,
-  setReload,
-  exerciseSessionId,
-  activeSessionDuration,
+  resetSubSessionTimer,
 }) {
   const api = useContext(APIContext);
   const [messageToAPI, setMessageToAPI] = useState("");
   const [exerciseBookmarks, setExerciseBookmarks] = useState(null);
   const [interactiveText, setInteractiveText] = useState(null);
   const speech = useContext(SpeechContext);
-  const [getCurrentSubSessionDuration] = useSubSessionTimer(
-    activeSessionDuration,
-  );
   const exerciseBookmark = { ...bookmarksToStudy[0], isExercise: true };
   const [clickedIndex, setClickedIndex] = useState(null);
   const [clickedOption, setClickedOption] = useState(null);
-  const [showSolution, setShowSolution] = useState(false);
   const [wordInContextHeadline, setWordInContextHeadline] = useState(
     removePunctuation(exerciseBookmark.from),
   );
-  const [isBookmarkChanged, setIsBookmarkChanged] = useState(false);
-  const showSolutionRef = useShadowRef(showSolution);
+  const isExerciseOverRef = useShadowRef(isExerciseOver);
 
   useEffect(() => {
+    resetSubSessionTimer();
     setExerciseType(EXERCISE_TYPE);
     let initExerciseBookmarks = [...bookmarksToStudy];
     for (let i = 0; i < initExerciseBookmarks.length; i++) {
@@ -74,16 +64,7 @@ export default function MultipleChoiceContext({
       ),
     );
     // eslint-disable-next-line
-  }, [isBookmarkChanged, bookmarksToStudy]);
-
-  function handleShowSolution() {
-    let message = messageToAPI + "S";
-    notifyIncorrectAnswer(exerciseBookmark);
-    setIsCorrect(true);
-    handleAnswer(message);
-    setShowSolution(true);
-    setWordInContextHeadline(removePunctuation(exerciseBookmark.to));
-  }
+  }, [reload, bookmarksToStudy]);
 
   function notifyChoiceSelection(
     selectedChoiceId,
@@ -91,16 +72,13 @@ export default function MultipleChoiceContext({
     index,
     e,
   ) {
-    if (isCorrect) return;
+    if (isExerciseOver) return;
     setClickedOption(index);
     if (selectedChoiceId === exerciseBookmark.id) {
-      setShowSolution(true);
       setClickedIndex(index);
-      notifyCorrectAnswer(exerciseBookmark);
-      setIsCorrect(true);
       setWordInContextHeadline(removePunctuation(exerciseBookmark.to));
       let concatMessage = messageToAPI + "C";
-      handleAnswer(concatMessage);
+      notifyCorrectAnswer(concatMessage, exerciseBookmark);
     } else {
       setClickedIndex(null);
       notifyIncorrectAnswer(exerciseBookmark);
@@ -110,20 +88,9 @@ export default function MultipleChoiceContext({
         // This line is here to avoid the reseting the styling on the
         // correct box if the user clicks on it shortly after getting the
         // context wrong.
-        if (!showSolutionRef.current) setClickedOption(null);
+        if (!isExerciseOverRef.current) setClickedOption(null);
       }, 500);
     }
-  }
-
-  function handleAnswer(message) {
-    setMessageToAPI(message);
-    api.uploadExerciseFinalizedData(
-      message,
-      EXERCISE_TYPE,
-      getCurrentSubSessionDuration(activeSessionDuration, "ms"),
-      exerciseBookmark.id,
-      exerciseSessionId,
-    );
   }
 
   function getHighlightedWord(word) {
@@ -145,7 +112,6 @@ export default function MultipleChoiceContext({
         <s.MultipleChoiceContext
           key={index}
           clicked={index === clickedIndex}
-          isCorrect={isCorrect}
           className={
             clickedOption !== null
               ? index === clickedOption
@@ -162,7 +128,7 @@ export default function MultipleChoiceContext({
           {option.left_ellipsis && <>...</>}
           <span
             dangerouslySetInnerHTML={{
-              __html: showSolution
+              __html: isExerciseOver
                 ? option.isExercise
                   ? option.context.replace(
                       option.from,
@@ -175,19 +141,6 @@ export default function MultipleChoiceContext({
           {option.right_ellipsis && <>...</>}
         </s.MultipleChoiceContext>
       ))}
-
-      <NextNavigation
-        exerciseType={EXERCISE_TYPE}
-        message={messageToAPI}
-        exerciseBookmark={bookmarksToStudy[0]}
-        moveToNextExercise={moveToNextExercise}
-        reload={reload}
-        setReload={setReload}
-        handleShowSolution={(e) => handleShowSolution(e, undefined)}
-        toggleShow={toggleShow}
-        isCorrect={isCorrect}
-        isBookmarkChanged={() => setIsBookmarkChanged(!isBookmarkChanged)}
-      />
     </s.Exercise>
   );
 }

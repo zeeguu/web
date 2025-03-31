@@ -2,12 +2,10 @@ import { useState, useEffect, useContext } from "react";
 import * as s from "../Exercise.sc.js";
 import { EXERCISE_TYPES } from "../../ExerciseTypeConstants.js";
 import strings from "../../../i18n/definitions.js";
-import NextNavigation from "../NextNavigation.js";
 import LoadingAnimation from "../../../components/LoadingAnimation.js";
 import InteractiveText from "../../../reader/InteractiveText.js";
 import { TranslatableText } from "../../../reader/TranslatableText.js";
 import { SpeechContext } from "../../../contexts/SpeechContext.js";
-import useSubSessionTimer from "../../../hooks/useSubSessionTimer.js";
 import BottomInput from "../BottomInput.js";
 import BookmarkProgressBar from "../../progressBars/BookmarkProgressBar.js";
 import { removePunctuation } from "../../../utils/text/preprocessing";
@@ -32,16 +30,20 @@ export default function TranslateL2toL1({
   isExerciseOver,
   resetSubSessionTimer,
 }) {
+  const api = useContext(APIContext);
   const [interactiveText, setInteractiveText] = useState();
   const [translatedWords, setTranslatedWords] = useState([]);
   const speech = useContext(SpeechContext);
 
   const exerciseBookmark = bookmarksToStudy[0];
+  useEffect(() => {
+    resetSubSessionTimer();
+    setExerciseType(EXERCISE_TYPE);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     setSelectedExerciseBookmark(exerciseBookmark);
-    resetSubSessionTimer();
-    setExerciseType(EXERCISE_TYPE);
     setInteractiveText(
       new InteractiveText(
         exerciseBookmark.context_tokenized,
@@ -55,6 +57,7 @@ export default function TranslateL2toL1({
         speech,
       ),
     );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [exerciseBookmark, reload]);
 
   function handleIncorrectAnswer() {
@@ -84,7 +87,7 @@ export default function TranslateL2toL1({
       )}
       <div className="contextExample">
         <TranslatableText
-          isCorrect={isExerciseOver}
+          isExerciseOver={isExerciseOver}
           interactiveText={interactiveText}
           translating={true}
           pronouncing={false}
@@ -106,6 +109,7 @@ export default function TranslateL2toL1({
           exerciseBookmark={exerciseBookmark}
           messageToAPI={exerciseMessageToAPI}
           setMessageToAPI={setExerciseMessageToAPI}
+          isL1Answer={true}
         />
       )}
     </s.Exercise>

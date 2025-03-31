@@ -6,13 +6,10 @@ import InteractiveText from "../../../reader/InteractiveText.js";
 import { TranslatableText } from "../../../reader/TranslatableText.js";
 import { EXERCISE_TYPES } from "../../ExerciseTypeConstants.js";
 import BookmarkProgressBar from "../../progressBars/BookmarkProgressBar.js";
-
-import NextNavigation from "../NextNavigation";
 import strings from "../../../i18n/definitions.js";
 import shuffle from "../../../assorted/fisherYatesShuffle";
 import { removePunctuation } from "../../../utils/text/preprocessing";
 import { SpeechContext } from "../../../contexts/SpeechContext.js";
-import useSubSessionTimer from "../../../hooks/useSubSessionTimer.js";
 import { APIContext } from "../../../contexts/APIContext.js";
 
 // The user has to select the correct L2 translation of a given L1 word out of three.
@@ -39,9 +36,11 @@ export default function MultipleChoice({
   const [interactiveText, setInteractiveText] = useState();
   const speech = useContext(SpeechContext);
   const exerciseBookmark = bookmarksToStudy[0];
+
   useEffect(() => {
     resetSubSessionTimer();
     setExerciseType(EXERCISE_TYPE);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -113,7 +112,7 @@ export default function MultipleChoice({
 
       <div className="contextExample">
         <TranslatableText
-          isCorrect={isExerciseOver}
+          isExerciseOver={isExerciseOver}
           interactiveText={interactiveText}
           translating={true}
           pronouncing={false}

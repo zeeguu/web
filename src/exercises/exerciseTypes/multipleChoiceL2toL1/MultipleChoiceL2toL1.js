@@ -40,6 +40,10 @@ export default function MultipleChoiceL2toL1({
   useEffect(() => {
     resetSubSessionTimer();
     setExerciseType(EXERCISE_TYPE);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
     setInteractiveText(
       new InteractiveText(
         exerciseBookmark.context_tokenized,
@@ -53,6 +57,7 @@ export default function MultipleChoiceL2toL1({
         speech,
       ),
     );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [exerciseBookmark, reload]);
 
   useEffect(() => {
@@ -97,13 +102,13 @@ export default function MultipleChoiceL2toL1({
 
       <div className="contextExample">
         <TranslatableText
-          isCorrect={isExerciseOver}
+          isExerciseOver={isExerciseOver}
           interactiveText={interactiveText}
           translating={true}
           pronouncing={false}
           bookmarkToStudy={exerciseBookmark.from}
-          exerciseType={EXERCISE_TYPE}
           boldExpression={exerciseBookmark.from}
+          exerciseType={EXERCISE_TYPE}
           leftEllipsis={exerciseBookmark.left_ellipsis}
           rightEllipsis={exerciseBookmark.right_ellipsis}
         />

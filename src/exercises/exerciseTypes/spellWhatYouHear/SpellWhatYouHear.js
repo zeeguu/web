@@ -9,7 +9,6 @@ import { TranslatableText } from "../../../reader/TranslatableText.js";
 import InteractiveText from "../../../reader/InteractiveText.js";
 import LoadingAnimation from "../../../components/LoadingAnimation.js";
 import { SpeechContext } from "../../../contexts/SpeechContext.js";
-import useSubSessionTimer from "../../../hooks/useSubSessionTimer.js";
 import BookmarkProgressBar from "../../progressBars/BookmarkProgressBar.js";
 import { removePunctuation } from "../../../utils/text/preprocessing.js";
 import { APIContext } from "../../../contexts/APIContext.js";
@@ -26,12 +25,15 @@ export default function SpellWhatYouHear({
   setExerciseMessageToAPI,
   notifyCorrectAnswer,
   notifyIncorrectAnswer,
+  notifyExerciseCompleted,
+  setIsCorrect,
   setExerciseType,
   moveToNextExercise,
   reload,
   isExerciseOver,
   resetSubSessionTimer,
 }) {
+  const api = useContext(APIContext);
   const speech = useContext(SpeechContext);
   const [interactiveText, setInteractiveText] = useState();
   const [isButtonSpeaking, setIsButtonSpeaking] = useState(false);
@@ -42,10 +44,14 @@ export default function SpellWhatYouHear({
   }
 
   useEffect(() => {
-    if (!SessionStorage.isAudioExercisesEnabled()) moveToNextExercise();
     resetSubSessionTimer();
-    setSelectedExerciseBookmark(exerciseBookmark);
     setExerciseType(EXERCISE_TYPE);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    if (!SessionStorage.isAudioExercisesEnabled()) moveToNextExercise();
+    setSelectedExerciseBookmark(exerciseBookmark);
     setInteractiveText(
       new InteractiveText(
         exerciseBookmark.context_tokenized,
@@ -59,6 +65,7 @@ export default function SpellWhatYouHear({
         speech,
       ),
     );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [exerciseBookmark, reload]);
 
   useEffect(() => {
@@ -68,6 +75,7 @@ export default function SpellWhatYouHear({
       setTimeout(() => {
         handleSpeak();
       }, 200);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [interactiveText]);
 
   function handleIncorrectAnswer() {
@@ -100,7 +108,7 @@ export default function SpellWhatYouHear({
           </s.CenteredRowTall>
           <div className="contextExample">
             <TranslatableText
-              isCorrect={isExerciseOver}
+              isExerciseOver={isExerciseOver}
               interactiveText={interactiveText}
               translating={true}
               pronouncing={false}
@@ -113,6 +121,8 @@ export default function SpellWhatYouHear({
           <BottomInput
             handleCorrectAnswer={notifyCorrectAnswer}
             handleIncorrectAnswer={handleIncorrectAnswer}
+            handleExerciseCompleted={notifyExerciseCompleted}
+            setIsCorrect={setIsCorrect}
             exerciseBookmark={exerciseBookmark}
             messageToAPI={exerciseMessageToAPI}
             setMessageToAPI={setExerciseMessageToAPI}
@@ -127,7 +137,7 @@ export default function SpellWhatYouHear({
           </h1>
           <div className="contextExample">
             <TranslatableText
-              isCorrect={isExerciseOver}
+              isExerciseOver={isExerciseOver}
               interactiveText={interactiveText}
               translating={true}
               pronouncing={false}

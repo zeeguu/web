@@ -25,7 +25,7 @@ export default function MultipleChoiceAudio({
   notifyCorrectAnswer,
   notifyIncorrectAnswer,
   setExerciseType,
-  isCorrect,
+  isExerciseOver,
   resetSubSessionTimer,
   handleDisabledAudio,
   reload,
@@ -41,6 +41,10 @@ export default function MultipleChoiceAudio({
   useEffect(() => {
     resetSubSessionTimer();
     setExerciseType(EXERCISE_TYPE);
+    // eslint-disable-next-line
+  }, []);
+
+  useEffect(() => {
     setInteractiveText(
       new InteractiveText(
         exerciseBookmark.context_tokenized,
@@ -56,6 +60,7 @@ export default function MultipleChoiceAudio({
     );
     consolidateChoice();
     if (!SessionStorage.isAudioExercisesEnabled()) handleDisabledAudio();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [reload, exerciseBookmark]);
 
   function consolidateChoice() {
@@ -89,7 +94,7 @@ export default function MultipleChoiceAudio({
         bookmark={exerciseBookmark}
         message={exerciseMessageToAPI}
       />
-      {isCorrect && (
+      {isExerciseOver && (
         <>
           <br></br>
           <h1 className="wordInContextHeadline">
@@ -100,7 +105,7 @@ export default function MultipleChoiceAudio({
 
       <div className="contextExample">
         <TranslatableText
-          isCorrect={isCorrect}
+          isExerciseOver={isExerciseOver}
           interactiveText={interactiveText}
           translating={true}
           pronouncing={false}
@@ -110,7 +115,7 @@ export default function MultipleChoiceAudio({
         />
       </div>
 
-      {!isCorrect && (
+      {!isExerciseOver && (
         <s.CenteredRow>
           {/* Mapping bookmarks to the buttons in random order, setting button properties based on bookmark index */}
           {choiceOptions &&
@@ -130,7 +135,7 @@ export default function MultipleChoiceAudio({
         </s.CenteredRow>
       )}
 
-      {!isCorrect && (
+      {!isExerciseOver && (
         <AudioTwoBotInput
           bookmarksToStudy={bookmarksToStudy}
           currentChoice={currentChoice}

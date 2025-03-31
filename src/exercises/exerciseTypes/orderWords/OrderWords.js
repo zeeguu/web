@@ -1056,7 +1056,7 @@ export default function OrderWords({
         {isCorrect && EXERCISE_TYPE === TYPE_L1_CONSTRUCTION && (
           <div className="contextExample" style={{ marginBottom: "2em" }}>
             <TranslatableText
-              isCorrect={isCorrect}
+              isExerciseOver={isCorrect}
               interactiveText={interactiveText}
               translating={true}
               pronouncing={false}
@@ -1067,7 +1067,7 @@ export default function OrderWords({
         {isCorrect && EXERCISE_TYPE === TYPE_L2_CONSTRUCTION && (
           <div className="contextExample" style={{ marginBottom: "2em" }}>
             <TranslatableText
-              isCorrect={isCorrect}
+              isExerciseOver={isCorrect}
               interactiveText={interactiveText}
               translating={true}
               pronouncing={false}

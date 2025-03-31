@@ -173,7 +173,6 @@ let ALL_EXERCISES = [
   EX_ClickWordInContext,
   EX_FindWordInContextCloze,
   EX_MultipleChoiceAudio,
-
   EX_MultipleChoiceContext,
 ];
 

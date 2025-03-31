@@ -1,13 +1,11 @@
 import { useState, useEffect, useContext } from "react";
 import * as s from "../Exercise.sc.js";
 import BottomInput from "../BottomInput.js";
-import NextNavigation from "../NextNavigation.js";
 import LoadingAnimation from "../../../components/LoadingAnimation.js";
 import InteractiveText from "../../../reader/InteractiveText.js";
 import { TranslatableText } from "../../../reader/TranslatableText.js";
 import { tokenize } from "../../../utils/text/preprocessing.js";
 import { SpeechContext } from "../../../contexts/SpeechContext.js";
-import useSubSessionTimer from "../../../hooks/useSubSessionTimer.js";
 import BookmarkProgressBar from "../../progressBars/BookmarkProgressBar.js";
 import { removePunctuation } from "../../../utils/text/preprocessing.js";
 import { APIContext } from "../../../contexts/APIContext.js";
@@ -31,9 +29,10 @@ export default function WordInContextExercise({
   isExerciseOver,
   setIsCorrect,
   resetSubSessionTimer,
+  exerciseMessageToAPI,
+  setExerciseMessageToAPI,
 }) {
   const api = useContext(APIContext);
-  const [messageToAPI, setMessageToAPI] = useState("");
   const [interactiveText, setInteractiveText] = useState();
   const [translatedWords, setTranslatedWords] = useState([]);
   const speech = useContext(SpeechContext);
@@ -42,8 +41,12 @@ export default function WordInContextExercise({
 
   useEffect(() => {
     resetSubSessionTimer();
-    setSelectedExerciseBookmark(exerciseBookmark);
     setExerciseType(exerciseType);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    setSelectedExerciseBookmark(exerciseBookmark);
     setInteractiveText(
       new InteractiveText(
         exerciseBookmark.context_tokenized,
@@ -97,26 +100,24 @@ export default function WordInContextExercise({
     if (solutionDiscovered && !isCorrect) {
       // Check how many translations were made
       let translationCount = 0;
-      for (let i = 0; i < messageToAPI.length; i++) {
-        if (messageToAPI[i] === "T") translationCount++;
+      for (let i = 0; i < exerciseMessageToAPI.length; i++) {
+        if (exerciseMessageToAPI[i] === "T") translationCount++;
       }
       if (translationCount < 2) {
-        let concatMessage = messageToAPI + "C";
-        setIsCorrect(true);
-        notifyCorrectAnswer(exerciseBookmark);
-        notifyExerciseCompleted(concatMessage, exerciseBookmark);
+        let concatMessage = exerciseMessageToAPI + "C";
+        notifyCorrectAnswer(concatMessage, exerciseBookmark);
       } else {
-        let concatMessage = messageToAPI + "S";
+        let concatMessage = exerciseMessageToAPI + "S";
         notifyShowSolution(concatMessage);
       }
     } else {
-      setMessageToAPI(messageToAPI + "T");
+      setExerciseMessageToAPI(exerciseMessageToAPI + "T");
     }
   }
 
   function handleIncorrectAnswer() {
     //alert("incorrect answer")
-    setMessageToAPI(messageToAPI + "W");
+    setExerciseMessageToAPI(exerciseMessageToAPI + "W");
     notifyIncorrectAnswer(exerciseBookmark);
   }
 
@@ -127,13 +128,16 @@ export default function WordInContextExercise({
   return (
     <s.Exercise className={exerciseType}>
       <div className="headlineWithMoreSpace">{exerciseHeadline}</div>
-      <BookmarkProgressBar bookmark={exerciseBookmark} message={messageToAPI} />
+      <BookmarkProgressBar
+        bookmark={exerciseBookmark}
+        message={exerciseMessageToAPI}
+      />
       <h1 className="wordInContextHeadline">
         {removePunctuation(exerciseBookmark.to)}
       </h1>
       <div className="contextExample">
         <TranslatableText
-          isCorrect={isExerciseOver}
+          isExerciseOver={isExerciseOver}
           interactiveText={interactiveText}
           translating={true}
           pronouncing={false}
@@ -151,8 +155,8 @@ export default function WordInContextExercise({
           handleExerciseCompleted={notifyExerciseCompleted}
           setIsCorrect={setIsCorrect}
           exerciseBookmark={exerciseBookmark}
-          messageToAPI={messageToAPI}
-          setMessageToAPI={setMessageToAPI}
+          messageToAPI={exerciseMessageToAPI}
+          setExerciseMessageToAPI={setExerciseMessageToAPI}
         />
       )}
     </s.Exercise>

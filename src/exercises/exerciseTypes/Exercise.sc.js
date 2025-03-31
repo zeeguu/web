@@ -3,7 +3,6 @@ import styled, { keyframes } from "styled-components";
 import {
   zeeguuTransparentLightOrange,
   zeeguuOrange,
-  lightGrey,
 } from "../../components/colors";
 
 const Exercise = styled.div`

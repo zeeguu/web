@@ -6,7 +6,6 @@ import * as s from "./Exercises.sc";
 import LoadingAnimation from "../components/LoadingAnimation";
 import { setTitle } from "../assorted/setTitle";
 import strings from "../i18n/definitions";
-import FeedbackDisplay from "./bottomActions/FeedbackDisplay";
 import OutOfWordsMessage from "./OutOfWordsMessage";
 import SessionStorage from "../assorted/SessionStorage";
 import Feature from "../features/Feature";
@@ -150,6 +149,7 @@ export default function Exercises({
       if ((!selectedExerciseBookmark.id) in _newExerciseMessageToAPI)
         _newExerciseMessageToAPI[selectedExerciseBookmark.id] = "";
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedExerciseBookmark]);
 
   function getExerciseSequenceType() {
@@ -227,7 +227,7 @@ export default function Exercises({
       //       bookmarks.slice(0, exerciseSession + 1),
       //       strings.exercises,
       //     ),
-      let exerciseSession = 20;
+      let exerciseSession = 25;
       api.getTopBookmarksToStudy(exerciseSession, (bookmarks) => {
         console.log(bookmarks);
         initializeExercises(
@@ -357,8 +357,16 @@ export default function Exercises({
   }
 
   function showSolutionNotification() {
-    for (let i = 0; i < currentBookmarksToStudy.length; i++) {
-      let currentBookmark = currentBookmarksToStudy[i];
+    // Currently, only match results in all bookmarks being marked as wrong.
+    let bookmarksToMarkAsWrong =
+      currentExerciseType === EXERCISE_TYPES.match
+        ? currentBookmarksToStudy.filter(
+            (b) => !correctBookmarksCopy.includes(b),
+          )
+        : [selectedExerciseBookmark];
+    console.log(bookmarksToMarkAsWrong);
+    for (let i = 0; i < bookmarksToMarkAsWrong.length; i++) {
+      let currentBookmark = bookmarksToMarkAsWrong[i];
       incorrectAnswerNotification(currentBookmark);
       exerciseCompletedNotification(
         exerciseMessageToAPI + "S",
@@ -453,6 +461,8 @@ export default function Exercises({
             notifyCorrectAnswer={correctAnswerNotification}
             notifyIncorrectAnswer={incorrectAnswerNotification}
             setExerciseType={setCurrentExerciseType}
+            notifyExerciseCompleted={exerciseCompletedNotification}
+            notifyShowSolution={showSolutionNotification}
             isCorrect={isCorrect}
             isExerciseOver={isExerciseOver}
             isShowSolution={isShowSolution}
@@ -473,7 +483,6 @@ export default function Exercises({
                 ? ""
                 : exerciseMessageToAPI[selectedExerciseBookmark.id]
             }
-            api={api}
             exerciseBookmarks={currentBookmarksToStudy}
             exerciseBookmark={currentBookmarksToStudy[0]}
             moveToNextExercise={moveToNextExercise}
@@ -495,15 +504,6 @@ export default function Exercises({
                 setIsCorrect={setIsExerciseOver}
               />
             )}
-          {showFeedbackButtons && (
-            <FeedbackDisplay
-              showFeedbackButtons={showFeedbackButtons}
-              setShowFeedbackButtons={setShowFeedbackButtons}
-              currentExerciseType={currentExerciseType}
-              currentBookmarksToStudy={currentBookmarksToStudy}
-              feedbackFunction={uploadUserFeedback}
-            />
-          )}
         </s.ExForm>
         {articleID && (
           <p>

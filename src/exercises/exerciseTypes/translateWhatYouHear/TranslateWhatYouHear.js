@@ -3,15 +3,12 @@ import * as s from "../Exercise.sc.js";
 import BottomInput from "../BottomInput.js";
 import SpeakButton from "../SpeakButton.js";
 import strings from "../../../i18n/definitions.js";
-import NextNavigation from "../NextNavigation.js";
 import { EXERCISE_TYPES } from "../../ExerciseTypeConstants.js";
 import SessionStorage from "../../../assorted/SessionStorage.js";
 import { TranslatableText } from "../../../reader/TranslatableText.js";
 import InteractiveText from "../../../reader/InteractiveText.js";
 import LoadingAnimation from "../../../components/LoadingAnimation.js";
 import { SpeechContext } from "../../../contexts/SpeechContext.js";
-import DisableAudioSession from "../DisableAudioSession.js";
-import useSubSessionTimer from "../../../hooks/useSubSessionTimer.js";
 import BookmarkProgressBar from "../../progressBars/BookmarkProgressBar.js";
 import { APIContext } from "../../../contexts/APIContext.js";
 
@@ -25,12 +22,15 @@ export default function TranslateWhatYouHear({
   setExerciseMessageToAPI,
   notifyCorrectAnswer,
   notifyIncorrectAnswer,
+  notifyExerciseCompleted,
+  setIsCorrect,
   moveToNextExercise,
   setExerciseType,
   reload,
   isExerciseOver,
   resetSubSessionTimer,
 }) {
+  const api = useContext(APIContext);
   const exerciseBookmark = bookmarksToStudy[0];
   const speech = useContext(SpeechContext);
   const [interactiveText, setInteractiveText] = useState();
@@ -41,9 +41,13 @@ export default function TranslateWhatYouHear({
   }
 
   useEffect(() => {
-    if (!SessionStorage.isAudioExercisesEnabled()) moveToNextExercise();
     resetSubSessionTimer();
     setExerciseType(EXERCISE_TYPE);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    if (!SessionStorage.isAudioExercisesEnabled()) moveToNextExercise();
     setInteractiveText(
       new InteractiveText(
         exerciseBookmark.context_tokenized,
@@ -57,6 +61,7 @@ export default function TranslateWhatYouHear({
         speech,
       ),
     );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [exerciseBookmark, reload]);
 
   useEffect(() => {
@@ -65,6 +70,7 @@ export default function TranslateWhatYouHear({
         handleSpeak();
       }, 300);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [interactiveText]);
 
   if (!interactiveText || !exerciseBookmark) {
@@ -91,7 +97,7 @@ export default function TranslateWhatYouHear({
           </s.CenteredRowTall>
           <div className="contextExample">
             <TranslatableText
-              isCorrect={isExerciseOver}
+              isExerciseOver={isExerciseOver}
               interactiveText={interactiveText}
               translating={true}
               pronouncing={false}
@@ -104,11 +110,12 @@ export default function TranslateWhatYouHear({
           <BottomInput
             handleCorrectAnswer={notifyCorrectAnswer}
             handleIncorrectAnswer={notifyIncorrectAnswer}
+            handleExerciseCompleted={notifyExerciseCompleted}
+            setIsCorrect={setIsCorrect}
             exerciseBookmark={exerciseBookmark}
             messageToAPI={exerciseMessageToAPI}
             setMessageToAPI={setExerciseMessageToAPI}
             isL1Answer={true}
-            exerciseType={EXERCISE_TYPE}
           />
         </>
       )}
@@ -118,7 +125,7 @@ export default function TranslateWhatYouHear({
           <h1 className="wordInContextHeadline">{exerciseBookmark.to}</h1>
           <div className="contextExample">
             <TranslatableText
-              isCorrect={isExerciseOver}
+              isExerciseOver={isExerciseOver}
               interactiveText={interactiveText}
               translating={true}
               pronouncing={false}

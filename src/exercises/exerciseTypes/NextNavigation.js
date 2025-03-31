@@ -18,6 +18,7 @@ import LocalStorage from "../../assorted/LocalStorage.js";
 import useBookmarkAutoPronounce from "../../hooks/useBookmarkAutoPronounce.js";
 import Pluralize from "../../utils/text/pluralize.js";
 import CorrectMessage from "./CorrectMessage";
+import { APIContext } from "../../contexts/APIContext.js";
 
 export default function NextNavigation({
   message: messageForAPI,
@@ -35,6 +36,7 @@ export default function NextNavigation({
   handleShowSolution,
   exerciseType,
 }) {
+  const api = useContext(APIContext);
   const exercise = "exercise";
   const [userIsCorrect] = correctnessBasedOnTries(messageForAPI);
   const [learningCycle, setLearningCycle] = useState(null);
@@ -102,6 +104,7 @@ export default function NextNavigation({
       );
       setMatchWordsProgressCount(wordsProgressed.length);
     }
+    // eslint-disable-next-line
   }, [isExerciseOver, exerciseAttemptsLog]);
 
   useEffect(() => {
@@ -147,12 +150,11 @@ export default function NextNavigation({
 
   return (
     <>
-      <>
-        <CelebrationModal
-          open={showCelebrationModal}
-          onClose={() => setShowCelebrationModal(false)}
-        />
-      </>
+      <CelebrationModal
+        open={showCelebrationModal}
+        onClose={() => setShowCelebrationModal(false)}
+      />
+
       {showConffetti && (
         <Confetti
           width={window.innerWidth}

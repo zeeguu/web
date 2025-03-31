@@ -24,6 +24,7 @@ const ExForm = styled.div`
   margin-top: 0px;
   background-color: rgba(241, 240, 240, 0.274);
   min-height: 400px;
+  padding-bottom: 1rem;
 
   box-sizing: border-box; // to ensure that padding does not expand width!
   justify-content: center;
