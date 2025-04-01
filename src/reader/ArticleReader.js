@@ -60,7 +60,6 @@ export default function ArticleReader({ teacherArticleID }) {
 
   const [articleInfo, setArticleInfo] = useState();
 
-  const [interactiveText] = useState();
   const [interactiveTitle, setInteractiveTitle] = useState();
   const [interactiveFragments, setInteractiveFragments] = useState();
   const {
@@ -296,7 +295,6 @@ export default function ArticleReader({ teacherArticleID }) {
         user={userDetails}
         teacherArticleID={teacherArticleID}
         articleID={articleID}
-        interactiveText={interactiveText}
         translating={translateInReader}
         pronouncing={pronounceInReader}
         setTranslating={updateTranslateInReader}
