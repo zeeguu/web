@@ -35,7 +35,8 @@ const HeroSection = styled.section`
   padding: 6rem 3rem;
   display: flex;
   flex-direction: row;
-  align-items: flex-start;
+  align-items: center;
+  justify-content: center;
   max-width: 80rem;
   gap: 1.5rem;
 
@@ -82,6 +83,7 @@ const HeroSection = styled.section`
 const HeroLeftColumn = styled.section`
   display: flex;
   flex-direction: column;
+  justify-content: center;
   align-items: flex-start;
   text-align: left;
   gap: 1.5rem;
@@ -93,23 +95,29 @@ const HeroLeftColumn = styled.section`
   }
 `;
 
-const HeroRightColumn = styled.div`
-  display: flex;
-  flex-direction: row;
-  align-content: center;
-  flex-wrap: wrap;
-  gap: 0.75rem;
+const LanguageGrid = styled.div`
   flex: 1;
-  height: 100%;
-  padding: 3rem 0 3rem 2rem;
-  height: 17rem;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  width: 100%;
+  padding: 0 0 0 2rem;
+
+  @media (max-width: 1200px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
 
   @media (max-width: 992px) {
+    grid-template-columns: repeat(4, 1fr);
     padding: 3rem 0 0 0;
-    justify-content: center;
+  }
+
+  @media (max-width: 768px) {
+    grid-template-columns: repeat(3, 1fr);
   }
 
   @media (max-width: 576px) {
+    grid-template-columns: repeat(2, 1fr);
     padding: 2rem 0 0 0;
   }
 `;
@@ -164,7 +172,7 @@ export {
   Main,
   HeroSection,
   HeroLeftColumn,
-  HeroRightColumn,
+  LanguageGrid,
   AdaptableColumn,
   PaleAdaptableColumn,
   DescriptionText,

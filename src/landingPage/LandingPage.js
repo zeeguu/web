@@ -54,17 +54,15 @@ export default function LandingPage() {
               your&nbsp;vocabulary
             </h1>
             <p className="hero-paragraph">
-              {/* {strings.projectDescription_UltraShort} */}
               Find interesting articles, translate words as&nbsp;you read,
               and&nbsp;use&nbsp;spaced repetition to&nbsp;remember&nbsp;them.
             </p>
             <Button onClick={() => handleRegisterClick()}>
-              {/* {strings.getStarted} */}
               Start Learning
               <RoundedForwardArrow />
             </Button>
           </s.HeroLeftColumn>
-          <s.HeroRightColumn>
+          <s.LanguageGrid>
             {systemLanguages &&
               systemLanguages.learnable_languages.map((language) => (
                 <Button
@@ -76,7 +74,7 @@ export default function LandingPage() {
                   {language.name}
                 </Button>
               ))}
-          </s.HeroRightColumn>
+          </s.LanguageGrid>
         </s.HeroSection>
 
         <s.PaleAdaptableColumn>
