@@ -9,22 +9,6 @@ We need this because we reuse as much code as possible from zeeguu-web.
 git clone git@github.com:zeeguu/browser-extension.git --recursive
 ```
 
-
-# 2.a. Building Using Docker
-
-After cloning the repositories, you can also build the extension using docker, to avoid differences between OSs.
-
-To build the docker image you run:
-
-```
-docker build -f Dockerfile.development -t zeeguu_extension .
-```
-
-With the image created you can now run the following commands to build the extension:
-
-`docker-compose up build_chrome` for the Chrome Extension and `docker-compose up build_firefox` for the Firefox Extension.
-
-
 # 2. Building on Windows or MacOs/Linux
 
 ### 2.1 Install Dependencies in both extension and the submodule
@@ -85,6 +69,22 @@ This will open a File explorer where you should select the `build` folder. This 
 
 ![image](https://github.com/zeeguu/browser-extension/assets/17390076/a7ea3553-1f89-4ac7-b892-92c595e1dc08)
 
+
+# (Optional) Building Using Docker
+
+_If you prefer to build using docker you can use this instead of 2._
+
+After cloning the repositories, you can also build the extension using docker, to avoid differences between OSs.
+
+To build the docker image you run:
+
+```
+docker build -f Dockerfile.development -t zeeguu_extension .
+```
+
+With the image created you can now run the following commands to build the extension:
+
+`docker-compose up build_chrome` for the Chrome Extension and `docker-compose up build_firefox` for the Firefox Extension.
 
 # Notes
 
