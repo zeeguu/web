@@ -94,14 +94,14 @@ Zeeguu_API.prototype.updateBookmark = function (
   word,
   translation,
   context,
-  context_type,
+  context_identifier,
   callback,
 ) {
   let payload = {
     word: word,
     translation: translation,
     context: context,
-    context_type: context_type,
+    context_identifier: context_identifier,
   };
 
   return this._post(

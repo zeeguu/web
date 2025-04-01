@@ -60,7 +60,7 @@ export default function TranslateWhatYouHear({
         exerciseBookmark.from_lang,
         EXERCISE_TYPE,
         speech,
-        exerciseBookmark.context_type,
+        exerciseBookmark.context_identifier,
         null,
         exerciseBookmark.fragment_id,
       ),
