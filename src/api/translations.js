@@ -89,13 +89,12 @@ Zeeguu_API.prototype.contributeTranslation = function (
   );
 };
 
-Zeeguu_API.prototype.updateBookmark = function (
+Zeeguu_API.prototype.updateBookmark = async function (
   bookmark_id,
   word,
   translation,
   context,
   context_identifier,
-  callback,
 ) {
   let payload = {
     word: word,
@@ -104,15 +103,7 @@ Zeeguu_API.prototype.updateBookmark = function (
     context_identifier: context_identifier,
   };
 
-  return this._post(
-    `update_bookmark/${bookmark_id}`,
-    qs.stringify(payload),
-    callback,
-    (error) => {
-      console.error(error);
-    },
-    true,
-  );
+  return await this.apiPost(`/update_bookmark/${bookmark_id}`, payload);
 };
 
 Zeeguu_API.prototype.basicTranlsate = function (from_lang, to_lang, phrase) {

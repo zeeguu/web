@@ -94,12 +94,17 @@ export default function EditBookmarkButton({
     bookmark.context = newContext;
     bookmark.fit_for_study = newFitForStudy;
 
-    api.updateBookmark(
-      bookmark.id,
-      newWord,
-      newTranslation,
-      newContext,
-      (newBookmark) => {
+    api
+      .updateBookmark(
+        bookmark.id,
+        newWord,
+        newTranslation,
+        newContext,
+        bookmark.context_identifier,
+      )
+      .then((response) => response.data)
+      .then((newBookmark) => {
+        console.dir(newBookmark);
         bookmark.context_tokenized = newBookmark.context_tokenized;
         bookmark.context_in_content = newBookmark.context_in_content;
         bookmark.left_ellipsis = newBookmark.left_ellipsis;
@@ -124,11 +129,11 @@ export default function EditBookmarkButton({
           );
         }
         if (setReload) setReload(!reload);
+
         if (notifyWordChange) notifyWordChange(bookmark);
         toast.success("Thank you for the contribution!");
         handleClose();
-      },
-    );
+      });
   }
 
   const isPhoneScreen = window.innerWidth < 800;
