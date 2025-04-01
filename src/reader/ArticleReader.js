@@ -155,36 +155,39 @@ export default function ArticleReader({ teacherArticleID }) {
     addPositionToScrollEventTracker(bottomRowElement);
   };
 
+  function updateViewportSize() {
+    try {
+      let scrollElement = document.getElementById("scrollHolder");
+      let textElement = document.getElementById("text");
+      let bottomRow = document.getElementById("bottomRow");
+      if (last_reading_percentage) {
+        let currentScrollHeight =
+          scrollElement.scrollHeight -
+          scrollElement.clientHeight -
+          bottomRow.clientHeight;
+        let destinationPixel = last_reading_percentage * currentScrollHeight;
+        scrollElement.scrollTo({
+          top: (0, destinationPixel),
+          behavior: "smooth",
+        });
+      }
+      setViewPortSettings(
+        JSON.stringify({
+          scrollHeight: scrollElement.scrollHeight,
+          clientHeight: scrollElement.clientHeight,
+          textHeight: textElement.clientHeight,
+          bottomRowHeight: bottomRow.clientHeight,
+        }),
+      );
+    } catch {
+      console.log("Failed to get elements to scroll.");
+    }
+  }
+
   useEffect(() => {
     if (interactiveFragments !== undefined) {
       setTimeout(() => {
-        try {
-          let scrollElement = document.getElementById("scrollHolder");
-          let textElement = document.getElementById("text");
-          let bottomRow = document.getElementById("bottomRow");
-          if (last_reading_percentage) {
-            let currentScrollHeight =
-              scrollElement.scrollHeight -
-              scrollElement.clientHeight -
-              bottomRow.clientHeight;
-            let destinationPixel =
-              last_reading_percentage * currentScrollHeight;
-            scrollElement.scrollTo({
-              top: (0, destinationPixel),
-              behavior: "smooth",
-            });
-          }
-          setViewPortSettings(
-            JSON.stringify({
-              scrollHeight: scrollElement.scrollHeight,
-              clientHeight: scrollElement.clientHeight,
-              textHeight: textElement.clientHeight,
-              bottomRowHeight: bottomRow.clientHeight,
-            }),
-          );
-        } catch {
-          console.log("Failed to get elements to scroll.");
-        }
+        updateViewportSize();
       }, 250);
     }
   }, [interactiveFragments, last_reading_percentage]);
@@ -195,8 +198,6 @@ export default function ArticleReader({ teacherArticleID }) {
     setScrollPosition(0);
 
     api.getArticleInfo(articleID, (articleInfo) => {
-      console.log("Here is the article info!");
-      console.dir(articleInfo);
       setInteractiveFragments(
         articleInfo.tokenized_fragments.map(
           (each) =>

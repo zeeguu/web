@@ -7,12 +7,6 @@ import isNullOrUndefinied from "../utils/misc/isNullOrUndefinied";
 // We try to capture about a full sentence around a word.
 const MAX_WORD_EXPANSION_COUNT = 14;
 
-function wordShouldSkipCount(word) {
-  //   When building context, we do not count for the context limit punctuation,
-  // symbols, and numbers.
-  return word.token.is_punct || word.token.is_symbol || word.token.is_like_num;
-}
-
 export default class InteractiveText {
   constructor(
     tokenizedParagraphs,
@@ -26,124 +20,7 @@ export default class InteractiveText {
     contextIdentifier,
     formatting,
   ) {
-    function _updateTokensWithBookmarks(bookmarks, paragraphs) {
-      function areCoordinatesInParagraphMatrix(
-        target_s_i,
-        target_t_i,
-        paragraphs,
-      ) {
-        // This can happen when we update the tokenizer, but do not update the bookmarks.
-        // They might become misaligned and point to a non existing token.
-        return (
-          target_s_i < paragraphs[0].length &&
-          target_t_i < paragraphs[0][target_s_i].length
-        );
-      }
-
-      if (!bookmarks) return;
-
-      for (let i = 0; i < bookmarks.length; i++) {
-        let bookmark = bookmarks[i];
-        let target_p_i, target_s_i, target_t_i;
-        let target_token;
-        target_p_i = 0;
-        target_s_i = bookmark["context_sent"] + bookmark["t_sentence_i"];
-        target_t_i = bookmark["context_token"] + bookmark["t_token_i"];
-
-        // If any the coordinates are null / undefined, we skip.
-        console.log(bookmark);
-        if (
-          isNullOrUndefinied(target_s_i) ||
-          isNullOrUndefinied(target_t_i) ||
-          !areCoordinatesInParagraphMatrix(target_s_i, target_t_i, paragraphs)
-        ) {
-          console.log("Skupped!");
-          continue;
-        }
-
-        target_token = paragraphs[target_p_i][target_s_i][target_t_i];
-        /*
-                                Before we update the target token we want to check two cases:
-                                 1. The bookmark isn't defined. 
-                                 If the bookmark is defined it means a bookmark is trying to override another
-                                 previous bookmark.
-                                 2. The bookmark text, doesn't match the token.
-                                 In this case, we might have an error in the coordinates, and for that reason
-                                 we don't update the original text.
-                                 */
-        if (target_token.bookmark) {
-          continue;
-        }
-        let bookmarkTokensSimplified = tokenize(bookmark["origin"]);
-        // Text and Bookmark will have different tokenization.
-        let bookmark_i = 0;
-        let text_i = 0;
-        let shouldSkipBookmarkUpdate = false;
-        while (bookmark_i < bookmarkTokensSimplified.length) {
-          let bookmark_word = removePunctuation(
-            bookmarkTokensSimplified[bookmark_i],
-          );
-          // If token is empty, due to removing punctuation, skip.
-          console.log(
-            bookmark_word,
-            paragraphs[target_p_i][target_s_i][
-              target_t_i + text_i + bookmark_i
-            ],
-          );
-          if (bookmark_word.length === 0) {
-            bookmark_i++;
-            continue;
-          }
-          let text_word = removePunctuation(
-            paragraphs[target_p_i][target_s_i][target_t_i + text_i + bookmark_i]
-              .text,
-          );
-          // If text is empty and there is more text in the sentence, we update the
-          // text pointer.
-          if (
-            text_word.length === 0 &&
-            target_t_i + text_i + bookmark_i + 1 <
-              paragraphs[target_p_i][target_s_i].length
-          ) {
-            text_i++;
-            continue;
-          }
-          // If the tokens don't match, we break and skip this bookmark.
-          console.log(bookmark_word, text_word);
-          if (bookmark_word !== text_word) {
-            shouldSkipBookmarkUpdate = true;
-            break;
-          }
-          bookmark_i++;
-        }
-        if (shouldSkipBookmarkUpdate) {
-          console.log(bookmark);
-          console.log("Skipped bookmark!");
-          continue;
-        }
-        // Because we are trying to find the tokens, we might skip some tokens that
-        // weren't included in the original bookmark. E.g. This, is a -> 4 tokens not 3.
-        if (bookmark.t_total_token < text_i + bookmark_i)
-          bookmark.total_tokens = text_i + bookmark_i;
-        target_token.bookmark = bookmark;
-        /*
-                                  When rendering the words in the frontend, we alter the word object to be composed
-                                  of multiple tokens.
-                                  In case of deleting a bookmark, we need to make sure that all the tokens are 
-                                  available to re-render the original text. 
-                                  To do this, we need to ensure that the stored token is stored without a bookmark,
-                                  so when those are retrieved the token is seen as a token rather than a bookmark. 
-                                 */
-        target_token.mergedTokens = [{ ...target_token, bookmark: null }];
-        for (let i = 1; i < bookmark["t_total_token"]; i++) {
-          target_token.mergedTokens.push({
-            ...paragraphs[target_p_i][target_s_i][target_t_i + i],
-          });
-          paragraphs[target_p_i][target_s_i][target_t_i + i].skipRender = true;
-        }
-      }
-    }
-
+    // beginning of the constructor
     this.api = api;
     this.sourceId = sourceId;
     this.language = language;
@@ -290,6 +167,14 @@ export default class InteractiveText {
   }
 
   getContextAndCoordinates(word) {
+    function _wordShouldSkipCount(word) {
+      //   When building context, we do not count for the context limit punctuation,
+      // symbols, and numbers.
+      return (
+        word.token.is_punct || word.token.is_symbol || word.token.is_like_num
+      );
+    }
+
     function getLeftContextAndStartIndex(word, maxLeftContextLength) {
       let currentWord = word;
       let contextBuilder = "";
@@ -306,7 +191,7 @@ export default class InteractiveText {
         ) {
           break;
         }
-        if (!wordShouldSkipCount(currentWord)) count++;
+        if (!_wordShouldSkipCount(currentWord)) count++;
       }
       return [
         contextBuilder,
@@ -333,7 +218,7 @@ export default class InteractiveText {
           contextBuilder +
           (currentWord.prev.token.has_space ? " " : "") +
           currentWord.word;
-        if (!wordShouldSkipCount(currentWord))
+        if (!_wordShouldSkipCount(currentWord))
           // If it's not a punctuation or symbol we count it.
           count++;
         currentWord = currentWord.next;
@@ -366,5 +251,113 @@ export default class InteractiveText {
     let context = leftContext + word.word + rightContext;
     console.log("Final context: ", context);
     return [context, paragraph_i, sent_i, token_i, leftEllipsis, rightEllipsis];
+  }
+}
+
+function _updateTokensWithBookmarks(bookmarks, paragraphs) {
+  function areCoordinatesInParagraphMatrix(target_s_i, target_t_i, paragraphs) {
+    // This can happen when we update the tokenizer, but do not update the bookmarks.
+    // They might become misaligned and point to a non existing token.
+    return (
+      target_s_i < paragraphs[0].length &&
+      target_t_i < paragraphs[0][target_s_i].length
+    );
+  }
+
+  if (!bookmarks) return;
+
+  for (let i = 0; i < bookmarks.length; i++) {
+    let bookmark = bookmarks[i];
+    let target_p_i, target_s_i, target_t_i;
+    let target_token;
+    target_p_i = 0;
+    target_s_i = bookmark["context_sent"] + bookmark["t_sentence_i"];
+    target_t_i = bookmark["context_token"] + bookmark["t_token_i"];
+
+    // If any the coordinates are null / undefined, we skip.
+
+    if (
+      isNullOrUndefinied(target_s_i) ||
+      isNullOrUndefinied(target_t_i) ||
+      !areCoordinatesInParagraphMatrix(target_s_i, target_t_i, paragraphs)
+    ) {
+      continue;
+    }
+
+    target_token = paragraphs[target_p_i][target_s_i][target_t_i];
+
+    /**
+     * Before we update the target token we want to check two cases:
+     * 1. The bookmark isn't defined.
+     * If the bookmark is defined it means a bookmark is trying to override another
+     * previous bookmark.
+     * 2. The bookmark text, doesn't match the token.
+     * In this case, we might have an error in the coordinates, and for that reason
+     * we don't update the original text.
+     */
+
+    if (target_token.bookmark) {
+      continue;
+    }
+    let bookmarkTokensSimplified = tokenize(bookmark["origin"]);
+    // Text and Bookmark will have different tokenization.
+    let bookmark_i = 0;
+    let text_i = 0;
+    let shouldSkipBookmarkUpdate = false;
+    while (bookmark_i < bookmarkTokensSimplified.length) {
+      let bookmark_word = removePunctuation(
+        bookmarkTokensSimplified[bookmark_i],
+      );
+      // If token is empty, due to removing punctuation, skip.
+      if (bookmark_word.length === 0) {
+        bookmark_i++;
+        continue;
+      }
+      let text_word = removePunctuation(
+        paragraphs[target_p_i][target_s_i][target_t_i + text_i + bookmark_i]
+          .text,
+      );
+      // If text is empty and there is more text in the sentence, we update the
+      // text pointer.
+      if (
+        text_word.length === 0 &&
+        target_t_i + text_i + bookmark_i + 1 <
+          paragraphs[target_p_i][target_s_i].length
+      ) {
+        text_i++;
+        continue;
+      }
+      // If the tokens don't match, we break and skip this bookmark.
+
+      if (bookmark_word !== text_word) {
+        shouldSkipBookmarkUpdate = true;
+        break;
+      }
+      bookmark_i++;
+    }
+    if (shouldSkipBookmarkUpdate) {
+      continue;
+    }
+    // Because we are trying to find the tokens, we might skip some tokens that
+    // weren't included in the original bookmark. E.g. This, is a -> 4 tokens not 3.
+    if (bookmark.t_total_token < text_i + bookmark_i)
+      bookmark.total_tokens = text_i + bookmark_i;
+    target_token.bookmark = bookmark;
+
+    /**
+     * When rendering the words in the frontend, we alter the word object to be composed
+     * of multiple tokens.
+     * In case of deleting a bookmark, we need to make sure that all the tokens are
+     * available to re-render the original text.
+     * To do this, we need to ensure that the stored token is stored without a bookmark,
+     * so when those are retrieved the token is seen as a token rather than a bookmark.
+     */
+    target_token.mergedTokens = [{ ...target_token, bookmark: null }];
+    for (let i = 1; i < bookmark["t_total_token"]; i++) {
+      target_token.mergedTokens.push({
+        ...paragraphs[target_p_i][target_s_i][target_t_i + i],
+      });
+      paragraphs[target_p_i][target_s_i][target_t_i + i].skipRender = true;
+    }
   }
 }
