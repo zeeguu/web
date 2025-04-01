@@ -11,7 +11,7 @@ import Button from "../pages/_pages_shared/Button.sc";
 import RoundedForwardArrow from "@mui/icons-material/ArrowForwardRounded";
 import LocalStorage from "../assorted/LocalStorage.js";
 import LandingPageTopNav from "./LandingPageTopNav.js";
-import DecorativeFlagImage from "../components/DecorativeFlagImage.js";
+import DynamicFlagImage from "../components/DynamicFlagImage.js";
 import * as s from "./LandingPage.sc.js";
 
 export default function LandingPage() {
@@ -68,11 +68,11 @@ export default function LandingPage() {
             {systemLanguages &&
               systemLanguages.learnable_languages.map((language) => (
                 <Button
-                  className="small grey"
+                  className="small grey left-aligned"
                   key={language.code}
                   onClick={() => handleLanguageSelect(language.code)}
                 >
-                  <DecorativeFlagImage languageCode={language.code} />
+                  <DynamicFlagImage languageCode={language.code} />
                   {language.name}
                 </Button>
               ))}

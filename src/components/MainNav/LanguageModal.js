@@ -14,7 +14,7 @@ import Heading from "../modal_shared/Heading.sc.js";
 import RadioGroup from "./RadioGroup.js";
 import ReactLink from "../ReactLink.sc.js";
 import AddRoundedIcon from "@mui/icons-material/AddRounded";
-import DecorativeFlagImage from "../DecorativeFlagImage.js";
+import DynamicFlagImage from "../DynamicFlagImage.js";
 
 export default function LanguageModal({ open, setOpen }) {
   const api = useContext(APIContext);
@@ -102,7 +102,8 @@ export default function LanguageModal({ open, setOpen }) {
               optionLabel={(e) => e.language}
               optionValue={(e) => e.code}
               optionId={(e) => e.id}
-              dynamicIcon={(e) => <DecorativeFlagImage languageCode={e.code} />}
+              dynamicIcon={(e) => <DynamicFlagImage languageCode={e.code} />}
+              radiosContentLeftAligned
             />
           </FormSection>
           <ButtonContainer className={"adaptive-alignment-horizontal"}>

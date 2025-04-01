@@ -37,8 +37,15 @@ const Button = styled.button`
   }
 
   &.small {
-    padding: 0.7em 2em;
+    padding: 0 2rem;
     font-size: 1rem;
+    height: 2.75rem;
+  }
+
+  &.left-aligned {
+    justify-content: flex-start;
+    padding: 0 1.5rem 0 0.5rem;
+    gap: 0.5rem;
   }
 
   &.warning {

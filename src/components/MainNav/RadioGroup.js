@@ -10,6 +10,7 @@ export default function RadioGroup({
   optionValue,
   optionId,
   dynamicIcon,
+  radiosContentLeftAligned = false,
 }) {
   return (
     <s.StyledRadioGroup role="radiogroup" aria-labelledby={`${name}-label`}>
@@ -26,7 +27,10 @@ export default function RadioGroup({
             onChange={onChange}
             checked={selectedValue === optionValue(option)}
           />
-          <s.OptionLabel htmlFor={optionId(option)}>
+          <s.OptionLabel
+            htmlFor={optionId(option)}
+            $leftAligned={radiosContentLeftAligned}
+          >
             {dynamicIcon && dynamicIcon(option)}
             {optionLabel(option)}
           </s.OptionLabel>
