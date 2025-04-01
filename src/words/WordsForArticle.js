@@ -36,7 +36,7 @@ export default function WordsForArticle() {
       setTitle('Words in "' + data.title + '"');
     });
 
-    api.logReaderActivity(api.WORDS_REVIEW, articleID, "", UMR_SOURCE);
+    api.logUserActivity(api.WORDS_REVIEW, articleID, "", UMR_SOURCE);
     // eslint-disable-next-line
   }, []);
 
@@ -81,7 +81,7 @@ export default function WordsForArticle() {
 
   function logGoingToExercisesAfterReview(e) {
     console.log("logGoingToExercisesAfterReview called");
-    return api.logReaderActivity(
+    return api.logUserActivity(
       api.TO_EXERCISES_AFTER_REVIEW,
       articleID,
       "",

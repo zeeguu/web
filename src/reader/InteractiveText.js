@@ -63,14 +63,14 @@ export default class InteractiveText {
 
         target_token = paragraphs[target_p_i][target_s_i][target_t_i];
         /*
-                Before we update the target token we want to check two cases:
-                 1. The bookmark isn't defined. 
-                 If the bookmark is defined it means a bookmark is trying to override another
-                 previous bookmark.
-                 2. The bookmark text, doesn't match the token.
-                 In this case, we might have an error in the coordinates, and for that reason
-                 we don't update the original text.
-                 */
+                        Before we update the target token we want to check two cases:
+                         1. The bookmark isn't defined. 
+                         If the bookmark is defined it means a bookmark is trying to override another
+                         previous bookmark.
+                         2. The bookmark text, doesn't match the token.
+                         In this case, we might have an error in the coordinates, and for that reason
+                         we don't update the original text.
+                         */
         if (target_token.bookmark) {
           continue;
         }
@@ -127,13 +127,13 @@ export default class InteractiveText {
           bookmark.total_tokens = text_i + bookmark_i;
         target_token.bookmark = bookmark;
         /*
-                  When rendering the words in the frontend, we alter the word object to be composed
-                  of multiple tokens.
-                  In case of deleting a bookmark, we need to make sure that all the tokens are 
-                  available to re-render the original text. 
-                  To do this, we need to ensure that the stored token is stored without a bookmark,
-                  so when those are retrieved the token is seen as a token rather than a bookmark. 
-                 */
+                          When rendering the words in the frontend, we alter the word object to be composed
+                          of multiple tokens.
+                          In case of deleting a bookmark, we need to make sure that all the tokens are 
+                          available to re-render the original text. 
+                          To do this, we need to ensure that the stored token is stored without a bookmark,
+                          so when those are retrieved the token is seen as a token rather than a bookmark. 
+                         */
         target_token.mergedTokens = [{ ...target_token, bookmark: null }];
         for (let i = 1; i < bookmark["t_total_token"]; i++) {
           target_token.mergedTokens.push({
@@ -207,7 +207,7 @@ export default class InteractiveText {
         console.log("could not retreive translation");
       });
 
-    this.api.logReaderActivity(
+    this.api.logUserActivity(
       this.translationEvent,
       null,
       word.word,
@@ -230,7 +230,7 @@ export default class InteractiveText {
     word.service_name = "Own alternative selection";
 
     let alternative_info = `${word.translation} => ${alternative} (${preferredSource})`;
-    this.api.logReaderActivity(
+    this.api.logUserActivity(
       this.api.SEND_SUGGESTION,
       null,
       alternative_info,
@@ -280,7 +280,7 @@ export default class InteractiveText {
   pronounce(word, callback) {
     this.zeeguuSpeech.speakOut(word.word);
 
-    this.api.logReaderActivity(
+    this.api.logUserActivity(
       this.api.SPEAK_TEXT,
       null,
       word.word,

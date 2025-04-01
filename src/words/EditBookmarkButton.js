@@ -23,6 +23,7 @@ export default function EditBookmarkButton({
   const [errorMessage, setErrorMessage] = useState();
   const SOURCE_FOR_API_USER_PREFERENCE = "WORD_EDIT_FORM_CHECKBOX";
   const SOURCE_FOR_API_BOOKMARK_DELETE = "WORD_EDIT_DELETE_BOOKMARK";
+
   function handleOpen() {
     setOpen(true);
   }
@@ -34,7 +35,7 @@ export default function EditBookmarkButton({
         if (response === "OK") {
           // delete was successful; log and close
           if (notifyDelete) notifyDelete(bookmark);
-          api.logReaderActivity(
+          api.logUserActivity(
             api.DELETE_WORD,
             bookmark.article_id,
             bookmark.from,
@@ -107,7 +108,7 @@ export default function EditBookmarkButton({
 
         if (newFitForStudy) {
           api.userSetForExercises(bookmark.id);
-          api.logReaderActivity(
+          api.logUserActivity(
             api.USER_SET_WORD_PREFERRED,
             newBookmark.article_id,
             newBookmark.from,
@@ -115,7 +116,7 @@ export default function EditBookmarkButton({
           );
         } else {
           api.userSetNotForExercises(bookmark.id);
-          api.logReaderActivity(
+          api.logUserActivity(
             api.USER_SET_NOT_WORD_PREFERED,
             newBookmark.article_id,
             newBookmark.from,
@@ -129,6 +130,7 @@ export default function EditBookmarkButton({
       },
     );
   }
+
   const isPhoneScreen = window.innerWidth < 800;
   return (
     <div>

@@ -98,7 +98,8 @@ export default function Exercises({
     if (!articleID)
       // Only report if it's the scheduled exercises that are opened
       // and not the article exercises
-      api.logReaderActivity(
+
+      api.logUserActivity(
         api.SCHEDULED_EXERCISES_OPEN,
         null,
         JSON.stringify({ had_notification: exerciseNotification.hasExercises }),

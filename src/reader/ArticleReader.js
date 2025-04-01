@@ -38,11 +38,11 @@ function useQuery() {
 }
 
 export function onFocus(api, articleID, source) {
-  api.logReaderActivity(api.ARTICLE_FOCUSED, articleID, "", source);
+  api.logUserActivity(api.ARTICLE_FOCUSED, articleID, "", source);
 }
 
 export function onBlur(api, articleID, source) {
-  api.logReaderActivity(api.ARTICLE_UNFOCUSED, articleID, "", source);
+  api.logUserActivity(api.ARTICLE_UNFOCUSED, articleID, "", source);
 }
 
 export default function ArticleReader({ teacherArticleID }) {
@@ -235,12 +235,7 @@ export default function ArticleReader({ teacherArticleID }) {
       api.readingSessionCreate(articleID, (sessionID) => {
         setReadingSessionId(sessionID);
         api.setArticleOpened(articleInfo.id);
-        api.logReaderActivity(
-          api.OPEN_ARTICLE,
-          articleID,
-          sessionID,
-          UMR_SOURCE,
-        );
+        api.logUserActivity(api.OPEN_ARTICLE, articleID, sessionID, UMR_SOURCE);
       });
     });
 
@@ -253,13 +248,13 @@ export default function ArticleReader({ teacherArticleID }) {
 
   function componentWillUnmount() {
     uploadActivity();
-    api.logReaderActivity(
+    api.logUserActivity(
       api.SCROLL,
       articleID,
       viewPortSettingsRef.current,
       JSON.stringify(scrollEvents.current).slice(0, 4096),
     );
-    api.logReaderActivity("ARTICLE CLOSED", articleID, "", UMR_SOURCE);
+    api.logUserActivity(api.ARTICLE_CLOSED, articleID, "", UMR_SOURCE);
     window.removeEventListener("focus", handleFocus);
     window.removeEventListener("blur", handleBlur);
     window.removeEventListener("scroll", handleScroll, true);
@@ -281,7 +276,7 @@ export default function ArticleReader({ teacherArticleID }) {
       setAnswerSubmitted(true);
       setArticleInfo(newArticleInfo);
     });
-    api.logReaderActivity(api.LIKE_ARTICLE, articleID, state, UMR_SOURCE);
+    api.logUserActivity(api.LIKE_ARTICLE, articleID, state, UMR_SOURCE);
   };
 
   const updateArticleDifficultyFeedback = (answer) => {
@@ -293,12 +288,7 @@ export default function ArticleReader({ teacherArticleID }) {
         setArticleInfo(newArticleInfo);
       },
     );
-    api.logReaderActivity(
-      api.DIFFICULTY_FEEDBACK,
-      articleID,
-      answer,
-      UMR_SOURCE,
-    );
+    api.logUserActivity(api.DIFFICULTY_FEEDBACK, articleID, answer, UMR_SOURCE);
   };
   return (
     <>
