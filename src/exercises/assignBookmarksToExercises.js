@@ -248,7 +248,7 @@ function assignBookmarksToDefaultSequence(bookmarks, exerciseTypesList) {
 }
 
 function assignBookmarksToExercises(bookmarks, exerciseTypesList) {
-  return assignBookmarksToDefaultSequence(bookmarks, ALL_EXERCISES);
+  //return assignBookmarksToDefaultSequence(bookmarks, ALL_EXERCISES);
   if (Feature.merle_exercises()) {
     return assignBookmarksWithLearningCycle(bookmarks, exerciseTypesList);
   } else if (Feature.exercise_levels()) {

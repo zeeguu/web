@@ -15,8 +15,8 @@ const EXERCISE_TYPE = EXERCISE_TYPES.multipleChoiceContext;
 
 export default function MultipleChoiceContext({
   bookmarksToStudy,
+  exerciseMessageToAPI,
   notifyCorrectAnswer,
-  notifyExerciseCompleted,
   notifyIncorrectAnswer,
   setExerciseType,
   isExerciseOver,
@@ -24,7 +24,6 @@ export default function MultipleChoiceContext({
   resetSubSessionTimer,
 }) {
   const api = useContext(APIContext);
-  const [messageToAPI, setMessageToAPI] = useState("");
   const [exerciseBookmarks, setExerciseBookmarks] = useState(null);
   const [interactiveText, setInteractiveText] = useState(null);
   const speech = useContext(SpeechContext);
@@ -77,13 +76,10 @@ export default function MultipleChoiceContext({
     if (selectedChoiceId === exerciseBookmark.id) {
       setClickedIndex(index);
       setWordInContextHeadline(removePunctuation(exerciseBookmark.to));
-      let concatMessage = messageToAPI + "C";
-      notifyCorrectAnswer(concatMessage, exerciseBookmark);
+      notifyCorrectAnswer(exerciseBookmark);
     } else {
       setClickedIndex(null);
       notifyIncorrectAnswer(exerciseBookmark);
-      let concatMessage = messageToAPI + "W";
-      setMessageToAPI(concatMessage);
       setTimeout(() => {
         // This line is here to avoid the reseting the styling on the
         // correct box if the user clicks on it shortly after getting the
@@ -106,7 +102,10 @@ export default function MultipleChoiceContext({
       <div className="headlineWithMoreSpace">
         {strings.multipleChoiceContextHeadline}
       </div>
-      <BookmarkProgressBar bookmark={exerciseBookmark} message={messageToAPI} />
+      <BookmarkProgressBar
+        bookmark={exerciseBookmark}
+        message={exerciseMessageToAPI}
+      />
       <h1 className="wordInContextHeadline">{wordInContextHeadline}</h1>
       {exerciseBookmarks.map((option, index) => (
         <s.MultipleChoiceContext

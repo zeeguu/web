@@ -19,7 +19,7 @@ const EXERCISE_TYPE = EXERCISE_TYPES.translateWhatYouHear;
 export default function TranslateWhatYouHear({
   bookmarksToStudy,
   exerciseMessageToAPI,
-  setExerciseMessageToAPI,
+  appendToExerciseMessageToAPI,
   notifyCorrectAnswer,
   notifyIncorrectAnswer,
   notifyExerciseCompleted,
@@ -114,7 +114,7 @@ export default function TranslateWhatYouHear({
             setIsCorrect={setIsCorrect}
             exerciseBookmark={exerciseBookmark}
             messageToAPI={exerciseMessageToAPI}
-            setMessageToAPI={setExerciseMessageToAPI}
+            appendToExerciseMessageToAPI={appendToExerciseMessageToAPI}
             isL1Answer={true}
           />
         </>

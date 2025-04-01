@@ -18,12 +18,11 @@ const EXERCISE_TYPE = EXERCISE_TYPES.translateL2toL1;
 
 export default function TranslateL2toL1({
   bookmarksToStudy,
-  setSelectedExerciseBookmark,
   notifyCorrectAnswer,
   notifyExerciseCompleted,
   notifyIncorrectAnswer,
   exerciseMessageToAPI,
-  setExerciseMessageToAPI,
+  appendToExerciseMessageToAPI,
   setExerciseType,
   reload,
   setIsCorrect,
@@ -43,7 +42,6 @@ export default function TranslateL2toL1({
   }, []);
 
   useEffect(() => {
-    setSelectedExerciseBookmark(exerciseBookmark);
     setInteractiveText(
       new InteractiveText(
         exerciseBookmark.context_tokenized,
@@ -61,7 +59,6 @@ export default function TranslateL2toL1({
   }, [exerciseBookmark, reload]);
 
   function handleIncorrectAnswer() {
-    setExerciseMessageToAPI(exerciseMessageToAPI + "W");
     notifyIncorrectAnswer(exerciseBookmark);
   }
 
@@ -108,7 +105,7 @@ export default function TranslateL2toL1({
           setIsCorrect={setIsCorrect}
           exerciseBookmark={exerciseBookmark}
           messageToAPI={exerciseMessageToAPI}
-          setMessageToAPI={setExerciseMessageToAPI}
+          appendToExerciseMessageToAPI={appendToExerciseMessageToAPI}
           isL1Answer={true}
         />
       )}

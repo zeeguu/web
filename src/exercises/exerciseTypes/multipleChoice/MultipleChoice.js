@@ -19,9 +19,7 @@ const EXERCISE_TYPE = EXERCISE_TYPES.multipleChoice;
 
 export default function MultipleChoice({
   bookmarksToStudy,
-  setSelectedExerciseBookmark,
   exerciseMessageToAPI,
-  setExerciseMessageToAPI,
   notifyCorrectAnswer,
   notifyIncorrectAnswer,
   setExerciseType,
@@ -44,7 +42,6 @@ export default function MultipleChoice({
   }, []);
 
   useEffect(() => {
-    setSelectedExerciseBookmark(exerciseBookmark);
     api.wordsSimilarTo(exerciseBookmark.id, (words) => {
       consolidateChoiceOptions(words);
     });
@@ -74,7 +71,6 @@ export default function MultipleChoice({
     } else {
       setIncorrectAnswer(selectedChoice);
       notifyIncorrectAnswer(exerciseBookmark);
-      setExerciseMessageToAPI(exerciseMessageToAPI + "W");
       setIsCorrect(false);
     }
   }

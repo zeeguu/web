@@ -6,16 +6,17 @@ export default function MultipleChoiceAudioBottomInput({
   notifyCorrectAnswer,
   notifyIncorrectAnswer,
   currentChoice,
+  targetBookmark,
   bookmarksToStudy,
 }) {
   const [isIncorrect, setIsIncorrect] = useState(false);
 
   function checkResult() {
     let bookmarkSelected = bookmarksToStudy[currentChoice];
-    if (currentChoice === true) {
-      notifyCorrectAnswer(bookmarkSelected);
+    if (bookmarkSelected.id === targetBookmark.id) {
+      notifyCorrectAnswer(targetBookmark);
     } else {
-      notifyIncorrectAnswer(bookmarkSelected);
+      notifyIncorrectAnswer(targetBookmark);
     }
   }
 

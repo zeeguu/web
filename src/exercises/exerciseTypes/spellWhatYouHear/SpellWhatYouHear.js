@@ -20,9 +20,8 @@ const EXERCISE_TYPE = EXERCISE_TYPES.spellWhatYouHear;
 
 export default function SpellWhatYouHear({
   bookmarksToStudy,
-  setSelectedExerciseBookmark,
   exerciseMessageToAPI,
-  setExerciseMessageToAPI,
+  appendToExerciseMessageToAPI,
   notifyCorrectAnswer,
   notifyIncorrectAnswer,
   notifyExerciseCompleted,
@@ -51,7 +50,6 @@ export default function SpellWhatYouHear({
 
   useEffect(() => {
     if (!SessionStorage.isAudioExercisesEnabled()) moveToNextExercise();
-    setSelectedExerciseBookmark(exerciseBookmark);
     setInteractiveText(
       new InteractiveText(
         exerciseBookmark.context_tokenized,
@@ -79,7 +77,6 @@ export default function SpellWhatYouHear({
   }, [interactiveText]);
 
   function handleIncorrectAnswer() {
-    setExerciseMessageToAPI(exerciseMessageToAPI + "W");
     notifyIncorrectAnswer(exerciseBookmark);
   }
 
@@ -125,7 +122,7 @@ export default function SpellWhatYouHear({
             setIsCorrect={setIsCorrect}
             exerciseBookmark={exerciseBookmark}
             messageToAPI={exerciseMessageToAPI}
-            setMessageToAPI={setExerciseMessageToAPI}
+            setMessageToAPI={appendToExerciseMessageToAPI}
           />
         </>
       )}

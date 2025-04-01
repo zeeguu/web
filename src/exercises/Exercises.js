@@ -9,7 +9,12 @@ import strings from "../i18n/definitions";
 import OutOfWordsMessage from "./OutOfWordsMessage";
 import SessionStorage from "../assorted/SessionStorage";
 import Feature from "../features/Feature";
-import { MAX_COOLDOWN_INTERVAL } from "./ExerciseConstants";
+import {
+  CORRECT,
+  MAX_COOLDOWN_INTERVAL,
+  SOLUTION,
+  WRONG,
+} from "./ExerciseConstants";
 import { EXERCISE_TYPES } from "./ExerciseTypeConstants";
 import LocalStorage from "../assorted/LocalStorage";
 import { assignBookmarksToExercises } from "./assignBookmarksToExercises";
@@ -34,6 +39,7 @@ import { MOBILE_WIDTH } from "../components/MainNav/screenSize";
 import { NarrowColumn } from "../components/ColumnWidth.sc";
 import useSubSessionTimer from "../hooks/useSubSessionTimer";
 import { APIContext } from "../contexts/APIContext";
+import isEmptyDictionary from "../utils/misc/isEmptyDictionary";
 
 const BOOKMARKS_DUE_REVIEW = false;
 
@@ -143,14 +149,14 @@ export default function Exercises({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  useEffect(() => {
-    if (selectedExerciseBookmark) {
-      let _newExerciseMessageToAPI = { ...exerciseMessageToAPI };
-      if ((!selectedExerciseBookmark.id) in _newExerciseMessageToAPI)
-        _newExerciseMessageToAPI[selectedExerciseBookmark.id] = "";
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedExerciseBookmark]);
+  function appendToMessageToAPI(message) {
+    let _newExerciseMessageToAPI = { ...exerciseMessageToAPI };
+    if (!(selectedExerciseBookmark.id in _newExerciseMessageToAPI))
+      _newExerciseMessageToAPI[selectedExerciseBookmark.id] = message;
+    else _newExerciseMessageToAPI[selectedExerciseBookmark.id] += message;
+    setExerciseMessageToAPI(_newExerciseMessageToAPI);
+    return _newExerciseMessageToAPI[selectedExerciseBookmark.id];
+  }
 
   function getExerciseSequenceType() {
     let exerciseTypesList;
@@ -295,7 +301,7 @@ export default function Exercises({
     LocalStorage.setLastExerciseCompleteDate(new Date().toDateString());
     setIsExerciseOver(false);
     setIsShowSolution(null);
-    setExerciseMessageToAPI("");
+    setExerciseMessageToAPI({});
     setIsCorrect(null);
     setShowFeedbackButtons(false);
     const newIndex = currentIndex + 1;
@@ -307,7 +313,6 @@ export default function Exercises({
     }
     setCurrentBookmarksToStudy(fullExerciseProgression[newIndex].bookmarks);
     setSelectedExerciseBookmark(fullExerciseProgression[newIndex].bookmarks[0]);
-
     setCurrentIndex(newIndex);
     api.updateExerciseSession(dbExerciseSessionId, activeSessionDuration);
   }
@@ -333,11 +338,7 @@ export default function Exercises({
     api.updateExerciseSession(dbExerciseSessionId, activeSessionDuration);
     if (endExercise) {
       setIsCorrect(true);
-      exerciseCompletedNotification(
-        exerciseMessageToAPI + "C",
-        selectedExerciseBookmark,
-        endExercise,
-      );
+      exerciseCompletedNotification(CORRECT, currentBookmark, endExercise);
     }
   }
 
@@ -353,6 +354,7 @@ export default function Exercises({
     }
     incorrectBookmarksCopy.push(currentBookmark);
     setIncorrectBookmarks(incorrectBookmarksCopy);
+    appendToMessageToAPI(WRONG);
     api.updateExerciseSession(dbExerciseSessionId, activeSessionDuration);
   }
 
@@ -364,14 +366,10 @@ export default function Exercises({
             (b) => !correctBookmarksCopy.includes(b),
           )
         : [selectedExerciseBookmark];
-    console.log(bookmarksToMarkAsWrong);
     for (let i = 0; i < bookmarksToMarkAsWrong.length; i++) {
       let currentBookmark = bookmarksToMarkAsWrong[i];
       incorrectAnswerNotification(currentBookmark);
-      exerciseCompletedNotification(
-        exerciseMessageToAPI + "S",
-        currentBookmark,
-      );
+      exerciseCompletedNotification(SOLUTION, currentBookmark);
     }
     setIsShowSolution(true);
   }
@@ -381,17 +379,10 @@ export default function Exercises({
     bookmark,
     endExercise = true,
   ) {
-    setExerciseMessageToAPI(message);
+    let updated_message = appendToMessageToAPI(message);
     if (endExercise) setIsExerciseOver(true);
-    console.log(
-      message,
-      currentExerciseType,
-      getCurrentSubSessionDuration(),
-      bookmark.id,
-      dbExerciseSessionIdRef.current,
-    );
     api.uploadExerciseFinalizedData(
-      message,
+      updated_message,
       currentExerciseType,
       getCurrentSubSessionDuration(),
       bookmark.id,
@@ -427,8 +418,11 @@ export default function Exercises({
   function toggleShow() {
     setShowFeedbackButtons(!showFeedbackButtons);
   }
-
+  let currentMessageToAPI = isEmptyDictionary(exerciseMessageToAPI)
+    ? ""
+    : exerciseMessageToAPI[selectedExerciseBookmark.id];
   const CurrentExerciseComponent = fullExerciseProgression[currentIndex].type;
+  console.log(currentBookmarksToStudy);
   return (
     <NarrowColumn>
       <s.ExercisesColumn>
@@ -456,8 +450,8 @@ export default function Exercises({
             bookmarksToStudy={currentBookmarksToStudy}
             selectedExerciseBookmark={selectedExerciseBookmark}
             setSelectedExerciseBookmark={setSelectedExerciseBookmark}
-            exerciseMessageToAPI={exerciseMessageToAPI}
-            setExerciseMessageToAPI={setExerciseMessageToAPI}
+            exerciseMessageToAPI={currentMessageToAPI}
+            appendToExerciseMessageToAPI={appendToMessageToAPI}
             notifyCorrectAnswer={correctAnswerNotification}
             notifyIncorrectAnswer={incorrectAnswerNotification}
             setExerciseType={setCurrentExerciseType}
@@ -478,11 +472,7 @@ export default function Exercises({
           />
           <NextNavigation
             exerciseType={currentExerciseType}
-            message={
-              Object.keys(exerciseMessageToAPI).length === 0
-                ? ""
-                : exerciseMessageToAPI[selectedExerciseBookmark.id]
-            }
+            message={currentMessageToAPI}
             exerciseBookmarks={currentBookmarksToStudy}
             exerciseBookmark={currentBookmarksToStudy[0]}
             moveToNextExercise={moveToNextExercise}

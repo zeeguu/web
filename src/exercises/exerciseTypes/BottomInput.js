@@ -9,6 +9,7 @@ import {
   getExpressionlength,
   countCommonWords,
 } from "../../utils/text/expressions";
+import { HINT, WRONG } from "../ExerciseConstants";
 
 function getFlagImageUrl(languageCode) {
   return `/static/flags/${languageCode}.png`;
@@ -20,8 +21,7 @@ export default function BottomInput({
   handleExerciseCompleted,
   setIsCorrect,
   exerciseBookmark,
-  messageToAPI,
-  setMessageToAPI,
+  appendToExerciseMessageToAPI,
   isL1Answer,
 }) {
   const [currentInput, setCurrentInput] = useState("");
@@ -65,7 +65,7 @@ export default function BottomInput({
       hint = solutionText.substring(0, 1);
     }
     setCurrentInput(hint);
-    setMessageToAPI(messageToAPI + "H");
+    appendToExerciseMessageToAPI(HINT);
   }
 
   // Update the feedback message
@@ -130,7 +130,6 @@ export default function BottomInput({
     if (normalizedInput === normalizedAnswer || userHasTypoInNativeLanguage) {
       //this allows for a typo in the native language
       handleCorrectAnswer(exerciseBookmark);
-      handleExerciseCompleted(messageToAPI + "C", exerciseBookmark);
       setIsCorrect(true);
       setIsIncorrect(false);
       return;
@@ -152,19 +151,19 @@ export default function BottomInput({
     if (userUsedWrongLang) {
       // If the user writes in the wrong language
       // we give them a Hint, mainly for audio exercises.
-      updatedMessageToAPI = messageToAPI + "H";
+      updatedMessageToAPI = HINT;
       setDistanceToCorrect();
     } else if (totalWordsCorrect >= 1 && solutionWordCount > 1) {
-      updatedMessageToAPI = messageToAPI + "H";
+      updatedMessageToAPI = HINT;
     } else if (levDistance === 1) {
       // The user almost got it correct
       // we associate it with a H
-      updatedMessageToAPI = messageToAPI + "H";
+      updatedMessageToAPI = HINT;
     } else {
-      updatedMessageToAPI = messageToAPI + "W";
+      updatedMessageToAPI = WRONG;
       handleIncorrectAnswer();
     }
-    setMessageToAPI(updatedMessageToAPI);
+    appendToExerciseMessageToAPI(updatedMessageToAPI);
     setIsIncorrect(true);
   }
 

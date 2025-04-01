@@ -16,7 +16,6 @@ import { APIContext } from "../../../contexts/APIContext.js";
 export default function WordInContextExercise({
   exerciseType,
   exerciseHeadline,
-  setSelectedExerciseBookmark,
   showBottomInput,
   notifyExerciseCompleted,
   notifyShowSolution,
@@ -30,7 +29,7 @@ export default function WordInContextExercise({
   setIsCorrect,
   resetSubSessionTimer,
   exerciseMessageToAPI,
-  setExerciseMessageToAPI,
+  appendToExerciseMessageToAPI,
 }) {
   const api = useContext(APIContext);
   const [interactiveText, setInteractiveText] = useState();
@@ -46,7 +45,6 @@ export default function WordInContextExercise({
   }, []);
 
   useEffect(() => {
-    setSelectedExerciseBookmark(exerciseBookmark);
     setInteractiveText(
       new InteractiveText(
         exerciseBookmark.context_tokenized,
@@ -104,20 +102,17 @@ export default function WordInContextExercise({
         if (exerciseMessageToAPI[i] === "T") translationCount++;
       }
       if (translationCount < 2) {
-        let concatMessage = exerciseMessageToAPI + "C";
-        notifyCorrectAnswer(concatMessage, exerciseBookmark);
+        notifyCorrectAnswer(exerciseBookmark);
       } else {
-        let concatMessage = exerciseMessageToAPI + "S";
-        notifyShowSolution(concatMessage);
+        notifyShowSolution();
       }
     } else {
-      setExerciseMessageToAPI(exerciseMessageToAPI + "T");
+      appendToExerciseMessageToAPI("T");
     }
   }
 
   function handleIncorrectAnswer() {
     //alert("incorrect answer")
-    setExerciseMessageToAPI(exerciseMessageToAPI + "W");
     notifyIncorrectAnswer(exerciseBookmark);
   }
 
@@ -156,7 +151,7 @@ export default function WordInContextExercise({
           setIsCorrect={setIsCorrect}
           exerciseBookmark={exerciseBookmark}
           messageToAPI={exerciseMessageToAPI}
-          setExerciseMessageToAPI={setExerciseMessageToAPI}
+          appendToExerciseMessageToAPI={appendToExerciseMessageToAPI}
         />
       )}
     </s.Exercise>

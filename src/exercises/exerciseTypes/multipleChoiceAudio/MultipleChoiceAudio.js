@@ -33,8 +33,7 @@ export default function MultipleChoiceAudio({
   const api = useContext(APIContext);
   const [interactiveText, setInteractiveText] = useState();
   const [choiceOptions, setChoiceOptions] = useState(null);
-  const [currentChoice, setCurrentChoice] = useState("");
-  const [selectedButtonId, setSelectedButtonId] = useState("");
+  const [currentSelectedChoice, setCurrentSelectedChoice] = useState("");
   const exerciseBookmark = bookmarksToStudy[0];
   const speech = useContext(SpeechContext);
 
@@ -74,17 +73,6 @@ export default function MultipleChoiceAudio({
     return <LoadingAnimation />;
   }
 
-  const selectedButtonStyle = (id) => {
-    if (selectedButtonId === id) {
-      return "selected";
-    }
-    return null;
-  };
-
-  function handleClick(id) {
-    setSelectedButtonId(id);
-  }
-
   return (
     <s.Exercise>
       <div className="headlineWithMoreSpace">
@@ -121,15 +109,14 @@ export default function MultipleChoiceAudio({
           {choiceOptions &&
             choiceOptions.map((option) => (
               <SpeakButton
-                onClick={(e) => {
-                  setCurrentChoice(option);
-                  handleClick(option);
+                onClickCallback={(e) => {
+                  setCurrentSelectedChoice(option);
                 }}
-                isSelected={option === currentChoice}
+                isSelected={option === currentSelectedChoice}
                 bookmarkToStudy={bookmarksToStudy[option]}
                 api={api}
-                id={option.id}
-                styling={selectedButtonStyle(option)}
+                id={option}
+                styling={option === currentSelectedChoice ? "selected" : ""}
               />
             ))}
         </s.CenteredRow>
@@ -138,7 +125,8 @@ export default function MultipleChoiceAudio({
       {!isExerciseOver && (
         <AudioTwoBotInput
           bookmarksToStudy={bookmarksToStudy}
-          currentChoice={currentChoice}
+          currentChoice={currentSelectedChoice}
+          targetBookmark={exerciseBookmark}
           notifyCorrectAnswer={notifyCorrectAnswer}
           notifyIncorrectAnswer={notifyIncorrectAnswer}
         />

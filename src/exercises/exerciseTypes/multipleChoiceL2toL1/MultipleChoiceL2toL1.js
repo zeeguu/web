@@ -20,7 +20,6 @@ const EXERCISE_TYPE = EXERCISE_TYPES.multipleChoiceL2toL1;
 export default function MultipleChoiceL2toL1({
   bookmarksToStudy,
   exerciseMessageToAPI,
-  setExerciseMessageToAPI,
   notifyCorrectAnswer,
   notifyIncorrectAnswer,
   setExerciseType,
@@ -80,7 +79,6 @@ export default function MultipleChoiceL2toL1({
       setIncorrectAnswer(selectedChoice);
       notifyIncorrectAnswer(exerciseBookmark);
       setIsCorrect(false);
-      setExerciseMessageToAPI(exerciseMessageToAPI + "W");
     }
   }
 

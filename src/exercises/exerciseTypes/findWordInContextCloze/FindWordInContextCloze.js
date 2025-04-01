@@ -26,7 +26,7 @@ export default function FindWordInContextCloze({
   isExerciseOver,
   setIsCorrect,
   exerciseMessageToAPI,
-  setExerciseMessageToAPI,
+  appendToExerciseMessageToAPI,
   reload,
 }) {
   const api = useContext(APIContext);
@@ -57,7 +57,6 @@ export default function FindWordInContextCloze({
   }
 
   function handleIncorrectAnswer() {
-    setExerciseMessageToAPI(exerciseMessageToAPI + "W");
     notifyIncorrectAnswer(exerciseBookmark);
   }
 
@@ -94,7 +93,7 @@ export default function FindWordInContextCloze({
             setIsCorrect={setIsCorrect}
             exerciseBookmark={exerciseBookmark}
             messageToAPI={exerciseMessageToAPI}
-            setMessageToAPI={setExerciseMessageToAPI}
+            setMessageToAPI={appendToExerciseMessageToAPI}
           />
         </>
       )}

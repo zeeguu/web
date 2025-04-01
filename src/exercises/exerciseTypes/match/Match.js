@@ -5,9 +5,7 @@ import shuffle from "../../../assorted/fisherYatesShuffle";
 import { EXERCISE_TYPES } from "../../ExerciseTypeConstants.js";
 import BookmarkProgressBar from "../../progressBars/BookmarkProgressBar.js";
 import { SpeechContext } from "../../../contexts/SpeechContext.js";
-import NextNavigation from "../NextNavigation";
 import MatchInput from "./MatchInput.js";
-import useSubSessionTimer from "../../../hooks/useSubSessionTimer.js";
 import { toast } from "react-toastify";
 import isBookmarkExpression from "../../../utils/misc/isBookmarkExpression.js";
 import useBookmarkAutoPronounce from "../../../hooks/useBookmarkAutoPronounce.js";
@@ -25,6 +23,7 @@ export default function Match({
   setExerciseType,
   isExerciseOver,
   notifyExerciseCompleted,
+  setSelectedExerciseBookmark,
   setIsExerciseOver,
   reload,
   setReload,
@@ -52,7 +51,6 @@ export default function Match({
     },
   ];
 
-  const [messageToNextNav, setMessageToNextNav] = useState("");
   const [firstPressTime, setFirstPressTime] = useState();
   const [exerciseAttemptsLog, setexerciseAttemptsLog] = useState(
     initialExerciseAttemptsLog,
@@ -90,12 +88,7 @@ export default function Match({
   }
 
   useEffect(() => {
-    for (let i = 0; i < bookmarksToStudy.length; i++) {
-      let currentBookmarkLog = exerciseAttemptsLog[i];
-      if (selectedBookmark === currentBookmarkLog.bookmark)
-        setSelectedBookmarkMessage(currentBookmarkLog.messageToAPI);
-    }
-
+    setSelectedExerciseBookmark(selectedBookmark);
     // eslint-disable-next-line
   }, [selectedBookmark]);
 
@@ -110,16 +103,12 @@ export default function Match({
 
   function notifyChoiceSelection(firstChoice, secondChoice) {
     let exerciseAttemptsLogCopy = [...exerciseAttemptsLog];
-    let fullMessage = messageToNextNav;
     for (let i = 0; i < bookmarksToStudy.length; i++) {
       let currentBookmarkLog = exerciseAttemptsLogCopy[i];
       let concatMessage = "";
       if (currentBookmarkLog.bookmark.id === Number(firstChoice)) {
         if (firstChoice === secondChoice) {
           setButtonsToDisable((arr) => [...arr, firstChoice]);
-          concatMessage = currentBookmarkLog.messageToAPI + "C";
-          fullMessage = fullMessage + concatMessage;
-          exerciseAttemptsLogCopy[i].messageToAPI = concatMessage;
           handleSpeak(exerciseAttemptsLogCopy[i].bookmark);
           setLastCorrectBookmarkId(currentBookmarkLog.bookmark.id);
           if (buttonsToDisable.length === 2) {
@@ -138,25 +127,18 @@ export default function Match({
         } else {
           setIncorrectAnswer(secondChoice);
           notifyIncorrectAnswer(currentBookmarkLog.bookmark);
-          concatMessage = currentBookmarkLog.messageToAPI + "W";
-          fullMessage = fullMessage + concatMessage;
-          exerciseAttemptsLogCopy[i].messageToAPI = concatMessage;
           setexerciseAttemptsLog(exerciseAttemptsLogCopy);
         }
       } else if (currentBookmarkLog.bookmark.id === Number(secondChoice)) {
         if (firstChoice !== secondChoice) {
           setIncorrectAnswer(secondChoice);
           notifyIncorrectAnswer(currentBookmarkLog.bookmark);
-          concatMessage = currentBookmarkLog.messageToAPI + "W";
-          fullMessage = fullMessage + concatMessage;
-          exerciseAttemptsLogCopy[i].messageToAPI = concatMessage;
           setexerciseAttemptsLog(exerciseAttemptsLogCopy);
         }
       }
       if (selectedBookmark === currentBookmarkLog.bookmark)
         setSelectedBookmarkMessage(concatMessage);
     }
-    setMessageToNextNav(fullMessage);
   }
 
   function setButtonOptions() {

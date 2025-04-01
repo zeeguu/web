@@ -67,6 +67,7 @@ export default function SpeakButton({
   isSelected,
   isReadContext,
   parentIsSpeakingControl,
+  onClickCallback,
 }) {
   const speech = useContext(SpeechContext);
   const [isSpeaking, setIsSpeaking] = useState(false);
@@ -95,6 +96,7 @@ export default function SpeakButton({
         disabled={isSpeaking}
         onClick={() => {
           !isSpeaking && handleSpeak();
+          onClickCallback();
         }}
       >
         {isSpeaking && (

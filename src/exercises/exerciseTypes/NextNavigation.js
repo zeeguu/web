@@ -19,6 +19,7 @@ import useBookmarkAutoPronounce from "../../hooks/useBookmarkAutoPronounce.js";
 import Pluralize from "../../utils/text/pluralize.js";
 import CorrectMessage from "./CorrectMessage";
 import { APIContext } from "../../contexts/APIContext.js";
+import { CORRECT } from "../ExerciseConstants.js";
 
 export default function NextNavigation({
   message: messageForAPI,
@@ -90,7 +91,7 @@ export default function NextNavigation({
         let isLastBookmark = exerciseAttemptsLog[i].isLast;
         if (
           b.is_last_in_cycle &&
-          apiMessage === "C" &&
+          apiMessage === CORRECT &&
           !isLastBookmark &&
           b.learning_cycle === LEARNING_CYCLE["RECEPTIVE"] &&
           learningCycleFeature

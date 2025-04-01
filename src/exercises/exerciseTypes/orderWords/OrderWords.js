@@ -12,6 +12,7 @@ import { TranslatableText } from "../../../reader/TranslatableText.js";
 import InteractiveText from "../../../reader/InteractiveText.js";
 import { SpeechContext } from "../../../contexts/SpeechContext.js";
 import { APIContext } from "../../../contexts/APIContext.js";
+import { CORRECT, HINT, SOLUTION } from "../../ExerciseConstants.js";
 
 export default function OrderWords({
   bookmarksToStudy,
@@ -811,7 +812,7 @@ export default function OrderWords({
     // Ensure Rest and Swap are reset
     handleUndoResetStatus();
 
-    let message = messageToAPI + "S";
+    let message = messageToAPI + SOLUTION;
     // Construct the Sentence to show the solution.
     let solutionWord = [...solutionWords];
     _setAllInWordsStatus(solutionWord, "correct");
@@ -907,7 +908,8 @@ export default function OrderWords({
       setIsCorrect(true);
       _setAllInWordsStatus(newUserSolutionWordArray, "correct");
       setUserSolutionWordArray(newUserSolutionWordArray);
-      let concatMessage = messageToAPI + "C";
+      let concatMessage = messageToAPI + CORRECT;
+      notifyCorrectAnswer(bookmarksToStudy[0]);
       handleAnswer(concatMessage);
     } else {
       // We need to ensure that we don't send the entire sentence,
@@ -916,7 +918,7 @@ export default function OrderWords({
       let resizedSolutionText = filterPunctuationSolArray
         .slice(0, newUserSolutionWordArray.length + 2)
         .join(" ");
-      setMessageToApi(messageToAPI + "H");
+      setMessageToApi(messageToAPI + HINT);
       let nlp_model_to_use =
         EXERCISE_TYPE === TYPE_L1_CONSTRUCTION ? L1_LANG : L2_LANG;
       api.annotateClues(
