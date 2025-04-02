@@ -11,9 +11,8 @@ import * as s from "../../zeeguu-react/src/reader/ArticleReader.sc";
 export function ArticleRenderer({
   articleId,
   articleTopics,
-
   author,
-  interactiveText,
+  interactiveFragments,
   interactiveTitle,
   articleImage,
   openReview,
@@ -66,12 +65,15 @@ export function ArticleRenderer({
           </div>
         )}
         <s.MainText>
-          <TranslatableText
-            interactiveText={interactiveText}
-            translating={translating}
-            pronouncing={pronouncing}
-            updateBookmarks={fetchBookmarks}
-          />
+          {interactiveFragments &&
+            interactiveFragments.map((interactiveText) => (
+              <TranslatableText
+                interactiveText={interactiveText}
+                translating={translating}
+                pronouncing={pronouncing}
+                updateBookmarks={fetchBookmarks}
+              />
+            ))}
         </s.MainText>
         <div id={"bottomRow"}>
           <ReviewVocabularyInfoBox

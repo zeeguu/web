@@ -29,7 +29,7 @@ export default function WordsForArticleModal({ api, articleID, openArticle }) {
         setArticleInfo(data);
         setTitle('Words in "' + data.title + '"');
       });
-      api.logReaderActivity(api.WORDS_REVIEW, articleID, "", EXTENSION_SOURCE);
+      api.logUserActivity(api.WORDS_REVIEW, articleID, "", EXTENSION_SOURCE);
     }
   }, [articleID]);
 
@@ -42,7 +42,7 @@ export default function WordsForArticleModal({ api, articleID, openArticle }) {
   }
 
   function logGoingToExercisesAfterReview(e) {
-    return api.logReaderActivity(
+    return api.logUserActivity(
       api.TO_EXERCISES_AFTER_REVIEW,
       articleID,
       "",

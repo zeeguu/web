@@ -1,6 +1,5 @@
 import styled, { createGlobalStyle } from "styled-components";
 import ReactModal from "react-modal";
-import { zeeguuTransparentMediumOrange } from "../../zeeguu-react/src/components/colors";
 import colors from "../colors";
 
 export const GlobalStyle = createGlobalStyle`
@@ -42,7 +41,7 @@ export const ZeeguuErrorStyle = styled.div`
   margin: 2px !important;
 
   p {
-    font-size: 1rem !important;
+    font-size: 1.15rem !important;
     color: black;
     text-align: center;
   }
@@ -140,7 +139,7 @@ export const StyledModal = styled(ReactModal)`
 
   p,
   li {
-    font-size: 1rem !important;
+    font-size: 1.15rem !important;
     line-height: normal;
   }
 
