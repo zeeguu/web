@@ -67,10 +67,15 @@ export default function WordInContextExercise({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [translatedWords]);
 
-  function equalAfterRemovingSpecialCharacters(a, b) {
+  function equalAfterRemovingSpecialCharacters(word1, word2) {
     // from: https://stackoverflow.com/a/4328546
-    let first = a.replace(/[^\w\s']|_/g, "").replace(/\s+/g, " ");
-    let second = b.replace(/[^\w\s']|_/g, "").replace(/\s+/g, " ");
+    // TR (28-03-2025) We need to support cases where the word might be word1: childrens', word2:childrens
+    // This now happens since the tokenizer doesn't reflect what is being done at the server.
+    const removeSpecialChars = /[^\w\s']|_/g;
+
+    let first = word1.replace(removeSpecialChars, "").replace(/\s+/g, " ");
+    if (first[first.length - 1] === "'") first = first.slice(0, -1);
+    let second = word2.replace(removeSpecialChars, "").replace(/\s+/g, " ");
     return first === second;
   }
 
@@ -80,7 +85,6 @@ export default function WordInContextExercise({
     }
 
     let solutionDiscovered = false;
-
     let solutionSplitIntoWords = tokenize(exerciseBookmark.from);
 
     solutionSplitIntoWords.forEach((wordInSolution) => {
