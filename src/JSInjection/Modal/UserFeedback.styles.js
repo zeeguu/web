@@ -57,7 +57,7 @@ export const StyledPopup = styled(ReactModal)`
     "Droid Sans",
     "Helvetica Neue",
     sans-serif;
-  font-size: 1.15rem !important;
+  font-size: 1rem !important;
 `;
 
 export const ErrorMessage = styled.span`

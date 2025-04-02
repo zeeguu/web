@@ -59,7 +59,7 @@ export function Modal({ modalIsOpen, setModalIsOpen, api, url, author }) {
   const [articleID, setArticleID] = useState(null);
   const [articleInfo, setArticleInfo] = useState();
   const [articleTopics, setArticleTopics] = useState([]);
-  const [interactiveFragments, setInteractiveFragments] = useState();
+  const [interactiveText, setInteractiveText] = useState();
   const [interactiveTitle, setInteractiveTitle] = useState();
   const [nativeLang, setNativeLang] = useState();
   const [username, setUsername] = useState();
@@ -84,7 +84,7 @@ export function Modal({ modalIsOpen, setModalIsOpen, api, url, author }) {
     if (readingSessionIdRef.current)
       api.readingSessionUpdate(
         readingSessionIdRef.current,
-        activeSessionDurationRef.current
+        activeSessionDurationRef.current,
       );
   }
 
@@ -163,20 +163,20 @@ export function Modal({ modalIsOpen, setModalIsOpen, api, url, author }) {
   };
 
   function logFocus() {
-    api.logUserActivity(
+    api.logReaderActivity(
       logContextRef.current + " FOCUSED",
       articleID,
       "",
-      EXTENSION_SOURCE
+      EXTENSION_SOURCE,
     );
   }
 
   function logBlur() {
-    api.logUserActivity(
+    api.logReaderActivity(
       logContextRef.current + " LOST FOCUS",
       articleID,
       "",
-      EXTENSION_SOURCE
+      EXTENSION_SOURCE,
     );
   }
   useEffect(() => {
@@ -204,47 +204,42 @@ export function Modal({ modalIsOpen, setModalIsOpen, api, url, author }) {
         setSpeechEngine(engine);
         setPersonalCopySaved(artinfo["has_personal_copy"]);
 
-        setInteractiveFragments(
-          artinfo.tokenized_fragments.map(
-            (each) =>
-              new InteractiveText(
-                each.tokens,
-                artinfo.source_id,
-                api,
-                each.past_bookmarks,
-                api.TRANSLATE_TEXT,
-                artinfo.language,
-                EXTENSION_SOURCE,
-                engine,
-                each.context_identifier,
-                each.formatting
-              )
-          )
-        );
-
-        const articleTitleData = artinfo.tokenized_title_new;
-        setInteractiveTitle(
+        setInteractiveText(
           new InteractiveText(
-            articleTitleData.tokens,
-            artinfo.source_id,
+            artinfo.tokenized_paragraphs,
+            artinfo.id,
+            true,
             api,
-            articleTitleData.past_bookmarks,
+            artinfo.translations,
             api.TRANSLATE_TEXT,
             artinfo.language,
             EXTENSION_SOURCE,
             engine,
-            articleTitleData.context_identifier
-          )
+          ),
         );
+        setInteractiveTitle(
+          new InteractiveText(
+            artinfo.tokenized_title,
+            artinfo.id,
+            false,
+            api,
+            artinfo.translations,
+            api.TRANSLATE_TEXT,
+            artinfo.language,
+            EXTENSION_SOURCE,
+            engine,
+          ),
+        );
+
         setBookmarks(artinfo.translations);
         api.readingSessionCreate(artinfo.id, (sessionID) => {
           setReadingSessionId(sessionID);
           api.setArticleOpened(artinfo.id);
-          api.logUserActivity(
+          api.logReaderActivity(
             api.OPEN_ARTICLE,
             artinfo.id,
             sessionID,
-            EXTENSION_SOURCE
+            EXTENSION_SOURCE,
           );
           clearTimeout(timedOutTimer);
         });
@@ -273,14 +268,14 @@ export function Modal({ modalIsOpen, setModalIsOpen, api, url, author }) {
   function handleClose() {
     setModalIsOpen(false);
     uploadActivity();
-    api.logUserActivity(
+    api.logReaderActivity(
       api.SCROLL,
       articleID,
       scrollEvents.current.length,
       JSON.stringify(scrollEvents.current).slice(0, 4096),
-      EXTENSION_SOURCE
+      EXTENSION_SOURCE,
     );
-    api.logUserActivity(api.ARTICLE_CLOSED, articleID, "", EXTENSION_SOURCE);
+    api.logReaderActivity(api.ARTICLE_CLOSED, articleID, "", EXTENSION_SOURCE);
     window.removeEventListener("focus", logFocus);
     window.removeEventListener("blur", logBlur);
     window.removeEventListener("scroll", handleScroll, true);
@@ -309,11 +304,11 @@ export function Modal({ modalIsOpen, setModalIsOpen, api, url, author }) {
       setAnswerSubmitted(true);
       setArticleInfo(newArticleInfo);
     });
-    api.logUserActivity(
+    api.logReaderActivity(
       api.LIKE_ARTICLE,
       articleInfo.id,
       state,
-      EXTENSION_SOURCE
+      EXTENSION_SOURCE,
     );
   };
 
@@ -324,24 +319,22 @@ export function Modal({ modalIsOpen, setModalIsOpen, api, url, author }) {
       () => {
         setAnswerSubmitted(true);
         setArticleInfo(newArticleInfo);
-      }
+      },
     );
-    api.logUserActivity(
+    api.logReaderActivity(
       api.DIFFICULTY_FEEDBACK,
       articleInfo.id,
       answer,
-      EXTENSION_SOURCE
+      EXTENSION_SOURCE,
     );
   };
 
-  if (isTimedOut === true) {
-    return <ZeeguuError api={api} isTimeout={isTimedOut} />;
-  }
-
-  if (interactiveFragments === undefined || interactiveTitle === undefined) {
+  if (interactiveText === undefined && isTimedOut === undefined) {
     return <ZeeguuLoader />;
   }
-
+  if (isTimedOut) {
+    return <ZeeguuError api={api} isTimeout={isTimedOut} />;
+  }
   return (
     <>
       <SpeechContext.Provider value={speechEngine}>
@@ -362,7 +355,7 @@ export function Modal({ modalIsOpen, setModalIsOpen, api, url, author }) {
                       <a href="https://www.zeeguu.org">
                         <img
                           src={BROWSER_API.runtime.getURL(
-                            "images/zeeguuLogo.svg"
+                            "images/zeeguuLogo.svg",
                           )}
                           alt={"Zeeguu logo"}
                           className="logoModal"
@@ -428,7 +421,7 @@ export function Modal({ modalIsOpen, setModalIsOpen, api, url, author }) {
                   articleTopics={articleTopics}
                   api={api}
                   author={author}
-                  interactiveFragments={interactiveFragments}
+                  interactiveText={interactiveText}
                   interactiveTitle={interactiveTitle}
                   articleImage={articleImage}
                   openReview={openReview}

@@ -1,25 +1,17 @@
-body {
-  background-color: #f4f4f6 !important;
-  font-family:
-    "Montserrat",
-    -apple-system,
-    BlinkMacSystemFont,
-    "Segoe UI",
-    "Roboto",
-    "Oxygen",
-    "Ubuntu",
-    "Cantarell",
-    "Fira Sans",
-    "Droid Sans",
-    "Helvetica Neue",
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  margin: 2px !important;
+
+
+  body{
+    background-color: #F4F4F6 !important;
+    font-family: "Montserrat", -apple-system, BlinkMacSystemFont, "Segoe UI",
+    "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans",
+    "Helvetica Neue", sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    margin: 2px !important;
 }
 
 p {
-  font-size: 1.15rem !important;
+  font-size: 1.0rem !important;
   color: black;
   text-align: center;
 }

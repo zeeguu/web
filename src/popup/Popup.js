@@ -13,7 +13,6 @@ import { checkLanguageSupport, setUserInLocalStorage } from "./functions";
 import { StyledPrimaryButton } from "../JSInjection/Modal/Buttons.styles";
 import { API_URL, WEB_URL } from "../config";
 import { BROWSER_API } from "../utils/browserApi";
-import { injectFontAndStyles } from "../background/background";
 
 //for isProbablyReadable options object
 const minLength = 120;
@@ -46,14 +45,14 @@ export default function Popup({ loggedIn }) {
   useEffect(() => {
     if (tab !== undefined && user !== undefined) {
       api.session = user.session;
-      api.logUserActivity(api.OPEN_POPUP, "", tab.url, EXTENSION_SOURCE);
+      api.logReaderActivity(api.OPEN_POPUP, "", tab.url, EXTENSION_SOURCE);
 
       // Readability check and language check
       const documentFromTab = getSourceAsDOM(tab.url);
       const isProbablyReadable = isProbablyReaderable(
         documentFromTab,
         minLength,
-        minScore
+        minScore,
       );
       const ownIsProbablyReadable = checkReadability(tab.url);
       if (!isProbablyReadable || !ownIsProbablyReadable) {
@@ -64,7 +63,6 @@ export default function Popup({ loggedIn }) {
         api.session = user.session;
         if (api.session !== undefined) {
           checkLanguageSupport(api, tab, setLanguageSupported);
-          injectFontAndStyles(tab.id);
         }
       }
     }
