@@ -24,7 +24,7 @@ export default function sendFeedbackEmail(
   let feedbackForDB = feedbackType + feedbackInfo.replace(/ /g, "_");
 
   try {
-    api.logReaderActivity(
+    api.logUserActivity(
       api.EXTENSION_FEEDBACK,
       articleId ? articleId : "",
       feedbackForDB,

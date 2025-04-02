@@ -1,4 +1,4 @@
-import styled, { css } from 'styled-components'
+import styled, { css } from "styled-components";
 import colors from "../JSInjection/colors";
 
 export const PopUp = styled.div`
@@ -15,7 +15,6 @@ export const PopUp = styled.div`
   position: relative;
   marign: 50px;
 `;
-
 
 export const BottomButton = styled.div`
   cursor: pointer;
@@ -79,7 +78,7 @@ export const MiddleContainer = styled.div`
   h1 {
     margin-block-start: 0.5em !important;
     margin-block-end: 0.5em !important;
-    font-size: 1rem !important;
+    font-size: 1.15rem !important;
     font-weight: 600 !important;
     text-align: center;
   }
