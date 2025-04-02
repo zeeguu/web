@@ -34,6 +34,7 @@ export default function FindArticles({
     LocalStorage.getDoNotShowRedirectionModal() === "true";
   const [articleList, setArticleList] = useState();
   const [originalList, setOriginalList] = useState(null);
+  const [searchError, setSearchError] = useState(false);
   const [isExtensionAvailable] = useExtensionCommunication();
   const [
     doNotShowRedirectionModal_UserPreference,
@@ -107,6 +108,7 @@ export default function FindArticles({
 
   useEffect(() => {
     resetPagination();
+    setSearchError(false);
     if (searchQuery) {
       setTitle(strings.titleSearch + ` '${searchQuery}'`);
       setReloadingSearchArticles(true);
@@ -122,6 +124,10 @@ export default function FindArticles({
         (error) => {
           console.log(error);
           console.log("Failed to get searches!");
+          setArticleList([]);
+          setOriginalList([]);
+          setReloadingSearchArticles(false);
+          setSearchError(true);
         },
       );
     } else {
@@ -140,6 +146,20 @@ export default function FindArticles({
 
   if (articleList == null) {
     return <LoadingAnimation />;
+  }
+
+  if (searchError) {
+    return (
+      <>
+        <s.SearchHolder>
+          <SearchField query={searchQuery} />
+        </s.SearchHolder>
+
+        <b>
+          An error occurred with this query. Please try a different keyword.
+        </b>
+      </>
+    );
   }
 
   return (
@@ -204,7 +224,9 @@ export default function FindArticles({
           />
         ))}
       {!reloadingSearchArticles && articleList.length === 0 && (
-        <p>No searches were found for this query.</p>
+        <div style={{ textAlign: "center", marginTop: "1rem" }}>
+          <p>No results were found for this query.</p>
+        </div>
       )}
 
       {!searchQuery && (
