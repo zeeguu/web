@@ -148,6 +148,20 @@ export default function FindArticles({
     return <LoadingAnimation />;
   }
 
+  if (searchError) {
+    return (
+      <>
+        <s.SearchHolder>
+          <SearchField query={searchQuery} />
+        </s.SearchHolder>
+
+        <b>
+          An error occurred with this query. Please try a different keyword.
+        </b>
+      </>
+    );
+  }
+
   return (
     <>
       {!searchQuery && (
@@ -211,13 +225,7 @@ export default function FindArticles({
         ))}
       {!reloadingSearchArticles && articleList.length === 0 && (
         <div style={{ textAlign: "center", marginTop: "1rem" }}>
-          {searchError ? (
-            <b>
-              An error occurred with this query. Please try a different keyword.
-            </b>
-          ) : (
-            <p>No searches were found for this query.</p>
-          )}
+          <p>No results were found for this query.</p>
         </div>
       )}
 
