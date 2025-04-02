@@ -66,38 +66,64 @@ export default function LandingPage() {
               ))}
           </s.LanguageGrid>
         </s.HeroSection>
+        <s.PageSectionWrapper>
+          <s.PageSection>
+            <h2>{strings.howDoesItWork}</h2>
+            <p>
+              Zeeguu is a research project that personalizes the way you learn
+              foreign languages
+            </p>
 
-        <s.PaleAdaptableColumn>
-          <h1>{strings.howDoesItWork}</h1>
-          <p>
-            Zeeguu is a research project that personalizes the way you
-            <br /> learn foreign languages
-          </p>
-          <h2>{strings.personalizedReading}</h2>
-          <s.DescriptionText>
-            <p>{strings.personalizedRecommandationsEllaboration1}</p>
+            <s.Subsections>
+              <s.SubsectionText>
+                {/* <h3>{strings.personalizedReading}</h3> */}
+                <h3>Your personalized feed</h3>
+                <p>
+                  Our system continuously searches the internet to bring you new
+                  article recommendations tailored to your interests and desired
+                  language difficulty.
+                </p>
+                {/* <p>{strings.personalizedRecommandationsEllaboration1}</p>
+                <p>{strings.personalizedRecommandationsEllaboration2}</p> */}
+              </s.SubsectionText>
+              <s.SubsectionImage>IMAGE GOES HERE!!!!!!!!</s.SubsectionImage>
+            </s.Subsections>
 
-            <p>{strings.personalizedRecommandationsEllaboration2}</p>
-          </s.DescriptionText>
+            <s.Subsections>
+              <s.SubsectionImage>IMAGE GOES HERE!!!!!!!!</s.SubsectionImage>
+              <s.SubsectionText>
+                {/* <h3>{strings.easyTranslations}</h3> */}
+                <h3>Read, translate words & hear pronunciation</h3>
+                <p>
+                  Select an article from your personalized feed, read it easily,
+                  Right-click anywhere on the article’s page to enjoy
+                  distraction-free reading with our browser extension. Instantly
+                  translate words and hear their pronunciation effortlessly.
+                </p>
+                {/* <p>{strings.easyTranslationsEllaboration1}</p>
+                <p>{strings.easyTranslationsEllaboration2}</p>
+                <p>{strings.easyTranslationsEllaboration3}</p> */}
+              </s.SubsectionText>
+            </s.Subsections>
 
-          <h2>{strings.easyTranslations}</h2>
-          <s.DescriptionText>
-            <p>{strings.easyTranslationsEllaboration1}</p>
-
-            <p>{strings.easyTranslationsEllaboration2}</p>
-
-            <p>{strings.easyTranslationsEllaboration3}</p>
-          </s.DescriptionText>
-
-          <h2>{strings.personalizedExercises}</h2>
-          <s.DescriptionText>
-            <p>{strings.personalizedPractiseEllaboration1}</p>
-
-            <p>{strings.personalizedMultipleExerciseTypes}</p>
-
-            <p>{strings.personalizedPractiseEllaboration2}</p>
-          </s.DescriptionText>
-        </s.PaleAdaptableColumn>
+            <s.Subsections>
+              <s.SubsectionText>
+                {/* <h3>{strings.personalizedExercises}</h3> */}
+                <h3>Practice new words in context</h3>
+                <p>
+                  Test your vocabulary with many types of interactive exercises
+                  that adapt to your level. Progress through increasing
+                  difficulties, reinforce learning with real-world usage, and
+                  improve pronunciation with audio exercises.
+                </p>
+                {/* <p>{strings.personalizedPractiseEllaboration1}</p>
+                <p>{strings.personalizedMultipleExerciseTypes}</p>
+                <p>{strings.personalizedPractiseEllaboration2}</p> */}
+              </s.SubsectionText>
+              <s.SubsectionImage>IMAGE GOES HERE!!!!!!!!</s.SubsectionImage>
+            </s.Subsections>
+          </s.PageSection>
+        </s.PageSectionWrapper>
 
         <s.AdaptableColumn>
           <News />

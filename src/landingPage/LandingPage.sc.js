@@ -103,11 +103,87 @@ const AdaptableColumn = styled.div`
   }
 
   p {
-    line-height: 140%;
+    line-height: 145%;
+    font-size: 1rem;
   }
 
   @media (min-width: 768px) {
     max-width: 32em;
+  }
+`;
+
+const PageSectionWrapper = styled.div`
+  box-sizing: border-box;
+  width: 100%;
+  padding: 3rem 3rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: #fff9f0;
+  p {
+    line-height: 150%;
+    font-size: 1rem;
+    color: ${almostBlack};
+    font-weight: 500;
+  }
+
+  h2 {
+    font-size: 2.25rem;
+    color: ${almostBlack};
+  }
+
+  h3 {
+    font-size: 1.5rem;
+    color: ${almostBlack};
+  }
+
+  @media (max-width: 576px) {
+    padding: 0 1rem;
+  }
+`;
+
+const PageSection = styled.section`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 80rem;
+`;
+
+const Subsections = styled.div`
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 2.5rem;
+  width: 100%;
+  padding: 3rem 0;
+
+  @media (max-width: 768px) {
+    grid-template-columns: repeat(1, 1fr);
+  }
+`;
+
+const SubsectionText = styled.div`
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  padding: 0 8rem 0 5rem;
+
+  @media (max-width: 1200px) {
+    padding: 0 4rem 0 2.5rem;
+  }
+
+  @media (max-width: 992px) {
+    padding: 0;
+  }
+`;
+
+const SubsectionImage = styled.div`
+  display: flex;
+  flex: 1;
+  justify-content: center;
+  align-items: center;
+
+  @media (max-width: 768px) {
+    order: -1;
   }
 `;
 
@@ -135,6 +211,11 @@ export {
   Main,
   HeroSection,
   LanguageGrid,
+  PageSectionWrapper,
+  PageSection,
+  SubsectionText,
+  SubsectionImage,
+  Subsections,
   AdaptableColumn,
   PaleAdaptableColumn,
   DescriptionText,
