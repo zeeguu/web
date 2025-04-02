@@ -5,7 +5,7 @@ import { removePunctuation } from "../utils/text/preprocessing";
 import isNullOrUndefinied from "../utils/misc/isNullOrUndefinied";
 
 // We try to capture about a full sentence around a word.
-const MAX_WORD_EXPANSION_COUNT = 14;
+const MAX_WORD_EXPANSION_COUNT = 28;
 function wordShouldSkipCount(word) {
   //   When building context, we do not count for the context limit punctuation,
   // symbols, and numbers.
@@ -290,19 +290,20 @@ export default class InteractiveText {
           currentWord.word +
           (currentWord.token.has_space ? " " : "") +
           contextBuilder;
+        count++;
         if (
           currentWord.token.is_sent_start ||
           currentWord.token.token_i === 0
         ) {
           break;
         }
-        if (!wordShouldSkipCount(currentWord)) count++;
       }
       return [
         contextBuilder,
         currentWord.token.paragraph_i,
         currentWord.token.sent_i,
         currentWord.token.token_i,
+        count > 0,
       ];
     }
 
@@ -323,38 +324,85 @@ export default class InteractiveText {
           contextBuilder +
           (currentWord.prev.token.has_space ? " " : "") +
           currentWord.word;
-        if (!wordShouldSkipCount(currentWord))
-          // If it's not a punctuation or symbol we count it.
-          count++;
+
+        count++;
         currentWord = currentWord.next;
       }
       // We broke early, or we didn't have more tokens in the link early.
       // We are at the end of paragraph (currentWord undefined),
       // or we broke early (found end of sent.)
       if (count < maxRightContextLength) hasRightEllipsis = false;
-      return [contextBuilder, hasRightEllipsis];
+      return [contextBuilder, hasRightEllipsis, count > 0];
     }
 
-    let [leftContext, paragraph_i, sent_i, token_i] = [
-      "",
-      word.token.paragraph_i,
-      word.token.sent_i,
-      word.token.token_i,
-    ];
-    // Do not get left context, if we are starting a sentence
-    // at the token.
-    if (word.prev && !word.token.is_sent_start)
-      [leftContext, paragraph_i, sent_i, token_i] = getLeftContextAndStartIndex(
-        word,
-        MAX_WORD_EXPANSION_COUNT,
-      );
-    let leftEllipsis = token_i !== 0;
-    let [rightContext, rightEllipsis] = getRightContext(
-      word.next,
-      MAX_WORD_EXPANSION_COUNT,
-    );
-    let context = leftContext + word.word + rightContext;
-    console.log("Final context: ", context);
-    return [context, paragraph_i, sent_i, token_i, leftEllipsis, rightEllipsis];
+    function radialExpansionContext(startingWord) {
+      /**
+       * Expands the context from the starting word. It adds words by alternating between
+       * left and right until we reach a start/end of sentence or run out of budget.
+       *
+       * We do this to avoid situations where the user might click a final word in an
+       * exercise and we end up creating a new BookmarkContext + Text pair.
+       *
+       * I reused the methods we had defined for left and right, though here they are
+       * exclusively used to expand 1 token to left and right.
+       */
+
+      let [leftContext, paragraph_i, sent_i, token_i] = [
+        "",
+        startingWord.token.paragraph_i,
+        startingWord.token.sent_i,
+        startingWord.token.token_i,
+      ];
+
+      let budget = MAX_WORD_EXPANSION_COUNT;
+      let leftEllipsis;
+      let rightContext, rightEllipsis;
+      let leftWord = startingWord;
+      let rightWord = startingWord.next;
+      let context = startingWord.word;
+
+      while (budget > 0) {
+        let rightUpdated = false;
+        let leftUpdated = false;
+
+        [leftContext, paragraph_i, sent_i, token_i, leftUpdated] =
+          getLeftContextAndStartIndex(leftWord, 1);
+        if (!wordShouldSkipCount(leftWord)) budget -= 1;
+        context = leftContext + context;
+
+        if (budget > 0 && rightWord) {
+          [rightContext, rightEllipsis, rightUpdated] = getRightContext(
+            rightWord,
+            1,
+          );
+          if (!wordShouldSkipCount(rightWord)) budget -= 1;
+          context += rightContext;
+        }
+
+        // We have captured the sentence in its entirety.
+        if (!rightUpdated & !leftUpdated) break;
+
+        // If we update one of the sides, we keep going.
+        if (leftUpdated) leftWord = leftWord.prev;
+        if (rightUpdated) rightWord = rightWord.next;
+      }
+
+      // If we are not at the start of the sentence, we need leftEllipsis.
+      leftEllipsis = token_i !== 0;
+
+      console.log("Budget: ", budget);
+      console.log("Final context: ", context);
+      console.log(paragraph_i, sent_i, token_i, leftEllipsis, rightEllipsis);
+
+      return [
+        context,
+        paragraph_i,
+        sent_i,
+        token_i,
+        leftEllipsis,
+        rightEllipsis,
+      ];
+    }
+    return radialExpansionContext(word);
   }
 }
