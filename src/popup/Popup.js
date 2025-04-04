@@ -13,7 +13,6 @@ import { checkLanguageSupport, setUserInLocalStorage } from "./functions";
 import { StyledPrimaryButton } from "../JSInjection/Modal/Buttons.styles";
 import { API_URL, WEB_URL } from "../config";
 import { BROWSER_API } from "../utils/browserApi";
-import { injectFontAndStyles } from "../background/background";
 
 //for isProbablyReadable options object
 const minLength = 120;
@@ -53,7 +52,7 @@ export default function Popup({ loggedIn }) {
       const isProbablyReadable = isProbablyReaderable(
         documentFromTab,
         minLength,
-        minScore
+        minScore,
       );
       const ownIsProbablyReadable = checkReadability(tab.url);
       if (!isProbablyReadable || !ownIsProbablyReadable) {
@@ -64,7 +63,6 @@ export default function Popup({ loggedIn }) {
         api.session = user.session;
         if (api.session !== undefined) {
           checkLanguageSupport(api, tab, setLanguageSupported);
-          injectFontAndStyles(tab.id);
         }
       }
     }

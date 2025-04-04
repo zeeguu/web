@@ -12,6 +12,7 @@ import {
   LANGUAGE_FEEDBACK,
   LANGUAGE_UNDEFINED,
 } from "../JSInjection/constants";
+import { injectFontAndStyles } from "../background/background";
 
 export default function PopupContent({
   isReadable,
@@ -54,11 +55,15 @@ export default function PopupContent({
   }, [languageSupported, finalStateExecuted, isReadable]);
 
   async function openModal() {
-    BROWSER_API.scripting.executeScript({
-      target: { tabId: tab.id },
-      files: ["./main.js"],
-      func: setCurrentURL(tab.url),
-    });
+    BROWSER_API.scripting
+      .executeScript({
+        target: { tabId: tab.id },
+        files: ["./main.js"],
+        func: setCurrentURL(tab.url),
+      })
+      .then(() => {
+        injectFontAndStyles(tab.id);
+      });
 
     window.close();
   }
