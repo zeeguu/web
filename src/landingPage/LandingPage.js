@@ -48,20 +48,18 @@ export default function LandingPage() {
       </s.Header>
       <s.Main>
         <s.HeroSection>
-          <s.HeroLeftColumn>
-            <h1>
-              Learn a language by reading what you love and improve your
-              vocabulary
-            </h1>
-            <p className="hero-paragraph">
-              Find interesting articles, translate words as&nbsp;you read,
-              and&nbsp;use&nbsp;spaced repetition to&nbsp;remember&nbsp;them.
-            </p>
-            <Button onClick={() => handleRegisterClick()}>
-              Start Learning
-              <RoundedForwardArrow />
-            </Button>
-          </s.HeroLeftColumn>
+          <h1>
+            Learn a language by reading what you love and improve
+            your&nbsp;vocabulary
+          </h1>
+          <p className="hero-paragraph">
+            Find interesting articles, translate words as&nbsp;you read,
+            and&nbsp;use&nbsp;spaced repetition to&nbsp;remember&nbsp;them.
+          </p>
+          <Button onClick={() => handleRegisterClick()}>
+            Start Learning
+            <RoundedForwardArrow />
+          </Button>
           <s.LanguageGrid>
             {systemLanguages &&
               systemLanguages.learnable_languages.map((language) => (

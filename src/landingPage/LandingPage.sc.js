@@ -34,82 +34,45 @@ const HeroSection = styled.section`
   max-width: 52rem;
   padding: 6rem 3rem;
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   align-items: center;
-  justify-content: center;
-  max-width: 80rem;
+  text-align: center;
+  max-width: 62rem;
   gap: 1.5rem;
-
-  @media (max-width: 992px) {
-    flex-direction: column;
-  }
 
   @media (max-width: 576px) {
     padding: 3rem 1rem;
-    justify-content: flex-start;
   }
 
   h1 {
     ${_mainHeader}
     color: ${almostBlack};
-    font-size: 2.5rem;
+    font-size: 3rem;
     margin: 0;
-
-    @media (max-width: 1200px) {
-      font-size: 2rem;
-    }
-
-    @media (max-width: 992px) {
-      font-size: 2.5rem;
-    }
 
     @media (max-width: 768px) {
       font-size: 2rem;
     }
-
-    @media (max-width: 576px) {
-      font-size: 1.7rem;
-    }
   }
 
   p.hero-paragraph {
-    font-size: 1.1rem;
+    font-size: 1.25rem;
     font-weight: 500;
     line-height: 150%;
     color: ${almostBlack};
   }
 `;
 
-const HeroLeftColumn = styled.section`
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: flex-start;
-  text-align: left;
-  gap: 1.5rem;
-  flex: 1;
-
-  @media (max-width: 992px) {
-    align-items: center;
-    text-align: center;
-  }
-`;
-
 const LanguageGrid = styled.div`
-  flex: 1;
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(5, 1fr);
   gap: 1rem;
   width: 100%;
-  padding: 0 0 0 2rem;
-
-  @media (max-width: 1200px) {
-    grid-template-columns: repeat(2, 1fr);
-  }
+  padding: 3rem 0 0 0;
+  min-height: 11rem;
 
   @media (max-width: 992px) {
     grid-template-columns: repeat(4, 1fr);
-    padding: 3rem 0 0 0;
   }
 
   @media (max-width: 768px) {
@@ -171,7 +134,6 @@ export {
   Header,
   Main,
   HeroSection,
-  HeroLeftColumn,
   LanguageGrid,
   AdaptableColumn,
   PaleAdaptableColumn,
