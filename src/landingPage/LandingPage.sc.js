@@ -68,11 +68,15 @@ const HeroSection = styled.section`
 
 const LanguageGrid = styled.div`
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
+  grid-template-columns: repeat(6, 1fr);
   gap: 1rem;
   width: 100%;
   padding: 3rem 0 0 0;
-  min-height: 11rem;
+  min-height: 3rem;
+
+  @media (max-width: 1200px) {
+    grid-template-columns: repeat(5, 1fr);
+  }
 
   @media (max-width: 992px) {
     grid-template-columns: repeat(4, 1fr);
