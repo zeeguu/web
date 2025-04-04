@@ -50,8 +50,8 @@ export default function LandingPage() {
         <s.HeroSection>
           <s.HeroLeftColumn>
             <h1>
-              Read what you love in your target language and improve
-              your&nbsp;vocabulary
+              Learn a language by reading what you love and improve your
+              vocabulary
             </h1>
             <p className="hero-paragraph">
               Find interesting articles, translate words as&nbsp;you read,
