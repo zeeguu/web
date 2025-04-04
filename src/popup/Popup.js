@@ -45,7 +45,7 @@ export default function Popup({ loggedIn }) {
   useEffect(() => {
     if (tab !== undefined && user !== undefined) {
       api.session = user.session;
-      api.logReaderActivity(api.OPEN_POPUP, "", tab.url, EXTENSION_SOURCE);
+      api.logUserActivity(api.OPEN_POPUP, "", tab.url, EXTENSION_SOURCE);
 
       // Readability check and language check
       const documentFromTab = getSourceAsDOM(tab.url);
