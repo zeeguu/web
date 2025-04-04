@@ -1,13 +1,21 @@
 import { useState, useContext, useEffect } from "react";
-
-import redirect from "../../utils/routing/routing";
+import { Link } from "react-router-dom/cjs/react-router-dom";
+import { useHistory } from "react-router-dom";
 import { scrollToTop } from "../../utils/misc/scrollToTop";
-import * as sC from "../../components/modal_shared/Checkbox.sc";
-import * as sI from "../../components/InputField.sc";
 import useFormField from "../../hooks/useFormField";
-
 import { UserContext } from "../../contexts/UserContext";
+import { APIContext } from "../../contexts/APIContext";
 import { saveUserInfoIntoCookies } from "../../utils/cookies/userInfo";
+import LocalStorage from "../../assorted/LocalStorage";
+import {
+  EmailValidator,
+  MinimumLengthValidator,
+  NonEmptyValidator,
+  Validator,
+} from "../../utils/ValidatorRule/Validator";
+import { setTitle } from "../../assorted/setTitle";
+import validateRules from "../../assorted/validateRules";
+import strings from "../../i18n/definitions";
 
 import PreferencesPage from "../_pages_shared/PreferencesPage";
 import Header from "../_pages_shared/Header";
@@ -22,21 +30,13 @@ import Footer from "../_pages_shared/Footer.sc";
 import ButtonContainer from "../_pages_shared/ButtonContainer.sc";
 import Button from "../_pages_shared/Button.sc";
 import Modal from "../../components/modal_shared/Modal";
-import validateRules from "../../assorted/validateRules";
-import strings from "../../i18n/definitions";
 
-import LocalStorage from "../../assorted/LocalStorage";
-import {
-  EmailValidator,
-  MinimumLengthValidator,
-  NonEmptyValidator,
-  Validator,
-} from "../../utils/ValidatorRule/Validator";
-import { setTitle } from "../../assorted/setTitle";
-import { APIContext } from "../../contexts/APIContext";
+import * as sC from "../../components/modal_shared/Checkbox.sc";
+import * as sI from "../../components/InputField.sc";
 
 export default function CreateAccount({ handleSuccessfulLogIn }) {
   const api = useContext(APIContext);
+  const history = useHistory();
   const { userDetails, setUserDetails } = useContext(UserContext);
 
   const learnedLanguage = LocalStorage.getLearnedLanguage();
@@ -161,7 +161,7 @@ export default function CreateAccount({ handleSuccessfulLogIn }) {
           handleSuccessfulLogIn(user, session);
           setUserDetails(userInfo);
           saveUserInfoIntoCookies(userInfo);
-          redirect("/select_interests");
+          history.push("/select_interests");
         });
       },
       (error) => {
@@ -314,9 +314,9 @@ export default function CreateAccount({ handleSuccessfulLogIn }) {
       <Footer>
         <p className="centered">
           {strings.alreadyHaveAccount + " "}
-          <a className="bold underlined-link" href="/log_in">
+          <Link className="bold underlined-link" to="/log_in">
             {strings.login}
-          </a>
+          </Link>
         </p>
       </Footer>
     </PreferencesPage>

@@ -1,6 +1,16 @@
 import { useContext, useEffect, useState } from "react";
-
+import { Link } from "react-router-dom/cjs/react-router-dom";
+import { APIContext } from "../contexts/APIContext";
+import { scrollToTop } from "../utils/misc/scrollToTop";
+import { setTitle } from "../assorted/setTitle";
 import useFormField from "../hooks/useFormField";
+import LocalStorage from "../assorted/LocalStorage";
+import {
+  NonEmptyValidator,
+  EmailValidator,
+} from "../utils/ValidatorRule/Validator";
+import validateRules from "../assorted/validateRules";
+import strings from "../i18n/definitions";
 
 import PreferencesPage from "./_pages_shared/PreferencesPage";
 import Header from "./_pages_shared/Header";
@@ -13,17 +23,6 @@ import InputField from "../components/InputField";
 import Footer from "./_pages_shared/Footer.sc";
 import ButtonContainer from "./_pages_shared/ButtonContainer.sc";
 import Button from "./_pages_shared/Button.sc";
-
-import strings from "../i18n/definitions";
-import LocalStorage from "../assorted/LocalStorage";
-import {
-  NonEmptyValidator,
-  EmailValidator,
-} from "../utils/ValidatorRule/Validator";
-import validateRules from "../assorted/validateRules";
-import { scrollToTop } from "../utils/misc/scrollToTop";
-import { setTitle } from "../assorted/setTitle";
-import { APIContext } from "../contexts/APIContext";
 
 export default function LogIn({ handleSuccessfulLogIn }) {
   strings.setLanguage(LocalStorage.getUiLanguage().code);
@@ -98,7 +97,9 @@ export default function LogIn({ handleSuccessfulLogIn }) {
               }}
               isError={!isPasswordValid}
               errorMessage={passwordErrorMsg}
-              helperText={<a href="/reset_pass">{strings.forgotPassword}</a>}
+              helperText={
+                <Link to="/reset_pass">{strings.forgotPassword}</Link>
+              }
             />
           </FormSection>
           <ButtonContainer className={"padding-medium"}>
@@ -115,9 +116,9 @@ export default function LogIn({ handleSuccessfulLogIn }) {
       <Footer>
         <p className="centered">
           {strings.dontHaveAnAccount + " "}
-          <a className="bold underlined-link" href="/language_preferences">
+          <Link className="bold underlined-link" to="/language_preferences">
             {strings.getStarted}
-          </a>
+          </Link>
         </p>
       </Footer>
     </PreferencesPage>
