@@ -1,6 +1,6 @@
 {
   "name": "extension",
-  "version": "2.4.7",
+  "version": "2.5.0",
   "private": true,
   "dependencies": {
     "ref_name": "file:src/zeeguu-react/"

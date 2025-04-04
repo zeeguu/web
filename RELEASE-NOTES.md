@@ -1,3 +1,7 @@
+# v2.5.0
+- moved from the whole article being an interactive text to separate fragments
+
+
 # v2.4.7
 - remembering translations in the text
 
