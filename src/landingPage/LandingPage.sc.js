@@ -60,6 +60,9 @@ const HeroSection = styled.section`
     font-weight: 500;
     line-height: 150%;
     color: ${almostBlack};
+    @media (max-width: 768px) {
+      font-size: 1.1rem;
+    }
   }
 `;
 
