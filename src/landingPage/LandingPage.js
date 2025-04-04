@@ -74,7 +74,7 @@ export default function LandingPage() {
               foreign languages
             </p>
 
-            <s.Subsections>
+            <s.Subsection>
               <s.SubsectionText>
                 {/* <h3>{strings.personalizedReading}</h3> */}
                 <h3>Your personalized feed</h3>
@@ -86,11 +86,16 @@ export default function LandingPage() {
                 {/* <p>{strings.personalizedRecommandationsEllaboration1}</p>
                 <p>{strings.personalizedRecommandationsEllaboration2}</p> */}
               </s.SubsectionText>
-              <s.SubsectionImage>IMAGE GOES HERE!!!!!!!!</s.SubsectionImage>
-            </s.Subsections>
+              <s.SubsectionImage>
+                <img src="static/images/feed.png" />
+              </s.SubsectionImage>
+            </s.Subsection>
 
-            <s.Subsections>
-              <s.SubsectionImage>IMAGE GOES HERE!!!!!!!!</s.SubsectionImage>
+            <s.Subsection>
+              <s.SubsectionImage>
+                <img src="static/images/feed.png" />
+                {/* <img src="/" /> */}
+              </s.SubsectionImage>
               <s.SubsectionText>
                 {/* <h3>{strings.easyTranslations}</h3> */}
                 <h3>Read, translate words & hear pronunciation</h3>
@@ -104,9 +109,9 @@ export default function LandingPage() {
                 <p>{strings.easyTranslationsEllaboration2}</p>
                 <p>{strings.easyTranslationsEllaboration3}</p> */}
               </s.SubsectionText>
-            </s.Subsections>
+            </s.Subsection>
 
-            <s.Subsections>
+            <s.Subsection>
               <s.SubsectionText>
                 {/* <h3>{strings.personalizedExercises}</h3> */}
                 <h3>Practice new words in context</h3>
@@ -120,8 +125,10 @@ export default function LandingPage() {
                 <p>{strings.personalizedMultipleExerciseTypes}</p>
                 <p>{strings.personalizedPractiseEllaboration2}</p> */}
               </s.SubsectionText>
-              <s.SubsectionImage>IMAGE GOES HERE!!!!!!!!</s.SubsectionImage>
-            </s.Subsections>
+              <s.SubsectionImage>
+                <img src="static/images/feed.png" />
+              </s.SubsectionImage>
+            </s.Subsection>
           </s.PageSection>
         </s.PageSectionWrapper>
 

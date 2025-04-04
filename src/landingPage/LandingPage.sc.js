@@ -130,11 +130,13 @@ const PageSectionWrapper = styled.div`
   h2 {
     font-size: 2.25rem;
     color: ${almostBlack};
+    margin: 0;
   }
 
   h3 {
     font-size: 1.5rem;
     color: ${almostBlack};
+    margin: 0;
   }
 
   @media (max-width: 576px) {
@@ -149,23 +151,27 @@ const PageSection = styled.section`
   max-width: 80rem;
 `;
 
-const Subsections = styled.div`
+const Subsection = styled.div`
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 2.5rem;
+  gap: 3rem;
   width: 100%;
   padding: 3rem 0;
 
   @media (max-width: 768px) {
     grid-template-columns: repeat(1, 1fr);
+    gap: 1rem;
   }
 `;
 
 const SubsectionText = styled.div`
+  flex: 1;
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
-  padding: 0 8rem 0 5rem;
+  justify-content: center;
+  padding: 0 5rem 0 5rem;
+  gap: 0.5rem;
 
   @media (max-width: 1200px) {
     padding: 0 4rem 0 2.5rem;
@@ -181,9 +187,16 @@ const SubsectionImage = styled.div`
   flex: 1;
   justify-content: center;
   align-items: center;
+  border: solid 0.1rem black;
+  img {
+    object-fit: cover;
+    max-height: 400px;
+    width: 100%;
+    height: auto;
+  }
 
   @media (max-width: 768px) {
-    order: -1;
+    order: 1;
   }
 `;
 
@@ -215,7 +228,7 @@ export {
   PageSection,
   SubsectionText,
   SubsectionImage,
-  Subsections,
+  Subsection,
   AdaptableColumn,
   PaleAdaptableColumn,
   DescriptionText,
