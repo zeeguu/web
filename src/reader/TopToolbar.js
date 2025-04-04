@@ -7,7 +7,6 @@ import { useContext } from "react";
 import { RoutingContext } from "../contexts/RoutingContext";
 import * as s from "./ArticleReader.sc";
 
-import SoundPlayer from "./SoundPlayer";
 import ToolbarButtons from "./ToolbarButtons";
 
 import BackArrow from "../pages/Settings/settings_pages_shared/BackArrow";
@@ -15,29 +14,10 @@ import useScreenWidth from "../hooks/useScreenWidth";
 import { MOBILE_WIDTH } from "../components/MainNav/screenSize";
 import { APIContext } from "../contexts/APIContext";
 
-function userIsTesterForAudio(user) {
-  let testers = [
-    "Michalis",
-    "Mir",
-    "Wim",
-    "Pauline",
-    "Arno",
-    "Geertje",
-    "Pieter",
-  ];
-  // return testers.some((tester) => user.name.startsWith(tester));
-  return false;
-}
-
-export function toggle(state, togglerFunction) {
-  togglerFunction(!state);
-}
-
 export default function TopToolbar({
   user,
   teacherArticleID,
   articleID,
-  interactiveText,
   translating,
   pronouncing,
   setTranslating,
@@ -98,11 +78,6 @@ export default function TopToolbar({
                   </StyledButton>
                 )}
               </>
-            )}
-            {userIsTesterForAudio(user) && (
-              <s.PlayerControl>
-                <SoundPlayer interactiveText={interactiveText} />
-              </s.PlayerControl>
             )}
           </div>
           <ToolbarButtons

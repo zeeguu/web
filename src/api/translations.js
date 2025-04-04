@@ -8,10 +8,10 @@ Zeeguu_API.prototype.getOneTranslation = function (
   bookmark_token_i,
   context,
   context_token_i,
-  articleID,
-  isArticleContent,
+  sourceID,
   leftEllipsis,
   rightEllipsis,
+  contextIdentifier,
 ) {
   let w_sent_i, w_token_i, w_total_tokens;
   let c_paragraph_i, c_sent_i, c_token_i;
@@ -21,21 +21,19 @@ Zeeguu_API.prototype.getOneTranslation = function (
   let payload = {
     word: word,
     context: context,
+    source_id: sourceID,
     w_sent_i: w_sent_i,
     w_token_i: w_token_i,
     w_total_tokens: w_total_tokens,
     c_paragraph_i: c_paragraph_i,
     c_sent_i: c_sent_i,
     c_token_i: c_token_i,
-    in_content: isArticleContent,
-    articleID: articleID,
     left_ellipsis: leftEllipsis,
     right_ellipsis: rightEllipsis,
+    context_identifier: contextIdentifier,
   };
-  return this._post(
-    `get_one_translation/${from_lang}/${to_lang}`,
-    qs.stringify(payload),
-  );
+
+  return this.apiPost(`/get_one_translation/${from_lang}/${to_lang}`, payload);
 };
 
 Zeeguu_API.prototype.getMultipleTranslations = function (
@@ -91,28 +89,21 @@ Zeeguu_API.prototype.contributeTranslation = function (
   );
 };
 
-Zeeguu_API.prototype.updateBookmark = function (
+Zeeguu_API.prototype.updateBookmark = async function (
   bookmark_id,
   word,
   translation,
   context,
-  callback,
+  context_identifier,
 ) {
   let payload = {
     word: word,
     translation: translation,
     context: context,
+    context_identifier: context_identifier,
   };
 
-  return this._post(
-    `update_bookmark/${bookmark_id}`,
-    qs.stringify(payload),
-    callback,
-    (error) => {
-      console.error(error);
-    },
-    true,
-  );
+  return await this.apiPost(`/update_bookmark/${bookmark_id}`, payload);
 };
 
 Zeeguu_API.prototype.basicTranlsate = function (from_lang, to_lang, phrase) {
