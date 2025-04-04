@@ -1,0 +1,22 @@
+.stage-indicator-container {
+  display: inline-block;
+  width: 100%;
+  max-width: 40px;
+  height: auto;
+}
+
+.stage-indicator {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.progress-circle {
+  transition: stroke-dashoffset 0.3s ease;
+  transform: rotate(-90deg);
+  transform-origin: 50% 50%;
+}
+
+.background-circle {
+  opacity: 0.3;
+}

@@ -9,6 +9,8 @@ import { USER_WORD_PREFERENCE } from "./userBookmarkPreferences";
 import { MAX_WORDS_IN_BOOKMARK_FOR_EXERCISES } from "../exercises/ExerciseConstants";
 import { getStaticPath } from "../utils/misc/staticPath";
 import { APIContext } from "../contexts/APIContext";
+import NotificationIcon from "../components/NotificationIcon";
+import CircularStageIndicator from "./CircularStageIndicator";
 
 export default function Word({
   bookmark,
@@ -18,9 +20,15 @@ export default function Word({
   source,
   isReview,
 }) {
+  function getRandomInt(max) {
+    return 1 + Math.floor(Math.random() * max);
+  }
   const api = useContext(APIContext);
   const [deleted, setDeleted] = useState(false);
   const [reload, setReload] = useState(false);
+  const [isNew] = useState(Math.random() > 0.5);
+  const [stageTest] = useState(getRandomInt(4));
+  const [stageProgression] = useState(getRandomInt(3));
 
   function setIsUserWordPreferred(bookmark) {
     // Keep the star to mirror the previous behaviour?
@@ -108,14 +116,23 @@ export default function Word({
           {!isReview && (
             <SpeakButton bookmarkToStudy={bookmark} styling={square} />
           )}
-          <s.WordPair>
-            <div className="from" style={style_grayed_out}>
-              {bookmark.from}
-            </div>
-            <div className="to" style={style_grayed_out}>
-              {bookmark.to}
-            </div>
-          </s.WordPair>
+          <>
+            <CircularStageIndicator
+              currentStage={stageTest}
+              stageProgression={stageProgression}
+            ></CircularStageIndicator>
+            <s.WordPair>
+              <div className="from" style={style_grayed_out}>
+                {bookmark.from}
+                {isNew && <NotificationIcon text={"New!"} />}
+              </div>
+
+              <div className="to" style={style_grayed_out}>
+                {bookmark.to}
+              </div>
+            </s.WordPair>
+            ({stageTest}, {stageProgression})
+          </>
         </CenteredRow>
       </s.Word>
       {children}
