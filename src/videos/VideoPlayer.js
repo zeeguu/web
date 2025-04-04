@@ -266,10 +266,10 @@ export default function VideoPlayer() {
 
   // Pause the video when a new word is translated
   useEffect(() => {
-    // Pause the video if a new word is translated
-   
+    if (player) {
       player.pauseVideo();
-  }, [translatedWords]);
+    }
+  }, [translatedWords, player]);
 
   const parseVTT = useCallback((vttText) => {
     const parseTime = (h, m, s, ms) =>
