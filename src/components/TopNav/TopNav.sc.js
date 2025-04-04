@@ -1,6 +1,6 @@
 import styled, { css } from "styled-components";
 
-const _navbarShared = css`
+const _topNavShared = css`
   box-sizing: border-box;
   width: 100%;
   display: flex;
@@ -10,7 +10,7 @@ const _navbarShared = css`
 `;
 
 const TopNavWrapper = styled.div`
-  ${_navbarShared};
+  ${_topNavShared};
   background-color: white;
   justify-content: center;
   background: white;
@@ -22,13 +22,13 @@ const TopNavWrapper = styled.div`
 `;
 
 const TopNav = styled.nav`
-  ${_navbarShared};
+  ${_topNavShared};
   max-width: 80rem;
 `;
 
 const NavList = styled.ul`
   all: unset;
-  ${_navbarShared};
+  ${_topNavShared};
   justify-content: flex-end;
   color: white;
   font-size: 18px;

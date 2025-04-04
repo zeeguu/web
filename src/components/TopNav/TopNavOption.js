@@ -1,6 +1,6 @@
-import * as s from "./TopNavLink.sc";
+import * as s from "./TopNavOption.sc";
 
-export default function TopNavLink({
+export default function TopNavOption({
   children,
   to,
   onClick,

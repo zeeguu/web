@@ -5,8 +5,8 @@ import {
   isMediumScreenWidth,
 } from "../components/MainNav/screenSize";
 import strings from "../i18n/definitions";
-import TopNav from "../components/TopNav";
-import TopNavLink from "../components/TopNavLink";
+import TopNav from "../components/TopNav/TopNav";
+import TopNavOption from "../components/TopNav/TopNavOption";
 import Logo from "../pages/_pages_shared/Logo";
 
 export default function LandingPageTopNav() {
@@ -16,20 +16,20 @@ export default function LandingPageTopNav() {
   }
   return (
     <TopNav>
-      <TopNavLink ariaLabel="Zeeguu" logo to="/">
+      <TopNavOption ariaLabel="Zeeguu" logo to="/">
         <Logo size={"1.7rem"} />
         {(isDesktopScreenWidth(screenWidth) ||
           isMediumScreenWidth(screenWidth)) &&
           "Zeeguu"}
-      </TopNavLink>
-      <TopNavLink to="/log_in">{strings.login}</TopNavLink>
-      <TopNavLink
+      </TopNavOption>
+      <TopNavOption to="/log_in">{strings.login}</TopNavOption>
+      <TopNavOption
         callToAction
         onClick={clearLearnedLanguage}
         to="/language_preferences"
       >
         {strings.register}
-      </TopNavLink>
+      </TopNavOption>
     </TopNav>
   );
 }

@@ -1,6 +1,6 @@
 import styled, { css } from "styled-components";
 import { Link } from "react-router-dom/cjs/react-router-dom";
-import { orange600, orange700, orange800 } from "./colors";
+import { orange600, orange700, orange800 } from "../colors";
 
 const ListItem = styled.li`
   list-style-type: none;
@@ -35,7 +35,7 @@ const TopNavLink = styled(Link)`
       border: solid 0.1rem ${orange600};
       border-radius: 4em;
       box-shadow: 0px 0.1rem ${orange600};
-      transition: all ease-in 0.08s;
+      transition: all 300ms ease-in-out;
 
       &:hover {
         color: white;
