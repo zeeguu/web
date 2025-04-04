@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { TopicOriginType } from "../appConstants";
 import VideoStatInfo from "./VideoStatInfo";
 import VideoSourceInfo from "./VideoSourceInfo";
+import { FaPlay } from "react-icons/fa";
 
 export default function VideoPreview({ video }) {
 
@@ -16,14 +17,31 @@ export default function VideoPreview({ video }) {
         <s.ArticlePreview>
             <s.TitleContainer>
                 <s.Title>
-                    <Link to={`/watch/${video.video_unique_key}`} onClick={handleTitleClick}>{video.title}</Link>
+                    <Link to={`/watch/${video.video_unique_key}`} onClick={handleTitleClick}>
+                        {video.title}
+                    </Link>
                 </s.Title>
             </s.TitleContainer>
 
             <VideoSourceInfo video={video}></VideoSourceInfo>
 
             <s.ArticleContent>
-                <img src={video.thumbnail_url} alt={video.title} />
+                <Link style={{ position: 'relative' }} onClick={handleTitleClick}>
+                    <img src={video.thumbnail_url} alt={video.title} />
+                    <div style={{
+                        position: 'absolute',
+                        top: '50%',
+                        left: '50%',
+                        transform: 'translate(-50%, -50%)',
+                        background: 'rgba(0, 0, 0, 0.5)',
+                        borderRadius: '50%',
+                        padding: '15px',
+                        color: 'white'
+                    }}>
+                        <FaPlay size={20} />
+                    </div>
+                
+                </Link>
                 <s.Summary>{video.description?.substring(0, 297)}...</s.Summary>
             </s.ArticleContent>
 

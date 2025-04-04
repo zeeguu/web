@@ -264,6 +264,13 @@ export default function VideoPlayer() {
     duration: "~ 10 minutes",
   };
 
+  // Pause the video when a new word is translated
+  useEffect(() => {
+    // Pause the video if a new word is translated
+   
+      player.pauseVideo();
+  }, [translatedWords]);
+
   const parseVTT = useCallback((vttText) => {
     const parseTime = (h, m, s, ms) =>
       parseInt(h) * 3600 + parseInt(m) * 60 + parseInt(s) + parseInt(ms) / 1000;
