@@ -28,7 +28,7 @@ export default function Word({
     bookmark.fit_for_study = true;
     bookmark.user_preference = USER_WORD_PREFERENCE.USE_IN_EXERCISES;
     if (notifyWordChange) notifyWordChange(bookmark);
-    api.logReaderActivity(
+    api.logUserActivity(
       api.USER_SET_WORD_PREFERRED,
       bookmark.article_id,
       bookmark.from,
@@ -41,7 +41,7 @@ export default function Word({
     bookmark.fit_for_study = false;
     bookmark.user_preference = USER_WORD_PREFERENCE.DONT_USE_IN_EXERCISES;
     if (notifyWordChange) notifyWordChange(bookmark);
-    api.logReaderActivity(
+    api.logUserActivity(
       api.USER_SET_NOT_WORD_PREFERED,
       bookmark.article_id,
       bookmark.from,

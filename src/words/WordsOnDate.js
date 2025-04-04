@@ -28,8 +28,17 @@ export function WordsOnDate({ day, notifyDelete }) {
       {articleIDs.map((article_id) => (
         <s.Article key={article_id}>
           <s.ArticleTitle>
-            {bookmarks_by_article.get(article_id)[0].title}
-            <Link to={"/read/article?id=" + article_id}>{strings.open}</Link>
+            {bookmarks_by_article.get(article_id)[0].title ? (
+              <>
+                {bookmarks_by_article.get(article_id)[0].title}
+                <Link to={"/read/article?id=" + article_id}>
+                  {strings.open}
+                </Link>
+              </>
+            ) : (
+              // If the source is missing, tell it to the user.
+              <span style={{ color: "grey" }}>[Source deleted]</span>
+            )}
           </s.ArticleTitle>
 
           {bookmarks_by_article.get(article_id).map((bookmark) => (
