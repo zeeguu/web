@@ -39,19 +39,19 @@ export default function sendFeedbackEmail(
     api.sendFeedback(
       feedbackForEmail,
       (result_dict) => {
-        console.log("Feedback sent successfully");
+        // console.log("Feedback sent successfully");
         if (confirmSuccess)
           if (result_dict === "OK") confirmSuccess(true);
           else confirmSuccess(false);
       },
       (error) => {
-        console.log("Something went wrong.");
+        // console.log("Something went wrong.");
         console.error("Error sending feedback:", error);
         if (confirmSuccess) confirmSuccess(false);
       }
     );
   } catch (error) {
-    console.log("Wasn't able to send feedback, error ocurred.");
+    // console.log("Wasn't able to send feedback, error ocurred.");
     console.error(error);
     if (confirmSuccess) confirmSuccess(false);
   }

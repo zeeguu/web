@@ -44,7 +44,7 @@ async function injectFontAndStyles(tabId) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
     const fontCss = await response.text();
-    console.log("Fetched Font CSS for tab:", tabId);
+    // console.log("Fetched Font CSS for tab:", tabId);
 
     // 2. Inject the fetched @font-face rules
     await BROWSER_API.scripting.insertCSS({
@@ -52,14 +52,14 @@ async function injectFontAndStyles(tabId) {
       // Injecting the fetched CSS which contains @font-face rules
       css: fontCss,
     });
-    console.log("Injected @font-face rules for tab:", tabId);
+    // console.log("Injected @font-face rules for tab:", tabId);
 
     // 3. Inject the Zeeguu Web font rules, this will use the font attached in 2.
     await BROWSER_API.scripting.insertCSS({
       target: { tabId: tabId },
       css: BODY_ZEEGUU_FONT_RULE,
     });
-    console.log("Injected font application rules for tab:", tabId);
+    // console.log("Injected font application rules for tab:", tabId);
   } catch (error) {
     console.error("Failed to inject font and styles:", error);
   }
@@ -67,7 +67,7 @@ async function injectFontAndStyles(tabId) {
 
 BROWSER_API.runtime.onMessageExternal.addListener(
   (request, sender, sendResponse) => {
-    console.log("Received message from " + sender.url + ": ", request);
+    // console.log("Received message from " + sender.url + ": ", request);
     sendResponse({ message: true });
   }
 );
@@ -87,7 +87,7 @@ BROWSER_API.runtime.onMessage.addListener(async function (request) {
       await BROWSER_API.tts.speak(request.options.text, {
         lang: request.options.language,
       });
-      console.log(request.options.language);
+      // console.log(request.options.language);
     } catch (error) {
       // trying to make this work also for Firefox
       console.log(error);
@@ -136,8 +136,8 @@ async function startReader() {
           func: setCurrentURL(tab.url),
         })
         .then(() => {
-          console.log("Zeeguu code injected successfully!");
-          console.log("Adding Zeeguu font-styling...");
+          // console.log("Zeeguu code injected successfully!");
+          // console.log("Adding Zeeguu font-styling...");
           injectFontAndStyles(tab.id);
         });
     }

@@ -87,7 +87,7 @@ export function deleteIntervals() {
 export function checkLanguageSupport(api, tab, setLanguageSupported) {
   Article(tab.url).then((article) => {
     api.isArticleLanguageSupported(article.textContent, (result_dict) => {
-      console.log(result_dict);
+      // console.log(result_dict);
       if (result_dict === "NO") {
         setLanguageSupported(false);
       }
@@ -101,7 +101,7 @@ export function checkLanguageSupport(api, tab, setLanguageSupported) {
 export function checkLanguageSupportFromUrl(api, url, setLanguageSupported) {
   Article(url).then((article) => {
     api.isArticleLanguageSupported(article.textContent, (result_dict) => {
-      console.log(result_dict);
+      // console.log(result_dict);
       if (result_dict === "NO") {
         setLanguageSupported(false);
       }
@@ -114,9 +114,7 @@ export function checkLanguageSupportFromUrl(api, url, setLanguageSupported) {
 
 export function setUserInLocalStorage(user, api) {
   if (user !== undefined) {
-    BROWSER_API.storage.local.set({ userInfo: user }, () =>
-      console.log("user set in local storage")
-    );
+    BROWSER_API.storage.local.set({ userInfo: user });
     BROWSER_API.storage.local.set({ sessionId: user.session });
     api.session = user.session;
   }
