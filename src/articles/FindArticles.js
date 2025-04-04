@@ -15,6 +15,7 @@ import UnfinishedArticlesList from "./UnfinishedArticleList";
 import { setTitle } from "../assorted/setTitle";
 import strings from "../i18n/definitions";
 import useShadowRef from "../hooks/useShadowRef";
+import VideoPreview from "../videos/VideoPreview";
 
 export default function FindArticles({
   content,
@@ -129,6 +130,7 @@ export default function FindArticles({
       api.getUserArticles((articles) => {
         setArticleList(articles);
         setOriginalList([...articles]);
+        console.log(articles);
       });
       window.addEventListener("scroll", handleScroll, true);
       return () => {
@@ -189,20 +191,24 @@ export default function FindArticles({
       {content}
       {reloadingSearchArticles && <LoadingAnimation></LoadingAnimation>}
       {!reloadingSearchArticles &&
-        articleList.map((each, index) => (
-          <ArticlePreview
-            key={each.id}
-            article={each}
-            hasExtension={isExtensionAvailable}
-            doNotShowRedirectionModal_UserPreference={
-              doNotShowRedirectionModal_UserPreference
-            }
-            setDoNotShowRedirectionModal_UserPreference={
-              setDoNotShowRedirectionModal_UserPreference
-            }
-            onArticleClick={() => handleArticleClick(each.id, index)}
-          />
-        ))}
+        articleList.map((each, index) =>
+          each.video ? (
+            <VideoPreview key={each.id} video={each} />
+          ) : (
+            <ArticlePreview
+              key={each.id}
+              article={each}
+              hasExtension={isExtensionAvailable}
+              doNotShowRedirectionModal_UserPreference={
+                doNotShowRedirectionModal_UserPreference
+              }
+              setDoNotShowRedirectionModal_UserPreference={
+                setDoNotShowRedirectionModal_UserPreference
+              }
+              onArticleClick={() => handleArticleClick(each.id, index)}
+            />
+          ),
+        )}
       {!reloadingSearchArticles && articleList.length === 0 && (
         <p>No searches were found for this query.</p>
       )}
