@@ -15,17 +15,17 @@ export default function ExercisesForArticle() {
       pathname: "/read/article",
       search: `?id=${articleID}`,
     });
-    api.logReaderActivity(api.BACK_TO_READING, articleID, "", UMR_SOURCE);
+    api.logUserActivity(api.BACK_TO_READING, articleID, "", UMR_SOURCE);
   };
 
   const keepExercisingAction = () => {
     window.location.reload(false);
-    api.logReaderActivity(api.KEEP_EXERCISING, articleID, "", UMR_SOURCE);
+    api.logUserActivity(api.KEEP_EXERCISING, articleID, "", UMR_SOURCE);
   };
 
   const toScheduledExercises = () => {
     history.push("/exercises");
-    api.logReaderActivity(api.TO_SCHEDULED_EXERCISES, "", "", UMR_SOURCE);
+    api.logUserActivity(api.TO_SCHEDULED_EXERCISES, "", "", UMR_SOURCE);
   };
 
   return (

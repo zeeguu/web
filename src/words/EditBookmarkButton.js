@@ -23,6 +23,7 @@ export default function EditBookmarkButton({
   const [errorMessage, setErrorMessage] = useState();
   const SOURCE_FOR_API_USER_PREFERENCE = "WORD_EDIT_FORM_CHECKBOX";
   const SOURCE_FOR_API_BOOKMARK_DELETE = "WORD_EDIT_DELETE_BOOKMARK";
+
   function handleOpen() {
     setOpen(true);
   }
@@ -34,7 +35,7 @@ export default function EditBookmarkButton({
         if (response === "OK") {
           // delete was successful; log and close
           if (notifyDelete) notifyDelete(bookmark);
-          api.logReaderActivity(
+          api.logUserActivity(
             api.DELETE_WORD,
             bookmark.article_id,
             bookmark.from,
@@ -93,12 +94,17 @@ export default function EditBookmarkButton({
     bookmark.context = newContext;
     bookmark.fit_for_study = newFitForStudy;
 
-    api.updateBookmark(
-      bookmark.id,
-      newWord,
-      newTranslation,
-      newContext,
-      (newBookmark) => {
+    api
+      .updateBookmark(
+        bookmark.id,
+        newWord,
+        newTranslation,
+        newContext,
+        bookmark.context_identifier,
+      )
+      .then((response) => response.data)
+      .then((newBookmark) => {
+        console.dir(newBookmark);
         bookmark.context_tokenized = newBookmark.context_tokenized;
         bookmark.context_in_content = newBookmark.context_in_content;
         bookmark.left_ellipsis = newBookmark.left_ellipsis;
@@ -107,7 +113,7 @@ export default function EditBookmarkButton({
 
         if (newFitForStudy) {
           api.userSetForExercises(bookmark.id);
-          api.logReaderActivity(
+          api.logUserActivity(
             api.USER_SET_WORD_PREFERRED,
             newBookmark.article_id,
             newBookmark.from,
@@ -115,7 +121,7 @@ export default function EditBookmarkButton({
           );
         } else {
           api.userSetNotForExercises(bookmark.id);
-          api.logReaderActivity(
+          api.logUserActivity(
             api.USER_SET_NOT_WORD_PREFERED,
             newBookmark.article_id,
             newBookmark.from,
@@ -123,12 +129,13 @@ export default function EditBookmarkButton({
           );
         }
         if (setReload) setReload(!reload);
-        if (notifyWordChange) notifyWordChange(bookmark.id);
+
+        if (notifyWordChange) notifyWordChange(bookmark);
         toast.success("Thank you for the contribution!");
         handleClose();
-      },
-    );
+      });
   }
+
   const isPhoneScreen = window.innerWidth < 800;
   return (
     <div>
