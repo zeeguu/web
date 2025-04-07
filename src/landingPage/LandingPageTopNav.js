@@ -1,4 +1,3 @@
-import LocalStorage from "../assorted/LocalStorage";
 import useScreenWidth from "../hooks/useScreenWidth";
 import {
   isDesktopScreenWidth,
@@ -11,9 +10,7 @@ import Logo from "../pages/_pages_shared/Logo";
 
 export default function LandingPageTopNav() {
   const { screenWidth } = useScreenWidth();
-  function clearLearnedLanguage() {
-    LocalStorage.setLearnedLanguage("");
-  }
+
   return (
     <TopNav>
       <TopNavOption ariaLabel="Zeeguu" logo to="/">
@@ -23,11 +20,7 @@ export default function LandingPageTopNav() {
           "Zeeguu"}
       </TopNavOption>
       <TopNavOption to="/log_in">{strings.login}</TopNavOption>
-      <TopNavOption
-        callToAction
-        onClick={clearLearnedLanguage}
-        to="/language_preferences"
-      >
+      <TopNavOption callToAction to="/language_preferences">
         {strings.register}
       </TopNavOption>
     </TopNav>
