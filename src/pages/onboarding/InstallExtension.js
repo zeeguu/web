@@ -16,6 +16,7 @@ import RoundedForwardArrow from "@mui/icons-material/ArrowForwardRounded";
 import strings from "../../i18n/definitions";
 import redirect from "../../utils/routing/routing";
 import { setTitle } from "../../assorted/setTitle";
+import { Link } from "react-router-dom/cjs/react-router-dom";
 
 export default function InstallExtension() {
   useEffect(() => {
@@ -50,9 +51,9 @@ export default function InstallExtension() {
             {getExtensionInstallationButtonContent()}
             <RoundedForwardArrow fontSize="medium" />
           </Button>
-          <a className="link" href="/articles">
+          <Link className="link" to="/articles">
             {strings.iWillInstallLater}
-          </a>
+          </Link>
         </ButtonContainer>
       </Footer>
     </PreferencesPage>

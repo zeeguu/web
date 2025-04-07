@@ -24,6 +24,7 @@ import validateRules from "../assorted/validateRules";
 import { scrollToTop } from "../utils/misc/scrollToTop";
 import { setTitle } from "../assorted/setTitle";
 import { APIContext } from "../contexts/APIContext";
+import { Link } from "react-router-dom/cjs/react-router-dom";
 
 export default function LogIn({ handleSuccessfulLogIn }) {
   strings.setLanguage(LocalStorage.getUiLanguage().code);
@@ -98,7 +99,9 @@ export default function LogIn({ handleSuccessfulLogIn }) {
               }}
               isError={!isPasswordValid}
               errorMessage={passwordErrorMsg}
-              helperText={<a href="/reset_pass">{strings.forgotPassword}</a>}
+              helperText={
+                <Link to="/reset_pass">{strings.forgotPassword}</Link>
+              }
             />
           </FormSection>
           <ButtonContainer className={"padding-medium"}>
@@ -115,9 +118,9 @@ export default function LogIn({ handleSuccessfulLogIn }) {
       <Footer>
         <p className="centered">
           {strings.dontHaveAnAccount + " "}
-          <a className="bold underlined-link" href="/language_preferences">
+          <Link className="bold underlined-link" to="/language_preferences">
             {strings.getStarted}
-          </a>
+          </Link>
         </p>
       </Footer>
     </PreferencesPage>

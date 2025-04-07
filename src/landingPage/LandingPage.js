@@ -10,6 +10,7 @@ import Button from "../pages/_pages_shared/Button.sc";
 import RoundedForwardArrow from "@mui/icons-material/ArrowForwardRounded";
 
 import redirect from "../utils/routing/routing.js";
+import { Link } from "react-router-dom/cjs/react-router-dom.js";
 
 export default function LandingPage() {
   useEffect(() => {
@@ -32,14 +33,16 @@ export default function LandingPage() {
             Zeeguu
           </s.LogoWithText>
           <s.NavbarButtonContainer>
-            <s.WhiteOutlinedNavbarBtn onClick={() => redirect("/log_in")}>
-              {strings.login}
-            </s.WhiteOutlinedNavbarBtn>
-            <s.WhiteFilledNavbarBtn
-              onClick={() => redirect("/language_preferences")}
-            >
-              {strings.register}
-            </s.WhiteFilledNavbarBtn>
+            <Link to={"/log_in"}>
+              <s.WhiteOutlinedNavbarBtn>
+                {strings.login}
+              </s.WhiteOutlinedNavbarBtn>
+            </Link>
+            <Link to={"/language_preferences"}>
+              <s.WhiteFilledNavbarBtn>
+                {strings.register}
+              </s.WhiteFilledNavbarBtn>
+            </Link>
           </s.NavbarButtonContainer>
 
           {/* temporarily disable UI language settings */}
@@ -56,10 +59,12 @@ export default function LandingPage() {
           <p className="hero-paragraph">
             {strings.projectDescription_UltraShort}
           </p>
-          <Button onClick={() => redirect("/language_preferences")}>
-            {strings.getStarted}
-            <RoundedForwardArrow />
-          </Button>
+          <Link to={"/language_preferences"}>
+            <Button>
+              {strings.getStarted}
+              <RoundedForwardArrow />
+            </Button>
+          </Link>
         </s.HeroColumn>
 
         <s.PaleAdaptableColumn>

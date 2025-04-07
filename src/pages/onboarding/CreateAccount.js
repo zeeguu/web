@@ -34,6 +34,7 @@ import {
 } from "../../utils/ValidatorRule/Validator";
 import { setTitle } from "../../assorted/setTitle";
 import { APIContext } from "../../contexts/APIContext";
+import { Link } from "react-router-dom/cjs/react-router-dom";
 
 export default function CreateAccount({ handleSuccessfulLogIn }) {
   const api = useContext(APIContext);
@@ -314,9 +315,9 @@ export default function CreateAccount({ handleSuccessfulLogIn }) {
       <Footer>
         <p className="centered">
           {strings.alreadyHaveAccount + " "}
-          <a className="bold underlined-link" href="/log_in">
+          <Link className="bold underlined-link" to="/log_in">
             {strings.login}
-          </a>
+          </Link>
         </p>
       </Footer>
     </PreferencesPage>

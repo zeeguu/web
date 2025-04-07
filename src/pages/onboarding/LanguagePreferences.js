@@ -28,6 +28,7 @@ import { scrollToTop } from "../../utils/misc/scrollToTop";
 import { Validator } from "../../utils/ValidatorRule/Validator";
 import useShadowRef from "../../hooks/useShadowRef";
 import { APIContext } from "../../contexts/APIContext";
+import { Link } from "react-router-dom/cjs/react-router-dom";
 
 export default function LanguagePreferences() {
   const api = useContext(APIContext);
@@ -179,9 +180,9 @@ export default function LanguagePreferences() {
           </ButtonContainer>
           <p className="centered">
             {strings.alreadyHaveAccount + " "}
-            <a className="bold underlined-link" href="/log_in">
+            <Link className="bold underlined-link" to="/log_in">
               {strings.login}
-            </a>
+            </Link>
           </p>
         </Form>
       </Main>

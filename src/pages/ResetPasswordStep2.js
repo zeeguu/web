@@ -16,6 +16,7 @@ import {
 } from "../utils/ValidatorRule/Validator";
 import { scrollToTop } from "../utils/misc/scrollToTop";
 import { APIContext } from "../contexts/APIContext";
+import { Link } from "react-router-dom/cjs/react-router-dom";
 
 export default function ResetPasswordStep2({ email }) {
   const api = useContext(APIContext);
@@ -77,7 +78,8 @@ export default function ResetPasswordStep2({ email }) {
         <h1>{strings.somethingWentWrong}</h1>
         <p>
           {strings.youCanTryTo}
-          <a href="/reset_pass">{strings.resetYourPassword}</a> {strings.again}
+          <Link to="/reset_pass">{strings.resetYourPassword}</Link>{" "}
+          {strings.again}
         </p>
 
         <p>
@@ -94,7 +96,7 @@ export default function ResetPasswordStep2({ email }) {
         <br />
         <p>
           {strings.youCanGoTo}
-          <a href="log_in">{strings.login}</a> {strings.now}
+          <Link to="/log_in">{strings.login}</Link> {strings.now}
         </p>
       </>
     );

@@ -17,6 +17,7 @@ import ResetPasswordStep2 from "./ResetPasswordStep2";
 
 import strings from "../i18n/definitions";
 import { setTitle } from "../assorted/setTitle";
+import { Link } from "react-router-dom/cjs/react-router-dom";
 
 export default function ResetPassword() {
   const [email, setEmail, validateEmail, isEmailValid, emailErrorMsg] =
@@ -56,9 +57,9 @@ export default function ResetPassword() {
       <Footer>
         <p className="centered">
           {strings.rememberPassword + " "}
-          <a className="bold underlined-link" href="log_in">
+          <Link className="bold underlined-link" to="/log_in">
             {strings.login}
-          </a>
+          </Link>
         </p>
       </Footer>
     </PreferencesPage>
