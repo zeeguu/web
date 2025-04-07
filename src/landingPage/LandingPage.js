@@ -9,7 +9,6 @@ import News from "./News";
 import Contributors from "./Contributors";
 import Button from "../pages/_pages_shared/Button.sc";
 import RoundedForwardArrow from "@mui/icons-material/ArrowForwardRounded";
-import LocalStorage from "../assorted/LocalStorage.js";
 import LandingPageTopNav from "./LandingPageTopNav.js";
 import DynamicFlagImage from "../components/DynamicFlagImage.js";
 import * as s from "./LandingPage.sc.js";
@@ -26,14 +25,12 @@ export default function LandingPage() {
     return <Redirect to={{ pathname: "/articles" }} />;
   }
 
-  function handleLanguageSelect(language) {
-    LocalStorage.setLearnedLanguage(language);
-    history.push("/language_preferences");
+  function handleLanguageSelect(selectedLanguage) {
+    history.push(`/language_preferences?selected_language=${selectedLanguage}`);
   }
 
   function handleRegisterClick() {
-    LocalStorage.setLearnedLanguage("");
-    history.push("/language_preferences");
+    history.push(`/language_preferences`);
   }
 
   return (

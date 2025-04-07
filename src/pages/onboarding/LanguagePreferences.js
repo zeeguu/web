@@ -1,4 +1,5 @@
 import { useEffect, useContext } from "react";
+import { useLocation } from "react-router-dom/cjs/react-router-dom";
 import { SystemLanguagesContext } from "../../contexts/SystemLanguagesContext";
 import { useHistory } from "react-router-dom/cjs/react-router-dom";
 import { Link } from "react-router-dom/cjs/react-router-dom";
@@ -29,10 +30,17 @@ import LoadingAnimation from "../../components/LoadingAnimation";
 
 export default function LanguagePreferences() {
   const history = useHistory();
+  const location = useLocation();
   const { sortedSystemLanguages } = useContext(SystemLanguagesContext);
+
+  function getQueryParam(name) {
+    const params = new URLSearchParams(location.search);
+    return params.get(name);
+  }
+
   function getInitialLearnedLanguage() {
-    const storedLearnedLanguage = LocalStorage.getLearnedLanguage();
-    return storedLearnedLanguage || "";
+    const selectedLanguage = getQueryParam("selected_language");
+    return selectedLanguage || "";
   }
   const [
     learnedLanguage,
