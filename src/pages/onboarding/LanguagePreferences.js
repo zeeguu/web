@@ -1,4 +1,5 @@
-import { useState, useEffect, useContext } from "react";
+import { useEffect, useContext } from "react";
+import { SystemLanguagesContext } from "../../contexts/SystemLanguagesContext";
 import { useHistory } from "react-router-dom/cjs/react-router-dom";
 import { Link } from "react-router-dom/cjs/react-router-dom";
 
@@ -8,7 +9,6 @@ import { setTitle } from "../../assorted/setTitle";
 import { scrollToTop } from "../../utils/misc/scrollToTop";
 import { Validator } from "../../utils/ValidatorRule/Validator";
 import useShadowRef from "../../hooks/useShadowRef";
-import { APIContext } from "../../contexts/APIContext";
 import LocalStorage from "../../assorted/LocalStorage";
 import useFormField from "../../hooks/useFormField";
 import validateRules from "../../assorted/validateRules";
@@ -29,11 +29,11 @@ import LoadingAnimation from "../../components/LoadingAnimation";
 
 export default function LanguagePreferences() {
   const history = useHistory();
+  const { sortedSystemLanguages } = useContext(SystemLanguagesContext);
   function getInitialLearnedLanguage() {
     const storedLearnedLanguage = LocalStorage.getLearnedLanguage();
     return storedLearnedLanguage || "";
   }
-  const api = useContext(APIContext);
   const [
     learnedLanguage,
     setLearnedLanguage,
@@ -68,17 +68,9 @@ export default function LanguagePreferences() {
     "",
     NonEmptyValidator("Please select a level for your learned language."),
   );
-  const [systemLanguages, setSystemLanguages] = useState();
 
   useEffect(() => {
     setTitle(strings.languagePreferences);
-
-    api.getSystemLanguages((languages) => {
-      languages.learnable_languages.sort((a, b) => (a.name > b.name ? 1 : -1));
-      languages.native_languages.sort((a, b) => (a.name > b.name ? 1 : -1));
-      setSystemLanguages(languages);
-    });
-    // eslint-disable-next-line
   }, []);
 
   //The useEffect hooks below take care of updating initial language preferences
@@ -95,7 +87,7 @@ export default function LanguagePreferences() {
     LocalStorage.setNativeLanguage(translationLanguage);
   }, [translationLanguage]);
 
-  if (!systemLanguages) {
+  if (!sortedSystemLanguages) {
     return <LoadingAnimation />;
   }
 
@@ -135,7 +127,7 @@ export default function LanguagePreferences() {
               optionLabel={(e) => e.name}
               optionValue={(e) => e.code}
               id={"practiced-languages"}
-              options={systemLanguages.learnable_languages}
+              options={sortedSystemLanguages.learnable_languages}
               isError={!isLearnedLanguageValid}
               errorMessage={learnedLanguageMsg}
               onChange={(e) => {
@@ -167,7 +159,7 @@ export default function LanguagePreferences() {
               id={"translation-languages"}
               isError={!isTranslationLanguageValid}
               errorMessage={translationLanguageErrorMsg}
-              options={systemLanguages.native_languages}
+              options={sortedSystemLanguages.native_languages}
               onChange={(e) => {
                 setTranslationLanguage(e.target.value);
               }}

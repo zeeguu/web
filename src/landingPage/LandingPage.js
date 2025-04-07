@@ -1,9 +1,9 @@
-import { useEffect, useState, useContext } from "react";
-import { APIContext } from "../contexts/APIContext.js";
+import { useEffect, useContext } from "react";
 import { useHistory } from "react-router-dom/cjs/react-router-dom";
 import { Redirect } from "react-router-dom";
 import { setTitle } from "../assorted/setTitle";
 import { getSessionFromCookies } from "../utils/cookies/userInfo";
+import { SystemLanguagesContext } from "../contexts/SystemLanguagesContext.js";
 import strings from "../i18n/definitions";
 import News from "./News";
 import Contributors from "./Contributors";
@@ -15,17 +15,12 @@ import DynamicFlagImage from "../components/DynamicFlagImage.js";
 import * as s from "./LandingPage.sc.js";
 
 export default function LandingPage() {
-  const api = useContext(APIContext);
   const history = useHistory();
-  const [systemLanguages, setSystemLanguages] = useState();
+  const { systemLanguages } = useContext(SystemLanguagesContext);
 
   useEffect(() => {
     setTitle(strings.landingPageTitle);
-
-    api.getSystemLanguages((languages) => {
-      setSystemLanguages(languages);
-    });
-  }, [api]);
+  }, []);
 
   if (getSessionFromCookies()) {
     return <Redirect to={{ pathname: "/articles" }} />;
