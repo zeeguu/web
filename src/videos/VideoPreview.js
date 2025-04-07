@@ -1,4 +1,4 @@
-import * as s from "../articles/ArticlePreview.sc";
+import * as s from "./VideoPreview.sc";
 import { Link } from "react-router-dom";
 import { TopicOriginType } from "../appConstants";
 import VideoStatInfo from "./VideoStatInfo";
@@ -10,40 +10,38 @@ import { darkBlue } from "../components/colors";
 import { useEffect } from "react";
 
 export default function VideoPreview({ video }) {
+  // Open the video in a new tab
+  const handleTitleClick = () => {
+    const baseUrl = window.location.origin;
+    const videoUrl = `${baseUrl}/watch/${video.video_unique_key}`;
+    window.open(videoUrl, "_blank", "noopener,noreferrer");
+  };
+
   useEffect(() => {
     console.log(video);
   }, []);
   return (
-    <s.ArticlePreview>
+    <s.VideoPreview>
       <s.TitleContainer>
-        <Link to={`/watch/${video.video_unique_key}`}>
-          <s.Title>{video.title}</s.Title>
-        </Link>
+        <s.Title>
+          <Link
+            to={`/watch/${video.video_unique_key}`}
+            onClick={handleTitleClick}
+          >
+            {video.title}
+          </Link>
+        </s.Title>
       </s.TitleContainer>
 
       <VideoSourceInfo video={video}></VideoSourceInfo>
 
       <s.ArticleContent>
-        <Link
-          style={{ position: "relative" }}
-          to={`/watch/${video.video_unique_key}`}
-        >
+        <s.VideoThumbnail onClick={handleTitleClick}>
           <img src={video.thumbnail_url} alt={video.title} />
-          <div
-            style={{
-              position: "absolute",
-              top: "50%",
-              left: "50%",
-              transform: "translate(-50%, -50%)",
-              background: "rgba(0, 0, 0, 0.5)",
-              borderRadius: "50%",
-              padding: "15px",
-              color: "white",
-            }}
-          >
-            <FaPlay size={20} />
-          </div>
-        </Link>
+          <s.PlayButtonOverlay>
+            <FaPlay size="1rem" />
+          </s.PlayButtonOverlay>
+        </s.VideoThumbnail>
         <s.Summary>{video.description?.substring(0, 297)}...</s.Summary>
       </s.ArticleContent>
 
@@ -79,6 +77,6 @@ export default function VideoPreview({ video }) {
         </div>
         <VideoStatInfo video={video}></VideoStatInfo>
       </s.BottomContainer>
-    </s.ArticlePreview>
+    </s.VideoPreview>
   );
 }
