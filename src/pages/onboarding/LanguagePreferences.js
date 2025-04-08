@@ -1,9 +1,20 @@
-import { useState, useEffect, useContext } from "react";
+import { useEffect, useContext } from "react";
+import { useLocation } from "react-router-dom/cjs/react-router-dom";
+import { SystemLanguagesContext } from "../../contexts/SystemLanguagesContext";
+import { useHistory } from "react-router-dom/cjs/react-router-dom";
+import { Link } from "react-router-dom/cjs/react-router-dom";
 
+import { CEFR_LEVELS } from "../../assorted/cefrLevels";
+import { setTitle } from "../../assorted/setTitle";
+
+import { scrollToTop } from "../../utils/misc/scrollToTop";
+import { Validator } from "../../utils/ValidatorRule/Validator";
+import useShadowRef from "../../hooks/useShadowRef";
 import LocalStorage from "../../assorted/LocalStorage";
-
-import redirect from "../../utils/routing/routing";
 import useFormField from "../../hooks/useFormField";
+import validateRules from "../../assorted/validateRules";
+import { NonEmptyValidator } from "../../utils/ValidatorRule/Validator";
+import strings from "../../i18n/definitions";
 
 import PreferencesPage from "../_pages_shared/PreferencesPage";
 import Header from "../_pages_shared/Header";
@@ -15,29 +26,32 @@ import Selector from "../../components/Selector";
 import ButtonContainer from "../_pages_shared/ButtonContainer.sc";
 import Button from "../_pages_shared/Button.sc";
 import RoundedForwardArrow from "@mui/icons-material/ArrowForwardRounded";
-
-import validateRules from "../../assorted/validateRules";
-import { NonEmptyValidator } from "../../utils/ValidatorRule/Validator";
-import strings from "../../i18n/definitions";
 import LoadingAnimation from "../../components/LoadingAnimation";
 
-import { CEFR_LEVELS } from "../../assorted/cefrLevels";
-import { setTitle } from "../../assorted/setTitle";
-
-import { scrollToTop } from "../../utils/misc/scrollToTop";
-import { Validator } from "../../utils/ValidatorRule/Validator";
-import useShadowRef from "../../hooks/useShadowRef";
-import { APIContext } from "../../contexts/APIContext";
-
 export default function LanguagePreferences() {
-  const api = useContext(APIContext);
+  const history = useHistory();
+  const location = useLocation();
+  const { sortedSystemLanguages } = useContext(SystemLanguagesContext);
+
+  function getQueryParam(name) {
+    const params = new URLSearchParams(location.search);
+    return params.get(name);
+  }
+
+  function getInitialLearnedLanguage() {
+    const selectedLanguage = getQueryParam("selected_language");
+    return selectedLanguage || "";
+  }
   const [
     learnedLanguage,
     setLearnedLanguage,
     validateLearnedLanguage,
     isLearnedLanguageValid,
     learnedLanguageMsg,
-  ] = useFormField("", NonEmptyValidator("Please select a language."));
+  ] = useFormField(
+    getInitialLearnedLanguage(),
+    NonEmptyValidator("Please select a language."),
+  );
 
   const learnedLanguageRef = useShadowRef(learnedLanguage);
   const [
@@ -62,17 +76,9 @@ export default function LanguagePreferences() {
     "",
     NonEmptyValidator("Please select a level for your learned language."),
   );
-  const [systemLanguages, setSystemLanguages] = useState();
 
   useEffect(() => {
     setTitle(strings.languagePreferences);
-
-    api.getSystemLanguages((languages) => {
-      languages.learnable_languages.sort((a, b) => (a.name > b.name ? 1 : -1));
-      languages.native_languages.sort((a, b) => (a.name > b.name ? 1 : -1));
-      setSystemLanguages(languages);
-    });
-    // eslint-disable-next-line
   }, []);
 
   //The useEffect hooks below take care of updating initial language preferences
@@ -89,7 +95,7 @@ export default function LanguagePreferences() {
     LocalStorage.setNativeLanguage(translationLanguage);
   }, [translationLanguage]);
 
-  if (!systemLanguages) {
+  if (!sortedSystemLanguages) {
     return <LoadingAnimation />;
   }
 
@@ -103,7 +109,7 @@ export default function LanguagePreferences() {
       ])
     )
       scrollToTop();
-    else redirect("/account_details");
+    else history.push("/account_details");
   }
 
   return (
@@ -129,7 +135,7 @@ export default function LanguagePreferences() {
               optionLabel={(e) => e.name}
               optionValue={(e) => e.code}
               id={"practiced-languages"}
-              options={systemLanguages.learnable_languages}
+              options={sortedSystemLanguages.learnable_languages}
               isError={!isLearnedLanguageValid}
               errorMessage={learnedLanguageMsg}
               onChange={(e) => {
@@ -161,7 +167,7 @@ export default function LanguagePreferences() {
               id={"translation-languages"}
               isError={!isTranslationLanguageValid}
               errorMessage={translationLanguageErrorMsg}
-              options={systemLanguages.native_languages}
+              options={sortedSystemLanguages.native_languages}
               onChange={(e) => {
                 setTranslationLanguage(e.target.value);
               }}
@@ -179,9 +185,9 @@ export default function LanguagePreferences() {
           </ButtonContainer>
           <p className="centered">
             {strings.alreadyHaveAccount + " "}
-            <a className="bold underlined-link" href="/log_in">
+            <Link className="bold underlined-link" to="/log_in">
               {strings.login}
-            </a>
+            </Link>
           </p>
         </Form>
       </Main>

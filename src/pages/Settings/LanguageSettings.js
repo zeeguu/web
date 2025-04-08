@@ -1,5 +1,6 @@
 import { useHistory } from "react-router-dom";
 import { useState, useEffect, useContext, useRef } from "react";
+import { SystemLanguagesContext } from "../../contexts/SystemLanguagesContext";
 import { APIContext } from "../../contexts/APIContext";
 import { UserContext } from "../../contexts/UserContext";
 import { saveUserInfoIntoCookies } from "../../utils/cookies/userInfo";
@@ -31,10 +32,11 @@ import validateRules from "../../assorted/validateRules";
 
 export default function LanguageSettings() {
   const api = useContext(APIContext);
+  const { sortedSystemLanguages } = useContext(SystemLanguagesContext);
   const { userDetails, setUserDetails, session } = useContext(UserContext);
   const [errorMessage, setErrorMessage] = useState("");
   const [CEFR, setCEFR] = useState(null);
-  const [languages, setLanguages] = useState();
+
   const [
     learnedLanguage,
     setLearnedLanguage,
@@ -78,12 +80,6 @@ export default function LanguageSettings() {
       setNativeLanguage(userDetails.native_language);
     }
 
-    api.getSystemLanguages((systemLanguages) => {
-      if (isPageMounted.current) {
-        setLanguages(systemLanguages);
-      }
-    });
-
     return () => {
       isPageMounted.current = false;
     };
@@ -116,7 +112,7 @@ export default function LanguageSettings() {
     }
   }
 
-  if (!userDetails || !languages) {
+  if (!userDetails || !sortedSystemLanguages) {
     return <LoadingAnimation />;
   }
 
@@ -135,7 +131,7 @@ export default function LanguageSettings() {
             <LanguageSelector
               id={"practiced-language-selector"}
               label={strings.learnedLanguage}
-              languages={languages.learnable_languages}
+              languages={sortedSystemLanguages.learnable_languages}
               selected={learnedLanguage}
               onChange={(e) => {
                 setLearnedLanguage(e.target.value);
@@ -160,7 +156,7 @@ export default function LanguageSettings() {
             <LanguageSelector
               id={"translation-language-selector"}
               label={strings.baseLanguage}
-              languages={languages.native_languages}
+              languages={sortedSystemLanguages.native_languages}
               selected={nativeLanguage}
               isError={!isNativeLanguageValid}
               errorMessage={nativeLanguageMsg}
