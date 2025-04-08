@@ -77,7 +77,7 @@ export default function LandingPage() {
             <s.Subsection>
               <s.SubsectionText>
                 {/* <h3>{strings.personalizedReading}</h3> */}
-                <h3>Your personalized feed</h3>
+                <h3>Browse your personalized&nbsp;feed</h3>
                 <p>
                   Our system continuously searches the internet to bring you new
                   article recommendations tailored to your interests and desired
@@ -86,19 +86,19 @@ export default function LandingPage() {
                 {/* <p>{strings.personalizedRecommandationsEllaboration1}</p>
                 <p>{strings.personalizedRecommandationsEllaboration2}</p> */}
               </s.SubsectionText>
-              <s.SubsectionImage>
-                <img src="static/images/feed.png" />
-              </s.SubsectionImage>
+              <s.SubsectionImage src="static/images/feed.png" />
+              {/* <img src="static/images/feed.png" /> */}
+              {/* </s.SubsectionImage> */}
             </s.Subsection>
 
             <s.Subsection>
-              <s.SubsectionImage>
-                <img src="static/images/feed.png" />
-                {/* <img src="/" /> */}
-              </s.SubsectionImage>
+              <s.SubsectionImage src="static/images/feed.png" />
+              {/* <img src="static/images/feed.png" /> */}
+              {/* <img src="/" /> */}
+              {/* </s.SubsectionImage> */}
               <s.SubsectionText>
                 {/* <h3>{strings.easyTranslations}</h3> */}
-                <h3>Read, translate words & hear pronunciation</h3>
+                <h3>Read, translate words &&nbsp;hear&nbsp;pronunciation</h3>
                 <p>
                   Select an article from your personalized feed, read it easily,
                   Right-click anywhere on the article’s page to enjoy
@@ -114,7 +114,7 @@ export default function LandingPage() {
             <s.Subsection>
               <s.SubsectionText>
                 {/* <h3>{strings.personalizedExercises}</h3> */}
-                <h3>Practice new words in context</h3>
+                <h3>Practice new words in&nbsp;context</h3>
                 <p>
                   Test your vocabulary with many types of interactive exercises
                   that adapt to your level. Progress through increasing
@@ -125,9 +125,9 @@ export default function LandingPage() {
                 <p>{strings.personalizedMultipleExerciseTypes}</p>
                 <p>{strings.personalizedPractiseEllaboration2}</p> */}
               </s.SubsectionText>
-              <s.SubsectionImage>
-                <img src="static/images/feed.png" />
-              </s.SubsectionImage>
+              <s.SubsectionImage src="static/images/feed.png" />
+              {/* <img src="static/images/feed.png" />
+              </s.SubsectionImage> */}
             </s.Subsection>
           </s.PageSection>
         </s.PageSectionWrapper>
