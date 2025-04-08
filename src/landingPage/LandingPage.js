@@ -8,11 +8,11 @@ import { setTitle } from "../assorted/setTitle";
 import { getSessionFromCookies } from "../utils/cookies/userInfo";
 import Button from "../pages/_pages_shared/Button.sc";
 import RoundedForwardArrow from "@mui/icons-material/ArrowForwardRounded";
-
-import redirect from "../utils/routing/routing.js";
+import { useHistory } from "react-router-dom";
 import { Link } from "react-router-dom/cjs/react-router-dom.js";
 
 export default function LandingPage() {
+  let history = useHistory();
   useEffect(() => {
     setTitle(strings.landingPageTitle);
   }, []);
@@ -20,7 +20,9 @@ export default function LandingPage() {
   if (getSessionFromCookies()) {
     return <Redirect to={{ pathname: "/articles" }} />;
   }
-
+  function navigateOnClick(location) {
+    history.push(location);
+  }
   return (
     <s.PageWrapper>
       <s.NavbarBg>
@@ -33,16 +35,16 @@ export default function LandingPage() {
             Zeeguu
           </s.LogoWithText>
           <s.NavbarButtonContainer>
-            <Link to={"/log_in"}>
-              <s.WhiteOutlinedNavbarBtn>
-                {strings.login}
-              </s.WhiteOutlinedNavbarBtn>
-            </Link>
-            <Link to={"/language_preferences"}>
-              <s.WhiteFilledNavbarBtn>
-                {strings.register}
-              </s.WhiteFilledNavbarBtn>
-            </Link>
+            <s.WhiteOutlinedNavbarBtn
+              onClick={() => navigateOnClick("/log_in")}
+            >
+              {strings.login}
+            </s.WhiteOutlinedNavbarBtn>
+            <s.WhiteFilledNavbarBtn
+              onClick={() => navigateOnClick("/language_preferences")}
+            >
+              {strings.register}
+            </s.WhiteFilledNavbarBtn>
           </s.NavbarButtonContainer>
 
           {/* temporarily disable UI language settings */}
