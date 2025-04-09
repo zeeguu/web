@@ -127,6 +127,17 @@ const PageSectionWrapper = styled.div`
     font-weight: 500;
   }
 
+  p.subheadline {
+    font-size: 1.25rem;
+    font-weight: 500;
+    line-height: 150%;
+    color: ${almostBlack};
+    text-align: center;
+    @media (max-width: 768px) {
+      font-size: 1.1rem;
+    }
+  }
+
   h2 {
     font-size: 2.25rem;
     color: ${almostBlack};
@@ -156,11 +167,12 @@ const Subsection = styled.div`
   grid-template-columns: repeat(2, 1fr);
   gap: 3rem;
   width: 100%;
-  padding: 3rem 0;
+  padding: 4rem 0;
 
   @media (max-width: 992px) {
     grid-template-columns: repeat(1, 1fr);
     gap: 1rem;
+    padding: 3rem 0;
   }
 `;
 
@@ -174,11 +186,14 @@ const SubsectionText = styled.div`
   gap: 0.5rem;
 
   @media (max-width: 1200px) {
-    padding: 0 4rem 0 2.5rem;
+    padding: 0 2rem 0 2rem;
   }
 
   @media (max-width: 992px) {
     padding: 0;
+    text-align: center;
+    max-width: 500px;
+    margin: auto;
   }
 `;
 
@@ -193,6 +208,8 @@ const SubsectionImage = styled.img`
 
   @media (max-width: 992px) {
     order: 1;
+    max-width: 640px;
+    margin: auto;
   }
 `;
 

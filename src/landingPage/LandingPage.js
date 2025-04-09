@@ -69,9 +69,9 @@ export default function LandingPage() {
         <s.PageSectionWrapper>
           <s.PageSection>
             <h2>{strings.howDoesItWork}</h2>
-            <p>
+            <p className="subheadline">
               Zeeguu is a research project that personalizes the way you learn
-              foreign languages
+              foreign&nbsp;languages
             </p>
 
             <s.Subsection>
@@ -81,7 +81,7 @@ export default function LandingPage() {
                 <p>
                   Our system continuously searches the internet to bring you new
                   article recommendations tailored to your interests and desired
-                  language difficulty.
+                  language&nbsp;difficulty.
                 </p>
                 {/* <p>{strings.personalizedRecommandationsEllaboration1}</p>
                 <p>{strings.personalizedRecommandationsEllaboration2}</p> */}
@@ -103,7 +103,8 @@ export default function LandingPage() {
                   Select an article from your personalized feed, read it easily,
                   Right-click anywhere on the article’s page to enjoy
                   distraction-free reading with our browser extension. Instantly
-                  translate words and hear their pronunciation effortlessly.
+                  translate words and hear their
+                  pronunciation&nbsp;effortlessly.
                 </p>
                 {/* <p>{strings.easyTranslationsEllaboration1}</p>
                 <p>{strings.easyTranslationsEllaboration2}</p>
@@ -119,7 +120,7 @@ export default function LandingPage() {
                   Test your vocabulary with many types of interactive exercises
                   that adapt to your level. Progress through increasing
                   difficulties, reinforce learning with real-world usage, and
-                  improve pronunciation with audio exercises.
+                  improve pronunciation with audio&nbsp;exercises.
                 </p>
                 {/* <p>{strings.personalizedPractiseEllaboration1}</p>
                 <p>{strings.personalizedMultipleExerciseTypes}</p>
