@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { BrowserRouter } from "react-router-dom";
 
 import ExerciseNotifications from "./exercises/ExerciseNotification";
 import { ExerciseCountContext } from "./exercises/ExerciseCountContext";
+import { SystemLanguagesContext } from "./contexts/SystemLanguagesContext";
 import { UserContext } from "./contexts/UserContext";
 import { RoutingContext } from "./contexts/RoutingContext";
 import LocalStorage from "./assorted/LocalStorage";
@@ -43,6 +44,28 @@ function App() {
   const [isExtensionAvailable] = useExtensionCommunication();
   const [zeeguuSpeech, setZeeguuSpeech] = useState(false);
   let { handleRedirectLinkOrGoTo } = useRedirectLink();
+
+  const [systemLanguages, setSystemLanguages] = useState();
+
+  useEffect(() => {
+    api.getSystemLanguages((languages) => {
+      setSystemLanguages(languages);
+    });
+  }, [api]);
+
+  // Alphabetically sorted variant of systemLanguages for dropdowns
+  const sortedSystemLanguages = useMemo(() => {
+    if (!systemLanguages) return null;
+
+    return {
+      learnable_languages: [...systemLanguages.learnable_languages].sort(
+        (a, b) => (a.name.toLowerCase() > b.name.toLowerCase() ? 1 : -1),
+      ),
+      native_languages: [...systemLanguages.native_languages].sort((a, b) =>
+        a.name.toLowerCase() > b.name.toLowerCase() ? 1 : -1,
+      ),
+    };
+  }, [systemLanguages]);
 
   useEffect(() => {
     if (userDetails && userDetails.learned_language) {
@@ -163,45 +186,49 @@ function App() {
   }
 
   return (
-    <SpeechContext.Provider value={zeeguuSpeech}>
-      <BrowserRouter>
-        <RoutingContext.Provider value={{ returnPath, setReturnPath }}>
-          <UserContext.Provider
-            value={{
-              userDetails,
-              setUserDetails,
-              userPreferences,
-              setUserPreferences,
-              session: getSessionFromCookies(),
-              logoutMethod: logout,
-            }}
-          >
-            <ExerciseCountContext.Provider value={exerciseNotification}>
-              <APIContext.Provider value={api}>
-                {/* Routing*/}
-                <MainAppRouter
-                  hasExtension={isExtensionAvailable}
-                  handleSuccessfulLogIn={handleSuccessfulLogIn}
-                />
+    <SystemLanguagesContext.Provider
+      value={{ systemLanguages, sortedSystemLanguages }}
+    >
+      <SpeechContext.Provider value={zeeguuSpeech}>
+        <BrowserRouter>
+          <RoutingContext.Provider value={{ returnPath, setReturnPath }}>
+            <UserContext.Provider
+              value={{
+                userDetails,
+                setUserDetails,
+                userPreferences,
+                setUserPreferences,
+                session: getSessionFromCookies(),
+                logoutMethod: logout,
+              }}
+            >
+              <ExerciseCountContext.Provider value={exerciseNotification}>
+                <APIContext.Provider value={api}>
+                  {/* Routing*/}
+                  <MainAppRouter
+                    hasExtension={isExtensionAvailable}
+                    handleSuccessfulLogIn={handleSuccessfulLogIn}
+                  />
 
-                <ToastContainer
-                  position="bottom-right"
-                  autoClose={2000}
-                  hideProgressBar={true}
-                  newestOnTop={false}
-                  closeOnClick
-                  rtl={false}
-                  pauseOnFocusLoss
-                  draggable
-                  pauseOnHover
-                  theme="light"
-                />
-              </APIContext.Provider>
-            </ExerciseCountContext.Provider>
-          </UserContext.Provider>
-        </RoutingContext.Provider>
-      </BrowserRouter>
-    </SpeechContext.Provider>
+                  <ToastContainer
+                    position="bottom-right"
+                    autoClose={2000}
+                    hideProgressBar={true}
+                    newestOnTop={false}
+                    closeOnClick
+                    rtl={false}
+                    pauseOnFocusLoss
+                    draggable
+                    pauseOnHover
+                    theme="light"
+                  />
+                </APIContext.Provider>
+              </ExerciseCountContext.Provider>
+            </UserContext.Provider>
+          </RoutingContext.Provider>
+        </BrowserRouter>
+      </SpeechContext.Provider>
+    </SystemLanguagesContext.Provider>
   );
 }
 

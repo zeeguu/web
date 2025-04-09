@@ -1,21 +1,20 @@
 import { useState, useEffect } from "react";
-
+import { Link } from "react-router-dom/cjs/react-router-dom";
+import useFormField from "../hooks/useFormField";
+import {
+  EmailValidator,
+  NonEmptyValidator,
+} from "../utils/ValidatorRule/Validator";
+import strings from "../i18n/definitions";
 import PreferencesPage from "./_pages_shared/PreferencesPage";
 import Header from "./_pages_shared/Header";
 import Heading from "./_pages_shared/Heading.sc";
 import Main from "./_pages_shared/Main.sc";
 import Footer from "./_pages_shared/Footer.sc";
 
-import useFormField from "../hooks/useFormField";
-import {
-  EmailValidator,
-  NonEmptyValidator,
-} from "../utils/ValidatorRule/Validator";
-
 import ResetPasswordStep1 from "./ResetPasswordStep1";
 import ResetPasswordStep2 from "./ResetPasswordStep2";
 
-import strings from "../i18n/definitions";
 import { setTitle } from "../assorted/setTitle";
 import { Link } from "react-router-dom/cjs/react-router-dom";
 

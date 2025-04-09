@@ -1,5 +1,6 @@
 import { getSessionFromCookies } from "../../utils/cookies/userInfo";
 import { useContext, useEffect } from "react";
+import { useHistory } from "react-router-dom/cjs/react-router-dom";
 import PreferencesPage from "../_pages_shared/PreferencesPage";
 import Header from "../_pages_shared/Header";
 import Heading from "../_pages_shared/Heading.sc";
@@ -10,13 +11,13 @@ import Footer from "../_pages_shared/Footer.sc";
 import Button from "../_pages_shared/Button.sc";
 
 import strings from "../../i18n/definitions";
-import redirect from "../../utils/routing/routing";
 import { runningInChromeDesktop } from "../../utils/misc/browserDetection";
 import { setTitle } from "../../assorted/setTitle";
 import { APIContext } from "../../contexts/APIContext";
 
 export default function ExtensionInstalled() {
   const api = useContext(APIContext);
+  const history = useHistory();
   useEffect(() => {
     setTitle(strings.extensionInstalled);
     api.logUserActivity(api.OPEN_EXTENSION_INSTALLED);
@@ -39,7 +40,7 @@ export default function ExtensionInstalled() {
           {getSessionFromCookies() ? (
             <Button
               className={"full-width-btn"}
-              onClick={() => redirect("/articles")}
+              onClick={() => history.push("/articles")}
             >
               {strings.goToZeeguuApp}
             </Button>
@@ -47,13 +48,13 @@ export default function ExtensionInstalled() {
             <>
               <Button
                 className={"full-width-btn"}
-                onClick={() => redirect("/language_preferences")}
+                onClick={() => history.push("/language_preferences")}
               >
                 {strings.createAccount}
               </Button>
               <Button
                 className={"full-width-btn"}
-                onClick={() => redirect("/log_in")}
+                onClick={() => history.push("/log_in")}
               >
                 {strings.login}
               </Button>

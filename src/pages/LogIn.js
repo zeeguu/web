@@ -1,6 +1,16 @@
 import { useContext, useEffect, useState } from "react";
-
+import { Link } from "react-router-dom/cjs/react-router-dom";
+import { APIContext } from "../contexts/APIContext";
+import { scrollToTop } from "../utils/misc/scrollToTop";
+import { setTitle } from "../assorted/setTitle";
 import useFormField from "../hooks/useFormField";
+import LocalStorage from "../assorted/LocalStorage";
+import {
+  NonEmptyValidator,
+  EmailValidator,
+} from "../utils/ValidatorRule/Validator";
+import validateRules from "../assorted/validateRules";
+import strings from "../i18n/definitions";
 
 import PreferencesPage from "./_pages_shared/PreferencesPage";
 import Header from "./_pages_shared/Header";
@@ -13,18 +23,6 @@ import InputField from "../components/InputField";
 import Footer from "./_pages_shared/Footer.sc";
 import ButtonContainer from "./_pages_shared/ButtonContainer.sc";
 import Button from "./_pages_shared/Button.sc";
-
-import strings from "../i18n/definitions";
-import LocalStorage from "../assorted/LocalStorage";
-import {
-  NonEmptyValidator,
-  EmailValidator,
-} from "../utils/ValidatorRule/Validator";
-import validateRules from "../assorted/validateRules";
-import { scrollToTop } from "../utils/misc/scrollToTop";
-import { setTitle } from "../assorted/setTitle";
-import { APIContext } from "../contexts/APIContext";
-import { Link } from "react-router-dom/cjs/react-router-dom";
 
 export default function LogIn({ handleSuccessfulLogIn }) {
   strings.setLanguage(LocalStorage.getUiLanguage().code);
