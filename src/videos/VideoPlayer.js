@@ -14,9 +14,7 @@ import {
   InfoItem,
   FullscreenButton,
 } from "./VideoPlayer.sc";
-
-import videos from "./Videos.json";
-import { set } from "date-fns";
+import LoadingAnimation from "../components/LoadingAnimation";
 
 function useQuery() {
   return new URLSearchParams(useLocation().search);
@@ -34,56 +32,44 @@ export default function VideoPlayer() {
 
   const history = useHistory();
   const [player, setPlayer] = useState(null);
-  const [videoInfo, setVideoInfo] = useState([]);
+  const [videoInfo, setVideoInfo] = useState();
   const [hasStartedPlaying, setHasStartedPlaying] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [translatedWords, setTranslatedWords] = useState(new Map());
   const [currentInteractiveCaption, setCurrentInteractiveCaption] = useState(null);
   const [interactiveTitle, setInteractiveTitle] = useState(null);
 
-  useEffect(() => {
-    onCreate();
-  }, []);
+  // Call onCreate immediately
+  onCreate();
 
   function onCreate() {
-    api.getVideoInfo(videoID, (videoInfo) => {
+    api.getVideoInfo(videoID, (video) => {
       setInteractiveTitle(
         new InteractiveText(
-          videoInfo.tokenized_title.tokenized_title,
-          videoInfo.source_id,
+          video.tokenized_title.tokenized_title,
+          video.source_id,
           api,
           [],
           api.TRANSLATE_TEXT,
-          videoInfo.language_code,
+          video.language_code,
           "video_title",
           speech,
-          videoInfo.tokenized_title.context_identifier,
+          video.tokenized_title.context_identifier,
         ),
       );
 
-      setVideoInfo(videoInfo);
+      setVideoInfo(video);
+      console.log("VIDEO INFO: ", videoInfo);
       setTitle(videoInfo.title);
     });
   }
 
   // Pause the video when a new word is translated
   useEffect(() => {
-    if (player && translatedWords.size > 0) {
+    if (player !== null) {
       player.pauseVideo();
     }
   }, [translatedWords, player]);
-
-  const opts = {
-    height: "100%",
-    width: "100%",
-    playerVars: {
-      autoplay: 0,
-      cc_load_policy: 0,
-      cc_lang_pref: videoInfo.language_code,
-      fs: 0,
-      controls: 1,
-    },
-  };
 
   const onReady = (event) => {
     setPlayer(event.target);
@@ -169,8 +155,8 @@ export default function VideoPlayer() {
     };
   }, []);
 
-  if (!videoInfo.video_unique_key) {
-    return <div>No video unique key provided</div>;
+  if (!videoInfo) {
+    return <LoadingAnimation />;
   }
 
   return (
@@ -181,7 +167,22 @@ export default function VideoPlayer() {
         </h1>
       </InfoContainer>
       <VideoContainer>
-        <YouTube videoId={videoInfo.video_unique_key} opts={opts} onReady={onReady} onStateChange={onStateChange} />
+        <YouTube
+          videoId={videoInfo.video_unique_key}
+          opts={{
+            height: "100%",
+            width: "100%",
+            playerVars: {
+              autoplay: 0,
+              cc_load_policy: 0,
+              cc_lang_pref: videoInfo.language_code,
+              fs: 0,
+              controls: 1,
+            },
+          }}
+          onReady={onReady}
+          onStateChange={onStateChange}
+        />
         <FullscreenButton onClick={toggleFullscreen}>
           {isFullscreen ? (
             <>
