@@ -39,6 +39,7 @@ export default function VideoPlayer() {
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [translatedWords, setTranslatedWords] = useState(new Map());
   const [currentInteractiveCaption, setCurrentInteractiveCaption] = useState(null);
+  const [interactiveTitle, setInteractiveTitle] = useState(null);
 
   useEffect(() => {
     onCreate();
@@ -46,6 +47,20 @@ export default function VideoPlayer() {
 
   function onCreate() {
     api.getVideoInfo(videoID, (videoInfo) => {
+      setInteractiveTitle(
+        new InteractiveText(
+          videoInfo.tokenized_title.tokenized_title,
+          videoInfo.source_id,
+          api,
+          [],
+          api.TRANSLATE_TEXT,
+          videoInfo.language_code,
+          "video_title",
+          speech,
+          videoInfo.tokenized_title.context_identifier,
+        ),
+      );
+
       setVideoInfo(videoInfo);
       setTitle(videoInfo.title);
     });
@@ -160,6 +175,11 @@ export default function VideoPlayer() {
 
   return (
     <MainContainer ref={containerRef} className={isFullscreen ? "fullscreen" : ""}>
+      <InfoContainer>
+        <h1>
+          <TranslatableText interactiveText={interactiveTitle} translating={true} />
+        </h1>
+      </InfoContainer>
       <VideoContainer>
         <YouTube videoId={videoInfo.video_unique_key} opts={opts} onReady={onReady} onStateChange={onStateChange} />
         <FullscreenButton onClick={toggleFullscreen}>
