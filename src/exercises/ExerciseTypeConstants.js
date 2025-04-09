@@ -19,9 +19,11 @@ export const EXERCISE_TYPES = {
     ].includes(exerciseType);
   },
   isAudioExercise: function (exerciseType) {
-    return [this.multipleChoiceAudio, this.spellWhatYouHear].includes(
-      exerciseType,
-    );
+    return [
+      this.multipleChoiceAudio,
+      this.spellWhatYouHear,
+      this.translateWhatYouHear,
+    ].includes(exerciseType);
   },
 };
 
