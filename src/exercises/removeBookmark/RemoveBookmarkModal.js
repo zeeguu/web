@@ -10,8 +10,6 @@ import Form from "../../pages/_pages_shared/Form.sc";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import MatchBookmarkSelection from "./MatchBookmarkSelection";
-import { isExpression } from "../../utils/text/expressions";
-import LoadingAnimation from "../../components/LoadingAnimation";
 
 export default function RemoveBookmarkModal({
   isTestingMultipleBookmarks,
@@ -24,17 +22,17 @@ export default function RemoveBookmarkModal({
   const [showOtherForm, setShowOtherForm] = useState(false);
   const [otherFeedback, setOtherFeedback] = useState("");
   const [hasMultipleBookmarks, setHasMultipleBookmarks] = useState(false);
-  const [exerciseBookmarkForFeedback, setExerciseBookmarkForFeedback] =
+  const [exerciseBookmarkIdForFeedback, setExerciseBookmarkIdForFeedback] =
     useState(null);
 
   useEffect(() => {
     if (exerciseBookmarks) {
       if (exerciseBookmarks.length > 1 && isTestingMultipleBookmarks) {
         setHasMultipleBookmarks(true);
-        setExerciseBookmarkForFeedback(null);
+        setExerciseBookmarkIdForFeedback(null);
       } else {
         setHasMultipleBookmarks(false);
-        setExerciseBookmarkForFeedback(exerciseBookmarks[0]);
+        setExerciseBookmarkIdForFeedback(exerciseBookmarks[0].id);
       }
     }
   }, [exerciseBookmarks, isTestingMultipleBookmarks]);
@@ -49,10 +47,13 @@ export default function RemoveBookmarkModal({
 
   function handleSubmit(e, reason) {
     e.preventDefault();
+    let bookmarkToProvideFeedback = exerciseBookmarks.filter(
+      (b) => b.id === exerciseBookmarkIdForFeedback,
+    )[0];
     toast.success(
-      `Bookmark ${exerciseBookmarkForFeedback.from} removed successfully ${reason}`,
+      `Bookmark ${bookmarkToProvideFeedback.from} removed successfully ${reason}`,
     );
-    uploadUserFeedback(reason, exerciseBookmarkForFeedback.id);
+    uploadUserFeedback(reason, bookmarkToProvideFeedback.id);
     setOpen(!open);
     setHasProvidedQuickFeedback(true);
   }
@@ -70,18 +71,18 @@ export default function RemoveBookmarkModal({
       <Main>
         {hasMultipleBookmarks && (
           <MatchBookmarkSelection
-            bookmarkSelected={exerciseBookmarkForFeedback}
+            bookmarkSelected={exerciseBookmarkIdForFeedback}
             exerciseBookmarks={exerciseBookmarks}
-            setExerciseBookmarkForFeedback={setExerciseBookmarkForFeedback}
+            setExerciseBookmarkForFeedback={setExerciseBookmarkIdForFeedback}
           ></MatchBookmarkSelection>
         )}
         {(!hasMultipleBookmarks ||
-          (hasMultipleBookmarks && exerciseBookmarkForFeedback !== null)) && (
+          (hasMultipleBookmarks && exerciseBookmarkIdForFeedback !== null)) && (
           <>
-            {exerciseBookmarkForFeedback && (
+            {exerciseBookmarkIdForFeedback && (
               <p>
                 Why don't you want to see '
-                <b>{exerciseBookmarkForFeedback.from}</b>'?
+                <b>{exerciseBookmarkIdForFeedback.from}</b>'?
               </p>
             )}
 
