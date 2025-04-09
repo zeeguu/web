@@ -38,8 +38,7 @@ export default function VideoPlayer() {
   const [hasStartedPlaying, setHasStartedPlaying] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [translatedWords, setTranslatedWords] = useState(new Map());
-  const [currentInteractiveCaption, setCurrentInteractiveCaption] =
-    useState(null);
+  const [currentInteractiveCaption, setCurrentInteractiveCaption] = useState(null);
 
   useEffect(() => {
     onCreate();
@@ -90,17 +89,11 @@ export default function VideoPlayer() {
 
       const currentTime = player.getCurrentTime();
       const captionMatch = videoInfo.captions.find(
-        (caption) =>
-          currentTime >= caption.time_start && currentTime <= caption.time_end,
+        (caption) => currentTime >= caption.time_start && currentTime <= caption.time_end,
       );
 
-      if (
-        captionMatch &&
-        captionMatch.context_identifier.video_caption_id !==
-          lastCaptionIdRef.current
-      ) {
-        lastCaptionIdRef.current =
-          captionMatch.context_identifier.video_caption_id;
+      if (captionMatch && captionMatch.context_identifier.video_caption_id !== lastCaptionIdRef.current) {
+        lastCaptionIdRef.current = captionMatch.context_identifier.video_caption_id;
         setCurrentInteractiveCaption(
           new InteractiveText(
             captionMatch.tokenized_text,
@@ -127,11 +120,7 @@ export default function VideoPlayer() {
   // Spacebar Play/Pause Event
   useEffect(() => {
     const handleSpacePressed = (event) => {
-      if (
-        event.code === "Space" &&
-        player &&
-        document.activeElement.tagName !== "IFRAME"
-      ) {
+      if (event.code === "Space" && player && document.activeElement.tagName !== "IFRAME") {
         event.preventDefault();
         const playerState = player.getPlayerState();
         playerState === 1 ? player.pauseVideo() : player.playVideo();
@@ -170,17 +159,9 @@ export default function VideoPlayer() {
   }
 
   return (
-    <MainContainer
-      ref={containerRef}
-      className={isFullscreen ? "fullscreen" : ""}
-    >
+    <MainContainer ref={containerRef} className={isFullscreen ? "fullscreen" : ""}>
       <VideoContainer>
-        <YouTube
-          videoId={videoInfo.video_unique_key}
-          opts={opts}
-          onReady={onReady}
-          onStateChange={onStateChange}
-        />
+        <YouTube videoId={videoInfo.video_unique_key} opts={opts} onReady={onReady} onStateChange={onStateChange} />
         <FullscreenButton onClick={toggleFullscreen}>
           {isFullscreen ? (
             <>
@@ -202,9 +183,7 @@ export default function VideoPlayer() {
 
       <CaptionContainer>
         {!hasStartedPlaying ? (
-          <p style={{ fontStyle: "italic", color: "gray" }}>
-            Start the video to see captions.
-          </p>
+          <p style={{ fontStyle: "italic", color: "gray" }}>Start the video to see captions.</p>
         ) : currentInteractiveCaption ? (
           <TranslatableText
             interactiveText={currentInteractiveCaption}
