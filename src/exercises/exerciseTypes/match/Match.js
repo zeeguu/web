@@ -5,9 +5,7 @@ import shuffle from "../../../assorted/fisherYatesShuffle";
 import { EXERCISE_TYPES } from "../../ExerciseTypeConstants.js";
 import BookmarkProgressBar from "../../progressBars/BookmarkProgressBar.js";
 import { SpeechContext } from "../../../contexts/SpeechContext.js";
-import NextNavigation from "../NextNavigation";
 import MatchInput from "./MatchInput.js";
-import useSubSessionTimer from "../../../hooks/useSubSessionTimer.js";
 import { toast } from "react-toastify";
 import isBookmarkExpression from "../../../utils/misc/isBookmarkExpression.js";
 import useBookmarkAutoPronounce from "../../../hooks/useBookmarkAutoPronounce.js";
@@ -23,14 +21,13 @@ export default function Match({
   notifyCorrectAnswer,
   notifyIncorrectAnswer,
   setExerciseType,
-  isCorrect,
-  setIsCorrect,
-  moveToNextExercise,
-  toggleShow,
+  isExerciseOver,
+  notifyExerciseCompleted,
+  setSelectedExerciseBookmark,
+  setIsExerciseOver,
   reload,
   setReload,
-  exerciseSessionId,
-  activeSessionDuration,
+  resetSubSessionTimer,
 }) {
   const api = useContext(APIContext);
   // ML: TODO: this duplicates a bit the information in bookmarksToStudy
@@ -54,7 +51,6 @@ export default function Match({
     },
   ];
 
-  const [messageToNextNav, setMessageToNextNav] = useState("");
   const [firstPressTime, setFirstPressTime] = useState();
   const [exerciseAttemptsLog, setexerciseAttemptsLog] = useState(
     initialExerciseAttemptsLog,
@@ -63,9 +59,6 @@ export default function Match({
   const [toButtonOptions, setToButtonOptions] = useState(null);
   const [buttonsToDisable, setButtonsToDisable] = useState([]);
   const [incorrectAnswer, setIncorrectAnswer] = useState("");
-  const [getCurrentSubSessionDuration] = useSubSessionTimer(
-    activeSessionDuration,
-  );
   const [autoPronounceBookmark] = useBookmarkAutoPronounce();
   const [isPronouncing, setIsPronouncing] = useState(false);
   const [lastCorrectBookmarkId, setLastCorrectBookmarkId] = useState(null);
@@ -78,6 +71,7 @@ export default function Match({
     setFromButtonOptions(null);
     setToButtonOptions(null);
     setButtonOptions();
+    resetSubSessionTimer();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -94,14 +88,11 @@ export default function Match({
   }
 
   useEffect(() => {
-    for (let i = 0; i < bookmarksToStudy.length; i++) {
-      let currentBookmarkLog = exerciseAttemptsLog[i];
-      if (selectedBookmark === currentBookmarkLog.bookmark)
-        setSelectedBookmarkMessage(currentBookmarkLog.messageToAPI);
-    }
-
+    setSelectedExerciseBookmark(selectedBookmark);
     // eslint-disable-next-line
   }, [selectedBookmark]);
+
+  useEffect(() => {});
 
   function notifyBookmarkDeletion(bookmark) {
     let word_expression = "";
@@ -112,81 +103,42 @@ export default function Match({
 
   function notifyChoiceSelection(firstChoice, secondChoice) {
     let exerciseAttemptsLogCopy = [...exerciseAttemptsLog];
-    let fullMessage = messageToNextNav;
     for (let i = 0; i < bookmarksToStudy.length; i++) {
       let currentBookmarkLog = exerciseAttemptsLogCopy[i];
       let concatMessage = "";
       if (currentBookmarkLog.bookmark.id === Number(firstChoice)) {
         if (firstChoice === secondChoice) {
           setButtonsToDisable((arr) => [...arr, firstChoice]);
-          concatMessage = currentBookmarkLog.messageToAPI + "C";
-          fullMessage = fullMessage + concatMessage;
-          exerciseAttemptsLogCopy[i].messageToAPI = concatMessage;
           handleSpeak(exerciseAttemptsLogCopy[i].bookmark);
-
           setLastCorrectBookmarkId(currentBookmarkLog.bookmark.id);
           if (buttonsToDisable.length === 2) {
-            setIsCorrect(true);
+            setIsExerciseOver(true);
             exerciseAttemptsLogCopy[i].isLast = true;
             break;
           } else {
-            notifyCorrectAnswer(currentBookmarkLog.bookmark);
-            handleAnswer(concatMessage, currentBookmarkLog.bookmark.id);
+            notifyCorrectAnswer(currentBookmarkLog.bookmark, false);
+            notifyExerciseCompleted(
+              concatMessage,
+              currentBookmarkLog.bookmark,
+              false,
+            );
           }
           setexerciseAttemptsLog(exerciseAttemptsLogCopy);
         } else {
           setIncorrectAnswer(secondChoice);
           notifyIncorrectAnswer(currentBookmarkLog.bookmark);
-          concatMessage = currentBookmarkLog.messageToAPI + "W";
-          fullMessage = fullMessage + concatMessage;
-          exerciseAttemptsLogCopy[i].messageToAPI = concatMessage;
           setexerciseAttemptsLog(exerciseAttemptsLogCopy);
         }
       } else if (currentBookmarkLog.bookmark.id === Number(secondChoice)) {
         if (firstChoice !== secondChoice) {
           setIncorrectAnswer(secondChoice);
           notifyIncorrectAnswer(currentBookmarkLog.bookmark);
-          concatMessage = currentBookmarkLog.messageToAPI + "W";
-          fullMessage = fullMessage + concatMessage;
-          exerciseAttemptsLogCopy[i].messageToAPI = concatMessage;
           setexerciseAttemptsLog(exerciseAttemptsLogCopy);
         }
       }
       if (selectedBookmark === currentBookmarkLog.bookmark)
         setSelectedBookmarkMessage(concatMessage);
     }
-    setMessageToNextNav(fullMessage);
-  }
-
-  function handleShowSolution() {
-    setSelectedBookmark();
-    let finalMessage = "";
-    for (let i = 0; i < bookmarksToStudy.length; i++) {
-      if (!exerciseAttemptsLog[i].messageToAPI.includes("C")) {
-        notifyIncorrectAnswer(exerciseAttemptsLog[i].bookmark);
-        let concatMessage = exerciseAttemptsLog[i].messageToAPI + "S";
-        finalMessage += concatMessage;
-        api.uploadExerciseFinalizedData(
-          concatMessage,
-          EXERCISE_TYPE,
-          getCurrentSubSessionDuration(activeSessionDuration, "ms"),
-          exerciseAttemptsLog[i].bookmark.id,
-          exerciseSessionId,
-        );
-      }
-    }
-    setIsCorrect(true);
-    setMessageToNextNav(finalMessage);
-  }
-
-  function handleAnswer(message, id) {
-    api.uploadExerciseFinalizedData(
-      message,
-      EXERCISE_TYPE,
-      getCurrentSubSessionDuration(activeSessionDuration, "ms"),
-      id,
-      exerciseSessionId,
-    );
   }
 
   function setButtonOptions() {
@@ -218,7 +170,8 @@ export default function Match({
         notifyChoiceSelection={notifyChoiceSelection}
         inputFirstClick={inputFirstClick}
         buttonsToDisable={buttonsToDisable}
-        isCorrect={isCorrect}
+        isExerciseOver={isExerciseOver}
+        api={api}
         incorrectAnswer={incorrectAnswer}
         setIncorrectAnswer={setIncorrectAnswer}
         reload={reload}
@@ -227,18 +180,6 @@ export default function Match({
         notifyBookmarkDeletion={notifyBookmarkDeletion}
         isPronouncing={isPronouncing}
         lastCorrectBookmarkId={lastCorrectBookmarkId}
-      />
-      <NextNavigation
-        message={messageToNextNav}
-        exerciseBookmark={bookmarksToStudy[0]}
-        exerciseAttemptsLog={exerciseAttemptsLog}
-        moveToNextExercise={moveToNextExercise}
-        reload={reload}
-        setReload={setReload}
-        handleShowSolution={handleShowSolution}
-        toggleShow={toggleShow}
-        isCorrect={isCorrect}
-        exerciseType={EXERCISE_TYPE}
       />
     </s.Exercise>
   );

@@ -1,13 +1,11 @@
 import { useState, useEffect, useContext } from "react";
 import * as s from "../Exercise.sc.js";
 import BottomInput from "../BottomInput.js";
-import NextNavigation from "../NextNavigation.js";
 import LoadingAnimation from "../../../components/LoadingAnimation.js";
 import InteractiveText from "../../../reader/InteractiveText.js";
 import { TranslatableText } from "../../../reader/TranslatableText.js";
 import { tokenize } from "../../../utils/text/preprocessing.js";
 import { SpeechContext } from "../../../contexts/SpeechContext.js";
-import useSubSessionTimer from "../../../hooks/useSubSessionTimer.js";
 import BookmarkProgressBar from "../../progressBars/BookmarkProgressBar.js";
 import { removePunctuation } from "../../../utils/text/preprocessing.js";
 import { APIContext } from "../../../contexts/APIContext.js";
@@ -19,32 +17,34 @@ export default function WordInContextExercise({
   exerciseType,
   exerciseHeadline,
   showBottomInput,
+  notifyExerciseCompleted,
+  notifyShowSolution,
+  reload,
   bookmarksToStudy,
   notifyCorrectAnswer,
   notifyIncorrectAnswer,
   setExerciseType,
   isCorrect,
+  isExerciseOver,
   setIsCorrect,
-  moveToNextExercise,
-  toggleShow,
-  reload,
-  setReload,
-  exerciseSessionId,
-  activeSessionDuration,
+  resetSubSessionTimer,
+  exerciseMessageToAPI,
+  appendToExerciseMessageToAPI,
 }) {
   const api = useContext(APIContext);
-  const [messageToAPI, setMessageToAPI] = useState("");
   const [interactiveText, setInteractiveText] = useState();
   const [translatedWords, setTranslatedWords] = useState([]);
   const speech = useContext(SpeechContext);
-  const [getCurrentSubSessionDuration] = useSubSessionTimer(
-    activeSessionDuration,
-  );
-  const [isBookmarkChanged, setIsBookmarkChanged] = useState(false);
+
   const exerciseBookmark = bookmarksToStudy[0];
 
   useEffect(() => {
+    resetSubSessionTimer();
     setExerciseType(exerciseType);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
     setInteractiveText(
       new InteractiveText(
         exerciseBookmark.context_tokenized,
@@ -60,7 +60,7 @@ export default function WordInContextExercise({
     );
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isBookmarkChanged]);
+  }, [exerciseBookmark, reload]);
 
   useEffect(() => {
     checkTranslations(translatedWords);
@@ -83,7 +83,6 @@ export default function WordInContextExercise({
     if (userTranslatedSequences.length === 0) {
       return;
     }
-
     let solutionDiscovered = false;
     let solutionSplitIntoWords = tokenize(exerciseBookmark.from);
 
@@ -103,61 +102,21 @@ export default function WordInContextExercise({
     if (solutionDiscovered && !isCorrect) {
       // Check how many translations were made
       let translationCount = 0;
-      for (let i = 0; i < messageToAPI.length; i++) {
-        if (messageToAPI[i] === "T") translationCount++;
+      for (let i = 0; i < exerciseMessageToAPI.length; i++) {
+        if (exerciseMessageToAPI[i] === "T") translationCount++;
       }
       if (translationCount < 2) {
-        let concatMessage = messageToAPI + "C";
-        handleCorrectAnswer(concatMessage);
+        notifyCorrectAnswer(exerciseBookmark);
       } else {
-        let concatMessage = messageToAPI + "S";
-        handleShowSolution(undefined, concatMessage);
+        notifyShowSolution();
       }
     } else {
-      setMessageToAPI(messageToAPI + "T");
+      appendToExerciseMessageToAPI("T");
     }
-  }
-
-  function handleShowSolution(e, message) {
-    if (e) {
-      e.preventDefault();
-    }
-    let concatMessage;
-
-    if (!message) {
-      concatMessage = messageToAPI + "S";
-    } else {
-      concatMessage = message;
-    }
-    setMessageToAPI(concatMessage);
-    notifyIncorrectAnswer(exerciseBookmark);
-    setIsCorrect(true);
-    console.log(activeSessionDuration);
-    api.uploadExerciseFinalizedData(
-      concatMessage,
-      exerciseType,
-      getCurrentSubSessionDuration(activeSessionDuration, "ms"),
-      exerciseBookmark.id,
-      exerciseSessionId,
-    );
-  }
-
-  function handleCorrectAnswer(message) {
-    setMessageToAPI(message);
-    notifyCorrectAnswer(exerciseBookmark);
-    setIsCorrect(true);
-    api.uploadExerciseFinalizedData(
-      message,
-      exerciseType,
-      getCurrentSubSessionDuration(activeSessionDuration, "ms"),
-      exerciseBookmark.id,
-      exerciseSessionId,
-    );
   }
 
   function handleIncorrectAnswer() {
     //alert("incorrect answer")
-    setMessageToAPI(messageToAPI + "W");
     notifyIncorrectAnswer(exerciseBookmark);
   }
 
@@ -168,13 +127,16 @@ export default function WordInContextExercise({
   return (
     <s.Exercise className={exerciseType}>
       <div className="headlineWithMoreSpace">{exerciseHeadline}</div>
-      <BookmarkProgressBar bookmark={exerciseBookmark} message={messageToAPI} />
+      <BookmarkProgressBar
+        bookmark={exerciseBookmark}
+        message={exerciseMessageToAPI}
+      />
       <h1 className="wordInContextHeadline">
         {removePunctuation(exerciseBookmark.to)}
       </h1>
       <div className="contextExample">
         <TranslatableText
-          isCorrect={isCorrect}
+          isExerciseOver={isExerciseOver}
           interactiveText={interactiveText}
           translating={true}
           pronouncing={false}
@@ -185,27 +147,17 @@ export default function WordInContextExercise({
           rightEllipsis={exerciseBookmark.right_ellipsis}
         />
       </div>
-      {showBottomInput && !isCorrect && (
+      {showBottomInput && !isExerciseOver && (
         <BottomInput
-          handleCorrectAnswer={handleCorrectAnswer}
+          handleCorrectAnswer={notifyCorrectAnswer}
           handleIncorrectAnswer={handleIncorrectAnswer}
-          bookmarksToStudy={bookmarksToStudy}
-          messageToAPI={messageToAPI}
-          setMessageToAPI={setMessageToAPI}
+          handleExerciseCompleted={notifyExerciseCompleted}
+          setIsCorrect={setIsCorrect}
+          exerciseBookmark={exerciseBookmark}
+          messageToAPI={exerciseMessageToAPI}
+          appendToExerciseMessageToAPI={appendToExerciseMessageToAPI}
         />
       )}
-      <NextNavigation
-        exerciseType={exerciseType}
-        message={messageToAPI}
-        exerciseBookmark={exerciseBookmark}
-        moveToNextExercise={moveToNextExercise}
-        reload={reload}
-        setReload={setReload}
-        handleShowSolution={(e) => handleShowSolution(e, undefined)}
-        toggleShow={toggleShow}
-        isCorrect={isCorrect}
-        isBookmarkChanged={() => setIsBookmarkChanged(!isBookmarkChanged)}
-      />
     </s.Exercise>
   );
 }

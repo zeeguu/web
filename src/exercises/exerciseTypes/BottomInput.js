@@ -9,6 +9,7 @@ import {
   getExpressionlength,
   countCommonWords,
 } from "../../utils/text/expressions";
+import { HINT, WRONG } from "../ExerciseConstants";
 
 function getFlagImageUrl(languageCode) {
   return `/static/flags/${languageCode}.png`;
@@ -17,11 +18,11 @@ function getFlagImageUrl(languageCode) {
 export default function BottomInput({
   handleCorrectAnswer,
   handleIncorrectAnswer,
-  bookmarksToStudy,
-  messageToAPI,
-  setMessageToAPI,
+  handleExerciseCompleted,
+  setIsCorrect,
+  exerciseBookmark,
+  appendToExerciseMessageToAPI,
   isL1Answer,
-  exerciseType,
 }) {
   const [currentInput, setCurrentInput] = useState("");
   const [isIncorrect, setIsIncorrect] = useState(false);
@@ -33,12 +34,9 @@ export default function BottomInput({
   const [correctWordCountInInput, setCorrectWordCountInInput] = useState(0);
   const [feedbackMessage, setFeedbackMessage] = useState("");
   const levenshtein = require("fast-levenshtein");
+  const normalizedLearningWord = normalizeAnswer(exerciseBookmark.from);
 
-  const normalizedLearningWord = normalizeAnswer(bookmarksToStudy[0].from);
-
-  const solutionText = isL1Answer
-    ? bookmarksToStudy[0].to
-    : bookmarksToStudy[0].from;
+  const solutionText = isL1Answer ? exerciseBookmark.to : exerciseBookmark.from;
 
   const solutionWordCount = getExpressionlength(solutionText);
   const isWrongOrder =
@@ -48,8 +46,8 @@ export default function BottomInput({
     correctWordCountInInput >= 1 && solutionWordCount > 1 && isIncorrect;
 
   const answerLanguageCode = isL1Answer
-    ? bookmarksToStudy[0].to_lang
-    : bookmarksToStudy[0].from_lang;
+    ? exerciseBookmark.to_lang
+    : exerciseBookmark.from_lang;
 
   const inputLanguageName = LANGUAGE_CODE_TO_NAME[answerLanguageCode];
 
@@ -67,7 +65,7 @@ export default function BottomInput({
       hint = solutionText.substring(0, 1);
     }
     setCurrentInput(hint);
-    setMessageToAPI(messageToAPI + "H");
+    appendToExerciseMessageToAPI(HINT);
   }
 
   // Update the feedback message
@@ -131,7 +129,8 @@ export default function BottomInput({
     let userHasTypoInNativeLanguage = isL1Answer && levDistance === 1;
     if (normalizedInput === normalizedAnswer || userHasTypoInNativeLanguage) {
       //this allows for a typo in the native language
-      handleCorrectAnswer(messageToAPI + "C");
+      handleCorrectAnswer(exerciseBookmark);
+      setIsCorrect(true);
       setIsIncorrect(false);
       return;
     }
@@ -152,19 +151,19 @@ export default function BottomInput({
     if (userUsedWrongLang) {
       // If the user writes in the wrong language
       // we give them a Hint, mainly for audio exercises.
-      updatedMessageToAPI = messageToAPI + "H";
+      updatedMessageToAPI = HINT;
       setDistanceToCorrect();
     } else if (totalWordsCorrect >= 1 && solutionWordCount > 1) {
-      updatedMessageToAPI = messageToAPI + "H";
+      updatedMessageToAPI = HINT;
     } else if (levDistance === 1) {
       // The user almost got it correct
       // we associate it with a H
-      updatedMessageToAPI = messageToAPI + "H";
+      updatedMessageToAPI = HINT;
     } else {
-      updatedMessageToAPI = messageToAPI + "W";
+      updatedMessageToAPI = WRONG;
       handleIncorrectAnswer();
     }
-    setMessageToAPI(updatedMessageToAPI);
+    appendToExerciseMessageToAPI(updatedMessageToAPI);
     setIsIncorrect(true);
   }
 

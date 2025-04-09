@@ -4,7 +4,7 @@ import * as s from "./TranslatableText.sc";
 import { removePunctuation } from "../utils/text/preprocessing";
 
 export function TranslatableText({
-  isCorrect,
+  isExerciseOver,
   interactiveText,
   translating,
   pronouncing,
@@ -14,7 +14,6 @@ export function TranslatableText({
   overrideBookmarkHighlightText,
   setIsRendered,
   boldExpression,
-  exerciseType,
   updateBookmarks,
   leftEllipsis,
   rightEllipsis,
@@ -56,7 +55,7 @@ export function TranslatableText({
     translationCount,
     translating,
     pronouncing,
-    isCorrect,
+    isExerciseOver,
     bookmarkToStudy,
     rightEllipsis,
     leftEllipsis,
@@ -110,7 +109,7 @@ export function TranslatableText({
       : [];
     const isWordBold = boldWords.includes(removePunctuation(word.word));
 
-    if (isCorrect) {
+    if (isExerciseOver) {
       if (word.id === firstWordID && overrideBookmarkHighlightText) {
         // In case we want to override the highlighted bookmark
         // with another string. Used in the OrderWords.

@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import { OrangeButton } from "./Exercise.sc.js";
+import { blue900 } from "../../components/colors.js";
 
 let SpeakerImage = styled.div`
   &.small {
@@ -24,7 +25,9 @@ let SpeakButton = styled(OrangeButton)`
   width: fit-content;
   outline: none;
   padding: 5px;
-
+  &:selected {
+    background-color: ${blue900};
+  }
   &:disabled {
     cursor: default;
     text-decoration: line-through;

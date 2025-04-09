@@ -95,7 +95,7 @@ export default function FeedbackButtons({
   }
 
   return (
-    <>
+    <s.FeedbackButtonsHolder>
       {show && currentExerciseType === EXERCISE_TYPES.match && (
         <>
           <s.FeedbackInstruction>{strings.selectWords}</s.FeedbackInstruction>
@@ -116,7 +116,7 @@ export default function FeedbackButtons({
         </>
       )}
       {show && (
-        <s.FeedbackButtonsHolder>
+        <>
           {buttons.map((each) =>
             each.value === "other" ? (
               <Tooltip
@@ -147,7 +147,7 @@ export default function FeedbackButtons({
               </Tooltip>
             ),
           )}
-        </s.FeedbackButtonsHolder>
+        </>
       )}
       {show && showInput && (
         <s.FeedbackForm onSubmit={handleSubmit}>
@@ -162,6 +162,6 @@ export default function FeedbackButtons({
           <s.FeedbackSubmit type="submit" value="Submit" />
         </s.FeedbackForm>
       )}
-    </>
+    </s.FeedbackButtonsHolder>
   );
 }

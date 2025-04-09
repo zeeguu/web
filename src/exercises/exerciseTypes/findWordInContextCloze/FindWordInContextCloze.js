@@ -2,12 +2,10 @@ import { useState, useEffect, useContext } from "react";
 import * as s from "../Exercise.sc.js";
 
 import strings from "../../../i18n/definitions.js";
-import NextNavigation from "../NextNavigation.js";
 import LoadingAnimation from "../../../components/LoadingAnimation.js";
 import InteractiveText from "../../../reader/InteractiveText.js";
 import { TranslatableText } from "../../../reader/TranslatableText.js";
 import { SpeechContext } from "../../../contexts/SpeechContext.js";
-import useSubSessionTimer from "../../../hooks/useSubSessionTimer.js";
 import BottomInput from "../BottomInput.js";
 import { EXERCISE_TYPES } from "../../ExerciseTypeConstants.js";
 import BookmarkProgressBar from "../../progressBars/BookmarkProgressBar.js";
@@ -22,25 +20,18 @@ const EXERCISE_TYPE = EXERCISE_TYPES.findWordInContextCloze;
 export default function FindWordInContextCloze({
   bookmarksToStudy,
   notifyCorrectAnswer,
+  notifyExerciseCompleted,
   notifyIncorrectAnswer,
   setExerciseType,
-  isCorrect,
+  isExerciseOver,
   setIsCorrect,
-  moveToNextExercise,
-  toggleShow,
+  exerciseMessageToAPI,
+  appendToExerciseMessageToAPI,
   reload,
-  setReload,
-  exerciseSessionId,
-  activeSessionDuration,
 }) {
   const api = useContext(APIContext);
-  const [messageToAPI, setMessageToAPI] = useState("");
   const [interactiveText, setInteractiveText] = useState();
   const speech = useContext(SpeechContext);
-  const [getCurrentSubSessionDuration] = useSubSessionTimer(
-    activeSessionDuration,
-  );
-  const [isBookmarkChanged, setIsBookmarkChanged] = useState(false);
   const exerciseBookmark = bookmarksToStudy[0];
 
   useEffect(() => {
@@ -59,49 +50,14 @@ export default function FindWordInContextCloze({
       ),
     );
     // eslint-disable-next-line
-  }, [isBookmarkChanged, exerciseBookmark]);
-
-  function handleShowSolution(e, message) {
-    e.preventDefault();
-    let concatMessage;
-    if (!message) {
-      concatMessage = messageToAPI + "S";
-    } else {
-      concatMessage = message;
-    }
-
-    notifyIncorrectAnswer(exerciseBookmark);
-    setIsCorrect(true);
-    setMessageToAPI(concatMessage);
-    api.uploadExerciseFinalizedData(
-      concatMessage,
-      EXERCISE_TYPE,
-      getCurrentSubSessionDuration(activeSessionDuration, "ms"),
-      exerciseBookmark.id,
-      exerciseSessionId,
-    );
-  }
-
-  function handleCorrectAnswer(message) {
-    setMessageToAPI(message);
-    notifyCorrectAnswer(exerciseBookmark);
-    setIsCorrect(true);
-    api.uploadExerciseFinalizedData(
-      message,
-      EXERCISE_TYPE,
-      getCurrentSubSessionDuration(activeSessionDuration, "ms"),
-      exerciseBookmark.id,
-      exerciseSessionId,
-    );
-  }
-
-  function handleIncorrectAnswer() {
-    setMessageToAPI(messageToAPI + "W");
-    notifyIncorrectAnswer(exerciseBookmark);
-  }
+  }, [reload, exerciseBookmark]);
 
   if (!interactiveText) {
     return <LoadingAnimation />;
+  }
+
+  function handleIncorrectAnswer() {
+    notifyIncorrectAnswer(exerciseBookmark);
   }
 
   return (
@@ -109,13 +65,16 @@ export default function FindWordInContextCloze({
       <div className="headlineWithMoreSpace">
         {strings.findWordInContextClozeHeadline}
       </div>
-      <BookmarkProgressBar bookmark={exerciseBookmark} message={messageToAPI} />
+      <BookmarkProgressBar
+        bookmark={exerciseBookmark}
+        message={exerciseMessageToAPI}
+      />
       <h1 className="wordInContextHeadline">
         {removePunctuation(exerciseBookmark.to)}
       </h1>
       <div className="contextExample">
         <TranslatableText
-          isCorrect={isCorrect}
+          isExerciseOver={isExerciseOver}
           interactiveText={interactiveText}
           translating={true}
           pronouncing={false}
@@ -125,30 +84,19 @@ export default function FindWordInContextCloze({
         />
       </div>
 
-      {!isCorrect && (
+      {!isExerciseOver && (
         <>
           <BottomInput
-            handleCorrectAnswer={handleCorrectAnswer}
+            handleCorrectAnswer={notifyCorrectAnswer}
             handleIncorrectAnswer={handleIncorrectAnswer}
-            bookmarksToStudy={bookmarksToStudy}
-            messageToAPI={messageToAPI}
-            setMessageToAPI={setMessageToAPI}
+            handleExerciseCompleted={notifyExerciseCompleted}
+            setIsCorrect={setIsCorrect}
+            exerciseBookmark={exerciseBookmark}
+            messageToAPI={exerciseMessageToAPI}
+            setMessageToAPI={appendToExerciseMessageToAPI}
           />
         </>
       )}
-
-      <NextNavigation
-        message={messageToAPI}
-        exerciseType={EXERCISE_TYPE}
-        exerciseBookmark={exerciseBookmark}
-        moveToNextExercise={moveToNextExercise}
-        reload={reload}
-        setReload={setReload}
-        handleShowSolution={(e) => handleShowSolution(e, undefined)}
-        toggleShow={toggleShow}
-        isCorrect={isCorrect}
-        isBookmarkChanged={() => setIsBookmarkChanged(!isBookmarkChanged)}
-      />
     </s.Exercise>
   );
 }

@@ -5,20 +5,26 @@ const ExercisesColumn = styled.div`
   max-width: 600px;
   margin-left: auto;
   margin-right: auto;
-  margin-top: 2em;
+  padding-top: 2rem;
   display: flex;
   flex-direction: column;
+  height: 95%;
+  @media (max-width: 700px) {
+    padding-top: 0.5rem;
+  }
 `;
 
 const ExForm = styled.div`
-  background-color: rgba(241, 240, 240, 0.274);
-  min-height: 300px;
-
+  display: flex;
+  flex-direction: column;
   border-radius: 10px;
-  overflow: hidden;
   transition: all 0.5s;
   width: 100%;
-  padding-bottom: 2rem;
+  margin: 1rem auto;
+  margin-top: 0px;
+  background-color: rgba(241, 240, 240, 0.274);
+  min-height: 400px;
+  padding-bottom: 1rem;
 
   box-sizing: border-box; // to ensure that padding does not expand width!
   justify-content: center;
@@ -33,6 +39,47 @@ const ExForm = styled.div`
 
   input {
     font-size: large;
+  }
+  .next-nav-feedback {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    margin-top: 1.5em;
+
+    img {
+      width: 60px;
+      mix-blend-mode: multiply;
+      height: auto;
+    }
+    p {
+      margin-left: 1em;
+    }
+  }
+
+  .next-nav-learning-cycle {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    margin-top: 1.5em;
+    margin-left: auto;
+    margin-right: auto;
+    border: 0.125em solid #99e47f;
+    border-radius: 0.5em;
+    background-color: #f1f7f2;
+    width: 70%;
+
+    img {
+      width: 60px;
+      mix-blend-mode: multiply;
+      height: auto;
+      margin: 0.5em;
+    }
+    p {
+      margin-left: 1em;
+      margin-right: 1em;
+    }
   }
 `;
 

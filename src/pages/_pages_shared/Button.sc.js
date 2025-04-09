@@ -3,6 +3,9 @@ import {
   almostBlack,
   lightGrey,
   veryLightGrey,
+  blue600,
+  blue700,
+  blue800,
   zeeguuDarkOrange,
   zeeguuOrange,
   zeeguuRed,
@@ -93,6 +96,18 @@ const Button = styled.button`
   &.small-border-btn {
     font-size: 1rem;
     padding: 0.4rem 1.4rem;
+  }
+
+  &.blue-btn {
+    background-color: ${blue700};
+    box-shadow: 0px 0.2rem ${blue800};
+  }
+
+  &.blue-outline-btn {
+    color: ${blue600};
+    background-color: white;
+    border: solid ${blue600} 0.2em;
+    box-shadow: 0px 0.2em ${blue700};
   }
 
   &.white-btn {

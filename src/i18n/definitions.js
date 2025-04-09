@@ -474,7 +474,8 @@ let strings = new LocalizedStrings(
       multipleChoiceContextHeadline: "Choose the context that fits the word",
 
       //FeedbackButtons
-      dontShowThisWordAgain: "Don't show this word again",
+      dontShowThisBookmarkAgain: "Don't show this bookmark again",
+      dontShowThisBookmarkMatchAgain: "Don't show one of these bookmark again",
       dontShowThisWordAgainAlert:
         "Please type your feedback before submitting.",
       giveFeedback: "Give Feedback",

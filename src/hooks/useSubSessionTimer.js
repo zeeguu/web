@@ -1,16 +1,15 @@
 import { useState } from "react";
 
-export default function useSubSessionTimer(activeSessionDuration) {
+export default function useSubSessionTimer(activeSessionDurationRef) {
   // active session duration is measured in seconds
   // The DB stored the exercise time in ms we need to convert it
   // to MS.
-  const [subSessionStart] = useState(activeSessionDuration);
+  const [subSessionStart, setSubSessionStart] = useState(
+    activeSessionDurationRef,
+  );
 
-  function getCurrentSubSessionDuration(
-    activeSessionDuration,
-    time_unit = "s",
-  ) {
-    let timeDiff = activeSessionDuration - subSessionStart;
+  function getCurrentSubSessionDuration(time_unit = "s") {
+    let timeDiff = activeSessionDurationRef - subSessionStart;
     switch (time_unit) {
       case "ms":
         return timeDiff * 1000;
@@ -20,5 +19,10 @@ export default function useSubSessionTimer(activeSessionDuration) {
     }
   }
 
-  return [getCurrentSubSessionDuration];
+  function resetSubSessionTimer() {
+    console.log("Resetting to: ", activeSessionDurationRef);
+    setSubSessionStart(activeSessionDurationRef);
+  }
+
+  return [getCurrentSubSessionDuration, resetSubSessionTimer];
 }

@@ -64,9 +64,10 @@ const styles = {
 export default function SpeakButton({
   bookmarkToStudy,
   styling,
-  handleClick,
+  isSelected,
   isReadContext,
   parentIsSpeakingControl,
+  onClickCallback,
 }) {
   const speech = useContext(SpeechContext);
   const [isSpeaking, setIsSpeaking] = useState(false);
@@ -90,85 +91,44 @@ export default function SpeakButton({
 
   return (
     <>
-      {handleClick !== undefined && (
-        <s.SpeakButton
-          disabled={isSpeaking}
-          onClick={() => {
-            !isSpeaking && handleSpeak();
-            handleClick();
-          }}
-        >
-          {isSpeaking && (
-            <Loader
-              type="Bars"
-              color="#ffffff"
-              width={style.loader_width}
-              height={style.loader_height}
-              style={{
-                paddingLeft: style.loader_paddingLeft,
-                paddingRight: style.loader_paddingRight,
-                marginTop: style.loader_marginTop,
-                marginLeft: style.loader_marginLeft,
-                marginBottom: style.loader_marginBottom,
-                display: "flex",
-                justifyContent: "center",
-              }}
-            />
-          )}
+      <s.SpeakButton
+        selected={isSelected}
+        disabled={isSpeaking}
+        onClick={() => {
+          !isSpeaking && handleSpeak();
+          onClickCallback();
+        }}
+      >
+        {isSpeaking && (
+          <Loader
+            type="Bars"
+            color="#ffffff"
+            width={style.loader_width}
+            height={style.loader_height}
+            style={{
+              paddingLeft: style.loader_paddingLeft,
+              paddingRight: style.loader_paddingRight,
+              marginTop: style.loader_marginTop,
+              marginBottom: style.loader_marginBottom,
+              display: "flex",
+              justifyContent: "center",
+            }}
+          />
+        )}
 
-          {!isSpeaking && (
-            <img
-              src={getStaticPath("images", "volume_up.svg")}
-              alt={strings.speak}
-              width={style.img_width}
-              height={style.img_height}
-              style={{
-                paddingLeft: style.img_paddingLeft,
-                paddingRight: style.img_paddingRight,
-              }}
-            />
-          )}
-        </s.SpeakButton>
-      )}
-
-      {handleClick === undefined && (
-        <s.SpeakButton
-          disabled={isSpeaking}
-          onClick={() => {
-            !isSpeaking && handleSpeak();
-          }}
-        >
-          {isSpeaking && (
-            <Loader
-              type="Bars"
-              color="#ffffff"
-              width={style.loader_width}
-              height={style.loader_height}
-              style={{
-                paddingLeft: style.loader_paddingLeft,
-                paddingRight: style.loader_paddingRight,
-                marginTop: style.loader_marginTop,
-                marginBottom: style.loader_marginBottom,
-                display: "flex",
-                justifyContent: "center",
-              }}
-            />
-          )}
-
-          {!isSpeaking && (
-            <img
-              src={getStaticPath("images", "volume_up.svg")}
-              alt={strings.speak}
-              width={style.img_width}
-              height={style.img_height}
-              style={{
-                paddingLeft: style.img_paddingLeft,
-                paddingRight: style.img_paddingRight,
-              }}
-            />
-          )}
-        </s.SpeakButton>
-      )}
+        {!isSpeaking && (
+          <img
+            src={getStaticPath("images", "volume_up.svg")}
+            alt={strings.speak}
+            width={style.img_width}
+            height={style.img_height}
+            style={{
+              paddingLeft: style.img_paddingLeft,
+              paddingRight: style.img_paddingRight,
+            }}
+          />
+        )}
+      </s.SpeakButton>
     </>
   );
 }

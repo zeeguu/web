@@ -5,6 +5,7 @@ import HelpIcon from "@mui/icons-material/Help";
 import { v4 as uuid } from "uuid";
 import strings from "../../../i18n/definitions";
 import * as s from "../../styledComponents/AttemptIcons.sc";
+import { HINT, SOLUTION, WRONG } from "../../../exercises/ExerciseConstants";
 
 const CorrectAttempt = () => {
   return (
@@ -67,11 +68,11 @@ const FeedbackGiven = (feedback) => {
 export const AttemptIcons = ({ attemptString }) => {
   const setIcon = (char) => {
     switch (char) {
-      case "W":
+      case WRONG:
         return <WrongAttempt key={char + uuid()} />;
-      case "H":
+      case HINT:
         return <HintUsed key={char + uuid()} />;
-      case "S":
+      case SOLUTION:
         return <SolutionShown key={char + uuid()} />;
       default:
         return <CorrectAttempt key={char + uuid()} />;
