@@ -78,36 +78,41 @@ export default function VideoPlayer() {
   // Update Caption Based on Video Time
   useEffect(() => {
     if (!hasStartedPlaying || !player) return; // Don't start interval if video hasn't started
-
+  
     const interval = setInterval(() => {
-        if (player.getPlayerState() !== 1) return; // Skip if not playing (1 is playing state)
-
-        const currentTime = player.getCurrentTime();
-        const captionMatch = videoInfo.captions.find(
-          (caption) => currentTime >= caption.time_start && currentTime <= caption.time_end
+      if (player.getPlayerState() !== 1) return; // Skip if not playing (1 is playing state)
+  
+      const currentTime = player.getCurrentTime();
+      const captionMatch = videoInfo.captions.find(
+        (caption) => currentTime >= caption.time_start && currentTime <= caption.time_end
+      );
+  
+      if (
+        captionMatch &&
+        captionMatch.context_identifier.video_caption_id !== lastCaptionIdRef.current
+      ) {
+        lastCaptionIdRef.current = captionMatch.context_identifier.video_caption_id;
+        setCurrentInteractiveCaption(
+          new InteractiveText(
+            captionMatch.tokenized_text,
+            videoInfo.source_id,
+            api,
+            [],
+            api.TRANSLATE_TEXT,
+            videoInfo.language_code,
+            "video",
+            speech,
+            captionMatch.context_identifier,
+          )
         );
-
-        if (captionMatch &&
-          captionMatch.context_identifier.video_caption_id !== lastCaptionIdRef.current
-        ) {
-          lastCaptionIdRef.current = captionMatch.context_identifier.video_caption_id;
-          setCurrentInteractiveCaption(
-            new InteractiveText(
-              captionMatch.tokenized_text,
-              videoInfo.source_id,
-              api,
-              [],
-              api.TRANSLATE_TEXT,
-              videoInfo.language_code,
-              "video",
-              speech,
-              captionMatch.context_identifier,
-            )
-          );
-        }
-      }, 250);
-
-      return () => clearInterval(interval);
+      } else if (!captionMatch && lastCaptionIdRef.current !== null) {
+        // No caption found, clear the current interactive caption
+        lastCaptionIdRef.current = null;
+        setCurrentInteractiveCaption(null);
+      }
+    }, 250);
+  
+    return () => clearInterval(interval);
   }, [player, hasStartedPlaying, videoInfo, api, speech]);
 
   // Spacebar Play/Pause Event
