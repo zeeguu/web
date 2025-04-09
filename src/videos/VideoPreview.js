@@ -10,11 +10,9 @@ import { darkBlue } from "../components/colors";
 import { useEffect } from "react";
 
 export default function VideoPreview({ video }) {
-  // Open the video in a new tab
+  // Redirect to the video page in the same window
   const handleTitleClick = () => {
-    const baseUrl = window.location.origin;
-    const videoUrl = `${baseUrl}/videos/watch?id=${video.id}`;
-    window.open(videoUrl, "_blank", "noopener,noreferrer");
+    window.location.href = `/watch/video?id=${video.id}`;
   };
 
   useEffect(() => {
@@ -24,10 +22,7 @@ export default function VideoPreview({ video }) {
     <s.VideoPreview>
       <s.TitleContainer>
         <s.Title>
-          <Link
-            to={`/watch/${video.video_unique_key}`}
-            onClick={handleTitleClick}
-          >
+          <Link to={`/watch/video?id=${video.id}`} onClick={handleTitleClick}>
             {video.title}
           </Link>
         </s.Title>
@@ -53,12 +48,7 @@ export default function VideoPreview({ video }) {
             <s.UrlTopics>
               {video.topics_list.map((tuple) => (
                 // Tuple (Topic Title, TopicOriginType)
-                <span
-                  key={tuple[0]}
-                  className={
-                    tuple[1] === TopicOriginType.INFERRED ? "inferred" : "gold"
-                  }
-                >
+                <span key={tuple[0]} className={tuple[1] === TopicOriginType.INFERRED ? "inferred" : "gold"}>
                   {tuple[0]}
                   {tuple[1] === TopicOriginType.INFERRED && (
                     <HighlightOffRounded

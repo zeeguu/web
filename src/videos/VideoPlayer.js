@@ -39,11 +39,15 @@ export default function VideoPlayer() {
   const [currentInteractiveCaption, setCurrentInteractiveCaption] = useState(null);
   const [interactiveTitle, setInteractiveTitle] = useState(null);
 
-  // Call onCreate immediately
-  onCreate();
+  // Call onCreate when the component mounts
+  useEffect(() => {
+    console.log("INITIATING VIDEO PLAYER FOR VIDEO ID: ", videoID);
+    onCreate();
+  }, []);
 
   function onCreate() {
     api.getVideoInfo(videoID, (video) => {
+      console.log("VIDEO INFO: ", video);
       setInteractiveTitle(
         new InteractiveText(
           video.tokenized_title.tokenized_title,
@@ -58,9 +62,8 @@ export default function VideoPlayer() {
         ),
       );
 
-      setVideoInfo(video);
-      console.log("VIDEO INFO: ", videoInfo);
-      setTitle(videoInfo.title);
+      setVideoInfo(video); // Note videoInfo cannot be accessed from here
+      setTitle(video.title);
     });
   }
 
