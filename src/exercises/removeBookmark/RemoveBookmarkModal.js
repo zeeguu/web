@@ -22,17 +22,17 @@ export default function RemoveBookmarkModal({
   const [showOtherForm, setShowOtherForm] = useState(false);
   const [otherFeedback, setOtherFeedback] = useState("");
   const [hasMultipleBookmarks, setHasMultipleBookmarks] = useState(false);
-  const [exerciseBookmarkIdForFeedback, setExerciseBookmarkIdForFeedback] =
+  const [exerciseBookmarkForFeedback, setExerciseBookmarkForFeedback] =
     useState(null);
 
   useEffect(() => {
     if (exerciseBookmarks) {
       if (exerciseBookmarks.length > 1 && isTestingMultipleBookmarks) {
         setHasMultipleBookmarks(true);
-        setExerciseBookmarkIdForFeedback(null);
+        setExerciseBookmarkForFeedback(null);
       } else {
         setHasMultipleBookmarks(false);
-        setExerciseBookmarkIdForFeedback(exerciseBookmarks[0].id);
+        setExerciseBookmarkForFeedback(exerciseBookmarks[0]);
       }
     }
   }, [exerciseBookmarks, isTestingMultipleBookmarks]);
@@ -47,13 +47,10 @@ export default function RemoveBookmarkModal({
 
   function handleSubmit(e, reason) {
     e.preventDefault();
-    let bookmarkToProvideFeedback = exerciseBookmarks.filter(
-      (b) => b.id === exerciseBookmarkIdForFeedback,
-    )[0];
     toast.success(
-      `Bookmark ${bookmarkToProvideFeedback.from} removed successfully ${reason}`,
+      `Bookmark ${exerciseBookmarkForFeedback.from} removed successfully ${reason}`,
     );
-    uploadUserFeedback(reason, bookmarkToProvideFeedback.id);
+    uploadUserFeedback(reason, exerciseBookmarkForFeedback.id);
     setOpen(!open);
     setHasProvidedQuickFeedback(true);
   }
@@ -71,18 +68,18 @@ export default function RemoveBookmarkModal({
       <Main>
         {hasMultipleBookmarks && (
           <MatchBookmarkSelection
-            bookmarkSelected={exerciseBookmarkIdForFeedback}
+            bookmarkSelected={exerciseBookmarkForFeedback}
             exerciseBookmarks={exerciseBookmarks}
-            setExerciseBookmarkForFeedback={setExerciseBookmarkIdForFeedback}
+            setExerciseBookmarkForFeedback={setExerciseBookmarkForFeedback}
           ></MatchBookmarkSelection>
         )}
         {(!hasMultipleBookmarks ||
-          (hasMultipleBookmarks && exerciseBookmarkIdForFeedback !== null)) && (
+          (hasMultipleBookmarks && exerciseBookmarkForFeedback !== null)) && (
           <>
-            {exerciseBookmarkIdForFeedback && (
+            {exerciseBookmarkForFeedback && (
               <p>
                 Why don't you want to see '
-                <b>{exerciseBookmarkIdForFeedback.from}</b>'?
+                <b>{exerciseBookmarkForFeedback.from}</b>'?
               </p>
             )}
 

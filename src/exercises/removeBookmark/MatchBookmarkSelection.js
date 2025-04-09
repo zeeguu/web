@@ -1,4 +1,4 @@
-import Button from "../../pages/_pages_shared/Button.sc";
+import SelectionButton from "../../pages/_pages_shared/SelectionButton.sc";
 import ButtonContainer from "../../components/modal_shared/ButtonContainer.sc";
 
 export default function MatchBookmarkSelection({
@@ -8,20 +8,19 @@ export default function MatchBookmarkSelection({
 }) {
   return (
     <>
-      <p>Which word would you like to remove?</p>
       <ButtonContainer style={{ flexWrap: "wrap", flexDirection: "row" }}>
         {exerciseBookmarks &&
           exerciseBookmarks.map((b) => (
-            <Button
+            <SelectionButton
               className={
-                b === bookmarkSelected
-                  ? "small-border-btn blue-btn"
-                  : "small-border-btn blue-outline-btn"
+                bookmarkSelected && b.id === bookmarkSelected.id
+                  ? "selected"
+                  : ""
               }
               onClick={() => setExerciseBookmarkForFeedback(b)}
             >
               {b.from}
-            </Button>
+            </SelectionButton>
           ))}
       </ButtonContainer>
     </>
