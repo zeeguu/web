@@ -1,5 +1,5 @@
 import styled, { css } from "styled-components";
-import { Link } from "react-router-dom/cjs/react-router-dom";
+import { Link } from "react-router-dom";
 import { orange600, orange700, orange800 } from "../colors";
 
 const ListItem = styled.li`

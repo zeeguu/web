@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom/cjs/react-router-dom";
+import { Link } from "react-router-dom";
 import useFormField from "../hooks/useFormField";
 import {
   EmailValidator,
@@ -16,7 +16,6 @@ import ResetPasswordStep1 from "./ResetPasswordStep1";
 import ResetPasswordStep2 from "./ResetPasswordStep2";
 
 import { setTitle } from "../assorted/setTitle";
-import { Link } from "react-router-dom/cjs/react-router-dom";
 
 export default function ResetPassword() {
   const [email, setEmail, validateEmail, isEmailValid, emailErrorMsg] =

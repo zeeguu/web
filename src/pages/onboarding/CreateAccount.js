@@ -1,5 +1,5 @@
 import { useState, useContext, useEffect } from "react";
-import { Link } from "react-router-dom/cjs/react-router-dom";
+import { Link } from "react-router-dom";
 import { useHistory } from "react-router-dom";
 import { scrollToTop } from "../../utils/misc/scrollToTop";
 import useFormField from "../../hooks/useFormField";

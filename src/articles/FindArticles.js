@@ -15,7 +15,7 @@ import UnfinishedArticlesList from "./UnfinishedArticleList";
 import { setTitle } from "../assorted/setTitle";
 import strings from "../i18n/definitions";
 import useShadowRef from "../hooks/useShadowRef";
-import { Link } from "react-router-dom/cjs/react-router-dom";
+import { Link } from "react-router-dom";
 
 export default function FindArticles({
   content,
@@ -173,14 +173,24 @@ export default function FindArticles({
           <div style={{ marginBottom: "1.5rem", padding: "0.5rem" }}>
             <span>
               You can customize your Home by{" "}
-              <Link to="/account_settings/interests?fromArticles=1">
+              <Link
+                className="bold underlined-link"
+                to="/account_settings/interests?fromArticles=1"
+              >
                 subscribing&nbsp;to&nbsp;topics
               </Link>
               ,{" "}
-              <Link to="/account_settings/excluded_keywords?fromArticles=1">
+              <Link
+                className="bold underlined-link"
+                to="/account_settings/excluded_keywords?fromArticles=1"
+              >
                 filtering&nbsp;keywords
               </Link>{" "}
-              or <Link to="/articles/mySearches">adding&nbsp;searches</Link>.
+              or{" "}
+              <Link className="bold underlined-link" to="/articles/mySearches">
+                adding&nbsp;searches
+              </Link>
+              .
             </span>
           </div>
 

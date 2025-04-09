@@ -16,7 +16,7 @@ import {
 } from "../utils/ValidatorRule/Validator";
 import { scrollToTop } from "../utils/misc/scrollToTop";
 import { APIContext } from "../contexts/APIContext";
-import { Link } from "react-router-dom/cjs/react-router-dom";
+import { Link } from "react-router-dom";
 
 export default function ResetPasswordStep2({ email }) {
   const api = useContext(APIContext);

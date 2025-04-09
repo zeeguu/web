@@ -1,5 +1,5 @@
 import styled, { css } from "styled-components";
-import { Link } from "react-router-dom/cjs/react-router-dom";
+import { Link } from "react-router-dom";
 import { MEDIUM_WIDTH, MOBILE_WIDTH } from "./screenSize";
 
 const NavOption = styled.li`
