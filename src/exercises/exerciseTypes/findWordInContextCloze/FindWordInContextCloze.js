@@ -93,7 +93,7 @@ export default function FindWordInContextCloze({
             setIsCorrect={setIsCorrect}
             exerciseBookmark={exerciseBookmark}
             messageToAPI={exerciseMessageToAPI}
-            setMessageToAPI={appendToExerciseMessageToAPI}
+            appendToExerciseMessageToAPI={appendToExerciseMessageToAPI}
           />
         </>
       )}

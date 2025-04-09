@@ -18,7 +18,6 @@ function getFlagImageUrl(languageCode) {
 export default function BottomInput({
   handleCorrectAnswer,
   handleIncorrectAnswer,
-  handleExerciseCompleted,
   setIsCorrect,
   exerciseBookmark,
   appendToExerciseMessageToAPI,

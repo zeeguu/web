@@ -122,7 +122,7 @@ export default function SpellWhatYouHear({
             setIsCorrect={setIsCorrect}
             exerciseBookmark={exerciseBookmark}
             messageToAPI={exerciseMessageToAPI}
-            setMessageToAPI={appendToExerciseMessageToAPI}
+            appendToExerciseMessageToAPI={appendToExerciseMessageToAPI}
           />
         </>
       )}
