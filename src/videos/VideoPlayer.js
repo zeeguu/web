@@ -5,7 +5,7 @@ import React, {
   useContext,
 } from "react";
 import YouTube from "react-youtube";
-import { useParams, useHistory } from "react-router-dom";
+import { useHistory, useLocation } from "react-router-dom";
 import { TranslatableText } from "../reader/TranslatableText";
 import InteractiveText from "../reader/InteractiveText";
 import { APIContext } from "../contexts/APIContext";
@@ -23,8 +23,16 @@ import {
 import videos from "./Videos.json";
 import { set } from "date-fns";
 
+function useQuery() {
+  return new URLSearchParams(useLocation().search);
+}
+
 export default function VideoPlayer() {
   const api = useContext(APIContext);
+  let videoID = "";
+  const query = useQuery();
+  videoID = query.get("id");
+
   const speech = useContext(SpeechContext);
   const containerRef = useRef(null);
   const lastCaptionIdRef = useRef(null);
@@ -37,14 +45,17 @@ export default function VideoPlayer() {
   const [translatedWords, setTranslatedWords] = useState(new Map());
   const [currentInteractiveCaption, setCurrentInteractiveCaption] = useState(null);
 
-  // Set page title to video title
+
   useEffect(() => {
-    const videoInfo = videos[0];
-    if(videoInfo) {
-      setTitle(videoInfo.title);
-      setVideoInfo(videoInfo);
-    }
+    onCreate();
   }, []);
+
+  function onCreate() {
+    api.getVideoInfo(videoID, (videoInfo) => {
+      setVideoInfo(videoInfo);
+      setTitle(videoInfo.title);
+    })
+  }
 
   // Pause the video when a new word is translated
   useEffect(() => {
@@ -157,7 +168,7 @@ export default function VideoPlayer() {
   }, []);
 
   if (!videoInfo.video_unique_key) {
-    return <div>No video ID provided</div>;
+    return <div>No video unique key provided</div>;
   }
 
   return (

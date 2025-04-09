@@ -73,7 +73,7 @@ export default function MainAppRouter({ hasExtension, handleSuccessfulLogIn }) {
 
       <PrivateRouteWithMainNav path="/articles" component={ArticlesRouter} />
       <PrivateRouteWithMainNav path="/videos" component={VideoList} />
-      <PrivateRoute path="/watch/:videoId" component={VideoPlayer} />
+      <PrivateRoute path="/watch/video" component={VideoPlayer} />
       <PrivateRouteWithMainNav path="/exercises" component={ExercisesRouter} />
       <PrivateRouteWithMainNav path="/words" component={WordsRouter} />
       <PrivateRouteWithMainNav path="/history" component={ReadingHistory} />
