@@ -46,7 +46,7 @@ export const VideoContainer = styled.div`
   position: relative;
   width: 100%;
   max-width: 800px;
-  height: 70vh;
+  height: 65vh;
   margin: 0 auto;
   border-radius: 12px;
   overflow: hidden;
@@ -85,8 +85,8 @@ export const CaptionContainer = styled.div`
   color: #444;
   background: white;
   border-radius: 8px;
-  min-height: 20vh;
-  max-height: 20vh;
+  min-height: 15vh;
+  max-height: 15vh;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -140,10 +140,12 @@ export const InfoItem = styled.div`
 export const MainContainer = styled.div`
   padding: 1rem;
   min-height: 100vh;
+  height: 100vh;
   display: flex;
   flex-direction: column;
   transition: all 0.3s ease;
   background: ${zeeguuOrange};
+  overflow-y: auto;
 
   &.fullscreen {
     position: fixed;

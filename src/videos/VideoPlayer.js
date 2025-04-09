@@ -1,9 +1,4 @@
-import React, {
-  useState,
-  useEffect,
-  useRef,
-  useContext,
-} from "react";
+import React, { useState, useEffect, useRef, useContext } from "react";
 import YouTube from "react-youtube";
 import { useHistory, useLocation } from "react-router-dom";
 import { TranslatableText } from "../reader/TranslatableText";
@@ -43,8 +38,8 @@ export default function VideoPlayer() {
   const [hasStartedPlaying, setHasStartedPlaying] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [translatedWords, setTranslatedWords] = useState(new Map());
-  const [currentInteractiveCaption, setCurrentInteractiveCaption] = useState(null);
-
+  const [currentInteractiveCaption, setCurrentInteractiveCaption] =
+    useState(null);
 
   useEffect(() => {
     onCreate();
@@ -54,7 +49,7 @@ export default function VideoPlayer() {
     api.getVideoInfo(videoID, (videoInfo) => {
       setVideoInfo(videoInfo);
       setTitle(videoInfo.title);
-    })
+    });
   }
 
   // Pause the video when a new word is translated
@@ -70,7 +65,7 @@ export default function VideoPlayer() {
     playerVars: {
       autoplay: 0,
       cc_load_policy: 0,
-      cc_lang_pref: "da",
+      cc_lang_pref: videoInfo.language_code,
       fs: 0,
       controls: 1,
     },
@@ -84,25 +79,28 @@ export default function VideoPlayer() {
     if (event.data === 1) {
       setHasStartedPlaying(true);
     }
-  }
+  };
 
   // Update Caption Based on Video Time
   useEffect(() => {
     if (!hasStartedPlaying || !player) return; // Don't start interval if video hasn't started
-  
+
     const interval = setInterval(() => {
       if (player.getPlayerState() !== 1) return; // Skip if not playing (1 is playing state)
-  
+
       const currentTime = player.getCurrentTime();
       const captionMatch = videoInfo.captions.find(
-        (caption) => currentTime >= caption.time_start && currentTime <= caption.time_end
+        (caption) =>
+          currentTime >= caption.time_start && currentTime <= caption.time_end,
       );
-  
+
       if (
         captionMatch &&
-        captionMatch.context_identifier.video_caption_id !== lastCaptionIdRef.current
+        captionMatch.context_identifier.video_caption_id !==
+          lastCaptionIdRef.current
       ) {
-        lastCaptionIdRef.current = captionMatch.context_identifier.video_caption_id;
+        lastCaptionIdRef.current =
+          captionMatch.context_identifier.video_caption_id;
         setCurrentInteractiveCaption(
           new InteractiveText(
             captionMatch.tokenized_text,
@@ -114,7 +112,7 @@ export default function VideoPlayer() {
             "video",
             speech,
             captionMatch.context_identifier,
-          )
+          ),
         );
       } else if (!captionMatch && lastCaptionIdRef.current !== null) {
         // No caption found, clear the current interactive caption
@@ -122,7 +120,7 @@ export default function VideoPlayer() {
         setCurrentInteractiveCaption(null);
       }
     }, 250);
-  
+
     return () => clearInterval(interval);
   }, [player, hasStartedPlaying, videoInfo, api, speech]);
 
@@ -177,7 +175,12 @@ export default function VideoPlayer() {
       className={isFullscreen ? "fullscreen" : ""}
     >
       <VideoContainer>
-        <YouTube videoId={videoInfo.video_unique_key} opts={opts} onReady={onReady} onStateChange={onStateChange} />
+        <YouTube
+          videoId={videoInfo.video_unique_key}
+          opts={opts}
+          onReady={onReady}
+          onStateChange={onStateChange}
+        />
         <FullscreenButton onClick={toggleFullscreen}>
           {isFullscreen ? (
             <>
@@ -212,12 +215,13 @@ export default function VideoPlayer() {
         ) : null}
       </CaptionContainer>
 
-      {/* <InfoContainer>
-        <InfoItem clickable onClick={() => history.push("/")}>
-          <img src="static/icons/go-back.png" alt="Go back icon" />
-          <span>Return to Home</span>
+      <InfoContainer>
+        <InfoItem>
+          <span>
+            <b>TIP:</b> Try the Fullscreen mode for a cinematic experience! 🍿
+          </span>
         </InfoItem>
-      </InfoContainer> */}
+      </InfoContainer>
     </MainContainer>
   );
 }

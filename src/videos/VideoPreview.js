@@ -13,7 +13,7 @@ export default function VideoPreview({ video }) {
   // Open the video in a new tab
   const handleTitleClick = () => {
     const baseUrl = window.location.origin;
-    const videoUrl = `${baseUrl}/watch/${video.video_unique_key}`;
+    const videoUrl = `${baseUrl}/videos/watch?id=${video.id}`;
     window.open(videoUrl, "_blank", "noopener,noreferrer");
   };
 
