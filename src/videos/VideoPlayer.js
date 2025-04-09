@@ -1,7 +1,6 @@
 import React, {
   useState,
   useEffect,
-  useCallback,
   useRef,
   useContext,
 } from "react";
@@ -21,139 +20,38 @@ import {
   FullscreenButton,
 } from "./VideoPlayer.sc";
 
+import videos from "./Videos.json";
+import { set } from "date-fns";
+
 export default function VideoPlayer() {
   const api = useContext(APIContext);
-  const { videoId } = useParams();
+  const speech = useContext(SpeechContext);
+  const containerRef = useRef(null);
+  const lastCaptionIdRef = useRef(null);
+
   const history = useHistory();
   const [player, setPlayer] = useState(null);
-  const [currentCaption, setCurrentCaption] = useState("");
-  const [captions, setCaptions] = useState([]);
+  const [videoInfo, setVideoInfo] = useState([]);
   const [hasStartedPlaying, setHasStartedPlaying] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [translatedWords, setTranslatedWords] = useState(new Map());
-  const [interactiveCaptions, setInteractiveCaptions] = useState([]);
-  const [currentInteractiveText, setCurrentInteractiveText] = useState(null);
-  const speech = useContext(SpeechContext);
-  const containerRef = useRef(null);
-  const subtitleFile = "/captions/captions.vtt";
+  const [currentInteractiveCaption, setCurrentInteractiveCaption] = useState(null);
 
   // Set page title to video title
   useEffect(() => {
-    setTitle(videoData.title);
+    const videoInfo = videos[0];
+    if(videoInfo) {
+      setTitle(videoInfo.title);
+      setVideoInfo(videoInfo);
+    }
   }, []);
-
-  // Create InteractiveText instance for captions
-  const createInteractiveText = useCallback(
-    (text) => {
-      console.log("Creating InteractiveText for text:", text);
-
-      // Split text into words using regex for both spaces and newlines
-      const tokenizedParagraphs = [
-        [
-          text.split(/\s+/).map((word, index) => ({
-            text: word,
-            is_sent_start: index === 0, // First word of sentence
-            is_punct: false,
-            is_symbol: false,
-            is_left_punct: false,
-            is_right_punct: false,
-            is_like_num: false,
-            sent_i: 0,
-            token_i: index,
-            paragraph_i: 0,
-            is_like_email: false,
-            is_like_url: false,
-            has_space: index < text.split(/\s+/).length - 1, // All words except last have space
-            pos: null,
-          })),
-        ],
-      ];
-
-      const interactiveText = new InteractiveText(
-        tokenizedParagraphs,
-        null, // articleID not needed for videos
-        false, // isArticleContent
-        api, // Using the API from context
-        [], // No bookmarks needed
-        api.TRANSLATE_TEXT,
-        "da", // Danish language
-        "video",
-        speech,
-      );
-
-      console.log("Created InteractiveText instance:", interactiveText);
-      return interactiveText;
-    },
-    [api],
-  );
-
-  // Video Data (Could be dynamically fetched later)
-  const videoData = {
-    cefr_level: "C1",
-    title: "5 SMÅ Naturperler du aldrig har hørt om // Dansk natur",
-    uploader: "Naturen I Danmark",
-    duration: "~ 10 minutes",
-  };
 
   // Pause the video when a new word is translated
   useEffect(() => {
-    if (player) {
+    if (player && translatedWords.size > 0) {
       player.pauseVideo();
     }
   }, [translatedWords, player]);
-
-  const parseVTT = useCallback((vttText) => {
-    const parseTime = (h, m, s, ms) =>
-      parseInt(h) * 3600 + parseInt(m) * 60 + parseInt(s) + parseInt(ms) / 1000;
-
-    const captions = [];
-    const lines = vttText.split("\n");
-    let currentCaption = null;
-
-    lines.forEach((line) => {
-      const timeMatch = line.match(
-        /(\d{2}):(\d{2}):(\d{2})\.(\d{3}) --> (\d{2}):(\d{2}):(\d{2})\.(\d{3})/,
-      );
-      if (timeMatch) {
-        if (currentCaption) captions.push(currentCaption);
-        currentCaption = {
-          start: parseTime(...timeMatch.slice(1, 5)),
-          end: parseTime(...timeMatch.slice(5, 9)),
-          text: "",
-        };
-      } else if (currentCaption && line.trim()) {
-        currentCaption.text += line + "\n";
-      }
-    });
-
-    if (currentCaption) captions.push(currentCaption);
-    return captions;
-  }, []);
-
-  useEffect(() => {
-    const fetchCaptions = async () => {
-      try {
-        console.log("Fetching captions from:", subtitleFile);
-        const response = await fetch(subtitleFile);
-        const vttText = await response.text();
-        console.log("VTT text loaded:", vttText);
-        const parsedCaptions = parseVTT(vttText);
-        console.log("Parsed captions:", parsedCaptions);
-        setCaptions(parsedCaptions);
-
-        // Create InteractiveText instances for each caption
-        const interactive = parsedCaptions.map((caption) =>
-          createInteractiveText(caption.text),
-        );
-        console.log("Interactive captions created:", interactive);
-        setInteractiveCaptions(interactive);
-      } catch (error) {
-        console.error("Error loading subtitles:", error);
-      }
-    };
-
-    fetchCaptions();
-  }, [subtitleFile, parseVTT, createInteractiveText]);
 
   const opts = {
     height: "100%",
@@ -169,41 +67,48 @@ export default function VideoPlayer() {
 
   const onReady = (event) => {
     setPlayer(event.target);
-    // Add event listener for state changes
-    event.target.addEventListener("onStateChange", (e) => {
-      if (e.data === 1) {
-        // 1 is the state for playing
-        setHasStartedPlaying(true);
-      }
-    });
   };
+
+  const onStateChange = (event) => {
+    if (event.data === 1) {
+      setHasStartedPlaying(true);
+    }
+  }
 
   // Update Caption Based on Video Time
   useEffect(() => {
-    if (!hasStartedPlaying) return; // Don't start interval if video hasn't started
+    if (!hasStartedPlaying || !player) return; // Don't start interval if video hasn't started
 
     const interval = setInterval(() => {
-      if (player) {
-        const playerState = player.getPlayerState();
-        if (playerState !== 1) return; // Skip if not playing (1 is playing state)
+        if (player.getPlayerState() !== 1) return; // Skip if not playing (1 is playing state)
 
         const currentTime = player.getCurrentTime();
-        const activeCaptionIndex = captions.findIndex(
-          (caption) =>
-            currentTime >= caption.start && currentTime <= caption.end,
+        const captionMatch = videoInfo.captions.find(
+          (caption) => currentTime >= caption.time_start && currentTime <= caption.time_end
         );
-        if (activeCaptionIndex !== -1) {
-          setCurrentCaption(captions[activeCaptionIndex].text);
-          setCurrentInteractiveText(interactiveCaptions[activeCaptionIndex]);
-        } else {
-          setCurrentCaption("");
-          setCurrentInteractiveText(null);
-        }
-      }
-    }, 250);
 
-    return () => clearInterval(interval);
-  }, [captions, interactiveCaptions, player, hasStartedPlaying]);
+        if (captionMatch &&
+          captionMatch.context_identifier.video_caption_id !== lastCaptionIdRef.current
+        ) {
+          lastCaptionIdRef.current = captionMatch.context_identifier.video_caption_id;
+          setCurrentInteractiveCaption(
+            new InteractiveText(
+              captionMatch.tokenized_text,
+              videoInfo.source_id,
+              api,
+              [],
+              api.TRANSLATE_TEXT,
+              videoInfo.language_code,
+              "video",
+              speech,
+              captionMatch.context_identifier,
+            )
+          );
+        }
+      }, 250);
+
+      return () => clearInterval(interval);
+  }, [player, hasStartedPlaying, videoInfo, api, speech]);
 
   // Spacebar Play/Pause Event
   useEffect(() => {
@@ -246,12 +151,7 @@ export default function VideoPlayer() {
     };
   }, []);
 
-  // Add debug effect for currentInteractiveText
-  useEffect(() => {
-    console.log("currentInteractiveText changed:", currentInteractiveText);
-  }, [currentInteractiveText]);
-
-  if (!videoId) {
+  if (!videoInfo.video_unique_key) {
     return <div>No video ID provided</div>;
   }
 
@@ -261,7 +161,7 @@ export default function VideoPlayer() {
       className={isFullscreen ? "fullscreen" : ""}
     >
       <VideoContainer>
-        <YouTube videoId={videoId} opts={opts} onReady={onReady} />
+        <YouTube videoId={videoInfo.video_unique_key} opts={opts} onReady={onReady} onStateChange={onStateChange} />
         <FullscreenButton onClick={toggleFullscreen}>
           {isFullscreen ? (
             <>
@@ -286,9 +186,9 @@ export default function VideoPlayer() {
           <p style={{ fontStyle: "italic", color: "gray" }}>
             Start the video to see captions.
           </p>
-        ) : currentInteractiveText ? (
+        ) : currentInteractiveCaption ? (
           <TranslatableText
-            interactiveText={currentInteractiveText}
+            interactiveText={currentInteractiveCaption}
             translating={true}
             translatedWords={translatedWords}
             setTranslatedWords={setTranslatedWords}
