@@ -64,7 +64,7 @@ export default function BottomInput({
       hint = solutionText.substring(0, 1);
     }
     setCurrentInput(hint);
-    appendToExerciseMessageToAPI(HINT);
+    appendToExerciseMessageToAPI(HINT, exerciseBookmark);
   }
 
   // Update the feedback message
@@ -162,7 +162,7 @@ export default function BottomInput({
       updatedMessageToAPI = WRONG;
       handleIncorrectAnswer();
     }
-    appendToExerciseMessageToAPI(updatedMessageToAPI);
+    appendToExerciseMessageToAPI(updatedMessageToAPI, exerciseBookmark);
     setIsIncorrect(true);
   }
 

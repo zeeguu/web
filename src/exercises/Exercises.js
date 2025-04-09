@@ -150,13 +150,13 @@ export default function Exercises({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  function appendToMessageToAPI(message) {
+  function appendToMessageToAPI(message, bookmarkToUpdate) {
     let _newExerciseMessageToAPI = { ...exerciseMessageToAPI };
-    if (!(selectedExerciseBookmark.id in _newExerciseMessageToAPI))
-      _newExerciseMessageToAPI[selectedExerciseBookmark.id] = message;
-    else _newExerciseMessageToAPI[selectedExerciseBookmark.id] += message;
+    if (!(bookmarkToUpdate.id in _newExerciseMessageToAPI))
+      _newExerciseMessageToAPI[bookmarkToUpdate.id] = message;
+    else _newExerciseMessageToAPI[bookmarkToUpdate.id] += message;
     setExerciseMessageToAPI(_newExerciseMessageToAPI);
-    return _newExerciseMessageToAPI[selectedExerciseBookmark.id];
+    return _newExerciseMessageToAPI[bookmarkToUpdate.id];
   }
 
   function getExerciseSequenceType() {
@@ -355,7 +355,7 @@ export default function Exercises({
     }
     incorrectBookmarksCopy.push(currentBookmark);
     setIncorrectBookmarks(incorrectBookmarksCopy);
-    appendToMessageToAPI(WRONG);
+    appendToMessageToAPI(WRONG, currentBookmark);
     api.updateExerciseSession(dbExerciseSessionId, activeSessionDuration);
   }
 
@@ -380,7 +380,7 @@ export default function Exercises({
     bookmark,
     endExercise = true,
   ) {
-    let updated_message = appendToMessageToAPI(message);
+    let updated_message = appendToMessageToAPI(message, bookmark);
     if (endExercise) setIsExerciseOver(true);
     api.uploadExerciseFinalizedData(
       updated_message,
@@ -419,11 +419,14 @@ export default function Exercises({
   function toggleShow() {
     setShowFeedbackButtons(!showFeedbackButtons);
   }
-  let currentMessageToAPI = isEmptyDictionary(exerciseMessageToAPI)
-    ? ""
-    : exerciseMessageToAPI[selectedExerciseBookmark.id];
+  // If user shows solution on Match without any selected bookmark, show blank progression.
+  let currentMessageToAPI =
+    isEmptyDictionary(exerciseMessageToAPI) ||
+    (currentExerciseType === EXERCISE_TYPES.match && isShowSolution)
+      ? ""
+      : exerciseMessageToAPI[selectedExerciseBookmark.id];
   const CurrentExerciseComponent = fullExerciseProgression[currentIndex].type;
-  console.log(currentBookmarksToStudy);
+  /* console.log(currentBookmarksToStudy); */
   return (
     <NarrowColumn>
       <s.ExercisesColumn>

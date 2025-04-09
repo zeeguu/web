@@ -111,7 +111,7 @@ export default function WordInContextExercise({
         notifyShowSolution();
       }
     } else {
-      appendToExerciseMessageToAPI("T");
+      appendToExerciseMessageToAPI("T", exerciseBookmark);
     }
   }
 
