@@ -145,8 +145,6 @@ function App() {
   function handleSuccessfulLogIn(userInfo, sessionId) {
     console.log("HANDLE SUCCESSFUL SIGN IN");
     api.session = sessionId;
-    console.log("Session: " + api.session);
-    LocalStorage.setSession(api.session);
     LocalStorage.setUserInfo(userInfo);
 
     // TODO: Should this be moved to Settings.loadUsrePreferences?
