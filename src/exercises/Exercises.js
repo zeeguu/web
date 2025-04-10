@@ -336,10 +336,14 @@ export default function Exercises({
       correctBookmarksCopy.push(currentBookmark);
       setCorrectBookmarks(correctBookmarksCopy);
     }
+
     api.updateExerciseSession(dbExerciseSessionId, activeSessionDuration);
     if (endExercise) {
       setIsCorrect(true);
       exerciseCompletedNotification(CORRECT, currentBookmark, endExercise);
+    } else {
+      // If we don't terminate the exercise, update the MessageToAPI
+      appendToMessageToAPI(CORRECT, currentBookmark);
     }
   }
 
@@ -420,11 +424,9 @@ export default function Exercises({
     setShowFeedbackButtons(!showFeedbackButtons);
   }
   // If user shows solution on Match without any selected bookmark, show blank progression.
-  let currentMessageToAPI =
-    isEmptyDictionary(exerciseMessageToAPI) ||
-    (currentExerciseType === EXERCISE_TYPES.match && isShowSolution)
-      ? ""
-      : exerciseMessageToAPI[selectedExerciseBookmark.id];
+  const currentMessageToAPI = isEmptyDictionary(exerciseMessageToAPI)
+    ? ""
+    : exerciseMessageToAPI[selectedExerciseBookmark.id];
   const CurrentExerciseComponent = fullExerciseProgression[currentIndex].type;
   /* console.log(currentBookmarksToStudy); */
   return (
@@ -476,7 +478,7 @@ export default function Exercises({
           />
           <NextNavigation
             exerciseType={currentExerciseType}
-            message={currentMessageToAPI}
+            bookmarkMessagesToAPI={exerciseMessageToAPI}
             exerciseBookmarks={currentBookmarksToStudy}
             exerciseBookmark={currentBookmarksToStudy[0]}
             moveToNextExercise={moveToNextExercise}
