@@ -26,7 +26,6 @@ export default function NextNavigation({
   bookmarkMessagesToAPI,
   exerciseBookmarks,
   exerciseBookmark,
-  exerciseAttemptsLog, // Used for exercises like Match which test multiple bookmarks
   moveToNextExercise,
   reload,
   setReload,
@@ -90,20 +89,18 @@ export default function NextNavigation({
     if (isExerciseOver && autoPronounceBookmark && !isMatchExercise)
       handleSpeak();
 
-    if (exerciseAttemptsLog) {
+    if (bookmarkMessagesToAPI.length > 1 && isMatchExercise) {
       let wordsProgressed = [];
-      for (let i = 0; i < exerciseAttemptsLog.length; i++) {
-        let apiMessage = exerciseAttemptsLog[i].messageToAPI;
-        let b = exerciseAttemptsLog[i].bookmark;
-        let isLastBookmark = exerciseAttemptsLog[i].isLast;
+      for (let b_id in bookmarkMessagesToAPI) {
+        let bookmark = exerciseBookmarks.filter((b) => b.id === b_id)[0];
+        let apiMessage = bookmarkMessagesToAPI[b_id];
         if (
-          b.is_last_in_cycle &&
+          bookmark.is_last_in_cycle &&
           apiMessage === CORRECT &&
-          !isLastBookmark &&
-          b.learning_cycle === LEARNING_CYCLE["RECEPTIVE"] &&
+          bookmark.learning_cycle === LEARNING_CYCLE["RECEPTIVE"] &&
           learningCycleFeature
         ) {
-          wordsProgressed.push(b.from);
+          wordsProgressed.push(bookmark.from);
           setIsMatchBookmarkProgression(true);
         }
       }
@@ -113,7 +110,7 @@ export default function NextNavigation({
       setMatchWordsProgressCount(wordsProgressed.length);
     }
     // eslint-disable-next-line
-  }, [isExerciseOver, exerciseAttemptsLog]);
+  }, [isExerciseOver]);
 
   useEffect(() => {
     if (exerciseBookmark && "learning_cycle" in exerciseBookmark) {
