@@ -5,9 +5,16 @@ import { removePunctuation } from "../../../utils/text/preprocessing";
 import EditBookmarkButton from "../../../words/EditBookmarkButton.js";
 import {
   zeeguuOrange,
-  darkBlue,
-  matchGreen,
-  zeeguuViolet,
+  tableau_1,
+  tableau_2,
+  tableau_3,
+  tableau_4,
+  tableau_5,
+  tableau_6,
+  tableau_7,
+  tableau_8,
+  tableau_9,
+  tableau_10,
 } from "../../../components/colors";
 import shuffle from "../../../assorted/fisherYatesShuffle.js";
 
@@ -30,15 +37,43 @@ function MatchInput({
   const answerColors = [
     {
       fontWeight: "700",
-      color: `${matchGreen}`,
+      color: `${tableau_1}`,
     },
     {
       fontWeight: "700",
-      color: `${darkBlue}`,
+      color: `${tableau_2}`,
     },
     {
       fontWeight: "700",
-      color: `${zeeguuViolet}`,
+      color: `${tableau_3}`,
+    },
+    {
+      fontWeight: "700",
+      color: `${tableau_4}`,
+    },
+    {
+      fontWeight: "700",
+      color: `${tableau_5}`,
+    },
+    {
+      fontWeight: "700",
+      color: `${tableau_6}`,
+    },
+    {
+      fontWeight: "700",
+      color: `${tableau_7}`,
+    },
+    {
+      fontWeight: "700",
+      color: `${tableau_8}`,
+    },
+    {
+      fontWeight: "700",
+      color: `${tableau_9}`,
+    },
+    {
+      fontWeight: "700",
+      color: `${tableau_10}`,
     },
   ];
 
@@ -58,7 +93,7 @@ function MatchInput({
     // they result in the same.
     setLeftBookmarkShuffled(shuffle([...exerciseBookmarks]));
     setRightBookmarkShuffled(shuffle([...exerciseBookmarks]));
-  }, []);
+  }, [exerciseBookmarks]);
 
   if (!leftBookmarksShuffled || !rightBookmarksShuffled) return <></>;
 
@@ -175,40 +210,6 @@ function MatchInput({
           {rightBookmarksShuffled.map((b, index) =>
             renderButton(b, index, RIGHT),
           )}
-          {/*toButtonOptions ? (
-            toButtonOptions.map((option) =>
-              Number(incorrectAnswer) === option.id &&
-              firstSelectionColumn !== "to" ? (
-                <s.AnimatedMatchButton
-                  key={"L1_" + option.id}
-                  id={option.id}
-                  onClick={(e) => handleClick("to", Number(e.target.id))}
-                  onAnimationEnd={() => setIncorrectAnswer("")}
-                >
-                  {removePunctuation(option.to.toLowerCase())}
-                </s.AnimatedMatchButton>
-              ) : buttonsToDisable.includes(option.id) || isExerciseOver ? (
-                <s.MatchingWords
-                  className="matchingWords"
-                  style={answerPairStyle(option.id)}
-                  key={"L1_" + option.id}
-                >
-                  {removePunctuation(option.to.toLowerCase())}
-                </s.MatchingWords>
-              ) : (
-                <s.MatchButton
-                  style={selectedButtonStyle("to", option.id)}
-                  key={"L1_" + option.id}
-                  id={option.id}
-                  onClick={(e) => handleClick("to", Number(e.target.id))}
-                >
-                  {removePunctuation(option.to.toLowerCase())}
-                </s.MatchButton>
-              ),
-            )
-          ) : (
-            <></>
-          )*/}
         </s.MatchButtonHolderRight>
       </s.MatchInputHolder>
     </>
