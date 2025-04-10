@@ -29,13 +29,11 @@ export default function MainAppRouter({ hasExtension, handleSuccessfulLogIn }) {
     <Switch>
       <Route
         path="/log_in"
-        component={() => (
-          <LogIn handleSuccessfulLogIn={handleSuccessfulLogIn} />
-        )}
+        render={() => <LogIn handleSuccessfulLogIn={handleSuccessfulLogIn} />}
       />
       <Route
         path="/account_details"
-        component={() => (
+        render={() => (
           <CreateAccount handleSuccessfulLogIn={handleSuccessfulLogIn} />
         )}
       />
