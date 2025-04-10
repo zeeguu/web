@@ -16,9 +16,11 @@ import {
 } from "../utils/ValidatorRule/Validator";
 import { scrollToTop } from "../utils/misc/scrollToTop";
 import { APIContext } from "../contexts/APIContext";
+import { useHistory } from "react-router-dom/cjs/react-router-dom";
 
-export default function ResetPasswordStep2({ email }) {
+export default function ResetPasswordStep2({ email, isLoggedIn }) {
   const api = useContext(APIContext);
+  const history = useHistory();
   const [errorMessage, setErrorMessage] = useState("");
   const [success, setSuccess] = useState(false);
   const [failure, setFailure] = useState(false);
@@ -61,6 +63,11 @@ export default function ResetPasswordStep2({ email }) {
       sentCode,
       newPass,
       () => {
+        if (isLoggedIn)
+          history.push({
+            pathname: "/account_settings/profile_details",
+            state: { passwordChanged: true },
+          });
         setSuccess(true);
       },
       (e) => {

@@ -4,6 +4,7 @@ import { UserContext } from "../../contexts/UserContext";
 import { saveUserInfoIntoCookies } from "../../utils/cookies/userInfo";
 import { setTitle } from "../../assorted/setTitle";
 import { APIContext } from "../../contexts/APIContext";
+import { Link } from "react-router-dom";
 import LocalStorage from "../../assorted/LocalStorage";
 import strings from "../../i18n/definitions";
 import Form from "../_pages_shared/Form.sc";
@@ -25,9 +26,14 @@ import {
   NonEmptyValidator,
 } from "../../utils/ValidatorRule/Validator";
 import validateRules from "../../assorted/validateRules";
+import { useLocation } from "react-router-dom/cjs/react-router-dom";
+import FullWidthConfirmMsg from "../../components/FullWidthConfirmMsg.sc";
 
 export default function ProfileDetails() {
   const api = useContext(APIContext);
+  const state = useLocation().state || {};
+  const successfulyChangedPassword =
+    "passwordChanged" in state ? state.passwordChanged : false;
   const [errorMessage, setErrorMessage] = useState("");
   const { userDetails, setUserDetails } = useContext(UserContext);
   const history = useHistory();
@@ -82,19 +88,26 @@ export default function ProfileDetails() {
       setUserDetails(newUserDetails);
       LocalStorage.setUserInfo(newUserDetails);
       saveUserInfoIntoCookies(newUserDetails);
-      history.goBack();
+      history.push("/account_settings");
     });
   }
 
   if (!userDetails) {
     return <LoadingAnimation />;
   }
-
+  console.log(userEmail);
   return (
     <PreferencesPage layoutVariant={"minimalistic-top-aligned"}>
       <BackArrow />
       <Header withoutLogo>
         <Heading>{strings.profileDetails}</Heading>
+        {successfulyChangedPassword && (
+          <>
+            <FullWidthConfirmMsg>
+              Password changed successfuly!
+            </FullWidthConfirmMsg>
+          </>
+        )}
       </Header>
       <Main>
         <Form>
@@ -128,6 +141,15 @@ export default function ProfileDetails() {
                 setUserEmail(e.target.value);
               }}
             />
+
+            <Link
+              to={{
+                pathname: "/reset_pass",
+                state: { profileEmail: userEmail },
+              }}
+            >
+              Change password
+            </Link>
           </FormSection>
           <ButtonContainer className={"adaptive-alignment-horizontal"}>
             <Button type={"submit"} onClick={handleSave}>

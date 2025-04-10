@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { Link } from "react-router-dom/cjs/react-router-dom";
 import useFormField from "../hooks/useFormField";
 import {
@@ -16,14 +16,36 @@ import ResetPasswordStep1 from "./ResetPasswordStep1";
 import ResetPasswordStep2 from "./ResetPasswordStep2";
 
 import { setTitle } from "../assorted/setTitle";
+import { APIContext } from "../contexts/APIContext";
+import { UserContext } from "../contexts/UserContext";
 
 export default function ResetPassword() {
+  const { userDetails } = useContext(UserContext);
+  const api = useContext(APIContext);
+  const loggedInEmail = "email" in userDetails ? userDetails.email : "";
+  const isLoggedIn = loggedInEmail !== "";
+
   const [email, setEmail, validateEmail, isEmailValid, emailErrorMsg] =
-    useFormField("", [
+    useFormField(loggedInEmail, [
       NonEmptyValidator("Please provide an email."),
       EmailValidator,
     ]);
   const [codeSent, setCodeSent] = useState(false);
+
+  useEffect(() => {
+    if (isLoggedIn) {
+      console.log("Sending the email...");
+      api.sendCode(
+        loggedInEmail,
+        () => {
+          emailSent();
+        },
+        () => {
+          console.error("Something went wrong...");
+        },
+      );
+    }
+  }, [loggedInEmail]);
 
   function emailSent() {
     setCodeSent(true);
@@ -39,7 +61,7 @@ export default function ResetPassword() {
         <Heading>Reset Password</Heading>
       </Header>
       <Main>
-        {!codeSent && (
+        {!codeSent && loggedInEmail === "" && (
           <ResetPasswordStep1
             email={email}
             setEmail={setEmail}
@@ -50,15 +72,19 @@ export default function ResetPassword() {
           />
         )}
 
-        {codeSent && <ResetPasswordStep2 email={email} />}
+        {codeSent && (
+          <ResetPasswordStep2 email={email} isLoggedIn={isLoggedIn} />
+        )}
       </Main>
       <Footer>
-        <p className="centered">
-          {strings.rememberPassword + " "}
-          <Link className="bold underlined-link" to="/log_in">
-            {strings.login}
-          </Link>
-        </p>
+        {isLoggedIn && (
+          <p className="centered">
+            {strings.rememberPassword + " "}
+            <Link className="bold underlined-link" to="/log_in">
+              {strings.login}
+            </Link>
+          </p>
+        )}
       </Footer>
     </PreferencesPage>
   );
