@@ -19,7 +19,6 @@ const EXERCISE_TYPE = EXERCISE_TYPES.match;
 
 export default function Match({
   bookmarksToStudy,
-  notifyCorrectAnswer,
   notifyIncorrectAnswer,
   setExerciseType,
   isExerciseOver,
@@ -27,7 +26,6 @@ export default function Match({
   exerciseMessageToAPI,
   selectedExerciseBookmark,
   setSelectedExerciseBookmark,
-  setIsExerciseOver,
   reload,
   setReload,
   resetSubSessionTimer,
@@ -48,12 +46,6 @@ export default function Match({
     [RIGHT]: [],
     [LEFT]: [],
   });
-
-  /*
-    Dictionary has Left and Right animations
-  */
-
-  const [isLeftStart, setIsLeftStart] = useState();
 
   useEffect(() => {
     setExerciseType(EXERCISE_TYPE);
@@ -77,12 +69,11 @@ export default function Match({
 
   useEffect(() => {
     let _isLeftStart = selectedLeftBookmark && !selectedRightBookmark;
-    let _isRightStart = !selectedLeftBookmark && selectedRightBookmark;
     if (selectedLeftBookmark && selectedRightBookmark) {
+      setSelectedExerciseBookmark(selectedLeftBookmark);
       // Handle check.
       setSelectedLeftBookmark();
       setSelectedRightBookmark();
-      setIsLeftStart();
       handleSpeak(selectedLeftBookmark);
       if (selectedLeftBookmark.id === selectedRightBookmark.id) {
         // Bookmarks are correct
@@ -112,11 +103,7 @@ export default function Match({
       }
     }
     if (_isLeftStart) {
-      setIsLeftStart(true);
       setSelectedExerciseBookmark(selectedLeftBookmark);
-    }
-    if (_isRightStart) {
-      setIsLeftStart(false);
     }
   }, [selectedRightBookmark, selectedLeftBookmark]);
 
