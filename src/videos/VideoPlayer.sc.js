@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { zeeguuOrange } from "../components/colors";
+import { white } from "../components/colors";
 
 export const FullscreenButton = styled.button`
   position: absolute;
@@ -144,7 +144,7 @@ export const MainContainer = styled.div`
   display: flex;
   flex-direction: column;
   transition: all 0.3s ease;
-  background: ${zeeguuOrange};
+  background: ${white};
   overflow-y: auto;
 
   &.fullscreen {
