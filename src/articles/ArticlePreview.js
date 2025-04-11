@@ -195,20 +195,6 @@ export default function ArticlePreview({
         </div>
         <ArticleStatInfo articleInfo={article}></ArticleStatInfo>
       </s.BottomContainer>
-
-      {article.video ? (
-        <img
-          alt=""
-          style={{ float: "left", marginRight: "1em" }}
-          src={
-            "https://img.youtube.com/vi/" +
-            extractVideoIDFromURL(article.url) +
-            "/default.jpg"
-          }
-        />
-      ) : (
-        ""
-      )}
     </s.ArticlePreview>
   );
 }
