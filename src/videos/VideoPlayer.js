@@ -218,13 +218,15 @@ export default function VideoPlayer() {
         ) : null}
       </CaptionContainer>
 
-      <InfoContainer>
-        <InfoItem>
-          <span>
-            <b>TIP:</b> Try the Fullscreen mode for a cinematic experience! 🍿
-          </span>
-        </InfoItem>
-      </InfoContainer>
+      {!isFullscreen && (
+        <InfoContainer>
+          <InfoItem>
+            <span>
+              <b>TIP:</b> Try the Fullscreen mode for a cinematic experience! 🍿
+            </span>
+          </InfoItem>
+        </InfoContainer>
+      )}
     </MainContainer>
   );
 }
