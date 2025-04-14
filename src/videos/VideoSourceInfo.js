@@ -8,9 +8,7 @@ export default function VideoSourceInfo({ video }) {
         <img src={video.channel.thumbnail_url} alt="" />
       </s.SourceImage>
       <s.FeedName>{video.channel.name}</s.FeedName>
-      <s.PublishingTime>
-        ({moment.utc(video.published_at).fromNow()})
-      </s.PublishingTime>
+      <s.PublishingTime>({moment.utc(video.published_time).fromNow()})</s.PublishingTime>
     </s.SourceContainer>
   );
 }
