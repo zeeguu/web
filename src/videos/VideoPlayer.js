@@ -231,6 +231,8 @@ export default function VideoPlayer() {
     return <LoadingAnimation />;
   }
 
+  let playbackPosition = videoInfo.playback_position ? Math.round(Number(videoInfo.playback_position)) : 0;
+
   return (
     <MainContainer ref={containerRef} className={isFullscreen ? "fullscreen" : ""}>
       <InfoContainer>
@@ -250,6 +252,7 @@ export default function VideoPlayer() {
               cc_lang_pref: videoInfo.language_code,
               fs: 0,
               controls: 1,
+              start: playbackPosition,
             },
           }}
           onReady={onReady}

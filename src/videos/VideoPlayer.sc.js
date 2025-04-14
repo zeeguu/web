@@ -139,7 +139,9 @@ export const InfoItem = styled.div`
 
 export const MainContainer = styled.div`
   padding: 1rem;
+  //  is this needed?
   min-height: 100vh;
+  //  is this better than 100%?
   height: 100vh;
   display: flex;
   flex-direction: column;
@@ -149,6 +151,7 @@ export const MainContainer = styled.div`
 
   &.fullscreen {
     position: fixed;
+    //  are these still needed if you have height 100vh?
     top: 0;
     left: 0;
     right: 0;
