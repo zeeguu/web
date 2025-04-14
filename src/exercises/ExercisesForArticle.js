@@ -1,6 +1,6 @@
 import { useParams, useHistory } from "react-router-dom";
 import Exercises from "./Exercises";
-import { UMR_SOURCE } from "../reader/ArticleReader";
+import { WEB_READER } from "../reader/ArticleReader";
 import { useContext } from "react";
 import { APIContext } from "../contexts/APIContext";
 
@@ -15,17 +15,17 @@ export default function ExercisesForArticle() {
       pathname: "/read/article",
       search: `?id=${articleID}`,
     });
-    api.logUserActivity(api.BACK_TO_READING, articleID, "", UMR_SOURCE);
+    api.logUserActivity(api.BACK_TO_READING, articleID, "", WEB_READER);
   };
 
   const keepExercisingAction = () => {
     window.location.reload(false);
-    api.logUserActivity(api.KEEP_EXERCISING, articleID, "", UMR_SOURCE);
+    api.logUserActivity(api.KEEP_EXERCISING, articleID, "", WEB_READER);
   };
 
   const toScheduledExercises = () => {
     history.push("/exercises");
-    api.logUserActivity(api.TO_SCHEDULED_EXERCISES, "", "", UMR_SOURCE);
+    api.logUserActivity(api.TO_SCHEDULED_EXERCISES, "", "", WEB_READER);
   };
 
   return (
@@ -34,7 +34,7 @@ export default function ExercisesForArticle() {
       backButtonAction={backToArticleAction}
       keepExercisingAction={keepExercisingAction}
       toScheduledExercises={toScheduledExercises}
-      source={UMR_SOURCE}
+      source={WEB_READER}
     />
   );
 }

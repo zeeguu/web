@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, useContext } from "react";
 import YouTube from "react-youtube";
-import { useHistory, useLocation } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import { TranslatableText } from "../reader/TranslatableText";
 import InteractiveText from "../reader/InteractiveText";
 import { APIContext } from "../contexts/APIContext";
@@ -17,10 +17,17 @@ import {
 import LoadingAnimation from "../components/LoadingAnimation";
 import useActivityTimer from "../hooks/useActivityTimer";
 import useShadowRef from "../hooks/useShadowRef";
+import { WEB_READER } from "../reader/ArticleReader";
 
 function useQuery() {
   return new URLSearchParams(useLocation().search);
 }
+
+const TIPS = [
+  "Press the spacebar to play/pause the video.",
+  "Try the Fullscreen mode for a cinematic experience! 🍿",
+  "Click on words in the captions to see translations.",
+];
 
 export default function VideoPlayer() {
   const api = useContext(APIContext);
@@ -32,7 +39,6 @@ export default function VideoPlayer() {
   const containerRef = useRef(null);
   const lastCaptionIdRef = useRef(null);
 
-  const history = useHistory();
   const [player, setPlayer] = useState(null);
   const [videoInfo, setVideoInfo] = useState();
   const [hasStartedPlaying, setHasStartedPlaying] = useState(false);
@@ -49,28 +55,28 @@ export default function VideoPlayer() {
   const playerRef = useShadowRef(player);
   const videoIDRef = useShadowRef(videoID);
 
-  // Call onCreate when the component mounts
+  // Call onComponentMount when the component mounts
   useEffect(() => {
     console.log("INITIATING VIDEO PLAYER FOR VIDEO ID: ", videoID);
-    onCreate();
+    onComponentMount();
     return () => {
-      componentWillUnmount();
+      onComponentUnmount();
     };
     // eslint-disable-next-line
   }, []);
 
-  function onCreate() {
+  function onComponentMount() {
     api.getVideoInfo(videoID, (video) => {
       console.log("VIDEO INFO: ", video);
       setInteractiveTitle(
         new InteractiveText(
-          video.tokenized_title.tokenized_title,
+          video.tokenized_title.tokens,
           video.source_id,
           api,
           video.tokenized_title.past_bookmarks,
           api.TRANSLATE_TEXT,
           video.language_code,
-          "video_title",
+          WEB_READER,
           speech,
           video.tokenized_title.context_identifier,
         ),
@@ -85,10 +91,10 @@ export default function VideoPlayer() {
       api.setVideoOpened(videoID);
     });
 
-    window.addEventListener("beforeunload", componentWillUnmount);
+    window.addEventListener("beforeunload", onComponentUnmount);
   }
 
-  function componentWillUnmount() {
+  function onComponentUnmount() {
     console.log("Component will unmount...");
 
     console.log("Updating watching session...");
@@ -97,7 +103,7 @@ export default function VideoPlayer() {
     console.log("Updating playback position...");
     updatePlaybackPosition();
 
-    window.removeEventListener("beforeunload", componentWillUnmount);
+    window.removeEventListener("beforeunload", onComponentUnmount);
   }
 
   function updateWatchingSession() {
@@ -280,19 +286,7 @@ export default function VideoPlayer() {
       {!isFullscreen && (
         <InfoContainer>
           <InfoItem>
-            {tipIndex === 0 ? (
-              <span>
-                <b>TIP:</b> Press the spacebar to play/pause the video.
-              </span>
-            ) : tipIndex === 1 ? (
-              <span>
-                <b>TIP:</b> Try the Fullscreen mode for a cinematic experience! 🍿
-              </span>
-            ) : (
-              <span>
-                <b>TIP:</b> Click on words in the captions to see translations.
-              </span>
-            )}
+            <b>TIP:</b> {TIPS[tipIndex]}
           </InfoItem>
         </InfoContainer>
       )}

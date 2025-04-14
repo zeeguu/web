@@ -5,7 +5,7 @@ import { setTitle } from "../assorted/setTitle";
 import strings from "../i18n/definitions";
 import Word from "./Word";
 import * as s from "../components/TopMessage.sc";
-import { UMR_SOURCE } from "../reader/ArticleReader";
+import { WEB_READER } from "../reader/ArticleReader";
 import { LEARNING_CYCLE } from "../exercises/ExerciseTypeConstants";
 import CollapsablePanel from "../components/CollapsablePanel";
 import Feature from "../features/Feature";
@@ -45,20 +45,13 @@ export default function Learning() {
     }
   }
 
-  if (
-    !receptiveWords ||
-    !productiveWords ||
-    !toLearnWords ||
-    !inLearningWords
-  ) {
+  if (!receptiveWords || !productiveWords || !toLearnWords || !inLearningWords) {
     return <LoadingAnimation />;
   }
 
   return (
     <>
-      <CollapsablePanel
-        topMessage={Feature.merle_exercises() ? "Receptive" : "In Learning"}
-      >
+      <CollapsablePanel topMessage={Feature.merle_exercises() ? "Receptive" : "In Learning"}>
         {Feature.merle_exercises() && (
           <>
             <s.TopMessage>
@@ -77,12 +70,7 @@ export default function Learning() {
             </s.TopMessage>
             {receptiveWords && receptiveWords.length > 0 ? (
               receptiveWords.map((each) => (
-                <Word
-                  key={each.id}
-                  bookmark={each}
-                  source={UMR_SOURCE}
-                  notifyDelete={onNotifyDelete}
-                />
+                <Word key={each.id} bookmark={each} source={WEB_READER} notifyDelete={onNotifyDelete} />
               ))
             ) : (
               <s.TopMessage>{strings.noReceptiveWords}</s.TopMessage>
@@ -94,12 +82,7 @@ export default function Learning() {
           <>
             {inLearningWords && inLearningWords.length > 0 ? (
               inLearningWords.map((each) => (
-                <Word
-                  key={each.id}
-                  bookmark={each}
-                  source={UMR_SOURCE}
-                  notifyDelete={onNotifyDelete}
-                />
+                <Word key={each.id} bookmark={each} source={WEB_READER} notifyDelete={onNotifyDelete} />
               ))
             ) : (
               <s.TopMessage>{strings.noReceptiveWords}</s.TopMessage>
@@ -125,17 +108,11 @@ export default function Learning() {
             {!LocalStorage.getProductiveExercisesEnabled() && (
               <s.TopMessage>{strings.productiveDisableMsg}</s.TopMessage>
             )}
-            {productiveWords.length === 0 &&
-            LocalStorage.getProductiveExercisesEnabled() ? (
+            {productiveWords.length === 0 && LocalStorage.getProductiveExercisesEnabled() ? (
               <s.TopMessage>{strings.noProductiveWords}</s.TopMessage>
             ) : (
               productiveWords.map((each) => (
-                <Word
-                  key={each.id}
-                  bookmark={each}
-                  source={UMR_SOURCE}
-                  notifyDelete={onNotifyDelete}
-                />
+                <Word key={each.id} bookmark={each} source={WEB_READER} notifyDelete={onNotifyDelete} />
               ))
             )}
           </CollapsablePanel>
@@ -147,9 +124,7 @@ export default function Learning() {
         {toLearnWords.length > 0 && (
           <s.TopMessage>
             <div className="top-message-icon">
-              {Feature.merle_exercises()
-                ? strings.toLearnMsgLearningCycles
-                : strings.toLearnMsg}
+              {Feature.merle_exercises() ? strings.toLearnMsgLearningCycles : strings.toLearnMsg}
             </div>
           </s.TopMessage>
         )}
@@ -159,12 +134,7 @@ export default function Learning() {
         ) : (
           <>
             {toLearnWords.map((each) => (
-              <Word
-                key={each.id}
-                bookmark={each}
-                source={UMR_SOURCE}
-                notifyDelete={onNotifyDelete}
-              />
+              <Word key={each.id} bookmark={each} source={WEB_READER} notifyDelete={onNotifyDelete} />
             ))}
           </>
         )}
