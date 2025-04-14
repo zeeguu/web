@@ -68,6 +68,7 @@ export default function VideoPlayer() {
   function onComponentMount() {
     api.getVideoInfo(videoID, (video) => {
       console.log("VIDEO INFO: ", video);
+
       setInteractiveTitle(
         new InteractiveText(
           video.tokenized_title.tokens,
@@ -91,6 +92,9 @@ export default function VideoPlayer() {
       api.setVideoOpened(videoID);
     });
 
+    // TODO: Figure out why do we have this twice both here and in the main useEffect - Both here and in the ArticleReader
+    // Based on testing, this does not seem to be needed
+    // None of the two seems to be able to capture the window close
     window.addEventListener("beforeunload", onComponentUnmount);
   }
 
