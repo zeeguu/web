@@ -22,72 +22,48 @@ import { PrivateRoute } from "./PrivateRoute";
 import DeleteAccount from "./pages/DeleteAccount/DeleteAccount";
 import SettingsRouter from "./pages/Settings/_SettingsRouter";
 import ExercisesForArticle from "./exercises/ExercisesForArticle";
-import { UMR_SOURCE } from "./reader/ArticleReader";
+import { WEB_READER } from "./reader/ArticleReader";
+import VideoPlayer from "./videos/VideoPlayer";
+import VideoList from "./videos/VideoList";
 
 export default function MainAppRouter({ hasExtension, handleSuccessfulLogIn }) {
   return (
     <Switch>
-      <Route
-        path="/log_in"
-        render={() => <LogIn handleSuccessfulLogIn={handleSuccessfulLogIn} />}
-      />
+      <Route path="/log_in" render={() => <LogIn handleSuccessfulLogIn={handleSuccessfulLogIn} />} />
 
-      <Route
-        path="/account_details"
-        render={() => (
-          <CreateAccount handleSuccessfulLogIn={handleSuccessfulLogIn} />
-        )}
-      />
+      <Route path="/account_details" render={() => <CreateAccount handleSuccessfulLogIn={handleSuccessfulLogIn} />} />
 
       <Route path="/create_account" render={() => <LanguagePreferences />} />
 
-      <Route
-        path="/language_preferences"
-        render={() => <LanguagePreferences />}
-      />
+      <Route path="/language_preferences" render={() => <LanguagePreferences />} />
 
       <Route path="/" exact render={() => <LandingPage />} />
-      <Route
-        path="/extension_installed"
-        render={() => <ExtensionInstalled />}
-      />
+      <Route path="/extension_installed" render={() => <ExtensionInstalled />} />
       <Route path="/install_extension" render={() => <InstallExtension />} />
       <Route path="/reset_pass" render={() => <ResetPassword />} />
       <Route path="/render" render={() => <NoSidebarRouter />} />
 
       <PrivateRoute path="/account_deletion" component={DeleteAccount} />
 
-      <PrivateRoute
-        path="/select_interests"
-        hasExtension={hasExtension}
-        component={SelectInterests}
-      />
+      <PrivateRoute path="/select_interests" hasExtension={hasExtension} component={SelectInterests} />
 
-      <PrivateRoute
-        path="/exclude_words"
-        hasExtension={hasExtension}
-        component={ExcludeWords}
-      />
+      <PrivateRoute path="/exclude_words" hasExtension={hasExtension} component={ExcludeWords} />
 
       <PrivateRouteWithMainNav path="/articles" component={ArticlesRouter} />
+      <PrivateRouteWithMainNav path="/videos" component={VideoList} />
+      <PrivateRoute path="/watch/video" component={VideoPlayer} />
       <PrivateRouteWithMainNav path="/exercises" component={ExercisesRouter} />
       <PrivateRouteWithMainNav path="/words" component={WordsRouter} />
       <PrivateRouteWithMainNav path="/history" component={ReadingHistory} />
-      <PrivateRouteWithMainNav
-        path="/account_settings"
-        component={SettingsRouter}
-      />
+      <PrivateRouteWithMainNav path="/account_settings" component={SettingsRouter} />
       <PrivateRouteWithMainNav path="/teacher" component={TeacherRouter} />
       <PrivateRouteWithMainNav path="/read/article" component={ArticleReader} />
-      <PrivateRouteWithMainNav
-        path="/user_dashboard"
-        component={UserDashboard}
-      />
+      <PrivateRouteWithMainNav path="/user_dashboard" component={UserDashboard} />
       <PrivateRouteWithMainNav path="/search" component={ArticlesRouter} />
       <PrivateRouteWithMainNav
         path="/articleWordReview/:articleID"
         component={ExercisesForArticle}
-        source={UMR_SOURCE}
+        source={WEB_READER}
       />
       <Route path="*" component={NotFound} />
     </Switch>
