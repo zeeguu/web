@@ -42,9 +42,12 @@ export default function VideoPlayer() {
   const [interactiveTitle, setInteractiveTitle] = useState(null);
   const [watchingSessionId, setWatchingSessionId] = useState(null);
   const [activityTimer] = useActivityTimer(updateWatchingSession);
+  const [tipIndex, setTipIndex] = useState(Math.floor(Math.random() * 3));
 
   const activityTimerRef = useShadowRef(activityTimer);
   const watchingSessionIdRef = useShadowRef(watchingSessionId);
+  const playerRef = useShadowRef(player);
+  const videoIDRef = useShadowRef(videoID);
 
   // Call onCreate when the component mounts
   useEffect(() => {
@@ -90,6 +93,9 @@ export default function VideoPlayer() {
     console.log("Updating watching session...");
     updateWatchingSession();
 
+    console.log("Updating playback position...");
+    updatePlaybackPosition();
+
     window.removeEventListener("beforeunload", componentWillUnmount);
   }
 
@@ -97,6 +103,12 @@ export default function VideoPlayer() {
     // It can happen that the timer already ticks before we have a watching session from the server.
     if (watchingSessionIdRef.current) {
       api.updateWatchingSession(watchingSessionIdRef.current, activityTimerRef.current);
+    }
+  }
+
+  function updatePlaybackPosition() {
+    if (playerRef.current !== null) {
+      api.updatePlaybackPosition(videoIDRef.current, playerRef.current.getCurrentTime());
     }
   }
 
@@ -109,6 +121,10 @@ export default function VideoPlayer() {
 
   const onReady = (event) => {
     setPlayer(event.target);
+    console.log("videoInfo.playback_position", videoInfo.playback_position);
+    if (videoInfo.playback_position) {
+      // event.target.seekTo(videoInfo.playback_position);
+    }
   };
 
   const onStateChange = (event) => {
@@ -191,6 +207,15 @@ export default function VideoPlayer() {
     };
   }, []);
 
+  // Tip rotation effect - changes tip every 10 seconds
+  useEffect(() => {
+    const tipInterval = setInterval(() => {
+      setTipIndex((prevIndex) => (prevIndex + 1) % 3);
+    }, 10000);
+
+    return () => clearInterval(tipInterval);
+  }, []);
+
   if (!videoInfo) {
     return <LoadingAnimation />;
   }
@@ -254,9 +279,19 @@ export default function VideoPlayer() {
       {!isFullscreen && (
         <InfoContainer>
           <InfoItem>
-            <span>
-              <b>TIP:</b> Try the Fullscreen mode for a cinematic experience! 🍿
-            </span>
+            {tipIndex === 0 ? (
+              <span>
+                <b>TIP:</b> Press the spacebar to play/pause the video.
+              </span>
+            ) : tipIndex === 1 ? (
+              <span>
+                <b>TIP:</b> Try the Fullscreen mode for a cinematic experience! 🍿
+              </span>
+            ) : (
+              <span>
+                <b>TIP:</b> Click on words in the captions to see translations.
+              </span>
+            )}
           </InfoItem>
         </InfoContainer>
       )}
