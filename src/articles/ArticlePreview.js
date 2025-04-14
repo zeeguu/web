@@ -26,21 +26,19 @@ export default function ArticlePreview({
   hasExtension,
   doNotShowRedirectionModal_UserPreference,
   setDoNotShowRedirectionModal_UserPreference,
-  onArticleClick,
+  notifyArticleClick,
 }) {
   const api = useContext(APIContext);
   // Store which topic was clicked to show in the Modal
   const [infoTopicClick, setInfoTopicClick] = useState("");
   const [showInfoTopics, setShowInfoTopics] = useState(false);
   const [isRedirectionModalOpen, setIsRedirectionModaOpen] = useState(false);
-  const [isArticleSaved, setIsArticleSaved] = useState(
-    article.has_personal_copy,
-  );
+  const [isArticleSaved, setIsArticleSaved] = useState(article.has_personal_copy);
   const [showInferredTopic, setShowInferredTopic] = useState(true);
 
   const handleArticleClick = () => {
-    if (onArticleClick) {
-      onArticleClick(article.id);
+    if (notifyArticleClick) {
+      notifyArticleClick(article.source_id);
     }
   };
 
@@ -74,9 +72,7 @@ export default function ArticlePreview({
           article={article}
           open={isRedirectionModalOpen}
           handleCloseRedirectionModal={handleCloseRedirectionModal}
-          setDoNotShowRedirectionModal_UserPreference={
-            setDoNotShowRedirectionModal_UserPreference
-          }
+          setDoNotShowRedirectionModal_UserPreference={setDoNotShowRedirectionModal_UserPreference}
           setIsArticleSaved={setIsArticleSaved}
         />
         <s.InvisibleTitleButton
@@ -93,12 +89,7 @@ export default function ArticlePreview({
     let open_externally_without_modal = (
       //allow target _self on mobile to easily go back to Zeeguu
       //using mobile browser navigation
-      <a
-        target={isMobile ? "_self" : "_blank"}
-        rel="noreferrer"
-        href={article.url}
-        onClick={handleArticleClick}
-      >
+      <a target={isMobile ? "_self" : "_blank"} rel="noreferrer" href={article.url} onClick={handleArticleClick}>
         {article.title}
       </a>
     );
@@ -110,8 +101,7 @@ export default function ArticlePreview({
       article.has_uploader ||
       isArticleSaved === true;
 
-    let should_open_with_modal =
-      doNotShowRedirectionModal_UserPreference === false;
+    let should_open_with_modal = doNotShowRedirectionModal_UserPreference === false;
 
     if (should_open_in_zeeguu) return open_in_zeeguu;
     else if (should_open_with_modal) return open_externally_with_modal;
@@ -129,18 +119,10 @@ export default function ArticlePreview({
           />
         </sweetM.TagsOfInterests>
       )}
-      <SmallSaveArticleButton
-        article={article}
-        isArticleSaved={isArticleSaved}
-        setIsArticleSaved={setIsArticleSaved}
-      />
+      <SmallSaveArticleButton article={article} isArticleSaved={isArticleSaved} setIsArticleSaved={setIsArticleSaved} />
       <s.TitleContainer>
-        <s.Title className={article.opened ? "opened" : ""}>
-          {titleLink(article)}{" "}
-        </s.Title>
-        <ReadingCompletionProgress
-          last_reading_percentage={article.reading_completion}
-        ></ReadingCompletionProgress>
+        <s.Title className={article.opened ? "opened" : ""}>{titleLink(article)} </s.Title>
+        <ReadingCompletionProgress last_reading_percentage={article.reading_completion}></ReadingCompletionProgress>
       </s.TitleContainer>
 
       {article.feed_id ? (
@@ -150,8 +132,7 @@ export default function ArticlePreview({
           dontShowSourceIcon={dontShowSourceIcon}
         ></ArticleSourceInfo>
       ) : (
-        !dontShowSourceIcon &&
-        article.url && <s.UrlSource>{extractDomain(article.url)}</s.UrlSource>
+        !dontShowSourceIcon && article.url && <s.UrlSource>{extractDomain(article.url)}</s.UrlSource>
       )}
 
       <s.ArticleContent>
@@ -171,9 +152,7 @@ export default function ArticlePreview({
                     setInfoTopicClick(tuple[0]);
                   }}
                   key={tuple[0]}
-                  className={
-                    tuple[1] === TopicOriginType.INFERRED ? "inferred" : "gold"
-                  }
+                  className={tuple[1] === TopicOriginType.INFERRED ? "inferred" : "gold"}
                 >
                   {tuple[0]}
                   {tuple[1] === TopicOriginType.INFERRED && (

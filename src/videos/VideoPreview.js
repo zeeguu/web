@@ -9,9 +9,10 @@ import { HighlightOffRounded } from "@mui/icons-material";
 import { darkBlue } from "../components/colors";
 import { useEffect } from "react";
 
-export default function VideoPreview({ video }) {
+export default function VideoPreview({ video, notifyVideoClick }) {
   // Redirect to the video page in the same window
   const handleTitleClick = () => {
+    notifyVideoClick && notifyVideoClick();
     window.location.href = `/watch/video?id=${video.id}`;
   };
 
@@ -22,7 +23,9 @@ export default function VideoPreview({ video }) {
     <s.VideoPreview>
       <s.TitleContainer>
         <s.Title>
-          <Link to={`/watch/video?id=${video.id}`}>{video.title}</Link>
+          <Link onClick={() => notifyVideoClick && notifyVideoClick()} to={`/watch/video?id=${video.id}`}>
+            {video.title}
+          </Link>
         </s.Title>
       </s.TitleContainer>
 
