@@ -218,15 +218,6 @@ export default function VideoPlayer() {
     };
   }, []);
 
-  // Tip rotation effect - changes tip every 10 seconds
-  useEffect(() => {
-    const tipInterval = setInterval(() => {
-      setTipIndex((prevIndex) => (prevIndex + 1) % 3);
-    }, 10000);
-
-    return () => clearInterval(tipInterval);
-  }, []);
-
   if (!videoInfo) {
     return <LoadingAnimation />;
   }
