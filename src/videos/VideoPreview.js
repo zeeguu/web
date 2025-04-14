@@ -22,9 +22,7 @@ export default function VideoPreview({ video }) {
     <s.VideoPreview>
       <s.TitleContainer>
         <s.Title>
-          <Link to={`/watch/video?id=${video.id}`} onClick={handleTitleClick}>
-            {video.title}
-          </Link>
+          <Link to={`/watch/video?id=${video.id}`}>{video.title}</Link>
         </s.Title>
       </s.TitleContainer>
 
