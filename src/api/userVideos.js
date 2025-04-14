@@ -27,3 +27,7 @@ Zeeguu_API.prototype.updatePlaybackPosition = function (videoID, positionInSecon
 
   this._post(`video_set_playback`, qs.stringify(body), onSuccess, onError);
 };
+
+Zeeguu_API.prototype.setVideoOpened = function (videoID) {
+  this._post("video_opened", `video_id=${videoID}`);
+};

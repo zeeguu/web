@@ -82,6 +82,7 @@ export default function VideoPlayer() {
 
     api.createWatchingSession(videoID, (sessionID) => {
       setWatchingSessionId(sessionID);
+      api.setVideoOpened(videoID);
     });
 
     window.addEventListener("beforeunload", componentWillUnmount);
