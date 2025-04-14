@@ -91,6 +91,7 @@ export const CaptionContainer = styled.div`
   align-items: center;
   justify-content: center;
   overflow-y: auto;
+  font-size: x-large;
 
   @media (max-width: 768px) {
     font-size: 16px;
@@ -103,7 +104,7 @@ export const CaptionContainer = styled.div`
 
 export const InfoContainer = styled.div`
   margin-top: 0.5em;
-  margin-bottom: 2em;
+  margin-bottom: 1.2em;
   padding: 1em;
   background: white;
   border-radius: 8px;
@@ -125,6 +126,7 @@ export const InfoItem = styled.div`
   gap: 0.5em;
   color: #444;
   font-size: 16px;
+  height: 1em;
   cursor: ${(props) => (props.clickable ? "pointer" : "default")};
 
   &:hover {
@@ -138,6 +140,7 @@ export const InfoItem = styled.div`
 `;
 
 export const MainContainer = styled.div`
+  box-sizing: border-box;
   padding: 1rem;
   //  is this needed?
   min-height: 100vh;
