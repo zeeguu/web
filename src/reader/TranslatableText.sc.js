@@ -1,9 +1,5 @@
 import styled from "styled-components";
-import {
-  almostBlack,
-  zeeguuOrange,
-  zeeguuTransparentLightOrange,
-} from "../components/colors";
+import { almostBlack, zeeguuOrange, zeeguuTransparentMediumOrange } from "../components/colors";
 
 const TranslatableText = styled.div`
   z-tag {
@@ -66,7 +62,9 @@ const TranslatableText = styled.div`
   /*  z-tag tag hover changes color, translated word hover no underline or color*/
 
   z-tag:hover {
-    background-color: ${zeeguuTransparentLightOrange};
+    text-decoration: underline;
+    text-decoration-thickness: 3px;
+    text-decoration-color: rgb(255, 229, 158); /*${zeeguuTransparentMediumOrange};*/
   }
 
   /* the translation - above the origin word
@@ -151,9 +149,6 @@ const TranslatableText = styled.div`
       margin: 0px 0.1rem;
       margin-left: -4px;
       padding: 0.2rem 0.3rem;
-    }
-    :hover {
-      filter: brightness(1.25);
     }
   }
 
