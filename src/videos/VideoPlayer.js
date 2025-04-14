@@ -15,6 +15,8 @@ import {
   FullscreenButton,
 } from "./VideoPlayer.sc";
 import LoadingAnimation from "../components/LoadingAnimation";
+import useActivityTimer from "../hooks/useActivityTimer";
+import useShadowRef from "../hooks/useShadowRef";
 
 function useQuery() {
   return new URLSearchParams(useLocation().search);
@@ -38,11 +40,20 @@ export default function VideoPlayer() {
   const [translatedWords, setTranslatedWords] = useState(new Map());
   const [currentInteractiveCaption, setCurrentInteractiveCaption] = useState(null);
   const [interactiveTitle, setInteractiveTitle] = useState(null);
+  const [watchingSessionId, setWatchingSessionId] = useState(null);
+  const [activityTimer] = useActivityTimer(updateWatchingSession);
+
+  const activityTimerRef = useShadowRef(activityTimer);
+  const watchingSessionIdRef = useShadowRef(watchingSessionId);
 
   // Call onCreate when the component mounts
   useEffect(() => {
     console.log("INITIATING VIDEO PLAYER FOR VIDEO ID: ", videoID);
     onCreate();
+    return () => {
+      componentWillUnmount();
+    };
+    // eslint-disable-next-line
   }, []);
 
   function onCreate() {
@@ -65,6 +76,28 @@ export default function VideoPlayer() {
       setVideoInfo(video); // Note videoInfo cannot be accessed from here
       setTitle(video.title);
     });
+
+    api.createWatchingSession(videoID, (sessionID) => {
+      setWatchingSessionId(sessionID);
+    });
+
+    window.addEventListener("beforeunload", componentWillUnmount);
+  }
+
+  function componentWillUnmount() {
+    console.log("Component will unmount...");
+
+    console.log("Updating watching session...");
+    updateWatchingSession();
+
+    window.removeEventListener("beforeunload", componentWillUnmount);
+  }
+
+  function updateWatchingSession() {
+    // It can happen that the timer already ticks before we have a watching session from the server.
+    if (watchingSessionIdRef.current) {
+      api.updateWatchingSession(watchingSessionIdRef.current, activityTimerRef.current);
+    }
   }
 
   // Pause the video when a new word is translated
