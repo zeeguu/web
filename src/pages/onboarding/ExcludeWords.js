@@ -1,4 +1,5 @@
 import { useEffect, useContext } from "react";
+import { useHistory } from "react-router-dom/cjs/react-router-dom";
 import { isSupportedBrowser } from "../../utils/misc/browserDetection";
 
 import useUnwantedContentPreferences from "../../hooks/useUnwantedContentPreferences";
@@ -20,7 +21,6 @@ import InputField from "../../components/InputField";
 import Tag from "../_pages_shared/Tag.sc";
 import TagContainer from "../_pages_shared/TagContainer.sc";
 
-import redirect from "../../utils/routing/routing";
 import strings from "../../i18n/definitions";
 import { setTitle } from "../../assorted/setTitle";
 import { NonEmptyValidator } from "../../utils/ValidatorRule/Validator";
@@ -28,6 +28,7 @@ import { APIContext } from "../../contexts/APIContext";
 
 export default function ExcludeWords({ hasExtension }) {
   const api = useContext(APIContext);
+  const history = useHistory();
   const { unwantedKeywords, addUnwantedKeyword, removeUnwantedKeyword } =
     useUnwantedContentPreferences(api);
 
@@ -105,7 +106,7 @@ export default function ExcludeWords({ hasExtension }) {
         <ButtonContainer className={"padding-large"}>
           <Button
             className={"full-width-btn"}
-            onClick={() => redirect(getLinkToNextPage())}
+            onClick={() => history.push(getLinkToNextPage())}
           >
             {strings.next} <RoundedForwardArrow />
           </Button>

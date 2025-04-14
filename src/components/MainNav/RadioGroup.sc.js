@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import { blue100, blue700, blue900, lightGrey, veryLightGrey } from "../colors";
 
 const StyledRadioGroup = styled.div`
@@ -38,16 +38,24 @@ const OptionLabel = styled.label`
   flex-direction: row;
   justify-content: center;
   align-items: center;
-  gap: 0.25rem;
+  gap: 0.5rem;
   font-size: 1rem;
   font-weight: 600;
-  padding: 0.6rem 1.2rem;
+  padding: 0 1.2rem;
+  height: 2.75rem;
   border-radius: 2rem;
   border: solid 0.1rem ${lightGrey};
   box-shadow: 0px 0.1rem ${lightGrey};
   white-space: nowrap;
   transition: all 300ms ease-in-out;
   margin-bottom: 0.2rem;
+
+  ${({ $leftAligned }) =>
+    $leftAligned &&
+    css`
+      justify-content: flex-start;
+      padding: 0 1.2rem 0 0.5rem;
+    `}
 
   &:hover {
     background-color: ${veryLightGrey};

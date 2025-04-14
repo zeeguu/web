@@ -1,4 +1,5 @@
 import { useContext, useEffect } from "react";
+import { useHistory } from "react-router-dom/cjs/react-router-dom";
 import useSelectInterest from "../../hooks/useSelectInterest";
 import PreferencesPage from "../_pages_shared/PreferencesPage";
 import Header from "../_pages_shared/Header";
@@ -12,12 +13,12 @@ import TagContainer from "../_pages_shared/TagContainer.sc";
 import RoundedForwardArrow from "@mui/icons-material/ArrowForwardRounded";
 import strings from "../../i18n/definitions";
 
-import redirect from "../../utils/routing/routing";
 import { setTitle } from "../../assorted/setTitle";
 import { APIContext } from "../../contexts/APIContext";
 
 export default function SelectInterests() {
   const api = useContext(APIContext);
+  const history = useHistory();
   const { allTopics, toggleTopicSubscription, isSubscribed } =
     useSelectInterest(api);
 
@@ -48,7 +49,7 @@ export default function SelectInterests() {
         <ButtonContainer className={"padding-large"}>
           <Button
             className={"full-width-btn"}
-            onClick={() => redirect("/exclude_words")}
+            onClick={() => history.push("/exclude_words")}
           >
             {strings.next}
             <RoundedForwardArrow />
