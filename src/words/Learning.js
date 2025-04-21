@@ -74,7 +74,13 @@ export default function Learning() {
             {inLearning_byLevel[level].length > 0 && (
               <CollapsablePanel topMessage={topMessage(level, inLearning_byLevel[level].length)}>
                 {inLearning_byLevel[level].map((each) => (
-                  <Word key={each.id} bookmark={each} source={WEB_READER} notifyDelete={onNotifyDelete} />
+                  <Word
+                    key={each.id}
+                    bookmark={each}
+                    source={WEB_READER}
+                    notifyDelete={onNotifyDelete}
+                    showRanking={true}
+                  />
                 ))}
               </CollapsablePanel>
             )}
@@ -98,13 +104,7 @@ export default function Learning() {
         ) : (
           <>
             {toLearn.map((each) => (
-              <Word
-                key={each.id}
-                bookmark={each}
-                source={WEB_READER}
-                notifyDelete={onNotifyDelete}
-                showRanking={true}
-              />
+              <Word key={each.id} bookmark={each} source={WEB_READER} notifyDelete={onNotifyDelete} />
             ))}
           </>
         )}
