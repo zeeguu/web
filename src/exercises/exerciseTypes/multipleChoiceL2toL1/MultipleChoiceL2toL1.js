@@ -11,6 +11,7 @@ import { removePunctuation } from "../../../utils/text/preprocessing";
 import { SpeechContext } from "../../../contexts/SpeechContext.js";
 import BookmarkProgressBar from "../../progressBars/BookmarkProgressBar.js";
 import { APIContext } from "../../../contexts/APIContext.js";
+import { TRANSLATE_WORD } from "../../ExerciseConstants.js";
 
 // The user has to select the correct L1 translation out of three. The L2 word is marked in bold in the context.
 // This tests the user's passive knowledge.
@@ -23,6 +24,7 @@ export default function MultipleChoiceL2toL1({
   notifyCorrectAnswer,
   notifyIncorrectAnswer,
   setExerciseType,
+  appendToExerciseMessageToAPI,
   reload,
   setIsCorrect,
   isExerciseOver,
@@ -32,6 +34,8 @@ export default function MultipleChoiceL2toL1({
   const [incorrectAnswer, setIncorrectAnswer] = useState("");
   const [buttonOptions, setButtonOptions] = useState(null);
   const [interactiveText, setInteractiveText] = useState();
+  const [prevTranslatedWords, setPrevTranslatedWords] = useState(0);
+  const [translatedWords, setTranslatedWords] = useState([]);
   const speech = useContext(SpeechContext);
 
   const exerciseBookmark = bookmarksToStudy[0];
@@ -41,6 +45,13 @@ export default function MultipleChoiceL2toL1({
     setExerciseType(EXERCISE_TYPE);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  useEffect(() => {
+    if (translatedWords.length > prevTranslatedWords) {
+      setPrevTranslatedWords(translatedWords.length);
+      appendToExerciseMessageToAPI(TRANSLATE_WORD, exerciseBookmark);
+    }
+  }, [translatedWords]);
 
   useEffect(() => {
     setInteractiveText(
@@ -88,13 +99,8 @@ export default function MultipleChoiceL2toL1({
 
   return (
     <s.Exercise className="multipleChoice">
-      <div className="headlineWithMoreSpace">
-        {strings.multipleChoiceL2toL1Headline}
-      </div>
-      <BookmarkProgressBar
-        bookmark={exerciseBookmark}
-        message={exerciseMessageToAPI}
-      />
+      <div className="headlineWithMoreSpace">{strings.multipleChoiceL2toL1Headline}</div>
+      <BookmarkProgressBar bookmark={exerciseBookmark} message={exerciseMessageToAPI} />
 
       {isExerciseOver && <h1>{removePunctuation(exerciseBookmark.to)}</h1>}
 
@@ -106,6 +112,8 @@ export default function MultipleChoiceL2toL1({
           pronouncing={false}
           bookmarkToStudy={exerciseBookmark.from}
           boldExpression={exerciseBookmark.from}
+          translatedWords={translatedWords}
+          setTranslatedWords={setTranslatedWords}
           exerciseType={EXERCISE_TYPE}
           leftEllipsis={exerciseBookmark.left_ellipsis}
           rightEllipsis={exerciseBookmark.right_ellipsis}
