@@ -9,12 +9,7 @@ import strings from "../i18n/definitions";
 import OutOfWordsMessage from "./OutOfWordsMessage";
 import SessionStorage from "../assorted/SessionStorage";
 import Feature from "../features/Feature";
-import {
-  CORRECT,
-  MAX_COOLDOWN_INTERVAL,
-  SOLUTION,
-  WRONG,
-} from "./ExerciseConstants";
+import { CORRECT, MAX_COOLDOWN_INTERVAL, SOLUTION, WRONG } from "./ExerciseConstants";
 import { EXERCISE_TYPES } from "./ExerciseTypeConstants";
 import LocalStorage from "../assorted/LocalStorage";
 import { assignBookmarksToExercises } from "./assignBookmarksToExercises";
@@ -43,12 +38,7 @@ import isEmptyDictionary from "../utils/misc/isEmptyDictionary";
 
 const BOOKMARKS_DUE_REVIEW = false;
 
-export default function Exercises({
-  articleID,
-  backButtonAction,
-  toScheduledExercises,
-  source,
-}) {
+export default function Exercises({ articleID, backButtonAction, toScheduledExercises, source }) {
   const api = useContext(APIContext);
   const [countBookmarksToPractice, setCountBookmarksToPractice] = useState();
   const [hasKeptExercising, setHasKeptExercising] = useState(false);
@@ -70,30 +60,24 @@ export default function Exercises({
   const [isCorrect, setIsCorrect] = useState(null);
   const [isExerciseOver, setIsExerciseOver] = useState(false);
   const [isShowSolution, setIsShowSolution] = useState(null);
-  const [selectedExerciseBookmark, setSelectedExerciseBookmark] =
-    useState(null);
+  const [selectedExerciseBookmark, setSelectedExerciseBookmark] = useState(null);
 
   const [showFeedbackButtons, setShowFeedbackButtons] = useState(false);
   const [reload, setReload] = useState(false);
   const [articleTitle, setArticleTitle] = useState();
   const [articleURL, setArticleURL] = useState();
   const [isOutOfWordsToday, setIsOutOfWordsToday] = useState();
-  const [
-    totalPracticedBookmarksInSession,
-    setTotalPracticedBookmarksInSession,
-  ] = useState(0);
+  const [totalPracticedBookmarksInSession, setTotalPracticedBookmarksInSession] = useState(0);
   const [exerciseMessageToAPI, setExerciseMessageToAPI] = useState({});
   const [dbExerciseSessionId, setDbExerciseSessionId] = useState();
   const dbExerciseSessionIdRef = useShadowRef(dbExerciseSessionId);
   const currentIndexRef = useShadowRef(currentIndex);
   const hasKeptExercisingRef = useShadowRef(hasKeptExercising);
 
-  const [activeSessionDuration, clockActive, setActivityOver] =
-    useActivityTimer();
+  const [activeSessionDuration, clockActive, setActivityOver] = useActivityTimer();
 
   const activeSessionDurationRef = useShadowRef(activeSessionDuration);
-  const [getCurrentSubSessionDuration, resetSubSessionTimer] =
-    useSubSessionTimer(activeSessionDurationRef.current);
+  const [getCurrentSubSessionDuration, resetSubSessionTimer] = useSubSessionTimer(activeSessionDurationRef.current);
   const exerciseNotification = useContext(ExerciseCountContext);
   const speech = useContext(SpeechContext);
 
@@ -105,8 +89,7 @@ export default function Exercises({
       if (SessionStorage.getAudioExercisesEnabled() === undefined)
         // If the user doesn't go through the login (or has it cached, we need to set it at the start of the exercises.)
         SessionStorage.setAudioExercisesEnabled(
-          preferences["audio_exercises"] === undefined ||
-            preferences["audio_exercises"] === "true",
+          preferences["audio_exercises"] === undefined || preferences["audio_exercises"] === "true",
         );
     });
     api.getTotalBookmarksInPipeline((totalInLearning) => {
@@ -151,22 +134,22 @@ export default function Exercises({
   }, []);
 
   function appendToMessageToAPI(message, bookmarkToUpdate) {
+    console.log("Adding ", message, " to ", bookmarkToUpdate.id);
     let _newExerciseMessageToAPI = { ...exerciseMessageToAPI };
-    if (!(bookmarkToUpdate.id in _newExerciseMessageToAPI))
+    if (!(bookmarkToUpdate.id in _newExerciseMessageToAPI)) {
       _newExerciseMessageToAPI[bookmarkToUpdate.id] = message;
-    else _newExerciseMessageToAPI[bookmarkToUpdate.id] += message;
+      console.log("Created a new Entry!");
+    } else _newExerciseMessageToAPI[bookmarkToUpdate.id] += message;
     setExerciseMessageToAPI(_newExerciseMessageToAPI);
     return _newExerciseMessageToAPI[bookmarkToUpdate.id];
   }
 
   function getExerciseSequenceType() {
     let exerciseTypesList;
-    if (Feature.merle_exercises() || Feature.exercise_levels())
-      exerciseTypesList = EXTENDED_SEQUENCE;
+    if (Feature.merle_exercises() || Feature.exercise_levels()) exerciseTypesList = EXTENDED_SEQUENCE;
     else exerciseTypesList = DEFAULT_SEQUENCE;
     if (!SessionStorage.isAudioExercisesEnabled()) {
-      if (Feature.merle_exercises() || Feature.exercise_levels())
-        exerciseTypesList = EXTENDED_SEQUENCE_NO_AUDIO;
+      if (Feature.merle_exercises() || Feature.exercise_levels()) exerciseTypesList = EXTENDED_SEQUENCE_NO_AUDIO;
       else exerciseTypesList = DEFAULT_SEQUENCE_NO_AUDIO;
     }
     return exerciseTypesList;
@@ -188,10 +171,7 @@ export default function Exercises({
       // and thus, know the language to pronounce in
       let exerciseSequenceType = getExerciseSequenceType();
 
-      let exerciseSession = assignBookmarksToExercises(
-        bookmarks,
-        exerciseSequenceType,
-      );
+      let exerciseSession = assignBookmarksToExercises(bookmarks, exerciseSequenceType);
       setFullExerciseProgression(exerciseSession);
 
       setCurrentBookmarksToStudy(exerciseSession[0].bookmarks);
@@ -237,10 +217,7 @@ export default function Exercises({
       let exerciseSession = 25;
       api.getTopBookmarksToStudy(exerciseSession, (bookmarks) => {
         console.log(bookmarks);
-        initializeExercises(
-          bookmarks.slice(0, exerciseSession + 1),
-          strings.exercises,
-        );
+        initializeExercises(bookmarks.slice(0, exerciseSession + 1), strings.exercises);
       });
     }
   }
@@ -282,18 +259,9 @@ export default function Exercises({
   }
 
   if (isOutOfWordsToday) {
-    return (
-      <OutOfWordsMessage
-        totalInLearning={totalBookmarksInPipeline}
-        goBackAction={backButtonAction}
-      />
-    );
+    return <OutOfWordsMessage totalInLearning={totalBookmarksInPipeline} goBackAction={backButtonAction} />;
   }
-  if (
-    !countBookmarksToPractice ||
-    !currentBookmarksToStudy ||
-    !fullExerciseProgression
-  ) {
+  if (!countBookmarksToPractice || !currentBookmarksToStudy || !fullExerciseProgression) {
     return <LoadingAnimation />;
   }
 
@@ -327,14 +295,12 @@ export default function Exercises({
       let didItProgressToProductive =
         currentBookmark["cooling_interval"] === MAX_COOLDOWN_INTERVAL &&
         currentBookmark.learning_cycle === LEARNING_CYCLE["RECEPTIVE"];
-      if (
-        !correctBookmarksIds.includes(currentBookmark.id) &&
-        !didItProgressToProductive
-      ) {
+      if (!correctBookmarksIds.includes(currentBookmark.id) && !didItProgressToProductive) {
         exerciseNotification.decrementExerciseCounter();
       }
       correctBookmarksCopy.push(currentBookmark);
       setCorrectBookmarks(correctBookmarksCopy);
+      if (!endExercise) appendToMessageToAPI(CORRECT, currentBookmark);
     }
 
     api.updateExerciseSession(dbExerciseSessionId, activeSessionDuration);
@@ -367,9 +333,7 @@ export default function Exercises({
     // Currently, only match results in all bookmarks being marked as wrong.
     let bookmarksToMarkAsWrong =
       currentExerciseType === EXERCISE_TYPES.match
-        ? currentBookmarksToStudy.filter(
-            (b) => !correctBookmarksCopy.includes(b),
-          )
+        ? currentBookmarksToStudy.filter((b) => !correctBookmarksCopy.includes(b))
         : [selectedExerciseBookmark];
     for (let i = 0; i < bookmarksToMarkAsWrong.length; i++) {
       let currentBookmark = bookmarksToMarkAsWrong[i];
@@ -379,11 +343,7 @@ export default function Exercises({
     setIsShowSolution(true);
   }
 
-  function exerciseCompletedNotification(
-    message,
-    bookmark,
-    endExercise = true,
-  ) {
+  function exerciseCompletedNotification(message, bookmark, endExercise = true) {
     let updated_message = appendToMessageToAPI(message, bookmark);
     if (endExercise) setIsExerciseOver(true);
     api.uploadExerciseFinalizedData(
@@ -411,28 +371,23 @@ export default function Exercises({
     );
     setIsExerciseOver(true);
     exerciseNotification.decrementExerciseCounter();
-    api.uploadExerciseFeedback(
-      userWrittenFeedback,
-      currentExerciseType,
-      0,
-      word_id,
-      dbExerciseSessionId,
-    );
+    api.uploadExerciseFeedback(userWrittenFeedback, currentExerciseType, 0, word_id, dbExerciseSessionId);
   }
 
   function toggleShow() {
     setShowFeedbackButtons(!showFeedbackButtons);
   }
   // If user shows solution on Match without any selected bookmark, show blank progression.
-  const currentMessageToAPI = isEmptyDictionary(exerciseMessageToAPI)
-    ? ""
-    : exerciseMessageToAPI[selectedExerciseBookmark.id];
+  let currentMessageToAPI =
+    isEmptyDictionary(exerciseMessageToAPI) || (currentExerciseType === EXERCISE_TYPES.match && isShowSolution)
+      ? ""
+      : exerciseMessageToAPI[selectedExerciseBookmark.id];
   const CurrentExerciseComponent = fullExerciseProgression[currentIndex].type;
-  /* console.log(currentBookmarksToStudy); */
   return (
     <NarrowColumn>
       <s.ExercisesColumn>
         {screenWidth < MOBILE_WIDTH && <BackArrow />}
+        <span>{currentExerciseType}</span>
         <ExerciseSessionProgressBar
           index={isCorrect ? currentIndex + 1 : currentIndex}
           total={fullExerciseProgression.length}
@@ -493,18 +448,13 @@ export default function Exercises({
             isCorrect={isCorrect}
             isExerciseOver={isExerciseOver}
           />
-          {EXERCISE_TYPES.isAudioExercise(currentExerciseType) &&
-            SessionStorage.isAudioExercisesEnabled() && (
-              <DisableAudioSession
-                handleDisabledAudio={disableAudio}
-                setIsCorrect={setIsExerciseOver}
-              />
-            )}
+          {EXERCISE_TYPES.isAudioExercise(currentExerciseType) && SessionStorage.isAudioExercisesEnabled() && (
+            <DisableAudioSession handleDisabledAudio={disableAudio} setIsCorrect={setIsExerciseOver} />
+          )}
         </s.ExForm>
         {articleID && (
           <p>
-            You are practicing words from:{" "}
-            <a href={articleURL}>{articleTitle}</a>
+            You are practicing words from: <a href={articleURL}>{articleTitle}</a>
           </p>
         )}
       </s.ExercisesColumn>
