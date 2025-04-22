@@ -17,6 +17,7 @@ const EXERCISE_TYPE = EXERCISE_TYPES.match;
 export default function Match({
   bookmarksToStudy,
   notifyIncorrectAnswer,
+  notifyCorrectAnswer,
   selectedExerciseBookmark,
   setSelectedExerciseBookmark,
   setExerciseType,
@@ -52,6 +53,10 @@ export default function Match({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  useEffect(() => {
+    if (isExerciseOver) setListOfSolvedBookmarks(bookmarksToStudy.map((bookmark) => bookmark.id));
+  }, [isExerciseOver]);
+
   function inputFirstClick() {
     if (firstPressTime === undefined) setFirstPressTime(new Date());
   }
@@ -77,9 +82,10 @@ export default function Match({
         let _listOfSolvedBookmarks = [...listOfSolvedBookmarks, selectedLeftBookmark.id];
 
         setListOfSolvedBookmarks(_listOfSolvedBookmarks);
-        if (_listOfSolvedBookmarks.length === bookmarksToStudy.length)
-          notifyExerciseCompleted("", selectedLeftBookmark, true);
-        else notifyExerciseCompleted(CORRECT, selectedLeftBookmark, false);
+        if (_listOfSolvedBookmarks.length === bookmarksToStudy.length) notifyExerciseCompleted("", null, true);
+        else {
+          notifyCorrectAnswer(selectedLeftBookmark, false);
+        }
       } else {
         let _newAnimationDictionary = {
           ...wrongAnimationsDictionary,

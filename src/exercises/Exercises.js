@@ -59,7 +59,7 @@ export default function Exercises({ articleID, backButtonAction, toScheduledExer
    */
   const [isCorrect, setIsCorrect] = useState(null);
   const [isExerciseOver, setIsExerciseOver] = useState(false);
-  const [isShowSolution, setIsShowSolution] = useState(null);
+  const [isShowSolution, setIsShowSolution] = useState(false);
   const [selectedExerciseBookmark, setSelectedExerciseBookmark] = useState(null);
 
   const [showFeedbackButtons, setShowFeedbackButtons] = useState(false);
@@ -134,7 +134,7 @@ export default function Exercises({ articleID, backButtonAction, toScheduledExer
   }, []);
 
   function appendToMessageToAPI(message, bookmarkToUpdate) {
-    console.log("Adding ", message, " to ", bookmarkToUpdate.id);
+    if (message === "" || !bookmarkToUpdate) return "";
     let _newExerciseMessageToAPI = { ...exerciseMessageToAPI };
     if (!(bookmarkToUpdate.id in _newExerciseMessageToAPI)) {
       _newExerciseMessageToAPI[bookmarkToUpdate.id] = message;
@@ -300,16 +300,11 @@ export default function Exercises({ articleID, backButtonAction, toScheduledExer
       }
       correctBookmarksCopy.push(currentBookmark);
       setCorrectBookmarks(correctBookmarksCopy);
-      if (!endExercise) appendToMessageToAPI(CORRECT, currentBookmark);
+      exerciseCompletedNotification(CORRECT, currentBookmark, endExercise);
     }
-
     api.updateExerciseSession(dbExerciseSessionId, activeSessionDuration);
     if (endExercise) {
       setIsCorrect(true);
-      exerciseCompletedNotification(CORRECT, currentBookmark, endExercise);
-    } else {
-      // If we don't terminate the exercise, update the MessageToAPI
-      appendToMessageToAPI(CORRECT, currentBookmark);
     }
   }
 
@@ -350,7 +345,7 @@ export default function Exercises({ articleID, backButtonAction, toScheduledExer
       updated_message,
       currentExerciseType,
       getCurrentSubSessionDuration(),
-      bookmark.id,
+      bookmark ? bookmark.id : null,
       dbExerciseSessionIdRef.current,
     );
   }
