@@ -5,22 +5,41 @@ import VideoStatInfo from "./VideoStatInfo";
 import VideoSourceInfo from "./VideoSourceInfo";
 import { toast } from "react-toastify";
 import { FaPlay } from "react-icons/fa";
-import { HighlightOffRounded } from "@mui/icons-material";
 import { darkBlue } from "../components/colors";
-import { useEffect } from "react";
+import { useEffect, useState, useContext } from "react";
+import ExplainTopicsModal from "../pages/ExplainTopicsModal";
+import * as sweetM from "../articles/TagsOfInterests.sc";
+import HighlightOffRoundedIcon from "@mui/icons-material/HighlightOffRounded";
+import { APIContext } from "../contexts/APIContext";
 
 export default function VideoPreview({ video, notifyVideoClick }) {
+  const [infoTopicClick, setInfoTopicClick] = useState("");
+  const [showInfoTopics, setShowInfoTopics] = useState(false);
+  const [showInferredTopic, setShowInferredTopic] = useState(true);
+  const api = useContext(APIContext);
+
   // Redirect to the video page in the same window
   const handleTitleClick = () => {
     notifyVideoClick && notifyVideoClick();
     window.location.href = `/watch/video?id=${video.id}`;
   };
 
+  let topics = video.topics_list;
+
   useEffect(() => {
     console.log(video);
   }, []);
   return (
     <s.VideoPreview>
+      {showInfoTopics && (
+        <sweetM.TagsOfInterests>
+          <ExplainTopicsModal
+            infoTopicClick={infoTopicClick}
+            showInfoTopics={showInfoTopics}
+            setShowInfoTopics={setShowInfoTopics}
+          />
+        </sweetM.TagsOfInterests>
+      )}
       <s.TitleContainer>
         <s.Title>
           <Link onClick={() => notifyVideoClick && notifyVideoClick()} to={`/watch/video?id=${video.id}`}>
@@ -43,21 +62,28 @@ export default function VideoPreview({ video, notifyVideoClick }) {
 
       <s.BottomContainer>
         <div>
-          {" "}
-          {/* Not sure if the surrounding div tag is needed */}
-          {video.topics_list && (
+          {showInferredTopic && topics.length > 0 && (
             <s.UrlTopics>
-              {video.topics_list.map((tuple) => (
+              {topics.map((tuple) => (
                 // Tuple (Topic Title, TopicOriginType)
-                <span key={tuple[0]} className={tuple[1] === TopicOriginType.INFERRED ? "inferred" : "gold"}>
+                <span
+                  onClick={() => {
+                    setShowInfoTopics(!showInfoTopics);
+                    setInfoTopicClick(tuple[0]);
+                  }}
+                  key={tuple[0]}
+                  className={tuple[1] === TopicOriginType.INFERRED ? "inferred" : "gold"}
+                >
                   {tuple[0]}
                   {tuple[1] === TopicOriginType.INFERRED && (
-                    <HighlightOffRounded
+                    <HighlightOffRoundedIcon
                       className="cancelButton"
                       sx={{ color: darkBlue }}
                       onClick={(e) => {
                         e.stopPropagation();
+                        setShowInferredTopic(false);
                         toast("Your preference was saved.");
+                        api.removeMLSuggestion(video.source_id, tuple[0]);
                       }}
                     />
                   )}
