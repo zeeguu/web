@@ -2,7 +2,7 @@ import { useEffect, useContext } from "react";
 import { useLocation } from "react-router-dom/cjs/react-router-dom";
 import { SystemLanguagesContext } from "../../contexts/SystemLanguagesContext";
 import { useHistory } from "react-router-dom/cjs/react-router-dom";
-import { Link } from "react-router-dom/cjs/react-router-dom";
+import { Link } from "react-router-dom";
 
 import { CEFR_LEVELS } from "../../assorted/cefrLevels";
 import { setTitle } from "../../assorted/setTitle";

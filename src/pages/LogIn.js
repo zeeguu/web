@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from "react";
-import { Link } from "react-router-dom/cjs/react-router-dom";
+import { Link } from "react-router-dom";
 import { APIContext } from "../contexts/APIContext";
 import { scrollToTop } from "../utils/misc/scrollToTop";
 import { setTitle } from "../assorted/setTitle";

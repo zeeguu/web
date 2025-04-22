@@ -5,7 +5,7 @@ import Word from "./Word";
 
 import * as s from "../components/TopMessage.sc";
 import strings from "../i18n/definitions";
-import { UMR_SOURCE } from "../reader/ArticleReader";
+import { WEB_READER } from "../reader/ArticleReader";
 
 export default function Starred({ api }) {
   const [words, setWords] = useState(null);
@@ -33,12 +33,7 @@ export default function Starred({ api }) {
   return (
     <>
       {words.map((bookmark) => (
-        <Word
-          key={bookmark.id}
-          bookmark={bookmark}
-          notifyUnstar={bookmarkHasBeenUnstared}
-          source={UMR_SOURCE}
-        />
+        <Word key={bookmark.id} bookmark={bookmark} notifyUnstar={bookmarkHasBeenUnstared} source={WEB_READER} />
       ))}
     </>
   );
