@@ -34,7 +34,6 @@ export default function ResetPassword() {
 
   useEffect(() => {
     if (isLoggedIn) {
-      console.log("Sending the email...");
       api.sendCode(
         loggedInEmail,
         () => {
@@ -61,7 +60,7 @@ export default function ResetPassword() {
         <Heading>Reset Password</Heading>
       </Header>
       <Main>
-        {!codeSent && loggedInEmail === "" && (
+        {!codeSent && !isLoggedIn && (
           <ResetPasswordStep1
             email={email}
             setEmail={setEmail}
@@ -77,7 +76,7 @@ export default function ResetPassword() {
         )}
       </Main>
       <Footer>
-        {isLoggedIn && (
+        {!isLoggedIn && (
           <p className="centered">
             {strings.rememberPassword + " "}
             <Link className="bold underlined-link" to="/log_in">

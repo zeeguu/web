@@ -98,7 +98,7 @@ export default function ProfileDetails() {
   console.log(userEmail);
   return (
     <PreferencesPage layoutVariant={"minimalistic-top-aligned"}>
-      <BackArrow />
+      <BackArrow redirectLink={"/account_settings"} />
       <Header withoutLogo>
         <Heading>{strings.profileDetails}</Heading>
         {successfulyChangedPassword && (
