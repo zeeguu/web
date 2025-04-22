@@ -20,11 +20,12 @@ export default function Match({
   bookmarksToStudy,
   notifyCorrectAnswer,
   notifyIncorrectAnswer,
+  exerciseMessageToAPI,
+  selectedExerciseBookmark,
+  setSelectedExerciseBookmark,
   setExerciseType,
   isExerciseOver,
   notifyExerciseCompleted,
-  setSelectedExerciseBookmark,
-  setIsExerciseOver,
   reload,
   setReload,
   resetSubSessionTimer,
@@ -62,7 +63,6 @@ export default function Match({
   const [autoPronounceBookmark] = useBookmarkAutoPronounce();
   const [isPronouncing, setIsPronouncing] = useState(false);
   const [lastCorrectBookmarkId, setLastCorrectBookmarkId] = useState(null);
-  const [selectedBookmark, setSelectedBookmark] = useState();
   const [selectedBookmarkMessage, setSelectedBookmarkMessage] = useState("");
 
   useEffect(() => {
@@ -87,13 +87,6 @@ export default function Match({
     }
   }
 
-  useEffect(() => {
-    setSelectedExerciseBookmark(selectedBookmark);
-    // eslint-disable-next-line
-  }, [selectedBookmark]);
-
-  useEffect(() => {});
-
   function notifyBookmarkDeletion(bookmark) {
     let word_expression = "";
     if (isBookmarkExpression(bookmark)) word_expression = "expression";
@@ -112,16 +105,11 @@ export default function Match({
           handleSpeak(exerciseAttemptsLogCopy[i].bookmark);
           setLastCorrectBookmarkId(currentBookmarkLog.bookmark.id);
           if (buttonsToDisable.length === 2) {
-            setIsExerciseOver(true);
+            notifyExerciseCompleted("", currentBookmarkLog.bookmark, true);
             exerciseAttemptsLogCopy[i].isLast = true;
             break;
           } else {
             notifyCorrectAnswer(currentBookmarkLog.bookmark, false);
-            notifyExerciseCompleted(
-              concatMessage,
-              currentBookmarkLog.bookmark,
-              false,
-            );
           }
           setexerciseAttemptsLog(exerciseAttemptsLogCopy);
         } else {
@@ -136,7 +124,7 @@ export default function Match({
           setexerciseAttemptsLog(exerciseAttemptsLogCopy);
         }
       }
-      if (selectedBookmark === currentBookmarkLog.bookmark)
+      if (selectedExerciseBookmark === currentBookmarkLog.bookmark)
         setSelectedBookmarkMessage(concatMessage);
     }
   }
@@ -159,9 +147,9 @@ export default function Match({
       </div>
 
       <BookmarkProgressBar
-        bookmark={selectedBookmark}
-        message={selectedBookmarkMessage}
-        isGreyedOutBar={selectedBookmark === undefined}
+        bookmark={selectedExerciseBookmark}
+        message={exerciseMessageToAPI}
+        isGreyedOutBar={selectedExerciseBookmark === undefined}
       />
 
       <MatchInput
@@ -176,7 +164,7 @@ export default function Match({
         setIncorrectAnswer={setIncorrectAnswer}
         reload={reload}
         setReload={setReload}
-        onBookmarkSelected={setSelectedBookmark}
+        onBookmarkSelected={setSelectedExerciseBookmark}
         notifyBookmarkDeletion={notifyBookmarkDeletion}
         isPronouncing={isPronouncing}
         lastCorrectBookmarkId={lastCorrectBookmarkId}
