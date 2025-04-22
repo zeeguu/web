@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { getExtensionInstallationLinks } from "../../utils/extension/extensionInstallationLinks";
 import { getExtensionInstallationButtonContent } from "../../utils/extension/extensionInstallationButtonContent";
 import { runningInChromeDesktop } from "../../utils/misc/browserDetection";
-import { Link } from "react-router-dom/cjs/react-router-dom";
+import { Link } from "react-router-dom";
 import { setTitle } from "../../assorted/setTitle";
 import PreferencesPage from "../_pages_shared/PreferencesPage";
 import Header from "../_pages_shared/Header";

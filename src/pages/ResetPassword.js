@@ -1,10 +1,7 @@
 import { useState, useEffect, useContext } from "react";
 import { Link } from "react-router-dom/cjs/react-router-dom";
 import useFormField from "../hooks/useFormField";
-import {
-  EmailValidator,
-  NonEmptyValidator,
-} from "../utils/ValidatorRule/Validator";
+import { EmailValidator, NonEmptyValidator } from "../utils/ValidatorRule/Validator";
 import strings from "../i18n/definitions";
 import PreferencesPage from "./_pages_shared/PreferencesPage";
 import Header from "./_pages_shared/Header";
@@ -25,11 +22,10 @@ export default function ResetPassword() {
   const loggedInEmail = "email" in userDetails ? userDetails.email : "";
   const isLoggedIn = loggedInEmail !== "";
 
-  const [email, setEmail, validateEmail, isEmailValid, emailErrorMsg] =
-    useFormField(loggedInEmail, [
-      NonEmptyValidator("Please provide an email."),
-      EmailValidator,
-    ]);
+  const [email, setEmail, validateEmail, isEmailValid, emailErrorMsg] = useFormField(loggedInEmail, [
+    NonEmptyValidator("Please provide an email."),
+    EmailValidator,
+  ]);
   const [codeSent, setCodeSent] = useState(false);
 
   useEffect(() => {
@@ -71,9 +67,7 @@ export default function ResetPassword() {
           />
         )}
 
-        {codeSent && (
-          <ResetPasswordStep2 email={email} isLoggedIn={isLoggedIn} />
-        )}
+        {codeSent && <ResetPasswordStep2 email={email} isLoggedIn={isLoggedIn} />}
       </Main>
       <Footer>
         {!isLoggedIn && (

@@ -55,6 +55,8 @@ const Zeeguu_API = class {
 
   //returning text or json based on the boolean getJson
   _post(endpoint, body, callback, onError, getJson) {
+    // TODO: Make sure that you either return a Promise or not. Now if a callback is passed we don't return anything otherwise we return a promise.
+
     this.apiLog("POST" + endpoint);
 
     const url = this._appendSessionToUrl(endpoint);
@@ -82,9 +84,7 @@ const Zeeguu_API = class {
   async apiPost(endpoint, data, isForm) {
     const params = { session: this.session };
 
-    const headers = isForm
-      ? { "Content-Type": "multipart/form-data" }
-      : { "Content-Type": "application/json" };
+    const headers = isForm ? { "Content-Type": "multipart/form-data" } : { "Content-Type": "application/json" };
 
     const res = await axios({
       method: "post",
