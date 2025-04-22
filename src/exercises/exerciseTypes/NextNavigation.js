@@ -20,12 +20,12 @@ import Pluralize from "../../utils/text/pluralize.js";
 import CorrectMessage from "./CorrectMessage";
 import { APIContext } from "../../contexts/APIContext.js";
 import { CORRECT } from "../ExerciseConstants.js";
+import isEmptyDictionary from "../../utils/misc/isEmptyDictionary.js";
 
 export default function NextNavigation({
-  message: messageForAPI,
+  bookmarkMessagesToAPI,
   exerciseBookmarks,
   exerciseBookmark,
-  exerciseAttemptsLog, // Used for exercises like Match which test multiple bookmarks
   moveToNextExercise,
   reload,
   setReload,
@@ -37,6 +37,9 @@ export default function NextNavigation({
   handleShowSolution,
   exerciseType,
 }) {
+  const messageForAPI = isEmptyDictionary(bookmarkMessagesToAPI)
+    ? ""
+    : bookmarkMessagesToAPI[exerciseBookmark.id];
   const api = useContext(APIContext);
   const exercise = "exercise";
   const [userIsCorrect] = correctnessBasedOnTries(messageForAPI);
@@ -59,7 +62,10 @@ export default function NextNavigation({
   const isLearningCycleOne = learningCycle === 1;
   const learningCycleFeature = Feature.merle_exercises();
   const isMatchExercise = exerciseType === EXERCISE_TYPES.match;
-  const isCorrectMatch = ["CCC"].includes(messageForAPI);
+
+  const isCorrectMatch =
+    isMatchExercise &&
+    ["CCC"].includes(Object.values(bookmarkMessagesToAPI).join(""));
 
   // TODO: Let's make sure that these two are named as clearly as possible;
   // if one is about actual answer correctness and the other is about correct answer being on screen, this should be clearer
@@ -83,20 +89,18 @@ export default function NextNavigation({
     if (isExerciseOver && autoPronounceBookmark && !isMatchExercise)
       handleSpeak();
 
-    if (exerciseAttemptsLog) {
+    if (bookmarkMessagesToAPI.length > 1 && isMatchExercise) {
       let wordsProgressed = [];
-      for (let i = 0; i < exerciseAttemptsLog.length; i++) {
-        let apiMessage = exerciseAttemptsLog[i].messageToAPI;
-        let b = exerciseAttemptsLog[i].bookmark;
-        let isLastBookmark = exerciseAttemptsLog[i].isLast;
+      for (let b_id in bookmarkMessagesToAPI) {
+        let bookmark = exerciseBookmarks.filter((b) => b.id === b_id)[0];
+        let apiMessage = bookmarkMessagesToAPI[b_id];
         if (
-          b.is_last_in_cycle &&
+          bookmark.is_last_in_cycle &&
           apiMessage === CORRECT &&
-          !isLastBookmark &&
-          b.learning_cycle === LEARNING_CYCLE["RECEPTIVE"] &&
+          bookmark.learning_cycle === LEARNING_CYCLE["RECEPTIVE"] &&
           learningCycleFeature
         ) {
-          wordsProgressed.push(b.from);
+          wordsProgressed.push(bookmark.from);
           setIsMatchBookmarkProgression(true);
         }
       }
@@ -106,7 +110,7 @@ export default function NextNavigation({
       setMatchWordsProgressCount(wordsProgressed.length);
     }
     // eslint-disable-next-line
-  }, [isExerciseOver, exerciseAttemptsLog]);
+  }, [isExerciseOver]);
 
   useEffect(() => {
     if (exerciseBookmark && "learning_cycle" in exerciseBookmark) {

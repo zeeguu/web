@@ -68,7 +68,7 @@ export default function LevelIndicator({
   userIsWrong,
   isGreyedOutBar,
 }) {
-  if (bookmark === undefined) {
+  if (bookmark === undefined || bookmark === null) {
     return GrayedOutIndicator;
   }
 

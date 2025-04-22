@@ -1,27 +1,35 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import SpeakButton from "../SpeakButton";
 import * as s from "../Exercise.sc";
 import { removePunctuation } from "../../../utils/text/preprocessing";
 import EditBookmarkButton from "../../../words/EditBookmarkButton.js";
 import {
   zeeguuOrange,
-  darkBlue,
-  matchGreen,
-  zeeguuViolet,
+  tableau_1,
+  tableau_2,
+  tableau_3,
+  tableau_4,
+  tableau_5,
+  tableau_6,
+  tableau_7,
+  tableau_8,
+  tableau_9,
+  tableau_10,
 } from "../../../components/colors";
+import shuffle from "../../../assorted/fisherYatesShuffle.js";
 
 function MatchInput({
-  fromButtonOptions,
-  toButtonOptions,
-  notifyChoiceSelection,
-  inputFirstClick,
-  buttonsToDisable,
+  exerciseBookmarks,
+  selectedLeftBookmark,
+  setSelectedLeftBookmark,
+  selectedRightBookmark,
+  setSelectedRightBookmark,
+  listOfSolvedBookmarks,
+  wrongAnimationsDictionary,
+  setWrongAnimationsDictionary,
   isExerciseOver,
-  incorrectAnswer,
-  setIncorrectAnswer,
   reload,
   setReload,
-  onBookmarkSelected,
   notifyBookmarkDeletion,
   isPronouncing,
   lastCorrectBookmarkId,
@@ -29,15 +37,43 @@ function MatchInput({
   const answerColors = [
     {
       fontWeight: "700",
-      color: `${matchGreen}`,
+      color: `${tableau_1}`,
     },
     {
       fontWeight: "700",
-      color: `${darkBlue}`,
+      color: `${tableau_2}`,
     },
     {
       fontWeight: "700",
-      color: `${zeeguuViolet}`,
+      color: `${tableau_3}`,
+    },
+    {
+      fontWeight: "700",
+      color: `${tableau_4}`,
+    },
+    {
+      fontWeight: "700",
+      color: `${tableau_5}`,
+    },
+    {
+      fontWeight: "700",
+      color: `${tableau_6}`,
+    },
+    {
+      fontWeight: "700",
+      color: `${tableau_7}`,
+    },
+    {
+      fontWeight: "700",
+      color: `${tableau_8}`,
+    },
+    {
+      fontWeight: "700",
+      color: `${tableau_9}`,
+    },
+    {
+      fontWeight: "700",
+      color: `${tableau_10}`,
     },
   ];
 
@@ -47,149 +83,132 @@ function MatchInput({
     border: `0.15em solid ${zeeguuOrange}`,
   };
 
-  const [firstSelection, setFirstSelection] = useState(0);
-  const [firstSelectionColumn, setFirstSelectionColumn] = useState("");
+  const [leftBookmarksShuffled, setLeftBookmarkShuffled] = useState();
+  const [rightBookmarksShuffled, setRightBookmarkShuffled] = useState();
+  const RIGHT = true;
+  const LEFT = !RIGHT;
 
-  function handleClick(column, id) {
-    let selectedBookmark =
-      column === "from"
-        ? fromButtonOptions.find((option) => option.id === id)
-        : toButtonOptions.find((option) => option.id === id);
-    if (firstSelection !== 0) {
-      if (
-        (column === "from" && firstSelectionColumn === "from") ||
-        (column === "to" && firstSelectionColumn === "to")
-      ) {
-        inputFirstClick();
-        setFirstSelection(id);
-      } else {
-        if (firstSelectionColumn === "from") {
-          notifyChoiceSelection(firstSelection, id);
-        } else {
-          notifyChoiceSelection(id, firstSelection);
-        }
-        setFirstSelection(0);
-      }
-    } else {
-      inputFirstClick();
-      setFirstSelection(id);
-      if (column === "from") {
-        setFirstSelectionColumn("from");
-      } else {
-        setFirstSelectionColumn("to");
-      }
-    }
-    onBookmarkSelected(selectedBookmark);
+  useEffect(() => {
+    // Shuffling is in place so we need to unpack otherwise
+    // they result in the same.
+    setLeftBookmarkShuffled(shuffle([...exerciseBookmarks]));
+    setRightBookmarkShuffled(shuffle([...exerciseBookmarks]));
+  }, [exerciseBookmarks]);
+
+  if (!leftBookmarksShuffled || !rightBookmarksShuffled) return <></>;
+
+  function isSameBookmark(b1, b2) {
+    if (b1 === null || b2 === null || b1 === undefined || b2 === undefined)
+      return false;
+    if (b1.id === b2.id) return true;
+    return false;
   }
 
-  const answerPairStyle = (id) => {
-    for (let i = 0; i < fromButtonOptions.length; i++) {
-      if (id === fromButtonOptions[i].id) return answerColors[i];
-    }
-  };
+  function handleClick(e, bookmark, side) {
+    e.preventDefault();
+    if (listOfSolvedBookmarks.includes(bookmark.id)) return;
+    if (side === LEFT)
+      isSameBookmark(selectedLeftBookmark, bookmark)
+        ? setSelectedLeftBookmark()
+        : setSelectedLeftBookmark(bookmark);
+    else if (side === RIGHT)
+      isSameBookmark(selectedRightBookmark, bookmark)
+        ? setSelectedRightBookmark()
+        : setSelectedRightBookmark(bookmark);
+  }
 
-  const selectedButtonStyle = (column, id) => {
-    if (firstSelectionColumn === column && firstSelection === id) {
-      return selectedButtonColor;
-    }
-    return null;
-  };
+  function renderSolutionButton(b, key, solvedIndex, word) {
+    const small = "small";
+    const match = "match";
 
-  const small = "small";
-  const match = "match";
+    return (
+      <s.ButtonRow key={key}>
+        <EditBookmarkButton
+          bookmark={b}
+          styling={match}
+          reload={reload}
+          setReload={setReload}
+          notifyDelete={() => notifyBookmarkDeletion(b)}
+        />
+        <s.MatchingWords
+          className="matchingWords"
+          style={answerColors[solvedIndex]}
+          key={key}
+        >
+          {removePunctuation(word)}
+        </s.MatchingWords>
+        <s.MatchSpeakButtonHolder>
+          <SpeakButton
+            bookmarkToStudy={b}
+            styling={small}
+            key={key}
+            parentIsSpeakingControl={
+              b.id === lastCorrectBookmarkId && isPronouncing
+            }
+          />
+        </s.MatchSpeakButtonHolder>
+      </s.ButtonRow>
+    );
+  }
+
+  function renderButton(b, index, side) {
+    let key = side === LEFT ? "L2_" + index : "L1_" + index;
+    let solvedIndex = listOfSolvedBookmarks.indexOf(b.id);
+    let selectedBookmark =
+      side === LEFT ? selectedLeftBookmark : selectedRightBookmark;
+    let word = side === LEFT ? b.from : b.to;
+    let isWrong = wrongAnimationsDictionary[side].includes(b.id);
+    if (isExerciseOver && side === LEFT)
+      return renderSolutionButton(b, key, solvedIndex, word);
+    if (isWrong)
+      return (
+        <s.AnimatedMatchButton
+          key={key}
+          style={isSameBookmark(b, selectedBookmark) ? selectedButtonColor : {}}
+          onClick={(e) => handleClick(e, b, side)}
+          onAnimationEnd={() => {
+            let _newWrongAnimationDictionary = { ...wrongAnimationsDictionary };
+            _newWrongAnimationDictionary[side] = _newWrongAnimationDictionary[
+              side
+            ].filter((id) => id !== b.id);
+            setWrongAnimationsDictionary(_newWrongAnimationDictionary);
+          }}
+        >
+          {removePunctuation(word)}
+        </s.AnimatedMatchButton>
+      );
+    if (solvedIndex !== -1)
+      return (
+        <s.MatchingWords
+          className="matchingWords"
+          style={answerColors[solvedIndex]}
+          key={key}
+        >
+          {removePunctuation(word)}
+        </s.MatchingWords>
+      );
+    return (
+      <s.MatchButton
+        style={isSameBookmark(b, selectedBookmark) ? selectedButtonColor : {}}
+        key={key}
+        onClick={(e) => handleClick(e, b, side)}
+      >
+        {removePunctuation(word)}
+      </s.MatchButton>
+    );
+  }
 
   return (
     <>
       <s.MatchInputHolder className="matchInputHolder">
         <s.MatchButtonHolder>
-          {fromButtonOptions ? (
-            fromButtonOptions.map((option) =>
-              Number(incorrectAnswer) === option.id &&
-              firstSelectionColumn !== "from" ? (
-                <s.AnimatedMatchButton
-                  key={"L2_" + option.id}
-                  id={option.id}
-                  onClick={(e) => handleClick("from", Number(e.target.id))}
-                  onAnimationEnd={() => setIncorrectAnswer("")}
-                >
-                  {removePunctuation(option.from.toLowerCase())}
-                </s.AnimatedMatchButton>
-              ) : buttonsToDisable.includes(option.id) || isExerciseOver ? (
-                <s.ButtonRow key={"L2_Row_" + option.id}>
-                  <EditBookmarkButton
-                    bookmark={option}
-                    styling={match}
-                    reload={reload}
-                    setReload={setReload}
-                    notifyDelete={() => notifyBookmarkDeletion(option)}
-                  />
-                  <s.MatchingWords
-                    className="matchingWords"
-                    style={answerPairStyle(option.id)}
-                    key={"L2_" + option.id}
-                  >
-                    {removePunctuation(option.from.toLowerCase())}
-                  </s.MatchingWords>
-                  <s.MatchSpeakButtonHolder>
-                    <SpeakButton
-                      bookmarkToStudy={option}
-                      styling={small}
-                      key={"L2_Speak_" + option.id}
-                      parentIsSpeakingControl={
-                        option.id === lastCorrectBookmarkId && isPronouncing
-                      }
-                    />
-                  </s.MatchSpeakButtonHolder>
-                </s.ButtonRow>
-              ) : (
-                <s.MatchButton
-                  style={selectedButtonStyle("from", option.id)}
-                  key={"L2_" + option.id}
-                  id={option.id}
-                  onClick={(e) => handleClick("from", Number(e.target.id))}
-                >
-                  {removePunctuation(option.from.toLowerCase())}
-                </s.MatchButton>
-              ),
-            )
-          ) : (
-            <></>
+          {leftBookmarksShuffled.map((b, index) =>
+            renderButton(b, index, LEFT),
           )}
         </s.MatchButtonHolder>
         <s.MatchButtonHolderRight>
-          {toButtonOptions ? (
-            toButtonOptions.map((option) =>
-              Number(incorrectAnswer) === option.id &&
-              firstSelectionColumn !== "to" ? (
-                <s.AnimatedMatchButton
-                  key={"L1_" + option.id}
-                  id={option.id}
-                  onClick={(e) => handleClick("to", Number(e.target.id))}
-                  onAnimationEnd={() => setIncorrectAnswer("")}
-                >
-                  {removePunctuation(option.to.toLowerCase())}
-                </s.AnimatedMatchButton>
-              ) : buttonsToDisable.includes(option.id) || isExerciseOver ? (
-                <s.MatchingWords
-                  className="matchingWords"
-                  style={answerPairStyle(option.id)}
-                  key={"L1_" + option.id}
-                >
-                  {removePunctuation(option.to.toLowerCase())}
-                </s.MatchingWords>
-              ) : (
-                <s.MatchButton
-                  style={selectedButtonStyle("to", option.id)}
-                  key={"L1_" + option.id}
-                  id={option.id}
-                  onClick={(e) => handleClick("to", Number(e.target.id))}
-                >
-                  {removePunctuation(option.to.toLowerCase())}
-                </s.MatchButton>
-              ),
-            )
-          ) : (
-            <></>
+          {rightBookmarksShuffled.map((b, index) =>
+            renderButton(b, index, RIGHT),
           )}
         </s.MatchButtonHolderRight>
       </s.MatchInputHolder>
