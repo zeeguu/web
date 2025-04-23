@@ -17,6 +17,7 @@ import strings from "../i18n/definitions";
 import useShadowRef from "../hooks/useShadowRef";
 import { Link } from "react-router-dom";
 import VideoPreview from "../videos/VideoPreview";
+import { SortButton } from "./SortingButtons.sc";
 
 export default function FindArticles({ content, searchQuery, searchPublishPriority, searchDifficultyPriority }) {
   let api = useContext(APIContext);
@@ -31,6 +32,7 @@ export default function FindArticles({ content, searchQuery, searchPublishPriori
   const [articlesAndVideosList, setArticlesAndVideosList] = useState();
   const [originalList, setOriginalList] = useState(null);
   const [searchError, setSearchError] = useState(false);
+  const [isShowVideosOnly, setIsShowVideosOnly] = useState(false);
   const [isExtensionAvailable] = useExtensionCommunication();
   const [doNotShowRedirectionModal_UserPreference, setDoNotShowRedirectionModal_UserPreference] = useState(
     doNotShowRedirectionModal_LocalStorage,
@@ -39,6 +41,7 @@ export default function FindArticles({ content, searchQuery, searchPublishPriori
 
   const searchPublishPriorityRef = useShadowRef(searchPublishPriority);
   const searchDifficultyPriorityRef = useShadowRef(searchDifficultyPriority);
+  const isShowVideosOnlyRef = useShadowRef(isShowVideosOnly);
 
   function getNewArticlesForPage(pageNumber, handleArticleInsertion) {
     if (searchQuery) {
@@ -59,8 +62,13 @@ export default function FindArticles({ content, searchQuery, searchPublishPriori
   }
 
   function updateOnPagination(newUpdatedList) {
-    setArticlesAndVideosList(newUpdatedList);
-    setOriginalList(newUpdatedList);
+    if (isShowVideosOnlyRef.current) {
+      const videosOnly = [...newUpdatedList].filter((each) => each.video);
+      setArticlesAndVideosList(videosOnly);
+    } else {
+      setArticlesAndVideosList(newUpdatedList);
+      setOriginalList(newUpdatedList);
+    }
   }
 
   const [handleScroll, isWaitingForNewArticles, noMoreArticlesToShow, resetPagination] = useArticlePagination(
@@ -69,6 +77,17 @@ export default function FindArticles({ content, searchQuery, searchPublishPriori
     searchQuery ? "Article Search" : strings.titleHome,
     getNewArticlesForPage,
   );
+
+  function handleVideoOnlyClick() {
+    setIsShowVideosOnly(!isShowVideosOnly);
+    if (isShowVideosOnly) {
+      setArticlesAndVideosList(originalList);
+      resetPagination();
+    } else {
+      const videosOnly = [...articlesAndVideosList].filter((each) => each.video);
+      setArticlesAndVideosList(videosOnly);
+    }
+  }
 
   const handleArticleClick = (articleId, sourceId, index) => {
     const seenList = articlesAndVideosList.slice(0, index).map((each) => each.source_id);
@@ -158,17 +177,11 @@ export default function FindArticles({ content, searchQuery, searchPublishPriori
           <div style={{ marginBottom: "1.5rem", padding: "0.5rem" }}>
             <span>
               You can customize your Home by{" "}
-              <Link
-                className="bold underlined-link"
-                to="/account_settings/interests?fromArticles=1"
-              >
+              <Link className="bold underlined-link" to="/account_settings/interests?fromArticles=1">
                 subscribing&nbsp;to&nbsp;topics
               </Link>
               ,{" "}
-              <Link
-                className="bold underlined-link"
-                to="/account_settings/excluded_keywords?fromArticles=1"
-              >
+              <Link className="bold underlined-link" to="/account_settings/excluded_keywords?fromArticles=1">
                 filtering&nbsp;keywords
               </Link>{" "}
               or{" "}
@@ -183,10 +196,13 @@ export default function FindArticles({ content, searchQuery, searchPublishPriori
             <UnfinishedArticlesList articleList={articlesAndVideosList} setArticleList={setArticlesAndVideosList} />
           )}
           <s.SortHolder>
+            <SortButton className={isShowVideosOnly && "selected"} onClick={handleVideoOnlyClick}>
+              Show videos only
+            </SortButton>
             <SortingButtons
               articleList={articlesAndVideosList}
-              originalList={originalList}
               setArticleList={setArticlesAndVideosList}
+              isShowVideoOnly={isShowVideosOnly}
             />
           </s.SortHolder>
         </>

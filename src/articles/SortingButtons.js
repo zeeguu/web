@@ -1,25 +1,27 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useLocation } from "react-router";
 import strings from "../i18n/definitions";
 import * as s from "./SortingButtons.sc";
 
-export default function SortingButtons({
-  articleList,
-  setArticleList,
-  originalList,
-}) {
+export default function SortingButtons({ articleList, setArticleList, isShowVideoOnly }) {
   const [difficultySortState, setDifficultySortState] = useState("");
   const [wordCountSortState, setWordCountSortState] = useState("");
   const [progressSortState, setProgressSortState] = useState("");
   const isOnTeacherSite = useLocation().pathname.includes("teacher");
   const isOnSavedArticles = useLocation().pathname.includes("ownTexts");
+  const [temporaryList, setTemporaryList] = useState([]);
+
+  useEffect(() => {
+    setDifficultySortState("");
+    setWordCountSortState("");
+    setProgressSortState("");
+    setTemporaryList([]);
+  }, [isShowVideoOnly]);
 
   function getReadingCompletion(article) {
     // If the article wasn't open give a negative value so they are first in the list.
     let openAdjustment = article.opened ? 0 : 0.1;
-    return article.reading_completion
-      ? article.reading_completion
-      : 0 - openAdjustment;
+    return article.reading_completion ? article.reading_completion : 0 - openAdjustment;
   }
   function sortArticleList(sorting) {
     setArticleList([...articleList].sort(sorting));
@@ -28,20 +30,17 @@ export default function SortingButtons({
     }
   }
 
-  function changeDifficultySorting(
-    e,
-    currentSort,
-    setCurrentSort,
-    otherSetters,
-    sortingFunction,
-  ) {
+  function changeDifficultySorting(e, currentSort, setCurrentSort, otherSetters, sortingFunction) {
     if (currentSort === "ascending") {
       sortArticleList(sortingFunction);
       setCurrentSort("descending");
     } else if (currentSort === "descending") {
-      setArticleList(originalList);
+      setArticleList(temporaryList.length > 0 ? temporaryList : articleList);
       setCurrentSort("");
     } else {
+      // Only set the temporary list if all the sortings are "off"
+      if (difficultySortState === "" && wordCountSortState === "" && progressSortState === "")
+        setTemporaryList(articleList);
       sortArticleList((a, b) => 0 - sortingFunction(a, b));
       setCurrentSort("ascending");
     }
@@ -75,7 +74,7 @@ export default function SortingButtons({
             wordCountSortState,
             setWordCountSortState,
             [setDifficultySortState, setProgressSortState],
-            (a, b) => b.metrics.word_count - a.metrics.word_count,
+            (a, b) => (b.video && a.video ? b.duration - a.duration : b.metrics.word_count - a.metrics.word_count),
           )
         }
       >

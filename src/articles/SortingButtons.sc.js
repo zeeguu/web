@@ -3,8 +3,6 @@ import * as b from "../components/allButtons.sc";
 import { almostBlack, veryLightGrey } from "../components/colors";
 
 const SortingButtons = styled.div`
-  margin-bottom: 1em;
-  margin-left: 1em;
   display: flex;
   justify-content: flex-end;
   font-size: medium;
@@ -26,18 +24,27 @@ const SortingButtons = styled.div`
   .ascending::after {
     content: "↓";
   }
-
-  @media (min-width: 768px) {
-    margin-bottom: 3em;
-  }
 `;
 
 const SortButton = styled(b.RoundButton)`
   padding: 0.3rem 0.5rem;
-
+  cursor: pointer;
   font-size: small;
   background-color: ${veryLightGrey};
   color: ${almostBlack} !important;
+
+  &:hover {
+    filter: brightness(0.98);
+  }
+
+  &.selected {
+    background-color: grey;
+    color: white !important;
+    font-weight: 600;
+    &:hover {
+      filter: brightness(1.02);
+    }
+  }
 
   ${(props) =>
     props.isOnTeacherSite &&
