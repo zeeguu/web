@@ -27,7 +27,7 @@ export default function MultipleChoiceAudio({
   setExerciseType,
   isExerciseOver,
   resetSubSessionTimer,
-  handleDisabledAudio,
+  moveToNextExercise,
   reload,
 }) {
   const api = useContext(APIContext);
@@ -58,7 +58,7 @@ export default function MultipleChoiceAudio({
       ),
     );
     consolidateChoice();
-    if (!SessionStorage.isAudioExercisesEnabled()) handleDisabledAudio();
+    if (!SessionStorage.isAudioExercisesEnabled()) moveToNextExercise();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [reload, exerciseBookmark]);
 
@@ -75,19 +75,12 @@ export default function MultipleChoiceAudio({
 
   return (
     <s.Exercise>
-      <div className="headlineWithMoreSpace">
-        {strings.multipleChoiceAudioHeadline}
-      </div>
-      <BookmarkProgressBar
-        bookmark={exerciseBookmark}
-        message={exerciseMessageToAPI}
-      />
+      <div className="headlineWithMoreSpace">{strings.multipleChoiceAudioHeadline}</div>
+      <BookmarkProgressBar bookmark={exerciseBookmark} message={exerciseMessageToAPI} />
       {isExerciseOver && (
         <>
           <br></br>
-          <h1 className="wordInContextHeadline">
-            {removePunctuation(exerciseBookmark.to)}
-          </h1>
+          <h1 className="wordInContextHeadline">{removePunctuation(exerciseBookmark.to)}</h1>
         </>
       )}
 
