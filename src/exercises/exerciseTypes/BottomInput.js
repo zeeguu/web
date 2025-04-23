@@ -5,10 +5,7 @@ import { normalizeAnswer } from "../inputNormalization";
 import Pluralize from "../../utils/text/pluralize";
 import { LANGUAGE_CODE_TO_NAME } from "../../utils/misc/languageCodeToName";
 
-import {
-  getExpressionlength,
-  countCommonWords,
-} from "../../utils/text/expressions";
+import { getExpressionlength, countCommonWords } from "../../utils/text/expressions";
 import { HINT, WRONG } from "../ExerciseConstants";
 
 function getFlagImageUrl(languageCode) {
@@ -38,15 +35,11 @@ export default function BottomInput({
   const solutionText = isL1Answer ? exerciseBookmark.to : exerciseBookmark.from;
 
   const solutionWordCount = getExpressionlength(solutionText);
-  const isWrongOrder =
-    isIncorrect && correctWordCountInInput === solutionWordCount;
+  const isWrongOrder = isIncorrect && correctWordCountInInput === solutionWordCount;
 
-  const isPartOfExpressionCorrect =
-    correctWordCountInInput >= 1 && solutionWordCount > 1 && isIncorrect;
+  const isPartOfExpressionCorrect = correctWordCountInInput >= 1 && solutionWordCount > 1 && isIncorrect;
 
-  const answerLanguageCode = isL1Answer
-    ? exerciseBookmark.to_lang
-    : exerciseBookmark.from_lang;
+  const answerLanguageCode = isL1Answer ? exerciseBookmark.to_lang : exerciseBookmark.from_lang;
 
   const inputLanguageName = LANGUAGE_CODE_TO_NAME[answerLanguageCode];
 
@@ -55,10 +48,7 @@ export default function BottomInput({
     let hint;
     const lowerCurrentInput = currentInput.toLowerCase();
     const lowerTargetWord = solutionText.toLowerCase();
-    if (
-      lowerCurrentInput ===
-      lowerTargetWord.substring(0, lowerCurrentInput.length)
-    ) {
+    if (lowerCurrentInput === lowerTargetWord.substring(0, lowerCurrentInput.length)) {
       hint = solutionText.substring(0, currentInput.length + 1);
     } else {
       hint = solutionText.substring(0, 1);
@@ -75,9 +65,7 @@ export default function BottomInput({
     }
 
     if (distanceToCorrect < 5 && distanceToCorrect > 2 && !isWrongOrder) {
-      setFeedbackMessage(
-        `❌ Not quite the ${Pluralize.wordExpression(solutionWordCount)}`,
-      );
+      setFeedbackMessage(`❌ Not quite the ${Pluralize.wordExpression(solutionWordCount)}`);
       return;
     }
     if (distanceToCorrect === 2) {
@@ -100,20 +88,12 @@ export default function BottomInput({
     }
     if (isPartOfExpressionCorrect) {
       if (isWrongOrder) setFeedbackMessage(`⭐ Check the word order`);
-      else
-        setFeedbackMessage(
-          `⭐ You got ${correctWordCountInInput}/${solutionWordCount} words correct`,
-        );
+      else setFeedbackMessage(`⭐ You got ${correctWordCountInInput}/${solutionWordCount} words correct`);
       return;
     }
     setFeedbackMessage("");
     // eslint-disable-next-line
-  }, [
-    distanceToCorrect,
-    isSameLengthAsSolution,
-    isLongerThanSolution,
-    isInputWrongLanguage,
-  ]);
+  }, [distanceToCorrect, isSameLengthAsSolution, isLongerThanSolution, isInputWrongLanguage]);
 
   function checkResult() {
     if (currentInput === "") {
@@ -138,13 +118,10 @@ export default function BottomInput({
     setCorrectWordCountInInput(totalWordsCorrect);
     setDistanceToCorrect(levDistance);
     setIsLongerThanSolution(normalizedInput.length > normalizedAnswer.length);
-    setIsSameLengthAsSolution(
-      normalizedInput.length === normalizedAnswer.length,
-    );
+    setIsSameLengthAsSolution(normalizedInput.length === normalizedAnswer.length);
 
     let updatedMessageToAPI;
-    let userUsedWrongLang =
-      isL1Answer && normalizedInput === normalizedLearningWord;
+    let userUsedWrongLang = isL1Answer && normalizedInput === normalizedLearningWord;
     setIsInputWrongLanguage(userUsedWrongLang);
 
     if (userUsedWrongLang) {
@@ -160,7 +137,7 @@ export default function BottomInput({
       updatedMessageToAPI = HINT;
     } else {
       updatedMessageToAPI = WRONG;
-      handleIncorrectAnswer();
+      handleIncorrectAnswer(exerciseBookmark);
     }
     appendToExerciseMessageToAPI(updatedMessageToAPI, exerciseBookmark);
     setIsIncorrect(true);
@@ -174,17 +151,11 @@ export default function BottomInput({
           {strings.hint}
         </s.LeftFeedbackButton>
         <div>
-          <div className="type-feedback">
-            {feedbackMessage !== "" && <p>{feedbackMessage}</p>}
-          </div>
+          <div className="type-feedback">{feedbackMessage !== "" && <p>{feedbackMessage}</p>}</div>
           <InputField
             type="text"
             placeholder={"Type in " + inputLanguageName}
-            className={
-              distanceToCorrect >= 5 && correctWordCountInInput === 0
-                ? "wrong-border"
-                : "almost-border"
-            }
+            className={distanceToCorrect >= 5 && correctWordCountInInput === 0 ? "wrong-border" : "almost-border"}
             value={currentInput}
             onChange={(e) => setCurrentInput(e.target.value)}
             onKeyUp={(e) => {
@@ -205,9 +176,7 @@ export default function BottomInput({
           />
         </div>
 
-        <s.RightFeedbackButton onClick={checkResult}>
-          {strings.check}
-        </s.RightFeedbackButton>
+        <s.RightFeedbackButton onClick={checkResult}>{strings.check}</s.RightFeedbackButton>
       </s.BottomRow>
     </>
   );
