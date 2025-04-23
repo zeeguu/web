@@ -38,6 +38,7 @@ export default function FindArticles({ content, searchQuery, searchPublishPriori
     doNotShowRedirectionModal_LocalStorage,
   );
   const [reloadingSearchArticles, setReloadingSearchArticles] = useState(false);
+  const [areVideosAvailable, setAreVideosAvailable] = useState(false);
 
   const searchPublishPriorityRef = useShadowRef(searchPublishPriority);
   const searchDifficultyPriorityRef = useShadowRef(searchDifficultyPriority);
@@ -127,6 +128,7 @@ export default function FindArticles({ content, searchQuery, searchPublishPriori
           setArticlesAndVideosList(articles);
           setOriginalList([...articles]);
           setReloadingSearchArticles(false);
+          articles.some((e) => e.video) ? setAreVideosAvailable(true) : setAreVideosAvailable(false);
         },
         (error) => {
           console.log(error);
@@ -142,6 +144,7 @@ export default function FindArticles({ content, searchQuery, searchPublishPriori
       api.getUserArticles((articles) => {
         setArticlesAndVideosList(articles);
         setOriginalList([...articles]);
+        articles.some((e) => e.video) ? setAreVideosAvailable(true) : setAreVideosAvailable(false);
       });
       window.addEventListener("scroll", handleScroll, true);
       return () => {
@@ -196,7 +199,11 @@ export default function FindArticles({ content, searchQuery, searchPublishPriori
             <UnfinishedArticlesList articleList={articlesAndVideosList} setArticleList={setArticlesAndVideosList} />
           )}
           <s.SortHolder>
-            <SortButton className={isShowVideosOnly && "selected"} onClick={handleVideoOnlyClick}>
+            <SortButton
+              className={isShowVideosOnly && "selected"}
+              style={{ visibility: !areVideosAvailable && "hidden" }}
+              onClick={handleVideoOnlyClick}
+            >
               Show videos only
             </SortButton>
             <SortingButtons
