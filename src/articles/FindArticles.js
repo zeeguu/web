@@ -32,17 +32,20 @@ export default function FindArticles({ content, searchQuery, searchPublishPriori
   const [articlesAndVideosList, setArticlesAndVideosList] = useState();
   const [originalList, setOriginalList] = useState(null);
   const [searchError, setSearchError] = useState(false);
-  const [isShowVideosOnly, setIsShowVideosOnly] = useState(false);
+
   const [isExtensionAvailable] = useExtensionCommunication();
   const [doNotShowRedirectionModal_UserPreference, setDoNotShowRedirectionModal_UserPreference] = useState(
     doNotShowRedirectionModal_LocalStorage,
   );
   const [reloadingSearchArticles, setReloadingSearchArticles] = useState(false);
-  const [areVideosAvailable, setAreVideosAvailable] = useState(false);
 
   const searchPublishPriorityRef = useShadowRef(searchPublishPriority);
   const searchDifficultyPriorityRef = useShadowRef(searchDifficultyPriority);
-  const isShowVideosOnlyRef = useShadowRef(isShowVideosOnly);
+
+  // Next three vars required for the "Show Videos Only" toggle button
+  const [areVideosAvailable, setAreVideosAvailable] = useState(false);
+  const [isShowVideosOnlyEnabled, setIsShowVideosOnlyEnabled] = useState(false);
+  const isShowVideosOnlyEnabledRef = useShadowRef(isShowVideosOnlyEnabled);
 
   function getNewArticlesForPage(pageNumber, handleArticleInsertion) {
     if (searchQuery) {
@@ -63,7 +66,7 @@ export default function FindArticles({ content, searchQuery, searchPublishPriori
   }
 
   function updateOnPagination(newUpdatedList) {
-    if (isShowVideosOnlyRef.current) {
+    if (isShowVideosOnlyEnabledRef.current) {
       const videosOnly = [...newUpdatedList].filter((each) => each.video);
       setArticlesAndVideosList(videosOnly);
     } else {
@@ -80,8 +83,8 @@ export default function FindArticles({ content, searchQuery, searchPublishPriori
   );
 
   function handleVideoOnlyClick() {
-    setIsShowVideosOnly(!isShowVideosOnly);
-    if (isShowVideosOnly) {
+    setIsShowVideosOnlyEnabled(!isShowVideosOnlyEnabled);
+    if (isShowVideosOnlyEnabled) {
       setArticlesAndVideosList(originalList);
       resetPagination();
     } else {
@@ -200,7 +203,7 @@ export default function FindArticles({ content, searchQuery, searchPublishPriori
           )}
           <s.SortHolder>
             <SortButton
-              className={isShowVideosOnly && "selected"}
+              className={isShowVideosOnlyEnabled && "selected"}
               style={{ visibility: !areVideosAvailable && "hidden" }}
               onClick={handleVideoOnlyClick}
             >
@@ -209,7 +212,7 @@ export default function FindArticles({ content, searchQuery, searchPublishPriori
             <SortingButtons
               articleList={articlesAndVideosList}
               setArticleList={setArticlesAndVideosList}
-              isShowVideoOnly={isShowVideosOnly}
+              isShowVideoOnly={isShowVideosOnlyEnabled}
             />
           </s.SortHolder>
         </>
