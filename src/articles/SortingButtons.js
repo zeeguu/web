@@ -18,6 +18,11 @@ export default function SortingButtons({ articleList, setArticleList, isShowVide
     setTemporaryList([]);
   }, [isShowVideoOnly]);
 
+  useEffect(() => {
+    // In case the user scrolls and gets more articles without resetting the filter.
+    if (articleList.length > temporaryList.length && temporaryList.length !== 0) setTemporaryList([]);
+  }, [articleList]);
+
   function getReadingCompletion(article) {
     // If the article wasn't open give a negative value so they are first in the list.
     let openAdjustment = article.opened ? 0 : 0.1;
