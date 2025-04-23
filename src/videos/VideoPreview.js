@@ -8,7 +8,7 @@ import { FaPlay } from "react-icons/fa";
 import { darkBlue } from "../components/colors";
 import { useEffect, useState, useContext } from "react";
 import ExplainTopicsModal from "../pages/ExplainTopicsModal";
-import * as sweetM from "../articles/TagsOfInterests.sc";
+import { TagsOfInterests } from "../articles/TagsOfInterests.sc";
 import HighlightOffRoundedIcon from "@mui/icons-material/HighlightOffRounded";
 import { APIContext } from "../contexts/APIContext";
 
@@ -32,13 +32,13 @@ export default function VideoPreview({ video, notifyVideoClick }) {
   return (
     <s.VideoPreview>
       {showInfoTopics && (
-        <sweetM.TagsOfInterests>
+        <TagsOfInterests>
           <ExplainTopicsModal
             infoTopicClick={infoTopicClick}
             showInfoTopics={showInfoTopics}
             setShowInfoTopics={setShowInfoTopics}
           />
-        </sweetM.TagsOfInterests>
+        </TagsOfInterests>
       )}
       <s.TitleContainer>
         <s.Title>
@@ -64,18 +64,17 @@ export default function VideoPreview({ video, notifyVideoClick }) {
         <div>
           {showInferredTopic && topics.length > 0 && (
             <s.UrlTopics>
-              {topics.map((tuple) => (
-                // Tuple (Topic Title, TopicOriginType)
+              {topics.map(([topicTitle, topicOrigin]) => (
                 <span
                   onClick={() => {
                     setShowInfoTopics(!showInfoTopics);
-                    setInfoTopicClick(tuple[0]);
+                    setInfoTopicClick(topicTitle);
                   }}
-                  key={tuple[0]}
-                  className={tuple[1] === TopicOriginType.INFERRED ? "inferred" : "gold"}
+                  key={topicTitle}
+                  className={topicOrigin === TopicOriginType.INFERRED ? "inferred" : "gold"}
                 >
-                  {tuple[0]}
-                  {tuple[1] === TopicOriginType.INFERRED && (
+                  {topicTitle}
+                  {topicOrigin === TopicOriginType.INFERRED && (
                     <HighlightOffRoundedIcon
                       className="cancelButton"
                       sx={{ color: darkBlue }}
@@ -83,7 +82,7 @@ export default function VideoPreview({ video, notifyVideoClick }) {
                         e.stopPropagation();
                         setShowInferredTopic(false);
                         toast("Your preference was saved.");
-                        api.removeMLSuggestion(video.source_id, tuple[0]);
+                        api.removeMLSuggestion(video.source_id, topicTitle);
                       }}
                     />
                   )}
