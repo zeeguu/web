@@ -300,12 +300,12 @@ export default function Exercises({ articleID, backButtonAction, toScheduledExer
       }
       correctBookmarksCopy.push(currentBookmark);
       setCorrectBookmarks(correctBookmarksCopy);
-      exerciseCompletedNotification(CORRECT, currentBookmark, endExercise);
     }
-    api.updateExerciseSession(dbExerciseSessionId, activeSessionDuration);
     if (endExercise) {
       setIsCorrect(true);
     }
+    exerciseCompletedNotification(CORRECT, currentBookmark, endExercise);
+    api.updateExerciseSession(dbExerciseSessionId, activeSessionDuration);
   }
 
   let incorrectBookmarksCopy = [...incorrectBookmarks];
