@@ -37,15 +37,6 @@ const SortButton = styled(b.RoundButton)`
     filter: brightness(0.98);
   }
 
-  &.selected {
-    background-color: grey;
-    color: white !important;
-    font-weight: 600;
-    &:hover {
-      filter: brightness(1.02);
-    }
-  }
-
   ${(props) =>
     props.isOnTeacherSite &&
     css`

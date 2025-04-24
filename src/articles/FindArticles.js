@@ -17,7 +17,6 @@ import strings from "../i18n/definitions";
 import useShadowRef from "../hooks/useShadowRef";
 import { Link } from "react-router-dom";
 import VideoPreview from "../videos/VideoPreview";
-import { SortButton } from "./SortingButtons.sc";
 
 export default function FindArticles({ content, searchQuery, searchPublishPriority, searchDifficultyPriority }) {
   let api = useContext(APIContext);
@@ -202,13 +201,13 @@ export default function FindArticles({ content, searchQuery, searchPublishPriori
             <UnfinishedArticlesList articleList={articlesAndVideosList} setArticleList={setArticlesAndVideosList} />
           )}
           <s.SortHolder>
-            <SortButton
+            <s.ShowVideoOnlyButton
               className={isShowVideosOnlyEnabled && "selected"}
               style={{ visibility: !areVideosAvailable && "hidden" }}
               onClick={handleVideoOnlyClick}
             >
               Show videos only
-            </SortButton>
+            </s.ShowVideoOnlyButton>
             <SortingButtons
               articleList={articlesAndVideosList}
               setArticleList={setArticlesAndVideosList}
