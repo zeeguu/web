@@ -6,7 +6,7 @@ import RedirectionNotificationModal from "../components/redirect_notification/Re
 import Feature from "../features/Feature";
 import { extractVideoIDFromURL } from "../utils/misc/youtube";
 import SmallSaveArticleButton from "./SmallSaveArticleButton";
-import * as sweetM from "./TagsOfInterests.sc";
+import { TagsOfInterests } from "./TagsOfInterests.sc";
 import ArticleSourceInfo from "../components/ArticleSourceInfo";
 import ArticleStatInfo from "../components/ArticleStatInfo";
 import HighlightOffRoundedIcon from "@mui/icons-material/HighlightOffRounded";
@@ -111,13 +111,13 @@ export default function ArticlePreview({
   return (
     <s.ArticlePreview>
       {showInfoTopics && (
-        <sweetM.TagsOfInterests>
+        <TagsOfInterests>
           <ExplainTopicsModal
             infoTopicClick={infoTopicClick}
             showInfoTopics={showInfoTopics}
             setShowInfoTopics={setShowInfoTopics}
           />
-        </sweetM.TagsOfInterests>
+        </TagsOfInterests>
       )}
       <SmallSaveArticleButton article={article} isArticleSaved={isArticleSaved} setIsArticleSaved={setIsArticleSaved} />
       <s.TitleContainer>
@@ -144,18 +144,17 @@ export default function ArticlePreview({
         <div>
           {showInferredTopic && topics.length > 0 && (
             <s.UrlTopics>
-              {topics.map((tuple) => (
-                // Tuple (Topic Title, TopicOriginType)
+              {topics.map(([topicTitle, topicOrigin]) => (
                 <span
                   onClick={() => {
                     setShowInfoTopics(!showInfoTopics);
-                    setInfoTopicClick(tuple[0]);
+                    setInfoTopicClick(topicTitle);
                   }}
-                  key={tuple[0]}
-                  className={tuple[1] === TopicOriginType.INFERRED ? "inferred" : "gold"}
+                  key={topicTitle}
+                  className={topicOrigin === TopicOriginType.INFERRED ? "inferred" : "gold"}
                 >
-                  {tuple[0]}
-                  {tuple[1] === TopicOriginType.INFERRED && (
+                  {topicTitle}
+                  {topicOrigin === TopicOriginType.INFERRED && (
                     <HighlightOffRoundedIcon
                       className="cancelButton"
                       sx={{ color: darkBlue }}
@@ -163,7 +162,7 @@ export default function ArticlePreview({
                         e.stopPropagation();
                         setShowInferredTopic(false);
                         toast("Your preference was saved.");
-                        api.removeMLSuggestion(article.id, tuple[0]);
+                        api.removeMLSuggestion(article.id, topicTitle);
                       }}
                     />
                   )}
