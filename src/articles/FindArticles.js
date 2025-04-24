@@ -213,7 +213,7 @@ export default function FindArticles({ content, searchQuery, searchPublishPriori
             <SortingButtons
               articleList={articlesAndVideosList}
               setArticleList={setArticlesAndVideosList}
-              resetTempListOnChange={isShowVideosOnlyEnabled}
+              clearStateOnUpdate={isShowVideosOnlyEnabled}
             />
           </s.SortHolder>
         </>
