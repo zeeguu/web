@@ -44,6 +44,8 @@ export default function FindArticles({ content, searchQuery, searchPublishPriori
   // Next three vars required for the "Show Videos Only" toggle button
   const [areVideosAvailable, setAreVideosAvailable] = useState(false);
   const [isShowVideosOnlyEnabled, setIsShowVideosOnlyEnabled] = useState(false);
+  // Ref is needed since it's called in the updateOnPagination function. This function
+  // could have stale values if using the state constant.
   const isShowVideosOnlyEnabledRef = useShadowRef(isShowVideosOnlyEnabled);
 
   function getNewArticlesForPage(pageNumber, handleArticleInsertion) {
@@ -211,7 +213,7 @@ export default function FindArticles({ content, searchQuery, searchPublishPriori
             <SortingButtons
               articleList={articlesAndVideosList}
               setArticleList={setArticlesAndVideosList}
-              isShowVideoOnly={isShowVideosOnlyEnabled}
+              resetTempListOnChange={isShowVideosOnlyEnabled}
             />
           </s.SortHolder>
         </>
