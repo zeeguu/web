@@ -31,6 +31,7 @@ export default function FindArticles({ content, searchQuery, searchPublishPriori
   const [articlesAndVideosList, setArticlesAndVideosList] = useState();
   const [originalList, setOriginalList] = useState(null);
   const [searchError, setSearchError] = useState(false);
+
   const [isExtensionAvailable] = useExtensionCommunication();
   const [doNotShowRedirectionModal_UserPreference, setDoNotShowRedirectionModal_UserPreference] = useState(
     doNotShowRedirectionModal_LocalStorage,
@@ -39,6 +40,13 @@ export default function FindArticles({ content, searchQuery, searchPublishPriori
 
   const searchPublishPriorityRef = useShadowRef(searchPublishPriority);
   const searchDifficultyPriorityRef = useShadowRef(searchDifficultyPriority);
+
+  // Next three vars required for the "Show Videos Only" toggle button
+  const [areVideosAvailable, setAreVideosAvailable] = useState(false);
+  const [isShowVideosOnlyEnabled, setIsShowVideosOnlyEnabled] = useState(false);
+  // Ref is needed since it's called in the updateOnPagination function. This function
+  // could have stale values if using the state constant.
+  const isShowVideosOnlyEnabledRef = useShadowRef(isShowVideosOnlyEnabled);
 
   function getNewArticlesForPage(pageNumber, handleArticleInsertion) {
     if (searchQuery) {
@@ -59,8 +67,13 @@ export default function FindArticles({ content, searchQuery, searchPublishPriori
   }
 
   function updateOnPagination(newUpdatedList) {
-    setArticlesAndVideosList(newUpdatedList);
-    setOriginalList(newUpdatedList);
+    if (isShowVideosOnlyEnabledRef.current) {
+      const videosOnly = [...newUpdatedList].filter((each) => each.video);
+      setArticlesAndVideosList(videosOnly);
+    } else {
+      setArticlesAndVideosList(newUpdatedList);
+      setOriginalList(newUpdatedList);
+    }
   }
 
   const [handleScroll, isWaitingForNewArticles, noMoreArticlesToShow, resetPagination] = useArticlePagination(
@@ -69,6 +82,17 @@ export default function FindArticles({ content, searchQuery, searchPublishPriori
     searchQuery ? "Article Search" : strings.titleHome,
     getNewArticlesForPage,
   );
+
+  function handleVideoOnlyClick() {
+    setIsShowVideosOnlyEnabled(!isShowVideosOnlyEnabled);
+    if (isShowVideosOnlyEnabled) {
+      setArticlesAndVideosList(originalList);
+      resetPagination();
+    } else {
+      const videosOnly = [...articlesAndVideosList].filter((each) => each.video);
+      setArticlesAndVideosList(videosOnly);
+    }
+  }
 
   const handleArticleClick = (articleId, sourceId, index) => {
     const seenList = articlesAndVideosList.slice(0, index).map((each) => each.source_id);
@@ -108,6 +132,7 @@ export default function FindArticles({ content, searchQuery, searchPublishPriori
           setArticlesAndVideosList(articles);
           setOriginalList([...articles]);
           setReloadingSearchArticles(false);
+          articles.some((e) => e.video) ? setAreVideosAvailable(true) : setAreVideosAvailable(false);
         },
         (error) => {
           console.log(error);
@@ -123,6 +148,7 @@ export default function FindArticles({ content, searchQuery, searchPublishPriori
       api.getUserArticles((articles) => {
         setArticlesAndVideosList(articles);
         setOriginalList([...articles]);
+        articles.some((e) => e.video) ? setAreVideosAvailable(true) : setAreVideosAvailable(false);
       });
       window.addEventListener("scroll", handleScroll, true);
       return () => {
@@ -158,17 +184,11 @@ export default function FindArticles({ content, searchQuery, searchPublishPriori
           <div style={{ marginBottom: "1.5rem", padding: "0.5rem" }}>
             <span>
               You can customize your Home by{" "}
-              <Link
-                className="bold underlined-link"
-                to="/account_settings/interests?fromArticles=1"
-              >
+              <Link className="bold underlined-link" to="/account_settings/interests?fromArticles=1">
                 subscribing&nbsp;to&nbsp;topics
               </Link>
               ,{" "}
-              <Link
-                className="bold underlined-link"
-                to="/account_settings/excluded_keywords?fromArticles=1"
-              >
+              <Link className="bold underlined-link" to="/account_settings/excluded_keywords?fromArticles=1">
                 filtering&nbsp;keywords
               </Link>{" "}
               or{" "}
@@ -183,10 +203,17 @@ export default function FindArticles({ content, searchQuery, searchPublishPriori
             <UnfinishedArticlesList articleList={articlesAndVideosList} setArticleList={setArticlesAndVideosList} />
           )}
           <s.SortHolder>
+            <s.ShowVideoOnlyButton
+              className={isShowVideosOnlyEnabled && "selected"}
+              style={{ visibility: !areVideosAvailable && "hidden" }}
+              onClick={handleVideoOnlyClick}
+            >
+              Show videos only
+            </s.ShowVideoOnlyButton>
             <SortingButtons
               articleList={articlesAndVideosList}
-              originalList={originalList}
               setArticleList={setArticlesAndVideosList}
+              clearStateTrigger={isShowVideosOnlyEnabled}
             />
           </s.SortHolder>
         </>
