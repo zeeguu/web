@@ -21,10 +21,7 @@ import FullWidthErrorMsg from "../../components/FullWidthErrorMsg.sc";
 import LoadingAnimation from "../../components/LoadingAnimation";
 import LogOutButton from "./LogOutButton";
 import useFormField from "../../hooks/useFormField";
-import {
-  EmailValidator,
-  NonEmptyValidator,
-} from "../../utils/ValidatorRule/Validator";
+import { EmailValidator, NonEmptyValidator } from "../../utils/ValidatorRule/Validator";
 import validateRules from "../../assorted/validateRules";
 import { useLocation } from "react-router-dom/cjs/react-router-dom";
 import FullWidthConfirmMsg from "../../components/FullWidthConfirmMsg.sc";
@@ -32,27 +29,17 @@ import FullWidthConfirmMsg from "../../components/FullWidthConfirmMsg.sc";
 export default function ProfileDetails() {
   const api = useContext(APIContext);
   const state = useLocation().state || {};
-  const successfulyChangedPassword =
-    "passwordChanged" in state ? state.passwordChanged : false;
+  const successfulyChangedPassword = "passwordChanged" in state ? state.passwordChanged : false;
   const [errorMessage, setErrorMessage] = useState("");
   const { userDetails, setUserDetails } = useContext(UserContext);
   const history = useHistory();
   const isPageMounted = useRef(true);
 
-  const [
-    userName,
-    setUserName,
-    validateUserName,
-    isUserNameValid,
-    userErrorMessage,
-  ] = useFormField("", NonEmptyValidator("Please provide a name."));
-  const [
-    userEmail,
-    setUserEmail,
-    validateEmail,
-    isEmailValid,
-    emailErrorMessage,
-  ] = useFormField("", [
+  const [userName, setUserName, validateUserName, isUserNameValid, userErrorMessage] = useFormField(
+    "",
+    NonEmptyValidator("Please provide a name."),
+  );
+  const [userEmail, setUserEmail, validateEmail, isEmailValid, emailErrorMessage] = useFormField("", [
     NonEmptyValidator("Please provide an email."),
     EmailValidator,
   ]);
@@ -95,7 +82,6 @@ export default function ProfileDetails() {
   if (!userDetails) {
     return <LoadingAnimation />;
   }
-  console.log(userEmail);
   return (
     <PreferencesPage layoutVariant={"minimalistic-top-aligned"}>
       <BackArrow redirectLink={"/account_settings"} />
@@ -103,17 +89,13 @@ export default function ProfileDetails() {
         <Heading>{strings.profileDetails}</Heading>
         {successfulyChangedPassword && (
           <>
-            <FullWidthConfirmMsg>
-              Password changed successfuly!
-            </FullWidthConfirmMsg>
+            <FullWidthConfirmMsg>Password changed successfuly!</FullWidthConfirmMsg>
           </>
         )}
       </Header>
       <Main>
         <Form>
-          {errorMessage && (
-            <FullWidthErrorMsg>{errorMessage}</FullWidthErrorMsg>
-          )}
+          {errorMessage && <FullWidthErrorMsg>{errorMessage}</FullWidthErrorMsg>}
           <FormSection>
             <InputField
               type={"text"}
