@@ -3,7 +3,7 @@ import { useLocation } from "react-router";
 import strings from "../i18n/definitions";
 import * as s from "./SortingButtons.sc";
 
-export default function SortingButtons({ articleList, setArticleList, clearStateOnUpdate }) {
+export default function SortingButtons({ articleList, setArticleList, clearStateTrigger }) {
   const [difficultySortState, setDifficultySortState] = useState("");
   const [wordCountSortState, setWordCountSortState] = useState("");
   const [progressSortState, setProgressSortState] = useState("");
@@ -16,7 +16,7 @@ export default function SortingButtons({ articleList, setArticleList, clearState
     setWordCountSortState("");
     setProgressSortState("");
     setTemporaryList([]);
-  }, [clearStateOnUpdate]);
+  }, [clearStateTrigger]);
 
   useEffect(() => {
     // In case the user scrolls and gets more articles without resetting the filter.
