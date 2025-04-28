@@ -6,11 +6,13 @@ import isNullOrUndefinied from "../utils/misc/isNullOrUndefinied";
 
 // We try to capture about a full sentence around a word.
 const MAX_WORD_EXPANSION_COUNT = 28;
-function wordShouldSkipCount(word) {
+
+function tokenShouldSkipCount(word) {
   //   When building context, we do not count for the context limit punctuation,
   // symbols, and numbers.
   return word.token.is_punct || word.token.is_symbol || word.token.is_like_num;
 }
+
 export default class InteractiveText {
   constructor(
     tokenizedParagraphs,
@@ -62,14 +64,14 @@ export default class InteractiveText {
           continue;
         target_token = paragraphs[target_p_i][target_s_i][target_t_i];
         /*
-        Before we update the target token we want to check two cases:
-         1. The bookmark isn't defined. 
-         If the bookmark is defined it means a bookmark is trying to override another
-         previous bookmark.
-         2. The bookmark text, doesn't match the token.
-         In this case, we might have an error in the coordinates, and for that reason
-         we don't update the original text.
-         */
+                                                                                Before we update the target token we want to check two cases:
+                                                                                 1. The bookmark isn't defined. 
+                                                                                 If the bookmark is defined it means a bookmark is trying to override another
+                                                                                 previous bookmark.
+                                                                                 2. The bookmark text, doesn't match the token.
+                                                                                 In this case, we might have an error in the coordinates, and for that reason
+                                                                                 we don't update the original text.
+                                                                                 */
         if (target_token.bookmark) {
           continue;
         }
@@ -119,13 +121,13 @@ export default class InteractiveText {
           bookmark.total_tokens = text_i + bookmark_i;
         target_token.bookmark = bookmark;
         /*
-          When rendering the words in the frontend, we alter the word object to be composed
-          of multiple tokens.
-          In case of deleting a bookmark, we need to make sure that all the tokens are 
-          available to re-render the original text. 
-          To do this, we need to ensure that the stored token is stored without a bookmark,
-          so when those are retrieved the token is seen as a token rather than a bookmark. 
-         */
+                                                                                  When rendering the words in the frontend, we alter the word object to be composed
+                                                                                  of multiple tokens.
+                                                                                  In case of deleting a bookmark, we need to make sure that all the tokens are 
+                                                                                  available to re-render the original text. 
+                                                                                  To do this, we need to ensure that the stored token is stored without a bookmark,
+                                                                                  so when those are retrieved the token is seen as a token rather than a bookmark. 
+                                                                                 */
         target_token.mergedTokens = [{ ...target_token, bookmark: null }];
         for (let i = 1; i < bookmark["t_total_token"]; i++) {
           target_token.mergedTokens.push({
@@ -135,6 +137,7 @@ export default class InteractiveText {
         }
       }
     }
+
     this.api = api;
     this.article_id = articleID;
     this.language = language;
@@ -341,11 +344,21 @@ export default class InteractiveText {
        * left and right until we reach a start/end of sentence or run out of budget.
        *
        * We do this to avoid situations where the user might click a final word in an
-       * exercise and we end up creating a new BookmarkContext + Text pair.
+       * exercise, and we used to end up creating a new BookmarkContext + Text pair
+       * With the current approach the last word in a sentence and the mid-word in a sentence
+       * will still get the same context!
+       *
+       * example for left and right extension with a MAX_WORD_EXPANSION_COUNT = 6:
+       *
+       *         w1 w2 w3 (w4) w5 w6 (w7).
+       *
+       * new method will have w1 ... w7 as context for both w4 and w7
        *
        * I reused the methods we had defined for left and right, though here they are
        * exclusively used to expand 1 token to left and right.
        */
+
+      let budget = MAX_WORD_EXPANSION_COUNT;
 
       let [leftContext, paragraph_i, sent_i, token_i] = [
         "",
@@ -353,12 +366,13 @@ export default class InteractiveText {
         startingWord.token.sent_i,
         startingWord.token.token_i,
       ];
-
-      let budget = MAX_WORD_EXPANSION_COUNT;
-      let leftEllipsis;
-      let rightContext, rightEllipsis;
       let leftWord = startingWord;
+      let leftEllipsis;
+
+      let rightContext, rightEllipsis;
       let rightWord = startingWord.next;
+
+      // accumulates context
       let context = startingWord.word;
 
       while (budget > 0) {
@@ -367,7 +381,7 @@ export default class InteractiveText {
 
         [leftContext, paragraph_i, sent_i, token_i, leftUpdated] =
           getLeftContextAndStartIndex(leftWord, 1);
-        if (!wordShouldSkipCount(leftWord)) budget -= 1;
+        if (!tokenShouldSkipCount(leftWord)) budget -= 1;
         context = leftContext + context;
 
         if (budget > 0 && rightWord) {
@@ -375,12 +389,12 @@ export default class InteractiveText {
             rightWord,
             1,
           );
-          if (!wordShouldSkipCount(rightWord)) budget -= 1;
+          if (!tokenShouldSkipCount(rightWord)) budget -= 1;
           context += rightContext;
         }
 
         // We have captured the sentence in its entirety.
-        if (!rightUpdated & !leftUpdated) break;
+        if (!rightUpdated && !leftUpdated) break;
 
         // If we update one of the sides, we keep going.
         if (leftUpdated) leftWord = leftWord.prev;
@@ -403,6 +417,7 @@ export default class InteractiveText {
         rightEllipsis,
       ];
     }
+
     return radialExpansionContext(word);
   }
 }
