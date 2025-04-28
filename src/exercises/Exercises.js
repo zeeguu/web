@@ -382,7 +382,6 @@ export default function Exercises({ articleID, backButtonAction, toScheduledExer
     <NarrowColumn>
       <s.ExercisesColumn>
         {screenWidth < MOBILE_WIDTH && <BackArrow />}
-        <span>{currentExerciseType}</span>
         <ExerciseSessionProgressBar
           index={isCorrect ? currentIndex + 1 : currentIndex}
           total={fullExerciseProgression.length}
