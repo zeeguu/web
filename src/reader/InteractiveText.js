@@ -176,16 +176,12 @@ export default class InteractiveText {
         if (currentWord.token.is_sent_start && currentWord.token.sent_i !== currentWord.prev.token.sent_i) {
           break;
         }
-
         contextBuilder = contextBuilder + (currentWord.prev.token.has_space ? " " : "") + currentWord.word;
-
         count++;
         currentWord = currentWord.next;
       }
-      // We broke early, or we didn't have more tokens in the link early.
-      // We are at the end of paragraph (currentWord undefined),
-      // or we broke early (found end of sent.)
-      if (count < maxRightContextLength) hasRightEllipsis = false;
+      // We have a word, and it's not the start of a sentence.
+      hasRightEllipsis = currentWord !== null && !currentWord.token.is_sent_start;
       return [contextBuilder, hasRightEllipsis, count > 0];
     }
 
@@ -220,17 +216,17 @@ export default class InteractiveText {
         let leftUpdated = false;
 
         [leftContext, paragraph_i, sent_i, token_i, leftUpdated] = getLeftContextAndStartIndex(leftWord, 1);
-        if (!tokenShouldSkipCount(leftWord)) budget -= 1;
+        if (leftUpdated && !tokenShouldSkipCount(leftWord)) budget -= 1;
         context = leftContext + context;
 
         if (budget > 0 && rightWord) {
           [rightContext, rightEllipsis, rightUpdated] = getRightContext(rightWord, 1);
-          if (!tokenShouldSkipCount(rightWord)) budget -= 1;
+          if (rightUpdated && !tokenShouldSkipCount(rightWord)) budget -= 1;
           context += rightContext;
         }
 
         // We have captured the sentence in its entirety.
-        if (!rightUpdated & !leftUpdated) break;
+        if (!rightUpdated && !leftUpdated) break;
 
         // If we update one of the sides, we keep going.
         if (leftUpdated) leftWord = leftWord.prev;
@@ -241,7 +237,7 @@ export default class InteractiveText {
       leftEllipsis = token_i !== 0;
 
       console.log("Budget: ", budget);
-      console.log("Final context: ", context);
+      console.log("Final context: ", context, "(", context.split(" ").length, " words)");
       console.log(paragraph_i, sent_i, token_i, leftEllipsis, rightEllipsis);
 
       return [context, paragraph_i, sent_i, token_i, leftEllipsis, rightEllipsis];
