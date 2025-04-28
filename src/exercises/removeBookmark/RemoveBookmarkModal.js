@@ -22,8 +22,7 @@ export default function RemoveBookmarkModal({
   const [showOtherForm, setShowOtherForm] = useState(false);
   const [otherFeedback, setOtherFeedback] = useState("");
   const [hasMultipleBookmarks, setHasMultipleBookmarks] = useState(false);
-  const [exerciseBookmarkForFeedback, setExerciseBookmarkForFeedback] =
-    useState(null);
+  const [exerciseBookmarkForFeedback, setExerciseBookmarkForFeedback] = useState(null);
 
   useEffect(() => {
     if (exerciseBookmarks) {
@@ -47,9 +46,8 @@ export default function RemoveBookmarkModal({
 
   function handleSubmit(e, reason) {
     e.preventDefault();
-    toast.success(
-      `Bookmark ${exerciseBookmarkForFeedback.from} removed successfully ${reason}`,
-    );
+    let reasonHumanReadable = possibleReasons.find((each) => each[0] === reason)[1];
+    toast.success(`Bookmark ${exerciseBookmarkForFeedback.from} removed successfully: '${reasonHumanReadable}'.`);
     uploadUserFeedback(reason, exerciseBookmarkForFeedback.id);
     setOpen(!open);
     setHasProvidedQuickFeedback(true);
@@ -73,13 +71,11 @@ export default function RemoveBookmarkModal({
             setExerciseBookmarkForFeedback={setExerciseBookmarkForFeedback}
           ></MatchBookmarkSelection>
         )}
-        {(!hasMultipleBookmarks ||
-          (hasMultipleBookmarks && exerciseBookmarkForFeedback !== null)) && (
+        {(!hasMultipleBookmarks || (hasMultipleBookmarks && exerciseBookmarkForFeedback !== null)) && (
           <>
             {exerciseBookmarkForFeedback && (
               <p>
-                Why don't you want to see '
-                <b>{exerciseBookmarkForFeedback.from}</b>'?
+                Why don't you want to see '<b>{exerciseBookmarkForFeedback.from}</b>'?
               </p>
             )}
 
@@ -108,10 +104,7 @@ export default function RemoveBookmarkModal({
               <Form>
                 {" "}
                 <FormSection>
-                  <TextField
-                    onChange={(e) => setOtherFeedback(e.target.value)}
-                    label={"Other"}
-                  />
+                  <TextField onChange={(e) => setOtherFeedback(e.target.value)} label={"Other"} />
                   <ButtonContainer className={"adaptive-alignment-horizontal"}>
                     <Button
                       type={"submit"}
