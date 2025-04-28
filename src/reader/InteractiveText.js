@@ -6,7 +6,7 @@ import isNullOrUndefinied from "../utils/misc/isNullOrUndefinied";
 
 // We try to capture about a full sentence around a word.
 const MAX_WORD_EXPANSION_COUNT = 28;
-function wordShouldSkipCount(word) {
+function tokenShouldSkipCount(word) {
   //   When building context, we do not count for the context limit punctuation,
   // symbols, and numbers.
   return word.token.is_punct || word.token.is_symbol || word.token.is_like_num;
@@ -220,12 +220,12 @@ export default class InteractiveText {
         let leftUpdated = false;
 
         [leftContext, paragraph_i, sent_i, token_i, leftUpdated] = getLeftContextAndStartIndex(leftWord, 1);
-        if (!wordShouldSkipCount(leftWord)) budget -= 1;
+        if (!tokenShouldSkipCount(leftWord)) budget -= 1;
         context = leftContext + context;
 
         if (budget > 0 && rightWord) {
           [rightContext, rightEllipsis, rightUpdated] = getRightContext(rightWord, 1);
-          if (!wordShouldSkipCount(rightWord)) budget -= 1;
+          if (!tokenShouldSkipCount(rightWord)) budget -= 1;
           context += rightContext;
         }
 
