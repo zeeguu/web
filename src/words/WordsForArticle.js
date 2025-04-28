@@ -1,5 +1,5 @@
 import { useParams, useHistory } from "react-router-dom";
-import { UMR_SOURCE } from "../reader/ArticleReader";
+import { WEB_READER } from "../reader/ArticleReader";
 import { useState, useEffect, useContext } from "react";
 import LoadingAnimation from "../components/LoadingAnimation";
 import WordsToReview from "./WordsToReview";
@@ -25,9 +25,7 @@ export default function WordsForArticle() {
   const [articleInfo, setArticleInfo] = useState(null);
   const [exercisesEnabled, setExercisesEnabled] = useState(false);
   const { screenWidth } = useScreenWidth();
-  const desktopTopMargin = isDesktopScreenWidth(screenWidth)
-    ? { marginTop: "2em" }
-    : {};
+  const desktopTopMargin = isDesktopScreenWidth(screenWidth) ? { marginTop: "2em" } : {};
 
   useEffect(() => {
     api.prioritizeBookmarksToStudy(articleID, setWords);
@@ -36,7 +34,7 @@ export default function WordsForArticle() {
       setTitle('Words in "' + data.title + '"');
     });
 
-    api.logReaderActivity(api.WORDS_REVIEW, articleID, "", UMR_SOURCE);
+    api.logUserActivity(api.WORDS_REVIEW, articleID, "", WEB_READER);
     // eslint-disable-next-line
   }, []);
 
@@ -55,9 +53,7 @@ export default function WordsForArticle() {
   }
 
   function notifyWordChanged(bookmark) {
-    let newWords = words.map((word) =>
-      word.bookmark_id === bookmark.id ? bookmark : word,
-    );
+    let newWords = words.map((word) => (word.bookmark_id === bookmark.id ? bookmark : word));
     setWords(newWords);
     setExercisesEnabled(fit_for_study(newWords));
   }
@@ -81,12 +77,7 @@ export default function WordsForArticle() {
 
   function logGoingToExercisesAfterReview(e) {
     console.log("logGoingToExercisesAfterReview called");
-    return api.logReaderActivity(
-      api.TO_EXERCISES_AFTER_REVIEW,
-      articleID,
-      "",
-      UMR_SOURCE,
-    );
+    return api.logUserActivity(api.TO_EXERCISES_AFTER_REVIEW, articleID, "", WEB_READER);
   }
 
   return (
@@ -97,14 +88,11 @@ export default function WordsForArticle() {
         deleteBookmark={deleteBookmark}
         articleInfo={articleInfo}
         notifyWordChanged={notifyWordChanged}
-        source={UMR_SOURCE}
+        source={WEB_READER}
       />
       <CenteredContent style={{ marginBottom: "2em" }}>
         {!exercisesEnabled ? (
-          <Tooltip
-            title="You need to translate words in the article first."
-            arrow
-          >
+          <Tooltip title="You need to translate words in the article first." arrow>
             <span>
               <StyledButton disabled>{strings.toPracticeWords}</StyledButton>
             </span>

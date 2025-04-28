@@ -3,6 +3,7 @@ import qs from "qs";
 
 // Reader Opening Actions
 Zeeguu_API.prototype.CLICKED_ARTICLE = "CLICKED ARTICLE";
+Zeeguu_API.prototype.CLICKED_VIDEO = "CLICKED VIDEO";
 Zeeguu_API.prototype.OPEN_ARTICLE = "OPEN ARTICLE";
 Zeeguu_API.prototype.CLICKED_RESUME_ARTICLE = "CLICKED RESUME ARTICLE";
 Zeeguu_API.prototype.ARTICLE_FOCUSED = "ARTICLE FOCUSED";
@@ -27,10 +28,8 @@ Zeeguu_API.prototype.PERSONAL_COPY = "PERSONAL COPY";
 Zeeguu_API.prototype.WORDS_REVIEW = "WORDS_REVIEW";
 Zeeguu_API.prototype.SUBSCRIBE_TO_SEARCH = "SUBSCRIBE_TO_SEARCH";
 Zeeguu_API.prototype.UNSUBSCRIBE_FROM_SEARCH = "UNSUBSCRIBE_FROM_SEARCH";
-Zeeguu_API.prototype.SUBSCRIBE_TO_EMAIL_NOTIFICATIONS =
-  "SUBSCRIBE_TO_EMAIL_NOTIFICATIONS";
-Zeeguu_API.prototype.UNSUBSCRIBE_FROM_EMAIL_NOTIFICATIONS =
-  "UNSUBSCRIBE_FROM_EMAIL_NOTIFICATIONS";
+Zeeguu_API.prototype.SUBSCRIBE_TO_EMAIL_NOTIFICATIONS = "SUBSCRIBE_TO_EMAIL_NOTIFICATIONS";
+Zeeguu_API.prototype.UNSUBSCRIBE_FROM_EMAIL_NOTIFICATIONS = "UNSUBSCRIBE_FROM_EMAIL_NOTIFICATIONS";
 Zeeguu_API.prototype.AUDIO_DISABLE = "AUDIO_DISABLE";
 
 // Reader Closing Actions
@@ -61,29 +60,31 @@ Zeeguu_API.prototype.AUDIO_EXP = "AUDIO_EXP";
 
 // User Activity Dashboard
 Zeeguu_API.prototype.USER_DASHBOARD_OPEN = "UD - USER DASHBOARD OPEN";
-Zeeguu_API.prototype.USER_DASHBOARD_USER_FEEDBACK =
-  "UD - USER DASHBOARD FEEDBACK";
-Zeeguu_API.prototype.USER_DASHBOARD_TAB_CHANGE =
-  "UD - USER DASHBOARD TAB CHANGE";
-Zeeguu_API.prototype.USER_DASHBOARD_PERIOD_CHANGE =
-  "UD - USER DASHBOARD PERIOD CHANGE";
-Zeeguu_API.prototype.USER_DASHBOARD_TIME_COUNT_CHANGE =
-  "UD - USER DASHBOARD TIME COUNT CHANGE";
-Zeeguu_API.prototype.USER_DASHBOARD_DATE_CHANGE =
-  "UD - USER DASHBOARD DATE CHANGE";
+Zeeguu_API.prototype.USER_DASHBOARD_USER_FEEDBACK = "UD - USER DASHBOARD FEEDBACK";
+Zeeguu_API.prototype.USER_DASHBOARD_TAB_CHANGE = "UD - USER DASHBOARD TAB CHANGE";
+Zeeguu_API.prototype.USER_DASHBOARD_PERIOD_CHANGE = "UD - USER DASHBOARD PERIOD CHANGE";
+Zeeguu_API.prototype.USER_DASHBOARD_TIME_COUNT_CHANGE = "UD - USER DASHBOARD TIME COUNT CHANGE";
+Zeeguu_API.prototype.USER_DASHBOARD_DATE_CHANGE = "UD - USER DASHBOARD DATE CHANGE";
 
-Zeeguu_API.prototype.logUserActivity = function (
-  event,
-  article_id = "",
-  value = "",
-  extra_data = "",
-) {
+Zeeguu_API.prototype.logUserActivity = function (event, article_id = "", value = "", extra_data = "", source_id = "") {
+  // TODO: think about -- what if you have a video_id?
+  /**
+   * Logs an activity
+   *
+   * @param {string} event - The type of event that occurred.
+   * @param {string} [article_id=""] - The ID of the article associated with the event.
+   * @param {string} [value=""] - Additional information about the event.
+   * @param {string} [extra_data=""] - Extra data related to the event.
+   * @param {string} [source_id=""] - The ID of source associated with the event.
+   */
+
   let event_information = {
     time: new Date().toJSON(),
     event: event,
     value: value,
     extra_data: extra_data,
     article_id: article_id,
+    source_id: source_id,
   };
 
   const currentDate = new Date();
@@ -101,17 +102,6 @@ Zeeguu_API.prototype.logUserActivity = function (
       console.log(error);
     },
   );
-};
-
-// Used only for events that happen in the text reader;
-// for any other events, use logUserActivity
-Zeeguu_API.prototype.logReaderActivity = function (
-  event,
-  article_id = "",
-  value = "",
-  extra_data = "",
-) {
-  return this.logUserActivity(event, article_id, value, extra_data);
 };
 
 Zeeguu_API.prototype.daysSinceLastUse = function (callback) {

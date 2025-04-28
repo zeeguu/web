@@ -6,7 +6,7 @@ import RedirectionNotificationModal from "../components/redirect_notification/Re
 import Feature from "../features/Feature";
 import { extractVideoIDFromURL } from "../utils/misc/youtube";
 import SmallSaveArticleButton from "./SmallSaveArticleButton";
-import * as sweetM from "./TagsOfInterests.sc";
+import { TagsOfInterests } from "./TagsOfInterests.sc";
 import ArticleSourceInfo from "../components/ArticleSourceInfo";
 import ArticleStatInfo from "../components/ArticleStatInfo";
 import HighlightOffRoundedIcon from "@mui/icons-material/HighlightOffRounded";
@@ -26,21 +26,19 @@ export default function ArticlePreview({
   hasExtension,
   doNotShowRedirectionModal_UserPreference,
   setDoNotShowRedirectionModal_UserPreference,
-  onArticleClick,
+  notifyArticleClick,
 }) {
   const api = useContext(APIContext);
   // Store which topic was clicked to show in the Modal
   const [infoTopicClick, setInfoTopicClick] = useState("");
   const [showInfoTopics, setShowInfoTopics] = useState(false);
   const [isRedirectionModalOpen, setIsRedirectionModaOpen] = useState(false);
-  const [isArticleSaved, setIsArticleSaved] = useState(
-    article.has_personal_copy,
-  );
+  const [isArticleSaved, setIsArticleSaved] = useState(article.has_personal_copy);
   const [showInferredTopic, setShowInferredTopic] = useState(true);
 
   const handleArticleClick = () => {
-    if (onArticleClick) {
-      onArticleClick(article.id);
+    if (notifyArticleClick) {
+      notifyArticleClick(article.source_id);
     }
   };
 
@@ -74,9 +72,7 @@ export default function ArticlePreview({
           article={article}
           open={isRedirectionModalOpen}
           handleCloseRedirectionModal={handleCloseRedirectionModal}
-          setDoNotShowRedirectionModal_UserPreference={
-            setDoNotShowRedirectionModal_UserPreference
-          }
+          setDoNotShowRedirectionModal_UserPreference={setDoNotShowRedirectionModal_UserPreference}
           setIsArticleSaved={setIsArticleSaved}
         />
         <s.InvisibleTitleButton
@@ -93,12 +89,7 @@ export default function ArticlePreview({
     let open_externally_without_modal = (
       //allow target _self on mobile to easily go back to Zeeguu
       //using mobile browser navigation
-      <a
-        target={isMobile ? "_self" : "_blank"}
-        rel="noreferrer"
-        href={article.url}
-        onClick={handleArticleClick}
-      >
+      <a target={isMobile ? "_self" : "_blank"} rel="noreferrer" href={article.url} onClick={handleArticleClick}>
         {article.title}
       </a>
     );
@@ -110,8 +101,7 @@ export default function ArticlePreview({
       article.has_uploader ||
       isArticleSaved === true;
 
-    let should_open_with_modal =
-      doNotShowRedirectionModal_UserPreference === false;
+    let should_open_with_modal = doNotShowRedirectionModal_UserPreference === false;
 
     if (should_open_in_zeeguu) return open_in_zeeguu;
     else if (should_open_with_modal) return open_externally_with_modal;
@@ -121,26 +111,18 @@ export default function ArticlePreview({
   return (
     <s.ArticlePreview>
       {showInfoTopics && (
-        <sweetM.TagsOfInterests>
+        <TagsOfInterests>
           <ExplainTopicsModal
             infoTopicClick={infoTopicClick}
             showInfoTopics={showInfoTopics}
             setShowInfoTopics={setShowInfoTopics}
           />
-        </sweetM.TagsOfInterests>
+        </TagsOfInterests>
       )}
-      <SmallSaveArticleButton
-        article={article}
-        isArticleSaved={isArticleSaved}
-        setIsArticleSaved={setIsArticleSaved}
-      />
+      <SmallSaveArticleButton article={article} isArticleSaved={isArticleSaved} setIsArticleSaved={setIsArticleSaved} />
       <s.TitleContainer>
-        <s.Title className={article.opened ? "opened" : ""}>
-          {titleLink(article)}{" "}
-        </s.Title>
-        <ReadingCompletionProgress
-          last_reading_percentage={article.reading_completion}
-        ></ReadingCompletionProgress>
+        <s.Title className={article.opened ? "opened" : ""}>{titleLink(article)} </s.Title>
+        <ReadingCompletionProgress last_reading_percentage={article.reading_completion}></ReadingCompletionProgress>
       </s.TitleContainer>
 
       {article.feed_id ? (
@@ -150,8 +132,7 @@ export default function ArticlePreview({
           dontShowSourceIcon={dontShowSourceIcon}
         ></ArticleSourceInfo>
       ) : (
-        !dontShowSourceIcon &&
-        article.url && <s.UrlSource>{extractDomain(article.url)}</s.UrlSource>
+        !dontShowSourceIcon && article.url && <s.UrlSource>{extractDomain(article.url)}</s.UrlSource>
       )}
 
       <s.ArticleContent>
@@ -163,20 +144,17 @@ export default function ArticlePreview({
         <div>
           {showInferredTopic && topics.length > 0 && (
             <s.UrlTopics>
-              {topics.map((tuple) => (
-                // Tuple (Topic Title, TopicOriginType)
+              {topics.map(([topicTitle, topicOrigin]) => (
                 <span
                   onClick={() => {
                     setShowInfoTopics(!showInfoTopics);
-                    setInfoTopicClick(tuple[0]);
+                    setInfoTopicClick(topicTitle);
                   }}
-                  key={tuple[0]}
-                  className={
-                    tuple[1] === TopicOriginType.INFERRED ? "inferred" : "gold"
-                  }
+                  key={topicTitle}
+                  className={topicOrigin === TopicOriginType.INFERRED ? "inferred" : "gold"}
                 >
-                  {tuple[0]}
-                  {tuple[1] === TopicOriginType.INFERRED && (
+                  {topicTitle}
+                  {topicOrigin === TopicOriginType.INFERRED && (
                     <HighlightOffRoundedIcon
                       className="cancelButton"
                       sx={{ color: darkBlue }}
@@ -184,7 +162,7 @@ export default function ArticlePreview({
                         e.stopPropagation();
                         setShowInferredTopic(false);
                         toast("Your preference was saved.");
-                        api.removeMLSuggestion(article.id, tuple[0]);
+                        api.removeMLSuggestion(article.id, topicTitle);
                       }}
                     />
                   )}
@@ -195,20 +173,6 @@ export default function ArticlePreview({
         </div>
         <ArticleStatInfo articleInfo={article}></ArticleStatInfo>
       </s.BottomContainer>
-
-      {article.video ? (
-        <img
-          alt=""
-          style={{ float: "left", marginRight: "1em" }}
-          src={
-            "https://img.youtube.com/vi/" +
-            extractVideoIDFromURL(article.url) +
-            "/default.jpg"
-          }
-        />
-      ) : (
-        ""
-      )}
     </s.ArticlePreview>
   );
 }

@@ -29,7 +29,8 @@ import ArticleStatInfo from "../components/ArticleStatInfo";
 import DigitalTimer from "../components/DigitalTimer";
 import { APIContext } from "../contexts/APIContext";
 
-export const UMR_SOURCE = "UMR";
+// UMR stands for historical reasons for: Unified Multilingual Reader
+export const WEB_READER = "UMR";
 
 // A custom hook that builds on useLocation to parse
 // the query string for you.
@@ -38,36 +39,27 @@ function useQuery() {
 }
 
 export function onFocus(api, articleID, source) {
-  api.logReaderActivity(api.ARTICLE_FOCUSED, articleID, "", source);
+  api.logUserActivity(api.ARTICLE_FOCUSED, articleID, "", source);
 }
 
 export function onBlur(api, articleID, source) {
-  api.logReaderActivity(api.ARTICLE_UNFOCUSED, articleID, "", source);
+  api.logUserActivity(api.ARTICLE_UNFOCUSED, articleID, "", source);
 }
 
 export default function ArticleReader({ teacherArticleID }) {
   const api = useContext(APIContext);
   let articleID = "";
   let query = useQuery();
-  teacherArticleID
-    ? (articleID = teacherArticleID)
-    : (articleID = query.get("id"));
+  teacherArticleID ? (articleID = teacherArticleID) : (articleID = query.get("id"));
   let last_reading_percentage = query.get("percentage");
-  last_reading_percentage =
-    last_reading_percentage === "undefined"
-      ? null
-      : Number(last_reading_percentage);
+  last_reading_percentage = last_reading_percentage === "undefined" ? null : Number(last_reading_percentage);
 
   const [articleInfo, setArticleInfo] = useState();
 
-  const [interactiveText, setInteractiveText] = useState();
   const [interactiveTitle, setInteractiveTitle] = useState();
-  const {
-    translateInReader,
-    pronounceInReader,
-    updateTranslateInReader,
-    updatePronounceInReader,
-  } = useUserPreferences(api);
+  const [interactiveFragments, setInteractiveFragments] = useState();
+  const { translateInReader, pronounceInReader, updateTranslateInReader, updatePronounceInReader } =
+    useUserPreferences(api);
   const [scrollPosition, setScrollPosition] = useState();
   const [readerReady, setReaderReady] = useState();
   const [answerSubmitted, setAnswerSubmitted] = useState(false);
@@ -94,10 +86,7 @@ export default function ArticleReader({ teacherArticleID }) {
   function uploadActivity() {
     // It can happen that the timer already ticks before we have a reading session from the server.
     if (readingSessionIdRef.current) {
-      api.readingSessionUpdate(
-        readingSessionIdRef.current,
-        activityTimerRef.current,
-      );
+      api.readingSessionUpdate(readingSessionIdRef.current, activityTimerRef.current);
     }
   }
 
@@ -121,11 +110,11 @@ export default function ArticleReader({ teacherArticleID }) {
   }, [articleID]);
 
   const handleFocus = () => {
-    onFocus(api, articleID, UMR_SOURCE);
+    onFocus(api, articleID, WEB_READER);
   };
 
   const handleBlur = () => {
-    onBlur(api, articleID, UMR_SOURCE);
+    onBlur(api, articleID, WEB_READER);
   };
 
   function addPositionToScrollEventTracker(bottomRowElement) {
@@ -141,10 +130,7 @@ export default function ArticleReader({ teacherArticleID }) {
     setScrollPosition(ratio);
     let percentage = Math.floor(ratio * 100);
     let currentReadingTimer = activityTimerRef.current;
-    if (
-      currentReadingTimer - lastSampleTimer.current >=
-      SCROLL_SAMPLE_FREQUENCY
-    ) {
+    if (currentReadingTimer - lastSampleTimer.current >= SCROLL_SAMPLE_FREQUENCY) {
       scrollEvents.current.push([currentReadingTimer, percentage]);
       lastSampleTimer.current = currentReadingTimer;
     }
@@ -155,39 +141,39 @@ export default function ArticleReader({ teacherArticleID }) {
     addPositionToScrollEventTracker(bottomRowElement);
   };
 
+  function updateViewportSize() {
+    try {
+      let scrollElement = document.getElementById("scrollHolder");
+      let textElement = document.getElementById("text");
+      let bottomRow = document.getElementById("bottomRow");
+      if (last_reading_percentage) {
+        let currentScrollHeight = scrollElement.scrollHeight - scrollElement.clientHeight - bottomRow.clientHeight;
+        let destinationPixel = last_reading_percentage * currentScrollHeight;
+        scrollElement.scrollTo({
+          top: (0, destinationPixel),
+          behavior: "smooth",
+        });
+      }
+      setViewPortSettings(
+        JSON.stringify({
+          scrollHeight: scrollElement.scrollHeight,
+          clientHeight: scrollElement.clientHeight,
+          textHeight: textElement.clientHeight,
+          bottomRowHeight: bottomRow.clientHeight,
+        }),
+      );
+    } catch {
+      console.log("Failed to get elements to scroll.");
+    }
+  }
+
   useEffect(() => {
-    if (interactiveText !== undefined) {
+    if (interactiveFragments !== undefined) {
       setTimeout(() => {
-        try {
-          let scrollElement = document.getElementById("scrollHolder");
-          let textElement = document.getElementById("text");
-          let bottomRow = document.getElementById("bottomRow");
-          if (last_reading_percentage) {
-            let currentScrollHeight =
-              scrollElement.scrollHeight -
-              scrollElement.clientHeight -
-              bottomRow.clientHeight;
-            let destinationPixel =
-              last_reading_percentage * currentScrollHeight;
-            scrollElement.scrollTo({
-              top: (0, destinationPixel),
-              behavior: "smooth",
-            });
-          }
-          setViewPortSettings(
-            JSON.stringify({
-              scrollHeight: scrollElement.scrollHeight,
-              clientHeight: scrollElement.clientHeight,
-              textHeight: textElement.clientHeight,
-              bottomRowHeight: bottomRow.clientHeight,
-            }),
-          );
-        } catch {
-          console.log("Failed to get elements to scroll.");
-        }
+        updateViewportSize();
       }, 250);
     }
-  }, [interactiveText, last_reading_percentage]);
+  }, [interactiveFragments, last_reading_percentage]);
 
   function onCreate() {
     scrollEvents.current = [];
@@ -195,30 +181,35 @@ export default function ArticleReader({ teacherArticleID }) {
     setScrollPosition(0);
 
     api.getArticleInfo(articleID, (articleInfo) => {
-      setInteractiveText(
-        new InteractiveText(
-          articleInfo.tokenized_paragraphs,
-          articleInfo.id,
-          true,
-          api,
-          articleInfo.translations,
-          api.TRANSLATE_TEXT,
-          articleInfo.language,
-          UMR_SOURCE,
-          speech,
+      setInteractiveFragments(
+        articleInfo.tokenized_fragments.map(
+          (each) =>
+            new InteractiveText(
+              each.tokens,
+              articleInfo.source_id,
+              api,
+              each.past_bookmarks,
+              api.TRANSLATE_TEXT,
+              articleInfo.language,
+              WEB_READER,
+              speech,
+              each.context_identifier,
+              each.formatting,
+            ),
         ),
       );
+      const articleTitleData = articleInfo.tokenized_title_new;
       setInteractiveTitle(
         new InteractiveText(
-          articleInfo.tokenized_title,
-          articleInfo.id,
-          false,
+          articleTitleData.tokens,
+          articleInfo.source_id,
           api,
-          articleInfo.translations,
+          articleTitleData.past_bookmarks,
           api.TRANSLATE_TEXT,
           articleInfo.language,
-          UMR_SOURCE,
+          WEB_READER,
           speech,
+          articleTitleData.context_identifier,
         ),
       );
       setArticleInfo(articleInfo);
@@ -227,12 +218,7 @@ export default function ArticleReader({ teacherArticleID }) {
       api.readingSessionCreate(articleID, (sessionID) => {
         setReadingSessionId(sessionID);
         api.setArticleOpened(articleInfo.id);
-        api.logReaderActivity(
-          api.OPEN_ARTICLE,
-          articleID,
-          sessionID,
-          UMR_SOURCE,
-        );
+        api.logUserActivity(api.OPEN_ARTICLE, articleID, sessionID, WEB_READER);
       });
     });
 
@@ -245,13 +231,13 @@ export default function ArticleReader({ teacherArticleID }) {
 
   function componentWillUnmount() {
     uploadActivity();
-    api.logReaderActivity(
+    api.logUserActivity(
       api.SCROLL,
       articleID,
       viewPortSettingsRef.current,
       JSON.stringify(scrollEvents.current).slice(0, 4096),
     );
-    api.logReaderActivity("ARTICLE CLOSED", articleID, "", UMR_SOURCE);
+    api.logUserActivity(api.ARTICLE_CLOSED, articleID, "", WEB_READER);
     window.removeEventListener("focus", handleFocus);
     window.removeEventListener("blur", handleBlur);
     window.removeEventListener("scroll", handleScroll, true);
@@ -263,7 +249,7 @@ export default function ArticleReader({ teacherArticleID }) {
     }
   }
 
-  if (!articleInfo || !interactiveText) {
+  if (!articleInfo || !interactiveFragments) {
     return <LoadingAnimation />;
   }
 
@@ -273,39 +259,29 @@ export default function ArticleReader({ teacherArticleID }) {
       setAnswerSubmitted(true);
       setArticleInfo(newArticleInfo);
     });
-    api.logReaderActivity(api.LIKE_ARTICLE, articleInfo.id, state, UMR_SOURCE);
+    api.logUserActivity(api.LIKE_ARTICLE, articleID, state, WEB_READER);
   };
 
   const updateArticleDifficultyFeedback = (answer) => {
     let newArticleInfo = { ...articleInfo, relative_difficulty: answer };
-    api.submitArticleDifficultyFeedback(
-      { article_id: articleInfo.id, difficulty: answer },
-      () => {
-        setAnswerSubmitted(true);
-        setArticleInfo(newArticleInfo);
-      },
-    );
-    api.logReaderActivity(
-      api.DIFFICULTY_FEEDBACK,
-      articleInfo.id,
-      answer,
-      UMR_SOURCE,
-    );
+    api.submitArticleDifficultyFeedback({ article_id: articleInfo.id, difficulty: answer }, () => {
+      setAnswerSubmitted(true);
+      setArticleInfo(newArticleInfo);
+    });
+    api.logUserActivity(api.DIFFICULTY_FEEDBACK, articleID, answer, WEB_READER);
   };
-
   return (
     <>
       <TopToolbar
         user={userDetails}
         teacherArticleID={teacherArticleID}
         articleID={articleID}
-        interactiveText={interactiveText}
         translating={translateInReader}
         pronouncing={pronounceInReader}
         setTranslating={updateTranslateInReader}
         setPronouncing={updatePronounceInReader}
         url={articleInfo.url}
-        UMR_SOURCE={UMR_SOURCE}
+        UMR_SOURCE={WEB_READER}
         articleProgress={scrollPosition}
         timer={
           <DigitalTimer
@@ -332,11 +308,7 @@ export default function ArticleReader({ teacherArticleID }) {
             <ArticleStatInfo articleInfo={articleInfo}></ArticleStatInfo>
             <s.TopReaderButtonsContainer>
               <ArticleSource url={articleInfo.url} />
-              <ReportBroken
-                UMR_SOURCE={UMR_SOURCE}
-                history={history}
-                articleID={articleID}
-              />
+              <ReportBroken UMR_SOURCE={WEB_READER} history={history} articleID={articleID} />
             </s.TopReaderButtonsContainer>
           </s.ArticleInfoContainer>
           <hr></hr>
@@ -351,22 +323,23 @@ export default function ArticleReader({ teacherArticleID }) {
               title="video-frame"
               width="620"
               height="415"
-              src={
-                "https://www.youtube.com/embed/" +
-                extractVideoIDFromURL(articleInfo.url)
-              }
+              src={"https://www.youtube.com/embed/" + extractVideoIDFromURL(articleInfo.url)}
             ></iframe>
           ) : (
             ""
           )}
 
           <s.MainText>
-            <TranslatableText
-              interactiveText={interactiveText}
-              translating={translateInReader}
-              pronouncing={pronounceInReader}
-              updateBookmarks={fetchBookmarks}
-            />
+            {interactiveFragments &&
+              interactiveFragments.map((interactiveText) => (
+                <TranslatableText
+                  interactiveText={interactiveText}
+                  translating={translateInReader}
+                  pronouncing={pronounceInReader}
+                  setIsRendered={setReaderReady}
+                  updateBookmarks={fetchBookmarks}
+                />
+              ))}
           </s.MainText>
         </div>
 
@@ -379,25 +352,15 @@ export default function ArticleReader({ teacherArticleID }) {
               bookmarks={bookmarks}
             />
             <s.CombinedBox>
-              <p style={{ padding: "0em 2em 0em 2em" }}>
-                {" "}
-                {strings.answeringMsg}{" "}
-              </p>
-              <LikeFeedBackBox
-                articleInfo={articleInfo}
-                setLikedState={setLikedState}
-              />
+              <p style={{ padding: "0em 2em 0em 2em" }}> {strings.answeringMsg} </p>
+              <LikeFeedBackBox articleInfo={articleInfo} setLikedState={setLikedState} />
               <DifficultyFeedbackBox
                 articleInfo={articleInfo}
-                updateArticleDifficultyFeedback={
-                  updateArticleDifficultyFeedback
-                }
+                updateArticleDifficultyFeedback={updateArticleDifficultyFeedback}
               />
               {answerSubmitted && (
                 <s.InvisibleBox>
-                  <h3 align="center">
-                    Thank You {random(["🤗", "🙏", "😊", "🎉"])}
-                  </h3>
+                  <h3 align="center">Thank You {random(["🤗", "🙏", "😊", "🎉"])}</h3>
                 </s.InvisibleBox>
               )}
             </s.CombinedBox>

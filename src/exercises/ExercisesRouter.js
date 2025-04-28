@@ -2,7 +2,7 @@ import { Switch, useHistory } from "react-router-dom";
 import { PrivateRoute } from "../PrivateRoute";
 import Exercises from "./Exercises";
 import * as s from "../components/ColumnWidth.sc";
-import { UMR_SOURCE } from "../reader/ArticleReader";
+import { WEB_READER } from "../reader/ArticleReader";
 import { useContext } from "react";
 import { APIContext } from "../contexts/APIContext";
 
@@ -12,17 +12,17 @@ export default function ExercisesRouter() {
 
   const backToReadingAction = () => {
     history.push("/articles");
-    api.logReaderActivity(api.BACK_TO_READING, "", "", UMR_SOURCE);
+    api.logUserActivity(api.BACK_TO_READING, "", "", WEB_READER);
   };
 
   const keepExercisingAction = () => {
     window.location.reload(false);
-    api.logReaderActivity(api.KEEP_EXERCISING, "", "", UMR_SOURCE);
+    api.logUserActivity(api.KEEP_EXERCISING, "", "", WEB_READER);
   };
 
   const toScheduledExercises = () => {
     history.push("/exercises");
-    api.logReaderActivity(api.TO_SCHEDULED_EXERCISES, "", "", UMR_SOURCE);
+    api.logUserActivity(api.TO_SCHEDULED_EXERCISES, "", "", WEB_READER);
   };
 
   return (
@@ -34,7 +34,7 @@ export default function ExercisesRouter() {
           backButtonAction={backToReadingAction}
           keepExercisingAction={keepExercisingAction}
           toScheduledExercises={toScheduledExercises}
-          source={UMR_SOURCE}
+          source={WEB_READER}
         />
       </Switch>
     </s.NarrowColumn>

@@ -15,13 +15,10 @@ import UnfinishedArticlesList from "./UnfinishedArticleList";
 import { setTitle } from "../assorted/setTitle";
 import strings from "../i18n/definitions";
 import useShadowRef from "../hooks/useShadowRef";
+import { Link } from "react-router-dom";
+import VideoPreview from "../videos/VideoPreview";
 
-export default function FindArticles({
-  content,
-  searchQuery,
-  searchPublishPriority,
-  searchDifficultyPriority,
-}) {
+export default function FindArticles({ content, searchQuery, searchPublishPriority, searchDifficultyPriority }) {
   let api = useContext(APIContext);
 
   //The ternary operator below fix the problem with the getOpenArticleExternallyWithoutModal()
@@ -30,19 +27,26 @@ export default function FindArticles({
   //Additionally, the conditional statement needed to be tightened up due to JS's unstable behavior, which resulted
   //in bool values changing on its own on refresh without any other external trigger or preferences change.
   // A '=== "true"' clause has been added to the getters to achieve predictable and desired bool values.
-  const doNotShowRedirectionModal_LocalStorage =
-    LocalStorage.getDoNotShowRedirectionModal() === "true";
-  const [articleList, setArticleList] = useState();
+  const doNotShowRedirectionModal_LocalStorage = LocalStorage.getDoNotShowRedirectionModal() === "true";
+  const [articlesAndVideosList, setArticlesAndVideosList] = useState();
   const [originalList, setOriginalList] = useState(null);
+  const [searchError, setSearchError] = useState(false);
+
   const [isExtensionAvailable] = useExtensionCommunication();
-  const [
-    doNotShowRedirectionModal_UserPreference,
-    setDoNotShowRedirectionModal_UserPreference,
-  ] = useState(doNotShowRedirectionModal_LocalStorage);
+  const [doNotShowRedirectionModal_UserPreference, setDoNotShowRedirectionModal_UserPreference] = useState(
+    doNotShowRedirectionModal_LocalStorage,
+  );
   const [reloadingSearchArticles, setReloadingSearchArticles] = useState(false);
 
   const searchPublishPriorityRef = useShadowRef(searchPublishPriority);
   const searchDifficultyPriorityRef = useShadowRef(searchDifficultyPriority);
+
+  // Next three vars required for the "Show Videos Only" toggle button
+  const [areVideosAvailable, setAreVideosAvailable] = useState(false);
+  const [isShowVideosOnlyEnabled, setIsShowVideosOnlyEnabled] = useState(false);
+  // Ref is needed since it's called in the updateOnPagination function. This function
+  // could have stale values if using the state constant.
+  const isShowVideosOnlyEnabledRef = useShadowRef(isShowVideosOnlyEnabled);
 
   function getNewArticlesForPage(pageNumber, handleArticleInsertion) {
     if (searchQuery) {
@@ -63,32 +67,43 @@ export default function FindArticles({
   }
 
   function updateOnPagination(newUpdatedList) {
-    setArticleList(newUpdatedList);
-    setOriginalList(newUpdatedList);
+    if (isShowVideosOnlyEnabledRef.current) {
+      const videosOnly = [...newUpdatedList].filter((each) => each.video);
+      setArticlesAndVideosList(videosOnly);
+    } else {
+      setArticlesAndVideosList(newUpdatedList);
+      setOriginalList(newUpdatedList);
+    }
   }
 
-  const [
-    handleScroll,
-    isWaitingForNewArticles,
-    noMoreArticlesToShow,
-    resetPagination,
-  ] = useArticlePagination(
-    articleList,
+  const [handleScroll, isWaitingForNewArticles, noMoreArticlesToShow, resetPagination] = useArticlePagination(
+    articlesAndVideosList,
     updateOnPagination,
     searchQuery ? "Article Search" : strings.titleHome,
     getNewArticlesForPage,
   );
-  const handleArticleClick = (articleId, index) => {
-    const articleSeenList = articleList
-      .slice(0, index)
-      .map((article) => article.id);
-    const articleSeenListString = JSON.stringify(articleSeenList, null, 0);
-    api.logUserActivity(
-      api.CLICKED_ARTICLE,
-      articleId,
-      "",
-      articleSeenListString,
-    );
+
+  function handleVideoOnlyClick() {
+    setIsShowVideosOnlyEnabled(!isShowVideosOnlyEnabled);
+    if (isShowVideosOnlyEnabled) {
+      setArticlesAndVideosList(originalList);
+      resetPagination();
+    } else {
+      const videosOnly = [...articlesAndVideosList].filter((each) => each.video);
+      setArticlesAndVideosList(videosOnly);
+    }
+  }
+
+  const handleArticleClick = (articleId, sourceId, index) => {
+    const seenList = articlesAndVideosList.slice(0, index).map((each) => each.source_id);
+    const seenListAsString = JSON.stringify(seenList, null, 0);
+    api.logUserActivity(api.CLICKED_ARTICLE, articleId, "", seenListAsString, sourceId);
+  };
+
+  const handleVideoClick = (sourceId, index) => {
+    const seenList = articlesAndVideosList.slice(0, index).map((each) => each.source_id);
+    const seenListAsString = JSON.stringify(seenList, null, 0);
+    api.logUserActivity(api.CLICKED_VIDEO, null, "", seenListAsString, sourceId);
   };
 
   useEffect(() => {
@@ -100,13 +115,12 @@ export default function FindArticles({
   }, []);
 
   useEffect(() => {
-    LocalStorage.setDoNotShowRedirectionModal(
-      doNotShowRedirectionModal_UserPreference,
-    );
+    LocalStorage.setDoNotShowRedirectionModal(doNotShowRedirectionModal_UserPreference);
   }, [doNotShowRedirectionModal_UserPreference]);
 
   useEffect(() => {
     resetPagination();
+    setSearchError(false);
     if (searchQuery) {
       setTitle(strings.titleSearch + ` '${searchQuery}'`);
       setReloadingSearchArticles(true);
@@ -115,20 +129,26 @@ export default function FindArticles({
         searchPublishPriority,
         searchDifficultyPriority,
         (articles) => {
-          setArticleList(articles);
+          setArticlesAndVideosList(articles);
           setOriginalList([...articles]);
           setReloadingSearchArticles(false);
+          articles.some((e) => e.video) ? setAreVideosAvailable(true) : setAreVideosAvailable(false);
         },
         (error) => {
           console.log(error);
           console.log("Failed to get searches!");
+          setArticlesAndVideosList([]);
+          setOriginalList([]);
+          setReloadingSearchArticles(false);
+          setSearchError(true);
         },
       );
     } else {
       setTitle(strings.titleHome);
       api.getUserArticles((articles) => {
-        setArticleList(articles);
+        setArticlesAndVideosList(articles);
         setOriginalList([...articles]);
+        articles.some((e) => e.video) ? setAreVideosAvailable(true) : setAreVideosAvailable(false);
       });
       window.addEventListener("scroll", handleScroll, true);
       return () => {
@@ -138,8 +158,20 @@ export default function FindArticles({
     // eslint-disable-next-line
   }, [searchPublishPriority, searchDifficultyPriority]);
 
-  if (articleList == null) {
+  if (articlesAndVideosList == null) {
     return <LoadingAnimation />;
+  }
+
+  if (searchError) {
+    return (
+      <>
+        <s.SearchHolder>
+          <SearchField query={searchQuery} />
+        </s.SearchHolder>
+
+        <b>An error occurred with this query. Please try a different keyword.</b>
+      </>
+    );
   }
 
   return (
@@ -152,28 +184,36 @@ export default function FindArticles({
           <div style={{ marginBottom: "1.5rem", padding: "0.5rem" }}>
             <span>
               You can customize your Home by{" "}
-              <a href="/account_settings/interests?fromArticles=1">
+              <Link className="bold underlined-link" to="/account_settings/interests?fromArticles=1">
                 subscribing&nbsp;to&nbsp;topics
-              </a>
+              </Link>
               ,{" "}
-              <a href="/account_settings/excluded_keywords?fromArticles=1">
+              <Link className="bold underlined-link" to="/account_settings/excluded_keywords?fromArticles=1">
                 filtering&nbsp;keywords
-              </a>{" "}
-              or <a href="articles/mySearches">adding&nbsp;searches</a>.
+              </Link>{" "}
+              or{" "}
+              <Link className="bold underlined-link" to="/articles/mySearches">
+                adding&nbsp;searches
+              </Link>
+              .
             </span>
           </div>
 
           {!searchQuery && (
-            <UnfinishedArticlesList
-              articleList={articleList}
-              setArticleList={setArticleList}
-            />
+            <UnfinishedArticlesList articleList={articlesAndVideosList} setArticleList={setArticlesAndVideosList} />
           )}
           <s.SortHolder>
+            <s.ShowVideoOnlyButton
+              className={isShowVideosOnlyEnabled && "selected"}
+              style={{ visibility: !areVideosAvailable && "hidden" }}
+              onClick={handleVideoOnlyClick}
+            >
+              Show videos only
+            </s.ShowVideoOnlyButton>
             <SortingButtons
-              articleList={articleList}
-              originalList={originalList}
-              setArticleList={setArticleList}
+              articleList={articlesAndVideosList}
+              setArticleList={setArticlesAndVideosList}
+              clearStateTrigger={isShowVideosOnlyEnabled}
             />
           </s.SortHolder>
         </>
@@ -189,35 +229,35 @@ export default function FindArticles({
       {content}
       {reloadingSearchArticles && <LoadingAnimation></LoadingAnimation>}
       {!reloadingSearchArticles &&
-        articleList.map((each, index) => (
-          <ArticlePreview
-            key={each.id}
-            article={each}
-            hasExtension={isExtensionAvailable}
-            doNotShowRedirectionModal_UserPreference={
-              doNotShowRedirectionModal_UserPreference
-            }
-            setDoNotShowRedirectionModal_UserPreference={
-              setDoNotShowRedirectionModal_UserPreference
-            }
-            onArticleClick={() => handleArticleClick(each.id, index)}
-          />
-        ))}
-      {!reloadingSearchArticles && articleList.length === 0 && (
-        <p>No searches were found for this query.</p>
+        articlesAndVideosList.map((each, index) =>
+          each.video ? (
+            <VideoPreview key={each.id} video={each} notifyVideoClick={() => handleVideoClick(each.source_id, index)} />
+          ) : (
+            <ArticlePreview
+              key={each.id}
+              article={each}
+              hasExtension={isExtensionAvailable}
+              doNotShowRedirectionModal_UserPreference={doNotShowRedirectionModal_UserPreference}
+              setDoNotShowRedirectionModal_UserPreference={setDoNotShowRedirectionModal_UserPreference}
+              notifyArticleClick={() => handleArticleClick(each.id, each.source_id, index)}
+            />
+          ),
+        )}
+      {!reloadingSearchArticles && articlesAndVideosList.length === 0 && (
+        <div style={{ textAlign: "center", marginTop: "1rem" }}>
+          <p>No results were found for this query.</p>
+        </div>
       )}
 
       {!searchQuery && (
         <>
           <ShowLinkRecommendationsIfNoArticles
-            articleList={articleList}
+            articleList={articlesAndVideosList}
           ></ShowLinkRecommendationsIfNoArticles>
         </>
       )}
-      {isWaitingForNewArticles && (
-        <LoadingAnimation delay={0}></LoadingAnimation>
-      )}
-      {noMoreArticlesToShow && articleList.length > 0 && (
+      {isWaitingForNewArticles && <LoadingAnimation delay={0}></LoadingAnimation>}
+      {noMoreArticlesToShow && articlesAndVideosList.length > 0 && (
         <div
           style={{
             display: "flex",

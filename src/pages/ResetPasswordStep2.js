@@ -10,36 +10,29 @@ import FullWidthErrorMsg from "../components/FullWidthErrorMsg.sc";
 import InputField from "../components/InputField";
 import ButtonContainer from "../pages/_pages_shared/ButtonContainer.sc";
 import Button from "../pages/_pages_shared/Button.sc";
-import {
-  MinimumLengthValidator,
-  NonEmptyValidator,
-} from "../utils/ValidatorRule/Validator";
+import { MinimumLengthValidator, NonEmptyValidator } from "../utils/ValidatorRule/Validator";
 import { scrollToTop } from "../utils/misc/scrollToTop";
 import { APIContext } from "../contexts/APIContext";
+import { useHistory } from "react-router-dom";
+import { Link } from "react-router-dom";
 
-export default function ResetPasswordStep2({ email }) {
+export default function ResetPasswordStep2({ email, isLoggedIn }) {
   const api = useContext(APIContext);
+  const history = useHistory();
   const [errorMessage, setErrorMessage] = useState("");
   const [success, setSuccess] = useState(false);
   const [failure, setFailure] = useState(false);
 
-  const [
-    sentCode,
-    setsentCode,
-    validatesentCode,
-    issentCodeValid,
-    sentCodeMsg,
-  ] = useFormField("", [
+  const [sentCode, setsentCode, validatesentCode, issentCodeValid, sentCodeMsg] = useFormField("", [
     NonEmptyValidator("Please insert the code sent to your email."),
   ]);
 
   // strings.plsProvideCode
 
-  const [newPass, setNewPass, validateNewPass, isNewPassValid, newPassMsg] =
-    useFormField("", [
-      NonEmptyValidator("You must provide a new password."),
-      MinimumLengthValidator(3, strings.passwordMustBeMsg),
-    ]);
+  const [newPass, setNewPass, validateNewPass, isNewPassValid, newPassMsg] = useFormField("", [
+    NonEmptyValidator("You must provide a new password."),
+    MinimumLengthValidator(3, strings.passwordMustBeMsg),
+  ]);
 
   useEffect(() => {
     if (errorMessage) {
@@ -61,6 +54,11 @@ export default function ResetPasswordStep2({ email }) {
       sentCode,
       newPass,
       () => {
+        if (isLoggedIn)
+          history.push({
+            pathname: "/account_settings/profile_details",
+            state: { passwordChanged: true },
+          });
         setSuccess(true);
       },
       (e) => {
@@ -77,7 +75,7 @@ export default function ResetPasswordStep2({ email }) {
         <h1>{strings.somethingWentWrong}</h1>
         <p>
           {strings.youCanTryTo}
-          <a href="/reset_pass">{strings.resetYourPassword}</a> {strings.again}
+          <Link to="/reset_pass">{strings.resetYourPassword}</Link> {strings.again}
         </p>
 
         <p>
@@ -94,7 +92,7 @@ export default function ResetPasswordStep2({ email }) {
         <br />
         <p>
           {strings.youCanGoTo}
-          <a href="log_in">{strings.login}</a> {strings.now}
+          <Link to="/log_in">{strings.login}</Link> {strings.now}
         </p>
       </>
     );
@@ -138,11 +136,7 @@ export default function ResetPasswordStep2({ email }) {
       </FormSection>
 
       <ButtonContainer className={"padding-medium"}>
-        <Button
-          type={"submit"}
-          className={"full-width-btn"}
-          onClick={handleResetPassword}
-        >
+        <Button type={"submit"} className={"full-width-btn"} onClick={handleResetPassword}>
           {strings.setNewPassword}
         </Button>
       </ButtonContainer>

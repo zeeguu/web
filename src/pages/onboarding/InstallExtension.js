@@ -1,4 +1,9 @@
 import { useEffect } from "react";
+import { getExtensionInstallationLinks } from "../../utils/extension/extensionInstallationLinks";
+import { getExtensionInstallationButtonContent } from "../../utils/extension/extensionInstallationButtonContent";
+import { runningInChromeDesktop } from "../../utils/misc/browserDetection";
+import { Link } from "react-router-dom";
+import { setTitle } from "../../assorted/setTitle";
 import PreferencesPage from "../_pages_shared/PreferencesPage";
 import Header from "../_pages_shared/Header";
 import Heading from "../_pages_shared/Heading.sc";
@@ -7,15 +12,10 @@ import ButtonContainer from "../_pages_shared/ButtonContainer.sc";
 import Footer from "../_pages_shared/Footer.sc";
 import Button from "../_pages_shared/Button.sc";
 import FullWidthImage from "../../components/FullWidthImage";
-import { getExtensionInstallationLinks } from "../../utils/extension/extensionInstallationLinks";
-import { getExtensionInstallationButtonContent } from "../../utils/extension/extensionInstallationButtonContent";
-import { runningInChromeDesktop } from "../../utils/misc/browserDetection";
-
 import RoundedForwardArrow from "@mui/icons-material/ArrowForwardRounded";
 
 import strings from "../../i18n/definitions";
 import redirect from "../../utils/routing/routing";
-import { setTitle } from "../../assorted/setTitle";
 
 export default function InstallExtension() {
   useEffect(() => {
@@ -50,9 +50,9 @@ export default function InstallExtension() {
             {getExtensionInstallationButtonContent()}
             <RoundedForwardArrow fontSize="medium" />
           </Button>
-          <a className="link" href="/articles">
+          <Link className="link" to="/articles">
             {strings.iWillInstallLater}
-          </a>
+          </Link>
         </ButtonContainer>
       </Footer>
     </PreferencesPage>

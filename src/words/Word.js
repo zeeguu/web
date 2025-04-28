@@ -10,14 +10,7 @@ import { MAX_WORDS_IN_BOOKMARK_FOR_EXERCISES } from "../exercises/ExerciseConsta
 import { getStaticPath } from "../utils/misc/staticPath";
 import { APIContext } from "../contexts/APIContext";
 
-export default function Word({
-  bookmark,
-  notifyDelete,
-  notifyWordChange,
-  children,
-  source,
-  isReview,
-}) {
+export default function Word({ bookmark, notifyDelete, notifyWordChange, children, source, isReview, showRanking }) {
   const api = useContext(APIContext);
   const [deleted, setDeleted] = useState(false);
   const [reload, setReload] = useState(false);
@@ -28,12 +21,7 @@ export default function Word({
     bookmark.fit_for_study = true;
     bookmark.user_preference = USER_WORD_PREFERENCE.USE_IN_EXERCISES;
     if (notifyWordChange) notifyWordChange(bookmark);
-    api.logReaderActivity(
-      api.USER_SET_WORD_PREFERRED,
-      bookmark.article_id,
-      bookmark.from,
-      source,
-    );
+    api.logUserActivity(api.USER_SET_WORD_PREFERRED, bookmark.article_id, bookmark.from, source);
   }
 
   function setNotIsUserWordPreferred(bookmark) {
@@ -41,12 +29,7 @@ export default function Word({
     bookmark.fit_for_study = false;
     bookmark.user_preference = USER_WORD_PREFERENCE.DONT_USE_IN_EXERCISES;
     if (notifyWordChange) notifyWordChange(bookmark);
-    api.logReaderActivity(
-      api.USER_SET_NOT_WORD_PREFERED,
-      bookmark.article_id,
-      bookmark.from,
-      source,
-    );
+    api.logUserActivity(api.USER_SET_NOT_WORD_PREFERED, bookmark.article_id, bookmark.from, source);
   }
 
   if (deleted) {
@@ -58,35 +41,24 @@ export default function Word({
     style_grayed_out = {};
   }
   const square = "square";
-  const isWordLengthFitForStudy =
-    bookmark.from.split(" ").length < MAX_WORDS_IN_BOOKMARK_FOR_EXERCISES;
+  const isWordLengthFitForStudy = bookmark.from.split(" ").length < MAX_WORDS_IN_BOOKMARK_FOR_EXERCISES;
 
   return (
     <>
       <s.Word key={bookmark.id}>
         <CenteredRow>
           {isReview && bookmark.fit_for_study && (
-            <s.AddRemoveStudyPreferenceButton
-              onClick={(e) => setNotIsUserWordPreferred(bookmark)}
-            >
-              <img
-                src={getStaticPath("icons", "remove-icon-color.png")}
-                alt="remove"
-              />
+            <s.AddRemoveStudyPreferenceButton onClick={(e) => setNotIsUserWordPreferred(bookmark)}>
+              <img src={getStaticPath("icons", "remove-icon-color.png")} alt="remove" />
             </s.AddRemoveStudyPreferenceButton>
           )}
           {isReview && !bookmark.fit_for_study && isWordLengthFitForStudy && (
-            <s.AddRemoveStudyPreferenceButton
-              onClick={(e) => setIsUserWordPreferred(bookmark)}
-            >
-              <img
-                src={getStaticPath("icons", "add-icon-color.png")}
-                alt="add"
-              />
+            <s.AddRemoveStudyPreferenceButton onClick={(e) => setIsUserWordPreferred(bookmark)}>
+              <img src={getStaticPath("icons", "add-icon-color.png")} alt="add" />
             </s.AddRemoveStudyPreferenceButton>
           )}
           {/*
-            Debug user preferences. 
+            Debug user preferences.
             {bookmark.user_preference !== USER_WORD_PREFERENCE.NO_PREFERENCE && (
               <span>❗</span>
             )}
@@ -105,12 +77,22 @@ export default function Word({
             />
           )}
 
-          {!isReview && (
-            <SpeakButton bookmarkToStudy={bookmark} styling={square} />
-          )}
+          {!isReview && <SpeakButton bookmarkToStudy={bookmark} styling={square} />}
           <s.WordPair>
             <div className="from" style={style_grayed_out}>
               {bookmark.from}
+
+              {showRanking && (
+                <sup
+                  style={{
+                    fontWeight: "300",
+                    marginLeft: "0.5em",
+                    fontSize: "xx-small",
+                  }}
+                >
+                  {bookmark.origin_rank}
+                </sup>
+              )}
             </div>
             <div className="to" style={style_grayed_out}>
               {bookmark.to}

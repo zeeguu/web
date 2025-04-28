@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, createElement } from "react";
 import TranslatableWord from "./TranslatableWord";
 import * as s from "./TranslatableText.sc";
 import { removePunctuation } from "../utils/text/preprocessing";
@@ -24,6 +24,9 @@ export function TranslatableText({
   const [paragraphs, setParagraphs] = useState([]);
   const [firstWordID, setFirstWordID] = useState(0);
   const [renderedText, setRenderedText] = useState();
+  const divType = interactiveText.formatting
+    ? interactiveText.formatting
+    : "div";
 
   useEffect(() => {
     if (bookmarkToStudy) {
@@ -35,13 +38,17 @@ export function TranslatableText({
 
   useEffect(() => {
     setRenderedText(
-      paragraphs.map((par, index) => (
-        <div key={index} className="textParagraph">
-          {index === 0 && leftEllipsis && <>...</>}
-          {par.getWords().map((word) => renderWordJSX(word))}
-          {index === 0 && rightEllipsis && <>...</>}
-        </div>
-      )),
+      paragraphs.map((par, index) =>
+        createElement(
+          divType,
+          { className: "textParagraph", key: index },
+          <>
+            {index === 0 && leftEllipsis && <>...</>}
+            {par.getWords().map((word) => renderWordJSX(word))}
+            {index === 0 && rightEllipsis && <>...</>}
+          </>,
+        ),
+      ),
     );
     //eslint-disable-next-line
   }, [
@@ -103,10 +110,6 @@ export function TranslatableText({
       : [];
     const isWordBold = boldWords.includes(removePunctuation(word.word));
 
-    if (isWordBold) {
-      return <span style={{ fontWeight: "bold" }}>{word.word + " "}</span>;
-    }
-
     if (isCorrect) {
       if (word.id === firstWordID && overrideBookmarkHighlightText) {
         // In case we want to override the highlighted bookmark
@@ -148,6 +151,9 @@ export function TranslatableText({
         );
       }
     } else {
+      if (isWordBold) {
+        return <span style={{ fontWeight: "bold" }}>{word.word + " "}</span>;
+      }
       if (!bookmarkToStudy || translatedWords) {
         return (
           <TranslatableWord

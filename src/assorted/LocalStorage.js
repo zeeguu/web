@@ -7,9 +7,6 @@ import uiLanguages from "./uiLanguages";
 // Note that session info is in the Cookies
 const LocalStorage = {
   Keys: {
-    Session: "sessionID",
-    Name: "name",
-
     // language related keys used in the logged-in user session
     LearnedLanguage: "learned_language",
     NativeLanguage: "native_language",
@@ -107,11 +104,6 @@ const LocalStorage = {
     }
   },
 
-  setSession: function (session) {
-    // localStorage[this.Keys.Session] = session;
-    setUserSession(session);
-  },
-
   setUiLanguage: function (language) {
     localStorage[this.Keys.UiLanguage] = language.code;
   },
@@ -145,7 +137,6 @@ const LocalStorage = {
   },
 
   setUserInfo: function (info) {
-    localStorage[this.Keys.Name] = info.name;
     localStorage[this.Keys.LearnedLanguage] = info.learned_language;
     localStorage[this.Keys.NativeLanguage] = info.native_language;
     localStorage[this.Keys.IsTeacher] = info.is_teacher;

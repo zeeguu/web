@@ -18,27 +18,44 @@ export function WordsOnDate({ day, notifyDelete }) {
     return map;
   }
 
-  const bookmarks_by_article = groupBy(day.bookmarks, (x) => x.article_id);
-  const articleIDs = Array.from(bookmarks_by_article.keys());
+  function returnTitleLink(bookmark) {
+    const article_id = bookmark.article_id;
+    const title = bookmark.title;
+    return (
+      <>
+        {article_id !== undefined && article_id === "" && <span style={{ fontSize: "small" }}>(Video) </span>}
+        {title}
+        {article_id !== undefined && article_id !== "" && (
+          <Link to={"/read/article?id=" + article_id}>{strings.open}</Link>
+        )}
+      </>
+    );
+  }
+
+  const bookmaks_by_title = groupBy(day.bookmarks, (x) => x.title);
+  const sourceTitles = Array.from(bookmaks_by_title.keys());
 
   return (
     <div key={day.date}>
       <s.Date>{day.date}</s.Date>
 
-      {articleIDs.map((article_id) => (
-        <s.Article key={article_id}>
+      {sourceTitles.map((sourceTitle, index) => (
+        <s.Article key={index}>
           <s.ArticleTitle>
-            {bookmarks_by_article.get(article_id)[0].title}
-            <Link to={"/read/article?id=" + article_id}>{strings.open}</Link>
+            {
+              // We take the first bookmark for the source to see if it has a title
+              bookmaks_by_title.get(sourceTitle)[0].title ? (
+                returnTitleLink(bookmaks_by_title.get(sourceTitle)[0])
+              ) : (
+                // If the source is missing, tell it to the user.
+                <span style={{ color: "grey" }}>[Source deleted]</span>
+              )
+            }
           </s.ArticleTitle>
 
-          {bookmarks_by_article.get(article_id).map((bookmark) => (
+          {bookmaks_by_title.get(sourceTitle).map((bookmark) => (
             <s.ContentOnRow className="contentOnRow">
-              <Word
-                key={bookmark.id}
-                bookmark={bookmark}
-                notifyDelete={notifyDelete}
-              />
+              <Word key={bookmark.id} bookmark={bookmark} notifyDelete={notifyDelete} />
             </s.ContentOnRow>
           ))}
         </s.Article>

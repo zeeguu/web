@@ -5,7 +5,7 @@ import { setTitle } from "../assorted/setTitle";
 import strings from "../i18n/definitions";
 import Word from "./Word";
 import * as s from "../components/TopMessage.sc";
-import { UMR_SOURCE } from "../reader/ArticleReader";
+import { WEB_READER } from "../reader/ArticleReader";
 import { APIContext } from "../contexts/APIContext";
 
 export default function Top() {
@@ -32,12 +32,7 @@ export default function Top() {
     <>
       <s.TopMessage>{strings.rankedMsg}</s.TopMessage>
       {words.map((each) => (
-        <Word
-          key={each.id}
-          bookmark={each}
-          source={UMR_SOURCE}
-          notifyDelete={onNotifyDelete}
-        />
+        <Word key={each.id} bookmark={each} source={WEB_READER} notifyDelete={onNotifyDelete} />
       ))}
     </>
   );
