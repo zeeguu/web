@@ -1,11 +1,5 @@
 import styled from "styled-components";
-import {
-  almostBlack,
-  zeeguuDarkOrange,
-  blue100,
-  blue400,
-  blue600,
-} from "../components/colors";
+import { almostBlack, zeeguuDarkOrange, blue100, blue400, blue600 } from "../components/colors";
 
 const VideoPreview = styled.div`
   margin-bottom: 1em;
@@ -109,6 +103,12 @@ const UrlTopics = styled.div`
     text-align: center;
     vertical-align: middle;
     background-color: ${blue100};
+  }
+  .cancelButton {
+    cursor: pointer;
+    padding-left: 0.3em;
+    margin-bottom: -0.3em;
+    margin-right: -0.3em;
   }
   @media (max-width: 990px) {
     margin-bottom: 1.2em;

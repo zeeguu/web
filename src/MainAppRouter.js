@@ -30,18 +30,17 @@ export default function MainAppRouter({ hasExtension, handleSuccessfulLogIn }) {
   return (
     <Switch>
       <Route path="/log_in" render={() => <LogIn handleSuccessfulLogIn={handleSuccessfulLogIn} />} />
-
       <Route path="/account_details" render={() => <CreateAccount handleSuccessfulLogIn={handleSuccessfulLogIn} />} />
 
-      <Route path="/create_account" render={() => <LanguagePreferences />} />
+      <Route path="/create_account" component={LanguagePreferences} />
 
-      <Route path="/language_preferences" render={() => <LanguagePreferences />} />
+      <Route path="/language_preferences" component={LanguagePreferences} />
 
-      <Route path="/" exact render={() => <LandingPage />} />
-      <Route path="/extension_installed" render={() => <ExtensionInstalled />} />
-      <Route path="/install_extension" render={() => <InstallExtension />} />
-      <Route path="/reset_pass" render={() => <ResetPassword />} />
-      <Route path="/render" render={() => <NoSidebarRouter />} />
+      <Route path="/" exact component={LandingPage} />
+      <Route path="/extension_installed" component={ExtensionInstalled} />
+      <Route path="/install_extension" component={InstallExtension} />
+      <Route path="/reset_pass" component={ResetPassword} />
+      <Route path="/render" component={NoSidebarRouter} />
 
       <PrivateRoute path="/account_deletion" component={DeleteAccount} />
 

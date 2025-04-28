@@ -51,7 +51,7 @@ export default function Learning() {
     }
   }
 
-  if (!toLearn || !inLearning) {
+  if (!toLearn || !inLearning || !inLearning_byLevel) {
     return <LoadingAnimation />;
   }
 

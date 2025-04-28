@@ -57,6 +57,7 @@ let almostBlack = "#444444";
 let zeeguuRed = "#d7263d";
 let zeeguuRedTransparent = "hsl(352, 70%, 50%, 11%)";
 let zeeguuDarkRed = "hsl(352, 70%, 43%)";
+let greenTransparent = "hsl(120, 70%, 50%, 11%)";
 let errorRed = "red";
 let zeeguuViolet = "#4a0d67";
 let darkGreen = "#006400";
@@ -109,6 +110,7 @@ export {
   lightBlue,
   lighterBlue,
   darkBlue,
+  greenTransparent,
   blue100,
   blue200,
   blue300,
