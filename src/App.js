@@ -16,11 +16,7 @@ import ZeeguuSpeech from "./speech/APIBasedSpeech";
 import { SpeechContext } from "./contexts/SpeechContext";
 import { API_ENDPOINT, APP_DOMAIN } from "./appConstants";
 
-import {
-  getSessionFromCookies,
-  removeUserInfoFromCookies,
-  saveUserInfoIntoCookies,
-} from "./utils/cookies/userInfo";
+import { getSessionFromCookies, removeUserInfoFromCookies, saveUserInfoIntoCookies } from "./utils/cookies/userInfo";
 
 import MainAppRouter from "./MainAppRouter";
 import { ToastContainer } from "react-toastify";
@@ -58,8 +54,8 @@ function App() {
     if (!systemLanguages) return null;
 
     return {
-      learnable_languages: [...systemLanguages.learnable_languages].sort(
-        (a, b) => (a.name.toLowerCase() > b.name.toLowerCase() ? 1 : -1),
+      learnable_languages: [...systemLanguages.learnable_languages].sort((a, b) =>
+        a.name.toLowerCase() > b.name.toLowerCase() ? 1 : -1,
       ),
       native_languages: [...systemLanguages.native_languages].sort((a, b) =>
         a.name.toLowerCase() > b.name.toLowerCase() ? 1 : -1,
@@ -98,18 +94,14 @@ function App() {
 
               if (userHasNotExercisedToday())
                 api.getUserBookmarksToStudy(1, (scheduledBookmaks) => {
-                  exerciseNotification.setHasExercises(
-                    scheduledBookmaks.length > 0,
-                  );
+                  exerciseNotification.setHasExercises(scheduledBookmaks.length > 0);
                   exerciseNotification.updateReactState();
                 });
               else {
                 exerciseNotification.setHasExercises(false);
                 exerciseNotification.updateReactState();
               }
-              setZeeguuSpeech(
-                new ZeeguuSpeech(api, userDetails.learned_language),
-              );
+              setZeeguuSpeech(new ZeeguuSpeech(api, userDetails.learned_language));
               setUserDetails(userDetails);
               setUserPreferences(userPreferences);
             });
@@ -142,7 +134,7 @@ function App() {
     removeUserInfoFromCookies();
   }
 
-  function handleSuccessfulLogIn(userInfo, sessionId) {
+  function handleSuccessfulLogIn(userInfo, sessionId, redirectToArticle = true) {
     console.log("HANDLE SUCCESSFUL SIGN IN");
     api.session = sessionId;
     LocalStorage.setUserInfo(userInfo);
@@ -150,8 +142,7 @@ function App() {
     // TODO: Should this be moved to Settings.loadUsrePreferences?
     api.getUserPreferences((preferences) => {
       SessionStorage.setAudioExercisesEnabled(
-        preferences["audio_exercises"] === undefined ||
-          preferences["audio_exercises"] === "true",
+        preferences["audio_exercises"] === undefined || preferences["audio_exercises"] === "true",
       );
     });
 
@@ -172,8 +163,8 @@ function App() {
     setUser(newUserValue);
 
     /* If a redirect link exists, uses it to redirect the user,
-                                                                            otherwise, uses the location from the function argument. */
-    handleRedirectLinkOrGoTo("/articles");
+       otherwise, uses the location from the function argument. */
+    if (redirectToArticle) handleRedirectLinkOrGoTo("/articles");
   }
 
   //Setting up the routing context to be able to use the cancel-button in EditText correctly
@@ -184,9 +175,7 @@ function App() {
   }
 
   return (
-    <SystemLanguagesContext.Provider
-      value={{ systemLanguages, sortedSystemLanguages }}
-    >
+    <SystemLanguagesContext.Provider value={{ systemLanguages, sortedSystemLanguages }}>
       <SpeechContext.Provider value={zeeguuSpeech}>
         <BrowserRouter>
           <RoutingContext.Provider value={{ returnPath, setReturnPath }}>
@@ -203,10 +192,7 @@ function App() {
               <ExerciseCountContext.Provider value={exerciseNotification}>
                 <APIContext.Provider value={api}>
                   {/* Routing*/}
-                  <MainAppRouter
-                    hasExtension={isExtensionAvailable}
-                    handleSuccessfulLogIn={handleSuccessfulLogIn}
-                  />
+                  <MainAppRouter hasExtension={isExtensionAvailable} handleSuccessfulLogIn={handleSuccessfulLogIn} />
 
                   <ToastContainer
                     position="bottom-right"
