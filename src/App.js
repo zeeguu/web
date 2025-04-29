@@ -164,6 +164,7 @@ function App() {
 
     /* If a redirect link exists, uses it to redirect the user,
        otherwise, uses the location from the function argument. */
+    // For the future consider taking the redirection out of this function alltogether. 
     if (redirectToArticle) handleRedirectLinkOrGoTo("/articles");
   }
 
