@@ -43,41 +43,25 @@ export default function CreateAccount({ handleSuccessfulLogIn }) {
   const nativeLanguage = LocalStorage.getNativeLanguage();
   const learnedCefrLevel = LocalStorage.getLearnedCefrLevel();
 
-  const [
-    inviteCode,
-    setInviteCode,
-    validateInviteCode,
-    isInviteCodeValid,
-    inviteCodeMsg,
-  ] = useFormField("", [NonEmptyValidator("Please enter an invite code.")]);
+  const [inviteCode, setInviteCode, validateInviteCode, isInviteCodeValid, inviteCodeMsg] = useFormField("", [
+    NonEmptyValidator("Please enter an invite code."),
+  ]);
 
   const [name, setName, validateName, isNameValid, nameMsg] = useFormField("", [
     NonEmptyValidator("Please enter a name."),
   ]);
-  const [email, setEmail, validateEmail, isEmailValid, emailMsg] = useFormField(
-    "",
-    [NonEmptyValidator("Please enter an e-mail."), EmailValidator],
-  );
-  const [
-    password,
-    setPassword,
-    validatePassword,
-    isPasswordValid,
-    passwordMsg,
-  ] = useFormField("", [
+  const [email, setEmail, validateEmail, isEmailValid, emailMsg] = useFormField("", [
+    NonEmptyValidator("Please enter an e-mail."),
+    EmailValidator,
+  ]);
+  const [password, setPassword, validatePassword, isPasswordValid, passwordMsg] = useFormField("", [
     NonEmptyValidator("Please enter a password."),
     MinimumLengthValidator(3, strings.passwordMustBeMsg),
   ]);
 
   const passwordRef = useShadowRef(password);
 
-  const [
-    confirmPass,
-    setConfirmPass,
-    validateConfirmPass,
-    isConfirmPassValid,
-    confirmPassMsg,
-  ] = useFormField("", [
+  const [confirmPass, setConfirmPass, validateConfirmPass, isConfirmPassValid, confirmPassMsg] = useFormField("", [
     NonEmptyValidator("Please re-enter your password."),
     new Validator((v) => {
       return v === passwordRef.current;
@@ -102,9 +86,7 @@ export default function CreateAccount({ handleSuccessfulLogIn }) {
   const [privacyNoticeText, setPrivacyNoticeText] = useState([]);
 
   useState(() => {
-    fetch(
-      "https://raw.githubusercontent.com/zeeguu/browser-extension/main/PRIVACY.md",
-    ).then((response) => {
+    fetch("https://raw.githubusercontent.com/zeeguu/browser-extension/main/PRIVACY.md").then((response) => {
       response.text().then((privacyText) => {
         let text = privacyText
           .split("==============")[1]
@@ -158,7 +140,7 @@ export default function CreateAccount({ handleSuccessfulLogIn }) {
       userInfo,
       (session) => {
         api.getUserDetails((user) => {
-          handleSuccessfulLogIn(user, session);
+          handleSuccessfulLogIn(user, session, false);
           setUserDetails(userInfo);
           saveUserInfoIntoCookies(userInfo);
           history.push("/select_interests");
@@ -193,9 +175,7 @@ export default function CreateAccount({ handleSuccessfulLogIn }) {
       </Header>
       <Main>
         <Form action={""} method={"POST"}>
-          {errorMessage && (
-            <FullWidthErrorMsg>{errorMessage}</FullWidthErrorMsg>
-          )}
+          {errorMessage && <FullWidthErrorMsg>{errorMessage}</FullWidthErrorMsg>}
           <FormSection>
             <InputField
               type={"text"}
@@ -211,8 +191,7 @@ export default function CreateAccount({ handleSuccessfulLogIn }) {
               errorMessage={inviteCodeMsg}
               helperText={
                 <div>
-                  No invite code? Request it at:{" "}
-                  <span className="bold">{strings.zeeguuTeamEmail}</span>
+                  No invite code? Request it at: <span className="bold">{strings.zeeguuTeamEmail}</span>
                 </div>
               }
             />
@@ -295,17 +274,11 @@ export default function CreateAccount({ handleSuccessfulLogIn }) {
               >
                 {strings.privacyNotice}
               </span>
-              {!isCheckPrivacyNoteValid && (
-                <sI.ErrorMessage>{checkPrivacyNoteMsg}</sI.ErrorMessage>
-              )}
+              {!isCheckPrivacyNoteValid && <sI.ErrorMessage>{checkPrivacyNoteMsg}</sI.ErrorMessage>}
             </label>
           </sC.CheckboxWrapper>
           <ButtonContainer className={"padding-medium"}>
-            <Button
-              type={"submit"}
-              className={"full-width-btn"}
-              onClick={handleCreate}
-            >
+            <Button type={"submit"} className={"full-width-btn"} onClick={handleCreate}>
               {strings.createAccount}
             </Button>
           </ButtonContainer>
