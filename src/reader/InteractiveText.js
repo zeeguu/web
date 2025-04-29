@@ -6,11 +6,13 @@ import isNullOrUndefinied from "../utils/misc/isNullOrUndefinied";
 
 // We try to capture about a full sentence around a word.
 const MAX_WORD_EXPANSION_COUNT = 28;
+
 function tokenShouldSkipCount(word) {
   //   When building context, we do not count for the context limit punctuation,
   // symbols, and numbers.
   return word.token.is_punct || word.token.is_symbol || word.token.is_like_num;
 }
+
 export default class InteractiveText {
   constructor(
     tokenizedParagraphs,
@@ -150,7 +152,7 @@ export default class InteractiveText {
       let currentWord = word;
       let contextBuilder = "";
       let count = 0;
-      while (count < maxLeftContextLength && currentWord.prev) {
+      while (count < maxLeftContextLength && currentWord.prev && !currentWord.token.is_sent_start) {
         currentWord = currentWord.prev;
         contextBuilder = currentWord.word + (currentWord.token.has_space ? " " : "") + contextBuilder;
         count++;
@@ -242,6 +244,7 @@ export default class InteractiveText {
 
       return [context, paragraph_i, sent_i, token_i, leftEllipsis, rightEllipsis];
     }
+
     return radialExpansionContext(word);
   }
 }
