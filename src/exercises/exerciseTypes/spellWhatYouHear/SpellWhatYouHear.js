@@ -19,7 +19,7 @@ const EXERCISE_TYPE = EXERCISE_TYPES.spellWhatYouHear;
 
 export default function SpellWhatYouHear({
   bookmarksToStudy,
-  appendToExerciseMessageToAPI,
+  appendToExerciseMessageForAPI,
   notifyCorrectAnswer,
   notifyIncorrectAnswer,
   notifyExerciseCompleted,
@@ -116,7 +116,7 @@ export default function SpellWhatYouHear({
             handleExerciseCompleted={notifyExerciseCompleted}
             setIsCorrect={setIsCorrect}
             exerciseBookmark={exerciseBookmark}
-            appendToExerciseMessageToAPI={appendToExerciseMessageToAPI}
+            appendToExerciseMessageForAPI={appendToExerciseMessageForAPI}
           />
         </>
       )}

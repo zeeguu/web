@@ -24,7 +24,7 @@ export default function FindWordInContextCloze({
   setExerciseType,
   isExerciseOver,
   setIsCorrect,
-  appendToExerciseMessageToAPI,
+  appendToExerciseMessageForAPI,
   reload,
   bookmarkProgressBar: BookmarkProgressBar,
   bookmarkProgressBarProps,
@@ -85,7 +85,7 @@ export default function FindWordInContextCloze({
             handleExerciseCompleted={notifyExerciseCompleted}
             setIsCorrect={setIsCorrect}
             exerciseBookmark={exerciseBookmark}
-            appendToExerciseMessageToAPI={appendToExerciseMessageToAPI}
+            appendToExerciseMessageForAPI={appendToExerciseMessageForAPI}
           />
         </>
       )}

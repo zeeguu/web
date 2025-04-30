@@ -28,7 +28,7 @@ export default function WordInContextExercise({
   setIsCorrect,
   resetSubSessionTimer,
   exerciseMessageToAPI,
-  appendToExerciseMessageToAPI,
+  appendToExerciseMessageForAPI,
   bookmarkProgressBar: BookmarkProgressBar,
   bookmarkProgressBarProps,
 }) {
@@ -110,7 +110,7 @@ export default function WordInContextExercise({
         notifyShowSolution();
       }
     } else {
-      appendToExerciseMessageToAPI("T", exerciseBookmark);
+      appendToExerciseMessageForAPI("T", exerciseBookmark);
     }
   }
 
@@ -148,7 +148,7 @@ export default function WordInContextExercise({
           handleExerciseCompleted={notifyExerciseCompleted}
           setIsCorrect={setIsCorrect}
           exerciseBookmark={exerciseBookmark}
-          appendToExerciseMessageToAPI={appendToExerciseMessageToAPI}
+          appendToExerciseMessageForAPI={appendToExerciseMessageForAPI}
         />
       )}
     </s.Exercise>

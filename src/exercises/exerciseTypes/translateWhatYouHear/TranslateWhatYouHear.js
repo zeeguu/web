@@ -17,7 +17,7 @@ import { APIContext } from "../../../contexts/APIContext.js";
 const EXERCISE_TYPE = EXERCISE_TYPES.translateWhatYouHear;
 export default function TranslateWhatYouHear({
   bookmarksToStudy,
-  appendToExerciseMessageToAPI,
+  appendToExerciseMessageForAPI,
   notifyCorrectAnswer,
   notifyIncorrectAnswer,
   notifyExerciseCompleted,
@@ -110,7 +110,7 @@ export default function TranslateWhatYouHear({
             handleExerciseCompleted={notifyExerciseCompleted}
             setIsCorrect={setIsCorrect}
             exerciseBookmark={exerciseBookmark}
-            appendToExerciseMessageToAPI={appendToExerciseMessageToAPI}
+            appendToExerciseMessageForAPI={appendToExerciseMessageForAPI}
             isL1Answer={true}
           />
         </>

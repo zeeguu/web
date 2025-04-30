@@ -55,11 +55,11 @@ export default function Exercises({ articleID, backButtonAction, toScheduledExer
   const [currentExerciseType, setCurrentExerciseType] = useState(null);
 
   /*
-  We can use this too states to track if the user is correct.
-  isExerciseOver & !isShownSolution & isCorrect = User Correct
-  isExerciseOver & isShownSolution & isCorrect === null = User Show Solution
-  isExerciseOver & isShownSolution === null & !isCorrect = User Wrong
-   */
+    We can use this too states to track if the user is correct.
+    isExerciseOver & !isShownSolution & isCorrect = User Correct
+    isExerciseOver & isShownSolution & isCorrect === null = User Show Solution
+    isExerciseOver & isShownSolution === null & !isCorrect = User Wrong
+     */
   const [isCorrect, setIsCorrect] = useState(null);
   const [isExerciseOver, setIsExerciseOver] = useState(false);
   const [isShowSolution, setIsShowSolution] = useState(false);
@@ -368,6 +368,7 @@ export default function Exercises({ articleID, backButtonAction, toScheduledExer
   function toggleShow() {
     setShowFeedbackButtons(!showFeedbackButtons);
   }
+
   // If user shows solution on Match without any selected bookmark, show blank progression.
   let currentMessageToAPI =
     isEmptyDictionary(exerciseMessageToAPI) || (currentExerciseType === EXERCISE_TYPES.match && isShowSolution)
@@ -402,7 +403,7 @@ export default function Exercises({ articleID, backButtonAction, toScheduledExer
             selectedExerciseBookmark={selectedExerciseBookmark}
             setSelectedExerciseBookmark={setSelectedExerciseBookmark}
             exerciseMessageToAPI={currentMessageToAPI}
-            appendToExerciseMessageToAPI={appendToMessageToAPI}
+            appendToExerciseMessageForAPI={appendToMessageToAPI}
             notifyCorrectAnswer={correctAnswerNotification}
             notifyIncorrectAnswer={incorrectAnswerNotification}
             setExerciseType={setCurrentExerciseType}

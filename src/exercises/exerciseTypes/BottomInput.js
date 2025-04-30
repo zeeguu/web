@@ -17,7 +17,7 @@ export default function BottomInput({
   handleIncorrectAnswer,
   setIsCorrect,
   exerciseBookmark,
-  appendToExerciseMessageToAPI,
+  appendToExerciseMessageForAPI,
   isL1Answer,
 }) {
   const [currentInput, setCurrentInput] = useState("");
@@ -54,7 +54,7 @@ export default function BottomInput({
       hint = solutionText.substring(0, 1);
     }
     setCurrentInput(hint);
-    appendToExerciseMessageToAPI(HINT, exerciseBookmark);
+    appendToExerciseMessageForAPI(HINT, exerciseBookmark);
   }
 
   // Update the feedback message
@@ -139,7 +139,7 @@ export default function BottomInput({
       updatedMessageToAPI = WRONG;
       handleIncorrectAnswer(exerciseBookmark);
     }
-    appendToExerciseMessageToAPI(updatedMessageToAPI, exerciseBookmark);
+    appendToExerciseMessageForAPI(updatedMessageToAPI, exerciseBookmark);
     setIsIncorrect(true);
   }
 
