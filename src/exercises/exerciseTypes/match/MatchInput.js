@@ -32,7 +32,6 @@ function MatchInput({
   setReload,
   notifyBookmarkDeletion,
   isPronouncing,
-  lastCorrectBookmarkId,
 }) {
   const answerColors = [
     {
@@ -98,8 +97,7 @@ function MatchInput({
   if (!leftBookmarksShuffled || !rightBookmarksShuffled) return <></>;
 
   function isSameBookmark(b1, b2) {
-    if (b1 === null || b2 === null || b1 === undefined || b2 === undefined)
-      return false;
+    if (b1 === null || b2 === null || b1 === undefined || b2 === undefined) return false;
     if (b1.id === b2.id) return true;
     return false;
   }
@@ -108,13 +106,9 @@ function MatchInput({
     e.preventDefault();
     if (listOfSolvedBookmarks.includes(bookmark.id)) return;
     if (side === LEFT)
-      isSameBookmark(selectedLeftBookmark, bookmark)
-        ? setSelectedLeftBookmark()
-        : setSelectedLeftBookmark(bookmark);
+      isSameBookmark(selectedLeftBookmark, bookmark) ? setSelectedLeftBookmark() : setSelectedLeftBookmark(bookmark);
     else if (side === RIGHT)
-      isSameBookmark(selectedRightBookmark, bookmark)
-        ? setSelectedRightBookmark()
-        : setSelectedRightBookmark(bookmark);
+      isSameBookmark(selectedRightBookmark, bookmark) ? setSelectedRightBookmark() : setSelectedRightBookmark(bookmark);
   }
 
   function renderSolutionButton(b, key, solvedIndex, word) {
@@ -130,22 +124,11 @@ function MatchInput({
           setReload={setReload}
           notifyDelete={() => notifyBookmarkDeletion(b)}
         />
-        <s.MatchingWords
-          className="matchingWords"
-          style={answerColors[solvedIndex]}
-          key={key}
-        >
+        <s.MatchingWords className="matchingWords" style={answerColors[solvedIndex]} key={key}>
           {removePunctuation(word)}
         </s.MatchingWords>
         <s.MatchSpeakButtonHolder>
-          <SpeakButton
-            bookmarkToStudy={b}
-            styling={small}
-            key={key}
-            parentIsSpeakingControl={
-              b.id === lastCorrectBookmarkId && isPronouncing
-            }
-          />
+          <SpeakButton bookmarkToStudy={b} styling={small} key={key} parentIsSpeakingControl={isPronouncing} />
         </s.MatchSpeakButtonHolder>
       </s.ButtonRow>
     );
@@ -154,12 +137,10 @@ function MatchInput({
   function renderButton(b, index, side) {
     let key = side === LEFT ? "L2_" + index : "L1_" + index;
     let solvedIndex = listOfSolvedBookmarks.indexOf(b.id);
-    let selectedBookmark =
-      side === LEFT ? selectedLeftBookmark : selectedRightBookmark;
+    let selectedBookmark = side === LEFT ? selectedLeftBookmark : selectedRightBookmark;
     let word = side === LEFT ? b.from : b.to;
     let isWrong = wrongAnimationsDictionary[side].includes(b.id);
-    if (isExerciseOver && side === LEFT)
-      return renderSolutionButton(b, key, solvedIndex, word);
+    if (isExerciseOver && side === LEFT) return renderSolutionButton(b, key, solvedIndex, word);
     if (isWrong)
       return (
         <s.AnimatedMatchButton
@@ -168,9 +149,7 @@ function MatchInput({
           onClick={(e) => handleClick(e, b, side)}
           onAnimationEnd={() => {
             let _newWrongAnimationDictionary = { ...wrongAnimationsDictionary };
-            _newWrongAnimationDictionary[side] = _newWrongAnimationDictionary[
-              side
-            ].filter((id) => id !== b.id);
+            _newWrongAnimationDictionary[side] = _newWrongAnimationDictionary[side].filter((id) => id !== b.id);
             setWrongAnimationsDictionary(_newWrongAnimationDictionary);
           }}
         >
@@ -179,11 +158,7 @@ function MatchInput({
       );
     if (solvedIndex !== -1)
       return (
-        <s.MatchingWords
-          className="matchingWords"
-          style={answerColors[solvedIndex]}
-          key={key}
-        >
+        <s.MatchingWords className="matchingWords" style={answerColors[solvedIndex]} key={key}>
           {removePunctuation(word)}
         </s.MatchingWords>
       );
@@ -202,14 +177,10 @@ function MatchInput({
     <>
       <s.MatchInputHolder className="matchInputHolder">
         <s.MatchButtonHolder>
-          {leftBookmarksShuffled.map((b, index) =>
-            renderButton(b, index, LEFT),
-          )}
+          {leftBookmarksShuffled.map((b, index) => renderButton(b, index, LEFT))}
         </s.MatchButtonHolder>
         <s.MatchButtonHolderRight>
-          {rightBookmarksShuffled.map((b, index) =>
-            renderButton(b, index, RIGHT),
-          )}
+          {rightBookmarksShuffled.map((b, index) => renderButton(b, index, RIGHT))}
         </s.MatchButtonHolderRight>
       </s.MatchInputHolder>
     </>

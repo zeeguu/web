@@ -8,6 +8,8 @@ import MatchInput from "./MatchInput.js";
 import useBookmarkAutoPronounce from "../../../hooks/useBookmarkAutoPronounce.js";
 import { APIContext } from "../../../contexts/APIContext.js";
 import { CORRECT } from "../../ExerciseConstants.js";
+import isBookmarkExpression from "../../../utils/misc/isBookmarkExpression";
+import { toast } from "react-toastify";
 
 // The user has to match three L1 words to their correct L2 translations.
 // This tests the user's passive knowledge.
@@ -69,6 +71,14 @@ export default function Match({
     }
   }
 
+  function bookmarkIsDeleted(bookmark) {
+    // TODO: strikethrough the bookmark
+    let word_expression = "";
+    if (isBookmarkExpression(bookmark)) word_expression = "expression";
+    else word_expression = "word";
+    toast.success(`The ${word_expression} '${bookmark.from}' is deleted!`);
+  }
+
   useEffect(() => {
     let _isLeftStart = selectedLeftBookmark && !selectedRightBookmark;
     if (selectedLeftBookmark && selectedRightBookmark) {
@@ -120,14 +130,10 @@ export default function Match({
         listOfSolvedBookmarks={listOfSolvedBookmarks}
         wrongAnimationsDictionary={wrongAnimationsDictionary}
         setWrongAnimationsDictionary={setWrongAnimationsDictionary}
-        inputFirstClick={inputFirstClick}
-        buttonsToDisable={buttonsToDisable}
         isExerciseOver={isExerciseOver}
-        api={api}
-        incorrectAnswer={incorrectAnswer}
-        setIncorrectAnswer={setIncorrectAnswer}
         reload={reload}
         setReload={setReload}
+        notifyBookmarkDeletion={bookmarkIsDeleted}
         isPronouncing={isPronouncing}
       />
     </s.Exercise>
