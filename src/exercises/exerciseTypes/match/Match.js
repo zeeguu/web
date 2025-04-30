@@ -6,8 +6,7 @@ import BookmarkProgressBar from "../../progressBars/BookmarkProgressBar.js";
 import { SpeechContext } from "../../../contexts/SpeechContext.js";
 import MatchInput from "./MatchInput.js";
 import useBookmarkAutoPronounce from "../../../hooks/useBookmarkAutoPronounce.js";
-import { APIContext } from "../../../contexts/APIContext.js";
-import { CORRECT } from "../../ExerciseConstants.js";
+
 import isBookmarkExpression from "../../../utils/misc/isBookmarkExpression";
 import { toast } from "react-toastify";
 
@@ -32,7 +31,6 @@ export default function Match({
 }) {
   const RIGHT = true;
   const LEFT = !RIGHT;
-  const api = useContext(APIContext);
 
   const [firstPressTime, setFirstPressTime] = useState();
   const [buttonsToDisable, setButtonsToDisable] = useState([]);
