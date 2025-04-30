@@ -81,13 +81,8 @@ export default function TranslateWhatYouHear({
 
   return (
     <s.Exercise>
-      <div className="headlineWithMoreSpace">
-        {strings.translateWhatYouHearHeadline}
-      </div>
-      <BookmarkProgressBar
-        bookmark={exerciseBookmark}
-        message={exerciseMessageToAPI}
-      />
+      <div className="headlineWithMoreSpace">{strings.translateWhatYouHearHeadline}</div>
+      <BookmarkProgressBar bookmark={exerciseBookmark} message={exerciseMessageToAPI} />
       {!isExerciseOver && (
         <>
           <s.CenteredRowTall>
@@ -115,7 +110,6 @@ export default function TranslateWhatYouHear({
             handleExerciseCompleted={notifyExerciseCompleted}
             setIsCorrect={setIsCorrect}
             exerciseBookmark={exerciseBookmark}
-            messageToAPI={exerciseMessageToAPI}
             appendToExerciseMessageToAPI={appendToExerciseMessageToAPI}
             isL1Answer={true}
           />

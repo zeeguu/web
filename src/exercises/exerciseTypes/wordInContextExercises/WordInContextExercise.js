@@ -90,9 +90,7 @@ export default function WordInContextExercise({
       userTranslatedSequences.forEach((userTranslatedSequence) => {
         let wordsInUserTranslatedSequence = userTranslatedSequence.split(" ");
         wordsInUserTranslatedSequence.forEach((translatedWord) => {
-          if (
-            equalAfterRemovingSpecialCharacters(translatedWord, wordInSolution)
-          ) {
+          if (equalAfterRemovingSpecialCharacters(translatedWord, wordInSolution)) {
             solutionDiscovered = true;
           }
         });
@@ -127,13 +125,8 @@ export default function WordInContextExercise({
   return (
     <s.Exercise className={exerciseType}>
       <div className="headlineWithMoreSpace">{exerciseHeadline}</div>
-      <BookmarkProgressBar
-        bookmark={exerciseBookmark}
-        message={exerciseMessageToAPI}
-      />
-      <h1 className="wordInContextHeadline">
-        {removePunctuation(exerciseBookmark.to)}
-      </h1>
+      <BookmarkProgressBar bookmark={exerciseBookmark} message={exerciseMessageToAPI} />
+      <h1 className="wordInContextHeadline">{removePunctuation(exerciseBookmark.to)}</h1>
       <div className="contextExample">
         <TranslatableText
           isExerciseOver={isExerciseOver}
@@ -154,7 +147,6 @@ export default function WordInContextExercise({
           handleExerciseCompleted={notifyExerciseCompleted}
           setIsCorrect={setIsCorrect}
           exerciseBookmark={exerciseBookmark}
-          messageToAPI={exerciseMessageToAPI}
           appendToExerciseMessageToAPI={appendToExerciseMessageToAPI}
         />
       )}

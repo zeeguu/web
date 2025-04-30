@@ -62,16 +62,9 @@ export default function FindWordInContextCloze({
 
   return (
     <s.Exercise className="findWordInContextCloze">
-      <div className="headlineWithMoreSpace">
-        {strings.findWordInContextClozeHeadline}
-      </div>
-      <BookmarkProgressBar
-        bookmark={exerciseBookmark}
-        message={exerciseMessageToAPI}
-      />
-      <h1 className="wordInContextHeadline">
-        {removePunctuation(exerciseBookmark.to)}
-      </h1>
+      <div className="headlineWithMoreSpace">{strings.findWordInContextClozeHeadline}</div>
+      <BookmarkProgressBar bookmark={exerciseBookmark} message={exerciseMessageToAPI} />
+      <h1 className="wordInContextHeadline">{removePunctuation(exerciseBookmark.to)}</h1>
       <div className="contextExample">
         <TranslatableText
           isExerciseOver={isExerciseOver}
@@ -92,7 +85,6 @@ export default function FindWordInContextCloze({
             handleExerciseCompleted={notifyExerciseCompleted}
             setIsCorrect={setIsCorrect}
             exerciseBookmark={exerciseBookmark}
-            messageToAPI={exerciseMessageToAPI}
             appendToExerciseMessageToAPI={appendToExerciseMessageToAPI}
           />
         </>

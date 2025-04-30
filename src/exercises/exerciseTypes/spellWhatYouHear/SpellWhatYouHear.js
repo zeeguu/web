@@ -86,13 +86,8 @@ export default function SpellWhatYouHear({
 
   return (
     <s.Exercise>
-      <div className="headlineWithMoreSpace">
-        {strings.audioExerciseHeadline}
-      </div>
-      <BookmarkProgressBar
-        bookmark={exerciseBookmark}
-        message={exerciseMessageToAPI}
-      />
+      <div className="headlineWithMoreSpace">{strings.audioExerciseHeadline}</div>
+      <BookmarkProgressBar bookmark={exerciseBookmark} message={exerciseMessageToAPI} />
 
       {!isExerciseOver && (
         <>
@@ -121,7 +116,6 @@ export default function SpellWhatYouHear({
             handleExerciseCompleted={notifyExerciseCompleted}
             setIsCorrect={setIsCorrect}
             exerciseBookmark={exerciseBookmark}
-            messageToAPI={exerciseMessageToAPI}
             appendToExerciseMessageToAPI={appendToExerciseMessageToAPI}
           />
         </>
@@ -129,9 +123,7 @@ export default function SpellWhatYouHear({
       {isExerciseOver && (
         <>
           <br></br>
-          <h1 className="wordInContextHeadline">
-            {removePunctuation(exerciseBookmark.to)}
-          </h1>
+          <h1 className="wordInContextHeadline">{removePunctuation(exerciseBookmark.to)}</h1>
           <div className="contextExample">
             <TranslatableText
               isExerciseOver={isExerciseOver}

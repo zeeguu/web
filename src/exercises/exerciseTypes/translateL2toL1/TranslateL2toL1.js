@@ -68,18 +68,11 @@ export default function TranslateL2toL1({
 
   return (
     <s.Exercise className="translateL2toL1">
-      <div className="headlineWithMoreSpace">
-        {strings.translateL2toL1Headline}
-      </div>
-      <BookmarkProgressBar
-        bookmark={exerciseBookmark}
-        message={exerciseMessageToAPI}
-      />
+      <div className="headlineWithMoreSpace">{strings.translateL2toL1Headline}</div>
+      <BookmarkProgressBar bookmark={exerciseBookmark} message={exerciseMessageToAPI} />
       {isExerciseOver && (
         <>
-          <h1 className="wordInContextHeadline">
-            {removePunctuation(exerciseBookmark.to)}
-          </h1>
+          <h1 className="wordInContextHeadline">{removePunctuation(exerciseBookmark.to)}</h1>
         </>
       )}
       <div className="contextExample">
@@ -104,7 +97,6 @@ export default function TranslateL2toL1({
           handleExerciseCompleted={notifyExerciseCompleted}
           setIsCorrect={setIsCorrect}
           exerciseBookmark={exerciseBookmark}
-          messageToAPI={exerciseMessageToAPI}
           appendToExerciseMessageToAPI={appendToExerciseMessageToAPI}
           isL1Answer={true}
         />
