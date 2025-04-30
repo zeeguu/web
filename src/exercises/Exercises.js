@@ -17,10 +17,12 @@ import NextNavigation from "./exerciseTypes/NextNavigation";
 import DisableAudioSession from "./exerciseTypes/DisableAudioSession";
 import { SpeechContext } from "../contexts/SpeechContext";
 import {
+  DEFAULT_NUMBER_BOOKMARKS_TO_PRACTICE,
   DEFAULT_SEQUENCE,
   DEFAULT_SEQUENCE_NO_AUDIO,
   EXTENDED_SEQUENCE,
   EXTENDED_SEQUENCE_NO_AUDIO,
+  MAX_NUMBER_OF_BOOKMARKS_EX_SESSION,
 } from "./exerciseSequenceTypes";
 import useActivityTimer from "../hooks/useActivityTimer";
 import { ExerciseCountContext } from "../exercises/ExerciseCountContext";
@@ -139,7 +141,6 @@ export default function Exercises({ articleID, backButtonAction, toScheduledExer
     let _newExerciseMessageToAPI = { ...exerciseMessageToAPI };
     if (!(bookmarkToUpdate.id in _newExerciseMessageToAPI)) {
       _newExerciseMessageToAPI[bookmarkToUpdate.id] = message;
-      console.log("Created a new Entry!");
     } else _newExerciseMessageToAPI[bookmarkToUpdate.id] += message;
     setExerciseMessageToAPI(_newExerciseMessageToAPI);
     return _newExerciseMessageToAPI[bookmarkToUpdate.id];
@@ -205,20 +206,14 @@ export default function Exercises({ articleID, backButtonAction, toScheduledExer
     if (articleID) {
       exercise_article_bookmarks();
     } else {
-      // api.getTopBookmarksToStudyCount((bookmarkCount) => {
-      //   let exerciseSession =
-      //     bookmarkCount <= MAX_NUMBER_OF_BOOKMARKS_EX_SESSION
-      //       ? MAX_NUMBER_OF_BOOKMARKS_EX_SESSION
-      //       : DEFAULT_NUMBER_BOOKMARKS_TO_PRACTICE;
-      //   api.getTopBookmarksToStudy(exerciseSession, (bookmarks) =>
-      //     initializeExercises(
-      //       bookmarks.slice(0, exerciseSession + 1),
-      //       strings.exercises,
-      //     ),
-      let exerciseSession = 25;
-      api.getTopBookmarksToStudy(exerciseSession, (bookmarks) => {
-        console.log(bookmarks);
-        initializeExercises(bookmarks.slice(0, exerciseSession + 1), strings.exercises);
+      api.getTopBookmarksToStudyCount((bookmarkCount) => {
+        let exerciseSession =
+          bookmarkCount <= MAX_NUMBER_OF_BOOKMARKS_EX_SESSION
+            ? MAX_NUMBER_OF_BOOKMARKS_EX_SESSION
+            : DEFAULT_NUMBER_BOOKMARKS_TO_PRACTICE;
+        api.getTopBookmarksToStudy(exerciseSession, (bookmarks) =>
+          initializeExercises(bookmarks.slice(0, exerciseSession + 1), strings.exercises),
+        );
       });
     }
   }
