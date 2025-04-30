@@ -7,7 +7,7 @@ import InteractiveText from "../../../reader/InteractiveText.js";
 import shuffle from "../../../assorted/fisherYatesShuffle.js";
 import { removePunctuation } from "../../../utils/text/preprocessing.js";
 import { TranslatableText } from "../../../reader/TranslatableText.js";
-import AudioTwoBotInput from "./MultipleChoiceAudioBottomInput.js";
+import MultipleChoiceAudioBottomInput from "./MultipleChoiceAudioBottomInput.js";
 import { EXERCISE_TYPES } from "../../ExerciseTypeConstants.js";
 import SessionStorage from "../../../assorted/SessionStorage.js";
 import { SpeechContext } from "../../../contexts/SpeechContext.js";
@@ -107,7 +107,6 @@ export default function MultipleChoiceAudio({
                 }}
                 isSelected={option === currentSelectedChoice}
                 bookmarkToStudy={bookmarksToStudy[option]}
-                api={api}
                 id={option}
                 styling={option === currentSelectedChoice ? "selected" : ""}
               />
@@ -116,7 +115,7 @@ export default function MultipleChoiceAudio({
       )}
 
       {!isExerciseOver && (
-        <AudioTwoBotInput
+        <MultipleChoiceAudioBottomInput
           bookmarksToStudy={bookmarksToStudy}
           currentChoice={currentSelectedChoice}
           targetBookmark={exerciseBookmark}
