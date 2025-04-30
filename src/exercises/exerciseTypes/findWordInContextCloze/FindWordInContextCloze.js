@@ -8,7 +8,6 @@ import { TranslatableText } from "../../../reader/TranslatableText.js";
 import { SpeechContext } from "../../../contexts/SpeechContext.js";
 import BottomInput from "../BottomInput.js";
 import { EXERCISE_TYPES } from "../../ExerciseTypeConstants.js";
-import BookmarkProgressBar from "../../progressBars/BookmarkProgressBar.js";
 import { removePunctuation } from "../../../utils/text/preprocessing";
 import { APIContext } from "../../../contexts/APIContext.js";
 
@@ -25,9 +24,10 @@ export default function FindWordInContextCloze({
   setExerciseType,
   isExerciseOver,
   setIsCorrect,
-  exerciseMessageToAPI,
   appendToExerciseMessageToAPI,
   reload,
+  bookmarkProgressBar: BookmarkProgressBar,
+  bookmarkProgressBarProps,
 }) {
   const api = useContext(APIContext);
   const [interactiveText, setInteractiveText] = useState();
@@ -63,7 +63,7 @@ export default function FindWordInContextCloze({
   return (
     <s.Exercise className="findWordInContextCloze">
       <div className="headlineWithMoreSpace">{strings.findWordInContextClozeHeadline}</div>
-      <BookmarkProgressBar bookmark={exerciseBookmark} message={exerciseMessageToAPI} />
+      <BookmarkProgressBar {...bookmarkProgressBarProps} />
       <h1 className="wordInContextHeadline">{removePunctuation(exerciseBookmark.to)}</h1>
       <div className="contextExample">
         <TranslatableText

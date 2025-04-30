@@ -6,7 +6,6 @@ import InteractiveText from "../../../reader/InteractiveText.js";
 import { TranslatableText } from "../../../reader/TranslatableText.js";
 import { tokenize } from "../../../utils/text/preprocessing.js";
 import { SpeechContext } from "../../../contexts/SpeechContext.js";
-import BookmarkProgressBar from "../../progressBars/BookmarkProgressBar.js";
 import { removePunctuation } from "../../../utils/text/preprocessing.js";
 import { APIContext } from "../../../contexts/APIContext.js";
 
@@ -30,6 +29,8 @@ export default function WordInContextExercise({
   resetSubSessionTimer,
   exerciseMessageToAPI,
   appendToExerciseMessageToAPI,
+  bookmarkProgressBar: BookmarkProgressBar,
+  bookmarkProgressBarProps,
 }) {
   const api = useContext(APIContext);
   const [interactiveText, setInteractiveText] = useState();
@@ -125,7 +126,7 @@ export default function WordInContextExercise({
   return (
     <s.Exercise className={exerciseType}>
       <div className="headlineWithMoreSpace">{exerciseHeadline}</div>
-      <BookmarkProgressBar bookmark={exerciseBookmark} message={exerciseMessageToAPI} />
+      <BookmarkProgressBar {...bookmarkProgressBarProps} />
       <h1 className="wordInContextHeadline">{removePunctuation(exerciseBookmark.to)}</h1>
       <div className="contextExample">
         <TranslatableText

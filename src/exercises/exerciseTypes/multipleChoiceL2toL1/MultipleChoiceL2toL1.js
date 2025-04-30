@@ -20,7 +20,6 @@ const EXERCISE_TYPE = EXERCISE_TYPES.multipleChoiceL2toL1;
 
 export default function MultipleChoiceL2toL1({
   bookmarksToStudy,
-  exerciseMessageToAPI,
   notifyCorrectAnswer,
   notifyIncorrectAnswer,
   setExerciseType,
@@ -29,6 +28,8 @@ export default function MultipleChoiceL2toL1({
   setIsCorrect,
   isExerciseOver,
   resetSubSessionTimer,
+  bookmarkProgressBar: BookmarkProgressBar,
+  bookmarkProgressBarProps,
 }) {
   const api = useContext(APIContext);
   const [incorrectAnswer, setIncorrectAnswer] = useState("");
@@ -100,8 +101,7 @@ export default function MultipleChoiceL2toL1({
   return (
     <s.Exercise className="multipleChoice">
       <div className="headlineWithMoreSpace">{strings.multipleChoiceL2toL1Headline}</div>
-      <BookmarkProgressBar bookmark={exerciseBookmark} message={exerciseMessageToAPI} />
-
+      <BookmarkProgressBar {...bookmarkProgressBarProps} />
       {isExerciseOver && <h1>{removePunctuation(exerciseBookmark.to)}</h1>}
 
       <div className="contextExample">

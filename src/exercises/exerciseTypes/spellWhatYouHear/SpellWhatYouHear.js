@@ -9,7 +9,6 @@ import { TranslatableText } from "../../../reader/TranslatableText.js";
 import InteractiveText from "../../../reader/InteractiveText.js";
 import LoadingAnimation from "../../../components/LoadingAnimation.js";
 import { SpeechContext } from "../../../contexts/SpeechContext.js";
-import BookmarkProgressBar from "../../progressBars/BookmarkProgressBar.js";
 import { removePunctuation } from "../../../utils/text/preprocessing.js";
 import { APIContext } from "../../../contexts/APIContext.js";
 
@@ -20,7 +19,6 @@ const EXERCISE_TYPE = EXERCISE_TYPES.spellWhatYouHear;
 
 export default function SpellWhatYouHear({
   bookmarksToStudy,
-  exerciseMessageToAPI,
   appendToExerciseMessageToAPI,
   notifyCorrectAnswer,
   notifyIncorrectAnswer,
@@ -31,6 +29,8 @@ export default function SpellWhatYouHear({
   reload,
   isExerciseOver,
   resetSubSessionTimer,
+  bookmarkProgressBar: BookmarkProgressBar,
+  bookmarkProgressBarProps,
 }) {
   const api = useContext(APIContext);
   const speech = useContext(SpeechContext);
@@ -87,7 +87,7 @@ export default function SpellWhatYouHear({
   return (
     <s.Exercise>
       <div className="headlineWithMoreSpace">{strings.audioExerciseHeadline}</div>
-      <BookmarkProgressBar bookmark={exerciseBookmark} message={exerciseMessageToAPI} />
+      <BookmarkProgressBar {...bookmarkProgressBarProps} />
 
       {!isExerciseOver && (
         <>

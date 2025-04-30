@@ -35,6 +35,7 @@ import { NarrowColumn } from "../components/ColumnWidth.sc";
 import useSubSessionTimer from "../hooks/useSubSessionTimer";
 import { APIContext } from "../contexts/APIContext";
 import isEmptyDictionary from "../utils/misc/isEmptyDictionary";
+import BookmarkProgressBar from "./progressBars/BookmarkProgressBar";
 
 const BOOKMARKS_DUE_REVIEW = false;
 
@@ -424,6 +425,12 @@ export default function Exercises({ articleID, backButtonAction, toScheduledExer
             exerciseSessionId={dbExerciseSessionId}
             activeSessionDuration={activeSessionDuration}
             resetSubSessionTimer={resetSubSessionTimer}
+            bookmarkProgressBar={BookmarkProgressBar}
+            bookmarkProgressBarProps={{
+              bookmark: selectedExerciseBookmark,
+              message: currentMessageToAPI,
+              isGreyedOutBar: selectedExerciseBookmark === undefined,
+            }}
           />
           <NextNavigation
             exerciseType={currentExerciseType}

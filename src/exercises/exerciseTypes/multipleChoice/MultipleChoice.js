@@ -5,7 +5,6 @@ import LoadingAnimation from "../../../components/LoadingAnimation";
 import InteractiveText from "../../../reader/InteractiveText.js";
 import { TranslatableText } from "../../../reader/TranslatableText.js";
 import { EXERCISE_TYPES } from "../../ExerciseTypeConstants.js";
-import BookmarkProgressBar from "../../progressBars/BookmarkProgressBar.js";
 import strings from "../../../i18n/definitions.js";
 import shuffle from "../../../assorted/fisherYatesShuffle";
 import { removePunctuation } from "../../../utils/text/preprocessing";
@@ -19,7 +18,6 @@ const EXERCISE_TYPE = EXERCISE_TYPES.multipleChoice;
 
 export default function MultipleChoice({
   bookmarksToStudy,
-  exerciseMessageToAPI,
   notifyCorrectAnswer,
   notifyIncorrectAnswer,
   setExerciseType,
@@ -27,6 +25,8 @@ export default function MultipleChoice({
   isExerciseOver,
   setIsCorrect,
   resetSubSessionTimer,
+  bookmarkProgressBar: BookmarkProgressBar,
+  bookmarkProgressBarProps,
 }) {
   const api = useContext(APIContext);
   const [incorrectAnswer, setIncorrectAnswer] = useState("");
@@ -63,9 +63,7 @@ export default function MultipleChoice({
   }, [exerciseBookmark, reload]);
 
   function notifyChoiceSelection(selectedChoice) {
-    if (
-      selectedChoice === removePunctuation(exerciseBookmark.from.toLowerCase())
-    ) {
+    if (selectedChoice === removePunctuation(exerciseBookmark.from.toLowerCase())) {
       setIsCorrect(true);
       notifyCorrectAnswer(exerciseBookmark);
     } else {
@@ -96,13 +94,8 @@ export default function MultipleChoice({
 
   return (
     <s.Exercise className="multipleChoice">
-      <div className="headlineWithMoreSpace">
-        {strings.chooseTheWordFittingContextHeadline}
-      </div>
-      <BookmarkProgressBar
-        bookmark={exerciseBookmark}
-        message={exerciseMessageToAPI}
-      />
+      <div className="headlineWithMoreSpace">{strings.chooseTheWordFittingContextHeadline}</div>
+      <BookmarkProgressBar {...bookmarkProgressBarProps} />
 
       {isExerciseOver && <h1>{removePunctuation(exerciseBookmark.to)}</h1>}
 

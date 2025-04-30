@@ -6,7 +6,6 @@ import InteractiveText from "../../../reader/InteractiveText.js";
 import { SpeechContext } from "../../../contexts/SpeechContext.js";
 import shuffle from "../../../assorted/fisherYatesShuffle";
 import { EXERCISE_TYPES } from "../../ExerciseTypeConstants.js";
-import BookmarkProgressBar from "../../progressBars/BookmarkProgressBar.js";
 import { removePunctuation } from "../../../utils/text/preprocessing";
 import useShadowRef from "../../../hooks/useShadowRef";
 import { APIContext } from "../../../contexts/APIContext.js";
@@ -15,13 +14,14 @@ const EXERCISE_TYPE = EXERCISE_TYPES.multipleChoiceContext;
 
 export default function MultipleChoiceContext({
   bookmarksToStudy,
-  exerciseMessageToAPI,
   notifyCorrectAnswer,
   notifyIncorrectAnswer,
   setExerciseType,
   isExerciseOver,
   reload,
   resetSubSessionTimer,
+  bookmarkProgressBar: BookmarkProgressBar,
+  bookmarkProgressBarProps,
 }) {
   const api = useContext(APIContext);
   const [exerciseBookmarks, setExerciseBookmarks] = useState(null);
@@ -30,9 +30,7 @@ export default function MultipleChoiceContext({
   const exerciseBookmark = { ...bookmarksToStudy[0], isExercise: true };
   const [clickedIndex, setClickedIndex] = useState(null);
   const [clickedOption, setClickedOption] = useState(null);
-  const [wordInContextHeadline, setWordInContextHeadline] = useState(
-    removePunctuation(exerciseBookmark.from),
-  );
+  const [wordInContextHeadline, setWordInContextHeadline] = useState(removePunctuation(exerciseBookmark.from));
   const isExerciseOverRef = useShadowRef(isExerciseOver);
 
   useEffect(() => {
@@ -65,12 +63,7 @@ export default function MultipleChoiceContext({
     // eslint-disable-next-line
   }, [reload, bookmarksToStudy]);
 
-  function notifyChoiceSelection(
-    selectedChoiceId,
-    selectedChoiceContext,
-    index,
-    e,
-  ) {
+  function notifyChoiceSelection(selectedChoiceId, selectedChoiceContext, index, e) {
     if (isExerciseOver) return;
     setClickedOption(index);
     if (selectedChoiceId === exerciseBookmark.id) {
@@ -99,40 +92,24 @@ export default function MultipleChoiceContext({
 
   return (
     <s.Exercise className="findWordInContext">
-      <div className="headlineWithMoreSpace">
-        {strings.multipleChoiceContextHeadline}
-      </div>
-      <BookmarkProgressBar
-        bookmark={exerciseBookmark}
-        message={exerciseMessageToAPI}
-      />
+      <div className="headlineWithMoreSpace">{strings.multipleChoiceContextHeadline}</div>
+      <BookmarkProgressBar {...bookmarkProgressBarProps} />
       <h1 className="wordInContextHeadline">{wordInContextHeadline}</h1>
       {exerciseBookmarks.map((option, index) => (
         <s.MultipleChoiceContext
           key={index}
           clicked={index === clickedIndex}
           className={
-            clickedOption !== null
-              ? index === clickedOption
-                ? option.isExercise
-                  ? "correct"
-                  : "wrong"
-                : ""
-              : ""
+            clickedOption !== null ? (index === clickedOption ? (option.isExercise ? "correct" : "wrong") : "") : ""
           }
-          onClick={(e) =>
-            notifyChoiceSelection(option.id, option.context, index, e)
-          }
+          onClick={(e) => notifyChoiceSelection(option.id, option.context, index, e)}
         >
           {option.left_ellipsis && <>...</>}
           <span
             dangerouslySetInnerHTML={{
               __html: isExerciseOver
                 ? option.isExercise
-                  ? option.context.replace(
-                      option.from,
-                      getHighlightedWord(option.from),
-                    )
+                  ? option.context.replace(option.from, getHighlightedWord(option.from))
                   : option.context.replace(option.from, `<b>${option.from}</b>`)
                 : option.context.replace(option.from, "_____"),
             }}

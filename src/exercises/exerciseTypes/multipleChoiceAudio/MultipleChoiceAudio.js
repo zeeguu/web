@@ -11,7 +11,6 @@ import AudioTwoBotInput from "./MultipleChoiceAudioBottomInput.js";
 import { EXERCISE_TYPES } from "../../ExerciseTypeConstants.js";
 import SessionStorage from "../../../assorted/SessionStorage.js";
 import { SpeechContext } from "../../../contexts/SpeechContext.js";
-import BookmarkProgressBar from "../../progressBars/BookmarkProgressBar.js";
 import { APIContext } from "../../../contexts/APIContext.js";
 
 // The user has to select the correct spoken L2 translation of a given L1 word out of three.
@@ -21,7 +20,6 @@ const EXERCISE_TYPE = EXERCISE_TYPES.multipleChoiceAudio;
 
 export default function MultipleChoiceAudio({
   bookmarksToStudy,
-  exerciseMessageToAPI,
   notifyCorrectAnswer,
   notifyIncorrectAnswer,
   setExerciseType,
@@ -29,6 +27,8 @@ export default function MultipleChoiceAudio({
   resetSubSessionTimer,
   moveToNextExercise,
   reload,
+  bookmarkProgressBar: BookmarkProgressBar,
+  bookmarkProgressBarProps,
 }) {
   const api = useContext(APIContext);
   const [interactiveText, setInteractiveText] = useState();
@@ -76,7 +76,7 @@ export default function MultipleChoiceAudio({
   return (
     <s.Exercise>
       <div className="headlineWithMoreSpace">{strings.multipleChoiceAudioHeadline}</div>
-      <BookmarkProgressBar bookmark={exerciseBookmark} message={exerciseMessageToAPI} />
+      <BookmarkProgressBar {...bookmarkProgressBarProps} />
       {isExerciseOver && (
         <>
           <br></br>

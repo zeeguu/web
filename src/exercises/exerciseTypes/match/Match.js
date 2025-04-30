@@ -2,11 +2,9 @@ import { useState, useEffect, useContext } from "react";
 import * as s from "../Exercise.sc.js";
 import strings from "../../../i18n/definitions";
 import { EXERCISE_TYPES } from "../../ExerciseTypeConstants.js";
-import BookmarkProgressBar from "../../progressBars/BookmarkProgressBar.js";
 import { SpeechContext } from "../../../contexts/SpeechContext.js";
 import MatchInput from "./MatchInput.js";
 import useBookmarkAutoPronounce from "../../../hooks/useBookmarkAutoPronounce.js";
-
 import isBookmarkExpression from "../../../utils/misc/isBookmarkExpression";
 import { toast } from "react-toastify";
 
@@ -19,22 +17,19 @@ export default function Match({
   bookmarksToStudy,
   notifyIncorrectAnswer,
   notifyCorrectAnswer,
-  selectedExerciseBookmark,
   setSelectedExerciseBookmark,
   setExerciseType,
   isExerciseOver,
   notifyExerciseCompleted,
-  exerciseMessageToAPI,
   reload,
   setReload,
   resetSubSessionTimer,
+  bookmarkProgressBar: BookmarkProgressBar,
+  bookmarkProgressBarProps,
 }) {
   const RIGHT = true;
   const LEFT = !RIGHT;
 
-  const [firstPressTime, setFirstPressTime] = useState();
-  const [buttonsToDisable, setButtonsToDisable] = useState([]);
-  const [incorrectAnswer, setIncorrectAnswer] = useState("");
   const [autoPronounceBookmark] = useBookmarkAutoPronounce();
   const [isPronouncing, setIsPronouncing] = useState(false);
   const [selectedRightBookmark, setSelectedRightBookmark] = useState(null);
@@ -47,7 +42,6 @@ export default function Match({
 
   useEffect(() => {
     setExerciseType(EXERCISE_TYPE);
-    setButtonsToDisable([]);
     setSelectedExerciseBookmark();
     resetSubSessionTimer();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -56,10 +50,6 @@ export default function Match({
   useEffect(() => {
     if (isExerciseOver) setListOfSolvedBookmarks(bookmarksToStudy.map((bookmark) => bookmark.id));
   }, [isExerciseOver]);
-
-  function inputFirstClick() {
-    if (firstPressTime === undefined) setFirstPressTime(new Date());
-  }
 
   const speech = useContext(SpeechContext);
 
@@ -113,11 +103,7 @@ export default function Match({
     <s.Exercise>
       <div className="headlineWithMoreSpace">{strings.matchWordWithTranslation} </div>
 
-      <BookmarkProgressBar
-        bookmark={selectedExerciseBookmark}
-        message={exerciseMessageToAPI}
-        isGreyedOutBar={selectedExerciseBookmark === undefined}
-      />
+      <BookmarkProgressBar {...bookmarkProgressBarProps} />
 
       <MatchInput
         exerciseBookmarks={bookmarksToStudy}

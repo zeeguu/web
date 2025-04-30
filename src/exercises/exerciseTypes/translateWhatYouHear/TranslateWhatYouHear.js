@@ -9,7 +9,6 @@ import { TranslatableText } from "../../../reader/TranslatableText.js";
 import InteractiveText from "../../../reader/InteractiveText.js";
 import LoadingAnimation from "../../../components/LoadingAnimation.js";
 import { SpeechContext } from "../../../contexts/SpeechContext.js";
-import BookmarkProgressBar from "../../progressBars/BookmarkProgressBar.js";
 import { APIContext } from "../../../contexts/APIContext.js";
 
 // The user has to translate the word they hear into their L1.
@@ -18,7 +17,6 @@ import { APIContext } from "../../../contexts/APIContext.js";
 const EXERCISE_TYPE = EXERCISE_TYPES.translateWhatYouHear;
 export default function TranslateWhatYouHear({
   bookmarksToStudy,
-  exerciseMessageToAPI,
   appendToExerciseMessageToAPI,
   notifyCorrectAnswer,
   notifyIncorrectAnswer,
@@ -29,6 +27,8 @@ export default function TranslateWhatYouHear({
   reload,
   isExerciseOver,
   resetSubSessionTimer,
+  bookmarkProgressBar: BookmarkProgressBar,
+  bookmarkProgressBarProps,
 }) {
   const api = useContext(APIContext);
   const exerciseBookmark = bookmarksToStudy[0];
@@ -82,7 +82,7 @@ export default function TranslateWhatYouHear({
   return (
     <s.Exercise>
       <div className="headlineWithMoreSpace">{strings.translateWhatYouHearHeadline}</div>
-      <BookmarkProgressBar bookmark={exerciseBookmark} message={exerciseMessageToAPI} />
+      <BookmarkProgressBar {...bookmarkProgressBarProps} />
       {!isExerciseOver && (
         <>
           <s.CenteredRowTall>
