@@ -73,16 +73,16 @@ let gray = "999999";
 // Based on the Tableau colours of Matplotlib
 // https://stackoverflow.com/questions/64369710/what-are-the-hex-codes-of-matplotlib-tab10-palette
 
-let tableau_1 = " #1f77b4"; /* Blue */
-let tableau_2 = " #ff7f0e"; /* Orange */
-let tableau_3 = " #2ca02c"; /* Green */
-let tableau_4 = " #d62728"; /* Red */
-let tableau_5 = " #9467bd"; /* Purple */
-let tableau_6 = " #8c564b"; /* Brown */
-let tableau_7 = " #e377c2"; /* Pink */
-let tableau_8 = " #7f7f7f"; /* Grey */
-let tableau_9 = " #bcbd22"; /* Olive */
-let tableau_10 = " #17becf"; /* Cyan */
+let tableau_1 = "#1f77b4"; /* Blue */
+let tableau_2 = "#ff7f0e"; /* Orange */
+let tableau_3 = "#2ca02c"; /* Green */
+let tableau_4 = "#d62728"; /* Red */
+let tableau_5 = "#9467bd"; /* Purple */
+let tableau_6 = "#8c564b"; /* Brown */
+let tableau_7 = "#e377c2"; /* Pink */
+let tableau_8 = "#7f7f7f"; /* Grey */
+let tableau_9 = "#bcbd22"; /* Olive */
+let tableau_10 = "#17becf"; /* Cyan */
 //black - the css standard color is used throughout the repo.
 //white - the css standard color is used throughout the repo.
 
