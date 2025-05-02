@@ -23,7 +23,7 @@ export default function MultipleChoiceL2toL1({
   notifyCorrectAnswer,
   notifyIncorrectAnswer,
   setExerciseType,
-  appendToExerciseMessageForAPI,
+  notifyOfUserAttempt,
   reload,
   setIsCorrect,
   isExerciseOver,
@@ -49,7 +49,7 @@ export default function MultipleChoiceL2toL1({
   useEffect(() => {
     if (translatedWords.length > prevTranslatedWords) {
       setPrevTranslatedWords(translatedWords.length);
-      appendToExerciseMessageForAPI(TRANSLATE_WORD, exerciseBookmark);
+      notifyOfUserAttempt(TRANSLATE_WORD, exerciseBookmark);
     }
   }, [translatedWords]);
 

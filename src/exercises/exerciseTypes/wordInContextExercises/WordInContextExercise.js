@@ -28,7 +28,7 @@ export default function WordInContextExercise({
   setIsCorrect,
   resetSubSessionTimer,
   exerciseMessageToAPI,
-  appendToExerciseMessageForAPI,
+  notifyOfUserAttempt,
   bookmarkProgressBar,
 }) {
   const api = useContext(APIContext);
@@ -109,7 +109,7 @@ export default function WordInContextExercise({
         notifyShowSolution();
       }
     } else {
-      appendToExerciseMessageForAPI("T", exerciseBookmark);
+      notifyOfUserAttempt("T", exerciseBookmark);
     }
   }
 
@@ -147,7 +147,7 @@ export default function WordInContextExercise({
           handleExerciseCompleted={notifyExerciseCompleted}
           setIsCorrect={setIsCorrect}
           exerciseBookmark={exerciseBookmark}
-          appendToExerciseMessageForAPI={appendToExerciseMessageForAPI}
+          notifyOfUserAttempt={notifyOfUserAttempt}
         />
       )}
     </s.Exercise>

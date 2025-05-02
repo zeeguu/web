@@ -135,7 +135,7 @@ export default function Exercises({ articleID, backButtonAction, toScheduledExer
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  function appendToMessageToAPI(message, bookmarkToUpdate) {
+  function handleUserAttempt(message, bookmarkToUpdate) {
     if (message === "" || !bookmarkToUpdate) return "";
     let _newExerciseMessageToAPI = { ...exerciseMessageForAPI };
     if (!(bookmarkToUpdate.id in _newExerciseMessageToAPI)) {
@@ -315,7 +315,7 @@ export default function Exercises({ articleID, backButtonAction, toScheduledExer
     }
     incorrectBookmarksCopy.push(currentBookmark);
     setIncorrectBookmarks(incorrectBookmarksCopy);
-    appendToMessageToAPI(WRONG, currentBookmark);
+    handleUserAttempt(WRONG, currentBookmark);
     api.updateExerciseSession(dbExerciseSessionId, activeSessionDuration);
   }
 
@@ -334,7 +334,7 @@ export default function Exercises({ articleID, backButtonAction, toScheduledExer
   }
 
   function updateAPIWithExerciseComplete(message, bookmark, endExercise = true) {
-    let updated_message = appendToMessageToAPI(message, bookmark);
+    let updated_message = handleUserAttempt(message, bookmark);
     if (endExercise) setIsExerciseOver(true);
     api.uploadExerciseFinalizedData(
       updated_message,
@@ -411,7 +411,7 @@ export default function Exercises({ articleID, backButtonAction, toScheduledExer
             selectedExerciseBookmark={selectedExerciseBookmark}
             setSelectedExerciseBookmark={setSelectedExerciseBookmark}
             exerciseMessageToAPI={currentMessageToAPI}
-            appendToExerciseMessageForAPI={appendToMessageToAPI}
+            notifyOfUserAttempt={handleUserAttempt}
             notifyCorrectAnswer={correctAnswerNotification}
             notifyIncorrectAnswer={updateAPIWithIncorrectAnswer}
             setExerciseType={setCurrentExerciseType}

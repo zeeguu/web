@@ -21,7 +21,7 @@ export default function TranslateL2toL1({
   notifyCorrectAnswer,
   notifyExerciseCompleted,
   notifyIncorrectAnswer,
-  appendToExerciseMessageForAPI,
+  notifyOfUserAttempt,
   setExerciseType,
   reload,
   setIsCorrect,
@@ -97,7 +97,7 @@ export default function TranslateL2toL1({
           handleExerciseCompleted={notifyExerciseCompleted}
           setIsCorrect={setIsCorrect}
           exerciseBookmark={exerciseBookmark}
-          appendToExerciseMessageForAPI={appendToExerciseMessageForAPI}
+          notifyOfUserAttempt={notifyOfUserAttempt}
           isL1Answer={true}
         />
       )}
