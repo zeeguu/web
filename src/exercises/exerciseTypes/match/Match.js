@@ -24,8 +24,7 @@ export default function Match({
   reload,
   setReload,
   resetSubSessionTimer,
-  bookmarkProgressBar: BookmarkProgressBar,
-  bookmarkProgressBarProps,
+  bookmarkProgressBar,
 }) {
   const RIGHT = true;
   const LEFT = !RIGHT;
@@ -112,7 +111,7 @@ export default function Match({
     <s.Exercise>
       <div className="headlineWithMoreSpace">{strings.matchWordWithTranslation} </div>
 
-      <BookmarkProgressBar {...bookmarkProgressBarProps} />
+      {bookmarkProgressBar}
 
       <MatchInput
         exerciseBookmarks={bookmarksToStudy}

@@ -29,8 +29,7 @@ export default function SpellWhatYouHear({
   reload,
   isExerciseOver,
   resetSubSessionTimer,
-  bookmarkProgressBar: BookmarkProgressBar,
-  bookmarkProgressBarProps,
+  bookmarkProgressBar,
 }) {
   const api = useContext(APIContext);
   const speech = useContext(SpeechContext);
@@ -87,7 +86,7 @@ export default function SpellWhatYouHear({
   return (
     <s.Exercise>
       <div className="headlineWithMoreSpace">{strings.audioExerciseHeadline}</div>
-      <BookmarkProgressBar {...bookmarkProgressBarProps} />
+      {bookmarkProgressBar}
 
       {!isExerciseOver && (
         <>

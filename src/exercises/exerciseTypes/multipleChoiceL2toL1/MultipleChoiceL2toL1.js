@@ -9,7 +9,7 @@ import strings from "../../../i18n/definitions.js";
 import shuffle from "../../../assorted/fisherYatesShuffle";
 import { removePunctuation } from "../../../utils/text/preprocessing";
 import { SpeechContext } from "../../../contexts/SpeechContext.js";
-import BookmarkProgressBar from "../../progressBars/BookmarkProgressBar.js";
+
 import { APIContext } from "../../../contexts/APIContext.js";
 import { TRANSLATE_WORD } from "../../ExerciseConstants.js";
 
@@ -28,8 +28,7 @@ export default function MultipleChoiceL2toL1({
   setIsCorrect,
   isExerciseOver,
   resetSubSessionTimer,
-  bookmarkProgressBar: BookmarkProgressBar,
-  bookmarkProgressBarProps,
+  bookmarkProgressBar,
 }) {
   const api = useContext(APIContext);
   const [incorrectAnswer, setIncorrectAnswer] = useState("");
@@ -101,7 +100,9 @@ export default function MultipleChoiceL2toL1({
   return (
     <s.Exercise className="multipleChoice">
       <div className="headlineWithMoreSpace">{strings.multipleChoiceL2toL1Headline}</div>
-      <BookmarkProgressBar {...bookmarkProgressBarProps} />
+
+      {bookmarkProgressBar}
+
       {isExerciseOver && <h1>{removePunctuation(exerciseBookmark.to)}</h1>}
 
       <div className="contextExample">

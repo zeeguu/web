@@ -29,8 +29,7 @@ export default function WordInContextExercise({
   resetSubSessionTimer,
   exerciseMessageToAPI,
   appendToExerciseMessageForAPI,
-  bookmarkProgressBar: BookmarkProgressBar,
-  bookmarkProgressBarProps,
+  bookmarkProgressBar,
 }) {
   const api = useContext(APIContext);
   const [interactiveText, setInteractiveText] = useState();
@@ -126,7 +125,7 @@ export default function WordInContextExercise({
   return (
     <s.Exercise className={exerciseType}>
       <div className="headlineWithMoreSpace">{exerciseHeadline}</div>
-      <BookmarkProgressBar {...bookmarkProgressBarProps} />
+      {bookmarkProgressBar}
       <h1 className="wordInContextHeadline">{removePunctuation(exerciseBookmark.to)}</h1>
       <div className="contextExample">
         <TranslatableText

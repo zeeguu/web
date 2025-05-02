@@ -25,8 +25,7 @@ export default function MultipleChoice({
   isExerciseOver,
   setIsCorrect,
   resetSubSessionTimer,
-  bookmarkProgressBar: BookmarkProgressBar,
-  bookmarkProgressBarProps,
+  bookmarkProgressBar,
 }) {
   const api = useContext(APIContext);
   const [incorrectAnswer, setIncorrectAnswer] = useState("");
@@ -95,7 +94,8 @@ export default function MultipleChoice({
   return (
     <s.Exercise className="multipleChoice">
       <div className="headlineWithMoreSpace">{strings.chooseTheWordFittingContextHeadline}</div>
-      <BookmarkProgressBar {...bookmarkProgressBarProps} />
+
+      {bookmarkProgressBar}
 
       {isExerciseOver && <h1>{removePunctuation(exerciseBookmark.to)}</h1>}
 

@@ -27,8 +27,7 @@ export default function TranslateWhatYouHear({
   reload,
   isExerciseOver,
   resetSubSessionTimer,
-  bookmarkProgressBar: BookmarkProgressBar,
-  bookmarkProgressBarProps,
+  bookmarkProgressBar,
 }) {
   const api = useContext(APIContext);
   const exerciseBookmark = bookmarksToStudy[0];
@@ -82,7 +81,7 @@ export default function TranslateWhatYouHear({
   return (
     <s.Exercise>
       <div className="headlineWithMoreSpace">{strings.translateWhatYouHearHeadline}</div>
-      <BookmarkProgressBar {...bookmarkProgressBarProps} />
+      {bookmarkProgressBar}
       {!isExerciseOver && (
         <>
           <s.CenteredRowTall>

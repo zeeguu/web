@@ -25,7 +25,7 @@ import {
   MAX_NUMBER_OF_BOOKMARKS_EX_SESSION,
 } from "./exerciseSequenceTypes";
 import useActivityTimer from "../hooks/useActivityTimer";
-import { ExerciseCountContext } from "../exercises/ExerciseCountContext";
+import { ExerciseCountContext } from "./ExerciseCountContext";
 import useShadowRef from "../hooks/useShadowRef";
 import { LEARNING_CYCLE } from "./ExerciseTypeConstants";
 import DigitalTimer from "../components/DigitalTimer";
@@ -374,6 +374,15 @@ export default function Exercises({ articleID, backButtonAction, toScheduledExer
       ? ""
       : exerciseMessageForAPI[selectedExerciseBookmark.id];
   const CurrentExerciseComponent = fullExerciseProgression[currentIndex].type;
+
+  const bookmarkProgressBar = (
+    <BookmarkProgressBar
+      bookmark={selectedExerciseBookmark}
+      message={currentMessageToAPI}
+      isGreyedOutBar={selectedExerciseBookmark === undefined}
+    />
+  );
+
   return (
     <NarrowColumn>
       <s.ExercisesColumn>
@@ -420,12 +429,7 @@ export default function Exercises({ articleID, backButtonAction, toScheduledExer
             exerciseSessionId={dbExerciseSessionId}
             activeSessionDuration={activeSessionDuration}
             resetSubSessionTimer={resetSubSessionTimer}
-            bookmarkProgressBar={BookmarkProgressBar}
-            bookmarkProgressBarProps={{
-              bookmark: selectedExerciseBookmark,
-              message: currentMessageToAPI,
-              isGreyedOutBar: selectedExerciseBookmark === undefined,
-            }}
+            bookmarkProgressBar={bookmarkProgressBar}
           />
           <NextNavigation
             exerciseType={currentExerciseType}

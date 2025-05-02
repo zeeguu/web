@@ -27,8 +27,7 @@ export default function MultipleChoiceAudio({
   resetSubSessionTimer,
   moveToNextExercise,
   reload,
-  bookmarkProgressBar: BookmarkProgressBar,
-  bookmarkProgressBarProps,
+  bookmarkProgressBar,
 }) {
   const api = useContext(APIContext);
   const [interactiveText, setInteractiveText] = useState();
@@ -76,7 +75,9 @@ export default function MultipleChoiceAudio({
   return (
     <s.Exercise>
       <div className="headlineWithMoreSpace">{strings.multipleChoiceAudioHeadline}</div>
-      <BookmarkProgressBar {...bookmarkProgressBarProps} />
+
+      {bookmarkProgressBar}
+
       {isExerciseOver && (
         <>
           <br></br>

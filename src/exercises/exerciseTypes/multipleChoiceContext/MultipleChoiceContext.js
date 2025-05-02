@@ -20,8 +20,7 @@ export default function MultipleChoiceContext({
   isExerciseOver,
   reload,
   resetSubSessionTimer,
-  bookmarkProgressBar: BookmarkProgressBar,
-  bookmarkProgressBarProps,
+  bookmarkProgressBar,
 }) {
   const api = useContext(APIContext);
   const [exerciseBookmarks, setExerciseBookmarks] = useState(null);
@@ -93,7 +92,9 @@ export default function MultipleChoiceContext({
   return (
     <s.Exercise className="findWordInContext">
       <div className="headlineWithMoreSpace">{strings.multipleChoiceContextHeadline}</div>
-      <BookmarkProgressBar {...bookmarkProgressBarProps} />
+
+      {bookmarkProgressBar}
+
       <h1 className="wordInContextHeadline">{wordInContextHeadline}</h1>
       {exerciseBookmarks.map((option, index) => (
         <s.MultipleChoiceContext

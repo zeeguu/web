@@ -26,8 +26,7 @@ export default function FindWordInContextCloze({
   setIsCorrect,
   appendToExerciseMessageForAPI,
   reload,
-  bookmarkProgressBar: BookmarkProgressBar,
-  bookmarkProgressBarProps,
+  bookmarkProgressBar,
 }) {
   const api = useContext(APIContext);
   const [interactiveText, setInteractiveText] = useState();
@@ -63,7 +62,7 @@ export default function FindWordInContextCloze({
   return (
     <s.Exercise className="findWordInContextCloze">
       <div className="headlineWithMoreSpace">{strings.findWordInContextClozeHeadline}</div>
-      <BookmarkProgressBar {...bookmarkProgressBarProps} />
+      {bookmarkProgressBar}
       <h1 className="wordInContextHeadline">{removePunctuation(exerciseBookmark.to)}</h1>
       <div className="contextExample">
         <TranslatableText

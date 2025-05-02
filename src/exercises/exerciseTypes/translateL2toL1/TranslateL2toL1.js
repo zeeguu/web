@@ -27,8 +27,7 @@ export default function TranslateL2toL1({
   setIsCorrect,
   isExerciseOver,
   resetSubSessionTimer,
-  bookmarkProgressBar: BookmarkProgressBar,
-  bookmarkProgressBarProps,
+  bookmarkProgressBar,
 }) {
   const api = useContext(APIContext);
   const [interactiveText, setInteractiveText] = useState();
@@ -70,7 +69,7 @@ export default function TranslateL2toL1({
   return (
     <s.Exercise className="translateL2toL1">
       <div className="headlineWithMoreSpace">{strings.translateL2toL1Headline}</div>
-      <BookmarkProgressBar {...bookmarkProgressBarProps} />
+      {bookmarkProgressBar}
       {isExerciseOver && (
         <>
           <h1 className="wordInContextHeadline">{removePunctuation(exerciseBookmark.to)}</h1>
