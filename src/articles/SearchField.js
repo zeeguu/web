@@ -39,7 +39,7 @@ export default function SearchField({ query }) {
       <s.SearchInput
         style={{ float: "left", fontWeight: query ? "bold" : "normal" }}
         type="text"
-        placeholder={strings.searchAllArticles}
+        placeholder={strings.searchAllArticlesAndVideos}
         value={searchTerm == null ? "" : searchTerm}
         ref={inputRef}
         onChange={(e) => setSearchTerm(e.target.value)}
