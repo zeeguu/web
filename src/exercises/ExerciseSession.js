@@ -41,7 +41,7 @@ import BookmarkProgressBar from "./progressBars/BookmarkProgressBar";
 
 const BOOKMARKS_DUE_REVIEW = false;
 
-export default function Exercises({ articleID, backButtonAction, toScheduledExercises, source }) {
+export default function ExerciseSession({ articleID, backButtonAction, toScheduledExercises, source }) {
   const api = useContext(APIContext);
   const [countBookmarksToPractice, setCountBookmarksToPractice] = useState();
   const [hasKeptExercising, setHasKeptExercising] = useState(false);
