@@ -1,6 +1,6 @@
 import { Switch, useHistory } from "react-router-dom";
 import { PrivateRoute } from "../PrivateRoute";
-import Exercises from "./Exercises";
+import ExerciseSession from "./ExerciseSession";
 import * as s from "../components/ColumnWidth.sc";
 import { WEB_READER } from "../reader/ArticleReader";
 import { useContext } from "react";
@@ -30,7 +30,7 @@ export default function ExercisesRouter() {
       <Switch>
         <PrivateRoute
           path="/exercises"
-          component={Exercises}
+          component={ExerciseSession}
           backButtonAction={backToReadingAction}
           keepExercisingAction={keepExercisingAction}
           toScheduledExercises={toScheduledExercises}

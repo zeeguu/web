@@ -5,14 +5,10 @@ import LoadingAnimation from "../../../components/LoadingAnimation";
 import InteractiveText from "../../../reader/InteractiveText.js";
 import { TranslatableText } from "../../../reader/TranslatableText.js";
 import { EXERCISE_TYPES } from "../../ExerciseTypeConstants.js";
-import BookmarkProgressBar from "../../progressBars/BookmarkProgressBar.js";
-
-import NextNavigation from "../NextNavigation";
 import strings from "../../../i18n/definitions.js";
 import shuffle from "../../../assorted/fisherYatesShuffle";
 import { removePunctuation } from "../../../utils/text/preprocessing";
 import { SpeechContext } from "../../../contexts/SpeechContext.js";
-import useSubSessionTimer from "../../../hooks/useSubSessionTimer.js";
 import { APIContext } from "../../../contexts/APIContext.js";
 
 // The user has to select the correct L2 translation of a given L1 word out of three.
@@ -25,28 +21,26 @@ export default function MultipleChoice({
   notifyCorrectAnswer,
   notifyIncorrectAnswer,
   setExerciseType,
-  isCorrect,
-  setIsCorrect,
-  moveToNextExercise,
-  toggleShow,
   reload,
-  setReload,
-  exerciseSessionId,
-  activeSessionDuration,
+  isExerciseOver,
+  setIsCorrect,
+  resetSubSessionTimer,
+  bookmarkProgressBar,
 }) {
   const api = useContext(APIContext);
   const [incorrectAnswer, setIncorrectAnswer] = useState("");
   const [buttonOptions, setButtonOptions] = useState(null);
-  const [messageToAPI, setMessageToAPI] = useState("");
   const [interactiveText, setInteractiveText] = useState();
   const speech = useContext(SpeechContext);
-  const [getCurrentSubSessionDuration] = useSubSessionTimer(
-    activeSessionDuration,
-  );
-  const [isBookmarkChanged, setIsBookmarkChanged] = useState(false);
   const exerciseBookmark = bookmarksToStudy[0];
+
   useEffect(() => {
+    resetSubSessionTimer();
     setExerciseType(EXERCISE_TYPE);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
     api.wordsSimilarTo(exerciseBookmark.id, (words) => {
       consolidateChoiceOptions(words);
     });
@@ -65,40 +59,17 @@ export default function MultipleChoice({
     );
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isBookmarkChanged]);
+  }, [exerciseBookmark, reload]);
 
   function notifyChoiceSelection(selectedChoice) {
-    if (
-      selectedChoice === removePunctuation(exerciseBookmark.from.toLowerCase())
-    ) {
-      notifyCorrectAnswer(exerciseBookmark);
+    if (selectedChoice === removePunctuation(exerciseBookmark.from.toLowerCase())) {
       setIsCorrect(true);
-      let concatMessage = messageToAPI + "C";
-      handleAnswer(concatMessage);
+      notifyCorrectAnswer(exerciseBookmark);
     } else {
       setIncorrectAnswer(selectedChoice);
       notifyIncorrectAnswer(exerciseBookmark);
-      let concatMessage = messageToAPI + "W";
-      setMessageToAPI(concatMessage);
+      setIsCorrect(false);
     }
-  }
-
-  function handleShowSolution() {
-    let message = messageToAPI + "S";
-    notifyIncorrectAnswer(exerciseBookmark);
-    setIsCorrect(true);
-    handleAnswer(message);
-  }
-
-  function handleAnswer(message) {
-    setMessageToAPI(message);
-    api.uploadExerciseFinalizedData(
-      message,
-      EXERCISE_TYPE,
-      getCurrentSubSessionDuration(activeSessionDuration, "ms"),
-      exerciseBookmark.id,
-      exerciseSessionId,
-    );
   }
 
   function consolidateChoiceOptions(similarWords) {
@@ -122,16 +93,15 @@ export default function MultipleChoice({
 
   return (
     <s.Exercise className="multipleChoice">
-      <div className="headlineWithMoreSpace">
-        {strings.chooseTheWordFittingContextHeadline}
-      </div>
-      <BookmarkProgressBar bookmark={exerciseBookmark} message={messageToAPI} />
+      <div className="headlineWithMoreSpace">{strings.chooseTheWordFittingContextHeadline}</div>
 
-      {isCorrect && <h1>{removePunctuation(exerciseBookmark.to)}</h1>}
+      {bookmarkProgressBar}
+
+      {isExerciseOver && <h1>{removePunctuation(exerciseBookmark.to)}</h1>}
 
       <div className="contextExample">
         <TranslatableText
-          isCorrect={isCorrect}
+          isExerciseOver={isExerciseOver}
           interactiveText={interactiveText}
           translating={true}
           pronouncing={false}
@@ -143,28 +113,14 @@ export default function MultipleChoice({
       </div>
 
       {!buttonOptions && <LoadingAnimation />}
-      {!isCorrect && (
+      {!isExerciseOver && (
         <MultipleChoicesInput
           buttonOptions={buttonOptions}
           notifyChoiceSelection={notifyChoiceSelection}
           incorrectAnswer={incorrectAnswer}
           setIncorrectAnswer={setIncorrectAnswer}
-          handleShowSolution={handleShowSolution}
-          toggleShow={toggleShow}
         />
       )}
-      <NextNavigation
-        exerciseType={EXERCISE_TYPE}
-        message={messageToAPI}
-        exerciseBookmark={exerciseBookmark}
-        moveToNextExercise={moveToNextExercise}
-        reload={reload}
-        setReload={setReload}
-        handleShowSolution={handleShowSolution}
-        toggleShow={toggleShow}
-        isCorrect={isCorrect}
-        isBookmarkChanged={() => setIsBookmarkChanged(!isBookmarkChanged)}
-      />
     </s.Exercise>
   );
 }

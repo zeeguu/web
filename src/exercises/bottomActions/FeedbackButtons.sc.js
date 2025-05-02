@@ -89,7 +89,7 @@ const FeedbackSubmit = styled.input`
   align-items: center;
   color: black;
   margin: 0.3em;
-  font-size: 0.875em;
+  font-size: 0.875em !important;
   background-color: ${zeeguuOrange};
   border: 0.2em solid ${zeeguuOrange};
   font-weight: 550;

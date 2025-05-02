@@ -1,5 +1,5 @@
 import { useParams, useHistory } from "react-router-dom";
-import Exercises from "./Exercises";
+import ExerciseSession from "./ExerciseSession";
 import { WEB_READER } from "../reader/ArticleReader";
 import { useContext } from "react";
 import { APIContext } from "../contexts/APIContext";
@@ -29,7 +29,7 @@ export default function ExercisesForArticle() {
   };
 
   return (
-    <Exercises
+    <ExerciseSession
       articleID={articleID}
       backButtonAction={backToArticleAction}
       keepExercisingAction={keepExercisingAction}

@@ -3,6 +3,7 @@ import shuffle from "../assorted/fisherYatesShuffle";
 
 import { MEMORY_TASK, LEARNING_CYCLE } from "./ExerciseTypeConstants";
 import Feature from "../features/Feature";
+import { ALL_EXERCISES } from "./exerciseSequenceTypes";
 
 /**
  * The bookmarks fetched by the API are assigned to the various exercises in the defined exercise session --
@@ -247,6 +248,7 @@ function assignBookmarksToDefaultSequence(bookmarks, exerciseTypesList) {
 }
 
 function assignBookmarksToExercises(bookmarks, exerciseTypesList) {
+  //return assignBookmarksToDefaultSequence(bookmarks, ALL_EXERCISES);
   if (Feature.merle_exercises()) {
     return assignBookmarksWithLearningCycle(bookmarks, exerciseTypesList);
   } else if (Feature.exercise_levels()) {

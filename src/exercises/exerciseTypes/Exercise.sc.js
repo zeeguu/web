@@ -3,7 +3,6 @@ import styled, { keyframes } from "styled-components";
 import {
   zeeguuTransparentLightOrange,
   zeeguuOrange,
-  lightGrey,
 } from "../../components/colors";
 
 const Exercise = styled.div`
@@ -11,48 +10,7 @@ const Exercise = styled.div`
   flex-direction: column;
   text-align: center;
   transition: all 0.5s;
-
-  .next-nav-feedback {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: center;
-    margin-top: 1.5em;
-
-    img {
-      width: 60px;
-      mix-blend-mode: multiply;
-      height: auto;
-    }
-    p {
-      margin-left: 1em;
-    }
-  }
-
-  .next-nav-learning-cycle {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: center;
-    margin-top: 1.5em;
-    margin-left: auto;
-    margin-right: auto;
-    border: 0.125em solid #99e47f;
-    border-radius: 0.5em;
-    background-color: #f1f7f2;
-    width: 70%;
-
-    img {
-      width: 60px;
-      mix-blend-mode: multiply;
-      height: auto;
-      margin: 0.5em;
-    }
-    p {
-      margin-left: 1em;
-      margin-right: 1em;
-    }
-  }
+  padding-bottom: 1rem;
 
   .type-feedback p {
     margin: 0.5em;
@@ -359,7 +317,7 @@ let Input = styled.input`
   &::placeholder {
     font-size: medium;
     font-weight: 500;
-    color: ${lightGrey};
+    color: lightgrey;
   }
 
   @media (max-width: 430px) {
@@ -404,6 +362,7 @@ let BottomRowCompact = styled.div`
   align-items: center;
   justify-content: space-around;
   margin-bottom: 3em;
+  margin-top: auto;
 
   @media (max-width: 430px) {
     flex-flow: row wrap;
@@ -433,6 +392,9 @@ let StyledGreyButton = styled.button`
   font-weight: 500;
   cursor: pointer;
   font-family: "Montserrat";
+  :hover {
+    filter: brightness(110%);
+  }
 `;
 
 let StyledDiv = styled.div`
@@ -452,6 +414,10 @@ let CenteredRow = styled.div`
   flex-direction: row;
   align-items: center;
   justify-content: center;
+
+  &.margin-top-auto {
+    margin-top: auto;
+  }
 `;
 
 let CenteredRowTall = styled.div`

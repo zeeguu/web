@@ -2,12 +2,10 @@ import { useState, useEffect, useContext } from "react";
 import * as s from "../Exercise.sc.js";
 import { EXERCISE_TYPES } from "../../ExerciseTypeConstants.js";
 import strings from "../../../i18n/definitions.js";
-import NextNavigation from "../NextNavigation.js";
 import LoadingAnimation from "../../../components/LoadingAnimation.js";
 import InteractiveText from "../../../reader/InteractiveText.js";
 import { TranslatableText } from "../../../reader/TranslatableText.js";
 import { SpeechContext } from "../../../contexts/SpeechContext.js";
-import useSubSessionTimer from "../../../hooks/useSubSessionTimer.js";
 import BottomInput from "../BottomInput.js";
 import BookmarkProgressBar from "../../progressBars/BookmarkProgressBar.js";
 import { removePunctuation } from "../../../utils/text/preprocessing";
@@ -21,29 +19,29 @@ const EXERCISE_TYPE = EXERCISE_TYPES.translateL2toL1;
 export default function TranslateL2toL1({
   bookmarksToStudy,
   notifyCorrectAnswer,
+  notifyExerciseCompleted,
   notifyIncorrectAnswer,
+  notifyOfUserAttempt,
   setExerciseType,
-  isCorrect,
-  setIsCorrect,
-  moveToNextExercise,
-  toggleShow,
   reload,
-  setReload,
-  exerciseSessionId,
-  activeSessionDuration,
+  setIsCorrect,
+  isExerciseOver,
+  resetSubSessionTimer,
+  bookmarkProgressBar,
 }) {
   const api = useContext(APIContext);
-  const [messageToAPI, setMessageToAPI] = useState("");
   const [interactiveText, setInteractiveText] = useState();
   const [translatedWords, setTranslatedWords] = useState([]);
   const speech = useContext(SpeechContext);
-  const [getCurrentSubSessionDuration] = useSubSessionTimer(
-    activeSessionDuration,
-  );
-  const [isBookmarkChanged, setIsBookmarkChanged] = useState(false);
+
   const exerciseBookmark = bookmarksToStudy[0];
   useEffect(() => {
+    resetSubSessionTimer();
     setExerciseType(EXERCISE_TYPE);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
     setInteractiveText(
       new InteractiveText(
         exerciseBookmark.context_tokenized,
@@ -57,45 +55,10 @@ export default function TranslateL2toL1({
         exerciseBookmark.context_identifier,
       ),
     );
-    // eslint-disable-next-line
-  }, [isBookmarkChanged, exerciseBookmark]);
-
-  function handleShowSolution(e, message) {
-    e.preventDefault();
-    let concatMessage;
-    if (!message) {
-      concatMessage = messageToAPI + "S";
-    } else {
-      concatMessage = message;
-    }
-
-    notifyIncorrectAnswer(exerciseBookmark);
-    setIsCorrect(true);
-    setMessageToAPI(concatMessage);
-    api.uploadExerciseFinalizedData(
-      concatMessage,
-      EXERCISE_TYPE,
-      getCurrentSubSessionDuration(activeSessionDuration, "ms"),
-      exerciseBookmark.id,
-      exerciseSessionId,
-    );
-  }
-
-  function handleCorrectAnswer(message) {
-    setMessageToAPI(message);
-    notifyCorrectAnswer(exerciseBookmark);
-    setIsCorrect(true);
-    api.uploadExerciseFinalizedData(
-      message,
-      EXERCISE_TYPE,
-      getCurrentSubSessionDuration(activeSessionDuration, "ms"),
-      exerciseBookmark.id,
-      exerciseSessionId,
-    );
-  }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [exerciseBookmark, reload]);
 
   function handleIncorrectAnswer() {
-    setMessageToAPI(messageToAPI + "W");
     notifyIncorrectAnswer(exerciseBookmark);
   }
 
@@ -105,20 +68,16 @@ export default function TranslateL2toL1({
 
   return (
     <s.Exercise className="translateL2toL1">
-      <div className="headlineWithMoreSpace">
-        {strings.translateL2toL1Headline}
-      </div>
-      <BookmarkProgressBar bookmark={exerciseBookmark} message={messageToAPI} />
-      {isCorrect && (
+      <div className="headlineWithMoreSpace">{strings.translateL2toL1Headline}</div>
+      {bookmarkProgressBar}
+      {isExerciseOver && (
         <>
-          <h1 className="wordInContextHeadline">
-            {removePunctuation(exerciseBookmark.to)}
-          </h1>
+          <h1 className="wordInContextHeadline">{removePunctuation(exerciseBookmark.to)}</h1>
         </>
       )}
       <div className="contextExample">
         <TranslatableText
-          isCorrect={isCorrect}
+          isExerciseOver={isExerciseOver}
           interactiveText={interactiveText}
           translating={true}
           pronouncing={false}
@@ -131,31 +90,17 @@ export default function TranslateL2toL1({
         />
       </div>
 
-      {!isCorrect && (
-        <>
-          <BottomInput
-            handleCorrectAnswer={handleCorrectAnswer}
-            handleIncorrectAnswer={handleIncorrectAnswer}
-            bookmarksToStudy={bookmarksToStudy}
-            messageToAPI={messageToAPI}
-            setMessageToAPI={setMessageToAPI}
-            isL1Answer={true}
-          />
-        </>
+      {!isExerciseOver && (
+        <BottomInput
+          handleCorrectAnswer={notifyCorrectAnswer}
+          handleIncorrectAnswer={handleIncorrectAnswer}
+          handleExerciseCompleted={notifyExerciseCompleted}
+          setIsCorrect={setIsCorrect}
+          exerciseBookmark={exerciseBookmark}
+          notifyOfUserAttempt={notifyOfUserAttempt}
+          isL1Answer={true}
+        />
       )}
-
-      <NextNavigation
-        exerciseType={EXERCISE_TYPE}
-        message={messageToAPI}
-        exerciseBookmark={exerciseBookmark}
-        moveToNextExercise={moveToNextExercise}
-        reload={reload}
-        setReload={setReload}
-        handleShowSolution={(e) => handleShowSolution(e, undefined)}
-        toggleShow={toggleShow}
-        isCorrect={isCorrect}
-        isBookmarkChanged={() => setIsBookmarkChanged(!isBookmarkChanged)}
-      />
     </s.Exercise>
   );
 }

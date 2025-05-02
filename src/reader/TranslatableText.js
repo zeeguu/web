@@ -4,29 +4,28 @@ import * as s from "./TranslatableText.sc";
 import { removePunctuation } from "../utils/text/preprocessing";
 
 export function TranslatableText({
-  isCorrect,
   interactiveText,
   translating,
   pronouncing,
   translatedWords,
   setTranslatedWords,
-  bookmarkToStudy,
-  overrideBookmarkHighlightText,
   setIsRendered,
   boldExpression,
-  exerciseType,
-  updateBookmarks,
   leftEllipsis,
   rightEllipsis,
+  // exercise related
+  // TODO: rename so they are general about translatable text
+  isExerciseOver, // highlightColor
+  bookmarkToStudy, // bookmarkToHighlight
+  overrideBookmarkHighlightText, // boldAndDeactivatedText -- used in OrderWords
+  updateBookmarks, // callback - should be probably named: notifyWordTranslated --- actually only used once in ArticleReader, in quite a bad way. consider alterantoves
 }) {
   const [translationCount, setTranslationCount] = useState(0);
   const [foundInstances, setFoundInstances] = useState([]);
   const [paragraphs, setParagraphs] = useState([]);
   const [firstWordID, setFirstWordID] = useState(0);
   const [renderedText, setRenderedText] = useState();
-  const divType = interactiveText.formatting
-    ? interactiveText.formatting
-    : "div";
+  const divType = interactiveText.formatting ? interactiveText.formatting : "div";
 
   useEffect(() => {
     if (bookmarkToStudy) {
@@ -56,7 +55,7 @@ export function TranslatableText({
     translationCount,
     translating,
     pronouncing,
-    isCorrect,
+    isExerciseOver,
     bookmarkToStudy,
     rightEllipsis,
     leftEllipsis,
@@ -105,12 +104,10 @@ export function TranslatableText({
     const disableTranslation = foundInstances.includes(word.id);
 
     // If boldExpression is defined, the bookmark is written in bold, otherwise boldWords will be set to an empty array to avoid runtime error
-    const boldWords = boldExpression
-      ? boldExpression.split(" ").map((word) => removePunctuation(word))
-      : [];
+    const boldWords = boldExpression ? boldExpression.split(" ").map((word) => removePunctuation(word)) : [];
     const isWordBold = boldWords.includes(removePunctuation(word.word));
 
-    if (isCorrect) {
+    if (isExerciseOver) {
       if (word.id === firstWordID && overrideBookmarkHighlightText) {
         // In case we want to override the highlighted bookmark
         // with another string. Used in the OrderWords.

@@ -5,14 +5,13 @@ import LoadingAnimation from "../../../components/LoadingAnimation";
 import InteractiveText from "../../../reader/InteractiveText.js";
 import { TranslatableText } from "../../../reader/TranslatableText.js";
 import { EXERCISE_TYPES } from "../../ExerciseTypeConstants.js";
-import NextNavigation from "../NextNavigation";
 import strings from "../../../i18n/definitions.js";
 import shuffle from "../../../assorted/fisherYatesShuffle";
 import { removePunctuation } from "../../../utils/text/preprocessing";
 import { SpeechContext } from "../../../contexts/SpeechContext.js";
-import useSubSessionTimer from "../../../hooks/useSubSessionTimer.js";
-import BookmarkProgressBar from "../../progressBars/BookmarkProgressBar.js";
+
 import { APIContext } from "../../../contexts/APIContext.js";
+import { TRANSLATE_WORD } from "../../ExerciseConstants.js";
 
 // The user has to select the correct L1 translation out of three. The L2 word is marked in bold in the context.
 // This tests the user's passive knowledge.
@@ -24,29 +23,37 @@ export default function MultipleChoiceL2toL1({
   notifyCorrectAnswer,
   notifyIncorrectAnswer,
   setExerciseType,
-  isCorrect,
-  setIsCorrect,
-  moveToNextExercise,
-  toggleShow,
+  notifyOfUserAttempt,
   reload,
-  setReload,
-  exerciseSessionId,
-  activeSessionDuration,
+  setIsCorrect,
+  isExerciseOver,
+  resetSubSessionTimer,
+  bookmarkProgressBar,
 }) {
   const api = useContext(APIContext);
   const [incorrectAnswer, setIncorrectAnswer] = useState("");
   const [buttonOptions, setButtonOptions] = useState(null);
-  const [messageToAPI, setMessageToAPI] = useState("");
   const [interactiveText, setInteractiveText] = useState();
+  const [prevTranslatedWords, setPrevTranslatedWords] = useState(0);
+  const [translatedWords, setTranslatedWords] = useState([]);
   const speech = useContext(SpeechContext);
-  const [getCurrentSubSessionDuration] = useSubSessionTimer(
-    activeSessionDuration,
-  );
-  const [isBookmarkChanged, setIsBookmarkChanged] = useState(false);
+
   const exerciseBookmark = bookmarksToStudy[0];
 
   useEffect(() => {
+    resetSubSessionTimer();
     setExerciseType(EXERCISE_TYPE);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    if (translatedWords.length > prevTranslatedWords) {
+      setPrevTranslatedWords(translatedWords.length);
+      notifyOfUserAttempt(TRANSLATE_WORD, exerciseBookmark);
+    }
+  }, [translatedWords]);
+
+  useEffect(() => {
     setInteractiveText(
       new InteractiveText(
         exerciseBookmark.context_tokenized,
@@ -60,8 +67,8 @@ export default function MultipleChoiceL2toL1({
         exerciseBookmark.context_identifier,
       ),
     );
-    // eslint-disable-next-line
-  }, [isBookmarkChanged, exerciseBookmark]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [exerciseBookmark, reload]);
 
   useEffect(() => {
     if (interactiveText) {
@@ -79,33 +86,11 @@ export default function MultipleChoiceL2toL1({
   function notifyChoiceSelection(selectedChoice) {
     if (selectedChoice === removePunctuation(exerciseBookmark.to)) {
       notifyCorrectAnswer(exerciseBookmark);
-      setIsCorrect(true);
-      let concatMessage = messageToAPI + "C";
-      handleAnswer(concatMessage);
     } else {
       setIncorrectAnswer(selectedChoice);
       notifyIncorrectAnswer(exerciseBookmark);
-      let concatMessage = messageToAPI + "W";
-      setMessageToAPI(concatMessage);
+      setIsCorrect(false);
     }
-  }
-
-  function handleShowSolution() {
-    let message = messageToAPI + "S";
-    notifyIncorrectAnswer(exerciseBookmark);
-    setIsCorrect(true);
-    handleAnswer(message);
-  }
-
-  function handleAnswer(message) {
-    setMessageToAPI(message);
-    api.uploadExerciseFinalizedData(
-      message,
-      EXERCISE_TYPE,
-      getCurrentSubSessionDuration(activeSessionDuration, "ms"),
-      exerciseBookmark.id,
-      exerciseSessionId,
-    );
   }
 
   if (!interactiveText || !buttonOptions) {
@@ -114,50 +99,37 @@ export default function MultipleChoiceL2toL1({
 
   return (
     <s.Exercise className="multipleChoice">
-      <div className="headlineWithMoreSpace">
-        {strings.multipleChoiceL2toL1Headline}
-      </div>
-      <BookmarkProgressBar bookmark={exerciseBookmark} message={messageToAPI} />
+      <div className="headlineWithMoreSpace">{strings.multipleChoiceL2toL1Headline}</div>
 
-      {isCorrect && <h1>{removePunctuation(exerciseBookmark.to)}</h1>}
+      {bookmarkProgressBar}
+
+      {isExerciseOver && <h1>{removePunctuation(exerciseBookmark.to)}</h1>}
 
       <div className="contextExample">
         <TranslatableText
-          isCorrect={isCorrect}
+          isExerciseOver={isExerciseOver}
           interactiveText={interactiveText}
           translating={true}
           pronouncing={false}
           bookmarkToStudy={exerciseBookmark.from}
-          exerciseType={EXERCISE_TYPE}
           boldExpression={exerciseBookmark.from}
+          translatedWords={translatedWords}
+          setTranslatedWords={setTranslatedWords}
+          exerciseType={EXERCISE_TYPE}
           leftEllipsis={exerciseBookmark.left_ellipsis}
           rightEllipsis={exerciseBookmark.right_ellipsis}
         />
       </div>
 
       {!buttonOptions && <LoadingAnimation />}
-      {!isCorrect && (
+      {!isExerciseOver && (
         <MultipleChoicesInput
           buttonOptions={buttonOptions}
           notifyChoiceSelection={notifyChoiceSelection}
           incorrectAnswer={incorrectAnswer}
           setIncorrectAnswer={setIncorrectAnswer}
-          handleShowSolution={handleShowSolution}
-          toggleShow={toggleShow}
         />
       )}
-      <NextNavigation
-        exerciseType={EXERCISE_TYPE}
-        message={messageToAPI}
-        exerciseBookmark={exerciseBookmark}
-        moveToNextExercise={moveToNextExercise}
-        reload={reload}
-        setReload={setReload}
-        handleShowSolution={handleShowSolution}
-        toggleShow={toggleShow}
-        isCorrect={isCorrect}
-        isBookmarkChanged={() => setIsBookmarkChanged(!isBookmarkChanged)}
-      />
     </s.Exercise>
   );
 }

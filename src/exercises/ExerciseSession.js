@@ -6,25 +6,26 @@ import * as s from "./Exercises.sc";
 import LoadingAnimation from "../components/LoadingAnimation";
 import { setTitle } from "../assorted/setTitle";
 import strings from "../i18n/definitions";
-import FeedbackDisplay from "./bottomActions/FeedbackDisplay";
 import OutOfWordsMessage from "./OutOfWordsMessage";
 import SessionStorage from "../assorted/SessionStorage";
 import Feature from "../features/Feature";
-import { MAX_COOLDOWN_INTERVAL } from "./ExerciseConstants";
+import { CORRECT, MAX_COOLDOWN_INTERVAL, SOLUTION, WRONG } from "./ExerciseConstants";
+import { EXERCISE_TYPES } from "./ExerciseTypeConstants";
 import LocalStorage from "../assorted/LocalStorage";
 import { assignBookmarksToExercises } from "./assignBookmarksToExercises";
+import NextNavigation from "./exerciseTypes/NextNavigation";
+import DisableAudioSession from "./exerciseTypes/DisableAudioSession";
 import { SpeechContext } from "../contexts/SpeechContext";
-
 import {
+  DEFAULT_NUMBER_BOOKMARKS_TO_PRACTICE,
   DEFAULT_SEQUENCE,
   DEFAULT_SEQUENCE_NO_AUDIO,
   EXTENDED_SEQUENCE,
   EXTENDED_SEQUENCE_NO_AUDIO,
-  DEFAULT_NUMBER_BOOKMARKS_TO_PRACTICE,
   MAX_NUMBER_OF_BOOKMARKS_EX_SESSION,
 } from "./exerciseSequenceTypes";
 import useActivityTimer from "../hooks/useActivityTimer";
-import { ExerciseCountContext } from "../exercises/ExerciseCountContext";
+import { ExerciseCountContext } from "./ExerciseCountContext";
 import useShadowRef from "../hooks/useShadowRef";
 import { LEARNING_CYCLE } from "./ExerciseTypeConstants";
 import DigitalTimer from "../components/DigitalTimer";
@@ -32,16 +33,15 @@ import DigitalTimer from "../components/DigitalTimer";
 import BackArrow from "../pages/Settings/settings_pages_shared/BackArrow";
 import useScreenWidth from "../hooks/useScreenWidth";
 import { MOBILE_WIDTH } from "../components/MainNav/screenSize";
+import { NarrowColumn } from "../components/ColumnWidth.sc";
+import useSubSessionTimer from "../hooks/useSubSessionTimer";
 import { APIContext } from "../contexts/APIContext";
+import isEmptyDictionary from "../utils/misc/isEmptyDictionary";
+import BookmarkProgressBar from "./progressBars/BookmarkProgressBar";
 
 const BOOKMARKS_DUE_REVIEW = false;
 
-export default function Exercises({
-  articleID,
-  backButtonAction,
-  toScheduledExercises,
-  source,
-}) {
+export default function ExerciseSession({ articleID, backButtonAction, toScheduledExercises, source }) {
   const api = useContext(APIContext);
   const [countBookmarksToPractice, setCountBookmarksToPractice] = useState();
   const [hasKeptExercising, setHasKeptExercising] = useState(false);
@@ -53,25 +53,33 @@ export default function Exercises({
   const [fullExerciseProgression, setFullExerciseProgression] = useState();
   const [totalBookmarksInPipeline, setTotalBookmarksInPipeline] = useState();
   const [currentExerciseType, setCurrentExerciseType] = useState(null);
-  const [isCorrect, setIsCorrect] = useState(false);
+
+  // We can use this too states to track if the user is correct.
+  // isExerciseOver & !isShownSolution & isCorrect = User Correct
+  // isExerciseOver & isShownSolution & isCorrect === null = User Show Solution
+  // isExerciseOver & isShownSolution === null & !isCorrect = User Wrong
+
+  const [isCorrect, setIsCorrect] = useState(null);
+  const [isExerciseOver, setIsExerciseOver] = useState(false);
+  const [isShowSolution, setIsShowSolution] = useState(false);
+  const [selectedExerciseBookmark, setSelectedExerciseBookmark] = useState(null);
+
   const [showFeedbackButtons, setShowFeedbackButtons] = useState(false);
   const [reload, setReload] = useState(false);
   const [articleTitle, setArticleTitle] = useState();
   const [articleURL, setArticleURL] = useState();
   const [isOutOfWordsToday, setIsOutOfWordsToday] = useState();
-  const [
-    totalPracticedBookmarksInSession,
-    setTotalPracticedBookmarksInSession,
-  ] = useState(0);
-
+  const [totalPracticedBookmarksInSession, setTotalPracticedBookmarksInSession] = useState(0);
+  const [exerciseMessageForAPI, setExerciseMessageForAPI] = useState({});
   const [dbExerciseSessionId, setDbExerciseSessionId] = useState();
   const dbExerciseSessionIdRef = useShadowRef(dbExerciseSessionId);
   const currentIndexRef = useShadowRef(currentIndex);
   const hasKeptExercisingRef = useShadowRef(hasKeptExercising);
 
-  const [activeSessionDuration, clockActive, setActivityOver] =
-    useActivityTimer();
+  const [activeSessionDuration, clockActive, setActivityOver] = useActivityTimer();
+
   const activeSessionDurationRef = useShadowRef(activeSessionDuration);
+  const [getCurrentSubSessionDuration, resetSubSessionTimer] = useSubSessionTimer(activeSessionDurationRef.current);
   const exerciseNotification = useContext(ExerciseCountContext);
   const speech = useContext(SpeechContext);
 
@@ -83,8 +91,7 @@ export default function Exercises({
       if (SessionStorage.getAudioExercisesEnabled() === undefined)
         // If the user doesn't go through the login (or has it cached, we need to set it at the start of the exercises.)
         SessionStorage.setAudioExercisesEnabled(
-          preferences["audio_exercises"] === undefined ||
-            preferences["audio_exercises"] === "true",
+          preferences["audio_exercises"] === undefined || preferences["audio_exercises"] === "true",
         );
     });
     api.getTotalBookmarksInPipeline((totalInLearning) => {
@@ -128,14 +135,22 @@ export default function Exercises({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  function handleUserAttempt(message, bookmarkToUpdate) {
+    if (message === "" || !bookmarkToUpdate) return "";
+    let _newExerciseMessageToAPI = { ...exerciseMessageForAPI };
+    if (!(bookmarkToUpdate.id in _newExerciseMessageToAPI)) {
+      _newExerciseMessageToAPI[bookmarkToUpdate.id] = message;
+    } else _newExerciseMessageToAPI[bookmarkToUpdate.id] += message;
+    setExerciseMessageForAPI(_newExerciseMessageToAPI);
+    return _newExerciseMessageToAPI[bookmarkToUpdate.id];
+  }
+
   function getExerciseSequenceType() {
     let exerciseTypesList;
-    if (Feature.merle_exercises() || Feature.exercise_levels())
-      exerciseTypesList = EXTENDED_SEQUENCE;
+    if (Feature.merle_exercises() || Feature.exercise_levels()) exerciseTypesList = EXTENDED_SEQUENCE;
     else exerciseTypesList = DEFAULT_SEQUENCE;
     if (!SessionStorage.isAudioExercisesEnabled()) {
-      if (Feature.merle_exercises() || Feature.exercise_levels())
-        exerciseTypesList = EXTENDED_SEQUENCE_NO_AUDIO;
+      if (Feature.merle_exercises() || Feature.exercise_levels()) exerciseTypesList = EXTENDED_SEQUENCE_NO_AUDIO;
       else exerciseTypesList = DEFAULT_SEQUENCE_NO_AUDIO;
     }
     return exerciseTypesList;
@@ -157,13 +172,11 @@ export default function Exercises({
       // and thus, know the language to pronounce in
       let exerciseSequenceType = getExerciseSequenceType();
 
-      let exerciseSession = assignBookmarksToExercises(
-        bookmarks,
-        exerciseSequenceType,
-      );
+      let exerciseSession = assignBookmarksToExercises(bookmarks, exerciseSequenceType);
       setFullExerciseProgression(exerciseSession);
 
       setCurrentBookmarksToStudy(exerciseSession[0].bookmarks);
+      setSelectedExerciseBookmark(exerciseSession[0].bookmarks[0]);
 
       setTitle(title);
     }
@@ -198,10 +211,7 @@ export default function Exercises({
             ? MAX_NUMBER_OF_BOOKMARKS_EX_SESSION
             : DEFAULT_NUMBER_BOOKMARKS_TO_PRACTICE;
         api.getTopBookmarksToStudy(exerciseSession, (bookmarks) =>
-          initializeExercises(
-            bookmarks.slice(0, exerciseSession + 1),
-            strings.exercises,
-          ),
+          initializeExercises(bookmarks.slice(0, exerciseSession + 1), strings.exercises),
         );
       });
     }
@@ -244,25 +254,18 @@ export default function Exercises({
   }
 
   if (isOutOfWordsToday) {
-    return (
-      <OutOfWordsMessage
-        totalInLearning={totalBookmarksInPipeline}
-        goBackAction={backButtonAction}
-      />
-    );
+    return <OutOfWordsMessage totalInLearning={totalBookmarksInPipeline} goBackAction={backButtonAction} />;
   }
-  if (
-    !countBookmarksToPractice ||
-    !currentBookmarksToStudy ||
-    !fullExerciseProgression
-  ) {
+  if (!countBookmarksToPractice || !currentBookmarksToStudy || !fullExerciseProgression) {
     return <LoadingAnimation />;
   }
 
   function moveToNextExercise() {
     speech.stopAudio();
     LocalStorage.setLastExerciseCompleteDate(new Date().toDateString());
-
+    setIsExerciseOver(false);
+    setIsShowSolution(null);
+    setExerciseMessageForAPI({});
     setIsCorrect(null);
     setShowFeedbackButtons(false);
     const newIndex = currentIndex + 1;
@@ -273,47 +276,78 @@ export default function Exercises({
       return;
     }
     setCurrentBookmarksToStudy(fullExerciseProgression[newIndex].bookmarks);
+    setSelectedExerciseBookmark(fullExerciseProgression[newIndex].bookmarks[0]);
     setCurrentIndex(newIndex);
     api.updateExerciseSession(dbExerciseSessionId, activeSessionDuration);
   }
 
   let correctBookmarksCopy = [...correctBookmarks];
 
-  function correctAnswerNotification(currentBookmark) {
+  function correctAnswerNotification(currentBookmark, endExercise = true) {
     if (!incorrectBookmarks.includes(currentBookmark)) {
       setTotalPracticedBookmarksInSession(totalPracticedBookmarksInSession + 1);
       let correctBookmarksIds = correctBookmarksCopy.map((b) => b.id);
       let didItProgressToProductive =
         currentBookmark["cooling_interval"] === MAX_COOLDOWN_INTERVAL &&
         currentBookmark.learning_cycle === LEARNING_CYCLE["RECEPTIVE"];
-      if (
-        !correctBookmarksIds.includes(currentBookmark.id) &&
-        !didItProgressToProductive
-      ) {
+      if (!correctBookmarksIds.includes(currentBookmark.id) && !didItProgressToProductive) {
         exerciseNotification.decrementExerciseCounter();
       }
       correctBookmarksCopy.push(currentBookmark);
       setCorrectBookmarks(correctBookmarksCopy);
     }
+    if (endExercise) {
+      setIsCorrect(true);
+    }
+    updateAPIWithExerciseComplete(CORRECT, currentBookmark, endExercise);
     api.updateExerciseSession(dbExerciseSessionId, activeSessionDuration);
   }
 
   let incorrectBookmarksCopy = [...incorrectBookmarks];
 
-  function incorrectAnswerNotification(currentBookmark) {
+  function updateAPIWithIncorrectAnswer(currentBookmark) {
     let incorrectBookmarksIds = incorrectBookmarksCopy.map((b) => b.id);
     if (!incorrectBookmarksIds.includes(currentBookmark.id)) {
       setTotalPracticedBookmarksInSession(totalPracticedBookmarksInSession + 1);
       if (currentBookmark["cooling_interval"] > 1) {
-        // 8->4, 4->2, 2->1
-        // We decrease because you dont have to do it
-        // today.
         exerciseNotification.decrementExerciseCounter();
       }
     }
     incorrectBookmarksCopy.push(currentBookmark);
     setIncorrectBookmarks(incorrectBookmarksCopy);
+    handleUserAttempt(WRONG, currentBookmark);
     api.updateExerciseSession(dbExerciseSessionId, activeSessionDuration);
+  }
+
+  function showSolution() {
+    // Currently, only match results in all bookmarks being marked as wrong.
+    let bookmarksToMarkAsWrong =
+      currentExerciseType === EXERCISE_TYPES.match
+        ? currentBookmarksToStudy.filter((b) => !correctBookmarksCopy.includes(b))
+        : [selectedExerciseBookmark];
+    for (let i = 0; i < bookmarksToMarkAsWrong.length; i++) {
+      let currentBookmark = bookmarksToMarkAsWrong[i];
+      updateAPIWithIncorrectAnswer(currentBookmark);
+      updateAPIWithExerciseComplete(SOLUTION, currentBookmark);
+    }
+    setIsShowSolution(true);
+  }
+
+  function updateAPIWithExerciseComplete(message, bookmark, endExercise = true) {
+    let updated_message = handleUserAttempt(message, bookmark);
+    if (endExercise) setIsExerciseOver(true);
+    api.uploadExerciseFinalizedData(
+      updated_message,
+      currentExerciseType,
+      getCurrentSubSessionDuration(),
+      bookmark ? bookmark.id : null,
+      dbExerciseSessionIdRef.current,
+    );
+  }
+
+  function disableAudio() {
+    api.logUserActivity(api.AUDIO_DISABLE, "", selectedExerciseBookmark.id, "");
+    moveToNextExercise();
   }
 
   function uploadUserFeedback(userWrittenFeedback, word_id) {
@@ -325,26 +359,34 @@ export default function Exercises({
       " and word: ",
       word_id,
     );
-    setIsCorrect(true);
+    setIsExerciseOver(true);
     exerciseNotification.decrementExerciseCounter();
-    api.uploadExerciseFeedback(
-      userWrittenFeedback,
-      currentExerciseType,
-      0,
-      word_id,
-      dbExerciseSessionId,
-    );
+    api.uploadExerciseFeedback(userWrittenFeedback, currentExerciseType, 0, word_id, dbExerciseSessionId);
   }
 
   function toggleShow() {
     setShowFeedbackButtons(!showFeedbackButtons);
   }
 
-  const CurrentExercise = fullExerciseProgression[currentIndex].type;
+  // If user shows solution on Match without any selected bookmark, show blank progression.
+  let currentMessageToAPI =
+    isEmptyDictionary(exerciseMessageForAPI) || (currentExerciseType === EXERCISE_TYPES.match && isShowSolution)
+      ? ""
+      : exerciseMessageForAPI[selectedExerciseBookmark.id];
+  const CurrentExerciseComponent = fullExerciseProgression[currentIndex].type;
+
+  const bookmarkProgressBar = (
+    <BookmarkProgressBar
+      bookmark={selectedExerciseBookmark}
+      message={currentMessageToAPI}
+      isGreyedOutBar={selectedExerciseBookmark === undefined}
+    />
+  );
+
   return (
-    <>
-      {screenWidth < MOBILE_WIDTH && <BackArrow />}
-      <s.ExercisesColumn className="exercisesColumn">
+    <NarrowColumn>
+      <s.ExercisesColumn>
+        {screenWidth < MOBILE_WIDTH && <BackArrow />}
         <ExerciseSessionProgressBar
           index={isCorrect ? currentIndex + 1 : currentIndex}
           total={fullExerciseProgression.length}
@@ -363,36 +405,59 @@ export default function Exercises({
           }
         />
         <s.ExForm>
-          <CurrentExercise
+          <CurrentExerciseComponent
             key={currentIndex}
             bookmarksToStudy={currentBookmarksToStudy}
+            selectedExerciseBookmark={selectedExerciseBookmark}
+            setSelectedExerciseBookmark={setSelectedExerciseBookmark}
+            exerciseMessageToAPI={currentMessageToAPI}
+            notifyOfUserAttempt={handleUserAttempt}
             notifyCorrectAnswer={correctAnswerNotification}
-            notifyIncorrectAnswer={incorrectAnswerNotification}
+            notifyIncorrectAnswer={updateAPIWithIncorrectAnswer}
             setExerciseType={setCurrentExerciseType}
+            notifyExerciseCompleted={updateAPIWithExerciseComplete}
+            notifyShowSolution={showSolution}
             isCorrect={isCorrect}
+            isExerciseOver={isExerciseOver}
+            isShowSolution={isShowSolution}
             setIsCorrect={setIsCorrect}
+            setIsExerciseOver={setIsExerciseOver}
             moveToNextExercise={moveToNextExercise}
             toggleShow={toggleShow}
             reload={reload}
             setReload={setReload}
             exerciseSessionId={dbExerciseSessionId}
             activeSessionDuration={activeSessionDuration}
+            resetSubSessionTimer={resetSubSessionTimer}
+            bookmarkProgressBar={bookmarkProgressBar}
           />
+          <NextNavigation
+            exerciseType={currentExerciseType}
+            bookmarkMessagesToAPI={exerciseMessageForAPI}
+            exerciseBookmarks={currentBookmarksToStudy}
+            exerciseBookmark={currentBookmarksToStudy[0]}
+            moveToNextExercise={moveToNextExercise}
+            uploadUserFeedback={uploadUserFeedback}
+            reload={reload}
+            setReload={setReload}
+            handleShowSolution={() => {
+              setIsShowSolution(true);
+              showSolution();
+            }}
+            toggleShow={toggleShow}
+            isCorrect={isCorrect}
+            isExerciseOver={isExerciseOver}
+          />
+          {EXERCISE_TYPES.isAudioExercise(currentExerciseType) && SessionStorage.isAudioExercisesEnabled() && (
+            <DisableAudioSession handleDisabledAudio={disableAudio} setIsCorrect={setIsExerciseOver} />
+          )}
         </s.ExForm>
-        <FeedbackDisplay
-          showFeedbackButtons={showFeedbackButtons}
-          setShowFeedbackButtons={setShowFeedbackButtons}
-          currentExerciseType={currentExerciseType}
-          currentBookmarksToStudy={currentBookmarksToStudy}
-          feedbackFunction={uploadUserFeedback}
-        />
         {articleID && (
           <p>
-            You are practicing words from:{" "}
-            <a href={articleURL}>{articleTitle}</a>
+            You are practicing words from: <a href={articleURL}>{articleTitle}</a>
           </p>
         )}
       </s.ExercisesColumn>
-    </>
+    </NarrowColumn>
   );
 }

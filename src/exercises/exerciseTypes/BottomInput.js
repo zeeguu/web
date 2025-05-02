@@ -5,10 +5,8 @@ import { normalizeAnswer } from "../inputNormalization";
 import Pluralize from "../../utils/text/pluralize";
 import { LANGUAGE_CODE_TO_NAME } from "../../utils/misc/languageCodeToName";
 
-import {
-  getExpressionlength,
-  countCommonWords,
-} from "../../utils/text/expressions";
+import { getExpressionlength, countCommonWords } from "../../utils/text/expressions";
+import { HINT, WRONG } from "../ExerciseConstants";
 
 function getFlagImageUrl(languageCode) {
   return `/static/flags/${languageCode}.png`;
@@ -17,11 +15,10 @@ function getFlagImageUrl(languageCode) {
 export default function BottomInput({
   handleCorrectAnswer,
   handleIncorrectAnswer,
-  bookmarksToStudy,
-  messageToAPI,
-  setMessageToAPI,
+  setIsCorrect,
+  exerciseBookmark,
+  notifyOfUserAttempt,
   isL1Answer,
-  exerciseType,
 }) {
   const [currentInput, setCurrentInput] = useState("");
   const [isIncorrect, setIsIncorrect] = useState(false);
@@ -33,23 +30,16 @@ export default function BottomInput({
   const [correctWordCountInInput, setCorrectWordCountInInput] = useState(0);
   const [feedbackMessage, setFeedbackMessage] = useState("");
   const levenshtein = require("fast-levenshtein");
+  const normalizedLearningWord = normalizeAnswer(exerciseBookmark.from);
 
-  const normalizedLearningWord = normalizeAnswer(bookmarksToStudy[0].from);
-
-  const solutionText = isL1Answer
-    ? bookmarksToStudy[0].to
-    : bookmarksToStudy[0].from;
+  const solutionText = isL1Answer ? exerciseBookmark.to : exerciseBookmark.from;
 
   const solutionWordCount = getExpressionlength(solutionText);
-  const isWrongOrder =
-    isIncorrect && correctWordCountInInput === solutionWordCount;
+  const isWrongOrder = isIncorrect && correctWordCountInInput === solutionWordCount;
 
-  const isPartOfExpressionCorrect =
-    correctWordCountInInput >= 1 && solutionWordCount > 1 && isIncorrect;
+  const isPartOfExpressionCorrect = correctWordCountInInput >= 1 && solutionWordCount > 1 && isIncorrect;
 
-  const answerLanguageCode = isL1Answer
-    ? bookmarksToStudy[0].to_lang
-    : bookmarksToStudy[0].from_lang;
+  const answerLanguageCode = isL1Answer ? exerciseBookmark.to_lang : exerciseBookmark.from_lang;
 
   const inputLanguageName = LANGUAGE_CODE_TO_NAME[answerLanguageCode];
 
@@ -58,16 +48,13 @@ export default function BottomInput({
     let hint;
     const lowerCurrentInput = currentInput.toLowerCase();
     const lowerTargetWord = solutionText.toLowerCase();
-    if (
-      lowerCurrentInput ===
-      lowerTargetWord.substring(0, lowerCurrentInput.length)
-    ) {
+    if (lowerCurrentInput === lowerTargetWord.substring(0, lowerCurrentInput.length)) {
       hint = solutionText.substring(0, currentInput.length + 1);
     } else {
       hint = solutionText.substring(0, 1);
     }
     setCurrentInput(hint);
-    setMessageToAPI(messageToAPI + "H");
+    notifyOfUserAttempt(HINT, exerciseBookmark);
   }
 
   // Update the feedback message
@@ -78,9 +65,7 @@ export default function BottomInput({
     }
 
     if (distanceToCorrect < 5 && distanceToCorrect > 2 && !isWrongOrder) {
-      setFeedbackMessage(
-        `❌ Not quite the ${Pluralize.wordExpression(solutionWordCount)}`,
-      );
+      setFeedbackMessage(`❌ Not quite the ${Pluralize.wordExpression(solutionWordCount)}`);
       return;
     }
     if (distanceToCorrect === 2) {
@@ -103,20 +88,12 @@ export default function BottomInput({
     }
     if (isPartOfExpressionCorrect) {
       if (isWrongOrder) setFeedbackMessage(`⭐ Check the word order`);
-      else
-        setFeedbackMessage(
-          `⭐ You got ${correctWordCountInInput}/${solutionWordCount} words correct`,
-        );
+      else setFeedbackMessage(`⭐ You got ${correctWordCountInInput}/${solutionWordCount} words correct`);
       return;
     }
     setFeedbackMessage("");
     // eslint-disable-next-line
-  }, [
-    distanceToCorrect,
-    isSameLengthAsSolution,
-    isLongerThanSolution,
-    isInputWrongLanguage,
-  ]);
+  }, [distanceToCorrect, isSameLengthAsSolution, isLongerThanSolution, isInputWrongLanguage]);
 
   function checkResult() {
     if (currentInput === "") {
@@ -131,7 +108,8 @@ export default function BottomInput({
     let userHasTypoInNativeLanguage = isL1Answer && levDistance === 1;
     if (normalizedInput === normalizedAnswer || userHasTypoInNativeLanguage) {
       //this allows for a typo in the native language
-      handleCorrectAnswer(messageToAPI + "C");
+      handleCorrectAnswer(exerciseBookmark);
+      setIsCorrect(true);
       setIsIncorrect(false);
       return;
     }
@@ -140,31 +118,28 @@ export default function BottomInput({
     setCorrectWordCountInInput(totalWordsCorrect);
     setDistanceToCorrect(levDistance);
     setIsLongerThanSolution(normalizedInput.length > normalizedAnswer.length);
-    setIsSameLengthAsSolution(
-      normalizedInput.length === normalizedAnswer.length,
-    );
+    setIsSameLengthAsSolution(normalizedInput.length === normalizedAnswer.length);
 
     let updatedMessageToAPI;
-    let userUsedWrongLang =
-      isL1Answer && normalizedInput === normalizedLearningWord;
+    let userUsedWrongLang = isL1Answer && normalizedInput === normalizedLearningWord;
     setIsInputWrongLanguage(userUsedWrongLang);
 
     if (userUsedWrongLang) {
       // If the user writes in the wrong language
       // we give them a Hint, mainly for audio exercises.
-      updatedMessageToAPI = messageToAPI + "H";
+      updatedMessageToAPI = HINT;
       setDistanceToCorrect();
     } else if (totalWordsCorrect >= 1 && solutionWordCount > 1) {
-      updatedMessageToAPI = messageToAPI + "H";
+      updatedMessageToAPI = HINT;
     } else if (levDistance === 1) {
       // The user almost got it correct
       // we associate it with a H
-      updatedMessageToAPI = messageToAPI + "H";
+      updatedMessageToAPI = HINT;
     } else {
-      updatedMessageToAPI = messageToAPI + "W";
-      handleIncorrectAnswer();
+      updatedMessageToAPI = WRONG;
+      handleIncorrectAnswer(exerciseBookmark);
     }
-    setMessageToAPI(updatedMessageToAPI);
+    notifyOfUserAttempt(updatedMessageToAPI, exerciseBookmark);
     setIsIncorrect(true);
   }
 
@@ -176,17 +151,11 @@ export default function BottomInput({
           {strings.hint}
         </s.LeftFeedbackButton>
         <div>
-          <div className="type-feedback">
-            {feedbackMessage !== "" && <p>{feedbackMessage}</p>}
-          </div>
+          <div className="type-feedback">{feedbackMessage !== "" && <p>{feedbackMessage}</p>}</div>
           <InputField
             type="text"
             placeholder={"Type in " + inputLanguageName}
-            className={
-              distanceToCorrect >= 5 && correctWordCountInInput === 0
-                ? "wrong-border"
-                : "almost-border"
-            }
+            className={distanceToCorrect >= 5 && correctWordCountInInput === 0 ? "wrong-border" : "almost-border"}
             value={currentInput}
             onChange={(e) => setCurrentInput(e.target.value)}
             onKeyUp={(e) => {
@@ -207,9 +176,7 @@ export default function BottomInput({
           />
         </div>
 
-        <s.RightFeedbackButton onClick={checkResult}>
-          {strings.check}
-        </s.RightFeedbackButton>
+        <s.RightFeedbackButton onClick={checkResult}>{strings.check}</s.RightFeedbackButton>
       </s.BottomRow>
     </>
   );

@@ -3,16 +3,12 @@ import * as s from "../Exercise.sc.js";
 import BottomInput from "../BottomInput.js";
 import SpeakButton from "../SpeakButton.js";
 import strings from "../../../i18n/definitions.js";
-import NextNavigation from "../NextNavigation.js";
 import { EXERCISE_TYPES } from "../../ExerciseTypeConstants.js";
 import SessionStorage from "../../../assorted/SessionStorage.js";
 import { TranslatableText } from "../../../reader/TranslatableText.js";
 import InteractiveText from "../../../reader/InteractiveText.js";
 import LoadingAnimation from "../../../components/LoadingAnimation.js";
 import { SpeechContext } from "../../../contexts/SpeechContext.js";
-import DisableAudioSession from "../DisableAudioSession.js";
-import useSubSessionTimer from "../../../hooks/useSubSessionTimer.js";
-import BookmarkProgressBar from "../../progressBars/BookmarkProgressBar.js";
 import { removePunctuation } from "../../../utils/text/preprocessing.js";
 import { APIContext } from "../../../contexts/APIContext.js";
 
@@ -23,27 +19,22 @@ const EXERCISE_TYPE = EXERCISE_TYPES.spellWhatYouHear;
 
 export default function SpellWhatYouHear({
   bookmarksToStudy,
+  notifyOfUserAttempt,
   notifyCorrectAnswer,
   notifyIncorrectAnswer,
-  setExerciseType,
-  isCorrect,
+  notifyExerciseCompleted,
   setIsCorrect,
+  setExerciseType,
   moveToNextExercise,
-  toggleShow,
   reload,
-  setReload,
-  exerciseSessionId,
-  activeSessionDuration,
+  isExerciseOver,
+  resetSubSessionTimer,
+  bookmarkProgressBar,
 }) {
   const api = useContext(APIContext);
-  const [messageToAPI, setMessageToAPI] = useState("");
   const speech = useContext(SpeechContext);
   const [interactiveText, setInteractiveText] = useState();
   const [isButtonSpeaking, setIsButtonSpeaking] = useState(false);
-  const [getCurrentSubSessionDuration] = useSubSessionTimer(
-    activeSessionDuration,
-  );
-  const [isBookmarkChanged, setIsBookmarkChanged] = useState(false);
   const exerciseBookmark = bookmarksToStudy[0];
 
   async function handleSpeak() {
@@ -51,7 +42,13 @@ export default function SpellWhatYouHear({
   }
 
   useEffect(() => {
+    resetSubSessionTimer();
     setExerciseType(EXERCISE_TYPE);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    if (!SessionStorage.isAudioExercisesEnabled()) moveToNextExercise();
     setInteractiveText(
       new InteractiveText(
         exerciseBookmark.context_tokenized,
@@ -65,62 +62,21 @@ export default function SpellWhatYouHear({
         exerciseBookmark.context_identifier,
       ),
     );
-    if (!SessionStorage.isAudioExercisesEnabled()) handleDisabledAudio();
-    // eslint-disable-next-line
-  }, [isBookmarkChanged, exerciseBookmark]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [exerciseBookmark, reload]);
 
   useEffect(() => {
     // Timeout is set so that the page renders before the word is spoken, allowing for the user to gain focus on the page
-    // Changed timeout to be slightly shorter. The sound should only play if the text
-    // is visible for the user.
+    // Changed timeout to be slightly shorter.
     if (interactiveText && !isButtonSpeaking)
       setTimeout(() => {
         handleSpeak();
       }, 200);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [interactiveText]);
 
-  function handleShowSolution(e, message) {
-    e.preventDefault();
-    let concatMessage;
-    if (!message) {
-      concatMessage = messageToAPI + "S";
-    } else {
-      concatMessage = message;
-    }
-
-    notifyIncorrectAnswer(exerciseBookmark);
-    setIsCorrect(true);
-    setMessageToAPI(concatMessage);
-    api.uploadExerciseFinalizedData(
-      concatMessage,
-      EXERCISE_TYPE,
-      getCurrentSubSessionDuration(activeSessionDuration, "ms"),
-      exerciseBookmark.id,
-      exerciseSessionId,
-    );
-  }
-
-  function handleDisabledAudio() {
-    api.logUserActivity(api.AUDIO_DISABLE, "", exerciseBookmark.id, "");
-    moveToNextExercise();
-  }
-
   function handleIncorrectAnswer() {
-    setMessageToAPI(messageToAPI + "W");
     notifyIncorrectAnswer(exerciseBookmark);
-  }
-
-  function handleCorrectAnswer(message) {
-    setMessageToAPI(message);
-    notifyCorrectAnswer(exerciseBookmark);
-    setIsCorrect(true);
-    api.uploadExerciseFinalizedData(
-      message,
-      EXERCISE_TYPE,
-      getCurrentSubSessionDuration(activeSessionDuration, "ms"),
-      exerciseBookmark.id,
-      exerciseSessionId,
-    );
   }
 
   if (!interactiveText) {
@@ -129,12 +85,10 @@ export default function SpellWhatYouHear({
 
   return (
     <s.Exercise>
-      <div className="headlineWithMoreSpace">
-        {strings.audioExerciseHeadline}
-      </div>
-      <BookmarkProgressBar bookmark={exerciseBookmark} message={messageToAPI} />
+      <div className="headlineWithMoreSpace">{strings.audioExerciseHeadline}</div>
+      {bookmarkProgressBar}
 
-      {!isCorrect && (
+      {!isExerciseOver && (
         <>
           <s.CenteredRowTall>
             <SpeakButton
@@ -145,7 +99,7 @@ export default function SpellWhatYouHear({
           </s.CenteredRowTall>
           <div className="contextExample">
             <TranslatableText
-              isCorrect={isCorrect}
+              isExerciseOver={isExerciseOver}
               interactiveText={interactiveText}
               translating={true}
               pronouncing={false}
@@ -156,23 +110,22 @@ export default function SpellWhatYouHear({
           </div>
 
           <BottomInput
-            handleCorrectAnswer={handleCorrectAnswer}
+            handleCorrectAnswer={notifyCorrectAnswer}
             handleIncorrectAnswer={handleIncorrectAnswer}
-            bookmarksToStudy={bookmarksToStudy}
-            messageToAPI={messageToAPI}
-            setMessageToAPI={setMessageToAPI}
+            handleExerciseCompleted={notifyExerciseCompleted}
+            setIsCorrect={setIsCorrect}
+            exerciseBookmark={exerciseBookmark}
+            notifyOfUserAttempt={notifyOfUserAttempt}
           />
         </>
       )}
-      {isCorrect && (
+      {isExerciseOver && (
         <>
           <br></br>
-          <h1 className="wordInContextHeadline">
-            {removePunctuation(exerciseBookmark.to)}
-          </h1>
+          <h1 className="wordInContextHeadline">{removePunctuation(exerciseBookmark.to)}</h1>
           <div className="contextExample">
             <TranslatableText
-              isCorrect={isCorrect}
+              isExerciseOver={isExerciseOver}
               interactiveText={interactiveText}
               translating={true}
               pronouncing={false}
@@ -182,24 +135,6 @@ export default function SpellWhatYouHear({
             />
           </div>
         </>
-      )}
-      <NextNavigation
-        exerciseType={EXERCISE_TYPE}
-        message={messageToAPI}
-        exerciseBookmark={exerciseBookmark}
-        moveToNextExercise={moveToNextExercise}
-        reload={reload}
-        setReload={setReload}
-        handleShowSolution={handleShowSolution}
-        toggleShow={toggleShow}
-        isCorrect={isCorrect}
-        isBookmarkChanged={() => setIsBookmarkChanged(!isBookmarkChanged)}
-      />
-      {SessionStorage.isAudioExercisesEnabled() && (
-        <DisableAudioSession
-          handleDisabledAudio={handleDisabledAudio}
-          setIsCorrect={setIsCorrect}
-        />
       )}
     </s.Exercise>
   );
