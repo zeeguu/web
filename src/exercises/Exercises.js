@@ -54,12 +54,11 @@ export default function Exercises({ articleID, backButtonAction, toScheduledExer
   const [totalBookmarksInPipeline, setTotalBookmarksInPipeline] = useState();
   const [currentExerciseType, setCurrentExerciseType] = useState(null);
 
-  /*
-    We can use this too states to track if the user is correct.
-    isExerciseOver & !isShownSolution & isCorrect = User Correct
-    isExerciseOver & isShownSolution & isCorrect === null = User Show Solution
-    isExerciseOver & isShownSolution === null & !isCorrect = User Wrong
-     */
+  // We can use this too states to track if the user is correct.
+  // isExerciseOver & !isShownSolution & isCorrect = User Correct
+  // isExerciseOver & isShownSolution & isCorrect === null = User Show Solution
+  // isExerciseOver & isShownSolution === null & !isCorrect = User Wrong
+
   const [isCorrect, setIsCorrect] = useState(null);
   const [isExerciseOver, setIsExerciseOver] = useState(false);
   const [isShowSolution, setIsShowSolution] = useState(false);
@@ -71,7 +70,7 @@ export default function Exercises({ articleID, backButtonAction, toScheduledExer
   const [articleURL, setArticleURL] = useState();
   const [isOutOfWordsToday, setIsOutOfWordsToday] = useState();
   const [totalPracticedBookmarksInSession, setTotalPracticedBookmarksInSession] = useState(0);
-  const [exerciseMessageToAPI, setExerciseMessageToAPI] = useState({});
+  const [exerciseMessageForAPI, setExerciseMessageForAPI] = useState({});
   const [dbExerciseSessionId, setDbExerciseSessionId] = useState();
   const dbExerciseSessionIdRef = useShadowRef(dbExerciseSessionId);
   const currentIndexRef = useShadowRef(currentIndex);
@@ -138,11 +137,11 @@ export default function Exercises({ articleID, backButtonAction, toScheduledExer
 
   function appendToMessageToAPI(message, bookmarkToUpdate) {
     if (message === "" || !bookmarkToUpdate) return "";
-    let _newExerciseMessageToAPI = { ...exerciseMessageToAPI };
+    let _newExerciseMessageToAPI = { ...exerciseMessageForAPI };
     if (!(bookmarkToUpdate.id in _newExerciseMessageToAPI)) {
       _newExerciseMessageToAPI[bookmarkToUpdate.id] = message;
     } else _newExerciseMessageToAPI[bookmarkToUpdate.id] += message;
-    setExerciseMessageToAPI(_newExerciseMessageToAPI);
+    setExerciseMessageForAPI(_newExerciseMessageToAPI);
     return _newExerciseMessageToAPI[bookmarkToUpdate.id];
   }
 
@@ -266,7 +265,7 @@ export default function Exercises({ articleID, backButtonAction, toScheduledExer
     LocalStorage.setLastExerciseCompleteDate(new Date().toDateString());
     setIsExerciseOver(false);
     setIsShowSolution(null);
-    setExerciseMessageToAPI({});
+    setExerciseMessageForAPI({});
     setIsCorrect(null);
     setShowFeedbackButtons(false);
     const newIndex = currentIndex + 1;
@@ -300,13 +299,13 @@ export default function Exercises({ articleID, backButtonAction, toScheduledExer
     if (endExercise) {
       setIsCorrect(true);
     }
-    exerciseCompletedNotification(CORRECT, currentBookmark, endExercise);
+    updateAPIWithExerciseComplete(CORRECT, currentBookmark, endExercise);
     api.updateExerciseSession(dbExerciseSessionId, activeSessionDuration);
   }
 
   let incorrectBookmarksCopy = [...incorrectBookmarks];
 
-  function incorrectAnswerNotification(currentBookmark) {
+  function updateAPIWithIncorrectAnswer(currentBookmark) {
     let incorrectBookmarksIds = incorrectBookmarksCopy.map((b) => b.id);
     if (!incorrectBookmarksIds.includes(currentBookmark.id)) {
       setTotalPracticedBookmarksInSession(totalPracticedBookmarksInSession + 1);
@@ -320,7 +319,7 @@ export default function Exercises({ articleID, backButtonAction, toScheduledExer
     api.updateExerciseSession(dbExerciseSessionId, activeSessionDuration);
   }
 
-  function showSolutionNotification() {
+  function showSolution() {
     // Currently, only match results in all bookmarks being marked as wrong.
     let bookmarksToMarkAsWrong =
       currentExerciseType === EXERCISE_TYPES.match
@@ -328,13 +327,13 @@ export default function Exercises({ articleID, backButtonAction, toScheduledExer
         : [selectedExerciseBookmark];
     for (let i = 0; i < bookmarksToMarkAsWrong.length; i++) {
       let currentBookmark = bookmarksToMarkAsWrong[i];
-      incorrectAnswerNotification(currentBookmark);
-      exerciseCompletedNotification(SOLUTION, currentBookmark);
+      updateAPIWithIncorrectAnswer(currentBookmark);
+      updateAPIWithExerciseComplete(SOLUTION, currentBookmark);
     }
     setIsShowSolution(true);
   }
 
-  function exerciseCompletedNotification(message, bookmark, endExercise = true) {
+  function updateAPIWithExerciseComplete(message, bookmark, endExercise = true) {
     let updated_message = appendToMessageToAPI(message, bookmark);
     if (endExercise) setIsExerciseOver(true);
     api.uploadExerciseFinalizedData(
@@ -371,9 +370,9 @@ export default function Exercises({ articleID, backButtonAction, toScheduledExer
 
   // If user shows solution on Match without any selected bookmark, show blank progression.
   let currentMessageToAPI =
-    isEmptyDictionary(exerciseMessageToAPI) || (currentExerciseType === EXERCISE_TYPES.match && isShowSolution)
+    isEmptyDictionary(exerciseMessageForAPI) || (currentExerciseType === EXERCISE_TYPES.match && isShowSolution)
       ? ""
-      : exerciseMessageToAPI[selectedExerciseBookmark.id];
+      : exerciseMessageForAPI[selectedExerciseBookmark.id];
   const CurrentExerciseComponent = fullExerciseProgression[currentIndex].type;
   return (
     <NarrowColumn>
@@ -405,10 +404,10 @@ export default function Exercises({ articleID, backButtonAction, toScheduledExer
             exerciseMessageToAPI={currentMessageToAPI}
             appendToExerciseMessageForAPI={appendToMessageToAPI}
             notifyCorrectAnswer={correctAnswerNotification}
-            notifyIncorrectAnswer={incorrectAnswerNotification}
+            notifyIncorrectAnswer={updateAPIWithIncorrectAnswer}
             setExerciseType={setCurrentExerciseType}
-            notifyExerciseCompleted={exerciseCompletedNotification}
-            notifyShowSolution={showSolutionNotification}
+            notifyExerciseCompleted={updateAPIWithExerciseComplete}
+            notifyShowSolution={showSolution}
             isCorrect={isCorrect}
             isExerciseOver={isExerciseOver}
             isShowSolution={isShowSolution}
@@ -430,7 +429,7 @@ export default function Exercises({ articleID, backButtonAction, toScheduledExer
           />
           <NextNavigation
             exerciseType={currentExerciseType}
-            bookmarkMessagesToAPI={exerciseMessageToAPI}
+            bookmarkMessagesToAPI={exerciseMessageForAPI}
             exerciseBookmarks={currentBookmarksToStudy}
             exerciseBookmark={currentBookmarksToStudy[0]}
             moveToNextExercise={moveToNextExercise}
@@ -439,7 +438,7 @@ export default function Exercises({ articleID, backButtonAction, toScheduledExer
             setReload={setReload}
             handleShowSolution={() => {
               setIsShowSolution(true);
-              showSolutionNotification();
+              showSolution();
             }}
             toggleShow={toggleShow}
             isCorrect={isCorrect}

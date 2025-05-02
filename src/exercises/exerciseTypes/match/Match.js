@@ -54,6 +54,7 @@ export default function Match({
   const speech = useContext(SpeechContext);
 
   async function handleSpeak(bookmark) {
+    console.log("Speaking..." + bookmark.from);
     if (autoPronounceBookmark) {
       await speech.speakOut(bookmark.from, setIsPronouncing);
     }
@@ -69,19 +70,26 @@ export default function Match({
 
   useEffect(() => {
     let _isLeftStart = selectedLeftBookmark && !selectedRightBookmark;
+    if (_isLeftStart) {
+      setSelectedExerciseBookmark(selectedLeftBookmark);
+    }
+
     if (selectedLeftBookmark && selectedRightBookmark) {
       setSelectedExerciseBookmark(selectedLeftBookmark);
-      // Handle check.
-      setSelectedLeftBookmark();
-      setSelectedRightBookmark();
-      handleSpeak(selectedLeftBookmark);
-      if (selectedLeftBookmark.id === selectedRightBookmark.id) {
-        // Bookmarks are correct
+
+      let userHasAnsweredCorrectly = selectedLeftBookmark.id === selectedRightBookmark.id;
+
+      if (userHasAnsweredCorrectly) {
+        // The user has answered correctly
+        handleSpeak(selectedLeftBookmark);
+
         let _listOfSolvedBookmarks = [...listOfSolvedBookmarks, selectedLeftBookmark.id];
 
         setListOfSolvedBookmarks(_listOfSolvedBookmarks);
-        if (_listOfSolvedBookmarks.length === bookmarksToStudy.length) notifyExerciseCompleted("", null, true);
-        else {
+
+        if (_listOfSolvedBookmarks.length === bookmarksToStudy.length) {
+          notifyExerciseCompleted("", null, true);
+        } else {
           notifyCorrectAnswer(selectedLeftBookmark, false);
         }
       } else {
@@ -93,11 +101,12 @@ export default function Match({
         setWrongAnimationsDictionary(_newAnimationDictionary);
         notifyIncorrectAnswer(selectedLeftBookmark);
       }
+
+      // Unselect both - no matter if we're correct or wrong
+      setSelectedLeftBookmark();
+      setSelectedRightBookmark();
     }
-    if (_isLeftStart) {
-      setSelectedExerciseBookmark(selectedLeftBookmark);
-    }
-  }, [selectedRightBookmark, selectedLeftBookmark]);
+  }, [selectedLeftBookmark, selectedRightBookmark]);
 
   return (
     <s.Exercise>
