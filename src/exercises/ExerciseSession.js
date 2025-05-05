@@ -141,8 +141,6 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
         setDbExerciseSessionId(id);
       });
 
-      // This can only be initialized here after we can get at least one bookmark
-      // and thus, know the language to pronounce in
       let exerciseSequenceType = getExerciseSequenceType();
 
       let exerciseSession = assignBookmarksToExercises(bookmarks, exerciseSequenceType);
@@ -155,7 +153,6 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
 
   function resetExerciseSessionState() {
     setIsOutOfWordsToday();
-
     setFullExerciseProgression();
     setCurrentBookmarksToStudy();
     setCorrectBookmarks([]);
