@@ -134,21 +134,19 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
       return;
     }
 
-    if (bookmarks.length > 0) {
-      // we have bookmarks; we can start loggign
-      api.startLoggingExerciseSessionToDB((newlyCreatedDBSessionID) => {
-        let id = JSON.parse(newlyCreatedDBSessionID).id;
-        setDbExerciseSessionId(id);
-      });
+    // we have bookmarks; we can start loggign
+    api.startLoggingExerciseSessionToDB((newlyCreatedDBSessionID) => {
+      let id = JSON.parse(newlyCreatedDBSessionID).id;
+      setDbExerciseSessionId(id);
+    });
 
-      let exerciseSequenceType = getExerciseSequenceType();
+    let exerciseSequenceType = getExerciseSequenceType();
 
-      let exerciseSession = assignBookmarksToExercises(bookmarks, exerciseSequenceType);
-      setFullExerciseProgression(exerciseSession);
+    let exerciseSession = assignBookmarksToExercises(bookmarks, exerciseSequenceType);
+    setFullExerciseProgression(exerciseSession);
 
-      setCurrentBookmarksToStudy(exerciseSession[0].bookmarks);
-      setSelectedExerciseBookmark(exerciseSession[0].bookmarks[0]);
-    }
+    setCurrentBookmarksToStudy(exerciseSession[0].bookmarks);
+    setSelectedExerciseBookmark(exerciseSession[0].bookmarks[0]);
   }
 
   function resetExerciseSessionState() {
