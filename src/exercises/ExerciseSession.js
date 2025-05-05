@@ -43,7 +43,7 @@ const BOOKMARKS_DUE_REVIEW = false;
 
 export default function ExerciseSession({ articleID, backButtonAction, toScheduledExercises, source }) {
   const api = useContext(APIContext);
-  const [countBookmarksToPractice, setCountBookmarksToPractice] = useState();
+
   const [hasKeptExercising, setHasKeptExercising] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [currentBookmarksToStudy, setCurrentBookmarksToStudy] = useState();
@@ -86,7 +86,20 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
   const { screenWidth } = useScreenWidth();
 
   useEffect(() => {
+    initializeExerciseSessionComponent();
+    return () => {
+      cleanupExerciseSessionComponent();
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // ********************************************************************************
+  // Component Initialization
+  // ********************************************************************************
+
+  function initializeExerciseSessionComponent() {
     setTitle(strings.titleExercises);
+
     api.getUserPreferences((preferences) => {
       if (SessionStorage.getAudioExercisesEnabled() === undefined)
         // If the user doesn't go through the login (or has it cached, we need to set it at the start of the exercises.)
@@ -94,46 +107,112 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
           preferences["audio_exercises"] === undefined || preferences["audio_exercises"] === "true",
         );
     });
+
+    // this will be needed for when writing the Out of Words today message
     api.getTotalBookmarksInPipeline((totalInLearning) => {
       setTotalBookmarksInPipeline(totalInLearning);
     });
-    api.startLoggingExerciseSessionToDB((newlyCreatedDBSessionID) => {
-      let id = JSON.parse(newlyCreatedDBSessionID).id;
-      setDbExerciseSessionId(id);
-    });
 
-    if (!articleID)
-      // Only report if it's the scheduled exercises that are opened
-      // and not the article exercises
+    api.logUserActivity(
+      articleID ? api.TO_EXERCISES_AFTER_REVIEW : api.SCHEDULED_EXERCISES_OPEN,
+      null,
+      JSON.stringify({ had_notification: exerciseNotification.hasExercises }),
+      "",
+    );
 
-      api.logUserActivity(
-        api.SCHEDULED_EXERCISES_OPEN,
-        null,
-        JSON.stringify({ had_notification: exerciseNotification.hasExercises }),
-        "",
-      );
+    resetExerciseSessionState();
 
-    setTitle("Exercises");
-    startExercising();
-    return () => {
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-      if (currentIndexRef.current > 0 || hasKeptExercisingRef.current) {
-        // Do not report if there were no exercises
-        // performed
+    getBookmarksAndAssignThemToExercises();
+  }
 
-        api.reportExerciseSessionEnd(
-          // eslint-disable-next-line react-hooks/exhaustive-deps
-          dbExerciseSessionIdRef.current,
-          // eslint-disable-next-line react-hooks/exhaustive-deps
-          activeSessionDurationRef.current,
+  function initializeExercisesForBookmarks(bookmarks) {
+    exerciseNotification.updateReactState();
+
+    if (bookmarks.length === 0) {
+      // If a user gets here with no bookmarks, means
+      // that we tried to schedule new bookmarks but none
+      // were found.
+      updateIsOutOfWordsToday();
+      return;
+    }
+
+    if (bookmarks.length > 0) {
+      // we have bookmarks; we can start loggign
+      api.startLoggingExerciseSessionToDB((newlyCreatedDBSessionID) => {
+        let id = JSON.parse(newlyCreatedDBSessionID).id;
+        setDbExerciseSessionId(id);
+      });
+
+      // This can only be initialized here after we can get at least one bookmark
+      // and thus, know the language to pronounce in
+      let exerciseSequenceType = getExerciseSequenceType();
+
+      let exerciseSession = assignBookmarksToExercises(bookmarks, exerciseSequenceType);
+      setFullExerciseProgression(exerciseSession);
+
+      setCurrentBookmarksToStudy(exerciseSession[0].bookmarks);
+      setSelectedExerciseBookmark(exerciseSession[0].bookmarks[0]);
+    }
+  }
+
+  function resetExerciseSessionState() {
+    setIsOutOfWordsToday();
+
+    setFullExerciseProgression();
+    setCurrentBookmarksToStudy();
+    setCorrectBookmarks([]);
+    setIncorrectBookmarks([]);
+    setFinished(false);
+    setCurrentIndex(0);
+    setActivityOver(false);
+  }
+
+  function getBookmarksAndAssignThemToExercises() {
+    if (articleID) {
+      api.getArticleInfo(articleID, (articleInfo) => {
+        api.bookmarksToStudyForArticle(articleID, true, (bookmarks) => {
+          exerciseNotification.unsetExerciseCounter();
+
+          setArticleTitle(articleInfo.title);
+          setArticleURL(articleInfo.url);
+          setTitle('Exercises for "' + articleInfo.title + '"');
+          initializeExercisesForBookmarks(bookmarks);
+        });
+      });
+    } else {
+      api.getTopBookmarksToStudyCount((bookmarkCount) => {
+        let exerciseCountInSession =
+          bookmarkCount <= MAX_NUMBER_OF_BOOKMARKS_EX_SESSION
+            ? MAX_NUMBER_OF_BOOKMARKS_EX_SESSION
+            : DEFAULT_NUMBER_BOOKMARKS_TO_PRACTICE;
+        api.getTopBookmarksToStudy(exerciseCountInSession, (bookmarks) =>
+          initializeExercisesForBookmarks(bookmarks.slice(0, exerciseCountInSession + 1)),
         );
-      }
-      setActivityOver(true);
-      exerciseNotification.unsetExerciseCounter();
-      exerciseNotification.updateReactState();
-    };
+        setTitle(strings.exercises);
+      });
+    }
+  }
+
+  // ********************************************************************************
+  // Component Cleanup
+  // ********************************************************************************
+  function cleanupExerciseSessionComponent() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    if (currentIndexRef.current > 0 || hasKeptExercisingRef.current) {
+      // Do not report if there were no exercises
+      // performed
+
+      api.reportExerciseSessionEnd(
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+        dbExerciseSessionIdRef.current,
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+        activeSessionDurationRef.current,
+      );
+    }
+    setActivityOver(true);
+    exerciseNotification.unsetExerciseCounter();
+    exerciseNotification.updateReactState();
+  }
 
   function handleUserAttempt(message, bookmarkToUpdate) {
     if (message === "" || !bookmarkToUpdate) return "";
@@ -156,75 +235,9 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
     return exerciseTypesList;
   }
 
-  function initializeExercises(bookmarks, title) {
-    exerciseNotification.updateReactState();
-    if (bookmarks.length === 0) {
-      // If a user gets here with no bookmarks, means
-      // that we tried to schedule new bookmarks but none
-      // were found.
-      updateIsOutOfWordsToday();
-      return;
-    }
-    setCountBookmarksToPractice(bookmarks.length);
-
-    if (bookmarks.length > 0) {
-      // This can only be initialized here after we can get at least one bookmark
-      // and thus, know the language to pronounce in
-      let exerciseSequenceType = getExerciseSequenceType();
-
-      let exerciseSession = assignBookmarksToExercises(bookmarks, exerciseSequenceType);
-      setFullExerciseProgression(exerciseSession);
-
-      setCurrentBookmarksToStudy(exerciseSession[0].bookmarks);
-      setSelectedExerciseBookmark(exerciseSession[0].bookmarks[0]);
-
-      setTitle(title);
-    }
-  }
-
-  function resetExerciseState() {
-    setIsOutOfWordsToday();
-    setCountBookmarksToPractice();
-    setFullExerciseProgression();
-    setCurrentBookmarksToStudy();
-    setCorrectBookmarks([]);
-    setIncorrectBookmarks([]);
-    setFinished(false);
-    setCurrentIndex(0);
-    setActivityOver(false);
-  }
-
   function updateIsOutOfWordsToday() {
     api.getTopBookmarksToStudyCount((bookmarkCount) => {
       setIsOutOfWordsToday(bookmarkCount === 0);
-    });
-  }
-
-  function startExercising() {
-    resetExerciseState();
-    if (articleID) {
-      exercise_article_bookmarks();
-    } else {
-      api.getTopBookmarksToStudyCount((bookmarkCount) => {
-        let exerciseSession =
-          bookmarkCount <= MAX_NUMBER_OF_BOOKMARKS_EX_SESSION
-            ? MAX_NUMBER_OF_BOOKMARKS_EX_SESSION
-            : DEFAULT_NUMBER_BOOKMARKS_TO_PRACTICE;
-        api.getTopBookmarksToStudy(exerciseSession, (bookmarks) =>
-          initializeExercises(bookmarks.slice(0, exerciseSession + 1), strings.exercises),
-        );
-      });
-    }
-  }
-
-  function exercise_article_bookmarks() {
-    api.bookmarksToStudyForArticle(articleID, true, (bookmarks) => {
-      api.getArticleInfo(articleID, (data) => {
-        exerciseNotification.unsetExerciseCounter();
-        initializeExercises(bookmarks, 'Exercises for "' + data.title + '"');
-        setArticleTitle(data.title);
-        setArticleURL(data.url);
-      });
     });
   }
 
@@ -240,7 +253,8 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
           incorrectBookmarks={incorrectBookmarks}
           backButtonAction={backButtonAction}
           keepExercisingAction={() => {
-            startExercising(BOOKMARKS_DUE_REVIEW);
+            resetExerciseSessionState();
+            getBookmarksAndAssignThemToExercises(BOOKMARKS_DUE_REVIEW);
             setHasKeptExercising(true);
           }}
           toScheduledExercises={toScheduledExercises}
@@ -256,7 +270,7 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
   if (isOutOfWordsToday) {
     return <OutOfWordsMessage totalInLearning={totalBookmarksInPipeline} goBackAction={backButtonAction} />;
   }
-  if (!countBookmarksToPractice || !currentBookmarksToStudy || !fullExerciseProgression) {
+  if (!currentBookmarksToStudy || !fullExerciseProgression) {
     return <LoadingAnimation />;
   }
 
