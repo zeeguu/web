@@ -101,6 +101,7 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
     api.getUserPreferences((preferences) => {
       if (SessionStorage.getAudioExercisesEnabled() === undefined)
         // If the user doesn't go through the login (or has it cached, we need to set it at the start of the exercises.)
+        // TODO: Move the UserContext?
         SessionStorage.setAudioExercisesEnabled(
           preferences["audio_exercises"] === undefined || preferences["audio_exercises"] === "true",
         );
@@ -119,7 +120,6 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
     );
 
     resetExerciseSessionState();
-
     getBookmarksAndAssignThemToExercises();
   }
 
