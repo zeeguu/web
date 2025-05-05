@@ -98,8 +98,6 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
   // ********************************************************************************
 
   function initializeExerciseSessionComponent() {
-    setTitle(strings.titleExercises);
-
     api.getUserPreferences((preferences) => {
       if (SessionStorage.getAudioExercisesEnabled() === undefined)
         // If the user doesn't go through the login (or has it cached, we need to set it at the start of the exercises.)
