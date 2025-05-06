@@ -142,6 +142,7 @@ const PageSectionWrapper = styled.div`
     font-size: 2.25rem;
     color: ${almostBlack};
     margin: 0;
+    margin-top: 2rem;
   }
 
   h3 {
@@ -167,7 +168,7 @@ const Subsection = styled.div`
   grid-template-columns: repeat(2, 1fr);
   gap: 3rem;
   width: 100%;
-  padding: 4rem 0;
+  padding: 5rem 0;
 
   @media (max-width: 992px) {
     grid-template-columns: repeat(1, 1fr);
@@ -183,7 +184,7 @@ const SubsectionText = styled.div`
   flex-direction: column;
   justify-content: center;
   padding: 0 5rem 0 5rem;
-  gap: 0.5rem;
+  gap: 1rem;
 
   @media (max-width: 1200px) {
     padding: 0 2rem 0 2rem;

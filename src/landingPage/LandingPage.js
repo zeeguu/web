@@ -79,9 +79,9 @@ export default function LandingPage() {
                 {/* <h3>{strings.personalizedReading}</h3> */}
                 <h3>Browse your personalized&nbsp;feed</h3>
                 <p>
-                  Our system continuously searches the internet to bring you new
-                  article recommendations tailored to your interests and desired
-                  language&nbsp;difficulty.
+                  Our system continuously searches the internet to&nbsp;bring
+                  you new article recommendations tailored to your interests and
+                  desired language&nbsp;difficulty.
                 </p>
                 {/* <p>{strings.personalizedRecommandationsEllaboration1}</p>
                 <p>{strings.personalizedRecommandationsEllaboration2}</p> */}
@@ -100,10 +100,10 @@ export default function LandingPage() {
                 {/* <h3>{strings.easyTranslations}</h3> */}
                 <h3>Read, translate words &&nbsp;hear&nbsp;pronunciation</h3>
                 <p>
-                  Select an article from your personalized feed, read it easily,
-                  Right-click anywhere on the article’s page to enjoy
-                  distraction-free reading with our browser extension. Instantly
-                  translate words and hear their
+                  Select an article from your personalized feed and
+                  read&nbsp;it&nbsp;with ease. Right-click anywhere on the page
+                  to&nbsp;activate distraction&#8209;free mode with our browser
+                  extension. Instantly translate words and hear their
                   pronunciation&nbsp;effortlessly.
                 </p>
                 {/* <p>{strings.easyTranslationsEllaboration1}</p>
@@ -119,14 +119,17 @@ export default function LandingPage() {
                 <p>
                   Test your vocabulary with many types of interactive exercises
                   that adapt to your level. Progress through increasing
-                  difficulties, reinforce learning with real-world usage, and
-                  improve pronunciation with audio&nbsp;exercises.
+                  difficulties, reinforce learning with real&#8209;world usage,
+                  and improve pronunciation thanks to&nbsp;audio&nbsp;exercises.
+                  Plus, spaced repetition helps you remember words by reviewing
+                  them at optimal time&nbsp;intervals.
                 </p>
                 {/* <p>{strings.personalizedPractiseEllaboration1}</p>
                 <p>{strings.personalizedMultipleExerciseTypes}</p>
                 <p>{strings.personalizedPractiseEllaboration2}</p> */}
               </s.SubsectionText>
               <s.SubsectionImage src="static/images/feed.png" />
+
               {/* <img src="static/images/feed.png" />
               </s.SubsectionImage> */}
             </s.Subsection>
