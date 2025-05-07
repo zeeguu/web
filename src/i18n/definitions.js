@@ -77,8 +77,7 @@ let strings = new LocalizedStrings(
       nameIsRequired: "Name is required.",
       passwordMustBeMsg: "Password should be at least 4 characters long.",
       plsAcceptPrivacyPolicy: "You need to agree to our privacy notice.",
-      thankYouMsgPrefix:
-        "Thanks for being a beta-tester. We really want to hear from you at",
+      thankYouMsgPrefix: "Thanks for being a beta-tester. We really want to hear from you at",
       thankYouMsgSuffix: ". Contact us also if you don't have an invite code.",
       inviteCode: "Invite Code",
       inviteCodePlaceholder: "Enter your invite code",
@@ -115,8 +114,7 @@ let strings = new LocalizedStrings(
       weStore: "We store ",
       anonymizedData: "anonymized data",
       aboutYour: " about your ",
-      interaction:
-        "interactions with foreign language texts and vocabulary exercises",
+      interaction: "interactions with foreign language texts and vocabulary exercises",
       togetherWithThe: " together with the ",
       times: "times of these interactions",
       restOfDataStorageInfoMsg:
@@ -130,8 +128,7 @@ let strings = new LocalizedStrings(
       or: "or",
 
       //ResetPasswordStep1
-      weNeedTheEmailMsg:
-        "To do this we need the email that you registered with us.",
+      weNeedTheEmailMsg: "To do this we need the email that you registered with us.",
       //ResetPasswordStep2
       plsProvideCode: "Please provide a code.",
       somethingWentWrong: "Something went wrong!",
@@ -139,8 +136,7 @@ let strings = new LocalizedStrings(
       again: "again. ",
       orContactUsAt: "Or contact us on ",
       success: "Success!",
-      passwordChangedSuccessfullyMsg:
-        "Your password has been changed successfully.",
+      passwordChangedSuccessfullyMsg: "Your password has been changed successfully.",
       youCanGoTo: "You can go to ",
       now: " now.",
       plsCheck: "Please check ",
@@ -181,8 +177,7 @@ let strings = new LocalizedStrings(
       personalizedExercises: "Personalized Exercises",
       personalizedPractiseEllaboration1:
         "Zeeguu generates personalized vocabulary exercises by using the original context in which you encountered words that you didn't understand. We do this because contextual learning works better.",
-      personalizedMultipleExerciseTypes:
-        " Different exercise types ensure that you do not get bored",
+      personalizedMultipleExerciseTypes: " Different exercise types ensure that you do not get bored",
       personalizedPractiseEllaboration2:
         "Spaced repetition algorithms optimize your practice. Moreover, if you have limited time, our algorithms will prioritize frequent words in your exercises.",
 
@@ -205,27 +200,21 @@ let strings = new LocalizedStrings(
       mirceaKeynoteAtEASEAI: "👨‍🏫 Mircea gives a keynote about Zeeguu at the ",
       pernilleObtainsFundingPrefix:
         "👩‍🔬 Pernille Hvalsoe obtains funding from The Danish Agency for International Recruitment and Integration for a ",
-      pernilleObtainsFundingLinkTitle:
-        "project which uses Zeeguu to study how to increase personalization",
+      pernilleObtainsFundingLinkTitle: "project which uses Zeeguu to study how to increase personalization",
       pernilleObtainsFundingSuffix: " in Danish language courses",
       procrastinationPaper:
         "Paper using Zeeguu to teach vocabulary in moments of online procrastination accepted at CHI 2021 ",
-      rotterdamStarts:
-        "A highschool in Rotterdam starts using Zeeguu in their language classes",
+      rotterdamStarts: "A highschool in Rotterdam starts using Zeeguu in their language classes",
       euroCall2020: "Workshop about Zeeguu at EuroCALL 2020",
-      betaTesters40K:
-        "The beta-testers of Zeeguu reach 40'000 distinct words practiced within the exercises",
+      betaTesters40K: "The beta-testers of Zeeguu reach 40'000 distinct words practiced within the exercises",
       betaTesters100K:
         "The beta-testers of Zeeguu have reached 100'000 translations in their foreign language readings",
-      amsterdamStarts:
-        "A highschool in Amsterdam starts using Zeeguu in the French courses",
+      amsterdamStarts: "A highschool in Amsterdam starts using Zeeguu in the French courses",
       euroCall2019: "Mircea talks about Zeeguu at EuroCALL 2019",
-      asWeMayStudyPaper:
-        "Paper about Zeeguu is accepted at CHI 2018 - the top international conference on HCI",
+      asWeMayStudyPaper: "Paper about Zeeguu is accepted at CHI 2018 - the top international conference on HCI",
       groningenStarts:
         "Students at the Language Center from the University of Groningen use Zeeguu in their Dutch classes",
-      gomarusStarts:
-        "Students at the Gomarus College in Netherlands start using Zeeguu in their French classes",
+      gomarusStarts: "Students at the Gomarus College in Netherlands start using Zeeguu in their French classes",
       zeeguuIsReady: "Zeeguu is online and ready to welcome beta-testers",
 
       //Contributors
@@ -269,8 +258,7 @@ let strings = new LocalizedStrings(
       helpUsMsg:
         "Help us make Zeeguu even smarter by always letting us know whether you liked reading an article or not.",
       didYouEnjoyMsg: "Did you enjoy the article?",
-      answeringMsg:
-        "Zeeguu can make better personalized recommendations based on your feedback.",
+      answeringMsg: "Zeeguu can make better personalized recommendations based on your feedback.",
       yes: "Yes",
       no: "No",
       reviewVocabulary: "Review Vocabulary",
@@ -293,6 +281,7 @@ let strings = new LocalizedStrings(
 
       //SearchField
       searchAllArticles: "Search all articles",
+      searchAllArticlesAndVideos: "Search all articles and videos",
 
       //Search
       searching: "Searching...",
@@ -338,8 +327,7 @@ let strings = new LocalizedStrings(
         "These words have not yet been practiced in the exercises. Once you practice them for the first time they will be shown under Receptive.",
       toLearnMsg:
         "These words have not yet been practiced in the exercises. Once you practice them for the first time they will be shown under In Learning.",
-      noToLearnWords:
-        "You haven't practiced any words. Keep reading and translating to add words.",
+      noToLearnWords: "You haven't practiced any words. Keep reading and translating to add words.",
 
       //Receptive
       titleReceptiveWords: "Receptive",
@@ -359,8 +347,7 @@ let strings = new LocalizedStrings(
       open: "Open",
 
       //LearningCycle
-      nextLearningCycle:
-        "This word has now moved to your productive exercises.",
+      nextLearningCycle: "This word has now moved to your productive exercises.",
       wordLearned: "You've learned a new word!",
       receptiveTooltip:
         "This word is part of your receptive vocabulary knowledge. Receptive means the capability to comprehend a word when you hear or see it.",
@@ -375,8 +362,7 @@ let strings = new LocalizedStrings(
       //WordEditAccordion
       deleteWord: "Delete Word",
       done: "Done",
-      rememberToSubmit:
-        'Remember to click "Submit" in each accordion to save changes.',
+      rememberToSubmit: 'Remember to click "Submit" in each accordion to save changes.',
       translation: "Translation",
       word: "Word",
       editWord: "Edit Word",
@@ -387,13 +373,11 @@ let strings = new LocalizedStrings(
       //WordsForArticle
       reviewTranslations: "Review Translations for Your Exercises ",
       from: "From: ",
-      deleteTranslation:
-        "Delete a translation if you don't want it to appear in exercises.",
+      deleteTranslation: "Delete a translation if you don't want it to appear in exercises.",
       starTranslation: "Starred translations have priority in exercises.",
       ifGreyedTranslation:
         "Translations are grayed out because Zeeguu thinks they are not suitable for the exercises. Star them if you disagree.",
-      theWordsYouTranslate:
-        "The words you translate in the article will appear here for review",
+      theWordsYouTranslate: "The words you translate in the article will appear here for review",
       backToArticle: "Back to Article",
       toPracticeWords: "Practice Words",
 
@@ -431,16 +415,14 @@ let strings = new LocalizedStrings(
       goBackArticlePrefix: "Go back to reading: ",
       noTranslatedWords: "You have no words to practice at the moment",
       goToTextsToTranslateWords: "Read and translate words to get exercises.",
-      goStarTranslations:
-        "Go back and star translations for Zeeguu to include them in your exercises.",
+      goStarTranslations: "Go back and star translations for Zeeguu to include them in your exercises.",
       correctExercise1: "Well done!",
       correctExercise2: "Correct!",
       correctExercise3: "Good job!",
       solutionExercise1: "Check the solution!",
       solutionExercise2: "See the solution above!",
       newWordExercisesTooltip: "This is the first time you practice this word!",
-      newExpressionExercisesTooltip:
-        "This is the first time you practice this expression!",
+      newExpressionExercisesTooltip: "This is the first time you practice this expression!",
       //LearnedWordsList
       studentHasNotLearnedWords: "The student has not learned any words yet.",
 
@@ -453,62 +435,47 @@ let strings = new LocalizedStrings(
 
       //ExerciseHeadlines
       findTheWordInContextHeadline: "Find the word in the context below",
-      findTheExpressionInContextHeadline:
-        "Find the expression in the context below",
-      chooseTheWordFittingContextHeadline:
-        "Choose the alternative that fits the context",
+      findTheExpressionInContextHeadline: "Find the expression in the context below",
+      chooseTheWordFittingContextHeadline: "Choose the alternative that fits the context",
       orderTheWordsToMakeTheHighlightedPhrase:
         "Order the words to make the highlighted phrase. Some words can be extra.",
       matchWordWithTranslation: "Match each word with its translation",
-      audioExerciseHeadline:
-        "Write the word your hear. Click to have it repeated!",
+      audioExerciseHeadline: "Write the word your hear. Click to have it repeated!",
       multipleChoiceAudioHeadline: "Select the word which fits the context",
       findWordInContextClozeHeadline: "Translate the word to fit the context",
       translateL2toL1Headline: "Translate the bold word",
-      translateWhatYouHearHeadline:
-        "Translate the word you hear. Click to have it repeated!",
-      multipleChoiceL2toL1Headline:
-        "Select the correct translation of the bold word",
-      clickWordInContextHeadline:
-        "Find the translation of the word below in the context and click on it",
+      translateWhatYouHearHeadline: "Translate the word you hear. Click to have it repeated!",
+      multipleChoiceL2toL1Headline: "Select the correct translation of the bold word",
+      clickWordInContextHeadline: "Find the translation of the word below in the context and click on it",
       multipleChoiceContextHeadline: "Choose the context that fits the word",
 
       //FeedbackButtons
       dontShowThisWordAgain: "Don't show this word again",
-      dontShowThisWordAgainAlert:
-        "Please type your feedback before submitting.",
+      dontShowThisWordAgainAlert: "Please type your feedback before submitting.",
       giveFeedback: "Give Feedback",
       giveFeedbackAlert: "Please type your feedback before submitting.",
       selectWords: "Select the word(s):",
-      selectWordsAlert:
-        "Please select the word(s) for which you are providing feedback.",
-      clickWords:
-        "Click on the word(s) for which you are improving the translation:",
+      selectWordsAlert: "Please select the word(s) for which you are providing feedback.",
+      clickWords: "Click on the word(s) for which you are improving the translation:",
       otherFeedback: "Other reason:",
       sentFeedback1: "Feedback",
       sentFeedback2: "sent!",
 
       //FeedbackOptions
       bookmarkTooEasy: "Too Easy",
-      bookmarkTooEasyTooltip:
-        "I know this already! I don't need to practice it any longer.",
+      bookmarkTooEasyTooltip: "I know this already! I don't need to practice it any longer.",
       bookmarkTooHard: "Too Hard",
-      bookmarkTooHardTooltip:
-        "This is a little too difficult. I'd rather focus on simpler words for now.",
+      bookmarkTooHardTooltip: "This is a little too difficult. I'd rather focus on simpler words for now.",
       dislike: "Thumb Down",
-      imNotsure:
-        "I'm not sure about this... And I'd rather not practice something that feels wrong.",
+      imNotsure: "I'm not sure about this... And I'd rather not practice something that feels wrong.",
       nb: "NB:",
-      youCanImprove:
-        "You can improve the translation after finding/showing the solution. If you wish to do so, ",
+      youCanImprove: "You can improve the translation after finding/showing the solution. If you wish to do so, ",
       doNot: "do not",
       clickOnThisFeedbackButton: " click on this feedback button.",
       badContext: "Bad Context",
-      badContextTooltip:
-        "The context provided is bad. I can't figure out the solution with such bad context.",
+      badContextTooltip: "The context provided is bad. I can't figure out the solution with such bad context.",
       other: "Other",
-      otherTooltip:
-        "None of the other options apply. I would like to submit personalised feedback.",
+      otherTooltip: "None of the other options apply. I would like to submit personalised feedback.",
 
       //ButtonInput
       undo: "Undo",
@@ -561,8 +528,7 @@ let strings = new LocalizedStrings(
       addClass: "Add Class",
       insertNewInviteCode: "Insert new invite code",
       insertInviteCode: "Insert invite code",
-      checkIfInviteCodeIsValid:
-        "Something went wrong. Please check that the invite code is valid and try again.",
+      checkIfInviteCodeIsValid: "Something went wrong. Please check that the invite code is valid and try again.",
 
       //CEFR_LEVELS
       beginner: "Beginner",
@@ -593,10 +559,8 @@ let strings = new LocalizedStrings(
       insertUrl: "Insert the url address of the text you wish to add",
       pleaseNote: "Please note: ",
       textNotExtracted: "Texts cannot be extracted from all webpages.",
-      editTheSavedText:
-        "So you might have to edit or delete the text, we save for you.",
-      nothingInInputField:
-        "You haven't typed in an URL-address in the input field.",
+      editTheSavedText: "So you might have to edit or delete the text, we save for you.",
+      nothingInInputField: "You haven't typed in an URL-address in the input field.",
       saveAndEdit: "Save and edit",
       invalidUrl: "Something went wrong. The URL might be invalid.",
 
@@ -605,33 +569,25 @@ let strings = new LocalizedStrings(
       noTextAddedYet: "You have not added any texts of your own yet.",
 
       //AttemptIcons
-      incorrectAttemptIconExplanation:
-        "indicates that the student made an incorrect attempt at solving the exercise.",
-      correctExerciseIconExplanation:
-        "indicates that the student solved the exercise correctly.",
-      hintInExerciseIconExplanation:
-        "indicates that the student asked for a hint in the exercise.",
-      askedForSolutionInExercise:
-        "indicates that the student asked to see the solution to the exercise.",
+      incorrectAttemptIconExplanation: "indicates that the student made an incorrect attempt at solving the exercise.",
+      correctExerciseIconExplanation: "indicates that the student solved the exercise correctly.",
+      hintInExerciseIconExplanation: "indicates that the student asked for a hint in the exercise.",
+      askedForSolutionInExercise: "indicates that the student asked to see the solution to the exercise.",
       studentExerciseFeedback: "Too hard/Too easy/Bad example etc.",
-      exerciseFeedbackFromStudent:
-        "is feedback that the student has given on the exercise.",
-      typeOfExerciseIconExplanation:
-        "is the type of exercise the student has practised the word in.",
+      exerciseFeedbackFromStudent: "is feedback that the student has given on the exercise.",
+      typeOfExerciseIconExplanation: "is the type of exercise the student has practised the word in.",
       pickTheWordOrMatchThreePairs: "Pick a word/Match 3 pairs etc.",
       tooHard: "too hard",
       badWord: "bad word",
       badExample: "bad example",
       dontShowAgain: "don't show again",
-      starExplanation:
-        "The asterisk next to the word indicates that the student has exercised the word at least once.",
+      starExplanation: "The asterisk next to the word indicates that the student has exercised the word at least once.",
 
       //CohortForm
       editClass: "Edit Class",
       createClass: "Create Class",
       classroomLanguage: "Classroom language",
-      errorInviteCode:
-        "Something went wrong. Maybe the invite code is already in use.",
+      errorInviteCode: "Something went wrong. Maybe the invite code is already in use.",
       errorEmptyInputField: "You must fill out all the input fields.",
 
       //CohortFormInputFields
@@ -649,8 +605,7 @@ let strings = new LocalizedStrings(
       //AddTeacherDialog
       addAnotherTeacherToTheClass: "Add another teacher to the class",
       addEmailOfColleague: "Add email of colleague",
-      addTeacherWarningPartOne:
-        "This adds the class to your colleague's list of classes.",
+      addTeacherWarningPartOne: "This adds the class to your colleague's list of classes.",
       addTeacherWarningPartTwo:
         "If you later delete this class, you also irreversibly delete the class from your colleague's list of classes.",
       youHaveToAddEmail: "You have to add the email of a teacher.",
@@ -662,8 +617,7 @@ let strings = new LocalizedStrings(
 
       //DeleteCohortWarning
       dangerzone: "Danger Zone!",
-      deleteCohortEnsurance:
-        "Are you sure you want to delete this class? This cannot be undone.",
+      deleteCohortEnsurance: "Are you sure you want to delete this class? This cannot be undone.",
       cannotDeleteClassWithText:
         "Something went wrong. If you still share texts with this class, you cannot remove it from your list. Please, check that in 'My texts' and try again.",
       youAreSharingThisClassWarning:
@@ -672,14 +626,12 @@ let strings = new LocalizedStrings(
       //DeleteStudentWarning
       wishToDeleteStudent: "Do you wish to remove",
       fromTheClass: "from the class?",
-      howStudentsRejoinClass:
-        "Students can rejoin the class (in 'Settings') if you give them the invite code again.",
+      howStudentsRejoinClass: "Students can rejoin the class (in 'Settings') if you give them the invite code again.",
       remove: "Remove",
 
       //DeleteTextWarning
       deleteTextWarning: "You are about to delete your text",
-      confirmDeleteText:
-        "Please confirm that you wish to delete the text or press 'Cancel'.",
+      confirmDeleteText: "Please confirm that you wish to delete the text or press 'Cancel'.",
 
       //EditText
       editText: "Edit Text",
@@ -690,8 +642,7 @@ let strings = new LocalizedStrings(
         "Something went wrong. Most likely, the email is not registered in Zeeguu. Please, try a different one.",
       theConnectionFailed:
         "The connection to the server seems unstable at the moment. Please, let us know if this continues to happen.",
-      enterEmailYourColleagueUse:
-        "Enter the email, your colleague use for Zeeguu.",
+      enterEmailYourColleagueUse: "Enter the email, your colleague use for Zeeguu.",
       share: "Share",
       yourColleagueShouldHaveTheTextShortly:
         "Your colleague should be able to find the text under 'My Texts' in a moment.",
@@ -704,8 +655,7 @@ let strings = new LocalizedStrings(
       extensionFunctionality:
         "When you follow an article recommendation link, or you find an article on the net, you should activate the extension which:",
       extensionAdvantage1: "Offers you one-click translation and pronunciation",
-      extensionAdvantage2:
-        "Removes all excess clutter, like adverts, buttons, and videos from the article",
+      extensionAdvantage2: "Removes all excess clutter, like adverts, buttons, and videos from the article",
       extensionAdvantage3:
         "Generates personalized vocabulary exercises by using the original context in which you encountered words that you didn't understand.",
 
@@ -717,14 +667,10 @@ let strings = new LocalizedStrings(
       //TooltipedButtons
       viewAsStudent: "View as Student",
       addToClass: "Share/unshare with class",
-      saveTextBeforeViewAsStudent:
-        "The text must be saved before you can view it as a student.",
-      saveChangesBeforeViewAsStudent:
-        "The changes must be saved before you can view the text as a student.",
-      textMustBeSavedBeforeSharing:
-        "The text must be saved before you can share it with your classes.",
-      changesMustBeSavedBeforeSharing:
-        "The changes must be saved before you can share the text with your classes.",
+      saveTextBeforeViewAsStudent: "The text must be saved before you can view it as a student.",
+      saveChangesBeforeViewAsStudent: "The changes must be saved before you can view the text as a student.",
+      textMustBeSavedBeforeSharing: "The text must be saved before you can share it with your classes.",
+      changesMustBeSavedBeforeSharing: "The changes must be saved before you can share the text with your classes.",
 
       //EditTextInputFields
       defineLanguage: "Please, define the language of the text",
@@ -740,8 +686,7 @@ let strings = new LocalizedStrings(
 
       //HowToAddStudentsInfo
       addStudents: "Add Students",
-      shareInviteCode:
-        "Share this code with your students to invite them to the class: ",
+      shareInviteCode: "Share this code with your students to invite them to the class: ",
       invitecodeInformation:
         "Students will not appear in the class until they have signed up for Zeeguu and used the invite code (in their Settings) to join the class.",
       goToClass: "Go to Class",
@@ -832,20 +777,17 @@ let strings = new LocalizedStrings(
       backToClasses: "Back to My Classes",
 
       //StudentsActivityOverviewContent
-      customTextInTimeSelector:
-        "This is the overview of the students' activities for the last",
+      customTextInTimeSelector: "This is the overview of the students' activities for the last",
 
       //StudentTextView
       viewText: "View Text",
 
       //StudentTranslations
-      translatedWordsInSentence:
-        "Translated words in the context of their sentences",
+      translatedWordsInSentence: "Translated words in the context of their sentences",
       translatedWordInText: "The student translated no words in this text.",
 
       //TeacherTextPreview
-      shareTextWithClasses:
-        "Remember to share this text with one or more classes.",
+      shareTextWithClasses: "Remember to share this text with one or more classes.",
       addedTo: "Added to: ",
 
       //TimeSelector
@@ -865,8 +807,7 @@ let strings = new LocalizedStrings(
       howToDeleteStudents: "How to delete students",
       howToAddTextUrl: "How to add a text using a URL",
       howToAddTextFromZeeguu: "How to add a text from Zeeguu",
-      howToAddTextCopyPaste:
-        "How to add a text by copy-pasting or writing text",
+      howToAddTextCopyPaste: "How to add a text by copy-pasting or writing text",
       howToEditAndDeleteText: "How to edit or delete a text",
       howToShareText: "How to share texts with your class/classes",
       howToExplainZeeguuData: "The data you can find in Zeeguu explained",
@@ -877,12 +818,9 @@ let strings = new LocalizedStrings(
       viewLessBtn: "View less",
 
       //WordsDropDown
-      wordsTranslatedButNotInZeeguu:
-        "Words/sentences translated by the student but not studied in Zeeguu",
-      wordsTranslatedAndLearned:
-        "Words/sentences practiced correctly on four different days or tagged 'Too easy'",
-      wordsTranslatedAndExercised:
-        "Practiced words/sentences - translated and exercised by the student",
+      wordsTranslatedButNotInZeeguu: "Words/sentences translated by the student but not studied in Zeeguu",
+      wordsTranslatedAndLearned: "Words/sentences practiced correctly on four different days or tagged 'Too easy'",
+      wordsTranslatedAndExercised: "Practiced words/sentences - translated and exercised by the student",
 
       //StudentExercisesInsights
       hasCompleted: " has completed ",
@@ -935,15 +873,12 @@ let strings = new LocalizedStrings(
       //CreateAccount
       nameIsRequired: "Vi mangler et navn.",
       learnedLanguageIsRequired: 'Udfyld feltet "Sprog, du vil lære"',
-      languangeLevelIsRequired:
-        "Angiv niveauet af det sprog, du gerne vil lære.",
+      languangeLevelIsRequired: "Angiv niveauet af det sprog, du gerne vil lære.",
       plsSelectBaseLanguage: "Angiv, dit base sprog.",
       passwordMustBeMsg: "Kodeordet skal være mindst fire karakterer",
       createAccount: "Opret konto",
-      thankYouMsgPrefix:
-        "Tak fordi du vil være beta-tester. Du er altid velkommen til at kontakte os på: ",
-      thankYouMsgSuffix:
-        ". Du kan også kontakte os, hvis du mangler en invitationskode.",
+      thankYouMsgPrefix: "Tak fordi du vil være beta-tester. Du er altid velkommen til at kontakte os på: ",
+      thankYouMsgSuffix: ". Du kan også kontakte os, hvis du mangler en invitationskode.",
       inviteCode: "Invitationskode",
       levelOfLearnedLanguage: "Niveau på dit læringssprog",
       baseLanguage: "Basesprog",
@@ -961,8 +896,7 @@ let strings = new LocalizedStrings(
       weStore: "Vi gemmer ",
       anonymizedData: "anonymiseret data",
       aboutYour: " om din ",
-      interaction:
-        " interaktion med fremmedsprogsteksterne og ordforrådsøvelserne",
+      interaction: " interaktion med fremmedsprogsteksterne og ordforrådsøvelserne",
       togetherWithThe: " sammen med ",
       times: "tidspunkterne for disse interaktioner",
       restOfDataStorageInfoMsg:
@@ -977,8 +911,7 @@ let strings = new LocalizedStrings(
       or: "eller",
 
       //ResetPasswordStep1
-      weNeedTheEmailMsg:
-        "Vi har brug for den email, du registrede hos os, for at nulstille kodeordet.",
+      weNeedTheEmailMsg: "Vi har brug for den email, du registrede hos os, for at nulstille kodeordet.",
       //ResetPasswordStep2
       plsProvideCode: "Angiv venligst engangskoden.",
       somethingWentWrong: "Noget gik galt!",
@@ -1035,34 +968,26 @@ let strings = new LocalizedStrings(
         "🇫🇷 Mere end 1000 brugere har nu brugt Zeeguu til at studere fransk! Sammen har de interageret med mere end 10.000 artikler og oversat mere end 250.000 ord. Trés bien, nos amis! 🎉",
       newsEmmaAndFrida:
         "Emma og Frida, 👩‍🎓👩‍🎓, lancerer den seje nye browserudvidelse, der fjerner den visuelle støj på nyhedssider og lader læseren fokusere på teksten.",
-      betaTesters200K:
-        "Beta-testerne af Zeeguu har nået 200.000 oversættelser i deres fremmedsprogslæsning.",
+      betaTesters200K: "Beta-testerne af Zeeguu har nået 200.000 oversættelser i deres fremmedsprogslæsning.",
 
       mirceaKeynoteAtEASEAI: "Mircea giver en keynote om Zeeguu på ",
 
       pernilleObtainsFundingPrefix:
         "Pernille Hvalsoe modtager bevillinger fra Styrelsen for International Rekruttering og Integration til et ",
-      pernilleObtainsFundingLinkTitle:
-        "projekt som bruger Zeeguu til at øge individualiseringen af materialer",
+      pernilleObtainsFundingLinkTitle: "projekt som bruger Zeeguu til at øge individualiseringen af materialer",
       pernilleObtainsFundingSuffix: " i de danske klasseværelser.",
       procrastinationPaper:
         "Udgivelse om at bruge Zeeguu til ordforrådsundervisning i online overspringshandlinger bliver godkendt på CHI 2021 ",
-      rotterdamStarts:
-        "Et gymnasium i Rotterdam begynder at bruge Zeeguu i deres sprogundervisning.",
+      rotterdamStarts: "Et gymnasium i Rotterdam begynder at bruge Zeeguu i deres sprogundervisning.",
       euroCall2020: "Workshop om Zeeguu på EuroCALL 2020.",
-      betaTesters40K:
-        "Beta-testerne af Zeeguu når op på 40.000 forskellige ord trænet i øvelserne.",
-      betaTesters100K:
-        "Beta-testerne af Zeeguu har nået 100.000 oversættelser i deres fremmedsprogslæsning.",
-      amsterdamStarts:
-        "Et gymnasium Amsterdam begynder at bruge Zeeguu i deres franskundervisning.",
+      betaTesters40K: "Beta-testerne af Zeeguu når op på 40.000 forskellige ord trænet i øvelserne.",
+      betaTesters100K: "Beta-testerne af Zeeguu har nået 100.000 oversættelser i deres fremmedsprogslæsning.",
+      amsterdamStarts: "Et gymnasium Amsterdam begynder at bruge Zeeguu i deres franskundervisning.",
       euroCall2019: "Mircea taler om Zeeguu på EuroCALL 2019.",
-      asWeMayStudyPaper:
-        "Udgivelse om Zeeguu bliver godkendt på CHI 2018 - en stor international conference om HCI ",
+      asWeMayStudyPaper: "Udgivelse om Zeeguu bliver godkendt på CHI 2018 - en stor international conference om HCI ",
       groningenStarts:
         "Studerende på sprogcenteret ved Groningen Universitet begynder at bruge Zeeguu i deres undervisning i hollandsk.",
-      gomarusStarts:
-        "Studerende på Gomarus Universitet i Holland begynder at bruge Zeeguu i deres franskundervisning.",
+      gomarusStarts: "Studerende på Gomarus Universitet i Holland begynder at bruge Zeeguu i deres franskundervisning.",
       zeeguuIsReady: "Zeeguu er online og klar til betatestere.",
 
       //Contributors
@@ -1120,6 +1045,7 @@ let strings = new LocalizedStrings(
 
       //SearchField
       searchAllArticles: "Søg i alle artikler",
+      searchAllArticlesAndVideos: "Søg i alle artikler og videoer",
 
       //Search
       searching: "Søger...",
@@ -1159,8 +1085,7 @@ let strings = new LocalizedStrings(
 
       //WordEditAccordion
       done: "Færdig",
-      rememberToSubmit:
-        'Husk at klikke på "Send" i hver del for at gemme ændringer.',
+      rememberToSubmit: 'Husk at klikke på "Send" i hver del for at gemme ændringer.',
       translation: "Oversættelse",
       word: "Ordet",
       editWord: "Rediger dette ord",
@@ -1171,22 +1096,18 @@ let strings = new LocalizedStrings(
       //WordsForArticle
       reviewTranslations: "Gennemse oversættelser til din øvelser ",
       from: "Fra: ",
-      deleteTranslation:
-        "Slet en oversættelse, hvis du ikke vil have den i øvelserne.",
-      starTranslation:
-        "Stjernemarkér en oversættelse for at prioritere den i øvelserne.",
+      deleteTranslation: "Slet en oversættelse, hvis du ikke vil have den i øvelserne.",
+      starTranslation: "Stjernemarkér en oversættelse for at prioritere den i øvelserne.",
       ifGreyedTranslation:
         "Hvis en oversættelse er grå, betyder det at Zeeguu finder den uegnet til øvelser; for at overskrive denne kendelse kan du stjernemarkere oversættelsen.",
-      theWordsYouTranslate:
-        "De ord, du oversætter i artiklen, vil blive vist til gennemgang her.",
+      theWordsYouTranslate: "De ord, du oversætter i artiklen, vil blive vist til gennemgang her.",
       backToArticle: "Tilbage til artiklen",
       toExercises: "Til øvelserne",
 
       //EmptyArticles
       noArticles:
         "Vi har ikke indhentet artikler i det sprog, som du gerne vil studere. For at læse artikler med Zeeguu kan du i stedet browse på nettet og læse artikler ved hjælp af vores Chrome udvidelse. Du kan også tilføje artikler til “Egne Tekster” via “Save article to zeeguu.org” knappen inde i udvidelsen.",
-      newssites:
-        "Herunder finder du eksempler på nogle af de mest populære nyhedssider:",
+      newssites: "Herunder finder du eksempler på nogle af de mest populære nyhedssider:",
 
       //ExerciseType
       matchThreePairs: " match 3 par",
@@ -1200,10 +1121,8 @@ let strings = new LocalizedStrings(
       wordSourceDefaultText: "din tidligere læsning",
       wordSourcePrefix: "Ord fra",
       noTranslatedWords: "Du har ingen oversatte ord.",
-      goToTextsToTranslateWords:
-        "Læs tekster og oversæt ord, som derefter kan bruges i øvelser.",
-      goStarTranslations:
-        "Gå tilbage og stjerne oversættelser, så Zeeguu kan inkludere dem i dine øvelser.",
+      goToTextsToTranslateWords: "Læs tekster og oversæt ord, som derefter kan bruges i øvelser.",
+      goStarTranslations: "Gå tilbage og stjerne oversættelser, så Zeeguu kan inkludere dem i dine øvelser.",
 
       //LearnedWordsList
       studentHasNotLearnedWords: "Eleven har ikke lært nogen ord endnu.",
@@ -1218,8 +1137,7 @@ let strings = new LocalizedStrings(
       //ExerciseHeadlines
       findTheWordInContextHeadline: "Find ordet i sammenhængen",
       findTheExpressionInContextHeadline: "Find udtrykket i sammenhængen",
-      chooseTheWordFittingContextHeadline:
-        "Vælg alternativet, der passer i sammenhængen",
+      chooseTheWordFittingContextHeadline: "Vælg alternativet, der passer i sammenhængen",
       matchWordWithTranslation: "Match hvert ord med dets oversættelse",
 
       //FeedbackButtons
@@ -1235,25 +1153,19 @@ let strings = new LocalizedStrings(
 
       //FeedbackOptions
       bookmarkTooEasy: "For nemt",
-      bookmarkTooEasyTooltip:
-        "Jeg ved det allerede! Jeg behøver ikke øve det mere.",
+      bookmarkTooEasyTooltip: "Jeg ved det allerede! Jeg behøver ikke øve det mere.",
       bookmarkTooHard: "For svært",
-      bookmarkTooHardTooltip:
-        "Dette er lidt for svært. Jeg vil hellere fokusere på enklere ord for nu.",
+      bookmarkTooHardTooltip: "Dette er lidt for svært. Jeg vil hellere fokusere på enklere ord for nu.",
       dislike: "Tommelfinger ned",
-      imNotsure:
-        "Jeg er ikke sikker på dette... Og jeg vil hellere lade være med at øve noget, der føles forkert.",
+      imNotsure: "Jeg er ikke sikker på dette... Og jeg vil hellere lade være med at øve noget, der føles forkert.",
       nb: "OBS:",
-      youCanImprove:
-        "Du kan forbedre oversættelsen efter at have fundet/set løsningen. Hvis du ønsker at gøre det, ",
+      youCanImprove: "Du kan forbedre oversættelsen efter at have fundet/set løsningen. Hvis du ønsker at gøre det, ",
       doNot: "skal du ikke",
       clickOnThisFeedbackButton: " klikke på denne feedback-knap.",
       badContext: "Dårlig kontekst",
-      badContextTooltip:
-        "Den givne kontekst er dårlig. Jeg kan ikke finde ud af løsningen med en så dårlig kontekst.",
+      badContextTooltip: "Den givne kontekst er dårlig. Jeg kan ikke finde ud af løsningen med en så dårlig kontekst.",
       other: "Andet",
-      otherTooltip:
-        "Ingen af ​​de andre muligheder gælder. Jeg vil gerne indsende personlig feedback.",
+      otherTooltip: "Ingen af ​​de andre muligheder gælder. Jeg vil gerne indsende personlig feedback.",
 
       //ButtonInput
       reset: "Nulstil",
@@ -1282,8 +1194,7 @@ let strings = new LocalizedStrings(
       changeClass: "Skift klasse",
       insertNewInviteCode: "Indsæt ny invitationskode",
       insertInviteCode: "Indsæt invitationskode",
-      checkIfInviteCodeIsValid:
-        "Noget gik galt. Tjek venligst at invitationskoden er korrekt og prøv igen.",
+      checkIfInviteCodeIsValid: "Noget gik galt. Tjek venligst at invitationskoden er korrekt og prøv igen.",
 
       //CEFR_LEVELS
       beginner: "Begynder",
@@ -1313,12 +1224,9 @@ let strings = new LocalizedStrings(
       addTextFromWebpage: "Tilføj tekst fra en hjemmeside",
       insertUrl: "Indsæt url-adressen på den tekst, du ønsker at tilføje",
       pleaseNote: "Bemærk venligst: ",
-      textNotExtracted:
-        "Det er ikke alle hjemmesider, hvorfra teksten kan udvindes.",
-      editTheSavedText:
-        "Så du bliver muligvis nødt til at redigere eller slette den tekst, vi gemmer til dig.",
-      nothingInInputField:
-        "Du mangler at indsætte en URL-adresse i feltet ovenfor.",
+      textNotExtracted: "Det er ikke alle hjemmesider, hvorfra teksten kan udvindes.",
+      editTheSavedText: "Så du bliver muligvis nødt til at redigere eller slette den tekst, vi gemmer til dig.",
+      nothingInInputField: "Du mangler at indsætte en URL-adresse i feltet ovenfor.",
       saveAndEdit: "Gem og rediger",
       invalidUrl: "Noget gik galt. URL addressen er muligvis ugyldig.",
 
@@ -1327,25 +1235,19 @@ let strings = new LocalizedStrings(
       noTextAddedYet: "Du har ikke tilføjet nogle af dine egne tekster endnu.",
 
       //AttemptIcons
-      incorrectAttemptIconExplanation:
-        "indikerer, at eleven lavede et forkert forsøg på at løse øvelsen.",
-      correctExerciseIconExplanation:
-        "indikerer, at eleven løste øvelsen korrekt.",
-      hintInExerciseIconExplanation:
-        "indikerer, at eleven bad om et tip i løbet af øvelsen.",
-      askedForSolutionInExercise:
-        "indikerer, at eleven bad om at se løsningen på øvelsen.",
+      incorrectAttemptIconExplanation: "indikerer, at eleven lavede et forkert forsøg på at løse øvelsen.",
+      correctExerciseIconExplanation: "indikerer, at eleven løste øvelsen korrekt.",
+      hintInExerciseIconExplanation: "indikerer, at eleven bad om et tip i løbet af øvelsen.",
+      askedForSolutionInExercise: "indikerer, at eleven bad om at se løsningen på øvelsen.",
       studentExerciseFeedback: "For svær/For nem/Dårligt eksempel",
       exerciseFeedbackFromStudent: "er elevens feedback på øvelsen.",
-      typeOfExerciseIconExplanation:
-        "indikerer, hvilken type øvelse eleven har øvet ordet i.",
+      typeOfExerciseIconExplanation: "indikerer, hvilken type øvelse eleven har øvet ordet i.",
       pickTheWordOrMatchThreePairs: "Vælg ordet/Match 3 par osv.",
       tooHard: "for svær",
       badWord: "dårligt ord",
       badExample: "dårligt eksempel",
       dontShowAgain: "vis ikke igen",
-      starExplanation:
-        "Stjernen ved siden af ordet indikerer, at eleven har lavet mindst én øvelse med ordet.",
+      starExplanation: "Stjernen ved siden af ordet indikerer, at eleven har lavet mindst én øvelse med ordet.",
 
       //CohortForm
       editClass: "Rediger klasse",
@@ -1382,8 +1284,7 @@ let strings = new LocalizedStrings(
 
       //DeleteCohortWarning
       dangerzone: "Farezone!",
-      deleteCohortEnsurance:
-        "Er du sikker på, at du vil slette denne klasse? Du kan ikke fortryde.",
+      deleteCohortEnsurance: "Er du sikker på, at du vil slette denne klasse? Du kan ikke fortryde.",
       cannotDeleteClassWithText:
         "Noget gik galt. Hvis du deler tekster med denne klasse, kan du ikke slette klassen. Fjern delte tekster med denne klasse i 'Mine tekster', og prøv igen.",
       youAreSharingThisClassWarning:
@@ -1398,8 +1299,7 @@ let strings = new LocalizedStrings(
 
       //DeleteTextWarning
       deleteTextWarning: "Du er igang med at slette din tekst",
-      confirmDeleteText:
-        "Bekræft venligst, at du vil slette teksten, eller tryk på 'Annuller'.",
+      confirmDeleteText: "Bekræft venligst, at du vil slette teksten, eller tryk på 'Annuller'.",
 
       //EditText
       editText: "Rediger",
@@ -1410,24 +1310,18 @@ let strings = new LocalizedStrings(
         "Noget gik galt. Det kan være din kollega bruger en anden email til Zeeguu. Tjek venligst og prøv igen.",
       theConnectionFailed:
         "Forbindelsen til serveren virker ustabil. Giv os gerne besked, hvis dette problem fortsætter.",
-      enterEmailYourColleagueUse:
-        "Indsæt den email, din kollega bruger til Zeeguu",
+      enterEmailYourColleagueUse: "Indsæt den email, din kollega bruger til Zeeguu",
       share: "Del",
-      yourColleagueShouldHaveTheTextShortly:
-        "Din kollega burde have teksten i 'Mine tekster' om et øjeblik.",
+      yourColleagueShouldHaveTheTextShortly: "Din kollega burde have teksten i 'Mine tekster' om et øjeblik.",
       ok: "OK",
 
       //TooltipedButtons
       viewAsStudent: "Se som elev",
       addToClass: "Del med/fjern fra klasse",
-      saveTextBeforeViewAsStudent:
-        "Teksten skal gemmes, før du kan se den som elev.",
-      saveChangesBeforeViewAsStudent:
-        "Ændingerne skal gemmes, før du kan se teksten som elev.",
-      textMustBeSavedBeforeSharing:
-        "Teksten skal gemmes, før du kan dele den med dine klasser",
-      changesMustBeSavedBeforeSharing:
-        "Ændringerne skal gemmes, før du kan dele teksten med dine klasser",
+      saveTextBeforeViewAsStudent: "Teksten skal gemmes, før du kan se den som elev.",
+      saveChangesBeforeViewAsStudent: "Ændingerne skal gemmes, før du kan se teksten som elev.",
+      textMustBeSavedBeforeSharing: "Teksten skal gemmes, før du kan dele den med dine klasser",
+      changesMustBeSavedBeforeSharing: "Ændringerne skal gemmes, før du kan dele teksten med dine klasser",
 
       //EditTextInputFields
       defineLanguage: "Angiv venligst hvilket sprog teksten er på",
@@ -1443,8 +1337,7 @@ let strings = new LocalizedStrings(
 
       //HowToAddStudentsInfo
       addStudents: "Tilføj elever",
-      shareInviteCode:
-        "Del denne kode med dine elever for at invitere dem til klassen: ",
+      shareInviteCode: "Del denne kode med dine elever for at invitere dem til klassen: ",
       invitecodeInformation:
         "Eleverne vil ikke blive vist i klassen før de har oprettet sig i Zeeguu og brugt invitationskoden (under Indstillinger) til at blive en del af klassen.",
       goToClass: "Bliv ført til klassen",
@@ -1485,8 +1378,7 @@ let strings = new LocalizedStrings(
       noStudentsInClass: "Der er ikke nogen elever i denne klasse endnu.",
       shareTheInviteCode: "Del invitationskoden",
       shareInviteCodeContinued: "med eleverne,",
-      soTheStudentCanJoinClass:
-        "så de kan oprette sig og blive en del af klassen.",
+      soTheStudentCanJoinClass: "så de kan oprette sig og blive en del af klassen.",
 
       //PractisedWordsCard
       practisedWords: "Øvede ord",
@@ -1517,12 +1409,9 @@ let strings = new LocalizedStrings(
       //StudentReadingInsights
       studentHasRead: " har læst ",
       textsInTheLastPeriod: " tekster i en periode på ",
-      studentHasNotReadAnyArticles:
-        "Eleven har endnu ikke læst nogle tekster i",
-      textLengthExplanation:
-        "Gennemsnitlig længde af de tekster eleven har læst",
-      difficultyExplanation:
-        "Gennemsnitlig sværhedsgrad af de tekster eleven har læst",
+      studentHasNotReadAnyArticles: "Eleven har endnu ikke læst nogle tekster i",
+      textLengthExplanation: "Gennemsnitlig længde af de tekster eleven har læst",
+      difficultyExplanation: "Gennemsnitlig sværhedsgrad af de tekster eleven har læst",
       exercisesExplaination: "Øvelser løst korrekt i først forsøg",
 
       //StudentInfoLineHeader
@@ -1538,20 +1427,17 @@ let strings = new LocalizedStrings(
       backToClasses: "Tilbage til 'Mine klasser'",
 
       //StudentsActivityOverviewContent
-      customTextInTimeSelector:
-        "Dette er en oversigt over elevernes aktiviteter i en periode på",
+      customTextInTimeSelector: "Dette er en oversigt over elevernes aktiviteter i en periode på",
 
       //StudentTextView
       viewText: "Vis tekst",
 
       //StudentTranslations
-      translatedWordsInSentence:
-        "Oversatte ord i kontekst af den sætning ordet indgår",
+      translatedWordsInSentence: "Oversatte ord i kontekst af den sætning ordet indgår",
       translatedWordInText: "Eleven oversatte ingen ord i denne tekst.",
 
       //TeacherTextPreview
-      shareTextWithClasses:
-        "Husk at tilføj denne tekst til en eller flere klasser.",
+      shareTextWithClasses: "Husk at tilføj denne tekst til en eller flere klasser.",
       addedTo: "Tilføjet til: ",
 
       //TimeSelector
@@ -1571,8 +1457,7 @@ let strings = new LocalizedStrings(
       howToDeleteStudents: "Sådan slettes elever",
       howToAddTextUrl: "Sådan tilføjes en tekst ved hjælp af en URL",
       howToAddTextFromZeeguu: "Sådan tilføjes en tekst fra Zeeguu",
-      howToAddTextCopyPaste:
-        "Sådan tilføjes en tekst ved enten at kopiere eller selv skrive tekst",
+      howToAddTextCopyPaste: "Sådan tilføjes en tekst ved enten at kopiere eller selv skrive tekst",
       howToEditAndDeleteText: "Sådan redigeres eller slettes en tekst",
       howToShareText: "Sådan deler du tekster med din klasse / dine klasser",
       howToExplainZeeguuData: "De data, du kan finde i Zeeguu forklaret",
@@ -1583,10 +1468,8 @@ let strings = new LocalizedStrings(
       viewLessBtn: "Vis mindre",
 
       //WordsDropDown
-      wordsTranslatedButNotInZeeguu:
-        "Ord/sætninger oversat af eleven, men ikke inkluderet i øvelser",
-      wordsTranslatedAndLearned:
-        "Ord/sætninger øvet korrekt på fire forskellige dage eller markeret som 'for nemme'.",
+      wordsTranslatedButNotInZeeguu: "Ord/sætninger oversat af eleven, men ikke inkluderet i øvelser",
+      wordsTranslatedAndLearned: "Ord/sætninger øvet korrekt på fire forskellige dage eller markeret som 'for nemme'.",
       wordsTranslatedAndExercised: "Ord/sætninger - oversat og øvet af eleven",
 
       //StudentExercisesInsights
