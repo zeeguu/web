@@ -233,9 +233,9 @@ export default function VideoPlayer() {
         <>
           <BackArrow />
           <InfoContainer>
-            <h1>
+            <h2>
               <TranslatableText interactiveText={interactiveTitle} translating={true} />
-            </h1>
+            </h2>
           </InfoContainer>
         </>
       )}
