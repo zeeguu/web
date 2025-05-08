@@ -5,10 +5,7 @@ Zeeguu_API.prototype.getUserBookmarksToStudy = function (count, callback) {
   this._getJSON(`scheduled_bookmarks_to_study/${count}`, callback);
 };
 
-Zeeguu_API.prototype.getUserBookmarksInPipeline = function (
-  isWithTokens,
-  callback,
-) {
+Zeeguu_API.prototype.getUserBookmarksInPipeline = function (isWithTokens, callback) {
   let endpoint = `bookmarks_in_pipeline`;
   let payload = {
     with_tokens: isWithTokens,
@@ -26,6 +23,9 @@ Zeeguu_API.prototype.getUserBookmarksInPipeline = function (
   else this._getJSON(endpoint, callback);
 };
 
+// Mircea: This could probably be removed - was used in the past for
+// showing words "not yet in learning" but i've removed that feature because
+// it's not very useful... or at least, it's not useful at the bottom of the :Learning: tab
 Zeeguu_API.prototype.getBookmarksToLearn = function (isWithTokens, callback) {
   let payload = {
     with_tokens: isWithTokens,
@@ -109,11 +109,7 @@ Zeeguu_API.prototype.wordsSimilarTo = function (bookmark_id, callback) {
   this._getJSON(`similar_words/${bookmark_id}`, callback);
 };
 
-Zeeguu_API.prototype.getConfusionWords = function (
-  lang,
-  original_sentence,
-  callback,
-) {
+Zeeguu_API.prototype.getConfusionWords = function (lang, original_sentence, callback) {
   let payload = {
     original_sent: original_sentence,
     language: lang,
@@ -122,12 +118,7 @@ Zeeguu_API.prototype.getConfusionWords = function (
   return this._post(`/create_confusion_words`, qs.stringify(payload), callback);
 };
 
-Zeeguu_API.prototype.annotateClues = function (
-  word_props,
-  og_sent,
-  lang,
-  callback,
-) {
+Zeeguu_API.prototype.annotateClues = function (word_props, og_sent, lang, callback) {
   let payload = {
     word_with_props: JSON.stringify(word_props),
     original_sentence: og_sent,
@@ -136,31 +127,16 @@ Zeeguu_API.prototype.annotateClues = function (
   return this._post(`/annotate_clues`, qs.stringify(payload), callback);
 };
 
-Zeeguu_API.prototype.getShorterSimilarSentsInArticle = function (
-  articleText,
-  contextBookmark,
-  lang,
-  callback,
-) {
+Zeeguu_API.prototype.getShorterSimilarSentsInArticle = function (articleText, contextBookmark, lang, callback) {
   let payload = {
     article_text: articleText,
     bookmark_context: contextBookmark,
     language: lang,
   };
-  return this._post(
-    `/get_shorter_similar_sents_in_article`,
-    qs.stringify(payload),
-    callback,
-  );
+  return this._post(`/get_shorter_similar_sents_in_article`, qs.stringify(payload), callback);
 };
 
-Zeeguu_API.prototype.getSmallerContext = function (
-  contextBookmark,
-  wordBookmark,
-  lang,
-  contextLen,
-  callback,
-) {
+Zeeguu_API.prototype.getSmallerContext = function (contextBookmark, wordBookmark, lang, contextLen, callback) {
   let payload = {
     bookmark_context: contextBookmark,
     bookmark_word: wordBookmark,
