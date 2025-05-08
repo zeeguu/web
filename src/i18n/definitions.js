@@ -75,19 +75,19 @@ let strings = new LocalizedStrings(
       titleUserDashboard: "User Statistics",
 
       //Progress Items
-      iconTextWeeklyArticles: "Weekly minutes read",
+      iconTextWeeklyArticles: "Weekly articles read",
       iconTextWeeklyWordsTranslated:  "Weekly words translated",
       iconTextWeeklyWordsPracticed: "Weekly words practiced",
       iconTextWeeklyStreak: "Weekly streak",
 
-      iconTextTotalArticles: "Minutes read",
+      iconTextTotalArticles: "Articles read",
       iconTextTotalWordsTranslated: "Words translated",
       iconTextTotalWordsPracticed: "Words practiced",
       iconTextTotalWordsLearned: "Words learned",
 
-      articlesReadTextStart: "You have read for",
-      articlesReadWeeklyTextEnd: "minutes this week. Keep up the good work!",
-      articlesReadTotalTextEnd: "minutes in total since you started using Zeeguu. You are doing good!",
+      articlesReadTextStart: "You have read",
+      articlesReadWeeklyTextEnd: "articled this week. Keep up the good work!",
+      articlesReadTotalTextEnd: "articles in total since you started using Zeeguu. You are doing good!",
 
       wordsTranslatedTextStart: "You have translated",
       wordsPracticedTextStart: "You have practiced",
@@ -898,6 +898,29 @@ let strings = new LocalizedStrings(
       studentSite: "Elevsiden",
       logout: "Log ud",
       userDashboard: "Statistik",
+
+      //Progress Items
+      iconTextWeeklyArticles: "Læste artikler pr. uge",
+      iconTextWeeklyWordsTranslated:  "Oversatte ord pr. uge",
+      iconTextWeeklyWordsPracticed: "Ord øvet pr. uge",
+      iconTextWeeklyStreak: "Ugentlig streak",
+
+      iconTextTotalArticles: "Læste artikler",
+      iconTextTotalWordsTranslated: "Oversatte ord",
+      iconTextTotalWordsPracticed: "Øvede ord",
+      iconTextTotalWordsLearned: "Lærte ord",
+
+      articlesReadTextStart: "Du har læst",
+      articlesReadWeeklyTextEnd: "artikler i denne uge. Godt gået!",
+      articlesReadTotalTextEnd: "siden du begyndte at bruge Zeeguu. Du klarer det godt!",
+
+      wordsTranslatedTextStart: "Du har oversat",
+      wordsPracticedTextStart: "Du har øvet",
+      wordsLearnedTextStart: "Du har lært",
+
+      wordsTextWeeklyEnd: "ord i denne uge. Du er godt i gang!",
+      wordsTextTotalEnd: "siden du begyndte at bruge Zeeguu. Hvor er du god!",
+      
 
       //Progress Items
       iconTextWeeklyArticles: "Læste artikler pr. uge",
