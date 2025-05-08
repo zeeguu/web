@@ -52,6 +52,7 @@ export default function RemoveBookmarkModal({
     setOpen(!open);
     setHasProvidedQuickFeedback(true);
   }
+
   return (
     <Modal
       open={open}
@@ -90,6 +91,7 @@ export default function RemoveBookmarkModal({
                 {possibleReasons.map((each) => (
                   <Button
                     className="small-border-btn white-btn"
+                    key={each[0]}
                     onClick={(e) => {
                       if (each[0] === "other") setShowOtherForm(true);
                       else handleSubmit(e, each[0]);
