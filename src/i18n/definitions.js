@@ -73,6 +73,28 @@ let strings = new LocalizedStrings(
       // User Dashboard:
       titleUserDashboard: "User Statistics",
 
+      //Progress Items
+      iconTextWeeklyArticles: "Weekly articles read",
+      iconTextWeeklyWordsTranslated:  "Weekly words translated",
+      iconTextWeeklyWordsPracticed: "Weekly words practiced",
+      iconTextWeeklyStreak: "Weekly streak",
+
+      iconTextTotalArticles: "Articles read",
+      iconTextTotalWordsTranslated: "Words translated",
+      iconTextTotalWordsPracticed: "Words practiced",
+      iconTextTotalWordsLearned: "Words learned",
+
+      articlesReadTextStart: "You have read",
+      articlesReadWeeklyTextEnd: "articled this week. Keep up the good work!",
+      articlesReadTotalTextEnd: "articles in total since you started using Zeeguu. You are doing good!",
+
+      wordsTranslatedTextStart: "You have translated",
+      wordsPracticedTextStart: "You have practiced",
+      wordsLearnedTextStart: "You have learned",
+
+      wordsTextWeeklyEnd: "words this week. Awesome work!",
+      wordsTextTotalEnd: "words in total since you started using Zeeguu",
+
       //CreateAccount
       nameIsRequired: "Name is required.",
       passwordMustBeMsg: "Password should be at least 4 characters long.",
@@ -870,6 +892,28 @@ let strings = new LocalizedStrings(
       logout: "Log ud",
       userDashboard: "Statistik",
 
+      //Progress Items
+      iconTextWeeklyArticles: "Læste artikler pr. uge",
+      iconTextWeeklyWordsTranslated:  "Oversatte ord pr. uge",
+      iconTextWeeklyWordsPracticed: "Ord øvet pr. uge",
+      iconTextWeeklyStreak: "Ugentlig streak",
+
+      iconTextTotalArticles: "Læste artikler",
+      iconTextTotalWordsTranslated: "Oversatte ord",
+      iconTextTotalWordsPracticed: "Øvede ord",
+      iconTextTotalWordsLearned: "Lærte ord",
+
+      articlesReadTextStart: "Du har læst",
+      articlesReadWeeklyTextEnd: "artikler i denne uge. Godt gået!",
+      articlesReadTotalTextEnd: "siden du begyndte at bruge Zeeguu. Du klarer det godt!",
+
+      wordsTranslatedTextStart: "Du har oversat",
+      wordsPracticedTextStart: "Du har øvet",
+      wordsLearnedTextStart: "Du har lært",
+
+      wordsTextWeeklyEnd: "ord i denne uge. Du er godt i gang!",
+      wordsTextTotalEnd: "siden du begyndte at bruge Zeeguu. Hvor er du god!",
+      
       //CreateAccount
       nameIsRequired: "Vi mangler et navn.",
       learnedLanguageIsRequired: 'Udfyld feltet "Sprog, du vil lære"',
