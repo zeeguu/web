@@ -141,6 +141,17 @@ export default function UserDashboard() {
       setTotalLearned(totalLearnedCount);
     });
 
+    api.getUserBookmarksInPipeline(false, (bookmarks) => {
+      setTotalInLearning(bookmarks.length)
+    });
+
+    api.getBookmarksToLearn(false, (bookmarks) =>{
+      setTotalToLearn(bookmarks.length);
+    });
+
+    api.totalLearnedBookmarks((totalLearnedCount) => {
+      setTotalLearned(totalLearnedCount);
+    });
     // eslint-disable-next-line
   }, [activeTab]);
 
