@@ -2,6 +2,7 @@ import { useContext, useEffect, useState } from "react";
 import LoadingAnimation from "../components/LoadingAnimation";
 import TranslatedWordsGraph from "./userdashboard_Graphs/TranslatedWordsGraph";
 import ReadingAndExercisesTimeGraph from "./userdashboard_Graphs/ReadingAndExercisesTimeGraph";
+import ProgressOverview from "./ProgressOverview";
 import {
   PERIOD_OPTIONS,
   ACTIVITY_TIME_FORMAT_OPTIONS,
@@ -40,6 +41,9 @@ export default function UserDashboard() {
     useState(null);
   const [monthlyExerciseAndReadingTimes, setMonthlyExerciseAndReadingTimes] =
     useState({});
+  const [totalInLearning, setTotalInLearning] = useState(null);
+  const [totalToLearn, setTotalToLearn] = useState(null);
+  const [totalLearned, setTotalLearned] = useState(null);
 
   function handleChangeReferenceDate(newDate) {
     setReferenceDate(newDate);
@@ -113,10 +117,22 @@ export default function UserDashboard() {
         calculateCountPerMonth_Activity(activity),
       );
     });
+
+    api.getUserBookmarksInPipeline(false, (bookmarks) => {
+      setTotalInLearning(bookmarks.length)
+    });
+
+    api.getBookmarksToLearn(false, (bookmarks) =>{
+      setTotalToLearn(bookmarks.length);
+    });
+
+    api.totalLearnedBookmarks((totalLearnedCount) => {
+      setTotalLearned(totalLearnedCount);
+    });
     // eslint-disable-next-line
   }, [activeTab]);
 
-  if (!allWordsData || !dailyExerciseAndReadingTimes) {
+  if (!allWordsData || !dailyExerciseAndReadingTimes || !totalInLearning || !totalToLearn || totalLearned == null) {
     return <LoadingAnimation />;
   }
 
@@ -158,7 +174,18 @@ export default function UserDashboard() {
         ) : (
           <></>
         )}
+        
+        {activeTab === TABS_IDS.PROGRESS_ITEMS && (
+          <>
+            <ProgressOverview
+            totalInLearning ={totalInLearning}
+            totalToLearn = {totalToLearn}
+            totalLearned = {totalLearned}
+            />
+          </>
+        )}
       </s.NivoGraphContainer>
+
     </>
   );
 }
