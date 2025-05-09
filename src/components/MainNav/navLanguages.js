@@ -13,6 +13,23 @@ const navLanguages = {
   ru: "Russian",
   es: "Spanish",
   sv: "Swedish",
+  "zh-CN": "Chinese",
+  el: "Greek",
+  tr: "Turkish",
+  ar: "Arabic",
+  so: "Somali",
+  ku: "Kurdish",
+  sq: "Albanian",
+  uk: "Ukrainian",
+  vi: "Vietnamese",
+  cym: "Welsh",
+  ja: "Japanese",
+  sr: "Serbian",
+  lv: "Latvian",
+  ind: "Indonesian",
+  ur: "Urdu",
+  ta: "Tamil",
+  bn: "Bengali",
 };
 
 export default navLanguages;
