@@ -61,7 +61,7 @@ export default function Learning() {
         {[4, 3, 2, 1, 0].map((level) => (
           <>
             {inLearning_byLevel[level].length > 0 && (
-              <CollapsablePanel topMessage={topMessage(level, inLearning_byLevel[level].length)}>
+              <CollapsablePanel key={level} topMessage={topMessage(level, inLearning_byLevel[level].length)}>
                 {inLearning_byLevel[level].map((each) => (
                   <Word
                     key={each.id}
