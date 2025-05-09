@@ -4,11 +4,8 @@ import LoadingAnimation from "../components/LoadingAnimation";
 import { setTitle } from "../assorted/setTitle";
 import strings from "../i18n/definitions";
 import Word from "./Word";
-import * as s from "../components/TopMessage.sc";
 import { WEB_READER } from "../reader/ArticleReader";
-import { LEARNING_CYCLE } from "../exercises/ExerciseTypeConstants";
 import CollapsablePanel from "../components/CollapsablePanel";
-import Feature from "../features/Feature";
 
 import { APIContext } from "../contexts/APIContext";
 
@@ -17,7 +14,6 @@ export default function Learning() {
 
   const [inLearning, setInLearning] = useState(null);
   const [inLearning_byLevel, setInLearning_byLevel] = useState(null);
-  const [toLearn, setToLearn] = useState(null);
 
   useEffect(() => {
     api.getAllScheduledBookmarks(false, (bookmarks) => {
@@ -35,23 +31,16 @@ export default function Learning() {
 
       setInLearning_byLevel(words_byLevel);
     });
-    api.getBookmarksToLearn(false, (bookmarks) => {
-      setToLearn(bookmarks);
-    });
+
     setTitle(strings.titleToLearnWords);
   }, [api]);
 
   function onNotifyDelete(bookmark) {
-    if (bookmark.learning_cycle === LEARNING_CYCLE.NOT_SET) {
-      let newWords = [...toLearn].filter((b) => b.id !== bookmark.id);
-      setToLearn(newWords);
-    } else {
-      let newWords = [...inLearning].filter((b) => b.id !== bookmark.id);
-      setInLearning(newWords);
-    }
+    let newWords = [...inLearning].filter((b) => b.id !== bookmark.id);
+    setInLearning(newWords);
   }
 
-  if (!toLearn || !inLearning || !inLearning_byLevel) {
+  if (!inLearning || !inLearning_byLevel) {
     return <LoadingAnimation />;
   }
 

@@ -23,27 +23,6 @@ Zeeguu_API.prototype.getAllScheduledBookmarks = function (isWithTokens, callback
   else this._getJSON(endpoint, callback);
 };
 
-// Mircea: This could probably be removed - was used in the past for
-// showing words "not yet in learning" but i've removed that feature because
-// it's not very useful... or at least, it's not useful at the bottom of the :Learning: tab
-Zeeguu_API.prototype.getBookmarksToLearn = function (isWithTokens, callback) {
-  let payload = {
-    with_tokens: isWithTokens,
-  };
-  let endpoint = `bookmarks_to_learn_not_scheduled`;
-  if (isWithTokens)
-    this._post(
-      endpoint,
-      qs.stringify(payload),
-      callback,
-      (error) => {
-        console.error(error);
-      },
-      true,
-    );
-  else this._getJSON(endpoint, callback);
-};
-
 Zeeguu_API.prototype.getNewBookmarksToStudy = function (count, callback) {
   this._getJSON(`new_bookmarks_to_study/${count}`, callback);
 };
