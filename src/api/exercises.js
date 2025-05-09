@@ -5,8 +5,8 @@ Zeeguu_API.prototype.getUserBookmarksScheduledForToday = function (count, callba
   this._getJSON(`bookmarks_scheduled_for_today/${count}`, callback);
 };
 
-Zeeguu_API.prototype.getAllScheduledBookmarks = function (isWithTokens, callback) {
-  let endpoint = `all_scheduled_bookmarks`;
+Zeeguu_API.prototype.getScheduledBookmarks = function (isWithTokens, callback) {
+  let endpoint = `scheduled_bookmarks`;
   let payload = {
     with_tokens: isWithTokens,
   };
@@ -23,16 +23,16 @@ Zeeguu_API.prototype.getAllScheduledBookmarks = function (isWithTokens, callback
   else this._getJSON(endpoint, callback);
 };
 
+Zeeguu_API.prototype.getScheduledBookmarksCount = function (callback) {
+  this._getJSON(`scheduled_bookmarks_count`, callback);
+};
+
 Zeeguu_API.prototype.getBookmarksToStudyCount = function (callback) {
   this._getJSON(`bookmarks_to_study_count`, callback);
 };
 
 Zeeguu_API.prototype.getBookmarksToStudy = function (callback) {
   this._getJSON(`bookmarks_to_study`, callback);
-};
-
-Zeeguu_API.prototype.getAllScheduledBookmarksCount = function (callback) {
-  this._getJSON(`all_scheduled_bookmarks_count`, callback);
 };
 
 Zeeguu_API.prototype.uploadExerciseFeedback = function (
