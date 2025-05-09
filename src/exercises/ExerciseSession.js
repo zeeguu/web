@@ -108,7 +108,7 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
     });
 
     // this will be needed for when writing the Out of Words today message
-    api.getAllScheduledBookmarksCount((totalInLearning) => {
+    api.getScheduledBookmarksCount((totalInLearning) => {
       setTotalBookmarksInPipeline(totalInLearning);
     });
 
