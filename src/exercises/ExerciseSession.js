@@ -173,12 +173,12 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
         });
       });
     } else {
-      api.getTopBookmarksToStudyCount((bookmarkCount) => {
+      api.getAllBookmarksAvailableForStudyCount((bookmarkCount) => {
         let exerciseCountInSession =
           bookmarkCount <= MAX_NUMBER_OF_BOOKMARKS_EX_SESSION
             ? MAX_NUMBER_OF_BOOKMARKS_EX_SESSION
             : DEFAULT_NUMBER_BOOKMARKS_TO_PRACTICE;
-        api.getTopBookmarksToStudy(exerciseCountInSession, (bookmarks) =>
+        api.getAllBookmarksAvailableForStudy(exerciseCountInSession, (bookmarks) =>
           initializeExercisesForBookmarks(bookmarks.slice(0, exerciseCountInSession + 1)),
         );
         setTitle(strings.exercises);
@@ -229,7 +229,8 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
   }
 
   function updateIsOutOfWordsToday() {
-    api.getTopBookmarksToStudyCount((bookmarkCount) => {
+    // TODO: why is this depending on allBookmarksAvailableForStudy? It should depend on bookmarks available today!
+    api.getAllBookmarksAvailableForStudyCount((bookmarkCount) => {
       setIsOutOfWordsToday(bookmarkCount === 0);
     });
   }
