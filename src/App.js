@@ -25,7 +25,6 @@ import { setUser } from "@sentry/react";
 import SessionStorage from "./assorted/SessionStorage";
 import useRedirectLink from "./hooks/useRedirectLink";
 import LoadingAnimation from "./components/LoadingAnimation";
-import { userHasNotExercisedToday } from "./exercises/utils/daysSinceLastExercise";
 
 function App() {
   const [api] = useState(new Zeeguu_API(API_ENDPOINT));
@@ -92,15 +91,12 @@ function App() {
             api.getUserPreferences((userPreferences) => {
               LocalStorage.setUserPreferences(userPreferences);
 
-              if (userHasNotExercisedToday())
-                api.getUserBookmarksScheduledForToday(1, (scheduledBookmaks) => {
-                  exerciseNotification.setHasExercises(scheduledBookmaks.length > 0);
-                  exerciseNotification.updateReactState();
-                });
-              else {
-                exerciseNotification.setHasExercises(false);
+              api.getBookmarksToStudyCount((scheduledBookmarksCount) => {
+                exerciseNotification.setHasExercises(scheduledBookmarksCount > 0);
+                exerciseNotification.setExerciseCounter(scheduledBookmarksCount);
                 exerciseNotification.updateReactState();
-              }
+              });
+
               setZeeguuSpeech(new ZeeguuSpeech(api, userDetails.learned_language));
               setUserDetails(userDetails);
               setUserPreferences(userPreferences);
@@ -163,7 +159,7 @@ function App() {
     setUser(newUserValue);
 
     /* If a redirect link exists, uses it to redirect the user,
-           otherwise, uses the location from the function argument. */
+                                                       otherwise, uses the location from the function argument. */
     // For the future consider taking the redirection out of this function alltogether.
     if (redirectToArticle) handleRedirectLinkOrGoTo("/articles");
   }
