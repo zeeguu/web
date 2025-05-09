@@ -93,7 +93,7 @@ function App() {
               LocalStorage.setUserPreferences(userPreferences);
 
               if (userHasNotExercisedToday())
-                api.getUserBookmarksToStudy(1, (scheduledBookmaks) => {
+                api.getUserBookmarksScheduledForToday(1, (scheduledBookmaks) => {
                   exerciseNotification.setHasExercises(scheduledBookmaks.length > 0);
                   exerciseNotification.updateReactState();
                 });
@@ -163,8 +163,8 @@ function App() {
     setUser(newUserValue);
 
     /* If a redirect link exists, uses it to redirect the user,
-       otherwise, uses the location from the function argument. */
-    // For the future consider taking the redirection out of this function alltogether. 
+           otherwise, uses the location from the function argument. */
+    // For the future consider taking the redirection out of this function alltogether.
     if (redirectToArticle) handleRedirectLinkOrGoTo("/articles");
   }
 

@@ -8,16 +8,14 @@ import { MAX_EXERCISE_TO_DO_NOTIFICATION } from "../exercises/ExerciseConstants"
 export default function useExerciseNotification() {
   const api = useContext(APIContext);
   const exerciseNotification = useContext(ExerciseCountContext);
-  const [hasExerciseNotification, setHasExerciseNotification] = useState(
-    exerciseNotification.hasExercises,
-  );
+  const [hasExerciseNotification, setHasExerciseNotification] = useState(exerciseNotification.hasExercises);
   const [totalExercisesInPipeline, setTotalExercisesInPipeline] = useState();
   const [notificationMsg, setNotificationMsg] = useState();
   const path = useLocation().pathname;
 
   useEffect(() => {
     if (userHasNotExercisedToday())
-      api.getUserBookmarksToStudy(1, (scheduledBookmaks) => {
+      api.getUserBookmarksScheduledForToday(1, (scheduledBookmaks) => {
         exerciseNotification.setHasExercises(scheduledBookmaks.length > 0);
         exerciseNotification.updateReactState();
       });
