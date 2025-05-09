@@ -135,6 +135,10 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
     );
 
     resetExerciseSessionState();
+
+    // ========================================
+    // GET THE BOOKMARKS THAT ARE TO BE STUDIED
+    // ========================================
     getBookmarksAndAssignThemToExercises();
   }
 
@@ -149,12 +153,6 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
       return;
     }
 
-    // we have bookmarks; we can start loggign
-    api.startLoggingExerciseSessionToDB((newlyCreatedDBSessionID) => {
-      let id = JSON.parse(newlyCreatedDBSessionID).id;
-      setDbExerciseSessionId(id);
-    });
-
     let exerciseSequenceType = getExerciseSequenceType();
 
     let exerciseSession = assignBookmarksToExercises(bookmarks, exerciseSequenceType);
@@ -162,6 +160,12 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
 
     setCurrentBookmarksToStudy(exerciseSession[0].bookmarks);
     setSelectedExerciseBookmark(exerciseSession[0].bookmarks[0]);
+
+    // we have bookmarks; we can start loggign
+    api.startLoggingExerciseSessionToDB((newlyCreatedDBSessionID) => {
+      let id = JSON.parse(newlyCreatedDBSessionID).id;
+      setDbExerciseSessionId(id);
+    });
   }
 
   function resetExerciseSessionState() {
@@ -192,16 +196,8 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
         });
       });
     } else {
-      api.getAllBookmarksAvailableForStudyCount((bookmarkCount) => {
-        let exerciseCountInSession =
-          bookmarkCount <= MAX_NUMBER_OF_BOOKMARKS_EX_SESSION
-            ? MAX_NUMBER_OF_BOOKMARKS_EX_SESSION
-            : DEFAULT_NUMBER_BOOKMARKS_TO_PRACTICE;
-        api.getAllBookmarksAvailableForStudy(exerciseCountInSession, (bookmarks) =>
-          initializeExercisesForBookmarks(bookmarks.slice(0, exerciseCountInSession + 1)),
-        );
-        setTitle(strings.exercises);
-      });
+      api.getBookmarksToStudy((bookmarks) => initializeExercisesForBookmarks(bookmarks));
+      setTitle(strings.exercises);
     }
   }
 
@@ -249,7 +245,7 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
 
   function updateIsOutOfWordsToday() {
     // TODO: why is this depending on allBookmarksAvailableForStudy? It should depend on bookmarks available today!
-    api.getAllBookmarksAvailableForStudyCount((bookmarkCount) => {
+    api.getBookmarksToStudyCount((bookmarkCount) => {
       setIsOutOfWordsToday(bookmarkCount === 0);
     });
   }
@@ -415,6 +411,8 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
       isGreyedOutBar={selectedExerciseBookmark === undefined}
     />
   );
+
+  console.dir(selectedExerciseBookmark);
 
   return (
     <NarrowColumn>

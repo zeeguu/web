@@ -23,16 +23,12 @@ Zeeguu_API.prototype.getAllScheduledBookmarks = function (isWithTokens, callback
   else this._getJSON(endpoint, callback);
 };
 
-Zeeguu_API.prototype.getNewBookmarksToStudy = function (count, callback) {
-  this._getJSON(`new_bookmarks_to_study/${count}`, callback);
+Zeeguu_API.prototype.getBookmarksToStudyCount = function (callback) {
+  this._getJSON(`bookmarks_to_study_count`, callback);
 };
 
-Zeeguu_API.prototype.getAllBookmarksAvailableForStudyCount = function (callback) {
-  this._getJSON(`all_bookmarks_available_for_study_count`, callback);
-};
-
-Zeeguu_API.prototype.getAllBookmarksAvailableForStudy = function (count, callback) {
-  this._getJSON(`all_bookmarks_available_for_study/${count}`, callback);
+Zeeguu_API.prototype.getBookmarksToStudy = function (callback) {
+  this._getJSON(`bookmarks_to_study`, callback);
 };
 
 Zeeguu_API.prototype.getAllScheduledBookmarksCount = function (callback) {
