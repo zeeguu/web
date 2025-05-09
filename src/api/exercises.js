@@ -56,8 +56,8 @@ Zeeguu_API.prototype.getAllBookmarksAvailableForStudy = function (count, callbac
   this._getJSON(`all_bookmarks_available_for_study/${count}`, callback);
 };
 
-Zeeguu_API.prototype.getTotalBookmarksInPipeline = function (callback) {
-  this._getJSON(`get_total_bookmarks_in_pipeline`, callback);
+Zeeguu_API.prototype.getScheduledBookmarksCount = function (callback) {
+  this._getJSON(`scheduled_bookmarks_count`, callback);
 };
 
 Zeeguu_API.prototype.uploadExerciseFeedback = function (
