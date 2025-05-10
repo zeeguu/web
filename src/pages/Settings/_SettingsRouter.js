@@ -30,6 +30,7 @@ export default function SettingsRouter({ setUser }) {
 
       <PrivateRoute path="/account_settings/interests" component={Interests} />
 
+
       <PrivateRoute path="/account_settings/excluded_keywords" component={ExcludedKeywords} />
 
       <PrivateRoute path="/account_settings/delete_account" component={DeleteAccount} />
