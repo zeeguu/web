@@ -505,7 +505,7 @@ let strings = new LocalizedStrings(
       goodJob: "Good Job, ",
       correct: "You got the following words correct:",
       payMoreAttentionTo: "Pay more attention to these words:",
-      wordsIncorrect: "Words you got incorrect: ",
+      wordsIncorrect: "Words you need to pay more attention to ",
       wordsCorrect: "Words you got correct:",
 
       //Settings
