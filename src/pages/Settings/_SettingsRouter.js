@@ -8,8 +8,11 @@ import ExerciseTypePreferences from "./ExerciseTypePreferences";
 import MyClassrooms from "./MyClassrooms/MyClassrooms";
 import DeleteAccount from "./DeleteAccount";
 import ExcludedKeywords from "./ExcludedKeywords";
+import TopbarIconPreferences from "./TopbarIconPreferences";
 import ExerciseSchedulingPreferences from "./ExerciseSchedulingPreferences";
 import TopbarIconPreferences from "./TopbarIconPreferences";
+
+
 
 export default function SettingsRouter({ setUser }) {
   return (
@@ -20,9 +23,15 @@ export default function SettingsRouter({ setUser }) {
 
       <PrivateRoute path="/account_settings/language_settings" setUser={setUser} component={LanguageSettings} />
 
-      <PrivateRoute path="/account_settings/exercise_types" component={ExerciseTypePreferences} />
+      <PrivateRoute
+        path="/account_settings/exercise_type_preferences"
+        component={ExerciseTypePreferences}
+      />
 
       <PrivateRoute path="/account_settings/exercise_scheduling" component={ExerciseSchedulingPreferences} />
+      <PrivateRoute path="/account_settings/topbar_progress_display" component={TopbarIconPreferences}/>
+
+
       <PrivateRoute path="/account_settings/topbar_progress_display" component={TopbarIconPreferences}/>
 
       <PrivateRoute path="/account_settings/my_classrooms" component={MyClassrooms} />
