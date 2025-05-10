@@ -5,7 +5,6 @@ import { useState, useEffect, useContext } from "react";
 import { CenteredColumn } from "./Congratulations.sc";
 import { removeArrayDuplicates } from "../utils/basic/arrays";
 import { LoadingAnimation } from "../components/LoadingAnimation.sc";
-import LocalStorage from "../assorted/LocalStorage";
 import { timeToHumanReadable } from "../utils/misc/readableTime";
 import CollapsablePanel from "../components/CollapsablePanel";
 import Pluralize from "../utils/text/pluralize";
@@ -98,7 +97,7 @@ export default function Congratulations({
         </CenteredColumn>
         <div style={{ marginLeft: "0.5em" }}>
           <p>
-            You have reviewed <b>{totalPracticedBookmarksInSession}</b> {Pluralize.word(totalBookmarksReviewed)} in{" "}
+            You have just done <b>{totalPracticedBookmarksInSession}</b> {Pluralize.exercise(totalBookmarksReviewed)} in{" "}
             <b>{timeToHumanReadable(checkpointTime)}</b>.
             {articleID && (
               <p>
@@ -107,36 +106,13 @@ export default function Congratulations({
               </p>
             )}
           </p>
-          {/*
-          <p>
-            {hasScheduledExercises && (
-              <b>
-                {" "}
-                There {Pluralize.is(exerciseNotification.exerciseCounter)}{" "}
-                {exerciseNotification.exerciseCounter}{" "}
-                {Pluralize.word(exerciseNotification.exerciseCounter)} left to
-                exercise today.
-              </b>
-            )}
-          </p>
-          */}
-          {isOutOfWordsToday && (
-            <p>
-              There are no more words for you to practice. You can read more articles and find new words to learn! We
-              will let you know when it's time to review your words according to our spaced-repetition schedule.
-            </p>
-          )}
         </div>
-        <CenteredColumn className="contentOnRow" style={{ marginTop: "2em", justifyContent: "space-around" }}>
-          {progressionButtonRender()}
-        </CenteredColumn>
         {articleID && (
           <p>
             You practiced words from: <a href={articleURL}>{articleTitle}</a>
           </p>
         )}
 
-        <br />
         {incorrectBookmarksToDisplay.length > 0 && (
           <CollapsablePanel
             children={incorrectBookmarksToDisplay.map((each) => (
@@ -160,6 +136,18 @@ export default function Congratulations({
             defaultOpen={true}
           ></CollapsablePanel>
         )}
+
+        <br />
+        {isOutOfWordsToday && (
+          <p>
+            There are no more words for you to practice today. Come back tomorrow to see the words that you should
+            practice again according to our spaced-repetition schedule.
+          </p>
+        )}
+
+        <CenteredColumn className="contentOnRow" style={{ marginTop: "2em", justifyContent: "space-around" }}>
+          {progressionButtonRender()}
+        </CenteredColumn>
       </s.NarrowColumn>
     </>
   );

@@ -183,17 +183,17 @@ export default function FindArticles({ content, searchQuery, searchPublishPriori
           </s.SearchHolder>
           <div style={{ marginBottom: "1.5rem", padding: "0.5rem" }}>
             <span>
-              You can customize your Home by{" "}
+              Customize this page by{" "}
               <Link className="bold underlined-link" to="/account_settings/interests?fromArticles=1">
-                subscribing&nbsp;to&nbsp;topics
+                subscribing&nbsp;to&nbsp;<b>topics</b>
               </Link>
               ,{" "}
               <Link className="bold underlined-link" to="/account_settings/excluded_keywords?fromArticles=1">
-                filtering&nbsp;keywords
-              </Link>{" "}
-              or{" "}
+                filtering&nbsp;<b>keywords</b>
+              </Link>
+              , or{" "}
               <Link className="bold underlined-link" to="/articles/mySearches">
-                adding&nbsp;searches
+                adding&nbsp;<b>searches</b>
               </Link>
               .
             </span>
