@@ -49,6 +49,12 @@ export default function Settings() {
         </SettingsItem>
       </ListOfSettingsItems>
 
+      <ListOfSettingsItems header={strings.topbarProgressDisplay}>
+        <SettingsItem path={"/account_settings/topbar_progress_display"}>
+          {strings.progressIconPreferences}
+        </SettingsItem>
+      </ListOfSettingsItems>
+
       <ListOfSettingsItems header={strings.accountManagement}>
         <SettingsItem path={"/account_settings/delete_account"}>
           {strings.deleteAccount}

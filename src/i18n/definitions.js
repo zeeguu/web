@@ -18,6 +18,7 @@ let strings = new LocalizedStrings(
       more: "More",
       wordHistoryTitle: "Word Translation History",
       exercises: "Exercises",
+      topbarProgressDisplay:  "Topbar Progress Display",
       myClasses: "My Classrooms",
       myTexts: "My Texts",
       tutorials: "Help",
@@ -107,6 +108,12 @@ let strings = new LocalizedStrings(
       levelOfLearnedLanguagePlaceholder: "Select level",
       baseLanguage: "I want translations in",
       baseLanguagePlaceholder: "Select Language",
+
+      //Topbar preferences display
+      progressIconPreferences: "Progress Icon Preferences",
+      wordsPracticedThisWeek: "Words practiced this week",
+      articlesReadThisWeek: "Articles read this week",
+      weeklyStreak: "Weekly streak",
 
       //LanguagePreferences
       languagePreferences: "Language Preferences",
