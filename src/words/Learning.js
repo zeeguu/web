@@ -54,7 +54,7 @@ export default function Learning() {
 
   return (
     <>
-      <h1>In Learning</h1>
+      <h1>In Learning ({inLearning.length})</h1>
       <>
         {inLearning.length === 0 && <p>No words being learned yet</p>}
 
