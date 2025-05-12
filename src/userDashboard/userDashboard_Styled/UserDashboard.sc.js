@@ -76,9 +76,12 @@ const UserDashBoardDropdown = styled.select`
 `;
 
 const ProgressOverviewContainer = styled.div`
-  margin-left: 10em;
+  display: flex;
+  flex-direction: column;
   width: 70%;
   padding-bottom: 1em;
+  margin-left: 10em;
+  margin-top: 5em;
 
   @media (max-width: 768px) {
   width: 80%;
@@ -86,34 +89,25 @@ const ProgressOverviewContainer = styled.div`
   }
 `;
 
-const ProgressOverviewTitle = styled.div`
-  font-size: 0.8em;
-  font-weight: bold;
-  margin-bottom: 1em;
-  margin-top: 5em;
-`;
-
 const ProgressOverviewSection = styled.div`
-  background-color: white;
-  border: 1px solid black;
   padding: 1em;
-  border-radius: 4px;
   display: flex;
   flex-wrap: wrap;
   gap: 2em;
+  width: 100;
   justify-content: space-evenly;
 `;
 
 const ProgressOverviewItem = styled.div`
   display: flex;
   background-color: white;
-  border: 1px solid orange;
+  border:2px solid ${zeeguuWarmYellow};
   border-radius: 4px;
   padding: 1.5em;
   width: 40%;
 
   @media (max-width: 768px) {
-    width: 100%; /* stack on small screens */
+    width: 100%;
   }
 `;
 
@@ -209,7 +203,6 @@ export {
   NivoGraphContainer,
   UserDatePicker,
   UserDashboardFeedbackButton,
-  ProgressOverviewTitle,
   ProgressOverviewItem,
   ProgressOverviewSection,
   ProgressOverviewContainer,

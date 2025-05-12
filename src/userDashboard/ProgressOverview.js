@@ -2,6 +2,7 @@ import * as s from "./userDashboard_Styled/UserDashboard.sc";
 import NavIcon from "../components/MainNav/NavIcon";
 import strings from "../i18n/definitions";
 import udstrings from "../i18n/userDashboard";
+import CollapsablePanel from "../components/CollapsablePanel";
 
 export default function ProgressOverview({totalInLearning, totalToLearn, totalLearned}){
 
@@ -65,8 +66,8 @@ export default function ProgressOverview({totalInLearning, totalToLearn, totalLe
 
     return (
         <>
-        <s.ProgressOverviewContainer>
-            <s.ProgressOverviewTitle>{udstrings.weeklyProgressOverviewTitle}</s.ProgressOverviewTitle>
+            <s.ProgressOverviewContainer>
+            <CollapsablePanel topMessage={udstrings.weeklyProgressOverviewTitle}>
             <s.ProgressOverviewSection>
                 {weeklyProgressOverview.map((item, index)=> (
                     <s.ProgressOverviewItem key={index}>
@@ -80,11 +81,12 @@ export default function ProgressOverview({totalInLearning, totalToLearn, totalLe
                         <s.ProgressDescription>{item.beforeText} {item.value} {item.afterText}</s.ProgressDescription>
                     </s.ProgressOverviewItem>
                 ))}
-            </s.ProgressOverviewSection>
-        </s.ProgressOverviewContainer>
+                </s.ProgressOverviewSection>
+            </CollapsablePanel>
+            </s.ProgressOverviewContainer>
 
-        <s.ProgressOverviewContainer>
-            <s.ProgressOverviewTitle>{udstrings.totalProgressOverviewTitle}</s.ProgressOverviewTitle>
+            <s.ProgressOverviewContainer>
+            <CollapsablePanel topMessage={udstrings.totalProgressOverviewTitle}>
             <s.ProgressOverviewSection>
                 {totalProgressOverview.map((item, index)=> (
                     <s.ProgressOverviewItem key={index}>
@@ -99,7 +101,8 @@ export default function ProgressOverview({totalInLearning, totalToLearn, totalLe
                     </s.ProgressOverviewItem>
                 ))}
             </s.ProgressOverviewSection>
-        </s.ProgressOverviewContainer>
+            </CollapsablePanel>
+            </s.ProgressOverviewContainer>
          </>
     );
 }
