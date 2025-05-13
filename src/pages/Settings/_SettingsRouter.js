@@ -30,10 +30,12 @@ export default function SettingsRouter({ setUser }) {
 
       <PrivateRoute path="/account_settings/interests" component={Interests} />
 
-
       <PrivateRoute path="/account_settings/excluded_keywords" component={ExcludedKeywords} />
 
       <PrivateRoute path="/account_settings/delete_account" component={DeleteAccount} />
+
+      <PrivateRoute path="/account_settings/topbar_progress_display" component={TopbarIconPreferences}/>
+
     </Switch>
   );
 }
