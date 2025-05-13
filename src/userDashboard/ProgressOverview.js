@@ -3,6 +3,7 @@ import NavIcon from "../components/MainNav/NavIcon";
 import strings from "../i18n/definitions";
 import udstrings from "../i18n/userDashboard";
 import CollapsablePanel from "../components/CollapsablePanel";
+import * as style from "../components/ProgressItems.sc";
 
 export default function ProgressOverview({totalInLearning, totalToLearn, totalLearned}){
 
@@ -70,16 +71,16 @@ export default function ProgressOverview({totalInLearning, totalToLearn, totalLe
             <CollapsablePanel topMessage={udstrings.weeklyProgressOverviewTitle}>
             <s.ProgressOverviewSection>
                 {weeklyProgressOverview.map((item, index)=> (
-                    <s.ProgressOverviewItem key={index}>
-                        <s.IconWithValueAndLabel>
-                            <s.IconAndValue>
-                                <s.Icon><NavIcon name="words"/></s.Icon>
-                                <s.Value> {item.value} </s.Value>
-                            </s.IconAndValue>
-                            <s.Label>{item.iconText}</s.Label>
-                        </s.IconWithValueAndLabel>
-                        <s.ProgressDescription>{item.beforeText} {item.value} {item.afterText}</s.ProgressDescription>
-                    </s.ProgressOverviewItem>
+                    <style.ProgressOverviewItem key={index}>
+                        <style.IconWithValueAndLabel>
+                            <style.IconAndValue>
+                                <style.Icon><NavIcon name="words"/></style.Icon>
+                                <style.Value> {item.value} </style.Value>
+                            </style.IconAndValue>
+                            <style.Label>{item.iconText}</style.Label>
+                        </style.IconWithValueAndLabel>
+                        <style.ProgressDescription>{item.beforeText} {item.value} {item.afterText}</style.ProgressDescription>
+                    </style.ProgressOverviewItem>
                 ))}
                 </s.ProgressOverviewSection>
             </CollapsablePanel>
@@ -89,16 +90,16 @@ export default function ProgressOverview({totalInLearning, totalToLearn, totalLe
             <CollapsablePanel topMessage={udstrings.totalProgressOverviewTitle}>
             <s.ProgressOverviewSection>
                 {totalProgressOverview.map((item, index)=> (
-                    <s.ProgressOverviewItem key={index}>
-                        <s.IconWithValueAndLabel>
-                            <s.IconAndValue>
-                                <s.Icon><NavIcon name="words"/></s.Icon>
-                                <s.Value> {item.value} </s.Value>
-                            </s.IconAndValue>
-                            <s.Label>{item.iconText}</s.Label>
-                        </s.IconWithValueAndLabel>
-                        <s.ProgressDescription>{item.beforeText} {item.value} {item.afterText}</s.ProgressDescription>
-                    </s.ProgressOverviewItem>
+                    <style.ProgressOverviewItem key={index}>
+                        <style.IconWithValueAndLabel>
+                            <style.IconAndValue>
+                                <style.Icon><NavIcon name="words"/></style.Icon>
+                                <style.Value> {item.value} </style.Value>
+                            </style.IconAndValue>
+                            <style.Label>{item.iconText}</style.Label>
+                        </style.IconWithValueAndLabel>
+                        <style.ProgressDescription>{item.beforeText} {item.value} {item.afterText}</style.ProgressDescription>
+                    </style.ProgressOverviewItem>
                 ))}
             </s.ProgressOverviewSection>
             </CollapsablePanel>

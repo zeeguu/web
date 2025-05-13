@@ -97,56 +97,6 @@ const ProgressOverviewSection = styled.div`
   justify-content: space-evenly;
 `;
 
-const ProgressOverviewItem = styled.div`
-  display: flex;
-  background-color: white;
-  border:2px solid ${zeeguuWarmYellow};
-  border-radius: 4px;
-  padding: 1.5em;
-  width: 40%;
-
-  @media (max-width: 768px) {
-    width: 100%;
-  }
-`;
-
-const IconWithValueAndLabel = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  width: 4.5em;
-`;
-
-const IconAndValue = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 0.3em;
-`;
-
-const Icon = styled.div`
-  font-size: 1em;
-`;
-
-const Value = styled.div`
-  font-weight: bold;
-  font-size: 0.8em;
-`;
-
-const Label = styled.div`
-  font-size: 0.6em;
-  margin-top: 0.2em;
-`;
-
-const ProgressDescription = styled.div`
-  display: flex;
-  width: 60%;
-  font-size: 0.75rem;
-  align-items: center;
-  text-align: left;
-  margin-left: 4em;
-`;
-
 // parent container has to have height specified in order for the nivo graphs to be shown
 // nivo automatically resizes the graphs' width, but not height
 const NivoGraphContainer = styled.div`
@@ -202,13 +152,6 @@ export {
   NivoGraphContainer,
   UserDatePicker,
   UserDashboardFeedbackButton,
-  ProgressOverviewItem,
   ProgressOverviewSection,
   ProgressOverviewContainer,
-  ProgressDescription,
-  Label,
-  Value,
-  Icon,
-  IconAndValue,
-  IconWithValueAndLabel,
 };
