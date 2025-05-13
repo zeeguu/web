@@ -53,28 +53,18 @@ export default function Learned() {
 
   return (
     <>
-      <s.TopMessage>{strings.learnedWordsAreMsg}</s.TopMessage>
+      <s.YellowMessageBox>{strings.learnedWordsAreMsg}</s.YellowMessageBox>
 
-      <s.TopMessage>
-        {strings.formatString(
-          strings.numberOfLearnedWordsMsg,
-          totalWordsLearned,
-        )}
-      </s.TopMessage>
+      <s.YellowMessageBox>
+        {strings.formatString(strings.numberOfLearnedWordsMsg, totalWordsLearned)}
+      </s.YellowMessageBox>
       <div>
         {words.map((subGroup) => {
           return (
             <div>
               <h2>{"Learned on: " + subGroup[0].learned_datetime}</h2>
               {subGroup.map((each) => {
-                return (
-                  <Word
-                    key={each.id}
-                    notifyDelete={onNotifyDelete}
-                    bookmark={each}
-                    hideStar={true}
-                  />
-                );
+                return <Word key={each.id} notifyDelete={onNotifyDelete} bookmark={each} hideStar={true} />;
               })}
             </div>
           );

@@ -1,5 +1,6 @@
 import Word from "../words/Word";
 import * as s from "../reader/ArticleReader.sc";
+import { YellowMessageBox } from "../components/TopMessage.sc";
 import strings from "../i18n/definitions";
 import { useState, useEffect, useContext } from "react";
 import { CenteredColumn } from "./Congratulations.sc";
@@ -143,6 +144,17 @@ export default function Congratulations({
             There are no more words for you to practice today. Come back tomorrow to see the words that you should
             practice again according to our spaced-repetition schedule.
           </p>
+        )}
+        {!isOutOfWordsToday && (
+          <>
+            <YellowMessageBox>
+              <p>There are a few words that we recommend you still practice today. Do you want do to it now?</p>
+
+              <CenteredColumn className="contentOnRow" style={{ marginTop: "-1em", justifyContent: "space-around" }}>
+                {progressionButtonRender()}
+              </CenteredColumn>
+            </YellowMessageBox>
+          </>
         )}
       </s.NarrowColumn>
     </>

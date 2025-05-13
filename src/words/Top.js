@@ -30,7 +30,7 @@ export default function Top() {
 
   return (
     <>
-      <s.TopMessage>{strings.rankedMsg}</s.TopMessage>
+      <s.YellowMessageBox>{strings.rankedMsg}</s.YellowMessageBox>
       {words.map((each) => (
         <Word key={each.id} bookmark={each} source={WEB_READER} notifyDelete={onNotifyDelete} />
       ))}

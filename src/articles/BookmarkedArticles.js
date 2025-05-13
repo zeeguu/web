@@ -27,24 +27,16 @@ export default function BookmarkedArticles() {
   }
 
   if (articleList.length === 0) {
-    return <s.TopMessage>{strings.noBookmarksYet}</s.TopMessage>;
+    return <s.YellowMessageBox>{strings.noBookmarksYet}</s.YellowMessageBox>;
   }
 
   return (
     <>
       <br />
       <br />
-      <SortingButtons
-        articleList={articleList}
-        originalList={originalList}
-        setArticleList={setArticleList}
-      />
+      <SortingButtons articleList={articleList} originalList={originalList} setArticleList={setArticleList} />
       {articleList.map((each) => (
-        <ArticlePreview
-          key={each.id}
-          article={each}
-          dontShowPublishingTime={true}
-        />
+        <ArticlePreview key={each.id} article={each} dontShowPublishingTime={true} />
       ))}
     </>
   );
