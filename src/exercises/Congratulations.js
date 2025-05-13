@@ -161,6 +161,17 @@ export default function Congratulations({
             </YellowMessageBox>
           </>
         )}
+        {!isOutOfWordsToday && (
+          <>
+            <YellowMessageBox>
+              <p>There are a few words that we recommend you still practice today. Do you want do to it now?</p>
+
+              <CenteredColumn className="contentOnRow" style={{ marginTop: "-1em", justifyContent: "space-around" }}>
+                {progressionButtonRender()}
+              </CenteredColumn>
+            </YellowMessageBox>
+          </>
+        )}
       </s.NarrowColumn>
     </>
   );
