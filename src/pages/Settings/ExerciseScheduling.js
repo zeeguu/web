@@ -76,11 +76,7 @@ export default function ExerciseScheduling() {
             <InputField
               id="max_words_to_schedule"
               type={"number"}
-              label={
-                <>
-                  Words in learning <small>(also maximum number of daily exercises)</small>
-                </>
-              }
+              label={<>Maximum words in learning</>}
               value={maxWordsToSchedule}
               onChange={(e) => {
                 setMaxWordsToSchedule(e.target.value);
