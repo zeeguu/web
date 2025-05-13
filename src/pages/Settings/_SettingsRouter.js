@@ -11,8 +11,6 @@ import ExcludedKeywords from "./ExcludedKeywords";
 import ExerciseSchedulingPreferences from "./ExerciseSchedulingPreferences";
 import TopbarIconPreferences from "./TopBarIconPreferences";
 
-
-
 export default function SettingsRouter({ setUser }) {
   return (
     <Switch>
@@ -22,14 +20,9 @@ export default function SettingsRouter({ setUser }) {
 
       <PrivateRoute path="/account_settings/language_settings" setUser={setUser} component={LanguageSettings} />
 
-      <PrivateRoute
-        path="/account_settings/exercise_type_preferences"
-        component={ExerciseTypePreferences}
-      />
+      <PrivateRoute path="/account_settings/exercise_types" component={ExerciseTypePreferences} />
 
       <PrivateRoute path="/account_settings/exercise_scheduling" component={ExerciseSchedulingPreferences} />
-      <PrivateRoute path="/account_settings/topbar_progress_display" component={TopbarIconPreferences}/>
-
 
       <PrivateRoute path="/account_settings/topbar_progress_display" component={TopbarIconPreferences}/>
 
