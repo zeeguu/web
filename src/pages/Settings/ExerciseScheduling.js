@@ -1,5 +1,5 @@
 import { Link, useHistory } from "react-router-dom";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect } from "react";
 import { UserContext } from "../../contexts/UserContext";
 import Button from "../_pages_shared/Button.sc";
 import ButtonContainer from "../_pages_shared/ButtonContainer.sc";
@@ -14,6 +14,9 @@ import strings from "../../i18n/definitions";
 import { setTitle } from "../../assorted/setTitle";
 import { APIContext } from "../../contexts/APIContext";
 import InputField from "../../components/InputField";
+import useFormField from "../../hooks/useFormField";
+import { PositiveIntegerValidator } from "../../utils/ValidatorRule/Validator";
+import validateRules from "../../assorted/validateRules";
 
 const PREF_KEY_MAX_WORDS_TO_SCHEDULE = "max_words_to_schedule";
 
@@ -22,7 +25,8 @@ export default function ExerciseScheduling() {
   const { session } = useContext(UserContext);
   const history = useHistory();
 
-  const [maxWordsToSchedule, setMaxWordsToSchedule] = useState(-1);
+  const [maxWordsToSchedule, setMaxWordsToSchedule, validateMaxWords, isMaxWordsValid, maxWordsErrorMessage] =
+    useFormField(-1, PositiveIntegerValidator());
 
   useEffect(() => {
     setTitle("Exercise Scheduling");
@@ -36,6 +40,11 @@ export default function ExerciseScheduling() {
 
   function handleSave(e) {
     e.preventDefault();
+
+    if (!validateRules([validateMaxWords])) {
+      // alert("Please introduce a number greater than 0");
+      return;
+    }
 
     api.saveUserPreferences({
       max_words_to_schedule: maxWordsToSchedule,
@@ -58,15 +67,18 @@ export default function ExerciseScheduling() {
           <FormSection>
             <InputField
               id="max_words_to_schedule"
+              type={"number"}
               label={
                 <>
-                  Words in learning <small>(scheduled with spaced repetition)</small>
+                  Words in learning <small>(also maximum number of daily exercises)</small>
                 </>
               }
               value={maxWordsToSchedule}
               onChange={(e) => {
                 setMaxWordsToSchedule(e.target.value);
               }}
+              isError={!isMaxWordsValid}
+              errorMessage={maxWordsErrorMessage}
             />
             <small>
               Note: If you change the maximum words to a lower number than the number of words that are already
@@ -84,4 +96,9 @@ export default function ExerciseScheduling() {
       </Main>
     </PreferencesPage>
   );
+}
+
+function is_integer(str) {
+  let n = Math.floor(Number(str));
+  return n !== Infinity && String(n) === str && n >= 1;
 }

@@ -26,6 +26,12 @@ function NonEmptyValidator(msg = "Field cannot be empty.") {
   }, msg);
 }
 
+function PositiveIntegerValidator(msg = "Please provide a positive number") {
+  return new Validator((value) => {
+    return value >= 1;
+  }, msg);
+}
+
 function MinimumLengthValidator(n_chars, msg) {
   return new Validator((value) => {
     return value.length > n_chars;
@@ -52,4 +58,5 @@ export {
   NonEmptyValidator,
   MinimumLengthValidator,
   validateMultipleRules,
+  PositiveIntegerValidator,
 };
