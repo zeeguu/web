@@ -46,7 +46,6 @@ const ExerciseNotifications = class {
     this.api.getBookmarksToStudyCount((scheduledBookmarksCount) => {
       this.setHasExercises(scheduledBookmarksCount > 0);
       this.setExerciseCounter(scheduledBookmarksCount);
-      console.log("before updating state");
       this.updateReactState();
     });
   }
