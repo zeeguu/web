@@ -81,7 +81,6 @@ const ProgressOverviewContainer = styled.div`
   width: 70%;
   padding-bottom: 1em;
   margin-left: 10em;
-  margin-top: 5em;
 
   @media (max-width: 768px) {
   width: 80%;
