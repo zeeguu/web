@@ -50,7 +50,7 @@ export default function ClassroomArticles() {
             </Link>
           </div>
         ) : (
-          <s.TopMessage>{strings.noArticlesInClassroom}</s.TopMessage>
+          <s.YellowMessageBox>{strings.noArticlesInClassroom}</s.YellowMessageBox>
         )}
       </Fragment>
     );
@@ -60,17 +60,9 @@ export default function ClassroomArticles() {
     <>
       <br />
       <br />
-      <SortingButtons
-        articleList={articleList}
-        originalList={originalList}
-        setArticleList={setArticleList}
-      />
+      <SortingButtons articleList={articleList} originalList={originalList} setArticleList={setArticleList} />
       {articleList.map((each) => (
-        <ArticlePreview
-          key={each.id}
-          article={each}
-          dontShowSourceIcon={true}
-        />
+        <ArticlePreview key={each.id} article={each} dontShowSourceIcon={true} />
       ))}
     </>
   );

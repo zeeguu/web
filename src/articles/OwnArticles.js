@@ -20,15 +20,14 @@ export default function OwnArticles() {
     setOriginalList(newUpdatedList);
   }
 
-  const [handleScroll, isWaitingForNewArticles, noMoreArticlesToShow] =
-    useArticlePagination(
-      articleList,
-      updateOnPagination,
-      "Saved Articles",
-      (pageNumber, handleArticleInsertion) => {
-        api.getSavedUserArticles(pageNumber, handleArticleInsertion);
-      },
-    );
+  const [handleScroll, isWaitingForNewArticles, noMoreArticlesToShow] = useArticlePagination(
+    articleList,
+    updateOnPagination,
+    "Saved Articles",
+    (pageNumber, handleArticleInsertion) => {
+      api.getSavedUserArticles(pageNumber, handleArticleInsertion);
+    },
+  );
 
   useEffect(() => {
     setTitle("Saved Articles");
@@ -48,26 +47,16 @@ export default function OwnArticles() {
   }
 
   if (articleList.length === 0) {
-    return <s.TopMessage>{strings.noOwnArticles}</s.TopMessage>;
+    return <s.YellowMessageBox>{strings.noOwnArticles}</s.YellowMessageBox>;
   }
 
   return (
     <>
-      <SortingButtons
-        articleList={articleList}
-        originalList={originalList}
-        setArticleList={setArticleList}
-      />
+      <SortingButtons articleList={articleList} originalList={originalList} setArticleList={setArticleList} />
       {articleList.map((each) => (
-        <ArticlePreview
-          key={each.id}
-          article={each}
-          dontShowSourceIcon={false}
-        />
+        <ArticlePreview key={each.id} article={each} dontShowSourceIcon={false} />
       ))}
-      {isWaitingForNewArticles && (
-        <LoadingAnimation delay={0}></LoadingAnimation>
-      )}
+      {isWaitingForNewArticles && <LoadingAnimation delay={0}></LoadingAnimation>}
       {noMoreArticlesToShow && articleList.length > 0 && (
         <div
           style={{

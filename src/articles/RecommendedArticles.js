@@ -30,24 +30,16 @@ export default function RecommendedArticles() {
   }
 
   if (articleList.length === 0) {
-    return <s.TopMessage>{strings.noRecommendedArticles}</s.TopMessage>;
+    return <s.YellowMessageBox>{strings.noRecommendedArticles}</s.YellowMessageBox>;
   }
 
   return (
     <>
       <br />
       <br />
-      <SortingButtons
-        articleList={articleList}
-        originalList={originalList}
-        setArticleList={setArticleList}
-      />
+      <SortingButtons articleList={articleList} originalList={originalList} setArticleList={setArticleList} />
       {articleList.map((each) => (
-        <ArticlePreview
-          key={each.id}
-          article={each}
-          dontShowSourceIcon={true}
-        />
+        <ArticlePreview key={each.id} article={each} dontShowSourceIcon={true} />
       ))}
     </>
   );

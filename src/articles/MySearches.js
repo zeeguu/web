@@ -39,9 +39,7 @@ export default function MySearches() {
   }
 
   async function subscribedSearchesWithTopArticles(subscribedSearches) {
-    const promises = subscribedSearches.map((searchTerm) =>
-      topArticlesForSearchTerm(searchTerm.search),
-    );
+    const promises = subscribedSearches.map((searchTerm) => topArticlesForSearchTerm(searchTerm.search));
     return Promise.all(promises);
   }
 
@@ -62,7 +60,7 @@ export default function MySearches() {
         <div>
           <SearchField />
         </div>
-        <s.TopMessage>{strings.NoSavedSearches}</s.TopMessage>
+        <s.YellowMessageBox>{strings.NoSavedSearches}</s.YellowMessageBox>
       </>
     );
   }
@@ -74,15 +72,11 @@ export default function MySearches() {
         <div key={searchTerm}>
           <d.HeadlineSavedSearches>{searchTerm}</d.HeadlineSavedSearches>
           <SubscribeSearchButton query={searchTerm} />
-          {articles.length === 0 && (
-            <p>No recent articles were found for this keyword.</p>
-          )}
+          {articles.length === 0 && <p>No recent articles were found for this keyword.</p>}
           {articles.map((each) => (
             <ArticlePreview key={each.id} article={each} />
           ))}
-          <d.buttonMoreArticles
-            onClick={(e) => redirect(`/search?search=${searchTerm}`)}
-          >
+          <d.buttonMoreArticles onClick={(e) => redirect(`/search?search=${searchTerm}`)}>
             {articles.length === 0 ? "Search for Keyword" : "See more articles"}
           </d.buttonMoreArticles>
         </div>

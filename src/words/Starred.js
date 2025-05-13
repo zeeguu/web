@@ -23,7 +23,7 @@ export default function Starred({ api }) {
   }
 
   if (words.length === 0) {
-    return <s.TopMessage>{strings.noStarredMsg}</s.TopMessage>;
+    return <s.YellowMessageBox>{strings.noStarredMsg}</s.YellowMessageBox>;
   }
 
   function bookmarkHasBeenUnstared(bookmark) {
