@@ -4,11 +4,9 @@ export default function useSubSessionTimer(activeSessionDurationRef) {
   // active session duration is measured in seconds
   // The DB stored the exercise time in ms we need to convert it
   // to MS.
-  const [subSessionStart, setSubSessionStart] = useState(
-    activeSessionDurationRef,
-  );
+  const [subSessionStart, setSubSessionStart] = useState(activeSessionDurationRef);
 
-  function getCurrentSubSessionDuration(time_unit = "s") {
+  function getCurrentSubSessionDuration(time_unit = "ms") {
     let timeDiff = activeSessionDurationRef - subSessionStart;
     switch (time_unit) {
       case "ms":
