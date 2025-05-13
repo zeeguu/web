@@ -39,11 +39,6 @@ export default function OutOfWordsMessage({ totalInLearning, goBackAction }) {
           preferences page.
         </p>
       </div>
-      <s.BottomRow>
-        {/*<StyledButton primary onClick={goBackAction}>*/}
-        {/*  {"Go Reading Instead"}*/}
-        {/*</StyledButton>*/}
-      </s.BottomRow>
     </s.Exercise>
   );
 }

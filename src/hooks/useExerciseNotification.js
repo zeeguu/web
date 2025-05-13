@@ -5,7 +5,6 @@ import { ExerciseCountContext } from "../exercises/ExerciseCountContext";
 import { MAX_EXERCISE_TO_DO_NOTIFICATION } from "../exercises/ExerciseConstants";
 
 export default function useExerciseNotification() {
-  const api = useContext(APIContext);
   const exerciseNotification = useContext(ExerciseCountContext);
   const [hasExerciseNotification, setHasExerciseNotification] = useState(exerciseNotification.hasExercises);
   const [totalExercisesInPipeline, setTotalExercisesInPipeline] = useState();
@@ -13,18 +12,13 @@ export default function useExerciseNotification() {
   const path = useLocation().pathname;
 
   useEffect(() => {
-    api.getBookmarksToStudyCount((scheduledBookmarksCount) => {
-      exerciseNotification.setHasExercises(scheduledBookmarksCount > 0);
-      exerciseNotification.setExerciseCounter(scheduledBookmarksCount);
-      exerciseNotification.updateReactState();
-    });
+    exerciseNotification.fetchAndUpdate();
+
     // eslint-disable-next-line
   }, [path]);
 
   useEffect(() => {
-    exerciseNotification.setHasExercisesHook = setHasExerciseNotification;
-    exerciseNotification.setExerciseCounterHook = setTotalExercisesInPipeline;
-    exerciseNotification.updateReactState();
+    exerciseNotification.fetchAndUpdate();
     // eslint-disable-next-line
   }, []);
 
