@@ -38,6 +38,7 @@ import useSubSessionTimer from "../hooks/useSubSessionTimer";
 import { APIContext } from "../contexts/APIContext";
 import isEmptyDictionary from "../utils/misc/isEmptyDictionary";
 import BookmarkProgressBar from "./progressBars/BookmarkProgressBar";
+import ExercisesProgressSummary from "./ExercisesProgressSummary";
 
 const BOOKMARKS_DUE_REVIEW = false;
 
@@ -53,6 +54,7 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
   const [fullExerciseProgression, setFullExerciseProgression] = useState();
   const [totalBookmarksInPipeline, setTotalBookmarksInPipeline] = useState();
   const [currentExerciseType, setCurrentExerciseType] = useState(null);
+  const [showProgressSummary, setShowProgressSummary] = useState(false);
 
   // We can use this too states to track if the user is correct.
   // isExerciseOver & !isShownSolution & isCorrect = User Correct
@@ -160,6 +162,10 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
     setActivityOver(false);
   }
 
+  function handleContinue(){
+    setShowProgressSummary(false);
+  }
+
   function getBookmarksAndAssignThemToExercises() {
     if (articleID) {
       api.getArticleInfo(articleID, (articleInfo) => {
@@ -236,6 +242,11 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
 
   // Standard flow when user completes exercise session
   if (finished) {
+    if(showProgressSummary){
+      return (
+        <ExercisesProgressSummary onHandle={handleContinue} />
+      );
+    }
     return (
       <>
         <Congratulations
@@ -279,6 +290,7 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
     exerciseNotification.updateReactState();
     if (newIndex === fullExerciseProgression.length) {
       setFinished(true);
+      setShowProgressSummary(true);
       updateIsOutOfWordsToday();
       return;
     }
