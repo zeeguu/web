@@ -8,9 +8,11 @@ import { WEB_READER } from "../reader/ArticleReader";
 import CollapsablePanel from "../components/CollapsablePanel";
 
 import { APIContext } from "../contexts/APIContext";
+import { ExerciseCountContext } from "../exercises/ExerciseCountContext";
 
 export default function Learning() {
   const api = useContext(APIContext);
+  const exerciseNotification = useContext(ExerciseCountContext);
 
   const [inLearning, setInLearning] = useState(null);
   const [inLearning_byLevel, setInLearning_byLevel] = useState(null);
@@ -38,6 +40,12 @@ export default function Learning() {
   function onNotifyDelete(bookmark) {
     let newWords = [...inLearning].filter((b) => b.id !== bookmark.id);
     setInLearning(newWords);
+
+    api.getBookmarksToStudyCount((scheduledBookmarksCount) => {
+      exerciseNotification.setHasExercises(scheduledBookmarksCount > 0);
+      exerciseNotification.setExerciseCounter(scheduledBookmarksCount);
+      exerciseNotification.updateReactState();
+    });
   }
 
   if (!inLearning || !inLearning_byLevel) {

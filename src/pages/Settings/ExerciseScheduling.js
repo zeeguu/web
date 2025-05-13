@@ -17,12 +17,15 @@ import InputField from "../../components/InputField";
 import useFormField from "../../hooks/useFormField";
 import { PositiveIntegerValidator } from "../../utils/ValidatorRule/Validator";
 import validateRules from "../../assorted/validateRules";
+import { ExerciseCountContext } from "../../exercises/ExerciseCountContext";
 
 const PREF_KEY_MAX_WORDS_TO_SCHEDULE = "max_words_to_schedule";
 
 export default function ExerciseScheduling() {
   const api = useContext(APIContext);
   const { session } = useContext(UserContext);
+  const exerciseNotification = useContext(ExerciseCountContext);
+
   const history = useHistory();
 
   const [maxWordsToSchedule, setMaxWordsToSchedule, validateMaxWords, isMaxWordsValid, maxWordsErrorMessage] =
@@ -50,6 +53,11 @@ export default function ExerciseScheduling() {
       max_words_to_schedule: maxWordsToSchedule,
     });
     history.goBack();
+    api.getBookmarksToStudyCount((scheduledBookmarksCount) => {
+      exerciseNotification.setHasExercises(scheduledBookmarksCount > 0);
+      exerciseNotification.setExerciseCounter(scheduledBookmarksCount);
+      exerciseNotification.updateReactState();
+    });
   }
 
   if (maxWordsToSchedule === -1) {
