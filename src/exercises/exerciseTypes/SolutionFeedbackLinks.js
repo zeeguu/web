@@ -15,8 +15,7 @@ export default function SolutionFeedbackLinks({
 }) {
   const [openFeedback, setOpenFeedback] = useState(false);
   const [openQuickFeedbackModal, setQuickFeedbackModal] = useState(false);
-  const [hasProvidedQuickFeedback, setHasProvidedQuickFeedback] =
-    useState(false);
+  const [hasProvidedQuickFeedback, setHasProvidedQuickFeedback] = useState(false);
 
   useEffect(() => {
     setQuickFeedbackModal(false);
@@ -42,10 +41,7 @@ export default function SolutionFeedbackLinks({
       ></FeedbackModal>
       {!isExerciseOver && (
         <>
-          <s.StyledGreyButton
-            className="styledGreyButton"
-            onClick={handleShowSolution}
-          >
+          <s.StyledGreyButton className="styledGreyButton" onClick={handleShowSolution}>
             {strings.showSolution}
           </s.StyledGreyButton>
           <s.StyledDiv>&nbsp;|&nbsp;</s.StyledDiv>
@@ -59,9 +55,7 @@ export default function SolutionFeedbackLinks({
               setQuickFeedbackModal(!openQuickFeedbackModal);
             }}
           >
-            {isTestingMultipleBookmarks
-              ? strings.dontShowThisBookmarkMatchAgain
-              : strings.dontShowThisBookmarkAgain}
+            {isTestingMultipleBookmarks ? "Don't show one of these words again" : "Don't show this word again"}
           </s.StyledGreyButton>
           <s.StyledDiv>&nbsp;|&nbsp;</s.StyledDiv>
         </>
