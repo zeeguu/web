@@ -1,7 +1,6 @@
 import {useState, useContext, useEffect} from "react";
 import {UserContext} from "../contexts/UserContext";
 import { StyledButton } from "../components/allButtons.sc";
-import * as s from "../reader/ArticleReader.sc";
 import { CenteredColumn } from "./Congratulations.sc";
 
 
@@ -15,8 +14,6 @@ export default function ExercisesProgressSummary({onHandle}){
     
     return (
         <>
-        <s.NarrowColumn className="narrowColumn">
-
         <CenteredColumn className="centeredColumn">
           <h1>
             Exercise complete!
@@ -30,7 +27,6 @@ export default function ExercisesProgressSummary({onHandle}){
                 Continue
             </StyledButton>
         </CenteredColumn>           
-        </s.NarrowColumn>
         </>
     )
 }
