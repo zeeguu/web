@@ -144,10 +144,6 @@ export default function Congratulations({
             practice again according to our spaced-repetition schedule.
           </p>
         )}
-
-        <CenteredColumn className="contentOnRow" style={{ marginTop: "2em", justifyContent: "space-around" }}>
-          {progressionButtonRender()}
-        </CenteredColumn>
       </s.NarrowColumn>
     </>
   );
