@@ -1,10 +1,12 @@
 const ExerciseNotifications = class {
-  constructor() {
+  constructor(api) {
     this.hasExercises = null;
     this.exerciseCounter = null;
     this.setHasExercisesHook = undefined;
     this.setExerciseCounterHook = undefined;
+    this.api = api;
   }
+
   setHasExercises(hasExercises) {
     this.hasExercises = hasExercises;
   }
@@ -37,8 +39,16 @@ const ExerciseNotifications = class {
 
   updateReactState() {
     if (this.setHasExercisesHook) this.setHasExercisesHook(this.hasExercises);
-    if (this.setExerciseCounterHook)
-      this.setExerciseCounterHook(this.exerciseCounter);
+    if (this.setExerciseCounterHook) this.setExerciseCounterHook(this.exerciseCounter);
+  }
+
+  fetchAndUpdate() {
+    this.api.getBookmarksToStudyCount((scheduledBookmarksCount) => {
+      this.setHasExercises(scheduledBookmarksCount > 0);
+      this.setExerciseCounter(scheduledBookmarksCount);
+      console.log("before updating state");
+      this.updateReactState();
+    });
   }
 };
 

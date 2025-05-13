@@ -45,7 +45,6 @@ export default function ExerciseScheduling() {
     e.preventDefault();
 
     if (!validateRules([validateMaxWords])) {
-      // alert("Please introduce a number greater than 0");
       return;
     }
 
@@ -53,11 +52,7 @@ export default function ExerciseScheduling() {
       max_words_to_schedule: maxWordsToSchedule,
     });
     history.goBack();
-    api.getBookmarksToStudyCount((scheduledBookmarksCount) => {
-      exerciseNotification.setHasExercises(scheduledBookmarksCount > 0);
-      exerciseNotification.setExerciseCounter(scheduledBookmarksCount);
-      exerciseNotification.updateReactState();
-    });
+    exerciseNotification.fetchAndUpdate();
   }
 
   if (maxWordsToSchedule === -1) {
@@ -100,9 +95,4 @@ export default function ExerciseScheduling() {
       </Main>
     </PreferencesPage>
   );
-}
-
-function is_integer(str) {
-  let n = Math.floor(Number(str));
-  return n !== Infinity && String(n) === str && n >= 1;
 }

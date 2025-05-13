@@ -41,11 +41,7 @@ export default function Learning() {
     let newWords = [...inLearning].filter((b) => b.id !== bookmark.id);
     setInLearning(newWords);
 
-    api.getBookmarksToStudyCount((scheduledBookmarksCount) => {
-      exerciseNotification.setHasExercises(scheduledBookmarksCount > 0);
-      exerciseNotification.setExerciseCounter(scheduledBookmarksCount);
-      exerciseNotification.updateReactState();
-    });
+    exerciseNotification.fetchAndUpdate();
   }
 
   if (!inLearning || !inLearning_byLevel) {

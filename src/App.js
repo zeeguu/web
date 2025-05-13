@@ -29,7 +29,7 @@ import LoadingAnimation from "./components/LoadingAnimation";
 function App() {
   const [api] = useState(new Zeeguu_API(API_ENDPOINT));
 
-  const [exerciseNotification] = useState(new ExerciseNotifications());
+  const [exerciseNotification] = useState(new ExerciseNotifications(api));
 
   useUILanguage();
 
@@ -91,11 +91,7 @@ function App() {
             api.getUserPreferences((userPreferences) => {
               LocalStorage.setUserPreferences(userPreferences);
 
-              api.getBookmarksToStudyCount((scheduledBookmarksCount) => {
-                exerciseNotification.setHasExercises(scheduledBookmarksCount > 0);
-                exerciseNotification.setExerciseCounter(scheduledBookmarksCount);
-                exerciseNotification.updateReactState();
-              });
+              exerciseNotification.fetchAndUpdate();
 
               setZeeguuSpeech(new ZeeguuSpeech(api, userDetails.learned_language));
               setUserDetails(userDetails);
@@ -186,8 +182,8 @@ function App() {
                 logoutMethod: logout,
               }}
             >
-              <ExerciseCountContext.Provider value={exerciseNotification}>
-                <APIContext.Provider value={api}>
+              <APIContext.Provider value={api}>
+                <ExerciseCountContext.Provider value={exerciseNotification}>
                   {/* Routing*/}
                   <MainAppRouter hasExtension={isExtensionAvailable} handleSuccessfulLogIn={handleSuccessfulLogIn} />
 
@@ -203,8 +199,8 @@ function App() {
                     pauseOnHover
                     theme="light"
                   />
-                </APIContext.Provider>
-              </ExerciseCountContext.Provider>
+                </ExerciseCountContext.Provider>
+              </APIContext.Provider>
             </UserContext.Provider>
           </RoutingContext.Provider>
         </BrowserRouter>
