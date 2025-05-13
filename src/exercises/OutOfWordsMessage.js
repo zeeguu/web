@@ -15,26 +15,29 @@ export default function OutOfWordsMessage({ totalInLearning, goBackAction }) {
         <br />
         <br />
 
-        <h2>You already practiced the words that were due today 🎉</h2>
-
-        <p></p>
+        <h2>No more exercises today. Come back tomorrow! :)</h2>
 
         <br />
         <br />
         <p>
-          You have <b>{totalInLearning}</b> {Pluralize.word(totalInLearning)} that are{" "}
+          Words are scheduled for exercises according to spaced-repetition principles and you already practiced the
+          words that were due today 🎉
+        </p>
+
+        <br />
+
+        <p>
+          Note: You currently have <b>{totalInLearning}</b> {Pluralize.word(totalInLearning)}{" "}
           <Link to={"words"}>
-            <b>currently in learning</b>
+            <b>in learning</b>
           </Link>
-          .
+          . You can also increase the number of words you can study in a day from the{" "}
+          <Link to={"/account_settings/exercise_scheduling"}>
+            {" "}
+            <b>Exercises>Scheduling</b>
+          </Link>{" "}
+          preferences page.
         </p>
-
-        <p>
-          Words are scheduled for exercises according to spaced-repetition principles and we believe there is no need to
-          practice your {totalInLearning} words again today.
-        </p>
-
-        <p>Come back tomorrow for more exercises :)</p>
       </div>
       <s.BottomRow>
         {/*<StyledButton primary onClick={goBackAction}>*/}
