@@ -95,6 +95,7 @@ const ProgressOverviewSection = styled.div`
   width: 100;
   justify-content: space-evenly;
 `;
+
 // parent container has to have height specified in order for the nivo graphs to be shown
 // nivo automatically resizes the graphs' width, but not height
 const NivoGraphContainer = styled.div`
