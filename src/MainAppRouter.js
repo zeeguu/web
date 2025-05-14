@@ -24,7 +24,6 @@ import SettingsRouter from "./pages/Settings/_SettingsRouter";
 import ExercisesForArticle from "./exercises/ExercisesForArticle";
 import { WEB_READER } from "./reader/ArticleReader";
 import VideoPlayer from "./videos/VideoPlayer";
-import VideoList from "./videos/VideoList";
 
 export default function MainAppRouter({ hasExtension, handleSuccessfulLogIn }) {
   return (
@@ -49,7 +48,6 @@ export default function MainAppRouter({ hasExtension, handleSuccessfulLogIn }) {
       <PrivateRoute path="/exclude_words" hasExtension={hasExtension} component={ExcludeWords} />
 
       <PrivateRouteWithMainNav path="/articles" component={ArticlesRouter} />
-      <PrivateRouteWithMainNav path="/videos" component={VideoList} />
       <PrivateRoute path="/watch/video" component={VideoPlayer} />
       <PrivateRouteWithMainNav path="/exercises" component={ExercisesRouter} />
       <PrivateRouteWithMainNav path="/words" component={WordsRouter} />

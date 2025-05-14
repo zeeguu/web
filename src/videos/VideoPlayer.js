@@ -33,6 +33,8 @@ const TIPS = [
   "You can adjust the video speed in the YouTube player settings.",
 ];
 
+const tipIndex = Math.floor(Math.random() * TIPS.length);
+
 export default function VideoPlayer() {
   const api = useContext(APIContext);
   let videoID = "";
@@ -52,7 +54,6 @@ export default function VideoPlayer() {
   const [interactiveTitle, setInteractiveTitle] = useState(null);
   const [watchingSessionId, setWatchingSessionId] = useState(null);
   const [activityTimer] = useActivityTimer(updateWatchingSession);
-  const [tipIndex, setTipIndex] = useState(Math.floor(Math.random() * TIPS.length));
 
   const activityTimerRef = useShadowRef(activityTimer);
   const watchingSessionIdRef = useShadowRef(watchingSessionId);
