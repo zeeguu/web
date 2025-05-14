@@ -1,9 +1,5 @@
 import styled from "styled-components";
-<<<<<<< HEAD
 import { zeeguuWarmYellow} from "./colors";
-=======
-import { zeeguuWarmYellow} from "../components/colors";
->>>>>>> cca16046 (Added file to separate general progress item styling)
 
 const ProgressOverviewItem = styled.div`
   display: flex;
@@ -12,7 +8,6 @@ const ProgressOverviewItem = styled.div`
   border-radius: 4px;
   padding: 1.5em;
   width: 40%;
-<<<<<<< HEAD
   max-width: 80em;
   height: 60px;
 
@@ -20,11 +15,6 @@ const ProgressOverviewItem = styled.div`
     width: 100%;
     max-width: 20em;
     height: 3.5em; 
-=======
-
-  @media (max-width: 768px) {
-    width: 100%;
->>>>>>> cca16046 (Added file to separate general progress item styling)
   }
 `;
 
