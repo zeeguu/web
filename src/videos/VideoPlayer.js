@@ -30,6 +30,7 @@ const TIPS = [
   "Press the spacebar to play/pause the video.",
   "Try the Fullscreen mode for a cinematic experience! 🍿",
   "Click on words in the captions to see translations.",
+  "You can adjust the video speed in the YouTube player settings.",
 ];
 
 export default function VideoPlayer() {
@@ -51,7 +52,7 @@ export default function VideoPlayer() {
   const [interactiveTitle, setInteractiveTitle] = useState(null);
   const [watchingSessionId, setWatchingSessionId] = useState(null);
   const [activityTimer] = useActivityTimer(updateWatchingSession);
-  const [tipIndex, setTipIndex] = useState(Math.floor(Math.random() * 3));
+  const [tipIndex, setTipIndex] = useState(Math.floor(Math.random() * TIPS.length));
 
   const activityTimerRef = useShadowRef(activityTimer);
   const watchingSessionIdRef = useShadowRef(watchingSessionId);
@@ -233,9 +234,9 @@ export default function VideoPlayer() {
         <>
           <BackArrow />
           <InfoContainer>
-            <h1>
+            <h2>
               <TranslatableText interactiveText={interactiveTitle} translating={true} />
-            </h1>
+            </h2>
           </InfoContainer>
         </>
       )}

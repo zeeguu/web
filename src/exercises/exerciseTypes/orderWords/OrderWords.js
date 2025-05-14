@@ -68,9 +68,7 @@ export default function OrderWords({
   const [textBeforeExerciseText, setTextBeforeExerciseText] = useState("");
   const [textAfterExerciseText, setTextAfterExerciseText] = useState("");
   const [movingObject, setMovingObject] = useState();
-  const [getCurrentSubSessionDuration] = useSubSessionTimer(
-    activeSessionDuration,
-  );
+  const [getCurrentSubSessionDuration] = useSubSessionTimer(activeSessionDuration);
 
   // for when we are dragging things from the solution area
   const solutionDragIndex = useRef(); // the one we are dragging
@@ -135,38 +133,17 @@ export default function OrderWords({
     if (IS_DEBUG) console.log(isCurrentSentenceTooLong);
     if (isHandleLongSentences && isCurrentSentenceTooLong) {
       if (IS_DEBUG) console.log("Getting smaller context.");
-      api.getSmallerContext(
-        originalContext,
-        bookmarkWord,
-        L2_LANG,
-        MAX_CONTEXT_LENGTH,
-        (apiCandidateSubSent) => {
-          let shorterContext = JSON.parse(apiCandidateSubSent);
-          prepareExercise(
-            shorterContext,
-            isCurrentSentenceTooLong,
-            isHandleLongSentences,
-            exerciseStartTime,
-          );
-        },
-      );
+      api.getSmallerContext(originalContext, bookmarkWord, L2_LANG, MAX_CONTEXT_LENGTH, (apiCandidateSubSent) => {
+        let shorterContext = JSON.parse(apiCandidateSubSent);
+        prepareExercise(shorterContext, isCurrentSentenceTooLong, isHandleLongSentences, exerciseStartTime);
+      });
     } else {
       if (IS_DEBUG) console.log("Using default context.");
-      prepareExercise(
-        originalContext,
-        isCurrentSentenceTooLong,
-        isHandleLongSentences,
-        exerciseStartTime,
-      );
+      prepareExercise(originalContext, isCurrentSentenceTooLong, isHandleLongSentences, exerciseStartTime);
     }
   }
 
-  function prepareExercise(
-    exerciseContext,
-    isSentenceTooLong,
-    isHandlingLongSentences,
-    startTime,
-  ) {
+  function prepareExercise(exerciseContext, isSentenceTooLong, isHandlingLongSentences, startTime) {
     if (IS_DEBUG) console.log("CONTEXT: '" + exerciseContext + "'");
     exerciseContext = exerciseContext.trim();
     if (IS_DEBUG) console.log("CONTEXT AFTER TRIM: '" + exerciseContext + "'");
@@ -193,12 +170,7 @@ export default function OrderWords({
             textBeforeContext = textBeforeContext + " ";
           }
           setTextBeforeExerciseText(textBeforeContext);
-          setTextAfterExerciseText(
-            originalContext.slice(
-              startPos + exerciseContext.length,
-              contextLen,
-            ),
-          );
+          setTextAfterExerciseText(originalContext.slice(startPos + exerciseContext.length, contextLen));
         }
         if (EXERCISE_TYPE === TYPE_L1_CONSTRUCTION) {
           setExerciseText(exerciseContext);
@@ -238,8 +210,8 @@ export default function OrderWords({
   }
 
   /*
-        Tracking the current scroll on mobile
-         */
+          Tracking the current scroll on mobile
+           */
   const handleTouchScroll = () => {
     let prevElement = document.getElementById("orderExercise");
     let currentElement = prevElement;
@@ -289,8 +261,7 @@ export default function OrderWords({
     elementList = elementList.filter(
       (e) =>
         e.tagName === "BUTTON" &&
-        (e.parentNode.classList.contains("ItemRowCompactWrapConstruct") ||
-          e.parentNode.id === SOLUTION_AREA_ID),
+        (e.parentNode.classList.contains("ItemRowCompactWrapConstruct") || e.parentNode.id === SOLUTION_AREA_ID),
     );
     let element = null;
     if (elementList.length > 1) element = elementList[1];
@@ -360,9 +331,7 @@ export default function OrderWords({
     let x = moveLastPosition.current[0];
     let y = moveLastPosition.current[1];
     let dropLocation = document.elementsFromPoint(x, y);
-    dropLocation = dropLocation.filter(
-      (e) => e.id === WORD_SOUP_ID || e.id === SOLUTION_AREA_ID,
-    );
+    dropLocation = dropLocation.filter((e) => e.id === WORD_SOUP_ID || e.id === SOLUTION_AREA_ID);
     if (dropLocation.length === 0) {
       // We didn't drop the element in any of the relevant areas.
       _clearMoveOverObject();
@@ -384,9 +353,7 @@ export default function OrderWords({
     if (isCorrect) return;
     _clearMoveOverObject();
     let dropLocation = document.elementsFromPoint(x, y);
-    dropLocation = dropLocation.filter(
-      (e) => e.id === WORD_SOUP_ID || e.id === SOLUTION_AREA_ID,
-    );
+    dropLocation = dropLocation.filter((e) => e.id === WORD_SOUP_ID || e.id === SOLUTION_AREA_ID);
     // Create the array to be modified
     let copyUserSolutionWordArray = [...userSolutionWordArray];
     if (
@@ -408,26 +375,20 @@ export default function OrderWords({
       // If there is an element dragged over, then we are going to
       // reset the status and place the item
       if (solutionDragOverIndex.current != null) {
-        isDragOverPlaceholder =
-          copyUserSolutionWordArray[solutionDragOverIndex.current]
-            .isPlaceholder;
+        isDragOverPlaceholder = copyUserSolutionWordArray[solutionDragOverIndex.current].isPlaceholder;
         if (isDragOverPlaceholder) {
-          dragOverId =
-            copyUserSolutionWordArray[solutionDragOverIndex.current].id;
+          dragOverId = copyUserSolutionWordArray[solutionDragOverIndex.current].id;
         }
       }
 
       if (solutionDragIndex.current != null) {
-        let dragItemContent =
-          copyUserSolutionWordArray[solutionDragIndex.current];
+        let dragItemContent = copyUserSolutionWordArray[solutionDragIndex.current];
         if (dropLocation[0].id === SOLUTION_AREA_ID) {
           // If it is an element from the solution area, we need to swap.
           // If it's null then place it in the same place.
-          if (solutionDragOverIndex.current == null)
-            solutionDragOverIndex.current = solutionDragIndex.current;
+          if (solutionDragOverIndex.current == null) solutionDragOverIndex.current = solutionDragIndex.current;
           copyUserSolutionWordArray.splice(solutionDragIndex.current, 1);
-          let isPositionAffected =
-            solutionDragOverIndex.current > solutionDragIndex.current ? 1 : 0;
+          let isPositionAffected = solutionDragOverIndex.current > solutionDragIndex.current ? 1 : 0;
           if (isDragPlacementLeft.current === RIGHT) {
             copyUserSolutionWordArray.splice(
               solutionDragOverIndex.current - isPositionAffected + 1,
@@ -435,11 +396,7 @@ export default function OrderWords({
               dragItemContent,
             );
           } else
-            copyUserSolutionWordArray.splice(
-              solutionDragOverIndex.current - isPositionAffected,
-              0,
-              dragItemContent,
-            );
+            copyUserSolutionWordArray.splice(solutionDragOverIndex.current - isPositionAffected, 0, dragItemContent);
         } else {
           notifyChoiceSelection(dragItemContent.id, false);
           _resetDragStatuses();
@@ -450,17 +407,10 @@ export default function OrderWords({
         // based on the order item.
         if (solutionDragOverIndex.current != null) {
           let copyWordsReferenceStatus = [...wordsReferenceStatus];
-          let elementToAdd = _getWordById(
-            wordSoupDrag.current,
-            copyWordsReferenceStatus,
-          );
+          let elementToAdd = _getWordById(wordSoupDrag.current, copyWordsReferenceStatus);
           elementToAdd.inUse = true;
           if (isDragPlacementLeft.current === RIGHT)
-            copyUserSolutionWordArray.splice(
-              solutionDragOverIndex.current + 1,
-              0,
-              { ...elementToAdd },
-            );
+            copyUserSolutionWordArray.splice(solutionDragOverIndex.current + 1, 0, { ...elementToAdd });
           else
             copyUserSolutionWordArray.splice(solutionDragOverIndex.current, 0, {
               ...elementToAdd,
@@ -475,9 +425,7 @@ export default function OrderWords({
 
       if (isDragOverPlaceholder) {
         // if it was a place holder we remove it from the solution box.
-        copyUserSolutionWordArray = copyUserSolutionWordArray.filter(
-          (word) => word.id !== dragOverId,
-        );
+        copyUserSolutionWordArray = copyUserSolutionWordArray.filter((word) => word.id !== dragOverId);
       }
     }
     // Reset all drag statuses to null.
@@ -524,8 +472,7 @@ export default function OrderWords({
   function _getWordsInSentence(sentence) {
     let wordsForExercise = tokenize(removePunctuation(sentence));
     // A lot of  articles start with a dash. ( - )
-    if (wordsForExercise[0] === "-")
-      wordsForExercise = wordsForExercise.splice(1);
+    if (wordsForExercise[0] === "-") wordsForExercise = wordsForExercise.splice(1);
     return _removeEmptyTokens(wordsForExercise);
   }
 
@@ -541,21 +488,21 @@ export default function OrderWords({
 
   function _initializeWordProps(wordList, sentenceWords) {
     /*
-                Create an word object with the following properties:
-                  To be set by the component:
-                  - id:int , position in the array
-                  - word:str, the token string
-                  - status:str, the class for the object (correct, incorrect)
-                  - inUse:bool, if the user has used this word
-                  - isInSetence:bool, if it's part of the original sentence
-                    - NOTE, this is done by the frontend as the API may add repeated
-                    words, and we do not want to mark them not being part of the sentence.
-                  - hasPlaceholders:bool, if it has a placeholder token
-                  To be set by API:
-                  - feedback:str, clue associated with the error
-                  - missBefore:bool, if the missing token is before
-                  - status (Correct, Incorrect, Feedback)
-                */
+                    Create an word object with the following properties:
+                      To be set by the component:
+                      - id:int , position in the array
+                      - word:str, the token string
+                      - status:str, the class for the object (correct, incorrect)
+                      - inUse:bool, if the user has used this word
+                      - isInSetence:bool, if it's part of the original sentence
+                        - NOTE, this is done by the frontend as the API may add repeated
+                        words, and we do not want to mark them not being part of the sentence.
+                      - hasPlaceholders:bool, if it has a placeholder token
+                      To be set by API:
+                      - feedback:str, clue associated with the error
+                      - missBefore:bool, if the missing token is before
+                      - status (Correct, Incorrect, Feedback)
+                    */
     let arrayWordsProps = [];
     for (let i = 0; i < wordList.length; i++) {
       let isInSetence = sentenceWords.includes(wordList[i]) ? true : false;
@@ -579,12 +526,7 @@ export default function OrderWords({
       console.log(jsonData);
     }
     jsonData["exercise_type"] = EXERCISE_TYPE;
-    api.logUserActivity(
-      eventType,
-      "",
-      bookmarksToStudy[0].id,
-      JSON.stringify(jsonData),
-    );
+    api.logUserActivity(eventType, "", bookmarksToStudy[0].id, JSON.stringify(jsonData));
   }
 
   function _logUserActivityCheck(
@@ -602,7 +544,7 @@ export default function OrderWords({
       feedback_given: finalClueText,
       error_types: errorTypesList,
       total_errors: updatedErrorCounter,
-      exercise_time: getCurrentSubSessionDuration(activeSessionDuration, "ms"),
+      exercise_time: getCurrentSubSessionDuration(),
       exercise_start: initialTime,
     };
     _orderWordsLogUserActivity("WO_CHECK", jsonDataExerciseCheck);
@@ -640,8 +582,7 @@ export default function OrderWords({
 
   function _filterPlaceholders(constructedWordArray) {
     let filterArray = constructedWordArray.filter(
-      (wordElement) =>
-        wordElement.id < wordsReferenceStatus.length && wordElement.id >= 0,
+      (wordElement) => wordElement.id < wordsReferenceStatus.length && wordElement.id >= 0,
     );
     for (let i = 0; i < filterArray.length; i++) {
       let wordProp = filterArray[i];
@@ -691,9 +632,7 @@ export default function OrderWords({
     startTime,
     is_L1,
   ) {
-    const initialWords = is_L1
-      ? _getWordsInSentence(translatedContext)
-      : _getWordsInSentence(exerciseContext);
+    const initialWords = is_L1 ? _getWordsInSentence(translatedContext) : _getWordsInSentence(exerciseContext);
     setSolutionWords(_initializeWordProps([...initialWords], initialWords));
     if (!is_L1) {
       api.getConfusionWords(L2_LANG, exerciseContext, (cWords) => {
@@ -782,13 +721,10 @@ export default function OrderWords({
     // Add the Word to the userSolutionArea
     if (!wordSelected.inUse) {
       newUserSolutionWordArray.push({ ...wordSelected });
-      newUserSolutionWordArray[newUserSolutionWordArray.length - 1].inUse =
-        !wordSelected.inUse;
+      newUserSolutionWordArray[newUserSolutionWordArray.length - 1].inUse = !wordSelected.inUse;
     } else {
       // In case the user selected the same word twice, we remove it.
-      newUserSolutionWordArray = newUserSolutionWordArray.filter(
-        (wordElement) => wordElement.id !== wordSelected.id,
-      );
+      newUserSolutionWordArray = newUserSolutionWordArray.filter((wordElement) => wordElement.id !== wordSelected.id);
     }
     // Toggle the inUse flag
     wordSelected.inUse = !wordSelected.inUse;
@@ -798,13 +734,10 @@ export default function OrderWords({
     if (newUserSolutionWordArray.length > 2) {
       // Check if the previous token (before the one the user just added)
       // is a placeholder token
-      let previousIdToken =
-        newUserSolutionWordArray[newUserSolutionWordArray.length - 2].id;
+      let previousIdToken = newUserSolutionWordArray[newUserSolutionWordArray.length - 2].id;
       if (previousIdToken < 0) {
         // Is a placeholder token
-        newUserSolutionWordArray = newUserSolutionWordArray.filter(
-          (word) => word.id !== previousIdToken,
-        );
+        newUserSolutionWordArray = newUserSolutionWordArray.filter((word) => word.id !== previousIdToken);
       }
     }
 
@@ -898,14 +831,10 @@ export default function OrderWords({
 
     // Check if the solution is already the same
     let filterPunctuationSolArray = _getWordsFromWordProps(solutionWords);
-    let newUserSolutionWordArray = _filterPlaceholders([
-      ...userSolutionWordArray,
-    ]);
+    let newUserSolutionWordArray = _filterPlaceholders([...userSolutionWordArray]);
 
     // Get the Constructed Sentence
-    let userSolutionSentence = _getWordsFromWordProps(
-      newUserSolutionWordArray,
-    ).join(" ");
+    let userSolutionSentence = _getWordsFromWordProps(newUserSolutionWordArray).join(" ");
 
     if (userSolutionSentence === filterPunctuationSolArray.join(" ")) {
       setIsCluesRowVisible(false);
@@ -919,32 +848,16 @@ export default function OrderWords({
       // We need to ensure that we don't send the entire sentence,
       // or alignment might align very distant words.
       // We provide only the context up to + 1 what the user has constructed.
-      let resizedSolutionText = filterPunctuationSolArray
-        .slice(0, newUserSolutionWordArray.length + 2)
-        .join(" ");
+      let resizedSolutionText = filterPunctuationSolArray.slice(0, newUserSolutionWordArray.length + 2).join(" ");
       setMessageToApi(messageToAPI + HINT);
-      let nlp_model_to_use =
-        EXERCISE_TYPE === TYPE_L1_CONSTRUCTION ? L1_LANG : L2_LANG;
-      api.annotateClues(
-        newUserSolutionWordArray,
-        resizedSolutionText,
-        nlp_model_to_use,
-        (updatedUserSolutionWords) => {
-          updateWordsFromAPI(
-            updatedUserSolutionWords,
-            resizedSolutionText,
-            userSolutionSentence,
-          );
-        },
-      );
+      let nlp_model_to_use = EXERCISE_TYPE === TYPE_L1_CONSTRUCTION ? L1_LANG : L2_LANG;
+      api.annotateClues(newUserSolutionWordArray, resizedSolutionText, nlp_model_to_use, (updatedUserSolutionWords) => {
+        updateWordsFromAPI(updatedUserSolutionWords, resizedSolutionText, userSolutionSentence);
+      });
     }
   }
 
-  function updateWordsFromAPI(
-    updatedWordStatusFromAPI,
-    resizeSol,
-    constructedSentence,
-  ) {
+  function updateWordsFromAPI(updatedWordStatusFromAPI, resizeSol, constructedSentence) {
     // Variable to update and store in the user Activity.
     let updatedWordStatus = JSON.parse(updatedWordStatusFromAPI);
     let cluesTextList = [];
@@ -966,21 +879,14 @@ export default function OrderWords({
       if (wordProp.feedback !== "" && !wordProp.isCorrect) {
         cluesTextList.push(wordProp.feedback);
         errorTypesList.push(wordProp.error_type);
-        if (
-          wordProp.error_type.slice(0, 2) === "M:" &&
-          !wordProp["hasPlaceholders"]
-        ) {
+        if (wordProp.error_type.slice(0, 2) === "M:" && !wordProp["hasPlaceholders"]) {
           if (wordProp["missBefore"]) {
-            newUserSolutionWordArray.push(
-              _constructPlaceholderWordProp(placeholderCounter--, "✎"),
-            );
+            newUserSolutionWordArray.push(_constructPlaceholderWordProp(placeholderCounter--, "✎"));
           }
           wordProp["hasPlaceholders"] = true;
           newUserSolutionWordArray.push({ ...wordProp });
           if (!wordProp["missBefore"]) {
-            newUserSolutionWordArray.push(
-              _constructPlaceholderWordProp(placeholderCounter--, "✎"),
-            );
+            newUserSolutionWordArray.push(_constructPlaceholderWordProp(placeholderCounter--, "✎"));
           }
           wordWasPushed = true;
         } else {
@@ -1039,10 +945,7 @@ export default function OrderWords({
   }
 
   // Handle the Loading screen while getting the text.
-  if (
-    (wordsReferenceStatus.length === 0) | (exerciseText === "") &&
-    !isCorrect
-  ) {
+  if ((wordsReferenceStatus.length === 0) | (exerciseText === "") && !isCorrect) {
     if (IS_DEBUG) console.log("Running load animation.");
     console.log(exerciseText);
     console.log(wordsReferenceStatus);
@@ -1051,14 +954,8 @@ export default function OrderWords({
 
   return (
     <>
-      <sOW.ExerciseOW
-        className="orderWords"
-        onTouchMove={handleTouchScroll}
-        id="orderExercise"
-      >
-        <div className="headline headlineOrderWords">
-          {strings.orderTheWordsToMakeTheHighlightedPhrase}
-        </div>
+      <sOW.ExerciseOW className="orderWords" onTouchMove={handleTouchScroll} id="orderExercise">
+        <div className="headline headlineOrderWords">{strings.orderTheWordsToMakeTheHighlightedPhrase}</div>
         {isCorrect && EXERCISE_TYPE === TYPE_L1_CONSTRUCTION && (
           <div className="contextExample" style={{ marginBottom: "2em" }}>
             <TranslatableText
@@ -1094,8 +991,7 @@ export default function OrderWords({
         {isCluesRowVisible && (
           <sOW.ItemRowCompactWrap className="cluesRow">
             <h4>Clues</h4>
-            {clueText.length > 0 &&
-              clueText.map((clue, index) => <p key={index}>{clue}</p>)}
+            {clueText.length > 0 && clueText.map((clue, index) => <p key={index}>{clue}</p>)}
           </sOW.ItemRowCompactWrap>
         )}
 
@@ -1124,9 +1020,7 @@ export default function OrderWords({
           </div>
         )}
 
-        {wordsReferenceStatus.length === 0 && !isCorrect && (
-          <LoadingAnimation />
-        )}
+        {wordsReferenceStatus.length === 0 && !isCorrect && <LoadingAnimation />}
 
         {!isCorrect && (
           <div
@@ -1154,26 +1048,15 @@ export default function OrderWords({
           <sOW.ItemRowCompactWrap className="ItemRowCompactWrap">
             <button
               onClick={handleResetClick}
-              className={
-                userSolutionWordArray.length > 0
-                  ? "owButton undo"
-                  : "owButton disable"
-              }
+              className={userSolutionWordArray.length > 0 ? "owButton undo" : "owButton disable"}
             >
               ↻ {strings.reset}
             </button>
             <button
               onClick={handleCheck}
-              className={
-                userSolutionWordArray.length > 0
-                  ? "owButton check"
-                  : "owButton disable"
-              }
+              className={userSolutionWordArray.length > 0 ? "owButton check" : "owButton disable"}
             >
-              {solutionWords.length <= userSolutionWordArray.length
-                ? strings.check
-                : strings.hint}{" "}
-              ✔
+              {solutionWords.length <= userSolutionWordArray.length ? strings.check : strings.hint} ✔
             </button>
           </sOW.ItemRowCompactWrap>
         )}
@@ -1203,18 +1086,12 @@ export default function OrderWords({
           toggleShow={toggleShow}
           isCorrect={isCorrect}
         />
-        {!isCorrect && (
-          <p className="tipText">{strings.orderWordsTipMessage}</p>
-        )}
+        {!isCorrect && <p className="tipText">{strings.orderWordsTipMessage}</p>}
         {!isCorrect && ENABLE_SHORTER_CONTEXT_BUTTON && (
           <sOW.ItemRowCompactWrap className="ItemRowCompactWrap">
             <button
               onClick={handleReduceContext}
-              className={
-                isHandlingLongSentences
-                  ? "owButton reduceContext correct"
-                  : "owButton reduceContext disable"
-              }
+              className={isHandlingLongSentences ? "owButton reduceContext correct" : "owButton reduceContext disable"}
             >
               Toggle Short Context
             </button>
@@ -1277,8 +1154,8 @@ export default function OrderWords({
   }
 
   /*
-        Returns RIGHT if the mouse is to the right or LEFT if the mouse is to the left.
-         */
+          Returns RIGHT if the mouse is to the right or LEFT if the mouse is to the left.
+           */
   function _getObjectSide(point, object) {
     function _getPosition(elem) {
       // Found: https://stackoverflow.com/questions/9040768/getting-coordinates-of-objects-in-js
@@ -1301,8 +1178,7 @@ export default function OrderWords({
     let x = point[0];
 
     let objectBoundingBox = _getPosition(object);
-    let objectMidpoint =
-      objectBoundingBox.offsetLeft + objectBoundingBox.width / 2;
+    let objectMidpoint = objectBoundingBox.offsetLeft + objectBoundingBox.width / 2;
     return x < objectMidpoint ? LEFT : RIGHT;
   }
 
@@ -1317,8 +1193,7 @@ export default function OrderWords({
       element.style.position = "absolute";
       element.classList.add("moveItem");
       element.style.left = initialPosition.current[0] + dx - width / 2 + "px";
-      element.style.top =
-        initialPosition.current[1] + dy + scrollY.current - height / 2 + "px";
+      element.style.top = initialPosition.current[1] + dy + scrollY.current - height / 2 + "px";
       element.style.zIndex = "2";
       element.classList.remove("renderDisable");
     }

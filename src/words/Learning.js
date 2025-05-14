@@ -89,26 +89,6 @@ export default function Learning() {
       </>
 
       <br />
-
-      <CollapsablePanel topMessage="Not Yet In Study">
-        {toLearn.length > 0 && (
-          <s.TopMessage>
-            <div className="top-message-icon">
-              {Feature.merle_exercises() ? strings.toLearnMsgLearningCycles : strings.toLearnMsg}
-            </div>
-          </s.TopMessage>
-        )}
-
-        {toLearn.length === 0 ? (
-          <s.TopMessage>{strings.noToLearnWords}</s.TopMessage>
-        ) : (
-          <>
-            {toLearn.map((each) => (
-              <Word key={each.id} bookmark={each} source={WEB_READER} notifyDelete={onNotifyDelete} />
-            ))}
-          </>
-        )}
-      </CollapsablePanel>
     </>
   );
 }

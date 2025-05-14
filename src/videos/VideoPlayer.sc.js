@@ -44,9 +44,7 @@ export const FullscreenButton = styled.button`
 
 export const VideoContainer = styled.div`
   position: relative;
-  width: 100%;
-  max-width: 800px;
-  height: 65vh;
+  aspect-ratio: 16 / 9;
   margin: 0 auto;
   border-radius: 12px;
   overflow: hidden;
@@ -76,17 +74,14 @@ export const VideoContainer = styled.div`
 `;
 
 export const CaptionContainer = styled.div`
-  margin-top: 1em;
-  margin-bottom: 0.5em;
-  padding: 1em;
   white-space: pre-wrap;
   font-size: 18px;
   text-align: center;
   color: #444;
   background: white;
   border-radius: 8px;
-  min-height: 15vh;
-  max-height: 15vh;
+  min-height: 17vh;
+  max-height: 17vh;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -103,9 +98,7 @@ export const CaptionContainer = styled.div`
 `;
 
 export const InfoContainer = styled.div`
-  margin-top: 0.5em;
   margin-bottom: 1.2em;
-  padding: 1em;
   background: white;
   border-radius: 8px;
   display: flex;
