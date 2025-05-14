@@ -55,6 +55,9 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
   const [totalBookmarksInPipeline, setTotalBookmarksInPipeline] = useState();
   const [currentExerciseType, setCurrentExerciseType] = useState(null);
   const [showProgressSummary, setShowProgressSummary] = useState(false);
+  const [totalInLearning, setTotalInLearning] = useState(null);
+  const [totalLearned, setTotalLearned] = useState(null);
+
 
   // We can use this too states to track if the user is correct.
   // isExerciseOver & !isShownSolution & isCorrect = User Correct
@@ -94,6 +97,16 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  useEffect(() => {
+    api.getUserBookmarksInPipeline(false, (bookmarks) => {
+      setTotalInLearning(bookmarks.length);
+    });
+
+    api.totalLearnedBookmarks((totalLearnedCount) =>{
+      setTotalLearned(totalLearnedCount)
+    });
+  }, [showProgressSummary]);
 
   // ********************************************************************************
   // Component Initialization
@@ -244,7 +257,7 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
   if (finished) {
     if(showProgressSummary){
       return (
-        <ExercisesProgressSummary onHandle={handleContinue} />
+        <ExercisesProgressSummary onHandle={handleContinue} totalInLearning={totalInLearning} totalLearned={totalLearned} />
       );
     }
     return (
