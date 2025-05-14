@@ -1,5 +1,35 @@
 import strings from "../../i18n/definitions";
 
+export function getWeeklyTranslatedWordsCount(data){
+    //converts the Map to an array of objects     
+    const dataArray = Array.from(data, ([date, count]) => ({ date, count }));
+
+    //show current date eg Wed May 14 2025 20:00:39 GMT+0200 (centraleuropeisk sommartid)
+    const now = new Date();
+
+    //day of week wednesday = 3
+    const dayOfWeek = now.getDay();
+
+    //danish way. Now wed = 2
+    const shiftNumOfDay = (dayOfWeek + 6) % 7;
+
+    //sets startOfWeek to
+    //wed = 3
+    const startOfWeek = new Date(now);
+    //3-2 = 1 e.g monday -> start of week = monday
+    startOfWeek.setDate(now.getDate()- shiftNumOfDay)
+    startOfWeek.setHours(0, 0, 0, 0);
+
+    const endOfWeek = new Date(startOfWeek);
+    endOfWeek.setDate(startOfWeek.getDate()+6);
+    endOfWeek.setHours(23, 59, 59, 999);
+
+    return dataArray.filter(({date}) => {
+      const dayDate = new Date(date);
+      return dayDate >= startOfWeek && dayDate <= endOfWeek; 
+    });
+  }
+
 export function getTotalProgressOverviewItems({totalInLearning, totalToLearn, totalLearned}){
     const totalTranslatedWords = totalInLearning + totalToLearn + totalLearned;
     const totalPracticedWords = totalInLearning;
@@ -45,7 +75,10 @@ export function getTotalProgressOverviewItems({totalInLearning, totalToLearn, to
     };
 }
 
-export function getWeeklyProgressOverviewItems(){
+export function getWeeklyProgressOverviewItems({weeklyTranslated}){
+    const weeklyTranslatedWords = weeklyTranslated;
+
+
     const weeklyArticlesRead = {
         iconText: strings.iconTextWeeklyArticles,
         value: 3,
@@ -55,7 +88,7 @@ export function getWeeklyProgressOverviewItems(){
 
     const weeklyWordsTranslated = {
         iconText: strings.iconTextWeeklyWordsTranslated,
-        value: 4,
+        value: weeklyTranslatedWords,
         beforeText: strings.wordsTranslatedTextStart,
         afterText: strings.wordsTextWeeklyEnd,
     };
