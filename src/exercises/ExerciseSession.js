@@ -96,16 +96,6 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  useEffect(() => {
-    api.getAllScheduledBookmarks(false, (bookmarks) => {
-      setTotalInLearning(bookmarks.length);
-    });
-
-    api.totalLearnedBookmarks((totalLearnedCount) =>{
-      setTotalLearned(totalLearnedCount)
-    });
-  }, [showProgressSummary]);
-
   // ********************************************************************************
   // Component Initialization
   // ********************************************************************************
