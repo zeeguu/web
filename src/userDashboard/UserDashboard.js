@@ -132,7 +132,7 @@ export default function UserDashboard() {
     // eslint-disable-next-line
   }, [activeTab]);
 
-  if (!allWordsData || !dailyExerciseAndReadingTimes || !totalInLearning || !totalToLearn || totalLearned == null) {
+  if (!allWordsData || !dailyExerciseAndReadingTimes || totalInLearning==null || totalToLearn==null || totalLearned == null) {
     return <LoadingAnimation />;
   }
 
