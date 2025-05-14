@@ -18,6 +18,7 @@ import {
   getBarGraphData,
   calculateCountPerMonth_Activity,
 } from "./userdashboard_Graphs/dataFormat/ReadingAndExercisesTimeDataFormat";
+import {getWeeklyTranslatedWordsCount} from "../utils/progressTracking/ProgressOverviewItems"
 import UserDashboardTop from "./userDashboard_Top/UserDashboardTop";
 import * as s from "./userDashboard_Styled/UserDashboard.sc";
 import { setTitle } from "../assorted/setTitle";
@@ -44,6 +45,9 @@ export default function UserDashboard() {
   const [totalInLearning, setTotalInLearning] = useState(null);
   const [totalToLearn, setTotalToLearn] = useState(null);
   const [totalLearned, setTotalLearned] = useState(null);
+  const [weeklyTranslated, setWeeklyTranslated] = useState(null);
+
+
 
   function handleChangeReferenceDate(newDate) {
     setReferenceDate(newDate);
@@ -108,6 +112,10 @@ export default function UserDashboard() {
       setAllWordsData(formatted);
 
       setAllWordsDataPerMonths(calculateCountPerMonth_Words(formatted));
+
+      const thisWeek = getWeeklyTranslatedWordsCount(formatted);
+      const thisWeekTotal = thisWeek.reduce((sum, day) => sum + day.count, 0);
+      setWeeklyTranslated(thisWeekTotal);
     });
 
     api.getUserActivityByDay((activity) => {
@@ -132,7 +140,7 @@ export default function UserDashboard() {
     // eslint-disable-next-line
   }, [activeTab]);
 
-  if (!allWordsData || !dailyExerciseAndReadingTimes || totalInLearning==null || totalToLearn==null || totalLearned == null) {
+  if (!allWordsData || !dailyExerciseAndReadingTimes || totalInLearning==null || totalToLearn==null || totalLearned == null || weeklyTranslated == null) {
     return <LoadingAnimation />;
   }
 
@@ -181,6 +189,7 @@ export default function UserDashboard() {
             totalInLearning ={totalInLearning}
             totalToLearn = {totalToLearn}
             totalLearned = {totalLearned}
+            weeklyTranslated = {weeklyTranslated}
             />
           </>
         )}
