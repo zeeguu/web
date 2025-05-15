@@ -8,7 +8,7 @@ import ExerciseTypePreferences from "./ExerciseTypePreferences";
 import MyClassrooms from "./MyClassrooms/MyClassrooms";
 import DeleteAccount from "./DeleteAccount";
 import ExcludedKeywords from "./ExcludedKeywords";
-import ExerciseScheduling from "./ExerciseScheduling";
+import ExerciseSchedulingPreferences from "./ExerciseSchedulingPreferences";
 
 export default function SettingsRouter({ setUser }) {
   return (
@@ -21,7 +21,7 @@ export default function SettingsRouter({ setUser }) {
 
       <PrivateRoute path="/account_settings/exercise_types" component={ExerciseTypePreferences} />
 
-      <PrivateRoute path="/account_settings/exercise_scheduling" component={ExerciseScheduling} />
+      <PrivateRoute path="/account_settings/exercise_scheduling" component={ExerciseSchedulingPreferences} />
 
       <PrivateRoute path="/account_settings/my_classrooms" component={MyClassrooms} />
 

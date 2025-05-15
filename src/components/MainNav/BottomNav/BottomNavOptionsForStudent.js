@@ -1,14 +1,14 @@
 import { useLocation } from "react-router-dom/cjs/react-router-dom";
 import NotificationIcon from "../../NotificationIcon";
-import useExerciseNotification from "../../../hooks/useExerciseNotification";
 import BottomNavOption from "./BottomNavOption";
 import NavigationOptions from "../navigationOptions";
 import BottomNavLanguageOption from "./BottomNavLanguageOption";
+import { useContext } from "react";
+import { ExercisesCounterContext } from "../../../exercises/ExercisesCounterContext";
 
 export default function BottomNavOptionsForStudent() {
   const path = useLocation().pathname;
-  const { hasExerciseNotification, notificationMsg } =
-    useExerciseNotification();
+  const { hasExerciseNotification, totalExercisesInPipeline } = useContext(ExercisesCounterContext);
 
   return (
     <>
@@ -17,12 +17,7 @@ export default function BottomNavOptionsForStudent() {
         {...NavigationOptions.exercises}
         currentPath={path}
         notification={
-          hasExerciseNotification && (
-            <NotificationIcon
-              position={"top-absolute"}
-              text={notificationMsg}
-            />
-          )
+          hasExerciseNotification && <NotificationIcon position={"top-absolute"} text={totalExercisesInPipeline} />
         }
       />
       <BottomNavOption {...NavigationOptions.words} currentPath={path} />
