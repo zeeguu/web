@@ -20,7 +20,7 @@ export default function Learning() {
   const [nextInLearning, setNextInLearning] = useState(false);
 
   useEffect(() => {
-    api.getAllScheduledBookmarks(false, (bookmarks) => {
+    api.getBookmarksAlreadyScheduled(false, (bookmarks) => {
       setInLearning(bookmarks);
 
       let words_byLevel = { 0: [], 1: [], 2: [], 3: [], 4: [] };
