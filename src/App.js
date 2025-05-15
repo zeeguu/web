@@ -179,7 +179,6 @@ function App() {
             >
               <APIContext.Provider value={api}>
                 {/* Routing*/}
-                <TopBar/>
                 <MainAppRouter hasExtension={isExtensionAvailable} handleSuccessfulLogIn={handleSuccessfulLogIn} />
 
                 <ToastContainer
