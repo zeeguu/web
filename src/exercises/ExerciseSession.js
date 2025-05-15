@@ -287,6 +287,7 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
     if (newIndex === fullExerciseProgression.length) {
       setFinished(true);
       api.getCountOfBookmarksRecommendedForPractice((bookmarkCount) => {
+      setShowProgressSummary(true);
         setIsOutOfWordsToday(bookmarkCount === 0);
       });
       return;
