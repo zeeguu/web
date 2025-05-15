@@ -185,7 +185,7 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
         });
       });
     } else {
-      api.getBookmarksAvailableForStudy((bookmarks) => initializeExercisesForBookmarks(bookmarks));
+      api.getBookmarksRecommendedForPractice((bookmarks) => initializeExercisesForBookmarks(bookmarks));
       setTitle(strings.exercises);
     }
   }
