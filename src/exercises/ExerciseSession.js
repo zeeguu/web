@@ -172,6 +172,8 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
 
   function getBookmarksAndAssignThemToExercises() {
     if (articleID) {
+      // TODO: Mircea: Consider creating an endpoint that merges these two
+      // calls so we only send a single call
       api.getArticleInfo(articleID, (articleInfo) => {
         api.bookmarksToStudyForArticle(articleID, true, (bookmarks) => {
           hideExerciseCounter(); // for article bookmarks we do not show the counter
@@ -183,7 +185,7 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
         });
       });
     } else {
-      api.getBookmarksAvailableForStudy((bookmarks) => initializeExercisesForBookmarks(bookmarks));
+      api.getBookmarksRecommendedForPractice((bookmarks) => initializeExercisesForBookmarks(bookmarks));
       setTitle(strings.exercises);
     }
   }
@@ -285,7 +287,7 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
     if (newIndex === fullExerciseProgression.length) {
       setFinished(true);
       setShowProgressSummary(true);
-      api.getCountOfBookmarksAvailableForStudy((bookmarkCount) => {
+      api.getCountOfBookmarksRecommendedForPractice((bookmarkCount) => {
         setIsOutOfWordsToday(bookmarkCount === 0);
       });
       return;

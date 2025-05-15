@@ -1,12 +1,13 @@
 import { Zeeguu_API } from "./classDef";
 import qs from "qs";
 
-Zeeguu_API.prototype.getUserBookmarksScheduledForToday = function (count, callback) {
-  this._getJSON(`bookmarks_scheduled_for_today/${count}`, callback);
+Zeeguu_API.prototype.getBookmarksDueToday = function (count, callback) {
+  this._getJSON(`bookmarks_due_today/${count}`, callback);
 };
 
-Zeeguu_API.prototype.getScheduledBookmarks = function (isWithTokens, callback) {
-  let endpoint = `scheduled_bookmarks`;
+// All Scheduled Bookmarks
+Zeeguu_API.prototype.getAllScheduledBookmarks = function (isWithTokens, callback) {
+  let endpoint = `all_scheduled_bookmarks`;
   let payload = {
     with_tokens: isWithTokens,
   };
@@ -23,16 +24,17 @@ Zeeguu_API.prototype.getScheduledBookmarks = function (isWithTokens, callback) {
   else this._getJSON(endpoint, callback);
 };
 
-Zeeguu_API.prototype.getScheduledBookmarksCount = function (callback) {
-  this._getJSON(`scheduled_bookmarks_count`, callback);
+Zeeguu_API.prototype.getCountOfAllScheduledBookmarks = function (callback) {
+  this._getJSON(`count_of_all_scheduled_bookmarks`, callback);
 };
 
-Zeeguu_API.prototype.getBookmarksToStudyCount = function (callback) {
-  this._getJSON(`bookmarks_to_study_count`, callback);
+// Bookmarks recommended to be studied today
+Zeeguu_API.prototype.getCountOfBookmarksRecommendedForPractice = function (callback) {
+  this._getJSON(`count_of_bookmarks_recommended_for_practice`, callback);
 };
 
-Zeeguu_API.prototype.getBookmarksToStudy = function (callback) {
-  this._getJSON(`bookmarks_to_study`, callback);
+Zeeguu_API.prototype.getBookmarksRecommendedForPractice = function (callback) {
+  this._getJSON(`bookmarks_recommended_for_practice`, callback);
 };
 
 Zeeguu_API.prototype.uploadExerciseFeedback = function (

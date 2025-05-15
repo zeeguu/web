@@ -17,7 +17,7 @@ export default function useExercisesCounterNotification() {
   }, [path]);
 
   function updateExercisesCounter() {
-    api.getCountOfBookmarksAvailableForStudy((scheduledBookmarksCount) => {
+    api.getCountOfBookmarksRecommendedForPractice((scheduledBookmarksCount) => {
       setTotalExercisesInPipeline(scheduledBookmarksCount);
 
       setHasExerciseNotification(scheduledBookmarksCount >= 1);
