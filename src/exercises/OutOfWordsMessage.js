@@ -14,7 +14,7 @@ export default function OutOfWordsMessage({ goBackAction }) {
   const [totalInLearning, setTotalInLearning] = useState();
 
   useEffect(() => {
-    api.getBookmarksCountOfAlreadyScheduled((totalInLearning) => {
+    api.getCountOfAllScheduledBookmarks((totalInLearning) => {
       setTotalInLearning(totalInLearning);
     });
   }, []);
