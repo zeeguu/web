@@ -76,28 +76,19 @@ export default function LandingPage() {
 
             <s.Subsection>
               <s.SubsectionText>
-                {/* <h3>{strings.personalizedReading}</h3> */}
                 <h3>Browse your personalized&nbsp;feed</h3>
                 <p>
                   Our system continuously searches the internet to&nbsp;bring
                   you new article recommendations tailored to your interests and
                   desired language&nbsp;difficulty.
                 </p>
-                {/* <p>{strings.personalizedRecommandationsEllaboration1}</p>
-                <p>{strings.personalizedRecommandationsEllaboration2}</p> */}
               </s.SubsectionText>
-              <s.SubsectionImage src="static/images/feed.png" />
-              {/* <img src="static/images/feed.png" /> */}
-              {/* </s.SubsectionImage> */}
+              <s.SubsectionImage src="static/images/customized-feed.png" />
             </s.Subsection>
 
             <s.Subsection>
-              <s.SubsectionImage src="static/images/feed.png" />
-              {/* <img src="static/images/feed.png" /> */}
-              {/* <img src="/" /> */}
-              {/* </s.SubsectionImage> */}
+              <s.SubsectionImage src="static/images/translation-pronunciation.png" />
               <s.SubsectionText>
-                {/* <h3>{strings.easyTranslations}</h3> */}
                 <h3>Read, translate words &&nbsp;hear&nbsp;pronunciation</h3>
                 <p>
                   Select an article from your personalized feed and
@@ -106,16 +97,12 @@ export default function LandingPage() {
                   extension. Instantly translate words and hear their
                   pronunciation&nbsp;effortlessly.
                 </p>
-                {/* <p>{strings.easyTranslationsEllaboration1}</p>
-                <p>{strings.easyTranslationsEllaboration2}</p>
-                <p>{strings.easyTranslationsEllaboration3}</p> */}
               </s.SubsectionText>
             </s.Subsection>
 
             <s.Subsection>
               <s.SubsectionText>
-                {/* <h3>{strings.personalizedExercises}</h3> */}
-                <h3>Practice new words in&nbsp;context</h3>
+                <h3>Practice new words with&nbsp;spaced&nbsp;repetition</h3>
                 <p>
                   Test your vocabulary with many types of interactive exercises
                   that adapt to your level. Progress through increasing
@@ -124,14 +111,8 @@ export default function LandingPage() {
                   Plus, spaced repetition helps you remember words by reviewing
                   them at optimal time&nbsp;intervals.
                 </p>
-                {/* <p>{strings.personalizedPractiseEllaboration1}</p>
-                <p>{strings.personalizedMultipleExerciseTypes}</p>
-                <p>{strings.personalizedPractiseEllaboration2}</p> */}
               </s.SubsectionText>
-              <s.SubsectionImage src="static/images/feed.png" />
-
-              {/* <img src="static/images/feed.png" />
-              </s.SubsectionImage> */}
+              <s.SubsectionImage src="static/images/spaced-repetition-calendar.png" />
             </s.Subsection>
           </s.PageSection>
         </s.PageSectionWrapper>
