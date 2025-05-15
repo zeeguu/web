@@ -4,9 +4,20 @@ import useScreenWidth from "../hooks/useScreenWidth";
 import { MOBILE_WIDTH } from "../components/MainNav/screenSize";
 import BackArrow from "../pages/Settings/settings_pages_shared/BackArrow";
 import { Link } from "react-router-dom";
+import { useContext, useEffect, useState } from "react";
+import { APIContext } from "../contexts/APIContext";
 
-export default function OutOfWordsMessage({ totalInLearning, goBackAction }) {
+export default function OutOfWordsMessage({ goBackAction }) {
   const { screenWidth } = useScreenWidth();
+  const api = useContext(APIContext);
+
+  const [totalInLearning, setTotalInLearning] = useState();
+
+  useEffect(() => {
+    api.getBookmarksCountOfAlreadyScheduled((totalInLearning) => {
+      setTotalInLearning(totalInLearning);
+    });
+  }, []);
 
   return (
     <s.Exercise>
@@ -27,16 +38,18 @@ export default function OutOfWordsMessage({ totalInLearning, goBackAction }) {
         <br />
 
         <p>
-          Note: You currently have <b>{totalInLearning}</b> {Pluralize.word(totalInLearning)}{" "}
-          <Link to={"words"}>
-            <b>in learning</b>
-          </Link>
-          . You can also increase the number of words you can study in a day from the{" "}
-          <Link to={"/account_settings/exercise_scheduling"}>
-            {" "}
-            <b>Exercises>Scheduling</b>
-          </Link>{" "}
-          preferences page.
+          <small>
+            Note: You currently have <b>{totalInLearning}</b> {Pluralize.word(totalInLearning)}{" "}
+            <Link to={"/words"}>
+              <b>in learning</b>
+            </Link>
+            . You can also increase the number of words in learning from the{" "}
+            <Link to={"/account_settings/exercise_scheduling"}>
+              {" "}
+              <b>Exercises>Scheduling</b>
+            </Link>{" "}
+            preferences page and then you can get more exercises also today.
+          </small>
         </p>
       </div>
     </s.Exercise>
