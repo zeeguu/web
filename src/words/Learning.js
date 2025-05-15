@@ -8,17 +8,18 @@ import { WEB_READER } from "../reader/ArticleReader";
 import CollapsablePanel from "../components/CollapsablePanel";
 
 import { APIContext } from "../contexts/APIContext";
-import { ExerciseCountContext } from "../exercises/ExerciseCountContext";
+import { ExercisesCounterContext } from "../exercises/ExercisesCounterContext";
 
 export default function Learning() {
   const api = useContext(APIContext);
-  const exerciseNotification = useContext(ExerciseCountContext);
+
+  const { updateExercisesCounter } = useContext(ExercisesCounterContext);
 
   const [inLearning, setInLearning] = useState(null);
   const [inLearning_byLevel, setInLearning_byLevel] = useState(null);
 
   useEffect(() => {
-    api.getScheduledBookmarks(false, (bookmarks) => {
+    api.getBookmarksAlreadyScheduled(false, (bookmarks) => {
       setInLearning(bookmarks);
 
       let words_byLevel = { 0: [], 1: [], 2: [], 3: [], 4: [] };
@@ -40,8 +41,7 @@ export default function Learning() {
   function onNotifyDelete(bookmark) {
     let newWords = [...inLearning].filter((b) => b.id !== bookmark.id);
     setInLearning(newWords);
-
-    exerciseNotification.fetchAndUpdate();
+    updateExercisesCounter();
   }
 
   if (!inLearning || !inLearning_byLevel) {

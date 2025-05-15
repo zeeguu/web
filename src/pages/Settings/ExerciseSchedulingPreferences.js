@@ -17,14 +17,14 @@ import InputField from "../../components/InputField";
 import useFormField from "../../hooks/useFormField";
 import { PositiveIntegerValidator } from "../../utils/ValidatorRule/Validator";
 import validateRules from "../../assorted/validateRules";
-import { ExerciseCountContext } from "../../exercises/ExerciseCountContext";
+import { ExercisesCounterContext } from "../../exercises/ExercisesCounterContext";
 
 const PREF_KEY_MAX_WORDS_TO_SCHEDULE = "max_words_to_schedule";
 
-export default function ExerciseScheduling() {
+export default function ExerciseSchedulingPreferences() {
   const api = useContext(APIContext);
   const { session } = useContext(UserContext);
-  const exerciseNotification = useContext(ExerciseCountContext);
+  const { updateExercisesCounter } = useContext(ExercisesCounterContext);
 
   const history = useHistory();
 
@@ -52,7 +52,7 @@ export default function ExerciseScheduling() {
       max_words_to_schedule: maxWordsToSchedule,
     });
     history.goBack();
-    exerciseNotification.fetchAndUpdate();
+    updateExercisesCounter();
   }
 
   if (maxWordsToSchedule === -1) {
@@ -71,7 +71,11 @@ export default function ExerciseScheduling() {
             <InputField
               id="max_words_to_schedule"
               type={"number"}
-              label={<>Maximum words in learning</>}
+              label={
+                <>
+                  Words in learning <small>(How many words to study at once)</small>
+                </>
+              }
               value={maxWordsToSchedule}
               onChange={(e) => {
                 setMaxWordsToSchedule(e.target.value);

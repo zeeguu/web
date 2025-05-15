@@ -1,8 +1,6 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { BrowserRouter } from "react-router-dom";
 
-import ExerciseNotifications from "./exercises/ExerciseNotification";
-import { ExerciseCountContext } from "./exercises/ExerciseCountContext";
 import { SystemLanguagesContext } from "./contexts/SystemLanguagesContext";
 import { UserContext } from "./contexts/UserContext";
 import { RoutingContext } from "./contexts/RoutingContext";
@@ -28,8 +26,6 @@ import LoadingAnimation from "./components/LoadingAnimation";
 
 function App() {
   const [api] = useState(new Zeeguu_API(API_ENDPOINT));
-
-  const [exerciseNotification] = useState(new ExerciseNotifications(api));
 
   useUILanguage();
 
@@ -90,8 +86,6 @@ function App() {
             LocalStorage.setUserInfo(userDetails);
             api.getUserPreferences((userPreferences) => {
               LocalStorage.setUserPreferences(userPreferences);
-
-              exerciseNotification.fetchAndUpdate();
 
               setZeeguuSpeech(new ZeeguuSpeech(api, userDetails.learned_language));
               setUserDetails(userDetails);
@@ -183,23 +177,21 @@ function App() {
               }}
             >
               <APIContext.Provider value={api}>
-                <ExerciseCountContext.Provider value={exerciseNotification}>
-                  {/* Routing*/}
-                  <MainAppRouter hasExtension={isExtensionAvailable} handleSuccessfulLogIn={handleSuccessfulLogIn} />
+                {/* Routing*/}
+                <MainAppRouter hasExtension={isExtensionAvailable} handleSuccessfulLogIn={handleSuccessfulLogIn} />
 
-                  <ToastContainer
-                    position="bottom-right"
-                    autoClose={2000}
-                    hideProgressBar={true}
-                    newestOnTop={false}
-                    closeOnClick
-                    rtl={false}
-                    pauseOnFocusLoss
-                    draggable
-                    pauseOnHover
-                    theme="light"
-                  />
-                </ExerciseCountContext.Provider>
+                <ToastContainer
+                  position="bottom-right"
+                  autoClose={2000}
+                  hideProgressBar={true}
+                  newestOnTop={false}
+                  closeOnClick
+                  rtl={false}
+                  pauseOnFocusLoss
+                  draggable
+                  pauseOnHover
+                  theme="light"
+                />
               </APIContext.Provider>
             </UserContext.Provider>
           </RoutingContext.Provider>

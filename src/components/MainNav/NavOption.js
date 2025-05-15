@@ -16,11 +16,7 @@ export default function NavOption({
 }) {
   const Component = linkTo ? s.RouterLink : s.OptionButton;
   const isActive = currentPath?.includes(linkTo);
-  const elementTitle = isMediumScreenWidth(screenWidth)
-    ? title
-      ? title
-      : text
-    : "";
+  const elementTitle = isMediumScreenWidth(screenWidth) ? (title ? title : text) : "";
 
   return (
     <s.NavOption>
@@ -37,7 +33,7 @@ export default function NavOption({
         <s.OptionContentWrapper $screenWidth={screenWidth}>
           <s.IconContainer>{icon}</s.IconContainer>
           <s.TextWrapper $screenWidth={screenWidth}>{text}</s.TextWrapper>
-          {!isActive && notification}
+          {notification}
         </s.OptionContentWrapper>
       </Component>
     </s.NavOption>

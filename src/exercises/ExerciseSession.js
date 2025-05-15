@@ -1,4 +1,4 @@
-import { useEffect, useState, useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 
 import Congratulations from "./Congratulations";
 import ExerciseSessionProgressBar from "./ExerciseSessionProgressBar";
@@ -10,24 +10,21 @@ import OutOfWordsMessage from "./OutOfWordsMessage";
 import SessionStorage from "../assorted/SessionStorage";
 import Feature from "../features/Feature";
 import { CORRECT, MAX_COOLDOWN_INTERVAL, SOLUTION, WRONG } from "./ExerciseConstants";
-import { EXERCISE_TYPES } from "./ExerciseTypeConstants";
+import { EXERCISE_TYPES, LEARNING_CYCLE } from "./ExerciseTypeConstants";
 import LocalStorage from "../assorted/LocalStorage";
 import { assignBookmarksToExercises } from "./assignBookmarksToExercises";
 import NextNavigation from "./exerciseTypes/NextNavigation";
 import DisableAudioSession from "./exerciseTypes/DisableAudioSession";
 import { SpeechContext } from "../contexts/SpeechContext";
 import {
-  DEFAULT_NUMBER_BOOKMARKS_TO_PRACTICE,
   DEFAULT_SEQUENCE,
   DEFAULT_SEQUENCE_NO_AUDIO,
   EXTENDED_SEQUENCE,
   EXTENDED_SEQUENCE_NO_AUDIO,
-  MAX_NUMBER_OF_BOOKMARKS_EX_SESSION,
 } from "./exerciseSequenceTypes";
 import useActivityTimer from "../hooks/useActivityTimer";
-import { ExerciseCountContext } from "./ExerciseCountContext";
+import { ExercisesCounterContext } from "./ExercisesCounterContext";
 import useShadowRef from "../hooks/useShadowRef";
-import { LEARNING_CYCLE } from "./ExerciseTypeConstants";
 import DigitalTimer from "../components/DigitalTimer";
 
 import BackArrow from "../pages/Settings/settings_pages_shared/BackArrow";
@@ -52,7 +49,7 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
   const [correctBookmarks, setCorrectBookmarks] = useState([]);
   const [incorrectBookmarks, setIncorrectBookmarks] = useState([]);
   const [fullExerciseProgression, setFullExerciseProgression] = useState();
-  const [totalBookmarksInPipeline, setTotalBookmarksInPipeline] = useState();
+
   const [currentExerciseType, setCurrentExerciseType] = useState(null);
   const [showProgressSummary, setShowProgressSummary] = useState(false);
   const [totalInLearning, setTotalInLearning] = useState(null);
@@ -85,7 +82,8 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
 
   const activeSessionDurationRef = useShadowRef(activeSessionDuration);
   const [getCurrentSubSessionDuration, resetSubSessionTimer] = useSubSessionTimer(activeSessionDurationRef.current);
-  const exerciseNotification = useContext(ExerciseCountContext);
+  const { hasExerciseNotification, decrementExerciseCounter, hideExerciseCounter } =
+    useContext(ExercisesCounterContext);
   const speech = useContext(SpeechContext);
 
   const { screenWidth } = useScreenWidth();
@@ -122,34 +120,23 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
         );
     });
 
-    // this will be needed for when writing the Out of Words today message
-    api.getScheduledBookmarksCount((totalInLearning) => {
-      setTotalBookmarksInPipeline(totalInLearning);
-    });
-
     api.logUserActivity(
       articleID ? api.TO_EXERCISES_AFTER_REVIEW : api.SCHEDULED_EXERCISES_OPEN,
       null,
-      JSON.stringify({ had_notification: exerciseNotification.hasExercises }),
+      JSON.stringify({ had_notification: hasExerciseNotification }),
       "",
     );
-
-    resetExerciseSessionState();
 
     // ========================================
     // GET THE BOOKMARKS THAT ARE TO BE STUDIED
     // ========================================
+    resetExerciseSessionState();
     getBookmarksAndAssignThemToExercises();
   }
 
   function initializeExercisesForBookmarks(bookmarks) {
-    exerciseNotification.updateReactState();
-
     if (bookmarks.length === 0) {
-      // If a user gets here with no bookmarks, means
-      // that we tried to schedule new bookmarks but none
-      // were found.
-      updateIsOutOfWordsToday();
+      setIsOutOfWordsToday(true);
       return;
     }
 
@@ -187,7 +174,7 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
     if (articleID) {
       api.getArticleInfo(articleID, (articleInfo) => {
         api.bookmarksToStudyForArticle(articleID, true, (bookmarks) => {
-          exerciseNotification.unsetExerciseCounter();
+          hideExerciseCounter(); // for article bookmarks we do not show the counter
 
           setArticleTitle(articleInfo.title);
           setArticleURL(articleInfo.url);
@@ -196,7 +183,7 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
         });
       });
     } else {
-      api.getBookmarksToStudy((bookmarks) => initializeExercisesForBookmarks(bookmarks));
+      api.getBookmarksAvailableForStudy((bookmarks) => initializeExercisesForBookmarks(bookmarks));
       setTitle(strings.exercises);
     }
   }
@@ -218,8 +205,6 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
       );
     }
     setActivityOver(true);
-    exerciseNotification.unsetExerciseCounter();
-    exerciseNotification.updateReactState();
   }
 
   function handleUserAttempt(message, bookmarkToUpdate) {
@@ -243,12 +228,11 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
     return exerciseTypesList;
   }
 
-  function updateIsOutOfWordsToday() {
-    // TODO: why is this depending on allBookmarksAvailableForStudy? It should depend on bookmarks available today!
-    api.getBookmarksToStudyCount((bookmarkCount) => {
-      setIsOutOfWordsToday(bookmarkCount === 0);
-    });
-  }
+  useEffect(() => {
+    if (isOutOfWordsToday) {
+      hideExerciseCounter();
+    }
+  }, [isOutOfWordsToday]);
 
   // Standard flow when user completes exercise session
   if (finished) {
@@ -282,7 +266,7 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
   }
 
   if (isOutOfWordsToday) {
-    return <OutOfWordsMessage totalInLearning={totalBookmarksInPipeline} goBackAction={backButtonAction} />;
+    return <OutOfWordsMessage goBackAction={backButtonAction} />;
   }
   if (!currentBookmarksToStudy || !fullExerciseProgression) {
     return <LoadingAnimation />;
@@ -297,11 +281,13 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
     setIsCorrect(null);
     setShowFeedbackButtons(false);
     const newIndex = currentIndex + 1;
-    exerciseNotification.updateReactState();
+
     if (newIndex === fullExerciseProgression.length) {
       setFinished(true);
       setShowProgressSummary(true);
-      updateIsOutOfWordsToday();
+      api.getCountOfBookmarksAvailableForStudy((bookmarkCount) => {
+        setIsOutOfWordsToday(bookmarkCount === 0);
+      });
       return;
     }
     setCurrentBookmarksToStudy(fullExerciseProgression[newIndex].bookmarks);
@@ -320,7 +306,9 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
         currentBookmark["cooling_interval"] === MAX_COOLDOWN_INTERVAL &&
         currentBookmark.learning_cycle === LEARNING_CYCLE["RECEPTIVE"];
       if (!correctBookmarksIds.includes(currentBookmark.id) && !didItProgressToProductive) {
-        exerciseNotification.decrementExerciseCounter();
+        if (hasExerciseNotification) {
+          decrementExerciseCounter();
+        }
       }
       correctBookmarksCopy.push(currentBookmark);
       setCorrectBookmarks(correctBookmarksCopy);
@@ -339,7 +327,9 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
     if (!incorrectBookmarksIds.includes(currentBookmark.id)) {
       setTotalPracticedBookmarksInSession(totalPracticedBookmarksInSession + 1);
       if (currentBookmark["cooling_interval"] > 1) {
-        exerciseNotification.decrementExerciseCounter();
+        if (hasExerciseNotification) {
+          decrementExerciseCounter();
+        }
       }
     }
     incorrectBookmarksCopy.push(currentBookmark);
@@ -389,7 +379,11 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
       word_id,
     );
     setIsExerciseOver(true);
-    exerciseNotification.decrementExerciseCounter();
+
+    if (hasExerciseNotification) {
+      decrementExerciseCounter();
+    }
+
     api.uploadExerciseFeedback(userWrittenFeedback, currentExerciseType, 0, word_id, dbExerciseSessionId);
   }
 
@@ -411,8 +405,6 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
       isGreyedOutBar={selectedExerciseBookmark === undefined}
     />
   );
-
-  console.dir(selectedExerciseBookmark);
 
   return (
     <NarrowColumn>
