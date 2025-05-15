@@ -98,8 +98,8 @@ export default function Congratulations({
         </CenteredColumn>
         <div style={{ marginLeft: "0.5em" }}>
           <p>
-            You have just done <b>{totalPracticedBookmarksInSession}</b> {Pluralize.exercise(totalBookmarksReviewed)} in{" "}
-            <b>{timeToHumanReadable(checkpointTime)}</b>.
+            You have just done <b>{totalPracticedBookmarksInSession}</b>{" "}
+            {Pluralize.exercise(totalPracticedBookmarksInSession)} in <b>{timeToHumanReadable(checkpointTime)}</b>.
             {articleID && (
               <p>
                 These words are now part of your vocabulary exercises, using spaced repetition and smart learning
@@ -148,7 +148,7 @@ export default function Congratulations({
         {!isOutOfWordsToday && (
           <>
             <YellowMessageBox>
-              <p>There are a few words that we recommend you still practice today. Do you want do to it now?</p>
+              <p>There are words that we recommend you still practice today. Do you want do to it now?</p>
 
               <CenteredColumn className="contentOnRow" style={{ marginTop: "-1em", justifyContent: "space-around" }}>
                 {progressionButtonRender()}
