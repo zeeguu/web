@@ -10,16 +10,19 @@ import { MAX_WORDS_IN_BOOKMARK_FOR_EXERCISES } from "../exercises/ExerciseConsta
 import { getStaticPath } from "../utils/misc/staticPath";
 import { APIContext } from "../contexts/APIContext";
 import LevelIndicator from "../exercises/progressBars/levelIndicator/LevelIndicator";
-// import {LevelWrapper} from "../exercises/progressBars/levelIndicator/LevelIndicator.sc";
-import styled from "styled-components";
+import {LevelWrapper} from "../exercises/progressBars/levelIndicator/LevelIndicator.sc";
 
-const LevelWrapper = styled.div`
-  margin-left: auto;
-  display: flex; // if LevelIndicator needs layout
-  align-items: center;
-`;
+export default function Word({
+  bookmark,
+  notifyDelete,
+  notifyWordChange,
+  children,
+  source,
+  isReview,
+  showRanking,
+  isGrayedOut,
+}) {
 
-export default function Word({ bookmark, notifyDelete, notifyWordChange, children, source, isReview, showRanking, isGreyedOutBar }) {
   const api = useContext(APIContext);
   const [deleted, setDeleted] = useState(false);
   const [reload, setReload] = useState(false);
@@ -46,7 +49,7 @@ export default function Word({ bookmark, notifyDelete, notifyWordChange, childre
   }
 
   let style_grayed_out = { color: darkGrey };
-  if (bookmark.fit_for_study) {
+  if (!isGrayedOut && bookmark.fit_for_study) {
     style_grayed_out = {};
   }
   const square = "square";
