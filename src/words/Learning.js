@@ -67,7 +67,10 @@ export default function Learning() {
       <h1>
         In Learning <span style={{ color: "gray", fontWeight: "lighter" }}>({inLearning.length})</span>
       </h1>
-      <p>Words you see in your exercises grouped by the level of their progress</p>
+      <p>
+        Words you see in your exercises grouped by the level of their progress. Note that you will not see all of them
+        in every day.
+      </p>
       <>
         {inLearning.length === 0 && <p>No words being learned yet</p>}
 
