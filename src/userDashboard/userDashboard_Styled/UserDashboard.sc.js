@@ -7,10 +7,9 @@ import { OrangeButton } from "../../reader/ArticleReader.sc";
 
 const UserDashboardTopContainer = styled.div`
   text-align: center;
-  margin: 0;
 `;
 
-const UserDashboardHelperText = styled(s.TopMessage)`
+const UserDashboardHelperText = styled(s.YellowMessageBox)`
   @media screen and (max-width: 768px) {
     font-size: 0.8em;
     line-height: 4ex;
