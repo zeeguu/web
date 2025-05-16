@@ -79,8 +79,8 @@ export default function LandingPage() {
                 <h3>Browse your personalized&nbsp;feed</h3>
                 <p>
                   Our system continuously searches the internet to&nbsp;bring
-                  you new article recommendations tailored to your interests and
-                  desired language&nbsp;difficulty.
+                  you new article recommendations tailored to&nbsp;your
+                  interests and desired language&nbsp;difficulty.
                 </p>
               </s.SubsectionText>
               <s.SubsectionImage src="static/images/customized-feed.png" />
@@ -92,9 +92,9 @@ export default function LandingPage() {
                 <h3>Read, translate words &&nbsp;hear&nbsp;pronunciation</h3>
                 <p>
                   Select an article from your personalized feed and
-                  read&nbsp;it&nbsp;with ease. Right-click anywhere on the page
-                  to&nbsp;activate distraction&#8209;free mode with our browser
-                  extension. Instantly translate words and hear their
+                  read&nbsp;it&nbsp;with ease. Right-click anywhere on&nbsp;the
+                  page to&nbsp;activate distraction&#8209;free mode with our
+                  browser extension. Instantly translate words and hear their
                   pronunciation&nbsp;effortlessly.
                 </p>
               </s.SubsectionText>
@@ -104,12 +104,10 @@ export default function LandingPage() {
               <s.SubsectionText>
                 <h3>Practice new words with&nbsp;spaced&nbsp;repetition</h3>
                 <p>
-                  Test your vocabulary with many types of interactive exercises
-                  that adapt to your level. Progress through increasing
-                  difficulties, reinforce learning with real&#8209;world usage,
-                  and improve pronunciation thanks to&nbsp;audio&nbsp;exercises.
-                  Plus, spaced repetition helps you remember words by reviewing
-                  them at optimal time&nbsp;intervals.
+                  Build your vocabulary with fun, interactive exercises that
+                  adapt to&nbsp;your level. Practice with real-life examples and
+                  audio, and remember words better thanks
+                  to&nbsp;spaced&nbsp;repetition.
                 </p>
               </s.SubsectionText>
               <s.SubsectionImage src="static/images/spaced-repetition-calendar.png" />
