@@ -4,23 +4,22 @@ import LoadingAnimation from "../components/LoadingAnimation";
 import { setTitle } from "../assorted/setTitle";
 import strings from "../i18n/definitions";
 import Word from "./Word";
-import * as s from "../components/TopMessage.sc";
 import { WEB_READER } from "../reader/ArticleReader";
-import { LEARNING_CYCLE } from "../exercises/ExerciseTypeConstants";
 import CollapsablePanel from "../components/CollapsablePanel";
-import Feature from "../features/Feature";
 
 import { APIContext } from "../contexts/APIContext";
+import { ExercisesCounterContext } from "../exercises/ExercisesCounterContext";
 
 export default function Learning() {
   const api = useContext(APIContext);
 
+  const { updateExercisesCounter } = useContext(ExercisesCounterContext);
+
   const [inLearning, setInLearning] = useState(null);
   const [inLearning_byLevel, setInLearning_byLevel] = useState(null);
-  const [toLearn, setToLearn] = useState(null);
 
   useEffect(() => {
-    api.getUserBookmarksInPipeline(false, (bookmarks) => {
+    api.getAllScheduledBookmarks(false, (bookmarks) => {
       setInLearning(bookmarks);
 
       let words_byLevel = { 0: [], 1: [], 2: [], 3: [], 4: [] };
@@ -35,23 +34,17 @@ export default function Learning() {
 
       setInLearning_byLevel(words_byLevel);
     });
-    api.getBookmarksToLearn(false, (bookmarks) => {
-      setToLearn(bookmarks);
-    });
+
     setTitle(strings.titleToLearnWords);
   }, [api]);
 
   function onNotifyDelete(bookmark) {
-    if (bookmark.learning_cycle === LEARNING_CYCLE.NOT_SET) {
-      let newWords = [...toLearn].filter((b) => b.id !== bookmark.id);
-      setToLearn(newWords);
-    } else {
-      let newWords = [...inLearning].filter((b) => b.id !== bookmark.id);
-      setInLearning(newWords);
-    }
+    let newWords = [...inLearning].filter((b) => b.id !== bookmark.id);
+    setInLearning(newWords);
+    updateExercisesCounter();
   }
 
-  if (!toLearn || !inLearning || !inLearning_byLevel) {
+  if (!inLearning || !inLearning_byLevel) {
     return <LoadingAnimation />;
   }
 
@@ -65,14 +58,14 @@ export default function Learning() {
 
   return (
     <>
-      <h1>In Learning</h1>
+      <h1>In Learning ({inLearning.length})</h1>
       <>
         {inLearning.length === 0 && <p>No words being learned yet</p>}
 
         {[4, 3, 2, 1, 0].map((level) => (
           <>
             {inLearning_byLevel[level].length > 0 && (
-              <CollapsablePanel topMessage={topMessage(level, inLearning_byLevel[level].length)}>
+              <CollapsablePanel key={level} topMessage={topMessage(level, inLearning_byLevel[level].length)}>
                 {inLearning_byLevel[level].map((each) => (
                   <Word
                     key={each.id}

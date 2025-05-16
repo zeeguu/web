@@ -1,8 +1,6 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { BrowserRouter } from "react-router-dom";
 
-import ExerciseNotifications from "./exercises/ExerciseNotification";
-import { ExerciseCountContext } from "./exercises/ExerciseCountContext";
 import { SystemLanguagesContext } from "./contexts/SystemLanguagesContext";
 import { UserContext } from "./contexts/UserContext";
 import { RoutingContext } from "./contexts/RoutingContext";
@@ -25,12 +23,9 @@ import { setUser } from "@sentry/react";
 import SessionStorage from "./assorted/SessionStorage";
 import useRedirectLink from "./hooks/useRedirectLink";
 import LoadingAnimation from "./components/LoadingAnimation";
-import { userHasNotExercisedToday } from "./exercises/utils/daysSinceLastExercise";
 
 function App() {
   const [api] = useState(new Zeeguu_API(API_ENDPOINT));
-
-  const [exerciseNotification] = useState(new ExerciseNotifications());
 
   useUILanguage();
 
@@ -92,15 +87,6 @@ function App() {
             api.getUserPreferences((userPreferences) => {
               LocalStorage.setUserPreferences(userPreferences);
 
-              if (userHasNotExercisedToday())
-                api.getUserBookmarksToStudy(1, (scheduledBookmaks) => {
-                  exerciseNotification.setHasExercises(scheduledBookmaks.length > 0);
-                  exerciseNotification.updateReactState();
-                });
-              else {
-                exerciseNotification.setHasExercises(false);
-                exerciseNotification.updateReactState();
-              }
               setZeeguuSpeech(new ZeeguuSpeech(api, userDetails.learned_language));
               setUserDetails(userDetails);
               setUserPreferences(userPreferences);
@@ -162,9 +148,9 @@ function App() {
     console.dir(newUserValue);
     setUser(newUserValue);
 
-    /* If a redirect link exists, uses it to redirect the user,
-       otherwise, uses the location from the function argument. */
-    // For the future consider taking the redirection out of this function alltogether. 
+    // If a redirect link exists, uses it to redirect the user,
+    // otherwise, uses the location from the function argument.
+    // For the future consider taking the redirection out of this function alltogether.
     if (redirectToArticle) handleRedirectLinkOrGoTo("/articles");
   }
 
@@ -190,25 +176,23 @@ function App() {
                 logoutMethod: logout,
               }}
             >
-              <ExerciseCountContext.Provider value={exerciseNotification}>
-                <APIContext.Provider value={api}>
-                  {/* Routing*/}
-                  <MainAppRouter hasExtension={isExtensionAvailable} handleSuccessfulLogIn={handleSuccessfulLogIn} />
+              <APIContext.Provider value={api}>
+                {/* Routing*/}
+                <MainAppRouter hasExtension={isExtensionAvailable} handleSuccessfulLogIn={handleSuccessfulLogIn} />
 
-                  <ToastContainer
-                    position="bottom-right"
-                    autoClose={2000}
-                    hideProgressBar={true}
-                    newestOnTop={false}
-                    closeOnClick
-                    rtl={false}
-                    pauseOnFocusLoss
-                    draggable
-                    pauseOnHover
-                    theme="light"
-                  />
-                </APIContext.Provider>
-              </ExerciseCountContext.Provider>
+                <ToastContainer
+                  position="bottom-right"
+                  autoClose={2000}
+                  hideProgressBar={true}
+                  newestOnTop={false}
+                  closeOnClick
+                  rtl={false}
+                  pauseOnFocusLoss
+                  draggable
+                  pauseOnHover
+                  theme="light"
+                />
+              </APIContext.Provider>
             </UserContext.Provider>
           </RoutingContext.Provider>
         </BrowserRouter>

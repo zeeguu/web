@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import { zeeguuVeryLightOrange } from "./colors";
 
-let TopMessage = styled.div`
+let YellowMessageBox = styled.div`
   display: flex;
   flex-direction: column;
   text-align: center;
@@ -30,4 +30,4 @@ let TopMessage = styled.div`
   }
 `;
 
-export { TopMessage };
+export { YellowMessageBox };

@@ -1,35 +1,57 @@
 import * as s from "./exerciseTypes/Exercise.sc";
-import strings from "../i18n/definitions";
 import Pluralize from "../utils/text/pluralize";
 import useScreenWidth from "../hooks/useScreenWidth";
 import { MOBILE_WIDTH } from "../components/MainNav/screenSize";
 import BackArrow from "../pages/Settings/settings_pages_shared/BackArrow";
-import { StyledButton } from "../components/allButtons.sc";
+import { Link } from "react-router-dom";
+import { useContext, useEffect, useState } from "react";
+import { APIContext } from "../contexts/APIContext";
 
-export default function OutOfWordsMessage({ totalInLearning, goBackAction }) {
+export default function OutOfWordsMessage({ goBackAction }) {
   const { screenWidth } = useScreenWidth();
+  const api = useContext(APIContext);
+
+  const [totalInLearning, setTotalInLearning] = useState();
+
+  useEffect(() => {
+    api.getCountOfAllScheduledBookmarks((totalInLearning) => {
+      setTotalInLearning(totalInLearning);
+    });
+  }, []);
+
   return (
     <s.Exercise>
       {screenWidth < MOBILE_WIDTH && <BackArrow />}
       <div className="contextExample">
-        <h2>{strings.noTranslatedWords}</h2>
+        <br />
+        <br />
+
+        <h2>No more exercises today. Come back tomorrow! :)</h2>
+
+        <br />
+        <br />
         <p>
-          This means you already practiced all the words you have translated and
-          have selected to be part of the exercises. These are scheduled
-          according to our spaced-repetition and we will let you know when it is
-          time to train them again.
+          Words are scheduled for exercises according to spaced-repetition principles and you already practiced the
+          words that were due today 🎉
         </p>
-        <p>You can always go read to find new words to start learning.</p>
+
+        <br />
+
         <p>
-          You are currently learning <b>{totalInLearning}</b>{" "}
-          {Pluralize.word(totalInLearning)}.
+          <small>
+            Note: You currently have <b>{totalInLearning}</b> {Pluralize.word(totalInLearning)}{" "}
+            <Link to={"/words"}>
+              <b>in learning</b>
+            </Link>
+            . You can also increase the number of words in learning from the{" "}
+            <Link to={"/account_settings/exercise_scheduling"}>
+              {" "}
+              <b>Exercises>Scheduling</b>
+            </Link>{" "}
+            preferences page and then you can get more exercises also today.
+          </small>
         </p>
       </div>
-      <s.BottomRow>
-        <StyledButton primary onClick={goBackAction}>
-          {"Go to Reading"}
-        </StyledButton>
-      </s.BottomRow>
     </s.Exercise>
   );
 }
