@@ -83,11 +83,17 @@ export default function LandingPage() {
                   interests and desired language&nbsp;difficulty.
                 </p>
               </s.SubsectionText>
-              <s.SubsectionImage src="static/images/customized-feed.png" />
+              <s.SubsectionImage
+                alt=""
+                src="static/images/customized-feed.png"
+              />
             </s.Subsection>
 
             <s.Subsection>
-              <s.SubsectionImage src="static/images/translation-pronunciation.png" />
+              <s.SubsectionImage
+                alt="Clickable words: tap to translate and hear how they are pronounced"
+                src="static/images/translation-pronunciation.png"
+              />
               <s.SubsectionText>
                 <h3>Read, translate words &&nbsp;hear&nbsp;pronunciation</h3>
                 <p>
@@ -110,7 +116,10 @@ export default function LandingPage() {
                   to&nbsp;spaced&nbsp;repetition.
                 </p>
               </s.SubsectionText>
-              <s.SubsectionImage src="static/images/spaced-repetition-calendar.png" />
+              <s.SubsectionImage
+                alt="Spaced repetition is a studying technique that increases the time in-between review sessions"
+                src="static/images/spaced-repetition-calendar.png"
+              />
             </s.Subsection>
           </s.PageSection>
         </s.PageSectionWrapper>
