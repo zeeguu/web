@@ -29,13 +29,17 @@ const _mainHeader = css`
   color: ${zeeguuOrange};
 `;
 
+const _sharedFlexColumn = css`
+  display: flex;
+  flex-direction: column;
+`;
+
 const HeroSection = styled.section`
+  ${_sharedFlexColumn}
+  align-items: center;
   height: auto;
   max-width: 52rem;
   padding: 6rem 3rem;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
   text-align: center;
   max-width: 62rem;
   gap: 1.5rem;
@@ -113,13 +117,16 @@ const AdaptableColumn = styled.div`
 `;
 
 const PageSectionWrapper = styled.div`
+  ${_sharedFlexColumn}
+  align-items: center;
   box-sizing: border-box;
   width: 100%;
-  padding: 3rem 3rem;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  padding: 5rem 3rem;
   background-color: #fff9f0;
+
+  @media (max-width: 576px) {
+    padding: 3rem 1rem;
+  }
   p {
     line-height: 150%;
     font-size: 1rem;
@@ -142,7 +149,11 @@ const PageSectionWrapper = styled.div`
     font-size: 2.25rem;
     color: ${almostBlack};
     margin: 0;
-    margin-top: 2rem;
+    text-align: center;
+
+    @media (max-width: 768px) {
+      font-size: 1.9rem;
+    }
   }
 
   h3 {
@@ -150,15 +161,10 @@ const PageSectionWrapper = styled.div`
     color: ${almostBlack};
     margin: 0;
   }
-
-  @media (max-width: 576px) {
-    padding: 2rem 1rem;
-  }
 `;
 
 const PageSection = styled.section`
-  display: flex;
-  flex-direction: column;
+  ${_sharedFlexColumn}
   align-items: center;
   max-width: 80rem;
 `;
@@ -170,18 +176,24 @@ const Subsection = styled.div`
   width: 100%;
   padding: 5rem 0;
 
+  &:last-child {
+    padding-bottom: 0;
+  }
+
   @media (max-width: 992px) {
     grid-template-columns: repeat(1, 1fr);
     gap: 1rem;
     padding: 3rem 0;
+    &:last-child {
+      padding-bottom: 0;
+    }
   }
 `;
 
 const SubsectionText = styled.div`
   flex: 1;
   box-sizing: border-box;
-  display: flex;
-  flex-direction: column;
+  ${_sharedFlexColumn}
   justify-content: center;
   padding: 0 5rem 0 5rem;
   gap: 1rem;
@@ -193,14 +205,14 @@ const SubsectionText = styled.div`
   @media (max-width: 992px) {
     padding: 0;
     text-align: center;
-    max-width: 500px;
+    max-width: 30rem;
     margin: auto;
   }
 `;
 
 const SubsectionImage = styled.img`
   object-fit: cover;
-  max-height: 400px;
+  max-height: 25rem;
   width: 100%;
   height: auto;
   border-radius: 1rem;
@@ -209,7 +221,7 @@ const SubsectionImage = styled.img`
 
   @media (max-width: 992px) {
     order: 1;
-    max-width: 640px;
+    max-width: 40rem;
     margin: auto;
   }
 `;
