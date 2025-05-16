@@ -9,7 +9,7 @@ const UserDashboardTopContainer = styled.div`
   text-align: center;
 `;
 
-const UserDashboardHelperText = styled(s.YellowMessageBox)`
+const UserDashboardHelperText = styled(s.TopMessage)`
   @media screen and (max-width: 768px) {
     font-size: 0.8em;
     line-height: 4ex;
