@@ -136,9 +136,6 @@ const PageSectionWrapper = styled.div`
 
   p.subheadline {
     font-size: 1.25rem;
-    font-weight: 500;
-    line-height: 150%;
-    color: ${almostBlack};
     text-align: center;
     @media (max-width: 768px) {
       font-size: 1.1rem;
