@@ -68,8 +68,8 @@ export default function Learning() {
         In Learning <span style={{ color: "gray", fontWeight: "lighter" }}>({inLearning.length})</span>
       </h1>
       <p>
-        Words you see in your exercises grouped by the level of their progress. Note that you will not see all of them
-        in every day.
+        Words you see in your exercises grouped by how far you've progressed them. Our spaced repetition algorithm
+        decides the ones you see in a given day.
       </p>
       <>
         {inLearning.length === 0 && <p>No words being learned yet</p>}
@@ -101,8 +101,8 @@ export default function Learning() {
             <i>Next in exercises...</i>
           </h1>
           <p>
-            As soon as you learn (or delete) some of the words above, the ones below are next in line to take their
-            place.
+            If you learn some of the words above, or if you remove some from learning, these ones are ready to take
+            their place
           </p>
           {nextInLearning.map((each) => (
             <Word
