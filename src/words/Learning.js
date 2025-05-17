@@ -17,6 +17,7 @@ export default function Learning() {
 
   const [inLearning, setInLearning] = useState(null);
   const [inLearning_byLevel, setInLearning_byLevel] = useState(null);
+  const [nextInLearning, setNextInLearning] = useState(false);
 
   useEffect(() => {
     api.getAllScheduledBookmarks(false, (bookmarks) => {
@@ -35,6 +36,11 @@ export default function Learning() {
       setInLearning_byLevel(words_byLevel);
     });
 
+    api.getBookmarksNextInLearning((bookmarks) => {
+      setNextInLearning(bookmarks);
+      console.log(bookmarks);
+    });
+
     setTitle(strings.titleToLearnWords);
   }, [api]);
 
@@ -44,7 +50,7 @@ export default function Learning() {
     updateExercisesCounter();
   }
 
-  if (!inLearning || !inLearning_byLevel) {
+  if (!inLearning || !inLearning_byLevel || !nextInLearning) {
     return <LoadingAnimation />;
   }
 
@@ -58,7 +64,13 @@ export default function Learning() {
 
   return (
     <>
-      <h1>In Learning ({inLearning.length})</h1>
+      <h1>
+        In Learning <span style={{ color: "gray", fontWeight: "lighter" }}>({inLearning.length})</span>
+      </h1>
+      <p>
+        Words you see in your exercises grouped by how far you've progressed them. Our spaced repetition algorithm
+        decides the ones you see in a given day.
+      </p>
       <>
         {inLearning.length === 0 && <p>No words being learned yet</p>}
 
@@ -82,6 +94,30 @@ export default function Learning() {
       </>
 
       <br />
+
+      {nextInLearning.length > 0 && (
+        <>
+          <h1 style={{ color: "gray" }}>
+            <i>Next in exercises...</i>
+          </h1>
+          <p>
+            These words are next in exercises. They are selected from your past translations and prioritized by
+            frequency of occurrence in your learned language.
+          </p>
+          {nextInLearning.map((each) => (
+            <Word
+              key={each.id}
+              bookmark={each}
+              source={WEB_READER}
+              notifyDelete={onNotifyDelete}
+              showRanking={true}
+              isGrayedOut={true}
+            />
+          ))}
+          <br />
+          <br />
+        </>
+      )}
     </>
   );
 }

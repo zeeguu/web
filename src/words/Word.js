@@ -10,7 +10,16 @@ import { MAX_WORDS_IN_BOOKMARK_FOR_EXERCISES } from "../exercises/ExerciseConsta
 import { getStaticPath } from "../utils/misc/staticPath";
 import { APIContext } from "../contexts/APIContext";
 
-export default function Word({ bookmark, notifyDelete, notifyWordChange, children, source, isReview, showRanking }) {
+export default function Word({
+  bookmark,
+  notifyDelete,
+  notifyWordChange,
+  children,
+  source,
+  isReview,
+  showRanking,
+  isGrayedOut,
+}) {
   const api = useContext(APIContext);
   const [deleted, setDeleted] = useState(false);
   const [reload, setReload] = useState(false);
@@ -37,7 +46,7 @@ export default function Word({ bookmark, notifyDelete, notifyWordChange, childre
   }
 
   let style_grayed_out = { color: darkGrey };
-  if (bookmark.fit_for_study) {
+  if (!isGrayedOut && bookmark.fit_for_study) {
     style_grayed_out = {};
   }
   const square = "square";

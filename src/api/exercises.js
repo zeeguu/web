@@ -37,6 +37,10 @@ Zeeguu_API.prototype.getBookmarksRecommendedForPractice = function (callback) {
   this._getJSON(`bookmarks_recommended_for_practice`, callback);
 };
 
+Zeeguu_API.prototype.getBookmarksNextInLearning = function (callback) {
+  this._getJSON(`bookmarks_next_in_learning`, callback);
+};
+
 Zeeguu_API.prototype.uploadExerciseFeedback = function (
   user_feedback,
   exercise_source,
