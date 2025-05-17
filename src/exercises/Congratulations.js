@@ -15,6 +15,7 @@ import { MOBILE_WIDTH } from "../components/MainNav/screenSize";
 import { StyledButton } from "../components/allButtons.sc";
 import { APIContext } from "../contexts/APIContext";
 import { UserContext } from "../contexts/UserContext";
+import { ExercisesCounterContext } from "./ExercisesCounterContext";
 
 export default function Congratulations({
   articleID,
@@ -32,6 +33,7 @@ export default function Congratulations({
 }) {
   const api = useContext(APIContext);
   const { userDetails } = useContext(UserContext);
+  const { updateExercisesCounter } = useContext(ExercisesCounterContext);
   const [checkpointTime] = useState(exerciseSessionTimer);
   const [correctBookmarksToDisplay, setCorrectBookmarksToDisplay] = useState(removeArrayDuplicates(correctBookmarks));
   const [incorrectBookmarksToDisplay, setIncorrectBookmarksToDisplay] = useState(
@@ -51,6 +53,7 @@ export default function Congratulations({
     setUsername(userDetails.name);
     setTotalBookmarksReviewed(incorrectBookmarksToDisplay.length + correctBookmarksToDisplay.length);
     api.logUserActivity(api.COMPLETED_EXERCISES, articleID, "", source);
+    updateExercisesCounter();
     // eslint-disable-next-line
   }, []);
 
