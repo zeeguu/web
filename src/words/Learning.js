@@ -101,8 +101,8 @@ export default function Learning() {
             <i>Next in exercises...</i>
           </h1>
           <p>
-            If you learn some of the words above, or if you remove some from learning, these ones are ready to take
-            their place
+            These words are next in exercises. They are selected from your past translations and prioritized by
+            frequency of occurrence in your learned language.
           </p>
           {nextInLearning.map((each) => (
             <Word
