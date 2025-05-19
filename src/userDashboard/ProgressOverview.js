@@ -5,9 +5,9 @@ import CollapsablePanel from "../components/CollapsablePanel";
 import * as style from "../components/ProgressItems.sc";
 import { getWeeklyProgressOverviewItems, getTotalProgressOverviewItems } from "../utils/progressTracking/ProgressOverviewItems";
 
-export default function ProgressOverview({totalInLearning, totalToLearn, totalLearned, weeklyTranslated}){
+export default function ProgressOverview({totalInLearning, totalLearned, weeklyTranslated, totalTranslated}){
     const {weeklyProgressOverview} = getWeeklyProgressOverviewItems({weeklyTranslated});
-    const {totalProgressOverview} = getTotalProgressOverviewItems({totalInLearning, totalToLearn, totalLearned});
+    const {totalProgressOverview} = getTotalProgressOverviewItems({totalInLearning, totalLearned, totalTranslated});
     return (
         <>
             <s.ProgressOverviewContainer>

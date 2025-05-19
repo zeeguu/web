@@ -30,8 +30,8 @@ export function getWeeklyTranslatedWordsCount(data){
     });
   }
 
-export function getTotalProgressOverviewItems({totalInLearning, totalToLearn, totalLearned}){
-    const totalTranslatedWords = totalInLearning + totalToLearn + totalLearned;
+export function getTotalProgressOverviewItems({totalInLearning, totalLearned, totalTranslated}){
+    const totalTranslatedWords = totalTranslated;
     const totalPracticedWords = totalInLearning;
     const totalLearnedWords = totalLearned;
 
