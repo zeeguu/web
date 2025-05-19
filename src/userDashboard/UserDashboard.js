@@ -18,7 +18,7 @@ import {
   getBarGraphData,
   calculateCountPerMonth_Activity,
 } from "./userdashboard_Graphs/dataFormat/ReadingAndExercisesTimeDataFormat";
-import {getWeeklyTranslatedWordsCount} from "../utils/progressTracking/ProgressOverviewItems"
+import {getWeeklyTranslatedWordsCount, calculateTotalReadingMinutes} from "../utils/progressTracking/ProgressOverviewItems"
 import UserDashboardTop from "./userDashboard_Top/UserDashboardTop";
 import * as s from "./userDashboard_Styled/UserDashboard.sc";
 import { setTitle } from "../assorted/setTitle";
@@ -46,6 +46,7 @@ export default function UserDashboard() {
   const [totalLearned, setTotalLearned] = useState(null);
   const [weeklyTranslated, setWeeklyTranslated] = useState(null);
   const [totalTranslated, setTotalTranslated] = useState(null);
+  const [totalReadingMinutes, setTotalReadingMinutes] = useState(null);
 
 
 
@@ -127,6 +128,8 @@ export default function UserDashboard() {
       setMonthlyExerciseAndReadingTimes(
         calculateCountPerMonth_Activity(activity),
       );
+
+      setTotalReadingMinutes(calculateTotalReadingMinutes(activity.reading));
     });
 
     api.getAllScheduledBookmarks(false, (bookmarks) => {
@@ -191,6 +194,7 @@ export default function UserDashboard() {
             totalLearned = {totalLearned}
             weeklyTranslated = {weeklyTranslated}
             totalTranslated = {totalTranslated}
+            totalReadingMinutes = {totalReadingMinutes}
             />
           </>
         )}

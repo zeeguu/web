@@ -1,5 +1,13 @@
 import strings from "../../i18n/definitions";
 
+export function calculateTotalReadingMinutes(readingActivity){
+    const totalReadingSeconds = readingActivity.reduce(
+        (sum, entry) => sum + entry.seconds,
+        0
+    );
+    return Math.floor(totalReadingSeconds / 60);
+};
+
 export function getWeeklyTranslatedWordsCount(data){
     //converts the Map to an array of objects     
     const dataArray = Array.from(data, ([date, count]) => ({ date, count }));
@@ -30,14 +38,15 @@ export function getWeeklyTranslatedWordsCount(data){
     });
   }
 
-export function getTotalProgressOverviewItems({totalInLearning, totalLearned, totalTranslated}){
+export function getTotalProgressOverviewItems({totalInLearning, totalLearned, totalTranslated, totalReadingMinutes}){
     const totalTranslatedWords = totalTranslated;
     const totalPracticedWords = totalInLearning;
     const totalLearnedWords = totalLearned;
+    const totalMinutesRead = totalReadingMinutes;
 
     const totalArticlesRead = {
         iconText: strings.iconTextTotalArticles,
-        value: 75,
+        value: totalMinutesRead,
         beforeText: strings.articlesReadTextStart,
         afterText: strings.articlesReadTotalTextEnd,
     };
