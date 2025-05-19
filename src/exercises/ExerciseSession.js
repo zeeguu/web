@@ -97,9 +97,9 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
   }, []);
 
   useEffect(() => {
-    //api.getUserBookmarksInPipeline(false, (bookmarks) => {
-      //setTotalInLearning(bookmarks.length);
-    //});
+    api.getAllScheduledBookmarks(false, (bookmarks) => {
+      setTotalInLearning(bookmarks.length);
+    });
 
     api.totalLearnedBookmarks((totalLearnedCount) =>{
       setTotalLearned(totalLearnedCount)

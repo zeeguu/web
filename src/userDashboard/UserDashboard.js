@@ -129,9 +129,9 @@ export default function UserDashboard() {
       );
     });
 
-    //api.getUserBookmarksInPipeline(false, (bookmarks) => {
-      //setTotalInLearning(bookmarks.length)
-    //});
+    api.getAllScheduledBookmarks(false, (bookmarks) => {
+      setTotalInLearning(bookmarks.length)
+    });
 
 
     api.totalLearnedBookmarks((totalLearnedCount) => {
