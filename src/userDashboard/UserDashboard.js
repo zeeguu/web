@@ -42,10 +42,10 @@ export default function UserDashboard() {
     useState(null);
   const [monthlyExerciseAndReadingTimes, setMonthlyExerciseAndReadingTimes] =
     useState({});
-  const [totalInLearning, setTotalInLearning] = useState(null);
-  const [totalToLearn, setTotalToLearn] = useState(null);
+  const [totalInLearning, setTotalInLearning] = useState(null); //maybe I do not need this one.
   const [totalLearned, setTotalLearned] = useState(null);
   const [weeklyTranslated, setWeeklyTranslated] = useState(null);
+  const [totalTranslated, setTotalTranslated] = useState(null);
 
 
 
@@ -116,6 +116,9 @@ export default function UserDashboard() {
       const thisWeek = getWeeklyTranslatedWordsCount(formatted);
       const thisWeekTotal = thisWeek.reduce((sum, day) => sum + day.count, 0);
       setWeeklyTranslated(thisWeekTotal);
+
+      const totalTranslatedWOrds = Array.from(formatted.values()).reduce((sum, count) => sum + count, 0);
+      setTotalTranslated(totalTranslatedWOrds);
     });
 
     api.getUserActivityByDay((activity) => {
@@ -130,9 +133,6 @@ export default function UserDashboard() {
       //setTotalInLearning(bookmarks.length)
     //});
 
-    //api.getBookmarksToLearn(false, (bookmarks) =>{
-      //setTotalToLearn(bookmarks.length);
-    //});
 
     api.totalLearnedBookmarks((totalLearnedCount) => {
       setTotalLearned(totalLearnedCount);
@@ -141,7 +141,7 @@ export default function UserDashboard() {
     // eslint-disable-next-line
   }, [activeTab]);
 
-  if (!allWordsData || !dailyExerciseAndReadingTimes || totalLearned == null || weeklyTranslated == null) { //|| totalInLearning==null || totalToLearn==null  add this when functions work
+  if (!allWordsData || !dailyExerciseAndReadingTimes || totalLearned == null || weeklyTranslated == null || totalTranslated == null) { //|| totalInLearning==null ||  add this when functions work
     return <LoadingAnimation />;
   }
 
@@ -188,9 +188,9 @@ export default function UserDashboard() {
           <>
             <ProgressOverview
             totalInLearning ={totalInLearning}
-            totalToLearn = {totalToLearn}
             totalLearned = {totalLearned}
             weeklyTranslated = {weeklyTranslated}
+            totalTranslated = {totalTranslated}
             />
           </>
         )}
