@@ -1,6 +1,5 @@
 import strings from "../../i18n/definitions";
 
-<<<<<<< HEAD
 export function getWeeklyTranslatedWordsCount(data){
     //converts the Map to an array of objects     
     const dataArray = Array.from(data, ([date, count]) => ({ date, count }));
@@ -31,8 +30,6 @@ export function getWeeklyTranslatedWordsCount(data){
     });
   }
 
-=======
->>>>>>> d9da87e3 (added progress summary after completing an exercise + some refactoring of progress-tracking code)
 export function getTotalProgressOverviewItems({totalInLearning, totalToLearn, totalLearned}){
     const totalTranslatedWords = totalInLearning + totalToLearn + totalLearned;
     const totalPracticedWords = totalInLearning;
@@ -78,14 +75,10 @@ export function getTotalProgressOverviewItems({totalInLearning, totalToLearn, to
     };
 }
 
-<<<<<<< HEAD
 export function getWeeklyProgressOverviewItems({weeklyTranslated}){
     const weeklyTranslatedWords = weeklyTranslated;
 
 
-=======
-export function getWeeklyProgressOverviewItems(){
->>>>>>> d9da87e3 (added progress summary after completing an exercise + some refactoring of progress-tracking code)
     const weeklyArticlesRead = {
         iconText: strings.iconTextWeeklyArticles,
         value: 3,
@@ -95,11 +88,7 @@ export function getWeeklyProgressOverviewItems(){
 
     const weeklyWordsTranslated = {
         iconText: strings.iconTextWeeklyWordsTranslated,
-<<<<<<< HEAD
         value: weeklyTranslatedWords,
-=======
-        value: 4,
->>>>>>> d9da87e3 (added progress summary after completing an exercise + some refactoring of progress-tracking code)
         beforeText: strings.wordsTranslatedTextStart,
         afterText: strings.wordsTextWeeklyEnd,
     };
