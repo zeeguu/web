@@ -126,33 +126,22 @@ export default function UserDashboard() {
       );
     });
 
-    api.getUserBookmarksInPipeline(false, (bookmarks) => {
-      setTotalInLearning(bookmarks.length)
-    });
+    //api.getUserBookmarksInPipeline(false, (bookmarks) => {
+      //setTotalInLearning(bookmarks.length)
+    //});
 
-    api.getBookmarksToLearn(false, (bookmarks) =>{
-      setTotalToLearn(bookmarks.length);
-    });
-
-    api.totalLearnedBookmarks((totalLearnedCount) => {
-      setTotalLearned(totalLearnedCount);
-    });
-
-    api.getUserBookmarksInPipeline(false, (bookmarks) => {
-      setTotalInLearning(bookmarks.length)
-    });
-
-    api.getBookmarksToLearn(false, (bookmarks) =>{
-      setTotalToLearn(bookmarks.length);
-    });
+    //api.getBookmarksToLearn(false, (bookmarks) =>{
+      //setTotalToLearn(bookmarks.length);
+    //});
 
     api.totalLearnedBookmarks((totalLearnedCount) => {
       setTotalLearned(totalLearnedCount);
     });
+
     // eslint-disable-next-line
   }, [activeTab]);
 
-  if (!allWordsData || !dailyExerciseAndReadingTimes || totalInLearning==null || totalToLearn==null || totalLearned == null || weeklyTranslated == null) {
+  if (!allWordsData || !dailyExerciseAndReadingTimes || totalLearned == null || weeklyTranslated == null) { //|| totalInLearning==null || totalToLearn==null  add this when functions work
     return <LoadingAnimation />;
   }
 
