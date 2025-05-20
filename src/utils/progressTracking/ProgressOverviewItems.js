@@ -1,18 +1,7 @@
 import strings from "../../i18n/definitions";
 
-export function calculateTotalReadingMinutes(readingActivity){
-    const totalReadingSeconds = readingActivity.reduce(
-        (sum, entry) => sum + entry.seconds,
-        0
-    );
-    return Math.floor(totalReadingSeconds / 60);
-};
-
-export function getWeeklyTranslatedWordsCount(data){
-    //converts the Map to an array of objects     
-    const dataArray = Array.from(data, ([date, count]) => ({ date, count }));
-
-    //show current date eg Wed May 14 2025 20:00:39 GMT+0200 (centraleuropeisk sommartid)
+export function getCurrentWeekRange(){
+     //show current date eg Wed May 14 2025 20:00:39 GMT+0200 (centraleuropeisk sommartid)
     const now = new Date();
 
     //day of week wednesday = 3
@@ -32,6 +21,42 @@ export function getWeeklyTranslatedWordsCount(data){
     endOfWeek.setDate(startOfWeek.getDate()+6);
     endOfWeek.setHours(23, 59, 59, 999);
 
+    return {startOfWeek, endOfWeek}
+}
+
+export function calcualteWeeklyReadingMinutes(readingActivity){
+    const { startOfWeek, endOfWeek } = getCurrentWeekRange();
+    console.log("this is the activities:!!", readingActivity);
+
+    const weeklyReadingSeconds = readingActivity.reduce((sum, entry) => {
+        const entryDate = new Date(entry.date);
+        entryDate.setHours(0, 0, 0, 0); // normalize to midnight
+
+        console.log("this is the entryDate!!", entryDate);
+
+        if (entryDate >= startOfWeek && entryDate <= endOfWeek) {
+            return sum + entry.seconds;
+        }
+        return sum;
+    }, 0);
+
+    return Math.floor(weeklyReadingSeconds / 60);
+}
+
+export function calculateTotalReadingMinutes(readingActivity){
+    const totalReadingSeconds = readingActivity.reduce(
+        (sum, entry) => sum + entry.seconds,
+        0
+    );
+    return Math.floor(totalReadingSeconds / 60);
+};
+
+export function getWeeklyTranslatedWordsCount(data){
+    //converts the Map to an array of objects     
+    const dataArray = Array.from(data, ([date, count]) => ({ date, count }));
+    const {startOfWeek, endOfWeek} = getCurrentWeekRange();
+
+   
     return dataArray.filter(({date}) => {
       const dayDate = new Date(date);
       return dayDate >= startOfWeek && dayDate <= endOfWeek; 
@@ -84,13 +109,14 @@ export function getTotalProgressOverviewItems({totalInLearning, totalLearned, to
     };
 }
 
-export function getWeeklyProgressOverviewItems({weeklyTranslated}){
+export function getWeeklyProgressOverviewItems({weeklyTranslated, weeklyReadingMinutes}){
     const weeklyTranslatedWords = weeklyTranslated;
+    const weeklyMinutesRead = weeklyReadingMinutes;
 
 
     const weeklyArticlesRead = {
         iconText: strings.iconTextWeeklyArticles,
-        value: 3,
+        value: weeklyMinutesRead,
         beforeText: strings.articlesReadTextStart,
         afterText: strings.articlesReadWeeklyTextEnd,
     };
