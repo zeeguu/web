@@ -68,7 +68,7 @@ export default function LandingPage() {
         </s.HeroSection>
         <s.PageSectionWrapper>
           <s.PageSection>
-            <h2>{strings.howDoesItWork}</h2>
+            <h2>What does Zeeguu offer?</h2>
             <p className="subheadline">
               Zeeguu is a research project that personalizes the way you learn
               foreign&nbsp;languages
@@ -108,7 +108,10 @@ export default function LandingPage() {
 
             <s.Subsection>
               <s.SubsectionText>
-                <h3>Practice new words with&nbsp;spaced&nbsp;repetition</h3>
+                <h3>
+                  Practice new words with&nbsp;spaced repetition and
+                  diverse&nbsp;exercises
+                </h3>
                 <p>
                   Build your vocabulary with fun, interactive exercises that
                   adapt to&nbsp;your level. Practice with real-life examples and
