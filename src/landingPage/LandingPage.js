@@ -45,7 +45,8 @@ export default function LandingPage() {
             your&nbsp;vocabulary
           </h1>
           <p className="hero-paragraph">
-            Find interesting articles, translate words as&nbsp;you read,
+            Zeeguu is a research project that helps you learn smarter - find
+            interesting articles, translate words as&nbsp;you read,
             and&nbsp;use&nbsp;spaced repetition to&nbsp;remember&nbsp;them.
           </p>
           <Button onClick={() => handleRegisterClick()}>
@@ -69,11 +70,6 @@ export default function LandingPage() {
         <s.PageSectionWrapper>
           <s.PageSection>
             <h2>What does Zeeguu offer?</h2>
-            <p className="subheadline">
-              Zeeguu is a research project that personalizes the way you learn
-              foreign&nbsp;languages
-            </p>
-
             <s.Subsection>
               <s.SubsectionText>
                 <h3>Browse your personalized&nbsp;feed</h3>
