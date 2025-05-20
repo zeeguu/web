@@ -164,6 +164,7 @@ const PageSection = styled.section`
   ${_sharedFlexColumn}
   align-items: center;
   max-width: 80rem;
+  gap: 1rem;
 `;
 
 const Subsection = styled.div`
