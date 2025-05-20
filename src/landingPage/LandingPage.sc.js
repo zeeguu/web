@@ -121,6 +121,10 @@ const PageSectionWrapper = styled.div`
   padding: 5rem 3rem;
   background-color: #fff9f0;
 
+  &:nth-child(odd) {
+    background-color: white;
+  }
+
   @media (max-width: 576px) {
     padding: 3rem 1rem;
   }
@@ -170,6 +174,10 @@ const Subsection = styled.div`
 
   &:last-child {
     padding-bottom: 0;
+  }
+
+  &:first-child {
+    padding-top: 0;
   }
 
   @media (max-width: 992px) {

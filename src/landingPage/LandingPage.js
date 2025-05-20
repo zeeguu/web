@@ -122,6 +122,38 @@ export default function LandingPage() {
             </s.Subsection>
           </s.PageSection>
         </s.PageSectionWrapper>
+        <s.PageSectionWrapper>
+          <s.PageSection>
+            <s.Subsection>
+              <s.SubsectionImage
+                alt="Spaced repetition is a studying technique that increases the time in-between review sessions"
+                src="static/images/spaced-repetition-calendar.png"
+              />
+              <s.SubsectionText>
+                <h2>Zeeguu for Teachers</h2>
+                <p className="subheadline">
+                  Help your students learn languages through reading
+                </p>
+                <p>
+                  With Zeeguu for Teachers, you can assign articles, track your
+                  students' progress, and see how they engage with texts. The
+                  platform helps you guide their reading practice and vocabulary
+                  learning in a simple and effective way.
+                </p>
+                <ul>
+                  <li>Choose or upload articles for your students</li>
+                  <li>See what they read and how often</li>
+                  <li>Track the words they translate or practice</li>
+                  <li>Understand where they might need help</li>
+                </ul>
+                <p>
+                  To start using Zeeguu for Teachers, contact us at
+                  <strong> zeeguu.team@gmail.com</strong>
+                </p>
+              </s.SubsectionText>
+            </s.Subsection>
+          </s.PageSection>
+        </s.PageSectionWrapper>
 
         <s.AdaptableColumn>
           <News />
