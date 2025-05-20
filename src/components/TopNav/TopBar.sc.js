@@ -1,22 +1,19 @@
 import styled from "styled-components";
 
-export const TopBarWrapper = styled.div`
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-  width: 100%;
-`;
-
 export const StatContainer = styled.div`
+  box-sizing: border-box;
   display: flex;
   align-items: center;
-  letter-spacing: 0.10em;
-  gap: 1em; 
-  padding: 1em;
+  justify-content: flex-end;
+  letter-spacing: 0.05em;
+  width: 100%;
+  gap: 0.5em;
+  padding-right: 1em;
+  padding-top: 1em;
 `;
 
 export const StatNumber = styled.h2`
-  font-weight: 300;
+  font-weight: 500;
   font-size: 1em;
   line-height: 1em;
   letter-spacing: 0.10em;
