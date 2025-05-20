@@ -18,7 +18,7 @@ import {
   getBarGraphData,
   calculateCountPerMonth_Activity,
 } from "./userdashboard_Graphs/dataFormat/ReadingAndExercisesTimeDataFormat";
-import {getWeeklyTranslatedWordsCount, calculateTotalReadingMinutes} from "../utils/progressTracking/ProgressOverviewItems"
+import {getWeeklyTranslatedWordsCount, calculateTotalReadingMinutes, calcualteWeeklyReadingMinutes} from "../utils/progressTracking/ProgressOverviewItems"
 import UserDashboardTop from "./userDashboard_Top/UserDashboardTop";
 import * as s from "./userDashboard_Styled/UserDashboard.sc";
 import { setTitle } from "../assorted/setTitle";
@@ -47,8 +47,7 @@ export default function UserDashboard() {
   const [weeklyTranslated, setWeeklyTranslated] = useState(null);
   const [totalTranslated, setTotalTranslated] = useState(null);
   const [totalReadingMinutes, setTotalReadingMinutes] = useState(null);
-
-
+  const [weeklyReadingMinutes, setWeeklyReadingMinutes] = useState(null);
 
   function handleChangeReferenceDate(newDate) {
     setReferenceDate(newDate);
@@ -130,6 +129,7 @@ export default function UserDashboard() {
       );
 
       setTotalReadingMinutes(calculateTotalReadingMinutes(activity.reading));
+      setWeeklyReadingMinutes(calcualteWeeklyReadingMinutes(activity.reading));
     });
 
     api.getAllScheduledBookmarks(false, (bookmarks) => {
@@ -144,7 +144,7 @@ export default function UserDashboard() {
     // eslint-disable-next-line
   }, [activeTab]);
 
-  if (!allWordsData || !dailyExerciseAndReadingTimes || totalLearned == null || weeklyTranslated == null || totalTranslated == null) { //|| totalInLearning==null ||  add this when functions work
+  if (!allWordsData || !dailyExerciseAndReadingTimes || totalLearned == null || weeklyTranslated == null || totalTranslated == null || totalReadingMinutes == null || weeklyReadingMinutes == null) { //|| totalInLearning==null ||  add this when functions work
     return <LoadingAnimation />;
   }
 
@@ -195,6 +195,7 @@ export default function UserDashboard() {
             weeklyTranslated = {weeklyTranslated}
             totalTranslated = {totalTranslated}
             totalReadingMinutes = {totalReadingMinutes}
+            weeklyReadingMinutes = {weeklyReadingMinutes}
             />
           </>
         )}
