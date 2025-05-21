@@ -96,7 +96,7 @@ export default function SpeakButton({
         disabled={isSpeaking}
         onClick={() => {
           !isSpeaking && handleSpeak();
-          onClickCallback();
+          onClickCallback && onClickCallback();
         }}
       >
         {isSpeaking && (
