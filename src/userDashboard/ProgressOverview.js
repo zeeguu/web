@@ -17,7 +17,7 @@ export default function ProgressOverview({totalInLearning, totalLearned, weeklyT
                     <style.ProgressOverviewItem key={index}>
                         <style.IconWithValueAndLabel>
                             <style.IconAndValue>
-                                <style.Icon><NavIcon name="words"/></style.Icon>
+                                <style.Icon><NavIcon name={item.icon}/></style.Icon>
                                 <style.Value> {item.value} </style.Value>
                             </style.IconAndValue>
                             <style.Label>{item.iconText}</style.Label>

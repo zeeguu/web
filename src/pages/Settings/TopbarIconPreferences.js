@@ -9,16 +9,36 @@ import Heading from "../_pages_shared/Heading.sc";
 import ButtonContainer from "../_pages_shared/ButtonContainer.sc";
 import Button  from "../_pages_shared/Button.sc";
 import NavIcon from "../../components/MainNav/NavIcon";
-import {IconRow, AdjustedIcon, Description} from "./TopbarIconPreferences.sc";
+import {IconRow, AdjustedIcon, Description} from "./TopBarIconPreferences.sc";
+import { useEffect, useState, React } from "react";
 
 export default function TopbarIconPreferences(){
-    function handleSave(e){
+    useEffect(() => {
+        const savedPrefs = JSON.parse(localStorage.getItem("topBarPrefs")) || [];
+        setWhichItems(savedPrefs);
+      }, []);
+
+    const [whichItems, setWhichItems] = useState([]);
+
+    function handleIconPreferences(e, key) {
+        const isChecked = e.target.checked;
+      
+        setWhichItems((prev) => {
+          if (isChecked) {
+            return [...prev, key]; 
+          } else {
+            return prev.filter(item => item !== key); 
+          }
+        });
+      }
+    
+      function handleSave(e){
         e.preventDefault();
+        localStorage.setItem("topBarPrefs", JSON.stringify(whichItems));
+        console.log("Saved topBarPrefs:", whichItems);
+        window.location.reload();
     }
-
-    function handleIconPreferences(){   
-    }
-
+    
     return(
         <PreferencesPage layoutVariant={"minimalistic-top-aligned"}>
         <BackArrow />
@@ -28,23 +48,23 @@ export default function TopbarIconPreferences(){
         <Main>
             <FormSection>
                 <IconRow>
-                <Checkbox onChange={handleIconPreferences}/>
+                <Checkbox checked={whichItems.includes("wordsPracticedTopBar")} onChange={(e) => handleIconPreferences(e, "wordsPracticedTopBar")}/>
                 <AdjustedIcon>
                 <NavIcon name="words"/>
                 <Description>{strings.wordsPracticedThisWeek}</Description>
                 </AdjustedIcon>
                </IconRow>
                <IconRow>
-                <Checkbox onChange={handleIconPreferences}/>
+                <Checkbox checked={whichItems.includes("articleMinutesTopBar")} onChange={(e) => handleIconPreferences(e, "articleMinutesTopBar")}/>
                 <AdjustedIcon>
-                <NavIcon name="words"/>
+                <NavIcon name="headerArticles"/>
                 <Description>{strings.articlesReadThisWeek}</Description>
                 </AdjustedIcon>
                </IconRow>
                <IconRow>
-                <Checkbox onChange={handleIconPreferences}/>
+                <Checkbox checked={whichItems.includes("streakTopBar")} onChange={(e) => handleIconPreferences(e, "streakTopBar")}/>
                 <AdjustedIcon>
-                <NavIcon name="words"/>
+                <NavIcon name="headerStreak"/>
                 <Description>{strings.weeklyStreak}</Description>
                 </AdjustedIcon>
                </IconRow>
