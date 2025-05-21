@@ -9,6 +9,9 @@ import { USER_WORD_PREFERENCE } from "./userBookmarkPreferences";
 import { MAX_WORDS_IN_BOOKMARK_FOR_EXERCISES } from "../exercises/ExerciseConstants";
 import { getStaticPath } from "../utils/misc/staticPath";
 import { APIContext } from "../contexts/APIContext";
+import LevelIndicator from "../exercises/progressBars/levelIndicator/LevelIndicator";
+// import {LevelWrapper} from "../exercises/progressBars/levelIndicator/LevelIndicator.sc";
+import styled from "styled-components";
 
 export default function Word({
   bookmark,
@@ -20,6 +23,13 @@ export default function Word({
   showRanking,
   isGrayedOut,
 }) {
+
+const LevelWrapper = styled.div`
+  margin-left: auto;
+  display: flex; // if LevelIndicator needs layout
+  align-items: center;
+`;
+
   const api = useContext(APIContext);
   const [deleted, setDeleted] = useState(false);
   const [reload, setReload] = useState(false);
@@ -51,7 +61,7 @@ export default function Word({
   }
   const square = "square";
   const isWordLengthFitForStudy = bookmark.from.split(" ").length < MAX_WORDS_IN_BOOKMARK_FOR_EXERCISES;
-
+  console.log("bookmark", bookmark)
   return (
     <>
       <s.Word key={bookmark.id}>
@@ -107,6 +117,9 @@ export default function Word({
               {bookmark.to}
             </div>
           </s.WordPair>
+          <LevelWrapper>
+          <LevelIndicator bookmark={bookmark} isGreyedOutBar={isGreyedOutBar}/>
+          </LevelWrapper>
         </CenteredRow>
       </s.Word>
       {children}
