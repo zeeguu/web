@@ -120,7 +120,7 @@ export function getTopBarData({weeklyTranslated, weeklyReadingMinutes}){
     const weeklyArticlesRead = {
         icon: "headerArticles",
         iconText: strings.iconTextWeeklyArticles,
-        value: 10, //weeklyMinutesRead,
+        value: weeklyMinutesRead,
         beforeText: strings.articlesReadTextStart,
         afterText: strings.articlesReadWeeklyTextEnd,
     };
@@ -128,7 +128,7 @@ export function getTopBarData({weeklyTranslated, weeklyReadingMinutes}){
     const weeklyWordsTranslated = {
         icon: "words",
         iconText: strings.iconTextWeeklyWordsTranslated,
-        value: 30, //weeklyTranslatedWords,
+        value: weeklyTranslatedWords,
         beforeText: strings.wordsTranslatedTextStart,
         afterText: strings.wordsTextWeeklyEnd,
     };

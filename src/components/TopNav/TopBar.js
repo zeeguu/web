@@ -1,12 +1,12 @@
 import NavIcon from "../MainNav/NavIcon";
 import * as s from "./TopBar.sc";
 import {zeeguuOrange} from "../colors";
-import { getTopBarData } from "../../utils/progressTracking/ProgressOverviewItems";
 import { useEffect, useState, React } from "react";
-
+import {getTopBarData} from "../../utils/progressTracking/ProgressOverviewItems";
 
 export default function TopBar({weeklyTranslated, weeklyReadingMinutes}) {
   const {weeklyProgressOverview} = getTopBarData({weeklyTranslated, weeklyReadingMinutes});
+      console.log("weeklyProgressOverview", weeklyProgressOverview);
 
   useEffect(() => {
     const savedPrefs = JSON.parse(localStorage.getItem("topBarPrefs")) || [];

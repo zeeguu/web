@@ -4,11 +4,14 @@ import { zeeguuWarmYellow } from "../components/colors";
 let Word = styled.div`
   display: flex;
   flex-direction: row;
-  align-items: flex-start;
-  margin-left: 0.5em;
-  @media (max-width: 400px) {
+  align-items: center;
+  gap: 1em; 
+  width: 100%;
+  @media (max-width: 800px) {
     margin-left: 0.1em;
     font-size: 0.8em;
+    gap: 0.5em;
+    justify-content: flex-start;
   }
 `;
 
