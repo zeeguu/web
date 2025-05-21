@@ -413,10 +413,14 @@ let CenteredRow = styled.div`
   display: flex;
   flex-direction: row;
   align-items: center;
-  justify-content: center;
-
+  flex-wrap: wrap; 
+  width: 100%;
   &.margin-top-auto {
     margin-top: auto;
+  }
+  @media (max-width: 800px) {
+    flex-wrap: wrap;
+    justify-content: flex-start;
   }
 `;
 
