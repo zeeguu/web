@@ -1,19 +1,18 @@
 import NavIcon from "../MainNav/NavIcon";
 import * as s from "./TopBar.sc";
 import {zeeguuOrange} from "../colors";
+import { getTopBarData } from "../../utils/progressTracking/ProgressOverviewItems";
+import { useEffect, useState} from "react";
 import WeeklyMinutesReadModal from "../progress_tracking/WeeklyMinutesReadModal";
 import WeeklyWordsPracticedModal from "../progress_tracking/WeeklyWordsPracticedModal";
 import WeeklyStreakModal from "../progress_tracking/WeeklyStreakModal";
-import { useEffect, useState, React } from "react";
-import {getTopBarData} from "../../utils/progressTracking/ProgressOverviewItems";
 
 export default function TopBar({weeklyTranslated, weeklyReadingMinutes}) {
   const {weeklyProgressOverview} = getTopBarData({weeklyTranslated, weeklyReadingMinutes});
   const [showWeeklyMinutesReadModal, setShowWeeklyMinutesReadModal] = useState(false);
   const [showWeeklyWordsPracticedModal, setShowWeeklyWordsPracticedModal] = useState(false);
   const [showWeeklyStreakModal, setShowWeeklyStreakModal] = useState(false);
-      console.log("weeklyProgressOverview", weeklyProgressOverview);
-      
+
   useEffect(() => {
     const savedPrefs = JSON.parse(localStorage.getItem("topBarPrefs")) || [];
     setWhichItems(savedPrefs);
