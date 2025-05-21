@@ -12,7 +12,8 @@ export default function TopBar({weeklyTranslated, weeklyReadingMinutes}) {
   const [showWeeklyMinutesReadModal, setShowWeeklyMinutesReadModal] = useState(false);
   const [showWeeklyWordsPracticedModal, setShowWeeklyWordsPracticedModal] = useState(false);
   const [showWeeklyStreakModal, setShowWeeklyStreakModal] = useState(false);
-
+      console.log("weeklyProgressOverview", weeklyProgressOverview);
+      
   useEffect(() => {
     const savedPrefs = JSON.parse(localStorage.getItem("topBarPrefs")) || [];
     setWhichItems(savedPrefs);
