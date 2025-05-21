@@ -4,7 +4,7 @@ import { StyledButton } from "../components/allButtons.sc";
 import NavIcon from "../components/MainNav/NavIcon";
 import { CenteredColumn } from "./Congratulations.sc";
 import { getExerciseProgressSummary } from "../utils/progressTracking/ProgressOverviewItems";
-import * as s from "../components/ProgressItems.sc";
+import * as s from "../components/progress_tracking/ProgressItems.sc";
 
 
 export default function ExercisesProgressSummary({onHandle, totalInLearning, totalLearned}){

@@ -2,7 +2,7 @@ import * as s from "./userDashboard_Styled/UserDashboard.sc";
 import NavIcon from "../components/MainNav/NavIcon";
 import udstrings from "../i18n/userDashboard";
 import CollapsablePanel from "../components/CollapsablePanel";
-import * as style from "../components/ProgressItems.sc";
+import * as style from "../components/progress_tracking/ProgressItems.sc";
 import { getWeeklyProgressOverviewItems, getTotalProgressOverviewItems } from "../utils/progressTracking/ProgressOverviewItems";
 
 export default function ProgressOverview({totalInLearning, totalLearned, weeklyTranslated, totalTranslated, totalReadingMinutes, weeklyReadingMinutes}){

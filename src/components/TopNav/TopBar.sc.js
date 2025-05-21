@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { veryLightGrey} from "../colors";
 
 export const StatContainer = styled.div`
   box-sizing: border-box;
@@ -19,4 +20,15 @@ export const StatNumber = styled.h2`
   letter-spacing: 0.10em;
   margin: 0;
   padding-bottom: 0.25em;
+`;
+
+export const ClickableStat = styled.div`
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  padding: 0.5em;
+  border-radius: 5px;
+  &:hover {
+    background-color: ${veryLightGrey};
+  }
 `;
