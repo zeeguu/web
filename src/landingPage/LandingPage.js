@@ -45,9 +45,9 @@ export default function LandingPage() {
             your&nbsp;vocabulary
           </h1>
           <p className="hero-paragraph">
-            Zeeguu is a research project that helps you learn smarter - find
-            interesting articles, translate words as&nbsp;you read,
-            and&nbsp;use&nbsp;spaced repetition to&nbsp;remember&nbsp;them.
+            Zeeguu is a&nbsp;research project that helps you learn smarter -
+            find interesting articles, translate words as&nbsp;you read, and
+            use&nbsp;spaced repetition to&nbsp;remember&nbsp;them.
           </p>
           <Button onClick={() => handleRegisterClick()}>
             Start Learning
@@ -69,7 +69,7 @@ export default function LandingPage() {
         </s.HeroSection>
         <s.PageSectionWrapper>
           <s.PageSection>
-            <h2>What does Zeeguu offer?</h2>
+            <h2>What does Zeeguu&nbsp;offer?</h2>
             <s.Subsection>
               <s.SubsectionText>
                 <h3>Browse your personalized&nbsp;feed</h3>
@@ -93,10 +93,10 @@ export default function LandingPage() {
               <s.SubsectionText>
                 <h3>Read, translate words &&nbsp;hear&nbsp;pronunciation</h3>
                 <p>
-                  Select an article from your personalized feed and
-                  read&nbsp;it&nbsp;with ease. Right-click anywhere on&nbsp;the
-                  page to&nbsp;activate distraction&#8209;free mode with our
-                  browser extension. Instantly translate words and hear their
+                  Select an&nbsp;article from your personalized feed and read it
+                  with ease. Right-click anywhere on&nbsp;the&nbsp;page
+                  to&nbsp;activate distraction&#8209;free mode with our browser
+                  extension. Instantly translate words and hear their
                   pronunciation&nbsp;effortlessly.
                 </p>
               </s.SubsectionText>
