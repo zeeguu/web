@@ -70,6 +70,7 @@ export function getTotalProgressOverviewItems({totalInLearning, totalLearned, to
     const totalMinutesRead = totalReadingMinutes;
 
     const totalArticlesRead = {
+        icon: "headerArticles",
         iconText: strings.iconTextTotalArticles,
         value: totalMinutesRead,
         beforeText: strings.articlesReadTextStart,
@@ -77,6 +78,7 @@ export function getTotalProgressOverviewItems({totalInLearning, totalLearned, to
     };
     
     const totalWordsTranslated = {
+        icon: "words",
         iconText: strings.iconTextTotalWordsTranslated,
         value: totalTranslatedWords,
         beforeText: strings.wordsTranslatedTextStart,
@@ -84,6 +86,7 @@ export function getTotalProgressOverviewItems({totalInLearning, totalLearned, to
     };
     
     const totalWordsPracticed = {
+        icon: "words",
         iconText: strings.iconTextTotalWordsPracticed,
         value: totalPracticedWords,
         beforeText: strings.wordsPracticedTextStart,
@@ -91,6 +94,7 @@ export function getTotalProgressOverviewItems({totalInLearning, totalLearned, to
     };
     
     const totalWordsLearned = {
+        icon: "words",
         iconText: strings.iconTextTotalWordsLearned,
         value: totalLearnedWords,
         beforeText: strings.wordsLearnedTextStart,
@@ -109,12 +113,54 @@ export function getTotalProgressOverviewItems({totalInLearning, totalLearned, to
     };
 }
 
+export function getTopBarData({weeklyTranslated, weeklyReadingMinutes}){
+    const weeklyTranslatedWords = weeklyTranslated;
+    const weeklyMinutesRead = weeklyReadingMinutes;
+
+    const weeklyArticlesRead = {
+        icon: "headerArticles",
+        iconText: strings.iconTextWeeklyArticles,
+        value: 10, //weeklyMinutesRead,
+        beforeText: strings.articlesReadTextStart,
+        afterText: strings.articlesReadWeeklyTextEnd,
+    };
+
+    const weeklyWordsTranslated = {
+        icon: "words",
+        iconText: strings.iconTextWeeklyWordsTranslated,
+        value: 30, //weeklyTranslatedWords,
+        beforeText: strings.wordsTranslatedTextStart,
+        afterText: strings.wordsTextWeeklyEnd,
+    };
+
+    const weeklyStreak = {
+        icon: "headerStreak",
+        iconText: strings.iconTextWeeklyStreak,
+        value: 5,
+        beforeText: "Words current in your learning pipeline.",
+        afterText: "xxx",
+    };
+
+    const weeklyProgressOverview = [
+        weeklyArticlesRead,
+        weeklyWordsTranslated,
+        weeklyStreak,
+    ];
+
+    return{
+        weeklyProgressOverview
+    };
+
+}
+
+
 export function getWeeklyProgressOverviewItems({weeklyTranslated, weeklyReadingMinutes}){
     const weeklyTranslatedWords = weeklyTranslated;
     const weeklyMinutesRead = weeklyReadingMinutes;
 
 
     const weeklyArticlesRead = {
+        icon: "headerArticles",
         iconText: strings.iconTextWeeklyArticles,
         value: weeklyMinutesRead,
         beforeText: strings.articlesReadTextStart,
@@ -122,6 +168,7 @@ export function getWeeklyProgressOverviewItems({weeklyTranslated, weeklyReadingM
     };
 
     const weeklyWordsTranslated = {
+        icon: "words",
         iconText: strings.iconTextWeeklyWordsTranslated,
         value: weeklyTranslatedWords,
         beforeText: strings.wordsTranslatedTextStart,
@@ -129,6 +176,7 @@ export function getWeeklyProgressOverviewItems({weeklyTranslated, weeklyReadingM
     };
 
     const weeklyWordsPracticed = {
+        icon: "words",
         iconText: strings.iconTextWeeklyWordsPracticed,
         value: 16,
         beforeText: strings.wordsPracticedTextStart,
@@ -136,6 +184,7 @@ export function getWeeklyProgressOverviewItems({weeklyTranslated, weeklyReadingM
     };
 
     const weeklyStreak = {
+        icon: "headerStreak",
         iconText: strings.iconTextWeeklyStreak,
         value: 5,
         beforeText: "Words current in your learning pipeline.",
@@ -161,6 +210,7 @@ export function getExerciseProgressSummary({totalInLearning, totalLearned}){
     const totalLearnedWords = totalLearned;
     
     const totalWordsPracticed = {
+        icon: "words",
         iconText: strings.iconTextTotalWordsPracticed,
         value: totalPracticedWords,
         beforeText: strings.wordsPracticedTextStart,
@@ -168,6 +218,7 @@ export function getExerciseProgressSummary({totalInLearning, totalLearned}){
     };
     
     const totalWordsLearned = {
+        icon: "words",
         iconText: strings.iconTextTotalWordsLearned,
         value: totalLearnedWords,
         beforeText: strings.wordsLearnedTextStart,
@@ -175,6 +226,7 @@ export function getExerciseProgressSummary({totalInLearning, totalLearned}){
     };
 
     const weeklyStreak = {
+        icon: "headerStreak",
         iconText: strings.iconTextWeeklyStreak,
         value: 5,
         beforeText: "Words current in your learning pipeline.",
@@ -182,6 +234,7 @@ export function getExerciseProgressSummary({totalInLearning, totalLearned}){
     };
 
     const weeklyWordsPracticed = {
+        icon: "words",
         iconText: strings.iconTextWeeklyWordsPracticed,
         value: 16,
         beforeText: strings.wordsPracticedTextStart,
