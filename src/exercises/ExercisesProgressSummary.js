@@ -5,8 +5,6 @@ import NavIcon from "../components/MainNav/NavIcon";
 import { getExerciseProgressSummary } from "../utils/progressTracking/ProgressOverviewItems";
 import * as s from "../components/progress_tracking/ProgressItems.sc";
 
-
-
 export default function ExercisesProgressSummary({onHandle, totalInLearning, totalLearned}){
     const [username, setUsername] = useState();
     const {userDetails} = useContext(UserContext);
