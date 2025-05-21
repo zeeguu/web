@@ -20,6 +20,10 @@ Zeeguu_API.prototype.getBookmarksCountsByDate = function (callback) {
   this._getJSON("bookmark_counts_by_date", callback);
 };
 
+Zeeguu_API.prototype.getTotalBookarmsCountWithLevel = function (callback){
+  this._getJSON("total_bookmarks_with_level", callback);
+}
+
 Zeeguu_API.prototype.starredBookmarks = function (count, callback) {
   this._getJSON(`starred_bookmarks/${count}`, callback);
 };

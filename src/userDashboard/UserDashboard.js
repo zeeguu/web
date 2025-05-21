@@ -42,8 +42,8 @@ export default function UserDashboard() {
     useState(null);
   const [monthlyExerciseAndReadingTimes, setMonthlyExerciseAndReadingTimes] =
     useState({});
-  const [totalInLearning, setTotalInLearning] = useState(null); //maybe I do not need this one.
   const [totalLearned, setTotalLearned] = useState(null);
+  const [totalInLearning, setTotalInLearning] = useState(null); 
   const [weeklyTranslated, setWeeklyTranslated] = useState(null);
   const [totalTranslated, setTotalTranslated] = useState(null);
   const [totalReadingMinutes, setTotalReadingMinutes] = useState(null);
@@ -107,14 +107,15 @@ export default function UserDashboard() {
 
   useEffect(() => {
     api.getBookmarksCountsByDate((counts) => {
+      console.log("this is from getBookmarksCountsByDate:", counts);
       var formatted = getMapData(counts);
 
       setAllWordsData(formatted);
 
       setAllWordsDataPerMonths(calculateCountPerMonth_Words(formatted));
 
-      const thisWeek = getWeeklyTranslatedWordsCount(formatted);
-      const thisWeekTotal = thisWeek.reduce((sum, day) => sum + day.count, 0);
+      const translatedWordsThisWeek = getWeeklyTranslatedWordsCount(formatted);
+      const thisWeekTotal = translatedWordsThisWeek.reduce((sum, day) => sum + day.count, 0);
       setWeeklyTranslated(thisWeekTotal);
 
       const totalTranslatedWOrds = Array.from(formatted.values()).reduce((sum, count) => sum + count, 0);
@@ -132,10 +133,10 @@ export default function UserDashboard() {
       setWeeklyReadingMinutes(calcualteWeeklyReadingMinutes(activity.reading));
     });
 
-    api.getAllScheduledBookmarks(false, (bookmarks) => {
-      setTotalInLearning(bookmarks.length)
+    api.getTotalBookarmsCountWithLevel((count) => {
+      console.log("I am calling this function now.");
+      setTotalInLearning(count);
     });
-
 
     api.totalLearnedBookmarks((totalLearnedCount) => {
       setTotalLearned(totalLearnedCount);
