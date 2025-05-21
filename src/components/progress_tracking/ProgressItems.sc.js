@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { zeeguuWarmYellow} from "./colors";
+import { zeeguuWarmYellow} from "../colors";
 
 const ProgressOverviewItem = styled.div`
   display: flex;
