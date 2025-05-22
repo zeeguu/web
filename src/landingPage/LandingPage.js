@@ -45,8 +45,9 @@ export default function LandingPage() {
             your&nbsp;vocabulary
           </h1>
           <p className="hero-paragraph">
-            Find interesting articles, translate words as&nbsp;you read,
-            and&nbsp;use&nbsp;spaced repetition to&nbsp;remember&nbsp;them.
+            Zeeguu is a&nbsp;research project that helps you learn smarter -
+            find interesting articles, translate words as&nbsp;you read, and
+            use&nbsp;spaced repetition to&nbsp;remember&nbsp;them.
           </p>
           <Button onClick={() => handleRegisterClick()}>
             Start Learning
@@ -66,38 +67,61 @@ export default function LandingPage() {
               ))}
           </s.LanguageGrid>
         </s.HeroSection>
+        <s.PageSectionWrapper>
+          <s.PageSection>
+            <h2>What does Zeeguu&nbsp;offer?</h2>
+            <s.Subsection>
+              <s.SubsectionText>
+                <h3>Browse your personalized&nbsp;feed</h3>
+                <p>
+                  Our system continuously searches the internet to&nbsp;bring
+                  you new article recommendations tailored to&nbsp;your
+                  interests and desired language&nbsp;difficulty.
+                </p>
+              </s.SubsectionText>
+              <s.SubsectionImage
+                alt=""
+                src="static/images/customized-feed.png"
+              />
+            </s.Subsection>
 
-        <s.PaleAdaptableColumn>
-          <h1>{strings.howDoesItWork}</h1>
-          <p>
-            Zeeguu is a research project that personalizes the way you
-            <br /> learn foreign languages
-          </p>
-          <h2>{strings.personalizedReading}</h2>
-          <s.DescriptionText>
-            <p>{strings.personalizedRecommandationsEllaboration1}</p>
+            <s.Subsection>
+              <s.SubsectionImage
+                alt="Clickable words: tap to translate and hear how they are pronounced"
+                src="static/images/translation-pronunciation.png"
+              />
+              <s.SubsectionText>
+                <h3>Read, translate words &&nbsp;hear&nbsp;pronunciation</h3>
+                <p>
+                  Select an&nbsp;article from your personalized feed and read it
+                  with ease. Right-click anywhere on&nbsp;the&nbsp;page
+                  to&nbsp;activate distraction&#8209;free mode with our browser
+                  extension. Instantly translate words and hear their
+                  pronunciation&nbsp;effortlessly.
+                </p>
+              </s.SubsectionText>
+            </s.Subsection>
 
-            <p>{strings.personalizedRecommandationsEllaboration2}</p>
-          </s.DescriptionText>
-
-          <h2>{strings.easyTranslations}</h2>
-          <s.DescriptionText>
-            <p>{strings.easyTranslationsEllaboration1}</p>
-
-            <p>{strings.easyTranslationsEllaboration2}</p>
-
-            <p>{strings.easyTranslationsEllaboration3}</p>
-          </s.DescriptionText>
-
-          <h2>{strings.personalizedExercises}</h2>
-          <s.DescriptionText>
-            <p>{strings.personalizedPractiseEllaboration1}</p>
-
-            <p>{strings.personalizedMultipleExerciseTypes}</p>
-
-            <p>{strings.personalizedPractiseEllaboration2}</p>
-          </s.DescriptionText>
-        </s.PaleAdaptableColumn>
+            <s.Subsection>
+              <s.SubsectionText>
+                <h3>
+                  Practice new words with&nbsp;spaced repetition and
+                  diverse&nbsp;exercises
+                </h3>
+                <p>
+                  Build your vocabulary with fun, interactive exercises that
+                  adapt to&nbsp;your level. Practice with real-life examples and
+                  audio, and remember words better thanks
+                  to&nbsp;spaced&nbsp;repetition.
+                </p>
+              </s.SubsectionText>
+              <s.SubsectionImage
+                alt="Spaced repetition is a studying technique that increases the time in-between review sessions"
+                src="static/images/spaced-repetition-calendar.png"
+              />
+            </s.Subsection>
+          </s.PageSection>
+        </s.PageSectionWrapper>
 
         <s.AdaptableColumn>
           <News />

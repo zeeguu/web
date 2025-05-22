@@ -29,13 +29,17 @@ const _mainHeader = css`
   color: ${zeeguuOrange};
 `;
 
+const _sharedFlexColumn = css`
+  display: flex;
+  flex-direction: column;
+`;
+
 const HeroSection = styled.section`
+  ${_sharedFlexColumn}
+  align-items: center;
   height: auto;
   max-width: 52rem;
   padding: 6rem 3rem;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
   text-align: center;
   max-width: 62rem;
   gap: 1.5rem;
@@ -60,9 +64,6 @@ const HeroSection = styled.section`
     font-weight: 500;
     line-height: 150%;
     color: ${almostBlack};
-    @media (max-width: 768px) {
-      font-size: 1.1rem;
-    }
   }
 `;
 
@@ -103,11 +104,117 @@ const AdaptableColumn = styled.div`
   }
 
   p {
-    line-height: 140%;
+    line-height: 145%;
+    font-size: 1rem;
   }
 
   @media (min-width: 768px) {
     max-width: 32em;
+  }
+`;
+
+const PageSectionWrapper = styled.div`
+  ${_sharedFlexColumn}
+  align-items: center;
+  box-sizing: border-box;
+  width: 100%;
+  padding: 5rem 3rem;
+  background-color: #fff9f0;
+
+  @media (max-width: 576px) {
+    padding: 3rem 1rem;
+  }
+  p {
+    line-height: 150%;
+    font-size: 1.2rem;
+    color: ${almostBlack};
+    font-weight: 500;
+  }
+
+  p.subheadline {
+    font-size: 1.25rem;
+    text-align: center;
+  }
+
+  h2 {
+    font-size: 2.25rem;
+    color: ${almostBlack};
+    margin: 0;
+    text-align: center;
+
+    @media (max-width: 768px) {
+      font-size: 1.9rem;
+    }
+  }
+
+  h3 {
+    font-size: 1.5rem;
+    color: ${almostBlack};
+    margin: 0;
+  }
+`;
+
+const PageSection = styled.section`
+  ${_sharedFlexColumn}
+  align-items: center;
+  max-width: 80rem;
+  gap: 1rem;
+`;
+
+const Subsection = styled.div`
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 3rem;
+  width: 100%;
+  padding: 5rem 0;
+
+  &:last-child {
+    padding-bottom: 0;
+  }
+
+  @media (max-width: 992px) {
+    grid-template-columns: repeat(1, 1fr);
+    gap: 1rem;
+    padding: 3rem 0;
+    &:last-child {
+      padding-bottom: 0;
+    }
+  }
+`;
+
+const SubsectionText = styled.div`
+  flex: 1;
+  box-sizing: border-box;
+  ${_sharedFlexColumn}
+  justify-content: center;
+  padding: 0 4rem 0 4rem;
+  gap: 1rem;
+
+  @media (max-width: 1200px) {
+    padding: 0 2rem 0 2rem;
+  }
+
+  @media (max-width: 992px) {
+    padding: 0;
+    text-align: center;
+    max-width: 32rem;
+    margin: auto;
+  }
+`;
+
+const SubsectionImage = styled.img`
+  object-fit: cover;
+  max-height: 25rem;
+  width: 100%;
+  height: auto;
+  border-radius: 1rem;
+  align-self: center;
+  aspect-ratio: 2 / 1;
+
+  @media (max-width: 992px) {
+    order: 1;
+    max-width: 40rem;
+    margin: auto;
   }
 `;
 
@@ -135,6 +242,11 @@ export {
   Main,
   HeroSection,
   LanguageGrid,
+  PageSectionWrapper,
+  PageSection,
+  SubsectionText,
+  SubsectionImage,
+  Subsection,
   AdaptableColumn,
   PaleAdaptableColumn,
   DescriptionText,
