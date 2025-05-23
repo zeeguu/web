@@ -181,6 +181,7 @@ const PageSectionWrapper = styled.div`
 
     @media (max-width: 992px) {
       margin: auto;
+      padding: 0 1rem;
     }
   }
 
