@@ -66,55 +66,55 @@ export default function LandingPage() {
         <s.PageSectionWrapper>
           <s.PageSection>
             <h2>What does Zeeguu&nbsp;offer?</h2>
-            <s.Subsection>
-              <s.SubsectionText>
+            <s.ResponsiveRow>
+              <s.ContentText>
                 <h3>Browse your personalized&nbsp;feed</h3>
                 <p>
                   Our system continuously searches the internet to&nbsp;bring you new article recommendations tailored
                   to&nbsp;your interests and desired language&nbsp;difficulty.
                 </p>
-              </s.SubsectionText>
-              <s.SubsectionImage alt="" src="static/images/customized-feed.png" />
-            </s.Subsection>
+              </s.ContentText>
+              <s.ContentImage alt="" src="static/images/customized-feed.png" />
+            </s.ResponsiveRow>
 
-            <s.Subsection>
-              <s.SubsectionImage
+            <s.ResponsiveRow>
+              <s.ContentImage
                 alt="Clickable words: tap to translate and hear how they are pronounced"
                 src="static/images/translation-pronunciation.png"
               />
-              <s.SubsectionText>
+              <s.ContentText>
                 <h3>Read, translate words &&nbsp;hear&nbsp;pronunciation</h3>
                 <p>
                   Select an&nbsp;article from your personalized feed and read it with ease. Right-click anywhere
                   on&nbsp;the&nbsp;page to&nbsp;activate distraction&#8209;free mode with our browser extension.
                   Instantly translate words and hear their pronunciation&nbsp;effortlessly.
                 </p>
-              </s.SubsectionText>
-            </s.Subsection>
+              </s.ContentText>
+            </s.ResponsiveRow>
 
-            <s.Subsection>
-              <s.SubsectionText>
+            <s.ResponsiveRow>
+              <s.ContentText>
                 <h3>Practice new words with&nbsp;spaced repetition and diverse&nbsp;exercises</h3>
                 <p>
                   Build your vocabulary with fun, interactive exercises that adapt to&nbsp;your level. Practice with
                   real-life examples and audio, and remember words better thanks to&nbsp;spaced&nbsp;repetition.
                 </p>
-              </s.SubsectionText>
-              <s.SubsectionImage
+              </s.ContentText>
+              <s.ContentImage
                 alt="Spaced repetition is a studying technique that increases the time in-between review sessions"
                 src="static/images/spaced-repetition-calendar.png"
               />
-            </s.Subsection>
+            </s.ResponsiveRow>
           </s.PageSection>
         </s.PageSectionWrapper>
         <s.PageSectionWrapper>
           <s.PageSection>
-            <s.Subsection>
-              <s.SubsectionImage
+            <s.ResponsiveRow>
+              <s.ContentImage
                 alt="Spaced repetition is a studying technique that increases the time in-between review sessions"
                 src="static/images/spaced-repetition-calendar.png"
               />
-              <s.SubsectionText>
+              <s.ContentText>
                 <h2 className="left-aligned">Zeeguu for&nbsp;Teachers</h2>
                 <p className="subheadline left-aligned">Help your students learn languages through&nbsp;reading</p>
                 <ul>
@@ -125,8 +125,8 @@ export default function LandingPage() {
                 <p>
                   To start using Zeeguu for Teachers, contact us at&nbsp;<strong>zeeguu.team@gmail.com</strong>
                 </p>
-              </s.SubsectionText>
-            </s.Subsection>
+              </s.ContentText>
+            </s.ResponsiveRow>
           </s.PageSection>
         </s.PageSectionWrapper>
 

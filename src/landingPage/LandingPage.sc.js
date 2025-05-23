@@ -200,7 +200,7 @@ const PageSection = styled.section`
   gap: 1rem;
 `;
 
-const Subsection = styled.div`
+const ResponsiveRow = styled.div`
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 3rem;
@@ -225,7 +225,7 @@ const Subsection = styled.div`
   }
 `;
 
-const SubsectionText = styled.div`
+const ContentText = styled.div`
   flex: 1;
   box-sizing: border-box;
   ${_sharedFlexColumn}
@@ -245,7 +245,7 @@ const SubsectionText = styled.div`
   }
 `;
 
-const SubsectionImage = styled.img`
+const ContentImage = styled.img`
   object-fit: cover;
   max-height: 25rem;
   width: 100%;
@@ -287,9 +287,9 @@ export {
   LanguageGrid,
   PageSectionWrapper,
   PageSection,
-  SubsectionText,
-  SubsectionImage,
-  Subsection,
+  ContentText,
+  ContentImage,
+  ResponsiveRow,
   AdaptableColumn,
   PaleAdaptableColumn,
   DescriptionText,
