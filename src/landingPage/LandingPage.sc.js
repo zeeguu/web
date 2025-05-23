@@ -1,9 +1,5 @@
 import styled, { css } from "styled-components";
-import {
-  zeeguuOrange,
-  zeeguuTransparentLightYellow,
-  almostBlack,
-} from "../components/colors";
+import { zeeguuOrange, zeeguuTransparentLightYellow, almostBlack } from "../components/colors";
 
 const PageWrapper = styled.div`
   width: 100%;
@@ -138,6 +134,14 @@ const PageSectionWrapper = styled.div`
   p.subheadline {
     font-size: 1.25rem;
     text-align: center;
+
+    &.left-aligned {
+      text-align: left;
+
+      @media (max-width: 992px) {
+        text-align: center;
+      }
+    }
   }
 
   h2 {
@@ -145,6 +149,14 @@ const PageSectionWrapper = styled.div`
     color: ${almostBlack};
     margin: 0;
     text-align: center;
+
+    &.left-aligned {
+      text-align: left;
+
+      @media (max-width: 992px) {
+        text-align: center;
+      }
+    }
 
     @media (max-width: 768px) {
       font-size: 1.9rem;
@@ -155,6 +167,29 @@ const PageSectionWrapper = styled.div`
     font-size: 1.5rem;
     color: ${almostBlack};
     margin: 0;
+  }
+
+  ul {
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+    margin-left: 1rem;
+    width: fit-content;
+
+    @media (max-width: 992px) {
+      margin: auto;
+    }
+  }
+
+  li {
+    font-size: 1.2rem;
+    color: ${almostBlack};
+    font-weight: 700;
+    line-height: 150%;
+    text-align: left;
   }
 `;
 
@@ -205,7 +240,7 @@ const SubsectionText = styled.div`
   @media (max-width: 992px) {
     padding: 0;
     text-align: center;
-    max-width: 32rem;
+    max-width: 36rem;
     margin: auto;
   }
 `;

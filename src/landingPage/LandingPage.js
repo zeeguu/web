@@ -40,14 +40,10 @@ export default function LandingPage() {
       </s.Header>
       <s.Main>
         <s.HeroSection>
-          <h1>
-            Learn a language by reading what you love and improve
-            your&nbsp;vocabulary
-          </h1>
+          <h1>Learn a language by reading what you love and improve your&nbsp;vocabulary</h1>
           <p className="hero-paragraph">
-            Zeeguu is a&nbsp;research project that helps you learn smarter -
-            find interesting articles, translate words as&nbsp;you read, and
-            use&nbsp;spaced repetition to&nbsp;remember&nbsp;them.
+            Zeeguu is a&nbsp;research project that helps you learn smarter - find interesting articles, translate words
+            as&nbsp;you read, and use&nbsp;spaced repetition to&nbsp;remember&nbsp;them.
           </p>
           <Button onClick={() => handleRegisterClick()}>
             Start Learning
@@ -74,15 +70,11 @@ export default function LandingPage() {
               <s.SubsectionText>
                 <h3>Browse your personalized&nbsp;feed</h3>
                 <p>
-                  Our system continuously searches the internet to&nbsp;bring
-                  you new article recommendations tailored to&nbsp;your
-                  interests and desired language&nbsp;difficulty.
+                  Our system continuously searches the internet to&nbsp;bring you new article recommendations tailored
+                  to&nbsp;your interests and desired language&nbsp;difficulty.
                 </p>
               </s.SubsectionText>
-              <s.SubsectionImage
-                alt=""
-                src="static/images/customized-feed.png"
-              />
+              <s.SubsectionImage alt="" src="static/images/customized-feed.png" />
             </s.Subsection>
 
             <s.Subsection>
@@ -93,26 +85,19 @@ export default function LandingPage() {
               <s.SubsectionText>
                 <h3>Read, translate words &&nbsp;hear&nbsp;pronunciation</h3>
                 <p>
-                  Select an&nbsp;article from your personalized feed and read it
-                  with ease. Right-click anywhere on&nbsp;the&nbsp;page
-                  to&nbsp;activate distraction&#8209;free mode with our browser
-                  extension. Instantly translate words and hear their
-                  pronunciation&nbsp;effortlessly.
+                  Select an&nbsp;article from your personalized feed and read it with ease. Right-click anywhere
+                  on&nbsp;the&nbsp;page to&nbsp;activate distraction&#8209;free mode with our browser extension.
+                  Instantly translate words and hear their pronunciation&nbsp;effortlessly.
                 </p>
               </s.SubsectionText>
             </s.Subsection>
 
             <s.Subsection>
               <s.SubsectionText>
-                <h3>
-                  Practice new words with&nbsp;spaced repetition and
-                  diverse&nbsp;exercises
-                </h3>
+                <h3>Practice new words with&nbsp;spaced repetition and diverse&nbsp;exercises</h3>
                 <p>
-                  Build your vocabulary with fun, interactive exercises that
-                  adapt to&nbsp;your level. Practice with real-life examples and
-                  audio, and remember words better thanks
-                  to&nbsp;spaced&nbsp;repetition.
+                  Build your vocabulary with fun, interactive exercises that adapt to&nbsp;your level. Practice with
+                  real-life examples and audio, and remember words better thanks to&nbsp;spaced&nbsp;repetition.
                 </p>
               </s.SubsectionText>
               <s.SubsectionImage
@@ -130,25 +115,15 @@ export default function LandingPage() {
                 src="static/images/spaced-repetition-calendar.png"
               />
               <s.SubsectionText>
-                <h2>Zeeguu for Teachers</h2>
-                <p className="subheadline">
-                  Help your students learn languages through reading
-                </p>
-                <p>
-                  With Zeeguu for Teachers, you can assign articles, track your
-                  students' progress, and see how they engage with texts. The
-                  platform helps you guide their reading practice and vocabulary
-                  learning in a simple and effective way.
-                </p>
+                <h2 className="left-aligned">Zeeguu for&nbsp;Teachers</h2>
+                <p className="subheadline left-aligned">Help your students learn languages through&nbsp;reading</p>
                 <ul>
-                  <li>Choose or upload articles for your students</li>
-                  <li>See what they read and how often</li>
-                  <li>Track the words they translate or practice</li>
-                  <li>Understand where they might need help</li>
+                  <li>Upload articles for your&nbsp;students</li>
+                  <li>See what they read and how&nbsp;often</li>
+                  <li>Track the words they translate or&nbsp;practice</li>
                 </ul>
                 <p>
-                  To start using Zeeguu for Teachers, contact us at
-                  <strong> zeeguu.team@gmail.com</strong>
+                  To start using Zeeguu for Teachers, contact us at&nbsp;<strong>zeeguu.team@gmail.com</strong>
                 </p>
               </s.SubsectionText>
             </s.Subsection>
