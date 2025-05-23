@@ -53,16 +53,25 @@ export default function Learned() {
 
   return (
     <>
-      <s.YellowMessageBox>{strings.learnedWordsAreMsg}</s.YellowMessageBox>
-
       <s.YellowMessageBox>
-        {strings.formatString(strings.numberOfLearnedWordsMsg, totalWordsLearned)}
+        <br />
+        <div>
+          {totalWordsLearned > 10 ? "Congratulations! " : " "}
+          You have learned <b>{totalWordsLearned}</b> words so far.
+        </div>
+        <br />
+        <div style={{ textAlign: "left", marginLeft: "1em", fontSize: "smaller" }}>
+          A word is learned when done correctly in exercises in all the four levels. Or when it is marked as{" "}
+          <i>"too easy"</i> by you after you have done several exercises with it.
+        </div>
+
+        <br />
       </s.YellowMessageBox>
+
       <div>
         {words.map((subGroup) => {
           return (
             <div>
-              <h2>{"Learned on: " + subGroup[0].learned_datetime}</h2>
               {subGroup.map((each) => {
                 return <Word key={each.id} notifyDelete={onNotifyDelete} bookmark={each} hideStar={true} />;
               })}

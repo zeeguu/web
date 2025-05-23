@@ -17,6 +17,7 @@ export default function Learning() {
 
   const [inLearning, setInLearning] = useState(null);
   const [inLearning_byLevel, setInLearning_byLevel] = useState(null);
+  const [nextInLearning, setNextInLearning] = useState(false);
 
   useEffect(() => {
     api.getAllScheduledBookmarks(false, (bookmarks) => {
@@ -35,6 +36,11 @@ export default function Learning() {
       setInLearning_byLevel(words_byLevel);
     });
 
+    api.getBookmarksNextInLearning((bookmarks) => {
+      setNextInLearning(bookmarks);
+      console.log(bookmarks);
+    });
+
     setTitle(strings.titleToLearnWords);
   }, [api]);
 
@@ -44,7 +50,7 @@ export default function Learning() {
     updateExercisesCounter();
   }
 
-  if (!inLearning || !inLearning_byLevel) {
+  if (!inLearning || !inLearning_byLevel || !nextInLearning) {
     return <LoadingAnimation />;
   }
 
@@ -58,7 +64,13 @@ export default function Learning() {
 
   return (
     <>
-      <h1>In Learning ({inLearning.length})</h1>
+      <h1>
+        In Learning <span style={{ color: "gray", fontWeight: "lighter" }}>({inLearning.length})</span>
+      </h1>
+      <p>
+        Words you see in your exercises grouped by how far you've progressed them. Our spaced repetition algorithm
+        decides the ones you see in a given day.
+      </p>
       <>
         {inLearning.length === 0 && <p>No words being learned yet</p>}
 
@@ -82,6 +94,33 @@ export default function Learning() {
       </>
 
       <br />
+
+      {nextInLearning.length > 0 && (
+        <>
+          <h1>Next in exercises...</h1>
+          <p>
+            When you master a word from your current exercise list, it gets replaced by a new word to keep your practice
+            sessions consistent.
+          </p>
+          <p>
+            The words below are ranked in order of their priority for being added to your exercises next. These
+            replacement words come from your previous translation work and are prioritized based on how frequently they
+            appear in the language you're learning.
+          </p>
+          {nextInLearning.map((each) => (
+            <Word
+              key={each.id}
+              bookmark={each}
+              source={WEB_READER}
+              notifyDelete={onNotifyDelete}
+              showRanking={true}
+              isGrayedOut={true}
+            />
+          ))}
+          <br />
+          <br />
+        </>
+      )}
     </>
   );
 }
