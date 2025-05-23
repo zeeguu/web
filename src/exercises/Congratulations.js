@@ -143,10 +143,12 @@ export default function Congratulations({
 
         <br />
         {isOutOfWordsToday && (
-          <p>
-            There are no more words for you to practice today. Come back tomorrow to see the words that you should
-            practice again according to our spaced-repetition schedule.
-          </p>
+          <YellowMessageBox>
+            <p>
+              There are no more words for you to practice today. Come back tomorrow to see the words that you should
+              practice again according to our spaced-repetition schedule.
+            </p>
+          </YellowMessageBox>
         )}
         {!isOutOfWordsToday && (
           <>
