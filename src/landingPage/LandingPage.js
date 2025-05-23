@@ -110,10 +110,7 @@ export default function LandingPage() {
         <s.PageSectionWrapper>
           <s.PageSection>
             <s.ResponsiveRow>
-              <s.ContentImage
-                alt="Spaced repetition is a studying technique that increases the time in-between review sessions"
-                src="static/images/spaced-repetition-calendar.png"
-              />
+              <s.ContentImage className="square" alt="" src="static/images/zeeguu-for-teachers.png" />
               <s.ContentText>
                 <h2 className="left-aligned">Zeeguu for&nbsp;Teachers</h2>
                 <p className="subheadline left-aligned">Help your students learn languages through&nbsp;reading</p>

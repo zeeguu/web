@@ -254,6 +254,10 @@ const ContentImage = styled.img`
   border-radius: 1rem;
   align-self: center;
   aspect-ratio: 2 / 1;
+  &.square {
+    aspect-ratio: 1 / 1;
+    max-height: none;
+  }
 
   @media (max-width: 992px) {
     order: 1;
