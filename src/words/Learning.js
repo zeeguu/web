@@ -97,12 +97,15 @@ export default function Learning() {
 
       {nextInLearning.length > 0 && (
         <>
-          <h1 style={{ color: "gray" }}>
-            <i>Next in exercises...</i>
-          </h1>
+          <h1>Next in exercises...</h1>
           <p>
-            These words are next in exercises. They are selected from your past translations and prioritized by
-            frequency of occurrence in your learned language.
+            When you master a word from your current exercise list, it gets replaced by a new word to keep your practice
+            sessions consistent.
+          </p>
+          <p>
+            The words below are ranked in order of their priority for being added to your exercises next. These
+            replacement words come from your previous translation work and are prioritized based on how frequently they
+            appear in the language you're learning.
           </p>
           {nextInLearning.map((each) => (
             <Word
