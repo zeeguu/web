@@ -11,6 +11,6 @@
  * setTitle("Home");
  */
 
-export function setTitle(title) {
-  document.title = title + ": Zeeguu";
+export function setTitle(title, suffix = ": Zeeguu") {
+  document.title = title + suffix;
 }
