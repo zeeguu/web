@@ -167,7 +167,7 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
       });
     } else {
       api.getBookmarksRecommendedForPractice((bookmarks) => initializeExercisesForBookmarks(bookmarks));
-      setTitle(strings.exercises);
+      setTitle("Zeeguu: Vocabulary Exercises (𝄂𝄂—𝄂𝄂)", "");
     }
   }
 
