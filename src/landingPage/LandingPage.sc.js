@@ -14,7 +14,7 @@ const Main = styled.main`
   align-items: center;
 `;
 
-const _mainHeader = css`
+const _sharedHeader = css`
   display: block;
   font-size: 2em;
   margin-block-start: 0.67em;
@@ -45,7 +45,7 @@ const HeroSection = styled.section`
   }
 
   h1 {
-    ${_mainHeader}
+    ${_sharedHeader}
     color: ${almostBlack};
     font-size: 3rem;
     margin: 0;
@@ -90,11 +90,11 @@ const AdaptableColumn = styled.div`
   margin-right: auto;
   text-align: center;
 
-  h1 {
-    ${_mainHeader}
+  h2 {
+    ${_sharedHeader}
   }
 
-  h2 {
+  h3 {
     margin-top: 1em;
     margin-bottom: -0.5em;
   }
