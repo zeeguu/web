@@ -44,7 +44,6 @@ export default function SolutionFeedbackLinks({
           <s.StyledGreyButton className="styledGreyButton" onClick={handleShowSolution}>
             {strings.showSolution}
           </s.StyledGreyButton>
-          <s.StyledDiv>&nbsp;|&nbsp;</s.StyledDiv>
         </>
       )}
       {isExerciseOver && !hasProvidedQuickFeedback && (
@@ -55,19 +54,10 @@ export default function SolutionFeedbackLinks({
               setQuickFeedbackModal(!openQuickFeedbackModal);
             }}
           >
-            {isTestingMultipleBookmarks ? "Don't show one of these words again" : "Don't show this word again"}
+            {isTestingMultipleBookmarks ? "Exclude one of these words from exercises" : "Don't show this word again"}
           </s.StyledGreyButton>
-          <s.StyledDiv>&nbsp;|&nbsp;</s.StyledDiv>
         </>
       )}
-      <s.StyledGreyButton
-        className="styledGreyButton"
-        onClick={() => {
-          setOpenFeedback(!openFeedback);
-        }}
-      >
-        {strings.giveFeedback}
-      </s.StyledGreyButton>
     </s.CenteredRow>
   );
 }

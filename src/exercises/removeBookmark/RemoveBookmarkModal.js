@@ -39,15 +39,13 @@ export default function RemoveBookmarkModal({
   const possibleReasons = [
     ["too_easy", "Too Easy"],
     ["too_hard", "Too Hard"],
-    ["bad_context", "Bad Context"],
-    ["dont_want_to_see_this_word", "Don't want to see this word"],
     ["other", "Other"],
   ];
 
   function handleSubmit(e, reason) {
     e.preventDefault();
     let reasonHumanReadable = possibleReasons.find((each) => each[0] === reason)[1];
-    toast.success(`Bookmark ${exerciseBookmarkForFeedback.from} removed successfully: '${reasonHumanReadable}'.`);
+    toast.success(`"${exerciseBookmarkForFeedback.from}" was removed successfully for: '${reasonHumanReadable}'.`);
     uploadUserFeedback(reason, exerciseBookmarkForFeedback.id);
     setOpen(!open);
     setHasProvidedQuickFeedback(true);
@@ -62,7 +60,7 @@ export default function RemoveBookmarkModal({
       }}
     >
       <Header>
-        <Heading>Removing a word/expression from exercises</Heading>
+        <Heading>Which word do you want to remove from exercises?</Heading>
       </Header>
       <Main>
         {hasMultipleBookmarks && (
@@ -76,7 +74,11 @@ export default function RemoveBookmarkModal({
           <>
             {exerciseBookmarkForFeedback && (
               <p>
-                Why don't you want to see '<b>{exerciseBookmarkForFeedback.from}</b>'?
+                Why don't you want to see '
+                <b>
+                  {exerciseBookmarkForFeedback.from}/{exerciseBookmarkForFeedback.to}
+                </b>
+                '?
               </p>
             )}
 

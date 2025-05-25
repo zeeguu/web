@@ -12,14 +12,14 @@ export default function MatchBookmarkSelection({
         {exerciseBookmarks &&
           exerciseBookmarks.map((b) => (
             <SelectionButton
-              className={
-                bookmarkSelected && b.id === bookmarkSelected.id
-                  ? "selected"
-                  : ""
-              }
+              className={bookmarkSelected && b.id === bookmarkSelected.id ? "selected" : ""}
               onClick={() => setExerciseBookmarkForFeedback(b)}
             >
-              {b.from}
+              <div>
+                {b.from}
+                <br />
+                <span style={{ color: "gray", fontSize: "smaller" }}>{b.to}</span>
+              </div>
             </SelectionButton>
           ))}
       </ButtonContainer>

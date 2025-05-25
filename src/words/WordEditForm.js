@@ -6,13 +6,7 @@ import { MAX_WORDS_IN_BOOKMARK_FOR_EXERCISES } from "../exercises/ExerciseConsta
 import isBookmarkExpression from "../utils/misc/isBookmarkExpression";
 import FullWidthErrorMsg from "../components/FullWidthErrorMsg.sc";
 
-export default function WordEditForm({
-  bookmark,
-  errorMessage,
-  handleClose,
-  updateBookmark,
-  deleteAction,
-}) {
+export default function WordEditForm({ bookmark, errorMessage, handleClose, updateBookmark, deleteAction }) {
   const [translation, setTranslation] = useState(bookmark.to);
   const [expression, setExpression] = useState(bookmark.from);
   const [context, setContext] = useState(bookmark.context);
@@ -75,10 +69,11 @@ export default function WordEditForm({
       {isBookmarkExpression(bookmark) ? (
         <s.Headline>{strings.editExpression}</s.Headline>
       ) : (
-        <s.Headline>{strings.editWord}</s.Headline>
+        <s.Headline>Edit Word and Example</s.Headline>
       )}
       <form onSubmit={handleSubmit} autoFocus={true}>
         {errorMessage && <FullWidthErrorMsg>{errorMessage}</FullWidthErrorMsg>}
+
         {isBookmarkExpression(bookmark) ? (
           <s.CustomTextField
             id="outlined-basic"
@@ -106,17 +101,18 @@ export default function WordEditForm({
           value={translation}
           onChange={typingTranslation}
         />
+
         <s.CustomTextField
           id="outlined-basic"
-          label={strings.context}
+          label="Example"
           variant="outlined"
           fullWidth
           multiline
           value={context}
           onChange={typingContext}
         />
-        {bookmark.from.split(" ").length <
-          MAX_WORDS_IN_BOOKMARK_FOR_EXERCISES && (
+
+        {bookmark.from.split(" ").length < MAX_WORDS_IN_BOOKMARK_FOR_EXERCISES && (
           <s.CustomCheckBoxDiv>
             <input
               style={{ width: "1.5em" }}
@@ -130,16 +126,8 @@ export default function WordEditForm({
 
         {isNotEdited ? (
           <s.DoneButtonHolder>
-            <st.FeedbackDelete
-              type="button"
-              onClick={() => deleteAction(bookmark)}
-              value={strings.deleteWord}
-            />
-            <st.FeedbackSubmit
-              type="submit"
-              value={strings.done}
-              style={{ marginLeft: "1em", marginTop: "1em" }}
-            />
+            <st.FeedbackDelete type="button" onClick={() => deleteAction(bookmark)} value={strings.deleteWord} />
+            <st.FeedbackSubmit type="submit" value={strings.done} style={{ marginLeft: "1em", marginTop: "1em" }} />
           </s.DoneButtonHolder>
         ) : (
           <s.DoneButtonHolder>
@@ -149,11 +137,7 @@ export default function WordEditForm({
               value={strings.cancel}
               style={{ marginLeft: "1em", marginTop: "1em" }}
             />
-            <st.FeedbackSubmit
-              type="submit"
-              value={strings.save}
-              style={{ marginLeft: "1em", marginTop: "1em" }}
-            />
+            <st.FeedbackSubmit type="submit" value={strings.save} style={{ marginLeft: "1em", marginTop: "1em" }} />
           </s.DoneButtonHolder>
         )}
       </form>
