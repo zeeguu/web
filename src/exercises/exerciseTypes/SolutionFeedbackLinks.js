@@ -54,7 +54,9 @@ export default function SolutionFeedbackLinks({
               setQuickFeedbackModal(!openQuickFeedbackModal);
             }}
           >
-            {isTestingMultipleBookmarks ? "Exclude one of these words from exercises" : "Don't show this word again"}
+            {/* keeping the code as a reminder that we used to have multiple options even though this
+            is clear enough IMO even if it's the same */}
+            {isTestingMultipleBookmarks ? "Exclude word from exercises" : "Exclude word from exercises"}
           </s.StyledGreyButton>
         </>
       )}
