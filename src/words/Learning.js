@@ -99,8 +99,8 @@ export default function Learning() {
         <>
           <h1>Next in exercises...</h1>
           <p>
-            When you master a word from your current exercise list, it gets replaced by a new word to keep your practice
-            sessions consistent.
+            When you master a word from your current exercise list (or you remove it), it gets replaced by a new word to
+            keep your practice sessions consistent.
           </p>
           <p>
             The words below are ranked in order of their priority for being added to your exercises next. These
