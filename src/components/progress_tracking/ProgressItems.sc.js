@@ -34,6 +34,7 @@ const IconAndValue = styled.div`
 
 const Icon = styled.div`
   font-size: 1em;
+  color: ${zeeguuWarmYellow};
 `;
 
 const Value = styled.div`

@@ -16,11 +16,14 @@ import LocalFireDepartmentIcon from '@mui/icons-material/LocalFireDepartment';
 import ArticleIcon from '@mui/icons-material/Article';
 
 
-export default function NavIcon({ name, color }) {
+export default function NavIcon({ name, color, size }) {
 
-  const iconProps = {
-    style: { color: color }, 
-  };
+const iconProps = {
+  sx: {
+    ...(color && { color }),
+    ...(size && { fontSize: size })
+  }
+};
 
   const navIcons = {
     home: <HomeRoundedIcon />,
