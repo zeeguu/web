@@ -50,14 +50,18 @@ export default function TopBar({weeklyTranslated, weeklyReadingMinutes}) {
     <WeeklyMinutesReadModal
       open={showWeeklyMinutesReadModal}
       setOpen={setShowWeeklyMinutesReadModal}
+      value={weeklyProgressOverview[0].value}
+
     />
     <WeeklyWordsPracticedModal
       open={showWeeklyWordsPracticedModal}
       setOpen={setShowWeeklyWordsPracticedModal}
+      value={weeklyProgressOverview[1].value}
     />
     <WeeklyStreakModal
       open={showWeeklyStreakModal}
       setOpen={setShowWeeklyStreakModal}
+      value={weeklyProgressOverview[2].value}
     />
     </>
   );
