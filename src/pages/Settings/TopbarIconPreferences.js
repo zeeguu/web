@@ -9,7 +9,7 @@ import Heading from "../_pages_shared/Heading.sc";
 import ButtonContainer from "../_pages_shared/ButtonContainer.sc";
 import Button  from "../_pages_shared/Button.sc";
 import NavIcon from "../../components/MainNav/NavIcon";
-import {IconRow, AdjustedIcon, Description} from "./TopBarIconPreferences.sc";
+import {IconRow, AdjustedIcon, Description} from "./TopbarIconPreferences.sc";
 import { useEffect, useState, React } from "react";
 
 export default function TopbarIconPreferences(){
