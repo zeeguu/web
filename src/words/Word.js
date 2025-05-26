@@ -111,7 +111,7 @@ export default function Word({
             </div>
           </s.WordPair>
           <LevelWrapper>
-          <LevelIndicator bookmark={bookmark} isGreyedOutBar={isGreyedOutBar}/>
+          <LevelIndicator bookmark={bookmark}/>
           </LevelWrapper>
         </CenteredRow>
       </s.Word>
