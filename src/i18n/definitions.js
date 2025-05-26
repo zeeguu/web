@@ -920,30 +920,7 @@ let strings = new LocalizedStrings(
 
       wordsTextWeeklyEnd: "ord i denne uge. Du er godt i gang!",
       wordsTextTotalEnd: "siden du begyndte at bruge Zeeguu. Hvor er du god!",
-      
-
-      //Progress Items
-      iconTextWeeklyArticles: "Læste artikler pr. uge",
-      iconTextWeeklyWordsTranslated:  "Oversatte ord pr. uge",
-      iconTextWeeklyWordsPracticed: "Ord øvet pr. uge",
-      iconTextWeeklyStreak: "Ugentlig streak",
-
-      iconTextTotalArticles: "Læste artikler",
-      iconTextTotalWordsTranslated: "Oversatte ord",
-      iconTextTotalWordsPracticed: "Øvede ord",
-      iconTextTotalWordsLearned: "Lærte ord",
-
-      articlesReadTextStart: "Du har læst",
-      articlesReadWeeklyTextEnd: "artikler i denne uge. Godt gået!",
-      articlesReadTotalTextEnd: "siden du begyndte at bruge Zeeguu. Du klarer det godt!",
-
-      wordsTranslatedTextStart: "Du har oversat",
-      wordsPracticedTextStart: "Du har øvet",
-      wordsLearnedTextStart: "Du har lært",
-
-      wordsTextWeeklyEnd: "ord i denne uge. Du er godt i gang!",
-      wordsTextTotalEnd: "siden du begyndte at bruge Zeeguu. Hvor er du god!",
-      
+    
       //CreateAccount
       nameIsRequired: "Vi mangler et navn.",
       learnedLanguageIsRequired: 'Udfyld feltet "Sprog, du vil lære"',
