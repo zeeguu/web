@@ -3,7 +3,7 @@ import { zeeguuWarmYellow } from "../../../components/colors";
 
 const LevelWrapper = styled.div`
   margin-left: auto;
-  display: flex; // if LevelIndicator needs layout
+  display: flex; 
   align-items: right;
   padding-right: 1em;
   @media (max-width: 800px) {
@@ -15,6 +15,14 @@ const LevelWrapper = styled.div`
     margin-right: 1em;
     padding-left: 1em;
   }
+`;
+
+const LevelExercisesWrapper  = styled.div`
+  display:flex; 
+  align-items: center;
+  margin: 1em;
+  padding-left: 1em;
+  padding-right: 2em;
 `;
 
 const LevelIndicator = styled.div`
@@ -171,4 +179,4 @@ const LevelIndicator = styled.div`
   }
 `;
 
-export { LevelIndicator, LevelWrapper };
+export { LevelIndicator, LevelWrapper, LevelExercisesWrapper };
