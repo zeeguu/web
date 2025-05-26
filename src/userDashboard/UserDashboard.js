@@ -158,6 +158,19 @@ export default function UserDashboard() {
         ) : (
           <></>
         )}
+        
+        {activeTab === TABS_IDS.PROGRESS_ITEMS && (
+          <>
+            <ProgressOverview
+            totalInLearning ={totalInLearning}
+            totalLearned = {totalLearned}
+            weeklyTranslated = {weeklyTranslated}
+            totalTranslated = {totalTranslated}
+            totalReadingMinutes = {totalReadingMinutes}
+            weeklyReadingMinutes = {weeklyReadingMinutes}
+            />
+          </>
+        )}
       </s.NivoGraphContainer>
     </>
   );
