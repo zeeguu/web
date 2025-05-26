@@ -4,6 +4,7 @@ import { StyledButton } from "../components/allButtons.sc";
 import NavIcon from "../components/MainNav/NavIcon";
 import { getExerciseProgressSummary } from "../utils/progressTracking/ProgressOverviewItems";
 import * as s from "../components/progress_tracking/ProgressItems.sc";
+import { CenteredColumn } from "./Congratulations.sc";
 
 export default function ExercisesProgressSummary({onHandle, totalInLearning, totalLearned}){
     const [username, setUsername] = useState();
