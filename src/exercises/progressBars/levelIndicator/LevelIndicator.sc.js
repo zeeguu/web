@@ -2,12 +2,13 @@ import styled from "styled-components";
 import { zeeguuWarmYellow } from "../../../components/colors";
 
 const LevelWrapper = styled.div`
-  margin-left: auto;
-  display: flex; // if LevelIndicator needs layout
-  align-items: right;
+  display: flex; 
   padding-right: 1em;
+  margin-left: auto;
+  align-items: center; 
   @media (max-width: 800px) {
     margin-left: 0;
+    margin-right: 1em;
     width: 100%;          
     margin-top: 0.5em;
     justify-content: flex-start;     

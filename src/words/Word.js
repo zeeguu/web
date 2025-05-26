@@ -10,14 +10,7 @@ import { MAX_WORDS_IN_BOOKMARK_FOR_EXERCISES } from "../exercises/ExerciseConsta
 import { getStaticPath } from "../utils/misc/staticPath";
 import { APIContext } from "../contexts/APIContext";
 import LevelIndicator from "../exercises/progressBars/levelIndicator/LevelIndicator";
-// import {LevelWrapper} from "../exercises/progressBars/levelIndicator/LevelIndicator.sc";
-import styled from "styled-components";
-
-const LevelWrapper = styled.div`
-  margin-left: auto;
-  display: flex; // if LevelIndicator needs layout
-  align-items: center;
-`;
+import {LevelWrapper} from "../exercises/progressBars/levelIndicator/LevelIndicator.sc";
 
 export default function Word({ bookmark, notifyDelete, notifyWordChange, children, source, isReview, showRanking, isGreyedOutBar }) {
   const api = useContext(APIContext);
