@@ -35,7 +35,6 @@ import useSubSessionTimer from "../hooks/useSubSessionTimer";
 import { APIContext } from "../contexts/APIContext";
 import isEmptyDictionary from "../utils/misc/isEmptyDictionary";
 import BookmarkProgressBar from "./progressBars/BookmarkProgressBar";
-import ExercisesProgressSummary from "./ExercisesProgressSummary";
 
 const BOOKMARKS_DUE_REVIEW = false;
 
@@ -51,10 +50,6 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
   const [fullExerciseProgression, setFullExerciseProgression] = useState();
 
   const [currentExerciseType, setCurrentExerciseType] = useState(null);
-  const [showProgressSummary, setShowProgressSummary] = useState(false);
-  const [totalInLearning, setTotalInLearning] = useState(null);
-  const [totalLearned, setTotalLearned] = useState(null);
-
 
   // We can use this too states to track if the user is correct.
   // isExerciseOver & !isShownSolution & isCorrect = User Correct
@@ -156,10 +151,6 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
     setActivityOver(false);
   }
 
-  function handleContinue(){
-    setShowProgressSummary(false);
-  }
-
   function getBookmarksAndAssignThemToExercises() {
     if (articleID) {
       // TODO: Mircea: Consider creating an endpoint that merges these two
@@ -175,8 +166,8 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
         });
       });
     } else {
-      api.getBookmarksToStudy((bookmarks) => initializeExercisesForBookmarks(bookmarks));
-      setTitle(strings.exercises);
+      api.getBookmarksRecommendedForPractice((bookmarks) => initializeExercisesForBookmarks(bookmarks));
+      setTitle("Zeeguu: Vocabulary Exercises (𝄂𝄂—𝄂𝄂)", "");
     }
   }
 
@@ -228,11 +219,6 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
 
   // Standard flow when user completes exercise session
   if (finished) {
-    if(showProgressSummary){
-      return (
-        <ExercisesProgressSummary onHandle={handleContinue} totalInLearning={totalInLearning} totalLearned={totalLearned} />
-      );
-    }
     return (
       <>
         <Congratulations
