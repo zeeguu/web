@@ -17,10 +17,17 @@ export default function TopBar({weeklyTranslated, weeklyReadingMinutes}) {
     const savedPrefs = JSON.parse(localStorage.getItem("topBarPrefs")) || [];
     setWhichItems(savedPrefs);
   }, []);
+
+  const DEFAULT_TOPBAR_PREFS = [
+    "wordsPracticedTopBar",
+    "articleMinutesTopBar",
+    "streakTopBar"
+  ];  
   
   const [whichItems, setWhichItems] = useState([]);
   console.log("whichItems", whichItems);
-  const savedItems = JSON.parse(localStorage.getItem("topBarPrefs") || "[]");
+  const savedItems = JSON.parse(localStorage.getItem("topBarPrefs") || "null") || DEFAULT_TOPBAR_PREFS;
+
 
   return (
     <>
