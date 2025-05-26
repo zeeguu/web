@@ -12,6 +12,7 @@ const LevelWrapper = styled.div`
     margin-top: 0.5em;
     justify-content: flex-start;     
     padding-right: 1em;
+    margin-right: 1em;
     padding-left: 1em;
   }
 `;
