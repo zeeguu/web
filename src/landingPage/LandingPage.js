@@ -113,7 +113,9 @@ export default function LandingPage() {
               <s.ContentImage className="square" alt="" src="static/images/zeeguu-for-teachers.png" />
               <s.ContentText>
                 <h2 className="left-aligned">Zeeguu for&nbsp;Teachers</h2>
-                <p className="subheadline left-aligned">Help your students learn languages through&nbsp;reading</p>
+                <p className="subheadline left-aligned">
+                  Let your students do the reading at home - and in class you can focus on speaking ;)
+                </p>
                 <ul>
                   <li>See how much time your students read and practice vocabulary exercises</li>
                   <li>Track the words they translate and the ones they struggle with</li>
