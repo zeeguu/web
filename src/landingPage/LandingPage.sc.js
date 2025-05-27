@@ -1,9 +1,5 @@
 import styled, { css } from "styled-components";
-import {
-  zeeguuOrange,
-  zeeguuTransparentLightYellow,
-  almostBlack,
-} from "../components/colors";
+import { zeeguuOrange, zeeguuTransparentLightYellow, almostBlack } from "../components/colors";
 
 const PageWrapper = styled.div`
   width: 100%;
@@ -18,7 +14,7 @@ const Main = styled.main`
   align-items: center;
 `;
 
-const _mainHeader = css`
+const _sharedHeader = css`
   display: block;
   font-size: 2em;
   margin-block-start: 0.67em;
@@ -49,7 +45,7 @@ const HeroSection = styled.section`
   }
 
   h1 {
-    ${_mainHeader}
+    ${_sharedHeader}
     color: ${almostBlack};
     font-size: 3rem;
     margin: 0;
@@ -94,11 +90,11 @@ const AdaptableColumn = styled.div`
   margin-right: auto;
   text-align: center;
 
-  h1 {
-    ${_mainHeader}
+  h2 {
+    ${_sharedHeader}
   }
 
-  h2 {
+  h3 {
     margin-top: 1em;
     margin-bottom: -0.5em;
   }
@@ -121,6 +117,10 @@ const PageSectionWrapper = styled.div`
   padding: 5rem 3rem;
   background-color: #fff9f0;
 
+  &:nth-child(odd) {
+    background-color: white;
+  }
+
   @media (max-width: 576px) {
     padding: 3rem 1rem;
   }
@@ -134,6 +134,14 @@ const PageSectionWrapper = styled.div`
   p.subheadline {
     font-size: 1.25rem;
     text-align: center;
+
+    &.left-aligned {
+      text-align: left;
+
+      @media (max-width: 992px) {
+        text-align: center;
+      }
+    }
   }
 
   h2 {
@@ -141,6 +149,14 @@ const PageSectionWrapper = styled.div`
     color: ${almostBlack};
     margin: 0;
     text-align: center;
+
+    &.left-aligned {
+      text-align: left;
+
+      @media (max-width: 992px) {
+        text-align: center;
+      }
+    }
 
     @media (max-width: 768px) {
       font-size: 1.9rem;
@@ -152,6 +168,30 @@ const PageSectionWrapper = styled.div`
     color: ${almostBlack};
     margin: 0;
   }
+
+  ul {
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+    margin-left: 1rem;
+    width: fit-content;
+
+    @media (max-width: 992px) {
+      margin: auto;
+      padding: 0 1rem;
+    }
+  }
+
+  li {
+    font-size: 1.2rem;
+    color: ${almostBlack};
+    font-weight: 700;
+    line-height: 150%;
+    text-align: left;
+  }
 `;
 
 const PageSection = styled.section`
@@ -161,7 +201,7 @@ const PageSection = styled.section`
   gap: 1rem;
 `;
 
-const Subsection = styled.div`
+const ResponsiveRow = styled.div`
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 3rem;
@@ -170,6 +210,10 @@ const Subsection = styled.div`
 
   &:last-child {
     padding-bottom: 0;
+  }
+
+  &:first-child {
+    padding-top: 0;
   }
 
   @media (max-width: 992px) {
@@ -182,7 +226,7 @@ const Subsection = styled.div`
   }
 `;
 
-const SubsectionText = styled.div`
+const ContentText = styled.div`
   flex: 1;
   box-sizing: border-box;
   ${_sharedFlexColumn}
@@ -197,12 +241,12 @@ const SubsectionText = styled.div`
   @media (max-width: 992px) {
     padding: 0;
     text-align: center;
-    max-width: 32rem;
+    max-width: 36rem;
     margin: auto;
   }
 `;
 
-const SubsectionImage = styled.img`
+const ContentImage = styled.img`
   object-fit: cover;
   max-height: 25rem;
   width: 100%;
@@ -210,6 +254,10 @@ const SubsectionImage = styled.img`
   border-radius: 1rem;
   align-self: center;
   aspect-ratio: 2 / 1;
+  &.square {
+    aspect-ratio: 1 / 1;
+    max-height: none;
+  }
 
   @media (max-width: 992px) {
     order: 1;
@@ -244,9 +292,9 @@ export {
   LanguageGrid,
   PageSectionWrapper,
   PageSection,
-  SubsectionText,
-  SubsectionImage,
-  Subsection,
+  ContentText,
+  ContentImage,
+  ResponsiveRow,
   AdaptableColumn,
   PaleAdaptableColumn,
   DescriptionText,

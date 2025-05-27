@@ -17,7 +17,7 @@ export default function Contributors() {
 
   return (
     <>
-      <h1>{strings.contributors}</h1>
+      <h2>{strings.contributors}</h2>
 
       {member("Mircea Lungu", "Production, Maintenance")}
 

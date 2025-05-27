@@ -4,9 +4,7 @@ export default function News() {
   function item(month, text) {
     return (
       <>
-        <div
-          style={{ textAlign: "left", marginLeft: "8px", marginRight: "8px" }}
-        >
+        <div style={{ textAlign: "left", marginLeft: "8px", marginRight: "8px" }}>
           <p>
             <small>[{month}]</small> {text}
           </p>
@@ -17,13 +15,10 @@ export default function News() {
 
   return (
     <>
-      <h1>{strings.news}</h1>
+      <h2>{strings.news}</h2>
 
       <h3>2025</h3>
-      {item(
-        strings.jan,
-        "Iga adds a fast language switcher: Zeeguu is ready for polyglots",
-      )}
+      {item(strings.jan, "Iga adds a fast language switcher: Zeeguu is ready for polyglots")}
 
       {item(
         strings.jan,
@@ -37,30 +32,24 @@ export default function News() {
         "Tiago implements an automatic multilingual classifier that works with seven top-level topics.",
       )}
 
-      {item(
-        strings.jul,
-        "Similar articles are recommended based on past likes",
-      )}
+      {item(strings.jul, "Similar articles are recommended based on past likes")}
 
       <h3>2023</h3>
 
-      {item(
-        strings.oct,
-        "Tiago joins as the first researcher to work full-time on Zeeguu",
-      )}
+      {item(strings.oct, "Tiago joins as the first researcher to work full-time on Zeeguu")}
 
       {item(
         strings.oct,
         "Mircea is awarded a Villum Experiment grant to improve the infrastructure and conduct a longitudinal study with  1000 users for six months",
       )}
 
-      <h2>2022</h2>
+      <h3>2022</h3>
 
       {item(strings.oct, strings.moreThan1000Frenchies)}
 
       {item(strings.aug, strings.newsEmmaAndFrida)}
 
-      <h2>2021</h2>
+      <h3>2021</h3>
       {item(
         strings.aug,
         <>
@@ -84,7 +73,7 @@ export default function News() {
           {strings.pernilleObtainsFundingSuffix}
         </>,
       )}
-      <h2>2020</h2>
+      <h3>2020</h3>
       {item(
         strings.jan,
         <>
@@ -101,11 +90,11 @@ export default function News() {
       {item(strings.sep, <>👨‍🎓 {strings.rotterdamStarts}</>)}
       {item(strings.aug, <> {strings.euroCall2020}</>)}
       {item(strings.jul, <>{strings.betaTesters40K}</>)}
-      <h2>2019</h2>
+      <h3>2019</h3>
       {item(strings.oct, <>{strings.betaTesters100K}</>)}
       {item(strings.sep, <>👩‍🎓 {strings.amsterdamStarts}</>)}
       {item(strings.aug, <>{strings.euroCall2019}</>)}
-      <h2>2018</h2>
+      <h3>2018</h3>
       {item(
         strings.jan,
         <>
@@ -122,9 +111,9 @@ export default function News() {
         </>,
       )}
       {item(strings.sep, <>👩‍🎓 {strings.groningenStarts}</>)}
-      <h2>2017</h2>
+      <h3>2017</h3>
       {item(strings.may, <> 👩‍🎓 {strings.gomarusStarts}</>)}
-      <h2>2016</h2>
+      <h3>2016</h3>
       {item(strings.dec, <> {strings.zeeguuIsReady}</>)}
     </>
   );
