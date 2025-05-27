@@ -1,7 +1,4 @@
-import {
-  isSupportedBrowser,
-  isMobile,
-} from "../../utils/misc/browserDetection";
+import { isSupportedBrowser, isMobile } from "../../utils/misc/browserDetection";
 import MobileNotification from "./MobileNotification";
 import UnsupportedNotification from "./UnsupportedNotification";
 import SupportedNotification from "./SupportedNotification";
@@ -22,9 +19,7 @@ export default function RedirectionNotificationModal({
       article={article}
       setIsArticleSaved={setIsArticleSaved}
       handleCloseRedirectionModal={handleCloseRedirectionModal}
-      setDoNotShowRedirectionModal_UserPreference={
-        setDoNotShowRedirectionModal_UserPreference
-      }
+      setDoNotShowRedirectionModal_UserPreference={setDoNotShowRedirectionModal_UserPreference}
       open={open}
     />
   );
@@ -33,18 +28,13 @@ export default function RedirectionNotificationModal({
     <SupportedNotification
       article={article}
       handleCloseRedirectionModal={handleCloseRedirectionModal}
-      setDoNotShowRedirectionModal_UserPreference={
-        setDoNotShowRedirectionModal_UserPreference
-      }
+      setDoNotShowRedirectionModal_UserPreference={setDoNotShowRedirectionModal_UserPreference}
       open={open}
     />
   );
 
   const SUPPORTED_NOT_INSTALLED = (
-    <SupportedNotificationNotInstalled
-      handleCloseRedirectionModal={handleCloseRedirectionModal}
-      open={open}
-    />
+    <SupportedNotificationNotInstalled handleCloseRedirectionModal={handleCloseRedirectionModal} open={open} />
   );
 
   const UNSUPPORTED_NOTIFICATION = (
@@ -52,9 +42,7 @@ export default function RedirectionNotificationModal({
       article={article}
       setIsArticleSaved={setIsArticleSaved}
       handleCloseRedirectionModal={handleCloseRedirectionModal}
-      setDoNotShowRedirectionModal_UserPreference={
-        setDoNotShowRedirectionModal_UserPreference
-      }
+      setDoNotShowRedirectionModal_UserPreference={setDoNotShowRedirectionModal_UserPreference}
       open={open}
     />
   );
