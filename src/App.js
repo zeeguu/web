@@ -68,13 +68,11 @@ function App() {
       const readingMinsPerWeek = calculateWeeklyReadingMinutes(activity.reading);
       setWeeklyReadingMinutes(readingMinsPerWeek);
     });
+
   };
   fetchData();
 
-  const intervalId = setInterval(fetchData, 60000);
-  return () => clearInterval(intervalId);
-
-  }, [api, api.session]);
+  }, [api, api.session, api.logUserActivity, ]);
 
   console.log("weeklyTranslate", weeklyTranslated )
   // Alphabetically sorted variant of systemLanguages for dropdowns
