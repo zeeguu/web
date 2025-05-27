@@ -24,6 +24,7 @@ import SessionStorage from "./assorted/SessionStorage";
 import useRedirectLink from "./hooks/useRedirectLink";
 import LoadingAnimation from "./components/LoadingAnimation";
 import TopBar from "./components/TopNav/TopBar";
+import {getWeeklyTranslatedWordsTopBar, calculateWeeklyReadingMinutes} from "./utils/progressTracking/ProgressOverviewItems";
 
 function App() {
   const [api] = useState(new Zeeguu_API(API_ENDPOINT));
@@ -45,6 +46,23 @@ function App() {
     });
   }, [api]);
 
+  const [weeklyTranslated, setWeeklyTranslated] = useState(null);
+  const [weeklyReadingMinutes, setWeeklyReadingMinutes] = useState(null);
+
+  useEffect(() => {
+    api.getBookmarksCountsByDate((counts) => {
+      const thisWeek = getWeeklyTranslatedWordsTopBar(counts);
+      const weeklyTotal = thisWeek.reduce((sum, day) => sum + day.count, 0);
+      setWeeklyTranslated(weeklyTotal);
+    });
+  
+    api.getUserActivityByDay((activity) => {
+      const readingMinsPerWeek = calculateWeeklyReadingMinutes(activity.reading);
+      setWeeklyReadingMinutes(readingMinsPerWeek);
+    });
+  }, [api]);
+
+  console.log("weeklyTranslate", weeklyTranslated )
   // Alphabetically sorted variant of systemLanguages for dropdowns
   const sortedSystemLanguages = useMemo(() => {
     if (!systemLanguages) return null;
@@ -179,9 +197,8 @@ function App() {
             >
               <APIContext.Provider value={api}>
                 {/* Routing*/}
-                <TopBar/>
+                <TopBar weeklyTranslated={weeklyTranslated} weeklyReadingMinutes={weeklyReadingMinutes}/>
                 <MainAppRouter hasExtension={isExtensionAvailable} handleSuccessfulLogIn={handleSuccessfulLogIn} />
-
                 <ToastContainer
                   position="bottom-right"
                   autoClose={2000}

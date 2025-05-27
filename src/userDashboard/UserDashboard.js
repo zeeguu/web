@@ -18,7 +18,7 @@ import {
   getBarGraphData,
   calculateCountPerMonth_Activity,
 } from "./userdashboard_Graphs/dataFormat/ReadingAndExercisesTimeDataFormat";
-import {getWeeklyTranslatedWordsCount, calculateTotalReadingMinutes, calcualteWeeklyReadingMinutes} from "../utils/progressTracking/ProgressOverviewItems"
+import {getWeeklyTranslatedWordsCount, calculateTotalReadingMinutes, calculateWeeklyReadingMinutes} from "../utils/progressTracking/ProgressOverviewItems"
 import UserDashboardTop from "./userDashboard_Top/UserDashboardTop";
 import * as s from "./userDashboard_Styled/UserDashboard.sc";
 import { setTitle } from "../assorted/setTitle";
@@ -129,7 +129,7 @@ export default function UserDashboard() {
       );
 
       setTotalReadingMinutes(calculateTotalReadingMinutes(activity.reading));
-      setWeeklyReadingMinutes(calcualteWeeklyReadingMinutes(activity.reading));
+      setWeeklyReadingMinutes(calculateWeeklyReadingMinutes(activity.reading));
     });
 
     api.getAllScheduledBookmarks(false, (bookmarks) => {
