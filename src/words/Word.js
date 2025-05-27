@@ -11,7 +11,7 @@ import { getStaticPath } from "../utils/misc/staticPath";
 import { APIContext } from "../contexts/APIContext";
 import LevelIndicator from "../exercises/progressBars/levelIndicator/LevelIndicator";
 import {LevelWrapper} from "../exercises/progressBars/levelIndicator/LevelIndicator.sc";
-import WordsModal from "./WordsModal";
+import WordsTooltip from "./WordsTooltip";
 
 
 export default function Word({
@@ -61,18 +61,7 @@ export default function Word({
   console.log("bookmark", bookmark)
   return (
     <>
-      <s.Word key={bookmark.id} onClick={() => {
-    if (!showWordsModal) {
-      setShowWordsModal(true);
-    }
-  }} 
->
-     {showWordsModal && (
-                <WordsModal  open={showWordsModal}
-                setOpen={setShowWordsModal}
-                value={bookmark}>Your level is {bookmark.level}</WordsModal>
-        
-              )}
+      <s.Word key={bookmark.id} >
         <CenteredRow>
           {isReview && bookmark.fit_for_study && (
             <s.AddRemoveStudyPreferenceButton onClick={(e) => setNotIsUserWordPreferred(bookmark)}>
@@ -124,8 +113,14 @@ export default function Word({
               {bookmark.to}
             </div>
           </s.WordPair>
-          <LevelWrapper>
+          <LevelWrapper onMouseEnter={() => setShowWordsModal(true)}
+          onMouseLeave={() => setShowWordsModal(false)}>
           <LevelIndicator bookmark={bookmark}/>
+          {showWordsModal && (
+                <WordsTooltip  open={showWordsModal}
+                setOpen={setShowWordsModal}
+                value={bookmark}>Your level is {bookmark.level}</WordsTooltip>
+              )}
           </LevelWrapper>
         </CenteredRow>
       </s.Word>
