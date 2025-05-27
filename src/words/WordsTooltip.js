@@ -12,7 +12,7 @@ export default function WordsToolTip({open, setOpen, value}){
                 setOpen(false);
             }}
             title={<span>
-                You'll need to practice this word {
+                You need to practice this word {
                     value.cooling_interval === 0 
                     ? "today" 
                     : `in ${value.cooling_interval} day${value.cooling_interval === 1 ? '' : 's'}`
