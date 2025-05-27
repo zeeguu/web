@@ -50,9 +50,17 @@ function App() {
   const [weeklyReadingMinutes, setWeeklyReadingMinutes] = useState(null);
 
   useEffect(() => {
+
+    if (!api.session) {
+      console.log("Not authenticated yet, skipping API calls");
+      return;
+    }
+    const fetchData = () => {
     api.getBookmarksCountsByDate((counts) => {
       const thisWeek = getWeeklyTranslatedWordsTopBar(counts);
+      console.log("thisWeek", thisWeek)
       const weeklyTotal = thisWeek.reduce((sum, day) => sum + day.count, 0);
+      console.log("weeklyTotal", weeklyTotal)
       setWeeklyTranslated(weeklyTotal);
     });
   
@@ -60,7 +68,13 @@ function App() {
       const readingMinsPerWeek = calculateWeeklyReadingMinutes(activity.reading);
       setWeeklyReadingMinutes(readingMinsPerWeek);
     });
-  }, [api]);
+  };
+  fetchData();
+
+  const intervalId = setInterval(fetchData, 60000);
+  return () => clearInterval(intervalId);
+
+  }, [api, api.session]);
 
   console.log("weeklyTranslate", weeklyTranslated )
   // Alphabetically sorted variant of systemLanguages for dropdowns
