@@ -54,8 +54,7 @@ export default function SupportedNotification({
     <Modal open={open} onClose={handleCancel}>
       <Header>
         <Heading>
-          You are ready to&nbsp;continue<br></br>to the original article's
-          website
+          You are ready to&nbsp;continue<br></br>to the original article's website
         </Heading>
       </Header>
       <Main>
@@ -69,7 +68,7 @@ export default function SupportedNotification({
         />
         <ButtonContainer buttonCountNum={1}>
           <Button className="small" onClick={() => handleOpenArticle(article)}>
-            Enter the article's website
+            Continue to article's website
           </Button>
         </ButtonContainer>
       </Footer>
