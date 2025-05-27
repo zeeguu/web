@@ -9,6 +9,7 @@ import ButtonContainer from "../modal_shared/ButtonContainer.sc";
 import Checkbox from "../modal_shared/Checkbox";
 import Button from "../../pages/_pages_shared/Button.sc";
 import redirect from "../../utils/routing/routing";
+import * as s from "../modal_shared/Modal.sc";
 
 export default function SupportedNotification({
   article,
@@ -54,12 +55,15 @@ export default function SupportedNotification({
     <Modal open={open} onClose={handleCancel}>
       <Header>
         <Heading>
-          You are ready to&nbsp;continue<br></br>to the original article's
-          website
+          You are ready to&nbsp;continue<br></br>to the original article's website
         </Heading>
       </Header>
       <Main>
-        <FullWidthImage src={gifSrc} alt={"Zeeguu browser extension"} />
+        <p>
+          Once there, <s.Strong>right-click</s.Strong> anywhere on the page to open the browser's context menu, then
+          select the <s.Strong> Read with Zeeguu</s.Strong> option.
+        </p>
+        <FullWidthImage src={gifSrc} alt={""} />
       </Main>
       <Footer>
         <Checkbox
@@ -69,7 +73,7 @@ export default function SupportedNotification({
         />
         <ButtonContainer buttonCountNum={1}>
           <Button className="small" onClick={() => handleOpenArticle(article)}>
-            Enter the article's website
+            Continue to article's website
           </Button>
         </ButtonContainer>
       </Footer>
