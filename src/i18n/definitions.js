@@ -75,19 +75,19 @@ let strings = new LocalizedStrings(
       titleUserDashboard: "User Statistics",
 
       //Progress Items
-      iconTextWeeklyArticles: "Weekly articles read",
+      iconTextWeeklyArticles: "Weekly minutes read",
       iconTextWeeklyWordsTranslated:  "Weekly words translated",
       iconTextWeeklyWordsPracticed: "Weekly words practiced",
       iconTextWeeklyStreak: "Weekly streak",
 
-      iconTextTotalArticles: "Articles read",
+      iconTextTotalArticles: "Minutes read",
       iconTextTotalWordsTranslated: "Words translated",
       iconTextTotalWordsPracticed: "Words practiced",
       iconTextTotalWordsLearned: "Words learned",
 
-      articlesReadTextStart: "You have read",
-      articlesReadWeeklyTextEnd: "articled this week. Keep up the good work!",
-      articlesReadTotalTextEnd: "articles in total since you started using Zeeguu. You are doing good!",
+      articlesReadTextStart: "You have read for",
+      articlesReadWeeklyTextEnd: "minutes this week. Keep up the good work!",
+      articlesReadTotalTextEnd: "minutes in total since you started using Zeeguu. You are doing good!",
 
       wordsTranslatedTextStart: "You have translated",
       wordsPracticedTextStart: "You have practiced",
@@ -95,6 +95,9 @@ let strings = new LocalizedStrings(
 
       wordsTextWeeklyEnd: "words this week. Awesome work!",
       wordsTextTotalEnd: "words in total since you started using Zeeguu",
+
+      streakTextStart: "You have practiced every week for",
+      streakTextEnd: "weeks straight. Great job!",
 
       //CreateAccount
       nameIsRequired: "Name is required.",

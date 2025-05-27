@@ -94,6 +94,11 @@ export function getTotalProgressOverviewItems({totalInLearning, totalLearned, to
         value: totalMinutesRead,
         beforeText: strings.articlesReadTextStart,
         afterText: strings.articlesReadTotalTextEnd,
+        modal: {
+            linkText: "More details on your activty",
+            linkTo: "user_dashboard",
+            size: 90,
+        }
     };
     
     const totalWordsTranslated = {
@@ -102,6 +107,11 @@ export function getTotalProgressOverviewItems({totalInLearning, totalLearned, to
         value: totalTranslatedWords,
         beforeText: strings.wordsTranslatedTextStart,
         afterText: strings.wordsTextTotalEnd,
+        modal: {
+            linkText: "More details on translation history",
+            linkTo: "history",
+            size: 90,
+        }
     };
     
     const totalWordsPracticed = {
@@ -110,6 +120,11 @@ export function getTotalProgressOverviewItems({totalInLearning, totalLearned, to
         value: totalPracticedWords,
         beforeText: strings.wordsPracticedTextStart,
         afterText: strings.wordsTextTotalEnd,
+        modal: {
+            linkText: "More details on word progress",
+            linkTo: "words",
+            size: 90,
+        }
     };
     
     const totalWordsLearned = {
@@ -118,6 +133,11 @@ export function getTotalProgressOverviewItems({totalInLearning, totalLearned, to
         value: totalLearnedWords,
         beforeText: strings.wordsLearnedTextStart,
         afterText: strings.wordsTextTotalEnd,
+        modal: {
+            linkText: "More details about words learned",
+            linkTo: "words/learned",
+            size: 90,
+        }
     };
 
     const totalProgressOverview = [
@@ -142,6 +162,11 @@ export function getTopBarData({weeklyTranslated, weeklyReadingMinutes}){
         value: weeklyMinutesRead,
         beforeText: strings.articlesReadTextStart,
         afterText: strings.articlesReadWeeklyTextEnd,
+        modal: {
+            linkText: "More details on your activity",
+            linkTo: "user_dashboard",
+            size: 90,
+        }
     };
 
     const weeklyWordsTranslated = {
@@ -150,14 +175,24 @@ export function getTopBarData({weeklyTranslated, weeklyReadingMinutes}){
         value: weeklyTranslatedWords,
         beforeText: strings.wordsTranslatedTextStart,
         afterText: strings.wordsTextWeeklyEnd,
+        modal: {
+            linkText: "More details on translation history",
+            linkTo: "history",
+            size: 90,
+        }
     };
 
     const weeklyStreak = {
         icon: "headerStreak",
         iconText: strings.iconTextWeeklyStreak,
         value: 5,
-        beforeText: "Words current in your learning pipeline.",
-        afterText: "xxx",
+        beforeText: strings.streakTextStart,
+        afterText: strings.streakTextEnd,
+        modal: {
+            linkText: "More details on your activity",
+            linkTo: "user_dashboard",
+            size: 90,
+        }
     };
 
     const weeklyProgressOverview = [
@@ -184,6 +219,11 @@ export function getWeeklyProgressOverviewItems({weeklyTranslated, weeklyReadingM
         value: weeklyMinutesRead,
         beforeText: strings.articlesReadTextStart,
         afterText: strings.articlesReadWeeklyTextEnd,
+        modal: {
+            linkText: "More details on your activty",
+            linkTo: "user_dashboard",
+            size: 90,
+        }
     };
 
     const weeklyWordsTranslated = {
@@ -192,6 +232,11 @@ export function getWeeklyProgressOverviewItems({weeklyTranslated, weeklyReadingM
         value: weeklyTranslatedWords,
         beforeText: strings.wordsTranslatedTextStart,
         afterText: strings.wordsTextWeeklyEnd,
+        modal: {
+            linkText: "More details on translation history",
+            linkTo: "history",
+            size: 90,
+        }
     };
 
     const weeklyWordsPracticed = {
@@ -200,14 +245,24 @@ export function getWeeklyProgressOverviewItems({weeklyTranslated, weeklyReadingM
         value: 16,
         beforeText: strings.wordsPracticedTextStart,
         afterText: strings.wordsTextWeeklyEnd,
+        modal: {
+            linkText: "More details on words progress",
+            linkTo: "words",
+            size: 90,
+        }
     };
 
     const weeklyStreak = {
         icon: "headerStreak",
         iconText: strings.iconTextWeeklyStreak,
         value: 5,
-        beforeText: "Words current in your learning pipeline.",
-        afterText: "xxx",
+        beforeText: strings.streakTextStart,
+        afterText: strings.streakTextEnd,
+        modal: {
+            linkText: "More  details on your acticity",
+            linkTo: "user_dashboard",
+            size: 90,
+        }
     };
 
     const weeklyProgressOverview = [
@@ -248,8 +303,8 @@ export function getExerciseProgressSummary({totalInLearning, totalLearned}){
         icon: "headerStreak",
         iconText: strings.iconTextWeeklyStreak,
         value: 5,
-        beforeText: "Words current in your learning pipeline.",
-        afterText: "xxx",
+        beforeText: strings.streakTextStart,
+        afterText: strings.streakTextEnd,
     };
 
     const weeklyWordsPracticed = {
