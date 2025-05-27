@@ -27,8 +27,6 @@ export default function Word({
 
   const [showWordsModal, setShowWordsModal] = useState(false);
 
-  console.log(setShowWordsModal, "setShowWordsModal")
-
   const api = useContext(APIContext);
   const [deleted, setDeleted] = useState(false);
   const [reload, setReload] = useState(false);
@@ -63,8 +61,12 @@ export default function Word({
   console.log("bookmark", bookmark)
   return (
     <>
-      <s.Word key={bookmark.id} OnClick={() => setShowWordsModal(true)} 
-  onClick={() => setShowWordsModal(false)}>
+      <s.Word key={bookmark.id} onClick={() => {
+    if (!showWordsModal) {
+      setShowWordsModal(true);
+    }
+  }} 
+>
      {showWordsModal && (
                 <WordsModal  open={showWordsModal}
                 setOpen={setShowWordsModal}
