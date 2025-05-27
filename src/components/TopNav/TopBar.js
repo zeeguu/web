@@ -43,6 +43,7 @@ export default function TopBar({weeklyTranslated, weeklyReadingMinutes}) {
       ...modalDefaults,
       open: true,
       setOpen: () => setShowModalData(null),
+      modalKey: key,
       value: item.value,
       title: item.iconText,
       descriptionStart: item.beforeText,
