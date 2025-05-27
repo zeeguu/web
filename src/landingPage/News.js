@@ -18,6 +18,12 @@ export default function News() {
       <h2>{strings.news}</h2>
 
       <h3>2025</h3>
+
+      {item(
+        strings.may,
+        <>Zeeguu goes to Czechia! Mircea does a workshop about Zeeguu at the Polyglot Gathering in Brno</>,
+      )}
+
       {item(strings.jan, "Iga adds a fast language switcher: Zeeguu is ready for polyglots")}
 
       {item(

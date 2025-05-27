@@ -115,12 +115,13 @@ export default function LandingPage() {
                 <h2 className="left-aligned">Zeeguu for&nbsp;Teachers</h2>
                 <p className="subheadline left-aligned">Help your students learn languages through&nbsp;reading</p>
                 <ul>
-                  <li>Upload articles for your&nbsp;students</li>
-                  <li>See what they read and how&nbsp;often</li>
-                  <li>Track the words they translate or&nbsp;practice</li>
+                  <li>See how much time your students read and practice vocabulary exercises</li>
+                  <li>Track the words they translate and the ones they struggle with</li>
+                  <li>Upload custom articles that students will see separately from the other recommendations</li>
                 </ul>
                 <p>
-                  To start using Zeeguu for Teachers, contact us at&nbsp;<strong>zeeguu.team@gmail.com</strong>
+                  To start using Zeeguu for Teachers, contact us at&nbsp;
+                  <strong>zeeguu.team@gmail.com</strong>
                 </p>
               </s.ContentText>
             </s.ResponsiveRow>
