@@ -6,6 +6,7 @@ import NavIcon from "../MainNav/NavIcon.js";
 import {zeeguuOrange} from "../colors.js";
 import ReactLink from "../ReactLink.sc.js";
 import ArrowForwardRoundedIcon from "@mui/icons-material/ArrowForwardRounded";
+import PieChartForModal from "../TopNav/PieChart.js";
 
 export default function ProgressModal({
     open,
@@ -19,6 +20,7 @@ export default function ProgressModal({
     linkText,
     linkTo,
     size,
+    modalKey,
 }){
    
     return (
@@ -33,11 +35,14 @@ export default function ProgressModal({
             </Header>
             <s.ModalContent>
             <s.IconAndIntegerRow>
-                <NavIcon name={iconName} size={size} color={zeeguuOrange}/>
-                <s.Value>{value}</s.Value>
+            {modalKey === "articleMinutesTopBar" ? 
+        <PieChartForModal />
+      : <NavIcon name={iconName} size={size} color={zeeguuOrange}/> }
+               {modalKey !== "articleMinutesTopBar" && (<s.Value>{value}</s.Value>)}
                 <h3>{unit}</h3>
                 </s.IconAndIntegerRow>
                 <s.TextRow>{descriptionStart} {value} {descriptionEnd}</s.TextRow>
+               
                  <ReactLink
                  className="small"
                  onClick={() => setOpen(false)}
