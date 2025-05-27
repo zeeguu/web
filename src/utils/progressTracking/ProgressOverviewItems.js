@@ -24,15 +24,11 @@ export function getCurrentWeekRange(){
     return {startOfWeek, endOfWeek}
 }
 
-export function calcualteWeeklyReadingMinutes(readingActivity){
+export function calculateWeeklyReadingMinutes(readingActivity){
     const { startOfWeek, endOfWeek } = getCurrentWeekRange();
-    console.log("this is the activities:!!", readingActivity);
-
     const weeklyReadingSeconds = readingActivity.reduce((sum, entry) => {
         const entryDate = new Date(entry.date);
         entryDate.setHours(0, 0, 0, 0); // normalize to midnight
-
-        console.log("this is the entryDate!!", entryDate);
 
         if (entryDate >= startOfWeek && entryDate <= endOfWeek) {
             return sum + entry.seconds;
@@ -55,13 +51,36 @@ export function getWeeklyTranslatedWordsCount(data){
     //converts the Map to an array of objects     
     const dataArray = Array.from(data, ([date, count]) => ({ date, count }));
     const {startOfWeek, endOfWeek} = getCurrentWeekRange();
-
    
     return dataArray.filter(({date}) => {
       const dayDate = new Date(date);
       return dayDate >= startOfWeek && dayDate <= endOfWeek; 
     });
   }
+
+  export function getWeeklyTranslatedWordsTopBar(counts) {
+    const currentDate = new Date();
+    const startOfWeek = new Date(currentDate);
+    startOfWeek.setDate(currentDate.getDate() - currentDate.getDay()); 
+    const endOfWeek = new Date(startOfWeek);
+    endOfWeek.setDate(startOfWeek.getDate() + 6); 
+  
+    return counts
+      .filter((item) => {
+        const itemDate = new Date(item.date);
+        return (
+          itemDate >= startOfWeek &&
+          itemDate <= endOfWeek &&
+          item.count !== undefined &&
+          !isNaN(item.count)
+        );
+      })
+      .map((item) => ({
+        ...item,
+        count: item.count || 0, 
+      }));
+  };
+
 
 export function getTotalProgressOverviewItems({totalInLearning, totalLearned, totalTranslated, totalReadingMinutes}){
     const totalTranslatedWords = totalTranslated;
