@@ -7,6 +7,8 @@ import { getWeeklyProgressOverviewItems, getTotalProgressOverviewItems } from ".
 
 export default function ProgressOverview({totalInLearning, totalLearned, weeklyTranslated, totalTranslated, totalReadingMinutes, weeklyReadingMinutes}){
     const {weeklyProgressOverview} = getWeeklyProgressOverviewItems({weeklyTranslated, weeklyReadingMinutes});
+    console.log("weeklyProgressOverview", weeklyProgressOverview);
+    
     const {totalProgressOverview} = getTotalProgressOverviewItems({totalInLearning, totalLearned, totalTranslated, totalReadingMinutes});
     return (
         <>
