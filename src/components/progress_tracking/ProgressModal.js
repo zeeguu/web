@@ -1,7 +1,6 @@
 import Modal from "../modal_shared/Modal.js";
 import Header from "../modal_shared/Header.sc.js";
 import Heading from "../modal_shared/Heading.sc.js";
-import Main from "../modal_shared/Main.sc.js";
 import * as s from "./ProgressTrackingModal.sc.js";
 import NavIcon from "../MainNav/NavIcon.js";
 import {zeeguuOrange} from "../colors.js";
