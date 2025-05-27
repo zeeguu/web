@@ -11,6 +11,8 @@ import { getStaticPath } from "../utils/misc/staticPath";
 import { APIContext } from "../contexts/APIContext";
 import LevelIndicator from "../exercises/progressBars/levelIndicator/LevelIndicator";
 import {LevelWrapper} from "../exercises/progressBars/levelIndicator/LevelIndicator.sc";
+import WordsModal from "./WordsModal";
+
 
 export default function Word({
   bookmark,
@@ -22,6 +24,10 @@ export default function Word({
   showRanking,
   isGrayedOut,
 }) {
+
+  const [showWordsModal, setShowWordsModal] = useState(false);
+
+  console.log(setShowWordsModal, "setShowWordsModal")
 
   const api = useContext(APIContext);
   const [deleted, setDeleted] = useState(false);
@@ -57,7 +63,14 @@ export default function Word({
   console.log("bookmark", bookmark)
   return (
     <>
-      <s.Word key={bookmark.id}>
+      <s.Word key={bookmark.id} OnClick={() => setShowWordsModal(true)} 
+  onClick={() => setShowWordsModal(false)}>
+     {showWordsModal && (
+                <WordsModal  open={showWordsModal}
+                setOpen={setShowWordsModal}
+                value={bookmark}>Your level is {bookmark.level}</WordsModal>
+        
+              )}
         <CenteredRow>
           {isReview && bookmark.fit_for_study && (
             <s.AddRemoveStudyPreferenceButton onClick={(e) => setNotIsUserWordPreferred(bookmark)}>
@@ -93,7 +106,6 @@ export default function Word({
           <s.WordPair>
             <div className="from" style={style_grayed_out}>
               {bookmark.from}
-
               {showRanking && (
                 <sup
                   style={{
