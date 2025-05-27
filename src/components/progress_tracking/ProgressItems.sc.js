@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { zeeguuWarmYellow} from "../colors";
+import { zeeguuWarmYellow, veryLightGrey} from "../colors";
 
 const ProgressOverviewItem = styled.div`
   display: flex;
@@ -10,6 +10,10 @@ const ProgressOverviewItem = styled.div`
   width: 40%;
   max-width: 80em;
   height: 60px;
+  cursor: pointer;
+  &:hover {
+    background-color: ${veryLightGrey};
+  }
 
   @media (max-width: 768px) {
     width: 100%;
