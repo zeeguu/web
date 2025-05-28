@@ -25,6 +25,7 @@ import useRedirectLink from "./hooks/useRedirectLink";
 import LoadingAnimation from "./components/LoadingAnimation";
 import TopBar from "./components/TopNav/TopBar";
 import {getWeeklyTranslatedWordsTopBar, calculateWeeklyReadingMinutes} from "./utils/progressTracking/ProgressOverviewItems";
+import { countPracticeWeeks } from "./userDashboard/helpers.js";
 
 function App() {
   const [api] = useState(new Zeeguu_API(API_ENDPOINT));
@@ -48,6 +49,7 @@ function App() {
 
   const [weeklyTranslated, setWeeklyTranslated] = useState(null);
   const [weeklyReadingMinutes, setWeeklyReadingMinutes] = useState(null);
+  const [weeksPracticed, setWeeksPracticed] = useState(0);
 
   useEffect(() => {
 
@@ -67,6 +69,10 @@ function App() {
     api.getUserActivityByDay((activity) => {
       const readingMinsPerWeek = calculateWeeklyReadingMinutes(activity.reading);
       setWeeklyReadingMinutes(readingMinsPerWeek);
+
+      const weeksPracticed = countPracticeWeeks(activity);
+      setWeeksPracticed(weeksPracticed);
+      console.log("weeksPracticed", weeksPracticed);
     });
 
   };
@@ -209,7 +215,7 @@ function App() {
             >
               <APIContext.Provider value={api}>
                 {/* Routing*/}
-                <TopBar weeklyTranslated={weeklyTranslated} weeklyReadingMinutes={weeklyReadingMinutes}/>
+                <TopBar weeklyTranslated={weeklyTranslated} weeklyReadingMinutes={weeklyReadingMinutes} weeksPracticed={weeksPracticed}/>
                 <MainAppRouter hasExtension={isExtensionAvailable} handleSuccessfulLogIn={handleSuccessfulLogIn} />
                 <ToastContainer
                   position="bottom-right"
