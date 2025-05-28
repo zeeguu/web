@@ -21,7 +21,11 @@ export default function News() {
 
       {item(
         strings.may,
-        <>Zeeguu goes to Czechia! Mircea does a workshop about Zeeguu at the Polyglot Gathering in Brno</>,
+        <>
+          Zeeguu goes to Czechia{" "}
+          <img style={{ marginLeft: "-1em", marginBottom: "-0.5em" }} width={50} src="/zeeguuLogo-czech-flag.svg" />!
+          Mircea does a workshop about Zeeguu at the Polyglot Gathering in Brno.
+        </>,
       )}
 
       {item(strings.jan, "Iga adds a fast language switcher: Zeeguu is ready for polyglots")}

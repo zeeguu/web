@@ -63,7 +63,7 @@ export default function Contributors() {
 
       {member("Alexander Lukjanenkovs", "Learner Feedback")}
 
-      {member("Anca Lungu", "Linguistics")}
+      {member("Anca Lungu", "Linguistics Advice")}
 
       {member("Linus Schwab", "Android RSS Feed Reader")}
 
