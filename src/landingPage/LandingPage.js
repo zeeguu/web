@@ -179,13 +179,17 @@ export default function LandingPage() {
           </s.PageSection>
         </s.PageSectionWrapper>
 
-        <s.AdaptableColumn>
-          <News />
-        </s.AdaptableColumn>
+        <s.PageSectionWrapper>
+          <s.AdaptableColumn>
+            <News />
+          </s.AdaptableColumn>
+        </s.PageSectionWrapper>
 
-        <s.PaleAdaptableColumn>
-          <Contributors />
-        </s.PaleAdaptableColumn>
+        <s.PageSectionWrapper>
+          <s.AdaptableColumn>
+            <Contributors />
+          </s.AdaptableColumn>
+        </s.PageSectionWrapper>
       </s.Main>
     </s.PageWrapper>
   );

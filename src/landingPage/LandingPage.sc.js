@@ -83,7 +83,6 @@ const LanguageGrid = styled.div`
 `;
 
 const AdaptableColumn = styled.div`
-  padding-bottom: 3em;
   height: auto;
   width: 100%;
   margin-left: auto;
@@ -92,6 +91,7 @@ const AdaptableColumn = styled.div`
 
   h2 {
     ${_sharedHeader}
+    margin-top: 0;
   }
 
   h3 {
@@ -291,7 +291,6 @@ const ContentImage = styled.img`
 
 const PaleAdaptableColumn = styled(AdaptableColumn)`
   background-color: ${zeeguuTransparentLightYellow};
-  padding-top: 0.1em;
 `;
 
 const DescriptionText = styled.div`
