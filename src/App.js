@@ -25,7 +25,7 @@ import useRedirectLink from "./hooks/useRedirectLink";
 import LoadingAnimation from "./components/LoadingAnimation";
 import TopBar from "./components/TopNav/TopBar";
 import {getWeeklyTranslatedWordsTopBar, calculateWeeklyReadingMinutes} from "./utils/progressTracking/ProgressOverviewItems";
-import { countPracticeWeeks } from "./userDashboard/helpers.js";
+import { countConsecutivePracticeWeeks } from "./userDashboard/helpers.js";
 
 function App() {
   const [api] = useState(new Zeeguu_API(API_ENDPOINT));
@@ -70,7 +70,7 @@ function App() {
       const readingMinsPerWeek = calculateWeeklyReadingMinutes(activity.reading);
       setWeeklyReadingMinutes(readingMinsPerWeek);
 
-      const weeksPracticed = countPracticeWeeks(activity);
+      const weeksPracticed = countConsecutivePracticeWeeks(activity);
       setWeeksPracticed(weeksPracticed);
       console.log("weeksPracticed", weeksPracticed);
     });
