@@ -7,8 +7,8 @@ import * as style from "../components/progress_tracking/ProgressItems.sc";
 import { getWeeklyProgressOverviewItems, getTotalProgressOverviewItems } from "../utils/progressTracking/ProgressOverviewItems";
 import ProgressModal from "../components/progress_tracking/ProgressModal";
 
-export default function ProgressOverview({totalInLearning, totalLearned, weeklyTranslated, totalTranslated, totalReadingMinutes, weeklyReadingMinutes}){
-    const {weeklyProgressOverview} = getWeeklyProgressOverviewItems({weeklyTranslated, weeklyReadingMinutes});
+export default function ProgressOverview({totalInLearning, totalLearned, weeklyTranslated, totalTranslated, totalReadingMinutes, weeklyReadingMinutes, weeksPracticed}){
+    const {weeklyProgressOverview} = getWeeklyProgressOverviewItems({weeklyTranslated, weeklyReadingMinutes,weeksPracticed});
     console.log("weeklyProgressOverview", weeklyProgressOverview);
     
     const {totalProgressOverview} = getTotalProgressOverviewItems({totalInLearning, totalLearned, totalTranslated, totalReadingMinutes});

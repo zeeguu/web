@@ -24,6 +24,7 @@ import * as s from "./userDashboard_Styled/UserDashboard.sc";
 import { setTitle } from "../assorted/setTitle";
 import strings from "../i18n/definitions";
 import { APIContext } from "../contexts/APIContext";
+import {countPracticeWeeks} from "./helpers";
 
 export default function UserDashboard() {
   const api = useContext(APIContext);
@@ -48,6 +49,7 @@ export default function UserDashboard() {
   const [totalTranslated, setTotalTranslated] = useState(null);
   const [totalReadingMinutes, setTotalReadingMinutes] = useState(null);
   const [weeklyReadingMinutes, setWeeklyReadingMinutes] = useState(null);
+  const [weeksPracticed, setWeeksPracticed] = useState(0);
 
   function handleChangeReferenceDate(newDate) {
     setReferenceDate(newDate);
@@ -128,6 +130,8 @@ export default function UserDashboard() {
         calculateCountPerMonth_Activity(activity),
       );
 
+      setWeeksPracticed(countPracticeWeeks(activity));
+
       setTotalReadingMinutes(calculateTotalReadingMinutes(activity.reading));
       setWeeklyReadingMinutes(calculateWeeklyReadingMinutes(activity.reading));
     });
@@ -196,6 +200,7 @@ export default function UserDashboard() {
             totalTranslated = {totalTranslated}
             totalReadingMinutes = {totalReadingMinutes}
             weeklyReadingMinutes = {weeklyReadingMinutes}
+            weeksPracticed={weeksPracticed}
             />
           </>
         )}
