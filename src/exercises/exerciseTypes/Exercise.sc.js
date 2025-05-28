@@ -11,6 +11,7 @@ const Exercise = styled.div`
   text-align: center;
   transition: all 0.5s;
   padding-bottom: 1rem;
+  margin-top: 8rem;
 
   .type-feedback p {
     margin: 0.5em;
@@ -413,14 +414,11 @@ let CenteredRow = styled.div`
   display: flex;
   flex-direction: row;
   align-items: center;
-  flex-wrap: wrap; 
-  width: 100%;
+  justify-content: center;
+  margin-bottom: 1.5em;
+
   &.margin-top-auto {
     margin-top: auto;
-  }
-  @media (max-width: 800px) {
-    flex-wrap: wrap;
-    justify-content: flex-start;
   }
 `;
 
