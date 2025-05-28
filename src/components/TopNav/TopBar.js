@@ -24,8 +24,8 @@ const modalData = {
 };
 
 
-export default function TopBar({weeklyTranslated, weeklyReadingMinutes}) {
-  const {weeklyProgressOverview} = getTopBarData({weeklyTranslated, weeklyReadingMinutes});
+export default function TopBar({weeklyTranslated, weeklyReadingMinutes,weeksPracticed}) {
+  const {weeklyProgressOverview} = getTopBarData({weeklyTranslated, weeklyReadingMinutes,weeksPracticed});
   const [showModalData, setShowModalData] = useState(null);
 
   useEffect(() => {

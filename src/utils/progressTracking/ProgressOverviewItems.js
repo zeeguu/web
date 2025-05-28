@@ -152,9 +152,10 @@ export function getTotalProgressOverviewItems({totalInLearning, totalLearned, to
     };
 }
 
-export function getTopBarData({weeklyTranslated, weeklyReadingMinutes}){
+export function getTopBarData({weeklyTranslated, weeklyReadingMinutes, weeksPracticed}){
     const weeklyTranslatedWords = weeklyTranslated;
     const weeklyMinutesRead = weeklyReadingMinutes;
+    const totalWeeksPracticed = weeksPracticed;
 
     const weeklyArticlesRead = {
         icon: "headerArticles",
@@ -185,7 +186,7 @@ export function getTopBarData({weeklyTranslated, weeklyReadingMinutes}){
     const weeklyStreak = {
         icon: "headerStreak",
         iconText: strings.iconTextWeeklyStreak,
-        value: 5,
+        value: totalWeeksPracticed,
         beforeText: strings.streakTextStart,
         afterText: strings.streakTextEnd,
         modal: {
