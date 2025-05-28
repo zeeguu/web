@@ -3,6 +3,19 @@ import { MAX_BOOKMARKS_TO_STUDY_PER_ARTICLE } from "../exercises/ExerciseConstan
 import { USER_WORD_PREFERENCE } from "../words/userBookmarkPreferences.js";
 import qs from "qs";
 
+Zeeguu_API.prototype.getBookmarksCountByLevel = function (callback) {
+  let payload = {
+     with_context: true,
+  };
+  this._post(
+    "bookmarks_count_by_level",
+    qs.stringify(payload),
+    callback,
+    () => {},
+    true,
+  );
+};
+
 Zeeguu_API.prototype.getBookmarksByDay = function (callback) {
   let payload = {
     with_context: true,
