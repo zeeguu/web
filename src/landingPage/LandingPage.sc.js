@@ -216,7 +216,7 @@ const PageSection = styled.section`
 
   li svg {
     vertical-align: middle;
-    margin-top: -0.5rem;
+    margin-top: -0.35rem;
   }
 
   span.strong {

@@ -172,9 +172,9 @@ export default function LandingPage() {
                     Confirm by tapping&nbsp;<span className="strong">"Add"</span>
                   </li>
                 </ol>
-                <p>Zeeguu will now appear on your home screen, just like a regular&nbsp;app!</p>
+                <p>Zeeguu will now appear on your home screen, just like a&nbsp;regular&nbsp;app!</p>
               </s.ContentText>
-              <s.ContentImage className="square" alt="" src="static/images/zeeguu-for-teachers.png" />
+              <s.ContentImage className="square" alt="" src="static/images/zeeguu-app.png" />
             </s.ResponsiveRow>
           </s.PageSection>
         </s.PageSectionWrapper>
