@@ -2,13 +2,12 @@ import styled from "styled-components";
 import { zeeguuWarmYellow, veryLightGrey} from "../colors";
 
 const ProgressOverviewItem = styled.div`
+  width: 285px;    
   display: flex;
   background-color: white;
   border:2px solid ${zeeguuWarmYellow};
   border-radius: 4px;
   padding: 1.5em;
-  width: 40%;
-  max-width: 80em;
   height: 60px;
   cursor: pointer;
   &:hover {

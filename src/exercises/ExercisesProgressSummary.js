@@ -1,10 +1,9 @@
 import {useState, useContext, useEffect} from "react";
 import {UserContext} from "../contexts/UserContext";
-import { StyledButton } from "../components/allButtons.sc";
 import NavIcon from "../components/MainNav/NavIcon";
 import { getExerciseProgressSummary } from "../utils/progressTracking/ProgressOverviewItems";
 import * as s from "../components/progress_tracking/ProgressItems.sc";
-import { CenteredColumn } from "./Congratulations.sc";
+import { CenteredRow } from "./Congratulations.sc";
 
 export default function ExercisesProgressSummary({onHandle, totalInLearning, totalLearned}){
     const [username, setUsername] = useState();
@@ -39,16 +38,8 @@ export default function ExercisesProgressSummary({onHandle, totalInLearning, tot
     
     return (
         <>
-        <CenteredColumn className="centeredColumn">
-          <h1>
-            Exercise complete!
-          </h1>
-        </CenteredColumn>
-        <CenteredColumn>
-        <p>You have made progress. Here's a glimpse showing what you improved after completing this exercise. Awesome, {username}!</p>
-        </CenteredColumn>
         {randomItems.map((item, index) => (
-        <CenteredColumn key={index}>
+        <CenteredRow key={index}>
           <s.ProgressOverviewItem>
             <s.IconWithValueAndLabel>
               <s.IconAndValue>
@@ -61,13 +52,8 @@ export default function ExercisesProgressSummary({onHandle, totalInLearning, tot
               {item.beforeText} {item.value} {item.afterText}
             </s.ProgressDescription>
           </s.ProgressOverviewItem>
-        </CenteredColumn>
-      ))}
-        <CenteredColumn>
-        <StyledButton primary onClick={onHandle}> 
-                Continue
-            </StyledButton>
-        </CenteredColumn>           
+        </CenteredRow>
+      ))}       
         </>
     );
 }
