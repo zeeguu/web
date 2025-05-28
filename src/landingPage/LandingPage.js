@@ -166,10 +166,10 @@ export default function LandingPage() {
                     </ul>
                   </li>
                   <li>
-                    Select <span className="strong">“Add to Home Screen”</span> (or “Install App” on&nbsp;Android)
+                    Select <span className="strong">"Add to Home Screen"</span> (or "Install App" on&nbsp;Android)
                   </li>
                   <li>
-                    Confirm by tapping&nbsp;<span className="strong">Add</span>
+                    Confirm by tapping&nbsp;<span className="strong">"Add"</span>
                   </li>
                 </ol>
                 <p>Zeeguu will now appear on your home screen, just like a regular&nbsp;app!</p>
