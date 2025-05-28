@@ -183,7 +183,7 @@ const PageSection = styled.section`
     ${_sharedFlexColumn}
     align-items: flex-start;
     gap: 1rem;
-    margin-left: 1rem;
+    margin-left: 1.5rem;
     width: fit-content;
     padding: 0;
 
