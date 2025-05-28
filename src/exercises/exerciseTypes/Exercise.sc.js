@@ -11,6 +11,7 @@ const Exercise = styled.div`
   text-align: center;
   transition: all 0.5s;
   padding-bottom: 1rem;
+  margin-top: 8rem;
 
   .type-feedback p {
     margin: 0.5em;
@@ -126,7 +127,6 @@ const Exercise = styled.div`
       margin-top: 0.5em;
       margin-left: 0.5em;
       margin-right: 0.5em;
-
     }
 
     .bottomInput {
