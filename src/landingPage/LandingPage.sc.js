@@ -124,6 +124,14 @@ const PageSectionWrapper = styled.div`
   @media (max-width: 576px) {
     padding: 3rem 1rem;
   }
+`;
+
+const PageSection = styled.section`
+  ${_sharedFlexColumn}
+  align-items: center;
+  max-width: 80rem;
+  gap: 1rem;
+
   p {
     line-height: 150%;
     font-size: 1.2rem;
@@ -214,13 +222,6 @@ const PageSectionWrapper = styled.div`
   span.strong {
     font-weight: 700;
   }
-`;
-
-const PageSection = styled.section`
-  ${_sharedFlexColumn}
-  align-items: center;
-  max-width: 80rem;
-  gap: 1rem;
 `;
 
 const ResponsiveRow = styled.div`
