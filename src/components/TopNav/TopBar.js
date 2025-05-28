@@ -4,6 +4,9 @@ import {zeeguuOrange} from "../colors";
 import { getTopBarData } from "../../utils/progressTracking/ProgressOverviewItems";
 import { useEffect, useState} from "react";
 import ProgressModal from "../progress_tracking/ProgressModal";
+import { getSessionFromCookies } from "../../utils/cookies/userInfo";
+import Zeeguu_API from "../../api/Zeeguu_API";
+import { API_ENDPOINT } from "../../appConstants";
 
 const modalData = {
   articleMinutesTopBar: {
@@ -27,6 +30,8 @@ const modalData = {
 export default function TopBar({weeklyTranslated, weeklyReadingMinutes,weeksPracticed}) {
   const {weeklyProgressOverview} = getTopBarData({weeklyTranslated, weeklyReadingMinutes,weeksPracticed});
   const [showModalData, setShowModalData] = useState(null);
+  const [api] = useState(new Zeeguu_API(API_ENDPOINT));
+
 
   useEffect(() => {
     const savedPrefs = JSON.parse(localStorage.getItem("topBarPrefs")) || [];
@@ -52,6 +57,9 @@ export default function TopBar({weeklyTranslated, weeklyReadingMinutes,weeksPrac
       unit: item.unit || "",
     });
   };
+
+  api.session = getSessionFromCookies();
+  if (!api.session) return null;
 
   return (
     <>
