@@ -8,9 +8,13 @@ export const StatContainer = styled.div`
   justify-content: flex-end;
   letter-spacing: 0.05em;
   width: 100%;
-  gap: 0.5em;
   padding-right: 1em;
   padding-top: 1em;
+
+  @media (min-width: 768px) {
+      gap: 0.5em;
+    }
+
 `;
 
 export const StatNumber = styled.h2`
