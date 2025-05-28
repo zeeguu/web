@@ -180,14 +180,12 @@ const PageSection = styled.section`
 
   ul,
   ol {
-    margin: 0;
-    padding: 0;
-    display: flex;
-    flex-direction: column;
+    ${_sharedFlexColumn}
     align-items: flex-start;
     gap: 1rem;
     margin-left: 1rem;
     width: fit-content;
+    padding: 0;
 
     @media (max-width: 992px) {
       margin: auto;
@@ -208,9 +206,8 @@ const PageSection = styled.section`
   li {
     font-size: 1.2rem;
     color: ${almostBlack};
-    font-weight: 700;
     font-weight: 500;
-    line-height: 150%;
+    line-height: 145%;
     text-align: left;
   }
 
