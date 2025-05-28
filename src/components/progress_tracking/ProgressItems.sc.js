@@ -48,6 +48,10 @@ const Value = styled.div`
 const Label = styled.div`
   font-size: 0.6em;
   margin-top: 0.2em;
+
+  @media (max-width: 768px) {
+    font-size: 0.55em;
+  }
 `;
 
 const ProgressDescription = styled.div`
@@ -57,6 +61,10 @@ const ProgressDescription = styled.div`
   align-items: center;
   text-align: left;
   margin-left: 4em;
+
+    @media (max-width: 768px) {
+    font-size: 0.6rem;
+  }
 `;
 
 export {ProgressDescription, Label, Value, Icon, IconAndValue, IconWithValueAndLabel, ProgressOverviewItem};

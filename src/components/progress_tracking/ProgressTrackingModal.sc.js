@@ -1,4 +1,6 @@
 import styled from "styled-components";
+import Heading from "../modal_shared/Heading.sc.js";
+
 
 export const IconAndIntegerRow = styled.div`
     display: flex;
@@ -21,7 +23,11 @@ export const TextRow = styled.div`
   width: 100%;
   justify-content: center;
   align-items: center;
-  max-width: 80%;  
+  max-width: 80%; 
+
+      @media (max-width: 768px) {
+    font-size: 0.9em;
+  } 
 `;
 
 export const ModalContent = styled.div`
@@ -30,6 +36,10 @@ export const ModalContent = styled.div`
   align-items: center;
   justify-content: center;
   text-align: center;
-  width: 100%;
+  width: 90%;
   padding: 1em;
+`;
+
+export const CenteredHeading = styled(Heading)`
+text-align: center;
 `;
