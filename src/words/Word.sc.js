@@ -9,6 +9,7 @@ let Word = styled.div`
   width: 100%;
   @media (max-width: 800px) {
     margin-left: 0.1em;
+    margin-right: 0.1em;
     font-size: 0.8em;
     gap: 0.5em;
     justify-content: flex-start;

@@ -83,7 +83,7 @@ const ProgressOverviewContainer = styled.div`
 
   @media (max-width: 768px) {
   width: 80%;
-  margin-left: 3em;
+  margin-left: 1.5em;
   }
 `;
 
