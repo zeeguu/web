@@ -4,6 +4,8 @@ import { Redirect } from "react-router-dom";
 import { setTitle } from "../assorted/setTitle";
 import { getSessionFromCookies } from "../utils/cookies/userInfo";
 import { SystemLanguagesContext } from "../contexts/SystemLanguagesContext.js";
+import IosShareIcon from "@mui/icons-material/IosShare";
+import MoreVertIcon from "@mui/icons-material/MoreVert";
 import strings from "../i18n/definitions";
 import News from "./News";
 import Contributors from "./Contributors";
@@ -154,10 +156,12 @@ export default function LandingPage() {
                     Tap the menu&nbsp;icon
                     <ul>
                       <li>
-                        <span className="strong">On Android:</span> tap the three dots&nbsp;icon&nbsp;(⋮)
+                        <span className="strong">On Android:</span> tap the three dots&nbsp;icon&nbsp;
+                        <MoreVertIcon fontSize="medium" />
                       </li>
                       <li>
-                        <span className="strong">On iPhone:</span> tap the Share&nbsp;icon&nbsp;(🔗)
+                        <span className="strong">On iPhone:</span> tap the Share&nbsp;icon&nbsp;
+                        <IosShareIcon fontSize="medium" />
                       </li>
                     </ul>
                   </li>

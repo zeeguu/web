@@ -206,6 +206,11 @@ const PageSectionWrapper = styled.div`
     text-align: left;
   }
 
+  li svg {
+    vertical-align: middle;
+    margin-top: -0.5rem;
+  }
+
   span.strong {
     font-weight: 700;
   }
