@@ -16,6 +16,8 @@ import { StyledButton } from "../components/allButtons.sc";
 import { APIContext } from "../contexts/APIContext";
 import { UserContext } from "../contexts/UserContext";
 import { ExercisesCounterContext } from "./ExercisesCounterContext";
+import  ExerciseProgressSummary  from "./ExercisesProgressSummary";
+import { CenteredRow } from "./Congratulations.sc";
 
 export default function Congratulations({
   articleID,
@@ -93,13 +95,15 @@ export default function Congratulations({
     <>
       <s.NarrowColumn className="narrowColumn">
         {screenWidth < MOBILE_WIDTH && <BackArrow />}
-
         <CenteredColumn className="centeredColumn">
           <h1>
             {strings.goodJob} {username}!
           </h1>
         </CenteredColumn>
-        <div style={{ marginLeft: "0.5em" }}>
+        <div style={{ marginLeft: "0.5em"}}>
+          <CenteredRow> 
+        <ExerciseProgressSummary/>
+        </CenteredRow>
           <p>
             You have just done <b>{totalPracticedBookmarksInSession}</b>{" "}
             {Pluralize.exercise(totalPracticedBookmarksInSession)} in <b>{timeToHumanReadable(checkpointTime)}</b>.
@@ -117,6 +121,7 @@ export default function Congratulations({
           </p>
         )}
 
+      
         {incorrectBookmarksToDisplay.length > 0 && (
           <CollapsablePanel
             children={incorrectBookmarksToDisplay.map((each) => (
@@ -154,17 +159,6 @@ export default function Congratulations({
           <>
             <YellowMessageBox>
               <p>There are words that we recommend you still practice today. Do you want do to it now?</p>
-
-              <CenteredColumn className="contentOnRow" style={{ marginTop: "-1em", justifyContent: "space-around" }}>
-                {progressionButtonRender()}
-              </CenteredColumn>
-            </YellowMessageBox>
-          </>
-        )}
-        {!isOutOfWordsToday && (
-          <>
-            <YellowMessageBox>
-              <p>There are a few words that we recommend you still practice today. Do you want do to it now?</p>
 
               <CenteredColumn className="contentOnRow" style={{ marginTop: "-1em", justifyContent: "space-around" }}>
                 {progressionButtonRender()}
