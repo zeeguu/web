@@ -129,6 +129,7 @@ const PageSectionWrapper = styled.div`
     font-size: 1.2rem;
     color: ${almostBlack};
     font-weight: 500;
+    margin: 0;
   }
 
   p.subheadline {
@@ -169,7 +170,8 @@ const PageSectionWrapper = styled.div`
     margin: 0;
   }
 
-  ul {
+  ul,
+  ol {
     margin: 0;
     padding: 0;
     display: flex;
@@ -185,12 +187,27 @@ const PageSectionWrapper = styled.div`
     }
   }
 
+  ol > li {
+    &::marker {
+      font-weight: 700;
+    }
+  }
+
+  ol ul {
+    margin-top: 1rem;
+  }
+
   li {
     font-size: 1.2rem;
     color: ${almostBlack};
     font-weight: 700;
+    font-weight: 500;
     line-height: 150%;
     text-align: left;
+  }
+
+  span.strong {
+    font-weight: 700;
   }
 `;
 
@@ -218,7 +235,7 @@ const ResponsiveRow = styled.div`
 
   @media (max-width: 992px) {
     grid-template-columns: repeat(1, 1fr);
-    gap: 1rem;
+    gap: 2rem;
     padding: 3rem 0;
     &:last-child {
       padding-bottom: 0;
@@ -232,7 +249,7 @@ const ContentText = styled.div`
   ${_sharedFlexColumn}
   justify-content: center;
   padding: 0 4rem 0 4rem;
-  gap: 1rem;
+  gap: 2rem;
 
   @media (max-width: 1200px) {
     padding: 0 2rem 0 2rem;

@@ -117,15 +117,60 @@ export default function LandingPage() {
                   Let your students do the reading at home - and in class you can focus on speaking ;)
                 </p>
                 <ul>
-                  <li>See how much time your students read and practice vocabulary exercises</li>
-                  <li>Track the words they translate and the ones they struggle with</li>
-                  <li>Upload custom articles that students will see separately from the other recommendations</li>
+                  <li>
+                    <span className="strong">
+                      See how much time your students read and practice vocabulary exercises
+                    </span>
+                  </li>
+                  <li>
+                    <span className="strong">Track the words they translate and the ones they struggle with</span>
+                  </li>
+                  <li>
+                    <span className="strong">
+                      Upload custom articles that students will see separately from the other recommendations
+                    </span>
+                  </li>
                 </ul>
                 <p>
                   To start using Zeeguu for Teachers, contact us at&nbsp;
                   <strong>zeeguu.team@gmail.com</strong>
                 </p>
               </s.ContentText>
+            </s.ResponsiveRow>
+          </s.PageSection>
+        </s.PageSectionWrapper>
+
+        <s.PageSectionWrapper>
+          <s.PageSection>
+            <s.ResponsiveRow>
+              <s.ContentText>
+                <h2 className="left-aligned">Use Zeeguu like an&nbsp;App</h2>
+                <ol>
+                  <li>
+                    Open <span className="strong">zeeguu.org</span> in your mobile browser (On&nbsp;Android, use Chrome.
+                    On iPhone, use Safari or&nbsp;Chrome)
+                  </li>
+                  <li>
+                    Tap the menu&nbsp;icon
+                    <ul>
+                      <li>
+                        <span className="strong">On Android:</span> tap the three dots&nbsp;icon&nbsp;(⋮)
+                      </li>
+                      <li>
+                        <span className="strong">On iPhone:</span> tap the Share&nbsp;icon&nbsp;(🔗)
+                      </li>
+                    </ul>
+                  </li>
+                  <li>
+                    Select <span className="strong">“Add to Home Screen”</span> (or “Install App” on&nbsp;Android)
+                  </li>
+                  <li>
+                    Confirm by tapping&nbsp;<span className="strong">Add</span>
+                  </li>
+                </ol>
+                <p>Zeeguu will now appear on your home screen, just like a regular&nbsp;app!</p>
+              </s.ContentText>
+              <s.ContentImage className="square" alt="" src="static/images/zeeguu-for-teachers.png" />
             </s.ResponsiveRow>
           </s.PageSection>
         </s.PageSectionWrapper>
