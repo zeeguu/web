@@ -209,10 +209,10 @@ export function getTopBarData({weeklyTranslated, weeklyReadingMinutes, weeksPrac
 }
 
 
-export function getWeeklyProgressOverviewItems({weeklyTranslated, weeklyReadingMinutes}){
+export function getWeeklyProgressOverviewItems({weeklyTranslated, weeklyReadingMinutes, weeksPracticed}){
     const weeklyTranslatedWords = weeklyTranslated;
     const weeklyMinutesRead = weeklyReadingMinutes;
-
+    const totalWeeksPracticed = weeksPracticed;
 
     const weeklyArticlesRead = {
         icon: "headerArticles",
@@ -256,7 +256,7 @@ export function getWeeklyProgressOverviewItems({weeklyTranslated, weeklyReadingM
     const weeklyStreak = {
         icon: "headerStreak",
         iconText: strings.iconTextWeeklyStreak,
-        value: 5,
+        value: totalWeeksPracticed,
         beforeText: strings.streakTextStart,
         afterText: strings.streakTextEnd,
         modal: {
