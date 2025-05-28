@@ -24,7 +24,7 @@ import * as s from "./userDashboard_Styled/UserDashboard.sc";
 import { setTitle } from "../assorted/setTitle";
 import strings from "../i18n/definitions";
 import { APIContext } from "../contexts/APIContext";
-import {countPracticeWeeks} from "./helpers";
+import {countConsecutivePracticeWeeks} from "./helpers";
 
 export default function UserDashboard() {
   const api = useContext(APIContext);
@@ -130,7 +130,7 @@ export default function UserDashboard() {
         calculateCountPerMonth_Activity(activity),
       );
 
-      setWeeksPracticed(countPracticeWeeks(activity));
+      setWeeksPracticed(countConsecutivePracticeWeeks(activity));
 
       setTotalReadingMinutes(calculateTotalReadingMinutes(activity.reading));
       setWeeklyReadingMinutes(calculateWeeklyReadingMinutes(activity.reading));
