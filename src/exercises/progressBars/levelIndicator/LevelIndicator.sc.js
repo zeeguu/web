@@ -12,7 +12,7 @@ const LevelWrapper = styled.div`
     margin-top: 0.5em;
     justify-content: flex-start;     
     padding-right: 1em;
-    margin-right: 1em;
+    margin-right: 2em;
     padding-left: 1em;
   }
 `;
@@ -23,6 +23,7 @@ const LevelExercisesWrapper  = styled.div`
   margin: 1em;
   padding-left: 1em;
   padding-right: 2em;
+
 `;
 
 const LevelIndicator = styled.div`
@@ -37,7 +38,7 @@ const LevelIndicator = styled.div`
   -ms-user-select: none; /* IE 10 and IE 11 */
   user-select: none; /* Standard */
   
-
+  
   .level-indicator {
     width: 100%;
     display: flex;

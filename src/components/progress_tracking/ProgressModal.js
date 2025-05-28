@@ -31,7 +31,7 @@ export default function ProgressModal({
             }}
         >
             <Header withoutLogo>
-                <Heading>{title}</Heading>
+                <s.CenteredHeading>{title}</s.CenteredHeading>
             </Header>
             <s.ModalContent>
             <s.IconAndIntegerRow>

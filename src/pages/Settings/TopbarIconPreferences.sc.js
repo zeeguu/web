@@ -4,6 +4,7 @@ export const IconRow = styled.div`
     display: flex;
     margin-bottom: 0.6em;
     gap: 0.7em;
+    margin-left: 1em;
 `;
 
 export const AdjustedIcon = styled.div`
