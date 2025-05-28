@@ -136,8 +136,9 @@ export default function UserDashboard() {
       setWeeklyReadingMinutes(calculateWeeklyReadingMinutes(activity.reading));
     });
 
-    api.getAllScheduledBookmarks(false, (bookmarks) => {
-      setTotalInLearning(bookmarks.length)
+    api.getBookmarksCountByLevel((count) => {
+      console.log("THIS IS THE GETBOOKMARKSCOUNTBYLEVEL result:", count);
+      setTotalInLearning(count);
     });
 
 
