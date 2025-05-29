@@ -61,7 +61,10 @@ export default function InstallationInstructions() {
         {selectedPlatform && (
           <ol>
             <li>
-              While viewing this page on your mobile device, tap the {iconType} icon&nbsp;{icon}
+              <b>
+                Tap the {iconType} icon&nbsp;({icon})
+              </b>
+              &nbsp; while viewing this page on your mobile device
             </li>
             <li>
               Select <span className="strong">{actionText}</span>
