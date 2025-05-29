@@ -17,6 +17,7 @@ import { APIContext } from "../contexts/APIContext";
 import { UserContext } from "../contexts/UserContext";
 import { ExercisesCounterContext } from "./ExercisesCounterContext";
 import  ExerciseProgressSummary  from "./ExercisesProgressSummary";
+import { countConsecutivePracticeWeeks } from "../userDashboard/helpers";
 
 export default function Congratulations({
   articleID,
@@ -44,6 +45,7 @@ export default function Congratulations({
   const [username, setUsername] = useState();
   const [totalInLearning, setTotalInLearning] = useState(null);
   const [totalLearned, setTotalLearned] = useState(null);
+  const [weeksPracticed, setWeeksPracticed] = useState(0);
 
   const { screenWidth } = useScreenWidth();
 
@@ -57,12 +59,17 @@ export default function Congratulations({
     setTotalBookmarksReviewed(incorrectBookmarksToDisplay.length + correctBookmarksToDisplay.length);
     api.logUserActivity(api.COMPLETED_EXERCISES, articleID, "", source);
     updateExercisesCounter();
-    api.getAllScheduledBookmarks(false, (bookmarks) => {
-      setTotalInLearning(bookmarks.length);
+    api.getBookmarksCountByLevel((count) => {
+      console.log("THIS IS THE GETBOOKMARKSCOUNTBYLEVEL result:", count);
+      setTotalInLearning(count);
     });
     api.totalLearnedBookmarks((totalLearnedCount) =>{
       setTotalLearned(totalLearnedCount)
     });
+    api.getUserActivityByDay((activity) => {
+      setWeeksPracticed(countConsecutivePracticeWeeks(activity));
+    });
+    
     // eslint-disable-next-line
   }, []);
 
@@ -132,8 +139,9 @@ export default function Congratulations({
         )}
         </CenteredColumn>
         <ExerciseProgressSummary
-        totalInLearning={totalInLearning} totalLearned={totalLearned}
-        
+          totalInLearning={totalInLearning}
+          totalLearned={totalLearned}
+          weeksPracticed={weeksPracticed}
         />
         {incorrectBookmarksToDisplay.length > 0 && (
           <CollapsablePanel
