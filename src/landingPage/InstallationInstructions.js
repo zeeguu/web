@@ -28,16 +28,19 @@ export default function InstallationInstructions() {
     android: {
       browser: "Chrome",
       icon: <MoreVertIcon fontSize="medium" />,
+      iconType: "Menu",
       actionText: '"Add to Home Screen" (or "Install App")',
     },
     ios: {
       browser: "Safari or Chrome",
       icon: <IosShareIcon fontSize="medium" />,
+      iconType: "Share",
       actionText: '"Add to Home Screen"',
     },
   };
 
-  const { browser, icon, actionText } = instructions[selectedPlatform] || {};
+  const { browser, icon, iconType, actionText } = instructions[selectedPlatform] || {};
+
   return (
     <s.PageSectionWrapper>
       <s.PageSection>
@@ -64,7 +67,9 @@ export default function InstallationInstructions() {
                 <li>
                   Open <span className="strong">zeeguu.org</span> in your mobile browser (use {browser})
                 </li>
-                <li>Tap the Menu icon&nbsp;{icon}</li>
+                <li>
+                  Tap the {iconType} icon&nbsp;{icon}
+                </li>
                 <li>
                   Select <span className="strong">{actionText}</span>
                 </li>
