@@ -57,8 +57,8 @@ export default function ProgressOverview({totalInLearning, totalLearned, weeklyT
             <CollapsablePanel topMessage={udstrings.totalProgressOverviewTitle}>
             <s.ProgressOverviewSection>
                 {totalProgressOverview.map((item, index)=> (
-                    <style.ProgressOverviewItem 
-                                  key={index}
+                    <style.ProgressOverviewItem
+                        key={index}
                         onClick= {() => {
                             const modalDefaults = item.modal || {};
                             setShowModalData({

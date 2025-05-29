@@ -3,8 +3,8 @@ import NavIcon from "../components/MainNav/NavIcon";
 import { getExerciseProgressSummary } from "../utils/progressTracking/ProgressOverviewItems";
 import * as s from "../components/progress_tracking/ProgressItems.sc";
 
-export default function ExercisesProgressSummary({onHandle, totalInLearning, totalLearned}){
-    const {exerciseProgressSummary} = getExerciseProgressSummary({totalInLearning, totalLearned});
+export default function ExercisesProgressSummary({onHandle, totalInLearning, totalLearned, weeksPracticed}) {
+    const {exerciseProgressSummary} = getExerciseProgressSummary({totalInLearning, totalLearned, weeksPracticed});
     const [randomItems, setRandomItems] = useState([]);
 
     function selectTwoRandomItems(items){
