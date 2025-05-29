@@ -15,7 +15,7 @@ export default function RadioGroup({
 }) {
   return (
     <s.StyledRadioGroup role="radiogroup" aria-label={ariaLabel} aria-labelledby={radioGroupLabel && `${name}-label`}>
-      <s.RadioGroupLabel id={`${name}-label`}>{radioGroupLabel}</s.RadioGroupLabel>
+      {radioGroupLabel && <s.RadioGroupLabel id={`${name}-label`}>{radioGroupLabel}</s.RadioGroupLabel>}
       {options?.map((option) => (
         <div key={optionId(option)}>
           <s.StyledInput
