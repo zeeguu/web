@@ -1,14 +1,10 @@
-import { useEffect, useContext, useState } from "react";
+import { useEffect, useContext } from "react";
 import { useHistory } from "react-router-dom/cjs/react-router-dom";
 import { Redirect } from "react-router-dom";
 import { setTitle } from "../assorted/setTitle";
 import { getSessionFromCookies } from "../utils/cookies/userInfo";
 import { SystemLanguagesContext } from "../contexts/SystemLanguagesContext.js";
-import AndroidIcon from "@mui/icons-material/Android";
-import AppleIcon from "@mui/icons-material/Apple";
-import RadioGroup from "../components/MainNav/RadioGroup.js";
-import IosShareIcon from "@mui/icons-material/IosShare";
-import MoreVertIcon from "@mui/icons-material/MoreVert";
+import InstallationInstructions from "./InstallationInstructions.js";
 import strings from "../i18n/definitions";
 import News from "./News";
 import Contributors from "./Contributors";
@@ -21,7 +17,6 @@ import * as s from "./LandingPage.sc.js";
 export default function LandingPage() {
   const history = useHistory();
   const { systemLanguages } = useContext(SystemLanguagesContext);
-  const [selectedPlatform, setSelectedPlatform] = useState("android");
 
   useEffect(() => {
     setTitle(strings.landingPageTitle);
@@ -38,21 +33,6 @@ export default function LandingPage() {
   function handleRegisterClick() {
     history.push(`/language_preferences`);
   }
-
-  const mobilePlatforms = [
-    {
-      id: "android",
-      code: "android",
-      language: "Android",
-      icon: <AndroidIcon fontSize="medium" color="black" />,
-    },
-    {
-      id: "ios",
-      code: "ios",
-      language: "iOS",
-      icon: <AppleIcon fontSize="medium" color="action" />,
-    },
-  ];
 
   return (
     <s.PageWrapper>
@@ -161,55 +141,7 @@ export default function LandingPage() {
           </s.PageSection>
         </s.PageSectionWrapper>
 
-        <s.PageSectionWrapper>
-          <s.PageSection>
-            <s.ResponsiveRow>
-              <s.ContentText>
-                <h2 className="left-aligned">Use Zeeguu like an&nbsp;App</h2>
-                <RadioGroup
-                  ariaLabel="Select your platform:"
-                  name="mobile-platform"
-                  options={mobilePlatforms}
-                  selectedValue={selectedPlatform}
-                  onChange={(e) => {
-                    setSelectedPlatform(e.target.value);
-                  }}
-                  optionLabel={(e) => e.language}
-                  optionValue={(e) => e.code}
-                  optionId={(e) => e.id}
-                  dynamicIcon={(e) => e.icon}
-                />
-                <ol>
-                  <li>
-                    Open <span className="strong">zeeguu.org</span> in your mobile browser (On&nbsp;Android, use Chrome.
-                    On iPhone, use Safari or&nbsp;Chrome)
-                  </li>
-                  <li>
-                    Tap the menu&nbsp;icon
-                    <ul>
-                      <li>
-                        <span className="strong">On Android:</span> tap the three dots&nbsp;icon&nbsp;
-                        <MoreVertIcon fontSize="medium" />
-                      </li>
-                      <li>
-                        <span className="strong">On iPhone:</span> tap the Share&nbsp;icon&nbsp;
-                        <IosShareIcon fontSize="medium" />
-                      </li>
-                    </ul>
-                  </li>
-                  <li>
-                    Select <span className="strong">"Add to Home Screen"</span> (or "Install App" on&nbsp;Android)
-                  </li>
-                  <li>
-                    Confirm by tapping&nbsp;<span className="strong">"Add"</span>
-                  </li>
-                </ol>
-                <p>Zeeguu will now appear on your home screen, just like a&nbsp;regular&nbsp;app!</p>
-              </s.ContentText>
-              <s.ContentImage className="square" alt="" src="static/images/zeeguu-app.png" />
-            </s.ResponsiveRow>
-          </s.PageSection>
-        </s.PageSectionWrapper>
+        <InstallationInstructions />
 
         <s.PageSectionWrapper>
           <s.AdaptableColumn>
