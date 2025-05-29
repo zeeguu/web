@@ -42,48 +42,44 @@ export default function InstallationInstructions() {
   const { browser, icon, iconType, actionText } = instructions[selectedPlatform] || {};
 
   return (
-    <s.PageSectionWrapper>
-      <s.PageSection>
-        <s.ResponsiveRow>
-          <s.ContentText>
-            <h2 className="left-aligned">Use Zeeguu like an&nbsp;App</h2>
+    <s.ResponsiveRow>
+      <s.ContentText>
+        <h2 className="left-aligned">Use Zeeguu like an&nbsp;App</h2>
 
-            <RadioGroup
-              ariaLabel="Select your platform:"
-              name="mobile-platform"
-              options={mobilePlatforms}
-              selectedValue={selectedPlatform}
-              onChange={(e) => {
-                setSelectedPlatform(e.target.value);
-              }}
-              optionLabel={(e) => e.platform}
-              optionValue={(e) => e.code}
-              optionId={(e) => e.id}
-              dynamicIcon={(e) => e.icon}
-            />
+        <RadioGroup
+          ariaLabel="Select your platform:"
+          name="mobile-platform"
+          options={mobilePlatforms}
+          selectedValue={selectedPlatform}
+          onChange={(e) => {
+            setSelectedPlatform(e.target.value);
+          }}
+          optionLabel={(e) => e.platform}
+          optionValue={(e) => e.code}
+          optionId={(e) => e.id}
+          dynamicIcon={(e) => e.icon}
+        />
 
-            {selectedPlatform && (
-              <ol>
-                <li>
-                  Open <span className="strong">zeeguu.org</span> in your mobile browser (use {browser})
-                </li>
-                <li>
-                  Tap the {iconType} icon&nbsp;{icon}
-                </li>
-                <li>
-                  Select <span className="strong">{actionText}</span>
-                </li>
-                <li>
-                  Confirm by tapping <span className="strong">"Add"</span>
-                </li>
-              </ol>
-            )}
+        {selectedPlatform && (
+          <ol>
+            <li>
+              Open <span className="strong">zeeguu.org</span> in your mobile browser (use {browser})
+            </li>
+            <li>
+              Tap the {iconType} icon&nbsp;{icon}
+            </li>
+            <li>
+              Select <span className="strong">{actionText}</span>
+            </li>
+            <li>
+              Confirm by tapping <span className="strong">"Add"</span>
+            </li>
+          </ol>
+        )}
 
-            <p>Zeeguu will now appear on your home screen, just like a&nbsp;regular&nbsp;app!</p>
-          </s.ContentText>
-          <s.ContentImage className="square" alt="" src="static/images/zeeguu-app.png" />
-        </s.ResponsiveRow>
-      </s.PageSection>
-    </s.PageSectionWrapper>
+        <p>Zeeguu will now appear on your home screen, just like a&nbsp;regular&nbsp;app!</p>
+      </s.ContentText>
+      <s.ContentImage className="square" alt="" src="static/images/zeeguu-app.png" />
+    </s.ResponsiveRow>
   );
 }

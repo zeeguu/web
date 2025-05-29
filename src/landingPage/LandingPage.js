@@ -141,7 +141,11 @@ export default function LandingPage() {
           </s.PageSection>
         </s.PageSectionWrapper>
 
-        <InstallationInstructions />
+        <s.PageSectionWrapper>
+          <s.PageSection>
+            <InstallationInstructions />
+          </s.PageSection>
+        </s.PageSectionWrapper>
 
         <s.PageSectionWrapper>
           <s.AdaptableColumn>
