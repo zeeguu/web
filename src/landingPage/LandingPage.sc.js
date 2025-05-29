@@ -83,7 +83,6 @@ const LanguageGrid = styled.div`
 `;
 
 const AdaptableColumn = styled.div`
-  padding-bottom: 3em;
   height: auto;
   width: 100%;
   margin-left: auto;
@@ -92,6 +91,7 @@ const AdaptableColumn = styled.div`
 
   h2 {
     ${_sharedHeader}
+    margin-top: 0;
   }
 
   h3 {
@@ -124,11 +124,20 @@ const PageSectionWrapper = styled.div`
   @media (max-width: 576px) {
     padding: 3rem 1rem;
   }
+`;
+
+const PageSection = styled.section`
+  ${_sharedFlexColumn}
+  align-items: center;
+  max-width: 80rem;
+  gap: 1rem;
+
   p {
     line-height: 150%;
     font-size: 1.2rem;
     color: ${almostBlack};
     font-weight: 500;
+    margin: 0;
   }
 
   p.subheadline {
@@ -169,15 +178,14 @@ const PageSectionWrapper = styled.div`
     margin: 0;
   }
 
-  ul {
-    margin: 0;
-    padding: 0;
-    display: flex;
-    flex-direction: column;
+  ul,
+  ol {
+    ${_sharedFlexColumn}
     align-items: flex-start;
     gap: 1rem;
-    margin-left: 1rem;
+    margin-left: 1.5rem;
     width: fit-content;
+    padding: 0;
 
     @media (max-width: 992px) {
       margin: auto;
@@ -185,20 +193,32 @@ const PageSectionWrapper = styled.div`
     }
   }
 
+  ol > li {
+    &::marker {
+      font-weight: 700;
+    }
+  }
+
+  ol ul {
+    margin-top: 1rem;
+  }
+
   li {
     font-size: 1.2rem;
     color: ${almostBlack};
-    font-weight: 700;
-    line-height: 150%;
+    font-weight: 500;
+    line-height: 145%;
     text-align: left;
   }
-`;
 
-const PageSection = styled.section`
-  ${_sharedFlexColumn}
-  align-items: center;
-  max-width: 80rem;
-  gap: 1rem;
+  li svg {
+    vertical-align: middle;
+    margin-top: -0.35rem;
+  }
+
+  span.strong {
+    font-weight: 700;
+  }
 `;
 
 const ResponsiveRow = styled.div`
@@ -218,7 +238,7 @@ const ResponsiveRow = styled.div`
 
   @media (max-width: 992px) {
     grid-template-columns: repeat(1, 1fr);
-    gap: 1rem;
+    gap: 2rem;
     padding: 3rem 0;
     &:last-child {
       padding-bottom: 0;
@@ -232,7 +252,7 @@ const ContentText = styled.div`
   ${_sharedFlexColumn}
   justify-content: center;
   padding: 0 4rem 0 4rem;
-  gap: 1rem;
+  gap: 2rem;
 
   @media (max-width: 1200px) {
     padding: 0 2rem 0 2rem;
@@ -268,7 +288,6 @@ const ContentImage = styled.img`
 
 const PaleAdaptableColumn = styled(AdaptableColumn)`
   background-color: ${zeeguuTransparentLightYellow};
-  padding-top: 0.1em;
 `;
 
 const DescriptionText = styled.div`

@@ -4,6 +4,7 @@ import { Redirect } from "react-router-dom";
 import { setTitle } from "../assorted/setTitle";
 import { getSessionFromCookies } from "../utils/cookies/userInfo";
 import { SystemLanguagesContext } from "../contexts/SystemLanguagesContext.js";
+import InstallationInstructions from "./InstallationInstructions.js";
 import strings from "../i18n/definitions";
 import News from "./News";
 import Contributors from "./Contributors";
@@ -127,9 +128,19 @@ export default function LandingPage() {
                   Let your students do the reading at home - and in class you can focus on speaking ;)
                 </p>
                 <ul>
-                  <li>See how much time your students read and practice vocabulary exercises</li>
-                  <li>Track the words they translate and the ones they struggle with</li>
-                  <li>Upload custom articles that students will see separately from the other recommendations</li>
+                  <li>
+                    <span className="strong">
+                      See how much time your students read and practice vocabulary exercises
+                    </span>
+                  </li>
+                  <li>
+                    <span className="strong">Track the words they translate and the ones they struggle with</span>
+                  </li>
+                  <li>
+                    <span className="strong">
+                      Upload custom articles that students will see separately from the other recommendations
+                    </span>
+                  </li>
                 </ul>
                 <p>
                   To start using Zeeguu for Teachers, contact us at&nbsp;
@@ -140,13 +151,23 @@ export default function LandingPage() {
           </s.PageSection>
         </s.PageSectionWrapper>
 
-        <s.AdaptableColumn>
-          <News />
-        </s.AdaptableColumn>
+        <s.PageSectionWrapper>
+          <s.PageSection>
+            <InstallationInstructions />
+          </s.PageSection>
+        </s.PageSectionWrapper>
 
-        <s.PaleAdaptableColumn>
-          <Contributors />
-        </s.PaleAdaptableColumn>
+        <s.PageSectionWrapper>
+          <s.AdaptableColumn>
+            <News />
+          </s.AdaptableColumn>
+        </s.PageSectionWrapper>
+
+        <s.PageSectionWrapper>
+          <s.AdaptableColumn>
+            <Contributors />
+          </s.AdaptableColumn>
+        </s.PageSectionWrapper>
       </s.Main>
     </s.PageWrapper>
   );

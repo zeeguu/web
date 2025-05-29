@@ -2,6 +2,7 @@ import * as s from "./RadioGroup.sc";
 
 export default function RadioGroup({
   radioGroupLabel,
+  ariaLabel,
   name,
   options,
   selectedValue,
@@ -13,10 +14,8 @@ export default function RadioGroup({
   radiosContentLeftAligned = false,
 }) {
   return (
-    <s.StyledRadioGroup role="radiogroup" aria-labelledby={`${name}-label`}>
-      <s.RadioGroupLabel id={`${name}-label`}>
-        {radioGroupLabel}
-      </s.RadioGroupLabel>
+    <s.StyledRadioGroup role="radiogroup" aria-label={ariaLabel} aria-labelledby={radioGroupLabel && `${name}-label`}>
+      {radioGroupLabel && <s.RadioGroupLabel id={`${name}-label`}>{radioGroupLabel}</s.RadioGroupLabel>}
       {options?.map((option) => (
         <div key={optionId(option)}>
           <s.StyledInput
@@ -27,10 +26,7 @@ export default function RadioGroup({
             onChange={onChange}
             checked={selectedValue === optionValue(option)}
           />
-          <s.OptionLabel
-            htmlFor={optionId(option)}
-            $leftAligned={radiosContentLeftAligned}
-          >
+          <s.OptionLabel htmlFor={optionId(option)} $leftAligned={radiosContentLeftAligned}>
             {dynamicIcon && dynamicIcon(option)}
             {optionLabel(option)}
           </s.OptionLabel>
