@@ -17,7 +17,6 @@ import { APIContext } from "../contexts/APIContext";
 import { UserContext } from "../contexts/UserContext";
 import { ExercisesCounterContext } from "./ExercisesCounterContext";
 import  ExerciseProgressSummary  from "./ExercisesProgressSummary";
-import { CenteredRow } from "./Congratulations.sc";
 
 export default function Congratulations({
   articleID,
@@ -43,6 +42,8 @@ export default function Congratulations({
   );
   const [totalBookmarksReviewed, setTotalBookmarksReviewed] = useState();
   const [username, setUsername] = useState();
+  const [totalInLearning, setTotalInLearning] = useState(null);
+  const [totalLearned, setTotalLearned] = useState(null);
 
   const { screenWidth } = useScreenWidth();
 
@@ -56,8 +57,16 @@ export default function Congratulations({
     setTotalBookmarksReviewed(incorrectBookmarksToDisplay.length + correctBookmarksToDisplay.length);
     api.logUserActivity(api.COMPLETED_EXERCISES, articleID, "", source);
     updateExercisesCounter();
+    api.getAllScheduledBookmarks(false, (bookmarks) => {
+      setTotalInLearning(bookmarks.length);
+    });
+    api.totalLearnedBookmarks((totalLearnedCount) =>{
+      setTotalLearned(totalLearnedCount)
+    });
     // eslint-disable-next-line
   }, []);
+
+
 
   if (username === undefined || isOutOfWordsToday === undefined) {
     return <LoadingAnimation />;
@@ -100,13 +109,13 @@ export default function Congratulations({
             {strings.goodJob} {username}!
           </h1>
         </CenteredColumn>
+         <CenteredColumn className="centeredColumn">
         <div style={{ marginLeft: "0.5em"}}>
-          <CenteredRow> 
-        <ExerciseProgressSummary/>
-        </CenteredRow>
+       
           <p>
             You have just done <b>{totalPracticedBookmarksInSession}</b>{" "}
-            {Pluralize.exercise(totalPracticedBookmarksInSession)} in <b>{timeToHumanReadable(checkpointTime)}</b>.
+            
+            {Pluralize.exercise(totalPracticedBookmarksInSession)} in <b>{timeToHumanReadable(checkpointTime)}</b>. Here are some hightlights of your current progress you have made.
             {articleID && (
               <p>
                 These words are now part of your vocabulary exercises, using spaced repetition and smart learning
@@ -119,9 +128,13 @@ export default function Congratulations({
           <p>
             You practiced words from: <a href={articleURL}>{articleTitle}</a>
           </p>
+          
         )}
-
-      
+        </CenteredColumn>
+        <ExerciseProgressSummary
+        totalInLearning={totalInLearning} totalLearned={totalLearned}
+        
+        />
         {incorrectBookmarksToDisplay.length > 0 && (
           <CollapsablePanel
             children={incorrectBookmarksToDisplay.map((each) => (

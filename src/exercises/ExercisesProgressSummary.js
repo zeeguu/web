@@ -1,13 +1,9 @@
-import {useState, useContext, useEffect} from "react";
-import {UserContext} from "../contexts/UserContext";
+import {useState, useEffect} from "react";
 import NavIcon from "../components/MainNav/NavIcon";
 import { getExerciseProgressSummary } from "../utils/progressTracking/ProgressOverviewItems";
 import * as s from "../components/progress_tracking/ProgressItems.sc";
-import { CenteredRow } from "./Congratulations.sc";
 
 export default function ExercisesProgressSummary({onHandle, totalInLearning, totalLearned}){
-    const [username, setUsername] = useState();
-    const {userDetails} = useContext(UserContext);
     const {exerciseProgressSummary} = getExerciseProgressSummary({totalInLearning, totalLearned});
     const [randomItems, setRandomItems] = useState([]);
 
@@ -30,16 +26,13 @@ export default function ExercisesProgressSummary({onHandle, totalInLearning, tot
     };
 
     useEffect(() =>{
-        setUsername(userDetails.name);
-
         const twoRandomItems = selectTwoRandomItems(exerciseProgressSummary);
         setRandomItems(twoRandomItems);
     }, []);
     
     return (
-        <>
+        <s.ProgressItemsContainer >
         {randomItems.map((item, index) => (
-        <CenteredRow key={index}>
           <s.ProgressOverviewItem>
             <s.IconWithValueAndLabel>
               <s.IconAndValue>
@@ -52,8 +45,7 @@ export default function ExercisesProgressSummary({onHandle, totalInLearning, tot
               {item.beforeText} {item.value} {item.afterText}
             </s.ProgressDescription>
           </s.ProgressOverviewItem>
-        </CenteredRow>
       ))}       
-        </>
+        </s.ProgressItemsContainer>
     );
 }

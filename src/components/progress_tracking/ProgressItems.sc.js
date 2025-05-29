@@ -67,4 +67,12 @@ const ProgressDescription = styled.div`
   }
 `;
 
-export {ProgressDescription, Label, Value, Icon, IconAndValue, IconWithValueAndLabel, ProgressOverviewItem};
+const ProgressItemsContainer = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  justify-content: left;
+  padding: 1em;
+  `;
+
+export {ProgressDescription, Label, Value, Icon, IconAndValue, IconWithValueAndLabel, ProgressOverviewItem, ProgressItemsContainer};
