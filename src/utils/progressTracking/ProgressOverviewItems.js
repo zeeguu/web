@@ -272,7 +272,7 @@ export function getWeeklyProgressOverviewItems({weeklyTranslated, weeklyReadingM
 }
 
 export function getExerciseProgressSummary({totalInLearning, totalLearned, weeksPracticed}){
-        const totalWordsPracticed = getTotalWordsPracticed(totalInLearning);
+    const totalWordsPracticed = getTotalWordsPracticed(totalInLearning);
     const totalWordsLearned = getTotalWordsLearned(totalLearned)
     const weeklyStreak = getWeeklyStreak(weeksPracticed);
     const weeklyWordsPracticed = getWeeklyWordsPracticed();
