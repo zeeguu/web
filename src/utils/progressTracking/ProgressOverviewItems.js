@@ -82,13 +82,9 @@ export function getWeeklyTranslatedWordsCount(data){
   };
 
 
-export function getTotalProgressOverviewItems({totalInLearning, totalLearned, totalTranslated, totalReadingMinutes}){
-    const totalTranslatedWords = totalTranslated;
-    const totalPracticedWords = totalInLearning;
-    const totalLearnedWords = totalLearned;
+  export function getTotalMinutesRead(totalReadingMinutes){
     const totalMinutesRead = totalReadingMinutes;
-
-    const totalArticlesRead = {
+    const totalMinutes = {
         icon: "headerArticles",
         iconText: strings.iconTextTotalArticles,
         value: totalMinutesRead,
@@ -99,8 +95,12 @@ export function getTotalProgressOverviewItems({totalInLearning, totalLearned, to
             linkTo: "user_dashboard",
             size: 90,
         }
-    };
-    
+    }
+    return totalMinutes;
+  }
+
+    export function getTotalWordsTranslated(totalTranslated){
+    const totalTranslatedWords = totalTranslated;
     const totalWordsTranslated = {
         icon: "words",
         iconText: strings.iconTextTotalWordsTranslated,
@@ -112,8 +112,12 @@ export function getTotalProgressOverviewItems({totalInLearning, totalLearned, to
             linkTo: "history",
             size: 90,
         }
-    };
-    
+    }
+    return totalWordsTranslated;
+  }
+
+export function getTotalWordsPracticed(totalInLearning){
+    const totalPracticedWords = totalInLearning;
     const totalWordsPracticed = {
         icon: "words",
         iconText: strings.iconTextTotalWordsPracticed,
@@ -121,42 +125,33 @@ export function getTotalProgressOverviewItems({totalInLearning, totalLearned, to
         beforeText: strings.wordsPracticedTextStart,
         afterText: strings.wordsTextTotalEnd,
         modal: {
-            linkText: "More details on word progress",
+            linkText: "More details on progress for practiced words",
             linkTo: "words",
             size: 90,
         }
-    };
-    
-    const totalWordsLearned = {
+    }
+    return totalWordsPracticed;
+  }
+
+  export function getTotalWordsLearned(totalLearned){
+    const totalLearnedWords = totalLearned;
+    const totalWordsLearned= {
         icon: "words",
         iconText: strings.iconTextTotalWordsLearned,
         value: totalLearnedWords,
         beforeText: strings.wordsLearnedTextStart,
         afterText: strings.wordsTextTotalEnd,
         modal: {
-            linkText: "More details about words learned",
+            linkText: "More details on translation history",
             linkTo: "words/learned",
             size: 90,
         }
-    };
+    }
+    return totalWordsLearned;
+  }
 
-    const totalProgressOverview = [
-        totalArticlesRead,
-        totalWordsTranslated,
-        totalWordsPracticed,
-        totalWordsLearned,
-    ];
-
-    return{
-        totalProgressOverview
-    };
-}
-
-export function getTopBarData({weeklyTranslated, weeklyReadingMinutes, weeksPracticed}){
-    const weeklyTranslatedWords = weeklyTranslated;
+    export function getWeeklyMinutesRead(weeklyReadingMinutes){
     const weeklyMinutesRead = weeklyReadingMinutes;
-    const totalWeeksPracticed = weeksPracticed;
-
     const weeklyArticlesRead = {
         icon: "headerArticles",
         iconText: strings.iconTextWeeklyArticles,
@@ -168,12 +163,16 @@ export function getTopBarData({weeklyTranslated, weeklyReadingMinutes, weeksPrac
             linkTo: "user_dashboard",
             size: 90,
         }
-    };
+    }
+    return weeklyArticlesRead
+  }
 
-    const weeklyWordsTranslated = {
+    export function getWeeklyWordsTranslated(weeklyTranslated){
+    const weeklyWordsTranslated = weeklyTranslated;
+    const weeklyTranslatedWords = {
         icon: "words",
         iconText: strings.iconTextWeeklyWordsTranslated,
-        value: weeklyTranslatedWords,
+        value: weeklyWordsTranslated,
         beforeText: strings.wordsTranslatedTextStart,
         afterText: strings.wordsTextWeeklyEnd,
         modal: {
@@ -181,12 +180,16 @@ export function getTopBarData({weeklyTranslated, weeklyReadingMinutes, weeksPrac
             linkTo: "history",
             size: 90,
         }
-    };
+    }
+    return weeklyTranslatedWords;
+  }
 
-    const weeklyStreak = {
+    export function getWeeklyStreak(weeksPracticed){
+    const weeklyStreak = weeksPracticed;
+    const streakWeekly = {
         icon: "headerStreak",
         iconText: strings.iconTextWeeklyStreak,
-        value: totalWeeksPracticed,
+        value: weeklyStreak,
         beforeText: strings.streakTextStart,
         afterText: strings.streakTextEnd,
         modal: {
@@ -194,7 +197,30 @@ export function getTopBarData({weeklyTranslated, weeklyReadingMinutes, weeksPrac
             linkTo: "user_dashboard",
             size: 90,
         }
-    };
+    }
+    return streakWeekly;
+  }
+
+  export function getWeeklyWordsPracticed(){
+    const weeklyWordsPracticed = {
+        icon: "words",
+        iconText: strings.iconTextWeeklyWordsPracticed,
+        value: 28,
+        beforeText: strings.wordsPracticedTextStart,
+        afterText: strings.wordsTextWeeklyEnd,
+        modal: {
+            linkText: "More details on translation history",
+            linkTo: "history",
+            size: 90,
+        }
+    }
+    return weeklyWordsPracticed;
+  }
+
+  export function getTopBarData({weeklyTranslated, weeklyReadingMinutes, weeksPracticed}){
+    const weeklyArticlesRead = getWeeklyMinutesRead(weeklyReadingMinutes);
+    const weeklyWordsTranslated = getWeeklyWordsTranslated(weeklyTranslated)
+    const weeklyStreak = getWeeklyStreak(weeksPracticed);
 
     const weeklyProgressOverview = [
         weeklyArticlesRead,
@@ -208,63 +234,29 @@ export function getTopBarData({weeklyTranslated, weeklyReadingMinutes, weeksPrac
 
 }
 
+  export function getTotalProgressOverviewItems({totalInLearning, totalLearned, totalTranslated, totalReadingMinutes}){
+    const totalWordsLearned = getTotalWordsLearned(totalLearned);
+    const totalArticlesRead = getTotalMinutesRead(totalReadingMinutes);
+    const totalWordsTranslated = getTotalWordsTranslated(totalTranslated);
+    const totalWordsPracticed = getTotalWordsPracticed(totalInLearning);
+
+    const totalProgressOverview = [
+        totalArticlesRead,
+        totalWordsTranslated,
+        totalWordsPracticed,
+        totalWordsLearned,
+    ];
+
+    return{
+        totalProgressOverview
+    };
+}
 
 export function getWeeklyProgressOverviewItems({weeklyTranslated, weeklyReadingMinutes, weeksPracticed}){
-    const weeklyTranslatedWords = weeklyTranslated;
-    const weeklyMinutesRead = weeklyReadingMinutes;
-    const totalWeeksPracticed = weeksPracticed;
-
-    const weeklyArticlesRead = {
-        icon: "headerArticles",
-        iconText: strings.iconTextWeeklyArticles,
-        value: weeklyMinutesRead,
-        beforeText: strings.articlesReadTextStart,
-        afterText: strings.articlesReadWeeklyTextEnd,
-        modal: {
-            linkText: "More details on your activty",
-            linkTo: "user_dashboard",
-            size: 90,
-        }
-    };
-
-    const weeklyWordsTranslated = {
-        icon: "words",
-        iconText: strings.iconTextWeeklyWordsTranslated,
-        value: weeklyTranslatedWords,
-        beforeText: strings.wordsTranslatedTextStart,
-        afterText: strings.wordsTextWeeklyEnd,
-        modal: {
-            linkText: "More details on translation history",
-            linkTo: "history",
-            size: 90,
-        }
-    };
-
-    const weeklyWordsPracticed = {
-        icon: "words",
-        iconText: strings.iconTextWeeklyWordsPracticed,
-        value: 16,
-        beforeText: strings.wordsPracticedTextStart,
-        afterText: strings.wordsTextWeeklyEnd,
-        modal: {
-            linkText: "More details on words progress",
-            linkTo: "words",
-            size: 90,
-        }
-    };
-
-    const weeklyStreak = {
-        icon: "headerStreak",
-        iconText: strings.iconTextWeeklyStreak,
-        value: totalWeeksPracticed,
-        beforeText: strings.streakTextStart,
-        afterText: strings.streakTextEnd,
-        modal: {
-            linkText: "More  details on your acticity",
-            linkTo: "user_dashboard",
-            size: 90,
-        }
-    };
+    const weeklyArticlesRead = getWeeklyMinutesRead(weeklyReadingMinutes);
+    const weeklyWordsTranslated = getWeeklyWordsTranslated(weeklyTranslated);
+    const weeklyWordsPracticed = getWeeklyWordsPracticed();
+    const weeklyStreak = getWeeklyStreak(weeksPracticed)
 
     const weeklyProgressOverview = [
         weeklyArticlesRead,
@@ -279,43 +271,11 @@ export function getWeeklyProgressOverviewItems({weeklyTranslated, weeklyReadingM
 
 }
 
-
-export function getExerciseProgressSummary({totalInLearning, totalLearned,weeksPracticed}){
-    const totalPracticedWords = totalInLearning;
-    const totalLearnedWords = totalLearned;
-    const totalWeeksPracticed = weeksPracticed;
-    
-    const totalWordsPracticed = {
-        icon: "words",
-        iconText: strings.iconTextTotalWordsPracticed,
-        value: totalPracticedWords,
-        beforeText: strings.wordsPracticedTextStart,
-        afterText: strings.wordsTextTotalEnd,
-    };
-    
-    const totalWordsLearned = {
-        icon: "words",
-        iconText: strings.iconTextTotalWordsLearned,
-        value: totalLearnedWords,
-        beforeText: strings.wordsLearnedTextStart,
-        afterText: strings.wordsTextTotalEnd,
-    };
-
-    const weeklyStreak = {
-        icon: "headerStreak",
-        iconText: strings.iconTextWeeklyStreak,
-        value: totalWeeksPracticed,
-        beforeText: strings.streakTextStart,
-        afterText: strings.streakTextEnd,
-    };
-
-    const weeklyWordsPracticed = {
-        icon: "words",
-        iconText: strings.iconTextWeeklyWordsPracticed,
-        value: 16,
-        beforeText: strings.wordsPracticedTextStart,
-        afterText: strings.wordsTextWeeklyEnd,
-    };
+export function getExerciseProgressSummary({totalInLearning, totalLearned, weeksPracticed}){
+        const totalWordsPracticed = getTotalWordsPracticed(totalInLearning);
+    const totalWordsLearned = getTotalWordsLearned(totalLearned)
+    const weeklyStreak = getWeeklyStreak(weeksPracticed);
+    const weeklyWordsPracticed = getWeeklyWordsPracticed();
 
     const exerciseProgressSummary = [
         totalWordsPracticed,
