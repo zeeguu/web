@@ -245,10 +245,11 @@ export function getTotalWordsPracticed(totalInLearning){
   }
 
   export function getWeeklyWordsPracticed(){
+    const value = 1;
     const weeklyWordsPracticed = {
         icon: "words",
         iconText: strings.iconTextWeeklyWordsPracticed,
-        value: 28,
+        value: value,
         beforeText: strings.wordsPracticedTextStart,
         afterText: (value === 1 ? strings.wordsTextWeeklyEndSingle : strings.wordsTextWeeklyEnd) + (value>0 ? " " + strings.positiveFeedbackMsg4 : ""),
         modal: {
