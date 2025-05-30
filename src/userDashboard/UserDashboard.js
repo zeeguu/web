@@ -24,6 +24,7 @@ import * as s from "./userDashboard_Styled/UserDashboard.sc";
 import { setTitle } from "../assorted/setTitle";
 import strings from "../i18n/definitions";
 import { APIContext } from "../contexts/APIContext";
+import { set } from "date-fns";
 
 export default function UserDashboard() {
   const api = useContext(APIContext);
@@ -42,7 +43,7 @@ export default function UserDashboard() {
     useState(null);
   const [monthlyExerciseAndReadingTimes, setMonthlyExerciseAndReadingTimes] =
     useState({});
-  const [totalInLearning, setTotalInLearning] = useState(null); //maybe I do not need this one.
+  const [totalInLearning, setTotalInLearning] = useState(null);
   const [totalLearned, setTotalLearned] = useState(null);
   const [weeklyTranslated, setWeeklyTranslated] = useState(null);
   const [totalTranslated, setTotalTranslated] = useState(null);
@@ -135,11 +136,14 @@ export default function UserDashboard() {
       setWeeklyReadingMinutes(calculateWeeklyReadingMinutes(activity.reading));
     });
 
-    api.getBookmarksCountByLevel((count) => {
-      console.log("THIS IS THE GETBOOKMARKSCOUNTBYLEVEL result:", count);
-      setTotalInLearning(count);
+    api.getAllScheduledBookmarks(false, (bookmarks) => {
+      setTotalInLearning(bookmarks.length);
     });
 
+    api.totalLearnedBookmarks((totalLearnedCount) => {
+      console.log("Johanna: total learned count", totalLearnedCount);
+      setTotalLearned(totalLearnedCount);
+    });
 
     api.totalLearnedBookmarks((totalLearnedCount) => {
       setTotalLearned(totalLearnedCount);

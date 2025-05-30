@@ -25,6 +25,7 @@ export default function ReadingHistory() {
 
   useEffect(() => {
     api.getBookmarksByDay((bookmarks_by_day) => {
+      console.log("bookmarks_by_day (JOHANNA)", bookmarks_by_day);
       setWordsByDay(bookmarks_by_day);
     });
     setTitle(strings.titleTranslationHistory);
