@@ -24,8 +24,7 @@ import SessionStorage from "./assorted/SessionStorage";
 import useRedirectLink from "./hooks/useRedirectLink";
 import LoadingAnimation from "./components/LoadingAnimation";
 import TopBar from "./components/TopNav/TopBar";
-import {getWeeklyTranslatedWordsTopBar, calculateWeeklyReadingMinutes} from "./utils/progressTracking/ProgressOverviewItems";
-import { countConsecutivePracticeWeeks } from "./userDashboard/helpers.js";
+import {getWeeklyTranslatedWordsTopBar, calculateWeeklyReadingMinutes, countConsecutivePracticeWeeks} from "./utils/progressTracking/ProgressOverviewItems";
 
 function App() {
   const [api] = useState(new Zeeguu_API(API_ENDPOINT));
