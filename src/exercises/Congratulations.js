@@ -17,7 +17,7 @@ import { APIContext } from "../contexts/APIContext";
 import { UserContext } from "../contexts/UserContext";
 import { ExercisesCounterContext } from "./ExercisesCounterContext";
 import  ExerciseProgressSummary  from "./ExercisesProgressSummary";
-import { countConsecutivePracticeWeeks } from "../userDashboard/helpers";
+import { countConsecutivePracticeWeeks } from "../utils/progressTracking/ProgressOverviewItems";
 
 export default function Congratulations({
   articleID,

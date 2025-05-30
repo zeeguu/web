@@ -18,13 +18,12 @@ import {
   getBarGraphData,
   calculateCountPerMonth_Activity,
 } from "./userdashboard_Graphs/dataFormat/ReadingAndExercisesTimeDataFormat";
-import {getWeeklyTranslatedWordsCount, calculateTotalReadingMinutes, calculateWeeklyReadingMinutes} from "../utils/progressTracking/ProgressOverviewItems"
+import {getWeeklyTranslatedWordsCount, calculateTotalReadingMinutes, calculateWeeklyReadingMinutes, countConsecutivePracticeWeeks} from "../utils/progressTracking/ProgressOverviewItems"
 import UserDashboardTop from "./userDashboard_Top/UserDashboardTop";
 import * as s from "./userDashboard_Styled/UserDashboard.sc";
 import { setTitle } from "../assorted/setTitle";
 import strings from "../i18n/definitions";
 import { APIContext } from "../contexts/APIContext";
-import {countConsecutivePracticeWeeks} from "./helpers";
 
 export default function UserDashboard() {
   const api = useContext(APIContext);
