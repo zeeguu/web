@@ -132,7 +132,7 @@ export function getWeeklyTranslatedWordsCount(data){
         iconText: strings.iconTextTotalArticles,
         value: totalMinutesRead,
         beforeText: strings.articlesReadTextStart,
-        afterText: strings.articlesReadTotalTextEnd,
+        afterText: (totalMinutesRead === 1 ? strings.articlesReadTotalTextEndSingle : strings.articlesReadTotalTextEnd) + (totalMinutesRead>0 ? " " + strings.positiveFeedbackMsg1 : ""),
         modal: {
             linkText: "More details on your activty",
             linkTo: "user_dashboard",
@@ -149,7 +149,7 @@ export function getWeeklyTranslatedWordsCount(data){
         iconText: strings.iconTextTotalWordsTranslated,
         value: totalTranslatedWords,
         beforeText: strings.wordsTranslatedTextStart,
-        afterText: strings.wordsTextTotalEnd,
+        afterText: (totalTranslatedWords === 1 ? strings.wordsTextWeeklyEndSingle : strings.wordsTextTotalEnd) + (totalTranslatedWords>0 ? " " + strings.positiveFeedbackMsg2 : ""),
         modal: {
             linkText: "More details on translation history",
             linkTo: "history",
@@ -166,7 +166,7 @@ export function getTotalWordsPracticed(totalInLearning){
         iconText: strings.iconTextTotalWordsPracticed,
         value: totalPracticedWords,
         beforeText: strings.wordsPracticedTextStart,
-        afterText: strings.wordsTextTotalEnd,
+        afterText: (totalPracticedWords === 1 ? strings.wordsTextTotalEndSingle : strings.wordsTextTotalEnd) + (totalPracticedWords>0 ? " " + strings.positiveFeedbackMsg3 : ""),
         modal: {
             linkText: "More details on progress for practiced words",
             linkTo: "words",
@@ -183,7 +183,7 @@ export function getTotalWordsPracticed(totalInLearning){
         iconText: strings.iconTextTotalWordsLearned,
         value: totalLearnedWords,
         beforeText: strings.wordsLearnedTextStart,
-        afterText: strings.wordsTextTotalEnd,
+        afterText: (totalLearnedWords === 1 ? strings.wordsTextTotalEndSingle : strings.wordsTextTotalEnd) + (totalLearnedWords>0 ? " " + strings.positiveFeedbackMsg4 : ""),
         modal: {
             linkText: "More details on translation history",
             linkTo: "words/learned",
@@ -200,7 +200,7 @@ export function getTotalWordsPracticed(totalInLearning){
         iconText: strings.iconTextWeeklyArticles,
         value: weeklyMinutesRead,
         beforeText: strings.articlesReadTextStart,
-        afterText: strings.articlesReadWeeklyTextEnd,
+        afterText: (weeklyMinutesRead === 1 ? strings.articlesReadWeeklyTextEndSingle : strings.articlesReadWeeklyTextEnd) + (weeklyMinutesRead>0 ? " " + strings.positiveFeedbackMsg1 : ""),
         modal: {
             linkText: "More details on your activity",
             linkTo: "user_dashboard",
@@ -217,7 +217,7 @@ export function getTotalWordsPracticed(totalInLearning){
         iconText: strings.iconTextWeeklyWordsTranslated,
         value: weeklyWordsTranslated,
         beforeText: strings.wordsTranslatedTextStart,
-        afterText: strings.wordsTextWeeklyEnd,
+        afterText: (weeklyWordsTranslated === 1 ? strings.wordsTextWeeklyEndSingle : strings.wordsTextWeeklyEnd) + (weeklyWordsTranslated>0 ? " " + strings.positiveFeedbackMsg2 : ""),
         modal: {
             linkText: "More details on translation history",
             linkTo: "history",
@@ -233,8 +233,8 @@ export function getTotalWordsPracticed(totalInLearning){
         icon: "headerStreak",
         iconText: strings.iconTextWeeklyStreak,
         value: weeklyStreak,
-        beforeText: strings.streakTextStart,
-        afterText: strings.streakTextEnd,
+        beforeText: (weeklyStreak === 1 ? strings.streakTextStartSingle : strings.streakTextStart),
+        afterText: (weeklyStreak === 1 ? strings.streakTextEndSingle : strings.streakTextEnd) + (weeklyStreak>0 ? " " + strings.positiveFeedbackMsg3 : ""),
         modal: {
             linkText: "More details on your activity",
             linkTo: "user_dashboard",
@@ -250,7 +250,7 @@ export function getTotalWordsPracticed(totalInLearning){
         iconText: strings.iconTextWeeklyWordsPracticed,
         value: 28,
         beforeText: strings.wordsPracticedTextStart,
-        afterText: strings.wordsTextWeeklyEnd,
+        afterText: (value === 1 ? strings.wordsTextWeeklyEndSingle : strings.wordsTextWeeklyEnd) + (value>0 ? " " + strings.positiveFeedbackMsg4 : ""),
         modal: {
             linkText: "More details on translation history",
             linkTo: "history",

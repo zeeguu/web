@@ -86,18 +86,32 @@ let strings = new LocalizedStrings(
       iconTextTotalWordsLearned: "Words learned",
 
       articlesReadTextStart: "You have read for",
-      articlesReadWeeklyTextEnd: "minutes this week. Keep up the good work!",
-      articlesReadTotalTextEnd: "minutes in total since you started using Zeeguu. You are doing good!",
+      articlesReadWeeklyTextEnd: "minutes this week.",
+      articlesReadWeeklyTextEndSingle: "minute this week.",
+      articlesReadTotalTextEnd: "minutes in total since you started using Zeeguu.",
+      articlesReadTotalTextEndSingle: "minute in total since you started using Zeeguu.",
+
 
       wordsTranslatedTextStart: "You have translated",
       wordsPracticedTextStart: "You have practiced",
       wordsLearnedTextStart: "You have learned",
 
-      wordsTextWeeklyEnd: "words this week. Awesome work!",
+      wordsTextWeeklyEnd: "words this week.",
+      wordsTextWeeklyEndSingle: "word this week.",
       wordsTextTotalEnd: "words in total since you started using Zeeguu",
+      wordsTextTotalEndSingle: "word in total since you started using Zeeguu",
+
 
       streakTextStart: "You have practiced every week for",
-      streakTextEnd: "weeks straight. Great job!",
+      streakTextStartSingle: "You have practiced for",
+      streakTextEnd: "weeks straight.",
+      streakTextEndSingle: "week straight.",
+
+      //Positive feedback
+      positiveFeedbackMsg1: "You are doing great!",
+      positiveFeedbackMsg2: "Keep up the good work!",
+      positiveFeedbackMsg3: "You are on the right track!",
+      positiveFeedbackMsg4: "You are making progress!",
 
       //CreateAccount
       nameIsRequired: "Name is required.",
