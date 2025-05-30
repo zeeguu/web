@@ -159,8 +159,10 @@ export function getWeeklyTranslatedWordsCount(data){
     return totalWordsTranslated;
   }
 
-export function getTotalWordsPracticed(totalInLearning){
-    const totalPracticedWords = totalInLearning;
+export function getTotalWordsPracticed(totalInLearning, totalLearned){
+  console.log("JOHANNA: getTotalWordsPracticed", totalInLearning, totalLearned);
+    const totalPracticedWords = totalInLearning + totalLearned;
+    console.log("JOHANNA: totalPracticedWords blabla", totalPracticedWords);
     const totalWordsPracticed = {
         icon: "words",
         iconText: strings.iconTextTotalWordsPracticed,
@@ -282,7 +284,7 @@ export function getTotalWordsPracticed(totalInLearning){
     const totalWordsLearned = getTotalWordsLearned(totalLearned);
     const totalArticlesRead = getTotalMinutesRead(totalReadingMinutes);
     const totalWordsTranslated = getTotalWordsTranslated(totalTranslated);
-    const totalWordsPracticed = getTotalWordsPracticed(totalInLearning);
+    const totalWordsPracticed = getTotalWordsPracticed(totalInLearning, totalLearned);
 
     const totalProgressOverview = [
         totalArticlesRead,
