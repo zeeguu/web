@@ -117,12 +117,11 @@ export default function Congratulations({
           </h1>
         </CenteredColumn>
          <CenteredColumn className="centeredColumn">
-        <div style={{ marginLeft: "0.5em"}}>
-       
-          <p>
+        <div style={{ marginLeft: "1em", display: "flex", flexDirection: "column", justifyContent:"center" }}>
+          <p style={{ textAlign: "center" }}>
             You have just done <b>{totalPracticedBookmarksInSession}</b>{" "}
             
-            {Pluralize.exercise(totalPracticedBookmarksInSession)} in <b>{timeToHumanReadable(checkpointTime)}</b>. Here are some hightlights of your current progress you have made.
+            {Pluralize.exercise(totalPracticedBookmarksInSession)} in <b>{timeToHumanReadable(checkpointTime)}</b>. Here are some highlights of your current progress you have made.
             {articleID && (
               <p>
                 These words are now part of your vocabulary exercises, using spaced repetition and smart learning

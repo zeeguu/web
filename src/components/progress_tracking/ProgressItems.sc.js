@@ -70,8 +70,8 @@ const ProgressDescription = styled.div`
 const ProgressItemsContainer = styled.div`
   display: flex;
   flex-wrap: wrap;
-  gap: 1rem;
-  justify-content: left;
+  gap: 2rem;
+  justify-content: center;
   padding: 1em;
   `;
 

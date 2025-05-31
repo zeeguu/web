@@ -2,13 +2,19 @@ import Word from "./Word";
 import { ContentOnRow } from "../reader/ArticleReader.sc";
 import strings from "../i18n/definitions";
 import Infobox from "../components/Infobox";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext  } from "react";
 import { tokenize } from "../utils/text/preprocessing";
 import ExplainBookmarkSelectionModal from "../components/ExplainBookmarkSelectionModal";
-import { MAX_BOOKMARKS_TO_STUDY_PER_ARTICLE } from "../exercises/ExerciseConstants";
+import { MAX_BOOKMARKS_TO_STUDY_PER_ARTICLE } from "../../exercises/ExerciseConstants";
 import { USER_WORD_PREFERENCE } from "./userBookmarkPreferences";
 import InfoBoxWordsToReview from "./InfoBoxWordsToReview";
 import ToggleEditReviewWords from "./ToggleEditReviewWords";
+import ExerciseProgressSummary from "../../exercises/ExerciseProgressSummary";
+import { APIContext } from "../contexts/APIContext";
+import { UserContext } from "../contexts/UserContext";
+import { ExercisesCounterContext } from "./ExercisesCounterContext";
+import { removeArrayDuplicates } from "../utils/basic/arrays";
+import { countConsecutivePracticeWeeks } from "../utils/progressTracking/ProgressOverviewItems";
 
 export default function WordsToReview({
   words,
@@ -16,6 +22,8 @@ export default function WordsToReview({
   deleteBookmark,
   notifyWordChanged,
   source,
+  incorrectBookmarks,
+  correctBookmarks,
 }) {
   const totalWordsTranslated = words.length;
   const [inEditMode, setInEditMode] = useState(false);
@@ -23,6 +31,10 @@ export default function WordsToReview({
   const [wordsExcludedForExercises, setWordsExcludedForExercises] = useState(
     [],
   );
+  const [totalInLearning, setTotalInLearning] = useState(null);
+  const [totalLearned, setTotalLearned] = useState(null);
+  const [weeksPracticed, setWeeksPracticed] = useState(0);
+  const [username, setUsername] = useState();
 
   // how many of the words were set by zeeguu
   const [wordsSelectedByZeeguu_Counter, setWordsSelectedByZeeguu_Counter] =
@@ -31,6 +43,33 @@ export default function WordsToReview({
   const [wordsExpressions, setWordsExpressions] = useState([]);
   const [showExplainWordSelectionModal, setShowExplainWordSelectionModal] =
     useState(false);
+  const [totalBookmarksReviewed, setTotalBookmarksReviewed] = useState();
+  const { updateExercisesCounter } = useContext(ExercisesCounterContext);
+  const [incorrectBookmarksToDisplay, setIncorrectBookmarksToDisplay] = useState(
+    removeArrayDuplicates(incorrectBookmarks),
+  );
+    const api = useContext(APIContext);
+    const { userDetails } = useContext(UserContext);
+    const [correctBookmarksToDisplay, setCorrectBookmarksToDisplay] = useState(removeArrayDuplicates(correctBookmarks));
+  
+    useEffect(() => {
+      setUsername(userDetails.name);
+      setTotalBookmarksReviewed(incorrectBookmarksToDisplay.length + correctBookmarksToDisplay.length);
+      api.logUserActivity(api.COMPLETED_EXERCISES, articleInfo.id, "", source);
+      updateExercisesCounter();
+      api.getBookmarksCountByLevel((count) => {
+        setTotalInLearning(count);
+      });
+      api.totalLearnedBookmarks((totalLearnedCount) =>{
+        setTotalLearned(totalLearnedCount)
+      });
+      api.getUserActivityByDay((activity) => {
+        setWeeksPracticed(countConsecutivePracticeWeeks(activity));
+      });
+      
+      // eslint-disable-next-line
+    }, []);
+  
 
   useEffect(() => {
     let newWordsForExercises = [];
@@ -123,6 +162,12 @@ export default function WordsToReview({
           }
         />
       )}
+
+      <ExerciseProgressSummary
+          totalInLearning={totalInLearning}
+          totalLearned={totalLearned}
+          weeksPracticed={weeksPracticed}
+        />
       {wordsForExercises.length > 0 && (
         <>
           <h3>You will see these words in your exercises:</h3>

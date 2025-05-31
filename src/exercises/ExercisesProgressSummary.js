@@ -32,7 +32,7 @@ export default function ExercisesProgressSummary({onHandle, totalInLearning, tot
     
     return (
         <s.ProgressItemsContainer >
-        {randomItems.map((item, index) => (
+        {randomItems.map((item) => (
           <s.ProgressOverviewItem
             style={{ cursor: 'default', 
             pointerEvents: 'none' }}
