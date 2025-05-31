@@ -5,14 +5,14 @@ import Infobox from "../components/Infobox";
 import { useState, useEffect, useContext  } from "react";
 import { tokenize } from "../utils/text/preprocessing";
 import ExplainBookmarkSelectionModal from "../components/ExplainBookmarkSelectionModal";
-import { MAX_BOOKMARKS_TO_STUDY_PER_ARTICLE } from "../../exercises/ExerciseConstants";
+import { MAX_BOOKMARKS_TO_STUDY_PER_ARTICLE } from "../exercises/ExerciseConstants";
 import { USER_WORD_PREFERENCE } from "./userBookmarkPreferences";
 import InfoBoxWordsToReview from "./InfoBoxWordsToReview";
 import ToggleEditReviewWords from "./ToggleEditReviewWords";
-import ExerciseProgressSummary from "../../exercises/ExerciseProgressSummary";
+import ExerciseProgressSummary from "../exercises/ExercisesProgressSummary";
 import { APIContext } from "../contexts/APIContext";
 import { UserContext } from "../contexts/UserContext";
-import { ExercisesCounterContext } from "./ExercisesCounterContext";
+import { ExercisesCounterContext } from "../exercises/ExercisesCounterContext";
 import { removeArrayDuplicates } from "../utils/basic/arrays";
 import { countConsecutivePracticeWeeks } from "../utils/progressTracking/ProgressOverviewItems";
 
