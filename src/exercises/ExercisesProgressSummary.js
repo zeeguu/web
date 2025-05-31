@@ -8,7 +8,7 @@ export default function ExercisesProgressSummary({onHandle, totalInLearning, tot
     const [randomItems, setRandomItems] = useState([]);
 
     function selectTwoRandomItems(items){
-      const nonZeroItems = items.filter(item => item.value !== 0);
+      const nonZeroItems = items.filter(item => item.value > 0);
 
       if (nonZeroItems.length<=2){
         return nonZeroItems;
