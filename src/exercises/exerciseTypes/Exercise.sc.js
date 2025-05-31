@@ -424,6 +424,22 @@ let CenteredRow = styled.div`
   }
 `;
 
+let CenteredWordRow = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  flex-wrap: wrap; 
+  justify-content: center;
+  width: 100%;
+  &.margin-top-auto {
+    margin-top: auto;
+  }
+  @media (max-width: 800px) {
+    flex-wrap: wrap;
+    justify-content: flex-start;
+  }
+`;
+
 let CenteredRowTall = styled.div`
   display: flex;
   flex-direction: row;
@@ -475,6 +491,7 @@ export {
   ButtonRow,
   CenteredRow,
   CenteredRowTall,
+  CenteredWordRow,
   LeftFeedbackButton,
   RightFeedbackButton,
   EditSpeakButtonHolder,
