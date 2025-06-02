@@ -1,6 +1,5 @@
 import Modal from "../modal_shared/Modal.js";
 import Header from "../modal_shared/Header.sc.js";
-import Heading from "../modal_shared/Heading.sc.js";
 import * as s from "./ProgressTrackingModal.sc.js";
 import NavIcon from "../MainNav/NavIcon.js";
 import {zeeguuOrange} from "../colors.js";
@@ -35,9 +34,7 @@ export default function ProgressModal({
             </Header>
             <s.ModalContent>
             <s.IconAndIntegerRow>
-            {modalKey === "articleMinutesTopBar" ? 
-        <PieChartForModal />
-      : <NavIcon name={iconName} size={size} color={zeeguuOrange}/> }
+            <NavIcon name={iconName} size={size} color={zeeguuOrange}/>
                {modalKey !== "articleMinutesTopBar" && (<s.Value>{value}</s.Value>)}
                 <h3>{unit}</h3>
                 </s.IconAndIntegerRow>
