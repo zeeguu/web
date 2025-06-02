@@ -8,6 +8,12 @@ import { getSessionFromCookies } from "../../utils/cookies/userInfo";
 import Zeeguu_API from "../../api/Zeeguu_API";
 import { API_ENDPOINT } from "../../appConstants";
 
+const DEFAULT_TOPBAR_PREFS = [
+  "wordsPracticedTopBar",
+  "articleMinutesTopBar",
+  "streakTopBar"
+];
+
 const modalData = {
   articleMinutesTopBar: {
     linkText: "See statistics on activty",
@@ -39,8 +45,8 @@ export default function TopBar({weeklyTranslated, weeklyReadingMinutes,weeksPrac
   
   const [whichItems, setWhichItems] = useState([]);
   console.log("whichItems", whichItems);
-  const savedItems = JSON.parse(localStorage.getItem("topBarPrefs") || "[]");
-
+  const savedItems = JSON.parse(localStorage.getItem("topBarPrefs") || "null") || DEFAULT_TOPBAR_PREFS;
+  
   const handleOpenModal = (key, item) => {
     const modalDefaults = modalData[key] || {};
     setShowModalData({
