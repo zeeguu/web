@@ -35,9 +35,7 @@ export function getTotalMinutesRead(totalReadingMinutes){
   }
 
 export function getTotalWordsPracticed(totalInLearning, totalLearned){
-  console.log("JOHANNA: getTotalWordsPracticed", totalInLearning, totalLearned);
     const totalPracticedWords = totalInLearning + totalLearned;
-    console.log("JOHANNA: totalPracticedWords blabla", totalPracticedWords);
     const totalWordsPracticed = {
         icon: "words",
         iconText: strings.iconTextTotalWordsPracticed,
@@ -192,17 +190,26 @@ export function getWeeklyProgressOverviewItems({weeklyTranslated, weeklyReadingM
 
 }
 
-export function getExerciseProgressSummary({totalInLearning, totalLearned, weeksPracticed}){
+export function getExerciseProgressSummary({totalInLearning, totalTranslated, totalLearned, totalReadingMinutes, weeksPracticed, weeklyMinutesRead, weeklyTranslated}){
     const totalWordsPracticed = getTotalWordsPracticed(totalInLearning);
     const totalWordsLearned = getTotalWordsLearned(totalLearned)
     const weeklyStreak = getWeeklyStreak(weeksPracticed);
     const weeklyWordsPracticed = getWeeklyWordsPracticed();
+    const totalWordsTranslated = getTotalWordsTranslated(totalTranslated);
+    const totalMinutesRead = getTotalMinutesRead(totalReadingMinutes);
+    const weeklyReadingMinutes = getWeeklyMinutesRead(weeklyMinutesRead);
+    const weeklyTranslatedWords = getWeeklyWordsTranslated(weeklyTranslated);
+
 
     const exerciseProgressSummary = [
         totalWordsPracticed,
         totalWordsLearned,
+        totalWordsTranslated,
+        totalMinutesRead,
         weeklyStreak,
         weeklyWordsPracticed,
+        weeklyReadingMinutes,
+        weeklyTranslatedWords
     ];
 
     return{
