@@ -4,6 +4,7 @@ import { BrowserRouter } from "react-router-dom";
 import { SystemLanguagesContext } from "./contexts/SystemLanguagesContext";
 import { UserContext } from "./contexts/UserContext";
 import { RoutingContext } from "./contexts/RoutingContext";
+import { ProgressContext } from "./contexts/ProgressContext";
 import LocalStorage from "./assorted/LocalStorage";
 import { APIContext } from "./contexts/APIContext";
 import Zeeguu_API from "./api/Zeeguu_API";
@@ -24,7 +25,7 @@ import SessionStorage from "./assorted/SessionStorage";
 import useRedirectLink from "./hooks/useRedirectLink";
 import LoadingAnimation from "./components/LoadingAnimation";
 import TopBar from "./components/TopNav/TopBar";
-import {getWeeklyTranslatedWordsTopBar, calculateWeeklyReadingMinutes, countConsecutivePracticeWeeks} from "./utils/progressTracking/ProgressOverviewItems";
+import { calculateWeeklyReadingMinutes, getWeeklyTranslatedWordsTopBar, countConsecutivePracticeWeeks } from "./utils/progressTracking/progressHelpers";
 
 function App() {
   const [api] = useState(new Zeeguu_API(API_ENDPOINT));
@@ -59,9 +60,7 @@ function App() {
     const fetchData = () => {
     api.getBookmarksCountsByDate((counts) => {
       const thisWeek = getWeeklyTranslatedWordsTopBar(counts);
-      console.log("thisWeek", thisWeek)
       const weeklyTotal = thisWeek.reduce((sum, day) => sum + day.count, 0);
-      console.log("weeklyTotal", weeklyTotal)
       setWeeklyTranslated(weeklyTotal);
     });
   
@@ -212,6 +211,13 @@ function App() {
                 logoutMethod: logout,
               }}
             >
+            <ProgressContext.Provider
+              value={{ 
+                weeklyTranslated,
+                weeklyReadingMinutes,
+                weeksPracticed,
+              }}
+              >
               <APIContext.Provider value={api}>
                 {/* Routing*/}
                 <TopBar weeklyTranslated={weeklyTranslated} weeklyReadingMinutes={weeklyReadingMinutes} weeksPracticed={weeksPracticed}/>
@@ -229,6 +235,7 @@ function App() {
                   theme="light"
                 />
               </APIContext.Provider>
+              </ProgressContext.Provider>
             </UserContext.Provider>
           </RoutingContext.Provider>
         </BrowserRouter>

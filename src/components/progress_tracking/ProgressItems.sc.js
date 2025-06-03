@@ -75,4 +75,26 @@ const ProgressItemsContainer = styled.div`
   padding: 1em;
   `;
 
-export {ProgressDescription, Label, Value, Icon, IconAndValue, IconWithValueAndLabel, ProgressOverviewItem, ProgressItemsContainer};
+  const ProgressOverviewContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: 70%;
+  padding-bottom: 1em;
+  margin-left: 10em;
+
+  @media (max-width: 768px) {
+  width: 80%;
+  margin-left: 1.5em;
+  }
+`;
+
+const ProgressOverviewSection = styled.div`
+  padding: 1em;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2em;
+  width: 100;
+  justify-content: space-evenly;
+`;
+
+export {ProgressDescription, Label, Value, Icon, IconAndValue, IconWithValueAndLabel, ProgressOverviewItem, ProgressItemsContainer, ProgressOverviewContainer, ProgressOverviewSection};

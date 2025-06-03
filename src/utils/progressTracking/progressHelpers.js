@@ -1,0 +1,124 @@
+export function countConsecutivePracticeWeeks(activity) {
+  if (!activity || !Array.isArray(activity.reading) || !Array.isArray(activity.exercises)) {
+    return 0;
+  }
+
+  // Collect all unique week start dates (YYYY-MM-DD, Monday)
+  const practicedWeeks = new Set();
+  const allEntries = [...activity.reading, ...activity.exercises];
+
+  allEntries.forEach(({ date, seconds }) => {
+    if (seconds > 0) {
+      const d = new Date(date);
+      d.setHours(0, 0, 0, 0);
+      // Find the Monday of this week
+      const monday = new Date(d);
+      monday.setDate(d.getDate() - d.getDay());
+      monday.setHours(0, 0, 0, 0);
+      practicedWeeks.add(monday.toISOString().slice(0, 10));
+    }
+  });
+
+  if (practicedWeeks.size === 0) return 0;
+
+  // Get this week's Monday (start of the week)
+  const now = new Date();
+  now.setHours(0, 0, 0, 0);
+  const thisMonday = new Date(now);
+  thisMonday.setDate(now.getDate() - now.getDay());
+  thisMonday.setHours(0, 0, 0, 0);
+
+  // Build streak backwards from this week
+  let streak = 0;
+  let checkMonday = new Date(thisMonday);
+
+  while (practicedWeeks.has(checkMonday.toISOString().slice(0, 10))) {
+    streak++;
+    // Go to previous week
+    checkMonday.setDate(checkMonday.getDate() - 7);
+  }
+
+  return streak;
+}
+
+export function getCurrentWeekRange(){
+     //show current date eg Wed May 14 2025 20:00:39 GMT+0200 (centraleuropeisk sommartid)
+    const now = new Date();
+
+    //day of week wednesday = 3
+    const dayOfWeek = now.getDay();
+
+    //danish way. Now wed = 2
+    const shiftNumOfDay = (dayOfWeek + 6) % 7;
+
+    //sets startOfWeek to
+    //wed = 3
+    const startOfWeek = new Date(now);
+    //3-2 = 1 e.g monday -> start of week = monday
+    startOfWeek.setDate(now.getDate()- shiftNumOfDay)
+    startOfWeek.setHours(0, 0, 0, 0);
+
+    const endOfWeek = new Date(startOfWeek);
+    endOfWeek.setDate(startOfWeek.getDate()+6);
+    endOfWeek.setHours(23, 59, 59, 999);
+
+    return {startOfWeek, endOfWeek}
+}
+
+export function calculateWeeklyReadingMinutes(readingActivity){
+    const { startOfWeek, endOfWeek } = getCurrentWeekRange();
+    const weeklyReadingSeconds = readingActivity.reduce((sum, entry) => {
+        const entryDate = new Date(entry.date);
+        entryDate.setHours(0, 0, 0, 0); // normalize to midnight
+
+        if (entryDate >= startOfWeek && entryDate <= endOfWeek) {
+            return sum + entry.seconds;
+        }
+        return sum;
+    }, 0);
+
+    return Math.floor(weeklyReadingSeconds / 60);
+}
+
+export function calculateTotalReadingMinutes(readingActivity){
+    const totalReadingSeconds = readingActivity.reduce(
+        (sum, entry) => sum + entry.seconds,
+        0
+    );
+    return Math.floor(totalReadingSeconds / 60);
+};
+
+export function getWeeklyTranslatedWordsCount(data){
+    //converts the Map to an array of objects     
+    const dataArray = Array.from(data, ([date, count]) => ({ date, count }));
+    const {startOfWeek, endOfWeek} = getCurrentWeekRange();
+   
+    return dataArray.filter(({date}) => {
+      const dayDate = new Date(date);
+      return dayDate >= startOfWeek && dayDate <= endOfWeek; 
+    });
+  }
+
+
+export function getWeeklyTranslatedWordsTopBar(counts) {
+    const currentDate = new Date();
+    const startOfWeek = new Date(currentDate);
+    startOfWeek.setDate(currentDate.getDate() - currentDate.getDay()); 
+    const endOfWeek = new Date(startOfWeek);
+    endOfWeek.setDate(startOfWeek.getDate() + 6); 
+  
+    return counts
+      .filter((item) => {
+        const itemDate = new Date(item.date);
+        return (
+          itemDate >= startOfWeek &&
+          itemDate <= endOfWeek &&
+          item.count !== undefined &&
+          !isNaN(item.count)
+        );
+      })
+      .map((item) => ({
+        ...item,
+        count: item.count || 0, 
+      }));
+  };

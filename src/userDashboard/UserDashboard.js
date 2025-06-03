@@ -18,7 +18,7 @@ import {
   getBarGraphData,
   calculateCountPerMonth_Activity,
 } from "./userdashboard_Graphs/dataFormat/ReadingAndExercisesTimeDataFormat";
-import {getWeeklyTranslatedWordsCount, calculateTotalReadingMinutes, calculateWeeklyReadingMinutes, countConsecutivePracticeWeeks} from "../utils/progressTracking/ProgressOverviewItems"
+import {calculateTotalReadingMinutes} from "../utils/progressTracking/progressHelpers"
 import UserDashboardTop from "./userDashboard_Top/UserDashboardTop";
 import * as s from "./userDashboard_Styled/UserDashboard.sc";
 import { setTitle } from "../assorted/setTitle";
@@ -45,11 +45,8 @@ export default function UserDashboard() {
     useState({});
   const [totalInLearning, setTotalInLearning] = useState(null);
   const [totalLearned, setTotalLearned] = useState(null);
-  const [weeklyTranslated, setWeeklyTranslated] = useState(null);
   const [totalTranslated, setTotalTranslated] = useState(null);
   const [totalReadingMinutes, setTotalReadingMinutes] = useState(null);
-  const [weeklyReadingMinutes, setWeeklyReadingMinutes] = useState(null);
-  const [weeksPracticed, setWeeksPracticed] = useState(0);
 
   function handleChangeReferenceDate(newDate) {
     setReferenceDate(newDate);
@@ -115,10 +112,6 @@ export default function UserDashboard() {
 
       setAllWordsDataPerMonths(calculateCountPerMonth_Words(formatted));
 
-      const thisWeek = getWeeklyTranslatedWordsCount(formatted);
-      const thisWeekTotal = thisWeek.reduce((sum, day) => sum + day.count, 0);
-      setWeeklyTranslated(thisWeekTotal);
-
       const totalTranslatedWOrds = Array.from(formatted.values()).reduce((sum, count) => sum + count, 0);
       setTotalTranslated(totalTranslatedWOrds);
     });
@@ -130,10 +123,7 @@ export default function UserDashboard() {
         calculateCountPerMonth_Activity(activity),
       );
 
-      setWeeksPracticed(countConsecutivePracticeWeeks(activity));
-
       setTotalReadingMinutes(calculateTotalReadingMinutes(activity.reading));
-      setWeeklyReadingMinutes(calculateWeeklyReadingMinutes(activity.reading));
     });
 
     api.getAllScheduledBookmarks(false, (bookmarks) => {
@@ -141,7 +131,6 @@ export default function UserDashboard() {
     });
 
     api.totalLearnedBookmarks((totalLearnedCount) => {
-      console.log("Johanna: total learned count", totalLearnedCount);
       setTotalLearned(totalLearnedCount);
     });
 
@@ -152,7 +141,7 @@ export default function UserDashboard() {
     // eslint-disable-next-line
   }, [activeTab]);
 
-  if (!allWordsData || !dailyExerciseAndReadingTimes || totalLearned == null || weeklyTranslated == null || totalTranslated == null || totalReadingMinutes == null || weeklyReadingMinutes == null) { //|| totalInLearning==null ||  add this when functions work
+  if (!allWordsData || !dailyExerciseAndReadingTimes || totalLearned == null ||  totalTranslated == null || totalReadingMinutes == null) {
     return <LoadingAnimation />;
   }
 
@@ -200,11 +189,8 @@ export default function UserDashboard() {
             <ProgressOverview
             totalInLearning ={totalInLearning}
             totalLearned = {totalLearned}
-            weeklyTranslated = {weeklyTranslated}
             totalTranslated = {totalTranslated}
             totalReadingMinutes = {totalReadingMinutes}
-            weeklyReadingMinutes = {weeklyReadingMinutes}
-            weeksPracticed={weeksPracticed}
             />
           </>
         )}

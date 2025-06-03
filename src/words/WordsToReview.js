@@ -14,7 +14,6 @@ import { APIContext } from "../contexts/APIContext";
 import { UserContext } from "../contexts/UserContext";
 import { ExercisesCounterContext } from "../exercises/ExercisesCounterContext";
 import { removeArrayDuplicates } from "../utils/basic/arrays";
-import { countConsecutivePracticeWeeks } from "../utils/progressTracking/ProgressOverviewItems";
 
 export default function WordsToReview({
   words,
@@ -33,7 +32,7 @@ export default function WordsToReview({
   );
   const [totalInLearning, setTotalInLearning] = useState(null);
   const [totalLearned, setTotalLearned] = useState(null);
-  const [weeksPracticed, setWeeksPracticed] = useState(0);
+  //const [weeksPracticed, setWeeksPracticed] = useState(0);
   const [username, setUsername] = useState();
 
   // how many of the words were set by zeeguu
@@ -62,11 +61,7 @@ export default function WordsToReview({
       });
       api.totalLearnedBookmarks((totalLearnedCount) =>{
         setTotalLearned(totalLearnedCount)
-      });
-      api.getUserActivityByDay((activity) => {
-        setWeeksPracticed(countConsecutivePracticeWeeks(activity));
-      });
-      
+      });      
       // eslint-disable-next-line
     }, []);
   
@@ -166,7 +161,6 @@ export default function WordsToReview({
       <ExerciseProgressSummary
           totalInLearning={totalInLearning}
           totalLearned={totalLearned}
-          weeksPracticed={weeksPracticed}
         />
       {wordsForExercises.length > 0 && (
         <>
