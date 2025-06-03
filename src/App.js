@@ -25,7 +25,7 @@ import SessionStorage from "./assorted/SessionStorage";
 import useRedirectLink from "./hooks/useRedirectLink";
 import LoadingAnimation from "./components/LoadingAnimation";
 import TopBar from "./components/TopNav/TopBar";
-import { calculateWeeklyReadingMinutes, getWeeklyTranslatedWordsTopBar, countConsecutivePracticeWeeks } from "./utils/progressTracking/progressHelpers";
+import { calculateWeeklyReadingMinutes, getWeeklyTranslatedWordsCount, calculateConsecutivePracticeWeeks } from "./utils/progressTracking/progressHelpers";
 
 function App() {
   const [api] = useState(new Zeeguu_API(API_ENDPOINT));
@@ -59,7 +59,7 @@ function App() {
     }
     const fetchData = () => {
     api.getBookmarksCountsByDate((counts) => {
-      const thisWeek = getWeeklyTranslatedWordsTopBar(counts);
+      const thisWeek = getWeeklyTranslatedWordsCount(counts);
       const weeklyTotal = thisWeek.reduce((sum, day) => sum + day.count, 0);
       setWeeklyTranslated(weeklyTotal);
     });
@@ -68,7 +68,7 @@ function App() {
       const readingMinsPerWeek = calculateWeeklyReadingMinutes(activity.reading);
       setWeeklyReadingMinutes(readingMinsPerWeek);
 
-      const weeksPracticed = countConsecutivePracticeWeeks(activity);
+      const weeksPracticed = calculateConsecutivePracticeWeeks(activity);
       setWeeksPracticed(weeksPracticed);
       console.log("weeksPracticed", weeksPracticed);
     });
