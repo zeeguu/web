@@ -1,8 +1,8 @@
 import { Tooltip } from "@mui/material";
 
 export default function WordsToolTip({open, setOpen, value}){
+    if (value.cooling_interval == null) return null;
     
-    console.log("it's open")
     return (
         <Tooltip
             open={open}
@@ -12,11 +12,11 @@ export default function WordsToolTip({open, setOpen, value}){
                 setOpen(false);
             }}
             title={<span>
-                You need to practice this word {
+                You need to get this word correct {
                     value.cooling_interval === 0 
-                    ? "today" 
-                    : `in ${value.cooling_interval} day${value.cooling_interval === 1 ? '' : 's'}`
-                } to get closer to level {value.level}
+                    ? "today " : value.cooling_interval === 1 ? "tomorrow "
+                    : `in ${value.cooling_interval} days `}
+                 to get closer to level {value.level + 1}
             </span>}
         >
             <div></div>
