@@ -12,6 +12,7 @@ export function getTotalMinutesRead(totalReadingMinutes){
             linkText: "More details on your activty",
             linkTo: "user_dashboard?tab=time",
             size: 90,
+            unit: "minutes"
         }
     }
     return totalMinutes;
@@ -29,6 +30,7 @@ export function getTotalMinutesRead(totalReadingMinutes){
             linkText: "More details on translation history",
             linkTo: "history",
             size: 90,
+            unit: "",
         }
     }
     return totalWordsTranslated;
@@ -46,6 +48,7 @@ export function getTotalWordsPracticed(totalInLearning, totalLearned){
             linkText: "More details on progress for practiced words",
             linkTo: "words",
             size: 90,
+            unit: "",
         }
     }
     return totalWordsPracticed;
@@ -63,6 +66,7 @@ export function getTotalWordsLearned(totalLearned){
             linkText: "More details on translation history",
             linkTo: "words/learned",
             size: 90,
+            unit: "",
         }
     }
     return totalWordsLearned;
@@ -80,6 +84,7 @@ export function getTotalWordsLearned(totalLearned){
             linkText: "More details on your activity",
             linkTo: "user_dashboard?tab=time",
             size: 90,
+            unit: "minutes",
         }
     }
     return weeklyArticlesRead
@@ -97,6 +102,7 @@ export function getTotalWordsLearned(totalLearned){
             linkText: "More details on translation history",
             linkTo: "history",
             size: 90,
+            unit: "",
         }
     }
     return weeklyTranslatedWords;
@@ -114,6 +120,7 @@ export function getTotalWordsLearned(totalLearned){
             linkText: "More details on your activity",
             linkTo: "user_dashboard",
             size: 90,
+            unit: "weeks",
         }
     }
     return streakWeekly;
@@ -131,6 +138,7 @@ export function getTotalWordsLearned(totalLearned){
             linkText: "More details on translation history",
             linkTo: "history",
             size: 90,
+            unit: "",
         }
     }
     return weeklyWordsPracticed;

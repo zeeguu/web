@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo, useContext } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { BrowserRouter } from "react-router-dom";
 
 import { SystemLanguagesContext } from "./contexts/SystemLanguagesContext";
@@ -7,7 +7,7 @@ import { RoutingContext } from "./contexts/RoutingContext";
 import LocalStorage from "./assorted/LocalStorage";
 import { APIContext } from "./contexts/APIContext";
 import Zeeguu_API from "./api/Zeeguu_API";
-import { ProggressContext } from "./contexts/ProgressContext";
+import { ProgressProvider } from "./contexts/ProgressContext";
 import useUILanguage from "./assorted/hooks/uiLanguageHook";
 
 import ZeeguuSpeech from "./speech/APIBasedSpeech";
@@ -24,7 +24,6 @@ import SessionStorage from "./assorted/SessionStorage";
 import useRedirectLink from "./hooks/useRedirectLink";
 import LoadingAnimation from "./components/LoadingAnimation";
 import TopBar from "./components/TopNav/TopBar";
-import { calculateWeeklyReadingMinutes, getWeeklyTranslatedWordsCount, calculateConsecutivePracticeWeeks } from "./utils/progressTracking/progressHelpers";
 
 function App() {
   const [api] = useState(new Zeeguu_API(API_ENDPOINT));
@@ -39,41 +38,13 @@ function App() {
   let { handleRedirectLinkOrGoTo } = useRedirectLink();
 
   const [systemLanguages, setSystemLanguages] = useState();
-  const {weeksPracticed, setWeeksPracticed, setWeeklyTranslated, weeklyTranslated, weeklyReadingMinutes, setWeeklyReadingMinutes} = useContext(ProggressContext);
 
   useEffect(() => {
     api.getSystemLanguages((languages) => {
       setSystemLanguages(languages);
     });
   }, [api]);
-  
-  useEffect(() => {
 
-    if (!api.session) {
-      console.log("Not authenticated yet, skipping API calls");
-      return;
-    }
-    const fetchData = () => {
-    api.getBookmarksCountsByDate((counts) => {
-      const thisWeek = getWeeklyTranslatedWordsCount(counts);
-      const weeklyTotal = thisWeek.reduce((sum, day) => sum + day.count, 0);
-      setWeeklyTranslated(weeklyTotal);
-    });
-  
-    api.getUserActivityByDay((activity) => {
-      const readingMinsPerWeek = calculateWeeklyReadingMinutes(activity.reading);
-      setWeeklyReadingMinutes(readingMinsPerWeek);
-
-      const weeksPracticed = calculateConsecutivePracticeWeeks(activity);
-      setWeeksPracticed(weeksPracticed);
-    });
-
-  };
-  fetchData();
-
-  }, [api, api.session, api.logUserActivity, ]);
-
-  console.log("weeklyTranslate", weeklyTranslated )
   // Alphabetically sorted variant of systemLanguages for dropdowns
   const sortedSystemLanguages = useMemo(() => {
     if (!systemLanguages) return null;
@@ -209,7 +180,7 @@ function App() {
             <ProgressProvider>
               <APIContext.Provider value={api}>
                 {/* Routing*/}
-                <TopBar weeklyTranslated={weeklyTranslated} weeklyReadingMinutes={weeklyReadingMinutes} weeksPracticed={weeksPracticed}/>
+                <TopBar/>
                 <MainAppRouter hasExtension={isExtensionAvailable} handleSuccessfulLogIn={handleSuccessfulLogIn} />
                 <ToastContainer
                   position="bottom-right"
