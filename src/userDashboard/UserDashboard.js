@@ -18,7 +18,6 @@ import {
   getBarGraphData,
   calculateCountPerMonth_Activity,
 } from "./userdashboard_Graphs/dataFormat/ReadingAndExercisesTimeDataFormat";
-import {calculateTotalReadingMinutes} from "../utils/progressTracking/progressHelpers"
 import UserDashboardTop from "./userDashboard_Top/UserDashboardTop";
 import * as s from "./userDashboard_Styled/UserDashboard.sc";
 import { setTitle } from "../assorted/setTitle";
@@ -47,10 +46,6 @@ export default function UserDashboard() {
     useState(null);
   const [monthlyExerciseAndReadingTimes, setMonthlyExerciseAndReadingTimes] =
     useState({});
-  const [totalInLearning, setTotalInLearning] = useState(null);
-  const [totalLearned, setTotalLearned] = useState(null);
-  const [totalTranslated, setTotalTranslated] = useState(null);
-  const [totalReadingMinutes, setTotalReadingMinutes] = useState(null);
 
   function handleChangeReferenceDate(newDate) {
     setReferenceDate(newDate);
@@ -137,9 +132,6 @@ export default function UserDashboard() {
       setAllWordsData(formatted);
 
       setAllWordsDataPerMonths(calculateCountPerMonth_Words(formatted));
-
-      const totalTranslatedWOrds = Array.from(formatted.values()).reduce((sum, count) => sum + count, 0);
-      setTotalTranslated(totalTranslatedWOrds);
     });
 
     api.getUserActivityByDay((activity) => {
@@ -148,20 +140,6 @@ export default function UserDashboard() {
       setMonthlyExerciseAndReadingTimes(
         calculateCountPerMonth_Activity(activity),
       );
-
-      setTotalReadingMinutes(calculateTotalReadingMinutes(activity.reading));
-    });
-
-    api.getAllScheduledBookmarks(false, (bookmarks) => {
-      setTotalInLearning(bookmarks.length);
-    });
-
-    api.totalLearnedBookmarks((totalLearnedCount) => {
-      setTotalLearned(totalLearnedCount);
-    });
-
-    api.totalLearnedBookmarks((totalLearnedCount) => {
-      setTotalLearned(totalLearnedCount);
     });
 
     // eslint-disable-next-line
@@ -213,15 +191,14 @@ export default function UserDashboard() {
         {activeTab === TABS_IDS.PROGRESS_ITEMS && (
           <>
             <ProgressOverview
-            totalInLearning ={totalInLearning}
-            totalLearned = {totalLearned}
-            totalTranslated = {totalTranslated}
-            totalReadingMinutes = {totalReadingMinutes}
+              totalInLearning ={totalInLearning}
+              totalLearned = {totalLearned}
+              totalTranslated = {totalTranslated}
+              totalReadingMinutes = {totalReadingMinutes}
             />
           </>
         )}
       </s.NivoGraphContainer>
-
     </>
   );
 }

@@ -1,14 +1,13 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useMemo, useContext } from "react";
 import { BrowserRouter } from "react-router-dom";
 
 import { SystemLanguagesContext } from "./contexts/SystemLanguagesContext";
 import { UserContext } from "./contexts/UserContext";
 import { RoutingContext } from "./contexts/RoutingContext";
-import { ProgressContext } from "./contexts/ProgressContext";
 import LocalStorage from "./assorted/LocalStorage";
 import { APIContext } from "./contexts/APIContext";
 import Zeeguu_API from "./api/Zeeguu_API";
-
+import { ProggressContext } from "./contexts/ProgressContext";
 import useUILanguage from "./assorted/hooks/uiLanguageHook";
 
 import ZeeguuSpeech from "./speech/APIBasedSpeech";
@@ -40,17 +39,14 @@ function App() {
   let { handleRedirectLinkOrGoTo } = useRedirectLink();
 
   const [systemLanguages, setSystemLanguages] = useState();
+  const {weeksPracticed, setWeeksPracticed, setWeeklyTranslated, weeklyTranslated, weeklyReadingMinutes, setWeeklyReadingMinutes} = useContext(ProggressContext);
 
   useEffect(() => {
     api.getSystemLanguages((languages) => {
       setSystemLanguages(languages);
     });
   }, [api]);
-
-  const [weeklyTranslated, setWeeklyTranslated] = useState(null);
-  const [weeklyReadingMinutes, setWeeklyReadingMinutes] = useState(null);
-  const [weeksPracticed, setWeeksPracticed] = useState(0);
-
+  
   useEffect(() => {
 
     if (!api.session) {
@@ -70,7 +66,6 @@ function App() {
 
       const weeksPracticed = calculateConsecutivePracticeWeeks(activity);
       setWeeksPracticed(weeksPracticed);
-      console.log("weeksPracticed", weeksPracticed);
     });
 
   };
@@ -211,13 +206,7 @@ function App() {
                 logoutMethod: logout,
               }}
             >
-            <ProgressContext.Provider
-              value={{ 
-                weeklyTranslated,
-                weeklyReadingMinutes,
-                weeksPracticed,
-              }}
-              >
+            <ProgressProvider>
               <APIContext.Provider value={api}>
                 {/* Routing*/}
                 <TopBar weeklyTranslated={weeklyTranslated} weeklyReadingMinutes={weeklyReadingMinutes} weeksPracticed={weeksPracticed}/>
@@ -235,7 +224,7 @@ function App() {
                   theme="light"
                 />
               </APIContext.Provider>
-              </ProgressContext.Provider>
+              </ProgressProvider>
             </UserContext.Provider>
           </RoutingContext.Provider>
         </BrowserRouter>

@@ -2,10 +2,8 @@ import {useState, useEffect, useContext} from "react";
 import NavIcon from "../components/MainNav/NavIcon";
 import { getExerciseProgressSummary } from "../utils/progressTracking/progressData";
 import * as s from "../components/progress_tracking/ProgressItems.sc";
-import { ProgressContext } from "../contexts/ProgressContext";
 
-export default function ExercisesProgressSummary({totalInLearning, totalLearned}) {
-    const { weeksPracticed } = useContext(ProgressContext);
+export default function ExercisesProgressSummary({totalInLearning, totalLearned, weeksPracticed}) {
     const {exerciseProgressSummary} = getExerciseProgressSummary({totalInLearning, totalLearned, weeksPracticed});
     const [randomItems, setRandomItems] = useState([]);
 
