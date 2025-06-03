@@ -11,8 +11,11 @@ import InfoBoxWordsToReview from "./InfoBoxWordsToReview";
 import ToggleEditReviewWords from "./ToggleEditReviewWords";
 import { APIContext } from "../contexts/APIContext";
 import { UserContext } from "../contexts/UserContext";
+import { ProgressContext } from "../contexts/ProgressContext";
 import { ExercisesCounterContext } from "../exercises/ExercisesCounterContext";
 import { removeArrayDuplicates } from "../utils/basic/arrays";
+import { calculateTotalReadingMinutes, calculateConsecutivePracticeWeeks, calculateWeeklyReadingMinutes } from "./utils/progressTracking/progressHelpers";
+
 
 export default function WordsToReview({
   words,
@@ -24,6 +27,7 @@ export default function WordsToReview({
   correctBookmarks,
 }) {
   const totalWordsTranslated = words.length;
+  const { setTotalTranslated, setTotalReadingMinutes, setWeeksPracticed, setWeeklyReadingMinutes, setWeeklyTranslated } = useContext(ProgressContext);
   const [inEditMode, setInEditMode] = useState(false);
   const [wordsForExercises, setWordsForExercises] = useState([]);
   const [wordsExcludedForExercises, setWordsExcludedForExercises] = useState(
@@ -51,7 +55,26 @@ export default function WordsToReview({
       setUsername(userDetails.name);
       setTotalBookmarksReviewed(incorrectBookmarksToDisplay.length + correctBookmarksToDisplay.length);
       api.logUserActivity(api.COMPLETED_EXERCISES, articleInfo.id, "", source);
-      updateExercisesCounter();    
+      updateExercisesCounter(); 
+
+      api.getBookmarksCountsByDate((counts) => {
+        var formatted = getMapData(counts);
+        const totalTranslatedWords = Array.from(formatted.values()).reduce((sum, count) => sum + count, 0);
+        setTotalTranslated(totalTranslatedWords);
+        const thisWeek = getWeeklyTranslatedWordsCount(counts);
+        const weeklyTotal = thisWeek.reduce((sum, day) => sum + day.count, 0);
+        setWeeklyTranslated(weeklyTotal);
+      
+      api.getUserActivityByDay((activity) => {
+        setTotalReadingMinutes(calculateTotalReadingMinutes(activity.reading));
+        const weeksPracticed = calculateConsecutivePracticeWeeks(activity);
+        setWeeksPracticed(weeksPracticed);
+        const readingMinsPerWeek = calculateWeeklyReadingMinutes(activity.reading);
+        setWeeklyReadingMinutes(readingMinsPerWeek);
+    });
+
+    });
+      
       // eslint-disable-next-line
     }, []);
   
