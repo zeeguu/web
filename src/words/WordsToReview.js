@@ -9,7 +9,6 @@ import { MAX_BOOKMARKS_TO_STUDY_PER_ARTICLE } from "../exercises/ExerciseConstan
 import { USER_WORD_PREFERENCE } from "./userBookmarkPreferences";
 import InfoBoxWordsToReview from "./InfoBoxWordsToReview";
 import ToggleEditReviewWords from "./ToggleEditReviewWords";
-import ExerciseProgressSummary from "../exercises/ExercisesProgressSummary";
 import { APIContext } from "../contexts/APIContext";
 import { UserContext } from "../contexts/UserContext";
 import { ExercisesCounterContext } from "../exercises/ExercisesCounterContext";
@@ -30,9 +29,6 @@ export default function WordsToReview({
   const [wordsExcludedForExercises, setWordsExcludedForExercises] = useState(
     [],
   );
-  const [totalInLearning, setTotalInLearning] = useState(null);
-  const [totalLearned, setTotalLearned] = useState(null);
-  //const [weeksPracticed, setWeeksPracticed] = useState(0);
   const [username, setUsername] = useState();
 
   // how many of the words were set by zeeguu
@@ -55,13 +51,7 @@ export default function WordsToReview({
       setUsername(userDetails.name);
       setTotalBookmarksReviewed(incorrectBookmarksToDisplay.length + correctBookmarksToDisplay.length);
       api.logUserActivity(api.COMPLETED_EXERCISES, articleInfo.id, "", source);
-      updateExercisesCounter();
-      api.getBookmarksCountByLevel((count) => {
-        setTotalInLearning(count);
-      });
-      api.totalLearnedBookmarks((totalLearnedCount) =>{
-        setTotalLearned(totalLearnedCount)
-      });      
+      updateExercisesCounter();    
       // eslint-disable-next-line
     }, []);
   
@@ -158,10 +148,7 @@ export default function WordsToReview({
         />
       )}
 
-      <ExerciseProgressSummary
-          totalInLearning={totalInLearning}
-          totalLearned={totalLearned}
-        />
+
       {wordsForExercises.length > 0 && (
         <>
           <h3>You will see these words in your exercises:</h3>
