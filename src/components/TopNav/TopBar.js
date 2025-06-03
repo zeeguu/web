@@ -1,8 +1,8 @@
 import NavIcon from "../MainNav/NavIcon";
 import * as s from "./TopBar.sc";
 import {zeeguuOrange} from "../colors";
-import { useEffect, useState, React } from "react";
-import {getTopBarData} from "../../utils/progressTracking/ProgressOverviewItems";
+import { useEffect, useState} from "react";
+import {getTopBarData} from "../../utils/progressTracking/progressData";
 import ProgressModal from "../progress_tracking/ProgressModal";
 import { getSessionFromCookies } from "../../utils/cookies/userInfo";
 import Zeeguu_API from "../../api/Zeeguu_API";
@@ -13,24 +13,6 @@ const DEFAULT_TOPBAR_PREFS = [
   "articleMinutesTopBar",
   "streakTopBar"
 ];
-
-const modalData = {
-  articleMinutesTopBar: {
-    linkText: "See statistics on activty",
-    linkTo: "user_dashboard",
-    size: 90,
-  },
-  wordsPracticedTopBar: {
-    linkText: "More information about word progress",
-    linkTo: "words",
-    size: 90,
-  },
-  streakTopBar: {
-    linkText: "See statistics on activity",
-    linkTo: "user_dashboard",
-    size: 90,
-  },
-};
 
 export default function TopBar({weeklyTranslated, weeklyReadingMinutes,weeksPracticed}) {
   const {weeklyProgressOverview} = getTopBarData({weeklyTranslated, weeklyReadingMinutes,weeksPracticed});
@@ -44,13 +26,11 @@ export default function TopBar({weeklyTranslated, weeklyReadingMinutes,weeksPrac
   }, []);
   
   const [whichItems, setWhichItems] = useState([]);
-  console.log("whichItems", whichItems);
   const savedItems = JSON.parse(localStorage.getItem("topBarPrefs") || "null") || DEFAULT_TOPBAR_PREFS;
   
   const handleOpenModal = (key, item) => {
-    const modalDefaults = modalData[key] || {};
     setShowModalData({
-      ...modalDefaults,
+      ...item.modal,
       open: true,
       setOpen: () => setShowModalData(null),
       modalKey: key,

@@ -1,16 +1,15 @@
-import {useState} from "react";
-import * as s from "./userDashboard_Styled/UserDashboard.sc";
+import {useState, useContext} from "react";
 import NavIcon from "../components/MainNav/NavIcon";
 import udstrings from "../i18n/userDashboard";
 import CollapsablePanel from "../components/CollapsablePanel";
-import * as style from "../components/progress_tracking/ProgressItems.sc";
-import { getWeeklyProgressOverviewItems, getTotalProgressOverviewItems } from "../utils/progressTracking/ProgressOverviewItems";
+import * as s from "../components/progress_tracking/ProgressItems.sc";
+import { getWeeklyProgressOverviewItems, getTotalProgressOverviewItems } from "../utils/progressTracking/progressData";
 import ProgressModal from "../components/progress_tracking/ProgressModal";
+import { ProgressContext} from "../contexts/ProgressContext";
 
-export default function ProgressOverview({totalInLearning, totalLearned, weeklyTranslated, totalTranslated, totalReadingMinutes, weeklyReadingMinutes, weeksPracticed}){
-    const {weeklyProgressOverview} = getWeeklyProgressOverviewItems({weeklyTranslated, weeklyReadingMinutes,weeksPracticed});
-    console.log("weeklyProgressOverview", weeklyProgressOverview);
-    
+export default function ProgressOverview({totalInLearning, totalLearned, totalTranslated, totalReadingMinutes}){
+    const { weeksPracticed, weeklyTranslated, weeklyReadingMinutes } = useContext(ProgressContext);
+    const {weeklyProgressOverview} = getWeeklyProgressOverviewItems({weeklyTranslated, weeklyReadingMinutes,weeksPracticed});    
     const {totalProgressOverview} = getTotalProgressOverviewItems({totalInLearning, totalLearned, totalTranslated, totalReadingMinutes});
     const [showModalData, setShowModalData] = useState(null);
     return (
@@ -22,7 +21,7 @@ export default function ProgressOverview({totalInLearning, totalLearned, weeklyT
             <CollapsablePanel topMessage={udstrings.weeklyProgressOverviewTitle}>
             <s.ProgressOverviewSection>
                 {weeklyProgressOverview.map((item, index)=> (
-                    <style.ProgressOverviewItem 
+                    <s.ProgressOverviewItem 
                         key={index}
                         onClick= {() => {
                             const modalDefaults = item.modal || {};
@@ -39,15 +38,15 @@ export default function ProgressOverview({totalInLearning, totalLearned, weeklyT
                             });
                         }}
                     >
-                        <style.IconWithValueAndLabel>
-                            <style.IconAndValue>
-                                <style.Icon><NavIcon name={item.icon}/></style.Icon>
-                                <style.Value> {item.value} </style.Value>
-                            </style.IconAndValue>
-                            <style.Label>{item.iconText}</style.Label>
-                        </style.IconWithValueAndLabel>
-                        <style.ProgressDescription>{item.beforeText} {item.value} {item.afterText}</style.ProgressDescription>
-                    </style.ProgressOverviewItem>
+                        <s.IconWithValueAndLabel>
+                            <s.IconAndValue>
+                                <s.Icon><NavIcon name={item.icon}/></s.Icon>
+                                <s.Value> {item.value} </s.Value>
+                            </s.IconAndValue>
+                            <s.Label>{item.iconText}</s.Label>
+                        </s.IconWithValueAndLabel>
+                        <s.ProgressDescription>{item.beforeText} {item.value} {item.afterText}</s.ProgressDescription>
+                    </s.ProgressOverviewItem>
                 ))}
                 </s.ProgressOverviewSection>
             </CollapsablePanel>
@@ -57,7 +56,7 @@ export default function ProgressOverview({totalInLearning, totalLearned, weeklyT
             <CollapsablePanel topMessage={udstrings.totalProgressOverviewTitle}>
             <s.ProgressOverviewSection>
                 {totalProgressOverview.map((item, index)=> (
-                    <style.ProgressOverviewItem
+                    <s.ProgressOverviewItem
                         key={index}
                         onClick= {() => {
                             const modalDefaults = item.modal || {};
@@ -74,15 +73,15 @@ export default function ProgressOverview({totalInLearning, totalLearned, weeklyT
                             });
                         }}
                     >
-                        <style.IconWithValueAndLabel>
-                            <style.IconAndValue>
-                                <style.Icon><NavIcon name={item.icon}/></style.Icon>
-                                <style.Value> {item.value} </style.Value>
-                            </style.IconAndValue>
-                            <style.Label>{item.iconText}</style.Label>
-                        </style.IconWithValueAndLabel>
-                        <style.ProgressDescription>{item.beforeText} {item.value} {item.afterText}</style.ProgressDescription>
-                    </style.ProgressOverviewItem>
+                        <s.IconWithValueAndLabel>
+                            <s.IconAndValue>
+                                <s.Icon><NavIcon name={item.icon}/></s.Icon>
+                                <s.Value> {item.value} </s.Value>
+                            </s.IconAndValue>
+                            <s.Label>{item.iconText}</s.Label>
+                        </s.IconWithValueAndLabel>
+                        <s.ProgressDescription>{item.beforeText} {item.value} {item.afterText}</s.ProgressDescription>
+                    </s.ProgressOverviewItem>
                 ))}
             </s.ProgressOverviewSection>
             </CollapsablePanel>

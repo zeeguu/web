@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import Heading from "../modal_shared/Heading.sc.js";
+import { Value } from "../progress_tracking/ProgressItems.sc.js";
 
 
 export const IconAndIntegerRow = styled.div`
@@ -10,9 +11,8 @@ export const IconAndIntegerRow = styled.div`
     padding-top: 1em;
 `;
 
-export const Value = styled.div`
+export const ValueModal = styled(Value)`
     font-size: 1.8em;
-    font-weight: 700;
     text-align: center;
 `;
 
