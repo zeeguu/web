@@ -114,7 +114,7 @@ export default function Word({
               {bookmark.to}
             </div>
           </s.WordPair>
-          {!isWordsOnDate && (
+          {!isWordsOnDate && bookmark.cooling_interval !== null && (
           <LevelWrapper onMouseEnter={() => setShowWordsModal(true)}
           onMouseLeave={() => setShowWordsModal(false)}>
           <LevelIndicator bookmark={bookmark}/>
