@@ -24,10 +24,14 @@ import * as s from "./userDashboard_Styled/UserDashboard.sc";
 import { setTitle } from "../assorted/setTitle";
 import strings from "../i18n/definitions";
 import { APIContext } from "../contexts/APIContext";
-import { set } from "date-fns";
+import { useHistory } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 
 export default function UserDashboard() {
   const api = useContext(APIContext);
+  const location = useLocation();
+  const history = useHistory();
+
   const [activeTab, setActiveTab] = useState(TABS_IDS.BAR_GRAPH);
   const [activeTimeInterval, setActiveTimeInterval] = useState(OPTIONS.WEEK);
   const [activeCustomTimeInterval, setActiveCustomTimeInterval] = useState(
@@ -56,6 +60,12 @@ export default function UserDashboard() {
   function handleActiveTabChange(tabId) {
     setActiveTab(tabId);
     api.logUserActivity(api.USER_DASHBOARD_TAB_CHANGE, "", tabId);
+  
+    let tabParam = "time";
+    if (tabId === TABS_IDS.LINE_GRAPH) tabParam = "translations";
+    else if (tabId === TABS_IDS.PROGRESS_ITEMS) tabParam = "progress";
+  
+    history.replace(`?tab=${tabParam}`);
   }
 
   function handleActiveTimeIntervalChange(selected) {
@@ -97,6 +107,22 @@ export default function UserDashboard() {
     setActiveTimeFormatOption(selected);
     api.logUserActivity(api.USER_DASHBOARD_TIME_COUNT_CHANGE, "", selected);
   }
+
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const tabParam = params.get("tab");
+    let newTab;
+    if (tabParam === "time" || !tabParam) {
+      newTab = TABS_IDS.BAR_GRAPH;
+    } else if (tabParam === "translations") {
+      newTab = TABS_IDS.LINE_GRAPH;
+    } else if (tabParam === "progress") {
+      newTab = TABS_IDS.PROGRESS_ITEMS;
+    } else {
+      newTab = TABS_IDS.BAR_GRAPH;
+    }
+    setActiveTab(newTab);
+  }, [location.search]);
 
   useEffect(() => {
     setTitle(strings.titleUserDashboard);
