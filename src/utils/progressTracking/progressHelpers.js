@@ -52,7 +52,7 @@ export function calculateConsecutivePracticeWeeks(activity) {
   const allEntries = [...activity.reading, ...activity.exercises];
 
   allEntries.forEach(({ date, seconds }) => {
-    if (seconds > 0) {
+    if (seconds >= 300) {
       const d = new Date(date);
       d.setHours(0, 0, 0, 0);
       // Find the Monday of this week
