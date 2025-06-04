@@ -224,3 +224,24 @@ export function getExerciseProgressSummary({totalInLearning, totalTranslated, to
         exerciseProgressSummary
     };
 }
+
+export function getArticlesProgressSummary({weeklyTranslated, weeklyMinutesRead, weeksPracticed, totalTranslated, totalReadingMinutes }){
+    const weeklyStreak = getWeeklyStreak(weeksPracticed);
+    const totalWordsTranslated = getTotalWordsTranslated(totalTranslated);
+    const totalMinutesRead = getTotalMinutesRead(totalReadingMinutes);
+    const weeklyReadingMinutes = getWeeklyMinutesRead(weeklyMinutesRead);
+    const weeklyTranslatedWords = getWeeklyWordsTranslated(weeklyTranslated);
+
+
+    const articlesProgressSummary = [
+        totalWordsTranslated,
+        totalMinutesRead,
+        weeklyStreak,
+        weeklyReadingMinutes,
+        weeklyTranslatedWords
+    ];
+
+    return{
+        articlesProgressSummary
+    };
+}

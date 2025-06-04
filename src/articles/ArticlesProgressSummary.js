@@ -1,16 +1,16 @@
 import {useState, useEffect} from "react";
 import NavIcon from "../components/MainNav/NavIcon";
-import { getExerciseProgressSummary } from "../utils/progressTracking/progressData";
+import { getArticlesProgressSummary } from "../utils/progressTracking/progressData";
 import { selectTwoRandomItems } from "../utils/progressTracking/progressHelpers";
+
 import * as s from "../components/progress_tracking/ProgressItems.sc";
 
-export default function ExercisesProgressSummary({totalInLearning, totalLearned, weeksPracticed}) {
-    const {exerciseProgressSummary} = getExerciseProgressSummary({totalInLearning, totalLearned, weeksPracticed});
+export default function ArticlesProgressSummary({weeklyTranslated, weeklyMinutesRead, weeksPracticed, totalTranslated, totalReadingMinutes }) {
+    const {articlesProgressSummary} = getArticlesProgressSummary({weeklyTranslated, weeklyMinutesRead, weeksPracticed, totalTranslated, totalReadingMinutes});
     const [randomItems, setRandomItems] = useState([]);
 
-
     useEffect(() =>{
-        const twoRandomItems = selectTwoRandomItems(exerciseProgressSummary);
+        const twoRandomItems = selectTwoRandomItems(articlesProgressSummary);
         setRandomItems(twoRandomItems);
     }, []);
     
