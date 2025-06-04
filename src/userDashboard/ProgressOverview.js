@@ -9,7 +9,7 @@ import { ProgressContext} from "../contexts/ProgressContext";
 
 export default function ProgressOverview(){
     const { weeksPracticed, weeklyTranslated, weeklyReadingMinutes, totalInLearning, totalLearned, totalTranslated, totalReadingMinutes } = useContext(ProgressContext);
-    const {weeklyProgressOverview} = getWeeklyProgressOverviewItems({weeklyTranslated, weeklyReadingMinutes,weeksPracticed});    
+    const {weeklyProgressOverview} = getWeeklyProgressOverviewItems({weeklyTranslated, weeklyReadingMinutes, weeksPracticed});    
     const {totalProgressOverview} = getTotalProgressOverviewItems({totalInLearning, totalLearned, totalTranslated, totalReadingMinutes});
     const [showModalData, setShowModalData] = useState(null);
     return (
@@ -34,7 +34,7 @@ export default function ProgressOverview(){
                                 descriptionStart: item.beforeText, 
                                 descriptionEnd: item.afterText,
                                 iconName: item.icon,
-                                unit: item.unit || "",
+                                unit: item.modal.unit || "",
                             });
                         }}
                     >
@@ -69,7 +69,7 @@ export default function ProgressOverview(){
                                 descriptionStart: item.beforeText,
                                 descriptionEnd: item.afterText,
                                 iconName: item.icon,
-                                unit: item.unit || "",
+                                unit: item.modal.unit || "",
                             });
                         }}
                     >
