@@ -10,7 +10,7 @@ export function getTotalMinutesRead(totalReadingMinutes){
         afterText: (totalMinutesRead === 1 ? strings.articlesReadTotalTextEndSingle : strings.articlesReadTotalTextEnd) + (totalMinutesRead>0 ? " " + strings.positiveFeedbackMsg1 : ""),
         modal: {
             linkText: "More details on your activty",
-            linkTo: "user_dashboard",
+            linkTo: "user_dashboard?tab=time",
             size: 90,
         }
     }
@@ -80,7 +80,7 @@ export function getTotalWordsLearned(totalLearned){
         afterText: (weeklyMinutesRead === 1 ? strings.articlesReadWeeklyTextEndSingle : strings.articlesReadWeeklyTextEnd) + (weeklyMinutesRead>0 ? " " + strings.positiveFeedbackMsg1 : ""),
         modal: {
             linkText: "More details on your activity",
-            linkTo: "user_dashboard",
+            linkTo: "user_dashboard?tab=time",
             size: 90,
         }
     }
