@@ -15,7 +15,6 @@ import { ExercisesCounterContext } from "../exercises/ExercisesCounterContext";
 import { removeArrayDuplicates } from "../utils/basic/arrays";
 import { ProgressContext } from "../contexts/ProgressContext";
 import { getWeeklyTranslatedWordsCount, calculateWeeklyReadingMinutes, calculateConsecutivePracticeWeeks, calculateTotalReadingMinutes } from "../utils/progressTracking/progressHelpers";
-import ArticlesProgressSummary from "../articles/ArticlesProgressSummary";
 
 export default function WordsToReview({
   words,
@@ -125,13 +124,6 @@ export default function WordsToReview({
             <p>You didn't translate any words in this article.</p>
           </div>
         </Infobox>
-        <ArticlesProgressSummary
-          weeklyTranslated={weeklyTranslated}
-          weeklyMinutesRead={weeklyReadingMinutes}
-          weeksPracticed={weeksPracticed}
-          totalTranslated={totalTranslated}
-          totalReadingMinutes={totalReadingMinutes}
-         />
       </>
     );
 
@@ -192,15 +184,7 @@ export default function WordsToReview({
                 source={source}
                 isReview={inEditMode}
               />
-                      <ArticlesProgressSummary
-          weeklyTranslated={weeklyTranslated}
-          weeklyMinutesRead={weeklyReadingMinutes}
-          weeksPracticed={weeksPracticed}
-          totalTranslated={totalTranslated}
-          totalReadingMinutes={totalReadingMinutes}
-         />
-            </ContentOnRow>
-            
+            </ContentOnRow>          
           ))}
         </>
       )}
@@ -220,16 +204,7 @@ export default function WordsToReview({
                 notifyWordChange={notifyWordChanged}
                 source={source}
                 isReview={inEditMode}
-
-                
               />
-                      <ArticlesProgressSummary
-          weeklyTranslated={weeklyTranslated}
-          weeklyMinutesRead={weeklyReadingMinutes}
-          weeksPracticed={weeksPracticed}
-          totalTranslated={totalTranslated}
-          totalReadingMinutes={totalReadingMinutes}
-         />
             </ContentOnRow>
           ))}
         </>
@@ -259,13 +234,6 @@ export default function WordsToReview({
                 source={source}
                 isReview={inEditMode}
               />
-                      <ArticlesProgressSummary
-          weeklyTranslated={weeklyTranslated}
-          weeklyMinutesRead={weeklyReadingMinutes}
-          weeksPracticed={weeksPracticed}
-          totalTranslated={totalTranslated}
-          totalReadingMinutes={totalReadingMinutes}
-         />
             </ContentOnRow>
           ))}
         </>
