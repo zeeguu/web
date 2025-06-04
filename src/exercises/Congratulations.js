@@ -18,6 +18,8 @@ import { UserContext } from "../contexts/UserContext";
 import { ProgressContext } from "../contexts/ProgressContext";
 import { ExercisesCounterContext } from "./ExercisesCounterContext";
 import  ExerciseProgressSummary  from "./ExercisesProgressSummary";
+import {calculateConsecutivePracticeWeeks, calculateWeeklyReadingMinutes} from "../utils/progressTracking/progressHelpers";
+
 
 export default function Congratulations({
   articleID,
@@ -57,16 +59,14 @@ export default function Congratulations({
     setTotalBookmarksReviewed(incorrectBookmarksToDisplay.length + correctBookmarksToDisplay.length);
     api.logUserActivity(api.COMPLETED_EXERCISES, articleID, "", source);
     updateExercisesCounter();
-    api.getBookmarksCountByLevel((count) => {
-      setTotalInLearning(count);
+
+    api.getAllScheduledBookmarks(false, (bookmarks) => {
+      setTotalInLearning(bookmarks.length);
     });
     api.totalLearnedBookmarks((totalLearnedCount) =>{
       setTotalLearned(totalLearnedCount)
     }); 
-    api.getUserActivityByDay((activity) => {
-      const readingMinsPerWeek = calculateWeeklyReadingMinutes(activity.reading);
-      setWeeklyReadingMinutes(readingMinsPerWeek);
-    
+    api.getUserActivityByDay((activity) => {  
       const weeksPracticed = calculateConsecutivePracticeWeeks(activity);
       setWeeksPracticed(weeksPracticed);
         });   

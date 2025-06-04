@@ -115,11 +115,10 @@ export default function UserDashboard() {
         calculateCountPerMonth_Activity(activity),
       );
     });
-
-    // eslint-disable-next-line
+  // eslint-disable-next-line
   }, [activeTab]);
 
-  if (!allWordsData || !dailyExerciseAndReadingTimes || totalLearned == null ||  totalTranslated == null || totalReadingMinutes == null) {
+  if (!allWordsData || !dailyExerciseAndReadingTimes) {
     return <LoadingAnimation />;
   }
 
@@ -164,12 +163,7 @@ export default function UserDashboard() {
         
         {activeTab === TABS_IDS.PROGRESS_ITEMS && (
           <>
-            <ProgressOverview
-              totalInLearning ={totalInLearning}
-              totalLearned = {totalLearned}
-              totalTranslated = {totalTranslated}
-              totalReadingMinutes = {totalReadingMinutes}
-            />
+            <ProgressOverview/>
           </>
         )}
       </s.NivoGraphContainer>
