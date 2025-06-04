@@ -12,6 +12,7 @@ export function getTotalMinutesRead(totalReadingMinutes){
             linkText: "More details on your activty",
             linkTo: "user_dashboard?tab=time",
             size: 90,
+            unit: "minutes"
         }
     }
     return totalMinutes;
@@ -29,15 +30,14 @@ export function getTotalMinutesRead(totalReadingMinutes){
             linkText: "More details on translation history",
             linkTo: "history",
             size: 90,
+            unit: "",
         }
     }
     return totalWordsTranslated;
   }
 
 export function getTotalWordsPracticed(totalInLearning, totalLearned){
-  console.log("JOHANNA: getTotalWordsPracticed", totalInLearning, totalLearned);
     const totalPracticedWords = totalInLearning + totalLearned;
-    console.log("JOHANNA: totalPracticedWords blabla", totalPracticedWords);
     const totalWordsPracticed = {
         icon: "words",
         iconText: strings.iconTextTotalWordsPracticed,
@@ -48,6 +48,7 @@ export function getTotalWordsPracticed(totalInLearning, totalLearned){
             linkText: "More details on progress for practiced words",
             linkTo: "words",
             size: 90,
+            unit: "",
         }
     }
     return totalWordsPracticed;
@@ -65,6 +66,7 @@ export function getTotalWordsLearned(totalLearned){
             linkText: "More details on translation history",
             linkTo: "words/learned",
             size: 90,
+            unit: "",
         }
     }
     return totalWordsLearned;
@@ -82,6 +84,7 @@ export function getTotalWordsLearned(totalLearned){
             linkText: "More details on your activity",
             linkTo: "user_dashboard?tab=time",
             size: 90,
+            unit: "minutes",
         }
     }
     return weeklyArticlesRead
@@ -99,6 +102,7 @@ export function getTotalWordsLearned(totalLearned){
             linkText: "More details on translation history",
             linkTo: "history",
             size: 90,
+            unit: "",
         }
     }
     return weeklyTranslatedWords;
@@ -116,6 +120,7 @@ export function getTotalWordsLearned(totalLearned){
             linkText: "More details on your activity",
             linkTo: "user_dashboard",
             size: 90,
+            unit: "weeks",
         }
     }
     return streakWeekly;
@@ -133,6 +138,7 @@ export function getTotalWordsLearned(totalLearned){
             linkText: "More details on translation history",
             linkTo: "history",
             size: 90,
+            unit: "",
         }
     }
     return weeklyWordsPracticed;
@@ -192,17 +198,26 @@ export function getWeeklyProgressOverviewItems({weeklyTranslated, weeklyReadingM
 
 }
 
-export function getExerciseProgressSummary({totalInLearning, totalLearned, weeksPracticed}){
+export function getExerciseProgressSummary({totalInLearning, totalTranslated, totalLearned, totalReadingMinutes, weeksPracticed, weeklyMinutesRead, weeklyTranslated}){
     const totalWordsPracticed = getTotalWordsPracticed(totalInLearning);
     const totalWordsLearned = getTotalWordsLearned(totalLearned)
     const weeklyStreak = getWeeklyStreak(weeksPracticed);
     const weeklyWordsPracticed = getWeeklyWordsPracticed();
+    const totalWordsTranslated = getTotalWordsTranslated(totalTranslated);
+    const totalMinutesRead = getTotalMinutesRead(totalReadingMinutes);
+    const weeklyReadingMinutes = getWeeklyMinutesRead(weeklyMinutesRead);
+    const weeklyTranslatedWords = getWeeklyWordsTranslated(weeklyTranslated);
+
 
     const exerciseProgressSummary = [
         totalWordsPracticed,
         totalWordsLearned,
+        totalWordsTranslated,
+        totalMinutesRead,
         weeklyStreak,
         weeklyWordsPracticed,
+        weeklyReadingMinutes,
+        weeklyTranslatedWords
     ];
 
     return{
