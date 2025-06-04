@@ -13,6 +13,8 @@ import { APIContext } from "../contexts/APIContext";
 import { UserContext } from "../contexts/UserContext";
 import { ExercisesCounterContext } from "../exercises/ExercisesCounterContext";
 import { removeArrayDuplicates } from "../utils/basic/arrays";
+import { ProgressContext } from "../contexts/ProgressContext";
+import { getWeeklyTranslatedWordsCount, calculateWeeklyReadingMinutes, calculateConsecutivePracticeWeeks, calculateTotalReadingMinutes } from "../utils/progressTracking/progressHelpers";
 
 export default function WordsToReview({
   words,
@@ -24,6 +26,7 @@ export default function WordsToReview({
   correctBookmarks,
 }) {
   const totalWordsTranslated = words.length;
+  const { setWeeksPracticed, setWeeklyReadingMinutes, setWeeklyTranslated, setTotalReadingMinutes, setTotalTranslated} = useContext(ProgressContext);
   const [inEditMode, setInEditMode] = useState(false);
   const [wordsForExercises, setWordsForExercises] = useState([]);
   const [wordsExcludedForExercises, setWordsExcludedForExercises] = useState(
@@ -51,7 +54,25 @@ export default function WordsToReview({
       setUsername(userDetails.name);
       setTotalBookmarksReviewed(incorrectBookmarksToDisplay.length + correctBookmarksToDisplay.length);
       api.logUserActivity(api.COMPLETED_EXERCISES, articleInfo.id, "", source);
-      updateExercisesCounter();    
+      updateExercisesCounter(); 
+
+      api.getBookmarksCountByDate((counts) => {
+        const totalTranslatedWords = counts.reduce((sum, day) => sum + day.count, 0);
+        setTotalTranslated(totalTranslatedWords);
+        const thisWeek = getWeeklyTranslatedWordsCount(counts);
+        const weeklyTotal = thisWeek.reduce((sum, day) => sum + day.count, 0);
+        setWeeklyTranslated(weeklyTotal);
+      })
+
+      api.getUserActivityByDay((activity) =>{
+        setTotalReadingMinutes(calculateTotalReadingMinutes(activity.reading));
+        const readingMinsPerWeek = calculateWeeklyReadingMinutes(activity.reading);
+        setWeeklyReadingMinutes(readingMinsPerWeek);
+    
+        const weeksPracticed = calculateConsecutivePracticeWeeks(activity);
+        setWeeksPracticed(weeksPracticed);
+
+      });
       // eslint-disable-next-line
     }, []);
   

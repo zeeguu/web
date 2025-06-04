@@ -1,4 +1,5 @@
 import NavIcon from "../MainNav/NavIcon";
+import { useContext } from "react";
 import * as s from "./TopBar.sc";
 import {zeeguuOrange} from "../colors";
 import { useEffect, useState} from "react";
@@ -7,6 +8,8 @@ import ProgressModal from "../progress_tracking/ProgressModal";
 import { getSessionFromCookies } from "../../utils/cookies/userInfo";
 import Zeeguu_API from "../../api/Zeeguu_API";
 import { API_ENDPOINT } from "../../appConstants";
+import { ProgressContext } from "../../contexts/ProgressContext";
+import { calculateWeeklyReadingMinutes, getWeeklyTranslatedWordsCount, calculateConsecutivePracticeWeeks, calculateTotalReadingMinutes } from "../../utils/progressTracking/progressHelpers";
 
 const DEFAULT_TOPBAR_PREFS = [
   "wordsPracticedTopBar",
@@ -14,7 +17,10 @@ const DEFAULT_TOPBAR_PREFS = [
   "streakTopBar"
 ];
 
-export default function TopBar({weeklyTranslated, weeklyReadingMinutes,weeksPracticed}) {
+
+export default function TopBar() {
+    const {weeksPracticed, setWeeksPracticed, setWeeklyTranslated, weeklyTranslated, weeklyReadingMinutes, setWeeklyReadingMinutes, setTotalTranslated, setTotalInLearning, setTotalLearned, setTotalReadingMinutes} = useContext(ProgressContext);
+
   const {weeklyProgressOverview} = getTopBarData({weeklyTranslated, weeklyReadingMinutes,weeksPracticed});
   const [showModalData, setShowModalData] = useState(null);
   const [api] = useState(new Zeeguu_API(API_ENDPOINT));
@@ -23,6 +29,33 @@ export default function TopBar({weeklyTranslated, weeklyReadingMinutes,weeksPrac
   useEffect(() => {
     const savedPrefs = JSON.parse(localStorage.getItem("topBarPrefs")) || [];
     setWhichItems(savedPrefs);
+
+  api.getBookmarksCountsByDate((counts) => {
+      const totalTranslatedWords = counts.reduce((sum, day) => sum + day.count, 0);
+
+      setTotalTranslated(totalTranslatedWords);
+      const thisWeek = getWeeklyTranslatedWordsCount(counts);
+      const weeklyTotal = thisWeek.reduce((sum, day) => sum + day.count, 0);
+      setWeeklyTranslated(weeklyTotal);
+    });
+
+  api.getUserActivityByDay((activity) => {
+      setTotalReadingMinutes(calculateTotalReadingMinutes(activity.reading));
+      const readingMinsPerWeek = calculateWeeklyReadingMinutes(activity.reading);
+      setWeeklyReadingMinutes(readingMinsPerWeek);
+
+      const weeksPracticed = calculateConsecutivePracticeWeeks(activity);
+      setWeeksPracticed(weeksPracticed);
+    });
+
+  api.getAllScheduledBookmarks(false, (bookmarks) => {
+      setTotalInLearning(bookmarks.length);
+    });
+
+  api.totalLearnedBookmarks((totalLearnedCount) =>{
+      setTotalLearned(totalLearnedCount)
+    }); 
+
   }, []);
   
   const [whichItems, setWhichItems] = useState([]);
@@ -39,7 +72,7 @@ export default function TopBar({weeklyTranslated, weeklyReadingMinutes,weeksPrac
       descriptionStart: item.beforeText,
       descriptionEnd: item.afterText,
       iconName: item.icon,
-      unit: item.unit || "",
+      unit: item.modal.unit || "",
     });
   };
 

@@ -18,7 +18,6 @@ export default function ProgressModal({
     linkText,
     linkTo,
     size,
-    modalKey,
 }){
    
     return (
@@ -34,7 +33,7 @@ export default function ProgressModal({
             <s.ModalContent>
             <s.IconAndIntegerRow>
             <NavIcon name={iconName} size={size} color={zeeguuOrange}/>
-               {modalKey !== "articleMinutesTopBar" && (<s.ValueModal>{value}</s.ValueModal>)}
+              <s.ValueModal>{value}</s.ValueModal>
                 <h3>{unit}</h3>
                 </s.IconAndIntegerRow>
                 <s.TextRow>{descriptionStart} {value} {descriptionEnd}</s.TextRow>
