@@ -436,7 +436,6 @@ let CenteredWordRow = styled.div`
   }
   @media (max-width: 800px) {
     flex-wrap: wrap;
-    justify-content: flex-start;
   }
 `;
 
