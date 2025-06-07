@@ -2,13 +2,19 @@ import Word from "./Word";
 import { ContentOnRow } from "../reader/ArticleReader.sc";
 import strings from "../i18n/definitions";
 import Infobox from "../components/Infobox";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext  } from "react";
 import { tokenize } from "../utils/text/preprocessing";
 import ExplainBookmarkSelectionModal from "../components/ExplainBookmarkSelectionModal";
 import { MAX_BOOKMARKS_TO_STUDY_PER_ARTICLE } from "../exercises/ExerciseConstants";
 import { USER_WORD_PREFERENCE } from "./userBookmarkPreferences";
 import InfoBoxWordsToReview from "./InfoBoxWordsToReview";
 import ToggleEditReviewWords from "./ToggleEditReviewWords";
+import { APIContext } from "../contexts/APIContext";
+import { UserContext } from "../contexts/UserContext";
+import { ExercisesCounterContext } from "../exercises/ExercisesCounterContext";
+import { removeArrayDuplicates } from "../utils/basic/arrays";
+import { ProgressContext } from "../contexts/ProgressContext";
+import { getWeeklyTranslatedWordsCount, calculateWeeklyReadingMinutes, calculateConsecutivePracticeWeeks, calculateTotalReadingMinutes } from "../utils/progressTracking/progressHelpers";
 
 export default function WordsToReview({
   words,
@@ -16,13 +22,17 @@ export default function WordsToReview({
   deleteBookmark,
   notifyWordChanged,
   source,
+  incorrectBookmarks,
+  correctBookmarks,
 }) {
   const totalWordsTranslated = words.length;
+  const { setWeeksPracticed, weeksPracticed, setWeeklyReadingMinutes, weeklyReadingMinutes, setWeeklyTranslated, weeklyTranslated, setTotalReadingMinutes, totalReadingMinutes, setTotalTranslated, totalTranslated} = useContext(ProgressContext);
   const [inEditMode, setInEditMode] = useState(false);
   const [wordsForExercises, setWordsForExercises] = useState([]);
   const [wordsExcludedForExercises, setWordsExcludedForExercises] = useState(
     [],
   );
+  const [username, setUsername] = useState();
 
   // how many of the words were set by zeeguu
   const [wordsSelectedByZeeguu_Counter, setWordsSelectedByZeeguu_Counter] =
@@ -31,6 +41,41 @@ export default function WordsToReview({
   const [wordsExpressions, setWordsExpressions] = useState([]);
   const [showExplainWordSelectionModal, setShowExplainWordSelectionModal] =
     useState(false);
+  const [totalBookmarksReviewed, setTotalBookmarksReviewed] = useState();
+  const { updateExercisesCounter } = useContext(ExercisesCounterContext);
+  const [incorrectBookmarksToDisplay, setIncorrectBookmarksToDisplay] = useState(
+    removeArrayDuplicates(incorrectBookmarks),
+  );
+    const api = useContext(APIContext);
+    const { userDetails } = useContext(UserContext);
+    const [correctBookmarksToDisplay, setCorrectBookmarksToDisplay] = useState(removeArrayDuplicates(correctBookmarks));
+  
+    useEffect(() => {
+      setUsername(userDetails.name);
+      setTotalBookmarksReviewed(incorrectBookmarksToDisplay.length + correctBookmarksToDisplay.length);
+      api.logUserActivity(api.COMPLETED_EXERCISES, articleInfo.id, "", source);
+      updateExercisesCounter(); 
+
+      api.getBookmarksCountByDate((counts) => {
+        const totalTranslatedWords = counts.reduce((sum, day) => sum + day.count, 0);
+        setTotalTranslated(totalTranslatedWords);
+        const thisWeek = getWeeklyTranslatedWordsCount(counts);
+        const weeklyTotal = thisWeek.reduce((sum, day) => sum + day.count, 0);
+        setWeeklyTranslated(weeklyTotal);
+      })
+
+      api.getUserActivityByDay((activity) =>{
+        setTotalReadingMinutes(calculateTotalReadingMinutes(activity.reading));
+        const readingMinsPerWeek = calculateWeeklyReadingMinutes(activity.reading);
+        setWeeklyReadingMinutes(readingMinsPerWeek);
+    
+        const weeksPracticed = calculateConsecutivePracticeWeeks(activity);
+        setWeeksPracticed(weeksPracticed);
+
+      });
+      // eslint-disable-next-line
+    }, []);
+  
 
   useEffect(() => {
     let newWordsForExercises = [];
@@ -123,6 +168,8 @@ export default function WordsToReview({
           }
         />
       )}
+
+
       {wordsForExercises.length > 0 && (
         <>
           <h3>You will see these words in your exercises:</h3>
@@ -137,7 +184,7 @@ export default function WordsToReview({
                 source={source}
                 isReview={inEditMode}
               />
-            </ContentOnRow>
+            </ContentOnRow>          
           ))}
         </>
       )}

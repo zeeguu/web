@@ -263,7 +263,7 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
     if (newIndex === fullExerciseProgression.length) {
       setFinished(true);
       api.getCountOfBookmarksRecommendedForPractice((bookmarkCount) => {
-        setIsOutOfWordsToday(bookmarkCount === 0);
+      setIsOutOfWordsToday(bookmarkCount === 0);
       });
       return;
     }

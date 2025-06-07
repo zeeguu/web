@@ -20,6 +20,7 @@ export default function UserDashboardTop({
   handleChangeReferenceDate,
 }) {
   return (
+    
     <s.UserDashboardTopContainer>
       <br />
       <br />
@@ -28,7 +29,8 @@ export default function UserDashboardTop({
         activeTab={activeTab}
         handleActiveTabChange={handleActiveTabChange}
       />
-
+      
+      {activeTab !== TABS_IDS.PROGRESS_ITEMS &&(
       <s.UserDashboardHelperText>
         <>
           {activeTab === TABS_IDS.BAR_GRAPH
@@ -59,6 +61,7 @@ export default function UserDashboardTop({
           )}
         </>
       </s.UserDashboardHelperText>
+        )}
     </s.UserDashboardTopContainer>
   );
 }

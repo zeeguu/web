@@ -10,7 +10,6 @@ export default function TopTabs({ title, tabsAndLinks }) {
     <div>
       <s.TopTabs>
         <br />
-        <br />
 
         <div className="all__tabs">
           {allTabsButLast.map((tabAndLink) => (

@@ -7,7 +7,7 @@ import { RoutingContext } from "./contexts/RoutingContext";
 import LocalStorage from "./assorted/LocalStorage";
 import { APIContext } from "./contexts/APIContext";
 import Zeeguu_API from "./api/Zeeguu_API";
-
+import { ProgressProvider } from "./contexts/ProgressContext";
 import useUILanguage from "./assorted/hooks/uiLanguageHook";
 
 import ZeeguuSpeech from "./speech/APIBasedSpeech";
@@ -23,6 +23,7 @@ import { setUser } from "@sentry/react";
 import SessionStorage from "./assorted/SessionStorage";
 import useRedirectLink from "./hooks/useRedirectLink";
 import LoadingAnimation from "./components/LoadingAnimation";
+import TopBar from "./components/TopNav/TopBar";
 
 function App() {
   const [api] = useState(new Zeeguu_API(API_ENDPOINT));
@@ -176,10 +177,11 @@ function App() {
                 logoutMethod: logout,
               }}
             >
+            <ProgressProvider>
               <APIContext.Provider value={api}>
                 {/* Routing*/}
+                <TopBar/>
                 <MainAppRouter hasExtension={isExtensionAvailable} handleSuccessfulLogIn={handleSuccessfulLogIn} />
-
                 <ToastContainer
                   position="bottom-right"
                   autoClose={2000}
@@ -193,6 +195,7 @@ function App() {
                   theme="light"
                 />
               </APIContext.Provider>
+              </ProgressProvider>
             </UserContext.Provider>
           </RoutingContext.Provider>
         </BrowserRouter>

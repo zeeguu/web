@@ -15,7 +15,11 @@ import { MOBILE_WIDTH } from "../components/MainNav/screenSize";
 import { StyledButton } from "../components/allButtons.sc";
 import { APIContext } from "../contexts/APIContext";
 import { UserContext } from "../contexts/UserContext";
+import { ProgressContext } from "../contexts/ProgressContext";
 import { ExercisesCounterContext } from "./ExercisesCounterContext";
+import  ExerciseProgressSummary  from "./ExercisesProgressSummary";
+import {calculateConsecutivePracticeWeeks, calculateWeeklyReadingMinutes} from "../utils/progressTracking/progressHelpers";
+
 
 export default function Congratulations({
   articleID,
@@ -32,6 +36,7 @@ export default function Congratulations({
   exerciseSessionTimer,
 }) {
   const api = useContext(APIContext);
+  const { weeksPracticed, setWeeksPracticed, totalLearned, setTotalLearned, totalInLearning, setTotalInLearning } = useContext(ProgressContext);
   const { userDetails } = useContext(UserContext);
   const { updateExercisesCounter } = useContext(ExercisesCounterContext);
   const [checkpointTime] = useState(exerciseSessionTimer);
@@ -54,8 +59,21 @@ export default function Congratulations({
     setTotalBookmarksReviewed(incorrectBookmarksToDisplay.length + correctBookmarksToDisplay.length);
     api.logUserActivity(api.COMPLETED_EXERCISES, articleID, "", source);
     updateExercisesCounter();
+
+    api.getAllScheduledBookmarks(false, (bookmarks) => {
+      setTotalInLearning(bookmarks.length);
+    });
+    api.totalLearnedBookmarks((totalLearnedCount) =>{
+      setTotalLearned(totalLearnedCount)
+    }); 
+    api.getUserActivityByDay((activity) => {  
+      const weeksPracticed = calculateConsecutivePracticeWeeks(activity);
+      setWeeksPracticed(weeksPracticed);
+        });   
     // eslint-disable-next-line
   }, []);
+
+
 
   if (username === undefined || isOutOfWordsToday === undefined) {
     return <LoadingAnimation />;
@@ -93,16 +111,17 @@ export default function Congratulations({
     <>
       <s.NarrowColumn className="narrowColumn">
         {screenWidth < MOBILE_WIDTH && <BackArrow />}
-
         <CenteredColumn className="centeredColumn">
           <h1>
             {strings.goodJob} {username}!
           </h1>
         </CenteredColumn>
-        <div style={{ marginLeft: "0.5em" }}>
-          <p>
+         <CenteredColumn className="centeredColumn">
+        <div style={{ marginLeft: "1em", display: "flex", flexDirection: "column", justifyContent:"center" }}>
+          <p style={{ textAlign: "center" }}>
             You have just done <b>{totalPracticedBookmarksInSession}</b>{" "}
-            {Pluralize.exercise(totalPracticedBookmarksInSession)} in <b>{timeToHumanReadable(checkpointTime)}</b>.
+            
+            {Pluralize.exercise(totalPracticedBookmarksInSession)} in <b>{timeToHumanReadable(checkpointTime)}</b>. Here are some highlights of your current progress you have made.
             {articleID && (
               <p>
                 These words are now part of your vocabulary exercises, using spaced repetition and smart learning
@@ -115,8 +134,14 @@ export default function Congratulations({
           <p>
             You practiced words from: <a href={articleURL}>{articleTitle}</a>
           </p>
+          
         )}
-
+        </CenteredColumn>
+        <ExerciseProgressSummary
+          totalInLearning={totalInLearning}
+          totalLearned={totalLearned}
+          weeksPracticed={weeksPracticed}
+        />
         {incorrectBookmarksToDisplay.length > 0 && (
           <CollapsablePanel
             children={incorrectBookmarksToDisplay.map((each) => (

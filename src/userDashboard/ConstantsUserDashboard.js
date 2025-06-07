@@ -22,6 +22,7 @@ const ACTIVITY_TIME_FORMAT_OPTIONS = {
 const TOP_TABS = {
   BAR_GRAPH: udstrings.tabActivity,
   LINE_GRAPH: udstrings.tabWords,
+  PROGRESS_ITEMS: udstrings.tabProgress,
 };
 
 const USER_DASHBOARD_TITLES = {
@@ -66,6 +67,7 @@ const PERIOD_OPTIONS = {
 const TABS_IDS = {
   BAR_GRAPH: 1,
   LINE_GRAPH: 2,
+  PROGRESS_ITEMS: 3,
 };
 
 //date format used for making sure dates are translated
