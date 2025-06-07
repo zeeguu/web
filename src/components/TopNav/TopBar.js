@@ -25,7 +25,6 @@ export default function TopBar() {
   const [showModalData, setShowModalData] = useState(null);
   const [api] = useState(new Zeeguu_API(API_ENDPOINT));
 
-
   useEffect(() => {
     const savedPrefs = JSON.parse(localStorage.getItem("topBarPrefs")) || [];
     setWhichItems(savedPrefs);

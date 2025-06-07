@@ -15,10 +15,19 @@ import { useEffect, useState, React } from "react";
 export default function TopbarIconPreferences(){
     useEffect(() => {
         const savedPrefs = JSON.parse(localStorage.getItem("topBarPrefs")) || [];
+        console.log('savedPrefs', savedPrefs );
         setWhichItems(savedPrefs);
       }, []);
 
-    const [whichItems, setWhichItems] = useState([]);
+    const DEFAULT_TOPBAR_PREFS = [
+        "wordsPracticedTopBar",
+        "articleMinutesTopBar",
+        "streakTopBar"
+    ];
+
+    const [whichItems, setWhichItems] = useState(() => {
+        return JSON.parse(localStorage.getItem("topBarPrefs") || "null") || DEFAULT_TOPBAR_PREFS;
+    });
 
     function handleIconPreferences(e, key) {
         const isChecked = e.target.checked;
