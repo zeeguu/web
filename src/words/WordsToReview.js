@@ -14,6 +14,7 @@ import { UserContext } from "../contexts/UserContext";
 import { ExercisesCounterContext } from "../exercises/ExercisesCounterContext";
 import { removeArrayDuplicates } from "../utils/basic/arrays";
 import { ProgressContext } from "../contexts/ProgressContext";
+import ArticlesProgressSummary from "../articles/ArticlesProgressSummary";
 import { getWeeklyTranslatedWordsCount, calculateWeeklyReadingMinutes, calculateConsecutivePracticeWeeks, calculateTotalReadingMinutes } from "../utils/progressTracking/progressHelpers";
 
 export default function WordsToReview({
@@ -124,6 +125,13 @@ export default function WordsToReview({
             <p>You didn't translate any words in this article.</p>
           </div>
         </Infobox>
+        <ArticlesProgressSummary
+          weeklyTranslated={weeklyTranslated}
+          weeklyReadingMinutes={weeklyReadingMinutes} 
+          weeksPracticed = {weeksPracticed}
+          totalTranslated = {totalTranslated}
+          totalReadingMinutes = {totalReadingMinutes}
+        />
       </>
     );
 
@@ -167,6 +175,7 @@ export default function WordsToReview({
             />
           }
         />
+        
       )}
 
 
@@ -184,6 +193,13 @@ export default function WordsToReview({
                 source={source}
                 isReview={inEditMode}
               />
+                      <ArticlesProgressSummary
+          weeklyTranslated={weeklyTranslated}
+          weeklyReadingMinutes={weeklyReadingMinutes} 
+          weeksPracticed = {weeksPracticed}
+          totalTranslated = {totalTranslated}
+          totalReadingMinutes = {totalReadingMinutes}
+        />
             </ContentOnRow>          
           ))}
         </>
@@ -205,6 +221,13 @@ export default function WordsToReview({
                 source={source}
                 isReview={inEditMode}
               />
+                      <ArticlesProgressSummary
+          weeklyTranslated={weeklyTranslated}
+          weeklyReadingMinutes={weeklyReadingMinutes} 
+          weeksPracticed = {weeksPracticed}
+          totalTranslated = {totalTranslated}
+          totalReadingMinutes = {totalReadingMinutes}
+        />
             </ContentOnRow>
           ))}
         </>
@@ -234,6 +257,13 @@ export default function WordsToReview({
                 source={source}
                 isReview={inEditMode}
               />
+                      <ArticlesProgressSummary
+          weeklyTranslated={weeklyTranslated}
+          weeklyReadingMinutes={weeklyReadingMinutes} 
+          weeksPracticed = {weeksPracticed}
+          totalTranslated = {totalTranslated}
+          totalReadingMinutes = {totalReadingMinutes}
+        />
             </ContentOnRow>
           ))}
         </>
