@@ -186,13 +186,6 @@ export default function WordsToReview({
                 source={source}
                 isReview={inEditMode}
               />
-                      <ArticlesProgressSummary
-          weeklyTranslated={weeklyTranslated}
-          weeklyReadingMinutes={weeklyReadingMinutes} 
-          weeksPracticed = {weeksPracticed}
-          totalTranslated = {totalTranslated}
-          totalReadingMinutes = {totalReadingMinutes}
-        />
             </ContentOnRow>          
           ))}
         </>
@@ -214,13 +207,6 @@ export default function WordsToReview({
                 source={source}
                 isReview={inEditMode}
               />
-                      <ArticlesProgressSummary
-          weeklyTranslated={weeklyTranslated}
-          weeklyReadingMinutes={weeklyReadingMinutes} 
-          weeksPracticed = {weeksPracticed}
-          totalTranslated = {totalTranslated}
-          totalReadingMinutes = {totalReadingMinutes}
-        />
             </ContentOnRow>
           ))}
         </>
@@ -250,13 +236,6 @@ export default function WordsToReview({
                 source={source}
                 isReview={inEditMode}
               />
-                      <ArticlesProgressSummary
-          weeklyTranslated={weeklyTranslated}
-          weeklyReadingMinutes={weeklyReadingMinutes} 
-          weeksPracticed = {weeksPracticed}
-          totalTranslated = {totalTranslated}
-          totalReadingMinutes = {totalReadingMinutes}
-        />
             </ContentOnRow>
           ))}
         </>
