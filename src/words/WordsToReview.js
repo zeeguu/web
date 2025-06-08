@@ -141,9 +141,9 @@ export default function WordsToReview({
                 source={source}
                 isReview={inEditMode}
               />
-              <ArticlesProgressSummary />
             </ContentOnRow>          
           ))}
+          <ArticlesProgressSummary />
         </>
       )}
       {((wordsExcludedForExercises.length > 0 && totalWordsTranslated < 10) ||
@@ -162,9 +162,9 @@ export default function WordsToReview({
                 source={source}
                 isReview={inEditMode}
               />
-              <ArticlesProgressSummary />
             </ContentOnRow>
           ))}
+          <ArticlesProgressSummary />
         </>
       )}
       {((wordsExpressions.length > 0 && totalWordsTranslated < 10) ||
@@ -191,10 +191,10 @@ export default function WordsToReview({
                 notifyWordChange={notifyWordChanged}
                 source={source}
                 isReview={inEditMode}
-              />
-              <ArticlesProgressSummary />
+              /> 
             </ContentOnRow>
           ))}
+          <ArticlesProgressSummary />
         </>
       )}
     </>
