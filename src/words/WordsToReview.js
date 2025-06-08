@@ -10,8 +10,6 @@ import { USER_WORD_PREFERENCE } from "./userBookmarkPreferences";
 import InfoBoxWordsToReview from "./InfoBoxWordsToReview";
 import ToggleEditReviewWords from "./ToggleEditReviewWords";
 import ArticlesProgressSummary from "../articles/ArticlesProgressSummary";
-import { ProgressContext } from "../contexts/ProgressContext";
-import { APIContext } from "../contexts/APIContext";
 
 
 export default function WordsToReview({
@@ -27,9 +25,6 @@ export default function WordsToReview({
   const [wordsExcludedForExercises, setWordsExcludedForExercises] = useState(
     [],
   );
-    const api = useContext(APIContext);
-
-
   // how many of the words were set by zeeguu
   const [wordsSelectedByZeeguu_Counter, setWordsSelectedByZeeguu_Counter] =
     useState();
@@ -37,7 +32,6 @@ export default function WordsToReview({
   const [wordsExpressions, setWordsExpressions] = useState([]);
   const [showExplainWordSelectionModal, setShowExplainWordSelectionModal] =
     useState(false);
-  const { totalTranslated, setTotalTranslated} = useContext(ProgressContext);
   
   useEffect(() => {
     let newWordsForExercises = [];
@@ -69,14 +63,6 @@ export default function WordsToReview({
     setWordsSelectedByZeeguu_Counter(_wordsSelectedByZeeguu_Counter);
     setWordsEditedByUser_Counter(_wordsEditedByUser_Counter);
   }, [words]);
-
-  useEffect(() => {
-    api.getBookmarksCountByDate((counts) => {
-      const totalTranslatedWords = counts.reduce((sum, day) => sum + day.count, 0);
-      setTotalTranslated(totalTranslatedWords);
-      })
-  
-  }, []);
     // Update the total translated words in the ProgressContext)
 
   if (words.length === 0)
@@ -95,9 +81,6 @@ export default function WordsToReview({
             <p>You didn't translate any words in this article.</p>
           </div>
         </Infobox>
-        <ArticlesProgressSummary 
-          totalTranslated={totalTranslated}
-        />
       </>
     );
 
@@ -157,9 +140,6 @@ export default function WordsToReview({
                 source={source}
                 isReview={inEditMode}
               />
-              <ArticlesProgressSummary
-                totalTranslated={totalTranslated}
-              />
             </ContentOnRow>          
           ))}
         </>
@@ -180,8 +160,6 @@ export default function WordsToReview({
                 source={source}
                 isReview={inEditMode}
               />
-              <ArticlesProgressSummary 
-              totalTranslated={totalTranslated}/>
             </ContentOnRow>
           ))}
         </>
@@ -211,8 +189,6 @@ export default function WordsToReview({
                 source={source}
                 isReview={inEditMode}
               />
-              <ArticlesProgressSummary 
-              totalTranslated={totalTranslated}/>
             </ContentOnRow>
           ))}
         </>
