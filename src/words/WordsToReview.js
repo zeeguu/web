@@ -125,13 +125,6 @@ export default function WordsToReview({
             <p>You didn't translate any words in this article.</p>
           </div>
         </Infobox>
-        <ArticlesProgressSummary
-          weeklyTranslated={weeklyTranslated}
-          weeklyReadingMinutes={weeklyReadingMinutes} 
-          weeksPracticed = {weeksPracticed}
-          totalTranslated = {totalTranslated}
-          totalReadingMinutes = {totalReadingMinutes}
-        />
       </>
     );
 
