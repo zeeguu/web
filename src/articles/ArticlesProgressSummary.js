@@ -1,17 +1,40 @@
-import {useState, useEffect} from "react";
+import {useState, useEffect, useContext} from "react";
 import NavIcon from "../components/MainNav/NavIcon";
 import { getArticlesProgressSummary } from "../utils/progressTracking/progressData";
 import { selectTwoRandomItems } from "../utils/progressTracking/progressHelpers";
+import { APIContext } from "../contexts/APIContext";
+import { ProgressContext } from "../contexts/ProgressContext";
+import { calculateWeeklyReadingMinutes, calculateTotalReadingMinutes, calculateConsecutivePracticeWeeks, getWeeklyTranslatedWordsCount} from "../utils/progressTracking/progressHelpers";
 
 import * as s from "../components/progress_tracking/ProgressItems.sc";
 
-export default function ArticlesProgressSummary({weeklyTranslated, weeklyMinutesRead, weeksPracticed, totalTranslated, totalReadingMinutes }) {
-    const {articlesProgressSummary} = getArticlesProgressSummary({weeklyTranslated, weeklyMinutesRead, weeksPracticed, totalTranslated, totalReadingMinutes});
+export default function ArticlesProgressSummary() {
+    const {articlesProgressSummary} = getArticlesProgressSummary({weeklyTranslated, weeklyReadingMinutes, weeksPracticed, totalTranslated, totalReadingMinutes});
+    const api = useContext(APIContext);
+    const {weeklyTranslated, setWeeklyTranslated, weeklyReadingMinutes, setWeeklyReadingMinutes, weeksPracticed, setWeeksPracticed, totalTranslated, setTotalTranslated, totalReadingMinutes, setTotalReadingMinutes} = useContext(ProgressContext);
     const [randomItems, setRandomItems] = useState([]);
 
     useEffect(() =>{
         const twoRandomItems = selectTwoRandomItems(articlesProgressSummary);
         setRandomItems(twoRandomItems);
+
+        api.getBookmarksCountByDate((counts) => {
+          const totalTranslatedWords = counts.reduce((sum, day) => sum + day.count, 0);
+          setTotalTranslated(totalTranslatedWords);
+          const thisWeek = getWeeklyTranslatedWordsCount(counts);
+          const weeklyTotal = thisWeek.reduce((sum, day) => sum + day.count, 0);
+          setWeeklyTranslated(weeklyTotal);
+        })
+
+      api.getUserActivityByDay((activity) =>{
+        setTotalReadingMinutes(calculateTotalReadingMinutes(activity.reading));
+        const readingMinsPerWeek = calculateWeeklyReadingMinutes(activity.reading);
+        setWeeklyReadingMinutes(readingMinsPerWeek);
+    
+        const weeksPracticed = calculateConsecutivePracticeWeeks(activity);
+        setWeeksPracticed(weeksPracticed);
+
+      });
     }, []);
     
     return (
