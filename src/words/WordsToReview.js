@@ -19,6 +19,7 @@ export default function WordsToReview({
   notifyWordChanged,
   source,
 }) {
+  console.log("articleInfo:", articleInfo);
   const totalWordsTranslated = words.length;
   const [inEditMode, setInEditMode] = useState(false);
   const [wordsForExercises, setWordsForExercises] = useState([]);
@@ -63,7 +64,6 @@ export default function WordsToReview({
     setWordsSelectedByZeeguu_Counter(_wordsSelectedByZeeguu_Counter);
     setWordsEditedByUser_Counter(_wordsEditedByUser_Counter);
   }, [words]);
-    // Update the total translated words in the ProgressContext)
 
   if (words.length === 0)
     return (
