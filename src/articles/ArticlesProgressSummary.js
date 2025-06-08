@@ -18,7 +18,7 @@ export default function ArticlesProgressSummary() {
         const twoRandomItems = selectTwoRandomItems(articlesProgressSummary);
         setRandomItems(twoRandomItems);
 
-        api.getBookmarksCountByDate((counts) => {
+        api.getBookmarksCountsByDate((counts) => {
           const totalTranslatedWords = counts.reduce((sum, day) => sum + day.count, 0);
           setTotalTranslated(totalTranslatedWords);
           const thisWeek = getWeeklyTranslatedWordsCount(counts);
