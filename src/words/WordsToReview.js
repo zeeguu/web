@@ -2,7 +2,7 @@ import Word from "./Word";
 import { ContentOnRow } from "../reader/ArticleReader.sc";
 import strings from "../i18n/definitions";
 import Infobox from "../components/Infobox";
-import { useState, useEffect} from "react";
+import { useState, useEffect, useContext} from "react";
 import { tokenize } from "../utils/text/preprocessing";
 import ExplainBookmarkSelectionModal from "../components/ExplainBookmarkSelectionModal";
 import { MAX_BOOKMARKS_TO_STUDY_PER_ARTICLE } from "../exercises/ExerciseConstants";
@@ -10,6 +10,7 @@ import { USER_WORD_PREFERENCE } from "./userBookmarkPreferences";
 import InfoBoxWordsToReview from "./InfoBoxWordsToReview";
 import ToggleEditReviewWords from "./ToggleEditReviewWords";
 import ArticlesProgressSummary from "../articles/ArticlesProgressSummary"
+import { ProgressContext } from "../context/ProgressContext";
 
 export default function WordsToReview({
   words,
@@ -32,6 +33,7 @@ export default function WordsToReview({
   const [wordsExpressions, setWordsExpressions] = useState([]);
   const [showExplainWordSelectionModal, setShowExplainWordSelectionModal] =
     useState(false);
+  const { totalTranslated, setTotalTranslated} = useContext(ProgressContext);
   
   useEffect(() => {
     let newWordsForExercises = [];
@@ -64,6 +66,15 @@ export default function WordsToReview({
     setWordsEditedByUser_Counter(_wordsEditedByUser_Counter);
   }, [words]);
 
+  useEffect(() => {
+    api.getBookmarksCountByDate((counts) => {
+      const totalTranslatedWords = counts.reduce((sum, day) => sum + day.count, 0);
+      setTotalTranslated(totalTranslatedWords);
+      })
+  
+  }, []);
+    // Update the total translated words in the ProgressContext)
+
   if (words.length === 0)
     return (
       <>
@@ -80,7 +91,9 @@ export default function WordsToReview({
             <p>You didn't translate any words in this article.</p>
           </div>
         </Infobox>
-        <ArticlesProgressSummary />
+        <ArticlesProgressSummary 
+          totalTranslated={totalTranslated}
+        />
       </>
     );
 
@@ -140,7 +153,9 @@ export default function WordsToReview({
                 source={source}
                 isReview={inEditMode}
               />
-              <ArticlesProgressSummary />
+              <ArticlesProgressSummary
+                totalTranslated={totalTranslated}
+              />
             </ContentOnRow>          
           ))}
         </>
@@ -161,7 +176,8 @@ export default function WordsToReview({
                 source={source}
                 isReview={inEditMode}
               />
-              <ArticlesProgressSummary />
+              <ArticlesProgressSummary 
+              totalTranslated={totalTranslated}/>
             </ContentOnRow>
           ))}
         </>
@@ -191,7 +207,8 @@ export default function WordsToReview({
                 source={source}
                 isReview={inEditMode}
               />
-              <ArticlesProgressSummary />
+              <ArticlesProgressSummary 
+              totalTranslated={totalTranslated}/>
             </ContentOnRow>
           ))}
         </>
