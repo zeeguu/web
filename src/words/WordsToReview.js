@@ -9,8 +9,10 @@ import { MAX_BOOKMARKS_TO_STUDY_PER_ARTICLE } from "../exercises/ExerciseConstan
 import { USER_WORD_PREFERENCE } from "./userBookmarkPreferences";
 import InfoBoxWordsToReview from "./InfoBoxWordsToReview";
 import ToggleEditReviewWords from "./ToggleEditReviewWords";
-import ArticlesProgressSummary from "../articles/ArticlesProgressSummary"
-import { ProgressContext } from "../context/ProgressContext";
+import ArticlesProgressSummary from "../articles/ArticlesProgressSummary";
+import { ProgressContext } from "../contexts/ProgressContext";
+import { APIContext } from "../contexts/APIContext";
+
 
 export default function WordsToReview({
   words,
@@ -25,6 +27,8 @@ export default function WordsToReview({
   const [wordsExcludedForExercises, setWordsExcludedForExercises] = useState(
     [],
   );
+    const api = useContext(APIContext);
+
 
   // how many of the words were set by zeeguu
   const [wordsSelectedByZeeguu_Counter, setWordsSelectedByZeeguu_Counter] =
