@@ -10,8 +10,8 @@ import * as s from "../components/progress_tracking/ProgressItems.sc";
 
 export default function ArticlesProgressSummary() {
     const api = useContext(APIContext);
-    const {articlesProgressSummary} = getArticlesProgressSummary({weeklyTranslated, weeklyReadingMinutes, weeksPracticed, totalTranslated, totalReadingMinutes});
     const {weeklyTranslated, setWeeklyTranslated, weeklyReadingMinutes, setWeeklyReadingMinutes, weeksPracticed, setWeeksPracticed, totalTranslated, setTotalTranslated, totalReadingMinutes, setTotalReadingMinutes} = useContext(ProgressContext);
+    const {articlesProgressSummary} = getArticlesProgressSummary({weeklyTranslated, weeklyReadingMinutes, weeksPracticed, totalTranslated, totalReadingMinutes});
     const [randomItems, setRandomItems] = useState([]);
 
     useEffect(() =>{
