@@ -9,6 +9,7 @@ import { MAX_BOOKMARKS_TO_STUDY_PER_ARTICLE } from "../exercises/ExerciseConstan
 import { USER_WORD_PREFERENCE } from "./userBookmarkPreferences";
 import InfoBoxWordsToReview from "./InfoBoxWordsToReview";
 import ToggleEditReviewWords from "./ToggleEditReviewWords";
+import ArticlesProgressSummary from "../articles/ArticlesProgressSummary"
 
 export default function WordsToReview({
   words,
@@ -79,6 +80,7 @@ export default function WordsToReview({
             <p>You didn't translate any words in this article.</p>
           </div>
         </Infobox>
+        <ArticlesProgressSummary />
       </>
     );
 
@@ -138,6 +140,7 @@ export default function WordsToReview({
                 source={source}
                 isReview={inEditMode}
               />
+              <ArticlesProgressSummary />
             </ContentOnRow>          
           ))}
         </>
@@ -158,6 +161,7 @@ export default function WordsToReview({
                 source={source}
                 isReview={inEditMode}
               />
+              <ArticlesProgressSummary />
             </ContentOnRow>
           ))}
         </>
@@ -187,6 +191,7 @@ export default function WordsToReview({
                 source={source}
                 isReview={inEditMode}
               />
+              <ArticlesProgressSummary />
             </ContentOnRow>
           ))}
         </>
