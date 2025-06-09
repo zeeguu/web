@@ -18,8 +18,6 @@ import { UserContext } from "../contexts/UserContext";
 import { ProgressContext } from "../contexts/ProgressContext";
 import { ExercisesCounterContext } from "./ExercisesCounterContext";
 import  ExerciseProgressSummary  from "./ExercisesProgressSummary";
-import {calculateConsecutivePracticeWeeks, calculateWeeklyReadingMinutes} from "../utils/progressTracking/progressHelpers";
-
 
 export default function Congratulations({
   articleID,
@@ -36,7 +34,7 @@ export default function Congratulations({
   exerciseSessionTimer,
 }) {
   const api = useContext(APIContext);
-  const { weeksPracticed, setWeeksPracticed, totalLearned, setTotalLearned, totalInLearning, setTotalInLearning } = useContext(ProgressContext);
+  const { weeksPracticed, totalLearned, setTotalLearned, totalInLearning, setTotalInLearning } = useContext(ProgressContext);
   const { userDetails } = useContext(UserContext);
   const { updateExercisesCounter } = useContext(ExercisesCounterContext);
   const [checkpointTime] = useState(exerciseSessionTimer);
@@ -66,10 +64,7 @@ export default function Congratulations({
     api.totalLearnedBookmarks((totalLearnedCount) =>{
       setTotalLearned(totalLearnedCount)
     }); 
-    api.getUserActivityByDay((activity) => {  
-      const weeksPracticed = calculateConsecutivePracticeWeeks(activity);
-      setWeeksPracticed(weeksPracticed);
-        });   
+ 
     // eslint-disable-next-line
   }, []);
 
