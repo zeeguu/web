@@ -98,7 +98,7 @@ let strings = new LocalizedStrings(
 
       wordsTextWeeklyEnd: "words this week.",
       wordsTextWeeklyEndSingle: "word this week.",
-      wordsTextTotalEnd: "words in total since you started using Zeeguu",
+      wordsTextTotalEnd: "words in total since you started using Zeeguu.",
       wordsTextTotalEndSingle: "word in total since you started using Zeeguu",
 
 
