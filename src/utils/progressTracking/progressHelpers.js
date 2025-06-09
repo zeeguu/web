@@ -43,6 +43,8 @@ export function getWeeklyTranslatedWordsCount(counts) {
   };
 
 export function calculateConsecutivePracticeWeeks(activity) {
+  console.log("activity", activity)
+  console.log("activity.reading", activity?.reading)
   if (!activity || !Array.isArray(activity.reading) || !Array.isArray(activity.exercises)) {
     return 0;
   }
@@ -64,7 +66,7 @@ export function calculateConsecutivePracticeWeeks(activity) {
   });
 
   if (practicedWeeks.size === 0) return 0;
-
+  console.log("Practiced weeks:", practicedWeeks);
   // Get this week's Monday (start of the week)
   const now = new Date();
   now.setHours(0, 0, 0, 0);
@@ -72,16 +74,20 @@ export function calculateConsecutivePracticeWeeks(activity) {
   thisMonday.setDate(now.getDate() - now.getDay());
   thisMonday.setHours(0, 0, 0, 0);
 
-  // Build streak backwards from this week
+  // Build streak backwards from last week
   let streak = 0;
   let checkMonday = new Date(thisMonday);
+  checkMonday.setDate(checkMonday.getDate() - 7);
 
   while (practicedWeeks.has(checkMonday.toISOString().slice(0, 10))) {
     streak++;
     // Go to previous week
     checkMonday.setDate(checkMonday.getDate() - 7);
   }
-
+  // if the user has practiced this week increment  by 1 
+  if (practicedWeeks.has(thisMonday.toISOString().slice(0, 10))){
+  streak++;}
+  
   return streak;
 }
 
