@@ -144,14 +144,14 @@ export function getTotalWordsLearned(totalLearned){
     return weeklyWordsPracticed;
   }
 
-  export function getTopBarData({weeklyTranslated, weeklyReadingMinutes, weeksPracticed}){
+  export function getTopBarData({weeklyReadingMinutes, weeksPracticed}){
     const weeklyArticlesRead = getWeeklyMinutesRead(weeklyReadingMinutes);
-    const weeklyWordsTranslated = getWeeklyWordsTranslated(weeklyTranslated)
+    const weeklyWordsPracticed = getWeeklyWordsPracticed();
     const weeklyStreak = getWeeklyStreak(weeksPracticed);
 
     const weeklyProgressOverview = [
         weeklyArticlesRead,
-        weeklyWordsTranslated,
+        weeklyWordsPracticed,
         weeklyStreak,
     ];
 
