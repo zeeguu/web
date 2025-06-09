@@ -102,8 +102,11 @@ export function calculateWeeklyReadingMinutes(readingActivity){
         }
         return sum;
     }, 0);
-
-    return Math.floor(weeklyReadingSeconds / 60);
+    console.log("Weekly reading seconds", weeklyReadingSeconds);
+    if (weeklyReadingSeconds % 60 > 30){
+      return Math.floor(weeklyReadingSeconds / 60) + 1; // round up if more than 30 seconds. This is what is done in user dashboard
+    }
+    return Math.floor(weeklyReadingSeconds / 60); 
 }
 
 export function calculateTotalReadingMinutes(readingActivity){
