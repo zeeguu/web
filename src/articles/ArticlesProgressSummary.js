@@ -4,13 +4,12 @@ import { getArticlesProgressSummary } from "../utils/progressTracking/progressDa
 import { selectTwoRandomItems } from "../utils/progressTracking/progressHelpers";
 import { APIContext } from "../contexts/APIContext";
 import { ProgressContext } from "../contexts/ProgressContext";
-import { calculateWeeklyReadingMinutes, calculateTotalReadingMinutes, calculateConsecutivePracticeWeeks, getWeeklyTranslatedWordsCount} from "../utils/progressTracking/progressHelpers";
-
+import { calculateTotalReadingMinutes, getWeeklyTranslatedWordsCount} from "../utils/progressTracking/progressHelpers";
 import * as s from "../components/progress_tracking/ProgressItems.sc";
 
 export default function ArticlesProgressSummary() {
     const api = useContext(APIContext);
-    const {weeklyTranslated, setWeeklyTranslated, weeklyReadingMinutes, setWeeklyReadingMinutes, weeksPracticed, setWeeksPracticed, totalTranslated, setTotalTranslated, totalReadingMinutes, setTotalReadingMinutes} = useContext(ProgressContext);
+    const { weeklyReadingMinutes, weeklyTranslated, setWeeklyTranslated, weeksPracticed, totalTranslated, setTotalTranslated, totalReadingMinutes, setTotalReadingMinutes} = useContext(ProgressContext);
     const {articlesProgressSummary} = getArticlesProgressSummary({weeklyTranslated, weeklyReadingMinutes, weeksPracticed, totalTranslated, totalReadingMinutes});
     const [randomItems, setRandomItems] = useState([]);
 
@@ -26,17 +25,11 @@ export default function ArticlesProgressSummary() {
           setWeeklyTranslated(weeklyTotal);
         })
 
-      api.getUserActivityByDay((activity) =>{
-        setTotalReadingMinutes(calculateTotalReadingMinutes(activity.reading));
-        const readingMinsPerWeek = calculateWeeklyReadingMinutes(activity.reading);
-        setWeeklyReadingMinutes(readingMinsPerWeek);
-    
-        const weeksPracticed = calculateConsecutivePracticeWeeks(activity);
-        setWeeksPracticed(weeksPracticed);
-
-      });
+        api.getUserActivityByDay((activity) => {
+          setTotalReadingMinutes(calculateTotalReadingMinutes(activity.reading));
+    });
     }, []);
-    
+
     return (
         <s.ProgressItemsContainer >
         {randomItems.map((item) => (
