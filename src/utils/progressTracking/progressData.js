@@ -198,26 +198,18 @@ export function getWeeklyProgressOverviewItems({weeklyTranslated, weeklyReadingM
 
 }
 
-export function getExerciseProgressSummary({totalInLearning, totalTranslated, totalLearned, totalReadingMinutes, weeksPracticed, weeklyMinutesRead, weeklyTranslated}){
+export function getExerciseProgressSummary({totalInLearning, totalLearned, weeksPracticed}){
     const totalWordsPracticed = getTotalWordsPracticed(totalInLearning);
     const totalWordsLearned = getTotalWordsLearned(totalLearned)
     const weeklyStreak = getWeeklyStreak(weeksPracticed);
     const weeklyWordsPracticed = getWeeklyWordsPracticed();
-    const totalWordsTranslated = getTotalWordsTranslated(totalTranslated);
-    const totalMinutesRead = getTotalMinutesRead(totalReadingMinutes);
-    const weeklyReadingMinutes = getWeeklyMinutesRead(weeklyMinutesRead);
-    const weeklyTranslatedWords = getWeeklyWordsTranslated(weeklyTranslated);
 
 
     const exerciseProgressSummary = [
         totalWordsPracticed,
         totalWordsLearned,
-        totalWordsTranslated,
-        totalMinutesRead,
         weeklyStreak,
         weeklyWordsPracticed,
-        weeklyReadingMinutes,
-        weeklyTranslatedWords
     ];
 
     return{
