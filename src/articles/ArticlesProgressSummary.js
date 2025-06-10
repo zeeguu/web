@@ -10,13 +10,36 @@ import * as s from "../components/progress_tracking/ProgressItems.sc";
 export default function ArticlesProgressSummary() {
     const api = useContext(APIContext);
     const { weeklyReadingMinutes, weeklyTranslated, setWeeklyTranslated, weeksPracticed, totalTranslated, setTotalTranslated, totalReadingMinutes, setTotalReadingMinutes} = useContext(ProgressContext);
-    const {articlesProgressSummary} = getArticlesProgressSummary({weeklyTranslated, weeklyReadingMinutes, weeksPracticed, totalTranslated, totalReadingMinutes});
     const [randomItems, setRandomItems] = useState([]);
 
-    useEffect(() =>{
-        const twoRandomItems = selectTwoRandomItems(articlesProgressSummary);
+    useEffect(() => {
+      const allValuesReady =
+        weeklyReadingMinutes != null &&
+        weeklyTranslated != null &&
+        weeksPracticed != null &&
+        totalTranslated != null &&
+        totalReadingMinutes != null;
+    
+      if (allValuesReady) {
+        const summary = getArticlesProgressSummary({
+          weeklyTranslated,
+          weeklyReadingMinutes,
+          weeksPracticed,
+          totalTranslated,
+          totalReadingMinutes,
+        }).articlesProgressSummary;
+        const twoRandomItems = selectTwoRandomItems(summary);
         setRandomItems(twoRandomItems);
+      }
+    }, [
+      weeklyReadingMinutes,
+      weeklyTranslated,
+      weeksPracticed,
+      totalTranslated,
+      totalReadingMinutes
+    ]);
 
+    useEffect(() =>{
         api.getBookmarksCountsByDate((counts) => {
           const totalTranslatedWords = counts.reduce((sum, day) => sum + day.count, 0);
           setTotalTranslated(totalTranslatedWords);
