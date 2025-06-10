@@ -8,7 +8,7 @@ export default function ExercisesProgressSummary({totalInLearning, totalLearned,
     const {exerciseProgressSummary} = getExerciseProgressSummary({totalInLearning, totalLearned, weeksPracticed});
     const [randomItems, setRandomItems] = useState([]);
 
-
+    
     useEffect(() =>{
         const twoRandomItems = selectTwoRandomItems(exerciseProgressSummary);
         setRandomItems(twoRandomItems);
@@ -23,7 +23,7 @@ export default function ExercisesProgressSummary({totalInLearning, totalLearned,
           >
             <s.IconWithValueAndLabel>
               <s.IconAndValue>
-                <s.Icon><NavIcon name="words"/></s.Icon>
+                <s.Icon><NavIcon name={item.icon} size='1.3em'/></s.Icon>
                 <s.Value> {item.value} </s.Value>
               </s.IconAndValue>
               <s.Label>{item.iconText}</s.Label>

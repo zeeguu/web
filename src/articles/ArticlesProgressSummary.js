@@ -63,7 +63,7 @@ export default function ArticlesProgressSummary() {
           >
             <s.IconWithValueAndLabel>
               <s.IconAndValue>
-                <s.Icon><NavIcon name={item.icon}/></s.Icon>
+                <s.Icon><NavIcon name={item.icon} size= '1.3em' /></s.Icon>
                 <s.Value> {item.value} </s.Value>
               </s.IconAndValue>
               <s.Label>{item.iconText}</s.Label>
