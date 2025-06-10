@@ -62,7 +62,9 @@ const ProgressDescription = styled.div`
   margin-left: 4em;
 
     @media (max-width: 768px) {
-    font-size: 0.6rem;
+    font-size: 0.55rem;
+    padding-top: 0.6rem;
+    padding-bottom: 0.6rem;
   }
 `;
 
