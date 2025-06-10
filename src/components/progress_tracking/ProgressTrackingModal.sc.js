@@ -43,3 +43,10 @@ export const ModalContent = styled.div`
 export const CenteredHeading = styled(Heading)`
 text-align: center;
 `;
+
+export const TextRowAsteriks = styled(TextRow)`
+  font-style: italic;
+  font-size: 0.7em;
+  
+
+`;

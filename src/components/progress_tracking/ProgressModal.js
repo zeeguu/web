@@ -18,6 +18,7 @@ export default function ProgressModal({
     linkText,
     linkTo,
     size,
+    asteriks,
 }){
    
     return (
@@ -37,6 +38,11 @@ export default function ProgressModal({
                 <h3>{unit}</h3>
                 </s.IconAndIntegerRow>
                 <s.TextRow>{descriptionStart} {value} {descriptionEnd}</s.TextRow>
+                {asteriks ? (
+                    <s.TextRowAsteriks>{asteriks}</s.TextRowAsteriks>) 
+                    : (
+                    null 
+                )}
                  <ReactLink
                  className="small"
                  onClick={() => setOpen(false)}
@@ -45,8 +51,6 @@ export default function ProgressModal({
                {linkText} <ArrowForwardRoundedIcon />
             </ReactLink>
             </s.ModalContent>
-        </Modal>
-
-        
+        </Modal> 
     );
 }

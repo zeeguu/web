@@ -102,10 +102,11 @@ let strings = new LocalizedStrings(
       wordsTextTotalEndSingle: "word in total since you started using Zeeguu",
 
 
-      streakTextStart: "You have practiced every week for",
-      streakTextStartSingle: "You have practiced for",
+      streakTextStart: "You have practiced* every week for",
+      streakTextStartSingle: "You have practiced* for",
       streakTextEnd: "weeks straight.",
       streakTextEndSingle: "week straight.",
+      streakAsteriks: "*minimum 5 minutes in one day",
 
       //Positive feedback
       positiveFeedbackMsg1: "You are doing great!",
