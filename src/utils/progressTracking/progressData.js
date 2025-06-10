@@ -114,6 +114,7 @@ export function getTotalWordsLearned(totalLearned){
         icon: "headerStreak",
         iconText: strings.iconTextWeeklyStreak,
         value: weeklyStreak,
+        asteriks: strings.streakAsteriks,
         beforeText: (weeklyStreak === 1 ? strings.streakTextStartSingle : strings.streakTextStart),
         afterText: (weeklyStreak === 1 ? strings.streakTextEndSingle : strings.streakTextEnd) + (weeklyStreak>0 ? " " + strings.positiveFeedbackMsg3 : ""),
         modal: {

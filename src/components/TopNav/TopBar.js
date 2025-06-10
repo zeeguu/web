@@ -49,6 +49,7 @@ export default function TopBar() {
       descriptionEnd: item.afterText,
       iconName: item.icon,
       unit: item.modal.unit || "",
+      asteriks: item.asteriks,
     });
   };
 
