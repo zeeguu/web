@@ -29,6 +29,7 @@ export default function ArticlesProgressSummary() {
           setTotalReadingMinutes(calculateTotalReadingMinutes(activity.reading));
     });
     }, []);
+    console.log("randomItems", randomItems);
 
     return (
         <s.ProgressItemsContainer >
@@ -39,7 +40,7 @@ export default function ArticlesProgressSummary() {
           >
             <s.IconWithValueAndLabel>
               <s.IconAndValue>
-                <s.Icon><NavIcon name="words"/></s.Icon>
+                <s.Icon><NavIcon name={item.icon}/></s.Icon>
                 <s.Value> {item.value} </s.Value>
               </s.IconAndValue>
               <s.Label>{item.iconText}</s.Label>
