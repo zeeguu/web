@@ -26,7 +26,7 @@ const IconWithValueAndLabel = styled.div`
   flex-direction: column;
   align-items: center;
   text-align: center;
-  width: 4.5em;
+  margin-top: -0.5em;
 `;
 
 const IconAndValue = styled.div`
@@ -36,19 +36,18 @@ const IconAndValue = styled.div`
 `;
 
 const Icon = styled.div`
-  font-size: 1em;
+  font-size: 2em;
   color: ${zeeguuWarmYellow};
 `;
 
 const Value = styled.div`
   font-weight: bold;
-  font-size: 0.8em;
+  font-size: 1em;
 `;
 
 const Label = styled.div`
-  font-size: 0.6em;
-  margin-top: 0.2em;
-
+  font-size: 0.7em;
+  margin-top: -0.3em;
   @media (max-width: 768px) {
     font-size: 0.55em;
   }
