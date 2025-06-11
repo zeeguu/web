@@ -26,7 +26,7 @@ import { APIContext } from "../contexts/APIContext";
 import { useHistory } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 import { ProgressContext } from "../contexts/ProgressContext";
-import { getWeeklyTranslatedWordsCount, calculateTotalReadingMinutes } from "../utils/progressTracking/progressHelpers";
+import { getWeeklyTranslatedWordsCount, calculateTotalReadingMinutes, calculateWeeklyReadingMinutes, calculateConsecutivePracticeWeeks } from "../utils/progressTracking/progressHelpers";
 
 
 
@@ -34,9 +34,7 @@ export default function UserDashboard() {
   const api = useContext(APIContext);
   const location = useLocation();
   const history = useHistory();
-
-
-  const { setWeeklyTranslated, setTotalReadingMinutes, setTotalTranslated, setTotalInLearning, setTotalLearned,  } = useContext(ProgressContext);
+  const { setWeeklyTranslated, setTotalReadingMinutes, setTotalTranslated, setTotalInLearning, setTotalLearned, setWeeksPracticed, setWeeklyPracticed, setWeeklyReadingMinutes } = useContext(ProgressContext);
   const [activeTab, setActiveTab] = useState(TABS_IDS.BAR_GRAPH);
   const [activeTimeInterval, setActiveTimeInterval] = useState(OPTIONS.WEEK);
   const [activeCustomTimeInterval, setActiveCustomTimeInterval] = useState(
@@ -156,6 +154,12 @@ export default function UserDashboard() {
       
       setTotalReadingMinutes(calculateTotalReadingMinutes(activity.reading));
 
+      const readingMinsPerWeek = calculateWeeklyReadingMinutes(activity.reading);
+      setWeeklyReadingMinutes(readingMinsPerWeek);
+      
+      const weeksPracticed = calculateConsecutivePracticeWeeks(activity);
+      setWeeksPracticed(weeksPracticed);
+
     });
 
     api.getAllScheduledBookmarks(false, (bookmarks) => {
@@ -165,6 +169,11 @@ export default function UserDashboard() {
     api.totalLearnedBookmarks((totalLearnedCount) =>{
       setTotalLearned(totalLearnedCount)
     }); 
+
+    api.getPracticedBookmarksCountThisWeek((count) => {
+      console.log("this is the count in the dashboard", count);
+      setWeeklyPracticed(count);
+    });
   // eslint-disable-next-line
   }, [activeTab]);
 
