@@ -48,6 +48,8 @@ const Value = styled.div`
 const Label = styled.div`
   font-size: 0.7em;
   margin-top: -0.3em;
+  letter-spacing: 0.04em;
+
   @media (max-width: 768px) {
     font-size: 0.55em;
   }
@@ -59,12 +61,13 @@ const ProgressDescription = styled.div`
   font-size: 0.75rem;
   align-items: center;
   text-align: left;
-  margin-left: 4em;
+  margin-left: 2.9em;
+  letter-spacing: 0.03em;
 
     @media (max-width: 768px) {
-    font-size: 0.55rem;
-    padding-top: 0.6rem;
-    padding-bottom: 0.6rem;
+    font-size: 0.55em;
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
   }
 `;
 
