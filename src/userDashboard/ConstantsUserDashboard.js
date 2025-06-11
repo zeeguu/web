@@ -65,9 +65,10 @@ const PERIOD_OPTIONS = {
 };
 
 const TABS_IDS = {
-  BAR_GRAPH: 1,
-  LINE_GRAPH: 2,
-  PROGRESS_ITEMS: 3,
+  PROGRESS_ITEMS: 1,
+  BAR_GRAPH: 2,
+  LINE_GRAPH: 3,
+  
 };
 
 //date format used for making sure dates are translated

@@ -60,9 +60,9 @@ export default function UserDashboard() {
     setActiveTab(tabId);
     api.logUserActivity(api.USER_DASHBOARD_TAB_CHANGE, "", tabId);
   
-    let tabParam = "time";
+    let tabParam = "progress";
     if (tabId === TABS_IDS.LINE_GRAPH) tabParam = "translations";
-    else if (tabId === TABS_IDS.PROGRESS_ITEMS) tabParam = "progress";
+    else if (tabId === TABS_IDS.BAR_GRAPH) tabParam = "time";
   
     history.replace(`?tab=${tabParam}`);
   }
@@ -111,14 +111,14 @@ export default function UserDashboard() {
     const params = new URLSearchParams(location.search);
     const tabParam = params.get("tab");
     let newTab;
-    if (tabParam === "time" || !tabParam) {
-      newTab = TABS_IDS.BAR_GRAPH;
+    if (tabParam === "progress" || !tabParam) {
+      newTab = TABS_IDS.PROGRESS_ITEMS;
     } else if (tabParam === "translations") {
       newTab = TABS_IDS.LINE_GRAPH;
-    } else if (tabParam === "progress") {
-      newTab = TABS_IDS.PROGRESS_ITEMS;
-    } else {
+    } else if (tabParam === "time") {
       newTab = TABS_IDS.BAR_GRAPH;
+    } else {
+      newTab = TABS_IDS.PROGRESS_ITEMS;
     }
     setActiveTab(newTab);
   }, [location.search]);

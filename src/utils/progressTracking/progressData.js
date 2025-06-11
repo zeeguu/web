@@ -1,4 +1,5 @@
 import strings from "../../i18n/definitions";
+
   
 export function getTotalMinutesRead(totalReadingMinutes){
     const totalMinutesRead = totalReadingMinutes;
@@ -39,7 +40,7 @@ export function getTotalMinutesRead(totalReadingMinutes){
 export function getTotalWordsPracticed(totalInLearning, totalLearned){
     const totalPracticedWords = totalInLearning + totalLearned;
     const totalWordsPracticed = {
-        icon: "words",
+        icon: "exercises",
         iconText: strings.iconTextTotalWordsPracticed,
         value: totalPracticedWords,
         beforeText: strings.wordsPracticedTextStart,
@@ -57,13 +58,13 @@ export function getTotalWordsPracticed(totalInLearning, totalLearned){
 export function getTotalWordsLearned(totalLearned){
     const totalLearnedWords = totalLearned;
     const totalWordsLearned= {
-        icon: "words",
+        icon: "school",
         iconText: strings.iconTextTotalWordsLearned,
         value: totalLearnedWords,
         beforeText: strings.wordsLearnedTextStart,
         afterText: (totalLearnedWords === 1 ? strings.wordsTextTotalEndSingle : strings.wordsTextTotalEnd) + (totalLearnedWords>0 ? " " + strings.positiveFeedbackMsg4 : ""),
         modal: {
-            linkText: "See your word learning progress",
+            linkText: "See your learned words",
             linkTo: "words/learned",
             size: 90,
             unit: "",
@@ -119,7 +120,7 @@ export function getTotalWordsLearned(totalLearned){
         afterText: (weeklyStreak === 1 ? strings.streakTextEndSingle : strings.streakTextEnd) + (weeklyStreak>0 ? " " + strings.positiveFeedbackMsg3 : ""),
         modal: {
             linkText: "See reading and practice stats",
-            linkTo: "user_dashboard",
+            linkTo: "user_dashboard?tab=time",
             size: 90,
             unit: "weeks",
         }
@@ -130,14 +131,14 @@ export function getTotalWordsLearned(totalLearned){
   export function getWeeklyWordsPracticed(weeklyPracticed){
     const weeklyPracticedWords = weeklyPracticed;
     const weeklyWordsPracticed = {
-        icon: "words",
+        icon: "exercises",
         iconText: strings.iconTextWeeklyWordsPracticed,
         value: weeklyPracticedWords,
         beforeText: strings.wordsPracticedTextStart,
         afterText: (weeklyPracticedWords === 1 ? strings.wordsTextWeeklyEndSingle : strings.wordsTextWeeklyEnd) + (weeklyPracticedWords > 0 ? " " + strings.positiveFeedbackMsg4 : ""),
         modal: {
             linkText: "See your word learning progress",
-            linkTo: "history",
+            linkTo: "words",
             size: 90,
             unit: "",
         }
