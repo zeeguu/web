@@ -4,8 +4,8 @@ import { getExerciseProgressSummary } from "../utils/progressTracking/progressDa
 import { selectTwoRandomItems } from "../utils/progressTracking/progressHelpers";
 import * as s from "../components/progress_tracking/ProgressItems.sc";
 
-export default function ExercisesProgressSummary({totalInLearning, totalLearned, weeksPracticed}) {
-    const {exerciseProgressSummary} = getExerciseProgressSummary({totalInLearning, totalLearned, weeksPracticed});
+export default function ExercisesProgressSummary({totalInLearning, totalLearned, weeksPracticed, weeklyPracticed}) {
+    const {exerciseProgressSummary} = getExerciseProgressSummary({totalInLearning, totalLearned, weeksPracticed, weeklyPracticed});
     const [randomItems, setRandomItems] = useState([]);
 
     

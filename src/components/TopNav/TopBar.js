@@ -17,8 +17,8 @@ const DEFAULT_TOPBAR_PREFS = [
 
 export default function TopBar() {
   const api = useContext(APIContext)
-  const {weeksPracticed, setWeeksPracticed, weeklyReadingMinutes, setWeeklyReadingMinutes} = useContext(ProgressContext);
-  const {weeklyProgressOverview} = getTopBarData({weeklyReadingMinutes, weeksPracticed});
+  const {weeksPracticed, setWeeksPracticed, weeklyReadingMinutes, setWeeklyReadingMinutes, weeklyPracticed, setWeeklyPracticed} = useContext(ProgressContext);
+  const {weeklyProgressOverview} = getTopBarData({weeklyReadingMinutes, weeksPracticed, weeklyPracticed});
   const [showModalData, setShowModalData] = useState(null);
   
 
@@ -31,6 +31,10 @@ export default function TopBar() {
       setWeeklyReadingMinutes(readingMinsPerWeek);
       const weeksPracticed = calculateConsecutivePracticeWeeks(activity);
       setWeeksPracticed(weeksPracticed);
+    });
+
+  api.getPracticedBookmarksCountThisWeek((count) => {
+      setWeeklyPracticed(count);
     });
   }, []);
   

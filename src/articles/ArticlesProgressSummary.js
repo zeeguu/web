@@ -4,12 +4,12 @@ import { getArticlesProgressSummary } from "../utils/progressTracking/progressDa
 import { selectTwoRandomItems } from "../utils/progressTracking/progressHelpers";
 import { APIContext } from "../contexts/APIContext";
 import { ProgressContext } from "../contexts/ProgressContext";
-import { calculateTotalReadingMinutes, getWeeklyTranslatedWordsCount} from "../utils/progressTracking/progressHelpers";
+import { calculateTotalReadingMinutes, getWeeklyTranslatedWordsCount, calculateWeeklyReadingMinutes, calculateConsecutivePracticeWeeks} from "../utils/progressTracking/progressHelpers";
 import * as s from "../components/progress_tracking/ProgressItems.sc";
 
 export default function ArticlesProgressSummary() {
     const api = useContext(APIContext);
-    const { weeklyReadingMinutes, weeklyTranslated, setWeeklyTranslated, weeksPracticed, totalTranslated, setTotalTranslated, totalReadingMinutes, setTotalReadingMinutes} = useContext(ProgressContext);
+    const { weeklyReadingMinutes, setWeeklyReadingMinutes, weeklyTranslated, setWeeklyTranslated, weeksPracticed, setWeeksPracticed, totalTranslated, setTotalTranslated, totalReadingMinutes, setTotalReadingMinutes} = useContext(ProgressContext);
     const [randomItems, setRandomItems] = useState([]);
 
     useEffect(() => {
@@ -50,6 +50,12 @@ export default function ArticlesProgressSummary() {
 
         api.getUserActivityByDay((activity) => {
           setTotalReadingMinutes(calculateTotalReadingMinutes(activity.reading));
+
+          const readingMinsPerWeek = calculateWeeklyReadingMinutes(activity.reading);
+          setWeeklyReadingMinutes(readingMinsPerWeek);
+
+          const weeksPracticed = calculateConsecutivePracticeWeeks(activity);
+          setWeeksPracticed(weeksPracticed);
     });
     }, []);
     console.log("randomItems", randomItems);
