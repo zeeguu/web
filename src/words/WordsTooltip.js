@@ -15,8 +15,13 @@ export default function WordsToolTip({open, setOpen, value}){
                 You need to get this word correct {
                     value.cooling_interval === 0 
                     ? "today " : value.cooling_interval === 1 ? "tomorrow "
-                    : `in ${value.cooling_interval} days `}
-                 to get closer to level {value.level + 1}
+                    : `in ${value.cooling_interval} days `
+                    }
+                    {
+                    value.level === 4 
+                        ? "to get closer to learning this word"
+                        : `to get closer to level ${value.level + 1}`
+                    }
             </span>}
         >
             <div></div>
