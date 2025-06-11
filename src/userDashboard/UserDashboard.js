@@ -111,14 +111,14 @@ export default function UserDashboard() {
     const params = new URLSearchParams(location.search);
     const tabParam = params.get("tab");
     let newTab;
-    if (tabParam === "time" || !tabParam) {
-      newTab = TABS_IDS.BAR_GRAPH;
+    if (tabParam === "progress" || !tabParam) {
+      newTab = TABS_IDS.PROGRESS_ITEMS;
     } else if (tabParam === "translations") {
       newTab = TABS_IDS.LINE_GRAPH;
-    } else if (tabParam === "progress") {
-      newTab = TABS_IDS.PROGRESS_ITEMS;
-    } else {
+    } else if (tabParam === "time") {
       newTab = TABS_IDS.BAR_GRAPH;
+    } else {
+      newTab = TABS_IDS.PROGRESS_ITEMS;
     }
     setActiveTab(newTab);
   }, [location.search]);
