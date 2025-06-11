@@ -14,6 +14,7 @@ import DoubleArrowLeft from "@mui/icons-material/KeyboardDoubleArrowLeftOutlined
 import LanguageRoundedIcon from "@mui/icons-material/LanguageRounded";
 import LocalFireDepartmentIcon from '@mui/icons-material/LocalFireDepartment';
 import ArticleIcon from '@mui/icons-material/Article';
+import SchoolIcon from "@mui/icons-material/School";
 
 
 export default function NavIcon({ name, color, size }) {
@@ -27,7 +28,7 @@ const iconProps = {
 
   const navIcons = {
     home: <HomeRoundedIcon />,
-    exercises: <FitnessCenterRoundedIcon />,
+    exercises: <FitnessCenterRoundedIcon {...iconProps} />,
     words: <TranslateRoundedIcon {...iconProps} />,
     history: <HistoryRoundedIcon />,
     statistics: <DonutSmallRoundedIcon />,
@@ -42,6 +43,7 @@ const iconProps = {
     language: <LanguageRoundedIcon  />,
     headerArticles: <ArticleIcon {...iconProps} />,
     headerStreak: <LocalFireDepartmentIcon {...iconProps}/>,
+    school: <SchoolIcon {...iconProps} />
   };
   return navIcons[name] || "";
 }

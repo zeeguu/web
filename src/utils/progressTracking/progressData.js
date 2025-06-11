@@ -1,4 +1,5 @@
 import strings from "../../i18n/definitions";
+
   
 export function getTotalMinutesRead(totalReadingMinutes){
     const totalMinutesRead = totalReadingMinutes;
@@ -39,7 +40,7 @@ export function getTotalMinutesRead(totalReadingMinutes){
 export function getTotalWordsPracticed(totalInLearning, totalLearned){
     const totalPracticedWords = totalInLearning + totalLearned;
     const totalWordsPracticed = {
-        icon: "words",
+        icon: "exercises",
         iconText: strings.iconTextTotalWordsPracticed,
         value: totalPracticedWords,
         beforeText: strings.wordsPracticedTextStart,
@@ -57,7 +58,7 @@ export function getTotalWordsPracticed(totalInLearning, totalLearned){
 export function getTotalWordsLearned(totalLearned){
     const totalLearnedWords = totalLearned;
     const totalWordsLearned= {
-        icon: "words",
+        icon: "school",
         iconText: strings.iconTextTotalWordsLearned,
         value: totalLearnedWords,
         beforeText: strings.wordsLearnedTextStart,
@@ -130,7 +131,7 @@ export function getTotalWordsLearned(totalLearned){
   export function getWeeklyWordsPracticed(weeklyPracticed){
     const weeklyPracticedWords = weeklyPracticed;
     const weeklyWordsPracticed = {
-        icon: "words",
+        icon: "exercises",
         iconText: strings.iconTextWeeklyWordsPracticed,
         value: weeklyPracticedWords,
         beforeText: strings.wordsPracticedTextStart,

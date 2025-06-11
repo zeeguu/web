@@ -6,9 +6,9 @@ export default function UserDashboardTabs({
   handleActiveTabChange,
 }) {
   const tabs = [
+    { id: TABS_IDS.PROGRESS_ITEMS, title: TOP_TABS.PROGRESS_ITEMS},
     { id: TABS_IDS.BAR_GRAPH, title: TOP_TABS.BAR_GRAPH },
     { id: TABS_IDS.LINE_GRAPH, title: TOP_TABS.LINE_GRAPH },
-    { id: TABS_IDS.PROGRESS_ITEMS, title: TOP_TABS.PROGRESS_ITEMS},
   ];
 
   const TabList = ({ children }) => {
