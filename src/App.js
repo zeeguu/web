@@ -23,7 +23,6 @@ import { setUser } from "@sentry/react";
 import SessionStorage from "./assorted/SessionStorage";
 import useRedirectLink from "./hooks/useRedirectLink";
 import LoadingAnimation from "./components/LoadingAnimation";
-import TopBar from "./components/TopNav/TopBar";
 
 function App() {
   const [api] = useState(new Zeeguu_API(API_ENDPOINT));
@@ -180,7 +179,7 @@ function App() {
             <ProgressProvider>
               <APIContext.Provider value={api}>
                 {/* Routing*/}
-                <TopBar/>
+          
                 <MainAppRouter hasExtension={isExtensionAvailable} handleSuccessfulLogIn={handleSuccessfulLogIn} />
                 <ToastContainer
                   position="bottom-right"
