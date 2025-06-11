@@ -9,7 +9,7 @@ export function getTotalMinutesRead(totalReadingMinutes){
         beforeText: strings.articlesReadTextStart,
         afterText: (totalMinutesRead === 1 ? strings.articlesReadTotalTextEndSingle : strings.articlesReadTotalTextEnd) + (totalMinutesRead>0 ? " " + strings.positiveFeedbackMsg1 : ""),
         modal: {
-            linkText: "More details on your activty",
+            linkText: "See reading and practice stats",
             linkTo: "user_dashboard?tab=time",
             size: 90,
             unit: "minutes"
@@ -27,7 +27,7 @@ export function getTotalMinutesRead(totalReadingMinutes){
         beforeText: strings.wordsTranslatedTextStart,
         afterText: (totalTranslatedWords === 1 ? strings.wordsTextWeeklyEndSingle : strings.wordsTextTotalEnd) + (totalTranslatedWords>0 ? " " + strings.positiveFeedbackMsg2 : ""),
         modal: {
-            linkText: "More details on translation history",
+            linkText: "See all translated words",
             linkTo: "history",
             size: 90,
             unit: "",
@@ -45,7 +45,7 @@ export function getTotalWordsPracticed(totalInLearning, totalLearned){
         beforeText: strings.wordsPracticedTextStart,
         afterText: (totalPracticedWords === 1 ? strings.wordsTextTotalEndSingle : strings.wordsTextTotalEnd) + (totalPracticedWords>0 ? " " + strings.positiveFeedbackMsg3 : ""),
         modal: {
-            linkText: "More details on progress for practiced words",
+            linkText: "See your word learning progress",
             linkTo: "words",
             size: 90,
             unit: "",
@@ -63,7 +63,7 @@ export function getTotalWordsLearned(totalLearned){
         beforeText: strings.wordsLearnedTextStart,
         afterText: (totalLearnedWords === 1 ? strings.wordsTextTotalEndSingle : strings.wordsTextTotalEnd) + (totalLearnedWords>0 ? " " + strings.positiveFeedbackMsg4 : ""),
         modal: {
-            linkText: "More details on translation history",
+            linkText: "See your word learning progress",
             linkTo: "words/learned",
             size: 90,
             unit: "",
@@ -81,7 +81,7 @@ export function getTotalWordsLearned(totalLearned){
         beforeText: strings.articlesReadTextStart,
         afterText: (weeklyMinutesRead === 1 ? strings.articlesReadWeeklyTextEndSingle : strings.articlesReadWeeklyTextEnd) + (weeklyMinutesRead>0 ? " " + strings.positiveFeedbackMsg1 : ""),
         modal: {
-            linkText: "More details on your activity",
+            linkText: "See reading and practice stats",
             linkTo: "user_dashboard?tab=time",
             size: 90,
             unit: "minutes",
@@ -99,7 +99,7 @@ export function getTotalWordsLearned(totalLearned){
         beforeText: strings.wordsTranslatedTextStart,
         afterText: (weeklyWordsTranslated === 1 ? strings.wordsTextWeeklyEndSingle : strings.wordsTextWeeklyEnd) + (weeklyWordsTranslated>0 ? " " + strings.positiveFeedbackMsg2 : ""),
         modal: {
-            linkText: "More details on translation history",
+            linkText: "See all translated words",
             linkTo: "history",
             size: 90,
             unit: "",
@@ -118,7 +118,7 @@ export function getTotalWordsLearned(totalLearned){
         beforeText: (weeklyStreak === 1 ? strings.streakTextStartSingle : strings.streakTextStart),
         afterText: (weeklyStreak === 1 ? strings.streakTextEndSingle : strings.streakTextEnd) + (weeklyStreak>0 ? " " + strings.positiveFeedbackMsg3 : ""),
         modal: {
-            linkText: "More details on your activity",
+            linkText: "See reading and practice stats",
             linkTo: "user_dashboard",
             size: 90,
             unit: "weeks",
@@ -136,7 +136,7 @@ export function getTotalWordsLearned(totalLearned){
         beforeText: strings.wordsPracticedTextStart,
         afterText: (weeklyPracticedWords === 1 ? strings.wordsTextWeeklyEndSingle : strings.wordsTextWeeklyEnd) + (weeklyPracticedWords > 0 ? " " + strings.positiveFeedbackMsg4 : ""),
         modal: {
-            linkText: "More details on translation history",
+            linkText: "See your word learning progress",
             linkTo: "history",
             size: 90,
             unit: "",
