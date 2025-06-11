@@ -60,9 +60,9 @@ export default function UserDashboard() {
     setActiveTab(tabId);
     api.logUserActivity(api.USER_DASHBOARD_TAB_CHANGE, "", tabId);
   
-    let tabParam = "time";
+    let tabParam = "progress";
     if (tabId === TABS_IDS.LINE_GRAPH) tabParam = "translations";
-    else if (tabId === TABS_IDS.PROGRESS_ITEMS) tabParam = "progress";
+    else if (tabId === TABS_IDS.BAR_GRAPH) tabParam = "time";
   
     history.replace(`?tab=${tabParam}`);
   }
