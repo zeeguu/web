@@ -1,17 +1,53 @@
-import {useState, useEffect} from "react";
+import {useState, useEffect, useContext} from "react";
 import NavIcon from "../components/MainNav/NavIcon";
 import { getExerciseProgressSummary } from "../utils/progressTracking/progressData";
-import { selectTwoRandomItems } from "../utils/progressTracking/progressHelpers";
 import * as s from "../components/progress_tracking/ProgressItems.sc";
+import { ProgressContext } from "../contexts/ProgressContext";
+import { calculateConsecutivePracticeWeeks, selectTwoRandomItems } from "../utils/progressTracking/progressHelpers";
+import { APIContext } from "../contexts/APIContext";
 
-export default function ExercisesProgressSummary({totalInLearning, totalLearned, weeksPracticed, weeklyPracticed}) {
-    const {exerciseProgressSummary} = getExerciseProgressSummary({totalInLearning, totalLearned, weeksPracticed, weeklyPracticed});
+export default function ExercisesProgressSummary() {
+    const api = useContext(APIContext);
+    const { weeksPracticed, setWeeksPracticed, totalLearned, setTotalLearned, totalInLearning, setTotalInLearning, weeklyPracticed, setWeeklyPracticed } = useContext(ProgressContext);
     const [randomItems, setRandomItems] = useState([]);
 
+    useEffect(() => {
+      const allValuesReady =
+        weeksPracticed != null &&
+        totalLearned != null &&
+        totalInLearning != null &&
+        weeklyPracticed != null;
+
+        if (allValuesReady){
+          const summary = getExerciseProgressSummary({
+            totalInLearning,
+            totalLearned,
+            weeksPracticed,
+            weeklyPracticed
+          }).exerciseProgressSummary;
+          console.log("summary,", summary);
+        const twoRandomItems = selectTwoRandomItems(summary);
+        setRandomItems(twoRandomItems);
+        }
+    },[weeksPracticed, totalLearned, totalInLearning, weeklyPracticed]);
     
     useEffect(() =>{
-        const twoRandomItems = selectTwoRandomItems(exerciseProgressSummary);
-        setRandomItems(twoRandomItems);
+    api.getAllScheduledBookmarks(false, (bookmarks) => {
+      setTotalInLearning(bookmarks.length);
+    });
+
+    api.totalLearnedBookmarks((totalLearnedCount) =>{
+      setTotalLearned(totalLearnedCount)
+    });
+
+    api.getPracticedBookmarksCountThisWeek((count) => {
+      setWeeklyPracticed(count);
+    });
+
+    api.getUserActivityByDay((activity) => {
+        const weeksPracticed = calculateConsecutivePracticeWeeks(activity);
+        setWeeksPracticed(weeksPracticed);
+    });
     }, []);
     
     return (

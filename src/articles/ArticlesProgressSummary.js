@@ -1,10 +1,9 @@
 import {useState, useEffect, useContext} from "react";
 import NavIcon from "../components/MainNav/NavIcon";
 import { getArticlesProgressSummary } from "../utils/progressTracking/progressData";
-import { selectTwoRandomItems } from "../utils/progressTracking/progressHelpers";
 import { APIContext } from "../contexts/APIContext";
 import { ProgressContext } from "../contexts/ProgressContext";
-import { calculateTotalReadingMinutes, getWeeklyTranslatedWordsCount, calculateWeeklyReadingMinutes, calculateConsecutivePracticeWeeks} from "../utils/progressTracking/progressHelpers";
+import { calculateTotalReadingMinutes, getWeeklyTranslatedWordsCount, calculateWeeklyReadingMinutes, calculateConsecutivePracticeWeeks, selectTwoRandomItems } from "../utils/progressTracking/progressHelpers";
 import * as s from "../components/progress_tracking/ProgressItems.sc";
 
 export default function ArticlesProgressSummary() {
@@ -46,7 +45,7 @@ export default function ArticlesProgressSummary() {
           const thisWeek = getWeeklyTranslatedWordsCount(counts);
           const weeklyTotal = thisWeek.reduce((sum, day) => sum + day.count, 0);
           setWeeklyTranslated(weeklyTotal);
-        })
+        });
 
         api.getUserActivityByDay((activity) => {
           setTotalReadingMinutes(calculateTotalReadingMinutes(activity.reading));
