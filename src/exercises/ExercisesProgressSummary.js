@@ -5,6 +5,7 @@ import * as s from "../components/progress_tracking/ProgressItems.sc";
 import { ProgressContext } from "../contexts/ProgressContext";
 import { calculateConsecutivePracticeWeeks, selectTwoRandomItems } from "../utils/progressTracking/progressHelpers";
 import { APIContext } from "../contexts/APIContext";
+import LoadingAnimation from "../components/LoadingAnimation";
 
 export default function ExercisesProgressSummary() {
     const api = useContext(APIContext);
@@ -50,6 +51,15 @@ export default function ExercisesProgressSummary() {
     });
     }, []);
     
+      if (
+    totalInLearning === undefined ||
+    totalLearned === undefined ||
+    weeklyPracticed === undefined ||
+    weeksPracticed === undefined
+  ) {
+    return <LoadingAnimation />
+  }
+
     return (
         <s.ProgressItemsContainer >
         {randomItems.map((item) => (
