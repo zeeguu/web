@@ -8,6 +8,7 @@ import { getSessionFromCookies } from "../../utils/cookies/userInfo";
 import { APIContext } from "../../contexts/APIContext";
 import { ProgressContext } from "../../contexts/ProgressContext";
 import { calculateWeeklyReadingMinutes, calculateConsecutivePracticeWeeks} from "../../utils/progressTracking/progressHelpers";
+import { UserContext } from "../../contexts/UserContext";
 
 const DEFAULT_TOPBAR_PREFS = [
   "wordsPracticedTopBar",
@@ -20,6 +21,8 @@ export default function TopBar() {
   const {weeksPracticed, setWeeksPracticed, weeklyReadingMinutes, setWeeklyReadingMinutes, weeklyPracticed, setWeeklyPracticed} = useContext(ProgressContext);
   const {weeklyProgressOverview} = getTopBarData({weeklyReadingMinutes, weeksPracticed, weeklyPracticed});
   const [showModalData, setShowModalData] = useState(null);
+  const { userDetails } = useContext(UserContext);
+
   
 
   useEffect(() => {
@@ -36,7 +39,7 @@ export default function TopBar() {
   api.getPracticedBookmarksCountThisWeek((count) => {
       setWeeklyPracticed(count);
     });
-  }, []);
+  }, [userDetails.learned_language]);
   
   const [whichItems, setWhichItems] = useState([]);
   const savedItems = JSON.parse(localStorage.getItem("topBarPrefs") || "null") || DEFAULT_TOPBAR_PREFS;
