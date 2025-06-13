@@ -15,11 +15,8 @@ import { MOBILE_WIDTH } from "../components/MainNav/screenSize";
 import { StyledButton } from "../components/allButtons.sc";
 import { APIContext } from "../contexts/APIContext";
 import { UserContext } from "../contexts/UserContext";
-import { ProgressContext } from "../contexts/ProgressContext";
 import { ExercisesCounterContext } from "./ExercisesCounterContext";
 import  ExerciseProgressSummary  from "./ExercisesProgressSummary";
-import { calculateConsecutivePracticeWeeks } from "../utils/progressTracking/progressHelpers";
-
 
 export default function Congratulations({
   articleID,
@@ -36,7 +33,6 @@ export default function Congratulations({
   exerciseSessionTimer,
 }) {
   const api = useContext(APIContext);
-  const { weeksPracticed, setWeeksPracticed, totalLearned, setTotalLearned, totalInLearning, setTotalInLearning, weeklyPracticed, setWeeklyPracticed } = useContext(ProgressContext);
   const { userDetails } = useContext(UserContext);
   const { updateExercisesCounter } = useContext(ExercisesCounterContext);
   const [checkpointTime] = useState(exerciseSessionTimer);
@@ -55,33 +51,13 @@ export default function Congratulations({
   }
 
   useEffect(() => {
-    api.getAllScheduledBookmarks(false, (bookmarks) => {
-      setTotalInLearning(bookmarks.length);
-    });
-    api.totalLearnedBookmarks((totalLearnedCount) =>{
-      setTotalLearned(totalLearnedCount)
-    });
-
-    api.getPracticedBookmarksCountThisWeek((count) => {
-      setWeeklyPracticed(count);
-    });
-
-    api.getUserActivityByDay((activity) => {
-        const weeksPracticed = calculateConsecutivePracticeWeeks(activity);
-        setWeeksPracticed(weeksPracticed);
-    });
-    
     setUsername(userDetails.name);
     setTotalBookmarksReviewed(incorrectBookmarksToDisplay.length + correctBookmarksToDisplay.length);
     api.logUserActivity(api.COMPLETED_EXERCISES, articleID, "", source);
     updateExercisesCounter();
-
-
     // eslint-disable-next-line
   }, []);
-
-
-
+  
   if (username === undefined || isOutOfWordsToday === undefined) {
     return <LoadingAnimation />;
   }
@@ -144,12 +120,7 @@ export default function Congratulations({
           
         )}
         </CenteredColumn>
-        <ExerciseProgressSummary
-          totalInLearning={totalInLearning}
-          totalLearned={totalLearned}
-          weeksPracticed={weeksPracticed}
-          weeklyPracticed = {weeklyPracticed}
-        />
+        <ExerciseProgressSummary/>
         {incorrectBookmarksToDisplay.length > 0 && (
           <CollapsablePanel
             children={incorrectBookmarksToDisplay.map((each) => (
