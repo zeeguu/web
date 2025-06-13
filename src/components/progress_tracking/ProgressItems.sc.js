@@ -64,8 +64,15 @@ const ProgressDescription = styled.div`
   margin-left: 2.9em;
   letter-spacing: 0.03em;
 
-    @media (max-width: 768px) {
+  @media (max-width: 768px) {
     font-size: 0.6em;
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+    
+  }
+  
+  @media (max-width: 375px) {
+    font-size: 0.56em;
     padding-top: 0.5rem;
     padding-bottom: 0.5rem;
   }
