@@ -55,11 +55,6 @@ export default function Congratulations({
   }
 
   useEffect(() => {
-    setUsername(userDetails.name);
-    setTotalBookmarksReviewed(incorrectBookmarksToDisplay.length + correctBookmarksToDisplay.length);
-    api.logUserActivity(api.COMPLETED_EXERCISES, articleID, "", source);
-    updateExercisesCounter();
-
     api.getAllScheduledBookmarks(false, (bookmarks) => {
       setTotalInLearning(bookmarks.length);
     });
@@ -75,6 +70,13 @@ export default function Congratulations({
         const weeksPracticed = calculateConsecutivePracticeWeeks(activity);
         setWeeksPracticed(weeksPracticed);
     });
+    
+    setUsername(userDetails.name);
+    setTotalBookmarksReviewed(incorrectBookmarksToDisplay.length + correctBookmarksToDisplay.length);
+    api.logUserActivity(api.COMPLETED_EXERCISES, articleID, "", source);
+    updateExercisesCounter();
+
+
     // eslint-disable-next-line
   }, []);
 
