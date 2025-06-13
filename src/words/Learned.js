@@ -67,7 +67,6 @@ export default function Learned() {
 
         <br />
       </s.YellowMessageBox>
-
       <div>
         {words.map((subGroup) => {
           return (

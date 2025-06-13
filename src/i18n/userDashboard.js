@@ -9,6 +9,10 @@ let compactFormat = {
     en: "Translations",
     da: "Ord",
   },
+  tabProgress: {
+    en: "Progress",
+    da: "Fremskridt",
+  },
   minutes: {
     en: "Minutes",
     da: "Minutter",
@@ -73,6 +77,15 @@ let compactFormat = {
     en: "Number of Translated Words for Available Years",
     da: "Oversatte ord for tilgængelige år",
   },
+  weeklyProgressOverviewTitle:{
+    en: "Weekly Progress",
+    dk: "Ugentlige fremskridt",
+  },
+  totalProgressOverviewTitle:{
+    en: "Total Progress",
+    dk: "Samlet Fremgang",
+  }
+
 };
 
 function invertKeysInDict(dict) {

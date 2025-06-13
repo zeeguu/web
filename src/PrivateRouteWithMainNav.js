@@ -2,6 +2,8 @@ import React, { useContext } from "react";
 import { Route, Redirect } from "react-router-dom";
 import { UserContext } from "./contexts/UserContext";
 import MainNavWithComponent from "./MainNavWithComponent";
+import TopBar from "./components/TopNav/TopBar";
+
 
 // inspired from:
 // https://dev.to/mychal/protected-routes-with-react-function-components-dh
@@ -23,10 +25,12 @@ export const PrivateRouteWithMainNav = ({ component: Component, ...rest }) => {
     );
   }
   return (
+
     <Route
       {...rest}
+
       render={() => (
-        <MainNavWithComponent>{<Component {...rest} />}</MainNavWithComponent>
+        <><TopBar /><MainNavWithComponent>{<Component {...rest} />}</MainNavWithComponent></>
       )}
     />
   );

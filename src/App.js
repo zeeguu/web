@@ -7,7 +7,7 @@ import { RoutingContext } from "./contexts/RoutingContext";
 import LocalStorage from "./assorted/LocalStorage";
 import { APIContext } from "./contexts/APIContext";
 import Zeeguu_API from "./api/Zeeguu_API";
-
+import { ProgressProvider } from "./contexts/ProgressContext";
 import useUILanguage from "./assorted/hooks/uiLanguageHook";
 
 import ZeeguuSpeech from "./speech/APIBasedSpeech";
@@ -176,10 +176,11 @@ function App() {
                 logoutMethod: logout,
               }}
             >
+            <ProgressProvider>
               <APIContext.Provider value={api}>
                 {/* Routing*/}
+          
                 <MainAppRouter hasExtension={isExtensionAvailable} handleSuccessfulLogIn={handleSuccessfulLogIn} />
-
                 <ToastContainer
                   position="bottom-right"
                   autoClose={2000}
@@ -193,6 +194,7 @@ function App() {
                   theme="light"
                 />
               </APIContext.Provider>
+              </ProgressProvider>
             </UserContext.Provider>
           </RoutingContext.Provider>
         </BrowserRouter>
