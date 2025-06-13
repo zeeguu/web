@@ -76,12 +76,13 @@ export default function WordsToReview({
             {articleInfo.title}
           </p>
         </div>
+        <ArticlesProgressSummary/>
         <Infobox>
           <div>
             <p>You didn't translate any words in this article.</p>
           </div>
         </Infobox>
-        <ArticlesProgressSummary/>
+
       </>
     );
 
@@ -129,6 +130,7 @@ export default function WordsToReview({
       )}
       {wordsForExercises.length > 0 && (
         <>
+          <ArticlesProgressSummary />
           <h3>You will see these words in your exercises:</h3>
           {wordsForExercises.map((each) => (
             <ContentOnRow className="contentOnRow">
@@ -143,7 +145,6 @@ export default function WordsToReview({
               />
             </ContentOnRow>          
           ))}
-          <ArticlesProgressSummary />
         </>
       )}
       {((wordsExcludedForExercises.length > 0 && totalWordsTranslated < 10) ||
@@ -164,7 +165,6 @@ export default function WordsToReview({
               />
             </ContentOnRow>
           ))}
-          <ArticlesProgressSummary />
         </>
       )}
       {((wordsExpressions.length > 0 && totalWordsTranslated < 10) ||
@@ -194,7 +194,6 @@ export default function WordsToReview({
               /> 
             </ContentOnRow>
           ))}
-          <ArticlesProgressSummary />
         </>
       )}
     </>
