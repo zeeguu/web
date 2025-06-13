@@ -88,8 +88,8 @@ let strings = new LocalizedStrings(
       articlesReadTextStart: "You have read for",
       articlesReadWeeklyTextEnd: "minutes this week.",
       articlesReadWeeklyTextEndSingle: "minute this week.",
-      articlesReadTotalTextEnd: "minutes in total.",
-      articlesReadTotalTextEndSingle: "minute in total.",
+      articlesReadTotalTextEnd: "minutes in total since you started using Zeeguu.",
+      articlesReadTotalTextEndSingle: "minute in total since you started using Zeeguu.",
 
 
       wordsTranslatedTextStart: "You have translated",
@@ -98,8 +98,8 @@ let strings = new LocalizedStrings(
 
       wordsTextWeeklyEnd: "words this week.",
       wordsTextWeeklyEndSingle: "word this week.",
-      wordsTextTotalEnd: "words in total.",
-      wordsTextTotalEndSingle: "word in total.",
+      wordsTextTotalEnd: "words in total since you started using Zeeguu.",
+      wordsTextTotalEndSingle: "word in total since you started using Zeeguu.",
 
 
       streakTextStart: "You have practiced* every week for",
