@@ -44,15 +44,18 @@ export function getWeeklyTranslatedWordsCount(counts) {
 
 export function calculateConsecutivePracticeWeeks(activity) {
   console.log("activity", activity)
+  //if there is no actvitiy return a streak of 0.
   if (!activity || !Array.isArray(activity.reading) || !Array.isArray(activity.exercises)) {
     return 0;
   }
 
-  // Collect all unique week start dates (YYYY-MM-DD, Monday)
   const practicedWeeks = new Set();
+  //combines entries from reading and exercise activity into one array.
+  // The reading and exercise seconds for the same date is still separated.
   const allEntries = [...activity.reading, ...activity.exercises];
+  console.log("allEntries", allEntries);
 
-    // Sum seconds for each unique date
+  //combines exercise and reading minutes for the same date in the same entry
   const dateToSeconds = {};
   allEntries.forEach(({ date, seconds }) => {
       if (!date) return;
@@ -66,37 +69,55 @@ export function calculateConsecutivePracticeWeeks(activity) {
 
   Object.entries(dateToSeconds).forEach(([date, seconds] ) => {
     if (seconds >= 300) {
+      //the date of each entry with a total practice of 5 minutes or more
+      //example Tue Mar 25 2025 00:00:00 GMT+0100 (centraleuropeisk normaltid)
       const d = new Date(date);
       d.setHours(0, 0, 0, 0);
+      console.log("d", d);
+
       // Find the Monday of this week
       const monday = new Date(d);
-      monday.setDate(d.getDate() - d.getDay());
+      console.log("monday,", monday);
+      const day = d.getDay();
+      const difference = (day === 0 ? -6 : 1 - day);
+      monday.setDate(d.getDate() + difference);
       monday.setHours(0, 0, 0, 0);
-      practicedWeeks.add(monday.toISOString().slice(0, 10));
+      console.log("now we are finding the monday", monday);
+      practicedWeeks.add(monday.toDateString());
     }
   });
+  console.log("practiced weeks", practicedWeeks);
   const weekArray = Array.from(practicedWeeks).sort((a, b) => new Date(a) - new Date(b));
+  console.log("This is the week array", weekArray);
   if (practicedWeeks.size === 0) return 0;
 
   // Get this week's Monday (start of the week)
   const now = new Date();
   now.setHours(0, 0, 0, 0);
+  console.log("this is the date of now/today", now);
   const thisMonday = new Date(now);
-  thisMonday.setDate(now.getDate() - now.getDay());
+  const thisDay = now.getDay();
+  const thisDiff = thisDay === 0 ? -6 : 1 - thisDay;
+  thisMonday.setDate(now.getDate() + thisDiff);
   thisMonday.setHours(0, 0, 0, 0);
+  console.log("This is monday today/now", thisMonday);
 
   // Build streak backwards from last week
   let streak = 0;
-  let checkMonday = new Date(thisMonday);
-  checkMonday.setDate(checkMonday.getDate() - 7);
+  //this monday
+  let lastMonday = new Date(thisMonday);
+  console.log("Check monday? what is this", lastMonday);
+  //last weeks monday
+  lastMonday.setDate(lastMonday.getDate() - 7);
+  console.log("check again", lastMonday);
 
-  while (weekArray.includes(checkMonday.toISOString().slice(0, 10))) {
+  while (weekArray.includes(lastMonday.toDateString())) {
     streak++;
     // Go to previous week
-    checkMonday.setDate(checkMonday.getDate() - 7);
+    lastMonday.setDate(lastMonday.getDate() - 7);
   }
   // if the user has practiced this week increment  by 1 
-  if (weekArray.includes(thisMonday.toISOString().slice(0, 10))){
+  if (weekArray.includes(thisMonday.toDateString())){
   streak++;}
   
   return streak;
