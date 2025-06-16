@@ -287,6 +287,13 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
           decrementExerciseCounter();
         }
       }
+      // update the cooling interval so we have the correct value for the level indicator 
+      if (currentBookmark.cooling_interval == null) {
+        currentBookmark.cooling_interval = 1;
+      } else if (currentBookmark.cooling_interval < MAX_COOLDOWN_INTERVAL) {
+        currentBookmark.cooling_interval += 1;
+      }
+
       correctBookmarksCopy.push(currentBookmark);
       setCorrectBookmarks(correctBookmarksCopy);
     }
