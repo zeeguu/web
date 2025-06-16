@@ -42,13 +42,6 @@ export default function LandingPage() {
       <s.Main>
         <s.HeroSection>
           <div>
-            <img
-              width={150}
-              style={{ marginTop: "-5em" }}
-              src="/zeeguuLogo-czech-flag.svg"
-              alt="Zeeguu elephant with Czech flag"
-              title="Zeeguu goes to Czechia! Mircea presents a workshop at the Polyglot Gathering in Brno."
-            />
             <h1>Learn a language by reading what you love and improve your&nbsp;vocabulary</h1>
           </div>
 

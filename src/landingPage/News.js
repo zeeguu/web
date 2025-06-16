@@ -20,6 +20,14 @@ export default function News() {
       <h3>2025</h3>
 
       {item(
+        strings.august,
+        <>
+          Zeeguu goes to Italy! Mircea does a workshop entitled "Personalized Learning Paths Through the Internet" at
+          the EuroCALL conference in Milano
+        </>,
+      )}
+
+      {item(
         strings.may,
         <>
           Zeeguu goes to Czechia{" "}
