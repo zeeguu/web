@@ -10,7 +10,7 @@ const TopTabs = styled.div`
     text-align: center;
     margin-top: 2em;
   }
-
+  
   .all__tabs {
     line-height: 1.4em;
     width: 100%;

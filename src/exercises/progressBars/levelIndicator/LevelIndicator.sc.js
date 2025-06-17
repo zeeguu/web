@@ -1,18 +1,51 @@
 import styled from "styled-components";
 import { zeeguuWarmYellow } from "../../../components/colors";
 
-const LevelIndicator = styled.div`
-  display: flex;
-  justify-content: center;
+const LevelWrapper = styled.div`
+  margin-left: auto;
+  display: flex; 
+  align-items: right;
+  padding-right: 1em;
+  @media (max-width: 800px) {
+    margin-left: 0;
+    width: 100%;          
+    margin-top: 0.5em;
+    justify-content: flex-start;     
+    padding-right: 1em;
+    margin-right: 2em;
+    padding-left: 1em;
+  }
+`;
+
+const LevelExercisesWrapper  = styled.div`
+  display:flex; 
   align-items: center;
-  width: 100%;
+  margin: 1em;
+  padding-left: 1em;
+  padding-right: 2em;
+
+`;
+
+const LevelIndicator = styled.div`
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  flex-grow: 1;
+  align-items: flex-start;
+  width: 250px;
   -webkit-user-select: none; /* Safari */
   -ms-user-select: none; /* IE 10 and IE 11 */
   user-select: none; /* Standard */
-
+  
+  
   .level-indicator {
-    width: 70%;
+    width: 100%;
     display: flex;
+    flex: 1;
+    flex-direction: row;
+    gap: 16px;
+    padding: 8px;
     align-items: center;
     margin: 1em 0;
     position: relative;
@@ -39,6 +72,13 @@ const LevelIndicator = styled.div`
     transition: width 0.5s ease-in-out;
     border-radius: 10px;
   }
+
+  .level-circles-wrapper {
+  display: flex;
+  gap: 6px; // or use justify-content
+  position: relative; // if needed for alignment
+  width: 100%;
+}
 
   .level-circle {
     position: absolute;
@@ -140,4 +180,4 @@ const LevelIndicator = styled.div`
   }
 `;
 
-export { LevelIndicator };
+export { LevelIndicator, LevelWrapper, LevelExercisesWrapper };

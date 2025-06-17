@@ -55,7 +55,7 @@ export function WordsOnDate({ day, notifyDelete }) {
 
           {bookmaks_by_title.get(sourceTitle).map((bookmark) => (
             <s.ContentOnRow className="contentOnRow">
-              <Word key={bookmark.id} bookmark={bookmark} notifyDelete={notifyDelete} />
+              <Word key={bookmark.id} bookmark={bookmark} notifyDelete={notifyDelete} isWordsOnDate={true}/>
             </s.ContentOnRow>
           ))}
         </s.Article>

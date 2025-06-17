@@ -12,12 +12,24 @@ import DonutSmallRoundedIcon from "@mui/icons-material/DonutSmallRounded";
 import DoubleArrowRight from "@mui/icons-material/KeyboardDoubleArrowRightOutlined";
 import DoubleArrowLeft from "@mui/icons-material/KeyboardDoubleArrowLeftOutlined";
 import LanguageRoundedIcon from "@mui/icons-material/LanguageRounded";
+import LocalFireDepartmentIcon from '@mui/icons-material/LocalFireDepartment';
+import ArticleIcon from '@mui/icons-material/Article';
+import SchoolIcon from "@mui/icons-material/School";
 
-export default function NavIcon({ name }) {
+
+export default function NavIcon({ name, color, size }) {
+
+const iconProps = {
+  sx: {
+    ...(color && { color }),
+    ...(size && { fontSize: size })
+  }
+};
+
   const navIcons = {
     home: <HomeRoundedIcon />,
-    exercises: <FitnessCenterRoundedIcon />,
-    words: <TranslateRoundedIcon />,
+    exercises: <FitnessCenterRoundedIcon {...iconProps} />,
+    words: <TranslateRoundedIcon {...iconProps} />,
     history: <HistoryRoundedIcon />,
     statistics: <DonutSmallRoundedIcon />,
     settings: <SettingsRoundedIcon />,
@@ -28,7 +40,10 @@ export default function NavIcon({ name }) {
     myTexts: <ChromeReaderModeRoundedIcon />,
     studentSite: <SchoolRoundedIcon />,
     more: <MoreHorizRoundedIcon />,
-    language: <LanguageRoundedIcon />,
+    language: <LanguageRoundedIcon  />,
+    headerArticles: <ArticleIcon {...iconProps} />,
+    headerStreak: <LocalFireDepartmentIcon {...iconProps}/>,
+    school: <SchoolIcon {...iconProps} />
   };
   return navIcons[name] || "";
 }
