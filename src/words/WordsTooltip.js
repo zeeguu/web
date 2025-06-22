@@ -11,8 +11,13 @@ export default function WordsToolTip({open, setOpen, value}){
                 console.log("Closing modal");
                 setOpen(false);
             }}
-            title={<span>
-                You need to get this word correct {
+            title={
+                <span>
+                    {
+                value.level === 4 && value.learned_datetime !== ""
+                ? "Congratulations! You have learned this word. You won't practice this word anymore"
+                : <>
+                   You need to get this word correct {
                     value.cooling_interval === 0 
                     ? "today " : value.cooling_interval === 1 ? "tomorrow "
                     : `in ${value.cooling_interval} days `
@@ -21,6 +26,9 @@ export default function WordsToolTip({open, setOpen, value}){
                     value.level === 4 
                         ? "to get closer to learning this word"
                         : `to get closer to level ${value.level + 1}`
+                    }
+                </>
+             
                     }
             </span>}
         >
