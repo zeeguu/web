@@ -22,7 +22,9 @@ export default function News() {
       {item(
         strings.aug,
         <>
-          Zeeguu goes to Italy! Mircea does a workshop entitled "Personalized Learning Paths Through the Internet" at
+          Zeeguu goes to Italy{" "}
+          <img style={{ marginLeft: "-1em", marginBottom: "-0.5em" }} width={50} src="/zeeguuLogo-italian-flag.svg" />!
+          Mircea does a workshop entitled "Personalized Learning Paths Through the Internet" at
           the EuroCALL conference in Milano
         </>,
       )}
