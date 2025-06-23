@@ -42,11 +42,20 @@ export default function RemoveBookmarkModal({
     ["other", "Other"],
   ];
 
-  function handleSubmit(e, reason) {
+  function handleSubmit(e, reason, customFeedback = null) {
     e.preventDefault();
-    let reasonHumanReadable = possibleReasons.find((each) => each[0] === reason)[1];
-    toast.success(`"${exerciseBookmarkForFeedback.from}" was removed successfully for: '${reasonHumanReadable}'.`);
-    uploadUserFeedback(reason, exerciseBookmarkForFeedback.id);
+    let reasonToSend = reason;
+    let reasonForToast;
+
+    if (reason === "other" && customFeedback) {
+      reasonToSend = `other: ${customFeedback}`;
+      reasonForToast = "Other";
+    } else {
+      reasonForToast = possibleReasons.find((each) => each[0] === reason)[1];
+    }
+
+    toast.success(`"${exerciseBookmarkForFeedback.from}" was removed successfully for: '${reasonForToast}'.`);
+    uploadUserFeedback(reasonToSend, exerciseBookmarkForFeedback.id);
     setOpen(!open);
     setHasProvidedQuickFeedback(true);
   }
@@ -61,7 +70,7 @@ export default function RemoveBookmarkModal({
     >
       <Header>
         {hasMultipleBookmarks && <Heading>Which word do you want to remove from exercises?</Heading>}
-        {!hasMultipleBookmarks && <Heading>Remove word from exercises</Heading>}
+        {!hasMultipleBookmarks && <Heading>Exclude word from exercises</Heading>}
       </Header>
       <Main>
         {hasMultipleBookmarks && (
@@ -115,7 +124,7 @@ export default function RemoveBookmarkModal({
                       type={"submit"}
                       className="small-border-btn"
                       onClick={(e) => {
-                        handleSubmit(e, otherFeedback);
+                        handleSubmit(e, "other", otherFeedback);
                       }}
                     >
                       Submit
