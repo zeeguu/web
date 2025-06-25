@@ -15,7 +15,7 @@ export default function WordsToolTip({open, setOpen, value}){
                 <span>
                     {
                 value.level === 4 && value.learned_datetime !== ""
-                ? "Congratulations! You have learned this word. You won't practice this word anymore"
+                ? <>Congratulations! You have learned this word. You won't practice this word anymore</>
                 : <>
                    You need to get this word correct {
                     value.cooling_interval === 0 
