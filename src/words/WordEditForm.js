@@ -126,7 +126,6 @@ export default function WordEditForm({ bookmark, errorMessage, handleClose, upda
 
         {isNotEdited ? (
           <s.DoneButtonHolder>
-            <st.FeedbackDelete type="button" onClick={() => deleteAction(bookmark)} value={strings.deleteWord} />
             <st.FeedbackSubmit type="submit" value={strings.done} style={{ marginLeft: "1em", marginTop: "1em" }} />
           </s.DoneButtonHolder>
         ) : (
