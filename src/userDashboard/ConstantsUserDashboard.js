@@ -68,7 +68,6 @@ const TABS_IDS = {
   PROGRESS_ITEMS: 1,
   BAR_GRAPH: 2,
   LINE_GRAPH: 3,
-  
 };
 
 //date format used for making sure dates are translated

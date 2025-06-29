@@ -11,7 +11,7 @@ let compactFormat = {
   },
   tabProgress: {
     en: "Progress",
-    da: "Fremskridt",
+    da: "Fremgang",
   },
   minutes: {
     en: "Minutes",
