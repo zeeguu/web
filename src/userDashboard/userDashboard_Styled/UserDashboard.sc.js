@@ -7,9 +7,10 @@ import { OrangeButton } from "../../reader/ArticleReader.sc";
 
 const UserDashboardTopContainer = styled.div`
   text-align: center;
+  margin: 0;
 `;
 
-const UserDashboardHelperText = styled(s.YellowMessageBox)`
+const UserDashboardHelperText = styled(s.TopMessage)`
   @media screen and (max-width: 768px) {
     font-size: 0.8em;
     line-height: 4ex;
@@ -74,6 +75,85 @@ const UserDashBoardDropdown = styled.select`
   }
 `;
 
+const ProgressOverviewContainer = styled.div`
+  margin-left: 10em;
+  width: 70%;
+  padding-bottom: 1em;
+
+  @media (max-width: 768px) {
+  width: 80%;
+  margin-left: 3em;
+  }
+`;
+
+const ProgressOverviewTitle = styled.div`
+  font-size: 0.8em;
+  font-weight: bold;
+  margin-bottom: 1em;
+  margin-top: 5em;
+`;
+
+const ProgressOverviewSection = styled.div`
+  background-color: white;
+  border: 1px solid black;
+  padding: 1em;
+  border-radius: 4px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2em;
+  justify-content: space-evenly;
+`;
+
+const ProgressOverviewItem = styled.div`
+  display: flex;
+  background-color: white;
+  border: 1px solid orange;
+  border-radius: 4px;
+  padding: 1.5em;
+  width: 40%;
+
+  @media (max-width: 768px) {
+    width: 100%; /* stack on small screens */
+  }
+`;
+
+const IconWithValueAndLabel = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  width: 4.5em;
+`;
+
+const IconAndValue = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 0.3em;
+`;
+
+const Icon = styled.div`
+  font-size: 1em;
+`;
+
+const Value = styled.div`
+  font-weight: bold;
+  font-size: 0.8em;
+`;
+
+const Label = styled.div`
+  font-size: 0.6em;
+  margin-top: 0.2em;
+`;
+
+const ProgressDescription = styled.div`
+  display: flex;
+  width: 60%;
+  font-size: 0.75rem;
+  align-items: center;
+  text-align: left;
+  margin-left: 4em;
+`;
+
 // parent container has to have height specified in order for the nivo graphs to be shown
 // nivo automatically resizes the graphs' width, but not height
 const NivoGraphContainer = styled.div`
@@ -129,4 +209,14 @@ export {
   NivoGraphContainer,
   UserDatePicker,
   UserDashboardFeedbackButton,
+  ProgressOverviewTitle,
+  ProgressOverviewItem,
+  ProgressOverviewSection,
+  ProgressOverviewContainer,
+  ProgressDescription,
+  Label,
+  Value,
+  Icon,
+  IconAndValue,
+  IconWithValueAndLabel,
 };

@@ -9,6 +9,10 @@ import { USER_WORD_PREFERENCE } from "./userBookmarkPreferences";
 import { MAX_WORDS_IN_BOOKMARK_FOR_EXERCISES } from "../exercises/ExerciseConstants";
 import { getStaticPath } from "../utils/misc/staticPath";
 import { APIContext } from "../contexts/APIContext";
+import LevelIndicator from "../exercises/progressBars/levelIndicator/LevelIndicator";
+import {LevelWrapper} from "../exercises/progressBars/levelIndicator/LevelIndicator.sc";
+import WordsTooltip from "./WordsTooltip";
+
 
 export default function Word({
   bookmark,
@@ -19,7 +23,11 @@ export default function Word({
   isReview,
   showRanking,
   isGrayedOut,
+  isWordsOnDate = false,
 }) {
+
+  const [showWordsModal, setShowWordsModal] = useState(false);
+
   const api = useContext(APIContext);
   const [deleted, setDeleted] = useState(false);
   const [reload, setReload] = useState(false);
@@ -51,10 +59,10 @@ export default function Word({
   }
   const square = "square";
   const isWordLengthFitForStudy = bookmark.from.split(" ").length < MAX_WORDS_IN_BOOKMARK_FOR_EXERCISES;
-
+  console.log("bookmark", bookmark)
   return (
     <>
-      <s.Word key={bookmark.id}>
+      <s.Word key={bookmark.id} >
         <CenteredRow>
           {isReview && bookmark.fit_for_study && (
             <s.AddRemoveStudyPreferenceButton onClick={(e) => setNotIsUserWordPreferred(bookmark)}>
@@ -90,7 +98,6 @@ export default function Word({
           <s.WordPair>
             <div className="from" style={style_grayed_out}>
               {bookmark.from}
-
               {showRanking && (
                 <sup
                   style={{
@@ -107,6 +114,16 @@ export default function Word({
               {bookmark.to}
             </div>
           </s.WordPair>
+          {!isWordsOnDate && bookmark.cooling_interval !== null && (
+          <LevelWrapper onMouseEnter={() => setShowWordsModal(true)}
+          onMouseLeave={() => setShowWordsModal(false)}>
+          <LevelIndicator bookmark={bookmark}/>
+          {showWordsModal && (
+                <WordsTooltip  open={showWordsModal}
+                setOpen={setShowWordsModal}
+                value={bookmark}>Your level is {bookmark.level}</WordsTooltip>
+              )}
+          </LevelWrapper>)}
         </CenteredRow>
       </s.Word>
       {children}
