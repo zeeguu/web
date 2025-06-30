@@ -16,15 +16,15 @@ export default function ExercisesProgressSummary() {
       const allValuesReady =
         weeksPracticed != null &&
         totalLearned != null &&
-        totalInLearning != null;
-        //weeklyPracticed != null;
+        totalInLearning != null &&
+        weeklyPracticed != null;
 
         if (allValuesReady){
           const summary = getExerciseProgressSummary({
             totalInLearning,
             totalLearned,
             weeksPracticed,
-            //weeklyPracticed
+            weeklyPracticed,
           }).exerciseProgressSummary;
           console.log("summary,", summary);
         const twoRandomItems = selectTwoRandomItems(summary);
@@ -43,9 +43,9 @@ export default function ExercisesProgressSummary() {
       setTotalLearned(totalLearnedCount)
     });
 
-    //api.getPracticedBookmarksCountThisWeek((count) => {
-      //setWeeklyPracticed(count);
-    //});
+    api.getPracticedBookmarksCountThisWeek((count) => {
+      setWeeklyPracticed(count);
+    });
 
     api.getUserActivityByDay((activity) => {
         const weeksPracticed = calculateConsecutivePracticeWeeks(activity);
@@ -56,7 +56,7 @@ export default function ExercisesProgressSummary() {
       if (
     totalInLearning === undefined ||
     totalLearned === undefined ||
-    //weeklyPracticed === undefined ||
+    weeklyPracticed === undefined ||
     weeksPracticed === undefined
   ) {
     return <LoadingAnimation />
