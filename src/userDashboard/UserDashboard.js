@@ -28,6 +28,8 @@ import { useLocation } from "react-router-dom";
 import { ProgressContext } from "../contexts/ProgressContext";
 import { getWeeklyTranslatedWordsCount, calculateTotalReadingMinutes, calculateWeeklyReadingMinutes, calculateConsecutivePracticeWeeks } from "../utils/progressTracking/progressHelpers";
 
+
+
 export default function UserDashboard() {
   const api = useContext(APIContext);
   const location = useLocation();
@@ -48,9 +50,9 @@ export default function UserDashboard() {
     useState(null);
   const [monthlyExerciseAndReadingTimes, setMonthlyExerciseAndReadingTimes] =
     useState({});
-  const [totalInLearning] = useState(null);
-  const [totalToLearn] = useState(null);
-  const [totalLearned] = useState(null);
+  const [totalInLearning, setTotalInLearning] = useState(null);
+  const [totalToLearn, setTotalToLearn] = useState(null);
+  const [totalLearned, setTotalLearned] = useState(null);
 
   function handleChangeReferenceDate(newDate) {
     setReferenceDate(newDate);
