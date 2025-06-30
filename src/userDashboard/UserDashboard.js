@@ -50,9 +50,6 @@ export default function UserDashboard() {
     useState(null);
   const [monthlyExerciseAndReadingTimes, setMonthlyExerciseAndReadingTimes] =
     useState({});
-  const [totalInLearning, setTotalInLearning] = useState(null);
-  const [totalToLearn, setTotalToLearn] = useState(null);
-  const [totalLearned, setTotalLearned] = useState(null);
 
   function handleChangeReferenceDate(newDate) {
     setReferenceDate(newDate);
@@ -177,10 +174,10 @@ export default function UserDashboard() {
       console.log("this is the count in the dashboard", count);
       setWeeklyPracticed(count);
     });
-    // eslint-disable-next-line
+  // eslint-disable-next-line
   }, [activeTab]);
 
-  if (!allWordsData || !dailyExerciseAndReadingTimes || !totalInLearning || !totalToLearn || totalLearned == null) {
+  if (!allWordsData || !dailyExerciseAndReadingTimes) {
     return <LoadingAnimation />;
   }
 
@@ -222,8 +219,13 @@ export default function UserDashboard() {
         ) : (
           <></>
         )}
+        
+        {activeTab === TABS_IDS.PROGRESS_ITEMS && (
+          <>
+            <ProgressOverview/>
+          </>
+        )}
       </s.NivoGraphContainer>
-
     </>
   );
 }
