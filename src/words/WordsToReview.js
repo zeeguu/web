@@ -142,6 +142,7 @@ export default function WordsToReview({
                 notifyWordChange={notifyWordChanged}
                 source={source}
                 isReview={inEditMode}
+                hideLevelIndicator={true}
               />
             </ContentOnRow>          
           ))}
@@ -162,6 +163,7 @@ export default function WordsToReview({
                 notifyWordChange={notifyWordChanged}
                 source={source}
                 isReview={inEditMode}
+                hideLevelIndicator={true}
               />
             </ContentOnRow>
           ))}

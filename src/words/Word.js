@@ -24,6 +24,7 @@ export default function Word({
   showRanking,
   isGrayedOut,
   isWordsOnDate = false,
+  hideLevelIndicator = false,
 }) {
 
   const [showWordsModal, setShowWordsModal] = useState(false);
@@ -114,7 +115,7 @@ export default function Word({
               {bookmark.to}
             </div>
           </s.WordPair>
-          {!isWordsOnDate && bookmark.cooling_interval !== null && (
+          {!isWordsOnDate && bookmark.cooling_interval !== null && !hideLevelIndicator && (
           <LevelWrapper onMouseEnter={() => setShowWordsModal(true)}
           onMouseLeave={() => setShowWordsModal(false)}>
           <LevelIndicator bookmark={bookmark}/>

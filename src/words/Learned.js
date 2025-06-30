@@ -72,7 +72,7 @@ export default function Learned() {
           return (
             <div>
               {subGroup.map((each) => {
-                return <Word key={each.id} notifyDelete={onNotifyDelete} bookmark={each} hideStar={true} />;
+                return <Word key={each.id} notifyDelete={onNotifyDelete} bookmark={each} hideStar={true} hideLevelIndicator={true} />;
               })}
             </div>
           );
