@@ -1,6 +1,6 @@
 import { Tooltip } from "@mui/material";
 
-export default function WordsToolTip({open, setOpen, value}){
+export default function WordsToolTip({open, setOpen, value, isOnCongratulationsPage = false}) {
     if (value.cooling_interval == null) return null;
     
     return (
@@ -16,7 +16,18 @@ export default function WordsToolTip({open, setOpen, value}){
                   {
                     value.level === 4 && value.is_about_to_be_learned === true
                       ? "Congratulations! You have learned this word. You won't practice this word anymore"
-                      : (() => {
+                      : isOnCongratulationsPage ? (
+            <>
+              You need to get this word correct{" "}
+              {value.cooling_interval === 0
+                ? "today "
+                : value.cooling_interval === 1
+                ? "tomorrow "
+                : `in ${value.cooling_interval} days `}
+              {value.level === 4
+                ? "to get closer to learning this word"
+                : `to get closer to level ${value.level + 1}`}
+            </>) : (() => {
                           const nextPractice = new Date(value.next_practice_time);
                           const today = new Date();
                           // Set both to midnight for date-only comparison

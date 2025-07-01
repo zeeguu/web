@@ -125,7 +125,7 @@ export default function Congratulations({
           <CollapsablePanel
             children={incorrectBookmarksToDisplay.map((each) => (
               <s.ContentOnRow className="contentOnRow" key={"row_" + each.id}>
-                <Word key={each.id} bookmark={each} notifyDelete={deleteBookmark} source={source} />
+                <Word key={each.id} bookmark={each} notifyDelete={deleteBookmark} source={source} isOnCongratulationsPage={true}  />
               </s.ContentOnRow>
             ))}
             topMessage={strings.wordsIncorrect}
@@ -137,7 +137,7 @@ export default function Congratulations({
           <CollapsablePanel
             children={correctBookmarksToDisplay.map((each) => (
               <s.ContentOnRow className="contentOnRow" key={"row_" + each.id}>
-                <Word key={each.id} bookmark={each} notifyDelete={deleteBookmark} source={source} />
+                <Word key={each.id} bookmark={each} notifyDelete={deleteBookmark} source={source} isOnCongratulationsPage={true} />
               </s.ContentOnRow>
             ))}
             topMessage={strings.wordsCorrect}
