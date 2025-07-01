@@ -55,16 +55,18 @@ export default function LandingPage() {
           </Button>
           <s.LanguageGrid>
             {systemLanguages &&
-              systemLanguages.learnable_languages.map((language) => (
-                <Button
-                  className="small grey left-aligned"
-                  key={language.code}
-                  onClick={() => handleLanguageSelect(language.code)}
-                >
-                  <DynamicFlagImage languageCode={language.code} />
-                  {language.name}
-                </Button>
-              ))}
+              systemLanguages.learnable_languages
+                .sort((a, b) => a.name.localeCompare(b.name))
+                .map((language) => (
+                  <Button
+                    className="small grey left-aligned"
+                    key={language.code}
+                    onClick={() => handleLanguageSelect(language.code)}
+                  >
+                    <DynamicFlagImage languageCode={language.code} />
+                    {language.name}
+                  </Button>
+                ))}
           </s.LanguageGrid>
         </s.HeroSection>
         <s.PageSectionWrapper>
