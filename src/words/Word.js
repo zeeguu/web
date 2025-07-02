@@ -25,7 +25,7 @@ export default function Word({
   isGrayedOut,
   isWordsOnDate = false,
   hideLevelIndicator = false,
-  isOnCongratulationsPage = false,
+  isOnCongratulationsPage,
 }) {
 
   const [showWordsModal, setShowWordsModal] = useState(false);
@@ -121,7 +121,7 @@ export default function Word({
           onMouseLeave={() => setShowWordsModal(false)}>
           <LevelIndicator bookmark={bookmark}/>
           {showWordsModal && (
-                <WordsTooltip  isOnCongratulationsPage={true}  open={showWordsModal}
+                <WordsTooltip  isOnCongratulationsPage={isOnCongratulationsPage}  open={showWordsModal}
                 setOpen={setShowWordsModal}
                 value={bookmark}>Your level is {bookmark.level}</WordsTooltip>
               )}

@@ -1,6 +1,6 @@
 import { Tooltip } from "@mui/material";
 
-export default function WordsToolTip({open, setOpen, value, isOnCongratulationsPage = false}) {
+export default function WordsToolTip({open, setOpen, value, isOnCongratulationsPage}) {
     if (value.cooling_interval == null) return null;
     
     return (
