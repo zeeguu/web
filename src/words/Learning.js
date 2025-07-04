@@ -85,6 +85,7 @@ export default function Learning() {
                     source={WEB_READER}
                     notifyDelete={onNotifyDelete}
                     showRanking={true}
+                    isOnCongratulationsPage={false}
                   />
                 ))}
               </CollapsablePanel>

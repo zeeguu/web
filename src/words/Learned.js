@@ -67,13 +67,12 @@ export default function Learned() {
 
         <br />
       </s.YellowMessageBox>
-
       <div>
         {words.map((subGroup) => {
           return (
             <div>
               {subGroup.map((each) => {
-                return <Word key={each.id} notifyDelete={onNotifyDelete} bookmark={each} hideStar={true} />;
+                return <Word key={each.id} notifyDelete={onNotifyDelete} bookmark={each} hideStar={true} hideLevelIndicator={true} />;
               })}
             </div>
           );

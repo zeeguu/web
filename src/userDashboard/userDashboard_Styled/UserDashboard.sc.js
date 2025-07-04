@@ -73,7 +73,6 @@ const UserDashBoardDropdown = styled.select`
     cursor: pointer;
   }
 `;
-
 // parent container has to have height specified in order for the nivo graphs to be shown
 // nivo automatically resizes the graphs' width, but not height
 const NivoGraphContainer = styled.div`
