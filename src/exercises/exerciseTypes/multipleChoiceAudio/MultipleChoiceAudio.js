@@ -98,7 +98,7 @@ export default function MultipleChoiceAudio({
       </div>
 
       {!isExerciseOver && (
-        <s.CenteredRow>
+        <s.CenteredWordRow>
           {/* Mapping bookmarks to the buttons in random order, setting button properties based on bookmark index */}
           {choiceOptions &&
             choiceOptions.map((option) => (
@@ -112,7 +112,7 @@ export default function MultipleChoiceAudio({
                 styling={option === currentSelectedChoice ? "selected" : ""}
               />
             ))}
-        </s.CenteredRow>
+        </s.CenteredWordRow>
       )}
 
       {!isExerciseOver && (

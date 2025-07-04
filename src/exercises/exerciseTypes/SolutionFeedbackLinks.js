@@ -24,7 +24,7 @@ export default function SolutionFeedbackLinks({
   }, [exerciseBookmarks]);
 
   return (
-    <s.CenteredRow className="margin-top-auto">
+    <s.CenteredWordRow className="margin-top-auto">
       <RemoveBookmarkModal
         exerciseBookmarks={exerciseBookmarks}
         open={openQuickFeedbackModal}
@@ -60,6 +60,6 @@ export default function SolutionFeedbackLinks({
           </s.StyledGreyButton>
         </>
       )}
-    </s.CenteredRow>
+    </s.CenteredWordRow>
   );
 }

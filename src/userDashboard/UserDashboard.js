@@ -2,6 +2,7 @@ import { useContext, useEffect, useState } from "react";
 import LoadingAnimation from "../components/LoadingAnimation";
 import TranslatedWordsGraph from "./userdashboard_Graphs/TranslatedWordsGraph";
 import ReadingAndExercisesTimeGraph from "./userdashboard_Graphs/ReadingAndExercisesTimeGraph";
+import ProgressOverview from "./ProgressOverview";
 import {
   PERIOD_OPTIONS,
   ACTIVITY_TIME_FORMAT_OPTIONS,
@@ -22,9 +23,18 @@ import * as s from "./userDashboard_Styled/UserDashboard.sc";
 import { setTitle } from "../assorted/setTitle";
 import strings from "../i18n/definitions";
 import { APIContext } from "../contexts/APIContext";
+import { useHistory } from "react-router-dom";
+import { useLocation } from "react-router-dom";
+import { ProgressContext } from "../contexts/ProgressContext";
+import { getWeeklyTranslatedWordsCount, calculateTotalReadingMinutes, calculateWeeklyReadingMinutes, calculateConsecutivePracticeWeeks } from "../utils/progressTracking/progressHelpers";
+
+
 
 export default function UserDashboard() {
   const api = useContext(APIContext);
+  const location = useLocation();
+  const history = useHistory();
+  const { setWeeklyTranslated, setTotalReadingMinutes, setTotalTranslated, setTotalInLearning, setTotalLearned, setWeeksPracticed, setWeeklyPracticed, setWeeklyReadingMinutes } = useContext(ProgressContext);
   const [activeTab, setActiveTab] = useState(TABS_IDS.BAR_GRAPH);
   const [activeTimeInterval, setActiveTimeInterval] = useState(OPTIONS.WEEK);
   const [activeCustomTimeInterval, setActiveCustomTimeInterval] = useState(
@@ -49,6 +59,12 @@ export default function UserDashboard() {
   function handleActiveTabChange(tabId) {
     setActiveTab(tabId);
     api.logUserActivity(api.USER_DASHBOARD_TAB_CHANGE, "", tabId);
+  
+    let tabParam = "progress";
+    if (tabId === TABS_IDS.LINE_GRAPH) tabParam = "translations";
+    else if (tabId === TABS_IDS.BAR_GRAPH) tabParam = "time";
+  
+    history.replace(`?tab=${tabParam}`);
   }
 
   function handleActiveTimeIntervalChange(selected) {
@@ -92,6 +108,22 @@ export default function UserDashboard() {
   }
 
   useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const tabParam = params.get("tab");
+    let newTab;
+    if (tabParam === "progress" || !tabParam) {
+      newTab = TABS_IDS.PROGRESS_ITEMS;
+    } else if (tabParam === "translations") {
+      newTab = TABS_IDS.LINE_GRAPH;
+    } else if (tabParam === "time") {
+      newTab = TABS_IDS.BAR_GRAPH;
+    } else {
+      newTab = TABS_IDS.PROGRESS_ITEMS;
+    }
+    setActiveTab(newTab);
+  }, [location.search]);
+
+  useEffect(() => {
     setTitle(strings.titleUserDashboard);
     api.logUserActivity(api.USER_DASHBOARD_OPEN);
     // eslint-disable-next-line
@@ -104,6 +136,13 @@ export default function UserDashboard() {
       setAllWordsData(formatted);
 
       setAllWordsDataPerMonths(calculateCountPerMonth_Words(formatted));
+
+      const totalTranslatedWords = counts.reduce((sum, day) => sum + day.count, 0);
+      setTotalTranslated(totalTranslatedWords);
+      
+      const thisWeek = getWeeklyTranslatedWordsCount(counts);
+      const weeklyTotal = thisWeek.reduce((sum, day) => sum + day.count, 0);
+      setWeeklyTranslated(weeklyTotal);
     });
 
     api.getUserActivityByDay((activity) => {
@@ -112,8 +151,30 @@ export default function UserDashboard() {
       setMonthlyExerciseAndReadingTimes(
         calculateCountPerMonth_Activity(activity),
       );
+      
+      setTotalReadingMinutes(calculateTotalReadingMinutes(activity.reading));
+
+      const readingMinsPerWeek = calculateWeeklyReadingMinutes(activity.reading);
+      setWeeklyReadingMinutes(readingMinsPerWeek);
+      
+      const weeksPracticed = calculateConsecutivePracticeWeeks(activity);
+      setWeeksPracticed(weeksPracticed);
+
     });
-    // eslint-disable-next-line
+
+    api.getAllScheduledBookmarks(false, (bookmarks) => {
+      setTotalInLearning(bookmarks.length);
+    });
+
+    api.totalLearnedBookmarks((totalLearnedCount) =>{
+      setTotalLearned(totalLearnedCount)
+    }); 
+
+    api.getPracticedBookmarksCountThisWeek((count) => {
+      console.log("this is the count in the dashboard", count);
+      setWeeklyPracticed(count);
+    });
+  // eslint-disable-next-line
   }, [activeTab]);
 
   if (!allWordsData || !dailyExerciseAndReadingTimes) {
@@ -157,6 +218,12 @@ export default function UserDashboard() {
           />
         ) : (
           <></>
+        )}
+        
+        {activeTab === TABS_IDS.PROGRESS_ITEMS && (
+          <>
+            <ProgressOverview/>
+          </>
         )}
       </s.NivoGraphContainer>
     </>

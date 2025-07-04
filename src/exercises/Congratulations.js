@@ -16,6 +16,7 @@ import { StyledButton } from "../components/allButtons.sc";
 import { APIContext } from "../contexts/APIContext";
 import { UserContext } from "../contexts/UserContext";
 import { ExercisesCounterContext } from "./ExercisesCounterContext";
+import  ExerciseProgressSummary  from "./ExercisesProgressSummary";
 
 export default function Congratulations({
   articleID,
@@ -56,7 +57,7 @@ export default function Congratulations({
     updateExercisesCounter();
     // eslint-disable-next-line
   }, []);
-
+  
   if (username === undefined || isOutOfWordsToday === undefined) {
     return <LoadingAnimation />;
   }
@@ -93,16 +94,17 @@ export default function Congratulations({
     <>
       <s.NarrowColumn className="narrowColumn">
         {screenWidth < MOBILE_WIDTH && <BackArrow />}
-
         <CenteredColumn className="centeredColumn">
           <h1>
             {strings.goodJob} {username}!
           </h1>
         </CenteredColumn>
-        <div style={{ marginLeft: "0.5em" }}>
-          <p>
+         <CenteredColumn className="centeredColumn">
+        <div style={{ marginLeft: "1em", display: "flex", flexDirection: "column", justifyContent:"center" }}>
+          <p style={{ textAlign: "center" }}>
             You have just done <b>{totalPracticedBookmarksInSession}</b>{" "}
-            {Pluralize.exercise(totalPracticedBookmarksInSession)} in <b>{timeToHumanReadable(checkpointTime)}</b>.
+            
+            {Pluralize.exercise(totalPracticedBookmarksInSession)} in <b>{timeToHumanReadable(checkpointTime)}</b>. Here are some highlights of your current progress you have made.
             {articleID && (
               <p>
                 These words are now part of your vocabulary exercises, using spaced repetition and smart learning
@@ -115,13 +117,15 @@ export default function Congratulations({
           <p>
             You practiced words from: <a href={articleURL}>{articleTitle}</a>
           </p>
+          
         )}
-
+        </CenteredColumn>
+        <ExerciseProgressSummary/>
         {incorrectBookmarksToDisplay.length > 0 && (
           <CollapsablePanel
             children={incorrectBookmarksToDisplay.map((each) => (
               <s.ContentOnRow className="contentOnRow" key={"row_" + each.id}>
-                <Word key={each.id} bookmark={each} notifyDelete={deleteBookmark} source={source} />
+                <Word key={each.id} bookmark={each} notifyDelete={deleteBookmark} source={source} isOnCongratulationsPage={true}  />
               </s.ContentOnRow>
             ))}
             topMessage={strings.wordsIncorrect}
@@ -133,7 +137,7 @@ export default function Congratulations({
           <CollapsablePanel
             children={correctBookmarksToDisplay.map((each) => (
               <s.ContentOnRow className="contentOnRow" key={"row_" + each.id}>
-                <Word key={each.id} bookmark={each} notifyDelete={deleteBookmark} source={source} />
+                <Word key={each.id} bookmark={each} notifyDelete={deleteBookmark} source={source} isOnCongratulationsPage={true} />
               </s.ContentOnRow>
             ))}
             topMessage={strings.wordsCorrect}

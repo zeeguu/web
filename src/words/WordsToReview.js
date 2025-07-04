@@ -2,13 +2,15 @@ import Word from "./Word";
 import { ContentOnRow } from "../reader/ArticleReader.sc";
 import strings from "../i18n/definitions";
 import Infobox from "../components/Infobox";
-import { useState, useEffect } from "react";
+import { useState, useEffect} from "react";
 import { tokenize } from "../utils/text/preprocessing";
 import ExplainBookmarkSelectionModal from "../components/ExplainBookmarkSelectionModal";
 import { MAX_BOOKMARKS_TO_STUDY_PER_ARTICLE } from "../exercises/ExerciseConstants";
 import { USER_WORD_PREFERENCE } from "./userBookmarkPreferences";
 import InfoBoxWordsToReview from "./InfoBoxWordsToReview";
 import ToggleEditReviewWords from "./ToggleEditReviewWords";
+import ArticlesProgressSummary from "../articles/ArticlesProgressSummary";
+
 
 export default function WordsToReview({
   words,
@@ -17,13 +19,13 @@ export default function WordsToReview({
   notifyWordChanged,
   source,
 }) {
+  console.log("articleInfo:", articleInfo);
   const totalWordsTranslated = words.length;
   const [inEditMode, setInEditMode] = useState(false);
   const [wordsForExercises, setWordsForExercises] = useState([]);
   const [wordsExcludedForExercises, setWordsExcludedForExercises] = useState(
     [],
   );
-
   // how many of the words were set by zeeguu
   const [wordsSelectedByZeeguu_Counter, setWordsSelectedByZeeguu_Counter] =
     useState();
@@ -31,7 +33,7 @@ export default function WordsToReview({
   const [wordsExpressions, setWordsExpressions] = useState([]);
   const [showExplainWordSelectionModal, setShowExplainWordSelectionModal] =
     useState(false);
-
+  
   useEffect(() => {
     let newWordsForExercises = [];
     let newWordsExcludedExercises = [];
@@ -74,11 +76,13 @@ export default function WordsToReview({
             {articleInfo.title}
           </p>
         </div>
+        <ArticlesProgressSummary/>
         <Infobox>
           <div>
             <p>You didn't translate any words in this article.</p>
           </div>
         </Infobox>
+
       </>
     );
 
@@ -122,9 +126,11 @@ export default function WordsToReview({
             />
           }
         />
+        
       )}
       {wordsForExercises.length > 0 && (
         <>
+          <ArticlesProgressSummary />
           <h3>You will see these words in your exercises:</h3>
           {wordsForExercises.map((each) => (
             <ContentOnRow className="contentOnRow">
@@ -136,12 +142,12 @@ export default function WordsToReview({
                 notifyWordChange={notifyWordChanged}
                 source={source}
                 isReview={inEditMode}
+                hideLevelIndicator={true}
               />
-            </ContentOnRow>
+            </ContentOnRow>          
           ))}
         </>
       )}
-
       {((wordsExcludedForExercises.length > 0 && totalWordsTranslated < 10) ||
         (inEditMode && wordsExcludedForExercises.length > 0)) && (
         <>
@@ -157,6 +163,7 @@ export default function WordsToReview({
                 notifyWordChange={notifyWordChanged}
                 source={source}
                 isReview={inEditMode}
+                hideLevelIndicator={true}
               />
             </ContentOnRow>
           ))}
@@ -186,7 +193,7 @@ export default function WordsToReview({
                 notifyWordChange={notifyWordChanged}
                 source={source}
                 isReview={inEditMode}
-              />
+              /> 
             </ContentOnRow>
           ))}
         </>
