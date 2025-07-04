@@ -18,10 +18,10 @@ let strings = new LocalizedStrings(
       more: "More",
       wordHistoryTitle: "Word Translation History",
       exercises: "Exercises",
-      dailyAudio: "Daily Audio",
+      dailyAudio: "Audio",
       today: "Today",
       pastLessons: "Past Lessons",
-      topbarProgressDisplay:  "Topbar Progress Display",
+      topbarProgressDisplay: "Topbar Progress Display",
       myClasses: "My Classrooms",
       myTexts: "My Texts",
       tutorials: "Help",
@@ -79,7 +79,7 @@ let strings = new LocalizedStrings(
 
       //Progress Items
       iconTextWeeklyArticles: "Weekly minutes read",
-      iconTextWeeklyWordsTranslated:  "Weekly words translated",
+      iconTextWeeklyWordsTranslated: "Weekly words translated",
       iconTextWeeklyWordsPracticed: "Weekly words practiced",
       iconTextWeeklyStreak: "Weekly streak",
 
@@ -94,7 +94,6 @@ let strings = new LocalizedStrings(
       articlesReadTotalTextEnd: "minutes in total since you started using Zeeguu.",
       articlesReadTotalTextEndSingle: "minute in total since you started using Zeeguu.",
 
-
       wordsTranslatedTextStart: "You have translated",
       wordsPracticedTextStart: "You have practiced",
       wordsLearnedTextStart: "You have learned",
@@ -103,7 +102,6 @@ let strings = new LocalizedStrings(
       wordsTextWeeklyEndSingle: "word this week.",
       wordsTextTotalEnd: "words in total since you started using Zeeguu.",
       wordsTextTotalEndSingle: "word in total since you started using Zeeguu.",
-
 
       streakTextStart: "You have practiced* every week for",
       streakTextStartSingle: "You have practiced* for",
@@ -922,7 +920,7 @@ let strings = new LocalizedStrings(
 
       //Progress Items
       iconTextWeeklyArticles: "Læste artikler pr. uge",
-      iconTextWeeklyWordsTranslated:  "Oversatte ord pr. uge",
+      iconTextWeeklyWordsTranslated: "Oversatte ord pr. uge",
       iconTextWeeklyWordsPracticed: "Ord øvet pr. uge",
       iconTextWeeklyStreak: "Ugentlig streak",
 
@@ -941,7 +939,7 @@ let strings = new LocalizedStrings(
 
       wordsTextWeeklyEnd: "ord i denne uge. Du er godt i gang!",
       wordsTextTotalEnd: "siden du begyndte at bruge Zeeguu. Hvor er du god!",
-    
+
       //CreateAccount
       nameIsRequired: "Vi mangler et navn.",
       learnedLanguageIsRequired: 'Udfyld feltet "Sprog, du vil lære"',
