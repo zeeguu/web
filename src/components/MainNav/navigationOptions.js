@@ -17,6 +17,13 @@ export default class NavigationOptions {
     isOnStudentSide: true,
   });
 
+  static dailyAudio = Object.freeze({
+    linkTo: "/daily-audio",
+    icon: <NavIcon name="dailyAudio" />,
+    text: strings.dailyAudio,
+    isOnStudentSide: true,
+  });
+
   static words = Object.freeze({
     linkTo: "/words",
     icon: <NavIcon name="words" />,

@@ -12,11 +12,13 @@ import DonutSmallRoundedIcon from "@mui/icons-material/DonutSmallRounded";
 import DoubleArrowRight from "@mui/icons-material/KeyboardDoubleArrowRightOutlined";
 import DoubleArrowLeft from "@mui/icons-material/KeyboardDoubleArrowLeftOutlined";
 import LanguageRoundedIcon from "@mui/icons-material/LanguageRounded";
+import HeadphonesRoundedIcon from "@mui/icons-material/HeadphonesRounded";
 
 export default function NavIcon({ name }) {
   const navIcons = {
     home: <HomeRoundedIcon />,
     exercises: <FitnessCenterRoundedIcon />,
+    dailyAudio: <HeadphonesRoundedIcon />,
     words: <TranslateRoundedIcon />,
     history: <HistoryRoundedIcon />,
     statistics: <DonutSmallRoundedIcon />,

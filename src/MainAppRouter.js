@@ -24,6 +24,7 @@ import SettingsRouter from "./pages/Settings/_SettingsRouter";
 import ExercisesForArticle from "./exercises/ExercisesForArticle";
 import { WEB_READER } from "./reader/ArticleReader";
 import VideoPlayer from "./videos/VideoPlayer";
+import DailyAudioRouter from "./dailyAudio/_DailyAudioRouter";
 
 export default function MainAppRouter({ hasExtension, handleSuccessfulLogIn }) {
   return (
@@ -50,6 +51,7 @@ export default function MainAppRouter({ hasExtension, handleSuccessfulLogIn }) {
       <PrivateRouteWithMainNav path="/articles" component={ArticlesRouter} />
       <PrivateRoute path="/watch/video" component={VideoPlayer} />
       <PrivateRouteWithMainNav path="/exercises" component={ExercisesRouter} />
+      <PrivateRouteWithMainNav path="/daily-audio" component={DailyAudioRouter} />
       <PrivateRouteWithMainNav path="/words" component={WordsRouter} />
       <PrivateRouteWithMainNav path="/history" component={ReadingHistory} />
       <PrivateRouteWithMainNav path="/account_settings" component={SettingsRouter} />
