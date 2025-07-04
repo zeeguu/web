@@ -10,6 +10,8 @@ export default function LoadingAnimation({
   specificStyle,
   delay = 1000,
   children,
+  showReportIssue = true,
+  reportIssueDelay = 4000,
 }) {
   const [showLoadingScreen, setShowLoadingScreen] = useState(false);
   const [showReportButton, setShowReportButton] = useState(false);
@@ -20,13 +22,15 @@ export default function LoadingAnimation({
     // Code from: https://stackoverflow.com/questions/53090432/react-hooks-right-way-to-clear-timeouts-and-intervals
     // Only show the loading if more that 1000ms have passed.
     let loadingTimer = setTimeout(() => setShowLoadingScreen(true), delay);
-    let showReportButtonTimer = setTimeout(
+    let showReportButtonTimer = showReportIssue ? setTimeout(
       () => setShowReportButton(true),
-      delay + 4000,
-    ); // Wait 4 seconds to show the link to the FeedbackScreen.
+      delay + reportIssueDelay,
+    ) : null; // Wait for specified delay to show the link to the FeedbackScreen.
     return () => {
       clearTimeout(loadingTimer);
-      clearTimeout(showReportButtonTimer);
+      if (showReportButtonTimer) {
+        clearTimeout(showReportButtonTimer);
+      }
     };
     // eslint-disable-next-line
   }, []);

@@ -6,6 +6,8 @@ import BottomNavLanguageOption from "./BottomNavLanguageOption";
 import { useContext } from "react";
 import { ExercisesCounterContext } from "../../../exercises/ExercisesCounterContext";
 
+import Feature from "../../../features/Feature";
+
 export default function BottomNavOptionsForStudent() {
   const path = useLocation().pathname;
   const { hasExerciseNotification, totalExercisesInPipeline } = useContext(ExercisesCounterContext);
@@ -20,6 +22,7 @@ export default function BottomNavOptionsForStudent() {
           hasExerciseNotification && <NotificationIcon position={"top-absolute"} text={totalExercisesInPipeline} />
         }
       />
+      {Feature.is_enabled("daily_audio") && <BottomNavOption {...NavigationOptions.dailyAudio} currentPath={path} />}
       <BottomNavOption {...NavigationOptions.words} currentPath={path} />
       <BottomNavLanguageOption />
     </>

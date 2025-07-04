@@ -19,5 +19,6 @@ import "./studentStatsForTeachers";
 import "./nlp";
 import "./userVideos";
 import "./watching_sessions";
+import "./dailyAudio";
 
 export default Zeeguu_API;

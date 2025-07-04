@@ -6,6 +6,7 @@ import NavOption from "../NavOption";
 import NavigationOptions from "../navigationOptions";
 import NotificationIcon from "../../NotificationIcon";
 import { ExercisesCounterContext } from "../../../exercises/ExercisesCounterContext";
+import Feature from "../../../features/Feature";
 
 export default function SideNavOptionsForStudent({ screenWidth }) {
   const { userDetails } = useContext(UserContext);
@@ -25,6 +26,10 @@ export default function SideNavOptionsForStudent({ screenWidth }) {
           hasExerciseNotification && <NotificationIcon position={"top-absolute"} text={totalExercisesInPipeline} />
         }
       />
+
+      {Feature.is_enabled("daily_audio") && (
+        <NavOption {...NavigationOptions.dailyAudio} currentPath={path} screenWidth={screenWidth} />
+      )}
 
       <NavOption {...NavigationOptions.words} currentPath={path} screenWidth={screenWidth} />
 

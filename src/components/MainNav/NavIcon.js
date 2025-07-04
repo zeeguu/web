@@ -12,6 +12,7 @@ import DonutSmallRoundedIcon from "@mui/icons-material/DonutSmallRounded";
 import DoubleArrowRight from "@mui/icons-material/KeyboardDoubleArrowRightOutlined";
 import DoubleArrowLeft from "@mui/icons-material/KeyboardDoubleArrowLeftOutlined";
 import LanguageRoundedIcon from "@mui/icons-material/LanguageRounded";
+import HeadphonesRoundedIcon from "@mui/icons-material/HeadphonesRounded";
 import LocalFireDepartmentIcon from '@mui/icons-material/LocalFireDepartment';
 import ArticleIcon from '@mui/icons-material/Article';
 import SchoolIcon from "@mui/icons-material/School";
@@ -28,8 +29,9 @@ const iconProps = {
 
   const navIcons = {
     home: <HomeRoundedIcon />,
-    exercises: <FitnessCenterRoundedIcon {...iconProps} />,
-    words: <TranslateRoundedIcon {...iconProps} />,
+    exercises: <FitnessCenterRoundedIcon />,
+    dailyAudio: <HeadphonesRoundedIcon />,
+    words: <TranslateRoundedIcon />,
     history: <HistoryRoundedIcon />,
     statistics: <DonutSmallRoundedIcon />,
     settings: <SettingsRoundedIcon />,
