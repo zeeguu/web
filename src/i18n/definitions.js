@@ -91,7 +91,7 @@ let strings = new LocalizedStrings(
       articlesReadTextStart: "You have read for",
       articlesReadWeeklyTextEnd: "minutes this week.",
       articlesReadWeeklyTextEndSingle: "minute this week.",
-      articlesReadTotalTextEnd: "minutes in total since you started using Zeeguu.",
+      articlesReadTotalTextEnd: "minutes in total since you started using Zeeguu!",
       articlesReadTotalTextEndSingle: "minute in total since you started using Zeeguu.",
 
       wordsTranslatedTextStart: "You have translated",
