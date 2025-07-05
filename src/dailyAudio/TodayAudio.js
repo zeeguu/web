@@ -1,9 +1,7 @@
-import React, { useState, useContext, useRef, useEffect } from "react";
-import { zeeguuOrange, orange500, orange600, orange800 } from "../components/colors";
+import React, { useContext, useEffect, useRef, useState } from "react";
+import { orange500, orange600, orange800, zeeguuOrange } from "../components/colors";
 import { APIContext } from "../contexts/APIContext";
-import { OrangeButton } from "../exercises/exerciseTypes/Exercise.sc";
 import LoadingAnimation from "../components/LoadingAnimation";
-import { Link } from "react-router-dom";
 
 const TWO_MIN = 120000; // 2 minutes in milliseconds
 
@@ -84,6 +82,12 @@ export default function TodayAudio() {
   const audioRef = useRef(null);
 
   useEffect(() => {
+    // Set page title
+    document.title = `Zeeguu Audio Lesson for ${new Date().toLocaleDateString("en-US", {
+      month: "short",
+      day: "numeric",
+    })}`;
+
     // Check if there's already a lesson for today
     setIsLoading(true);
 
@@ -244,7 +248,7 @@ export default function TodayAudio() {
     <div style={{ padding: "20px" }}>
       <h2 style={{ color: zeeguuOrange, marginBottom: "20px", display: "flex", alignItems: "center", gap: "8px" }}>
         {lessonData.is_completed && <span style={{ color: "#28a745", fontSize: "20px" }}>✓</span>}
-        Today's Audio Lesson
+        Audio Lesson for {new Date().toLocaleDateString("en-US", { month: "short", day: "numeric" })}
       </h2>
 
       {error && <div style={{ color: "red", marginBottom: "20px" }}>{error}</div>}
