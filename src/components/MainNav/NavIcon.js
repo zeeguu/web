@@ -29,9 +29,9 @@ const iconProps = {
 
   const navIcons = {
     home: <HomeRoundedIcon />,
-    exercises: <FitnessCenterRoundedIcon />,
+    exercises: <FitnessCenterRoundedIcon {...iconProps} />,
     dailyAudio: <HeadphonesRoundedIcon />,
-    words: <TranslateRoundedIcon />,
+    words: <TranslateRoundedIcon {...iconProps} />,
     history: <HistoryRoundedIcon />,
     statistics: <DonutSmallRoundedIcon />,
     settings: <SettingsRoundedIcon />,
