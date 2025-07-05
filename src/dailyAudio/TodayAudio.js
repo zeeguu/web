@@ -5,17 +5,20 @@ import { OrangeButton } from "../exercises/exerciseTypes/Exercise.sc";
 import LoadingAnimation from "../components/LoadingAnimation";
 import { Link } from "react-router-dom";
 
+const TWO_MIN = 120000; // 2 minutes in milliseconds
+
 export default function TodayAudio() {
   const api = useContext(APIContext);
   const [isLoading, setIsLoading] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
-  
+
   // Check localStorage for ongoing generation
   useEffect(() => {
     const generatingKey = `zeeguu_generating_lesson_${new Date().toDateString()}`;
     const isCurrentlyGenerating = localStorage.getItem(generatingKey);
     if (isCurrentlyGenerating) {
       setIsGenerating(true);
+
       // Poll for lesson completion
       const pollInterval = setInterval(() => {
         api.getTodaysLesson(
@@ -29,22 +32,50 @@ export default function TodayAudio() {
             }
           },
           (error) => {
-            // If there's an error, stop polling and show error
+            // Only show error if it's not just "no lesson found"
+            if (!error.message.includes("No lesson generated yet today")) {
+              clearInterval(pollInterval);
+              localStorage.removeItem(generatingKey);
+              setIsGenerating(false);
+              setError(error.message);
+            }
+          },
+        );
+      }, 3000); // Poll every 3 seconds
+
+      // Clear polling after 2 minutes (timeout) but check one more time
+      const timeoutId = setTimeout(() => {
+        // Final check before timing out
+        api.getTodaysLesson(
+          (data) => {
+            if (data && data.lesson_id) {
+              // Lesson was actually ready
+              clearInterval(pollInterval);
+              localStorage.removeItem(generatingKey);
+              setIsGenerating(false);
+              setLessonData(data);
+            } else {
+              // Actually timed out
+              clearInterval(pollInterval);
+              localStorage.removeItem(generatingKey);
+              setIsGenerating(false);
+              setError("Lesson generation timed out. Please try again.");
+            }
+          },
+          (error) => {
             clearInterval(pollInterval);
             localStorage.removeItem(generatingKey);
             setIsGenerating(false);
-            setError(error.message);
-          }
+            setError("Lesson generation timed out. Please try again.");
+          },
         );
-      }, 3000); // Poll every 3 seconds
-      
-      // Clear polling after 2 minutes (timeout)
-      setTimeout(() => {
+      }, TWO_MIN);
+
+      // Cleanup function to clear intervals if component unmounts
+      return () => {
         clearInterval(pollInterval);
-        localStorage.removeItem(generatingKey);
-        setIsGenerating(false);
-        setError("Lesson generation timed out. Please try again.");
-      }, 120000);
+        clearTimeout(timeoutId);
+      };
     }
   }, [api]);
   const [isDeleting, setIsDeleting] = useState(false);
@@ -70,24 +101,14 @@ export default function TodayAudio() {
     );
   }, [api]);
 
-  const handleGenerateLesson = async () => {
+  const handleGenerateLesson = () => {
     const generatingKey = `zeeguu_generating_lesson_${new Date().toDateString()}`;
-    
+
     setIsGenerating(true);
     setError(null);
-    
+
     // Set localStorage flag to track generation across page reloads
     localStorage.setItem(generatingKey, "true");
-
-    // Pre-load and prepare audio for mobile autoplay
-    if (audioRef.current) {
-      try {
-        // This prepares the audio context on mobile
-        await audioRef.current.load();
-      } catch (e) {
-        console.log("Audio preload failed:", e);
-      }
-    }
 
     api.generateDailyLesson(
       (data) => {
@@ -96,19 +117,6 @@ export default function TodayAudio() {
         setIsGenerating(false);
         console.log("Generated new lesson:", data);
         setLessonData(data);
-        // Try to auto-play the audio when it's ready
-        setTimeout(async () => {
-          if (audioRef.current) {
-            try {
-              await audioRef.current.play();
-              console.log("Autoplay successful");
-            } catch (error) {
-              // Autoplay failed (likely on mobile), show a message or button
-              console.log("Autoplay prevented:", error);
-              // Could show a "Click to play" message here if needed
-            }
-          }
-        }, 100);
       },
       (error) => {
         // Clear the localStorage flag on error
@@ -164,7 +172,7 @@ export default function TodayAudio() {
         }}
       >
         <LoadingAnimation delay={0} reportIssueDelay={40000}>
-          <p>Generating your daily lesson... This may take up to 30 seconds.</p>
+          <p>Generating your daily lesson... This may take from 30s up to a minute</p>
         </LoadingAnimation>
       </div>
     );
@@ -263,7 +271,6 @@ export default function TodayAudio() {
         <audio
           ref={audioRef}
           controls
-          preload="metadata"
           style={{
             width: "100%",
             marginBottom: "20px",
