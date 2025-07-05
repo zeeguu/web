@@ -9,6 +9,44 @@ export default function TodayAudio() {
   const api = useContext(APIContext);
   const [isLoading, setIsLoading] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
+  
+  // Check localStorage for ongoing generation
+  useEffect(() => {
+    const generatingKey = `zeeguu_generating_lesson_${new Date().toDateString()}`;
+    const isCurrentlyGenerating = localStorage.getItem(generatingKey);
+    if (isCurrentlyGenerating) {
+      setIsGenerating(true);
+      // Poll for lesson completion
+      const pollInterval = setInterval(() => {
+        api.getTodaysLesson(
+          (data) => {
+            if (data && data.lesson_id) {
+              // Lesson is ready
+              clearInterval(pollInterval);
+              localStorage.removeItem(generatingKey);
+              setIsGenerating(false);
+              setLessonData(data);
+            }
+          },
+          (error) => {
+            // If there's an error, stop polling and show error
+            clearInterval(pollInterval);
+            localStorage.removeItem(generatingKey);
+            setIsGenerating(false);
+            setError(error.message);
+          }
+        );
+      }, 3000); // Poll every 3 seconds
+      
+      // Clear polling after 2 minutes (timeout)
+      setTimeout(() => {
+        clearInterval(pollInterval);
+        localStorage.removeItem(generatingKey);
+        setIsGenerating(false);
+        setError("Lesson generation timed out. Please try again.");
+      }, 120000);
+    }
+  }, [api]);
   const [isDeleting, setIsDeleting] = useState(false);
   const [lessonData, setLessonData] = useState(null);
   const [error, setError] = useState(null);
@@ -32,23 +70,49 @@ export default function TodayAudio() {
     );
   }, [api]);
 
-  const handleGenerateLesson = () => {
+  const handleGenerateLesson = async () => {
+    const generatingKey = `zeeguu_generating_lesson_${new Date().toDateString()}`;
+    
     setIsGenerating(true);
     setError(null);
+    
+    // Set localStorage flag to track generation across page reloads
+    localStorage.setItem(generatingKey, "true");
+
+    // Pre-load and prepare audio for mobile autoplay
+    if (audioRef.current) {
+      try {
+        // This prepares the audio context on mobile
+        await audioRef.current.load();
+      } catch (e) {
+        console.log("Audio preload failed:", e);
+      }
+    }
 
     api.generateDailyLesson(
       (data) => {
+        // Clear the localStorage flag when generation completes
+        localStorage.removeItem(generatingKey);
         setIsGenerating(false);
         console.log("Generated new lesson:", data);
         setLessonData(data);
-        // Auto-play the audio when it's ready
-        setTimeout(() => {
+        // Try to auto-play the audio when it's ready
+        setTimeout(async () => {
           if (audioRef.current) {
-            audioRef.current.play();
+            try {
+              await audioRef.current.play();
+              console.log("Autoplay successful");
+            } catch (error) {
+              // Autoplay failed (likely on mobile), show a message or button
+              console.log("Autoplay prevented:", error);
+              // Could show a "Click to play" message here if needed
+            }
           }
         }, 100);
       },
       (error) => {
+        // Clear the localStorage flag on error
+        localStorage.removeItem(generatingKey);
         setIsGenerating(false);
         console.error("Error generating lesson:", error);
         setError(error.message || "Failed to generate daily lesson. Please try again.");
@@ -162,7 +226,7 @@ export default function TodayAudio() {
           Daily Lesson
         </button>
         <p style={{ marginBottom: "20px", textAlign: "center", maxWidth: "500px" }}>
-          Let's generate an audio lesson for you based on the words you are currently learning.
+          Push the button for... an audio lesson for you based on the words you are currently learning.
         </p>
       </div>
     );
@@ -199,6 +263,7 @@ export default function TodayAudio() {
         <audio
           ref={audioRef}
           controls
+          preload="metadata"
           style={{
             width: "100%",
             marginBottom: "20px",
