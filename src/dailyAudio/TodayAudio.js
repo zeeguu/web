@@ -1,8 +1,9 @@
 import React, { useState, useContext, useRef, useEffect } from "react";
-import { zeeguuOrange } from "../components/colors";
+import { zeeguuOrange, orange500, orange600, orange800 } from "../components/colors";
 import { APIContext } from "../contexts/APIContext";
 import { OrangeButton } from "../exercises/exerciseTypes/Exercise.sc";
 import LoadingAnimation from "../components/LoadingAnimation";
+import { Link } from "react-router-dom";
 
 export default function TodayAudio() {
   const api = useContext(APIContext);
@@ -79,7 +80,6 @@ export default function TodayAudio() {
   if (isLoading) {
     return (
       <div style={{ padding: "20px" }}>
-        <h2 style={{ color: zeeguuOrange, marginBottom: "20px" }}>Today's Audio Lesson</h2>
         <LoadingAnimation>
           <p>Checking for existing lesson...</p>
         </LoadingAnimation>
@@ -99,7 +99,6 @@ export default function TodayAudio() {
           minHeight: "400px",
         }}
       >
-        <h2 style={{ color: zeeguuOrange, marginBottom: "20px" }}>Today's Audio Lesson</h2>
         <LoadingAnimation delay={0} reportIssueDelay={40000}>
           <p>Generating your daily lesson... This may take up to 30 seconds.</p>
         </LoadingAnimation>
@@ -119,11 +118,52 @@ export default function TodayAudio() {
           minHeight: "400px",
         }}
       >
-        <h2 style={{ color: zeeguuOrange, marginBottom: "20px" }}>Today's Audio Lesson</h2>
+        <button
+          onClick={handleGenerateLesson}
+          style={{
+            width: "150px",
+            height: "150px",
+            borderRadius: "50%",
+            backgroundColor: orange500,
+            color: "white",
+            border: "none",
+            fontSize: "16px",
+            fontWeight: "600",
+            cursor: "pointer",
+            boxShadow: `0px 0.3rem ${orange800}`,
+            transition: "all 0.3s ease-in-out",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            textAlign: "center",
+            lineHeight: "1.2",
+          }}
+          onMouseEnter={(e) => {
+            e.target.style.backgroundColor = orange600;
+          }}
+          onMouseLeave={(e) => {
+            e.target.style.backgroundColor = orange500;
+            e.target.style.boxShadow = `0px 0.3rem ${orange800}`;
+            e.target.style.transform = "translateY(0)";
+          }}
+          onMouseDown={(e) => {
+            e.target.style.boxShadow = "none";
+            e.target.style.transform = "translateY(0.2em)";
+            e.target.style.transition = "all 0.08s ease-in";
+          }}
+          onMouseUp={(e) => {
+            e.target.style.boxShadow = `0px 0.3rem ${orange800}`;
+            e.target.style.transform = "translateY(0)";
+            e.target.style.transition = "all 0.3s ease-in-out";
+          }}
+        >
+          Generate
+          <br />
+          Daily Lesson
+        </button>
         <p style={{ marginBottom: "20px", textAlign: "center", maxWidth: "500px" }}>
-          Generate your personalized audio lesson for today. The lesson will be based on your current words in learning.
+          Let's generate an audio lesson for you based on the words you are currently learning.
         </p>
-        <OrangeButton onClick={handleGenerateLesson}>Generate Daily Lesson</OrangeButton>
       </div>
     );
   }
@@ -173,10 +213,10 @@ export default function TodayAudio() {
             if (lessonData.lesson_id) {
               api.updateLessonState(lessonData.lesson_id, "complete", () => {
                 // Update local state to show completion immediately
-                setLessonData(prev => ({
+                setLessonData((prev) => ({
                   ...prev,
                   is_completed: true,
-                  completed_at: new Date().toISOString()
+                  completed_at: new Date().toISOString(),
                 }));
               });
             }
