@@ -71,7 +71,7 @@ export default function TodayAudio() {
           setIsDeleting(false);
           console.error("Error deleting lesson:", error);
           setError(error.message || "Failed to delete lesson. Please try again.");
-        }
+        },
       );
     }
   };
@@ -89,9 +89,18 @@ export default function TodayAudio() {
 
   if (isGenerating) {
     return (
-      <div style={{ padding: "20px" }}>
+      <div
+        style={{
+          padding: "20px",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
+          minHeight: "400px",
+        }}
+      >
         <h2 style={{ color: zeeguuOrange, marginBottom: "20px" }}>Today's Audio Lesson</h2>
-        <LoadingAnimation reportIssueDelay={40000}>
+        <LoadingAnimation delay={0} reportIssueDelay={40000}>
           <p>Generating your daily lesson... This may take up to 30 seconds.</p>
         </LoadingAnimation>
       </div>
@@ -112,8 +121,7 @@ export default function TodayAudio() {
       >
         <h2 style={{ color: zeeguuOrange, marginBottom: "20px" }}>Today's Audio Lesson</h2>
         <p style={{ marginBottom: "20px", textAlign: "center", maxWidth: "500px" }}>
-          Generate your personalized audio lesson for today. The lesson will be tailored to your learning level and
-          interests.
+          Generate your personalized audio lesson for today. The lesson will be based on your current words in learning.
         </p>
         <OrangeButton onClick={handleGenerateLesson}>Generate Daily Lesson</OrangeButton>
       </div>
@@ -122,34 +130,56 @@ export default function TodayAudio() {
 
   return (
     <div style={{ padding: "20px" }}>
-      <h2 style={{ color: zeeguuOrange, marginBottom: "20px" }}>Today's Audio Lesson</h2>
+      <h2 style={{ color: zeeguuOrange, marginBottom: "20px", display: "flex", alignItems: "center", gap: "8px" }}>
+        {lessonData.is_completed && <span style={{ color: "#28a745", fontSize: "20px" }}>✓</span>}
+        Today's Audio Lesson
+      </h2>
 
       {error && <div style={{ color: "red", marginBottom: "20px" }}>{error}</div>}
 
+      {lessonData.is_completed && (
+        <div
+          style={{
+            marginBottom: "20px",
+            padding: "12px",
+            backgroundColor: "#f8fff9",
+            border: "1px solid #28a745",
+            borderRadius: "4px",
+          }}
+        >
+          <span style={{ color: "#28a745", fontWeight: "500", fontSize: "14px" }}>
+            ✓ Lesson completed! Great job on finishing today's lesson.
+          </span>
+        </div>
+      )}
+
       <div>
-        <p style={{ marginBottom: "20px" }}>
-          Here's your daily lesson! Listen to improve your comprehension skills.
-        </p>
-
-        {lessonData.duration_seconds && (
-          <p style={{ marginBottom: "10px", color: "gray" }}>
-            Duration: {Math.floor(lessonData.duration_seconds / 60)}:
-            {(lessonData.duration_seconds % 60).toString().padStart(2, "0")}
-          </p>
-        )}
-
-        {lessonData.created_at && (
-          <p style={{ marginBottom: "10px", color: "gray" }}>
-            Created: {new Date(lessonData.created_at).toLocaleDateString()}
-          </p>
-        )}
+        <p style={{ marginBottom: "20px" }}>Here's your daily lesson! Listen to improve your comprehension skills.</p>
 
         <audio
           ref={audioRef}
           controls
-          style={{ 
-            width: "100%", 
-            marginBottom: "20px"
+          style={{
+            width: "100%",
+            marginBottom: "20px",
+            height: "60px",
+          }}
+          onPlay={() => {
+            if (lessonData.lesson_id) {
+              api.updateLessonState(lessonData.lesson_id, "play");
+            }
+          }}
+          onEnded={() => {
+            if (lessonData.lesson_id) {
+              api.updateLessonState(lessonData.lesson_id, "complete", () => {
+                // Update local state to show completion immediately
+                setLessonData(prev => ({
+                  ...prev,
+                  is_completed: true,
+                  completed_at: new Date().toISOString()
+                }));
+              });
+            }
           }}
           onError={() => {
             console.log("Audio failed to load, trying direct fetch...");
@@ -204,7 +234,7 @@ export default function TodayAudio() {
               fontSize: "12px",
               cursor: isDeleting ? "not-allowed" : "pointer",
               opacity: isDeleting ? 0.5 : 1,
-              textDecoration: "underline"
+              textDecoration: "underline",
             }}
           >
             {isDeleting ? "deleting..." : "delete lesson"}
