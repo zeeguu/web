@@ -176,7 +176,7 @@ export default function TodayAudio() {
         }}
       >
         <LoadingAnimation delay={0} reportIssueDelay={40000}>
-          <p>Generating your daily lesson... This may take from 30s up to a minute</p>
+          <p>Generating your daily lesson... This may take up to a minute</p>
         </LoadingAnimation>
       </div>
     );
