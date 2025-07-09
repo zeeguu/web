@@ -81,13 +81,22 @@ export default function TodayAudio() {
   const [error, setError] = useState(null);
   const audioRef = useRef(null);
 
-  useEffect(() => {
-    // Set page title
-    document.title = `Zeeguu Audio Lesson for ${new Date().toLocaleDateString("en-US", {
-      month: "short",
-      day: "numeric",
-    })}`;
+  let words = lessonData?.words || [];
 
+  // Update page title when lessonData changes
+  useEffect(() => {
+    if (lessonData && lessonData.words) {
+      document.title = `${new Date().toLocaleDateString("en-US", {
+        month: "short",
+        day: "numeric",
+      })} - Audio: ${lessonData.words.map((word) => word.origin || word).join(", ")}`;
+    } else {
+      document.title = "Zeeguu: Audio Lesson";
+    }
+  }, [lessonData]);
+
+  // Fetch lesson data on mount
+  useEffect(() => {
     // Check if there's already a lesson for today
     setIsLoading(true);
 
@@ -175,7 +184,7 @@ export default function TodayAudio() {
           minHeight: "400px",
         }}
       >
-        <LoadingAnimation delay={0} reportIssueDelay={40000}>
+        <LoadingAnimation delay={0} reportIssueDelay={60000}>
           <p>Generating your daily lesson... This may take up to a minute</p>
         </LoadingAnimation>
       </div>
