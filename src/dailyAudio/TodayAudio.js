@@ -86,10 +86,10 @@ export default function TodayAudio() {
   // Update page title when lessonData changes
   useEffect(() => {
     if (lessonData && lessonData.words) {
-      document.title = `${new Date().toLocaleDateString("en-US", {
+      document.title = `[${new Date().toLocaleDateString("en-US", {
         month: "short",
         day: "numeric",
-      })} - Audio: ${lessonData.words.map((word) => word.origin || word).join(", ")}`;
+      })}] Daily Audio: ${lessonData.words.map((word) => word.origin || word).join(", ")}`;
     } else {
       document.title = "Zeeguu: Audio Lesson";
     }
