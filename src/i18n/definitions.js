@@ -280,7 +280,7 @@ let strings = new LocalizedStrings(
       yourWordsHeadline: "Your Words",
       history: "History",
       starred: "Starred",
-      learning: "Learning",
+      learning: "In Learning",
       learned: "Learned",
       topWords: "Top Words",
 

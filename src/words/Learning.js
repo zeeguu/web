@@ -64,9 +64,6 @@ export default function Learning() {
 
   return (
     <>
-      <h1>
-        In Learning <span style={{ color: "gray", fontWeight: "lighter" }}>({inLearning.length})</span>
-      </h1>
       <p>
         Words you see in your exercises grouped by how far you've progressed them. Our spaced repetition algorithm
         decides the ones you see in a given day.

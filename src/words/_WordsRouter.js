@@ -1,3 +1,4 @@
+import React, { useState, useContext, useEffect } from "react";
 import { PrivateRoute } from "../PrivateRoute";
 import Learned from "./Learned";
 import Top from "./Top";
@@ -8,17 +9,44 @@ import { Switch } from "react-router-dom";
 import WordsForArticle from "./WordsForArticle";
 import Feature from "../features/Feature";
 import Learning from "./Learning";
+import { APIContext } from "../contexts/APIContext";
 
 export default function WordsRouter() {
-  let tabsAndLinks = {
-    [strings.learned]: "/words/learned",
-    [strings.topWords]: "/words",
-  };
+  const api = useContext(APIContext);
+  const [learningCount, setLearningCount] = useState(0);
+  const [learnedCount, setLearnedCount] = useState(0);
+
+  useEffect(() => {
+    // Get count of words in learning
+    api.getAllScheduledBookmarks(false, (bookmarks) => {
+      setLearningCount(bookmarks.length);
+    });
+
+    // Get count of learned words
+    api.totalLearnedBookmarks((totalLearnedCount) => {
+      setLearnedCount(totalLearnedCount);
+    });
+  }, [api]);
+
+  let tabsAndLinks;
 
   if (Feature.merle_exercises) {
+    tabsAndLinks = [
+      {
+        text: strings.learning,
+        link: "/words",
+        counter: learningCount
+      },
+      {
+        text: strings.learned,
+        link: "/words/learned",
+        counter: learnedCount
+      }
+    ];
+  } else {
     tabsAndLinks = {
-      [strings.learning]: "/words",
       [strings.learned]: "/words/learned",
+      [strings.topWords]: "/words",
     };
   }
 

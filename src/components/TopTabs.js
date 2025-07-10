@@ -3,8 +3,16 @@ import { TopTab } from "./TopTab";
 
 // Renders a title and the corresponding tabs links
 export default function TopTabs({ title, tabsAndLinks }) {
-  let allTabsButLast = Object.entries(tabsAndLinks).slice(0, -1);
-  let lastTab = Object.entries(tabsAndLinks).pop();
+  // Handle both object and array formats
+  let tabsArray;
+  if (Array.isArray(tabsAndLinks)) {
+    tabsArray = tabsAndLinks;
+  } else {
+    tabsArray = Object.entries(tabsAndLinks).map(([text, link]) => ({ text, link }));
+  }
+
+  let allTabsButLast = tabsArray.slice(0, -1);
+  let lastTab = tabsArray[tabsArray.length - 1];
 
   return (
     <div>
@@ -12,15 +20,16 @@ export default function TopTabs({ title, tabsAndLinks }) {
         <br />
 
         <div className="all__tabs">
-          {allTabsButLast.map((tabAndLink) => (
+          {allTabsButLast.map((tab) => (
             <TopTab
-              key={tabAndLink[1]}
-              text={tabAndLink[0]}
-              link={tabAndLink[1]}
+              key={tab.link}
+              text={tab.text}
+              link={tab.link}
+              counter={tab.counter}
               addSeparator={true}
             />
           ))}
-          <TopTab text={lastTab[0]} link={lastTab[1]} />
+          <TopTab text={lastTab.text} link={lastTab.link} counter={lastTab.counter} />
         </div>
       </s.TopTabs>
     </div>
