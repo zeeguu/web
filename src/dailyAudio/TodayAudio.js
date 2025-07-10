@@ -136,7 +136,15 @@ export default function TodayAudio() {
         localStorage.removeItem(generatingKey);
         setIsGenerating(false);
         console.error("Error generating lesson:", error);
-        setError(error.message || "Failed to generate daily lesson. Please try again.");
+
+        // Check if the error is related to no words in learning
+        if (error.message && error.message.toLowerCase().includes("not enough words in learning")) {
+          setError(
+            "Not enough words in learning to generate a lesson. Need at least 3 words that were not in audio lessons before",
+          );
+        } else {
+          setError(error.message || "Failed to generate daily lesson. Please try again.");
+        }
       },
     );
   };
@@ -191,7 +199,7 @@ export default function TodayAudio() {
     );
   }
 
-  if (!lessonData && !error) {
+  if (!lessonData) {
     return (
       <div
         style={{
@@ -246,9 +254,31 @@ export default function TodayAudio() {
           <br />
           Daily Lesson
         </button>
-        <p style={{ marginBottom: "20px", textAlign: "center", maxWidth: "500px" }}>
-          Push the button for... an audio lesson for you based on the words you are currently learning.
-        </p>
+        {!error && (
+          <p style={{ marginBottom: "20px", textAlign: "center", maxWidth: "500px" }}>
+            Push the button for... an audio lesson for you based on the words you are currently learning.
+          </p>
+        )}
+        {error && (
+          <div
+            style={{
+              color: "#d73502",
+              marginBottom: "30px",
+              marginTop: "30px",
+              fontWeight: "bold",
+              textAlign: "center",
+              maxWidth: "600px",
+              backgroundColor: "#fff5f5",
+              border: "1px solid #feb2b2",
+              borderRadius: "8px",
+              padding: "16px",
+              fontSize: "14px",
+              lineHeight: "1.5",
+            }}
+          >
+            {error}
+          </div>
+        )}
       </div>
     );
   }
