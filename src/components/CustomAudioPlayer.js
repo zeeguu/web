@@ -167,7 +167,15 @@ export default function CustomAudioPlayer({
   const progressPercentage = duration > 0 ? (currentTime / duration) * 100 : 0;
 
   return (
-    <div style={{ ...style, backgroundColor: "#f8f9fa", borderRadius: "12px", padding: "20px" }}>
+    <div style={{ 
+      ...style, 
+      backgroundColor: "#f8f9fa", 
+      borderRadius: "12px", 
+      padding: "20px",
+      margin: "0 auto",
+      maxWidth: "100%",
+      boxSizing: "border-box"
+    }}>
       <audio ref={audioRef} src={src} preload="metadata" />
       
       {/* Play/Pause Button */}

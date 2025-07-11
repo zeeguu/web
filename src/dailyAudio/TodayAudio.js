@@ -353,6 +353,8 @@ export default function TodayAudio() {
           style={{
             width: "100%",
             marginBottom: "20px",
+            maxWidth: "600px",
+            margin: "0 auto 20px auto",
           }}
         />
 
