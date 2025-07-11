@@ -6,6 +6,15 @@ import CustomAudioPlayer from "../components/CustomAudioPlayer";
 
 const TWO_MIN = 120000; // 2 minutes in milliseconds
 
+export function wordsAsTile(words) {
+  if (!words || !words.length) return "";
+
+  const comma_separated_words = words.map((word) => word.origin || word).join(", ");
+  const capitalized_comma_separated_words =
+    comma_separated_words.charAt(0).toUpperCase() + comma_separated_words.slice(1);
+  return capitalized_comma_separated_words;
+}
+
 export default function TodayAudio() {
   const api = useContext(APIContext);
   const [isLoading, setIsLoading] = useState(false);
@@ -80,7 +89,6 @@ export default function TodayAudio() {
   const [isDeleting, setIsDeleting] = useState(false);
   const [lessonData, setLessonData] = useState(null);
   const [error, setError] = useState(null);
-  const audioRef = useRef(null);
 
   let words = lessonData?.words || [];
 
@@ -90,7 +98,7 @@ export default function TodayAudio() {
       document.title = `[${new Date().toLocaleDateString("en-US", {
         month: "short",
         day: "numeric",
-      })}] Daily Audio: ${lessonData.words.map((word) => word.origin || word).join(", ")}`;
+      })}] Daily Audio: ${wordsAsTile(words)}`;
     } else {
       document.title = "Zeeguu: Audio Lesson";
     }
@@ -289,33 +297,21 @@ export default function TodayAudio() {
     <div style={{ padding: "20px" }}>
       <h2 style={{ color: zeeguuOrange, marginBottom: "20px", display: "flex", alignItems: "center", gap: "8px" }}>
         {lessonData.is_completed && <span style={{ color: "#28a745", fontSize: "20px" }}>✓</span>}
-        Audio Lesson for {new Date().toLocaleDateString("en-US", { month: "short", day: "numeric" })}
+        {wordsAsTile(words)}
       </h2>
 
       {error && <div style={{ color: "red", marginBottom: "20px" }}>{error}</div>}
 
-      {lessonData.is_completed && (
-        <div
-          style={{
-            marginBottom: "20px",
-            padding: "12px",
-            backgroundColor: "#f8fff9",
-            border: "1px solid #28a745",
-            borderRadius: "4px",
-          }}
-        >
-          <span style={{ color: "#28a745", fontWeight: "500", fontSize: "14px" }}>
-            ✓ Lesson completed! Great job on finishing today's lesson.
-          </span>
-        </div>
-      )}
-
       <div>
-        <p style={{ marginBottom: "20px" }}>Here's your daily lesson! Listen to improve your comprehension skills.</p>
+        {!lessonData.is_completed && (
+          <p style={{ marginBottom: "20px" }}>Here's your daily lesson! Listen to improve your comprehension skills.</p>
+        )}
 
         <CustomAudioPlayer
           src={lessonData.audio_url}
-          initialProgress={lessonData.pause_position_seconds || lessonData.position_seconds || lessonData.progress_seconds || 0}
+          initialProgress={
+            lessonData.pause_position_seconds || lessonData.position_seconds || lessonData.progress_seconds || 0
+          }
           onPlay={() => {
             if (lessonData.lesson_id) {
               api.updateLessonState(lessonData.lesson_id, "resume");
@@ -358,25 +354,20 @@ export default function TodayAudio() {
           }}
         />
 
-        {lessonData.words && lessonData.words.length > 0 && (
-          <div style={{ marginBottom: "20px" }}>
-            <h3 style={{ color: zeeguuOrange, marginBottom: "10px" }}>Words in this lesson:</h3>
-            <div style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
-              {lessonData.words.map((word, index) => (
-                <span
-                  key={index}
-                  style={{
-                    backgroundColor: "#f0f0f0",
-                    padding: "4px 8px",
-                    borderRadius: "4px",
-                    fontSize: "14px",
-                  }}
-                  title={word.translation || ""}
-                >
-                  {word.origin || word}
-                </span>
-              ))}
-            </div>
+        {lessonData.is_completed && (
+          <div
+            style={{
+              marginBottom: "20px",
+              marginTop: "20px",
+              padding: "12px",
+              backgroundColor: "#f8fff9",
+              border: "1px solid #28a745",
+              borderRadius: "4px",
+            }}
+          >
+            <span style={{ color: "#28a745", fontWeight: "500", fontSize: "14px" }}>
+              ✓ Lesson completed! Great job on finishing today's lesson.
+            </span>
           </div>
         )}
 

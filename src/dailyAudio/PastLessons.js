@@ -3,6 +3,7 @@ import { zeeguuOrange } from "../components/colors";
 import { APIContext } from "../contexts/APIContext";
 import LoadingAnimation from "../components/LoadingAnimation";
 import CustomAudioPlayer from "../components/CustomAudioPlayer";
+import { wordsAsTile } from "./TodayAudio";
 
 export default function PastLessons() {
   const api = useContext(APIContext);
@@ -28,12 +29,12 @@ export default function PastLessons() {
         setIsLoading(false);
         if (data.lessons) {
           // Filter out lessons without audio files
-          const lessonsWithAudio = data.lessons.filter(lesson => lesson.audio_exists !== false);
-          
+          const lessonsWithAudio = data.lessons.filter((lesson) => lesson.audio_exists !== false);
+
           if (reset) {
             setPastLessons(lessonsWithAudio);
           } else {
-            setPastLessons(prev => [...prev, ...lessonsWithAudio]);
+            setPastLessons((prev) => [...prev, ...lessonsWithAudio]);
           }
           // Use the pagination data from backend
           if (data.pagination) {
@@ -51,7 +52,7 @@ export default function PastLessons() {
       (error) => {
         setIsLoading(false);
         setError(error.message || "Failed to load past lessons");
-      }
+      },
     );
   };
 
@@ -73,11 +74,7 @@ export default function PastLessons() {
 
   return (
     <div style={{ padding: "20px" }}>
-      {error && (
-        <div style={{ color: "red", marginBottom: "20px" }}>
-          {error}
-        </div>
-      )}
+      {error && <div style={{ color: "red", marginBottom: "20px" }}>{error}</div>}
 
       {pastLessons.length === 0 && !isLoading && !error && (
         <div style={{ textAlign: "center", color: "#666", marginTop: "40px" }}>
@@ -96,36 +93,45 @@ export default function PastLessons() {
                 borderRadius: "8px",
                 padding: "16px",
                 marginBottom: "16px",
-                backgroundColor: lesson.is_completed ? "#f8fff9" : "#fafafa"
+                backgroundColor: lesson.is_completed ? "#f8fff9" : "#fafafa",
               }}
             >
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "12px" }}>
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  marginBottom: "12px",
+                }}
+              >
                 <div>
-                  <h3 style={{ color: zeeguuOrange, margin: 0, fontSize: "18px", display: "flex", alignItems: "center", gap: "8px" }}>
+                  <h3
+                    style={{
+                      margin: 0,
+                      fontSize: "18px",
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "8px",
+                      color: lesson.is_completed ? "#009c00" : zeeguuOrange,
+                    }}
+                  >
                     {lesson.is_completed && <span style={{ color: "#28a745", fontSize: "16px" }}>✓</span>}
-                    {new Date(lesson.created_at).toLocaleDateString('en-US', {
-                      weekday: 'long',
-                      year: 'numeric',
-                      month: 'long',
-                      day: 'numeric'
+                    {new Date(lesson.created_at).toLocaleDateString("en-US", {
+                      month: "short",
+                      day: "numeric",
                     })}
+                    : {wordsAsTile(lesson.words)}
                   </h3>
                   {lesson.is_completed && lesson.completed_at && (
-                    <span style={{ fontSize: "12px", color: "#28a745", fontWeight: "500" }}>
+                    <span
+                      style={{
+                        fontSize: "12px",
+                        color: "#28a745",
+                        fontWeight: "500",
+                      }}
+                    >
                       Completed
                     </span>
-                  )}
-                </div>
-                <div style={{ textAlign: "right" }}>
-                  {lesson.duration_seconds && (
-                    <div style={{ color: "#666", fontSize: "14px" }}>
-                      {Math.floor(lesson.duration_seconds / 60)}:{(lesson.duration_seconds % 60).toString().padStart(2, '0')}
-                    </div>
-                  )}
-                  {lesson.word_count && (
-                    <div style={{ color: "#999", fontSize: "12px" }}>
-                      {lesson.word_count} words
-                    </div>
                   )}
                 </div>
               </div>
@@ -134,7 +140,9 @@ export default function PastLessons() {
                 <div style={{ marginBottom: "16px" }}>
                   <CustomAudioPlayer
                     src={`${api.baseAPIurl}${lesson.audio_url}?session=${api.session}`}
-                    initialProgress={lesson.pause_position_seconds || lesson.position_seconds || lesson.progress_seconds || 0}
+                    initialProgress={
+                      lesson.pause_position_seconds || lesson.position_seconds || lesson.progress_seconds || 0
+                    }
                     onPlay={() => {
                       if (lesson.lesson_id) {
                         api.updateLessonState(lesson.lesson_id, "resume");
@@ -150,12 +158,16 @@ export default function PastLessons() {
                       if (lesson.lesson_id) {
                         api.updateLessonState(lesson.lesson_id, "complete", null, () => {
                           // Update local state to show completion immediately
-                          setPastLessons(prev => 
-                            prev.map(l => 
-                              l.lesson_id === lesson.lesson_id 
-                                ? { ...l, is_completed: true, completed_at: new Date().toISOString() }
-                                : l
-                            )
+                          setPastLessons((prev) =>
+                            prev.map((l) =>
+                              l.lesson_id === lesson.lesson_id
+                                ? {
+                                    ...l,
+                                    is_completed: true,
+                                    completed_at: new Date().toISOString(),
+                                  }
+                                : l,
+                            ),
                           );
                         });
                       }
@@ -163,38 +175,12 @@ export default function PastLessons() {
                     onError={() => {
                       console.log("Audio failed to load for lesson:", lesson.lesson_id);
                     }}
-                    style={{ 
+                    style={{
                       width: "100%",
                       maxWidth: "600px",
-                      margin: "0 auto"
+                      margin: "0 auto",
                     }}
                   />
-                </div>
-              )}
-
-              {lesson.words && lesson.words.length > 0 && (
-                <div>
-                  <h4 style={{ color: "#333", fontSize: "14px", marginBottom: "8px", fontWeight: "600" }}>
-                    Words practiced:
-                  </h4>
-                  <div style={{ display: "flex", flexWrap: "wrap", gap: "6px" }}>
-                    {lesson.words.map((word, wordIndex) => (
-                      <span
-                        key={wordIndex}
-                        style={{
-                          backgroundColor: "#e9ecef",
-                          color: "#333",
-                          padding: "4px 8px",
-                          borderRadius: "4px",
-                          fontSize: "13px",
-                          border: "1px solid #dee2e6"
-                        }}
-                        title={word.translation || ""}
-                      >
-                        {word.origin || word}
-                      </span>
-                    ))}
-                  </div>
                 </div>
               )}
             </div>
@@ -213,7 +199,7 @@ export default function PastLessons() {
                   padding: "10px 20px",
                   cursor: isLoading ? "not-allowed" : "pointer",
                   fontSize: "14px",
-                  opacity: isLoading ? 0.6 : 1
+                  opacity: isLoading ? 0.6 : 1,
                 }}
               >
                 {isLoading ? "Loading..." : "Load More"}
