@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useRef, useState } from "react";
 import { orange500, orange600, orange800, zeeguuOrange } from "../components/colors";
 import { APIContext } from "../contexts/APIContext";
 import LoadingAnimation from "../components/LoadingAnimation";
+import CustomAudioPlayer from "../components/CustomAudioPlayer";
 
 const TWO_MIN = 120000; // 2 minutes in milliseconds
 
@@ -103,6 +104,7 @@ export default function TodayAudio() {
     api.getTodaysLesson(
       (data) => {
         setIsLoading(false);
+        console.log("Lesson data received:", data); // Debug log
         setLessonData(data); // data will be null if no lesson exists, or lesson object if it exists
       },
       (error) => {
@@ -311,22 +313,23 @@ export default function TodayAudio() {
       <div>
         <p style={{ marginBottom: "20px" }}>Here's your daily lesson! Listen to improve your comprehension skills.</p>
 
-        <audio
-          ref={audioRef}
-          controls
-          style={{
-            width: "100%",
-            marginBottom: "20px",
-            height: "60px",
-          }}
+        <CustomAudioPlayer
+          src={lessonData.audio_url}
+          initialProgress={lessonData.pause_position_seconds || lessonData.position_seconds || lessonData.progress_seconds || 0}
           onPlay={() => {
             if (lessonData.lesson_id) {
-              api.updateLessonState(lessonData.lesson_id, "play");
+              api.updateLessonState(lessonData.lesson_id, "resume");
+            }
+          }}
+          onProgressUpdate={(progressSeconds) => {
+            if (lessonData.lesson_id) {
+              // Use pause action to save progress
+              api.updateLessonState(lessonData.lesson_id, "pause", progressSeconds);
             }
           }}
           onEnded={() => {
             if (lessonData.lesson_id) {
-              api.updateLessonState(lessonData.lesson_id, "complete", () => {
+              api.updateLessonState(lessonData.lesson_id, "complete", null, () => {
                 // Update local state to show completion immediately
                 setLessonData((prev) => ({
                   ...prev,
@@ -343,16 +346,15 @@ export default function TodayAudio() {
               .then((response) => response.blob())
               .then((blob) => {
                 const blobUrl = URL.createObjectURL(blob);
-                if (audioRef.current) {
-                  audioRef.current.src = blobUrl;
-                }
+                // Note: Custom player will need to handle blob URLs
               })
               .catch((err) => console.error("Failed to fetch audio as blob:", err));
           }}
-        >
-          <source src={lessonData.audio_url} type="audio/mpeg" />
-          Your browser does not support the audio element.
-        </audio>
+          style={{
+            width: "100%",
+            marginBottom: "20px",
+          }}
+        />
 
         {lessonData.words && lessonData.words.length > 0 && (
           <div style={{ marginBottom: "20px" }}>

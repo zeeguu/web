@@ -146,10 +146,15 @@ Zeeguu_API.prototype.getPastDailyLessons = function (limit, offset, callback, on
     });
 };
 
-Zeeguu_API.prototype.updateLessonState = function (lessonId, action, callback, onError) {
+Zeeguu_API.prototype.updateLessonState = function (lessonId, action, positionSeconds, callback, onError) {
   this.apiLog(`POST update_lesson_state/${lessonId}`);
   
   const payload = { action };
+  
+  // Add position_seconds for pause action
+  if (action === 'pause' && positionSeconds !== undefined) {
+    payload.position_seconds = Math.floor(positionSeconds);
+  }
   
   fetch(this._appendSessionToUrl(`update_lesson_state/${lessonId}`), {
     method: "POST",
@@ -176,3 +181,5 @@ Zeeguu_API.prototype.updateLessonState = function (lessonId, action, callback, o
       }
     });
 };
+
+// Removed saveLessonProgress - use updateLessonState with "pause" action instead

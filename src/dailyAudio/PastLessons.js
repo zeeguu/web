@@ -2,6 +2,7 @@ import React, { useState, useContext, useEffect } from "react";
 import { zeeguuOrange } from "../components/colors";
 import { APIContext } from "../contexts/APIContext";
 import LoadingAnimation from "../components/LoadingAnimation";
+import CustomAudioPlayer from "../components/CustomAudioPlayer";
 
 export default function PastLessons() {
   const api = useContext(APIContext);
@@ -131,17 +132,23 @@ export default function PastLessons() {
 
               {lesson.audio_url && (
                 <div style={{ marginBottom: "16px" }}>
-                  <audio
-                    controls
-                    style={{ width: "100%" }}
+                  <CustomAudioPlayer
+                    src={`${api.baseAPIurl}${lesson.audio_url}?session=${api.session}`}
+                    initialProgress={lesson.pause_position_seconds || lesson.position_seconds || lesson.progress_seconds || 0}
                     onPlay={() => {
                       if (lesson.lesson_id) {
-                        api.updateLessonState(lesson.lesson_id, "play");
+                        api.updateLessonState(lesson.lesson_id, "resume");
+                      }
+                    }}
+                    onProgressUpdate={(progressSeconds) => {
+                      if (lesson.lesson_id) {
+                        // Use pause action to save progress
+                        api.updateLessonState(lesson.lesson_id, "pause", progressSeconds);
                       }
                     }}
                     onEnded={() => {
                       if (lesson.lesson_id) {
-                        api.updateLessonState(lesson.lesson_id, "complete", () => {
+                        api.updateLessonState(lesson.lesson_id, "complete", null, () => {
                           // Update local state to show completion immediately
                           setPastLessons(prev => 
                             prev.map(l => 
@@ -156,10 +163,8 @@ export default function PastLessons() {
                     onError={() => {
                       console.log("Audio failed to load for lesson:", lesson.lesson_id);
                     }}
-                  >
-                    <source src={`${api.baseAPIurl}${lesson.audio_url}?session=${api.session}`} type="audio/mpeg" />
-                    Your browser does not support the audio element.
-                  </audio>
+                    style={{ width: "100%" }}
+                  />
                 </div>
               )}
 
