@@ -204,3 +204,7 @@ Zeeguu_API.prototype.submitArticleDifficultyFeedback = function (
 Zeeguu_API.prototype.getUnfinishedUserReadingSessions = function (callback) {
   this._getJSON(`/get_unfinished_user_reading_sessions`, callback);
 };
+
+Zeeguu_API.prototype.getArticleSimplificationLevels = function (articleID, callback) {
+  this._getJSON(`article_simplification_levels?article_id=${articleID}`, callback);
+};

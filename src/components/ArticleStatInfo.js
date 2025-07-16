@@ -3,7 +3,8 @@ import { getStaticPath } from "../utils/misc/staticPath";
 import { estimateReadingTime } from "../utils/misc/readableTime";
 
 export default function ArticleStatInfo({ articleInfo }) {
-  let cefr_level = articleInfo.metrics.cefr_level;
+  const cefr_level = articleInfo.metrics?.cefr_level || articleInfo.cefr_level || 'B1';
+  const word_count = articleInfo.metrics?.word_count || articleInfo.word_count || 0;
   return (
     <s.StatContainer>
       <s.Difficulty>
@@ -18,7 +19,7 @@ export default function ArticleStatInfo({ articleInfo }) {
           src={getStaticPath("icons", "read-time-icon.png")}
           alt="read time icon"
         ></img>
-        <span>~ {estimateReadingTime(articleInfo.metrics.word_count)}</span>
+        <span>~ {estimateReadingTime(word_count)}</span>
       </s.ReadingTimeContainer>
     </s.StatContainer>
   );

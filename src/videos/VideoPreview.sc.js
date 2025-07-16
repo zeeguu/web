@@ -51,6 +51,7 @@ const ArticleContent = styled.div`
       margin: 0.5rem;
     }
   }
+
   @media (max-width: 990px) {
     align-content: center;
     justify-content: space-around;
@@ -59,7 +60,7 @@ const ArticleContent = styled.div`
 `;
 
 const Summary = styled.div`
-  font-size: 0.83em;
+  font-size: 1.2em;
   color: ${almostBlack};
   line-height: 1.5em;
   margin-top: 0.36em;
@@ -77,7 +78,6 @@ const BottomContainer = styled.div`
   @media (max-width: 990px) {
     flex-direction: column;
     align-items: flex-start;
-    gap: 0.5 rem;
   }
 `;
 
@@ -85,9 +85,11 @@ const UrlTopics = styled.div`
   display: inline-block;
   cursor: help;
   margin-top: 1em;
+
   .inferred {
     border: dashed 1px ${blue400};
   }
+
   .gold {
     border: solid 1px ${blue600};
   }
@@ -104,12 +106,14 @@ const UrlTopics = styled.div`
     vertical-align: middle;
     background-color: ${blue100};
   }
+
   .cancelButton {
     cursor: pointer;
     padding-left: 0.3em;
     margin-bottom: -0.3em;
     margin-right: -0.3em;
   }
+
   @media (max-width: 990px) {
     margin-bottom: 1.2em;
   }

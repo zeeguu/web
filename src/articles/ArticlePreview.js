@@ -4,7 +4,6 @@ import { isMobile } from "../utils/misc/browserDetection";
 import * as s from "./ArticlePreview.sc";
 import RedirectionNotificationModal from "../components/redirect_notification/RedirectionNotificationModal";
 import Feature from "../features/Feature";
-import { extractVideoIDFromURL } from "../utils/misc/youtube";
 import SmallSaveArticleButton from "./SmallSaveArticleButton";
 import { TagsOfInterests } from "./TagsOfInterests.sc";
 import ArticleSourceInfo from "../components/ArticleSourceInfo";
@@ -17,6 +16,7 @@ import { TopicOriginType } from "../appConstants";
 import extractDomain from "../utils/web/extractDomain";
 import ReadingCompletionProgress from "./ReadingCompletionProgress";
 import { APIContext } from "../contexts/APIContext";
+import TruncatedSummary from "../components/TruncatedSummary";
 
 export default function ArticlePreview({
   article,
@@ -99,7 +99,8 @@ export default function ArticlePreview({
       (!Feature.extension_experiment1() && !hasExtension) ||
       article.has_personal_copy ||
       article.has_uploader ||
-      isArticleSaved === true;
+      isArticleSaved === true ||
+      article.parent_article_id; // Simplified articles (with parent_article_id) always open in Zeeguu reader
 
     let should_open_with_modal = doNotShowRedirectionModal_UserPreference === false;
 
@@ -122,6 +123,7 @@ export default function ArticlePreview({
       <SmallSaveArticleButton article={article} isArticleSaved={isArticleSaved} setIsArticleSaved={setIsArticleSaved} />
       <s.TitleContainer>
         <s.Title className={article.opened ? "opened" : ""}>{titleLink(article)} </s.Title>
+
         <ReadingCompletionProgress last_reading_percentage={article.reading_completion}></ReadingCompletionProgress>
       </s.TitleContainer>
 
@@ -132,12 +134,23 @@ export default function ArticlePreview({
           dontShowSourceIcon={dontShowSourceIcon}
         ></ArticleSourceInfo>
       ) : (
-        !dontShowSourceIcon && article.url && <s.UrlSource>{extractDomain(article.url)}</s.UrlSource>
+        !dontShowSourceIcon && article.url && (
+          <s.UrlSourceContainer>
+            <s.UrlSource>{extractDomain(article.url)}</s.UrlSource>
+            {article.parent_article_id && (
+              <s.SimplifiedLabel>
+                simplified from {article.parent_cefr_level || 'unknown'}
+              </s.SimplifiedLabel>
+            )}
+          </s.UrlSourceContainer>
+        )
       )}
 
       <s.ArticleContent>
         {article.img_url && <img alt="" src={article.img_url} />}
-        <s.Summary>{article.summary}...</s.Summary>
+        <s.Summary>
+          <TruncatedSummary text={article.summary} />
+        </s.Summary>
       </s.ArticleContent>
 
       <s.BottomContainer>

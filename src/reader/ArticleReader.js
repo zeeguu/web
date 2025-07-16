@@ -28,6 +28,7 @@ import useUserPreferences from "../hooks/useUserPreferences";
 import ArticleStatInfo from "../components/ArticleStatInfo";
 import DigitalTimer from "../components/DigitalTimer";
 import { APIContext } from "../contexts/APIContext";
+import SimplificationLevelsNotice from "../components/SimplificationLevelsNotice";
 
 // UMR stands for historical reasons for: Unified Multilingual Reader
 export const WEB_READER = "UMR";
@@ -312,6 +313,9 @@ export default function ArticleReader({ teacherArticleID }) {
             </s.TopReaderButtonsContainer>
           </s.ArticleInfoContainer>
           <hr></hr>
+
+          <SimplificationLevelsNotice articleInfo={articleInfo} api={api} />
+
           {articleInfo.img_url && (
             <s.ArticleImgContainer>
               <s.ArticleImg alt="article image" src={articleInfo.img_url} />

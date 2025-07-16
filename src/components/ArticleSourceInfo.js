@@ -2,11 +2,7 @@ import * as s from "./ArticleSourceInfo.sc";
 import { getNewsIconPath } from "../utils/misc/staticPath";
 import moment from "moment";
 
-export default function ArticleSourceInfo({
-  articleInfo,
-  dontShowSourceIcon,
-  dontShowPublishingTime,
-}) {
+export default function ArticleSourceInfo({ articleInfo, dontShowSourceIcon, dontShowPublishingTime }) {
   return (
     <s.SourceContainer>
       {!dontShowSourceIcon && (
@@ -14,16 +10,11 @@ export default function ArticleSourceInfo({
           <s.SourceImage>
             <img src={getNewsIconPath(articleInfo.feed_icon_name)} alt="" />
           </s.SourceImage>
-          {articleInfo.feed_name && (
-            <s.FeedName>{articleInfo.feed_name}</s.FeedName>
-          )}
+          {articleInfo.feed_name && <s.FeedName>{articleInfo.feed_name}</s.FeedName>}
+          {articleInfo.parent_article_id && <s.SimplifiedLabel>simplified </s.SimplifiedLabel>}
         </>
       )}
-      {!dontShowPublishingTime && (
-        <s.PublishingTime>
-          ({moment.utc(articleInfo.published).fromNow()})
-        </s.PublishingTime>
-      )}
+      {!dontShowPublishingTime && <s.PublishingTime>({moment.utc(articleInfo.published).fromNow()})</s.PublishingTime>}
     </s.SourceContainer>
   );
 }

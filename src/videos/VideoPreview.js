@@ -6,11 +6,12 @@ import VideoSourceInfo from "./VideoSourceInfo";
 import { toast } from "react-toastify";
 import { FaPlay } from "react-icons/fa";
 import { darkBlue } from "../components/colors";
-import { useEffect, useState, useContext } from "react";
+import { useState, useContext } from "react";
 import ExplainTopicsModal from "../pages/ExplainTopicsModal";
 import { TagsOfInterests } from "../articles/TagsOfInterests.sc";
 import HighlightOffRoundedIcon from "@mui/icons-material/HighlightOffRounded";
 import { APIContext } from "../contexts/APIContext";
+import TruncatedSummary from "../components/TruncatedSummary";
 
 export default function VideoPreview({ video, notifyVideoClick }) {
   const [infoTopicClick, setInfoTopicClick] = useState("");
@@ -25,10 +26,6 @@ export default function VideoPreview({ video, notifyVideoClick }) {
   };
 
   let topics = video.topics_list;
-
-  useEffect(() => {
-    console.log(video);
-  }, []);
   return (
     <s.VideoPreview>
       {showInfoTopics && (
@@ -57,7 +54,9 @@ export default function VideoPreview({ video, notifyVideoClick }) {
             <FaPlay size="1rem" />
           </s.PlayButtonOverlay>
         </s.VideoThumbnail>
-        <s.Summary>{video.description?.substring(0, 297)}...</s.Summary>
+        <s.Summary>
+          <TruncatedSummary text={video.description} />
+        </s.Summary>
       </s.ArticleContent>
 
       <s.BottomContainer>
