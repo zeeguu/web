@@ -293,7 +293,7 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
     if (endExercise) {
       setIsCorrect(true);
     }
-    updateAPIWithExerciseComplete(CORRECT, currentBookmark, endExercise);   
+    updateAPIWithExerciseComplete(CORRECT, currentBookmark, endExercise);
     api.updateExerciseSession(dbExerciseSessionId, activeSessionDuration);
   }
 
@@ -330,9 +330,6 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
   }
 
   function updateAPIWithExerciseComplete(message, bookmark, endExercise = true) {
-    if (bookmark && bookmark.cooling_interval == null) {
-      bookmark.cooling_interval = 0;
-  }
     let updated_message = handleUserAttempt(message, bookmark);
     if (endExercise) setIsExerciseOver(true);
     api.uploadExerciseFinalizedData(
