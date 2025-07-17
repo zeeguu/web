@@ -4,14 +4,19 @@ export default function SimplificationLevelsNotice({ articleInfo, api }) {
   const [simplificationLevels, setSimplificationLevels] = useState([]);
 
   useEffect(() => {
-    if (articleInfo?.parent_article_id) {
+    // Always try to fetch simplification levels for any article
+    // This works for both simplified articles and original articles
+    if (articleInfo?.id) {
       api.getArticleSimplificationLevels(articleInfo.id, (levels) => {
         setSimplificationLevels(levels || []);
       });
     }
-  }, [articleInfo?.id, articleInfo?.parent_article_id, api]);
+  }, [articleInfo?.id, api]);
 
-  if (!articleInfo?.parent_article_id && simplificationLevels.length === 0) {
+  // Show the notice if:
+  // 1. It's a simplified article (has parent_article_id), OR
+  // 2. We have multiple versions from the API (simplificationLevels.length > 1)
+  if (!articleInfo?.parent_article_id && simplificationLevels.length <= 1) {
     return null;
   }
 
