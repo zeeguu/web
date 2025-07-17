@@ -9,6 +9,7 @@ import { APIContext } from "../../contexts/APIContext";
 import { ProgressContext } from "../../contexts/ProgressContext";
 import { calculateWeeklyReadingMinutes, calculateConsecutivePracticeWeeks} from "../../utils/progressTracking/progressHelpers";
 import { UserContext } from "../../contexts/UserContext";
+import { useLocation } from "react-router-dom";
 
 const DEFAULT_TOPBAR_PREFS = [
   "wordsPracticedTopBar",
@@ -22,6 +23,7 @@ export default function TopBar() {
   const {weeklyProgressOverview} = getTopBarData({weeklyReadingMinutes, weeksPracticed, weeklyPracticed});
   const [showModalData, setShowModalData] = useState(null);
   const { userDetails } = useContext(UserContext);
+  const location = useLocation();
 
   
 
@@ -62,6 +64,10 @@ export default function TopBar() {
 
   api.session = getSessionFromCookies();
   if (!api.session) return null;
+
+  // Only show progress icons on the homepage (articles route)
+  const isHomepage = location.pathname === "/articles";
+  if (!isHomepage) return null;
 
   return (
     <>
