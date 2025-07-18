@@ -263,13 +263,16 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
     if (newIndex === fullExerciseProgression.length) {
       setFinished(true);
       api.getCountOfBookmarksRecommendedForPractice((bookmarkCount) => {
-      setIsOutOfWordsToday(bookmarkCount === 0);
+        setIsOutOfWordsToday(bookmarkCount === 0);
       });
       return;
     }
     setCurrentBookmarksToStudy(fullExerciseProgression[newIndex].bookmarks);
-    setSelectedExerciseBookmark(fullExerciseProgression[newIndex].bookmarks[0]);
+    let nextBookmarkToStudy = fullExerciseProgression[newIndex].bookmarks[0];
+    setSelectedExerciseBookmark(nextBookmarkToStudy);
+    console.dir(nextBookmarkToStudy);
     setCurrentIndex(newIndex);
+
     api.updateExerciseSession(dbExerciseSessionId, activeSessionDuration);
   }
 
