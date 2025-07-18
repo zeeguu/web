@@ -6,11 +6,11 @@ const BottomNav = styled.nav`
   position: fixed;
   bottom: 0;
   padding: 0.5rem 1rem 1rem 1rem;
+  padding-bottom: calc(1rem + env(safe-area-inset-bottom, 0px));
   background-color: ${({ theme }) => theme.navBg};
   z-index: 2;
   transition: 0.3s ease-in-out;
-  animation: ${({ $bottomNavTransition }) => $bottomNavTransition} 0.3s
-    ease-in-out forwards;
+  animation: ${({ $bottomNavTransition }) => $bottomNavTransition} 0.3s ease-in-out forwards;
 `;
 
 const NavList = styled.ul`
