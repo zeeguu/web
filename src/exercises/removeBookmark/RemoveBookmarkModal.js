@@ -36,9 +36,18 @@ export default function RemoveBookmarkModal({
     }
   }, [exerciseBookmarks, isTestingMultipleBookmarks]);
 
+  // Reset form state when modal opens
+  useEffect(() => {
+    if (open) {
+      setShowOtherForm(false);
+      setOtherFeedback("");
+    }
+  }, [open]);
+
   const possibleReasons = [
-    ["learned_already", "I Learned it Already :)"],
-    ["bad_translation", "Bad Translation"],
+    ["too_easy", "Too easy"],
+    ["learned_already", "I learned it already :)"],
+    ["bad_translation", "Bad translation"],
     ["other", "Other"],
   ];
 
@@ -56,6 +65,8 @@ export default function RemoveBookmarkModal({
 
     toast.success(`"${exerciseBookmarkForFeedback.from}" was removed successfully for: '${reasonForToast}'.`);
     uploadUserFeedback(reasonToSend, exerciseBookmarkForFeedback.id);
+    setShowOtherForm(false);
+    setOtherFeedback("");
     setOpen(!open);
     setHasProvidedQuickFeedback(true);
   }
