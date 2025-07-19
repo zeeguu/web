@@ -75,7 +75,7 @@ export default function NextNavigation({
     // Add 200ms delay to ensure speech has fully started before enabling button
     setTimeout(() => {
       setIsAutoPronouncing(false);
-    }, 200);
+    }, 400);
   }
 
   useEffect(() => {
@@ -196,13 +196,13 @@ export default function NextNavigation({
                 />
               </s.EditSpeakButtonHolder>
             )}
-            <s.FeedbackButton 
-              onClick={(e) => !isAutoPronouncing && moveToNextExercise()} 
-              autoFocus 
-              style={{ 
-                backgroundColor: isAutoPronouncing ? '#f0f5f0' : undefined,
-                color: isAutoPronouncing ? '#cccccc' : undefined,
-                cursor: isAutoPronouncing ? 'default' : 'pointer'
+            <s.FeedbackButton
+              onClick={(e) => !isAutoPronouncing && moveToNextExercise()}
+              autoFocus
+              style={{
+                backgroundColor: isAutoPronouncing ? "#f0f5f0" : undefined,
+                color: isAutoPronouncing ? "#cccccc" : undefined,
+                cursor: isAutoPronouncing ? "default" : "pointer",
               }}
             >
               {strings.next}
