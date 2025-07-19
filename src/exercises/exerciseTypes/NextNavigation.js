@@ -72,7 +72,10 @@ export default function NextNavigation({
   async function handleSpeak() {
     setIsAutoPronouncing(true);
     await speech.speakOut(exerciseBookmark.from, setIsButtonSpeaking);
-    setIsAutoPronouncing(false);
+    // Add 200ms delay to ensure speech has fully started before enabling button
+    setTimeout(() => {
+      setIsAutoPronouncing(false);
+    }, 200);
   }
 
   useEffect(() => {
