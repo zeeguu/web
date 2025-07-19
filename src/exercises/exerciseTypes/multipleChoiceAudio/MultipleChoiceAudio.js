@@ -37,6 +37,7 @@ export default function MultipleChoiceAudio({
   const speech = useContext(SpeechContext);
 
   useEffect(() => {
+    speech.stopAudio(); // Stop any pending speech from previous exercise
     resetSubSessionTimer();
     setExerciseType(EXERCISE_TYPE);
     // eslint-disable-next-line

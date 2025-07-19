@@ -33,6 +33,7 @@ export default function MultipleChoiceContext({
   const isExerciseOverRef = useShadowRef(isExerciseOver);
 
   useEffect(() => {
+    speech.stopAudio(); // Stop any pending speech from previous exercise
     resetSubSessionTimer();
     setExerciseType(EXERCISE_TYPE);
     let initExerciseBookmarks = [...bookmarksToStudy];

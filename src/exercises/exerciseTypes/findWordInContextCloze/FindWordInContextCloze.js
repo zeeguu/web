@@ -34,6 +34,7 @@ export default function FindWordInContextCloze({
   const exerciseBookmark = bookmarksToStudy[0];
 
   useEffect(() => {
+    speech.stopAudio(); // Stop any pending speech from previous exercise
     setExerciseType(EXERCISE_TYPE);
     setInteractiveText(
       new InteractiveText(

@@ -87,6 +87,7 @@ export default function OrderWords({
   // Exercise Functions / Setup / Handle Interactions
 
   useEffect(() => {
+    speech.stopAudio(); // Stop any pending speech from previous exercise
     setExerciseType(EXERCISE_TYPE);
     let exerciseIntializeVariables = _get_exercise_start_variables();
     api.getArticleInfo(bookmarksToStudy[0].article_id, (articleInfo) => {

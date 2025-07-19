@@ -41,6 +41,7 @@ export default function MultipleChoiceL2toL1({
   const exerciseBookmark = bookmarksToStudy[0];
 
   useEffect(() => {
+    speech.stopAudio(); // Stop any pending speech from previous exercise
     resetSubSessionTimer();
     setExerciseType(EXERCISE_TYPE);
     // eslint-disable-next-line react-hooks/exhaustive-deps

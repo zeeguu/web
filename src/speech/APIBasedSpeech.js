@@ -17,8 +17,7 @@ const ZeeguuSpeech = class {
   }
 
   animateSpeechButton(setIsSpeaking, isPlayingSound) {
-    if (typeof setIsSpeaking !== "undefined" && setIsSpeaking)
-      setIsSpeaking(isPlayingSound);
+    if (typeof setIsSpeaking !== "undefined" && setIsSpeaking) setIsSpeaking(isPlayingSound);
   }
 
   stopAudio() {
@@ -38,11 +37,13 @@ const ZeeguuSpeech = class {
       .fetchLinkToSpeechMp3(word, this.language)
       .then((linkToMp3) => {
         this.pronunciationPlayer.src = linkToMp3;
-        this.pronunciationPlayer.addEventListener("ended", (e) => {
+
+        // Remove any existing ended event listeners to prevent accumulation
+        this.pronunciationPlayer.onended = () => {
           // Only terminate the animation after playing the sound.
           this.animateSpeechButton(setIsSpeaking, false);
           this.isCurrentlySpeaking = false;
-        });
+        };
 
         var promise = this.pronunciationPlayer.play();
         if (promise !== undefined) {

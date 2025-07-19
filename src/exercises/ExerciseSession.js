@@ -5,7 +5,6 @@ import ExerciseSessionProgressBar from "./ExerciseSessionProgressBar";
 import * as s from "./Exercises.sc";
 import LoadingAnimation from "../components/LoadingAnimation";
 import { setTitle } from "../assorted/setTitle";
-import strings from "../i18n/definitions";
 import OutOfWordsMessage from "./OutOfWordsMessage";
 import SessionStorage from "../assorted/SessionStorage";
 import Feature from "../features/Feature";
@@ -40,6 +39,7 @@ const BOOKMARKS_DUE_REVIEW = false;
 
 export default function ExerciseSession({ articleID, backButtonAction, toScheduledExercises, source }) {
   const api = useContext(APIContext);
+  const speech = useContext(SpeechContext);
 
   const [hasKeptExercising, setHasKeptExercising] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -79,7 +79,6 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
   const [getCurrentSubSessionDuration, resetSubSessionTimer] = useSubSessionTimer(activeSessionDurationRef.current);
   const { hasExerciseNotification, decrementExerciseCounter, hideExerciseCounter } =
     useContext(ExercisesCounterContext);
-  const speech = useContext(SpeechContext);
 
   const { screenWidth } = useScreenWidth();
 

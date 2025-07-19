@@ -40,6 +40,7 @@ export default function Match({
   });
 
   useEffect(() => {
+    speech.stopAudio(); // Stop any pending speech from previous exercise
     setExerciseType(EXERCISE_TYPE);
     setSelectedExerciseBookmark();
     resetSubSessionTimer();

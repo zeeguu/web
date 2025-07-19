@@ -39,6 +39,7 @@ export default function WordInContextExercise({
   const exerciseBookmark = bookmarksToStudy[0];
 
   useEffect(() => {
+    speech.stopAudio(); // Stop any pending speech from previous exercise
     resetSubSessionTimer();
     setExerciseType(exerciseType);
     // eslint-disable-next-line react-hooks/exhaustive-deps
