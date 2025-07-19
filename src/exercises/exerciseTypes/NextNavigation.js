@@ -47,6 +47,7 @@ export default function NextNavigation({
   const [autoPronounceBookmark, autoPronounceString, toggleAutoPronounceState] = useBookmarkAutoPronounce();
   const speech = useContext(SpeechContext);
   const [isButtonSpeaking, setIsButtonSpeaking] = useState(false);
+  const [isAutoPronouncing, setIsAutoPronouncing] = useState(false);
   const [matchExerciseProgressionMessage, setMatchExercisesProgressionMessage] = useState();
   const [matchWordsProgressCount, setMatchWordsProgressCount] = useState(0);
   const [isMatchBookmarkProgression, setIsMatchBookmarkProgression] = useState(false);
@@ -69,7 +70,9 @@ export default function NextNavigation({
     userIsCorrect && isLearningCycleOne && isLastInCycle && !productiveExercisesDisabled && learningCycleFeature;
 
   async function handleSpeak() {
+    setIsAutoPronouncing(true);
     await speech.speakOut(exerciseBookmark.from, setIsButtonSpeaking);
+    setIsAutoPronouncing(false);
   }
 
   useEffect(() => {
@@ -190,7 +193,15 @@ export default function NextNavigation({
                 />
               </s.EditSpeakButtonHolder>
             )}
-            <s.FeedbackButton onClick={(e) => moveToNextExercise()} autoFocus>
+            <s.FeedbackButton 
+              onClick={(e) => !isAutoPronouncing && moveToNextExercise()} 
+              autoFocus 
+              style={{ 
+                backgroundColor: isAutoPronouncing ? '#f0f5f0' : undefined,
+                color: isAutoPronouncing ? '#cccccc' : undefined,
+                cursor: isAutoPronouncing ? 'default' : 'pointer'
+              }}
+            >
               {strings.next}
             </s.FeedbackButton>
           </s.BottomRowSmallTopMargin>
