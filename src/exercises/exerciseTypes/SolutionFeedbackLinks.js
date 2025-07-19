@@ -12,6 +12,7 @@ export default function SolutionFeedbackLinks({
   handleShowSolution,
   isExerciseOver,
   uploadUserFeedback,
+  bookmarkLearned,
 }) {
   const [openFeedback, setOpenFeedback] = useState(false);
   const [openQuickFeedbackModal, setQuickFeedbackModal] = useState(false);
@@ -46,7 +47,7 @@ export default function SolutionFeedbackLinks({
           </s.StyledGreyButton>
         </>
       )}
-      {isExerciseOver && !hasProvidedQuickFeedback && (
+      {isExerciseOver && !hasProvidedQuickFeedback && !bookmarkLearned && (
         <>
           <s.StyledGreyButton
             className="styledGreyButton"

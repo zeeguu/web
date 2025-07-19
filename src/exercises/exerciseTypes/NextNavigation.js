@@ -226,6 +226,7 @@ export default function NextNavigation({
         toggleShow={toggleShow}
         isExerciseOver={isExerciseOver}
         uploadUserFeedback={uploadUserFeedback}
+        bookmarkLearned={bookmarkLearned}
       />
     </>
   );
