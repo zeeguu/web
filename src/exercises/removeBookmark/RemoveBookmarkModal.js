@@ -37,10 +37,8 @@ export default function RemoveBookmarkModal({
   }, [exerciseBookmarks, isTestingMultipleBookmarks]);
 
   const possibleReasons = [
-    ["too_easy", "Too Easy"],
-    ["too_hard", "Too Hard"],
+    ["learned_already", "I Learned it Already :)"],
     ["bad_translation", "Bad Translation"],
-    ["learned_already", "I Learned it Already"],
     ["other", "Other"],
   ];
 
