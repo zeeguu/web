@@ -75,7 +75,7 @@ export default function NextNavigation({
     // Add 200ms delay to ensure speech has fully started before enabling button
     setTimeout(() => {
       setIsAutoPronouncing(false);
-    }, 400);
+    }, 500);
   }
 
   useEffect(() => {
