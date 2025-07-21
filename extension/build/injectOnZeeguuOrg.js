@@ -1,1 +1,0 @@
-window.addEventListener("message",(function(E){E.source==window&&"CONFIRM_EXTENSION_REQUEST"===E.data.message&&"ZEEGUU_PAGE"===E.data.source&&window.postMessage({message:"EXTENSION_CONFIRMATION_RESPONSE",source:"EXTENSION_INJECTED_CODE"},"*")}));
