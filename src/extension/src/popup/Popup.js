@@ -5,7 +5,7 @@ import { useState, useEffect } from "react";
 import Zeeguu_API from "../../../api/Zeeguu_API";
 import { getSourceAsDOM } from "./functions";
 import { isProbablyReaderable } from "@mozilla/readability";
-import logo from "../../../../public/images/zeeguu128.png";
+import logo from "../../../../public/static/images/zeeguu128.png";
 import { HeadingContainer, PopUp, BottomContainer } from "./Popup.styles";
 import PopupContent from "./PopupContent";
 import { EXTENSION_SOURCE } from "../constants";

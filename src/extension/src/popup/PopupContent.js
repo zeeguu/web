@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react";
 import { setCurrentURL } from "./functions";
 import { BROWSER_API } from "../utils/browserApi";
 import { HeadingContainer, MiddleContainer } from "./Popup.styles";
-import logo from "../../../../public/images/zeeguu128.png";
+import logo from "../../../../public/static/images/zeeguu128.png";
 import PopupLoading from "./PopupLoading";
 import ReportError from "../reportError/ReportError";
 import {
