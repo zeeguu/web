@@ -1,0 +1,31 @@
+name: Publish to Firefox Add-ons
+
+env:
+  DIRECTORY: ./build
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  Submit:
+    name: Publish to Firefox Add-ons
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v1
+      - uses: actions/setup-node@v1
+        with:
+            node-version: 16
+      - name: Build
+        run: |
+          npm ci
+          npm run pub-ci-firefox
+      - name: Install Mozillas web-ext
+        run: |
+          npm install --global web-ext
+          pwd     
+      - name: Publish
+        run: |
+            cd $DIRECTORY && web-ext sign --channel=listed --api-key=${{ secrets.FIREFOX_API_KEY }} --api-secret=${{ secrets.FIREFOX_API_SECRET }} || test $? -eq 1 && echo "error code 1 => The add-on has been submitted for review, but can not automatically be approved."
