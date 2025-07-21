@@ -1,0 +1,61 @@
+{
+  "name": "The Zeeguu Reader",
+  "description": "The extension helps you read articles in the language that you want to practice and offers one-click translation and pronunciation.",
+  "version": "2.5.0",
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "{f2222964-e685-4342-a484-9c4820f317fc}"
+    }
+  },
+
+  "manifest_version": 2,
+  "permissions": [
+    "storage",
+    "activeTab",
+    "tabs",
+    "cookies",
+    "scripting",
+    "https://www.zeeguu.org/",
+    "https://api.zeeguu.org/",
+    "<all_urls>",
+    "contextMenus"
+  ],
+
+  "browser_action": {
+    "default_icon": {
+      "16": "/images/zeeguu16.png",
+      "32": "/images/zeeguu32.png",
+      "48": "/images/zeeguu48.png",
+      "128": "/images/zeeguu128.png"
+    },
+    "default_title": "Open the popup",
+    "default_popup": "index.html"
+  },
+  "background": {
+    "scripts": ["background.js"]
+  },
+  "content_scripts": [
+    {
+      "matches": ["*://*.zeeguu.org/*"],
+      "js": ["injectOnZeeguuOrg.js"]
+    }
+  ],
+  "icons": {
+    "16": "/images/zeeguu16.png",
+    "32": "/images/zeeguu32.png",
+    "48": "/images/zeeguu48.png",
+    "128": "/images/zeeguu128.png"
+  },
+  "web_accessible_resources": [
+    "images/translate.svg",
+    "images/sound.svg",
+    "images/zeeguuLogo.svg",
+    "images/zeeguuWhiteLogo.svg",
+    "https://zeeguu.org/static/icons/zeeguu-icon-correct.png",
+    "https://zeeguu.org/static/images/trash.svg",
+    "https://zeeguu.org//static/images/yellow_star",
+    "https://zeeguu.org/static/images/file_rename_orange_36dp.svg",
+    "https://zeeguu.org/static/images/volume_up.svg",
+    "https://zeeguu.org/static/images/thumb_down_black_18dp.svg"
+  ]
+}

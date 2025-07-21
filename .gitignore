@@ -16,6 +16,8 @@
 
 # production
 /build
+/src/extension/build
+/src/extension/build.zip
 
 
 # misc
