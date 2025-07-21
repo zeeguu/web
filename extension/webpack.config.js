@@ -3,7 +3,14 @@ const path = require("path");
 module.exports = {
   module: {
     rules: [
-      { test: /\.js$/, loader: "babel-loader", exclude: /node_modules/ },
+      { 
+        test: /\.js$/, 
+        loader: "babel-loader", 
+        exclude: /node_modules/,
+        options: {
+          presets: ['@babel/preset-react', '@babel/preset-env']
+        }
+      },
       { test: /\.css$/, use: ["style-loader", "css-loader"] },
       { test: /\.svg$/, loader: "svg-inline-loader" },
       { 
