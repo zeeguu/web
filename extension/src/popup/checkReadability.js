@@ -1,14 +1,14 @@
 import { readableDR } from "./Pages/dr";
-import { getHTMLContent } from "../JSInjection/Cleaning/pageSpecificClean";
-import { drRegex } from "../JSInjection/Cleaning/Pages/dr";
-import { lefigaroRegex } from "../JSInjection/Cleaning/Pages/lefigaro";
+import { getHTMLContent } from "../Cleaning/pageSpecificClean";
+import { drRegex } from "../Cleaning/Pages/dr";
+import { lefigaroRegex } from "../Cleaning/Pages/lefigaro";
 import { readableLefigaro } from "./Pages/lefigaro";
-import { berlingskeRegex } from "../JSInjection/Cleaning/Pages/berlingske";
+import { berlingskeRegex } from "../Cleaning/Pages/berlingske";
 import { readableBerlingske } from "./Pages/berlingske";
-import { lemondeRegex } from "../JSInjection/Cleaning/Pages/lemonde";
+import { lemondeRegex } from "../Cleaning/Pages/lemonde";
 import { liveArticleLemonde } from "./Pages/lemonde";
 import { paywallPolitiken } from "./Pages/politiken";
-import { politikenRegex } from "../JSInjection/Cleaning/Pages/politiken";
+import { politikenRegex } from "../Cleaning/Pages/politiken";
 
 export function checkReadability(url){
     if(url.match(drRegex)){

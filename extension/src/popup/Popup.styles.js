@@ -1,5 +1,5 @@
 import styled, { css } from "styled-components";
-import colors from "../JSInjection/colors";
+import colors from "../colors";
 
 export const PopUp = styled.div`
   font-weight: 600;

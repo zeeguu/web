@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { ZeeguuErrorStyle } from "./Modal/Modal.styles";
-import { BROWSER_API } from "../utils/browserApi";
+import { BROWSER_API } from "./utils/browserApi";
 import { StyledPrimaryButton } from "./Modal/Buttons.styles";
-import ReportError from "../reportError/ReportError";
+import ReportError from "./reportError/ReportError";
 import {
   NO_INTERNET_CONNECTION,
   SESSISON_FEEDBACK,

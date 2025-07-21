@@ -11,7 +11,7 @@ import {
   READABILITY_FEEDBACK,
   LANGUAGE_FEEDBACK,
   LANGUAGE_UNDEFINED,
-} from "../JSInjection/constants";
+} from "../constants";
 import { injectFontAndStyles } from "../background/background";
 
 export default function PopupContent({

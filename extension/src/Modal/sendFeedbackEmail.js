@@ -1,7 +1,7 @@
 import {
   FEEDBACK_CODES,
   FEEDBACK_CODES_NAME,
-} from "../../../../src/components/FeedbackConstants";
+} from "../../../src/components/FeedbackConstants";
 import { EXTENSION_SOURCE } from "../constants";
 /**
  * @param {ZeeguuAPI} api

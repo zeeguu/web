@@ -1,4 +1,4 @@
-import { getSourceAsDOM } from "../../popup/functions";
+import { getSourceAsDOM } from "../popup/functions";
 import { Readability } from "@mozilla/readability";
 import { cleanBeforeArray, individualClean } from "../Cleaning/pageSpecificClean";
 import { displayEntireArticleFaz, fazRegex } from "../Cleaning/Pages/faz";

@@ -2,16 +2,16 @@
 import { checkReadability } from "./checkReadability";
 import { getUserInfo } from "./cookies";
 import { useState, useEffect } from "react";
-import Zeeguu_API from "../../../../src/api/Zeeguu_API";
+import Zeeguu_API from "../../../src/api/Zeeguu_API";
 import { getSourceAsDOM } from "./functions";
 import { isProbablyReaderable } from "@mozilla/readability";
 import logo from "../images/zeeguu128.png";
 import { HeadingContainer, PopUp, BottomContainer } from "./Popup.styles";
 import PopupContent from "./PopupContent";
-import { EXTENSION_SOURCE } from "../JSInjection/constants";
+import { EXTENSION_SOURCE } from "../constants";
 import { checkLanguageSupport, setUserInLocalStorage } from "./functions";
-import { StyledPrimaryButton } from "../JSInjection/Modal/Buttons.styles";
-import { API_URL, WEB_URL } from "../../../../src/config";
+import { StyledPrimaryButton } from "../Modal/Buttons.styles";
+import { API_URL, WEB_URL } from "../../../src/config";
 import { BROWSER_API } from "../utils/browserApi";
 
 //for isProbablyReadable options object

@@ -1,6 +1,6 @@
 import { egyszervoltRegex } from "./Pages/egyszervolt";
 import { removeAllElementsIfExistent, createDivWithContent  } from "./util";
-import { getSourceAsDOM } from "../../popup/functions";
+import { getSourceAsDOM } from "../popup/functions";
 
 
 export function getMainImage(HTMLContent, url) {

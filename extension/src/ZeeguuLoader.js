@@ -1,5 +1,5 @@
 import { StyledLoader } from "./ZeeguuLoader.styles";
-import { BROWSER_API } from "../utils/browserApi";
+import { BROWSER_API } from "./utils/browserApi";
 
 export default function ZeeguuLoader() {
   return (

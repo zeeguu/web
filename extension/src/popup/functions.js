@@ -1,4 +1,4 @@
-import { Article } from "../JSInjection/Modal/Article";
+import { Article } from "../Modal/Article";
 import { BROWSER_API } from "../utils/browserApi";
 
 export async function getCurrentTab() {
