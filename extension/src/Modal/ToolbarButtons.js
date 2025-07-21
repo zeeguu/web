@@ -1,5 +1,5 @@
-import * as s from "../../../../src/reader/ArticleReader.sc";
-import toggle from "../../../../src/utils/misc/toggle";
+import * as s from "../../../src/reader/ArticleReader.sc";
+import toggle from "../../../src/utils/misc/toggle";
 import * as React from "react";
 import FormGroup from "@mui/material/FormGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";

@@ -1,12 +1,12 @@
 import { useState } from "react";
-import { TranslatableText } from "../../../../src/reader/TranslatableText";
+import { TranslatableText } from "../../../src/reader/TranslatableText";
 import { InvisibleBox, StyledBox } from "./Modal.styles";
-import ReviewVocabularyInfoBox from "../../../../src/reader/ReviewVocabularyInfoBox";
-import LikeFeedbackBox from "../../../../src/reader/LikeFeedbackBox";
-import DifficultyFeedbackBox from "../../../../src/reader/DifficultyFeedbackBox";
-import { random } from "../../../../src/utils/basic/arrays";
-import ArticleStatInfo from "../../../../src/components/ArticleStatInfo";
-import * as s from "../../../../src/reader/ArticleReader.sc";
+import ReviewVocabularyInfoBox from "../../../src/reader/ReviewVocabularyInfoBox";
+import LikeFeedbackBox from "../../../src/reader/LikeFeedbackBox";
+import DifficultyFeedbackBox from "../../../src/reader/DifficultyFeedbackBox";
+import { random } from "../../../src/utils/basic/arrays";
+import ArticleStatInfo from "../../../src/components/ArticleStatInfo";
+import * as s from "../../../src/reader/ArticleReader.sc";
 
 export function ArticleRenderer({
   articleId,

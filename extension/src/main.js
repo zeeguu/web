@@ -8,16 +8,16 @@ import {
   deleteEvents,
   deleteIntervals,
   deleteTimeouts,
-} from "../popup/functions";
+} from "./popup/functions";
 import { Article } from "./Modal/Article";
 import { cleanDOMAfter } from "./Cleaning/pageSpecificClean";
-import Zeeguu_API from "../../../src/api/Zeeguu_API";
+import Zeeguu_API from "../../src/api/Zeeguu_API";
 import ZeeguuLoader from "./ZeeguuLoader";
-import { API_URL } from "../../../src/config";
+import { API_URL } from "../../src/config";
 import ZeeguuError from "./ZeeguuError";
 import { isProbablyReaderable } from "@mozilla/readability";
-import { checkReadability } from "../popup/checkReadability";
-import { APIContext } from "../../../src/contexts/APIContext";
+import { checkReadability } from "./popup/checkReadability";
+import { APIContext } from "../../src/contexts/APIContext";
 
 export function Main({ documentFromTab, url }) {
   const [article, setArticle] = useState();
