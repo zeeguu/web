@@ -1,12 +1,12 @@
 import { BROWSER_API } from "../utils/browserApi";
-import { WEB_URL, WEB_LOGIN_URL, API_URL } from "../config";
+import { WEB_URL, WEB_LOGIN_URL, API_URL } from "../../../../src/config";
 import {
   setCurrentURL,
   setUserInLocalStorage,
   getCurrentTab,
 } from "../popup/functions";
 import { getIsLoggedIn, getUserInfoDictFromCookies } from "../popup/cookies";
-import Zeeguu_API from "../zeeguu-react/src/api/Zeeguu_API";
+import Zeeguu_API from "../../../../src/api/Zeeguu_API";
 import { EXTENSION_SOURCE } from "../JSInjection/constants";
 
 // Montserrat font

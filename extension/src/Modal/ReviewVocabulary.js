@@ -1,8 +1,8 @@
-import * as s from "../../zeeguu-react/src/reader/ArticleReader.sc";
-import useUILanguage from "../../zeeguu-react/src/assorted/hooks/uiLanguageHook";
+import * as s from "../../../../src/reader/ArticleReader.sc";
+import useUILanguage from "../../../../src/assorted/hooks/uiLanguageHook";
 import { StyledPrimaryButton } from "./Buttons.styles";
 import NavigateNextIcon from "@mui/icons-material/NavigateNext";
-import { BROWSER_API } from "../../utils/browserApi";
+import { BROWSER_API } from "../utils/browserApi";
 import { CenteredContent } from "./Modal.styles";
 
 export default function ReviewVocabulary({ openReview }) {

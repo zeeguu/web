@@ -1,4 +1,4 @@
-import * as s from "../../zeeguu-react/src/reader/ArticleReader.sc";
+import * as s from "../../../../src/reader/ArticleReader.sc";
 import { useState } from "react";
 import sendFeedbackEmail from "./sendFeedbackEmail";
 import TextField from '@mui/material/TextField';

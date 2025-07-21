@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import colors from "../JSInjection/colors";
-import { zeeguuOrange } from "../zeeguu-react/src/components/colors";
+import { zeeguuOrange } from "../../../../src/components/colors";
 export const LoadingCircle = styled.div`
     margin-top: 15%;
     align-self: center;

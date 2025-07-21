@@ -1,16 +1,16 @@
 import { useState, useEffect } from "react";
-import LoadingAnimation from "../../zeeguu-react/src/components/LoadingAnimation";
+import LoadingAnimation from "../../../../src/components/LoadingAnimation";
 import {
   NarrowColumn,
   CenteredContent,
-} from "../../zeeguu-react/src/components/ColumnWidth.sc";
-import { setTitle } from "../../zeeguu-react/src/assorted/setTitle";
-import strings from "../../zeeguu-react/src/i18n/definitions";
+} from "../../../../src/components/ColumnWidth.sc";
+import { setTitle } from "../../../../src/assorted/setTitle";
+import strings from "../../../../src/i18n/definitions";
 import { EXTENSION_SOURCE } from "../constants";
-import WordsToReview from "../../zeeguu-react/src/words/WordsToReview";
-import BackArrow from "../../zeeguu-react/src/pages/Settings/settings_pages_shared/BackArrow";
-import { StyledButton } from "../../zeeguu-react/src/components/allButtons.sc.js";
-import { WEB_URL } from "../../config.js";
+import WordsToReview from "../../../../src/words/WordsToReview";
+import BackArrow from "../../../../src/pages/Settings/settings_pages_shared/BackArrow";
+import { StyledButton } from "../../../../src/components/allButtons.sc.js";
+import { WEB_URL } from "../../../../src/config.js";
 import Tooltip from "@mui/material/Tooltip";
 
 function fit_for_study(words) {

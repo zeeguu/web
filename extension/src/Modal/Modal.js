@@ -16,15 +16,15 @@ import UserFeedback from "./UserFeedback";
 
 import { EXTENSION_SOURCE } from "../constants";
 
-import InteractiveText from "../../zeeguu-react/src/reader/InteractiveText";
+import InteractiveText from "../../../../src/reader/InteractiveText";
 import { getMainImage } from "../Cleaning/generelClean";
-import { getNativeLanguage, getUsername } from "../../popup/functions";
+import { getNativeLanguage, getUsername } from "../popup/functions";
 import { ArticleRenderer } from "./ArticleRenderer";
 import WordsForArticleModal from "./WordsForArticleModal";
 import ToolbarButtons from "./ToolbarButtons";
-import useUILanguage from "../../zeeguu-react/src/assorted/hooks/uiLanguageHook";
+import useUILanguage from "../../../../src/assorted/hooks/uiLanguageHook";
 import { getHTMLContent } from "../Cleaning/pageSpecificClean";
-import { BROWSER_API } from "../../utils/browserApi";
+import { BROWSER_API } from "../utils/browserApi";
 
 import CloseSharpIcon from "@mui/icons-material/CloseSharp";
 import SaveToZeeguu from "./SaveToZeeguu";
@@ -32,17 +32,17 @@ import colors from "../colors";
 import FactCheckOutlinedIcon from "@mui/icons-material/FactCheckOutlined";
 import FactCheckIcon from "@mui/icons-material/FactCheck";
 
-import { SpeechContext } from "../../zeeguu-react/src/contexts/SpeechContext";
-import ZeeguuSpeech from "../../zeeguu-react/src/speech/APIBasedSpeech";
-import useActivityTimer from "../../zeeguu-react/src/hooks/useActivityTimer";
-import useShadowRef from "../../zeeguu-react/src/hooks/useShadowRef";
-import ratio from "../../zeeguu-react/src/utils/basic/ratio";
+import { SpeechContext } from "../../../../src/contexts/SpeechContext";
+import ZeeguuSpeech from "../../../../src/speech/APIBasedSpeech";
+import useActivityTimer from "../../../../src/hooks/useActivityTimer";
+import useShadowRef from "../../../../src/hooks/useShadowRef";
+import ratio from "../../../../src/utils/basic/ratio";
 
-import DigitalTimer from "../../zeeguu-react/src/components/DigitalTimer";
+import DigitalTimer from "../../../../src/components/DigitalTimer";
 import Button from "@mui/material/Button";
 import SettingsIcon from "@mui/icons-material/Settings";
 import ZeeguuError from "../ZeeguuError";
-import useUserPreferences from "../../zeeguu-react/src/hooks/useUserPreferences.js";
+import useUserPreferences from "../../../../src/hooks/useUserPreferences.js";
 
 export function Modal({ modalIsOpen, setModalIsOpen, api, url, author }) {
   const [readArticleOpen, setReadArticleOpen] = useState(true);
