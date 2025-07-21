@@ -81,7 +81,7 @@
     "ext:pub-ci": "cd src/extension && (cd src && git clone -b development https://github.com/zeeguu-ecosystem/zeeguu-react.git && cd zeeguu-react && npm ci) && cp ./public/manifest.chrome.json ./build/manifest.json && npm-run-all build:* && zip -FSr build.zip build",
     "ext:pub-ci-firefox": "cd src/extension && (cd src && git clone -b development https://github.com/zeeguu-ecosystem/zeeguu-react.git && cd zeeguu-react && npm ci) && npm run buildFirefox && zip -FSr build.zip build",
     "ext:zip-build": "cd src/extension && (cd build && zip -FSr ../build.zip *)",
-    "ext:buildZipChrome": "npm run ext:buildUnix:popup && npm run ext:build:content && npm run ext:build:bg && npm run ext:build:izo && cd src/extension && mkdir -p ./build/images && cp ./index.html ./build/index.html && cp ./images/* ./build/images/ && cp ./manifest.chrome.json ./build/manifest.json && npm run ext:zip-build",
+    "ext:buildZipChrome": "npm run ext:buildUnix:popup && npm run ext:build:content && npm run ext:build:bg && npm run ext:build:izo && cd src/extension && mkdir -p ./build/images && cp ./index.html ./build/index.html && cp ../../public/images/* ./build/images/ && cp ./manifest.chrome.json ./build/manifest.json && npm run ext:zip-build",
     "ext:buildZipFirefox": "npm run ext:buildFirefox && npm run ext:zip-build",
     "ext:zipSources": "cd src/extension && zip -FSr zeeguu-reader-source-code.zip . -x 'build/*' 'node_modules/*' 'src/zeeguu-react/node_modules/*' 'src/zeeguu-react/build/*' '.git/*' build.zip '.idea/*'"
   },
