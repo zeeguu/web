@@ -8,14 +8,17 @@ import PopupLoading from "./PopupLoading";
 import ReportError from "../reportError/ReportError";
 import { READABILITY_FEEDBACK, LANGUAGE_FEEDBACK, LANGUAGE_UNDEFINED } from "../constants";
 import { injectFontAndStyles } from "../background/background";
+import { ArticleAsync } from "../Modal/Article";
 
 // Use extension runtime URL instead of direct import
 const logo = chrome?.runtime?.getURL ? chrome.runtime.getURL("images/zeeguu128.png") : "/images/zeeguu128.png";
 
-export default function PopupContent({ isReadable, languageSupported, user, tab, api, sessionId }) {
+export default function PopupContent({ isReadable, languageSupported, user, tab, api, sessionId, articleData, fragmentData, loadingProgress: passedLoadingProgress }) {
   const [feedbackSuccess, setFeedbackSuccess] = useState(false);
   const [finalStateExecuted, setFinalStateExecuted] = useState(false);
   const [showLoader, setShowLoader] = useState(true);
+  const [article, setArticle] = useState(articleData);
+  const [loadingProgress, setLoadingProgress] = useState(passedLoadingProgress || "Analyzing page...");
 
   useEffect(() => {
     // Hide loader only when we're ready to show final content
@@ -25,7 +28,21 @@ export default function PopupContent({ isReadable, languageSupported, user, tab,
   }, [showLoader, finalStateExecuted]);
 
   useEffect(() => {
-    // If languageSupported is already determined (not undefined), set finalStateExecuted immediately
+    // Update loading progress from parent
+    if (passedLoadingProgress) {
+      setLoadingProgress(passedLoadingProgress);
+    }
+  }, [passedLoadingProgress]);
+
+  useEffect(() => {
+    // Update article data from parent
+    if (articleData && !article) {
+      setArticle(articleData);
+    }
+  }, [articleData, article]);
+
+  useEffect(() => {
+    // If languageSupported is already determined, set final state
     if (languageSupported !== undefined && !finalStateExecuted) {
       setFinalStateExecuted(true);
     } else if (languageSupported === undefined && !finalStateExecuted) {
@@ -47,8 +64,14 @@ export default function PopupContent({ isReadable, languageSupported, user, tab,
 
   async function openModal() {
     try {
-      // Store URL for the content script to access
+      // Store URL and article data for the content script to access
       setCurrentURL(tab.url);
+      await BROWSER_API.storage.local.set({ 
+        articleData: article,
+        fragmentData: fragmentData,
+        sessionId: sessionId,
+        url: tab.url
+      });
 
       await BROWSER_API.scripting.executeScript({
         target: { tabId: tab.id },
@@ -114,7 +137,7 @@ export default function PopupContent({ isReadable, languageSupported, user, tab,
     return renderFeedbackSection(READABILITY_FEEDBACK);
   } else if (languageSupported === false && finalStateExecuted) {
     return renderFeedbackSection(LANGUAGE_FEEDBACK);
-  } else if (languageSupported && finalStateExecuted) {
+  } else if (languageSupported && finalStateExecuted && article && fragmentData) {
     openModal();
     return <></>;
   }
@@ -122,7 +145,7 @@ export default function PopupContent({ isReadable, languageSupported, user, tab,
 
   return (
     <>
-      <PopupLoading showLoader={showLoader} setShowLoader={setShowLoader} />
+      <PopupLoading showLoader={showLoader} setShowLoader={setShowLoader} loadingText={loadingProgress} />
     </>
   );
 }

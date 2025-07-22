@@ -44,7 +44,7 @@ import SettingsIcon from "@mui/icons-material/Settings";
 import ZeeguuError from "../ZeeguuError";
 import useUserPreferences from "../../../hooks/useUserPreferences.js";
 
-export function Modal({ modalIsOpen, setModalIsOpen, api, url, author }) {
+export function Modal({ modalIsOpen, setModalIsOpen, api, url, author, article, fragmentData }) {
   const [readArticleOpen, setReadArticleOpen] = useState(true);
   const [reviewOpen, setReviewOpen] = useState(false);
   const [answerSubmitted, setAnswerSubmitted] = useState(false);
@@ -186,10 +186,66 @@ export function Modal({ modalIsOpen, setModalIsOpen, api, url, author }) {
     scrollEvents.current = [];
     lastSampleScroll.current = 0;
     setScrollPosition(0);
-    if (url !== undefined) {
-      let info = {
-        url: url,
-      };
+    
+    // Use pre-fetched fragment data if available
+    if (fragmentData) {
+      let artinfo = fragmentData;
+      let engine = new ZeeguuSpeech(api, artinfo.language);
+      let articleTopics = artinfo.topics_list.map((x) => x[0]);
+
+      setArticleID(artinfo.id);
+      setArticleInfo(artinfo);
+      setArticleTopics(articleTopics);
+      setSpeechEngine(engine);
+      setPersonalCopySaved(artinfo["has_personal_copy"]);
+
+      setInteractiveFragments(
+        artinfo.tokenized_fragments.map(
+          (each) =>
+            new InteractiveText(
+              each.tokens,
+              artinfo.source_id,
+              api,
+              each.past_bookmarks,
+              api.TRANSLATE_TEXT,
+              artinfo.language,
+              EXTENSION_SOURCE,
+              engine,
+              each.context_identifier,
+              each.formatting
+            )
+        )
+      );
+
+      const articleTitleData = artinfo.tokenized_title_new;
+      setInteractiveTitle(
+        new InteractiveText(
+          articleTitleData.tokens,
+          artinfo.source_id,
+          api,
+          articleTitleData.past_bookmarks,
+          api.TRANSLATE_TEXT,
+          artinfo.language,
+          EXTENSION_SOURCE,
+          engine,
+          articleTitleData.context_identifier
+        )
+      );
+      setBookmarks(artinfo.translations);
+      api.readingSessionCreate(artinfo.id, (sessionID) => {
+        setReadingSessionId(sessionID);
+        api.setArticleOpened(artinfo.id);
+        api.logUserActivity(
+          api.OPEN_ARTICLE,
+          artinfo.id,
+          sessionID,
+          EXTENSION_SOURCE
+        );
+        clearTimeout(timedOutTimer);
+      });
+    } else if (url !== undefined) {
+      // Fallback: fetch data if not pre-fetched
+      let info = { url: url };
       api.findOrCreateArticle(info, (result_dict) => {
         if (result_dict.includes("Language not supported")) {
           return alert("not readable");

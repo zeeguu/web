@@ -1,4 +1,4 @@
-import { Article } from "../Modal/Article";
+import { Article, ArticleAsync } from "../Modal/Article";
 import { BROWSER_API } from "../utils/browserApi";
 
 export async function getCurrentTab() {
@@ -32,12 +32,55 @@ export async function getSessionId() {
 }
 
 export function getSourceAsDOM(url) {
-  const xmlhttp = new XMLHttpRequest();
-  xmlhttp.open("GET", url, false);
-  xmlhttp.send();
-  const parser = new DOMParser();
-  //const clean = DOMPurify.sanitize(xmlhttp.responseText);
-  return parser.parseFromString(xmlhttp.responseText, "text/html");
+  try {
+    const xmlhttp = new XMLHttpRequest();
+    xmlhttp.open("GET", url, false);
+    // Don't set timeout for sync requests - it's not supported
+    xmlhttp.send();
+    
+    if (xmlhttp.status !== 200) {
+      throw new Error(`HTTP ${xmlhttp.status}: ${xmlhttp.statusText}`);
+    }
+    
+    const parser = new DOMParser();
+    //const clean = DOMPurify.sanitize(xmlhttp.responseText);
+    return parser.parseFromString(xmlhttp.responseText, "text/html");
+  } catch (error) {
+    console.error("Failed to fetch article content:", error);
+    throw error;
+  }
+}
+
+export async function getSourceAsDOMAsync(url) {
+  return new Promise((resolve, reject) => {
+    const xmlhttp = new XMLHttpRequest();
+    xmlhttp.open("GET", url, true); // Async request
+    xmlhttp.timeout = 15000; // Set 15 second timeout
+    
+    xmlhttp.onload = function() {
+      if (xmlhttp.status === 200) {
+        const parser = new DOMParser();
+        //const clean = DOMPurify.sanitize(xmlhttp.responseText);
+        resolve(parser.parseFromString(xmlhttp.responseText, "text/html"));
+      } else {
+        reject(new Error(`HTTP ${xmlhttp.status}: ${xmlhttp.statusText}`));
+      }
+    };
+    
+    xmlhttp.onerror = function() {
+      reject(new Error('Network error occurred'));
+    };
+    
+    xmlhttp.ontimeout = function() {
+      reject(new Error('Request timed out'));
+    };
+    
+    try {
+      xmlhttp.send();
+    } catch (error) {
+      reject(error);
+    }
+  });
 }
 
 export function removeAllChildNodes(parent) {
@@ -53,7 +96,12 @@ export function deleteCurrentDOM() {
   }
   const head = document.querySelector("head");
   if (head) {
+    // Only preserve styled-components style tags (they have data-styled attribute)
+    // These are our extension's styles, not the page's original styles
+    const styledComponentsStyles = head.querySelectorAll('style[data-styled]');
     removeAllChildNodes(head);
+    // Re-add only our styled-components styles
+    styledComponentsStyles.forEach(style => head.appendChild(style));
   }
   const div = document.querySelector("div");
   if (div) {
@@ -84,17 +132,45 @@ export function deleteIntervals() {
   }
 }
 
-export function checkLanguageSupport(api, tab, setLanguageSupported) {
-  Article(tab.url).then((article) => {
+export function checkLanguageSupport(api, tab, setLanguageSupported, setArticleData, setLoadingProgress, setFragmentData) {
+  if (setLoadingProgress) setLoadingProgress("Fetching article content...");
+  
+  ArticleAsync(tab.url).then((article) => {
+    if (setArticleData) setArticleData(article);
+    if (setLoadingProgress) setLoadingProgress("Checking language support...");
+    
     api.isArticleLanguageSupported(article.textContent, (result_dict) => {
-      // console.log(result_dict);
       if (result_dict === "NO") {
         setLanguageSupported(false);
       }
       if (result_dict === "YES") {
-        setLanguageSupported(true);
+        if (setLoadingProgress) setLoadingProgress("Processing article fragments...");
+        
+        // Get tokenized fragments
+        let info = { url: tab.url };
+        api.findOrCreateArticle(info, (articleResult) => {
+          if (articleResult.includes("Language not supported")) {
+            setLanguageSupported(false);
+            return;
+          }
+          
+          try {
+            let artinfo = JSON.parse(articleResult);
+            if (setFragmentData) {
+              setFragmentData(artinfo);
+            }
+            if (setLoadingProgress) setLoadingProgress("Preparing reader...");
+            setLanguageSupported(true);
+          } catch (error) {
+            console.error("Failed to parse article info:", error);
+            setLanguageSupported(false);
+          }
+        });
       }
     });
+  }).catch((error) => {
+    console.error("Failed to fetch article for language check:", error);
+    setLanguageSupported(false);
   });
 }
 
