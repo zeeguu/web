@@ -1,0 +1,1 @@
+export const lefigaroRegex = /(http|https):\/\/(www.lefigaro.fr).*/
