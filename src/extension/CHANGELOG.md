@@ -5,6 +5,27 @@ All notable changes to the Zeeguu Browser Extension will be documented in this f
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+
+## [2.5.3] - 2025-07-22
+
+### Added
+- Cross-browser compatibility improvements with unified cookie API
+- ProgressContext provider for word review functionality
+- Proper browser API abstraction layer for Chrome and Firefox
+
+### Changed
+- Renamed Modal component to InjectedReaderApp for better clarity
+- Consolidated loading experience in popup with progress indicators
+- Enhanced Firefox cookie handling with API-based fallback authentication
+- Cleaned up debugging code and improved code maintainability
+
+### Fixed
+- Firefox login detection issues with cookie API returning undefined
+- XMLHttpRequest timeout errors in synchronous requests
+- Word review page crashing with useContext undefined error
+- Styled-components loading before content display
+- Cross-browser cookie access inconsistencies
+
 ## [2.5.2] - 2025-07-22
 
 ### Added
