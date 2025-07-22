@@ -16,7 +16,7 @@ import ZeeguuLoader from "./ZeeguuLoader";
 import { API_URL } from "../../config";
 import ZeeguuError from "./ZeeguuError";
 import { isProbablyReaderable } from "@mozilla/readability";
-import { checkReadability } from "./popup/checkReadability";
+import { manualReadabilityCheck } from "./popup/manualReadabilityCheck";
 import { APIContext } from "../../contexts/APIContext";
 
 export function Main({ documentFromTab, url }) {
@@ -27,8 +27,8 @@ export function Main({ documentFromTab, url }) {
   const [languageSupported, setLanguageSupported] = useState();
   const [isAPIDown, setIsAPIDown] = useState();
   const [foundError, setFoundError] = useState();
-  const minLength = 120;
-  const minScore = 20;
+  const minLength = 200;
+  const minScore = 30;
   const isInternetDown = documentFromTab === undefined;
 
   let api = new Zeeguu_API(API_URL);
@@ -46,29 +46,30 @@ export function Main({ documentFromTab, url }) {
             let ownIsProbablyReadable = false;
 
             try {
-              isProbablyReadable = isProbablyReaderable(
-                documentFromTab,
+              isProbablyReadable = isProbablyReaderable(documentFromTab, {
+                minContentLength: minLength,
+                minScore: minScore,
+              });
+              console.log(`Content script readability check:`, {
+                isProbablyReadable,
                 minLength,
-                minScore
-              );
-              ownIsProbablyReadable = checkReadability(url);
+                minScore,
+              });
+              ownIsProbablyReadable = manualReadabilityCheck(url);
               if (!isProbablyReadable || !ownIsProbablyReadable) {
                 setIsReadable(false);
                 // if it is not readable, we default the language support to true;
                 setLanguageSupported(true);
               } else {
                 setIsReadable(true);
-                api.isArticleLanguageSupported(
-                  article.textContent,
-                  (result_dict) => {
-                    if (result_dict === "NO") {
-                      setLanguageSupported(false);
-                    }
-                    if (result_dict === "YES") {
-                      setLanguageSupported(true);
-                    }
+                api.isArticleLanguageSupported(article.textContent, (result_dict) => {
+                  if (result_dict === "NO") {
+                    setLanguageSupported(false);
                   }
-                );
+                  if (result_dict === "YES") {
+                    setLanguageSupported(true);
+                  }
+                });
               }
             } catch {
               setFoundError(true);
@@ -77,21 +78,19 @@ export function Main({ documentFromTab, url }) {
           () => {
             setFoundError(true);
             setIsAPIDown(true);
-          }
+          },
         );
       },
       () => {
         setFoundError(true);
         setIsAPIDown(true);
-      }
+      },
     );
   }, [url]);
 
   useEffect(() => {
     if (languageSupported !== undefined && isReadable !== undefined)
-      setFoundError(
-        sessionId === undefined || !languageSupported || !isReadable
-      );
+      setFoundError(sessionId === undefined || !languageSupported || !isReadable);
   }, [languageSupported, isReadable]);
 
   if (isInternetDown) {
@@ -127,12 +126,7 @@ export function Main({ documentFromTab, url }) {
   }
   return (
     <APIContext.Provider value={api}>
-      <Modal
-        modalIsOpen={modalIsOpen}
-        setModalIsOpen={setModalIsOpen}
-        api={api}
-        url={url}
-      />
+      <Modal modalIsOpen={modalIsOpen} setModalIsOpen={setModalIsOpen} api={api} url={url} />
     </APIContext.Provider>
   );
 }

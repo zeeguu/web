@@ -4,7 +4,7 @@ import colors from "../colors";
 export const PopUp = styled.div`
   font-weight: 600;
   display: flex;
-  background-color: rgba(255, 223, 143, 0.49) !important;
+  background-color: white !important;
   flex-direction: column;
   border: none;
   padding: 10px;

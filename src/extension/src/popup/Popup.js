@@ -1,5 +1,5 @@
 /*global chrome*/
-import { checkReadability } from "./checkReadability";
+import { manualReadabilityCheck } from "./manualReadabilityCheck";
 import { getUserInfo } from "./cookies";
 import { useState, useEffect } from "react";
 import Zeeguu_API from "../../../api/Zeeguu_API";
@@ -49,12 +49,16 @@ export default function Popup({ loggedIn }) {
 
       // Readability check and language check
       const documentFromTab = getSourceAsDOM(tab.url);
-      const isProbablyReadable = isProbablyReaderable(
-        documentFromTab,
+      const isProbablyReadable = isProbablyReaderable(documentFromTab, {
+        minContentLength: minLength,
+        minScore: minScore,
+      });
+      console.log(`Readability check for ${tab.url}:`, {
+        isProbablyReadable,
         minLength,
         minScore,
-      );
-      const ownIsProbablyReadable = checkReadability(tab.url);
+      });
+      const ownIsProbablyReadable = manualReadabilityCheck(tab.url);
       if (!isProbablyReadable || !ownIsProbablyReadable) {
         setIsReadable(false);
         setLanguageSupported(false);
@@ -79,11 +83,7 @@ export default function Popup({ loggedIn }) {
           <img src={logo} alt="Zeeguu logo" />
         </HeadingContainer>
         <BottomContainer>
-          <StyledPrimaryButton
-            onClick={openLogin}
-            name="toLogin"
-            className="toLoginButton"
-          >
+          <StyledPrimaryButton onClick={openLogin} name="toLogin" className="toLoginButton">
             Login
           </StyledPrimaryButton>
         </BottomContainer>

@@ -34,8 +34,11 @@ export default function PopupContent({ isReadable, languageSupported, user, tab,
       setFinalStateExecuted(true);
     } else if (languageSupported === undefined && !finalStateExecuted) {
       let timerId = setTimeout(() => {
-        setFinalStateExecuted(true);
-      }, 1000);
+        // Only set final state if language is still undefined after timeout
+        if (languageSupported === undefined) {
+          setFinalStateExecuted(true);
+        }
+      }, 2000); // Increased timeout to give more time for language check
 
       return () => {
         clearTimeout(timerId);
@@ -92,6 +95,25 @@ export default function PopupContent({ isReadable, languageSupported, user, tab,
     </>
   );
 
+  // Check if we're on zeeguu.org
+  const isZeeguuSite = tab?.url && (tab.url.includes("zeeguu.org") || tab.url.includes("localhost:3000"));
+
+  if (isZeeguuSite) {
+    return (
+      <>
+        <HeadingContainer>
+          <img src={logo} alt="Zeeguu logo" />
+        </HeadingContainer>
+        <MiddleContainer style={{ textAlign: "center" }}>
+          <h2>Already on Zeeguu!</h2>
+          <p style={{ fontSize: "16px", lineHeight: "1.5" }}>
+            Use this extension when reading articles on other websites to get instant translations.
+          </p>
+        </MiddleContainer>
+      </>
+    );
+  }
+
   if (!isReadable) {
     return renderFeedbackSection(READABILITY_FEEDBACK);
   } else if (languageSupported === false && finalStateExecuted) {
@@ -99,10 +121,13 @@ export default function PopupContent({ isReadable, languageSupported, user, tab,
   } else if (languageSupported && finalStateExecuted) {
     openModal();
     return <></>;
-  } else if (languageSupported === undefined && finalStateExecuted) {
-    return renderFeedbackSection(LANGUAGE_UNDEFINED);
   }
 
+  // If we already know language is not supported, show the error immediately
+  if (languageSupported === false && !finalStateExecuted) {
+    return renderFeedbackSection(LANGUAGE_FEEDBACK);
+  }
+  
   return (
     <>
       <PopupLoading showLoader={showLoader} setShowLoader={setShowLoader} />
