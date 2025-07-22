@@ -18,15 +18,11 @@ export default function PopupContent({ isReadable, languageSupported, user, tab,
   const [showLoader, setShowLoader] = useState(true);
 
   useEffect(() => {
-    if (showLoader) {
-      let timerId = setTimeout(() => {
-        setShowLoader(false);
-      }, 800);
-      return () => {
-        clearTimeout(timerId);
-      };
+    // Hide loader only when we're ready to show final content
+    if (showLoader && finalStateExecuted) {
+      setShowLoader(false);
     }
-  }, [showLoader]);
+  }, [showLoader, finalStateExecuted]);
 
   useEffect(() => {
     // If languageSupported is already determined (not undefined), set finalStateExecuted immediately
@@ -78,8 +74,8 @@ export default function PopupContent({ isReadable, languageSupported, user, tab,
         <MiddleContainer>
           {!feedbackSuccess && (
             <>
-              {user && <h1>Oh no, {user.name}!</h1>}
               <p>{feedback}</p>
+              {feedback === LANGUAGE_FEEDBACK}
               <br />
             </>
           )}
@@ -123,11 +119,7 @@ export default function PopupContent({ isReadable, languageSupported, user, tab,
     return <></>;
   }
 
-  // If we already know language is not supported, show the error immediately
-  if (languageSupported === false && !finalStateExecuted) {
-    return renderFeedbackSection(LANGUAGE_FEEDBACK);
-  }
-  
+
   return (
     <>
       <PopupLoading showLoader={showLoader} setShowLoader={setShowLoader} />

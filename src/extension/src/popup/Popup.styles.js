@@ -91,6 +91,7 @@ export const MiddleContainer = styled.div`
     margin-block-start: 0em !important;
     margin-block-end: 0em !important;
     font-weight: normal;
-    font-size: 1em !important;
+    font-size: 1.15em !important;
+    line-height: 1.25em !important;
   }
 `;
