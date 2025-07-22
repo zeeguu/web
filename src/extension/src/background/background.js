@@ -132,7 +132,7 @@ async function startReader() {
       BROWSER_API.scripting
         .executeScript({
           target: { tabId: tab.id },
-          files: ["main.js"],
+          files: ["contentScript.js"],
           func: setCurrentURL(tab.url),
         })
         .then(() => {

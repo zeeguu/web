@@ -75,7 +75,7 @@ export default function PopupContent({ isReadable, languageSupported, user, tab,
 
       await BROWSER_API.scripting.executeScript({
         target: { tabId: tab.id },
-        files: ["./main.js"],
+        files: ["contentScript.js"],
       });
 
       await injectFontAndStyles(tab.id);
