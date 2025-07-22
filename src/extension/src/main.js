@@ -1,4 +1,4 @@
-import { InjectedReaderApp } from "./Modal/InjectedReaderApp";
+import { InjectedReaderApp } from "./InjectedReaderApp/InjectedReaderApp";
 import ReactDOM from "react-dom";
 import { useState } from "react";
 import {
@@ -13,7 +13,7 @@ import { API_URL } from "../../config";
 import ZeeguuError from "./ZeeguuError";
 import { APIContext } from "../../contexts/APIContext";
 import { ProgressProvider } from "../../contexts/ProgressContext";
-import { GlobalStyle } from "./Modal/InjectedReaderApp.styles";
+import { GlobalStyle } from "./InjectedReaderApp/InjectedReaderApp.styles";
 import { BROWSER_API } from "./utils/browserApi";
 
 export function Main({ articleData, fragmentData, sessionId: passedSessionId, url }) {

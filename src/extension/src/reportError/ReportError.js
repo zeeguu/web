@@ -1,5 +1,5 @@
 import { useState } from "react";
-import sendFeedbackEmail from "../Modal/sendFeedbackEmail";
+import sendFeedbackEmail from "../InjectedReaderApp/sendFeedbackEmail";
 import Link from "@mui/material/Link";
 import Alert from "@mui/material/Alert";
 import colors from "../colors";

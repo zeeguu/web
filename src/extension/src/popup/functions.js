@@ -1,4 +1,4 @@
-import { Article, ArticleAsync } from "../Modal/Article";
+import { Article, ArticleAsync } from "../InjectedReaderApp/Article";
 import { BROWSER_API } from "../utils/browserApi";
 
 export async function getCurrentTab() {

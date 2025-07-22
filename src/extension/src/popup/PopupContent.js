@@ -8,7 +8,7 @@ import PopupLoading from "./PopupLoading";
 import ReportError from "../reportError/ReportError";
 import { READABILITY_FEEDBACK, LANGUAGE_FEEDBACK, LANGUAGE_UNDEFINED } from "../constants";
 import { injectFontAndStyles } from "../background/background";
-import { ArticleAsync } from "../Modal/Article";
+import { ArticleAsync } from "../InjectedReaderApp/Article";
 
 // Use extension runtime URL instead of direct import
 const logo = chrome?.runtime?.getURL ? chrome.runtime.getURL("images/zeeguu128.png") : "/images/zeeguu128.png";

@@ -10,7 +10,7 @@ import { HeadingContainer, PopUp, BottomContainer } from "./Popup.styles";
 import PopupContent from "./PopupContent";
 import { EXTENSION_SOURCE } from "../constants";
 import { checkLanguageSupport, setUserInLocalStorage } from "./functions";
-import { StyledPrimaryButton } from "../Modal/Buttons.styles";
+import { StyledPrimaryButton } from "../InjectedReaderApp/Buttons.styles";
 import { API_URL, WEB_URL } from "../../../config";
 import { BROWSER_API } from "../utils/browserApi";
 
