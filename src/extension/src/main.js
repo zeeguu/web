@@ -1,4 +1,4 @@
-import { Modal } from "./Modal/Modal";
+import { InjectedReaderApp } from "./Modal/InjectedReaderApp";
 import ReactDOM from "react-dom";
 import { useState } from "react";
 import {
@@ -12,7 +12,8 @@ import Zeeguu_API from "../../api/Zeeguu_API";
 import { API_URL } from "../../config";
 import ZeeguuError from "./ZeeguuError";
 import { APIContext } from "../../contexts/APIContext";
-import { GlobalStyle } from "./Modal/Modal.styles";
+import { ProgressProvider } from "../../contexts/ProgressContext";
+import { GlobalStyle } from "./Modal/InjectedReaderApp.styles";
 import { BROWSER_API } from "./utils/browserApi";
 
 export function Main({ articleData, fragmentData, sessionId: passedSessionId, url }) {
@@ -29,7 +30,9 @@ export function Main({ articleData, fragmentData, sessionId: passedSessionId, ur
       <>
         <GlobalStyle />
         <APIContext.Provider value={api}>
-          <Modal modalIsOpen={modalIsOpen} setModalIsOpen={setModalIsOpen} api={api} url={url} article={articleData} fragmentData={fragmentData} />
+          <ProgressProvider>
+            <InjectedReaderApp modalIsOpen={modalIsOpen} setModalIsOpen={setModalIsOpen} api={api} url={url} article={articleData} fragmentData={fragmentData} />
+          </ProgressProvider>
         </APIContext.Provider>
       </>
     );

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { ZeeguuErrorStyle } from "./Modal/Modal.styles";
+import { ZeeguuErrorStyle } from "./Modal/InjectedReaderApp.styles";
 import { BROWSER_API } from "./utils/browserApi";
 import { StyledPrimaryButton } from "./Modal/Buttons.styles";
 import ReportError from "./reportError/ReportError";

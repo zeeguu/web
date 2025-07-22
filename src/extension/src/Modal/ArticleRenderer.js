@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { TranslatableText } from "../../../reader/TranslatableText";
-import { InvisibleBox, StyledBox } from "./Modal.styles";
+import { InvisibleBox, StyledBox } from "./InjectedReaderApp.styles";
 import ReviewVocabularyInfoBox from "../../../reader/ReviewVocabularyInfoBox";
 import LikeFeedbackBox from "../../../reader/LikeFeedbackBox";
 import DifficultyFeedbackBox from "../../../reader/DifficultyFeedbackBox";

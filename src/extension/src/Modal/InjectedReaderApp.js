@@ -5,9 +5,9 @@ import {
   StyledHeading,
   GlobalStyle,
   OverwriteZeeguu,
-} from "./Modal.styles";
+} from "./InjectedReaderApp.styles";
 
-import * as s from "./Modal.sc";
+import * as s from "./InjectedReaderApp.sc";
 
 import { StyledCloseButton, StyledSmallButton } from "./Buttons.styles";
 import FloatingMenu from "./FloatingMenu";
@@ -44,7 +44,7 @@ import SettingsIcon from "@mui/icons-material/Settings";
 import ZeeguuError from "../ZeeguuError";
 import useUserPreferences from "../../../hooks/useUserPreferences.js";
 
-export function Modal({ modalIsOpen, setModalIsOpen, api, url, author, article, fragmentData }) {
+export function InjectedReaderApp({ modalIsOpen, setModalIsOpen, api, url, author, article, fragmentData }) {
   const [readArticleOpen, setReadArticleOpen] = useState(true);
   const [reviewOpen, setReviewOpen] = useState(false);
   const [answerSubmitted, setAnswerSubmitted] = useState(false);
