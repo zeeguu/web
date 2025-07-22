@@ -4,11 +4,11 @@ import colors from "../colors";
 export const PopUp = styled.div`
   font-weight: 600;
   display: flex;
-  background-color: ${colors.white} !important;
+  background-color: rgba(255, 223, 143, 0.49) !important;
   flex-direction: column;
   border: none;
   padding: 10px;
-  width: 230px;
+  width: auto;
   height: auto;
   min-height: 120px;
   border-radius: 10px;
@@ -24,6 +24,7 @@ export const BottomButton = styled.div`
   bottom: -0.4em;
   font-size: 1em !important;
   font-weight: 600 !important;
+
   :hover {
     color: ${colors.hoverBlue} !important;
   }
@@ -37,9 +38,11 @@ export const NotifyButton = styled.button`
   cursor: pointer;
   color: ${colors.darkBlue};
   font-weight: 600 !important;
+
   :hover {
     color: ${colors.hoverBlue} !important;
   }
+
   font-size: 1em !important;
 
   //Small
@@ -57,6 +60,7 @@ export const HeadingContainer = styled.div`
   img {
     width: 15%;
   }
+
   display: flex;
   justify-content: center;
   margin: 10px;
@@ -82,6 +86,7 @@ export const MiddleContainer = styled.div`
     font-weight: 600 !important;
     text-align: center;
   }
+
   p {
     margin-block-start: 0em !important;
     margin-block-end: 0em !important;

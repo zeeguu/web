@@ -1,27 +1,18 @@
 /*global chrome*/
 /*global browser*/
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { setCurrentURL } from "./functions";
 import { BROWSER_API } from "../utils/browserApi";
 import { HeadingContainer, MiddleContainer } from "./Popup.styles";
-import logo from "../../../../public/static/images/zeeguu128.png";
 import PopupLoading from "./PopupLoading";
 import ReportError from "../reportError/ReportError";
-import {
-  READABILITY_FEEDBACK,
-  LANGUAGE_FEEDBACK,
-  LANGUAGE_UNDEFINED,
-} from "../constants";
+import { READABILITY_FEEDBACK, LANGUAGE_FEEDBACK, LANGUAGE_UNDEFINED } from "../constants";
 import { injectFontAndStyles } from "../background/background";
 
-export default function PopupContent({
-  isReadable,
-  languageSupported,
-  user,
-  tab,
-  api,
-  sessionId,
-}) {
+// Use extension runtime URL instead of direct import
+const logo = chrome?.runtime?.getURL ? chrome.runtime.getURL("images/zeeguu128.png") : "/images/zeeguu128.png";
+
+export default function PopupContent({ isReadable, languageSupported, user, tab, api, sessionId }) {
   const [feedbackSuccess, setFeedbackSuccess] = useState(false);
   const [finalStateExecuted, setFinalStateExecuted] = useState(false);
   const [showLoader, setShowLoader] = useState(true);
@@ -38,32 +29,38 @@ export default function PopupContent({
   }, [showLoader]);
 
   useEffect(() => {
-    if (languageSupported === undefined && !finalStateExecuted) {
+    // If languageSupported is already determined (not undefined), set finalStateExecuted immediately
+    if (languageSupported !== undefined && !finalStateExecuted) {
+      setFinalStateExecuted(true);
+    } else if (languageSupported === undefined && !finalStateExecuted) {
       let timerId = setTimeout(() => {
         setFinalStateExecuted(true);
-        console.log("Executing final state:", isReadable, languageSupported);
       }, 1000);
 
       return () => {
         clearTimeout(timerId);
         if (!finalStateExecuted) {
           setFinalStateExecuted(true);
-          console.log("Executing final state:", isReadable, languageSupported);
         }
       };
     }
   }, [languageSupported, finalStateExecuted, isReadable]);
 
   async function openModal() {
-    BROWSER_API.scripting
-      .executeScript({
+    try {
+      // Store URL for the content script to access
+      setCurrentURL(tab.url);
+
+      await BROWSER_API.scripting.executeScript({
         target: { tabId: tab.id },
         files: ["./main.js"],
-        func: setCurrentURL(tab.url),
-      })
-      .then(() => {
-        injectFontAndStyles(tab.id);
       });
+
+      await injectFontAndStyles(tab.id);
+    } catch (error) {
+      console.error("Error executing script:", error);
+      return; // Don't close window if there was an error
+    }
 
     window.close();
   }

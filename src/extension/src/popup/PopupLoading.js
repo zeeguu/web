@@ -12,5 +12,10 @@ export default function PopupLoading({ showLoader, setShowLoader }) {
     };
   }, []);
 
-  return showLoader === true ? <LoadingCircle /> : null;
+  return showLoader === true ? (
+    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '10px', padding: '20px' }}>
+      <LoadingCircle />
+      <span style={{ fontSize: '12px', color: '#666' }}>Analyzing page...</span>
+    </div>
+  ) : null;
 }
