@@ -65,7 +65,6 @@ function correctImageFormat(imgScr) {
 /*Final cleanup function */
 export function generalClean(readabilityContent) {
   let cleanContent = removeSVG(readabilityContent);
-  cleanContent = removeLinks(cleanContent);
   cleanContent = removeFigures(cleanContent);
   return cleanContent;
 }
@@ -78,38 +77,6 @@ function removeSVG(readabilityContent) {
   return div.innerHTML;
 }
 
-function removeLinks(readabilityContent) {
-  const div = document.createElement("div");
-  div.innerHTML = readabilityContent;
-  var links = div.getElementsByTagName("a");
-  while (links.length) {
-    var link = links[0];
-    var parent = link.parentNode;
-    
-    // Safety check: ensure the link has a parent
-    if (!parent) {
-      link.remove();
-      continue;
-    }
-    
-    // Move all children of the link before the link itself
-    while (link.firstChild) {
-      // Safety check: ensure the link is still a child of the parent
-      if (parent.contains(link)) {
-        parent.insertBefore(link.firstChild, link);
-      } else {
-        // If the link is no longer in the parent, just remove the child
-        link.removeChild(link.firstChild);
-      }
-    }
-    
-    // Remove the empty link element
-    if (parent.contains(link)) {
-      parent.removeChild(link);
-    }
-  }
-  return div.innerHTML;
-}
 
 function removeFigures(readabilityContent) {
   const div = document.createElement("div");
