@@ -16,6 +16,25 @@ import { ProgressProvider } from "../../contexts/ProgressContext";
 import { GlobalStyle } from "./InjectedReaderApp/InjectedReaderApp.styles";
 import { BROWSER_API } from "./utils/browserApi";
 
+// Override insertBefore to fix styled-components crashes on certain websites
+// Some sites (like fotogramas.es) dynamically modify their DOM structure, which can cause
+// styled-components' style injection to fail with "The node before which the new node is 
+// to be inserted is not a child of this node" errors. This override adds safety checks.
+const originalInsertBefore = Node.prototype.insertBefore;
+Node.prototype.insertBefore = function(newNode, referenceNode) {
+  try {
+    // Check if the reference node is actually a child of this node
+    if (referenceNode && !this.contains(referenceNode)) {
+      // If not, append instead
+      return this.appendChild(newNode);
+    }
+    return originalInsertBefore.call(this, newNode, referenceNode);
+  } catch (e) {
+    console.warn('insertBefore failed, falling back to appendChild:', e);
+    return this.appendChild(newNode);
+  }
+};
+
 export function Main({ articleData, fragmentData, sessionId: passedSessionId, url }) {
   const [article, setArticle] = useState(articleData);
   const [sessionId, setSessionId] = useState(passedSessionId);
@@ -70,7 +89,14 @@ BROWSER_API.storage.local.get(['articleData', 'fragmentData', 'sessionId', 'url'
     
     // Ensure we have a proper head element for styled-components
     if (!document.head) {
-      document.documentElement.appendChild(document.createElement('head'));
+      const head = document.createElement('head');
+      document.documentElement.insertBefore(head, document.documentElement.firstChild);
+    }
+    
+    // Ensure body exists
+    if (!document.body) {
+      const body = document.createElement('body');
+      document.documentElement.appendChild(body);
     }
     
     document.body.appendChild(div);
@@ -96,10 +122,18 @@ BROWSER_API.storage.local.get(['articleData', 'fragmentData', 'sessionId', 'url'
   deleteCurrentDOM();
   
   if (!document.head) {
-    document.documentElement.appendChild(document.createElement('head'));
+    const head = document.createElement('head');
+    document.documentElement.insertBefore(head, document.documentElement.firstChild);
+  }
+  
+  // Ensure body exists
+  if (!document.body) {
+    const body = document.createElement('body');
+    document.documentElement.appendChild(body);
   }
   
   document.body.appendChild(div);
+  
   setTimeout(() => {
     ReactDOM.render(<Main articleData={null} fragmentData={null} sessionId={null} url={url} />, div);
   }, 10);
