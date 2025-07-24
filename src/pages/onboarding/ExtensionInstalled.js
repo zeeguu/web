@@ -27,9 +27,9 @@ export default function ExtensionInstalled() {
     <PreferencesPage>
       <Header>
         <Heading>
-          Right-click anywhere on any article’s page to&nbsp;access
-          the&nbsp;Zeeguu&nbsp;
+          Right-click to&nbsp; activate the&nbsp;Zeeguu&nbsp;
           {runningInChromeDesktop() ? "extension" : "add-on"}
+          on any page containing an article.
         </Heading>
       </Header>
       <Main>
@@ -38,24 +38,15 @@ export default function ExtensionInstalled() {
       <Footer>
         <ButtonContainer className={"padding-large"}>
           {getSessionFromCookies() ? (
-            <Button
-              className={"full-width-btn"}
-              onClick={() => history.push("/articles")}
-            >
+            <Button className={"full-width-btn"} onClick={() => history.push("/articles")}>
               {strings.goToZeeguuApp}
             </Button>
           ) : (
             <>
-              <Button
-                className={"full-width-btn"}
-                onClick={() => history.push("/language_preferences")}
-              >
+              <Button className={"full-width-btn"} onClick={() => history.push("/language_preferences")}>
                 {strings.createAccount}
               </Button>
-              <Button
-                className={"full-width-btn"}
-                onClick={() => history.push("/log_in")}
-              >
+              <Button className={"full-width-btn"} onClick={() => history.push("/log_in")}>
                 {strings.login}
               </Button>
             </>
