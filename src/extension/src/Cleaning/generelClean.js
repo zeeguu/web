@@ -83,11 +83,30 @@ function removeLinks(readabilityContent) {
   div.innerHTML = readabilityContent;
   var links = div.getElementsByTagName("a");
   while (links.length) {
-    var parent = links[0].parentNode;
-    while (links[0].firstChild) {
-      parent.insertBefore(links[0].firstChild, links[0]);
+    var link = links[0];
+    var parent = link.parentNode;
+    
+    // Safety check: ensure the link has a parent
+    if (!parent) {
+      link.remove();
+      continue;
     }
-    parent.removeChild(links[0]);
+    
+    // Move all children of the link before the link itself
+    while (link.firstChild) {
+      // Safety check: ensure the link is still a child of the parent
+      if (parent.contains(link)) {
+        parent.insertBefore(link.firstChild, link);
+      } else {
+        // If the link is no longer in the parent, just remove the child
+        link.removeChild(link.firstChild);
+      }
+    }
+    
+    // Remove the empty link element
+    if (parent.contains(link)) {
+      parent.removeChild(link);
+    }
   }
   return div.innerHTML;
 }
