@@ -1,6 +1,6 @@
 /*global chrome*/
 import { useState } from "react";
-import { StyledSmallButtonBlue } from "../Modal/Buttons.styles";
+import { StyledSmallButtonBlue } from "../InjectedReaderApp/Buttons.styles";
 import { MainContainer, BottomContainer } from "./Login.styles";
 import { BROWSER_API } from "../utils/browserApi";
 

@@ -203,7 +203,7 @@ export default function TodayAudio() {
         }}
       >
         <LoadingAnimation delay={0} reportIssueDelay={60000}>
-          <p>Generating your daily lesson... This may take up to a minute</p>
+          <p>Generating your daily lesson... This may take a few minutes so feel free to go away and come back later</p>
         </LoadingAnimation>
       </div>
     );

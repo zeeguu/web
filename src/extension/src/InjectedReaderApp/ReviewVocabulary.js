@@ -3,7 +3,7 @@ import useUILanguage from "../../../assorted/hooks/uiLanguageHook";
 import { StyledPrimaryButton } from "./Buttons.styles";
 import NavigateNextIcon from "@mui/icons-material/NavigateNext";
 import { BROWSER_API } from "../utils/browserApi";
-import { CenteredContent } from "./Modal.styles";
+import { CenteredContent } from "./InjectedReaderApp.styles";
 
 export default function ReviewVocabulary({ openReview }) {
   useUILanguage();
