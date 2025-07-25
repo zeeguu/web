@@ -88,6 +88,23 @@ export default function ArticleReader({ teacherArticleID }) {
     // It can happen that the timer already ticks before we have a reading session from the server.
     if (readingSessionIdRef.current) {
       api.readingSessionUpdate(readingSessionIdRef.current, activityTimerRef.current);
+      
+      // Send periodic SCROLL events with accumulated scroll data
+      if (scrollEvents.current && scrollEvents.current.length > 0 && articleID && articleInfo) {
+        console.log('📊 Sending periodic SCROLL event:', {
+          articleID,
+          scrollEventsCount: scrollEvents.current.length,
+          scrollData: scrollEvents.current.slice(0, 5) // Show first 5 entries
+        });
+        api.logUserActivity(
+          api.SCROLL,
+          articleID,
+          scrollEvents.current.length,
+          JSON.stringify(scrollEvents.current).slice(0, 4096),
+          articleInfo.source_id
+        );
+        // Keep the events for the final scroll event too
+      }
     }
   }
 
@@ -232,12 +249,15 @@ export default function ArticleReader({ teacherArticleID }) {
 
   function componentWillUnmount() {
     uploadActivity();
-    api.logUserActivity(
-      api.SCROLL,
-      articleID,
-      viewPortSettingsRef.current,
-      JSON.stringify(scrollEvents.current).slice(0, 4096),
-    );
+    if (articleInfo) {
+      api.logUserActivity(
+        api.SCROLL,
+        articleID,
+        viewPortSettingsRef.current,
+        JSON.stringify(scrollEvents.current).slice(0, 4096),
+        articleInfo.source_id
+      );
+    }
     api.logUserActivity(api.ARTICLE_CLOSED, articleID, "", WEB_READER);
     window.removeEventListener("focus", handleFocus);
     window.removeEventListener("blur", handleBlur);

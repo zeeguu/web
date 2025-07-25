@@ -81,11 +81,29 @@ export function InjectedReaderApp({ modalIsOpen, setModalIsOpen, api, url, autho
   const readingSessionIdRef = useShadowRef(readingSessionId);
 
   function uploadActivity() {
-    if (readingSessionIdRef.current)
+    if (readingSessionIdRef.current) {
       api.readingSessionUpdate(
         readingSessionIdRef.current,
         activeSessionDurationRef.current
       );
+      
+      // Send periodic SCROLL events with accumulated scroll data
+      if (scrollEvents.current && scrollEvents.current.length > 0 && articleID && articleInfo) {
+        console.log('📊 Sending periodic SCROLL event:', {
+          articleID,
+          scrollEventsCount: scrollEvents.current.length,
+          scrollData: scrollEvents.current.slice(0, 5) // Show first 5 entries
+        });
+        api.logUserActivity(
+          api.SCROLL,
+          articleID,
+          scrollEvents.current.length,
+          JSON.stringify(scrollEvents.current).slice(0, 4096),
+          articleInfo.source_id
+        );
+        // Keep the events for the final scroll event too
+      }
+    }
   }
 
   function updateBookmarks() {
@@ -334,7 +352,7 @@ export function InjectedReaderApp({ modalIsOpen, setModalIsOpen, api, url, autho
       articleID,
       scrollEvents.current.length,
       JSON.stringify(scrollEvents.current).slice(0, 4096),
-      EXTENSION_SOURCE
+      articleInfo.source_id
     );
     api.logUserActivity(api.ARTICLE_CLOSED, articleID, "", EXTENSION_SOURCE);
     window.removeEventListener("focus", logFocus);
