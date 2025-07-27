@@ -7,7 +7,7 @@ import InteractiveText from "../../../reader/InteractiveText.js";
 import { TranslatableText } from "../../../reader/TranslatableText.js";
 import { SpeechContext } from "../../../contexts/SpeechContext.js";
 import BottomInput from "../BottomInput.js";
-import BookmarkProgressBar from "../../progressBars/BookmarkProgressBar.js";
+import WordProgressBar from "../../progressBars/WordProgressBar.js";
 import { removePunctuation } from "../../../utils/text/preprocessing";
 import { APIContext } from "../../../contexts/APIContext.js";
 
