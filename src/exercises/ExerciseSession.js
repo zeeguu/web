@@ -34,6 +34,7 @@ import useSubSessionTimer from "../hooks/useSubSessionTimer";
 import { APIContext } from "../contexts/APIContext";
 import isEmptyDictionary from "../utils/misc/isEmptyDictionary";
 import BookmarkProgressBar from "./progressBars/BookmarkProgressBar";
+import { getExerciseTypeName } from "./exerciseTypes/exerciseTypeNames";
 
 const BOOKMARKS_DUE_REVIEW = false;
 
@@ -385,6 +386,27 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
     />
   );
 
+  // Create shareable URL for current exercise
+  const createShareableUrl = () => {
+    if (!selectedExerciseBookmark || !currentExerciseType) return "";
+    
+    const exerciseTypeName = getExerciseTypeName(currentExerciseType);
+    const encodedWord = encodeURIComponent(selectedExerciseBookmark.from);
+    const encodedTranslation = encodeURIComponent(selectedExerciseBookmark.to);
+    const encodedContext = encodeURIComponent(selectedExerciseBookmark.context);
+    const encodedTokenized = encodeURIComponent(JSON.stringify(selectedExerciseBookmark.context_tokenized));
+    
+    console.log("Creating permalink:", {
+      exerciseTypeName,
+      word: selectedExerciseBookmark.from,
+      translation: selectedExerciseBookmark.to,
+      context: selectedExerciseBookmark.context,
+      tokenized: selectedExerciseBookmark.context_tokenized
+    });
+    
+    return `${window.location.origin}/exercise-test/${exerciseTypeName}/${encodedWord}/${encodedTranslation}/${encodedContext}/${encodedTokenized}`;
+  };
+
   return (
     <NarrowColumn>
       <s.ExercisesColumn>
@@ -458,6 +480,24 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
           <p>
             You are practicing words from: <a href={articleURL}>{articleTitle}</a>
           </p>
+        )}
+        {selectedExerciseBookmark && currentExerciseType && window.location.hostname === "localhost" && (
+          <div style={{ marginTop: "1rem", fontSize: "small", color: "grey" }}>
+            <a href={createShareableUrl()} target="_blank" rel="noopener noreferrer">
+              permalink
+            </a>
+          </div>
+        )}
+        {currentExerciseType && window.location.hostname === "localhost" && (
+          <div style={{ 
+            marginTop: "2rem", 
+            textAlign: "center", 
+            fontSize: "0.75rem", 
+            color: "#999",
+            opacity: 0.8
+          }}>
+            {getExerciseTypeName(currentExerciseType)}
+          </div>
         )}
       </s.ExercisesColumn>
     </NarrowColumn>

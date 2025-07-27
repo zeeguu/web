@@ -25,6 +25,7 @@ import ExercisesForArticle from "./exercises/ExercisesForArticle";
 import { WEB_READER } from "./reader/ArticleReader";
 import VideoPlayer from "./videos/VideoPlayer";
 import DailyAudioRouter from "./dailyAudio/_DailyAudioRouter";
+import ExerciseTest from "./pages/ExerciseTest";
 
 export default function MainAppRouter({ hasExtension, handleSuccessfulLogIn }) {
   return (
@@ -64,6 +65,9 @@ export default function MainAppRouter({ hasExtension, handleSuccessfulLogIn }) {
         component={ExercisesForArticle}
         source={WEB_READER}
       />
+      <PrivateRouteWithMainNav path="/exercise-test/:exerciseType/:word/:translation/:context/:tokenized" component={ExerciseTest} />
+      <PrivateRouteWithMainNav path="/exercise-test/:exerciseType/:word/:translation/:context" component={ExerciseTest} />
+      <PrivateRouteWithMainNav path="/exercise-test" component={ExerciseTest} />
       <Route path="*" component={NotFound} />
     </Switch>
   );
