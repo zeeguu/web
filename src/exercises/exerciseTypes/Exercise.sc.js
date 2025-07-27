@@ -389,6 +389,10 @@ let BottomRowSmallTopMargin = styled.div`
   justify-content: space-around;
   margin-bottom: 0.5em;
 
+  @media (max-width: 768px) {
+    margin-bottom: 1.5em;
+  }
+
   @media (max-width: 430px) {
     flex-flow: row wrap;
   }
