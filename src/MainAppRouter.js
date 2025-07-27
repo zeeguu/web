@@ -65,6 +65,7 @@ export default function MainAppRouter({ hasExtension, handleSuccessfulLogIn }) {
         component={ExercisesForArticle}
         source={WEB_READER}
       />
+      <PrivateRouteWithMainNav path="/exercise/:exerciseType/:bookmarkId" component={ExerciseTest} />
       <PrivateRouteWithMainNav path="/exercise-test/:exerciseType/:bookmarkId" component={ExerciseTest} />
       <PrivateRouteWithMainNav path="/exercise-test/:exerciseType/:word/:translation/:context/:tokenized" component={ExerciseTest} />
       <PrivateRouteWithMainNav path="/exercise-test/:exerciseType/:word/:translation/:context" component={ExerciseTest} />

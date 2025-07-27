@@ -260,17 +260,17 @@ export default function ExerciseTest() {
           <h3>Test Examples:</h3>
           <ul>
             <li>
-              <a href="http://localhost:3000/exercise-test/TranslateL2toL1/123">
+              <a href="http://localhost:3000/exercise/TranslateL2toL1/123">
                 Single bookmark: TranslateL2toL1 with bookmark ID 123
               </a>
             </li>
             <li>
-              <a href="http://localhost:3000/exercise-test/Match/123,456,789">
+              <a href="http://localhost:3000/exercise/Match/123,456,789">
                 Multiple bookmarks: Match with bookmark IDs 123,456,789
               </a>
             </li>
             <li>
-              <a href="http://localhost:3000/exercise-test/MultipleChoice/456">
+              <a href="http://localhost:3000/exercise/MultipleChoice/456">
                 Single bookmark: MultipleChoice with bookmark ID 456
               </a>
             </li>

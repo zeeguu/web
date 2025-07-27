@@ -400,7 +400,7 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
         bookmarkIds,
         bookmarks: currentBookmarksToStudy.length
       });
-      return `${window.location.origin}/exercise-test/${exerciseTypeName}/${bookmarkIds}`;
+      return `${window.location.origin}/exercise/${exerciseTypeName}/${bookmarkIds}`;
     }
     
     // For single bookmark exercises
@@ -413,7 +413,7 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
       translation: selectedExerciseBookmark.to
     });
     
-    return `${window.location.origin}/exercise-test/${exerciseTypeName}/${bookmarkId}`;
+    return `${window.location.origin}/exercise/${exerciseTypeName}/${bookmarkId}`;
   };
 
   return (
