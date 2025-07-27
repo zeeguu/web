@@ -5,6 +5,8 @@ import strings from "../../i18n/definitions";
 import { PageTitle } from "../../components/PageTitle";
 import SettingsItem from "./settings_pages_shared/SettingsItem";
 import ListOfSettingsItems from "./settings_pages_shared/ListOfSettingsItems";
+import LogOutButton from "./LogOutButton";
+import ButtonContainer from "../_pages_shared/ButtonContainer.sc";
 
 import * as s from "./Settings.sc";
 
@@ -47,6 +49,10 @@ export default function Settings() {
       <ListOfSettingsItems header={strings.accountManagement}>
         <SettingsItem path={"/account_settings/delete_account"}>{strings.deleteAccount}</SettingsItem>
       </ListOfSettingsItems>
+
+      <ButtonContainer className={"adaptive-alignment-horizontal"} style={{marginTop: "1em", marginBottom: "3em"}}>
+        <LogOutButton />
+      </ButtonContainer>
     </s.StyledWrapper>
   );
 }

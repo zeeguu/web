@@ -19,7 +19,6 @@ import Main from "../_pages_shared/Main.sc";
 import BackArrow from "./settings_pages_shared/BackArrow";
 import FullWidthErrorMsg from "../../components/FullWidthErrorMsg.sc";
 import LoadingAnimation from "../../components/LoadingAnimation";
-import LogOutButton from "./LogOutButton";
 import useFormField from "../../hooks/useFormField";
 import { EmailValidator, NonEmptyValidator } from "../../utils/ValidatorRule/Validator";
 import validateRules from "../../assorted/validateRules";
@@ -139,9 +138,6 @@ export default function ProfileDetails() {
             </Button>
           </ButtonContainer>
         </Form>
-        <ButtonContainer className={"adaptive-alignment-horizontal"}>
-          <LogOutButton />
-        </ButtonContainer>
       </Main>
     </PreferencesPage>
   );
