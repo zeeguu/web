@@ -1,5 +1,4 @@
-import { useCallback, useContext, useEffect, useState } from "react";
-import { useHistory } from "react-router-dom";
+import { useContext, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
 import Congratulations from "./Congratulations";
@@ -43,7 +42,6 @@ const BOOKMARKS_DUE_REVIEW = false;
 export default function ExerciseSession({ articleID, backButtonAction, toScheduledExercises, source }) {
   const api = useContext(APIContext);
   const speech = useContext(SpeechContext);
-  const history = useHistory();
 
   const [hasKeptExercising, setHasKeptExercising] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -220,65 +218,6 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
     }
   }, [isOutOfWordsToday]);
 
-  // Update the browser URL to reflect the current exercise state
-  const updateURLForCurrentExercise = useCallback(() => {
-    if (!currentExerciseType) return;
-
-    const exerciseTypeName = getExerciseTypeName(currentExerciseType);
-    console.log("updateURLForCurrentExercise called:", {
-      currentExerciseType,
-      exerciseTypeName,
-      selectedBookmarkId: selectedExerciseBookmark?.id,
-      bookmarksCount: currentBookmarksToStudy?.length,
-    });
-
-    // Check if this is actually a Match exercise
-    if (exerciseTypeName === "Match") {
-      // For Match exercises, include all bookmark IDs
-      if (currentBookmarksToStudy && currentBookmarksToStudy.length > 1) {
-        const bookmarkIds = currentBookmarksToStudy.map((b) => b.id).join(",");
-        const newUrl = `/exercises/${exerciseTypeName}/${bookmarkIds}`;
-        if (window.location.pathname !== newUrl) {
-          history.replace(newUrl);
-          console.log("Updated URL for Match exercise:", exerciseTypeName, bookmarkIds);
-        }
-      } else {
-        console.log("Match exercise but insufficient bookmarks:", currentBookmarksToStudy?.length);
-      }
-    } else {
-      // For all non-Match exercises, ALWAYS use single bookmark ID from selectedExerciseBookmark
-      if (selectedExerciseBookmark) {
-        const bookmarkId = selectedExerciseBookmark.id;
-        const newUrl = `/exercises/${exerciseTypeName}/${bookmarkId}`;
-        if (window.location.pathname !== newUrl) {
-          history.replace(newUrl);
-          console.log(
-            "Updated URL for single bookmark exercise:",
-            exerciseTypeName,
-            bookmarkId,
-            "from",
-            currentBookmarksToStudy?.length,
-            "available bookmarks",
-          );
-        }
-      } else {
-        console.log("Non-Match exercise but no selectedExerciseBookmark:", exerciseTypeName);
-      }
-    }
-  }, [currentExerciseType, selectedExerciseBookmark, currentBookmarksToStudy, history]);
-
-  // Update URL when exercise type or bookmarks change
-  useEffect(() => {
-    console.log("URL Update useEffect triggered:", {
-      currentExerciseType: currentExerciseType ? getExerciseTypeName(currentExerciseType) : null,
-      selectedExerciseBookmark: selectedExerciseBookmark?.id,
-      currentBookmarksToStudy: currentBookmarksToStudy?.length,
-    });
-
-    if (currentExerciseType && currentBookmarksToStudy) {
-      updateURLForCurrentExercise();
-    }
-  }, [currentExerciseType, selectedExerciseBookmark, currentBookmarksToStudy, updateURLForCurrentExercise]);
 
   // Standard flow when user completes exercise session
   if (finished) {
@@ -307,11 +246,6 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
   }
 
   if (isOutOfWordsToday) {
-    // Update URL for out of words state
-    if (window.location.pathname !== "/exercises/no-words") {
-      history.replace("/exercises/no-words");
-      console.log("No more words available - navigated to no-words page");
-    }
     return <OutOfWordsMessage goBackAction={backButtonAction} />;
   }
   if (!currentBookmarksToStudy || !fullExerciseProgression) {
@@ -330,9 +264,6 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
 
     if (newIndex === fullExerciseProgression.length) {
       setFinished(true);
-      // Update URL to show summary page
-      history.replace("/exercises/summary");
-      console.log("Exercise session completed - navigated to summary");
       api.getCountOfBookmarksRecommendedForPractice((bookmarkCount) => {
         setIsOutOfWordsToday(bookmarkCount === 0);
       });
@@ -345,8 +276,6 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
     setCurrentIndex(newIndex);
 
     api.updateExerciseSession(dbExerciseSessionId, activeSessionDuration);
-
-    // URL will be updated by useEffect when the new exercise component sets its type
   }
 
   let correctBookmarksCopy = [...correctBookmarks];

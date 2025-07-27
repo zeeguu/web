@@ -345,6 +345,7 @@ export default function ExerciseTest() {
                 toggleShow={() => {}}
                 isCorrect={isCorrect}
                 isExerciseOver={isExerciseOver}
+                nextButtonText="Reset"
               />
             </s.ExForm>
             <div style={{ 
