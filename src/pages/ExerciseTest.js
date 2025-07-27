@@ -177,27 +177,39 @@ export default function ExerciseTest() {
     return createBookmarkFromUrl(decodedWord, decodedTranslation, decodedContext);
   }, [bookmarkData, decodedWord, decodedTranslation, decodedContext, tokenized]);
 
-  // For exercises that need multiple bookmarks (like Match)
+  // For exercises that need multiple bookmarks (like Match or MultipleChoiceL2toL1)
   const multipleBookmarks = useMemo(() => {
     // If we have multiple bookmarks from API, use those
     if (bookmarkData && Array.isArray(bookmarkData)) {
       return bookmarkData;
     }
     
-    // Fall back to creating multiple bookmarks (legacy behavior)
+    // Fall back to creating multiple bookmarks with different translations
+    // For MultipleChoiceL2toL1, we need bookmarks with different 'to' values
+    if (exerciseType === "MultipleChoiceL2toL1" && bookmark) {
+      return [
+        bookmark,
+        { ...bookmark, id: (bookmark.id || 1) + 1, to: "wrong_option_1" },
+        { ...bookmark, id: (bookmark.id || 1) + 2, to: "wrong_option_2" }
+      ];
+    }
+    
+    // For Match exercises, create different bookmarks entirely
     return [
       bookmark,
       createBookmarkFromUrl("car", "coche", "I drive my car to work every day."),
       createBookmarkFromUrl("book", "libro", "She is reading a good book.")
     ];
-  }, [bookmarkData, bookmark]);
+  }, [bookmarkData, bookmark, exerciseType]);
 
   const ExerciseComponent = EXERCISE_COMPONENTS[exerciseType];
 
-  const notifyCorrectAnswer = (bookmark) => {
-    console.log("Correct answer for:", bookmark);
+  const notifyCorrectAnswer = (bookmark, endExercise = true) => {
+    console.log("Correct answer for:", bookmark, "endExercise:", endExercise);
     setIsCorrect(true);
-    setIsExerciseOver(true);
+    if (endExercise) {
+      setIsExerciseOver(true);
+    }
     setMessage("CORRECT");
   };
 
@@ -286,7 +298,9 @@ export default function ExerciseTest() {
   }
 
   // Determine which bookmark set to use
-  const bookmarksToUse = exerciseType === "Match" ? multipleBookmarks : [bookmark];
+  const bookmarksToUse = (exerciseType === "Match" || exerciseType === "MultipleChoiceL2toL1") 
+    ? multipleBookmarks 
+    : [bookmark];
 
   return (
     <APIContext.Provider value={mockApi}>
@@ -297,6 +311,7 @@ export default function ExerciseTest() {
               <ExerciseComponent
                 bookmarksToStudy={bookmarksToUse}
                 selectedExerciseBookmark={bookmark}
+                exerciseMessageToAPI={exerciseMessageToAPI[bookmark?.id] || ""}
                 notifyCorrectAnswer={notifyCorrectAnswer}
                 notifyExerciseCompleted={notifyExerciseCompleted}
                 notifyIncorrectAnswer={notifyIncorrectAnswer}

@@ -1,5 +1,6 @@
-import { useContext, useEffect, useState, useCallback } from "react";
+import { useCallback, useContext, useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
+import { toast } from "react-toastify";
 
 import Congratulations from "./Congratulations";
 import ExerciseSessionProgressBar from "./ExerciseSessionProgressBar";
@@ -222,20 +223,20 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
   // Update the browser URL to reflect the current exercise state
   const updateURLForCurrentExercise = useCallback(() => {
     if (!currentExerciseType) return;
-    
+
     const exerciseTypeName = getExerciseTypeName(currentExerciseType);
     console.log("updateURLForCurrentExercise called:", {
       currentExerciseType,
       exerciseTypeName,
       selectedBookmarkId: selectedExerciseBookmark?.id,
-      bookmarksCount: currentBookmarksToStudy?.length
+      bookmarksCount: currentBookmarksToStudy?.length,
     });
-    
+
     // Check if this is actually a Match exercise
     if (exerciseTypeName === "Match") {
       // For Match exercises, include all bookmark IDs
       if (currentBookmarksToStudy && currentBookmarksToStudy.length > 1) {
-        const bookmarkIds = currentBookmarksToStudy.map(b => b.id).join(',');
+        const bookmarkIds = currentBookmarksToStudy.map((b) => b.id).join(",");
         const newUrl = `/exercises/${exerciseTypeName}/${bookmarkIds}`;
         if (window.location.pathname !== newUrl) {
           history.replace(newUrl);
@@ -251,7 +252,14 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
         const newUrl = `/exercises/${exerciseTypeName}/${bookmarkId}`;
         if (window.location.pathname !== newUrl) {
           history.replace(newUrl);
-          console.log("Updated URL for single bookmark exercise:", exerciseTypeName, bookmarkId, "from", currentBookmarksToStudy?.length, "available bookmarks");
+          console.log(
+            "Updated URL for single bookmark exercise:",
+            exerciseTypeName,
+            bookmarkId,
+            "from",
+            currentBookmarksToStudy?.length,
+            "available bookmarks",
+          );
         }
       } else {
         console.log("Non-Match exercise but no selectedExerciseBookmark:", exerciseTypeName);
@@ -264,9 +272,9 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
     console.log("URL Update useEffect triggered:", {
       currentExerciseType: currentExerciseType ? getExerciseTypeName(currentExerciseType) : null,
       selectedExerciseBookmark: selectedExerciseBookmark?.id,
-      currentBookmarksToStudy: currentBookmarksToStudy?.length
+      currentBookmarksToStudy: currentBookmarksToStudy?.length,
     });
-    
+
     if (currentExerciseType && currentBookmarksToStudy) {
       updateURLForCurrentExercise();
     }
@@ -300,8 +308,8 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
 
   if (isOutOfWordsToday) {
     // Update URL for out of words state
-    if (window.location.pathname !== '/exercises/no-words') {
-      history.replace('/exercises/no-words');
+    if (window.location.pathname !== "/exercises/no-words") {
+      history.replace("/exercises/no-words");
       console.log("No more words available - navigated to no-words page");
     }
     return <OutOfWordsMessage goBackAction={backButtonAction} />;
@@ -323,7 +331,7 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
     if (newIndex === fullExerciseProgression.length) {
       setFinished(true);
       // Update URL to show summary page
-      history.replace('/exercises/summary');
+      history.replace("/exercises/summary");
       console.log("Exercise session completed - navigated to summary");
       api.getCountOfBookmarksRecommendedForPractice((bookmarkCount) => {
         setIsOutOfWordsToday(bookmarkCount === 0);
@@ -337,7 +345,7 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
     setCurrentIndex(newIndex);
 
     api.updateExerciseSession(dbExerciseSessionId, activeSessionDuration);
-    
+
     // URL will be updated by useEffect when the new exercise component sets its type
   }
 
@@ -454,20 +462,20 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
   // Create shareable URL for current exercise
   const createShareableUrl = () => {
     if (!currentExerciseType) return "";
-    
+
     const exerciseTypeName = getExerciseTypeName(currentExerciseType);
-    
+
     // For Match exercises, include all bookmark IDs
     if (exerciseTypeName === "Match" && currentBookmarksToStudy && currentBookmarksToStudy.length > 1) {
-      const bookmarkIds = currentBookmarksToStudy.map(b => b.id).join(',');
+      const bookmarkIds = currentBookmarksToStudy.map((b) => b.id).join(",");
       console.log("Creating Match permalink:", {
         exerciseTypeName,
         bookmarkIds,
-        bookmarks: currentBookmarksToStudy.length
+        bookmarks: currentBookmarksToStudy.length,
       });
       return `${window.location.origin}/exercise/${exerciseTypeName}/${bookmarkIds}`;
     }
-    
+
     // For single bookmark exercises
     if (!selectedExerciseBookmark) return "";
     const bookmarkId = selectedExerciseBookmark.id;
@@ -475,9 +483,9 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
       exerciseTypeName,
       bookmarkId,
       word: selectedExerciseBookmark.from,
-      translation: selectedExerciseBookmark.to
+      translation: selectedExerciseBookmark.to,
     });
-    
+
     return `${window.location.origin}/exercise/${exerciseTypeName}/${bookmarkId}`;
   };
 
@@ -557,9 +565,29 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
         )}
         {currentExerciseType && window.location.hostname === "localhost" && (selectedExerciseBookmark || (currentExerciseType === EXERCISE_TYPES.match && currentBookmarksToStudy && currentBookmarksToStudy.length > 0)) && (
           <div style={{ marginTop: "1rem", fontSize: "small", color: "grey" }}>
-            <a href={createShareableUrl()} target="_blank" rel="noopener noreferrer">
-              permalink
-            </a>
+            <button 
+              style={{ 
+                background: "none", 
+                border: "none", 
+                color: "grey", 
+                fontSize: "small", 
+                textDecoration: "underline", 
+                cursor: "pointer",
+                padding: 0
+              }}
+              onClick={() => {
+                const url = createShareableUrl();
+                navigator.clipboard.writeText(url).then(() => {
+                  console.log("Copied to clipboard:", url);
+                  toast.success("Exercise link copied to clipboard!");
+                }).catch(err => {
+                  console.error("Failed to copy to clipboard:", err);
+                  toast.error("Failed to copy link to clipboard");
+                });
+              }}
+            >
+              share this exercise
+            </button>
           </div>
         )}
         {currentExerciseType && window.location.hostname === "localhost" && (

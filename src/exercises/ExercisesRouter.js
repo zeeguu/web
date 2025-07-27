@@ -45,14 +45,6 @@ export default function ExercisesRouter() {
           source={WEB_READER}
         />
         <PrivateRoute
-          path="/exercises/:exerciseType/:bookmarkId"
-          component={ExerciseSession}
-          backButtonAction={backToReadingAction}
-          keepExercisingAction={keepExercisingAction}
-          toScheduledExercises={toScheduledExercises}
-          source={WEB_READER}
-        />
-        <PrivateRoute
           path="/exercises"
           component={ExerciseSession}
           backButtonAction={backToReadingAction}
