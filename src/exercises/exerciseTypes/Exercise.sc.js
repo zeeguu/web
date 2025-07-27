@@ -132,7 +132,7 @@ const Exercise = styled.div`
       margin-top: 0.5em;
       margin-left: 0.5em;
       margin-right: 0.5em;
-      font-size: 1.1em;
+      font-size: 1.2em;
     }
 
     .bottomInput {
