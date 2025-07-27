@@ -388,11 +388,24 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
 
   // Create shareable URL for current exercise
   const createShareableUrl = () => {
-    if (!selectedExerciseBookmark || !currentExerciseType) return "";
+    if (!currentExerciseType) return "";
     
     const exerciseTypeName = getExerciseTypeName(currentExerciseType);
-    const bookmarkId = selectedExerciseBookmark.id;
     
+    // For Match exercises, include all bookmark IDs
+    if (exerciseTypeName === "Match" && currentBookmarksToStudy && currentBookmarksToStudy.length > 1) {
+      const bookmarkIds = currentBookmarksToStudy.map(b => b.id).join(',');
+      console.log("Creating Match permalink:", {
+        exerciseTypeName,
+        bookmarkIds,
+        bookmarks: currentBookmarksToStudy.length
+      });
+      return `${window.location.origin}/exercise-test/${exerciseTypeName}/${bookmarkIds}`;
+    }
+    
+    // For single bookmark exercises
+    if (!selectedExerciseBookmark) return "";
+    const bookmarkId = selectedExerciseBookmark.id;
     console.log("Creating permalink:", {
       exerciseTypeName,
       bookmarkId,
@@ -477,7 +490,7 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
             You are practicing words from: <a href={articleURL}>{articleTitle}</a>
           </p>
         )}
-        {selectedExerciseBookmark && currentExerciseType && window.location.hostname === "localhost" && (
+        {currentExerciseType && window.location.hostname === "localhost" && (selectedExerciseBookmark || (currentExerciseType === EXERCISE_TYPES.match && currentBookmarksToStudy && currentBookmarksToStudy.length > 0)) && (
           <div style={{ marginTop: "1rem", fontSize: "small", color: "grey" }}>
             <a href={createShareableUrl()} target="_blank" rel="noopener noreferrer">
               permalink

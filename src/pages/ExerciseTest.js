@@ -108,11 +108,33 @@ export default function ExerciseTest() {
   useEffect(() => {
     if (bookmarkId && api) {
       setLoading(true);
-      api.getBookmarkWithContext(bookmarkId, (data) => {
-        console.log("Fetched bookmark data:", data);
-        setBookmarkData(data);
-        setLoading(false);
-      });
+      
+      // Check if bookmarkId contains multiple IDs (comma-separated for Match exercises)
+      if (bookmarkId.includes(',')) {
+        const bookmarkIds = bookmarkId.split(',');
+        let fetchedBookmarks = [];
+        let fetchCount = 0;
+        
+        bookmarkIds.forEach((id, index) => {
+          api.getBookmarkWithContext(id.trim(), (data) => {
+            fetchedBookmarks[index] = data;
+            fetchCount++;
+            
+            if (fetchCount === bookmarkIds.length) {
+              console.log("Fetched multiple bookmark data:", fetchedBookmarks);
+              setBookmarkData(fetchedBookmarks);
+              setLoading(false);
+            }
+          });
+        });
+      } else {
+        // Single bookmark
+        api.getBookmarkWithContext(bookmarkId, (data) => {
+          console.log("Fetched bookmark data:", data);
+          setBookmarkData(data);
+          setLoading(false);
+        });
+      }
     }
   }, [bookmarkId, api]);
 
@@ -125,7 +147,8 @@ export default function ExerciseTest() {
   const bookmark = useMemo(() => {
     // If we have bookmark data from API, use that
     if (bookmarkData) {
-      return bookmarkData;
+      // If it's an array (multiple bookmarks for Match), return the first one as primary
+      return Array.isArray(bookmarkData) ? bookmarkData[0] : bookmarkData;
     }
     
     // Fall back to URL-based data
@@ -155,11 +178,19 @@ export default function ExerciseTest() {
   }, [bookmarkData, decodedWord, decodedTranslation, decodedContext, tokenized]);
 
   // For exercises that need multiple bookmarks (like Match)
-  const multipleBookmarks = useMemo(() => [
-    bookmark,
-    createBookmarkFromUrl("car", "coche", "I drive my car to work every day."),
-    createBookmarkFromUrl("book", "libro", "She is reading a good book.")
-  ], [bookmark]);
+  const multipleBookmarks = useMemo(() => {
+    // If we have multiple bookmarks from API, use those
+    if (bookmarkData && Array.isArray(bookmarkData)) {
+      return bookmarkData;
+    }
+    
+    // Fall back to creating multiple bookmarks (legacy behavior)
+    return [
+      bookmark,
+      createBookmarkFromUrl("car", "coche", "I drive my car to work every day."),
+      createBookmarkFromUrl("book", "libro", "She is reading a good book.")
+    ];
+  }, [bookmarkData, bookmark]);
 
   const ExerciseComponent = EXERCISE_COMPONENTS[exerciseType];
 
@@ -230,12 +261,17 @@ export default function ExerciseTest() {
           <ul>
             <li>
               <a href="http://localhost:3000/exercise-test/TranslateL2toL1/123">
-                New format: TranslateL2toL1 with bookmark ID 123
+                Single bookmark: TranslateL2toL1 with bookmark ID 123
+              </a>
+            </li>
+            <li>
+              <a href="http://localhost:3000/exercise-test/Match/123,456,789">
+                Multiple bookmarks: Match with bookmark IDs 123,456,789
               </a>
             </li>
             <li>
               <a href="http://localhost:3000/exercise-test/MultipleChoice/456">
-                New format: MultipleChoice with bookmark ID 456
+                Single bookmark: MultipleChoice with bookmark ID 456
               </a>
             </li>
             <li>
