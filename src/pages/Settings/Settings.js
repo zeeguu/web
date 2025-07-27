@@ -34,7 +34,7 @@ export default function Settings() {
       </ListOfSettingsItems>
 
       <ListOfSettingsItems header={strings.exercises}>
-        <SettingsItem path={"/account_settings/exercise_types"}>Exercise Types</SettingsItem>
+        <SettingsItem path={"/account_settings/exercise_types"}>Audio & Pronunciation</SettingsItem>
         <SettingsItem path={"/account_settings/exercise_scheduling"}>Scheduling</SettingsItem>
       </ListOfSettingsItems>
 

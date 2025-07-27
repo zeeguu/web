@@ -25,13 +25,12 @@ export default function ExerciseTypePreferences() {
   const history = useHistory();
 
   const [audioExercises, setAudioExercises] = useState(true);
-  let preferenceNotSet =
-    LocalStorage.getProductiveExercisesEnabled() === undefined;
+  let preferenceNotSet = LocalStorage.getProductiveExercisesEnabled() === undefined;
 
   const [productiveExercises, setProductiveExercises] = useState(
     preferenceNotSet || LocalStorage.getProductiveExercisesEnabled(),
   );
-  
+
   const [autoPronounceBookmark, autoPronounceString, toggleAutoPronounceState] = useBookmarkAutoPronounce();
 
   useEffect(() => {
@@ -41,8 +40,7 @@ export default function ExerciseTypePreferences() {
   useEffect(() => {
     api.getUserPreferences((preferences) => {
       setAudioExercises(
-        (preferences["audio_exercises"] === undefined ||
-          preferences["audio_exercises"] === "true") &&
+        (preferences["audio_exercises"] === undefined || preferences["audio_exercises"] === "true") &&
           SessionStorage.isAudioExercisesEnabled(),
       );
     });
@@ -58,10 +56,7 @@ export default function ExerciseTypePreferences() {
 
     // Update local storage
     const newProductiveValue = !productiveExercises;
-    localStorage.setItem(
-      "productiveExercisesEnabled",
-      JSON.stringify(newProductiveValue),
-    );
+    localStorage.setItem("productiveExercisesEnabled", JSON.stringify(newProductiveValue));
   }
 
   function handleSave(e) {
@@ -87,12 +82,7 @@ export default function ExerciseTypePreferences() {
             <Checkbox
               id="audio-exercises-checkbox"
               label={
-                <>
-                  Include Audio Exercises{" "}
-                  {SessionStorage.isAudioExercisesEnabled()
-                    ? ""
-                    : "(Temporaly Disabled)"}
-                </>
+                <>Include audio exercises {SessionStorage.isAudioExercisesEnabled() ? "" : "(Temporaly Disabled)"}</>
               }
               checked={audioExercises}
               onChange={handleAudioExercisesChange}

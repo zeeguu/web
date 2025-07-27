@@ -566,7 +566,7 @@ let strings = new LocalizedStrings(
       profileDetails: "Profile Details",
       languageSettings: "Language Settings",
       myClassrooms: "My Classrooms",
-      exerciseTypePreferences: "Exercise Type Preferences",
+      exerciseTypePreferences: "Exercise Audio & Pronunciation",
 
       deleteAccount: "Delete Account",
 

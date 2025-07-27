@@ -63,7 +63,7 @@ export default function ExerciseSchedulingPreferences() {
     <PreferencesPage layoutVariant={"minimalistic-top-aligned"}>
       <BackArrow />
       <Header withoutLogo>
-        <Heading>Exercise Scheduling Preferences</Heading>
+        <Heading>Exercise Scheduling</Heading>
       </Header>
       <Main>
         <Form>
