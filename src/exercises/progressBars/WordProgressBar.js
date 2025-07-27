@@ -5,7 +5,7 @@ import LevelIndicator from "./levelIndicator/LevelIndicator.js";
 import {WordProgressWrapper} from "./levelIndicator/LevelIndicator.sc.js";
 import LearningCycleIndicator from "./LearningCycleIndicator.js";
 
-export default function BookmarkProgressBar({
+export default function WordProgressBar({
   bookmark,
   message,
   isGreyedOutBar,

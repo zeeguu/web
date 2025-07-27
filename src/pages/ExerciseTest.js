@@ -4,7 +4,7 @@ import { SpeechContext } from "../contexts/SpeechContext";
 import { APIContext } from "../contexts/APIContext";
 import { NarrowColumn } from "../components/ColumnWidth.sc";
 import { PrivateRouteWithMainNav } from "../PrivateRouteWithMainNav";
-import BookmarkProgressBar from "../exercises/progressBars/BookmarkProgressBar";
+import WordProgressBar from "../exercises/progressBars/WordProgressBar";
 import * as s from "../exercises/Exercises.sc";
 
 // Import all exercise components
@@ -321,7 +321,7 @@ export default function ExerciseTest() {
                 moveToNextExercise={() => {}}
                 bookmarkProgressBar={
                   isExerciseOver ? (
-                    <BookmarkProgressBar bookmark={bookmark} message={message} isGreyedOutBar={false} />
+                    <WordProgressBar bookmark={bookmark} message={message} isGreyedOutBar={false} />
                   ) : null
                 }
               />
