@@ -58,14 +58,11 @@ export default function LanguageModal({ open, setOpen }) {
 
   function updateLearnedLanguage(lang_code) {
     setLearnedLanguageCode(lang_code);
-  }
-
-  function handleSave(e) {
-    e.preventDefault();
-
+    
+    // Automatically save the selection
     const newUserDetails = {
       ...userDetails,
-      learned_language: learnedLanguageCode,
+      learned_language: lang_code,
     };
 
     api.saveUserDetails(newUserDetails, setErrorMessage, () => {
@@ -74,9 +71,10 @@ export default function LanguageModal({ open, setOpen }) {
       LocalStorage.setUserInfo(newUserDetails);
       saveUserInfoIntoCookies(newUserDetails);
 
-      setOpen(false);
+      setOpen(false); // Close modal after successful save
     });
   }
+
 
   return (
     <Modal
@@ -107,9 +105,6 @@ export default function LanguageModal({ open, setOpen }) {
             />
           </FormSection>
           <ButtonContainer className={"adaptive-alignment-horizontal"}>
-            <Button onClick={handleSave} type={"submit"}>
-              Save
-            </Button>
             <ReactLink
               className="small"
               onClick={() => setOpen(false)}
