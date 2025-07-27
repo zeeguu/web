@@ -391,20 +391,16 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
     if (!selectedExerciseBookmark || !currentExerciseType) return "";
     
     const exerciseTypeName = getExerciseTypeName(currentExerciseType);
-    const encodedWord = encodeURIComponent(selectedExerciseBookmark.from);
-    const encodedTranslation = encodeURIComponent(selectedExerciseBookmark.to);
-    const encodedContext = encodeURIComponent(selectedExerciseBookmark.context);
-    const encodedTokenized = encodeURIComponent(JSON.stringify(selectedExerciseBookmark.context_tokenized));
+    const bookmarkId = selectedExerciseBookmark.id;
     
     console.log("Creating permalink:", {
       exerciseTypeName,
+      bookmarkId,
       word: selectedExerciseBookmark.from,
-      translation: selectedExerciseBookmark.to,
-      context: selectedExerciseBookmark.context,
-      tokenized: selectedExerciseBookmark.context_tokenized
+      translation: selectedExerciseBookmark.to
     });
     
-    return `${window.location.origin}/exercise-test/${exerciseTypeName}/${encodedWord}/${encodedTranslation}/${encodedContext}/${encodedTokenized}`;
+    return `${window.location.origin}/exercise-test/${exerciseTypeName}/${bookmarkId}`;
   };
 
   return (

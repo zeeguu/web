@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect, useContext } from "react";
 import { useParams } from "react-router-dom";
 import { SpeechContext } from "../contexts/SpeechContext";
 import { APIContext } from "../contexts/APIContext";
@@ -93,20 +93,42 @@ function createBookmarkFromUrl(word, translation, context, lang = "en") {
 }
 
 export default function ExerciseTest() {
-  const { exerciseType, word, translation, context, tokenized } = useParams();
+  const { exerciseType, bookmarkId, word, translation, context, tokenized } = useParams();
   const [isExerciseOver, setIsExerciseOver] = useState(false);
   const [isCorrect, setIsCorrect] = useState(null);
   const [isShowSolution, setIsShowSolution] = useState(false);
   const [message, setMessage] = useState("");
   const [exerciseMessageToAPI, setExerciseMessageToAPI] = useState({});
+  const [bookmarkData, setBookmarkData] = useState(null);
+  const [loading, setLoading] = useState(false);
+  
+  const api = useContext(APIContext);
+
+  // Fetch bookmark data when bookmarkId is provided
+  useEffect(() => {
+    if (bookmarkId && api) {
+      setLoading(true);
+      api.getBookmarkWithContext(bookmarkId, (data) => {
+        console.log("Fetched bookmark data:", data);
+        setBookmarkData(data);
+        setLoading(false);
+      });
+    }
+  }, [bookmarkId, api]);
 
   // Decode URL parameters
   const decodedWord = decodeURIComponent(word || "house");
   const decodedTranslation = decodeURIComponent(translation || "casa");
   const decodedContext = decodeURIComponent(context || "I live in a beautiful house with my family.");
   
-  // Use tokenized data if available, otherwise create it
+  // Use bookmark data from API, tokenized data, or create from URL
   const bookmark = useMemo(() => {
+    // If we have bookmark data from API, use that
+    if (bookmarkData) {
+      return bookmarkData;
+    }
+    
+    // Fall back to URL-based data
     if (tokenized) {
       try {
         const decodedTokenized = JSON.parse(decodeURIComponent(tokenized));
@@ -130,7 +152,7 @@ export default function ExerciseTest() {
       }
     }
     return createBookmarkFromUrl(decodedWord, decodedTranslation, decodedContext);
-  }, [decodedWord, decodedTranslation, decodedContext, tokenized]);
+  }, [bookmarkData, decodedWord, decodedTranslation, decodedContext, tokenized]);
 
   // For exercises that need multiple bookmarks (like Match)
   const multipleBookmarks = useMemo(() => [
@@ -185,6 +207,17 @@ export default function ExerciseTest() {
     setExerciseMessageToAPI({});
   };
 
+  // Show loading state when fetching bookmark data
+  if (loading) {
+    return (
+      <NarrowColumn>
+        <div style={{ padding: "2rem", textAlign: "center" }}>
+          <h2>Loading exercise...</h2>
+        </div>
+      </NarrowColumn>
+    );
+  }
+
   if (!ExerciseComponent) {
     return (
       <NarrowColumn>
@@ -196,13 +229,18 @@ export default function ExerciseTest() {
           <h3>Test Examples:</h3>
           <ul>
             <li>
-              <a href="http://localhost:3000/exercise-test/TranslateL2toL1/gratis/free/-%20for%20at%20du%20og%20alle%20andre%2C%20helt%20gratis%2C%20kan%20se%20og%20l%C3%A6se%20alt%20det%20indhold%20vi%20producerer./%5B%5B%5B%7B%22text%22%3A%22-%22%2C%22is_sent_start%22%3Atrue%2C%22is_punct%22%3Atrue%2C%22is_symbol%22%3Afalse%2C%22is_left_punct%22%3Afalse%2C%22is_right_punct%22%3Afalse%2C%22is_like_num%22%3Afalse%2C%22sent_i%22%3A0%2C%22token_i%22%3A0%2C%22paragraph_i%22%3A0%2C%22is_like_email%22%3Afalse%2C%22is_like_url%22%3Afalse%2C%22has_space%22%3Atrue%2C%22pos%22%3Anull%7D%2C%7B%22text%22%3A%22for%22%2C%22is_sent_start%22%3Afalse%2C%22is_punct%22%3Afalse%2C%22is_symbol%22%3Afalse%2C%22is_left_punct%22%3Afalse%2C%22is_right_punct%22%3Afalse%2C%22is_like_num%22%3Afalse%2C%22sent_i%22%3A0%2C%22token_i%22%3A1%2C%22paragraph_i%22%3A0%2C%22is_like_email%22%3Afalse%2C%22is_like_url%22%3Afalse%2C%22has_space%22%3Atrue%2C%22pos%22%3Anull%7D%2C%7B%22text%22%3A%22at%22%2C%22is_sent_start%22%3Afalse%2C%22is_punct%22%3Afalse%2C%22is_symbol%22%3Afalse%2C%22is_left_punct%22%3Afalse%2C%22is_right_punct%22%3Afalse%2C%22is_like_num%22%3Afalse%2C%22sent_i%22%3A0%2C%22token_i%22%3A2%2C%22paragraph_i%22%3A0%2C%22is_like_email%22%3Afalse%2C%22is_like_url%22%3Afalse%2C%22has_space%22%3Atrue%2C%22pos%22%3Anull%7D%2C%7B%22text%22%3A%22du%22%2C%22is_sent_start%22%3Afalse%2C%22is_punct%22%3Afalse%2C%22is_symbol%22%3Afalse%2C%22is_left_punct%22%3Afalse%2C%22is_right_punct%22%3Afalse%2C%22is_like_num%22%3Afalse%2C%22sent_i%22%3A0%2C%22token_i%22%3A3%2C%22paragraph_i%22%3A0%2C%22is_like_email%22%3Afalse%2C%22is_like_url%22%3Afalse%2C%22has_space%22%3Atrue%2C%22pos%22%3Anull%7D%2C%7B%22text%22%3A%22og%22%2C%22is_sent_start%22%3Afalse%2C%22is_punct%22%3Afalse%2C%22is_symbol%22%3Afalse%2C%22is_left_punct%22%3Afalse%2C%22is_right_punct%22%3Afalse%2C%22is_like_num%22%3Afalse%2C%22sent_i%22%3A0%2C%22token_i%22%3A4%2C%22paragraph_i%22%3A0%2C%22is_like_email%22%3Afalse%2C%22is_like_url%22%3Afalse%2C%22has_space%22%3Atrue%2C%22pos%22%3Anull%7D%2C%7B%22text%22%3A%22alle%22%2C%22is_sent_start%22%3Afalse%2C%22is_punct%22%3Afalse%2C%22is_symbol%22%3Afalse%2C%22is_left_punct%22%3Afalse%2C%22is_right_punct%22%3Afalse%2C%22is_like_num%22%3Afalse%2C%22sent_i%22%3A0%2C%22token_i%22%3A5%2C%22paragraph_i%22%3A0%2C%22is_like_email%22%3Afalse%2C%22is_like_url%22%3Afalse%2C%22has_space%22%3Atrue%2C%22pos%22%3Anull%7D%2C%7B%22text%22%3A%22andre%22%2C%22is_sent_start%22%3Afalse%2C%22is_punct%22%3Afalse%2C%22is_symbol%22%3Afalse%2C%22is_left_punct%22%3Afalse%2C%22is_right_punct%22%3Afalse%2C%22is_like_num%22%3Afalse%2C%22sent_i%22%3A0%2C%22token_i%22%3A6%2C%22paragraph_i%22%3A0%2C%22is_like_email%22%3Afalse%2C%22is_like_url%22%3Afalse%2C%22has_space%22%3Afalse%2C%22pos%22%3Anull%7D%2C%7B%22text%22%3A%22%2C%22%2C%22is_sent_start%22%3Afalse%2C%22is_punct%22%3Atrue%2C%22is_symbol%22%3Afalse%2C%22is_left_punct%22%3Afalse%2C%22is_right_punct%22%3Afalse%2C%22is_like_num%22%3Afalse%2C%22sent_i%22%3A0%2C%22token_i%22%3A7%2C%22paragraph_i%22%3A0%2C%22is_like_email%22%3Afalse%2C%22is_like_url%22%3Afalse%2C%22has_space%22%3Atrue%2C%22pos%22%3Anull%7D%2C%7B%22text%22%3A%22helt%22%2C%22is_sent_start%22%3Afalse%2C%22is_punct%22%3Afalse%2C%22is_symbol%22%3Afalse%2C%22is_left_punct%22%3Afalse%2C%22is_right_punct%22%3Afalse%2C%22is_like_num%22%3Afalse%2C%22sent_i%22%3A0%2C%22token_i%22%3A8%2C%22paragraph_i%22%3A0%2C%22is_like_email%22%3Afalse%2C%22is_like_url%22%3Afalse%2C%22has_space%22%3Atrue%2C%22pos%22%3Anull%7D%2C%7B%22text%22%3A%22gratis%22%2C%22is_sent_start%22%3Afalse%2C%22is_punct%22%3Afalse%2C%22is_symbol%22%3Afalse%2C%22is_left_punct%22%3Afalse%2C%22is_right_punct%22%3Afalse%2C%22is_like_num%22%3Afalse%2C%22sent_i%22%3A0%2C%22token_i%22%3A9%2C%22paragraph_i%22%3A0%2C%22is_like_email%22%3Afalse%2C%22is_like_url%22%3Afalse%2C%22has_space%22%3Afalse%2C%22pos%22%3Anull%7D%2C%7B%22text%22%3A%22%2C%22%2C%22is_sent_start%22%3Afalse%2C%22is_punct%22%3Atrue%2C%22is_symbol%22%3Afalse%2C%22is_left_punct%22%3Afalse%2C%22is_right_punct%22%3Afalse%2C%22is_like_num%22%3Afalse%2C%22sent_i%22%3A0%2C%22token_i%22%3A10%2C%22paragraph_i%22%3A0%2C%22is_like_email%22%3Afalse%2C%22is_like_url%22%3Afalse%2C%22has_space%22%3Atrue%2C%22pos%22%3Anull%7D%2C%7B%22text%22%3A%22kan%22%2C%22is_sent_start%22%3Afalse%2C%22is_punct%22%3Afalse%2C%22is_symbol%22%3Afalse%2C%22is_left_punct%22%3Afalse%2C%22is_right_punct%22%3Afalse%2C%22is_like_num%22%3Afalse%2C%22sent_i%22%3A0%2C%22token_i%22%3A11%2C%22paragraph_i%22%3A0%2C%22is_like_email%22%3Afalse%2C%22is_like_url%22%3Afalse%2C%22has_space%22%3Atrue%2C%22pos%22%3Anull%7D%2C%7B%22text%22%3A%22se%22%2C%22is_sent_start%22%3Afalse%2C%22is_punct%22%3Afalse%2C%22is_symbol%22%3Afalse%2C%22is_left_punct%22%3Afalse%2C%22is_right_punct%22%3Afalse%2C%22is_like_num%22%3Afalse%2C%22sent_i%22%3A0%2C%22token_i%22%3A12%2C%22paragraph_i%22%3A0%2C%22is_like_email%22%3Afalse%2C%22is_like_url%22%3Afalse%2C%22has_space%22%3Atrue%2C%22pos%22%3Anull%7D%2C%7B%22text%22%3A%22og%22%2C%22is_sent_start%22%3Afalse%2C%22is_punct%22%3Afalse%2C%22is_symbol%22%3Afalse%2C%22is_left_punct%22%3Afalse%2C%22is_right_punct%22%3Afalse%2C%22is_like_num%22%3Afalse%2C%22sent_i%22%3A0%2C%22token_i%22%3A13%2C%22paragraph_i%22%3A0%2C%22is_like_email%22%3Afalse%2C%22is_like_url%22%3Afalse%2C%22has_space%22%3Atrue%2C%22pos%22%3Anull%7D%2C%7B%22text%22%3A%22l%C3%A6se%22%2C%22is_sent_start%22%3Afalse%2C%22is_punct%22%3Afalse%2C%22is_symbol%22%3Afalse%2C%22is_left_punct%22%3Afalse%2C%22is_right_punct%22%3Afalse%2C%22is_like_num%22%3Afalse%2C%22sent_i%22%3A0%2C%22token_i%22%3A14%2C%22paragraph_i%22%3A0%2C%22is_like_email%22%3Afalse%2C%22is_like_url%22%3Afalse%2C%22has_space%22%3Atrue%2C%22pos%22%3Anull%7D%2C%7B%22text%22%3A%22alt%22%2C%22is_sent_start%22%3Afalse%2C%22is_punct%22%3Afalse%2C%22is_symbol%22%3Afalse%2C%22is_left_punct%22%3Afalse%2C%22is_right_punct%22%3Afalse%2C%22is_like_num%22%3Afalse%2C%22sent_i%22%3A0%2C%22token_i%22%3A15%2C%22paragraph_i%22%3A0%2C%22is_like_email%22%3Afalse%2C%22is_like_url%22%3Afalse%2C%22has_space%22%3Atrue%2C%22pos%22%3Anull%7D%2C%7B%22text%22%3A%22det%22%2C%22is_sent_start%22%3Afalse%2C%22is_punct%22%3Afalse%2C%22is_symbol%22%3Afalse%2C%22is_left_punct%22%3Afalse%2C%22is_right_punct%22%3Afalse%2C%22is_like_num%22%3Afalse%2C%22sent_i%22%3A0%2C%22token_i%22%3A16%2C%22paragraph_i%22%3A0%2C%22is_like_email%22%3Afalse%2C%22is_like_url%22%3Afalse%2C%22has_space%22%3Atrue%2C%22pos%22%3Anull%7D%2C%7B%22text%22%3A%22indhold%22%2C%22is_sent_start%22%3Afalse%2C%22is_punct%22%3Afalse%2C%22is_symbol%22%3Afalse%2C%22is_left_punct%22%3Afalse%2C%22is_right_punct%22%3Afalse%2C%22is_like_num%22%3Afalse%2C%22sent_i%22%3A0%2C%22token_i%22%3A17%2C%22paragraph_i%22%3A0%2C%22is_like_email%22%3Afalse%2C%22is_like_url%22%3Afalse%2C%22has_space%22%3Atrue%2C%22pos%22%3Anull%7D%2C%7B%22text%22%3A%22vi%22%2C%22is_sent_start%22%3Afalse%2C%22is_punct%22%3Afalse%2C%22is_symbol%22%3Afalse%2C%22is_left_punct%22%3Afalse%2C%22is_right_punct%22%3Afalse%2C%22is_like_num%22%3Afalse%2C%22sent_i%22%3A0%2C%22token_i%22%3A18%2C%22paragraph_i%22%3A0%2C%22is_like_email%22%3Afalse%2C%22is_like_url%22%3Afalse%2C%22has_space%22%3Atrue%2C%22pos%22%3Anull%7D%2C%7B%22text%22%3A%22producerer%22%2C%22is_sent_start%22%3Afalse%2C%22is_punct%22%3Afalse%2C%22is_symbol%22%3Afalse%2C%22is_left_punct%22%3Afalse%2C%22is_right_punct%22%3Afalse%2C%22is_like_num%22%3Afalse%2C%22sent_i%22%3A0%2C%22token_i%22%3A19%2C%22paragraph_i%22%3A0%2C%22is_like_email%22%3Afalse%2C%22is_like_url%22%3Afalse%2C%22has_space%22%3Afalse%2C%22pos%22%3Anull%7D%2C%7B%22text%22%3A%22.%22%2C%22is_sent_start%22%3Afalse%2C%22is_punct%22%3Atrue%2C%22is_symbol%22%3Afalse%2C%22is_left_punct%22%3Afalse%2C%22is_right_punct%22%3Afalse%2C%22is_like_num%22%3Afalse%2C%22sent_i%22%3A0%2C%22token_i%22%3A20%2C%22paragraph_i%22%3A0%2C%22is_like_email%22%3Afalse%2C%22is_like_url%22%3Afalse%2C%22has_space%22%3Afalse%2C%22pos%22%3Anull%7D%5D%5D%5D">
-                TranslateL2toL1: gratis → free (Danish with full tokenized context)
+              <a href="http://localhost:3000/exercise-test/TranslateL2toL1/123">
+                New format: TranslateL2toL1 with bookmark ID 123
               </a>
             </li>
             <li>
-              <a href="http://localhost:3000/exercise-test/TranslateWhatYouHear/%C3%A6ldre/older/Kampdag%20%E2%80%94%20Tilbud%20om%20dates%20med%20%C3%A6ldre%20kollegaer%20og%20upassende%20kommentarer%20om%20krop%2C%20udseende%20eller%20privatliv./%5B%5B%5B%7B%22text%22%3A%22Kampdag%22%2C%22is_sent_start%22%3Atrue%2C%22is_punct%22%3Afalse%2C%22is_symbol%22%3Afalse%2C%22is_left_punct%22%3Afalse%2C%22is_right_punct%22%3Afalse%2C%22is_like_num%22%3Afalse%2C%22sent_i%22%3A0%2C%22token_i%22%3A0%2C%22paragraph_i%22%3A0%2C%22is_like_email%22%3Afalse%2C%22is_like_url%22%3Afalse%2C%22has_space%22%3Atrue%2C%22pos%22%3Anull%7D%2C%7B%22text%22%3A%22%E2%80%94%22%2C%22is_sent_start%22%3Afalse%2C%22is_punct%22%3Atrue%2C%22is_symbol%22%3Afalse%2C%22is_left_punct%22%3Afalse%2C%22is_right_punct%22%3Afalse%2C%22is_like_num%22%3Afalse%2C%22sent_i%22%3A0%2C%22token_i%22%3A1%2C%22paragraph_i%22%3A0%2C%22is_like_email%22%3Afalse%2C%22is_like_url%22%3Afalse%2C%22has_space%22%3Atrue%2C%22pos%22%3Anull%7D%2C%7B%22text%22%3A%22Tilbud%22%2C%22is_sent_start%22%3Afalse%2C%22is_punct%22%3Afalse%2C%22is_symbol%22%3Afalse%2C%22is_left_punct%22%3Afalse%2C%22is_right_punct%22%3Afalse%2C%22is_like_num%22%3Afalse%2C%22sent_i%22%3A0%2C%22token_i%22%3A2%2C%22paragraph_i%22%3A0%2C%22is_like_email%22%3Afalse%2C%22is_like_url%22%3Afalse%2C%22has_space%22%3Atrue%2C%22pos%22%3Anull%7D%2C%7B%22text%22%3A%22om%22%2C%22is_sent_start%22%3Afalse%2C%22is_punct%22%3Afalse%2C%22is_symbol%22%3Afalse%2C%22is_left_punct%22%3Afalse%2C%22is_right_punct%22%3Afalse%2C%22is_like_num%22%3Afalse%2C%22sent_i%22%3A0%2C%22token_i%22%3A3%2C%22paragraph_i%22%3A0%2C%22is_like_email%22%3Afalse%2C%22is_like_url%22%3Afalse%2C%22has_space%22%3Atrue%2C%22pos%22%3Anull%7D%2C%7B%22text%22%3A%22dates%22%2C%22is_sent_start%22%3Afalse%2C%22is_punct%22%3Afalse%2C%22is_symbol%22%3Afalse%2C%22is_left_punct%22%3Afalse%2C%22is_right_punct%22%3Afalse%2C%22is_like_num%22%3Afalse%2C%22sent_i%22%3A0%2C%22token_i%22%3A4%2C%22paragraph_i%22%3A0%2C%22is_like_email%22%3Afalse%2C%22is_like_url%22%3Afalse%2C%22has_space%22%3Atrue%2C%22pos%22%3Anull%7D%2C%7B%22text%22%3A%22med%22%2C%22is_sent_start%22%3Afalse%2C%22is_punct%22%3Afalse%2C%22is_symbol%22%3Afalse%2C%22is_left_punct%22%3Afalse%2C%22is_right_punct%22%3Afalse%2C%22is_like_num%22%3Afalse%2C%22sent_i%22%3A0%2C%22token_i%22%3A5%2C%22paragraph_i%22%3A0%2C%22is_like_email%22%3Afalse%2C%22is_like_url%22%3Afalse%2C%22has_space%22%3Atrue%2C%22pos%22%3Anull%7D%2C%7B%22text%22%3A%22%C3%A6ldre%22%2C%22is_sent_start%22%3Afalse%2C%22is_punct%22%3Afalse%2C%22is_symbol%22%3Afalse%2C%22is_left_punct%22%3Afalse%2C%22is_right_punct%22%3Afalse%2C%22is_like_num%22%3Afalse%2C%22sent_i%22%3A0%2C%22token_i%22%3A6%2C%22paragraph_i%22%3A0%2C%22is_like_email%22%3Afalse%2C%22is_like_url%22%3Afalse%2C%22has_space%22%3Atrue%2C%22pos%22%3Anull%7D%2C%7B%22text%22%3A%22kollegaer%22%2C%22is_sent_start%22%3Afalse%2C%22is_punct%22%3Afalse%2C%22is_symbol%22%3Afalse%2C%22is_left_punct%22%3Afalse%2C%22is_right_punct%22%3Afalse%2C%22is_like_num%22%3Afalse%2C%22sent_i%22%3A0%2C%22token_i%22%3A7%2C%22paragraph_i%22%3A0%2C%22is_like_email%22%3Afalse%2C%22is_like_url%22%3Afalse%2C%22has_space%22%3Atrue%2C%22pos%22%3Anull%7D%2C%7B%22text%22%3A%22og%22%2C%22is_sent_start%22%3Afalse%2C%22is_punct%22%3Afalse%2C%22is_symbol%22%3Afalse%2C%22is_left_punct%22%3Afalse%2C%22is_right_punct%22%3Afalse%2C%22is_like_num%22%3Afalse%2C%22sent_i%22%3A0%2C%22token_i%22%3A8%2C%22paragraph_i%22%3A0%2C%22is_like_email%22%3Afalse%2C%22is_like_url%22%3Afalse%2C%22has_space%22%3Atrue%2C%22pos%22%3Anull%7D%2C%7B%22text%22%3A%22upassende%22%2C%22is_sent_start%22%3Afalse%2C%22is_punct%22%3Afalse%2C%22is_symbol%22%3Afalse%2C%22is_left_punct%22%3Afalse%2C%22is_right_punct%22%3Afalse%2C%22is_like_num%22%3Afalse%2C%22sent_i%22%3A0%2C%22token_i%22%3A9%2C%22paragraph_i%22%3A0%2C%22is_like_email%22%3Afalse%2C%22is_like_url%22%3Afalse%2C%22has_space%22%3Atrue%2C%22pos%22%3Anull%7D%2C%7B%22text%22%3A%22kommentarer%22%2C%22is_sent_start%22%3Afalse%2C%22is_punct%22%3Afalse%2C%22is_symbol%22%3Afalse%2C%22is_left_punct%22%3Afalse%2C%22is_right_punct%22%3Afalse%2C%22is_like_num%22%3Afalse%2C%22sent_i%22%3A0%2C%22token_i%22%3A10%2C%22paragraph_i%22%3A0%2C%22is_like_email%22%3Afalse%2C%22is_like_url%22%3Afalse%2C%22has_space%22%3Atrue%2C%22pos%22%3Anull%7D%2C%7B%22text%22%3A%22om%22%2C%22is_sent_start%22%3Afalse%2C%22is_punct%22%3Afalse%2C%22is_symbol%22%3Afalse%2C%22is_left_punct%22%3Afalse%2C%22is_right_punct%22%3Afalse%2C%22is_like_num%22%3Afalse%2C%22sent_i%22%3A0%2C%22token_i%22%3A11%2C%22paragraph_i%22%3A0%2C%22is_like_email%22%3Afalse%2C%22is_like_url%22%3Afalse%2C%22has_space%22%3Atrue%2C%22pos%22%3Anull%7D%2C%7B%22text%22%3A%22krop%22%2C%22is_sent_start%22%3Afalse%2C%22is_punct%22%3Afalse%2C%22is_symbol%22%3Afalse%2C%22is_left_punct%22%3Afalse%2C%22is_right_punct%22%3Afalse%2C%22is_like_num%22%3Afalse%2C%22sent_i%22%3A0%2C%22token_i%22%3A12%2C%22paragraph_i%22%3A0%2C%22is_like_email%22%3Afalse%2C%22is_like_url%22%3Afalse%2C%22has_space%22%3Afalse%2C%22pos%22%3Anull%7D%2C%7B%22text%22%3A%22%2C%22%2C%22is_sent_start%22%3Afalse%2C%22is_punct%22%3Atrue%2C%22is_symbol%22%3Afalse%2C%22is_left_punct%22%3Afalse%2C%22is_right_punct%22%3Afalse%2C%22is_like_num%22%3Afalse%2C%22sent_i%22%3A0%2C%22token_i%22%3A13%2C%22paragraph_i%22%3A0%2C%22is_like_email%22%3Afalse%2C%22is_like_url%22%3Afalse%2C%22has_space%22%3Atrue%2C%22pos%22%3Anull%7D%2C%7B%22text%22%3A%22udseende%22%2C%22is_sent_start%22%3Afalse%2C%22is_punct%22%3Afalse%2C%22is_symbol%22%3Afalse%2C%22is_left_punct%22%3Afalse%2C%22is_right_punct%22%3Afalse%2C%22is_like_num%22%3Afalse%2C%22sent_i%22%3A0%2C%22token_i%22%3A14%2C%22paragraph_i%22%3A0%2C%22is_like_email%22%3Afalse%2C%22is_like_url%22%3Afalse%2C%22has_space%22%3Atrue%2C%22pos%22%3Anull%7D%2C%7B%22text%22%3A%22eller%22%2C%22is_sent_start%22%3Afalse%2C%22is_punct%22%3Afalse%2C%22is_symbol%22%3Afalse%2C%22is_left_punct%22%3Afalse%2C%22is_right_punct%22%3Afalse%2C%22is_like_num%22%3Afalse%2C%22sent_i%22%3A0%2C%22token_i%22%3A15%2C%22paragraph_i%22%3A0%2C%22is_like_email%22%3Afalse%2C%22is_like_url%22%3Afalse%2C%22has_space%22%3Atrue%2C%22pos%22%3Anull%7D%2C%7B%22text%22%3A%22privatliv%22%2C%22is_sent_start%22%3Afalse%2C%22is_punct%22%3Afalse%2C%22is_symbol%22%3Afalse%2C%22is_left_punct%22%3Afalse%2C%22is_right_punct%22%3Afalse%2C%22is_like_num%22%3Afalse%2C%22sent_i%22%3A0%2C%22token_i%22%3A16%2C%22paragraph_i%22%3A0%2C%22is_like_email%22%3Afalse%2C%22is_like_url%22%3Afalse%2C%22has_space%22%3Afalse%2C%22pos%22%3Anull%7D%2C%7B%22text%22%3A%22.%22%2C%22is_sent_start%22%3Afalse%2C%22is_punct%22%3Atrue%2C%22is_symbol%22%3Afalse%2C%22is_left_punct%22%3Afalse%2C%22is_right_punct%22%3Afalse%2C%22is_like_num%22%3Afalse%2C%22sent_i%22%3A0%2C%22token_i%22%3A17%2C%22paragraph_i%22%3A0%2C%22is_like_email%22%3Afalse%2C%22is_like_url%22%3Afalse%2C%22has_space%22%3Afalse%2C%22pos%22%3Anull%7D%5D%5D%5D">
-                TranslateWhatYouHear: ældre → older (Danish audio exercise)
+              <a href="http://localhost:3000/exercise-test/MultipleChoice/456">
+                New format: MultipleChoice with bookmark ID 456
+              </a>
+            </li>
+            <li>
+              <a href="http://localhost:3000/exercise-test/TranslateL2toL1/gratis/free/-%20for%20at%20du%20og%20alle%20andre%2C%20helt%20gratis%2C%20kan%20se%20og%20l%C3%A6se%20alt%20det%20indhold%20vi%20producerer.">
+                Legacy format: TranslateL2toL1 (still supported)
               </a>
             </li>
           </ul>
