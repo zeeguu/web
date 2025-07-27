@@ -242,12 +242,8 @@ export default function ExerciseTest() {
     console.log("User feedback:", feedback, "for bookmark:", bookmarkId);
   };
 
-  const resetExercise = () => {
-    setIsExerciseOver(false);
-    setIsCorrect(null);
-    setIsShowSolution(false);
-    setMessage("");
-    setExerciseMessageToAPI({});
+  const goToMoreExercises = () => {
+    window.location.href = '/exercises';
   };
 
   // Show loading state when fetching bookmark data
@@ -337,7 +333,7 @@ export default function ExerciseTest() {
                 bookmarkMessagesToAPI={exerciseMessageToAPI}
                 exerciseBookmarks={bookmarksToUse}
                 exerciseBookmark={bookmark}
-                moveToNextExercise={resetExercise}
+                moveToNextExercise={goToMoreExercises}
                 uploadUserFeedback={uploadUserFeedback}
                 reload={false}
                 setReload={() => {}}
@@ -345,7 +341,7 @@ export default function ExerciseTest() {
                 toggleShow={() => {}}
                 isCorrect={isCorrect}
                 isExerciseOver={isExerciseOver}
-                nextButtonText="Reset"
+                nextButtonText="More exercises"
               />
             </s.ExForm>
             <div style={{ 
