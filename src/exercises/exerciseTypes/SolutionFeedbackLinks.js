@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import FeedbackModal from "../../components/FeedbackModal";
 import { FEEDBACK_OPTIONS } from "../../components/FeedbackConstants";
 import RemoveBookmarkModal from "../removeBookmark/RemoveBookmarkModal";
+import { toast } from "react-toastify";
 
 export default function SolutionFeedbackLinks({
   isTestingMultipleBookmarks,
@@ -13,6 +14,9 @@ export default function SolutionFeedbackLinks({
   isExerciseOver,
   uploadUserFeedback,
   bookmarkLearned,
+  shareableUrl,
+  autoPronounceString,
+  toggleAutoPronounceState,
 }) {
   const [openFeedback, setOpenFeedback] = useState(false);
   const [openQuickFeedbackModal, setQuickFeedbackModal] = useState(false);
@@ -25,42 +29,67 @@ export default function SolutionFeedbackLinks({
   }, [exerciseBookmarks]);
 
   return (
-    <s.CenteredWordRow className="margin-top-auto">
-      <RemoveBookmarkModal
-        exerciseBookmarks={exerciseBookmarks}
-        open={openQuickFeedbackModal}
-        setOpen={setQuickFeedbackModal}
-        isTestingMultipleBookmarks={isTestingMultipleBookmarks}
-        uploadUserFeedback={uploadUserFeedback}
-        setHasProvidedQuickFeedback={setHasProvidedQuickFeedback}
-      ></RemoveBookmarkModal>
-      <FeedbackModal
-        prefixMsg={prefixMsg}
-        open={openFeedback}
-        setOpen={setOpenFeedback}
-        feedbackOptions={FEEDBACK_OPTIONS.EXERCISE}
-      ></FeedbackModal>
-      {!isExerciseOver && (
-        <>
-          <s.StyledGreyButton className="styledGreyButton" onClick={handleShowSolution}>
-            {strings.showSolution}
-          </s.StyledGreyButton>
-        </>
+    <>
+      <s.CenteredWordRow className="margin-top-auto">
+        <RemoveBookmarkModal
+          exerciseBookmarks={exerciseBookmarks}
+          open={openQuickFeedbackModal}
+          setOpen={setQuickFeedbackModal}
+          isTestingMultipleBookmarks={isTestingMultipleBookmarks}
+          uploadUserFeedback={uploadUserFeedback}
+          setHasProvidedQuickFeedback={setHasProvidedQuickFeedback}
+        ></RemoveBookmarkModal>
+        <FeedbackModal
+          prefixMsg={prefixMsg}
+          open={openFeedback}
+          setOpen={setOpenFeedback}
+          feedbackOptions={FEEDBACK_OPTIONS.EXERCISE}
+        ></FeedbackModal>
+        {!isExerciseOver && (
+          <>
+            <s.StyledGreyButton className="styledGreyButton" onClick={handleShowSolution}>
+              {strings.showSolution}
+            </s.StyledGreyButton>
+          </>
+        )}
+      </s.CenteredWordRow>
+      {isExerciseOver && (
+        <s.CenteredWordRow style={{ gap: '1em', flexWrap: 'wrap' }}>
+          {!hasProvidedQuickFeedback && !bookmarkLearned && (
+            <s.StyledGreyButton
+              className="styledGreyButton"
+              onClick={() => {
+                setQuickFeedbackModal(!openQuickFeedbackModal);
+              }}
+            >
+              {isTestingMultipleBookmarks ? "Exclude word from exercises" : "Exclude word from exercises"}
+            </s.StyledGreyButton>
+          )}
+          {autoPronounceString && toggleAutoPronounceState && (
+            <s.StyledGreyButton className="styledGreyButton" onClick={toggleAutoPronounceState}>
+              {autoPronounceString === "On" ? "Disable auto-pronounce" : "Enable autopronounce"}
+            </s.StyledGreyButton>
+          )}
+          {shareableUrl && (
+            <s.StyledGreyButton
+              className="styledGreyButton"
+              onClick={() => {
+                navigator.clipboard
+                  .writeText(shareableUrl)
+                  .then(() => {
+                    toast.success("Exercise link copied to clipboard!");
+                  })
+                  .catch((err) => {
+                    console.error("Failed to copy to clipboard:", err);
+                    toast.error("Failed to copy link to clipboard");
+                  });
+              }}
+            >
+              Share exercise
+            </s.StyledGreyButton>
+          )}
+        </s.CenteredWordRow>
       )}
-      {isExerciseOver && !hasProvidedQuickFeedback && !bookmarkLearned && (
-        <>
-          <s.StyledGreyButton
-            className="styledGreyButton"
-            onClick={() => {
-              setQuickFeedbackModal(!openQuickFeedbackModal);
-            }}
-          >
-            {/* keeping the code as a reminder that we used to have multiple options even though this
-            is clear enough IMO even if it's the same */}
-            {isTestingMultipleBookmarks ? "Exclude word from exercises" : "Exclude word from exercises"}
-          </s.StyledGreyButton>
-        </>
-      )}
-    </s.CenteredWordRow>
+    </>
   );
 }

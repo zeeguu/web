@@ -86,11 +86,27 @@ export default function SpellWhatYouHear({
 
   return (
     <s.Exercise>
-      <div className="headlineWithMoreSpace">{strings.audioExerciseHeadline}</div>
-      {bookmarkProgressBar}
+      {/* Instructions - visible during exercise, invisible when showing solution but still take space */}
+      <div className="headlineWithMoreSpace">
+        {strings.audioExerciseHeadline}
+      </div>
 
-      {!isExerciseOver && (
-        <>
+      {/* Context - always at the top, never moves */}
+      <div className="contextExample">
+        <TranslatableText
+          isExerciseOver={isExerciseOver}
+          interactiveText={interactiveText}
+          translating={true}
+          pronouncing={false}
+          bookmarkToStudy={exerciseBookmark.from}
+          leftEllipsis={exerciseBookmark.left_ellipsis}
+          rightEllipsis={exerciseBookmark.right_ellipsis}
+        />
+      </div>
+
+      {/* Button/Solution area - maintain consistent height, placed below context */}
+      <div style={{ minHeight: '120px', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', marginTop: '2em' }}>
+        {!isExerciseOver ? (
           <s.CenteredRowTall>
             <SpeakButton
               bookmarkToStudy={exerciseBookmark}
@@ -98,44 +114,26 @@ export default function SpellWhatYouHear({
               parentIsSpeakingControl={isButtonSpeaking}
             />
           </s.CenteredRowTall>
-          <div className="contextExample">
-            <TranslatableText
-              isExerciseOver={isExerciseOver}
-              interactiveText={interactiveText}
-              translating={true}
-              pronouncing={false}
-              bookmarkToStudy={exerciseBookmark.from}
-              leftEllipsis={exerciseBookmark.left_ellipsis}
-              rightEllipsis={exerciseBookmark.right_ellipsis}
-            />
-          </div>
+        ) : (
+          <>
+            <h1 className="wordInContextHeadline" style={{ margin: '0.25em 0' }}>
+              {removePunctuation(exerciseBookmark.to)}
+            </h1>
+            {bookmarkProgressBar}
+          </>
+        )}
+      </div>
 
-          <BottomInput
-            handleCorrectAnswer={notifyCorrectAnswer}
-            handleIncorrectAnswer={handleIncorrectAnswer}
-            handleExerciseCompleted={notifyExerciseCompleted}
-            setIsCorrect={setIsCorrect}
-            exerciseBookmark={exerciseBookmark}
-            notifyOfUserAttempt={notifyOfUserAttempt}
-          />
-        </>
-      )}
-      {isExerciseOver && (
-        <>
-          <br></br>
-          <h1 className="wordInContextHeadline">{removePunctuation(exerciseBookmark.to)}</h1>
-          <div className="contextExample">
-            <TranslatableText
-              isExerciseOver={isExerciseOver}
-              interactiveText={interactiveText}
-              translating={true}
-              pronouncing={false}
-              bookmarkToStudy={exerciseBookmark.from}
-              leftEllipsis={exerciseBookmark.left_ellipsis}
-              rightEllipsis={exerciseBookmark.right_ellipsis}
-            />
-          </div>
-        </>
+      {/* Bottom input - only during exercise */}
+      {!isExerciseOver && (
+        <BottomInput
+          handleCorrectAnswer={notifyCorrectAnswer}
+          handleIncorrectAnswer={handleIncorrectAnswer}
+          handleExerciseCompleted={notifyExerciseCompleted}
+          setIsCorrect={setIsCorrect}
+          exerciseBookmark={exerciseBookmark}
+          notifyOfUserAttempt={notifyOfUserAttempt}
+        />
       )}
     </s.Exercise>
   );

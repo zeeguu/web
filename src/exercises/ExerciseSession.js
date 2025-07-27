@@ -218,7 +218,6 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
     }
   }, [isOutOfWordsToday]);
 
-
   // Standard flow when user completes exercise session
   if (finished) {
     return (
@@ -380,13 +379,13 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
       : exerciseMessageForAPI[selectedExerciseBookmark.id];
   const CurrentExerciseComponent = fullExerciseProgression[currentIndex].type;
 
-  const bookmarkProgressBar = (
+  const bookmarkProgressBar = isExerciseOver ? (
     <BookmarkProgressBar
       bookmark={selectedExerciseBookmark}
       message={currentMessageToAPI}
       isGreyedOutBar={selectedExerciseBookmark === undefined}
     />
-  );
+  ) : null;
 
   // Create shareable URL for current exercise
   const createShareableUrl = () => {
@@ -491,44 +490,6 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
           <p>
             You are practicing words from: <a href={articleURL}>{articleTitle}</a>
           </p>
-        )}
-        {currentExerciseType && window.location.hostname === "localhost" && (selectedExerciseBookmark || (currentExerciseType === EXERCISE_TYPES.match && currentBookmarksToStudy && currentBookmarksToStudy.length > 0)) && (
-          <div style={{ marginTop: "1rem", fontSize: "small", color: "grey" }}>
-            <button 
-              style={{ 
-                background: "none", 
-                border: "none", 
-                color: "grey", 
-                fontSize: "small", 
-                textDecoration: "underline", 
-                cursor: "pointer",
-                padding: 0
-              }}
-              onClick={() => {
-                const url = createShareableUrl();
-                navigator.clipboard.writeText(url).then(() => {
-                  console.log("Copied to clipboard:", url);
-                  toast.success("Exercise link copied to clipboard!");
-                }).catch(err => {
-                  console.error("Failed to copy to clipboard:", err);
-                  toast.error("Failed to copy link to clipboard");
-                });
-              }}
-            >
-              share this exercise
-            </button>
-          </div>
-        )}
-        {currentExerciseType && window.location.hostname === "localhost" && (
-          <div style={{ 
-            marginTop: "2rem", 
-            textAlign: "center", 
-            fontSize: "0.75rem", 
-            color: "#999",
-            opacity: 0.8
-          }}>
-            {getExerciseTypeName(currentExerciseType)}
-          </div>
         )}
       </s.ExercisesColumn>
     </NarrowColumn>

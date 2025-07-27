@@ -48,30 +48,30 @@ const mockApi = {
 
 // Exercise type mapping
 const EXERCISE_COMPONENTS = {
-  "MultipleChoice": MultipleChoice,
-  "TranslateL2toL1": TranslateL2toL1,
-  "MultipleChoiceContext": MultipleChoiceContext,
-  "MultipleChoiceL2toL1": MultipleChoiceL2toL1,
-  "FindWordInContextCloze": FindWordInContextCloze,
-  "Match": Match,
-  "SpellWhatYouHear": SpellWhatYouHear,
-  "TranslateWhatYouHear": TranslateWhatYouHear,
-  "MultipleChoiceAudio": MultipleChoiceAudio,
-  "ClickWordInContext": ClickWordInContext,
-  "FindWordInContext": FindWordInContext,
+  MultipleChoice: MultipleChoice,
+  TranslateL2toL1: TranslateL2toL1,
+  MultipleChoiceContext: MultipleChoiceContext,
+  MultipleChoiceL2toL1: MultipleChoiceL2toL1,
+  FindWordInContextCloze: FindWordInContextCloze,
+  Match: Match,
+  SpellWhatYouHear: SpellWhatYouHear,
+  TranslateWhatYouHear: TranslateWhatYouHear,
+  MultipleChoiceAudio: MultipleChoiceAudio,
+  ClickWordInContext: ClickWordInContext,
+  FindWordInContext: FindWordInContext,
 };
 
 function createBookmarkFromUrl(word, translation, context, lang = "en") {
   // Tokenize the context and mark the word
   const contextWords = context.split(" ");
-  const contextTokenized = contextWords.map(w => {
+  const contextTokenized = contextWords.map((w) => {
     // Remove punctuation for comparison but keep original word
-    const cleanWord = w.replace(/[.,!?;:"()]/g, '').toLowerCase();
+    const cleanWord = w.replace(/[.,!?;:"()]/g, "").toLowerCase();
     const cleanTargetWord = word.toLowerCase();
-    
+
     return {
       word: w,
-      is_marked: cleanWord === cleanTargetWord || cleanWord.includes(cleanTargetWord)
+      is_marked: cleanWord === cleanTargetWord || cleanWord.includes(cleanTargetWord),
     };
   });
 
@@ -101,25 +101,25 @@ export default function ExerciseTest() {
   const [exerciseMessageToAPI, setExerciseMessageToAPI] = useState({});
   const [bookmarkData, setBookmarkData] = useState(null);
   const [loading, setLoading] = useState(false);
-  
+
   const api = useContext(APIContext);
 
   // Fetch bookmark data when bookmarkId is provided
   useEffect(() => {
     if (bookmarkId && api) {
       setLoading(true);
-      
+
       // Check if bookmarkId contains multiple IDs (comma-separated for Match exercises)
-      if (bookmarkId.includes(',')) {
-        const bookmarkIds = bookmarkId.split(',');
+      if (bookmarkId.includes(",")) {
+        const bookmarkIds = bookmarkId.split(",");
         let fetchedBookmarks = [];
         let fetchCount = 0;
-        
+
         bookmarkIds.forEach((id, index) => {
           api.getBookmarkWithContext(id.trim(), (data) => {
             fetchedBookmarks[index] = data;
             fetchCount++;
-            
+
             if (fetchCount === bookmarkIds.length) {
               console.log("Fetched multiple bookmark data:", fetchedBookmarks);
               setBookmarkData(fetchedBookmarks);
@@ -142,7 +142,7 @@ export default function ExerciseTest() {
   const decodedWord = decodeURIComponent(word || "house");
   const decodedTranslation = decodeURIComponent(translation || "casa");
   const decodedContext = decodeURIComponent(context || "I live in a beautiful house with my family.");
-  
+
   // Use bookmark data from API, tokenized data, or create from URL
   const bookmark = useMemo(() => {
     // If we have bookmark data from API, use that
@@ -150,7 +150,7 @@ export default function ExerciseTest() {
       // If it's an array (multiple bookmarks for Match), return the first one as primary
       return Array.isArray(bookmarkData) ? bookmarkData[0] : bookmarkData;
     }
-    
+
     // Fall back to URL-based data
     if (tokenized) {
       try {
@@ -183,22 +183,22 @@ export default function ExerciseTest() {
     if (bookmarkData && Array.isArray(bookmarkData)) {
       return bookmarkData;
     }
-    
+
     // Fall back to creating multiple bookmarks with different translations
     // For MultipleChoiceL2toL1, we need bookmarks with different 'to' values
     if (exerciseType === "MultipleChoiceL2toL1" && bookmark) {
       return [
         bookmark,
         { ...bookmark, id: (bookmark.id || 1) + 1, to: "wrong_option_1" },
-        { ...bookmark, id: (bookmark.id || 1) + 2, to: "wrong_option_2" }
+        { ...bookmark, id: (bookmark.id || 1) + 2, to: "wrong_option_2" },
       ];
     }
-    
+
     // For Match exercises, create different bookmarks entirely
     return [
       bookmark,
       createBookmarkFromUrl("car", "coche", "I drive my car to work every day."),
-      createBookmarkFromUrl("book", "libro", "She is reading a good book.")
+      createBookmarkFromUrl("book", "libro", "She is reading a good book."),
     ];
   }, [bookmarkData, bookmark, exerciseType]);
 
@@ -243,7 +243,7 @@ export default function ExerciseTest() {
   };
 
   const goToMoreExercises = () => {
-    window.location.href = '/exercises';
+    window.location.href = "/exercises";
   };
 
   // Show loading state when fetching bookmark data
@@ -264,7 +264,7 @@ export default function ExerciseTest() {
           <h1>Exercise Not Found</h1>
           <p>Exercise type "{exerciseType}" is not available.</p>
           <p>Available types: {Object.keys(EXERCISE_COMPONENTS).join(", ")}</p>
-          
+
           <h3>Test Examples:</h3>
           <ul>
             <li>
@@ -294,9 +294,8 @@ export default function ExerciseTest() {
   }
 
   // Determine which bookmark set to use
-  const bookmarksToUse = (exerciseType === "Match" || exerciseType === "MultipleChoiceL2toL1") 
-    ? multipleBookmarks 
-    : [bookmark];
+  const bookmarksToUse =
+    exerciseType === "Match" || exerciseType === "MultipleChoiceL2toL1" ? multipleBookmarks : [bookmark];
 
   return (
     <APIContext.Provider value={mockApi}>
@@ -321,11 +320,9 @@ export default function ExerciseTest() {
                 setSelectedExerciseBookmark={() => {}}
                 moveToNextExercise={() => {}}
                 bookmarkProgressBar={
-                  <BookmarkProgressBar
-                    bookmark={bookmark}
-                    message={message}
-                    isGreyedOutBar={false}
-                  />
+                  isExerciseOver ? (
+                    <BookmarkProgressBar bookmark={bookmark} message={message} isGreyedOutBar={false} />
+                  ) : null
                 }
               />
               <NextNavigation
@@ -341,16 +338,18 @@ export default function ExerciseTest() {
                 toggleShow={() => {}}
                 isCorrect={isCorrect}
                 isExerciseOver={isExerciseOver}
-                nextButtonText="More exercises"
+                nextButtonText="More"
               />
             </s.ExForm>
-            <div style={{ 
-              marginTop: "2rem", 
-              textAlign: "center", 
-              fontSize: "0.75rem", 
-              color: "#999",
-              opacity: 0.8
-            }}>
+            <div
+              style={{
+                marginTop: "2rem",
+                textAlign: "center",
+                fontSize: "0.75rem",
+                color: "#999",
+                opacity: 0.8,
+              }}
+            >
               {exerciseType}
             </div>
           </s.ExercisesColumn>

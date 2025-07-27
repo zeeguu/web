@@ -124,11 +124,11 @@ function MatchInput({
           setReload={setReload}
           notifyDelete={() => notifyBookmarkDeletion(b)}
         />
-        <s.MatchingWords className="matchingWords" style={answerColors[solvedIndex]} key={key}>
+        <s.MatchingWords className="matchingWords" style={answerColors[solvedIndex]}>
           {removePunctuation(word)}
         </s.MatchingWords>
         <s.MatchSpeakButtonHolder>
-          <SpeakButton bookmarkToStudy={b} styling={small} key={key} parentIsSpeakingControl={isPronouncing} />
+          <SpeakButton bookmarkToStudy={b} styling={small} parentIsSpeakingControl={isPronouncing} />
         </s.MatchSpeakButtonHolder>
       </s.ButtonRow>
     );

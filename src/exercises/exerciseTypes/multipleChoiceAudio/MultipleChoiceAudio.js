@@ -75,17 +75,12 @@ export default function MultipleChoiceAudio({
 
   return (
     <s.Exercise>
-      <div className="headlineWithMoreSpace">{strings.multipleChoiceAudioHeadline}</div>
+      {/* Instructions - visible during exercise, invisible when showing solution but still take space */}
+      <div className="headlineWithMoreSpace">
+        {strings.multipleChoiceAudioHeadline}
+      </div>
 
-      {bookmarkProgressBar}
-
-      {isExerciseOver && (
-        <>
-          <br></br>
-          <h1 className="wordInContextHeadline">{removePunctuation(exerciseBookmark.to)}</h1>
-        </>
-      )}
-
+      {/* Context - always at the top, never moves */}
       <div className="contextExample">
         <TranslatableText
           isExerciseOver={isExerciseOver}
@@ -98,24 +93,38 @@ export default function MultipleChoiceAudio({
         />
       </div>
 
+      {/* Audio buttons - below context during exercise */}
       {!isExerciseOver && (
-        <s.CenteredWordRow>
-          {/* Mapping bookmarks to the buttons in random order, setting button properties based on bookmark index */}
-          {choiceOptions &&
-            choiceOptions.map((option) => (
-              <SpeakButton
-                onClickCallback={(e) => {
-                  setCurrentSelectedChoice(option);
-                }}
-                isSelected={option === currentSelectedChoice}
-                bookmarkToStudy={bookmarksToStudy[option]}
-                id={option}
-                styling={option === currentSelectedChoice ? "selected" : ""}
-              />
-            ))}
-        </s.CenteredWordRow>
+        <div style={{ marginTop: '2em' }}>
+          <s.CenteredWordRow>
+            {/* Mapping bookmarks to the buttons in random order, setting button properties based on bookmark index */}
+            {choiceOptions &&
+              choiceOptions.map((option) => (
+                <SpeakButton
+                  onClickCallback={(e) => {
+                    setCurrentSelectedChoice(option);
+                  }}
+                  isSelected={option === currentSelectedChoice}
+                  bookmarkToStudy={bookmarksToStudy[option]}
+                  id={option}
+                  styling={option === currentSelectedChoice ? "selected" : ""}
+                />
+              ))}
+          </s.CenteredWordRow>
+        </div>
       )}
 
+      {/* Solution area - appears below context when exercise is over */}
+      {isExerciseOver && (
+        <div style={{ marginTop: '3em' }}>
+          <h1 className="wordInContextHeadline">
+            {removePunctuation(exerciseBookmark.to)}
+          </h1>
+          {bookmarkProgressBar}
+        </div>
+      )}
+
+      {/* Bottom input - only during exercise */}
       {!isExerciseOver && (
         <MultipleChoiceAudioBottomInput
           bookmarksToStudy={bookmarksToStudy}

@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import Feature from "../../features/Feature.js";
 import { correctnessBasedOnTries } from "../CorrectnessBasedOnTries.js";
 import LevelIndicator from "./levelIndicator/LevelIndicator.js";
-import {LevelExercisesWrapper} from "./levelIndicator/LevelIndicator.sc.js";
+import {WordProgressWrapper} from "./levelIndicator/LevelIndicator.sc.js";
 import LearningCycleIndicator from "./LearningCycleIndicator.js";
 
 export default function BookmarkProgressBar({
@@ -27,14 +27,14 @@ export default function BookmarkProgressBar({
   return (
     <>
       {Feature.exercise_levels() && (
-        <LevelExercisesWrapper>
+        <WordProgressWrapper>
         <LevelIndicator
           bookmark={bookmark}
           userIsCorrect={userIsCorrect}
           userIsWrong={userIsWrong}
           isGreyedOutBar={isGreyedOutBar}
         />
-        </LevelExercisesWrapper>
+        </WordProgressWrapper>
       )}
       {Feature.merle_exercises() && (
         <LearningCycleIndicator
