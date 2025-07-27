@@ -15,8 +15,6 @@ export default function SolutionFeedbackLinks({
   uploadUserFeedback,
   bookmarkLearned,
   shareableUrl,
-  autoPronounceString,
-  toggleAutoPronounceState,
 }) {
   const [openFeedback, setOpenFeedback] = useState(false);
   const [openQuickFeedbackModal, setQuickFeedbackModal] = useState(false);
@@ -53,8 +51,9 @@ export default function SolutionFeedbackLinks({
           </>
         )}
       </s.CenteredWordRow>
+
       {isExerciseOver && (
-        <s.CenteredWordRow style={{ gap: '1em', flexWrap: 'wrap' }}>
+        <s.CenteredWordRow style={{ gap: "1em", flexWrap: "wrap" }}>
           {!hasProvidedQuickFeedback && !bookmarkLearned && (
             <s.StyledGreyButton
               className="styledGreyButton"
@@ -63,11 +62,6 @@ export default function SolutionFeedbackLinks({
               }}
             >
               {isTestingMultipleBookmarks ? "Exclude word from exercises" : "Exclude word from exercises"}
-            </s.StyledGreyButton>
-          )}
-          {autoPronounceString && toggleAutoPronounceState && (
-            <s.StyledGreyButton className="styledGreyButton" onClick={toggleAutoPronounceState}>
-              {autoPronounceString === "On" ? "Disable auto-pronounce" : "Enable autopronounce"}
             </s.StyledGreyButton>
           )}
           {shareableUrl && (

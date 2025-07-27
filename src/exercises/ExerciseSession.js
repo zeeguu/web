@@ -482,7 +482,7 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
             isCorrect={isCorrect}
             isExerciseOver={isExerciseOver}
           />
-          {EXERCISE_TYPES.isAudioExercise(currentExerciseType) && SessionStorage.isAudioExercisesEnabled() && (
+          {EXERCISE_TYPES.isAudioExercise(currentExerciseType) && SessionStorage.isAudioExercisesEnabled() && !isExerciseOver && (
             <DisableAudioSession handleDisabledAudio={disableAudio} setIsCorrect={setIsExerciseOver} />
           )}
         </s.ExForm>

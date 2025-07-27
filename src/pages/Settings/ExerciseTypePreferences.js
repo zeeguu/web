@@ -17,6 +17,7 @@ import Checkbox from "../../components/modal_shared/Checkbox";
 import strings from "../../i18n/definitions";
 import { setTitle } from "../../assorted/setTitle";
 import { APIContext } from "../../contexts/APIContext";
+import useBookmarkAutoPronounce from "../../hooks/useBookmarkAutoPronounce";
 
 export default function ExerciseTypePreferences() {
   const api = useContext(APIContext);
@@ -30,6 +31,8 @@ export default function ExerciseTypePreferences() {
   const [productiveExercises, setProductiveExercises] = useState(
     preferenceNotSet || LocalStorage.getProductiveExercisesEnabled(),
   );
+  
+  const [autoPronounceBookmark, autoPronounceString, toggleAutoPronounceState] = useBookmarkAutoPronounce();
 
   useEffect(() => {
     setTitle(strings.exerciseTypePreferences);
@@ -105,6 +108,14 @@ export default function ExerciseTypePreferences() {
               />
             </FormSection>
           )}
+          <FormSection>
+            <Checkbox
+              id="auto-pronounce-checkbox"
+              label={<>Auto-pronounce words after exercise completion</>}
+              checked={autoPronounceBookmark}
+              onChange={toggleAutoPronounceState}
+            />
+          </FormSection>
           <ButtonContainer className={"adaptive-alignment-horizontal"}>
             <Button type={"submit"} onClick={handleSave}>
               {strings.save}

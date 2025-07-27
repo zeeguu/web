@@ -239,8 +239,6 @@ export default function NextNavigation({
         uploadUserFeedback={uploadUserFeedback}
         bookmarkLearned={bookmarkLearned}
         shareableUrl={createShareableUrl()}
-        autoPronounceString={autoPronounceString}
-        toggleAutoPronounceState={toggleAutoPronounceState}
       />
     </>
   );
