@@ -390,7 +390,7 @@ let BottomRowSmallTopMargin = styled.div`
   margin-bottom: 0.5em;
 
   @media (max-width: 768px) {
-    margin-bottom: 1.5em;
+    margin-bottom: 2.5em;
   }
 
   @media (max-width: 430px) {
