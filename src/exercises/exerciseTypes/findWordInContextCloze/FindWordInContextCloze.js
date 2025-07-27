@@ -62,9 +62,13 @@ export default function FindWordInContextCloze({
 
   return (
     <s.Exercise className="findWordInContextCloze">
-      <div className="headlineWithMoreSpace">{strings.findWordInContextClozeHeadline}</div>
-      {bookmarkProgressBar}
+      <div className="headlineWithMoreSpace">
+        {strings.findWordInContextClozeHeadline}
+      </div>
       <h1 className="wordInContextHeadline">{removePunctuation(exerciseBookmark.to)}</h1>
+      <div style={{ visibility: isExerciseOver ? 'visible' : 'hidden' }}>
+        {bookmarkProgressBar}
+      </div>
       <div className="contextExample">
         <TranslatableText
           isExerciseOver={isExerciseOver}

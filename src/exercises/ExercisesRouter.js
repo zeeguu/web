@@ -29,6 +29,22 @@ export default function ExercisesRouter() {
     <s.NarrowColumn>
       <Switch>
         <PrivateRoute
+          path="/exercises/summary"
+          component={ExerciseSession}
+          backButtonAction={backToReadingAction}
+          keepExercisingAction={keepExercisingAction}
+          toScheduledExercises={toScheduledExercises}
+          source={WEB_READER}
+        />
+        <PrivateRoute
+          path="/exercises/no-words"
+          component={ExerciseSession}
+          backButtonAction={backToReadingAction}
+          keepExercisingAction={keepExercisingAction}
+          toScheduledExercises={toScheduledExercises}
+          source={WEB_READER}
+        />
+        <PrivateRoute
           path="/exercises"
           component={ExerciseSession}
           backButtonAction={backToReadingAction}

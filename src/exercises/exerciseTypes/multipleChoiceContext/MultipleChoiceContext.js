@@ -92,11 +92,14 @@ export default function MultipleChoiceContext({
 
   return (
     <s.Exercise className="findWordInContext">
-      <div className="headlineWithMoreSpace">{strings.multipleChoiceContextHeadline}</div>
-
-      {bookmarkProgressBar}
+      <div className="headlineWithMoreSpace">
+        {strings.multipleChoiceContextHeadline}
+      </div>
 
       <h1 className="wordInContextHeadline">{wordInContextHeadline}</h1>
+      <div style={{ visibility: isExerciseOver ? 'visible' : 'hidden' }}>
+        {bookmarkProgressBar}
+      </div>
       {exerciseBookmarks.map((option, index) => (
         <s.MultipleChoiceContext
           key={index}

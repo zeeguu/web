@@ -110,9 +110,9 @@ export default function Match({
 
   return (
     <s.Exercise>
-      <div className="headlineWithMoreSpace">{strings.matchWordWithTranslation} </div>
-
-      {bookmarkProgressBar}
+      <div className="headlineWithMoreSpace">
+        {strings.matchWordWithTranslation}
+      </div>
 
       <MatchInput
         exerciseBookmarks={bookmarksToStudy}

@@ -69,13 +69,12 @@ export default function TranslateL2toL1({
 
   return (
     <s.Exercise className="translateL2toL1">
-      <div className="headlineWithMoreSpace">{strings.translateL2toL1Headline}</div>
-      {bookmarkProgressBar}
-      {isExerciseOver && (
-        <>
-          <h1 className="wordInContextHeadline">{removePunctuation(exerciseBookmark.to)}</h1>
-        </>
-      )}
+      {/* Instructions - visible during exercise, invisible when showing solution but still take space */}
+      <div className="headlineWithMoreSpace">
+        {strings.translateL2toL1Headline}
+      </div>
+
+      {/* Context - always at the top, never moves */}
       <div className="contextExample">
         <TranslatableText
           isExerciseOver={isExerciseOver}
@@ -91,6 +90,17 @@ export default function TranslateL2toL1({
         />
       </div>
 
+      {/* Solution area - appears below context when exercise is over */}
+      {isExerciseOver && (
+        <div style={{ marginTop: '3em' }}>
+          <h1 className="wordInContextHeadline">
+            {removePunctuation(exerciseBookmark.to)}
+          </h1>
+          {bookmarkProgressBar}
+        </div>
+      )}
+
+      {/* Bottom input - only during exercise */}
       {!isExerciseOver && (
         <BottomInput
           handleCorrectAnswer={notifyCorrectAnswer}

@@ -1,4 +1,5 @@
 import { useContext, useEffect, useState } from "react";
+import { toast } from "react-toastify";
 
 import Congratulations from "./Congratulations";
 import ExerciseSessionProgressBar from "./ExerciseSessionProgressBar";
@@ -34,6 +35,7 @@ import useSubSessionTimer from "../hooks/useSubSessionTimer";
 import { APIContext } from "../contexts/APIContext";
 import isEmptyDictionary from "../utils/misc/isEmptyDictionary";
 import BookmarkProgressBar from "./progressBars/BookmarkProgressBar";
+import { getExerciseTypeName } from "./exerciseTypes/exerciseTypeNames";
 
 const BOOKMARKS_DUE_REVIEW = false;
 
@@ -377,13 +379,43 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
       : exerciseMessageForAPI[selectedExerciseBookmark.id];
   const CurrentExerciseComponent = fullExerciseProgression[currentIndex].type;
 
-  const bookmarkProgressBar = (
+  const bookmarkProgressBar = isExerciseOver ? (
     <BookmarkProgressBar
       bookmark={selectedExerciseBookmark}
       message={currentMessageToAPI}
       isGreyedOutBar={selectedExerciseBookmark === undefined}
     />
-  );
+  ) : null;
+
+  // Create shareable URL for current exercise
+  const createShareableUrl = () => {
+    if (!currentExerciseType) return "";
+
+    const exerciseTypeName = getExerciseTypeName(currentExerciseType);
+
+    // For Match exercises, include all bookmark IDs
+    if (exerciseTypeName === "Match" && currentBookmarksToStudy && currentBookmarksToStudy.length > 1) {
+      const bookmarkIds = currentBookmarksToStudy.map((b) => b.id).join(",");
+      console.log("Creating Match permalink:", {
+        exerciseTypeName,
+        bookmarkIds,
+        bookmarks: currentBookmarksToStudy.length,
+      });
+      return `${window.location.origin}/exercise/${exerciseTypeName}/${bookmarkIds}`;
+    }
+
+    // For single bookmark exercises
+    if (!selectedExerciseBookmark) return "";
+    const bookmarkId = selectedExerciseBookmark.id;
+    console.log("Creating permalink:", {
+      exerciseTypeName,
+      bookmarkId,
+      word: selectedExerciseBookmark.from,
+      translation: selectedExerciseBookmark.to,
+    });
+
+    return `${window.location.origin}/exercise/${exerciseTypeName}/${bookmarkId}`;
+  };
 
   return (
     <NarrowColumn>

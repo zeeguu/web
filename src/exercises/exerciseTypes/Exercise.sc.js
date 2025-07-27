@@ -1,9 +1,6 @@
 import styled, { keyframes } from "styled-components";
 
-import {
-  zeeguuTransparentLightOrange,
-  zeeguuOrange,
-} from "../../components/colors";
+import { zeeguuTransparentLightOrange, zeeguuOrange } from "../../components/colors";
 
 const Exercise = styled.div`
   display: flex;
@@ -53,6 +50,13 @@ const Exercise = styled.div`
   .highlightedWord {
     color: orange;
     font-weight: 800;
+  }
+
+  .wordInContextHeadline {
+    margin-bottom: 0.25em;
+    margin-top: 0.5em;
+    font-size: 1.5em;
+    font-weight: 600;
   }
 
   .contextExample {
@@ -122,6 +126,8 @@ const Exercise = styled.div`
 
   /* Mobile version */
   @media screen and (max-width: 768px) {
+    padding-top: 1em; /* Add space to avoid session progress bar overlap */
+
     .contextExample {
       margin-top: 0.5em;
       margin-left: 0.5em;
@@ -139,6 +145,12 @@ const Exercise = styled.div`
     h1 {
       margin-top: 0px;
       margin-bottom: 0px;
+    }
+
+    .wordInContextHeadline {
+      margin-bottom: 0.1em;
+      margin-top: 0.25em;
+      font-size: 1.25em;
     }
   }
 `;
@@ -413,7 +425,7 @@ let CenteredRow = styled.div`
   display: flex;
   flex-direction: row;
   align-items: center;
-  flex-wrap: wrap; 
+  flex-wrap: wrap;
   width: 100%;
   &.margin-top-auto {
     margin-top: auto;
@@ -428,7 +440,7 @@ let CenteredWordRow = styled.div`
   display: flex;
   flex-direction: row;
   align-items: center;
-  flex-wrap: wrap; 
+  flex-wrap: wrap;
   justify-content: center;
   width: 100%;
   &.margin-top-auto {

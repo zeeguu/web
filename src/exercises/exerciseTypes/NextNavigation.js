@@ -3,6 +3,7 @@ import SpeakButton from "./SpeakButton";
 import EditBookmarkButton from "../../words/EditBookmarkButton";
 import * as s from "./Exercise.sc";
 import SolutionFeedbackLinks from "./SolutionFeedbackLinks";
+import { getExerciseTypeName } from "../exerciseTypes/exerciseTypeNames";
 import { useEffect, useState, useContext } from "react";
 import Confetti from "react-confetti";
 import SessionStorage from "../../assorted/SessionStorage.js";
@@ -36,6 +37,7 @@ export default function NextNavigation({
   isExerciseOver,
   handleShowSolution,
   exerciseType,
+  nextButtonText,
 }) {
   const messageForAPI = isEmptyDictionary(bookmarkMessagesToAPI) ? "" : bookmarkMessagesToAPI[exerciseBookmark.id];
   const api = useContext(APIContext);
@@ -128,6 +130,22 @@ export default function NextNavigation({
   }, [bookmarkLearned]);
   const isExerciseCorrect = (isCorrect && !isMatchExercise) || isCorrectMatch;
 
+  // Create shareable URL for feedback purposes
+  const createShareableUrl = () => {
+    const exerciseTypeName = getExerciseTypeName(exerciseType);
+    
+    // For multi-bookmark exercises (Match, MultipleChoice, MultipleChoiceContext), include all bookmark IDs
+    if (EXERCISE_TYPES.isMultiBookmarkExercise(exerciseType) && exerciseBookmarks && exerciseBookmarks.length > 1) {
+      const bookmarkIds = exerciseBookmarks.map(b => b.id).join(',');
+      return `${window.location.origin}/exercise/${exerciseTypeName}/${bookmarkIds}`;
+    }
+    
+    // For single bookmark exercises
+    if (!exerciseBookmark) return "";
+    const bookmarkId = exerciseBookmark.id;
+    return `${window.location.origin}/exercise/${exerciseTypeName}/${bookmarkId}`;
+  };
+
   const showConffetti =
     isUserAndAnswerCorrect &&
     (isMatchBookmarkProgression || bookmarkIsProgressingToNextLearningCycle || bookmarkLearned);
@@ -171,9 +189,10 @@ export default function NextNavigation({
           )}
         </>
       )}
+      {/* Removed general "Well Done!" message
       {isExerciseCorrect && !(bookmarkLearned || bookmarkIsProgressingToNextLearningCycle) && (
         <CorrectMessage className={"next-nav-feedback"} info={""} />
-      )}
+      )} */}
       {isExerciseOver && (
         <>
           <s.BottomRowSmallTopMargin className="bottomRow">
@@ -205,31 +224,23 @@ export default function NextNavigation({
                 cursor: isAutoPronouncing ? "default" : "pointer",
               }}
             >
-              {strings.next}
+              {nextButtonText || strings.next}
             </s.FeedbackButton>
           </s.BottomRowSmallTopMargin>
-          <s.StyledGreyButton
-            onClick={toggleAutoPronounceState}
-            style={{
-              position: "relative",
-              bottom: "3em",
-              left: "2em",
-              textAlign: "start",
-            }}
-          >
-            {"Auto-Pronounce: " + autoPronounceString}
-          </s.StyledGreyButton>
         </>
       )}
       <SolutionFeedbackLinks
         isTestingMultipleBookmarks={isMatchExercise}
         exerciseBookmarks={exerciseBookmarks}
-        prefixMsg={`${exerciseType}-(${exerciseBookmark.id})`}
+        prefixMsg={`Exercise URL: ${createShareableUrl()}`}
         handleShowSolution={handleShowSolution}
         toggleShow={toggleShow}
         isExerciseOver={isExerciseOver}
         uploadUserFeedback={uploadUserFeedback}
         bookmarkLearned={bookmarkLearned}
+        shareableUrl={createShareableUrl()}
+        autoPronounceString={autoPronounceString}
+        toggleAutoPronounceState={toggleAutoPronounceState}
       />
     </>
   );

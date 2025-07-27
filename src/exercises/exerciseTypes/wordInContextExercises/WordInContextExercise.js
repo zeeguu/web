@@ -125,9 +125,13 @@ export default function WordInContextExercise({
 
   return (
     <s.Exercise className={exerciseType}>
-      <div className="headlineWithMoreSpace">{exerciseHeadline}</div>
-      {bookmarkProgressBar}
+      <div className="headlineWithMoreSpace">
+        {exerciseHeadline}
+      </div>
       <h1 className="wordInContextHeadline">{removePunctuation(exerciseBookmark.to)}</h1>
+      <div style={{ visibility: isExerciseOver ? 'visible' : 'hidden', minHeight: '60px' }}>
+        {bookmarkProgressBar || <div style={{ height: '60px', width: '30%', margin: '0.1em auto 0.5em auto' }}></div>}
+      </div>
       <div className="contextExample">
         <TranslatableText
           isExerciseOver={isExerciseOver}

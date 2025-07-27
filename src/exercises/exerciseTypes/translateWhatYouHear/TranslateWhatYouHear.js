@@ -81,10 +81,28 @@ export default function TranslateWhatYouHear({
 
   return (
     <s.Exercise>
-      <div className="headlineWithMoreSpace">{strings.translateWhatYouHearHeadline}</div>
-      {bookmarkProgressBar}
+      {/* Instructions - visible during exercise, invisible when showing solution but still take space */}
+      <div className="headlineWithMoreSpace">
+        {strings.translateWhatYouHearHeadline}
+      </div>
+
+      {/* Context - always at the top, never moves */}
+      <div className="contextExample">
+        <TranslatableText
+          isExerciseOver={isExerciseOver}
+          interactiveText={interactiveText}
+          translating={true}
+          pronouncing={false}
+          bookmarkToStudy={exerciseBookmark.from}
+          exerciseType={EXERCISE_TYPE}
+          leftEllipsis={exerciseBookmark.left_ellipsis}
+          rightEllipsis={exerciseBookmark.right_ellipsis}
+        />
+      </div>
+
+      {/* Button area - below context during exercise */}
       {!isExerciseOver && (
-        <>
+        <div style={{ marginTop: '2em', textAlign: 'center' }}>
           <s.CenteredRowTall>
             <SpeakButton
               bookmarkToStudy={exerciseBookmark}
@@ -92,45 +110,30 @@ export default function TranslateWhatYouHear({
               parentIsSpeakingControl={isButtonSpeaking}
             />
           </s.CenteredRowTall>
-          <div className="contextExample">
-            <TranslatableText
-              isExerciseOver={isExerciseOver}
-              interactiveText={interactiveText}
-              translating={true}
-              pronouncing={false}
-              bookmarkToStudy={exerciseBookmark.from}
-              exerciseType={EXERCISE_TYPE}
-              leftEllipsis={exerciseBookmark.left_ellipsis}
-              rightEllipsis={exerciseBookmark.right_ellipsis}
-            />
-          </div>
-          <BottomInput
-            handleCorrectAnswer={notifyCorrectAnswer}
-            handleIncorrectAnswer={notifyIncorrectAnswer}
-            handleExerciseCompleted={notifyExerciseCompleted}
-            setIsCorrect={setIsCorrect}
-            exerciseBookmark={exerciseBookmark}
-            notifyOfUserAttempt={notifyOfUserAttempt}
-            isL1Answer={true}
-          />
-        </>
+        </div>
       )}
 
+      {/* Solution area - appears below context when exercise is over */}
       {isExerciseOver && (
-        <>
-          <h1 className="wordInContextHeadline">{exerciseBookmark.to}</h1>
-          <div className="contextExample">
-            <TranslatableText
-              isExerciseOver={isExerciseOver}
-              interactiveText={interactiveText}
-              translating={true}
-              pronouncing={false}
-              bookmarkToStudy={exerciseBookmark.from}
-              leftEllipsis={exerciseBookmark.left_ellipsis}
-              rightEllipsis={exerciseBookmark.right_ellipsis}
-            />
-          </div>
-        </>
+        <div style={{ marginTop: '3em' }}>
+          <h1 className="wordInContextHeadline">
+            {exerciseBookmark.to}
+          </h1>
+          {bookmarkProgressBar}
+        </div>
+      )}
+
+      {/* Bottom input - only during exercise */}
+      {!isExerciseOver && (
+        <BottomInput
+          handleCorrectAnswer={notifyCorrectAnswer}
+          handleIncorrectAnswer={notifyIncorrectAnswer}
+          handleExerciseCompleted={notifyExerciseCompleted}
+          setIsCorrect={setIsCorrect}
+          exerciseBookmark={exerciseBookmark}
+          notifyOfUserAttempt={notifyOfUserAttempt}
+          isL1Answer={true}
+        />
       )}
     </s.Exercise>
   );
