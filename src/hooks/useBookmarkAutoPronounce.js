@@ -34,7 +34,7 @@ export default function useBookmarkAutoPronounce() {
     let currentState = LocalStorage.getAutoPronounceInExercises();
     if (currentState === undefined) currentState = PRONOUNCIATION_SETTING.off;
     __updateState(currentState);
-  });
+  }, []);
 
   function toggleAutoPronounceState() {
     let optionSelected;

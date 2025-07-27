@@ -1,8 +1,5 @@
 import styled from "styled-components";
-import {
-  sideNavCollapsedWidth,
-  sideNavExpandedWidth,
-} from "./components/MainNav/SideNav/SideNav.sc";
+import { sideNavCollapsedWidth, sideNavExpandedWidth } from "./components/MainNav/SideNav/SideNav.sc";
 import { MEDIUM_WIDTH, MOBILE_WIDTH } from "./components/MainNav/screenSize";
 import { PAGES_WITHOUT_BOTTOM_NAV } from "./components/MainNav/BottomNav/pagesWithoutBottomNav";
 
@@ -12,8 +9,7 @@ const MainNavWithComponent = styled.div`
   height: 100%;
   display: flex;
   justify-content: space-around;
-  flex-direction: ${({ $screenWidth }) =>
-    $screenWidth <= MOBILE_WIDTH ? "column" : "row"};
+  flex-direction: ${({ $screenWidth }) => ($screenWidth <= MOBILE_WIDTH ? "column" : "row")};
 `;
 
 const AppContent = styled.section`
@@ -22,7 +18,7 @@ const AppContent = styled.section`
   width: 100%;
   position: relative;
   transition: 0.3s ease-in-out;
-  padding: 0 1rem 0 1rem;
+  padding: 0 0.2rem 0 0.2rem;
   overflow-x: hidden;
   top: 0;
 
@@ -39,10 +35,7 @@ const AppContent = styled.section`
   // Updated margin-bottom because we don't want margin-bottom on pages that don't have the bottom bar
   // To be refactored so that this logic is not repeated and info is retrieved from the navbar's context
   margin-bottom: ${({ $screenWidth, $currentPath }) => {
-    if (
-      $screenWidth <= MOBILE_WIDTH &&
-      PAGES_WITHOUT_BOTTOM_NAV.some((page) => $currentPath.startsWith(page))
-    ) {
+    if ($screenWidth <= MOBILE_WIDTH && PAGES_WITHOUT_BOTTOM_NAV.some((page) => $currentPath.startsWith(page))) {
       return "0";
     } else if ($screenWidth <= MOBILE_WIDTH) {
       return "4rem";

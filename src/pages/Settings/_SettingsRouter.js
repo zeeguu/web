@@ -21,7 +21,7 @@ export default function SettingsRouter({ setUser }) {
       <PrivateRoute path="/account_settings/language_settings" setUser={setUser} component={LanguageSettings} />
 
       <PrivateRoute
-        path="/account_settings/exercise_type_preferences"
+        path="/account_settings/exercise_types"
         component={ExerciseTypePreferences}
       />
 
