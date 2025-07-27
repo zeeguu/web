@@ -23,7 +23,7 @@ const Exercise = styled.div`
     font-size: small;
     font-weight: 600;
     color: gray;
-    margin-top: 2em;
+    margin-top: 0.5em;
     margin-bottom: 2em;
     /* font-weight: 600; */
   }
@@ -132,6 +132,7 @@ const Exercise = styled.div`
       margin-top: 0.5em;
       margin-left: 0.5em;
       margin-right: 0.5em;
+      font-size: 1.1em;
     }
 
     .bottomInput {
