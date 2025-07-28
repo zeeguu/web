@@ -72,10 +72,10 @@ export default function PWAInstallOverlay({ onClose, show, isIOSBrowser, iosBrow
   const contentStyle = {
     backgroundColor: "#fff",
     borderRadius: "16px",
-    padding: "32px",
-    maxWidth: "500px",
+    padding: "24px",
+    maxWidth: "400px",
     width: "100%",
-    maxHeight: "90vh",
+    maxHeight: "85vh",
     overflowY: "auto",
     position: "relative",
     animation: "slideIn 0.3s ease-out",
@@ -83,41 +83,41 @@ export default function PWAInstallOverlay({ onClose, show, isIOSBrowser, iosBrow
 
   const headerStyle = {
     textAlign: "center",
-    marginBottom: "24px",
+    marginBottom: "20px",
   };
 
   const iconStyle = {
-    fontSize: "48px",
-    marginBottom: "16px",
+    fontSize: "36px",
+    marginBottom: "12px",
   };
 
   const titleStyle = {
     margin: 0,
-    fontSize: "24px",
+    fontSize: "20px",
     fontWeight: "700",
     color: "#333",
-    marginBottom: "8px",
+    marginBottom: "6px",
   };
 
   const subtitleStyle = {
     margin: 0,
-    fontSize: "16px",
+    fontSize: "14px",
     color: "#666",
-    lineHeight: "1.4",
+    lineHeight: "1.3",
   };
 
   const instructionsStyle = {
-    marginBottom: "24px",
+    marginBottom: "20px",
   };
 
   const stepStyle = {
     display: "flex",
     alignItems: "flex-start",
-    gap: "16px",
-    marginBottom: "20px",
-    padding: "16px",
+    gap: "12px",
+    marginBottom: "12px",
+    padding: "12px",
     backgroundColor: "#f8f9fa",
-    borderRadius: "12px",
+    borderRadius: "8px",
     border: "1px solid #e9ecef",
   };
 
@@ -128,15 +128,15 @@ export default function PWAInstallOverlay({ onClose, show, isIOSBrowser, iosBrow
     backgroundColor: zeeguuOrange, // Always orange for step numbers
     color: "white",
     borderRadius: "50%",
-    width: "32px",
-    height: "32px",
+    width: "24px",
+    height: "24px",
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    fontSize: "16px",
+    fontSize: "14px",
     fontWeight: "700",
     flexShrink: 0,
-    marginTop: "2px",
+    marginTop: "1px",
   };
 
   const stepContentStyle = {
@@ -145,17 +145,10 @@ export default function PWAInstallOverlay({ onClose, show, isIOSBrowser, iosBrow
 
   const stepTitleStyle = {
     margin: 0,
-    fontSize: "16px",
+    fontSize: "14px",
     fontWeight: "600",
     color: "#333",
-    marginBottom: "4px",
-  };
-
-  const stepDescriptionStyle = {
-    margin: 0,
-    fontSize: "14px",
-    color: "#666",
-    lineHeight: "1.4",
+    lineHeight: "1.3",
   };
 
   const closeButtonStyle = {
@@ -236,7 +229,7 @@ export default function PWAInstallOverlay({ onClose, show, isIOSBrowser, iosBrow
             <div style={iconStyle}>📱</div>
             <h2 style={titleStyle}>Install Zeeguu App</h2>
             <p style={subtitleStyle}>
-              Add Zeeguu to your home screen for faster access and a better reading experience!
+              Add to your home screen for faster access
             </p>
           </div>
 
@@ -246,22 +239,19 @@ export default function PWAInstallOverlay({ onClose, show, isIOSBrowser, iosBrow
                 <div style={stepStyle}>
                   <div style={stepNumberStyle}>1</div>
                   <div style={stepContentStyle}>
-                    <h3 style={stepTitleStyle}>Tap the Share button</h3>
-                    <p style={stepDescriptionStyle}>{getShareButtonText()}</p>
+                    <div style={stepTitleStyle}>{getShareButtonText()}</div>
                   </div>
                 </div>
                 <div style={stepStyle}>
                   <div style={stepNumberStyle}>2</div>
                   <div style={stepContentStyle}>
-                    <h3 style={stepTitleStyle}>Tap "Add to home screen"</h3>
-                    <p style={stepDescriptionStyle}>Scroll down in the share menu</p>
+                    <div style={stepTitleStyle}>Scroll down and tap "Add to Home Screen"</div>
                   </div>
                 </div>
                 <div style={stepStyle}>
                   <div style={stepNumberStyle}>3</div>
                   <div style={stepContentStyle}>
-                    <h3 style={stepTitleStyle}>Confirm installation</h3>
-                    <p style={stepDescriptionStyle}>Tap "Add" in the top right corner</p>
+                    <div style={stepTitleStyle}>Tap "Add" to install</div>
                   </div>
                 </div>
               </>
@@ -270,22 +260,19 @@ export default function PWAInstallOverlay({ onClose, show, isIOSBrowser, iosBrow
                 <div style={stepStyle}>
                   <div style={stepNumberStyle}>1</div>
                   <div style={stepContentStyle}>
-                    <h3 style={stepTitleStyle}>Tap the menu (three dots)</h3>
-                    <p style={stepDescriptionStyle}>Look for the three dots menu in the top right corner of Chrome</p>
+                    <div style={stepTitleStyle}>Tap the menu (⋮) in top right corner</div>
                   </div>
                 </div>
                 <div style={stepStyle}>
                   <div style={stepNumberStyle}>2</div>
                   <div style={stepContentStyle}>
-                    <h3 style={stepTitleStyle}>Find "Add to Home screen"</h3>
-                    <p style={stepDescriptionStyle}>Look for "Add to Home screen" or "Install app" in the menu</p>
+                    <div style={stepTitleStyle}>Tap "Add to Home screen" or "Install app"</div>
                   </div>
                 </div>
                 <div style={stepStyle}>
                   <div style={stepNumberStyle}>3</div>
                   <div style={stepContentStyle}>
-                    <h3 style={stepTitleStyle}>Confirm installation</h3>
-                    <p style={stepDescriptionStyle}>Tap "Add" or "Install" to add Zeeguu to your home screen</p>
+                    <div style={stepTitleStyle}>Tap "Add" or "Install"</div>
                   </div>
                 </div>
               </>
