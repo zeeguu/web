@@ -26,28 +26,63 @@ import useRedirectLink from "./hooks/useRedirectLink";
 import LoadingAnimation from "./components/LoadingAnimation";
 import PWAInstallBanner from "./components/PWAInstallBanner";
 import IOSInstallBanner from "./components/IOSInstallBanner";
+import PWAInstallOverlay from "./components/PWAInstallOverlay";
 import usePWAInstall from "./hooks/usePWAInstall";
 
 function PWABanners() {
   const location = useLocation();
   const { showInstallBanner, isAnyIOSBrowser, installPWA, dismissBanner } = usePWAInstall();
+  const [showInstructions, setShowInstructions] = useState(false);
   
   // Only show PWA install banners on /articles page
   const shouldShowBanner = showInstallBanner && location.pathname === '/articles';
   
-  if (!shouldShowBanner) return null;
+  const handleShowInstructions = () => {
+    setShowInstructions(true);
+  };
+
+  const handleCloseInstructions = () => {
+    setShowInstructions(false);
+    dismissBanner(); // Also dismiss the banner when closing instructions
+  };
+
+  const handleInstall = async () => {
+    if (isAnyIOSBrowser) {
+      // iOS browsers need manual instructions
+      handleShowInstructions();
+    } else {
+      // Android browsers can install directly
+      const success = await installPWA();
+      if (!success) {
+        // If direct install fails, show instructions
+        handleShowInstructions();
+      }
+    }
+  };
   
-  return isAnyIOSBrowser ? (
-    <IOSInstallBanner 
-      show={shouldShowBanner}
-      onDismiss={dismissBanner}
-    />
-  ) : (
-    <PWAInstallBanner 
-      show={shouldShowBanner}
-      onInstall={installPWA}
-      onDismiss={dismissBanner}
-    />
+  return (
+    <>
+      {shouldShowBanner && (
+        isAnyIOSBrowser ? (
+          <IOSInstallBanner 
+            show={shouldShowBanner}
+            onShowInstructions={handleShowInstructions}
+            onDismiss={dismissBanner}
+          />
+        ) : (
+          <PWAInstallBanner 
+            show={shouldShowBanner}
+            onInstall={handleInstall}
+            onDismiss={dismissBanner}
+          />
+        )
+      )}
+      <PWAInstallOverlay 
+        show={showInstructions}
+        isIOSBrowser={isAnyIOSBrowser}
+        onClose={handleCloseInstructions}
+      />
+    </>
   );
 }
 

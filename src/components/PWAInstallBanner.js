@@ -11,7 +11,7 @@ export default function PWAInstallBanner({ onInstall, onDismiss, show }) {
 
   const bannerStyle = {
     position: "fixed",
-    bottom: isMobile ? "4rem" : "1rem", // Above mobile nav if present
+    bottom: isMobile ? "4rem" : "1rem",
     left: "1rem",
     right: "1rem",
     backgroundColor: "#fff",
@@ -35,7 +35,7 @@ export default function PWAInstallBanner({ onInstall, onDismiss, show }) {
 
   const contentStyle = {
     flex: 1,
-    minWidth: 0, // Allow text to shrink
+    minWidth: 0,
   };
 
   const titleStyle = {
@@ -84,14 +84,6 @@ export default function PWAInstallBanner({ onInstall, onDismiss, show }) {
     border: "1px solid #ddd",
   };
 
-  const handleInstall = () => {
-    onInstall();
-  };
-
-  const handleDismiss = () => {
-    onDismiss();
-  };
-
   return (
     <>
       <style>
@@ -113,25 +105,25 @@ export default function PWAInstallBanner({ onInstall, onDismiss, show }) {
         <div style={contentStyle}>
           <h3 style={titleStyle}>Install Zeeguu App</h3>
           <p style={descriptionStyle}>
-            Get the full experience with offline reading, faster loading, and quick access from your home screen!
+            Add Zeeguu to your home screen for faster access!
           </p>
         </div>
         <div style={buttonContainerStyle}>
           <button
             style={installButtonStyle}
-            onClick={handleInstall}
+            onClick={onInstall}
             onMouseOver={(e) => (e.target.style.backgroundColor = "#e69500")}
             onMouseOut={(e) => (e.target.style.backgroundColor = zeeguuOrange)}
           >
-            Install
+            Yes, let's do it!
           </button>
           <button
             style={dismissButtonStyle}
-            onClick={handleDismiss}
+            onClick={onDismiss}
             onMouseOver={(e) => (e.target.style.backgroundColor = "#f5f5f5")}
             onMouseOut={(e) => (e.target.style.backgroundColor = "transparent")}
           >
-            Ask me another time
+            Later
           </button>
         </div>
       </div>
