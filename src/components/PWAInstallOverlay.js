@@ -3,11 +3,72 @@ import { zeeguuOrange } from "./colors";
 import { isMobileScreenWidth } from "./MainNav/screenSize";
 import useScreenWidth from "../hooks/useScreenWidth";
 
-export default function PWAInstallOverlay({ onClose, show, isIOSBrowser }) {
+export default function PWAInstallOverlay({ onClose, show, isIOSBrowser, iosBrowserType }) {
   const { screenWidth } = useScreenWidth();
   const isMobile = isMobileScreenWidth(screenWidth);
 
   if (!show) return null;
+
+  // Share button icon component
+  const ShareButtonIcon = ({ style }) => (
+    <span style={{
+      display: 'inline-block',
+      width: '20px',
+      height: '20px',
+      border: '2px solid #007AFF',
+      borderRadius: '3px',
+      position: 'relative',
+      backgroundColor: '#f8f9fa',
+      marginRight: '8px',
+      verticalAlign: 'middle',
+      ...style
+    }}>
+      <span style={{
+        position: 'absolute',
+        top: '6px',
+        left: '50%',
+        transform: 'translateX(-50%)',
+        width: '0',
+        height: '0',
+        borderLeft: '3px solid transparent',
+        borderRight: '3px solid transparent',
+        borderBottom: '4px solid #007AFF'
+      }}></span>
+      <span style={{
+        position: 'absolute',
+        top: '10px',
+        left: '50%',
+        transform: 'translateX(-50%)',
+        width: '2px',
+        height: '6px',
+        backgroundColor: '#007AFF'
+      }}></span>
+    </span>
+  );
+
+  // Get browser-specific instructions
+  const getShareButtonText = () => {
+    switch (iosBrowserType) {
+      case 'chrome':
+        return (
+          <>
+            Look for the share icon <ShareButtonIcon /> in your address bar at the top
+          </>
+        );
+      case 'safari':
+        return (
+          <>
+            Look for the share icon <ShareButtonIcon /> in your address bar at the bottom
+          </>
+        );
+      default:
+        return (
+          <>
+            Look for the share icon <ShareButtonIcon /> in your address bar
+          </>
+        );
+    }
+  };
 
   const overlayStyle = {
     position: "fixed",
@@ -190,7 +251,7 @@ export default function PWAInstallOverlay({ onClose, show, isIOSBrowser }) {
                   <div style={stepContentStyle}>
                     <h3 style={stepTitleStyle}>Tap the Share button</h3>
                     <p style={stepDescriptionStyle}>
-                      Look for the share icon (square with arrow pointing up) in your address bar (at the top in Chrome, bottom in Safari)
+                      {getShareButtonText()}
                     </p>
                   </div>
                 </div>

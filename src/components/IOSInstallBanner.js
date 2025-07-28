@@ -3,11 +3,27 @@ import { zeeguuOrange } from "./colors";
 import { isMobileScreenWidth } from "./MainNav/screenSize";
 import useScreenWidth from "../hooks/useScreenWidth";
 
-export default function IOSInstallBanner({ onShowInstructions, onDismiss, show }) {
+export default function IOSInstallBanner({ browserType, onShowInstructions, onDismiss, show }) {
   const { screenWidth } = useScreenWidth();
   const isMobile = isMobileScreenWidth(screenWidth);
 
   if (!show) return null;
+
+  // Get browser-specific text
+  const getBrowserText = () => {
+    switch (browserType) {
+      case 'chrome':
+        return 'Add Zeeguu to your home screen using Chrome\'s menu!';
+      case 'safari':
+        return 'Add Zeeguu to your home screen using Safari\'s share button!';
+      case 'firefox':
+        return 'Add Zeeguu to your home screen using Firefox\'s menu!';
+      case 'edge':
+        return 'Add Zeeguu to your home screen using Edge\'s menu!';
+      default:
+        return 'Add Zeeguu to your home screen for faster access!';
+    }
+  };
 
   const bannerStyle = {
     position: "fixed",
@@ -109,7 +125,7 @@ export default function IOSInstallBanner({ onShowInstructions, onDismiss, show }
           <div style={contentStyle}>
             <h3 style={titleStyle}>Install Zeeguu App</h3>
             <p style={descriptionStyle}>
-              Add Zeeguu to your home screen for faster access!
+              {getBrowserText()}
             </p>
           </div>
         </div>
