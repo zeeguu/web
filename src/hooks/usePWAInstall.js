@@ -165,6 +165,20 @@ export default function usePWAInstall() {
     }
   };
 
+  // Visual debug info - remove after testing
+  const debugInfo = {
+    isPWAInstalled,
+    isInstallable, 
+    showInstallBanner,
+    isAnyIOSBrowser,
+    userAgent: navigator.userAgent.substring(0, 50) + '...'
+  };
+  
+  // Show debug on page
+  if (typeof window !== 'undefined') {
+    window.pwaDebugInfo = debugInfo;
+  }
+
   return {
     isPWAInstalled,
     isInstallable,
@@ -172,6 +186,7 @@ export default function usePWAInstall() {
     isAnyIOSBrowser,
     installPWA,
     dismissBanner,
-    resetDismissal
+    resetDismissal,
+    debugInfo
   };
 }

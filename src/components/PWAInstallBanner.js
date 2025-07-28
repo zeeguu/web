@@ -11,7 +11,7 @@ export default function PWAInstallBanner({ onInstall, onDismiss, show }) {
 
   const bannerStyle = {
     position: "fixed",
-    bottom: isMobile ? "4rem" : "1rem",
+    top: "1rem",
     left: "1rem",
     right: "1rem",
     backgroundColor: "#fff",
