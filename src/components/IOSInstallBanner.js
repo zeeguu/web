@@ -10,6 +10,9 @@ export default function IOSInstallBanner({ browserType, onShowInstructions, onDi
 
   if (!show) return null;
 
+  const accentColor = useOrangeAccent ? zeeguuOrange : "#007AFF";
+  const accentHoverColor = useOrangeAccent ? "#e69500" : "#0056CC";
+
   // Get browser-specific text
   const getBrowserText = () => {
     switch (browserType) {
@@ -32,7 +35,7 @@ export default function IOSInstallBanner({ browserType, onShowInstructions, onDi
     left: "1rem",
     right: "1rem",
     backgroundColor: "#fff",
-    border: `2px solid ${zeeguuOrange}`,
+    border: `2px solid ${accentColor}`,
     borderRadius: "12px",
     padding: "20px",
     boxShadow: "0 4px 12px rgba(0, 0, 0, 0.15)",
@@ -90,9 +93,6 @@ export default function IOSInstallBanner({ browserType, onShowInstructions, onDi
     transition: "all 0.2s ease",
     minWidth: isMobile ? "120px" : "auto",
   };
-
-  const accentColor = useOrangeAccent ? zeeguuOrange : "#007AFF";
-  const accentHoverColor = useOrangeAccent ? "#e69500" : "#0056CC";
 
   const installButtonStyle = {
     ...buttonStyle,
