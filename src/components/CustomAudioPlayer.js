@@ -80,6 +80,17 @@ export default function CustomAudioPlayer({
     };
     const handleLoadStart = () => setIsLoading(true);
     const handleCanPlay = () => setIsLoading(false);
+    
+    // Sync UI state with actual audio state
+    const handlePlay = () => {
+      setIsPlaying(true);
+      startProgressTimer();
+    };
+    const handlePause = () => {
+      setIsPlaying(false);
+      clearProgressTimer();
+      saveProgress(true);
+    };
 
     audio.addEventListener("timeupdate", updateTime);
     audio.addEventListener("loadedmetadata", updateDuration);
@@ -87,6 +98,23 @@ export default function CustomAudioPlayer({
     audio.addEventListener("error", handleError);
     audio.addEventListener("loadstart", handleLoadStart);
     audio.addEventListener("canplay", handleCanPlay);
+    audio.addEventListener("play", handlePlay);
+    audio.addEventListener("pause", handlePause);
+
+    // Sync state when app becomes visible again
+    const handleVisibilityChange = () => {
+      if (!document.hidden && audio) {
+        // Update UI state to match actual audio state when app becomes visible
+        setIsPlaying(!audio.paused);
+        if (audio.paused) {
+          clearProgressTimer();
+        } else {
+          startProgressTimer();
+        }
+      }
+    };
+
+    document.addEventListener("visibilitychange", handleVisibilityChange);
 
     return () => {
       audio.removeEventListener("timeupdate", updateTime);
@@ -95,6 +123,9 @@ export default function CustomAudioPlayer({
       audio.removeEventListener("error", handleError);
       audio.removeEventListener("loadstart", handleLoadStart);
       audio.removeEventListener("canplay", handleCanPlay);
+      audio.removeEventListener("play", handlePlay);
+      audio.removeEventListener("pause", handlePause);
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
       clearProgressTimer();
     };
   }, [onEnded, onError, initialProgress]);
