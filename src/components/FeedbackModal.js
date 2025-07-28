@@ -1,5 +1,5 @@
 import { toast } from "react-toastify";
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import useFormField from "../hooks/useFormField.js";
 import { APIContext } from "../contexts/APIContext";
 import Modal from "./modal_shared/Modal.js";
@@ -17,22 +17,66 @@ import { FEEDBACK_CODES, FEEDBACK_CODES_NAME } from "./FeedbackConstants.js";
 export default function FeedbackModal({
   open,
   setOpen,
-  feedbackOptions,
+  componentCategories,
+  preselectedCategory,
   prefixMsg,
+  contextualInfo,
 }) {
   let api = useContext(APIContext);
-  const [feedbackComponentSelected, setFeedbackComponentSelected] =
-    useFormField(FEEDBACK_CODES_NAME.OTHER);
+
+  // Smart preselection: explicit choice > intelligent context-based > first available > Other
+  const getDefaultOption = () => {
+    // 1. If explicitly specified, use that
+    if (preselectedCategory && componentCategories?.includes(preselectedCategory)) {
+      return preselectedCategory;
+    }
+
+    // 2. Intelligent preselection based on current page URL
+    const currentUrl = contextualInfo?.url || window.location.href;
+    console.log("FeedbackModal Debug:", {
+      currentUrl,
+      componentCategories,
+      exerciseCodeName: FEEDBACK_CODES_NAME.EXERCISE,
+      includesExercise: componentCategories?.includes(FEEDBACK_CODES_NAME.EXERCISE)
+    });
+    if (currentUrl.includes("/exercise") || currentUrl.includes("/exercises")) {
+      return componentCategories?.includes(FEEDBACK_CODES_NAME.EXERCISE)
+        ? FEEDBACK_CODES_NAME.EXERCISE
+        : FEEDBACK_CODES_NAME.OTHER;
+    }
+    if (currentUrl.includes("/read/article")) {
+      return componentCategories?.includes(FEEDBACK_CODES_NAME.ARTICLE_READER)
+        ? FEEDBACK_CODES_NAME.ARTICLE_READER
+        : FEEDBACK_CODES_NAME.OTHER;
+    }
+    if (currentUrl.includes("/daily-audio")) {
+      return componentCategories?.includes(FEEDBACK_CODES_NAME.DAILY_AUDIO)
+        ? FEEDBACK_CODES_NAME.DAILY_AUDIO
+        : FEEDBACK_CODES_NAME.OTHER;
+    }
+
+    // 3. Default to "Other" for any unrecognized page
+    return FEEDBACK_CODES_NAME.OTHER;
+  };
+
+  const defaultOption = getDefaultOption();
+  const [feedbackComponentSelected, setFeedbackComponentSelected] = useFormField(defaultOption);
   const [feedbackMessage, feedbackMessageChange] = useFormField("");
+
+  // Reset form fields when modal opens or context changes
+  useEffect(() => {
+    if (open) {
+      setFeedbackComponentSelected(defaultOption);
+      feedbackMessageChange("");
+    }
+  }, [open, defaultOption, setFeedbackComponentSelected, feedbackMessageChange]);
 
   function onSubmit(e) {
     e.preventDefault();
     let payload = {
-      message: prefixMsg
-        ? prefixMsg + " - " + feedbackMessage
-        : feedbackMessage,
+      message: prefixMsg ? prefixMsg + " - " + feedbackMessage : feedbackMessage,
       feedbackComponentId: feedbackComponentSelected,
-      currentUrl: window.location.href,
+      currentUrl: contextualInfo?.url || window.location.href,
     };
     api.sendFeedback(
       payload,
@@ -60,7 +104,7 @@ export default function FeedbackModal({
         <Form action={onSubmit}>
           <FormSection>
             <Selector
-              options={feedbackOptions}
+              options={componentCategories}
               optionLabel={(v) => FEEDBACK_CODES[v]}
               optionValue={(v) => v}
               selectedValue={feedbackComponentSelected}
@@ -71,9 +115,10 @@ export default function FeedbackModal({
             />
           </FormSection>
           <FormSection>
-            <TextField
-              label={"Let us know what happened"}
+            <TextField 
+              label={"Let us know what happened"} 
               onChange={(e) => feedbackMessageChange(e.target.value)}
+              autoFocus={open}
             />
           </FormSection>
 

@@ -3,9 +3,12 @@ import { FEEDBACK_OPTIONS } from "./FeedbackConstants";
 import FeedbackModal from "./FeedbackModal";
 import NavOption from "./MainNav/NavOption";
 import FeedbackRoundedIcon from "@mui/icons-material/FeedbackRounded";
+import { useFeedbackContext } from "../contexts/FeedbackContext";
 
 export default function FeedbackButton({ screenWidth }) {
   const [showFeedbackModal, setShowFeedbackModal] = useState(false);
+  const { contextualInfo } = useFeedbackContext();
+  
   return (
     <>
       <FeedbackModal
@@ -14,7 +17,8 @@ export default function FeedbackButton({ screenWidth }) {
         setOpen={() => {
           setShowFeedbackModal(!showFeedbackModal);
         }}
-        feedbackOptions={FEEDBACK_OPTIONS.ALL}
+        componentCategories={FEEDBACK_OPTIONS.ALL}
+        contextualInfo={contextualInfo}
       ></FeedbackModal>
       <NavOption
         ariaHasPopup={"dialog"}

@@ -36,12 +36,14 @@ import { APIContext } from "../contexts/APIContext";
 import isEmptyDictionary from "../utils/misc/isEmptyDictionary";
 import WordProgressBar from "./progressBars/WordProgressBar";
 import { getExerciseTypeName } from "./exerciseTypes/exerciseTypeNames";
+import { useFeedbackContext } from "../contexts/FeedbackContext";
 
 const BOOKMARKS_DUE_REVIEW = false;
 
 export default function ExerciseSession({ articleID, backButtonAction, toScheduledExercises, source }) {
   const api = useContext(APIContext);
   const speech = useContext(SpeechContext);
+  const { setContextualInfo } = useFeedbackContext();
 
   const [hasKeptExercising, setHasKeptExercising] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -189,6 +191,8 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
       );
     }
     setActivityOver(true);
+    // Clear contextual info from feedback context when leaving exercise session
+    setContextualInfo(null);
   }
 
   function handleUserAttempt(message, bookmarkToUpdate) {
@@ -217,6 +221,44 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
       hideExerciseCounter();
     }
   }, [isOutOfWordsToday]);
+
+  // Create shareable URL for current exercise
+  const createShareableUrl = () => {
+    if (!currentExerciseType) return "";
+
+    const exerciseTypeName = getExerciseTypeName(currentExerciseType);
+
+    // For Match exercises, include all bookmark IDs
+    if (exerciseTypeName === "Match" && currentBookmarksToStudy && currentBookmarksToStudy.length > 1) {
+      const bookmarkIds = currentBookmarksToStudy.map((b) => b.id).join(",");
+      console.log("Creating Match permalink:", {
+        exerciseTypeName,
+        bookmarkIds,
+        bookmarks: currentBookmarksToStudy.length,
+      });
+      return `${window.location.origin}/exercise/${exerciseTypeName}/${bookmarkIds}`;
+    }
+
+    // For single bookmark exercises
+    if (!selectedExerciseBookmark) return "";
+    const bookmarkId = selectedExerciseBookmark.id;
+    console.log("Creating permalink:", {
+      exerciseTypeName,
+      bookmarkId,
+      word: selectedExerciseBookmark.from,
+      translation: selectedExerciseBookmark.to,
+    });
+
+    return `${window.location.origin}/exercise/${exerciseTypeName}/${bookmarkId}`;
+  };
+
+  // Update feedback context with current exercise URL
+  useEffect(() => {
+    const exerciseUrl = createShareableUrl();
+    if (exerciseUrl) {
+      setContextualInfo({ url: exerciseUrl });
+    }
+  }, [currentExerciseType, selectedExerciseBookmark, currentBookmarksToStudy, setContextualInfo]);
 
   // Standard flow when user completes exercise session
   if (finished) {
@@ -386,36 +428,6 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
       isGreyedOutBar={selectedExerciseBookmark === undefined}
     />
   ) : null;
-
-  // Create shareable URL for current exercise
-  const createShareableUrl = () => {
-    if (!currentExerciseType) return "";
-
-    const exerciseTypeName = getExerciseTypeName(currentExerciseType);
-
-    // For Match exercises, include all bookmark IDs
-    if (exerciseTypeName === "Match" && currentBookmarksToStudy && currentBookmarksToStudy.length > 1) {
-      const bookmarkIds = currentBookmarksToStudy.map((b) => b.id).join(",");
-      console.log("Creating Match permalink:", {
-        exerciseTypeName,
-        bookmarkIds,
-        bookmarks: currentBookmarksToStudy.length,
-      });
-      return `${window.location.origin}/exercise/${exerciseTypeName}/${bookmarkIds}`;
-    }
-
-    // For single bookmark exercises
-    if (!selectedExerciseBookmark) return "";
-    const bookmarkId = selectedExerciseBookmark.id;
-    console.log("Creating permalink:", {
-      exerciseTypeName,
-      bookmarkId,
-      word: selectedExerciseBookmark.from,
-      translation: selectedExerciseBookmark.to,
-    });
-
-    return `${window.location.origin}/exercise/${exerciseTypeName}/${bookmarkId}`;
-  };
 
   return (
     <NarrowColumn>

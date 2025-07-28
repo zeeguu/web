@@ -25,7 +25,7 @@ import ExercisesForArticle from "./exercises/ExercisesForArticle";
 import { WEB_READER } from "./reader/ArticleReader";
 import VideoPlayer from "./videos/VideoPlayer";
 import DailyAudioRouter from "./dailyAudio/_DailyAudioRouter";
-import ExerciseTest from "./pages/ExerciseTest";
+import IndividualExercise from "./pages/IndividualExercise";
 
 export default function MainAppRouter({ hasExtension, handleSuccessfulLogIn }) {
   return (
@@ -65,11 +65,11 @@ export default function MainAppRouter({ hasExtension, handleSuccessfulLogIn }) {
         component={ExercisesForArticle}
         source={WEB_READER}
       />
-      <PrivateRouteWithMainNav path="/exercise/:exerciseType/:bookmarkId" component={ExerciseTest} />
-      <PrivateRouteWithMainNav path="/exercise-test/:exerciseType/:bookmarkId" component={ExerciseTest} />
-      <PrivateRouteWithMainNav path="/exercise-test/:exerciseType/:word/:translation/:context/:tokenized" component={ExerciseTest} />
-      <PrivateRouteWithMainNav path="/exercise-test/:exerciseType/:word/:translation/:context" component={ExerciseTest} />
-      <PrivateRouteWithMainNav path="/exercise-test" component={ExerciseTest} />
+      <PrivateRouteWithMainNav path="/exercise/:exerciseType/:bookmarkId" component={IndividualExercise} />
+      <PrivateRouteWithMainNav path="/exercise-test/:exerciseType/:bookmarkId" component={IndividualExercise} />
+      <PrivateRouteWithMainNav path="/exercise-test/:exerciseType/:word/:translation/:context/:tokenized" component={IndividualExercise} />
+      <PrivateRouteWithMainNav path="/exercise-test/:exerciseType/:word/:translation/:context" component={IndividualExercise} />
+      <PrivateRouteWithMainNav path="/exercise-test" component={IndividualExercise} />
       <Route path="*" component={NotFound} />
     </Switch>
   );

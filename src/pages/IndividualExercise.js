@@ -2,6 +2,7 @@ import React, { useState, useMemo, useEffect, useContext } from "react";
 import { useParams } from "react-router-dom";
 import { SpeechContext } from "../contexts/SpeechContext";
 import { APIContext } from "../contexts/APIContext";
+import { useFeedbackContext } from "../contexts/FeedbackContext";
 import { NarrowColumn } from "../components/ColumnWidth.sc";
 import { PrivateRouteWithMainNav } from "../PrivateRouteWithMainNav";
 import WordProgressBar from "../exercises/progressBars/WordProgressBar";
@@ -92,7 +93,7 @@ function createBookmarkFromUrl(word, translation, context, lang = "en") {
   };
 }
 
-export default function ExerciseTest() {
+export default function IndividualExercise() {
   const { exerciseType, bookmarkId, word, translation, context, tokenized } = useParams();
   const [isExerciseOver, setIsExerciseOver] = useState(false);
   const [isCorrect, setIsCorrect] = useState(null);
@@ -103,6 +104,17 @@ export default function ExerciseTest() {
   const [loading, setLoading] = useState(false);
 
   const api = useContext(APIContext);
+  const { setContextualInfo } = useFeedbackContext();
+
+  // Set current exercise URL for feedback context and clear on cleanup
+  useEffect(() => {
+    const currentUrl = window.location.href;
+    setContextualInfo({ url: currentUrl });
+    
+    return () => {
+      setContextualInfo(null);
+    };
+  }, [exerciseType, bookmarkId, setContextualInfo]);
 
   // Fetch bookmark data when bookmarkId is provided
   useEffect(() => {

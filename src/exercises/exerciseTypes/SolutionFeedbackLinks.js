@@ -2,7 +2,7 @@ import strings from "../../i18n/definitions";
 import * as s from "./Exercise.sc";
 import { useEffect, useState } from "react";
 import FeedbackModal from "../../components/FeedbackModal";
-import { FEEDBACK_OPTIONS } from "../../components/FeedbackConstants";
+import { FEEDBACK_OPTIONS, FEEDBACK_CODES_NAME } from "../../components/FeedbackConstants";
 import RemoveBookmarkModal from "../removeBookmark/RemoveBookmarkModal";
 import { toast } from "react-toastify";
 
@@ -41,7 +41,8 @@ export default function SolutionFeedbackLinks({
           prefixMsg={prefixMsg}
           open={openFeedback}
           setOpen={setOpenFeedback}
-          feedbackOptions={FEEDBACK_OPTIONS.EXERCISE}
+          componentCategories={FEEDBACK_OPTIONS.EXERCISE}
+          preselectedCategory={FEEDBACK_CODES_NAME.EXERCISE}
         ></FeedbackModal>
         {!isExerciseOver && (
           <>

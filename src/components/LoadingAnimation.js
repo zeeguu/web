@@ -43,7 +43,7 @@ export default function LoadingAnimation({
         setOpen={() => {
           setShowFeedbackModal(!showFeedbackModal);
         }}
-        feedbackOptions={FEEDBACK_OPTIONS.ALL}
+        componentCategories={FEEDBACK_OPTIONS.ALL}
       />
       {showLoadingScreen && (
         <s.LoadingContainer style={specificStyle}>

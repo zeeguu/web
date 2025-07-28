@@ -6,6 +6,7 @@ export default function TextField({
   placeholder,
   name,
   id,
+  autoFocus,
 }) {
   return (
     <s.TextFieldWrapper>
@@ -18,6 +19,7 @@ export default function TextField({
           name={name}
           onChange={onChange}
           placeholder={placeholder}
+          autoFocus={autoFocus}
         ></s.StyledTextField>
       </s.TextFieldContainer>
     </s.TextFieldWrapper>

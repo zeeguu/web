@@ -4,6 +4,7 @@ import { BrowserRouter } from "react-router-dom";
 import { SystemLanguagesContext } from "./contexts/SystemLanguagesContext";
 import { UserContext } from "./contexts/UserContext";
 import { RoutingContext } from "./contexts/RoutingContext";
+import { FeedbackContextProvider } from "./contexts/FeedbackContext";
 import LocalStorage from "./assorted/LocalStorage";
 import { APIContext } from "./contexts/APIContext";
 import Zeeguu_API from "./api/Zeeguu_API";
@@ -178,21 +179,23 @@ function App() {
             >
             <ProgressProvider>
               <APIContext.Provider value={api}>
-                {/* Routing*/}
-          
-                <MainAppRouter hasExtension={isExtensionAvailable} handleSuccessfulLogIn={handleSuccessfulLogIn} />
-                <ToastContainer
-                  position="bottom-right"
-                  autoClose={2000}
-                  hideProgressBar={true}
-                  newestOnTop={false}
-                  closeOnClick
-                  rtl={false}
-                  pauseOnFocusLoss
-                  draggable
-                  pauseOnHover
-                  theme="light"
-                />
+                <FeedbackContextProvider>
+                  {/* Routing*/}
+            
+                  <MainAppRouter hasExtension={isExtensionAvailable} handleSuccessfulLogIn={handleSuccessfulLogIn} />
+                  <ToastContainer
+                    position="bottom-right"
+                    autoClose={2000}
+                    hideProgressBar={true}
+                    newestOnTop={false}
+                    closeOnClick
+                    rtl={false}
+                    pauseOnFocusLoss
+                    draggable
+                    pauseOnHover
+                    theme="light"
+                  />
+                </FeedbackContextProvider>
               </APIContext.Provider>
               </ProgressProvider>
             </UserContext.Provider>
