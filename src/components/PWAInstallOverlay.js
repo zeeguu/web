@@ -9,41 +9,30 @@ export default function PWAInstallOverlay({ onClose, show, isIOSBrowser, iosBrow
 
   if (!show) return null;
 
-  // Share button icon component
+  // Real iOS share button icon
   const ShareButtonIcon = ({ style }) => (
-    <span style={{
-      display: 'inline-block',
-      width: '20px',
-      height: '20px',
-      border: '2px solid #007AFF',
-      borderRadius: '3px',
-      position: 'relative',
-      backgroundColor: '#f8f9fa',
-      marginRight: '8px',
-      verticalAlign: 'middle',
-      ...style
-    }}>
-      <span style={{
-        position: 'absolute',
-        top: '6px',
-        left: '50%',
-        transform: 'translateX(-50%)',
-        width: '0',
-        height: '0',
-        borderLeft: '3px solid transparent',
-        borderRight: '3px solid transparent',
-        borderBottom: '4px solid #007AFF'
-      }}></span>
-      <span style={{
-        position: 'absolute',
-        top: '10px',
-        left: '50%',
-        transform: 'translateX(-50%)',
-        width: '2px',
-        height: '6px',
-        backgroundColor: '#007AFF'
-      }}></span>
-    </span>
+    <svg 
+      width="20" 
+      height="20" 
+      viewBox="0 0 24 24" 
+      fill="none" 
+      xmlns="http://www.w3.org/2000/svg"
+      style={{
+        display: 'inline-block',
+        marginRight: '8px',
+        verticalAlign: 'middle',
+        ...style
+      }}
+    >
+      <path 
+        d="M12 2L8 6h2.5v6h3V6H16l-4-4z" 
+        fill="#007AFF"
+      />
+      <path 
+        d="M6 14v6h12v-6h2v6a2 2 0 01-2 2H6a2 2 0 01-2-2v-6h2z" 
+        fill="#007AFF"
+      />
+    </svg>
   );
 
   // Get browser-specific instructions
