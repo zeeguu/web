@@ -11,14 +11,13 @@
   "background_color": "#ffffff",
   "icons": [
     {
-      "src": "favicon.ico",
-      "sizes": "64x64 32x32 24x24 16x16",
-      "type": "image/x-icon"
-    },
-    {
       "src": "/static/images/zeeguu16.png",
       "type": "image/png",
       "sizes": "16x16"
+    },{
+      "src": "/static/images/zeeguu24.png",
+      "type": "image/png",
+      "sizes": "24x24"
     },
     {
       "src": "/static/images/zeeguu32.png",
@@ -31,6 +30,11 @@
       "sizes": "48x48"
     },
     {
+      "src": "/static/images/zeeguu64.png",
+      "type": "image/png",
+      "sizes": "64x64"
+    },
+    {
       "src": "/static/images/zeeguu128.png",
       "type": "image/png",
       "sizes": "128x128"
@@ -38,14 +42,12 @@
     {
       "src": "logo192.png",
       "type": "image/png",
-      "sizes": "192x192",
-      "purpose": "any maskable"
+      "sizes": "192x192"
     },
     {
       "src": "logo512.png",
       "type": "image/png",
-      "sizes": "512x512",
-      "purpose": "any maskable"
+      "sizes": "512x512"
     }
   ],
   "categories": ["education", "reading"],
