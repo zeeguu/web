@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 
-const DISMISS_DURATION_MS = 24 * 60 * 60 * 1000; // 24 hours
-// For testing: const DISMISS_DURATION_MS = 5 * 1000; // 5 seconds
+// const DISMISS_DURATION_MS = 24 * 60 * 60 * 1000; // 24 hours
+const DISMISS_DURATION_MS = 1 * 60 * 1000; // 1 minute for testing
 
 export default function usePWAInstall() {
   const [deferredPrompt, setDeferredPrompt] = useState(null);
@@ -28,8 +28,23 @@ export default function usePWAInstall() {
       const isPWALaunch = urlParams.get('source') === 'pwa';
       const isStandalone = window.matchMedia('(display-mode: standalone)').matches;
       const isIOSStandalone = window.navigator.standalone === true;
+      const isFullscreen = window.matchMedia('(display-mode: fullscreen)').matches;
+      const isMinimalUI = window.matchMedia('(display-mode: minimal-ui)').matches;
       
-      return isPWALaunch || isStandalone || isIOSStandalone;
+      const result = isPWALaunch || isStandalone || isIOSStandalone || isFullscreen || isMinimalUI;
+      
+      console.log('PWA Detection:', {
+        isPWALaunch,
+        isStandalone,
+        isIOSStandalone,
+        isFullscreen,
+        isMinimalUI,
+        result,
+        userAgent: navigator.userAgent,
+        url: window.location.href
+      });
+      
+      return result;
     };
 
     // Detect if user is on mobile device
@@ -46,11 +61,24 @@ export default function usePWAInstall() {
 
 
     const anyIOSBrowser = isIOSBrowser();
-    setIsPWAInstalled(checkIfPWA());
+    const isPWA = checkIfPWA();
+    const isMobile = isMobileDevice();
+    const isDismissed = isDismissedRecently();
+    
+    setIsPWAInstalled(isPWA);
     setIsAnyIOSBrowser(anyIOSBrowser);
 
+    console.log('Banner conditions check:', {
+      anyIOSBrowser,
+      isMobile,
+      isPWA,
+      isDismissed,
+      shouldShowiOS: anyIOSBrowser && isMobile && !isPWA && !isDismissed
+    });
+
     // For any iOS browser, show banner immediately (no beforeinstallprompt event on iOS)
-    if (anyIOSBrowser && isMobileDevice() && !checkIfPWA() && !isDismissedRecently()) {
+    if (anyIOSBrowser && isMobile && !isPWA && !isDismissed) {
+      console.log('iOS browser detected - showing install banner');
       setIsInstallable(true);
       setShowInstallBanner(true);
     }

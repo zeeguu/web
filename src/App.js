@@ -37,6 +37,26 @@ function PWABanners() {
   // Only show PWA install banners on /articles page
   const shouldShowBanner = showInstallBanner && location.pathname === '/articles';
   
+  console.log('PWABanners render:', {
+    showInstallBanner,
+    isAnyIOSBrowser,
+    pathname: location.pathname,
+    shouldShowBanner
+  });
+  
+  // Visual debugging for mobile - remove after testing
+  const debugStyle = {
+    position: 'fixed',
+    top: '10px',
+    left: '10px',
+    background: 'black',
+    color: 'white',
+    padding: '10px',
+    fontSize: '12px',
+    zIndex: 99999,
+    borderRadius: '5px'
+  };
+  
   const handleShowInstructions = () => {
     setShowInstructions(true);
   };
@@ -62,6 +82,15 @@ function PWABanners() {
   
   return (
     <>
+      {/* Debug info - remove after testing */}
+      <div style={debugStyle}>
+        PWA Debug:<br/>
+        showBanner: {showInstallBanner ? 'YES' : 'NO'}<br/>
+        isIOS: {isAnyIOSBrowser ? 'YES' : 'NO'}<br/>
+        path: {location.pathname}<br/>
+        shouldShow: {shouldShowBanner ? 'YES' : 'NO'}
+      </div>
+      
       {shouldShowBanner && (
         isAnyIOSBrowser ? (
           <IOSInstallBanner 
