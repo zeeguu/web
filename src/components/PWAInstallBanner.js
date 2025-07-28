@@ -18,7 +18,7 @@ export default function PWAInstallBanner({ onInstall, onDismiss, show }) {
     top: "1rem",
     left: "1rem",
     right: "1rem",
-    backgroundColor: "#fff",
+    backgroundColor: "#f8fbff",
     border: `2px solid ${accentColor}`,
     borderRadius: "12px",
     padding: "20px",
