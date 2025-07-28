@@ -75,6 +75,7 @@ async function fetchNotificationData() {
   }
 }
 
+
 // Used for handling notification clicks
 // https://developer.mozilla.org/en-US/docs/Web/API/ServiceWorkerGlobalScope/notificationclick_event
 self.addEventListener("notificationclick", (event) => {

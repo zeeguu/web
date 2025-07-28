@@ -24,6 +24,9 @@ import { setUser } from "@sentry/react";
 import SessionStorage from "./assorted/SessionStorage";
 import useRedirectLink from "./hooks/useRedirectLink";
 import LoadingAnimation from "./components/LoadingAnimation";
+import PWAInstallBanner from "./components/PWAInstallBanner";
+import IOSInstallBanner from "./components/IOSInstallBanner";
+import usePWAInstall from "./hooks/usePWAInstall";
 
 function App() {
   const [api] = useState(new Zeeguu_API(API_ENDPOINT));
@@ -36,6 +39,9 @@ function App() {
   const [isExtensionAvailable] = useExtensionCommunication();
   const [zeeguuSpeech, setZeeguuSpeech] = useState(false);
   let { handleRedirectLinkOrGoTo } = useRedirectLink();
+  
+  // PWA Install functionality
+  const { showInstallBanner, isIOSSafari, installPWA, dismissBanner } = usePWAInstall();
 
   const [systemLanguages, setSystemLanguages] = useState();
 
@@ -195,6 +201,18 @@ function App() {
                     pauseOnHover
                     theme="light"
                   />
+                  {isIOSSafari ? (
+                    <IOSInstallBanner 
+                      show={showInstallBanner}
+                      onDismiss={dismissBanner}
+                    />
+                  ) : (
+                    <PWAInstallBanner 
+                      show={showInstallBanner}
+                      onInstall={installPWA}
+                      onDismiss={dismissBanner}
+                    />
+                  )}
                 </FeedbackContextProvider>
               </APIContext.Provider>
               </ProgressProvider>

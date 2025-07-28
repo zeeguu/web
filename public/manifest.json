@@ -1,9 +1,13 @@
 {
+  "id": "org.zeeguu.pwa",
   "short_name": "Zeeguu",
   "name": "Zeeguu",
-  "start_url": ".",
+  "description": "Learn languages while reading what you love",
+  "start_url": "/?source=pwa",
+  "scope": "/",
   "display": "standalone",
-  "theme_color": "#000000",
+  "orientation": "portrait",
+  "theme_color": "#ffe0b3",
   "background_color": "#ffffff",
   "icons": [
     {
@@ -14,12 +18,18 @@
     {
       "src": "logo192.png",
       "type": "image/png",
-      "sizes": "192x192"
+      "sizes": "192x192",
+      "purpose": "any maskable"
     },
     {
       "src": "logo512.png",
       "type": "image/png",
-      "sizes": "512x512"
+      "sizes": "512x512",
+      "purpose": "any maskable"
     }
-  ]
+  ],
+  "categories": ["education", "reading"],
+  "launch_handler": {
+    "client_mode": "focus-existing"
+  }
 }
