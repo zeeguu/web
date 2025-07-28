@@ -9,6 +9,19 @@ const DISMISS_DURATIONS = [
   7 * 24 * 60 * 60 * 1000   // 1 week
 ];
 
+// Detect specific iOS browsers
+const getIOSBrowserType = () => {
+  const userAgent = window.navigator.userAgent;
+  if (/iPad|iPhone|iPod/.test(userAgent)) {
+    if (/CriOS/.test(userAgent)) return 'chrome';
+    if (/FxiOS/.test(userAgent)) return 'firefox';
+    if (/EdgiOS/.test(userAgent)) return 'edge';
+    if (/Safari/.test(userAgent) && !/CriOS|FxiOS|EdgiOS/.test(userAgent)) return 'safari';
+    return 'other';
+  }
+  return null;
+};
+
 export default function usePWAInstall() {
   const [deferredPrompt, setDeferredPrompt] = useState(null);
   const [isPWAInstalled, setIsPWAInstalled] = useState(false);
@@ -61,18 +74,6 @@ export default function usePWAInstall() {
       return /iPad|iPhone|iPod/.test(userAgent);
     };
 
-    // Detect specific iOS browsers
-    const getIOSBrowserType = () => {
-      const userAgent = window.navigator.userAgent;
-      if (/iPad|iPhone|iPod/.test(userAgent)) {
-        if (/CriOS/.test(userAgent)) return 'chrome';
-        if (/FxiOS/.test(userAgent)) return 'firefox';
-        if (/EdgiOS/.test(userAgent)) return 'edge';
-        if (/Safari/.test(userAgent) && !/CriOS|FxiOS|EdgiOS/.test(userAgent)) return 'safari';
-        return 'other';
-      }
-      return null;
-    };
 
 
     const anyIOSBrowser = isIOSBrowser();
