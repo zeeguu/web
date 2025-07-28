@@ -1,7 +1,13 @@
 import { useState, useEffect } from 'react';
 
-// const DISMISS_DURATION_MS = 24 * 60 * 60 * 1000; // 24 hours
-const DISMISS_DURATION_MS = 1 * 60 * 1000; // 1 minute for testing
+// Progressive dismissal durations: 5min → 15min → 1day → 2days → 1week
+const DISMISS_DURATIONS = [
+  5 * 60 * 1000,        // 5 minutes
+  15 * 60 * 1000,       // 15 minutes
+  24 * 60 * 60 * 1000,  // 1 day
+  2 * 24 * 60 * 60 * 1000,  // 2 days
+  7 * 24 * 60 * 60 * 1000   // 1 week
+];
 
 export default function usePWAInstall() {
   const [deferredPrompt, setDeferredPrompt] = useState(null);
@@ -10,15 +16,21 @@ export default function usePWAInstall() {
   const [showInstallBanner, setShowInstallBanner] = useState(false);
   const [isAnyIOSBrowser, setIsAnyIOSBrowser] = useState(false);
 
-  // Check if banner was dismissed recently (within 24 hours)
+  // Check if banner was dismissed recently with progressive delays
   const isDismissedRecently = () => {
     const dismissedTime = localStorage.getItem('pwa-install-dismissed');
+    const dismissCount = parseInt(localStorage.getItem('pwa-dismiss-count') || '0');
+    
     if (!dismissedTime) return false;
     
     const now = Date.now();
     const timeSinceDismiss = now - parseInt(dismissedTime);
     
-    return timeSinceDismiss < DISMISS_DURATION_MS;
+    // Use the appropriate duration based on dismiss count
+    const durationIndex = Math.min(dismissCount, DISMISS_DURATIONS.length - 1);
+    const currentDuration = DISMISS_DURATIONS[durationIndex];
+    
+    return timeSinceDismiss < currentDuration;
   };
 
   useEffect(() => {
@@ -33,16 +45,6 @@ export default function usePWAInstall() {
       
       const result = isPWALaunch || isStandalone || isIOSStandalone || isFullscreen || isMinimalUI;
       
-      console.log('PWA Detection:', {
-        isPWALaunch,
-        isStandalone,
-        isIOSStandalone,
-        isFullscreen,
-        isMinimalUI,
-        result,
-        userAgent: navigator.userAgent,
-        url: window.location.href
-      });
       
       return result;
     };
@@ -68,17 +70,8 @@ export default function usePWAInstall() {
     setIsPWAInstalled(isPWA);
     setIsAnyIOSBrowser(anyIOSBrowser);
 
-    console.log('Banner conditions check:', {
-      anyIOSBrowser,
-      isMobile,
-      isPWA,
-      isDismissed,
-      shouldShowiOS: anyIOSBrowser && isMobile && !isPWA && !isDismissed
-    });
-
     // For any iOS browser, show banner immediately (no beforeinstallprompt event on iOS)
     if (anyIOSBrowser && isMobile && !isPWA && !isDismissed) {
-      console.log('iOS browser detected - showing install banner');
       setIsInstallable(true);
       setShowInstallBanner(true);
     }
@@ -87,7 +80,6 @@ export default function usePWAInstall() {
     // Wait a bit to give beforeinstallprompt a chance to fire first
     const androidFallbackTimer = setTimeout(() => {
       if (!anyIOSBrowser && isMobile && !isPWA && !isDismissed && !isInstallable) {
-        console.log('Android fallback - showing banner without beforeinstallprompt');
         setIsInstallable(true);
         setShowInstallBanner(true);
       }
@@ -95,38 +87,29 @@ export default function usePWAInstall() {
 
     // Listen for PWA install prompt
     const handleBeforeInstallPrompt = (e) => {
-      console.log('PWA install prompt available - beforeinstallprompt fired');
       e.preventDefault();
       
       // Only allow PWA installation on mobile devices
       if (!isMobileDevice()) {
-        console.log('Desktop detected - PWA installation disabled to preserve extension functionality');
         return;
       }
-      
-      console.log('Android PWA conditions:', {
-        isPWA: checkIfPWA(),
-        dismissed: isDismissedRecently(),
-        shouldShow: !checkIfPWA() && !isDismissedRecently()
-      });
       
       setDeferredPrompt(e);
       setIsInstallable(true);
       
       // Show banner only if not in PWA and not recently dismissed
       if (!checkIfPWA() && !isDismissedRecently()) {
-        console.log('Setting Android banner to show');
         setShowInstallBanner(true);
       }
     };
 
     // Listen for successful PWA install
     const handleAppInstalled = () => {
-      console.log('PWA was installed');
       setIsPWAInstalled(true);
       setShowInstallBanner(false);
       setDeferredPrompt(null);
       localStorage.removeItem('pwa-install-dismissed');
+      localStorage.removeItem('pwa-dismiss-count');
     };
 
     window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
@@ -142,12 +125,10 @@ export default function usePWAInstall() {
   const installPWA = async () => {
     // iOS browsers don't support programmatic install
     if (isAnyIOSBrowser) {
-      console.log('iOS browser detected - cannot trigger install programmatically');
       return false;
     }
 
     if (!deferredPrompt) {
-      console.log('No install prompt available');
       return false;
     }
 
@@ -156,15 +137,12 @@ export default function usePWAInstall() {
       const { outcome } = await deferredPrompt.userChoice;
       
       if (outcome === 'accepted') {
-        console.log('User accepted the install prompt');
         setShowInstallBanner(false);
         return true;
       } else {
-        console.log('User dismissed the install prompt');
         return false;
       }
     } catch (error) {
-      console.error('Error during PWA install:', error);
       return false;
     } finally {
       setDeferredPrompt(null);
@@ -173,29 +151,22 @@ export default function usePWAInstall() {
 
   const dismissBanner = () => {
     setShowInstallBanner(false);
+    
+    // Increment dismiss count and save timestamp
+    const currentCount = parseInt(localStorage.getItem('pwa-dismiss-count') || '0');
+    const newCount = currentCount + 1;
+    
     localStorage.setItem('pwa-install-dismissed', Date.now().toString());
+    localStorage.setItem('pwa-dismiss-count', newCount.toString());
   };
 
   const resetDismissal = () => {
     localStorage.removeItem('pwa-install-dismissed');
+    localStorage.removeItem('pwa-dismiss-count');
     if (isInstallable && !isPWAInstalled) {
       setShowInstallBanner(true);
     }
   };
-
-  // Visual debug info - remove after testing
-  const debugInfo = {
-    isPWAInstalled,
-    isInstallable, 
-    showInstallBanner,
-    isAnyIOSBrowser,
-    userAgent: navigator.userAgent.substring(0, 50) + '...'
-  };
-  
-  // Show debug on page
-  if (typeof window !== 'undefined') {
-    window.pwaDebugInfo = debugInfo;
-  }
 
   return {
     isPWAInstalled,
@@ -204,7 +175,6 @@ export default function usePWAInstall() {
     isAnyIOSBrowser,
     installPWA,
     dismissBanner,
-    resetDismissal,
-    debugInfo
+    resetDismissal
   };
 }
