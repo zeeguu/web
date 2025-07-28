@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { zeeguuOrange } from "./colors";
 import { isMobileScreenWidth } from "./MainNav/screenSize";
 import useScreenWidth from "../hooks/useScreenWidth";
@@ -6,6 +6,7 @@ import useScreenWidth from "../hooks/useScreenWidth";
 export default function PWAInstallBanner({ onInstall, onDismiss, show }) {
   const { screenWidth } = useScreenWidth();
   const isMobile = isMobileScreenWidth(screenWidth);
+  const [useOrangeAccent, setUseOrangeAccent] = useState(true); // Default to orange for banner
 
   if (!show) return null;
 
@@ -74,9 +75,12 @@ export default function PWAInstallBanner({ onInstall, onDismiss, show }) {
     minWidth: isMobile ? "120px" : "auto",
   };
 
+  const accentColor = useOrangeAccent ? zeeguuOrange : "#007AFF";
+  const accentHoverColor = useOrangeAccent ? "#e69500" : "#0056CC";
+
   const installButtonStyle = {
     ...buttonStyle,
-    backgroundColor: zeeguuOrange,
+    backgroundColor: accentColor,
     color: "white",
   };
 
@@ -85,6 +89,15 @@ export default function PWAInstallBanner({ onInstall, onDismiss, show }) {
     backgroundColor: "transparent",
     color: "#666",
     border: "1px solid #ddd",
+  };
+
+  const toggleLinkStyle = {
+    fontSize: "11px",
+    color: "#999",
+    textDecoration: "underline",
+    cursor: "pointer",
+    marginTop: "8px",
+    textAlign: "center",
   };
 
   return (
@@ -117,8 +130,8 @@ export default function PWAInstallBanner({ onInstall, onDismiss, show }) {
           <button
             style={installButtonStyle}
             onClick={onInstall}
-            onMouseOver={(e) => (e.target.style.backgroundColor = "#e69500")}
-            onMouseOut={(e) => (e.target.style.backgroundColor = zeeguuOrange)}
+            onMouseOver={(e) => (e.target.style.backgroundColor = accentHoverColor)}
+            onMouseOut={(e) => (e.target.style.backgroundColor = accentColor)}
           >
             Yes, now!
           </button>
@@ -130,6 +143,15 @@ export default function PWAInstallBanner({ onInstall, onDismiss, show }) {
           >
             Later
           </button>
+        </div>
+        
+        <div style={toggleLinkStyle}>
+          <a onClick={(e) => {
+            e.preventDefault();
+            setUseOrangeAccent(!useOrangeAccent);
+          }}>
+            Try {useOrangeAccent ? 'blue' : 'orange'} button
+          </a>
         </div>
       </div>
     </>

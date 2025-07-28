@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { zeeguuOrange } from "./colors";
 import { isMobileScreenWidth } from "./MainNav/screenSize";
 import useScreenWidth from "../hooks/useScreenWidth";
@@ -6,6 +6,7 @@ import useScreenWidth from "../hooks/useScreenWidth";
 export default function PWAInstallOverlay({ onClose, show, isIOSBrowser, iosBrowserType }) {
   const { screenWidth } = useScreenWidth();
   const isMobile = isMobileScreenWidth(screenWidth);
+  const [useOrangeAccent, setUseOrangeAccent] = useState(false);
 
   if (!show) return null;
 
@@ -126,8 +127,11 @@ export default function PWAInstallOverlay({ onClose, show, isIOSBrowser, iosBrow
     border: "1px solid #e9ecef",
   };
 
+  const accentColor = useOrangeAccent ? zeeguuOrange : "#007AFF";
+  const accentHoverColor = useOrangeAccent ? "#e69500" : "#0056CC";
+
   const stepNumberStyle = {
-    backgroundColor: zeeguuOrange,
+    backgroundColor: accentColor,
     color: "white",
     borderRadius: "50%",
     width: "32px",
@@ -182,7 +186,7 @@ export default function PWAInstallOverlay({ onClose, show, isIOSBrowser, iosBrow
   const bottomButtonStyle = {
     width: "100%",
     padding: "12px 24px",
-    backgroundColor: zeeguuOrange,
+    backgroundColor: accentColor,
     color: "white",
     border: "none",
     borderRadius: "8px",
@@ -190,6 +194,16 @@ export default function PWAInstallOverlay({ onClose, show, isIOSBrowser, iosBrow
     fontWeight: "600",
     cursor: "pointer",
     transition: "background-color 0.2s ease",
+  };
+
+  const toggleLinkStyle = {
+    display: "block",
+    textAlign: "center",
+    marginTop: "12px",
+    fontSize: "12px",
+    color: "#666",
+    textDecoration: "underline",
+    cursor: "pointer",
   };
 
   return (
@@ -299,11 +313,21 @@ export default function PWAInstallOverlay({ onClose, show, isIOSBrowser, iosBrow
           <button
             style={bottomButtonStyle}
             onClick={onClose}
-            onMouseOver={(e) => (e.target.style.backgroundColor = "#e69500")}
-            onMouseOut={(e) => (e.target.style.backgroundColor = zeeguuOrange)}
+            onMouseOver={(e) => (e.target.style.backgroundColor = accentHoverColor)}
+            onMouseOut={(e) => (e.target.style.backgroundColor = accentColor)}
           >
             Got it!
           </button>
+          
+          <a 
+            style={toggleLinkStyle}
+            onClick={(e) => {
+              e.preventDefault();
+              setUseOrangeAccent(!useOrangeAccent);
+            }}
+          >
+            Try {useOrangeAccent ? 'blue' : 'orange'} accents
+          </a>
         </div>
       </div>
     </>
