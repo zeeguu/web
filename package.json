@@ -90,7 +90,8 @@
     "ext:publish:chrome": "npm run ext:buildZipChrome && node src/extension/scripts/publish-chrome.js",
     "ext:publish:firefox": "npm run ext:buildZipFirefox && node src/extension/scripts/publish-firefox.js",
     "ext:publish": "npm run ext:publish:chrome && npm run ext:publish:firefox",
-    "ext:zipSources": "cd src/extension && zip -FSr zeeguu-reader-source-code.zip . -x 'build/*' 'node_modules/*' 'src/zeeguu-react/node_modules/*' 'src/zeeguu-react/build/*' '.git/*' build.zip '.idea/*'"
+    "ext:zipSources": "cd src/extension && zip -FSr zeeguu-reader-source-code.zip . -x 'build/*' 'node_modules/*' 'src/zeeguu-react/node_modules/*' 'src/zeeguu-react/build/*' '.git/*' build.zip '.idea/*'",
+    "prebuild": "npx update-browserslist-db@latest"
   },
   "eslintConfig": {
     "extends": [
