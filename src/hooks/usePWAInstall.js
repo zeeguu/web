@@ -191,6 +191,9 @@ export default function usePWAInstall() {
     iosBrowserType: getIOSBrowserType(),
     installPWA,
     dismissBanner,
-    resetDismissal
+    resetDismissal,
+    // Debug info
+    hasDeferredPrompt: !!deferredPrompt,
+    userAgent: navigator.userAgent
   };
 }

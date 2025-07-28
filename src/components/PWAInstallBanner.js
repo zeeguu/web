@@ -3,7 +3,7 @@ import { zeeguuOrange } from "./colors";
 import { isMobileScreenWidth } from "./MainNav/screenSize";
 import useScreenWidth from "../hooks/useScreenWidth";
 
-export default function PWAInstallBanner({ onInstall, onDismiss, show }) {
+export default function PWAInstallBanner({ onInstall, onDismiss, show, isAnyIOSBrowser, hasDeferredPrompt }) {
   const { screenWidth } = useScreenWidth();
   const isMobile = isMobileScreenWidth(screenWidth);
 
@@ -109,6 +109,9 @@ export default function PWAInstallBanner({ onInstall, onDismiss, show }) {
           <div style={iconStyle}>📱</div>
           <div style={contentStyle}>
             <h3 style={titleStyle}>Install Zeeguu as an app?</h3>
+            <div style={{ fontSize: "10px", color: "#999", marginTop: "4px" }}>
+              iOS: {isAnyIOSBrowser ? 'YES' : 'NO'} | Prompt: {hasDeferredPrompt ? 'YES' : 'NO'}
+            </div>
           </div>
         </div>
         <div style={buttonContainerStyle}>

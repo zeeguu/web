@@ -31,7 +31,7 @@ import usePWAInstall from "./hooks/usePWAInstall";
 
 function PWABanners() {
   const location = useLocation();
-  const { showInstallBanner, isAnyIOSBrowser, iosBrowserType, installPWA, dismissBanner } = usePWAInstall();
+  const { showInstallBanner, isAnyIOSBrowser, iosBrowserType, installPWA, dismissBanner, hasDeferredPrompt, userAgent } = usePWAInstall();
   const [showInstructions, setShowInstructions] = useState(false);
   
   // Only show PWA install banners on /articles page
@@ -75,6 +75,8 @@ function PWABanners() {
             show={shouldShowBanner}
             onInstall={handleInstall}
             onDismiss={dismissBanner}
+            isAnyIOSBrowser={isAnyIOSBrowser}
+            hasDeferredPrompt={hasDeferredPrompt}
           />
         )
       )}
