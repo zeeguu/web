@@ -107,7 +107,7 @@ export default function PWAInstallBanner({ onInstall, onDismiss, show }) {
         <div style={containerStyle}>
           <div style={iconStyle}>📱</div>
           <div style={contentStyle}>
-            <h3 style={titleStyle}>Install Zeeguu App</h3>
+            <h3 style={titleStyle}>Install Zeeguu App?</h3>
             <p style={descriptionStyle}>
               Add Zeeguu to your home screen for faster access!
             </p>
@@ -120,7 +120,7 @@ export default function PWAInstallBanner({ onInstall, onDismiss, show }) {
             onMouseOver={(e) => (e.target.style.backgroundColor = "#e69500")}
             onMouseOut={(e) => (e.target.style.backgroundColor = zeeguuOrange)}
           >
-            Yes, let's do it!
+            Yes, now!
           </button>
           <button
             style={dismissButtonStyle}

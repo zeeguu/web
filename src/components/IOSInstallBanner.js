@@ -123,7 +123,7 @@ export default function IOSInstallBanner({ browserType, onShowInstructions, onDi
         <div style={containerStyle}>
           <div style={iconStyle}>📱</div>
           <div style={contentStyle}>
-            <h3 style={titleStyle}>Install Zeeguu App</h3>
+            <h3 style={titleStyle}>Install Zeeguu App?</h3>
             <p style={descriptionStyle}>
               {getBrowserText()}
             </p>
@@ -136,7 +136,7 @@ export default function IOSInstallBanner({ browserType, onShowInstructions, onDi
             onMouseOver={(e) => (e.target.style.backgroundColor = "#e69500")}
             onMouseOut={(e) => (e.target.style.backgroundColor = zeeguuOrange)}
           >
-            Yes, let's do it!
+            Yes, now!
           </button>
           <button
             style={dismissButtonStyle}
