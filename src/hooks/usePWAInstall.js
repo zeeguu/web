@@ -8,7 +8,7 @@ export default function usePWAInstall() {
   const [isPWAInstalled, setIsPWAInstalled] = useState(false);
   const [isInstallable, setIsInstallable] = useState(false);
   const [showInstallBanner, setShowInstallBanner] = useState(false);
-  const [isIOSSafari, setIsIOSSafari] = useState(false);
+  const [isAnyIOSBrowser, setIsAnyIOSBrowser] = useState(false);
 
   // Check if banner was dismissed recently (within 24 hours)
   const isDismissedRecently = () => {
@@ -38,20 +38,19 @@ export default function usePWAInstall() {
              (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1); // iPad on iOS 13+
     };
 
-    // Detect iOS Safari
-    const isIOSSafari = () => {
+    // Detect any iOS browser (Safari, Chrome, Firefox, etc.)
+    const isIOSBrowser = () => {
       const userAgent = window.navigator.userAgent;
-      const isIOS = /iPad|iPhone|iPod/.test(userAgent);
-      const isSafari = /Safari/.test(userAgent) && !/CriOS|FxiOS|EdgiOS/.test(userAgent);
-      return isIOS && isSafari;
+      return /iPad|iPhone|iPod/.test(userAgent);
     };
 
-    const iosDetected = isIOSSafari();
-    setIsPWAInstalled(checkIfPWA());
-    setIsIOSSafari(iosDetected);
 
-    // For iOS Safari on mobile, show banner immediately (no beforeinstallprompt event)
-    if (iosDetected && isMobileDevice() && !checkIfPWA() && !isDismissedRecently()) {
+    const anyIOSBrowser = isIOSBrowser();
+    setIsPWAInstalled(checkIfPWA());
+    setIsAnyIOSBrowser(anyIOSBrowser);
+
+    // For any iOS browser, show banner immediately (no beforeinstallprompt event on iOS)
+    if (anyIOSBrowser && isMobileDevice() && !checkIfPWA() && !isDismissedRecently()) {
       setIsInstallable(true);
       setShowInstallBanner(true);
     }
@@ -95,9 +94,9 @@ export default function usePWAInstall() {
   }, []);
 
   const installPWA = async () => {
-    // iOS Safari doesn't support programmatic install
-    if (isIOSSafari) {
-      console.log('iOS Safari detected - cannot trigger install programmatically');
+    // iOS browsers don't support programmatic install
+    if (isAnyIOSBrowser) {
+      console.log('iOS browser detected - cannot trigger install programmatically');
       return false;
     }
 
@@ -142,7 +141,7 @@ export default function usePWAInstall() {
     isPWAInstalled,
     isInstallable,
     showInstallBanner,
-    isIOSSafari,
+    isAnyIOSBrowser,
     installPWA,
     dismissBanner,
     resetDismissal

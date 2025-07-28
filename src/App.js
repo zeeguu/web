@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from "react";
-import { BrowserRouter } from "react-router-dom";
+import { BrowserRouter, useLocation } from "react-router-dom";
 
 import { SystemLanguagesContext } from "./contexts/SystemLanguagesContext";
 import { UserContext } from "./contexts/UserContext";
@@ -28,6 +28,29 @@ import PWAInstallBanner from "./components/PWAInstallBanner";
 import IOSInstallBanner from "./components/IOSInstallBanner";
 import usePWAInstall from "./hooks/usePWAInstall";
 
+function PWABanners() {
+  const location = useLocation();
+  const { showInstallBanner, isAnyIOSBrowser, installPWA, dismissBanner } = usePWAInstall();
+  
+  // Only show PWA install banners on /articles page
+  const shouldShowBanner = showInstallBanner && location.pathname === '/articles';
+  
+  if (!shouldShowBanner) return null;
+  
+  return isAnyIOSBrowser ? (
+    <IOSInstallBanner 
+      show={shouldShowBanner}
+      onDismiss={dismissBanner}
+    />
+  ) : (
+    <PWAInstallBanner 
+      show={shouldShowBanner}
+      onInstall={installPWA}
+      onDismiss={dismissBanner}
+    />
+  );
+}
+
 function App() {
   const [api] = useState(new Zeeguu_API(API_ENDPOINT));
 
@@ -39,9 +62,6 @@ function App() {
   const [isExtensionAvailable] = useExtensionCommunication();
   const [zeeguuSpeech, setZeeguuSpeech] = useState(false);
   let { handleRedirectLinkOrGoTo } = useRedirectLink();
-  
-  // PWA Install functionality
-  const { showInstallBanner, isIOSSafari, installPWA, dismissBanner } = usePWAInstall();
 
   const [systemLanguages, setSystemLanguages] = useState();
 
@@ -201,18 +221,7 @@ function App() {
                     pauseOnHover
                     theme="light"
                   />
-                  {isIOSSafari ? (
-                    <IOSInstallBanner 
-                      show={showInstallBanner}
-                      onDismiss={dismissBanner}
-                    />
-                  ) : (
-                    <PWAInstallBanner 
-                      show={showInstallBanner}
-                      onInstall={installPWA}
-                      onDismiss={dismissBanner}
-                    />
-                  )}
+                  <PWABanners />
                 </FeedbackContextProvider>
               </APIContext.Provider>
               </ProgressProvider>
