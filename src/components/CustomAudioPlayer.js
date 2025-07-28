@@ -1,17 +1,19 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { zeeguuOrange } from "./colors";
 import PlayArrowRoundedIcon from "@mui/icons-material/PlayArrowRounded";
 import PauseRoundedIcon from "@mui/icons-material/PauseRounded";
 import HourglassEmptyRoundedIcon from "@mui/icons-material/HourglassEmptyRounded";
 
-export default function CustomAudioPlayer({ 
-  src, 
-  onPlay, 
-  onEnded, 
-  onError, 
+const SEEK_SECONDS = 5;
+
+export default function CustomAudioPlayer({
+  src,
+  onPlay,
+  onEnded,
+  onError,
   onProgressUpdate,
   initialProgress = 0,
-  style 
+  style,
 }) {
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
@@ -25,36 +27,36 @@ export default function CustomAudioPlayer({
   useEffect(() => {
     const audio = audioRef.current;
     if (!audio || !initialProgress || initialProgress <= 0) return;
-    
+
     let hasSeenked = false;
-    
+
     const seekToInitialProgress = () => {
       if (hasSeenked) return; // Prevent multiple seeks
-      
+
       console.log(`Audio ready, seeking to initial progress: ${initialProgress}, duration: ${audio.duration}`);
       if (audio.duration > 0 && initialProgress > 0) {
         audio.currentTime = initialProgress;
         setCurrentTime(initialProgress);
         hasSeenked = true;
         console.log(`Successfully seeked to ${initialProgress} seconds`);
-        
+
         // Remove listeners after successful seek
-        audio.removeEventListener('loadedmetadata', seekToInitialProgress);
-        audio.removeEventListener('canplay', seekToInitialProgress);
+        audio.removeEventListener("loadedmetadata", seekToInitialProgress);
+        audio.removeEventListener("canplay", seekToInitialProgress);
       }
     };
-    
+
     // If audio is already loaded, seek immediately
     if (audio.readyState >= 2 && audio.duration > 0) {
       seekToInitialProgress();
     } else {
       // Otherwise, wait for it to be ready
-      audio.addEventListener('loadedmetadata', seekToInitialProgress);
-      audio.addEventListener('canplay', seekToInitialProgress);
-      
+      audio.addEventListener("loadedmetadata", seekToInitialProgress);
+      audio.addEventListener("canplay", seekToInitialProgress);
+
       return () => {
-        audio.removeEventListener('loadedmetadata', seekToInitialProgress);
-        audio.removeEventListener('canplay', seekToInitialProgress);
+        audio.removeEventListener("loadedmetadata", seekToInitialProgress);
+        audio.removeEventListener("canplay", seekToInitialProgress);
       };
     }
   }, [initialProgress]);
@@ -80,7 +82,7 @@ export default function CustomAudioPlayer({
     };
     const handleLoadStart = () => setIsLoading(true);
     const handleCanPlay = () => setIsLoading(false);
-    
+
     // Sync UI state with actual audio state
     const handlePlay = () => {
       setIsPlaying(true);
@@ -133,9 +135,11 @@ export default function CustomAudioPlayer({
   const saveProgress = (forceSave = false) => {
     const audio = audioRef.current;
     if (!audio || !onProgressUpdate) return;
-    
+
     const currentProgress = Math.floor(audio.currentTime);
-    console.log(`Saving progress: ${currentProgress} seconds (last saved: ${lastSavedProgressRef.current}, forced: ${forceSave})`); // Debug log
+    console.log(
+      `Saving progress: ${currentProgress} seconds (last saved: ${lastSavedProgressRef.current}, forced: ${forceSave})`,
+    ); // Debug log
     // Only save if progress changed by at least 5 seconds OR if forceSave is true (e.g., on pause)
     if (forceSave || Math.abs(currentProgress - lastSavedProgressRef.current) >= 5) {
       console.log(`Progress saved: ${currentProgress} seconds`); // Debug log
@@ -146,7 +150,7 @@ export default function CustomAudioPlayer({
 
   const startProgressTimer = () => {
     if (!onProgressUpdate) return;
-    
+
     // Save progress every 10 seconds
     progressTimerRef.current = setInterval(saveProgress, 10000);
   };
@@ -175,6 +179,24 @@ export default function CustomAudioPlayer({
     }
   };
 
+  const seekBackward = () => {
+    const audio = audioRef.current;
+    if (!audio) return;
+
+    const newTime = Math.max(0, audio.currentTime - SEEK_SECONDS);
+    audio.currentTime = newTime;
+    setCurrentTime(newTime);
+  };
+
+  const seekForward = () => {
+    const audio = audioRef.current;
+    if (!audio) return;
+
+    const newTime = Math.min(duration, audio.currentTime + SEEK_SECONDS);
+    audio.currentTime = newTime;
+    setCurrentTime(newTime);
+  };
+
   const handleProgressClick = (e) => {
     const audio = audioRef.current;
     if (!audio || !duration) return;
@@ -183,7 +205,7 @@ export default function CustomAudioPlayer({
     const clickX = e.clientX - rect.left;
     const percentage = clickX / rect.width;
     const newTime = percentage * duration;
-    
+
     audio.currentTime = newTime;
     setCurrentTime(newTime);
   };
@@ -198,19 +220,59 @@ export default function CustomAudioPlayer({
   const progressPercentage = duration > 0 ? (currentTime / duration) * 100 : 0;
 
   return (
-    <div style={{ 
-      ...style, 
-      backgroundColor: "#f8f9fa", 
-      borderRadius: "12px", 
-      padding: "20px",
-      margin: "0 auto",
-      maxWidth: "100%",
-      boxSizing: "border-box"
-    }}>
+    <div
+      style={{
+        ...style,
+        backgroundColor: "#f8f9fa",
+        borderRadius: "12px",
+        padding: "20px",
+        margin: "0 auto",
+        maxWidth: "100%",
+        boxSizing: "border-box",
+      }}
+    >
       <audio ref={audioRef} src={src} preload="metadata" />
-      
-      {/* Play/Pause Button */}
+
+      {/* Controls Section */}
       <div style={{ display: "flex", alignItems: "center", gap: "16px", marginBottom: "16px" }}>
+        {/* Back 15s Button */}
+        <button
+          onClick={seekBackward}
+          disabled={isLoading}
+          style={{
+            width: "44px",
+            height: "44px",
+            borderRadius: "50%",
+            border: `2px solid ${isLoading ? "#ccc" : zeeguuOrange}`,
+            backgroundColor: "white",
+            color: isLoading ? "#ccc" : zeeguuOrange,
+            cursor: isLoading ? "not-allowed" : "pointer",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            fontSize: "20px",
+            transition: "all 0.2s ease",
+          }}
+          onMouseDown={(e) => {
+            if (!isLoading) {
+              e.currentTarget.style.transform = "scale(0.95)";
+            }
+          }}
+          onMouseUp={(e) => {
+            if (!isLoading) {
+              e.currentTarget.style.transform = "scale(1)";
+            }
+          }}
+          onMouseLeave={(e) => {
+            if (!isLoading) {
+              e.currentTarget.style.transform = "scale(1)";
+            }
+          }}
+        >
+          <span style={{ fontSize: "14px", fontWeight: "600" }}>-{SEEK_SECONDS}</span>
+        </button>
+
+        {/* Play/Pause Button */}
         <button
           onClick={togglePlay}
           disabled={isLoading}
@@ -231,17 +293,17 @@ export default function CustomAudioPlayer({
           }}
           onMouseDown={(e) => {
             if (!isLoading) {
-              e.target.style.transform = "scale(0.95)";
+              e.currentTarget.style.transform = "scale(0.95)";
             }
           }}
           onMouseUp={(e) => {
             if (!isLoading) {
-              e.target.style.transform = "scale(1)";
+              e.currentTarget.style.transform = "scale(1)";
             }
           }}
           onMouseLeave={(e) => {
             if (!isLoading) {
-              e.target.style.transform = "scale(1)";
+              e.currentTarget.style.transform = "scale(1)";
             }
           }}
         >
@@ -253,15 +315,50 @@ export default function CustomAudioPlayer({
             <PlayArrowRoundedIcon sx={{ fontSize: 32 }} />
           )}
         </button>
-        
+
+        {/* Forward 15s Button */}
+        <button
+          onClick={seekForward}
+          disabled={isLoading}
+          style={{
+            width: "44px",
+            height: "44px",
+            borderRadius: "50%",
+            border: `2px solid ${isLoading ? "#ccc" : zeeguuOrange}`,
+            backgroundColor: "white",
+            color: isLoading ? "#ccc" : zeeguuOrange,
+            cursor: isLoading ? "not-allowed" : "pointer",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            fontSize: "20px",
+            transition: "all 0.2s ease",
+          }}
+          onMouseDown={(e) => {
+            if (!isLoading) {
+              e.currentTarget.style.transform = "scale(0.95)";
+            }
+          }}
+          onMouseUp={(e) => {
+            if (!isLoading) {
+              e.currentTarget.style.transform = "scale(1)";
+            }
+          }}
+          onMouseLeave={(e) => {
+            if (!isLoading) {
+              e.currentTarget.style.transform = "scale(1)";
+            }
+          }}
+        >
+          <span style={{ fontSize: "14px", fontWeight: "600" }}>+{SEEK_SECONDS}</span>
+        </button>
+
         {/* Time Display */}
         <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-start" }}>
           <div style={{ fontSize: "16px", fontWeight: "600", color: "#333" }}>
             {formatTime(currentTime)} / {formatTime(duration)}
           </div>
-          {isLoading && (
-            <div style={{ fontSize: "12px", color: "#666" }}>Loading...</div>
-          )}
+          {isLoading && <div style={{ fontSize: "12px", color: "#666" }}>Loading...</div>}
         </div>
       </div>
 
@@ -287,7 +384,7 @@ export default function CustomAudioPlayer({
             transition: "width 0.1s ease",
           }}
         />
-        
+
         {/* Progress Handle */}
         <div
           style={{
