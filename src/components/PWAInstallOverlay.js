@@ -215,7 +215,7 @@ export default function PWAInstallOverlay({ onClose, show, isIOSBrowser, iosBrow
 
           <div style={headerStyle}>
             <div style={iconStyle}>📱</div>
-            <h2 style={titleStyle}>Add Zeeguu to your home screen</h2>
+            <h2 style={titleStyle}>Add Zeeguu as an app to your home screen</h2>
           </div>
 
           <div style={instructionsStyle}>
