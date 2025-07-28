@@ -190,7 +190,7 @@ export default function PWAInstallOverlay({ onClose, show, isIOSBrowser }) {
                   <div style={stepContentStyle}>
                     <h3 style={stepTitleStyle}>Tap the Share button</h3>
                     <p style={stepDescriptionStyle}>
-                      Look for the share icon (square with arrow pointing up) at the bottom of your browser
+                      Look for the share icon (square with arrow pointing up) in your address bar (at the top in Chrome, bottom in Safari)
                     </p>
                   </div>
                 </div>

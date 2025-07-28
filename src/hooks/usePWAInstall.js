@@ -82,10 +82,20 @@ export default function usePWAInstall() {
       setIsInstallable(true);
       setShowInstallBanner(true);
     }
+    
+    // For Android, also show banner as fallback if beforeinstallprompt doesn't fire
+    // Wait a bit to give beforeinstallprompt a chance to fire first
+    const androidFallbackTimer = setTimeout(() => {
+      if (!anyIOSBrowser && isMobile && !isPWA && !isDismissed && !isInstallable) {
+        console.log('Android fallback - showing banner without beforeinstallprompt');
+        setIsInstallable(true);
+        setShowInstallBanner(true);
+      }
+    }, 2000); // Wait 2 seconds
 
     // Listen for PWA install prompt
     const handleBeforeInstallPrompt = (e) => {
-      console.log('PWA install prompt available');
+      console.log('PWA install prompt available - beforeinstallprompt fired');
       e.preventDefault();
       
       // Only allow PWA installation on mobile devices
@@ -94,11 +104,18 @@ export default function usePWAInstall() {
         return;
       }
       
+      console.log('Android PWA conditions:', {
+        isPWA: checkIfPWA(),
+        dismissed: isDismissedRecently(),
+        shouldShow: !checkIfPWA() && !isDismissedRecently()
+      });
+      
       setDeferredPrompt(e);
       setIsInstallable(true);
       
       // Show banner only if not in PWA and not recently dismissed
       if (!checkIfPWA() && !isDismissedRecently()) {
+        console.log('Setting Android banner to show');
         setShowInstallBanner(true);
       }
     };
@@ -118,6 +135,7 @@ export default function usePWAInstall() {
     return () => {
       window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
       window.removeEventListener('appinstalled', handleAppInstalled);
+      clearTimeout(androidFallbackTimer);
     };
   }, []);
 
