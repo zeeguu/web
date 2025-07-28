@@ -13,6 +13,7 @@ import Main from "./modal_shared/Main.sc.js";
 import Header from "./modal_shared/Header.sc.js";
 import Heading from "./modal_shared/Heading.sc.js";
 import { FEEDBACK_CODES, FEEDBACK_CODES_NAME, getCategoryIdForUrl } from "./FeedbackConstants.js";
+import useScreenWidth from "../hooks/useScreenWidth.js";
 
 export default function FeedbackModal({
   open,
@@ -23,6 +24,7 @@ export default function FeedbackModal({
   contextualInfo,
 }) {
   let api = useContext(APIContext);
+  const { isMobile } = useScreenWidth();
 
   // Smart preselection: explicit choice > intelligent context-based > first available > Other
   const getDefaultOption = () => {
@@ -62,6 +64,7 @@ export default function FeedbackModal({
       message: prefixMsg ? prefixMsg + " - " + feedbackMessage : feedbackMessage,
       feedbackComponentId: feedbackComponentSelected,
       currentUrl: contextualInfo?.url || window.location.href,
+      isMobile: isMobile,
     };
     api.sendFeedback(
       payload,
