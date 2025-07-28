@@ -10,9 +10,6 @@ export default function IOSInstallBanner({ browserType, onShowInstructions, onDi
 
   if (!show) return null;
 
-  const accentColor = useOrangeAccent ? zeeguuOrange : "#007AFF";
-  const accentHoverColor = useOrangeAccent ? "#e69500" : "#0056CC";
-
   // Get browser-specific text
   const getBrowserText = () => {
     switch (browserType) {
@@ -35,7 +32,7 @@ export default function IOSInstallBanner({ browserType, onShowInstructions, onDi
     left: "1rem",
     right: "1rem",
     backgroundColor: "#f8fbff",
-    border: `2px solid ${accentColor}`,
+    border: `2px solid #007AFF`,
     borderRadius: "12px",
     padding: "20px",
     boxShadow: "0 4px 12px rgba(0, 0, 0, 0.15)",
@@ -64,7 +61,7 @@ export default function IOSInstallBanner({ browserType, onShowInstructions, onDi
 
   const titleStyle = {
     margin: 0,
-    fontSize: "24px",
+    fontSize: "19px",
     fontWeight: "600",
     color: "#333",
     marginBottom: "6px",
@@ -72,7 +69,7 @@ export default function IOSInstallBanner({ browserType, onShowInstructions, onDi
 
   const descriptionStyle = {
     margin: 0,
-    fontSize: "21px",
+    fontSize: "17px",
     color: "#666",
     lineHeight: "1.4",
   };
@@ -87,7 +84,7 @@ export default function IOSInstallBanner({ browserType, onShowInstructions, onDi
     padding: "12px 24px",
     border: "none",
     borderRadius: "8px",
-    fontSize: "21px",
+    fontSize: "17px",
     fontWeight: "600",
     cursor: "pointer",
     transition: "all 0.2s ease",
@@ -96,7 +93,7 @@ export default function IOSInstallBanner({ browserType, onShowInstructions, onDi
 
   const installButtonStyle = {
     ...buttonStyle,
-    backgroundColor: accentColor,
+    backgroundColor: zeeguuOrange,
     color: "white",
   };
 
@@ -146,8 +143,8 @@ export default function IOSInstallBanner({ browserType, onShowInstructions, onDi
           <button
             style={installButtonStyle}
             onClick={onShowInstructions}
-            onMouseOver={(e) => (e.target.style.backgroundColor = accentHoverColor)}
-            onMouseOut={(e) => (e.target.style.backgroundColor = accentColor)}
+            onMouseOver={(e) => (e.target.style.backgroundColor = "#e69500")}
+            onMouseOut={(e) => (e.target.style.backgroundColor = zeeguuOrange)}
           >
             Yes, now!
           </button>

@@ -116,16 +116,16 @@ export default function PWAInstallOverlay({ onClose, show, isIOSBrowser, iosBrow
     gap: "12px",
     marginBottom: "12px",
     padding: "12px",
-    backgroundColor: "#f8f9fa",
+    backgroundColor: "#f0f4ff",
     borderRadius: "8px",
-    border: "1px solid #e9ecef",
+    border: "1px solid #d6e3ff",
   };
 
   const buttonColor = useOrangeAccent ? zeeguuOrange : "#007AFF";
   const buttonHoverColor = useOrangeAccent ? "#e69500" : "#0056CC";
 
   const stepNumberStyle = {
-    backgroundColor: zeeguuOrange, // Always orange for step numbers
+    backgroundColor: "#007AFF", // Blue step numbers
     color: "white",
     borderRadius: "50%",
     width: "24px",
@@ -173,7 +173,7 @@ export default function PWAInstallOverlay({ onClose, show, isIOSBrowser, iosBrow
   const bottomButtonStyle = {
     width: "100%",
     padding: "12px 24px",
-    backgroundColor: buttonColor,
+    backgroundColor: zeeguuOrange, // Orange "Got it!" button
     color: "white",
     border: "none",
     borderRadius: "8px",
@@ -282,8 +282,8 @@ export default function PWAInstallOverlay({ onClose, show, isIOSBrowser, iosBrow
           <button
             style={bottomButtonStyle}
             onClick={onClose}
-            onMouseOver={(e) => (e.target.style.backgroundColor = buttonHoverColor)}
-            onMouseOut={(e) => (e.target.style.backgroundColor = buttonColor)}
+            onMouseOver={(e) => (e.target.style.backgroundColor = "#e69500")}
+            onMouseOut={(e) => (e.target.style.backgroundColor = zeeguuOrange)}
           >
             Got it!
           </button>
