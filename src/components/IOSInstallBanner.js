@@ -17,19 +17,23 @@ export default function IOSInstallBanner({ onShowInstructions, onDismiss, show }
     backgroundColor: "#fff",
     border: `2px solid ${zeeguuOrange}`,
     borderRadius: "12px",
-    padding: "16px",
+    padding: "20px",
     boxShadow: "0 4px 12px rgba(0, 0, 0, 0.15)",
     zIndex: 1000,
-    display: "flex",
-    alignItems: "center",
-    gap: "12px",
     animation: "slideUp 0.3s ease-out",
     maxWidth: "500px",
     margin: "0 auto",
   };
 
+  const containerStyle = {
+    display: "flex",
+    alignItems: "center",
+    gap: "16px",
+    marginBottom: "20px",
+  };
+
   const iconStyle = {
-    fontSize: "24px",
+    fontSize: "36px",
     flexShrink: 0,
   };
 
@@ -40,35 +44,34 @@ export default function IOSInstallBanner({ onShowInstructions, onDismiss, show }
 
   const titleStyle = {
     margin: 0,
-    fontSize: "16px",
+    fontSize: "24px",
     fontWeight: "600",
     color: "#333",
-    marginBottom: "4px",
+    marginBottom: "6px",
   };
 
   const descriptionStyle = {
     margin: 0,
-    fontSize: "14px",
+    fontSize: "21px",
     color: "#666",
     lineHeight: "1.4",
   };
 
   const buttonContainerStyle = {
     display: "flex",
-    gap: "8px",
+    gap: "12px",
     flexDirection: isMobile ? "column" : "row",
-    flexShrink: 0,
   };
 
   const buttonStyle = {
-    padding: "8px 16px",
+    padding: "12px 24px",
     border: "none",
-    borderRadius: "6px",
-    fontSize: "14px",
+    borderRadius: "8px",
+    fontSize: "21px",
     fontWeight: "600",
     cursor: "pointer",
     transition: "all 0.2s ease",
-    minWidth: isMobile ? "80px" : "auto",
+    minWidth: isMobile ? "120px" : "auto",
   };
 
   const installButtonStyle = {
@@ -101,12 +104,14 @@ export default function IOSInstallBanner({ onShowInstructions, onDismiss, show }
         `}
       </style>
       <div style={bannerStyle}>
-        <div style={iconStyle}>📱</div>
-        <div style={contentStyle}>
-          <h3 style={titleStyle}>Install Zeeguu App</h3>
-          <p style={descriptionStyle}>
-            Add Zeeguu to your home screen for faster access!
-          </p>
+        <div style={containerStyle}>
+          <div style={iconStyle}>📱</div>
+          <div style={contentStyle}>
+            <h3 style={titleStyle}>Install Zeeguu App</h3>
+            <p style={descriptionStyle}>
+              Add Zeeguu to your home screen for faster access!
+            </p>
+          </div>
         </div>
         <div style={buttonContainerStyle}>
           <button
