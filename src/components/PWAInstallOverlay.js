@@ -12,40 +12,34 @@ export default function PWAInstallOverlay({ onClose, show, isIOSBrowser, iosBrow
 
   // Real iOS share button icon
   const ShareButtonIcon = ({ style }) => (
-    <svg 
-      width="20" 
-      height="20" 
-      viewBox="0 0 24 24" 
-      fill="none" 
+    <svg
+      width="20"
+      height="20"
+      viewBox="0 0 24 24"
+      fill="none"
       xmlns="http://www.w3.org/2000/svg"
       style={{
-        display: 'inline-block',
-        marginRight: '8px',
-        verticalAlign: 'middle',
-        ...style
+        display: "inline-block",
+        marginRight: "8px",
+        verticalAlign: "middle",
+        ...style,
       }}
     >
-      <path 
-        d="M12 2L8 6h2.5v6h3V6H16l-4-4z" 
-        fill="#007AFF"
-      />
-      <path 
-        d="M6 14v6h12v-6h2v6a2 2 0 01-2 2H6a2 2 0 01-2-2v-6h2z" 
-        fill="#007AFF"
-      />
+      <path d="M12 2L8 6h2.5v6h3V6H16l-4-4z" fill="#007AFF" />
+      <path d="M6 14v6h12v-6h2v6a2 2 0 01-2 2H6a2 2 0 01-2-2v-6h2z" fill="#007AFF" />
     </svg>
   );
 
   // Get browser-specific instructions
   const getShareButtonText = () => {
     switch (iosBrowserType) {
-      case 'chrome':
+      case "chrome":
         return (
           <>
             Look for the share icon <ShareButtonIcon /> in your address bar at the top
           </>
         );
-      case 'safari':
+      case "safari":
         return (
           <>
             Look for the share icon <ShareButtonIcon /> in your address bar at the bottom
@@ -253,27 +247,21 @@ export default function PWAInstallOverlay({ onClose, show, isIOSBrowser, iosBrow
                   <div style={stepNumberStyle}>1</div>
                   <div style={stepContentStyle}>
                     <h3 style={stepTitleStyle}>Tap the Share button</h3>
-                    <p style={stepDescriptionStyle}>
-                      {getShareButtonText()}
-                    </p>
+                    <p style={stepDescriptionStyle}>{getShareButtonText()}</p>
                   </div>
                 </div>
                 <div style={stepStyle}>
                   <div style={stepNumberStyle}>2</div>
                   <div style={stepContentStyle}>
-                    <h3 style={stepTitleStyle}>Find "Add to Home Screen"</h3>
-                    <p style={stepDescriptionStyle}>
-                      Scroll down in the share menu and tap "Add to Home Screen"
-                    </p>
+                    <h3 style={stepTitleStyle}>Tap "Add to home screen"</h3>
+                    <p style={stepDescriptionStyle}>Scroll down in the share menu</p>
                   </div>
                 </div>
                 <div style={stepStyle}>
                   <div style={stepNumberStyle}>3</div>
                   <div style={stepContentStyle}>
                     <h3 style={stepTitleStyle}>Confirm installation</h3>
-                    <p style={stepDescriptionStyle}>
-                      Tap "Add" in the top right corner to install the Zeeguu app
-                    </p>
+                    <p style={stepDescriptionStyle}>Tap "Add" in the top right corner</p>
                   </div>
                 </div>
               </>
@@ -283,27 +271,21 @@ export default function PWAInstallOverlay({ onClose, show, isIOSBrowser, iosBrow
                   <div style={stepNumberStyle}>1</div>
                   <div style={stepContentStyle}>
                     <h3 style={stepTitleStyle}>Tap the menu (three dots)</h3>
-                    <p style={stepDescriptionStyle}>
-                      Look for the three dots menu in the top right corner of Chrome
-                    </p>
+                    <p style={stepDescriptionStyle}>Look for the three dots menu in the top right corner of Chrome</p>
                   </div>
                 </div>
                 <div style={stepStyle}>
                   <div style={stepNumberStyle}>2</div>
                   <div style={stepContentStyle}>
                     <h3 style={stepTitleStyle}>Find "Add to Home screen"</h3>
-                    <p style={stepDescriptionStyle}>
-                      Look for "Add to Home screen" or "Install app" in the menu
-                    </p>
+                    <p style={stepDescriptionStyle}>Look for "Add to Home screen" or "Install app" in the menu</p>
                   </div>
                 </div>
                 <div style={stepStyle}>
                   <div style={stepNumberStyle}>3</div>
                   <div style={stepContentStyle}>
                     <h3 style={stepTitleStyle}>Confirm installation</h3>
-                    <p style={stepDescriptionStyle}>
-                      Tap "Add" or "Install" to add Zeeguu to your home screen
-                    </p>
+                    <p style={stepDescriptionStyle}>Tap "Add" or "Install" to add Zeeguu to your home screen</p>
                   </div>
                 </div>
               </>
@@ -318,15 +300,15 @@ export default function PWAInstallOverlay({ onClose, show, isIOSBrowser, iosBrow
           >
             Got it!
           </button>
-          
-          <a 
+
+          <a
             style={toggleLinkStyle}
             onClick={(e) => {
               e.preventDefault();
               setUseOrangeAccent(!useOrangeAccent);
             }}
           >
-            Try {useOrangeAccent ? 'blue' : 'orange'} button
+            Try {useOrangeAccent ? "blue" : "orange"} button
           </a>
         </div>
       </div>
