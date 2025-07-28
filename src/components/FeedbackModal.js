@@ -12,7 +12,7 @@ import TextField from "./TextField.js";
 import Main from "./modal_shared/Main.sc.js";
 import Header from "./modal_shared/Header.sc.js";
 import Heading from "./modal_shared/Heading.sc.js";
-import { FEEDBACK_CODES, FEEDBACK_CODES_NAME } from "./FeedbackConstants.js";
+import { FEEDBACK_CODES, FEEDBACK_CODES_NAME, getCategoryIdForUrl } from "./FeedbackConstants.js";
 
 export default function FeedbackModal({
   open,
@@ -33,29 +33,14 @@ export default function FeedbackModal({
 
     // 2. Intelligent preselection based on current page URL
     const currentUrl = contextualInfo?.url || window.location.href;
-    console.log("FeedbackModal Debug:", {
-      currentUrl,
-      componentCategories,
-      exerciseCodeName: FEEDBACK_CODES_NAME.EXERCISE,
-      includesExercise: componentCategories?.includes(FEEDBACK_CODES_NAME.EXERCISE)
-    });
-    if (currentUrl.includes("/exercise") || currentUrl.includes("/exercises")) {
-      return componentCategories?.includes(FEEDBACK_CODES_NAME.EXERCISE)
-        ? FEEDBACK_CODES_NAME.EXERCISE
-        : FEEDBACK_CODES_NAME.OTHER;
-    }
-    if (currentUrl.includes("/read/article")) {
-      return componentCategories?.includes(FEEDBACK_CODES_NAME.ARTICLE_READER)
-        ? FEEDBACK_CODES_NAME.ARTICLE_READER
-        : FEEDBACK_CODES_NAME.OTHER;
-    }
-    if (currentUrl.includes("/daily-audio")) {
-      return componentCategories?.includes(FEEDBACK_CODES_NAME.DAILY_AUDIO)
-        ? FEEDBACK_CODES_NAME.DAILY_AUDIO
-        : FEEDBACK_CODES_NAME.OTHER;
+    const suggestedCategory = getCategoryIdForUrl(currentUrl);
+    
+    // Use suggested category if it's available in the current options
+    if (componentCategories?.includes(suggestedCategory)) {
+      return suggestedCategory;
     }
 
-    // 3. Default to "Other" for any unrecognized page
+    // 3. Default to "Other" if suggested category not available
     return FEEDBACK_CODES_NAME.OTHER;
   };
 

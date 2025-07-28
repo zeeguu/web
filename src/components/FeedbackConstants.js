@@ -3,14 +3,14 @@
  * These values need to be aligned with the API values in the Database (FeedbackComponent)
  */
 const FEEDBACK_CATEGORIES = [
-  { id: 1, name: "Article Reader", key: "ARTICLE_READER" },
-  { id: 2, name: "Article Recommendations", key: "ARTICLE_RECOMMENDATION" }, 
-  { id: 3, name: "Translation", key: "TRANSLATION" },
-  { id: 4, name: "Sound", key: "SOUND" },
-  { id: 5, name: "Exercises", key: "EXERCISE" },
-  { id: 6, name: "Extension", key: "EXTENSION" },
-  { id: 7, name: "Other", key: "OTHER" },
-  { id: 8, name: "Daily Audio", key: "DAILY_AUDIO" },
+  { id: 1, name: "Article Reader", key: "ARTICLE_READER", urlPatterns: ["/read/article"] },
+  { id: 2, name: "Article Recommendations", key: "ARTICLE_RECOMMENDATION", urlPatterns: ["/articles"] }, 
+  { id: 3, name: "Translation", key: "TRANSLATION", urlPatterns: [] },
+  { id: 4, name: "Sound", key: "SOUND", urlPatterns: [] },
+  { id: 5, name: "Exercises", key: "EXERCISE", urlPatterns: ["/exercise", "/exercises"] },
+  { id: 6, name: "Extension", key: "EXTENSION", urlPatterns: [] },
+  { id: 7, name: "Other", key: "OTHER", urlPatterns: [] },
+  { id: 8, name: "Daily Audio", key: "DAILY_AUDIO", urlPatterns: ["/daily-audio"] },
 ];
 
 // Auto-generated from single source of truth
@@ -37,3 +37,11 @@ export const FEEDBACK_OPTIONS = {
     FEEDBACK_CODES_NAME.OTHER,
   ],
 };
+
+// Helper function to find category by URL
+export function getCategoryIdForUrl(url) {
+  const category = FEEDBACK_CATEGORIES.find(cat => 
+    cat.urlPatterns.some(pattern => url.includes(pattern))
+  );
+  return category ? category.id : FEEDBACK_CODES_NAME.OTHER;
+}
