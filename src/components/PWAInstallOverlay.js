@@ -251,7 +251,7 @@ export default function PWAInstallOverlay({ onClose, show, isIOSBrowser, iosBrow
                 <div style={stepStyle}>
                   <div style={stepNumberStyle}>2</div>
                   <div style={stepContentStyle}>
-                    <div style={stepTitleStyle}>Tap "Add to Home screen" or "Install app"</div>
+                    <div style={stepTitleStyle}>Look for "Add to Home screen" or "Install"</div>
                   </div>
                 </div>
                 <div style={stepStyle}>

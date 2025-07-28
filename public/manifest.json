@@ -16,6 +16,26 @@
       "type": "image/x-icon"
     },
     {
+      "src": "/static/images/zeeguu16.png",
+      "type": "image/png",
+      "sizes": "16x16"
+    },
+    {
+      "src": "/static/images/zeeguu32.png",
+      "type": "image/png",
+      "sizes": "32x32"
+    },
+    {
+      "src": "/static/images/zeeguu48.png",
+      "type": "image/png",
+      "sizes": "48x48"
+    },
+    {
+      "src": "/static/images/zeeguu128.png",
+      "type": "image/png",
+      "sizes": "128x128"
+    },
+    {
       "src": "logo192.png",
       "type": "image/png",
       "sizes": "192x192",
@@ -29,6 +49,14 @@
     }
   ],
   "categories": ["education", "reading"],
+  "screenshots": [
+    {
+      "src": "/static/images/mobile-screenshot.jpeg",
+      "sizes": "735x1600",
+      "type": "image/jpeg",
+      "form_factor": "narrow"
+    }
+  ],
   "launch_handler": {
     "client_mode": "focus-existing"
   }
