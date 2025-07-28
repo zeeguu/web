@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { zeeguuOrange } from "./colors";
 import { isMobileScreenWidth } from "./MainNav/screenSize";
 import useScreenWidth from "../hooks/useScreenWidth";
@@ -6,7 +6,6 @@ import useScreenWidth from "../hooks/useScreenWidth";
 export default function PWAInstallOverlay({ onClose, show, isIOSBrowser, iosBrowserType }) {
   const { screenWidth } = useScreenWidth();
   const isMobile = isMobileScreenWidth(screenWidth);
-  const [useOrangeAccent, setUseOrangeAccent] = useState(false);
 
   if (!show) return null;
 
@@ -121,8 +120,6 @@ export default function PWAInstallOverlay({ onClose, show, isIOSBrowser, iosBrow
     border: "1px solid #d6e3ff",
   };
 
-  const buttonColor = useOrangeAccent ? zeeguuOrange : "#007AFF";
-  const buttonHoverColor = useOrangeAccent ? "#e69500" : "#0056CC";
 
   const stepNumberStyle = {
     backgroundColor: "#007AFF", // Blue step numbers
@@ -183,15 +180,6 @@ export default function PWAInstallOverlay({ onClose, show, isIOSBrowser, iosBrow
     transition: "background-color 0.2s ease",
   };
 
-  const toggleLinkStyle = {
-    display: "block",
-    textAlign: "center",
-    marginTop: "12px",
-    fontSize: "12px",
-    color: "#666",
-    textDecoration: "underline",
-    cursor: "pointer",
-  };
 
   return (
     <>
@@ -285,15 +273,6 @@ export default function PWAInstallOverlay({ onClose, show, isIOSBrowser, iosBrow
             Got it!
           </button>
 
-          <a
-            style={toggleLinkStyle}
-            onClick={(e) => {
-              e.preventDefault();
-              setUseOrangeAccent(!useOrangeAccent);
-            }}
-          >
-            Try {useOrangeAccent ? "blue" : "orange"} button
-          </a>
         </div>
       </div>
     </>

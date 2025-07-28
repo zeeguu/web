@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { zeeguuOrange } from "./colors";
 import { isMobileScreenWidth } from "./MainNav/screenSize";
 import useScreenWidth from "../hooks/useScreenWidth";
@@ -6,7 +6,6 @@ import useScreenWidth from "../hooks/useScreenWidth";
 export default function PWAInstallBanner({ onInstall, onDismiss, show }) {
   const { screenWidth } = useScreenWidth();
   const isMobile = isMobileScreenWidth(screenWidth);
-  const [useOrangeAccent, setUseOrangeAccent] = useState(true); // Default to orange for banner
 
   if (!show) return null;
 
@@ -15,7 +14,7 @@ export default function PWAInstallBanner({ onInstall, onDismiss, show }) {
     top: "1rem",
     left: "1rem",
     right: "1rem",
-    backgroundColor: "#f8fbff",
+    backgroundColor: "#fff",
     border: `2px solid #007AFF`,
     borderRadius: "12px",
     padding: "20px",
@@ -88,14 +87,6 @@ export default function PWAInstallBanner({ onInstall, onDismiss, show }) {
     border: "1px solid #ddd",
   };
 
-  const toggleLinkStyle = {
-    fontSize: "11px",
-    color: "#999",
-    textDecoration: "underline",
-    cursor: "pointer",
-    marginTop: "8px",
-    textAlign: "center",
-  };
 
   return (
     <>
@@ -117,10 +108,7 @@ export default function PWAInstallBanner({ onInstall, onDismiss, show }) {
         <div style={containerStyle}>
           <div style={iconStyle}>📱</div>
           <div style={contentStyle}>
-            <h3 style={titleStyle}>Install Zeeguu App?</h3>
-            <p style={descriptionStyle}>
-              Add Zeeguu to your home screen for faster access!
-            </p>
+            <h3 style={titleStyle}>Install Zeeguu as an app?</h3>
           </div>
         </div>
         <div style={buttonContainerStyle}>
@@ -130,7 +118,7 @@ export default function PWAInstallBanner({ onInstall, onDismiss, show }) {
             onMouseOver={(e) => (e.target.style.backgroundColor = "#e69500")}
             onMouseOut={(e) => (e.target.style.backgroundColor = zeeguuOrange)}
           >
-            Yes, now!
+Yes, let's do it!
           </button>
           <button
             style={dismissButtonStyle}
@@ -140,15 +128,6 @@ export default function PWAInstallBanner({ onInstall, onDismiss, show }) {
           >
             Later
           </button>
-        </div>
-        
-        <div style={toggleLinkStyle}>
-          <a onClick={(e) => {
-            e.preventDefault();
-            setUseOrangeAccent(!useOrangeAccent);
-          }}>
-            Try {useOrangeAccent ? 'blue' : 'orange'} button
-          </a>
         </div>
       </div>
     </>
