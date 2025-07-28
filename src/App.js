@@ -47,7 +47,7 @@ function PWABanners() {
   // Visual debugging for mobile - remove after testing
   const debugStyle = {
     position: 'fixed',
-    top: '10px',
+    bottom: '10px',
     left: '10px',
     background: 'black',
     color: 'white',

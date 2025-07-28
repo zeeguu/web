@@ -218,27 +218,27 @@ export default function PWAInstallOverlay({ onClose, show, isIOSBrowser }) {
                 <div style={stepStyle}>
                   <div style={stepNumberStyle}>1</div>
                   <div style={stepContentStyle}>
-                    <h3 style={stepTitleStyle}>Install prompt will appear</h3>
+                    <h3 style={stepTitleStyle}>Tap the menu (three dots)</h3>
                     <p style={stepDescriptionStyle}>
-                      Your browser will show an "Install" button or prompt
+                      Look for the three dots menu in the top right corner of Chrome
                     </p>
                   </div>
                 </div>
                 <div style={stepStyle}>
                   <div style={stepNumberStyle}>2</div>
                   <div style={stepContentStyle}>
-                    <h3 style={stepTitleStyle}>Click Install</h3>
+                    <h3 style={stepTitleStyle}>Find "Add to Home screen"</h3>
                     <p style={stepDescriptionStyle}>
-                      Click the "Install" button to add Zeeguu to your home screen
+                      Look for "Add to Home screen" or "Install app" in the menu
                     </p>
                   </div>
                 </div>
                 <div style={stepStyle}>
                   <div style={stepNumberStyle}>3</div>
                   <div style={stepContentStyle}>
-                    <h3 style={stepTitleStyle}>Enjoy the app!</h3>
+                    <h3 style={stepTitleStyle}>Confirm installation</h3>
                     <p style={stepDescriptionStyle}>
-                      Access Zeeguu quickly from your home screen with offline reading support
+                      Tap "Add" or "Install" to add Zeeguu to your home screen
                     </p>
                   </div>
                 </div>
