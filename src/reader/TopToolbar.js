@@ -11,8 +11,8 @@ import ToolbarButtons from "./ToolbarButtons";
 
 import BackArrow from "../pages/Settings/settings_pages_shared/BackArrow";
 import useScreenWidth from "../hooks/useScreenWidth";
-import { MOBILE_WIDTH } from "../components/MainNav/screenSize";
 import { APIContext } from "../contexts/APIContext";
+import { MOBILE_WIDTH } from "../components/MainNav/screenSize";
 
 export default function TopToolbar({
   user,
@@ -26,19 +26,14 @@ export default function TopToolbar({
   timer,
 }) {
   const api = useContext(APIContext);
-  const { screenWidth } = useScreenWidth();
+  const { screenWidth, isMobile } = useScreenWidth();
   const history = useHistory();
   const { setReturnPath } = useContext(RoutingContext); //This to be able to use Cancel correctly in EditText.
   const saveArticleToOwnTexts = () => {
     api.getArticleInfo(articleID, (article) => {
-      api.uploadOwnText(
-        article.title,
-        article.content,
-        article.language,
-        (newID) => {
-          history.push(`/teacher/texts/editText/${newID}`);
-        },
-      );
+      api.uploadOwnText(article.title, article.content, article.language, (newID) => {
+        history.push(`/teacher/texts/editText/${newID}`);
+      });
     });
   };
 
@@ -51,11 +46,11 @@ export default function TopToolbar({
     <s.ToolbarWrapper>
       <s.Toolbar>
         <s.TopbarButtonsContainer $screenWidth={screenWidth}>
-          {screenWidth < MOBILE_WIDTH && <BackArrow noMargin={false} />}
+          {isMobile && <BackArrow noMargin={false} />}
           <div>
             {user.is_teacher && (
               <>
-                {teacherArticleID && screenWidth >= MOBILE_WIDTH && (
+                {teacherArticleID && !isMobile && (
                   <Link to={`/teacher/texts/editText/${articleID}`}>
                     <StyledButton className="toolbar-btn" secondary studentView>
                       {strings.backToEditing}
@@ -64,17 +59,8 @@ export default function TopToolbar({
                 )}
 
                 {!teacherArticleID && screenWidth >= MOBILE_WIDTH && (
-                  <StyledButton
-                    className="toolbar-btn"
-                    primary
-                    studentView
-                    onClick={handleSaveCopyToShare}
-                  >
-                    <img
-                      width="40px"
-                      src="/static/images/share-button.svg"
-                      alt="share"
-                    />
+                  <StyledButton className="toolbar-btn" primary studentView onClick={handleSaveCopyToShare}>
+                    <img width="40px" src="/static/images/share-button.svg" alt="share" />
                   </StyledButton>
                 )}
               </>

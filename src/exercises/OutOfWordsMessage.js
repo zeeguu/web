@@ -1,14 +1,13 @@
 import * as s from "./exerciseTypes/Exercise.sc";
 import Pluralize from "../utils/text/pluralize";
 import useScreenWidth from "../hooks/useScreenWidth";
-import { MOBILE_WIDTH } from "../components/MainNav/screenSize";
 import BackArrow from "../pages/Settings/settings_pages_shared/BackArrow";
 import { Link } from "react-router-dom";
 import { useContext, useEffect, useState } from "react";
 import { APIContext } from "../contexts/APIContext";
 
 export default function OutOfWordsMessage({ goBackAction }) {
-  const { screenWidth } = useScreenWidth();
+  const { isMobile } = useScreenWidth();
   const api = useContext(APIContext);
 
   const [totalInLearning, setTotalInLearning] = useState();
@@ -21,7 +20,7 @@ export default function OutOfWordsMessage({ goBackAction }) {
 
   return (
     <s.Exercise>
-      {screenWidth < MOBILE_WIDTH && <BackArrow />}
+      {isMobile && <BackArrow />}
       <div className="contextExample">
         <br />
         <br />

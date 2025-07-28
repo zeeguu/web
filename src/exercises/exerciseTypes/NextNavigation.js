@@ -22,6 +22,10 @@ import CorrectMessage from "./CorrectMessage";
 import { APIContext } from "../../contexts/APIContext.js";
 import { CORRECT } from "../ExerciseConstants.js";
 import isEmptyDictionary from "../../utils/misc/isEmptyDictionary.js";
+import useScreenWidth from "../../hooks/useScreenWidth.js";
+import FeedbackModal from "../../components/FeedbackModal.js";
+import { FEEDBACK_OPTIONS } from "../../components/FeedbackConstants.js";
+import RemoveBookmarkModal from "../removeBookmark/RemoveBookmarkModal.js";
 
 export default function NextNavigation({
   bookmarkMessagesToAPI,
@@ -38,6 +42,8 @@ export default function NextNavigation({
   handleShowSolution,
   exerciseType,
   nextButtonText,
+  disableAudio,
+  setIsExerciseOver,
 }) {
   const messageForAPI = isEmptyDictionary(bookmarkMessagesToAPI) ? "" : bookmarkMessagesToAPI[exerciseBookmark.id];
   const api = useContext(APIContext);
@@ -53,6 +59,9 @@ export default function NextNavigation({
   const [matchExerciseProgressionMessage, setMatchExercisesProgressionMessage] = useState();
   const [matchWordsProgressCount, setMatchWordsProgressCount] = useState(0);
   const [isMatchBookmarkProgression, setIsMatchBookmarkProgression] = useState(false);
+  const [showFeedbackModal, setShowFeedbackModal] = useState(false);
+  const [showExcludeModal, setShowExcludeModal] = useState(false);
+  const { isMobile } = useScreenWidth();
   const productiveExercisesDisabled = LocalStorage.getProductiveExercisesEnabled() === "false";
 
   const isLastInCycle = exerciseBookmark.is_last_in_cycle;
@@ -133,13 +142,13 @@ export default function NextNavigation({
   // Create shareable URL for feedback purposes
   const createShareableUrl = () => {
     const exerciseTypeName = getExerciseTypeName(exerciseType);
-    
+
     // For multi-bookmark exercises (Match, MultipleChoice, MultipleChoiceContext), include all bookmark IDs
     if (EXERCISE_TYPES.isMultiBookmarkExercise(exerciseType) && exerciseBookmarks && exerciseBookmarks.length > 1) {
-      const bookmarkIds = exerciseBookmarks.map(b => b.id).join(',');
+      const bookmarkIds = exerciseBookmarks.map((b) => b.id).join(",");
       return `${window.location.origin}/exercise/${exerciseTypeName}/${bookmarkIds}`;
     }
-    
+
     // For single bookmark exercises
     if (!exerciseBookmark) return "";
     const bookmarkId = exerciseBookmark.id;
@@ -227,6 +236,13 @@ export default function NextNavigation({
               {nextButtonText || strings.next}
             </s.FeedbackButton>
           </s.BottomRowSmallTopMargin>
+          {isMobile && !bookmarkLearned && (
+            <s.BottomRowSmallTopMargin style={{ textAlign: "center", marginTop: "10px" }}>
+              <s.StyledGreyButton className="styledGreyButton" onClick={() => setShowExcludeModal(true)}>
+                Exclude word form exercises
+              </s.StyledGreyButton>
+            </s.BottomRowSmallTopMargin>
+          )}
         </>
       )}
       <SolutionFeedbackLinks
@@ -239,6 +255,22 @@ export default function NextNavigation({
         uploadUserFeedback={uploadUserFeedback}
         bookmarkLearned={bookmarkLearned}
         shareableUrl={createShareableUrl()}
+        exerciseType={exerciseType}
+        disableAudio={disableAudio}
+        setIsExerciseOver={setIsExerciseOver}
+      />
+      <FeedbackModal
+        open={showFeedbackModal}
+        setOpen={setShowFeedbackModal}
+        componentCategories={FEEDBACK_OPTIONS.ALL}
+        contextualInfo={{ url: createShareableUrl() }}
+      />
+      <RemoveBookmarkModal
+        exerciseBookmarks={exerciseBookmarks}
+        open={showExcludeModal}
+        setOpen={setShowExcludeModal}
+        isTestingMultipleBookmarks={isMatchExercise}
+        uploadUserFeedback={uploadUserFeedback}
       />
     </>
   );

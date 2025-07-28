@@ -5,6 +5,10 @@ import FeedbackModal from "../../components/FeedbackModal";
 import { FEEDBACK_OPTIONS, FEEDBACK_CODES_NAME } from "../../components/FeedbackConstants";
 import RemoveBookmarkModal from "../removeBookmark/RemoveBookmarkModal";
 import { toast } from "react-toastify";
+import useScreenWidth from "../../hooks/useScreenWidth";
+import DisableAudioSession from "./DisableAudioSession";
+import { EXERCISE_TYPES } from "../ExerciseTypeConstants";
+import SessionStorage from "../../assorted/SessionStorage";
 
 export default function SolutionFeedbackLinks({
   isTestingMultipleBookmarks,
@@ -15,10 +19,14 @@ export default function SolutionFeedbackLinks({
   uploadUserFeedback,
   bookmarkLearned,
   shareableUrl,
+  exerciseType,
+  disableAudio,
+  setIsExerciseOver,
 }) {
   const [openFeedback, setOpenFeedback] = useState(false);
   const [openQuickFeedbackModal, setQuickFeedbackModal] = useState(false);
   const [hasProvidedQuickFeedback, setHasProvidedQuickFeedback] = useState(false);
+  const { isMobile } = useScreenWidth();
 
   useEffect(() => {
     setQuickFeedbackModal(false);
@@ -28,7 +36,7 @@ export default function SolutionFeedbackLinks({
 
   return (
     <>
-      <s.CenteredWordRow className="margin-top-auto">
+      <s.CenteredWordRow className="margin-top-auto" style={{ flexDirection: isMobile ? "column" : "row" }}>
         <RemoveBookmarkModal
           exerciseBookmarks={exerciseBookmarks}
           open={openQuickFeedbackModal}
@@ -49,22 +57,36 @@ export default function SolutionFeedbackLinks({
             <s.StyledGreyButton className="styledGreyButton" onClick={handleShowSolution}>
               {strings.showSolution}
             </s.StyledGreyButton>
+            {EXERCISE_TYPES.isAudioExercise(exerciseType) &&
+              SessionStorage.isAudioExercisesEnabled() && (
+                <DisableAudioSession handleDisabledAudio={disableAudio} setIsCorrect={setIsExerciseOver} />
+              )}
+            {isMobile && (
+              <div style={{ marginTop: "3rem" }}>
+                <s.StyledGreyButton
+                  className="styledGreyButton"
+                  onClick={() => {
+                    setOpenFeedback(!openFeedback);
+                  }}
+                >
+                  Feedback
+                </s.StyledGreyButton>
+              </div>
+            )}
           </>
         )}
       </s.CenteredWordRow>
 
       {isExerciseOver && (
         <s.CenteredWordRow style={{ gap: "1em", flexWrap: "wrap" }}>
-          {!hasProvidedQuickFeedback && !bookmarkLearned && (
-            <s.StyledGreyButton
-              className="styledGreyButton"
-              onClick={() => {
-                setQuickFeedbackModal(!openQuickFeedbackModal);
-              }}
-            >
-              {isTestingMultipleBookmarks ? "Exclude word from exercises" : "Exclude word from exercises"}
-            </s.StyledGreyButton>
-          )}
+          <s.StyledGreyButton
+            className="styledGreyButton"
+            onClick={() => {
+              setOpenFeedback(!openFeedback);
+            }}
+          >
+            Feedback
+          </s.StyledGreyButton>
           {shareableUrl && (
             <s.StyledGreyButton
               className="styledGreyButton"

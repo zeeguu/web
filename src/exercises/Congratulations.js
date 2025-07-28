@@ -11,7 +11,6 @@ import CollapsablePanel from "../components/CollapsablePanel";
 import Pluralize from "../utils/text/pluralize";
 import BackArrow from "../pages/Settings/settings_pages_shared/BackArrow";
 import useScreenWidth from "../hooks/useScreenWidth";
-import { MOBILE_WIDTH } from "../components/MainNav/screenSize";
 import { StyledButton } from "../components/allButtons.sc";
 import { APIContext } from "../contexts/APIContext";
 import { UserContext } from "../contexts/UserContext";
@@ -43,7 +42,7 @@ export default function Congratulations({
   const [totalBookmarksReviewed, setTotalBookmarksReviewed] = useState();
   const [username, setUsername] = useState();
 
-  const { screenWidth } = useScreenWidth();
+  const { isMobile } = useScreenWidth();
 
   function deleteBookmark(bookmark) {
     setCorrectBookmarksToDisplay(correctBookmarksToDisplay.filter((e) => e.id !== bookmark.id));
@@ -93,7 +92,7 @@ export default function Congratulations({
   return (
     <>
       <s.NarrowColumn className="narrowColumn">
-        {screenWidth < MOBILE_WIDTH && <BackArrow />}
+        {isMobile && <BackArrow />}
         <CenteredColumn className="centeredColumn">
           <h1>
             {strings.goodJob} {username}!

@@ -12,14 +12,8 @@ export default function MainNav({ screenWidth }) {
 
   return (
     // More about ThemeProviders (https://styled-components.com/docs/advanced)
-    <ThemeProvider
-      theme={isOnStudentSide ? mainNavTheme.student : mainNavTheme.teacher}
-    >
-      {screenWidth <= MOBILE_WIDTH ? (
-        <BottomNav />
-      ) : (
-        <SideNav screenWidth={screenWidth} />
-      )}
+    <ThemeProvider theme={isOnStudentSide ? mainNavTheme.student : mainNavTheme.teacher}>
+      {screenWidth <= MOBILE_WIDTH ? <BottomNav /> : <SideNav screenWidth={screenWidth} />}
     </ThemeProvider>
   );
 }

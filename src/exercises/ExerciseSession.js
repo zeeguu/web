@@ -29,7 +29,6 @@ import DigitalTimer from "../components/DigitalTimer";
 
 import BackArrow from "../pages/Settings/settings_pages_shared/BackArrow";
 import useScreenWidth from "../hooks/useScreenWidth";
-import { MOBILE_WIDTH } from "../components/MainNav/screenSize";
 import { NarrowColumn } from "../components/ColumnWidth.sc";
 import useSubSessionTimer from "../hooks/useSubSessionTimer";
 import { APIContext } from "../contexts/APIContext";
@@ -84,7 +83,7 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
   const { hasExerciseNotification, decrementExerciseCounter, hideExerciseCounter } =
     useContext(ExercisesCounterContext);
 
-  const { screenWidth } = useScreenWidth();
+  const { isMobile } = useScreenWidth();
 
   useEffect(() => {
     initializeExerciseSessionComponent();
@@ -432,7 +431,7 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
   return (
     <NarrowColumn>
       <s.ExercisesColumn>
-        {screenWidth < MOBILE_WIDTH && <BackArrow />}
+        {isMobile && <BackArrow />}
         <ExerciseSessionProgressBar
           index={isCorrect ? currentIndex + 1 : currentIndex}
           total={fullExerciseProgression.length}
@@ -493,10 +492,9 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
             toggleShow={toggleShow}
             isCorrect={isCorrect}
             isExerciseOver={isExerciseOver}
+            disableAudio={disableAudio}
+            setIsExerciseOver={setIsExerciseOver}
           />
-          {EXERCISE_TYPES.isAudioExercise(currentExerciseType) && SessionStorage.isAudioExercisesEnabled() && !isExerciseOver && (
-            <DisableAudioSession handleDisabledAudio={disableAudio} setIsCorrect={setIsExerciseOver} />
-          )}
         </s.ExForm>
         {articleID && (
           <p>
