@@ -102,13 +102,16 @@ export default function usePWAInstall() {
 
     // Listen for PWA install prompt
     const handleBeforeInstallPrompt = (e) => {
+      console.log('beforeinstallprompt event fired!', e);
       e.preventDefault();
       
       // Only allow PWA installation on mobile devices
       if (!isMobileDevice()) {
+        console.log('Not mobile device, ignoring prompt');
         return;
       }
       
+      console.log('Setting deferred prompt and showing banner');
       setDeferredPrompt(e);
       setIsInstallable(true);
       
@@ -194,6 +197,8 @@ export default function usePWAInstall() {
     resetDismissal,
     // Debug info
     hasDeferredPrompt: !!deferredPrompt,
-    userAgent: navigator.userAgent
+    userAgent: navigator.userAgent,
+    // Add console logs for mobile debugging
+    debugLog: `Mobile: ${isMobileDevice()}, iOS: ${isAnyIOSBrowser}, Prompt: ${!!deferredPrompt}`
   };
 }
