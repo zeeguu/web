@@ -198,7 +198,5 @@ export default function usePWAInstall() {
     // Debug info
     hasDeferredPrompt: !!deferredPrompt,
     userAgent: navigator.userAgent,
-    // Add console logs for mobile debugging
-    debugLog: `Mobile: ${isMobileDevice()}, iOS: ${isAnyIOSBrowser}, Prompt: ${!!deferredPrompt}`
   };
 }
