@@ -12,6 +12,25 @@ const ExercisesColumn = styled.div`
   @media (max-width: 700px) {
     padding-top: 0.5rem;
   }
+  // VISUAL_DEBUGGING
+  //background-color: aquamarine;
+
+  #arrowAndProgress {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+
+    /* BackArrow takes its natural width */
+    > button:first-child {
+      flex-shrink: 0;
+    }
+
+    /* Progress bar takes remaining space */
+    > div:last-child {
+      flex: 1;
+      margin-right: 1rem;
+    }
+  }
 `;
 
 const ExForm = styled.div`

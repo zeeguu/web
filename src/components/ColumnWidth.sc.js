@@ -5,6 +5,9 @@ const NarrowColumn = styled.div`
   margin-left: auto;
   margin-right: auto;
   height: 100%;
+  // VISUAL_DEBUGGING
+  //background-color: red;
+  padding: 1px;
 `;
 
 const CenteredContentContainer = styled.div`

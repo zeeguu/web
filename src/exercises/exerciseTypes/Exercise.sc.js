@@ -8,6 +8,8 @@ const Exercise = styled.div`
   text-align: center;
   transition: all 0.5s;
   padding-bottom: 1rem;
+  // VISUAL_DEBUGGING
+  //background-color: antiquewhite;
 
   .type-feedback p {
     margin: 0.5em;

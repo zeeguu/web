@@ -54,15 +54,17 @@ export default function SolutionFeedbackLinks({
         ></FeedbackModal>
         {!isExerciseOver && (
           <>
+            <br />
+            <br />
+            <br />
             <s.StyledGreyButton className="styledGreyButton" onClick={handleShowSolution}>
               {strings.showSolution}
             </s.StyledGreyButton>
-            {EXERCISE_TYPES.isAudioExercise(exerciseType) &&
-              SessionStorage.isAudioExercisesEnabled() && (
-                <DisableAudioSession handleDisabledAudio={disableAudio} setIsCorrect={setIsExerciseOver} />
-              )}
+            {EXERCISE_TYPES.isAudioExercise(exerciseType) && SessionStorage.isAudioExercisesEnabled() && (
+              <DisableAudioSession handleDisabledAudio={disableAudio} setIsCorrect={setIsExerciseOver} />
+            )}
             {isMobile && (
-              <div style={{ marginTop: "3rem" }}>
+              <div style={{ marginTop: "5rem" }}>
                 <s.StyledGreyButton
                   className="styledGreyButton"
                   onClick={() => {
