@@ -32,7 +32,6 @@ import usePWAInstall from "./hooks/usePWAInstall";
 
 // Wrapper component to use location tracker inside Router context
 function LocationTrackingWrapper({ children }) {
-  console.log("LocationTrackingWrapper - rendering");
   useLocationTracker();
   return children;
 }
@@ -228,7 +227,6 @@ function App() {
     return <LoadingAnimation />;
   }
 
-  console.log("App.js - about to render main app with userDetails:", userDetails);
 
   return (
     <SystemLanguagesContext.Provider value={{ systemLanguages, sortedSystemLanguages }}>

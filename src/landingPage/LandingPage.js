@@ -26,7 +26,6 @@ export default function LandingPage() {
   if (getSessionFromCookies()) {
     const lastVisitedPage = LocalStorage.getLastVisitedPage();
     const redirectTo = lastVisitedPage || "/articles";
-    console.log('LandingPage - redirecting logged in user to:', redirectTo);
     return <Redirect to={{ pathname: redirectTo }} />;
   }
 
