@@ -88,26 +88,57 @@ export default function CustomAudioPlayer({
       if (window.focus) window.focus();
     });
 
+    // Try different action handlers that iOS might recognize
+    try {
+      navigator.mediaSession.setActionHandler('previoustrack', () => {
+        seekBackward();
+      });
+      
+      navigator.mediaSession.setActionHandler('nexttrack', () => {
+        seekForward();
+      });
+    } catch (error) {
+      console.log('Track controls not supported');
+    }
+    
     navigator.mediaSession.setActionHandler('seekbackward', (details) => {
       const audio = audioRef.current;
       if (!audio) return;
       
-      // Use the seekOffset if provided by iOS, otherwise use our default
-      const offset = details.seekOffset || SEEK_SECONDS;
+      // iOS typically uses 10 or 15 second intervals
+      const offset = details?.seekOffset || 10;
       const newTime = Math.max(0, audio.currentTime - offset);
       audio.currentTime = newTime;
       setCurrentTime(newTime);
+      
+      // Update position state immediately
+      if ('setPositionState' in navigator.mediaSession && duration > 0) {
+        navigator.mediaSession.setPositionState({
+          duration: duration,
+          playbackRate: playbackRate,
+          position: newTime
+        });
+      }
     });
 
     navigator.mediaSession.setActionHandler('seekforward', (details) => {
       const audio = audioRef.current;
       if (!audio) return;
       
-      // Use the seekOffset if provided by iOS, otherwise use our default
-      const offset = details.seekOffset || SEEK_SECONDS;
+      // iOS typically uses 10 or 15 second intervals
+      const offset = details?.seekOffset || 10;
       const newTime = Math.min(duration, audio.currentTime + offset);
       audio.currentTime = newTime;
       setCurrentTime(newTime);
+      
+      // Update position state immediately
+      if ('setPositionState' in navigator.mediaSession && duration > 0) {
+        navigator.mediaSession.setPositionState({
+          duration: duration,
+          playbackRate: playbackRate,
+          position: newTime
+        });
+      }
     });
 
     navigator.mediaSession.setActionHandler('seekto', (details) => {
@@ -254,7 +285,24 @@ export default function CustomAudioPlayer({
     const audio = audioRef.current;
     if (!audio) return;
 
-    const updateTime = () => setCurrentTime(audio.currentTime);
+    const updateTime = () => {
+      setCurrentTime(audio.currentTime);
+      
+      // Update media session position for lock screen scrubber
+      if ('mediaSession' in navigator && 'setPositionState' in navigator.mediaSession) {
+        if (duration > 0 && !audio.paused) {
+          try {
+            navigator.mediaSession.setPositionState({
+              duration: duration,
+              playbackRate: playbackRate,
+              position: audio.currentTime
+            });
+          } catch (error) {
+            // Ignore errors from setting position state
+          }
+        }
+      }
+    };
     const updateDuration = () => {
       setDuration(audio.duration);
       setIsLoading(false);
@@ -455,6 +503,16 @@ export default function CustomAudioPlayer({
         src={src} 
         preload="metadata"
         playsInline
+        controlsList="nodownload"
+        crossOrigin="anonymous"
+        onLoadedMetadata={(e) => {
+          // Ensure seekable range is set
+          const audio = e.target;
+          if (audio.duration && isFinite(audio.duration)) {
+            // Force iOS to recognize this as seekable content
+            audio.currentTime = 0;
+          }
+        }}
       />
 
       {/* Controls Section */}
