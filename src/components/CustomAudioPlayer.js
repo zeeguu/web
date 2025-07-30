@@ -193,13 +193,20 @@ export default function CustomAudioPlayer({
       // Resume audio context if it's suspended (iOS requirement)
       if (audioContextRef.current.state === 'suspended') {
         const resumeAudio = () => {
-          audioContextRef.current.resume();
+          if (audioContextRef.current && audioContextRef.current.state === 'suspended') {
+            audioContextRef.current.resume().catch(err => {
+              console.log('Could not resume audio context:', err);
+            });
+          }
           document.removeEventListener('touchstart', resumeAudio);
           document.removeEventListener('click', resumeAudio);
         };
         document.addEventListener('touchstart', resumeAudio);
         document.addEventListener('click', resumeAudio);
       }
+    } else if (audioContextRef.current && audioContextRef.current.state === 'closed') {
+      // Recreate if closed
+      audioContextRef.current = new (window.AudioContext || window.webkitAudioContext)();
     }
 
     // Handle visibility changes to maintain audio playback
@@ -266,7 +273,9 @@ export default function CustomAudioPlayer({
       window.removeEventListener('pageshow', handleAppActivation);
       document.removeEventListener('resume', handleAppActivation);
       if (audioContextRef.current && audioContextRef.current.state !== 'closed') {
-        audioContextRef.current.close();
+        audioContextRef.current.close().catch(err => {
+          console.log('Could not close audio context:', err);
+        });
       }
     };
   }, [isPlaying, duration, playbackRate]);
@@ -439,7 +448,9 @@ export default function CustomAudioPlayer({
     } else {
       // For iOS: Ensure audio context is resumed before playing
       if (audioContextRef.current && audioContextRef.current.state === 'suspended') {
-        audioContextRef.current.resume();
+        audioContextRef.current.resume().catch(err => {
+          console.log('Could not resume audio context on play:', err);
+        });
       }
       
       audio.play().then(() => {
