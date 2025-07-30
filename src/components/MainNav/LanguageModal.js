@@ -15,6 +15,7 @@ import RadioGroup from "./RadioGroup.js";
 import ReactLink from "../ReactLink.sc.js";
 import AddRoundedIcon from "@mui/icons-material/AddRounded";
 import DynamicFlagImage from "../DynamicFlagImage.js";
+import { CEFR_LEVELS } from "../../assorted/cefrLevels.js";
 
 export default function LanguageModal({ open, setOpen }) {
   const api = useContext(APIContext);
@@ -37,6 +38,13 @@ export default function LanguageModal({ open, setOpen }) {
       setLearnedLanguageCode(undefined);
     };
   }, [open, api, session]);
+
+  const getCefrLevelForLanguage = (languageCode) => {
+    const cefrKey = languageCode + "_cefr_level";
+    const cefrLevel = userDetails[cefrKey];
+    const level = CEFR_LEVELS.find(level => level.value === cefrLevel?.toString());
+    return level ? level.label.split(' | ')[0] : 'A1'; // Extract just "A1", "B2", etc.
+  };
 
   const reorderedLanguages = useMemo(() => {
     if (!activeLanguages) return [];
@@ -97,7 +105,14 @@ export default function LanguageModal({ open, setOpen }) {
               onChange={(e) => {
                 updateLearnedLanguage(e.target.value);
               }}
-              optionLabel={(e) => e.language}
+              optionLabel={(e) => (
+                <span>
+                  {e.language}{" "}
+                  <span style={{ color: "#888", fontSize: "0.9em" }}>
+                    ({getCefrLevelForLanguage(e.code)})
+                  </span>
+                </span>
+              )}
               optionValue={(e) => e.code}
               optionId={(e) => e.id}
               dynamicIcon={(e) => <DynamicFlagImage languageCode={e.code} />}
