@@ -16,6 +16,11 @@ const StyledRadioGroup = styled.div`
   &::-webkit-scrollbar {
     display: none;
   }
+  
+  @media (max-width: 768px) {
+    flex-direction: column;
+    align-items: center;
+  }
 `;
 
 const RadioGroupLabel = styled.div`
