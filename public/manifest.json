@@ -3,7 +3,7 @@
   "short_name": "Zeeguu",
   "name": "Zeeguu",
   "description": "Learn languages while reading what you love",
-  "start_url": "/?source=pwa",
+  "start_url": "/?source=pwa&utm_source=homescreen",
   "scope": "/",
   "display": "standalone",
   "orientation": "portrait",
@@ -65,5 +65,7 @@
   ],
   "launch_handler": {
     "client_mode": "focus-existing"
-  }
+  },
+  "display_override": ["standalone", "minimal-ui"],
+  "handle_links": "preferred"
 }

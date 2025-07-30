@@ -67,6 +67,8 @@ export default function CustomAudioPlayer({
         setIsPlaying(true);
         onPlay && onPlay();
       }
+      // Try to focus the window when interacting from lock screen
+      if (window.focus) window.focus();
     });
 
     navigator.mediaSession.setActionHandler('pause', () => {
@@ -76,14 +78,30 @@ export default function CustomAudioPlayer({
         setIsPlaying(false);
         saveProgress(true);
       }
+      // Try to focus the window when interacting from lock screen
+      if (window.focus) window.focus();
     });
 
-    navigator.mediaSession.setActionHandler('seekbackward', () => {
-      seekBackward();
+    navigator.mediaSession.setActionHandler('seekbackward', (details) => {
+      const audio = audioRef.current;
+      if (!audio) return;
+      
+      // Use the seekOffset if provided by iOS, otherwise use our default
+      const offset = details.seekOffset || SEEK_SECONDS;
+      const newTime = Math.max(0, audio.currentTime - offset);
+      audio.currentTime = newTime;
+      setCurrentTime(newTime);
     });
 
-    navigator.mediaSession.setActionHandler('seekforward', () => {
-      seekForward();
+    navigator.mediaSession.setActionHandler('seekforward', (details) => {
+      const audio = audioRef.current;
+      if (!audio) return;
+      
+      // Use the seekOffset if provided by iOS, otherwise use our default
+      const offset = details.seekOffset || SEEK_SECONDS;
+      const newTime = Math.min(duration, audio.currentTime + offset);
+      audio.currentTime = newTime;
+      setCurrentTime(newTime);
     });
 
     navigator.mediaSession.setActionHandler('seekto', (details) => {
