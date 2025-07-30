@@ -30,6 +30,12 @@ import IOSInstallBanner from "./components/IOSInstallBanner";
 import PWAInstallOverlay from "./components/PWAInstallOverlay";
 import usePWAInstall from "./hooks/usePWAInstall";
 
+// Wrapper component to use location tracker inside Router context
+function LocationTrackingWrapper({ children }) {
+  useLocationTracker();
+  return children;
+}
+
 function PWABanners() {
   const location = useLocation();
   const { showInstallBanner, isAnyIOSBrowser, iosBrowserType, installPWA, dismissBanner } = usePWAInstall();
@@ -93,7 +99,6 @@ function App() {
   const [api] = useState(new Zeeguu_API(API_ENDPOINT));
 
   useUILanguage();
-  useLocationTracker(); // Track page visits for return navigation
 
   const [userDetails, setUserDetails] = useState();
   const [userPreferences, setUserPreferences] = useState();
@@ -231,41 +236,43 @@ function App() {
     <SystemLanguagesContext.Provider value={{ systemLanguages, sortedSystemLanguages }}>
       <SpeechContext.Provider value={zeeguuSpeech}>
         <BrowserRouter>
-          <RoutingContext.Provider value={{ returnPath, setReturnPath }}>
-            <UserContext.Provider
-              value={{
-                userDetails,
-                setUserDetails,
-                userPreferences,
-                setUserPreferences,
-                session: getSessionFromCookies(),
-                logoutMethod: logout,
-              }}
-            >
-            <ProgressProvider>
-              <APIContext.Provider value={api}>
-                <FeedbackContextProvider>
-                  {/* Routing*/}
-            
-                  <MainAppRouter hasExtension={isExtensionAvailable} handleSuccessfulLogIn={handleSuccessfulLogIn} />
-                  <ToastContainer
-                    position="bottom-right"
-                    autoClose={2000}
-                    hideProgressBar={true}
-                    newestOnTop={false}
-                    closeOnClick
-                    rtl={false}
-                    pauseOnFocusLoss
-                    draggable
-                    pauseOnHover
-                    theme="light"
-                  />
-                  <PWABanners />
-                </FeedbackContextProvider>
-              </APIContext.Provider>
-              </ProgressProvider>
-            </UserContext.Provider>
-          </RoutingContext.Provider>
+          <LocationTrackingWrapper>
+            <RoutingContext.Provider value={{ returnPath, setReturnPath }}>
+              <UserContext.Provider
+                value={{
+                  userDetails,
+                  setUserDetails,
+                  userPreferences,
+                  setUserPreferences,
+                  session: getSessionFromCookies(),
+                  logoutMethod: logout,
+                }}
+              >
+              <ProgressProvider>
+                <APIContext.Provider value={api}>
+                  <FeedbackContextProvider>
+                    {/* Routing*/}
+              
+                    <MainAppRouter hasExtension={isExtensionAvailable} handleSuccessfulLogIn={handleSuccessfulLogIn} />
+                    <ToastContainer
+                      position="bottom-right"
+                      autoClose={2000}
+                      hideProgressBar={true}
+                      newestOnTop={false}
+                      closeOnClick
+                      rtl={false}
+                      pauseOnFocusLoss
+                      draggable
+                      pauseOnHover
+                      theme="light"
+                    />
+                    <PWABanners />
+                  </FeedbackContextProvider>
+                </APIContext.Provider>
+                </ProgressProvider>
+              </UserContext.Provider>
+            </RoutingContext.Provider>
+          </LocationTrackingWrapper>
         </BrowserRouter>
       </SpeechContext.Provider>
     </SystemLanguagesContext.Provider>
