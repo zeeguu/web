@@ -1,5 +1,5 @@
 {
-  "id": "org.zeeguu.pwa",
+  "id": "org.zeeguu.pwa.audio",
   "short_name": "Zeeguu",
   "name": "Zeeguu",
   "description": "Learn languages while reading what you love",
@@ -67,5 +67,10 @@
     "client_mode": "focus-existing"
   },
   "display_override": ["standalone", "minimal-ui"],
-  "handle_links": "preferred"
+  "handle_links": "preferred",
+  "url_handlers": [
+    {
+      "origin": "https://app.zeeguu.org"
+    }
+  ]
 }

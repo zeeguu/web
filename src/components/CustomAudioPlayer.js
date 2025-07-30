@@ -47,7 +47,10 @@ export default function CustomAudioPlayer({
   useEffect(() => {
     if (!('mediaSession' in navigator)) return;
 
-    // Set metadata for lock screen
+    // Force clear any existing metadata first
+    navigator.mediaSession.metadata = null;
+    
+    // Set fresh metadata for lock screen
     navigator.mediaSession.metadata = new MediaMetadata({
       title: title,
       artist: artist,
@@ -58,6 +61,9 @@ export default function CustomAudioPlayer({
         { src: '/static/images/zeeguu128.png', sizes: '128x128', type: 'image/png' }
       ]
     });
+    
+    // Force set playback state
+    navigator.mediaSession.playbackState = 'none';
 
     // Set up action handlers
     navigator.mediaSession.setActionHandler('play', () => {
@@ -355,10 +361,24 @@ export default function CustomAudioPlayer({
       clearProgressTimer();
       saveProgress(true); // Force save progress when pausing
     } else {
-      audio.play();
-      setIsPlaying(true);
-      onPlay && onPlay();
-      startProgressTimer();
+      // For iOS: Ensure audio context is resumed before playing
+      if (audioContextRef.current && audioContextRef.current.state === 'suspended') {
+        audioContextRef.current.resume();
+      }
+      
+      audio.play().then(() => {
+        setIsPlaying(true);
+        onPlay && onPlay();
+        startProgressTimer();
+        
+        // Force update media session when starting playback
+        if ('mediaSession' in navigator) {
+          navigator.mediaSession.playbackState = 'playing';
+        }
+      }).catch(err => {
+        console.error('Playback failed:', err);
+        setIsPlaying(false);
+      });
     }
   };
 
