@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { BrowserRouter, useLocation } from "react-router-dom";
 
 import { SystemLanguagesContext } from "./contexts/SystemLanguagesContext";
@@ -32,6 +32,7 @@ import usePWAInstall from "./hooks/usePWAInstall";
 
 // Wrapper component to use location tracker inside Router context
 function LocationTrackingWrapper({ children }) {
+  console.log("LocationTrackingWrapper - rendering");
   useLocationTracker();
   return children;
 }
@@ -40,10 +41,10 @@ function PWABanners() {
   const location = useLocation();
   const { showInstallBanner, isAnyIOSBrowser, iosBrowserType, installPWA, dismissBanner } = usePWAInstall();
   const [showInstructions, setShowInstructions] = useState(false);
-  
+
   // Only show PWA install banners on /articles page
-  const shouldShowBanner = showInstallBanner && location.pathname === '/articles';
-  
+  const shouldShowBanner = showInstallBanner && location.pathname === "/articles";
+
   const handleShowInstructions = () => {
     setShowInstructions(true);
   };
@@ -66,26 +67,21 @@ function PWABanners() {
       }
     }
   };
-  
+
   return (
     <>
-      {shouldShowBanner && (
-        isAnyIOSBrowser ? (
-          <IOSInstallBanner 
+      {shouldShowBanner &&
+        (isAnyIOSBrowser ? (
+          <IOSInstallBanner
             show={shouldShowBanner}
             browserType={iosBrowserType}
             onShowInstructions={handleShowInstructions}
             onDismiss={dismissBanner}
           />
         ) : (
-          <PWAInstallBanner 
-            show={shouldShowBanner}
-            onInstall={handleInstall}
-            onDismiss={dismissBanner}
-          />
-        )
-      )}
-      <PWAInstallOverlay 
+          <PWAInstallBanner show={shouldShowBanner} onInstall={handleInstall} onDismiss={dismissBanner} />
+        ))}
+      <PWAInstallOverlay
         show={showInstructions}
         isIOSBrowser={isAnyIOSBrowser}
         iosBrowserType={iosBrowserType}
@@ -232,6 +228,8 @@ function App() {
     return <LoadingAnimation />;
   }
 
+  console.log("App.js - about to render main app with userDetails:", userDetails);
+
   return (
     <SystemLanguagesContext.Provider value={{ systemLanguages, sortedSystemLanguages }}>
       <SpeechContext.Provider value={zeeguuSpeech}>
@@ -248,27 +246,30 @@ function App() {
                   logoutMethod: logout,
                 }}
               >
-              <ProgressProvider>
-                <APIContext.Provider value={api}>
-                  <FeedbackContextProvider>
-                    {/* Routing*/}
-              
-                    <MainAppRouter hasExtension={isExtensionAvailable} handleSuccessfulLogIn={handleSuccessfulLogIn} />
-                    <ToastContainer
-                      position="bottom-right"
-                      autoClose={2000}
-                      hideProgressBar={true}
-                      newestOnTop={false}
-                      closeOnClick
-                      rtl={false}
-                      pauseOnFocusLoss
-                      draggable
-                      pauseOnHover
-                      theme="light"
-                    />
-                    <PWABanners />
-                  </FeedbackContextProvider>
-                </APIContext.Provider>
+                <ProgressProvider>
+                  <APIContext.Provider value={api}>
+                    <FeedbackContextProvider>
+                      {/* Routing*/}
+
+                      <MainAppRouter
+                        hasExtension={isExtensionAvailable}
+                        handleSuccessfulLogIn={handleSuccessfulLogIn}
+                      />
+                      <ToastContainer
+                        position="bottom-right"
+                        autoClose={2000}
+                        hideProgressBar={true}
+                        newestOnTop={false}
+                        closeOnClick
+                        rtl={false}
+                        pauseOnFocusLoss
+                        draggable
+                        pauseOnHover
+                        theme="light"
+                      />
+                      <PWABanners />
+                    </FeedbackContextProvider>
+                  </APIContext.Provider>
                 </ProgressProvider>
               </UserContext.Provider>
             </RoutingContext.Provider>

@@ -3,6 +3,7 @@ import { useHistory } from "react-router-dom/cjs/react-router-dom";
 import { Redirect } from "react-router-dom";
 import { setTitle } from "../assorted/setTitle";
 import { getSessionFromCookies } from "../utils/cookies/userInfo";
+import LocalStorage from "../assorted/LocalStorage";
 import { SystemLanguagesContext } from "../contexts/SystemLanguagesContext.js";
 import InstallationInstructions from "./InstallationInstructions.js";
 import strings from "../i18n/definitions";
@@ -23,7 +24,10 @@ export default function LandingPage() {
   }, []);
 
   if (getSessionFromCookies()) {
-    return <Redirect to={{ pathname: "/articles" }} />;
+    const lastVisitedPage = LocalStorage.getLastVisitedPage();
+    const redirectTo = lastVisitedPage || "/articles";
+    console.log('LandingPage - redirecting logged in user to:', redirectTo);
+    return <Redirect to={{ pathname: redirectTo }} />;
   }
 
   function handleLanguageSelect(selectedLanguage) {
