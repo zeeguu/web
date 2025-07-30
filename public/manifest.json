@@ -53,6 +53,8 @@
     }
   ],
   "categories": ["education", "reading"],
+  "prefer_related_applications": false,
+  "related_applications": [],
   "screenshots": [
     {
       "src": "/static/images/mobile-screenshot.jpeg",

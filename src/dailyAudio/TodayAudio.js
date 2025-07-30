@@ -315,6 +315,8 @@ export default function TodayAudio() {
             lessonData.pause_position_seconds || lessonData.position_seconds || lessonData.progress_seconds || 0
           }
           language={userDetails?.learned_language}
+          title={lessonData.words ? wordsAsTile(lessonData.words) : "Daily Audio Lesson"}
+          artist="Zeeguu Daily Lesson"
           onPlay={() => {
             if (lessonData.lesson_id) {
               api.updateLessonState(lessonData.lesson_id, "resume");

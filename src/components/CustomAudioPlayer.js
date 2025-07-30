@@ -15,6 +15,8 @@ export default function CustomAudioPlayer({
   initialProgress = 0,
   style,
   language,
+  title = "Audio Lesson",
+  artist = "Zeeguu",
 }) {
   const getStoredSpeed = () => {
     if (!language) return 1.0;
@@ -39,6 +41,92 @@ export default function CustomAudioPlayer({
       audio.playbackRate = playbackRate;
     }
   }, [playbackRate]);
+
+  // Set up Media Session API for lock screen controls
+  useEffect(() => {
+    if (!('mediaSession' in navigator)) return;
+
+    // Set metadata for lock screen
+    navigator.mediaSession.metadata = new MediaMetadata({
+      title: title,
+      artist: artist,
+      album: language ? `${language.toUpperCase()} Lessons` : 'Language Lessons',
+      artwork: [
+        { src: '/logo192.png', sizes: '192x192', type: 'image/png' },
+        { src: '/logo512.png', sizes: '512x512', type: 'image/png' },
+        { src: '/static/images/zeeguu128.png', sizes: '128x128', type: 'image/png' }
+      ]
+    });
+
+    // Set up action handlers
+    navigator.mediaSession.setActionHandler('play', () => {
+      const audio = audioRef.current;
+      if (audio && audio.paused) {
+        audio.play();
+        setIsPlaying(true);
+        onPlay && onPlay();
+      }
+    });
+
+    navigator.mediaSession.setActionHandler('pause', () => {
+      const audio = audioRef.current;
+      if (audio && !audio.paused) {
+        audio.pause();
+        setIsPlaying(false);
+        saveProgress(true);
+      }
+    });
+
+    navigator.mediaSession.setActionHandler('seekbackward', () => {
+      seekBackward();
+    });
+
+    navigator.mediaSession.setActionHandler('seekforward', () => {
+      seekForward();
+    });
+
+    navigator.mediaSession.setActionHandler('seekto', (details) => {
+      const audio = audioRef.current;
+      if (audio && details.seekTime !== undefined) {
+        audio.currentTime = details.seekTime;
+        setCurrentTime(details.seekTime);
+      }
+    });
+
+    // Update playback state
+    const updatePlaybackState = () => {
+      if (!('mediaSession' in navigator)) return;
+      
+      const audio = audioRef.current;
+      if (!audio) return;
+
+      navigator.mediaSession.playbackState = audio.paused ? 'paused' : 'playing';
+      
+      // Set position state for progress bar on lock screen
+      if ('setPositionState' in navigator.mediaSession) {
+        if (duration > 0) {
+          navigator.mediaSession.setPositionState({
+            duration: duration,
+            playbackRate: playbackRate,
+            position: currentTime
+          });
+        }
+      }
+    };
+
+    updatePlaybackState();
+
+    return () => {
+      // Clean up handlers when component unmounts
+      if ('mediaSession' in navigator) {
+        navigator.mediaSession.setActionHandler('play', null);
+        navigator.mediaSession.setActionHandler('pause', null);
+        navigator.mediaSession.setActionHandler('seekbackward', null);
+        navigator.mediaSession.setActionHandler('seekforward', null);
+        navigator.mediaSession.setActionHandler('seekto', null);
+      }
+    };
+  }, [title, artist, language, duration, currentTime, playbackRate, isPlaying]);
 
   // Handle initial seek when audio is ready
   useEffect(() => {
@@ -264,7 +352,12 @@ export default function CustomAudioPlayer({
         boxSizing: "border-box",
       }}
     >
-      <audio ref={audioRef} src={src} preload="metadata" />
+      <audio 
+        ref={audioRef} 
+        src={src} 
+        preload="metadata"
+        playsInline
+      />
 
       {/* Controls Section */}
       <div style={{ display: "flex", alignItems: "center", marginBottom: "16px", justifyContent: "space-between" }}>

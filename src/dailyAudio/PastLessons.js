@@ -146,6 +146,8 @@ export default function PastLessons() {
                       lesson.pause_position_seconds || lesson.position_seconds || lesson.progress_seconds || 0
                     }
                     language={userDetails?.learned_language}
+                    title={lesson.words ? wordsAsTile(lesson.words) : "Past Audio Lesson"}
+                    artist={`Zeeguu - ${new Date(lesson.created_on).toLocaleDateString()}`}
                     onPlay={() => {
                       if (lesson.lesson_id) {
                         api.updateLessonState(lesson.lesson_id, "resume");
