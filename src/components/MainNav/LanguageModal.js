@@ -128,7 +128,7 @@ export default function LanguageModal({ open, setOpen }) {
               onClick={() => setOpen(false)}
               to="/account_settings/language_settings"
             >
-              <AddRoundedIcon /> Add a new language
+              <AddRoundedIcon /> More language settings
             </ReactLink>
           </ButtonContainer>
         </Form>

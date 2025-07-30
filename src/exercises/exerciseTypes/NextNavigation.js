@@ -236,10 +236,10 @@ export default function NextNavigation({
               {nextButtonText || strings.next}
             </s.FeedbackButton>
           </s.BottomRowSmallTopMargin>
-          {isMobile && !bookmarkLearned && (
+          {!bookmarkLearned && (
             <s.BottomRowSmallTopMargin style={{ textAlign: "center", marginTop: "10px" }}>
               <s.StyledGreyButton className="styledGreyButton" onClick={() => setShowExcludeModal(true)}>
-                Exclude word form exercises
+                Exclude word from exercises
               </s.StyledGreyButton>
             </s.BottomRowSmallTopMargin>
           )}
