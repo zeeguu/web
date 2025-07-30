@@ -185,6 +185,20 @@ self.addEventListener("activate", (event) => {
 // https://developer.mozilla.org/en-US/docs/Web/API/ServiceWorkerGlobalScope/fetch_event
 self.addEventListener("fetch", (event) => {
   const requestUrl = new URL(event.request.url);
+  
+  // Add a parameter to track media control activations
+  if (event.request.mode === "navigate" && event.request.referrer === "") {
+    // This might be from a lock screen tap
+    const modifiedUrl = new URL(requestUrl);
+    modifiedUrl.searchParams.set('media_activation', '1');
+    event.respondWith(
+      fetch(modifiedUrl.toString()).catch(() => {
+        return handleNavigationRequest(event);
+      })
+    );
+    return;
+  }
+  
   if (event.request.mode === "navigate") {
     handleNavigationRequest(event);
   } else if (CACHE_STATIC_FILES.includes(requestUrl.pathname)) {

@@ -234,9 +234,37 @@ export default function CustomAudioPlayer({
 
     document.addEventListener('visibilitychange', handleVisibilityChange);
 
+    // Handle app activation from lock screen
+    const handleAppActivation = () => {
+      console.log('App activated, possibly from lock screen tap');
+      
+      // Re-establish media session ownership
+      if ('mediaSession' in navigator) {
+        // Force update metadata to reclaim session
+        const currentMetadata = navigator.mediaSession.metadata;
+        navigator.mediaSession.metadata = null;
+        setTimeout(() => {
+          navigator.mediaSession.metadata = currentMetadata;
+          navigator.mediaSession.playbackState = isPlaying ? 'playing' : 'paused';
+        }, 0);
+      }
+    };
+
+    // Listen for various activation events
+    window.addEventListener('focus', handleAppActivation);
+    window.addEventListener('pageshow', handleAppActivation);
+    
+    // For PWAs, also listen to these events
+    if (window.matchMedia('(display-mode: standalone)').matches) {
+      document.addEventListener('resume', handleAppActivation);
+    }
+
     // Cleanup
     return () => {
       document.removeEventListener('visibilitychange', handleVisibilityChange);
+      window.removeEventListener('focus', handleAppActivation);
+      window.removeEventListener('pageshow', handleAppActivation);
+      document.removeEventListener('resume', handleAppActivation);
       if (audioContextRef.current && audioContextRef.current.state !== 'closed') {
         audioContextRef.current.close();
       }
