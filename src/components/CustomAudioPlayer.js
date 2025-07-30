@@ -33,6 +33,7 @@ export default function CustomAudioPlayer({
   const audioRef = useRef(null);
   const progressTimerRef = useRef(null);
   const lastSavedProgressRef = useRef(0);
+  const audioContextRef = useRef(null);
 
   // Apply stored playback rate when audio is ready
   useEffect(() => {
@@ -127,6 +128,65 @@ export default function CustomAudioPlayer({
       }
     };
   }, [title, artist, language, duration, currentTime, playbackRate, isPlaying]);
+
+  // Initialize Audio Context and handle visibility changes
+  useEffect(() => {
+    // Create Audio Context to maintain audio session
+    if (!audioContextRef.current && 'AudioContext' in window) {
+      audioContextRef.current = new (window.AudioContext || window.webkitAudioContext)();
+      
+      // Resume audio context if it's suspended (iOS requirement)
+      if (audioContextRef.current.state === 'suspended') {
+        const resumeAudio = () => {
+          audioContextRef.current.resume();
+          document.removeEventListener('touchstart', resumeAudio);
+          document.removeEventListener('click', resumeAudio);
+        };
+        document.addEventListener('touchstart', resumeAudio);
+        document.addEventListener('click', resumeAudio);
+      }
+    }
+
+    // Handle visibility changes to maintain audio playback
+    const handleVisibilityChange = () => {
+      const audio = audioRef.current;
+      if (!audio) return;
+
+      if (document.hidden) {
+        // Page is hidden (locked screen or switched apps)
+        console.log('Page hidden, audio playing:', !audio.paused);
+      } else {
+        // Page is visible again
+        console.log('Page visible, audio playing:', !audio.paused);
+        
+        // If audio was playing and got paused, try to resume
+        if (isPlaying && audio.paused) {
+          audio.play().catch(err => {
+            console.log('Could not resume audio after visibility change:', err);
+          });
+        }
+        
+        // Update Media Session position
+        if ('mediaSession' in navigator && 'setPositionState' in navigator.mediaSession && duration > 0) {
+          navigator.mediaSession.setPositionState({
+            duration: duration,
+            playbackRate: playbackRate,
+            position: audio.currentTime
+          });
+        }
+      }
+    };
+
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+
+    // Cleanup
+    return () => {
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+      if (audioContextRef.current && audioContextRef.current.state !== 'closed') {
+        audioContextRef.current.close();
+      }
+    };
+  }, [isPlaying, duration, playbackRate]);
 
   // Handle initial seek when audio is ready
   useEffect(() => {
