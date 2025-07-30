@@ -23,6 +23,7 @@ import useExtensionCommunication from "./hooks/useExtensionCommunication";
 import { setUser } from "@sentry/react";
 import SessionStorage from "./assorted/SessionStorage";
 import useRedirectLink from "./hooks/useRedirectLink";
+import useLocationTracker from "./hooks/useLocationTracker";
 import LoadingAnimation from "./components/LoadingAnimation";
 import PWAInstallBanner from "./components/PWAInstallBanner";
 import IOSInstallBanner from "./components/IOSInstallBanner";
@@ -92,6 +93,7 @@ function App() {
   const [api] = useState(new Zeeguu_API(API_ENDPOINT));
 
   useUILanguage();
+  useLocationTracker(); // Track page visits for return navigation
 
   const [userDetails, setUserDetails] = useState();
   const [userPreferences, setUserPreferences] = useState();

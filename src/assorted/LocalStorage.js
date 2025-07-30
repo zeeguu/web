@@ -1,7 +1,4 @@
-import {
-  removeUserInfoFromCookies,
-  setUserSession,
-} from "../utils/cookies/userInfo";
+import { removeUserInfoFromCookies, setUserSession } from "../utils/cookies/userInfo";
 import uiLanguages from "./uiLanguages";
 
 // Note that session info is in the Cookies
@@ -20,14 +17,14 @@ const LocalStorage = {
     AudioExperimentNoOfSessions: "audio_experiment_no_of_sessions",
     DisplayedAudioExperimentPopup: "audio_experiment_displayed_popup",
     AudioExperimentCompleted: "audio_experiment_completed",
-    DisplayedAudioExperimentQuestionnaire:
-      "audio_experiment_displayed_questionnaire",
+    DisplayedAudioExperimentQuestionnaire: "audio_experiment_displayed_questionnaire",
     TargetNoOfAudioSessions: "audio_target_no_of_sessions",
     clickedVideoLink: "clicked_video_link",
     DoNotShowRedirectionModal: "do_not_show_redirection_modal",
     ProductiveExercisesEnabled: "productiveExercisesEnabled",
     AutoPronounceInExercises: "auto_pronounce_bookmark_exercise",
     lastExerciseCompleteDate: "last_exercise_complete_date",
+    LastVisitedPage: "last_visited_page",
   },
 
   userInfo: function () {
@@ -36,8 +33,7 @@ const LocalStorage = {
       learned_language: localStorage[this.Keys.LearnedLanguage],
       native_language: localStorage[this.Keys.NativeLanguage],
       is_teacher: "true" === localStorage[this.Keys.IsTeacher],
-      productiveExercisesEnabled:
-        localStorage[this.Keys.ProductiveExercisesEnabled],
+      productiveExercisesEnabled: localStorage[this.Keys.ProductiveExercisesEnabled],
     };
   },
 
@@ -70,9 +66,7 @@ const LocalStorage = {
   },
 
   selectedTimePeriod: function () {
-    return localStorage[this.Keys.SelectedTimePeriod]
-      ? localStorage[this.Keys.SelectedTimePeriod]
-      : 30;
+    return localStorage[this.Keys.SelectedTimePeriod] ? localStorage[this.Keys.SelectedTimePeriod] : 30;
   },
 
   getDoNotShowRedirectionModal: function () {
@@ -80,8 +74,7 @@ const LocalStorage = {
   },
 
   setDoNotShowRedirectionModal: function (doNotShowRedirectionModal) {
-    localStorage[this.Keys.DoNotShowRedirectionModal] =
-      doNotShowRedirectionModal;
+    localStorage[this.Keys.DoNotShowRedirectionModal] = doNotShowRedirectionModal;
   },
 
   // Setting info
@@ -90,15 +83,12 @@ const LocalStorage = {
   },
 
   setProductiveExercisesEnabled: function (productiveExercisesEnabled) {
-    localStorage[this.Keys.ProductiveExercisesEnabled] =
-      productiveExercisesEnabled;
+    localStorage[this.Keys.ProductiveExercisesEnabled] = productiveExercisesEnabled;
   },
 
   getProductiveExercisesEnabled: function () {
     try {
-      return (
-        localStorage.getItem(this.Keys.ProductiveExercisesEnabled) === "true"
-      );
+      return localStorage.getItem(this.Keys.ProductiveExercisesEnabled) === "true";
     } catch (e) {
       return undefined;
     }
@@ -119,8 +109,7 @@ const LocalStorage = {
   },
 
   getAutoPronounceInExercises: function () {
-    const autoPronounceInExercises =
-      localStorage[this.Keys.AutoPronounceInExercises];
+    const autoPronounceInExercises = localStorage[this.Keys.AutoPronounceInExercises];
     if (autoPronounceInExercises === undefined) {
       return undefined;
     } else {
@@ -161,8 +150,7 @@ const LocalStorage = {
 
   setUserPreferences: function (preferences) {
     if (preferences["productive_exercises"] !== undefined) {
-      localStorage[this.Keys.ProductiveExercisesEnabled] =
-        preferences["productive_exercises"];
+      localStorage[this.Keys.ProductiveExercisesEnabled] = preferences["productive_exercises"];
     }
   },
 
@@ -183,8 +171,7 @@ const LocalStorage = {
   },
 
   setDisplayedAudioExperimentPopup: function (displayedAudioExperimentPopup) {
-    localStorage[this.Keys.DisplayedAudioExperimentPopup] =
-      displayedAudioExperimentPopup;
+    localStorage[this.Keys.DisplayedAudioExperimentPopup] = displayedAudioExperimentPopup;
   },
 
   audioExperimentCompleted: function () {
@@ -196,12 +183,8 @@ const LocalStorage = {
   },
 
   checkAndUpdateAudioExperimentCompleted: function () {
-    let noOfSessions = Number(
-      localStorage[this.Keys.AudioExperimentNoOfSessions],
-    );
-    let targetNoOfAudioSessions = Number(
-      localStorage[this.Keys.TargetNoOfAudioSessions],
-    );
+    let noOfSessions = Number(localStorage[this.Keys.AudioExperimentNoOfSessions]);
+    let targetNoOfAudioSessions = Number(localStorage[this.Keys.TargetNoOfAudioSessions]);
     if (noOfSessions >= targetNoOfAudioSessions) {
       this.setAudioExperimentCompleted(true);
       localStorage[this.Keys.AudioExperimentCompleted] = true;
@@ -216,11 +199,8 @@ const LocalStorage = {
     return localStorage[this.Keys.DisplayedAudioExperimentQuestionnaire];
   },
 
-  setDisplayedAudioExperimentQuestionnaire: function (
-    displayedAudioExperimentQuestionnaire,
-  ) {
-    localStorage[this.Keys.DisplayedAudioExperimentQuestionnaire] =
-      displayedAudioExperimentQuestionnaire;
+  setDisplayedAudioExperimentQuestionnaire: function (displayedAudioExperimentQuestionnaire) {
+    localStorage[this.Keys.DisplayedAudioExperimentQuestionnaire] = displayedAudioExperimentQuestionnaire;
   },
 
   setAutoPronounceInExercises: function (val) {
@@ -229,9 +209,7 @@ const LocalStorage = {
 
   getTargetNoOfAudioSessions: function () {
     try {
-      let noofsessions = Number(
-        localStorage[this.Keys.TargetNoOfAudioSessions],
-      );
+      let noofsessions = Number(localStorage[this.Keys.TargetNoOfAudioSessions]);
       return noofsessions;
     } catch (e) {
       return 0;
@@ -243,21 +221,16 @@ const LocalStorage = {
   },
 
   getAudioExperimentNoOfSessions: function () {
-    let noofsessions = Number(
-      localStorage[this.Keys.AudioExperimentNoOfSessions],
-    );
+    let noofsessions = Number(localStorage[this.Keys.AudioExperimentNoOfSessions]);
     return noofsessions;
   },
 
   setAudioExperimentNoOfSessions: function (audioExperimentNoOfSessions) {
-    localStorage[this.Keys.AudioExperimentNoOfSessions] =
-      audioExperimentNoOfSessions;
+    localStorage[this.Keys.AudioExperimentNoOfSessions] = audioExperimentNoOfSessions;
   },
 
   incrementAudioExperimentNoOfSessions: function () {
-    var audioExperimentNoOfSessions = Number(
-      localStorage[this.Keys.AudioExperimentNoOfSessions],
-    );
+    var audioExperimentNoOfSessions = Number(localStorage[this.Keys.AudioExperimentNoOfSessions]);
     var temp = audioExperimentNoOfSessions + 1;
     localStorage[this.Keys.AudioExperimentNoOfSessions] = temp;
   },
@@ -276,6 +249,14 @@ const LocalStorage = {
 
   setLastExerciseCompleteDate: function (date) {
     localStorage[this.Keys.lastExerciseCompleteDate] = date;
+  },
+
+  getLastVisitedPage: function () {
+    return localStorage[this.Keys.LastVisitedPage];
+  },
+
+  setLastVisitedPage: function (path) {
+    localStorage[this.Keys.LastVisitedPage] = path;
   },
 };
 
