@@ -108,7 +108,7 @@ export default function LanguageModal({ open, setOpen }) {
               optionLabel={(e) => (
                 <span>
                   {e.language}{" "}
-                  <span style={{ color: "#888", fontSize: "0.9em" }}>
+                  <span style={{ color: "#888", fontSize: "0.8em" }}>
                     ({getCefrLevelForLanguage(e.code)})
                   </span>
                 </span>
