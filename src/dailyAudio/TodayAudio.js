@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
 import { orange500, orange600, orange800, zeeguuOrange } from "../components/colors";
 import { APIContext } from "../contexts/APIContext";
+import { UserContext } from "../contexts/UserContext";
 import LoadingAnimation from "../components/LoadingAnimation";
 import CustomAudioPlayer from "../components/CustomAudioPlayer";
 
@@ -17,6 +18,7 @@ export function wordsAsTile(words) {
 
 export default function TodayAudio() {
   const api = useContext(APIContext);
+  const { userDetails } = useContext(UserContext);
   const [isLoading, setIsLoading] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
 
@@ -312,6 +314,7 @@ export default function TodayAudio() {
           initialProgress={
             lessonData.pause_position_seconds || lessonData.position_seconds || lessonData.progress_seconds || 0
           }
+          language={userDetails?.learned_language}
           onPlay={() => {
             if (lessonData.lesson_id) {
               api.updateLessonState(lessonData.lesson_id, "resume");

@@ -14,14 +14,31 @@ export default function CustomAudioPlayer({
   onProgressUpdate,
   initialProgress = 0,
   style,
+  language,
 }) {
+  const getStoredSpeed = () => {
+    if (!language) return 1.0;
+    const key = `audioSpeed_${language}`;
+    const stored = localStorage.getItem(key);
+    return stored ? parseFloat(stored) : 1.0;
+  };
+
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
+  const [playbackRate, setPlaybackRate] = useState(getStoredSpeed());
   const audioRef = useRef(null);
   const progressTimerRef = useRef(null);
   const lastSavedProgressRef = useRef(0);
+
+  // Apply stored playback rate when audio is ready
+  useEffect(() => {
+    const audio = audioRef.current;
+    if (audio && playbackRate !== 1.0) {
+      audio.playbackRate = playbackRate;
+    }
+  }, [playbackRate]);
 
   // Handle initial seek when audio is ready
   useEffect(() => {
@@ -210,14 +227,30 @@ export default function CustomAudioPlayer({
     setCurrentTime(newTime);
   };
 
-  const formatTime = (time) => {
+  const formatTime = (time, adjustForSpeed = false) => {
     if (isNaN(time)) return "0:00";
-    const minutes = Math.floor(time / 60);
-    const seconds = Math.floor(time % 60);
+    // Adjust time based on playback rate if requested
+    const adjustedTime = adjustForSpeed ? time / playbackRate : time;
+    const minutes = Math.floor(adjustedTime / 60);
+    const seconds = Math.floor(adjustedTime % 60);
     return `${minutes}:${seconds.toString().padStart(2, "0")}`;
   };
 
   const progressPercentage = duration > 0 ? (currentTime / duration) * 100 : 0;
+
+  const handleSpeedChange = (newRate) => {
+    const audio = audioRef.current;
+    if (!audio) return;
+
+    setPlaybackRate(newRate);
+    audio.playbackRate = newRate;
+
+    // Save to localStorage if language is provided
+    if (language) {
+      const key = `audioSpeed_${language}`;
+      localStorage.setItem(key, newRate.toString());
+    }
+  };
 
   return (
     <div
@@ -234,173 +267,221 @@ export default function CustomAudioPlayer({
       <audio ref={audioRef} src={src} preload="metadata" />
 
       {/* Controls Section */}
-      <div style={{ display: "flex", alignItems: "center", gap: "16px", marginBottom: "16px" }}>
-        {/* Back 15s Button */}
-        <button
-          onClick={seekBackward}
-          disabled={isLoading}
-          style={{
-            width: "44px",
-            height: "44px",
-            borderRadius: "50%",
-            border: `2px solid ${isLoading ? "#ccc" : zeeguuOrange}`,
-            backgroundColor: "white",
-            color: isLoading ? "#ccc" : zeeguuOrange,
-            cursor: isLoading ? "not-allowed" : "pointer",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            fontSize: "20px",
-            transition: "all 0.2s ease",
-          }}
-          onMouseDown={(e) => {
-            if (!isLoading) {
-              e.currentTarget.style.transform = "scale(0.95)";
-            }
-          }}
-          onMouseUp={(e) => {
-            if (!isLoading) {
-              e.currentTarget.style.transform = "scale(1)";
-            }
-          }}
-          onMouseLeave={(e) => {
-            if (!isLoading) {
-              e.currentTarget.style.transform = "scale(1)";
-            }
-          }}
-        >
-          <span style={{ fontSize: "14px", fontWeight: "600" }}>-{SEEK_SECONDS}</span>
-        </button>
+      <div style={{ display: "flex", alignItems: "center", marginBottom: "16px", justifyContent: "space-between" }}>
+        {/* Playback Controls */}
+        <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
+          {/* Back 15s Button */}
+          <button
+            onClick={seekBackward}
+            disabled={isLoading}
+            style={{
+              width: "44px",
+              height: "44px",
+              borderRadius: "50%",
+              border: `2px solid ${isLoading ? "#ccc" : zeeguuOrange}`,
+              backgroundColor: "white",
+              color: isLoading ? "#ccc" : zeeguuOrange,
+              cursor: isLoading ? "not-allowed" : "pointer",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              fontSize: "20px",
+              transition: "all 0.2s ease",
+            }}
+            onMouseDown={(e) => {
+              if (!isLoading) {
+                e.currentTarget.style.transform = "scale(0.95)";
+              }
+            }}
+            onMouseUp={(e) => {
+              if (!isLoading) {
+                e.currentTarget.style.transform = "scale(1)";
+              }
+            }}
+            onMouseLeave={(e) => {
+              if (!isLoading) {
+                e.currentTarget.style.transform = "scale(1)";
+              }
+            }}
+          >
+            <span style={{ fontSize: "14px", fontWeight: "600" }}>-{SEEK_SECONDS}</span>
+          </button>
 
-        {/* Play/Pause Button */}
-        <button
-          onClick={togglePlay}
-          disabled={isLoading}
-          style={{
-            width: "60px",
-            height: "60px",
-            borderRadius: "50%",
-            border: "none",
-            backgroundColor: isLoading ? "#ccc" : zeeguuOrange,
-            color: "white",
-            cursor: isLoading ? "not-allowed" : "pointer",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            fontSize: "24px",
-            boxShadow: "0 4px 8px rgba(0,0,0,0.2)",
-            transition: "all 0.2s ease",
-          }}
-          onMouseDown={(e) => {
-            if (!isLoading) {
-              e.currentTarget.style.transform = "scale(0.95)";
-            }
-          }}
-          onMouseUp={(e) => {
-            if (!isLoading) {
-              e.currentTarget.style.transform = "scale(1)";
-            }
-          }}
-          onMouseLeave={(e) => {
-            if (!isLoading) {
-              e.currentTarget.style.transform = "scale(1)";
-            }
-          }}
-        >
-          {isLoading ? (
-            <HourglassEmptyRoundedIcon sx={{ fontSize: 28 }} />
-          ) : isPlaying ? (
-            <PauseRoundedIcon sx={{ fontSize: 32 }} />
-          ) : (
-            <PlayArrowRoundedIcon sx={{ fontSize: 32 }} />
-          )}
-        </button>
+          {/* Play/Pause Button */}
+          <button
+            onClick={togglePlay}
+            disabled={isLoading}
+            style={{
+              width: "60px",
+              height: "60px",
+              borderRadius: "50%",
+              border: "none",
+              backgroundColor: isLoading ? "#ccc" : zeeguuOrange,
+              color: "white",
+              cursor: isLoading ? "not-allowed" : "pointer",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              fontSize: "24px",
+              boxShadow: "0 4px 8px rgba(0,0,0,0.2)",
+              transition: "all 0.2s ease",
+            }}
+            onMouseDown={(e) => {
+              if (!isLoading) {
+                e.currentTarget.style.transform = "scale(0.95)";
+              }
+            }}
+            onMouseUp={(e) => {
+              if (!isLoading) {
+                e.currentTarget.style.transform = "scale(1)";
+              }
+            }}
+            onMouseLeave={(e) => {
+              if (!isLoading) {
+                e.currentTarget.style.transform = "scale(1)";
+              }
+            }}
+          >
+            {isLoading ? (
+              <HourglassEmptyRoundedIcon sx={{ fontSize: 28 }} />
+            ) : isPlaying ? (
+              <PauseRoundedIcon sx={{ fontSize: 32 }} />
+            ) : (
+              <PlayArrowRoundedIcon sx={{ fontSize: 32 }} />
+            )}
+          </button>
 
-        {/* Forward 15s Button */}
-        <button
-          onClick={seekForward}
-          disabled={isLoading}
-          style={{
-            width: "44px",
-            height: "44px",
-            borderRadius: "50%",
-            border: `2px solid ${isLoading ? "#ccc" : zeeguuOrange}`,
-            backgroundColor: "white",
-            color: isLoading ? "#ccc" : zeeguuOrange,
-            cursor: isLoading ? "not-allowed" : "pointer",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            fontSize: "20px",
-            transition: "all 0.2s ease",
-          }}
-          onMouseDown={(e) => {
-            if (!isLoading) {
-              e.currentTarget.style.transform = "scale(0.95)";
-            }
-          }}
-          onMouseUp={(e) => {
-            if (!isLoading) {
-              e.currentTarget.style.transform = "scale(1)";
-            }
-          }}
-          onMouseLeave={(e) => {
-            if (!isLoading) {
-              e.currentTarget.style.transform = "scale(1)";
-            }
-          }}
-        >
-          <span style={{ fontSize: "14px", fontWeight: "600" }}>+{SEEK_SECONDS}</span>
-        </button>
+          {/* Forward 15s Button */}
+          <button
+            onClick={seekForward}
+            disabled={isLoading}
+            style={{
+              width: "44px",
+              height: "44px",
+              borderRadius: "50%",
+              border: `2px solid ${isLoading ? "#ccc" : zeeguuOrange}`,
+              backgroundColor: "white",
+              color: isLoading ? "#ccc" : zeeguuOrange,
+              cursor: isLoading ? "not-allowed" : "pointer",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              fontSize: "20px",
+              transition: "all 0.2s ease",
+            }}
+            onMouseDown={(e) => {
+              if (!isLoading) {
+                e.currentTarget.style.transform = "scale(0.95)";
+              }
+            }}
+            onMouseUp={(e) => {
+              if (!isLoading) {
+                e.currentTarget.style.transform = "scale(1)";
+              }
+            }}
+            onMouseLeave={(e) => {
+              if (!isLoading) {
+                e.currentTarget.style.transform = "scale(1)";
+              }
+            }}
+          >
+            <span style={{ fontSize: "14px", fontWeight: "600" }}>+{SEEK_SECONDS}</span>
+          </button>
+        </div>
 
-        {/* Time Display */}
-        <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-start" }}>
-          <div style={{ fontSize: "16px", fontWeight: "600", color: "#333" }}>
-            {formatTime(currentTime)} / {formatTime(duration)}
+        {/* Speed Control Dropdown */}
+        <div style={{ position: "relative" }}>
+          <select
+            value={playbackRate}
+            onChange={(e) => handleSpeedChange(parseFloat(e.target.value))}
+            disabled={isLoading}
+            style={{
+              padding: "6px 12px",
+              borderRadius: "20px",
+              border: `1px solid ${zeeguuOrange}`,
+              backgroundColor: "white",
+              color: zeeguuOrange,
+              cursor: isLoading ? "not-allowed" : "pointer",
+              fontSize: "14px",
+              fontWeight: "500",
+              outline: "none",
+              appearance: "none",
+              paddingRight: "28px",
+              minWidth: "80px",
+            }}
+          >
+            <option value="0.8">0.8x</option>
+            <option value="0.85">0.85x</option>
+            <option value="0.9">0.9x</option>
+            <option value="0.95">0.95x</option>
+            <option value="1">1x</option>
+          </select>
+          {/* Custom dropdown arrow */}
+          <div
+            style={{
+              position: "absolute",
+              right: "10px",
+              top: "50%",
+              transform: "translateY(-50%)",
+              pointerEvents: "none",
+              color: zeeguuOrange,
+              fontSize: "12px",
+            }}
+          >
+            ▼
           </div>
-          {isLoading && <div style={{ fontSize: "12px", color: "#666" }}>Loading...</div>}
         </div>
       </div>
 
-      {/* Progress Bar */}
-      <div
-        onClick={handleProgressClick}
-        style={{
-          width: "100%",
-          height: "8px",
-          backgroundColor: "#e0e0e0",
-          borderRadius: "4px",
-          cursor: "pointer",
-          position: "relative",
-          overflow: "hidden",
-        }}
-      >
+      {/* Progress Bar and Time Display */}
+      <div style={{ display: "flex", alignItems: "center", gap: "16px", marginTop: "16px" }}>
+        {/* Progress Bar */}
         <div
+          onClick={handleProgressClick}
           style={{
-            width: `${progressPercentage}%`,
-            height: "100%",
-            backgroundColor: zeeguuOrange,
+            flex: 1,
+            height: "8px",
+            backgroundColor: "#e0e0e0",
             borderRadius: "4px",
-            transition: "width 0.1s ease",
-          }}
-        />
-
-        {/* Progress Handle */}
-        <div
-          style={{
-            position: "absolute",
-            top: "-6px",
-            left: `${progressPercentage}%`,
-            width: "20px",
-            height: "20px",
-            backgroundColor: zeeguuOrange,
-            borderRadius: "50%",
-            transform: "translateX(-50%)",
-            boxShadow: "0 2px 4px rgba(0,0,0,0.2)",
             cursor: "pointer",
-            opacity: duration > 0 ? 1 : 0,
+            position: "relative",
+            overflow: "hidden",
           }}
-        />
+        >
+          <div
+            style={{
+              width: `${progressPercentage}%`,
+              height: "100%",
+              backgroundColor: zeeguuOrange,
+              borderRadius: "4px",
+              transition: "width 0.1s ease",
+            }}
+          />
+
+          {/* Progress Handle */}
+          <div
+            style={{
+              position: "absolute",
+              top: "-6px",
+              left: `${progressPercentage}%`,
+              width: "20px",
+              height: "20px",
+              backgroundColor: zeeguuOrange,
+              borderRadius: "50%",
+              transform: "translateX(-50%)",
+              boxShadow: "0 2px 4px rgba(0,0,0,0.2)",
+              cursor: "pointer",
+              opacity: duration > 0 ? 1 : 0,
+            }}
+          />
+        </div>
+
+        {/* Time Display */}
+        <div style={{ minWidth: "100px", textAlign: "right" }}>
+          <div style={{ fontSize: "14px", fontWeight: "600", color: "#888" }}>
+            {formatTime(currentTime)} / {formatTime(duration, true)}
+          </div>
+        </div>
       </div>
     </div>
   );

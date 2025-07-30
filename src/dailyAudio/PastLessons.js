@@ -1,12 +1,14 @@
 import React, { useState, useContext, useEffect } from "react";
 import { zeeguuOrange } from "../components/colors";
 import { APIContext } from "../contexts/APIContext";
+import { UserContext } from "../contexts/UserContext";
 import LoadingAnimation from "../components/LoadingAnimation";
 import CustomAudioPlayer from "../components/CustomAudioPlayer";
 import { wordsAsTile } from "./TodayAudio";
 
 export default function PastLessons() {
   const api = useContext(APIContext);
+  const { userDetails } = useContext(UserContext);
   const [pastLessons, setPastLessons] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -143,6 +145,7 @@ export default function PastLessons() {
                     initialProgress={
                       lesson.pause_position_seconds || lesson.position_seconds || lesson.progress_seconds || 0
                     }
+                    language={userDetails?.learned_language}
                     onPlay={() => {
                       if (lesson.lesson_id) {
                         api.updateLessonState(lesson.lesson_id, "resume");
