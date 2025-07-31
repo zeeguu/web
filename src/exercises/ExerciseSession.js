@@ -432,7 +432,7 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
     <NarrowColumn>
       <s.ExercisesColumn>
         <div id="arrowAndProgress">
-          {isMobile && <BackArrow />}
+          {isMobile && <BackArrow func={backButtonAction} />}
 
           <ExerciseSessionProgressBar
             index={isCorrect ? currentIndex + 1 : currentIndex}

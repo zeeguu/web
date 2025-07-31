@@ -20,7 +20,7 @@ export default function OutOfWordsMessage({ goBackAction }) {
 
   return (
     <s.Exercise>
-      {isMobile && <BackArrow />}
+      {isMobile && <BackArrow func={goBackAction} />}
       <div className="contextExample">
         <br />
         <br />

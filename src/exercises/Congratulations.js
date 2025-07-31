@@ -92,7 +92,7 @@ export default function Congratulations({
   return (
     <>
       <s.NarrowColumn className="narrowColumn">
-        {isMobile && <BackArrow />}
+        {isMobile && <BackArrow func={backButtonAction} />}
         <CenteredColumn className="centeredColumn">
           <h1>
             {strings.goodJob} {username}!
