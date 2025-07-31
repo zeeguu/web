@@ -15,21 +15,16 @@ const ExercisesColumn = styled.div`
   // VISUAL_DEBUGGING
   //background-color: aquamarine;
 
-  #arrowAndProgress {
+  #exerciseTopbar {
+    width: 100%;
+  }
+
+  #topbarRow {
     display: flex;
     align-items: center;
-    gap: 1rem;
-
-    /* BackArrow takes its natural width */
-    > button:first-child {
-      flex-shrink: 0;
-    }
-
-    /* Progress bar takes remaining space */
-    > div:last-child {
-      flex: 1;
-      margin-right: 1rem;
-    }
+    flex-direction: row;
+    justify-content: space-between;
+    margin-bottom: 0;
   }
 `;
 
@@ -39,8 +34,7 @@ const ExForm = styled.div`
   border-radius: 10px;
   transition: all 0.5s;
   width: 100%;
-  margin: 1rem auto;
-  margin-top: 0px;
+  margin: 0 auto;
   background-color: rgba(241, 240, 240, 0.274);
   min-height: 400px;
   padding-bottom: 1rem;

@@ -494,7 +494,7 @@ let strings = new LocalizedStrings(
       translateL2toL1Headline: "Translate the bold word",
       translateWhatYouHearHeadline: "Translate the word you hear. Click to have it repeated!",
       multipleChoiceL2toL1Headline: "Select the correct translation of the bold word",
-      clickWordInContextHeadline: "Find the translation of the word below in the context and click on it",
+      clickWordInContextHeadline: "Click on the translation of the word below in the text",
       multipleChoiceContextHeadline: "Choose the context that fits the word",
 
       //FeedbackButtons

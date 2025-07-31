@@ -431,25 +431,26 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
   return (
     <NarrowColumn>
       <s.ExercisesColumn>
-        <div id="arrowAndProgress">
-          {isMobile && <BackArrow func={backButtonAction} />}
-
-          <ExerciseSessionProgressBar
-            index={isCorrect ? currentIndex + 1 : currentIndex}
-            total={fullExerciseProgression.length}
-            clock={
+        <div id="exerciseTopbar">
+          <div id="topbarRow">
+            <div style={{ display: "flex", alignItems: "center", marginLeft: "1rem" }}>
+              {isMobile && <BackArrow func={backButtonAction} />}
+            </div>
+            <div style={{ display: "flex", alignItems: "center", gap: "1rem", marginRight: "1rem" }}>
               <DigitalTimer
                 activeSessionDuration={activeSessionDuration}
                 clockActive={clockActive}
                 showClock={false}
                 style={{
                   width: "3em",
-                  float: "right",
-                  margin: "0.25rem 0.15rem",
                   color: "grey",
                 }}
-              ></DigitalTimer>
-            }
+              />
+            </div>
+          </div>
+          <ExerciseSessionProgressBar
+            index={isCorrect ? currentIndex + 1 : currentIndex}
+            total={fullExerciseProgression.length}
           />
         </div>
         <s.ExForm>

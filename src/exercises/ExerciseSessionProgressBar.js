@@ -4,18 +4,18 @@ function percentageDone(index, total) {
   return p;
 }
 
-export default function ExerciseSessionProgressBar({ index, total, clock }) {
+export default function ExerciseSessionProgressBar({ index, total }) {
   return (
     <s.ExerciseSessionProgressBar>
-      <div className="progressModule">
-        <div className="ex-progress">
-          <div
-            id="ex-bar"
-            style={{ width: percentageDone(index, total) + "%" }}
-          ></div>
-          {clock}
-        </div>
-      </div>
+      <progress 
+        style={{ 
+          margin: "0px", 
+          marginBottom: "0.5rem", 
+          marginTop: "1rem",
+          width: "100%" 
+        }} 
+        value={percentageDone(index, total) / 100} 
+      />
     </s.ExerciseSessionProgressBar>
   );
 }
