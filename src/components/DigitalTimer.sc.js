@@ -8,7 +8,7 @@ let DigitalClock = styled.div`
   font-size: small;
   margin-right: 0.5em;
   font-weight: 500;
-  color: ${darkBlue};
+  color: #9ca3af;
 
   &.disabled {
     font-weight: 300;

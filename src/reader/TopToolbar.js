@@ -46,7 +46,10 @@ export default function TopToolbar({
     <s.ToolbarWrapper>
       <s.Toolbar>
         <s.TopbarButtonsContainer $screenWidth={screenWidth}>
-          {isMobile && <BackArrow noMargin={false} />}
+          <div style={{ display: "flex", alignItems: "center", marginLeft: "1rem" }}>
+            {isMobile && <BackArrow />}
+            {!isMobile && timer}
+          </div>
           <div>
             {user.is_teacher && (
               <>
@@ -66,18 +69,18 @@ export default function TopToolbar({
               </>
             )}
           </div>
-          <ToolbarButtons
-            translating={translating}
-            pronouncing={pronouncing}
-            setTranslating={setTranslating}
-            setPronouncing={setPronouncing}
-          />
+          <div style={{ display: "flex", alignItems: "center", gap: "1rem", marginRight: "1rem" }}>
+            {isMobile && timer}
+            <ToolbarButtons
+              translating={translating}
+              pronouncing={pronouncing}
+              setTranslating={setTranslating}
+              setPronouncing={setPronouncing}
+            />
+          </div>
         </s.TopbarButtonsContainer>
 
-        <div>
-          {timer}
-          <progress style={{ margin: "0px" }} value={articleProgress} />
-        </div>
+        <progress style={{ margin: "0px", marginBottom: "0.5rem", marginTop: isMobile ? "0" : "1rem" }} value={articleProgress} />
       </s.Toolbar>
     </s.ToolbarWrapper>
   );

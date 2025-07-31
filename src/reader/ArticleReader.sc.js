@@ -1,23 +1,11 @@
 import styled, { css } from "styled-components";
 import { BigSquareButton } from "../components/allButtons.sc";
 
-import {
-  veryLightGrey,
-  zeeguuLightYellow,
-  zeeguuOrange,
-  zeeguuWarmYellow,
-  lighterBlue,
-  lightGrey,
-} from "../components/colors";
+import { lighterBlue, lightGrey, zeeguuLightYellow, zeeguuOrange, zeeguuWarmYellow } from "../components/colors";
 
-import {
-  NarrowColumn,
-  CenteredContent,
-  ContentOnRow,
-} from "../components/ColumnWidth.sc";
+import { CenteredContent, ContentOnRow, NarrowColumn } from "../components/ColumnWidth.sc";
 
 import { Link } from "react-router-dom";
-import { MOBILE_WIDTH } from "../components/MainNav/screenSize";
 
 let ArticleReader = styled.div`
   padding: 0px 0.5rem;
@@ -65,11 +53,10 @@ let PlayerControl = styled.div`
 
 let TopbarButtonsContainer = styled.div`
   display: flex;
-  align-items: ${({ $screenWidth }) =>
-    $screenWidth < MOBILE_WIDTH ? "flex-start" : "flex-end"};
+  align-items: center;
   flex-direction: row;
   justify-content: space-between;
-  margin-bottom: 0.6rem;
+  margin-bottom: 0;
 `;
 
 let TopReaderButtonsContainer = styled.div`
@@ -124,7 +111,7 @@ const ToolbarWrapper = styled.div`
   top: 0;
   z-index: 1000;
   background-color: white;
-  padding-top: 0.5rem;
+  padding-top: 1.5rem;
 `;
 
 let Toolbar = styled.div`
@@ -133,7 +120,7 @@ let Toolbar = styled.div`
   max-width: 768px;
   margin-left: auto;
   margin-right: auto;
-  border-bottom: 1px solid ${veryLightGrey};
+
   button.toolbar-btn {
     width: 55px;
     height: 55px;
@@ -148,11 +135,7 @@ let Toolbar = styled.div`
   }
 
   progress[value] {
-    --color: linear-gradient(
-      89.5deg,
-      ${zeeguuOrange},
-      ${zeeguuLightYellow} 100%
-    ); /* the progress color */
+    --color: linear-gradient(89.5deg, ${zeeguuOrange}, ${zeeguuLightYellow} 100%); /* the progress color */
     --background: ${lightGrey}; /* the background color */
 
     -webkit-appearance: none;
@@ -160,7 +143,7 @@ let Toolbar = styled.div`
     appearance: none;
     border: none;
     width: 100%;
-    height: 0.5em;
+    height: 0.2em;
     border-radius: 10em;
     background: var(--background);
     transition: all 0.1s linear 0s;

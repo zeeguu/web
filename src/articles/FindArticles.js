@@ -17,6 +17,7 @@ import strings from "../i18n/definitions";
 import useShadowRef from "../hooks/useShadowRef";
 import { Link } from "react-router-dom";
 import VideoPreview from "../videos/VideoPreview";
+import SettingsRoundedIcon from "@mui/icons-material/SettingsRounded";
 
 export default function FindArticles({ content, searchQuery, searchPublishPriority, searchDifficultyPriority }) {
   let api = useContext(APIContext);
@@ -187,9 +188,7 @@ export default function FindArticles({ content, searchQuery, searchPublishPriori
             marginBottom: window.innerWidth <= 768 ? "0.5rem" : "1.5rem"
           }}>
             <div style={{ display: "flex", alignItems: "center", gap: "0.3rem" }}>
-              <span style={{ fontSize: "1.2em", cursor: "pointer" }} title="Customize this page by subscribing to topics, filtering keywords, or adding searches">
-                ⚙️
-              </span>
+              <SettingsRoundedIcon style={{ fontSize: "1.2em", cursor: "pointer" }} title="Customize this page by subscribing to topics, filtering keywords, or adding searches" />
               <span style={{ fontSize: window.innerWidth <= 768 ? "0.8em" : "0.9em", color: "#666", whiteSpace: "nowrap" }}>
                 <Link className="bold underlined-link" to="/account_settings/interests?fromArticles=1">
                   Topics
