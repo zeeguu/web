@@ -183,6 +183,7 @@ export default function FindArticles({ content, searchQuery, searchPublishPriori
             display: "flex", 
             justifyContent: "space-between", 
             alignItems: "center",
+            marginTop: window.innerWidth <= 768 ? "0" : "1.5rem",
             marginBottom: window.innerWidth <= 768 ? "0.5rem" : "1.5rem"
           }}>
             <div style={{ display: "flex", alignItems: "center", gap: "0.3rem" }}>
