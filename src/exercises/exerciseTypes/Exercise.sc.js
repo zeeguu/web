@@ -128,7 +128,6 @@ const Exercise = styled.div`
 
   /* Mobile version */
   @media screen and (max-width: 768px) {
-    padding-top: 1em; /* Add space to avoid session progress bar overlap */
 
     .contextExample {
       margin-top: 0.5em;
