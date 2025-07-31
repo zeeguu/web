@@ -14,7 +14,6 @@ const SortHolder = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  margin-bottom: 3em;
 `;
 
 const SearchHolder = styled.div`

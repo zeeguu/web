@@ -274,7 +274,7 @@ let strings = new LocalizedStrings(
       bookmarkedTab: "Bookmarked",
       saved: "Saves",
       forYou: "For You",
-      searches: "Searches",
+      search: "Search",
 
       //WordsRouter
       yourWordsHeadline: "Your Words",

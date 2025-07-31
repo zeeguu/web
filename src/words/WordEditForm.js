@@ -124,6 +124,27 @@ export default function WordEditForm({ bookmark, errorMessage, handleClose, upda
           </s.CustomCheckBoxDiv>
         )}
 
+        {window.location.hostname === 'localhost' && (
+          <div style={{ 
+            margin: "1em 0",
+            padding: "0.5em",
+            backgroundColor: "#f0f8f0",
+            border: "1px solid #4CAF50",
+            borderRadius: "4px",
+            fontSize: "0.85em", 
+            color: "#2e7d32"
+          }}>
+            <div style={{ fontWeight: "bold", marginBottom: "0.3em" }}>Debug Info:</div>
+            <div>Bookmark ID: {bookmark.id}</div>
+            {bookmark.user_word_id && (
+              <div>User Word ID: {bookmark.user_word_id}</div>
+            )}
+            {bookmark.meaning_id && (
+              <div>Meaning ID: {bookmark.meaning_id}</div>
+            )}
+          </div>
+        )}
+
         {isNotEdited ? (
           <s.DoneButtonHolder>
             <st.FeedbackSubmit type="submit" value={strings.done} style={{ marginLeft: "1em", marginTop: "1em" }} />

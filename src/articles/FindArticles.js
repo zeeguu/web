@@ -178,31 +178,31 @@ export default function FindArticles({ content, searchQuery, searchPublishPriori
     <>
       {!searchQuery && (
         <>
-          <s.SearchHolder>
-            <SearchField query={searchQuery} />
-          </s.SearchHolder>
-          <div style={{ marginBottom: "1.5rem", padding: "0.5rem" }}>
-            <span>
-              Customize this page by{" "}
-              <Link className="bold underlined-link" to="/account_settings/interests?fromArticles=1">
-                subscribing&nbsp;to&nbsp;<b>topics</b>
-              </Link>
-              ,{" "}
-              <Link className="bold underlined-link" to="/account_settings/excluded_keywords?fromArticles=1">
-                filtering&nbsp;<b>keywords</b>
-              </Link>
-              , or{" "}
-              <Link className="bold underlined-link" to="/articles/mySearches">
-                adding&nbsp;<b>searches</b>
-              </Link>
-              .
-            </span>
-          </div>
-
-          {!searchQuery && (
-            <UnfinishedArticlesList articleList={articlesAndVideosList} setArticleList={setArticlesAndVideosList} />
-          )}
-          <s.SortHolder>
+          <UnfinishedArticlesList articleList={articlesAndVideosList} setArticleList={setArticlesAndVideosList} />
+          <s.SortHolder style={{ 
+            display: "flex", 
+            justifyContent: "space-between", 
+            alignItems: "center",
+            marginBottom: window.innerWidth <= 768 ? "0.5rem" : "1.5rem"
+          }}>
+            <div style={{ display: "flex", alignItems: "center", gap: "0.3rem" }}>
+              <span style={{ fontSize: "1.2em", cursor: "pointer" }} title="Customize this page by subscribing to topics, filtering keywords, or adding searches">
+                ⚙️
+              </span>
+              <span style={{ fontSize: window.innerWidth <= 768 ? "0.8em" : "0.9em", color: "#666", whiteSpace: "nowrap" }}>
+                <Link className="bold underlined-link" to="/account_settings/interests?fromArticles=1">
+                  Topics
+                </Link>
+                {" • "}
+                <Link className="bold underlined-link" to="/account_settings/excluded_keywords?fromArticles=1">
+                  Keywords
+                </Link>
+                {" • "}
+                <Link className="bold underlined-link" to="/articles/mySearches">
+                  Saved Searches
+                </Link>
+              </span>
+            </div>
             <s.ShowVideoOnlyButton
               className={isShowVideosOnlyEnabled && "selected"}
               style={{ visibility: !areVideosAvailable && "hidden" }}
@@ -210,11 +210,6 @@ export default function FindArticles({ content, searchQuery, searchPublishPriori
             >
               Show videos only
             </s.ShowVideoOnlyButton>
-            <SortingButtons
-              articleList={articlesAndVideosList}
-              setArticleList={setArticlesAndVideosList}
-              clearStateTrigger={isShowVideosOnlyEnabled}
-            />
           </s.SortHolder>
         </>
       )}

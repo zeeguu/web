@@ -21,8 +21,8 @@ export default function ArticlesRouter({ hasExtension, isChrome }) {
   const api = useContext(APIContext);
   const [tabsAndLinks, setTabsAndLinks] = useState({
     [strings.homeTab]: "/articles",
+    [strings.search]: "/articles/mySearches",
     [strings.saved]: "/articles/ownTexts",
-    [strings.searches]: "/articles/mySearches",
   });
 
   useEffect(() => {
