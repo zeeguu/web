@@ -80,7 +80,7 @@ export default function TranslateWhatYouHear({
   }
 
   return (
-    <s.Exercise>
+    <s.Exercise className="translateWhatYouHear">
       {/* Instructions - visible during exercise, invisible when showing solution but still take space */}
       <div className="headlineWithMoreSpace">
         {strings.translateWhatYouHearHeadline}
@@ -100,9 +100,9 @@ export default function TranslateWhatYouHear({
         />
       </div>
 
-      {/* Button area - below context during exercise */}
-      {!isExerciseOver && (
-        <div style={{ marginTop: '2em', textAlign: 'center' }}>
+      {/* Button/Solution area - maintain consistent height, placed below context */}
+      <div style={{ minHeight: '120px', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', marginTop: '2em' }}>
+        {!isExerciseOver ? (
           <s.CenteredRowTall>
             <SpeakButton
               bookmarkToStudy={exerciseBookmark}
@@ -110,18 +110,15 @@ export default function TranslateWhatYouHear({
               parentIsSpeakingControl={isButtonSpeaking}
             />
           </s.CenteredRowTall>
-        </div>
-      )}
-
-      {/* Solution area - appears below context when exercise is over */}
-      {isExerciseOver && (
-        <div style={{ marginTop: '3em' }}>
-          <h1 className="wordInContextHeadline">
-            {exerciseBookmark.to}
-          </h1>
-          {bookmarkProgressBar}
-        </div>
-      )}
+        ) : (
+          <>
+            <h1 className="wordInContextHeadline" style={{ margin: '0.25em 0' }}>
+              {exerciseBookmark.to}
+            </h1>
+            {bookmarkProgressBar}
+          </>
+        )}
+      </div>
 
       {/* Bottom input - only during exercise */}
       {!isExerciseOver && (

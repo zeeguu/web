@@ -42,22 +42,34 @@ export default function MultipleChoice({
   }, []);
 
   useEffect(() => {
+    const timestamp = new Date().toISOString();
+    console.log(`[${timestamp}] MultipleChoice useEffect triggered`);
+    console.log("MultipleChoice useEffect - exerciseBookmark:", exerciseBookmark);
+    console.log("MultipleChoice useEffect - context_tokenized:", exerciseBookmark.context_tokenized);
+    console.log("MultipleChoice useEffect - bookmark ID:", exerciseBookmark.id);
+    console.log("MultipleChoice useEffect - reload state:", reload);
+    console.log("MultipleChoice useEffect - word:", exerciseBookmark.from);
+    
     api.wordsSimilarTo(exerciseBookmark.id, (words) => {
+      console.log(`[${timestamp}] MultipleChoice - received similar words:`, words);
       consolidateChoiceOptions(words);
     });
-    setInteractiveText(
-      new InteractiveText(
-        exerciseBookmark.context_tokenized,
-        exerciseBookmark.source_id,
-        api,
-        [],
-        "TRANSLATE WORDS IN EXERCISE",
-        exerciseBookmark.from_lang,
-        EXERCISE_TYPE,
-        speech,
-        exerciseBookmark.context_identifier,
-      ),
+    
+    const newInteractiveText = new InteractiveText(
+      exerciseBookmark.context_tokenized,
+      exerciseBookmark.source_id,
+      api,
+      [],
+      "TRANSLATE WORDS IN EXERCISE",
+      exerciseBookmark.from_lang,
+      EXERCISE_TYPE,
+      speech,
+      exerciseBookmark.context_identifier,
     );
+    
+    console.log(`[${timestamp}] MultipleChoice - created InteractiveText:`, newInteractiveText);
+    console.log(`[${timestamp}] MultipleChoice - InteractiveText paragraphs:`, newInteractiveText.paragraphs);
+    setInteractiveText(newInteractiveText);
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [exerciseBookmark, reload]);

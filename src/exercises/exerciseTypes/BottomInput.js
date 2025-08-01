@@ -146,38 +146,55 @@ export default function BottomInput({
   const InputField = isIncorrect ? s.AnimatedInput : s.Input;
   return (
     <>
-      <s.BottomRow className="bottomRow">
-        <s.LeftFeedbackButton onClick={() => handleHint()} disabled={usedHint}>
-          {strings.hint}
-        </s.LeftFeedbackButton>
-        <div>
+      <div style={{ marginTop: '3em', marginBottom: '1em' }}>
+        {/* Input field - centered */}
+        <div style={{ 
+          display: 'flex', 
+          flexDirection: 'column',
+          alignItems: 'center',
+          marginBottom: '1em',
+          width: '100%'
+        }}>
           <div className="type-feedback">{feedbackMessage !== "" && <p>{feedbackMessage}</p>}</div>
           <InputField
-            type="text"
-            placeholder={"Type in " + inputLanguageName}
-            className={distanceToCorrect >= 5 && correctWordCountInInput === 0 ? "wrong-border" : "almost-border"}
-            value={currentInput}
-            onChange={(e) => setCurrentInput(e.target.value)}
-            onKeyUp={(e) => {
-              if (e.key === "Enter") {
-                checkResult();
-              }
-            }}
-            onAnimationEnd={() => setIsIncorrect(false)}
-            autoFocus
-            style={{
-              paddingLeft: "1.5em",
-              backgroundImage: `url(${getFlagImageUrl(answerLanguageCode)})`,
-              backgroundRepeat: "no-repeat",
-              backgroundSize: "1em 1em",
-              backgroundPosition: "left center",
-              backgroundPositionX: "0.4em",
-            }}
-          />
+              type="text"
+              placeholder={"Type in " + inputLanguageName}
+              className={distanceToCorrect >= 5 && correctWordCountInInput === 0 ? "wrong-border" : "almost-border"}
+              value={currentInput}
+              onChange={(e) => setCurrentInput(e.target.value)}
+              onKeyUp={(e) => {
+                if (e.key === "Enter") {
+                  checkResult();
+                }
+              }}
+              onAnimationEnd={() => setIsIncorrect(false)}
+              autoFocus
+              style={{
+                paddingLeft: "1.5em",
+                backgroundImage: `url(${getFlagImageUrl(answerLanguageCode)})`,
+                backgroundRepeat: "no-repeat",
+                backgroundSize: "1em 1em",
+                backgroundPosition: "left center",
+                backgroundPositionX: "0.4em",
+                width: '100%',
+                maxWidth: '300px'
+              }}
+            />
         </div>
-
-        <s.RightFeedbackButton onClick={checkResult}>{strings.check}</s.RightFeedbackButton>
-      </s.BottomRow>
+        
+        {/* Buttons - side by side on all screen sizes */}
+        <div style={{ 
+          display: 'flex', 
+          justifyContent: 'center', 
+          gap: '1em',
+          flexWrap: 'wrap'
+        }}>
+          <s.LeftFeedbackButton onClick={() => handleHint()} disabled={usedHint}>
+            {strings.hint}
+          </s.LeftFeedbackButton>
+          <s.RightFeedbackButton onClick={checkResult}>{strings.check}</s.RightFeedbackButton>
+        </div>
+      </div>
     </>
   );
 }

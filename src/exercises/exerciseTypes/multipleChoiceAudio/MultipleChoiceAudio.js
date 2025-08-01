@@ -44,19 +44,26 @@ export default function MultipleChoiceAudio({
   }, []);
 
   useEffect(() => {
-    setInteractiveText(
-      new InteractiveText(
-        exerciseBookmark.context_tokenized,
-        exerciseBookmark.source_id,
-        api,
-        [],
-        "TRANSLATE WORDS IN EXERCISE",
-        exerciseBookmark.from_lang,
-        EXERCISE_TYPE,
-        speech,
-        exerciseBookmark.context_identifier,
-      ),
+    console.log("MultipleChoiceAudio useEffect - exerciseBookmark:", exerciseBookmark);
+    console.log("MultipleChoiceAudio useEffect - context_tokenized:", exerciseBookmark.context_tokenized);
+    console.log("MultipleChoiceAudio useEffect - bookmark ID:", exerciseBookmark.id);
+    console.log("MultipleChoiceAudio useEffect - reload state:", reload);
+    
+    const newInteractiveText = new InteractiveText(
+      exerciseBookmark.context_tokenized,
+      exerciseBookmark.source_id,
+      api,
+      [],
+      "TRANSLATE WORDS IN EXERCISE",
+      exerciseBookmark.from_lang,
+      EXERCISE_TYPE,
+      speech,
+      exerciseBookmark.context_identifier,
     );
+    
+    console.log("MultipleChoiceAudio - created InteractiveText:", newInteractiveText);
+    setInteractiveText(newInteractiveText);
+    
     consolidateChoice();
     if (!SessionStorage.isAudioExercisesEnabled()) moveToNextExercise();
     // eslint-disable-next-line react-hooks/exhaustive-deps

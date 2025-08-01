@@ -58,13 +58,11 @@ export default function DisableAudioSession({
   }
 
   return (
-    <s.CenteredWordRow>
-      <s.StyledGreyButton
-        className="styledGreyButton"
-        onClick={(e) => disableAudio(e)}
-      >
-        {strings.disableAudio}
-      </s.StyledGreyButton>
-    </s.CenteredWordRow>
+    <s.StyledGreyButton
+      className="styledGreyButton"
+      onClick={(e) => disableAudio(e)}
+    >
+      {strings.disableAudio}
+    </s.StyledGreyButton>
   );
 }

@@ -8,6 +8,7 @@ const Exercise = styled.div`
   text-align: center;
   transition: all 0.5s;
   padding-bottom: 1rem;
+  flex: 1;
   // VISUAL_DEBUGGING
   //background-color: antiquewhite;
 

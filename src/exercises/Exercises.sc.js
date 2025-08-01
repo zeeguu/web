@@ -36,11 +36,10 @@ const ExForm = styled.div`
   width: 100%;
   margin: 0 auto;
   background-color: rgba(241, 240, 240, 0.274);
-  min-height: 400px;
+  min-height: 500px;
   padding-bottom: 1rem;
 
   box-sizing: border-box; // to ensure that padding does not expand width!
-  justify-content: center;
 
   .bottomInput {
     margin-bottom: 1em;

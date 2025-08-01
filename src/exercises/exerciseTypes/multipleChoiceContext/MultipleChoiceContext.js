@@ -26,10 +26,10 @@ export default function MultipleChoiceContext({
   const [exerciseBookmarks, setExerciseBookmarks] = useState(null);
   const [interactiveText, setInteractiveText] = useState(null);
   const speech = useContext(SpeechContext);
-  const exerciseBookmark = { ...bookmarksToStudy[0], isExercise: true };
+  const [exerciseBookmark, setExerciseBookmark] = useState({ ...bookmarksToStudy[0], isExercise: true });
   const [clickedIndex, setClickedIndex] = useState(null);
   const [clickedOption, setClickedOption] = useState(null);
-  const [wordInContextHeadline, setWordInContextHeadline] = useState(removePunctuation(exerciseBookmark.from));
+  const [wordInContextHeadline, setWordInContextHeadline] = useState(removePunctuation(bookmarksToStudy[0].from));
   const isExerciseOverRef = useShadowRef(isExerciseOver);
 
   useEffect(() => {
@@ -46,18 +46,26 @@ export default function MultipleChoiceContext({
   }, []);
 
   useEffect(() => {
-    console.log(bookmarksToStudy);
+    console.log("MultipleChoiceContext useEffect - bookmarksToStudy:", bookmarksToStudy);
+    
+    // Update exerciseBookmark when bookmarksToStudy changes
+    const newExerciseBookmark = { ...bookmarksToStudy[0], isExercise: true };
+    setExerciseBookmark(newExerciseBookmark);
+    
+    console.log("MultipleChoiceContext - updated exerciseBookmark:", newExerciseBookmark);
+    console.log("MultipleChoiceContext - context_tokenized:", newExerciseBookmark.context_tokenized);
+    
     setInteractiveText(
       new InteractiveText(
-        exerciseBookmark.context_tokenized,
-        exerciseBookmark.source_id,
+        newExerciseBookmark.context_tokenized,
+        newExerciseBookmark.source_id,
         api,
         [],
         "TRANSLATE WORDS IN EXERCISE",
-        exerciseBookmark.from_lang,
+        newExerciseBookmark.from_lang,
         EXERCISE_TYPE,
         speech,
-        exerciseBookmark.context_identifier,
+        newExerciseBookmark.context_identifier,
       ),
     );
     // eslint-disable-next-line
