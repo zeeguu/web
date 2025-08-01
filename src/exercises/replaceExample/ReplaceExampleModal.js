@@ -86,9 +86,16 @@ export default function ReplaceExampleModal({
 
   // Save selected example
   const saveSelectedExample = async () => {
+    console.log("saveSelectedExample called");
+    console.log("selectedExample:", selectedExample);
+    console.log("exerciseBookmark.user_word_id:", exerciseBookmark?.user_word_id);
+    
     if (!selectedExample || !exerciseBookmark?.user_word_id) {
+      console.log("Early return - missing selectedExample or user_word_id");
       return;
     }
+
+    console.log("Starting save process...");
 
     setSaving(true);
     const url = `${api.baseAPIurl}/save_sentence/${exerciseBookmark.user_word_id}?session=${api.session}`;
@@ -98,6 +105,9 @@ export default function ReplaceExampleModal({
       cefr_level: selectedExample.cefr_level,
       ai_generator_id: selectedExample.ai_generator_id,
     };
+    
+    console.log("Making API call to:", url);
+    console.log("Payload:", payload);
 
     try {
       const response = await fetch(url, {
@@ -108,8 +118,11 @@ export default function ReplaceExampleModal({
         body: JSON.stringify(payload),
       });
 
+      console.log("Response received, status:", response.status);
+
       if (!response.ok) {
         const errorText = await response.text();
+        console.error("API error response:", errorText);
         throw new Error(`HTTP error! status: ${response.status} - ${errorText}`);
       }
 
@@ -131,6 +144,7 @@ export default function ReplaceExampleModal({
       // Close modal
       handleClose();
     } catch (error) {
+      console.error("Error in saveSelectedExample:", error);
       if (error.name === "TypeError" && error.message.includes("Failed to fetch")) {
         toast.error("Network error - check if the save API endpoint exists and CORS is configured");
       } else {
