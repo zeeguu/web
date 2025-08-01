@@ -114,13 +114,19 @@ export default function ReplaceExampleModal({
       }
 
       const data = await response.json();
+      console.log("Backend response received:", data);
+      console.log("Updated bookmark in response:", data.updated_bookmark);
+      console.log("Context tokenized in response:", data.updated_bookmark?.context_tokenized);
+      
       toast.success("Example updated successfully!");
 
+      console.log("Calling onExampleUpdated...");
       // The backend now includes user_word_id in the updated_bookmark object
       onExampleUpdated({
         selectedExample,
         updatedBookmark: data.updated_bookmark,
       });
+      console.log("onExampleUpdated called");
 
       // Close modal
       handleClose();
