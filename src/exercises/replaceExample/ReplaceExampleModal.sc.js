@@ -96,13 +96,15 @@ export const ExamplesContainer = styled.div`
 `;
 
 export const ExampleOption = styled.div`
-  border: 2px solid ${props => props.selected ? zeeguuOrange : lightGrey};
+  border: 2px solid ${(props) => (props.selected ? zeeguuOrange : lightGrey)};
   border-radius: 8px;
   padding: 1rem;
   margin-bottom: 1rem;
   cursor: pointer;
   transition: all 0.2s ease;
-  background-color: ${props => props.selected ? zeeguuLightYellow + '20' : 'white'};
+  background-color: ${(props) => (props.selected ? zeeguuLightYellow + "20" : "white")};
+
+  text-align: left;
 
   &:hover {
     border-color: ${zeeguuOrange};
@@ -138,7 +140,6 @@ export const LevelBadge = styled.span`
 `;
 
 export const EmptyState = styled.div`
-  text-align: center;
   padding: 2rem;
   color: #666;
 `;
