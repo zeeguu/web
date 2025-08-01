@@ -405,7 +405,7 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
     if (currentBookmarkIndex !== -1) {
       updatedProgression[currentIndex].bookmarks[currentBookmarkIndex] = updatedBookmark;
       setFullExerciseProgression(updatedProgression);
-      setCurrentBookmarksToStudy([updatedBookmark]);
+      setCurrentBookmarksToStudy(updatedProgression[currentIndex].bookmarks);
       setSelectedExerciseBookmark(updatedBookmark);
 
       setTimeout(() => {
