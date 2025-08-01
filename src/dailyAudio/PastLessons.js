@@ -178,7 +178,6 @@ export default function PastLessons() {
                       }
                     }}
                     onError={() => {
-                      console.log("Audio failed to load for lesson:", lesson.lesson_id);
                     }}
                     style={{
                       width: "100%",

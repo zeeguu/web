@@ -95,7 +95,6 @@ export default function SolutionFeedbackLinks({
                     toast.success("Exercise link copied to clipboard!");
                   })
                   .catch((err) => {
-                    console.error("Failed to copy to clipboard:", err);
                     toast.error("Failed to copy link to clipboard");
                   });
               }}

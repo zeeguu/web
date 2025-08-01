@@ -114,12 +114,10 @@ export default function TodayAudio() {
     api.getTodaysLesson(
       (data) => {
         setIsLoading(false);
-        console.log("Lesson data received:", data); // Debug log
         setLessonData(data); // data will be null if no lesson exists, or lesson object if it exists
       },
       (error) => {
         setIsLoading(false);
-        console.error("Error getting today's lesson:", error);
         setError(error.message);
         setLessonData(null);
       },
@@ -140,14 +138,12 @@ export default function TodayAudio() {
         // Clear the localStorage flag when generation completes
         localStorage.removeItem(generatingKey);
         setIsGenerating(false);
-        console.log("Generated new lesson:", data);
         setLessonData(data);
       },
       (error) => {
         // Clear the localStorage flag on error
         localStorage.removeItem(generatingKey);
         setIsGenerating(false);
-        console.error("Error generating lesson:", error);
 
         // Check if the error is related to no words in learning
         if (error.message && error.message.toLowerCase().includes("not enough words in learning")) {
@@ -171,11 +167,9 @@ export default function TodayAudio() {
           setIsDeleting(false);
           setLessonData(null);
           // Show success message briefly
-          console.log("Lesson deleted successfully:", data);
         },
         (error) => {
           setIsDeleting(false);
-          console.error("Error deleting lesson:", error);
           setError(error.message || "Failed to delete lesson. Please try again.");
         },
       );
@@ -341,7 +335,6 @@ export default function TodayAudio() {
             }
           }}
           onError={() => {
-            console.log("Audio failed to load, trying direct fetch...");
             // If direct URL fails, try fetching as blob
             fetch(lessonData.audio_url)
               .then((response) => response.blob())
@@ -349,7 +342,7 @@ export default function TodayAudio() {
                 const blobUrl = URL.createObjectURL(blob);
                 // Note: Custom player will need to handle blob URLs
               })
-              .catch((err) => console.error("Failed to fetch audio as blob:", err));
+              .catch((err) => {});
           }}
           style={{
             width: "100%",

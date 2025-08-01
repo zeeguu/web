@@ -44,11 +44,6 @@ export default function MultipleChoiceAudio({
   }, []);
 
   useEffect(() => {
-    console.log("MultipleChoiceAudio useEffect - exerciseBookmark:", exerciseBookmark);
-    console.log("MultipleChoiceAudio useEffect - context_tokenized:", exerciseBookmark.context_tokenized);
-    console.log("MultipleChoiceAudio useEffect - bookmark ID:", exerciseBookmark.id);
-    console.log("MultipleChoiceAudio useEffect - reload state:", reload);
-    
     const newInteractiveText = new InteractiveText(
       exerciseBookmark.context_tokenized,
       exerciseBookmark.source_id,
@@ -60,8 +55,6 @@ export default function MultipleChoiceAudio({
       speech,
       exerciseBookmark.context_identifier,
     );
-    
-    console.log("MultipleChoiceAudio - created InteractiveText:", newInteractiveText);
     setInteractiveText(newInteractiveText);
     
     consolidateChoice();

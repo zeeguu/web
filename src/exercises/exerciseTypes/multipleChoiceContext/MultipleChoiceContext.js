@@ -46,14 +46,9 @@ export default function MultipleChoiceContext({
   }, []);
 
   useEffect(() => {
-    console.log("MultipleChoiceContext useEffect - bookmarksToStudy:", bookmarksToStudy);
-    
     // Update exerciseBookmark when bookmarksToStudy changes
     const newExerciseBookmark = { ...bookmarksToStudy[0], isExercise: true };
     setExerciseBookmark(newExerciseBookmark);
-    
-    console.log("MultipleChoiceContext - updated exerciseBookmark:", newExerciseBookmark);
-    console.log("MultipleChoiceContext - context_tokenized:", newExerciseBookmark.context_tokenized);
     
     setInteractiveText(
       new InteractiveText(
