@@ -26,6 +26,7 @@ import useScreenWidth from "../../hooks/useScreenWidth.js";
 import FeedbackModal from "../../components/FeedbackModal.js";
 import { FEEDBACK_OPTIONS } from "../../components/FeedbackConstants.js";
 import RemoveBookmarkModal from "../removeBookmark/RemoveBookmarkModal.js";
+import ReplaceExampleModal from "../replaceExample/ReplaceExampleModal.js";
 
 export default function NextNavigation({
   bookmarkMessagesToAPI,
@@ -44,6 +45,7 @@ export default function NextNavigation({
   nextButtonText,
   disableAudio,
   setIsExerciseOver,
+  onExampleUpdated,
 }) {
   const messageForAPI = isEmptyDictionary(bookmarkMessagesToAPI) ? "" : bookmarkMessagesToAPI[exerciseBookmark.id];
   const api = useContext(APIContext);
@@ -237,9 +239,16 @@ export default function NextNavigation({
             </s.FeedbackButton>
           </s.BottomRowSmallTopMargin>
           {!bookmarkLearned && (
-            <s.BottomRowSmallTopMargin style={{ textAlign: "center", marginTop: "10px" }}>
+            <s.BottomRowSmallTopMargin style={{ textAlign: "center", marginTop: "10px", display: "flex", flexWrap: "wrap", gap: "10px", justifyContent: "center" }}>
+              {exerciseBookmark && onExampleUpdated && (
+                <ReplaceExampleModal
+                  exerciseBookmark={exerciseBookmark}
+                  onExampleUpdated={onExampleUpdated}
+                  renderAs="button"
+                />
+              )}
               <s.StyledGreyButton className="styledGreyButton" onClick={() => setShowExcludeModal(true)}>
-                Exclude word from exercises
+                Exclude word
               </s.StyledGreyButton>
             </s.BottomRowSmallTopMargin>
           )}

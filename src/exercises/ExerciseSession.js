@@ -230,23 +230,12 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
     // For Match exercises, include all bookmark IDs
     if (exerciseTypeName === "Match" && currentBookmarksToStudy && currentBookmarksToStudy.length > 1) {
       const bookmarkIds = currentBookmarksToStudy.map((b) => b.id).join(",");
-      console.log("Creating Match permalink:", {
-        exerciseTypeName,
-        bookmarkIds,
-        bookmarks: currentBookmarksToStudy.length,
-      });
       return `${window.location.origin}/exercise/${exerciseTypeName}/${bookmarkIds}`;
     }
 
     // For single bookmark exercises
     if (!selectedExerciseBookmark) return "";
     const bookmarkId = selectedExerciseBookmark.id;
-    console.log("Creating permalink:", {
-      exerciseTypeName,
-      bookmarkId,
-      word: selectedExerciseBookmark.from,
-      translation: selectedExerciseBookmark.to,
-    });
 
     return `${window.location.origin}/exercise/${exerciseTypeName}/${bookmarkId}`;
   };
@@ -312,7 +301,6 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
     setCurrentBookmarksToStudy(fullExerciseProgression[newIndex].bookmarks);
     let nextBookmarkToStudy = fullExerciseProgression[newIndex].bookmarks[0];
     setSelectedExerciseBookmark(nextBookmarkToStudy);
-    console.dir(nextBookmarkToStudy);
     setCurrentIndex(newIndex);
 
     api.updateExerciseSession(dbExerciseSessionId, activeSessionDuration);
@@ -392,14 +380,6 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
   }
 
   function uploadUserFeedback(userWrittenFeedback, word_id) {
-    console.log(
-      "Sending to the API. Feedback: ",
-      userWrittenFeedback,
-      " Exercise type: ",
-      currentExerciseType,
-      " and word: ",
-      word_id,
-    );
     setIsExerciseOver(true);
 
     if (hasExerciseNotification) {
@@ -407,6 +387,31 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
     }
 
     api.uploadExerciseFeedback(userWrittenFeedback, currentExerciseType, 0, word_id, dbExerciseSessionId);
+  }
+
+  function handleExampleUpdate(updateData) {
+    if (!updateData.updatedBookmark) {
+      return;
+    }
+
+    const updatedBookmark = updateData.updatedBookmark;
+
+    // Update the current exercise with the returned bookmark data
+    let updatedProgression = [...fullExerciseProgression];
+    const currentBookmarkIndex = updatedProgression[currentIndex].bookmarks.findIndex(
+      (b) => b.id === selectedExerciseBookmark.id,
+    );
+
+    if (currentBookmarkIndex !== -1) {
+      updatedProgression[currentIndex].bookmarks[currentBookmarkIndex] = updatedBookmark;
+      setFullExerciseProgression(updatedProgression);
+      setCurrentBookmarksToStudy([updatedBookmark]);
+      setSelectedExerciseBookmark(updatedBookmark);
+
+      setTimeout(() => {
+        setReload(!reload);
+      }, 100);
+    }
   }
 
   function toggleShow() {
@@ -498,6 +503,7 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
             isExerciseOver={isExerciseOver}
             disableAudio={disableAudio}
             setIsExerciseOver={setIsExerciseOver}
+            onExampleUpdated={handleExampleUpdate}
           />
         </s.ExForm>
         {articleID && (

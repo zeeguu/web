@@ -58,8 +58,6 @@ export default function FindArticles({ content, searchQuery, searchPublishPriori
         searchDifficultyPriorityRef.current,
         handleArticleInsertion,
         (error) => {
-          console.log("Failed to get searches!");
-          console.error(error);
         },
       );
     } else {
@@ -136,8 +134,6 @@ export default function FindArticles({ content, searchQuery, searchPublishPriori
           articles.some((e) => e.video) ? setAreVideosAvailable(true) : setAreVideosAvailable(false);
         },
         (error) => {
-          console.log(error);
-          console.log("Failed to get searches!");
           setArticlesAndVideosList([]);
           setOriginalList([]);
           setReloadingSearchArticles(false);

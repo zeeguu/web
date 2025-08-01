@@ -45,19 +45,20 @@ export default function MultipleChoice({
     api.wordsSimilarTo(exerciseBookmark.id, (words) => {
       consolidateChoiceOptions(words);
     });
-    setInteractiveText(
-      new InteractiveText(
-        exerciseBookmark.context_tokenized,
-        exerciseBookmark.source_id,
-        api,
-        [],
-        "TRANSLATE WORDS IN EXERCISE",
-        exerciseBookmark.from_lang,
-        EXERCISE_TYPE,
-        speech,
-        exerciseBookmark.context_identifier,
-      ),
+    
+    const newInteractiveText = new InteractiveText(
+      exerciseBookmark.context_tokenized,
+      exerciseBookmark.source_id,
+      api,
+      [],
+      "TRANSLATE WORDS IN EXERCISE",
+      exerciseBookmark.from_lang,
+      EXERCISE_TYPE,
+      speech,
+      exerciseBookmark.context_identifier,
     );
+    
+    setInteractiveText(newInteractiveText);
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [exerciseBookmark, reload]);

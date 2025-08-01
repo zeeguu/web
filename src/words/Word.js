@@ -56,7 +56,6 @@ export default function Word({
   }
   const square = "square";
   const isWordLengthFitForStudy = bookmark.from.split(" ").length < MAX_WORDS_IN_BOOKMARK_FOR_EXERCISES;
-  console.log("bookmark", bookmark);
   return (
     <>
       <s.Word key={bookmark.id}>

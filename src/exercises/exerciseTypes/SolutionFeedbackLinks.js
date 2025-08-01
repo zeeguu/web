@@ -36,7 +36,7 @@ export default function SolutionFeedbackLinks({
 
   return (
     <>
-      <s.CenteredWordRow className="margin-top-auto" style={{ flexDirection: isMobile ? "column" : "row" }}>
+      <s.CenteredWordRow className={!isExerciseOver ? "margin-top-auto" : ""} style={{ flexDirection: isMobile ? "column" : "row", marginTop: !isExerciseOver ? "1rem" : "0", gap: "1rem" }}>
         <RemoveBookmarkModal
           exerciseBookmarks={exerciseBookmarks}
           open={openQuickFeedbackModal}
@@ -54,9 +54,6 @@ export default function SolutionFeedbackLinks({
         ></FeedbackModal>
         {!isExerciseOver && (
           <>
-            <br />
-            <br />
-            <br />
             <s.StyledGreyButton className="styledGreyButton" onClick={handleShowSolution}>
               {strings.showSolution}
             </s.StyledGreyButton>
@@ -64,16 +61,15 @@ export default function SolutionFeedbackLinks({
               <DisableAudioSession handleDisabledAudio={disableAudio} setIsCorrect={setIsExerciseOver} />
             )}
             {isMobile && (
-              <div style={{ marginTop: "5rem" }}>
-                <s.StyledGreyButton
-                  className="styledGreyButton"
-                  onClick={() => {
-                    setOpenFeedback(!openFeedback);
-                  }}
-                >
-                  Feedback
-                </s.StyledGreyButton>
-              </div>
+              <s.StyledGreyButton
+                className="styledGreyButton"
+                onClick={() => {
+                  setOpenFeedback(!openFeedback);
+                }}
+                style={{ marginTop: "1rem" }}
+              >
+                Feedback
+              </s.StyledGreyButton>
             )}
           </>
         )}
@@ -99,7 +95,6 @@ export default function SolutionFeedbackLinks({
                     toast.success("Exercise link copied to clipboard!");
                   })
                   .catch((err) => {
-                    console.error("Failed to copy to clipboard:", err);
                     toast.error("Failed to copy link to clipboard");
                   });
               }}
