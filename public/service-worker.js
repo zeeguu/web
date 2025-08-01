@@ -1,6 +1,6 @@
 // https://developer.mozilla.org/en-US/docs/Web/API/Cache
-const OFFLINE_CACHE = "offline-cache-v2.5.1";
-const DATA_CACHE = "offline-cache-v2.5.1";
+const OFFLINE_CACHE = "offline-cache-v2.5.2";
+const DATA_CACHE = "offline-cache-v2.5.2";
 const OFFLINE_URL = "offline.html";
 
 // These are the files downloaded into the cache for the PWA
