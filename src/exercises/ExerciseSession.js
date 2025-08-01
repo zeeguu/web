@@ -410,109 +410,34 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
   }
 
   function handleExampleUpdate(updateData) {
-    // If we have the updated bookmark data directly from the save response, use it
-    if (updateData.updatedBookmark) {
-      const updatedBookmark = updateData.updatedBookmark;
-      
-      // Check if context_tokenized is properly formatted
-      if (!updatedBookmark.context_tokenized || !Array.isArray(updatedBookmark.context_tokenized)) {
-        console.warn("Updated bookmark missing or invalid context_tokenized, fetching full bookmark data");
-        
-        // Fetch the complete bookmark data with tokenization
-        api.getBookmarkWithContext(updatedBookmark.id, (fullBookmark) => {
-          if (fullBookmark && fullBookmark.context_tokenized) {
-            // Update with the complete bookmark data
-            let updatedProgression = [...fullExerciseProgression];
-            const currentBookmarkIndex = updatedProgression[currentIndex].bookmarks.findIndex(
-              b => b.id === selectedExerciseBookmark.id
-            );
-            
-            if (currentBookmarkIndex !== -1) {
-              updatedProgression[currentIndex].bookmarks[currentBookmarkIndex] = fullBookmark;
-              setFullExerciseProgression(updatedProgression);
-              setCurrentBookmarksToStudy([fullBookmark]);
-              setSelectedExerciseBookmark(fullBookmark);
-              
-              setTimeout(() => {
-                setReload(!reload);
-              }, 100);
-            }
-          }
-        });
-        return;
-      } else {
-        // Update the current exercise with the returned bookmark data
-        let updatedProgression = [...fullExerciseProgression];
-        const currentBookmarkIndex = updatedProgression[currentIndex].bookmarks.findIndex(
-          b => b.id === selectedExerciseBookmark.id
-        );
-        
-        if (currentBookmarkIndex !== -1) {
-          updatedProgression[currentIndex].bookmarks[currentBookmarkIndex] = updatedBookmark;
-          setFullExerciseProgression(updatedProgression);
-          setCurrentBookmarksToStudy([updatedBookmark]);
-          setSelectedExerciseBookmark(updatedBookmark);
-          
-          // Trigger reload immediately
-          setTimeout(() => {
-            setReload(!reload);
-          }, 100);
-        }
-        return;
-      }
+    if (!updateData.updatedBookmark) {
+      console.warn("No updated bookmark data received");
+      return;
+    }
+
+    const updatedBookmark = updateData.updatedBookmark;
+    
+    // Validate that context_tokenized exists and is properly formatted
+    if (!updatedBookmark.context_tokenized || !Array.isArray(updatedBookmark.context_tokenized)) {
+      console.error("Updated bookmark missing or invalid context_tokenized:", updatedBookmark);
+      return;
     }
     
-    // Fallback: Refresh the bookmarks from the server to get the updated context
-    if (articleID) {
-      api.bookmarksToStudyForArticle(articleID, true, (bookmarks) => {
-        const updatedBookmark = bookmarks.find(b => 
-          b.id === selectedExerciseBookmark.id || 
-          (b.from === selectedExerciseBookmark.from && b.to === selectedExerciseBookmark.to)
-        );
-        
-        if (updatedBookmark) {
-          let updatedProgression = [...fullExerciseProgression];
-          const currentBookmarkIndex = updatedProgression[currentIndex].bookmarks.findIndex(
-            b => b.id === selectedExerciseBookmark.id
-          );
-          
-          if (currentBookmarkIndex !== -1) {
-            updatedProgression[currentIndex].bookmarks[currentBookmarkIndex] = updatedBookmark;
-            setFullExerciseProgression(updatedProgression);
-            setCurrentBookmarksToStudy([updatedBookmark]);
-            setSelectedExerciseBookmark(updatedBookmark);
-            
-            setTimeout(() => {
-              setReload(!reload);
-            }, 100);
-          }
-        }
-      });
-    } else {
-      api.getBookmarksRecommendedForPractice((bookmarks) => {
-        const updatedBookmark = bookmarks.find(b => 
-          b.id === selectedExerciseBookmark.id || 
-          (b.from === selectedExerciseBookmark.from && b.to === selectedExerciseBookmark.to)
-        );
-        
-        if (updatedBookmark) {
-          let updatedProgression = [...fullExerciseProgression];
-          const currentBookmarkIndex = updatedProgression[currentIndex].bookmarks.findIndex(
-            b => b.id === selectedExerciseBookmark.id
-          );
-          
-          if (currentBookmarkIndex !== -1) {
-            updatedProgression[currentIndex].bookmarks[currentBookmarkIndex] = updatedBookmark;
-            setFullExerciseProgression(updatedProgression);
-            setCurrentBookmarksToStudy([updatedBookmark]);
-            setSelectedExerciseBookmark(updatedBookmark);
-            
-            setTimeout(() => {
-              setReload(!reload);
-            }, 100);
-          }
-        }
-      });
+    // Update the current exercise with the returned bookmark data
+    let updatedProgression = [...fullExerciseProgression];
+    const currentBookmarkIndex = updatedProgression[currentIndex].bookmarks.findIndex(
+      b => b.id === selectedExerciseBookmark.id
+    );
+    
+    if (currentBookmarkIndex !== -1) {
+      updatedProgression[currentIndex].bookmarks[currentBookmarkIndex] = updatedBookmark;
+      setFullExerciseProgression(updatedProgression);
+      setCurrentBookmarksToStudy([updatedBookmark]);
+      setSelectedExerciseBookmark(updatedBookmark);
+      
+      setTimeout(() => {
+        setReload(!reload);
+      }, 100);
     }
   }
 
