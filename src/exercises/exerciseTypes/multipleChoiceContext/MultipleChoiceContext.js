@@ -52,6 +52,7 @@ export default function MultipleChoiceContext({
     
     // Validate that context_tokenized exists and is properly formatted
     if (!newExerciseBookmark.context_tokenized || !Array.isArray(newExerciseBookmark.context_tokenized)) {
+      setInteractiveText(null);
       return;
     }
 

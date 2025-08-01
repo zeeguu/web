@@ -57,6 +57,7 @@ export default function MultipleChoiceL2toL1({
   useEffect(() => {
     // Validate that context_tokenized exists and is properly formatted
     if (!exerciseBookmark.context_tokenized || !Array.isArray(exerciseBookmark.context_tokenized)) {
+      setInteractiveText(null);
       return;
     }
     
