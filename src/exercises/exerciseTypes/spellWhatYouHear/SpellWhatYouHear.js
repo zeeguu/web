@@ -50,6 +50,12 @@ export default function SpellWhatYouHear({
 
   useEffect(() => {
     if (!SessionStorage.isAudioExercisesEnabled()) moveToNextExercise();
+    
+    // Validate that context_tokenized exists and is properly formatted
+    if (!exerciseBookmark.context_tokenized || !Array.isArray(exerciseBookmark.context_tokenized)) {
+      return;
+    }
+
     setInteractiveText(
       new InteractiveText(
         exerciseBookmark.context_tokenized,

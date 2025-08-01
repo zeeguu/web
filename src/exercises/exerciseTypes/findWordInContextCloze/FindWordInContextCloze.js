@@ -36,6 +36,12 @@ export default function FindWordInContextCloze({
   useEffect(() => {
     speech.stopAudio(); // Stop any pending speech from previous exercise
     setExerciseType(EXERCISE_TYPE);
+    
+    // Validate that context_tokenized exists and is properly formatted
+    if (!exerciseBookmark.context_tokenized || !Array.isArray(exerciseBookmark.context_tokenized)) {
+      return;
+    }
+
     setInteractiveText(
       new InteractiveText(
         exerciseBookmark.context_tokenized,

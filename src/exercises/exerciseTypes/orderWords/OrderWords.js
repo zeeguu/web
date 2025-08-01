@@ -92,6 +92,12 @@ export default function OrderWords({
     let exerciseIntializeVariables = _get_exercise_start_variables();
     api.getArticleInfo(bookmarksToStudy[0].article_id, (articleInfo) => {
       if (IS_DEBUG) console.log("Setting article info.");
+      
+      // Validate that context_tokenized exists and is properly formatted
+      if (!exerciseBookmark.context_tokenized || !Array.isArray(exerciseBookmark.context_tokenized)) {
+        return;
+      }
+
       setInteractiveText(
         new InteractiveText(
           exerciseBookmark.context_tokenized,

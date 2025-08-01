@@ -46,6 +46,11 @@ export default function MultipleChoice({
       consolidateChoiceOptions(words);
     });
     
+    // Validate that context_tokenized exists and is properly formatted
+    if (!exerciseBookmark.context_tokenized || !Array.isArray(exerciseBookmark.context_tokenized)) {
+      return;
+    }
+    
     const newInteractiveText = new InteractiveText(
       exerciseBookmark.context_tokenized,
       exerciseBookmark.source_id,

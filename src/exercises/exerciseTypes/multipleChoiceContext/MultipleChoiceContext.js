@@ -50,6 +50,11 @@ export default function MultipleChoiceContext({
     const newExerciseBookmark = { ...bookmarksToStudy[0], isExercise: true };
     setExerciseBookmark(newExerciseBookmark);
     
+    // Validate that context_tokenized exists and is properly formatted
+    if (!newExerciseBookmark.context_tokenized || !Array.isArray(newExerciseBookmark.context_tokenized)) {
+      return;
+    }
+
     setInteractiveText(
       new InteractiveText(
         newExerciseBookmark.context_tokenized,

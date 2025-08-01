@@ -55,6 +55,11 @@ export default function MultipleChoiceL2toL1({
   }, [translatedWords]);
 
   useEffect(() => {
+    // Validate that context_tokenized exists and is properly formatted
+    if (!exerciseBookmark.context_tokenized || !Array.isArray(exerciseBookmark.context_tokenized)) {
+      return;
+    }
+    
     setInteractiveText(
       new InteractiveText(
         exerciseBookmark.context_tokenized,
