@@ -377,8 +377,8 @@ export default function TodayAudio() {
           prefixMsg={`Daily Audio Lesson - Playback time: ${Math.floor(currentPlaybackTime / 60)}:${(currentPlaybackTime % 60).toFixed(0).padStart(2, '0')}`}
           open={openFeedback}
           setOpen={setOpenFeedback}
-          componentCategories={FEEDBACK_OPTIONS.GENERAL}
-          preselectedCategory={FEEDBACK_CODES_NAME.GENERAL}
+          componentCategories={FEEDBACK_OPTIONS.ALL}
+          preselectedCategory={FEEDBACK_CODES_NAME.DAILY_AUDIO}
         />
       </div>
     </div>
