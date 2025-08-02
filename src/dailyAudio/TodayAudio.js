@@ -98,13 +98,18 @@ export default function TodayAudio() {
 
   let words = lessonData?.words || [];
 
-  // Update page title when lessonData changes
+  // Update page title and playback time when lessonData changes
   useEffect(() => {
     if (lessonData && lessonData.words) {
       document.title = `[${new Date().toLocaleDateString("en-US", {
         month: "short",
         day: "numeric",
       })}] Daily Audio: ${wordsAsTile(words)}`;
+      
+      // Initialize playback time from lesson data
+      const initialTime = lessonData.pause_position_seconds || lessonData.position_seconds || lessonData.progress_seconds || 0;
+      console.log('Setting initial playback time:', initialTime);
+      setCurrentPlaybackTime(initialTime);
     } else {
       document.title = "Zeeguu: Audio Lesson";
     }
@@ -303,6 +308,7 @@ export default function TodayAudio() {
             }
           }}
           onProgressUpdate={(progressSeconds) => {
+            console.log('Updating playback time:', progressSeconds);
             setCurrentPlaybackTime(progressSeconds);
             if (lessonData.lesson_id) {
               // Use pause action to save progress
@@ -376,7 +382,11 @@ export default function TodayAudio() {
 
         <FeedbackModal
           prefixMsg={lessonData ? 
-            `Daily Audio Lesson - Playback time: ${Math.floor(currentPlaybackTime / 60)}:${(currentPlaybackTime % 60).toFixed(0).padStart(2, '0')} | Lesson ID: ${lessonData.lesson_id} | Words: ${wordsAsTile(lessonData.words)} | Date: ${new Date(lessonData.created_at || Date.now()).toLocaleDateString()}` 
+            (() => {
+              const prefixMsg = `Daily Audio Lesson - Playback time: ${Math.floor(currentPlaybackTime / 60)}:${(currentPlaybackTime % 60).toFixed(0).padStart(2, '0')} | Lesson ID: ${lessonData.lesson_id} | Words: ${wordsAsTile(lessonData.words)} | Date: ${new Date(lessonData.created_at || Date.now()).toLocaleDateString()}`;
+              console.log('Feedback prefix message:', prefixMsg);
+              return prefixMsg;
+            })()
             : "Daily Audio Lesson Feedback"
           }
           open={openFeedback}

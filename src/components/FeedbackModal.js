@@ -64,6 +64,7 @@ export default function FeedbackModal({
       currentUrl: contextualInfo?.url || window.location.href,
       isMobile: isMobile,
     };
+    console.log('Sending feedback payload:', payload);
     api.sendFeedback(
       payload,
       () => {
