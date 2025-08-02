@@ -60,7 +60,7 @@ export default function FeedbackModal({
     e.preventDefault();
     let payload = {
       message: prefixMsg ? prefixMsg + " - " + feedbackMessage : feedbackMessage,
-      feedbackComponentId: feedbackComponentSelected,
+      feedbackComponentName: FEEDBACK_CODES[feedbackComponentSelected],
       currentUrl: contextualInfo?.url || window.location.href,
       isMobile: isMobile,
     };
