@@ -1,5 +1,5 @@
 import { toast } from "react-toastify";
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useMemo } from "react";
 import useFormField from "../hooks/useFormField.js";
 import { APIContext } from "../contexts/APIContext";
 import Modal from "./modal_shared/Modal.js";
@@ -27,7 +27,7 @@ export default function FeedbackModal({
   const { isMobile } = useScreenWidth();
 
   // Smart preselection: explicit choice > intelligent context-based > first available > Other
-  const getDefaultOption = () => {
+  const defaultOption = useMemo(() => {
     // 1. If explicitly specified, use that
     if (preselectedCategory && componentCategories?.includes(preselectedCategory)) {
       return preselectedCategory;
@@ -44,9 +44,7 @@ export default function FeedbackModal({
 
     // 3. Default to "Other" if suggested category not available
     return FEEDBACK_CODES_NAME.OTHER;
-  };
-
-  const defaultOption = getDefaultOption();
+  }, [preselectedCategory, componentCategories, contextualInfo]);
   const [feedbackComponentSelected, setFeedbackComponentSelected] = useFormField(defaultOption);
   const [feedbackMessage, feedbackMessageChange] = useFormField("");
 
