@@ -4,6 +4,8 @@ import { APIContext } from "../contexts/APIContext";
 import { UserContext } from "../contexts/UserContext";
 import LoadingAnimation from "../components/LoadingAnimation";
 import CustomAudioPlayer from "../components/CustomAudioPlayer";
+import FeedbackModal from "../components/FeedbackModal";
+import { FEEDBACK_OPTIONS, FEEDBACK_CODES_NAME } from "../components/FeedbackConstants";
 
 const TWO_MIN = 120000; // 2 minutes in milliseconds
 
@@ -88,7 +90,8 @@ export default function TodayAudio() {
       };
     }
   }, [api]);
-  const [isDeleting, setIsDeleting] = useState(false);
+  const [openFeedback, setOpenFeedback] = useState(false);
+  const [currentPlaybackTime, setCurrentPlaybackTime] = useState(0);
   const [lessonData, setLessonData] = useState(null);
   const [error, setError] = useState(null);
 
@@ -157,24 +160,6 @@ export default function TodayAudio() {
     );
   };
 
-  const handleDeleteLesson = () => {
-    if (window.confirm("Are you sure you want to delete today's lesson? This action cannot be undone.")) {
-      setIsDeleting(true);
-      setError(null);
-
-      api.deleteTodaysLesson(
-        (data) => {
-          setIsDeleting(false);
-          setLessonData(null);
-          // Show success message briefly
-        },
-        (error) => {
-          setIsDeleting(false);
-          setError(error.message || "Failed to delete lesson. Please try again.");
-        },
-      );
-    }
-  };
 
   if (isLoading) {
     return (
@@ -317,6 +302,7 @@ export default function TodayAudio() {
             }
           }}
           onProgressUpdate={(progressSeconds) => {
+            setCurrentPlaybackTime(progressSeconds);
             if (lessonData.lesson_id) {
               // Use pause action to save progress
               api.updateLessonState(lessonData.lesson_id, "pause", progressSeconds);
@@ -371,8 +357,7 @@ export default function TodayAudio() {
 
         <div style={{ marginTop: "40px", textAlign: "center" }}>
           <button
-            onClick={handleDeleteLesson}
-            disabled={isDeleting}
+            onClick={() => setOpenFeedback(true)}
             style={{
               backgroundColor: "transparent",
               color: "#999",
@@ -380,14 +365,21 @@ export default function TodayAudio() {
               borderRadius: "0",
               padding: "4px 8px",
               fontSize: "12px",
-              cursor: isDeleting ? "not-allowed" : "pointer",
-              opacity: isDeleting ? 0.5 : 1,
+              cursor: "pointer",
               textDecoration: "underline",
             }}
           >
-            {isDeleting ? "deleting..." : "delete lesson"}
+            Feedback
           </button>
         </div>
+
+        <FeedbackModal
+          prefixMsg={`Daily Audio Lesson - Playback time: ${Math.floor(currentPlaybackTime / 60)}:${(currentPlaybackTime % 60).toFixed(0).padStart(2, '0')}`}
+          open={openFeedback}
+          setOpen={setOpenFeedback}
+          componentCategories={FEEDBACK_OPTIONS.GENERAL}
+          preselectedCategory={FEEDBACK_CODES_NAME.GENERAL}
+        />
       </div>
     </div>
   );
