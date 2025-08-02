@@ -36,8 +36,9 @@ export const ModalContent = styled.div`
   max-width: 600px;
   width: 100%;
   max-height: 80vh;
-  overflow-y: auto;
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  display: flex;
+  flex-direction: column;
 `;
 
 export const ModalHeader = styled.div`
@@ -46,10 +47,15 @@ export const ModalHeader = styled.div`
   align-items: center;
   padding: 1.5rem;
   border-bottom: 1px solid ${lightGrey};
+  flex-shrink: 0;
 
   h3 {
     margin: 0;
     color: #333;
+    flex: 1;
+    margin-right: 1rem;
+    word-wrap: break-word;
+    line-height: 1.3;
   }
 `;
 
@@ -73,6 +79,8 @@ export const CloseButton = styled.button`
 
 export const ModalBody = styled.div`
   padding: 1.5rem;
+  overflow-y: auto;
+  flex: 1;
 
   p {
     margin-bottom: 1rem;
@@ -150,6 +158,7 @@ export const ModalFooter = styled.div`
   gap: 1rem;
   padding: 1.5rem;
   border-top: 1px solid ${lightGrey};
+  flex-shrink: 0;
 `;
 
 export const CancelButton = styled.button`

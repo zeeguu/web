@@ -67,12 +67,8 @@ export default function ReplaceExampleModal({
 
       const data = await response.json();
 
-      // Add ai_generator_id to each example from the response metadata
-      const examplesWithMetadata = (data.examples || []).map((example) => ({
-        ...example,
-        ai_generator_id: data.ai_generator_id,
-      }));
-      setAlternatives(examplesWithMetadata);
+      // Examples now come with IDs directly from the database
+      setAlternatives(data.examples || []);
     } catch (error) {
       if (error.name === "TypeError" && error.message.includes("Failed to fetch")) {
         toast.error("Network error - check if the API endpoint exists and CORS is configured");
@@ -86,28 +82,15 @@ export default function ReplaceExampleModal({
 
   // Save selected example
   const saveSelectedExample = async () => {
-    console.log("saveSelectedExample called");
-    console.log("selectedExample:", selectedExample);
-    console.log("exerciseBookmark.user_word_id:", exerciseBookmark?.user_word_id);
-    
     if (!selectedExample || !exerciseBookmark?.user_word_id) {
-      console.log("Early return - missing selectedExample or user_word_id");
       return;
     }
 
-    console.log("Starting save process...");
-
     setSaving(true);
-    const url = `${api.baseAPIurl}/save_sentence/${exerciseBookmark.user_word_id}?session=${api.session}`;
+    const url = `${api.baseAPIurl}/set_preferred_example/${exerciseBookmark.user_word_id}?session=${api.session}`;
     const payload = {
-      sentence: selectedExample.sentence,
-      translation: selectedExample.translation,
-      cefr_level: selectedExample.cefr_level,
-      ai_generator_id: selectedExample.ai_generator_id,
+      sentence_id: selectedExample.id, // New API only needs the sentence ID
     };
-    
-    console.log("Making API call to:", url);
-    console.log("Payload:", payload);
 
     try {
       const response = await fetch(url, {
@@ -118,33 +101,23 @@ export default function ReplaceExampleModal({
         body: JSON.stringify(payload),
       });
 
-      console.log("Response received, status:", response.status);
-
       if (!response.ok) {
         const errorText = await response.text();
-        console.error("API error response:", errorText);
         throw new Error(`HTTP error! status: ${response.status} - ${errorText}`);
       }
 
       const data = await response.json();
-      console.log("Backend response received:", data);
-      console.log("Updated bookmark in response:", data.updated_bookmark);
-      console.log("Context tokenized in response:", data.updated_bookmark?.context_tokenized);
-      
       toast.success("Example updated successfully!");
 
-      console.log("Calling onExampleUpdated...");
-      // The backend now includes user_word_id in the updated_bookmark object
+      // The backend now returns complete updated_bookmark with context_tokenized
       onExampleUpdated({
         selectedExample,
         updatedBookmark: data.updated_bookmark,
       });
-      console.log("onExampleUpdated called");
 
       // Close modal
       handleClose();
     } catch (error) {
-      console.error("Error in saveSelectedExample:", error);
       if (error.name === "TypeError" && error.message.includes("Failed to fetch")) {
         toast.error("Network error - check if the save API endpoint exists and CORS is configured");
       } else {
@@ -172,6 +145,22 @@ export default function ReplaceExampleModal({
     setSelectedExample(example);
   };
 
+  // Function to highlight the target word in the sentence
+  const highlightTargetWord = (sentence, targetWord) => {
+    if (!sentence || !targetWord) return sentence;
+    
+    // Create a regex that matches the target word (case insensitive, word boundaries)
+    const regex = new RegExp(`\\b(${targetWord.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})\\b`, 'gi');
+    
+    return sentence.split(regex).map((part, index) => {
+      // If this part matches the target word (case insensitive), highlight it
+      if (part.toLowerCase() === targetWord.toLowerCase()) {
+        return <span key={index} style={{color: '#ff8c42', fontWeight: 'bold'}}>{part}</span>;
+      }
+      return part;
+    });
+  };
+
   if (!open) {
     if (renderAs === "button") {
       return (
@@ -189,9 +178,8 @@ export default function ReplaceExampleModal({
       <s.ModalContent onClick={(e) => e.stopPropagation()}>
         <s.ModalHeader>
           <h3>
-            Select alternative: {exerciseBookmark?.from} → {exerciseBookmark?.to}
+            Select new example sentence
           </h3>
-          <s.CloseButton onClick={handleClose}>×</s.CloseButton>
         </s.ModalHeader>
 
         <s.ModalBody>
@@ -210,7 +198,9 @@ export default function ReplaceExampleModal({
                   selected={selectedExample === example}
                   onClick={() => handleExampleSelect(example)}
                 >
-                  <s.SentenceText>{example.sentence}</s.SentenceText>
+                  <s.SentenceText>
+                    {highlightTargetWord(example.sentence, exerciseBookmark?.from)}
+                  </s.SentenceText>
                   <s.TranslationText>{example.translation}</s.TranslationText>
                 </s.ExampleOption>
               ))}

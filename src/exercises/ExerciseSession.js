@@ -390,40 +390,30 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
   }
 
   function handleExampleUpdate(updateData) {
-    console.log("handleExampleUpdate called with:", updateData);
-    
     if (!updateData.updatedBookmark) {
-      console.warn("No updated bookmark data received");
       return;
     }
 
     const updatedBookmark = updateData.updatedBookmark;
-    console.log("Updated bookmark received:", updatedBookmark);
-    console.log("Context tokenized:", updatedBookmark.context_tokenized);
 
     // Validate that context_tokenized exists and is properly formatted
     if (!updatedBookmark.context_tokenized || !Array.isArray(updatedBookmark.context_tokenized)) {
-      console.error("Updated bookmark missing or invalid context_tokenized:", updatedBookmark);
-      // Don't return - let's try to continue and see what happens
+      return;
     }
 
-    console.log("Updating exercise progression...");
     // Update the current exercise with the returned bookmark data
     let updatedProgression = [...fullExerciseProgression];
     const currentBookmarkIndex = updatedProgression[currentIndex].bookmarks.findIndex(
       (b) => b.id === selectedExerciseBookmark.id,
     );
 
-    console.log("Current bookmark index:", currentBookmarkIndex);
     if (currentBookmarkIndex !== -1) {
       updatedProgression[currentIndex].bookmarks[currentBookmarkIndex] = updatedBookmark;
       setFullExerciseProgression(updatedProgression);
       setCurrentBookmarksToStudy(updatedProgression[currentIndex].bookmarks);
       setSelectedExerciseBookmark(updatedBookmark);
 
-      console.log("State updated, triggering reload in 100ms...");
       setTimeout(() => {
-        console.log("Triggering reload now");
         setReload(!reload);
       }, 100);
     }
