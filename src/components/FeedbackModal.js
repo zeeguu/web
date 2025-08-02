@@ -107,6 +107,8 @@ export default function FeedbackModal({
               label={"Let us know what happened"} 
               onChange={(e) => feedbackMessageChange(e.target.value)}
               autoFocus={open}
+              multiline={true}
+              rows={3}
             />
           </FormSection>
 

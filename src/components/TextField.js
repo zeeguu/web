@@ -7,6 +7,8 @@ export default function TextField({
   name,
   id,
   autoFocus,
+  multiline = false,
+  rows = 2,
 }) {
   return (
     <s.TextFieldWrapper>
@@ -20,6 +22,8 @@ export default function TextField({
           onChange={onChange}
           placeholder={placeholder}
           autoFocus={autoFocus}
+          multiline={multiline}
+          rows={multiline ? rows : undefined}
         ></s.StyledTextField>
       </s.TextFieldContainer>
     </s.TextFieldWrapper>
