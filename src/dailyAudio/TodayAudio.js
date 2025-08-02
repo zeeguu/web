@@ -5,7 +5,7 @@ import { UserContext } from "../contexts/UserContext";
 import LoadingAnimation from "../components/LoadingAnimation";
 import CustomAudioPlayer from "../components/CustomAudioPlayer";
 import FeedbackModal from "../components/FeedbackModal";
-import { FEEDBACK_OPTIONS, FEEDBACK_CODES_NAME } from "../components/FeedbackConstants";
+import { FEEDBACK_OPTIONS, FEEDBACK_CODES_NAME, FEEDBACK_CODES } from "../components/FeedbackConstants";
 
 const TWO_MIN = 120000; // 2 minutes in milliseconds
 
@@ -23,6 +23,7 @@ export default function TodayAudio() {
   const { userDetails } = useContext(UserContext);
   const [isLoading, setIsLoading] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
+
 
   // Check localStorage for ongoing generation
   useEffect(() => {
@@ -374,7 +375,10 @@ export default function TodayAudio() {
         </div>
 
         <FeedbackModal
-          prefixMsg={`Daily Audio Lesson - Playback time: ${Math.floor(currentPlaybackTime / 60)}:${(currentPlaybackTime % 60).toFixed(0).padStart(2, '0')}`}
+          prefixMsg={lessonData ? 
+            `Daily Audio Lesson - Playback time: ${Math.floor(currentPlaybackTime / 60)}:${(currentPlaybackTime % 60).toFixed(0).padStart(2, '0')} | Lesson ID: ${lessonData.lesson_id} | Words: ${wordsAsTile(lessonData.words)} | Date: ${new Date(lessonData.created_at || Date.now()).toLocaleDateString()}` 
+            : "Daily Audio Lesson Feedback"
+          }
           open={openFeedback}
           setOpen={setOpenFeedback}
           componentCategories={FEEDBACK_OPTIONS.ALL}
