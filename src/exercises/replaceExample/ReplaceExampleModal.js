@@ -102,8 +102,21 @@ export default function ReplaceExampleModal({
       });
 
       if (!response.ok) {
-        const errorText = await response.text();
-        throw new Error(`HTTP error! status: ${response.status} - ${errorText}`);
+        try {
+          const errorData = await response.json();
+          
+          if (response.status === 400 && errorData.error === "Unable to save this example") {
+            toast.error(errorData.detail || errorData.error);
+            console.error("Technical detail:", errorData.technical_detail);
+            console.error("User word ID:", errorData.user_word_id);
+          } else {
+            toast.error(errorData.error || `Failed to save example (${response.status})`);
+          }
+        } catch (parseError) {
+          const errorText = await response.text();
+          toast.error(`Failed to save example: ${errorText}`);
+        }
+        return;
       }
 
       const data = await response.json();
@@ -121,7 +134,8 @@ export default function ReplaceExampleModal({
       if (error.name === "TypeError" && error.message.includes("Failed to fetch")) {
         toast.error("Network error - check if the save API endpoint exists and CORS is configured");
       } else {
-        toast.error(`Failed to save selected example: ${error.message}`);
+        console.error("Unexpected error saving example:", error);
+        toast.error("An unexpected error occurred. Please try again.");
       }
     } finally {
       setSaving(false);
