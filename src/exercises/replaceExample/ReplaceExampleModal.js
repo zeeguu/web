@@ -108,10 +108,12 @@ export default function ReplaceExampleModal({
       const data = await response.json();
 
       // Examples come with IDs directly from the database
-      const formattedExamples = (data.examples || []).map((example) => ({
-        ...example,
-        isFromHistory: false,
-      }));
+      const formattedExamples = (data.examples || [])
+        .filter((example) => example.sentence !== exerciseBookmark?.context)
+        .map((example) => ({
+          ...example,
+          isFromHistory: false,
+        }));
 
       setAlternatives(formattedExamples);
     } catch (error) {
@@ -248,7 +250,9 @@ export default function ReplaceExampleModal({
     <s.ModalOverlay onClick={handleClose}>
       <s.ModalContent onClick={(e) => e.stopPropagation()}>
         <s.ModalHeader>
-          <h3>Select preferred example</h3>
+          <h3>
+            Choose example for <span style={{ color: "orange" }}>{exerciseBookmark?.from}</span>/{exerciseBookmark?.to}
+          </h3>
           <s.CloseButton onClick={handleClose}>
             <CloseIcon />
           </s.CloseButton>
