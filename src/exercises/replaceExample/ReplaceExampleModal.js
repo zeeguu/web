@@ -124,27 +124,40 @@ export default function ReplaceExampleModal({
     }
   };
 
-  // Save selected example
-  const saveSelectedExample = async () => {
-    if (!selectedExample || !exerciseBookmark?.user_word_id) {
-      return;
-    }
+  const handleOpen = () => {
+    setOpen(true);
+    fetchPastContexts(); // Load immediately
+    fetchAlternatives(); // Load AI examples (might be slower)
+  };
 
+  const handleClose = () => {
+    setOpen(false);
+    setPastContexts([]);
+    setAlternatives([]);
+    setSelectedExample(null);
+    setLoading(false);
+    setSaving(false);
+  };
+
+  const handleExampleSelect = async (example) => {
+    setSelectedExample(example);
+    
+    // Automatically save the selection
     setSaving(true);
     
     let url, payload;
     
-    if (selectedExample.isFromHistory) {
+    if (example.isFromHistory) {
       // Use set_preferred_bookmark for past encounters (bookmarks)
       url = `${api.baseAPIurl}/set_preferred_bookmark/${exerciseBookmark.user_word_id}?session=${api.session}`;
       payload = {
-        bookmark_id: selectedExample.id,
+        bookmark_id: example.id,
       };
     } else {
       // Use set_preferred_example for AI-generated examples (example sentences)
       url = `${api.baseAPIurl}/set_preferred_example/${exerciseBookmark.user_word_id}?session=${api.session}`;
       payload = {
-        sentence_id: selectedExample.id,
+        sentence_id: example.id,
       };
     }
 
@@ -160,7 +173,7 @@ export default function ReplaceExampleModal({
       if (!response.ok) {
         try {
           const errorData = await response.json();
-
+          
           if (response.status === 400 && errorData.error === "Unable to save this example") {
             toast.error(errorData.detail || errorData.error);
             console.error("Technical detail:", errorData.technical_detail);
@@ -178,9 +191,9 @@ export default function ReplaceExampleModal({
       const data = await response.json();
       toast.success("Example updated successfully!");
 
-      // The backend now returns complete updated_bookmark with context_tokenized
+      // The backend returns complete updated_bookmark
       onExampleUpdated({
-        selectedExample,
+        selectedExample: example,
         updatedBookmark: data.updated_bookmark,
       });
 
@@ -198,40 +211,17 @@ export default function ReplaceExampleModal({
     }
   };
 
-  const handleOpen = () => {
-    setOpen(true);
-    fetchPastContexts(); // Load immediately
-    fetchAlternatives(); // Load AI examples (might be slower)
-  };
-
-  const handleClose = () => {
-    setOpen(false);
-    setPastContexts([]);
-    setAlternatives([]);
-    setSelectedExample(null);
-    setLoading(false);
-    setSaving(false);
-  };
-
-  const handleExampleSelect = (example) => {
-    setSelectedExample(example);
-  };
-
   // Function to highlight the target word in the sentence
   const highlightTargetWord = (sentence, targetWord) => {
     if (!sentence || !targetWord) return sentence;
-
+    
     // Create a regex that matches the target word (case insensitive, word boundaries)
-    const regex = new RegExp(`\\b(${targetWord.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")})\\b`, "gi");
-
+    const regex = new RegExp(`\\b(${targetWord.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})\\b`, 'gi');
+    
     return sentence.split(regex).map((part, index) => {
       // If this part matches the target word (case insensitive), highlight it
       if (part.toLowerCase() === targetWord.toLowerCase()) {
-        return (
-          <span key={index} style={{ color: "#ff8c42", fontWeight: "bold" }}>
-            {part}
-          </span>
-        );
+        return <span key={index} style={{color: '#ff8c42', fontWeight: 'bold'}}>{part}</span>;
       }
       return part;
     });
@@ -276,10 +266,14 @@ export default function ReplaceExampleModal({
                     key={example.isFromHistory ? `past-${example.id}` : `alt-${example.id || index}`}
                     selected={selectedExample === example}
                     onClick={() => handleExampleSelect(example)}
+                    style={{
+                      visibility: selectedExample && selectedExample !== example ? 'hidden' : 'visible'
+                    }}
                   >
                     <s.SentenceText>
                       {highlightTargetWord(example.sentence, exerciseBookmark?.from)}
                       {example.isFromHistory && <s.ContextTypeBadge type="past">past encounter</s.ContextTypeBadge>}
+                      {saving && selectedExample === example && <span style={{marginLeft: '0.5rem', fontSize: '0.8rem', color: '#666'}}>Saving...</span>}
                     </s.SentenceText>
                     {example.title && <s.ContextTitle>From: {example.title}</s.ContextTitle>}
                   </s.ExampleOption>
@@ -293,13 +287,6 @@ export default function ReplaceExampleModal({
             </s.EmptyState>
           )}
         </s.ModalBody>
-
-        <s.ModalFooter>
-          <s.CancelButton onClick={handleClose}>Cancel</s.CancelButton>
-          <s.SaveButton onClick={saveSelectedExample} disabled={!selectedExample || saving}>
-            {saving ? "Saving..." : "Use This Example"}
-          </s.SaveButton>
-        </s.ModalFooter>
       </s.ModalContent>
     </s.ModalOverlay>
   );
