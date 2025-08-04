@@ -108,15 +108,20 @@ export const ExampleOption = styled.div`
   border-radius: 8px;
   padding: 1rem;
   margin-bottom: 1rem;
-  cursor: pointer;
+  cursor: ${(props) => (props.disabled ? "default" : "pointer")};
   transition: all 0.2s ease;
-  background-color: ${(props) => (props.selected ? zeeguuLightYellow + "20" : "white")};
+  background-color: ${(props) => 
+    props.disabled ? "#f5f5f5" : 
+    props.selected ? zeeguuLightYellow + "20" : "white"};
+  opacity: ${(props) => (props.disabled ? 0.7 : 1)};
 
   text-align: left;
 
   &:hover {
-    border-color: ${zeeguuOrange};
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    ${(props) => !props.disabled && `
+      border-color: ${zeeguuOrange};
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    `}
   }
 
   &:last-child {
@@ -150,6 +155,37 @@ export const LevelBadge = styled.span`
 export const EmptyState = styled.div`
   padding: 2rem;
   color: #666;
+`;
+
+export const SectionLabel = styled.div`
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #666;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 0.75rem;
+  margin-top: 1.5rem;
+  
+  &:first-child {
+    margin-top: 0;
+  }
+`;
+
+export const ContextTypeBadge = styled.span`
+  background-color: ${props => props.type === 'past' ? '#666' : '#666'};
+  color: white;
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  margin-left: 0.5rem;
+`;
+
+export const ContextTitle = styled.div`
+  font-size: 0.85rem;
+  color: #999;
+  margin-top: 0.5rem;
+  font-style: italic;
 `;
 
 export const ModalFooter = styled.div`

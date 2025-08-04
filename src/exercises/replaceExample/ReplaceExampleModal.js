@@ -17,6 +17,7 @@ export default function ReplaceExampleModal({
   const { userDetails } = useContext(UserContext);
   const [open, setOpen] = useState(false);
   const [alternatives, setAlternatives] = useState([]);
+  const [pastContexts, setPastContexts] = useState([]);
   const [loading, setLoading] = useState(false);
   const [selectedExample, setSelectedExample] = useState(null);
   const [saving, setSaving] = useState(false);
@@ -41,6 +42,44 @@ export default function ReplaceExampleModal({
     };
 
     return levelMap[levelNumber?.toString()] || "B1";
+  };
+
+  // Fetch past contexts where the word was encountered
+  const fetchPastContexts = async () => {
+    if (!exerciseBookmark?.user_word_id) {
+      return;
+    }
+
+    const url = `${api.baseAPIurl}/all_contexts/${exerciseBookmark.user_word_id}?session=${api.session}`;
+
+    try {
+      const response = await fetch(url, {
+        method: "GET",
+      });
+
+      if (!response.ok) {
+        console.error("Failed to fetch past contexts:", response.status);
+        return;
+      }
+
+      const data = await response.json();
+
+      const contexts = data.contexts || [];
+      const formattedContexts = contexts
+        .filter((ctx) => !ctx.is_preferred)
+        .map((ctx) => ({
+          id: ctx.bookmark_id,
+          sentence: ctx.context,
+          translation: ctx.translation || "",
+          contextType: ctx.context_type,
+          title: ctx.title,
+          isFromHistory: true,
+        }));
+
+      setPastContexts(formattedContexts);
+    } catch (error) {
+      console.error("Error fetching past contexts:", error);
+    }
   };
 
   // Fetch alternatives when modal opens
@@ -88,8 +127,11 @@ export default function ReplaceExampleModal({
 
     setSaving(true);
     const url = `${api.baseAPIurl}/set_preferred_example/${exerciseBookmark.user_word_id}?session=${api.session}`;
+
+    // For past contexts, use the bookmark_id as sentence_id
+    // For generated alternatives, use the id directly
     const payload = {
-      sentence_id: selectedExample.id, // New API only needs the sentence ID
+      sentence_id: selectedExample.isFromHistory ? selectedExample.id : selectedExample.id,
     };
 
     try {
@@ -104,7 +146,7 @@ export default function ReplaceExampleModal({
       if (!response.ok) {
         try {
           const errorData = await response.json();
-          
+
           if (response.status === 400 && errorData.error === "Unable to save this example") {
             toast.error(errorData.detail || errorData.error);
             console.error("Technical detail:", errorData.technical_detail);
@@ -144,12 +186,14 @@ export default function ReplaceExampleModal({
 
   const handleOpen = () => {
     setOpen(true);
+    fetchPastContexts();
     fetchAlternatives();
   };
 
   const handleClose = () => {
     setOpen(false);
     setAlternatives([]);
+    setPastContexts([]);
     setSelectedExample(null);
     setLoading(false);
     setSaving(false);
@@ -162,14 +206,18 @@ export default function ReplaceExampleModal({
   // Function to highlight the target word in the sentence
   const highlightTargetWord = (sentence, targetWord) => {
     if (!sentence || !targetWord) return sentence;
-    
+
     // Create a regex that matches the target word (case insensitive, word boundaries)
-    const regex = new RegExp(`\\b(${targetWord.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})\\b`, 'gi');
-    
+    const regex = new RegExp(`\\b(${targetWord.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")})\\b`, "gi");
+
     return sentence.split(regex).map((part, index) => {
       // If this part matches the target word (case insensitive), highlight it
       if (part.toLowerCase() === targetWord.toLowerCase()) {
-        return <span key={index} style={{color: '#ff8c42', fontWeight: 'bold'}}>{part}</span>;
+        return (
+          <span key={index} style={{ color: "#ff8c42", fontWeight: "bold" }}>
+            {part}
+          </span>
+        );
       }
       return part;
     });
@@ -179,7 +227,7 @@ export default function ReplaceExampleModal({
     if (renderAs === "button") {
       return (
         <exerciseStyles.StyledGreyButton className="styledGreyButton" onClick={handleOpen}>
-          Replace sentence
+          Select different context
         </exerciseStyles.StyledGreyButton>
       );
     }
@@ -191,39 +239,42 @@ export default function ReplaceExampleModal({
     <s.ModalOverlay onClick={handleClose}>
       <s.ModalContent onClick={(e) => e.stopPropagation()}>
         <s.ModalHeader>
-          <h3>
-            Select new example sentence
-          </h3>
+          <h3>Select an alternative preferred context</h3>
         </s.ModalHeader>
 
         <s.ModalBody>
           {loading && (
             <s.LoadingContainer>
               <LoadingAnimation />
-              <p>Generating alternative examples...</p>
+              <p>Loading examples...</p>
             </s.LoadingContainer>
           )}
 
-          {!loading && alternatives.length > 0 && (
+          {!loading && (pastContexts.length > 0 || alternatives.length > 0) && (
             <s.ExamplesContainer>
-              {alternatives.map((example, index) => (
-                <s.ExampleOption
-                  key={index}
-                  selected={selectedExample === example}
-                  onClick={() => handleExampleSelect(example)}
-                >
-                  <s.SentenceText>
-                    {highlightTargetWord(example.sentence, exerciseBookmark?.from)}
-                  </s.SentenceText>
-                  <s.TranslationText>{example.translation}</s.TranslationText>
-                </s.ExampleOption>
-              ))}
+              {/* Past Encounters and AI Suggestions combined and sorted by length */}
+              {[...pastContexts, ...alternatives]
+                .sort((a, b) => a.sentence.length - b.sentence.length)
+                .map((example, index) => (
+                  <s.ExampleOption
+                    key={example.isFromHistory ? `past-${example.id}` : `alt-${example.id || index}`}
+                    selected={selectedExample === example}
+                    onClick={() => handleExampleSelect(example)}
+                  >
+                    <s.SentenceText>
+                      {highlightTargetWord(example.sentence, exerciseBookmark?.from)}
+                      {example.isFromHistory && <s.ContextTypeBadge type="past">Past Encounter</s.ContextTypeBadge>}
+                    </s.SentenceText>
+                    {example.translation && <s.TranslationText>{example.translation}</s.TranslationText>}
+                    {example.title && <s.ContextTitle>From: {example.title}</s.ContextTitle>}
+                  </s.ExampleOption>
+                ))}
             </s.ExamplesContainer>
           )}
 
-          {!loading && alternatives.length === 0 && (
+          {!loading && pastContexts.length === 0 && alternatives.length === 0 && (
             <s.EmptyState>
-              <p>No alternative examples available at the moment.</p>
+              <p>No examples available at the moment.</p>
             </s.EmptyState>
           )}
         </s.ModalBody>
