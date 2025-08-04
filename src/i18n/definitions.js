@@ -491,9 +491,9 @@ let strings = new LocalizedStrings(
       audioExerciseHeadline: "Write the word your hear. Click to have it repeated!",
       multipleChoiceAudioHeadline: "Select the word which fits the context",
       findWordInContextClozeHeadline: "Translate the word to fit the context",
-      translateL2toL1Headline: "Translate the bold word",
+      translateL2toL1Headline: "Translate the highlighted word",
       translateWhatYouHearHeadline: "Translate the word you hear. Click to have it repeated!",
-      multipleChoiceL2toL1Headline: "Select the correct translation of the bold word",
+      multipleChoiceL2toL1Headline: "Select the correct translation of the highlighted word",
       clickWordInContextHeadline: "Click on the translation of the word below in the text",
       multipleChoiceContextHeadline: "Choose the context that fits the word",
 

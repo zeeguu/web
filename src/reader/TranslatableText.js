@@ -103,9 +103,9 @@ export function TranslatableText({
     // If the word is a bookmarked word, it won't be translated when clicked
     const disableTranslation = foundInstances.includes(word.id);
 
-    // If boldExpression is defined, the bookmark is written in bold, otherwise boldWords will be set to an empty array to avoid runtime error
-    const boldWords = boldExpression ? boldExpression.split(" ").map((word) => removePunctuation(word)) : [];
-    const isWordBold = boldWords.includes(removePunctuation(word.word));
+    // If boldExpression is defined, the bookmark is highlighted, otherwise highlightedWords will be set to an empty array to avoid runtime error
+    const highlightedWords = boldExpression ? boldExpression.split(" ").map((word) => removePunctuation(word)) : [];
+    const isWordHighlighted = highlightedWords.includes(removePunctuation(word.word));
 
     if (isExerciseOver) {
       if (word.id === firstWordID && overrideBookmarkHighlightText) {
@@ -148,7 +148,7 @@ export function TranslatableText({
         );
       }
     } else {
-      if (isWordBold) {
+      if (isWordHighlighted) {
         return <span style={{ color: "orange", fontWeight: "bold" }}>{word.word + " "}</span>;
       }
       if (!bookmarkToStudy || translatedWords) {
