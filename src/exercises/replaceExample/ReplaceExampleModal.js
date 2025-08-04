@@ -236,12 +236,12 @@ export default function ReplaceExampleModal({
     if (renderAs === "button") {
       return (
         <exerciseStyles.StyledGreyButton className="styledGreyButton" onClick={handleOpen}>
-          Change preferred example
+          Change example
         </exerciseStyles.StyledGreyButton>
       );
     }
 
-    return <s.TriggerButton onClick={handleOpen}>Change preferred example</s.TriggerButton>;
+    return <exerciseStyles.StyledGreyButton onClick={handleOpen}>Change example</exerciseStyles.StyledGreyButton>;
   }
 
   return (

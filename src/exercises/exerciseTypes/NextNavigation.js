@@ -239,7 +239,16 @@ export default function NextNavigation({
             </s.FeedbackButton>
           </s.BottomRowSmallTopMargin>
           {!bookmarkLearned && (
-            <s.BottomRowSmallTopMargin style={{ textAlign: "center", marginTop: "10px", display: "flex", flexWrap: "wrap", gap: "10px", justifyContent: "center" }}>
+            <s.BottomRowSmallTopMargin
+              style={{
+                textAlign: "center",
+                marginTop: "10px",
+                display: "flex",
+                flexWrap: "wrap",
+                gap: "10px",
+                justifyContent: "center",
+              }}
+            >
               {exerciseBookmark && onExampleUpdated && (
                 <ReplaceExampleModal
                   exerciseBookmark={exerciseBookmark}

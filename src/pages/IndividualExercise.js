@@ -336,6 +336,10 @@ export default function IndividualExercise() {
                     <WordProgressBar bookmark={bookmark} message={message} isGreyedOutBar={false} />
                   ) : null
                 }
+                onExampleUpdated={(data) => {
+                  console.log("Example updated:", data);
+                  // Handle the updated example in the individual exercise component
+                }}
               />
               <NextNavigation
                 exerciseType={exerciseType}

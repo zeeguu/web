@@ -8,6 +8,7 @@ import { tokenize } from "../../../utils/text/preprocessing.js";
 import { SpeechContext } from "../../../contexts/SpeechContext.js";
 import { removePunctuation } from "../../../utils/text/preprocessing.js";
 import { APIContext } from "../../../contexts/APIContext.js";
+import ReplaceExampleModal from "../../replaceExample/ReplaceExampleModal.js";
 
 //shared code for ClickWordInContext and FindWordInContext exercises
 //The difference between the two is that in FindWordInContext the user can choose to either click on the word or type the word.
@@ -30,6 +31,7 @@ export default function WordInContextExercise({
   exerciseMessageToAPI,
   notifyOfUserAttempt,
   bookmarkProgressBar,
+  onExampleUpdated,
 }) {
   const api = useContext(APIContext);
   const [interactiveText, setInteractiveText] = useState();
@@ -131,7 +133,7 @@ export default function WordInContextExercise({
 
   return (
     <s.Exercise className={exerciseType}>
-      <div className="headlineWithMoreSpace">
+      <div className="headlineWithMoreSpace" style={{ visibility: isExerciseOver ? 'hidden' : 'visible' }}>
         {exerciseHeadline}
       </div>
       <h1 className="wordInContextHeadline">{removePunctuation(exerciseBookmark.to)}</h1>

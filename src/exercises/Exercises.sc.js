@@ -49,6 +49,11 @@ const ExForm = styled.div`
     font-size: large;
   }
 
+  .highlightedWord {
+    color: orange;
+    font-weight: 800;
+  }
+
   input {
     font-size: large;
   }

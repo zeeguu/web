@@ -10,6 +10,7 @@ import shuffle from "../../../assorted/fisherYatesShuffle";
 import { removePunctuation } from "../../../utils/text/preprocessing";
 import { SpeechContext } from "../../../contexts/SpeechContext.js";
 import { APIContext } from "../../../contexts/APIContext.js";
+import ReplaceExampleModal from "../../replaceExample/ReplaceExampleModal.js";
 
 // The user has to select the correct L2 translation of a given L1 word out of three.
 // This tests the user's active knowledge.
@@ -26,6 +27,7 @@ export default function MultipleChoice({
   setIsCorrect,
   resetSubSessionTimer,
   bookmarkProgressBar,
+  onExampleUpdated,
 }) {
   const api = useContext(APIContext);
   const [incorrectAnswer, setIncorrectAnswer] = useState("");
@@ -102,7 +104,7 @@ export default function MultipleChoice({
   return (
     <s.Exercise className="multipleChoice">
       {/* Instructions - visible during exercise, invisible when showing solution but still take space */}
-      <div className="headlineWithMoreSpace">
+      <div className="headlineWithMoreSpace" style={{ visibility: isExerciseOver ? 'hidden' : 'visible' }}>
         {strings.chooseTheWordFittingContextHeadline}
       </div>
 

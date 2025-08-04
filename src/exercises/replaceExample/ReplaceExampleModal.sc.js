@@ -2,17 +2,19 @@ import styled from "styled-components";
 import { zeeguuOrange, lightGrey, zeeguuLightYellow } from "../../components/colors";
 
 export const TriggerButton = styled.button`
-  background: none;
-  border: none;
-  color: ${zeeguuOrange};
-  text-decoration: underline;
-  cursor: pointer;
-  font-size: 0.9em;
-  padding: 0;
+  background: none !important;
+  border: none !important;
+  padding: 0 !important;
   margin: 0 0.5em;
+  color: gray;
+  text-decoration: underline;
+  font-size: small !important;
+  font-weight: 500;
+  cursor: pointer;
+  font-family: "Montserrat";
 
   &:hover {
-    color: ${zeeguuLightYellow};
+    filter: brightness(110%);
   }
 `;
 
@@ -110,15 +112,15 @@ export const ExampleOption = styled.div`
   margin-bottom: 1rem;
   cursor: ${(props) => (props.disabled ? "default" : "pointer")};
   transition: all 0.2s ease;
-  background-color: ${(props) => 
-    props.disabled ? "#f5f5f5" : 
-    props.selected ? zeeguuLightYellow + "20" : "white"};
+  background-color: ${(props) => (props.disabled ? "#f5f5f5" : props.selected ? zeeguuLightYellow + "20" : "white")};
   opacity: ${(props) => (props.disabled ? 0.7 : 1)};
 
   text-align: left;
 
   &:hover {
-    ${(props) => !props.disabled && `
+    ${(props) =>
+      !props.disabled &&
+      `
       border-color: ${zeeguuOrange};
       box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     `}
@@ -165,14 +167,14 @@ export const SectionLabel = styled.div`
   letter-spacing: 0.5px;
   margin-bottom: 0.75rem;
   margin-top: 1.5rem;
-  
+
   &:first-child {
     margin-top: 0;
   }
 `;
 
 export const ContextTypeBadge = styled.span`
-  background-color: ${props => props.type === 'past' ? '#e3f2fd' : '#e3f2fd'};
+  background-color: ${(props) => (props.type === "past" ? "#e3f2fd" : "#e3f2fd")};
   color: #1976d2;
   padding: 0.2rem 0.5rem;
   border-radius: 4px;
@@ -180,6 +182,7 @@ export const ContextTypeBadge = styled.span`
   font-weight: 500;
   margin-left: 0.5rem;
   white-space: nowrap;
+  font-style: normal;
 `;
 
 export const ContextTitle = styled.div`

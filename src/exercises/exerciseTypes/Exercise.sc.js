@@ -66,7 +66,7 @@ const Exercise = styled.div`
     margin-top: 1em;
     margin-left: 2em;
     margin-right: 2em;
-    font-weight: 400;
+    font-weight: 500;
     line-height: 1.4em;
   }
 
@@ -129,7 +129,6 @@ const Exercise = styled.div`
 
   /* Mobile version */
   @media screen and (max-width: 768px) {
-
     .contextExample {
       margin-top: 0.5em;
       margin-left: 0.5em;

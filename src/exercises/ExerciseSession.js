@@ -489,6 +489,7 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
             activeSessionDuration={activeSessionDuration}
             resetSubSessionTimer={resetSubSessionTimer}
             bookmarkProgressBar={wordProgressBar}
+            onExampleUpdated={handleExampleUpdate}
           />
           <NextNavigation
             exerciseType={currentExerciseType}

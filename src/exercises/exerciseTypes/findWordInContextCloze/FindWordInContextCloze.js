@@ -10,6 +10,7 @@ import BottomInput from "../BottomInput.js";
 import { EXERCISE_TYPES } from "../../ExerciseTypeConstants.js";
 import { removePunctuation } from "../../../utils/text/preprocessing";
 import { APIContext } from "../../../contexts/APIContext.js";
+import ReplaceExampleModal from "../../replaceExample/ReplaceExampleModal.js";
 
 // The user has to type the correct translation of a given L1 word in a L2 context. The L2 word is omitted in the context, so the user has to fill in the blank.
 // This tests the user's active knowledge.
@@ -27,6 +28,7 @@ export default function FindWordInContextCloze({
   notifyOfUserAttempt,
   reload,
   bookmarkProgressBar,
+  onExampleUpdated,
 }) {
   const api = useContext(APIContext);
   const [interactiveText, setInteractiveText] = useState();
@@ -69,7 +71,7 @@ export default function FindWordInContextCloze({
 
   return (
     <s.Exercise className="findWordInContextCloze">
-      <div className="headlineWithMoreSpace">
+      <div className="headlineWithMoreSpace" style={{ visibility: isExerciseOver ? 'hidden' : 'visible' }}>
         {strings.findWordInContextClozeHeadline}
       </div>
       <h1 className="wordInContextHeadline">{removePunctuation(exerciseBookmark.to)}</h1>

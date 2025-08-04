@@ -1,11 +1,6 @@
 import styled from "styled-components";
 import StyledButton from "../Exercise.sc";
-import {
-  zeeguuOrange,
-  darkGreen,
-  zeeguuRed,
-  darkBlue,
-} from "../../../components/colors";
+import { zeeguuOrange, darkGreen, zeeguuRed, darkBlue } from "../../../components/colors";
 
 const ExerciseOW = styled.div`
   display: flex;
@@ -316,7 +311,7 @@ const ExerciseOW = styled.div`
     margin-right: 2em;
     font-weight: 400;
     line-height: 1.4em;
-    paddingBottom: 1em;
+    
   }
 
   /* Mobile version */
@@ -415,10 +410,4 @@ let OrangeItemCompactConstruct = styled(StyledButton)`
   }
 `;
 
-export {
-  ExerciseOW,
-  OrangeItemCompact,
-  OrangeItemCompactConstruct,
-  ItemRowCompactWrap,
-  ItemRowCompactWrapConstruct,
-};
+export { ExerciseOW, OrangeItemCompact, OrangeItemCompactConstruct, ItemRowCompactWrap, ItemRowCompactWrapConstruct };

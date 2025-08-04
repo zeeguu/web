@@ -149,7 +149,7 @@ export function TranslatableText({
       }
     } else {
       if (isWordBold) {
-        return <span style={{ fontWeight: "bold" }}>{word.word + " "}</span>;
+        return <span style={{ color: "orange", fontWeight: "bold" }}>{word.word + " "}</span>;
       }
       if (!bookmarkToStudy || translatedWords) {
         return (
@@ -168,9 +168,20 @@ export function TranslatableText({
       }
 
       if (foundInstances[0] === word.id) {
-        // If we want, we can render it according to words size.
-        // "_".repeat(word.word.length) + " ";
-        return "_______ ";
+        // Render the actual word but with transparent color and solid bottom border
+        // This prevents layout jumps and creates an uninterrupted line
+        return (
+          <span 
+            key={word.id}
+            style={{ 
+              color: 'transparent',
+              borderBottom: '2px solid #333',
+              display: 'inline-block'
+            }}
+          >
+            {word.word + " "}
+          </span>
+        );
       }
 
       if (disableTranslation) {

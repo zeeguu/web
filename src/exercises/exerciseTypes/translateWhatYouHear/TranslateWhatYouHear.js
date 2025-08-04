@@ -10,6 +10,7 @@ import InteractiveText from "../../../reader/InteractiveText.js";
 import LoadingAnimation from "../../../components/LoadingAnimation.js";
 import { SpeechContext } from "../../../contexts/SpeechContext.js";
 import { APIContext } from "../../../contexts/APIContext.js";
+import ReplaceExampleModal from "../../replaceExample/ReplaceExampleModal.js";
 
 // The user has to translate the word they hear into their L1.
 // This tests the user's passive knowledge.
@@ -28,6 +29,7 @@ export default function TranslateWhatYouHear({
   isExerciseOver,
   resetSubSessionTimer,
   bookmarkProgressBar,
+  onExampleUpdated,
 }) {
   const api = useContext(APIContext);
   const exerciseBookmark = bookmarksToStudy[0];
@@ -89,7 +91,7 @@ export default function TranslateWhatYouHear({
   return (
     <s.Exercise className="translateWhatYouHear">
       {/* Instructions - visible during exercise, invisible when showing solution but still take space */}
-      <div className="headlineWithMoreSpace">
+      <div className="headlineWithMoreSpace" style={{ visibility: isExerciseOver ? 'hidden' : 'visible' }}>
         {strings.translateWhatYouHearHeadline}
       </div>
 

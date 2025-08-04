@@ -10,6 +10,7 @@ import BottomInput from "../BottomInput.js";
 import WordProgressBar from "../../progressBars/WordProgressBar.js";
 import { removePunctuation } from "../../../utils/text/preprocessing";
 import { APIContext } from "../../../contexts/APIContext.js";
+import ReplaceExampleModal from "../../replaceExample/ReplaceExampleModal.js";
 
 // The user has to translate the L2 word in bold to their L1.
 // This tests the user's active knowledge.
@@ -28,6 +29,7 @@ export default function TranslateL2toL1({
   isExerciseOver,
   resetSubSessionTimer,
   bookmarkProgressBar,
+  onExampleUpdated,
 }) {
   const api = useContext(APIContext);
   const [interactiveText, setInteractiveText] = useState();
@@ -76,7 +78,7 @@ export default function TranslateL2toL1({
   return (
     <s.Exercise className="translateL2toL1">
       {/* Instructions - visible during exercise, invisible when showing solution but still take space */}
-      <div className="headlineWithMoreSpace">
+      <div className="headlineWithMoreSpace" style={{ visibility: isExerciseOver ? 'hidden' : 'visible' }}>
         {strings.translateL2toL1Headline}
       </div>
 
