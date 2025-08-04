@@ -271,12 +271,16 @@ export default function ReplaceExampleModal({
                   >
                     <s.SentenceText>
                       {highlightTargetWord(example.sentence, exerciseBookmark?.from)}
-                      <s.ContextTypeBadge type="past">past encounter</s.ContextTypeBadge>
                       {saving && selectedExample === example && (
                         <span style={{ marginLeft: "0.5rem", fontSize: "0.8rem", color: "#666" }}>Saving...</span>
                       )}
                     </s.SentenceText>
-                    {example.title && <s.ContextTitle>From: {example.title}</s.ContextTitle>}
+                    {example.title && (
+                      <s.ContextTitle>
+                        From: {example.title}
+                        <s.ContextTypeBadge type="past">past encounter</s.ContextTypeBadge>
+                      </s.ContextTitle>
+                    )}
                   </s.ExampleOption>
                 ))}
 
