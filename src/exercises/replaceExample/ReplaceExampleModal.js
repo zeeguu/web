@@ -266,9 +266,11 @@ export default function ReplaceExampleModal({
 
           {(pastContexts.length > 0 || alternatives.length > 0) && (
             <s.ExamplesContainer>
-              {/* Combined contexts sorted by sentence length */}
-              {[...pastContexts, ...alternatives]
-                .sort((a, b) => a.sentence.length - b.sentence.length)
+              {/* Past encounters first, then AI alternatives, each group sorted by sentence length */}
+              {[
+                ...pastContexts.sort((a, b) => a.sentence.length - b.sentence.length),
+                ...alternatives.sort((a, b) => a.sentence.length - b.sentence.length)
+              ]
                 .map((example, index) => (
                   <s.ExampleOption
                     key={example.isFromHistory ? `past-${example.id}` : `alt-${example.id || index}`}
