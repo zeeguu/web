@@ -5,6 +5,7 @@ import { useState } from "react";
 import { MAX_WORDS_IN_BOOKMARK_FOR_EXERCISES } from "../exercises/ExerciseConstants";
 import isBookmarkExpression from "../utils/misc/isBookmarkExpression";
 import FullWidthErrorMsg from "../components/FullWidthErrorMsg.sc";
+import ReplaceExampleModal from "../exercises/replaceExample/ReplaceExampleModal";
 
 export default function WordEditForm({ bookmark, errorMessage, handleClose, updateBookmark, deleteAction }) {
   const [translation, setTranslation] = useState(bookmark.to);
@@ -102,16 +103,6 @@ export default function WordEditForm({ bookmark, errorMessage, handleClose, upda
           onChange={typingTranslation}
         />
 
-        <s.CustomTextField
-          id="outlined-basic"
-          label="Example"
-          variant="outlined"
-          fullWidth
-          multiline
-          value={context}
-          onChange={typingContext}
-        />
-
         {bookmark.from.split(" ").length < MAX_WORDS_IN_BOOKMARK_FOR_EXERCISES && (
           <s.CustomCheckBoxDiv>
             <input
@@ -124,26 +115,26 @@ export default function WordEditForm({ bookmark, errorMessage, handleClose, upda
           </s.CustomCheckBoxDiv>
         )}
 
-        {window.location.hostname === 'localhost' && (
-          <div style={{ 
-            margin: "1em 0",
-            padding: "0.5em",
-            backgroundColor: "#f0f8f0",
-            border: "1px solid #4CAF50",
-            borderRadius: "4px",
-            fontSize: "0.85em", 
-            color: "#2e7d32"
-          }}>
-            <div style={{ fontWeight: "bold", marginBottom: "0.3em" }}>Debug Info:</div>
-            <div>Bookmark ID: {bookmark.id}</div>
-            {bookmark.user_word_id && (
-              <div>User Word ID: {bookmark.user_word_id}</div>
-            )}
-            {bookmark.meaning_id && (
-              <div>Meaning ID: {bookmark.meaning_id}</div>
-            )}
-          </div>
-        )}
+        <s.CustomTextField
+          id="outlined-basic"
+          label="Preferred Example"
+          variant="outlined"
+          fullWidth
+          multiline
+          value={context}
+          onChange={typingContext}
+        />
+        
+        <s.LinkContainer>
+          <ReplaceExampleModal 
+            exerciseBookmark={bookmark}
+            onExampleUpdated={({ updatedBookmark }) => {
+              setContext(updatedBookmark.context);
+            }}
+            renderAs="link"
+          />
+        </s.LinkContainer>
+
 
         {isNotEdited ? (
           <s.DoneButtonHolder>

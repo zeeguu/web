@@ -16,8 +16,8 @@ export default function ReplaceExampleModal({
   const api = useContext(APIContext);
   const { userDetails } = useContext(UserContext);
   const [open, setOpen] = useState(false);
-  const [alternatives, setAlternatives] = useState([]);
   const [pastContexts, setPastContexts] = useState([]);
+  const [alternatives, setAlternatives] = useState([]);
   const [loading, setLoading] = useState(false);
   const [selectedExample, setSelectedExample] = useState(null);
   const [saving, setSaving] = useState(false);
@@ -44,13 +44,13 @@ export default function ReplaceExampleModal({
     return levelMap[levelNumber?.toString()] || "B1";
   };
 
-  // Fetch past contexts where the word was encountered
+  // Fetch past contexts (articles, videos, etc.)
   const fetchPastContexts = async () => {
     if (!exerciseBookmark?.user_word_id) {
       return;
     }
 
-    const url = `${api.baseAPIurl}/all_contexts/${exerciseBookmark.user_word_id}?session=${api.session}`;
+    const url = `${api.baseAPIurl}/past_contexts/${exerciseBookmark.user_word_id}?session=${api.session}`;
 
     try {
       const response = await fetch(url, {
@@ -64,7 +64,7 @@ export default function ReplaceExampleModal({
 
       const data = await response.json();
 
-      const contexts = data.contexts || [];
+      const contexts = data.past_contexts || [];
       const formattedContexts = contexts
         .filter((ctx) => !ctx.is_preferred)
         .map((ctx) => ({
@@ -82,7 +82,7 @@ export default function ReplaceExampleModal({
     }
   };
 
-  // Fetch alternatives when modal opens
+  // Fetch AI-generated alternatives
   const fetchAlternatives = async () => {
     if (!exerciseBookmark?.user_word_id) {
       toast.error("Unable to fetch alternatives - missing word ID");
@@ -106,8 +106,13 @@ export default function ReplaceExampleModal({
 
       const data = await response.json();
 
-      // Examples now come with IDs directly from the database
-      setAlternatives(data.examples || []);
+      // Examples come with IDs directly from the database
+      const formattedExamples = (data.examples || []).map((example) => ({
+        ...example,
+        isFromHistory: false,
+      }));
+
+      setAlternatives(formattedExamples);
     } catch (error) {
       if (error.name === "TypeError" && error.message.includes("Failed to fetch")) {
         toast.error("Network error - check if the API endpoint exists and CORS is configured");
@@ -126,13 +131,22 @@ export default function ReplaceExampleModal({
     }
 
     setSaving(true);
-    const url = `${api.baseAPIurl}/set_preferred_example/${exerciseBookmark.user_word_id}?session=${api.session}`;
-
-    // For past contexts, use the bookmark_id as sentence_id
-    // For generated alternatives, use the id directly
-    const payload = {
-      sentence_id: selectedExample.isFromHistory ? selectedExample.id : selectedExample.id,
-    };
+    
+    let url, payload;
+    
+    if (selectedExample.isFromHistory) {
+      // Use set_preferred_bookmark for past encounters (bookmarks)
+      url = `${api.baseAPIurl}/set_preferred_bookmark/${exerciseBookmark.user_word_id}?session=${api.session}`;
+      payload = {
+        bookmark_id: selectedExample.id,
+      };
+    } else {
+      // Use set_preferred_example for AI-generated examples (example sentences)
+      url = `${api.baseAPIurl}/set_preferred_example/${exerciseBookmark.user_word_id}?session=${api.session}`;
+      payload = {
+        sentence_id: selectedExample.id,
+      };
+    }
 
     try {
       const response = await fetch(url, {
@@ -186,14 +200,14 @@ export default function ReplaceExampleModal({
 
   const handleOpen = () => {
     setOpen(true);
-    fetchPastContexts();
-    fetchAlternatives();
+    fetchPastContexts(); // Load immediately
+    fetchAlternatives(); // Load AI examples (might be slower)
   };
 
   const handleClose = () => {
     setOpen(false);
-    setAlternatives([]);
     setPastContexts([]);
+    setAlternatives([]);
     setSelectedExample(null);
     setLoading(false);
     setSaving(false);
@@ -227,19 +241,19 @@ export default function ReplaceExampleModal({
     if (renderAs === "button") {
       return (
         <exerciseStyles.StyledGreyButton className="styledGreyButton" onClick={handleOpen}>
-          Select different context
+          Change preferred example
         </exerciseStyles.StyledGreyButton>
       );
     }
 
-    return <s.TriggerButton onClick={handleOpen}>Try different example</s.TriggerButton>;
+    return <s.TriggerButton onClick={handleOpen}>Change preferred example</s.TriggerButton>;
   }
 
   return (
     <s.ModalOverlay onClick={handleClose}>
       <s.ModalContent onClick={(e) => e.stopPropagation()}>
         <s.ModalHeader>
-          <h3>Select an alternative preferred context</h3>
+          <h3>Select a preferred example</h3>
         </s.ModalHeader>
 
         <s.ModalBody>
@@ -250,9 +264,9 @@ export default function ReplaceExampleModal({
             </s.LoadingContainer>
           )}
 
-          {!loading && (pastContexts.length > 0 || alternatives.length > 0) && (
+          {(pastContexts.length > 0 || alternatives.length > 0) && (
             <s.ExamplesContainer>
-              {/* Past Encounters and AI Suggestions combined and sorted by length */}
+              {/* Combined contexts sorted by sentence length */}
               {[...pastContexts, ...alternatives]
                 .sort((a, b) => a.sentence.length - b.sentence.length)
                 .map((example, index) => (
@@ -263,9 +277,8 @@ export default function ReplaceExampleModal({
                   >
                     <s.SentenceText>
                       {highlightTargetWord(example.sentence, exerciseBookmark?.from)}
-                      {example.isFromHistory && <s.ContextTypeBadge type="past">Past Encounter</s.ContextTypeBadge>}
+                      {example.isFromHistory && <s.ContextTypeBadge type="past">past encounter</s.ContextTypeBadge>}
                     </s.SentenceText>
-                    {example.translation && <s.TranslationText>{example.translation}</s.TranslationText>}
                     {example.title && <s.ContextTitle>From: {example.title}</s.ContextTitle>}
                   </s.ExampleOption>
                 ))}

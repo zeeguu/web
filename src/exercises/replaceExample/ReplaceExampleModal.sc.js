@@ -172,13 +172,14 @@ export const SectionLabel = styled.div`
 `;
 
 export const ContextTypeBadge = styled.span`
-  background-color: ${props => props.type === 'past' ? '#666' : '#666'};
-  color: white;
+  background-color: ${props => props.type === 'past' ? '#e3f2fd' : '#e3f2fd'};
+  color: #1976d2;
   padding: 0.2rem 0.5rem;
   border-radius: 4px;
   font-size: 0.75rem;
   font-weight: 500;
   margin-left: 0.5rem;
+  white-space: nowrap;
 `;
 
 export const ContextTitle = styled.div`

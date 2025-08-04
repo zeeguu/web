@@ -81,6 +81,39 @@ let CustomCheckBoxDiv = scStyled.div`
   }
 `;
 
+let ExampleFieldContainer = scStyled.div`
+  display: flex;
+  gap: 1rem;
+  align-items: flex-end;
+  margin-top: 1em;
+  margin-bottom: 1em;
+  
+  > div:first-child {
+    flex: 1;
+    margin-top: 0;
+    margin-bottom: 0;
+  }
+`;
+
+let LinkContainer = scStyled.div`
+  margin-bottom: 1em;
+  padding-left: 0.5em;
+`;
+
+let ExampleFieldWrapper = scStyled.div`
+  position: relative;
+  margin-top: 1em;
+  margin-bottom: 1em;
+`;
+
+let FloatingButton = scStyled.div`
+  position: absolute;
+  top: 50%;
+  right: 12px;
+  transform: translateY(-50%);
+  z-index: 1;
+`;
+
 export {
   style,
   stylePhone,
@@ -91,4 +124,8 @@ export {
   EditButton,
   CustomTextField,
   CustomCheckBoxDiv,
+  ExampleFieldContainer,
+  LinkContainer,
+  ExampleFieldWrapper,
+  FloatingButton,
 };
