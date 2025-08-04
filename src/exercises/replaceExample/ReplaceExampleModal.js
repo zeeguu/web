@@ -7,6 +7,7 @@ import * as s from "./ReplaceExampleModal.sc";
 import * as exerciseStyles from "../exerciseTypes/Exercise.sc";
 import LoadingAnimation from "../../components/LoadingAnimation";
 import { toast } from "react-toastify";
+import CloseIcon from "@mui/icons-material/Close";
 
 export default function ReplaceExampleModal({
   exerciseBookmark,
@@ -141,12 +142,12 @@ export default function ReplaceExampleModal({
 
   const handleExampleSelect = async (example) => {
     setSelectedExample(example);
-    
+
     // Automatically save the selection
     setSaving(true);
-    
+
     let url, payload;
-    
+
     if (example.isFromHistory) {
       // Use set_preferred_bookmark for past encounters (bookmarks)
       url = `${api.baseAPIurl}/set_preferred_bookmark/${exerciseBookmark.user_word_id}?session=${api.session}`;
@@ -173,7 +174,7 @@ export default function ReplaceExampleModal({
       if (!response.ok) {
         try {
           const errorData = await response.json();
-          
+
           if (response.status === 400 && errorData.error === "Unable to save this example") {
             toast.error(errorData.detail || errorData.error);
             console.error("Technical detail:", errorData.technical_detail);
@@ -214,14 +215,18 @@ export default function ReplaceExampleModal({
   // Function to highlight the target word in the sentence
   const highlightTargetWord = (sentence, targetWord) => {
     if (!sentence || !targetWord) return sentence;
-    
+
     // Create a regex that matches the target word (case insensitive, word boundaries)
-    const regex = new RegExp(`\\b(${targetWord.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})\\b`, 'gi');
-    
+    const regex = new RegExp(`\\b(${targetWord.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")})\\b`, "gi");
+
     return sentence.split(regex).map((part, index) => {
       // If this part matches the target word (case insensitive), highlight it
       if (part.toLowerCase() === targetWord.toLowerCase()) {
-        return <span key={index} style={{color: '#ff8c42', fontWeight: 'bold'}}>{part}</span>;
+        return (
+          <span key={index} style={{ color: "#ff8c42", fontWeight: "bold" }}>
+            {part}
+          </span>
+        );
       }
       return part;
     });
@@ -243,43 +248,70 @@ export default function ReplaceExampleModal({
     <s.ModalOverlay onClick={handleClose}>
       <s.ModalContent onClick={(e) => e.stopPropagation()}>
         <s.ModalHeader>
-          <h3>Select a preferred example</h3>
+          <h3>Select preferred example</h3>
+          <s.CloseButton onClick={handleClose}>
+            <CloseIcon />
+          </s.CloseButton>
         </s.ModalHeader>
 
         <s.ModalBody>
-          {loading && (
-            <s.LoadingContainer>
-              <LoadingAnimation />
-              <p>Loading examples...</p>
-            </s.LoadingContainer>
-          )}
-
-          {(pastContexts.length > 0 || alternatives.length > 0) && (
-            <s.ExamplesContainer>
-              {/* Past encounters first, then AI alternatives, each group sorted by sentence length */}
-              {[
-                ...pastContexts.sort((a, b) => a.sentence.length - b.sentence.length),
-                ...alternatives.sort((a, b) => a.sentence.length - b.sentence.length)
-              ]
+          <s.ExamplesContainer>
+            {/* Past encounters first */}
+            {pastContexts.length > 0 &&
+              pastContexts
+                .sort((a, b) => a.sentence.length - b.sentence.length)
                 .map((example, index) => (
                   <s.ExampleOption
-                    key={example.isFromHistory ? `past-${example.id}` : `alt-${example.id || index}`}
+                    key={`past-${example.id}`}
                     selected={selectedExample === example}
                     onClick={() => handleExampleSelect(example)}
                     style={{
-                      visibility: selectedExample && selectedExample !== example ? 'hidden' : 'visible'
+                      visibility: selectedExample && selectedExample !== example ? "hidden" : "visible",
                     }}
                   >
                     <s.SentenceText>
                       {highlightTargetWord(example.sentence, exerciseBookmark?.from)}
-                      {example.isFromHistory && <s.ContextTypeBadge type="past">past encounter</s.ContextTypeBadge>}
-                      {saving && selectedExample === example && <span style={{marginLeft: '0.5rem', fontSize: '0.8rem', color: '#666'}}>Saving...</span>}
+                      <s.ContextTypeBadge type="past">past encounter</s.ContextTypeBadge>
+                      {saving && selectedExample === example && (
+                        <span style={{ marginLeft: "0.5rem", fontSize: "0.8rem", color: "#666" }}>Saving...</span>
+                      )}
                     </s.SentenceText>
                     {example.title && <s.ContextTitle>From: {example.title}</s.ContextTitle>}
                   </s.ExampleOption>
                 ))}
-            </s.ExamplesContainer>
-          )}
+
+            {/* Loading spinner for AI examples */}
+            {loading && (
+              <s.LoadingContainer>
+                <LoadingAnimation />
+                <p>Loading AI suggestions...</p>
+              </s.LoadingContainer>
+            )}
+
+            {/* AI alternatives after loading */}
+            {!loading &&
+              alternatives.length > 0 &&
+              alternatives
+                .sort((a, b) => a.sentence.length - b.sentence.length)
+                .map((example, index) => (
+                  <s.ExampleOption
+                    key={`alt-${example.id || index}`}
+                    selected={selectedExample === example}
+                    onClick={() => handleExampleSelect(example)}
+                    style={{
+                      visibility: selectedExample && selectedExample !== example ? "hidden" : "visible",
+                    }}
+                  >
+                    <s.SentenceText>
+                      {highlightTargetWord(example.sentence, exerciseBookmark?.from)}
+                      {saving && selectedExample === example && (
+                        <span style={{ marginLeft: "0.5rem", fontSize: "0.8rem", color: "#666" }}>Saving...</span>
+                      )}
+                    </s.SentenceText>
+                    {example.title && <s.ContextTitle>From: {example.title}</s.ContextTitle>}
+                  </s.ExampleOption>
+                ))}
+          </s.ExamplesContainer>
 
           {!loading && pastContexts.length === 0 && alternatives.length === 0 && (
             <s.EmptyState>
