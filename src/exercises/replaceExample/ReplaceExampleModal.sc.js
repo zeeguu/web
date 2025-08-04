@@ -37,7 +37,8 @@ export const ModalContent = styled.div`
   border-radius: 12px;
   max-width: 600px;
   width: 100%;
-  max-height: 80vh;
+  max-height: 70vh;
+  min-height: 300px;
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
   display: flex;
   flex-direction: column;
@@ -46,8 +47,8 @@ export const ModalContent = styled.div`
 export const ModalHeader = styled.div`
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  padding: 1.5rem;
+  align-items: flex-start;
+  padding: 1rem 1.5rem;
   border-bottom: 1px solid ${lightGrey};
   flex-shrink: 0;
 
@@ -58,6 +59,7 @@ export const ModalHeader = styled.div`
     margin-right: 1rem;
     word-wrap: break-word;
     line-height: 1.3;
+    font-size: 1.1rem;
   }
 `;
 
