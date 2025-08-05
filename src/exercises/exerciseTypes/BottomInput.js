@@ -95,6 +95,18 @@ export default function BottomInput({
     // eslint-disable-next-line
   }, [distanceToCorrect, isSameLengthAsSolution, isLongerThanSolution, isInputWrongLanguage]);
 
+  // Check if current input is correct (for auto-submission)
+  function checkIfCorrect(input) {
+    if (input === "") return false;
+
+    let normalizedInput = normalizeAnswer(input);
+    let normalizedAnswer = normalizeAnswer(solutionText);
+    let levDistance = levenshtein.get(normalizedInput, normalizedAnswer);
+
+    let userHasTypoInNativeLanguage = isL1Answer && levDistance === 1;
+    return normalizedInput === normalizedAnswer || userHasTypoInNativeLanguage;
+  }
+
   function checkResult() {
     if (currentInput === "") {
       setFeedbackMessage("");
@@ -161,7 +173,19 @@ export default function BottomInput({
               placeholder={"Type in " + inputLanguageName}
               className={distanceToCorrect >= 5 && correctWordCountInInput === 0 ? "wrong-border" : "almost-border"}
               value={currentInput}
-              onChange={(e) => setCurrentInput(e.target.value)}
+              onChange={(e) => {
+                const newValue = e.target.value;
+                setCurrentInput(newValue);
+                
+                // Auto-submit if the answer is correct
+                if (checkIfCorrect(newValue)) {
+                  setTimeout(() => {
+                    handleCorrectAnswer(exerciseBookmark);
+                    setIsCorrect(true);
+                    setIsIncorrect(false);
+                  }, 200); // Small delay to show the typed word
+                }
+              }}
               onKeyUp={(e) => {
                 if (e.key === "Enter") {
                   checkResult();
