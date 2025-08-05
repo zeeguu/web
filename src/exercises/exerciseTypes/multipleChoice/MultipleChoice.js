@@ -11,7 +11,7 @@ import { removePunctuation } from "../../../utils/text/preprocessing";
 import { SpeechContext } from "../../../contexts/SpeechContext.js";
 import { APIContext } from "../../../contexts/APIContext.js";
 import ReplaceExampleModal from "../../replaceExample/ReplaceExampleModal.js";
-import FlyingWord from "./FlyingWord.js";
+import FlyingWord from "../../components/FlyingWord.js";
 
 // The user has to select the correct L2 translation of a given L1 word out of three.
 // This tests the user's active knowledge.
