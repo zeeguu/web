@@ -182,4 +182,27 @@ Zeeguu_API.prototype.updateLessonState = function (lessonId, action, positionSec
     });
 };
 
+Zeeguu_API.prototype.checkDailyLessonFeasibility = function (callback, onError) {
+  this.apiLog("GET check_daily_lesson_feasibility");
+  
+  fetch(this._appendSessionToUrl("check_daily_lesson_feasibility"))
+    .then((response) => {
+      if (!response.ok) {
+        return response.json().then(data => {
+          throw new Error(data.error || "Network response was not ok");
+        });
+      }
+      return response.json();
+    })
+    .then((data) => {
+      callback(data);
+    })
+    .catch((error) => {
+      console.error("Error checking daily lesson feasibility:", error);
+      if (onError) {
+        onError(error);
+      }
+    });
+};
+
 // Removed saveLessonProgress - use updateLessonState with "pause" action instead

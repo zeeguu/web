@@ -95,6 +95,7 @@ export default function TodayAudio() {
   const [currentPlaybackTime, setCurrentPlaybackTime] = useState(0);
   const [lessonData, setLessonData] = useState(null);
   const [error, setError] = useState(null);
+  const [canGenerateLesson, setCanGenerateLesson] = useState(null); // null = checking, true = can generate, false = cannot
 
   let words = lessonData?.words || [];
 
@@ -115,6 +116,23 @@ export default function TodayAudio() {
     }
   }, [lessonData]);
 
+  // Check if lesson generation is possible
+  const checkLessonGenerationFeasibility = () => {
+    api.checkDailyLessonFeasibility(
+      (data) => {
+        setCanGenerateLesson(data.feasible);
+        if (!data.feasible) {
+          setError(data.message || "Not enough words available to generate a lesson.");
+        }
+      },
+      (error) => {
+        // If the API endpoint doesn't exist, we'll assume generation is possible
+        // and let the generation attempt handle the error
+        setCanGenerateLesson(true);
+      }
+    );
+  };
+
   // Fetch lesson data on mount
   useEffect(() => {
     // Check if there's already a lesson for today
@@ -124,11 +142,19 @@ export default function TodayAudio() {
       (data) => {
         setIsLoading(false);
         setLessonData(data); // data will be null if no lesson exists, or lesson object if it exists
+        
+        // If no lesson exists, check if we can generate one
+        if (!data) {
+          checkLessonGenerationFeasibility();
+        }
       },
       (error) => {
         setIsLoading(false);
         setError(error.message);
         setLessonData(null);
+        
+        // Even on error, check if generation is possible
+        checkLessonGenerationFeasibility();
       },
     );
   }, [api]);
@@ -197,6 +223,38 @@ export default function TodayAudio() {
   }
 
   if (!lessonData) {
+    // Still checking if generation is possible
+    if (canGenerateLesson === null) {
+      return (
+        <div style={{ padding: "20px" }}>
+          <LoadingAnimation>
+            <p>Checking if audio lesson generation is possible...</p>
+          </LoadingAnimation>
+        </div>
+      );
+    }
+
+    // Cannot generate lesson - show error immediately
+    if (canGenerateLesson === false) {
+      return (
+        <div
+          style={{
+            padding: "20px",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            minHeight: "400px",
+          }}
+        >
+          <p style={{ textAlign: "center", maxWidth: "500px", color: "#666", fontSize: "16px", lineHeight: "1.6" }}>
+            You need more words in your learning vocabulary to generate an audio lesson. Try reading more articles and translating more words first.
+          </p>
+        </div>
+      );
+    }
+
+    // Can generate lesson - show the generate button
     return (
       <div
         style={{
@@ -251,31 +309,9 @@ export default function TodayAudio() {
           <br />
           Daily Lesson
         </button>
-        {!error && (
-          <p style={{ marginBottom: "20px", textAlign: "center", maxWidth: "500px" }}>
-            Push the button for... an audio lesson for you based on the words you are currently learning.
-          </p>
-        )}
-        {error && (
-          <div
-            style={{
-              color: "#d73502",
-              marginBottom: "30px",
-              marginTop: "30px",
-              fontWeight: "bold",
-              textAlign: "center",
-              maxWidth: "600px",
-              backgroundColor: "#fff5f5",
-              border: "1px solid #feb2b2",
-              borderRadius: "8px",
-              padding: "16px",
-              fontSize: "14px",
-              lineHeight: "1.5",
-            }}
-          >
-            {error}
-          </div>
-        )}
+        <p style={{ marginBottom: "20px", textAlign: "center", maxWidth: "500px" }}>
+          Push the button for... an audio lesson for you based on the words you are currently learning.
+        </p>
       </div>
     );
   }
