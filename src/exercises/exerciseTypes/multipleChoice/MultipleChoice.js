@@ -1,4 +1,4 @@
-import { useState, useEffect, useContext } from "react";
+import { useState, useEffect, useContext, useRef } from "react";
 import * as s from "../Exercise.sc.js";
 import MultipleChoicesInput from "./MultipleChoicesInput.js";
 import LoadingAnimation from "../../../components/LoadingAnimation";
@@ -11,6 +11,7 @@ import { removePunctuation } from "../../../utils/text/preprocessing";
 import { SpeechContext } from "../../../contexts/SpeechContext.js";
 import { APIContext } from "../../../contexts/APIContext.js";
 import ReplaceExampleModal from "../../replaceExample/ReplaceExampleModal.js";
+import FlyingWord from "./FlyingWord.js";
 
 // The user has to select the correct L2 translation of a given L1 word out of three.
 // This tests the user's active knowledge.
@@ -33,8 +34,11 @@ export default function MultipleChoice({
   const [incorrectAnswer, setIncorrectAnswer] = useState("");
   const [buttonOptions, setButtonOptions] = useState(null);
   const [interactiveText, setInteractiveText] = useState();
+  const [flyingWord, setFlyingWord] = useState(null);
+  const [isAnimating, setIsAnimating] = useState(false);
   const speech = useContext(SpeechContext);
   const exerciseBookmark = bookmarksToStudy[0];
+  const contextRef = useRef(null);
 
   useEffect(() => {
     speech.stopAudio(); // Stop any pending speech from previous exercise
@@ -71,10 +75,68 @@ export default function MultipleChoice({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [exerciseBookmark, reload]);
 
-  function notifyChoiceSelection(selectedChoice) {
+  function notifyChoiceSelection(selectedChoice, buttonElement) {
     if (selectedChoice === removePunctuation(exerciseBookmark.from.toLowerCase())) {
-      setIsCorrect(true);
-      notifyCorrectAnswer(exerciseBookmark);
+      // Get button position
+      const buttonRect = buttonElement.getBoundingClientRect();
+      
+      // Find the placeholder position - look for the dotted underline
+      const placeholderElement = contextRef.current?.querySelector('span[style*="border-bottom"]') || 
+                                contextRef.current?.querySelector('span[style*="borderBottom"]');
+      
+      if (placeholderElement) {
+        const placeholderRect = placeholderElement.getBoundingClientRect();
+        
+        // Start flying animation
+        setIsAnimating(true);
+        setFlyingWord({
+          word: selectedChoice,
+          startRect: {
+            left: buttonRect.left + buttonRect.width / 2 - 30,
+            top: buttonRect.top + buttonRect.height / 2 - 15
+          },
+          endRect: {
+            left: placeholderRect.left + placeholderRect.width / 2 - 30,
+            top: placeholderRect.top + placeholderRect.height / 2 - 15
+          }
+        });
+        
+        // Delay the correct answer notification until animation completes
+        setTimeout(() => {
+          setIsCorrect(true);
+          notifyCorrectAnswer(exerciseBookmark);
+          setIsAnimating(false);
+          setFlyingWord(null);
+        }, 800);
+      } else {
+        // Fallback - animate to approximate position if placeholder not found
+        const contextRect = contextRef.current?.getBoundingClientRect();
+        
+        if (contextRect) {
+          setIsAnimating(true);
+          setFlyingWord({
+            word: selectedChoice,
+            startRect: {
+              left: buttonRect.left + buttonRect.width / 2 - 30,
+              top: buttonRect.top + buttonRect.height / 2 - 15
+            },
+            endRect: {
+              left: contextRect.left + contextRect.width / 2 - 30,
+              top: contextRect.top + contextRect.height / 2 - 15
+            }
+          });
+          
+          setTimeout(() => {
+            setIsCorrect(true);
+            notifyCorrectAnswer(exerciseBookmark);
+            setIsAnimating(false);
+            setFlyingWord(null);
+          }, 800);
+        } else {
+          setIsCorrect(true);
+          notifyCorrectAnswer(exerciseBookmark);
+        }
+      }
     } else {
       setIncorrectAnswer(selectedChoice);
       notifyIncorrectAnswer(exerciseBookmark);
@@ -109,7 +171,7 @@ export default function MultipleChoice({
       </div>
 
       {/* Context - always at the top, never moves */}
-      <div className="contextExample">
+      <div className="contextExample" ref={contextRef}>
         <TranslatableText
           isExerciseOver={isExerciseOver}
           interactiveText={interactiveText}
@@ -140,6 +202,17 @@ export default function MultipleChoice({
           notifyChoiceSelection={notifyChoiceSelection}
           incorrectAnswer={incorrectAnswer}
           setIncorrectAnswer={setIncorrectAnswer}
+          isAnimating={isAnimating}
+        />
+      )}
+      
+      {/* Flying word animation */}
+      {flyingWord && (
+        <FlyingWord
+          word={flyingWord.word}
+          startRect={flyingWord.startRect}
+          endRect={flyingWord.endRect}
+          onAnimationComplete={() => {}}
         />
       )}
     </s.Exercise>
