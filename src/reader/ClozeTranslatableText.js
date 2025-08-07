@@ -33,39 +33,6 @@ export function ClozeTranslatableText({
   const [renderedText, setRenderedText] = useState();
   const inputRef = useRef(null);
   
-  // Auto-focus the input when it's rendered
-  useEffect(() => {
-    if (inputRef.current && !isExerciseOver) {
-      // Function to focus the input
-      const focusInput = () => {
-        if (inputRef.current) {
-          inputRef.current.focus();
-          // On mobile, try multiple approaches to show keyboard
-          inputRef.current.click();
-          
-          // Select all text (if any)
-          inputRef.current.select();
-        }
-      };
-      
-      // Try with delays for mobile browsers
-      setTimeout(focusInput, 100);
-      setTimeout(focusInput, 300);
-      setTimeout(focusInput, 500);
-    }
-  }, []); // Run once when component mounts
-  
-  // Re-focus when shouldFocus changes (for SpellWhatYouHear after audio)
-  useEffect(() => {
-    if (inputRef.current && !isExerciseOver && shouldFocus && !inputValue) {
-      setTimeout(() => {
-        if (inputRef.current) {
-          inputRef.current.focus();
-          inputRef.current.click();
-        }
-      }, 100);
-    }
-  }, [shouldFocus]);
   const divType = interactiveText.formatting ? interactiveText.formatting : "div";
 
   useEffect(() => {
@@ -238,10 +205,8 @@ export function ClozeTranslatableText({
               cursor: 'text'
             }}
             onClick={() => {
-              // Help mobile users by focusing on tap
               if (inputRef.current) {
                 inputRef.current.focus();
-                inputRef.current.click();
               }
             }}
           >
