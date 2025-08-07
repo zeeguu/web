@@ -32,6 +32,7 @@ import useScreenWidth from "../hooks/useScreenWidth";
 import { NarrowColumn } from "../components/ColumnWidth.sc";
 import useSubSessionTimer from "../hooks/useSubSessionTimer";
 import { APIContext } from "../contexts/APIContext";
+import { UserContext } from "../contexts/UserContext";
 import isEmptyDictionary from "../utils/misc/isEmptyDictionary";
 import WordProgressBar from "./progressBars/WordProgressBar";
 import { getExerciseTypeName } from "./exerciseTypes/exerciseTypeNames";
@@ -42,6 +43,7 @@ const BOOKMARKS_DUE_REVIEW = false;
 export default function ExerciseSession({ articleID, backButtonAction, toScheduledExercises, source }) {
   const api = useContext(APIContext);
   const speech = useContext(SpeechContext);
+  const { userDetails } = useContext(UserContext);
   const { setContextualInfo } = useFeedbackContext();
 
   const [hasKeptExercising, setHasKeptExercising] = useState(false);
@@ -516,6 +518,19 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
           <p>
             You are practicing words from: <a href={articleURL}>{articleTitle}</a>
           </p>
+        )}
+        {userDetails?.name === "Mircea" && (
+          <div
+            style={{
+              marginTop: "1rem",
+              textAlign: "center",
+              fontSize: "0.75rem",
+              color: "#999",
+              opacity: 0.8,
+            }}
+          >
+            {getExerciseTypeName(currentExerciseType)}
+          </div>
         )}
       </s.ExercisesColumn>
     </NarrowColumn>
