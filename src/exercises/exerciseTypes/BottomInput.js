@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
 import strings from "../../i18n/definitions";
 import * as s from "./Exercise.sc";
 import { normalizeAnswer } from "../inputNormalization";
@@ -19,7 +19,6 @@ export default function BottomInput({
   exerciseBookmark,
   notifyOfUserAttempt,
   isL1Answer,
-  onInputRef, // Callback to pass the input ref
 }) {
   const [currentInput, setCurrentInput] = useState("");
   const [isIncorrect, setIsIncorrect] = useState(false);
@@ -31,7 +30,6 @@ export default function BottomInput({
   const [correctWordCountInInput, setCorrectWordCountInInput] = useState(0);
   const [feedbackMessage, setFeedbackMessage] = useState("");
   const levenshtein = require("fast-levenshtein");
-  const inputRef = useRef(null);
   const normalizedLearningWord = normalizeAnswer(exerciseBookmark.from);
 
   const solutionText = isL1Answer ? exerciseBookmark.to : exerciseBookmark.from;
@@ -44,13 +42,6 @@ export default function BottomInput({
   const answerLanguageCode = isL1Answer ? exerciseBookmark.to_lang : exerciseBookmark.from_lang;
 
   const inputLanguageName = LANGUAGE_CODE_TO_NAME[answerLanguageCode];
-
-  // Pass the input ref to parent via callback
-  useEffect(() => {
-    if (onInputRef && inputRef.current) {
-      onInputRef(inputRef.current);
-    }
-  }, [onInputRef]);
 
   function handleHint() {
     setUsedHint(true);
@@ -178,7 +169,6 @@ export default function BottomInput({
         }}>
           <div className="type-feedback">{feedbackMessage !== "" && <p>{feedbackMessage}</p>}</div>
           <InputField
-              ref={inputRef}
               type="text"
               placeholder={"Type in " + inputLanguageName}
               className={distanceToCorrect >= 5 && correctWordCountInInput === 0 ? "wrong-border" : "almost-border"}

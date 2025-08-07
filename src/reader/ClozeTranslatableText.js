@@ -279,6 +279,7 @@ export function ClozeTranslatableText({
                 onChange={handleInputChange}
                 onKeyPress={handleInputKeyPress}
                 onFocus={() => setShowHint(false)}
+                autoFocus={shouldFocus}
                 style={{
                   border: 'none',
                   borderBottom: `2px ${isCorrectAnswer ? 'solid' : 'dotted'} ${isCorrectAnswer ? '#FF8C00' : '#333'}`,
