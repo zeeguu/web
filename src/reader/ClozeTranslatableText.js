@@ -31,14 +31,7 @@ export function ClozeTranslatableText({
   const [paragraphs, setParagraphs] = useState([]);
   const [firstWordID, setFirstWordID] = useState(0);
   const [renderedText, setRenderedText] = useState();
-  const [showInput, setShowInput] = useState(true);
   const inputRef = useRef(null);
-  
-  // Show input immediately on desktop, require tap on mobile
-  useEffect(() => {
-    const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-    setShowInput(!isMobile);
-  }, []);
   
   const divType = interactiveText.formatting ? interactiveText.formatting : "div";
 
@@ -131,15 +124,6 @@ export function ClozeTranslatableText({
     }
   }
 
-  function handleTapToStart() {
-    setShowInput(true);
-    // Focus after state update
-    setTimeout(() => {
-      if (inputRef.current) {
-        inputRef.current.focus();
-      }
-    }, 10);
-  }
 
   function renderWordJSX(word) {
     // If the word is a bookmarked word, it won't be translated when clicked
@@ -248,58 +232,34 @@ export function ClozeTranslatableText({
                 }
               }
             `}</style>
-            {showInput ? (
-              <input
-                ref={inputRef}
-                type="text"
-                value={inputValue}
-                placeholder={placeholder}
-                onChange={handleInputChange}
-                onKeyPress={handleInputKeyPress}
-                style={{
-                  border: 'none',
-                  borderBottom: `2px ${isCorrectAnswer ? 'solid' : 'dotted'} ${isCorrectAnswer ? '#FF8C00' : '#333'}`,
-                  background: 'transparent',
-                  outline: 'none',
-                  fontSize: 'inherit',
-                  fontFamily: 'inherit',
-                  textAlign: 'left',
-                  width: `${inputWidth}em`,
-                  minWidth: '4em',
-                  padding: '2px 4px',
-                  margin: '0',
-                  color: 'inherit',
-                  fontWeight: 'normal',
-                  cursor: 'text',
-                  animation: isCorrectAnswer ? 'correctAnswer 0.6s ease-out forwards' : (inputValue === '' ? 'pulseUnderline 2s ease-in-out infinite' : 'none'),
-                }}
-                autoComplete="off"
-                spellCheck="false"
-                autoFocus
-                inputMode="text"
-              />
-            ) : (
-              <button
-                onClick={handleTapToStart}
-                style={{
-                  border: 'none',
-                  borderBottom: '2px dotted #333',
-                  background: 'transparent',
-                  outline: 'none',
-                  fontSize: 'inherit',
-                  fontFamily: 'inherit',
-                  textAlign: 'left',
-                  minWidth: '6em',
-                  padding: '2px 4px',
-                  margin: '0',
-                  color: '#666',
-                  cursor: 'pointer',
-                  animation: 'pulseUnderline 2s ease-in-out infinite',
-                }}
-              >
-                Tap to type
-              </button>
-            )}
+            <input
+              ref={inputRef}
+              type="text"
+              value={inputValue}
+              placeholder={placeholder}
+              onChange={handleInputChange}
+              onKeyPress={handleInputKeyPress}
+              style={{
+                border: 'none',
+                borderBottom: `2px ${isCorrectAnswer ? 'solid' : 'dotted'} ${isCorrectAnswer ? '#FF8C00' : '#333'}`,
+                background: 'transparent',
+                outline: 'none',
+                fontSize: 'inherit',
+                fontFamily: 'inherit',
+                textAlign: 'left',
+                width: `${inputWidth}em`,
+                minWidth: '4em',
+                padding: '2px 4px',
+                margin: '0',
+                color: 'inherit',
+                fontWeight: 'normal',
+                cursor: 'text',
+                animation: isCorrectAnswer ? 'correctAnswer 0.6s ease-out forwards' : (inputValue === '' ? 'pulseUnderline 2s ease-in-out infinite' : 'none'),
+              }}
+              autoComplete="off"
+              spellCheck="false"
+              inputMode="text"
+            />
           </span>
         );
       }
