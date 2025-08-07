@@ -40,10 +40,16 @@ export default function SpellWhatYouHear({
   const [inputValue, setInputValue] = useState("");
   const [isCorrectAnswer, setIsCorrectAnswer] = useState(false);
   const [useInlineInput, setUseInlineInput] = useState(true);
+  const [shouldFocusInput, setShouldFocusInput] = useState(false);
   const exerciseBookmark = bookmarksToStudy[0];
 
   async function handleSpeak() {
+    setShouldFocusInput(false); // Unfocus during speech
     await speech.speakOut(exerciseBookmark.from, setIsButtonSpeaking);
+    // Focus after speech is done
+    setTimeout(() => {
+      setShouldFocusInput(true);
+    }, 100);
   }
 
   useEffect(() => {
@@ -147,6 +153,7 @@ export default function SpellWhatYouHear({
           inputValue={inputValue}
           placeholder=""
           isCorrectAnswer={isCorrectAnswer}
+          shouldFocus={shouldFocusInput}
         />
       ) : (
         <ContextWithExchange

@@ -24,6 +24,7 @@ export function ClozeTranslatableText({
   inputValue = "",
   placeholder = "",
   isCorrectAnswer = false,
+  shouldFocus = true,
 }) {
   const [translationCount, setTranslationCount] = useState(0);
   const [foundInstances, setFoundInstances] = useState([]);
@@ -32,19 +33,19 @@ export function ClozeTranslatableText({
   const [renderedText, setRenderedText] = useState();
   const inputRef = useRef(null);
   
-  // Auto-focus the input when it's rendered
+  // Auto-focus the input when shouldFocus becomes true
   useEffect(() => {
-    if (inputRef.current && !isExerciseOver) {
-      // Delay to ensure the element is fully rendered and after audio starts
+    if (inputRef.current && !isExerciseOver && shouldFocus) {
+      // Small delay to ensure the element is fully rendered
       setTimeout(() => {
         inputRef.current.focus();
         // On mobile, this might also trigger the keyboard to appear
         inputRef.current.click();
         // Try selecting the input to ensure keyboard appears on iOS
         inputRef.current.select();
-      }, 350);
+      }, 100);
     }
-  }, [isExerciseOver]);
+  }, [isExerciseOver, shouldFocus]);
   const divType = interactiveText.formatting ? interactiveText.formatting : "div";
 
   useEffect(() => {
