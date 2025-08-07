@@ -31,18 +31,14 @@ export function ClozeTranslatableText({
   const [paragraphs, setParagraphs] = useState([]);
   const [firstWordID, setFirstWordID] = useState(0);
   const [renderedText, setRenderedText] = useState();
+  const [inputFocused, setInputFocused] = useState(false);
   const inputRef = useRef(null);
   
-  // Focus the input after it's rendered
+  // Focus the input immediately when component mounts, then transfer focus when text is rendered
   useEffect(() => {
-    if (renderedText && inputRef.current && !isExerciseOver) {
-      // Use a timeout to ensure the DOM is updated
-      const timer = setTimeout(() => {
-        if (inputRef.current) {
-          inputRef.current.focus();
-        }
-      }, 50);
-      return () => clearTimeout(timer);
+    if (inputRef.current && !isExerciseOver) {
+      inputRef.current.focus();
+      setInputFocused(true);
     }
   }, [renderedText, isExerciseOver]);
   
@@ -297,5 +293,25 @@ export function ClozeTranslatableText({
     }
   }
 
-  return <s.TranslatableText>{renderedText}</s.TranslatableText>;
+  return (
+    <div>
+      {/* Temporary input for initial focus - hidden after text is rendered */}
+      {!renderedText && !isExerciseOver && (
+        <input
+          ref={inputRef}
+          type="text"
+          value={inputValue}
+          onChange={handleInputChange}
+          onKeyPress={handleInputKeyPress}
+          style={{
+            position: 'absolute',
+            left: '-9999px',
+            opacity: 0,
+          }}
+          autoFocus
+        />
+      )}
+      <s.TranslatableText>{renderedText}</s.TranslatableText>
+    </div>
+  );
 }
