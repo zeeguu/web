@@ -9,7 +9,7 @@ import { EXERCISE_TYPES } from "../../ExerciseTypeConstants.js";
 import { removePunctuation } from "../../../utils/text/preprocessing";
 import { APIContext } from "../../../contexts/APIContext.js";
 import ContextWithExchange from "../../components/ContextWithExchange.js";
-import FlyingWord from "../../components/FlyingWord.js";
+import ClozeContextWithExchange from "../../components/ClozeContextWithExchange.js";
 import AnimatedBottomInput from "../../components/AnimatedBottomInput.js";
 
 // The user has to type the correct translation of a given L1 word in a L2 context. The L2 word is omitted in the context, so the user has to fill in the blank.
@@ -32,8 +32,9 @@ export default function FindWordInContextCloze({
 }) {
   const api = useContext(APIContext);
   const [interactiveText, setInteractiveText] = useState();
-  const [flyingWord, setFlyingWord] = useState(null);
-  const [isAnimating, setIsAnimating] = useState(false);
+  const [inputValue, setInputValue] = useState("");
+  const [isCorrectAnswer, setIsCorrectAnswer] = useState(false);
+  const [useInlineInput, setUseInlineInput] = useState(true); // Toggle between inline and bottom input
   const speech = useContext(SpeechContext);
   const exerciseBookmark = bookmarksToStudy[0];
   const contextRef = useRef(null);
@@ -72,64 +73,35 @@ export default function FindWordInContextCloze({
   function handleIncorrectAnswer() {
     notifyIncorrectAnswer(exerciseBookmark);
   }
-  
-  function handleCorrectAnswerWithAnimation(inputElement) {
-    // Get input position
-    const inputRect = inputElement.getBoundingClientRect();
+
+  function handleInputChange(value, inputElement) {
+    setInputValue(value);
     
-    // Find the placeholder position
-    const placeholderElement = contextRef.current?.querySelector('span[style*="border-bottom"]') || 
-                              contextRef.current?.querySelector('span[style*="borderBottom"]');
+    // Constantly check if answer is correct
+    const userInput = value.trim().toLowerCase();
+    const expectedAnswer = removePunctuation(exerciseBookmark.from).toLowerCase();
+    const isCorrect = userInput === expectedAnswer;
     
-    if (placeholderElement) {
-      const placeholderRect = placeholderElement.getBoundingClientRect();
-      
-      // Start flying animation
-      setIsAnimating(true);
-      setFlyingWord({
-        word: inputElement.value,
-        startRect: {
-          left: inputRect.left + inputRect.width / 2 - 30,
-          top: inputRect.top + inputRect.height / 2 - 15
-        },
-        endRect: {
-          left: placeholderRect.left + placeholderRect.width / 2 - 30,
-          top: placeholderRect.top + placeholderRect.height / 2 - 15
-        }
-      });
-      
-      // Delay the correct answer notification until animation completes
+    setIsCorrectAnswer(isCorrect);
+    
+    // Auto-submit when correct
+    if (isCorrect && value.trim().length > 0) {
       setTimeout(() => {
         notifyCorrectAnswer(exerciseBookmark);
-        setIsAnimating(false);
-        setFlyingWord(null);
-      }, 800);
+      }, 800); // Delay to show the orange glow
+    }
+  }
+
+  function handleInputSubmit(value, inputElement) {
+    const userInput = value.trim().toLowerCase();
+    const expectedAnswer = removePunctuation(exerciseBookmark.from).toLowerCase();
+    
+    if (userInput === expectedAnswer) {
+      notifyCorrectAnswer(exerciseBookmark);
     } else {
-      // Fallback - animate to approximate position if placeholder not found
-      const contextRect = contextRef.current?.getBoundingClientRect();
-      
-      if (contextRect) {
-        setIsAnimating(true);
-        setFlyingWord({
-          word: inputElement.value,
-          startRect: {
-            left: inputRect.left + inputRect.width / 2 - 30,
-            top: inputRect.top + inputRect.height / 2 - 15
-          },
-          endRect: {
-            left: contextRect.left + contextRect.width / 2 - 30,
-            top: contextRect.top + contextRect.height / 2 - 15
-          }
-        });
-        
-        setTimeout(() => {
-          notifyCorrectAnswer(exerciseBookmark);
-          setIsAnimating(false);
-          setFlyingWord(null);
-        }, 800);
-      } else {
-        notifyCorrectAnswer(exerciseBookmark);
-      }
+      // Check for close matches or provide feedback
+      notifyOfUserAttempt(value, exerciseBookmark);
+      handleIncorrectAnswer();
     }
   }
 
@@ -142,17 +114,34 @@ export default function FindWordInContextCloze({
       <div style={{ visibility: isExerciseOver ? 'visible' : 'hidden', minHeight: '60px' }}>
         {bookmarkProgressBar || <div style={{ height: '60px', width: '30%', margin: '0.1em auto 0.5em auto' }}></div>}
       </div>
-      <ContextWithExchange
-        ref={contextRef}
-        exerciseBookmark={exerciseBookmark}
-        interactiveText={interactiveText}
-        translatedWords={null}
-        setTranslatedWords={() => {}}
-        isExerciseOver={isExerciseOver}
-        onExampleUpdated={onExampleUpdated}
-      />
+      {useInlineInput ? (
+        <ClozeContextWithExchange
+          ref={contextRef}
+          exerciseBookmark={exerciseBookmark}
+          interactiveText={interactiveText}
+          translatedWords={null}
+          setTranslatedWords={() => {}}
+          isExerciseOver={isExerciseOver}
+          onExampleUpdated={onExampleUpdated}
+          onInputChange={handleInputChange}
+          onInputSubmit={handleInputSubmit}
+          inputValue={inputValue}
+          placeholder=""
+          isCorrectAnswer={isCorrectAnswer}
+        />
+      ) : (
+        <ContextWithExchange
+          ref={contextRef}
+          exerciseBookmark={exerciseBookmark}
+          interactiveText={interactiveText}
+          translatedWords={null}
+          setTranslatedWords={() => {}}
+          isExerciseOver={isExerciseOver}
+          onExampleUpdated={onExampleUpdated}
+        />
+      )}
 
-      {!isExerciseOver && (
+      {!isExerciseOver && !useInlineInput && (
         <>
           <AnimatedBottomInput
             handleCorrectAnswer={notifyCorrectAnswer}
@@ -162,20 +151,8 @@ export default function FindWordInContextCloze({
             exerciseBookmark={exerciseBookmark}
             notifyOfUserAttempt={notifyOfUserAttempt}
             ref={inputRef}
-            onCorrectAnswerAnimationRequest={handleCorrectAnswerWithAnimation}
-            isAnimating={isAnimating}
           />
         </>
-      )}
-      
-      {/* Flying word animation */}
-      {flyingWord && (
-        <FlyingWord
-          word={flyingWord.word}
-          startRect={flyingWord.startRect}
-          endRect={flyingWord.endRect}
-          onAnimationComplete={() => {}}
-        />
       )}
     </s.Exercise>
   );
