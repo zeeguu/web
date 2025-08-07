@@ -31,16 +31,14 @@ export function ClozeTranslatableText({
   const [paragraphs, setParagraphs] = useState([]);
   const [firstWordID, setFirstWordID] = useState(0);
   const [renderedText, setRenderedText] = useState();
-  const [inputFocused, setInputFocused] = useState(false);
+  const [showInput, setShowInput] = useState(true);
   const inputRef = useRef(null);
   
-  // Focus the input immediately when component mounts, then transfer focus when text is rendered
+  // Show input immediately on desktop, require tap on mobile
   useEffect(() => {
-    if (inputRef.current && !isExerciseOver) {
-      inputRef.current.focus();
-      setInputFocused(true);
-    }
-  }, [renderedText, isExerciseOver]);
+    const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+    setShowInput(!isMobile);
+  }, []);
   
   const divType = interactiveText.formatting ? interactiveText.formatting : "div";
 
@@ -131,6 +129,16 @@ export function ClozeTranslatableText({
     if (onInputChange) {
       onInputChange(e.target.value, e.target);
     }
+  }
+
+  function handleTapToStart() {
+    setShowInput(true);
+    // Focus after state update
+    setTimeout(() => {
+      if (inputRef.current) {
+        inputRef.current.focus();
+      }
+    }, 10);
   }
 
   function renderWordJSX(word) {
@@ -240,35 +248,58 @@ export function ClozeTranslatableText({
                 }
               }
             `}</style>
-            <input
-              ref={inputRef}
-              type="text"
-              value={inputValue}
-              placeholder={placeholder}
-              onChange={handleInputChange}
-              onKeyPress={handleInputKeyPress}
-              style={{
-                border: 'none',
-                borderBottom: `2px ${isCorrectAnswer ? 'solid' : 'dotted'} ${isCorrectAnswer ? '#FF8C00' : '#333'}`,
-                background: 'transparent',
-                outline: 'none',
-                fontSize: 'inherit',
-                fontFamily: 'inherit',
-                textAlign: 'left',
-                width: `${inputWidth}em`,
-                minWidth: '4em',
-                padding: '2px 4px',
-                margin: '0',
-                color: 'inherit',
-                fontWeight: 'normal',
-                cursor: 'text',
-                animation: isCorrectAnswer ? 'correctAnswer 0.6s ease-out forwards' : (inputValue === '' ? 'pulseUnderline 2s ease-in-out infinite' : 'none'),
-              }}
-              autoComplete="off"
-              spellCheck="false"
-              autoFocus
-              inputMode="text"
-            />
+            {showInput ? (
+              <input
+                ref={inputRef}
+                type="text"
+                value={inputValue}
+                placeholder={placeholder}
+                onChange={handleInputChange}
+                onKeyPress={handleInputKeyPress}
+                style={{
+                  border: 'none',
+                  borderBottom: `2px ${isCorrectAnswer ? 'solid' : 'dotted'} ${isCorrectAnswer ? '#FF8C00' : '#333'}`,
+                  background: 'transparent',
+                  outline: 'none',
+                  fontSize: 'inherit',
+                  fontFamily: 'inherit',
+                  textAlign: 'left',
+                  width: `${inputWidth}em`,
+                  minWidth: '4em',
+                  padding: '2px 4px',
+                  margin: '0',
+                  color: 'inherit',
+                  fontWeight: 'normal',
+                  cursor: 'text',
+                  animation: isCorrectAnswer ? 'correctAnswer 0.6s ease-out forwards' : (inputValue === '' ? 'pulseUnderline 2s ease-in-out infinite' : 'none'),
+                }}
+                autoComplete="off"
+                spellCheck="false"
+                autoFocus
+                inputMode="text"
+              />
+            ) : (
+              <button
+                onClick={handleTapToStart}
+                style={{
+                  border: 'none',
+                  borderBottom: '2px dotted #333',
+                  background: 'transparent',
+                  outline: 'none',
+                  fontSize: 'inherit',
+                  fontFamily: 'inherit',
+                  textAlign: 'left',
+                  minWidth: '6em',
+                  padding: '2px 4px',
+                  margin: '0',
+                  color: '#666',
+                  cursor: 'pointer',
+                  animation: 'pulseUnderline 2s ease-in-out infinite',
+                }}
+              >
+                Tap to type
+              </button>
+            )}
           </span>
         );
       }
@@ -293,25 +324,5 @@ export function ClozeTranslatableText({
     }
   }
 
-  return (
-    <div>
-      {/* Temporary input for initial focus - hidden after text is rendered */}
-      {!renderedText && !isExerciseOver && (
-        <input
-          ref={inputRef}
-          type="text"
-          value={inputValue}
-          onChange={handleInputChange}
-          onKeyPress={handleInputKeyPress}
-          style={{
-            position: 'absolute',
-            left: '-9999px',
-            opacity: 0,
-          }}
-          autoFocus
-        />
-      )}
-      <s.TranslatableText>{renderedText}</s.TranslatableText>
-    </div>
-  );
+  return <s.TranslatableText>{renderedText}</s.TranslatableText>;
 }
