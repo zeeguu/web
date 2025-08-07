@@ -33,6 +33,19 @@ export function ClozeTranslatableText({
   const [renderedText, setRenderedText] = useState();
   const inputRef = useRef(null);
   
+  // Focus the input after it's rendered
+  useEffect(() => {
+    if (renderedText && inputRef.current && !isExerciseOver) {
+      // Use a timeout to ensure the DOM is updated
+      const timer = setTimeout(() => {
+        if (inputRef.current) {
+          inputRef.current.focus();
+        }
+      }, 50);
+      return () => clearTimeout(timer);
+    }
+  }, [renderedText, isExerciseOver]);
+  
   const divType = interactiveText.formatting ? interactiveText.formatting : "div";
 
   useEffect(() => {
