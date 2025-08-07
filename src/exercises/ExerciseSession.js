@@ -448,6 +448,17 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
             <div style={{ display: "flex", alignItems: "center", marginLeft: "1rem" }}>
               {isMobile && <BackArrow func={backButtonAction} />}
             </div>
+            {userDetails?.name === "Mircea" && (
+              <div style={{ 
+                display: "flex", 
+                alignItems: "center", 
+                fontSize: "0.8rem", 
+                color: "#666",
+                fontWeight: "500"
+              }}>
+                {getExerciseTypeName(currentExerciseType)}
+              </div>
+            )}
             <div style={{ display: "flex", alignItems: "center", gap: "1rem", marginRight: "1rem" }}>
               <DigitalTimer
                 activeSessionDuration={activeSessionDuration}
