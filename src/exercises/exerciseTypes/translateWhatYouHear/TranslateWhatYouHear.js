@@ -99,7 +99,7 @@ export default function TranslateWhatYouHear({
       <ContextWithExchange
         exerciseBookmark={exerciseBookmark}
         interactiveText={interactiveText}
-        translatedWords={[]}
+        translatedWords={null}
         setTranslatedWords={() => {}}
         isExerciseOver={isExerciseOver}
         onExampleUpdated={onExampleUpdated}

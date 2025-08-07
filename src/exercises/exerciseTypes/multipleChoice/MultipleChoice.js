@@ -174,7 +174,7 @@ export default function MultipleChoice({
         ref={contextRef}
         exerciseBookmark={exerciseBookmark}
         interactiveText={interactiveText}
-        translatedWords={[]}
+        translatedWords={null}
         setTranslatedWords={() => {}}
         isExerciseOver={isExerciseOver}
         onExampleUpdated={onExampleUpdated}

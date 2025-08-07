@@ -146,7 +146,7 @@ export default function FindWordInContextCloze({
         ref={contextRef}
         exerciseBookmark={exerciseBookmark}
         interactiveText={interactiveText}
-        translatedWords={[]}
+        translatedWords={null}
         setTranslatedWords={() => {}}
         isExerciseOver={isExerciseOver}
         onExampleUpdated={onExampleUpdated}
