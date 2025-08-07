@@ -31,7 +31,26 @@ export function ClozeTranslatableText({
   const [paragraphs, setParagraphs] = useState([]);
   const [firstWordID, setFirstWordID] = useState(0);
   const [renderedText, setRenderedText] = useState();
+  const [showHint, setShowHint] = useState(true);
   const inputRef = useRef(null);
+  
+  // Hide hint after 3 seconds or on first interaction
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setShowHint(false);
+    }, 3000);
+    return () => clearTimeout(timer);
+  }, []);
+  
+  // Poll to check if input is focused (for stubborn mobile browsers)
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (inputRef.current && document.activeElement === inputRef.current) {
+        setShowHint(false);
+      }
+    }, 100);
+    return () => clearInterval(interval);
+  }, []);
   
   const divType = interactiveText.formatting ? interactiveText.formatting : "div";
 
@@ -69,6 +88,7 @@ export function ClozeTranslatableText({
     leftEllipsis,
     inputValue,
     isCorrectAnswer,
+    showHint,
   ]);
 
   useEffect(() => {
@@ -119,6 +139,7 @@ export function ClozeTranslatableText({
   }
 
   function handleInputChange(e) {
+    setShowHint(false); // Hide hint on first interaction
     if (onInputChange) {
       onInputChange(e.target.value, e.target);
     }
@@ -206,6 +227,7 @@ export function ClozeTranslatableText({
               cursor: 'text'
             }}
             onClick={() => {
+              setShowHint(false);
               if (inputRef.current) {
                 inputRef.current.focus();
               }
@@ -232,34 +254,53 @@ export function ClozeTranslatableText({
                 }
               }
             `}</style>
-            <input
-              ref={inputRef}
-              type="text"
-              value={inputValue}
-              placeholder={placeholder}
-              onChange={handleInputChange}
-              onKeyPress={handleInputKeyPress}
-              style={{
-                border: 'none',
-                borderBottom: `2px ${isCorrectAnswer ? 'solid' : 'dotted'} ${isCorrectAnswer ? '#FF8C00' : '#333'}`,
-                background: 'transparent',
-                outline: 'none',
-                fontSize: 'inherit',
-                fontFamily: 'inherit',
-                textAlign: 'left',
-                width: `${inputWidth}em`,
-                minWidth: '4em',
-                padding: '2px 4px',
-                margin: '0',
-                color: 'inherit',
-                fontWeight: 'normal',
-                cursor: 'text',
-                animation: isCorrectAnswer ? 'correctAnswer 0.6s ease-out forwards' : (inputValue === '' ? 'pulseUnderline 2s ease-in-out infinite' : 'none'),
-              }}
-              autoComplete="off"
-              spellCheck="false"
-              inputMode="text"
-            />
+            <>
+              {showHint && inputValue === '' && (
+                <div
+                  style={{
+                    position: 'absolute',
+                    top: '0.2em',
+                    left: '0',
+                    fontSize: '0.7em',
+                    color: '#999',
+                    opacity: 1,
+                    pointerEvents: 'none',
+                    whiteSpace: 'nowrap'
+                  }}
+                >
+                  tap to type
+                </div>
+              )}
+              <input
+                ref={inputRef}
+                type="text"
+                value={inputValue}
+                placeholder={placeholder}
+                onChange={handleInputChange}
+                onKeyPress={handleInputKeyPress}
+                onFocus={() => setShowHint(false)}
+                style={{
+                  border: 'none',
+                  borderBottom: `2px ${isCorrectAnswer ? 'solid' : 'dotted'} ${isCorrectAnswer ? '#FF8C00' : '#333'}`,
+                  background: 'transparent',
+                  outline: 'none',
+                  fontSize: 'inherit',
+                  fontFamily: 'inherit',
+                  textAlign: 'left',
+                  width: `${inputWidth}em`,
+                  minWidth: '4em',
+                  padding: '2px 4px',
+                  margin: '0',
+                  color: 'inherit',
+                  fontWeight: 'normal',
+                  cursor: 'text',
+                  animation: isCorrectAnswer ? 'correctAnswer 0.6s ease-out forwards' : (inputValue === '' ? 'pulseUnderline 2s ease-in-out infinite' : 'none'),
+                }}
+                autoComplete="off"
+                spellCheck="false"
+                inputMode="text"
+              />
+            </>
           </span>
         );
       }
