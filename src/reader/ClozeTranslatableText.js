@@ -34,13 +34,7 @@ export function ClozeTranslatableText({
   const [showHint, setShowHint] = useState(true);
   const inputRef = useRef(null);
   
-  // Hide hint after 3 seconds or on first interaction
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setShowHint(false);
-    }, 3000);
-    return () => clearTimeout(timer);
-  }, []);
+  // Don't auto-hide hint - let it stay until user interacts
   
   // Poll to check if input is focused (for stubborn mobile browsers)
   useEffect(() => {
