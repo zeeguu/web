@@ -26,6 +26,8 @@ import { WEB_READER } from "./reader/ArticleReader";
 import VideoPlayer from "./videos/VideoPlayer";
 import DailyAudioRouter from "./dailyAudio/_DailyAudioRouter";
 import IndividualExercise from "./pages/IndividualExercise";
+import IOSFocusTest from "./components/IOSFocusTest";
+import IOSFocusTestMoving from "./components/IOSFocusTestMoving";
 
 export default function MainAppRouter({ hasExtension, handleSuccessfulLogIn }) {
   return (
@@ -70,6 +72,8 @@ export default function MainAppRouter({ hasExtension, handleSuccessfulLogIn }) {
       <PrivateRouteWithMainNav path="/exercise-test/:exerciseType/:word/:translation/:context/:tokenized" component={IndividualExercise} />
       <PrivateRouteWithMainNav path="/exercise-test/:exerciseType/:word/:translation/:context" component={IndividualExercise} />
       <PrivateRouteWithMainNav path="/exercise-test" component={IndividualExercise} />
+      <PrivateRouteWithMainNav path="/ios-focus-test" component={IOSFocusTest} />
+      <PrivateRouteWithMainNav path="/ios-focus-test-moving" component={IOSFocusTestMoving} />
       <Route path="*" component={NotFound} />
     </Switch>
   );
