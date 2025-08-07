@@ -33,9 +33,9 @@ export function ClozeTranslatableText({
   const [renderedText, setRenderedText] = useState();
   const inputRef = useRef(null);
   
-  // Auto-focus the input when shouldFocus becomes true
+  // Auto-focus the input when it's rendered
   useEffect(() => {
-    if (inputRef.current && !isExerciseOver && shouldFocus) {
+    if (inputRef.current && !isExerciseOver) {
       // Function to focus the input
       const focusInput = () => {
         if (inputRef.current) {
@@ -43,32 +43,29 @@ export function ClozeTranslatableText({
           // On mobile, try multiple approaches to show keyboard
           inputRef.current.click();
           
-          // For iOS Safari
-          if (/iPhone|iPad|iPod/.test(navigator.userAgent)) {
-            inputRef.current.setAttribute('readonly', 'readonly');
-            inputRef.current.removeAttribute('readonly');
-          }
-          
-          // Try setting a value and clearing it to trigger mobile keyboard
-          const currentValue = inputRef.current.value;
-          inputRef.current.value = currentValue + ' ';
-          inputRef.current.value = currentValue;
-          
           // Select all text (if any)
           inputRef.current.select();
         }
       };
       
-      // Try immediate focus
-      focusInput();
-      
-      // Also try with a delay
+      // Try with delays for mobile browsers
+      setTimeout(focusInput, 100);
       setTimeout(focusInput, 300);
-      
-      // And one more time for stubborn mobile browsers
-      setTimeout(focusInput, 600);
+      setTimeout(focusInput, 500);
     }
-  }, [isExerciseOver, shouldFocus]);
+  }, []); // Run once when component mounts
+  
+  // Re-focus when shouldFocus changes (for SpellWhatYouHear after audio)
+  useEffect(() => {
+    if (inputRef.current && !isExerciseOver && shouldFocus && !inputValue) {
+      setTimeout(() => {
+        if (inputRef.current) {
+          inputRef.current.focus();
+          inputRef.current.click();
+        }
+      }, 100);
+    }
+  }, [shouldFocus]);
   const divType = interactiveText.formatting ? interactiveText.formatting : "div";
 
   useEffect(() => {
