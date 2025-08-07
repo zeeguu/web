@@ -249,15 +249,8 @@ export default function NextNavigation({
                 justifyContent: "center",
               }}
             >
-              {exerciseBookmark && onExampleUpdated && (
-                <ReplaceExampleModal
-                  exerciseBookmark={exerciseBookmark}
-                  onExampleUpdated={onExampleUpdated}
-                  renderAs="button"
-                />
-              )}
               <s.StyledGreyButton className="styledGreyButton" onClick={() => setShowExcludeModal(true)}>
-                Exclude word
+                Do not show this word again
               </s.StyledGreyButton>
             </s.BottomRowSmallTopMargin>
           )}

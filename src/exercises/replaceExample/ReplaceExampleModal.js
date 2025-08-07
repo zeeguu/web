@@ -59,7 +59,14 @@ export default function ReplaceExampleModal({
       });
 
       if (!response.ok) {
-        console.error("Failed to fetch past contexts:", response.status);
+        console.warn("Past contexts endpoint not available:", response.status);
+        return;
+      }
+
+      // Check if response is JSON
+      const contentType = response.headers.get("content-type");
+      if (!contentType || !contentType.includes("application/json")) {
+        console.warn("Past contexts endpoint returned non-JSON response");
         return;
       }
 
@@ -79,7 +86,7 @@ export default function ReplaceExampleModal({
 
       setPastContexts(formattedContexts);
     } catch (error) {
-      console.error("Error fetching past contexts:", error);
+      console.warn("Past contexts feature not available:", error.message);
     }
   };
 
@@ -238,12 +245,29 @@ export default function ReplaceExampleModal({
     if (renderAs === "button") {
       return (
         <exerciseStyles.StyledGreyButton className="styledGreyButton" onClick={handleOpen}>
-          Change example
+          Other contexts
         </exerciseStyles.StyledGreyButton>
       );
     }
 
-    return <exerciseStyles.StyledGreyButton onClick={handleOpen}>Change example</exerciseStyles.StyledGreyButton>;
+    if (renderAs === "link") {
+      return (
+        <a 
+          href="#" 
+          onClick={(e) => { e.preventDefault(); handleOpen(); }}
+          style={{ 
+            color: '#666', 
+            textDecoration: 'underline',
+            cursor: 'pointer',
+            fontSize: 'inherit'
+          }}
+        >
+          Other contexts
+        </a>
+      );
+    }
+
+    return <exerciseStyles.StyledGreyButton onClick={handleOpen}>Other contexts</exerciseStyles.StyledGreyButton>;
   }
 
   return (

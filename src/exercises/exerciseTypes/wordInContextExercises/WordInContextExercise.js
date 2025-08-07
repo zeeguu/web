@@ -3,12 +3,11 @@ import * as s from "../Exercise.sc.js";
 import BottomInput from "../BottomInput.js";
 import LoadingAnimation from "../../../components/LoadingAnimation.js";
 import InteractiveText from "../../../reader/InteractiveText.js";
-import { TranslatableText } from "../../../reader/TranslatableText.js";
 import { tokenize } from "../../../utils/text/preprocessing.js";
 import { SpeechContext } from "../../../contexts/SpeechContext.js";
 import { removePunctuation } from "../../../utils/text/preprocessing.js";
 import { APIContext } from "../../../contexts/APIContext.js";
-import ReplaceExampleModal from "../../replaceExample/ReplaceExampleModal.js";
+import ContextWithExchange from "../../components/ContextWithExchange.js";
 
 //shared code for ClickWordInContext and FindWordInContext exercises
 //The difference between the two is that in FindWordInContext the user can choose to either click on the word or type the word.
@@ -140,19 +139,14 @@ export default function WordInContextExercise({
       <div style={{ visibility: isExerciseOver ? 'visible' : 'hidden', minHeight: '60px' }}>
         {bookmarkProgressBar || <div style={{ height: '60px', width: '30%', margin: '0.1em auto 0.5em auto' }}></div>}
       </div>
-      <div className="contextExample">
-        <TranslatableText
-          isExerciseOver={isExerciseOver}
-          interactiveText={interactiveText}
-          translating={true}
-          pronouncing={false}
-          translatedWords={translatedWords}
-          setTranslatedWords={setTranslatedWords}
-          bookmarkToStudy={exerciseBookmark.from}
-          leftEllipsis={exerciseBookmark.left_ellipsis}
-          rightEllipsis={exerciseBookmark.right_ellipsis}
-        />
-      </div>
+      <ContextWithExchange
+        exerciseBookmark={exerciseBookmark}
+        interactiveText={interactiveText}
+        translatedWords={translatedWords}
+        setTranslatedWords={setTranslatedWords}
+        isExerciseOver={isExerciseOver}
+        onExampleUpdated={onExampleUpdated}
+      />
       {showBottomInput && !isExerciseOver && (
         <BottomInput
           handleCorrectAnswer={notifyCorrectAnswer}

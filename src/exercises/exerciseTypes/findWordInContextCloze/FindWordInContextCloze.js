@@ -4,12 +4,11 @@ import * as s from "../Exercise.sc.js";
 import strings from "../../../i18n/definitions.js";
 import LoadingAnimation from "../../../components/LoadingAnimation.js";
 import InteractiveText from "../../../reader/InteractiveText.js";
-import { TranslatableText } from "../../../reader/TranslatableText.js";
 import { SpeechContext } from "../../../contexts/SpeechContext.js";
 import { EXERCISE_TYPES } from "../../ExerciseTypeConstants.js";
 import { removePunctuation } from "../../../utils/text/preprocessing";
 import { APIContext } from "../../../contexts/APIContext.js";
-import ReplaceExampleModal from "../../replaceExample/ReplaceExampleModal.js";
+import ContextWithExchange from "../../components/ContextWithExchange.js";
 import FlyingWord from "../../components/FlyingWord.js";
 import AnimatedBottomInput from "../../components/AnimatedBottomInput.js";
 
@@ -143,17 +142,15 @@ export default function FindWordInContextCloze({
       <div style={{ visibility: isExerciseOver ? 'visible' : 'hidden', minHeight: '60px' }}>
         {bookmarkProgressBar || <div style={{ height: '60px', width: '30%', margin: '0.1em auto 0.5em auto' }}></div>}
       </div>
-      <div className="contextExample" ref={contextRef}>
-        <TranslatableText
-          isExerciseOver={isExerciseOver}
-          interactiveText={interactiveText}
-          translating={true}
-          pronouncing={false}
-          bookmarkToStudy={exerciseBookmark.from}
-          leftEllipsis={exerciseBookmark.left_ellipsis}
-          rightEllipsis={exerciseBookmark.right_ellipsis}
-        />
-      </div>
+      <ContextWithExchange
+        ref={contextRef}
+        exerciseBookmark={exerciseBookmark}
+        interactiveText={interactiveText}
+        translatedWords={[]}
+        setTranslatedWords={() => {}}
+        isExerciseOver={isExerciseOver}
+        onExampleUpdated={onExampleUpdated}
+      />
 
       {!isExerciseOver && (
         <>

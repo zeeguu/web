@@ -3,14 +3,13 @@ import * as s from "../Exercise.sc.js";
 import MultipleChoicesInput from "./MultipleChoicesInput.js";
 import LoadingAnimation from "../../../components/LoadingAnimation";
 import InteractiveText from "../../../reader/InteractiveText.js";
-import { TranslatableText } from "../../../reader/TranslatableText.js";
 import { EXERCISE_TYPES } from "../../ExerciseTypeConstants.js";
 import strings from "../../../i18n/definitions.js";
 import shuffle from "../../../assorted/fisherYatesShuffle";
 import { removePunctuation } from "../../../utils/text/preprocessing";
 import { SpeechContext } from "../../../contexts/SpeechContext.js";
 import { APIContext } from "../../../contexts/APIContext.js";
-import ReplaceExampleModal from "../../replaceExample/ReplaceExampleModal.js";
+import ContextWithExchange from "../../components/ContextWithExchange.js";
 import FlyingWord from "../../components/FlyingWord.js";
 
 // The user has to select the correct L2 translation of a given L1 word out of three.
@@ -171,18 +170,15 @@ export default function MultipleChoice({
       </div>
 
       {/* Context - always at the top, never moves */}
-      <div className="contextExample" ref={contextRef}>
-        <TranslatableText
-          isExerciseOver={isExerciseOver}
-          interactiveText={interactiveText}
-          translating={true}
-          pronouncing={false}
-          bookmarkToStudy={exerciseBookmark.from}
-          exerciseType={EXERCISE_TYPE}
-          leftEllipsis={exerciseBookmark.left_ellipsis}
-          rightEllipsis={exerciseBookmark.right_ellipsis}
-        />
-      </div>
+      <ContextWithExchange
+        ref={contextRef}
+        exerciseBookmark={exerciseBookmark}
+        interactiveText={interactiveText}
+        translatedWords={[]}
+        setTranslatedWords={() => {}}
+        isExerciseOver={isExerciseOver}
+        onExampleUpdated={onExampleUpdated}
+      />
 
       {/* Solution area - appears below context when exercise is over */}
       {isExerciseOver && (

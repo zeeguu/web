@@ -4,13 +4,12 @@ import { EXERCISE_TYPES } from "../../ExerciseTypeConstants.js";
 import strings from "../../../i18n/definitions.js";
 import LoadingAnimation from "../../../components/LoadingAnimation.js";
 import InteractiveText from "../../../reader/InteractiveText.js";
-import { TranslatableText } from "../../../reader/TranslatableText.js";
 import { SpeechContext } from "../../../contexts/SpeechContext.js";
 import BottomInput from "../BottomInput.js";
 import WordProgressBar from "../../progressBars/WordProgressBar.js";
 import { removePunctuation } from "../../../utils/text/preprocessing";
 import { APIContext } from "../../../contexts/APIContext.js";
-import ReplaceExampleModal from "../../replaceExample/ReplaceExampleModal.js";
+import ContextWithExchange from "../../components/ContextWithExchange.js";
 
 // The user has to translate the L2 word in bold to their L1.
 // This tests the user's active knowledge.
@@ -83,20 +82,15 @@ export default function TranslateL2toL1({
       </div>
 
       {/* Context - always at the top, never moves */}
-      <div className="contextExample">
-        <TranslatableText
-          isExerciseOver={isExerciseOver}
-          interactiveText={interactiveText}
-          translating={true}
-          pronouncing={false}
-          translatedWords={translatedWords}
-          setTranslatedWords={setTranslatedWords}
-          bookmarkToStudy={exerciseBookmark.from}
-          boldExpression={exerciseBookmark.from}
-          leftEllipsis={exerciseBookmark.left_ellipsis}
-          rightEllipsis={exerciseBookmark.right_ellipsis}
-        />
-      </div>
+      <ContextWithExchange
+        exerciseBookmark={exerciseBookmark}
+        interactiveText={interactiveText}
+        translatedWords={translatedWords}
+        setTranslatedWords={setTranslatedWords}
+        isExerciseOver={isExerciseOver}
+        onExampleUpdated={onExampleUpdated}
+        boldExpression={exerciseBookmark.from}
+      />
 
       {/* Solution area - appears below context when exercise is over */}
       {isExerciseOver && (

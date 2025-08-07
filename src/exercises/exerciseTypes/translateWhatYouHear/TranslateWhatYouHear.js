@@ -10,7 +10,7 @@ import InteractiveText from "../../../reader/InteractiveText.js";
 import LoadingAnimation from "../../../components/LoadingAnimation.js";
 import { SpeechContext } from "../../../contexts/SpeechContext.js";
 import { APIContext } from "../../../contexts/APIContext.js";
-import ReplaceExampleModal from "../../replaceExample/ReplaceExampleModal.js";
+import ContextWithExchange from "../../components/ContextWithExchange.js";
 
 // The user has to translate the word they hear into their L1.
 // This tests the user's passive knowledge.
@@ -96,18 +96,14 @@ export default function TranslateWhatYouHear({
       </div>
 
       {/* Context - always at the top, never moves */}
-      <div className="contextExample">
-        <TranslatableText
-          isExerciseOver={isExerciseOver}
-          interactiveText={interactiveText}
-          translating={true}
-          pronouncing={false}
-          bookmarkToStudy={exerciseBookmark.from}
-          exerciseType={EXERCISE_TYPE}
-          leftEllipsis={exerciseBookmark.left_ellipsis}
-          rightEllipsis={exerciseBookmark.right_ellipsis}
-        />
-      </div>
+      <ContextWithExchange
+        exerciseBookmark={exerciseBookmark}
+        interactiveText={interactiveText}
+        translatedWords={[]}
+        setTranslatedWords={() => {}}
+        isExerciseOver={isExerciseOver}
+        onExampleUpdated={onExampleUpdated}
+      />
 
       {/* Button/Solution area - maintain consistent height, placed below context */}
       <div style={{ minHeight: '120px', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', marginTop: '2em' }}>
