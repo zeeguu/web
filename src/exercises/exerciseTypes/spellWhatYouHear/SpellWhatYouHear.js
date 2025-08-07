@@ -6,6 +6,7 @@ import strings from "../../../i18n/definitions.js";
 import { EXERCISE_TYPES } from "../../ExerciseTypeConstants.js";
 import SessionStorage from "../../../assorted/SessionStorage.js";
 import ContextWithExchange from "../../components/ContextWithExchange.js";
+import ClozeContextWithExchange from "../../components/ClozeContextWithExchange.js";
 import InteractiveText from "../../../reader/InteractiveText.js";
 import LoadingAnimation from "../../../components/LoadingAnimation.js";
 import { SpeechContext } from "../../../contexts/SpeechContext.js";
@@ -36,6 +37,9 @@ export default function SpellWhatYouHear({
   const speech = useContext(SpeechContext);
   const [interactiveText, setInteractiveText] = useState();
   const [isButtonSpeaking, setIsButtonSpeaking] = useState(false);
+  const [inputValue, setInputValue] = useState("");
+  const [isCorrectAnswer, setIsCorrectAnswer] = useState(false);
+  const [useInlineInput, setUseInlineInput] = useState(true);
   const exerciseBookmark = bookmarksToStudy[0];
 
   async function handleSpeak() {
@@ -88,6 +92,36 @@ export default function SpellWhatYouHear({
     notifyIncorrectAnswer(exerciseBookmark);
   }
 
+  function handleInputChange(value, inputElement) {
+    setInputValue(value);
+    
+    // Constantly check if answer is correct
+    const userInput = value.trim().toLowerCase();
+    const expectedAnswer = removePunctuation(exerciseBookmark.from).toLowerCase();
+    const isCorrect = userInput === expectedAnswer;
+    
+    setIsCorrectAnswer(isCorrect);
+    
+    // Auto-submit when correct
+    if (isCorrect && value.trim().length > 0) {
+      setTimeout(() => {
+        notifyCorrectAnswer(exerciseBookmark);
+      }, 800); // Delay to show the orange color
+    }
+  }
+
+  function handleInputSubmit(value, inputElement) {
+    const userInput = value.trim().toLowerCase();
+    const expectedAnswer = removePunctuation(exerciseBookmark.from).toLowerCase();
+    
+    if (userInput === expectedAnswer) {
+      notifyCorrectAnswer(exerciseBookmark);
+    } else {
+      notifyOfUserAttempt(value, exerciseBookmark);
+      handleIncorrectAnswer();
+    }
+  }
+
   if (!interactiveText) {
     return <LoadingAnimation />;
   }
@@ -100,14 +134,30 @@ export default function SpellWhatYouHear({
       </div>
 
       {/* Context - always at the top, never moves */}
-      <ContextWithExchange
-        exerciseBookmark={exerciseBookmark}
-        interactiveText={interactiveText}
-        translatedWords={null}
-        setTranslatedWords={() => {}}
-        isExerciseOver={isExerciseOver}
-        onExampleUpdated={onExampleUpdated}
-      />
+      {useInlineInput ? (
+        <ClozeContextWithExchange
+          exerciseBookmark={exerciseBookmark}
+          interactiveText={interactiveText}
+          translatedWords={null}
+          setTranslatedWords={() => {}}
+          isExerciseOver={isExerciseOver}
+          onExampleUpdated={onExampleUpdated}
+          onInputChange={handleInputChange}
+          onInputSubmit={handleInputSubmit}
+          inputValue={inputValue}
+          placeholder=""
+          isCorrectAnswer={isCorrectAnswer}
+        />
+      ) : (
+        <ContextWithExchange
+          exerciseBookmark={exerciseBookmark}
+          interactiveText={interactiveText}
+          translatedWords={null}
+          setTranslatedWords={() => {}}
+          isExerciseOver={isExerciseOver}
+          onExampleUpdated={onExampleUpdated}
+        />
+      )}
 
       {/* Button/Solution area - maintain consistent height, placed below context */}
       <div style={{ minHeight: '120px', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', marginTop: '2em' }}>
@@ -129,8 +179,8 @@ export default function SpellWhatYouHear({
         )}
       </div>
 
-      {/* Bottom input - only during exercise */}
-      {!isExerciseOver && (
+      {/* Bottom input - only during exercise and when not using inline input */}
+      {!isExerciseOver && !useInlineInput && (
         <BottomInput
           handleCorrectAnswer={notifyCorrectAnswer}
           handleIncorrectAnswer={handleIncorrectAnswer}
