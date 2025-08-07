@@ -5,7 +5,7 @@ import SpeakButton from "../SpeakButton.js";
 import strings from "../../../i18n/definitions.js";
 import { EXERCISE_TYPES } from "../../ExerciseTypeConstants.js";
 import SessionStorage from "../../../assorted/SessionStorage.js";
-import { TranslatableText } from "../../../reader/TranslatableText.js";
+import ContextWithExchange from "../../components/ContextWithExchange.js";
 import InteractiveText from "../../../reader/InteractiveText.js";
 import LoadingAnimation from "../../../components/LoadingAnimation.js";
 import { SpeechContext } from "../../../contexts/SpeechContext.js";
@@ -30,6 +30,7 @@ export default function SpellWhatYouHear({
   isExerciseOver,
   resetSubSessionTimer,
   bookmarkProgressBar,
+  onExampleUpdated,
 }) {
   const api = useContext(APIContext);
   const speech = useContext(SpeechContext);
@@ -99,17 +100,14 @@ export default function SpellWhatYouHear({
       </div>
 
       {/* Context - always at the top, never moves */}
-      <div className="contextExample">
-        <TranslatableText
-          isExerciseOver={isExerciseOver}
-          interactiveText={interactiveText}
-          translating={true}
-          pronouncing={false}
-          bookmarkToStudy={exerciseBookmark.from}
-          leftEllipsis={exerciseBookmark.left_ellipsis}
-          rightEllipsis={exerciseBookmark.right_ellipsis}
-        />
-      </div>
+      <ContextWithExchange
+        exerciseBookmark={exerciseBookmark}
+        interactiveText={interactiveText}
+        translatedWords={null}
+        setTranslatedWords={() => {}}
+        isExerciseOver={isExerciseOver}
+        onExampleUpdated={onExampleUpdated}
+      />
 
       {/* Button/Solution area - maintain consistent height, placed below context */}
       <div style={{ minHeight: '120px', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', marginTop: '2em' }}>
