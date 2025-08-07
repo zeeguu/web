@@ -35,12 +35,14 @@ export function ClozeTranslatableText({
   // Auto-focus the input when it's rendered
   useEffect(() => {
     if (inputRef.current && !isExerciseOver) {
-      // Small delay to ensure the element is fully rendered
+      // Delay to ensure the element is fully rendered and after audio starts
       setTimeout(() => {
         inputRef.current.focus();
         // On mobile, this might also trigger the keyboard to appear
         inputRef.current.click();
-      }, 100);
+        // Try selecting the input to ensure keyboard appears on iOS
+        inputRef.current.select();
+      }, 350);
     }
   }, [isExerciseOver]);
   const divType = interactiveText.formatting ? interactiveText.formatting : "div";
@@ -262,6 +264,7 @@ export function ClozeTranslatableText({
               autoComplete="off"
               spellCheck="false"
               autoFocus
+              inputMode="text"
             />
           </span>
         );
