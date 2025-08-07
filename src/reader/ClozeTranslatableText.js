@@ -31,6 +31,18 @@ export function ClozeTranslatableText({
   const [firstWordID, setFirstWordID] = useState(0);
   const [renderedText, setRenderedText] = useState();
   const inputRef = useRef(null);
+  
+  // Auto-focus the input when it's rendered
+  useEffect(() => {
+    if (inputRef.current && !isExerciseOver) {
+      // Small delay to ensure the element is fully rendered
+      setTimeout(() => {
+        inputRef.current.focus();
+        // On mobile, this might also trigger the keyboard to appear
+        inputRef.current.click();
+      }, 100);
+    }
+  }, [isExerciseOver]);
   const divType = interactiveText.formatting ? interactiveText.formatting : "div";
 
   useEffect(() => {
@@ -213,6 +225,15 @@ export function ClozeTranslatableText({
                   font-weight: 600;
                 }
               }
+              
+              @keyframes pulseUnderline {
+                0%, 100% { 
+                  border-bottom-color: #333;
+                }
+                50% { 
+                  border-bottom-color: #666;
+                }
+              }
             `}</style>
             <input
               ref={inputRef}
@@ -236,7 +257,7 @@ export function ClozeTranslatableText({
                 color: 'inherit',
                 fontWeight: 'normal',
                 cursor: 'text',
-                animation: isCorrectAnswer ? 'correctAnswer 0.6s ease-out forwards' : 'none',
+                animation: isCorrectAnswer ? 'correctAnswer 0.6s ease-out forwards' : (inputValue === '' ? 'pulseUnderline 2s ease-in-out infinite' : 'none'),
               }}
               autoComplete="off"
               spellCheck="false"
