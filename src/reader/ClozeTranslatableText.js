@@ -36,14 +36,37 @@ export function ClozeTranslatableText({
   // Auto-focus the input when shouldFocus becomes true
   useEffect(() => {
     if (inputRef.current && !isExerciseOver && shouldFocus) {
-      // Small delay to ensure the element is fully rendered
-      setTimeout(() => {
-        inputRef.current.focus();
-        // On mobile, this might also trigger the keyboard to appear
-        inputRef.current.click();
-        // Try selecting the input to ensure keyboard appears on iOS
-        inputRef.current.select();
-      }, 100);
+      // Function to focus the input
+      const focusInput = () => {
+        if (inputRef.current) {
+          inputRef.current.focus();
+          // On mobile, try multiple approaches to show keyboard
+          inputRef.current.click();
+          
+          // For iOS Safari
+          if (/iPhone|iPad|iPod/.test(navigator.userAgent)) {
+            inputRef.current.setAttribute('readonly', 'readonly');
+            inputRef.current.removeAttribute('readonly');
+          }
+          
+          // Try setting a value and clearing it to trigger mobile keyboard
+          const currentValue = inputRef.current.value;
+          inputRef.current.value = currentValue + ' ';
+          inputRef.current.value = currentValue;
+          
+          // Select all text (if any)
+          inputRef.current.select();
+        }
+      };
+      
+      // Try immediate focus
+      focusInput();
+      
+      // Also try with a delay
+      setTimeout(focusInput, 300);
+      
+      // And one more time for stubborn mobile browsers
+      setTimeout(focusInput, 600);
     }
   }, [isExerciseOver, shouldFocus]);
   const divType = interactiveText.formatting ? interactiveText.formatting : "div";
@@ -214,7 +237,15 @@ export function ClozeTranslatableText({
               position: 'relative',
               display: 'inline-block',
               marginRight: '0.25em',
-              marginLeft: '0.25em'
+              marginLeft: '0.25em',
+              cursor: 'text'
+            }}
+            onClick={() => {
+              // Help mobile users by focusing on tap
+              if (inputRef.current) {
+                inputRef.current.focus();
+                inputRef.current.click();
+              }
             }}
           >
             <style>{`
