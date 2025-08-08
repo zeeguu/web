@@ -168,45 +168,27 @@ export function ClozeTranslatableText({
     const highlightedWords = boldExpression ? boldExpression.split(" ").map((word) => removePunctuation(word)) : [];
     const isWordHighlighted = highlightedWords.includes(removePunctuation(word.word));
 
-    if (isExerciseOver) {
-      if (word.id === firstWordID && overrideBookmarkHighlightText) {
-        return (
-          <span
-            key={word.id}
-            dangerouslySetInnerHTML={{
-              __html: colorWord(overrideBookmarkHighlightText),
-            }}
-          />
-        );
-      }
-      if (foundInstances.includes(word.id)) {
-        if (overrideBookmarkHighlightText) {
-          return <></>;
-        }
-        return (
-          <span
-            key={word.id}
-            dangerouslySetInnerHTML={{
-              __html: colorWord(word.word),
-            }}
-          />
-        );
-      } else {
-        return (
-          <TranslatableWord
-            interactiveText={interactiveText}
-            key={word.id}
-            word={word}
-            wordUpdated={wordUpdated}
-            translating={translating}
-            pronouncing={pronouncing}
-            translatedWords={translatedWords}
-            setTranslatedWords={setTranslatedWords}
-            disableTranslation={disableTranslation}
-          />
-        );
-      }
-    } else {
+    // Don't switch rendering mode when exercise is over if we have an inline input
+    // Keep the input visible but disabled
+    if (isExerciseOver && !foundInstances.includes(word.id)) {
+      // For non-target words, render normally even when exercise is over
+      return (
+        <TranslatableWord
+          interactiveText={interactiveText}
+          key={word.id}
+          word={word}
+          wordUpdated={wordUpdated}
+          translating={translating}
+          pronouncing={pronouncing}
+          translatedWords={translatedWords}
+          setTranslatedWords={setTranslatedWords}
+          disableTranslation={disableTranslation}
+        />
+      );
+    }
+    
+    if (!isExerciseOver || foundInstances[0] === word.id) {
+      // During exercise OR for the target word even after exercise
       if (isWordHighlighted) {
         return <span key={word.id} style={{ color: "orange", fontWeight: "bold" }}>{word.word + " "}</span>;
       }
@@ -288,27 +270,29 @@ export function ClozeTranslatableText({
               <input
                 ref={inputRef}
                 type="text"
-                value={inputValue}
+                value={isExerciseOver && !isCorrectAnswer ? bookmarkToStudy : inputValue}
                 placeholder={placeholder}
                 onChange={handleInputChange}
                 onKeyPress={handleInputKeyPress}
                 onFocus={() => setShowHint(false)}
                 autoFocus={shouldFocus}
+                disabled={isCorrectAnswer || isExerciseOver}
                 style={{
                   border: 'none',
-                  borderBottom: `2px ${isCorrectAnswer ? 'solid' : 'dotted'} ${isCorrectAnswer ? '#FF8C00' : '#333'}`,
+                  borderBottom: `2px solid ${isExerciseOver || isCorrectAnswer ? '#FF8C00' : '#333'}`,
+                  borderBottomStyle: isExerciseOver || isCorrectAnswer ? 'solid' : 'dotted',
                   background: 'transparent',
                   outline: 'none',
                   fontSize: 'inherit',
                   fontFamily: 'inherit',
                   textAlign: 'left',
-                  width: `${inputWidth}em`,
+                  width: `${Math.max((isExerciseOver && !isCorrectAnswer ? bookmarkToStudy.length : inputValue.length) * 0.8, 4)}em`,
                   minWidth: '4em',
                   padding: '2px 4px',
                   margin: '0',
-                  color: 'inherit',
-                  fontWeight: 'normal',
-                  cursor: 'text',
+                  color: isExerciseOver || isCorrectAnswer ? '#FF8C00' : 'inherit',
+                  fontWeight: isExerciseOver || isCorrectAnswer ? '600' : 'normal',
+                  cursor: isCorrectAnswer || isExerciseOver ? 'default' : 'text',
                   animation: isCorrectAnswer ? 'correctAnswer 0.6s ease-out forwards' : (inputValue === '' ? 'pulseUnderline 2s ease-in-out infinite' : 'none'),
                 }}
                 autoComplete="off"
