@@ -203,7 +203,35 @@ export function ClozeTranslatableText({
 
       if (foundInstances[0] === word.id) {
         // Inline input field for cloze exercise
-        const inputWidth = Math.max(inputValue.length * 0.8, 4); // Dynamic width based on content
+        const currentValue = isExerciseOver && !isCorrectAnswer ? bookmarkToStudy : inputValue;
+        
+        // Function to measure actual text width
+        const measureTextWidth = (text) => {
+          if (!text) return 4; // Default for empty text
+          
+          // Create a temporary span to measure text
+          const span = document.createElement('span');
+          span.style.visibility = 'hidden';
+          span.style.position = 'absolute';
+          span.style.whiteSpace = 'nowrap';
+          span.style.fontSize = 'inherit';
+          span.style.fontFamily = 'inherit';
+          span.style.fontWeight = (isCorrectAnswer || isExerciseOver) ? '700' : 'normal';
+          span.textContent = text;
+          
+          document.body.appendChild(span);
+          const width = span.getBoundingClientRect().width;
+          document.body.removeChild(span);
+          
+          // Convert to em units (approximately) and add some padding
+          return (width / 16) + 0.5; // Assuming 1em ≈ 16px, plus padding
+        };
+        
+        const inputWidth = (isCorrectAnswer || isExerciseOver) ? 
+          measureTextWidth(currentValue) : // Exact fit when finalized
+          Math.max(currentValue.length * 0.8, 4); // Generous width during typing
+        
+        console.log('Debug:', { currentValue, inputWidth, isCorrectAnswer, isExerciseOver });
         
         return (
           <span 
@@ -213,12 +241,14 @@ export function ClozeTranslatableText({
               display: 'inline-block',
               marginRight: '0.25em',
               marginLeft: '0.25em',
-              cursor: 'text'
+              cursor: (isCorrectAnswer || isExerciseOver) ? 'default' : 'text'
             }}
             onClick={() => {
-              setShowHint(false);
-              if (inputRef.current) {
-                inputRef.current.focus();
+              if (!isCorrectAnswer && !isExerciseOver) {
+                setShowHint(false);
+                if (inputRef.current) {
+                  inputRef.current.focus();
+                }
               }
             }}
           >
@@ -229,8 +259,8 @@ export function ClozeTranslatableText({
                   font-weight: normal;
                 }
                 100% { 
-                  color: #FF8C00;
-                  font-weight: 600;
+                  color: #FF6600 !important;
+                  font-weight: 700;
                 }
               }
               
@@ -272,21 +302,22 @@ export function ClozeTranslatableText({
                 disabled={isCorrectAnswer || isExerciseOver}
                 style={{
                   border: 'none',
-                  borderBottom: `2px solid ${isExerciseOver || isCorrectAnswer ? '#FF8C00' : '#333'}`,
-                  borderBottomStyle: isExerciseOver || isCorrectAnswer ? 'solid' : 'dotted',
+                  borderBottom: `2px ${isExerciseOver || isCorrectAnswer ? 'solid' : 'dotted'} ${isExerciseOver || isCorrectAnswer ? '#FF6600' : '#333'}`,
                   background: 'transparent',
                   outline: 'none',
                   fontSize: 'inherit',
                   fontFamily: 'inherit',
-                  textAlign: 'left',
-                  width: `${Math.max((isExerciseOver && !isCorrectAnswer ? bookmarkToStudy.length : inputValue.length) * 0.8, 4)}em`,
-                  minWidth: '4em',
+                  textAlign: (isCorrectAnswer || isExerciseOver) ? 'center' : 'left',
+                  width: `${inputWidth}em`,
+                  maxWidth: `${inputWidth}em`,
+                  minWidth: (isCorrectAnswer || isExerciseOver) ? '2em' : '4em',
                   padding: '2px 4px',
                   margin: '0',
-                  color: isExerciseOver || isCorrectAnswer ? '#FF8C00' : 'inherit',
-                  fontWeight: isExerciseOver || isCorrectAnswer ? '600' : 'normal',
+                  color: isExerciseOver || isCorrectAnswer ? '#FF6600' : 'inherit',
+                  fontWeight: isExerciseOver || isCorrectAnswer ? '700' : 'normal',
                   cursor: isCorrectAnswer || isExerciseOver ? 'default' : 'text',
                   animation: isCorrectAnswer ? 'correctAnswer 0.6s ease-out forwards' : (inputValue === '' ? 'pulseUnderline 2s ease-in-out infinite' : 'none'),
+                  opacity: isCorrectAnswer || isExerciseOver ? '1 !important' : '1',
                 }}
                 autoComplete="off"
                 spellCheck="false"
