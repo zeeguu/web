@@ -530,19 +530,6 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
             You are practicing words from: <a href={articleURL}>{articleTitle}</a>
           </p>
         )}
-        {userDetails?.name === "Mircea" && (
-          <div
-            style={{
-              marginTop: "1rem",
-              textAlign: "center",
-              fontSize: "0.75rem",
-              color: "#999",
-              opacity: 0.8,
-            }}
-          >
-            {getExerciseTypeName(currentExerciseType)}
-          </div>
-        )}
       </s.ExercisesColumn>
     </NarrowColumn>
   );
