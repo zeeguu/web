@@ -36,15 +36,8 @@ export function ClozeTranslatableText({
   
   // Don't auto-hide hint - let it stay until user interacts
   
-  // Poll to check if input is focused (for stubborn mobile browsers)
-  useEffect(() => {
-    const interval = setInterval(() => {
-      if (inputRef.current && document.activeElement === inputRef.current) {
-        setShowHint(false);
-      }
-    }, 100);
-    return () => clearInterval(interval);
-  }, []);
+  // Only hide hint when there's actual user interaction or typing
+  // Don't hide just because of autoFocus attempts
   
   const divType = interactiveText.formatting ? interactiveText.formatting : "div";
 
@@ -255,11 +248,12 @@ export function ClozeTranslatableText({
                 <div
                   style={{
                     position: 'absolute',
-                    top: '0.2em',
-                    left: '0',
+                    top: '50%',
+                    left: '50%',
+                    transform: 'translate(-50%, -50%)',
                     fontSize: '0.7em',
                     color: '#999',
-                    opacity: 1,
+                    opacity: 0.8,
                     pointerEvents: 'none',
                     whiteSpace: 'nowrap'
                   }}
@@ -275,7 +269,6 @@ export function ClozeTranslatableText({
                 onChange={handleInputChange}
                 onKeyPress={handleInputKeyPress}
                 onFocus={() => setShowHint(false)}
-                autoFocus={shouldFocus}
                 disabled={isCorrectAnswer || isExerciseOver}
                 style={{
                   border: 'none',
