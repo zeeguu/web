@@ -13,7 +13,7 @@ export default function OutOfWordsMessage({ goBackAction }) {
   const [totalInLearning, setTotalInLearning] = useState();
 
   useEffect(() => {
-    api.getCountOfAllScheduledBookmarks((totalInLearning) => {
+    api.getCountOfAllScheduledWords((totalInLearning) => {
       setTotalInLearning(totalInLearning);
     });
   }, []);

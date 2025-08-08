@@ -24,8 +24,8 @@ Zeeguu_API.prototype.getAllScheduledBookmarks = function (isWithTokens, callback
   else this._getJSON(endpoint, callback);
 };
 
-Zeeguu_API.prototype.getCountOfAllScheduledBookmarks = function (callback) {
-  this._getJSON(`count_of_all_scheduled_bookmarks`, callback);
+Zeeguu_API.prototype.getCountOfAllScheduledWords = function (callback) {
+  this._getJSON(`count_of_all_scheduled_words`, callback);
 };
 
 // Bookmarks recommended to be studied today
