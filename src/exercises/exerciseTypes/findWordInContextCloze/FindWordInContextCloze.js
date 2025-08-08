@@ -128,6 +128,7 @@ export default function FindWordInContextCloze({
           inputValue={inputValue}
           placeholder=""
           isCorrectAnswer={isCorrectAnswer}
+          shouldFocus={true}
         />
       ) : (
         <ContextWithExchange
