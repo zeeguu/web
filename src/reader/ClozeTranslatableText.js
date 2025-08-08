@@ -134,8 +134,28 @@ export function ClozeTranslatableText({
 
   function handleInputChange(e) {
     setShowHint(false); // Hide hint on first interaction
+    
+    let value = e.target.value;
+    
+    // Match capitalization of the solution
+    if (bookmarkToStudy && value) {
+      const solution = bookmarkToStudy;
+      if (solution.length > 0) {
+        // If solution starts with uppercase, capitalize first letter
+        if (solution[0] === solution[0].toUpperCase()) {
+          value = value.charAt(0).toUpperCase() + value.slice(1).toLowerCase();
+        } else {
+          // Otherwise make it lowercase
+          value = value.toLowerCase();
+        }
+        
+        // Update the input value to match our formatting
+        e.target.value = value;
+      }
+    }
+    
     if (onInputChange) {
-      onInputChange(e.target.value, e.target);
+      onInputChange(value, e.target);
     }
   }
 
