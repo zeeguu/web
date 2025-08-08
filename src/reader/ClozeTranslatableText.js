@@ -91,10 +91,10 @@ export function ClozeTranslatableText({
     let bookmarkWords = bookmarkToStudy.split(" ");
     let word = interactiveText.paragraphsAsLinkedWordLists[0].linkedWords.head;
     while (word) {
-      if (removePunctuation(word.word) === bookmarkWords[0]) {
+      if (removePunctuation(word.word).toLowerCase() === bookmarkWords[0].toLowerCase()) {
         let copyOfFoundInstances = [...foundInstances];
         for (let index = 0; index < bookmarkWords.length; index++) {
-          if (removePunctuation(word.word) === bookmarkWords[index]) {
+          if (removePunctuation(word.word).toLowerCase() === bookmarkWords[index].toLowerCase()) {
             if (index === 0) setFirstWordID(word.id);
             copyOfFoundInstances.push(word.id);
             word = word.next;
