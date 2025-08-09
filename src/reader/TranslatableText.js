@@ -2,6 +2,7 @@ import { useState, useEffect, createElement } from "react";
 import TranslatableWord from "./TranslatableWord";
 import * as s from "./TranslatableText.sc";
 import { removePunctuation } from "../utils/text/preprocessing";
+import { orange500 } from "../components/colors";
 
 export function TranslatableText({
   interactiveText,
@@ -10,26 +11,30 @@ export function TranslatableText({
   translatedWords,
   setTranslatedWords,
   setIsRendered,
-  boldExpression,
+  highlightExpression,
   leftEllipsis,
   rightEllipsis,
   // exercise related
-  // TODO: rename so they are general about translatable text
-  isExerciseOver, // highlightColor
-  bookmarkToStudy, // bookmarkToHighlight
+  isExerciseOver,
+  clozeWord, // Word(s) to hide and replace with underlines/placeholders in cloze exercises
+  nonTranslatableWords, // Word(s) that should not be clickable for translation
   overrideBookmarkHighlightText, // boldAndDeactivatedText -- used in OrderWords
   updateBookmarks, // callback - should be probably named: notifyWordTranslated --- actually only used once in ArticleReader, in quite a bad way. consider alterantoves
 }) {
   const [translationCount, setTranslationCount] = useState(0);
-  const [foundInstances, setFoundInstances] = useState([]);
+  const [nonTranslatableWordIds, setNonTranslatableWordIds] = useState([]);
+  const [clozeWordIds, setClozeWordIds] = useState([]);
   const [paragraphs, setParagraphs] = useState([]);
-  const [firstWordID, setFirstWordID] = useState(0);
+  const [firstClozeWordId, setFirstClozeWordId] = useState(0);
   const [renderedText, setRenderedText] = useState();
   const divType = interactiveText.formatting ? interactiveText.formatting : "div";
 
   useEffect(() => {
-    if (bookmarkToStudy) {
-      findBookmarkInInteractiveText();
+    if (nonTranslatableWords) {
+      findNonTranslatableWords();
+    }
+    if (clozeWord) {
+      findClozeWords();
     }
     if (interactiveText) setParagraphs(interactiveText.getParagraphs());
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -56,7 +61,8 @@ export function TranslatableText({
     translating,
     pronouncing,
     isExerciseOver,
-    bookmarkToStudy,
+    clozeWord,
+    nonTranslatableWords,
     rightEllipsis,
     leftEllipsis,
   ]);
@@ -70,25 +76,51 @@ export function TranslatableText({
     if (updateBookmarks) updateBookmarks();
   }
 
-  function findBookmarkInInteractiveText() {
-    let bookmarkWords = bookmarkToStudy.split(" ");
+  function findNonTranslatableWords() {
+    if (!nonTranslatableWords) return;
+    let targetWords = nonTranslatableWords.split(" ");
     let word = interactiveText.paragraphsAsLinkedWordLists[0].linkedWords.head;
     while (word) {
-      if (removePunctuation(word.word).toLowerCase() === bookmarkWords[0].toLowerCase()) {
-        let copyOfFoundInstances = [...foundInstances];
-        for (let index = 0; index < bookmarkWords.length; index++) {
-          if (removePunctuation(word.word).toLowerCase() === bookmarkWords[index].toLowerCase()) {
-            if (index === 0) setFirstWordID(word.id);
-            copyOfFoundInstances.push(word.id);
+      if (removePunctuation(word.word).toLowerCase() === targetWords[0].toLowerCase()) {
+        let copyOfFoundIds = [...nonTranslatableWordIds];
+        for (let index = 0; index < targetWords.length; index++) {
+          if (removePunctuation(word.word).toLowerCase() === targetWords[index].toLowerCase()) {
+            copyOfFoundIds.push(word.id);
             word = word.next;
           } else {
-            copyOfFoundInstances = [...foundInstances];
+            copyOfFoundIds = [...nonTranslatableWordIds];
             word = word.next;
             break;
           }
         }
-        setFoundInstances(copyOfFoundInstances);
-        if (copyOfFoundInstances.length === bookmarkWords.length) break;
+        setNonTranslatableWordIds(copyOfFoundIds);
+        if (copyOfFoundIds.length === targetWords.length) break;
+      } else {
+        word = word.next;
+      }
+    }
+  }
+
+  function findClozeWords() {
+    if (!clozeWord) return;
+    let targetWords = clozeWord.split(" ");
+    let word = interactiveText.paragraphsAsLinkedWordLists[0].linkedWords.head;
+    while (word) {
+      if (removePunctuation(word.word).toLowerCase() === targetWords[0].toLowerCase()) {
+        let copyOfFoundIds = [...clozeWordIds];
+        for (let index = 0; index < targetWords.length; index++) {
+          if (removePunctuation(word.word).toLowerCase() === targetWords[index].toLowerCase()) {
+            if (index === 0) setFirstClozeWordId(word.id);
+            copyOfFoundIds.push(word.id);
+            word = word.next;
+          } else {
+            copyOfFoundIds = [...clozeWordIds];
+            word = word.next;
+            break;
+          }
+        }
+        setClozeWordIds(copyOfFoundIds);
+        if (copyOfFoundIds.length === targetWords.length) break;
       } else {
         word = word.next;
       }
@@ -100,15 +132,18 @@ export function TranslatableText({
   }
 
   function renderWordJSX(word) {
-    // If the word is a bookmarked word, it won't be translated when clicked
-    const disableTranslation = foundInstances.includes(word.id);
+    // If the word is a non-translatable word, it won't be translated when clicked
+    const disableTranslation = nonTranslatableWordIds.includes(word.id);
+    
+    // Check if this word is part of the cloze (hidden) text
+    const isClozeWord = clozeWordIds.includes(word.id);
 
-    // If boldExpression is defined, the bookmark is highlighted, otherwise highlightedWords will be set to an empty array to avoid runtime error
-    const highlightedWords = boldExpression ? boldExpression.split(" ").map((word) => removePunctuation(word)) : [];
-    const isWordHighlighted = highlightedWords.includes(removePunctuation(word.word));
+    // If highlightExpression is defined, the bookmark is highlighted, otherwise highlightedWords will be set to an empty array to avoid runtime error
+    const highlightedWords = highlightExpression ? highlightExpression.split(" ").map((word) => removePunctuation(word).toLowerCase()) : [];
+    const isWordHighlighted = highlightedWords.includes(removePunctuation(word.word).toLowerCase());
 
     if (isExerciseOver) {
-      if (word.id === firstWordID && overrideBookmarkHighlightText) {
+      if (word.id === firstClozeWordId && overrideBookmarkHighlightText) {
         // In case we want to override the highlighted bookmark
         // with another string. Used in the OrderWords.
         return (
@@ -120,7 +155,7 @@ export function TranslatableText({
           />
         );
       }
-      if (foundInstances.includes(word.id)) {
+      if (isClozeWord) {
         if (overrideBookmarkHighlightText) {
           return <></>;
         }
@@ -132,6 +167,9 @@ export function TranslatableText({
             }}
           />
         );
+      } else if (isWordHighlighted) {
+        // Highlight words based on highlightExpression when showing solution
+        return <span key={word.id} style={{ color: orange500, fontWeight: "bold" }}>{word.word + " "}</span>;
       } else {
         return (
           <TranslatableWord
@@ -149,9 +187,9 @@ export function TranslatableText({
       }
     } else {
       if (isWordHighlighted) {
-        return <span style={{ color: "orange", fontWeight: "bold" }}>{word.word + " "}</span>;
+        return <span key={word.id} style={{ color: orange500, fontWeight: "bold" }}>{word.word + " "}</span>;
       }
-      if (!bookmarkToStudy || translatedWords) {
+      if (!clozeWord || translatedWords) {
         return (
           <TranslatableWord
             interactiveText={interactiveText}
@@ -167,7 +205,7 @@ export function TranslatableText({
         );
       }
 
-      if (foundInstances[0] === word.id) {
+      if (clozeWordIds[0] === word.id) {
         // Fixed-length underline with smooth transition animation
         const fixedUnderlineLength = '4em'; // Fixed length to prevent solution hints
         
@@ -203,7 +241,7 @@ export function TranslatableText({
               style={{
                 opacity: isExerciseOver ? 1 : 0,
                 transition: 'opacity 0.6s ease-in-out',
-                color: 'orange',
+                color: orange500,
                 fontWeight: 'bold',
                 display: 'inline-block'
               }}

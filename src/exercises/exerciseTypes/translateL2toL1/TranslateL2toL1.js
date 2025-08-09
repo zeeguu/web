@@ -89,7 +89,7 @@ export default function TranslateL2toL1({
         setTranslatedWords={setTranslatedWords}
         isExerciseOver={isExerciseOver}
         onExampleUpdated={onExampleUpdated}
-        boldExpression={exerciseBookmark.from}
+        highlightExpression={exerciseBookmark.from}
       />
 
       {/* Solution area - appears below context when exercise is over */}

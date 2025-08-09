@@ -146,6 +146,7 @@ export default function WordInContextExercise({
         setTranslatedWords={setTranslatedWords}
         isExerciseOver={isExerciseOver}
         onExampleUpdated={onExampleUpdated}
+        highlightExpression={isExerciseOver ? exerciseBookmark.from : null}
       />
       {showBottomInput && !isExerciseOver && (
         <BottomInput

@@ -9,7 +9,7 @@ import shuffle from "../../../assorted/fisherYatesShuffle";
 import { removePunctuation } from "../../../utils/text/preprocessing";
 import { SpeechContext } from "../../../contexts/SpeechContext.js";
 import { APIContext } from "../../../contexts/APIContext.js";
-import ContextWithExchange from "../../components/ContextWithExchange.js";
+import ClozeContextWithExchange from "../../components/ClozeContextWithExchange.js";
 import FlyingWord from "../../components/FlyingWord.js";
 
 // The user has to select the correct L2 translation of a given L1 word out of three.
@@ -170,7 +170,7 @@ export default function MultipleChoice({
       </div>
 
       {/* Context - always at the top, never moves */}
-      <ContextWithExchange
+      <ClozeContextWithExchange
         ref={contextRef}
         exerciseBookmark={exerciseBookmark}
         interactiveText={interactiveText}
@@ -178,6 +178,13 @@ export default function MultipleChoice({
         setTranslatedWords={() => {}}
         isExerciseOver={isExerciseOver}
         onExampleUpdated={onExampleUpdated}
+        onInputChange={() => {}} // No input handling needed for multiple choice
+        onInputSubmit={() => {}} // No input handling needed for multiple choice
+        inputValue={isExerciseOver ? exerciseBookmark.from : ""}
+        placeholder=""
+        isCorrectAnswer={isExerciseOver}
+        shouldFocus={false} // Don't focus the hidden input
+        showHint={false} // Don't show "tap to type" hint
       />
 
       {/* Solution area - appears below context when exercise is over */}

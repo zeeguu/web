@@ -971,7 +971,8 @@ export default function OrderWords({
               interactiveText={interactiveText}
               translating={true}
               pronouncing={false}
-              bookmarkToStudy={removePunctuation(exerciseContext)}
+              clozeWord={removePunctuation(exerciseContext)}
+              nonTranslatableWords={removePunctuation(exerciseContext)}
             />
           </div>
         )}
@@ -982,7 +983,8 @@ export default function OrderWords({
               interactiveText={interactiveText}
               translating={true}
               pronouncing={false}
-              bookmarkToStudy={removePunctuation(exerciseContext)}
+              clozeWord={removePunctuation(exerciseContext)}
+              nonTranslatableWords={removePunctuation(exerciseContext)}
               overrideBookmarkHighlightText={exerciseText}
             />
           </div>

@@ -13,7 +13,7 @@ const ClozeContextWithExchange = forwardRef(function ClozeContextWithExchange(
     onExampleUpdated,
     translating = true,
     pronouncing = false,
-    boldExpression,
+    highlightExpression,
     // cloze specific props
     onInputChange,
     onInputSubmit,
@@ -21,6 +21,7 @@ const ClozeContextWithExchange = forwardRef(function ClozeContextWithExchange(
     placeholder,
     isCorrectAnswer,
     shouldFocus,
+    showHint = true,
   },
   ref,
 ) {
@@ -40,16 +41,18 @@ const ClozeContextWithExchange = forwardRef(function ClozeContextWithExchange(
           pronouncing={pronouncing}
           translatedWords={translatedWords}
           setTranslatedWords={setTranslatedWords}
-          bookmarkToStudy={exerciseBookmark.from}
+          clozeWord={exerciseBookmark.from}
+          nonTranslatableWords={exerciseBookmark.from}
           leftEllipsis={exerciseBookmark.left_ellipsis}
           rightEllipsis={exerciseBookmark.right_ellipsis}
-          boldExpression={boldExpression}
+          highlightExpression={highlightExpression}
           onInputChange={onInputChange}
           onInputSubmit={onInputSubmit}
           inputValue={inputValue}
           placeholder={placeholder}
           isCorrectAnswer={isCorrectAnswer}
           shouldFocus={shouldFocus}
+          showHint={showHint}
         />
         {onExampleUpdated && isExerciseOver && (
           <div

@@ -10,7 +10,7 @@ import InteractiveText from "../../../reader/InteractiveText.js";
 import LoadingAnimation from "../../../components/LoadingAnimation.js";
 import { SpeechContext } from "../../../contexts/SpeechContext.js";
 import { APIContext } from "../../../contexts/APIContext.js";
-import ContextWithExchange from "../../components/ContextWithExchange.js";
+import ClozeContextWithExchange from "../../components/ClozeContextWithExchange.js";
 
 // The user has to translate the word they hear into their L1.
 // This tests the user's passive knowledge.
@@ -96,13 +96,20 @@ export default function TranslateWhatYouHear({
       </div>
 
       {/* Context - always at the top, never moves */}
-      <ContextWithExchange
+      <ClozeContextWithExchange
         exerciseBookmark={exerciseBookmark}
         interactiveText={interactiveText}
         translatedWords={null}
         setTranslatedWords={() => {}}
         isExerciseOver={isExerciseOver}
         onExampleUpdated={onExampleUpdated}
+        onInputChange={() => {}} // No input handling needed - uses bottom input
+        onInputSubmit={() => {}} // No input handling needed - uses bottom input
+        inputValue={isExerciseOver ? exerciseBookmark.from : ""}
+        placeholder=""
+        isCorrectAnswer={isExerciseOver}
+        shouldFocus={false} // Don't focus the hidden input - uses bottom input
+        showHint={false} // Don't show "tap to type" hint - uses bottom input
       />
 
       {/* Button/Solution area - maintain consistent height, placed below context */}

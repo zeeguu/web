@@ -118,8 +118,8 @@ export default function MultipleChoiceL2toL1({
           interactiveText={interactiveText}
           translating={true}
           pronouncing={false}
-          bookmarkToStudy={exerciseBookmark.from}
-          boldExpression={exerciseBookmark.from}
+          nonTranslatableWords={exerciseBookmark.from}
+          highlightExpression={exerciseBookmark.from}
           translatedWords={translatedWords}
           setTranslatedWords={setTranslatedWords}
           exerciseType={EXERCISE_TYPE}

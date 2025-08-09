@@ -2,6 +2,7 @@ import { useState, useEffect, createElement, useRef } from "react";
 import TranslatableWord from "./TranslatableWord";
 import * as s from "./TranslatableText.sc";
 import { removePunctuation } from "../utils/text/preprocessing";
+import { orange500 } from "../components/colors";
 
 export function ClozeTranslatableText({
   interactiveText,
@@ -10,12 +11,13 @@ export function ClozeTranslatableText({
   translatedWords,
   setTranslatedWords,
   setIsRendered,
-  boldExpression,
+  highlightExpression,
   leftEllipsis,
   rightEllipsis,
   // exercise related
   isExerciseOver,
-  bookmarkToStudy,
+  clozeWord, // Word(s) to hide and replace with input field
+  nonTranslatableWords, // Word(s) that should not be clickable for translation
   overrideBookmarkHighlightText,
   updateBookmarks,
   // cloze specific props
@@ -25,25 +27,25 @@ export function ClozeTranslatableText({
   placeholder = "",
   isCorrectAnswer = false,
   shouldFocus = true,
+  showHint = true, // Whether to show "tap to type" hint
 }) {
   const [translationCount, setTranslationCount] = useState(0);
-  const [foundInstances, setFoundInstances] = useState([]);
+  const [clozeWordIds, setClozeWordIds] = useState([]);
+  const [nonTranslatableWordIds, setNonTranslatableWordIds] = useState([]);
   const [paragraphs, setParagraphs] = useState([]);
-  const [firstWordID, setFirstWordID] = useState(0);
+  const [firstClozeWordId, setFirstClozeWordId] = useState(0);
   const [renderedText, setRenderedText] = useState();
-  const [showHint, setShowHint] = useState(true);
+  const [hintVisible, setHintVisible] = useState(true);
   const inputRef = useRef(null);
-  
-  // Don't auto-hide hint - let it stay until user interacts
-  
-  // Only hide hint when there's actual user interaction or typing
-  // Don't hide just because of autoFocus attempts
   
   const divType = interactiveText.formatting ? interactiveText.formatting : "div";
 
   useEffect(() => {
-    if (bookmarkToStudy) {
-      findBookmarkInInteractiveText();
+    if (clozeWord) {
+      findClozeWords();
+    }
+    if (nonTranslatableWords) {
+      findNonTranslatableWords();
     }
     if (interactiveText) setParagraphs(interactiveText.getParagraphs());
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -70,12 +72,13 @@ export function ClozeTranslatableText({
     translating,
     pronouncing,
     isExerciseOver,
-    bookmarkToStudy,
+    clozeWord,
+    nonTranslatableWords,
     rightEllipsis,
     leftEllipsis,
     inputValue,
     isCorrectAnswer,
-    showHint,
+    hintVisible,
   ]);
 
   useEffect(() => {
@@ -87,25 +90,51 @@ export function ClozeTranslatableText({
     if (updateBookmarks) updateBookmarks();
   }
 
-  function findBookmarkInInteractiveText() {
-    let bookmarkWords = bookmarkToStudy.split(" ");
+  function findClozeWords() {
+    if (!clozeWord) return;
+    let targetWords = clozeWord.split(" ");
     let word = interactiveText.paragraphsAsLinkedWordLists[0].linkedWords.head;
     while (word) {
-      if (removePunctuation(word.word).toLowerCase() === bookmarkWords[0].toLowerCase()) {
-        let copyOfFoundInstances = [...foundInstances];
-        for (let index = 0; index < bookmarkWords.length; index++) {
-          if (removePunctuation(word.word).toLowerCase() === bookmarkWords[index].toLowerCase()) {
-            if (index === 0) setFirstWordID(word.id);
-            copyOfFoundInstances.push(word.id);
+      if (removePunctuation(word.word).toLowerCase() === targetWords[0].toLowerCase()) {
+        let copyOfFoundIds = [...clozeWordIds];
+        for (let index = 0; index < targetWords.length; index++) {
+          if (removePunctuation(word.word).toLowerCase() === targetWords[index].toLowerCase()) {
+            if (index === 0) setFirstClozeWordId(word.id);
+            copyOfFoundIds.push(word.id);
             word = word.next;
           } else {
-            copyOfFoundInstances = [...foundInstances];
+            copyOfFoundIds = [...clozeWordIds];
             word = word.next;
             break;
           }
         }
-        setFoundInstances(copyOfFoundInstances);
-        if (copyOfFoundInstances.length === bookmarkWords.length) break;
+        setClozeWordIds(copyOfFoundIds);
+        if (copyOfFoundIds.length === targetWords.length) break;
+      } else {
+        word = word.next;
+      }
+    }
+  }
+
+  function findNonTranslatableWords() {
+    if (!nonTranslatableWords) return;
+    let targetWords = nonTranslatableWords.split(" ");
+    let word = interactiveText.paragraphsAsLinkedWordLists[0].linkedWords.head;
+    while (word) {
+      if (removePunctuation(word.word).toLowerCase() === targetWords[0].toLowerCase()) {
+        let copyOfFoundIds = [...nonTranslatableWordIds];
+        for (let index = 0; index < targetWords.length; index++) {
+          if (removePunctuation(word.word).toLowerCase() === targetWords[index].toLowerCase()) {
+            copyOfFoundIds.push(word.id);
+            word = word.next;
+          } else {
+            copyOfFoundIds = [...nonTranslatableWordIds];
+            word = word.next;
+            break;
+          }
+        }
+        setNonTranslatableWordIds(copyOfFoundIds);
+        if (copyOfFoundIds.length === targetWords.length) break;
       } else {
         word = word.next;
       }
@@ -126,13 +155,13 @@ export function ClozeTranslatableText({
   }
 
   function handleInputChange(e) {
-    setShowHint(false); // Hide hint on first interaction
+    setHintVisible(false); // Hide hint on first interaction
     
     let value = e.target.value;
     
     // Match capitalization of the solution
-    if (bookmarkToStudy && value) {
-      const solution = bookmarkToStudy;
+    if (clozeWord && value) {
+      const solution = clozeWord;
       if (solution.length > 0) {
         // If solution starts with uppercase, capitalize first letter
         if (solution[0] === solution[0].toUpperCase()) {
@@ -154,16 +183,19 @@ export function ClozeTranslatableText({
 
 
   function renderWordJSX(word) {
-    // If the word is a bookmarked word, it won't be translated when clicked
-    const disableTranslation = foundInstances.includes(word.id);
+    // If the word is a non-translatable word, it won't be translated when clicked
+    const disableTranslation = nonTranslatableWordIds.includes(word.id);
+    
+    // Check if this word is part of the cloze (hidden) text
+    const isClozeWord = clozeWordIds.includes(word.id);
 
-    // If boldExpression is defined, the bookmark is highlighted, otherwise highlightedWords will be set to an empty array to avoid runtime error
-    const highlightedWords = boldExpression ? boldExpression.split(" ").map((word) => removePunctuation(word)) : [];
+    // If highlightExpression is defined, the bookmark is highlighted, otherwise highlightedWords will be set to an empty array to avoid runtime error
+    const highlightedWords = highlightExpression ? highlightExpression.split(" ").map((word) => removePunctuation(word)) : [];
     const isWordHighlighted = highlightedWords.includes(removePunctuation(word.word));
 
     // Don't switch rendering mode when exercise is over if we have an inline input
     // Keep the input visible but disabled
-    if (isExerciseOver && !foundInstances.includes(word.id)) {
+    if (isExerciseOver && !isClozeWord) {
       // For non-target words, render normally even when exercise is over
       return (
         <TranslatableWord
@@ -180,12 +212,12 @@ export function ClozeTranslatableText({
       );
     }
     
-    if (!isExerciseOver || foundInstances[0] === word.id) {
+    if (!isExerciseOver || clozeWordIds[0] === word.id) {
       // During exercise OR for the target word even after exercise
       if (isWordHighlighted) {
-        return <span key={word.id} style={{ color: "orange", fontWeight: "bold" }}>{word.word + " "}</span>;
+        return <span key={word.id} style={{ color: orange500, fontWeight: "bold" }}>{word.word + " "}</span>;
       }
-      if (!bookmarkToStudy || translatedWords) {
+      if (!clozeWord || translatedWords) {
         return (
           <TranslatableWord
             interactiveText={interactiveText}
@@ -201,9 +233,9 @@ export function ClozeTranslatableText({
         );
       }
 
-      if (foundInstances[0] === word.id) {
+      if (clozeWordIds[0] === word.id) {
         // Inline input field for cloze exercise
-        const currentValue = isExerciseOver && !isCorrectAnswer ? bookmarkToStudy : inputValue;
+        const currentValue = isExerciseOver && !isCorrectAnswer ? clozeWord : inputValue;
         
         // Function to measure actual text width
         const measureTextWidth = (text) => {
@@ -245,7 +277,7 @@ export function ClozeTranslatableText({
             }}
             onClick={() => {
               if (!isCorrectAnswer && !isExerciseOver) {
-                setShowHint(false);
+                setHintVisible(false);
                 if (inputRef.current) {
                   inputRef.current.focus();
                 }
@@ -259,7 +291,7 @@ export function ClozeTranslatableText({
                   font-weight: normal;
                 }
                 100% { 
-                  color: #FF6600 !important;
+                  color: ${orange500} !important;
                   font-weight: 700;
                 }
               }
@@ -274,7 +306,7 @@ export function ClozeTranslatableText({
               }
             `}</style>
             <>
-              {showHint && inputValue === '' && !isExerciseOver && (
+              {showHint && hintVisible && inputValue === '' && !isExerciseOver && (
                 <div
                   style={{
                     position: 'absolute',
@@ -294,15 +326,15 @@ export function ClozeTranslatableText({
               <input
                 ref={inputRef}
                 type="text"
-                value={isExerciseOver && !isCorrectAnswer ? bookmarkToStudy : inputValue}
+                value={isExerciseOver && !isCorrectAnswer ? clozeWord : inputValue}
                 placeholder={placeholder}
                 onChange={handleInputChange}
                 onKeyPress={handleInputKeyPress}
-                onFocus={() => setShowHint(false)}
+                onFocus={() => setHintVisible(false)}
                 disabled={isCorrectAnswer || isExerciseOver}
                 style={{
                   border: 'none',
-                  borderBottom: `2px ${isExerciseOver || isCorrectAnswer ? 'solid' : 'dotted'} ${isExerciseOver || isCorrectAnswer ? '#FF6600' : '#333'}`,
+                  borderBottom: `2px ${isExerciseOver || isCorrectAnswer ? 'solid' : 'dotted'} ${isExerciseOver || isCorrectAnswer ? '${orange500}' : '#333'}`,
                   background: 'transparent',
                   outline: 'none',
                   fontSize: 'inherit',
@@ -313,7 +345,7 @@ export function ClozeTranslatableText({
                   minWidth: (isCorrectAnswer || isExerciseOver) ? '2em' : '4em',
                   padding: '2px 4px',
                   margin: '0',
-                  color: isExerciseOver || isCorrectAnswer ? '#FF6600' : 'inherit',
+                  color: isExerciseOver || isCorrectAnswer ? orange500 : 'inherit',
                   fontWeight: isExerciseOver || isCorrectAnswer ? '700' : 'normal',
                   cursor: isCorrectAnswer || isExerciseOver ? 'default' : 'text',
                   animation: isCorrectAnswer ? 'correctAnswer 0.6s ease-out forwards' : (inputValue === '' ? 'pulseUnderline 2s ease-in-out infinite' : 'none'),

@@ -66,6 +66,31 @@ export default function FindWordInContextCloze({
     // eslint-disable-next-line
   }, [reload, exerciseBookmark]);
 
+  // Focus input when user starts typing
+  useEffect(() => {
+    if (!useInlineInput || isExerciseOver) return;
+
+    const handleKeyDown = (e) => {
+      // Only focus if it's a letter, number, or backspace key, not special keys
+      const isTypingKey = (e.key.length === 1 && !e.ctrlKey && !e.metaKey && !e.altKey) || 
+                          e.key === 'Backspace';
+      
+      if (isTypingKey) {
+        // Find the input element within the ClozeContextWithExchange component
+        const inputElement = document.querySelector('.findWordInContextCloze input[type="text"]');
+        if (inputElement && document.activeElement !== inputElement) {
+          inputElement.focus();
+          // The keydown event will naturally flow to the input after focus
+        }
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyDown);
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [useInlineInput, isExerciseOver]);
+
   if (!interactiveText) {
     return <LoadingAnimation />;
   }
