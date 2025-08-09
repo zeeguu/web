@@ -11,6 +11,7 @@ import { APIContext } from "../../../contexts/APIContext.js";
 import ContextWithExchange from "../../components/ContextWithExchange.js";
 import ClozeContextWithExchange from "../../components/ClozeContextWithExchange.js";
 import AnimatedBottomInput from "../../components/AnimatedBottomInput.js";
+import useInlineInputAutoFocus from "../../../hooks/useInlineInputAutoFocus.js";
 
 // The user has to type the correct translation of a given L1 word in a L2 context. The L2 word is omitted in the context, so the user has to fill in the blank.
 // This tests the user's active knowledge.
@@ -40,6 +41,14 @@ export default function FindWordInContextCloze({
   const contextRef = useRef(null);
   const inputRef = useRef(null);
 
+  // Auto-focus functionality for inline input
+  useInlineInputAutoFocus({
+    enabled: useInlineInput,
+    isExerciseOver,
+    hasInteractiveText: !!interactiveText,
+    exerciseClassName: 'findWordInContextCloze'
+  });
+
   useEffect(() => {
     speech.stopAudio(); // Stop any pending speech from previous exercise
     setExerciseType(EXERCISE_TYPE);
@@ -65,31 +74,6 @@ export default function FindWordInContextCloze({
     );
     // eslint-disable-next-line
   }, [reload, exerciseBookmark]);
-
-  // Focus input when user starts typing
-  useEffect(() => {
-    if (!useInlineInput || isExerciseOver) return;
-
-    const handleKeyDown = (e) => {
-      // Only focus if it's a letter, number, or backspace key, not special keys
-      const isTypingKey = (e.key.length === 1 && !e.ctrlKey && !e.metaKey && !e.altKey) || 
-                          e.key === 'Backspace';
-      
-      if (isTypingKey) {
-        // Find the input element within the ClozeContextWithExchange component
-        const inputElement = document.querySelector('.findWordInContextCloze input[type="text"]');
-        if (inputElement && document.activeElement !== inputElement) {
-          inputElement.focus();
-          // The keydown event will naturally flow to the input after focus
-        }
-      }
-    };
-
-    document.addEventListener('keydown', handleKeyDown);
-    return () => {
-      document.removeEventListener('keydown', handleKeyDown);
-    };
-  }, [useInlineInput, isExerciseOver]);
 
   if (!interactiveText) {
     return <LoadingAnimation />;

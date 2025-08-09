@@ -142,22 +142,6 @@ export function TranslatableText({
     const highlightedWords = highlightExpression ? highlightExpression.split(" ").map((word) => removePunctuation(word).toLowerCase()) : [];
     const isWordHighlighted = highlightedWords.includes(removePunctuation(word.word).toLowerCase());
 
-    // Debug highlighting logic for case mismatch issues
-    if (highlightExpression) {
-      console.log('TranslatableText highlighting debug for word:', word.word, {
-        'word.id': word.id,
-        'word.word': word.word,
-        'word.word (removePunctuation)': removePunctuation(word.word),
-        'word.word (removePunctuation + toLowerCase)': removePunctuation(word.word).toLowerCase(),
-        'highlightExpression': highlightExpression,
-        'highlightExpression.split(" ")': highlightExpression.split(" "),
-        'highlightedWords (processed)': highlightedWords,
-        'isWordHighlighted': isWordHighlighted,
-        'isExerciseOver': isExerciseOver,
-        'isClozeWord': isClozeWord
-      });
-    }
-
     if (isExerciseOver) {
       if (word.id === firstClozeWordId && overrideBookmarkHighlightText) {
         // In case we want to override the highlighted bookmark

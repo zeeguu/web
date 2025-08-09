@@ -82,18 +82,6 @@ export default function TranslateL2toL1({
       </div>
 
       {/* Context - always at the top, never moves */}
-      {/* Debug info for highlighting issue */}
-      {console.log('TranslateL2toL1 Debug:', {
-        'exerciseBookmark.from': exerciseBookmark.from,
-        'exerciseBookmark.from type': typeof exerciseBookmark.from,
-        'isExerciseOver': isExerciseOver,
-        'context_tokenized sample': interactiveText?.paragraphsAsLinkedWordLists?.[0]?.linkedWords?.head ? 
-          [
-            interactiveText.paragraphsAsLinkedWordLists[0].linkedWords.head.word,
-            interactiveText.paragraphsAsLinkedWordLists[0].linkedWords.head.next?.word,
-            interactiveText.paragraphsAsLinkedWordLists[0].linkedWords.head.next?.next?.word
-          ] : 'no words available'
-      })}
       <ContextWithExchange
         exerciseBookmark={exerciseBookmark}
         interactiveText={interactiveText}

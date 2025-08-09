@@ -12,6 +12,7 @@ import LoadingAnimation from "../../../components/LoadingAnimation.js";
 import { SpeechContext } from "../../../contexts/SpeechContext.js";
 import { removePunctuation } from "../../../utils/text/preprocessing.js";
 import { APIContext } from "../../../contexts/APIContext.js";
+import useInlineInputAutoFocus from "../../../hooks/useInlineInputAutoFocus.js";
 
 // The user has to write the word they hear. A context with the word omitted is shown.
 // This tests the user's active knowledge.
@@ -42,6 +43,14 @@ export default function SpellWhatYouHear({
   const [useInlineInput, setUseInlineInput] = useState(true);
   const [shouldFocusInput, setShouldFocusInput] = useState(false);
   const exerciseBookmark = bookmarksToStudy[0];
+
+  // Auto-focus functionality for inline input
+  useInlineInputAutoFocus({
+    enabled: useInlineInput,
+    isExerciseOver,
+    hasInteractiveText: !!interactiveText,
+    exerciseClassName: 'spellWhatYouHear'
+  });
 
   async function handleSpeak() {
     setShouldFocusInput(false); // Unfocus during speech
@@ -133,7 +142,7 @@ export default function SpellWhatYouHear({
   }
 
   return (
-    <s.Exercise>
+    <s.Exercise className="spellWhatYouHear">
       {/* Instructions - visible during exercise, invisible when showing solution but still take space */}
       <div className="headlineWithMoreSpace" style={{ visibility: isExerciseOver ? 'hidden' : 'visible' }}>
         {strings.audioExerciseHeadline}
