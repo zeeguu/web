@@ -274,7 +274,7 @@ export function ClozeTranslatableText({
               }
             `}</style>
             <>
-              {showHint && inputValue === '' && (
+              {showHint && inputValue === '' && !isExerciseOver && (
                 <div
                   style={{
                     position: 'absolute',
