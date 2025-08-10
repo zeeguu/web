@@ -156,7 +156,10 @@ export function ClozeTranslatableText({
   }
 
   function handleInputChange(e) {
-    setHintVisible(false); // Hide hint on first interaction
+    // Only hide hint when user actually has typed something
+    if (e.target.value.length > 0) {
+      setHintVisible(false);
+    }
     
     let value = e.target.value;
     
@@ -278,7 +281,7 @@ export function ClozeTranslatableText({
             }}
             onClick={() => {
               if (!isCorrectAnswer && !isExerciseOver) {
-                setHintVisible(false);
+                // Don't hide hint immediately on click - let user see it until they type
                 if (inputRef.current) {
                   inputRef.current.focus();
                 }
@@ -331,7 +334,10 @@ export function ClozeTranslatableText({
                 placeholder={placeholder}
                 onChange={handleInputChange}
                 onKeyPress={handleInputKeyPress}
-                onFocus={() => setHintVisible(false)}
+                onFocus={() => {
+                  // Don't hide hint immediately on focus - let user see it until they type
+                  // The hint will be hidden when they actually start typing in handleInputChange
+                }}
                 disabled={isCorrectAnswer || isExerciseOver}
                 style={{
                   border: 'none',
