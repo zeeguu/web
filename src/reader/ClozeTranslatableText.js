@@ -28,6 +28,7 @@ export function ClozeTranslatableText({
   isCorrectAnswer = false,
   shouldFocus = true,
   showHint = true, // Whether to show "tap to type" hint
+  canTypeInline = false, // Whether this exercise type allows inline typing
 }) {
   const [translationCount, setTranslationCount] = useState(0);
   const [clozeWordIds, setClozeWordIds] = useState([]);
@@ -334,7 +335,7 @@ export function ClozeTranslatableText({
                 disabled={isCorrectAnswer || isExerciseOver}
                 style={{
                   border: 'none',
-                  borderBottom: `2px ${isExerciseOver || isCorrectAnswer ? 'solid' : 'dotted'} ${isExerciseOver || isCorrectAnswer ? '${orange500}' : '#333'}`,
+                  borderBottom: `${canTypeInline ? '2px dotted' : '1px solid'} ${isExerciseOver || isCorrectAnswer ? orange500 : '#333'}`,
                   background: 'transparent',
                   outline: 'none',
                   fontSize: 'inherit',

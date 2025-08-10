@@ -163,6 +163,7 @@ export default function SpellWhatYouHear({
           placeholder=""
           isCorrectAnswer={isCorrectAnswer}
           shouldFocus={shouldFocusInput}
+          canTypeInline={true}
         />
       ) : (
         <ContextWithExchange

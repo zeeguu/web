@@ -101,6 +101,7 @@ export default function MultipleChoiceAudio({
         isCorrectAnswer={false}
         shouldFocus={false} // Don't focus any hidden input
         showHint={false} // Don't show "tap to type" hint
+        canTypeInline={false}
       />
 
       {/* Audio buttons - below context during exercise */}

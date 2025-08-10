@@ -118,6 +118,7 @@ export default function TranslateWhatYouHear({
         isCorrectAnswer={isExerciseOver}
         shouldFocus={false} // Don't focus the hidden input - uses bottom input
         showHint={false} // Don't show "tap to type" hint - uses bottom input
+        canTypeInline={false}
       />
 
       {/* Button/Solution area - maintain consistent height, placed below context */}

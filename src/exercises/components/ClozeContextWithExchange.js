@@ -22,6 +22,7 @@ const ClozeContextWithExchange = forwardRef(function ClozeContextWithExchange(
     isCorrectAnswer,
     shouldFocus,
     showHint = true,
+    canTypeInline = false,
   },
   ref,
 ) {
@@ -53,6 +54,7 @@ const ClozeContextWithExchange = forwardRef(function ClozeContextWithExchange(
           isCorrectAnswer={isCorrectAnswer}
           shouldFocus={shouldFocus}
           showHint={showHint}
+          canTypeInline={canTypeInline}
         />
         {onExampleUpdated && isExerciseOver && (
           <div

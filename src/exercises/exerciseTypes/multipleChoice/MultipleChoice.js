@@ -185,6 +185,7 @@ export default function MultipleChoice({
         isCorrectAnswer={isExerciseOver}
         shouldFocus={false} // Don't focus the hidden input
         showHint={false} // Don't show "tap to type" hint
+        canTypeInline={false}
       />
 
       {/* Solution area - appears below context when exercise is over */}

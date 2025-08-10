@@ -109,28 +109,28 @@ export default function MultipleChoiceContext({
       <div style={{ visibility: isExerciseOver ? 'visible' : 'hidden' }}>
         {bookmarkProgressBar}
       </div>
-      {exerciseBookmarks.map((option, index) => (
-        <s.MultipleChoiceContext
-          key={index}
-          clicked={index === clickedIndex}
-          className={
-            clickedOption !== null ? (index === clickedOption ? (option.isExercise ? "correct" : "wrong") : "") : ""
-          }
-          onClick={(e) => notifyChoiceSelection(option.id, option.context, index, e)}
-        >
-          {option.left_ellipsis && <>...</>}
-          <span
-            dangerouslySetInnerHTML={{
-              __html: isExerciseOver
-                ? option.isExercise
+      {exerciseBookmarks
+        .filter((option) => !isExerciseOver || option.isExercise)
+        .map((option, index) => (
+          <s.MultipleChoiceContext
+            key={index}
+            clicked={index === clickedIndex}
+            className={
+              clickedOption !== null ? (index === clickedOption ? (option.isExercise ? "correct" : "wrong") : "") : ""
+            }
+            onClick={(e) => notifyChoiceSelection(option.id, option.context, index, e)}
+          >
+            {option.left_ellipsis && <>...</>}
+            <span
+              dangerouslySetInnerHTML={{
+                __html: isExerciseOver
                   ? option.context.replace(option.from, getHighlightedWord(option.from))
-                  : option.context.replace(option.from, `<b>${option.from}</b>`)
-                : option.context.replace(option.from, "_____"),
-            }}
-          />
-          {option.right_ellipsis && <>...</>}
-        </s.MultipleChoiceContext>
-      ))}
+                  : option.context.replace(option.from, "_____"),
+              }}
+            />
+            {option.right_ellipsis && <>...</>}
+          </s.MultipleChoiceContext>
+        ))}
     </s.Exercise>
   );
 }
