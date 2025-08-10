@@ -101,10 +101,9 @@ export default function BottomInput({
 
     let normalizedInput = normalizeAnswer(input);
     let normalizedAnswer = normalizeAnswer(solutionText);
-    let levDistance = levenshtein.get(normalizedInput, normalizedAnswer);
 
-    let userHasTypoInNativeLanguage = isL1Answer && levDistance === 1;
-    return normalizedInput === normalizedAnswer || userHasTypoInNativeLanguage;
+    // Auto-submit only for perfect matches - no typo tolerance
+    return normalizedInput === normalizedAnswer;
   }
 
   function checkResult() {
@@ -158,61 +157,65 @@ export default function BottomInput({
   const InputField = isIncorrect ? s.AnimatedInput : s.Input;
   return (
     <>
-      <div style={{ marginTop: '3em', marginBottom: '1em' }}>
+      <div style={{ marginTop: "3em", marginBottom: "1em" }}>
         {/* Input field - centered */}
-        <div style={{ 
-          display: 'flex', 
-          flexDirection: 'column',
-          alignItems: 'center',
-          marginBottom: '1em',
-          width: '100%'
-        }}>
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            marginBottom: "1em",
+            width: "100%",
+          }}
+        >
           <div className="type-feedback">{feedbackMessage !== "" && <p>{feedbackMessage}</p>}</div>
           <InputField
-              type="text"
-              placeholder={"Type in " + inputLanguageName}
-              className={distanceToCorrect >= 5 && correctWordCountInInput === 0 ? "wrong-border" : "almost-border"}
-              value={currentInput}
-              onChange={(e) => {
-                const newValue = e.target.value;
-                setCurrentInput(newValue);
-                
-                // Auto-submit if the answer is correct
-                if (checkIfCorrect(newValue)) {
-                  setTimeout(() => {
-                    handleCorrectAnswer(exerciseBookmark);
-                    setIsCorrect(true);
-                    setIsIncorrect(false);
-                  }, 200); // Small delay to show the typed word
-                }
-              }}
-              onKeyUp={(e) => {
-                if (e.key === "Enter") {
-                  checkResult();
-                }
-              }}
-              onAnimationEnd={() => setIsIncorrect(false)}
-              autoFocus
-              style={{
-                paddingLeft: "1.5em",
-                backgroundImage: `url(${getFlagImageUrl(answerLanguageCode)})`,
-                backgroundRepeat: "no-repeat",
-                backgroundSize: "1em 1em",
-                backgroundPosition: "left center",
-                backgroundPositionX: "0.4em",
-                width: '100%',
-                maxWidth: '300px'
-              }}
-            />
+            type="text"
+            placeholder={"Type in " + inputLanguageName}
+            className={distanceToCorrect >= 5 && correctWordCountInInput === 0 ? "wrong-border" : "almost-border"}
+            value={currentInput}
+            onChange={(e) => {
+              const newValue = e.target.value;
+              setCurrentInput(newValue);
+
+              // Auto-submit if the answer is correct
+              if (checkIfCorrect(newValue)) {
+                setTimeout(() => {
+                  handleCorrectAnswer(exerciseBookmark);
+                  setIsCorrect(true);
+                  setIsIncorrect(false);
+                }, 200); // Small delay to show the typed word
+              }
+            }}
+            onKeyUp={(e) => {
+              if (e.key === "Enter") {
+                checkResult();
+              }
+            }}
+            onAnimationEnd={() => setIsIncorrect(false)}
+            autoFocus
+            style={{
+              paddingLeft: "1.5em",
+              backgroundImage: `url(${getFlagImageUrl(answerLanguageCode)})`,
+              backgroundRepeat: "no-repeat",
+              backgroundSize: "1em 1em",
+              backgroundPosition: "left center",
+              backgroundPositionX: "0.4em",
+              width: "100%",
+              maxWidth: "300px",
+            }}
+          />
         </div>
-        
+
         {/* Buttons - side by side on all screen sizes */}
-        <div style={{ 
-          display: 'flex', 
-          justifyContent: 'center', 
-          gap: '1em',
-          flexWrap: 'wrap'
-        }}>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            gap: "1em",
+            flexWrap: "wrap",
+          }}
+        >
           <s.LeftFeedbackButton onClick={() => handleHint()} disabled={usedHint}>
             {strings.hint}
           </s.LeftFeedbackButton>
