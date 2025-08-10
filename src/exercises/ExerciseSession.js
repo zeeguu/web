@@ -371,7 +371,7 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
       updated_message,
       currentExerciseType,
       getCurrentSubSessionDuration(),
-      bookmark ? bookmark.id : null,
+      bookmark ? bookmark.user_word_id : null,
       dbExerciseSessionIdRef.current,
     );
   }

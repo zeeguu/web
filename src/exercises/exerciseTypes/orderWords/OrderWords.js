@@ -774,7 +774,7 @@ export default function OrderWords({
       message,
       EXERCISE_TYPE,
       getCurrentSubSessionDuration(activeSessionDuration, "ms"),
-      bookmarksToStudy[0].id,
+      bookmarksToStudy[0].user_word_id,
       exerciseSessionId,
     );
 
