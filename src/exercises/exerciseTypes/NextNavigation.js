@@ -27,6 +27,7 @@ import FeedbackModal from "../../components/FeedbackModal.js";
 import { FEEDBACK_OPTIONS } from "../../components/FeedbackConstants.js";
 import RemoveBookmarkModal from "../removeBookmark/RemoveBookmarkModal.js";
 import ReplaceExampleModal from "../replaceExample/ReplaceExampleModal.js";
+import AutoPronounceToggle from "../../components/AutoPronounceToggle.js";
 
 export default function NextNavigation({
   bookmarkMessagesToAPI,
@@ -253,6 +254,14 @@ export default function NextNavigation({
                 Do not show this word again
               </s.StyledGreyButton>
             </s.BottomRowSmallTopMargin>
+          )}
+          {!isMatchExercise && (
+            <div style={{ display: 'flex', justifyContent: 'center', marginTop: '8px' }}>
+              <AutoPronounceToggle
+                enabled={autoPronounceBookmark}
+                onToggle={toggleAutoPronounceState}
+              />
+            </div>
           )}
         </>
       )}
