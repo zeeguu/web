@@ -6,7 +6,7 @@ import LoadingAnimation from "../../../components/LoadingAnimation.js";
 import InteractiveText from "../../../reader/InteractiveText.js";
 import shuffle from "../../../assorted/fisherYatesShuffle.js";
 import { removePunctuation } from "../../../utils/text/preprocessing.js";
-import { TranslatableText } from "../../../reader/TranslatableText.js";
+import ClozeContextWithExchange from "../../components/ClozeContextWithExchange.js";
 import MultipleChoiceAudioBottomInput from "./MultipleChoiceAudioBottomInput.js";
 import { EXERCISE_TYPES } from "../../ExerciseTypeConstants.js";
 import SessionStorage from "../../../assorted/SessionStorage.js";
@@ -87,17 +87,21 @@ export default function MultipleChoiceAudio({
       </div>
 
       {/* Context - always at the top, never moves */}
-      <div className="contextExample">
-        <TranslatableText
-          isExerciseOver={isExerciseOver}
-          interactiveText={interactiveText}
-          translating={true}
-          pronouncing={false}
-          bookmarkToStudy={exerciseBookmark.from}
-          leftEllipsis={exerciseBookmark.left_ellipsis}
-          rightEllipsis={exerciseBookmark.right_ellipsis}
-        />
-      </div>
+      <ClozeContextWithExchange
+        exerciseBookmark={exerciseBookmark}
+        interactiveText={interactiveText}
+        translatedWords={null}
+        setTranslatedWords={() => {}}
+        isExerciseOver={isExerciseOver}
+        onExampleUpdated={() => {}}
+        onInputChange={() => {}} // No input handling needed for multiple choice audio
+        onInputSubmit={() => {}} // No input handling needed for multiple choice audio
+        inputValue=""
+        placeholder=""
+        isCorrectAnswer={false}
+        shouldFocus={false} // Don't focus any hidden input
+        showHint={false} // Don't show "tap to type" hint
+      />
 
       {/* Audio buttons - below context during exercise */}
       {!isExerciseOver && (
