@@ -251,16 +251,13 @@ export default function NextNavigation({
               }}
             >
               <s.StyledGreyButton className="styledGreyButton" onClick={() => setShowExcludeModal(true)}>
-                Do not show this word again
+                {isMatchExercise ? "Do not show some of the words again" : "Do not show this word again"}
               </s.StyledGreyButton>
             </s.BottomRowSmallTopMargin>
           )}
           {!isMatchExercise && (
-            <div style={{ display: 'flex', justifyContent: 'center', marginTop: '8px' }}>
-              <AutoPronounceToggle
-                enabled={autoPronounceBookmark}
-                onToggle={toggleAutoPronounceState}
-              />
+            <div style={{ display: "flex", justifyContent: "center", marginTop: "8px" }}>
+              <AutoPronounceToggle enabled={autoPronounceBookmark} onToggle={toggleAutoPronounceState} />
             </div>
           )}
         </>
