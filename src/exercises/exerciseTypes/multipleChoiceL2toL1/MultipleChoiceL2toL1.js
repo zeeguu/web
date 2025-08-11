@@ -3,7 +3,6 @@ import * as s from "../Exercise.sc.js";
 import MultipleChoicesInput from "../multipleChoice/MultipleChoicesInput.js";
 import LoadingAnimation from "../../../components/LoadingAnimation";
 import InteractiveText from "../../../reader/InteractiveText.js";
-import { TranslatableText } from "../../../reader/TranslatableText.js";
 import { EXERCISE_TYPES } from "../../ExerciseTypeConstants.js";
 import strings from "../../../i18n/definitions.js";
 import shuffle from "../../../assorted/fisherYatesShuffle";
@@ -12,6 +11,7 @@ import { SpeechContext } from "../../../contexts/SpeechContext.js";
 
 import { APIContext } from "../../../contexts/APIContext.js";
 import { TRANSLATE_WORD } from "../../ExerciseConstants.js";
+import ClozeContextWithExchange from "../../components/ClozeContextWithExchange.js";
 
 // The user has to select the correct L1 translation out of three. The L2 word is marked in bold in the context.
 // This tests the user's passive knowledge.
@@ -29,6 +29,7 @@ export default function MultipleChoiceL2toL1({
   isExerciseOver,
   resetSubSessionTimer,
   bookmarkProgressBar,
+  onExampleUpdated,
 }) {
   const api = useContext(APIContext);
   const [incorrectAnswer, setIncorrectAnswer] = useState("");
@@ -112,21 +113,25 @@ export default function MultipleChoiceL2toL1({
       </div>
 
       {/* Context - always at the top, never moves */}
-      <div className="contextExample">
-        <TranslatableText
-          isExerciseOver={isExerciseOver}
-          interactiveText={interactiveText}
-          translating={true}
-          pronouncing={false}
-          nonTranslatableWords={exerciseBookmark.from}
-          highlightExpression={exerciseBookmark.from}
-          translatedWords={translatedWords}
-          setTranslatedWords={setTranslatedWords}
-          exerciseType={EXERCISE_TYPE}
-          leftEllipsis={exerciseBookmark.left_ellipsis}
-          rightEllipsis={exerciseBookmark.right_ellipsis}
-        />
-      </div>
+      <ClozeContextWithExchange
+        exerciseBookmark={exerciseBookmark}
+        interactiveText={interactiveText}
+        translatedWords={translatedWords}
+        setTranslatedWords={setTranslatedWords}
+        isExerciseOver={isExerciseOver}
+        onExampleUpdated={onExampleUpdated}
+        translating={true}
+        pronouncing={false}
+        highlightExpression={exerciseBookmark.from}
+        onInputChange={() => {}} // No input handling needed for multiple choice
+        onInputSubmit={() => {}} // No input handling needed for multiple choice
+        inputValue=""
+        placeholder=""
+        isCorrectAnswer={false}
+        shouldFocus={false}
+        showHint={false}
+        canTypeInline={false}
+      />
 
       {/* Solution area - appears below context when exercise is over */}
       {isExerciseOver && (
