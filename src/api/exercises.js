@@ -5,9 +5,9 @@ Zeeguu_API.prototype.getBookmarksDueToday = function (count, callback) {
   this._getJSON(`bookmarks_due_today/${count}`, callback);
 };
 
-// All Scheduled Bookmarks
-Zeeguu_API.prototype.getAllScheduledBookmarks = function (isWithTokens, callback) {
-  let endpoint = `all_scheduled_bookmarks`;
+// All Scheduled User Words
+Zeeguu_API.prototype.getAllScheduledUserWords = function (isWithTokens, callback) {
+  let endpoint = `all_scheduled_user_words`;
   let payload = {
     with_tokens: isWithTokens,
   };
@@ -24,21 +24,42 @@ Zeeguu_API.prototype.getAllScheduledBookmarks = function (isWithTokens, callback
   else this._getJSON(endpoint, callback);
 };
 
-Zeeguu_API.prototype.getCountOfAllScheduledWords = function (callback) {
-  this._getJSON(`count_of_all_scheduled_words`, callback);
+Zeeguu_API.prototype.getCountOfAllScheduledUserWords = function (callback) {
+  this._getJSON(`count_of_all_scheduled_user_words`, callback);
 };
 
-// Bookmarks recommended to be studied today
+// User Words recommended to be studied today
+Zeeguu_API.prototype.getCountOfUserWordsRecommendedForPractice = function (callback) {
+  this._getJSON(`count_of_user_words_recommended_for_practice`, callback);
+};
+
+Zeeguu_API.prototype.getUserWordsRecommendedForPractice = function (callback) {
+  this._getJSON(`user_words_recommended_for_practice`, callback);
+};
+
+Zeeguu_API.prototype.getUserWordsNextInLearning = function (callback) {
+  this._getJSON(`user_words_next_in_learning`, callback);
+};
+
+// Backward compatibility (deprecated methods)
+Zeeguu_API.prototype.getAllScheduledBookmarks = function (isWithTokens, callback) {
+  return this.getAllScheduledUserWords(isWithTokens, callback);
+};
+
+Zeeguu_API.prototype.getCountOfAllScheduledWords = function (callback) {
+  return this.getCountOfAllScheduledUserWords(callback);
+};
+
 Zeeguu_API.prototype.getCountOfBookmarksRecommendedForPractice = function (callback) {
-  this._getJSON(`count_of_bookmarks_recommended_for_practice`, callback);
+  return this.getCountOfUserWordsRecommendedForPractice(callback);
 };
 
 Zeeguu_API.prototype.getBookmarksRecommendedForPractice = function (callback) {
-  this._getJSON(`bookmarks_recommended_for_practice`, callback);
+  return this.getUserWordsRecommendedForPractice(callback);
 };
 
 Zeeguu_API.prototype.getBookmarksNextInLearning = function (callback) {
-  this._getJSON(`bookmarks_next_in_learning`, callback);
+  return this.getUserWordsNextInLearning(callback);
 };
 
 Zeeguu_API.prototype.uploadExerciseFeedback = function (
