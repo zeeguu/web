@@ -39,6 +39,18 @@ export default function WordInContextExercise({
 
   const exerciseBookmark = bookmarksToStudy[0];
 
+  // Debug logging for ClickWordInContext issue
+  console.log("[ClickWordInContext Debug] Exercise initialized with bookmark:", {
+    bookmarkId: exerciseBookmark?.id,
+    userWordId: exerciseBookmark?.user_word_id,
+    from: exerciseBookmark?.from,
+    to: exerciseBookmark?.to,
+    context: exerciseBookmark?.context,
+    contextTokenized: exerciseBookmark?.context_tokenized,
+    sentenceI: exerciseBookmark?.t_sentence_i,
+    tokenI: exerciseBookmark?.t_token_i,
+  });
+
   useEffect(() => {
     speech.stopAudio(); // Stop any pending speech from previous exercise
     resetSubSessionTimer();
@@ -98,7 +110,8 @@ export default function WordInContextExercise({
       userTranslatedSequences.forEach((userTranslatedSequence) => {
         let wordsInUserTranslatedSequence = userTranslatedSequence.split(" ");
         wordsInUserTranslatedSequence.forEach((translatedWord) => {
-          if (equalAfterRemovingSpecialCharacters(translatedWord, wordInSolution)) {
+          // Make the comparison case-insensitive
+          if (equalAfterRemovingSpecialCharacters(translatedWord.toLowerCase(), wordInSolution.toLowerCase())) {
             solutionDiscovered = true;
           }
         });
@@ -132,12 +145,12 @@ export default function WordInContextExercise({
 
   return (
     <s.Exercise className={exerciseType}>
-      <div className="headlineWithMoreSpace" style={{ visibility: isExerciseOver ? 'hidden' : 'visible' }}>
+      <div className="headlineWithMoreSpace" style={{ visibility: isExerciseOver ? "hidden" : "visible" }}>
         {exerciseHeadline}
       </div>
       <h1 className="wordInContextHeadline">{removePunctuation(exerciseBookmark.to)}</h1>
-      <div style={{ visibility: isExerciseOver ? 'visible' : 'hidden', minHeight: '60px' }}>
-        {bookmarkProgressBar || <div style={{ height: '60px', width: '30%', margin: '0.1em auto 0.5em auto' }}></div>}
+      <div style={{ visibility: isExerciseOver ? "visible" : "hidden", minHeight: "60px" }}>
+        {bookmarkProgressBar || <div style={{ height: "60px", width: "30%", margin: "0.1em auto 0.5em auto" }}></div>}
       </div>
       <ContextWithExchange
         exerciseBookmark={exerciseBookmark}
