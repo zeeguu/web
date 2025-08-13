@@ -8,15 +8,8 @@ export function TranslatableText({
   interactiveText,
   translating,
   pronouncing,
-  translatedWords,
-  setTranslatedWords,
-  translatedWordPositions,
-  setTranslatedWordPositions,
   setIsRendered,
   highlightExpression,
-  highlightSentenceIndex,
-  highlightTokenIndex,
-  highlightTotalTokens,
   leftEllipsis,
   rightEllipsis,
   // exercise related
@@ -163,18 +156,10 @@ export function TranslatableText({
 
     // Position-based highlighting for exercises
     let isWordHighlighted = false;
-    if (highlightSentenceIndex !== null && highlightTokenIndex !== null && word.token) {
-      // Check if this word is at the correct position
-      // Note: highlightSentenceIndex and highlightTokenIndex are relative to context start
-      // but word.token.sent_i is absolute, so we need to adjust
-      const tokenCount = highlightTotalTokens || 1;
-      // We don't have context offset here, so we'll use absolute positions
-      // The positions passed should already be absolute
-      isWordHighlighted = word.token.sent_i === highlightSentenceIndex && 
-                         word.token.token_i >= highlightTokenIndex && 
-                         word.token.token_i < highlightTokenIndex + tokenCount;
+    if (isExerciseOver && interactiveText.shouldHighlightWord) {
+      isWordHighlighted = interactiveText.shouldHighlightWord(word);
     } else if (highlightExpression) {
-      // Fallback to word-based matching if position info is not available
+      // Fallback to word-based highlighting for non-exercises
       const highlightedWords = highlightExpression.split(" ").map((w) => removePunctuation(w).toLowerCase());
       isWordHighlighted = highlightedWords.includes(removePunctuation(word.word).toLowerCase());
     }
@@ -216,10 +201,6 @@ export function TranslatableText({
             wordUpdated={wordUpdated}
             translating={translating}
             pronouncing={pronouncing}
-            translatedWords={translatedWords}
-            setTranslatedWords={setTranslatedWords}
-            translatedWordPositions={translatedWordPositions}
-            setTranslatedWordPositions={setTranslatedWordPositions}
             disableTranslation={disableTranslation}
           />
         );
@@ -228,7 +209,7 @@ export function TranslatableText({
       if (isWordHighlighted) {
         return <span key={word.id} style={{ color: orange500, fontWeight: "bold" }}>{word.word + " "}</span>;
       }
-      if (!clozeWord || translatedWords) {
+      if (!clozeWord) {
         return (
           <TranslatableWord
             interactiveText={interactiveText}
@@ -237,10 +218,6 @@ export function TranslatableText({
             wordUpdated={wordUpdated}
             translating={translating}
             pronouncing={pronouncing}
-            translatedWords={translatedWords}
-            setTranslatedWords={setTranslatedWords}
-            translatedWordPositions={translatedWordPositions}
-            setTranslatedWordPositions={setTranslatedWordPositions}
             disableTranslation={disableTranslation}
           />
         );
@@ -305,8 +282,6 @@ export function TranslatableText({
           wordUpdated={wordUpdated}
           translating={translating}
           pronouncing={pronouncing}
-          translatedWords={translatedWords}
-          setTranslatedWords={setTranslatedWords}
           disableTranslation={disableTranslation}
         />
       );

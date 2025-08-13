@@ -25,6 +25,9 @@ export default class InteractiveText {
     zeeguuSpeech,
     contextIdentifier,
     formatting,
+    expectedSolution = null,
+    expectedPosition = null,
+    onSolutionFound = null,
   ) {
     // beginning of the constructor
     this.api = api;
@@ -42,6 +45,9 @@ export default class InteractiveText {
     _updateTokensWithBookmarks(this.previousBookmarks, this.paragraphs);
     this.paragraphsAsLinkedWordLists = this.paragraphs.map((sent) => new LinkedWordList(sent));
     this.clickedWords = []; // Track clicked words and their positions
+    this.expectedSolution = expectedSolution; // Words that should be clicked for exercises
+    this.expectedPosition = expectedPosition; // Position info for the expected solution
+    this.onSolutionFound = onSolutionFound; // Callback when solution is found
     if (language !== zeeguuSpeech.language) {
       this.zeeguuSpeech = new ZeeguuSpeech(api, language);
     } else {
@@ -60,6 +66,35 @@ export default class InteractiveText {
       sentenceIndex: word.token ? word.token.sent_i : null,
       tokenIndex: word.token ? word.token.token_i : null
     });
+    
+    // Check if this word is part of the expected solution
+    if (this.expectedSolution && this.onSolutionFound) {
+      const solutionWords = this.expectedSolution.split(" ").map(w => w.toLowerCase());
+      const clickedWord = word.word.toLowerCase();
+      
+      // First check if the word matches
+      if (solutionWords.includes(clickedWord)) {
+        // If we have position info, verify it's the correct instance
+        if (this.expectedPosition && word.token) {
+          const targetSentenceIndex = this.expectedPosition.sentenceIndex;
+          const targetTokenIndex = this.expectedPosition.tokenIndex;
+          const targetTotalTokens = this.expectedPosition.totalTokens || 1;
+          const contextOffset = this.expectedPosition.contextOffset || 0;
+          
+          // Adjust clicked word position relative to context
+          const adjustedSentIndex = word.token.sent_i - contextOffset;
+          
+          if (adjustedSentIndex === targetSentenceIndex && 
+              word.token.token_i >= targetTokenIndex && 
+              word.token.token_i < targetTokenIndex + targetTotalTokens) {
+            this.onSolutionFound(word);
+          }
+        } else {
+          // No position info - accept any word match
+          this.onSolutionFound(word);
+        }
+      }
+    }
   }
 
   // Get clicked words (for exercises)
@@ -78,6 +113,35 @@ export default class InteractiveText {
   // Clear clicked words (for exercise reset)
   clearClickedWords() {
     this.clickedWords = [];
+  }
+
+  // Check if a word should be highlighted (for solution display)
+  shouldHighlightWord(word) {
+    if (!this.expectedSolution || !word.token) return false;
+
+    const solutionWords = this.expectedSolution.split(" ").map(w => w.toLowerCase());
+    const wordToCheck = word.word.toLowerCase();
+
+    // First check if the word matches
+    if (!solutionWords.includes(wordToCheck)) return false;
+
+    // If we have position info, verify it's the correct instance
+    if (this.expectedPosition) {
+      const targetSentenceIndex = this.expectedPosition.sentenceIndex;
+      const targetTokenIndex = this.expectedPosition.tokenIndex;
+      const targetTotalTokens = this.expectedPosition.totalTokens || 1;
+      const contextOffset = this.expectedPosition.contextOffset || 0;
+      
+      // Adjust word position relative to context
+      const adjustedSentIndex = word.token.sent_i - contextOffset;
+      
+      return adjustedSentIndex === targetSentenceIndex && 
+             word.token.token_i >= targetTokenIndex && 
+             word.token.token_i < targetTokenIndex + targetTotalTokens;
+    }
+
+    // No position info - highlight any word match
+    return true;
   }
 
   translate(word, fuseWithNeighbours, onSuccess) {
