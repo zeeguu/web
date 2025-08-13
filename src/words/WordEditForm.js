@@ -1,13 +1,16 @@
 import * as s from "./WordEdit.sc";
 import * as st from "../exercises/bottomActions/FeedbackButtons.sc";
 import strings from "../i18n/definitions";
-import { useState } from "react";
+import { useState, useContext } from "react";
 import { MAX_WORDS_IN_BOOKMARK_FOR_EXERCISES } from "../exercises/ExerciseConstants";
 import isBookmarkExpression from "../utils/misc/isBookmarkExpression";
 import FullWidthErrorMsg from "../components/FullWidthErrorMsg.sc";
 import ReplaceExampleModal from "../exercises/replaceExample/ReplaceExampleModal";
 
+import { APIContext } from "../contexts/APIContext";
+
 export default function WordEditForm({ bookmark, errorMessage, handleClose, updateBookmark, deleteAction }) {
+  const api = useContext(APIContext);
   const [translation, setTranslation] = useState(bookmark.to);
   const [expression, setExpression] = useState(bookmark.from);
   const [context, setContext] = useState(bookmark.context);
@@ -105,12 +108,7 @@ export default function WordEditForm({ bookmark, errorMessage, handleClose, upda
 
         {bookmark.from.split(" ").length < MAX_WORDS_IN_BOOKMARK_FOR_EXERCISES && (
           <s.CustomCheckBoxDiv>
-            <input
-              style={{ width: "1.5em" }}
-              type={"checkbox"}
-              checked={fitForStudy}
-              onChange={handleFitForStudyCheck}
-            />
+            <input type="checkbox" checked={fitForStudy} onChange={handleFitForStudyCheck} />
             <label>Include Word in Exercises</label>
           </s.CustomCheckBoxDiv>
         )}
@@ -124,9 +122,9 @@ export default function WordEditForm({ bookmark, errorMessage, handleClose, upda
           value={context}
           onChange={typingContext}
         />
-        
+
         <s.LinkContainer>
-          <ReplaceExampleModal 
+          <ReplaceExampleModal
             exerciseBookmark={bookmark}
             onExampleUpdated={({ updatedBookmark }) => {
               setContext(updatedBookmark.context);
@@ -134,7 +132,6 @@ export default function WordEditForm({ bookmark, errorMessage, handleClose, upda
             renderAs="link"
           />
         </s.LinkContainer>
-
 
         {isNotEdited ? (
           <s.DoneButtonHolder>

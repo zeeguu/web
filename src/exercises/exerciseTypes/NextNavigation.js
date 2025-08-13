@@ -251,7 +251,7 @@ export default function NextNavigation({
               }}
             >
               <s.StyledGreyButton className="styledGreyButton" onClick={() => setShowExcludeModal(true)}>
-                {isMatchExercise ? "Do not show some of the words again" : "Do not show this word again"}
+                {isMatchExercise ? "Remove a word from exercises" : "Remove word from exercises"}
               </s.StyledGreyButton>
             </s.BottomRowSmallTopMargin>
           )}

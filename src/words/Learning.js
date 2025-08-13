@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 
 import LoadingAnimation from "../components/LoadingAnimation";
 import { setTitle } from "../assorted/setTitle";
@@ -6,6 +6,8 @@ import strings from "../i18n/definitions";
 import Word from "./Word";
 import { WEB_READER } from "../reader/ArticleReader";
 import CollapsablePanel from "../components/CollapsablePanel";
+import { StyledButton } from "../components/allButtons.sc";
+import AddCustomWordModal from "./AddCustomWordModal";
 
 import { APIContext } from "../contexts/APIContext";
 import { ExercisesCounterContext } from "../exercises/ExercisesCounterContext";
@@ -18,6 +20,7 @@ export default function Learning() {
   const [inLearning, setInLearning] = useState(null);
   const [inLearning_byLevel, setInLearning_byLevel] = useState(null);
   const [nextInLearning, setNextInLearning] = useState(false);
+  const [showAddWordModal, setShowAddWordModal] = useState(false);
 
   useEffect(() => {
     api.getAllScheduledBookmarks(false, (bookmarks) => {
@@ -50,6 +53,32 @@ export default function Learning() {
     updateExercisesCounter();
   }
 
+  function refreshWordList() {
+    // Refresh the word list after adding a custom word
+    api.getAllScheduledBookmarks(false, (bookmarks) => {
+      setInLearning(bookmarks);
+
+      let words_byLevel = { 0: [], 1: [], 2: [], 3: [], 4: [] };
+      bookmarks.forEach((word) => {
+        words_byLevel[word.level] = [...words_byLevel[word.level], word];
+      });
+
+      // Order by rank within the levels
+      [4, 3, 2, 1, 0].forEach((level) => {
+        words_byLevel[level] = words_byLevel[level].sort((a, b) => a.origin_rank - b.origin_rank);
+      });
+
+      setInLearning_byLevel(words_byLevel);
+    });
+
+    updateExercisesCounter();
+  }
+
+  function handleAddCustomWord() {
+    setShowAddWordModal(false);
+    refreshWordList();
+  }
+
   if (!inLearning || !inLearning_byLevel || !nextInLearning) {
     return <LoadingAnimation />;
   }
@@ -64,17 +93,25 @@ export default function Learning() {
 
   return (
     <>
-      <p>
-        Words you see in your exercises grouped by how far you've progressed them. Our spaced repetition algorithm
-        decides the ones you see in a given day.
-      </p>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1em" }}>
+        <p style={{ margin: 0 }}>
+          Words you see in your exercises grouped by how far you've progressed them. A spaced repetition algorithm
+          decides the ones you see in a given day.
+        </p>
+        <StyledButton onClick={() => setShowAddWordModal(true)}>+</StyledButton>
+      </div>
+
+      {showAddWordModal && (
+        <AddCustomWordModal onClose={() => setShowAddWordModal(false)} onSuccess={handleAddCustomWord} />
+      )}
+
       <>
         {inLearning.length === 0 && <p>No words being learned yet</p>}
 
         {[4, 3, 2, 1, 0].map((level) => (
-          <>
+          <React.Fragment key={level}>
             {inLearning_byLevel[level].length > 0 && (
-              <CollapsablePanel key={level} topMessage={topMessage(level, inLearning_byLevel[level].length)}>
+              <CollapsablePanel topMessage={topMessage(level, inLearning_byLevel[level].length)}>
                 {inLearning_byLevel[level].map((each) => (
                   <Word
                     key={each.id}
@@ -87,7 +124,7 @@ export default function Learning() {
                 ))}
               </CollapsablePanel>
             )}
-          </>
+          </React.Fragment>
         ))}
       </>
 

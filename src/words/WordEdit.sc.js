@@ -114,6 +114,53 @@ let FloatingButton = scStyled.div`
   z-index: 1;
 `;
 
+
+let ButtonContainer = scStyled.div`
+  display: flex;
+  justify-content: space-between;
+  margin-top: 2em;
+  gap: 1em;
+`;
+
+let HelpText = scStyled.p`
+  color: #666;
+  font-size: 0.9em;
+  font-style: italic;
+  margin: 1em 0;
+`;
+
+let ExamplesContainer = scStyled.div`
+  border: 1px solid #ddd;
+  border-radius: 0.5em;
+  padding: 1em;
+  margin: 1em 0;
+  background-color: #f9f9f9;
+`;
+
+let ExamplesHeading = scStyled.h4`
+  margin: 0 0 0.5em 0;
+  color: #333;
+  font-size: 0.9em;
+`;
+
+let ExampleOption = scStyled.div`
+  padding: 0.75em;
+  margin: 0.5em 0;
+  background-color: white;
+  border: 1px solid #e0e0e0;
+  border-radius: 0.3em;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  
+  &:hover {
+    background-color: #f0f0f0;
+  }
+  
+  &:active {
+    background-color: #e0e0e0;
+  }
+`;
+
 export {
   style,
   stylePhone,
@@ -128,4 +175,9 @@ export {
   LinkContainer,
   ExampleFieldWrapper,
   FloatingButton,
+  ButtonContainer,
+  HelpText,
+  ExamplesContainer,
+  ExamplesHeading,
+  ExampleOption,
 };

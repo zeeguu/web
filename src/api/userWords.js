@@ -194,3 +194,51 @@ Zeeguu_API.prototype.prioritizeBookmarksToStudy = function (
     if (setUpdatedBookmarks) setUpdatedBookmarks(bookmarks);
   });
 };
+
+Zeeguu_API.prototype.addCustomWord = function (
+  word,
+  translation,
+  fromLang,
+  toLang,
+  context,
+  callback,
+  errorCallback
+) {
+  const payload = JSON.stringify({
+    word: word,
+    translation: translation,
+    from_lang: fromLang,
+    to_lang: toLang,
+    context: context || ""
+  });
+  
+  fetch(this._appendSessionToUrl("add_custom_word"), {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: payload
+  })
+  .then(response => response.json())
+  .then(data => {
+    if (callback) callback(data);
+  })
+  .catch(error => {
+    if (errorCallback) errorCallback(error);
+  });
+};
+
+Zeeguu_API.prototype.getGeneratedExamples = function (
+  word,
+  fromLang,
+  toLang,
+  callback,
+  errorCallback
+) {
+  const url = `generate_examples/${encodeURIComponent(word)}/${fromLang}/${toLang}`;
+  this._getJSON(url, (result) => {
+    // Extract examples from the response
+    const examples = result.examples || [];
+    if (callback) callback(examples);
+  }, errorCallback);
+};

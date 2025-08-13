@@ -39,17 +39,6 @@ export default function WordInContextExercise({
 
   const exerciseBookmark = bookmarksToStudy[0];
 
-  // Debug logging for ClickWordInContext issue
-  console.log("[ClickWordInContext Debug] Exercise initialized with bookmark:", {
-    bookmarkId: exerciseBookmark?.id,
-    userWordId: exerciseBookmark?.user_word_id,
-    from: exerciseBookmark?.from,
-    to: exerciseBookmark?.to,
-    context: exerciseBookmark?.context,
-    contextTokenized: exerciseBookmark?.context_tokenized,
-    sentenceI: exerciseBookmark?.t_sentence_i,
-    tokenI: exerciseBookmark?.t_token_i,
-  });
 
   useEffect(() => {
     speech.stopAudio(); // Stop any pending speech from previous exercise

@@ -68,7 +68,9 @@ export default function RemoveBookmarkModal({
     setShowOtherForm(false);
     setOtherFeedback("");
     setOpen(!open);
-    setHasProvidedQuickFeedback(true);
+    if (setHasProvidedQuickFeedback) {
+      setHasProvidedQuickFeedback(true);
+    }
   }
 
   return (
