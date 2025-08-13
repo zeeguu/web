@@ -15,6 +15,8 @@ export default function TranslatableWord({
   pronouncing,
   translatedWords,
   setTranslatedWords,
+  translatedWordPositions,
+  setTranslatedWordPositions,
   disableTranslation,
 }) {
   const [showingAlterMenu, setShowingAlterMenu] = useState(false);
@@ -60,11 +62,15 @@ export default function TranslatableWord({
           setIsWordTranslating(false);
           setIsTranslationVisible(true);
         });
-      }
-      if (translatedWords) {
-        let copyOfWords = [...translatedWords];
-        copyOfWords.push(word.word);
-        setTranslatedWords(copyOfWords);
+      } else {
+        // For non-translatable words in exercises, track the click
+        interactiveText.trackWordClick(word);
+        if (translatedWords && setTranslatedWords) {
+          setTranslatedWords(interactiveText.getClickedWords());
+        }
+        if (translatedWordPositions && setTranslatedWordPositions) {
+          setTranslatedWordPositions(interactiveText.getClickedWordPositions());
+        }
       }
     }
     if (pronouncing || isClickedToPronounce) {

@@ -310,7 +310,7 @@ export default function IndividualExercise() {
     exerciseType === "Match" || exerciseType === "MultipleChoiceL2toL1" ? multipleBookmarks : [bookmark];
 
   return (
-    <APIContext.Provider value={mockApi}>
+    <APIContext.Provider value={api}>
       <SpeechContext.Provider value={mockSpeech}>
         <NarrowColumn>
           <s.ExercisesColumn>

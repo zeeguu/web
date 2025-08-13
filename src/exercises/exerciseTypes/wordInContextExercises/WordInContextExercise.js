@@ -35,10 +35,10 @@ export default function WordInContextExercise({
   const api = useContext(APIContext);
   const [interactiveText, setInteractiveText] = useState();
   const [translatedWords, setTranslatedWords] = useState([]);
+  const [translatedWordPositions, setTranslatedWordPositions] = useState([]);
   const speech = useContext(SpeechContext);
 
   const exerciseBookmark = bookmarksToStudy[0];
-
 
   useEffect(() => {
     speech.stopAudio(); // Stop any pending speech from previous exercise
@@ -92,19 +92,39 @@ export default function WordInContextExercise({
     if (userTranslatedSequences.length === 0) {
       return;
     }
-    let solutionDiscovered = false;
-    let solutionSplitIntoWords = tokenize(exerciseBookmark.from);
 
-    solutionSplitIntoWords.forEach((wordInSolution) => {
-      userTranslatedSequences.forEach((userTranslatedSequence) => {
-        let wordsInUserTranslatedSequence = userTranslatedSequence.split(" ");
-        wordsInUserTranslatedSequence.forEach((translatedWord) => {
-          // Make the comparison case-insensitive
-          if (equalAfterRemovingSpecialCharacters(translatedWord.toLowerCase(), wordInSolution.toLowerCase())) {
-            solutionDiscovered = true;
-          }
-        });
-      });
+    // Get the words that are part of the solution
+    const solutionWords = tokenize(exerciseBookmark.from).map((word) => word.toLowerCase());
+    
+    // Target position in the context (relative to context start)
+    const targetSentenceIndex = exerciseBookmark.t_sentence_i;
+    const targetTokenIndex = exerciseBookmark.t_token_i;
+    const targetTotalTokens = exerciseBookmark.t_total_token || 1;
+    const contextOffset = exerciseBookmark.context_sent || 0;
+
+    // Check if any clicked word is the correct solution
+    const solutionDiscovered = userTranslatedSequences.some((clickedWord, index) => {
+      // First check if the word matches
+      const clickedWords = clickedWord.split(" ");
+      const wordMatches = clickedWords.some((word) =>
+        solutionWords.some((solutionWord) => 
+          equalAfterRemovingSpecialCharacters(word.toLowerCase(), solutionWord)
+        )
+      );
+      
+      if (!wordMatches) return false;
+      
+      // If we have position info, verify it's the right instance of the word
+      if (translatedWordPositions && translatedWordPositions[index]) {
+        const pos = translatedWordPositions[index];
+        const adjustedSentIndex = pos.sentenceIndex - contextOffset;
+        return adjustedSentIndex === targetSentenceIndex && 
+               pos.tokenIndex >= targetTokenIndex && 
+               pos.tokenIndex < targetTokenIndex + targetTotalTokens;
+      }
+      
+      // No position info - accept the word match
+      return true;
     });
 
     if (solutionDiscovered && !isCorrect) {
@@ -146,9 +166,14 @@ export default function WordInContextExercise({
         interactiveText={interactiveText}
         translatedWords={translatedWords}
         setTranslatedWords={setTranslatedWords}
+        translatedWordPositions={translatedWordPositions}
+        setTranslatedWordPositions={setTranslatedWordPositions}
         isExerciseOver={isExerciseOver}
         onExampleUpdated={onExampleUpdated}
         highlightExpression={isExerciseOver ? exerciseBookmark.from : null}
+        highlightSentenceIndex={isExerciseOver ? (exerciseBookmark.t_sentence_i + (exerciseBookmark.context_sent || 0)) : null}
+        highlightTokenIndex={isExerciseOver ? exerciseBookmark.t_token_i : null}
+        highlightTotalTokens={isExerciseOver ? exerciseBookmark.t_total_token : null}
       />
       {showBottomInput && !isExerciseOver && (
         <BottomInput

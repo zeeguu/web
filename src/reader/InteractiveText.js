@@ -41,6 +41,7 @@ export default class InteractiveText {
     this.paragraphs = tokenizedParagraphs;
     _updateTokensWithBookmarks(this.previousBookmarks, this.paragraphs);
     this.paragraphsAsLinkedWordLists = this.paragraphs.map((sent) => new LinkedWordList(sent));
+    this.clickedWords = []; // Track clicked words and their positions
     if (language !== zeeguuSpeech.language) {
       this.zeeguuSpeech = new ZeeguuSpeech(api, language);
     } else {
@@ -50,6 +51,33 @@ export default class InteractiveText {
 
   getParagraphs() {
     return this.paragraphsAsLinkedWordLists;
+  }
+
+  // Track a clicked word for exercises
+  trackWordClick(word) {
+    this.clickedWords.push({
+      word: word.word,
+      sentenceIndex: word.token ? word.token.sent_i : null,
+      tokenIndex: word.token ? word.token.token_i : null
+    });
+  }
+
+  // Get clicked words (for exercises)
+  getClickedWords() {
+    return this.clickedWords.map(click => click.word);
+  }
+
+  // Get clicked word positions (for exercises)
+  getClickedWordPositions() {
+    return this.clickedWords.map(click => ({
+      sentenceIndex: click.sentenceIndex,
+      tokenIndex: click.tokenIndex
+    }));
+  }
+
+  // Clear clicked words (for exercise reset)
+  clearClickedWords() {
+    this.clickedWords = [];
   }
 
   translate(word, fuseWithNeighbours, onSuccess) {

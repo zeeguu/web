@@ -10,8 +10,13 @@ export function TranslatableText({
   pronouncing,
   translatedWords,
   setTranslatedWords,
+  translatedWordPositions,
+  setTranslatedWordPositions,
   setIsRendered,
   highlightExpression,
+  highlightSentenceIndex,
+  highlightTokenIndex,
+  highlightTotalTokens,
   leftEllipsis,
   rightEllipsis,
   // exercise related
@@ -80,24 +85,42 @@ export function TranslatableText({
     if (!nonTranslatableWords) return;
     let targetWords = nonTranslatableWords.split(" ");
     let word = interactiveText.paragraphsAsLinkedWordLists[0].linkedWords.head;
+    let foundIds = [];
+    
     while (word) {
-      if (removePunctuation(word.word).toLowerCase() === targetWords[0].toLowerCase()) {
-        let copyOfFoundIds = [...nonTranslatableWordIds];
-        for (let index = 0; index < targetWords.length; index++) {
-          if (removePunctuation(word.word).toLowerCase() === targetWords[index].toLowerCase()) {
-            copyOfFoundIds.push(word.id);
-            word = word.next;
+      // Check if this word matches any word in the target phrase
+      let wordMatches = false;
+      for (let targetWord of targetWords) {
+        if (removePunctuation(word.word).toLowerCase() === targetWord.toLowerCase()) {
+          wordMatches = true;
+          break;
+        }
+      }
+      
+      if (wordMatches) {
+        // Try to match the entire phrase starting from this position
+        let tempWord = word;
+        let tempFoundIds = [];
+        let matched = true;
+        
+        for (let index = 0; index < targetWords.length && tempWord; index++) {
+          if (removePunctuation(tempWord.word).toLowerCase() === targetWords[index].toLowerCase()) {
+            tempFoundIds.push(tempWord.id);
+            tempWord = tempWord.next;
           } else {
-            copyOfFoundIds = [...nonTranslatableWordIds];
-            word = word.next;
+            matched = false;
             break;
           }
         }
-        setNonTranslatableWordIds(copyOfFoundIds);
-        if (copyOfFoundIds.length === targetWords.length) break;
-      } else {
-        word = word.next;
+        
+        if (matched && tempFoundIds.length === targetWords.length) {
+          // Found the complete phrase
+          foundIds = tempFoundIds;
+          setNonTranslatableWordIds(foundIds);
+          break;
+        }
       }
+      word = word.next;
     }
   }
 
@@ -138,9 +161,23 @@ export function TranslatableText({
     // Check if this word is part of the cloze (hidden) text
     const isClozeWord = clozeWordIds.includes(word.id);
 
-    // If highlightExpression is defined, the bookmark is highlighted, otherwise highlightedWords will be set to an empty array to avoid runtime error
-    const highlightedWords = highlightExpression ? highlightExpression.split(" ").map((word) => removePunctuation(word).toLowerCase()) : [];
-    const isWordHighlighted = highlightedWords.includes(removePunctuation(word.word).toLowerCase());
+    // Position-based highlighting for exercises
+    let isWordHighlighted = false;
+    if (highlightSentenceIndex !== null && highlightTokenIndex !== null && word.token) {
+      // Check if this word is at the correct position
+      // Note: highlightSentenceIndex and highlightTokenIndex are relative to context start
+      // but word.token.sent_i is absolute, so we need to adjust
+      const tokenCount = highlightTotalTokens || 1;
+      // We don't have context offset here, so we'll use absolute positions
+      // The positions passed should already be absolute
+      isWordHighlighted = word.token.sent_i === highlightSentenceIndex && 
+                         word.token.token_i >= highlightTokenIndex && 
+                         word.token.token_i < highlightTokenIndex + tokenCount;
+    } else if (highlightExpression) {
+      // Fallback to word-based matching if position info is not available
+      const highlightedWords = highlightExpression.split(" ").map((w) => removePunctuation(w).toLowerCase());
+      isWordHighlighted = highlightedWords.includes(removePunctuation(word.word).toLowerCase());
+    }
 
     if (isExerciseOver) {
       if (word.id === firstClozeWordId && overrideBookmarkHighlightText) {
@@ -181,6 +218,8 @@ export function TranslatableText({
             pronouncing={pronouncing}
             translatedWords={translatedWords}
             setTranslatedWords={setTranslatedWords}
+            translatedWordPositions={translatedWordPositions}
+            setTranslatedWordPositions={setTranslatedWordPositions}
             disableTranslation={disableTranslation}
           />
         );
@@ -200,6 +239,8 @@ export function TranslatableText({
             pronouncing={pronouncing}
             translatedWords={translatedWords}
             setTranslatedWords={setTranslatedWords}
+            translatedWordPositions={translatedWordPositions}
+            setTranslatedWordPositions={setTranslatedWordPositions}
             disableTranslation={disableTranslation}
           />
         );

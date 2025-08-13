@@ -9,11 +9,16 @@ const ContextWithExchange = forwardRef(function ContextWithExchange(
     interactiveText,
     translatedWords,
     setTranslatedWords,
+    translatedWordPositions,
+    setTranslatedWordPositions,
     isExerciseOver,
     onExampleUpdated,
     translating = true,
     pronouncing = false,
     highlightExpression,
+    highlightSentenceIndex,
+    highlightTokenIndex,
+    highlightTotalTokens,
   },
   ref,
 ) {
@@ -33,10 +38,15 @@ const ContextWithExchange = forwardRef(function ContextWithExchange(
           pronouncing={pronouncing}
           translatedWords={translatedWords}
           setTranslatedWords={setTranslatedWords}
+          translatedWordPositions={translatedWordPositions}
+          setTranslatedWordPositions={setTranslatedWordPositions}
           nonTranslatableWords={exerciseBookmark.from}
           leftEllipsis={exerciseBookmark.left_ellipsis}
           rightEllipsis={exerciseBookmark.right_ellipsis}
           highlightExpression={highlightExpression}
+          highlightSentenceIndex={highlightSentenceIndex}
+          highlightTokenIndex={highlightTokenIndex}
+          highlightTotalTokens={highlightTotalTokens}
         />
         {onExampleUpdated && isExerciseOver && (
           <div
