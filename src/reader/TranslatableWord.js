@@ -224,7 +224,7 @@ export default function TranslatableWord({
             translation0={word.translation}
             ref={refToTranslation}
           >
-            <div className="translationContainer">
+            <span className="translationContainer">
               <span className="hide low-oppacity translation-icon">
                 <VisibilityOffIcon
                   fontSize="8px"
@@ -253,7 +253,7 @@ export default function TranslatableWord({
                   />
                 </span>
               )}
-            </div>
+            </span>
           </z-tran>
         )}
         <z-orig>
