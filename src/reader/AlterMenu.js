@@ -51,9 +51,9 @@ export default function AlterMenu({
           delay={0}
         ></LoadingAnimation>
       ) : (
-        word.alternatives.map((each) => (
+        word.alternatives.map((each, index) => (
           <div
-            key={each.translation}
+            key={`${each.translation}-${each.source}-${index}`}
             onClick={(e) =>
               selectAlternative(each.translation, shortenSource(each))
             }
