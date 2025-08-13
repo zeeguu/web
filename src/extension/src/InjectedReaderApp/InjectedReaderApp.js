@@ -36,7 +36,7 @@ import { SpeechContext } from "../../../contexts/SpeechContext";
 import ZeeguuSpeech from "../../../speech/APIBasedSpeech";
 import useActivityTimer from "../../../hooks/useActivityTimer";
 import useShadowRef from "../../../hooks/useShadowRef";
-import ratio from "../../../utils/basic/ratio";
+import useScrollTracking from "../../../hooks/useScrollTracking";
 
 import DigitalTimer from "../../../components/DigitalTimer";
 import Button from "@mui/material/Button";
@@ -68,6 +68,7 @@ export function InjectedReaderApp({ modalIsOpen, setModalIsOpen, api, url, autho
   const [personalCopySaved, setPersonalCopySaved] = useState(false);
   const [articleImage, setarticleImage] = useState();
   const [bookmarks, setBookmarks] = useState([]);
+  // viewPortSettings now provided by useScrollTracking hook
 
   const [logContext, setLogContext] = useState("ARTICLE");
   const logContextRef = useRef({});
@@ -77,33 +78,34 @@ export function InjectedReaderApp({ modalIsOpen, setModalIsOpen, api, url, autho
   const [activeSessionDuration, clockActive] = useActivityTimer(uploadActivity);
   const [readingSessionId, setReadingSessionId] = useState();
 
+  // Use the shared scroll tracking hook
+  const {
+    scrollPosition,
+    viewPortSettings,
+    handleScroll,
+    sendFinalScrollEvent,
+    uploadScrollActivity,
+    initializeScrollTracking,
+    scrollEvents,
+  } = useScrollTracking({
+    api,
+    articleID,
+    articleInfo,
+    readingSessionId,
+    activityTimer: activeSessionDuration,
+    scrollHolderId: "scrollHolder",
+    bottomRowId: "bottomRow",
+    sampleFrequency: 1,
+    source: EXTENSION_SOURCE,
+  });
+
   const activeSessionDurationRef = useShadowRef(activeSessionDuration);
   const readingSessionIdRef = useShadowRef(readingSessionId);
+  const viewPortSettingsRef = useShadowRef(viewPortSettings);
 
   function uploadActivity() {
-    if (readingSessionIdRef.current) {
-      api.readingSessionUpdate(
-        readingSessionIdRef.current,
-        activeSessionDurationRef.current
-      );
-      
-      // Send periodic SCROLL events with accumulated scroll data
-      if (scrollEvents.current && scrollEvents.current.length > 0 && articleID && articleInfo) {
-        console.log('📊 Sending periodic SCROLL event:', {
-          articleID,
-          scrollEventsCount: scrollEvents.current.length,
-          scrollData: scrollEvents.current.slice(0, 5) // Show first 5 entries
-        });
-        api.logUserActivity(
-          api.SCROLL,
-          articleID,
-          scrollEvents.current.length,
-          JSON.stringify(scrollEvents.current).slice(0, 4096),
-          articleInfo.source_id
-        );
-        // Keep the events for the final scroll event too
-      }
-    }
+    // Delegate scroll activity to the hook
+    uploadScrollActivity();
   }
 
   function updateBookmarks() {
@@ -113,10 +115,7 @@ export function InjectedReaderApp({ modalIsOpen, setModalIsOpen, api, url, autho
       });
   }
 
-  const [scrollPosition, setScrollPosition] = useState();
-  const scrollEvents = useRef();
-  const lastSampleScroll = useRef();
-  const SCROLL_SAMPLE_FREQUENCY = 1; // Sample Every second
+  // Scroll tracking is now handled by useScrollTracking hook
 
   const openSettings = () => {
     window.open("https://www.zeeguu.org/account_settings/options", "_blank");
@@ -149,36 +148,7 @@ export function InjectedReaderApp({ modalIsOpen, setModalIsOpen, api, url, autho
 
   useUILanguage();
 
-  function getScrollRatio() {
-    let scrollElement = document.getElementById("scrollHolder");
-    let scrollY = scrollElement.scrollTop;
-    let bottomRowHeight = document.getElementById("bottomRow");
-    if (!bottomRowHeight) {
-      bottomRowHeight = 450; // 450 Is a default in case we can't acess the property
-    } else {
-      bottomRowHeight = bottomRowHeight.offsetHeight;
-    }
-    let endArticle =
-      scrollElement.scrollHeight - scrollElement.clientHeight - bottomRowHeight;
-
-    // Should we allow the ratio to go above 1?
-    // Above 1 is the area where the feedback + exercises are.
-    return ratio(scrollY, endArticle);
-  }
-
-  const handleScroll = () => {
-    let ratio = getScrollRatio();
-    setScrollPosition(ratio);
-    let percentage = Math.floor(ratio * 100);
-    let currentSessionDuration = activeSessionDurationRef.current;
-    if (
-      currentSessionDuration - lastSampleScroll.current >=
-      SCROLL_SAMPLE_FREQUENCY
-    ) {
-      scrollEvents.current.push([currentSessionDuration, percentage]);
-      lastSampleScroll.current = currentSessionDuration;
-    }
-  };
+  // Scroll ratio calculation and scroll handling are now provided by useScrollTracking hook
 
   function logFocus() {
     api.logUserActivity(
@@ -201,9 +171,7 @@ export function InjectedReaderApp({ modalIsOpen, setModalIsOpen, api, url, autho
     const timedOutTimer = setTimeout(() => {
       setIsTimedOut(true);
     }, 10000);
-    scrollEvents.current = [];
-    lastSampleScroll.current = 0;
-    setScrollPosition(0);
+    initializeScrollTracking();
     
     // Use pre-fetched fragment data if available
     if (fragmentData) {
@@ -347,13 +315,7 @@ export function InjectedReaderApp({ modalIsOpen, setModalIsOpen, api, url, autho
   function handleClose() {
     setModalIsOpen(false);
     uploadActivity();
-    api.logUserActivity(
-      api.SCROLL,
-      articleID,
-      scrollEvents.current.length,
-      JSON.stringify(scrollEvents.current).slice(0, 4096),
-      articleInfo.source_id
-    );
+    sendFinalScrollEvent();
     api.logUserActivity(api.ARTICLE_CLOSED, articleID, "", EXTENSION_SOURCE);
     window.removeEventListener("focus", logFocus);
     window.removeEventListener("blur", logBlur);

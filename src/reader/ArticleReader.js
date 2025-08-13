@@ -1,4 +1,4 @@
-import { useEffect, useState, useContext, useRef } from "react";
+import { useEffect, useState, useContext, useCallback } from "react";
 import { useLocation, useHistory } from "react-router-dom";
 
 import { UserContext } from "../contexts/UserContext";
@@ -22,8 +22,8 @@ import ReviewVocabularyInfoBox from "./ReviewVocabularyInfoBox";
 import ArticleAuthors from "./ArticleAuthors";
 import useActivityTimer from "../hooks/useActivityTimer";
 import useShadowRef from "../hooks/useShadowRef";
+import useScrollTracking from "../hooks/useScrollTracking";
 import strings from "../i18n/definitions";
-import { getScrollRatio } from "../utils/misc/getScrollLocation";
 import useUserPreferences from "../hooks/useUserPreferences";
 import ArticleStatInfo from "../components/ArticleStatInfo";
 import DigitalTimer from "../components/DigitalTimer";
@@ -61,11 +61,9 @@ export default function ArticleReader({ teacherArticleID }) {
   const [interactiveFragments, setInteractiveFragments] = useState();
   const { translateInReader, pronounceInReader, updateTranslateInReader, updatePronounceInReader } =
     useUserPreferences(api);
-  const [scrollPosition, setScrollPosition] = useState();
   const [readerReady, setReaderReady] = useState();
   const [answerSubmitted, setAnswerSubmitted] = useState(false);
   const [clickedOnReviewVocab, setClickedOnReviewVocab] = useState(false);
-  const [viewPortSettings, setViewPortSettings] = useState("");
 
   const { userDetails } = useContext(UserContext);
   const history = useHistory();
@@ -74,38 +72,30 @@ export default function ArticleReader({ teacherArticleID }) {
   const [readingSessionId, setReadingSessionId] = useState();
   const [bookmarks, setBookmarks] = useState([]);
 
-  const scrollEvents = useRef();
-
-  const activityTimerRef = useShadowRef(activityTimer);
-  const readingSessionIdRef = useShadowRef(readingSessionId);
   const clickedOnReviewVocabRef = useShadowRef(clickedOnReviewVocab);
-  const viewPortSettingsRef = useShadowRef(viewPortSettings);
 
-  const lastSampleTimer = useRef();
-  const SCROLL_SAMPLE_FREQUENCY = 1; // Sample Every second
+  // Use the shared scroll tracking hook
+  const {
+    scrollPosition,
+    handleScroll,
+    sendFinalScrollEvent,
+    uploadScrollActivity,
+    initializeScrollTracking,
+  } = useScrollTracking({
+    api,
+    articleID,
+    articleInfo,
+    readingSessionId,
+    activityTimer,
+    scrollHolderId: "scrollHolder",
+    bottomRowId: "bottomRow",
+    sampleFrequency: 1,
+    source: WEB_READER,
+  });
 
   function uploadActivity() {
-    // It can happen that the timer already ticks before we have a reading session from the server.
-    if (readingSessionIdRef.current) {
-      api.readingSessionUpdate(readingSessionIdRef.current, activityTimerRef.current);
-      
-      // Send periodic SCROLL events with accumulated scroll data
-      if (scrollEvents.current && scrollEvents.current.length > 0 && articleID && articleInfo) {
-        console.log('📊 Sending periodic SCROLL event:', {
-          articleID,
-          scrollEventsCount: scrollEvents.current.length,
-          scrollData: scrollEvents.current.slice(0, 5) // Show first 5 entries
-        });
-        api.logUserActivity(
-          api.SCROLL,
-          articleID,
-          scrollEvents.current.length,
-          JSON.stringify(scrollEvents.current).slice(0, 4096),
-          articleInfo.source_id
-        );
-        // Keep the events for the final scroll event too
-      }
-    }
+    // Delegate scroll activity to the hook
+    uploadScrollActivity();
   }
 
   useEffect(() => {
@@ -135,34 +125,11 @@ export default function ArticleReader({ teacherArticleID }) {
     onBlur(api, articleID, WEB_READER);
   };
 
-  function addPositionToScrollEventTracker(bottomRowElement) {
-    // We use this to avoid counting the feedback elements
-    // as part of the article length when updating the
-    // scroll bar.
-    // 450 Is a default in case we can't access the property
-    let bottomRowHeight = 450;
-    if (bottomRowElement) {
-      bottomRowHeight = bottomRowElement.offsetHeight;
-    }
-    let ratio = getScrollRatio(bottomRowHeight);
-    setScrollPosition(ratio);
-    let percentage = Math.floor(ratio * 100);
-    let currentReadingTimer = activityTimerRef.current;
-    if (currentReadingTimer - lastSampleTimer.current >= SCROLL_SAMPLE_FREQUENCY) {
-      scrollEvents.current.push([currentReadingTimer, percentage]);
-      lastSampleTimer.current = currentReadingTimer;
-    }
-  }
+  // Scroll handling is now done by the useScrollTracking hook
 
-  const handleScroll = () => {
-    let bottomRowElement = document.getElementById("bottomRow");
-    addPositionToScrollEventTracker(bottomRowElement);
-  };
-
-  function updateViewportSize() {
+  const updateViewportSize = useCallback(() => {
     try {
       let scrollElement = document.getElementById("scrollHolder");
-      let textElement = document.getElementById("text");
       let bottomRow = document.getElementById("bottomRow");
       if (last_reading_percentage) {
         let currentScrollHeight = scrollElement.scrollHeight - scrollElement.clientHeight - bottomRow.clientHeight;
@@ -172,18 +139,11 @@ export default function ArticleReader({ teacherArticleID }) {
           behavior: "smooth",
         });
       }
-      setViewPortSettings(
-        JSON.stringify({
-          scrollHeight: scrollElement.scrollHeight,
-          clientHeight: scrollElement.clientHeight,
-          textHeight: textElement.clientHeight,
-          bottomRowHeight: bottomRow.clientHeight,
-        }),
-      );
+      // Viewport settings are handled automatically by useScrollTracking hook
     } catch {
       console.log("Failed to get elements to scroll.");
     }
-  }
+  }, [last_reading_percentage]);
 
   useEffect(() => {
     if (interactiveFragments !== undefined) {
@@ -191,12 +151,11 @@ export default function ArticleReader({ teacherArticleID }) {
         updateViewportSize();
       }, 250);
     }
-  }, [interactiveFragments, last_reading_percentage]);
+  }, [interactiveFragments, last_reading_percentage, updateViewportSize]);
 
   function onCreate() {
-    scrollEvents.current = [];
-    lastSampleTimer.current = 0;
-    setScrollPosition(0);
+    // Initialize scroll tracking using the hook
+    initializeScrollTracking();
 
     api.getArticleInfo(articleID, (articleInfo) => {
       setInteractiveFragments(
@@ -249,15 +208,7 @@ export default function ArticleReader({ teacherArticleID }) {
 
   function componentWillUnmount() {
     uploadActivity();
-    if (articleInfo) {
-      api.logUserActivity(
-        api.SCROLL,
-        articleID,
-        viewPortSettingsRef.current,
-        JSON.stringify(scrollEvents.current).slice(0, 4096),
-        articleInfo.source_id
-      );
-    }
+    sendFinalScrollEvent();
     api.logUserActivity(api.ARTICLE_CLOSED, articleID, "", WEB_READER);
     window.removeEventListener("focus", handleFocus);
     window.removeEventListener("blur", handleBlur);
@@ -355,8 +306,9 @@ export default function ArticleReader({ teacherArticleID }) {
 
           <s.MainText>
             {interactiveFragments &&
-              interactiveFragments.map((interactiveText) => (
+              interactiveFragments.map((interactiveText, index) => (
                 <TranslatableText
+                  key={index}
                   interactiveText={interactiveText}
                   translating={translateInReader}
                   pronouncing={pronounceInReader}
