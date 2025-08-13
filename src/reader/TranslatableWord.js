@@ -60,7 +60,13 @@ export default function TranslatableWord({
         });
       } else {
         // For non-translatable words in exercises, track the click
-        interactiveText.trackWordClick(word);
+        console.log("Clicking on non-translatable word:", word.word, "disableTranslation:", disableTranslation);
+        if (interactiveText.trackWordClick) {
+          console.log("Calling trackWordClick for:", word.word);
+          interactiveText.trackWordClick(word);
+        } else {
+          console.log("trackWordClick method not available on interactiveText");
+        }
       }
     }
     if (pronouncing || isClickedToPronounce) {

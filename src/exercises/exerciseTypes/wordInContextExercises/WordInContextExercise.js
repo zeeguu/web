@@ -8,6 +8,7 @@ import { SpeechContext } from "../../../contexts/SpeechContext.js";
 import { removePunctuation } from "../../../utils/text/preprocessing.js";
 import { APIContext } from "../../../contexts/APIContext.js";
 import ContextWithExchange from "../../components/ContextWithExchange.js";
+import InteractiveExerciseText from "../../../reader/InteractiveExerciseText.js";
 
 //shared code for ClickWordInContext and FindWordInContext exercises
 //The difference between the two is that in FindWordInContext the user can choose to either click on the word or type the word.
@@ -72,8 +73,9 @@ export default function WordInContextExercise({
       contextOffset: exerciseBookmark.context_sent || 0
     };
 
+
     setInteractiveText(
-      new InteractiveText(
+      new InteractiveExerciseText(
         exerciseBookmark.context_tokenized,
         exerciseBookmark.source_id,
         api,
