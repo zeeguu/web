@@ -1,13 +1,13 @@
-import { useState, useContext } from "react";
+import { useContext, useState } from "react";
 import Modal from "@mui/material/Modal";
 import * as s from "./WordEdit.sc";
 import { ModalWrapper } from "../components/modal_shared/Modal.sc";
-import { FeedbackSubmit, FeedbackCancel, FeedbackButton } from "../exercises/bottomActions/FeedbackButtons.sc";
+import { FeedbackCancel, FeedbackSubmit } from "../exercises/bottomActions/FeedbackButtons.sc";
 import FullWidthErrorMsg from "../components/FullWidthErrorMsg.sc";
 import { APIContext } from "../contexts/APIContext";
 import { UserContext } from "../contexts/UserContext";
 import LoadingAnimation from "../components/LoadingAnimation";
-import { StyledGreyButton } from "../exercises/exerciseTypes/Exercise.sc";
+import { validateWordInContext } from "../utils/validation/wordContextValidation";
 
 export default function AddCustomWordModal({ onClose, onSuccess }) {
   const api = useContext(APIContext);
@@ -54,21 +54,10 @@ export default function AddCustomWordModal({ onClose, onSuccess }) {
     }
 
     // Validate that the word appears only once in the context
-    const wordToFind = word.trim().toLowerCase();
-    const contextText = context.trim().toLowerCase();
-    
-    // Count occurrences using a simple regex approach
-    const wordPattern = new RegExp(`\\b${wordToFind.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\b`, 'g');
-    const matches = contextText.match(wordPattern);
-    const occurrenceCount = matches ? matches.length : 0;
-    
-    if (occurrenceCount === 0) {
-      setErrorMessage(`The word/phrase "${word.trim()}" does not appear in the context. Please check your spelling or provide a different context.`);
-      return;
-    }
-    
-    if (occurrenceCount > 1) {
-      setErrorMessage(`The word/phrase "${word.trim()}" appears ${occurrenceCount} times in the context. Please provide a context where it appears exactly once to avoid ambiguity in exercises.`);
+    const validation = validateWordInContext(word.trim(), context.trim());
+
+    if (!validation.valid) {
+      setErrorMessage(validation.errorMessage);
       return;
     }
 
@@ -98,7 +87,7 @@ export default function AddCustomWordModal({ onClose, onSuccess }) {
       (error) => {
         setIsLoading(false);
         console.error("Error adding custom word:", error);
-        
+
         // Display specific error message from backend if available
         if (error && error.detail) {
           setErrorMessage(error.detail);
