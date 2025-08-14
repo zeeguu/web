@@ -24,6 +24,7 @@ export default function Word({
   hideLevelIndicator = false,
   isOnCongratulationsPage,
   disableEdit = false,
+  compact = false,
 }) {
   const [showWordsModal, setShowWordsModal] = useState(false);
 
@@ -76,6 +77,7 @@ export default function Word({
       <s.Word 
         key={bookmark.id} 
         className={removing ? 'removing' : ''}
+        compact={compact}
       >
         <CenteredRow>
           {isReview && bookmark.fit_for_study && (
@@ -109,16 +111,17 @@ export default function Word({
             />
           )}
 
-          {!isReview && <SpeakButton bookmarkToStudy={bookmark} styling={square} />}
-          <s.WordPair>
+          {!isReview && !compact && <SpeakButton bookmarkToStudy={bookmark} styling={square} />}
+          <s.WordPair compact={compact}>
             <div className="from" style={style_grayed_out}>
               {bookmark.from}
-              {showRanking && (
+              {(showRanking || compact) && bookmark.origin_rank && (
                 <sup
                   style={{
                     fontWeight: "300",
-                    marginLeft: "0.5em",
-                    fontSize: "xx-small",
+                    marginLeft: compact ? "0.2em" : "0.5em",
+                    fontSize: compact ? "x-small" : "xx-small",
+                    color: compact ? "#888" : "inherit",
                   }}
                 >
                   {bookmark.origin_rank}

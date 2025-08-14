@@ -2,7 +2,7 @@ import { useContext, useEffect, useState } from "react";
 import LoadingAnimation from "../components/LoadingAnimation";
 import { setTitle } from "../assorted/setTitle";
 import strings from "../i18n/definitions";
-import Word from "./Word";
+import CompactWord from "./CompactWord";
 import * as s from "../components/TopMessage.sc";
 import CollapsablePanel from "../components/CollapsablePanel";
 import { APIContext } from "../contexts/APIContext";
@@ -84,7 +84,8 @@ export default function Learned() {
     const monthName = date.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
     return (
       <>
-        {monthName} <span style={{ color: "gray", fontWeight: "lighter" }}>({count})</span>
+        <span style={{ color: "#007bff", fontWeight: "bold", fontSize: "1.2em" }}>{monthName}</span>{" "}
+        <span style={{ color: "gray", fontWeight: "lighter" }}>({count} words)</span>
       </>
     );
   }
@@ -112,9 +113,11 @@ export default function Learned() {
               key={`month-${monthGroup.monthKey}`}
               topMessage={topMessage(monthGroup.monthKey, monthGroup.words.length)}
             >
-              {monthGroup.words.map((each) => {
-                return <Word key={each.id} notifyDelete={onNotifyDelete} bookmark={each} hideStar={true} hideLevelIndicator={true} disableEdit={true} />;
-              })}
+              <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'flex-start' }}>
+                {monthGroup.words.map((each) => {
+                  return <CompactWord key={each.id} bookmark={each} />;
+                })}
+              </div>
             </CollapsablePanel>
           );
         })}
