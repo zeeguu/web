@@ -9,10 +9,8 @@ import FormSection from "../../pages/_pages_shared/FormSection.sc";
 import Form from "../../pages/_pages_shared/Form.sc";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
-import MatchBookmarkSelection from "./MatchBookmarkSelection";
 
 export default function RemoveBookmarkModal({
-  isTestingMultipleBookmarks,
   exerciseBookmarks,
   open,
   setOpen,
@@ -21,20 +19,13 @@ export default function RemoveBookmarkModal({
 }) {
   const [showOtherForm, setShowOtherForm] = useState(false);
   const [otherFeedback, setOtherFeedback] = useState("");
-  const [hasMultipleBookmarks, setHasMultipleBookmarks] = useState(false);
   const [exerciseBookmarkForFeedback, setExerciseBookmarkForFeedback] = useState(null);
 
   useEffect(() => {
-    if (exerciseBookmarks) {
-      if (exerciseBookmarks.length > 1 && isTestingMultipleBookmarks) {
-        setHasMultipleBookmarks(true);
-        setExerciseBookmarkForFeedback(null);
-      } else {
-        setHasMultipleBookmarks(false);
-        setExerciseBookmarkForFeedback(exerciseBookmarks[0]);
-      }
+    if (exerciseBookmarks && exerciseBookmarks.length > 0) {
+      setExerciseBookmarkForFeedback(exerciseBookmarks[0]);
     }
-  }, [exerciseBookmarks, isTestingMultipleBookmarks]);
+  }, [exerciseBookmarks]);
 
   // Reset form state when modal opens
   useEffect(() => {
@@ -53,6 +44,13 @@ export default function RemoveBookmarkModal({
 
   function handleSubmit(e, reason, customFeedback = null) {
     e.preventDefault();
+    
+    if (!exerciseBookmarkForFeedback) {
+      toast.error("Unable to remove bookmark - bookmark data not available");
+      setOpen(false);
+      return;
+    }
+    
     let reasonToSend = reason;
     let reasonForToast;
 
@@ -82,29 +80,15 @@ export default function RemoveBookmarkModal({
       }}
     >
       <Header>
-        {hasMultipleBookmarks && <Heading>Which word do you want to remove from exercises?</Heading>}
-        {!hasMultipleBookmarks && <Heading>Remove word from exercises</Heading>}
+        {exerciseBookmarkForFeedback && (
+          <Heading>
+            Why remove {exerciseBookmarkForFeedback.from}/{exerciseBookmarkForFeedback.to}?
+          </Heading>
+        )}
       </Header>
       <Main>
-        {hasMultipleBookmarks && (
-          <MatchBookmarkSelection
-            bookmarkSelected={exerciseBookmarkForFeedback}
-            exerciseBookmarks={exerciseBookmarks}
-            setExerciseBookmarkForFeedback={setExerciseBookmarkForFeedback}
-          ></MatchBookmarkSelection>
-        )}
-        {(!hasMultipleBookmarks || (hasMultipleBookmarks && exerciseBookmarkForFeedback !== null)) && (
+        {exerciseBookmarkForFeedback && (
           <>
-            {exerciseBookmarkForFeedback && (
-              <p>
-                Why don't you want to see '
-                <b>
-                  {exerciseBookmarkForFeedback.from}/{exerciseBookmarkForFeedback.to}
-                </b>
-                '?
-              </p>
-            )}
-
             {!showOtherForm && (
               <ButtonContainer
                 style={{

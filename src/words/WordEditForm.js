@@ -172,12 +172,11 @@ export default function WordEditForm({
           )}
         </s.DoneButtonHolder>
       </form>
-      {uploadUserFeedback && (
+      {uploadUserFeedback && bookmark && (
         <RemoveBookmarkModal
           exerciseBookmarks={[bookmark]}
           open={showExcludeModal}
           setOpen={setShowExcludeModal}
-          isTestingMultipleBookmarks={false}
           uploadUserFeedback={uploadUserFeedback}
           setHasProvidedQuickFeedback={() => {
             setShowExcludeModal(false);

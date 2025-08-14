@@ -246,7 +246,6 @@ export default function NextNavigation({
         </>
       )}
       <SolutionFeedbackLinks
-        isTestingMultipleBookmarks={isMatchExercise}
         exerciseBookmarks={exerciseBookmarks}
         prefixMsg={`Exercise URL: ${createShareableUrl()}`}
         handleShowSolution={handleShowSolution}

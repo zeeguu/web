@@ -11,7 +11,6 @@ import { EXERCISE_TYPES } from "../ExerciseTypeConstants";
 import SessionStorage from "../../assorted/SessionStorage";
 
 export default function SolutionFeedbackLinks({
-  isTestingMultipleBookmarks,
   exerciseBookmarks,
   prefixMsg,
   handleShowSolution,
@@ -36,15 +35,10 @@ export default function SolutionFeedbackLinks({
 
   return (
     <>
-      <s.CenteredWordRow className={!isExerciseOver ? "margin-top-auto" : ""} style={{ flexDirection: isMobile ? "column" : "row", marginTop: !isExerciseOver ? "1rem" : "0", gap: "1rem" }}>
-        <RemoveBookmarkModal
-          exerciseBookmarks={exerciseBookmarks}
-          open={openQuickFeedbackModal}
-          setOpen={setQuickFeedbackModal}
-          isTestingMultipleBookmarks={isTestingMultipleBookmarks}
-          uploadUserFeedback={uploadUserFeedback}
-          setHasProvidedQuickFeedback={setHasProvidedQuickFeedback}
-        ></RemoveBookmarkModal>
+      <s.CenteredWordRow
+        className={!isExerciseOver ? "margin-top-auto" : ""}
+        style={{ flexDirection: isMobile ? "column" : "row", marginTop: !isExerciseOver ? "1rem" : "0", gap: "1rem" }}
+      >
         <FeedbackModal
           prefixMsg={prefixMsg}
           open={openFeedback}
