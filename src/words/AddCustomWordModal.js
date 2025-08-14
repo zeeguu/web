@@ -53,8 +53,22 @@ export default function AddCustomWordModal({ onClose, onSuccess }) {
       return;
     }
 
-    if (!word.trim() || !translation.trim() || !context.trim()) {
-      setErrorMessage("Word, translation, and context are required");
+    // Validate that the word appears only once in the context
+    const wordToFind = word.trim().toLowerCase();
+    const contextText = context.trim().toLowerCase();
+    
+    // Count occurrences using a simple regex approach
+    const wordPattern = new RegExp(`\\b${wordToFind.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\b`, 'g');
+    const matches = contextText.match(wordPattern);
+    const occurrenceCount = matches ? matches.length : 0;
+    
+    if (occurrenceCount === 0) {
+      setErrorMessage(`The word/phrase "${word.trim()}" does not appear in the context. Please check your spelling or provide a different context.`);
+      return;
+    }
+    
+    if (occurrenceCount > 1) {
+      setErrorMessage(`The word/phrase "${word.trim()}" appears ${occurrenceCount} times in the context. Please provide a context where it appears exactly once to avoid ambiguity in exercises.`);
       return;
     }
 
@@ -83,7 +97,16 @@ export default function AddCustomWordModal({ onClose, onSuccess }) {
       },
       (error) => {
         setIsLoading(false);
-        setErrorMessage("Failed to add word. Please try again.");
+        console.error("Error adding custom word:", error);
+        
+        // Display specific error message from backend if available
+        if (error && error.detail) {
+          setErrorMessage(error.detail);
+        } else if (error && error.error) {
+          setErrorMessage(error.error);
+        } else {
+          setErrorMessage("Failed to add word. Please try again.");
+        }
       },
     );
   }

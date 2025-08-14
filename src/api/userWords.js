@@ -219,12 +219,21 @@ Zeeguu_API.prototype.addCustomWord = function (
     },
     body: payload
   })
-  .then(response => response.json())
-  .then(data => {
-    if (callback) callback(data);
+  .then(response => {
+    return response.json().then(data => ({ status: response.status, data }));
+  })
+  .then(({ status, data }) => {
+    if (status >= 200 && status < 300) {
+      // Success
+      if (callback) callback(data);
+    } else {
+      // Error response from server
+      if (errorCallback) errorCallback(data);
+    }
   })
   .catch(error => {
-    if (errorCallback) errorCallback(error);
+    // Network or parsing error
+    if (errorCallback) errorCallback({ error: "Network error", detail: error.message });
   });
 };
 
