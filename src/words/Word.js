@@ -14,6 +14,7 @@ export default function Word({
   bookmark,
   notifyDelete,
   notifyWordChange,
+  onWordRemovedFromExercises,
   children,
   source,
   isReview,
@@ -27,6 +28,7 @@ export default function Word({
 
   const api = useContext(APIContext);
   const [deleted, setDeleted] = useState(false);
+  const [removing, setRemoving] = useState(false);
   const [reload, setReload] = useState(false);
 
   function setIsUserWordPreferred(bookmark) {
@@ -46,7 +48,19 @@ export default function Word({
     api.logUserActivity(api.USER_SET_NOT_WORD_PREFERED, bookmark.article_id, bookmark.from, source);
   }
 
-  if (deleted) {
+  function handleWordRemovedFromExercises(reason, bookmarkId) {
+    // Start the shrinking animation
+    setRemoving(true);
+    
+    // After animation completes, remove from list
+    setTimeout(() => {
+      if (onWordRemovedFromExercises) {
+        onWordRemovedFromExercises(reason, bookmarkId);
+      }
+    }, 1000); // Match animation duration (1s)
+  }
+
+  if (deleted && !removing) {
     return <></>;
   }
 
@@ -58,7 +72,10 @@ export default function Word({
   const isWordLengthFitForStudy = bookmark.from.split(" ").length < MAX_WORDS_IN_BOOKMARK_FOR_EXERCISES;
   return (
     <>
-      <s.Word key={bookmark.id}>
+      <s.Word 
+        key={bookmark.id} 
+        className={removing ? 'removing' : ''}
+      >
         <CenteredRow>
           {isReview && bookmark.fit_for_study && (
             <s.AddRemoveStudyPreferenceButton onClick={(e) => setNotIsUserWordPreferred(bookmark)}>
@@ -87,6 +104,7 @@ export default function Word({
                 setDeleted(true);
                 notifyDelete(bookmark);
               }}
+              onWordRemovedFromExercises={handleWordRemovedFromExercises}
             />
           )}
 

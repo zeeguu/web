@@ -5,14 +5,30 @@ let Word = styled.div`
   display: flex;
   flex-direction: row;
   align-items: center;
-  gap: 1em; 
+  gap: 1em;
   width: 100%;
+  min-height: 50px;
+  padding: 6px 0;
+  margin-bottom: 3px;
+  transition: all 1s ease-out;
+  overflow: hidden;
+
+  &.removing {
+    height: 0;
+    min-height: 0;
+    margin: 0;
+    padding: 0;
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+
   @media (max-width: 800px) {
     margin-left: 0.1em;
     margin-right: 0.1em;
     font-size: 0.8em;
     gap: 0.5em;
     justify-content: flex-start;
+    min-height: 40px;
   }
 `;
 

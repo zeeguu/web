@@ -53,6 +53,21 @@ export default function Learning() {
     updateExercisesCounter();
   }
 
+  function onWordRemovedFromExercises(reason, bookmarkId) {
+    // Find the bookmark in the current list
+    const bookmark = inLearning.find((b) => b.id === bookmarkId);
+    if (bookmark) {
+      // Remove the word from the list with animation
+      onNotifyDelete(bookmark);
+      
+      // Also update the grouped by level data
+      let newWords_byLevel = { ...inLearning_byLevel };
+      const level = bookmark.level;
+      newWords_byLevel[level] = newWords_byLevel[level].filter((b) => b.id !== bookmarkId);
+      setInLearning_byLevel(newWords_byLevel);
+    }
+  }
+
   function refreshWordList() {
     // Refresh the word list after adding a custom word
     api.getAllScheduledBookmarks(false, (bookmarks) => {
@@ -118,6 +133,7 @@ export default function Learning() {
                     bookmark={each}
                     source={WEB_READER}
                     notifyDelete={onNotifyDelete}
+                    onWordRemovedFromExercises={onWordRemovedFromExercises}
                     showRanking={true}
                     isOnCongratulationsPage={false}
                   />
