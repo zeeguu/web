@@ -5,7 +5,6 @@ function MultipleChoicesInput({
   notifyChoiceSelection,
   incorrectAnswer,
   setIncorrectAnswer,
-  isAnimating,
 }) {
   return (
     <s.BottomRow className="bottomRow">
@@ -15,10 +14,8 @@ function MultipleChoicesInput({
             <s.AnimatedOrangeButton
               key={option}
               id={option}
-              onClick={(e) => !isAnimating && notifyChoiceSelection(e.target.id, e.currentTarget)}
+              onClick={(e) => notifyChoiceSelection(e.target.id)}
               onAnimationEnd={() => setIncorrectAnswer("")}
-              disabled={isAnimating}
-              style={{ opacity: isAnimating ? 0.5 : 1 }}
             >
               {option}
             </s.AnimatedOrangeButton>
@@ -26,9 +23,7 @@ function MultipleChoicesInput({
             <s.OrangeButton
               key={option}
               id={option}
-              onClick={(e) => !isAnimating && notifyChoiceSelection(e.target.id, e.currentTarget)}
-              disabled={isAnimating}
-              style={{ opacity: isAnimating ? 0.5 : 1 }}
+              onClick={(e) => notifyChoiceSelection(e.target.id)}
             >
               {option}
             </s.OrangeButton>

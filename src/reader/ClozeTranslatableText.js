@@ -2,7 +2,7 @@ import { useState, useEffect, createElement, useRef } from "react";
 import TranslatableWord from "./TranslatableWord";
 import * as s from "./TranslatableText.sc";
 import { removePunctuation } from "../utils/text/preprocessing";
-import { orange500 } from "../components/colors";
+import { orange600 } from "../components/colors";
 
 export function ClozeTranslatableText({
   interactiveText,
@@ -255,7 +255,7 @@ export function ClozeTranslatableText({
     if (isExerciseOver && !isClozeWord) {
       // Check if this word should be highlighted when showing the solution
       if (isWordHighlighted) {
-        return <span key={word.id} style={{ color: orange500, fontWeight: "bold" }}>{word.word + " "}</span>;
+        return <span key={word.id} style={{ color: orange600, fontWeight: "bold" }}>{word.word + " "}</span>;
       }
       // For non-highlighted words, render normally even when exercise is over
       return (
@@ -276,7 +276,7 @@ export function ClozeTranslatableText({
     if (!isExerciseOver || clozeWordIds[0] === word.id) {
       // During exercise OR for the target word even after exercise
       if (isWordHighlighted) {
-        return <span key={word.id} style={{ color: orange500, fontWeight: "bold" }}>{word.word + " "}</span>;
+        return <span key={word.id} style={{ color: orange600, fontWeight: "bold" }}>{word.word + " "}</span>;
       }
       if (!clozeWord || translatedWords) {
         return (
@@ -352,7 +352,7 @@ export function ClozeTranslatableText({
                   font-weight: normal;
                 }
                 100% { 
-                  color: ${orange500} !important;
+                  color: ${orange600} !important;
                   font-weight: 700;
                 }
               }
@@ -398,7 +398,7 @@ export function ClozeTranslatableText({
                 disabled={isCorrectAnswer || isExerciseOver}
                 style={{
                   border: 'none',
-                  borderBottom: `${canTypeInline ? '2px dotted' : '1px solid'} ${isExerciseOver || isCorrectAnswer ? orange500 : '#333'}`,
+                  borderBottom: `${canTypeInline ? '2px dotted' : '1px solid'} ${isExerciseOver || isCorrectAnswer ? orange600 : '#333'}`,
                   background: 'transparent',
                   outline: 'none',
                   fontSize: 'inherit',
@@ -409,7 +409,7 @@ export function ClozeTranslatableText({
                   minWidth: (isCorrectAnswer || isExerciseOver) ? '2em' : '4em',
                   padding: '2px 4px',
                   margin: '0',
-                  color: isExerciseOver || isCorrectAnswer ? orange500 : 'inherit',
+                  color: isExerciseOver || isCorrectAnswer ? orange600 : 'inherit',
                   fontWeight: isExerciseOver || isCorrectAnswer ? '700' : 'normal',
                   cursor: isCorrectAnswer || isExerciseOver ? 'default' : 'text',
                   animation: isCorrectAnswer ? 'correctAnswer 0.6s ease-out forwards' : (inputValue === '' ? 'pulseUnderline 2s ease-in-out infinite' : 'none'),
