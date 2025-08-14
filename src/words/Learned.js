@@ -78,14 +78,32 @@ export default function Learned() {
     return <LoadingAnimation />;
   }
 
-  function topMessage(monthKey, count) {
+  function calculateMedianRank(words) {
+    const rankedWords = words.filter(word => word.origin_rank && word.origin_rank !== "");
+    if (rankedWords.length === 0) return null;
+    
+    // Sort by rank (lowest numbers = most frequent words)
+    const sortedByRank = rankedWords
+      .map(word => parseInt(word.origin_rank))
+      .sort((a, b) => a - b);
+    
+    // Calculate median of all words
+    const mid = Math.floor(sortedByRank.length / 2);
+    if (sortedByRank.length % 2 === 0) {
+      return Math.round((sortedByRank[mid - 1] + sortedByRank[mid]) / 2);
+    } else {
+      return sortedByRank[mid];
+    }
+  }
+
+  function topMessage(monthKey, count, medianRank) {
     const [year, month] = monthKey.split('-');
     const date = new Date(year, month - 1, 1);
     const monthName = date.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
     return (
       <>
         <span style={{ color: "#007bff", fontWeight: "bold", fontSize: "1.2em" }}>{monthName}</span>{" "}
-        <span style={{ color: "gray", fontWeight: "lighter" }}>({count} words)</span>
+        <span style={{ color: "gray", fontWeight: "lighter" }}>({count} words{count > 20 && medianRank ? `, median: ${medianRank}` : ""})</span>
       </>
     );
   }
@@ -108,10 +126,11 @@ export default function Learned() {
       </s.YellowMessageBox>
       <>
         {words.map((monthGroup) => {
+          const medianRank = monthGroup.words.length > 20 ? calculateMedianRank(monthGroup.words) : null;
           return (
             <CollapsablePanel 
               key={`month-${monthGroup.monthKey}`}
-              topMessage={topMessage(monthGroup.monthKey, monthGroup.words.length)}
+              topMessage={topMessage(monthGroup.monthKey, monthGroup.words.length, medianRank)}
             >
               <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'flex-start' }}>
                 {monthGroup.words.map((each) => {
