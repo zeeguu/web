@@ -23,6 +23,7 @@ export default function Word({
   isWordsOnDate = false,
   hideLevelIndicator = false,
   isOnCongratulationsPage,
+  disableEdit = false,
 }) {
   const [showWordsModal, setShowWordsModal] = useState(false);
 
@@ -94,7 +95,7 @@ export default function Word({
             )}
           */}
 
-          {!isReview && (
+          {!isReview && !disableEdit && (
             <EditBookmarkButton
               bookmark={bookmark}
               reload={reload}

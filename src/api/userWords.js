@@ -29,8 +29,16 @@ Zeeguu_API.prototype.learnedBookmarks = function (count, callback) {
   this._getJSON(`learned_bookmarks/${count}`, callback);
 };
 
+Zeeguu_API.prototype.learnedUserWords = function (count, callback) {
+  this._getJSON(`learned_user_words/${count}`, callback);
+};
+
 Zeeguu_API.prototype.totalLearnedBookmarks = function (callback) {
   this._getJSON(`total_learned_bookmarks`, callback);
+};
+
+Zeeguu_API.prototype.totalLearnedUserWords = function (callback) {
+  this._getJSON(`total_learned_user_words`, callback);
 };
 
 Zeeguu_API.prototype.topBookmarks = function (count, callback) {
