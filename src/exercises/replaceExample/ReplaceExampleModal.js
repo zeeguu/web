@@ -13,8 +13,8 @@ import CloseIcon from "@mui/icons-material/Close";
 export default function ReplaceExampleModal({
   exerciseBookmark,
   onExampleUpdated,
-  renderAs = "link", // "link" or "button"  
-  label = "Other contexts", // customizable label
+  renderAs = "link", // "link" or "button"
+  label = "Change example", // customizable label
 }) {
   const api = useContext(APIContext);
   const { userDetails } = useContext(UserContext);
@@ -245,23 +245,22 @@ export default function ReplaceExampleModal({
 
   if (!open) {
     if (renderAs === "button") {
-      return (
-        <BlueButton onClick={handleOpen}>
-          {label}
-        </BlueButton>
-      );
+      return <BlueButton onClick={handleOpen}>{label}</BlueButton>;
     }
 
     if (renderAs === "link") {
       return (
-        <a 
-          href="#" 
-          onClick={(e) => { e.preventDefault(); handleOpen(); }}
-          style={{ 
-            color: '#666', 
-            textDecoration: 'underline',
-            cursor: 'pointer',
-            fontSize: 'inherit'
+        <a
+          href="#"
+          onClick={(e) => {
+            e.preventDefault();
+            handleOpen();
+          }}
+          style={{
+            color: "#666",
+            textDecoration: "underline",
+            cursor: "pointer",
+            fontSize: "inherit",
           }}
         >
           {label}
