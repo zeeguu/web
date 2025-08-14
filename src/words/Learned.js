@@ -4,6 +4,7 @@ import { setTitle } from "../assorted/setTitle";
 import strings from "../i18n/definitions";
 import Word from "./Word";
 import * as s from "../components/TopMessage.sc";
+import CollapsablePanel from "../components/CollapsablePanel";
 import { APIContext } from "../contexts/APIContext";
 
 export default function Learned() {
@@ -24,11 +25,9 @@ export default function Learned() {
         // Check if date is invalid
         if (isNaN(learnedDate.getTime())) {
           console.warn('Invalid date for word:', word.from, 'learned_datetime:', word.learned_datetime);
-          // Skip words with invalid dates
           return;
         }
       } else {
-        // Skip words that don't have a learned date (shouldn't happen for learned words)
         console.warn('No learned_datetime for word:', word.from);
         return;
       }
@@ -79,11 +78,15 @@ export default function Learned() {
     return <LoadingAnimation />;
   }
 
-  function formatMonthHeader(monthKey) {
+  function topMessage(monthKey, count) {
     const [year, month] = monthKey.split('-');
     const date = new Date(year, month - 1, 1);
     const monthName = date.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
-    return monthName;
+    return (
+      <>
+        {monthName} <span style={{ color: "gray", fontWeight: "lighter" }}>({count})</span>
+      </>
+    );
   }
 
   return (
@@ -102,20 +105,20 @@ export default function Learned() {
 
         <br />
       </s.YellowMessageBox>
-      <div>
-        {words.map((monthGroup, groupIndex) => {
+      <>
+        {words.map((monthGroup) => {
           return (
-            <div key={`month-${monthGroup.monthKey}`}>
-              <h3 style={{ marginTop: '2em', marginBottom: '1em', color: '#4a90e2' }}>
-                {formatMonthHeader(monthGroup.monthKey)} ({monthGroup.words.length})
-              </h3>
+            <CollapsablePanel 
+              key={`month-${monthGroup.monthKey}`}
+              topMessage={topMessage(monthGroup.monthKey, monthGroup.words.length)}
+            >
               {monthGroup.words.map((each) => {
                 return <Word key={each.id} notifyDelete={onNotifyDelete} bookmark={each} hideStar={true} hideLevelIndicator={true} disableEdit={true} />;
               })}
-            </div>
+            </CollapsablePanel>
           );
         })}
-      </div>
+      </>
     </>
   );
 }
