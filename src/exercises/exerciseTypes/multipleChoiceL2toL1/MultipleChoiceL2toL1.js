@@ -2,7 +2,7 @@ import { useState, useEffect, useContext } from "react";
 import * as s from "../Exercise.sc.js";
 import MultipleChoicesInput from "../multipleChoice/MultipleChoicesInput.js";
 import LoadingAnimation from "../../../components/LoadingAnimation";
-import InteractiveText from "../../../reader/InteractiveText.js";
+import InteractiveExerciseText from "../../../reader/InteractiveExerciseText.js";
 import { EXERCISE_TYPES } from "../../ExerciseTypeConstants.js";
 import strings from "../../../i18n/definitions.js";
 import shuffle from "../../../assorted/fisherYatesShuffle";
@@ -62,8 +62,20 @@ export default function MultipleChoiceL2toL1({
       return;
     }
     
+    const expectedPosition = {
+      sentenceIndex: exerciseBookmark.t_sentence_i,
+      tokenIndex: exerciseBookmark.t_token_i,
+      totalTokens: exerciseBookmark.t_total_token || 1,
+      contextOffset: exerciseBookmark.context_sent || 0
+    };
+
+    console.log("=== MultipleChoiceL2toL1 DEBUG ===");
+    console.log("Exercise bookmark:", exerciseBookmark);
+    console.log("Word to highlight:", exerciseBookmark.from);
+    console.log("Expected position:", expectedPosition);
+
     setInteractiveText(
-      new InteractiveText(
+      new InteractiveExerciseText(
         exerciseBookmark.context_tokenized,
         exerciseBookmark.source_id,
         api,
@@ -73,6 +85,10 @@ export default function MultipleChoiceL2toL1({
         EXERCISE_TYPE,
         speech,
         exerciseBookmark.context_identifier,
+        null, // formatting
+        exerciseBookmark.from, // expectedSolution
+        expectedPosition, // expectedPosition
+        null, // onSolutionFound - not needed for multiple choice
       ),
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -131,6 +147,7 @@ export default function MultipleChoiceL2toL1({
         shouldFocus={false}
         showHint={false}
         canTypeInline={false}
+        showCloze={false} // Don't show a blank, show highlighting instead
       />
 
       {/* Solution area - appears below context when exercise is over */}

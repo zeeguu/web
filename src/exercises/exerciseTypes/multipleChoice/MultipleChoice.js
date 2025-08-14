@@ -2,7 +2,7 @@ import { useState, useEffect, useContext, useRef } from "react";
 import * as s from "../Exercise.sc.js";
 import MultipleChoicesInput from "./MultipleChoicesInput.js";
 import LoadingAnimation from "../../../components/LoadingAnimation";
-import InteractiveText from "../../../reader/InteractiveText.js";
+import InteractiveExerciseText from "../../../reader/InteractiveExerciseText.js";
 import { EXERCISE_TYPES } from "../../ExerciseTypeConstants.js";
 import strings from "../../../i18n/definitions.js";
 import shuffle from "../../../assorted/fisherYatesShuffle";
@@ -56,8 +56,15 @@ export default function MultipleChoice({
       setInteractiveText(null);
       return;
     }
+
+    const expectedPosition = {
+      sentenceIndex: exerciseBookmark.t_sentence_i,
+      tokenIndex: exerciseBookmark.t_token_i,
+      totalTokens: exerciseBookmark.t_total_token || 1,
+      contextOffset: exerciseBookmark.context_sent || 0
+    };
     
-    const newInteractiveText = new InteractiveText(
+    const newInteractiveText = new InteractiveExerciseText(
       exerciseBookmark.context_tokenized,
       exerciseBookmark.source_id,
       api,
@@ -67,6 +74,10 @@ export default function MultipleChoice({
       EXERCISE_TYPE,
       speech,
       exerciseBookmark.context_identifier,
+      null, // formatting
+      exerciseBookmark.from, // expectedSolution
+      expectedPosition, // expectedPosition
+      null, // onSolutionFound - not needed for multiple choice
     );
     
     setInteractiveText(newInteractiveText);

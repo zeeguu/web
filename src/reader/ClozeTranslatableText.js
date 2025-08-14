@@ -93,6 +93,39 @@ export function ClozeTranslatableText({
 
   function findClozeWords() {
     if (!clozeWord) return;
+    console.log("Finding cloze words for:", clozeWord);
+    
+    // If we have position-aware InteractiveExerciseText, use it to find the correct instance
+    if (interactiveText.findSolutionPositionsInContext) {
+      const targetWords = clozeWord.split(" ").map(w => w.toLowerCase());
+      const solutionPositions = interactiveText.findSolutionPositionsInContext(targetWords);
+      console.log("Found solution positions:", solutionPositions);
+      
+      if (solutionPositions.length > 0) {
+        // Find the word IDs at those positions
+        let word = interactiveText.paragraphsAsLinkedWordLists[0].linkedWords.head;
+        let foundIds = [];
+        while (word) {
+          for (const pos of solutionPositions) {
+            const contextOffset = interactiveText.expectedPosition?.contextOffset || 0;
+            const adjustedSentIndex = word.token.sent_i - contextOffset;
+            if (adjustedSentIndex === pos.sentenceIndex && word.token.token_i === pos.tokenIndex) {
+              foundIds.push(word.id);
+              if (foundIds.length === 1) setFirstClozeWordId(word.id);
+            }
+          }
+          word = word.next;
+        }
+        if (foundIds.length > 0) {
+          console.log("Setting cloze word IDs from positions:", foundIds);
+          setClozeWordIds(foundIds);
+          return;
+        }
+      }
+    }
+    
+    // Fallback to word-based search
+    console.log("Falling back to word-based cloze search");
     let targetWords = clozeWord.split(" ");
     let word = interactiveText.paragraphsAsLinkedWordLists[0].linkedWords.head;
     while (word) {
@@ -193,14 +226,38 @@ export function ClozeTranslatableText({
     // Check if this word is part of the cloze (hidden) text
     const isClozeWord = clozeWordIds.includes(word.id);
 
-    // If highlightExpression is defined, the bookmark is highlighted, otherwise highlightedWords will be set to an empty array to avoid runtime error
-    const highlightedWords = highlightExpression ? highlightExpression.split(" ").map((word) => removePunctuation(word)) : [];
-    const isWordHighlighted = highlightedWords.includes(removePunctuation(word.word));
+    // Check if this word should be highlighted
+    // IMPORTANT: Don't highlight if this is a cloze word (it should show as blank instead)
+    let isWordHighlighted = false;
+    if (!isClozeWord) {
+      // Only check highlighting if this is NOT a cloze word
+      if (interactiveText.shouldHighlightWord) {
+        // Use position-aware highlighting for exercises (both during and after)
+        isWordHighlighted = interactiveText.shouldHighlightWord(word);
+        if (word.word.toLowerCase() === "det") {
+          console.log(`ClozeTranslatableText: Checking highlight for "det" using position-aware logic - result: ${isWordHighlighted}`);
+          console.log(`  isExerciseOver: ${isExerciseOver}`);
+        }
+      } else if (highlightExpression) {
+        // Fallback to word-based highlighting for non-exercises
+        const highlightedWords = highlightExpression.split(" ").map((word) => removePunctuation(word));
+        isWordHighlighted = highlightedWords.includes(removePunctuation(word.word));
+        if (word.word.toLowerCase() === "det") {
+          console.log(`ClozeTranslatableText: Using fallback highlighting for "det" - result: ${isWordHighlighted}`);
+          console.log(`  highlightExpression: "${highlightExpression}"`);
+          console.log(`  highlightedWords:`, highlightedWords);
+        }
+      }
+    }
 
     // Don't switch rendering mode when exercise is over if we have an inline input
     // Keep the input visible but disabled
     if (isExerciseOver && !isClozeWord) {
-      // For non-target words, render normally even when exercise is over
+      // Check if this word should be highlighted when showing the solution
+      if (isWordHighlighted) {
+        return <span key={word.id} style={{ color: orange500, fontWeight: "bold" }}>{word.word + " "}</span>;
+      }
+      // For non-highlighted words, render normally even when exercise is over
       return (
         <TranslatableWord
           interactiveText={interactiveText}

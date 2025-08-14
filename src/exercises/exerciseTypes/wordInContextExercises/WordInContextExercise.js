@@ -1,11 +1,9 @@
-import { useState, useEffect, useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import * as s from "../Exercise.sc.js";
 import BottomInput from "../BottomInput.js";
 import LoadingAnimation from "../../../components/LoadingAnimation.js";
-import InteractiveText from "../../../reader/InteractiveText.js";
-import { tokenize } from "../../../utils/text/preprocessing.js";
-import { SpeechContext } from "../../../contexts/SpeechContext.js";
 import { removePunctuation } from "../../../utils/text/preprocessing.js";
+import { SpeechContext } from "../../../contexts/SpeechContext.js";
 import { APIContext } from "../../../contexts/APIContext.js";
 import ContextWithExchange from "../../components/ContextWithExchange.js";
 import InteractiveExerciseText from "../../../reader/InteractiveExerciseText.js";
@@ -54,14 +52,27 @@ export default function WordInContextExercise({
     }
 
     const onSolutionFound = (word) => {
+      console.log("Solution found! Word clicked:", word.word);
+
+      // Check if exercise is already over to prevent duplicate notifications
+      if (isExerciseOver) {
+        console.log("Exercise already over, ignoring click");
+        return;
+      }
+
       // Check how many translations were made
       let translationCount = 0;
-      for (let i = 0; i < exerciseMessageToAPI.length; i++) {
-        if (exerciseMessageToAPI[i] === "T") translationCount++;
+      if (exerciseMessageToAPI && exerciseMessageToAPI.length > 0) {
+        for (let i = 0; i < exerciseMessageToAPI.length; i++) {
+          if (exerciseMessageToAPI[i] === "T") translationCount++;
+        }
       }
+
       if (translationCount < 1) {
+        console.log("Notifying correct answer");
         notifyCorrectAnswer(exerciseBookmark);
       } else {
+        console.log("Showing solution (user made translations)");
         notifyShowSolution();
       }
     };
@@ -70,9 +81,31 @@ export default function WordInContextExercise({
       sentenceIndex: exerciseBookmark.t_sentence_i,
       tokenIndex: exerciseBookmark.t_token_i,
       totalTokens: exerciseBookmark.t_total_token || 1,
-      contextOffset: exerciseBookmark.context_sent || 0
+      contextOffset: exerciseBookmark.context_sent || 0,
     };
 
+    console.log("=== WORD IN CONTEXT EXERCISE DEBUG ===");
+    console.log("Exercise bookmark:", exerciseBookmark);
+    console.log("Expected solution:", exerciseBookmark.from);
+    console.log("Expected position:", expectedPosition);
+    console.log("Context tokenized structure:", exerciseBookmark.context_tokenized);
+
+    // Special debugging for multi-word bookmarks
+    if (exerciseBookmark.from && exerciseBookmark.from.includes(" ")) {
+      console.log("=== MULTI-WORD BOOKMARK DEBUG ===");
+      console.log("Multi-word solution detected:", exerciseBookmark.from);
+      console.log("Number of words:", exerciseBookmark.from.split(" ").length);
+      console.log("Total tokens from bookmark:", exerciseBookmark.t_total_token);
+      console.log("Expected position for multi-word:", expectedPosition);
+
+      // Check if total tokens matches word count
+      const wordCount = exerciseBookmark.from.split(" ").length;
+      if (exerciseBookmark.t_total_token !== wordCount) {
+        console.warn(
+          `WARNING: Token count mismatch! Bookmark has ${exerciseBookmark.t_total_token} tokens but phrase has ${wordCount} words`,
+        );
+      }
+    }
 
     setInteractiveText(
       new InteractiveExerciseText(
@@ -94,7 +127,6 @@ export default function WordInContextExercise({
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [exerciseBookmark, reload]);
-
 
   function handleIncorrectAnswer() {
     //alert("incorrect answer")

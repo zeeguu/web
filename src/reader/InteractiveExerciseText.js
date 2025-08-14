@@ -39,7 +39,20 @@ export default class InteractiveExerciseText extends InteractiveText {
 
   // Track a clicked word for exercises
   trackWordClick(word) {
-    console.log("trackWordClick called with:", word.word);
+    console.log("=== TRACK WORD CLICK DEBUG ===");
+    console.log("Clicked word:", word.word);
+    console.log("Expected solution:", this.expectedSolution);
+    console.log("Expected position:", this.expectedPosition);
+    console.log("Word token info:", word.token);
+    
+    // Special debugging for "tidligere"
+    if (word.word.toLowerCase().includes("tidligere") || (this.expectedSolution && this.expectedSolution.toLowerCase().includes("tidligere"))) {
+      console.log("=== SPECIAL DEBUG FOR 'TIDLIGERE' ===");
+      console.log("Clicked word full:", word);
+      console.log("Expected solution full:", this.expectedSolution);
+      console.log("Word matches solution?", word.word.toLowerCase() === this.expectedSolution?.toLowerCase());
+      console.log("Solution words array:", this.expectedSolution?.split(" ").map(w => w.toLowerCase()));
+    }
 
     this.clickedWords.push({
       word: word.word,
@@ -52,10 +65,15 @@ export default class InteractiveExerciseText extends InteractiveText {
       const solutionWords = this.expectedSolution.split(" ").map((w) => w.toLowerCase());
       const clickedWord = word.word.toLowerCase();
 
-      // First check if the word matches
+      // First check if the word matches any word in the solution
       if (solutionWords.includes(clickedWord)) {
+        // Check if we have valid position info
+        const hasValidPosition = this.expectedPosition && 
+                                 this.expectedPosition.sentenceIndex !== null && 
+                                 this.expectedPosition.tokenIndex !== null;
+        
         // If we have position info, verify it's the correct instance
-        if (this.expectedPosition && word.token) {
+        if (hasValidPosition && word.token) {
           const targetSentenceIndex = this.expectedPosition.sentenceIndex;
           const targetTokenIndex = this.expectedPosition.tokenIndex;
           const targetTotalTokens = this.expectedPosition.totalTokens || 1;
@@ -63,8 +81,14 @@ export default class InteractiveExerciseText extends InteractiveText {
           const adjustedSentIndex = word.token.sent_i - contextOffset;
 
           // FIRST: Try the original bookmark position (most reliable when correct)
+          // Note: For multi-word solutions, we should use targetTotalTokens, not solutionWordCount
           const solutionWordCount = solutionWords.length;
-          const expectedEndToken = targetTokenIndex + solutionWordCount;
+          const expectedEndToken = targetTokenIndex + targetTotalTokens; // Use bookmark's total tokens
+          
+          console.log("Position check debug:");
+          console.log("  targetTotalTokens from bookmark:", targetTotalTokens);
+          console.log("  solutionWordCount from split:", solutionWordCount);
+          console.log("  Using expectedEndToken:", expectedEndToken);
 
           if (
             adjustedSentIndex === targetSentenceIndex &&
@@ -72,7 +96,9 @@ export default class InteractiveExerciseText extends InteractiveText {
             word.token.token_i < expectedEndToken
           ) {
             // Bookmark position is valid - use it (handles multiple "ikke" correctly)
-            console.log("Using bookmark position - correct solution word clicked!");
+            console.log("✓ CLICK DETECTION: Using bookmark position - correct solution word clicked!");
+            console.log(`  Position: sent_i=${adjustedSentIndex}, token_i=${word.token.token_i} (range: ${targetTokenIndex}-${expectedEndToken-1})`);
+            console.log(`  Clicked word "${clickedWord}" is part of multi-word solution "${this.expectedSolution}"`);
             this.onSolutionFound(word);
             return;
           }
@@ -85,26 +111,37 @@ export default class InteractiveExerciseText extends InteractiveText {
           const wordAtBookmarkPosition = this.getWordAtPosition(targetSentenceIndex, targetTokenIndex, contextOffset);
           if (wordAtBookmarkPosition && solutionWords.includes(wordAtBookmarkPosition.toLowerCase())) {
             // The bookmark position points to a different instance of the solution word
-            console.log("Different instance of solution word at bookmark position - not accepting click");
+            console.log("✗ CLICK DETECTION: Different instance of solution word at bookmark position - rejecting click");
+            console.log(`  Word at bookmark position: "${wordAtBookmarkPosition}" at sent_i=${targetSentenceIndex}, token_i=${targetTokenIndex}`);
             return;
           }
 
           // The bookmark position is completely wrong (likely due to tokenization change)
-          // Fall back to dynamic position finding, but only accept the FIRST occurrence
-          console.log("Bookmark position invalid - using fallback to first occurrence");
+          // Fall back to dynamic position finding, but only accept the FIRST complete phrase occurrence
+          console.log("⚠ CLICK DETECTION: Bookmark position invalid - using fallback to first phrase occurrence");
           const actualSolutionPositions = this.findSolutionPositionsInContext(solutionWords);
+          console.log(`  Found ${actualSolutionPositions.length} solution positions in context:`, actualSolutionPositions);
           if (actualSolutionPositions.length > 0) {
-            const firstOccurrence = actualSolutionPositions[0];
-            if (
-              adjustedSentIndex === firstOccurrence.sentenceIndex &&
-              word.token.token_i === firstOccurrence.tokenIndex
-            ) {
-              console.log("Fallback: accepting first occurrence of solution");
+            // Check if the clicked word is part of the first complete phrase occurrence
+            const clickedWordMatchesFirstPhrase = actualSolutionPositions.some(pos => 
+              adjustedSentIndex === pos.sentenceIndex && word.token.token_i === pos.tokenIndex
+            );
+            
+            if (clickedWordMatchesFirstPhrase) {
+              console.log("✓ CLICK DETECTION: Fallback - accepting word as part of first phrase occurrence");
+              console.log(`  Clicked word position: sent_i=${adjustedSentIndex}, token_i=${word.token.token_i}`);
               this.onSolutionFound(word);
+            } else {
+              console.log("✗ CLICK DETECTION: Fallback - clicked word is not part of first phrase occurrence");
+              console.log(`  Clicked: sent_i=${adjustedSentIndex}, token_i=${word.token.token_i}`);
+              console.log(`  First phrase positions:`, actualSolutionPositions);
             }
           }
-        } else {
-          // No position info - accept any word match
+        } else if (!hasValidPosition) {
+          // No valid position info - fall back to word-based matching
+          console.log("⚠ CLICK DETECTION: No valid position data - using word-based matching");
+          console.log(`  Clicked word "${clickedWord}" matches solution word`);
+          console.log(`  This is likely a user-uploaded word without proper position anchoring`);
           this.onSolutionFound(word);
         }
       }
@@ -142,7 +179,7 @@ export default class InteractiveExerciseText extends InteractiveText {
 
     while (currentWord) {
       // Check if this word starts a match for the solution phrase
-      if (solutionWords.includes(currentWord.word.toLowerCase())) {
+      if (currentWord.word.toLowerCase() === solutionWords[0]) {
         // Try to match the complete solution phrase starting from this position
         let tempWord = currentWord;
         let matchedWords = [];
@@ -173,7 +210,6 @@ export default class InteractiveExerciseText extends InteractiveText {
       }
       currentWord = currentWord.next;
     }
-
     return positions;
   }
 
@@ -206,16 +242,22 @@ export default class InteractiveExerciseText extends InteractiveText {
     // First check if the word matches
     if (!solutionWords.includes(wordToCheck)) return false;
 
+    // Check if we have valid position info
+    const hasValidPosition = this.expectedPosition && 
+                            this.expectedPosition.sentenceIndex !== null && 
+                            this.expectedPosition.tokenIndex !== null;
+    
     // If we have position info, use the same prioritized logic as click detection
-    if (this.expectedPosition) {
+    if (hasValidPosition) {
       const targetSentenceIndex = this.expectedPosition.sentenceIndex;
       const targetTokenIndex = this.expectedPosition.tokenIndex;
       const contextOffset = this.expectedPosition.contextOffset || 0;
       const adjustedSentIndex = word.token.sent_i - contextOffset;
 
       // FIRST: Try the original bookmark position (most reliable when correct)
-      const solutionWordCount = solutionWords.length;
-      const expectedEndToken = targetTokenIndex + solutionWordCount;
+      // Use targetTotalTokens from bookmark for multi-word solutions
+      const targetTotalTokens = this.expectedPosition.totalTokens || solutionWords.length;
+      const expectedEndToken = targetTokenIndex + targetTotalTokens;
 
       if (
         adjustedSentIndex === targetSentenceIndex &&
@@ -223,6 +265,10 @@ export default class InteractiveExerciseText extends InteractiveText {
         word.token.token_i < expectedEndToken
       ) {
         // Bookmark position is valid - highlight this word
+        // Only log for the expected word to reduce noise
+        if (solutionWords.includes(wordToCheck)) {
+          console.log(`✓ HIGHLIGHTING: Using bookmark position for "${word.word}" at sent_i=${adjustedSentIndex}, token_i=${word.token.token_i}`);
+        }
         return true;
       }
 
@@ -230,20 +276,57 @@ export default class InteractiveExerciseText extends InteractiveText {
       const wordAtBookmarkPosition = this.getWordAtPosition(targetSentenceIndex, targetTokenIndex, contextOffset);
       if (wordAtBookmarkPosition && solutionWords.includes(wordAtBookmarkPosition.toLowerCase())) {
         // Bookmark position points to a different instance - don't highlight this word
+        if (solutionWords.includes(wordToCheck)) {
+          console.log(`✗ HIGHLIGHTING: Different instance at bookmark position - not highlighting "${word.word}"`);
+          console.log(`  Word at bookmark position: "${wordAtBookmarkPosition}" at sent_i=${targetSentenceIndex}, token_i=${targetTokenIndex}`);
+        }
         return false;
       }
 
-      // Bookmark position is invalid - fall back to first occurrence only
+      // Bookmark position is invalid - fall back to first phrase occurrence only
+      if (solutionWords.includes(wordToCheck)) {
+        console.log(`⚠ HIGHLIGHTING: Bookmark position invalid - using fallback for "${word.word}"`);
+      }
       const actualSolutionPositions = this.findSolutionPositionsInContext(solutionWords);
       if (actualSolutionPositions.length > 0) {
-        const firstOccurrence = actualSolutionPositions[0];
-        return adjustedSentIndex === firstOccurrence.sentenceIndex && word.token.token_i === firstOccurrence.tokenIndex;
+        // Check if this word is part of the first complete phrase occurrence
+        const shouldHighlight = actualSolutionPositions.some(pos => 
+          adjustedSentIndex === pos.sentenceIndex && word.token.token_i === pos.tokenIndex
+        );
+        if (shouldHighlight && solutionWords.includes(wordToCheck)) {
+          console.log(`✓ HIGHLIGHTING: Fallback - highlighting "${word.word}" as part of first phrase (sent_i=${adjustedSentIndex}, token_i=${word.token.token_i})`);
+        }
+        return shouldHighlight;
       }
 
       return false;
     }
 
-    // No position info - highlight any word match
+    // No position info - for multi-word solutions, be more careful about highlighting
+    // Only highlight if this is likely the first occurrence of the word
+    if (solutionWords.length > 1) {
+      console.log(`⚠ HIGHLIGHTING: No position data for multi-word solution "${this.expectedSolution}" - using conservative highlighting`);
+      
+      // For multi-word solutions without position data, try to find the phrase and only highlight it
+      const actualSolutionPositions = this.findSolutionPositionsInContext(solutionWords);
+      if (actualSolutionPositions.length > 0) {
+        const shouldHighlight = actualSolutionPositions.some(pos => {
+          const contextOffset = this.expectedPosition?.contextOffset || 0;
+          const adjustedSentIndex = word.token.sent_i - contextOffset;
+          return adjustedSentIndex === pos.sentenceIndex && word.token.token_i === pos.tokenIndex;
+        });
+        if (shouldHighlight) {
+          console.log(`✓ HIGHLIGHTING: Conservative - highlighting "${word.word}" as part of first phrase occurrence`);
+        }
+        return shouldHighlight;
+      }
+      
+      // If we can't find the phrase, don't highlight anything to avoid false positives
+      console.log(`✗ HIGHLIGHTING: Conservative - cannot find phrase, not highlighting "${word.word}"`);
+      return false;
+    }
+    
+    // For single-word solutions without position data, highlight any match
     return true;
   }
 }

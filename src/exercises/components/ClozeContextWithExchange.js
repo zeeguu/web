@@ -23,6 +23,7 @@ const ClozeContextWithExchange = forwardRef(function ClozeContextWithExchange(
     shouldFocus,
     showHint = true,
     canTypeInline = false,
+    showCloze = true, // New prop to control whether to show a cloze/blank
   },
   ref,
 ) {
@@ -42,7 +43,7 @@ const ClozeContextWithExchange = forwardRef(function ClozeContextWithExchange(
           pronouncing={pronouncing}
           translatedWords={translatedWords}
           setTranslatedWords={setTranslatedWords}
-          clozeWord={exerciseBookmark.from}
+          clozeWord={showCloze ? exerciseBookmark.from : null} // Only pass clozeWord if we want a blank
           nonTranslatableWords={exerciseBookmark.from}
           leftEllipsis={exerciseBookmark.left_ellipsis}
           rightEllipsis={exerciseBookmark.right_ellipsis}
