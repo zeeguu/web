@@ -48,7 +48,7 @@ let Paragraph = scStyled.p`
 let DoneButtonHolder = scStyled.div`
   display: flex;
   flex-direction: row;
-  justify-content: space-between;
+  justify-content: flex-end;
   
   @media (max-width: 800px) {
     flex-direction: column;
@@ -119,10 +119,35 @@ let ExampleFieldWrapper = scStyled.div`
 
 let FloatingButton = scStyled.div`
   position: absolute;
-  top: 50%;
+  top: 8px;
   right: 12px;
-  transform: translateY(-50%);
   z-index: 1;
+  
+  .styledGreyButton,
+  .remove-word-button {
+    background-color: #f8f9fa !important;
+    border: 1px solid #dee2e6 !important;
+    color: #6c757d !important;
+    padding: 0.25rem 0.5rem !important;
+    border-radius: 0.25rem !important;
+    text-decoration: none !important;
+    font-size: 0.75rem !important;
+    font-weight: 400 !important;
+    cursor: pointer !important;
+    transition: all 0.15s ease-in-out !important;
+    margin: 0 !important;
+    font-family: inherit !important;
+    
+    &:hover {
+      background-color: #e9ecef !important;
+      border-color: #adb5bd !important;
+    }
+    
+    &:active {
+      background-color: #dee2e6 !important;
+      border-color: #adb5bd !important;
+    }
+  }
 `;
 
 

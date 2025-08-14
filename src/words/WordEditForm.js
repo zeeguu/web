@@ -81,23 +81,49 @@ export default function WordEditForm({ bookmark, errorMessage, handleClose, upda
         {errorMessage && <FullWidthErrorMsg>{errorMessage}</FullWidthErrorMsg>}
 
         {isBookmarkExpression(bookmark) ? (
-          <s.CustomTextField
-            id="outlined-basic"
-            label={strings.expression}
-            variant="outlined"
-            fullWidth
-            value={expression}
-            onChange={typingExpression}
-          />
+          <s.ExampleFieldWrapper>
+            <s.CustomTextField
+              id="outlined-basic"
+              label={strings.expression}
+              variant="outlined"
+              fullWidth
+              value={expression}
+              onChange={typingExpression}
+            />
+            {bookmark.from.split(" ").length < MAX_WORDS_IN_BOOKMARK_FOR_EXERCISES && uploadUserFeedback && (
+              <s.FloatingButton>
+                <button
+                  type="button"
+                  onClick={() => setShowExcludeModal(true)}
+                  className="remove-word-button"
+                >
+                  Remove from exercises
+                </button>
+              </s.FloatingButton>
+            )}
+          </s.ExampleFieldWrapper>
         ) : (
-          <s.CustomTextField
-            id="outlined-basic"
-            label={strings.word}
-            variant="outlined"
-            fullWidth
-            value={expression}
-            onChange={typingExpression}
-          />
+          <s.ExampleFieldWrapper>
+            <s.CustomTextField
+              id="outlined-basic"
+              label={strings.word}
+              variant="outlined"
+              fullWidth
+              value={expression}
+              onChange={typingExpression}
+            />
+            {bookmark.from.split(" ").length < MAX_WORDS_IN_BOOKMARK_FOR_EXERCISES && uploadUserFeedback && (
+              <s.FloatingButton>
+                <button
+                  type="button"
+                  onClick={() => setShowExcludeModal(true)}
+                  className="remove-word-button"
+                >
+                  Remove from exercises
+                </button>
+              </s.FloatingButton>
+            )}
+          </s.ExampleFieldWrapper>
         )}
         <s.CustomTextField
           id="outlined-basic"
@@ -115,39 +141,34 @@ export default function WordEditForm({ bookmark, errorMessage, handleClose, upda
           </s.CustomCheckBoxDiv>
         )}
 
-        <s.CustomTextField
-          id="outlined-basic"
-          label="Preferred Example"
-          variant="outlined"
-          fullWidth
-          multiline
-          value={context}
-          onChange={typingContext}
-        />
-
-        <s.LinkContainer>
-          <ReplaceExampleModal
-            exerciseBookmark={bookmark}
-            onExampleUpdated={({ updatedBookmark }) => {
-              setContext(updatedBookmark.context);
-            }}
-            renderAs="link"
-            label="Change preferred example"
+        <s.ExampleFieldWrapper>
+          <s.CustomTextField
+            id="outlined-basic"
+            label="Preferred Example"
+            variant="outlined"
+            fullWidth
+            multiline
+            value={context}
+            onChange={typingContext}
           />
-        </s.LinkContainer>
+          <s.FloatingButton>
+            <ReplaceExampleModal
+              exerciseBookmark={bookmark}
+              onExampleUpdated={({ updatedBookmark }) => {
+                setContext(updatedBookmark.context);
+              }}
+              renderAs="button"
+              label="Change"
+            />
+          </s.FloatingButton>
+        </s.ExampleFieldWrapper>
 
 
         <s.DoneButtonHolder>
-          {bookmark.from.split(" ").length < MAX_WORDS_IN_BOOKMARK_FOR_EXERCISES && uploadUserFeedback && (
-            <st.FeedbackCancel
-              type="button"
-              onClick={() => setShowExcludeModal(true)}
-              value="Remove word from exercises"
-              style={{ marginTop: "1em" }}
-            />
-          )}
           {isNotEdited ? (
-            <st.FeedbackSubmit type="submit" value={strings.done} style={{ marginTop: "1em" }} />
+            <div style={{ display: "flex", justifyContent: "flex-end" }}>
+              <st.FeedbackSubmit type="submit" value={strings.done} style={{ marginTop: "1em" }} />
+            </div>
           ) : (
             <div style={{ display: "flex", gap: "1em", justifyContent: "flex-end" }} className="save-cancel-buttons">
               <st.FeedbackCancel

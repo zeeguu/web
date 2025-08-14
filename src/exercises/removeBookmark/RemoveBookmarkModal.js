@@ -83,7 +83,7 @@ export default function RemoveBookmarkModal({
     >
       <Header>
         {hasMultipleBookmarks && <Heading>Which word do you want to remove from exercises?</Heading>}
-        {!hasMultipleBookmarks && <Heading>Exclude word from exercises</Heading>}
+        {!hasMultipleBookmarks && <Heading>Remove word from exercises</Heading>}
       </Header>
       <Main>
         {hasMultipleBookmarks && (
