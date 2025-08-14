@@ -13,6 +13,7 @@ export default function ReplaceExampleModal({
   exerciseBookmark,
   onExampleUpdated,
   renderAs = "link", // "link" or "button"
+  label = "Other contexts", // customizable label
 }) {
   const api = useContext(APIContext);
   const { userDetails } = useContext(UserContext);
@@ -245,7 +246,7 @@ export default function ReplaceExampleModal({
     if (renderAs === "button") {
       return (
         <exerciseStyles.StyledGreyButton className="styledGreyButton" onClick={handleOpen}>
-          Other contexts
+          {label}
         </exerciseStyles.StyledGreyButton>
       );
     }
@@ -262,12 +263,12 @@ export default function ReplaceExampleModal({
             fontSize: 'inherit'
           }}
         >
-          Other contexts
+          {label}
         </a>
       );
     }
 
-    return <exerciseStyles.StyledGreyButton onClick={handleOpen}>Other contexts</exerciseStyles.StyledGreyButton>;
+    return <exerciseStyles.StyledGreyButton onClick={handleOpen}>{label}</exerciseStyles.StyledGreyButton>;
   }
 
   return (

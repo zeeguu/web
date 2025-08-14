@@ -6,15 +6,17 @@ import { MAX_WORDS_IN_BOOKMARK_FOR_EXERCISES } from "../exercises/ExerciseConsta
 import isBookmarkExpression from "../utils/misc/isBookmarkExpression";
 import FullWidthErrorMsg from "../components/FullWidthErrorMsg.sc";
 import ReplaceExampleModal from "../exercises/replaceExample/ReplaceExampleModal";
+import RemoveBookmarkModal from "../exercises/removeBookmark/RemoveBookmarkModal";
 
 import { APIContext } from "../contexts/APIContext";
 
-export default function WordEditForm({ bookmark, errorMessage, handleClose, updateBookmark, deleteAction }) {
+export default function WordEditForm({ bookmark, errorMessage, handleClose, updateBookmark, deleteAction, uploadUserFeedback }) {
   const api = useContext(APIContext);
   const [translation, setTranslation] = useState(bookmark.to);
   const [expression, setExpression] = useState(bookmark.from);
   const [context, setContext] = useState(bookmark.context);
   const [fitForStudy, setFitForStudy] = useState(bookmark.fit_for_study);
+  const [showExcludeModal, setShowExcludeModal] = useState(false);
 
   const isNotEdited =
     bookmark.to === translation &&
@@ -106,7 +108,7 @@ export default function WordEditForm({ bookmark, errorMessage, handleClose, upda
           onChange={typingTranslation}
         />
 
-        {bookmark.from.split(" ").length < MAX_WORDS_IN_BOOKMARK_FOR_EXERCISES && (
+        {bookmark.from.split(" ").length < MAX_WORDS_IN_BOOKMARK_FOR_EXERCISES && !uploadUserFeedback && (
           <s.CustomCheckBoxDiv>
             <input type="checkbox" checked={fitForStudy} onChange={handleFitForStudyCheck} />
             <label>Include Word in Exercises</label>
@@ -130,25 +132,48 @@ export default function WordEditForm({ bookmark, errorMessage, handleClose, upda
               setContext(updatedBookmark.context);
             }}
             renderAs="link"
+            label="Change preferred example"
           />
         </s.LinkContainer>
 
-        {isNotEdited ? (
-          <s.DoneButtonHolder>
-            <st.FeedbackSubmit type="submit" value={strings.done} style={{ marginLeft: "1em", marginTop: "1em" }} />
-          </s.DoneButtonHolder>
-        ) : (
-          <s.DoneButtonHolder>
+
+        <s.DoneButtonHolder>
+          {bookmark.from.split(" ").length < MAX_WORDS_IN_BOOKMARK_FOR_EXERCISES && uploadUserFeedback && (
             <st.FeedbackCancel
               type="button"
-              onClick={prepClose}
-              value={strings.cancel}
-              style={{ marginLeft: "1em", marginTop: "1em" }}
+              onClick={() => setShowExcludeModal(true)}
+              value="Remove word from exercises"
+              style={{ marginTop: "1em" }}
             />
-            <st.FeedbackSubmit type="submit" value={strings.save} style={{ marginLeft: "1em", marginTop: "1em" }} />
-          </s.DoneButtonHolder>
-        )}
+          )}
+          {isNotEdited ? (
+            <st.FeedbackSubmit type="submit" value={strings.done} style={{ marginTop: "1em" }} />
+          ) : (
+            <div style={{ display: "flex", gap: "1em", justifyContent: "flex-end" }} className="save-cancel-buttons">
+              <st.FeedbackCancel
+                type="button"
+                onClick={prepClose}
+                value={strings.cancel}
+                style={{ marginTop: "1em" }}
+              />
+              <st.FeedbackSubmit type="submit" value={strings.save} style={{ marginTop: "1em" }} />
+            </div>
+          )}
+        </s.DoneButtonHolder>
       </form>
+      {uploadUserFeedback && (
+        <RemoveBookmarkModal
+          exerciseBookmarks={[bookmark]}
+          open={showExcludeModal}
+          setOpen={setShowExcludeModal}
+          isTestingMultipleBookmarks={false}
+          uploadUserFeedback={uploadUserFeedback}
+          setHasProvidedQuickFeedback={() => {
+            setShowExcludeModal(false);
+            handleClose();
+          }}
+        />
+      )}
     </>
   );
 }

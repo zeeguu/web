@@ -25,7 +25,6 @@ import isEmptyDictionary from "../../utils/misc/isEmptyDictionary.js";
 import useScreenWidth from "../../hooks/useScreenWidth.js";
 import FeedbackModal from "../../components/FeedbackModal.js";
 import { FEEDBACK_OPTIONS } from "../../components/FeedbackConstants.js";
-import RemoveBookmarkModal from "../removeBookmark/RemoveBookmarkModal.js";
 import ReplaceExampleModal from "../replaceExample/ReplaceExampleModal.js";
 import AutoPronounceToggle from "../../components/AutoPronounceToggle.js";
 
@@ -63,7 +62,6 @@ export default function NextNavigation({
   const [matchWordsProgressCount, setMatchWordsProgressCount] = useState(0);
   const [isMatchBookmarkProgression, setIsMatchBookmarkProgression] = useState(false);
   const [showFeedbackModal, setShowFeedbackModal] = useState(false);
-  const [showExcludeModal, setShowExcludeModal] = useState(false);
   const { isMobile } = useScreenWidth();
   const productiveExercisesDisabled = LocalStorage.getProductiveExercisesEnabled() === "false";
 
@@ -224,6 +222,7 @@ export default function NextNavigation({
                   reload={reload}
                   setReload={setReload}
                   notifyDelete={() => setIsDeleted(true)}
+                  uploadUserFeedback={uploadUserFeedback}
                 />
               </s.EditSpeakButtonHolder>
             )}
@@ -239,22 +238,6 @@ export default function NextNavigation({
               {nextButtonText || strings.next}
             </s.FeedbackButton>
           </s.BottomRowSmallTopMargin>
-          {!bookmarkLearned && (
-            <s.BottomRowSmallTopMargin
-              style={{
-                textAlign: "center",
-                marginTop: "10px",
-                display: "flex",
-                flexWrap: "wrap",
-                gap: "10px",
-                justifyContent: "center",
-              }}
-            >
-              <s.StyledGreyButton className="styledGreyButton" onClick={() => setShowExcludeModal(true)}>
-                {isMatchExercise ? "Remove a word from exercises" : "Remove word from exercises"}
-              </s.StyledGreyButton>
-            </s.BottomRowSmallTopMargin>
-          )}
           {!isMatchExercise && (
             <div style={{ display: "flex", justifyContent: "center", marginTop: "8px" }}>
               <AutoPronounceToggle enabled={autoPronounceBookmark} onToggle={toggleAutoPronounceState} />
@@ -281,13 +264,6 @@ export default function NextNavigation({
         setOpen={setShowFeedbackModal}
         componentCategories={FEEDBACK_OPTIONS.ALL}
         contextualInfo={{ url: createShareableUrl() }}
-      />
-      <RemoveBookmarkModal
-        exerciseBookmarks={exerciseBookmarks}
-        open={showExcludeModal}
-        setOpen={setShowExcludeModal}
-        isTestingMultipleBookmarks={isMatchExercise}
-        uploadUserFeedback={uploadUserFeedback}
       />
     </>
   );

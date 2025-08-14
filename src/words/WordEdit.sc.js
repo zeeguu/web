@@ -48,7 +48,18 @@ let Paragraph = scStyled.p`
 let DoneButtonHolder = scStyled.div`
   display: flex;
   flex-direction: row;
-  justify-content: space-between;`;
+  justify-content: space-between;
+  
+  @media (max-width: 800px) {
+    flex-direction: column;
+    gap: 1em;
+    align-items: stretch;
+    
+    .save-cancel-buttons {
+      justify-content: space-between !important;
+    }
+  }
+`;
 
 let EditButton = scStyled(FeedbackButton)`
   background-color: rgba(255,255,255,0);
