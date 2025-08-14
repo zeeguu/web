@@ -1,5 +1,6 @@
 import * as s from "./WordEdit.sc";
 import * as st from "../exercises/bottomActions/FeedbackButtons.sc";
+import { StyledGreyButton } from "../exercises/exerciseTypes/Exercise.sc";
 import strings from "../i18n/definitions";
 import { useState, useContext } from "react";
 import { MAX_WORDS_IN_BOOKMARK_FOR_EXERCISES } from "../exercises/ExerciseConstants";
@@ -10,7 +11,14 @@ import RemoveBookmarkModal from "../exercises/removeBookmark/RemoveBookmarkModal
 
 import { APIContext } from "../contexts/APIContext";
 
-export default function WordEditForm({ bookmark, errorMessage, handleClose, updateBookmark, deleteAction, uploadUserFeedback }) {
+export default function WordEditForm({
+  bookmark,
+  errorMessage,
+  handleClose,
+  updateBookmark,
+  deleteAction,
+  uploadUserFeedback,
+}) {
   const api = useContext(APIContext);
   const [translation, setTranslation] = useState(bookmark.to);
   const [expression, setExpression] = useState(bookmark.from);
@@ -90,17 +98,6 @@ export default function WordEditForm({ bookmark, errorMessage, handleClose, upda
               value={expression}
               onChange={typingExpression}
             />
-            {bookmark.from.split(" ").length < MAX_WORDS_IN_BOOKMARK_FOR_EXERCISES && uploadUserFeedback && (
-              <s.FloatingButton>
-                <button
-                  type="button"
-                  onClick={() => setShowExcludeModal(true)}
-                  className="remove-word-button"
-                >
-                  Remove from exercises
-                </button>
-              </s.FloatingButton>
-            )}
           </s.ExampleFieldWrapper>
         ) : (
           <s.ExampleFieldWrapper>
@@ -112,17 +109,6 @@ export default function WordEditForm({ bookmark, errorMessage, handleClose, upda
               value={expression}
               onChange={typingExpression}
             />
-            {bookmark.from.split(" ").length < MAX_WORDS_IN_BOOKMARK_FOR_EXERCISES && uploadUserFeedback && (
-              <s.FloatingButton>
-                <button
-                  type="button"
-                  onClick={() => setShowExcludeModal(true)}
-                  className="remove-word-button"
-                >
-                  Remove from exercises
-                </button>
-              </s.FloatingButton>
-            )}
           </s.ExampleFieldWrapper>
         )}
         <s.CustomTextField
@@ -163,8 +149,12 @@ export default function WordEditForm({ bookmark, errorMessage, handleClose, upda
           </s.FloatingButton>
         </s.ExampleFieldWrapper>
 
-
         <s.DoneButtonHolder>
+          {bookmark.from.split(" ").length < MAX_WORDS_IN_BOOKMARK_FOR_EXERCISES && uploadUserFeedback && (
+            <StyledGreyButton type="button" onClick={() => setShowExcludeModal(true)} style={{ marginTop: "1em" }}>
+              Remove word from exercises
+            </StyledGreyButton>
+          )}
           {isNotEdited ? (
             <div style={{ display: "flex", justifyContent: "flex-end" }}>
               <st.FeedbackSubmit type="submit" value={strings.done} style={{ marginTop: "1em" }} />

@@ -48,15 +48,21 @@ let Paragraph = scStyled.p`
 let DoneButtonHolder = scStyled.div`
   display: flex;
   flex-direction: row;
-  justify-content: flex-end;
+  justify-content: space-between;
+  align-items: center;
   
   @media (max-width: 800px) {
     flex-direction: column;
     gap: 1em;
-    align-items: stretch;
+    align-items: flex-start;
     
     .save-cancel-buttons {
       justify-content: space-between !important;
+      align-self: stretch;
+    }
+    
+    > div {
+      align-self: flex-end;
     }
   }
 `;

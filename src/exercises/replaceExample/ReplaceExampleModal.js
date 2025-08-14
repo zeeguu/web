@@ -5,6 +5,7 @@ import { APIContext } from "../../contexts/APIContext";
 import { UserContext } from "../../contexts/UserContext";
 import * as s from "./ReplaceExampleModal.sc";
 import * as exerciseStyles from "../exerciseTypes/Exercise.sc";
+import { BlueButton } from "../exerciseTypes/Exercise.sc";
 import LoadingAnimation from "../../components/LoadingAnimation";
 import { toast } from "react-toastify";
 import CloseIcon from "@mui/icons-material/Close";
@@ -12,7 +13,7 @@ import CloseIcon from "@mui/icons-material/Close";
 export default function ReplaceExampleModal({
   exerciseBookmark,
   onExampleUpdated,
-  renderAs = "link", // "link" or "button"
+  renderAs = "link", // "link" or "button"  
   label = "Other contexts", // customizable label
 }) {
   const api = useContext(APIContext);
@@ -245,9 +246,9 @@ export default function ReplaceExampleModal({
   if (!open) {
     if (renderAs === "button") {
       return (
-        <exerciseStyles.StyledGreyButton className="styledGreyButton" onClick={handleOpen}>
+        <BlueButton onClick={handleOpen}>
           {label}
-        </exerciseStyles.StyledGreyButton>
+        </BlueButton>
       );
     }
 

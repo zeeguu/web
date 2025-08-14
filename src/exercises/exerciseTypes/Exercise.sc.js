@@ -415,6 +415,31 @@ let StyledGreyButton = styled.button`
   }
 `;
 
+let BlueButton = styled.button`
+  background-color: #f8f9fa !important;
+  border: 1px solid #dee2e6 !important;
+  color: #1976D2 !important;
+  padding: 0.25rem 0.5rem !important;
+  border-radius: 0.25rem !important;
+  text-decoration: none !important;
+  font-size: 0.75rem !important;
+  font-weight: 400 !important;
+  cursor: pointer !important;
+  transition: all 0.15s ease-in-out !important;
+  margin: 0 !important;
+  font-family: inherit !important;
+  
+  &:hover {
+    background-color: #e9ecef !important;
+    border-color: #adb5bd !important;
+  }
+  
+  &:active {
+    background-color: #dee2e6 !important;
+    border-color: #adb5bd !important;
+  }
+`;
+
 let StyledDiv = styled.div`
   margin-top: 1em;
   color: gray;
@@ -497,6 +522,7 @@ export {
   BottomRowCompact,
   BottomRowSmallTopMargin,
   StyledGreyButton,
+  BlueButton,
   StyledDiv,
   MatchButton,
   MatchingWords,
