@@ -381,14 +381,14 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
     moveToNextExercise();
   }
 
-  function uploadUserFeedback(userWrittenFeedback, word_id) {
+  function onWordRemovedFromExercises(reason, word_id) {
     setIsExerciseOver(true);
 
     if (hasExerciseNotification) {
       decrementExerciseCounter();
     }
 
-    api.uploadExerciseFeedback(userWrittenFeedback, currentExerciseType, 0, word_id, dbExerciseSessionId);
+    api.uploadExerciseFeedback(reason, currentExerciseType, 0, word_id, dbExerciseSessionId);
   }
 
   function handleExampleUpdate(updateData) {
@@ -510,7 +510,7 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
             exerciseBookmarks={currentBookmarksToStudy}
             exerciseBookmark={currentBookmarksToStudy[0]}
             moveToNextExercise={moveToNextExercise}
-            uploadUserFeedback={uploadUserFeedback}
+            onWordRemovedFromExercises={onWordRemovedFromExercises}
             reload={reload}
             setReload={setReload}
             handleShowSolution={() => {

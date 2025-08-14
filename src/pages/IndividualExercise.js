@@ -250,8 +250,8 @@ export default function IndividualExercise() {
     setIsCorrect(false);
   };
 
-  const uploadUserFeedback = (feedback, bookmarkId) => {
-    console.log("User feedback:", feedback, "for bookmark:", bookmarkId);
+  const onWordRemovedFromExercises = (reason, bookmarkId) => {
+    console.log("Word removed from exercises:", reason, "for bookmark:", bookmarkId);
   };
 
   const goToMoreExercises = () => {
@@ -347,7 +347,7 @@ export default function IndividualExercise() {
                 exerciseBookmarks={bookmarksToUse}
                 exerciseBookmark={bookmark}
                 moveToNextExercise={goToMoreExercises}
-                uploadUserFeedback={uploadUserFeedback}
+                onWordRemovedFromExercises={onWordRemovedFromExercises}
                 reload={false}
                 setReload={() => {}}
                 handleShowSolution={showSolution}

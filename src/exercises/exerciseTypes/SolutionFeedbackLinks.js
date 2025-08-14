@@ -15,7 +15,6 @@ export default function SolutionFeedbackLinks({
   prefixMsg,
   handleShowSolution,
   isExerciseOver,
-  uploadUserFeedback,
   bookmarkLearned,
   shareableUrl,
   exerciseType,

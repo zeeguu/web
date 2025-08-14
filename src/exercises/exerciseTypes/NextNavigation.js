@@ -38,7 +38,7 @@ export default function NextNavigation({
   isReadContext,
   toggleShow,
   isCorrect,
-  uploadUserFeedback,
+  onWordRemovedFromExercises,
   isExerciseOver,
   handleShowSolution,
   exerciseType,
@@ -222,7 +222,7 @@ export default function NextNavigation({
                   reload={reload}
                   setReload={setReload}
                   notifyDelete={() => setIsDeleted(true)}
-                  uploadUserFeedback={uploadUserFeedback}
+                  onWordRemovedFromExercises={onWordRemovedFromExercises}
                 />
               </s.EditSpeakButtonHolder>
             )}
@@ -251,7 +251,6 @@ export default function NextNavigation({
         handleShowSolution={handleShowSolution}
         toggleShow={toggleShow}
         isExerciseOver={isExerciseOver}
-        uploadUserFeedback={uploadUserFeedback}
         bookmarkLearned={bookmarkLearned}
         shareableUrl={createShareableUrl()}
         exerciseType={exerciseType}

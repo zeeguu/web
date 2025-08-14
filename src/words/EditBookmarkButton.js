@@ -18,7 +18,7 @@ export default function EditBookmarkButton({
   setReload,
   notifyWordChange,
   notifyDelete,
-  uploadUserFeedback,
+  onWordRemovedFromExercises,
 }) {
   const api = useContext(APIContext);
   const [open, setOpen] = useState(false);
@@ -208,7 +208,7 @@ export default function EditBookmarkButton({
             handleClose={handleClose}
             updateBookmark={updateBookmark}
             deleteAction={deleteBookmark}
-            uploadUserFeedback={uploadUserFeedback}
+            onWordRemovedFromExercises={onWordRemovedFromExercises}
           />
         </Box>
       </Modal>

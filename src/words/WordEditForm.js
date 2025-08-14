@@ -17,7 +17,7 @@ export default function WordEditForm({
   handleClose,
   updateBookmark,
   deleteAction,
-  uploadUserFeedback,
+  onWordRemovedFromExercises,
 }) {
   const api = useContext(APIContext);
   const [translation, setTranslation] = useState(bookmark.to);
@@ -26,11 +26,33 @@ export default function WordEditForm({
   const [fitForStudy, setFitForStudy] = useState(bookmark.fit_for_study);
   const [showExcludeModal, setShowExcludeModal] = useState(false);
 
+  // Handle user feedback for removing word from exercises
+  const handleUserFeedback = (reason, bookmarkId) => {
+    // Log the reason for removal
+    api.logUserActivity(
+      api.USER_SET_NOT_WORD_PREFERED,
+      bookmark.article_id,
+      bookmark.from,
+      `WORD_EDIT_FORM_REMOVE: ${reason}`
+    );
+    
+    // Remove word from exercises
+    api.userSetNotForExercises(bookmarkId);
+    
+    // Update local state
+    bookmark.fit_for_study = false;
+    setFitForStudy(false);
+    
+    // Notify parent if in exercise context
+    if (onWordRemovedFromExercises) {
+      onWordRemovedFromExercises(reason, bookmarkId);
+    }
+  };
+
   const isNotEdited =
     bookmark.to === translation &&
     bookmark.from === expression &&
-    bookmark.context === context &&
-    bookmark.fit_for_study === fitForStudy;
+    bookmark.context === context;
 
   function prepClose() {
     setTranslation(bookmark.to);
@@ -39,9 +61,6 @@ export default function WordEditForm({
     setFitForStudy(bookmark.fit_for_study);
   }
 
-  function handleFitForStudyCheck() {
-    setFitForStudy((state) => !state);
-  }
 
   function typingTranslation(event) {
     setTranslation(event.target.value);
@@ -74,7 +93,7 @@ export default function WordEditForm({
       prepClose();
       handleClose();
     } else {
-      updateBookmark(bookmark, expression, translation, context, fitForStudy);
+      updateBookmark(bookmark, expression, translation, context, bookmark.fit_for_study);
     }
   }
 
@@ -120,12 +139,6 @@ export default function WordEditForm({
           onChange={typingTranslation}
         />
 
-        {bookmark.from.split(" ").length < MAX_WORDS_IN_BOOKMARK_FOR_EXERCISES && !uploadUserFeedback && (
-          <s.CustomCheckBoxDiv>
-            <input type="checkbox" checked={fitForStudy} onChange={handleFitForStudyCheck} />
-            <label>Include Word in Exercises</label>
-          </s.CustomCheckBoxDiv>
-        )}
 
         <s.ExampleFieldWrapper>
           <s.CustomTextField
@@ -150,7 +163,7 @@ export default function WordEditForm({
         </s.ExampleFieldWrapper>
 
         <s.DoneButtonHolder>
-          {bookmark.from.split(" ").length < MAX_WORDS_IN_BOOKMARK_FOR_EXERCISES && uploadUserFeedback && (
+          {bookmark.from.split(" ").length < MAX_WORDS_IN_BOOKMARK_FOR_EXERCISES && (
             <StyledGreyButton type="button" onClick={() => setShowExcludeModal(true)} style={{ marginTop: "1em" }}>
               Remove word from exercises
             </StyledGreyButton>
@@ -172,12 +185,12 @@ export default function WordEditForm({
           )}
         </s.DoneButtonHolder>
       </form>
-      {uploadUserFeedback && bookmark && (
+      {bookmark && (
         <RemoveBookmarkModal
           exerciseBookmarks={[bookmark]}
           open={showExcludeModal}
           setOpen={setShowExcludeModal}
-          uploadUserFeedback={uploadUserFeedback}
+          uploadUserFeedback={handleUserFeedback}
           setHasProvidedQuickFeedback={() => {
             setShowExcludeModal(false);
             handleClose();
