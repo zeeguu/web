@@ -57,8 +57,7 @@ export default function FindArticles({ content, searchQuery, searchPublishPriori
         searchPublishPriorityRef.current,
         searchDifficultyPriorityRef.current,
         handleArticleInsertion,
-        (error) => {
-        },
+        (error) => {},
       );
     } else {
       api.getMoreUserArticles(20, pageNumber, handleArticleInsertion);
@@ -176,22 +175,29 @@ export default function FindArticles({ content, searchQuery, searchPublishPriori
       {!searchQuery && (
         <>
           <UnfinishedArticlesList articleList={articlesAndVideosList} setArticleList={setArticlesAndVideosList} />
-          <s.SortHolder style={{ 
-            display: "flex", 
-            justifyContent: "space-between", 
-            alignItems: "center",
-            marginTop: window.innerWidth <= 768 ? "0" : "1.5rem",
-            marginBottom: window.innerWidth <= 768 ? "0.5rem" : "1.5rem"
-          }}>
+          <s.SortHolder
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              marginTop: window.innerWidth <= 768 ? "0" : "1.5rem",
+              marginBottom: window.innerWidth <= 768 ? "0.5rem" : "1.5rem",
+            }}
+          >
             <div style={{ display: "flex", alignItems: "center", gap: "0.3rem" }}>
-              <SettingsRoundedIcon style={{ fontSize: "1.2em", cursor: "pointer" }} title="Customize this page by subscribing to topics, filtering keywords, or adding searches" />
-              <span style={{ fontSize: window.innerWidth <= 768 ? "0.8em" : "0.9em", color: "#666", whiteSpace: "nowrap" }}>
+              <SettingsRoundedIcon
+                style={{ fontSize: "1.2em", cursor: "pointer" }}
+                title="Customize this page by subscribing to topics, filtering keywords, or adding searches"
+              />
+              <span
+                style={{ fontSize: window.innerWidth <= 768 ? "0.8em" : "0.9em", color: "#666", whiteSpace: "nowrap" }}
+              >
                 <Link className="bold underlined-link" to="/account_settings/interests?fromArticles=1">
                   Topics
                 </Link>
                 {" • "}
                 <Link className="bold underlined-link" to="/account_settings/excluded_keywords?fromArticles=1">
-                  Keywords
+                  Excluded Keywords
                 </Link>
                 {" • "}
                 <Link className="bold underlined-link" to="/articles/mySearches">

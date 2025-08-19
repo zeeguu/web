@@ -14,32 +14,32 @@ export default function Learned() {
 
   function groupByMonth(learnedWords) {
     if (learnedWords.length === 0) return learnedWords;
-    
+
     const grouped = {};
-    
-    learnedWords.forEach(word => {
+
+    learnedWords.forEach((word) => {
       let learnedDate;
       if (word.learned_datetime) {
         learnedDate = new Date(word.learned_datetime);
-        
+
         // Check if date is invalid
         if (isNaN(learnedDate.getTime())) {
-          console.warn('Invalid date for word:', word.from, 'learned_datetime:', word.learned_datetime);
+          console.warn("Invalid date for word:", word.from, "learned_datetime:", word.learned_datetime);
           return;
         }
       } else {
-        console.warn('No learned_datetime for word:', word.from);
+        console.warn("No learned_datetime for word:", word.from);
         return;
       }
-      
-      const monthKey = `${learnedDate.getFullYear()}-${String(learnedDate.getMonth() + 1).padStart(2, '0')}`;
-      
+
+      const monthKey = `${learnedDate.getFullYear()}-${String(learnedDate.getMonth() + 1).padStart(2, "0")}`;
+
       if (!grouped[monthKey]) {
         grouped[monthKey] = [];
       }
       grouped[monthKey].push(word);
     });
-    
+
     // Convert to array and sort by month (most recent first)
     const groupedArray = Object.entries(grouped)
       .sort(([a], [b]) => b.localeCompare(a))
@@ -49,9 +49,9 @@ export default function Learned() {
           const dateA = new Date(a.learned_datetime);
           const dateB = new Date(b.learned_datetime);
           return dateB - dateA;
-        })
+        }),
       }));
-    
+
     return groupedArray;
   }
 
@@ -67,10 +67,12 @@ export default function Learned() {
 
   function onNotifyDelete(bookmark) {
     // Remove the word from all month groups
-    let newWords = words.map(monthGroup => ({
-      ...monthGroup,
-      words: monthGroup.words.filter(word => word.id !== bookmark.id)
-    })).filter(monthGroup => monthGroup.words.length > 0); // Remove empty months
+    let newWords = words
+      .map((monthGroup) => ({
+        ...monthGroup,
+        words: monthGroup.words.filter((word) => word.id !== bookmark.id),
+      }))
+      .filter((monthGroup) => monthGroup.words.length > 0); // Remove empty months
     setWords(newWords);
   }
 
@@ -79,14 +81,12 @@ export default function Learned() {
   }
 
   function calculateMedianRank(words) {
-    const rankedWords = words.filter(word => word.origin_rank && word.origin_rank !== "");
+    const rankedWords = words.filter((word) => word.origin_rank && word.origin_rank !== "");
     if (rankedWords.length === 0) return null;
-    
+
     // Sort by rank (lowest numbers = most frequent words)
-    const sortedByRank = rankedWords
-      .map(word => parseInt(word.origin_rank))
-      .sort((a, b) => a - b);
-    
+    const sortedByRank = rankedWords.map((word) => parseInt(word.origin_rank)).sort((a, b) => a - b);
+
     // Calculate median of all words
     const mid = Math.floor(sortedByRank.length / 2);
     if (sortedByRank.length % 2 === 0) {
@@ -97,13 +97,15 @@ export default function Learned() {
   }
 
   function topMessage(monthKey, count, medianRank) {
-    const [year, month] = monthKey.split('-');
+    const [year, month] = monthKey.split("-");
     const date = new Date(year, month - 1, 1);
-    const monthName = date.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+    const monthName = date.toLocaleDateString("en-US", { month: "long", year: "numeric" });
     return (
       <>
         <span style={{ color: "#007bff", fontWeight: "bold", fontSize: "1.2em" }}>{monthName}</span>{" "}
-        <span style={{ color: "gray", fontWeight: "lighter" }}>({count} words{count > 20 && medianRank ? `, median: ${medianRank}` : ""})</span>
+        <span style={{ color: "gray", fontWeight: "lighter" }}>
+          ({count} words{count > 20 && medianRank ? `, median rank: ${medianRank}` : ""})
+        </span>
       </>
     );
   }
@@ -128,11 +130,11 @@ export default function Learned() {
         {words.map((monthGroup) => {
           const medianRank = monthGroup.words.length > 20 ? calculateMedianRank(monthGroup.words) : null;
           return (
-            <CollapsablePanel 
+            <CollapsablePanel
               key={`month-${monthGroup.monthKey}`}
               topMessage={topMessage(monthGroup.monthKey, monthGroup.words.length, medianRank)}
             >
-              <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'flex-start' }}>
+              <div style={{ display: "flex", flexWrap: "wrap", alignItems: "flex-start" }}>
                 {monthGroup.words.map((each) => {
                   return <CompactWord key={each.id} bookmark={each} />;
                 })}
