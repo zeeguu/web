@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-export default function SimplificationLevelsNotice({ articleInfo, api }) {
+export default function SimplificationLevelsNotice({ articleInfo, api, onLevelChange, currentArticleId }) {
   const [simplificationLevels, setSimplificationLevels] = useState([]);
 
   useEffect(() => {
@@ -42,28 +42,44 @@ export default function SimplificationLevelsNotice({ articleInfo, api }) {
     fontWeight: "500",
     textDecoration: "underline",
     padding: "2px 4px",
+    cursor: onLevelChange ? "pointer" : "default",
+    border: onLevelChange ? "none" : undefined,
+    background: onLevelChange ? "none" : undefined,
+  };
+
+  const handleLevelClick = (levelId) => {
+    if (onLevelChange && levelId !== (currentArticleId || articleInfo.id)) {
+      onLevelChange(levelId, () => {
+        // Level change completed
+      });
+    }
   };
 
   if (simplificationLevels.length > 0) {
-    const originalLevel = simplificationLevels.find(level => level.is_original);
-    
+    const originalLevel = simplificationLevels.find((level) => level.is_original);
+
     return (
       <div style={noticeStyle}>
         <div>
-          📄 <strong>Other versions of this article:</strong>
+          <strong>Article versions: </strong>
           {originalLevel?.url && (
             <span style={{ color: "#666", fontSize: "13px", marginLeft: "8px" }}>
               (from {new URL(originalLevel.url).hostname})
             </span>
           )}
-          <div style={{ marginTop: "8px" }}>
+          <span style={{ marginTop: "8px" }}>
             {simplificationLevels.map((level, index) => (
               <span key={level.id}>
-                {level.id === articleInfo.id ? (
+                {level.id === (currentArticleId || articleInfo.id) ? (
                   <span style={currentLevelStyle}>
                     {level.cefr_level || level.difficulty || "current"}
-                    {level.is_original ? " (original)" : ""} (reading now)
+                    {level.is_original ? " (original)" : ""}
                   </span>
+                ) : onLevelChange ? (
+                  <button onClick={() => handleLevelClick(level.id)} style={levelLinkStyle}>
+                    {level.cefr_level || level.difficulty || "level"}
+                    {level.is_original ? " (original)" : ""}
+                  </button>
                 ) : (
                   <a href={`/read/article?id=${level.id}`} style={levelLinkStyle}>
                     {level.cefr_level || level.difficulty || "level"}
@@ -73,7 +89,7 @@ export default function SimplificationLevelsNotice({ articleInfo, api }) {
                 {index < simplificationLevels.length - 1 && " • "}
               </span>
             ))}
-          </div>
+          </span>
         </div>
       </div>
     );

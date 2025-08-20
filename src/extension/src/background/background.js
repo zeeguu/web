@@ -1,10 +1,8 @@
 import { BROWSER_API } from "../utils/browserApi";
 import { WEB_URL, WEB_LOGIN_URL, API_URL } from "../../../config";
-import {
-  setCurrentURL,
-  setUserInLocalStorage,
-  getCurrentTab,
-} from "../popup/functions";
+
+// Debug logging to check API URL configuration in background script
+import { setCurrentURL, setUserInLocalStorage, getCurrentTab } from "../popup/functions";
 import { getIsLoggedIn, getUserInfoDictFromCookies } from "../popup/cookies";
 import Zeeguu_API from "../../../api/Zeeguu_API";
 import { EXTENSION_SOURCE } from "../constants";
@@ -65,12 +63,10 @@ async function injectFontAndStyles(tabId) {
   }
 }
 
-BROWSER_API.runtime.onMessageExternal.addListener(
-  (request, sender, sendResponse) => {
-    // console.log("Received message from " + sender.url + ": ", request);
-    sendResponse({ message: true });
-  }
-);
+BROWSER_API.runtime.onMessageExternal.addListener((request, sender, sendResponse) => {
+  // console.log("Received message from " + sender.url + ": ", request);
+  sendResponse({ message: true });
+});
 
 BROWSER_API.runtime.onInstalled.addListener(function (object) {
   let externalUrl = WEB_URL + "/extension_installed";
@@ -120,12 +116,7 @@ async function startReader() {
       let api = new Zeeguu_API(API_URL);
       let userData = await getUserInfoDictFromCookies(WEB_URL);
       setUserInLocalStorage(userData, api);
-      await api.logUserActivity(
-        api.OPEN_CONTEXT,
-        "",
-        tab.url,
-        EXTENSION_SOURCE
-      );
+      await api.logUserActivity(api.OPEN_CONTEXT, "", tab.url, EXTENSION_SOURCE);
     } catch (err) {
       console.error(`failed to execute script: ${err}`);
     } finally {

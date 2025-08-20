@@ -208,3 +208,50 @@ Zeeguu_API.prototype.getUnfinishedUserReadingSessions = function (callback) {
 Zeeguu_API.prototype.getArticleSimplificationLevels = function (articleID, callback) {
   this._getJSON(`article_simplification_levels?article_id=${articleID}`, callback);
 };
+
+Zeeguu_API.prototype.simplifyArticle = function (articleID, callback) {
+  const url = this._appendSessionToUrl(`simplify_article/${articleID}`);
+  
+  // Use AbortController for timeout
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 120000); // 120 second timeout
+  
+  fetch(url, {
+    method: "POST",
+    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    body: "",
+    signal: controller.signal
+  })
+  .then((response) => {
+    clearTimeout(timeoutId);
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+    }
+    return response.text();
+  })
+  .then((response) => {
+    try {
+      callback(JSON.parse(response));
+    } catch (e) {
+      callback({ status: "error", message: "Invalid response format" });
+    }
+  })
+  .catch((error) => {
+    clearTimeout(timeoutId);
+    if (error.name === 'AbortError') {
+      // Check if simplification actually succeeded despite timeout
+      setTimeout(() => {
+        this.getArticleSimplificationLevels(articleID, (levels) => {
+          if (levels && levels.length > 1) {
+            // Simplification succeeded despite timeout
+            callback({ status: "success", levels: levels });
+          } else {
+            callback({ status: "error", message: "Simplification timed out" });
+          }
+        });
+      }, 2000); // Wait 2 seconds then check
+    } else {
+      callback({ status: "error", message: error.message || "Network error" });
+    }
+  });
+};

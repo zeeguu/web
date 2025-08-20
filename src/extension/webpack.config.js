@@ -1,6 +1,14 @@
 const path = require("path");
+const webpack = require("webpack");
 
 module.exports = {
+  // Use source-map devtool for development to avoid eval() usage
+  devtool: process.env.NODE_ENV === "development" ? "source-map" : false,
+  plugins: [
+    new webpack.DefinePlugin({
+      "process.env.NODE_ENV": JSON.stringify(process.env.NODE_ENV || "production"),
+    }),
+  ],
   module: {
     rules: [
       { 

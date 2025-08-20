@@ -1,31 +1,52 @@
 /*global chrome*/
 /*global browser*/
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { setCurrentURL } from "./functions";
 import { BROWSER_API } from "../utils/browserApi";
 import { HeadingContainer, MiddleContainer } from "./Popup.styles";
 import PopupLoading from "./PopupLoading";
 import ReportError from "../reportError/ReportError";
-import { READABILITY_FEEDBACK, LANGUAGE_FEEDBACK, LANGUAGE_UNDEFINED } from "../constants";
+import { LANGUAGE_FEEDBACK, READABILITY_FEEDBACK } from "../constants";
 import { injectFontAndStyles } from "../background/background";
-import { ArticleAsync } from "../InjectedReaderApp/Article";
 
 // Use extension runtime URL instead of direct import
 const logo = chrome?.runtime?.getURL ? chrome.runtime.getURL("images/zeeguu128.png") : "/images/zeeguu128.png";
 
-export default function PopupContent({ isReadable, languageSupported, user, tab, api, sessionId, articleData, fragmentData, loadingProgress: passedLoadingProgress }) {
+export default function PopupContent({
+  isReadable,
+  languageSupported,
+  user,
+  tab,
+  api,
+  sessionId,
+  articleData,
+  fragmentData,
+  loadingProgress: passedLoadingProgress,
+}) {
   const [feedbackSuccess, setFeedbackSuccess] = useState(false);
   const [finalStateExecuted, setFinalStateExecuted] = useState(false);
   const [showLoader, setShowLoader] = useState(true);
   const [article, setArticle] = useState(articleData);
   const [loadingProgress, setLoadingProgress] = useState(passedLoadingProgress || "Analyzing page...");
 
+  // Debug logging for state changes
   useEffect(() => {
-    // Hide loader only when we're ready to show final content
-    if (showLoader && finalStateExecuted) {
+    console.log("PopupContent state:", {
+      languageSupported,
+      finalStateExecuted,
+      article: !!article,
+      fragmentData: !!fragmentData,
+      loadingProgress,
+      showLoader,
+    });
+  }, [languageSupported, finalStateExecuted, article, fragmentData, loadingProgress, showLoader]);
+
+  useEffect(() => {
+    // Hide loader only when we're ready to show final content OR we have an error state
+    if (showLoader && finalStateExecuted && (languageSupported === false || !isReadable)) {
       setShowLoader(false);
     }
-  }, [showLoader, finalStateExecuted]);
+  }, [showLoader, finalStateExecuted, languageSupported, isReadable]);
 
   useEffect(() => {
     // Update loading progress from parent
@@ -66,11 +87,11 @@ export default function PopupContent({ isReadable, languageSupported, user, tab,
     try {
       // Store URL and article data for the content script to access
       setCurrentURL(tab.url);
-      await BROWSER_API.storage.local.set({ 
+      await BROWSER_API.storage.local.set({
         articleData: article,
         fragmentData: fragmentData,
         sessionId: sessionId,
-        url: tab.url
+        url: tab.url,
       });
 
       await BROWSER_API.scripting.executeScript({
@@ -138,10 +159,16 @@ export default function PopupContent({ isReadable, languageSupported, user, tab,
   } else if (languageSupported === false && finalStateExecuted) {
     return renderFeedbackSection(LANGUAGE_FEEDBACK);
   } else if (languageSupported && finalStateExecuted && article && fragmentData) {
-    openModal();
-    return <></>;
+    // Always show loading message before opening modal
+    setTimeout(() => {
+      openModal();
+    }, 800); // Show message long enough to be visible
+    return (
+      <>
+        <PopupLoading showLoader={true} setShowLoader={setShowLoader} loadingText="Opening article reader..." />
+      </>
+    );
   }
-
 
   return (
     <>

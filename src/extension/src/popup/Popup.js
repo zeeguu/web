@@ -14,7 +14,7 @@ import { StyledPrimaryButton } from "../InjectedReaderApp/Buttons.styles";
 import { API_URL, WEB_URL } from "../../../config";
 import { BROWSER_API } from "../utils/browserApi";
 
-//for isProbablyReadable options object
+// for isProbablyReadable options object
 const minLength = 120;
 const minScore = 20;
 

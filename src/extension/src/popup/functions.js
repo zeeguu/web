@@ -37,11 +37,11 @@ export function getSourceAsDOM(url) {
     xmlhttp.open("GET", url, false);
     // Don't set timeout for sync requests - it's not supported
     xmlhttp.send();
-    
+
     if (xmlhttp.status !== 200) {
       throw new Error(`HTTP ${xmlhttp.status}: ${xmlhttp.statusText}`);
     }
-    
+
     const parser = new DOMParser();
     //const clean = DOMPurify.sanitize(xmlhttp.responseText);
     return parser.parseFromString(xmlhttp.responseText, "text/html");
@@ -56,8 +56,8 @@ export async function getSourceAsDOMAsync(url) {
     const xmlhttp = new XMLHttpRequest();
     xmlhttp.open("GET", url, true); // Async request
     xmlhttp.timeout = 15000; // Set 15 second timeout
-    
-    xmlhttp.onload = function() {
+
+    xmlhttp.onload = function () {
       if (xmlhttp.status === 200) {
         const parser = new DOMParser();
         //const clean = DOMPurify.sanitize(xmlhttp.responseText);
@@ -66,15 +66,15 @@ export async function getSourceAsDOMAsync(url) {
         reject(new Error(`HTTP ${xmlhttp.status}: ${xmlhttp.statusText}`));
       }
     };
-    
-    xmlhttp.onerror = function() {
-      reject(new Error('Network error occurred'));
+
+    xmlhttp.onerror = function () {
+      reject(new Error("Network error occurred"));
     };
-    
-    xmlhttp.ontimeout = function() {
-      reject(new Error('Request timed out'));
+
+    xmlhttp.ontimeout = function () {
+      reject(new Error("Request timed out"));
     };
-    
+
     try {
       xmlhttp.send();
     } catch (error) {
@@ -98,10 +98,10 @@ export function deleteCurrentDOM() {
   if (head) {
     // Only preserve styled-components style tags (they have data-styled attribute)
     // These are our extension's styles, not the page's original styles
-    const styledComponentsStyles = head.querySelectorAll('style[data-styled]');
+    const styledComponentsStyles = head.querySelectorAll("style[data-styled]");
     removeAllChildNodes(head);
     // Re-add only our styled-components styles
-    styledComponentsStyles.forEach(style => head.appendChild(style));
+    styledComponentsStyles.forEach((style) => head.appendChild(style));
   }
   const div = document.querySelector("div");
   if (div) {
@@ -132,46 +132,62 @@ export function deleteIntervals() {
   }
 }
 
-export function checkLanguageSupport(api, tab, setLanguageSupported, setArticleData, setLoadingProgress, setFragmentData) {
+export function checkLanguageSupport(
+  api,
+  tab,
+  setLanguageSupported,
+  setArticleData,
+  setLoadingProgress,
+  setFragmentData,
+) {
   if (setLoadingProgress) setLoadingProgress("Fetching article content...");
-  
-  ArticleAsync(tab.url).then((article) => {
-    if (setArticleData) setArticleData(article);
-    if (setLoadingProgress) setLoadingProgress("Checking language support...");
-    
-    api.isArticleLanguageSupported(article.textContent, (result_dict) => {
-      if (result_dict === "NO") {
-        setLanguageSupported(false);
-      }
-      if (result_dict === "YES") {
-        if (setLoadingProgress) setLoadingProgress("Processing article fragments...");
-        
-        // Get tokenized fragments
-        let info = { url: tab.url };
-        api.findOrCreateArticle(info, (articleResult) => {
-          if (articleResult.includes("Language not supported")) {
-            setLanguageSupported(false);
-            return;
-          }
-          
-          try {
-            let artinfo = JSON.parse(articleResult);
-            if (setFragmentData) {
-              setFragmentData(artinfo);
+
+  ArticleAsync(tab.url)
+    .then((article) => {
+      if (setArticleData) setArticleData(article);
+      if (setLoadingProgress) setLoadingProgress("Checking language support...");
+
+      api.isArticleLanguageSupported(article.textContent, (result_dict) => {
+        if (result_dict === "NO") {
+          setLanguageSupported(false);
+        }
+        if (result_dict === "YES") {
+          if (setLoadingProgress) setLoadingProgress("Processing article fragments...");
+
+          // Get tokenized fragments
+          let info = { url: tab.url };
+
+          if (setLoadingProgress) setLoadingProgress("Assessing article difficulty level...");
+
+          api.findOrCreateArticle(info, (articleResult) => {
+            if (articleResult.includes("Language not supported")) {
+              setLanguageSupported(false);
+              return;
             }
-            if (setLoadingProgress) setLoadingProgress("Preparing reader...");
-            setLanguageSupported(true);
-          } catch (error) {
-            console.error("Failed to parse article info:", error);
-            setLanguageSupported(false);
-          }
-        });
-      }
+
+            try {
+              let artinfo = JSON.parse(articleResult);
+              if (setFragmentData) {
+                setFragmentData(artinfo);
+              }
+
+              if (setLoadingProgress) setLoadingProgress("Preparing reader...");
+
+              if (setLoadingProgress) setLoadingProgress("Opening article reader...");
+
+              setLanguageSupported(true);
+            } catch (error) {
+              console.error("Failed to parse article info:", error);
+              setLanguageSupported(false);
+            }
+          });
+        }
+      });
+    })
+    .catch((error) => {
+      console.error("Failed to fetch article for language check:", error);
+      setLanguageSupported(false);
     });
-  }).catch((error) => {
-    console.error("Failed to fetch article for language check:", error);
-    setLanguageSupported(false);
-  });
 }
 
 export function checkLanguageSupportFromUrl(api, url, setLanguageSupported) {
