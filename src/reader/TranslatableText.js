@@ -43,7 +43,7 @@ export function TranslatableText({
       paragraphs.map((par, index) =>
         createElement(
           divType,
-          { className: "textParagraph", key: index },
+          { className: `textParagraph ${divType}`, key: index },
           <>
             {index === 0 && leftEllipsis && <>...</>}
             {par.getWords().map((word) => renderWordJSX(word))}

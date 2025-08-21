@@ -193,6 +193,64 @@ that made the UI too heavy ... */
   .selectedAlternativeOrig,
   .contributedAlternativeOrig {
   }
+
+  /* HTML formatting elements styling */
+  .textParagraph {
+    &.h1 {
+      font-size: 2em;
+      font-weight: bold;
+      margin: 1em 0 0.5em 0;
+      line-height: 1.2;
+    }
+
+    &.h2 {
+      font-size: 1.5em;
+      font-weight: bold;
+      margin: 0.8em 0 0.4em 0;
+      line-height: 1.3;
+    }
+
+    &.h3 {
+      font-size: 1.3em;
+      font-weight: bold;
+      margin: 0.7em 0 0.3em 0;
+      line-height: 1.3;
+    }
+
+    &.h4 {
+      font-size: 1.1em;
+      font-weight: bold;
+      margin: 0.6em 0 0.2em 0;
+      line-height: 1.4;
+    }
+
+    &.h5 {
+      font-size: 1em;
+      font-weight: bold;
+      margin: 0.5em 0 0.2em 0;
+      line-height: 1.4;
+    }
+
+    &.h6 {
+      font-size: 0.9em;
+      font-weight: bold;
+      margin: 0.5em 0 0.2em 0;
+      line-height: 1.4;
+      color: #666;
+    }
+
+    &.p {
+      margin: 1em 0;
+      line-height: 1.6;
+    }
+
+    /* Add space between different section headings and content */
+    &.h1 + .textParagraph,
+    &.h2 + .textParagraph,
+    &.h3 + .textParagraph {
+      margin-top: 0.5em;
+    }
+  }
 `;
 
 export { TranslatableText };
