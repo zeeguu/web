@@ -28,6 +28,7 @@ export default function Popup({ loggedIn }) {
   const [articleData, setArticleData] = useState();
   const [fragmentData, setFragmentData] = useState();
   const [loadingProgress, setLoadingProgress] = useState("Analyzing page...");
+  const [detectedLanguage, setDetectedLanguage] = useState();
 
   useEffect(() => {
     if (loggedIn) {
@@ -69,7 +70,7 @@ export default function Popup({ loggedIn }) {
         setIsReadable(true);
         api.session = user.session;
         if (api.session !== undefined) {
-          checkLanguageSupport(api, tab, setLanguageSupported, setArticleData, setLoadingProgress, setFragmentData);
+          checkLanguageSupport(api, tab, setLanguageSupported, setArticleData, setLoadingProgress, setFragmentData, setDetectedLanguage);
         }
       }
     }
@@ -108,6 +109,7 @@ export default function Popup({ loggedIn }) {
             articleData={articleData}
             fragmentData={fragmentData}
             loadingProgress={loadingProgress}
+            detectedLanguage={detectedLanguage}
           ></PopupContent>
         </PopUp>
       );

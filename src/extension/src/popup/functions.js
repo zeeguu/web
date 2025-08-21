@@ -139,6 +139,7 @@ export function checkLanguageSupport(
   setArticleData,
   setLoadingProgress,
   setFragmentData,
+  setDetectedLanguage = null,
 ) {
   if (setLoadingProgress) setLoadingProgress("Fetching article content...");
 
@@ -147,11 +148,19 @@ export function checkLanguageSupport(
       if (setArticleData) setArticleData(article);
       if (setLoadingProgress) setLoadingProgress("Checking language support...");
 
-      api.isArticleLanguageSupported(article.textContent, (result_dict) => {
-        if (result_dict === "NO") {
-          setLanguageSupported(false);
+      api.detectArticleLanguage(article.textContent, (result) => {
+        // Set detected language regardless
+        if (setDetectedLanguage && result.detected_language) {
+          setDetectedLanguage(result.detected_language);
         }
-        if (result_dict === "YES") {
+
+        if (result.supported === false) {
+          setLanguageSupported(false);
+        } else if (result.needs_translation === true) {
+          // Language is supported but needs translation
+          setLanguageSupported(false); // This will trigger the translation prompt
+        } else if (result.supported === true && !result.needs_translation) {
+          // Language is supported and matches user's learned language
           if (setLoadingProgress) setLoadingProgress("Processing article fragments...");
 
           // Get tokenized fragments

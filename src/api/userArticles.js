@@ -190,6 +190,46 @@ Zeeguu_API.prototype.isArticleLanguageSupported = function (
   this._post(`/is_article_language_supported`, qs.stringify(article), callback);
 };
 
+Zeeguu_API.prototype.detectArticleLanguage = function (
+  htmlContent,
+  callback,
+) {
+  let article = { htmlContent: htmlContent, detailed: true };
+  this._post(`/is_article_language_supported`, qs.stringify(article), (response) => {
+    try {
+      callback(JSON.parse(response));
+    } catch (e) {
+      // Backward compatibility - old format
+      callback({ supported: response === "YES" });
+    }
+  });
+};
+
+Zeeguu_API.prototype.translateAndAdaptArticle = function (
+  url,
+  targetLanguage,
+  callback,
+  onError,
+) {
+  let params = { url: url };
+  if (targetLanguage) {
+    params.target_language = targetLanguage;
+  }
+  this._post(`/translate_and_adapt_article`, qs.stringify(params), (response) => {
+    try {
+      callback(JSON.parse(response));
+    } catch (e) {
+      if (onError) {
+        onError("Failed to parse translation response");
+      }
+    }
+  }, onError);
+};
+
+Zeeguu_API.prototype.getLearnedLanguage = function (callback, onError) {
+  this._getPlainText(`learned_language`, callback, onError);
+};
+
 Zeeguu_API.prototype.sendFeedback = function (feedback, callback, onError) {
   this._post(`/send_feedback`, qs.stringify(feedback), callback, onError);
 };

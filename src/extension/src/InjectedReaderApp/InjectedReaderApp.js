@@ -454,7 +454,7 @@ export function InjectedReaderApp({ modalIsOpen, setModalIsOpen, api, url, autho
                     <SimplifyButton
                       api={api}
                       articleId={articleID}
-                      hasExistingLevels={availableLevels && availableLevels.length > 1}
+                      hasExistingLevels={(availableLevels && availableLevels.length > 1) || (articleInfo && articleInfo.is_translated)}
                       setIsLoadingNewVersion={setIsLoadingNewVersion}
                       onLevelsReady={handleLevelsReady}
                     />
