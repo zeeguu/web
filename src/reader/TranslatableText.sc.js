@@ -244,6 +244,60 @@ that made the UI too heavy ... */
       line-height: 1.6;
     }
 
+    /* List styling */
+    &.ul {
+      margin: 1em 0;
+      padding-left: 0;
+      list-style: none;
+    }
+
+    &.ol {
+      margin: 1em 0;
+      padding-left: 0;
+      list-style: none;
+      counter-reset: list-counter;
+    }
+
+    &.li {
+      margin: 0.5em 0 0.5em 1.5em;
+      line-height: 1.5;
+      position: relative;
+      /* Keep default list styling - it's working fine */
+    }
+
+    /* For now, we'll use bullets for all list items */
+    /* TODO: In the future, we could add logic to distinguish ul vs ol lists */
+
+    /* Blockquote styling */
+    &.blockquote {
+      margin: 1.5em 0;
+      padding: 1em 1.5em;
+      border-left: 4px solid ${zeeguuOrange};
+      background-color: #f9f9f9;
+      font-style: italic;
+      position: relative;
+    }
+
+    &.blockquote::before {
+      content: '"';
+      font-size: 3em;
+      color: ${zeeguuOrange};
+      position: absolute;
+      left: 0.2em;
+      top: -0.1em;
+      opacity: 0.3;
+    }
+
+    /* Inline formatting elements (for future support) */
+    strong, b {
+      font-weight: bold;
+      color: ${almostBlack};
+    }
+
+    em, i {
+      font-style: italic;
+    }
+
     /* Add space between different section headings and content */
     &.h1 + .textParagraph,
     &.h2 + .textParagraph,
