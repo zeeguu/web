@@ -287,12 +287,6 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
           decrementExerciseCounter();
         }
       }
-      // update the cooling interval so we have the correct value for the level indicator 
-      if (currentBookmark.cooling_interval == null) {
-        currentBookmark.cooling_interval = 1;
-      } else if (currentBookmark.cooling_interval < MAX_COOLDOWN_INTERVAL) {
-        currentBookmark.cooling_interval += 1;
-      }
 
       correctBookmarksCopy.push(currentBookmark);
       setCorrectBookmarks(correctBookmarksCopy);
@@ -337,9 +331,6 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
   }
 
   function updateAPIWithExerciseComplete(message, bookmark, endExercise = true) {
-    if (bookmark && bookmark.cooling_interval == null) {
-      bookmark.cooling_interval = 0;
-  }
     let updated_message = handleUserAttempt(message, bookmark);
     if (endExercise) setIsExerciseOver(true);
     api.uploadExerciseFinalizedData(
