@@ -6,6 +6,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
+
+## [2.5.6] - 2025-08-21
+
+### Added
+- Styling of headings and list items in text
+- Translate & Simplify for articles that are not in the learned language
+
 ## [2.5.5] - 2025-08-20
 
 ### Added
