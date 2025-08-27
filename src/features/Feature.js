@@ -2,7 +2,16 @@ import LocalStorage from "../assorted/LocalStorage";
 
 const Feature = {
   is_enabled: function (featureName) {
+    if (featureName === "daily_audio") {
+      return LocalStorage.hasFeature(featureName) && this.is_audio_supported_for_language();
+    }
     return LocalStorage.hasFeature(featureName);
+  },
+
+  is_audio_supported_for_language: function() {
+    const learnedLanguage = LocalStorage.getLearnedLanguage();
+    const languagesWithoutAudio = ['el'];
+    return !languagesWithoutAudio.includes(learnedLanguage);
   },
 
   tiago_exercises: function () {
