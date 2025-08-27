@@ -28,4 +28,5 @@ export const LANGUAGE_CODE_TO_NAME = {
   ur: "Urdu",
   ta: "Tamil",
   bn: "Bengali",
+  el: "Greek",
 };
