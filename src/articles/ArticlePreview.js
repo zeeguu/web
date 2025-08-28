@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { useContext, useState } from "react";
+import { useContext, useState, useEffect } from "react";
 import { isMobile } from "../utils/misc/browserDetection";
 import * as s from "./ArticlePreview.sc";
 import RedirectionNotificationModal from "../components/redirect_notification/RedirectionNotificationModal";
@@ -16,7 +16,9 @@ import { TopicOriginType } from "../appConstants";
 import extractDomain from "../utils/web/extractDomain";
 import ReadingCompletionProgress from "./ReadingCompletionProgress";
 import { APIContext } from "../contexts/APIContext";
-import TruncatedSummary from "../components/TruncatedSummary";
+import { TranslatableText } from "../reader/TranslatableText";
+import InteractiveText from "../reader/InteractiveText";
+import ZeeguuSpeech from "../speech/APIBasedSpeech";
 
 export default function ArticlePreview({
   article,
@@ -35,6 +37,35 @@ export default function ArticlePreview({
   const [isRedirectionModalOpen, setIsRedirectionModaOpen] = useState(false);
   const [isArticleSaved, setIsArticleSaved] = useState(article.has_personal_copy);
   const [showInferredTopic, setShowInferredTopic] = useState(true);
+  const [interactiveSummary, setInteractiveSummary] = useState(null);
+  const [isTokenizing, setIsTokenizing] = useState(false);
+  const [zeeguuSpeech] = useState(() => new ZeeguuSpeech(api, article.language));
+
+  useEffect(() => {
+    if (article.summary && !isTokenizing && !interactiveSummary) {
+      setIsTokenizing(true);
+      api.getArticleSummaryInfo(article.id, (summaryData) => {
+        console.log("Summary data received:", summaryData);
+        if (summaryData.tokenized_summary) {
+          console.log("Tokenized summary tokens:", summaryData.tokenized_summary.tokens);
+          const interactive = new InteractiveText(
+            summaryData.tokenized_summary.tokens,
+            article.id,
+            api,
+            summaryData.tokenized_summary.past_bookmarks,
+            api.TRANSLATE_TEXT,
+            article.language,
+            "article_preview",
+            zeeguuSpeech,
+            summaryData.tokenized_summary.context_identifier
+          );
+          console.log("Interactive text created:", interactive);
+          setInteractiveSummary(interactive);
+        }
+        setIsTokenizing(false);
+      });
+    }
+  }, [article.summary, article.language, article.id, api, zeeguuSpeech, isTokenizing, interactiveSummary]);
 
   const handleArticleClick = () => {
     if (notifyArticleClick) {
@@ -149,7 +180,21 @@ export default function ArticlePreview({
       <s.ArticleContent>
         {article.img_url && <img alt="" src={article.img_url} />}
         <s.Summary>
-          <TruncatedSummary text={article.summary} />
+          {(() => {
+            console.log("Rendering summary - interactiveSummary:", !!interactiveSummary);
+            if (interactiveSummary) {
+              console.log("Interactive summary paragraphs:", interactiveSummary.getParagraphs().length);
+              return (
+                <TranslatableText
+                  interactiveText={interactiveSummary}
+                  translating={false}
+                  pronouncing={false}
+                />
+              );
+            } else {
+              return article.summary;
+            }
+          })()}
         </s.Summary>
       </s.ArticleContent>
 

@@ -141,6 +141,10 @@ Zeeguu_API.prototype.getArticleInfo = function (articleID, callback) {
   this._getJSON(`user_article?article_id=${articleID}`, callback);
 };
 
+Zeeguu_API.prototype.getArticleSummaryInfo = function (articleID, callback) {
+  this._getJSON(`user_article_summary?article_id=${articleID}`, callback);
+};
+
 Zeeguu_API.prototype.setArticleInfo = function (articleInfo, callback) {
   this._post(
     `user_article`,
