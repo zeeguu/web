@@ -45,9 +45,7 @@ export default function ArticlePreview({
     if (article.summary && !isTokenizing && !interactiveSummary) {
       setIsTokenizing(true);
       api.getArticleSummaryInfo(article.id, (summaryData) => {
-        console.log("Summary data received:", summaryData);
         if (summaryData.tokenized_summary) {
-          console.log("Tokenized summary tokens:", summaryData.tokenized_summary.tokens);
           const interactive = new InteractiveText(
             summaryData.tokenized_summary.tokens,
             article.id,
@@ -59,7 +57,6 @@ export default function ArticlePreview({
             zeeguuSpeech,
             summaryData.tokenized_summary.context_identifier
           );
-          console.log("Interactive text created:", interactive);
           setInteractiveSummary(interactive);
         }
         setIsTokenizing(false);
@@ -180,21 +177,15 @@ export default function ArticlePreview({
       <s.ArticleContent>
         {article.img_url && <img alt="" src={article.img_url} />}
         <s.Summary>
-          {(() => {
-            console.log("Rendering summary - interactiveSummary:", !!interactiveSummary);
-            if (interactiveSummary) {
-              console.log("Interactive summary paragraphs:", interactiveSummary.getParagraphs().length);
-              return (
-                <TranslatableText
-                  interactiveText={interactiveSummary}
-                  translating={false}
-                  pronouncing={false}
-                />
-              );
-            } else {
-              return article.summary;
-            }
-          })()}
+          {interactiveSummary ? (
+            <TranslatableText
+              interactiveText={interactiveSummary}
+              translating={true}
+              pronouncing={false}
+            />
+          ) : (
+            article.summary
+          )}
         </s.Summary>
       </s.ArticleContent>
 
