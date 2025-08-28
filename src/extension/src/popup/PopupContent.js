@@ -287,6 +287,7 @@ export default function PopupContent({
       nl: "Dutch",
       it: "Italian",
       da: "Danish",
+      el: "Greek",
       pl: "Polish",
       sv: "Swedish",
       ru: "Russian",
