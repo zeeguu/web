@@ -161,7 +161,7 @@ const UnfinishedArticleStats = styled.div`
 `;
 
 let Summary = styled.div`
-  font-size: 1.2em;
+  font-size: 1.3em;
   color: ${almostBlack};
   line-height: 1.5em;
   margin-top: 0.36em;

@@ -11,7 +11,6 @@ export default function ArticleSourceInfo({ articleInfo, dontShowSourceIcon, don
             <img src={getNewsIconPath(articleInfo.feed_icon_name)} alt="" />
           </s.SourceImage>
           {articleInfo.feed_name && <s.FeedName>{articleInfo.feed_name}</s.FeedName>}
-          {articleInfo.parent_article_id && <s.SimplifiedLabel>simplified </s.SimplifiedLabel>}
         </>
       )}
       {!dontShowPublishingTime && <s.PublishingTime>({moment.utc(articleInfo.published).fromNow()})</s.PublishingTime>}
