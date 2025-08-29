@@ -5,14 +5,8 @@ import * as s from "./ArticlePreview.sc";
 import RedirectionNotificationModal from "../components/redirect_notification/RedirectionNotificationModal";
 import Feature from "../features/Feature";
 import SmallSaveArticleButton from "./SmallSaveArticleButton";
-import { TagsOfInterests } from "./TagsOfInterests.sc";
 import ArticleSourceInfo from "../components/ArticleSourceInfo";
 import ArticleStatInfo from "../components/ArticleStatInfo";
-import HighlightOffRoundedIcon from "@mui/icons-material/HighlightOffRounded";
-import { toast } from "react-toastify";
-import { darkBlue } from "../components/colors";
-import ExplainTopicsModal from "../pages/ExplainTopicsModal";
-import { TopicOriginType } from "../appConstants";
 import extractDomain from "../utils/web/extractDomain";
 import ReadingCompletionProgress from "./ReadingCompletionProgress";
 import { APIContext } from "../contexts/APIContext";
@@ -23,6 +17,7 @@ import moment from "moment";
 import { getStaticPath } from "../utils/misc/staticPath";
 import { estimateReadingTime } from "../utils/misc/readableTime";
 import ActionButton from "../components/ActionButton";
+import ArticleTopics from "../components/ArticleTopics";
 
 export default function ArticlePreview({
   article,
@@ -35,9 +30,6 @@ export default function ArticlePreview({
   notifyArticleClick,
 }) {
   const api = useContext(APIContext);
-  // Store which topic was clicked to show in the Modal
-  const [infoTopicClick, setInfoTopicClick] = useState("");
-  const [showInfoTopics, setShowInfoTopics] = useState(false);
   const [isRedirectionModalOpen, setIsRedirectionModaOpen] = useState(false);
   const [isArticleSaved, setIsArticleSaved] = useState(article.has_personal_copy);
   const [showInferredTopic, setShowInferredTopic] = useState(true);
@@ -162,62 +154,38 @@ export default function ArticlePreview({
 
   return (
     <s.ArticlePreview>
-      {showInfoTopics && (
-        <TagsOfInterests>
-          <ExplainTopicsModal
-            infoTopicClick={infoTopicClick}
-            showInfoTopics={showInfoTopics}
-            setShowInfoTopics={setShowInfoTopics}
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap' }}>
+        <div>
+          {article.feed_id ? (
+            <ArticleSourceInfo
+              articleInfo={article}
+              dontShowPublishingTime={dontShowPublishingTime}
+              dontShowSourceIcon={dontShowSourceIcon}
+            />
+          ) : (
+            !dontShowSourceIcon && article.url && (
+              <s.UrlSourceContainer>
+                <s.UrlSource>{extractDomain(article.url)}</s.UrlSource>
+                {!dontShowPublishingTime && article.published && (
+                  <span style={{ marginLeft: '5px' }}>
+                    ({moment.utc(article.published).fromNow()})
+                  </span>
+                )}
+              </s.UrlSourceContainer>
+            )
+          )}
+        </div>
+        
+        <div>
+          <ArticleTopics 
+            topics={topics}
+            api={api}
+            articleId={article.id}
+            showInferredTopic={showInferredTopic}
+            setShowInferredTopic={setShowInferredTopic}
           />
-        </TagsOfInterests>
-      )}
-      {article.feed_id ? (
-        <ArticleSourceInfo
-          articleInfo={article}
-          dontShowPublishingTime={dontShowPublishingTime}
-          dontShowSourceIcon={dontShowSourceIcon}
-        />
-      ) : (
-        !dontShowSourceIcon && article.url && (
-          <s.UrlSourceContainer>
-            <s.UrlSource>{extractDomain(article.url)}</s.UrlSource>
-            {!dontShowPublishingTime && article.published && (
-              <span style={{ marginLeft: '5px' }}>
-                ({moment.utc(article.published).fromNow()})
-              </span>
-            )}
-          </s.UrlSourceContainer>
-        )
-      )}
-
-      {showInferredTopic && topics.length > 0 && (
-        <s.UrlTopics>
-          {topics.map(([topicTitle, topicOrigin]) => (
-            <span
-              onClick={() => {
-                setShowInfoTopics(!showInfoTopics);
-                setInfoTopicClick(topicTitle);
-              }}
-              key={topicTitle}
-              className={topicOrigin === TopicOriginType.INFERRED ? "inferred" : "gold"}
-            >
-              {topicTitle}
-              {topicOrigin === TopicOriginType.INFERRED && (
-                <HighlightOffRoundedIcon
-                  className="cancelButton"
-                  sx={{ color: darkBlue }}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setShowInferredTopic(false);
-                    toast("Your preference was saved.");
-                    api.removeMLSuggestion(article.id, topicTitle);
-                  }}
-                />
-              )}
-            </span>
-          ))}
-        </s.UrlTopics>
-      )}
+        </div>
+      </div>
 
       <s.TitleContainer>
         <s.Title>
