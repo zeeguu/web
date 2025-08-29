@@ -105,7 +105,7 @@ export default function ArticlePreview({
     let linkToRedirect = `/read/article?id=${article.id}`;
     
     let open_in_zeeguu = (
-      <Link to={linkToRedirect} onClick={handleArticleClick} style={{ color: '#8b5f28', textDecoration: 'none', fontWeight: 400, backgroundColor: '#fff5e6', padding: '2px 6px', borderRadius: '3px', transition: 'all 0.2s ease' }} onMouseEnter={(e) => { e.target.style.backgroundColor = '#f0e6cc'; e.target.style.color = '#8b5f28'; }} onMouseLeave={(e) => { e.target.style.backgroundColor = '#fff5e6'; e.target.style.color = '#8b5f28'; }}>
+      <Link to={linkToRedirect} onClick={handleArticleClick} style={{ color: '#8b5f28', textDecoration: 'none', fontWeight: 400, backgroundColor: '#fff5e6', padding: '2px 6px', borderRadius: '3px', margin: 0, outline: 'none', boxSizing: 'border-box', transition: 'all 0.2s ease' }} onMouseEnter={(e) => { e.target.style.backgroundColor = '#f0e6cc'; e.target.style.color = '#8b5f28'; }} onMouseLeave={(e) => { e.target.style.backgroundColor = '#fff5e6'; e.target.style.color = '#8b5f28'; }}>
         Open
       </Link>
     );
@@ -141,6 +141,9 @@ export default function ArticlePreview({
             borderRadius: '3px',
             cursor: 'pointer',
             fontSize: 'inherit',
+            margin: 0,
+            outline: 'none',
+            boxSizing: 'border-box',
             transition: 'all 0.2s ease'
           }}
           onMouseEnter={(e) => { 
@@ -160,7 +163,7 @@ export default function ArticlePreview({
     let open_externally_without_modal = (
       //allow target _self on mobile to easily go back to Zeeguu
       //using mobile browser navigation
-      <a target={isMobile ? "_self" : "_blank"} rel="noreferrer" href={article.url} onClick={handleArticleClick} style={{ color: '#8b5f28', textDecoration: 'none', fontWeight: 400, backgroundColor: '#fff5e6', padding: '2px 6px', borderRadius: '3px', transition: 'all 0.2s ease' }} onMouseEnter={(e) => { e.target.style.backgroundColor = '#f0e6cc'; e.target.style.color = '#8b5f28'; }} onMouseLeave={(e) => { e.target.style.backgroundColor = '#fff5e6'; e.target.style.color = '#8b5f28'; }}>
+      <a target={isMobile ? "_self" : "_blank"} rel="noreferrer" href={article.url} onClick={handleArticleClick} style={{ color: '#8b5f28', textDecoration: 'none', fontWeight: 400, backgroundColor: '#fff5e6', padding: '2px 6px', borderRadius: '3px', margin: 0, outline: 'none', boxSizing: 'border-box', transition: 'all 0.2s ease' }} onMouseEnter={(e) => { e.target.style.backgroundColor = '#f0e6cc'; e.target.style.color = '#8b5f28'; }} onMouseLeave={(e) => { e.target.style.backgroundColor = '#fff5e6'; e.target.style.color = '#8b5f28'; }}>
         Open
       </a>
     );
