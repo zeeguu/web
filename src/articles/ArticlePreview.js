@@ -105,8 +105,8 @@ export default function ArticlePreview({
     let linkToRedirect = `/read/article?id=${article.id}`;
     
     let open_in_zeeguu = (
-      <Link to={linkToRedirect} onClick={handleArticleClick} style={{ color: 'inherit', textDecoration: 'underline' }}>
-        [Open]
+      <Link to={linkToRedirect} onClick={handleArticleClick} style={{ color: '#9c7130', textDecoration: 'underline' }}>
+        Open
       </Link>
     );
 
@@ -133,14 +133,14 @@ export default function ArticlePreview({
           style={{
             background: 'none',
             border: 'none',
-            color: 'inherit',
+            color: '#9c7130',
             textDecoration: 'underline',
             cursor: 'pointer',
             padding: 0,
             fontSize: 'inherit'
           }}
         >
-          [Open]
+          Open
         </button>
       </>
     );
@@ -148,8 +148,8 @@ export default function ArticlePreview({
     let open_externally_without_modal = (
       //allow target _self on mobile to easily go back to Zeeguu
       //using mobile browser navigation
-      <a target={isMobile ? "_self" : "_blank"} rel="noreferrer" href={article.url} onClick={handleArticleClick} style={{ color: 'inherit', textDecoration: 'underline' }}>
-        [Open]
+      <a target={isMobile ? "_self" : "_blank"} rel="noreferrer" href={article.url} onClick={handleArticleClick} style={{ color: '#9c7130', textDecoration: 'underline' }}>
+        Open
       </a>
     );
 

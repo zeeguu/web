@@ -39,14 +39,14 @@ export default function SmallSaveArticleButton({
           style={{
             background: 'none',
             border: 'none',
-            color: 'inherit',
+            color: '#9c7130',
             textDecoration: 'underline',
             cursor: 'pointer',
             padding: 0,
             fontSize: 'inherit'
           }}
         >
-          [Unsave]
+          Unsave
         </button>
       ) : (
         <button
@@ -54,14 +54,14 @@ export default function SmallSaveArticleButton({
           style={{
             background: 'none',
             border: 'none',
-            color: 'inherit',
+            color: '#9c7130',
             textDecoration: 'underline',
             cursor: 'pointer',
             padding: 0,
             fontSize: 'inherit'
           }}
         >
-          [Save]
+          Save
         </button>
       )}
     </>
