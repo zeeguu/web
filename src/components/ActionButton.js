@@ -15,7 +15,7 @@ const buttonStyles = {
   outline: "none",
   boxSizing: "border-box",
   transition: "all 0.2s ease",
-  minHeight: "32px",
+  minHeight: "36px",
   display: "inline-flex",
   alignItems: "center",
 };
