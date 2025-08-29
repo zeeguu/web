@@ -1,10 +1,12 @@
 import { useContext, useEffect, useState } from "react";
 import { useLocation } from "react-router-dom/cjs/react-router-dom";
 import { APIContext } from "../contexts/APIContext";
+import { UserContext } from "../contexts/UserContext";
 
 export default function useExercisesCounterNotification() {
   const path = useLocation().pathname;
   const api = useContext(APIContext);
+  const { userDetails } = useContext(UserContext);
 
   const [hasExerciseNotification, setHasExerciseNotification] = useState(false);
   const [totalExercisesInPipeline, setTotalExercisesInPipeline] = useState();
@@ -14,7 +16,7 @@ export default function useExercisesCounterNotification() {
     updateExercisesCounter();
 
     // eslint-disable-next-line
-  }, [path]);
+  }, [path, userDetails.learned_language]);
 
   function updateExercisesCounter() {
     api.getCountOfBookmarksRecommendedForPractice((scheduledBookmarksCount) => {
