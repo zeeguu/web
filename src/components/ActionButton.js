@@ -14,7 +14,10 @@ const buttonStyles = {
   margin: 0,
   outline: 'none',
   boxSizing: 'border-box',
-  transition: 'all 0.2s ease'
+  transition: 'all 0.2s ease',
+  minHeight: '24px',
+  display: 'inline-flex',
+  alignItems: 'center'
 };
 
 export default function ActionButton({ children, onClick, as: Component = 'button', ...props }) {
