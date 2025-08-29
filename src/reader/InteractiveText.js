@@ -73,6 +73,11 @@ export default class InteractiveText {
         leftEllipsis,
         rightEllipsis,
         this.contextIdentifier,
+        this.source === "article_preview" 
+          ? "article_preview" 
+          : this.source && (this.source.includes("L1_to_L2") || this.source.includes("L2_to_L1") || this.source.includes("What_You_Hear") || this.source.includes("Choice") || this.source.includes("Click") || this.source.includes("Recognize") || this.source.includes("Match") || this.source.includes("Select") || this.source.includes("Spell"))
+          ? "exercise"
+          : "reading",
       )
       .then((response) => response.data)
       .then((data) => {

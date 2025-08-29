@@ -12,6 +12,7 @@ Zeeguu_API.prototype.getOneTranslation = function (
   leftEllipsis,
   rightEllipsis,
   contextIdentifier,
+  translationSource = 'reading',
 ) {
   let w_sent_i, w_token_i, w_total_tokens;
   let c_paragraph_i, c_sent_i, c_token_i;
@@ -31,6 +32,7 @@ Zeeguu_API.prototype.getOneTranslation = function (
     left_ellipsis: leftEllipsis,
     right_ellipsis: rightEllipsis,
     context_identifier: contextIdentifier,
+    translation_source: translationSource,
   };
 
   return this.apiPost(`/get_one_translation/${from_lang}/${to_lang}`, payload);

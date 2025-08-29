@@ -28,11 +28,11 @@ const ArticleContent = styled.div`
   gap: 0.5em;
 
   img {
-    margin: 0 0.5em;
+    margin: 0.5em 0.5em 0 0.5em;
     max-width: 10em;
     max-height: 10em;
     border-radius: 1em;
-    align-self: center;
+    align-self: flex-start;
     object-fit: cover;
 
     @media (max-width: 990px) {

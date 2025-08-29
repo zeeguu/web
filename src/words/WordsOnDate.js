@@ -4,6 +4,7 @@ import Word from "./Word";
 import * as s from "./WordsOnDate.sc";
 
 export function WordsOnDate({ day, notifyDelete }) {
+
   function groupBy(list, keyGetter) {
     const map = new Map();
     list.forEach((item) => {
@@ -18,21 +19,39 @@ export function WordsOnDate({ day, notifyDelete }) {
     return map;
   }
 
-  function returnTitleLink(bookmark) {
+  function returnTitleLink(bookmark, groupTitle) {
     const article_id = bookmark.article_id;
     const title = bookmark.title;
+    
+    // Handle grouped titles
+    if (groupTitle === 'Article Preview Translations') {
+      return <span style={{ fontSize: "large" }}>Article Preview Translations</span>;
+    }
+    
+    if (groupTitle === 'Exercise Translations') {
+      return <span style={{ fontSize: "large" }}>Exercise Translations</span>;
+    }
+    
+    // Regular reading bookmarks
     return (
       <>
         {article_id !== undefined && article_id === "" && <span style={{ fontSize: "small" }}>(Video) </span>}
         {title}
         {article_id !== undefined && article_id !== "" && (
-          <Link to={"/read/article?id=" + article_id}>{strings.open}</Link>
+          <Link to={"/read/article?id=" + article_id}> Open</Link>
         )}
       </>
     );
   }
 
-  const bookmaks_by_title = groupBy(day.bookmarks, (x) => x.title);
+  // Custom grouping function to group by translation source for special cases
+  const getGroupingKey = (bookmark) => {
+    if (bookmark.translation_source === 'article_preview') return 'Article Preview Translations';
+    if (bookmark.translation_source === 'exercise') return 'Exercise Translations';
+    return bookmark.title; // Regular reading bookmarks grouped by title
+  };
+  
+  const bookmaks_by_title = groupBy(day.bookmarks, getGroupingKey);
   const sourceTitles = Array.from(bookmaks_by_title.keys());
 
   return (
@@ -43,9 +62,11 @@ export function WordsOnDate({ day, notifyDelete }) {
         <s.Article key={index}>
           <s.ArticleTitle>
             {
-              // We take the first bookmark for the source to see if it has a title
-              bookmaks_by_title.get(sourceTitle)[0].title ? (
-                returnTitleLink(bookmaks_by_title.get(sourceTitle)[0])
+              // Handle grouped titles (Preview/Exercise) or regular titles
+              sourceTitle === 'Article Preview Translations' || sourceTitle === 'Exercise Translations' ? (
+                returnTitleLink(bookmaks_by_title.get(sourceTitle)[0], sourceTitle)
+              ) : bookmaks_by_title.get(sourceTitle)[0].title ? (
+                returnTitleLink(bookmaks_by_title.get(sourceTitle)[0], sourceTitle)
               ) : (
                 // If the source is missing, tell it to the user.
                 <span style={{ color: "grey" }}>[Source deleted]</span>
@@ -55,7 +76,7 @@ export function WordsOnDate({ day, notifyDelete }) {
 
           {bookmaks_by_title.get(sourceTitle).map((bookmark) => (
             <s.ContentOnRow className="contentOnRow">
-              <Word key={bookmark.id} bookmark={bookmark} notifyDelete={notifyDelete} isWordsOnDate={true}/>
+              <Word key={bookmark.id} bookmark={bookmark} notifyDelete={notifyDelete} isWordsOnDate={true} showRanking={true}/>
             </s.ContentOnRow>
           ))}
         </s.Article>
