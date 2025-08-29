@@ -17,7 +17,6 @@ import moment from "moment";
 import { getStaticPath } from "../utils/misc/staticPath";
 import { estimateReadingTime } from "../utils/misc/readableTime";
 import ActionButton from "../components/ActionButton";
-import ArticleTopics from "../components/ArticleTopics";
 
 export default function ArticlePreview({
   article,
@@ -154,38 +153,24 @@ export default function ArticlePreview({
 
   return (
     <s.ArticlePreview>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap' }}>
-        <div>
-          {article.feed_id ? (
-            <ArticleSourceInfo
-              articleInfo={article}
-              dontShowPublishingTime={dontShowPublishingTime}
-              dontShowSourceIcon={dontShowSourceIcon}
-            />
-          ) : (
-            !dontShowSourceIcon && article.url && (
-              <s.UrlSourceContainer>
-                <s.UrlSource>{extractDomain(article.url)}</s.UrlSource>
-                {!dontShowPublishingTime && article.published && (
-                  <span style={{ marginLeft: '5px' }}>
-                    ({moment.utc(article.published).fromNow()})
-                  </span>
-                )}
-              </s.UrlSourceContainer>
-            )
-          )}
-        </div>
-        
-        <div>
-          <ArticleTopics 
-            topics={topics}
-            api={api}
-            articleId={article.id}
-            showInferredTopic={showInferredTopic}
-            setShowInferredTopic={setShowInferredTopic}
-          />
-        </div>
-      </div>
+      {article.feed_id ? (
+        <ArticleSourceInfo
+          articleInfo={article}
+          dontShowPublishingTime={dontShowPublishingTime}
+          dontShowSourceIcon={dontShowSourceIcon}
+        />
+      ) : (
+        !dontShowSourceIcon && article.url && (
+          <s.UrlSourceContainer>
+            <s.UrlSource>{extractDomain(article.url)}</s.UrlSource>
+            {!dontShowPublishingTime && article.published && (
+              <span style={{ marginLeft: '5px' }}>
+                ({moment.utc(article.published).fromNow()})
+              </span>
+            )}
+          </s.UrlSourceContainer>
+        )
+      )}
 
       <s.TitleContainer>
         <s.Title>
