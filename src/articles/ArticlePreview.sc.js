@@ -28,7 +28,7 @@ const ArticleContent = styled.div`
   gap: 0.5em;
 
   img {
-    margin: 0.5em 0.5em 0 0.5em;
+    margin: 1em 0.5em 0 0.5em;
     max-width: 10em;
     max-height: 10em;
     border-radius: 1em;

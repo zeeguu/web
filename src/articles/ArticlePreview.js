@@ -225,10 +225,12 @@ export default function ArticlePreview({
             <span>{article.metrics?.cefr_level || article.cefr_level || 'B1'}</span>
           </div>
           
-          {/* Simplified label if available - TESTING: all articles shown as simplified */}
-          <s.SimplifiedLabel>
-            simplified
-          </s.SimplifiedLabel>
+          {/* Simplified label if available */}
+          {article.parent_article_id && (
+            <s.SimplifiedLabel>
+              simplified
+            </s.SimplifiedLabel>
+          )}
         </div>
         
         <div>

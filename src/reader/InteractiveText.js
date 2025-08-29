@@ -3,9 +3,17 @@ import ZeeguuSpeech from "../speech/APIBasedSpeech";
 import { tokenize } from "../utils/text/preprocessing";
 import { removePunctuation } from "../utils/text/preprocessing";
 import isNullOrUndefinied from "../utils/misc/isNullOrUndefinied";
+import { EXERCISE_TYPES } from "../exercises/ExerciseTypeConstants";
 
 // We try to capture about a full sentence around a word.
 const MAX_WORD_EXPANSION_COUNT = 28;
+
+function isExerciseSource(source) {
+  if (!source) return false;
+  
+  const exerciseTypeValues = Object.values(EXERCISE_TYPES).filter(value => typeof value === 'string');
+  return exerciseTypeValues.some(exerciseType => source.includes(exerciseType.split('_')[0]));
+}
 
 function tokenShouldSkipCount(word) {
   //   When building context, we do not count for the context limit punctuation,
@@ -75,7 +83,7 @@ export default class InteractiveText {
         this.contextIdentifier,
         this.source === "article_preview" 
           ? "article_preview" 
-          : this.source && (this.source.includes("L1_to_L2") || this.source.includes("L2_to_L1") || this.source.includes("What_You_Hear") || this.source.includes("Choice") || this.source.includes("Click") || this.source.includes("Recognize") || this.source.includes("Match") || this.source.includes("Select") || this.source.includes("Spell"))
+          : isExerciseSource(this.source)
           ? "exercise"
           : "reading",
       )

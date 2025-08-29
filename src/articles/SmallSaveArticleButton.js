@@ -34,33 +34,35 @@ export default function SmallSaveArticleButton({
   return (
     <>
       {isArticleSaved ? (
-        <s.SavedButton
+        <button
           onClick={removeArticle}
-          onMouseEnter={() => setIsHoveringSave(true)}
-          onMouseLeave={() => setIsHoveringSave(false)}
+          style={{
+            background: 'none',
+            border: 'none',
+            color: 'inherit',
+            textDecoration: 'underline',
+            cursor: 'pointer',
+            padding: 0,
+            fontSize: 'inherit'
+          }}
         >
-          {isHoveringSave ? (
-            <BookmarkAddOutlinedIcon fontSize="small" />
-          ) : (
-            <BookmarkAddIcon fontSize="small" />
-          )}
-          Remove
-        </s.SavedButton>
+          [Unsave]
+        </button>
       ) : (
-        <div>
-          <s.SaveButton
-            onClick={saveArticle}
-            onMouseEnter={() => setIsHoveringSave(true)}
-            onMouseLeave={() => setIsHoveringSave(false)}
-          >
-            {isHoveringSave ? (
-              <BookmarkAddIcon fontSize="small" />
-            ) : (
-              <BookmarkAddOutlinedIcon fontSize="small" />
-            )}
-            Add to Saves
-          </s.SaveButton>
-        </div>
+        <button
+          onClick={saveArticle}
+          style={{
+            background: 'none',
+            border: 'none',
+            color: 'inherit',
+            textDecoration: 'underline',
+            cursor: 'pointer',
+            padding: 0,
+            fontSize: 'inherit'
+          }}
+        >
+          [Save]
+        </button>
       )}
     </>
   );
