@@ -40,10 +40,25 @@ export default function SmallSaveArticleButton({
             background: 'none',
             border: 'none',
             color: '#9c7130',
-            textDecoration: 'underline',
+            textDecoration: 'none',
+            fontWeight: 300,
+            backgroundColor: '#fef9f0',
+            padding: '2px 6px',
+            borderRadius: '3px',
             cursor: 'pointer',
-            padding: 0,
-            fontSize: 'inherit'
+            fontSize: 'inherit',
+            margin: 0,
+            outline: 'none',
+            boxSizing: 'border-box',
+            transition: 'all 0.2s ease'
+          }}
+          onMouseEnter={(e) => { 
+            e.target.style.backgroundColor = '#f0e6cc'; 
+            e.target.style.color = '#8b5f28'; 
+          }}
+          onMouseLeave={(e) => { 
+            e.target.style.backgroundColor = '#fff5e6'; 
+            e.target.style.color = '#8b5f28'; 
           }}
         >
           Unsave
@@ -55,10 +70,25 @@ export default function SmallSaveArticleButton({
             background: 'none',
             border: 'none',
             color: '#9c7130',
-            textDecoration: 'underline',
+            textDecoration: 'none',
+            fontWeight: 300,
+            backgroundColor: '#fef9f0',
+            padding: '2px 6px',
+            borderRadius: '3px',
             cursor: 'pointer',
-            padding: 0,
-            fontSize: 'inherit'
+            fontSize: 'inherit',
+            margin: 0,
+            outline: 'none',
+            boxSizing: 'border-box',
+            transition: 'all 0.2s ease'
+          }}
+          onMouseEnter={(e) => { 
+            e.target.style.backgroundColor = '#f0e6cc'; 
+            e.target.style.color = '#8b5f28'; 
+          }}
+          onMouseLeave={(e) => { 
+            e.target.style.backgroundColor = '#fff5e6'; 
+            e.target.style.color = '#8b5f28'; 
           }}
         >
           Save

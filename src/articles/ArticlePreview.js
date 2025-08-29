@@ -105,7 +105,7 @@ export default function ArticlePreview({
     let linkToRedirect = `/read/article?id=${article.id}`;
     
     let open_in_zeeguu = (
-      <Link to={linkToRedirect} onClick={handleArticleClick} style={{ color: '#9c7130', textDecoration: 'underline' }}>
+      <Link to={linkToRedirect} onClick={handleArticleClick} style={{ color: '#8b5f28', textDecoration: 'none', fontWeight: 400, backgroundColor: '#fff5e6', padding: '2px 6px', borderRadius: '3px', transition: 'all 0.2s ease' }} onMouseEnter={(e) => { e.target.style.backgroundColor = '#f0e6cc'; e.target.style.color = '#8b5f28'; }} onMouseLeave={(e) => { e.target.style.backgroundColor = '#fff5e6'; e.target.style.color = '#8b5f28'; }}>
         Open
       </Link>
     );
@@ -133,11 +133,23 @@ export default function ArticlePreview({
           style={{
             background: 'none',
             border: 'none',
-            color: '#9c7130',
-            textDecoration: 'underline',
+            color: '#8b5f28',
+            textDecoration: 'none',
+            fontWeight: 400,
+            backgroundColor: '#fff5e6',
+            padding: '2px 6px',
+            borderRadius: '3px',
             cursor: 'pointer',
-            padding: 0,
-            fontSize: 'inherit'
+            fontSize: 'inherit',
+            transition: 'all 0.2s ease'
+          }}
+          onMouseEnter={(e) => { 
+            e.target.style.backgroundColor = '#f0e6cc'; 
+            e.target.style.color = '#8b5f28'; 
+          }}
+          onMouseLeave={(e) => { 
+            e.target.style.backgroundColor = '#fef9f0'; 
+            e.target.style.color = '#b8803d'; 
           }}
         >
           Open
@@ -148,7 +160,7 @@ export default function ArticlePreview({
     let open_externally_without_modal = (
       //allow target _self on mobile to easily go back to Zeeguu
       //using mobile browser navigation
-      <a target={isMobile ? "_self" : "_blank"} rel="noreferrer" href={article.url} onClick={handleArticleClick} style={{ color: '#9c7130', textDecoration: 'underline' }}>
+      <a target={isMobile ? "_self" : "_blank"} rel="noreferrer" href={article.url} onClick={handleArticleClick} style={{ color: '#8b5f28', textDecoration: 'none', fontWeight: 400, backgroundColor: '#fff5e6', padding: '2px 6px', borderRadius: '3px', transition: 'all 0.2s ease' }} onMouseEnter={(e) => { e.target.style.backgroundColor = '#f0e6cc'; e.target.style.color = '#8b5f28'; }} onMouseLeave={(e) => { e.target.style.backgroundColor = '#fff5e6'; e.target.style.color = '#8b5f28'; }}>
         Open
       </a>
     );
@@ -260,7 +272,7 @@ export default function ArticlePreview({
               article.summary
             )}
           </span>
-          <div style={{ whiteSpace: 'nowrap', display: 'flex', alignItems: 'center', gap: '10px' }}>
+          <div style={{ whiteSpace: 'nowrap', display: 'flex', alignItems: 'center', gap: '10px', marginTop: '8px' }}>
             {titleLink(article)}
             <SmallSaveArticleButton article={article} isArticleSaved={isArticleSaved} setIsArticleSaved={setIsArticleSaved} />
           </div>
