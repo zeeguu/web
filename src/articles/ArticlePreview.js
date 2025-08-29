@@ -52,11 +52,11 @@ export default function ArticlePreview({
             article.language,
             "article_preview",
             zeeguuSpeech,
-            summaryData.tokenized_summary.context_identifier
+            summaryData.tokenized_summary.context_identifier,
           );
           setInteractiveSummary(interactive);
         }
-        
+
         // Create interactive title
         if (summaryData.tokenized_title && summaryData.tokenized_title.tokens) {
           const titleInteractive = new InteractiveText(
@@ -68,14 +68,24 @@ export default function ArticlePreview({
             article.language,
             "article_preview",
             zeeguuSpeech,
-            summaryData.tokenized_title.context_identifier
+            summaryData.tokenized_title.context_identifier,
           );
           setInteractiveTitle(titleInteractive);
         }
         setIsTokenizing(false);
       });
     }
-  }, [article.summary, article.title, article.language, article.id, api, zeeguuSpeech, isTokenizing, interactiveSummary, interactiveTitle]);
+  }, [
+    article.summary,
+    article.title,
+    article.language,
+    article.id,
+    api,
+    zeeguuSpeech,
+    isTokenizing,
+    interactiveSummary,
+    interactiveTitle,
+  ]);
 
   const handleArticleClick = () => {
     if (notifyArticleClick) {
@@ -95,7 +105,7 @@ export default function ArticlePreview({
 
   function titleLink(article) {
     let linkToRedirect = `/read/article?id=${article.id}`;
-    
+
     let open_in_zeeguu = (
       <ActionButton as={Link} to={linkToRedirect} onClick={handleArticleClick}>
         Open
@@ -131,7 +141,13 @@ export default function ArticlePreview({
     let open_externally_without_modal = (
       //allow target _self on mobile to easily go back to Zeeguu
       //using mobile browser navigation
-      <ActionButton as="a" target={isMobile ? "_self" : "_blank"} rel="noreferrer" href={article.url} onClick={handleArticleClick}>
+      <ActionButton
+        as="a"
+        target={isMobile ? "_self" : "_blank"}
+        rel="noreferrer"
+        href={article.url}
+        onClick={handleArticleClick}
+      >
         Open
       </ActionButton>
     );
@@ -160,13 +176,12 @@ export default function ArticlePreview({
           dontShowSourceIcon={dontShowSourceIcon}
         />
       ) : (
-        !dontShowSourceIcon && article.url && (
+        !dontShowSourceIcon &&
+        article.url && (
           <s.UrlSourceContainer>
             <s.UrlSource>{extractDomain(article.url)}</s.UrlSource>
             {!dontShowPublishingTime && article.published && (
-              <span style={{ marginLeft: '5px' }}>
-                ({moment.utc(article.published).fromNow()})
-              </span>
+              <span style={{ marginLeft: "5px" }}>({moment.utc(article.published).fromNow()})</span>
             )}
           </s.UrlSourceContainer>
         )
@@ -175,11 +190,7 @@ export default function ArticlePreview({
       <s.TitleContainer>
         <s.Title>
           {interactiveTitle ? (
-            <TranslatableText
-              interactiveText={interactiveTitle}
-              translating={true}
-              pronouncing={false}
-            />
+            <TranslatableText interactiveText={interactiveTitle} translating={true} pronouncing={true} />
           ) : (
             article.title
           )}
@@ -187,33 +198,40 @@ export default function ArticlePreview({
         <ReadingCompletionProgress last_reading_percentage={article.reading_completion}></ReadingCompletionProgress>
       </s.TitleContainer>
 
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '15px', marginBottom: '10px' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          marginTop: "15px",
+          marginBottom: "10px",
+        }}
+      >
+        <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
           {/* Difficulty (CEFR level) */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "5px" }}>
             <img
-              src={getStaticPath("icons", `${(article.metrics?.cefr_level || article.cefr_level || 'B1')}-level-icon.png`)}
+              src={getStaticPath(
+                "icons",
+                `${article.metrics?.cefr_level || article.cefr_level || "B1"}-level-icon.png`,
+              )}
               alt="difficulty icon"
-              style={{ width: '16px', height: '16px' }}
+              style={{ width: "16px", height: "16px" }}
             />
-            <span>{article.metrics?.cefr_level || article.cefr_level || 'B1'}</span>
+            <span>{article.metrics?.cefr_level || article.cefr_level || "B1"}</span>
           </div>
-          
+
           {/* Simplified label if available */}
-          {article.parent_article_id && (
-            <s.SimplifiedLabel>
-              simplified
-            </s.SimplifiedLabel>
-          )}
+          {article.parent_article_id && <s.SimplifiedLabel>simplified</s.SimplifiedLabel>}
         </div>
-        
+
         <div>
           {/* Reading time only */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "5px" }}>
             <img
               src={getStaticPath("icons", "read-time-icon.png")}
               alt="read time icon"
-              style={{ width: '16px', height: '16px' }}
+              style={{ width: "16px", height: "16px" }}
             />
             <span>~ {estimateReadingTime(article.metrics?.word_count || article.word_count || 0)}</span>
           </div>
@@ -222,25 +240,24 @@ export default function ArticlePreview({
 
       <s.ArticleContent>
         {article.img_url && <img alt="" src={article.img_url} />}
-        <s.Summary style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'baseline', gap: '4px' }}>
-          <span style={{ flex: '1', minWidth: 'fit-content' }}>
+        <s.Summary style={{ display: "flex", flexWrap: "wrap", alignItems: "baseline", gap: "4px" }}>
+          <span style={{ flex: "1", minWidth: "fit-content" }}>
             {interactiveSummary ? (
-              <TranslatableText
-                interactiveText={interactiveSummary}
-                translating={true}
-                pronouncing={false}
-              />
+              <TranslatableText interactiveText={interactiveSummary} translating={true} pronouncing={true} />
             ) : (
               article.summary
             )}
           </span>
-          <div style={{ whiteSpace: 'nowrap', display: 'flex', alignItems: 'center', gap: '10px', marginTop: '8px' }}>
+          <div style={{ whiteSpace: "nowrap", display: "flex", alignItems: "center", gap: "10px", marginTop: "8px" }}>
             {titleLink(article)}
-            <SmallSaveArticleButton article={article} isArticleSaved={isArticleSaved} setIsArticleSaved={setIsArticleSaved} />
+            <SmallSaveArticleButton
+              article={article}
+              isArticleSaved={isArticleSaved}
+              setIsArticleSaved={setIsArticleSaved}
+            />
           </div>
         </s.Summary>
       </s.ArticleContent>
-
     </s.ArticlePreview>
   );
 }
