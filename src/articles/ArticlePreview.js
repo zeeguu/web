@@ -22,6 +22,7 @@ import ZeeguuSpeech from "../speech/APIBasedSpeech";
 import moment from "moment";
 import { getStaticPath } from "../utils/misc/staticPath";
 import { estimateReadingTime } from "../utils/misc/readableTime";
+import ActionButton from "../components/ActionButton";
 
 export default function ArticlePreview({
   article,
@@ -105,9 +106,9 @@ export default function ArticlePreview({
     let linkToRedirect = `/read/article?id=${article.id}`;
     
     let open_in_zeeguu = (
-      <Link to={linkToRedirect} onClick={handleArticleClick} style={{ color: '#8b5f28', textDecoration: 'none', fontWeight: 400, backgroundColor: '#fff5e6', padding: '2px 6px', borderRadius: '3px', margin: 0, outline: 'none', boxSizing: 'border-box', transition: 'all 0.2s ease' }} onMouseEnter={(e) => { e.target.style.backgroundColor = '#f0e6cc'; e.target.style.color = '#8b5f28'; }} onMouseLeave={(e) => { e.target.style.backgroundColor = '#fff5e6'; e.target.style.color = '#8b5f28'; }}>
+      <ActionButton as={Link} to={linkToRedirect} onClick={handleArticleClick}>
         Open
-      </Link>
+      </ActionButton>
     );
 
     let open_externally_with_modal = (
@@ -125,47 +126,23 @@ export default function ArticlePreview({
           setDoNotShowRedirectionModal_UserPreference={setDoNotShowRedirectionModal_UserPreference}
           setIsArticleSaved={setIsArticleSaved}
         />
-        <button
+        <ActionButton
           onClick={() => {
             handleArticleClick();
             handleOpenRedirectionModal();
           }}
-          style={{
-            background: 'none',
-            border: 'none',
-            color: '#8b5f28',
-            textDecoration: 'none',
-            fontWeight: 400,
-            backgroundColor: '#fff5e6',
-            padding: '2px 6px',
-            borderRadius: '3px',
-            cursor: 'pointer',
-            fontSize: 'inherit',
-            margin: 0,
-            outline: 'none',
-            boxSizing: 'border-box',
-            transition: 'all 0.2s ease'
-          }}
-          onMouseEnter={(e) => { 
-            e.target.style.backgroundColor = '#f0e6cc'; 
-            e.target.style.color = '#8b5f28'; 
-          }}
-          onMouseLeave={(e) => { 
-            e.target.style.backgroundColor = '#fef9f0'; 
-            e.target.style.color = '#b8803d'; 
-          }}
         >
           Open
-        </button>
+        </ActionButton>
       </>
     );
 
     let open_externally_without_modal = (
       //allow target _self on mobile to easily go back to Zeeguu
       //using mobile browser navigation
-      <a target={isMobile ? "_self" : "_blank"} rel="noreferrer" href={article.url} onClick={handleArticleClick} style={{ color: '#8b5f28', textDecoration: 'none', fontWeight: 400, backgroundColor: '#fff5e6', padding: '2px 6px', borderRadius: '3px', margin: 0, outline: 'none', boxSizing: 'border-box', transition: 'all 0.2s ease' }} onMouseEnter={(e) => { e.target.style.backgroundColor = '#f0e6cc'; e.target.style.color = '#8b5f28'; }} onMouseLeave={(e) => { e.target.style.backgroundColor = '#fff5e6'; e.target.style.color = '#8b5f28'; }}>
+      <ActionButton as="a" target={isMobile ? "_self" : "_blank"} rel="noreferrer" href={article.url} onClick={handleArticleClick}>
         Open
-      </a>
+      </ActionButton>
     );
 
     let should_open_in_zeeguu =
@@ -211,6 +188,35 @@ export default function ArticlePreview({
             )}
           </s.UrlSourceContainer>
         )
+      )}
+
+      {showInferredTopic && topics.length > 0 && (
+        <s.UrlTopics>
+          {topics.map(([topicTitle, topicOrigin]) => (
+            <span
+              onClick={() => {
+                setShowInfoTopics(!showInfoTopics);
+                setInfoTopicClick(topicTitle);
+              }}
+              key={topicTitle}
+              className={topicOrigin === TopicOriginType.INFERRED ? "inferred" : "gold"}
+            >
+              {topicTitle}
+              {topicOrigin === TopicOriginType.INFERRED && (
+                <HighlightOffRoundedIcon
+                  className="cancelButton"
+                  sx={{ color: darkBlue }}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setShowInferredTopic(false);
+                    toast("Your preference was saved.");
+                    api.removeMLSuggestion(article.id, topicTitle);
+                  }}
+                />
+              )}
+            </span>
+          ))}
+        </s.UrlTopics>
       )}
 
       <s.TitleContainer>
@@ -282,38 +288,6 @@ export default function ArticlePreview({
         </s.Summary>
       </s.ArticleContent>
 
-      <s.BottomContainer>
-        <div>
-          {showInferredTopic && topics.length > 0 && (
-            <s.UrlTopics>
-              {topics.map(([topicTitle, topicOrigin]) => (
-                <span
-                  onClick={() => {
-                    setShowInfoTopics(!showInfoTopics);
-                    setInfoTopicClick(topicTitle);
-                  }}
-                  key={topicTitle}
-                  className={topicOrigin === TopicOriginType.INFERRED ? "inferred" : "gold"}
-                >
-                  {topicTitle}
-                  {topicOrigin === TopicOriginType.INFERRED && (
-                    <HighlightOffRoundedIcon
-                      className="cancelButton"
-                      sx={{ color: darkBlue }}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setShowInferredTopic(false);
-                        toast("Your preference was saved.");
-                        api.removeMLSuggestion(article.id, topicTitle);
-                      }}
-                    />
-                  )}
-                </span>
-              ))}
-            </s.UrlTopics>
-          )}
-        </div>
-      </s.BottomContainer>
     </s.ArticlePreview>
   );
 }

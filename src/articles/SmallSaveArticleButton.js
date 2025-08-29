@@ -1,10 +1,8 @@
-import * as s from "./SmallSaveArticleButton.sc.js";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import BookmarkAddOutlinedIcon from "@mui/icons-material/BookmarkAddOutlined";
-import BookmarkAddIcon from "@mui/icons-material/BookmarkAdd";
-import { useContext, useState } from "react";
+import { useContext } from "react";
 import { APIContext } from "../contexts/APIContext.js";
+import ActionButton from "../components/ActionButton.js";
 
 export default function SmallSaveArticleButton({
   article,
@@ -12,7 +10,6 @@ export default function SmallSaveArticleButton({
   setIsArticleSaved,
 }) {
   const api = useContext(APIContext);
-  const [isHoveringSave, setIsHoveringSave] = useState(false);
 
   function saveArticle() {
     api.makePersonalCopy(article.id, (data) => {
@@ -34,65 +31,13 @@ export default function SmallSaveArticleButton({
   return (
     <>
       {isArticleSaved ? (
-        <button
-          onClick={removeArticle}
-          style={{
-            background: 'none',
-            border: 'none',
-            color: '#9c7130',
-            textDecoration: 'none',
-            fontWeight: 400,
-            backgroundColor: '#fef9f0',
-            padding: '2px 6px',
-            borderRadius: '3px',
-            cursor: 'pointer',
-            fontSize: 'inherit',
-            margin: 0,
-            outline: 'none',
-            boxSizing: 'border-box',
-            transition: 'all 0.2s ease'
-          }}
-          onMouseEnter={(e) => { 
-            e.target.style.backgroundColor = '#f0e6cc'; 
-            e.target.style.color = '#8b5f28'; 
-          }}
-          onMouseLeave={(e) => { 
-            e.target.style.backgroundColor = '#fff5e6'; 
-            e.target.style.color = '#8b5f28'; 
-          }}
-        >
+        <ActionButton onClick={removeArticle}>
           Unsave
-        </button>
+        </ActionButton>
       ) : (
-        <button
-          onClick={saveArticle}
-          style={{
-            background: 'none',
-            border: 'none',
-            color: '#9c7130',
-            textDecoration: 'none',
-            fontWeight: 400,
-            backgroundColor: '#fef9f0',
-            padding: '2px 6px',
-            borderRadius: '3px',
-            cursor: 'pointer',
-            fontSize: 'inherit',
-            margin: 0,
-            outline: 'none',
-            boxSizing: 'border-box',
-            transition: 'all 0.2s ease'
-          }}
-          onMouseEnter={(e) => { 
-            e.target.style.backgroundColor = '#f0e6cc'; 
-            e.target.style.color = '#8b5f28'; 
-          }}
-          onMouseLeave={(e) => { 
-            e.target.style.backgroundColor = '#fff5e6'; 
-            e.target.style.color = '#8b5f28'; 
-          }}
-        >
+        <ActionButton onClick={saveArticle}>
           Save
-        </button>
+        </ActionButton>
       )}
     </>
   );
