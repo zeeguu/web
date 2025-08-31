@@ -146,6 +146,9 @@ export function calculateTotalReadingMinutes(readingActivity){
         (sum, entry) => sum + entry.seconds,
         0
     );
+    if (totalReadingSeconds % 60 > 30){
+      return Math.floor(totalReadingSeconds / 60) + 1;
+    }
     return Math.floor(totalReadingSeconds / 60);
 };
 

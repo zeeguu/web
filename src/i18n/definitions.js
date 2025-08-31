@@ -106,7 +106,7 @@ let strings = new LocalizedStrings(
       streakTextStartSingle: "You have practiced* for",
       streakTextEnd: "weeks straight.",
       streakTextEndSingle: "week straight.",
-      streakAsteriks: "*minimum 5 minutes in a day",
+      streakAsteriks: "*minimum 5 minutes in one day",
 
       //Positive feedback
       positiveFeedbackMsg1: "You are doing great!",

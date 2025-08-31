@@ -6,7 +6,7 @@ function ProgressProvider({ children }) {
   const [weeklyTranslated, setWeeklyTranslated] = useState(null);
   const [weeklyReadingMinutes, setWeeklyReadingMinutes] = useState(null);
   const [weeksPracticed, setWeeksPracticed] = useState(0);  
-  const [weeklyPracticed, setWeeklyPracticed] = useState(null); //not implemented yet
+  const [weeklyPracticed, setWeeklyPracticed] = useState(null);
   const [totalInLearning, setTotalInLearning] = useState(null);
   const [totalTranslated, setTotalTranslated] = useState(null);
   const [totalReadingMinutes, setTotalReadingMinutes] = useState(null);
