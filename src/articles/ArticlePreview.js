@@ -45,7 +45,7 @@ export default function ArticlePreview({
         if (summaryData.tokenized_summary) {
           const interactive = new InteractiveText(
             summaryData.tokenized_summary.tokens,
-            article.id,
+            article.source_id,
             api,
             summaryData.tokenized_summary.past_bookmarks,
             api.TRANSLATE_TEXT,
@@ -61,7 +61,7 @@ export default function ArticlePreview({
         if (summaryData.tokenized_title && summaryData.tokenized_title.tokens) {
           const titleInteractive = new InteractiveText(
             summaryData.tokenized_title.tokens,
-            article.id,
+            article.source_id,
             api,
             summaryData.tokenized_title.past_bookmarks || [],
             api.TRANSLATE_TEXT,
