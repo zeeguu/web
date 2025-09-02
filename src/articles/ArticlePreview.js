@@ -1,12 +1,11 @@
 import { Link } from "react-router-dom";
-import { useContext, useState, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 import { isMobile } from "../utils/misc/browserDetection";
 import * as s from "./ArticlePreview.sc";
 import RedirectionNotificationModal from "../components/redirect_notification/RedirectionNotificationModal";
 import Feature from "../features/Feature";
 import SmallSaveArticleButton from "./SmallSaveArticleButton";
 import ArticleSourceInfo from "../components/ArticleSourceInfo";
-import ArticleStatInfo from "../components/ArticleStatInfo";
 import extractDomain from "../utils/web/extractDomain";
 import ReadingCompletionProgress from "./ReadingCompletionProgress";
 import { APIContext } from "../contexts/APIContext";
