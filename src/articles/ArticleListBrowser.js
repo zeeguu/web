@@ -2,7 +2,7 @@ import React, { useState, useEffect, useContext } from "react";
 import ArticlePreview from "./ArticlePreview";
 import SortingButtons from "./SortingButtons";
 import SearchField from "./SearchField";
-import * as s from "./FindArticles.sc";
+import * as s from "./ArticleListBrowser.sc";
 import LoadingAnimation from "../components/LoadingAnimation";
 
 import LocalStorage from "../assorted/LocalStorage";
@@ -19,7 +19,7 @@ import { Link } from "react-router-dom";
 import VideoPreview from "../videos/VideoPreview";
 import SettingsRoundedIcon from "@mui/icons-material/SettingsRounded";
 
-export default function FindArticles({ content, searchQuery, searchPublishPriority, searchDifficultyPriority }) {
+export default function ArticleListBrowser({ content, searchQuery, searchPublishPriority, searchDifficultyPriority }) {
   let api = useContext(APIContext);
 
   //The ternary operator below fix the problem with the getOpenArticleExternallyWithoutModal()

@@ -2,7 +2,7 @@ import { useState } from "react";
 import * as s from "./Search.sc";
 import useQuery from "../hooks/useQuery";
 import SubscribeSearchButton from "./SubscribeSearchButton";
-import FindArticles from "./FindArticles";
+import ArticleListBrowser from "./ArticleListBrowser";
 import CustomizeSearchToolbar from "./CustomizeSearchToolbar";
 
 export default function Search() {
@@ -12,7 +12,7 @@ export default function Search() {
     useState(true);
 
   return (
-    <FindArticles
+    <ArticleListBrowser
       searchPublishPriority={searchPublishPriority}
       searchDifficultyPriority={searchDifficultyPriority}
       searchQuery={searchQuery}

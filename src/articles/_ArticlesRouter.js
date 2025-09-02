@@ -1,4 +1,4 @@
-import FindArticles from "./FindArticles";
+import ArticleListBrowser from "./ArticleListBrowser";
 import BookmarkedArticles from "./BookmarkedArticles";
 import { useContext, useEffect, useState } from "react";
 
@@ -55,7 +55,7 @@ export default function ArticlesRouter({ hasExtension, isChrome }) {
         <PrivateRoute
           path="/articles"
           exact
-          component={FindArticles}
+          component={ArticleListBrowser}
           hasExtension={hasExtension}
           isChrome={isChrome}
         />
