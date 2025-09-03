@@ -12,7 +12,7 @@ export default function BottomNavOption({
 }) {
   const Component = linkTo ? s.StyledLink : s.StyledButton;
   // Special case: Home should be active for both /articles and /swiper
-  const isActive = linkTo === "/articles" 
+  const isActive = linkTo === "/articles"
     ? (currentPath?.includes("/articles") || currentPath?.includes("/swiper"))
     : currentPath?.includes(linkTo);
 
