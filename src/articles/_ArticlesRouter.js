@@ -1,4 +1,5 @@
 import ArticleListBrowser from "./ArticleListBrowser";
+import ArticleSwipeBrowser from "./ArticleSwipeBrowser";
 import BookmarkedArticles from "./BookmarkedArticles";
 import { useContext, useEffect, useState } from "react";
 
@@ -21,6 +22,7 @@ export default function ArticlesRouter({ hasExtension, isChrome }) {
   const api = useContext(APIContext);
   const [tabsAndLinks, setTabsAndLinks] = useState({
     [strings.homeTab]: "/articles",
+    [strings.swipeTab]: "/articles/swipe",
     [strings.search]: "/articles/mySearches",
     [strings.saved]: "/articles/ownTexts",
   });
@@ -58,6 +60,10 @@ export default function ArticlesRouter({ hasExtension, isChrome }) {
           component={ArticleListBrowser}
           hasExtension={hasExtension}
           isChrome={isChrome}
+        />
+         <PrivateRoute
+          path="/articles/swipe"
+          component={ArticleSwipeBrowser}
         />
         <PrivateRoute
           path="/articles/bookmarked"
