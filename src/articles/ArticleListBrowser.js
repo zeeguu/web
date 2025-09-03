@@ -1,6 +1,5 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import ArticlePreview from "./ArticlePreview";
-import SortingButtons from "./SortingButtons";
 import SearchField from "./SearchField";
 import * as s from "./ArticleListBrowser.sc";
 import LoadingAnimation from "../components/LoadingAnimation";
@@ -15,9 +14,8 @@ import UnfinishedArticlesList from "./UnfinishedArticleList";
 import { setTitle } from "../assorted/setTitle";
 import strings from "../i18n/definitions";
 import useShadowRef from "../hooks/useShadowRef";
-import { Link } from "react-router-dom";
 import VideoPreview from "../videos/VideoPreview";
-import SettingsRoundedIcon from "@mui/icons-material/SettingsRounded";
+import CustomizeFeed from "./CustomizeFeed";
 
 export default function ArticleListBrowser({ content, searchQuery, searchPublishPriority, searchDifficultyPriority }) {
   let api = useContext(APIContext);
@@ -112,6 +110,7 @@ export default function ArticleListBrowser({ content, searchQuery, searchPublish
     // eslint-disable-next-line
   }, []);
 
+
   useEffect(() => {
     LocalStorage.setDoNotShowRedirectionModal(doNotShowRedirectionModal_UserPreference);
   }, [doNotShowRedirectionModal_UserPreference]);
@@ -184,27 +183,7 @@ export default function ArticleListBrowser({ content, searchQuery, searchPublish
               marginBottom: window.innerWidth <= 768 ? "0.5rem" : "1.5rem",
             }}
           >
-            <div style={{ display: "flex", alignItems: "center", gap: "0.3rem" }}>
-              <SettingsRoundedIcon
-                style={{ fontSize: "1.2em", cursor: "pointer" }}
-                title="Customize this page by subscribing to topics, filtering keywords, or adding searches"
-              />
-              <span
-                style={{ fontSize: window.innerWidth <= 768 ? "0.8em" : "0.9em", color: "#666", whiteSpace: "nowrap" }}
-              >
-                <Link className="bold underlined-link" to="/account_settings/interests?fromArticles=1">
-                  Topics
-                </Link>
-                {" • "}
-                <Link className="bold underlined-link" to="/account_settings/excluded_keywords?fromArticles=1">
-                  Excluded Keywords
-                </Link>
-                {" • "}
-                <Link className="bold underlined-link" to="/articles/mySearches">
-                  Saved Searches
-                </Link>
-              </span>
-            </div>
+            <CustomizeFeed />
             <s.ShowVideoOnlyButton
               className={isShowVideosOnlyEnabled && "selected"}
               style={{ visibility: !areVideosAvailable && "hidden" }}
