@@ -10,6 +10,13 @@ export default class NavigationOptions {
     isOnStudentSide: true,
   });
 
+  static swipe = Object.freeze({
+    linkTo: "/articles/swipe",
+    icon: <NavIcon name="home" />,
+    text: strings.swipeTab,
+    isOnStudentSide: true,
+  });
+
   static exercises = Object.freeze({
     linkTo: "/exercises",
     icon: <NavIcon name="exercises" />,
