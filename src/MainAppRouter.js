@@ -26,6 +26,7 @@ import { WEB_READER } from "./reader/ArticleReader";
 import VideoPlayer from "./videos/VideoPlayer";
 import DailyAudioRouter from "./dailyAudio/_DailyAudioRouter";
 import IndividualExercise from "./pages/IndividualExercise";
+import Swiper from "./swiper/Swiper";
 
 export default function MainAppRouter({ hasExtension, handleSuccessfulLogIn }) {
   return (
@@ -50,6 +51,7 @@ export default function MainAppRouter({ hasExtension, handleSuccessfulLogIn }) {
       <PrivateRoute path="/exclude_words" hasExtension={hasExtension} component={ExcludeWords} />
 
       <PrivateRouteWithMainNav path="/articles" component={ArticlesRouter} />
+      <PrivateRouteWithMainNav path="/swiper" component={Swiper} />
       <PrivateRoute path="/watch/video" component={VideoPlayer} />
       <PrivateRouteWithMainNav path="/exercises" component={ExercisesRouter} />
       <PrivateRouteWithMainNav path="/daily-audio" component={DailyAudioRouter} />

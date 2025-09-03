@@ -48,6 +48,8 @@ const DropdownItem = styled.div`
   border-bottom: 1px solid #eee;
   transition: background-color 0.2s ease;
   font-size: 0.9em;
+  display: flex;
+  align-items: center;
   
   @media (max-width: 768px) {
     font-size: 0.85em;
@@ -62,4 +64,10 @@ const DropdownItem = styled.div`
   }
 `;
 
-export { DropdownContainer, CustomizeFeedButton, DropdownMenu, DropdownItem };
+const Separator = styled.div`
+  height: 2px;
+  background-color: #ddd;
+  margin: 0;
+`;
+
+export { DropdownContainer, CustomizeFeedButton, DropdownMenu, DropdownItem, Separator };

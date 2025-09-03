@@ -11,7 +11,10 @@ export default function BottomNavOption({
   ariaLabel,
 }) {
   const Component = linkTo ? s.StyledLink : s.StyledButton;
-  const isActive = currentPath?.includes(linkTo);
+  // Special case: Home should be active for both /articles and /swiper
+  const isActive = linkTo === "/articles" 
+    ? (currentPath?.includes("/articles") || currentPath?.includes("/swiper"))
+    : currentPath?.includes(linkTo);
 
   return (
     <s.BottomNavOption>

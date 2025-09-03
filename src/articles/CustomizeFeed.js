@@ -2,9 +2,11 @@ import React, { useState, useRef, useEffect } from "react";
 import { useHistory } from "react-router-dom";
 import SettingsRoundedIcon from "@mui/icons-material/SettingsRounded";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
+import SwipeIcon from "@mui/icons-material/Swipe";
+import ViewListIcon from "@mui/icons-material/ViewList";
 import * as s from "./CustomizeFeed.sc";
 
-export default function CustomizeFeed() {
+export default function CustomizeFeed({ currentMode = "list" }) {
   const history = useHistory();
   const dropdownRef = useRef(null);
   const [showDropdown, setShowDropdown] = useState(false);
@@ -61,6 +63,23 @@ export default function CustomizeFeed() {
           >
             Saved Searches
           </s.DropdownItem>
+          <s.Separator />
+          {currentMode === "swiper" && (
+            <s.DropdownItem
+              onClick={() => handleItemClick("/articles")}
+            >
+              <ViewListIcon style={{ fontSize: "1.2em", marginRight: "0.5rem" }} />
+              List Mode
+            </s.DropdownItem>
+          )}
+          {currentMode === "list" && (
+            <s.DropdownItem
+              onClick={() => handleItemClick("/swiper")}
+            >
+              <SwipeIcon style={{ fontSize: "1.2em", marginRight: "0.5rem" }} />
+              Swipe Mode
+            </s.DropdownItem>
+          )}
         </s.DropdownMenu>
       )}
     </s.DropdownContainer>
