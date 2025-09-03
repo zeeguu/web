@@ -69,8 +69,14 @@ export default function MainAppRouter({ hasExtension, handleSuccessfulLogIn }) {
       />
       <PrivateRouteWithMainNav path="/exercise/:exerciseType/:bookmarkId" component={IndividualExercise} />
       <PrivateRouteWithMainNav path="/exercise-test/:exerciseType/:bookmarkId" component={IndividualExercise} />
-      <PrivateRouteWithMainNav path="/exercise-test/:exerciseType/:word/:translation/:context/:tokenized" component={IndividualExercise} />
-      <PrivateRouteWithMainNav path="/exercise-test/:exerciseType/:word/:translation/:context" component={IndividualExercise} />
+      <PrivateRouteWithMainNav
+        path="/exercise-test/:exerciseType/:word/:translation/:context/:tokenized"
+        component={IndividualExercise}
+      />
+      <PrivateRouteWithMainNav
+        path="/exercise-test/:exerciseType/:word/:translation/:context"
+        component={IndividualExercise}
+      />
       <PrivateRouteWithMainNav path="/exercise-test" component={IndividualExercise} />
       <Route path="*" component={NotFound} />
     </Switch>
