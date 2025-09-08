@@ -1,5 +1,7 @@
 import { Link } from "react-router-dom";
 import { useContext, useEffect, useState } from "react";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import { isMobile } from "../utils/misc/browserDetection";
 import * as s from "./ArticlePreview.sc";
 import RedirectionNotificationModal from "../components/redirect_notification/RedirectionNotificationModal";
@@ -110,6 +112,7 @@ export default function ArticlePreview({
       if (onArticleHidden) {
         onArticleHidden(article.id);
       }
+      toast("Article hidden from your feed!");
     });
   }
 
