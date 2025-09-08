@@ -39,6 +39,7 @@ export default function ArticlePreview({
   const [isTokenizing, setIsTokenizing] = useState(false);
   const [zeeguuSpeech] = useState(() => new ZeeguuSpeech(api, article.language));
   const [isHidden, setIsHidden] = useState(article.hidden || false);
+  const [isAnimatingOut, setIsAnimatingOut] = useState(false);
 
   useEffect(() => {
     if ((article.summary || article.title) && !isTokenizing && !interactiveSummary && !interactiveTitle) {
@@ -107,11 +108,15 @@ export default function ArticlePreview({
   }
 
   function handleHideArticle() {
+    setIsAnimatingOut(true);
     api.hideArticle(article.id, () => {
-      setIsHidden(true);
-      if (onArticleHidden) {
-        onArticleHidden(article.id);
-      }
+      // Delay the actual hiding to allow animation to complete
+      setTimeout(() => {
+        setIsHidden(true);
+        if (onArticleHidden) {
+          onArticleHidden(article.id);
+        }
+      }, 300); // Match animation duration
       toast("Article hidden from your feed!");
     });
   }
@@ -185,7 +190,15 @@ export default function ArticlePreview({
   }
 
   return (
-    <s.ArticlePreview>
+    <s.ArticlePreview
+      style={{
+        maxHeight: isAnimatingOut ? '0' : '1000px',
+        opacity: isAnimatingOut ? '0' : '1',
+        overflow: 'hidden',
+        transition: 'max-height 0.3s ease-out, opacity 0.3s ease-out',
+        marginBottom: isAnimatingOut ? '0' : undefined,
+      }}
+    >
       {article.feed_id ? (
         <ArticleSourceInfo
           articleInfo={article}
