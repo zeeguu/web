@@ -4,7 +4,7 @@ import { isMobile } from "../utils/misc/browserDetection";
 import * as s from "./ArticlePreview.sc";
 import RedirectionNotificationModal from "../components/redirect_notification/RedirectionNotificationModal";
 import Feature from "../features/Feature";
-import SmallSaveArticleButton from "./SmallSaveArticleButton";
+import SaveArticleButton from "./SaveArticleButton";
 import ArticleSourceInfo from "../components/ArticleSourceInfo";
 import extractDomain from "../utils/web/extractDomain";
 import ReadingCompletionProgress from "./ReadingCompletionProgress";
@@ -26,6 +26,7 @@ export default function ArticlePreview({
   doNotShowRedirectionModal_UserPreference,
   setDoNotShowRedirectionModal_UserPreference,
   notifyArticleClick,
+  onArticleHidden,
 }) {
   const api = useContext(APIContext);
   const [isRedirectionModalOpen, setIsRedirectionModaOpen] = useState(false);
@@ -35,6 +36,7 @@ export default function ArticlePreview({
   const [interactiveTitle, setInteractiveTitle] = useState(null);
   const [isTokenizing, setIsTokenizing] = useState(false);
   const [zeeguuSpeech] = useState(() => new ZeeguuSpeech(api, article.language));
+  const [isHidden, setIsHidden] = useState(article.hidden || false);
 
   useEffect(() => {
     if ((article.summary || article.title) && !isTokenizing && !interactiveSummary && !interactiveTitle) {
@@ -102,6 +104,15 @@ export default function ArticlePreview({
     setIsRedirectionModaOpen(true);
   }
 
+  function handleHideArticle() {
+    api.hideArticle(article.id, () => {
+      setIsHidden(true);
+      if (onArticleHidden) {
+        onArticleHidden(article.id);
+      }
+    });
+  }
+
   function titleLink(article) {
     let linkToRedirect = `/read/article?id=${article.id}`;
 
@@ -164,6 +175,10 @@ export default function ArticlePreview({
     if (should_open_in_zeeguu) return open_in_zeeguu;
     else if (should_open_with_modal) return open_externally_with_modal;
     else return open_externally_without_modal;
+  }
+
+  if (isHidden) {
+    return null;
   }
 
   return (
@@ -247,13 +262,31 @@ export default function ArticlePreview({
               article.summary
             )}
           </span>
-          <div style={{ whiteSpace: "nowrap", display: "flex", alignItems: "center", gap: "10px", marginTop: "8px" }}>
-            {titleLink(article)}
-            <SmallSaveArticleButton
-              article={article}
-              isArticleSaved={isArticleSaved}
-              setIsArticleSaved={setIsArticleSaved}
-            />
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              marginTop: "8px",
+              width: "100%",
+            }}
+          >
+            <div style={{ display: "flex", alignItems: "center", gap: "10px", flex: "0 0 auto" }}>
+              {titleLink(article)}
+              <SaveArticleButton
+                article={article}
+                isArticleSaved={isArticleSaved}
+                setIsArticleSaved={setIsArticleSaved}
+              />
+            </div>
+            <div style={{ flex: "0 0 auto" }}>
+              <ActionButton
+                onClick={handleHideArticle}
+                variant="muted"
+              >
+                Hide
+              </ActionButton>
+            </div>
           </div>
         </s.Summary>
       </s.ArticleContent>

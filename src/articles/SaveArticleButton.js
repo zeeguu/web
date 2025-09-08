@@ -4,7 +4,7 @@ import { useContext } from "react";
 import { APIContext } from "../contexts/APIContext.js";
 import ActionButton from "../components/ActionButton.js";
 
-export default function SmallSaveArticleButton({
+export default function SaveArticleButton({
   article,
   isArticleSaved,
   setIsArticleSaved,
