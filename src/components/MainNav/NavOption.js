@@ -16,7 +16,7 @@ export default function NavOption({
 }) {
   const Component = linkTo ? s.RouterLink : s.OptionButton;
   // Special case: Home should be active for both /articles and /swiper
-  const isActive = linkTo === "/articles" 
+  const isActive = linkTo === "/articles"
     ? (currentPath?.includes("/articles") || currentPath?.includes("/swiper"))
     : currentPath?.includes(linkTo);
   const elementTitle = isMediumScreenWidth(screenWidth) ? (title ? title : text) : "";
