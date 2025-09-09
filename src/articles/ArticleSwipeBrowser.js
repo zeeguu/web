@@ -50,7 +50,6 @@ export default function ArticleSwipeBrowser() {
 
   return (
     <div>
-      <h2>Swipe through articles</h2>
       <ArticlePreview
         article={currentArticle}
         isListview={false}

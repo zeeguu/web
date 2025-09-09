@@ -1,12 +1,14 @@
 import { Link } from "react-router-dom";
 import { useContext, useEffect, useState } from "react";
+import {toast} from "react-toastify";
+
+
 import { isMobile } from "../utils/misc/browserDetection";
 import RedirectionNotificationModal from "../components/redirect_notification/RedirectionNotificationModal";
 import Feature from "../features/Feature";
 import { APIContext } from "../contexts/APIContext";
 import InteractiveText from "../reader/InteractiveText";
 import ZeeguuSpeech from "../speech/APIBasedSpeech";
-
 import ActionButton from "../components/ActionButton";
 import ArticlePreviewList from "./ArticlePreviewList";
 import ArticlePreviewSwipe from "./ArticlePreviewSwipe";
@@ -100,103 +102,101 @@ export default function ArticlePreview({
     setIsRedirectionModaOpen(true);
   }
 
-  function handleHideArticle() {
+  function handleHideArticleInListMode() {
     setIsAnimatingOut(true);
     api.hideArticle(article.id, () => {
       // Delay the actual hiding to allow animation to complete
       setTimeout(() => {
         setIsHidden(true);
-        if (onArticleHidden) {
-          onArticleHidden(article.id);
-        }
+          if (onArticleHidden) {
+              onArticleHidden(article.id);
+          }
       }, 300); // Match animation duration
-      toast("Article hidden from your feed!");
+        toast("Article hidden from your feed!");
     });
   }
 
-  function titleLink(article) {
-    let linkToRedirect = `/read/article?id=${article.id}`;
+    function titleLink(article) {
+        let linkToRedirect = `/read/article?id=${article.id}`;
 
-    let open_in_zeeguu = (
-      <ActionButton as={Link} to={linkToRedirect} onClick={handleArticleClick}>
-        Open
-      </ActionButton>
-    );
+        let open_in_zeeguu = (
+            <ActionButton as={Link} to={linkToRedirect} onClick={handleArticleClick}>
+                {isListView ? "Open" : "Read full article →"}
+            </ActionButton>
+        );
 
-    let open_externally_with_modal = (
-      //The RedirectionNotificationModal modal informs the user that they are about
-      //to be redirected to the original article's website and guides them on what steps
-      //should be taken to start reading the said article with The Zeeguu Reader extension
-      //The modal is displayed when the user clicks the article's title from the recommendation
-      //list and can be deactivated when they select "Do not show again" and proceed.
-      <>
-        <RedirectionNotificationModal
-          hasExtension={hasExtension}
-          article={article}
-          open={isRedirectionModalOpen}
-          handleCloseRedirectionModal={handleCloseRedirectionModal}
-          setDoNotShowRedirectionModal_UserPreference={setDoNotShowRedirectionModal_UserPreference}
-          setIsArticleSaved={setIsArticleSaved}
-        />
-        <ActionButton
-          onClick={() => {
-            handleArticleClick();
-            handleOpenRedirectionModal();
-          }}
-        >
-          Open
-        </ActionButton>
-      </>
-    );
+        let open_externally_with_modal = (
+            //The RedirectionNotificationModal modal informs the user that they are about
+            //to be redirected to the original article's website and guides them on what steps
+            //should be taken to start reading the said article with The Zeeguu Reader extension
+            //The modal is displayed when the user clicks the article's title from the recommendation
+            //list and can be deactivated when they select "Do not show again" and proceed.
+            <>
+                <RedirectionNotificationModal
+                    hasExtension={hasExtension}
+                    article={article}
+                    open={isRedirectionModalOpen}
+                    handleCloseRedirectionModal={handleCloseRedirectionModal}
+                    setDoNotShowRedirectionModal_UserPreference={setDoNotShowRedirectionModal_UserPreference}
+                    setIsArticleSaved={setIsArticleSaved}
+                />
+                <ActionButton
+                    onClick={() => {
+                        handleArticleClick();
+                        handleOpenRedirectionModal();
+                    }}
+                >
+                    {isListView ? "Open" : "Read full article →"}
+                </ActionButton>
+            </>
+        );
 
-    let open_externally_without_modal = (
-      //allow target _self on mobile to easily go back to Zeeguu
-      //using mobile browser navigation
-      <ActionButton
-        as="a"
-        target={isMobile ? "_self" : "_blank"}
-        rel="noreferrer"
-        href={article.url}
-        onClick={handleArticleClick}
-      >
-        Open
-      </ActionButton>
-    );
+        let open_externally_without_modal = (
+            //allow target _self on mobile to easily go back to Zeeguu
+            //using mobile browser navigation
+            <ActionButton
+                as="a"
+                target={isMobile ? "_self" : "_blank"}
+                rel="noreferrer"
+                href={article.url}
+                onClick={handleArticleClick}
+            >
+                {isListView ? "Open" : "Read full article →"}
+            </ActionButton>
+        );
 
-    let should_open_in_zeeguu =
-      article.video ||
-      (!Feature.extension_experiment1() && !hasExtension) ||
-      article.has_personal_copy ||
-      article.has_uploader ||
-      isArticleSaved === true ||
-      article.parent_article_id; // Simplified articles (with parent_article_id) always open in Zeeguu reader
+        let should_open_in_zeeguu =
+            article.video ||
+            (!Feature.extension_experiment1() && !hasExtension) ||
+            article.has_personal_copy ||
+            article.has_uploader ||
+            isArticleSaved === true ||
+            article.parent_article_id; // Simplified articles (with parent_article_id) always open in Zeeguu reader
 
-    let should_open_with_modal = doNotShowRedirectionModal_UserPreference === false;
+        let should_open_with_modal = doNotShowRedirectionModal_UserPreference === false;
 
-    if (should_open_in_zeeguu) return open_in_zeeguu;
-    else if (should_open_with_modal) return open_externally_with_modal;
-    else return open_externally_without_modal;
-  }
+        if (should_open_in_zeeguu) return open_in_zeeguu;
+        else if (should_open_with_modal) return open_externally_with_modal;
+        else return open_externally_without_modal;
+    }
 
-  if (isHidden) {
-    return null;
-  }
+    if (isHidden) {
+        return null;
+    }
 
-  return (
-      isListView ? (
-          <ArticlePreviewList
+    return (
+        isListView ? (
+            <ArticlePreviewList
                 article={article}
                 interactiveTitle={interactiveTitle}
                 interactiveSummary={interactiveSummary}
                 isArticleSaved={isArticleSaved}
                 setIsArticleSaved={setIsArticleSaved}
-                notifyArticleClick={notifyArticleClick}
-                hasExtension={hasExtension}
-                doNotShowRedirectionModal_UserPreference={doNotShowRedirectionModal_UserPreference}
                 dontShowPublishingTime={dontShowPublishingTime}
                 dontShowSourceIcon={dontShowSourceIcon}
                 titleLink={titleLink}
-                handleHideArticle={handleHideArticle}
+                handleHideArticle={handleHideArticleInListMode}
+                isAnimatingOut={isAnimatingOut}
             />
         ) : (
             <ArticlePreviewSwipe
