@@ -1,5 +1,5 @@
 import ArticleListBrowser from "./ArticleListBrowser";
-import ArticleSwipeBrowser from "./ArticleSwipeBrowser";
+// import ArticleSwipeBrowser from "./ArticleSwipeBrowser";
 import BookmarkedArticles from "./BookmarkedArticles";
 import { useContext, useEffect, useState } from "react";
 
@@ -87,7 +87,7 @@ export default function ArticlesRouter({ hasExtension, isChrome }) {
           component={ClassroomArticles}
         /> */}
 
-        <PrivateRoute path="/articles/swipe" component={ArticleSwipeBrowser} />
+        {/* <PrivateRoute path="/articles/swipe" component={ArticleSwipeBrowser} /> */}
 
         <PrivateRoute path="/articles/ownTexts" component={OwnArticles} />
 

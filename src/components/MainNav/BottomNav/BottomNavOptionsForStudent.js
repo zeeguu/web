@@ -15,7 +15,6 @@ export default function BottomNavOptionsForStudent() {
   return (
     <>
       <BottomNavOption {...NavigationOptions.articles} currentPath={path} />
-      <BottomNavOption {...NavigationOptions.swipe}    currentPath={path} />
       <BottomNavOption
         {...NavigationOptions.exercises}
         currentPath={path}

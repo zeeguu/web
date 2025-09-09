@@ -5,11 +5,9 @@ import ArticleSwipeControl from "../components/article_swipe/ArticleSwipeControl
 
 export default function ArticleSwipeBrowser() {
   return (
-    <s.PageWrapper>
-      <s.CardAndControls>
-        <ArticleCard />
-        <ArticleSwipeControl />
-      </s.CardAndControls>
-    </s.PageWrapper>
+    <s.CardAndControls>
+      <ArticleCard />
+      <ArticleSwipeControl />
+    </s.CardAndControls>
   );
 }

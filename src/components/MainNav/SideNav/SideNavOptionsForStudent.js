@@ -17,7 +17,6 @@ export default function SideNavOptionsForStudent({ screenWidth }) {
   return (
     <>
       <NavOption {...NavigationOptions.articles} currentPath={path} screenWidth={screenWidth} />
-      <NavOption {...NavigationOptions.swipe} currentPath={path} screenWidth={screenWidth} />
 
       <NavOption
         {...NavigationOptions.exercises}

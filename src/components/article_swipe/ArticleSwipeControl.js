@@ -3,11 +3,7 @@ import { Bar, DismissButton, OpenButton, SaveButton, ButtonInner } from "./Artic
 import { white, darkGrey, orange600 } from "../colors";
 import SwipeIcon from "./SwipeIcon.js";
 
-export default function ArticleSwipeControl({
-    onDismiss = () => {}, 
-    onOpen = () => {}, 
-    onSave = () => {}
-}) {
+export default function ArticleSwipeControl({ onDismiss = () => {}, onOpen = () => {}, onSave = () => {} }) {
     return (
         <Bar>
             <DismissButton onClick={onDismiss} aria-label="Dimiss">
