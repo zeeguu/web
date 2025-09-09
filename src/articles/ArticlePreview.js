@@ -1,26 +1,21 @@
 import { Link } from "react-router-dom";
 import { useContext, useEffect, useState } from "react";
-import { toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import {toast} from "react-toastify";
+
+
 import { isMobile } from "../utils/misc/browserDetection";
-import * as s from "./ArticlePreview.sc";
 import RedirectionNotificationModal from "../components/redirect_notification/RedirectionNotificationModal";
 import Feature from "../features/Feature";
-import SaveArticleButton from "./SaveArticleButton";
-import ArticleSourceInfo from "../components/ArticleSourceInfo";
-import extractDomain from "../utils/web/extractDomain";
-import ReadingCompletionProgress from "./ReadingCompletionProgress";
 import { APIContext } from "../contexts/APIContext";
-import { TranslatableText } from "../reader/TranslatableText";
 import InteractiveText from "../reader/InteractiveText";
 import ZeeguuSpeech from "../speech/APIBasedSpeech";
-import moment from "moment";
-import { getStaticPath } from "../utils/misc/staticPath";
-import { estimateReadingTime } from "../utils/misc/readableTime";
 import ActionButton from "../components/ActionButton";
+import ArticlePreviewList from "./ArticlePreviewList";
+import ArticlePreviewSwipe from "./ArticlePreviewSwipe";
 
 export default function ArticlePreview({
   article,
+  isListView,
   dontShowPublishingTime,
   dontShowSourceIcon,
   showArticleCompletion,
@@ -107,205 +102,109 @@ export default function ArticlePreview({
     setIsRedirectionModaOpen(true);
   }
 
-  function handleHideArticle() {
+  function handleHideArticleInListMode() {
     setIsAnimatingOut(true);
     api.hideArticle(article.id, () => {
       // Delay the actual hiding to allow animation to complete
       setTimeout(() => {
         setIsHidden(true);
-        if (onArticleHidden) {
-          onArticleHidden(article.id);
-        }
+          if (onArticleHidden) {
+              onArticleHidden(article.id);
+          }
       }, 300); // Match animation duration
-      toast("Article hidden from your feed!");
+        toast("Article hidden from your feed!");
     });
   }
 
-  function titleLink(article) {
-    let linkToRedirect = `/read/article?id=${article.id}`;
+    function titleLink(article) {
+        let linkToRedirect = `/read/article?id=${article.id}`;
 
-    let open_in_zeeguu = (
-      <ActionButton as={Link} to={linkToRedirect} onClick={handleArticleClick}>
-        Open
-      </ActionButton>
-    );
+        let open_in_zeeguu = (
+            <ActionButton as={Link} to={linkToRedirect} onClick={handleArticleClick}>
+                {isListView ? "Open" : "Read full article →"}
+            </ActionButton>
+        );
 
-    let open_externally_with_modal = (
-      //The RedirectionNotificationModal modal informs the user that they are about
-      //to be redirected to the original article's website and guides them on what steps
-      //should be taken to start reading the said article with The Zeeguu Reader extension
-      //The modal is displayed when the user clicks the article's title from the recommendation
-      //list and can be deactivated when they select "Do not show again" and proceed.
-      <>
-        <RedirectionNotificationModal
-          hasExtension={hasExtension}
-          article={article}
-          open={isRedirectionModalOpen}
-          handleCloseRedirectionModal={handleCloseRedirectionModal}
-          setDoNotShowRedirectionModal_UserPreference={setDoNotShowRedirectionModal_UserPreference}
-          setIsArticleSaved={setIsArticleSaved}
-        />
-        <ActionButton
-          onClick={() => {
-            handleArticleClick();
-            handleOpenRedirectionModal();
-          }}
-        >
-          Open
-        </ActionButton>
-      </>
-    );
+        let open_externally_with_modal = (
+            //The RedirectionNotificationModal modal informs the user that they are about
+            //to be redirected to the original article's website and guides them on what steps
+            //should be taken to start reading the said article with The Zeeguu Reader extension
+            //The modal is displayed when the user clicks the article's title from the recommendation
+            //list and can be deactivated when they select "Do not show again" and proceed.
+            <>
+                <RedirectionNotificationModal
+                    hasExtension={hasExtension}
+                    article={article}
+                    open={isRedirectionModalOpen}
+                    handleCloseRedirectionModal={handleCloseRedirectionModal}
+                    setDoNotShowRedirectionModal_UserPreference={setDoNotShowRedirectionModal_UserPreference}
+                    setIsArticleSaved={setIsArticleSaved}
+                />
+                <ActionButton
+                    onClick={() => {
+                        handleArticleClick();
+                        handleOpenRedirectionModal();
+                    }}
+                >
+                    {isListView ? "Open" : "Read full article →"}
+                </ActionButton>
+            </>
+        );
 
-    let open_externally_without_modal = (
-      //allow target _self on mobile to easily go back to Zeeguu
-      //using mobile browser navigation
-      <ActionButton
-        as="a"
-        target={isMobile ? "_self" : "_blank"}
-        rel="noreferrer"
-        href={article.url}
-        onClick={handleArticleClick}
-      >
-        Open
-      </ActionButton>
-    );
+        let open_externally_without_modal = (
+            //allow target _self on mobile to easily go back to Zeeguu
+            //using mobile browser navigation
+            <ActionButton
+                as="a"
+                target={isMobile ? "_self" : "_blank"}
+                rel="noreferrer"
+                href={article.url}
+                onClick={handleArticleClick}
+            >
+                {isListView ? "Open" : "Read full article →"}
+            </ActionButton>
+        );
 
-    let should_open_in_zeeguu =
-      article.video ||
-      (!Feature.extension_experiment1() && !hasExtension) ||
-      article.has_personal_copy ||
-      article.has_uploader ||
-      isArticleSaved === true ||
-      article.parent_article_id; // Simplified articles (with parent_article_id) always open in Zeeguu reader
+        let should_open_in_zeeguu =
+            article.video ||
+            (!Feature.extension_experiment1() && !hasExtension) ||
+            article.has_personal_copy ||
+            article.has_uploader ||
+            isArticleSaved === true ||
+            article.parent_article_id; // Simplified articles (with parent_article_id) always open in Zeeguu reader
 
-    let should_open_with_modal = doNotShowRedirectionModal_UserPreference === false;
+        let should_open_with_modal = doNotShowRedirectionModal_UserPreference === false;
 
-    if (should_open_in_zeeguu) return open_in_zeeguu;
-    else if (should_open_with_modal) return open_externally_with_modal;
-    else return open_externally_without_modal;
-  }
+        if (should_open_in_zeeguu) return open_in_zeeguu;
+        else if (should_open_with_modal) return open_externally_with_modal;
+        else return open_externally_without_modal;
+    }
 
-  if (isHidden) {
-    return null;
-  }
+    if (isHidden) {
+        return null;
+    }
 
-  return (
-    <s.ArticlePreview
-      style={{
-        maxHeight: isAnimatingOut ? '0' : '1000px',
-        opacity: isAnimatingOut ? '0' : '1',
-        overflow: 'hidden',
-        transition: 'max-height 0.3s ease-out, opacity 0.3s ease-out',
-        marginBottom: isAnimatingOut ? '0' : undefined,
-      }}
-    >
-      {article.feed_id ? (
-        <ArticleSourceInfo
-          articleInfo={article}
-          dontShowPublishingTime={dontShowPublishingTime}
-          dontShowSourceIcon={dontShowSourceIcon}
-        />
-      ) : (
-        !dontShowSourceIcon &&
-        article.url && (
-          <s.UrlSourceContainer>
-            <s.UrlSource>{extractDomain(article.url)}</s.UrlSource>
-            {!dontShowPublishingTime && article.published && (
-              <span style={{ marginLeft: "5px" }}>({moment.utc(article.published).fromNow()})</span>
-            )}
-          </s.UrlSourceContainer>
-        )
-      )}
-
-      <s.TitleContainer>
-        <s.Title>
-          {interactiveTitle ? (
-            <TranslatableText interactiveText={interactiveTitle} translating={true} pronouncing={true} />
-          ) : (
-            article.title
-          )}
-        </s.Title>
-        <ReadingCompletionProgress last_reading_percentage={article.reading_completion}></ReadingCompletionProgress>
-      </s.TitleContainer>
-
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          marginTop: "15px",
-          marginBottom: "10px",
-        }}
-      >
-        <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-          {/* Difficulty (CEFR level) */}
-          <div style={{ display: "flex", alignItems: "center", gap: "5px" }}>
-            <img
-              src={getStaticPath(
-                "icons",
-                `${article.metrics?.cefr_level || article.cefr_level || "B1"}-level-icon.png`,
-              )}
-              alt="difficulty icon"
-              style={{ width: "16px", height: "16px" }}
-            />
-            <span>{article.metrics?.cefr_level || article.cefr_level || "B1"}</span>
-          </div>
-
-          {/* Simplified label if available */}
-          {article.parent_article_id && <s.SimplifiedLabel>simplified</s.SimplifiedLabel>}
-        </div>
-
-        <div>
-          {/* Reading time only */}
-          <div style={{ display: "flex", alignItems: "center", gap: "5px" }}>
-            <img
-              src={getStaticPath("icons", "read-time-icon.png")}
-              alt="read time icon"
-              style={{ width: "16px", height: "16px" }}
-            />
-            <span>~ {estimateReadingTime(article.metrics?.word_count || article.word_count || 0)}</span>
-          </div>
-        </div>
-      </div>
-
-      <s.ArticleContent>
-        {article.img_url && <img alt="" src={article.img_url} />}
-        <s.Summary style={{ display: "flex", flexWrap: "wrap", alignItems: "baseline", gap: "4px" }}>
-          <span style={{ flex: "1", minWidth: "fit-content" }}>
-            {interactiveSummary ? (
-              <TranslatableText interactiveText={interactiveSummary} translating={true} pronouncing={true} />
-            ) : (
-              article.summary
-            )}
-          </span>
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "space-between",
-              marginTop: "8px",
-              width: "100%",
-            }}
-          >
-            <div style={{ display: "flex", alignItems: "center", gap: "10px", flex: "0 0 auto" }}>
-              {titleLink(article)}
-              <SaveArticleButton
+    return (
+        isListView ? (
+            <ArticlePreviewList
                 article={article}
+                interactiveTitle={interactiveTitle}
+                interactiveSummary={interactiveSummary}
                 isArticleSaved={isArticleSaved}
                 setIsArticleSaved={setIsArticleSaved}
-              />
-            </div>
-            <div style={{ flex: "0 0 auto" }}>
-              <ActionButton
-                onClick={handleHideArticle}
-                variant="muted"
-              >
-                Hide
-              </ActionButton>
-            </div>
-          </div>
-        </s.Summary>
-      </s.ArticleContent>
-    </s.ArticlePreview>
-  );
+                dontShowPublishingTime={dontShowPublishingTime}
+                dontShowSourceIcon={dontShowSourceIcon}
+                titleLink={titleLink}
+                handleHideArticle={handleHideArticleInListMode}
+                isAnimatingOut={isAnimatingOut}
+            />
+        ) : (
+            <ArticlePreviewSwipe
+                article={article}
+                titleLink={titleLink}
+                interactiveTitle={interactiveTitle}
+                interactiveSummary={interactiveSummary}
+            />
+        )
+    );
 }

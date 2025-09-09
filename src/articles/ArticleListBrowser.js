@@ -221,6 +221,7 @@ export default function ArticleListBrowser({ content, searchQuery, searchPublish
             <ArticlePreview
               key={each.id}
               article={each}
+              isListView={true}
               hasExtension={isExtensionAvailable}
               doNotShowRedirectionModal_UserPreference={doNotShowRedirectionModal_UserPreference}
               setDoNotShowRedirectionModal_UserPreference={setDoNotShowRedirectionModal_UserPreference}
