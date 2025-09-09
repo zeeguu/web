@@ -102,6 +102,15 @@ export default function ArticleListBrowser({ content, searchQuery, searchPublish
     api.logUserActivity(api.CLICKED_VIDEO, null, "", seenListAsString, sourceId);
   };
 
+  const handleArticleHidden = (articleId) => {
+    const updatedList = articlesAndVideosList.filter((item) => item.id !== articleId);
+    setArticlesAndVideosList(updatedList);
+    if (originalList) {
+      const updatedOriginalList = originalList.filter((item) => item.id !== articleId);
+      setOriginalList(updatedOriginalList);
+    }
+  };
+
   useEffect(() => {
     window.addEventListener("scroll", handleScroll, true);
     return () => {
@@ -212,9 +221,11 @@ export default function ArticleListBrowser({ content, searchQuery, searchPublish
             <ArticlePreview
               key={each.id}
               article={each}
+              isListView={true}
               hasExtension={isExtensionAvailable}
               doNotShowRedirectionModal_UserPreference={doNotShowRedirectionModal_UserPreference}
               setDoNotShowRedirectionModal_UserPreference={setDoNotShowRedirectionModal_UserPreference}
+              onArticleHidden={handleArticleHidden}
               notifyArticleClick={() => handleArticleClick(each.id, each.source_id, index)}
             />
           ),

@@ -15,6 +15,15 @@ export default function RecommendedArticles() {
   const [articleList, setArticleList] = useState(null);
   const [originalList, setOriginalList] = useState(null);
 
+  const handleArticleHidden = (articleId) => {
+    const updatedList = articleList.filter((item) => item.id !== articleId);
+    setArticleList(updatedList);
+    if (originalList) {
+      const updatedOriginalList = originalList.filter((item) => item.id !== articleId);
+      setOriginalList(updatedOriginalList);
+    }
+  };
+
   useEffect(() => {
     setTitle("Recommended Articles");
 
@@ -39,7 +48,7 @@ export default function RecommendedArticles() {
       <br />
       <SortingButtons articleList={articleList} originalList={originalList} setArticleList={setArticleList} />
       {articleList.map((each) => (
-        <ArticlePreview key={each.id} article={each} dontShowSourceIcon={true} />
+        <ArticlePreview key={each.id} article={each} dontShowSourceIcon={true} onArticleHidden={handleArticleHidden} />
       ))}
     </>
   );

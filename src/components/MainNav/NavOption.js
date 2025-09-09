@@ -15,10 +15,9 @@ export default function NavOption({
   ariaLabel,
 }) {
   const Component = linkTo ? s.RouterLink : s.OptionButton;
-  // Special case: Home should be active for both /articles and /swiper
-  const isActive = linkTo === "/articles"
-    ? (currentPath?.includes("/articles") || currentPath?.includes("/swiper"))
-    : currentPath?.includes(linkTo);
+  // const isActive = currentPath?.includes(linkTo);
+  // changed to this, because the path for swipe is in 'path/swipe'
+  const isActive = !!linkTo && currentPath === linkTo;
   const elementTitle = isMediumScreenWidth(screenWidth) ? (title ? title : text) : "";
 
   return (

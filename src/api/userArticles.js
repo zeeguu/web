@@ -299,3 +299,8 @@ Zeeguu_API.prototype.simplifyArticle = function (articleID, callback) {
     }
   });
 };
+
+Zeeguu_API.prototype.hideArticle = function (articleId, callback) {
+  let param = qs.stringify({ article_id: articleId });
+  this._post(`/hide_article`, param, callback);
+};
