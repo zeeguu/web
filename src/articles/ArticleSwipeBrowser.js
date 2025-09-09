@@ -1,9 +1,11 @@
 import React, { useContext, useEffect, useState } from "react";
+import * as s from "./ArticleSwipeBrowser.sc";
 import { APIContext } from "../contexts/APIContext";
 import { setTitle } from "../assorted/setTitle";
 import strings from "../i18n/definitions";
 import LoadingAnimation from "../components/LoadingAnimation";
 import ArticlePreview from "./ArticlePreview";
+import ArticleSwipeControl from "../components/article_swipe/ArticleSwipeControl";
 
 export default function ArticleSwipeBrowser() {
   const api = useContext(APIContext);
@@ -49,12 +51,14 @@ export default function ArticleSwipeBrowser() {
   const currentArticle = articles[currentArticleIndex];
 
   return (
-    <div>
+    <s.Container>
       <ArticlePreview
         article={currentArticle}
         isListview={false}
         notifyArticleClick={() => handleArticleClick(currentArticle.id, currentArticle.source_id, currentArticleIndex)}
       />
-    </div>
+
+      <ArticleSwipeControl />
+    </s.Container>
   );
 }

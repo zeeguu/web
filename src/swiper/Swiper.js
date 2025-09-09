@@ -11,15 +11,6 @@ export default function Swiper() {
       </Header>
 
       <ArticleSwipeBrowser />
-      
-      {/* <PlaceholderCard>
-        <Title>Swipe Mode</Title>
-        <Description>
-          Experience a new way to browse articles with our swipe interface. 
-          Swipe right to save articles for later, swipe left to skip.
-        </Description>
-        <ComingSoon>Coming Soon</ComingSoon>
-      </PlaceholderCard> */}
     </Container>
   );
 }

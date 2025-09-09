@@ -12,10 +12,10 @@ export const CardContainer = styled.div`
     flex-direction: column;
     margin: 0 auto;
 
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+    position: static;
+    top: auto;
+    left: auto;
+    transform: none;
 `;
 
 export const ImageWrapper = styled.div`
