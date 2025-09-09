@@ -16,8 +16,7 @@ import HeadphonesRoundedIcon from "@mui/icons-material/HeadphonesRounded";
 import LocalFireDepartmentIcon from '@mui/icons-material/LocalFireDepartment';
 import ArticleIcon from '@mui/icons-material/Article';
 import SchoolIcon from "@mui/icons-material/School";
-import SwipeRoundedIcon from '@mui/icons-material/SwipeRounded';
-
+// import SwipeRoundedIcon from '@mui/icons-material/SwipeRounded';
 
 export default function NavIcon({ name, color, size }) {
 

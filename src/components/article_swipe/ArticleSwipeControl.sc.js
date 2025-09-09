@@ -1,5 +1,5 @@
-import styled, { css } from "styled-components";
-import { white, veryLightGrey, zeeguuOrange, orange600, orange300 } from "../colors";
+import styled from "styled-components";
+import { white, veryLightGrey, orange600, orange300 } from "../colors";
 
 export const Bar = styled.div`
     display: flex;

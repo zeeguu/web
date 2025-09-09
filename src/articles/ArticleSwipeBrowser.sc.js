@@ -1,5 +1,4 @@
 import styled from "styled-components";
-import { white } from "../components/colors";
 
 export const CardAndControls = styled.div`
   display: flex;

@@ -1,5 +1,4 @@
 import ArticleListBrowser from "./ArticleListBrowser";
-// import ArticleSwipeBrowser from "./ArticleSwipeBrowser";
 import BookmarkedArticles from "./BookmarkedArticles";
 import { useContext, useEffect, useState } from "react";
 
@@ -51,24 +50,7 @@ export default function ArticlesRouter({ hasExtension, isChrome }) {
     <>
       {/* Rendering top menu first, then routing to corresponding page */}
       <s.NarrowColumn>
-        {/* <TopTabs title={strings.articles} tabsAndLinks={tabsAndLinks} /> */}
-
-        {/* Show TopTabs on all article pages EXCEPT /articles/swipe */}
-        <PrivateRoute
-          path="/articles"
-          exact
-          component={() => <TopTabs title={strings.articles} tabsAndLinks={tabsAndLinks} />}
-        />
-        <PrivateRoute
-          path={[
-            "/articles/bookmarked",
-            "/articles/classroom",
-            "/articles/ownTexts",
-            "/articles/history",
-            "/articles/mySearches",
-          ]}
-          component={() => <TopTabs title={strings.articles} tabsAndLinks={tabsAndLinks} />}
-        />
+        <TopTabs title={strings.articles} tabsAndLinks={tabsAndLinks} />
 
         <PrivateRoute
           path="/articles"
@@ -77,17 +59,9 @@ export default function ArticlesRouter({ hasExtension, isChrome }) {
           hasExtension={hasExtension}
           isChrome={isChrome}
         />
+        <PrivateRoute path="/articles/bookmarked" component={BookmarkedArticles} />
 
-        {/* <PrivateRoute
-          path="/articles/bookmarked"
-          component={BookmarkedArticles}
-        />
-        <PrivateRoute
-          path="/articles/classroom"
-          component={ClassroomArticles}
-        /> */}
-
-        {/* <PrivateRoute path="/articles/swipe" component={ArticleSwipeBrowser} /> */}
+        <PrivateRoute path="/articles/classroom" component={ClassroomArticles} />
 
         <PrivateRoute path="/articles/ownTexts" component={OwnArticles} />
 
