@@ -74,6 +74,7 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
   const [totalPracticedBookmarksInSession, setTotalPracticedBookmarksInSession] = useState(0);
   const [exerciseMessageForAPI, setExerciseMessageForAPI] = useState({});
   const [dbExerciseSessionId, setDbExerciseSessionId] = useState();
+  const [isSessionLoading, setIsSessionLoading] = useState(true); // New loading state
   const dbExerciseSessionIdRef = useShadowRef(dbExerciseSessionId);
   const currentIndexRef = useShadowRef(currentIndex);
   const hasKeptExercisingRef = useShadowRef(hasKeptExercising);
@@ -126,6 +127,7 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
   function initializeExercisesForBookmarks(bookmarks) {
     if (bookmarks.length === 0) {
       setIsOutOfWordsToday(true);
+      setIsSessionLoading(false); // No exercises to load
       return;
     }
 
@@ -137,10 +139,11 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
     setCurrentBookmarksToStudy(exerciseSession[0].bookmarks);
     setSelectedExerciseBookmark(exerciseSession[0].bookmarks[0]);
 
-    // we have bookmarks; we can start loggign
+    // we have bookmarks; we can start logging
     api.startLoggingExerciseSessionToDB((newlyCreatedDBSessionID) => {
       let id = JSON.parse(newlyCreatedDBSessionID).id;
       setDbExerciseSessionId(id);
+      setIsSessionLoading(false); // Session is ready
     });
   }
 
@@ -279,7 +282,9 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
   if (isOutOfWordsToday) {
     return <OutOfWordsMessage goBackAction={backButtonAction} />;
   }
-  if (!currentBookmarksToStudy || !fullExerciseProgression) {
+  
+  // Show loading screen until session is created and bookmarks are loaded
+  if (!currentBookmarksToStudy || !fullExerciseProgression || isSessionLoading) {
     return <LoadingAnimation />;
   }
 
