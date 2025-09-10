@@ -81,14 +81,14 @@ export const Title = styled.h2`
     color: ${almostBlack};
 `;
 
-export const Summary = styled.p`
+export const Summary = styled.div`
     font-size: 1rem;
     line-height: 1.5;
     color: ${almostBlack};
     flex-grow: 1;
 `;
 
-export const ContinueReading = styled.a`
+export const ContinueReading = styled.div`
     margin-top: 1rem;
     font-size: 0.95rem;
     font-weight: 500;
