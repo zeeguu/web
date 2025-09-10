@@ -6,7 +6,7 @@ import SwipeIcon from "./SwipeIcon.js";
 export default function ArticleSwipeControl({ onDismiss = () => {}, onOpen = () => {}, onSave = () => {} }) {
     return (
         <Bar>
-            <DismissButton onClick={onDismiss} aria-label="Dimiss">
+            <DismissButton onClick={onDismiss} aria-label="Dismiss">
                 <ButtonInner>
                     <SwipeIcon name="dismiss" color={darkGrey} size={22} />
                 </ButtonInner>
