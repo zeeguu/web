@@ -102,13 +102,23 @@ export default function ArticleBrowser({ content, searchQuery, searchPublishPrio
         api.logUserActivity(api.CLICKED_VIDEO, null, "", seenListAsString, sourceId);
     };
 
+    // const handleArticleHidden = (articleId) => {
+    //     const updatedList = articlesAndVideosList.filter((item) => item.id !== articleId);
+    //     setArticlesAndVideosList(updatedList);
+    //     if (originalList) {
+    //         const updatedOriginalList = originalList.filter((item) => item.id !== articleId);
+    //         setOriginalList(updatedOriginalList);
+    //     }
+    // };
+
+    // changed above to this 
     const handleArticleHidden = (articleId) => {
-        const updatedList = articlesAndVideosList.filter((item) => item.id !== articleId);
-        setArticlesAndVideosList(updatedList);
-        if (originalList) {
-            const updatedOriginalList = originalList.filter((item) => item.id !== articleId);
-            setOriginalList(updatedOriginalList);
-        }
+    // tell backend this is hidden (api) i'm THINKING this means we should remove it from the ArticlePreview ??? which should call the parent's (this one) instead ???
+        api.hideArticle(articleId, () => {
+        // update UI lists
+            setArticlesAndVideosList((prev) => prev.filter((item) => item.id !== articleId));
+            setOriginalList((prev) => (prev ? prev.filter((item) => item.id !== articleId) : prev));
+        });
     };
 
     // persist user pref for redirection modal
@@ -167,9 +177,13 @@ export default function ArticleBrowser({ content, searchQuery, searchPublishPrio
     return isSwipeView ? (
         <ArticleSwipeBrowser
             articles={articlesAndVideosList}
-            reloading={reloadingSearchArticles}
-            isWaiting={isWaitingForNewArticles}
-            noMore={noMoreArticlesToShow}
+            onArticleClick={handleArticleClick}
+            onArticleHidden={handleArticleHidden}
+
+            // downstream UI needs
+            hasExtension={isExtensionAvailable}
+            doNotShowRedirectionModal_UserPreference={doNotShowRedirectionModal_UserPreference}
+            setDoNotShowRedirectionModal_UserPreference={setDoNotShowRedirectionModal_UserPreference}
         />
     ) : (
         <ArticleListBrowser
