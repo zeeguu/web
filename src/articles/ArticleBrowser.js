@@ -24,11 +24,20 @@ export default function ArticleBrowser({ content, searchQuery, searchPublishPrio
     const [isExtensionAvailable] = useExtensionCommunication();
 
     // video toggle
+    // Next three vars required for the "Show Videos Only" toggle button
     const [areVideosAvailable, setAreVideosAvailable] = useState(false);
     const [isShowVideosOnlyEnabled, setIsShowVideosOnlyEnabled] = useState(false);
+    // Ref is needed since it's called in the updateOnPagination function. This function
+    // could have stale values if using the state constant.
     const isShowVideosOnlyEnabledRef = useShadowRef(isShowVideosOnlyEnabled);
 
     // modal pref
+    //The ternary operator below fix the problem with the getOpenArticleExternallyWithoutModal()
+    //getter that was outputting undefined string values when they should be false.
+    //This occurs before the user selects their own preferences.
+    //Additionally, the conditional statement needed to be tightened up due to JS's unstable behavior, which resulted
+    //in bool values changing on its own on refresh without any other external trigger or preferences change.
+    // A '=== "true"' clause has been added to the getters to achieve predictable and desired bool values.
     const doNotShowRedirectionModal_LocalStorage = LocalStorage.getDoNotShowRedirectionModal() === "true";
     const [doNotShowRedirectionModal_UserPreference, setDoNotShowRedirectionModal_UserPreference] = useState(doNotShowRedirectionModal_LocalStorage);
 
@@ -45,7 +54,7 @@ export default function ArticleBrowser({ content, searchQuery, searchPublishPrio
                 searchPublishPriorityRef.current,
                 searchDifficultyPriorityRef.current,
                 handleArticleInsertion,
-                () => {}
+                (error) => {}
             );
         } else {
             api.getMoreUserArticles(20, pageNumber, handleArticleInsertion);
@@ -71,50 +80,33 @@ export default function ArticleBrowser({ content, searchQuery, searchPublishPrio
 
     // UI functions
     function handleVideoOnlyClick() {
-        setIsShowVideosOnlyEnabled((prev) => {
-            const next = !prev;
-            if (next) {
-                const videosOnly = [...APIContext(articlesAndVideosList || [])].filter((each) => each.video);
-                setArticlesAndVideosList(videosOnly);
-            } else {
-                setAreVideosAvailable(originalList || []);
-                resetPagination();
-            }
-            return next;
-        });
-    }
+        setIsShowVideosOnlyEnabled(!isShowVideosOnlyEnabled);
+        if (isShowVideosOnlyEnabled) {
+            setArticlesAndVideosList(originalList);
+            resetPagination();
+        } else {
+            const videosOnly = [...articlesAndVideosList].filter((each) => each.video);
+            setArticlesAndVideosList(videosOnly);
+        }
+    };
 
     const handleArticleClick = (articleId, sourceId, index) => {
-        const seenList = (articlesAndVideosList || [])
-            .slice(0, index)
-            .map((each) => each.source_id);
+        const seenList = articlesAndVideosList.slice(0, index).map((each) => each.source_id);
         const seenListAsString = JSON.stringify(seenList, null, 0);
-        api.logUserActivity(
-            api.CLICKED_ARTICLE,
-            articleId,
-            "",
-            seenListAsString,
-            sourceId
-        );
+        api.logUserActivity(api.CLICKED_ARTICLE, articleId, "", seenListAsString, sourceId);
     };
 
     const handleVideoClick = (sourceId, index) => {
-        const seenList = (articlesAndVideosList || [])
-            .slice(0, index)
-            .map((each) => each.source_id);
+        const seenList = articlesAndVideosList.slice(0, index).map((each) => each.source_id);
         const seenListAsString = JSON.stringify(seenList, null, 0);
         api.logUserActivity(api.CLICKED_VIDEO, null, "", seenListAsString, sourceId);
     };
 
     const handleArticleHidden = (articleId) => {
-        const updatedList = (articlesAndVideosList || []).filter(
-            (item) => item.id !== articleId
-        );
+        const updatedList = articlesAndVideosList.filter((item) => item.id !== articleId);
         setArticlesAndVideosList(updatedList);
         if (originalList) {
-            const updatedOriginalList = originalList.filter(
-                (item) => item.id !== articleId
-            );
+            const updatedOriginalList = originalList.filter((item) => item.id !== articleId);
             setOriginalList(updatedOriginalList);
         }
     };
@@ -140,9 +132,7 @@ export default function ArticleBrowser({ content, searchQuery, searchPublishPrio
                     setArticlesAndVideosList(articles);
                     setOriginalList([...articles]);
                     setReloadingSearchArticles(false);
-                    articles.some((e) => e.video)
-                        ? setAreVideosAvailable(true)
-                        : setAreVideosAvailable(false);
+                    articles.some((e) => e.video) ? setAreVideosAvailable(true) : setAreVideosAvailable(false);
                 },
                 (error) => {
                     setArticlesAndVideosList([]);
@@ -156,9 +146,7 @@ export default function ArticleBrowser({ content, searchQuery, searchPublishPrio
             api.getUserArticles((articles) => {
                 setArticlesAndVideosList(articles);
                 setOriginalList([...articles]);
-                articles.some((e) => e.video)
-                    ? setAreVideosAvailable(true)
-                    : setAreVideosAvailable(false);
+                articles.some((e) => e.video) ? setAreVideosAvailable(true) : setAreVideosAvailable(false);
             });
 
             // attach scroll for home feed
