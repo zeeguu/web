@@ -3,7 +3,7 @@ import { Bar, DismissButton, OpenButton, SaveButton, ButtonInner } from "./Artic
 import { white, darkGrey, orange600 } from "../colors";
 import SwipeIcon from "./SwipeIcon.js";
 
-export default function ArticleSwipeControl({ onDismiss = () => {}, onOpen = () => {}, onSave = () => {} }) {
+export default function ArticleSwipeControl({ onDismiss = () => {}, onOpen = () => {}, onSave = () => {}, children }) {
     return (
         <Bar>
             <DismissButton onClick={onDismiss} aria-label="Dismiss">
@@ -18,11 +18,22 @@ export default function ArticleSwipeControl({ onDismiss = () => {}, onOpen = () 
                 </ButtonInner>
             </OpenButton>
 
-            <SaveButton onClick={onSave} aria-label="Save Article">
+            {/* <SaveButton onClick={onSave} aria-label="Save Article">
                 <ButtonInner>
                     <SwipeIcon name="save" color={orange600} size={22} />
                 </ButtonInner>
-            </SaveButton>
+            </SaveButton> */}
+            {children ? (
+                <SaveButton as="div" aria-label="Save Article">
+                    <ButtonInner>{children}</ButtonInner>
+                </SaveButton>
+            ) : (
+                <SaveButton onClick={onSave} aria-label="Save Article">
+                    <ButtonInner>
+                        <SwipeIcon name="save" color={orange600} size={22} />
+                    </ButtonInner>
+                </SaveButton>
+            )}
         </Bar>        
     )
 }

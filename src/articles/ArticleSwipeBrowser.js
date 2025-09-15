@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import * as s from "./ArticleSwipeBrowser.sc";
 import LoadingAnimation from "../components/LoadingAnimation";
 import ArticlePreview from "./ArticlePreview";
 import ArticleSwipeControl from "../components/article_swipe/ArticleSwipeControl";
+import SaveArticleButton from "./SaveArticleButton";
 
 // should not be here
 import { isMobile } from "../utils/misc/browserDetection";
@@ -18,12 +19,13 @@ export default function ArticleSwipeBrowser({
   doNotShowRedirectionModal_UserPreference,
   setDoNotShowRedirectionModal_UserPreference,
 }) {
-  // const api = useContext(APIContext);
-
   //const [articles, setArticles] = useState(null);
   //const [originalList, setOriginalList] = useState(null);
   const [currentArticleIndex, setCurrentArticleIndex] = useState(0);
   //const [shouldLoadNewArticles, setShouldLoadNewArticles] = useState(false);
+  const currentArticle = articles?.[currentArticleIndex];
+  const [isArticleSaved, setIsArticleSaved] = useState(!!currentArticle?.has_personal_copy);
+  const hiddenSaveRef = useRef(null);
 
   // these will be removed when we decided on a clear structure
   const [isRedirectionModalOpen, setIsRedirectionModalOpen] = useState(false);
@@ -40,43 +42,17 @@ export default function ArticleSwipeBrowser({
     }
   }, [articles, currentArticleIndex]);
 
-  // useEffect(() => {
-  //   setTitle(strings.titleHome);
-  //   api.getUserArticles((fetchedArticles) => {
-  //     setArticles(fetchedArticles);
-  //     setOriginalList([...fetchedArticles]);
-  //     setShouldLoadNewArticles(false);
-  //   });
-  // }, [api, shouldLoadNewArticles]);
-
-  // set the title when this view mounts
-  // useEffect(() => {
-  //   setTitle(strings.titleHome);
-  // }, []);
-
-  // useEffect(() => {
-  //   if (articles && currentArticleIndex >= articles.length - 1) {
-  //     setShouldLoadNewArticles(true);
-  //   }
-  // }, [currentArticleIndex, articles]);
+  // keep local saved state in sync when the current article changes
+  useEffect(() => {
+    if (!currentArticle) return;
+    setIsArticleSaved(!!currentArticle.has_personal_copy);
+  }, [currentArticle?.id, currentArticle?.has_personal_copy]);
 
   if (!articles) return <LoadingAnimation />;
   if (articles.length === 0) return <p>No more articles</p>;
 
-  const currentArticle = articles[currentArticleIndex];
+  // const currentArticle = articles[currentArticleIndex];
   if (!currentArticle) return <LoadingAnimation />;
-
-  // if (currentArticleIndex >= articles.length) return <p>No more articles</p>;
-
-  // const handleNextArticle = () => {
-  //   setCurrentArticleIndex((prev) => Math.min(prev + 1, articles.length));
-  // };
-
-  // const handleArticleClick = (articleId, sourceId) => {
-  //   const seenList = articles.slice(0, currentArticleIndex).map((each) => each.source_id);
-  //   const seenListAsString = JSON.stringify(seenList, null, 0);
-  //   api.logUserActivity(api.CLICKED_ARTICLE, articleId, "", seenListAsString, sourceId);
-  // };
 
   const handleOpen = () => {
     onArticleClick?.(currentArticle.id, currentArticle.source_id, currentArticleIndex);
@@ -100,31 +76,60 @@ export default function ArticleSwipeBrowser({
     }
   };
 
-  // const currentArticle = articles[currentArticleIndex];
-
   const handleDismiss = () => {
     onArticleHidden?.(currentArticle.id);
     if (currentArticleIndex >= articles.length - 1) {
-      setCurrentArticleIndex((i) => Math.map(0, i - 1));
+      setCurrentArticleIndex((i) => Math.max(0, i - 1));
     }
   };
 
-  const handleSave = () => {
-    onArticleSave?.(currentArticle.id);
+  // notify parent to update its lists
+  const setSavedAndNotify = (val) => {
+    setIsArticleSaved(val);
+    onArticleSave?.(currentArticle.id, val); // parent flips has_personal_copy in its arrays
   };
 
-  // const notifyArticleClick = () => handleOpen();
+  const handleSave = () => {
+    // onArticleSave?.(currentArticle.id);
+    const root = hiddenSaveRef.current;
+    if (!root) return;
+    const clickable = root.querySelector("button, a");
+    if (clickable) {
+      clickable.click();
+    }
+  };
+
 
   return (
     <s.Container>
       <ArticlePreview
         article={currentArticle}
-        isListview={false}
+        isListView={false}
         //notifyArticleClick={() => handleArticleClick(currentArticle.id, currentArticle.source_id, currentArticleIndex)}
         notifyArticleClick={handleOpen}
       />
 
       <ArticleSwipeControl onOpen={handleOpen} onDismiss={handleDismiss} onSave={handleSave} />
+
+      <div
+        ref={hiddenSaveRef}
+        style={{
+          position: "absolute",
+          width: 1,
+          height: 1,
+          overflow: "hidden",
+          clip: "rect(0 0 0 0)",
+          clipPath: "inset(50%)",
+          whiteSpace: "nowrap",
+        }}
+        aria-hidden="true"
+      >
+        <SaveArticleButton
+          article={currentArticle}
+          isArticleSaved={isArticleSaved}
+          setIsArticleSaved={setSavedAndNotify}
+        />
+      </div>
 
       {/* Same modal as list-mode titleLink flow */}
       <RedirectionNotificationModal
