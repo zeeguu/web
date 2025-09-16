@@ -1,4 +1,4 @@
-import { useState } from "react";
+import {useEffect, useState} from "react";
 import { getPixelsFromScrollBarToEnd } from "../utils/misc/getScrollLocation";
 import { setTitle } from "../assorted/setTitle";
 import useShadowRef from "./useShadowRef";
@@ -35,6 +35,39 @@ export default function useArticlePagination(
     setIsWaitingForNewArticles(false);
   }
 
+  function loadArticles() {
+        setIsWaitingForNewArticles(true);
+        setTitle("Getting more articles...");
+
+        let newCurrentPage = currentPageRef.current + 1;
+        let articleListCopy = [...articleListRef.current];
+
+        getNewArticlesForPage(newCurrentPage, (articles) => {
+            insertNewArticlesIntoArticleList(
+                articles,
+                newCurrentPage,
+                articleListCopy,
+            );
+            setTitle(pageTitle);
+        });
+    }
+
+    useEffect(() => {
+        if (!articleListRef.current || articleListRef.current.length === 0) {
+            loadArticles();
+        }
+    }, []);
+
+    function loadNextPage() {
+        if (!articleListRef.current || isWaitingForNewArticlesRef.current) return;
+
+        if (!noMoreArticlesToShowRef.current
+        ) {
+          loadArticles();
+          return true;
+      }
+    }
+
   function handleScroll() {
     if (!articleListRef.current) return;
 
@@ -49,22 +82,8 @@ export default function useArticlePagination(
       !noMoreArticlesToShowRef.current &&
       weHaveHadAtLeastOneRenderingOfArticles
     ) {
-      setIsWaitingForNewArticles(true);
-      setTitle("Getting more articles...");
-
-      let newCurrentPage = currentPageRef.current + 1;
-      let articleListCopy = [...articleListRef.current];
-
-      getNewArticlesForPage(newCurrentPage, (articles) => {
-        insertNewArticlesIntoArticleList(
-          articles,
-          newCurrentPage,
-          articleListCopy,
-        );
-        setTitle(pageTitle);
-      });
-
-      return true;
+        loadArticles();
+        return true;
     }
   }
 
@@ -75,9 +94,10 @@ export default function useArticlePagination(
   }
 
   return [
-    handleScroll,
-    isWaitingForNewArticles,
-    noMoreArticlesToShow,
-    resetPagination,
+      handleScroll,
+      isWaitingForNewArticles,
+      noMoreArticlesToShow,
+      resetPagination,
+      loadNextPage,
   ];
 }

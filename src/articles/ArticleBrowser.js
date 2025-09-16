@@ -19,7 +19,7 @@ export default function ArticleBrowser({ content, searchQuery, searchPublishPrio
   const isSwipeView = location.pathname.includes("swiper");
 
   // UI and logiv state
-  const [articlesAndVideosList, setArticlesAndVideosList] = useState();
+  const [articlesAndVideosList, setArticlesAndVideosList] = useState([]);
   const [originalList, setOriginalList] = useState(null);
   const [searchError, setSearchError] = useState(false);
   const [reloadingSearchArticles, setReloadingSearchArticles] = useState(false);
@@ -81,11 +81,17 @@ export default function ArticleBrowser({ content, searchQuery, searchPublishPrio
     }
   }
 
-  const [handleScroll, isWaitingForNewArticles, noMoreArticlesToShow, resetPagination] = useArticlePagination(
-    articlesAndVideosList,
-    updateOnPagination,
-    searchQuery ? "Article Search" : strings.titleHome,
-    getNewArticlesForPage,
+  const [
+      handleScroll,
+      isWaitingForNewArticles,
+      noMoreArticlesToShow,
+      resetPagination,
+      loadNextPage,
+  ] = useArticlePagination(
+      articlesAndVideosList,
+      updateOnPagination,
+      searchQuery ? "Article Search" : strings.titleHome,
+      getNewArticlesForPage,
   );
 
   // UI functions
@@ -145,53 +151,46 @@ export default function ArticleBrowser({ content, searchQuery, searchPublishPrio
     LocalStorage.setDoNotShowRedirectionModal(doNotShowRedirectionModal_UserPreference);
   }, [doNotShowRedirectionModal_UserPreference]);
 
-  // initial load + reacting to priority changes
-  useEffect(() => {
-    resetPagination();
-    setSearchError(false);
+    useEffect(() => {
+        resetPagination();
+        setSearchError(false);
 
-    if (searchQuery) {
-      setTitle(strings.titleSearch + ` '${searchQuery}'`);
-      setReloadingSearchArticles(true);
-      api.search(
-        searchQuery,
-        searchPublishPriority,
-        searchDifficultyPriority,
-        (articles) => {
-          setArticlesAndVideosList(articles);
-          setOriginalList([...articles]);
-          setReloadingSearchArticles(false);
-          articles.some((e) => e.video) ? setAreVideosAvailable(true) : setAreVideosAvailable(false);
-        },
-        (error) => {
-          setArticlesAndVideosList([]);
-          setOriginalList([]);
-          setReloadingSearchArticles(false);
-          setSearchError(true);
-        },
-      );
-    } else {
-      setTitle(strings.titleHome);
-      api.getUserArticles((articles) => {
-        const visibleArticles = (articles || []).filter((a) => !a.hidden);
-        setArticlesAndVideosList(visibleArticles);
-        setOriginalList([...visibleArticles]);
-        setAreVideosAvailable(visibleArticles.some((e) => e.video));
-        // articles.some((e) => e.video) ? setAreVideosAvailable(true) : setAreVideosAvailable(false);
-      });
+        if (searchQuery) {
+            setTitle(strings.titleSearch + ` '${searchQuery}'`);
+            setReloadingSearchArticles(true);
+            api.search(
+                searchQuery,
+                searchPublishPriority,
+                searchDifficultyPriority,
+                (articles) => {
+                    updateOnPagination(articles);
+                    setReloadingSearchArticles(false);
+                    articles.some((e) => e.video)
+                        ? setAreVideosAvailable(true)
+                        : setAreVideosAvailable(false);
+                },
+                (error) => {
+                    setArticlesAndVideosList([]);
+                    setOriginalList([]);
+                    setReloadingSearchArticles(false);
+                    setSearchError(true);
+                },
+            );
+        } else {
+            setTitle(strings.titleHome);
+            loadNextPage(); // fetch first page using your hook
+        }
 
-      // attach scroll for (scroll list) home feed
-      if (!isSwipeView) {
-        window.addEventListener("scroll", handleScroll, true);
-        return () => {
-          window.removeEventListener("scroll", handleScroll, true);
-        };
-      }
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchPublishPriority, searchDifficultyPriority]);
+        if (!isSwipeView) {
+            window.addEventListener("scroll", handleScroll, true);
+            return () => {
+                window.removeEventListener("scroll", handleScroll, true);
+            };
+        }
+    }, [searchPublishPriority, searchDifficultyPriority]);
 
-  if (articlesAndVideosList == null) return <LoadingAnimation />;
+
+    if (articlesAndVideosList == null) return <LoadingAnimation />;
   if (searchError) return <b>Something went wrong. Please try again.</b>;
 
   return isSwipeView ? (
@@ -200,7 +199,10 @@ export default function ArticleBrowser({ content, searchQuery, searchPublishPrio
       onArticleClick={handleArticleClick}
       onArticleHidden={handleArticleHidden}
       onArticleSave={handleArticleSave}
-      // downstream UI needs
+      loadNextPage={loadNextPage}
+      isWaiting={isWaitingForNewArticles}
+      noMore={noMoreArticlesToShow}
+        // downstream UI needs
       hasExtension={isExtensionAvailable}
       doNotShowRedirectionModal_UserPreference={doNotShowRedirectionModal_UserPreference}
       setDoNotShowRedirectionModal_UserPreference={setDoNotShowRedirectionModal_UserPreference}
