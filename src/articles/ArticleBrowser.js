@@ -15,6 +15,9 @@ export default function ArticleBrowser({ content, searchQuery, searchPublishPrio
   const api = useContext(APIContext);
   const location = useLocation();
 
+  // Decide view based on path
+  const isSwipeView = location.pathname.includes("swiper");
+
   // UI and logiv state
   const [articlesAndVideosList, setArticlesAndVideosList] = useState();
   const [originalList, setOriginalList] = useState(null);
@@ -129,8 +132,12 @@ export default function ArticleBrowser({ content, searchQuery, searchPublishPrio
   };
 
   const handleArticleSave = (articleId, saved) => {
-    setArticlesAndVideosList(prev => prev?.map(e => (e.id === articleId ? { ...e, has_personal_copy: saved} : e)) ?? prev);
-    setOriginalList(prev => prev ? prev.map(e => (e.id === articleId ? { ...e, has_personal_copy: saved} : e)) : prev);
+    setArticlesAndVideosList(
+      (prev) => prev?.map((e) => (e.id === articleId ? { ...e, has_personal_copy: saved } : e)) ?? prev,
+    );
+    setOriginalList((prev) =>
+      prev ? prev.map((e) => (e.id === articleId ? { ...e, has_personal_copy: saved } : e)) : prev,
+    );
   };
 
   // persist user pref for redirection modal
@@ -173,20 +180,19 @@ export default function ArticleBrowser({ content, searchQuery, searchPublishPrio
         // articles.some((e) => e.video) ? setAreVideosAvailable(true) : setAreVideosAvailable(false);
       });
 
-      // attach scroll for home feed
-      window.addEventListener("scroll", handleScroll, true);
-      return () => {
-        window.removeEventListener("scroll", handleScroll, true);
-      };
+      // attach scroll for (scroll list) home feed
+      if (!isSwipeView) {
+        window.addEventListener("scroll", handleScroll, true);
+        return () => {
+          window.removeEventListener("scroll", handleScroll, true);
+        };
+      }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchPublishPriority, searchDifficultyPriority]);
 
   if (articlesAndVideosList == null) return <LoadingAnimation />;
   if (searchError) return <b>Something went wrong. Please try again.</b>;
-
-  // Decide view based on path
-  const isSwipeView = location.pathname.includes("swiper");
 
   return isSwipeView ? (
     <ArticleSwipeBrowser
