@@ -18,29 +18,25 @@ export default function useArticlePagination(
   const currentPageRef = useShadowRef(currentPage);
   const articleListRef = useShadowRef(articleList);
 
-  function insertNewArticlesIntoArticleList(
-    fetchedArticles,
-    newCurrentPage,
-    currentArticleList,
-  ) {
-    if (fetchedArticles.length === 0) {
-      setNoMoreArticlesToShow(true);
+    function insertNewArticlesIntoArticleList(fetchedArticles, newCurrentPage, currentArticleList) {
+        if (fetchedArticles.length === 0 && newCurrentPage > 1) {
+            setNoMoreArticlesToShow(true);
+        }
+        let existingArticlesId = currentArticleList.map((each) => each.id);
+        currentArticleList = currentArticleList.concat(
+            fetchedArticles.filter((each) => !existingArticlesId.includes(each.id)),
+        );
+        setArticleList(currentArticleList);
+        setCurrentPage(newCurrentPage);
+        setIsWaitingForNewArticles(false);
     }
-    let existingArticlesId = currentArticleList.map((each) => each.id);
-    currentArticleList = currentArticleList.concat(
-      fetchedArticles.filter((each) => !existingArticlesId.includes(each.id)),
-    );
-    setArticleList(currentArticleList);
-    setCurrentPage(newCurrentPage);
-    setIsWaitingForNewArticles(false);
-  }
 
   function loadArticles() {
-        setIsWaitingForNewArticles(true);
-        setTitle("Getting more articles...");
+      setIsWaitingForNewArticles(true);
+      setTitle("Getting more articles...");
 
-        let newCurrentPage = currentPageRef.current + 1;
-        let articleListCopy = [...articleListRef.current];
+      let newCurrentPage = currentPageRef.current + 1;
+      let articleListCopy = [...(articleListRef.current || [])];
 
         getNewArticlesForPage(newCurrentPage, (articles) => {
             insertNewArticlesIntoArticleList(

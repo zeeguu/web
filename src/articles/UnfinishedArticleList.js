@@ -8,30 +8,30 @@ export default function UnfinishedArticlesList({
   articleList,
   setArticleList,
 }) {
-  let api = useContext(APIContext);
+  const api = useContext(APIContext);
+  const [unfinishedArticleList, setUnfinishedArticleList] = useState([]);
 
-  const [unfineshedArticleList, setUnfineshedArticleList] = useState();
+    useEffect(() => {
+        let isMounted = true;
 
-  useEffect(() => {
-    api.getUnfinishedUserReadingSessions((articles) => {
-      setUnfineshedArticleList(articles);
-      let filterUnfinishedArticles = [...articleList];
-      for (let i = 0; i < articles.length; i++) {
-        filterUnfinishedArticles = filterUnfinishedArticles.filter(
-          (article) => article.id !== articles[i].id,
-        );
-      }
-      setArticleList(filterUnfinishedArticles);
-    });
-    // eslint-disable-next-line
-  }, []);
+        api.getUnfinishedUserReadingSessions((articles) => {
+            if (!isMounted) return;
 
-  if (
-    unfineshedArticleList === undefined ||
-    unfineshedArticleList.length === 0
-  ) {
-    return <></>;
-  }
+            setUnfinishedArticleList(articles);
+
+            // Remove unfinished articles from main list
+            const filteredList = articleList.filter(
+                (article) => !articles.some((a) => a.id === article.id)
+            );
+            setArticleList(filteredList);
+        });
+
+        return () => {
+            isMounted = false;
+        };
+    }, []);
+
+    if (unfinishedArticleList.length === 0) return null;
 
   return (
     <>
@@ -39,7 +39,7 @@ export default function UnfinishedArticlesList({
         <s.UnfishedArticleBoxTitle>
           Continue where you left off
         </s.UnfishedArticleBoxTitle>
-        {unfineshedArticleList.map((each, index) => (
+        {unfinishedArticleList.map((each, index) => (
           <UnfinishedArticlePreview
             key={each.id}
             article={each}

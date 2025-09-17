@@ -137,37 +137,43 @@ export default function ArticleBrowser({ content, searchQuery, searchPublishPrio
     });
   };
 
-  const handleArticleSave = (articleId, saved) => {
-    setArticlesAndVideosList(
-      (prev) => prev?.map((e) => (e.id === articleId ? { ...e, has_personal_copy: saved } : e)) ?? prev,
-    );
-    setOriginalList((prev) =>
-      prev ? prev.map((e) => (e.id === articleId ? { ...e, has_personal_copy: saved } : e)) : prev,
-    );
-  };
+    const handleArticleSave = (articleId, saved) => {
+        setArticlesAndVideosList(
+          (prev) => prev?.map((e) => (e.id === articleId ? { ...e, has_personal_copy: saved } : e)) ?? prev,
+        );
+        setOriginalList((prev) =>
+          prev ? prev.map((e) => (e.id === articleId ? { ...e, has_personal_copy: saved } : e)) : prev,
+        );
+      };
 
-  // persist user pref for redirection modal
-  useEffect(() => {
-    LocalStorage.setDoNotShowRedirectionModal(doNotShowRedirectionModal_UserPreference);
-  }, [doNotShowRedirectionModal_UserPreference]);
+      // persist user pref for redirection modal
+    useEffect(() => {
+        LocalStorage.setDoNotShowRedirectionModal(doNotShowRedirectionModal_UserPreference);
+        }, [doNotShowRedirectionModal_UserPreference]);
 
     useEffect(() => {
+        let isMounted = true;
+
+        // clear out old results
+        setArticlesAndVideosList([]);
+        setOriginalList([]);
         resetPagination();
         setSearchError(false);
 
         if (searchQuery) {
             setTitle(strings.titleSearch + ` '${searchQuery}'`);
             setReloadingSearchArticles(true);
+
             api.search(
                 searchQuery,
                 searchPublishPriority,
                 searchDifficultyPriority,
                 (articles) => {
-                    updateOnPagination(articles);
+                    // force array
+                    const arr = Array.isArray(articles) ? articles : articles?.results || [];
+                    updateOnPagination(arr);
                     setReloadingSearchArticles(false);
-                    articles.some((e) => e.video)
-                        ? setAreVideosAvailable(true)
-                        : setAreVideosAvailable(false);
+                    setAreVideosAvailable(arr.some((e) => e.video));
                 },
                 (error) => {
                     setArticlesAndVideosList([]);
@@ -178,20 +184,25 @@ export default function ArticleBrowser({ content, searchQuery, searchPublishPrio
             );
         } else {
             setTitle(strings.titleHome);
-            loadNextPage(); // fetch first page using your hook
+            loadNextPage(); // fetch first page
         }
 
         if (!isSwipeView) {
             window.addEventListener("scroll", handleScroll, true);
-            return () => {
-                window.removeEventListener("scroll", handleScroll, true);
-            };
         }
-    }, [searchPublishPriority, searchDifficultyPriority]);
+
+        return () => {
+            isMounted = false;
+            if (!isSwipeView) {
+                window.removeEventListener("scroll", handleScroll, true);
+            }
+        };
+    }, [searchQuery, searchPublishPriority, searchDifficultyPriority]);
+
 
 
     if (articlesAndVideosList == null) return <LoadingAnimation />;
-  if (searchError) return <b>Something went wrong. Please try again.</b>;
+    if (searchError) return <b>Something went wrong. Please try again.</b>;
 
   return isSwipeView ? (
     <ArticleSwipeBrowser

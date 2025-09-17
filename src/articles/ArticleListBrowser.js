@@ -39,7 +39,7 @@ export default function ArticleListBrowser({
   doNotShowRedirectionModal_UserPreference,
   setDoNotShowRedirectionModal_UserPreference
   }) {
-    if (!articles) {
+    if (isWaiting && articles.length === 0) {
       return <LoadingAnimation />;
     }
 
@@ -120,7 +120,7 @@ export default function ArticleListBrowser({
           )
         )}
 
-      {!reloading && articles.length === 0 && (
+      {!isWaiting && !reloading && articles.length === 0 && (
         <div style={{ textAlign: "center", marginTop: "1rem" }}>
           <p>No results were found for this query.</p>
         </div>
