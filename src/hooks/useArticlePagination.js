@@ -1,4 +1,4 @@
-import {useEffect, useState} from "react";
+import { useState} from "react";
 import { getPixelsFromScrollBarToEnd } from "../utils/misc/getScrollLocation";
 import { setTitle } from "../assorted/setTitle";
 import useShadowRef from "./useShadowRef";
@@ -8,6 +8,8 @@ export default function useArticlePagination(
   setArticleList,
   pageTitle,
   getNewArticlesForPage,
+  shouldShow,
+  skipShouldShow = false,
 ) {
   const [isWaitingForNewArticles, setIsWaitingForNewArticles] = useState(false);
   const [currentPage, setCurrentPage] = useState(0);
@@ -23,9 +25,16 @@ export default function useArticlePagination(
             setNoMoreArticlesToShow(true);
         }
         let existingArticlesId = currentArticleList.map((each) => each.id);
-        currentArticleList = currentArticleList.concat(
-            fetchedArticles.filter((each) => !existingArticlesId.includes(each.id)),
-        );
+        currentArticleList = currentArticleList
+            .concat(fetchedArticles.filter(a => !currentArticleList.some(existing => existing.id === a.id)))
+            .filter(a => !skipShouldShow && typeof shouldShow === "function" ? shouldShow(a) : true);
+
+        if (currentArticleList.length === 0 && newCurrentPage === 1) {
+            currentPageRef.current = newCurrentPage;
+            loadArticles();
+            return;
+        }
+
         setArticleList(currentArticleList);
         setCurrentPage(newCurrentPage);
         setIsWaitingForNewArticles(false);
@@ -36,23 +45,28 @@ export default function useArticlePagination(
       setTitle("Getting more articles...");
 
       let newCurrentPage = currentPageRef.current + 1;
+      console.log(newCurrentPage);
       let articleListCopy = [...(articleListRef.current || [])];
 
         getNewArticlesForPage(newCurrentPage, (articles) => {
+            let filteredArticles = (articles || []);
+            if (!skipShouldShow && typeof shouldShow === "function") {
+                filteredArticles = filteredArticles.filter(shouldShow);
+                if (filteredArticles.length === 0) {
+                    currentPageRef.current = newCurrentPage;
+                    loadArticles();
+                    return;
+                }
+            }
+
             insertNewArticlesIntoArticleList(
-                articles,
+                filteredArticles? filteredArticles : articles,
                 newCurrentPage,
                 articleListCopy,
             );
             setTitle(pageTitle);
         });
     }
-
-    useEffect(() => {
-        if (!articleListRef.current || articleListRef.current.length === 0) {
-            loadArticles();
-        }
-    }, []);
 
     function loadNextPage() {
         if (!articleListRef.current || isWaitingForNewArticlesRef.current) return;

@@ -74,7 +74,7 @@ export default function CustomizeFeed({ currentMode = "list" }) {
           )}
           {currentMode === "list" && (
             <s.DropdownItem
-              onClick={() => handleItemClick("/swiper")}
+              onClick={() => handleItemClick("/articles/swiper")}
             >
               <SwipeIcon style={{ fontSize: "1.2em", marginRight: "0.5rem" }} />
               Swipe Mode
