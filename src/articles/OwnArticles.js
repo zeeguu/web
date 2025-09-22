@@ -12,8 +12,8 @@ import useArticlePagination from "../hooks/useArticlePagination";
 
 export default function OwnArticles() {
   const api = useContext(APIContext);
-  const [articleList, setArticleList] = useState(null);
-  const [originalList, setOriginalList] = useState(null);
+  const [articleList, setArticleList] = useState([]);
+  const [originalList, setOriginalList] = useState([]);
 
   function updateOnPagination(newUpdatedList) {
     setArticleList(newUpdatedList);
@@ -36,6 +36,8 @@ export default function OwnArticles() {
     (pageNumber, handleArticleInsertion) => {
       api.getSavedUserArticles(pageNumber, handleArticleInsertion);
     },
+      { skipShouldShow: true }
+
   );
 
   useEffect(() => {

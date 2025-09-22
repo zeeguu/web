@@ -14,10 +14,9 @@ import ArticlePreviewSwipe from "./ArticlePreviewSwipe";
 
 export default function ArticlePreview({
   article,
-  isListView,
+  isListView = true,
   dontShowPublishingTime,
   dontShowSourceIcon,
-  showArticleCompletion,
   hasExtension,
   doNotShowRedirectionModal_UserPreference,
   setDoNotShowRedirectionModal_UserPreference,
@@ -36,10 +35,14 @@ export default function ArticlePreview({
   const [isAnimatingOut, setIsAnimatingOut] = useState(false);
 
   useEffect(() => {
-    if ((article.summary || article.title) && !isTokenizing && !interactiveSummary && !interactiveTitle) {
+      let isMounted = true;
+
+      if ((article.summary || article.title) && !isTokenizing && !interactiveSummary && !interactiveTitle) {
       setIsTokenizing(true);
       api.getArticleSummaryInfo(article.id, (summaryData) => {
-        // Create interactive summary
+          if (!isMounted) return;
+
+          // Create interactive summary
         if (summaryData.tokenized_summary) {
           const interactive = new InteractiveText(
             summaryData.tokenized_summary.tokens,
@@ -73,6 +76,9 @@ export default function ArticlePreview({
         setIsTokenizing(false);
       });
     }
+    return () => {
+          isMounted = false;
+    };
   }, [
     article.summary,
     article.title,
@@ -100,20 +106,6 @@ export default function ArticlePreview({
   function handleOpenRedirectionModal() {
     setIsRedirectionModaOpen(true);
   }
-
-  // function handleHideArticleInListMode() {
-  //   setIsAnimatingOut(true);
-  //   api.hideArticle(article.id, () => {
-  //     // Delay the actual hiding to allow animation to complete
-  //     setTimeout(() => {
-  //       setIsHidden(true);
-  //         if (onArticleHidden) {
-  //             onArticleHidden(article.id);
-  //         }
-  //     }, 300); // Match animation duration
-  //       toast("Article hidden from your feed!");
-  //   });
-  // }
 
   // changed to this --> we should discuss
   function handleHideArticleInListMode() {

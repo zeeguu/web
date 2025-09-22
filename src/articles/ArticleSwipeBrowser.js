@@ -93,7 +93,6 @@ export default function ArticleSwipeBrowser({
   };
 
   const handleSave = () => {
-    // onArticleSave?.(currentArticle.id);
     const root = hiddenSaveRef.current;
     if (!root) return;
     const clickable = root.querySelector("button, a");
