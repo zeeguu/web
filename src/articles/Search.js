@@ -2,17 +2,19 @@ import { useState } from "react";
 import * as s from "./Search.sc";
 import useQuery from "../hooks/useQuery";
 import SubscribeSearchButton from "./SubscribeSearchButton";
-import ArticleListBrowser from "./ArticleListBrowser";
+import ArticleBrowser from "./ArticleBrowser";
 import CustomizeSearchToolbar from "./CustomizeSearchToolbar";
 
-export default function Search() {
+export default function Search( {hasExtension, isChrome}) {
   const searchQuery = useQuery().get("search");
   const [searchPublishPriority, setSearchPublishPriority] = useState(false);
   const [searchDifficultyPriority, setSearchDifficultyPriority] =
     useState(true);
 
   return (
-    <ArticleListBrowser
+    <ArticleBrowser
+      hasExtension={hasExtension}
+      isChrome={isChrome}
       searchPublishPriority={searchPublishPriority}
       searchDifficultyPriority={searchDifficultyPriority}
       searchQuery={searchQuery}

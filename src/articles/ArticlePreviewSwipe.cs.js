@@ -54,21 +54,6 @@ export const ReadTimeWrapper = styled.div`
   }
 `;
 
-export const LangTag = styled.div`
-  position: absolute;
-  top: 12px;
-  right: 12px;
-  background: ${white};
-  padding: 4px 10px;
-  border-radius: 12px;
-  font-size: 0.875rem;
-  font-weight: bold;
-  color: ${zeeguuDarkOrange};
-  display: flex;
-  align-items: center;
-  gap: 4px;
-`;
-
 export const Content = styled.div`
   padding: 1.5rem;
   display: flex;

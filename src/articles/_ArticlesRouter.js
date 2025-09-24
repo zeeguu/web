@@ -84,9 +84,13 @@ export default function ArticlesRouter({ hasExtension, isChrome }) {
 
               <PrivateRoute path="/articles/mySearches" component={MySearches} />
 
-              <PrivateRoute path="/search" component={Search} />
+              <PrivateRoute path="/search">
+                  <Search
+                      hasExtension={hasExtension}
+                      isChrome={isChrome}
+                  />
+              </PrivateRoute>
         </Switch>
-
       </s.NarrowColumn>
     </>
   );

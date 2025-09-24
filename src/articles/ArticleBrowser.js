@@ -1,5 +1,4 @@
 import React, { useContext, useEffect, useState } from "react";
-import {useLocation} from "react-router-dom";
 import { APIContext } from "../contexts/APIContext";
 import useArticlePagination from "../hooks/useArticlePagination";
 import strings from "../i18n/definitions";
@@ -9,19 +8,23 @@ import ArticleListBrowser from "./ArticleListBrowser";
 import ArticleSwipeBrowser from "./ArticleSwipeBrowser";
 import LocalStorage from "../assorted/LocalStorage";
 import useExtensionCommunication from "../hooks/useExtensionCommunication";
+import {setTitle} from "../assorted/setTitle";
 
-export default function ArticleBrowser({ articlesAndVideosList,
-                                           setArticlesAndVideosList,
-                                           originalList,
-                                           setOriginalList,
-                                           isSwipeView = false,
-                                           content,
-                                           searchQuery,
-                                           searchPublishPriority,
-                                           searchDifficultyPriority }) {
+export default function ArticleBrowser({
+    articlesAndVideosList = [],
+    setArticlesAndVideosList  = () => {},
+    originalList = [],
+    setOriginalList = ([]) => {},
+    isSwipeView = false,
+    content,
+    searchQuery,
+    searchPublishPriority,
+    searchDifficultyPriority })
+{
   const api = useContext(APIContext);
 
   // UI and logic state
+  const [searchResultArticleList, setSearchResultArticleList] = useState([])
   const [searchError, setSearchError] = useState(false);
   const [reloadingSearchArticles, setReloadingSearchArticles] = useState(false);
 
@@ -93,7 +96,7 @@ export default function ArticleBrowser({ articlesAndVideosList,
       resetPagination,
       loadNextPage,
   ] = useArticlePagination(
-      articlesAndVideosList,
+      searchQuery ? searchResultArticleList : articlesAndVideosList,
       updateOnPagination,
       searchQuery ? "Article Search" : strings.titleHome,
       getNewArticlesForPage,
@@ -176,15 +179,37 @@ export default function ArticleBrowser({ articlesAndVideosList,
     useEffect(() => {
         if (!searchQuery) return;
 
-        resetPagination();
-        setArticlesAndVideosList([]);
+        let isMounted = true;
 
-        getNewArticlesForPage(1, (articles) => {
-            const arr = Array.isArray(articles) ? articles : articles?.results || [];
-            setArticlesAndVideosList(arr);
-            setAreVideosAvailable(arr.some((e) => e.video));
-        });
-    }, [searchQuery]);
+        setTitle(strings.titleSearch + ` '${searchQuery}'`);
+        setReloadingSearchArticles(true);
+        setSearchError(false);
+        setSearchResultArticleList([]);
+
+        api.search(
+            searchQuery,
+            searchPublishPriorityRef.current,
+            searchDifficultyPriorityRef.current,
+            (articles) => {
+                if (!isMounted) return;
+                setSearchResultArticleList(articles);
+                setAreVideosAvailable(articles.some((e) => e.video));
+                setReloadingSearchArticles(false);
+            },
+            (error) => {
+                if (!isMounted) return;
+
+                setSearchResultArticleList([]);
+                setReloadingSearchArticles(false);
+                setSearchError(true);
+            }
+        );
+
+        return () => {
+            isMounted = false;
+        };
+    }, [searchQuery, searchPublishPriority, searchDifficultyPriority]);
+
 
     if (articlesAndVideosList == null) return <LoadingAnimation />;
     if (searchError) return <b>Something went wrong. Please try again.</b>;
@@ -207,7 +232,7 @@ export default function ArticleBrowser({ articlesAndVideosList,
     <ArticleListBrowser
       content={content}
       searchQuery={searchQuery}
-      articles={articlesAndVideosList}
+      articles={searchQuery ? searchResultArticleList : articlesAndVideosList}
       reloading={reloadingSearchArticles}
       isWaiting={isWaitingForNewArticles}
       noMore={noMoreArticlesToShow}

@@ -19,8 +19,8 @@ import CustomizeFeed from "./CustomizeFeed";
 
 export default function ArticleListBrowser({ 
   // from ArticleBrowser
-  content, 
-  searchQuery, 
+  content,
+  searchQuery,
   articles, 
   reloading,
   isWaiting,
@@ -83,7 +83,7 @@ export default function ArticleListBrowser({
 
       {searchQuery && (
         <s.SearchHolder>
-          <SearchField query={searchQuery} />
+            <SearchField query={searchQuery} />
         </s.SearchHolder>
       )}
 
