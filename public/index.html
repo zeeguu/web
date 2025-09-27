@@ -69,6 +69,12 @@ To create a production bundle, use `npm run build` or `yarn build`.
     }
 
     if ("serviceWorker" in navigator) {
+        // Handle PWA updates - reload when service worker takes control
+        navigator.serviceWorker.addEventListener('controllerchange', () => {
+            console.log('Service worker updated, reloading page...');
+            window.location.reload();
+        });
+
         navigator.serviceWorker
             .register("/service-worker.js")
             .then((registration) => {
