@@ -427,7 +427,7 @@ let strings = new LocalizedStrings(
         "Translations are grayed out because Zeeguu thinks they are not suitable for the exercises. Star them if you disagree.",
       theWordsYouTranslate: "The words you translate in the article will appear here for review",
       backToArticle: "Back to Article",
-      toPracticeWords: "Practice Words",
+      toPracticeWords: "Practice These Words",
 
       //EmptyArticles
       noArticles:
