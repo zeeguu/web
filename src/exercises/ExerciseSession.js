@@ -163,7 +163,7 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
       // TODO: Mircea: Consider creating an endpoint that merges these two
       // calls so we only send a single call
       api.getArticleInfo(articleID, (articleInfo) => {
-        api.bookmarksToStudyForArticle(articleID, true, (bookmarks) => {
+        api.wordsToStudyForArticle(articleID, true, (bookmarks) => {
           hideExerciseCounter(); // for article bookmarks we do not show the counter
 
           setArticleTitle(articleInfo.title);
