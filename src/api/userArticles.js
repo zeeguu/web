@@ -10,7 +10,8 @@ import qs from "qs";
  * @param {Function} callback - Function to call with the articles
  * @param {Object} options - Optional parameters
  * @param {boolean} options.excludeSaved - If true, exclude articles the user has saved
- * @param {boolean} options.excludeHidden - If true, exclude articles the user has hidden
+ *
+ * Note: Hidden articles are always excluded from recommendations.
  *
  * Usage examples:
  *   // Get all recommended articles (backward compatible)
@@ -18,21 +19,12 @@ import qs from "qs";
  *
  *   // Exclude saved articles
  *   api.getUserArticles(callback, { excludeSaved: true });
- *
- *   // Exclude hidden articles
- *   api.getUserArticles(callback, { excludeHidden: true });
- *
- *   // Exclude both saved and hidden articles
- *   api.getUserArticles(callback, { excludeSaved: true, excludeHidden: true });
  */
 Zeeguu_API.prototype.getUserArticles = function (callback, options = {}) {
   // Build query string for optional exclusion parameters
   const params = [];
   if (options.excludeSaved) {
     params.push("exclude_saved=true");
-  }
-  if (options.excludeHidden) {
-    params.push("exclude_hidden=true");
   }
   const queryString = params.length > 0 ? "?" + params.join("&") : "";
 
@@ -57,7 +49,8 @@ Zeeguu_API.prototype.getUserArticles = function (callback, options = {}) {
  * @param {Function} callback - Function to call with the articles
  * @param {Object} options - Optional parameters
  * @param {boolean} options.excludeSaved - If true, exclude articles the user has saved
- * @param {boolean} options.excludeHidden - If true, exclude articles the user has hidden
+ *
+ * Note: Hidden articles are always excluded from recommendations.
  *
  * Usage examples:
  *   // Get 20 articles from page 1 without exclusions (backward compatible)
@@ -65,21 +58,12 @@ Zeeguu_API.prototype.getUserArticles = function (callback, options = {}) {
  *
  *   // Get 20 articles from page 2, excluding saved articles
  *   api.getMoreUserArticles(20, 2, callback, { excludeSaved: true });
- *
- *   // Get 10 articles from page 0, excluding hidden articles
- *   api.getMoreUserArticles(10, 0, callback, { excludeHidden: true });
- *
- *   // Get 15 articles from page 3, excluding both saved and hidden
- *   api.getMoreUserArticles(15, 3, callback, { excludeSaved: true, excludeHidden: true });
  */
 Zeeguu_API.prototype.getMoreUserArticles = function (count, page, callback, options = {}) {
   // Build query string for optional exclusion parameters
   const params = [];
   if (options.excludeSaved) {
     params.push("exclude_saved=true");
-  }
-  if (options.excludeHidden) {
-    params.push("exclude_hidden=true");
   }
   const queryString = params.length > 0 ? "?" + params.join("&") : "";
 
