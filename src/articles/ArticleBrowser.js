@@ -73,7 +73,7 @@ export default function ArticleBrowser({
         },
       );
     } else {
-      api.getMoreUserArticles(20, pageNumber, handleArticleInsertion);
+      api.getMoreUserArticles(20, pageNumber, handleArticleInsertion, { excludeSaved: true });
     }
   }
 

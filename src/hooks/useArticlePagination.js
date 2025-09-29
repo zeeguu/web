@@ -24,7 +24,7 @@ export default function useArticlePagination(
         if (fetchedArticles.length === 0 && newCurrentPage > 1) {
             setNoMoreArticlesToShow(true);
         }
-        let existingArticlesId = currentArticleList.map((each) => each.id);
+
         currentArticleList = currentArticleList
             .concat(fetchedArticles.filter(a => !currentArticleList.some(existing => existing.id === a.id)))
             .filter(a => !skipShouldShow && typeof shouldShow === "function" ? shouldShow(a) : true);
@@ -49,18 +49,10 @@ export default function useArticlePagination(
       let articleListCopy = [...(articleListRef.current || [])];
 
         getNewArticlesForPage(newCurrentPage, (articles) => {
-            let filteredArticles = (articles || []);
-            if (!skipShouldShow && typeof shouldShow === "function") {
-                filteredArticles = filteredArticles.filter(shouldShow);
-                if (filteredArticles.length === 0) {
-                    currentPageRef.current = newCurrentPage;
-                    loadArticles();
-                    return;
-                }
-            }
+            let fetchedArticles = (articles || []);
 
             insertNewArticlesIntoArticleList(
-                filteredArticles? filteredArticles : articles,
+                fetchedArticles,
                 newCurrentPage,
                 articleListCopy,
             );
