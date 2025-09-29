@@ -1,1 +1,1 @@
-export const PAGES_WITHOUT_BOTTOM_NAV = ["/exercises", "/read"];
+export const PAGES_WITHOUT_BOTTOM_NAV = ["/read"];

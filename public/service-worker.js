@@ -24,6 +24,11 @@ self.addEventListener("message", async (event) => {
     sessionId = event.data.sessionId;
     console.log("Session ID updated in service worker: asd", sessionId);
   }
+
+  // Handle PWA update requests
+  if (event.data && event.data.type === 'SKIP_WAITING') {
+    self.skipWaiting();
+  }
 });
 
 self.addEventListener("periodicsync", (event) => {

@@ -8,7 +8,7 @@ const ExercisesColumn = styled.div`
   padding-top: 2rem;
   display: flex;
   flex-direction: column;
-  height: 95%;
+  height: 100%;
   @media (max-width: 700px) {
     padding-top: 0.5rem;
   }
@@ -37,6 +37,7 @@ const ExForm = styled.div`
   margin: 0 auto;
   background-color: rgba(241, 240, 240, 0.274);
   min-height: 500px;
+  flex: 1;
   padding-bottom: 1rem;
 
   box-sizing: border-box; // to ensure that padding does not expand width!

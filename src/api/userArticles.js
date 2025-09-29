@@ -4,8 +4,31 @@ import qs from "qs";
 // articles
 // articles
 
-Zeeguu_API.prototype.getUserArticles = function (callback) {
-  this._getJSON("user_articles/recommended", (articles) => {
+/**
+ * Get recommended articles for the user
+ *
+ * @param {Function} callback - Function to call with the articles
+ * @param {Object} options - Optional parameters
+ * @param {boolean} options.excludeSaved - If true, exclude articles the user has saved
+ *
+ * Note: Hidden articles are always excluded from recommendations.
+ *
+ * Usage examples:
+ *   // Get all recommended articles (backward compatible)
+ *   api.getUserArticles(callback);
+ *
+ *   // Exclude saved articles
+ *   api.getUserArticles(callback, { excludeSaved: true });
+ */
+Zeeguu_API.prototype.getUserArticles = function (callback, options = {}) {
+  // Build query string for optional exclusion parameters
+  const params = [];
+  if (options.excludeSaved) {
+    params.push("exclude_saved=true");
+  }
+  const queryString = params.length > 0 ? "?" + params.join("&") : "";
+
+  this._getJSON("user_articles/recommended" + queryString, (articles) => {
     // sometimes we get duplicates from the server
     // deduplicate them here
     // fast deduplication cf. https://stackoverflow.com/a/64791605/1200070
@@ -17,9 +40,35 @@ Zeeguu_API.prototype.getUserArticles = function (callback) {
     callback(deduplicated);
   });
 };
-Zeeguu_API.prototype.getMoreUserArticles = function (count, page, callback) {
+
+/**
+ * Get more recommended articles with pagination
+ *
+ * @param {number} count - Number of articles to retrieve
+ * @param {number} page - Page number (for pagination)
+ * @param {Function} callback - Function to call with the articles
+ * @param {Object} options - Optional parameters
+ * @param {boolean} options.excludeSaved - If true, exclude articles the user has saved
+ *
+ * Note: Hidden articles are always excluded from recommendations.
+ *
+ * Usage examples:
+ *   // Get 20 articles from page 1 without exclusions (backward compatible)
+ *   api.getMoreUserArticles(20, 1, callback);
+ *
+ *   // Get 20 articles from page 2, excluding saved articles
+ *   api.getMoreUserArticles(20, 2, callback, { excludeSaved: true });
+ */
+Zeeguu_API.prototype.getMoreUserArticles = function (count, page, callback, options = {}) {
+  // Build query string for optional exclusion parameters
+  const params = [];
+  if (options.excludeSaved) {
+    params.push("exclude_saved=true");
+  }
+  const queryString = params.length > 0 ? "?" + params.join("&") : "";
+
   this._getJSON(
-    "user_articles/recommended/" + count + "/" + page,
+    "user_articles/recommended/" + count + "/" + page + queryString,
     (articles) => {
       // sometimes we get duplicates from the server
       // deduplicate them here
