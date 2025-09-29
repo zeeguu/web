@@ -245,6 +245,7 @@ export default function ArticleBrowser({
       onArticleClick={handleArticleClick}
       onVideoClick={handleVideoClick}
       onArticleHidden={handleArticleHidden}
+      onArticleSave={handleArticleSave}
       // downstream UI needs
       hasExtension={isExtensionAvailable}
       doNotShowRedirectionModal_UserPreference={doNotShowRedirectionModal_UserPreference}
