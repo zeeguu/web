@@ -69,10 +69,11 @@ export default function ArticleBrowser({
         searchDifficultyPriorityRef.current,
         handleArticleInsertion,
         (error) => {
-            // currently no error handling
+            console.log(error.message);
         },
       );
     } else {
+
       api.getMoreUserArticles(20, pageNumber, handleArticleInsertion, { excludeSaved: true });
     }
   }
@@ -198,7 +199,7 @@ export default function ArticleBrowser({
             },
             (error) => {
                 if (!isMounted) return;
-
+                console.log(error.message);
                 setSearchResultArticleList([]);
                 setReloadingSearchArticles(false);
                 setSearchError(true);

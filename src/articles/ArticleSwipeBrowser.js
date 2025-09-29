@@ -82,14 +82,12 @@ export default function ArticleSwipeBrowser({
 
   const handleDismiss = () => {
     onArticleHidden?.(currentArticle.id);
-    increaseCurrentArticleIndex();
   };
 
   // notify parent to update its lists
   const setSavedAndNotify = (val) => {
       setIsArticleSaved(val);
       onArticleSave?.(currentArticle.id, val); // parent flips has_personal_copy in its arrays
-      increaseCurrentArticleIndex();
   };
 
   const handleSave = () => {
@@ -100,16 +98,6 @@ export default function ArticleSwipeBrowser({
       clickable.click();
     }
   };
-
-  const increaseCurrentArticleIndex = () => {
-      if (!isWaiting && currentArticleIndex >= articles.length - 1) {
-          loadNextPage();
-          console.log("loaded new page");
-          setCurrentArticleIndex(0);
-      } else {
-          setCurrentArticleIndex((prev) => prev + 1);
-      }
-    }
 
   return (
     <s.Container>
