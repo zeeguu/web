@@ -34,6 +34,7 @@ export default function ArticleListBrowser({
   onArticleClick,
   onVideoClick,
   onArticleHidden,
+  onArticleSave,
   // downstream UI needs
   hasExtension,
   doNotShowRedirectionModal_UserPreference,
@@ -113,6 +114,7 @@ export default function ArticleListBrowser({
                 setDoNotShowRedirectionModal_UserPreference
               }
               onArticleHidden={() => onArticleHidden(each.id)}
+              onArticleSave={onArticleSave}
               notifyArticleClick={() =>
                 onArticleClick(each.id, each.source_id, index)
               }

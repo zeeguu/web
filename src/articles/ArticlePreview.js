@@ -22,6 +22,7 @@ export default function ArticlePreview({
   setDoNotShowRedirectionModal_UserPreference,
   notifyArticleClick,
   onArticleHidden,
+  onArticleSave,
 }) {
   const api = useContext(APIContext);
   const [isRedirectionModalOpen, setIsRedirectionModaOpen] = useState(false);
@@ -35,14 +36,14 @@ export default function ArticlePreview({
   const [isAnimatingOut, setIsAnimatingOut] = useState(false);
 
   useEffect(() => {
-      let isMounted = true;
+    let isMounted = true;
 
-      if ((article.summary || article.title) && !isTokenizing && !interactiveSummary && !interactiveTitle) {
+    if ((article.summary || article.title) && !isTokenizing && !interactiveSummary && !interactiveTitle) {
       setIsTokenizing(true);
       api.getArticleSummaryInfo(article.id, (summaryData) => {
-          if (!isMounted) return;
+        if (!isMounted) return;
 
-          // Create interactive summary
+        // Create interactive summary
         if (summaryData.tokenized_summary) {
           const interactive = new InteractiveText(
             summaryData.tokenized_summary.tokens,
@@ -77,7 +78,7 @@ export default function ArticlePreview({
       });
     }
     return () => {
-          isMounted = false;
+      isMounted = false;
     };
   }, [
     article.summary,
@@ -95,6 +96,12 @@ export default function ArticlePreview({
     if (notifyArticleClick) {
       notifyArticleClick(article.source_id);
     }
+  };
+
+  const handleSetIsArticleSaved = (val) => {
+    setIsArticleSaved(val);
+    // notify parent so it can flip has_personal_copy and re-filter from recommendations
+    onArticleSave?.(article.id, val);
   };
 
   let topics = article.topics_list;
@@ -140,7 +147,7 @@ export default function ArticlePreview({
           open={isRedirectionModalOpen}
           handleCloseRedirectionModal={handleCloseRedirectionModal}
           setDoNotShowRedirectionModal_UserPreference={setDoNotShowRedirectionModal_UserPreference}
-          setIsArticleSaved={setIsArticleSaved}
+          setIsArticleSaved={handleSetIsArticleSaved}
         />
         <ActionButton
           onClick={() => {
@@ -192,7 +199,7 @@ export default function ArticlePreview({
       interactiveTitle={interactiveTitle}
       interactiveSummary={interactiveSummary}
       isArticleSaved={isArticleSaved}
-      setIsArticleSaved={setIsArticleSaved}
+      setIsArticleSaved={handleSetIsArticleSaved}
       dontShowPublishingTime={dontShowPublishingTime}
       dontShowSourceIcon={dontShowSourceIcon}
       titleLink={titleLink}
