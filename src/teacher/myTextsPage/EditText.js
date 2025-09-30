@@ -1,21 +1,13 @@
-import React, { useState, useContext, Fragment, useEffect } from "react";
+import React, { Fragment, useContext, useEffect, useState } from "react";
 import { useHistory, useParams } from "react-router-dom";
 import strings from "../../i18n/definitions";
 import { RoutingContext } from "../../contexts/RoutingContext";
 import EditTextInputFields from "./EditTextInputFields";
 import AddToCohortDialog from "./AddToCohortDialog";
 import DeleteTextWarning from "./DeleteTextWarning";
-import {
-  StyledButton,
-  TopButtonWrapper,
-  PopupButtonWrapper,
-} from "../styledComponents/TeacherButtons.sc";
+import { StyledButton, TopButtonWrapper } from "../styledComponents/TeacherButtons.sc";
 import * as s from "../../components/ColumnWidth.sc";
-import * as sc from "../../components/TopTabs.sc";
-import {
-  ShareWithClassesButton,
-  ViewAsStudentButton,
-} from "./TooltippedButtons";
+import { ShareWithClassesButton, ViewAsStudentButton } from "./TooltippedButtons";
 import { Error } from "../sharedComponents/Error";
 import ShareWithCollegueDialog from "./ShareWithColleagueDialog";
 import { APIContext } from "../../contexts/APIContext";
@@ -30,8 +22,7 @@ export default function EditText() {
   const [cohortList, setCohortList] = useState([]);
   const [showAddToCohortDialog, setShowAddToCohortDialog] = useState(false);
   const [showDeleteTextWarning, setShowDeleteTextWarning] = useState(false);
-  const [showShareWithColleagueDialog, setShowShareWithColleagueDialog] =
-    useState(false);
+  const [showShareWithColleagueDialog, setShowShareWithColleagueDialog] = useState(false);
 
   const [stateChanged, setStateChanged] = useState(false);
   const articleID = useParams().articleID;
@@ -123,7 +114,7 @@ export default function EditText() {
       null, // onError
       null, // original_cefr_level
       null, // img_url
-      articleState.article_content // HTML content
+      articleState.article_content, // HTML content
     );
   };
 
@@ -149,7 +140,7 @@ export default function EditText() {
           console.log(result);
         }
       },
-      articleState.article_content // HTML content
+      articleState.article_content, // HTML content
     );
   };
 
@@ -171,21 +162,14 @@ export default function EditText() {
   return (
     <Fragment>
       <s.NarrowColumn>
-        <TopButtonWrapper style={{ justifyContent: 'space-between' }}>
-          <div style={{ display: 'flex', gap: '0.5rem' }}>
+        <TopButtonWrapper style={{ justifyContent: "space-between" }}>
+          <div style={{ display: "flex", gap: "0.5rem" }}>
             {!isNew && (
-              <StyledButton
-                secondary
-                onClick={() => setShowDeleteTextWarning(true)}
-              >
+              <StyledButton secondary onClick={() => setShowDeleteTextWarning(true)}>
                 {strings.delete}
               </StyledButton>
             )}
-            <ViewAsStudentButton
-              articleID={articleID}
-              disabled={viewAsStudentAndShareDisabled}
-              isNew={isNew}
-            />
+            <ViewAsStudentButton articleID={articleID} disabled={viewAsStudentAndShareDisabled} isNew={isNew} />
             <StyledButton
               secondary
               onClick={() => setShowShareWithColleagueDialog(true)}
@@ -194,17 +178,13 @@ export default function EditText() {
               {strings.shareWithColleague}
             </StyledButton>
           </div>
-          <div style={{ display: 'flex', gap: '0.5rem' }}>
+          <div style={{ display: "flex", gap: "0.5rem" }}>
             {stateChanged && (
               <>
                 <StyledButton secondary onClick={handleCancel}>
                   {strings.cancel}
                 </StyledButton>
-                <StyledButton
-                  primary
-                  onClick={isNew ? uploadArticle : updateArticle}
-                  disabled={inputInvalid}
-                >
+                <StyledButton primary onClick={isNew ? uploadArticle : updateArticle} disabled={inputInvalid}>
                   {strings.save}
                 </StyledButton>
               </>
@@ -216,12 +196,27 @@ export default function EditText() {
             )}
           </div>
         </TopButtonWrapper>
-        <div style={{ marginTop: '1.5rem', marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '1rem', flexWrap: 'wrap', backgroundColor: '#f8f9fa', padding: '0.75rem', borderRadius: '5px' }}>
-          <span style={{ fontWeight: 'bold', whiteSpace: 'nowrap' }}>Shared With:</span>
+        <div
+          style={{
+            marginTop: "1.5rem",
+            marginBottom: "1rem",
+            display: "flex",
+            alignItems: "center",
+            gap: "1rem",
+            flexWrap: "wrap",
+            backgroundColor: "#f8f9fa",
+            padding: "0.75rem",
+            borderRadius: "5px",
+          }}
+        >
+          <span style={{ fontWeight: "bold", whiteSpace: "nowrap" }}>Share With:</span>
           {cohortList.map((cohort, index) => (
-            <span key={cohort} style={{ whiteSpace: 'nowrap', fontFamily: 'monospace', fontSize: '1.05em', letterSpacing: '-0.5px' }}>
+            <span
+              key={cohort}
+              style={{ whiteSpace: "nowrap", fontFamily: "monospace", fontSize: "1.05em", letterSpacing: "-0.5px" }}
+            >
               {cohort}
-              {index < cohortList.length - 1 ? ',' : ''}
+              {index < cohortList.length - 1 ? "," : ""}
             </span>
           ))}
           <div style={{ flexShrink: 0 }}>
@@ -240,7 +235,7 @@ export default function EditText() {
           handleChange={handleChange}
         />
         {inputInvalid && <Error message={strings.errorEmptyInputField} />}
-        <div style={{ height: '8em' }} />
+        <div style={{ height: "8em" }} />
       </s.NarrowColumn>
       {showAddToCohortDialog && (
         <AddToCohortDialog
@@ -256,10 +251,7 @@ export default function EditText() {
         />
       )}
       {showShareWithColleagueDialog && (
-        <ShareWithCollegueDialog
-          articleID={articleID}
-          setShowDialog={setShowShareWithColleagueDialog}
-        />
+        <ShareWithCollegueDialog articleID={articleID} setShowDialog={setShowShareWithColleagueDialog} />
       )}
     </Fragment>
   );
