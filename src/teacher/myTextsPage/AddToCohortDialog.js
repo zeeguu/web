@@ -54,17 +54,31 @@ export default function AddToCohortDialog({ setIsOpen, onCohortsUpdated }) {
   };
 
   const handleChange = (cohort_name) => {
+    const cohort = cohortsToChoose.find((c) => c.name === cohort_name);
+
     //adding a cohort to the list
     if (!chosenCohorts.includes(cohort_name)) {
       var temp = [...chosenCohorts, cohort_name];
       setChosenCohorts(temp);
+      if (cohort) {
+        addArticleToCohort(cohort.id);
+      }
+      if (onCohortsUpdated) {
+        onCohortsUpdated(temp);
+      }
     }
     //taking a cohort off the list
-    if (chosenCohorts.includes(cohort_name)) {
+    else if (chosenCohorts.includes(cohort_name)) {
       const temp = chosenCohorts.filter(
         (chosenCohort) => chosenCohort !== cohort_name,
       );
       setChosenCohorts(temp);
+      if (cohort) {
+        deleteArticleFromCohort(cohort.id);
+      }
+      if (onCohortsUpdated) {
+        onCohortsUpdated(temp);
+      }
     }
   };
 
@@ -114,8 +128,8 @@ export default function AddToCohortDialog({ setIsOpen, onCohortsUpdated }) {
           />
         ))}
       <PopupButtonWrapper>
-        <StyledButton primary onClick={addToCohorts}>
-          {strings.saveChanges}
+        <StyledButton secondary onClick={() => setIsOpen(false)}>
+          Close
         </StyledButton>
       </PopupButtonWrapper>
     </StyledDialog>

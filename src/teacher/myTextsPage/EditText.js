@@ -190,7 +190,7 @@ export default function EditText() {
               </>
             )}
             {!stateChanged && (
-              <StyledButton secondary onClick={handleBack}>
+              <StyledButton primary onClick={handleBack}>
                 Close
               </StyledButton>
             )}
