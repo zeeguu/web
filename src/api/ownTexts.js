@@ -21,7 +21,9 @@ Zeeguu_API.prototype.uploadOwnText = function (
   language,
   onSuccess,
   onError,
-  original_cefr_level = null
+  original_cefr_level = null,
+  img_url = null,
+  htmlContent = null
 ) {
   let payload = {
     title: title,
@@ -30,6 +32,12 @@ Zeeguu_API.prototype.uploadOwnText = function (
   };
   if (original_cefr_level) {
     payload.original_cefr_level = original_cefr_level;
+  }
+  if (img_url) {
+    payload.img_url = img_url;
+  }
+  if (htmlContent) {
+    payload.htmlContent = htmlContent;
   }
   this._post("upload_own_text", qs.stringify(payload), onSuccess, onError);
 };
@@ -45,13 +53,17 @@ Zeeguu_API.prototype.updateOwnText = function (
   title,
   content,
   language,
-  onSuccess
+  onSuccess,
+  htmlContent = null
 ) {
   let payload = {
     title: title,
     content: content,
     language: language,
   };
+  if (htmlContent) {
+    payload.htmlContent = htmlContent;
+  }
   this._post(`update_own_text/${id}`, qs.stringify(payload), onSuccess);
 };
 

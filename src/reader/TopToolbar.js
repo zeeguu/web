@@ -30,6 +30,8 @@ export default function TopToolbar({
   const saveArticleAndEdit = () => {
     api.getArticleInfo(articleID, (article) => {
       const originalCefrLevel = article.metrics?.cefr_level || null;
+      const imgUrl = article.img_url || null;
+      const htmlContent = article.htmlContent || article.content;
       api.uploadOwnText(
         article.title,
         article.content,
@@ -41,6 +43,8 @@ export default function TopToolbar({
         },
         null, // onError
         originalCefrLevel,
+        imgUrl,
+        htmlContent,
       );
     });
   };

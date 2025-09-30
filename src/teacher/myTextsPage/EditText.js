@@ -47,14 +47,15 @@ export default function EditText() {
     if (!isNew) {
       api.getArticleInfo(articleID, (article) => {
         setArticleState({
-          article_title: article.title,
-          article_content: article.content,
-          language_code: article.language,
+          article_title: article.title || "",
+          article_content: article.htmlContent || article.content || "",
+          language_code: article.language || "default",
         });
+        setStateChanged(false);
       });
     }
     //eslint-disable-next-line
-  }, []);
+  }, [articleID]);
 
   //As there are three paths to EditText, we are using RoutingContext to go back correctly on Cancel
   const { returnPath } = useContext(RoutingContext);
@@ -82,23 +83,46 @@ export default function EditText() {
   }
 
   const uploadArticle = () => {
+    // Strip HTML tags to get plain text for content field
+    const stripHtml = (html) => {
+      const tmp = document.createElement("DIV");
+      tmp.innerHTML = html;
+      return tmp.textContent || tmp.innerText || "";
+    };
+
+    console.log("Saving HTML content:", articleState.article_content);
+
     api.uploadOwnText(
       articleState.article_title,
-      articleState.article_content,
+      stripHtml(articleState.article_content), // Plain text
       articleState.language_code,
       (newID) => {
         console.log(`article created with id: ${newID}`);
         setStateChanged(false);
-        history.push("/teacher/texts");
+        // Navigate to the edit page for the newly created article
+        history.push(`/teacher/texts/editText/${newID}`);
       },
+      null, // onError
+      null, // original_cefr_level
+      null, // img_url
+      articleState.article_content // HTML content
     );
   };
 
   const updateArticle = () => {
+    // Strip HTML tags to get plain text for content field
+    const stripHtml = (html) => {
+      const tmp = document.createElement("DIV");
+      tmp.innerHTML = html;
+      return tmp.textContent || tmp.innerText || "";
+    };
+
+    console.log("Updating HTML content:", articleState.article_content);
+
     api.updateOwnText(
       articleID,
       articleState.article_title,
-      articleState.article_content,
+      stripHtml(articleState.article_content), // Plain text
       articleState.language_code,
       (result) => {
         if ((result = "OK")) {
@@ -108,6 +132,7 @@ export default function EditText() {
           console.log(result);
         }
       },
+      articleState.article_content // HTML content
     );
   };
 
@@ -146,9 +171,6 @@ export default function EditText() {
             disabled={viewAsStudentAndShareDisabled}
             isNew={isNew}
           />
-          <StyledButton secondary onClick={handleCancel}>
-            {strings.cancel}
-          </StyledButton>
         </TopButtonWrapper>
         <EditTextInputFields
           language_code={articleState.language_code}
@@ -158,33 +180,29 @@ export default function EditText() {
           handleChange={handleChange}
         />
         {inputInvalid && <Error message={strings.errorEmptyInputField} />}
-        <PopupButtonWrapper>
-          {isNew ? (
+        <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '2rem' }}>
+          {!isNew && (
+            <StyledButton
+              secondary
+              onClick={() => setShowDeleteTextWarning(true)}
+            >
+              {strings.delete}
+            </StyledButton>
+          )}
+          <div style={{ display: 'flex', gap: '0.5rem', marginLeft: 'auto' }}>
+            <StyledButton secondary onClick={handleCancel}>
+              {strings.cancel}
+            </StyledButton>
             <StyledButton
               primary
-              onClick={uploadArticle}
+              onClick={isNew ? uploadArticle : updateArticle}
               disabled={inputInvalid}
             >
-              {strings.saveText}
+              {strings.save}
             </StyledButton>
-          ) : (
-            <Fragment>
-              <StyledButton
-                secondary
-                onClick={() => setShowDeleteTextWarning(true)}
-              >
-                {strings.delete}
-              </StyledButton>
-              <StyledButton
-                primary
-                onClick={updateArticle}
-                disabled={inputInvalid}
-              >
-                {strings.saveChanges}
-              </StyledButton>
-            </Fragment>
-          )}
-        </PopupButtonWrapper>
+          </div>
+        </div>
+        <div style={{ height: '8em' }} />
       </s.NarrowColumn>
       {showAddToCohortDialog && (
         <AddToCohortDialog setIsOpen={setShowAddToCohortDialog} />

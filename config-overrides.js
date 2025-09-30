@@ -7,5 +7,15 @@ module.exports = override(
       displayName: true,
       fileName: true
     }
-  ])
+  ]),
+  (config) => {
+    // Fix for Tiptap ESM imports
+    config.module.rules.push({
+      test: /\.m?js$/,
+      resolve: {
+        fullySpecified: false,
+      },
+    });
+    return config;
+  }
 );

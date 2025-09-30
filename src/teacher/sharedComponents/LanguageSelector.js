@@ -1,7 +1,7 @@
 import { Fragment, useState, useEffect, useContext } from "react";
 import strings from "../../i18n/definitions";
 import { Listbox, ListboxOption } from "@reach/listbox";
-import * as s from "../styledComponents/LabeledInputFields.sc";
+import * as s from "../styledComponents/TitleInput.sc";
 import { APIContext } from "../../contexts/APIContext";
 
 export function LanguageSelector(props) {

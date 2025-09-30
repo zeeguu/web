@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import strings from "../../i18n/definitions";
 import { useHistory } from "react-router";
-import { LabeledTextField } from "../sharedComponents/LabeledInputFields";
+import { TitleInput } from "../sharedComponents/TitleInput";
 import { StyledDialog } from "../styledComponents/StyledDialog.sc";
 import * as s from "../styledComponents/AddURLDialog.sc";
 import {
@@ -63,14 +63,14 @@ export default function AddURLDialog({ setShowAddURLDialog }) {
       <s.StyledURLDialog>
         <h1 className="add-text-headline">{strings.addTextFromWebpage}</h1>
       </s.StyledURLDialog>
-      <LabeledTextField
+      <TitleInput
         value={url}
         onChange={handleChange}
         name="url_address"
         placeholder="eg. 'http://www.news.com/article/19358538'"
       >
         {strings.insertUrl}
-      </LabeledTextField>
+      </TitleInput>
       <p>
         <b>{strings.pleaseNote}</b> {strings.textNotExtracted} <br />{" "}
         {strings.editTheSavedText}

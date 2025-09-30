@@ -215,6 +215,23 @@ let MainText = styled.div`
   .textParagraph {
     margin-bottom: 1.2em;
   }
+
+  /* Consecutive blockquote fragments should merge visually */
+  > div:has(.textParagraph.blockquote) + div:has(.textParagraph.blockquote) {
+    .textParagraph.blockquote {
+      margin-top: 0;
+    }
+    .textParagraph.blockquote::before {
+      content: none;
+    }
+  }
+
+  /* Last blockquote in sequence gets bottom margin */
+  > div:has(.textParagraph.blockquote):not(:has(+ div .textParagraph.blockquote)) {
+    .textParagraph.blockquote {
+      margin-bottom: 1.5em;
+    }
+  }
 `;
 
 let _BottomButton = styled(BigSquareButton)`
