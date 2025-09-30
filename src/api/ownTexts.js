@@ -20,13 +20,17 @@ Zeeguu_API.prototype.uploadOwnText = function (
   content,
   language,
   onSuccess,
-  onError
+  onError,
+  original_cefr_level = null
 ) {
   let payload = {
     title: title,
     content: content,
     language: language,
   };
+  if (original_cefr_level) {
+    payload.original_cefr_level = original_cefr_level;
+  }
   this._post("upload_own_text", qs.stringify(payload), onSuccess, onError);
 };
 

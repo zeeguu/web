@@ -14,7 +14,8 @@ export default function AddToCohortDialog({ setIsOpen }) {
   const [cohortsToChoose, setCohortsToChoose] = useState([]);
   const [initiallyChosen, setInitiallyChosen] = useState([]);
   const [chosenCohorts, setChosenCohorts] = useState([]);
-  const articleID = useParams().articleID;
+  const params = useParams();
+  const articleID = params.articleID;
 
   useEffect(() => {
     api.getCohortsInfo((cohortsOfTeacher) => {
@@ -28,14 +29,13 @@ export default function AddToCohortDialog({ setIsOpen }) {
   }, []);
 
   const addToCohorts = () => {
-    cohortsToChoose.forEach((cohort) => {
-      if (isChosen(cohort) === true) {
+    chosenCohorts.forEach((cohortName) => {
+      const cohort = cohortsToChoose.find((c) => c.name === cohortName);
+      if (cohort) {
         addArticleToCohort(cohort.id);
-      } else if (initiallyChosen.includes(cohort.name)) {
-        deleteArticleFromCohort(cohort.id);
       }
-      setIsOpen(false);
     });
+    setIsOpen(false);
   };
 
   const handleChange = (cohort_name) => {
