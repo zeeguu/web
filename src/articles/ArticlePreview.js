@@ -74,9 +74,9 @@ export default function ArticlePreview({
           );
           setInteractiveTitle(titleInteractive);
         }
-        setIsTokenizing(false);
       });
-    }
+          setIsTokenizing(false);
+      }
     return () => {
       isMounted = false;
     };
