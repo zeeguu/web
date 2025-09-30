@@ -43,7 +43,7 @@ export default function ExcludedKeywords() {
   }
   return (
     <PreferencesPage layoutVariant={"minimalistic-top-aligned"}>
-      <BackArrow redirectLink={isFromArticles && "/articles"} />
+      <BackArrow redirectLink={isFromArticles && "/articles/swiper"} />
       <Header withoutLogo>
         <Heading>{strings.excludedKeywords}</Heading>
       </Header>

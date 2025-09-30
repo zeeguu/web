@@ -23,7 +23,7 @@ export default function ArticlesRouter({ hasExtension, isChrome }) {
     const location = useLocation();
 
     const [tabsAndLinks, setTabsAndLinks] = useState({
-    [strings.homeTab]: "/articles",
+    // [strings.homeTab]: "/articles",
     [strings.swipeTab]: "/articles/swiper",
     [strings.search]: "/articles/mySearches",
     [strings.saved]: "/articles/ownTexts",

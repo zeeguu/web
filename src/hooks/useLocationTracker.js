@@ -11,7 +11,7 @@ export default function useLocationTracker() {
     // Only track specific main pages
     const pathname = location.pathname;
     if (pathname && 
-        (pathname.startsWith('/articles') || 
+        (pathname.startsWith('/articles/swiper') ||
          pathname.startsWith('/exercises') || 
          pathname.startsWith('/daily-audio'))) {
       

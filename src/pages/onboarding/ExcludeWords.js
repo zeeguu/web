@@ -44,7 +44,7 @@ export default function ExcludeWords({ hasExtension }) {
   function getLinkToNextPage() {
     if (isSupportedBrowser() && hasExtension === false) {
       return "/install_extension";
-    } else return "/articles";
+    } else return "/articles/swiper";
   }
 
   function handleAddNewSearchFilter(e) {
