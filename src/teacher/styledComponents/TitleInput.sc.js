@@ -15,16 +15,17 @@ export const LabeledInputFields = styled.div`
     margin-left: 0.7em;
   }
 
-  .input-field {
-    border: solid 2px ${darkBlue};
-    border-radius: 5;
-    margin-top: 10;
-    margin-bottom: 10;
+  .input-field:not([role="listbox"]) {
+    border: solid 0.5px #e8e8e8 !important;
+    border-radius: 5px;
+    margin-top: 10px;
+    margin-bottom: 10px;
   }
 
   span#button--language_code {
     width: 95%;
-    border: none;
-    margin: 4px 0 5px;
+    border: solid 0.5px #e8e8e8 !important;
+    border-radius: 5px;
+    margin: 1rem 0;
   }
 `;

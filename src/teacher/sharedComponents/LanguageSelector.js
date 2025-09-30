@@ -17,11 +17,9 @@ export function LanguageSelector(props) {
   return (
     <Fragment>
       <s.LabeledInputFields>
-        <div className="input-container">
-          <label htmlFor="language_code"></label>
-          {props.children}
+        <div className="input-container" style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+          <label htmlFor="language_code">{props.children}</label>
           <Listbox
-            className="input-field"
             id="language_code"
             aria-labelledby="language_code"
             value={props.value}

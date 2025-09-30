@@ -127,13 +127,16 @@ export default function EditText() {
       (result) => {
         if ((result = "OK")) {
           setStateChanged(false);
-          history.push("/teacher/texts");
         } else {
           console.log(result);
         }
       },
       articleState.article_content // HTML content
     );
+  };
+
+  const handleBack = () => {
+    history.push("/teacher/texts");
   };
 
   const deleteText = () => {
@@ -150,10 +153,32 @@ export default function EditText() {
   return (
     <Fragment>
       <s.NarrowColumn>
-        <sc.TopTabs>
-          <h1>{strings.editText}</h1>
-        </sc.TopTabs>
-        <TopButtonWrapper>
+        <TopButtonWrapper style={{ justifyContent: 'space-between' }}>
+          <StyledButton secondary onClick={handleBack}>
+            Back
+          </StyledButton>
+          <div style={{ display: 'flex', gap: '0.5rem' }}>
+            <StyledButton secondary onClick={handleCancel}>
+              {strings.cancel}
+            </StyledButton>
+            <StyledButton
+              primary
+              onClick={isNew ? uploadArticle : updateArticle}
+              disabled={inputInvalid}
+            >
+              {strings.save}
+            </StyledButton>
+          </div>
+        </TopButtonWrapper>
+        <TopButtonWrapper style={{ justifyContent: 'flex-start', marginTop: '1rem' }}>
+          {!isNew && (
+            <StyledButton
+              secondary
+              onClick={() => setShowDeleteTextWarning(true)}
+            >
+              {strings.delete}
+            </StyledButton>
+          )}
           <ViewAsStudentButton
             articleID={articleID}
             disabled={viewAsStudentAndShareDisabled}
@@ -180,28 +205,6 @@ export default function EditText() {
           handleChange={handleChange}
         />
         {inputInvalid && <Error message={strings.errorEmptyInputField} />}
-        <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '2rem' }}>
-          {!isNew && (
-            <StyledButton
-              secondary
-              onClick={() => setShowDeleteTextWarning(true)}
-            >
-              {strings.delete}
-            </StyledButton>
-          )}
-          <div style={{ display: 'flex', gap: '0.5rem', marginLeft: 'auto' }}>
-            <StyledButton secondary onClick={handleCancel}>
-              {strings.cancel}
-            </StyledButton>
-            <StyledButton
-              primary
-              onClick={isNew ? uploadArticle : updateArticle}
-              disabled={inputInvalid}
-            >
-              {strings.save}
-            </StyledButton>
-          </div>
-        </div>
         <div style={{ height: '8em' }} />
       </s.NarrowColumn>
       {showAddToCohortDialog && (
