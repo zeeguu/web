@@ -19,6 +19,7 @@ export default function SaveArticleButton({
       }
     });
   }
+
   function removeArticle() {
     api.removePersonalCopy(article.id, (data) => {
       if (data === "OK") {
