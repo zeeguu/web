@@ -40,12 +40,12 @@ export const ShareWithClassesButton = ({ onclick, disabled, isNew }) => {
       {disabled ? (
         <StyledTooltip label={text}>
           <StyledButton secondary onClick={onclick} disabled={disabled}>
-            {strings.addToClass}
+            +
           </StyledButton>
         </StyledTooltip>
       ) : (
         <StyledButton secondary onClick={onclick} disabled={disabled}>
-          {strings.addToClass}
+          +
         </StyledButton>
       )}
     </Fragment>

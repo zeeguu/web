@@ -13,6 +13,11 @@ export default function EditTextInputFields({
 }) {
   return (
     <Fragment>
+      <div style={{ marginTop: "2.5rem" }}>
+        <LanguageSelector value={language_code} onChange={handleLanguageChange}>
+          {strings.defineLanguage}
+        </LanguageSelector>
+      </div>
       <TitleInput
         value={article_title}
         onChange={handleChange}
@@ -21,9 +26,7 @@ export default function EditTextInputFields({
       >
         {strings.clickToChangeTitle}
       </TitleInput>
-      <LanguageSelector value={language_code} onChange={handleLanguageChange}>
-        {strings.defineLanguage}
-      </LanguageSelector>
+
       <RichTextEditor
         value={article_content}
         onChange={handleChange}

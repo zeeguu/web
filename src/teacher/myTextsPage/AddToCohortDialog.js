@@ -9,7 +9,7 @@ import {
 } from "../styledComponents/TeacherButtons.sc";
 import { APIContext } from "../../contexts/APIContext";
 
-export default function AddToCohortDialog({ setIsOpen }) {
+export default function AddToCohortDialog({ setIsOpen, onCohortsUpdated }) {
   const api = useContext(APIContext);
   const [cohortsToChoose, setCohortsToChoose] = useState([]);
   const [initiallyChosen, setInitiallyChosen] = useState([]);
@@ -29,12 +29,27 @@ export default function AddToCohortDialog({ setIsOpen }) {
   }, []);
 
   const addToCohorts = () => {
+    // Remove cohorts that were initially chosen but are no longer selected
+    initiallyChosen.forEach((cohortName) => {
+      if (!chosenCohorts.includes(cohortName)) {
+        const cohort = cohortsToChoose.find((c) => c.name === cohortName);
+        if (cohort) {
+          deleteArticleFromCohort(cohort.id);
+        }
+      }
+    });
+
+    // Add newly selected cohorts
     chosenCohorts.forEach((cohortName) => {
       const cohort = cohortsToChoose.find((c) => c.name === cohortName);
-      if (cohort) {
+      if (cohort && !initiallyChosen.includes(cohortName)) {
         addArticleToCohort(cohort.id);
       }
     });
+
+    if (onCohortsUpdated) {
+      onCohortsUpdated(chosenCohorts);
+    }
     setIsOpen(false);
   };
 

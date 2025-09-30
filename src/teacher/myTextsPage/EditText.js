@@ -27,6 +27,7 @@ export default function EditText() {
     article_content: "",
     language_code: "default",
   });
+  const [cohortList, setCohortList] = useState([]);
   const [showAddToCohortDialog, setShowAddToCohortDialog] = useState(false);
   const [showDeleteTextWarning, setShowDeleteTextWarning] = useState(false);
   const [showShareWithColleagueDialog, setShowShareWithColleagueDialog] =
@@ -53,6 +54,9 @@ export default function EditText() {
         });
         setStateChanged(false);
       });
+      api.getCohortFromArticle(articleID, (cohorts) => {
+        setCohortList(cohorts || []);
+      });
     }
     //eslint-disable-next-line
   }, [articleID]);
@@ -62,7 +66,21 @@ export default function EditText() {
   const history = useHistory();
 
   const handleCancel = () => {
-    history.push(returnPath);
+    if (!isNew) {
+      api.getArticleInfo(articleID, (article) => {
+        setArticleState({
+          article_title: article.title || "",
+          article_content: article.htmlContent || article.content || "",
+          language_code: article.language || "default",
+        });
+        setStateChanged(false);
+      });
+      api.getCohortFromArticle(articleID, (cohorts) => {
+        setCohortList(cohorts || []);
+      });
+    } else {
+      history.push(returnPath);
+    }
   };
 
   const handleChange = (event) => {
@@ -154,49 +172,66 @@ export default function EditText() {
     <Fragment>
       <s.NarrowColumn>
         <TopButtonWrapper style={{ justifyContent: 'space-between' }}>
-          <StyledButton secondary onClick={handleBack}>
-            Back
-          </StyledButton>
           <div style={{ display: 'flex', gap: '0.5rem' }}>
-            <StyledButton secondary onClick={handleCancel}>
-              {strings.cancel}
-            </StyledButton>
-            <StyledButton
-              primary
-              onClick={isNew ? uploadArticle : updateArticle}
-              disabled={inputInvalid}
-            >
-              {strings.save}
-            </StyledButton>
-          </div>
-        </TopButtonWrapper>
-        <TopButtonWrapper style={{ justifyContent: 'flex-start', marginTop: '1rem' }}>
-          {!isNew && (
+            {!isNew && (
+              <StyledButton
+                secondary
+                onClick={() => setShowDeleteTextWarning(true)}
+              >
+                {strings.delete}
+              </StyledButton>
+            )}
+            <ViewAsStudentButton
+              articleID={articleID}
+              disabled={viewAsStudentAndShareDisabled}
+              isNew={isNew}
+            />
             <StyledButton
               secondary
-              onClick={() => setShowDeleteTextWarning(true)}
+              onClick={() => setShowShareWithColleagueDialog(true)}
+              disabled={viewAsStudentAndShareDisabled}
             >
-              {strings.delete}
+              {strings.shareWithColleague}
             </StyledButton>
-          )}
-          <ViewAsStudentButton
-            articleID={articleID}
-            disabled={viewAsStudentAndShareDisabled}
-            isNew={isNew}
-          />
-          <StyledButton
-            secondary
-            onClick={() => setShowShareWithColleagueDialog(true)}
-            disabled={viewAsStudentAndShareDisabled}
-          >
-            {strings.shareWithColleague}
-          </StyledButton>
-          <ShareWithClassesButton
-            onclick={() => setShowAddToCohortDialog(true)}
-            disabled={viewAsStudentAndShareDisabled}
-            isNew={isNew}
-          />
+          </div>
+          <div style={{ display: 'flex', gap: '0.5rem' }}>
+            {stateChanged && (
+              <>
+                <StyledButton secondary onClick={handleCancel}>
+                  {strings.cancel}
+                </StyledButton>
+                <StyledButton
+                  primary
+                  onClick={isNew ? uploadArticle : updateArticle}
+                  disabled={inputInvalid}
+                >
+                  {strings.save}
+                </StyledButton>
+              </>
+            )}
+            {!stateChanged && (
+              <StyledButton secondary onClick={handleBack}>
+                Close
+              </StyledButton>
+            )}
+          </div>
         </TopButtonWrapper>
+        <div style={{ marginTop: '1.5rem', marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '1rem', flexWrap: 'wrap', backgroundColor: '#f8f9fa', padding: '0.75rem', borderRadius: '5px' }}>
+          <span style={{ fontWeight: 'bold', whiteSpace: 'nowrap' }}>Shared With:</span>
+          {cohortList.map((cohort, index) => (
+            <span key={cohort} style={{ whiteSpace: 'nowrap', fontFamily: 'monospace', fontSize: '1.05em', letterSpacing: '-0.5px' }}>
+              {cohort}
+              {index < cohortList.length - 1 ? ',' : ''}
+            </span>
+          ))}
+          <div style={{ flexShrink: 0 }}>
+            <ShareWithClassesButton
+              onclick={() => setShowAddToCohortDialog(true)}
+              disabled={viewAsStudentAndShareDisabled}
+              isNew={isNew}
+            />
+          </div>
+        </div>
         <EditTextInputFields
           language_code={articleState.language_code}
           article_title={articleState.article_title}
@@ -208,7 +243,10 @@ export default function EditText() {
         <div style={{ height: '8em' }} />
       </s.NarrowColumn>
       {showAddToCohortDialog && (
-        <AddToCohortDialog setIsOpen={setShowAddToCohortDialog} />
+        <AddToCohortDialog
+          setIsOpen={setShowAddToCohortDialog}
+          onCohortsUpdated={(cohorts) => setCohortList(cohorts)}
+        />
       )}
       {showDeleteTextWarning && (
         <DeleteTextWarning

@@ -20,38 +20,36 @@ export default function TeacherTextPreview({ article }) {
       <st.StyledTeacherTextPreview>
         <div className="text-container">
           <div className="lhs">
-            <Link
-              to={`/teacher/texts/editText/${article.id}`}
-              onClick={() => setReturnPath("/teacher/texts")}
-            >
-              <s.Title>{shortenedTitle}</s.Title>
-            </Link>
-            <div className="added-container">
-              <br />
-              {cohortList.length === 0 ? (
-                <p className="not-added">{strings.shareTextWithClasses}</p>
-              ) : (
-                strings.addedTo
-              )}
-              <div className="classes-container">
-                {cohortList.map((cohort) => (
-                  <s.Topics key={cohort}>
-                    <span className="added-to">{cohort}</span>
-                  </s.Topics>
+            <div style={{ display: 'flex', alignItems: 'baseline', gap: '1rem', marginBottom: '0.75rem' }}>
+              <Link
+                to={`/teacher/texts/editText/${article.id}`}
+                onClick={() => setReturnPath("/teacher/texts")}
+              >
+                <s.Title>{shortenedTitle}</s.Title>
+              </Link>
+              <Link
+                to={`/teacher/texts/editText/${article.id}`}
+                onClick={() => setReturnPath("/teacher/texts")}
+              >
+                <StyledButton secondary className="edit-btn">
+                  Edit
+                </StyledButton>
+              </Link>
+            </div>
+            <div style={{ marginBottom: '0.75rem' }}>
+              <ArticleStatInfo cefr_level={cefr_level} articleInfo={article} />
+            </div>
+            {cohortList.length > 0 && (
+              <div className="added-container" style={{ marginTop: '0.5rem' }}>
+                <span style={{ fontWeight: 'bold' }}>Shared With: </span>
+                {cohortList.map((cohort, index) => (
+                  <span key={cohort}>
+                    {cohort}
+                    {index < cohortList.length - 1 ? ', ' : ''}
+                  </span>
                 ))}
               </div>
-            </div>
-          </div>
-          <div className="action-container">
-            <ArticleStatInfo cefr_level={cefr_level} articleInfo={article} />
-            <Link
-              to={`/teacher/texts/editText/${article.id}`}
-              onClick={() => setReturnPath("/teacher/texts")}
-            >
-              <StyledButton secondary className="edit-btn">
-                {strings.editText}
-              </StyledButton>
-            </Link>
+            )}
           </div>
         </div>
       </st.StyledTeacherTextPreview>

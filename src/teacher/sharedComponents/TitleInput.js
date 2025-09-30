@@ -11,7 +11,13 @@ export const TitleInput = (props) => {
           <TextField
             InputProps={{
               disableUnderline: true,
-              style: { fontWeight: 400, fontSize: '1.3rem', border: 'solid 0.5px #e8e8e8', borderRadius: '5px', padding: '8px' }
+              style: {
+                fontWeight: 400,
+                fontSize: "1.3rem",
+                border: "solid 0.3px #f0f0f0",
+                borderRadius: "5px",
+                padding: "4px",
+              },
             }}
             className="input-field"
             aria-label={props.name}
