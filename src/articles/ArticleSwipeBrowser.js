@@ -12,7 +12,7 @@ import RedirectionNotificationModal from "../components/redirect_notification/Re
 
 export default function ArticleSwipeBrowser({
     articles,
-    onArticleClick,
+    onArticleOpen,
     onArticleHidden,
     onArticleSave,
     loadNextPage,
@@ -59,7 +59,7 @@ export default function ArticleSwipeBrowser({
   if (!currentArticle) return <LoadingAnimation />;
 
   const handleOpen = () => {
-    onArticleClick?.(currentArticle.id, currentArticle.source_id, currentArticleIndex);
+    onArticleOpen?.(currentArticle.id, currentArticle.source_id, currentArticleIndex);
 
     const shouldOpenInZeeguu =
       currentArticle.video ||

@@ -45,7 +45,7 @@ export default function ArticleBrowser({
       shouldShow,
     );
 
-  const handleArticleClick = (articleId, sourceId, index) => {
+  const handleArticleOpen = (articleId, sourceId, index) => {
     const seenList = articlesAndVideosList.slice(0, index).map((each) => each.source_id);
     const seenListAsString = JSON.stringify(seenList, null, 0);
     api.logUserActivity(api.CLICKED_ARTICLE, articleId, "", seenListAsString, sourceId);
@@ -93,7 +93,7 @@ export default function ArticleBrowser({
   return isSwipeView ? (
     <ArticleSwipeBrowser
       articles={articlesAndVideosList}
-      onArticleClick={handleArticleClick}
+      onArticleOpen={handleArticleOpen}
       onArticleHidden={handleArticleHidden}
       onArticleSave={handleArticleSave}
       loadNextPage={loadNextPage}
@@ -110,7 +110,7 @@ export default function ArticleBrowser({
       isWaiting={isWaitingForNewArticles}
       noMore={noMoreArticlesToShow}
       resetPagination={resetPagination}
-      onArticleClick={handleArticleClick}
+      onArticleOpen={handleArticleOpen}
       onArticleHidden={handleArticleHidden}
       onArticleSave={handleArticleSave}
       hasExtension={isExtensionAvailable}
