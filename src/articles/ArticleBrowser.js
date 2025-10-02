@@ -11,10 +11,6 @@ import useExtensionCommunication from "../hooks/useExtensionCommunication";
 import {setTitle} from "../assorted/setTitle";
 
 export default function ArticleBrowser({
-    articlesAndVideosList = [],
-    setArticlesAndVideosList  = () => {},
-    originalList = [],
-    setOriginalList = ([]) => {},
     isSwipeView = false,
     content,
     searchQuery,
@@ -24,9 +20,11 @@ export default function ArticleBrowser({
   const api = useContext(APIContext);
 
   // UI and logic state
+  const [articlesAndVideosList, setArticlesAndVideosList] = useState([]);
   const [searchResultArticleList, setSearchResultArticleList] = useState([])
   const [searchError, setSearchError] = useState(false);
   const [reloadingSearchArticles, setReloadingSearchArticles] = useState(false);
+  const [originalList, setOriginalList] = useState(null);
 
   const [isExtensionAvailable] = useExtensionCommunication();
 
