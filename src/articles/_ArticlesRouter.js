@@ -1,4 +1,4 @@
-import { Switch, useLocation } from "react-router-dom";
+import { Switch } from "react-router-dom";
 import ArticleBrowser from "./ArticleBrowser";
 import BookmarkedArticles from "./BookmarkedArticles";
 import { useContext, useEffect, useState } from "react";
