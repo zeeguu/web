@@ -13,7 +13,7 @@ import RedirectionNotificationModal from "../components/redirect_notification/Re
 export default function ArticleSwipeBrowser({
     articles,
     onArticleOpen,
-    onArticleHidden,
+    onArticleHide,
     onArticleSave,
     loadNextPage,
     isWaiting,
@@ -81,7 +81,7 @@ export default function ArticleSwipeBrowser({
   };
 
   const handleDismiss = () => {
-    onArticleHidden?.(currentArticle.id);
+    onArticleHide?.(currentArticle.id);
   };
 
   // notify parent to update its lists

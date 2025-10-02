@@ -51,7 +51,7 @@ export default function ArticleBrowser({
     api.logUserActivity(api.CLICKED_ARTICLE, articleId, "", seenListAsString, sourceId);
   };
 
-  const handleArticleHidden = (articleId) => {
+  const handleArticleHide = (articleId) => {
     const updatedList = articlesAndVideosList.filter((item) => item.id !== articleId);
     setArticlesAndVideosList(updatedList);
     api.hideArticle(articleId, () => {
@@ -94,7 +94,7 @@ export default function ArticleBrowser({
     <ArticleSwipeBrowser
       articles={articlesAndVideosList}
       onArticleOpen={handleArticleOpen}
-      onArticleHidden={handleArticleHidden}
+      onArticleHide={handleArticleHide}
       onArticleSave={handleArticleSave}
       loadNextPage={loadNextPage}
       isWaiting={isWaitingForNewArticles}
@@ -111,7 +111,7 @@ export default function ArticleBrowser({
       noMore={noMoreArticlesToShow}
       resetPagination={resetPagination}
       onArticleOpen={handleArticleOpen}
-      onArticleHidden={handleArticleHidden}
+      onArticleHide={handleArticleHide}
       onArticleSave={handleArticleSave}
       hasExtension={isExtensionAvailable}
       doNotShowRedirectionModal_UserPreference={doNotShowRedirectionModal_UserPreference}

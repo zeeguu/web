@@ -25,7 +25,7 @@ export default function ArticleListBrowser({
   resetPagination,
   // interactions
   onArticleOpen,
-  onArticleHidden,
+  onArticleHide,
   onArticleSave,
   // downstream UI needs
   hasExtension,
@@ -175,7 +175,7 @@ export default function ArticleListBrowser({
               hasExtension={hasExtension}
               doNotShowRedirectionModal_UserPreference={doNotShowRedirectionModal_UserPreference}
               setDoNotShowRedirectionModal_UserPreference={setDoNotShowRedirectionModal_UserPreference}
-              onArticleHidden={() => onArticleHidden(each.id)}
+              onArticleHidden={() => onArticleHide(each.id)}
               onArticleSave={onArticleSave}
               notifyArticleClick={() => onArticleOpen(each.id, each.source_id, index)}
             />
