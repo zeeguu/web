@@ -55,12 +55,24 @@ export default function ArticleListBrowser({
   const handleVideoOnlyClick = () => {
     setIsShowVideosOnlyEnabled(!isShowVideosOnlyEnabled);
     if (isShowVideosOnlyEnabled) {
-      setArticles(originalList);
-      resetPagination();
+      setArticles?.(originalList);
+      resetPagination?.();
     } else {
-      const videosOnly = [...articles].filter((each) => each.video);
-      setArticles(videosOnly);
+      const videosOnly = [...(articles || [])].filter((each) => each.video);
+      setArticles?.(videosOnly);
     }
+  };
+
+  const handleArticleOpen = (articleId, sourceId, index) => {
+    onArticleOpen?.(articleId, sourceId, index);
+  };
+
+  const handleArticleHide = (articleId) => {
+    onArticleHide?.(articleId);
+  };
+
+  const handleArticleSave = (articleId, saved) => {
+    onArticleSave?.(articleId, saved);
   };
 
   const handleVideoClick = (sourceId, index) => {
@@ -106,11 +118,11 @@ export default function ArticleListBrowser({
 
   // Update originalList when articles change (for video toggle)
   useEffect(() => {
-    if (!isShowVideosOnlyEnabledRef.current && !searchQuery) {
+    if (!isShowVideosOnlyEnabledRef.current && !searchQuery && articles) {
       setOriginalList(articles);
     }
   }, [articles, searchQuery]);
-  if (isWaiting && displayArticles.length === 0) {
+  if (isWaiting && (!displayArticles || displayArticles.length === 0)) {
     return <LoadingAnimation />;
   }
 
@@ -175,9 +187,9 @@ export default function ArticleListBrowser({
               hasExtension={hasExtension}
               doNotShowRedirectionModal_UserPreference={doNotShowRedirectionModal_UserPreference}
               setDoNotShowRedirectionModal_UserPreference={setDoNotShowRedirectionModal_UserPreference}
-              onArticleHidden={() => onArticleHide(each.id)}
-              onArticleSave={onArticleSave}
-              notifyArticleClick={() => onArticleOpen(each.id, each.source_id, index)}
+              onArticleHidden={() => handleArticleHide(each.id)}
+              onArticleSave={handleArticleSave}
+              notifyArticleClick={() => handleArticleOpen(each.id, each.source_id, index)}
             />
           ),
         )}
