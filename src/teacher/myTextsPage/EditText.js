@@ -1,5 +1,7 @@
 import React, { Fragment, useContext, useEffect, useState } from "react";
 import { useHistory, useParams } from "react-router-dom";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import strings from "../../i18n/definitions";
 import { RoutingContext } from "../../contexts/RoutingContext";
 import EditTextInputFields from "./EditTextInputFields";
@@ -150,11 +152,12 @@ export default function EditText() {
 
   const deleteText = () => {
     api.deleteOwnText(articleID, (res) => {
-      if (res === "OK") {
+      if (res.success) {
+        toast(res.message);
         setStateChanged(false);
         history.push("/teacher/texts");
       } else {
-        console.log(res);
+        toast.error(res.message || "Failed to delete article");
       }
     });
   };

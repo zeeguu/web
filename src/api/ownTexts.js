@@ -71,12 +71,15 @@ Zeeguu_API.prototype.updateOwnText = function (
   Example:
 
     api.deleteOwnText(1407033, (res) => {
-      if (res === "OK") {
-        console.log("Article successfully deleted");
-      } else {console.log(res)}});
+      if (res.success) {
+        console.log(res.message); // "Article permanently deleted" or "Article hidden..."
+      } else {
+        console.log(res.message);
+      }
+    });
 */
 Zeeguu_API.prototype.deleteOwnText = function (id, onSuccess) {
-  this._getPlainText(`delete_own_text/${id}`, onSuccess);
+  this._getJSON(`delete_own_text/${id}`, onSuccess);
 };
 
 Zeeguu_API.prototype.getOwnTexts = function (callback) {
