@@ -276,7 +276,8 @@ export default function ReplaceExampleModal({
       <s.ModalContent onClick={(e) => e.stopPropagation()}>
         <s.ModalHeader>
           <h3>
-            Select example for <span style={{ color: "orange" }}>{exerciseBookmark?.from}</span>/{exerciseBookmark?.to}
+            Select example for <span style={{ color: "orange" }}>{exerciseBookmark?.from}</span>/
+            <span style={{ color: "darkblue" }}>{exerciseBookmark?.to}</span>
           </h3>
           <s.CloseButton onClick={handleClose}>
             <CloseIcon />
