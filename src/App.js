@@ -141,10 +141,11 @@ function App() {
     // them in the LocalStorage
 
     api.session = getSessionFromCookies();
-    console.log("Session: " + api.session);
+    console.log("Session from cookies: " + api.session);
 
     // Only validate if there is a session in cookies.
-    if (api.session !== undefined)
+    if (api.session !== undefined) {
+      console.log("Validating session...");
       api.isValidSession(
         () => {
           console.log("valid sesison... getting user details...");
@@ -160,10 +161,13 @@ function App() {
           });
         },
         () => {
-          console.log("no valid session");
+          console.log("Session validation FAILED - logging out");
           logout();
         },
       );
+    } else {
+      console.log("No session found in cookies");
+    }
 
     //logs out user on zeeguu.org if they log out of the extension
     const interval = setInterval(() => {
@@ -211,7 +215,7 @@ function App() {
     };
 
     console.log("setting new user value: ");
-    console.dir(newUserValue);
+    console.log(JSON.stringify(newUserValue));
     setUser(newUserValue);
 
     // If a redirect link exists, uses it to redirect the user,
