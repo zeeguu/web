@@ -23,6 +23,7 @@ export default function ArticlesRouter({ hasExtension, isChrome }) {
   const location = useLocation();
 
   const [tabsAndLinks, setTabsAndLinks] = useState({
+  const [tabsAndLinks, setTabsAndLinks] = useState({
     [strings.homeTab]: "/articles",
     [strings.swipeTab]: "/articles/swiper",
     [strings.search]: "/articles/mySearches",
@@ -32,6 +33,7 @@ export default function ArticlesRouter({ hasExtension, isChrome }) {
   const [originalList, setOriginalList] = useState(null);
   const isSwipeView = location.pathname === "/articles/swiper";
 
+  useEffect(() => {
   useEffect(() => {
     if (LocalStorage.isStudent()) {
       setTabsAndLinks((prevTabsAndLinks) => ({

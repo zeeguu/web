@@ -11,15 +11,15 @@ import Feature from "../features/Feature";
 import RedirectionNotificationModal from "../components/redirect_notification/RedirectionNotificationModal";
 
 export default function ArticleSwipeBrowser({
-  articles,
-  onArticleClick,
-  onArticleHidden,
-  onArticleSave,
-  loadNextPage,
-  isWaiting,
-  hasExtension,
-  doNotShowRedirectionModal_UserPreference,
-  setDoNotShowRedirectionModal_UserPreference,
+    articles,
+    onArticleOpen,
+    onArticleHide,
+    onArticleSave,
+    loadNextPage,
+    isWaiting,
+    hasExtension,
+    doNotShowRedirectionModal_UserPreference,
+    setDoNotShowRedirectionModal_UserPreference,
 }) {
   const [currentArticleIndex, setCurrentArticleIndex] = useState(0);
   const currentArticle = articles?.[currentArticleIndex];
@@ -59,7 +59,7 @@ export default function ArticleSwipeBrowser({
   if (!currentArticle) return <LoadingAnimation />;
 
   const handleOpen = () => {
-    onArticleClick?.(currentArticle.id, currentArticle.source_id, currentArticleIndex);
+    onArticleOpen?.(currentArticle.id, currentArticle.source_id, currentArticleIndex);
 
     const shouldOpenInZeeguu =
       currentArticle.video ||
@@ -81,15 +81,13 @@ export default function ArticleSwipeBrowser({
   };
 
   const handleDismiss = () => {
-    onArticleHidden?.(currentArticle.id);
-    // increaseCurrentArticleIndex();
+    onArticleHide?.(currentArticle.id);
   };
 
   // notify parent to update its lists
   const setSavedAndNotify = (val) => {
-    setIsArticleSaved(val);
-    onArticleSave?.(currentArticle.id, val); // parent flips has_personal_copy in its arrays
-    // increaseCurrentArticleIndex();
+      setIsArticleSaved(val);
+      onArticleSave?.(currentArticle.id, val); // parent flips has_personal_copy in its arrays
   };
 
   const handleSave = () => {
@@ -100,16 +98,6 @@ export default function ArticleSwipeBrowser({
       clickable.click();
     }
   };
-
-  // const increaseCurrentArticleIndex = () => {
-  //   if (!isWaiting && currentArticleIndex >= articles.length - 1) {
-  //     loadNextPage();
-  //     console.log("loaded new page");
-  //     setCurrentArticleIndex(0);
-  //   } else {
-  //     setCurrentArticleIndex((prev) => prev + 1);
-  //   }
-  // };
 
   return (
     <s.Container>

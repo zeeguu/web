@@ -59,11 +59,11 @@ export default function OwnArticles() {
     // eslint-disable-next-line
   }, []);
 
-  if (articleList == null) {
+  if (articleList == null || isWaitingForNewArticles || articleList.length === 0) {
     return <LoadingAnimation />;
   }
 
-  if (articleList.length === 0) {
+  if (articleList.length === 0 && !isWaitingForNewArticles) {
     return <s.YellowMessageBox>{strings.noOwnArticles}</s.YellowMessageBox>;
   }
 
