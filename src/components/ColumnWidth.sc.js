@@ -8,6 +8,9 @@ const NarrowColumn = styled.div`
   // VISUAL_DEBUGGING
   //background-color: red;
   padding: 1px;
+  display: ${({ $isSwipe }) => ($isSwipe ? "flex" : "block")};
+  flex-direction: ${({ $isSwipe }) => ($isSwipe ? "column" : "initial")};
+  min-height: ${({ $isSwipe }) => ($isSwipe ? 0 : "auto")};
 `;
 
 const CenteredContentContainer = styled.div`
@@ -48,6 +51,15 @@ const ToolTipsContainer = styled.div`
   }
 `;
 
+const SwipeCenterContainer = styled.div`
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  align-items: ${({ $center }) => ($center ? "center" : "stretch")};
+  justify-content: ${({ $center }) => ($center ? "center" : "flex-start")};
+`;
+
 const ContentOnRow = styled.div`
   display: flex;
   flex-direction: row;
@@ -73,6 +85,7 @@ export {
   NarrowColumn,
   CenteredContentContainer,
   CenteredContent,
+  SwipeCenterContainer,
   ContentOnRow,
   WideColumn,
   WidestColumn,

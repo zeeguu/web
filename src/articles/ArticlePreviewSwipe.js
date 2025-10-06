@@ -31,19 +31,19 @@ export default function ArticlePreviewSwipe({ article, titleLink, interactiveSum
                     article.summary
                 )}
               </span></s.Summary>
-                <s.ContinueReading>
+                {/* <s.ContinueReading>
                     {titleLink(article)}
-                </s.ContinueReading>
+                </s.ContinueReading> */}
             </s.Content>
 
-            <s.Footer>
+            {/* <s.Footer>
                 from{" "}
                 {article.feed_id ? (
                         <span>{article.feed_name || article.feed_icon_name?.replace(/\.[^.]+$/, "") }</span>
                 ) : (
                     article.url && <span>{extractDomain(article.url)}</span>
                 )}
-            </s.Footer>
+            </s.Footer> */}
         </s.CardContainer>
     );
 }

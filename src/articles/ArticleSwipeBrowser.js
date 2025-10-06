@@ -11,15 +11,15 @@ import Feature from "../features/Feature";
 import RedirectionNotificationModal from "../components/redirect_notification/RedirectionNotificationModal";
 
 export default function ArticleSwipeBrowser({
-    articles,
-    onArticleClick,
-    onArticleHidden,
-    onArticleSave,
-    loadNextPage,
-    isWaiting,
-    hasExtension,
-    doNotShowRedirectionModal_UserPreference,
-    setDoNotShowRedirectionModal_UserPreference,
+  articles,
+  onArticleClick,
+  onArticleHidden,
+  onArticleSave,
+  loadNextPage,
+  isWaiting,
+  hasExtension,
+  doNotShowRedirectionModal_UserPreference,
+  setDoNotShowRedirectionModal_UserPreference,
 }) {
   const [currentArticleIndex, setCurrentArticleIndex] = useState(0);
   const currentArticle = articles?.[currentArticleIndex];
@@ -29,11 +29,11 @@ export default function ArticleSwipeBrowser({
   // these will be removed when we decided on a clear structure
   const [isRedirectionModalOpen, setIsRedirectionModalOpen] = useState(false);
 
-    useEffect(() => {
-        if (!articles || articles.length === 0) {
-            loadNextPage();
-        }
-    }, [articles]);
+  useEffect(() => {
+    if (!articles || articles.length === 0) {
+      loadNextPage();
+    }
+  }, [articles]);
 
   // keep index valid whenever list changes (e.g., after dismiss)
   useEffect(() => {
@@ -82,14 +82,14 @@ export default function ArticleSwipeBrowser({
 
   const handleDismiss = () => {
     onArticleHidden?.(currentArticle.id);
-    increaseCurrentArticleIndex();
+    // increaseCurrentArticleIndex();
   };
 
   // notify parent to update its lists
   const setSavedAndNotify = (val) => {
-      setIsArticleSaved(val);
-      onArticleSave?.(currentArticle.id, val); // parent flips has_personal_copy in its arrays
-      increaseCurrentArticleIndex();
+    setIsArticleSaved(val);
+    onArticleSave?.(currentArticle.id, val); // parent flips has_personal_copy in its arrays
+    // increaseCurrentArticleIndex();
   };
 
   const handleSave = () => {
@@ -101,46 +101,35 @@ export default function ArticleSwipeBrowser({
     }
   };
 
-  const increaseCurrentArticleIndex = () => {
-      if (!isWaiting && currentArticleIndex >= articles.length - 1) {
-          loadNextPage();
-          console.log("loaded new page");
-          setCurrentArticleIndex(0);
-      } else {
-          setCurrentArticleIndex((prev) => prev + 1);
-      }
-    }
+  // const increaseCurrentArticleIndex = () => {
+  //   if (!isWaiting && currentArticleIndex >= articles.length - 1) {
+  //     loadNextPage();
+  //     console.log("loaded new page");
+  //     setCurrentArticleIndex(0);
+  //   } else {
+  //     setCurrentArticleIndex((prev) => prev + 1);
+  //   }
+  // };
 
   return (
     <s.Container>
-      <ArticlePreview
+      <s.CenterStack>
+        <ArticlePreview
           key={currentArticle.id + (isArticleSaved ? "_saved" : "")}
           article={currentArticle}
-            isListView={false}
-            notifyArticleClick={handleOpen}
-      />
+          isListView={false}
+          notifyArticleClick={handleOpen}
+        />
 
-      <ArticleSwipeControl onOpen={handleOpen} onDismiss={handleDismiss} onSave={handleSave} />
-
-        <div
-            ref={hiddenSaveRef}
-            style={{
-                position: "absolute",
-                width: 1,
-                height: 1,
-                overflow: "hidden",
-                clip: "rect(0 0 0 0)",
-                clipPath: "inset(50%)",
-                whiteSpace: "nowrap",
-            }}
-            aria-hidden="true"
-        >
-            <SaveArticleButton
-                article={currentArticle}
-                isArticleSaved={isArticleSaved}
-                setIsArticleSaved={setSavedAndNotify}
-            />
-        </div>
+        <ArticleSwipeControl onOpen={handleOpen} onDismiss={handleDismiss} onSave={handleSave} />
+      </s.CenterStack>
+      <s.VisuallyHidden ref={hiddenSaveRef} aria-hidden="true">
+        <SaveArticleButton
+          article={currentArticle}
+          isArticleSaved={isArticleSaved}
+          setIsArticleSaved={setSavedAndNotify}
+        />
+      </s.VisuallyHidden>
 
       {/* Same modal as list-mode titleLink flow */}
       <RedirectionNotificationModal

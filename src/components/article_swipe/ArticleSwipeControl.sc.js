@@ -6,7 +6,7 @@ export const Bar = styled.div`
   align-items: center;
   justify-content: center;
   gap: 3rem;
-  padding: 0.25rem 1rem 0.25rem;
+  padding: 1rem 1rem 1rem;
   width: 500px;
 `;
 
