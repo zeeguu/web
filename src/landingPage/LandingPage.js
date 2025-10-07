@@ -25,7 +25,7 @@ export default function LandingPage() {
 
   if (getSessionFromCookies()) {
     const lastVisitedPage = LocalStorage.getLastVisitedPage();
-    const redirectTo = lastVisitedPage || "/articles";
+    const redirectTo = lastVisitedPage || "/articles/swiper";
     return <Redirect to={{ pathname: redirectTo }} />;
   }
 

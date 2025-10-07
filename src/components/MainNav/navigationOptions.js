@@ -4,7 +4,7 @@ import strings from "../../i18n/definitions";
 export default class NavigationOptions {
   // Student-specific options
   static articles = Object.freeze({
-    linkTo: "/articles",
+    linkTo: "/articles/swiper",
     icon: <NavIcon name="home" />,
     text: strings.articles,
     isOnStudentSide: true,
