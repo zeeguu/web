@@ -353,3 +353,16 @@ Zeeguu_API.prototype.hideArticle = function (articleId, callback) {
   let param = qs.stringify({ article_id: articleId });
   this._post(`/hide_article`, param, callback);
 };
+
+Zeeguu_API.prototype.reportBrokenArticle = function (articleId, reason, callback, onError) {
+  let param = qs.stringify({ article_id: articleId, reason: reason });
+  this._post(`/report_broken_article`, param, (response) => {
+    try {
+      callback(JSON.parse(response));
+    } catch (e) {
+      if (onError) {
+        onError("Failed to parse response");
+      }
+    }
+  }, onError);
+};
