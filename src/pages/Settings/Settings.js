@@ -32,7 +32,7 @@ export default function Settings() {
 
       <ListOfSettingsItems header={"Reading"}>
         <SettingsItem path={"/account_settings/interests"}>{strings.interests}</SettingsItem>
-        <SettingsItem path={"/account_settings/excluded_keywords"}>Filters</SettingsItem>
+        <SettingsItem path={"/account_settings/filters"}>Filters</SettingsItem>
       </ListOfSettingsItems>
 
       <ListOfSettingsItems header={strings.exercises}>

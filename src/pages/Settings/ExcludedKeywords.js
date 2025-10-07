@@ -78,12 +78,9 @@ export default function ExcludedKeywords() {
         <div
           style={{
             fontSize: "1rem",
-            color: "rgba(0, 0, 0, 0.87)",
             marginBottom: 0,
             textAlign: "left",
             width: "100%",
-            fontWeight: 400,
-            fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif',
           }}
         >
           Filter articles containing the following keywords:
@@ -123,6 +120,7 @@ export default function ExcludedKeywords() {
               />
             }
             label="Filter disturbing news (violence, death, disasters)"
+            sx={{ '& .MuiTypography-root': { fontFamily: 'inherit' } }}
           />
           <div style={{ fontSize: "0.9em", color: "#666", marginLeft: "32px", marginTop: "0.25em" }}>
             When enabled, articles about violence, war, accidents, and other disturbing topics will be hidden from your

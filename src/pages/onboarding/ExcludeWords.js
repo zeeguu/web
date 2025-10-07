@@ -87,6 +87,7 @@ export default function ExcludeWords({ hasExtension }) {
           <FormControlLabel
             control={<Checkbox checked={filterDisturbingContent} onChange={handleToggleDisturbingContent} />}
             label="Filter disturbing news (violence, death, disasters)"
+            sx={{ '& .MuiTypography-root': { fontFamily: 'inherit' } }}
           />
           <div style={{ fontSize: "0.9em", color: "#666", marginLeft: "32px", marginTop: "0.25em" }}>
             When enabled, articles about violence, war, accidents, and other disturbing topics will be hidden from your
