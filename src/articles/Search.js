@@ -23,10 +23,12 @@ export default function Search() {
                 <s.HeadlineSearch>{searchQuery}</s.HeadlineSearch>
               </s.ContainerH1Subscribe>
             </s.RowHeadlineSearch>
-            <s.SearchNote>
-              Your saved searches are also used to personalize the recommendations on your homepage.
-            </s.SearchNote>
             <SubscribeSearchButton query={searchQuery} />
+            {!searchQuery && (
+              <s.SearchNote>
+                Your saved searches are also used to personalize the recommendations on your homepage.
+              </s.SearchNote>
+            )}
           </s.ContainerTitleSubscribe>
           <CustomizeSearchToolbar
             searchPublishPriority={searchPublishPriority}
