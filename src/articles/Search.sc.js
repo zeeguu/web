@@ -34,10 +34,17 @@ const RowHeadlineSearch = styled.div`
   align-items: baseline;
 `;
 
+const SearchNote = styled.p`
+  color: #666;
+  font-size: 0.9em;
+  margin: 0.5em 0 1em 0;
+`;
+
 export {
   SearchTopBar,
   ContainerTitleSubscribe,
   HeadlineSearch,
   RowHeadlineSearch,
   ContainerH1Subscribe,
+  SearchNote,
 };

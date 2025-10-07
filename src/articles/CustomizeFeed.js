@@ -51,7 +51,7 @@ export default function CustomizeFeed({ currentMode = "list" }) {
           <s.DropdownItem onClick={() => handleItemClick("/account_settings/filters?fromArticles=1")}>
             Filters
           </s.DropdownItem>
-          <s.DropdownItem onClick={() => handleItemClick("/articles/mySearches")}>Saved Searches</s.DropdownItem>
+          <s.DropdownItem onClick={() => handleItemClick("/articles/mySearches")}>Searches</s.DropdownItem>
           <s.Separator />
           {currentMode === "swiper" && (
             <s.DropdownItem onClick={() => handleItemClick("/articles")}>

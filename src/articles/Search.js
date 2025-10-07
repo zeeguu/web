@@ -8,8 +8,7 @@ import CustomizeSearchToolbar from "./CustomizeSearchToolbar";
 export default function Search() {
   const searchQuery = useQuery().get("search");
   const [searchPublishPriority, setSearchPublishPriority] = useState(false);
-  const [searchDifficultyPriority, setSearchDifficultyPriority] =
-    useState(true);
+  const [searchDifficultyPriority, setSearchDifficultyPriority] = useState(true);
 
   return (
     <ArticleListBrowser
@@ -24,6 +23,9 @@ export default function Search() {
                 <s.HeadlineSearch>{searchQuery}</s.HeadlineSearch>
               </s.ContainerH1Subscribe>
             </s.RowHeadlineSearch>
+            <s.SearchNote>
+              Your saved searches are also used to personalize the recommendations on your homepage.
+            </s.SearchNote>
             <SubscribeSearchButton query={searchQuery} />
           </s.ContainerTitleSubscribe>
           <CustomizeSearchToolbar
