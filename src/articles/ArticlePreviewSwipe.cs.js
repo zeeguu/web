@@ -67,6 +67,7 @@ export const Title = styled.h2`
   font-size: 20px;
   font-weight: bold;
   color: ${almostBlack};
+  // color: ${zeeguuDarkOrange};
   margin: 0 0 16px 0;
 `;
 
