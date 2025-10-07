@@ -24,11 +24,9 @@ import { APIContext } from "../../contexts/APIContext";
 
 export default function ExcludedKeywords() {
   const api = useContext(APIContext);
-  const { unwantedKeywords, addUnwantedKeyword, removeUnwantedKeyword } =
-    useUnwantedContentPreferences(api);
+  const { unwantedKeywords, addUnwantedKeyword, removeUnwantedKeyword } = useUnwantedContentPreferences(api);
 
-  const [excludedWord, setExcludedWord, , , , resetExcludedWord] =
-    useFormField("");
+  const [excludedWord, setExcludedWord, , , , resetExcludedWord] = useFormField("");
 
   const [filterDisturbingContent, setFilterDisturbingContent] = useState(false);
   const [preferencesLoaded, setPreferencesLoaded] = useState(false);
@@ -36,7 +34,7 @@ export default function ExcludedKeywords() {
   const isFromArticles = useQuery().get("fromArticles") === "1";
 
   useEffect(() => {
-    setTitle(strings.excludedKeywords);
+    setTitle("Filters");
 
     // Load user preferences
     api.getUserPreferences((preferences) => {
@@ -67,17 +65,55 @@ export default function ExcludedKeywords() {
         console.error("Failed to update disturbing content filter:", error);
         // Revert on error
         setFilterDisturbingContent(!newValue);
-      }
+      },
     );
   }
   return (
     <PreferencesPage layoutVariant={"minimalistic-top-aligned"}>
       <BackArrow redirectLink={isFromArticles && "/articles"} />
       <Header withoutLogo>
-        <Heading>{strings.excludedKeywords}</Heading>
+        <Heading>Filters</Heading>
       </Header>
       <Main>
-        <div style={{ marginBottom: "1.5em" }}>
+        <div
+          style={{
+            fontSize: "1rem",
+            color: "rgba(0, 0, 0, 0.87)",
+            marginBottom: 0,
+            textAlign: "left",
+            width: "100%",
+            fontWeight: 400,
+            fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif',
+          }}
+        >
+          Filter articles containing the following keywords:
+        </div>
+        <TagContainer style={{ marginTop: "-1em" }}>
+          {unwantedKeywords.map((keyword) => (
+            <div key={keyword.id} id={keyword.id}>
+              <Tag className={"outlined-blue small"} onClick={() => removeUnwantedKeyword(keyword)}>
+                {keyword.search}
+                <HighlightOffRoundedIcon fontSize="small" />
+              </Tag>
+            </div>
+          ))}
+        </TagContainer>
+        <Form style={{ marginTop: "-1em" }}>
+          <InputField
+            value={excludedWord}
+            onChange={(e) => {
+              setExcludedWord(e.target.value);
+            }}
+            helperText={strings.addUnwantedWordHelperText}
+            placeholder={strings.unwantedWordPlaceholder}
+          >
+            <Button className="small-square-btn" onClick={handleAddNewSearchFilter}>
+              <AddRoundedIcon />
+            </Button>
+          </InputField>
+        </Form>
+
+        <div style={{ marginTop: "2em", marginBottom: "1.5em" }}>
           <FormControlLabel
             control={
               <Checkbox
@@ -89,39 +125,10 @@ export default function ExcludedKeywords() {
             label="Filter disturbing news (violence, death, disasters)"
           />
           <div style={{ fontSize: "0.9em", color: "#666", marginLeft: "32px", marginTop: "0.25em" }}>
-            When enabled, articles about violence, war, accidents, and other disturbing topics will be hidden from your recommendations.
+            When enabled, articles about violence, war, accidents, and other disturbing topics will be hidden from your
+            recommendations.
           </div>
         </div>
-        <Form>
-          <InputField
-            value={excludedWord}
-            onChange={(e) => {
-              setExcludedWord(e.target.value);
-            }}
-            helperText={strings.addUnwantedWordHelperText}
-            placeholder={strings.unwantedWordPlaceholder}
-          >
-            <Button
-              className="small-square-btn"
-              onClick={handleAddNewSearchFilter}
-            >
-              <AddRoundedIcon />
-            </Button>
-          </InputField>
-        </Form>
-        <TagContainer>
-          {unwantedKeywords.map((keyword) => (
-            <div key={keyword.id} id={keyword.id}>
-              <Tag
-                className={"outlined-blue small"}
-                onClick={() => removeUnwantedKeyword(keyword)}
-              >
-                {keyword.search}
-                <HighlightOffRoundedIcon fontSize="small" />
-              </Tag>
-            </div>
-          ))}
-        </TagContainer>
       </Main>
     </PreferencesPage>
   );

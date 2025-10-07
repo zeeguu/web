@@ -1,4 +1,4 @@
-import { useEffect, useContext } from "react";
+import { useEffect, useContext, useState } from "react";
 import { useHistory } from "react-router-dom/cjs/react-router-dom";
 import { isSupportedBrowser } from "../../utils/misc/browserDetection";
 
@@ -16,6 +16,7 @@ import ButtonContainer from "../_pages_shared/ButtonContainer.sc";
 import RoundedForwardArrow from "@mui/icons-material/ArrowForwardRounded";
 import AddRoundedIcon from "@mui/icons-material/AddRounded";
 import HighlightOffRoundedIcon from "@mui/icons-material/HighlightOffRounded";
+import { FormControlLabel, Checkbox } from "@mui/material";
 
 import InputField from "../../components/InputField";
 import Tag from "../_pages_shared/Tag.sc";
@@ -29,8 +30,7 @@ import { APIContext } from "../../contexts/APIContext";
 export default function ExcludeWords({ hasExtension }) {
   const api = useContext(APIContext);
   const history = useHistory();
-  const { unwantedKeywords, addUnwantedKeyword, removeUnwantedKeyword } =
-    useUnwantedContentPreferences(api);
+  const { unwantedKeywords, addUnwantedKeyword, removeUnwantedKeyword } = useUnwantedContentPreferences(api);
 
   const [
     excludedWord,
@@ -40,6 +40,8 @@ export default function ExcludeWords({ hasExtension }) {
     excludedWordErrorMsg,
     resetExcludedWords,
   ] = useFormField("", [NonEmptyValidator("Please write a keyword.")]);
+
+  const [filterDisturbingContent, setFilterDisturbingContent] = useState(false);
 
   function getLinkToNextPage() {
     if (isSupportedBrowser() && hasExtension === false) {
@@ -55,6 +57,22 @@ export default function ExcludeWords({ hasExtension }) {
     }
   }
 
+  function handleToggleDisturbingContent(e) {
+    const newValue = e.target.checked;
+    setFilterDisturbingContent(newValue);
+
+    // Save preference to backend
+    api.saveUserPreferences(
+      { filter_disturbing_content: newValue ? "true" : "false" },
+      () => {
+        console.log("Disturbing content filter set during onboarding:", newValue);
+      },
+      (error) => {
+        console.error("Failed to set disturbing content filter:", error);
+      },
+    );
+  }
+
   useEffect(() => {
     setTitle(strings.excludeWords);
   }, []);
@@ -62,12 +80,19 @@ export default function ExcludeWords({ hasExtension }) {
   return (
     <PreferencesPage>
       <Header>
-        <Heading>
-          Would you like to exclude articles and exercises containing particular
-          words or&nbsp;phrases?
-        </Heading>
+        <Heading>Would you like to exclude articles and exercises containing particular words or&nbsp;phrases?</Heading>
       </Header>
       <Main>
+        <div style={{ marginBottom: "1em" }}>
+          <FormControlLabel
+            control={<Checkbox checked={filterDisturbingContent} onChange={handleToggleDisturbingContent} />}
+            label="Filter disturbing news (violence, death, disasters)"
+          />
+          <div style={{ fontSize: "0.9em", color: "#666", marginLeft: "32px", marginTop: "0.25em" }}>
+            When enabled, articles about violence, war, accidents, and other disturbing topics will be hidden from your
+            recommendations.
+          </div>
+        </div>
         <Form>
           <InputField
             value={excludedWord}
@@ -79,10 +104,7 @@ export default function ExcludeWords({ hasExtension }) {
             isError={!isExcludedWordValid}
             errorMessage={excludedWordErrorMsg}
           >
-            <Button
-              className="small-square-btn"
-              onClick={handleAddNewSearchFilter}
-            >
+            <Button className="small-square-btn" onClick={handleAddNewSearchFilter}>
               <AddRoundedIcon />
             </Button>
           </InputField>
@@ -90,10 +112,7 @@ export default function ExcludeWords({ hasExtension }) {
         <TagContainer>
           {unwantedKeywords.map((keyword) => (
             <div key={keyword.id} id={keyword.id}>
-              <Tag
-                className={"outlined-blue small"}
-                onClick={() => removeUnwantedKeyword(keyword)}
-              >
+              <Tag className={"outlined-blue small"} onClick={() => removeUnwantedKeyword(keyword)}>
                 {keyword.search}
                 <HighlightOffRoundedIcon fontSize="small" />
               </Tag>
@@ -104,10 +123,7 @@ export default function ExcludeWords({ hasExtension }) {
       <Footer>
         <p className="centered">{strings.youCanChangeLater}</p>
         <ButtonContainer className={"padding-large"}>
-          <Button
-            className={"full-width-btn"}
-            onClick={() => history.push(getLinkToNextPage())}
-          >
+          <Button className={"full-width-btn"} onClick={() => history.push(getLinkToNextPage())}>
             {strings.next} <RoundedForwardArrow />
           </Button>
         </ButtonContainer>
