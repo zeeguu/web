@@ -79,7 +79,7 @@ const PageContainer = styled.div`
       }
       @media (max-width: 576px) {
         width: 100%;
-        padding: 0;
+        padding: 1em;
         margin: 1rem 0 0 0;
       }
     `}
