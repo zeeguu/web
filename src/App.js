@@ -15,7 +15,7 @@ import ZeeguuSpeech from "./speech/APIBasedSpeech";
 import { SpeechContext } from "./contexts/SpeechContext";
 import { API_ENDPOINT, APP_DOMAIN } from "./appConstants";
 
-import { getSessionFromCookies, removeUserInfoFromCookies, saveUserInfoIntoCookies } from "./utils/cookies/userInfo";
+import { getSharedSession, removeSharedUserInfo, saveSharedUserInfo } from "./utils/cookies/userInfo";
 
 import MainAppRouter from "./MainAppRouter";
 import { ToastContainer } from "react-toastify";
@@ -140,7 +140,7 @@ function App() {
     // we get the latest feature flags for this user and save
     // them in the LocalStorage
 
-    api.session = getSessionFromCookies();
+    api.session = getSharedSession();
     console.log("Session from cookies: " + api.session);
 
     // Only validate if there is a session in cookies.
@@ -171,7 +171,7 @@ function App() {
 
     //logs out user on zeeguu.org if they log out of the extension
     const interval = setInterval(() => {
-      if (!getSessionFromCookies()) {
+      if (!getSharedSession()) {
         setUserDetails({});
         setUserPreferences({});
       }
@@ -187,7 +187,7 @@ function App() {
     setUserDetails({});
     setUserPreferences({});
 
-    removeUserInfoFromCookies();
+    removeSharedUserInfo();
   }
 
   function handleSuccessfulLogIn(userInfo, sessionId, redirectToArticle = true) {
@@ -202,9 +202,8 @@ function App() {
       );
     });
 
-    // Cookies are the mechanism via which we share a login
-    // between the extension and the website
-    saveUserInfoIntoCookies(userInfo, api.session);
+    // Save shared user info for extension/web communication
+    saveSharedUserInfo(userInfo, api.session);
     let newUserValue = {
       session: api.session,
       name: userInfo.name,
@@ -244,7 +243,7 @@ function App() {
                   setUserDetails,
                   userPreferences,
                   setUserPreferences,
-                  session: getSessionFromCookies(),
+                  session: getSharedSession(),
                   logoutMethod: logout,
                 }}
               >

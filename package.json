@@ -4,6 +4,11 @@
   "private": true,
   "homepage": "https://www.zeeguu.org/",
   "dependencies": {
+    "@capacitor/android": "^7.4.3",
+    "@capacitor/cli": "^7.4.3",
+    "@capacitor/core": "^7.4.3",
+    "@capacitor/ios": "^7.4.3",
+    "@capacitor/splash-screen": "^7.0.3",
     "@emotion/react": "^11.4.1",
     "@emotion/styled": "^11.3.0",
     "@mozilla/readability": "^0.4.1",

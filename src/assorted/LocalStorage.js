@@ -1,7 +1,7 @@
-import { removeUserInfoFromCookies, setUserSession } from "../utils/cookies/userInfo";
+import { removeSharedUserInfo, setUserSession } from "../utils/cookies/userInfo";
 import uiLanguages from "./uiLanguages";
 
-// Note that session info is in the Cookies
+// Note that shared session info is in Cookies (or localStorage for Capacitor)
 const LocalStorage = {
   Keys: {
     // language related keys used in the logged-in user session
@@ -142,7 +142,7 @@ const LocalStorage = {
       localStorage.removeItem(this.Keys.Session);
       localStorage.removeItem(this.Keys.Features);
       localStorage.removeItem(this.Keys.IsStudent);
-      removeUserInfoFromCookies();
+      removeSharedUserInfo();
     } catch (e) {
       console.log(e);
     }

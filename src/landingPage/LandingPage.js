@@ -2,7 +2,7 @@ import { useEffect, useContext } from "react";
 import { useHistory } from "react-router-dom/cjs/react-router-dom";
 import { Redirect } from "react-router-dom";
 import { setTitle } from "../assorted/setTitle";
-import { getSessionFromCookies } from "../utils/cookies/userInfo";
+import { getSharedSession } from "../utils/cookies/userInfo";
 import LocalStorage from "../assorted/LocalStorage";
 import { SystemLanguagesContext } from "../contexts/SystemLanguagesContext.js";
 import InstallationInstructions from "./InstallationInstructions.js";
@@ -23,7 +23,7 @@ export default function LandingPage() {
     setTitle(strings.landingPageTitle);
   }, []);
 
-  if (getSessionFromCookies()) {
+  if (getSharedSession()) {
     const lastVisitedPage = LocalStorage.getLastVisitedPage();
     const redirectTo = lastVisitedPage || "/articles";
     return <Redirect to={{ pathname: redirectTo }} />;
