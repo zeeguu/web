@@ -8,9 +8,9 @@ const Feature = {
     return LocalStorage.hasFeature(featureName);
   },
 
-  is_audio_supported_for_language: function() {
+  is_audio_supported_for_language: function () {
     const learnedLanguage = LocalStorage.getLearnedLanguage();
-    const languagesWithoutAudio = ['el'];
+    const languagesWithoutAudio = ["el"];
     return !languagesWithoutAudio.includes(learnedLanguage);
   },
 
@@ -20,10 +20,6 @@ const Feature = {
 
   merle_exercises: function () {
     return this.is_enabled("merle_exercises");
-  },
-
-  exercise_levels: function () {
-    return this.is_enabled("exercise_levels");
   },
 
   extension_experiment1: function () {

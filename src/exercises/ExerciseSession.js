@@ -209,14 +209,7 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
   }
 
   function getExerciseSequenceType() {
-    let exerciseTypesList;
-    if (Feature.merle_exercises() || Feature.exercise_levels()) exerciseTypesList = EXTENDED_SEQUENCE;
-    else exerciseTypesList = DEFAULT_SEQUENCE;
-    if (!SessionStorage.isAudioExercisesEnabled()) {
-      if (Feature.merle_exercises() || Feature.exercise_levels()) exerciseTypesList = EXTENDED_SEQUENCE_NO_AUDIO;
-      else exerciseTypesList = DEFAULT_SEQUENCE_NO_AUDIO;
-    }
-    return exerciseTypesList;
+    return SessionStorage.isAudioExercisesEnabled() ? EXTENDED_SEQUENCE : EXTENDED_SEQUENCE_NO_AUDIO;
   }
 
   useEffect(() => {
