@@ -30,62 +30,30 @@ export default function WordsRouter() {
 
   let tabsAndLinks;
 
-  if (Feature.merle_exercises) {
-    tabsAndLinks = [
-      {
-        text: strings.learning,
-        link: "/words",
-        counter: learningCount
-      },
-      {
-        text: strings.learned,
-        link: "/words/learned",
-        counter: learnedCount
-      }
-    ];
-  } else {
-    tabsAndLinks = {
-      [strings.learned]: "/words/learned",
-      [strings.topWords]: "/words",
-    };
-  }
+  tabsAndLinks = {
+    [strings.learned]: "/words/learned",
+    [strings.topWords]: "/words",
+  };
 
   return (
     <Switch>
-      <PrivateRoute
-        path="/words/forArticle/:articleID"
-        component={WordsForArticle}
-      />
-      <PrivateRoute
-        path="/render/words/forArticle/:articleID"
-        component={WordsForArticle}
-      />
+      <PrivateRoute path="/words/forArticle/:articleID" component={WordsForArticle} />
+      <PrivateRoute path="/render/words/forArticle/:articleID" component={WordsForArticle} />
 
       <s.NarrowColumn>
-        <TopTabs
-          title={strings.yourWordsHeadline}
-          tabsAndLinks={tabsAndLinks}
-        />
+        <TopTabs title={strings.yourWordsHeadline} tabsAndLinks={tabsAndLinks} />
 
         <PrivateRoute path="/words/learned" component={Learned} />
 
         <PrivateRoute path="/render/words/learned" component={Learned} />
 
-        {Feature.merle_exercises ? (
-          <PrivateRoute exact path="/words" component={Learning} />
-        ) : (
-          <PrivateRoute exact path="/words" component={Top} />
-        )}
+        <PrivateRoute exact path="/words" component={Top} />
 
         <PrivateRoute exact path="/render/words" component={Top} />
 
         <PrivateRoute exact path="/words/learning" component={Learning} />
 
-        <PrivateRoute
-          exact
-          path="/render/words/learning"
-          component={Learning}
-        />
+        <PrivateRoute exact path="/render/words/learning" component={Learning} />
 
         <PrivateRoute exact path="/words/top" component={Top} />
       </s.NarrowColumn>

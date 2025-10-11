@@ -67,7 +67,7 @@ export default function NextNavigation({
 
   const isLastInCycle = exerciseBookmark.is_last_in_cycle;
   const isLearningCycleOne = learningCycle === 1;
-  const learningCycleFeature = Feature.merle_exercises();
+
   const isMatchExercise = exerciseType === EXERCISE_TYPES.match;
 
   const isCorrectMatch = isMatchExercise && ["CCC"].includes(Object.values(bookmarkMessagesToAPI).join(""));
@@ -95,20 +95,6 @@ export default function NextNavigation({
     if (isExerciseOver && autoPronounceBookmark && !isMatchExercise) handleSpeak();
 
     if (bookmarkMessagesToAPI.length > 1 && isMatchExercise) {
-      let wordsProgressed = [];
-      for (let b_id in bookmarkMessagesToAPI) {
-        let bookmark = exerciseBookmarks.filter((b) => b.id === b_id)[0];
-        let apiMessage = bookmarkMessagesToAPI[b_id];
-        if (
-          bookmark.is_last_in_cycle &&
-          apiMessage === CORRECT &&
-          bookmark.learning_cycle === LEARNING_CYCLE["RECEPTIVE"] &&
-          learningCycleFeature
-        ) {
-          wordsProgressed.push(bookmark.from);
-          setIsMatchBookmarkProgression(true);
-        }
-      }
       setMatchExercisesProgressionMessage("'" + wordsProgressed.join("', '") + "'");
       setMatchWordsProgressCount(wordsProgressed.length);
     }
