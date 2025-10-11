@@ -88,7 +88,6 @@ function createBookmarkFromUrl(word, translation, context, lang = "en") {
     left_ellipsis: false,
     right_ellipsis: false,
     cooling_interval: 2,
-    learning_cycle: 1,
     level: 2,
   };
 }
@@ -110,7 +109,7 @@ export default function IndividualExercise() {
   useEffect(() => {
     const currentUrl = window.location.href;
     setContextualInfo({ url: currentUrl });
-    
+
     return () => {
       setContextualInfo(null);
     };
@@ -179,7 +178,6 @@ export default function IndividualExercise() {
           left_ellipsis: false,
           right_ellipsis: false,
           cooling_interval: 2,
-          learning_cycle: 1,
           level: 2,
         };
       } catch (e) {

@@ -4,28 +4,24 @@ import EditBookmarkButton from "../../words/EditBookmarkButton";
 import * as s from "./Exercise.sc";
 import SolutionFeedbackLinks from "./SolutionFeedbackLinks";
 import { getExerciseTypeName } from "../exerciseTypes/exerciseTypeNames";
-import { useEffect, useState, useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import Confetti from "react-confetti";
 import SessionStorage from "../../assorted/SessionStorage.js";
 import { SpeechContext } from "../../contexts/SpeechContext.js";
-import { EXERCISE_TYPES, LEARNING_CYCLE } from "../ExerciseTypeConstants";
+import { EXERCISE_TYPES } from "../ExerciseTypeConstants";
 
 import CelebrationModal from "../CelebrationModal";
 import { getStaticPath } from "../../utils/misc/staticPath.js";
-
-import Feature from "../../features/Feature";
 import { correctnessBasedOnTries } from "../CorrectnessBasedOnTries.js";
 import LocalStorage from "../../assorted/LocalStorage.js";
 import useBookmarkAutoPronounce from "../../hooks/useBookmarkAutoPronounce.js";
 import Pluralize from "../../utils/text/pluralize.js";
 import CorrectMessage from "./CorrectMessage";
 import { APIContext } from "../../contexts/APIContext.js";
-import { CORRECT } from "../ExerciseConstants.js";
 import isEmptyDictionary from "../../utils/misc/isEmptyDictionary.js";
 import useScreenWidth from "../../hooks/useScreenWidth.js";
 import FeedbackModal from "../../components/FeedbackModal.js";
 import { FEEDBACK_OPTIONS } from "../../components/FeedbackConstants.js";
-import ReplaceExampleModal from "../replaceExample/ReplaceExampleModal.js";
 import AutoPronounceToggle from "../../components/AutoPronounceToggle.js";
 
 export default function NextNavigation({
@@ -92,16 +88,6 @@ export default function NextNavigation({
 
     // eslint-disable-next-line
   }, [isExerciseOver]);
-
-  useEffect(() => {
-    if (exerciseBookmark && "learning_cycle" in exerciseBookmark) {
-      setLearningCycle(exerciseBookmark.learning_cycle);
-    }
-  }, [exerciseBookmark]);
-
-  useEffect(() => {
-    setLearningCycle(exerciseBookmark.learning_cycle);
-  }, [exerciseBookmark.learning_cycle]);
 
   useEffect(() => {
     if (isDeleted) {

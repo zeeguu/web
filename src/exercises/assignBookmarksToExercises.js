@@ -1,51 +1,6 @@
 import { removeAllMatchingItemFromList } from "../utils/basic/arrays";
 import shuffle from "../assorted/fisherYatesShuffle";
 
-import { MEMORY_TASK, LEARNING_CYCLE } from "./ExerciseTypeConstants";
-import Feature from "../features/Feature";
-import { ALL_EXERCISES } from "./exerciseSequenceTypes";
-
-/**
- * The bookmarks fetched by the API are assigned to the various exercises in the defined exercise session --
- * with the required amount of bookmarks assigned to each exercise and the first set of bookmarks set as
- * currentBookmarksToStudy to begin the exercise session.
- */
-const EX_TYPE_SEQUENCE = [
-  [LEARNING_CYCLE.RECEPTIVE, MEMORY_TASK.RECOGNITION],
-  [LEARNING_CYCLE.PRODUCTIVE, MEMORY_TASK.RECOGNITION],
-  [LEARNING_CYCLE.RECEPTIVE, MEMORY_TASK.RECALL],
-  [LEARNING_CYCLE.PRODUCTIVE, MEMORY_TASK.RECALL],
-];
-
-function getMemoryTask(bookmark) {
-  let memoryTask = bookmark.cooling_interval > 2 ? MEMORY_TASK.RECALL : MEMORY_TASK.RECOGNITION;
-  return memoryTask;
-}
-
-function getBookmarkCycleTaskKey(b) {
-  // If there is no learning cycle (it is a new word) treat as
-  // receptive.
-  return [b.learning_cycle === LEARNING_CYCLE.NOT_SET ? LEARNING_CYCLE.RECEPTIVE : b.learning_cycle, getMemoryTask(b)];
-}
-
-function getExerciseCycleTaskKey(e) {
-  let learningCycleKey = e.learningCycle === "receptive" ? LEARNING_CYCLE.RECEPTIVE : LEARNING_CYCLE.PRODUCTIVE;
-  return [learningCycleKey, e.memoryTask];
-}
-
-function getElementsByCycleTask(elementList, keyFunc) {
-  let elementsByCycleTask = {};
-  for (let i = 0; i < elementList.length; i++) {
-    let e = elementList[i];
-    let eKey = keyFunc(e);
-    if (!elementsByCycleTask[eKey]) {
-      elementsByCycleTask[eKey] = [];
-    }
-    elementsByCycleTask[eKey].push(e);
-  }
-  return elementsByCycleTask;
-}
-
 function popNElementsFromList(l, n) {
   let a = [];
   for (let i = 0; i < n; i++) {

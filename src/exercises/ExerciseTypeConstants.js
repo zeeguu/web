@@ -12,32 +12,12 @@ export const EXERCISE_TYPES = {
   findWordInContext: "Recognize_L1W_in_L2T",
 
   isMultiBookmarkExercise: function (exerciseType) {
-    return [
-      this.multipleChoice,
-      this.multipleChoiceContext,
-      this.match,
-    ].includes(exerciseType);
+    return [this.multipleChoice, this.multipleChoiceContext, this.match].includes(exerciseType);
   },
   isAudioExercise: function (exerciseType) {
-    return [
-      this.multipleChoiceAudio,
-      this.spellWhatYouHear,
-      this.translateWhatYouHear,
-    ].includes(exerciseType);
+    return [this.multipleChoiceAudio, this.spellWhatYouHear, this.translateWhatYouHear].includes(exerciseType);
   },
 };
-
-export const LEARNING_CYCLE_NAME = Object.freeze({
-  0: "not set",
-  1: "receptive",
-  2: "productive",
-});
-
-export const LEARNING_CYCLE = Object.freeze({
-  NOT_SET: 0,
-  RECEPTIVE: 1,
-  PRODUCTIVE: 2,
-});
 
 export const MEMORY_TASK = Object.freeze({
   RECALL: "recall",

@@ -3,7 +3,6 @@ import Feature from "../../features/Feature.js";
 import { correctnessBasedOnTries } from "../CorrectnessBasedOnTries.js";
 import LevelIndicator from "./levelIndicator/LevelIndicator.js";
 import { WordProgressWrapper } from "./levelIndicator/LevelIndicator.sc.js";
-import LearningCycleIndicator from "./LearningCycleIndicator.js";
 
 export default function WordProgressBar({ bookmark, message, isGreyedOutBar }) {
   // Note that the userIsCorrect and userIsWrong states are needed both
