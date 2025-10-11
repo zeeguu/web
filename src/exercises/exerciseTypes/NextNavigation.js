@@ -77,10 +77,6 @@ export default function NextNavigation({
   const isUserAndAnswerCorrect = userIsCorrect && isCorrect;
   const bookmarkLearned = isUserAndAnswerCorrect && exerciseBookmark.is_about_to_be_learned;
 
-  // this next one is only for the Merle exercises with two learning cycles
-  const bookmarkIsProgressingToNextLearningCycle =
-    userIsCorrect && isLearningCycleOne && isLastInCycle && !productiveExercisesDisabled && learningCycleFeature;
-
   async function handleSpeak() {
     setIsAutoPronouncing(true);
     await speech.speakOut(exerciseBookmark.from, setIsButtonSpeaking);
@@ -94,10 +90,6 @@ export default function NextNavigation({
     // Auto-pronounce the correct word after exercise completion when enabled
     if (isExerciseOver && autoPronounceBookmark && !isMatchExercise) handleSpeak();
 
-    if (bookmarkMessagesToAPI.length > 1 && isMatchExercise) {
-      setMatchExercisesProgressionMessage("'" + wordsProgressed.join("', '") + "'");
-      setMatchWordsProgressCount(wordsProgressed.length);
-    }
     // eslint-disable-next-line
   }, [isExerciseOver]);
 
@@ -142,9 +134,7 @@ export default function NextNavigation({
     return `${window.location.origin}/exercise/${exerciseTypeName}/${bookmarkId}`;
   };
 
-  const showConffetti =
-    isUserAndAnswerCorrect &&
-    (isMatchBookmarkProgression || bookmarkIsProgressingToNextLearningCycle || bookmarkLearned);
+  const showConffetti = isUserAndAnswerCorrect && (isMatchBookmarkProgression || bookmarkLearned);
 
   function celebrationMessageMatch() {
     if (LocalStorage.getProductiveExercisesEnabled()) {
@@ -177,18 +167,12 @@ export default function NextNavigation({
       )}
       {!isMatchExercise && (
         <>
-          {isCorrect && bookmarkIsProgressingToNextLearningCycle && (
-            <CorrectMessage className={"next-nav-learning-cycle"} info={strings.nextLearningCycle} />
-          )}
           {isCorrect && bookmarkLearned && (
             <CorrectMessage className={"next-nav-learning-cycle"} info={strings.wordLearned} />
           )}
         </>
       )}
-      {/* Removed general "Well Done!" message
-      {isExerciseCorrect && !(bookmarkLearned || bookmarkIsProgressingToNextLearningCycle) && (
-        <CorrectMessage className={"next-nav-feedback"} info={""} />
-      )} */}
+
       {isExerciseOver && (
         <>
           <s.BottomRowSmallTopMargin className="bottomRow">
