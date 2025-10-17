@@ -39,9 +39,25 @@ export default function AddURLDialog({ setShowAddURLDialog }) {
           const newTitle = articleInfo.title;
           const newText = articleInfo.text;
           const newLanguage = articleInfo.language_code;
-          api.uploadOwnText(newTitle, newText, newLanguage, (newID) => {
-            history.push(`/teacher/texts/editText/${newID}`);
-          });
+          const htmlContent = articleInfo.htmlContent;
+          const topImage = articleInfo.top_image;
+
+          api.uploadOwnText(
+            newTitle,
+            newText,
+            newLanguage,
+            (newID) => {
+              history.push(`/teacher/texts/editText/${newID}`);
+            },
+            (error) => {
+              setShowError(true);
+              console.log("Failed to upload article:", error);
+            },
+            null, // cefr_level (will be estimated on backend)
+            null, // assessment_method
+            topImage, // img_url
+            htmlContent // htmlContent
+          );
         },
         (err) => {
           setShowError(true);

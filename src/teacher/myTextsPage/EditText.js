@@ -13,6 +13,7 @@ import { ShareWithClassesButton, ViewAsStudentButton } from "./TooltippedButtons
 import { Error } from "../sharedComponents/Error";
 import ShareWithCollegueDialog from "./ShareWithColleagueDialog";
 import { APIContext } from "../../contexts/APIContext";
+import CefrAssessmentDisplay from "./CefrAssessmentDisplay";
 
 export default function EditText() {
   const api = useContext(APIContext);
@@ -20,7 +21,12 @@ export default function EditText() {
     article_title: "",
     article_content: "",
     language_code: "default",
+    cefr_level: "",
+    assessment_method: "",
   });
+  const [originalCEFRLevel, setOriginalCEFRLevel] = useState(""); // Track original to detect manual changes
+  const [isEstimating, setIsEstimating] = useState(false);
+  const [cefrAssessments, setCefrAssessments] = useState(null); // Store CEFR assessment data
   const [cohortList, setCohortList] = useState([]);
   const [showAddToCohortDialog, setShowAddToCohortDialog] = useState(false);
   const [showDeleteTextWarning, setShowDeleteTextWarning] = useState(false);
@@ -40,12 +46,35 @@ export default function EditText() {
   useEffect(() => {
     if (!isNew) {
       api.getArticleInfo(articleID, (article) => {
+        const cefrLevel = article.metrics?.cefr_level || "";
+
+        // Convert plain text to HTML if no htmlContent available
+        // TODO: Investigate, why do we end up in this situation with not having HTML content!
+        let contentForEditor = article.htmlContent;
+        if (!contentForEditor || contentForEditor.trim() === "") {
+          // Convert plain text paragraphs to HTML
+          const plainText = article.content || "";
+          contentForEditor = plainText
+            .split(/\n\n+/) // Split on double newlines (paragraphs)
+            .filter((para) => para.trim()) // Remove empty paragraphs
+            .map((para) => `<p>${para.trim()}</p>`) // Wrap each paragraph in <p> tags
+            .join("");
+        }
+
         setArticleState({
           article_title: article.title || "",
-          article_content: article.htmlContent || article.content || "",
+          article_content: contentForEditor,
           language_code: article.language || "default",
+          cefr_level: cefrLevel,
+          assessment_method: article.cefr_source || "",
         });
+        setOriginalCEFRLevel(cefrLevel); // Track original for change detection
         setStateChanged(false);
+
+        // Save CEFR assessments if available
+        if (article.cefr_assessments) {
+          setCefrAssessments(article.cefr_assessments);
+        }
       });
       api.getCohortFromArticle(articleID, (cohorts) => {
         setCohortList(cohorts || []);
@@ -61,12 +90,34 @@ export default function EditText() {
   const handleCancel = () => {
     if (!isNew) {
       api.getArticleInfo(articleID, (article) => {
+        const cefrLevel = article.metrics?.cefr_level || "";
+
+        // Convert plain text to HTML if no htmlContent available
+        let contentForEditor = article.htmlContent;
+        if (!contentForEditor || contentForEditor.trim() === "") {
+          // Convert plain text paragraphs to HTML
+          const plainText = article.content || "";
+          contentForEditor = plainText
+            .split(/\n\n+/) // Split on double newlines (paragraphs)
+            .filter((para) => para.trim()) // Remove empty paragraphs
+            .map((para) => `<p>${para.trim()}</p>`) // Wrap each paragraph in <p> tags
+            .join("");
+        }
+
         setArticleState({
           article_title: article.title || "",
-          article_content: article.htmlContent || article.content || "",
+          article_content: contentForEditor,
           language_code: article.language || "default",
+          cefr_level: cefrLevel,
+          assessment_method: article.cefr_source || "",
         });
+        setOriginalCEFRLevel(cefrLevel);
         setStateChanged(false);
+
+        // Reload CEFR assessments
+        if (article.cefr_assessments) {
+          setCefrAssessments(article.cefr_assessments);
+        }
       });
       api.getCohortFromArticle(articleID, (cohorts) => {
         setCohortList(cohorts || []);
@@ -93,6 +144,16 @@ export default function EditText() {
     });
   }
 
+  // Handle teacher override from CefrAssessmentDisplay component
+  function handleTeacherOverride(overrideLevel) {
+    setStateChanged(true);
+    setArticleState({
+      ...articleState,
+      cefr_level: overrideLevel,
+      assessment_method: overrideLevel ? "teacher_manual" : articleState.assessment_method,
+    });
+  }
+
   const uploadArticle = () => {
     // Strip HTML tags to get plain text for content field
     const stripHtml = (html) => {
@@ -103,21 +164,61 @@ export default function EditText() {
 
     console.log("Saving HTML content:", articleState.article_content);
 
-    api.uploadOwnText(
-      articleState.article_title,
-      stripHtml(articleState.article_content), // Plain text
-      articleState.language_code,
-      (newID) => {
-        console.log(`article created with id: ${newID}`);
-        setStateChanged(false);
-        // Navigate to the edit page for the newly created article
-        history.push(`/teacher/texts/editText/${newID}`);
-      },
-      null, // onError
-      null, // original_cefr_level
-      null, // img_url
-      articleState.article_content, // HTML content
-    );
+    const plainContent = stripHtml(articleState.article_content);
+
+    // If no CEFR level yet, estimate it first
+    if (!articleState.cefr_level) {
+      setIsEstimating(true);
+      api.estimateArticleCEFR(
+        articleState.article_title,
+        plainContent,
+        articleState.language_code,
+        (estimation) => {
+          setIsEstimating(false);
+          // Upload with estimated CEFR
+          api.uploadOwnText(
+            articleState.article_title,
+            plainContent,
+            articleState.language_code,
+            (newID) => {
+              console.log(`article created with id: ${newID}`);
+              setStateChanged(false);
+              history.push(`/teacher/texts/editText/${newID}`);
+            },
+            (error) => {
+              toast.error("Failed to upload article: " + error);
+            },
+            estimation.cefr_level,
+            estimation.assessment_method,
+            null, // img_url
+            articleState.article_content, // HTML content
+          );
+        },
+        (error) => {
+          setIsEstimating(false);
+          toast.error("Failed to estimate CEFR level: " + error);
+        },
+      );
+    } else {
+      // Already have CEFR level (either from estimation or teacher selection)
+      api.uploadOwnText(
+        articleState.article_title,
+        plainContent,
+        articleState.language_code,
+        (newID) => {
+          console.log(`article created with id: ${newID}`);
+          setStateChanged(false);
+          history.push(`/teacher/texts/editText/${newID}`);
+        },
+        (error) => {
+          toast.error("Failed to upload article: " + error);
+        },
+        articleState.cefr_level,
+        articleState.assessment_method,
+        null, // img_url
+        articleState.article_content, // HTML content
+      );
+    }
   };
 
   const updateArticle = () => {
@@ -143,6 +244,8 @@ export default function EditText() {
         }
       },
       articleState.article_content, // HTML content
+      articleState.cefr_level || null, // cefr_level
+      articleState.assessment_method || null, // assessment_method
     );
   };
 
@@ -212,7 +315,7 @@ export default function EditText() {
             borderRadius: "5px",
           }}
         >
-          <span style={{ fontWeight: "bold", whiteSpace: "nowrap" }}>Share With:</span>
+          <span style={{ fontWeight: "bold", whiteSpace: "nowrap" }}>Share With Class:</span>
           {cohortList.map((cohort, index) => (
             <span
               key={cohort}
@@ -230,6 +333,18 @@ export default function EditText() {
             />
           </div>
         </div>
+
+        {/* CEFR Assessment Display - shows LLM, ML, and Teacher assessments */}
+        {!isNew && (
+          <CefrAssessmentDisplay
+            articleID={articleID}
+            articleContent={articleState.article_content}
+            articleTitle={articleState.article_title}
+            onOverrideChange={handleTeacherOverride}
+            initialAssessments={cefrAssessments}
+          />
+        )}
+
         <EditTextInputFields
           language_code={articleState.language_code}
           article_title={articleState.article_title}

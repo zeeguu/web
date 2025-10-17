@@ -18,6 +18,7 @@ import moment from "moment";
 import { getStaticPath } from "../utils/misc/staticPath";
 import { estimateReadingTime } from "../utils/misc/readableTime";
 import ActionButton from "../components/ActionButton";
+import { getHighestCefrLevel } from "../utils/misc/cefrHelpers";
 
 export default function ArticlePreview({
   article,
@@ -217,6 +218,14 @@ export default function ArticlePreview({
         )
       )}
 
+      {/* Show teacher name for classroom articles */}
+      {article.uploader_name && (
+        <div style={{ marginTop: "8px", marginBottom: "8px", fontSize: "0.9em", color: "#666" }}>
+          <span style={{ fontWeight: "500" }}>Shared by:</span>{" "}
+          <span style={{ color: "#333" }}>{article.uploader_name}</span>
+        </div>
+      )}
+
       <s.TitleContainer>
         <s.Title>
           {interactiveTitle ? (
@@ -243,7 +252,7 @@ export default function ArticlePreview({
             <img
               src={getStaticPath(
                 "icons",
-                `${article.metrics?.cefr_level || article.cefr_level || "B1"}-level-icon.png`,
+                `${getHighestCefrLevel(article.metrics?.cefr_level || article.cefr_level || "B1")}-level-icon.png`,
               )}
               alt="difficulty icon"
               style={{ width: "16px", height: "16px" }}
