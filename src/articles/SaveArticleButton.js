@@ -4,18 +4,33 @@ import { useContext } from "react";
 import { APIContext } from "../contexts/APIContext.js";
 import ActionButton from "../components/ActionButton.js";
 
-export default function SaveArticleButton({
-  article,
-  isArticleSaved,
-  setIsArticleSaved,
-}) {
+export default function SaveArticleButton({ article, isArticleSaved, setIsArticleSaved }) {
   const api = useContext(APIContext);
 
   function saveArticle() {
     api.makePersonalCopy(article.id, (data) => {
       if (data === "OK") {
         setIsArticleSaved(true);
-        toast("Article added to your Saves!");
+        // toast("Article added to your Saves!");
+        const t = toast(
+          <span>
+            Article added to your Saves!{" "}
+            <u
+              onClick={() => {
+                toast.dismiss(t);
+                removeArticle();
+              }}
+              style={{
+                cursor: "pointer",
+                textDecoration: "underline",
+                marginLeft: "6px",
+                fontStyle: "italic",
+              }}
+            >
+              Undo?
+            </u>
+          </span>,
+        );
       }
     });
   }
@@ -32,14 +47,11 @@ export default function SaveArticleButton({
   return (
     <>
       {isArticleSaved ? (
-        <ActionButton onClick={removeArticle}>
-          Unsave
-        </ActionButton>
+        <ActionButton onClick={removeArticle}>Unsave</ActionButton>
       ) : (
-        <ActionButton onClick={saveArticle}>
-          Save
-        </ActionButton>
+        <ActionButton onClick={saveArticle}>Save</ActionButton>
       )}
     </>
   );
 }
+

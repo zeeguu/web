@@ -3,7 +3,7 @@ import { Bar, DismissButton, OpenButton, SaveButton, ButtonInner } from "./Artic
 import { white, darkGrey, orange600 } from "../colors";
 import SwipeIcon from "./SwipeIcon.js";
 
-export default function ArticleSwipeControl({ onDismiss = () => {}, onOpen = () => {}, onSave = () => {}, children }) {
+export default function ArticleSwipeControl({ onDismiss = () => {}, onOpen = () => {}, onSave = () => {}, children, isSaved = false }) {
     return (
         <Bar>
             <DismissButton onClick={onDismiss} aria-label="Dismiss">
@@ -14,23 +14,20 @@ export default function ArticleSwipeControl({ onDismiss = () => {}, onOpen = () 
 
             <OpenButton onClick={onOpen} aria-label="Open Article">
                 <ButtonInner>
-                    <SwipeIcon name="open" color={white} size={32} />
+                    <SwipeIcon name="open" color={white} size={26} />
                 </ButtonInner>
             </OpenButton>
 
-            {/* <SaveButton onClick={onSave} aria-label="Save Article">
-                <ButtonInner>
-                    <SwipeIcon name="save" color={orange600} size={22} />
-                </ButtonInner>
-            </SaveButton> */}
             {children ? (
                 <SaveButton as="div" aria-label="Save Article">
                     <ButtonInner>{children}</ButtonInner>
                 </SaveButton>
             ) : (
-                <SaveButton onClick={onSave} aria-label="Save Article">
+                <SaveButton onClick={onSave} aria-label="Save Article" className={isSaved ? "saved" : ""}>
                     <ButtonInner>
-                        <SwipeIcon name="save" color={orange600} size={22} />
+                        {/* <SwipeIcon name="save" color={orange600} size={22} /> */}
+                        <SwipeIcon className="heart-outline" name="save" color={orange600} size={22} />
+                        <SwipeIcon className="heart-filled" name="saveFilled" color={orange600} size={22} />
                     </ButtonInner>
                 </SaveButton>
             )}

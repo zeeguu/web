@@ -90,7 +90,7 @@ export default function ArticleSwipeBrowser({
       onArticleSave?.(currentArticle.id, val); // parent flips has_personal_copy in its arrays
   };
 
-  const handleSave = () => {
+  const handleSave = () => {   
     const root = hiddenSaveRef.current;
     if (!root) return;
     const clickable = root.querySelector("button, a");
@@ -107,6 +107,8 @@ export default function ArticleSwipeBrowser({
           article={currentArticle}
           isListView={false}
           notifyArticleClick={handleOpen}
+          onArticleHidden={handleDismiss}
+          onArticleSave={handleSave}
         />
 
         <ArticleSwipeControl onOpen={handleOpen} onDismiss={handleDismiss} onSave={handleSave} />
@@ -131,3 +133,4 @@ export default function ArticleSwipeBrowser({
     </s.Container>
   );
 }
+
