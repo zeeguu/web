@@ -1,7 +1,8 @@
 import styled from "styled-components";
-import { white, almostBlack, lightGrey, zeeguuDarkOrange } from "../components/colors";
+import { white, almostBlack, zeeguuDarkOrange } from "../components/colors";
+import {motion} from "framer-motion";
 
-export const CardContainer = styled.div`
+export const CardContainer = styled(motion.div)`
   width: 500px;
   max-width: 95vw;
   height: 600px;
@@ -14,7 +15,14 @@ export const CardContainer = styled.div`
   display: flex;
   flex-direction: column;
   margin: 0 auto;
+  cursor: grab;
+  touch-action: pan-y;
+  user-select: none;
 
+  &:active {
+    cursor: grabbing;
+  }
+    
   position: static;
   top: auto;
   left: auto;
@@ -79,29 +87,3 @@ export const Summary = styled.div`
   min-height: 0;
   overflow: auto;
 `;
-
-// export const ContinueReading = styled.div`
-//   margin-top: 1rem;
-//   font-size: 0.95rem;
-//   font-weight: 500;
-//   color: ${zeeguuDarkOrange};
-//   cursor: pointer;
-//   text-decoration: none;
-
-//   &:hover {
-//     text-decoration: underline;
-//   }
-// `;
-
-// export const Footer = styled.div`
-//   padding: 0.5rem 1.5rem;
-//   font-size: 0.875rem;
-//   color: ${lightGrey};
-//   text-align: center;
-// `;
-
-// export const FeedName = styled.span`
-//   font-size: small;
-//   font-style: oblique;
-//   margin-right: 0.5em;
-// `;
