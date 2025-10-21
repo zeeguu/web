@@ -64,9 +64,18 @@ export const SaveButton = styled(BaseButton)`
     transition: opacity 0.25s ease;
   }
 
-  .heart-filled { opacity: 0; } 
-  &:hover .heart-filled { opacity: 1; }
-  &:hover .heart-outline { opacity: 0; }
+  .heart-filled { opacity: 0; }
+  .heart-outline { opacity: 1; }
+
+  /* Hover only for desktop */
+  @media (hover: hover) and (pointer: fine) {
+      &:hover .heart-filled {
+          opacity: 1;
+      }
+      &:hover .heart-outline {
+          opacity: 0;
+      }
+  }
 
   &.saved .heart-filled { opacity: 1; }
   &.saved .heart-outline { opacity: 0; }
