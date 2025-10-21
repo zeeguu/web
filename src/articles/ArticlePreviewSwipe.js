@@ -29,10 +29,10 @@ export default function ArticlePreviewSwipe({
         const deltaY = Math.abs(info.point.y - dragStartY.current);
 
         // Only consider drag horizontal if X movement is clearly larger than Y
-        isHorizontalDrag.current = deltaX > deltaY * 1.5;
+        isHorizontalDrag.current = deltaX > deltaY * 0.6;
     };
 
-    const MIN_DISTANCE = 60;
+    const MIN_DISTANCE = 10;
 
     const handleDragEnd = (_, info) => {
         if (!isHorizontalDrag.current) {
