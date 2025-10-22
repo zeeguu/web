@@ -330,9 +330,9 @@ export default function TodayAudio() {
   const getSchedulingReasonStyle = (reason) => {
     switch (reason) {
       case "manually_added": return { backgroundColor: "#e3f2fd", color: "#1976d2" };
-      case "due_today": return { backgroundColor: "#fff3e0", color: "#e65100" };
+      case "due_today": return { backgroundColor: "#e8f5e9", color: "#2e7d32" };
       case "overdue": return { backgroundColor: "#ffebee", color: "#c62828" };
-      case "early_practice": return { backgroundColor: "#e8f5e9", color: "#2e7d32" };
+      case "early_practice": return { backgroundColor: "#fff3e0", color: "#e65100" };
       default: return {};
     }
   };
