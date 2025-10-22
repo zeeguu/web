@@ -316,12 +316,57 @@ export default function TodayAudio() {
     );
   }
 
+  // Helper to get scheduling reason label
+  const getSchedulingReasonLabel = (reason, days) => {
+    switch (reason) {
+      case "manually_added": return "added";
+      case "due_today": return "due today";
+      case "overdue": return days === 1 ? "due 1 day ago" : `due ${days} days ago`;
+      case "early_practice": return "early practice";
+      default: return null;
+    }
+  };
+
+  const getSchedulingReasonStyle = (reason) => {
+    switch (reason) {
+      case "manually_added": return { backgroundColor: "#e3f2fd", color: "#1976d2" };
+      case "due_today": return { backgroundColor: "#fff3e0", color: "#e65100" };
+      case "overdue": return { backgroundColor: "#ffebee", color: "#c62828" };
+      case "early_practice": return { backgroundColor: "#e8f5e9", color: "#2e7d32" };
+      default: return {};
+    }
+  };
+
   return (
     <div style={{ padding: "20px" }}>
-      <h2 style={{ color: zeeguuOrange, marginBottom: "20px", display: "flex", alignItems: "center", gap: "8px" }}>
+      <h2 style={{ color: zeeguuOrange, marginBottom: "10px", display: "flex", alignItems: "center", gap: "8px" }}>
         {lessonData.is_completed && <span style={{ color: "#28a745", fontSize: "20px" }}>✓</span>}
         {wordsAsTile(words)}
       </h2>
+
+      {/* Display word details with scheduling reasons */}
+      {words && words.length > 0 && (
+        <div style={{ marginBottom: "20px", fontSize: "14px", color: "#666" }}>
+          {words.map((word, index) => (
+            <span key={index} style={{ display: "inline-block", marginRight: "12px", marginBottom: "8px" }}>
+              {word.origin || word}
+              {word.scheduling_reason && getSchedulingReasonLabel(word.scheduling_reason, word.days_until_practice) && (
+                <span
+                  style={{
+                    marginLeft: "4px",
+                    fontSize: "0.85em",
+                    padding: "2px 6px",
+                    borderRadius: "3px",
+                    ...getSchedulingReasonStyle(word.scheduling_reason),
+                  }}
+                >
+                  {getSchedulingReasonLabel(word.scheduling_reason, word.days_until_practice)}
+                </span>
+              )}
+            </span>
+          ))}
+        </div>
+      )}
 
       {error && <div style={{ color: "red", marginBottom: "20px" }}>{error}</div>}
 

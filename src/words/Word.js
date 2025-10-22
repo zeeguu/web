@@ -122,21 +122,6 @@ export default function Word({
                   rank={bookmark.origin_rank}
                 />
               )}
-              {bookmark.is_user_added && (
-                <span
-                  title="User added word"
-                  style={{
-                    marginLeft: "4px",
-                    fontSize: "0.7em",
-                    backgroundColor: "#e3f2fd",
-                    padding: "1px 4px",
-                    borderRadius: "3px",
-                    color: "#1976d2",
-                  }}
-                >
-                  manually added
-                </span>
-              )}
             </div>
             <div className="to" style={style_grayed_out}>
               {bookmark.to}
