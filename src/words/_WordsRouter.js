@@ -28,12 +28,18 @@ export default function WordsRouter() {
     });
   }, [api]);
 
-  let tabsAndLinks;
-
-  tabsAndLinks = {
-    [strings.learned]: "/words/learned",
-    [strings.topWords]: "/words",
-  };
+  const tabsAndLinks = [
+    {
+      text: strings.learning,
+      link: "/words",
+      counter: learningCount
+    },
+    {
+      text: strings.learned,
+      link: "/words/learned",
+      counter: learnedCount
+    }
+  ];
 
   return (
     <Switch>
@@ -47,9 +53,9 @@ export default function WordsRouter() {
 
         <PrivateRoute path="/render/words/learned" component={Learned} />
 
-        <PrivateRoute exact path="/words" component={Top} />
+        <PrivateRoute exact path="/words" component={Learning} />
 
-        <PrivateRoute exact path="/render/words" component={Top} />
+        <PrivateRoute exact path="/render/words" component={Learning} />
 
         <PrivateRoute exact path="/words/learning" component={Learning} />
 
