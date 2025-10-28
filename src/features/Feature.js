@@ -8,9 +8,9 @@ const Feature = {
     return LocalStorage.hasFeature(featureName);
   },
 
-  is_audio_supported_for_language: function () {
+  is_audio_supported_for_language: function() {
     const learnedLanguage = LocalStorage.getLearnedLanguage();
-    const languagesWithoutAudio = ["el"];
+    const languagesWithoutAudio = [];  // Greek now supported via Azure TTS
     return !languagesWithoutAudio.includes(learnedLanguage);
   },
 
