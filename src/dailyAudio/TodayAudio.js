@@ -316,25 +316,42 @@ export default function TodayAudio() {
     );
   }
 
-  // Helper to get scheduling reason label
-  const getSchedulingReasonLabel = (reason, days) => {
-    switch (reason) {
-      case "manually_added": return "added";
-      case "due_today": return "due today";
-      case "overdue": return days === 1 ? "due 1 day ago" : `due ${days} days ago`;
-      case "early_practice": return "early practice";
-      default: return null;
+  // Helper to get word type badge info
+  const getWordTypeBadge = (word) => {
+    // Show "manually updated" if word was user-added
+    if (word.is_user_added) {
+      return {
+        label: "manually updated",
+        style: { backgroundColor: "#e3f2fd", color: "#1976d2" }
+      };
     }
-  };
 
-  const getSchedulingReasonStyle = (reason) => {
-    switch (reason) {
-      case "manually_added": return { backgroundColor: "#e3f2fd", color: "#1976d2" };
-      case "due_today": return { backgroundColor: "#e8f5e9", color: "#2e7d32" };
-      case "overdue": return { backgroundColor: "#ffebee", color: "#c62828" };
-      case "early_practice": return { backgroundColor: "#fff3e0", color: "#e65100" };
-      default: return {};
+    // Show phrase type badges for special types
+    const phraseType = word.phrase_type?.toLowerCase();
+
+    if (phraseType === "collocation") {
+      return {
+        label: "collocation",
+        style: { backgroundColor: "#e8f5e9", color: "#2e7d32" }
+      };
     }
+
+    if (phraseType === "idiom") {
+      return {
+        label: "idiom",
+        style: { backgroundColor: "#fff3e0", color: "#e65100" }
+      };
+    }
+
+    if (phraseType === "expression") {
+      return {
+        label: "expression",
+        style: { backgroundColor: "#f3e5f5", color: "#6a1b9a" }
+      };
+    }
+
+    // No badge for regular single words or unclassified multi-word phrases
+    return null;
   };
 
   return (
@@ -344,27 +361,30 @@ export default function TodayAudio() {
         {wordsAsTile(words)}
       </h2>
 
-      {/* Display word details with scheduling reasons */}
+      {/* Display word details with type badges */}
       {words && words.length > 0 && (
         <div style={{ marginBottom: "20px", fontSize: "14px", color: "#666" }}>
-          {words.map((word, index) => (
-            <span key={index} style={{ display: "inline-block", marginRight: "12px", marginBottom: "8px" }}>
-              {word.origin || word}
-              {word.scheduling_reason && getSchedulingReasonLabel(word.scheduling_reason, word.days_until_practice) && (
-                <span
-                  style={{
-                    marginLeft: "4px",
-                    fontSize: "0.85em",
-                    padding: "2px 6px",
-                    borderRadius: "3px",
-                    ...getSchedulingReasonStyle(word.scheduling_reason),
-                  }}
-                >
-                  {getSchedulingReasonLabel(word.scheduling_reason, word.days_until_practice)}
-                </span>
-              )}
-            </span>
-          ))}
+          {words.map((word, index) => {
+            const badge = getWordTypeBadge(word);
+            return (
+              <span key={index} style={{ display: "inline-block", marginRight: "12px", marginBottom: "8px" }}>
+                {word.origin || word}
+                {badge && (
+                  <span
+                    style={{
+                      marginLeft: "4px",
+                      fontSize: "0.85em",
+                      padding: "2px 6px",
+                      borderRadius: "3px",
+                      ...badge.style,
+                    }}
+                  >
+                    {badge.label}
+                  </span>
+                )}
+              </span>
+            );
+          })}
         </div>
       )}
 
