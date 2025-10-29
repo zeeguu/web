@@ -325,21 +325,6 @@ export default function TodayAudio() {
         {wordsAsTile(words)}
       </h2>
 
-      {/* Display word details with type badges */}
-      {words && words.length > 0 && (
-        <div style={{ marginBottom: "20px" }}>
-          {words.map((word, index) => (
-            <Word
-              key={index}
-              bookmark={word}
-              disableEdit={true}
-              compact={true}
-              showRanking={false}
-            />
-          ))}
-        </div>
-      )}
-
       {error && <div style={{ color: "red", marginBottom: "20px" }}>{error}</div>}
 
       <div>
@@ -412,6 +397,24 @@ export default function TodayAudio() {
             <span style={{ color: "#28a745", fontWeight: "500", fontSize: "14px" }}>
               ✓ Lesson completed! Great job on finishing today's lesson.
             </span>
+          </div>
+        )}
+
+        {/* Display word details with type badges */}
+        {words && words.length > 0 && (
+          <div style={{ marginTop: "30px", marginBottom: "20px" }}>
+            <h3 style={{ fontSize: "16px", fontWeight: "600", marginBottom: "12px", color: "#333" }}>
+              Words in this lesson
+            </h3>
+            {words.map((word, index) => (
+              <Word
+                key={index}
+                bookmark={word}
+                disableEdit={true}
+                compact={true}
+                showRanking={false}
+              />
+            ))}
           </div>
         )}
 
