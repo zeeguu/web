@@ -86,15 +86,31 @@ const Zeeguu_API = class {
 
     const headers = isForm ? { "Content-Type": "multipart/form-data" } : { "Content-Type": "application/json" };
 
-    const res = await axios({
-      method: "post",
-      url: this.baseAPIurl + endpoint,
-      params: params,
-      headers: headers,
-      data: data,
-    });
+    console.log(`[FRONTEND-API] POST ${endpoint} - START`, { timestamp: new Date().toISOString(), endpoint, dataSize: JSON.stringify(data).length });
 
-    return res;
+    const startTime = performance.now();
+    try {
+      const res = await axios({
+        method: "post",
+        url: this.baseAPIurl + endpoint,
+        params: params,
+        headers: headers,
+        data: data,
+      });
+      const elapsed = performance.now() - startTime;
+      console.log(`[FRONTEND-API] POST ${endpoint} - SUCCESS`, { timestamp: new Date().toISOString(), elapsed: `${elapsed.toFixed(2)}ms`, status: res.status });
+      return res;
+    } catch (error) {
+      const elapsed = performance.now() - startTime;
+      console.error(`[FRONTEND-API] POST ${endpoint} - ERROR`, {
+        timestamp: new Date().toISOString(),
+        elapsed: `${elapsed.toFixed(2)}ms`,
+        error: error.message,
+        code: error.code,
+        response: error.response?.status
+      });
+      throw error;
+    }
   }
 
   async apiGet(endpoint) {

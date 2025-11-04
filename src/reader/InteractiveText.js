@@ -62,6 +62,14 @@ export default class InteractiveText {
 
 
   translate(word, fuseWithNeighbours, onSuccess) {
+    console.log(`[INTERACTIVE-TEXT] translate() called`, {
+      timestamp: new Date().toISOString(),
+      word: word.word,
+      fuseWithNeighbours,
+      source: this.source,
+      sourceId: this.sourceId
+    });
+
     let context, cParagraph_i, cSent_i, cToken_i, leftEllipsis, rightEllipsis;
 
     [context, cParagraph_i, cSent_i, cToken_i, leftEllipsis, rightEllipsis] = this.getContextAndCoordinates(word);
@@ -69,6 +77,9 @@ export default class InteractiveText {
     let wordSent_i = word.token.sent_i - cSent_i;
     let wordToken_i = word.token.token_i - cToken_i;
     console.log(word);
+
+    console.log(`[INTERACTIVE-TEXT] Calling api.getOneTranslation`, { timestamp: new Date().toISOString(), word: word.word });
+
     this.api
       .getOneTranslation(
         this.language,
@@ -81,18 +92,23 @@ export default class InteractiveText {
         leftEllipsis,
         rightEllipsis,
         this.contextIdentifier,
-        this.source === "article_preview" 
-          ? "article_preview" 
+        this.source === "article_preview"
+          ? "article_preview"
           : isExerciseSource(this.source)
           ? "exercise"
           : "reading",
       )
-      .then((response) => response.data)
+      .then((response) => {
+        console.log(`[INTERACTIVE-TEXT] Translation response received`, { timestamp: new Date().toISOString(), word: word.word });
+        return response.data;
+      })
       .then((data) => {
+        console.log(`[INTERACTIVE-TEXT] Translation data processed`, { timestamp: new Date().toISOString(), word: word.word, translation: data.translation });
         word.updateTranslation(data.translation, data.service_name, data.bookmark_id);
         onSuccess();
       })
       .catch((e) => {
+        console.error(`[INTERACTIVE-TEXT] Translation ERROR`, { timestamp: new Date().toISOString(), word: word.word, error: e.message, code: e.code });
         console.error(e);
         console.log("could not retreive translation");
       });

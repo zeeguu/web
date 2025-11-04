@@ -14,6 +14,15 @@ Zeeguu_API.prototype.getOneTranslation = function (
   contextIdentifier,
   translationSource = 'reading',
 ) {
+  console.log(`[TRANSLATION] getOneTranslation called`, {
+    timestamp: new Date().toISOString(),
+    word,
+    from_lang,
+    to_lang,
+    translationSource,
+    contextLength: context?.length || 0
+  });
+
   let w_sent_i, w_token_i, w_total_tokens;
   let c_paragraph_i, c_sent_i, c_token_i;
   [w_sent_i, w_token_i, w_total_tokens] = bookmark_token_i;
@@ -34,6 +43,8 @@ Zeeguu_API.prototype.getOneTranslation = function (
     context_identifier: contextIdentifier,
     translation_source: translationSource,
   };
+
+  console.log(`[TRANSLATION] About to call apiPost`, { timestamp: new Date().toISOString(), payloadSize: JSON.stringify(payload).length });
 
   return this.apiPost(`/get_one_translation/${from_lang}/${to_lang}`, payload);
 };
