@@ -45,7 +45,7 @@ export default function OutOfWordsMessage({ goBackAction }) {
             . You can also increase the number of words in learning from the{" "}
             <Link to={"/account_settings/exercise_scheduling"}>
               {" "}
-              <b>Settings>Exercises>Scheduling</b>
+              <b>Settings &gt; Exercises &gt; Scheduling</b>
             </Link>{" "}
             preferences page and then you can get more exercises also today.
           </small>

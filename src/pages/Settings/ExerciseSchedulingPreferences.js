@@ -86,7 +86,7 @@ export default function ExerciseSchedulingPreferences() {
             <small>
               Note: If you change the maximum words to a lower number than the number of words that are already
               scheduled, you'll have to remove manually the extra words from the{" "}
-              <Link to={"/words"}>Words > In Learning</Link> page or to wait until some of the words will be learned
+              <Link to={"/words"}>Words &gt; In Learning</Link> page or to wait until some of the words will be learned
             </small>
           </FormSection>
 
