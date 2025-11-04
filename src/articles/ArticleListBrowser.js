@@ -149,10 +149,20 @@ export default function ArticleListBrowser({ content, searchQuery, searchPublish
       );
     } else {
       setTitle(strings.titleHome);
-      api.getUserArticles((articles) => {
-        setArticlesAndVideosList(articles);
-        setOriginalList([...articles]);
-        articles.some((e) => e.video) ? setAreVideosAvailable(true) : setAreVideosAvailable(false);
+      // First fetch unfinished articles, then fetch main articles
+      api.getUnfinishedUserReadingSessions((unfinishedArticles) => {
+        api.getUserArticles((articles) => {
+          // Filter out unfinished articles from the main list
+          let filteredArticles = [...articles];
+          for (let i = 0; i < unfinishedArticles.length; i++) {
+            filteredArticles = filteredArticles.filter(
+              (article) => article.id !== unfinishedArticles[i].id,
+            );
+          }
+          setArticlesAndVideosList(filteredArticles);
+          setOriginalList([...filteredArticles]);
+          filteredArticles.some((e) => e.video) ? setAreVideosAvailable(true) : setAreVideosAvailable(false);
+        });
       });
       window.addEventListener("scroll", handleScroll, true);
       return () => {

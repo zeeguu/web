@@ -15,13 +15,8 @@ export default function UnfinishedArticlesList({
   useEffect(() => {
     api.getUnfinishedUserReadingSessions((articles) => {
       setUnfineshedArticleList(articles);
-      let filterUnfinishedArticles = [...articleList];
-      for (let i = 0; i < articles.length; i++) {
-        filterUnfinishedArticles = filterUnfinishedArticles.filter(
-          (article) => article.id !== articles[i].id,
-        );
-      }
-      setArticleList(filterUnfinishedArticles);
+      // Note: Filtering is now handled in ArticleListBrowser to prevent flicker
+      // The main article list is already filtered before being set
     });
     // eslint-disable-next-line
   }, []);
