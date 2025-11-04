@@ -28,6 +28,7 @@ export default function ArticleListBrowser({ content, searchQuery, searchPublish
   // A '=== "true"' clause has been added to the getters to achieve predictable and desired bool values.
   const doNotShowRedirectionModal_LocalStorage = LocalStorage.getDoNotShowRedirectionModal() === "true";
   const [articlesAndVideosList, setArticlesAndVideosList] = useState();
+  const [unfinishedArticles, setUnfinishedArticles] = useState();
   const [originalList, setOriginalList] = useState(null);
   const [searchError, setSearchError] = useState(false);
 
@@ -150,13 +151,14 @@ export default function ArticleListBrowser({ content, searchQuery, searchPublish
     } else {
       setTitle(strings.titleHome);
       // First fetch unfinished articles, then fetch main articles
-      api.getUnfinishedUserReadingSessions((unfinishedArticles) => {
+      api.getUnfinishedUserReadingSessions((unfinished) => {
+        setUnfinishedArticles(unfinished);
         api.getUserArticles((articles) => {
           // Filter out unfinished articles from the main list
           let filteredArticles = [...articles];
-          for (let i = 0; i < unfinishedArticles.length; i++) {
+          for (let i = 0; i < unfinished.length; i++) {
             filteredArticles = filteredArticles.filter(
-              (article) => article.id !== unfinishedArticles[i].id,
+              (article) => article.id !== unfinished[i].id,
             );
           }
           setArticlesAndVideosList(filteredArticles);
@@ -192,7 +194,7 @@ export default function ArticleListBrowser({ content, searchQuery, searchPublish
     <>
       {!searchQuery && (
         <>
-          <UnfinishedArticlesList articleList={articlesAndVideosList} setArticleList={setArticlesAndVideosList} />
+          <UnfinishedArticlesList unfinishedArticles={unfinishedArticles} />
           <s.SortHolder
             style={{
               display: "flex",

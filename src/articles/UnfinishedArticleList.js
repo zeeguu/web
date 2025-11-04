@@ -1,29 +1,20 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useContext } from "react";
 
 import { APIContext } from "../contexts/APIContext";
 import * as s from "./UnfinishedArticleList.sc";
 import UnfinishedArticlePreview from "./UnfinishedArticlePreview";
 
 export default function UnfinishedArticlesList({
-  articleList,
-  setArticleList,
+  unfinishedArticles,
 }) {
   let api = useContext(APIContext);
 
-  const [unfineshedArticleList, setUnfineshedArticleList] = useState();
-
-  useEffect(() => {
-    api.getUnfinishedUserReadingSessions((articles) => {
-      setUnfineshedArticleList(articles);
-      // Note: Filtering is now handled in ArticleListBrowser to prevent flicker
-      // The main article list is already filtered before being set
-    });
-    // eslint-disable-next-line
-  }, []);
+  // unfinishedArticles is now passed from parent component
+  // No need for separate API call or state management
 
   if (
-    unfineshedArticleList === undefined ||
-    unfineshedArticleList.length === 0
+    unfinishedArticles === undefined ||
+    unfinishedArticles.length === 0
   ) {
     return <></>;
   }
@@ -34,7 +25,7 @@ export default function UnfinishedArticlesList({
         <s.UnfishedArticleBoxTitle>
           Continue where you left off
         </s.UnfishedArticleBoxTitle>
-        {unfineshedArticleList.map((each, index) => (
+        {unfinishedArticles.map((each, index) => (
           <UnfinishedArticlePreview
             key={each.id}
             article={each}
