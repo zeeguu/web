@@ -45,7 +45,26 @@ export default function ArticlePreview({
   useEffect(() => {
     if ((article.summary || article.title) && !isTokenizing && !interactiveSummary && !interactiveTitle) {
       setIsTokenizing(true);
-      api.getArticleSummaryInfo(article.id, (summaryData) => {
+
+      // Check if article already has tokenized data (optimization to avoid N+1 API calls)
+      const summaryData =
+        article.interactiveSummary && article.interactiveTitle
+          ? {
+              tokenized_summary: article.interactiveSummary,
+              tokenized_title: article.interactiveTitle,
+            }
+          : null;
+
+      if (summaryData) {
+        // Use pre-loaded summary data (already included in article from /user_articles/recommended)
+        processSummaryData(summaryData);
+      } else {
+        // Fall back to fetching summary separately (for backwards compatibility)
+        // Nov '25 - should be removed soon
+        api.getArticleSummaryInfo(article.id, processSummaryData);
+      }
+
+      function processSummaryData(summaryData) {
         // Create interactive summary
         if (summaryData.tokenized_summary) {
           const interactive = new InteractiveText(
@@ -78,7 +97,7 @@ export default function ArticlePreview({
           setInteractiveTitle(titleInteractive);
         }
         setIsTokenizing(false);
-      });
+      }
     }
   }, [
     article.summary,
@@ -193,11 +212,11 @@ export default function ArticlePreview({
   return (
     <s.ArticlePreview
       style={{
-        maxHeight: isAnimatingOut ? '0' : '1000px',
-        opacity: isAnimatingOut ? '0' : '1',
-        overflow: 'hidden',
-        transition: 'max-height 0.3s ease-out, opacity 0.3s ease-out',
-        marginBottom: isAnimatingOut ? '0' : undefined,
+        maxHeight: isAnimatingOut ? "0" : "1000px",
+        opacity: isAnimatingOut ? "0" : "1",
+        overflow: "hidden",
+        transition: "max-height 0.3s ease-out, opacity 0.3s ease-out",
+        marginBottom: isAnimatingOut ? "0" : undefined,
       }}
     >
       {article.feed_id ? (
@@ -305,10 +324,7 @@ export default function ArticlePreview({
               />
             </div>
             <div style={{ flex: "0 0 auto" }}>
-              <ActionButton
-                onClick={handleHideArticle}
-                variant="muted"
-              >
+              <ActionButton onClick={handleHideArticle} variant="muted">
                 Hide
               </ActionButton>
             </div>
