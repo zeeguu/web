@@ -1,4 +1,4 @@
-const { override, overrideDevServer } = require('customize-cra');
+const { override, addBabelPlugin, overrideDevServer } = require('customize-cra');
 
 // Jest configuration override
 const overrideJest = (config) => {
@@ -11,46 +11,15 @@ const overrideJest = (config) => {
   return config;
 };
 
-// Replace Babel with SWC for faster builds
-const useSWC = () => (config) => {
-  // Find and replace babel-loader with swc-loader
-  const oneOfRule = config.module.rules.find(rule => Array.isArray(rule.oneOf));
-  if (oneOfRule) {
-    oneOfRule.oneOf.forEach(rule => {
-      if (rule.loader && rule.loader.includes('babel-loader')) {
-        rule.loader = require.resolve('swc-loader');
-        rule.options = {
-          jsc: {
-            parser: {
-              syntax: 'ecmascript',
-              jsx: true,
-              dynamicImport: true,
-            },
-            transform: {
-              react: {
-                runtime: 'automatic',
-                development: process.env.NODE_ENV === 'development',
-              },
-            },
-            experimental: {
-              plugins: [
-                ['@swc/plugin-styled-components', {
-                  displayName: true,
-                  fileName: true,
-                }],
-              ],
-            },
-          },
-        };
-      }
-    });
-  }
-  return config;
-};
-
 module.exports = {
   webpack: override(
-    useSWC(),
+    addBabelPlugin([
+      'babel-plugin-styled-components',
+      {
+        displayName: true,
+        fileName: true
+      }
+    ]),
     (config) => {
       // Fix for Tiptap ESM imports
       config.module.rules.push({
