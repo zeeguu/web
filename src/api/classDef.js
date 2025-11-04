@@ -86,7 +86,7 @@ const Zeeguu_API = class {
 
     const headers = isForm ? { "Content-Type": "multipart/form-data" } : { "Content-Type": "application/json" };
 
-    console.log(`[FRONTEND-API] POST ${endpoint} - START`, { timestamp: new Date().toISOString(), endpoint, dataSize: JSON.stringify(data).length });
+    console.log(`[FRONTEND-API] POST ${endpoint} - START`, { timestamp: new Date().toISOString(), endpoint, dataSize: data ? JSON.stringify(data).length : 0 });
 
     const startTime = performance.now();
     try {
