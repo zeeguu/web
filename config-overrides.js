@@ -41,6 +41,14 @@ module.exports = {
         );
       }
 
+      // Enable persistent caching for faster rebuilds
+      config.cache = {
+        type: 'filesystem',
+        buildDependencies: {
+          config: [__filename],
+        },
+      };
+
       return config;
     }
   ),
