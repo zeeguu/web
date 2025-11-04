@@ -49,6 +49,22 @@ module.exports = {
         },
       };
 
+      // Disable content hashing in production filenames so sourcemaps can be built separately
+      // Files will be named main.js instead of main.[hash].js
+      if (config.mode === 'production') {
+        config.output.filename = 'static/js/[name].js';
+        config.output.chunkFilename = 'static/js/[name].chunk.js';
+
+        // Also disable CSS hashing
+        const miniCssExtractPlugin = config.plugins.find(
+          plugin => plugin.constructor.name === 'MiniCssExtractPlugin'
+        );
+        if (miniCssExtractPlugin) {
+          miniCssExtractPlugin.options.filename = 'static/css/[name].css';
+          miniCssExtractPlugin.options.chunkFilename = 'static/css/[name].chunk.css';
+        }
+      }
+
       return config;
     }
   ),
