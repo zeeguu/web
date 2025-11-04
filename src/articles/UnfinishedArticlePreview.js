@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import * as s from "./ArticlePreview.sc";
-import moment from "moment";
+import { formatDistanceToNow } from "date-fns";
 import ReadingCompletionProgress from "./ReadingCompletionProgress";
 export default function UnfinishedArticlePreview({ article, onArticleClick }) {
   const handleArticleClick = () => {
@@ -32,7 +32,7 @@ export default function UnfinishedArticlePreview({ article, onArticleClick }) {
         ></ReadingCompletionProgress>
       </s.UnfinishedArticleContainer>
       <s.UnfinishedArticleStats>
-        ({moment.utc(article.time_last_read).fromNow()})
+        ({formatDistanceToNow(new Date(article.time_last_read), { addSuffix: true })})
       </s.UnfinishedArticleStats>
     </s.ArticlePreview>
   );

@@ -1,4 +1,5 @@
 const { override, addBabelPlugin, overrideDevServer } = require('customize-cra');
+const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 
 // Jest configuration override
 const overrideJest = (config) => {
@@ -28,6 +29,18 @@ module.exports = {
           fullySpecified: false,
         },
       });
+
+      // Add bundle analyzer in analyze mode
+      if (process.env.ANALYZE) {
+        config.plugins.push(
+          new BundleAnalyzerPlugin({
+            analyzerMode: 'static',
+            reportFilename: 'bundle-report.html',
+            openAnalyzer: false,
+          })
+        );
+      }
+
       return config;
     }
   ),

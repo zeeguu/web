@@ -14,7 +14,7 @@ import { APIContext } from "../contexts/APIContext";
 import { TranslatableText } from "../reader/TranslatableText";
 import InteractiveText from "../reader/InteractiveText";
 import ZeeguuSpeech from "../speech/APIBasedSpeech";
-import moment from "moment";
+import { formatDistanceToNow } from "date-fns";
 import { getStaticPath } from "../utils/misc/staticPath";
 import { estimateReadingTime } from "../utils/misc/readableTime";
 import ActionButton from "../components/ActionButton";
@@ -231,7 +231,7 @@ export default function ArticlePreview({
           <s.UrlSourceContainer>
             <s.UrlSource>{extractDomain(article.url)}</s.UrlSource>
             {!dontShowPublishingTime && article.published && (
-              <span style={{ marginLeft: "5px" }}>({moment.utc(article.published).fromNow()})</span>
+              <span style={{ marginLeft: "5px" }}>({formatDistanceToNow(new Date(article.published), { addSuffix: true })})</span>
             )}
           </s.UrlSourceContainer>
         )
