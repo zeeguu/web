@@ -9,6 +9,7 @@ export default function CefrAssessmentDisplay({
   articleID,
   articleContent,
   articleTitle,
+  languageCode,
   onOverrideChange,
   initialAssessments // Optional: pre-loaded assessment data from article
 }) {
@@ -65,23 +66,38 @@ export default function CefrAssessmentDisplay({
   // Debounced ML assessment recomputation
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const recomputeML = useCallback(
-    debounce((content) => {
-      if (!articleID || articleID === "new" || !content) return;
+    debounce((content, languageCode) => {
+      if (!content || !languageCode) return;
 
       setIsComputingML(true);
-      api.assessML(
-        articleID,
+
+      // Use estimate endpoint for both new and existing articles
+      api.estimateArticleCEFR(
+        articleTitle || "Untitled",
         content,
+        languageCode,
         (data) => {
-          setMlAssessment(data.ml_assessment);
+          console.log("ML assessment response:", data);
+          console.log("CEFR level from response:", data.cefr_level);
+
+          // Log detailed debug info if available
+          if (data.error) {
+            console.warn("ML Assessment Error:", data.error);
+          }
+          if (data.debug) {
+            console.log("ML Assessment Debug Info:", data.debug);
+          }
+
+          setMlAssessment(data.cefr_level);
           setMlLastUpdated(new Date());
           // Recalculate effective level
-          const newEffective = getMaxLevel(llmAssessment, data.ml_assessment);
+          const newEffective = getMaxLevel(llmAssessment, data.cefr_level);
           setEffectiveLevel(teacherOverride || newEffective);
           setIsComputingML(false);
         },
         (err) => {
           console.error("Failed to recompute ML assessment:", err);
+          console.error("Error details:", JSON.stringify(err, null, 2));
           setMlAssessment(null);
           // Even if ML fails, compute effective level from LLM only
           const newEffective = getMaxLevel(llmAssessment, null);
@@ -90,28 +106,46 @@ export default function CefrAssessmentDisplay({
         }
       );
     }, 1500), // 1.5 second debounce
-    [articleID, api, llmAssessment, teacherOverride]
+    [api, articleTitle, llmAssessment, teacherOverride]
   );
 
   // Detect content changes and trigger ML recomputation
   // Track initial content to detect actual changes
   const [initialContent, setInitialContent] = useState(null);
+  const [lastLanguageCode, setLastLanguageCode] = useState(null);
+
+  // Reset when language changes
+  useEffect(() => {
+    if (languageCode && languageCode !== "default" && languageCode !== lastLanguageCode) {
+      console.log("Language changed from", lastLanguageCode, "to", languageCode);
+      setLastLanguageCode(languageCode);
+      setMlAssessment(null);
+      setInitialContent(null);
+      setMlLastUpdated(null);
+      // Trigger ML assessment with new language if we have content
+      if (articleContent) {
+        console.log("Triggering ML assessment for new language");
+        recomputeML(stripHtml(articleContent), languageCode);
+        setInitialContent(articleContent);
+      }
+    }
+  }, [languageCode, lastLanguageCode, articleContent, recomputeML]);
 
   useEffect(() => {
-    if (articleContent && initialContent === null) {
+    if (articleContent && languageCode && languageCode !== "default" && initialContent === null) {
       // First load - set initial content without marking as changed
       setInitialContent(articleContent);
       // Only compute ML if we don't already have it
       if (!mlAssessment) {
         console.log("Triggering initial ML assessment");
-        recomputeML(stripHtml(articleContent));
+        recomputeML(stripHtml(articleContent), languageCode);
       }
-    } else if (articleContent && articleContent !== initialContent) {
+    } else if (articleContent && languageCode && languageCode !== "default" && articleContent !== initialContent) {
       // Content actually changed
       setContentChanged(true);
-      recomputeML(stripHtml(articleContent));
+      recomputeML(stripHtml(articleContent), languageCode);
     }
-  }, [articleContent, initialContent, mlAssessment, recomputeML]);
+  }, [articleContent, languageCode, initialContent, mlAssessment, recomputeML]);
 
   // Recompute LLM assessment (button click)
   const recomputeLLM = () => {
@@ -148,12 +182,14 @@ export default function CefrAssessmentDisplay({
     setTeacherOverride(value);
     if (value) {
       setEffectiveLevel(value);
-      // Save teacher override to database
-      api.resolveCEFR(articleID, value, (response) => {
-        console.log("Teacher override saved:", response);
-      }, (error) => {
-        console.error("Failed to save teacher override:", error);
-      });
+      // Only save to database if article exists (not new)
+      if (articleID && articleID !== "new") {
+        api.resolveCEFR(articleID, value, (response) => {
+          console.log("Teacher override saved:", response);
+        }, (error) => {
+          console.error("Failed to save teacher override:", error);
+        });
+      }
     } else {
       // No override, use max of LLM and ML
       const newEffective = getMaxLevel(llmAssessment, mlAssessment);
@@ -181,10 +217,7 @@ export default function CefrAssessmentDisplay({
     return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
   };
 
-  // Don't show for new articles
-  if (!articleID || articleID === "new") {
-    return null;
-  }
+  const isNewArticle = !articleID || articleID === "new";
 
   return (
     <div
@@ -200,39 +233,41 @@ export default function CefrAssessmentDisplay({
       <h3 style={{ marginTop: 0, marginBottom: "0.75rem", fontSize: "1.1em" }}>CEFR Difficulty Assessment</h3>
 
       <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
-        {/* LLM Assessment Row */}
-        <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
-          <span style={{ fontWeight: "bold", minWidth: "120px" }}>LLM:</span>
-          {contentChanged && !llmAssessment ? (
-            <span style={{ color: "#888", fontStyle: "italic" }}>Click "Recompute LLM" after editing</span>
-          ) : (
-            <>
-              <span
-                style={{
-                  fontFamily: "monospace",
-                  fontSize: "1.1em",
-                  fontWeight: "bold",
-                  color: llmAssessment ? "#2563eb" : "#888",
-                }}
-              >
-                {llmAssessment || "—"}
-              </span>
-              {llmLastUpdated && (
-                <span style={{ fontSize: "0.85em", color: "#888", fontStyle: "italic" }}>
-                  (last updated {formatTimestamp(llmLastUpdated)})
+        {/* LLM Assessment Row - only show for existing articles */}
+        {!isNewArticle && (
+          <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
+            <span style={{ fontWeight: "bold", minWidth: "120px" }}>LLM:</span>
+            {contentChanged && !llmAssessment ? (
+              <span style={{ color: "#888", fontStyle: "italic" }}>Click "Recompute LLM" after editing</span>
+            ) : (
+              <>
+                <span
+                  style={{
+                    fontFamily: "monospace",
+                    fontSize: "1.1em",
+                    fontWeight: "bold",
+                    color: llmAssessment ? "#2563eb" : "#888",
+                  }}
+                >
+                  {llmAssessment || "—"}
                 </span>
-              )}
-            </>
-          )}
-          <StyledButton
-            secondary
-            onClick={recomputeLLM}
-            disabled={isComputingLLM}
-            style={{ marginLeft: "auto", fontSize: "0.9em", padding: "0.4rem 0.8rem" }}
-          >
-            {isComputingLLM ? "Computing..." : "Recompute LLM"}
-          </StyledButton>
-        </div>
+                {llmLastUpdated && (
+                  <span style={{ fontSize: "0.85em", color: "#888", fontStyle: "italic" }}>
+                    (last updated {formatTimestamp(llmLastUpdated)})
+                  </span>
+                )}
+              </>
+            )}
+            <StyledButton
+              secondary
+              onClick={recomputeLLM}
+              disabled={isComputingLLM}
+              style={{ marginLeft: "auto", fontSize: "0.9em", padding: "0.4rem 0.8rem" }}
+            >
+              {isComputingLLM ? "Computing..." : "Recompute LLM"}
+            </StyledButton>
+          </div>
+        )}
 
         {/* ML Assessment Row */}
         <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
@@ -250,9 +285,14 @@ export default function CefrAssessmentDisplay({
           {isComputingML && (
             <span style={{ color: "#888", fontSize: "0.9em", fontStyle: "italic" }}>updating...</span>
           )}
-          {!isComputingML && mlLastUpdated && (
+          {!isComputingML && mlLastUpdated && mlAssessment && (
             <span style={{ fontSize: "0.85em", color: "#888", fontStyle: "italic" }}>
               (last updated {formatTimestamp(mlLastUpdated)})
+            </span>
+          )}
+          {!isComputingML && !mlAssessment && languageCode && languageCode !== "default" && (
+            <span style={{ fontSize: "0.85em", color: "#888", fontStyle: "italic" }}>
+              (ML model not available for this language)
             </span>
           )}
         </div>

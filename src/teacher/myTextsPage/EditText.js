@@ -14,6 +14,7 @@ import { Error } from "../sharedComponents/Error";
 import ShareWithCollegueDialog from "./ShareWithColleagueDialog";
 import { APIContext } from "../../contexts/APIContext";
 import CefrAssessmentDisplay from "./CefrAssessmentDisplay";
+import LoadingAnimation from "../../components/LoadingAnimation";
 
 export default function EditText() {
   const api = useContext(APIContext);
@@ -25,12 +26,12 @@ export default function EditText() {
     assessment_method: "",
   });
   const [originalCEFRLevel, setOriginalCEFRLevel] = useState(""); // Track original to detect manual changes
-  const [isEstimating, setIsEstimating] = useState(false);
   const [cefrAssessments, setCefrAssessments] = useState(null); // Store CEFR assessment data
   const [cohortList, setCohortList] = useState([]);
   const [showAddToCohortDialog, setShowAddToCohortDialog] = useState(false);
   const [showDeleteTextWarning, setShowDeleteTextWarning] = useState(false);
   const [showShareWithColleagueDialog, setShowShareWithColleagueDialog] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const [stateChanged, setStateChanged] = useState(false);
   const articleID = useParams().articleID;
@@ -45,6 +46,16 @@ export default function EditText() {
   //The user is editing an already existing text...
   useEffect(() => {
     if (!isNew) {
+      setIsLoading(true);
+      let articleLoaded = false;
+      let cohortsLoaded = false;
+
+      const checkIfDone = () => {
+        if (articleLoaded && cohortsLoaded) {
+          setIsLoading(false);
+        }
+      };
+
       api.getArticleInfo(articleID, (article) => {
         const cefrLevel = article.metrics?.cefr_level || "";
 
@@ -75,9 +86,15 @@ export default function EditText() {
         if (article.cefr_assessments) {
           setCefrAssessments(article.cefr_assessments);
         }
+
+        articleLoaded = true;
+        checkIfDone();
       });
+
       api.getCohortFromArticle(articleID, (cohorts) => {
         setCohortList(cohorts || []);
+        cohortsLoaded = true;
+        checkIfDone();
       });
     }
     //eslint-disable-next-line
@@ -166,59 +183,25 @@ export default function EditText() {
 
     const plainContent = stripHtml(articleState.article_content);
 
-    // If no CEFR level yet, estimate it first
-    if (!articleState.cefr_level) {
-      setIsEstimating(true);
-      api.estimateArticleCEFR(
-        articleState.article_title,
-        plainContent,
-        articleState.language_code,
-        (estimation) => {
-          setIsEstimating(false);
-          // Upload with estimated CEFR
-          api.uploadOwnText(
-            articleState.article_title,
-            plainContent,
-            articleState.language_code,
-            (newID) => {
-              console.log(`article created with id: ${newID}`);
-              setStateChanged(false);
-              history.push(`/teacher/texts/editText/${newID}`);
-            },
-            (error) => {
-              toast.error("Failed to upload article: " + error);
-            },
-            estimation.cefr_level,
-            estimation.assessment_method,
-            null, // img_url
-            articleState.article_content, // HTML content
-          );
-        },
-        (error) => {
-          setIsEstimating(false);
-          toast.error("Failed to estimate CEFR level: " + error);
-        },
-      );
-    } else {
-      // Already have CEFR level (either from estimation or teacher selection)
-      api.uploadOwnText(
-        articleState.article_title,
-        plainContent,
-        articleState.language_code,
-        (newID) => {
-          console.log(`article created with id: ${newID}`);
-          setStateChanged(false);
-          history.push(`/teacher/texts/editText/${newID}`);
-        },
-        (error) => {
-          toast.error("Failed to upload article: " + error);
-        },
-        articleState.cefr_level,
-        articleState.assessment_method,
-        null, // img_url
-        articleState.article_content, // HTML content
-      );
-    }
+    // Upload article with CEFR level if available (from teacher override)
+    // CEFR assessment is already happening live in CefrAssessmentDisplay component
+    api.uploadOwnText(
+      articleState.article_title,
+      plainContent,
+      articleState.language_code,
+      (newID) => {
+        console.log(`article created with id: ${newID}`);
+        setStateChanged(false);
+        history.push(`/teacher/texts/editText/${newID}`);
+      },
+      (error) => {
+        toast.error("Failed to upload article: " + error);
+      },
+      articleState.cefr_level || null,
+      articleState.assessment_method || null,
+      null, // img_url
+      articleState.article_content, // HTML content
+    );
   };
 
   const updateArticle = () => {
@@ -264,6 +247,10 @@ export default function EditText() {
       }
     });
   };
+
+  if (isLoading) {
+    return <LoadingAnimation />;
+  }
 
   return (
     <Fragment>
@@ -334,16 +321,15 @@ export default function EditText() {
           </div>
         </div>
 
-        {/* CEFR Assessment Display - shows LLM, ML, and Teacher assessments */}
-        {!isNew && (
-          <CefrAssessmentDisplay
-            articleID={articleID}
-            articleContent={articleState.article_content}
-            articleTitle={articleState.article_title}
-            onOverrideChange={handleTeacherOverride}
-            initialAssessments={cefrAssessments}
-          />
-        )}
+        {/* CEFR Assessment Display - shows ML assessment (and LLM for existing articles) */}
+        <CefrAssessmentDisplay
+          articleID={articleID}
+          articleContent={articleState.article_content}
+          articleTitle={articleState.article_title}
+          languageCode={articleState.language_code}
+          onOverrideChange={handleTeacherOverride}
+          initialAssessments={cefrAssessments}
+        />
 
         <EditTextInputFields
           language_code={articleState.language_code}
