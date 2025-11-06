@@ -1,6 +1,5 @@
 import styled from "styled-components";
 import { darkBlue } from "../../components/colors";
-import "@reach/listbox/styles.css";
 
 export const LabeledInputFields = styled.div`
   input {

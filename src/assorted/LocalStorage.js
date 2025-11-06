@@ -25,6 +25,7 @@ const LocalStorage = {
     AutoPronounceInExercises: "auto_pronounce_bookmark_exercise",
     lastExerciseCompleteDate: "last_exercise_complete_date",
     LastVisitedPage: "last_visited_page",
+    LastVisitedTeacherPage: "last_visited_teacher_page",
   },
 
   userInfo: function () {
@@ -257,6 +258,14 @@ const LocalStorage = {
 
   setLastVisitedPage: function (path) {
     localStorage[this.Keys.LastVisitedPage] = path;
+  },
+
+  getLastVisitedTeacherPage: function () {
+    return localStorage[this.Keys.LastVisitedTeacherPage] || "/teacher/classes";
+  },
+
+  setLastVisitedTeacherPage: function (path) {
+    localStorage[this.Keys.LastVisitedTeacherPage] = path;
   },
 };
 
