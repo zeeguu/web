@@ -97,10 +97,8 @@ export default function EditBookmarkButton({
       return;
     }
 
-    bookmark.from = newWord;
-    bookmark.to = newTranslation;
-    bookmark.context = newContext;
-    bookmark.fit_for_study = newFitForStudy;
+    // Don't update local state prematurely - wait for server response
+    // The server might return a different bookmark/UserWord after the update
 
     api
       .updateBookmark(
@@ -119,11 +117,16 @@ export default function EditBookmarkButton({
       })
       .then((newBookmark) => {
         console.dir(newBookmark);
+        // Update ALL fields from server response to reflect the actual updated bookmark
+        bookmark.from = newBookmark.from;
+        bookmark.to = newBookmark.to;
+        bookmark.context = newBookmark.context;
         bookmark.context_tokenized = newBookmark.context_tokenized;
         bookmark.context_in_content = newBookmark.context_in_content;
         bookmark.left_ellipsis = newBookmark.left_ellipsis;
         bookmark.right_ellipsis = newBookmark.right_ellipsis;
         bookmark.id = newBookmark.id;
+        bookmark.user_word_id = newBookmark.user_word_id;
 
         if (newFitForStudy) {
           api.userSetForExercises(bookmark.id);
@@ -145,7 +148,14 @@ export default function EditBookmarkButton({
         if (setReload) setReload(!reload);
 
         if (notifyWordChange) notifyWordChange(bookmark);
-        toast.success("Thank you for the contribution!");
+
+        // Check if there's a message from the backend (e.g., word not fit for study)
+        if (newBookmark._message) {
+          toast.info(newBookmark._message);
+        } else {
+          toast.success("Thank you for the contribution!");
+        }
+
         handleClose();
       })
       .catch((error) => {
