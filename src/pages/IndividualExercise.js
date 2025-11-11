@@ -204,6 +204,15 @@ export default function IndividualExercise() {
       ];
     }
 
+    // For MultipleChoiceContext exercises, create bookmarks with different contexts
+    if (exerciseType === "MultipleChoiceContext" && bookmark) {
+      return [
+        bookmark,
+        createBookmarkFromUrl("car", "coche", "I drive my car to work every day."),
+        createBookmarkFromUrl("book", "libro", "She is reading a good book."),
+      ];
+    }
+
     // For Match exercises, create different bookmarks entirely
     return [
       bookmark,
@@ -305,7 +314,7 @@ export default function IndividualExercise() {
 
   // Determine which bookmark set to use
   const bookmarksToUse =
-    exerciseType === "Match" || exerciseType === "MultipleChoiceL2toL1" ? multipleBookmarks : [bookmark];
+    exerciseType === "Match" || exerciseType === "MultipleChoiceL2toL1" || exerciseType === "MultipleChoiceContext" ? multipleBookmarks : [bookmark];
 
   return (
     <APIContext.Provider value={api}>
