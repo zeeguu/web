@@ -1,7 +1,9 @@
-import { useContext, forwardRef } from "react";
+import { forwardRef, useContext } from "react";
 import { ClozeTranslatableText } from "../../reader/ClozeTranslatableText.js";
-import { APIContext } from "../../contexts/APIContext.js";
 import ReplaceExampleModal from "../replaceExample/ReplaceExampleModal.js";
+import VirtualKeyboard from "../../components/VirtualKeyboard/VirtualKeyboard.js";
+import { needsVirtualKeyboard } from "../../utils/misc/languageScripts.js";
+import { UserContext } from "../../contexts/UserContext.js";
 
 const ClozeContextWithExchange = forwardRef(function ClozeContextWithExchange(
   {
@@ -27,7 +29,12 @@ const ClozeContextWithExchange = forwardRef(function ClozeContextWithExchange(
   },
   ref,
 ) {
-  const api = useContext(APIContext);
+  const { userDetails } = useContext(UserContext);
+
+  // Determine the language for the answer (L2 for this exercise type)
+  const answerLanguageCode = exerciseBookmark?.from_lang;
+  const showVirtualKeyboard =
+    answerLanguageCode && needsVirtualKeyboard(answerLanguageCode, userDetails?.id) && canTypeInline && !isExerciseOver;
 
   return (
     <div style={{ textAlign: "center" }}>
@@ -56,6 +63,8 @@ const ClozeContextWithExchange = forwardRef(function ClozeContextWithExchange(
           shouldFocus={shouldFocus}
           showHint={showHint}
           canTypeInline={canTypeInline}
+          answerLanguageCode={answerLanguageCode}
+          showVirtualKeyboard={showVirtualKeyboard}
         />
         {onExampleUpdated && isExerciseOver && (
           <div
@@ -64,7 +73,7 @@ const ClozeContextWithExchange = forwardRef(function ClozeContextWithExchange(
               right: 0,
               top: "100%",
               marginTop: "0.1em",
-              fontSize: "0.7em"
+              fontSize: "0.7em",
             }}
           >
             <ReplaceExampleModal
@@ -75,6 +84,18 @@ const ClozeContextWithExchange = forwardRef(function ClozeContextWithExchange(
           </div>
         )}
       </div>
+
+      {/* Virtual Keyboard - shown below the context for non-Roman alphabets */}
+      {showVirtualKeyboard && (
+        <div style={{ marginTop: "1em" }}>
+          <VirtualKeyboard
+            languageCode={answerLanguageCode}
+            onInput={onInputChange}
+            currentValue={inputValue}
+            initialCollapsed={false}
+          />
+        </div>
+      )}
     </div>
   );
 });

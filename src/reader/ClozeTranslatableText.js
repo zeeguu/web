@@ -29,6 +29,8 @@ export function ClozeTranslatableText({
   shouldFocus = true,
   showHint = true, // Whether to show "tap to type" hint
   canTypeInline = false, // Whether this exercise type allows inline typing
+  answerLanguageCode = null, // Language code for the answer
+  showVirtualKeyboard = false, // Whether virtual keyboard is shown
 }) {
   const [translationCount, setTranslationCount] = useState(0);
   const [clozeWordIds, setClozeWordIds] = useState([]);
@@ -93,7 +95,9 @@ export function ClozeTranslatableText({
 
   function findClozeWords() {
     if (!clozeWord) return;
-    console.log("Finding cloze words for:", clozeWord);
+    console.log("=== FINDING CLOZE WORDS ===");
+    console.log("Target clozeWord:", clozeWord);
+    console.log("interactiveText:", interactiveText);
     
     // If we have position-aware InteractiveExerciseText, use it to find the correct instance
     if (interactiveText.findSolutionPositionsInContext) {
@@ -127,27 +131,44 @@ export function ClozeTranslatableText({
     // Fallback to word-based search
     console.log("Falling back to word-based cloze search");
     let targetWords = clozeWord.split(" ");
+    console.log("Target words:", targetWords);
     let word = interactiveText.paragraphsAsLinkedWordLists[0].linkedWords.head;
+    console.log("First word in linked list:", word);
+
+    let allWords = [];
+    let tempWord = word;
+    while (tempWord) {
+      allWords.push(removePunctuation(tempWord.word));
+      tempWord = tempWord.next;
+    }
+    console.log("All words in context:", allWords);
+
     while (word) {
       if (removePunctuation(word.word).toLowerCase() === targetWords[0].toLowerCase()) {
-        let copyOfFoundIds = [...clozeWordIds];
+        let copyOfFoundIds = [];  // Start fresh, not from previous clozeWordIds
+        let currentWord = word;  // Save the starting word
+        let matched = true;
+
         for (let index = 0; index < targetWords.length; index++) {
-          if (removePunctuation(word.word).toLowerCase() === targetWords[index].toLowerCase()) {
-            if (index === 0) setFirstClozeWordId(word.id);
-            copyOfFoundIds.push(word.id);
-            word = word.next;
+          if (currentWord && removePunctuation(currentWord.word).toLowerCase() === targetWords[index].toLowerCase()) {
+            if (index === 0) setFirstClozeWordId(currentWord.id);
+            copyOfFoundIds.push(currentWord.id);
+            currentWord = currentWord.next;
           } else {
-            copyOfFoundIds = [...clozeWordIds];
-            word = word.next;
+            matched = false;
             break;
           }
         }
-        setClozeWordIds(copyOfFoundIds);
-        if (copyOfFoundIds.length === targetWords.length) break;
-      } else {
-        word = word.next;
+
+        if (matched && copyOfFoundIds.length === targetWords.length) {
+          console.log("Found cloze word IDs:", copyOfFoundIds);
+          setClozeWordIds(copyOfFoundIds);
+          break;  // Found it, stop searching
+        }
       }
+      word = word.next;
     }
+    console.log("Final clozeWordIds will be set to:", clozeWordIds);
   }
 
   function findNonTranslatableWords() {
@@ -417,7 +438,7 @@ export function ClozeTranslatableText({
                 }}
                 autoComplete="off"
                 spellCheck="false"
-                inputMode="text"
+                inputMode={showVirtualKeyboard ? "none" : "text"}
               />
             </>
           </span>
