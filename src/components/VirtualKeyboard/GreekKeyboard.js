@@ -1,18 +1,20 @@
 import React, { useState } from 'react';
 import * as s from './VirtualKeyboard.sc';
 
-// Greek keyboard layout based on standard Greek keyboard
-// Row layout matches physical keyboard for familiarity
+// Greek keyboard layout - alphabetical with accents
+// Using 10 keys per row for better mobile sizing
 const GREEK_LAYOUT = {
   lowercase: [
-    ['α', 'β', 'γ', 'δ', 'ε', 'ζ', 'η', 'θ', 'ι', 'κ', 'λ', 'μ'],
-    ['ν', 'ξ', 'ο', 'π', 'ρ', 'σ', 'τ', 'υ', 'φ', 'χ', 'ψ', 'ω'],
-    ['ά', 'έ', 'ή', 'ί', 'ό', 'ύ', 'ώ', 'ϊ', 'ΐ', 'ϋ', 'ΰ', 'ς']
+    ['α', 'β', 'γ', 'δ', 'ε', 'ζ', 'η', 'θ', 'ι', 'κ'],
+    ['λ', 'μ', 'ν', 'ξ', 'ο', 'π', 'ρ', 'σ', 'τ', 'υ'],
+    ['φ', 'χ', 'ψ', 'ω', 'ά', 'έ', 'ή', 'ί', 'ό', 'ύ'],
+    ['ώ', 'ϊ', 'ΐ', 'ϋ', 'ΰ', 'ς', '', '', '', '']
   ],
   uppercase: [
-    ['Α', 'Β', 'Γ', 'Δ', 'Ε', 'Ζ', 'Η', 'Θ', 'Ι', 'Κ', 'Λ', 'Μ'],
-    ['Ν', 'Ξ', 'Ο', 'Π', 'Ρ', 'Σ', 'Τ', 'Υ', 'Φ', 'Χ', 'Ψ', 'Ω'],
-    ['Ά', 'Έ', 'Ή', 'Ί', 'Ό', 'Ύ', 'Ώ', 'Ϊ', '', 'Ϋ', '', '΢']
+    ['Α', 'Β', 'Γ', 'Δ', 'Ε', 'Ζ', 'Η', 'Θ', 'Ι', 'Κ'],
+    ['Λ', 'Μ', 'Ν', 'Ξ', 'Ο', 'Π', 'Ρ', 'Σ', 'Τ', 'Υ'],
+    ['Φ', 'Χ', 'Ψ', 'Ω', 'Ά', 'Έ', 'Ή', 'Ί', 'Ό', 'Ύ'],
+    ['Ώ', 'Ϊ', '', 'Ϋ', '', '΢', '', '', '', '']
   ],
   // Additional accented characters if needed
   accents: []
@@ -22,6 +24,7 @@ export default function GreekKeyboard({ onKeyPress, isCollapsed, setIsCollapsed 
   const [isShift, setIsShift] = useState(false);
 
   const handleKeyClick = (char) => {
+    if (!char) return; // Skip empty slots
     onKeyPress(char);
     // Reset shift after typing (like a real keyboard)
     if (isShift) {
@@ -62,11 +65,17 @@ export default function GreekKeyboard({ onKeyPress, isCollapsed, setIsCollapsed 
       <s.KeyboardRows>
         {currentLayout.map((row, rowIndex) => (
           <s.KeyRow key={`row-${rowIndex}`}>
-            {row.map((char, charIndex) => (
-              <s.Key key={`${rowIndex}-${charIndex}`} onClick={() => handleKeyClick(char)}>
-                {char}
-              </s.Key>
-            ))}
+            {row.map((char, charIndex) => {
+              // Skip rendering empty keys but keep them for layout consistency
+              if (!char) {
+                return <s.Key key={`${rowIndex}-${charIndex}`} style={{ visibility: 'hidden' }} />;
+              }
+              return (
+                <s.Key key={`${rowIndex}-${charIndex}`} onClick={() => handleKeyClick(char)}>
+                  {char}
+                </s.Key>
+              );
+            })}
           </s.KeyRow>
         ))}
 

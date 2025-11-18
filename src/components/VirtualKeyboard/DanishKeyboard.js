@@ -1,18 +1,19 @@
 import React, { useState } from 'react';
 import * as s from './VirtualKeyboard.sc';
 
-// Danish keyboard layout with special characters
+// Danish keyboard layout with QWERTY layout
 // Danish uses: æ, ø, å (and their uppercase variants)
+// Using 10 keys per row for better mobile sizing
 const DANISH_LAYOUT = {
   lowercase: [
-    ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l'],
-    ['m', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x'],
-    ['y', 'z', 'æ', 'ø', 'å', '', '', '', '', '', '', '']
+    ['q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p'],
+    ['a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', 'æ'],
+    ['z', 'x', 'c', 'v', 'b', 'n', 'm', 'ø', 'å', '']
   ],
   uppercase: [
-    ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L'],
-    ['M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X'],
-    ['Y', 'Z', 'Æ', 'Ø', 'Å', '', '', '', '', '', '', '']
+    ['Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P'],
+    ['A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L', 'Æ'],
+    ['Z', 'X', 'C', 'V', 'B', 'N', 'M', 'Ø', 'Å', '']
   ]
 };
 
