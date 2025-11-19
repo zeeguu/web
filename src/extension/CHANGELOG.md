@@ -8,6 +8,33 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 
 
+
+
+
+## [2.5.10] - 2025-11-19
+
+### Changed
+- Complete pre-extraction optimization: Extension now extracts all article data locally using Mozilla Readability
+- Backend processing completely bypassed for extension requests - significantly faster article loading
+- Improved bot detection avoidance by doing all extraction client-side in user's browser
+
+### Added
+- Client-side main image extraction (checks og:image meta tag and article HTML)
+- Pass extracted data (title, author, excerpt, text, image) directly to backend
+
+### Fixed
+- HTML entities (like &quot;) in article titles and metadata are now properly decoded
+
+## [2.5.9] - 2025-11-19
+
+### Added
+- Release 2.5.9
+
+## [2.5.8] - 2025-11-19
+
+### Added
+- Release 2.5.8
+
 ## [2.5.7] - 2025-11-19
 
 ### Fixed

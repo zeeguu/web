@@ -132,6 +132,49 @@ export function deleteIntervals() {
   }
 }
 
+function decodeHTMLEntities(text) {
+  if (!text) return text;
+  const textarea = document.createElement('textarea');
+  textarea.innerHTML = text;
+  return textarea.value;
+}
+
+function extractMainImage(cleanHTML) {
+  let mainImageUrl = null;
+  try {
+    // Try to get og:image meta tag first
+    const ogImage = document.querySelector('meta[property="og:image"]');
+    if (ogImage) {
+      mainImageUrl = ogImage.getAttribute('content');
+    }
+
+    // If no og:image, scan article HTML for large images
+    if (!mainImageUrl) {
+      const parser = new DOMParser();
+      const articleDoc = parser.parseFromString(cleanHTML, 'text/html');
+      const images = articleDoc.querySelectorAll('img');
+
+      for (let img of images) {
+        const src = img.getAttribute('src');
+        if (!src) continue;
+
+        // Skip icons, placeholders, gifs, svgs
+        if (src.includes('icon') || src.includes('placeholder') ||
+            src.endsWith('.gif') || src.endsWith('.svg')) {
+          continue;
+        }
+
+        // Take first valid image (Readability already filtered out small ones)
+        mainImageUrl = src;
+        break;
+      }
+    }
+  } catch (e) {
+    console.log('Failed to extract main image:', e);
+  }
+  return mainImageUrl;
+}
+
 export function checkLanguageSupport(
   api,
   tab,
@@ -143,19 +186,20 @@ export function checkLanguageSupport(
 ) {
   if (setLoadingProgress) setLoadingProgress("Fetching article content...");
 
-  // Get the raw HTML document first
-  getSourceAsDOMAsync(tab.url)
-    .then((documentFromTab) => {
-      // Store the raw HTML for sending to backend
-      const rawHTML = documentFromTab.documentElement.outerHTML;
+  // Use Readability to extract clean article content
+  ArticleAsync(tab.url)
+    .then((article) => {
+      // Send the cleaned content from Readability instead of full page HTML
+      // This avoids navigation menus and improves parsing performance
+      const cleanHTML = article.content;
+      console.log(`Clean HTML size: ${cleanHTML.length} characters`);
+      console.log(`First 500 chars:`, cleanHTML.substring(0, 500));
 
-      // Now parse with Readability for language detection
-      return ArticleAsync(tab.url).then((article) => {
-        // Return both the parsed article and raw HTML
-        return { article, rawHTML };
-      });
+      const mainImageUrl = extractMainImage(cleanHTML);
+
+      return { article, rawHTML: cleanHTML, imageUrl: mainImageUrl };
     })
-    .then(({ article, rawHTML }) => {
+    .then(({ article, rawHTML, imageUrl }) => {
       if (setArticleData) setArticleData(article);
       if (setLoadingProgress) setLoadingProgress("Checking language support...");
 
@@ -176,11 +220,18 @@ export function checkLanguageSupport(
             // Language is supported and matches user's learned language
             if (setLoadingProgress) setLoadingProgress("Processing article fragments...");
 
-            // Get tokenized fragments - send both URL and RAW HTML content
-            // This avoids the backend needing to re-fetch the article
+            // Send all extracted data from Readability to avoid backend processing
+            // The extension has already done all the extraction work
             let info = {
               url: tab.url,
-              htmlContent: rawHTML
+              htmlContent: rawHTML,
+              textContent: article.textContent,
+              title: decodeHTMLEntities(article.title),
+              author: decodeHTMLEntities(article.byline),
+              excerpt: decodeHTMLEntities(article.excerpt),
+              siteName: decodeHTMLEntities(article.siteName),
+              imageUrl: imageUrl,
+              preExtracted: true  // Flag to tell backend we've already extracted everything
             };
 
             if (setLoadingProgress) setLoadingProgress("Assessing article difficulty level...");
