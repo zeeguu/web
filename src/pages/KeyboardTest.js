@@ -7,12 +7,23 @@ const Container = styled.div`
   margin: 2em auto;
   padding: 2em;
   font-family: Arial, sans-serif;
+
+  @media (max-width: 768px) {
+    max-width: 100%;
+    margin: 0;
+    padding: 1em;
+  }
 `;
 
 const Title = styled.h1`
   text-align: center;
   color: #333;
   margin-bottom: 1em;
+
+  @media (max-width: 768px) {
+    font-size: 1.5em;
+    margin-bottom: 0.5em;
+  }
 `;
 
 const Section = styled.div`
@@ -20,11 +31,23 @@ const Section = styled.div`
   padding: 2em;
   background: #f9f9f9;
   border-radius: 8px;
+
+  @media (max-width: 768px) {
+    padding: 1em 0;
+    border-radius: 0;
+    margin-bottom: 0;
+    border-bottom: 1px solid #ddd;
+  }
 `;
 
 const SectionTitle = styled.h2`
   color: #555;
   margin-bottom: 1em;
+
+  @media (max-width: 768px) {
+    padding-left: 1em;
+    padding-right: 1em;
+  }
 `;
 
 const TestInput = styled.input`
@@ -40,6 +63,13 @@ const TestInput = styled.input`
     outline: none;
     border-color: #ff8800;
   }
+
+  @media (max-width: 768px) {
+    margin-left: 1em;
+    margin-right: 1em;
+    width: calc(100% - 2em);
+    border-radius: 0;
+  }
 `;
 
 const InputValue = styled.div`
@@ -50,12 +80,23 @@ const InputValue = styled.div`
   border-radius: 4px;
   min-height: 60px;
   word-break: break-all;
+
+  @media (max-width: 768px) {
+    margin-left: 1em;
+    margin-right: 1em;
+    border-radius: 0;
+  }
 `;
 
 const Label = styled.div`
   font-weight: bold;
   margin-bottom: 0.5em;
   color: #666;
+
+  @media (max-width: 768px) {
+    padding-left: 1em;
+    padding-right: 1em;
+  }
 `;
 
 const LanguageSelector = styled.select`
@@ -70,6 +111,13 @@ const LanguageSelector = styled.select`
     outline: none;
     border-color: #ff8800;
   }
+
+  @media (max-width: 768px) {
+    margin-left: 1em;
+    margin-right: 1em;
+    width: calc(100% - 2em);
+    border-radius: 0;
+  }
 `;
 
 const Info = styled.p`
@@ -77,6 +125,11 @@ const Info = styled.p`
   font-size: 14px;
   line-height: 1.5;
   margin-top: 1em;
+
+  @media (max-width: 768px) {
+    padding-left: 1em;
+    padding-right: 1em;
+  }
 `;
 
 export default function KeyboardTest() {

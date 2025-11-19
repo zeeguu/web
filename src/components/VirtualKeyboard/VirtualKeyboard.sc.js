@@ -15,10 +15,12 @@ export const KeyboardContainer = styled.div`
   box-sizing: border-box;
 
   @media (max-width: 768px) {
-    padding: 6px;
+    padding: 6px 0;
     max-width: 100%;
-    margin-left: 0;
-    margin-right: 0;
+    margin: 0;
+    border-radius: 0;
+    border-left: none;
+    border-right: none;
   }
 `;
 
@@ -29,6 +31,11 @@ export const KeyboardHeader = styled.div`
   margin-bottom: 0.5em;
   padding-bottom: 0.5em;
   border-bottom: 1px solid #eee;
+
+  @media (max-width: 768px) {
+    padding-left: 6px;
+    padding-right: 6px;
+  }
 `;
 
 export const KeyboardTitle = styled.h3`
@@ -82,6 +89,11 @@ export const KeyboardRows = styled.div`
   display: flex;
   flex-direction: column;
   gap: 3px;
+
+  @media (max-width: 768px) {
+    padding-left: 6px;
+    padding-right: 6px;
+  }
 `;
 
 export const KeyRow = styled.div`
