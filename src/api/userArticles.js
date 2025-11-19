@@ -209,9 +209,18 @@ Zeeguu_API.prototype.setArticleOpened = function (articleID) {
 };
 
 Zeeguu_API.prototype.findOrCreateArticle = function (articleInfo, callback, onError) {
+  // Pass all fields from articleInfo to backend
+  // If preExtracted is true, the extension has already done all extraction work
   let article = {
     url: articleInfo.url,
     htmlContent: articleInfo.htmlContent,
+    textContent: articleInfo.textContent,
+    title: articleInfo.title,
+    author: articleInfo.author,
+    excerpt: articleInfo.excerpt,
+    siteName: articleInfo.siteName,
+    imageUrl: articleInfo.imageUrl,
+    preExtracted: articleInfo.preExtracted,
   };
   this._post(`/find_or_create_article`, qs.stringify(article), callback, onError);
 };
