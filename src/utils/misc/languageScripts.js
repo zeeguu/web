@@ -41,17 +41,11 @@ export const LANGUAGE_TO_SCRIPT = {
 
 /**
  * Determines if a language uses a non-Roman script and needs a virtual keyboard
- * @param {string} languageCode - ISO language code (e.g., 'el', 'ru')
- * @param {number} userId - User ID for testing overrides (optional)
+ * @param {string} languageCode - ISO language code (e.g., 'el', 'ru', 'da')
+ * @param {number} userId - User ID (optional, for future use)
  * @returns {boolean} - True if virtual keyboard should be shown
  */
 export function needsVirtualKeyboard(languageCode, userId = null) {
-  // Testing override: Always show virtual keyboard for user ID 4607
-  if (userId === 4607) {
-    const scriptType = LANGUAGE_TO_SCRIPT[languageCode];
-    return scriptType && scriptType !== SCRIPT_TYPES.ROMAN;
-  }
-
   const scriptType = LANGUAGE_TO_SCRIPT[languageCode];
   return scriptType && scriptType !== SCRIPT_TYPES.ROMAN;
 }
