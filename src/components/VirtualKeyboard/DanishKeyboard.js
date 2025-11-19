@@ -3,17 +3,20 @@ import * as s from './VirtualKeyboard.sc';
 
 // Danish keyboard layout with QWERTY layout
 // Danish uses: æ, ø, å (and their uppercase variants)
-// Using 10 keys per row for better mobile sizing
+// Using 9 keys per row for better mobile sizing
+// Special characters on the bottom row
 const DANISH_LAYOUT = {
   lowercase: [
-    ['q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p'],
-    ['a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', 'æ'],
-    ['z', 'x', 'c', 'v', 'b', 'n', 'm', 'ø', 'å', '']
+    ['q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o'],
+    ['a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l'],
+    ['z', 'x', 'c', 'v', 'b', 'n', 'm', 'p', ''],
+    ['æ', 'ø', 'å', '', '', '', '', '', '']
   ],
   uppercase: [
-    ['Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P'],
-    ['A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L', 'Æ'],
-    ['Z', 'X', 'C', 'V', 'B', 'N', 'M', 'Ø', 'Å', '']
+    ['Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O'],
+    ['A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L'],
+    ['Z', 'X', 'C', 'V', 'B', 'N', 'M', 'P', ''],
+    ['Æ', 'Ø', 'Å', '', '', '', '', '', '']
   ]
 };
 

@@ -102,14 +102,14 @@ export const AccentRow = styled(KeyRow)`
 `;
 
 export const Key = styled.button`
-  /* 10 keys per row, with gaps: calc((100% - 9 * 2px) / 10) */
-  width: calc((100% - 9 * 2px) / 10);
-  height: 38px;
+  /* 9 keys per row, with gaps: calc((100% - 8 * 2px) / 9) */
+  width: calc((100% - 8 * 2px) / 9);
+  height: 42px;
   padding: 4px;
   background: white;
   border: 1px solid #ccc;
   border-radius: 3px;
-  font-size: 18px;
+  font-size: 20px;
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -133,16 +133,16 @@ export const Key = styled.button`
   }
 
   @media (max-width: 768px) {
-    width: calc((100% - 9 * 1.5px) / 10);
-    height: 34px;
+    width: calc((100% - 8 * 1.5px) / 9);
+    height: 38px;
     padding: 2px;
-    font-size: 16px;
+    font-size: 18px;
   }
 `;
 
 export const SpecialKey = styled(Key)`
   width: auto;
-  min-width: calc((100% - 9 * 2px) / 10 * 2.5);
+  min-width: calc((100% - 8 * 2px) / 9 * 2.5);
   font-size: 16px;
   background: ${props => props.isActive ? zeeguuOrange : '#f5f5f5'};
   color: ${props => props.isActive ? 'white' : almostBlack};
@@ -154,7 +154,7 @@ export const SpecialKey = styled(Key)`
   }
 
   @media (max-width: 768px) {
-    min-width: calc((100% - 9 * 1.5px) / 10 * 2.5);
+    min-width: calc((100% - 8 * 1.5px) / 9 * 2.5);
     font-size: 13px;
   }
 `;
