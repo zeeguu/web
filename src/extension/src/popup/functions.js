@@ -143,8 +143,19 @@ export function checkLanguageSupport(
 ) {
   if (setLoadingProgress) setLoadingProgress("Fetching article content...");
 
-  ArticleAsync(tab.url)
-    .then((article) => {
+  // Get the raw HTML document first
+  getSourceAsDOMAsync(tab.url)
+    .then((documentFromTab) => {
+      // Store the raw HTML for sending to backend
+      const rawHTML = documentFromTab.documentElement.outerHTML;
+
+      // Now parse with Readability for language detection
+      return ArticleAsync(tab.url).then((article) => {
+        // Return both the parsed article and raw HTML
+        return { article, rawHTML };
+      });
+    })
+    .then(({ article, rawHTML }) => {
       if (setArticleData) setArticleData(article);
       if (setLoadingProgress) setLoadingProgress("Checking language support...");
 
@@ -165,33 +176,66 @@ export function checkLanguageSupport(
             // Language is supported and matches user's learned language
             if (setLoadingProgress) setLoadingProgress("Processing article fragments...");
 
-            // Get tokenized fragments
-            let info = { url: tab.url };
+            // Get tokenized fragments - send both URL and RAW HTML content
+            // This avoids the backend needing to re-fetch the article
+            let info = {
+              url: tab.url,
+              htmlContent: rawHTML
+            };
 
             if (setLoadingProgress) setLoadingProgress("Assessing article difficulty level...");
 
-            api.findOrCreateArticle(info, (articleResult) => {
-              if (articleResult.includes("Language not supported")) {
-                setLanguageSupported(false);
-                return;
-              }
-
-              try {
-                let artinfo = JSON.parse(articleResult);
-                if (setFragmentData) {
-                  setFragmentData(artinfo);
+            api.findOrCreateArticle(
+              info,
+              (articleResult) => {
+                if (articleResult.includes("Language not supported")) {
+                  setLanguageSupported(false);
+                  return;
                 }
 
-                if (setLoadingProgress) setLoadingProgress("Preparing reader...");
+                try {
+                  let artinfo = JSON.parse(articleResult);
+                  if (setFragmentData) {
+                    setFragmentData(artinfo);
+                  }
 
-                if (setLoadingProgress) setLoadingProgress("Opening article reader...");
+                  if (setLoadingProgress) setLoadingProgress("Preparing reader...");
 
-                setLanguageSupported(true);
-              } catch (error) {
-                console.error("Failed to parse article info:", error);
-                setLanguageSupported(false);
+                  if (setLoadingProgress) setLoadingProgress("Opening article reader...");
+
+                  setLanguageSupported(true);
+                } catch (error) {
+                  console.error("Failed to parse article info:", error);
+                  setLanguageSupported(false);
+                }
+              },
+              (error) => {
+                // Handle errors when creating/fetching article
+                console.error("Failed to create/fetch article:", error);
+
+                if (error.status === 422) {
+                  // Article parsing failed
+                  console.log("Article could not be parsed");
+                  setLanguageSupported(false);
+                  if (setLoadingProgress) {
+                    setLoadingProgress("This article could not be processed. Please try a different article.");
+                  }
+                } else if (error.status === 401) {
+                  // Authentication error - handle same as language detection
+                  console.log("Session invalid during article creation");
+                  setLanguageSupported(false);
+                  if (setLoadingProgress) {
+                    setLoadingProgress("Session expired. Please close this popup and click the extension icon again.");
+                  }
+                } else {
+                  // Other errors
+                  setLanguageSupported(false);
+                  if (setLoadingProgress) {
+                    setLoadingProgress("An error occurred. Please try again.");
+                  }
+                }
               }
-            });
+            );
           }
         },
         async (error) => {

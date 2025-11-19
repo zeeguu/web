@@ -208,12 +208,12 @@ Zeeguu_API.prototype.setArticleOpened = function (articleID) {
   this._post("article_opened", `article_id=${articleID}`);
 };
 
-Zeeguu_API.prototype.findOrCreateArticle = function (articleInfo, callback) {
+Zeeguu_API.prototype.findOrCreateArticle = function (articleInfo, callback, onError) {
   let article = {
     url: articleInfo.url,
     htmlContent: articleInfo.htmlContent,
   };
-  this._post(`/find_or_create_article`, qs.stringify(article), callback);
+  this._post(`/find_or_create_article`, qs.stringify(article), callback, onError);
 };
 
 Zeeguu_API.prototype.removeMLSuggestion = function (
