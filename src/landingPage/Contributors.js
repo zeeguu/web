@@ -22,6 +22,8 @@ export default function Contributors() {
       {member("Mircea Lungu", "Production, Maintenance")}
 
       {member("Tiago Ribeiro", "Development and ML Research")}
+      {member("Sofia Henden", "Article browsing modes")}
+      {member("Louise Sørensen", "Article browsing modes")}
 
       {member("Iga Anna Waclawska", "Onboarding Experience Improvement")}
 
