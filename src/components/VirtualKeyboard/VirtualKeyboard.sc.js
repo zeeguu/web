@@ -114,7 +114,7 @@ export const Key = styled.button`
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all 0.1s;
+  transition: background 0.3s ease, border-color 0.3s ease, color 0.3s ease, transform 0.1s ease, box-shadow 0.1s ease;
   font-family: Arial, sans-serif;
   flex-shrink: 0;
   box-sizing: border-box;
@@ -128,8 +128,12 @@ export const Key = styled.button`
   }
 
   &:active {
+    background: ${zeeguuOrange};
+    border-color: ${zeeguuDarkOrange};
+    color: white;
     transform: translateY(0);
     box-shadow: none;
+    transition: none;
   }
 
   @media (max-width: 768px) {
