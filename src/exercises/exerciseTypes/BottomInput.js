@@ -33,6 +33,7 @@ export default function BottomInput({
   const [isInputWrongLanguage, setIsInputWrongLanguage] = useState(false);
   const [correctWordCountInInput, setCorrectWordCountInInput] = useState(0);
   const [feedbackMessage, setFeedbackMessage] = useState("");
+  const [isKeyboardCollapsed, setIsKeyboardCollapsed] = useState(true);
   const levenshtein = require("fast-levenshtein");
   const normalizedLearningWord = normalizeAnswer(exerciseBookmark.from);
 
@@ -47,6 +48,7 @@ export default function BottomInput({
 
   const inputLanguageName = LANGUAGE_CODE_TO_NAME[answerLanguageCode];
   const showVirtualKeyboard = needsVirtualKeyboard(answerLanguageCode, userDetails?.id);
+  const suppressOSKeyboard = showVirtualKeyboard && !isKeyboardCollapsed;
 
   function handleHint() {
     setUsedHint(true);
@@ -176,7 +178,7 @@ export default function BottomInput({
           <div className="type-feedback">{feedbackMessage !== "" && <p>{feedbackMessage}</p>}</div>
           <InputField
             type="text"
-            inputMode={showVirtualKeyboard ? "none" : "text"}
+            inputMode={suppressOSKeyboard ? "none" : "text"}
             placeholder={"Type in " + inputLanguageName}
             className={distanceToCorrect >= 5 && correctWordCountInInput === 0 ? "wrong-border" : "almost-border"}
             value={currentInput}
@@ -235,6 +237,7 @@ export default function BottomInput({
             onInput={setCurrentInput}
             currentValue={currentInput}
             initialCollapsed={false}
+            onCollapsedChange={setIsKeyboardCollapsed}
           />
         )}
       </div>

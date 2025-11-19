@@ -30,7 +30,7 @@ export function ClozeTranslatableText({
   showHint = true, // Whether to show "tap to type" hint
   canTypeInline = false, // Whether this exercise type allows inline typing
   answerLanguageCode = null, // Language code for the answer
-  showVirtualKeyboard = false, // Whether virtual keyboard is shown
+  suppressOSKeyboard = false, // Whether to suppress the OS keyboard
 }) {
   const [translationCount, setTranslationCount] = useState(0);
   const [clozeWordIds, setClozeWordIds] = useState([]);
@@ -438,7 +438,7 @@ export function ClozeTranslatableText({
                 }}
                 autoComplete="off"
                 spellCheck="false"
-                inputMode={showVirtualKeyboard ? "none" : "text"}
+                inputMode={suppressOSKeyboard ? "none" : "text"}
               />
             </>
           </span>

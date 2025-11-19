@@ -1,4 +1,4 @@
-import { forwardRef, useContext } from "react";
+import { forwardRef, useContext, useState } from "react";
 import { ClozeTranslatableText } from "../../reader/ClozeTranslatableText.js";
 import ReplaceExampleModal from "../replaceExample/ReplaceExampleModal.js";
 import VirtualKeyboard from "../../components/VirtualKeyboard/VirtualKeyboard.js";
@@ -30,11 +30,13 @@ const ClozeContextWithExchange = forwardRef(function ClozeContextWithExchange(
   ref,
 ) {
   const { userDetails } = useContext(UserContext);
+  const [isKeyboardCollapsed, setIsKeyboardCollapsed] = useState(true);
 
   // Determine the language for the answer (L2 for this exercise type)
   const answerLanguageCode = exerciseBookmark?.from_lang;
   const showVirtualKeyboard =
     answerLanguageCode && needsVirtualKeyboard(answerLanguageCode, userDetails?.id) && canTypeInline && !isExerciseOver;
+  const suppressOSKeyboard = showVirtualKeyboard && !isKeyboardCollapsed;
 
   return (
     <div style={{ textAlign: "center" }}>
@@ -64,7 +66,7 @@ const ClozeContextWithExchange = forwardRef(function ClozeContextWithExchange(
           showHint={showHint}
           canTypeInline={canTypeInline}
           answerLanguageCode={answerLanguageCode}
-          showVirtualKeyboard={showVirtualKeyboard}
+          suppressOSKeyboard={suppressOSKeyboard}
         />
         {onExampleUpdated && isExerciseOver && (
           <div
@@ -93,6 +95,7 @@ const ClozeContextWithExchange = forwardRef(function ClozeContextWithExchange(
             onInput={onInputChange}
             currentValue={inputValue}
             initialCollapsed={false}
+            onCollapsedChange={setIsKeyboardCollapsed}
           />
         </div>
       )}

@@ -13,12 +13,14 @@ const STORAGE_KEY = 'zeeguu_virtual_keyboard_collapsed';
  * @param {function} onInput - Callback when user types a character
  * @param {string} currentValue - Current input value (for context)
  * @param {boolean} initialCollapsed - Whether keyboard starts collapsed
+ * @param {function} onCollapsedChange - Callback when collapsed state changes
  */
 export default function VirtualKeyboard({
   languageCode,
   onInput,
   currentValue = '',
-  initialCollapsed = false
+  initialCollapsed = false,
+  onCollapsedChange
 }) {
   // Load collapsed state from localStorage
   const getInitialCollapsedState = () => {
@@ -40,7 +42,12 @@ export default function VirtualKeyboard({
     } catch (e) {
       // Ignore localStorage errors
     }
-  }, [isCollapsed]);
+
+    // Notify parent component of collapsed state change
+    if (onCollapsedChange) {
+      onCollapsedChange(isCollapsed);
+    }
+  }, [isCollapsed, onCollapsedChange]);
 
   // Handle key press from virtual keyboard
   const handleKeyPress = (key) => {
