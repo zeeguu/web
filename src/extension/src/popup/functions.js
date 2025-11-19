@@ -148,50 +148,88 @@ export function checkLanguageSupport(
       if (setArticleData) setArticleData(article);
       if (setLoadingProgress) setLoadingProgress("Checking language support...");
 
-      api.detectArticleLanguage(article.textContent, (result) => {
-        // Set detected language regardless
-        if (setDetectedLanguage && result.detected_language) {
-          setDetectedLanguage(result.detected_language);
-        }
+      api.detectArticleLanguage(
+        article.textContent,
+        (result) => {
+          // Set detected language regardless
+          if (setDetectedLanguage && result.detected_language) {
+            setDetectedLanguage(result.detected_language);
+          }
 
-        if (result.supported === false) {
-          setLanguageSupported(false);
-        } else if (result.needs_translation === true) {
-          // Language is supported but needs translation
-          setLanguageSupported(false); // This will trigger the translation prompt
-        } else if (result.supported === true && !result.needs_translation) {
-          // Language is supported and matches user's learned language
-          if (setLoadingProgress) setLoadingProgress("Processing article fragments...");
+          if (result.supported === false) {
+            setLanguageSupported(false);
+          } else if (result.needs_translation === true) {
+            // Language is supported but needs translation
+            setLanguageSupported(false); // This will trigger the translation prompt
+          } else if (result.supported === true && !result.needs_translation) {
+            // Language is supported and matches user's learned language
+            if (setLoadingProgress) setLoadingProgress("Processing article fragments...");
 
-          // Get tokenized fragments
-          let info = { url: tab.url };
+            // Get tokenized fragments
+            let info = { url: tab.url };
 
-          if (setLoadingProgress) setLoadingProgress("Assessing article difficulty level...");
+            if (setLoadingProgress) setLoadingProgress("Assessing article difficulty level...");
 
-          api.findOrCreateArticle(info, (articleResult) => {
-            if (articleResult.includes("Language not supported")) {
-              setLanguageSupported(false);
-              return;
-            }
-
-            try {
-              let artinfo = JSON.parse(articleResult);
-              if (setFragmentData) {
-                setFragmentData(artinfo);
+            api.findOrCreateArticle(info, (articleResult) => {
+              if (articleResult.includes("Language not supported")) {
+                setLanguageSupported(false);
+                return;
               }
 
-              if (setLoadingProgress) setLoadingProgress("Preparing reader...");
+              try {
+                let artinfo = JSON.parse(articleResult);
+                if (setFragmentData) {
+                  setFragmentData(artinfo);
+                }
 
-              if (setLoadingProgress) setLoadingProgress("Opening article reader...");
+                if (setLoadingProgress) setLoadingProgress("Preparing reader...");
 
-              setLanguageSupported(true);
-            } catch (error) {
-              console.error("Failed to parse article info:", error);
-              setLanguageSupported(false);
+                if (setLoadingProgress) setLoadingProgress("Opening article reader...");
+
+                setLanguageSupported(true);
+              } catch (error) {
+                console.error("Failed to parse article info:", error);
+                setLanguageSupported(false);
+              }
+            });
+          }
+        },
+        async (error) => {
+          // Handle authentication and other API errors
+          console.error("Language detection API error:", error);
+
+          if (error.status === 401) {
+            // 401 Unauthorized - session is invalid
+            console.log("Session invalid - clearing stale cookies");
+
+            // Remove stale sessionID cookie and local storage
+            // so next time the popup opens it will get fresh cookies
+            try {
+              const { WEB_URL } = await import("../../../config");
+              const { removeCookiesOnZeeguu } = await import("./cookies");
+
+              // Clear stale cookies
+              await removeCookiesOnZeeguu(WEB_URL);
+
+              // Clear extension local storage
+              await BROWSER_API.storage.local.clear();
+
+              console.log("Cleared stale session cookies and storage");
+            } catch (e) {
+              console.error("Error clearing cookies:", e);
             }
-          });
+
+            // Show error message to user
+            setLanguageSupported(false);
+            if (setLoadingProgress) {
+              setLoadingProgress("Session expired. Please close this popup and click the extension icon again.");
+            }
+          } else {
+            // Other errors - treat as language not supported
+            setLanguageSupported(false);
+          }
         }
-      });
+      );
     })
     .catch((error) => {
       console.error("Failed to fetch article for language check:", error);

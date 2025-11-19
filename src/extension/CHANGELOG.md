@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 
 
+
+## [2.5.7] - 2025-11-19
+
+### Fixed
+- Fixed authentication error handling to properly detect expired sessions
+- Extension now automatically clears stale cookies when session expires
+- Improved error messages to distinguish between authentication errors and language support issues
+- Users no longer need to manually log in again if already logged in on zeeguu.org
+
 ## [2.5.6] - 2025-08-21
 
 ### Added

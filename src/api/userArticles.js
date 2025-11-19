@@ -246,16 +246,31 @@ Zeeguu_API.prototype.isArticleLanguageSupported = function (
 Zeeguu_API.prototype.detectArticleLanguage = function (
   htmlContent,
   callback,
+  onError,
 ) {
   let article = { htmlContent: htmlContent, detailed: true };
-  this._post(`/is_article_language_supported`, qs.stringify(article), (response) => {
-    try {
-      callback(JSON.parse(response));
-    } catch (e) {
-      // Backward compatibility - old format
-      callback({ supported: response === "YES" });
+  this._post(
+    `/is_article_language_supported`,
+    qs.stringify(article),
+    (response) => {
+      try {
+        callback(JSON.parse(response));
+      } catch (e) {
+        // Backward compatibility - old format
+        callback({ supported: response === "YES" });
+      }
+    },
+    (error) => {
+      // Handle HTTP errors (401, 406, 500, etc.)
+      console.error("Language detection failed:", error);
+      if (onError) {
+        onError(error);
+      } else {
+        // Default fallback - treat as unsupported
+        callback({ supported: false, error: error.message });
+      }
     }
-  });
+  );
 };
 
 Zeeguu_API.prototype.translateAndAdaptArticle = function (
