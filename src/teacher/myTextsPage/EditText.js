@@ -15,6 +15,7 @@ import ShareWithCollegueDialog from "./ShareWithColleagueDialog";
 import { APIContext } from "../../contexts/APIContext";
 import CefrAssessmentDisplay from "./CefrAssessmentDisplay";
 import LoadingAnimation from "../../components/LoadingAnimation";
+import { detectLanguageFromText } from "../../utils/languageDetection";
 
 export default function EditText() {
   const api = useContext(APIContext);
@@ -146,10 +147,21 @@ export default function EditText() {
 
   const handleChange = (event) => {
     setStateChanged(true);
-    setArticleState({
+    const newState = {
       ...articleState,
       [event.target.name]: event.target.value, //ie: article_title : "Harry Potter tickets sold out", article_content : "bla bla bla"
-    });
+    };
+
+    // Auto-detect language when article content changes and language is not yet set
+    if (event.target.name === "article_content" && articleState.language_code === "default") {
+      const detectedLanguage = detectLanguageFromText(event.target.value);
+      if (detectedLanguage) {
+        newState.language_code = detectedLanguage;
+        toast.info(`Language detected: ${detectedLanguage}`);
+      }
+    }
+
+    setArticleState(newState);
   };
 
   //The LanguageSelector component returns the language selected by the user as a string (not an event like the other input fields)
