@@ -1,9 +1,11 @@
-import { useState, useRef, useEffect } from "react";
-import * as s from "./ArticlePreviewSwipe.cs.js";
+import React, { useState, useRef, useEffect } from "react";
+import * as s from "./ArticlePreviewSwipe.sc.js";
+import { SimplifiedLabel } from "./ArticlePreviewList.sc.js";
 import { estimateReadingTime } from "../utils/misc/readableTime";
 import { getStaticPath } from "../utils/misc/staticPath";
 import { TranslatableText } from "../reader/TranslatableText";
 import { AnimatePresence, useMotionValue, animate } from "framer-motion";
+import ArticleSourceInfo from "../components/ArticleSourceInfo";
 
 export default function ArticlePreviewSwipe({
                                                 article,
@@ -11,6 +13,7 @@ export default function ArticlePreviewSwipe({
                                                 interactiveTitle,
                                                 onSwipeLeft,
                                                 onSwipeRight,
+                                                onOpen,
                                             }) {
     const [isRemoved, setIsRemoved] = useState(false);
     const x = useMotionValue(0);
@@ -83,16 +86,45 @@ export default function ArticlePreviewSwipe({
                     onDragEnd={handleDragEnd}
                     whileTap={{ scale: 0.97 }}>
                     <s.ImageWrapper>
-                        {article.img_url && <img alt="" src={article.img_url} />}
-                        <s.ReadTimeWrapper>
+                        {article.img_url && (
                             <img
-                                src={getStaticPath("icons", "read-time-icon.png")}
-                                alt="read time icon"
+                                alt=""
+                                src={article.img_url}
+                                className="link"
+                                onClick={() => {
+                                    onOpen?.(article);
+                                }}
                             />
-                            {estimateReadingTime(
-                                article.metrics?.word_count || article.word_count || 0
-                            )}
-                        </s.ReadTimeWrapper>
+                        )}
+                        <s.InfoWrapper>
+                            <s.InfoItem>
+                                <ArticleSourceInfo
+                                    articleInfo={article}
+                                    style={{ margin: "0 0 0 0", fontSize: "12px" }}
+                                />
+                            </s.InfoItem>
+                            <s.InfoItem>
+                                <img
+                                    src={getStaticPath("icons", "read-time-icon.png")}
+                                    alt="read time icon"
+                                />
+                                {estimateReadingTime(
+                                    article.metrics?.word_count || article.word_count || 0
+                                )}
+                            </s.InfoItem>
+
+                            <s.InfoItem>
+                                <img
+                                    src={getStaticPath(
+                                        "icons",
+                                        `${article.metrics?.cefr_level || article.cefr_level || "B1"}-level-icon.png`
+                                    )}
+                                    alt="difficulty icon"
+                                />
+                                <span>{article.metrics?.cefr_level || article.cefr_level || "B1"}</span>
+                                {article.parent_article_id && <SimplifiedLabel>simplified</SimplifiedLabel>}
+                            </s.InfoItem>
+                        </s.InfoWrapper>
                     </s.ImageWrapper>
                     <s.Content>
                         <s.Title>{interactiveTitle ? (

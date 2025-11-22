@@ -2,9 +2,9 @@ import * as s from "./ArticleSourceInfo.sc";
 import { getNewsIconPath } from "../utils/misc/staticPath";
 import moment from "moment";
 
-export default function ArticleSourceInfo({ articleInfo, dontShowSourceIcon, dontShowPublishingTime }) {
+export default function ArticleSourceInfo({ articleInfo, dontShowSourceIcon, dontShowPublishingTime, ...rest }) {
   return (
-    <s.SourceContainer>
+    <s.SourceContainer  {...rest}>
       {!dontShowSourceIcon && (
         <>
           <s.SourceImage>

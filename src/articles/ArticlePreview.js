@@ -214,6 +214,7 @@ export default function ArticlePreview({
       interactiveSummary={interactiveSummary}
       onSwipeRight={onArticleSave}
       onSwipeLeft={onArticleHidden}
+      onOpen={notifyArticleClick}
     />
   );
 }

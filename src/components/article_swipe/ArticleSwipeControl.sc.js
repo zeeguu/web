@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { white, veryLightGrey, orange600, orange300 } from "../colors";
+import { orange600, saveGreen, dismissRed } from "../colors";
 
 export const Bar = styled.div`
   display: flex;
@@ -30,16 +30,16 @@ export const BaseButton = styled.button`
 export const DismissButton = styled(BaseButton)`
   width: 60px;
   height: 60px;
-  background: ${white};
+  background: ${dismissRed};
   box-shadow:
     0 22px 34px rgba(0, 0, 0, 0.12),
     0 6px 12px rgba(0, 0, 0, 0.06),
-    0 0 0 3px ${veryLightGrey} inset;
+    0 0 0 3px ${dismissRed} inset;
 `;
 
 export const OpenButton = styled(BaseButton)`
-  width: 60px;
-  height: 60px;
+  width: 65px;
+  height: 65px;
   background: ${orange600};
   box-shadow:
     0 38px 60px rgba(0, 0, 0, 0.12),
@@ -49,11 +49,11 @@ export const OpenButton = styled(BaseButton)`
 export const SaveButton = styled(BaseButton)`
   width: 60px;
   height: 60px;
-  background: ${white};
+  background: ${saveGreen};
   box-shadow:
     0 22px 34px rgba(0, 0, 0, 0.12),
     0 6px 12px rgba(0, 0, 0, 0.06),
-    0 0 0 3px ${orange300} inset;
+    0 0 0 3px ${saveGreen} inset;
 
   .heart-outline,
   .heart-filled {

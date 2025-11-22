@@ -1,6 +1,6 @@
 import React from "react";
 import { Bar, DismissButton, OpenButton, SaveButton, ButtonInner } from "./ArticleSwipeControl.sc.js";
-import { white, darkGrey, orange600 } from "../colors";
+import { white } from "../colors";
 import SwipeIcon from "./SwipeIcon.js";
 
 export default function ArticleSwipeControl({ onDismiss = () => {}, onOpen = () => {}, onSave = () => {}, children, isSaved = false }) {
@@ -8,7 +8,7 @@ export default function ArticleSwipeControl({ onDismiss = () => {}, onOpen = () 
         <Bar>
             <DismissButton onClick={onDismiss} aria-label="Dismiss">
                 <ButtonInner>
-                    <SwipeIcon name="dismiss" color={darkGrey} size={22} />
+                    <SwipeIcon name="dismiss" color={white} size={30} />
                 </ButtonInner>
             </DismissButton>
 
@@ -25,9 +25,8 @@ export default function ArticleSwipeControl({ onDismiss = () => {}, onOpen = () 
             ) : (
                 <SaveButton onClick={onSave} aria-label="Save Article" className={isSaved ? "saved" : ""}>
                     <ButtonInner>
-                        {/* <SwipeIcon name="save" color={orange600} size={22} /> */}
-                        <SwipeIcon className="heart-outline" name="save" color={orange600} size={22} />
-                        <SwipeIcon className="heart-filled" name="saveFilled" color={orange600} size={22} />
+                        <SwipeIcon className="heart-outline" name="save" color={white} size={26} />
+                        <SwipeIcon className="heart-filled" name="saveFilled" color={white} size={26} />
                     </ButtonInner>
                 </SaveButton>
             )}

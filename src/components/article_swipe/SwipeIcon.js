@@ -14,7 +14,10 @@ export default function SwipeIcon({ name, color, size, className }) {
 
     const swipeIcons = {
         dismiss: <CloseRoundedIcon {...iconProps} />,
-        open: <MenuBookRoundedIcon {...iconProps} />,
+        open: <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+            <MenuBookRoundedIcon {...iconProps} />
+            <span style={{ fontWeight: '600', fontSize: '12px',  color: color}}>Read</span>
+        </div>,
         save: <FavoriteBorderRoundedIcon {...iconProps} />,
         saveFilled: <FavoriteRoundedIcon {...iconProps} />,
     };
