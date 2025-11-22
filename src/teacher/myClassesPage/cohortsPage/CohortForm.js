@@ -3,6 +3,7 @@ import strings from "../../../i18n/definitions";
 import { FormControl } from "@mui/material";
 import LoadingAnimation from "../../../components/LoadingAnimation";
 import { Error } from "../../sharedComponents/Error";
+import { toast } from "react-toastify";
 import {
   CohortNameTextField,
   InviteCodeTextField,
@@ -55,6 +56,7 @@ const CohortForm = ({ cohort, setForceUpdate, setShowCohortForm, cohorts }) => {
     api
       .deleteCohort(cohort_id)
       .then((result) => {
+        toast.success("Class deleted successfully!");
         setShowCohortForm(false);
         setForceUpdate((prev) => prev + 1); // reloads the classes to update the UI
       })

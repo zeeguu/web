@@ -145,7 +145,6 @@ export const Key = styled.button`
     color: white;
     transform: translateY(0);
     box-shadow: none;
-    transition: none;
   }
 
   @media (max-width: 768px) {
