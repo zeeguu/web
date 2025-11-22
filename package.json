@@ -4,11 +4,6 @@
   "private": true,
   "homepage": "https://www.zeeguu.org/",
   "dependencies": {
-    "@emotion/react": "^11.14.0",
-    "@emotion/styled": "^11.14.1",
-    "@mozilla/readability": "^0.4.1",
-    "@mui/icons-material": "^5.18.0",
-    "@mui/material": "^5.18.0",
     "@capacitor/android": "^7.4.3",
     "@capacitor/cli": "^7.4.3",
     "@capacitor/core": "^7.4.3",

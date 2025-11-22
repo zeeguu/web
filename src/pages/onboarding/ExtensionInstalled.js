@@ -37,8 +37,8 @@ export default function ExtensionInstalled() {
       </Main>
       <Footer>
         <ButtonContainer className={"padding-large"}>
-          {getSessionFromCookies() ? (
-            <Button className={"full-width-btn"} onClick={() => history.push("/articles/swiper")}>
+          {getSharedSession() ? (
+            <Button className={"full-width-btn"} onClick={() => history.push("/articles")}>
               {strings.goToZeeguuApp}
             </Button>
           ) : (
