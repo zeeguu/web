@@ -187,7 +187,16 @@ const CohortForm = ({ cohort, setForceUpdate, setShowCohortForm, cohorts }) => {
           </form>
         )}
         {inputIsEmpty && <Error message={strings.errorEmptyInputField} />}
-        <PopupButtonWrapper>
+        <PopupButtonWrapper style={{ justifyContent: cohort ? "space-between" : "flex-end" }}>
+          {cohort && (
+            <StyledButton
+              secondary
+              onClick={() => setShowWarning(true)}
+              style={{ opacity: 0.6 }}
+            >
+              {strings.delete}
+            </StyledButton>
+          )}
           <StyledButton
             primary
             onClick={submitForm}
@@ -196,11 +205,6 @@ const CohortForm = ({ cohort, setForceUpdate, setShowCohortForm, cohorts }) => {
           >
             {cohort ? strings.saveChanges : strings.createClass}
           </StyledButton>
-          {cohort && (
-            <StyledButton secondary onClick={() => setShowWarning(true)}>
-              {strings.delete}
-            </StyledButton>
-          )}
         </PopupButtonWrapper>
         {showWarning && (
           <DeleteCohortWarning
