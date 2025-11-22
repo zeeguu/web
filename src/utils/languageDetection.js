@@ -18,6 +18,24 @@ const francToZeeguuLanguageMap = {
   rus: "ru", // Russian
 };
 
+// Mapping from language codes to readable names
+export const languageNames = {
+  de: "German",
+  es: "Spanish",
+  fr: "French",
+  nl: "Dutch",
+  en: "English",
+  it: "Italian",
+  "zh-CN": "Chinese",
+  da: "Danish",
+  tr: "Turkish",
+  ar: "Arabic",
+  so: "Somali",
+  ku: "Kurdish",
+  sv: "Swedish",
+  ru: "Russian",
+};
+
 /**
  * Detects the language of the provided text and returns the Zeeguu language code.
  * Returns null if the language cannot be detected or is not supported by Zeeguu.

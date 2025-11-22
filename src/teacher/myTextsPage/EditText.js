@@ -15,7 +15,7 @@ import ShareWithCollegueDialog from "./ShareWithColleagueDialog";
 import { APIContext } from "../../contexts/APIContext";
 import CefrAssessmentDisplay from "./CefrAssessmentDisplay";
 import LoadingAnimation from "../../components/LoadingAnimation";
-import { detectLanguageFromText } from "../../utils/languageDetection";
+import { detectLanguageFromText, languageNames } from "../../utils/languageDetection";
 
 export default function EditText() {
   const api = useContext(APIContext);
@@ -157,7 +157,8 @@ export default function EditText() {
       const detectedLanguage = detectLanguageFromText(event.target.value);
       if (detectedLanguage) {
         newState.language_code = detectedLanguage;
-        toast.info(`Language detected: ${detectedLanguage}`);
+        const languageName = languageNames[detectedLanguage] || detectedLanguage;
+        toast.info(`Language automatically detected: ${languageName}. You can change it if needed.`);
       }
     }
 
