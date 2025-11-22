@@ -315,11 +315,15 @@ export default function EditText() {
             borderRadius: "5px",
           }}
         >
-          <span style={{ fontWeight: "bold", whiteSpace: "nowrap" }}>Share With Class:</span>
+          <span style={{ fontWeight: "bold", whiteSpace: "nowrap" }}>Shared With:</span>
           {cohortList.map((cohort, index) => (
             <span
               key={cohort}
-              style={{ whiteSpace: "nowrap", fontFamily: "monospace", fontSize: "1.05em", letterSpacing: "-0.5px" }}
+              style={{
+                whiteSpace: "nowrap",
+                fontSize: "1.15em",
+                letterSpacing: "-0.4px",
+              }}
             >
               {cohort}
               {index < cohortList.length - 1 ? "," : ""}

@@ -58,7 +58,7 @@ let strings = new LocalizedStrings(
       youHaveNotJoinedAClass: "You haven't joined a class yet.",
       titleLearnedWords: "Learned Words",
       tooEasy: "too easy",
-      shareWithColleague: "Share with colleague",
+      shareWithColleague: "Send to colleague",
       colleagueEmailExample: "eg. 'colleague@work.mail.com'",
       next: "Next",
       youCanChangeLater: "You can always change it later",
