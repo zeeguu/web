@@ -12,6 +12,7 @@ export default function InputField({
   isError,
   errorMessage,
   children,
+  autoFocus,
 }) {
   return (
     <s.FieldLabelContainer>
@@ -25,6 +26,7 @@ export default function InputField({
           id={id}
           placeholder={placeholder}
           onChange={onChange}
+          autoFocus={autoFocus}
         />
         {children}
       </s.InputWrapper>

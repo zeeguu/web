@@ -83,6 +83,7 @@ export default function LogIn({ handleSuccessfulLogIn }) {
               }}
               isError={!isEmailValid}
               errorMessage={emailErrorMsg}
+              autoFocus={true}
             />
 
             <InputField
