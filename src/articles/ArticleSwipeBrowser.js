@@ -29,11 +29,11 @@ export default function ArticleSwipeBrowser({
   // these will be removed when we decided on a clear structure
   const [isRedirectionModalOpen, setIsRedirectionModalOpen] = useState(false);
 
-    useEffect(() => {
-        if (!articles || articles.length === 0) {
-            loadNextPage();
-        }
-    }, [articles]);
+  useEffect(() => {
+    if (!articles || articles.length === 0) {
+      loadNextPage();
+    }
+  }, [articles]);
 
   // keep index valid whenever list changes (e.g., after dismiss)
   useEffect(() => {
@@ -90,7 +90,7 @@ export default function ArticleSwipeBrowser({
       onArticleSave?.(currentArticle.id, val); // parent flips has_personal_copy in its arrays
   };
 
-  const handleSave = () => {
+  const handleSave = () => {   
     const root = hiddenSaveRef.current;
     if (!root) return;
     const clickable = root.querySelector("button, a");
@@ -101,34 +101,25 @@ export default function ArticleSwipeBrowser({
 
   return (
     <s.Container>
-      <ArticlePreview
+      <s.CenterStack>
+        <ArticlePreview
           key={currentArticle.id + (isArticleSaved ? "_saved" : "")}
           article={currentArticle}
-            isListView={false}
-            notifyArticleClick={handleOpen}
-      />
+          isListView={false}
+          notifyArticleClick={handleOpen}
+          onArticleHidden={handleDismiss}
+          onArticleSave={handleSave}
+        />
 
-      <ArticleSwipeControl onOpen={handleOpen} onDismiss={handleDismiss} onSave={handleSave} />
-
-        <div
-            ref={hiddenSaveRef}
-            style={{
-                position: "absolute",
-                width: 1,
-                height: 1,
-                overflow: "hidden",
-                clip: "rect(0 0 0 0)",
-                clipPath: "inset(50%)",
-                whiteSpace: "nowrap",
-            }}
-            aria-hidden="true"
-        >
-            <SaveArticleButton
-                article={currentArticle}
-                isArticleSaved={isArticleSaved}
-                setIsArticleSaved={setSavedAndNotify}
-            />
-        </div>
+        <ArticleSwipeControl onOpen={handleOpen} onDismiss={handleDismiss} onSave={handleSave} />
+      </s.CenterStack>
+      <s.VisuallyHidden ref={hiddenSaveRef} aria-hidden="true">
+        <SaveArticleButton
+          article={currentArticle}
+          isArticleSaved={isArticleSaved}
+          setIsArticleSaved={setSavedAndNotify}
+        />
+      </s.VisuallyHidden>
 
       {/* Same modal as list-mode titleLink flow */}
       <RedirectionNotificationModal
@@ -142,3 +133,4 @@ export default function ArticleSwipeBrowser({
     </s.Container>
   );
 }
+

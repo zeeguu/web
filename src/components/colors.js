@@ -70,6 +70,10 @@ let white = "#FFFFFF";
 let buttonBorder = "#3079b0";
 let gray = "999999";
 
+let dismissRed = "rgba(219,64,83,0.89)";
+let saveGreen = "rgba(113,159,91,0.94)";
+
+
 // Based on the Tableau colours of Matplotlib
 // https://stackoverflow.com/questions/64369710/what-are-the-hex-codes-of-matplotlib-tab10-palette
 
@@ -161,5 +165,7 @@ export {
   buttonBorder,
   white,
   gray,
+  saveGreen,
+  dismissRed,
   setColors,
 };

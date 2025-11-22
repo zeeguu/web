@@ -1,12 +1,12 @@
 import styled from "styled-components";
-import { white, veryLightGrey, orange600, orange300 } from "../colors";
+import { orange600, saveGreen, dismissRed } from "../colors";
 
 export const Bar = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 3rem;
-  padding: 0.25rem 1rem 0.25rem;
+  padding: 1rem;
   width: 500px;
 `;
 
@@ -28,18 +28,18 @@ export const BaseButton = styled.button`
 `;
 
 export const DismissButton = styled(BaseButton)`
-  width: 74px;
-  height: 74px;
-  background: ${white};
+  width: 60px;
+  height: 60px;
+  background: ${dismissRed};
   box-shadow:
     0 22px 34px rgba(0, 0, 0, 0.12),
     0 6px 12px rgba(0, 0, 0, 0.06),
-    0 0 0 3px ${veryLightGrey} inset;
+    0 0 0 3px ${dismissRed} inset;
 `;
 
 export const OpenButton = styled(BaseButton)`
-  width: 112px;
-  height: 112px;
+  width: 65px;
+  height: 65px;
   background: ${orange600};
   box-shadow:
     0 38px 60px rgba(0, 0, 0, 0.12),
@@ -47,13 +47,38 @@ export const OpenButton = styled(BaseButton)`
 `;
 
 export const SaveButton = styled(BaseButton)`
-  width: 74px;
-  height: 74px;
-  background: ${white};
+  width: 60px;
+  height: 60px;
+  background: ${saveGreen};
   box-shadow:
     0 22px 34px rgba(0, 0, 0, 0.12),
     0 6px 12px rgba(0, 0, 0, 0.06),
-    0 0 0 3px ${orange300} inset;
+    0 0 0 3px ${saveGreen} inset;
+
+  .heart-outline,
+  .heart-filled {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    transition: opacity 0.25s ease;
+  }
+
+  .heart-filled { opacity: 0; }
+  .heart-outline { opacity: 1; }
+
+  /* Hover only for desktop */
+  @media (hover: hover) and (pointer: fine) {
+      &:hover .heart-filled {
+          opacity: 1;
+      }
+      &:hover .heart-outline {
+          opacity: 0;
+      }
+  }
+
+  &.saved .heart-filled { opacity: 1; }
+  &.saved .heart-outline { opacity: 0; }
 `;
 
 export const ButtonInner = styled.div`
@@ -62,4 +87,5 @@ export const ButtonInner = styled.div`
   border-radius: inherit;
   display: grid;
   place-items: center;
+  position: relative;
 `;

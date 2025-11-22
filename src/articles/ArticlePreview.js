@@ -212,6 +212,9 @@ export default function ArticlePreview({
       titleLink={titleLink}
       interactiveTitle={interactiveTitle}
       interactiveSummary={interactiveSummary}
+      onSwipeRight={onArticleSave}
+      onSwipeLeft={onArticleHidden}
+      onOpen={notifyArticleClick}
     />
   );
 }

@@ -1,4 +1,4 @@
-import { Switch } from "react-router-dom";
+import { Switch, useLocation } from "react-router-dom";
 import ArticleBrowser from "./ArticleBrowser";
 import BookmarkedArticles from "./BookmarkedArticles";
 import { useContext, useEffect, useState } from "react";
@@ -20,22 +20,26 @@ import { APIContext } from "../contexts/APIContext";
 
 export default function ArticlesRouter({ hasExtension, isChrome }) {
   const api = useContext(APIContext);
+  const location = useLocation();
 
   const [tabsAndLinks, setTabsAndLinks] = useState({
-    [strings.homeTab]: "/articles",
+    // [strings.homeTab]: "/articles",
     [strings.swipeTab]: "/articles/swiper",
     [strings.search]: "/articles/mySearches",
     [strings.saved]: "/articles/ownTexts",
   });
+  const [articlesAndVideosList, setArticlesAndVideosList] = useState([]);
+  const [originalList, setOriginalList] = useState(null);
+  const isSwipeView = location.pathname === "/articles/swiper";
 
-  useEffect(() => {
-    if (LocalStorage.isStudent()) {
-      setTabsAndLinks((prevTabsAndLinks) => ({
-        ...prevTabsAndLinks,
-        [strings.classroomTab]: "/articles/classroom",
-      }));
-    }
-  }, []);
+  // useEffect(() => {
+  //   if (LocalStorage.isStudent()) {
+  //     setTabsAndLinks((prevTabsAndLinks) => ({
+  //       ...prevTabsAndLinks,
+  //       [strings.classroomTab]: "/articles/classroom",
+  //     }));
+  //   }
+  // }, []);
 
   useEffect(() => {
     api.getBookmarkedArticles((articles) => {
@@ -52,33 +56,51 @@ export default function ArticlesRouter({ hasExtension, isChrome }) {
   return (
     <>
       {/* Rendering top menu first, then routing to corresponding page */}
-      <s.NarrowColumn>
+      <s.NarrowColumn $isSwipe={isSwipeView}>
         <TopTabs title={strings.articles} tabsAndLinks={tabsAndLinks} />
-        <Switch>
-          <PrivateRoute exact path="/articles/swiper">
-            <ArticleBrowser isSwipeView={true} hasExtension={hasExtension} isChrome={isChrome} />
-          </PrivateRoute>
+          <Switch>
+            <PrivateRoute exact path={["/articles", "/articles/swiper"]}>
+              {isSwipeView ? (
+                <s.SwipeCenterContainer $center>
+                  <ArticleBrowser
+                    articlesAndVideosList={articlesAndVideosList}
+                    setArticlesAndVideosList={setArticlesAndVideosList}
+                    originalList={originalList}
+                    setOriginalList={setOriginalList}
+                    isSwipeView={isSwipeView}
+                    hasExtension={hasExtension}
+                    isChrome={isChrome}
+                  />
+                </s.SwipeCenterContainer>
+              ) : (
+                <ArticleBrowser
+                  articlesAndVideosList={articlesAndVideosList}
+                  setArticlesAndVideosList={setArticlesAndVideosList}
+                  originalList={originalList}
+                  setOriginalList={setOriginalList}
+                  isSwipeView={isSwipeView}
+                  hasExtension={hasExtension}
+                  isChrome={isChrome}
+                />
+              )}
+            </PrivateRoute>
 
-          <PrivateRoute exact path="/articles">
-            <ArticleBrowser isSwipeView={false} hasExtension={hasExtension} isChrome={isChrome} />
-          </PrivateRoute>
+            <PrivateRoute path="/articles/bookmarked" component={BookmarkedArticles} />
 
-          <PrivateRoute path="/articles/bookmarked" component={BookmarkedArticles} />
+            <PrivateRoute path="/articles/classroom" component={ClassroomArticles} />
 
-          <PrivateRoute path="/articles/classroom" component={ClassroomArticles} />
+            <PrivateRoute path="/articles/ownTexts" component={OwnArticles} />
 
-          <PrivateRoute path="/articles/ownTexts" component={OwnArticles} />
+            <PrivateRoute path="/articles/forYou" component={RecommendedArticles} />
 
-          <PrivateRoute path="/articles/forYou" component={RecommendedArticles} />
+            <PrivateRoute path="/articles/history" component={ReadingHistory} />
 
-          <PrivateRoute path="/articles/history" component={ReadingHistory} />
+            <PrivateRoute path="/articles/mySearches" component={MySearches} />
 
-          <PrivateRoute path="/articles/mySearches" component={MySearches} />
-
-          <PrivateRoute path="/search">
-            <Search hasExtension={hasExtension} isChrome={isChrome} />
-          </PrivateRoute>
-        </Switch>
+            <PrivateRoute path="/search">
+              <Search hasExtension={hasExtension} isChrome={isChrome} />
+            </PrivateRoute>
+          </Switch>
       </s.NarrowColumn>
     </>
   );
