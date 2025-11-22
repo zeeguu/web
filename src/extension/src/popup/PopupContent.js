@@ -321,7 +321,12 @@ export default function PopupContent({
     !translatedArticle &&
     !isTranslating
   ) {
-    return renderFeedbackSection(LANGUAGE_FEEDBACK);
+    // Check if it's an authentication error
+    const isAuthError = loadingProgress && loadingProgress.includes("Authentication failed");
+    const feedbackMessage = isAuthError
+      ? "Session expired. Please close this popup and click the Zeeguu icon again."
+      : LANGUAGE_FEEDBACK;
+    return renderFeedbackSection(feedbackMessage);
   } else if ((languageSupported && finalStateExecuted && article && fragmentData) || translatedArticle) {
     // Always show loading message before opening modal
     setTimeout(() => {

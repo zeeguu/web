@@ -1,12 +1,11 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useContext } from "react";
 
 import { APIContext } from "../contexts/APIContext";
 import * as s from "./UnfinishedArticleList.sc";
 import UnfinishedArticlePreview from "./UnfinishedArticlePreview";
 
 export default function UnfinishedArticlesList({
-  articleList,
-  setArticleList,
+  unfinishedArticles,
 }) {
   const api = useContext(APIContext);
   const [unfinishedArticleList, setUnfinishedArticleList] = useState([]);

@@ -72,9 +72,26 @@ const Zeeguu_API = class {
 
     if (callback) {
       fetch(url, params)
-        .then((response) => (getJson ? response.json() : response.text()))
+        .then((response) => {
+          // Check for HTTP errors before processing response
+          if (!response.ok) {
+            // Create error with status code and message
+            const error = new Error(`HTTP ${response.status}: ${response.statusText}`);
+            error.status = response.status;
+            error.response = response;
+            throw error;
+          }
+          return getJson ? response.json() : response.text();
+        })
         .then((data) => callback(data))
-        .catch((e) => onError(e));
+        .catch((e) => {
+          // Call onError if provided, otherwise log the error
+          if (onError) {
+            onError(e);
+          } else {
+            console.error("API request failed:", e);
+          }
+        });
     } else {
       return fetch(url, params);
     }
@@ -86,15 +103,31 @@ const Zeeguu_API = class {
 
     const headers = isForm ? { "Content-Type": "multipart/form-data" } : { "Content-Type": "application/json" };
 
-    const res = await axios({
-      method: "post",
-      url: this.baseAPIurl + endpoint,
-      params: params,
-      headers: headers,
-      data: data,
-    });
+    console.log(`[FRONTEND-API] POST ${endpoint} - START`, { timestamp: new Date().toISOString(), endpoint, dataSize: data ? JSON.stringify(data).length : 0 });
 
-    return res;
+    const startTime = performance.now();
+    try {
+      const res = await axios({
+        method: "post",
+        url: this.baseAPIurl + endpoint,
+        params: params,
+        headers: headers,
+        data: data,
+      });
+      const elapsed = performance.now() - startTime;
+      console.log(`[FRONTEND-API] POST ${endpoint} - SUCCESS`, { timestamp: new Date().toISOString(), elapsed: `${elapsed.toFixed(2)}ms`, status: res.status });
+      return res;
+    } catch (error) {
+      const elapsed = performance.now() - startTime;
+      console.error(`[FRONTEND-API] POST ${endpoint} - ERROR`, {
+        timestamp: new Date().toISOString(),
+        elapsed: `${elapsed.toFixed(2)}ms`,
+        error: error.message,
+        code: error.code,
+        response: error.response?.status
+      });
+      throw error;
+    }
   }
 
   async apiGet(endpoint) {

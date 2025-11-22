@@ -5,7 +5,7 @@ import { scrollToTop } from "../../utils/misc/scrollToTop";
 import useFormField from "../../hooks/useFormField";
 import { UserContext } from "../../contexts/UserContext";
 import { APIContext } from "../../contexts/APIContext";
-import { saveUserInfoIntoCookies } from "../../utils/cookies/userInfo";
+import { saveSharedUserInfo } from "../../utils/cookies/userInfo";
 import LocalStorage from "../../assorted/LocalStorage";
 import {
   EmailValidator,
@@ -142,7 +142,7 @@ export default function CreateAccount({ handleSuccessfulLogIn }) {
         api.getUserDetails((user) => {
           handleSuccessfulLogIn(user, session, false);
           setUserDetails(userInfo);
-          saveUserInfoIntoCookies(userInfo);
+          saveSharedUserInfo(userInfo);
           history.push("/select_interests");
         });
       },

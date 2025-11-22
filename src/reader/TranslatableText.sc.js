@@ -270,7 +270,8 @@ that made the UI too heavy ... */
 
     /* Blockquote styling */
     &.blockquote {
-      margin: 1.5em 0;
+      margin-top: 1.5em;
+      margin-bottom: 0;
       padding: 1em 1.5em;
       border-left: 4px solid ${zeeguuOrange};
       background-color: #f9f9f9;
@@ -278,6 +279,7 @@ that made the UI too heavy ... */
       position: relative;
     }
 
+    /* Only show quote mark on first blockquote in sequence */
     &.blockquote::before {
       content: '"';
       font-size: 3em;

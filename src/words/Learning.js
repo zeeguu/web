@@ -59,7 +59,7 @@ export default function Learning() {
     if (bookmark) {
       // Remove the word from the list with animation
       onNotifyDelete(bookmark);
-      
+
       // Also update the grouped by level data
       let newWords_byLevel = { ...inLearning_byLevel };
       const level = bookmark.level;
@@ -110,8 +110,8 @@ export default function Learning() {
     <>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1em" }}>
         <p style={{ margin: 0 }}>
-          Words you see in your exercises grouped by how far you've progressed them. A spaced repetition algorithm
-          decides the ones you see in a given day.
+          Words you see in your exercises grouped by how far you've progressed in their learning. A spaced repetition
+          algorithm decides the ones you see in a given day.
         </p>
         <StyledButton onClick={() => setShowAddWordModal(true)}>+</StyledButton>
       </div>

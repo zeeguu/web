@@ -9,12 +9,13 @@ import {
 } from "../styledComponents/TeacherButtons.sc";
 import { APIContext } from "../../contexts/APIContext";
 
-export default function AddToCohortDialog({ setIsOpen }) {
+export default function AddToCohortDialog({ setIsOpen, onCohortsUpdated }) {
   const api = useContext(APIContext);
   const [cohortsToChoose, setCohortsToChoose] = useState([]);
   const [initiallyChosen, setInitiallyChosen] = useState([]);
   const [chosenCohorts, setChosenCohorts] = useState([]);
-  const articleID = useParams().articleID;
+  const params = useParams();
+  const articleID = params.articleID;
 
   useEffect(() => {
     api.getCohortsInfo((cohortsOfTeacher) => {
@@ -28,28 +29,56 @@ export default function AddToCohortDialog({ setIsOpen }) {
   }, []);
 
   const addToCohorts = () => {
-    cohortsToChoose.forEach((cohort) => {
-      if (isChosen(cohort) === true) {
-        addArticleToCohort(cohort.id);
-      } else if (initiallyChosen.includes(cohort.name)) {
-        deleteArticleFromCohort(cohort.id);
+    // Remove cohorts that were initially chosen but are no longer selected
+    initiallyChosen.forEach((cohortName) => {
+      if (!chosenCohorts.includes(cohortName)) {
+        const cohort = cohortsToChoose.find((c) => c.name === cohortName);
+        if (cohort) {
+          deleteArticleFromCohort(cohort.id);
+        }
       }
-      setIsOpen(false);
     });
+
+    // Add newly selected cohorts
+    chosenCohorts.forEach((cohortName) => {
+      const cohort = cohortsToChoose.find((c) => c.name === cohortName);
+      if (cohort && !initiallyChosen.includes(cohortName)) {
+        addArticleToCohort(cohort.id);
+      }
+    });
+
+    if (onCohortsUpdated) {
+      onCohortsUpdated(chosenCohorts);
+    }
+    setIsOpen(false);
   };
 
   const handleChange = (cohort_name) => {
+    const cohort = cohortsToChoose.find((c) => c.name === cohort_name);
+
     //adding a cohort to the list
     if (!chosenCohorts.includes(cohort_name)) {
       var temp = [...chosenCohorts, cohort_name];
       setChosenCohorts(temp);
+      if (cohort) {
+        addArticleToCohort(cohort.id);
+      }
+      if (onCohortsUpdated) {
+        onCohortsUpdated(temp);
+      }
     }
     //taking a cohort off the list
-    if (chosenCohorts.includes(cohort_name)) {
+    else if (chosenCohorts.includes(cohort_name)) {
       const temp = chosenCohorts.filter(
         (chosenCohort) => chosenCohort !== cohort_name,
       );
       setChosenCohorts(temp);
+      if (cohort) {
+        deleteArticleFromCohort(cohort.id);
+      }
+      if (onCohortsUpdated) {
+        onCohortsUpdated(temp);
+      }
     }
   };
 
@@ -99,8 +128,8 @@ export default function AddToCohortDialog({ setIsOpen }) {
           />
         ))}
       <PopupButtonWrapper>
-        <StyledButton primary onClick={addToCohorts}>
-          {strings.saveChanges}
+        <StyledButton secondary onClick={() => setIsOpen(false)}>
+          Close
         </StyledButton>
       </PopupButtonWrapper>
     </StyledDialog>

@@ -28,6 +28,7 @@ export default function MultipleChoiceAudio({
   moveToNextExercise,
   reload,
   bookmarkProgressBar,
+  onExampleUpdated,
 }) {
   const api = useContext(APIContext);
   const [interactiveText, setInteractiveText] = useState();
@@ -62,7 +63,7 @@ export default function MultipleChoiceAudio({
       exerciseBookmark.context_identifier,
     );
     setInteractiveText(newInteractiveText);
-    
+
     consolidateChoice();
     if (!SessionStorage.isAudioExercisesEnabled()) moveToNextExercise();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -82,9 +83,7 @@ export default function MultipleChoiceAudio({
   return (
     <s.Exercise>
       {/* Instructions - visible during exercise, invisible when showing solution but still take space */}
-      <div className="headlineWithMoreSpace">
-        {strings.multipleChoiceAudioHeadline}
-      </div>
+      <div className="headlineWithMoreSpace">{strings.multipleChoiceAudioHeadline}</div>
 
       {/* Context - always at the top, never moves */}
       <ClozeContextWithExchange
@@ -93,7 +92,7 @@ export default function MultipleChoiceAudio({
         translatedWords={null}
         setTranslatedWords={() => {}}
         isExerciseOver={isExerciseOver}
-        onExampleUpdated={() => {}}
+        onExampleUpdated={onExampleUpdated}
         onInputChange={() => {}} // No input handling needed for multiple choice audio
         onInputSubmit={() => {}} // No input handling needed for multiple choice audio
         inputValue=""
@@ -106,7 +105,7 @@ export default function MultipleChoiceAudio({
 
       {/* Audio buttons - below context during exercise */}
       {!isExerciseOver && (
-        <div style={{ marginTop: '2em' }}>
+        <div style={{ marginTop: "2em" }}>
           <s.CenteredWordRow>
             {/* Mapping bookmarks to the buttons in random order, setting button properties based on bookmark index */}
             {choiceOptions &&
@@ -127,10 +126,8 @@ export default function MultipleChoiceAudio({
 
       {/* Solution area - appears below context when exercise is over */}
       {isExerciseOver && (
-        <div style={{ marginTop: '3em' }}>
-          <h1 className="wordInContextHeadline">
-            {removePunctuation(exerciseBookmark.to)}
-          </h1>
+        <div style={{ marginTop: "3em" }}>
+          <h1 className="wordInContextHeadline">{removePunctuation(exerciseBookmark.to)}</h1>
           {bookmarkProgressBar}
         </div>
       )}

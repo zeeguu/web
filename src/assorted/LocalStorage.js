@@ -1,7 +1,7 @@
-import { removeUserInfoFromCookies, setUserSession } from "../utils/cookies/userInfo";
+import { removeSharedUserInfo, setUserSession } from "../utils/cookies/userInfo";
 import uiLanguages from "./uiLanguages";
 
-// Note that session info is in the Cookies
+// Note that shared session info is in Cookies (or localStorage for Capacitor)
 const LocalStorage = {
   Keys: {
     // language related keys used in the logged-in user session
@@ -25,6 +25,7 @@ const LocalStorage = {
     AutoPronounceInExercises: "auto_pronounce_bookmark_exercise",
     lastExerciseCompleteDate: "last_exercise_complete_date",
     LastVisitedPage: "last_visited_page",
+    LastVisitedTeacherPage: "last_visited_teacher_page",
   },
 
   userInfo: function () {
@@ -142,7 +143,7 @@ const LocalStorage = {
       localStorage.removeItem(this.Keys.Session);
       localStorage.removeItem(this.Keys.Features);
       localStorage.removeItem(this.Keys.IsStudent);
-      removeUserInfoFromCookies();
+      removeSharedUserInfo();
     } catch (e) {
       console.log(e);
     }
@@ -257,6 +258,14 @@ const LocalStorage = {
 
   setLastVisitedPage: function (path) {
     localStorage[this.Keys.LastVisitedPage] = path;
+  },
+
+  getLastVisitedTeacherPage: function () {
+    return localStorage[this.Keys.LastVisitedTeacherPage] || "/teacher/classes";
+  },
+
+  setLastVisitedTeacherPage: function (path) {
+    localStorage[this.Keys.LastVisitedTeacherPage] = path;
   },
 };
 

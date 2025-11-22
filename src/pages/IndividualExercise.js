@@ -88,7 +88,6 @@ function createBookmarkFromUrl(word, translation, context, lang = "en") {
     left_ellipsis: false,
     right_ellipsis: false,
     cooling_interval: 2,
-    learning_cycle: 1,
     level: 2,
   };
 }
@@ -110,7 +109,7 @@ export default function IndividualExercise() {
   useEffect(() => {
     const currentUrl = window.location.href;
     setContextualInfo({ url: currentUrl });
-    
+
     return () => {
       setContextualInfo(null);
     };
@@ -179,7 +178,6 @@ export default function IndividualExercise() {
           left_ellipsis: false,
           right_ellipsis: false,
           cooling_interval: 2,
-          learning_cycle: 1,
           level: 2,
         };
       } catch (e) {
@@ -203,6 +201,15 @@ export default function IndividualExercise() {
         bookmark,
         { ...bookmark, id: (bookmark.id || 1) + 1, to: "wrong_option_1" },
         { ...bookmark, id: (bookmark.id || 1) + 2, to: "wrong_option_2" },
+      ];
+    }
+
+    // For MultipleChoiceContext exercises, create bookmarks with different contexts
+    if (exerciseType === "MultipleChoiceContext" && bookmark) {
+      return [
+        bookmark,
+        createBookmarkFromUrl("car", "coche", "I drive my car to work every day."),
+        createBookmarkFromUrl("book", "libro", "She is reading a good book."),
       ];
     }
 
@@ -307,7 +314,7 @@ export default function IndividualExercise() {
 
   // Determine which bookmark set to use
   const bookmarksToUse =
-    exerciseType === "Match" || exerciseType === "MultipleChoiceL2toL1" ? multipleBookmarks : [bookmark];
+    exerciseType === "Match" || exerciseType === "MultipleChoiceL2toL1" || exerciseType === "MultipleChoiceContext" ? multipleBookmarks : [bookmark];
 
   return (
     <APIContext.Provider value={api}>

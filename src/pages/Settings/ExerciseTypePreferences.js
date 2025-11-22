@@ -88,16 +88,7 @@ export default function ExerciseTypePreferences() {
               onChange={handleAudioExercisesChange}
             />
           </FormSection>
-          {Feature.merle_exercises() && (
-            <FormSection>
-              <Checkbox
-                id="productive-exercises-checkbox"
-                label={<>Enable Productive Exercises</>}
-                checked={productiveExercises}
-                onChange={handleProductiveExercisesChange}
-              />
-            </FormSection>
-          )}
+
           <FormSection>
             <Checkbox
               id="auto-pronounce-checkbox"

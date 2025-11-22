@@ -9,6 +9,7 @@ import { USER_WORD_PREFERENCE } from "./userBookmarkPreferences";
 import { MAX_WORDS_IN_BOOKMARK_FOR_EXERCISES } from "../exercises/ExerciseConstants";
 import { getStaticPath } from "../utils/misc/staticPath";
 import { APIContext } from "../contexts/APIContext";
+import PhraseTypeBadge from "./PhraseTypeBadge";
 
 export default function Word({
   bookmark,
@@ -115,32 +116,11 @@ export default function Word({
           <s.WordPair compact={compact}>
             <div className="from" style={style_grayed_out}>
               {bookmark.from}
-              {(showRanking || compact) && bookmark.origin_rank && (
-                <sup
-                  style={{
-                    fontWeight: "300",
-                    marginLeft: compact ? "0.2em" : "0.5em",
-                    fontSize: compact ? "x-small" : "xx-small",
-                    color: compact ? "#888" : "inherit",
-                  }}
-                >
-                  {bookmark.origin_rank}
-                </sup>
-              )}
-              {bookmark.is_user_added && (
-                <span
-                  title="User added word"
-                  style={{
-                    marginLeft: "4px",
-                    fontSize: "0.7em",
-                    backgroundColor: "#e3f2fd",
-                    padding: "1px 4px",
-                    borderRadius: "3px",
-                    color: "#1976d2",
-                  }}
-                >
-                  manually added
-                </span>
+              {(showRanking || compact) && (
+                <PhraseTypeBadge
+                  phraseType={bookmark.phrase_type}
+                  rank={bookmark.origin_rank}
+                />
               )}
             </div>
             <div className="to" style={style_grayed_out}>

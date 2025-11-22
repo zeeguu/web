@@ -1,11 +1,11 @@
 import React from "react";
 import strings from "../../../i18n/definitions";
 import { Error } from "../../sharedComponents/Error";
-import { LabeledTextField } from "../../sharedComponents/LabeledInputFields";
+import { TitleInput } from "../../sharedComponents/TitleInput";
 
 export const CohortNameTextField = ({ value, onChange }) => {
   return (
-    <LabeledTextField
+    <TitleInput
       value={value}
       onChange={onChange}
       name="cohort_name"
@@ -16,13 +16,13 @@ export const CohortNameTextField = ({ value, onChange }) => {
       ) : (
         <Error message={strings.classnameTooLong} />
       )}
-    </LabeledTextField>
+    </TitleInput>
   );
 };
 
 export const InviteCodeTextField = ({ value, onChange }) => {
   return (
-    <LabeledTextField
+    <TitleInput
       value={value}
       onChange={onChange}
       name="invite_code"
@@ -33,6 +33,6 @@ export const InviteCodeTextField = ({ value, onChange }) => {
       ) : (
         <Error message={strings.invitecodeTooLong} />
       )}
-    </LabeledTextField>
+    </TitleInput>
   );
 };

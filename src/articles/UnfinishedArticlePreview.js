@@ -32,7 +32,7 @@ export default function UnfinishedArticlePreview({ article, onArticleClick }) {
         ></ReadingCompletionProgress>
       </s.UnfinishedArticleContainer>
       <s.UnfinishedArticleStats>
-        ({moment.utc(article.time_last_read).fromNow()})
+        ({formatDistanceToNow(new Date(article.time_last_read), { addSuffix: true })})
       </s.UnfinishedArticleStats>
     </s.ArticlePreview>
   );

@@ -3,7 +3,7 @@ import { useState, useEffect, useContext, useRef } from "react";
 import { SystemLanguagesContext } from "../../contexts/SystemLanguagesContext";
 import { APIContext } from "../../contexts/APIContext";
 import { UserContext } from "../../contexts/UserContext";
-import { saveUserInfoIntoCookies } from "../../utils/cookies/userInfo";
+import { saveSharedUserInfo } from "../../utils/cookies/userInfo";
 import { CEFR_LEVELS } from "../../assorted/cefrLevels";
 import strings from "../../i18n/definitions";
 import LocalStorage from "../../assorted/LocalStorage";
@@ -106,7 +106,7 @@ export default function LanguageSettings() {
       api.saveUserDetails(newUserDetailsForAPI, setErrorMessage, () => {
         setUserDetails(newUserDetails);
         LocalStorage.setUserInfo(newUserDetails);
-        saveUserInfoIntoCookies(newUserDetails);
+        saveSharedUserInfo(newUserDetails);
         history.goBack();
       });
     }

@@ -9,9 +9,6 @@ export default function StudentsTextView() {
 
   return (
     <s.NarrowColumn>
-      <sc.TopTabs>
-        <h1>{strings.viewText}</h1>
-      </sc.TopTabs>
       <ArticleReader teacherArticleID={articleID} />
     </s.NarrowColumn>
   );

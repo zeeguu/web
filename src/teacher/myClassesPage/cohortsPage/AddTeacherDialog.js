@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import strings from "../../../i18n/definitions";
-import { LabeledTextField } from "../../sharedComponents/LabeledInputFields";
+import { TitleInput } from "../../sharedComponents/TitleInput";
 import * as s from "../../styledComponents/AddURLDialog.sc";
 import {
   PopupButtonWrapper,
@@ -67,14 +67,14 @@ export default function AddTeacherDialog({
           {strings.addAnotherTeacherToTheClass}
         </h1>
       </s.StyledURLDialog>
-      <LabeledTextField
+      <TitleInput
         value={colleagueEmail}
         onChange={handleChange}
         name="colleague_email"
         placeholder={strings.colleagueEmailExample}
       >
         {strings.addEmailOfColleague}
-      </LabeledTextField>
+      </TitleInput>
       <p>
         <b>{strings.pleaseNote}</b>
         {strings.addTeacherWarningPartOne}

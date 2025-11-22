@@ -1,9 +1,12 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import strings from "../../i18n/definitions";
 import * as s from "./Exercise.sc";
 import { normalizeAnswer } from "../inputNormalization";
 import Pluralize from "../../utils/text/pluralize";
 import { LANGUAGE_CODE_TO_NAME } from "../../utils/misc/languageCodeToName";
+import { needsVirtualKeyboard } from "../../utils/misc/languageScripts";
+import VirtualKeyboard from "../../components/VirtualKeyboard/VirtualKeyboard";
+import { UserContext } from "../../contexts/UserContext";
 
 import { getExpressionlength, countCommonWords } from "../../utils/text/expressions";
 import { HINT, WRONG } from "../ExerciseConstants";
@@ -20,6 +23,7 @@ export default function BottomInput({
   notifyOfUserAttempt,
   isL1Answer,
 }) {
+  const { userDetails } = useContext(UserContext);
   const [currentInput, setCurrentInput] = useState("");
   const [isIncorrect, setIsIncorrect] = useState(false);
   const [usedHint, setUsedHint] = useState(false);
@@ -29,6 +33,7 @@ export default function BottomInput({
   const [isInputWrongLanguage, setIsInputWrongLanguage] = useState(false);
   const [correctWordCountInInput, setCorrectWordCountInInput] = useState(0);
   const [feedbackMessage, setFeedbackMessage] = useState("");
+  const [isKeyboardCollapsed, setIsKeyboardCollapsed] = useState(true);
   const levenshtein = require("fast-levenshtein");
   const normalizedLearningWord = normalizeAnswer(exerciseBookmark.from);
 
@@ -42,6 +47,8 @@ export default function BottomInput({
   const answerLanguageCode = isL1Answer ? exerciseBookmark.to_lang : exerciseBookmark.from_lang;
 
   const inputLanguageName = LANGUAGE_CODE_TO_NAME[answerLanguageCode];
+  const showVirtualKeyboard = needsVirtualKeyboard(answerLanguageCode, userDetails?.id);
+  const suppressOSKeyboard = showVirtualKeyboard && !isKeyboardCollapsed;
 
   function handleHint() {
     setUsedHint(true);
@@ -171,6 +178,7 @@ export default function BottomInput({
           <div className="type-feedback">{feedbackMessage !== "" && <p>{feedbackMessage}</p>}</div>
           <InputField
             type="text"
+            inputMode={suppressOSKeyboard ? "none" : "text"}
             placeholder={"Type in " + inputLanguageName}
             className={distanceToCorrect >= 5 && correctWordCountInInput === 0 ? "wrong-border" : "almost-border"}
             value={currentInput}
@@ -221,6 +229,17 @@ export default function BottomInput({
           </s.LeftFeedbackButton>
           <s.RightFeedbackButton onClick={checkResult}>{strings.check}</s.RightFeedbackButton>
         </div>
+
+        {/* Virtual Keyboard - shown for non-Roman alphabets */}
+        {showVirtualKeyboard && (
+          <VirtualKeyboard
+            languageCode={answerLanguageCode}
+            onInput={setCurrentInput}
+            currentValue={currentInput}
+            initialCollapsed={false}
+            onCollapsedChange={setIsKeyboardCollapsed}
+          />
+        )}
       </div>
     </>
   );

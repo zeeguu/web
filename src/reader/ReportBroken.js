@@ -13,26 +13,55 @@ import { gray, darkBlue } from "../components/colors";
 import CloseSharpIcon from "@mui/icons-material/CloseSharp";
 import { APIContext } from "../contexts/APIContext";
 
-export default function ReportBroken({ sourceID, UMR_SOURCE }) {
+export default function ReportBroken({ articleID, sourceID, UMR_SOURCE }) {
   const api = useContext(APIContext);
   const [open, setOpen] = useState(false);
   const [feedback, setFeedback] = useState("");
   const [isFeedbackSent, setIsFeedbackSent] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [reportInfo, setReportInfo] = useState(null);
+  const [error, setError] = useState(null);
 
   const handleClickOpen = () => {
     setOpen(true);
     setIsFeedbackSent(false);
+    setError(null);
   };
 
   const handleClose = () => {
     setFeedback("");
     setOpen(false);
+    setError(null);
+    setReportInfo(null);
   };
 
   function reportBroken() {
-    api.logUserActivity(api.USER_FEEDBACK, "", feedback, UMR_SOURCE, sourceID);
-    setIsFeedbackSent(true);
-    setTimeout(() => handleClose(), 1000);
+    setIsSubmitting(true);
+    setError(null);
+
+    // Call new API endpoint
+    api.reportBrokenArticle(
+      articleID,
+      feedback,
+      (response) => {
+        setIsSubmitting(false);
+        if (response.status === "success") {
+          setIsFeedbackSent(true);
+          setReportInfo(response);
+
+          // Also log for analytics
+          api.logUserActivity(api.USER_FEEDBACK, articleID, feedback, UMR_SOURCE, sourceID);
+
+          setTimeout(() => handleClose(), 2000);
+        } else {
+          setError("Failed to submit report. Please try again.");
+        }
+      },
+      (error) => {
+        setIsSubmitting(false);
+        setError("Network error. Please check your connection and try again.");
+      }
+    );
   }
 
   const handleChange = (e) => {
@@ -66,8 +95,31 @@ export default function ReportBroken({ sourceID, UMR_SOURCE }) {
             minWidth: "14em",
           }}
         >
-          {isFeedbackSent ? (
-            <Alert severity="success">Feedback sent</Alert>
+          {error && (
+            <Alert severity="error" sx={{ mb: 2 }}>
+              {error}
+            </Alert>
+          )}
+          {isFeedbackSent && reportInfo ? (
+            <Alert severity="success">
+              <div>
+                <strong>Thank you for your report!</strong>
+                {reportInfo.marked_as_broken ? (
+                  <div style={{ marginTop: "8px", fontSize: "0.9em" }}>
+                    This article has been marked as broken and won't be shown to other users.
+                    {reportInfo.is_teacher && (
+                      <div style={{ marginTop: "8px", fontStyle: "italic" }}>
+                        As a teacher, your reports are trusted and mark articles immediately.
+                      </div>
+                    )}
+                  </div>
+                ) : (
+                  <div style={{ marginTop: "8px", fontSize: "0.9em" }}>
+                    Your report has been recorded. We'll review it soon.
+                  </div>
+                )}
+              </div>
+            </Alert>
           ) : (
             <>
               <IconButton
@@ -100,9 +152,9 @@ export default function ReportBroken({ sourceID, UMR_SOURCE }) {
                   onClick={reportBroken}
                   id="feedback-box"
                   aria-label="send"
-                  disabled={!feedback.trim()}
+                  disabled={!feedback.trim() || isSubmitting}
                   sx={{
-                    color: !feedback.trim() ? gray : darkBlue,
+                    color: !feedback.trim() || isSubmitting ? gray : darkBlue,
                     fontSize: "medium",
                   }}
                 >

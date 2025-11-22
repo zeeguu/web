@@ -31,12 +31,9 @@ export default function CustomizeFeed({ currentMode = "list" }) {
 
   return (
     <s.DropdownContainer ref={dropdownRef}>
-      <s.CustomizeFeedButton
-        onClick={() => setShowDropdown(!showDropdown)}
-        className={showDropdown ? "active" : ""}
-      >
+      <s.CustomizeFeedButton onClick={() => setShowDropdown(!showDropdown)} className={showDropdown ? "active" : ""}>
         <SettingsRoundedIcon style={{ fontSize: "1.2em" }} />
-        <span>Customize feed</span>
+        <span>Customize</span>
         <ArrowDropDownIcon
           style={{
             fontSize: "1.2em",
@@ -48,26 +45,16 @@ export default function CustomizeFeed({ currentMode = "list" }) {
 
       {showDropdown && (
         <s.DropdownMenu>
-          <s.DropdownItem
-            onClick={() => handleItemClick("/account_settings/interests?fromArticles=1")}
-          >
+          <s.DropdownItem onClick={() => handleItemClick("/account_settings/interests?fromArticles=1")}>
             Topics
           </s.DropdownItem>
-          <s.DropdownItem
-            onClick={() => handleItemClick("/account_settings/excluded_keywords?fromArticles=1")}
-          >
-            Excluded Keywords
+          <s.DropdownItem onClick={() => handleItemClick("/account_settings/filters?fromArticles=1")}>
+            Filters
           </s.DropdownItem>
-          <s.DropdownItem
-            onClick={() => handleItemClick("/articles/mySearches")}
-          >
-            Saved Searches
-          </s.DropdownItem>
+          <s.DropdownItem onClick={() => handleItemClick("/articles/mySearches")}>Searches</s.DropdownItem>
           <s.Separator />
           {currentMode === "swiper" && (
-            <s.DropdownItem
-              onClick={() => handleItemClick("/articles")}
-            >
+            <s.DropdownItem onClick={() => handleItemClick("/articles")}>
               <ViewListIcon style={{ fontSize: "1.2em", marginRight: "0.5rem" }} />
               List Mode
             </s.DropdownItem>

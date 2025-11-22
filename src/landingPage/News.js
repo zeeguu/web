@@ -24,8 +24,18 @@ export default function News() {
         <>
           Zeeguu goes to Italy{" "}
           <img style={{ marginLeft: "-1em", marginBottom: "-0.5em" }} width={50} src="/zeeguuLogo-italian-flag.svg" />!
-          Mircea does a workshop entitled "Personalized Learning Paths Through the Internet" at
-          the EuroCALL conference in Milano
+          Mircea does a workshop entitled "Personalized Learning Paths Through the Internet" at the EuroCALL conference
+          in Milano
+        </>,
+      )}
+
+      {item(
+        strings.aug,
+        <>
+          Zeeguu goes to Italy{" "}
+          <img style={{ marginLeft: "-1em", marginBottom: "-0.5em" }} width={50} src="/zeeguuLogo-italian-flag.svg" />!
+          Mircea does a workshop entitled "Personalized Learning Paths Through the Internet" at the EuroCALL conference
+          in Milano
         </>,
       )}
 

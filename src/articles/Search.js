@@ -25,6 +25,11 @@ export default function Search({ hasExtension, isChrome }) {
               </s.ContainerH1Subscribe>
             </s.RowHeadlineSearch>
             <SubscribeSearchButton query={searchQuery} />
+            {!searchQuery && (
+              <s.SearchNote>
+                Your saved searches are also used to personalize the recommendations on your homepage.
+              </s.SearchNote>
+            )}
           </s.ContainerTitleSubscribe>
           <CustomizeSearchToolbar
             searchPublishPriority={searchPublishPriority}

@@ -87,9 +87,9 @@ export default function ArticlePreview({
     article.id,
     api,
     zeeguuSpeech,
-    isTokenizing,
-    interactiveSummary,
-    interactiveTitle,
+    // isTokenizing removed - was causing infinite loop!
+    // interactiveSummary removed - was causing infinite loop!
+    // interactiveTitle removed - was causing infinite loop!
   ]);
 
   const handleArticleClick = () => {

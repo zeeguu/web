@@ -1,7 +1,7 @@
 import { useHistory } from "react-router-dom";
 import { useState, useEffect, useContext, useRef } from "react";
 import { UserContext } from "../../contexts/UserContext";
-import { saveUserInfoIntoCookies } from "../../utils/cookies/userInfo";
+import { saveSharedUserInfo } from "../../utils/cookies/userInfo";
 import { setTitle } from "../../assorted/setTitle";
 import { APIContext } from "../../contexts/APIContext";
 import { Link } from "react-router-dom";
@@ -73,7 +73,7 @@ export default function ProfileDetails() {
     api.saveUserDetails(newUserDetails, setErrorMessage, () => {
       setUserDetails(newUserDetails);
       LocalStorage.setUserInfo(newUserDetails);
-      saveUserInfoIntoCookies(newUserDetails);
+      saveSharedUserInfo(newUserDetails);
       history.push("/account_settings");
     });
   }

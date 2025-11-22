@@ -58,7 +58,7 @@ let strings = new LocalizedStrings(
       youHaveNotJoinedAClass: "You haven't joined a class yet.",
       titleLearnedWords: "Learned Words",
       tooEasy: "too easy",
-      shareWithColleague: "Share with colleague",
+      shareWithColleague: "Send to colleague",
       colleagueEmailExample: "eg. 'colleague@work.mail.com'",
       next: "Next",
       youCanChangeLater: "You can always change it later",
@@ -722,11 +722,11 @@ let strings = new LocalizedStrings(
       changesMustBeSavedBeforeSharing: "The changes must be saved before you can share the text with your classes.",
 
       //EditTextInputFields
-      defineLanguage: "Please, define the language of the text",
+      defineLanguage: "Language",
       pasteTitleHere: "Paste or type your title here...",
-      clickToChangeTitle: "Click in the box below to edit the title",
+      clickToChangeTitle: "Title",
       pasteBodyHere: "Paste or type the body of your text here...",
-      clickToChangeBody: "Click in the box below to edit the text body",
+      clickToChangeBody: "Content",
 
       //FormatedTime
       exactReadingTime: "Exact reading time:",
@@ -1396,11 +1396,11 @@ let strings = new LocalizedStrings(
       changesMustBeSavedBeforeSharing: "Ændringerne skal gemmes, før du kan dele teksten med dine klasser",
 
       //EditTextInputFields
-      defineLanguage: "Angiv venligst hvilket sprog teksten er på",
+      defineLanguage: "Sprog",
       pasteTitleHere: "Indsæt eller skriv tekstens titlen her...",
-      clickToChangeTitle: "Klik i feltet nedenfor for at redigere titlen",
+      clickToChangeTitle: "Titel",
       pasteBodyHere: "Indsæt eller skriv selv tekstens brødteksten her...",
-      clickToChangeBody: "Klik i feltet nedenfor for at redigere brødteksten",
+      clickToChangeBody: "Indhold",
 
       //FormatedTime
       exactReadingTime: "Nøjagtig læsetid:",

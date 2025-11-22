@@ -1,12 +1,11 @@
-import { useState, useEffect, useContext, useMemo } from "react";
+import { useContext, useEffect, useMemo, useState } from "react";
 import { APIContext } from "../../contexts/APIContext.js";
 import { UserContext } from "../../contexts/UserContext.js";
-import { saveUserInfoIntoCookies } from "../../utils/cookies/userInfo.js";
+import { saveSharedUserInfo } from "../../utils/cookies/userInfo.js";
 import LocalStorage from "../../assorted/LocalStorage.js";
 import Modal from "../modal_shared/Modal.js";
 import Form from "../../pages/_pages_shared/Form.sc.js";
 import ButtonContainer from "../modal_shared/ButtonContainer.sc.js";
-import Button from "../../pages/_pages_shared/Button.sc.js";
 import FormSection from "../../pages/_pages_shared/FormSection.sc.js";
 import Main from "../modal_shared/Main.sc.js";
 import Header from "../modal_shared/Header.sc.js";
@@ -42,31 +41,25 @@ export default function LanguageModal({ open, setOpen }) {
   const getCefrLevelForLanguage = (languageCode) => {
     const cefrKey = languageCode + "_cefr_level";
     const cefrLevel = userDetails[cefrKey];
-    const level = CEFR_LEVELS.find(level => level.value === cefrLevel?.toString());
-    return level ? level.label.split(' | ')[0] : 'A1'; // Extract just "A1", "B2", etc.
+    const level = CEFR_LEVELS.find((level) => level.value === cefrLevel?.toString());
+    return level ? level.label.split(" | ")[0] : "A1"; // Extract just "A1", "B2", etc.
   };
 
   const reorderedLanguages = useMemo(() => {
     if (!activeLanguages) return [];
 
-    const filteredLanguages = activeLanguages.filter(
-      (lang) => lang.code !== userDetails.native_language,
-    );
+    const filteredLanguages = activeLanguages.filter((lang) => lang.code !== userDetails.native_language);
 
     return filteredLanguages.sort((a, b) => {
       if (a.code === userDetails.learned_language) return -1;
       if (b.code === userDetails.learned_language) return 1;
       return 0;
     });
-  }, [
-    activeLanguages,
-    userDetails.native_language,
-    userDetails.learned_language,
-  ]);
+  }, [activeLanguages, userDetails.native_language, userDetails.learned_language]);
 
   function updateLearnedLanguage(lang_code) {
     setLearnedLanguageCode(lang_code);
-    
+
     // Automatically save the selection
     const newUserDetails = {
       ...userDetails,
@@ -77,12 +70,11 @@ export default function LanguageModal({ open, setOpen }) {
       setUserDetails(newUserDetails);
 
       LocalStorage.setUserInfo(newUserDetails);
-      saveUserInfoIntoCookies(newUserDetails);
+      saveSharedUserInfo(newUserDetails);
 
       setOpen(false); // Close modal after successful save
     });
   }
-
 
   return (
     <Modal
@@ -108,10 +100,12 @@ export default function LanguageModal({ open, setOpen }) {
               optionLabel={(e) => (
                 <span>
                   {e.language}{" "}
-                  <span style={{ 
-                    color: "#888", 
-                    fontSize: "0.7em" 
-                  }}>
+                  <span
+                    style={{
+                      color: "#888",
+                      fontSize: "0.7em",
+                    }}
+                  >
                     ({getCefrLevelForLanguage(e.code)})
                   </span>
                 </span>
@@ -123,11 +117,7 @@ export default function LanguageModal({ open, setOpen }) {
             />
           </FormSection>
           <ButtonContainer className={"adaptive-alignment-horizontal"}>
-            <ReactLink
-              className="small"
-              onClick={() => setOpen(false)}
-              to="/account_settings/language_settings"
-            >
+            <ReactLink className="small" onClick={() => setOpen(false)} to="/account_settings/language_settings">
               <AddRoundedIcon /> More language settings
             </ReactLink>
           </ButtonContainer>

@@ -5,8 +5,6 @@ const NarrowColumn = styled.div`
   margin-left: auto;
   margin-right: auto;
   height: 100%;
-  // VISUAL_DEBUGGING
-  //background-color: red;
   padding: 1px;
   display: ${({ $isSwipe }) => ($isSwipe ? "flex" : "block")};
   flex-direction: ${({ $isSwipe }) => ($isSwipe ? "column" : "initial")};

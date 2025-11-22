@@ -1,4 +1,4 @@
-import { Route, Switch } from "react-router-dom";
+import { Route, Switch, Redirect } from "react-router-dom";
 import LandingPage from "./landingPage/LandingPage";
 import ExtensionInstalled from "./pages/onboarding/ExtensionInstalled";
 import InstallExtension from "./pages/onboarding/InstallExtension";
@@ -26,6 +26,23 @@ import { WEB_READER } from "./reader/ArticleReader";
 import VideoPlayer from "./videos/VideoPlayer";
 import DailyAudioRouter from "./dailyAudio/_DailyAudioRouter";
 import IndividualExercise from "./pages/IndividualExercise";
+import Swiper from "./swiper/Swiper";
+import KeyboardTest from "./pages/KeyboardTest";
+
+// Helper to detect if we're in a Capacitor app
+const isCapacitor = () => {
+  return window.location.protocol === "capacitor:" || window.location.protocol === "ionic:";
+};
+
+// Component to handle mobile app homepage redirect
+function HomePage() {
+  // If running in Capacitor (mobile app), redirect to language preferences
+  // Otherwise show the full landing page
+  if (isCapacitor()) {
+    return <Redirect to="/language_preferences" />;
+  }
+  return <LandingPage />;
+}
 
 export default function MainAppRouter({ hasExtension, handleSuccessfulLogIn }) {
   return (
@@ -37,7 +54,7 @@ export default function MainAppRouter({ hasExtension, handleSuccessfulLogIn }) {
 
       <Route path="/language_preferences" component={LanguagePreferences} />
 
-      <Route path="/" exact component={LandingPage} />
+      <Route path="/" exact component={HomePage} />
       <Route path="/extension_installed" component={ExtensionInstalled} />
       <Route path="/install_extension" component={InstallExtension} />
       <Route path="/reset_pass" component={ResetPassword} />
@@ -75,6 +92,7 @@ export default function MainAppRouter({ hasExtension, handleSuccessfulLogIn }) {
         component={IndividualExercise}
       />
       <PrivateRouteWithMainNav path="/exercise-test" component={IndividualExercise} />
+      <Route path="/keyboard-test" component={KeyboardTest} />
       <Route path="*" component={NotFound} />
     </Switch>
   );

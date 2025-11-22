@@ -9,6 +9,7 @@ import { EXERCISE_TYPES } from "../../ExerciseTypeConstants.js";
 import { removePunctuation } from "../../../utils/text/preprocessing";
 import useShadowRef from "../../../hooks/useShadowRef";
 import { APIContext } from "../../../contexts/APIContext.js";
+import { highlightWord, replaceWordWithPlaceholder } from "../../../utils/text/highlightWord";
 
 const EXERCISE_TYPE = EXERCISE_TYPES.multipleChoiceContext;
 
@@ -91,8 +92,15 @@ export default function MultipleChoiceContext({
     }
   }
 
-  function getHighlightedWord(word) {
-    return `<span class="highlightedWord">${word}</span>`;
+  // Get the text to display for an option
+  // When exercise is over: highlight the word
+  // During exercise: replace with blank
+  function getOptionDisplayText(option) {
+    if (isExerciseOver) {
+      return highlightWord(option.context, option.from);
+    } else {
+      return replaceWordWithPlaceholder(option.context, option.from, "_____");
+    }
   }
 
   if (!interactiveText || !exerciseBookmarks) {
@@ -123,9 +131,7 @@ export default function MultipleChoiceContext({
             {option.left_ellipsis && <>...</>}
             <span
               dangerouslySetInnerHTML={{
-                __html: isExerciseOver
-                  ? option.context.replace(option.from, getHighlightedWord(option.from))
-                  : option.context.replace(option.from, "_____"),
+                __html: getOptionDisplayText(option),
               }}
             />
             {option.right_ellipsis && <>...</>}

@@ -1,5 +1,6 @@
 import NavIcon from "./NavIcon";
 import strings from "../../i18n/definitions";
+import LocalStorage from "../../assorted/LocalStorage";
 
 export default class NavigationOptions {
   // Student-specific options
@@ -52,12 +53,14 @@ export default class NavigationOptions {
     isOnStudentSide: true,
   });
 
-  static teacherSite = Object.freeze({
-    linkTo: "/teacher/classes",
-    icon: <NavIcon name="teacherSite" />,
-    text: strings.teacherSite,
-    isOnStudentSide: true,
-  });
+  static get teacherSite() {
+    return Object.freeze({
+      linkTo: LocalStorage.getLastVisitedTeacherPage(),
+      icon: <NavIcon name="teacherSite" />,
+      text: strings.teacherSite,
+      isOnStudentSide: true,
+    });
+  }
 
   // Teacher-specific options
   static myClasses = Object.freeze({

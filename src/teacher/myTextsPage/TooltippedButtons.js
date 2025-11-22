@@ -5,9 +5,7 @@ import { StyledButton } from "../styledComponents/TeacherButtons.sc";
 import { StyledTooltip } from "../styledComponents/StyledTooltip.sc";
 
 export const ViewAsStudentButton = ({ articleID, disabled, isNew }) => {
-  const text = isNew
-    ? strings.saveTextBeforeViewAsStudent
-    : strings.saveChangesBeforeViewAsStudent;
+  const text = isNew ? strings.saveTextBeforeViewAsStudent : strings.saveChangesBeforeViewAsStudent;
 
   return (
     <Fragment>
@@ -31,21 +29,19 @@ export const ViewAsStudentButton = ({ articleID, disabled, isNew }) => {
 };
 
 export const ShareWithClassesButton = ({ onclick, disabled, isNew }) => {
-  const text = isNew
-    ? strings.textMustBeSavedBeforeSharing
-    : strings.changesMustBeSavedBeforeSharing;
+  const text = isNew ? strings.textMustBeSavedBeforeSharing : strings.changesMustBeSavedBeforeSharing;
 
   return (
     <Fragment>
       {disabled ? (
         <StyledTooltip label={text}>
-          <StyledButton primary onClick={onclick} disabled={disabled}>
-            {strings.addToClass}
+          <StyledButton secondary onClick={onclick} disabled={disabled}>
+            Edit
           </StyledButton>
         </StyledTooltip>
       ) : (
-        <StyledButton primary onClick={onclick} disabled={disabled}>
-          {strings.addToClass}
+        <StyledButton secondary onClick={onclick} disabled={disabled}>
+          Edit
         </StyledButton>
       )}
     </Fragment>

@@ -1,41 +1,60 @@
 import { Fragment, useState, useEffect, useContext } from "react";
 import strings from "../../i18n/definitions";
-import { Listbox, ListboxOption } from "@reach/listbox";
-import * as s from "../styledComponents/LabeledInputFields.sc";
+import * as s from "../styledComponents/TitleInput.sc";
 import { APIContext } from "../../contexts/APIContext";
 
 export function LanguageSelector(props) {
   const api = useContext(APIContext);
   const [languages, setLanguages] = useState([]);
+
   useEffect(() => {
-    api.getSystemLanguages((languages) =>
-      setLanguages(languages.learnable_languages),
-    );
+    api.getSystemLanguages((data) => {
+      console.log("System languages response:", data);
+      if (data && data.learnable_languages) {
+        console.log("Setting languages to:", data.learnable_languages);
+        setLanguages(data.learnable_languages);
+      } else {
+        console.error("No learnable_languages in response:", data);
+      }
+    });
     //eslint-disable-next-line
   }, []);
+
+  console.log("LanguageSelector render - languages:", languages);
+  console.log("LanguageSelector render - props.value:", props.value);
 
   return (
     <Fragment>
       <s.LabeledInputFields>
-        <div className="input-container">
-          <label htmlFor="language_code"></label>
-          {props.children}
-          <Listbox
-            className="input-field"
+        <div className="input-container" style={{ display: 'flex', alignItems: 'center', gap: '1rem', justifyContent: 'flex-end' }}>
+          <label htmlFor="language_code">{props.children}</label>
+          <select
             id="language_code"
-            aria-labelledby="language_code"
-            value={props.value}
-            onChange={props.onChange}
+            name="language_code"
+            value={props.value || "default"}
+            onChange={(e) => {
+              console.log("Select onChange called with:", e.target.value);
+              props.onChange(e.target.value);
+            }}
+            disabled={languages.length === 0}
+            style={{
+              padding: '0.5rem',
+              borderRadius: '5px',
+              border: '1px solid #ccc',
+              fontSize: '1rem',
+              minWidth: '200px',
+              cursor: 'pointer'
+            }}
           >
-            <ListboxOption value="default">
+            <option value="default">
               {strings.chooseLanguage}
-            </ListboxOption>
+            </option>
             {languages.map((language) => (
-              <ListboxOption key={language.code} value={language.code}>
-                {strings[language.name.toLowerCase()]}
-              </ListboxOption>
+              <option key={language.code} value={language.code}>
+                {strings[language.name.toLowerCase()] || language.name}
+              </option>
             ))}
-          </Listbox>
+          </select>
         </div>
       </s.LabeledInputFields>
     </Fragment>

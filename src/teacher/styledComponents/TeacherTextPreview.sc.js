@@ -5,14 +5,16 @@ export const StyledTeacherTextPreview = styled.div`
   .lhs {
     display: flex;
     flex-direction: column;
-    width: 500px;
+    width: 850px;
     margin-left: 1em;
   }
 
   .added-container {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
+    flex-wrap: wrap;
     gap: 0.5em;
+    margin-left: 0;
   }
   .classes-container {
     display: flex;
@@ -29,8 +31,7 @@ export const StyledTeacherTextPreview = styled.div`
     padding: 1em;
     justify-content: space-between;
     margin-bottom: 2em;
-    height: 6.5em;
-    border-left: solid 3px ${darkBlue};
+    min-height: 6.5em;
     width: 90%;
   }
 

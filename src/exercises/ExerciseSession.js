@@ -1,5 +1,4 @@
 import { useContext, useEffect, useState } from "react";
-import { toast } from "react-toastify";
 
 import Congratulations from "./Congratulations";
 import ExerciseSessionProgressBar from "./ExerciseSessionProgressBar";
@@ -8,20 +7,13 @@ import LoadingAnimation from "../components/LoadingAnimation";
 import { setTitle } from "../assorted/setTitle";
 import OutOfWordsMessage from "./OutOfWordsMessage";
 import SessionStorage from "../assorted/SessionStorage";
-import Feature from "../features/Feature";
-import { CORRECT, MAX_COOLDOWN_INTERVAL, SOLUTION, WRONG } from "./ExerciseConstants";
-import { EXERCISE_TYPES, LEARNING_CYCLE } from "./ExerciseTypeConstants";
+import { CORRECT, SOLUTION, WRONG } from "./ExerciseConstants";
+import { EXERCISE_TYPES } from "./ExerciseTypeConstants";
 import LocalStorage from "../assorted/LocalStorage";
 import { assignBookmarksToExercises } from "./assignBookmarksToExercises";
 import NextNavigation from "./exerciseTypes/NextNavigation";
-import DisableAudioSession from "./exerciseTypes/DisableAudioSession";
 import { SpeechContext } from "../contexts/SpeechContext";
-import {
-  DEFAULT_SEQUENCE,
-  DEFAULT_SEQUENCE_NO_AUDIO,
-  EXTENDED_SEQUENCE,
-  EXTENDED_SEQUENCE_NO_AUDIO,
-} from "./exerciseSequenceTypes";
+import { EXTENDED_SEQUENCE, EXTENDED_SEQUENCE_NO_AUDIO } from "./exerciseSequenceTypes";
 import useActivityTimer from "../hooks/useActivityTimer";
 import { ExercisesCounterContext } from "./ExercisesCounterContext";
 import useShadowRef from "../hooks/useShadowRef";
@@ -209,14 +201,7 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
   }
 
   function getExerciseSequenceType() {
-    let exerciseTypesList;
-    if (Feature.merle_exercises() || Feature.exercise_levels()) exerciseTypesList = EXTENDED_SEQUENCE;
-    else exerciseTypesList = DEFAULT_SEQUENCE;
-    if (!SessionStorage.isAudioExercisesEnabled()) {
-      if (Feature.merle_exercises() || Feature.exercise_levels()) exerciseTypesList = EXTENDED_SEQUENCE_NO_AUDIO;
-      else exerciseTypesList = DEFAULT_SEQUENCE_NO_AUDIO;
-    }
-    return exerciseTypesList;
+    return SessionStorage.isAudioExercisesEnabled() ? EXTENDED_SEQUENCE : EXTENDED_SEQUENCE_NO_AUDIO;
   }
 
   useEffect(() => {
@@ -318,10 +303,8 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
     if (!incorrectBookmarks.includes(currentBookmark)) {
       setTotalPracticedBookmarksInSession(totalPracticedBookmarksInSession + 1);
       let correctBookmarksIds = correctBookmarksCopy.map((b) => b.id);
-      let didItProgressToProductive =
-        currentBookmark["cooling_interval"] === MAX_COOLDOWN_INTERVAL &&
-        currentBookmark.learning_cycle === LEARNING_CYCLE["RECEPTIVE"];
-      if (!correctBookmarksIds.includes(currentBookmark.id) && !didItProgressToProductive) {
+
+      if (!correctBookmarksIds.includes(currentBookmark.id)) {
         if (hasExerciseNotification) {
           decrementExerciseCounter();
         }

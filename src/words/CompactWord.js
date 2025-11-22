@@ -2,7 +2,7 @@ import * as s from "./CompactWord.sc";
 
 export default function CompactWord({ bookmark }) {
   const hasRank = bookmark.origin_rank && bookmark.origin_rank !== "";
-  
+
   return (
     <s.CompactWord>
       <s.WordContent>

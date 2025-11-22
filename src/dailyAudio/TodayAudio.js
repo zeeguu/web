@@ -6,6 +6,7 @@ import LoadingAnimation from "../components/LoadingAnimation";
 import CustomAudioPlayer from "../components/CustomAudioPlayer";
 import FeedbackModal from "../components/FeedbackModal";
 import { FEEDBACK_OPTIONS, FEEDBACK_CODES_NAME, FEEDBACK_CODES } from "../components/FeedbackConstants";
+import Word from "../words/Word";
 
 const TWO_MIN = 120000; // 2 minutes in milliseconds
 
@@ -316,9 +317,10 @@ export default function TodayAudio() {
     );
   }
 
+
   return (
     <div style={{ padding: "20px" }}>
-      <h2 style={{ color: zeeguuOrange, marginBottom: "20px", display: "flex", alignItems: "center", gap: "8px" }}>
+      <h2 style={{ color: zeeguuOrange, marginBottom: "10px", display: "flex", alignItems: "center", gap: "8px" }}>
         {lessonData.is_completed && <span style={{ color: "#28a745", fontSize: "20px" }}>✓</span>}
         {wordsAsTile(words)}
       </h2>
@@ -395,6 +397,24 @@ export default function TodayAudio() {
             <span style={{ color: "#28a745", fontWeight: "500", fontSize: "14px" }}>
               ✓ Lesson completed! Great job on finishing today's lesson.
             </span>
+          </div>
+        )}
+
+        {/* Display word details with type badges */}
+        {words && words.length > 0 && (
+          <div style={{ marginTop: "30px", marginBottom: "20px" }}>
+            <h3 style={{ fontSize: "16px", fontWeight: "600", marginBottom: "12px", color: "#333" }}>
+              Words in this lesson
+            </h3>
+            {words.map((word, index) => (
+              <Word
+                key={index}
+                bookmark={word}
+                disableEdit={true}
+                compact={true}
+                showRanking={false}
+              />
+            ))}
           </div>
         )}
 

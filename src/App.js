@@ -15,7 +15,7 @@ import ZeeguuSpeech from "./speech/APIBasedSpeech";
 import { SpeechContext } from "./contexts/SpeechContext";
 import { API_ENDPOINT, APP_DOMAIN } from "./appConstants";
 
-import { getSessionFromCookies, removeUserInfoFromCookies, saveUserInfoIntoCookies } from "./utils/cookies/userInfo";
+import { getSharedSession, removeSharedUserInfo, saveSharedUserInfo } from "./utils/cookies/userInfo";
 
 import MainAppRouter from "./MainAppRouter";
 import { ToastContainer } from "react-toastify";
@@ -166,11 +166,12 @@ function App() {
     // we get the latest feature flags for this user and save
     // them in the LocalStorage
 
-    api.session = getSessionFromCookies();
-    console.log("Session: " + api.session);
+    api.session = getSharedSession();
+    console.log("Session from cookies: " + api.session);
 
     // Only validate if there is a session in cookies.
-    if (api.session !== undefined)
+    if (api.session !== undefined) {
+      console.log("Validating session...");
       api.isValidSession(
         () => {
           console.log("valid sesison... getting user details...");
@@ -186,14 +187,17 @@ function App() {
           });
         },
         () => {
-          console.log("no valid session");
+          console.log("Session validation FAILED - logging out");
           logout();
         },
       );
+    } else {
+      console.log("No session found in cookies");
+    }
 
     //logs out user on zeeguu.org if they log out of the extension
     const interval = setInterval(() => {
-      if (!getSessionFromCookies()) {
+      if (!getSharedSession()) {
         setUserDetails({});
         setUserPreferences({});
       }
@@ -209,7 +213,7 @@ function App() {
     setUserDetails({});
     setUserPreferences({});
 
-    removeUserInfoFromCookies();
+    removeSharedUserInfo();
   }
 
   function handleSuccessfulLogIn(userInfo, sessionId, redirectToArticle = true) {
@@ -224,9 +228,8 @@ function App() {
       );
     });
 
-    // Cookies are the mechanism via which we share a login
-    // between the extension and the website
-    saveUserInfoIntoCookies(userInfo, api.session);
+    // Save shared user info for extension/web communication
+    saveSharedUserInfo(userInfo, api.session);
     let newUserValue = {
       session: api.session,
       name: userInfo.name,
@@ -237,7 +240,7 @@ function App() {
     };
 
     console.log("setting new user value: ");
-    console.dir(newUserValue);
+    console.log(JSON.stringify(newUserValue));
     setUser(newUserValue);
 
     // If a redirect link exists, uses it to redirect the user,
@@ -265,7 +268,7 @@ function App() {
                   setUserDetails,
                   userPreferences,
                   setUserPreferences,
-                  session: getSessionFromCookies(),
+                  session: getSharedSession(),
                   logoutMethod: logout,
                 }}
               >

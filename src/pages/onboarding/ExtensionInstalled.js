@@ -1,4 +1,4 @@
-import { getSessionFromCookies } from "../../utils/cookies/userInfo";
+import { getSharedSession } from "../../utils/cookies/userInfo";
 import { useContext, useEffect } from "react";
 import { useHistory } from "react-router-dom/cjs/react-router-dom";
 import PreferencesPage from "../_pages_shared/PreferencesPage";

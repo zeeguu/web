@@ -1,7 +1,7 @@
 import { useContext, useState } from "react";
 import strings from "../../i18n/definitions";
 import { Error } from "../sharedComponents/Error";
-import { LabeledTextField } from "../sharedComponents/LabeledInputFields";
+import { TitleInput } from "../sharedComponents/TitleInput";
 import { StyledDialog } from "../styledComponents/StyledDialog.sc";
 import {
   PopupButtonWrapper,
@@ -60,14 +60,14 @@ const ShareWithCollegueDialog = ({ articleID, setShowDialog }) => {
       ) : (
         <div className="centered">
           <h1>{strings.shareWithColleague}</h1>
-          <LabeledTextField
+          <TitleInput
             value={receivingColleague}
             onChange={handleChange}
             name={strings.enterEmailYourColleagueUse}
             placeholder={strings.colleagueEmailExample}
           >
             {strings.enterEmailYourColleagueUse}
-          </LabeledTextField>
+          </TitleInput>
           <Error message={errorMsg} />
           <PopupButtonWrapper>
             <StyledButton secondary onClick={() => setShowDialog(false)}>

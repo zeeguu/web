@@ -1,5 +1,5 @@
 import * as s from "../components/ArticleSourceInfo.sc";
-import moment from "moment";
+import { formatDistanceToNow } from "date-fns";
 
 export default function VideoSourceInfo({ video }) {
   return (
@@ -8,7 +8,7 @@ export default function VideoSourceInfo({ video }) {
         <img src={video.channel.thumbnail_url} alt="" />
       </s.SourceImage>
       <s.FeedName>{video.channel.name}</s.FeedName>
-      <s.PublishingTime>({moment.utc(video.published_time).fromNow()})</s.PublishingTime>
+      <s.PublishingTime>({formatDistanceToNow(new Date(video.published_time), { addSuffix: true })})</s.PublishingTime>
     </s.SourceContainer>
   );
 }

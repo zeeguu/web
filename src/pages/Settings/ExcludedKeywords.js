@@ -1,4 +1,4 @@
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 import useUnwantedContentPreferences from "../../hooks/useUnwantedContentPreferences";
 import useFormField from "../../hooks/useFormField";
 import useQuery from "../../hooks/useQuery";
@@ -11,6 +11,7 @@ import Form from "../_pages_shared/Form.sc";
 import Button from "../_pages_shared/Button.sc";
 import AddRoundedIcon from "@mui/icons-material/AddRounded";
 import HighlightOffRoundedIcon from "@mui/icons-material/HighlightOffRounded";
+import { FormControlLabel, Checkbox } from "@mui/material";
 
 import InputField from "../../components/InputField";
 import Tag from "../_pages_shared/Tag.sc";
@@ -23,16 +24,24 @@ import { APIContext } from "../../contexts/APIContext";
 
 export default function ExcludedKeywords() {
   const api = useContext(APIContext);
-  const { unwantedKeywords, addUnwantedKeyword, removeUnwantedKeyword } =
-    useUnwantedContentPreferences(api);
+  const { unwantedKeywords, addUnwantedKeyword, removeUnwantedKeyword } = useUnwantedContentPreferences(api);
 
-  const [excludedWord, setExcludedWord, , , , resetExcludedWord] =
-    useFormField("");
+  const [excludedWord, setExcludedWord, , , , resetExcludedWord] = useFormField("");
+
+  const [filterDisturbingContent, setFilterDisturbingContent] = useState(false);
+  const [preferencesLoaded, setPreferencesLoaded] = useState(false);
 
   const isFromArticles = useQuery().get("fromArticles") === "1";
+
   useEffect(() => {
-    setTitle(strings.excludedKeywords);
-  }, []);
+    setTitle("Filters");
+
+    // Load user preferences
+    api.getUserPreferences((preferences) => {
+      setFilterDisturbingContent(preferences.filter_disturbing_content === "true");
+      setPreferencesLoaded(true);
+    });
+  }, [api]);
 
   function handleAddNewSearchFilter(e) {
     e.preventDefault();
@@ -41,14 +50,52 @@ export default function ExcludedKeywords() {
       resetExcludedWord();
     }
   }
+
+  function handleToggleDisturbingContent(e) {
+    const newValue = e.target.checked;
+    setFilterDisturbingContent(newValue);
+
+    // Save preference to backend
+    api.saveUserPreferences(
+      { filter_disturbing_content: newValue ? "true" : "false" },
+      () => {
+        console.log("Disturbing content filter updated:", newValue);
+      },
+      (error) => {
+        console.error("Failed to update disturbing content filter:", error);
+        // Revert on error
+        setFilterDisturbingContent(!newValue);
+      },
+    );
+  }
   return (
     <PreferencesPage layoutVariant={"minimalistic-top-aligned"}>
       <BackArrow redirectLink={isFromArticles && "/articles/swiper"} />
       <Header withoutLogo>
-        <Heading>{strings.excludedKeywords}</Heading>
+        <Heading>Filters</Heading>
       </Header>
       <Main>
-        <Form>
+        <div
+          style={{
+            fontSize: "1rem",
+            marginBottom: 0,
+            textAlign: "left",
+            width: "100%",
+          }}
+        >
+          Filter articles containing the following keywords:
+        </div>
+        <TagContainer style={{ marginTop: "-1em" }}>
+          {unwantedKeywords.map((keyword) => (
+            <div key={keyword.id} id={keyword.id}>
+              <Tag className={"outlined-blue small"} onClick={() => removeUnwantedKeyword(keyword)}>
+                {keyword.search}
+                <HighlightOffRoundedIcon fontSize="small" />
+              </Tag>
+            </div>
+          ))}
+        </TagContainer>
+        <Form style={{ marginTop: "-1em" }}>
           <InputField
             value={excludedWord}
             onChange={(e) => {
@@ -57,27 +104,29 @@ export default function ExcludedKeywords() {
             helperText={strings.addUnwantedWordHelperText}
             placeholder={strings.unwantedWordPlaceholder}
           >
-            <Button
-              className="small-square-btn"
-              onClick={handleAddNewSearchFilter}
-            >
+            <Button className="small-square-btn" onClick={handleAddNewSearchFilter}>
               <AddRoundedIcon />
             </Button>
           </InputField>
         </Form>
-        <TagContainer>
-          {unwantedKeywords.map((keyword) => (
-            <div key={keyword.id} id={keyword.id}>
-              <Tag
-                className={"outlined-blue small"}
-                onClick={() => removeUnwantedKeyword(keyword)}
-              >
-                {keyword.search}
-                <HighlightOffRoundedIcon fontSize="small" />
-              </Tag>
-            </div>
-          ))}
-        </TagContainer>
+
+        <div style={{ marginTop: "2em", marginBottom: "1.5em" }}>
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={filterDisturbingContent}
+                onChange={handleToggleDisturbingContent}
+                disabled={!preferencesLoaded}
+              />
+            }
+            label="Filter disturbing news (violence, death, disasters)"
+            sx={{ '& .MuiTypography-root': { fontFamily: 'inherit' } }}
+          />
+          <div style={{ fontSize: "0.9em", color: "#666", marginLeft: "32px", marginTop: "0.25em" }}>
+            When enabled, articles about violence, war, accidents, and other disturbing topics will be hidden from your
+            recommendations.
+          </div>
+        </div>
       </Main>
     </PreferencesPage>
   );

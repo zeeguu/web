@@ -132,6 +132,49 @@ export function deleteIntervals() {
   }
 }
 
+function decodeHTMLEntities(text) {
+  if (!text) return text;
+  const textarea = document.createElement('textarea');
+  textarea.innerHTML = text;
+  return textarea.value;
+}
+
+function extractMainImage(cleanHTML) {
+  let mainImageUrl = null;
+  try {
+    // Try to get og:image meta tag first
+    const ogImage = document.querySelector('meta[property="og:image"]');
+    if (ogImage) {
+      mainImageUrl = ogImage.getAttribute('content');
+    }
+
+    // If no og:image, scan article HTML for large images
+    if (!mainImageUrl) {
+      const parser = new DOMParser();
+      const articleDoc = parser.parseFromString(cleanHTML, 'text/html');
+      const images = articleDoc.querySelectorAll('img');
+
+      for (let img of images) {
+        const src = img.getAttribute('src');
+        if (!src) continue;
+
+        // Skip icons, placeholders, gifs, svgs
+        if (src.includes('icon') || src.includes('placeholder') ||
+            src.endsWith('.gif') || src.endsWith('.svg')) {
+          continue;
+        }
+
+        // Take first valid image (Readability already filtered out small ones)
+        mainImageUrl = src;
+        break;
+      }
+    }
+  } catch (e) {
+    console.log('Failed to extract main image:', e);
+  }
+  return mainImageUrl;
+}
+
 export function checkLanguageSupport(
   api,
   tab,
@@ -143,55 +186,145 @@ export function checkLanguageSupport(
 ) {
   if (setLoadingProgress) setLoadingProgress("Fetching article content...");
 
+  // Use Readability to extract clean article content
   ArticleAsync(tab.url)
     .then((article) => {
+      // Send the cleaned content from Readability instead of full page HTML
+      // This avoids navigation menus and improves parsing performance
+      const cleanHTML = article.content;
+      console.log(`Clean HTML size: ${cleanHTML.length} characters`);
+      console.log(`First 500 chars:`, cleanHTML.substring(0, 500));
+
+      const mainImageUrl = extractMainImage(cleanHTML);
+
+      return { article, rawHTML: cleanHTML, imageUrl: mainImageUrl };
+    })
+    .then(({ article, rawHTML, imageUrl }) => {
       if (setArticleData) setArticleData(article);
       if (setLoadingProgress) setLoadingProgress("Checking language support...");
 
-      api.detectArticleLanguage(article.textContent, (result) => {
-        // Set detected language regardless
-        if (setDetectedLanguage && result.detected_language) {
-          setDetectedLanguage(result.detected_language);
-        }
+      api.detectArticleLanguage(
+        article.textContent,
+        (result) => {
+          // Set detected language regardless
+          if (setDetectedLanguage && result.detected_language) {
+            setDetectedLanguage(result.detected_language);
+          }
 
-        if (result.supported === false) {
-          setLanguageSupported(false);
-        } else if (result.needs_translation === true) {
-          // Language is supported but needs translation
-          setLanguageSupported(false); // This will trigger the translation prompt
-        } else if (result.supported === true && !result.needs_translation) {
-          // Language is supported and matches user's learned language
-          if (setLoadingProgress) setLoadingProgress("Processing article fragments...");
+          if (result.supported === false) {
+            setLanguageSupported(false);
+          } else if (result.needs_translation === true) {
+            // Language is supported but needs translation
+            setLanguageSupported(false); // This will trigger the translation prompt
+          } else if (result.supported === true && !result.needs_translation) {
+            // Language is supported and matches user's learned language
+            if (setLoadingProgress) setLoadingProgress("Processing article fragments...");
 
-          // Get tokenized fragments
-          let info = { url: tab.url };
+            // Send all extracted data from Readability to avoid backend processing
+            // The extension has already done all the extraction work
+            let info = {
+              url: tab.url,
+              htmlContent: rawHTML,
+              textContent: article.textContent,
+              title: decodeHTMLEntities(article.title),
+              author: decodeHTMLEntities(article.byline),
+              excerpt: decodeHTMLEntities(article.excerpt),
+              siteName: decodeHTMLEntities(article.siteName),
+              imageUrl: imageUrl,
+              preExtracted: true  // Flag to tell backend we've already extracted everything
+            };
 
-          if (setLoadingProgress) setLoadingProgress("Assessing article difficulty level...");
+            if (setLoadingProgress) setLoadingProgress("Assessing article difficulty level...");
 
-          api.findOrCreateArticle(info, (articleResult) => {
-            if (articleResult.includes("Language not supported")) {
-              setLanguageSupported(false);
-              return;
-            }
+            api.findOrCreateArticle(
+              info,
+              (articleResult) => {
+                if (articleResult.includes("Language not supported")) {
+                  setLanguageSupported(false);
+                  return;
+                }
 
-            try {
-              let artinfo = JSON.parse(articleResult);
-              if (setFragmentData) {
-                setFragmentData(artinfo);
+                try {
+                  let artinfo = JSON.parse(articleResult);
+                  if (setFragmentData) {
+                    setFragmentData(artinfo);
+                  }
+
+                  if (setLoadingProgress) setLoadingProgress("Preparing reader...");
+
+                  if (setLoadingProgress) setLoadingProgress("Opening article reader...");
+
+                  setLanguageSupported(true);
+                } catch (error) {
+                  console.error("Failed to parse article info:", error);
+                  setLanguageSupported(false);
+                }
+              },
+              (error) => {
+                // Handle errors when creating/fetching article
+                console.error("Failed to create/fetch article:", error);
+
+                if (error.status === 422) {
+                  // Article parsing failed
+                  console.log("Article could not be parsed");
+                  setLanguageSupported(false);
+                  if (setLoadingProgress) {
+                    setLoadingProgress("This article could not be processed. Please try a different article.");
+                  }
+                } else if (error.status === 401) {
+                  // Authentication error - handle same as language detection
+                  console.log("Session invalid during article creation");
+                  setLanguageSupported(false);
+                  if (setLoadingProgress) {
+                    setLoadingProgress("Session expired. Please close this popup and click the extension icon again.");
+                  }
+                } else {
+                  // Other errors
+                  setLanguageSupported(false);
+                  if (setLoadingProgress) {
+                    setLoadingProgress("An error occurred. Please try again.");
+                  }
+                }
               }
+            );
+          }
+        },
+        async (error) => {
+          // Handle authentication and other API errors
+          console.error("Language detection API error:", error);
 
-              if (setLoadingProgress) setLoadingProgress("Preparing reader...");
+          if (error.status === 401) {
+            // 401 Unauthorized - session is invalid
+            console.log("Session invalid - clearing stale cookies");
 
-              if (setLoadingProgress) setLoadingProgress("Opening article reader...");
+            // Remove stale sessionID cookie and local storage
+            // so next time the popup opens it will get fresh cookies
+            try {
+              const { WEB_URL } = await import("../../../config");
+              const { removeCookiesOnZeeguu } = await import("./cookies");
 
-              setLanguageSupported(true);
-            } catch (error) {
-              console.error("Failed to parse article info:", error);
-              setLanguageSupported(false);
+              // Clear stale cookies
+              await removeCookiesOnZeeguu(WEB_URL);
+
+              // Clear extension local storage
+              await BROWSER_API.storage.local.clear();
+
+              console.log("Cleared stale session cookies and storage");
+            } catch (e) {
+              console.error("Error clearing cookies:", e);
             }
-          });
+
+            // Show error message to user
+            setLanguageSupported(false);
+            if (setLoadingProgress) {
+              setLoadingProgress("Session expired. Please close this popup and click the extension icon again.");
+            }
+          } else {
+            // Other errors - treat as language not supported
+            setLanguageSupported(false);
+          }
         }
-      });
+      );
     })
     .catch((error) => {
       console.error("Failed to fetch article for language check:", error);

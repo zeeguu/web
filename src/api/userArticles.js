@@ -208,12 +208,21 @@ Zeeguu_API.prototype.setArticleOpened = function (articleID) {
   this._post("article_opened", `article_id=${articleID}`);
 };
 
-Zeeguu_API.prototype.findOrCreateArticle = function (articleInfo, callback) {
+Zeeguu_API.prototype.findOrCreateArticle = function (articleInfo, callback, onError) {
+  // Pass all fields from articleInfo to backend
+  // If preExtracted is true, the extension has already done all extraction work
   let article = {
     url: articleInfo.url,
     htmlContent: articleInfo.htmlContent,
+    textContent: articleInfo.textContent,
+    title: articleInfo.title,
+    author: articleInfo.author,
+    excerpt: articleInfo.excerpt,
+    siteName: articleInfo.siteName,
+    imageUrl: articleInfo.imageUrl,
+    preExtracted: articleInfo.preExtracted,
   };
-  this._post(`/find_or_create_article`, qs.stringify(article), callback);
+  this._post(`/find_or_create_article`, qs.stringify(article), callback, onError);
 };
 
 Zeeguu_API.prototype.removeMLSuggestion = function (
@@ -246,16 +255,31 @@ Zeeguu_API.prototype.isArticleLanguageSupported = function (
 Zeeguu_API.prototype.detectArticleLanguage = function (
   htmlContent,
   callback,
+  onError,
 ) {
   let article = { htmlContent: htmlContent, detailed: true };
-  this._post(`/is_article_language_supported`, qs.stringify(article), (response) => {
-    try {
-      callback(JSON.parse(response));
-    } catch (e) {
-      // Backward compatibility - old format
-      callback({ supported: response === "YES" });
+  this._post(
+    `/is_article_language_supported`,
+    qs.stringify(article),
+    (response) => {
+      try {
+        callback(JSON.parse(response));
+      } catch (e) {
+        // Backward compatibility - old format
+        callback({ supported: response === "YES" });
+      }
+    },
+    (error) => {
+      // Handle HTTP errors (401, 406, 500, etc.)
+      console.error("Language detection failed:", error);
+      if (onError) {
+        onError(error);
+      } else {
+        // Default fallback - treat as unsupported
+        callback({ supported: false, error: error.message });
+      }
     }
-  });
+  );
 };
 
 Zeeguu_API.prototype.translateAndAdaptArticle = function (
@@ -352,4 +376,17 @@ Zeeguu_API.prototype.simplifyArticle = function (articleID, callback) {
 Zeeguu_API.prototype.hideArticle = function (articleId, callback) {
   let param = qs.stringify({ article_id: articleId });
   this._post(`/hide_article`, param, callback);
+};
+
+Zeeguu_API.prototype.reportBrokenArticle = function (articleId, reason, callback, onError) {
+  let param = qs.stringify({ article_id: articleId, reason: reason });
+  this._post(`/report_broken_article`, param, (response) => {
+    try {
+      callback(JSON.parse(response));
+    } catch (e) {
+      if (onError) {
+        onError("Failed to parse response");
+      }
+    }
+  }, onError);
 };

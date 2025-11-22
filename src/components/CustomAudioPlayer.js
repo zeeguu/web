@@ -411,14 +411,19 @@ export default function CustomAudioPlayer({
     if (!audio || !onProgressUpdate) return;
 
     const currentProgress = Math.floor(audio.currentTime);
+    // Ensure progress doesn't exceed duration (prevents MediaSession API errors)
+    const validProgress = audio.duration > 0
+      ? Math.min(currentProgress, Math.floor(audio.duration))
+      : currentProgress;
+
     console.log(
-      `Saving progress: ${currentProgress} seconds (last saved: ${lastSavedProgressRef.current}, forced: ${forceSave})`,
+      `Saving progress: ${validProgress} seconds (last saved: ${lastSavedProgressRef.current}, forced: ${forceSave})`,
     ); // Debug log
     // Only save if progress changed by at least 5 seconds OR if forceSave is true (e.g., on pause)
-    if (forceSave || Math.abs(currentProgress - lastSavedProgressRef.current) >= 5) {
-      console.log(`Progress saved: ${currentProgress} seconds`); // Debug log
-      onProgressUpdate(currentProgress);
-      lastSavedProgressRef.current = currentProgress;
+    if (forceSave || Math.abs(validProgress - lastSavedProgressRef.current) >= 5) {
+      console.log(`Progress saved: ${validProgress} seconds`); // Debug log
+      onProgressUpdate(validProgress);
+      lastSavedProgressRef.current = validProgress;
     }
   };
 
