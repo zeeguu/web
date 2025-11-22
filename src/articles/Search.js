@@ -5,13 +5,14 @@ import SubscribeSearchButton from "./SubscribeSearchButton";
 import ArticleListBrowser from "./ArticleListBrowser";
 import CustomizeSearchToolbar from "./CustomizeSearchToolbar";
 
-export default function Search() {
+export default function Search({ hasExtension, isChrome }) {
   const searchQuery = useQuery().get("search");
   const [searchPublishPriority, setSearchPublishPriority] = useState(false);
   const [searchDifficultyPriority, setSearchDifficultyPriority] = useState(true);
 
   return (
     <ArticleListBrowser
+      hasExtension={hasExtension}
       searchPublishPriority={searchPublishPriority}
       searchDifficultyPriority={searchDifficultyPriority}
       searchQuery={searchQuery}

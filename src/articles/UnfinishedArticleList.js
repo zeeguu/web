@@ -7,17 +7,30 @@ import UnfinishedArticlePreview from "./UnfinishedArticlePreview";
 export default function UnfinishedArticlesList({
   unfinishedArticles,
 }) {
-  let api = useContext(APIContext);
+  const api = useContext(APIContext);
+  const [unfinishedArticleList, setUnfinishedArticleList] = useState([]);
 
-  // unfinishedArticles is now passed from parent component
-  // No need for separate API call or state management
+    useEffect(() => {
+        let isMounted = true;
 
-  if (
-    unfinishedArticles === undefined ||
-    unfinishedArticles.length === 0
-  ) {
-    return <></>;
-  }
+        api.getUnfinishedUserReadingSessions((articles) => {
+            if (!isMounted) return;
+
+            setUnfinishedArticleList(articles);
+
+            // Remove unfinished articles from main list
+            const filteredList = articleList.filter(
+                (article) => !articles.some((a) => a.id === article.id)
+            );
+            setArticleList(filteredList);
+        });
+
+        return () => {
+            isMounted = false;
+        };
+    }, []);
+
+    if (unfinishedArticleList.length === 0) return null;
 
   return (
     <>
@@ -25,7 +38,7 @@ export default function UnfinishedArticlesList({
         <s.UnfishedArticleBoxTitle>
           Continue where you left off
         </s.UnfishedArticleBoxTitle>
-        {unfinishedArticles.map((each, index) => (
+        {unfinishedArticleList.map((each, index) => (
           <UnfinishedArticlePreview
             key={each.id}
             article={each}

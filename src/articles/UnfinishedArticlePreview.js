@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
-import * as s from "./ArticlePreview.sc";
-import { formatDistanceToNow } from "date-fns";
+import * as s from "./ArticlePreviewList.sc";
+import moment from "moment";
 import ReadingCompletionProgress from "./ReadingCompletionProgress";
 export default function UnfinishedArticlePreview({ article, onArticleClick }) {
   const handleArticleClick = () => {

@@ -3,178 +3,126 @@ import ArticlePreview from "./ArticlePreview";
 import SearchField from "./SearchField";
 import * as s from "./ArticleListBrowser.sc";
 import LoadingAnimation from "../components/LoadingAnimation";
-
-import LocalStorage from "../assorted/LocalStorage";
-
 import ShowLinkRecommendationsIfNoArticles from "./ShowLinkRecommendationsIfNoArticles";
-import { APIContext } from "../contexts/APIContext";
-import useExtensionCommunication from "../hooks/useExtensionCommunication";
-import useArticlePagination from "../hooks/useArticlePagination";
 import UnfinishedArticlesList from "./UnfinishedArticleList";
-import { setTitle } from "../assorted/setTitle";
-import strings from "../i18n/definitions";
-import useShadowRef from "../hooks/useShadowRef";
 import VideoPreview from "../videos/VideoPreview";
 import CustomizeFeed from "./CustomizeFeed";
+import { APIContext } from "../contexts/APIContext";
+import useShadowRef from "../hooks/useShadowRef";
+import { setTitle } from "../assorted/setTitle";
+import strings from "../i18n/definitions";
 
-export default function ArticleListBrowser({ content, searchQuery, searchPublishPriority, searchDifficultyPriority }) {
-  let api = useContext(APIContext);
+export default function ArticleListBrowser({
+  // from ArticleBrowser or Search
+  content,
+  searchQuery,
+  searchPublishPriority,
+  searchDifficultyPriority,
+  articles,
+  setArticles,
+  isWaiting,
+  noMore,
+  resetPagination,
+  // interactions
+  onArticleOpen,
+  onArticleHide,
+  onArticleSave,
+  // downstream UI needs
+  hasExtension,
+  doNotShowRedirectionModal_UserPreference,
+  setDoNotShowRedirectionModal_UserPreference,
+}) {
+  const api = useContext(APIContext);
 
-  //The ternary operator below fix the problem with the getOpenArticleExternallyWithoutModal()
-  //getter that was outputting undefined string values when they should be false.
-  //This occurs before the user selects their own preferences.
-  //Additionally, the conditional statement needed to be tightened up due to JS's unstable behavior, which resulted
-  //in bool values changing on its own on refresh without any other external trigger or preferences change.
-  // A '=== "true"' clause has been added to the getters to achieve predictable and desired bool values.
-  const doNotShowRedirectionModal_LocalStorage = LocalStorage.getDoNotShowRedirectionModal() === "true";
-  const [articlesAndVideosList, setArticlesAndVideosList] = useState();
-  const [unfinishedArticles, setUnfinishedArticles] = useState();
-  const [originalList, setOriginalList] = useState(null);
+  // Search state
+  const [searchResultArticleList, setSearchResultArticleList] = useState([]);
   const [searchError, setSearchError] = useState(false);
-
-  const [isExtensionAvailable] = useExtensionCommunication();
-  const [doNotShowRedirectionModal_UserPreference, setDoNotShowRedirectionModal_UserPreference] = useState(
-    doNotShowRedirectionModal_LocalStorage,
-  );
   const [reloadingSearchArticles, setReloadingSearchArticles] = useState(false);
 
+  // Video filtering state
+  const [originalList, setOriginalList] = useState(null);
+  const [areVideosAvailable, setAreVideosAvailable] = useState(false);
+  const [isShowVideosOnlyEnabled, setIsShowVideosOnlyEnabled] = useState(false);
+  const isShowVideosOnlyEnabledRef = useShadowRef(isShowVideosOnlyEnabled);
+
+  // Keep latest priorities for search
   const searchPublishPriorityRef = useShadowRef(searchPublishPriority);
   const searchDifficultyPriorityRef = useShadowRef(searchDifficultyPriority);
 
-  // Next three vars required for the "Show Videos Only" toggle button
-  const [areVideosAvailable, setAreVideosAvailable] = useState(false);
-  const [isShowVideosOnlyEnabled, setIsShowVideosOnlyEnabled] = useState(false);
-  // Ref is needed since it's called in the updateOnPagination function. This function
-  // could have stale values if using the state constant.
-  const isShowVideosOnlyEnabledRef = useShadowRef(isShowVideosOnlyEnabled);
+  // Get the actual articles to display
+  const displayArticles = searchQuery ? searchResultArticleList : articles;
 
-  function getNewArticlesForPage(pageNumber, handleArticleInsertion) {
-    if (searchQuery) {
-      api.searchMore(
-        searchQuery,
-        pageNumber,
-        searchPublishPriorityRef.current,
-        searchDifficultyPriorityRef.current,
-        handleArticleInsertion,
-        (error) => {},
-      );
-    } else {
-      api.getMoreUserArticles(20, pageNumber, handleArticleInsertion);
-    }
-  }
-
-  function updateOnPagination(newUpdatedList) {
-    if (isShowVideosOnlyEnabledRef.current) {
-      const videosOnly = [...newUpdatedList].filter((each) => each.video);
-      setArticlesAndVideosList(videosOnly);
-    } else {
-      setArticlesAndVideosList(newUpdatedList);
-      setOriginalList(newUpdatedList);
-    }
-  }
-
-  const [handleScroll, isWaitingForNewArticles, noMoreArticlesToShow, resetPagination] = useArticlePagination(
-    articlesAndVideosList,
-    updateOnPagination,
-    searchQuery ? "Article Search" : strings.titleHome,
-    getNewArticlesForPage,
-  );
-
-  function handleVideoOnlyClick() {
+  const handleVideoOnlyClick = () => {
     setIsShowVideosOnlyEnabled(!isShowVideosOnlyEnabled);
     if (isShowVideosOnlyEnabled) {
-      setArticlesAndVideosList(originalList);
-      resetPagination();
+      setArticles?.(originalList);
+      resetPagination?.();
     } else {
-      const videosOnly = [...articlesAndVideosList].filter((each) => each.video);
-      setArticlesAndVideosList(videosOnly);
+      const videosOnly = [...(articles || [])].filter((each) => each.video);
+      setArticles?.(videosOnly);
     }
-  }
+  };
 
-  const handleArticleClick = (articleId, sourceId, index) => {
-    const seenList = articlesAndVideosList.slice(0, index).map((each) => each.source_id);
-    const seenListAsString = JSON.stringify(seenList, null, 0);
-    api.logUserActivity(api.CLICKED_ARTICLE, articleId, "", seenListAsString, sourceId);
+  const handleArticleOpen = (articleId, sourceId, index) => {
+    onArticleOpen?.(articleId, sourceId, index);
+  };
+
+  const handleArticleHide = (articleId) => {
+    onArticleHide?.(articleId);
+  };
+
+  const handleArticleSave = (articleId, saved) => {
+    onArticleSave?.(articleId, saved);
   };
 
   const handleVideoClick = (sourceId, index) => {
-    const seenList = articlesAndVideosList.slice(0, index).map((each) => each.source_id);
+    const seenList = articles.slice(0, index).map((each) => each.source_id);
     const seenListAsString = JSON.stringify(seenList, null, 0);
     api.logUserActivity(api.CLICKED_VIDEO, null, "", seenListAsString, sourceId);
   };
 
-  const handleArticleHidden = (articleId) => {
-    const updatedList = articlesAndVideosList.filter((item) => item.id !== articleId);
-    setArticlesAndVideosList(updatedList);
-    if (originalList) {
-      const updatedOriginalList = originalList.filter((item) => item.id !== articleId);
-      setOriginalList(updatedOriginalList);
-    }
-  };
-
+  // Handle search
   useEffect(() => {
-    window.addEventListener("scroll", handleScroll, true);
-    return () => {
-      window.removeEventListener("scroll", handleScroll, true);
-    };
-    // eslint-disable-next-line
-  }, []);
+    if (!searchQuery) return;
 
+    let isMounted = true;
 
-  useEffect(() => {
-    LocalStorage.setDoNotShowRedirectionModal(doNotShowRedirectionModal_UserPreference);
-  }, [doNotShowRedirectionModal_UserPreference]);
-
-  useEffect(() => {
-    resetPagination();
+    setTitle(strings.titleSearch + ` '${searchQuery}'`);
+    setReloadingSearchArticles(true);
     setSearchError(false);
-    if (searchQuery) {
-      setTitle(strings.titleSearch + ` '${searchQuery}'`);
-      setReloadingSearchArticles(true);
-      api.search(
-        searchQuery,
-        searchPublishPriority,
-        searchDifficultyPriority,
-        (articles) => {
-          setArticlesAndVideosList(articles);
-          setOriginalList([...articles]);
-          setReloadingSearchArticles(false);
-          articles.some((e) => e.video) ? setAreVideosAvailable(true) : setAreVideosAvailable(false);
-        },
-        (error) => {
-          setArticlesAndVideosList([]);
-          setOriginalList([]);
-          setReloadingSearchArticles(false);
-          setSearchError(true);
-        },
-      );
-    } else {
-      setTitle(strings.titleHome);
-      // First fetch unfinished articles, then fetch main articles
-      api.getUnfinishedUserReadingSessions((unfinished) => {
-        setUnfinishedArticles(unfinished);
-        api.getUserArticles((articles) => {
-          // Filter out unfinished articles from the main list
-          let filteredArticles = [...articles];
-          for (let i = 0; i < unfinished.length; i++) {
-            filteredArticles = filteredArticles.filter(
-              (article) => article.id !== unfinished[i].id,
-            );
-          }
-          setArticlesAndVideosList(filteredArticles);
-          setOriginalList([...filteredArticles]);
-          filteredArticles.some((e) => e.video) ? setAreVideosAvailable(true) : setAreVideosAvailable(false);
-        });
-      });
-      window.addEventListener("scroll", handleScroll, true);
-      return () => {
-        window.removeEventListener("scroll", handleScroll, true);
-      };
-    }
-    // eslint-disable-next-line
-  }, [searchPublishPriority, searchDifficultyPriority]);
+    setSearchResultArticleList([]);
 
-  if (articlesAndVideosList == null) {
+    api.search(
+      searchQuery,
+      searchPublishPriorityRef.current,
+      searchDifficultyPriorityRef.current,
+      (articles) => {
+        if (!isMounted) return;
+        setSearchResultArticleList(articles);
+        setAreVideosAvailable(articles.some((e) => e.video));
+        setReloadingSearchArticles(false);
+      },
+      (error) => {
+        if (!isMounted) return;
+        console.log(error.message);
+        setSearchResultArticleList([]);
+        setReloadingSearchArticles(false);
+        setSearchError(true);
+      },
+    );
+
+    return () => {
+      isMounted = false;
+    };
+  }, [searchQuery, searchPublishPriority, searchDifficultyPriority]);
+
+  // Update originalList when articles change (for video toggle)
+  useEffect(() => {
+    if (!isShowVideosOnlyEnabledRef.current && !searchQuery && articles) {
+      setOriginalList(articles);
+    }
+  }, [articles, searchQuery]);
+  if (isWaiting && (!displayArticles || displayArticles.length === 0)) {
     return <LoadingAnimation />;
   }
 
@@ -184,8 +132,7 @@ export default function ArticleListBrowser({ content, searchQuery, searchPublish
         <s.SearchHolder>
           <SearchField query={searchQuery} />
         </s.SearchHolder>
-
-        <b>An error occurred with this query. Please try a different keyword.</b>
+        <b>An error occured with this query. Please try a different keyword.</b>
       </>
     );
   }
@@ -194,7 +141,8 @@ export default function ArticleListBrowser({ content, searchQuery, searchPublish
     <>
       {!searchQuery && (
         <>
-          <UnfinishedArticlesList unfinishedArticles={unfinishedArticles} />
+          {/* Unfinished drafts and feed customization remain as UI */}
+          <UnfinishedArticlesList articleList={displayArticles} setArticleList={() => {}} />
           <s.SortHolder
             style={{
               display: "flex",
@@ -222,40 +170,41 @@ export default function ArticleListBrowser({ content, searchQuery, searchPublish
         </s.SearchHolder>
       )}
 
-      {/* This is where the content of the Search component will be rendered */}
+      {/* Slot for extra content above the list */}
       {content}
-      {reloadingSearchArticles && <LoadingAnimation></LoadingAnimation>}
+
+      {reloadingSearchArticles && <LoadingAnimation />}
+
       {!reloadingSearchArticles &&
-        articlesAndVideosList.map((each, index) =>
+        displayArticles.map((each, index) =>
           each.video ? (
             <VideoPreview key={each.id} video={each} notifyVideoClick={() => handleVideoClick(each.source_id, index)} />
           ) : (
             <ArticlePreview
               key={each.id}
               article={each}
-              hasExtension={isExtensionAvailable}
+              isListView={true}
+              hasExtension={hasExtension}
               doNotShowRedirectionModal_UserPreference={doNotShowRedirectionModal_UserPreference}
               setDoNotShowRedirectionModal_UserPreference={setDoNotShowRedirectionModal_UserPreference}
-              onArticleHidden={handleArticleHidden}
-              notifyArticleClick={() => handleArticleClick(each.id, each.source_id, index)}
+              onArticleHidden={() => handleArticleHide(each.id)}
+              onArticleSave={handleArticleSave}
+              notifyArticleClick={() => handleArticleOpen(each.id, each.source_id, index)}
             />
           ),
         )}
-      {!reloadingSearchArticles && articlesAndVideosList.length === 0 && (
+
+      {!isWaiting && !reloadingSearchArticles && displayArticles.length === 0 && (
         <div style={{ textAlign: "center", marginTop: "1rem" }}>
           <p>No results were found for this query.</p>
         </div>
       )}
 
-      {!searchQuery && (
-        <>
-          <ShowLinkRecommendationsIfNoArticles
-            articleList={articlesAndVideosList}
-          ></ShowLinkRecommendationsIfNoArticles>
-        </>
-      )}
-      {isWaitingForNewArticles && <LoadingAnimation delay={0}></LoadingAnimation>}
-      {noMoreArticlesToShow && articlesAndVideosList.length > 0 && (
+      {!searchQuery && <ShowLinkRecommendationsIfNoArticles articleList={displayArticles} />}
+
+      {isWaiting && <LoadingAnimation delay={0} />}
+
+      {noMore && displayArticles.length > 0 && (
         <div
           style={{
             display: "flex",

@@ -4,7 +4,7 @@ import { RoutingContext } from "../../contexts/RoutingContext";
 import strings from "../../i18n/definitions";
 import { StyledButton } from "../styledComponents/TeacherButtons.sc";
 import * as st from "../styledComponents/TeacherTextPreview.sc";
-import * as s from "../../articles/ArticlePreview.sc";
+import * as s from "../../articles/ArticlePreviewList.sc";
 import ArticleStatInfo from "../../components/ArticleStatInfo";
 
 export default function TeacherTextPreview({ article }) {

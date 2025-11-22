@@ -1,0 +1,91 @@
+import styled from "styled-components";
+import { orange600, saveGreen, dismissRed } from "../colors";
+
+export const Bar = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 3rem;
+  padding: 1rem;
+  width: 500px;
+`;
+
+export const BaseButton = styled.button`
+  appearance: none;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: transform 120ms ease;
+  will-change: transform;
+
+  &:hover {
+    filter: brightness(0.95);
+  }
+
+  &:active {
+    transform: translateY(1px) scale(0.95);
+  }
+`;
+
+export const DismissButton = styled(BaseButton)`
+  width: 60px;
+  height: 60px;
+  background: ${dismissRed};
+  box-shadow:
+    0 22px 34px rgba(0, 0, 0, 0.12),
+    0 6px 12px rgba(0, 0, 0, 0.06),
+    0 0 0 3px ${dismissRed} inset;
+`;
+
+export const OpenButton = styled(BaseButton)`
+  width: 65px;
+  height: 65px;
+  background: ${orange600};
+  box-shadow:
+    0 38px 60px rgba(0, 0, 0, 0.12),
+    0 10px 20px rgba(0, 0, 0, 0.06);
+`;
+
+export const SaveButton = styled(BaseButton)`
+  width: 60px;
+  height: 60px;
+  background: ${saveGreen};
+  box-shadow:
+    0 22px 34px rgba(0, 0, 0, 0.12),
+    0 6px 12px rgba(0, 0, 0, 0.06),
+    0 0 0 3px ${saveGreen} inset;
+
+  .heart-outline,
+  .heart-filled {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    transition: opacity 0.25s ease;
+  }
+
+  .heart-filled { opacity: 0; }
+  .heart-outline { opacity: 1; }
+
+  /* Hover only for desktop */
+  @media (hover: hover) and (pointer: fine) {
+      &:hover .heart-filled {
+          opacity: 1;
+      }
+      &:hover .heart-outline {
+          opacity: 0;
+      }
+  }
+
+  &.saved .heart-filled { opacity: 1; }
+  &.saved .heart-outline { opacity: 0; }
+`;
+
+export const ButtonInner = styled.div`
+  width: 100%;
+  height: 100%;
+  border-radius: inherit;
+  display: grid;
+  place-items: center;
+  position: relative;
+`;
