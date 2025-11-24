@@ -12,8 +12,8 @@ import useArticlePagination from "../hooks/useArticlePagination";
 
 export default function OwnArticles() {
   const api = useContext(APIContext);
-  const [articleList, setArticleList] = useState([]);
-  const [originalList, setOriginalList] = useState([]);
+  const [articleList, setArticleList] = useState(null);
+  const [originalList, setOriginalList] = useState(null);
 
   function updateOnPagination(newUpdatedList) {
     setArticleList(newUpdatedList);
@@ -42,9 +42,7 @@ export default function OwnArticles() {
     "Saved Articles",
     (pageNumber, handleArticleInsertion) => {
       api.getSavedUserArticles(pageNumber, handleArticleInsertion);
-    },
-    { skipShouldShow: true },
-  );
+    });
 
   useEffect(() => {
     setTitle("Saved Articles");
@@ -59,7 +57,7 @@ export default function OwnArticles() {
     // eslint-disable-next-line
   }, []);
 
-  if (articleList == null || isWaitingForNewArticles || articleList.length === 0) {
+  if (articleList == null || isWaitingForNewArticles) {
     return <LoadingAnimation />;
   }
 
