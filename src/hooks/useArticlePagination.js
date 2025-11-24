@@ -8,8 +8,6 @@ export default function useArticlePagination(
   setArticleList,
   pageTitle,
   getNewArticlesForPage,
-  shouldShow,
-  skipShouldShow = false,
 ) {
   const [isWaitingForNewArticles, setIsWaitingForNewArticles] = useState(false);
   const [currentPage, setCurrentPage] = useState(0);
@@ -26,9 +24,7 @@ export default function useArticlePagination(
         }
 
         currentArticleList = currentArticleList
-            .concat(fetchedArticles.filter(a => !currentArticleList.some(existing => existing.id === a.id)))
-            .filter(a => !skipShouldShow && typeof shouldShow === "function" ? shouldShow(a) : true);
-
+            .concat(fetchedArticles.filter(a => !currentArticleList.some(existing => existing.id === a.id)));
         if (currentArticleList.length === 0 && newCurrentPage === 1) {
             currentPageRef.current = newCurrentPage;
             loadArticles();
