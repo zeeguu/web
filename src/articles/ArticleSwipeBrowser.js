@@ -55,7 +55,7 @@ export default function ArticleSwipeBrowser({
     setIsArticleSaved(!!currentArticle.has_personal_copy);
   }, [currentArticle?.id, currentArticle?.has_personal_copy]);
 
-  if (articles.length === 0 && !isWaiting) return <LoadingAnimation />;
+  if (articles.length === 0 && isWaiting) return <LoadingAnimation />;
   if (articles.length === 0 && !isWaiting) return <p>No more articles</p>;
 
   if (!currentArticle) return <LoadingAnimation />;
