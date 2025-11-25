@@ -28,46 +28,43 @@ export default function useArticlePagination(
       };
   }, [currentPage, noMoreArticlesToShow, articleList]);
 
-    async function loadArticles() {
-        const s = stateRef.current;
+  async function loadArticles() {
+    const s = stateRef.current;
 
-        if (isWaitingRef.current || s.finished) return;
-        isWaitingRef.current = true;
+    if (isWaitingRef.current || s.finished) return;
+    isWaitingRef.current = true;
 
-        const nextPage = s.page + 1;
+    const nextPage = s.page + 1;
 
-        setIsWaitingForNewArticles(true);
-        setTitle("Getting more articles...");
+    setIsWaitingForNewArticles(true);
+    setTitle("Getting more articles...");
 
-        try {
-            const fetched = await new Promise((resolve) =>
-                getNewArticlesForPage(nextPage, resolve)
-            );
-            console.log("api called again")
+    try {
+        const fetched = await new Promise((resolve) =>
+            getNewArticlesForPage(nextPage, resolve)
+        );
 
+        const articles = fetched || [];
 
-            const articles = fetched || [];
-
-            // Detect end of list
-            if (articles.length === 0) {
-                setNoMoreArticlesToShow(true);
-                return;
-            }
-
-            // Deduplicate efficiently
-            const existingIds = new Set(s.list.map((a) => a.id));
-            const uniqueArticles = articles.filter((a) => !existingIds.has(a.id));
-
-            const updatedList = [...s.list, ...uniqueArticles];
-
-            setArticleList(updatedList);
-            setCurrentPage(nextPage);
-        } finally {
-            isWaitingRef.current = false;
-            setIsWaitingForNewArticles(false);
-            setTitle(pageTitle);
+        if (articles.length === 0) {
+            setNoMoreArticlesToShow(true);
+            return;
         }
+
+        // Deduplicate efficiently
+        const existingIds = new Set(s.list.map((a) => a.id));
+        const uniqueArticles = articles.filter((a) => !existingIds.has(a.id));
+
+        const updatedList = [...s.list, ...uniqueArticles];
+
+        setArticleList(updatedList);
+        setCurrentPage(nextPage);
+    } finally {
+        isWaitingRef.current = false;
+        setIsWaitingForNewArticles(false);
+        setTitle(pageTitle);
     }
+  }
 
     function loadNextPage() {
         return loadArticles();
