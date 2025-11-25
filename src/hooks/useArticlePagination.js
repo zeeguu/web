@@ -1,7 +1,6 @@
-import { useState} from "react";
+import {useCallback, useEffect, useRef, useState} from "react";
 import { getPixelsFromScrollBarToEnd } from "../utils/misc/getScrollLocation";
 import { setTitle } from "../assorted/setTitle";
-import useShadowRef from "./useShadowRef";
 
 export default function useArticlePagination(
   articleList,
@@ -12,84 +11,86 @@ export default function useArticlePagination(
   const [isWaitingForNewArticles, setIsWaitingForNewArticles] = useState(false);
   const [currentPage, setCurrentPage] = useState(0);
   const [noMoreArticlesToShow, setNoMoreArticlesToShow] = useState(false);
+  const isWaitingRef = useRef(false);
 
-  const noMoreArticlesToShowRef = useShadowRef(noMoreArticlesToShow);
-  const isWaitingForNewArticlesRef = useShadowRef(isWaitingForNewArticles);
-  const currentPageRef = useShadowRef(currentPage);
-  const articleListRef = useShadowRef(articleList);
 
-    function insertNewArticlesIntoArticleList(fetchedArticles, newCurrentPage, currentArticleList) {
-        if (fetchedArticles.length === 0 && newCurrentPage > 1) {
-            setNoMoreArticlesToShow(true);
-        }
+  const stateRef = useRef({
+    page: 0,
+    finished: false,
+    list: [],
+  });
 
-        currentArticleList = currentArticleList
-            .concat(fetchedArticles.filter(a => !currentArticleList.some(existing => existing.id === a.id)));
-        if (currentArticleList.length === 0 && newCurrentPage === 1) {
-            currentPageRef.current = newCurrentPage;
-            loadArticles();
-            return;
-        }
+  useEffect(() => {
+      stateRef.current = {
+          page: currentPage,
+          finished: noMoreArticlesToShow,
+          list: articleList,
+      };
+  }, [currentPage, noMoreArticlesToShow, articleList]);
 
-        setArticleList(currentArticleList);
-        setCurrentPage(newCurrentPage);
-        setIsWaitingForNewArticles(false);
-    }
+    async function loadArticles() {
+        const s = stateRef.current;
 
-  function loadArticles() {
-      setIsWaitingForNewArticles(true);
-      setTitle("Getting more articles...");
+        if (isWaitingRef.current || s.finished) return;
+        isWaitingRef.current = true;
 
-      let newCurrentPage = currentPageRef.current + 1;
-      console.log(newCurrentPage);
-      let articleListCopy = [...(articleListRef.current || [])];
+        const nextPage = s.page + 1;
 
-        getNewArticlesForPage(newCurrentPage, (articles) => {
-            let fetchedArticles = (articles || []);
+        setIsWaitingForNewArticles(true);
+        setTitle("Getting more articles...");
 
-            insertNewArticlesIntoArticleList(
-                fetchedArticles,
-                newCurrentPage,
-                articleListCopy,
+        try {
+            const fetched = await new Promise((resolve) =>
+                getNewArticlesForPage(nextPage, resolve)
             );
+            console.log("api called again")
+
+
+            const articles = fetched || [];
+
+            // Detect end of list
+            if (articles.length === 0) {
+                setNoMoreArticlesToShow(true);
+                return;
+            }
+
+            // Deduplicate efficiently
+            const existingIds = new Set(s.list.map((a) => a.id));
+            const uniqueArticles = articles.filter((a) => !existingIds.has(a.id));
+
+            const updatedList = [...s.list, ...uniqueArticles];
+
+            setArticleList(updatedList);
+            setCurrentPage(nextPage);
+        } finally {
+            isWaitingRef.current = false;
+            setIsWaitingForNewArticles(false);
             setTitle(pageTitle);
-        });
+        }
     }
 
     function loadNextPage() {
-        if (!articleListRef.current || isWaitingForNewArticlesRef.current) return;
-
-        if (!noMoreArticlesToShowRef.current
-        ) {
-          loadArticles();
-          return true;
-      }
+        return loadArticles();
     }
 
-  function handleScroll() {
-    if (!articleListRef.current) return;
+    const handleScroll = useCallback(() => {
+        const s = stateRef.current;
 
-    let scrollBarPixelDistToPageEnd = getPixelsFromScrollBarToEnd();
+        if (!s.list.length || s.isWaiting || s.finished) return;
 
-    let weHaveHadAtLeastOneRenderingOfArticles =
-      currentPageRef.current !== undefined;
+        const pixelsLeft = getPixelsFromScrollBarToEnd();
 
-    if (
-      scrollBarPixelDistToPageEnd <= 50 &&
-      !isWaitingForNewArticlesRef.current &&
-      !noMoreArticlesToShowRef.current &&
-      weHaveHadAtLeastOneRenderingOfArticles
-    ) {
-        loadArticles();
-        return true;
-    }
-  }
+        if (pixelsLeft <= 50) {
+            loadArticles().then(() => {return true});
+        }
+    }, []);
 
   function resetPagination() {
-    setNoMoreArticlesToShow(false);
-    setCurrentPage(0);
-    setIsWaitingForNewArticles(false);
-  }
+        setIsWaitingForNewArticles(false);
+        setNoMoreArticlesToShow(false);
+        setCurrentPage(0);
+        setArticleList([]);
+    }
 
   return [
       handleScroll,

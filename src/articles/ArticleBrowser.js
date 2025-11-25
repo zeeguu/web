@@ -34,8 +34,7 @@ export default function ArticleBrowser({
   }
 
   function updateOnPagination(newUpdatedList) {
-    const filtered = (newUpdatedList || []);
-    setArticlesAndVideosList(filtered);
+    setArticlesAndVideosList(newUpdatedList);
   }
 
   const [handleScroll, isWaitingForNewArticles, noMoreArticlesToShow, resetPagination, loadNextPage] =
@@ -57,8 +56,15 @@ export default function ArticleBrowser({
   const handleArticleSave = (articleId, saved) => {
     setArticlesAndVideosList(
       (prev) =>
-        prev?.map((e) => (e.id === articleId ? { ...e, has_personal_copy: saved } : e)) ?? prev,
-    );
+          prev?.reduce((acc, article) => {
+              if (article.id === articleId) {
+                  article = { ...article, has_personal_copy: saved };
+              }
+              if (![true, "true"].includes(article.has_personal_copy)) {
+                  acc.push(article);
+              }
+              return acc;
+          }, []) ?? prev    );
   };
 
   // persist user pref for redirection modal

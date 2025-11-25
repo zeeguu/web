@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { useContext, useEffect, useState } from "react";
+import {useContext, useEffect, useRef, useState} from "react";
 import { toast } from "react-toastify";
 
 import { isMobile } from "../utils/misc/browserDetection";
@@ -30,50 +30,54 @@ export default function ArticlePreview({
   const [showInferredTopic, setShowInferredTopic] = useState(true);
   const [interactiveSummary, setInteractiveSummary] = useState(null);
   const [interactiveTitle, setInteractiveTitle] = useState(null);
-  const [isTokenizing, setIsTokenizing] = useState(false);
   const [zeeguuSpeech] = useState(() => new ZeeguuSpeech(api, article.language));
   const [isHidden, setIsHidden] = useState(article.hidden || false);
   const [isAnimatingOut, setIsAnimatingOut] = useState(false);
+  const isTokenizing = useRef(false);
 
     useEffect(() => {
-    if ((article.summary || article.title) && !isTokenizing && !interactiveSummary && !interactiveTitle) {
-      setIsTokenizing(true);
-      api.getArticleSummaryInfo(article.id, (summaryData) => {
+        // To avoid two api.calls due to React.StrictMode
+        if (isTokenizing.current) return;
+        isTokenizing.current = true;
 
-        // Create interactive summary
-        if (summaryData.tokenized_summary) {
-          const interactive = new InteractiveText(
-            summaryData.tokenized_summary.tokens,
-            article.source_id,
-            api,
-            summaryData.tokenized_summary.past_bookmarks,
-            api.TRANSLATE_TEXT,
-            article.language,
-            "article_preview",
-            zeeguuSpeech,
-            summaryData.tokenized_summary.context_identifier,
-          );
-          setInteractiveSummary(interactive);
-        }
+        if ((article.summary || article.title) && !interactiveSummary && !interactiveTitle) {
+          api.getArticleSummaryInfo(article.id, (summaryData) => {
 
-        // Create interactive title
-        if (summaryData.tokenized_title && summaryData.tokenized_title.tokens) {
-          const titleInteractive = new InteractiveText(
-            summaryData.tokenized_title.tokens,
-            article.source_id,
-            api,
-            summaryData.tokenized_title.past_bookmarks || [],
-            api.TRANSLATE_TEXT,
-            article.language,
-            "article_preview",
-            zeeguuSpeech,
-            summaryData.tokenized_title.context_identifier,
-          );
-          setInteractiveTitle(titleInteractive);
-        }
-      });
-          setIsTokenizing(false);
-      }
+            // Create interactive summary
+            if (summaryData.tokenized_summary) {
+                setInteractiveSummary(
+                    new InteractiveText(
+                        summaryData.tokenized_summary.tokens,
+                        article.source_id,
+                        api,
+                        summaryData.tokenized_summary.past_bookmarks,
+                        api.TRANSLATE_TEXT,
+                        article.language,
+                        "article_preview",
+                        zeeguuSpeech,
+                        summaryData.tokenized_summary.context_identifier,
+                      )
+                );
+            }
+
+            // Create interactive title
+            if (summaryData.tokenized_title?.tokens) {
+              setInteractiveTitle(
+                  new InteractiveText(
+                    summaryData.tokenized_title.tokens,
+                    article.source_id,
+                    api,
+                    summaryData.tokenized_title.past_bookmarks || [],
+                    api.TRANSLATE_TEXT,
+                    article.language,
+                    "article_preview",
+                    zeeguuSpeech,
+                    summaryData.tokenized_title.context_identifier,
+                  )
+              );
+            }
+          });
+          }
   }, [
     article.summary,
     article.title,
