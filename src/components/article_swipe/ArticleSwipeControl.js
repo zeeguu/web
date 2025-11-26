@@ -6,15 +6,15 @@ import { toast } from "react-toastify";
 
 export default function ArticleSwipeControl({ onDismiss, onDismissUndo, onOpen, onSave, children, isSaved = false }) {
   function handleDismiss() {
-    onDismiss(); // hide in UI (or notify parent)
+    onDismiss();
 
+    // only ui for now since missing an endpoint
     const t = toast(
       <span>
         Article hidden.
         <u
           onClick={() => {
             toast.dismiss(t);
-            // Tell parent to reverse: unhide
             if (typeof onDismissUndo === "function") {
               onDismissUndo();
             }
