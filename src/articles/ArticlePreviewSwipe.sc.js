@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { white, almostBlack, zeeguuDarkOrange } from "../components/colors";
+import { white, almostBlack } from "../components/colors";
 import { motion } from "framer-motion";
 import { PublishingTime, SourceContainer } from "../components/ArticleSourceInfo.sc";
 
@@ -94,7 +94,7 @@ export const PublishingTimeSwipe = styled(PublishingTime)`
 `;
 
 export const Content = styled.div`
-    padding: 16px 16px 24px;
+    padding: 10px 16px 24px;
     display: flex;
     flex-direction: column;
     flex: 1;
@@ -105,8 +105,7 @@ export const Title = styled.h2`
     font-size: 20px;
     font-weight: bold;
     color: ${almostBlack};
-    // color: ${zeeguuDarkOrange};
-    margin: 0 0 16px 0;
+    margin: 0 0 10px 0;
 `;
 
 export const Summary = styled.div`

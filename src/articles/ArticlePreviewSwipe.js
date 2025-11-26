@@ -168,10 +168,6 @@ export default function ArticlePreviewSwipe({
                                 {article?.topics?.trim().replace(/,$/, "") || "General"}
                             </s.InfoItem>
                             <s.InfoItem>
-                                <img src={getStaticPath("icons", "read-time-icon.png")} alt="read time icon" />
-                                {estimateReadingTime(article.metrics?.word_count || article.word_count || 0)}
-                            </s.InfoItem>
-                            <s.InfoItem>
                                 <img
                                     src={getStaticPath(
                                         "icons",
@@ -181,6 +177,10 @@ export default function ArticlePreviewSwipe({
                                 />
                                 <span>{getLevelLabel(level)}</span>
                                 {article.parent_article_id && <SimplifiedLabel>simplified</SimplifiedLabel>}
+                            </s.InfoItem>
+                            <s.InfoItem>
+                                <img src={getStaticPath("icons", "read-time-icon.png")} alt="read time icon" />
+                                {estimateReadingTime(article.metrics?.word_count || article.word_count || 0)}
                             </s.InfoItem>
                         </s.InfoWrapper>
                         {isPhone && !summaryOpen && (
