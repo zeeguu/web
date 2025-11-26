@@ -10,6 +10,7 @@ const TopTabs = styled.div`
     text-align: center;
     margin-top: 2em;
   }
+   
 
   .all__tabs {
     line-height: 1.4em;
@@ -18,6 +19,15 @@ const TopTabs = styled.div`
     display: flex;
     justify-content: center;
   }
+    .customize{
+        align-items: center;
+        display: flex;
+        width: fit-content;
+        margin: auto;
+        padding-right: 0.1rem;
+        padding-bottom: 0.5rem;
+    }
+    
 
   .headmenuTab {
     font-size: 1.2em;
@@ -50,7 +60,12 @@ const TopTabs = styled.div`
 
   /*******MEDIA QUERIES **********/
   @media screen and (max-width: 768px) {
+      .customize {
+        font-size: 0.8rem;
+      }
+      
     .headmenuTab {
+        margin-top: 0;
       font-size: 0.8em;
       line-height: 7ex;
     }
