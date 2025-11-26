@@ -3,7 +3,9 @@ import { TopTab } from "./TopTab";
 import CustomizeFeed from "../articles/CustomizeFeed";
 
 // Renders a title and the corresponding tabs links
-export default function TopTabs({ title, tabsAndLinks }) {
+export default function TopTabs({ title, tabsAndLinks, isSwipeView = false }) {
+  const currentMode = isSwipeView ? "swiper" : "list";
+
   // Handle both object and array formats
   let tabsArray;
   if (Array.isArray(tabsAndLinks)) {
@@ -17,23 +19,25 @@ export default function TopTabs({ title, tabsAndLinks }) {
 
   return (
     <div>
-      <s.TopTabs>
-          <br/>
+      <s.TopTabs currentMode={currentMode}>
+        <br />
+
+        <div className="top-bar">
+          {/* for now only in the top bar for swipe mode but could / should go here in list mode as well ? */}
+          {currentMode === "swiper" && (
+            <div className="customize">
+              <CustomizeFeed currentMode={currentMode} />
+            </div>
+          )}
+
           <div className="all__tabs">
-          {allTabsButLast.map((tab) => (
-            <TopTab
-              key={tab.link}
-              text={tab.text}
-              link={tab.link}
-              counter={tab.counter}
-              addSeparator={true}
-            />
-          ))}
-          <TopTab text={lastTab.text} link={lastTab.link} counter={lastTab.counter} />
-        </div>
-          <div className="customize">
-              <CustomizeFeed currentMode={"swipe"}/>
+            {allTabsButLast.map((tab) => (
+              <TopTab key={tab.link} text={tab.text} link={tab.link} counter={tab.counter} addSeparator={true} />
+            ))}
+
+            <TopTab text={lastTab.text} link={lastTab.link} counter={lastTab.counter} />
           </div>
+        </div>
       </s.TopTabs>
     </div>
   );
