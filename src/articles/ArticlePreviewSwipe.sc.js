@@ -94,7 +94,7 @@ export const PublishingTimeSwipe = styled(PublishingTime)`
 `;
 
 export const Content = styled.div`
-    padding: 24px;
+    padding: 16px 16px 24px;
     display: flex;
     flex-direction: column;
     flex: 1;
