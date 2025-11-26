@@ -1,5 +1,6 @@
 import * as s from "./TopTabs.sc";
 import { TopTab } from "./TopTab";
+import CustomizeFeed from "../articles/CustomizeFeed";
 
 // Renders a title and the corresponding tabs links
 export default function TopTabs({ title, tabsAndLinks }) {
@@ -17,9 +18,8 @@ export default function TopTabs({ title, tabsAndLinks }) {
   return (
     <div>
       <s.TopTabs>
-        <br />
-
-        <div className="all__tabs">
+          <br/>
+          <div className="all__tabs">
           {allTabsButLast.map((tab) => (
             <TopTab
               key={tab.link}
@@ -31,6 +31,9 @@ export default function TopTabs({ title, tabsAndLinks }) {
           ))}
           <TopTab text={lastTab.text} link={lastTab.link} counter={lastTab.counter} />
         </div>
+          <div className="customize">
+              <CustomizeFeed currentMode={"swipe"}/>
+          </div>
       </s.TopTabs>
     </div>
   );

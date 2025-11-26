@@ -33,7 +33,7 @@ export default function CustomizeFeed({ currentMode = "list" }) {
     <s.DropdownContainer ref={dropdownRef}>
       <s.CustomizeFeedButton onClick={() => setShowDropdown(!showDropdown)} className={showDropdown ? "active" : ""}>
         <SettingsRoundedIcon style={{ fontSize: "1.2em" }} />
-        <span>Customize</span>
+        <span>{currentMode === "swipe" ? "" : "Customize"}</span>
         <ArrowDropDownIcon
           style={{
             fontSize: "1.2em",

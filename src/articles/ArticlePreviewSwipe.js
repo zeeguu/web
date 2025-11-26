@@ -86,22 +86,27 @@ export default function ArticlePreviewSwipe({
                     onDragEnd={handleDragEnd}
                     whileTap={{ scale: 0.97 }}>
                     <s.ImageWrapper>
-                        {article.img_url && (
-                            <img
-                                alt=""
-                                src={article.img_url}
-                                className="link"
-                                onClick={() => {
-                                    onOpen?.(article);
-                                }}
-                            />
-                        )}
+                        <img
+                            alt="Article image"
+                            src={article.img_url ||getStaticPath("images", "placeholder-orange.png")}
+                            className="link"
+                            onClick={() => {
+                                onOpen?.(article);
+                            }}
+                        />
                         <s.InfoWrapper>
                             <s.InfoItem>
                                 <ArticleSourceInfo
                                     articleInfo={article}
                                     style={{ margin: "0 0 0 0", fontSize: "12px" }}
                                 />
+                            </s.InfoItem>
+                            <s.InfoItem>
+                                <img
+                                    src={getStaticPath("images", "star.svg")}
+                                    alt="topic icon"
+                                />
+                                {article?.topics?.trim().replace(/,$/, '') || "General"}
                             </s.InfoItem>
                             <s.InfoItem>
                                 <img
@@ -112,7 +117,6 @@ export default function ArticlePreviewSwipe({
                                     article.metrics?.word_count || article.word_count || 0
                                 )}
                             </s.InfoItem>
-
                             <s.InfoItem>
                                 <img
                                     src={getStaticPath(
