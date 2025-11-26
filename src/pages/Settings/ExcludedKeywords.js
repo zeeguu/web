@@ -70,7 +70,7 @@ export default function ExcludedKeywords() {
   }
   return (
     <PreferencesPage layoutVariant={"minimalistic-top-aligned"}>
-      <BackArrow redirectLink={isFromArticles && "/articles/swiper"} />
+      <BackArrow />
       <Header withoutLogo>
         <Heading>Filters</Heading>
       </Header>

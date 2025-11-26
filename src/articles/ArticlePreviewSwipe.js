@@ -3,6 +3,7 @@ import * as s from "./ArticlePreviewSwipe.sc.js";
 import { SimplifiedLabel } from "./ArticlePreviewList.sc.js";
 import { estimateReadingTime } from "../utils/misc/readableTime";
 import { getStaticPath } from "../utils/misc/staticPath";
+import { getLevelLabel } from "../extension/src/InjectedReaderApp/LevelSwitcher";
 import { TranslatableText } from "../reader/TranslatableText";
 import { AnimatePresence, useMotionValue, animate } from "framer-motion";
 import ArticleSourceInfo from "../components/ArticleSourceInfo";
@@ -12,75 +13,85 @@ import strings from "../i18n/definitions";
 import {SummaryButtonContainer} from "./ArticlePreviewSwipe.sc.js";
 
 export default function ArticlePreviewSwipe({
-                                                article,
-                                                interactiveSummary,
-                                                interactiveTitle,
-                                                onSwipeLeft,
-                                                onSwipeRight,
-                                                onOpen,
-                                            }) {
-    const [isRemoved, setIsRemoved] = useState(false);
-    const x = useMotionValue(0);
-    const dragStartX = useRef(0);
-    const dragStartY = useRef(0);
-    const isHorizontalDrag = useRef(false);
+  article,
+  interactiveSummary,
+  interactiveTitle,
+  onSwipeLeft,
+  onSwipeRight,
+  onOpen,
+}) {
+  const [isRemoved, setIsRemoved] = useState(false);
+  const x = useMotionValue(0);
+  const dragStartX = useRef(0);
+  const dragStartY = useRef(0);
+  const isHorizontalDrag = useRef(false);
 
-    const [summaryOpen, setSummaryOpen] = useState(false);
-    const isPhone = typeof window !== "undefined" &&
+  const [summaryOpen, setSummaryOpen] = useState(false);
+  const isPhone = typeof window !== "undefined" &&
         window.matchMedia("(max-width: 768px)").matches;
 
-    const handleDragStart = (e, info) => {
-        dragStartX.current = info.point.x;
-        dragStartY.current = info.point.y;
-        isHorizontalDrag.current = false;
+  const handleDragStart = (e, info) => {
+    dragStartX.current = info.point.x;
+    dragStartY.current = info.point.y;
+    isHorizontalDrag.current = false;
+  };
+
+  const handleDrag = (e, info) => {
+    const deltaX = Math.abs(info.point.x - dragStartX.current);
+    const deltaY = Math.abs(info.point.y - dragStartY.current);
+
+    // Only consider drag horizontal if X movement is clearly larger than Y
+    isHorizontalDrag.current = deltaX > deltaY * 0.6;
+  };
+
+  const MIN_DISTANCE = 10;
+
+  const handleDragEnd = (_, info) => {
+    if (!isHorizontalDrag.current) {
+      animate(x, 0, { type: "spring", stiffness: 300 });
+      return;
+    }
+
+    const deltaX = info.point.x - dragStartX.current;
+    const velocityX = info.velocity.x;
+
+    // Only trigger swipe if distance threshold is met
+    if (deltaX > MIN_DISTANCE && velocityX > 0) {
+      animate(x, 1000, {
+        type: "tween",
+        duration: 0.3,
+        onComplete: () => {
+          setIsRemoved(true);
+          onSwipeRight?.(article);
+        },
+      });
+    } else if (deltaX < -MIN_DISTANCE && velocityX < 0) {
+      animate(x, -1000, {
+        type: "tween",
+        duration: 0.3,
+        onComplete: () => {
+          setIsRemoved(true);
+          onSwipeLeft?.(article);
+        },
+      });
+    } else {
+      // not enough distance → snap back
+      animate(x, 0, { type: "spring", stiffness: 300 });
+    }
+  };
+
+  // Disable scroll when component mounts
+  useEffect(() => {
+    document.body.style.overflow = "hidden";
+
+    return () => {
+      document.body.style.overflow = "";
     };
+  }, []);
 
-    const handleDrag = (e, info) => {
-        const deltaX = Math.abs(info.point.x - dragStartX.current);
-        const deltaY = Math.abs(info.point.y - dragStartY.current);
+  const level = article.metrics?.cefr_level || article.cefr_level || "B1";
 
-        // Only consider drag horizontal if X movement is clearly larger than Y
-        isHorizontalDrag.current = deltaX > deltaY * 0.6;
-    };
-
-    const MIN_DISTANCE = 10;
-
-    const handleDragEnd = (_, info) => {
-        if (!isHorizontalDrag.current) {
-            animate(x, 0, { type: "spring", stiffness: 300 });
-            return;
-        }
-
-        const deltaX = info.point.x - dragStartX.current;
-        const velocityX = info.velocity.x;
-
-        // Only trigger swipe if distance threshold is met
-        if (deltaX > MIN_DISTANCE && velocityX > 0) {
-            animate(x, 1000, { type: "tween", duration: 0.3, onComplete: () => {
-                    setIsRemoved(true);
-                    onSwipeRight?.(article);
-                }});
-        } else if (deltaX < -MIN_DISTANCE && velocityX < 0) {
-            animate(x, -1000, { type: "tween", duration: 0.3, onComplete: () => {
-                    setIsRemoved(true);
-                    onSwipeLeft?.(article);
-                }});
-        } else {
-            // not enough distance → snap back
-            animate(x, 0, { type: "spring", stiffness: 300 });
-        }
-    };
-
-    // Disable scroll when component mounts
-    useEffect(() => {
-        document.body.style.overflow = 'hidden';
-
-        return () => {
-            document.body.style.overflow = '';
-        };
-    }, []);
-
-    const titleComponent = (
+  const titleComponent = (
         <s.Title>
             {interactiveTitle ? (
                 <TranslatableText
@@ -150,29 +161,25 @@ export default function ArticlePreviewSwipe({
                         )}
                         <s.InfoWrapper>
                             <s.InfoItem>
-                                <ArticleSourceInfo
-                                    articleInfo={article}
-                                    style={{ margin: "0 0 0 0", fontSize: "12px" }}
-                                />
+                                <ArticleSourceInfo articleInfo={article} style={{ margin: "0 0 0 0", fontSize: "12px" }} />
                             </s.InfoItem>
                             <s.InfoItem>
-                                <img
-                                    src={getStaticPath("icons", "read-time-icon.png")}
-                                    alt="read time icon"
-                                />
-                                {estimateReadingTime(
-                                    article.metrics?.word_count || article.word_count || 0
-                                )}
+                                <img src={getStaticPath("images", "star.svg")} alt="topic icon" />
+                                {article?.topics?.trim().replace(/,$/, "") || "General"}
+                            </s.InfoItem>
+                            <s.InfoItem>
+                                <img src={getStaticPath("icons", "read-time-icon.png")} alt="read time icon" />
+                                {estimateReadingTime(article.metrics?.word_count || article.word_count || 0)}
                             </s.InfoItem>
                             <s.InfoItem>
                                 <img
                                     src={getStaticPath(
                                         "icons",
-                                        `${article.metrics?.cefr_level || article.cefr_level || "B1"}-level-icon.png`
+                                        `${article.metrics?.cefr_level || article.cefr_level || "B1"}-level-icon.png`,
                                     )}
                                     alt="difficulty icon"
                                 />
-                                <span>{article.metrics?.cefr_level || article.cefr_level || "B1"}</span>
+                                <span>{getLevelLabel(level)}</span>
                                 {article.parent_article_id && <SimplifiedLabel>simplified</SimplifiedLabel>}
                             </s.InfoItem>
                         </s.InfoWrapper>

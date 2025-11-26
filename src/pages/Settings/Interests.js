@@ -22,7 +22,7 @@ export default function Interests() {
   }, []);
   return (
     <PreferencesPage layoutVariant={"minimalistic-top-aligned"}>
-      <BackArrow redirectLink={isFromArticles && "/articles"} />
+      <BackArrow />
       <Header withoutLogo>
         <Heading>{strings.interests}</Heading>
       </Header>
