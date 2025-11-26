@@ -293,6 +293,11 @@ let strings = new LocalizedStrings(
       // Home (Find Articles)
       titleHome: "Home",
 
+      // Swipe
+      showSummary: "Show Summary",
+      hideSummary: "Hide Summary",
+      read: "Read",
+
       // Search Query (Find Articles)
       titleSearch: "Search",
 
@@ -1086,6 +1091,11 @@ let strings = new LocalizedStrings(
 
       //FindArticles
       findArticles: "Find artikler",
+
+      // Swipe
+      showSummary: "Vis sammendrag",
+      hideSummary: "Skjul sammendrag",
+      read: "Læs",
 
       //ArticleReader
       translateOnClick: "klik og oversæt",

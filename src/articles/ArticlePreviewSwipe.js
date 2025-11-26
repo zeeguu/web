@@ -6,6 +6,10 @@ import { getStaticPath } from "../utils/misc/staticPath";
 import { TranslatableText } from "../reader/TranslatableText";
 import { AnimatePresence, useMotionValue, animate } from "framer-motion";
 import ArticleSourceInfo from "../components/ArticleSourceInfo";
+import SwipeSummaryOverlay from "./SwipeSummaryOverlay.sc";
+import Button from "../pages/_pages_shared/Button.sc";
+import strings from "../i18n/definitions";
+import {SummaryButtonContainer} from "./ArticlePreviewSwipe.sc.js";
 
 export default function ArticlePreviewSwipe({
                                                 article,
@@ -20,6 +24,10 @@ export default function ArticlePreviewSwipe({
     const dragStartX = useRef(0);
     const dragStartY = useRef(0);
     const isHorizontalDrag = useRef(false);
+
+    const [summaryOpen, setSummaryOpen] = useState(false);
+    const isPhone = typeof window !== "undefined" &&
+        window.matchMedia("(max-width: 768px)").matches;
 
     const handleDragStart = (e, info) => {
         dragStartX.current = info.point.x;
@@ -72,6 +80,32 @@ export default function ArticlePreviewSwipe({
         };
     }, []);
 
+    const titleComponent = (
+        <s.Title>
+            {interactiveTitle ? (
+                <TranslatableText
+                    interactiveText={interactiveTitle}
+                    translating={true}
+                    pronouncing={true}
+                />
+            ) : (
+                article.title
+            )}
+        </s.Title>
+    );
+
+    const summary = (
+        interactiveSummary ? (
+            <TranslatableText
+                interactiveText={interactiveSummary}
+                translating
+                pronouncing
+            />
+        ) : (
+            article.summary
+        )
+    );
+
 
     return (
         <AnimatePresence>
@@ -85,6 +119,16 @@ export default function ArticlePreviewSwipe({
                     onDrag={handleDrag}
                     onDragEnd={handleDragEnd}
                     whileTap={{ scale: 0.97 }}>
+                    {summaryOpen && (
+                        <SwipeSummaryOverlay
+                            titleComponent={titleComponent}
+                            summary={summary}
+                            onClose={(e) => {
+                                e.stopPropagation(); // prevent click → swipe
+                                setSummaryOpen(false);
+                            }}
+                        />
+                    )}
                     <s.ImageWrapper>
                         {article.img_url && (
                             <img
@@ -95,6 +139,14 @@ export default function ArticlePreviewSwipe({
                                     onOpen?.(article);
                                 }}
                             />
+                        )}
+                    </s.ImageWrapper>
+                    <s.Content>
+                        {titleComponent}
+                        {!isPhone && (
+                            <s.Summary><span style={{ flex: "1", minWidth: "fit-content" }}>
+                                {summary}
+                            </span></s.Summary>
                         )}
                         <s.InfoWrapper>
                             <s.InfoItem>
@@ -112,7 +164,6 @@ export default function ArticlePreviewSwipe({
                                     article.metrics?.word_count || article.word_count || 0
                                 )}
                             </s.InfoItem>
-
                             <s.InfoItem>
                                 <img
                                     src={getStaticPath(
@@ -125,20 +176,16 @@ export default function ArticlePreviewSwipe({
                                 {article.parent_article_id && <SimplifiedLabel>simplified</SimplifiedLabel>}
                             </s.InfoItem>
                         </s.InfoWrapper>
-                    </s.ImageWrapper>
-                    <s.Content>
-                        <s.Title>{interactiveTitle ? (
-                            <TranslatableText interactiveText={interactiveTitle} translating={true} pronouncing={true} />
-                        ) : (
-                            article.title
-                        )}</s.Title>
-                        <s.Summary><span style={{ flex: "1", minWidth: "fit-content" }}>
-                        {interactiveSummary ? (
-                            <TranslatableText interactiveText={interactiveSummary} translating={true} pronouncing={true} />
-                        ) : (
-                            article.summary
+                        {isPhone && !summaryOpen && (
+                            <SummaryButtonContainer>
+                                <Button
+                                    className={"show-summary-btn"}
+                                    onClick={() => setSummaryOpen(true)}
+                                >
+                                    {strings.showSummary}
+                                </Button>
+                            </SummaryButtonContainer>
                         )}
-                      </span></s.Summary>
                     </s.Content>
                 </s.CardContainer>
             )}
