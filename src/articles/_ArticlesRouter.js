@@ -57,7 +57,7 @@ export default function ArticlesRouter({ hasExtension, isChrome }) {
     <>
       {/* Rendering top menu first, then routing to corresponding page */}
       <s.NarrowColumn $isSwipe={isSwipeView}>
-        <TopTabs title={strings.articles} tabsAndLinks={tabsAndLinks} />
+        <TopTabs title={strings.articles} tabsAndLinks={tabsAndLinks} isSwipeView={isSwipeView} />
           <Switch>
             <PrivateRoute exact path={["/articles", "/articles/swiper"]}>
               {isSwipeView ? (
