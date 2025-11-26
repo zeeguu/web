@@ -48,7 +48,9 @@ const TopTabs = styled.div`
         ? `
         position: absolute;
         top: 50%;
+        left: 1rem;
         transform: translateY(-50%);
+        width: auto;
       `
         : `
         position: static;
