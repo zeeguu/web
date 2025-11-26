@@ -1,7 +1,7 @@
 import styled from "styled-components";
-import { white, almostBlack, zeeguuDarkOrange } from "../components/colors";
-import {motion} from "framer-motion";
-import {PublishingTime, SourceContainer} from "../components/ArticleSourceInfo.sc";
+import { white, almostBlack } from "../components/colors";
+import { motion } from "framer-motion";
+import { PublishingTime, SourceContainer } from "../components/ArticleSourceInfo.sc";
 
 let labelFontSize = 'small';
 
@@ -26,7 +26,7 @@ export const CardContainer = styled(motion.div)`
       cursor: grabbing;
     }
       
-    position: static;
+    position: relative;
     top: auto;
     left: auto;
     transform: none;
@@ -49,13 +49,17 @@ export const ImageWrapper = styled.div`
 `;
 
 export const InfoWrapper = styled.div`
-    position: absolute;
-    top: 12px;
-    left: 12px;
+    position: relative;
+    justify-content: center;
+    display: flex;
+    grid-auto-flow: column;
+    gap: 8px;
     
-    display: grid;
-    grid-auto-flow: row;
-    gap: 8px;          
+    @media (max-width: 768px) {
+        flex-wrap: wrap;       
+        justify-content: flex-start; 
+        gap: 4px;                  
+    }
 `;
 
 export const InfoItem = styled.div`
@@ -79,7 +83,6 @@ export const InfoItem = styled.div`
     span {
       white-space: nowrap; 
     }
-
 `;
 
 export const SourceContainerSwipe = styled(SourceContainer)`
@@ -91,7 +94,7 @@ export const PublishingTimeSwipe = styled(PublishingTime)`
 `;
 
 export const Content = styled.div`
-    padding: 24px;
+    padding: 10px 16px 24px;
     display: flex;
     flex-direction: column;
     flex: 1;
@@ -102,8 +105,7 @@ export const Title = styled.h2`
     font-size: 20px;
     font-weight: bold;
     color: ${almostBlack};
-    // color: ${zeeguuDarkOrange};
-    margin: 0 0 16px 0;
+    margin: 0 0 10px 0;
 `;
 
 export const Summary = styled.div`
@@ -115,4 +117,9 @@ export const Summary = styled.div`
     overflow: auto;
 `;
 
-
+export const SummaryButtonContainer = styled.div`
+    display: flex;           
+    justify-content: center; 
+    width: 100%;
+    margin-top: auto;
+`;

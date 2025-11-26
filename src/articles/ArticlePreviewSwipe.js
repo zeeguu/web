@@ -7,6 +7,10 @@ import { getLevelLabel } from "../extension/src/InjectedReaderApp/LevelSwitcher"
 import { TranslatableText } from "../reader/TranslatableText";
 import { AnimatePresence, useMotionValue, animate } from "framer-motion";
 import ArticleSourceInfo from "../components/ArticleSourceInfo";
+import SwipeSummaryOverlay from "./SwipeSummaryOverlay.sc";
+import Button from "../pages/_pages_shared/Button.sc";
+import strings from "../i18n/definitions";
+import {SummaryButtonContainer} from "./ArticlePreviewSwipe.sc.js";
 
 export default function ArticlePreviewSwipe({
   article,
@@ -21,6 +25,10 @@ export default function ArticlePreviewSwipe({
   const dragStartX = useRef(0);
   const dragStartY = useRef(0);
   const isHorizontalDrag = useRef(false);
+
+  const [summaryOpen, setSummaryOpen] = useState(false);
+  const isPhone = typeof window !== "undefined" &&
+        window.matchMedia("(max-width: 768px)").matches;
 
   const handleDragStart = (e, info) => {
     dragStartX.current = info.point.x;
@@ -83,73 +91,111 @@ export default function ArticlePreviewSwipe({
 
   const level = article.metrics?.cefr_level || article.cefr_level || "B1";
 
-  return (
-    <AnimatePresence>
-      {!isRemoved && (
-        <s.CardContainer
-          drag="x"
-          style={{ x }}
-          dragElastic={0.3}
-          dragConstraints={{ left: 0, right: 0 }}
-          onDragStart={handleDragStart}
-          onDrag={handleDrag}
-          onDragEnd={handleDragEnd}
-          whileTap={{ scale: 0.97 }}
-        >
-          <s.ImageWrapper>
-            <img
-              alt="Article image"
-              src={article.img_url || getStaticPath("images", "placeholder-orange.png")}
-              className="link"
-              onClick={() => {
-                onOpen?.(article);
-              }}
-            />
-            <s.InfoWrapper>
-              <s.InfoItem>
-                <ArticleSourceInfo articleInfo={article} style={{ margin: "0 0 0 0", fontSize: "12px" }} />
-              </s.InfoItem>
-              <s.InfoItem>
-                <img src={getStaticPath("images", "star.svg")} alt="topic icon" />
-                {article?.topics?.trim().replace(/,$/, "") || "General"}
-              </s.InfoItem>
-              <s.InfoItem>
-                <img src={getStaticPath("icons", "read-time-icon.png")} alt="read time icon" />
-                {estimateReadingTime(article.metrics?.word_count || article.word_count || 0)}
-              </s.InfoItem>
-              <s.InfoItem>
-                <img
-                  src={getStaticPath(
-                    "icons",
-                    `${article.metrics?.cefr_level || article.cefr_level || "B1"}-level-icon.png`,
-                  )}
-                  alt="difficulty icon"
+  const titleComponent = (
+        <s.Title>
+            {interactiveTitle ? (
+                <TranslatableText
+                    interactiveText={interactiveTitle}
+                    translating={true}
+                    pronouncing={true}
                 />
-                <span>{getLevelLabel(level)}</span>
-                {article.parent_article_id && <SimplifiedLabel>simplified</SimplifiedLabel>}
-              </s.InfoItem>
-            </s.InfoWrapper>
-          </s.ImageWrapper>
-          <s.Content>
-            <s.Title>
-              {interactiveTitle ? (
-                <TranslatableText interactiveText={interactiveTitle} translating={true} pronouncing={true} />
-              ) : (
+            ) : (
                 article.title
-              )}
-            </s.Title>
-            <s.Summary>
-              <span style={{ flex: "1", minWidth: "fit-content" }}>
-                {interactiveSummary ? (
-                  <TranslatableText interactiveText={interactiveSummary} translating={true} pronouncing={true} />
-                ) : (
-                  article.summary
-                )}
-              </span>
-            </s.Summary>
-          </s.Content>
-        </s.CardContainer>
-      )}
-    </AnimatePresence>
-  );
+            )}
+        </s.Title>
+    );
+
+    const summary = (
+        interactiveSummary ? (
+            <TranslatableText
+                interactiveText={interactiveSummary}
+                translating
+                pronouncing
+            />
+        ) : (
+            article.summary
+        )
+    );
+
+
+    return (
+        <AnimatePresence>
+            {!isRemoved && (
+                <s.CardContainer
+                    drag="x"
+                    style={{ x }}
+                    dragElastic={0.3}
+                    dragConstraints={{ left: 0, right: 0 }}
+                    onDragStart={handleDragStart}
+                    onDrag={handleDrag}
+                    onDragEnd={handleDragEnd}
+                    whileTap={{ scale: 0.97 }}>
+                    {summaryOpen && (
+                        <SwipeSummaryOverlay
+                            titleComponent={titleComponent}
+                            summary={summary}
+                            onClose={(e) => {
+                                e.stopPropagation(); // prevent click → swipe
+                                setSummaryOpen(false);
+                            }}
+                        />
+                    )}
+                    <s.ImageWrapper>
+                        {article.img_url && (
+                            <img
+                                alt=""
+                                src={article.img_url}
+                                className="link"
+                                onClick={() => {
+                                    onOpen?.(article);
+                                }}
+                            />
+                        )}
+                    </s.ImageWrapper>
+                    <s.Content>
+                        {titleComponent}
+                        {!isPhone && (
+                            <s.Summary><span style={{ flex: "1", minWidth: "fit-content" }}>
+                                {summary}
+                            </span></s.Summary>
+                        )}
+                        <s.InfoWrapper>
+                            <s.InfoItem>
+                                <ArticleSourceInfo articleInfo={article} style={{ margin: "0 0 0 0", fontSize: "12px" }} />
+                            </s.InfoItem>
+                            <s.InfoItem>
+                                <img src={getStaticPath("images", "star.svg")} alt="topic icon" />
+                                {article?.topics?.trim().replace(/,$/, "") || "General"}
+                            </s.InfoItem>
+                            <s.InfoItem>
+                                <img
+                                    src={getStaticPath(
+                                        "icons",
+                                        `${article.metrics?.cefr_level || article.cefr_level || "B1"}-level-icon.png`,
+                                    )}
+                                    alt="difficulty icon"
+                                />
+                                <span>{getLevelLabel(level)}</span>
+                                {article.parent_article_id && <SimplifiedLabel>simplified</SimplifiedLabel>}
+                            </s.InfoItem>
+                            <s.InfoItem>
+                                <img src={getStaticPath("icons", "read-time-icon.png")} alt="read time icon" />
+                                {estimateReadingTime(article.metrics?.word_count || article.word_count || 0)}
+                            </s.InfoItem>
+                        </s.InfoWrapper>
+                        {isPhone && !summaryOpen && (
+                            <SummaryButtonContainer>
+                                <Button
+                                    className={"show-summary-btn"}
+                                    onClick={() => setSummaryOpen(true)}
+                                >
+                                    {strings.showSummary}
+                                </Button>
+                            </SummaryButtonContainer>
+                        )}
+                    </s.Content>
+                </s.CardContainer>
+            )}
+        </AnimatePresence>
+    );
 }
