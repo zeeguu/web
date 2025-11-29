@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import {useContext, useEffect, useRef, useState} from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
 
 import { isMobile } from "../utils/misc/browserDetection";
@@ -35,49 +35,48 @@ export default function ArticlePreview({
   const [isAnimatingOut, setIsAnimatingOut] = useState(false);
   const isTokenizing = useRef(false);
 
-    useEffect(() => {
-        // To avoid two api.calls due to React.StrictMode
-        if (isTokenizing.current) return;
-        isTokenizing.current = true;
+  useEffect(() => {
+    // To avoid two api.calls due to React.StrictMode
+    if (isTokenizing.current) return;
+    isTokenizing.current = true;
 
-        if ((article.summary || article.title) && !interactiveSummary && !interactiveTitle) {
-          api.getArticleSummaryInfo(article.id, (summaryData) => {
+    if ((article.summary || article.title) && !interactiveSummary && !interactiveTitle) {
+      api.getArticleSummaryInfo(article.id, (summaryData) => {
+        // Create interactive summary
+        if (summaryData.tokenized_summary) {
+          setInteractiveSummary(
+            new InteractiveText(
+              summaryData.tokenized_summary.tokens,
+              article.source_id,
+              api,
+              summaryData.tokenized_summary.past_bookmarks,
+              api.TRANSLATE_TEXT,
+              article.language,
+              "article_preview",
+              zeeguuSpeech,
+              summaryData.tokenized_summary.context_identifier,
+            ),
+          );
+        }
 
-            // Create interactive summary
-            if (summaryData.tokenized_summary) {
-                setInteractiveSummary(
-                    new InteractiveText(
-                        summaryData.tokenized_summary.tokens,
-                        article.source_id,
-                        api,
-                        summaryData.tokenized_summary.past_bookmarks,
-                        api.TRANSLATE_TEXT,
-                        article.language,
-                        "article_preview",
-                        zeeguuSpeech,
-                        summaryData.tokenized_summary.context_identifier,
-                      )
-                );
-            }
-
-            // Create interactive title
-            if (summaryData.tokenized_title?.tokens) {
-              setInteractiveTitle(
-                  new InteractiveText(
-                    summaryData.tokenized_title.tokens,
-                    article.source_id,
-                    api,
-                    summaryData.tokenized_title.past_bookmarks || [],
-                    api.TRANSLATE_TEXT,
-                    article.language,
-                    "article_preview",
-                    zeeguuSpeech,
-                    summaryData.tokenized_title.context_identifier,
-                  )
-              );
-            }
-          });
-          }
+        // Create interactive title
+        if (summaryData.tokenized_title?.tokens) {
+          setInteractiveTitle(
+            new InteractiveText(
+              summaryData.tokenized_title.tokens,
+              article.source_id,
+              api,
+              summaryData.tokenized_title.past_bookmarks || [],
+              api.TRANSLATE_TEXT,
+              article.language,
+              "article_preview",
+              zeeguuSpeech,
+              summaryData.tokenized_title.context_identifier,
+            ),
+          );
+        }
+      });
+    }
   }, [
     article.summary,
     article.title,

@@ -3,6 +3,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { useContext } from "react";
 import { APIContext } from "../contexts/APIContext.js";
 import ActionButton from "../components/ActionButton.js";
+import strings from "../i18n/definitions.js";
 
 export default function SaveArticleButton({ article, isArticleSaved, setIsArticleSaved }) {
   const api = useContext(APIContext);
@@ -14,7 +15,7 @@ export default function SaveArticleButton({ article, isArticleSaved, setIsArticl
         // toast("Article added to your Saves!");
         const t = toast(
           <span>
-            Article added to your Saves!{" "}
+            {strings.saveArticleAddedToast}{" "}
             <u
               onClick={() => {
                 toast.dismiss(t);
@@ -27,7 +28,7 @@ export default function SaveArticleButton({ article, isArticleSaved, setIsArticl
                 fontStyle: "italic",
               }}
             >
-              Undo?
+              {strings.saveArticleUndo}
             </u>
           </span>,
         );
@@ -39,7 +40,7 @@ export default function SaveArticleButton({ article, isArticleSaved, setIsArticl
     api.removePersonalCopy(article.id, (data) => {
       if (data === "OK") {
         setIsArticleSaved(false);
-        toast("Article removed from your Saves!");
+        toast(strings.saveArticleRemovedToast);
       }
     });
   }
@@ -47,9 +48,9 @@ export default function SaveArticleButton({ article, isArticleSaved, setIsArticl
   return (
     <>
       {isArticleSaved ? (
-        <ActionButton onClick={removeArticle}>Unsave</ActionButton>
+        <ActionButton onClick={removeArticle}>{strings.saveArticleButtonUnsave}</ActionButton>
       ) : (
-        <ActionButton onClick={saveArticle}>Save</ActionButton>
+        <ActionButton onClick={saveArticle}>{strings.saveArticleButtonSave}</ActionButton>
       )}
     </>
   );
