@@ -9,8 +9,10 @@ const Overlay = styled.div`
     position: absolute;
     display: flex;
     flex-direction: column;
-    padding: 24px;
+    padding: 16px;
     height: 100%;
+    min-height: 0;
+    overflow-y: auto; /* vertical scroll if content overflows */
     font-size: 18px;
     font-weight: 450;
     background-color: ${whiteSemiTransparent};
