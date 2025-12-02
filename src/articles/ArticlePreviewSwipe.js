@@ -28,10 +28,10 @@ export default function ArticlePreviewSwipe({
   const isHorizontalDrag = useRef(false);
 
   const [summaryOpen, setSummaryOpen] = useState(false);
-  const { screenWidth, isMobile } = useScreenWidth();
-  const isPhone = isMobile;
+  const { isMobile } = useScreenWidth();
+  const [loaded, setLoaded] = useState(false);
 
-  const handleDragStart = (e, info) => {
+    const handleDragStart = (e, info) => {
     dragStartX.current = info.point.x;
     dragStartY.current = info.point.y;
     isHorizontalDrag.current = false;
@@ -112,7 +112,11 @@ export default function ArticlePreviewSwipe({
     <AnimatePresence>
       {!isRemoved && (
         <s.CardContainer
-          $screenWidth={screenWidth}
+          key={article.id}
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -10 }}
+          transition={{ duration: 0.3, ease: "easeOut" }}
           drag="x"
           style={{ x }}
           dragElastic={0.3}
@@ -132,21 +136,30 @@ export default function ArticlePreviewSwipe({
               }}
             />
           )}
-          <s.ImageWrapper $screenWidth={screenWidth}>
-            {article.img_url && (
+          <s.ImageWrapper>
               <img
-                alt=""
-                src={article.img_url}
-                className="link"
-                onClick={() => {
-                  onOpen?.(article);
-                }}
+                  alt="article image"
+                  src={article.img_url || "/static/images/placeholder-orange.png"}
+                  loading="lazy"
+                  onLoad={() => setLoaded(true)}
+                  style={{
+                      width: "100%",
+                      height: "100%",
+                      objectFit: "cover",
+                      opacity: loaded ? 1 : 0,
+                      transition: "opacity 0.3s ease-in",
+                  }}
+                  className="link"
+                  onClick={() => onOpen?.(article)}
+                  onError={(e) => { e.currentTarget.src = "/static/images/placeholder-orange.png"; }}
               />
-            )}
           </s.ImageWrapper>
-          <s.Content>
+            <s.Content
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.3, delay: 0.2 }}>
             {titleComponent}
-            {!isPhone && (
+            {!isMobile && (
               <s.Summary>
                 <span style={{ flex: "1", minWidth: "fit-content" }}>{summary}</span>
               </s.Summary>
@@ -175,7 +188,7 @@ export default function ArticlePreviewSwipe({
                 {estimateReadingTime(article.metrics?.word_count || article.word_count || 0)}
               </s.InfoItem>
             </s.InfoWrapper>
-            {isPhone && !summaryOpen && (
+            {isMobile && !summaryOpen && (
               <SummaryButtonContainer>
                 <Button className={"show-summary-btn"} onClick={() => setSummaryOpen(true)}>
                   {strings.showSummary}
