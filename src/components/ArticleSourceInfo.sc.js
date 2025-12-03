@@ -1,11 +1,11 @@
 import styled from "styled-components";
-import { zeeguuWarmYellow, blue600 } from "../components/colors";
+import { zeeguuWarmYellow, blue600 } from "./colors";
 
 const SourceContainer = styled.div`
   display: flex;
   align-items: center;
   width: 50%;
-  margin: 0.3em 0px;
+  margin: 0.3em 0;
   @media (max-width: 990px) {
     width: 100%;
   }
@@ -22,10 +22,10 @@ let SourceImage = styled.span`
     background-color: ${zeeguuWarmYellow};
     height: 1.5em;
     width: 1.5em;
-    border-radius: 0.25em;
+    border-radius: 0.5em;
   }
-
-  margin-right: 0.2em;
+    
+  margin-right: 0.5em;
 `;
 
 let PublishingTime = styled.span`

@@ -67,6 +67,7 @@ let translationHover = "#2f76ac";
 let lightOrange = "#ffe5b9";
 let brown = "#A46A00";
 let white = "#FFFFFF";
+let whiteSemiTransparent = "rgba(255,255,255,0.95)";
 let buttonBorder = "#3079b0";
 let gray = "999999";
 
@@ -164,6 +165,7 @@ export {
   brown,
   buttonBorder,
   white,
+  whiteSemiTransparent,
   gray,
   saveGreen,
   dismissRed,

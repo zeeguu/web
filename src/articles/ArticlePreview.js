@@ -1,6 +1,5 @@
 import { Link } from "react-router-dom";
-import { useContext, useEffect, useState } from "react";
-import { toast } from "react-toastify";
+import { useContext, useEffect, useRef, useState } from "react";
 
 import { isMobile } from "../utils/misc/browserDetection";
 import RedirectionNotificationModal from "../components/redirect_notification/RedirectionNotificationModal";
@@ -30,56 +29,51 @@ export default function ArticlePreview({
   const [showInferredTopic, setShowInferredTopic] = useState(true);
   const [interactiveSummary, setInteractiveSummary] = useState(null);
   const [interactiveTitle, setInteractiveTitle] = useState(null);
-  const [isTokenizing, setIsTokenizing] = useState(false);
   const [zeeguuSpeech] = useState(() => new ZeeguuSpeech(api, article.language));
-  const [isHidden, setIsHidden] = useState(article.hidden || false);
-  const [isAnimatingOut, setIsAnimatingOut] = useState(false);
+  const isTokenizing = useRef(false);
 
   useEffect(() => {
-    let isMounted = true;
+    // To avoid two api.calls due to React.StrictMode
+    if (isTokenizing.current) return;
+    isTokenizing.current = true;
 
-    if ((article.summary || article.title) && !isTokenizing && !interactiveSummary && !interactiveTitle) {
-      setIsTokenizing(true);
+    if ((article.summary || article.title) && !interactiveSummary && !interactiveTitle) {
       api.getArticleSummaryInfo(article.id, (summaryData) => {
-        if (!isMounted) return;
-
         // Create interactive summary
         if (summaryData.tokenized_summary) {
-          const interactive = new InteractiveText(
-            summaryData.tokenized_summary.tokens,
-            article.source_id,
-            api,
-            summaryData.tokenized_summary.past_bookmarks,
-            api.TRANSLATE_TEXT,
-            article.language,
-            "article_preview",
-            zeeguuSpeech,
-            summaryData.tokenized_summary.context_identifier,
+          setInteractiveSummary(
+            new InteractiveText(
+              summaryData.tokenized_summary.tokens,
+              article.source_id,
+              api,
+              summaryData.tokenized_summary.past_bookmarks,
+              api.TRANSLATE_TEXT,
+              article.language,
+              "article_preview",
+              zeeguuSpeech,
+              summaryData.tokenized_summary.context_identifier,
+            ),
           );
-          setInteractiveSummary(interactive);
         }
 
         // Create interactive title
-        if (summaryData.tokenized_title && summaryData.tokenized_title.tokens) {
-          const titleInteractive = new InteractiveText(
-            summaryData.tokenized_title.tokens,
-            article.source_id,
-            api,
-            summaryData.tokenized_title.past_bookmarks || [],
-            api.TRANSLATE_TEXT,
-            article.language,
-            "article_preview",
-            zeeguuSpeech,
-            summaryData.tokenized_title.context_identifier,
+        if (summaryData.tokenized_title?.tokens) {
+          setInteractiveTitle(
+            new InteractiveText(
+              summaryData.tokenized_title.tokens,
+              article.source_id,
+              api,
+              summaryData.tokenized_title.past_bookmarks || [],
+              api.TRANSLATE_TEXT,
+              article.language,
+              "article_preview",
+              zeeguuSpeech,
+              summaryData.tokenized_title.context_identifier,
+            ),
           );
-          setInteractiveTitle(titleInteractive);
         }
       });
-          setIsTokenizing(false);
-      }
-    return () => {
-      isMounted = false;
-    };
+    }
   }, [
     article.summary,
     article.title,
@@ -112,17 +106,6 @@ export default function ArticlePreview({
 
   function handleOpenRedirectionModal() {
     setIsRedirectionModaOpen(true);
-  }
-
-  // changed to this --> we should discuss
-  function handleHideArticleInListMode() {
-    setIsAnimatingOut(true);
-    // Let the parent do the API call; we only handle the animation timing here.
-    setTimeout(() => {
-      setIsHidden(true);
-      onArticleHidden?.(article.id);
-      toast("Article hidden from your feed!");
-    }, 300); // Match animation duration
   }
 
   function titleLink(article) {
@@ -189,10 +172,6 @@ export default function ArticlePreview({
     else return open_externally_without_modal;
   }
 
-  if (isHidden) {
-    return null;
-  }
-
   return isListView ? (
     <ArticlePreviewList
       article={article}
@@ -203,8 +182,7 @@ export default function ArticlePreview({
       dontShowPublishingTime={dontShowPublishingTime}
       dontShowSourceIcon={dontShowSourceIcon}
       titleLink={titleLink}
-      handleHideArticle={handleHideArticleInListMode}
-      isAnimatingOut={isAnimatingOut}
+      handleHideArticle={onArticleHidden}
     />
   ) : (
     <ArticlePreviewSwipe

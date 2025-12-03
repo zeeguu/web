@@ -2,6 +2,9 @@ import styled from "styled-components";
 import { darkGrey, zeeguuOrange } from "./colors";
 
 const TopTabs = styled.div`
+  position: relative;
+  z-index: 10;
+
   h1 {
     font-weight: 300;
     font-size: 3em;
@@ -11,12 +14,50 @@ const TopTabs = styled.div`
     margin-top: 2em;
   }
 
+  .top-bar {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    flex-direction: column;
+    ${({ currentMode }) =>
+      currentMode === "swiper" &&
+      `
+        flex-direction: row;
+      `}
+  }
+
   .all__tabs {
     line-height: 1.4em;
-    width: 100%;
     align-items: center;
     display: flex;
     justify-content: center;
+    margin: 0 auto;
+  }
+  .customize {
+    align-items: center;
+    display: flex;
+    width: 100%;
+    margin: 0;
+    padding-right: 0.1rem;
+    padding-bottom: 0.5rem;
+
+    ${({ currentMode }) =>
+      currentMode === "swiper"
+        ? `
+        position: absolute;
+        top: 50%;
+        left: 1rem;
+        transform: translateY(-50%);
+        width: auto;
+      `
+        : `
+        position: static;
+        width: 100%;
+        justify-content: center;
+        margin-top: 0.25rem;
+      `}
   }
 
   .headmenuTab {
@@ -50,8 +91,13 @@ const TopTabs = styled.div`
 
   /*******MEDIA QUERIES **********/
   @media screen and (max-width: 768px) {
+    .customize {
+      font-size: 0.8rem;
+    }
+
     .headmenuTab {
-      font-size: 0.8em;
+      margin-top: 0;
+      font-size: 1.0em;
       line-height: 7ex;
     }
 

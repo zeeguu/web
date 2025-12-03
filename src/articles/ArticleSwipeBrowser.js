@@ -1,39 +1,44 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import * as s from "./ArticleSwipeBrowser.sc";
 import LoadingAnimation from "../components/LoadingAnimation";
 import ArticlePreview from "./ArticlePreview";
 import ArticleSwipeControl from "../components/article_swipe/ArticleSwipeControl";
 import SaveArticleButton from "./SaveArticleButton";
+import SwipeInstruction from "../components/article_swipe/SwipeInstruction";
 
 // should not be here
 import { isMobile } from "../utils/misc/browserDetection";
 import Feature from "../features/Feature";
 import RedirectionNotificationModal from "../components/redirect_notification/RedirectionNotificationModal";
+import { APIContext } from "../contexts/APIContext";
 
 export default function ArticleSwipeBrowser({
-    articles,
-    onArticleOpen,
-    onArticleHide,
-    onArticleSave,
-    loadNextPage,
-    isWaiting,
-    hasExtension,
-    doNotShowRedirectionModal_UserPreference,
-    setDoNotShowRedirectionModal_UserPreference,
+  articles,
+  onArticleHide,
+  onArticleSave,
+  loadNextPage,
+  isWaiting,
+  hasExtension,
+  doNotShowRedirectionModal_UserPreference,
+  setDoNotShowRedirectionModal_UserPreference,
 }) {
   const [currentArticleIndex, setCurrentArticleIndex] = useState(0);
   const currentArticle = articles?.[currentArticleIndex];
   const [isArticleSaved, setIsArticleSaved] = useState(!!currentArticle?.has_personal_copy);
   const hiddenSaveRef = useRef(null);
+  const api = useContext(APIContext);
+
+  const [showInstruction, setShowInstruction] = useState(false);
 
   // these will be removed when we decided on a clear structure
   const [isRedirectionModalOpen, setIsRedirectionModalOpen] = useState(false);
 
   useEffect(() => {
-    if (!articles || articles.length === 0) {
-      loadNextPage();
-    }
-  }, [articles]);
+      if (!articles || articles.length === 0) return;
+      if (currentArticleIndex >= articles.length - 2) {
+          loadNextPage();
+      }
+  }, [currentArticleIndex, articles]);
 
   // keep index valid whenever list changes (e.g., after dismiss)
   useEffect(() => {
@@ -53,13 +58,22 @@ export default function ArticleSwipeBrowser({
     setIsArticleSaved(!!currentArticle.has_personal_copy);
   }, [currentArticle?.id, currentArticle?.has_personal_copy]);
 
-  if (articles.length === 0 && !isWaiting) return <LoadingAnimation />;
+  // checking whether the user has seen the instruction before
+  useEffect(() => {
+    const seenSwipeInstruction = localStorage.getItem("seenSwipeInstruction") === "true";
+    if (!seenSwipeInstruction) {
+      setShowInstruction(true);
+      localStorage.setItem("seenSwipeInstruction", "true");
+    }
+  }, []);
+
+  if (articles.length === 0 && isWaiting) return <LoadingAnimation />;
   if (articles.length === 0 && !isWaiting) return <p>No more articles</p>;
 
   if (!currentArticle) return <LoadingAnimation />;
 
   const handleOpen = () => {
-    onArticleOpen?.(currentArticle.id, currentArticle.source_id, currentArticleIndex);
+    api.logUserActivity(api.CLICKED_ARTICLE, currentArticle.id, undefined, currentArticle.source_id);
 
     const shouldOpenInZeeguu =
       currentArticle.video ||
@@ -86,11 +100,11 @@ export default function ArticleSwipeBrowser({
 
   // notify parent to update its lists
   const setSavedAndNotify = (val) => {
-      setIsArticleSaved(val);
-      onArticleSave?.(currentArticle.id, val); // parent flips has_personal_copy in its arrays
+    setIsArticleSaved(val);
+    onArticleSave?.(currentArticle.id, val); // parent flips has_personal_copy in its arrays
   };
 
-  const handleSave = () => {   
+  const handleSave = () => {
     const root = hiddenSaveRef.current;
     if (!root) return;
     const clickable = root.querySelector("button, a");
@@ -101,6 +115,8 @@ export default function ArticleSwipeBrowser({
 
   return (
     <s.Container>
+      {showInstruction && <SwipeInstruction onClose={() => setShowInstruction(false)} />}
+
       <s.CenterStack>
         <ArticlePreview
           key={currentArticle.id + (isArticleSaved ? "_saved" : "")}
@@ -133,4 +149,3 @@ export default function ArticleSwipeBrowser({
     </s.Container>
   );
 }
-

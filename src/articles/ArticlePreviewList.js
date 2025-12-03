@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState} from "react";
 import moment from "moment";
 import { getStaticPath } from "../utils/misc/staticPath";
 import { estimateReadingTime } from "../utils/misc/readableTime";
@@ -20,8 +20,20 @@ export default function ArticlePreviewList ({
     dontShowSourceIcon,
     titleLink,
     handleHideArticle,
-    isAnimatingOut
     }) {
+    const [isHidden, setIsHidden] = useState(article.hidden || false);
+    const [isAnimatingOut, setIsAnimatingOut] = useState(false);
+
+    const handleHideClick = () => {
+        setIsAnimatingOut(true);
+        setIsHidden(true);
+        handleHideArticle();
+    }
+
+    if (isHidden){
+        return null;
+    }
+
     return (
         <s.ArticlePreview
             style={{
@@ -130,7 +142,7 @@ export default function ArticlePreviewList ({
                         </div>
                         <div style={{ flex: "0 0 auto" }}>
                             <ActionButton
-                                onClick={handleHideArticle}
+                                onClick={handleHideClick}
                                 variant="muted"
                             >
                                 Hide

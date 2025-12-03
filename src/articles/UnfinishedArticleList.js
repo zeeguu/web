@@ -12,11 +12,7 @@ export default function UnfinishedArticlesList({
   const [unfinishedArticleList, setUnfinishedArticleList] = useState([]);
 
     useEffect(() => {
-        let isMounted = true;
-
         api.getUnfinishedUserReadingSessions((articles) => {
-            if (!isMounted) return;
-
             setUnfinishedArticleList(articles);
 
             // Remove unfinished articles from main list
@@ -24,11 +20,7 @@ export default function UnfinishedArticlesList({
                 (article) => !articles.some((a) => a.id === article.id)
             );
             setArticleList(filteredList);
-        });
-
-        return () => {
-            isMounted = false;
-        };
+        })
     }, []);
 
     if (unfinishedArticleList.length === 0) return null;

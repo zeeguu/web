@@ -7,6 +7,7 @@ import ArticleListBrowser from "./ArticleListBrowser";
 import ArticleSwipeBrowser from "./ArticleSwipeBrowser";
 import LocalStorage from "../assorted/LocalStorage";
 import useExtensionCommunication from "../hooks/useExtensionCommunication";
+import {showSingleActionToast} from "./utils/showActionToast";
 
 export default function ArticleBrowser({
   isSwipeView = false,
@@ -16,15 +17,19 @@ export default function ArticleBrowser({
   // UI and logic state
   const [articlesAndVideosList, setArticlesAndVideosList] = useState([]);
   const [isExtensionAvailable] = useExtensionCommunication();
+  const [hiddenArticleIds, setHiddenArticleIds] = useState(new Set());
 
-  // modal pref
+
+    // The ternary operator below fix the problem with the getOpenArticleExternallyWithoutModal()
+    // getter that was outputting undefined string values when they should be false
+    // This occurs before the user selects their own preferences.
+    // Additionally, the conditional statement needed to be tightened up due to JS's unstable behavior, which resulted
+    // in bool values changing on its own on refresh without any other external trigger or preferences change.
+    // A '=== "true"' clause has been added to the getters to achieve predictable and desired bool values.
   const doNotShowRedirectionModal_LocalStorage = LocalStorage.getDoNotShowRedirectionModal() === "true";
   const [doNotShowRedirectionModal_UserPreference, setDoNotShowRedirectionModal_UserPreference] = useState(
     doNotShowRedirectionModal_LocalStorage,
   );
-
-  // exclude hidden and saved article from the homepage
-  const shouldShow = (a) => ![true, "true"].includes(a?.hidden) && ![true, "true"].includes(a?.has_personal_copy);
 
   // pagination helpers
   function getNewArticlesForPage(pageNumber, handleArticleInsertion) {
@@ -32,8 +37,7 @@ export default function ArticleBrowser({
   }
 
   function updateOnPagination(newUpdatedList) {
-    const filtered = (newUpdatedList || []).filter(shouldShow);
-    setArticlesAndVideosList(filtered);
+    setArticlesAndVideosList(prev => [...prev, ...newUpdatedList]);
   }
 
   const [handleScroll, isWaitingForNewArticles, noMoreArticlesToShow, resetPagination, loadNextPage] =
@@ -42,28 +46,77 @@ export default function ArticleBrowser({
       updateOnPagination,
       strings.titleHome,
       getNewArticlesForPage,
-      shouldShow,
+      hiddenArticleIds,
     );
 
-  const handleArticleOpen = (articleId, sourceId, index) => {
-    const seenList = articlesAndVideosList.slice(0, index).map((each) => each.source_id);
-    const seenListAsString = JSON.stringify(seenList, null, 0);
-    api.logUserActivity(api.CLICKED_ARTICLE, articleId, "", seenListAsString, sourceId);
-  };
+    const handleArticleDismiss = (articleId) => {
+        const oldList = [...articlesAndVideosList];
+        const removedArticle = articlesAndVideosList.find(a => a.id === articleId);
 
-  const handleArticleHide = (articleId) => {
-    const updatedList = articlesAndVideosList.filter((item) => item.id !== articleId);
-    setArticlesAndVideosList(updatedList);
-    api.hideArticle(articleId, () => {
-      // backend acknowledged → nothing else to do
-    });
-  };
+        setArticlesAndVideosList(prev => prev.filter(a => a.id !== articleId));
 
-  const handleArticleSave = (articleId, saved) => {
+        const duration = 3000;
+        let undoClicked = false;
+
+        setHiddenArticleIds(prev => {
+            const newSet = new Set(prev);
+            newSet.add(articleId);
+
+            // Reset if too many hidden but keep current one
+            if (newSet.size > 10) return new Set([articleId]);
+            return newSet;
+        });
+
+        // Set a timer to finalize hiding when user does not undo
+        const timer = setTimeout(() => {
+            if (!undoClicked && removedArticle) api.hideArticle(articleId, () => {});
+        }, duration);
+
+        if (hiddenArticleIds.size > 10)setHiddenArticleIds(new Set());
+
+        showSingleActionToast(
+            "Article hidden",
+            () => {
+                undoClicked = true;
+                clearTimeout(timer);
+                onClickUndo(removedArticle, oldList, articleId);
+                },
+            duration
+        );
+    };
+
+    const onClickUndo = (removedArticle, oldList, articleId) => {
+        if (!removedArticle) return;
+
+        // Restore the article at its original position
+        setArticlesAndVideosList(prev => {
+            const index = oldList.findIndex(a => a.id === articleId);
+            const newList = [...prev];
+            newList.splice(index, 0, removedArticle);
+            return newList;
+        });
+
+        // Remove from hidden set
+        setHiddenArticleIds(prev => {
+            const newSet = new Set(prev);
+            newSet.delete(articleId);
+            return newSet;
+        });
+    }
+
+
+    const handleArticleSave = (articleId, saved) => {
     setArticlesAndVideosList(
       (prev) =>
-        prev?.map((e) => (e.id === articleId ? { ...e, has_personal_copy: saved } : e)).filter(shouldShow) ?? prev,
-    );
+          prev?.reduce((acc, article) => {
+              if (article.id === articleId) {
+                  article = { ...article, has_personal_copy: saved };
+              }
+              if (![true, "true"].includes(article.has_personal_copy)) {
+                  acc.push(article);
+              }
+              return acc;
+          }, []) ?? prev    );
   };
 
   // persist user pref for redirection modal
@@ -93,8 +146,7 @@ export default function ArticleBrowser({
   return isSwipeView ? (
     <ArticleSwipeBrowser
       articles={articlesAndVideosList}
-      onArticleOpen={handleArticleOpen}
-      onArticleHide={handleArticleHide}
+      onArticleHide={handleArticleDismiss}
       onArticleSave={handleArticleSave}
       loadNextPage={loadNextPage}
       isWaiting={isWaitingForNewArticles}
@@ -110,8 +162,7 @@ export default function ArticleBrowser({
       isWaiting={isWaitingForNewArticles}
       noMore={noMoreArticlesToShow}
       resetPagination={resetPagination}
-      onArticleOpen={handleArticleOpen}
-      onArticleHide={handleArticleHide}
+      onArticleHide={handleArticleDismiss}
       onArticleSave={handleArticleSave}
       hasExtension={isExtensionAvailable}
       doNotShowRedirectionModal_UserPreference={doNotShowRedirectionModal_UserPreference}

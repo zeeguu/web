@@ -1,99 +1,103 @@
-import { useState} from "react";
+import {useCallback, useEffect, useRef, useState} from "react";
 import { getPixelsFromScrollBarToEnd } from "../utils/misc/getScrollLocation";
 import { setTitle } from "../assorted/setTitle";
-import useShadowRef from "./useShadowRef";
 
 export default function useArticlePagination(
   articleList,
   setArticleList,
   pageTitle,
   getNewArticlesForPage,
-  shouldShow,
-  skipShouldShow = false,
+  hiddenArticleIds,
 ) {
   const [isWaitingForNewArticles, setIsWaitingForNewArticles] = useState(false);
   const [currentPage, setCurrentPage] = useState(0);
   const [noMoreArticlesToShow, setNoMoreArticlesToShow] = useState(false);
+  const isWaitingRef = useRef(false);
 
-  const noMoreArticlesToShowRef = useShadowRef(noMoreArticlesToShow);
-  const isWaitingForNewArticlesRef = useShadowRef(isWaitingForNewArticles);
-  const currentPageRef = useShadowRef(currentPage);
-  const articleListRef = useShadowRef(articleList);
 
-    function insertNewArticlesIntoArticleList(fetchedArticles, newCurrentPage, currentArticleList) {
-        if (fetchedArticles.length === 0 && newCurrentPage > 1) {
+  const stateRef = useRef({
+    page: 0,
+    finished: false,
+    list: [],
+  });
+
+  useEffect(() => {
+      stateRef.current = {
+          page: currentPage,
+          finished: noMoreArticlesToShow,
+          list: articleList,
+      };
+  }, [currentPage, noMoreArticlesToShow, articleList]);
+
+  async function loadArticles() {
+    const s = stateRef.current;
+
+    if (isWaitingRef.current || s.finished) return;
+    isWaitingRef.current = true;
+
+    const nextPage = s.page + 1;
+
+    setIsWaitingForNewArticles(true);
+    setTitle("Getting more articles...");
+
+    try {
+        const fetched = await new Promise((resolve) =>
+            getNewArticlesForPage(nextPage, resolve)
+        );
+
+        const articles = fetched || [];
+
+        if (articles.length === 0) {
             setNoMoreArticlesToShow(true);
-        }
-
-        currentArticleList = currentArticleList
-            .concat(fetchedArticles.filter(a => !currentArticleList.some(existing => existing.id === a.id)))
-            .filter(a => !skipShouldShow && typeof shouldShow === "function" ? shouldShow(a) : true);
-
-        if (currentArticleList.length === 0 && newCurrentPage === 1) {
-            currentPageRef.current = newCurrentPage;
-            loadArticles();
             return;
         }
+        // Deduplicate efficiently
+        const existingIds = new Set(articleList.map(a => a.id));
+        const hiddenIds = hiddenArticleIds || new Set();
 
-        setArticleList(currentArticleList);
-        setCurrentPage(newCurrentPage);
+        const uniqueArticles = articles.filter(
+            a =>
+                !existingIds.has(a.id) &&
+                !hiddenIds.has(a.id) &&
+                !a.has_personal_copy
+        );
+
+        const updatedList = [...articleList, ...uniqueArticles];
+        if (updatedList.length === 0){
+            console.log("list empty after filtering");
+            await loadArticles();
+        }
+        setArticleList(updatedList);
+        setCurrentPage(nextPage);
+    } finally {
+        isWaitingRef.current = false;
         setIsWaitingForNewArticles(false);
+        setTitle(pageTitle);
     }
-
-  function loadArticles() {
-      setIsWaitingForNewArticles(true);
-      setTitle("Getting more articles...");
-
-      let newCurrentPage = currentPageRef.current + 1;
-      console.log(newCurrentPage);
-      let articleListCopy = [...(articleListRef.current || [])];
-
-        getNewArticlesForPage(newCurrentPage, (articles) => {
-            let fetchedArticles = (articles || []);
-
-            insertNewArticlesIntoArticleList(
-                fetchedArticles,
-                newCurrentPage,
-                articleListCopy,
-            );
-            setTitle(pageTitle);
-        });
-    }
+  }
 
     function loadNextPage() {
-        if (!articleListRef.current || isWaitingForNewArticlesRef.current) return;
-
-        if (!noMoreArticlesToShowRef.current
-        ) {
-          loadArticles();
-          return true;
-      }
+        return loadArticles();
     }
 
-  function handleScroll() {
-    if (!articleListRef.current) return;
+    const handleScroll = useCallback(() => {
+        const s = stateRef.current;
 
-    let scrollBarPixelDistToPageEnd = getPixelsFromScrollBarToEnd();
+        if (!s.list.length || s.isWaiting || s.finished) return;
 
-    let weHaveHadAtLeastOneRenderingOfArticles =
-      currentPageRef.current !== undefined;
+        const pixelsLeft = getPixelsFromScrollBarToEnd();
 
-    if (
-      scrollBarPixelDistToPageEnd <= 50 &&
-      !isWaitingForNewArticlesRef.current &&
-      !noMoreArticlesToShowRef.current &&
-      weHaveHadAtLeastOneRenderingOfArticles
-    ) {
-        loadArticles();
-        return true;
-    }
-  }
+        if (pixelsLeft <= 50) {
+            loadArticles().then(() => {return true});
+        }
+    }, []);
 
   function resetPagination() {
-    setNoMoreArticlesToShow(false);
-    setCurrentPage(0);
-    setIsWaitingForNewArticles(false);
-  }
+        setIsWaitingForNewArticles(false);
+        setNoMoreArticlesToShow(false);
+        setCurrentPage(0);
+        setArticleList([]);
+    }
 
   return [
       handleScroll,

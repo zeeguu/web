@@ -1,69 +1,115 @@
 import styled from "styled-components";
-import { white, almostBlack, zeeguuDarkOrange } from "../components/colors";
-import {motion} from "framer-motion";
-import {PublishingTime, SourceContainer} from "../components/ArticleSourceInfo.sc";
+import { white, almostBlack } from "../components/colors";
+import { motion } from "framer-motion";
+import { MOBILE_WIDTH } from "../components/MainNav/screenSize";
 
-let labelFontSize = 'small';
+let labelFontSize = "small";
 
 export const CardContainer = styled(motion.div)`
     width: 500px;
     max-width: 95vw;
-    height: 600px;
-    max-height: 100%;
-    min-height: 0;
+    height: 75vh;
+    min-height: 160px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
     background: ${white};
     border-radius: 24px;
     box-shadow: 0 25px 50px rgba(0, 0, 0, 0.1);
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
     margin: 0 auto;
     cursor: grab;
     touch-action: pan-y;
     user-select: none;
-    
+
     &:active {
-      cursor: grabbing;
+        cursor: grabbing;
     }
-      
-    position: static;
-    top: auto;
-    left: auto;
-    transform: none;
+    
+    & {
+        position: relative;
+    }
+
+    @media (max-width: ${MOBILE_WIDTH}px) {
+        height: 62vh;
+    }
 `;
 
 export const ImageWrapper = styled.div`
-    position: relative;
     width: 100%;
-    flex: 0 0 250px;
-    overflow: hidden;
-    
+    flex: 1 1 auto; /* grow or shrink to fill remaining space */
+    min-height: 0;
+    max-height: 60%;
+    height: auto;
+    aspect-ratio: 12 / 9;
+
     img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    } 
-      .link{
-          cursor: pointer;
-      }
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+    }
+
+    .link {
+        cursor: pointer;
+    }
+`;
+
+export const Content = styled(motion.div)`
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 auto;
+    padding: 16px 20px 16px;
+    position: relative;
+
+    @media (max-width: ${MOBILE_WIDTH}px) {
+        padding: 10px 16px 16px;
+    }
+`;
+
+export const Title = styled.h2`
+    font-size: 20px;
+    font-weight: bold;
+    color: ${almostBlack};
+    margin: 0 0 10px 0;
+    line-height: 1.2;
+    word-wrap: break-word;
+`;
+
+
+export const Summary = styled.div`
+    font-size: 16px;
+    line-height: 1.5;
+    color: ${almostBlack};
+    margin-bottom: 16px;
+`;
+
+export const SummaryButtonContainer = styled.div`
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    padding-top: 12px;
+    margin-top: auto;
 `;
 
 export const InfoWrapper = styled.div`
-    position: absolute;
-    top: 12px;
-    left: 12px;
-    
-    display: grid;
-    grid-auto-flow: row;
-    gap: 8px;          
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px;
+    margin-top: auto;
+    margin-bottom: 8px;
+        
+    @media (max-width: ${MOBILE_WIDTH}px) {
+        justify-content: flex-start;
+    }
 `;
+
 
 export const InfoItem = styled.div`
     display: flex;
     width: fit-content;
     align-items: center;
     gap: 6px;
-    
     background: white;
     padding: 6px 10px;
     border-radius: 10px;
@@ -72,47 +118,11 @@ export const InfoItem = styled.div`
     box-shadow: 0 1px 4px rgba(0, 0, 0, 0.12);
 
     img {
-      width: 14px;
-      height: 14px;
-      object-fit: contain;
+        width: 14px;
+        height: 14px;
+        object-fit: contain;
     }
     span {
-      white-space: nowrap; 
+        white-space: nowrap;
     }
-
 `;
-
-export const SourceContainerSwipe = styled(SourceContainer)`
-    margin: 0 0 0 0;
-`;
-
-export const PublishingTimeSwipe = styled(PublishingTime)`
-    font-size: ${labelFontSize};
-`;
-
-export const Content = styled.div`
-    padding: 24px;
-    display: flex;
-    flex-direction: column;
-    flex: 1;
-    min-height: 0;
-`;
-
-export const Title = styled.h2`
-    font-size: 20px;
-    font-weight: bold;
-    color: ${almostBlack};
-    // color: ${zeeguuDarkOrange};
-    margin: 0 0 16px 0;
-`;
-
-export const Summary = styled.div`
-    font-size: 16px;
-    line-height: 1.5;
-    color: ${almostBlack};
-    flex-grow: 1;
-    min-height: 0;
-    overflow: auto;
-`;
-
-
