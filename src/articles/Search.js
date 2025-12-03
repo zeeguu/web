@@ -7,7 +7,7 @@ import CustomizeSearchToolbar from "./CustomizeSearchToolbar";
 
 export default function Search({ hasExtension, isChrome }) {
   const searchQuery = useQuery().get("search");
-  const [searchPublishPriority, setSearchPublishPriority] = useState(false);
+  const [searchPublishPriority, setSearchPublishPriority] = useState(true);
   const [searchDifficultyPriority, setSearchDifficultyPriority] = useState(true);
 
   return (
