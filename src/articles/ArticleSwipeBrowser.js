@@ -34,10 +34,11 @@ export default function ArticleSwipeBrowser({
   const [isRedirectionModalOpen, setIsRedirectionModalOpen] = useState(false);
 
   useEffect(() => {
-    if (!articles || articles.length === 0) {
-      loadNextPage();
-    }
-  }, [articles]);
+      if (!articles || articles.length === 0) return;
+      if (currentArticleIndex >= articles.length - 2) {
+          loadNextPage();
+      }
+  }, [currentArticleIndex, articles]);
 
   // keep index valid whenever list changes (e.g., after dismiss)
   useEffect(() => {

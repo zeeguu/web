@@ -7,6 +7,7 @@ import ArticleListBrowser from "./ArticleListBrowser";
 import ArticleSwipeBrowser from "./ArticleSwipeBrowser";
 import LocalStorage from "../assorted/LocalStorage";
 import useExtensionCommunication from "../hooks/useExtensionCommunication";
+import {showSingleActionToast} from "./utils/showActionToast";
 
 export default function ArticleBrowser({
   isSwipeView = false,
@@ -16,6 +17,8 @@ export default function ArticleBrowser({
   // UI and logic state
   const [articlesAndVideosList, setArticlesAndVideosList] = useState([]);
   const [isExtensionAvailable] = useExtensionCommunication();
+  const [hiddenArticleIds, setHiddenArticleIds] = useState(new Set());
+
 
     // The ternary operator below fix the problem with the getOpenArticleExternallyWithoutModal()
     // getter that was outputting undefined string values when they should be false
@@ -34,7 +37,7 @@ export default function ArticleBrowser({
   }
 
   function updateOnPagination(newUpdatedList) {
-    setArticlesAndVideosList(newUpdatedList);
+    setArticlesAndVideosList(prev => [...prev, ...newUpdatedList]);
   }
 
   const [handleScroll, isWaitingForNewArticles, noMoreArticlesToShow, resetPagination, loadNextPage] =
@@ -43,17 +46,66 @@ export default function ArticleBrowser({
       updateOnPagination,
       strings.titleHome,
       getNewArticlesForPage,
+      hiddenArticleIds,
     );
 
-  const handleArticleHide = (articleId) => {
-    const updatedList = articlesAndVideosList.filter((item) => item.id !== articleId);
-    setArticlesAndVideosList(updatedList);
-    api.hideArticle(articleId, () => {
-      // backend acknowledged → nothing else to do
-    });
-  };
+    const handleArticleDismiss = (articleId) => {
+        const oldList = [...articlesAndVideosList];
+        const removedArticle = articlesAndVideosList.find(a => a.id === articleId);
 
-  const handleArticleSave = (articleId, saved) => {
+        setArticlesAndVideosList(prev => prev.filter(a => a.id !== articleId));
+
+        const duration = 3000;
+        let undoClicked = false;
+
+        setHiddenArticleIds(prev => {
+            const newSet = new Set(prev);
+            newSet.add(articleId);
+
+            // Reset if too many hidden but keep current one
+            if (newSet.size > 10) return new Set([articleId]);
+            return newSet;
+        });
+
+        // Set a timer to finalize hiding when user does not undo
+        const timer = setTimeout(() => {
+            if (!undoClicked && removedArticle) api.hideArticle(articleId, () => {});
+        }, duration);
+
+        if (hiddenArticleIds.size > 10)setHiddenArticleIds(new Set());
+
+        showSingleActionToast(
+            "Article hidden",
+            () => {
+                undoClicked = true;
+                clearTimeout(timer);
+                onClickUndo(removedArticle, oldList, articleId);
+                },
+            duration
+        );
+    };
+
+    const onClickUndo = (removedArticle, oldList, articleId) => {
+        if (!removedArticle) return;
+
+        // Restore the article at its original position
+        setArticlesAndVideosList(prev => {
+            const index = oldList.findIndex(a => a.id === articleId);
+            const newList = [...prev];
+            newList.splice(index, 0, removedArticle);
+            return newList;
+        });
+
+        // Remove from hidden set
+        setHiddenArticleIds(prev => {
+            const newSet = new Set(prev);
+            newSet.delete(articleId);
+            return newSet;
+        });
+    }
+
+
+    const handleArticleSave = (articleId, saved) => {
     setArticlesAndVideosList(
       (prev) =>
           prev?.reduce((acc, article) => {
@@ -94,7 +146,7 @@ export default function ArticleBrowser({
   return isSwipeView ? (
     <ArticleSwipeBrowser
       articles={articlesAndVideosList}
-      onArticleHide={handleArticleHide}
+      onArticleHide={handleArticleDismiss}
       onArticleSave={handleArticleSave}
       loadNextPage={loadNextPage}
       isWaiting={isWaitingForNewArticles}
@@ -110,7 +162,7 @@ export default function ArticleBrowser({
       isWaiting={isWaitingForNewArticles}
       noMore={noMoreArticlesToShow}
       resetPagination={resetPagination}
-      onArticleHide={handleArticleHide}
+      onArticleHide={handleArticleDismiss}
       onArticleSave={handleArticleSave}
       hasExtension={isExtensionAvailable}
       doNotShowRedirectionModal_UserPreference={doNotShowRedirectionModal_UserPreference}

@@ -1,6 +1,5 @@
 import { Link } from "react-router-dom";
 import { useContext, useEffect, useRef, useState } from "react";
-import { toast } from "react-toastify";
 
 import { isMobile } from "../utils/misc/browserDetection";
 import RedirectionNotificationModal from "../components/redirect_notification/RedirectionNotificationModal";
@@ -31,8 +30,6 @@ export default function ArticlePreview({
   const [interactiveSummary, setInteractiveSummary] = useState(null);
   const [interactiveTitle, setInteractiveTitle] = useState(null);
   const [zeeguuSpeech] = useState(() => new ZeeguuSpeech(api, article.language));
-  const [isHidden, setIsHidden] = useState(article.hidden || false);
-  const [isAnimatingOut, setIsAnimatingOut] = useState(false);
   const isTokenizing = useRef(false);
 
   useEffect(() => {
@@ -111,17 +108,6 @@ export default function ArticlePreview({
     setIsRedirectionModaOpen(true);
   }
 
-  // changed to this --> we should discuss
-  function handleHideArticleInListMode() {
-    setIsAnimatingOut(true);
-    // Let the parent do the API call; we only handle the animation timing here.
-    setTimeout(() => {
-      setIsHidden(true);
-      onArticleHidden?.(article.id);
-      toast("Article hidden from your feed!");
-    }, 300); // Match animation duration
-  }
-
   function titleLink(article) {
     let linkToRedirect = `/read/article?id=${article.id}`;
 
@@ -186,10 +172,6 @@ export default function ArticlePreview({
     else return open_externally_without_modal;
   }
 
-  if (isHidden) {
-    return null;
-  }
-
   return isListView ? (
     <ArticlePreviewList
       article={article}
@@ -200,8 +182,7 @@ export default function ArticlePreview({
       dontShowPublishingTime={dontShowPublishingTime}
       dontShowSourceIcon={dontShowSourceIcon}
       titleLink={titleLink}
-      handleHideArticle={handleHideArticleInListMode}
-      isAnimatingOut={isAnimatingOut}
+      handleHideArticle={onArticleHidden}
     />
   ) : (
     <ArticlePreviewSwipe

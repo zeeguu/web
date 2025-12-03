@@ -2,38 +2,12 @@ import React from "react";
 import { Bar, DismissButton, OpenButton, SaveButton, ButtonInner } from "./ArticleSwipeControl.sc.js";
 import { white } from "../colors";
 import SwipeIcon from "./SwipeIcon.js";
-import { toast } from "react-toastify";
 
-export default function ArticleSwipeControl({ onDismiss, onDismissUndo, onOpen, onSave, children, isSaved = false }) {
-  function handleDismiss() {
-    onDismiss();
+export default function ArticleSwipeControl({ onDismiss, onOpen, onSave, children, isSaved = false }) {
 
-    // only ui for now since missing an endpoint
-    const t = toast(
-      <span>
-        Article hidden.
-        <u
-          onClick={() => {
-            toast.dismiss(t);
-            if (typeof onDismissUndo === "function") {
-              onDismissUndo();
-            }
-          }}
-          style={{
-            cursor: "pointer",
-            marginLeft: "6px",
-            fontStyle: "italic",
-            textDecoration: "underline",
-          }}
-        >
-          Undo?
-        </u>
-      </span>,
-    );
-  }
   return (
     <Bar>
-      <DismissButton onClick={handleDismiss} aria-label="Dismiss">
+      <DismissButton onClick={onDismiss} aria-label="Dismiss">
         <ButtonInner>
           <SwipeIcon name="dismiss" color={white} size={30} />
         </ButtonInner>

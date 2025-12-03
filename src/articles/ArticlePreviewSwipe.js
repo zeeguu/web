@@ -21,7 +21,6 @@ export default function ArticlePreviewSwipe({
   onSwipeRight,
   onOpen,
 }) {
-  const [isRemoved, setIsRemoved] = useState(false);
   const x = useMotionValue(0);
   const dragStartX = useRef(0);
   const dragStartY = useRef(0);
@@ -62,7 +61,6 @@ export default function ArticlePreviewSwipe({
         type: "tween",
         duration: 0.3,
         onComplete: () => {
-          setIsRemoved(true);
           onSwipeRight?.(article);
         },
       });
@@ -71,7 +69,6 @@ export default function ArticlePreviewSwipe({
         type: "tween",
         duration: 0.3,
         onComplete: () => {
-          setIsRemoved(true);
           onSwipeLeft?.(article);
         },
       });
@@ -110,7 +107,6 @@ export default function ArticlePreviewSwipe({
 
   return (
     <AnimatePresence>
-      {!isRemoved && (
         <s.CardContainer
           key={article.id}
           initial={{ opacity: 0, y: 10 }}
@@ -197,7 +193,6 @@ export default function ArticlePreviewSwipe({
             )}
           </s.Content>
         </s.CardContainer>
-      )}
     </AnimatePresence>
   );
 }

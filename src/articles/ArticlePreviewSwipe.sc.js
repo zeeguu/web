@@ -8,6 +8,7 @@ let labelFontSize = "small";
 export const CardContainer = styled(motion.div)`
     width: 500px;
     max-width: 95vw;
+    height: 75vh;
     min-height: 160px;
     display: flex;
     flex-direction: column;
@@ -57,8 +58,12 @@ export const Content = styled(motion.div)`
     display: flex;
     flex-direction: column;
     flex: 1 1 auto;
-    padding: 10px 16px 16px;
+    padding: 16px 20px 16px;
     position: relative;
+
+    @media (max-width: ${MOBILE_WIDTH}px) {
+        padding: 10px 16px 16px;
+    }
 `;
 
 export const Title = styled.h2`
@@ -91,6 +96,7 @@ export const InfoWrapper = styled.div`
     flex-wrap: wrap;
     justify-content: center;
     gap: 8px;
+    margin-top: auto;
     margin-bottom: 8px;
         
     @media (max-width: ${MOBILE_WIDTH}px) {
