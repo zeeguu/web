@@ -7,6 +7,7 @@ export default function useArticlePagination(
   setArticleList,
   pageTitle,
   getNewArticlesForPage,
+  hiddenArticleIds,
 ) {
   const [isWaitingForNewArticles, setIsWaitingForNewArticles] = useState(false);
   const [currentPage, setCurrentPage] = useState(0);
@@ -50,13 +51,22 @@ export default function useArticlePagination(
             setNoMoreArticlesToShow(true);
             return;
         }
-
         // Deduplicate efficiently
-        const existingIds = new Set(s.list.map((a) => a.id));
-        const uniqueArticles = articles.filter((a) => !existingIds.has(a.id));
+        const existingIds = new Set(articleList.map(a => a.id));
+        const hiddenIds = hiddenArticleIds || new Set();
 
-        const updatedList = [...s.list, ...uniqueArticles];
+        const uniqueArticles = articles.filter(
+            a =>
+                !existingIds.has(a.id) &&
+                !hiddenIds.has(a.id) &&
+                !a.has_personal_copy
+        );
 
+        const updatedList = [...articleList, ...uniqueArticles];
+        if (updatedList.length === 0){
+            console.log("list empty after filtering");
+            await loadArticles();
+        }
         setArticleList(updatedList);
         setCurrentPage(nextPage);
     } finally {
