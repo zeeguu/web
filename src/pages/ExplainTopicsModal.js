@@ -1,4 +1,4 @@
-import * as s from "../articles/ArticlePreview.sc";
+import * as s from "../articles/ArticlePreviewList.sc";
 import Modal from "../components/modal_shared/Modal";
 import { darkBlue } from "../components/colors";
 import HighlightOffRoundedIcon from "@mui/icons-material/HighlightOffRounded";

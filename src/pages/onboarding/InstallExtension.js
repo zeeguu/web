@@ -50,7 +50,7 @@ export default function InstallExtension() {
             {getExtensionInstallationButtonContent()}
             <RoundedForwardArrow fontSize="medium" />
           </Button>
-          <Link className="link" to="/articles">
+          <Link className="link" to="/articles/swiper">
             {strings.iWillInstallLater}
           </Link>
         </ButtonContainer>

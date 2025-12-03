@@ -29,6 +29,7 @@ import PWAInstallBanner from "./components/PWAInstallBanner";
 import IOSInstallBanner from "./components/IOSInstallBanner";
 import PWAInstallOverlay from "./components/PWAInstallOverlay";
 import usePWAInstall from "./hooks/usePWAInstall";
+import { white, orange600 } from "./components/colors";
 
 // Wrapper component to use location tracker inside Router context
 function LocationTrackingWrapper({ children }) {
@@ -87,6 +88,31 @@ function PWABanners() {
         onClose={handleCloseInstructions}
       />
     </>
+  );
+}
+
+function ToastWithRoute() {
+  const location = useLocation();
+  const isSwiper = location.pathname === "/articles/swiper";
+
+  return (
+    <ToastContainer
+      position="bottom-right"
+      autoClose={isSwiper ? 1000 : 2000}
+      hideProgressBar={true}
+      newestOnTop={false}
+      closeOnClick
+      rtl={false}
+      pauseOnFocusLoss
+      draggable
+      pauseOnHover
+      theme={"light"}
+      toastStyle={{
+        backgroundColor: isSwiper ? orange600 : white,
+        color: isSwiper ? white : "black",
+      }}
+      style={{ marginBottom: isSwiper ? "30px" : "0px" }}
+    />
   );
 }
 
@@ -220,7 +246,7 @@ function App() {
     // If a redirect link exists, uses it to redirect the user,
     // otherwise, uses the location from the function argument.
     // For the future consider taking the redirection out of this function alltogether.
-    if (redirectToArticle) handleRedirectLinkOrGoTo("/articles");
+    if (redirectToArticle) handleRedirectLinkOrGoTo("/articles/swiper");
   }
 
   //Setting up the routing context to be able to use the cancel-button in EditText correctly
@@ -229,7 +255,6 @@ function App() {
   if (userDetails === undefined) {
     return <LoadingAnimation />;
   }
-
 
   return (
     <SystemLanguagesContext.Provider value={{ systemLanguages, sortedSystemLanguages }}>
@@ -256,18 +281,7 @@ function App() {
                         hasExtension={isExtensionAvailable}
                         handleSuccessfulLogIn={handleSuccessfulLogIn}
                       />
-                      <ToastContainer
-                        position="bottom-right"
-                        autoClose={2000}
-                        hideProgressBar={true}
-                        newestOnTop={false}
-                        closeOnClick
-                        rtl={false}
-                        pauseOnFocusLoss
-                        draggable
-                        pauseOnHover
-                        theme="light"
-                      />
+                      <ToastWithRoute />
                       <PWABanners />
                     </FeedbackContextProvider>
                   </APIContext.Provider>

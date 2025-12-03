@@ -4,6 +4,20 @@ import Select from "@mui/material/Select";
 import FormControl from "@mui/material/FormControl";
 import Tooltip from "@mui/material/Tooltip";
 
+// Map CEFR levels to readable labels
+// maybe move this to a utils?
+export const getLevelLabel = (level) => {
+  const labels = {
+    A1: "A1 - Beginner",
+    A2: "A2 - Elementary",
+    B1: "B1 - Intermediate",
+    B2: "B2 - Upper Intermediate",
+    C1: "C1 - Advanced",
+    C2: "C2 - Proficient",
+  };
+  return labels[level] || level;
+};
+
 export default function LevelSwitcher({ currentArticleId, levels, api, onLevelChange, readingTimeEstimate }) {
   const [selectedLevel, setSelectedLevel] = useState(currentArticleId);
   const [isLoading, setIsLoading] = useState(false);
@@ -39,19 +53,6 @@ export default function LevelSwitcher({ currentArticleId, levels, api, onLevelCh
     }
   };
 
-  // Map CEFR levels to readable labels
-  const getLevelLabel = (level) => {
-    const labels = {
-      A1: "A1 - Beginner",
-      A2: "A2 - Elementary",
-      B1: "B1 - Intermediate",
-      B2: "B2 - Upper Int.",
-      C1: "C1 - Advanced",
-      C2: "C2 - Proficient",
-    };
-    return labels[level] || level;
-  };
-
   // Sort levels alphabetically by CEFR level
   const getSortedLevels = (levels) => {
     if (!levels) return [];
@@ -82,12 +83,7 @@ export default function LevelSwitcher({ currentArticleId, levels, api, onLevelCh
 
   return (
     <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-      <Tooltip
-        title="Choose reading difficulty level"
-        arrow
-        placement="top"
-        disablePortal
-      >
+      <Tooltip title="Choose reading difficulty level" arrow placement="top" disablePortal>
         <FormControl size="small" style={{ minWidth: 120 }}>
           <Select
             value={selectedLevel}

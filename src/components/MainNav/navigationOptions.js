@@ -5,11 +5,18 @@ import LocalStorage from "../../assorted/LocalStorage";
 export default class NavigationOptions {
   // Student-specific options
   static articles = Object.freeze({
-    linkTo: "/articles",
+    linkTo: "/articles/swiper",
     icon: <NavIcon name="home" />,
     text: strings.articles,
     isOnStudentSide: true,
   });
+
+  // static swipe = Object.freeze({
+  //   linkTo: "/articles/swipe",
+  //   icon: <NavIcon name="swipe" />,
+  //   text: strings.swipeTab,
+  //   isOnStudentSide: true,
+  // });
 
   static exercises = Object.freeze({
     linkTo: "/exercises",
