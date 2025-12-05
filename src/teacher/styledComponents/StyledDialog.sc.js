@@ -1,6 +1,5 @@
 import styled from "styled-components";
-import { Dialog } from "@reach/dialog";
-import "@reach/dialog/styles.css";
+import { Dialog } from "../../components/DialogWrapper";
 import { darkBlue } from "../../components/colors";
 
 export const StyledDialog = styled(Dialog)`

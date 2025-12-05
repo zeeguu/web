@@ -2,7 +2,7 @@ import styled from "styled-components";
 import * as s from "../../components/TopMessage.sc";
 import { zeeguuWarmYellow, zeeguuDarkOrange } from "../../components/colors";
 import { device } from "./Devices";
-import * as datePickerCSS from "react-datepicker/dist/react-datepicker.css";
+import "react-datepicker/dist/react-datepicker.css";
 import { OrangeButton } from "../../reader/ArticleReader.sc";
 
 const UserDashboardTopContainer = styled.div`
@@ -18,7 +18,6 @@ const UserDashboardHelperText = styled(s.YellowMessageBox)`
 `;
 
 const UserDatePicker = styled.div`
-  ${datePickerCSS}
   padding: 0.2em;
   input {
     border: none;

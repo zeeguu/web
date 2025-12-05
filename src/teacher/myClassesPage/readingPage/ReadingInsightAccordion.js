@@ -1,12 +1,10 @@
-import { Accordion } from "@reach/accordion";
+import * as Accordion from "@radix-ui/react-accordion";
 import { v4 as uuid } from "uuid";
 import ReadingInsightAccordionItem from "./ReadingInsightsAccordionItem";
 
 const ReadingInsightAccordion = ({ readingSessions }) => {
-  // const [readingSession, setFirstReadingSession] = useState(null);
-  // const [restOfReadingSessions, setRestOfReadingSessions] = useState(null);
   return (
-    <Accordion collapsible>
+    <Accordion.Root type="single" collapsible>
       {readingSessions !== null &&
         readingSessions.map((readingSession) => (
           <ReadingInsightAccordionItem
@@ -14,7 +12,7 @@ const ReadingInsightAccordion = ({ readingSessions }) => {
             readingSession={readingSession}
           />
         ))}
-    </Accordion>
+    </Accordion.Root>
   );
 };
 export default ReadingInsightAccordion;
