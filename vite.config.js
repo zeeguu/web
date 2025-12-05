@@ -52,16 +52,15 @@ export default defineConfig(({ mode }) => ({
         manualChunks: {
           // React core
           'vendor-react': ['react', 'react-dom', 'react-router-dom'],
-          // Material UI (large)
+          // Material UI (large) - includes emotion as peer dep
           'vendor-mui': ['@mui/material', '@mui/icons-material'],
-          // Styling
-          'vendor-styling': ['styled-components', '@emotion/react', '@emotion/styled'],
           // Rich text editor
           'vendor-tiptap': ['@tiptap/react', '@tiptap/starter-kit', '@tiptap/extension-link'],
           // Error tracking
           'vendor-sentry': ['@sentry/react'],
           // UI primitives
           'vendor-radix': ['@radix-ui/react-dialog', '@radix-ui/react-tooltip', '@radix-ui/react-accordion'],
+          // Note: emotion and styled-components left out - splitting them causes runtime errors
         }
       }
     },
