@@ -9,9 +9,11 @@ import SortingButtons from "./SortingButtons";
 
 import * as s from "../components/TopMessage.sc";
 import useArticlePagination from "../hooks/useArticlePagination";
+import useBrowsingSession from "../hooks/useBrowsingSession";
 
 export default function OwnArticles() {
   const api = useContext(APIContext);
+  useBrowsingSession("saved");
   const [articleList, setArticleList] = useState(null);
   const [originalList, setOriginalList] = useState(null);
 

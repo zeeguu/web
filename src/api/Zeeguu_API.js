@@ -9,6 +9,7 @@ import "./translations";
 import "./exercises";
 import "./exercise_sessions";
 import "./reading_sessions";
+import "./browsing_sessions";
 import "./userStats";
 import "./speech";
 import "./activityLogging";
