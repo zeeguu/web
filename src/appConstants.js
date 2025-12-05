@@ -1,10 +1,10 @@
 let APP_DOMAIN = window.location.origin;
 let API_ENDPOINT = "https://api.zeeguu.org";
 
-/* 
+/*
   This is done to allow Netlify previews to shown new
   resources that are added in a PR.
-  We want to keep a possibility to point to another 
+  We want to keep a possibility to point to another
   location, which can be done by setting the env variables.
 
   In the Extension, we want to ensure we keep the default
@@ -25,17 +25,12 @@ const TopicOriginType = Object.freeze({
   INFERRED: 3,
 });
 
-try {
-  if (typeof process.env !== "undefined") {
-    if (process.env.REACT_APP_API_URL) {
-      API_ENDPOINT = process.env.REACT_APP_API_URL;
-    }
-    if (process.env.REACT_APP_WEB_URL) {
-      APP_DOMAIN = process.env.REACT_APP_WEB_URL;
-    }
-  }
-} catch {
-  console.log("Didn't set variables");
+// Environment variables (Vite uses import.meta.env.VITE_*)
+if (import.meta.env.VITE_API_URL) {
+  API_ENDPOINT = import.meta.env.VITE_API_URL;
+}
+if (import.meta.env.VITE_WEB_URL) {
+  APP_DOMAIN = import.meta.env.VITE_WEB_URL;
 }
 
 export { APP_DOMAIN, API_ENDPOINT, TopicOriginType };
