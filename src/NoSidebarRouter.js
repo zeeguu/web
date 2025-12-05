@@ -1,12 +1,16 @@
+import { lazy, Suspense } from "react";
 import { PrivateRoute } from "./PrivateRoute";
 import WordsRouter from "./words/_WordsRouter";
 import ExercisesRouter from "./exercises/ExercisesRouter";
-import TeacherRouter from "./teacher/_routing/_TeacherRouter";
 import Settings from "./pages/Settings/Settings";
-import UserDashboard from "./userDashboard/UserDashboard";
 import React from "react";
 import ReadingHistory from "./words/WordHistory";
 import StandAloneReader from "./reader/StandAloneReader";
+import LoadingAnimation from "./components/LoadingAnimation";
+
+// Lazy load separate parts of the app
+const TeacherRouter = lazy(() => import("./teacher/_routing/_TeacherRouter"));
+const UserDashboard = lazy(() => import("./userDashboard/UserDashboard"));
 
 export default function NoSidebarRouter({ setUser }) {
   return (
@@ -17,7 +21,9 @@ export default function NoSidebarRouter({ setUser }) {
 
       <PrivateRoute path="/render/history" component={ReadingHistory} />
 
-      <PrivateRoute path="/teacher" component={TeacherRouter} />
+      <Suspense fallback={<LoadingAnimation />}>
+        <PrivateRoute path="/teacher" component={TeacherRouter} />
+      </Suspense>
 
       <PrivateRoute
         path="/render/account_settings"
@@ -27,7 +33,9 @@ export default function NoSidebarRouter({ setUser }) {
 
       <PrivateRoute path="/render/read/article" component={StandAloneReader} />
 
-      <PrivateRoute path="/user_dashboard" component={UserDashboard} />
+      <Suspense fallback={<LoadingAnimation />}>
+        <PrivateRoute path="/user_dashboard" component={UserDashboard} />
+      </Suspense>
     </>
   );
 }

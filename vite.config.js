@@ -38,16 +38,30 @@ export default defineConfig(({ mode }) => ({
   // Build settings
   build: {
     outDir: 'build',
-    // Disable content hashing for sourcemap compatibility (matching CRA config)
+    chunkSizeWarningLimit: 1000, // KB - our main bundle is ~779 KB
     rollupOptions: {
       output: {
-        entryFileNames: 'static/js/[name].js',
-        chunkFileNames: 'static/js/[name].chunk.js',
+        entryFileNames: 'static/js/[name].[hash].js',
+        chunkFileNames: 'static/js/[name].[hash].chunk.js',
         assetFileNames: (assetInfo) => {
           if (assetInfo.name?.endsWith('.css')) {
-            return 'static/css/[name][extname]';
+            return 'static/css/[name].[hash][extname]';
           }
-          return 'static/media/[name][extname]';
+          return 'static/media/[name].[hash][extname]';
+        },
+        manualChunks: {
+          // React core
+          'vendor-react': ['react', 'react-dom', 'react-router-dom'],
+          // Material UI (large)
+          'vendor-mui': ['@mui/material', '@mui/icons-material'],
+          // Styling
+          'vendor-styling': ['styled-components', '@emotion/react', '@emotion/styled'],
+          // Rich text editor
+          'vendor-tiptap': ['@tiptap/react', '@tiptap/starter-kit', '@tiptap/extension-link'],
+          // Error tracking
+          'vendor-sentry': ['@sentry/react'],
+          // UI primitives
+          'vendor-radix': ['@radix-ui/react-dialog', '@radix-ui/react-tooltip', '@radix-ui/react-accordion'],
         }
       }
     },
