@@ -16,9 +16,14 @@ import strings from "../i18n/definitions";
 import useShadowRef from "../hooks/useShadowRef";
 import VideoPreview from "../videos/VideoPreview";
 import CustomizeFeed from "./CustomizeFeed";
+import useBrowsingSession from "../hooks/useBrowsingSession";
 
 export default function ArticleListBrowser({ content, searchQuery, searchPublishPriority, searchDifficultyPriority }) {
   let api = useContext(APIContext);
+
+  // Track browsing session - page type depends on whether this is a search or home page
+  const pageType = searchQuery ? "search" : "home";
+  useBrowsingSession(pageType);
 
   //The ternary operator below fix the problem with the getOpenArticleExternallyWithoutModal()
   //getter that was outputting undefined string values when they should be false.
