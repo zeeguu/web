@@ -47,10 +47,10 @@ const UserDashBoardTab = styled.a`
   letter-spacing: 0;
   color: black;
   padding: 1em;
+  cursor: pointer;
 
   :hover {
     color: ${zeeguuWarmYellow};
-    cursor: pointer;
   }
 
   @media screen and (max-width: 768px) {
