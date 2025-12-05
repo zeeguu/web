@@ -19,8 +19,20 @@ import ArticleReader from "./reader/ArticleReader";
 import LoadingAnimation from "./components/LoadingAnimation";
 
 // Lazy load separate parts of the app
-const TeacherRouter = lazy(() => import("./teacher/_routing/_TeacherRouter"));
-const UserDashboard = lazy(() => import("./userDashboard/UserDashboard"));
+const LazyTeacherRouter = lazy(() => import("./teacher/_routing/_TeacherRouter"));
+const LazyUserDashboard = lazy(() => import("./userDashboard/UserDashboard"));
+
+// Wrapper components to handle Suspense (required for react-router v5)
+const TeacherRouter = (props) => (
+  <Suspense fallback={<LoadingAnimation />}>
+    <LazyTeacherRouter {...props} />
+  </Suspense>
+);
+const UserDashboard = (props) => (
+  <Suspense fallback={<LoadingAnimation />}>
+    <LazyUserDashboard {...props} />
+  </Suspense>
+);
 import { PrivateRouteWithMainNav } from "./PrivateRouteWithMainNav";
 import { PrivateRoute } from "./PrivateRoute";
 import DeleteAccount from "./pages/DeleteAccount/DeleteAccount";
@@ -78,13 +90,9 @@ export default function MainAppRouter({ hasExtension, handleSuccessfulLogIn }) {
       <PrivateRouteWithMainNav path="/words" component={WordsRouter} />
       <PrivateRouteWithMainNav path="/history" component={ReadingHistory} />
       <PrivateRouteWithMainNav path="/account_settings" component={SettingsRouter} />
-      <Suspense fallback={<LoadingAnimation />}>
-        <PrivateRouteWithMainNav path="/teacher" component={TeacherRouter} />
-      </Suspense>
+      <PrivateRouteWithMainNav path="/teacher" component={TeacherRouter} />
       <PrivateRouteWithMainNav path="/read/article" component={ArticleReader} />
-      <Suspense fallback={<LoadingAnimation />}>
-        <PrivateRouteWithMainNav path="/user_dashboard" component={UserDashboard} />
-      </Suspense>
+      <PrivateRouteWithMainNav path="/user_dashboard" component={UserDashboard} />
       <PrivateRouteWithMainNav path="/search" component={ArticlesRouter} />
       <PrivateRouteWithMainNav
         path="/articleWordReview/:articleID"
