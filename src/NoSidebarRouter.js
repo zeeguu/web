@@ -10,7 +10,6 @@ import LoadingAnimation from "./components/LoadingAnimation";
 
 // Lazy load separate parts of the app
 const LazyTeacherRouter = lazy(() => import("./teacher/_routing/_TeacherRouter"));
-const LazyUserDashboard = lazy(() => import("./userDashboard/UserDashboard"));
 
 // Wrapper components to handle Suspense (required for react-router v5)
 const TeacherRouter = (props) => (
@@ -18,11 +17,9 @@ const TeacherRouter = (props) => (
     <LazyTeacherRouter {...props} />
   </Suspense>
 );
-const UserDashboard = (props) => (
-  <Suspense fallback={<LoadingAnimation />}>
-    <LazyUserDashboard {...props} />
-  </Suspense>
-);
+
+// UserDashboard loaded normally (lazy loading caused styling issues)
+import UserDashboard from "./userDashboard/UserDashboard";
 
 export default function NoSidebarRouter({ setUser }) {
   return (
