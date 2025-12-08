@@ -1,5 +1,5 @@
 import { useEffect, useContext, useState } from "react";
-import { useHistory } from "react-router-dom/cjs/react-router-dom";
+import {useHistory, useLocation} from "react-router-dom/cjs/react-router-dom";
 import { isSupportedBrowser } from "../../utils/misc/browserDetection";
 
 import useUnwantedContentPreferences from "../../hooks/useUnwantedContentPreferences";
@@ -31,6 +31,8 @@ export default function ExcludeWords({ hasExtension }) {
   const api = useContext(APIContext);
   const history = useHistory();
   const { unwantedKeywords, addUnwantedKeyword, removeUnwantedKeyword } = useUnwantedContentPreferences(api);
+  const isSwipeView = useLocation().pathname.includes("swiper");
+  const pathName = isSwipeView ? "/articles/swiper" : "/articles";
 
   const [
     excludedWord,
@@ -46,7 +48,7 @@ export default function ExcludeWords({ hasExtension }) {
   function getLinkToNextPage() {
     if (isSupportedBrowser() && hasExtension === false) {
       return "/install_extension";
-    } else return "/articles/swiper";
+    } else return pathName || "/articles";
   }
 
   function handleAddNewSearchFilter(e) {

@@ -5,7 +5,6 @@ import FormControl from "@mui/material/FormControl";
 import Tooltip from "@mui/material/Tooltip";
 
 // Map CEFR levels to readable labels
-// maybe move this to a utils?
 export const getLevelLabel = (level) => {
   const labels = {
     A1: "A1 - Beginner",
@@ -18,7 +17,7 @@ export const getLevelLabel = (level) => {
   return labels[level] || level;
 };
 
-export default function LevelSwitcher({ currentArticleId, levels, api, onLevelChange, readingTimeEstimate }) {
+export default function LevelSwitcher({ currentArticleId, levels, onLevelChange, readingTimeEstimate }) {
   const [selectedLevel, setSelectedLevel] = useState(currentArticleId);
   const [isLoading, setIsLoading] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);

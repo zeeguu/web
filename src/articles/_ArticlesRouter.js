@@ -23,8 +23,7 @@ export default function ArticlesRouter({ hasExtension, isChrome }) {
   const location = useLocation();
 
   const [tabsAndLinks, setTabsAndLinks] = useState({
-    // [strings.homeTab]: "/articles",
-    [strings.swipeTab]: "/articles/swiper",
+    [strings.articlesTab]: "/articles/swiper",
     [strings.search]: "/articles/mySearches",
     [strings.saved]: "/articles/ownTexts",
   });
@@ -32,14 +31,14 @@ export default function ArticlesRouter({ hasExtension, isChrome }) {
   const [originalList, setOriginalList] = useState(null);
   const isSwipeView = location.pathname === "/articles/swiper";
 
-  // useEffect(() => {
-  //   if (LocalStorage.isStudent()) {
-  //     setTabsAndLinks((prevTabsAndLinks) => ({
-  //       ...prevTabsAndLinks,
-  //       [strings.classroomTab]: "/articles/classroom",
-  //     }));
-  //   }
-  // }, []);
+  useEffect(() => {
+    if (LocalStorage.isStudent()) {
+      setTabsAndLinks((prevTabsAndLinks) => ({
+        ...prevTabsAndLinks,
+        [strings.classroomTab]: "/articles/classroom",
+      }));
+    }
+  }, []);
 
   useEffect(() => {
     api.getBookmarkedArticles((articles) => {

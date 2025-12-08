@@ -16,11 +16,15 @@ import RoundedForwardArrow from "@mui/icons-material/ArrowForwardRounded";
 
 import strings from "../../i18n/definitions";
 import redirect from "../../utils/routing/routing";
+import {useLocation} from "react-router-dom/cjs/react-router-dom";
 
 export default function InstallExtension() {
   useEffect(() => {
     setTitle(strings.installExtension);
   }, []);
+
+  const isSwipeView = useLocation().pathname.includes("swiper");
+  const pathName = isSwipeView ? "/articles/swiper" : "/articles";
 
   return (
     <PreferencesPage>
@@ -50,7 +54,7 @@ export default function InstallExtension() {
             {getExtensionInstallationButtonContent()}
             <RoundedForwardArrow fontSize="medium" />
           </Button>
-          <Link className="link" to="/articles/swiper">
+          <Link className="link" to={pathName || "/articles"}>
             {strings.iWillInstallLater}
           </Link>
         </ButtonContainer>
