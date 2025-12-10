@@ -1,10 +1,10 @@
 import * as s from "./ArticleSourceInfo.sc";
 import { getNewsIconPath } from "../utils/misc/staticPath";
-import { formatDistanceToNow } from "date-fns";
+import { formatDistanceToNowStrict } from "date-fns";
 
-export default function ArticleSourceInfo({ articleInfo, dontShowSourceIcon, dontShowPublishingTime }) {
+export default function ArticleSourceInfo({ articleInfo, dontShowSourceIcon, dontShowPublishingTime, ...rest }) {
   return (
-    <s.SourceContainer>
+    <s.SourceContainer  {...rest}>
       {!dontShowSourceIcon && (
         <>
           <s.SourceImage>
@@ -13,7 +13,7 @@ export default function ArticleSourceInfo({ articleInfo, dontShowSourceIcon, don
           {articleInfo.feed_name && <s.FeedName>{articleInfo.feed_name}</s.FeedName>}
         </>
       )}
-      {!dontShowPublishingTime && <s.PublishingTime>({formatDistanceToNow(new Date(articleInfo.published), { addSuffix: true })})</s.PublishingTime>}
+      {!dontShowPublishingTime && <s.PublishingTime>{formatDistanceToNowStrict(new Date(articleInfo.published), { addSuffix: true })}</s.PublishingTime>}
     </s.SourceContainer>
   );
 }

@@ -270,6 +270,7 @@ let strings = new LocalizedStrings(
 
       //ArticleRouter
       homeTab: "Home",
+      articlesTab: "Articles",
       classroomTab: "Classroom",
       bookmarkedTab: "Bookmarked",
       saved: "Saves",
@@ -291,6 +292,15 @@ let strings = new LocalizedStrings(
 
       // Home (Find Articles)
       titleHome: "Home",
+
+      // Swipe
+      showSummary: "Show Summary",
+      hideSummary: "Hide Summary",
+      read: "Read",
+
+      // SwipeInstruction
+      swipeInstructionText: "Swipe right to save, left to dismiss, or tap the buttons below.",
+      swipeInstructionConfirm: "Got it!",
 
       // Search Query (Find Articles)
       titleSearch: "Search",
@@ -318,6 +328,13 @@ let strings = new LocalizedStrings(
       //BookmarkButton
       addToBookmarks: "Add to bookmarks",
       removeFromBookmarks: "Remove from bookmarks",
+
+      // SaveArticleButton
+      saveArticleAddedToast: "Article added to your Saves!",
+      saveArticleRemovedToast: "Article removed from your Saves!",
+      saveArticleUndo: "Undo?",
+      saveArticleButtonSave: "Save",
+      saveArticleButtonUnsave: "Unsave",
 
       //SortingButtons
       sortBy: "Sort by:",
@@ -1085,6 +1102,11 @@ let strings = new LocalizedStrings(
 
       //FindArticles
       findArticles: "Find artikler",
+
+      // Swipe
+      showSummary: "Vis sammendrag",
+      hideSummary: "Skjul sammendrag",
+      read: "Læs",
 
       //ArticleReader
       translateOnClick: "klik og oversæt",

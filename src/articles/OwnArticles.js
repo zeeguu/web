@@ -29,14 +29,20 @@ export default function OwnArticles() {
     }
   };
 
+  const handleArticleSave = (articleId, saved) => {
+    if (!saved) {
+      setArticleList((prev) => (prev ? prev.filter((e) => String(e.id) !== String(articleId)) : prev));
+      setOriginalList((prev) => (prev ? prev.filter((e) => String(e.id) !== String(articleId)) : prev));
+    }
+  };
+
   const [handleScroll, isWaitingForNewArticles, noMoreArticlesToShow] = useArticlePagination(
     articleList,
     updateOnPagination,
     "Saved Articles",
     (pageNumber, handleArticleInsertion) => {
       api.getSavedUserArticles(pageNumber, handleArticleInsertion);
-    },
-  );
+    });
 
   useEffect(() => {
     setTitle("Saved Articles");
@@ -51,11 +57,11 @@ export default function OwnArticles() {
     // eslint-disable-next-line
   }, []);
 
-  if (articleList == null) {
+  if (articleList == null || isWaitingForNewArticles) {
     return <LoadingAnimation />;
   }
 
-  if (articleList.length === 0) {
+  if (articleList.length === 0 && !isWaitingForNewArticles) {
     return <s.YellowMessageBox>{strings.noOwnArticles}</s.YellowMessageBox>;
   }
 
@@ -63,7 +69,13 @@ export default function OwnArticles() {
     <>
       <SortingButtons articleList={articleList} originalList={originalList} setArticleList={setArticleList} />
       {articleList.map((each) => (
-        <ArticlePreview key={each.id} article={each} dontShowSourceIcon={false} onArticleHidden={handleArticleHidden} />
+        <ArticlePreview
+          key={each.id}
+          article={each}
+          dontShowSourceIcon={false}
+          onArticleHidden={handleArticleHidden}
+          onArticleSave={handleArticleSave}
+        />
       ))}
       {isWaitingForNewArticles && <LoadingAnimation delay={0}></LoadingAnimation>}
       {noMoreArticlesToShow && articleList.length > 0 && (

@@ -15,15 +15,16 @@ const CustomizeFeedButton = styled.div`
   background-color: #fff;
   transition: all 0.2s ease;
   font-size: 0.9em;
-  
+
   @media (max-width: 768px) {
-    font-size: 0.85em;
+    padding: 0.2rem 0.2rem;
+    gap: 0.1rem;
   }
-  
+
   &:hover {
     background-color: #f5f5f5;
   }
-  
+
   &.active {
     background-color: #f5f5f5;
   }
@@ -50,15 +51,15 @@ const DropdownItem = styled.div`
   font-size: 0.9em;
   display: flex;
   align-items: center;
-  
+
   @media (max-width: 768px) {
     font-size: 0.85em;
   }
-  
+
   &:last-child {
     border-bottom: none;
   }
-  
+
   &:hover {
     background-color: #f5f5f5;
   }

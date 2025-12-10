@@ -43,7 +43,6 @@ import { WEB_READER } from "./reader/ArticleReader";
 import VideoPlayer from "./videos/VideoPlayer";
 import DailyAudioRouter from "./dailyAudio/_DailyAudioRouter";
 import IndividualExercise from "./pages/IndividualExercise";
-import Swiper from "./swiper/Swiper";
 import KeyboardTest from "./pages/KeyboardTest";
 
 // Helper to detect if we're in a Capacitor app
@@ -82,9 +81,7 @@ export default function MainAppRouter({ hasExtension, handleSuccessfulLogIn }) {
       <PrivateRoute path="/select_interests" hasExtension={hasExtension} component={SelectInterests} />
 
       <PrivateRoute path="/exclude_words" hasExtension={hasExtension} component={ExcludeWords} />
-
-      <PrivateRouteWithMainNav path="/articles" component={ArticlesRouter} />
-      <PrivateRouteWithMainNav path="/swiper" component={Swiper} />
+      <PrivateRouteWithMainNav path="/articles/:view?" component={ArticlesRouter} />
       <PrivateRoute path="/watch/video" component={VideoPlayer} />
       <PrivateRouteWithMainNav path="/exercises" component={ExercisesRouter} />
       <PrivateRouteWithMainNav path="/daily-audio" component={DailyAudioRouter} />

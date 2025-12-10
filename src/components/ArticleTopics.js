@@ -3,7 +3,7 @@ import { toast } from "react-toastify";
 import HighlightOffRoundedIcon from "@mui/icons-material/HighlightOffRounded";
 import { darkBlue } from "./colors";
 import { TopicOriginType } from "../appConstants";
-import * as s from "../articles/ArticlePreview.sc";
+import * as s from "../articles/ArticlePreviewList.sc";
 import ExplainTopicsModal from "../pages/ExplainTopicsModal";
 import { TagsOfInterests } from "../articles/TagsOfInterests.sc";
 

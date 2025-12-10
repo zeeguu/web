@@ -116,6 +116,21 @@ const Button = styled.button`
     border: solid ${zeeguuOrange} 0.2em;
     box-shadow: 0px 0.2em ${zeeguuDarkOrange};
   }
-`;
+    &.show-summary-btn,
+    &.hide-summary-btn {
+        padding: 0 1rem;
+        font-size: 0.8rem;
+        height: 2.1rem;
+        width: auto;
+        color: ${zeeguuOrange};
+        background-color: white;
+        border: solid ${zeeguuOrange} 0.1em;
+        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.12);
+    }
+    
+    &.hide-summary-btn {
+        margin-top: auto; 
+    }
 
+`;
 export default Button;
