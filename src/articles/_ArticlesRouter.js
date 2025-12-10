@@ -1,6 +1,6 @@
 import ArticleListBrowser from "./ArticleListBrowser";
 import BookmarkedArticles from "./BookmarkedArticles";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState, useRef } from "react";
 
 import { PrivateRoute } from "../PrivateRoute";
 import ClassroomArticles from "./ClassroomArticles";
@@ -16,9 +16,18 @@ import Search from "./Search";
 import * as s from "../components/ColumnWidth.sc";
 import LocalStorage from "../assorted/LocalStorage";
 import { APIContext } from "../contexts/APIContext";
+import { BrowsingSessionContext } from "../contexts/BrowsingSessionContext";
+import useBrowsingSession from "../hooks/useBrowsingSession";
 
 export default function ArticlesRouter({ hasExtension, isChrome }) {
   const api = useContext(APIContext);
+  const { browsingSessionId } = useBrowsingSession();
+
+  // Use ref so child components can always get the latest value
+  const browsingSessionIdRef = useRef(null);
+  useEffect(() => {
+    browsingSessionIdRef.current = browsingSessionId;
+  }, [browsingSessionId]);
   const [tabsAndLinks, setTabsAndLinks] = useState({
     [strings.homeTab]: "/articles",
     [strings.search]: "/articles/mySearches",
@@ -47,7 +56,7 @@ export default function ArticlesRouter({ hasExtension, isChrome }) {
   }, [api]);
 
   return (
-    <>
+    <BrowsingSessionContext.Provider value={() => browsingSessionIdRef.current}>
       {/* Rendering top menu first, then routing to corresponding page */}
       <s.NarrowColumn>
         <TopTabs title={strings.articles} tabsAndLinks={tabsAndLinks} />
@@ -78,7 +87,7 @@ export default function ArticlesRouter({ hasExtension, isChrome }) {
 
         <PrivateRoute path="/search" component={Search} />
       </s.NarrowColumn>
-    </>
+    </BrowsingSessionContext.Provider>
   );
 }
 

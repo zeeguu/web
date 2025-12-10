@@ -9,11 +9,8 @@ import SortingButtons from "./SortingButtons";
 
 import * as s from "../components/TopMessage.sc";
 import { APIContext } from "../contexts/APIContext";
-import useBrowsingSession from "../hooks/useBrowsingSession";
-
 export default function RecommendedArticles() {
   const api = useContext(APIContext);
-  useBrowsingSession("recommended");
   const [articleList, setArticleList] = useState(null);
   const [originalList, setOriginalList] = useState(null);
 

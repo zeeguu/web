@@ -9,11 +9,8 @@ import SortingButtons from "./SortingButtons";
 
 import * as s from "../components/TopMessage.sc";
 import { APIContext } from "../contexts/APIContext";
-import useBrowsingSession from "../hooks/useBrowsingSession";
-
 export default function BookmarkedArticles() {
   const api = useContext(APIContext);
-  useBrowsingSession("bookmarked");
   const [articleList, setArticleList] = useState(null);
 
   let originalList = articleList;

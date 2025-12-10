@@ -11,6 +11,7 @@ import ArticleSourceInfo from "../components/ArticleSourceInfo";
 import extractDomain from "../utils/web/extractDomain";
 import ReadingCompletionProgress from "./ReadingCompletionProgress";
 import { APIContext } from "../contexts/APIContext";
+import { BrowsingSessionContext } from "../contexts/BrowsingSessionContext";
 import { TranslatableText } from "../reader/TranslatableText";
 import InteractiveText from "../reader/InteractiveText";
 import ZeeguuSpeech from "../speech/APIBasedSpeech";
@@ -32,6 +33,7 @@ export default function ArticlePreview({
   onArticleHidden,
 }) {
   const api = useContext(APIContext);
+  const getBrowsingSessionId = useContext(BrowsingSessionContext) || (() => null);
   const [isRedirectionModalOpen, setIsRedirectionModaOpen] = useState(false);
   const [isArticleSaved, setIsArticleSaved] = useState(article.has_personal_copy);
   const [showInferredTopic, setShowInferredTopic] = useState(true);
@@ -77,6 +79,8 @@ export default function ArticlePreview({
             "article_preview",
             zeeguuSpeech,
             summaryData.tokenized_summary.context_identifier,
+            null, // formatting
+            getBrowsingSessionId,
           );
           setInteractiveSummary(interactive);
         }
@@ -93,6 +97,8 @@ export default function ArticlePreview({
             "article_preview",
             zeeguuSpeech,
             summaryData.tokenized_title.context_identifier,
+            null, // formatting
+            getBrowsingSessionId,
           );
           setInteractiveTitle(titleInteractive);
         }
@@ -106,6 +112,7 @@ export default function ArticlePreview({
     article.id,
     api,
     zeeguuSpeech,
+    // browsingSessionId accessed via ref to avoid stale closure
     // isTokenizing removed - was causing infinite loop!
     // interactiveSummary removed - was causing infinite loop!
     // interactiveTitle removed - was causing infinite loop!

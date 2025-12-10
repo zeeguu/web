@@ -33,6 +33,7 @@ export default class InteractiveText {
     zeeguuSpeech,
     contextIdentifier,
     formatting,
+    getBrowsingSessionId = () => null,
   ) {
     // beginning of the constructor
     this.api = api;
@@ -42,6 +43,7 @@ export default class InteractiveText {
     this.source = source;
     this.formatting = formatting;
     this.contextIdentifier = contextIdentifier;
+    this.getBrowsingSessionId = getBrowsingSessionId;
 
     // Might be worth to store a flag to keep track of wether or not the
     // bookmark / text are part of the content or stand by themselves.
@@ -78,7 +80,7 @@ export default class InteractiveText {
     let wordToken_i = word.token.token_i - cToken_i;
     console.log(word);
 
-    console.log(`[INTERACTIVE-TEXT] Calling api.getOneTranslation`, { timestamp: new Date().toISOString(), word: word.word });
+    const browsingSessionId = this.getBrowsingSessionId ? this.getBrowsingSessionId() : null;
 
     this.api
       .getOneTranslation(
@@ -97,6 +99,7 @@ export default class InteractiveText {
           : isExerciseSource(this.source)
           ? "exercise"
           : "reading",
+        browsingSessionId,
       )
       .then((response) => {
         console.log(`[INTERACTIVE-TEXT] Translation response received`, { timestamp: new Date().toISOString(), word: word.word });

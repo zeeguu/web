@@ -8,11 +8,8 @@ import SortingButtons from "./SortingButtons";
 import { OrangeRoundButton } from "../components/allButtons.sc";
 import * as s from "../components/TopMessage.sc";
 import { APIContext } from "../contexts/APIContext";
-import useBrowsingSession from "../hooks/useBrowsingSession";
-
 export default function ClassroomArticles() {
   const api = useContext(APIContext);
-  useBrowsingSession("classroom");
   const [articleList, setArticleList] = useState(null);
   const [studentJoinedCohort, setStudentJoinedCohort] = useState(null);
 

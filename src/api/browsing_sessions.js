@@ -1,7 +1,7 @@
 import { Zeeguu_API } from "./classDef";
 import qs from "qs";
 
-Zeeguu_API.prototype.browsingSessionCreate = function (pageType, callback) {
+Zeeguu_API.prototype.browsingSessionCreate = function (callback) {
   const after_extracting_json = function (json) {
     let id = JSON.parse(json).id;
     callback(id);
@@ -9,7 +9,7 @@ Zeeguu_API.prototype.browsingSessionCreate = function (pageType, callback) {
 
   this._post(
     `browsing_session_start`,
-    qs.stringify({ page_type: pageType }),
+    "",
     after_extracting_json
   );
 };

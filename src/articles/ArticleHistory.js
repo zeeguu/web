@@ -8,10 +8,7 @@ import ArticlePreview from "./ArticlePreview";
 import SortingButtons from "./SortingButtons";
 
 import * as s from "../components/TopMessage.sc";
-import useBrowsingSession from "../hooks/useBrowsingSession";
-
 export default function OwnArticles({ api }) {
-  useBrowsingSession("history");
   const [articleList, setArticleList] = useState(null);
 
   let originalList = articleList;

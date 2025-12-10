@@ -10,11 +10,8 @@ import useSelectInterest from "../hooks/useSelectInterest";
 import redirect from "../utils/routing/routing.js";
 import SubscribeSearchButton from "./SubscribeSearchButton.js";
 import SearchField from "./SearchField.js";
-import useBrowsingSession from "../hooks/useBrowsingSession";
-
 export default function MySearches() {
   const api = useContext(APIContext);
-  useBrowsingSession("my_searches");
   const { subscribedSearches } = useSelectInterest(api);
   const [articlesBySearchTerm, setArticlesBySearchTerm] = useState(null);
   const [isLoading, setIsLoading] = useState(true);

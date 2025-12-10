@@ -8,12 +8,11 @@ import { APIContext } from "../contexts/APIContext";
  * Unlike reading sessions, browsing sessions:
  * - Start only after the first meaningful interaction (scroll, click on article action)
  * - Use a shorter idle timeout (15 seconds vs 30 seconds)
- * - Track time spent on article list pages (home, search, saved, etc.)
+ * - Track time spent browsing articles
  *
- * @param {string} pageType - The type of page being browsed (home, search, saved, classroom, etc.)
  * @returns {object} - { browsingSessionId, hasSessionStarted, activityTimer }
  */
-export default function useBrowsingSession(pageType) {
+export default function useBrowsingSession() {
   const api = useContext(APIContext);
 
   const [browsingSessionId, setBrowsingSessionId] = useState(null);
@@ -34,11 +33,11 @@ export default function useBrowsingSession(pageType) {
     setHasSessionStarted(true);
     setIsTimerActive(true);
 
-    api.browsingSessionCreate(pageType, (sessionId) => {
+    api.browsingSessionCreate((sessionId) => {
       sessionIdRef.current = sessionId;
       setBrowsingSessionId(sessionId);
     });
-  }, [api, pageType]);
+  }, [api]);
 
   // Upload current activity to the server
   const uploadActivity = useCallback(() => {
@@ -55,7 +54,7 @@ export default function useBrowsingSession(pageType) {
   }, [api, activityTimer]);
 
   // Idle timer with 15 second timeout (shorter than reading's 30 seconds)
-  useIdleTimer({
+  const { reset: resetIdleTimer } = useIdleTimer({
     onActive: () => {
       if (sessionStartedRef.current) {
         // Session was already started, resume timer
@@ -71,8 +70,15 @@ export default function useBrowsingSession(pageType) {
       }
       setIsTimerActive(false);
     },
+    onAction: () => {
+      // Start session on first action if not started
+      if (!sessionStartedRef.current) {
+        startSession();
+      }
+    },
     timeout: 15_000, // 15 seconds idle timeout
     eventsThrottle: 500,
+    startOnMount: true,
     events: [
       "keydown",
       "wheel",
@@ -113,6 +119,7 @@ export default function useBrowsingSession(pageType) {
       setIsFocused(true);
       if (sessionStartedRef.current) {
         setIsTimerActive(true);
+        resetIdleTimer(); // Reset idle timer to detect new activity
       }
     };
 
@@ -131,7 +138,7 @@ export default function useBrowsingSession(pageType) {
       window.removeEventListener("focus", handleFocus);
       window.removeEventListener("blur", handleBlur);
     };
-  }, [isTimerActive, uploadActivity]);
+  }, [isTimerActive, uploadActivity, resetIdleTimer, activityTimer]);
 
   // Cleanup on unmount
   useEffect(() => {
