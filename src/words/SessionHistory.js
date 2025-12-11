@@ -74,12 +74,33 @@ const SessionType = styled.span`
 const ArticleTitle = styled.div`
   font-size: 1.1em;
   margin-bottom: 0.5em;
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
 
   a {
     color: #1976d2;
     text-decoration: none;
     &:hover {
       text-decoration: underline;
+    }
+  }
+
+  .source-badge {
+    font-size: 0.65em;
+    padding: 0.15em 0.4em;
+    border-radius: 3px;
+    font-weight: 500;
+    text-transform: uppercase;
+
+    &.extension {
+      background: #e8f5e9;
+      color: #2e7d32;
+    }
+
+    &.web {
+      background: #e3f2fd;
+      color: #1565c0;
     }
   }
 `;
@@ -596,6 +617,12 @@ function SessionItem({ session, onEditWord }) {
       {session.session_type === "reading" && session.article_title && (
         <ArticleTitle>
           <Link to={`/read/article?id=${session.article_id}`}>{session.article_title}</Link>
+          {session.reading_source === "extension" && (
+            <span className="source-badge extension" title="Read via browser extension">ext</span>
+          )}
+          {session.reading_source === "web" && (
+            <span className="source-badge web" title="Read in Zeeguu">web</span>
+          )}
         </ArticleTitle>
       )}
 
