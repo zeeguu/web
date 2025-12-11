@@ -16,9 +16,13 @@ import Search from "./Search";
 import * as s from "../components/ColumnWidth.sc";
 import LocalStorage from "../assorted/LocalStorage";
 import { APIContext } from "../contexts/APIContext";
+import { BrowsingSessionContext } from "../contexts/BrowsingSessionContext";
+import useBrowsingSession from "../hooks/useBrowsingSession";
 
 export default function ArticlesRouter({ hasExtension, isChrome }) {
   const api = useContext(APIContext);
+  const { getBrowsingSessionId } = useBrowsingSession();
+
   const [tabsAndLinks, setTabsAndLinks] = useState({
     [strings.homeTab]: "/articles",
     [strings.search]: "/articles/mySearches",
@@ -47,7 +51,7 @@ export default function ArticlesRouter({ hasExtension, isChrome }) {
   }, [api]);
 
   return (
-    <>
+    <BrowsingSessionContext.Provider value={getBrowsingSessionId}>
       {/* Rendering top menu first, then routing to corresponding page */}
       <s.NarrowColumn>
         <TopTabs title={strings.articles} tabsAndLinks={tabsAndLinks} />
@@ -78,7 +82,7 @@ export default function ArticlesRouter({ hasExtension, isChrome }) {
 
         <PrivateRoute path="/search" component={Search} />
       </s.NarrowColumn>
-    </>
+    </BrowsingSessionContext.Provider>
   );
 }
 

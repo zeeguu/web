@@ -16,7 +16,6 @@ import strings from "../i18n/definitions";
 import useShadowRef from "../hooks/useShadowRef";
 import VideoPreview from "../videos/VideoPreview";
 import CustomizeFeed from "./CustomizeFeed";
-
 export default function ArticleListBrowser({ content, searchQuery, searchPublishPriority, searchDifficultyPriority }) {
   let api = useContext(APIContext);
 

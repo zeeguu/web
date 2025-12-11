@@ -11,6 +11,7 @@ import ArticleSourceInfo from "../components/ArticleSourceInfo";
 import extractDomain from "../utils/web/extractDomain";
 import ReadingCompletionProgress from "./ReadingCompletionProgress";
 import { APIContext } from "../contexts/APIContext";
+import { BrowsingSessionContext } from "../contexts/BrowsingSessionContext";
 import { TranslatableText } from "../reader/TranslatableText";
 import InteractiveText from "../reader/InteractiveText";
 import ZeeguuSpeech from "../speech/APIBasedSpeech";
@@ -32,6 +33,7 @@ export default function ArticlePreview({
   onArticleHidden,
 }) {
   const api = useContext(APIContext);
+  const getBrowsingSessionId = useContext(BrowsingSessionContext);
   const [isRedirectionModalOpen, setIsRedirectionModaOpen] = useState(false);
   const [isArticleSaved, setIsArticleSaved] = useState(article.has_personal_copy);
   const [showInferredTopic, setShowInferredTopic] = useState(true);
@@ -77,6 +79,8 @@ export default function ArticlePreview({
             "article_preview",
             zeeguuSpeech,
             summaryData.tokenized_summary.context_identifier,
+            null, // formatting
+            getBrowsingSessionId,
           );
           setInteractiveSummary(interactive);
         }
@@ -93,6 +97,8 @@ export default function ArticlePreview({
             "article_preview",
             zeeguuSpeech,
             summaryData.tokenized_title.context_identifier,
+            null, // formatting
+            getBrowsingSessionId,
           );
           setInteractiveTitle(titleInteractive);
         }
@@ -231,7 +237,9 @@ export default function ArticlePreview({
           <s.UrlSourceContainer>
             <s.UrlSource>{extractDomain(article.url)}</s.UrlSource>
             {!dontShowPublishingTime && article.published && (
-              <span style={{ marginLeft: "5px" }}>({formatDistanceToNow(new Date(article.published), { addSuffix: true })})</span>
+              <span style={{ marginLeft: "5px" }}>
+                ({formatDistanceToNow(new Date(article.published), { addSuffix: true })})
+              </span>
             )}
           </s.UrlSourceContainer>
         )

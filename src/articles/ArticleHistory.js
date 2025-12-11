@@ -8,7 +8,6 @@ import ArticlePreview from "./ArticlePreview";
 import SortingButtons from "./SortingButtons";
 
 import * as s from "../components/TopMessage.sc";
-
 export default function OwnArticles({ api }) {
   const [articleList, setArticleList] = useState(null);
 

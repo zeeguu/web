@@ -8,7 +8,6 @@ import SortingButtons from "./SortingButtons";
 import { OrangeRoundButton } from "../components/allButtons.sc";
 import * as s from "../components/TopMessage.sc";
 import { APIContext } from "../contexts/APIContext";
-
 export default function ClassroomArticles() {
   const api = useContext(APIContext);
   const [articleList, setArticleList] = useState(null);

@@ -10,7 +10,6 @@ import useSelectInterest from "../hooks/useSelectInterest";
 import redirect from "../utils/routing/routing.js";
 import SubscribeSearchButton from "./SubscribeSearchButton.js";
 import SearchField from "./SearchField.js";
-
 export default function MySearches() {
   const api = useContext(APIContext);
   const { subscribedSearches } = useSelectInterest(api);

@@ -9,7 +9,6 @@ import SortingButtons from "./SortingButtons";
 
 import * as s from "../components/TopMessage.sc";
 import { APIContext } from "../contexts/APIContext";
-
 export default function BookmarkedArticles() {
   const api = useContext(APIContext);
   const [articleList, setArticleList] = useState(null);
