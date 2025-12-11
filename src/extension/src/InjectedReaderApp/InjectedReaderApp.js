@@ -291,7 +291,7 @@ export function InjectedReaderApp({ modalIsOpen, setModalIsOpen, api, url, autho
         }
       });
 
-      api.readingSessionCreate(artinfo.id, (sessionID) => {
+      api.readingSessionCreate(artinfo.id, "extension", (sessionID) => {
         setReadingSessionId(sessionID);
         api.setArticleOpened(artinfo.id);
         api.logUserActivity(api.OPEN_ARTICLE, artinfo.id, sessionID, EXTENSION_SOURCE);
@@ -360,7 +360,7 @@ export function InjectedReaderApp({ modalIsOpen, setModalIsOpen, api, url, autho
           }
         });
 
-        api.readingSessionCreate(artinfo.id, (sessionID) => {
+        api.readingSessionCreate(artinfo.id, "extension", (sessionID) => {
           setReadingSessionId(sessionID);
           api.setArticleOpened(artinfo.id);
           api.logUserActivity(api.OPEN_ARTICLE, artinfo.id, sessionID, EXTENSION_SOURCE);

@@ -201,7 +201,7 @@ export default function ArticleReader({ teacherArticleID }) {
       setArticleInfo(articleInfo);
       setTitle(articleInfo.title);
 
-      api.readingSessionCreate(articleID, (sessionID) => {
+      api.readingSessionCreate(articleID, "web", (sessionID) => {
         setReadingSessionId(sessionID);
         api.setArticleOpened(articleInfo.id);
         api.logUserActivity(api.OPEN_ARTICLE, articleID, sessionID, WEB_READER);
