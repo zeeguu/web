@@ -79,6 +79,7 @@ const UserDashboardFeedbackButton = styled(OrangeButton)`
 
 export {
   UserDashboardTopContainer,
+  UserDashboardTopContainer as DashboardContainer,
   UserDashboardHelperText,
   UserDashBoardTabs,
   UserDashBoardTab,
