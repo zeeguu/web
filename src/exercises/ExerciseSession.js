@@ -91,6 +91,14 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
   // Component Initialization
   // ********************************************************************************
 
+  function handleExerciseFocus() {
+    api.logUserActivity(api.EXERCISE_FOCUSED, articleID || "", "", source || "");
+  }
+
+  function handleExerciseBlur() {
+    api.logUserActivity(api.EXERCISE_UNFOCUSED, articleID || "", "", source || "");
+  }
+
   function initializeExerciseSessionComponent() {
     api.getUserPreferences((preferences) => {
       if (SessionStorage.getAudioExercisesEnabled() === undefined)
@@ -107,6 +115,10 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
       JSON.stringify({ had_notification: hasExerciseNotification }),
       "",
     );
+
+    // Track focus/blur for exercise sessions
+    window.addEventListener("focus", handleExerciseFocus);
+    window.addEventListener("blur", handleExerciseBlur);
 
     // ========================================
     // GET THE BOOKMARKS THAT ARE TO BE STUDIED
@@ -173,6 +185,10 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
   // Component Cleanup
   // ********************************************************************************
   function cleanupExerciseSessionComponent() {
+    // Remove focus/blur event listeners
+    window.removeEventListener("focus", handleExerciseFocus);
+    window.removeEventListener("blur", handleExerciseBlur);
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
     if (currentIndexRef.current > 0 || hasKeptExercisingRef.current) {
       // Do not report if there were no exercises

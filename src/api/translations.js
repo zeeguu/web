@@ -14,6 +14,7 @@ Zeeguu_API.prototype.getOneTranslation = function (
   contextIdentifier,
   translationSource = 'reading',
   browsingSessionId = null,
+  readingSessionId = null,
 ) {
   console.log(`[TRANSLATION] getOneTranslation called`, {
     timestamp: new Date().toISOString(),
@@ -44,6 +45,7 @@ Zeeguu_API.prototype.getOneTranslation = function (
     context_identifier: contextIdentifier,
     translation_source: translationSource,
     browsing_session_id: browsingSessionId,
+    reading_session_id: readingSessionId,
   };
 
   console.log(`[TRANSLATION] About to call apiPost`, { timestamp: new Date().toISOString(), payloadSize: JSON.stringify(payload).length });
