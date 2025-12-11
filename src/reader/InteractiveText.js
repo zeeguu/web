@@ -34,6 +34,7 @@ export default class InteractiveText {
     contextIdentifier,
     formatting,
     getBrowsingSessionId = () => null,
+    getReadingSessionId = () => null,
   ) {
     // beginning of the constructor
     this.api = api;
@@ -44,6 +45,7 @@ export default class InteractiveText {
     this.formatting = formatting;
     this.contextIdentifier = contextIdentifier;
     this.getBrowsingSessionId = getBrowsingSessionId;
+    this.getReadingSessionId = getReadingSessionId;
 
     // Might be worth to store a flag to keep track of wether or not the
     // bookmark / text are part of the content or stand by themselves.
@@ -81,6 +83,7 @@ export default class InteractiveText {
     console.log(word);
 
     const browsingSessionId = this.getBrowsingSessionId?.();
+    const readingSessionId = this.getReadingSessionId?.();
 
     this.api
       .getOneTranslation(
@@ -100,6 +103,7 @@ export default class InteractiveText {
           ? "exercise"
           : "reading",
         browsingSessionId,
+        readingSessionId,
       )
       .then((response) => {
         console.log(`[INTERACTIVE-TEXT] Translation response received`, { timestamp: new Date().toISOString(), word: word.word });

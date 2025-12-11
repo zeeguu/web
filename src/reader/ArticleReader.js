@@ -73,6 +73,10 @@ export default function ArticleReader({ teacherArticleID }) {
   const [bookmarks, setBookmarks] = useState([]);
 
   const clickedOnReviewVocabRef = useShadowRef(clickedOnReviewVocab);
+  const readingSessionIdRef = useShadowRef(readingSessionId);
+
+  // Getter function for InteractiveText to access current reading session ID
+  const getReadingSessionId = useCallback(() => readingSessionIdRef.current, []);
 
   // Use the shared scroll tracking hook
   const {
@@ -172,6 +176,8 @@ export default function ArticleReader({ teacherArticleID }) {
               speech,
               each.context_identifier,
               each.formatting,
+              null, // getBrowsingSessionId - not used in article reader
+              getReadingSessionId,
             ),
         ),
       );
@@ -187,12 +193,15 @@ export default function ArticleReader({ teacherArticleID }) {
           WEB_READER,
           speech,
           articleTitleData.context_identifier,
+          null, // formatting
+          null, // getBrowsingSessionId
+          getReadingSessionId,
         ),
       );
       setArticleInfo(articleInfo);
       setTitle(articleInfo.title);
 
-      api.readingSessionCreate(articleID, (sessionID) => {
+      api.readingSessionCreate(articleID, "web", (sessionID) => {
         setReadingSessionId(sessionID);
         api.setArticleOpened(articleInfo.id);
         api.logUserActivity(api.OPEN_ARTICLE, articleID, sessionID, WEB_READER);

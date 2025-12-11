@@ -33,7 +33,7 @@ export default class NavigationOptions {
   });
 
   static history = Object.freeze({
-    linkTo: "/history",
+    linkTo: "/activity-history",
     icon: <NavIcon name="history" />,
     text: strings.history,
     isOnStudentSide: true,

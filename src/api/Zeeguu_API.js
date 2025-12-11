@@ -21,5 +21,6 @@ import "./nlp";
 import "./userVideos";
 import "./watching_sessions";
 import "./dailyAudio";
+import "./sessionHistory";
 
 export default Zeeguu_API;

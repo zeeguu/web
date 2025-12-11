@@ -1,8 +1,9 @@
 import { Zeeguu_API } from "./classDef";
 import qs from "qs";
 
-Zeeguu_API.prototype.readingSessionCreate = function (articleId, callback) {
+Zeeguu_API.prototype.readingSessionCreate = function (articleId, readingSource, callback) {
   // the API expects the article_id to be an integer
+  // readingSource: 'extension' or 'web'
   const after_extracting_json = function (json) {
     let id = JSON.parse(json).id;
     callback(id);
@@ -10,7 +11,7 @@ Zeeguu_API.prototype.readingSessionCreate = function (articleId, callback) {
 
   this._post(
     `reading_session_start`,
-    qs.stringify({ article_id: articleId }),
+    qs.stringify({ article_id: articleId, reading_source: readingSource }),
     after_extracting_json
   );
 };

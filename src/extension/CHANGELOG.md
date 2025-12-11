@@ -11,6 +11,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 
 
+
+## [2.5.11] - 2025-12-11
+
+### Added
+- Track reading source (extension vs web) when starting reading sessions for activity history
+
 ## [2.5.10] - 2025-11-19
 
 ### Changed

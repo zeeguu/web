@@ -97,6 +97,8 @@ export function InjectedReaderApp({ modalIsOpen, setModalIsOpen, api, url, autho
               engine,
               each.context_identifier,
               each.formatting,
+              null, // getBrowsingSessionId
+              getReadingSessionId,
             ),
         ),
       );
@@ -113,6 +115,9 @@ export function InjectedReaderApp({ modalIsOpen, setModalIsOpen, api, url, autho
           EXTENSION_SOURCE,
           engine,
           articleTitleData.context_identifier,
+          null, // formatting
+          null, // getBrowsingSessionId
+          getReadingSessionId,
         ),
       );
       setBookmarks(artinfo.translations);
@@ -164,6 +169,9 @@ export function InjectedReaderApp({ modalIsOpen, setModalIsOpen, api, url, autho
   const activeSessionDurationRef = useShadowRef(activeSessionDuration);
   const readingSessionIdRef = useShadowRef(readingSessionId);
   const viewPortSettingsRef = useShadowRef(viewPortSettings);
+
+  // Getter function for InteractiveText to access current reading session ID
+  const getReadingSessionId = () => readingSessionIdRef.current;
 
   function uploadActivity() {
     // Delegate scroll activity to the hook
@@ -251,6 +259,8 @@ export function InjectedReaderApp({ modalIsOpen, setModalIsOpen, api, url, autho
               engine,
               each.context_identifier,
               each.formatting,
+              null, // getBrowsingSessionId
+              getReadingSessionId,
             ),
         ),
       );
@@ -267,6 +277,9 @@ export function InjectedReaderApp({ modalIsOpen, setModalIsOpen, api, url, autho
           EXTENSION_SOURCE,
           engine,
           articleTitleData.context_identifier,
+          null, // formatting
+          null, // getBrowsingSessionId
+          getReadingSessionId,
         ),
       );
       setBookmarks(artinfo.translations);
@@ -278,7 +291,7 @@ export function InjectedReaderApp({ modalIsOpen, setModalIsOpen, api, url, autho
         }
       });
 
-      api.readingSessionCreate(artinfo.id, (sessionID) => {
+      api.readingSessionCreate(artinfo.id, "extension", (sessionID) => {
         setReadingSessionId(sessionID);
         api.setArticleOpened(artinfo.id);
         api.logUserActivity(api.OPEN_ARTICLE, artinfo.id, sessionID, EXTENSION_SOURCE);
@@ -315,6 +328,8 @@ export function InjectedReaderApp({ modalIsOpen, setModalIsOpen, api, url, autho
                 engine,
                 each.context_identifier,
                 each.formatting,
+                null, // getBrowsingSessionId
+                getReadingSessionId,
               ),
           ),
         );
@@ -331,6 +346,9 @@ export function InjectedReaderApp({ modalIsOpen, setModalIsOpen, api, url, autho
             EXTENSION_SOURCE,
             engine,
             articleTitleData.context_identifier,
+            null, // formatting
+            null, // getBrowsingSessionId
+            getReadingSessionId,
           ),
         );
         setBookmarks(artinfo.translations);
@@ -342,7 +360,7 @@ export function InjectedReaderApp({ modalIsOpen, setModalIsOpen, api, url, autho
           }
         });
 
-        api.readingSessionCreate(artinfo.id, (sessionID) => {
+        api.readingSessionCreate(artinfo.id, "extension", (sessionID) => {
           setReadingSessionId(sessionID);
           api.setArticleOpened(artinfo.id);
           api.logUserActivity(api.OPEN_ARTICLE, artinfo.id, sessionID, EXTENSION_SOURCE);
