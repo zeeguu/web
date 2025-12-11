@@ -40,7 +40,7 @@ export default class NavigationOptions {
   });
 
   static statistics = Object.freeze({
-    linkTo: "/user_dashboard",
+    linkTo: "/activity-history",
     icon: <NavIcon name="statistics" />,
     text: strings.userDashboard,
     isOnStudentSide: true,

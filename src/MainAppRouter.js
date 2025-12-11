@@ -74,7 +74,7 @@ export default function MainAppRouter({ hasExtension, handleSuccessfulLogIn }) {
       <PrivateRouteWithMainNav path="/daily-audio" component={DailyAudioRouter} />
       <PrivateRouteWithMainNav path="/words" component={WordsRouter} />
       <PrivateRouteWithMainNav path="/history" component={ReadingHistory} />
-      <PrivateRouteWithMainNav path="/session-history" component={SessionHistory} />
+      <PrivateRouteWithMainNav path="/activity-history" component={SessionHistory} />
       <PrivateRouteWithMainNav path="/account_settings" component={SettingsRouter} />
       <PrivateRouteWithMainNav path="/teacher" component={TeacherRouter} />
       <PrivateRouteWithMainNav path="/read/article" component={ArticleReader} />
