@@ -88,14 +88,6 @@ export default function TranslateWhatYouHear({
     return <LoadingAnimation />;
   }
 
-  // Debug the state issue where TranslateWhatYouHear immediately shows solution
-  console.log('TranslateWhatYouHear render debug:', {
-    'isExerciseOver': isExerciseOver,
-    'exerciseBookmark.from': exerciseBookmark.from,
-    'exerciseBookmark.to': exerciseBookmark.to,
-    'interactiveText loaded': !!interactiveText
-  });
-
   return (
     <s.Exercise className="translateWhatYouHear">
       {/* Instructions - visible during exercise, invisible when showing solution but still take space */}
