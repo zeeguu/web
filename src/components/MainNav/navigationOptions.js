@@ -33,14 +33,14 @@ export default class NavigationOptions {
   });
 
   static history = Object.freeze({
-    linkTo: "/history",
+    linkTo: "/activity-history",
     icon: <NavIcon name="history" />,
     text: strings.history,
     isOnStudentSide: true,
   });
 
   static statistics = Object.freeze({
-    linkTo: "/activity-history",
+    linkTo: "/user_dashboard",
     icon: <NavIcon name="statistics" />,
     text: strings.userDashboard,
     isOnStudentSide: true,
