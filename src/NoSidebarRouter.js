@@ -1,12 +1,29 @@
+import { lazy, Suspense } from "react";
 import { PrivateRoute } from "./PrivateRoute";
 import WordsRouter from "./words/_WordsRouter";
 import ExercisesRouter from "./exercises/ExercisesRouter";
-import TeacherRouter from "./teacher/_routing/_TeacherRouter";
 import Settings from "./pages/Settings/Settings";
-import UserDashboard from "./userDashboard/UserDashboard";
 import React from "react";
 import ReadingHistory from "./words/WordHistory";
 import StandAloneReader from "./reader/StandAloneReader";
+import LoadingAnimation from "./components/LoadingAnimation";
+
+// Lazy load separate parts of the app
+const LazyTeacherRouter = lazy(() => import("./teacher/_routing/_TeacherRouter"));
+const LazyUserDashboard = lazy(() => import("./userDashboard/UserDashboard"));
+
+// Wrapper components to handle Suspense (required for react-router v5)
+const TeacherRouter = (props) => (
+  <Suspense fallback={<LoadingAnimation />}>
+    <LazyTeacherRouter {...props} />
+  </Suspense>
+);
+
+const UserDashboard = (props) => (
+  <Suspense fallback={<LoadingAnimation />}>
+    <LazyUserDashboard {...props} />
+  </Suspense>
+);
 
 export default function NoSidebarRouter({ setUser }) {
   return (

@@ -134,7 +134,7 @@ function App() {
   useEffect(() => {
     console.log("Got the API URL:" + API_ENDPOINT);
     console.log("Got the Domain URL:" + APP_DOMAIN);
-    console.log("Extension ID: " + process.env.REACT_APP_EXTENSION_ID);
+    console.log("Extension ID: " + import.meta.env.VITE_EXTENSION_ID);
     // when creating the app component we also load the
     // user details from the server; this also ensures that
     // we get the latest feature flags for this user and save
