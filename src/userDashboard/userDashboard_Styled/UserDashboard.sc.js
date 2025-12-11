@@ -1,7 +1,6 @@
 import styled from "styled-components";
 import * as s from "../../components/TopMessage.sc";
 import { zeeguuWarmYellow, zeeguuDarkOrange } from "../../components/colors";
-import { device } from "./Devices";
 import "react-datepicker/dist/react-datepicker.css";
 import { OrangeButton } from "../../reader/ArticleReader.sc";
 
@@ -72,46 +71,6 @@ const UserDashBoardDropdown = styled.select`
     cursor: pointer;
   }
 `;
-// parent container has to have height specified in order for the nivo graphs to be shown
-// nivo automatically resizes the graphs' width, but not height
-const NivoGraphContainer = styled.div`
-  @media ${device.mobileS} {
-    height: 200px;
-  }
-
-  @media ${device.mobileL} {
-    height: 250px;
-  }
-
-  @media ${device.tablet} {
-    height: 350px;
-  }
-
-  @media ${device.laptop1} {
-    height: 350px;
-  }
-
-  @media ${device.laptop2} {
-    height: 400px;
-  }
-
-  @media ${device.laptop3} {
-    height: 450px;
-  }
-
-  @media ${device.laptop4} {
-    height: 550px;
-  }
-
-  @media ${device.laptop5} {
-    height: 600px;
-  }
-
-  @media ${device.desktop} {
-    height: 700px;
-  }
-`;
-
 const UserDashboardFeedbackButton = styled(OrangeButton)`
   display: inline-block;
   float: none;
@@ -124,7 +83,6 @@ export {
   UserDashBoardTabs,
   UserDashBoardTab,
   UserDashBoardDropdown,
-  NivoGraphContainer,
   UserDatePicker,
   UserDashboardFeedbackButton,
 };
