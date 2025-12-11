@@ -16,30 +16,37 @@ export default function useBrowsingSession() {
   const api = useContext(APIContext);
 
   const [browsingSessionId, setBrowsingSessionId] = useState(null);
+  const sessionIdRef = useRef(null);
+  useEffect(() => {
+    sessionIdRef.current = browsingSessionId;
+  }, [browsingSessionId]);
+
   const [hasSessionStarted, setHasSessionStarted] = useState(false);
+  const sessionStartedRef = useRef(false);
+  // Keep refs in sync with state (state is single source of truth)
+  useEffect(() => {
+    sessionStartedRef.current = hasSessionStarted;
+  }, [hasSessionStarted]);
+
   const [activityTimer, setActivityTimer] = useState(0);
   const [isTimerActive, setIsTimerActive] = useState(false);
   const [isFocused, setIsFocused] = useState(true);
 
-  // Use ref to track if session has started to avoid closure issues
-  const sessionStartedRef = useRef(false);
-  const sessionIdRef = useRef(null);
-
   // Start the browsing session
+  // **************************
   const startSession = useCallback(() => {
     if (sessionStartedRef.current || !api) return;
 
-    sessionStartedRef.current = true;
     setHasSessionStarted(true);
     setIsTimerActive(true);
 
     api.browsingSessionCreate((sessionId) => {
-      sessionIdRef.current = sessionId;
       setBrowsingSessionId(sessionId);
     });
   }, [api]);
 
   // Upload current activity to the server
+  // *************************************
   const uploadActivity = useCallback(() => {
     if (sessionIdRef.current && activityTimer > 0) {
       api.browsingSessionUpdate(sessionIdRef.current, activityTimer);
@@ -47,6 +54,7 @@ export default function useBrowsingSession() {
   }, [api, activityTimer]);
 
   // End the session
+  // ***************
   const endSession = useCallback(() => {
     if (sessionIdRef.current && activityTimer > 0) {
       api.browsingSessionEnd(sessionIdRef.current, activityTimer);
@@ -54,6 +62,7 @@ export default function useBrowsingSession() {
   }, [api, activityTimer]);
 
   // Idle timer with 15 second timeout (shorter than reading's 30 seconds)
+  // *********************************************************************
   const { reset: resetIdleTimer } = useIdleTimer({
     onActive: () => {
       if (sessionStartedRef.current) {
@@ -94,6 +103,7 @@ export default function useBrowsingSession() {
   });
 
   // Timer increment effect
+  // *************************
   useEffect(() => {
     if (!hasSessionStarted) return;
 
@@ -107,6 +117,7 @@ export default function useBrowsingSession() {
   }, [hasSessionStarted, isTimerActive]);
 
   // Periodic upload (every 10 seconds of active time)
+  // *************************************************
   useEffect(() => {
     if (hasSessionStarted && isTimerActive && activityTimer > 0 && activityTimer % 10 === 0) {
       uploadActivity();
@@ -114,6 +125,7 @@ export default function useBrowsingSession() {
   }, [activityTimer, hasSessionStarted, isTimerActive, uploadActivity]);
 
   // Focus/blur handling
+  // *************************************************
   useEffect(() => {
     const handleFocus = () => {
       setIsFocused(true);
@@ -141,6 +153,7 @@ export default function useBrowsingSession() {
   }, [isTimerActive, uploadActivity, resetIdleTimer, activityTimer]);
 
   // Cleanup on unmount
+  // *************************************************
   useEffect(() => {
     return () => {
       if (sessionIdRef.current) {
@@ -150,8 +163,12 @@ export default function useBrowsingSession() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // Getter function for context - reads from ref for latest value
+  const getBrowsingSessionId = useCallback(() => sessionIdRef.current, []);
+
   return {
     browsingSessionId,
+    getBrowsingSessionId,
     hasSessionStarted,
     activityTimer,
   };

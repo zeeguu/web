@@ -80,7 +80,7 @@ export default class InteractiveText {
     let wordToken_i = word.token.token_i - cToken_i;
     console.log(word);
 
-    const browsingSessionId = this.getBrowsingSessionId ? this.getBrowsingSessionId() : null;
+    const browsingSessionId = this.getBrowsingSessionId?.();
 
     this.api
       .getOneTranslation(

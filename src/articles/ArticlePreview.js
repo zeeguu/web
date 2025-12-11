@@ -33,7 +33,7 @@ export default function ArticlePreview({
   onArticleHidden,
 }) {
   const api = useContext(APIContext);
-  const getBrowsingSessionId = useContext(BrowsingSessionContext) || (() => null);
+  const getBrowsingSessionId = useContext(BrowsingSessionContext);
   const [isRedirectionModalOpen, setIsRedirectionModaOpen] = useState(false);
   const [isArticleSaved, setIsArticleSaved] = useState(article.has_personal_copy);
   const [showInferredTopic, setShowInferredTopic] = useState(true);
@@ -112,7 +112,6 @@ export default function ArticlePreview({
     article.id,
     api,
     zeeguuSpeech,
-    // browsingSessionId accessed via ref to avoid stale closure
     // isTokenizing removed - was causing infinite loop!
     // interactiveSummary removed - was causing infinite loop!
     // interactiveTitle removed - was causing infinite loop!
@@ -238,7 +237,9 @@ export default function ArticlePreview({
           <s.UrlSourceContainer>
             <s.UrlSource>{extractDomain(article.url)}</s.UrlSource>
             {!dontShowPublishingTime && article.published && (
-              <span style={{ marginLeft: "5px" }}>({formatDistanceToNow(new Date(article.published), { addSuffix: true })})</span>
+              <span style={{ marginLeft: "5px" }}>
+                ({formatDistanceToNow(new Date(article.published), { addSuffix: true })})
+              </span>
             )}
           </s.UrlSourceContainer>
         )
