@@ -1,4 +1,5 @@
 import { useEffect, useState, useContext } from "react";
+import levenshtein from "fast-levenshtein";
 import strings from "../../i18n/definitions";
 import * as s from "./Exercise.sc";
 import { normalizeAnswer } from "../inputNormalization";
@@ -34,7 +35,6 @@ export default function BottomInput({
   const [correctWordCountInInput, setCorrectWordCountInInput] = useState(0);
   const [feedbackMessage, setFeedbackMessage] = useState("");
   const [isKeyboardCollapsed, setIsKeyboardCollapsed] = useState(true);
-  const levenshtein = require("fast-levenshtein");
   const normalizedLearningWord = normalizeAnswer(exerciseBookmark.from);
 
   const solutionText = isL1Answer ? exerciseBookmark.to : exerciseBookmark.from;
