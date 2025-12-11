@@ -1,3 +1,4 @@
+import { lazy, Suspense } from "react";
 import { Route, Switch, Redirect } from "react-router-dom";
 import LandingPage from "./landingPage/LandingPage";
 import ExtensionInstalled from "./pages/onboarding/ExtensionInstalled";
@@ -15,9 +16,25 @@ import ExercisesRouter from "./exercises/ExercisesRouter";
 import WordsRouter from "./words/_WordsRouter";
 import ReadingHistory from "./words/WordHistory";
 import SessionHistory from "./words/SessionHistory";
-import TeacherRouter from "./teacher/_routing/_TeacherRouter";
 import ArticleReader from "./reader/ArticleReader";
-import UserDashboard from "./userDashboard/UserDashboard";
+import LoadingAnimation from "./components/LoadingAnimation";
+
+// Lazy load separate parts of the app
+const LazyTeacherRouter = lazy(() => import("./teacher/_routing/_TeacherRouter"));
+const LazyUserDashboard = lazy(() => import("./userDashboard/UserDashboard"));
+
+// Wrapper components to handle Suspense (required for react-router v5)
+const TeacherRouter = (props) => (
+  <Suspense fallback={<LoadingAnimation />}>
+    <LazyTeacherRouter {...props} />
+  </Suspense>
+);
+
+const UserDashboard = (props) => (
+  <Suspense fallback={<LoadingAnimation />}>
+    <LazyUserDashboard {...props} />
+  </Suspense>
+);
 import { PrivateRouteWithMainNav } from "./PrivateRouteWithMainNav";
 import { PrivateRoute } from "./PrivateRoute";
 import DeleteAccount from "./pages/DeleteAccount/DeleteAccount";

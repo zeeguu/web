@@ -1,5 +1,4 @@
 import styled from "styled-components";
-import "@reach/accordion/styles.css";
 
 export const StyledMyTexts = styled.div`
   .sorting-btns-box {
