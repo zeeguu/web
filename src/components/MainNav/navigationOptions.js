@@ -37,7 +37,6 @@ export default class NavigationOptions {
     icon: <NavIcon name="history" />,
     text: strings.activity,
     isOnStudentSide: true,
-    isNew: true,
   });
 
   static statistics = Object.freeze({

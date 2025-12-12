@@ -118,6 +118,7 @@
     "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
     "@babel/plugin-transform-runtime": "^7.17.0",
     "@babel/preset-env": "^7.16.11",
+    "@babel/preset-react": "^7.28.5",
     "@vitejs/plugin-react": "^5.1.1",
     "babel-core": "^6.26.3",
     "babel-loader": "^8.2.3",

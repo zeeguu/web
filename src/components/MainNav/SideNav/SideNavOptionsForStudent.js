@@ -33,12 +33,7 @@ export default function SideNavOptionsForStudent({ screenWidth }) {
 
       <NavOption {...NavigationOptions.words} currentPath={path} screenWidth={screenWidth} />
 
-      <NavOption
-        {...NavigationOptions.activity}
-        currentPath={path}
-        screenWidth={screenWidth}
-        notification={<NotificationIcon position={"top-absolute"} text="new" />}
-      />
+      <NavOption {...NavigationOptions.activity} currentPath={path} screenWidth={screenWidth} />
 
       <NavOption {...NavigationOptions.statistics} currentPath={path} screenWidth={screenWidth} />
 
