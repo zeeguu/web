@@ -601,6 +601,12 @@ function SessionItem({ session, onEditWord }) {
             {session.session_type === "browsing" && "Browsing"}
             {session.session_type === "audio" && "Audio Lesson"}
           </SessionType>
+          {session.session_type === "reading" && session.reading_source === "extension" && (
+            <span className="source-badge extension" title="Read via browser extension">ext</span>
+          )}
+          {session.session_type === "reading" && session.reading_source === "web" && (
+            <span className="source-badge web" title="Read in Zeeguu">web</span>
+          )}
         </div>
         <div style={{ display: "flex", alignItems: "center", gap: "0.5em" }}>
           {session.focus_level && (
@@ -617,12 +623,6 @@ function SessionItem({ session, onEditWord }) {
       {session.session_type === "reading" && session.article_title && (
         <ArticleTitle>
           <Link to={`/read/article?id=${session.article_id}`}>{session.article_title}</Link>
-          {session.reading_source === "extension" && (
-            <span className="source-badge extension" title="Read via browser extension">ext</span>
-          )}
-          {session.reading_source === "web" && (
-            <span className="source-badge web" title="Read in Zeeguu">web</span>
-          )}
         </ArticleTitle>
       )}
 
