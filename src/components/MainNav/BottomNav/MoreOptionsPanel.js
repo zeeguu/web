@@ -6,6 +6,7 @@ import NavigationOptions from "../navigationOptions";
 import FeedbackButton from "../../FeedbackButton";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import NavOption from "../NavOption";
+import NotificationIcon from "../../NotificationIcon";
 import * as s from "./MoreOptionsPanel.sc";
 
 export default function MoreOptionsPanel({
@@ -54,9 +55,10 @@ export default function MoreOptionsPanel({
               />
 
               <NavOption
-                {...NavigationOptions.history}
+                {...NavigationOptions.activity}
                 currentPath={currentPath}
                 onClick={handleHideMoreOptions}
+                notification={<NotificationIcon position={"top-absolute"} text="new" />}
               />
 
               {userDetails.is_teacher && (
