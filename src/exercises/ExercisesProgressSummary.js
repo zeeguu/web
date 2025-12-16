@@ -34,12 +34,10 @@ export default function ExercisesProgressSummary() {
     
     useEffect(() =>{
     api.getAllScheduledBookmarks(false, (bookmarks) => {
-      console.log("bookmarks JOHANNA", bookmarks);
       setTotalInLearning(bookmarks.length);
     });
 
     api.totalLearnedBookmarks((totalLearnedCount) =>{
-      console.log("totalLearnedCount JOHANNA", totalLearnedCount);
       setTotalLearned(totalLearnedCount)
     });
 

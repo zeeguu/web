@@ -57,7 +57,6 @@ export default function ArticlesProgressSummary() {
           setWeeksPracticed(weeksPracticed);
     });
     }, []);
-    console.log("randomItems", randomItems);
 
     return (
         <s.ProgressItemsContainer >
