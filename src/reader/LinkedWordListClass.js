@@ -105,6 +105,22 @@ export class Word extends Item {
     }
     return newWord;
   }
+
+  // Prevent circular reference issues during JSON serialization (e.g., Sentry Replay)
+  // The Word class extends Item from linked-list, which has prev/next pointers
+  // that create circular references and cause "Maximum call stack size exceeded" errors
+  toJSON() {
+    return {
+      id: this.id,
+      word: this.word,
+      translation: this.translation,
+      total_tokens: this.total_tokens,
+      bookmark_id: this.bookmark_id,
+      service_name: this.service_name,
+      // Omit prev/next (inherited from Item) to break circular reference
+      // Omit token and mergedTokens as they may contain complex nested objects
+    };
+  }
 }
 
 export default class LinkedWordList {
