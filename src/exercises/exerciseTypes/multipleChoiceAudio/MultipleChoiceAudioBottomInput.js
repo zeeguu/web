@@ -13,6 +13,11 @@ export default function MultipleChoiceAudioBottomInput({
 
   function checkResult() {
     let bookmarkSelected = bookmarksToStudy[currentChoice];
+    if (!bookmarkSelected) {
+      // User clicked Check without selecting any option
+      setIsIncorrect(true);
+      return;
+    }
     if (bookmarkSelected.id === targetBookmark.id) {
       notifyCorrectAnswer(targetBookmark);
     } else {
