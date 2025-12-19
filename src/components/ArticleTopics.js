@@ -47,7 +47,7 @@ export default function ArticleTopics({
             {topicOrigin === TopicOriginType.INFERRED && (
               <HighlightOffRoundedIcon
                 className="cancelButton"
-                sx={{ color: darkBlue }}
+                sx={{ color: '#aaa', fontSize: '1rem', strokeWidth: 0.5 }}
                 onClick={(e) => {
                   e.stopPropagation();
                   setShowInferredTopic(false);

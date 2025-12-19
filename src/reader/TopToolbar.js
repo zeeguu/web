@@ -22,6 +22,7 @@ export default function TopToolbar({
   setPronouncing,
   articleProgress,
   timer,
+  reportBroken,
 }) {
   const api = useContext(APIContext);
   const { screenWidth, isMobile } = useScreenWidth();
@@ -100,6 +101,7 @@ export default function TopToolbar({
           </div>
           <div style={{ display: "flex", alignItems: "center", gap: "1rem", marginRight: "1rem" }}>
             {isMobile && timer}
+            {reportBroken}
             <ToolbarButtons
               translating={translating}
               pronouncing={pronouncing}

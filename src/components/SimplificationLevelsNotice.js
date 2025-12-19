@@ -1,17 +1,26 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
+import { UserContext } from "../contexts/UserContext";
 
 export default function SimplificationLevelsNotice({ articleInfo, api, onLevelChange, currentArticleId }) {
   const [simplificationLevels, setSimplificationLevels] = useState([]);
+  const { userDetails } = useContext(UserContext);
+
+  // Only show for users with the simplification_versions feature
+  const hasFeature = userDetails?.features?.includes("simplification_versions");
 
   useEffect(() => {
-    // Always try to fetch simplification levels for any article
-    // This works for both simplified articles and original articles
-    if (articleInfo?.id) {
+    // Only fetch if user has the feature
+    if (articleInfo?.id && hasFeature) {
       api.getArticleSimplificationLevels(articleInfo.id, (levels) => {
         setSimplificationLevels(levels || []);
       });
     }
-  }, [articleInfo?.id, api]);
+  }, [articleInfo?.id, api, hasFeature]);
+
+  // Don't show if user doesn't have the feature
+  if (!hasFeature) {
+    return null;
+  }
 
   // Show the notice if:
   // 1. It's a simplified article (has parent_article_id), OR

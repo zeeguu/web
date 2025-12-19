@@ -28,7 +28,6 @@ import useUserPreferences from "../hooks/useUserPreferences";
 import ArticleStatInfo from "../components/ArticleStatInfo";
 import DigitalTimer from "../components/DigitalTimer";
 import { APIContext } from "../contexts/APIContext";
-import SimplificationLevelsNotice from "../components/SimplificationLevelsNotice";
 
 // UMR stands for historical reasons for: Unified Multilingual Reader
 export const WEB_READER = "UMR";
@@ -271,6 +270,9 @@ export default function ArticleReader({ teacherArticleID }) {
             showClock={true}
           ></DigitalTimer>
         }
+        reportBroken={
+          <ReportBroken UMR_SOURCE={WEB_READER} history={history} articleID={articleID} />
+        }
       />
 
       <s.ArticleReader>
@@ -287,14 +289,9 @@ export default function ArticleReader({ teacherArticleID }) {
           <ArticleAuthors articleInfo={articleInfo} />
           <s.ArticleInfoContainer>
             <ArticleStatInfo articleInfo={articleInfo}></ArticleStatInfo>
-            <s.TopReaderButtonsContainer>
-              <ArticleSource url={articleInfo.url} />
-              <ReportBroken UMR_SOURCE={WEB_READER} history={history} articleID={articleID} />
-            </s.TopReaderButtonsContainer>
+            {!articleInfo.parent_url && <ArticleSource url={articleInfo.url} />}
           </s.ArticleInfoContainer>
           <hr></hr>
-
-          <SimplificationLevelsNotice articleInfo={articleInfo} api={api} />
 
           {articleInfo.img_url && (
             <s.ArticleImgContainer>

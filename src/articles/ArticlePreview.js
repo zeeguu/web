@@ -20,6 +20,8 @@ import { getStaticPath } from "../utils/misc/staticPath";
 import { estimateReadingTime } from "../utils/misc/readableTime";
 import ActionButton from "../components/ActionButton";
 import { getHighestCefrLevel } from "../utils/misc/cefrHelpers";
+import getDomainName from "../utils/misc/getDomainName";
+import ArticleTopics from "../components/ArticleTopics";
 
 export default function ArticlePreview({
   article,
@@ -149,10 +151,9 @@ export default function ArticlePreview({
 
   function titleLink(article) {
     let linkToRedirect = `/read/article?id=${article.id}`;
-
     let open_in_zeeguu = (
       <ActionButton as={Link} to={linkToRedirect} onClick={handleArticleClick}>
-        Open
+        Read Full
       </ActionButton>
     );
 
@@ -177,7 +178,7 @@ export default function ArticlePreview({
             handleOpenRedirectionModal();
           }}
         >
-          Open
+          Read Full
         </ActionButton>
       </>
     );
@@ -192,7 +193,7 @@ export default function ArticlePreview({
         href={article.url}
         onClick={handleArticleClick}
       >
-        Open
+        Read Full
       </ActionButton>
     );
 
@@ -225,11 +226,10 @@ export default function ArticlePreview({
         marginBottom: isAnimatingOut ? "0" : undefined,
       }}
     >
-      {article.feed_id ? (
+      {article.feed_id && !dontShowSourceIcon ? (
         <ArticleSourceInfo
           articleInfo={article}
           dontShowPublishingTime={dontShowPublishingTime}
-          dontShowSourceIcon={dontShowSourceIcon}
         />
       ) : (
         !dontShowSourceIcon &&
@@ -273,7 +273,7 @@ export default function ArticlePreview({
           marginBottom: "10px",
         }}
       >
-        <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+        <div style={{ display: "flex", alignItems: "center" }}>
           {/* Difficulty (CEFR level) */}
           <div style={{ display: "flex", alignItems: "center", gap: "5px" }}>
             <img
@@ -287,27 +287,65 @@ export default function ArticlePreview({
             <span>{article.metrics?.cefr_level || article.cefr_level || "B1"}</span>
           </div>
 
-          {/* Simplified label if available */}
-          {article.parent_article_id && <s.SimplifiedLabel>simplified</s.SimplifiedLabel>}
+          {/* Simplified tag */}
+          {article.parent_article_id && (
+            <s.SimplifiedLabel style={{ marginLeft: '8px' }}>Simplified</s.SimplifiedLabel>
+          )}
+
+          {/* Source info */}
+          {article.parent_article_id && article.parent_url && (
+            <a
+              href={article.parent_url}
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{ color: '#888', fontSize: '0.85em', marginLeft: '8px', textDecoration: 'none' }}
+            >
+              from: {getDomainName(article.parent_url).replace('.dk', '').replace('.se', '').replace('.nl', '').replace('.de', '').replace('.fr', '').replace('.com', '').replace('.org', '')}
+            </a>
+          )}
         </div>
 
-        <div>
-          {/* Reading time only */}
-          <div style={{ display: "flex", alignItems: "center", gap: "5px" }}>
-            <img
-              src={getStaticPath("icons", "read-time-icon.png")}
-              alt="read time icon"
-              style={{ width: "16px", height: "16px" }}
-            />
-            <span>~ {estimateReadingTime(article.metrics?.word_count || article.word_count || 0)}</span>
+        <ArticleTopics
+          topics={article.topics_list}
+          api={api}
+          articleId={article.id}
+          showInferredTopic={showInferredTopic}
+          setShowInferredTopic={setShowInferredTopic}
+        />
+
+        {/* Matched search subscriptions */}
+        {article.matched_searches && article.matched_searches.length > 0 && (
+          <div style={{ marginTop: "8px" }}>
+            {article.matched_searches.map((search, i) => (
+              <span
+                key={i}
+                style={{
+                  display: "inline-block",
+                  fontSize: "0.75em",
+                  color: "#b45309",
+                  backgroundColor: "#fef3c7",
+                  padding: "2px 8px",
+                  borderRadius: "12px",
+                  marginRight: "6px",
+                  fontWeight: "500",
+                }}
+              >
+                🔍 {search}
+              </span>
+            ))}
           </div>
-        </div>
+        )}
       </div>
 
       <s.ArticleContent>
-        {article.img_url && <img alt="" src={article.img_url} />}
+        {article.img_url && (
+          <Link to={`/read/article?id=${article.id}`} onClick={handleArticleClick}>
+            <img alt="" src={article.img_url} style={{ cursor: "pointer" }} />
+          </Link>
+        )}
         <s.Summary style={{ display: "flex", flexWrap: "wrap", alignItems: "baseline", gap: "4px" }}>
           <span style={{ flex: "1", minWidth: "fit-content" }}>
+            <span style={{ fontWeight: 'bold', fontSize: '0.85em', marginRight: '5px' }}>Summary</span>
             {interactiveSummary ? (
               <TranslatableText interactiveText={interactiveSummary} translating={true} pronouncing={true} />
             ) : (
@@ -325,13 +363,19 @@ export default function ArticlePreview({
           >
             <div style={{ display: "flex", alignItems: "center", gap: "10px", flex: "0 0 auto" }}>
               {titleLink(article)}
+              <span style={{ fontSize: "0.8em", opacity: 0.7 }}>
+                (~{estimateReadingTime(article.metrics?.word_count || article.word_count || 0)
+                  .replace(" minutes", "min")
+                  .replace(" minute", "min")})
+              </span>
+            </div>
+            <div style={{ display: "flex", alignItems: "center", gap: "10px", flex: "0 0 auto" }}>
               <SaveArticleButton
                 article={article}
                 isArticleSaved={isArticleSaved}
                 setIsArticleSaved={setIsArticleSaved}
+                variant="muted"
               />
-            </div>
-            <div style={{ flex: "0 0 auto" }}>
               <ActionButton onClick={handleHideArticle} variant="muted">
                 Hide
               </ActionButton>

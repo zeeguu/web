@@ -430,11 +430,18 @@ let CombinedBox = styled.div`
   }
 `;
 
+const ReadingTime = styled.div`
+  font-size: 0.9em;
+  color: #888;
+  margin-bottom: 0.5em;
+`;
+
 export {
   ArticleReader,
   ArticleTopics,
   ArticleImg,
   ArticleImgContainer,
+  ReadingTime,
   AuthorLinksContainer,
   ArticleInfoContainer,
   TopReaderButtonsContainer,

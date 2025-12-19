@@ -1,11 +1,15 @@
 import * as s from "./ArticleStatInfo.sc";
 import { getStaticPath } from "../utils/misc/staticPath";
-import { estimateReadingTime } from "../utils/misc/readableTime";
 import { getHighestCefrLevel } from "../utils/misc/cefrHelpers";
+import getDomainName from "../utils/misc/getDomainName";
 
 export default function ArticleStatInfo({ articleInfo }) {
   const cefr_level = articleInfo.metrics?.cefr_level || articleInfo.cefr_level || 'B1';
-  const word_count = articleInfo.metrics?.word_count || articleInfo.word_count || 0;
+
+  // Check if this is a simplified article
+  const isSimplified = !!articleInfo.parent_url;
+  const originalDomain = isSimplified ? getDomainName(articleInfo.parent_url) : null;
+  const originalCefr = articleInfo.parent_cefr_level;
 
   // Check if we have CEFR assessment details (for teachers)
   const assessments = articleInfo.cefr_assessments;
@@ -22,6 +26,20 @@ export default function ArticleStatInfo({ articleInfo }) {
           alt="difficulty icon"
         ></img>
         <span style={{ fontWeight: 'bold' }}>{displayCefr}</span>
+        {isSimplified && (
+          <span style={{ color: '#666' }}>
+            {' · simplified from '}
+            <a
+              href={articleInfo.parent_url}
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{ color: '#0066cc' }}
+            >
+              {originalCefr ? `${originalCefr} original` : 'original'}
+            </a>
+            {` on ${originalDomain}`}
+          </span>
+        )}
         {hasAssessments && (
           <span style={{ marginLeft: '0.5rem', fontSize: '0.85em', color: '#666' }}>
             {assessments.llm?.level && (
@@ -45,13 +63,6 @@ export default function ArticleStatInfo({ articleInfo }) {
           </span>
         )}
       </s.Difficulty>
-      <s.ReadingTimeContainer>
-        <img
-          src={getStaticPath("icons", "read-time-icon.png")}
-          alt="read time icon"
-        ></img>
-        <span>~ {estimateReadingTime(word_count)}</span>
-      </s.ReadingTimeContainer>
     </s.StatContainer>
   );
 }
