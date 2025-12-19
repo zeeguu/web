@@ -97,6 +97,27 @@ const Zeeguu_API = class {
     }
   }
 
+  /**
+   * Fire-and-forget POST using sendBeacon API.
+   * Use this for analytics/session updates that should survive page navigation.
+   * Safari aggressively cancels fetch requests on navigation, causing "Load failed" errors.
+   * sendBeacon is designed for this use case and won't be cancelled.
+   */
+  _postBeacon(endpoint, body) {
+    const url = this._appendSessionToUrl(endpoint);
+    const blob = new Blob([body], { type: "application/x-www-form-urlencoded" });
+    const success = navigator.sendBeacon(url, blob);
+    if (!success) {
+      // Fallback to fetch if sendBeacon fails (e.g., payload too large)
+      // Use catch to prevent unhandled rejection on navigation
+      fetch(url, {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: body,
+      }).catch(() => {});
+    }
+  }
+
   //migrated from old teacher zeeguu dashboard
   async apiPost(endpoint, data, isForm) {
     const params = { session: this.session };

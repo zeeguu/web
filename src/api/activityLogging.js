@@ -96,14 +96,8 @@ Zeeguu_API.prototype.logUserActivity = function (event, article_id = "", value =
 
   console.log(`${hours}:${minutes}:${seconds} -- ` + event);
 
-  return this._post(
-    `upload_user_activity_data`,
-    qs.stringify(event_information),
-    () => {},
-    (error) => {
-      console.log(error);
-    },
-  );
+  // Use beacon to prevent "Load failed" errors when user navigates away
+  this._postBeacon(`upload_user_activity_data`, qs.stringify(event_information));
 };
 
 Zeeguu_API.prototype.daysSinceLastUse = function (callback) {

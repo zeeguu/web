@@ -25,7 +25,8 @@ Zeeguu_API.prototype.readingSessionUpdate = function (
     duration: currentDuration * 1000, //the API expects ms
   };
 
-  this._post(`reading_session_update`, qs.stringify(payload));
+  // Use beacon to prevent "Load failed" errors when user navigates away
+  this._postBeacon(`reading_session_update`, qs.stringify(payload));
 };
 
 Zeeguu_API.prototype.readingSessionEnd = function (
@@ -37,5 +38,6 @@ Zeeguu_API.prototype.readingSessionEnd = function (
     duration: totalTime * 1000,
   };
 
-  this._post(`reading_session_start`, qs.stringify(payload));
+  // Use beacon to prevent "Load failed" errors when user navigates away
+  this._postBeacon(`reading_session_start`, qs.stringify(payload));
 };
