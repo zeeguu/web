@@ -32,6 +32,7 @@
     "date-fns": "^2.19.0",
     "email-validator": "^2.0.4",
     "fast-levenshtein": "3.0.0",
+    "framer-motion": "^12.23.26",
     "franc": "^6.2.0",
     "franc-min": "^6.2.0",
     "js-cookie": "^3.0.1",
