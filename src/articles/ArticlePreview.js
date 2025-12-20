@@ -21,6 +21,8 @@ import { estimateReadingTime } from "../utils/misc/readableTime";
 import ActionButton from "../components/ActionButton";
 import { getHighestCefrLevel } from "../utils/misc/cefrHelpers";
 import getDomainName from "../utils/misc/getDomainName";
+import HighlightOffRoundedIcon from "@mui/icons-material/HighlightOffRounded";
+import { TopicOriginType } from "../appConstants";
 
 export default function ArticlePreview({
   article,
@@ -309,9 +311,21 @@ export default function ArticlePreview({
           {showInferredTopic && article.topics_list && article.topics_list.map(([topicTitle, topicOrigin]) => (
             <span
               key={topicTitle}
-              className={topicOrigin === 3 ? "inferred" : "gold"}
+              className={topicOrigin === TopicOriginType.INFERRED ? "inferred" : "gold"}
             >
               {topicTitle}
+              {topicOrigin === TopicOriginType.INFERRED && (
+                <HighlightOffRoundedIcon
+                  className="cancelButton"
+                  sx={{ color: '#aaa', fontSize: '1rem', strokeWidth: 0.5 }}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setShowInferredTopic(false);
+                    toast("Your preference was saved.");
+                    api.removeMLSuggestion(article.id, topicTitle);
+                  }}
+                />
+              )}
             </span>
           ))}
 
