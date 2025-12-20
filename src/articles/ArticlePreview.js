@@ -21,7 +21,6 @@ import { estimateReadingTime } from "../utils/misc/readableTime";
 import ActionButton from "../components/ActionButton";
 import { getHighestCefrLevel } from "../utils/misc/cefrHelpers";
 import getDomainName from "../utils/misc/getDomainName";
-import ArticleTopics from "../components/ArticleTopics";
 
 export default function ArticlePreview({
   article,
@@ -305,29 +304,23 @@ export default function ArticlePreview({
           )}
         </div>
 
-        <div style={{ display: "inline-flex", alignItems: "center", gap: "0.2em", marginTop: "1em" }}>
-          <ArticleTopics
-            topics={article.topics_list}
-            api={api}
-            articleId={article.id}
-            showInferredTopic={showInferredTopic}
-            setShowInferredTopic={setShowInferredTopic}
-          />
+        <s.UrlTopics style={{ cursor: "default" }}>
+          {/* Topic tags */}
+          {showInferredTopic && article.topics_list && article.topics_list.map(([topicTitle, topicOrigin]) => (
+            <span
+              key={topicTitle}
+              className={topicOrigin === 3 ? "inferred" : "gold"}
+            >
+              {topicTitle}
+            </span>
+          ))}
 
           {/* Matched search subscriptions - same style as topics but orange */}
           {article.matched_searches && article.matched_searches.length > 0 && (
             article.matched_searches.map((search, i) => (
               <span
-                key={i}
+                key={`search-${i}`}
                 style={{
-                  height: "1.2em",
-                  marginLeft: "0.2em",
-                  borderRadius: "2em",
-                  padding: "0.4em 1.35em",
-                  fontSize: "0.85em",
-                  fontWeight: "500",
-                  textAlign: "center",
-                  verticalAlign: "middle",
                   backgroundColor: "#fef3c7",
                   border: "solid 1px #b45309",
                   color: "#92400e",
@@ -337,7 +330,7 @@ export default function ArticlePreview({
               </span>
             ))
           )}
-        </div>
+        </s.UrlTopics>
       </div>
 
       <s.ArticleContent>
