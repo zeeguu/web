@@ -305,36 +305,39 @@ export default function ArticlePreview({
           )}
         </div>
 
-        <ArticleTopics
-          topics={article.topics_list}
-          api={api}
-          articleId={article.id}
-          showInferredTopic={showInferredTopic}
-          setShowInferredTopic={setShowInferredTopic}
-        />
+        <div style={{ display: "inline-flex", alignItems: "center", gap: "0.2em", marginTop: "1em" }}>
+          <ArticleTopics
+            topics={article.topics_list}
+            api={api}
+            articleId={article.id}
+            showInferredTopic={showInferredTopic}
+            setShowInferredTopic={setShowInferredTopic}
+          />
 
-        {/* Matched search subscriptions */}
-        {article.matched_searches && article.matched_searches.length > 0 && (
-          <div style={{ marginTop: "8px" }}>
-            {article.matched_searches.map((search, i) => (
+          {/* Matched search subscriptions - same style as topics but orange */}
+          {article.matched_searches && article.matched_searches.length > 0 && (
+            article.matched_searches.map((search, i) => (
               <span
                 key={i}
                 style={{
-                  display: "inline-block",
-                  fontSize: "0.75em",
-                  color: "#b45309",
-                  backgroundColor: "#fef3c7",
-                  padding: "2px 8px",
-                  borderRadius: "12px",
-                  marginRight: "6px",
+                  height: "1.2em",
+                  marginLeft: "0.2em",
+                  borderRadius: "2em",
+                  padding: "0.4em 1.35em",
+                  fontSize: "0.85em",
                   fontWeight: "500",
+                  textAlign: "center",
+                  verticalAlign: "middle",
+                  backgroundColor: "#fef3c7",
+                  border: "solid 1px #b45309",
+                  color: "#92400e",
                 }}
               >
                 🔍 {search}
               </span>
-            ))}
-          </div>
-        )}
+            ))
+          )}
+        </div>
       </div>
 
       <s.ArticleContent>
