@@ -254,6 +254,47 @@ export default function ArticlePreview({
         </div>
       )}
 
+      {/* Topics and search tags - above title for better mobile layout */}
+      <s.UrlTopics style={{ cursor: "default", marginTop: "8px" }}>
+        {/* Topic tags */}
+        {showInferredTopic && article.topics_list && article.topics_list.map(([topicTitle, topicOrigin]) => (
+          <span
+            key={topicTitle}
+            className={topicOrigin === TopicOriginType.INFERRED ? "inferred" : "gold"}
+          >
+            {topicTitle}
+            {topicOrigin === TopicOriginType.INFERRED && (
+              <HighlightOffRoundedIcon
+                className="cancelButton"
+                sx={{ color: '#aaa', fontSize: '1rem', strokeWidth: 0.5 }}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setShowInferredTopic(false);
+                  toast("Your preference was saved.");
+                  api.removeMLSuggestion(article.id, topicTitle);
+                }}
+              />
+            )}
+          </span>
+        ))}
+
+        {/* Matched search subscriptions - same style as topics but orange, clickable */}
+        {article.matched_searches && article.matched_searches.length > 0 && (
+          article.matched_searches.map((search, i) => (
+            <span
+              key={`search-${i}`}
+              style={{
+                backgroundColor: "#fef3c7",
+                border: "solid 1px #b45309",
+                color: "#92400e",
+              }}
+            >
+              🔍 <Link to={`/search?search=${encodeURIComponent(search)}`} style={{ color: "inherit", textDecoration: "none" }}>{search}</Link>
+            </span>
+          ))
+        )}
+      </s.UrlTopics>
+
       <s.TitleContainer>
         <s.Title>
           {interactiveTitle ? (
@@ -297,47 +338,6 @@ export default function ArticlePreview({
           </a>
         )}
       </div>
-
-      {/* Topics and search tags - separate row for better mobile layout */}
-      <s.UrlTopics style={{ cursor: "default", marginTop: "8px" }}>
-        {/* Topic tags */}
-        {showInferredTopic && article.topics_list && article.topics_list.map(([topicTitle, topicOrigin]) => (
-          <span
-            key={topicTitle}
-            className={topicOrigin === TopicOriginType.INFERRED ? "inferred" : "gold"}
-          >
-            {topicTitle}
-            {topicOrigin === TopicOriginType.INFERRED && (
-              <HighlightOffRoundedIcon
-                className="cancelButton"
-                sx={{ color: '#aaa', fontSize: '1rem', strokeWidth: 0.5 }}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setShowInferredTopic(false);
-                  toast("Your preference was saved.");
-                  api.removeMLSuggestion(article.id, topicTitle);
-                }}
-              />
-            )}
-          </span>
-        ))}
-
-        {/* Matched search subscriptions - same style as topics but orange, clickable */}
-        {article.matched_searches && article.matched_searches.length > 0 && (
-          article.matched_searches.map((search, i) => (
-            <span
-              key={`search-${i}`}
-              style={{
-                backgroundColor: "#fef3c7",
-                border: "solid 1px #b45309",
-                color: "#92400e",
-              }}
-            >
-              🔍 <Link to={`/search?search=${encodeURIComponent(search)}`} style={{ color: "inherit", textDecoration: "none" }}>{search}</Link>
-            </span>
-          ))
-        )}
-      </s.UrlTopics>
 
       <s.ArticleContent>
         {article.img_url && (
