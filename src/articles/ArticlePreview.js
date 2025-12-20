@@ -315,19 +315,21 @@ export default function ArticlePreview({
             </span>
           ))}
 
-          {/* Matched search subscriptions - same style as topics but orange */}
+          {/* Matched search subscriptions - same style as topics but orange, clickable */}
           {article.matched_searches && article.matched_searches.length > 0 && (
             article.matched_searches.map((search, i) => (
-              <span
+              <Link
                 key={`search-${i}`}
+                to={`/search?search=${encodeURIComponent(search)}`}
                 style={{
                   backgroundColor: "#fef3c7",
                   border: "solid 1px #b45309",
                   color: "#92400e",
+                  textDecoration: "none",
                 }}
               >
                 🔍 {search}
-              </span>
+              </Link>
             ))
           )}
         </s.UrlTopics>
