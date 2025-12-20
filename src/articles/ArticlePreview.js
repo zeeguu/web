@@ -325,7 +325,7 @@ export default function ArticlePreview({
             href={article.parent_url}
             target="_blank"
             rel="noopener noreferrer"
-            style={{ color: '#888', fontSize: '0.85em', marginLeft: '8px', textDecoration: 'none' }}
+            style={{ fontSize: 'small', marginLeft: '8px', textDecoration: 'none', color: 'inherit' }}
           >
             from {getDomainName(article.parent_url).replace('.dk', '').replace('.se', '').replace('.nl', '').replace('.de', '').replace('.fr', '').replace('.com', '').replace('.org', '')}
           </a>
@@ -333,7 +333,7 @@ export default function ArticlePreview({
 
         {/* Publishing time */}
         {!dontShowPublishingTime && article.published && (
-          <span style={{ color: '#888', fontSize: '0.85em' }}>
+          <span style={{ fontSize: 'small' }}>
             , {formatDistanceToNow(new Date(article.published), { addSuffix: true }).replace("about ", "")}
           </span>
         )}
