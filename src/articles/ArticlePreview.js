@@ -265,87 +265,79 @@ export default function ArticlePreview({
         <ReadingCompletionProgress last_reading_percentage={article.reading_completion}></ReadingCompletionProgress>
       </s.TitleContainer>
 
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          marginTop: "15px",
-          marginBottom: "10px",
-        }}
-      >
-        <div style={{ display: "flex", alignItems: "center" }}>
-          {/* Difficulty (CEFR level) */}
-          <div style={{ display: "flex", alignItems: "center", gap: "5px" }}>
-            <img
-              src={getStaticPath(
-                "icons",
-                `${getHighestCefrLevel(article.metrics?.cefr_level || article.cefr_level || "B1")}-level-icon.png`,
-              )}
-              alt="difficulty icon"
-              style={{ width: "16px", height: "16px" }}
-            />
-            <span>{article.metrics?.cefr_level || article.cefr_level || "B1"}</span>
-          </div>
-
-          {/* Simplified tag */}
-          {article.parent_article_id && (
-            <s.SimplifiedLabel style={{ marginLeft: '8px' }}>Simplified</s.SimplifiedLabel>
-          )}
-
-          {/* Source info */}
-          {article.parent_article_id && article.parent_url && (
-            <a
-              href={article.parent_url}
-              target="_blank"
-              rel="noopener noreferrer"
-              style={{ color: '#888', fontSize: '0.85em', marginLeft: '8px', textDecoration: 'none' }}
-            >
-              from: {getDomainName(article.parent_url).replace('.dk', '').replace('.se', '').replace('.nl', '').replace('.de', '').replace('.fr', '').replace('.com', '').replace('.org', '')}
-            </a>
-          )}
+      {/* Metadata row: CEFR level, simplified tag, source */}
+      <div style={{ display: "flex", alignItems: "center", marginTop: "15px" }}>
+        {/* Difficulty (CEFR level) */}
+        <div style={{ display: "flex", alignItems: "center", gap: "5px" }}>
+          <img
+            src={getStaticPath(
+              "icons",
+              `${getHighestCefrLevel(article.metrics?.cefr_level || article.cefr_level || "B1")}-level-icon.png`,
+            )}
+            alt="difficulty icon"
+            style={{ width: "16px", height: "16px" }}
+          />
+          <span>{article.metrics?.cefr_level || article.cefr_level || "B1"}</span>
         </div>
 
-        <s.UrlTopics style={{ cursor: "default" }}>
-          {/* Topic tags */}
-          {showInferredTopic && article.topics_list && article.topics_list.map(([topicTitle, topicOrigin]) => (
-            <span
-              key={topicTitle}
-              className={topicOrigin === TopicOriginType.INFERRED ? "inferred" : "gold"}
-            >
-              {topicTitle}
-              {topicOrigin === TopicOriginType.INFERRED && (
-                <HighlightOffRoundedIcon
-                  className="cancelButton"
-                  sx={{ color: '#aaa', fontSize: '1rem', strokeWidth: 0.5 }}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setShowInferredTopic(false);
-                    toast("Your preference was saved.");
-                    api.removeMLSuggestion(article.id, topicTitle);
-                  }}
-                />
-              )}
-            </span>
-          ))}
+        {/* Simplified tag */}
+        {article.parent_article_id && (
+          <s.SimplifiedLabel style={{ marginLeft: '8px' }}>Simplified</s.SimplifiedLabel>
+        )}
 
-          {/* Matched search subscriptions - same style as topics but orange, clickable */}
-          {article.matched_searches && article.matched_searches.length > 0 && (
-            article.matched_searches.map((search, i) => (
-              <span
-                key={`search-${i}`}
-                style={{
-                  backgroundColor: "#fef3c7",
-                  border: "solid 1px #b45309",
-                  color: "#92400e",
-                }}
-              >
-                🔍 <Link to={`/search?search=${encodeURIComponent(search)}`} style={{ color: "inherit", textDecoration: "none" }}>{search}</Link>
-              </span>
-            ))
-          )}
-        </s.UrlTopics>
+        {/* Source info */}
+        {article.parent_article_id && article.parent_url && (
+          <a
+            href={article.parent_url}
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{ color: '#888', fontSize: '0.85em', marginLeft: '8px', textDecoration: 'none' }}
+          >
+            from: {getDomainName(article.parent_url).replace('.dk', '').replace('.se', '').replace('.nl', '').replace('.de', '').replace('.fr', '').replace('.com', '').replace('.org', '')}
+          </a>
+        )}
       </div>
+
+      {/* Topics and search tags - separate row for better mobile layout */}
+      <s.UrlTopics style={{ cursor: "default", marginTop: "8px" }}>
+        {/* Topic tags */}
+        {showInferredTopic && article.topics_list && article.topics_list.map(([topicTitle, topicOrigin]) => (
+          <span
+            key={topicTitle}
+            className={topicOrigin === TopicOriginType.INFERRED ? "inferred" : "gold"}
+          >
+            {topicTitle}
+            {topicOrigin === TopicOriginType.INFERRED && (
+              <HighlightOffRoundedIcon
+                className="cancelButton"
+                sx={{ color: '#aaa', fontSize: '1rem', strokeWidth: 0.5 }}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setShowInferredTopic(false);
+                  toast("Your preference was saved.");
+                  api.removeMLSuggestion(article.id, topicTitle);
+                }}
+              />
+            )}
+          </span>
+        ))}
+
+        {/* Matched search subscriptions - same style as topics but orange, clickable */}
+        {article.matched_searches && article.matched_searches.length > 0 && (
+          article.matched_searches.map((search, i) => (
+            <span
+              key={`search-${i}`}
+              style={{
+                backgroundColor: "#fef3c7",
+                border: "solid 1px #b45309",
+                color: "#92400e",
+              }}
+            >
+              🔍 <Link to={`/search?search=${encodeURIComponent(search)}`} style={{ color: "inherit", textDecoration: "none" }}>{search}</Link>
+            </span>
+          ))
+        )}
+      </s.UrlTopics>
 
       <s.ArticleContent>
         {article.img_url && (
