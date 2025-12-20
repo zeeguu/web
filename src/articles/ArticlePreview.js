@@ -318,28 +318,16 @@ export default function ArticlePreview({
           {/* Matched search subscriptions - same style as topics but orange, clickable */}
           {article.matched_searches && article.matched_searches.length > 0 && (
             article.matched_searches.map((search, i) => (
-              <Link
+              <span
                 key={`search-${i}`}
-                to={`/search?search=${encodeURIComponent(search)}`}
                 style={{
-                  display: "inline-block",
-                  height: "1.2em",
-                  marginLeft: "0.2em",
-                  marginBottom: "0.5em",
-                  borderRadius: "2em",
-                  padding: "0.4em 1.35em",
-                  fontSize: "0.85em",
-                  fontWeight: "500",
-                  textAlign: "center",
-                  verticalAlign: "middle",
                   backgroundColor: "#fef3c7",
                   border: "solid 1px #b45309",
                   color: "#92400e",
-                  textDecoration: "none",
                 }}
               >
-                🔍 {search}
-              </Link>
+                🔍 <Link to={`/search?search=${encodeURIComponent(search)}`} style={{ color: "inherit", textDecoration: "none" }}>{search}</Link>
+              </span>
             ))
           )}
         </s.UrlTopics>
