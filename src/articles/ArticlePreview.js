@@ -7,7 +7,6 @@ import * as s from "./ArticlePreview.sc";
 import RedirectionNotificationModal from "../components/redirect_notification/RedirectionNotificationModal";
 import Feature from "../features/Feature";
 import SaveArticleButton from "./SaveArticleButton";
-import ArticleSourceInfo from "../components/ArticleSourceInfo";
 import extractDomain from "../utils/web/extractDomain";
 import ReadingCompletionProgress from "./ReadingCompletionProgress";
 import { APIContext } from "../contexts/APIContext";
@@ -27,8 +26,6 @@ import { TopicOriginType } from "../appConstants";
 export default function ArticlePreview({
   article,
   dontShowPublishingTime,
-  dontShowSourceIcon,
-  showArticleCompletion,
   hasExtension,
   doNotShowRedirectionModal_UserPreference,
   setDoNotShowRedirectionModal_UserPreference,
@@ -227,23 +224,8 @@ export default function ArticlePreview({
         marginBottom: isAnimatingOut ? "0" : undefined,
       }}
     >
-      {/* Source info (without time - time moved to metadata row) */}
-      {article.feed_id && !dontShowSourceIcon ? (
-        <ArticleSourceInfo
-          articleInfo={article}
-          dontShowPublishingTime={true}
-        />
-      ) : (
-        !dontShowSourceIcon &&
-        article.url && (
-          <s.UrlSourceContainer>
-            <s.UrlSource>{extractDomain(article.url)}</s.UrlSource>
-          </s.UrlSourceContainer>
-        )
-      )}
-
       {/* Topics and search tags */}
-      <s.UrlTopics style={{ cursor: "default", marginTop: "8px", marginBottom: "12px" }}>
+      <s.UrlTopics style={{ display: 'flex', flexWrap: 'wrap', marginTop: 0, marginBottom: '4px' }}>
         {showInferredTopic && article.topics_list && article.topics_list.map(([topicTitle, topicOrigin]) => (
           <span
             key={topicTitle}
@@ -319,24 +301,13 @@ export default function ArticlePreview({
           <s.SimplifiedLabel style={{ marginLeft: '8px' }}>Simplified</s.SimplifiedLabel>
         )}
 
-        {/* Source info for simplified articles */}
-        {article.parent_article_id && article.parent_url && (
-          <a
-            href={article.parent_url}
-            target="_blank"
-            rel="noopener noreferrer"
-            style={{ fontSize: 'small', marginLeft: '8px', textDecoration: 'none', color: 'inherit' }}
-          >
-            from {getDomainName(article.parent_url).replace('.dk', '').replace('.se', '').replace('.nl', '').replace('.de', '').replace('.fr', '').replace('.com', '').replace('.org', '')}
-          </a>
-        )}
-
-        {/* Publishing time */}
-        {!dontShowPublishingTime && article.published && (
-          <span style={{ fontSize: 'small' }}>
-            , {formatDistanceToNow(new Date(article.published), { addSuffix: true }).replace("about ", "")}
-          </span>
-        )}
+        {/* Source and time */}
+        <span style={{ fontSize: 'small', marginLeft: '8px', color: '#666' }}>
+          {article.feed_name && `from ${article.feed_name}`}
+          {!article.feed_name && article.parent_url && `from ${getDomainName(article.parent_url)}`}
+          {!article.feed_name && !article.parent_url && article.url && `from ${extractDomain(article.url)}`}
+          {!dontShowPublishingTime && article.published && `, ${formatDistanceToNow(new Date(article.published), { addSuffix: true }).replace("about ", "")}`}
+        </span>
       </div>
 
       <s.ArticleContent>
