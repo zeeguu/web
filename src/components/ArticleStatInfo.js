@@ -28,7 +28,7 @@ export default function ArticleStatInfo({ articleInfo }) {
         <span style={{ fontWeight: 'bold' }}>{displayCefr}</span>
         {isSimplified && (
           <span style={{ color: '#666' }}>
-            {' · simplified from '}
+            {' · '}
             <a
               href={articleInfo.parent_url}
               target="_blank"

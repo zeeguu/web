@@ -303,9 +303,15 @@ export default function ArticlePreview({
 
         {/* Source and time */}
         <span style={{ fontSize: 'small', marginLeft: '8px', color: '#666' }}>
-          {article.feed_name && `from ${article.feed_name}`}
-          {!article.feed_name && article.parent_url && `from ${getDomainName(article.parent_url)}`}
-          {!article.feed_name && !article.parent_url && article.url && `from ${extractDomain(article.url)}`}
+          from{' '}
+          <a
+            href={article.parent_url || article.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{ color: 'inherit', textDecoration: 'none' }}
+          >
+            {article.feed_name || (article.parent_url ? getDomainName(article.parent_url) : extractDomain(article.url))}
+          </a>
           {!dontShowPublishingTime && article.published && `, ${formatDistanceToNow(new Date(article.published), { addSuffix: true }).replace("about ", "")}`}
         </span>
       </div>
@@ -316,25 +322,21 @@ export default function ArticlePreview({
             <img alt="" src={article.img_url} style={{ cursor: "pointer" }} />
           </Link>
         )}
-        <s.Summary style={{ display: "flex", flexWrap: "wrap", alignItems: "baseline", gap: "4px" }}>
-          <span style={{ flex: "1", minWidth: "fit-content" }}>
-            <span style={{ fontWeight: 'bold', fontSize: '0.85em', marginRight: '5px' }}>Summary</span>
-            {interactiveSummary ? (
-              <TranslatableText interactiveText={interactiveSummary} translating={true} pronouncing={true} />
-            ) : (
-              article.summary
-            )}
-          </span>
+        <s.Summary>
+          {interactiveSummary ? (
+            <TranslatableText interactiveText={interactiveSummary} translating={true} pronouncing={true} />
+          ) : (
+            article.summary
+          )}
           <div
             style={{
               display: "flex",
               alignItems: "center",
               justifyContent: "space-between",
               marginTop: "8px",
-              width: "100%",
             }}
           >
-            <div style={{ display: "flex", alignItems: "center", gap: "10px", flex: "0 0 auto" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
               {titleLink(article)}
               <span style={{ fontSize: "0.8em", opacity: 0.7 }}>
                 (~{estimateReadingTime(article.metrics?.word_count || article.word_count || 0)
@@ -342,7 +344,7 @@ export default function ArticlePreview({
                   .replace(" minute", "min")})
               </span>
             </div>
-            <div style={{ display: "flex", alignItems: "center", gap: "10px", flex: "0 0 auto" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
               <SaveArticleButton
                 article={article}
                 isArticleSaved={isArticleSaved}
