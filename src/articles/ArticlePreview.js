@@ -237,7 +237,7 @@ export default function ArticlePreview({
             <s.UrlSource>{extractDomain(article.url)}</s.UrlSource>
             {!dontShowPublishingTime && article.published && (
               <span style={{ marginLeft: "5px" }}>
-                ({formatDistanceToNow(new Date(article.published), { addSuffix: true })})
+                ({formatDistanceToNow(new Date(article.published), { addSuffix: true }).replace("about ", "")})
               </span>
             )}
           </s.UrlSourceContainer>
