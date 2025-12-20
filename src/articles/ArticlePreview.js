@@ -227,24 +227,67 @@ export default function ArticlePreview({
         marginBottom: isAnimatingOut ? "0" : undefined,
       }}
     >
-      {article.feed_id && !dontShowSourceIcon ? (
-        <ArticleSourceInfo
-          articleInfo={article}
-          dontShowPublishingTime={dontShowPublishingTime}
-        />
-      ) : (
-        !dontShowSourceIcon &&
-        article.url && (
-          <s.UrlSourceContainer>
-            <s.UrlSource>{extractDomain(article.url)}</s.UrlSource>
-            {!dontShowPublishingTime && article.published && (
-              <span style={{ marginLeft: "5px" }}>
-                ({formatDistanceToNow(new Date(article.published), { addSuffix: true }).replace("about ", "")})
+      {/* Source/time row with topics */}
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: "8px" }}>
+        <div>
+          {article.feed_id && !dontShowSourceIcon ? (
+            <ArticleSourceInfo
+              articleInfo={article}
+              dontShowPublishingTime={dontShowPublishingTime}
+            />
+          ) : (
+            !dontShowSourceIcon &&
+            article.url && (
+              <s.UrlSourceContainer>
+                <s.UrlSource>{extractDomain(article.url)}</s.UrlSource>
+                {!dontShowPublishingTime && article.published && (
+                  <span style={{ marginLeft: "5px" }}>
+                    ({formatDistanceToNow(new Date(article.published), { addSuffix: true }).replace("about ", "")})
+                  </span>
+                )}
+              </s.UrlSourceContainer>
+            )
+          )}
+        </div>
+
+        {/* Topics and search tags */}
+        <s.UrlTopics style={{ cursor: "default", marginTop: "0" }}>
+          {showInferredTopic && article.topics_list && article.topics_list.map(([topicTitle, topicOrigin]) => (
+            <span
+              key={topicTitle}
+              className={topicOrigin === TopicOriginType.INFERRED ? "inferred" : "gold"}
+            >
+              {topicTitle}
+              {topicOrigin === TopicOriginType.INFERRED && (
+                <HighlightOffRoundedIcon
+                  className="cancelButton"
+                  sx={{ color: '#aaa', fontSize: '1rem', strokeWidth: 0.5 }}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setShowInferredTopic(false);
+                    toast("Your preference was saved.");
+                    api.removeMLSuggestion(article.id, topicTitle);
+                  }}
+                />
+              )}
+            </span>
+          ))}
+          {article.matched_searches && article.matched_searches.length > 0 && (
+            article.matched_searches.map((search, i) => (
+              <span
+                key={`search-${i}`}
+                style={{
+                  backgroundColor: "#fef3c7",
+                  border: "solid 1px #b45309",
+                  color: "#92400e",
+                }}
+              >
+                🔍 <Link to={`/search?search=${encodeURIComponent(search)}`} style={{ color: "inherit", textDecoration: "none" }}>{search}</Link>
               </span>
-            )}
-          </s.UrlSourceContainer>
-        )
-      )}
+            ))
+          )}
+        </s.UrlTopics>
+      </div>
 
       {/* Show teacher name for classroom articles */}
       {article.uploader_name && (
@@ -253,47 +296,6 @@ export default function ArticlePreview({
           <span style={{ color: "#333" }}>{article.uploader_name}</span>
         </div>
       )}
-
-      {/* Topics and search tags - above title for better mobile layout */}
-      <s.UrlTopics style={{ cursor: "default", marginTop: "8px" }}>
-        {/* Topic tags */}
-        {showInferredTopic && article.topics_list && article.topics_list.map(([topicTitle, topicOrigin]) => (
-          <span
-            key={topicTitle}
-            className={topicOrigin === TopicOriginType.INFERRED ? "inferred" : "gold"}
-          >
-            {topicTitle}
-            {topicOrigin === TopicOriginType.INFERRED && (
-              <HighlightOffRoundedIcon
-                className="cancelButton"
-                sx={{ color: '#aaa', fontSize: '1rem', strokeWidth: 0.5 }}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setShowInferredTopic(false);
-                  toast("Your preference was saved.");
-                  api.removeMLSuggestion(article.id, topicTitle);
-                }}
-              />
-            )}
-          </span>
-        ))}
-
-        {/* Matched search subscriptions - same style as topics but orange, clickable */}
-        {article.matched_searches && article.matched_searches.length > 0 && (
-          article.matched_searches.map((search, i) => (
-            <span
-              key={`search-${i}`}
-              style={{
-                backgroundColor: "#fef3c7",
-                border: "solid 1px #b45309",
-                color: "#92400e",
-              }}
-            >
-              🔍 <Link to={`/search?search=${encodeURIComponent(search)}`} style={{ color: "inherit", textDecoration: "none" }}>{search}</Link>
-            </span>
-          ))
-        )}
-      </s.UrlTopics>
 
       <s.TitleContainer>
         <s.Title>
