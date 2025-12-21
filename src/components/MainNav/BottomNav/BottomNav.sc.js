@@ -9,8 +9,12 @@ const BottomNav = styled.nav`
   padding-bottom: calc(0.5rem + env(safe-area-inset-bottom, 0px));
   background-color: ${({ theme }) => theme.navBg};
   z-index: 2;
-  transition: 0.3s ease-in-out;
+  transition: transform 0.3s ease-in-out;
   animation: ${({ $bottomNavTransition }) => $bottomNavTransition} 0.3s ease-in-out forwards;
+
+  &.nav--hidden {
+    transform: translateY(100%);
+  }
 `;
 
 const NavList = styled.ul`
