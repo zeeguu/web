@@ -10,13 +10,11 @@ import BottomNavOptionsForTeacher from "./BottomNavOptionsForTeacher";
 import BottomNavOption from "./BottomNavOption";
 import { fadeIn, fadeOut } from "../../transitions";
 import { slideIn, slideOut } from "../../transitions";
-import useScrollDirection from "../../../hooks/useScrollDirection";
 import * as s from "./BottomNav.sc";
 
 export default function BottomNav() {
   const { mainNavProperties } = useContext(MainNavContext);
   const { isOnStudentSide } = mainNavProperties;
-  const scrollDirection = useScrollDirection();
 
   const path = useLocation().pathname;
 
@@ -65,7 +63,6 @@ export default function BottomNav() {
         <s.BottomNav
           aria-label="Bottom Navigation"
           $bottomNavTransition={bottomNavTransition}
-          $hidden={scrollDirection === "down"}
         >
           <s.NavList>
             {isOnStudentSide && <BottomNavOptionsForStudent />}

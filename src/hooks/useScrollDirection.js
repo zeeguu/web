@@ -15,10 +15,13 @@ export default function useScrollDirection({ threshold = 10, topOffset = 100 } =
   const ticking = useRef(false);
 
   useEffect(() => {
-    const scrollHolder = document.getElementById("scrollHolder");
-    if (!scrollHolder) return;
-
     const updateScrollDirection = () => {
+      const scrollHolder = document.getElementById("scrollHolder");
+      if (!scrollHolder) {
+        ticking.current = false;
+        return;
+      }
+
       const scrollY = scrollHolder.scrollTop;
 
       // Always show header when near the top
@@ -47,10 +50,11 @@ export default function useScrollDirection({ threshold = 10, topOffset = 100 } =
       }
     };
 
-    scrollHolder.addEventListener("scroll", handleScroll, { passive: true });
+    // Listen on window with capture to catch scroll events from scrollHolder
+    window.addEventListener("scroll", handleScroll, true);
 
     return () => {
-      scrollHolder.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("scroll", handleScroll, true);
     };
   }, [threshold, topOffset]);
 
