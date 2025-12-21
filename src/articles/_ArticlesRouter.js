@@ -24,36 +24,25 @@ export default function ArticlesRouter({ hasExtension, isChrome }) {
   const api = useContext(APIContext);
   const { getBrowsingSessionId } = useBrowsingSession();
 
-  const [tabsAndLinks, setTabsAndLinks] = useState([
+  const baseTabs = [
     { text: strings.homeTab, link: "/articles", action: <CustomizeGear /> },
     { text: strings.search, link: "/articles/mySearches" },
     { text: strings.saved, link: "/articles/ownTexts" },
-  ]);
+    LocalStorage.isStudent() && { text: strings.classroomTab, link: "/articles/classroom" },
+  ].filter(Boolean);
 
-  useEffect(() => {
-    if (LocalStorage.isStudent()) {
-      setTabsAndLinks((prevTabsAndLinks) => {
-        if (prevTabsAndLinks.some((tab) => tab.link === "/articles/classroom")) {
-          return prevTabsAndLinks;
-        }
-        return [...prevTabsAndLinks, { text: strings.classroomTab, link: "/articles/classroom" }];
-      });
-    }
-  }, []);
+  const [showForYou, setShowForYou] = useState(false);
 
   useEffect(() => {
     api.getBookmarkedArticles((articles) => {
-      const likedArticles = articles.filter((article) => article.liked);
-      if (likedArticles.length >= 5) {
-        setTabsAndLinks((prevTabsAndLinks) => {
-          if (prevTabsAndLinks.some((tab) => tab.link === "/articles/forYou")) {
-            return prevTabsAndLinks;
-          }
-          return [...prevTabsAndLinks, { text: strings.forYou, link: "/articles/forYou" }];
-        });
-      }
+      const likedCount = articles.filter((article) => article.liked).length;
+      setShowForYou(likedCount >= 5);
     });
   }, [api]);
+
+  const tabsAndLinks = showForYou
+    ? [...baseTabs, { text: strings.forYou, link: "/articles/forYou" }]
+    : baseTabs;
 
   return (
     <BrowsingSessionContext.Provider value={getBrowsingSessionId}>
