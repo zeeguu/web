@@ -1,8 +1,11 @@
 import * as s from "./TopTabs.sc";
 import { TopTab } from "./TopTab";
+import useScrollDirection from "../hooks/useScrollDirection";
 
 // Renders a title and the corresponding tabs links
 export default function TopTabs({ title, tabsAndLinks }) {
+  const scrollDirection = useScrollDirection();
+
   // Handle both object and array formats
   let tabsArray;
   if (Array.isArray(tabsAndLinks)) {
@@ -15,10 +18,8 @@ export default function TopTabs({ title, tabsAndLinks }) {
   let lastTab = tabsArray[tabsArray.length - 1];
 
   return (
-    <div>
+    <s.TopTabsWrapper className={scrollDirection === "down" ? "header--hidden" : ""}>
       <s.TopTabs>
-        <br />
-
         <div className="all__tabs">
           {allTabsButLast.map((tab) => (
             <TopTab
@@ -33,6 +34,6 @@ export default function TopTabs({ title, tabsAndLinks }) {
           <TopTab text={lastTab.text} link={lastTab.link} counter={lastTab.counter} action={lastTab.action} />
         </div>
       </s.TopTabs>
-    </div>
+    </s.TopTabsWrapper>
   );
 }
