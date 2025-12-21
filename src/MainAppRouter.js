@@ -15,24 +15,17 @@ import NotFound from "./pages/NotFound";
 import ExercisesRouter from "./exercises/ExercisesRouter";
 import WordsRouter from "./words/_WordsRouter";
 import ReadingHistory from "./words/WordHistory";
-import SessionHistory from "./words/SessionHistory";
+import ActivityRouter from "./activity/_ActivityRouter";
 import ArticleReader from "./reader/ArticleReader";
 import LoadingAnimation from "./components/LoadingAnimation";
 
 // Lazy load separate parts of the app
 const LazyTeacherRouter = lazy(() => import("./teacher/_routing/_TeacherRouter"));
-const LazyUserDashboard = lazy(() => import("./userDashboard/UserDashboard"));
 
 // Wrapper components to handle Suspense (required for react-router v5)
 const TeacherRouter = (props) => (
   <Suspense fallback={<LoadingAnimation />}>
     <LazyTeacherRouter {...props} />
-  </Suspense>
-);
-
-const UserDashboard = (props) => (
-  <Suspense fallback={<LoadingAnimation />}>
-    <LazyUserDashboard {...props} />
   </Suspense>
 );
 import { PrivateRouteWithMainNav } from "./PrivateRouteWithMainNav";
@@ -91,11 +84,11 @@ export default function MainAppRouter({ hasExtension, handleSuccessfulLogIn }) {
       <PrivateRouteWithMainNav path="/daily-audio" component={DailyAudioRouter} />
       <PrivateRouteWithMainNav path="/words" component={WordsRouter} />
       <PrivateRouteWithMainNav path="/history" component={ReadingHistory} />
-      <PrivateRouteWithMainNav path="/activity-history" component={SessionHistory} />
+      <PrivateRouteWithMainNav path="/activity-history" component={ActivityRouter} />
       <PrivateRouteWithMainNav path="/account_settings" component={SettingsRouter} />
       <PrivateRouteWithMainNav path="/teacher" component={TeacherRouter} />
       <PrivateRouteWithMainNav path="/read/article" component={ArticleReader} />
-      <PrivateRouteWithMainNav path="/user_dashboard" component={UserDashboard} />
+      <Redirect from="/user_dashboard" to="/activity-history/statistics" />
       <PrivateRouteWithMainNav path="/search" component={ArticlesRouter} />
       <PrivateRouteWithMainNav
         path="/articleWordReview/:articleID"

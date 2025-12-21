@@ -8,7 +8,7 @@ export default function VideoSourceInfo({ video }) {
         <img src={video.channel.thumbnail_url} alt="" />
       </s.SourceImage>
       <s.FeedName>{video.channel.name}</s.FeedName>
-      <s.PublishingTime>({formatDistanceToNow(new Date(video.published_time), { addSuffix: true })})</s.PublishingTime>
+      <s.PublishingTime>({formatDistanceToNow(new Date(video.published_time), { addSuffix: true }).replace("about ", "")})</s.PublishingTime>
     </s.SourceContainer>
   );
 }

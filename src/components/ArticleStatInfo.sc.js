@@ -3,6 +3,7 @@ import styled from "styled-components";
 let StatContainer = styled.div`
   display: flex;
   align-items: center;
+  justify-content: space-between;
   @media (max-width: 990px) {
     margin-left: 0;
   }
@@ -10,10 +11,9 @@ let StatContainer = styled.div`
 
 const Difficulty = styled.div`
   display: flex;
-  align-items: flex-end;
+  align-items: center;
   flex-direction: row;
   gap: 0.5em;
-  margin-right: 2em;
   img {
     height: 1.5em;
   }
@@ -26,4 +26,9 @@ const WordCount = styled(Difficulty)``;
 
 const ReadingTimeContainer = styled(Difficulty)``;
 
-export { StatContainer, Difficulty, WordCount, ReadingTimeContainer };
+const ReadingTime = styled.span`
+  font-size: 0.9em;
+  color: #888;
+`;
+
+export { StatContainer, Difficulty, WordCount, ReadingTimeContainer, ReadingTime };

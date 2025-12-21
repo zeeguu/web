@@ -2,9 +2,7 @@ import { useState, useEffect, useContext } from "react";
 import { Link } from "react-router-dom";
 import LoadingAnimation from "../components/LoadingAnimation";
 import strings from "../i18n/definitions";
-import * as sc from "../components/ColumnWidth.sc";
 import { setTitle } from "../assorted/setTitle";
-import { PageTitle } from "../components/PageTitle";
 import Infobox from "../components/Infobox";
 import { APIContext } from "../contexts/APIContext";
 import { SpeechContext } from "../contexts/SpeechContext";
@@ -263,16 +261,25 @@ const StatItem = styled.div`
   text-align: center;
   padding: 0.5em 1em;
 
-  .value {
+  .label {
+    font-size: 0.85em;
+    font-weight: 600;
+    color: ${(props) => props.color || "#333"};
+    margin-bottom: 0.2em;
+  }
+
+  .time {
     font-size: 1.4em;
     font-weight: 700;
     color: ${(props) => props.color || "#333"};
   }
 
-  .label {
-    font-size: 0.85em;
-    color: #666;
-    margin-top: 0.2em;
+  .words {
+    font-size: 0.9em;
+    font-weight: 600;
+    color: ${(props) => props.color || "#333"};
+    opacity: 0.7;
+    margin-top: 0.1em;
   }
 `;
 
@@ -382,12 +389,12 @@ function formatTime(isoString) {
 }
 
 function formatDurationShort(ms) {
-  if (!ms) return "0m";
+  if (!ms) return "0 min";
   const minutes = Math.round(ms / 60000);
-  if (minutes < 60) return `${minutes}m`;
+  if (minutes < 60) return `${minutes} min`;
   const hours = Math.floor(minutes / 60);
   const remainingMins = minutes % 60;
-  return remainingMins > 0 ? `${hours}h ${remainingMins}m` : `${hours}h`;
+  return remainingMins > 0 ? `${hours}h ${remainingMins} min` : `${hours}h`;
 }
 
 function calculateStats(sessions) {
@@ -415,33 +422,38 @@ function calculateStats(sessions) {
 
 function Summary({ sessions, label }) {
   const stats = calculateStats(sessions);
-  const totalTime = stats.reading.time + stats.exercise.time + stats.browsing.time + stats.audio.time;
-  const totalWords = stats.reading.words + stats.exercise.words + stats.browsing.words + stats.audio.words;
   const maxTime = Math.max(stats.reading.time, stats.exercise.time, stats.browsing.time, stats.audio.time, 1);
 
   return (
+    <>
     <SummaryCard>
       <SummaryTitle>{label}</SummaryTitle>
 
       <StatsRow>
         <StatItem color="#1565c0">
-          <div className="value">{formatDurationShort(stats.reading.time)}</div>
           <div className="label">Reading</div>
+          <div className="time">{formatDurationShort(stats.reading.time)}</div>
+          {stats.reading.words > 0 && <div className="words">{stats.reading.words} words</div>}
         </StatItem>
         <StatItem color="#2e7d32">
-          <div className="value">{formatDurationShort(stats.exercise.time)}</div>
           <div className="label">Exercises</div>
+          <div className="time">{formatDurationShort(stats.exercise.time)}</div>
+          {stats.exercise.words > 0 && <div className="words">{stats.exercise.words} words</div>}
         </StatItem>
         {stats.audio.time > 0 && (
           <StatItem color="#7b1fa2">
-            <div className="value">{formatDurationShort(stats.audio.time)}</div>
-            <div className="label">Audio</div>
+            <div className="label">Listening</div>
+            <div className="time">{formatDurationShort(stats.audio.time)}</div>
+            {stats.audio.words > 0 && <div className="words">{stats.audio.words} words</div>}
           </StatItem>
         )}
-        <StatItem color="#333">
-          <div className="value">{totalWords}</div>
-          <div className="label">Words</div>
-        </StatItem>
+        {stats.browsing.time > 0 && (
+          <StatItem color="#ff8f00">
+            <div className="label">Browsing</div>
+            <div className="time">{formatDurationShort(stats.browsing.time)}</div>
+            {stats.browsing.words > 0 && <div className="words">{stats.browsing.words} words</div>}
+          </StatItem>
+        )}
       </StatsRow>
 
       <BarChartContainer>
@@ -453,7 +465,7 @@ function Summary({ sessions, label }) {
           <span className="time">{formatDurationShort(stats.reading.time)}</span>
         </BarRow>
         <BarRow>
-          <span className="label">Exercises</span>
+          <span className="label">Exercising</span>
           <div className="bar-wrapper">
             <div className="bar exercise" style={{ width: `${(stats.exercise.time / maxTime) * 100}%` }} />
           </div>
@@ -461,7 +473,7 @@ function Summary({ sessions, label }) {
         </BarRow>
         {stats.audio.time > 0 && (
           <BarRow>
-            <span className="label">Audio</span>
+            <span className="label">Listening</span>
             <div className="bar-wrapper">
               <div className="bar audio" style={{ width: `${(stats.audio.time / maxTime) * 100}%` }} />
             </div>
@@ -479,6 +491,7 @@ function Summary({ sessions, label }) {
         )}
       </BarChartContainer>
     </SummaryCard>
+    </>
   );
 }
 
@@ -597,9 +610,9 @@ function SessionItem({ session, onEditWord }) {
           <SessionTime>{formatTime(session.start_time)}</SessionTime>
           <SessionType className={session.session_type}>
             {session.session_type === "reading" && "Reading"}
-            {session.session_type === "exercise" && "Exercises"}
+            {session.session_type === "exercise" && "Exercising"}
             {session.session_type === "browsing" && "Browsing"}
-            {session.session_type === "audio" && "Audio Lesson"}
+            {session.session_type === "audio" && "Listening"}
           </SessionType>
           {session.session_type === "reading" && session.reading_source === "extension" && (
             <span className="source-badge extension" title="Read via browser extension">ext</span>
@@ -869,7 +882,7 @@ export default function SessionHistory() {
       setSessions(data);
       setLoading(false);
     });
-    setTitle("Activity History");
+    setTitle("My Activity");
   }, [api, timeRange, appliedFrom, appliedTo]);
 
   const isCustomNotApplied = timeRange === "custom" && (!appliedFrom || !appliedTo);
@@ -882,9 +895,7 @@ export default function SessionHistory() {
   const dates = Object.keys(groupedSessions);
 
   return (
-    <sc.NarrowColumn>
-      <PageTitle>Activity History</PageTitle>
-
+    <>
       <TimeSelector>
         <select value={timeRange} onChange={(e) => setTimeRange(e.target.value)}>
           <option value="7">Last 7 days</option>
@@ -913,7 +924,7 @@ export default function SessionHistory() {
         <Infobox>No activity recorded for {getDisplayLabel().toLowerCase()}.</Infobox>
       )}
 
-      {!loading && sessions && sessions.length > 0 && <Summary sessions={sessions} label={getDisplayLabel()} />}
+      {!loading && sessions && sessions.length > 0 && <Summary sessions={sessions} label="Overview" />}
 
       {!loading &&
         (() => {
@@ -961,6 +972,6 @@ export default function SessionHistory() {
           )}
         </Box>
       </Modal>
-    </sc.NarrowColumn>
+    </>
   );
 }

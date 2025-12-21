@@ -6,11 +6,11 @@ let strings = new LocalizedStrings(
     en: {
       //Shared
       title: "Title",
-      words: "Words",
+      words: "My Words",
       readingCompletion: "Completion",
       lengthWithCapital: "Length",
       levelWithCapital: "Level",
-      articles: "Home",
+      articles: "Reading",
       text: "Text",
       save: "Save",
       apply: "Apply",
@@ -18,7 +18,7 @@ let strings = new LocalizedStrings(
       more: "More",
       wordHistoryTitle: "Word Translation History",
       exercises: "Exercises",
-      dailyAudio: "Audio",
+      dailyAudio: "Listening",
       today: "Today",
       pastLessons: "Past Lessons",
       topbarProgressDisplay: "Topbar Progress Display",
@@ -278,7 +278,9 @@ let strings = new LocalizedStrings(
 
       //WordsRouter
       yourWordsHeadline: "Your Words",
-      activity: "Activity",
+      activity: "My Activity",
+      historyTab: "History",
+      statisticsTab: "Statistics",
       starred: "Starred",
       learning: "In Learning",
       learned: "Learned",
@@ -881,10 +883,10 @@ let strings = new LocalizedStrings(
     da: {
       //Shared
       title: "Titel",
-      words: "Ord",
+      words: "Mine ord",
       lengthWithCapital: "Længde",
       levelWithCapital: "Sværhed",
-      articles: "Hjem",
+      articles: "Læsning",
       text: "tekst",
       save: "Gem",
       settings: "Indstillinger",
@@ -1073,7 +1075,9 @@ let strings = new LocalizedStrings(
 
       //WordsRouter
       yourWordsHeadline: "Dine ord",
-      activity: "Aktivitet",
+      activity: "Min aktivitet",
+      historyTab: "Historik",
+      statisticsTab: "Statistik",
       starred: "Stjernemarkerede",
       translated: "Oversatte",
       learned: "Indlærte",

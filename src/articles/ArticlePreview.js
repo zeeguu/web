@@ -7,7 +7,6 @@ import * as s from "./ArticlePreview.sc";
 import RedirectionNotificationModal from "../components/redirect_notification/RedirectionNotificationModal";
 import Feature from "../features/Feature";
 import SaveArticleButton from "./SaveArticleButton";
-import ArticleSourceInfo from "../components/ArticleSourceInfo";
 import extractDomain from "../utils/web/extractDomain";
 import ReadingCompletionProgress from "./ReadingCompletionProgress";
 import { APIContext } from "../contexts/APIContext";
@@ -20,12 +19,13 @@ import { getStaticPath } from "../utils/misc/staticPath";
 import { estimateReadingTime } from "../utils/misc/readableTime";
 import ActionButton from "../components/ActionButton";
 import { getHighestCefrLevel } from "../utils/misc/cefrHelpers";
+import getDomainName from "../utils/misc/getDomainName";
+import HighlightOffRoundedIcon from "@mui/icons-material/HighlightOffRounded";
+import { TopicOriginType } from "../appConstants";
 
 export default function ArticlePreview({
   article,
   dontShowPublishingTime,
-  dontShowSourceIcon,
-  showArticleCompletion,
   hasExtension,
   doNotShowRedirectionModal_UserPreference,
   setDoNotShowRedirectionModal_UserPreference,
@@ -149,10 +149,9 @@ export default function ArticlePreview({
 
   function titleLink(article) {
     let linkToRedirect = `/read/article?id=${article.id}`;
-
     let open_in_zeeguu = (
       <ActionButton as={Link} to={linkToRedirect} onClick={handleArticleClick}>
-        Open
+        Read Full
       </ActionButton>
     );
 
@@ -177,7 +176,7 @@ export default function ArticlePreview({
             handleOpenRedirectionModal();
           }}
         >
-          Open
+          Read Full
         </ActionButton>
       </>
     );
@@ -192,7 +191,7 @@ export default function ArticlePreview({
         href={article.url}
         onClick={handleArticleClick}
       >
-        Open
+        Read Full
       </ActionButton>
     );
 
@@ -225,25 +224,43 @@ export default function ArticlePreview({
         marginBottom: isAnimatingOut ? "0" : undefined,
       }}
     >
-      {article.feed_id ? (
-        <ArticleSourceInfo
-          articleInfo={article}
-          dontShowPublishingTime={dontShowPublishingTime}
-          dontShowSourceIcon={dontShowSourceIcon}
-        />
-      ) : (
-        !dontShowSourceIcon &&
-        article.url && (
-          <s.UrlSourceContainer>
-            <s.UrlSource>{extractDomain(article.url)}</s.UrlSource>
-            {!dontShowPublishingTime && article.published && (
-              <span style={{ marginLeft: "5px" }}>
-                ({formatDistanceToNow(new Date(article.published), { addSuffix: true })})
-              </span>
+      {/* Topics and search tags */}
+      <s.UrlTopics style={{ display: 'flex', flexWrap: 'wrap', marginTop: 0, marginBottom: '4px' }}>
+        {showInferredTopic && article.topics_list && article.topics_list.map(([topicTitle, topicOrigin]) => (
+          <span
+            key={topicTitle}
+            className={topicOrigin === TopicOriginType.INFERRED ? "inferred" : "gold"}
+          >
+            {topicTitle}
+            {topicOrigin === TopicOriginType.INFERRED && (
+              <HighlightOffRoundedIcon
+                className="cancelButton"
+                sx={{ color: '#aaa', fontSize: '1rem', strokeWidth: 0.5 }}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setShowInferredTopic(false);
+                  toast("Your preference was saved.");
+                  api.removeMLSuggestion(article.id, topicTitle);
+                }}
+              />
             )}
-          </s.UrlSourceContainer>
-        )
-      )}
+          </span>
+        ))}
+        {article.matched_searches && article.matched_searches.length > 0 && (
+          article.matched_searches.map((search, i) => (
+            <span
+              key={`search-${i}`}
+              style={{
+                backgroundColor: "#fef3c7",
+                border: "solid 1px #b45309",
+                color: "#92400e",
+              }}
+            >
+              🔍 <Link to={`/search?search=${encodeURIComponent(search)}`} style={{ color: "inherit", textDecoration: "none" }}>{search}</Link>
+            </span>
+          ))
+        )}
+      </s.UrlTopics>
 
       {/* Show teacher name for classroom articles */}
       {article.uploader_name && (
@@ -264,74 +281,76 @@ export default function ArticlePreview({
         <ReadingCompletionProgress last_reading_percentage={article.reading_completion}></ReadingCompletionProgress>
       </s.TitleContainer>
 
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          marginTop: "15px",
-          marginBottom: "10px",
-        }}
-      >
-        <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-          {/* Difficulty (CEFR level) */}
-          <div style={{ display: "flex", alignItems: "center", gap: "5px" }}>
-            <img
-              src={getStaticPath(
-                "icons",
-                `${getHighestCefrLevel(article.metrics?.cefr_level || article.cefr_level || "B1")}-level-icon.png`,
-              )}
-              alt="difficulty icon"
-              style={{ width: "16px", height: "16px" }}
-            />
-            <span>{article.metrics?.cefr_level || article.cefr_level || "B1"}</span>
-          </div>
-
-          {/* Simplified label if available */}
-          {article.parent_article_id && <s.SimplifiedLabel>simplified</s.SimplifiedLabel>}
+      {/* Metadata row: CEFR level, simplified tag, source */}
+      <div style={{ display: "flex", alignItems: "center", marginTop: "15px" }}>
+        {/* Difficulty (CEFR level) */}
+        <div style={{ display: "flex", alignItems: "center", gap: "5px" }}>
+          <img
+            src={getStaticPath(
+              "icons",
+              `${getHighestCefrLevel(article.metrics?.cefr_level || article.cefr_level || "B1")}-level-icon.png`,
+            )}
+            alt="difficulty icon"
+            style={{ width: "16px", height: "16px" }}
+          />
+          <span>{article.metrics?.cefr_level || article.cefr_level || "B1"}</span>
         </div>
 
-        <div>
-          {/* Reading time only */}
-          <div style={{ display: "flex", alignItems: "center", gap: "5px" }}>
-            <img
-              src={getStaticPath("icons", "read-time-icon.png")}
-              alt="read time icon"
-              style={{ width: "16px", height: "16px" }}
-            />
-            <span>~ {estimateReadingTime(article.metrics?.word_count || article.word_count || 0)}</span>
-          </div>
-        </div>
+        {/* Simplified tag */}
+        {article.parent_article_id && (
+          <s.SimplifiedLabel style={{ marginLeft: '8px' }}>Simplified</s.SimplifiedLabel>
+        )}
+
+        {/* Source and time */}
+        <span style={{ fontSize: 'small', marginLeft: '8px', color: '#666' }}>
+          from{' '}
+          <a
+            href={article.parent_url || article.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{ color: 'inherit', textDecoration: 'none' }}
+          >
+            {article.feed_name || (article.parent_url ? getDomainName(article.parent_url) : extractDomain(article.url))}
+          </a>
+          {!dontShowPublishingTime && article.published && `, ${formatDistanceToNow(new Date(article.published), { addSuffix: true }).replace("about ", "")}`}
+        </span>
       </div>
 
       <s.ArticleContent>
-        {article.img_url && <img alt="" src={article.img_url} />}
-        <s.Summary style={{ display: "flex", flexWrap: "wrap", alignItems: "baseline", gap: "4px" }}>
-          <span style={{ flex: "1", minWidth: "fit-content" }}>
-            {interactiveSummary ? (
-              <TranslatableText interactiveText={interactiveSummary} translating={true} pronouncing={true} />
-            ) : (
-              article.summary
-            )}
-          </span>
+        {article.img_url && (
+          <Link to={`/read/article?id=${article.id}`} onClick={handleArticleClick}>
+            <img alt="" src={article.img_url} style={{ cursor: "pointer" }} />
+          </Link>
+        )}
+        <s.Summary>
+          {interactiveSummary ? (
+            <TranslatableText interactiveText={interactiveSummary} translating={true} pronouncing={true} />
+          ) : (
+            article.summary
+          )}
           <div
             style={{
               display: "flex",
               alignItems: "center",
               justifyContent: "space-between",
               marginTop: "8px",
-              width: "100%",
             }}
           >
-            <div style={{ display: "flex", alignItems: "center", gap: "10px", flex: "0 0 auto" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
               {titleLink(article)}
+              <span style={{ fontSize: "0.8em", opacity: 0.7 }}>
+                (~{estimateReadingTime(article.metrics?.word_count || article.word_count || 0)
+                  .replace(" minutes", "min")
+                  .replace(" minute", "min")})
+              </span>
+            </div>
+            <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
               <SaveArticleButton
                 article={article}
                 isArticleSaved={isArticleSaved}
                 setIsArticleSaved={setIsArticleSaved}
+                variant="muted"
               />
-            </div>
-            <div style={{ flex: "0 0 auto" }}>
               <ActionButton onClick={handleHideArticle} variant="muted">
                 Hide
               </ActionButton>

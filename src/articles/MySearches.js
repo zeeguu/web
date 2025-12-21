@@ -44,7 +44,13 @@ export default function MySearches() {
 
   async function fetchData() {
     subscribedSearchesWithTopArticles(subscribedSearches).then((results) => {
-      setArticlesBySearchTerm(results);
+      // Sort by most recent article in each search category
+      const sortedResults = [...results].sort((a, b) => {
+        const aDate = a.articles[0]?.published ? new Date(a.articles[0].published) : new Date(0);
+        const bDate = b.articles[0]?.published ? new Date(b.articles[0].published) : new Date(0);
+        return bDate - aDate; // Most recent first
+      });
+      setArticlesBySearchTerm(sortedResults);
       setIsLoading(false);
     });
   }

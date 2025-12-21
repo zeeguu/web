@@ -33,7 +33,7 @@ export default function UnfinishedArticlePreview({ article, onArticleClick }) {
       </s.UnfinishedArticleContainer>
       {article.time_last_read && (
         <s.UnfinishedArticleStats>
-          ({formatDistanceToNow(new Date(article.time_last_read), { addSuffix: true })})
+          ({formatDistanceToNow(new Date(article.time_last_read), { addSuffix: true }).replace("about ", "")})
         </s.UnfinishedArticleStats>
       )}
     </s.ArticlePreview>

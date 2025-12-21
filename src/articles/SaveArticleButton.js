@@ -8,6 +8,7 @@ export default function SaveArticleButton({
   article,
   isArticleSaved,
   setIsArticleSaved,
+  variant,
 }) {
   const api = useContext(APIContext);
 
@@ -31,11 +32,11 @@ export default function SaveArticleButton({
   return (
     <>
       {isArticleSaved ? (
-        <ActionButton onClick={removeArticle}>
+        <ActionButton onClick={removeArticle} variant={variant}>
           Unsave
         </ActionButton>
       ) : (
-        <ActionButton onClick={saveArticle}>
+        <ActionButton onClick={saveArticle} variant={variant}>
           Save
         </ActionButton>
       )}

@@ -17,6 +17,7 @@ let FeedName = styled.span`
   margin-right: 0.5em;
 `;
 
+// Used by VideoSourceInfo for channel thumbnails
 let SourceImage = styled.span`
   img {
     background-color: ${zeeguuWarmYellow};

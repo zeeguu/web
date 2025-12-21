@@ -1,6 +1,6 @@
 // https://developer.mozilla.org/en-US/docs/Web/API/Cache
 
-const OFFLINE_CACHE = "offline-cache-v20251211T22252";
+const OFFLINE_CACHE = "offline-cache-v20251219T15262";
 const DATA_CACHE = "data-cache-v20250814T11364";
 const OFFLINE_URL = "offline.html";
 
