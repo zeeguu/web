@@ -1,7 +1,7 @@
 import { NavLink } from "react-router-dom";
 import NotificationIcon from "./NotificationIcon";
 
-function TopTab({ id, text, link, isActive, addSeparator, hasNotification, notificationText, counter }) {
+function TopTab({ id, text, link, isActive, addSeparator, hasNotification, notificationText, counter, action }) {
   return (
     <>
       <div className="row__tab">
@@ -12,6 +12,7 @@ function TopTab({ id, text, link, isActive, addSeparator, hasNotification, notif
           )}
           {hasNotification && <NotificationIcon text={notificationText} />}
         </NavLink>
+        {action}
       </div>
       {addSeparator && SeparatorBar()}
     </>

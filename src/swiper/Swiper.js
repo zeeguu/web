@@ -1,6 +1,5 @@
 import React from "react";
 import styled from "styled-components";
-import CustomizeFeed from "../articles/CustomizeFeed";
 
 const Container = styled.div`
   display: flex;
@@ -9,14 +8,6 @@ const Container = styled.div`
   padding: 2rem;
   min-height: 100vh;
   background-color: #f5f5f5;
-`;
-
-const Header = styled.div`
-  width: 100%;
-  max-width: 1200px;
-  display: flex;
-  justify-content: flex-start;
-  margin-bottom: 2rem;
 `;
 
 const PlaceholderCard = styled.div`
@@ -54,10 +45,6 @@ const ComingSoon = styled.div`
 export default function Swiper() {
   return (
     <Container>
-      <Header>
-        <CustomizeFeed currentMode="swiper" />
-      </Header>
-      
       <PlaceholderCard>
         <Title>Swipe Mode</Title>
         <Description>

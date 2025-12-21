@@ -18,23 +18,26 @@ import LocalStorage from "../assorted/LocalStorage";
 import { APIContext } from "../contexts/APIContext";
 import { BrowsingSessionContext } from "../contexts/BrowsingSessionContext";
 import useBrowsingSession from "../hooks/useBrowsingSession";
+import CustomizeGear from "./CustomizeGear";
 
 export default function ArticlesRouter({ hasExtension, isChrome }) {
   const api = useContext(APIContext);
   const { getBrowsingSessionId } = useBrowsingSession();
 
-  const [tabsAndLinks, setTabsAndLinks] = useState({
-    [strings.homeTab]: "/articles",
-    [strings.search]: "/articles/mySearches",
-    [strings.saved]: "/articles/ownTexts",
-  });
+  const [tabsAndLinks, setTabsAndLinks] = useState([
+    { text: strings.homeTab, link: "/articles", action: <CustomizeGear /> },
+    { text: strings.search, link: "/articles/mySearches" },
+    { text: strings.saved, link: "/articles/ownTexts" },
+  ]);
 
   useEffect(() => {
     if (LocalStorage.isStudent()) {
-      setTabsAndLinks((prevTabsAndLinks) => ({
-        ...prevTabsAndLinks,
-        [strings.classroomTab]: "/articles/classroom",
-      }));
+      setTabsAndLinks((prevTabsAndLinks) => {
+        if (prevTabsAndLinks.some((tab) => tab.link === "/articles/classroom")) {
+          return prevTabsAndLinks;
+        }
+        return [...prevTabsAndLinks, { text: strings.classroomTab, link: "/articles/classroom" }];
+      });
     }
   }, []);
 
@@ -42,10 +45,12 @@ export default function ArticlesRouter({ hasExtension, isChrome }) {
     api.getBookmarkedArticles((articles) => {
       const likedArticles = articles.filter((article) => article.liked);
       if (likedArticles.length >= 5) {
-        setTabsAndLinks((prevTabsAndLinks) => ({
-          ...prevTabsAndLinks,
-          [strings.forYou]: "/articles/forYou",
-        }));
+        setTabsAndLinks((prevTabsAndLinks) => {
+          if (prevTabsAndLinks.some((tab) => tab.link === "/articles/forYou")) {
+            return prevTabsAndLinks;
+          }
+          return [...prevTabsAndLinks, { text: strings.forYou, link: "/articles/forYou" }];
+        });
       }
     });
   }, [api]);

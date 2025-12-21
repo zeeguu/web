@@ -26,10 +26,11 @@ export default function TopTabs({ title, tabsAndLinks }) {
               text={tab.text}
               link={tab.link}
               counter={tab.counter}
+              action={tab.action}
               addSeparator={true}
             />
           ))}
-          <TopTab text={lastTab.text} link={lastTab.link} counter={lastTab.counter} />
+          <TopTab text={lastTab.text} link={lastTab.link} counter={lastTab.counter} action={lastTab.action} />
         </div>
       </s.TopTabs>
     </div>
