@@ -261,16 +261,25 @@ const StatItem = styled.div`
   text-align: center;
   padding: 0.5em 1em;
 
-  .value {
+  .label {
+    font-size: 0.85em;
+    font-weight: 600;
+    color: ${(props) => props.color || "#333"};
+    margin-bottom: 0.2em;
+  }
+
+  .time {
     font-size: 1.4em;
     font-weight: 700;
     color: ${(props) => props.color || "#333"};
   }
 
-  .label {
-    font-size: 0.85em;
-    color: #666;
-    margin-top: 0.2em;
+  .words {
+    font-size: 0.9em;
+    font-weight: 600;
+    color: ${(props) => props.color || "#333"};
+    opacity: 0.7;
+    margin-top: 0.1em;
   }
 `;
 
@@ -380,12 +389,12 @@ function formatTime(isoString) {
 }
 
 function formatDurationShort(ms) {
-  if (!ms) return "0m";
+  if (!ms) return "0 min";
   const minutes = Math.round(ms / 60000);
-  if (minutes < 60) return `${minutes}m`;
+  if (minutes < 60) return `${minutes} min`;
   const hours = Math.floor(minutes / 60);
   const remainingMins = minutes % 60;
-  return remainingMins > 0 ? `${hours}h ${remainingMins}m` : `${hours}h`;
+  return remainingMins > 0 ? `${hours}h ${remainingMins} min` : `${hours}h`;
 }
 
 function calculateStats(sessions) {
@@ -416,28 +425,33 @@ function Summary({ sessions, label }) {
   const maxTime = Math.max(stats.reading.time, stats.exercise.time, stats.browsing.time, stats.audio.time, 1);
 
   return (
+    <>
     <SummaryCard>
       <SummaryTitle>{label}</SummaryTitle>
 
       <StatsRow>
         <StatItem color="#1565c0">
-          <div className="value">{formatDurationShort(stats.reading.time)}</div>
           <div className="label">Reading</div>
+          <div className="time">{formatDurationShort(stats.reading.time)}</div>
+          {stats.reading.words > 0 && <div className="words">{stats.reading.words} words</div>}
         </StatItem>
         <StatItem color="#2e7d32">
-          <div className="value">{formatDurationShort(stats.exercise.time)}</div>
-          <div className="label">Exercising</div>
+          <div className="label">Exercises</div>
+          <div className="time">{formatDurationShort(stats.exercise.time)}</div>
+          {stats.exercise.words > 0 && <div className="words">{stats.exercise.words} words</div>}
         </StatItem>
         {stats.audio.time > 0 && (
           <StatItem color="#7b1fa2">
-            <div className="value">{formatDurationShort(stats.audio.time)}</div>
             <div className="label">Listening</div>
+            <div className="time">{formatDurationShort(stats.audio.time)}</div>
+            {stats.audio.words > 0 && <div className="words">{stats.audio.words} words</div>}
           </StatItem>
         )}
         {stats.browsing.time > 0 && (
           <StatItem color="#ff8f00">
-            <div className="value">{formatDurationShort(stats.browsing.time)}</div>
             <div className="label">Browsing</div>
+            <div className="time">{formatDurationShort(stats.browsing.time)}</div>
+            {stats.browsing.words > 0 && <div className="words">{stats.browsing.words} words</div>}
           </StatItem>
         )}
       </StatsRow>
@@ -477,6 +491,7 @@ function Summary({ sessions, label }) {
         )}
       </BarChartContainer>
     </SummaryCard>
+    </>
   );
 }
 
