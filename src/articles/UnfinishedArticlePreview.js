@@ -31,9 +31,11 @@ export default function UnfinishedArticlePreview({ article, onArticleClick }) {
           last_reading_percentage={article.last_reading_percentage}
         ></ReadingCompletionProgress>
       </s.UnfinishedArticleContainer>
-      <s.UnfinishedArticleStats>
-        ({formatDistanceToNow(new Date(article.time_last_read), { addSuffix: true }).replace("about ", "")})
-      </s.UnfinishedArticleStats>
+      {article.time_last_read && (
+        <s.UnfinishedArticleStats>
+          ({formatDistanceToNow(new Date(article.time_last_read), { addSuffix: true }).replace("about ", "")})
+        </s.UnfinishedArticleStats>
+      )}
     </s.ArticlePreview>
   );
 }
