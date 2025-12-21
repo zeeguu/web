@@ -2,9 +2,7 @@ import { useState, useEffect, useContext } from "react";
 import { Link } from "react-router-dom";
 import LoadingAnimation from "../components/LoadingAnimation";
 import strings from "../i18n/definitions";
-import * as sc from "../components/ColumnWidth.sc";
 import { setTitle } from "../assorted/setTitle";
-import { PageTitle } from "../components/PageTitle";
 import Infobox from "../components/Infobox";
 import { APIContext } from "../contexts/APIContext";
 import { SpeechContext } from "../contexts/SpeechContext";
@@ -882,9 +880,7 @@ export default function SessionHistory() {
   const dates = Object.keys(groupedSessions);
 
   return (
-    <sc.NarrowColumn>
-      <PageTitle>My Activity</PageTitle>
-
+    <>
       <TimeSelector>
         <select value={timeRange} onChange={(e) => setTimeRange(e.target.value)}>
           <option value="7">Last 7 days</option>
@@ -961,6 +957,6 @@ export default function SessionHistory() {
           )}
         </Box>
       </Modal>
-    </sc.NarrowColumn>
+    </>
   );
 }

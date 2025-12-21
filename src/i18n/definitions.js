@@ -279,6 +279,8 @@ let strings = new LocalizedStrings(
       //WordsRouter
       yourWordsHeadline: "Your Words",
       activity: "My Activity",
+      historyTab: "History",
+      statisticsTab: "Statistics",
       starred: "Starred",
       learning: "In Learning",
       learned: "Learned",
@@ -1074,6 +1076,8 @@ let strings = new LocalizedStrings(
       //WordsRouter
       yourWordsHeadline: "Dine ord",
       activity: "Min aktivitet",
+      historyTab: "Historik",
+      statisticsTab: "Statistik",
       starred: "Stjernemarkerede",
       translated: "Oversatte",
       learned: "Indlærte",
