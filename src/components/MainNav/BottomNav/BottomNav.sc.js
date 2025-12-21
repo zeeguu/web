@@ -11,10 +11,7 @@ const BottomNav = styled.nav`
   z-index: 2;
   transition: transform 0.3s ease-in-out;
   animation: ${({ $bottomNavTransition }) => $bottomNavTransition} 0.3s ease-in-out forwards;
-
-  &.nav--hidden {
-    transform: translateY(100%);
-  }
+  transform: ${({ $hidden }) => ($hidden ? "translateY(100%)" : "translateY(0)")};
 `;
 
 const NavList = styled.ul`

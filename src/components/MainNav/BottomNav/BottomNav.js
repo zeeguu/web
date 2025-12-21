@@ -65,7 +65,7 @@ export default function BottomNav() {
         <s.BottomNav
           aria-label="Bottom Navigation"
           $bottomNavTransition={bottomNavTransition}
-          className={scrollDirection === "down" ? "nav--hidden" : ""}
+          $hidden={scrollDirection === "down"}
         >
           <s.NavList>
             {isOnStudentSide && <BottomNavOptionsForStudent />}
