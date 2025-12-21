@@ -1,6 +1,19 @@
 import styled from "styled-components";
 import { darkGrey, zeeguuOrange } from "./colors";
 
+const TopTabsWrapper = styled.div`
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: white;
+  transition: transform 0.3s ease-in-out;
+  padding-top: 0.5em;
+
+  &.header--hidden {
+    transform: translateY(-100%);
+  }
+`;
+
 const TopTabs = styled.div`
   h1 {
     font-weight: 300;
@@ -78,4 +91,4 @@ const TopTabs = styled.div`
   }
 `;
 
-export { TopTabs };
+export { TopTabs, TopTabsWrapper };
