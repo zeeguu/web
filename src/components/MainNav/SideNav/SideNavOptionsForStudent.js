@@ -35,8 +35,6 @@ export default function SideNavOptionsForStudent({ screenWidth }) {
 
       <NavOption {...NavigationOptions.activity} currentPath={path} screenWidth={screenWidth} />
 
-      <NavOption {...NavigationOptions.statistics} currentPath={path} screenWidth={screenWidth} />
-
       {userDetails.is_teacher && (
         <NavOption {...NavigationOptions.teacherSite} currentPath={path} screenWidth={screenWidth} />
       )}

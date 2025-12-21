@@ -415,8 +415,6 @@ function calculateStats(sessions) {
 
 function Summary({ sessions, label }) {
   const stats = calculateStats(sessions);
-  const totalTime = stats.reading.time + stats.exercise.time + stats.browsing.time + stats.audio.time;
-  const totalWords = stats.reading.words + stats.exercise.words + stats.browsing.words + stats.audio.words;
   const maxTime = Math.max(stats.reading.time, stats.exercise.time, stats.browsing.time, stats.audio.time, 1);
 
   return (
@@ -430,18 +428,20 @@ function Summary({ sessions, label }) {
         </StatItem>
         <StatItem color="#2e7d32">
           <div className="value">{formatDurationShort(stats.exercise.time)}</div>
-          <div className="label">Exercises</div>
+          <div className="label">Exercising</div>
         </StatItem>
         {stats.audio.time > 0 && (
           <StatItem color="#7b1fa2">
             <div className="value">{formatDurationShort(stats.audio.time)}</div>
-            <div className="label">Audio</div>
+            <div className="label">Listening</div>
           </StatItem>
         )}
-        <StatItem color="#333">
-          <div className="value">{totalWords}</div>
-          <div className="label">Words</div>
-        </StatItem>
+        {stats.browsing.time > 0 && (
+          <StatItem color="#ff8f00">
+            <div className="value">{formatDurationShort(stats.browsing.time)}</div>
+            <div className="label">Browsing</div>
+          </StatItem>
+        )}
       </StatsRow>
 
       <BarChartContainer>
@@ -453,7 +453,7 @@ function Summary({ sessions, label }) {
           <span className="time">{formatDurationShort(stats.reading.time)}</span>
         </BarRow>
         <BarRow>
-          <span className="label">Exercises</span>
+          <span className="label">Exercising</span>
           <div className="bar-wrapper">
             <div className="bar exercise" style={{ width: `${(stats.exercise.time / maxTime) * 100}%` }} />
           </div>
@@ -461,7 +461,7 @@ function Summary({ sessions, label }) {
         </BarRow>
         {stats.audio.time > 0 && (
           <BarRow>
-            <span className="label">Audio</span>
+            <span className="label">Listening</span>
             <div className="bar-wrapper">
               <div className="bar audio" style={{ width: `${(stats.audio.time / maxTime) * 100}%` }} />
             </div>
@@ -597,9 +597,9 @@ function SessionItem({ session, onEditWord }) {
           <SessionTime>{formatTime(session.start_time)}</SessionTime>
           <SessionType className={session.session_type}>
             {session.session_type === "reading" && "Reading"}
-            {session.session_type === "exercise" && "Exercises"}
+            {session.session_type === "exercise" && "Exercising"}
             {session.session_type === "browsing" && "Browsing"}
-            {session.session_type === "audio" && "Audio Lesson"}
+            {session.session_type === "audio" && "Listening"}
           </SessionType>
           {session.session_type === "reading" && session.reading_source === "extension" && (
             <span className="source-badge extension" title="Read via browser extension">ext</span>
@@ -869,7 +869,7 @@ export default function SessionHistory() {
       setSessions(data);
       setLoading(false);
     });
-    setTitle("Activity History");
+    setTitle("My Activity");
   }, [api, timeRange, appliedFrom, appliedTo]);
 
   const isCustomNotApplied = timeRange === "custom" && (!appliedFrom || !appliedTo);
@@ -883,7 +883,7 @@ export default function SessionHistory() {
 
   return (
     <sc.NarrowColumn>
-      <PageTitle>Activity History</PageTitle>
+      <PageTitle>My Activity</PageTitle>
 
       <TimeSelector>
         <select value={timeRange} onChange={(e) => setTimeRange(e.target.value)}>
@@ -913,7 +913,7 @@ export default function SessionHistory() {
         <Infobox>No activity recorded for {getDisplayLabel().toLowerCase()}.</Infobox>
       )}
 
-      {!loading && sessions && sessions.length > 0 && <Summary sessions={sessions} label={getDisplayLabel()} />}
+      {!loading && sessions && sessions.length > 0 && <Summary sessions={sessions} label="Overview" />}
 
       {!loading &&
         (() => {
