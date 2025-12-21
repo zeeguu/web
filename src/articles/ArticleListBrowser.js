@@ -15,7 +15,6 @@ import { setTitle } from "../assorted/setTitle";
 import strings from "../i18n/definitions";
 import useShadowRef from "../hooks/useShadowRef";
 import VideoPreview from "../videos/VideoPreview";
-import CustomizeFeed from "./CustomizeFeed";
 export default function ArticleListBrowser({ content, searchQuery, searchPublishPriority, searchDifficultyPriority }) {
   let api = useContext(APIContext);
 
@@ -194,24 +193,24 @@ export default function ArticleListBrowser({ content, searchQuery, searchPublish
       {!searchQuery && (
         <>
           <UnfinishedArticlesList unfinishedArticles={unfinishedArticles} />
-          <s.SortHolder
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-              marginTop: window.innerWidth <= 768 ? "0" : "1.5rem",
-              marginBottom: window.innerWidth <= 768 ? "0.5rem" : "1.5rem",
-            }}
-          >
-            <CustomizeFeed />
-            <s.ShowVideoOnlyButton
-              className={isShowVideosOnlyEnabled && "selected"}
-              style={{ visibility: !areVideosAvailable && "hidden" }}
-              onClick={handleVideoOnlyClick}
+          {areVideosAvailable && (
+            <s.SortHolder
+              style={{
+                display: "flex",
+                justifyContent: "flex-end",
+                alignItems: "center",
+                marginTop: window.innerWidth <= 768 ? "0" : "1.5rem",
+                marginBottom: window.innerWidth <= 768 ? "0.5rem" : "1.5rem",
+              }}
             >
-              Show videos only
-            </s.ShowVideoOnlyButton>
-          </s.SortHolder>
+              <s.ShowVideoOnlyButton
+                className={isShowVideosOnlyEnabled && "selected"}
+                onClick={handleVideoOnlyClick}
+              >
+                Show videos only
+              </s.ShowVideoOnlyButton>
+            </s.SortHolder>
+          )}
         </>
       )}
 

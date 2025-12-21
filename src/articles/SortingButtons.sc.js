@@ -12,7 +12,7 @@ const SortingButtons = styled.div`
   }
 
   ${(props) =>
-    props.isOnTeacherSite &&
+    props.$isOnTeacherSite &&
     css`
       margin-right: 13.7em;
     `}
@@ -38,7 +38,7 @@ const SortButton = styled(b.RoundButton)`
   }
 
   ${(props) =>
-    props.isOnTeacherSite &&
+    props.$isOnTeacherSite &&
     css`
       margin-left: 2vw;
       font-size: medium;

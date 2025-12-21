@@ -90,7 +90,7 @@ export default function SortingButtons({ articleList, setArticleList, clearState
   }
 
   return (
-    <s.SortingButtons isOnTeacherSite={isOnTeacherSite}>
+    <s.SortingButtons $isOnTeacherSite={isOnTeacherSite}>
       <div style={{ position: "relative", display: "inline-block" }}>
         <span 
           style={{ 
