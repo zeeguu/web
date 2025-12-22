@@ -88,6 +88,21 @@ export function ClozeTranslatableText({
     if (setIsRendered) setIsRendered(true);
   }, [setIsRendered]);
 
+  // Manage focus based on virtual keyboard state
+  useEffect(() => {
+    if (!inputRef.current || isExerciseOver || isCorrectAnswer) return;
+
+    if (suppressOSKeyboard) {
+      // Virtual keyboard shown - blur input to hide native keyboard
+      inputRef.current.blur();
+    } else if (canTypeInline) {
+      // Virtual keyboard hidden - focus input to trigger native keyboard
+      setTimeout(() => {
+        inputRef.current?.focus();
+      }, 100);
+    }
+  }, [suppressOSKeyboard, canTypeInline, isExerciseOver, isCorrectAnswer]);
+
   function wordUpdated() {
     setTranslationCount(translationCount + 1);
     if (updateBookmarks) updateBookmarks();
@@ -417,6 +432,7 @@ export function ClozeTranslatableText({
                   // The hint will be hidden when they actually start typing in handleInputChange
                 }}
                 disabled={isCorrectAnswer || isExerciseOver}
+                readOnly={suppressOSKeyboard}
                 style={{
                   border: 'none',
                   borderBottom: `${canTypeInline ? '2px dotted' : '1px solid'} ${isExerciseOver || isCorrectAnswer ? orange600 : '#333'}`,

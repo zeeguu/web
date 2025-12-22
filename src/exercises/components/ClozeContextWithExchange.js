@@ -5,6 +5,16 @@ import VirtualKeyboard from "../../components/VirtualKeyboard/VirtualKeyboard.js
 import { needsVirtualKeyboard } from "../../utils/misc/languageScripts.js";
 import { UserContext } from "../../contexts/UserContext.js";
 
+// Check localStorage for keyboard collapsed state
+const getInitialKeyboardCollapsed = () => {
+  try {
+    const saved = localStorage.getItem('zeeguu_virtual_keyboard_collapsed');
+    return saved !== null ? JSON.parse(saved) : false; // Default to expanded (false)
+  } catch (e) {
+    return false;
+  }
+};
+
 const ClozeContextWithExchange = forwardRef(function ClozeContextWithExchange(
   {
     exerciseBookmark,
@@ -30,7 +40,7 @@ const ClozeContextWithExchange = forwardRef(function ClozeContextWithExchange(
   ref,
 ) {
   const { userDetails } = useContext(UserContext);
-  const [isKeyboardCollapsed, setIsKeyboardCollapsed] = useState(true);
+  const [isKeyboardCollapsed, setIsKeyboardCollapsed] = useState(getInitialKeyboardCollapsed);
 
   // Determine the language for the answer (L2 for this exercise type)
   const answerLanguageCode = exerciseBookmark?.from_lang;

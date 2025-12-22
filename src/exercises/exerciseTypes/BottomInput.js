@@ -12,6 +12,16 @@ import { UserContext } from "../../contexts/UserContext";
 import { getExpressionlength, countCommonWords } from "../../utils/text/expressions";
 import { HINT, WRONG } from "../ExerciseConstants";
 
+// Check localStorage for keyboard collapsed state
+const getInitialKeyboardCollapsed = () => {
+  try {
+    const saved = localStorage.getItem('zeeguu_virtual_keyboard_collapsed');
+    return saved !== null ? JSON.parse(saved) : false; // Default to expanded (false)
+  } catch (e) {
+    return false;
+  }
+};
+
 function getFlagImageUrl(languageCode) {
   return `/static/flags/${languageCode}.png`;
 }
@@ -34,7 +44,7 @@ export default function BottomInput({
   const [isInputWrongLanguage, setIsInputWrongLanguage] = useState(false);
   const [correctWordCountInInput, setCorrectWordCountInInput] = useState(0);
   const [feedbackMessage, setFeedbackMessage] = useState("");
-  const [isKeyboardCollapsed, setIsKeyboardCollapsed] = useState(true);
+  const [isKeyboardCollapsed, setIsKeyboardCollapsed] = useState(getInitialKeyboardCollapsed);
   const inputRef = useRef(null);
   const normalizedLearningWord = normalizeAnswer(exerciseBookmark.from);
 
