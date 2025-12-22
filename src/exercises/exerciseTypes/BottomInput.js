@@ -188,6 +188,7 @@ export default function BottomInput({
         >
           <div className="type-feedback">{feedbackMessage !== "" && <p>{feedbackMessage}</p>}</div>
           <InputField
+            key={suppressOSKeyboard ? "virtual-kb" : "native-kb"}
             ref={inputRef}
             type="text"
             inputMode={suppressOSKeyboard ? "none" : "text"}
