@@ -11,6 +11,7 @@ const NotificationIcon = styled.div`
     top: 0;
     right: 0.25rem;
     position: absolute;
+    z-index: 1;
   }
 
   &.bottom {
