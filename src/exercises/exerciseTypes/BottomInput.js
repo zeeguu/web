@@ -61,17 +61,9 @@ export default function BottomInput({
   const showVirtualKeyboard = needsVirtualKeyboard(answerLanguageCode, userDetails?.id);
   const suppressOSKeyboard = showVirtualKeyboard && !isKeyboardCollapsed;
 
-  // Manage focus based on virtual keyboard state
+  // Blur input when virtual keyboard is shown to hide native keyboard
   useEffect(() => {
-    if (!showVirtualKeyboard || !inputRef.current) return;
-
-    if (isKeyboardCollapsed) {
-      // Virtual keyboard hidden - focus input to trigger native keyboard
-      setTimeout(() => {
-        inputRef.current.focus();
-      }, 100);
-    } else {
-      // Virtual keyboard shown - blur input to hide native keyboard
+    if (showVirtualKeyboard && !isKeyboardCollapsed && inputRef.current) {
       inputRef.current.blur();
     }
   }, [isKeyboardCollapsed, showVirtualKeyboard]);
@@ -203,11 +195,9 @@ export default function BottomInput({
         >
           <div className="type-feedback">{feedbackMessage !== "" && <p>{feedbackMessage}</p>}</div>
           <InputField
-            key={suppressOSKeyboard ? "virtual-kb" : "native-kb"}
             ref={inputRef}
             type="text"
             readOnly={suppressOSKeyboard}
-            inputMode={suppressOSKeyboard ? "none" : "text"}
             placeholder={"Type in " + inputLanguageName}
             className={distanceToCorrect >= 5 && correctWordCountInInput === 0 ? "wrong-border" : "almost-border"}
             value={currentInput}
