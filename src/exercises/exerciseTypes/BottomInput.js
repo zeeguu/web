@@ -197,7 +197,6 @@ export default function BottomInput({
           <InputField
             ref={inputRef}
             type="text"
-            readOnly={suppressOSKeyboard}
             placeholder={"Type in " + inputLanguageName}
             className={distanceToCorrect >= 5 && correctWordCountInInput === 0 ? "wrong-border" : "almost-border"}
             value={currentInput}

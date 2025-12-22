@@ -424,7 +424,6 @@ export function ClozeTranslatableText({
                   // The hint will be hidden when they actually start typing in handleInputChange
                 }}
                 disabled={isCorrectAnswer || isExerciseOver}
-                readOnly={suppressOSKeyboard}
                 style={{
                   border: 'none',
                   borderBottom: `${canTypeInline ? '2px dotted' : '1px solid'} ${isExerciseOver || isCorrectAnswer ? orange600 : '#333'}`,
