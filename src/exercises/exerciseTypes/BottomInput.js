@@ -1,4 +1,4 @@
-import { useEffect, useState, useContext } from "react";
+import { useEffect, useState, useContext, useRef } from "react";
 import levenshtein from "fast-levenshtein";
 import strings from "../../i18n/definitions";
 import * as s from "./Exercise.sc";
@@ -35,6 +35,7 @@ export default function BottomInput({
   const [correctWordCountInInput, setCorrectWordCountInInput] = useState(0);
   const [feedbackMessage, setFeedbackMessage] = useState("");
   const [isKeyboardCollapsed, setIsKeyboardCollapsed] = useState(true);
+  const inputRef = useRef(null);
   const normalizedLearningWord = normalizeAnswer(exerciseBookmark.from);
 
   const solutionText = isL1Answer ? exerciseBookmark.to : exerciseBookmark.from;
@@ -49,6 +50,16 @@ export default function BottomInput({
   const inputLanguageName = LANGUAGE_CODE_TO_NAME[answerLanguageCode];
   const showVirtualKeyboard = needsVirtualKeyboard(answerLanguageCode, userDetails?.id);
   const suppressOSKeyboard = showVirtualKeyboard && !isKeyboardCollapsed;
+
+  // Re-focus input when virtual keyboard is collapsed to trigger native keyboard
+  useEffect(() => {
+    if (showVirtualKeyboard && isKeyboardCollapsed && inputRef.current) {
+      // Small delay to ensure inputMode has been updated before focusing
+      setTimeout(() => {
+        inputRef.current.focus();
+      }, 100);
+    }
+  }, [isKeyboardCollapsed, showVirtualKeyboard]);
 
   function handleHint() {
     setUsedHint(true);
@@ -177,6 +188,7 @@ export default function BottomInput({
         >
           <div className="type-feedback">{feedbackMessage !== "" && <p>{feedbackMessage}</p>}</div>
           <InputField
+            ref={inputRef}
             type="text"
             inputMode={suppressOSKeyboard ? "none" : "text"}
             placeholder={"Type in " + inputLanguageName}

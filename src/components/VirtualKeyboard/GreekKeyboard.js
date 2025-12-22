@@ -59,7 +59,10 @@ export default function GreekKeyboard({ onKeyPress, isCollapsed, setIsCollapsed 
     <s.KeyboardContainer>
       <s.KeyboardHeader>
         <s.KeyboardTitle>Greek Keyboard</s.KeyboardTitle>
-        <s.CollapseButton onClick={() => setIsCollapsed(true)}>▼</s.CollapseButton>
+        <s.CollapseButton
+          onMouseDown={(e) => e.preventDefault()}
+          onClick={() => setIsCollapsed(true)}
+        >▼</s.CollapseButton>
       </s.KeyboardHeader>
 
       <s.KeyboardRows>
@@ -71,7 +74,11 @@ export default function GreekKeyboard({ onKeyPress, isCollapsed, setIsCollapsed 
                 return <s.Key key={`${rowIndex}-${charIndex}`} style={{ visibility: 'hidden' }} />;
               }
               return (
-                <s.Key key={`${rowIndex}-${charIndex}`} onClick={() => handleKeyClick(char)}>
+                <s.Key
+                  key={`${rowIndex}-${charIndex}`}
+                  onMouseDown={(e) => e.preventDefault()}
+                  onClick={() => handleKeyClick(char)}
+                >
                   {char}
                 </s.Key>
               );
@@ -81,13 +88,13 @@ export default function GreekKeyboard({ onKeyPress, isCollapsed, setIsCollapsed 
 
         {/* Bottom row with special keys */}
         <s.KeyRow>
-          <s.SpecialKey onClick={toggleShift} isActive={isShift}>
+          <s.SpecialKey onMouseDown={(e) => e.preventDefault()} onClick={toggleShift} isActive={isShift}>
             ⇧ Shift
           </s.SpecialKey>
-          <s.SpaceKey onClick={handleSpace}>
+          <s.SpaceKey onMouseDown={(e) => e.preventDefault()} onClick={handleSpace}>
             Space
           </s.SpaceKey>
-          <s.SpecialKey onClick={handleBackspace}>
+          <s.SpecialKey onMouseDown={(e) => e.preventDefault()} onClick={handleBackspace}>
             ⌫ Back
           </s.SpecialKey>
         </s.KeyRow>
