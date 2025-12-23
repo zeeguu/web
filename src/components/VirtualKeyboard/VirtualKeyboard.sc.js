@@ -85,6 +85,54 @@ export const KeyboardIcon = styled.span`
   font-size: 1.5em;
 `;
 
+export const CollapsedKeyboardWithKeys = styled.div`
+  background: white;
+  border: 2px solid #ddd;
+  border-radius: 8px;
+  padding: 8px;
+  margin-top: 1em;
+  margin-left: auto;
+  margin-right: auto;
+  max-width: 400px;
+  width: 100%;
+  box-sizing: border-box;
+
+  @media (max-width: 768px) {
+    max-width: 100%;
+    margin: 0;
+    border-radius: 0;
+    border-left: none;
+    border-right: none;
+    padding: 6px;
+  }
+`;
+
+export const SpecialKeysRow = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+`;
+
+export const ExpandButton = styled.button`
+  background: #f5f5f5;
+  border: 1px solid #bbb;
+  border-radius: 3px;
+  font-size: 16px;
+  cursor: pointer;
+  padding: 8px 12px;
+  color: #666;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &:hover {
+    background: ${zeeguuOrange};
+    border-color: ${zeeguuDarkOrange};
+    color: white;
+  }
+`;
+
 export const KeyboardRows = styled.div`
   display: flex;
   flex-direction: column;
