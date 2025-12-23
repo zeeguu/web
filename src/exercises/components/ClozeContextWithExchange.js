@@ -2,8 +2,19 @@ import { forwardRef, useContext, useState } from "react";
 import { ClozeTranslatableText } from "../../reader/ClozeTranslatableText.js";
 import ReplaceExampleModal from "../replaceExample/ReplaceExampleModal.js";
 import VirtualKeyboard from "../../components/VirtualKeyboard/VirtualKeyboard.js";
+import SpecialCharacterBar, { hasSpecialCharacters } from "../../components/VirtualKeyboard/SpecialCharacterBar.js";
 import { needsVirtualKeyboard } from "../../utils/misc/languageScripts.js";
 import { UserContext } from "../../contexts/UserContext.js";
+
+// Check localStorage for keyboard collapsed state
+const getInitialKeyboardCollapsed = () => {
+  try {
+    const saved = localStorage.getItem('zeeguu_virtual_keyboard_collapsed');
+    return saved !== null ? JSON.parse(saved) : false; // Default to expanded (false)
+  } catch (e) {
+    return false;
+  }
+};
 
 const ClozeContextWithExchange = forwardRef(function ClozeContextWithExchange(
   {
@@ -30,7 +41,7 @@ const ClozeContextWithExchange = forwardRef(function ClozeContextWithExchange(
   ref,
 ) {
   const { userDetails } = useContext(UserContext);
-  const [isKeyboardCollapsed, setIsKeyboardCollapsed] = useState(true);
+  const [isKeyboardCollapsed, setIsKeyboardCollapsed] = useState(getInitialKeyboardCollapsed);
 
   // Determine the language for the answer (L2 for this exercise type)
   const answerLanguageCode = exerciseBookmark?.from_lang;
@@ -96,6 +107,18 @@ const ClozeContextWithExchange = forwardRef(function ClozeContextWithExchange(
             currentValue={inputValue}
             initialCollapsed={false}
             onCollapsedChange={setIsKeyboardCollapsed}
+          />
+        </div>
+      )}
+
+      {/* Special Character Bar - for Roman alphabets with special characters */}
+      {!showVirtualKeyboard && canTypeInline && !isExerciseOver &&
+       answerLanguageCode && hasSpecialCharacters(answerLanguageCode) && (
+        <div style={{ marginTop: "1em" }}>
+          <SpecialCharacterBar
+            languageCode={answerLanguageCode}
+            onKeyPress={onInputChange}
+            currentValue={inputValue}
           />
         </div>
       )}

@@ -88,6 +88,13 @@ export function ClozeTranslatableText({
     if (setIsRendered) setIsRendered(true);
   }, [setIsRendered]);
 
+  // Blur input when virtual keyboard is shown to hide native keyboard
+  useEffect(() => {
+    if (suppressOSKeyboard && inputRef.current) {
+      inputRef.current.blur();
+    }
+  }, [suppressOSKeyboard]);
+
   function wordUpdated() {
     setTranslationCount(translationCount + 1);
     if (updateBookmarks) updateBookmarks();
@@ -438,7 +445,6 @@ export function ClozeTranslatableText({
                 }}
                 autoComplete="off"
                 spellCheck="false"
-                inputMode={suppressOSKeyboard ? "none" : "text"}
               />
             </>
           </span>

@@ -1,4 +1,4 @@
-import { useEffect, useState, useContext } from "react";
+import { useEffect, useState, useContext, useRef } from "react";
 import levenshtein from "fast-levenshtein";
 import strings from "../../i18n/definitions";
 import * as s from "./Exercise.sc";
@@ -7,10 +7,21 @@ import Pluralize from "../../utils/text/pluralize";
 import { LANGUAGE_CODE_TO_NAME } from "../../utils/misc/languageCodeToName";
 import { needsVirtualKeyboard } from "../../utils/misc/languageScripts";
 import VirtualKeyboard from "../../components/VirtualKeyboard/VirtualKeyboard";
+import SpecialCharacterBar, { hasSpecialCharacters } from "../../components/VirtualKeyboard/SpecialCharacterBar";
 import { UserContext } from "../../contexts/UserContext";
 
 import { getExpressionlength, countCommonWords } from "../../utils/text/expressions";
 import { HINT, WRONG } from "../ExerciseConstants";
+
+// Check localStorage for keyboard collapsed state
+const getInitialKeyboardCollapsed = () => {
+  try {
+    const saved = localStorage.getItem('zeeguu_virtual_keyboard_collapsed');
+    return saved !== null ? JSON.parse(saved) : false; // Default to expanded (false)
+  } catch (e) {
+    return false;
+  }
+};
 
 function getFlagImageUrl(languageCode) {
   return `/static/flags/${languageCode}.png`;
@@ -34,7 +45,8 @@ export default function BottomInput({
   const [isInputWrongLanguage, setIsInputWrongLanguage] = useState(false);
   const [correctWordCountInInput, setCorrectWordCountInInput] = useState(0);
   const [feedbackMessage, setFeedbackMessage] = useState("");
-  const [isKeyboardCollapsed, setIsKeyboardCollapsed] = useState(true);
+  const [isKeyboardCollapsed, setIsKeyboardCollapsed] = useState(getInitialKeyboardCollapsed);
+  const inputRef = useRef(null);
   const normalizedLearningWord = normalizeAnswer(exerciseBookmark.from);
 
   const solutionText = isL1Answer ? exerciseBookmark.to : exerciseBookmark.from;
@@ -49,6 +61,13 @@ export default function BottomInput({
   const inputLanguageName = LANGUAGE_CODE_TO_NAME[answerLanguageCode];
   const showVirtualKeyboard = needsVirtualKeyboard(answerLanguageCode, userDetails?.id);
   const suppressOSKeyboard = showVirtualKeyboard && !isKeyboardCollapsed;
+
+  // Blur input when virtual keyboard is shown to hide native keyboard
+  useEffect(() => {
+    if (showVirtualKeyboard && !isKeyboardCollapsed && inputRef.current) {
+      inputRef.current.blur();
+    }
+  }, [isKeyboardCollapsed, showVirtualKeyboard]);
 
   function handleHint() {
     setUsedHint(true);
@@ -177,8 +196,8 @@ export default function BottomInput({
         >
           <div className="type-feedback">{feedbackMessage !== "" && <p>{feedbackMessage}</p>}</div>
           <InputField
+            ref={inputRef}
             type="text"
-            inputMode={suppressOSKeyboard ? "none" : "text"}
             placeholder={"Type in " + inputLanguageName}
             className={distanceToCorrect >= 5 && correctWordCountInInput === 0 ? "wrong-border" : "almost-border"}
             value={currentInput}
@@ -238,6 +257,15 @@ export default function BottomInput({
             currentValue={currentInput}
             initialCollapsed={false}
             onCollapsedChange={setIsKeyboardCollapsed}
+          />
+        )}
+
+        {/* Special Character Bar - for Roman alphabets with special characters */}
+        {!showVirtualKeyboard && hasSpecialCharacters(answerLanguageCode) && (
+          <SpecialCharacterBar
+            languageCode={answerLanguageCode}
+            onKeyPress={setCurrentInput}
+            currentValue={currentInput}
           />
         )}
       </div>

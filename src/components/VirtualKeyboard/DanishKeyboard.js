@@ -47,11 +47,36 @@ export default function DanishKeyboard({ onKeyPress, isCollapsed, setIsCollapsed
   const currentLayout = isShift ? DANISH_LAYOUT.uppercase : DANISH_LAYOUT.lowercase;
 
   if (isCollapsed) {
+    const specialChars = isShift ? ['Æ', 'Ø', 'Å'] : ['æ', 'ø', 'å'];
     return (
-      <s.CollapsedKeyboard onClick={() => setIsCollapsed(false)}>
-        <s.KeyboardIcon>⌨️</s.KeyboardIcon>
-        <span>Show Danish Keyboard</span>
-      </s.CollapsedKeyboard>
+      <s.CollapsedKeyboardWithKeys>
+        <s.SpecialKeysRow>
+          {specialChars.map((char) => (
+            <s.Key
+              key={char}
+              onMouseDown={(e) => e.preventDefault()}
+              onClick={() => handleKeyClick(char)}
+              style={{ width: '50px', minWidth: '50px' }}
+            >
+              {char}
+            </s.Key>
+          ))}
+          <s.SpecialKey
+            onMouseDown={(e) => e.preventDefault()}
+            onClick={toggleShift}
+            isActive={isShift}
+            style={{ minWidth: 'auto', width: '50px', padding: '0' }}
+          >
+            ⇧
+          </s.SpecialKey>
+          <s.ExpandButton
+            onMouseDown={(e) => e.preventDefault()}
+            onClick={() => setIsCollapsed(false)}
+          >
+            ▲
+          </s.ExpandButton>
+        </s.SpecialKeysRow>
+      </s.CollapsedKeyboardWithKeys>
     );
   }
 
@@ -59,7 +84,10 @@ export default function DanishKeyboard({ onKeyPress, isCollapsed, setIsCollapsed
     <s.KeyboardContainer>
       <s.KeyboardHeader>
         <s.KeyboardTitle>Danish Keyboard</s.KeyboardTitle>
-        <s.CollapseButton onClick={() => setIsCollapsed(true)}>▼</s.CollapseButton>
+        <s.CollapseButton
+          onMouseDown={(e) => e.preventDefault()}
+          onClick={() => setIsCollapsed(true)}
+        >▼</s.CollapseButton>
       </s.KeyboardHeader>
 
       <s.KeyboardRows>
@@ -71,7 +99,11 @@ export default function DanishKeyboard({ onKeyPress, isCollapsed, setIsCollapsed
                 return <s.Key key={`${rowIndex}-${charIndex}`} style={{ visibility: 'hidden' }} />;
               }
               return (
-                <s.Key key={`${rowIndex}-${charIndex}`} onClick={() => handleKeyClick(char)}>
+                <s.Key
+                  key={`${rowIndex}-${charIndex}`}
+                  onMouseDown={(e) => e.preventDefault()}
+                  onClick={() => handleKeyClick(char)}
+                >
                   {char}
                 </s.Key>
               );
@@ -81,13 +113,13 @@ export default function DanishKeyboard({ onKeyPress, isCollapsed, setIsCollapsed
 
         {/* Bottom row with special keys */}
         <s.KeyRow>
-          <s.SpecialKey onClick={toggleShift} isActive={isShift}>
+          <s.SpecialKey onMouseDown={(e) => e.preventDefault()} onClick={toggleShift} isActive={isShift}>
             ⇧ Shift
           </s.SpecialKey>
-          <s.SpaceKey onClick={handleSpace}>
+          <s.SpaceKey onMouseDown={(e) => e.preventDefault()} onClick={handleSpace}>
             Space
           </s.SpaceKey>
-          <s.SpecialKey onClick={handleBackspace}>
+          <s.SpecialKey onMouseDown={(e) => e.preventDefault()} onClick={handleBackspace}>
             ⌫ Back
           </s.SpecialKey>
         </s.KeyRow>

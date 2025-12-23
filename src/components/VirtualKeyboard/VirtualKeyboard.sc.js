@@ -85,6 +85,63 @@ export const KeyboardIcon = styled.span`
   font-size: 1.5em;
 `;
 
+export const CollapsedKeyboardWithKeys = styled.div`
+  background: white;
+  border: 2px solid #ddd;
+  border-radius: 8px;
+  padding: 8px;
+  margin-top: 1em;
+  margin-left: auto;
+  margin-right: auto;
+  max-width: 400px;
+  width: 100%;
+  box-sizing: border-box;
+
+  @media (max-width: 768px) {
+    max-width: 100%;
+    margin: 0;
+    border-radius: 0;
+    border-left: none;
+    border-right: none;
+    padding: 6px;
+  }
+`;
+
+export const SpecialKeysRow = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+`;
+
+export const ExpandButton = styled.button`
+  background: #f5f5f5;
+  border: 1px solid #bbb;
+  border-radius: 3px;
+  font-size: 16px;
+  cursor: pointer;
+  padding: 8px 12px;
+  color: #666;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  -webkit-tap-highlight-color: transparent;
+
+  @media (hover: hover) {
+    &:hover {
+      background: ${zeeguuOrange};
+      border-color: ${zeeguuDarkOrange};
+      color: white;
+    }
+  }
+
+  &:active {
+    background: ${zeeguuOrange};
+    border-color: ${zeeguuDarkOrange};
+    color: white;
+  }
+`;
+
 export const KeyboardRows = styled.div`
   display: flex;
   flex-direction: column;
@@ -126,25 +183,28 @@ export const Key = styled.button`
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: background 0.3s ease, border-color 0.3s ease, color 0.3s ease, transform 0.1s ease, box-shadow 0.1s ease;
   font-family: Arial, sans-serif;
   flex-shrink: 0;
   box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
 
-  &:hover {
-    background: ${zeeguuOrange};
-    border-color: ${zeeguuDarkOrange};
-    color: white;
-    transform: translateY(-1px);
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  /* Only apply hover on devices that support it (not touch) */
+  @media (hover: hover) {
+    transition: background 0.3s ease, border-color 0.3s ease, color 0.3s ease, transform 0.1s ease, box-shadow 0.1s ease;
+
+    &:hover {
+      background: ${zeeguuOrange};
+      border-color: ${zeeguuDarkOrange};
+      color: white;
+      transform: translateY(-1px);
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
   }
 
   &:active {
     background: ${zeeguuOrange};
     border-color: ${zeeguuDarkOrange};
     color: white;
-    transform: translateY(0);
-    box-shadow: none;
   }
 
   @media (max-width: 768px) {
@@ -163,9 +223,11 @@ export const SpecialKey = styled(Key)`
   color: ${props => props.isActive ? 'white' : almostBlack};
   border-color: ${props => props.isActive ? zeeguuDarkOrange : '#bbb'};
 
-  &:hover {
-    background: ${zeeguuOrange};
-    color: white;
+  @media (hover: hover) {
+    &:hover {
+      background: ${zeeguuOrange};
+      color: white;
+    }
   }
 
   @media (max-width: 768px) {
