@@ -125,8 +125,17 @@ export const ExpandButton = styled.button`
   display: flex;
   align-items: center;
   justify-content: center;
+  -webkit-tap-highlight-color: transparent;
 
-  &:hover {
+  @media (hover: hover) {
+    &:hover {
+      background: ${zeeguuOrange};
+      border-color: ${zeeguuDarkOrange};
+      color: white;
+    }
+  }
+
+  &:active {
     background: ${zeeguuOrange};
     border-color: ${zeeguuDarkOrange};
     color: white;
@@ -174,25 +183,28 @@ export const Key = styled.button`
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: background 0.3s ease, border-color 0.3s ease, color 0.3s ease, transform 0.1s ease, box-shadow 0.1s ease;
   font-family: Arial, sans-serif;
   flex-shrink: 0;
   box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
 
-  &:hover {
-    background: ${zeeguuOrange};
-    border-color: ${zeeguuDarkOrange};
-    color: white;
-    transform: translateY(-1px);
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  /* Only apply hover on devices that support it (not touch) */
+  @media (hover: hover) {
+    transition: background 0.3s ease, border-color 0.3s ease, color 0.3s ease, transform 0.1s ease, box-shadow 0.1s ease;
+
+    &:hover {
+      background: ${zeeguuOrange};
+      border-color: ${zeeguuDarkOrange};
+      color: white;
+      transform: translateY(-1px);
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
   }
 
   &:active {
     background: ${zeeguuOrange};
     border-color: ${zeeguuDarkOrange};
     color: white;
-    transform: translateY(0);
-    box-shadow: none;
   }
 
   @media (max-width: 768px) {
@@ -211,9 +223,11 @@ export const SpecialKey = styled(Key)`
   color: ${props => props.isActive ? 'white' : almostBlack};
   border-color: ${props => props.isActive ? zeeguuDarkOrange : '#bbb'};
 
-  &:hover {
-    background: ${zeeguuOrange};
-    color: white;
+  @media (hover: hover) {
+    &:hover {
+      background: ${zeeguuOrange};
+      color: white;
+    }
   }
 
   @media (max-width: 768px) {
