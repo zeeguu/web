@@ -7,6 +7,7 @@ import Pluralize from "../../utils/text/pluralize";
 import { LANGUAGE_CODE_TO_NAME } from "../../utils/misc/languageCodeToName";
 import { needsVirtualKeyboard } from "../../utils/misc/languageScripts";
 import VirtualKeyboard from "../../components/VirtualKeyboard/VirtualKeyboard";
+import SpecialCharacterBar, { hasSpecialCharacters } from "../../components/VirtualKeyboard/SpecialCharacterBar";
 import { UserContext } from "../../contexts/UserContext";
 
 import { getExpressionlength, countCommonWords } from "../../utils/text/expressions";
@@ -256,6 +257,15 @@ export default function BottomInput({
             currentValue={currentInput}
             initialCollapsed={false}
             onCollapsedChange={setIsKeyboardCollapsed}
+          />
+        )}
+
+        {/* Special Character Bar - for Roman alphabets with special characters */}
+        {!showVirtualKeyboard && hasSpecialCharacters(answerLanguageCode) && (
+          <SpecialCharacterBar
+            languageCode={answerLanguageCode}
+            onKeyPress={setCurrentInput}
+            currentValue={currentInput}
           />
         )}
       </div>
