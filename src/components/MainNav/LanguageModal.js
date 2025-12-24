@@ -15,6 +15,28 @@ import ReactLink from "../ReactLink.sc.js";
 import AddRoundedIcon from "@mui/icons-material/AddRounded";
 import DynamicFlagImage from "../DynamicFlagImage.js";
 import { CEFR_LEVELS } from "../../assorted/cefrLevels.js";
+import styled from "styled-components";
+
+const CefrSelect = styled.select`
+  font-size: 0.8em;
+  font-weight: 500;
+  padding: 0.2em 0.5em;
+  border-radius: 1em;
+  border: 1px solid #ddd;
+  background: white;
+  cursor: pointer;
+  margin-left: 0.5em;
+
+  &:hover {
+    background: #f9f9f9;
+    border-color: #ccc;
+  }
+
+  &:focus {
+    outline: none;
+    border-color: #0066cc;
+  }
+`;
 
 export default function LanguageModal({ open, setOpen }) {
   const api = useContext(APIContext);
@@ -38,11 +60,32 @@ export default function LanguageModal({ open, setOpen }) {
     };
   }, [open, api, session]);
 
-  const getCefrLevelForLanguage = (languageCode) => {
+  const getCefrLevelValueForLanguage = (languageCode) => {
     const cefrKey = languageCode + "_cefr_level";
     const cefrLevel = userDetails[cefrKey];
-    const level = CEFR_LEVELS.find((level) => level.value === cefrLevel?.toString());
-    return level ? level.label.split(" | ")[0] : "A1"; // Extract just "A1", "B2", etc.
+    return cefrLevel?.toString() || "1";
+  };
+
+  const handleCefrLevelChange = (languageCode, newLevel, e) => {
+    e.stopPropagation(); // Prevent triggering radio button
+    const cefrKey = languageCode + "_cefr_level";
+
+    const newUserDetails = {
+      ...userDetails,
+      [cefrKey]: parseInt(newLevel),
+    };
+
+    const newUserDetailsForAPI = {
+      ...newUserDetails,
+      learned_language: languageCode,
+      cefr_level: parseInt(newLevel),
+    };
+
+    api.saveUserDetails(newUserDetailsForAPI, setErrorMessage, () => {
+      setUserDetails(newUserDetails);
+      LocalStorage.setUserInfo(newUserDetails);
+      saveSharedUserInfo(newUserDetails);
+    });
   };
 
   const reorderedLanguages = useMemo(() => {
@@ -99,15 +142,18 @@ export default function LanguageModal({ open, setOpen }) {
               }}
               optionLabel={(e) => (
                 <span>
-                  {e.language}{" "}
-                  <span
-                    style={{
-                      color: "#888",
-                      fontSize: "0.7em",
-                    }}
+                  {e.language}
+                  <CefrSelect
+                    value={getCefrLevelValueForLanguage(e.code)}
+                    onClick={(ev) => ev.stopPropagation()}
+                    onChange={(ev) => handleCefrLevelChange(e.code, ev.target.value, ev)}
                   >
-                    ({getCefrLevelForLanguage(e.code)})
-                  </span>
+                    {CEFR_LEVELS.map((level) => (
+                      <option key={level.value} value={level.value}>
+                        {level.label.split(" | ")[0]}
+                      </option>
+                    ))}
+                  </CefrSelect>
                 </span>
               )}
               optionValue={(e) => e.code}
