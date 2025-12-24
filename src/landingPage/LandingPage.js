@@ -49,7 +49,7 @@ export default function LandingPage() {
           </div>
 
           <p className="hero-paragraph">
-            Zeeguu is a&nbsp;research project that helps you learn smarter - find interesting articles, translate words
+            Zeeguu is a&nbsp;<a href="https://mircealungu.com/projects/zeeguu" target="_blank" rel="noopener noreferrer">research project</a> that helps you learn smarter - find interesting articles, translate words
             as&nbsp;you read, and use&nbsp;spaced repetition to&nbsp;remember&nbsp;them.
           </p>
           <Button onClick={() => handleRegisterClick()}>
