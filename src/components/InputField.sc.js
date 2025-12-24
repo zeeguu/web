@@ -28,7 +28,7 @@ const InputWrapper = styled.div`
 const Input = styled.input`
   box-sizing: border-box;
   width: 100%;
-  font-size: 0.9rem;
+  font-size: 1rem; /* Must be >= 16px to prevent iOS auto-zoom on focus */
   height: 2.5rem;
   padding: 0 1rem;
   margin: 0;
