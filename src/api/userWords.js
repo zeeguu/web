@@ -130,8 +130,8 @@ Zeeguu_API.prototype.userSetForExercises = function (bookmark_id) {
   this._post(`use_in_exercises/${bookmark_id}`);
 };
 
-Zeeguu_API.prototype.userSetNotForExercises = function (bookmark_id) {
-  this._post(`dont_use_in_exercises/${bookmark_id}`);
+Zeeguu_API.prototype.userSetNotForExercises = function (bookmark_id, reason = "") {
+  this._post(`dont_use_in_exercises/${bookmark_id}`, { reason });
 };
 
 Zeeguu_API.prototype.prioritizeBookmarksToStudy = function (

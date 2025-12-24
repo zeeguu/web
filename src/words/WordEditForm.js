@@ -36,8 +36,8 @@ export default function WordEditForm({
       `WORD_EDIT_FORM_REMOVE: ${reason}`
     );
     
-    // Remove word from exercises
-    api.userSetNotForExercises(bookmarkId);
+    // Remove from exercises (pass reason so backend can mark as learned if appropriate)
+    api.userSetNotForExercises(bookmarkId, reason);
     
     // Update local state
     bookmark.fit_for_study = false;
@@ -165,7 +165,7 @@ export default function WordEditForm({
         <s.DoneButtonHolder>
           {bookmark.from.split(" ").length < MAX_WORDS_IN_BOOKMARK_FOR_EXERCISES && (
             <StyledGreyButton type="button" onClick={() => setShowExcludeModal(true)} style={{ marginTop: "1em" }}>
-              Remove word from exercises
+              Remove from exercises
             </StyledGreyButton>
           )}
           {isNotEdited ? (
