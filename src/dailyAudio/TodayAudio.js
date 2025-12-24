@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { orange500, orange600, orange800, zeeguuOrange } from "../components/colors";
 import { APIContext } from "../contexts/APIContext";
 import { UserContext } from "../contexts/UserContext";
@@ -7,9 +7,9 @@ import CustomAudioPlayer from "../components/CustomAudioPlayer";
 import FeedbackModal from "../components/FeedbackModal";
 import { FEEDBACK_OPTIONS, FEEDBACK_CODES_NAME, FEEDBACK_CODES } from "../components/FeedbackConstants";
 import Word from "../words/Word";
+import useListeningSession from "../hooks/useListeningSession";
 
 const TWO_MIN = 120000; // 2 minutes in milliseconds
-const SESSION_UPDATE_INTERVAL = 10000; // Update session every 10 seconds
 
 export function wordsAsTile(words) {
   if (!words || !words.length) return "";
@@ -99,61 +99,10 @@ export default function TodayAudio() {
   const [error, setError] = useState(null);
   const [canGenerateLesson, setCanGenerateLesson] = useState(null); // null = checking, true = can generate, false = cannot
 
-  // Listening session tracking
-  const listeningSessionIdRef = useRef(null);
-  const listeningStartTimeRef = useRef(null);
-  const sessionUpdateTimerRef = useRef(null);
+  // Listening session tracking via hook
+  const listeningSession = useListeningSession(lessonData?.lesson_id);
 
   let words = lessonData?.words || [];
-
-  // Clean up listening session on unmount
-  useEffect(() => {
-    return () => {
-      if (sessionUpdateTimerRef.current) {
-        clearInterval(sessionUpdateTimerRef.current);
-      }
-      // End any active session when component unmounts
-      if (listeningSessionIdRef.current && listeningStartTimeRef.current) {
-        const elapsedSeconds = Math.floor((Date.now() - listeningStartTimeRef.current) / 1000);
-        api.listeningSessionEnd(listeningSessionIdRef.current, elapsedSeconds);
-      }
-    };
-  }, [api]);
-
-  const startListeningSession = () => {
-    if (!lessonData?.lesson_id) return;
-
-    api.listeningSessionCreate(lessonData.lesson_id, (sessionId) => {
-      console.log('Started listening session:', sessionId);
-      listeningSessionIdRef.current = sessionId;
-      listeningStartTimeRef.current = Date.now();
-
-      // Set up periodic session updates
-      sessionUpdateTimerRef.current = setInterval(() => {
-        if (listeningSessionIdRef.current && listeningStartTimeRef.current) {
-          const elapsedSeconds = Math.floor((Date.now() - listeningStartTimeRef.current) / 1000);
-          api.listeningSessionUpdate(listeningSessionIdRef.current, elapsedSeconds);
-        }
-      }, SESSION_UPDATE_INTERVAL);
-    });
-  };
-
-  const endListeningSession = () => {
-    // Clear the update timer
-    if (sessionUpdateTimerRef.current) {
-      clearInterval(sessionUpdateTimerRef.current);
-      sessionUpdateTimerRef.current = null;
-    }
-
-    // End the session with final duration
-    if (listeningSessionIdRef.current && listeningStartTimeRef.current) {
-      const elapsedSeconds = Math.floor((Date.now() - listeningStartTimeRef.current) / 1000);
-      console.log('Ending listening session:', listeningSessionIdRef.current, 'duration:', elapsedSeconds, 'seconds');
-      api.listeningSessionEnd(listeningSessionIdRef.current, elapsedSeconds);
-      listeningSessionIdRef.current = null;
-      listeningStartTimeRef.current = null;
-    }
-  };
 
   // Update page title and playback time when lessonData changes
   useEffect(() => {
@@ -399,12 +348,12 @@ export default function TodayAudio() {
             if (lessonData.lesson_id) {
               api.updateLessonState(lessonData.lesson_id, "resume");
               // Start a new listening session
-              startListeningSession();
+              listeningSession.start();
             }
           }}
           onPause={() => {
             // End listening session when paused
-            endListeningSession();
+            listeningSession.end();
           }}
           onProgressUpdate={(progressSeconds) => {
             console.log('Updating playback time:', progressSeconds);
@@ -416,7 +365,7 @@ export default function TodayAudio() {
           }}
           onEnded={() => {
             // End listening session when audio ends
-            endListeningSession();
+            listeningSession.end();
             if (lessonData.lesson_id) {
               api.updateLessonState(lessonData.lesson_id, "complete", null, () => {
                 // Update local state to show completion immediately
