@@ -151,14 +151,14 @@ let strings = new LocalizedStrings(
 
       //PrivacyNotice
       privacyNotice: "Privacy Notice",
-      zeeguuIsAReaserchProject:
-        "Zeeguu is a research project. Our goal is to discover ways in which learning a foreign language is more fun.",
+      zeeguuIsAResearchProject:
+        "Zeeguu is a research project. Our goal is to discover ways in which learning a foreign language is more fun and more effective.",
       the: "The ",
       onlyPersonalInfo: "only personal information",
       thatWeStore: " that we store about you is the ",
       nameAndEmail: "name and email",
       restOfPersonalInfoMsg:
-        "you provide on this page. We will share your name and email with only your teacher. We need you email to send you a reset password code, important announcements about the platform, and possibly a survey at some point.",
+        " you provide on this page. We will share your name and email only with your teacher if you are part of a class. We need your email to send you a reset password code, important announcements about the platform, and possibly a survey at some point.",
       weStore: "We store ",
       anonymizedData: "anonymized data",
       aboutYour: " about your ",
@@ -166,9 +166,9 @@ let strings = new LocalizedStrings(
       togetherWithThe: " together with the ",
       times: "times of these interactions",
       restOfDataStorageInfoMsg:
-        ". They help us estimate the words you know, the ones you should learn, recommend texts, and approximate time spent studying.",
+        ". This helps us estimate the words you know, the ones you should learn, recommend texts, and approximate time spent studying.",
       weMightMakeDataAvailableInfo:
-        "        We might make the anonymized interaction data available for other researchers too. In research, data can be even more important than algorithms.",
+        "We might make the anonymized interaction data available to other researchers too. In research, data can be even more important than algorithms.",
 
       //Signin
       dontHaveAnAccount: "Don't have an account?",
@@ -958,7 +958,7 @@ let strings = new LocalizedStrings(
 
       //PrivacyNotice
       privacyNotice: "Fortrolighedserklæring",
-      zeeguuIsAReaserchProject:
+      zeeguuIsAResearchProject:
         "Zeeguu er et forskningsprojekt. Vores mål er at undersøge, hvordan man kan gøre det sjovere at lære et fremmedsprog.",
       the: "Den ",
       onlyPersonalInfo: "eneste personlige information",

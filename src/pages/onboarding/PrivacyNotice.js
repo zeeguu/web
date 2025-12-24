@@ -5,7 +5,7 @@ export default function PrivacyNotice() {
     <>
       <h2>{strings.privacyNotice}</h2>
 
-      <p>{strings.zeeguuIsAReaserchProject}</p>
+      <p>{strings.zeeguuIsAResearchProject}</p>
 
       <p>
         {strings.the} <b>{strings.onlyPersonalInfo}</b> {strings.thatWeStore}
