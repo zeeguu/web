@@ -85,6 +85,10 @@ export default function LanguageModal({ open, setOpen }) {
       setUserDetails(newUserDetails);
       LocalStorage.setUserInfo(newUserDetails);
       saveSharedUserInfo(newUserDetails);
+      // Reload if changing level for current language
+      if (languageCode === userDetails.learned_language) {
+        window.location.reload();
+      }
     });
   };
 
