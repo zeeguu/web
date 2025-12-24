@@ -1,6 +1,5 @@
 import { useContext, useEffect, useState } from "react";
-
-import Congratulations from "./Congratulations";
+import { useHistory } from "react-router-dom";
 import ExerciseSessionProgressBar from "./ExerciseSessionProgressBar";
 import * as s from "./Exercises.sc";
 import LoadingAnimation from "../components/LoadingAnimation";
@@ -36,11 +35,11 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
   const speech = useContext(SpeechContext);
   const { userDetails } = useContext(UserContext);
   const { setContextualInfo } = useFeedbackContext();
+  const history = useHistory();
 
   const [hasKeptExercising, setHasKeptExercising] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [currentBookmarksToStudy, setCurrentBookmarksToStudy] = useState();
-  const [finished, setFinished] = useState(false);
   const [correctBookmarks, setCorrectBookmarks] = useState([]);
   const [incorrectBookmarks, setIncorrectBookmarks] = useState([]);
   const [fullExerciseProgression, setFullExerciseProgression] = useState();
@@ -156,7 +155,6 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
     setCurrentBookmarksToStudy();
     setCorrectBookmarks([]);
     setIncorrectBookmarks([]);
-    setFinished(false);
     setCurrentIndex(0);
     setActivityOver(false);
   }
@@ -253,32 +251,6 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
     }
   }, [currentExerciseType, selectedExerciseBookmark, currentBookmarksToStudy, setContextualInfo]);
 
-  // Standard flow when user completes exercise session
-  if (finished) {
-    return (
-      <>
-        <Congratulations
-          articleID={articleID}
-          isOutOfWordsToday={isOutOfWordsToday}
-          totalPracticedBookmarksInSession={totalPracticedBookmarksInSession}
-          correctBookmarks={correctBookmarks}
-          incorrectBookmarks={incorrectBookmarks}
-          backButtonAction={backButtonAction}
-          keepExercisingAction={() => {
-            resetExerciseSessionState();
-            getBookmarksAndAssignThemToExercises(BOOKMARKS_DUE_REVIEW);
-            setHasKeptExercising(true);
-          }}
-          toScheduledExercises={toScheduledExercises}
-          source={source}
-          exerciseSessionTimer={activeSessionDuration}
-          articleURL={articleURL}
-          articleTitle={articleTitle}
-        />
-      </>
-    );
-  }
-
   if (isOutOfWordsToday) {
     return <OutOfWordsMessage goBackAction={backButtonAction} />;
   }
@@ -299,9 +271,19 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
     const newIndex = currentIndex + 1;
 
     if (newIndex === fullExerciseProgression.length) {
-      setFinished(true);
+      // Navigate to the summary page with session data
       api.getCountOfBookmarksRecommendedForPractice((bookmarkCount) => {
-        setIsOutOfWordsToday(bookmarkCount === 0);
+        history.push("/exercises/summary", {
+          articleID,
+          isOutOfWordsToday: bookmarkCount === 0,
+          totalPracticedBookmarksInSession: totalPracticedBookmarksInSession,
+          correctBookmarks: correctBookmarks,
+          incorrectBookmarks: incorrectBookmarks,
+          exerciseSessionTimer: activeSessionDuration,
+          articleURL,
+          articleTitle,
+          source,
+        });
       });
       return;
     }

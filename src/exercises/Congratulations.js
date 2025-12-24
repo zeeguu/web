@@ -3,6 +3,7 @@ import * as s from "../reader/ArticleReader.sc";
 import { YellowMessageBox } from "../components/TopMessage.sc";
 import strings from "../i18n/definitions";
 import { useState, useEffect, useContext } from "react";
+import { useLocation, useHistory } from "react-router-dom";
 import { CenteredColumn } from "./Congratulations.sc";
 import { removeArrayDuplicates } from "../utils/basic/arrays";
 import { LoadingAnimation } from "../components/LoadingAnimation.sc";
@@ -15,22 +16,41 @@ import { StyledButton } from "../components/allButtons.sc";
 import { APIContext } from "../contexts/APIContext";
 import { UserContext } from "../contexts/UserContext";
 import { ExercisesCounterContext } from "./ExercisesCounterContext";
-import  ExerciseProgressSummary  from "./ExercisesProgressSummary";
+import ExerciseProgressSummary from "./ExercisesProgressSummary";
+import { WEB_READER } from "../reader/ArticleReader";
 
 export default function Congratulations({
-  articleID,
-  isOutOfWordsToday,
-  totalPracticedBookmarksInSession,
-  articleTitle,
-  articleURL,
-  correctBookmarks,
-  incorrectBookmarks,
+  // Props from router
   backButtonAction,
   keepExercisingAction,
   toScheduledExercises,
-  source,
-  exerciseSessionTimer,
 }) {
+  const location = useLocation();
+  const history = useHistory();
+
+  // Get session data from route state
+  const sessionData = location.state || {};
+  const {
+    articleID,
+    isOutOfWordsToday: isOutOfWordsTodayFromState,
+    totalPracticedBookmarksInSession = 0,
+    correctBookmarks = [],
+    incorrectBookmarks = [],
+    exerciseSessionTimer = 0,
+    articleURL,
+    articleTitle,
+    source = WEB_READER,
+  } = sessionData;
+
+  // Redirect to exercises if no session data (user navigated directly)
+  useEffect(() => {
+    if (!location.state) {
+      history.replace("/exercises");
+    }
+  }, [location.state, history]);
+
+  // Use state for isOutOfWordsToday to allow updates
+  const [isOutOfWordsToday, setIsOutOfWordsToday] = useState(isOutOfWordsTodayFromState);
   const api = useContext(APIContext);
   const { userDetails } = useContext(UserContext);
   const { updateExercisesCounter } = useContext(ExercisesCounterContext);
@@ -57,7 +77,8 @@ export default function Congratulations({
     // eslint-disable-next-line
   }, []);
   
-  if (username === undefined || isOutOfWordsToday === undefined) {
+  // Show loading while redirecting or waiting for data
+  if (!location.state || username === undefined || isOutOfWordsToday === undefined) {
     return <LoadingAnimation />;
   }
 
