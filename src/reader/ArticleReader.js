@@ -20,9 +20,9 @@ import ReportBroken from "./ReportBroken";
 import TopToolbar from "./TopToolbar";
 import ReviewVocabularyInfoBox from "./ReviewVocabularyInfoBox";
 import ArticleAuthors from "./ArticleAuthors";
-import useActivityTimer from "../hooks/useActivityTimer";
 import useShadowRef from "../hooks/useShadowRef";
 import useScrollTracking from "../hooks/useScrollTracking";
+import useReadingSession from "../hooks/useReadingSession";
 import strings from "../i18n/definitions";
 import useUserPreferences from "../hooks/useUserPreferences";
 import ArticleStatInfo from "../components/ArticleStatInfo";
@@ -67,15 +67,17 @@ export default function ArticleReader({ teacherArticleID }) {
   const { userDetails } = useContext(UserContext);
   const history = useHistory();
   const speech = useContext(SpeechContext);
-  const [activityTimer, isTimerActive] = useActivityTimer(uploadActivity);
-  const [readingSessionId, setReadingSessionId] = useState();
   const [bookmarks, setBookmarks] = useState([]);
 
-  const clickedOnReviewVocabRef = useShadowRef(clickedOnReviewVocab);
-  const readingSessionIdRef = useShadowRef(readingSessionId);
+  // Reading session hook - starts when articleInfo is loaded
+  const {
+    readingSessionId,
+    getReadingSessionId,
+    duration: activityTimer,
+    isTimerActive,
+  } = useReadingSession(articleID, "web", !!articleInfo);
 
-  // Getter function for InteractiveText to access current reading session ID
-  const getReadingSessionId = useCallback(() => readingSessionIdRef.current, []);
+  const clickedOnReviewVocabRef = useShadowRef(clickedOnReviewVocab);
 
   // Use the shared scroll tracking hook
   const {
@@ -200,11 +202,9 @@ export default function ArticleReader({ teacherArticleID }) {
       setArticleInfo(articleInfo);
       setTitle(articleInfo.title);
 
-      api.readingSessionCreate(articleID, "web", (sessionID) => {
-        setReadingSessionId(sessionID);
-        api.setArticleOpened(articleInfo.id);
-        api.logUserActivity(api.OPEN_ARTICLE, articleID, sessionID, WEB_READER);
-      });
+      // Session is now created by useReadingSession hook when articleInfo becomes available
+      api.setArticleOpened(articleInfo.id);
+      api.logUserActivity(api.OPEN_ARTICLE, articleID, "", WEB_READER);
     });
 
     window.addEventListener("focus", handleFocus);

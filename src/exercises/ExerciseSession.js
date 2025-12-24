@@ -13,9 +13,9 @@ import { assignBookmarksToExercises } from "./assignBookmarksToExercises";
 import NextNavigation from "./exerciseTypes/NextNavigation";
 import { SpeechContext } from "../contexts/SpeechContext";
 import { EXTENDED_SEQUENCE, EXTENDED_SEQUENCE_NO_AUDIO } from "./exerciseSequenceTypes";
-import useActivityTimer from "../hooks/useActivityTimer";
 import { ExercisesCounterContext } from "./ExercisesCounterContext";
 import useShadowRef from "../hooks/useShadowRef";
+import useExerciseSession from "../hooks/useExerciseSession";
 import DigitalTimer from "../components/DigitalTimer";
 
 import useScreenWidth from "../hooks/useScreenWidth";
@@ -63,14 +63,19 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
   const [isOutOfWordsToday, setIsOutOfWordsToday] = useState();
   const [totalPracticedBookmarksInSession, setTotalPracticedBookmarksInSession] = useState(0);
   const [exerciseMessageForAPI, setExerciseMessageForAPI] = useState({});
-  const [dbExerciseSessionId, setDbExerciseSessionId] = useState();
   const [isSessionLoading, setIsSessionLoading] = useState(true); // New loading state
-  const dbExerciseSessionIdRef = useShadowRef(dbExerciseSessionId);
   const currentIndexRef = useShadowRef(currentIndex);
   const hasKeptExercisingRef = useShadowRef(hasKeptExercising);
 
-  const [activeSessionDuration, clockActive, setActivityOver] = useActivityTimer();
+  // Exercise session hook - starts when exercises are loaded
+  const {
+    exerciseSessionId: dbExerciseSessionId,
+    getExerciseSessionId,
+    duration: activeSessionDuration,
+    isTimerActive: clockActive,
+  } = useExerciseSession(!!fullExerciseProgression);
 
+  const dbExerciseSessionIdRef = useShadowRef(dbExerciseSessionId);
   const activeSessionDurationRef = useShadowRef(activeSessionDuration);
   const [getCurrentSubSessionDuration, resetSubSessionTimer] = useSubSessionTimer(activeSessionDurationRef.current);
   const { hasExerciseNotification, decrementExerciseCounter, hideExerciseCounter } =
@@ -141,12 +146,8 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
     setCurrentBookmarksToStudy(exerciseSession[0].bookmarks);
     setSelectedExerciseBookmark(exerciseSession[0].bookmarks[0]);
 
-    // we have bookmarks; we can start logging
-    api.startLoggingExerciseSessionToDB((newlyCreatedDBSessionID) => {
-      let id = JSON.parse(newlyCreatedDBSessionID).id;
-      setDbExerciseSessionId(id);
-      setIsSessionLoading(false); // Session is ready
-    });
+    // Session is now created by useExerciseSession hook when fullExerciseProgression is set
+    setIsSessionLoading(false);
   }
 
   function resetExerciseSessionState() {
@@ -156,7 +157,6 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
     setCorrectBookmarks([]);
     setIncorrectBookmarks([]);
     setCurrentIndex(0);
-    setActivityOver(false);
   }
 
   function getBookmarksAndAssignThemToExercises() {
@@ -187,19 +187,8 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
     window.removeEventListener("focus", handleExerciseFocus);
     window.removeEventListener("blur", handleExerciseBlur);
 
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    if (currentIndexRef.current > 0 || hasKeptExercisingRef.current) {
-      // Do not report if there were no exercises
-      // performed
+    // Session end is now handled by useExerciseSession hook on unmount
 
-      api.reportExerciseSessionEnd(
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-        dbExerciseSessionIdRef.current,
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-        activeSessionDurationRef.current,
-      );
-    }
-    setActivityOver(true);
     // Clear contextual info from feedback context when leaving exercise session
     setContextualInfo(null);
   }

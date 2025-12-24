@@ -59,7 +59,7 @@ export default function useSession({
   const [isTimerActive, setIsTimerActive] = useState(false);
   const [isFocused, setIsFocused] = useState(true);
 
-  // API method mapping (handles different naming conventions across session types)
+  // API method mapping - all session types now use consistent naming
   const apiMethods = {
     reading: {
       create: (callback) => api.readingSessionCreate(resourceId, createParams.reading_source, callback),
@@ -77,15 +77,9 @@ export default function useSession({
       end: (id, dur) => api.listeningSessionEnd(id, dur),
     },
     exercise: {
-      // Exercise sessions use different API method names
-      create: (callback) => {
-        api.startLoggingExerciseSessionToDB((json) => {
-          const id = JSON.parse(json).id;
-          callback(id);
-        });
-      },
-      update: (id, dur) => api.updateExerciseSession(id, dur),
-      end: (id, dur) => api.reportExerciseSessionEnd(id, dur),
+      create: (callback) => api.exerciseSessionCreate(callback),
+      update: (id, dur) => api.exerciseSessionUpdate(id, dur),
+      end: (id, dur) => api.exerciseSessionEnd(id, dur),
     },
   };
 
