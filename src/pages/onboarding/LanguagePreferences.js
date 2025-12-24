@@ -120,12 +120,6 @@ export default function LanguagePreferences() {
         </Heading>
       </Header>
       <Main>
-        <p>
-          After this step, you will need an{" "}
-          <span className="bold">invite code</span> to continue registration. If
-          you don't have one yet, reach out to us at{" "}
-          <span className="bold">{strings.zeeguuTeamEmail}</span>.
-        </p>
         <Form action={""}>
           <FormSection>
             <Selector
