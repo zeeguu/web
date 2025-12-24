@@ -130,11 +130,6 @@ export default function Learning() {
         <StyledButton onClick={() => setShowAddWordModal(true)}>+</StyledButton>
       </div>
 
-      <p style={{ marginTop: 0 }}>
-        You can have up to {maxWordsToSchedule} words in learning at a given moment.{" "}
-        <Link to="/account_settings/exercise_scheduling">Change this in settings</Link>.
-      </p>
-
       {showAddWordModal && (
         <AddCustomWordModal onClose={() => setShowAddWordModal(false)} onSuccess={handleAddCustomWord} />
       )}
@@ -178,6 +173,12 @@ export default function Learning() {
             These words will be added to your exercises soon. They come from your translations and are prioritized by
             how frequently they appear in the language you're learning.
           </p>
+          {inLearning.length >= maxWordsToSchedule && (
+            <p>
+              You can have up to {maxWordsToSchedule} words in learning at a given moment.{" "}
+              <Link to="/account_settings/exercise_scheduling">Change this in settings</Link>.
+            </p>
+          )}
           {nextInLearning.map((each) => (
             <Word
               key={each.id}
