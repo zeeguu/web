@@ -88,6 +88,7 @@ export default function SideNavLanguageOption({ screenWidth }) {
       setUserDetails(newUserDetails);
       LocalStorage.setUserInfo(newUserDetails);
       saveSharedUserInfo(newUserDetails);
+      window.location.reload();
     });
 
     handleLevelMenuClose();
