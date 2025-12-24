@@ -1,12 +1,16 @@
 import { useState, useContext, useMemo } from "react";
-import { useHistory } from "react-router-dom";
 import { UserContext } from "../../../contexts/UserContext";
+import { APIContext } from "../../../contexts/APIContext";
 import LanguageModal from "../LanguageModal";
 import NavOption from "../NavOption";
 import NavIcon from "../NavIcon";
 import navLanguages from "../navLanguages";
 import { CEFR_LEVELS } from "../../../assorted/cefrLevels";
+import LocalStorage from "../../../assorted/LocalStorage";
+import { saveSharedUserInfo } from "../../../utils/cookies/userInfo";
 import styled from "styled-components";
+import Menu from "@mui/material/Menu";
+import MenuItem from "@mui/material/MenuItem";
 
 const LanguageContainer = styled.div`
   display: flex;
@@ -34,8 +38,9 @@ const LevelBadge = styled.span`
 
 export default function SideNavLanguageOption({ screenWidth }) {
   const [showLanguageModal, setShowLanguageModal] = useState(false);
-  const { userDetails } = useContext(UserContext);
-  const history = useHistory();
+  const [levelMenuAnchor, setLevelMenuAnchor] = useState(null);
+  const { userDetails, setUserDetails } = useContext(UserContext);
+  const api = useContext(APIContext);
 
   const currentLearnedLanguage = useMemo(() => {
     const languageCode = userDetails.learned_language;
@@ -47,8 +52,8 @@ export default function SideNavLanguageOption({ screenWidth }) {
     const languageCode = userDetails.learned_language;
     const cefrKey = languageCode + "_cefr_level";
     const cefrLevel = userDetails[cefrKey];
-    const level = CEFR_LEVELS.find(level => level.value === cefrLevel.toString());
-    return level ? level.label.split(' | ')[0] : 'A1'; // Extract just "A1", "B2", etc.
+    const level = CEFR_LEVELS.find(level => level.value === cefrLevel?.toString());
+    return level ? level.label.split(' | ')[0] : 'A1';
   }, [userDetails.learned_language, userDetails]);
 
   const handleLanguageNameClick = (e) => {
@@ -58,7 +63,34 @@ export default function SideNavLanguageOption({ screenWidth }) {
 
   const handleLevelBadgeClick = (e) => {
     e.stopPropagation();
-    history.push('/account_settings/language_settings');
+    setLevelMenuAnchor(e.currentTarget);
+  };
+
+  const handleLevelMenuClose = () => {
+    setLevelMenuAnchor(null);
+  };
+
+  const handleCefrLevelChange = (newLevel) => {
+    const languageCode = userDetails.learned_language;
+    const cefrKey = languageCode + "_cefr_level";
+
+    const newUserDetails = {
+      ...userDetails,
+      [cefrKey]: parseInt(newLevel),
+    };
+
+    const newUserDetailsForAPI = {
+      ...newUserDetails,
+      cefr_level: parseInt(newLevel),
+    };
+
+    api.saveUserDetails(newUserDetailsForAPI, () => {}, () => {
+      setUserDetails(newUserDetails);
+      LocalStorage.setUserInfo(newUserDetails);
+      saveSharedUserInfo(newUserDetails);
+    });
+
+    handleLevelMenuClose();
   };
 
   const languageDisplayed = currentLearnedLanguage || "Language not set";
@@ -76,7 +108,7 @@ export default function SideNavLanguageOption({ screenWidth }) {
             <LevelBadge onClick={handleLevelBadgeClick}>{currentCefrLevel}</LevelBadge>
           </LanguageContainer>
         }
-        title={`${languageDisplayed} (${currentCefrLevel}) - Click name to change language, click level to go to settings`}
+        title={`${languageDisplayed} (${currentCefrLevel}) - Click name to change language, click level to change it`}
         screenWidth={screenWidth}
         onClick={() => {}} // Disable default click behavior since we handle clicks on individual elements
       />
@@ -87,6 +119,29 @@ export default function SideNavLanguageOption({ screenWidth }) {
           setShowLanguageModal(!showLanguageModal);
         }}
       ></LanguageModal>
+      <Menu
+        anchorEl={levelMenuAnchor}
+        open={Boolean(levelMenuAnchor)}
+        onClose={handleLevelMenuClose}
+        anchorOrigin={{
+          vertical: "bottom",
+          horizontal: "left",
+        }}
+        transformOrigin={{
+          vertical: "top",
+          horizontal: "left",
+        }}
+      >
+        {CEFR_LEVELS.map((level) => (
+          <MenuItem
+            key={level.value}
+            selected={level.label.split(' | ')[0] === currentCefrLevel}
+            onClick={() => handleCefrLevelChange(level.value)}
+          >
+            {level.label}
+          </MenuItem>
+        ))}
+      </Menu>
     </>
   );
 }
