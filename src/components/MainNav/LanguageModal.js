@@ -17,24 +17,31 @@ import DynamicFlagImage from "../DynamicFlagImage.js";
 import { CEFR_LEVELS } from "../../assorted/cefrLevels.js";
 import styled from "styled-components";
 
+const CefrSection = styled.span`
+  display: flex;
+  align-items: center;
+  margin-left: auto;
+  padding-left: 0.75em;
+  border-left: 1px solid rgba(128, 128, 128, 0.3);
+  height: 1.5em;
+`;
+
 const CefrSelect = styled.select`
-  font-size: 0.8em;
-  font-weight: 500;
-  padding: 0.2em 0.5em;
-  border-radius: 1em;
-  border: 1px solid #ddd;
-  background: white;
+  font-size: 0.9em;
+  font-weight: 600;
+  padding: 0.2em 0.3em;
+  border: none;
+  background: transparent;
   cursor: pointer;
-  margin-left: 0.5em;
+  color: inherit;
 
   &:hover {
-    background: #f9f9f9;
-    border-color: #ccc;
+    background: rgba(0, 0, 0, 0.05);
+    border-radius: 0.3em;
   }
 
   &:focus {
     outline: none;
-    border-color: #0066cc;
   }
 `;
 
@@ -145,20 +152,22 @@ export default function LanguageModal({ open, setOpen }) {
                 updateLearnedLanguage(e.target.value);
               }}
               optionLabel={(e) => (
-                <span>
+                <>
                   {e.language}
-                  <CefrSelect
-                    value={getCefrLevelValueForLanguage(e.code)}
-                    onClick={(ev) => ev.stopPropagation()}
-                    onChange={(ev) => handleCefrLevelChange(e.code, ev.target.value, ev)}
-                  >
-                    {CEFR_LEVELS.map((level) => (
-                      <option key={level.value} value={level.value}>
-                        {level.label.split(" | ")[0]}
-                      </option>
-                    ))}
-                  </CefrSelect>
-                </span>
+                  <CefrSection>
+                    <CefrSelect
+                      value={getCefrLevelValueForLanguage(e.code)}
+                      onClick={(ev) => ev.stopPropagation()}
+                      onChange={(ev) => handleCefrLevelChange(e.code, ev.target.value, ev)}
+                    >
+                      {CEFR_LEVELS.map((level) => (
+                        <option key={level.value} value={level.value}>
+                          {level.label.split(" | ")[0]}
+                        </option>
+                      ))}
+                    </CefrSelect>
+                  </CefrSection>
+                </>
               )}
               optionValue={(e) => e.code}
               optionId={(e) => e.id}

@@ -56,12 +56,13 @@ const OptionLabel = styled.label`
   white-space: nowrap;
   transition: all 300ms ease-in-out;
   margin-bottom: 0.2rem;
+  min-width: 11rem;
 
   ${({ $leftAligned }) =>
     $leftAligned &&
     css`
       justify-content: flex-start;
-      padding: 0 1.2rem 0 0.5rem;
+      padding: 0 0.75rem 0 0.5rem;
     `}
 
   &:hover {
