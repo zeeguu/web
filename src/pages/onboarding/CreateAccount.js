@@ -43,9 +43,7 @@ export default function CreateAccount({ handleSuccessfulLogIn }) {
   const nativeLanguage = LocalStorage.getNativeLanguage();
   const learnedCefrLevel = LocalStorage.getLearnedCefrLevel();
 
-  const [inviteCode, setInviteCode, validateInviteCode, isInviteCodeValid, inviteCodeMsg] = useFormField("", [
-    NonEmptyValidator("Please enter an invite code."),
-  ]);
+  const [inviteCode, setInviteCode] = useFormField("", []);
 
   const [name, setName, validateName, isNameValid, nameMsg] = useFormField("", [
     NonEmptyValidator("Please enter a name."),
@@ -116,7 +114,6 @@ export default function CreateAccount({ handleSuccessfulLogIn }) {
         validateName,
         validatePassword,
         validateEmail,
-        validateInviteCode,
         validateCheckPrivacyNote,
         validateConfirmPass,
       ])
@@ -171,7 +168,7 @@ export default function CreateAccount({ handleSuccessfulLogIn }) {
         </>
       </Modal>
       <Header>
-        <Heading>Create Beta&nbsp;Account</Heading>
+        <Heading>Create Account</Heading>
       </Header>
       <Main>
         <Form action={""} method={"POST"}>
@@ -179,7 +176,7 @@ export default function CreateAccount({ handleSuccessfulLogIn }) {
           <FormSection>
             <InputField
               type={"text"}
-              label={strings.inviteCode}
+              label={strings.inviteCode + " (optional)"}
               id={"invite-code"}
               name={"invite-code"}
               placeholder={strings.inviteCodePlaceholder}
@@ -187,11 +184,9 @@ export default function CreateAccount({ handleSuccessfulLogIn }) {
               onChange={(e) => {
                 setInviteCode(e.target.value);
               }}
-              isError={!isInviteCodeValid}
-              errorMessage={inviteCodeMsg}
               helperText={
                 <div>
-                  No invite code? Request it at: <span className="bold">{strings.zeeguuTeamEmail}</span>
+                  Only needed if you received one from a teacher or researcher.
                 </div>
               }
             />

@@ -23,7 +23,7 @@ const sharedSideNavStyling = css`
 const SideNav = styled.nav`
   height: 100%;
   top: 0;
-  padding: 0.5rem 0.5rem 11rem 0.5rem;
+  padding: calc(0.5rem + env(safe-area-inset-top)) 0.5rem 11rem 0.5rem;
   overflow-y: scroll;
   z-index: 2;
 

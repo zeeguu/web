@@ -4,6 +4,7 @@ import { almostBlack } from "../components/colors";
 const SearchTopBar = styled.div`
   display: flex;
   justify-content: space-between;
+  padding-left: 1em;
 
   @media (max-width: 768px) {
     flex-direction: column;

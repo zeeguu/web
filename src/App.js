@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { BrowserRouter, useLocation } from "react-router-dom";
+import { BrowserRouter } from "react-router-dom";
 
 import { SystemLanguagesContext } from "./contexts/SystemLanguagesContext";
 import { UserContext } from "./contexts/UserContext";
@@ -25,69 +25,11 @@ import SessionStorage from "./assorted/SessionStorage";
 import useRedirectLink from "./hooks/useRedirectLink";
 import useLocationTracker from "./hooks/useLocationTracker";
 import LoadingAnimation from "./components/LoadingAnimation";
-import PWAInstallBanner from "./components/PWAInstallBanner";
-import IOSInstallBanner from "./components/IOSInstallBanner";
-import PWAInstallOverlay from "./components/PWAInstallOverlay";
-import usePWAInstall from "./hooks/usePWAInstall";
 
 // Wrapper component to use location tracker inside Router context
 function LocationTrackingWrapper({ children }) {
   useLocationTracker();
   return children;
-}
-
-function PWABanners() {
-  const location = useLocation();
-  const { showInstallBanner, isAnyIOSBrowser, iosBrowserType, installPWA, dismissBanner } = usePWAInstall();
-  const [showInstructions, setShowInstructions] = useState(false);
-
-  // Only show PWA install banners on /articles page
-  const shouldShowBanner = showInstallBanner && location.pathname === "/articles";
-
-  const handleShowInstructions = () => {
-    setShowInstructions(true);
-  };
-
-  const handleCloseInstructions = () => {
-    setShowInstructions(false);
-    dismissBanner(); // Also dismiss the banner when closing instructions
-  };
-
-  const handleInstall = async () => {
-    if (isAnyIOSBrowser) {
-      // iOS browsers need manual instructions
-      handleShowInstructions();
-    } else {
-      // Android browsers can install directly
-      const success = await installPWA();
-      if (!success) {
-        // If direct install fails, show instructions
-        handleShowInstructions();
-      }
-    }
-  };
-
-  return (
-    <>
-      {shouldShowBanner &&
-        (isAnyIOSBrowser ? (
-          <IOSInstallBanner
-            show={shouldShowBanner}
-            browserType={iosBrowserType}
-            onShowInstructions={handleShowInstructions}
-            onDismiss={dismissBanner}
-          />
-        ) : (
-          <PWAInstallBanner show={shouldShowBanner} onInstall={handleInstall} onDismiss={dismissBanner} />
-        ))}
-      <PWAInstallOverlay
-        show={showInstructions}
-        isIOSBrowser={isAnyIOSBrowser}
-        iosBrowserType={iosBrowserType}
-        onClose={handleCloseInstructions}
-      />
-    </>
-  );
 }
 
 function App() {
@@ -268,7 +210,6 @@ function App() {
                         pauseOnHover
                         theme="light"
                       />
-                      <PWABanners />
                     </FeedbackContextProvider>
                   </APIContext.Provider>
                 </ProgressProvider>
