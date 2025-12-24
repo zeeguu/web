@@ -9,6 +9,7 @@ import { FEEDBACK_OPTIONS, FEEDBACK_CODES_NAME, FEEDBACK_CODES } from "../compon
 import Word from "../words/Word";
 
 const TWO_MIN = 120000; // 2 minutes in milliseconds
+const SESSION_UPDATE_INTERVAL = 10000; // Update session every 10 seconds
 
 export function wordsAsTile(words) {
   if (!words || !words.length) return "";
@@ -98,7 +99,61 @@ export default function TodayAudio() {
   const [error, setError] = useState(null);
   const [canGenerateLesson, setCanGenerateLesson] = useState(null); // null = checking, true = can generate, false = cannot
 
+  // Listening session tracking
+  const listeningSessionIdRef = useRef(null);
+  const listeningStartTimeRef = useRef(null);
+  const sessionUpdateTimerRef = useRef(null);
+
   let words = lessonData?.words || [];
+
+  // Clean up listening session on unmount
+  useEffect(() => {
+    return () => {
+      if (sessionUpdateTimerRef.current) {
+        clearInterval(sessionUpdateTimerRef.current);
+      }
+      // End any active session when component unmounts
+      if (listeningSessionIdRef.current && listeningStartTimeRef.current) {
+        const elapsedSeconds = Math.floor((Date.now() - listeningStartTimeRef.current) / 1000);
+        api.listeningSessionEnd(listeningSessionIdRef.current, elapsedSeconds);
+      }
+    };
+  }, [api]);
+
+  const startListeningSession = () => {
+    if (!lessonData?.lesson_id) return;
+
+    api.listeningSessionCreate(lessonData.lesson_id, (sessionId) => {
+      console.log('Started listening session:', sessionId);
+      listeningSessionIdRef.current = sessionId;
+      listeningStartTimeRef.current = Date.now();
+
+      // Set up periodic session updates
+      sessionUpdateTimerRef.current = setInterval(() => {
+        if (listeningSessionIdRef.current && listeningStartTimeRef.current) {
+          const elapsedSeconds = Math.floor((Date.now() - listeningStartTimeRef.current) / 1000);
+          api.listeningSessionUpdate(listeningSessionIdRef.current, elapsedSeconds);
+        }
+      }, SESSION_UPDATE_INTERVAL);
+    });
+  };
+
+  const endListeningSession = () => {
+    // Clear the update timer
+    if (sessionUpdateTimerRef.current) {
+      clearInterval(sessionUpdateTimerRef.current);
+      sessionUpdateTimerRef.current = null;
+    }
+
+    // End the session with final duration
+    if (listeningSessionIdRef.current && listeningStartTimeRef.current) {
+      const elapsedSeconds = Math.floor((Date.now() - listeningStartTimeRef.current) / 1000);
+      console.log('Ending listening session:', listeningSessionIdRef.current, 'duration:', elapsedSeconds, 'seconds');
+      api.listeningSessionEnd(listeningSessionIdRef.current, elapsedSeconds);
+      listeningSessionIdRef.current = null;
+      listeningStartTimeRef.current = null;
+    }
+  };
 
   // Update page title and playback time when lessonData changes
   useEffect(() => {
@@ -343,17 +398,25 @@ export default function TodayAudio() {
           onPlay={() => {
             if (lessonData.lesson_id) {
               api.updateLessonState(lessonData.lesson_id, "resume");
+              // Start a new listening session
+              startListeningSession();
             }
+          }}
+          onPause={() => {
+            // End listening session when paused
+            endListeningSession();
           }}
           onProgressUpdate={(progressSeconds) => {
             console.log('Updating playback time:', progressSeconds);
             setCurrentPlaybackTime(progressSeconds);
             if (lessonData.lesson_id) {
-              // Use pause action to save progress
+              // Use pause action to save progress position
               api.updateLessonState(lessonData.lesson_id, "pause", progressSeconds);
             }
           }}
           onEnded={() => {
+            // End listening session when audio ends
+            endListeningSession();
             if (lessonData.lesson_id) {
               api.updateLessonState(lessonData.lesson_id, "complete", null, () => {
                 // Update local state to show completion immediately
