@@ -1,4 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 
 import LoadingAnimation from "../components/LoadingAnimation";
 import { setTitle } from "../assorted/setTitle";
@@ -11,11 +12,21 @@ import AddCustomWordModal from "./AddCustomWordModal";
 
 import { APIContext } from "../contexts/APIContext";
 import { ExercisesCounterContext } from "../exercises/ExercisesCounterContext";
+import useUserPreferences from "../hooks/useUserPreferences";
+
+const LEVEL_DESCRIPTIONS = {
+  0: "Not yet practiced",
+  1: "Recognize (match, multiple choice)",
+  2: "Recognize (multiple choice, context, audio)",
+  3: "Recall (type translations)",
+  4: "Productive recall (spell, fill in blanks)",
+};
 
 export default function Learning() {
   const api = useContext(APIContext);
 
   const { updateExercisesCounter } = useContext(ExercisesCounterContext);
+  const { maxWordsToSchedule } = useUserPreferences(api);
 
   const [inLearning, setInLearning] = useState(null);
   const [inLearning_byLevel, setInLearning_byLevel] = useState(null);
@@ -101,7 +112,10 @@ export default function Learning() {
   function topMessage(level, count) {
     return (
       <>
-        Level {level} <span style={{ color: "gray", fontWeight: "lighter" }}>({count})</span>
+        Level {level}: {LEVEL_DESCRIPTIONS[level]}{" "}
+        <span style={{ color: "gray", fontWeight: "lighter" }}>
+          ({count} {count === 1 ? "word" : "words"})
+        </span>
       </>
     );
   }
@@ -110,23 +124,35 @@ export default function Learning() {
     <>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1em" }}>
         <p style={{ margin: 0 }}>
-          Words you see in your exercises grouped by how far you've progressed in their learning. A spaced repetition
-          algorithm decides the ones you see in a given day.
+          Words in your exercises grouped by level. Each level has progressively harder exercises. When you answer a
+          word correctly on two different days, it moves to the next level.
         </p>
         <StyledButton onClick={() => setShowAddWordModal(true)}>+</StyledButton>
       </div>
+
+      <p style={{ marginTop: 0 }}>
+        You can have up to {maxWordsToSchedule} words in learning at a given moment.{" "}
+        <Link to="/account_settings/exercise_scheduling">Change this in settings</Link>.
+      </p>
 
       {showAddWordModal && (
         <AddCustomWordModal onClose={() => setShowAddWordModal(false)} onSuccess={handleAddCustomWord} />
       )}
 
       <>
-        {inLearning.length === 0 && <p>No words being learned yet</p>}
+        {inLearning.length === 0 && (
+          <p style={{ color: "gray", fontStyle: "italic" }}>
+            No words in your exercises yet. Translate words while reading to add them.
+          </p>
+        )}
 
-        {[4, 3, 2, 1, 0].map((level) => (
-          <React.Fragment key={level}>
-            {inLearning_byLevel[level].length > 0 && (
-              <CollapsablePanel topMessage={topMessage(level, inLearning_byLevel[level].length)}>
+        {[1, 2, 3, 4].map(
+          (level) =>
+            inLearning_byLevel[level].length > 0 && (
+              <CollapsablePanel
+                key={level}
+                topMessage={topMessage(level, inLearning_byLevel[level].length)}
+              >
                 {inLearning_byLevel[level].map((each) => (
                   <Word
                     key={each.id}
@@ -139,9 +165,8 @@ export default function Learning() {
                   />
                 ))}
               </CollapsablePanel>
-            )}
-          </React.Fragment>
-        ))}
+            ),
+        )}
       </>
 
       <br />
@@ -150,13 +175,8 @@ export default function Learning() {
         <>
           <h1>Next in exercises...</h1>
           <p>
-            When you master a word from your current exercise list (or you remove it), it gets replaced by a new word to
-            keep your practice sessions consistent.
-          </p>
-          <p>
-            The words below are ranked in order of their priority for being added to your exercises next. These
-            replacement words come from your previous translation work and are prioritized based on how frequently they
-            appear in the language you're learning.
+            These words will be added to your exercises soon. They come from your translations and are prioritized by
+            how frequently they appear in the language you're learning.
           </p>
           {nextInLearning.map((each) => (
             <Word
