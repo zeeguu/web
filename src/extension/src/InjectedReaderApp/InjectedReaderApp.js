@@ -144,6 +144,8 @@ export function InjectedReaderApp({ modalIsOpen, setModalIsOpen, api, url, autho
 
   const [activeSessionDuration, clockActive] = useActivityTimer(uploadActivity);
   const [readingSessionId, setReadingSessionId] = useState();
+  const readingSessionIdRef = useShadowRef(readingSessionId);
+  const getReadingSessionId = () => readingSessionIdRef.current;
 
   // Use the shared scroll tracking hook
   const {
@@ -158,7 +160,7 @@ export function InjectedReaderApp({ modalIsOpen, setModalIsOpen, api, url, autho
     api,
     articleID,
     articleInfo,
-    readingSessionId,
+    getReadingSessionId,
     activityTimer: activeSessionDuration,
     scrollHolderId: "scrollHolder",
     bottomRowId: "bottomRow",
@@ -167,11 +169,7 @@ export function InjectedReaderApp({ modalIsOpen, setModalIsOpen, api, url, autho
   });
 
   const activeSessionDurationRef = useShadowRef(activeSessionDuration);
-  const readingSessionIdRef = useShadowRef(readingSessionId);
   const viewPortSettingsRef = useShadowRef(viewPortSettings);
-
-  // Getter function for InteractiveText to access current reading session ID
-  const getReadingSessionId = () => readingSessionIdRef.current;
 
   function uploadActivity() {
     // Delegate scroll activity to the hook

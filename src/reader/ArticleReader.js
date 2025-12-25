@@ -71,7 +71,6 @@ export default function ArticleReader({ teacherArticleID }) {
 
   // Reading session hook - starts when articleInfo is loaded
   const {
-    readingSessionId,
     getReadingSessionId,
     duration: activityTimer,
     isTimerActive,
@@ -90,7 +89,7 @@ export default function ArticleReader({ teacherArticleID }) {
     api,
     articleID,
     articleInfo,
-    readingSessionId,
+    getReadingSessionId,
     activityTimer,
     scrollHolderId: "scrollHolder",
     bottomRowId: "bottomRow",
