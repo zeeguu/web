@@ -70,11 +70,10 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
   // Exercise session hook - starts when exercises are loaded
   const {
     exerciseSessionId,
+    getExerciseSessionId,
     duration: activeSessionDuration,
     isTimerActive: clockActive,
   } = useExerciseSession(!!fullExerciseProgression);
-
-  const exerciseSessionIdRef = useShadowRef(exerciseSessionId);
   const activeSessionDurationRef = useShadowRef(activeSessionDuration);
   const [getCurrentSubSessionDuration, resetSubSessionTimer] = useSubSessionTimer(activeSessionDurationRef.current);
   const { hasExerciseNotification, decrementExerciseCounter, hideExerciseCounter } =
@@ -341,7 +340,7 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
       currentExerciseType,
       getCurrentSubSessionDuration(),
       bookmark ? bookmark.user_word_id : null,
-      exerciseSessionIdRef.current,
+      getExerciseSessionId(),
     );
   }
 
