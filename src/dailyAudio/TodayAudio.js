@@ -347,13 +347,13 @@ export default function TodayAudio() {
           onPlay={() => {
             if (lessonData.lesson_id) {
               api.updateLessonState(lessonData.lesson_id, "resume");
-              // Start a new listening session
+              // Start or resume listening session
               listeningSession.start();
             }
           }}
           onPause={() => {
-            // End listening session when paused
-            listeningSession.end();
+            // Pause listening session (accumulates time, doesn't end)
+            listeningSession.pause();
           }}
           onProgressUpdate={(progressSeconds) => {
             console.log('Updating playback time:', progressSeconds);
