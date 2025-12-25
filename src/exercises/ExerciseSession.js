@@ -69,13 +69,12 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
 
   // Exercise session hook - starts when exercises are loaded
   const {
-    exerciseSessionId: dbExerciseSessionId,
-    getExerciseSessionId,
+    exerciseSessionId,
     duration: activeSessionDuration,
     isTimerActive: clockActive,
   } = useExerciseSession(!!fullExerciseProgression);
 
-  const dbExerciseSessionIdRef = useShadowRef(dbExerciseSessionId);
+  const exerciseSessionIdRef = useShadowRef(exerciseSessionId);
   const activeSessionDurationRef = useShadowRef(activeSessionDuration);
   const [getCurrentSubSessionDuration, resetSubSessionTimer] = useSubSessionTimer(activeSessionDurationRef.current);
   const { hasExerciseNotification, decrementExerciseCounter, hideExerciseCounter } =
@@ -281,7 +280,7 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
     setSelectedExerciseBookmark(nextBookmarkToStudy);
     setCurrentIndex(newIndex);
 
-    api.updateExerciseSession(dbExerciseSessionId, activeSessionDuration);
+    api.updateExerciseSession(exerciseSessionId, activeSessionDuration);
   }
 
   let correctBookmarksCopy = [...correctBookmarks];
@@ -303,7 +302,7 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
       setIsCorrect(true);
     }
     updateAPIWithExerciseComplete(CORRECT, currentBookmark, endExercise);
-    api.updateExerciseSession(dbExerciseSessionId, activeSessionDuration);
+    api.updateExerciseSession(exerciseSessionId, activeSessionDuration);
   }
 
   let incorrectBookmarksCopy = [...incorrectBookmarks];
@@ -321,7 +320,7 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
     incorrectBookmarksCopy.push(currentBookmark);
     setIncorrectBookmarks(incorrectBookmarksCopy);
     handleUserAttempt(WRONG, currentBookmark);
-    api.updateExerciseSession(dbExerciseSessionId, activeSessionDuration);
+    api.updateExerciseSession(exerciseSessionId, activeSessionDuration);
   }
 
   function showSolution() {
@@ -346,7 +345,7 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
       currentExerciseType,
       getCurrentSubSessionDuration(),
       bookmark ? bookmark.user_word_id : null,
-      dbExerciseSessionIdRef.current,
+      exerciseSessionIdRef.current,
     );
   }
 
@@ -362,7 +361,7 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
       decrementExerciseCounter();
     }
 
-    api.uploadExerciseFeedback(reason, currentExerciseType, 0, word_id, dbExerciseSessionId);
+    api.uploadExerciseFeedback(reason, currentExerciseType, 0, word_id, exerciseSessionId);
   }
 
   function handleExampleUpdate(updateData) {
@@ -473,7 +472,7 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
             toggleShow={toggleShow}
             reload={reload}
             setReload={setReload}
-            exerciseSessionId={dbExerciseSessionId}
+            exerciseSessionId={exerciseSessionId}
             activeSessionDuration={activeSessionDuration}
             resetSubSessionTimer={resetSubSessionTimer}
             bookmarkProgressBar={wordProgressBar}
