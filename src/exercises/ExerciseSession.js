@@ -279,8 +279,6 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
     let nextBookmarkToStudy = fullExerciseProgression[newIndex].bookmarks[0];
     setSelectedExerciseBookmark(nextBookmarkToStudy);
     setCurrentIndex(newIndex);
-
-    api.updateExerciseSession(exerciseSessionId, activeSessionDuration);
   }
 
   let correctBookmarksCopy = [...correctBookmarks];
@@ -302,7 +300,6 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
       setIsCorrect(true);
     }
     updateAPIWithExerciseComplete(CORRECT, currentBookmark, endExercise);
-    api.updateExerciseSession(exerciseSessionId, activeSessionDuration);
   }
 
   let incorrectBookmarksCopy = [...incorrectBookmarks];
@@ -320,7 +317,6 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
     incorrectBookmarksCopy.push(currentBookmark);
     setIncorrectBookmarks(incorrectBookmarksCopy);
     handleUserAttempt(WRONG, currentBookmark);
-    api.updateExerciseSession(exerciseSessionId, activeSessionDuration);
   }
 
   function showSolution() {
