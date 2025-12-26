@@ -645,9 +645,9 @@ function SessionItem({ session, onEditWord }) {
         </ExerciseStats>
       )}
 
-      {session.session_type === "audio" && (
+      {session.session_type === "audio" && session.completed && session.word_count > 0 && (
         <ExerciseStats>
-          {session.word_count} words reviewed{session.completed ? " ✓ Completed" : ""}
+          {session.word_count} words in lesson ✓
         </ExerciseStats>
       )}
 
