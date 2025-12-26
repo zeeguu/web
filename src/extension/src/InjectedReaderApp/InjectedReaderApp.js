@@ -30,9 +30,9 @@ import FactCheckIcon from "@mui/icons-material/FactCheck";
 
 import { SpeechContext } from "../../../contexts/SpeechContext";
 import ZeeguuSpeech from "../../../speech/APIBasedSpeech";
-import useActivityTimer from "../../../hooks/useActivityTimer";
 import useShadowRef from "../../../hooks/useShadowRef";
 import useScrollTracking from "../../../hooks/useScrollTracking";
+import useReadingSession from "../../../hooks/useReadingSession";
 
 import DigitalTimer from "../../../components/DigitalTimer";
 import Button from "@mui/material/Button";
@@ -142,8 +142,12 @@ export function InjectedReaderApp({ modalIsOpen, setModalIsOpen, api, url, autho
 
   logContextRef.current = logContext;
 
-  const [activeSessionDuration, clockActive] = useActivityTimer(uploadActivity);
-  const [readingSessionId, setReadingSessionId] = useState();
+  // Reading session hook - starts when articleInfo is loaded
+  const {
+    getReadingSessionId,
+    sessionDuration,
+    isTimerActive,
+  } = useReadingSession(articleID, "extension", !!articleInfo);
 
   // Use the shared scroll tracking hook
   const {
@@ -158,20 +162,15 @@ export function InjectedReaderApp({ modalIsOpen, setModalIsOpen, api, url, autho
     api,
     articleID,
     articleInfo,
-    readingSessionId,
-    activityTimer: activeSessionDuration,
+    getReadingSessionId,
+    sessionDuration,
     scrollHolderId: "scrollHolder",
     bottomRowId: "bottomRow",
     sampleFrequency: 1,
     source: EXTENSION_SOURCE,
   });
 
-  const activeSessionDurationRef = useShadowRef(activeSessionDuration);
-  const readingSessionIdRef = useShadowRef(readingSessionId);
   const viewPortSettingsRef = useShadowRef(viewPortSettings);
-
-  // Getter function for InteractiveText to access current reading session ID
-  const getReadingSessionId = () => readingSessionIdRef.current;
 
   function uploadActivity() {
     // Delegate scroll activity to the hook
@@ -291,12 +290,10 @@ export function InjectedReaderApp({ modalIsOpen, setModalIsOpen, api, url, autho
         }
       });
 
-      api.readingSessionCreate(artinfo.id, "extension", (sessionID) => {
-        setReadingSessionId(sessionID);
-        api.setArticleOpened(artinfo.id);
-        api.logUserActivity(api.OPEN_ARTICLE, artinfo.id, sessionID, EXTENSION_SOURCE);
-        clearTimeout(timedOutTimer);
-      });
+      // Session is created by useReadingSession hook when articleInfo becomes available
+      api.setArticleOpened(artinfo.id);
+      api.logUserActivity(api.OPEN_ARTICLE, artinfo.id, "", EXTENSION_SOURCE);
+      clearTimeout(timedOutTimer);
     } else if (url !== undefined) {
       // Fallback: fetch data if not pre-fetched
       let info = { url: url };
@@ -360,12 +357,10 @@ export function InjectedReaderApp({ modalIsOpen, setModalIsOpen, api, url, autho
           }
         });
 
-        api.readingSessionCreate(artinfo.id, "extension", (sessionID) => {
-          setReadingSessionId(sessionID);
-          api.setArticleOpened(artinfo.id);
-          api.logUserActivity(api.OPEN_ARTICLE, artinfo.id, sessionID, EXTENSION_SOURCE);
-          clearTimeout(timedOutTimer);
-        });
+        // Session is created by useReadingSession hook when articleInfo becomes available
+        api.setArticleOpened(artinfo.id);
+        api.logUserActivity(api.OPEN_ARTICLE, artinfo.id, "", EXTENSION_SOURCE);
+        clearTimeout(timedOutTimer);
       });
     }
     getNativeLanguage().then((result) => setNativeLang(result));
@@ -505,8 +500,8 @@ export function InjectedReaderApp({ modalIsOpen, setModalIsOpen, api, url, autho
                 {readArticleOpen && (
                   <div>
                     <DigitalTimer
-                      activeSessionDuration={activeSessionDuration}
-                      clockActive={clockActive}
+                      sessionDuration={sessionDuration}
+                      isTimerActive={isTimerActive}
                       showClock={true}
                     ></DigitalTimer>
                     <progress value={scrollPosition} />

@@ -2,8 +2,8 @@ import { timeToHumanReadable } from "../utils/misc/readableTime";
 
 export default function ActivityTimer({
   message,
-  activeSessionDuration,
-  clockActive,
+  sessionDuration,
+  isTimerActive,
   placement = "bottom",
   backgroundColor = "white",
 }) {
@@ -21,8 +21,8 @@ export default function ActivityTimer({
   return (
     <div style={style}>
       <small style={{ color: "gray" }}>
-        {message}: {timeToHumanReadable(activeSessionDuration)}{" "}
-        {clockActive ? "" : "(paused)"}
+        {message}: {timeToHumanReadable(sessionDuration)}{" "}
+        {isTimerActive ? "" : "(paused)"}
       </small>
     </div>
   );

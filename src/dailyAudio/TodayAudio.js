@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { orange500, orange600, orange800, zeeguuOrange } from "../components/colors";
 import { APIContext } from "../contexts/APIContext";
 import { UserContext } from "../contexts/UserContext";
@@ -7,6 +7,7 @@ import CustomAudioPlayer from "../components/CustomAudioPlayer";
 import FeedbackModal from "../components/FeedbackModal";
 import { FEEDBACK_OPTIONS, FEEDBACK_CODES_NAME, FEEDBACK_CODES } from "../components/FeedbackConstants";
 import Word from "../words/Word";
+import useListeningSession from "../hooks/useListeningSession";
 
 const TWO_MIN = 120000; // 2 minutes in milliseconds
 
@@ -97,6 +98,9 @@ export default function TodayAudio() {
   const [lessonData, setLessonData] = useState(null);
   const [error, setError] = useState(null);
   const [canGenerateLesson, setCanGenerateLesson] = useState(null); // null = checking, true = can generate, false = cannot
+
+  // Listening session tracking via hook
+  const listeningSession = useListeningSession(lessonData?.lesson_id);
 
   let words = lessonData?.words || [];
 
@@ -343,17 +347,25 @@ export default function TodayAudio() {
           onPlay={() => {
             if (lessonData.lesson_id) {
               api.updateLessonState(lessonData.lesson_id, "resume");
+              // Start or resume listening session
+              listeningSession.start();
             }
+          }}
+          onPause={() => {
+            // Pause listening session (accumulates time, doesn't end)
+            listeningSession.pause();
           }}
           onProgressUpdate={(progressSeconds) => {
             console.log('Updating playback time:', progressSeconds);
             setCurrentPlaybackTime(progressSeconds);
             if (lessonData.lesson_id) {
-              // Use pause action to save progress
+              // Use pause action to save progress position
               api.updateLessonState(lessonData.lesson_id, "pause", progressSeconds);
             }
           }}
           onEnded={() => {
+            // End listening session when audio ends
+            listeningSession.end();
             if (lessonData.lesson_id) {
               api.updateLessonState(lessonData.lesson_id, "complete", null, () => {
                 // Update local state to show completion immediately

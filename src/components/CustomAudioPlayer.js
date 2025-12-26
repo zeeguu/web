@@ -9,6 +9,7 @@ const SEEK_SECONDS = 5;
 export default function CustomAudioPlayer({
   src,
   onPlay,
+  onPause,
   onEnded,
   onError,
   onProgressUpdate,
@@ -81,8 +82,7 @@ export default function CustomAudioPlayer({
       const audio = audioRef.current;
       if (audio && !audio.paused) {
         audio.pause();
-        setIsPlaying(false);
-        saveProgress(true);
+        // Note: handlePause will be called by the 'pause' event listener
       }
       // Try to focus the window when interacting from lock screen
       if (window.focus) window.focus();
@@ -366,6 +366,7 @@ export default function CustomAudioPlayer({
       setIsPlaying(false);
       clearProgressTimer();
       saveProgress(true);
+      onPause && onPause();
     };
 
     audio.addEventListener("timeupdate", updateTime);
@@ -404,7 +405,7 @@ export default function CustomAudioPlayer({
       document.removeEventListener("visibilitychange", handleVisibilityChange);
       clearProgressTimer();
     };
-  }, [onEnded, onError, initialProgress]);
+  }, [onEnded, onError, onPause, initialProgress]);
 
   const saveProgress = (forceSave = false) => {
     const audio = audioRef.current;
@@ -447,9 +448,8 @@ export default function CustomAudioPlayer({
 
     if (isPlaying) {
       audio.pause();
-      setIsPlaying(false);
-      clearProgressTimer();
-      saveProgress(true); // Force save progress when pausing
+      // Note: handlePause will be called by the 'pause' event listener
+      // which handles setIsPlaying, clearProgressTimer, saveProgress, and onPause
     } else {
       // For iOS: Ensure audio context is resumed before playing
       if (audioContextRef.current && audioContextRef.current.state === 'suspended') {

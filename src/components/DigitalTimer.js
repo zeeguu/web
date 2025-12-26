@@ -3,20 +3,20 @@ import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import * as s from "./DigitalTimer.sc";
 
 export default function DigitalTimer({
-  activeSessionDuration,
-  clockActive,
+  sessionDuration,
+  isTimerActive,
   style,
   precision,
   showClock,
 }) {
   return (
     <s.DigitalClock
-      className={clockActive ? "" : "disabled"}
+      className={isTimerActive ? "" : "disabled"}
       style={{ ...style }}
     >
       {showClock && <AccessTimeIcon fontSize="small" />}
       {timeToDigitalClock(
-        activeSessionDuration,
+        sessionDuration,
         precision ? "minutes" : precision,
       )}{" "}
     </s.DigitalClock>
