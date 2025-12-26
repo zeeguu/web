@@ -38,7 +38,7 @@ export default function useExerciseSession(enabled = true) {
   return {
     exerciseSessionId: session.sessionId,
     getExerciseSessionId,
-    duration: session.duration,
+    sessionDuration: session.sessionDuration,
     isTimerActive: session.isTimerActive,
   };
 }

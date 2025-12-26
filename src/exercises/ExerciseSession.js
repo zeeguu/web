@@ -71,11 +71,11 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
   const {
     exerciseSessionId,
     getExerciseSessionId,
-    duration: activeSessionDuration,
+    sessionDuration,
     isTimerActive: clockActive,
   } = useExerciseSession(!!fullExerciseProgression);
-  const activeSessionDurationRef = useShadowRef(activeSessionDuration);
-  const [getCurrentSubSessionDuration, resetSubSessionTimer] = useSubSessionTimer(activeSessionDurationRef.current);
+  const sessionDurationRef = useShadowRef(sessionDuration);
+  const [getCurrentSubSessionDuration, resetSubSessionTimer] = useSubSessionTimer(sessionDurationRef.current);
   const { hasExerciseNotification, decrementExerciseCounter, hideExerciseCounter } =
     useContext(ExercisesCounterContext);
 
@@ -266,7 +266,7 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
           totalPracticedBookmarksInSession: totalPracticedBookmarksInSession,
           correctBookmarks: correctBookmarks,
           incorrectBookmarks: incorrectBookmarks,
-          exerciseSessionTimer: activeSessionDuration,
+          exerciseSessionTimer: sessionDuration,
           articleURL,
           articleTitle,
           source,
@@ -429,7 +429,7 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
 
             <div style={{ display: "flex", alignItems: "center", marginLeft: "auto" }}>
               <DigitalTimer
-                activeSessionDuration={activeSessionDuration}
+                sessionDuration={sessionDuration}
                 clockActive={clockActive}
                 showClock={false}
                 style={{
@@ -468,7 +468,7 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
             reload={reload}
             setReload={setReload}
             exerciseSessionId={exerciseSessionId}
-            activeSessionDuration={activeSessionDuration}
+            sessionDuration={sessionDuration}
             resetSubSessionTimer={resetSubSessionTimer}
             bookmarkProgressBar={wordProgressBar}
             onExampleUpdated={handleExampleUpdate}

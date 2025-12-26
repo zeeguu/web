@@ -27,6 +27,6 @@ export default function useBrowsingSession() {
     browsingSessionId: session.sessionId,
     getBrowsingSessionId,
     hasSessionStarted: session.hasStarted,
-    activityTimer: session.duration,
+    sessionDuration: session.sessionDuration,
   };
 }

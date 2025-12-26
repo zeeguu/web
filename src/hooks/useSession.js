@@ -50,11 +50,11 @@ export default function useSession({
   }, [hasStarted]);
 
   // Timer state
-  const [duration, setDuration] = useState(0);
-  const durationRef = useRef(0);
+  const [sessionDuration, setSessionDuration] = useState(0);
+  const sessionDurationRef = useRef(0);
   useEffect(() => {
-    durationRef.current = duration;
-  }, [duration]);
+    sessionDurationRef.current = sessionDuration;
+  }, [sessionDuration]);
 
   const [isTimerActive, setIsTimerActive] = useState(false);
   const [isFocused, setIsFocused] = useState(true);
@@ -91,8 +91,8 @@ export default function useSession({
 
     setHasStarted(true);
     setIsTimerActive(true);
-    setDuration(0);
-    durationRef.current = 0;
+    setSessionDuration(0);
+    sessionDurationRef.current = 0;
 
     methods.create((id) => {
       setSessionId(id);
@@ -101,15 +101,15 @@ export default function useSession({
 
   // Upload current duration to server
   const upload = useCallback(() => {
-    if (sessionIdRef.current && durationRef.current > 0 && methods) {
-      methods.update(sessionIdRef.current, durationRef.current);
+    if (sessionIdRef.current && sessionDurationRef.current > 0 && methods) {
+      methods.update(sessionIdRef.current, sessionDurationRef.current);
     }
   }, [methods]);
 
   // End the session
   const end = useCallback(() => {
     if (sessionIdRef.current && methods) {
-      methods.end(sessionIdRef.current, durationRef.current);
+      methods.end(sessionIdRef.current, sessionDurationRef.current);
       setSessionId(null);
       setHasStarted(false);
       setIsTimerActive(false);
@@ -121,8 +121,8 @@ export default function useSession({
     setSessionId(null);
     setHasStarted(false);
     setIsTimerActive(false);
-    setDuration(0);
-    durationRef.current = 0;
+    setSessionDuration(0);
+    sessionDurationRef.current = 0;
   }, []);
 
   // Idle timer
@@ -168,7 +168,7 @@ export default function useSession({
 
     const interval = setInterval(() => {
       if (isTimerActive) {
-        setDuration((prev) => prev + 1);
+        setSessionDuration((prev) => prev + 1);
       }
     }, 1000);
 
@@ -177,10 +177,10 @@ export default function useSession({
 
   // Periodic upload
   useEffect(() => {
-    if (hasStarted && isTimerActive && duration > 0 && duration % uploadInterval === 0) {
+    if (hasStarted && isTimerActive && sessionDuration > 0 && sessionDuration % uploadInterval === 0) {
       upload();
     }
-  }, [duration, hasStarted, isTimerActive, upload, uploadInterval]);
+  }, [sessionDuration, hasStarted, isTimerActive, upload, uploadInterval]);
 
   // Focus/blur handling
   useEffect(() => {
@@ -222,7 +222,7 @@ export default function useSession({
       if (sessionIdRef.current) {
         // Use refs for latest values in cleanup
         if (methods) {
-          methods.end(sessionIdRef.current, durationRef.current);
+          methods.end(sessionIdRef.current, sessionDurationRef.current);
         }
       }
     };
@@ -235,7 +235,7 @@ export default function useSession({
   return {
     sessionId,
     getSessionId,
-    duration,
+    sessionDuration,
     hasStarted,
     isTimerActive,
     start,

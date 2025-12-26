@@ -11,7 +11,7 @@ import useShadowRef from "./useShadowRef";
  * @param {string} config.articleID - The current article ID
  * @param {Object} config.articleInfo - Article information including source_id
  * @param {Function} config.getReadingSessionId - Function to get current reading session ID
- * @param {number} config.activityTimer - Current activity timer value
+ * @param {number} config.sessionDuration - Current session duration in seconds
  * @param {string} config.scrollHolderId - ID of the scroll container element (default: "scrollHolder")
  * @param {string} config.bottomRowId - ID of the bottom row element (default: "bottomRow")
  * @param {number} config.sampleFrequency - How often to sample scroll events in seconds (default: 1)
@@ -30,7 +30,7 @@ export default function useScrollTracking({
   articleID,
   articleInfo,
   getReadingSessionId,
-  activityTimer,
+  sessionDuration,
   scrollHolderId = "scrollHolder",
   bottomRowId = "bottomRow",
   sampleFrequency = 1,
@@ -44,7 +44,7 @@ export default function useScrollTracking({
 
   // Use shadow refs for values that change frequently
   const viewPortSettingsRef = useShadowRef(viewPortSettings);
-  const activityTimerRef = useShadowRef(activityTimer);
+  const sessionDurationRef = useShadowRef(sessionDuration);
 
   /**
    * Calculate the scroll ratio (0-1) representing how far down the page we are
@@ -96,7 +96,7 @@ export default function useScrollTracking({
     setScrollPosition(ratio);
     
     const percentage = Math.floor(ratio * 100);
-    const currentTimer = activityTimerRef.current;
+    const currentTimer = sessionDurationRef.current;
     
     // Update viewport settings on each scroll (they might change if window resizes)
     updateViewPortSettings();
@@ -117,7 +117,7 @@ export default function useScrollTracking({
     
     // Update reading session duration
     if (api.readingSessionUpdate) {
-      api.readingSessionUpdate(readingSessionId, activityTimerRef.current);
+      api.readingSessionUpdate(readingSessionId, sessionDurationRef.current);
     }
     
     // Send periodic SCROLL events with accumulated scroll data

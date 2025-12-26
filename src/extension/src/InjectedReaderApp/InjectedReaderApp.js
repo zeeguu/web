@@ -161,7 +161,7 @@ export function InjectedReaderApp({ modalIsOpen, setModalIsOpen, api, url, autho
     articleID,
     articleInfo,
     getReadingSessionId,
-    activityTimer: activeSessionDuration,
+    sessionDuration: activeSessionDuration,
     scrollHolderId: "scrollHolder",
     bottomRowId: "bottomRow",
     sampleFrequency: 1,

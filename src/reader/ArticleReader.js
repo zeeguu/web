@@ -72,7 +72,7 @@ export default function ArticleReader({ teacherArticleID }) {
   // Reading session hook - starts when articleInfo is loaded
   const {
     getReadingSessionId,
-    duration: activityTimer,
+    sessionDuration,
     isTimerActive,
   } = useReadingSession(articleID, "web", !!articleInfo);
 
@@ -90,7 +90,7 @@ export default function ArticleReader({ teacherArticleID }) {
     articleID,
     articleInfo,
     getReadingSessionId,
-    activityTimer,
+    sessionDuration,
     scrollHolderId: "scrollHolder",
     bottomRowId: "bottomRow",
     sampleFrequency: 1,
@@ -264,7 +264,7 @@ export default function ArticleReader({ teacherArticleID }) {
         articleProgress={scrollPosition}
         timer={
           <DigitalTimer
-            activeSessionDuration={activityTimer}
+            activeSessionDuration={sessionDuration}
             clockActive={isTimerActive}
             showClock={true}
           ></DigitalTimer>

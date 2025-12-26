@@ -43,7 +43,7 @@ export default function useReadingSession(articleId, readingSource = "web", enab
   return {
     readingSessionId: session.sessionId,
     getReadingSessionId,
-    duration: session.duration,
+    sessionDuration: session.sessionDuration,
     isTimerActive: session.isTimerActive,
   };
 }
