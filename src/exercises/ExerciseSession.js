@@ -72,7 +72,7 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
     exerciseSessionId,
     getExerciseSessionId,
     sessionDuration,
-    isTimerActive: clockActive,
+    isTimerActive,
   } = useExerciseSession(!!fullExerciseProgression);
   const sessionDurationRef = useShadowRef(sessionDuration);
   const [getCurrentSubSessionDuration, resetSubSessionTimer] = useSubSessionTimer(sessionDurationRef.current);
@@ -430,7 +430,7 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
             <div style={{ display: "flex", alignItems: "center", marginLeft: "auto" }}>
               <DigitalTimer
                 sessionDuration={sessionDuration}
-                clockActive={clockActive}
+                isTimerActive={isTimerActive}
                 showClock={false}
                 style={{
                   width: "3em",
@@ -468,7 +468,7 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
             reload={reload}
             setReload={setReload}
             exerciseSessionId={exerciseSessionId}
-            sessionDuration={sessionDuration}
+            activeSessionDuration={sessionDuration}
             resetSubSessionTimer={resetSubSessionTimer}
             bookmarkProgressBar={wordProgressBar}
             onExampleUpdated={handleExampleUpdate}

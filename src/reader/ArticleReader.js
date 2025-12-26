@@ -264,8 +264,8 @@ export default function ArticleReader({ teacherArticleID }) {
         articleProgress={scrollPosition}
         timer={
           <DigitalTimer
-            activeSessionDuration={sessionDuration}
-            clockActive={isTimerActive}
+            sessionDuration={sessionDuration}
+            isTimerActive={isTimerActive}
             showClock={true}
           ></DigitalTimer>
         }

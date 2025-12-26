@@ -146,7 +146,7 @@ export function InjectedReaderApp({ modalIsOpen, setModalIsOpen, api, url, autho
   const {
     getReadingSessionId,
     sessionDuration,
-    isTimerActive: clockActive,
+    isTimerActive,
   } = useReadingSession(articleID, "extension", !!articleInfo);
 
   // Use the shared scroll tracking hook
@@ -500,8 +500,8 @@ export function InjectedReaderApp({ modalIsOpen, setModalIsOpen, api, url, autho
                 {readArticleOpen && (
                   <div>
                     <DigitalTimer
-                      activeSessionDuration={sessionDuration}
-                      clockActive={clockActive}
+                      sessionDuration={sessionDuration}
+                      isTimerActive={isTimerActive}
                       showClock={true}
                     ></DigitalTimer>
                     <progress value={scrollPosition} />
