@@ -15,7 +15,7 @@ import ZeeguuSpeech from "./speech/APIBasedSpeech";
 import { SpeechContext } from "./contexts/SpeechContext";
 import { API_ENDPOINT, APP_DOMAIN } from "./appConstants";
 
-import { getSharedSession, removeSharedUserInfo, saveSharedUserInfo } from "./utils/cookies/userInfo";
+import { getSharedSession, removeSharedUserInfo, saveSharedUserInfo, initializeSession } from "./utils/cookies/userInfo";
 
 import MainAppRouter from "./MainAppRouter";
 import { ToastContainer } from "react-toastify";
@@ -39,12 +39,20 @@ function App() {
 
   const [userDetails, setUserDetails] = useState();
   const [userPreferences, setUserPreferences] = useState();
+  const [sessionInitialized, setSessionInitialized] = useState(false);
 
   const [isExtensionAvailable] = useExtensionCommunication();
   const [zeeguuSpeech, setZeeguuSpeech] = useState(false);
   let { handleRedirectLinkOrGoTo } = useRedirectLink();
 
   const [systemLanguages, setSystemLanguages] = useState();
+
+  // Initialize session from native storage (for Capacitor) before doing anything else
+  useEffect(() => {
+    initializeSession().then(() => {
+      setSessionInitialized(true);
+    });
+  }, []);
 
   useEffect(() => {
     api.getSystemLanguages((languages) => {
@@ -74,6 +82,9 @@ function App() {
   }, [userDetails]);
 
   useEffect(() => {
+    // Wait for session to be initialized (especially important for Capacitor)
+    if (!sessionInitialized) return;
+
     console.log("Got the API URL:" + API_ENDPOINT);
     console.log("Got the Domain URL:" + APP_DOMAIN);
     console.log("Extension ID: " + import.meta.env.VITE_EXTENSION_ID);
@@ -83,14 +94,11 @@ function App() {
     // them in the LocalStorage
 
     api.session = getSharedSession();
-    console.log("Session from cookies: " + api.session);
 
-    // Only validate if there is a session in cookies.
-    if (api.session !== undefined) {
-      console.log("Validating session...");
+    // Only validate if there is a session.
+    if (api.session !== undefined && api.session !== null) {
       api.isValidSession(
         () => {
-          console.log("valid sesison... getting user details...");
           api.getUserDetails((userDetails) => {
             LocalStorage.setUserInfo(userDetails);
             api.getUserPreferences((userPreferences) => {
@@ -103,15 +111,16 @@ function App() {
           });
         },
         () => {
-          console.log("Session validation FAILED - logging out");
           logout();
         },
       );
     } else {
-      console.log("No session found in cookies");
+      // No session - user is not logged in
+      setUserDetails({});
+      setUserPreferences({});
     }
 
-    //logs out user on zeeguu.org if they log out of the extension
+    // Log out user on zeeguu.org if they log out of the extension
     const interval = setInterval(() => {
       if (!getSharedSession()) {
         setUserDetails({});
@@ -121,7 +130,7 @@ function App() {
     return () => clearInterval(interval);
 
     // eslint-disable-next-line
-  }, []);
+  }, [sessionInitialized]);
 
   function logout() {
     LocalStorage.deleteUserInfo();
@@ -168,7 +177,8 @@ function App() {
   //Setting up the routing context to be able to use the cancel-button in EditText correctly
   const [returnPath, setReturnPath] = useState("");
 
-  if (userDetails === undefined) {
+  // Wait for session initialization and user details loading
+  if (!sessionInitialized || userDetails === undefined) {
     return <LoadingAnimation />;
   }
 

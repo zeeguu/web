@@ -1,11 +1,18 @@
 import Cookies from "js-cookie";
+import { Preferences } from "@capacitor/preferences";
+import { Capacitor } from "@capacitor/core";
 
 const FAR_INTO_THE_FUTURE = 365 * 5;
 
-// Helper to detect if we're in a Capacitor app
+// In-memory cache for the session (loaded at startup for Capacitor)
+let cachedSession = null;
+let sessionLoaded = false;
+
+// Helper to detect if we're in a Capacitor native app
 const isCapacitor = () => {
-  return window.location.protocol === 'capacitor:' ||
-         window.location.protocol === 'ionic:';
+  const platform = Capacitor.getPlatform();
+  // getPlatform() returns 'ios', 'android', or 'web'
+  return platform === 'ios' || platform === 'android';
 };
 
 // Cookie-based functions for web/extension communication
@@ -30,31 +37,44 @@ function getSharedSessionFromCookies() {
   return Cookies.get("sessionID");
 }
 
-// LocalStorage-based functions for Capacitor apps
-function saveSharedUserInfoToLocalStorage(userInfo, sessionID = null) {
-  localStorage.setItem("nativeLanguage", userInfo.native_language);
-  localStorage.setItem("name", userInfo.name);
+// Capacitor Preferences-based functions (persistent native storage)
+async function saveSharedUserInfoToPreferences(userInfo, sessionID = null) {
+  await Preferences.set({ key: "nativeLanguage", value: userInfo.native_language });
+  await Preferences.set({ key: "name", value: userInfo.name });
   if (sessionID) {
-    console.log("saving shared session ID to localStorage (Capacitor mode)");
-    localStorage.setItem("sessionID", sessionID);
+    await Preferences.set({ key: "sessionID", value: sessionID });
+    cachedSession = sessionID;
   }
 }
 
-function removeSharedUserInfoFromLocalStorage() {
-  localStorage.removeItem("sessionID");
-  localStorage.removeItem("nativeLanguage");
-  localStorage.removeItem("name");
+async function removeSharedUserInfoFromPreferences() {
+  await Preferences.remove({ key: "sessionID" });
+  await Preferences.remove({ key: "nativeLanguage" });
+  await Preferences.remove({ key: "name" });
+  cachedSession = null; // Clear cache
 }
 
-function getSharedSessionFromLocalStorage() {
-  return localStorage.getItem("sessionID");
+async function getSharedSessionFromPreferences() {
+  const result = await Preferences.get({ key: "sessionID" });
+  return result.value;
+}
+
+// Initialize session from Preferences at app startup (call this before rendering)
+async function initializeSession() {
+  if (isCapacitor()) {
+    cachedSession = await getSharedSessionFromPreferences();
+  }
+  sessionLoaded = true;
+  return cachedSession;
 }
 
 // Platform-agnostic functions that detect platform and use appropriate storage
 // These handle the minimal user info shared between web app and browser extension
 function saveSharedUserInfo(userInfo, sessionID = null) {
   if (isCapacitor()) {
-    saveSharedUserInfoToLocalStorage(userInfo, sessionID);
+    // Update cache immediately, save to Preferences async
+    if (sessionID) cachedSession = sessionID;
+    saveSharedUserInfoToPreferences(userInfo, sessionID);
   } else {
     saveSharedUserInfoToCookies(userInfo, sessionID);
   }
@@ -62,7 +82,8 @@ function saveSharedUserInfo(userInfo, sessionID = null) {
 
 function removeSharedUserInfo() {
   if (isCapacitor()) {
-    removeSharedUserInfoFromLocalStorage();
+    cachedSession = null; // Clear cache immediately
+    removeSharedUserInfoFromPreferences();
   } else {
     removeSharedUserInfoFromCookies();
   }
@@ -70,7 +91,12 @@ function removeSharedUserInfo() {
 
 function getSharedSession() {
   if (isCapacitor()) {
-    return getSharedSessionFromLocalStorage();
+    // Return cached session (must call initializeSession first)
+    if (!sessionLoaded) {
+      console.warn("getSharedSession called before initializeSession - session may be undefined");
+    }
+    console.log("getSharedSession returning:", cachedSession ? "session exists" : "NULL");
+    return cachedSession;
   } else {
     return getSharedSessionFromCookies();
   }
@@ -78,7 +104,8 @@ function getSharedSession() {
 
 function setUserSession(val) {
   if (isCapacitor()) {
-    return localStorage.setItem("sessionID", val);
+    cachedSession = val; // Update cache immediately
+    Preferences.set({ key: "sessionID", value: val });
   } else {
     return Cookies.set("sessionID", val);
   }
@@ -91,12 +118,14 @@ export {
   removeSharedUserInfo,
   getSharedSession,
   setUserSession,
+  // Initialization (must be called before getSharedSession on Capacitor)
+  initializeSession,
   // Cookie-specific functions (for web/extension communication)
   saveSharedUserInfoToCookies,
   removeSharedUserInfoFromCookies,
   getSharedSessionFromCookies,
-  // LocalStorage-specific functions (for Capacitor)
-  saveSharedUserInfoToLocalStorage,
-  removeSharedUserInfoFromLocalStorage,
-  getSharedSessionFromLocalStorage,
+  // Preferences-specific functions (for Capacitor native storage)
+  saveSharedUserInfoToPreferences,
+  removeSharedUserInfoFromPreferences,
+  getSharedSessionFromPreferences,
 };

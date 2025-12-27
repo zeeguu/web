@@ -1,0 +1,11 @@
+# App identifier from your Xcode project
+app_identifier("org.zeeguu.app")
+
+# Your Apple ID email (set FASTLANE_USER environment variable)
+apple_id(ENV["FASTLANE_USER"])
+
+# Team ID (from Apple Developer account)
+team_id("1928065")
+
+# App Store Connect Team ID
+itc_team_id("1928065")

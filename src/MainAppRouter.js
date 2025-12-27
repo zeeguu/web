@@ -19,6 +19,9 @@ import ReadingHistory from "./words/WordHistory";
 import ActivityRouter from "./activity/_ActivityRouter";
 import ArticleReader from "./reader/ArticleReader";
 import LoadingAnimation from "./components/LoadingAnimation";
+import { getSharedSession } from "./utils/cookies/userInfo";
+import LocalStorage from "./assorted/LocalStorage";
+import { Capacitor } from "@capacitor/core";
 
 // Lazy load separate parts of the app
 const LazyTeacherRouter = lazy(() => import("./teacher/_routing/_TeacherRouter"));
@@ -41,18 +44,29 @@ import IndividualExercise from "./pages/IndividualExercise";
 import Swiper from "./swiper/Swiper";
 import KeyboardTest from "./pages/KeyboardTest";
 
-// Helper to detect if we're in a Capacitor app
+// Helper to detect if we're in a Capacitor native app
 const isCapacitor = () => {
-  return window.location.protocol === "capacitor:" || window.location.protocol === "ionic:";
+  const platform = Capacitor.getPlatform();
+  return platform === 'ios' || platform === 'android';
 };
 
 // Component to handle mobile app homepage redirect
 function HomePage() {
-  // If running in Capacitor (mobile app), redirect to language preferences
-  // Otherwise show the full landing page
+  // Check if user is logged in first
+  const session = getSharedSession();
+  if (session) {
+    // User is logged in - redirect to articles (or last visited page)
+    const lastVisitedPage = LocalStorage.getLastVisitedPage();
+    const redirectTo = lastVisitedPage || "/articles";
+    return <Redirect to={redirectTo} />;
+  }
+
+  // Not logged in - show appropriate page
   if (isCapacitor()) {
+    // Mobile app: go to language preferences (start of registration)
     return <Redirect to="/language_preferences" />;
   }
+  // Web: show full landing page
   return <LandingPage />;
 }
 
