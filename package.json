@@ -8,6 +8,7 @@
     "@capacitor/cli": "^7.4.3",
     "@capacitor/core": "^7.4.3",
     "@capacitor/ios": "^7.4.3",
+    "@capacitor/preferences": "^7.0.3",
     "@capacitor/splash-screen": "^7.0.3",
     "@emotion/react": "^11.4.1",
     "@emotion/styled": "^11.3.0",
@@ -100,7 +101,13 @@
     "ext:publish:firefox": "npm run ext:buildZipFirefox && node src/extension/scripts/publish-firefox.js",
     "ext:publish": "npm run ext:publish:chrome && npm run ext:publish:firefox",
     "ext:zipSources": "cd src/extension && zip -FSr zeeguu-reader-source-code.zip . -x 'build/*' 'node_modules/*' 'src/zeeguu-react/node_modules/*' 'src/zeeguu-react/build/*' '.git/*' build.zip '.idea/*'",
-    "prebuild": "BROWSERSLIST_IGNORE_OLD_DATA=1 node scripts/update-service-worker-version.js"
+    "prebuild": "BROWSERSLIST_IGNORE_OLD_DATA=1 node scripts/update-service-worker-version.js",
+    "ios:build": "npm run build && npx cap sync ios",
+    "ios:open": "npm run ios:build && npx cap open ios",
+    "ios:version": "grep MARKETING_VERSION ios/App/App.xcodeproj/project.pbxproj | head -1 && cd ios/App && agvtool what-version",
+    "ios:bump": "cd ios/App && agvtool new-marketing-version",
+    "ios:beta": "npm run ios:build && cd ios/App && fastlane beta",
+    "ios:release": "npm run ios:build && cd ios/App && fastlane release"
   },
   "browserslist": {
     "production": [

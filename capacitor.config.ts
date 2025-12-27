@@ -10,6 +10,10 @@ const config: CapacitorConfig = {
     // This helps with CORS issues in the WebView
     androidScheme: 'https'
   },
+  ios: {
+    // Enable Web Inspector for debugging (even in release builds)
+    webContentsDebuggingEnabled: true
+  },
   plugins: {
     SplashScreen: {
       launchShowDuration: 2000,  // Show for 2 seconds
