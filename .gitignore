@@ -39,5 +39,11 @@ package-lock.json
 .sentryclirc
 .idea
 
+# iOS build artifacts
+ios/App/App.ipa
+ios/App/*.dSYM.zip
+ios/App/fastlane/report.xml
+ios/App/fastlane/screenshots/
+ios/App/App.xcodeproj/xcshareddata/
 
 *.md
