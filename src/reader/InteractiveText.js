@@ -492,6 +492,23 @@ function _updateTokensWithBookmarks(bookmarks, paragraphs) {
             }
             target_token.text = adjacentPartnerTexts.join(" ");
           }
+        } else if (bookmark["t_total_token"] > 1) {
+          // Fallback for adjacent MWEs without mwe_group_id (e.g., article summaries):
+          // Use total_tokens to fuse consecutive tokens
+          console.log("[MWE-RESTORE] Using t_total_token fallback:", bookmark["t_total_token"]);
+          const totalTokens = bookmark["t_total_token"];
+          const tokensToFuse = [target_token];
+          for (let i = 1; i < totalTokens; i++) {
+            const nextToken = sentenceTokens.find(t => t.token_i === targetTokenI + i);
+            if (nextToken) {
+              tokensToFuse.push(nextToken);
+              nextToken.skipRender = true;
+              target_token.mergedTokens.push({ ...nextToken, bookmark: null });
+            }
+          }
+          if (tokensToFuse.length > 1) {
+            target_token.text = tokensToFuse.map(t => t.text).join(" ");
+          }
         }
         MWE_DEBUG && console.log("MWE bookmark applied:", target_token.text);
       }
