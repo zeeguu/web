@@ -21,7 +21,18 @@ export class Word extends Item {
         this.total_tokens = 1; // Each word is still just one token visually
         this.mweExpression = bookmark.origin; // Store full expression for reference
       } else {
-        this.word = bookmark.origin;
+        // For single-word bookmarks, keep original token text (preserves case)
+        // For multi-word, reconstruct from merged tokens to preserve original case
+        if (bookmark.t_total_token === 1) {
+          // Single word: keep token.text (e.g., "Dingue" not "dingue")
+          // this.word is already set to token.text above
+        } else if (token.mergedTokens && token.mergedTokens.length > 1) {
+          // Multi-word: reconstruct from merged tokens to preserve original case
+          this.word = token.mergedTokens.map(t => t.text).join(" ");
+        } else {
+          // Fallback to bookmark.origin if no merged tokens available
+          this.word = bookmark.origin;
+        }
         this.translation = bookmark.translation;
         this.total_tokens = bookmark.t_total_token;
         this.bookmark_id = bookmark.id;

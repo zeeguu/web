@@ -545,9 +545,8 @@ function _updateTokensWithBookmarks(bookmarks, paragraphs) {
         text_i++;
         continue;
       }
-      // If the tokens don't match, we break and skip this bookmark.
-
-      if (bookmark_word !== text_word) {
+      // If the tokens don't match (case-insensitive), we break and skip this bookmark.
+      if (bookmark_word.toLowerCase() !== text_word.toLowerCase()) {
         shouldSkipBookmarkUpdate = true;
         break;
       }
