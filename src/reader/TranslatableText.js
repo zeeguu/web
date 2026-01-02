@@ -25,10 +25,6 @@ export function TranslatableText({
   const [paragraphs, setParagraphs] = useState([]);
   const [firstClozeWordId, setFirstClozeWordId] = useState(0);
   const [renderedText, setRenderedText] = useState();
-  const [highlightedMWEGroupId, setHighlightedMWEGroupId] = useState(null);
-  const [loadingMWEGroupId, setLoadingMWEGroupId] = useState(null);
-  const [mweGroupColorMap, setMweGroupColorMap] = useState({});
-  const [mweGroupsWithTranslations, setMweGroupsWithTranslations] = useState(new Set());
   const divType = interactiveText.formatting ? interactiveText.formatting : "div";
 
   useEffect(() => {
@@ -38,69 +34,9 @@ export function TranslatableText({
     if (clozeWord) {
       findClozeWords();
     }
-    if (interactiveText) {
-      setParagraphs(interactiveText.getParagraphs());
-      // Build MWE group to color index mapping
-      buildMweColorMap();
-    }
+    if (interactiveText) setParagraphs(interactiveText.getParagraphs());
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [interactiveText]);
-
-  function buildMweColorMap() {
-    const groupsWithTranslations = new Set();
-    const colorMap = {};
-
-    // Track color assignment per sentence - colors reset for each new sentence
-    let currentSentI = -1;
-    let colorIndex = 0;
-    const sentenceMweGroups = new Set(); // MWE groups seen in current sentence
-
-    for (const par of interactiveText.paragraphsAsLinkedWordLists) {
-      let word = par.linkedWords.head;
-      while (word) {
-        if (word.token.mwe_group_id) {
-          const groupId = word.token.mwe_group_id;
-          const sentI = word.token.sent_i;
-
-          // Reset color index when entering a new sentence
-          if (sentI !== currentSentI) {
-            currentSentI = sentI;
-            colorIndex = 0;
-            sentenceMweGroups.clear();
-          }
-
-          // Assign color for this group if not already assigned in this sentence
-          if (!sentenceMweGroups.has(groupId)) {
-            sentenceMweGroups.add(groupId);
-            colorMap[groupId] = colorIndex % 5;
-            colorIndex++;
-          }
-
-          if (word.translation) {
-            groupsWithTranslations.add(groupId);
-          }
-        }
-        word = word.next;
-      }
-    }
-
-    setMweGroupColorMap(colorMap);
-    setMweGroupsWithTranslations(groupsWithTranslations);
-  }
-
-  function updateMweGroupsWithTranslations() {
-    const groupsWithTranslations = new Set();
-    for (const par of interactiveText.paragraphsAsLinkedWordLists) {
-      let word = par.linkedWords.head;
-      while (word) {
-        if (word.token.mwe_group_id && word.translation) {
-          groupsWithTranslations.add(word.token.mwe_group_id);
-        }
-        word = word.next;
-      }
-    }
-    setMweGroupsWithTranslations(groupsWithTranslations);
-  }
 
   useEffect(() => {
     setRenderedText(
@@ -127,9 +63,6 @@ export function TranslatableText({
     nonTranslatableWords,
     rightEllipsis,
     leftEllipsis,
-    highlightedMWEGroupId,
-    loadingMWEGroupId,
-    mweGroupColorMap,
   ]);
 
   useEffect(() => {
@@ -138,7 +71,6 @@ export function TranslatableText({
 
   function wordUpdated() {
     setTranslationCount(translationCount + 1);
-    updateMweGroupsWithTranslations();
     if (updateBookmarks) updateBookmarks();
   }
 
@@ -270,12 +202,6 @@ export function TranslatableText({
             translating={translating}
             pronouncing={pronouncing}
             disableTranslation={disableTranslation}
-            highlightedMWEGroupId={highlightedMWEGroupId}
-            setHighlightedMWEGroupId={setHighlightedMWEGroupId}
-            loadingMWEGroupId={loadingMWEGroupId}
-            setLoadingMWEGroupId={setLoadingMWEGroupId}
-            mweGroupColorMap={mweGroupColorMap}
-            mweGroupsWithTranslations={mweGroupsWithTranslations}
           />
         );
       }
@@ -293,12 +219,6 @@ export function TranslatableText({
             translating={translating}
             pronouncing={pronouncing}
             disableTranslation={disableTranslation}
-            highlightedMWEGroupId={highlightedMWEGroupId}
-            setHighlightedMWEGroupId={setHighlightedMWEGroupId}
-            loadingMWEGroupId={loadingMWEGroupId}
-            setLoadingMWEGroupId={setLoadingMWEGroupId}
-            mweGroupColorMap={mweGroupColorMap}
-            mweGroupsWithTranslations={mweGroupsWithTranslations}
           />
         );
       }
@@ -363,12 +283,6 @@ export function TranslatableText({
           translating={translating}
           pronouncing={pronouncing}
           disableTranslation={disableTranslation}
-          highlightedMWEGroupId={highlightedMWEGroupId}
-          setHighlightedMWEGroupId={setHighlightedMWEGroupId}
-          loadingMWEGroupId={loadingMWEGroupId}
-          setLoadingMWEGroupId={setLoadingMWEGroupId}
-          mweGroupColorMap={mweGroupColorMap}
-          mweGroupsWithTranslations={mweGroupsWithTranslations}
         />
       );
     }

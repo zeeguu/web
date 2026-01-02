@@ -2,37 +2,44 @@ import styled from "styled-components";
 import { almostBlack, zeeguuOrange, zeeguuTransparentMediumOrange } from "../components/colors";
 
 const TranslatableText = styled.div`
-  /* ========================================================================
-   * BASE Z-TAG STYLES
-   * ======================================================================== */
   z-tag {
     white-space: break-spaces;
     cursor: pointer;
     display: inline-block;
     margin: 0;
     line-height: 29px;
+    /* background-color: greenyellow; */
   }
 
-  z-tag.number,
-  z-tag.no-hover {
+  z-tag.number {
     cursor: default;
     &:hover {
-      background-color: transparent !important;
+      background-color: rgb(255 255 255 / 0%) !important;
     }
   }
 
-  z-tag.punct { margin-left: -5.2px; }
-  z-tag.left-punct { margin-left: 0px; margin-right: -5px; }
-  z-tag.no-space { margin-right: -5px; }
-  z-tag.no-margin { margin: 0px !important; }
+  z-tag.punct {
+    margin-left: -5.2px;
+  }
 
-  /* ========================================================================
-   * LOADING ANIMATION
-   * ======================================================================== */
-  @keyframes blink {
-    0% { opacity: 0.2; }
-    50% { opacity: 0.7; }
-    100% { opacity: 1; }
+  z-tag.no-hover {
+    cursor: default;
+    &:hover {
+      background-color: rgb(255 255 255 / 0%) !important;
+    }
+  }
+
+  z-tag.left-punct {
+    margin-left: 0px;
+    margin-right: -5px;
+  }
+
+  z-tag.no-space {
+    margin-right: -5px;
+  }
+
+  z-tag.no-margin {
+    margin: 0px !important;
   }
 
   .loading {
@@ -40,129 +47,31 @@ const TranslatableText = styled.div`
     color: ${zeeguuOrange};
   }
 
-  /* ========================================================================
-   * MWE (Multi-Word Expression) STYLES
-   *
-   * MWE Color System:
-   * - Each MWE group gets a color (0-4) to visually connect related words
-   * - Colors defined once as CSS variables, used everywhere
-   *
-   * MWE States:
-   * - mwe-color-X: Base styling for translated MWE words (permanent)
-   * - mwe-hover-hint: Subtle hint for untranslated MWEs (debug mode)
-   * - mwe-hover-active: Highlight when hovering any MWE partner word
-   * - mwe-loading: Pulsing animation while translating
-   * ======================================================================== */
-
-  /* --- MWE Color Definitions (single source of truth) --- */
-  z-tag.mwe-color-0 { --mwe-color: rgb(130, 100, 200); --mwe-bg: rgba(130, 100, 200, 0.08); --mwe-bg-hover: rgba(130, 100, 200, 0.2); --mwe-tran-bg: rgb(220, 210, 245); }
-  z-tag.mwe-color-1 { --mwe-color: rgb(70, 130, 200);  --mwe-bg: rgba(70, 130, 200, 0.08);  --mwe-bg-hover: rgba(70, 130, 200, 0.2);  --mwe-tran-bg: rgb(210, 225, 250); }
-  z-tag.mwe-color-2 { --mwe-color: rgb(0, 150, 150);   --mwe-bg: rgba(0, 150, 150, 0.08);   --mwe-bg-hover: rgba(0, 150, 150, 0.2);   --mwe-tran-bg: rgb(200, 235, 235); }
-  z-tag.mwe-color-3 { --mwe-color: rgb(80, 160, 80);   --mwe-bg: rgba(80, 160, 80, 0.08);   --mwe-bg-hover: rgba(80, 160, 80, 0.2);   --mwe-tran-bg: rgb(215, 240, 215); }
-  z-tag.mwe-color-4 { --mwe-color: rgb(200, 100, 150); --mwe-bg: rgba(200, 100, 150, 0.08); --mwe-bg-hover: rgba(200, 100, 150, 0.2); --mwe-tran-bg: rgb(250, 220, 235); }
-
-  /* --- MWE Loading: All partner words pulse together --- */
-  z-tag.mwe-loading {
-    animation: blink 0.75s linear infinite alternate;
-    color: var(--mwe-color, rgb(100, 100, 100)) !important;
-  }
-  z-tag.mwe-loading .loading,
-  z-tag[class*="mwe-color-"] .loading {
-    color: var(--mwe-color, rgb(100, 100, 100)) !important;
+  @keyframes blink {
+    0% {
+      opacity: 0.2;
+    }
+    50% {
+      opacity: 0.7;
+    }
+    100% {
+      opacity: 1;
+    }
   }
 
-  /* --- MWE Hover Hint: Subtle indicator for untranslated MWEs (debug mode) --- */
-  z-tag.mwe-hover-hint {
-    text-decoration: underline dotted;
-    text-decoration-thickness: 2px;
-    text-decoration-color: rgba(100, 100, 100, 0.7);
-    text-underline-offset: 3px;
-    background-color: rgba(150, 150, 150, 0.15);
-  }
-  z-tag.mwe-hover-hint[class*="mwe-color-"] {
-    text-decoration-color: var(--mwe-color);
-    background-color: var(--mwe-bg);
-  }
+  /*  z-tag tag hover changes color, translated word hover no underline or color*/
 
-  /* --- MWE Translated: Permanent styling for translated MWE words --- */
-  z-tag[class*="mwe-color-"]:not(.mwe-hover-hint) {
-    color: var(--mwe-color) !important;
-    font-weight: 600;
-    background-color: var(--mwe-bg);
-  }
-  /* Underline on z-tag when no translation visible */
-  z-tag[class*="mwe-color-"]:not(.mwe-hover-hint):not(:has(z-orig)) {
-    text-decoration: underline dotted var(--mwe-color);
-    text-decoration-thickness: 2px;
-    text-underline-offset: 3px;
-  }
-  /* Underline on z-orig when translation is visible */
-  z-tag[class*="mwe-color-"]:not(.mwe-hover-hint) z-orig {
-    color: var(--mwe-color) !important;
-    font-weight: 600;
-    text-decoration: underline dotted var(--mwe-color);
-    text-decoration-thickness: 2px;
-    text-underline-offset: 3px;
-  }
-  z-tag[class*="mwe-color-"]:not(.mwe-hover-hint) z-orig span {
-    text-decoration: none !important;
-    border: none !important;
-  }
-  z-tag[class*="mwe-color-"]:not(.mwe-hover-hint) z-tran {
-    background-color: var(--mwe-tran-bg) !important;
-  }
-
-  /* --- MWE Hover Active: Solid underline when hovering MWE partner words --- */
-  /* Words WITHOUT translation (no z-orig) */
-  z-tag.mwe-hover-active:not(:has(z-orig)) {
-    text-decoration-line: underline !important;
-    text-decoration-style: solid !important;
-    text-decoration-thickness: 3px !important;
-    text-decoration-color: var(--mwe-color, rgba(100, 100, 100, 0.9)) !important;
-    background-color: var(--mwe-bg-hover, rgba(100, 100, 100, 0.2)) !important;
-  }
-  /* Words WITH translation (has z-orig) */
-  z-tag.mwe-hover-active:has(z-orig) {
-    text-decoration: none !important;
-    background-color: var(--mwe-bg-hover, rgba(100, 100, 100, 0.2)) !important;
-  }
-  z-tag.mwe-hover-active z-orig,
-  z-tag.mwe-hover-active z-orig span {
-    text-decoration-line: underline !important;
-    text-decoration-style: solid !important;
-    text-decoration-thickness: 3px !important;
-    text-decoration-color: var(--mwe-color, rgba(100, 100, 100, 0.9)) !important;
-    border: none !important;
-  }
-
-  /* ========================================================================
-   * REGULAR WORD HOVER (non-MWE)
-   * ======================================================================== */
   z-tag:hover {
     text-decoration: underline;
     text-decoration-thickness: 3px;
-    text-decoration-color: rgb(255, 229, 158);
-  }
-  /* Don't underline translation box - only underline z-orig */
-  z-tag:hover:has(z-orig) {
-    text-decoration: none;
-  }
-  z-tag:hover z-orig {
-    text-decoration: underline;
-    text-decoration-thickness: 3px;
-    text-decoration-color: rgb(255, 229, 158);
-  }
-  /* MWE words use their color on hover */
-  z-tag[class*="mwe-color-"]:hover {
-    text-decoration-color: var(--mwe-color) !important;
-  }
-  z-tag[class*="mwe-color-"]:hover z-orig {
-    text-decoration-color: var(--mwe-color) !important;
+    text-decoration-color: rgb(255, 229, 158); /*${zeeguuTransparentMediumOrange};*/
   }
 
-  /* ========================================================================
-   * TRANSLATION BOX STYLES
-   * ======================================================================== */
+  /* the translation - above the origin word
+   the font is thin until the user contributes or selects an alternative
+   highlights the fact that we are not sure of the translation ...
+   */
+
   z-tran {
     margin-right: 0px !important;
     margin-left: 2px !important;
@@ -174,7 +83,7 @@ const TranslatableText = styled.div`
     margin-bottom: -0.3rem;
     margin-top: 0.1rem;
     padding-left: 0.3rem;
-    border-radius: 0.3em;
+    border-radius: 0.3em 0.3em 0.3em 0.3em;
     background-clip: padding-box;
     background-color: rgb(255 229 158 / 100%);
     font-size: 14px;
@@ -217,7 +126,9 @@ const TranslatableText = styled.div`
       }
     }
 
-    .translation-icon { font-size: 17px; }
+    .translation-icon {
+      font-size: 17px;
+    }
 
     .unlink {
       margin: 0px 0.1rem;
@@ -241,9 +152,6 @@ const TranslatableText = styled.div`
     }
   }
 
-  /* ========================================================================
-   * ALTERNATIVE SELECTION STYLES
-   * ======================================================================== */
   .handSelected,
   .handContributed {
     width: 1.5em;
@@ -254,34 +162,111 @@ const TranslatableText = styled.div`
   .handContributed:after {
     display: none;
     opacity: 0.1;
-    transition: visibility 0s 2s, opacity 2s linear;
+    transition:
+      visibility 0s 2s,
+      opacity 2s linear;
   }
 
-  .handSelected:after { content: " "; color: white; }
-  .handContributed:after { content: " "; color: white; }
+  .handSelected:after {
+    content: " ";
+    color: white;
+  }
+
+  .handContributed:after {
+    content: " ";
+    color: white;
+  }
+
+  /* When an alternative is selected or a translation is uploaded
+we highlight this by changing the style of both the translation
+(normal font weight) and origin (solid underline)
+
+why? there are two selectedAltenative and contributedAlternative
+classes for the origin... because at some point we were considering
+distinguishing between the two types of contribution... eventually
+that made the UI too heavy ... */
 
   .selectedAlternative,
-  .contributedAlternativeTran {}
+  .contributedAlternativeTran {
+  }
 
   .selectedAlternativeOrig,
-  .contributedAlternativeOrig {}
+  .contributedAlternativeOrig {
+  }
 
-  /* ========================================================================
-   * TEXT PARAGRAPH FORMATTING
-   * ======================================================================== */
+  /* HTML formatting elements styling */
   .textParagraph {
-    &.h1 { font-size: 2em; font-weight: bold; margin: 1em 0 0.5em 0; line-height: 1.2; }
-    &.h2 { font-size: 1.5em; font-weight: bold; margin: 0.8em 0 0.4em 0; line-height: 1.3; }
-    &.h3 { font-size: 1.3em; font-weight: bold; margin: 0.7em 0 0.3em 0; line-height: 1.3; }
-    &.h4 { font-size: 1.1em; font-weight: bold; margin: 0.6em 0 0.2em 0; line-height: 1.4; }
-    &.h5 { font-size: 1em; font-weight: bold; margin: 0.5em 0 0.2em 0; line-height: 1.4; }
-    &.h6 { font-size: 0.9em; font-weight: bold; margin: 0.5em 0 0.2em 0; line-height: 1.4; color: #666; }
-    &.p { margin: 1em 0; line-height: 1.6; }
+    &.h1 {
+      font-size: 2em;
+      font-weight: bold;
+      margin: 1em 0 0.5em 0;
+      line-height: 1.2;
+    }
+
+    &.h2 {
+      font-size: 1.5em;
+      font-weight: bold;
+      margin: 0.8em 0 0.4em 0;
+      line-height: 1.3;
+    }
+
+    &.h3 {
+      font-size: 1.3em;
+      font-weight: bold;
+      margin: 0.7em 0 0.3em 0;
+      line-height: 1.3;
+    }
+
+    &.h4 {
+      font-size: 1.1em;
+      font-weight: bold;
+      margin: 0.6em 0 0.2em 0;
+      line-height: 1.4;
+    }
+
+    &.h5 {
+      font-size: 1em;
+      font-weight: bold;
+      margin: 0.5em 0 0.2em 0;
+      line-height: 1.4;
+    }
+
+    &.h6 {
+      font-size: 0.9em;
+      font-weight: bold;
+      margin: 0.5em 0 0.2em 0;
+      line-height: 1.4;
+      color: #666;
+    }
+
+    &.p {
+      margin: 1em 0;
+      line-height: 1.6;
+    }
 
     /* List styling */
-    &.ul { margin: 1em 0; padding-left: 0; list-style: none; }
-    &.ol { margin: 1em 0; padding-left: 0; list-style: none; counter-reset: list-counter; }
-    &.li { margin: 0.5em 0 0.5em 1.5em; line-height: 1.5; position: relative; }
+    &.ul {
+      margin: 1em 0;
+      padding-left: 0;
+      list-style: none;
+    }
+
+    &.ol {
+      margin: 1em 0;
+      padding-left: 0;
+      list-style: none;
+      counter-reset: list-counter;
+    }
+
+    &.li {
+      margin: 0.5em 0 0.5em 1.5em;
+      line-height: 1.5;
+      position: relative;
+      /* Keep default list styling - it's working fine */
+    }
+
+    /* For now, we'll use bullets for all list items */
+    /* TODO: In the future, we could add logic to distinguish ul vs ol lists */
 
     /* Blockquote styling */
     &.blockquote {
@@ -294,6 +279,7 @@ const TranslatableText = styled.div`
       position: relative;
     }
 
+    /* Only show quote mark on first blockquote in sequence */
     &.blockquote::before {
       content: '"';
       font-size: 3em;
@@ -304,9 +290,17 @@ const TranslatableText = styled.div`
       opacity: 0.3;
     }
 
-    strong, b { font-weight: bold; color: ${almostBlack}; }
-    em, i { font-style: italic; }
+    /* Inline formatting elements (for future support) */
+    strong, b {
+      font-weight: bold;
+      color: ${almostBlack};
+    }
 
+    em, i {
+      font-style: italic;
+    }
+
+    /* Add space between different section headings and content */
     &.h1 + .textParagraph,
     &.h2 + .textParagraph,
     &.h3 + .textParagraph {

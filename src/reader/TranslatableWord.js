@@ -7,9 +7,6 @@ import redirect from "../utils/routing/routing";
 import LinkOffIcon from "@mui/icons-material/LinkOff";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 
-// Debug flag: always show MWE indicators (not just on hover)
-const MWE_ALWAYS_SHOW_HINTS = false;
-
 export default function TranslatableWord({
   interactiveText,
   word,
@@ -17,12 +14,6 @@ export default function TranslatableWord({
   translating,
   pronouncing,
   disableTranslation,
-  highlightedMWEGroupId,
-  setHighlightedMWEGroupId,
-  loadingMWEGroupId,
-  setLoadingMWEGroupId,
-  mweGroupColorMap,
-  mweGroupsWithTranslations,
 }) {
   const [showingAlterMenu, setShowingAlterMenu] = useState(false);
   const [refToTranslation, clickedOutsideTranslation] = useClickOutside();
@@ -61,25 +52,20 @@ export default function TranslatableWord({
         setIsLoading(true);
         setPreviousWord(word.word);
         setIsWordTranslating(true);
-        // Set MWE group loading state so all partner words pulse together
-        const mweGroupId = word.token?.mwe_group_id;
-        if (mweGroupId && setLoadingMWEGroupId) {
-          setLoadingMWEGroupId(mweGroupId);
-        }
         interactiveText.translate(word, true, () => {
           wordUpdated();
           setIsLoading(false);
           setIsWordTranslating(false);
           setIsTranslationVisible(true);
-          // Clear MWE loading state
-          if (mweGroupId && setLoadingMWEGroupId) {
-            setLoadingMWEGroupId(null);
-          }
         });
       } else {
         // For non-translatable words in exercises, track the click
+        console.log("Clicking on non-translatable word:", word.word, "disableTranslation:", disableTranslation);
         if (interactiveText.trackWordClick) {
+          console.log("Calling trackWordClick for:", word.word);
           interactiveText.trackWordClick(word);
+        } else {
+          console.log("trackWordClick method not available on interactiveText");
         }
       }
     }
@@ -164,83 +150,6 @@ export default function TranslatableWord({
     setShowingAlterMenu(false);
   }
 
-  // Check if this word has MWE partners in the same sentence
-  // Only apply MWE styling when there are 2+ MWE words in the same sentence
-  function hasMWEPartnersInSameSentence() {
-    if (!word.token.mwe_group_id) return false;
-    // findMWEPartners returns all partners in the same sentence (including self)
-    const partners = word.findMWEPartners();
-    return partners.length > 1;
-  }
-
-  // MWE (Multi-Word Expression) hover handlers - work for all MWEs (even untranslated)
-  function handleMouseEnter() {
-    if (hasAnyMWE() && setHighlightedMWEGroupId) {
-      setHighlightedMWEGroupId(word.token.mwe_group_id);
-    }
-  }
-
-  function handleMouseLeave() {
-    if (hasAnyMWE() && setHighlightedMWEGroupId) {
-      setHighlightedMWEGroupId(null);
-    }
-  }
-
-  // Check if this word is part of any MWE with partners in same sentence (for hover hints)
-  function hasAnyMWE() {
-    return hasMWEPartnersInSameSentence();
-  }
-
-  // Check if this word is part of a translated MWE (for permanent styling)
-  // Always show MWE styling for translated MWEs, even if alone in sentence
-  // (the translation is still for the full MWE expression)
-  function isMWEWord() {
-    // Case 1: Word has mwe_group_id and the group has been translated
-    if (word.token.mwe_group_id && mweGroupsWithTranslations?.has(word.token.mwe_group_id)) {
-      return true;
-    }
-    // Case 2: Word has an MWE bookmark (restored from previous session)
-    // mweExpression is set when restoring MWE bookmarks
-    if (word.mweExpression && word.translation) {
-      return true;
-    }
-    return false;
-  }
-
-  // Check if this MWE has separated parts (non-adjacent words)
-  // Only separated MWEs need color coding to show which parts belong together
-  function isSeparatedMWE() {
-    return word.token.mwe_is_separated === true;
-  }
-
-  // Get the color class for this MWE word (mwe-color-0 through mwe-color-4)
-  // Only returns a color class for separated MWEs - adjacent MWEs don't need colors
-  function getMWEColorClass() {
-    // Only apply colors for separated MWEs
-    if (!isSeparatedMWE()) {
-      return "";
-    }
-    if (word.token.mwe_group_id && mweGroupColorMap) {
-      const colorIndex = mweGroupColorMap[word.token.mwe_group_id];
-      if (colorIndex !== undefined) {
-        return `mwe-color-${colorIndex}`;
-      }
-    }
-    // Fallback for MWE bookmarks without a mapped color
-    if (word.mweExpression) {
-      return "mwe-color-0"; // Default to violet
-    }
-    return "";
-  }
-
-  // Check if this word should be highlighted as part of an MWE (on hover)
-  // Works for all MWE words, even untranslated ones (to hint at the connection)
-  function isMWEHighlighted() {
-    if (!highlightedMWEGroupId) return false;
-    if (word.token.mwe_group_id !== highlightedMWEGroupId) return false;
-    return hasMWEPartnersInSameSentence();
-  }
-
   function getWordClass(word) {
     /*
     Function determines which class to be assigned to the word object.
@@ -255,9 +164,6 @@ export default function TranslatableWord({
       // from stanza, has_space property
       if (word.token.is_punct || word.token.is_like_symbol)
         allClasses.push("no-hover");
-      // Add no-space class when has_space is false (e.g., Romanian clitics like "s-")
-      if (word.token.has_space === false)
-        allClasses.push("no-space");
     } else {
       // we are in NLTK
       if (word.token.is_punct) {
@@ -275,32 +181,6 @@ export default function TranslatableWord({
         allClasses.push("no-margin");
     }
     if (word.token.is_like_num) allClasses.push("number");
-    // Add permanent MWE color class only if this MWE has been translated
-    if (isMWEWord()) allClasses.push(getMWEColorClass());
-
-    // Debug mode: always show MWE hints for untranslated MWEs
-    const hasMWEGroup = word.token?.mwe_group_id;
-    if (MWE_ALWAYS_SHOW_HINTS && hasMWEGroup && !isMWEWord()) {
-      allClasses.push("mwe-hover-hint");
-      allClasses.push(getMWEColorClass());
-    }
-
-    // Add MWE loading class when this word's MWE group is being translated
-    // This makes ALL partner words pulse together in the MWE color
-    if (hasMWEGroup && loadingMWEGroupId === hasMWEGroup) {
-      allClasses.push("mwe-loading");
-      allClasses.push(getMWEColorClass());
-    }
-
-    // Add MWE highlight class on hover - works for all MWEs (even untranslated)
-    if (isMWEHighlighted()) {
-      allClasses.push("mwe-hover-active");
-      if (!isMWEWord()) {
-        // Untranslated MWEs also need the color class
-        allClasses.push(getMWEColorClass());
-      }
-    }
-
     return allClasses.join(" ");
   }
 
@@ -330,12 +210,7 @@ export default function TranslatableWord({
   ) {
     return (
       <>
-        <z-tag
-          class={wordClass}
-          onClick={(e) => clickOnWord(e, word)}
-          onMouseEnter={handleMouseEnter}
-          onMouseLeave={handleMouseLeave}
-        >
+        <z-tag class={wordClass} onClick={(e) => clickOnWord(e, word)}>
           {word.word + (word.token.has_space === true ? " " : "")}
         </z-tag>
       </>
@@ -344,12 +219,8 @@ export default function TranslatableWord({
 
   return (
     <>
-      <z-tag
-        class={wordClass}
-        onMouseEnter={handleMouseEnter}
-        onMouseLeave={handleMouseLeave}
-      >
-        {word.translation && (isTranslationVisible || word.isTranslationVisible) && (
+      <z-tag className={wordClass}>
+        {word.translation && isTranslationVisible && (
           <z-tran
             chosen={word.translation}
             translation0={word.translation}
@@ -360,10 +231,7 @@ export default function TranslatableWord({
                 <VisibilityOffIcon
                   fontSize="8px"
                   onClick={(e) => {
-                    // Toggle both React state and word object flag
-                    const newVisibility = !(isTranslationVisible || word.isTranslationVisible);
-                    setIsTranslationVisible(newVisibility);
-                    word.isTranslationVisible = newVisibility;
+                    setIsTranslationVisible(!isTranslationVisible);
                     setShowingAlterMenu(false);
                   }}
                 />
