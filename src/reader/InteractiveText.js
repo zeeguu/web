@@ -428,7 +428,7 @@ function _updateTokensWithBookmarks(bookmarks, paragraphs) {
       // For MWE: just verify the first word matches and apply bookmark (case-insensitive)
       let firstWord = tokenize(bookmark["origin"])[0];
       let targetWord = removePunctuation(target_token.text);
-      console.log("[MWE-RESTORE] Checking MWE bookmark:", {
+      MWE_DEBUG && console.log("[MWE-RESTORE] Checking MWE bookmark:", {
         origin: bookmark["origin"],
         firstWord,
         targetWord,
@@ -446,14 +446,14 @@ function _updateTokensWithBookmarks(bookmarks, paragraphs) {
 
         // Use stored partner token index if available (proper fix)
         // Otherwise fall back to mwe_group_id matching (for older bookmarks)
-        console.log("[MWE-RESTORE] Path check:", {
+        MWE_DEBUG && console.log("[MWE-RESTORE] Path check:", {
           hasStoredPartner: storedPartnerTokenI != null,
           hasMweGroupId: !!target_token.mwe_group_id,
           isSeparated: target_token.mwe_is_separated,
         });
         if (storedPartnerTokenI != null && storedPartnerTokenI !== targetTokenI) {
           // Find partner by stored index (must be different from target)
-          console.log("[MWE-RESTORE] Using stored partner index:", storedPartnerTokenI);
+          MWE_DEBUG && console.log("[MWE-RESTORE] Using stored partner index:", storedPartnerTokenI);
           const partnerToken = sentenceTokens.find(t => t.token_i === storedPartnerTokenI);
           if (partnerToken) {
             const gap = Math.abs(storedPartnerTokenI - targetTokenI);
@@ -488,7 +488,7 @@ function _updateTokensWithBookmarks(bookmarks, paragraphs) {
             }
           }
 
-          console.log("[MWE-RESTORE] mwe_group_id matching:", {
+          MWE_DEBUG && console.log("[MWE-RESTORE] mwe_group_id matching:", {
             mweGroupId,
             partners: allPartners.map(p => p.token.text),
             isContiguous
@@ -508,7 +508,7 @@ function _updateTokensWithBookmarks(bookmarks, paragraphs) {
         } else if (bookmark["t_total_token"] > 1) {
           // Fallback for adjacent MWEs without mwe_group_id (e.g., article summaries):
           // Use total_tokens to fuse consecutive tokens
-          console.log("[MWE-RESTORE] Using t_total_token fallback:", bookmark["t_total_token"]);
+          MWE_DEBUG && console.log("[MWE-RESTORE] Using t_total_token fallback:", bookmark["t_total_token"]);
           const totalTokens = bookmark["t_total_token"];
           const tokensToFuse = [target_token];
           for (let i = 1; i < totalTokens; i++) {
