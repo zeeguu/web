@@ -451,8 +451,8 @@ function _updateTokensWithBookmarks(bookmarks, paragraphs) {
           hasMweGroupId: !!target_token.mwe_group_id,
           isSeparated: target_token.mwe_is_separated,
         });
-        if (storedPartnerTokenI != null) {
-          // Find partner by stored index
+        if (storedPartnerTokenI != null && storedPartnerTokenI !== targetTokenI) {
+          // Find partner by stored index (must be different from target)
           console.log("[MWE-RESTORE] Using stored partner index:", storedPartnerTokenI);
           const partnerToken = sentenceTokens.find(t => t.token_i === storedPartnerTokenI);
           if (partnerToken) {
@@ -468,29 +468,42 @@ function _updateTokensWithBookmarks(bookmarks, paragraphs) {
             // Separated MWEs stay in their original positions (no visual fusion)
           }
         } else if (target_token.mwe_group_id && target_token.mwe_is_separated === false) {
-          // Fallback: use mwe_group_id matching (for older bookmarks without stored partner)
+          // Fallback: use mwe_group_id matching - find ALL tokens with same group
           const mweGroupId = target_token.mwe_group_id;
-          const allAdjacentPartners = [{ token: target_token, tokenI: targetTokenI }];
+          const allPartners = [{ token: target_token, tokenI: targetTokenI }];
           for (let t = 0; t < sentenceTokens.length; t++) {
             const token = sentenceTokens[t];
             if (token !== target_token && token.mwe_group_id === mweGroupId) {
-              const gap = Math.abs(token.token_i - targetTokenI);
-              if (gap === 1) {
-                allAdjacentPartners.push({ token, tokenI: token.token_i });
-              }
+              allPartners.push({ token, tokenI: token.token_i });
             }
           }
-          allAdjacentPartners.sort((a, b) => a.tokenI - b.tokenI);
-          if (allAdjacentPartners.length > 1) {
-            const adjacentPartnerTexts = [];
-            for (const { token } of allAdjacentPartners) {
-              adjacentPartnerTexts.push(token.text);
+          allPartners.sort((a, b) => a.tokenI - b.tokenI);
+
+          // Check if partners form a contiguous sequence
+          let isContiguous = true;
+          for (let i = 1; i < allPartners.length; i++) {
+            if (allPartners[i].tokenI - allPartners[i-1].tokenI !== 1) {
+              isContiguous = false;
+              break;
+            }
+          }
+
+          console.log("[MWE-RESTORE] mwe_group_id matching:", {
+            mweGroupId,
+            partners: allPartners.map(p => p.token.text),
+            isContiguous
+          });
+
+          if (isContiguous && allPartners.length > 1) {
+            const partnerTexts = [];
+            for (const { token } of allPartners) {
+              partnerTexts.push(token.text);
               if (token !== target_token) {
                 token.skipRender = true;
                 target_token.mergedTokens.push({ ...token, bookmark: null });
               }
             }
-            target_token.text = adjacentPartnerTexts.join(" ");
+            target_token.text = partnerTexts.join(" ");
           }
         } else if (bookmark["t_total_token"] > 1) {
           // Fallback for adjacent MWEs without mwe_group_id (e.g., article summaries):
