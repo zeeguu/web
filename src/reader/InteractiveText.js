@@ -425,10 +425,10 @@ function _updateTokensWithBookmarks(bookmarks, paragraphs) {
     // For MWE bookmarks, the tokens aren't consecutive in the text.
     // We need to fuse them visually and hide partner tokens.
     if (bookmark["is_mwe"]) {
-      // For MWE: just verify the first word matches and apply bookmark
+      // For MWE: just verify the first word matches and apply bookmark (case-insensitive)
       let firstWord = tokenize(bookmark["origin"])[0];
       let targetWord = removePunctuation(target_token.text);
-      if (removePunctuation(firstWord) === targetWord) {
+      if (removePunctuation(firstWord).toLowerCase() === targetWord.toLowerCase()) {
         target_token.bookmark = bookmark;
         target_token.mergedTokens = [{ ...target_token, bookmark: null }];
 
