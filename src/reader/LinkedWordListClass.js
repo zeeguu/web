@@ -164,13 +164,6 @@ export class Word extends Item {
   }
 
   /**
-   * Get the indices of MWE partner tokens in the same sentence.
-   */
-  getMWEPartnerIndices() {
-    return this.token.mwe_partner_indices || [];
-  }
-
-  /**
    * Find all MWE partner Word objects in the linked list.
    * Returns array of Word objects that share the same mwe_group_id.
    */
