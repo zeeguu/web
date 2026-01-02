@@ -428,6 +428,14 @@ function _updateTokensWithBookmarks(bookmarks, paragraphs) {
       // For MWE: just verify the first word matches and apply bookmark (case-insensitive)
       let firstWord = tokenize(bookmark["origin"])[0];
       let targetWord = removePunctuation(target_token.text);
+      console.log("[MWE-RESTORE] Checking MWE bookmark:", {
+        origin: bookmark["origin"],
+        firstWord,
+        targetWord,
+        match: removePunctuation(firstWord).toLowerCase() === targetWord.toLowerCase(),
+        storedPartnerTokenI: bookmark["mwe_partner_token_i"],
+        targetTokenMweGroupId: target_token.mwe_group_id,
+      });
       if (removePunctuation(firstWord).toLowerCase() === targetWord.toLowerCase()) {
         target_token.bookmark = bookmark;
         target_token.mergedTokens = [{ ...target_token, bookmark: null }];
@@ -438,8 +446,14 @@ function _updateTokensWithBookmarks(bookmarks, paragraphs) {
 
         // Use stored partner token index if available (proper fix)
         // Otherwise fall back to mwe_group_id matching (for older bookmarks)
+        console.log("[MWE-RESTORE] Path check:", {
+          hasStoredPartner: storedPartnerTokenI != null,
+          hasMweGroupId: !!target_token.mwe_group_id,
+          isSeparated: target_token.mwe_is_separated,
+        });
         if (storedPartnerTokenI != null) {
           // Find partner by stored index
+          console.log("[MWE-RESTORE] Using stored partner index:", storedPartnerTokenI);
           const partnerToken = sentenceTokens.find(t => t.token_i === storedPartnerTokenI);
           if (partnerToken) {
             const gap = Math.abs(storedPartnerTokenI - targetTokenI);
