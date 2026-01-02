@@ -8,7 +8,7 @@ import LinkOffIcon from "@mui/icons-material/LinkOff";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 
 // Debug flag: always show MWE indicators (not just on hover)
-const MWE_ALWAYS_SHOW_HINTS = true;
+const MWE_ALWAYS_SHOW_HINTS = false;
 
 export default function TranslatableWord({
   interactiveText,
@@ -64,7 +64,6 @@ export default function TranslatableWord({
         // Set MWE group loading state so all partner words pulse together
         const mweGroupId = word.token?.mwe_group_id;
         if (mweGroupId && setLoadingMWEGroupId) {
-          console.log(`[MWE-LOADING] Setting loadingMWEGroupId: ${mweGroupId}`);
           setLoadingMWEGroupId(mweGroupId);
         }
         interactiveText.translate(word, true, () => {
@@ -79,12 +78,8 @@ export default function TranslatableWord({
         });
       } else {
         // For non-translatable words in exercises, track the click
-        console.log("Clicking on non-translatable word:", word.word, "disableTranslation:", disableTranslation);
         if (interactiveText.trackWordClick) {
-          console.log("Calling trackWordClick for:", word.word);
           interactiveText.trackWordClick(word);
-        } else {
-          console.log("trackWordClick method not available on interactiveText");
         }
       }
     }
@@ -181,7 +176,6 @@ export default function TranslatableWord({
   // MWE (Multi-Word Expression) hover handlers - work for all MWEs (even untranslated)
   function handleMouseEnter() {
     if (hasAnyMWE() && setHighlightedMWEGroupId) {
-      console.log(`[MWE-ENTER] ${word.word}: setting highlightedMWEGroupId to ${word.token.mwe_group_id}`);
       setHighlightedMWEGroupId(word.token.mwe_group_id);
     }
   }
@@ -203,23 +197,12 @@ export default function TranslatableWord({
   function isMWEWord() {
     // Case 1: Word has mwe_group_id and the group has been translated
     if (word.token.mwe_group_id && mweGroupsWithTranslations?.has(word.token.mwe_group_id)) {
-      MWE_ALWAYS_SHOW_HINTS && console.log(`[MWE-DEBUG] isMWEWord=true (case1): ${word.word}, groupId=${word.token.mwe_group_id}`);
       return true;
     }
     // Case 2: Word has an MWE bookmark (restored from previous session)
     // mweExpression is set when restoring MWE bookmarks
     if (word.mweExpression && word.translation) {
-      MWE_ALWAYS_SHOW_HINTS && console.log(`[MWE-DEBUG] isMWEWord=true (case2): ${word.word}, mweExpr=${word.mweExpression}`);
       return true;
-    }
-    // Debug: why is it false?
-    if (word.translation && word.token.mwe_group_id) {
-      console.log(`[MWE-DEBUG] isMWEWord=FALSE but has groupId: ${word.word}`, {
-        groupId: word.token.mwe_group_id,
-        hasTranslation: !!word.translation,
-        groupsSet: mweGroupsWithTranslations,
-        inSet: mweGroupsWithTranslations?.has(word.token.mwe_group_id)
-      });
     }
     return false;
   }
@@ -254,11 +237,7 @@ export default function TranslatableWord({
   // Works for all MWE words, even untranslated ones (to hint at the connection)
   function isMWEHighlighted() {
     if (!highlightedMWEGroupId) return false;
-    const matches = word.token.mwe_group_id === highlightedMWEGroupId;
-    if (matches) {
-      console.log(`[MWE-HOVER] ${word.word}: groupId=${word.token.mwe_group_id}, highlighted=${highlightedMWEGroupId}, hasPartners=${hasMWEPartnersInSameSentence()}`);
-    }
-    if (!matches) return false;
+    if (word.token.mwe_group_id !== highlightedMWEGroupId) return false;
     return hasMWEPartnersInSameSentence();
   }
 
@@ -309,26 +288,17 @@ export default function TranslatableWord({
     // Add MWE loading class when this word's MWE group is being translated
     // This makes ALL partner words pulse together in the MWE color
     if (hasMWEGroup && loadingMWEGroupId === hasMWEGroup) {
-      console.log(`[MWE-LOADING] Adding mwe-loading class to: ${word.word}`);
       allClasses.push("mwe-loading");
       allClasses.push(getMWEColorClass());
     }
 
     // Add MWE highlight class on hover - works for all MWEs (even untranslated)
-    const isHighlighted = isMWEHighlighted();
-    if (isHighlighted) {
-      console.log(`[MWE-CLASS] ${word.word}: adding mwe-hover-active, isMWEWord=${isMWEWord()}`);
-      // Use mwe-hover-active for all MWE hover states (both translated and untranslated)
+    if (isMWEHighlighted()) {
       allClasses.push("mwe-hover-active");
       if (!isMWEWord()) {
         // Untranslated MWEs also need the color class
         allClasses.push(getMWEColorClass());
       }
-    }
-
-    // Debug: log what group ID this word has
-    if (word.token?.mwe_group_id && highlightedMWEGroupId) {
-      console.log(`[MWE-CHECK] ${word.word}: groupId=${word.token.mwe_group_id}, highlighted=${highlightedMWEGroupId}, match=${word.token.mwe_group_id === highlightedMWEGroupId}`);
     }
 
     return allClasses.join(" ");

@@ -69,16 +69,6 @@ export default class InteractiveText {
 
 
   translate(word, fuseWithNeighbours, onSuccess) {
-    console.log(`[INTERACTIVE-TEXT] translate() called`, {
-      timestamp: new Date().toISOString(),
-      word: word.word,
-      fuseWithNeighbours,
-      source: this.source,
-      sourceId: this.sourceId,
-      isMWE: word.isMWE?.() || false,
-      mweGroupId: word.token?.mwe_group_id
-    });
-
     let context, cParagraph_i, cSent_i, cToken_i, leftEllipsis, rightEllipsis;
 
     [context, cParagraph_i, cSent_i, cToken_i, leftEllipsis, rightEllipsis] = this.getContextAndCoordinates(word);
@@ -126,13 +116,6 @@ export default class InteractiveText {
     const browsingSessionId = this.getBrowsingSessionId?.();
     const readingSessionId = this.getReadingSessionId?.();
 
-    // Debug: log context identifier to help diagnose bookmark saving issues
-    console.log(`[TRANSLATION-DEBUG] contextIdentifier:`, {
-      contextIdentifier: this.contextIdentifier,
-      source: this.source,
-      word: word.word,
-    });
-
     this.api
       .getOneTranslation(
         this.language,
@@ -157,12 +140,8 @@ export default class InteractiveText {
         mweSentence,
         mwePartnerTokenI,
       )
-      .then((response) => {
-        console.log(`[INTERACTIVE-TEXT] Translation response received`, { timestamp: new Date().toISOString(), word: word.word });
-        return response.data;
-      })
+      .then((response) => response.data)
       .then((data) => {
-        console.log(`[INTERACTIVE-TEXT] Translation data processed`, { timestamp: new Date().toISOString(), word: word.word, translation: data.translation });
         word.updateTranslation(data.translation, data.service_name, data.bookmark_id);
         // Mark word's translation as visible so the component renders it
         // This is especially important for MWEs where clicking any word
@@ -171,9 +150,7 @@ export default class InteractiveText {
         onSuccess();
       })
       .catch((e) => {
-        console.error(`[INTERACTIVE-TEXT] Translation ERROR`, { timestamp: new Date().toISOString(), word: word.word, error: e.message, code: e.code });
-        console.error(e);
-        console.log("could not retreive translation");
+        console.error("Translation failed:", e);
       });
 
     this.api.logUserActivity(this.translationEvent, null, word.word, this.source, this.sourceId);
@@ -216,17 +193,14 @@ export default class InteractiveText {
   }
 
   playAll() {
-    console.log("playing all");
     this.zeeguuSpeech.playAll(this.sourceId);
   }
 
   pause() {
-    console.log("pausing");
     this.zeeguuSpeech.pause();
   }
 
   resume() {
-    console.log("resuming");
     this.zeeguuSpeech.resume();
   }
 
@@ -355,10 +329,6 @@ export default class InteractiveText {
 
       // If we are not at the start of the sentence, we need leftEllipsis.
       leftEllipsis = token_i !== 0;
-
-      console.log("Budget: ", budget);
-      console.log("Final context: ", context, "(", context.split(" ").length, " words)");
-      console.log(paragraph_i, sent_i, token_i, leftEllipsis, rightEllipsis);
 
       return [context, paragraph_i, sent_i, token_i, leftEllipsis, rightEllipsis];
     }
