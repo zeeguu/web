@@ -48,8 +48,8 @@ const IconSpan = styled.span`
   color: ${({ theme }) => theme.btnContentDefault};
   transition: 0.3s ease-in-out;
 
-  ${({ isActive }) =>
-    isActive &&
+  ${({ $isActive }) =>
+    $isActive &&
     css`
       ${activeIconShared}
     `}

@@ -25,7 +25,7 @@ export default function BottomNavOption({
         aria-label={ariaLabel}
       >
         {notification}
-        <s.IconSpan isActive={isActive}>{icon}</s.IconSpan>
+        <s.IconSpan $isActive={isActive}>{icon}</s.IconSpan>
         {text}
       </Component>
     </s.BottomNavOption>
