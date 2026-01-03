@@ -59,28 +59,20 @@ export default function TranslatableWord({
         if (mweGroupId && setLoadingMWEGroupId) {
           setLoadingMWEGroupId(mweGroupId);
         }
-        // Use setTimeout(0) to allow React to render loading state on ALL MWE words
-        // before fuseMWEPartners() mutates the linked list (detaching partner words).
-        // Without this, partners are detached before they can show the loading animation.
-        const doTranslate = () => {
-          interactiveText.translate(word, true, () => {
-            wordUpdated();
-            setIsLoading(false);
-            setIsWordTranslating(false);
-            setIsTranslationVisible(true);
-            // Clear MWE loading state
-            if (mweGroupId && setLoadingMWEGroupId) {
-              setLoadingMWEGroupId(null);
-            }
-          });
-        };
-        if (mweGroupId) {
-          // Delay for MWE words to let React render loading animation first
-          setTimeout(doTranslate, 0);
-        } else {
-          // Non-MWE words: translate immediately
-          doTranslate();
-        }
+        // For MWE words, pass wordUpdated as onFusionComplete callback
+        // This triggers a re-render immediately after fuseMWEPartners modifies the linked list,
+        // ensuring the UI shows the fused word before the API call completes
+        const onFusionComplete = mweGroupId ? wordUpdated : null;
+        interactiveText.translate(word, true, () => {
+          wordUpdated();
+          setIsLoading(false);
+          setIsWordTranslating(false);
+          setIsTranslationVisible(true);
+          // Clear MWE loading state
+          if (mweGroupId && setLoadingMWEGroupId) {
+            setLoadingMWEGroupId(null);
+          }
+        }, onFusionComplete);
       } else {
         // For non-translatable words in exercises, track the click
         if (interactiveText.trackWordClick) {
