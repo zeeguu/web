@@ -261,7 +261,10 @@ export class Word extends Item {
         separated: this.token?.mwe_is_separated,
       });
 
-    let headWord = mainGroup.find((w) => w.token.mwe_role === "head") || mainGroup[0];
+    // Always use first word as the visual head, regardless of mwe_role
+    // mwe_role indicates the linguistic/semantic head from the backend,
+    // but for UI we want the first word to remain visible and show combined text
+    let headWord = mainGroup[0];
 
     // Update head word with fused group info
     let mergedTokens = mainGroup.map((p) => ({ ...p.token }));
