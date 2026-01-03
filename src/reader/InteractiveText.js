@@ -178,6 +178,10 @@ export default class InteractiveText {
     [context] = this.getContextAndCoordinates(word);
     // Use mweExpression for MWEs (e.g., "har ... måttet" instead of just "har")
     const textToTranslate = word.mweExpression || word.word;
+    const isSeparatedMwe = !!word.token?.mwe_is_separated;
+    // Get full sentence for separated MWEs
+    const fullSentenceContext = isSeparatedMwe ? this._getSentenceText(word) : null;
+
     this.api
       .getMultipleTranslations(
         this.language,
@@ -188,6 +192,8 @@ export default class InteractiveText {
         word.service_name,
         word.translation,
         this.sourceId,
+        isSeparatedMwe,
+        fullSentenceContext,
       )
       .then((response) => response.json())
       .then((data) => {

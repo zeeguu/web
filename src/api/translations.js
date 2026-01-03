@@ -71,13 +71,19 @@ Zeeguu_API.prototype.getMultipleTranslations = function (
   serviceToExclude,
   translationToExclude,
   articleID,
+  isSeparatedMwe = false,
+  fullSentenceContext = null,
 ) {
   let payload = {
     word: word,
     context: context,
     numberOfResults: numberOfResults,
     articleID: articleID,
+    is_separated_mwe: isSeparatedMwe,
   };
+  if (fullSentenceContext) {
+    payload["full_sentence_context"] = fullSentenceContext;
+  }
   if (serviceToExclude) {
     payload["service"] = serviceToExclude;
   }
