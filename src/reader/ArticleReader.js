@@ -55,6 +55,7 @@ export default function ArticleReader({ teacherArticleID }) {
   last_reading_percentage = last_reading_percentage === "undefined" ? null : Number(last_reading_percentage);
 
   const [articleInfo, setArticleInfo] = useState();
+  const [loadingProgress, setLoadingProgress] = useState(null);
 
   const [interactiveTitle, setInteractiveTitle] = useState();
   const [interactiveFragments, setInteractiveFragments] = useState();
@@ -161,7 +162,8 @@ export default function ArticleReader({ teacherArticleID }) {
     // Initialize scroll tracking using the hook
     initializeScrollTracking();
 
-    api.getArticleInfo(articleID, (articleInfo) => {
+    const handleArticleLoaded = (articleInfo) => {
+      setLoadingProgress(null);
       setInteractiveFragments(
         articleInfo.tokenized_fragments.map(
           (each) =>
@@ -204,7 +206,17 @@ export default function ArticleReader({ teacherArticleID }) {
       // Session is now created by useReadingSession hook when articleInfo becomes available
       api.setArticleOpened(articleInfo.id);
       api.logUserActivity(api.OPEN_ARTICLE, articleID, "", WEB_READER);
-    });
+    };
+
+    api.getArticleInfoWithProgress(
+      articleID,
+      (progress) => setLoadingProgress(progress),
+      handleArticleLoaded,
+      (error) => {
+        console.error('Failed to load article:', error);
+        setLoadingProgress({ message: 'Error loading article', step: 0, total: 1 });
+      }
+    );
 
     window.addEventListener("focus", handleFocus);
     window.addEventListener("blur", handleBlur);
@@ -229,7 +241,20 @@ export default function ArticleReader({ teacherArticleID }) {
   }
 
   if (!articleInfo || !interactiveFragments) {
-    return <LoadingAnimation />;
+    return (
+      <LoadingAnimation>
+        {loadingProgress && (
+          <div style={{ textAlign: 'center', marginTop: '1em' }}>
+            <div>{loadingProgress.message}</div>
+            {loadingProgress.total > 0 && (
+              <div style={{ marginTop: '0.5em', color: '#666' }}>
+                Step {loadingProgress.step} of {loadingProgress.total}
+              </div>
+            )}
+          </div>
+        )}
+      </LoadingAnimation>
+    );
   }
 
   const setLikedState = (state) => {

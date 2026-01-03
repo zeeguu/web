@@ -255,9 +255,9 @@ export default function TranslatableWord({
       // from stanza, has_space property
       if (word.token.is_punct || word.token.is_like_symbol)
         allClasses.push("no-hover");
-      // Add no-space class when has_space is false (e.g., Romanian clitics like "s-")
-      if (word.token.has_space === false)
-        allClasses.push("no-space");
+      // Note: has_space === false is handled in the render by not adding a trailing space
+      // We do NOT add the no-space CSS class here because that adds negative margin
+      // which is only appropriate for punctuation, not for regular words like clitics
     } else {
       // we are in NLTK
       if (word.token.is_punct) {
