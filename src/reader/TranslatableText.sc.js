@@ -21,18 +21,33 @@ const TranslatableText = styled.div`
     }
   }
 
-  z-tag.punct { margin-left: -5.2px; }
-  z-tag.left-punct { margin-left: 0px; margin-right: -5px; }
-  z-tag.no-space { margin-right: -5px; }
-  z-tag.no-margin { margin: 0px !important; }
+  z-tag.punct {
+    margin-left: -5.2px;
+  }
+  z-tag.left-punct {
+    margin-left: 0px;
+    margin-right: -5px;
+  }
+  z-tag.no-space {
+    margin-right: -5px;
+  }
+  z-tag.no-margin {
+    margin: 0px !important;
+  }
 
   /* ========================================================================
    * LOADING ANIMATION
    * ======================================================================== */
   @keyframes blink {
-    0% { opacity: 0.2; }
-    50% { opacity: 0.7; }
-    100% { opacity: 1; }
+    0% {
+      opacity: 0.2;
+    }
+    50% {
+      opacity: 0.7;
+    }
+    100% {
+      opacity: 1;
+    }
   }
 
   .loading {
@@ -55,11 +70,36 @@ const TranslatableText = styled.div`
    * ======================================================================== */
 
   /* --- MWE Color Definitions (single source of truth) --- */
-  z-tag.mwe-color-0 { --mwe-color: rgb(130, 100, 200); --mwe-bg: rgba(130, 100, 200, 0.08); --mwe-bg-hover: rgba(130, 100, 200, 0.2); --mwe-tran-bg: rgb(220, 210, 245); }
-  z-tag.mwe-color-1 { --mwe-color: rgb(70, 130, 200);  --mwe-bg: rgba(70, 130, 200, 0.08);  --mwe-bg-hover: rgba(70, 130, 200, 0.2);  --mwe-tran-bg: rgb(210, 225, 250); }
-  z-tag.mwe-color-2 { --mwe-color: rgb(0, 150, 150);   --mwe-bg: rgba(0, 150, 150, 0.08);   --mwe-bg-hover: rgba(0, 150, 150, 0.2);   --mwe-tran-bg: rgb(200, 235, 235); }
-  z-tag.mwe-color-3 { --mwe-color: rgb(80, 160, 80);   --mwe-bg: rgba(80, 160, 80, 0.08);   --mwe-bg-hover: rgba(80, 160, 80, 0.2);   --mwe-tran-bg: rgb(215, 240, 215); }
-  z-tag.mwe-color-4 { --mwe-color: rgb(200, 100, 150); --mwe-bg: rgba(200, 100, 150, 0.08); --mwe-bg-hover: rgba(200, 100, 150, 0.2); --mwe-tran-bg: rgb(250, 220, 235); }
+  z-tag.mwe-color-0 {
+    --mwe-color: rgb(130, 100, 200);
+    --mwe-bg: rgba(130, 100, 200, 0.08);
+    --mwe-bg-hover: rgba(130, 100, 200, 0.1);
+    --mwe-tran-bg: rgb(220, 210, 245);
+  }
+  z-tag.mwe-color-1 {
+    --mwe-color: rgb(70, 130, 200);
+    --mwe-bg: rgba(70, 130, 200, 0.08);
+    --mwe-bg-hover: rgba(70, 130, 200, 0.2);
+    --mwe-tran-bg: rgb(210, 225, 250);
+  }
+  z-tag.mwe-color-2 {
+    --mwe-color: rgb(0, 150, 150);
+    --mwe-bg: rgba(0, 150, 150, 0.08);
+    --mwe-bg-hover: rgba(0, 150, 150, 0.2);
+    --mwe-tran-bg: rgb(200, 235, 235);
+  }
+  z-tag.mwe-color-3 {
+    --mwe-color: rgb(80, 160, 80);
+    --mwe-bg: rgba(80, 160, 80, 0.08);
+    --mwe-bg-hover: rgba(80, 160, 80, 0.2);
+    --mwe-tran-bg: rgb(215, 240, 215);
+  }
+  z-tag.mwe-color-4 {
+    --mwe-color: rgb(200, 100, 150);
+    --mwe-bg: rgba(200, 100, 150, 0.08);
+    --mwe-bg-hover: rgba(200, 100, 150, 0.2);
+    --mwe-tran-bg: rgb(250, 220, 235);
+  }
 
   /* --- MWE Loading: All partner words pulse together --- */
   z-tag.mwe-loading {
@@ -71,17 +111,36 @@ const TranslatableText = styled.div`
     color: var(--mwe-color, rgb(100, 100, 100)) !important;
   }
 
-  /* --- MWE Hover Hint: Subtle indicator for untranslated MWEs (debug mode) --- */
+  /* --- MWE Adjacent: Translated adjacent (non-separated) MWEs use darker orange --- */
+  z-tag.mwe-adjacent {
+    --mwe-color: rgb(200, 140, 60);
+    --mwe-tran-bg: rgb(255, 240, 220);
+  }
+  z-tag.mwe-adjacent z-orig {
+    color: rgb(200, 140, 60) !important;
+    font-weight: 600;
+    text-decoration: underline dotted rgb(200, 140, 60);
+    text-decoration-thickness: 2px;
+    text-underline-offset: 3px;
+  }
+  z-tag.mwe-adjacent z-orig span {
+    text-decoration: none !important;
+    border: none !important;
+  }
+  z-tag.mwe-adjacent z-tran {
+    background-color: rgb(255, 240, 220) !important;
+  }
+
+  /* --- MWE Hover Hint: Subtle indicator for untranslated MWEs --- */
+  /* Adjacent MWEs use darker orange, separated MWEs use their assigned color */
   z-tag.mwe-hover-hint {
     text-decoration: underline dotted;
     text-decoration-thickness: 2px;
-    text-decoration-color: rgba(100, 100, 100, 0.7);
+    text-decoration-color: rgb(200, 140, 60);
     text-underline-offset: 3px;
-    background-color: rgba(150, 150, 150, 0.15);
   }
   z-tag.mwe-hover-hint[class*="mwe-color-"] {
     text-decoration-color: var(--mwe-color);
-    background-color: var(--mwe-bg);
   }
 
   /* --- MWE Translated: Permanent styling for translated MWE words --- */
@@ -113,25 +172,24 @@ const TranslatableText = styled.div`
   }
 
   /* --- MWE Hover Active: Solid underline when hovering MWE partner words --- */
+  /* Adjacent MWEs use darker orange, separated MWEs use their assigned color */
   /* Words WITHOUT translation (no z-orig) */
   z-tag.mwe-hover-active:not(:has(z-orig)) {
     text-decoration-line: underline !important;
     text-decoration-style: solid !important;
     text-decoration-thickness: 3px !important;
-    text-decoration-color: var(--mwe-color, rgba(100, 100, 100, 0.9)) !important;
-    background-color: var(--mwe-bg-hover, rgba(100, 100, 100, 0.2)) !important;
+    text-decoration-color: var(--mwe-color, rgb(200, 140, 60)) !important;
   }
   /* Words WITH translation (has z-orig) */
   z-tag.mwe-hover-active:has(z-orig) {
     text-decoration: none !important;
-    background-color: var(--mwe-bg-hover, rgba(100, 100, 100, 0.2)) !important;
   }
   z-tag.mwe-hover-active z-orig,
   z-tag.mwe-hover-active z-orig span {
     text-decoration-line: underline !important;
     text-decoration-style: solid !important;
     text-decoration-thickness: 3px !important;
-    text-decoration-color: var(--mwe-color, rgba(100, 100, 100, 0.9)) !important;
+    text-decoration-color: var(--mwe-color, rgb(200, 140, 60)) !important;
     border: none !important;
   }
 
@@ -217,7 +275,9 @@ const TranslatableText = styled.div`
       }
     }
 
-    .translation-icon { font-size: 17px; }
+    .translation-icon {
+      font-size: 17px;
+    }
 
     .unlink {
       margin: 0px 0.1rem;
@@ -254,34 +314,91 @@ const TranslatableText = styled.div`
   .handContributed:after {
     display: none;
     opacity: 0.1;
-    transition: visibility 0s 2s, opacity 2s linear;
+    transition:
+      visibility 0s 2s,
+      opacity 2s linear;
   }
 
-  .handSelected:after { content: " "; color: white; }
-  .handContributed:after { content: " "; color: white; }
+  .handSelected:after {
+    content: " ";
+    color: white;
+  }
+  .handContributed:after {
+    content: " ";
+    color: white;
+  }
 
   .selectedAlternative,
-  .contributedAlternativeTran {}
+  .contributedAlternativeTran {
+  }
 
   .selectedAlternativeOrig,
-  .contributedAlternativeOrig {}
+  .contributedAlternativeOrig {
+  }
 
   /* ========================================================================
    * TEXT PARAGRAPH FORMATTING
    * ======================================================================== */
   .textParagraph {
-    &.h1 { font-size: 2em; font-weight: bold; margin: 1em 0 0.5em 0; line-height: 1.2; }
-    &.h2 { font-size: 1.5em; font-weight: bold; margin: 0.8em 0 0.4em 0; line-height: 1.3; }
-    &.h3 { font-size: 1.3em; font-weight: bold; margin: 0.7em 0 0.3em 0; line-height: 1.3; }
-    &.h4 { font-size: 1.1em; font-weight: bold; margin: 0.6em 0 0.2em 0; line-height: 1.4; }
-    &.h5 { font-size: 1em; font-weight: bold; margin: 0.5em 0 0.2em 0; line-height: 1.4; }
-    &.h6 { font-size: 0.9em; font-weight: bold; margin: 0.5em 0 0.2em 0; line-height: 1.4; color: #666; }
-    &.p { margin: 1em 0; line-height: 1.6; }
+    &.h1 {
+      font-size: 2em;
+      font-weight: bold;
+      margin: 1em 0 0.5em 0;
+      line-height: 1.2;
+    }
+    &.h2 {
+      font-size: 1.5em;
+      font-weight: bold;
+      margin: 0.8em 0 0.4em 0;
+      line-height: 1.3;
+    }
+    &.h3 {
+      font-size: 1.3em;
+      font-weight: bold;
+      margin: 0.7em 0 0.3em 0;
+      line-height: 1.3;
+    }
+    &.h4 {
+      font-size: 1.1em;
+      font-weight: bold;
+      margin: 0.6em 0 0.2em 0;
+      line-height: 1.4;
+    }
+    &.h5 {
+      font-size: 1em;
+      font-weight: bold;
+      margin: 0.5em 0 0.2em 0;
+      line-height: 1.4;
+    }
+    &.h6 {
+      font-size: 0.9em;
+      font-weight: bold;
+      margin: 0.5em 0 0.2em 0;
+      line-height: 1.4;
+      color: #666;
+    }
+    &.p {
+      margin: 1em 0;
+      line-height: 1.6;
+    }
 
     /* List styling */
-    &.ul { margin: 1em 0; padding-left: 0; list-style: none; }
-    &.ol { margin: 1em 0; padding-left: 0; list-style: none; counter-reset: list-counter; }
-    &.li { margin: 0.5em 0 0.5em 1.5em; line-height: 1.5; position: relative; }
+    &.ul {
+      margin: 1em 0;
+      padding-left: 0;
+      list-style: none;
+    }
+    &.ol {
+      margin: 1em 0;
+      padding-left: 0;
+      list-style: none;
+      counter-reset: list-counter;
+    }
+    &.li {
+      margin: 0.5em 0 0.5em 1.5em;
+      line-height: 1.5;
+      position: relative;
+    }
 
     /* Blockquote styling */
     &.blockquote {
@@ -304,8 +421,15 @@ const TranslatableText = styled.div`
       opacity: 0.3;
     }
 
-    strong, b { font-weight: bold; color: ${almostBlack}; }
-    em, i { font-style: italic; }
+    strong,
+    b {
+      font-weight: bold;
+      color: ${almostBlack};
+    }
+    em,
+    i {
+      font-style: italic;
+    }
 
     &.h1 + .textParagraph,
     &.h2 + .textParagraph,

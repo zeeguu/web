@@ -270,7 +270,15 @@ export default function TranslatableWord({
     }
     if (word.token.is_like_num) allClasses.push("number");
     // Add permanent MWE color class only if this MWE has been translated
-    if (isMWEWord()) allClasses.push(getMWEColorClass());
+    if (isMWEWord()) {
+      const colorClass = getMWEColorClass();
+      if (colorClass) {
+        allClasses.push(colorClass);
+      } else {
+        // Adjacent (non-separated) MWEs get darker orange styling
+        allClasses.push("mwe-adjacent");
+      }
+    }
 
     // Debug mode: always show MWE hints for untranslated MWEs
     const hasMWEGroup = word.token?.mwe_group_id;
