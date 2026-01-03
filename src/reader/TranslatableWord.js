@@ -42,17 +42,10 @@ export default function TranslatableWord({
   }, [word]);
 
   function clickOnWord(e, word) {
-    if (
-      word.token.is_like_num ||
-      (word.token.is_punct && word.word.length === 1)
-    )
-      return;
+    if (word.token.is_like_num || (word.token.is_punct && word.word.length === 1)) return;
     if (word.translation) {
       if (pronouncing) interactiveText.pronounce(word);
-      if (
-        (translating && !isTranslationVisible) ||
-        (!translating && isTranslationVisible)
-      )
+      if ((translating && !isTranslationVisible) || (!translating && isTranslationVisible))
         setIsTranslationVisible(!isTranslationVisible);
       return;
     }
@@ -66,16 +59,28 @@ export default function TranslatableWord({
         if (mweGroupId && setLoadingMWEGroupId) {
           setLoadingMWEGroupId(mweGroupId);
         }
-        interactiveText.translate(word, true, () => {
-          wordUpdated();
-          setIsLoading(false);
-          setIsWordTranslating(false);
-          setIsTranslationVisible(true);
-          // Clear MWE loading state
-          if (mweGroupId && setLoadingMWEGroupId) {
-            setLoadingMWEGroupId(null);
-          }
-        });
+        // Use setTimeout(0) to allow React to render loading state on ALL MWE words
+        // before fuseMWEPartners() mutates the linked list (detaching partner words).
+        // Without this, partners are detached before they can show the loading animation.
+        const doTranslate = () => {
+          interactiveText.translate(word, true, () => {
+            wordUpdated();
+            setIsLoading(false);
+            setIsWordTranslating(false);
+            setIsTranslationVisible(true);
+            // Clear MWE loading state
+            if (mweGroupId && setLoadingMWEGroupId) {
+              setLoadingMWEGroupId(null);
+            }
+          });
+        };
+        if (mweGroupId) {
+          // Delay for MWE words to let React render loading animation first
+          setTimeout(doTranslate, 0);
+        } else {
+          // Non-MWE words: translate immediately
+          doTranslate();
+        }
       } else {
         // For non-translatable words in exercises, track the click
         if (interactiveText.trackWordClick) {
@@ -141,23 +146,16 @@ export default function TranslatableWord({
       (error) => {
         // onError
         console.log(error);
-        alert(
-          "something went wrong and we could not delete the bookmark; try again later.",
-        );
+        alert("something went wrong and we could not delete the bookmark; try again later.");
       },
     );
   }
 
   function selectAlternative(alternative, preferredSource) {
-    interactiveText.selectAlternative(
-      word,
-      alternative,
-      preferredSource,
-      () => {
-        wordUpdated();
-        setShowingAlterMenu(false);
-      },
-    );
+    interactiveText.selectAlternative(word, alternative, preferredSource, () => {
+      wordUpdated();
+      setShowingAlterMenu(false);
+    });
   }
 
   function hideAlterMenu() {
@@ -253,8 +251,7 @@ export default function TranslatableWord({
     let allClasses = [];
     if (word.token.has_space !== undefined) {
       // from stanza, has_space property
-      if (word.token.is_punct || word.token.is_like_symbol)
-        allClasses.push("no-hover");
+      if (word.token.is_punct || word.token.is_like_symbol) allClasses.push("no-hover");
       // Note: has_space === false is handled in the render by not adding a trailing space
       // We do NOT add the no-space CSS class here because that adds negative margin
       // which is only appropriate for punctuation, not for regular words like clitics
@@ -266,13 +263,10 @@ export default function TranslatableWord({
       }
       if (
         word.token.is_left_punct ||
-        (word.token.is_punct &&
-          word.prev &&
-          [":", ".", ","].includes(word.prev.word.trim()))
+        (word.token.is_punct && word.prev && [":", ".", ","].includes(word.prev.word.trim()))
       )
         allClasses.push("left-punct");
-      if (noMarginPunctuation.includes(word.word.trim()))
-        allClasses.push("no-margin");
+      if (noMarginPunctuation.includes(word.word.trim())) allClasses.push("no-margin");
     }
     if (word.token.is_like_num) allClasses.push("number");
     // Add permanent MWE color class only if this MWE has been translated
@@ -324,10 +318,7 @@ export default function TranslatableWord({
     );
 
   //disableTranslation so user cannot translate words that are being tested
-  if (
-    (!isWordTranslating && !word.translation && !isClickedToPronounce) ||
-    disableTranslation
-  ) {
+  if ((!isWordTranslating && !word.translation && !isClickedToPronounce) || disableTranslation) {
     return (
       <>
         <z-tag
@@ -344,17 +335,9 @@ export default function TranslatableWord({
 
   return (
     <>
-      <z-tag
-        class={wordClass}
-        onMouseEnter={handleMouseEnter}
-        onMouseLeave={handleMouseLeave}
-      >
+      <z-tag class={wordClass} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
         {word.translation && (isTranslationVisible || word.isTranslationVisible) && (
-          <z-tran
-            chosen={word.translation}
-            translation0={word.translation}
-            ref={refToTranslation}
-          >
+          <z-tran chosen={word.translation} translation0={word.translation} ref={refToTranslation}>
             <span className="translationContainer">
               <span className="hide low-oppacity translation-icon">
                 <VisibilityOffIcon
@@ -368,10 +351,7 @@ export default function TranslatableWord({
                   }}
                 />
               </span>
-              <span
-                className="translation"
-                onClick={(e) => toggleAlterMenu(e, word)}
-              >
+              <span className="translation" onClick={(e) => toggleAlterMenu(e, word)}>
                 {word.translation}
               </span>
               <span className="arrow" onClick={(e) => toggleAlterMenu(e, word)}>
@@ -394,10 +374,7 @@ export default function TranslatableWord({
           {isWordTranslating ? (
             <span className={isLoading ? " loading" : ""}> {prevWord} </span>
           ) : (
-            <span
-              className={isLoading ? " loading" : ""}
-              onClick={(e) => clickOnWord(e, word)}
-            >
+            <span className={isLoading ? " loading" : ""} onClick={(e) => clickOnWord(e, word)}>
               {word.word}{" "}
             </span>
           )}

@@ -56,6 +56,7 @@ export default function ArticleReader({ teacherArticleID }) {
 
   const [articleInfo, setArticleInfo] = useState();
   const [loadingProgress, setLoadingProgress] = useState(null);
+  const [showSlowLoadingHint, setShowSlowLoadingHint] = useState(false);
 
   const [interactiveTitle, setInteractiveTitle] = useState();
   const [interactiveFragments, setInteractiveFragments] = useState();
@@ -121,6 +122,16 @@ export default function ArticleReader({ teacherArticleID }) {
     fetchBookmarks();
     // eslint-disable-next-line
   }, [articleID]);
+
+  // Show "this can take a bit" hint after 5 seconds if still loading
+  useEffect(() => {
+    if (articleInfo) {
+      setShowSlowLoadingHint(false);
+      return;
+    }
+    const timer = setTimeout(() => setShowSlowLoadingHint(true), 5000);
+    return () => clearTimeout(timer);
+  }, [articleInfo]);
 
   const handleFocus = () => {
     onFocus(api, articleID, WEB_READER);
@@ -242,7 +253,7 @@ export default function ArticleReader({ teacherArticleID }) {
 
   if (!articleInfo || !interactiveFragments) {
     return (
-      <LoadingAnimation>
+      <LoadingAnimation showReportIssue={false}>
         {loadingProgress && (
           <div style={{ textAlign: 'center', marginTop: '1em' }}>
             <div>{loadingProgress.message}</div>
@@ -251,6 +262,11 @@ export default function ArticleReader({ teacherArticleID }) {
                 Step {loadingProgress.step} of {loadingProgress.total}
               </div>
             )}
+          </div>
+        )}
+        {showSlowLoadingHint && (
+          <div style={{ textAlign: 'center', marginTop: '1.5em', color: '#888', fontSize: '0.9em' }}>
+            This can take a moment for longer articles...
           </div>
         )}
       </LoadingAnimation>
