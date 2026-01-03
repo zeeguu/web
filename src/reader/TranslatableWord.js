@@ -8,7 +8,7 @@ import LinkOffIcon from "@mui/icons-material/LinkOff";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 
 // Debug flag: always show MWE indicators (not just on hover)
-const MWE_ALWAYS_SHOW_HINTS = false;
+const MWE_ALWAYS_SHOW_HINTS = true;
 
 export default function TranslatableWord({
   interactiveText,
@@ -299,6 +299,13 @@ export default function TranslatableWord({
   }
 
   const wordClass = getWordClass(word);
+
+  // Don't render words that have been fused into an MWE (marked for skip)
+  // This prevents duplication during loading animation when fuseMWEPartners
+  // has already run but the component is still mounted
+  if (word.token?.skipRender) {
+    return null;
+  }
 
   if (word.token.is_like_email)
     return (
