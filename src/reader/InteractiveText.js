@@ -464,10 +464,19 @@ function _updateTokensWithBookmarks(bookmarks, paragraphs) {
               target_token.text = tokens.map(t => t.text).join(" ");
               partnerToken.skipRender = true;
               target_token.mergedTokens.push({ ...partnerToken, bookmark: null });
+            } else {
+              // Separated MWEs: both words stay visible, translation only on first word
+              // Partner just needs MWE styling (via mweExpression), not a full bookmark
+              target_token.mweExpression = bookmark["origin"];
+              partnerToken.mweExpression = bookmark["origin"];
+              MWE_DEBUG && console.log("[MWE-RESTORE] Separated MWE - styling both, translation on first:", {
+                target: target_token.text,
+                partner: partnerToken.text,
+                expression: bookmark["origin"],
+              });
             }
-            // Separated MWEs stay in their original positions (no visual fusion)
           }
-        } else if (target_token.mwe_group_id && target_token.mwe_is_separated === false) {
+        } else if (target_token.mwe_group_id) {
           // Fallback: use mwe_group_id matching - find ALL tokens with same group
           const mweGroupId = target_token.mwe_group_id;
           const allPartners = [{ token: target_token, tokenI: targetTokenI }];
@@ -495,6 +504,7 @@ function _updateTokensWithBookmarks(bookmarks, paragraphs) {
           });
 
           if (isContiguous && allPartners.length > 1) {
+            // Adjacent MWEs: fuse into single word
             const partnerTexts = [];
             for (const { token } of allPartners) {
               partnerTexts.push(token.text);
@@ -504,6 +514,15 @@ function _updateTokensWithBookmarks(bookmarks, paragraphs) {
               }
             }
             target_token.text = partnerTexts.join(" ");
+          } else if (!isContiguous && allPartners.length > 1) {
+            // Separated MWEs: style all words, translation only on first
+            for (const { token } of allPartners) {
+              token.mweExpression = bookmark["origin"];
+            }
+            MWE_DEBUG && console.log("[MWE-RESTORE] Separated MWE via group_id - styling all:", {
+              partners: allPartners.map(p => p.token.text),
+              expression: bookmark["origin"],
+            });
           }
         } else if (bookmark["t_total_token"] > 1) {
           // Fallback for adjacent MWEs without mwe_group_id (e.g., article summaries):

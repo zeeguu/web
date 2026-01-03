@@ -15,6 +15,10 @@ Zeeguu_API.prototype.getOneTranslation = function (
   translationSource = 'reading',
   browsingSessionId = null,
   readingSessionId = null,
+  isMweExpression = false,
+  isSeparatedMwe = false,
+  fullSentenceContext = null,
+  mwePartnerTokenI = null,
 ) {
   console.log(`[TRANSLATION] getOneTranslation called`, {
     timestamp: new Date().toISOString(),
@@ -22,7 +26,8 @@ Zeeguu_API.prototype.getOneTranslation = function (
     from_lang,
     to_lang,
     translationSource,
-    contextLength: context?.length || 0
+    contextLength: context?.length || 0,
+    isMweExpression,
   });
 
   let w_sent_i, w_token_i, w_total_tokens;
@@ -46,6 +51,10 @@ Zeeguu_API.prototype.getOneTranslation = function (
     translation_source: translationSource,
     browsing_session_id: browsingSessionId,
     reading_session_id: readingSessionId,
+    is_mwe_expression: isMweExpression,
+    is_separated_mwe: isSeparatedMwe,
+    full_sentence_context: fullSentenceContext,
+    mwe_partner_token_i: mwePartnerTokenI,
   };
 
   console.log(`[TRANSLATION] About to call apiPost`, { timestamp: new Date().toISOString(), payloadSize: JSON.stringify(payload).length });

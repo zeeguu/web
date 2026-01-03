@@ -28,7 +28,7 @@ export class Word extends Item {
           // this.word is already set to token.text above
         } else if (token.mergedTokens && token.mergedTokens.length > 1) {
           // Multi-word: reconstruct from merged tokens to preserve original case
-          this.word = token.mergedTokens.map(t => t.text).join(" ");
+          this.word = token.mergedTokens.map((t) => t.text).join(" ");
         } else {
           // Fallback to bookmark.origin if no merged tokens available
           this.word = bookmark.origin;
@@ -41,6 +41,11 @@ export class Word extends Item {
     this.token = token;
     if (token.mergedTokens) this.mergedTokens = [...token.mergedTokens];
     else this.mergedTokens = [{ ...token }];
+    // For separated MWE partners: token has mweExpression but no bookmark
+    // Transfer it to the Word so it gets MWE styling
+    if (token.mweExpression && !this.mweExpression) {
+      this.mweExpression = token.mweExpression;
+    }
   }
 
   updateTranslation(translation, service_name, bookmark_id) {
@@ -205,12 +210,12 @@ export class Word extends Item {
     if (partners.length <= 1) return this;
 
     // Build combined expression text (for translation)
-    const combinedExpression = partners.map(p => p.word).join(" ");
+    const combinedExpression = partners.map((p) => p.word).join(" ");
 
     // Check if all partners are adjacent (no gaps > 1)
     let allAdjacent = true;
     for (let i = 1; i < partners.length; i++) {
-      const gap = partners[i].token.token_i - partners[i-1].token.token_i;
+      const gap = partners[i].token.token_i - partners[i - 1].token.token_i;
       if (gap > 1) {
         allAdjacent = false;
         break;
@@ -231,7 +236,7 @@ export class Word extends Item {
     let currentGroup = [partners[0]];
 
     for (let i = 1; i < partners.length; i++) {
-      const gap = partners[i].token.token_i - partners[i-1].token.token_i;
+      const gap = partners[i].token.token_i - partners[i - 1].token.token_i;
       if (gap === 1) {
         // Truly adjacent - fuse with current group
         currentGroup.push(partners[i]);
@@ -246,19 +251,20 @@ export class Word extends Item {
     // Only fuse the first group (which contains the head word)
     // Other groups stay as separate words with MWE styling
     const mainGroup = fusionGroups[0];
-    const mainExpression = mainGroup.map(p => p.word).join(" ");
+    const mainExpression = mainGroup.map((p) => p.word).join(" ");
 
-    MWE_DEBUG && console.log("MWE fusion:", {
-      fullExpression: combinedExpression,
-      fusedExpression: mainExpression,
-      numGroups: fusionGroups.length,
-      separated: this.token?.mwe_is_separated,
-    });
+    MWE_DEBUG &&
+      console.log("MWE fusion:", {
+        fullExpression: combinedExpression,
+        fusedExpression: mainExpression,
+        numGroups: fusionGroups.length,
+        separated: this.token?.mwe_is_separated,
+      });
 
-    let headWord = mainGroup.find(w => w.token.mwe_role === "head") || mainGroup[0];
+    let headWord = mainGroup.find((w) => w.token.mwe_role === "head") || mainGroup[0];
 
     // Update head word with fused group info
-    let mergedTokens = mainGroup.map(p => ({ ...p.token }));
+    let mergedTokens = mainGroup.map((p) => ({ ...p.token }));
     headWord.word = mainExpression;
     headWord.mweExpression = combinedExpression; // Keep full expression for translation
     headWord.mergedTokens = mergedTokens;
