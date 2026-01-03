@@ -457,3 +457,15 @@ Zeeguu_API.prototype.reportBrokenArticle = function (articleId, reason, callback
     }
   }, onError);
 };
+
+Zeeguu_API.prototype.clearArticleCache = function (articleId, callback, onError) {
+  this._post(`/clear_article_cache/${articleId}`, "", (response) => {
+    try {
+      callback(JSON.parse(response));
+    } catch (e) {
+      if (onError) {
+        onError("Failed to parse response");
+      }
+    }
+  }, onError);
+};
