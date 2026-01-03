@@ -59,10 +59,12 @@ export default function TranslatableWord({
         if (mweGroupId && setLoadingMWEGroupId) {
           setLoadingMWEGroupId(mweGroupId);
         }
-        // For MWE words, pass wordUpdated as onFusionComplete callback
-        // This triggers a re-render immediately after fuseMWEPartners modifies the linked list,
-        // ensuring the UI shows the fused word before the API call completes
-        const onFusionComplete = mweGroupId ? wordUpdated : null;
+        // For MWE words, update prevWord to fused text and trigger re-render
+        // This ensures the loading animation shows "suntem prezenți" not just "suntem"
+        const onFusionComplete = mweGroupId ? () => {
+          setPreviousWord(word.word); // word.word is now the fused MWE text
+          wordUpdated();
+        } : null;
         interactiveText.translate(word, true, () => {
           wordUpdated();
           setIsLoading(false);
