@@ -209,8 +209,19 @@ export class Word extends Item {
     const partners = this.findMWEPartners();
     if (partners.length <= 1) return this;
 
+    // Helper to join words without space after hyphen (e.g., "și-" + "a" → "și-a")
+    const joinWords = (words) => {
+      return words.reduce((acc, word, i) => {
+        if (i === 0) return word;
+        // Don't add space if previous word ends with hyphen
+        const prevWord = words[i - 1];
+        if (prevWord.endsWith("-")) return acc + word;
+        return acc + " " + word;
+      }, "");
+    };
+
     // Build combined expression text (for translation)
-    const combinedExpression = partners.map((p) => p.word).join(" ");
+    const combinedExpression = joinWords(partners.map((p) => p.word));
 
     // Check if all partners are adjacent (no gaps > 1)
     let allAdjacent = true;
@@ -251,7 +262,7 @@ export class Word extends Item {
     // Only fuse the first group (which contains the head word)
     // Other groups stay as separate words with MWE styling
     const mainGroup = fusionGroups[0];
-    const mainExpression = mainGroup.map((p) => p.word).join(" ");
+    const mainExpression = joinWords(mainGroup.map((p) => p.word));
 
     MWE_DEBUG &&
       console.log("MWE fusion:", {

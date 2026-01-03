@@ -1,4 +1,4 @@
-import { useState, useEffect, createElement } from "react";
+import { useState, useEffect, useMemo, createElement } from "react";
 import TranslatableWord from "./TranslatableWord";
 import * as s from "./TranslatableText.sc";
 import { removePunctuation } from "../utils/text/preprocessing";
@@ -24,7 +24,6 @@ export function TranslatableText({
   const [clozeWordIds, setClozeWordIds] = useState([]);
   const [paragraphs, setParagraphs] = useState([]);
   const [firstClozeWordId, setFirstClozeWordId] = useState(0);
-  const [renderedText, setRenderedText] = useState();
   const [highlightedMWEGroupId, setHighlightedMWEGroupId] = useState(null);
   const [loadingMWEGroupId, setLoadingMWEGroupId] = useState(null);
   const [mweGroupColorMap, setMweGroupColorMap] = useState({});
@@ -102,21 +101,21 @@ export function TranslatableText({
     setMweGroupsWithTranslations(groupsWithTranslations);
   }
 
-  useEffect(() => {
-    setRenderedText(
-      paragraphs.map((par, index) =>
-        createElement(
-          divType,
-          { className: `textParagraph ${divType}`, key: index },
-          <>
-            {index === 0 && leftEllipsis && <>...</>}
-            {par.getWords().map((word) => renderWordJSX(word))}
-            {index === 0 && rightEllipsis && <>...</>}
-          </>,
-        ),
+  // Use useMemo instead of useEffect to compute rendered text synchronously
+  // This prevents the blink when MWE words are fused (useEffect runs after paint)
+  const renderedText = useMemo(() => {
+    return paragraphs.map((par, index) =>
+      createElement(
+        divType,
+        { className: `textParagraph ${divType}`, key: index },
+        <>
+          {index === 0 && leftEllipsis && <>...</>}
+          {par.getWords().map((word) => renderWordJSX(word))}
+          {index === 0 && rightEllipsis && <>...</>}
+        </>,
       ),
     );
-    //eslint-disable-next-line
+    //eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     paragraphs,
     translationCount,
@@ -124,12 +123,16 @@ export function TranslatableText({
     pronouncing,
     isExerciseOver,
     clozeWord,
+    clozeWordIds,
     nonTranslatableWords,
+    nonTranslatableWordIds,
     rightEllipsis,
     leftEllipsis,
     highlightedMWEGroupId,
     loadingMWEGroupId,
     mweGroupColorMap,
+    mweGroupsWithTranslations,
+    firstClozeWordId,
   ]);
 
   useEffect(() => {

@@ -95,10 +95,11 @@ export default function TranslatableWord({
     }
     setShowingAlterMenu(true);
     if (!hasFetchedAlternatives)
-      interactiveText.alternativeTranslations(word, () => {
-        wordUpdated(word);
-        setHasFetchedAlternatives(true);
-      });
+      interactiveText.alternativeTranslations(
+        word,
+        () => wordUpdated(word), // Called for each translation as it arrives
+        () => setHasFetchedAlternatives(true), // Called when all done
+      );
   }
 
   function unlinkLastWord(e, word) {
@@ -336,7 +337,7 @@ export default function TranslatableWord({
           onMouseEnter={handleMouseEnter}
           onMouseLeave={handleMouseLeave}
         >
-          {word.word + (word.token.has_space === true ? " " : "")}
+          {word.word + (word.token.has_space === true && !word.word.endsWith("-") && !word.next?.word?.startsWith("-") ? " " : "")}
         </z-tag>
       </>
     );

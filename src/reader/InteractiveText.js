@@ -159,11 +159,8 @@ export default class InteractiveText {
   }
 
   selectAlternative(word, alternative, preferredSource, onSuccess) {
-    let context;
-    [context] = this.getContextAndCoordinates(word);
-    // Use mweExpression for MWE bookmarks, otherwise use word.word
-    const originText = word.mweExpression || word.word;
-    this.api.updateBookmark(word.bookmark_id, originText, alternative, context, this.contextIdentifier);
+    // Simple translation-only update - preserves all position data
+    this.api.updateBookmarkTranslation(word.bookmark_id, alternative);
     word.translation = alternative;
     word.service_name = "Own alternative selection";
 
@@ -173,7 +170,7 @@ export default class InteractiveText {
     onSuccess();
   }
 
-  alternativeTranslations(word, onSuccess) {
+  alternativeTranslations(word, onUpdate, onComplete) {
     let context;
     [context] = this.getContextAndCoordinates(word);
     // Use mweExpression for MWEs (e.g., "har ... måttet" instead of just "har")
@@ -182,24 +179,26 @@ export default class InteractiveText {
     // Get full sentence for separated MWEs
     const fullSentenceContext = isSeparatedMwe ? this._getSentenceText(word) : null;
 
-    this.api
-      .getMultipleTranslations(
-        this.language,
-        localStorage.native_language,
-        textToTranslate,
-        context,
-        -1,
-        word.service_name,
-        word.translation,
-        this.sourceId,
-        isSeparatedMwe,
-        fullSentenceContext,
-      )
-      .then((response) => response.json())
-      .then((data) => {
-        word.alternatives = data.translations;
-        onSuccess();
-      });
+    // Initialize alternatives array for streaming
+    word.alternatives = [];
+
+    this.api.getTranslationsStreaming(
+      this.language,
+      localStorage.native_language,
+      textToTranslate,
+      context,
+      // Called for each translation as it arrives
+      (translation) => {
+        word.alternatives.push(translation);
+        onUpdate && onUpdate();
+      },
+      // Called when all translations are done
+      () => {
+        onComplete && onComplete();
+      },
+      isSeparatedMwe,
+      fullSentenceContext,
+    );
   }
 
   playAll() {
@@ -256,7 +255,9 @@ export default class InteractiveText {
       let count = 0;
       while (count < maxLeftContextLength && currentWord.prev && !currentWord.token.is_sent_start) {
         currentWord = currentWord.prev;
-        contextBuilder = currentWord.word + (currentWord.token.has_space ? " " : "") + contextBuilder;
+        // Don't add space after words ending with hyphen (e.g., "l-" + "a" -> "l-a")
+        const addSpace = currentWord.token.has_space && !currentWord.word.endsWith("-");
+        contextBuilder = currentWord.word + (addSpace ? " " : "") + contextBuilder;
         count++;
         if (currentWord.token.is_sent_start || currentWord.token.token_i === 0) {
           break;
@@ -280,7 +281,9 @@ export default class InteractiveText {
         if (currentWord.token.is_sent_start && currentWord.token.sent_i !== currentWord.prev.token.sent_i) {
           break;
         }
-        contextBuilder = contextBuilder + (currentWord.prev.token.has_space ? " " : "") + currentWord.word;
+        // Don't add space after words ending with hyphen (e.g., "l-" + "a" -> "l-a")
+        const addSpace = currentWord.prev.token.has_space && !currentWord.prev.word.endsWith("-");
+        contextBuilder = contextBuilder + (addSpace ? " " : "") + currentWord.word;
         count++;
         currentWord = currentWord.next;
       }
@@ -435,37 +438,62 @@ function _updateTokensWithBookmarks(bookmarks, paragraphs) {
     // For MWE bookmarks, the tokens aren't consecutive in the text.
     // We need to fuse them visually and hide partner tokens.
     if (bookmark["is_mwe"]) {
-      // For MWE: just verify the first word matches and apply bookmark (case-insensitive)
-      let firstWord = tokenize(bookmark["origin"])[0];
+      const bookmarkWords = tokenize(bookmark["origin"]);
+      const firstWord = bookmarkWords[0];
+      const secondWord = bookmarkWords.length > 1 ? bookmarkWords[1] : null;
       let targetWord = removePunctuation(target_token.text);
+      const targetTokenI = target_token.token_i;
+      const sentenceTokens = paragraphs[paragraph_i][sentence_i];
+      const storedPartnerTokenI = bookmark["mwe_partner_token_i"];
+
       MWE_DEBUG && console.log("[MWE-RESTORE] Checking MWE bookmark:", {
         origin: bookmark["origin"],
         firstWord,
+        secondWord,
         targetWord,
-        match: removePunctuation(firstWord).toLowerCase() === targetWord.toLowerCase(),
-        storedPartnerTokenI: bookmark["mwe_partner_token_i"],
-        targetTokenMweGroupId: target_token.mwe_group_id,
+        storedPartnerTokenI,
       });
-      if (removePunctuation(firstWord).toLowerCase() === targetWord.toLowerCase()) {
-        target_token.bookmark = bookmark;
-        target_token.mergedTokens = [{ ...target_token, bookmark: null }];
 
-        const targetTokenI = target_token.token_i;
-        const sentenceTokens = paragraphs[paragraph_i][sentence_i];
-        const storedPartnerTokenI = bookmark["mwe_partner_token_i"];
+      // First word must match
+      if (removePunctuation(firstWord).toLowerCase() !== targetWord.toLowerCase()) {
+        MWE_DEBUG && console.log("[MWE-RESTORE] First word mismatch, skipping");
+        continue;
+      }
 
-        // Use stored partner token index if available (proper fix)
-        // Otherwise fall back to mwe_group_id matching (for older bookmarks)
-        MWE_DEBUG && console.log("[MWE-RESTORE] Path check:", {
-          hasStoredPartner: storedPartnerTokenI != null,
-          hasMweGroupId: !!target_token.mwe_group_id,
-          isSeparated: target_token.mwe_is_separated,
-        });
-        if (storedPartnerTokenI != null && storedPartnerTokenI !== targetTokenI) {
-          // Find partner by stored index (must be different from target)
-          MWE_DEBUG && console.log("[MWE-RESTORE] Using stored partner index:", storedPartnerTokenI);
-          const partnerToken = sentenceTokens.find(t => t.token_i === storedPartnerTokenI);
-          if (partnerToken) {
+      // CRITICAL: Verify the partner token matches the second word of the bookmark
+      // This prevents "să pună" bookmark from attaching to "să fie"
+      if (storedPartnerTokenI != null && secondWord != null) {
+        const partnerToken = sentenceTokens.find(t => t.token_i === storedPartnerTokenI);
+        if (partnerToken) {
+          const partnerWord = removePunctuation(partnerToken.text).toLowerCase();
+          const expectedWord = removePunctuation(secondWord).toLowerCase();
+          if (partnerWord !== expectedWord) {
+            MWE_DEBUG && console.log("[MWE-RESTORE] Partner word mismatch:", {
+              expected: expectedWord,
+              found: partnerWord,
+              skipping: true,
+            });
+            continue; // Wrong MWE - skip this bookmark
+          }
+        }
+      }
+
+      // Both words verified - now attach the bookmark
+      target_token.bookmark = bookmark;
+      target_token.mergedTokens = [{ ...target_token, bookmark: null }];
+
+      // Use stored partner token index if available (proper fix)
+      // Otherwise fall back to mwe_group_id matching (for older bookmarks)
+      MWE_DEBUG && console.log("[MWE-RESTORE] Path check:", {
+        hasStoredPartner: storedPartnerTokenI != null,
+        hasMweGroupId: !!target_token.mwe_group_id,
+        isSeparated: target_token.mwe_is_separated,
+      });
+      if (storedPartnerTokenI != null && storedPartnerTokenI !== targetTokenI) {
+        // Find partner by stored index (must be different from target)
+        MWE_DEBUG && console.log("[MWE-RESTORE] Using stored partner index:", storedPartnerTokenI);
+        const partnerToken = sentenceTokens.find(t => t.token_i === storedPartnerTokenI);
+        if (partnerToken) {
             const gap = Math.abs(storedPartnerTokenI - targetTokenI);
             // Only fuse if directly adjacent (gap = 1)
             if (gap === 1) {
@@ -553,7 +581,6 @@ function _updateTokensWithBookmarks(bookmarks, paragraphs) {
           }
         }
         MWE_DEBUG && console.log("MWE bookmark applied:", target_token.text);
-      }
       continue;
     }
 

@@ -98,6 +98,92 @@ Zeeguu_API.prototype.getMultipleTranslations = function (
   );
 };
 
+/**
+ * Stream translations as they arrive using Server-Sent Events.
+ * Calls onTranslation for each translation as it arrives.
+ *
+ * @param {string} from_lang - Source language code
+ * @param {string} to_lang - Target language code
+ * @param {string} word - Word to translate
+ * @param {string} context - Sentence context
+ * @param {function} onTranslation - Callback called with each translation object
+ * @param {function} onComplete - Callback called when all translations received
+ * @param {boolean} isSeparatedMwe - Whether this is a separated MWE
+ * @param {string} fullSentenceContext - Full sentence for separated MWEs
+ */
+Zeeguu_API.prototype.getTranslationsStreaming = function (
+  from_lang,
+  to_lang,
+  word,
+  context,
+  onTranslation,
+  onComplete,
+  isSeparatedMwe = false,
+  fullSentenceContext = null,
+) {
+  const payload = new FormData();
+  payload.append("word", word);
+  payload.append("context", context);
+  payload.append("is_separated_mwe", isSeparatedMwe.toString());
+  if (fullSentenceContext) {
+    payload.append("full_sentence_context", fullSentenceContext);
+  }
+
+  const url = this._appendSessionToUrl(
+    `get_translations_stream/${from_lang}/${to_lang}`
+  );
+
+  // Use fetch with streaming for SSE over POST
+  fetch(url, {
+    method: "POST",
+    body: payload,
+  })
+    .then((response) => {
+      const reader = response.body.getReader();
+      const decoder = new TextDecoder();
+      let buffer = "";
+
+      function processStream() {
+        reader.read().then(({ done, value }) => {
+          if (done) {
+            onComplete && onComplete();
+            return;
+          }
+
+          buffer += decoder.decode(value, { stream: true });
+
+          // Process complete SSE messages
+          const lines = buffer.split("\n");
+          buffer = lines.pop(); // Keep incomplete line in buffer
+
+          for (const line of lines) {
+            if (line.startsWith("data: ")) {
+              const data = line.slice(6);
+              if (data === "[DONE]") {
+                onComplete && onComplete();
+                return;
+              }
+              try {
+                const translation = JSON.parse(data);
+                onTranslation && onTranslation(translation);
+              } catch (e) {
+                console.error("Failed to parse translation:", e);
+              }
+            }
+          }
+
+          processStream();
+        });
+      }
+
+      processStream();
+    })
+    .catch((error) => {
+      console.error("Streaming error:", error);
+      onComplete && onComplete();
+    });
+};
+
 Zeeguu_API.prototype.contributeTranslation = function (
   from_lang,
   to_lang,
@@ -121,6 +207,18 @@ Zeeguu_API.prototype.contributeTranslation = function (
   );
 };
 
+// Simple translation-only update (from reader alternative selection)
+// Preserves all position data
+Zeeguu_API.prototype.updateBookmarkTranslation = async function (
+  bookmark_id,
+  translation,
+) {
+  return await this.apiPost(`/update_bookmark_translation/${bookmark_id}`, {
+    translation: translation,
+  });
+};
+
+// Full bookmark update (from WordEditForm - can change word, context, translation)
 Zeeguu_API.prototype.updateBookmark = async function (
   bookmark_id,
   word,
