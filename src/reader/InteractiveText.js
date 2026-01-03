@@ -68,7 +68,7 @@ export default class InteractiveText {
   }
 
 
-  translate(word, fuseWithNeighbours, onSuccess) {
+  translate(word, fuseWithNeighbours, onSuccess, onFusionComplete = null) {
     let context, cParagraph_i, cSent_i, cToken_i, leftEllipsis, rightEllipsis;
 
     [context, cParagraph_i, cSent_i, cToken_i, leftEllipsis, rightEllipsis] = this.getContextAndCoordinates(word);
@@ -83,6 +83,8 @@ export default class InteractiveText {
         onSuccess();
         return;
       }
+      // Trigger re-render after fusion so UI shows fused word immediately
+      if (onFusionComplete) onFusionComplete();
     } else if (fuseWithNeighbours) {
       word = word.fuseWithNeighborsIfNeeded(this.api);
     }
@@ -174,11 +176,13 @@ export default class InteractiveText {
   alternativeTranslations(word, onSuccess) {
     let context;
     [context] = this.getContextAndCoordinates(word);
+    // Use mweExpression for MWEs (e.g., "har ... måttet" instead of just "har")
+    const textToTranslate = word.mweExpression || word.word;
     this.api
       .getMultipleTranslations(
         this.language,
         localStorage.native_language,
-        word.word,
+        textToTranslate,
         context,
         -1,
         word.service_name,
