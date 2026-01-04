@@ -13,13 +13,24 @@ export class Word extends Item {
     this.translation = null;
     this.total_tokens = 1;
     if (bookmark) {
-      // For MWE bookmarks, don't override word text with the full expression
-      // Each word in the MWE should keep its original text
       if (bookmark.is_mwe) {
         this.translation = bookmark.translation;
         this.bookmark_id = bookmark.id;
-        this.total_tokens = 1; // Each word is still just one token visually
-        this.mweExpression = bookmark.origin; // Store full expression for reference
+        this.mweExpression = bookmark.origin;
+        // For contiguous MWEs with merged tokens, show combined text
+        if (token.mergedTokens && token.mergedTokens.length > 1) {
+          // Join respecting has_space property (like hyphenated words)
+          this.word = token.mergedTokens.reduce((acc, t, i) => {
+            if (i === 0) return t.text.trim();
+            const prev = token.mergedTokens[i - 1];
+            const separator = prev.has_space === false ? "" : " ";
+            return acc + separator + t.text.trim();
+          }, "");
+          this.total_tokens = token.mergedTokens.length;
+        } else {
+          // Separated MWE - keep original token text
+          this.total_tokens = 1;
+        }
       } else {
         // For single-word bookmarks, keep original token text (preserves case)
         // For multi-word, reconstruct from merged tokens to preserve original case
@@ -45,6 +56,10 @@ export class Word extends Item {
     // Transfer it to the Word so it gets MWE styling
     if (token.mweExpression && !this.mweExpression) {
       this.mweExpression = token.mweExpression;
+    }
+    // Transfer isMwePartner flag for separated MWE partners
+    if (token.isMwePartner) {
+      this.isMwePartner = true;
     }
   }
 

@@ -197,6 +197,10 @@ export default function TranslatableWord({
     if (word.mweExpression && word.translation) {
       return true;
     }
+    // Case 3: Separated MWE partner (has mweExpression but not the main bookmark)
+    if (word.isMwePartner && word.mweExpression) {
+      return true;
+    }
     return false;
   }
 

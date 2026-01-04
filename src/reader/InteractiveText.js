@@ -39,7 +39,6 @@ export default class InteractiveText {
     getBrowsingSessionId = () => null,
     getReadingSessionId = () => null,
   ) {
-    // beginning of the constructor
     this.api = api;
     this.sourceId = sourceId;
     this.language = language;
@@ -55,7 +54,9 @@ export default class InteractiveText {
     this.previousBookmarks = previousBookmarks;
     this.paragraphs = tokenizedParagraphs;
     _updateTokensWithBookmarks(this.previousBookmarks, this.paragraphs);
-    this.paragraphsAsLinkedWordLists = this.paragraphs.map((sent) => new LinkedWordList(sent));
+    this.paragraphsAsLinkedWordLists = this.paragraphs.map(
+      (sent) => new LinkedWordList(sent),
+    );
     if (language !== zeeguuSpeech.language) {
       this.zeeguuSpeech = new ZeeguuSpeech(api, language);
     } else {
@@ -477,10 +478,11 @@ function _restoreSeparatedMwe(bookmark, targetToken, partnerTokens) {
   targetToken.mergedTokens = [{ ...targetToken, bookmark: null }];
   targetToken.mweExpression = bookmark["origin"];
 
-  // Style all partner tokens
+  // Style all partner tokens - mark them as MWE partners so they get styling
   const partners = Array.isArray(partnerTokens) ? partnerTokens : (partnerTokens ? [partnerTokens] : []);
   for (const partner of partners) {
     partner.mweExpression = bookmark["origin"];
+    partner.isMwePartner = true; // Flag for isMWEWord() to detect
   }
 
   MWE_DEBUG && console.log("[MWE] Separated - styling all:", { target: targetToken.text, partners: partners.map(p => p.text) });
@@ -488,14 +490,11 @@ function _restoreSeparatedMwe(bookmark, targetToken, partnerTokens) {
 }
 
 /**
- * Restore a contiguous (adjacent) bookmark - fuse tokens into one.
- * Works for both MWE and non-MWE multi-word bookmarks.
+ * Validate that bookmark words match the tokens at the expected positions.
+ * Returns false if the article was re-tokenized and tokens no longer match.
  */
-function _restoreContiguousBookmark(bookmark, targetToken, sentenceTokens) {
+function _validateBookmarkTokens(bookmark, localStartIndex, sentenceTokens) {
   const bookmarkWords = tokenize(bookmark["origin"]);
-  const token_i_in_sentence = targetToken.token_i;
-
-  // Validate all bookmark words match sentence tokens
   let bookmark_i = 0;
   let text_i = 0;
 
@@ -506,7 +505,7 @@ function _restoreContiguousBookmark(bookmark, targetToken, sentenceTokens) {
       continue;
     }
 
-    const tokenIndex = token_i_in_sentence + text_i + bookmark_i;
+    const tokenIndex = localStartIndex + text_i + bookmark_i;
     if (tokenIndex >= sentenceTokens.length) return false;
 
     const text_word = removePunctuation(sentenceTokens[tokenIndex].text);
@@ -518,9 +517,27 @@ function _restoreContiguousBookmark(bookmark, targetToken, sentenceTokens) {
     bookmark_i++;
   }
 
-  // Update total tokens if needed
-  if (bookmark.t_total_token < text_i + bookmark_i) {
-    bookmark.total_tokens = text_i + bookmark_i;
+  return true;
+}
+
+/**
+ * Restore a contiguous (adjacent) bookmark - fuse tokens into one.
+ * Works for both MWE and non-MWE multi-word bookmarks.
+ */
+function _restoreContiguousBookmark(bookmark, targetToken, sentenceTokens) {
+  // Find the LOCAL index of targetToken within sentenceTokens array
+  // (token_i is GLOBAL but sentenceTokens uses local 0-based indices)
+  const localStartIndex = sentenceTokens.findIndex(t => t === targetToken);
+  MWE_DEBUG && console.log("[Contiguous] localStartIndex:", localStartIndex, "targetToken:", targetToken.text, "t_total_token:", bookmark["t_total_token"]);
+  if (localStartIndex === -1) {
+    MWE_DEBUG && console.log("[Contiguous] FAILED - token not found in sentenceTokens");
+    return false;
+  }
+
+  // Validate bookmark words match tokens (guards against re-tokenized articles)
+  if (!_validateBookmarkTokens(bookmark, localStartIndex, sentenceTokens)) {
+    MWE_DEBUG && console.log("[Contiguous] FAILED - bookmark words don't match tokens");
+    return false;
   }
 
   // Attach bookmark and merge tokens
@@ -528,12 +545,14 @@ function _restoreContiguousBookmark(bookmark, targetToken, sentenceTokens) {
   targetToken.mergedTokens = [{ ...targetToken, bookmark: null }];
 
   for (let i = 1; i < bookmark["t_total_token"]; i++) {
-    const nextTokenIndex = token_i_in_sentence + i;
+    const nextTokenIndex = localStartIndex + i;
     if (nextTokenIndex < sentenceTokens.length) {
+      MWE_DEBUG && console.log("[Contiguous] Merging token at index", nextTokenIndex, ":", sentenceTokens[nextTokenIndex].text);
       targetToken.mergedTokens.push({ ...sentenceTokens[nextTokenIndex] });
       sentenceTokens[nextTokenIndex].skipRender = true;
     }
   }
+  MWE_DEBUG && console.log("[Contiguous] Done - mergedTokens:", targetToken.mergedTokens.map(t => t.text));
   return true;
 }
 
@@ -544,29 +563,43 @@ function _restoreContiguousBookmark(bookmark, targetToken, sentenceTokens) {
 function _updateTokensWithBookmarks(bookmarks, paragraphs) {
   if (!bookmarks) return;
 
+  MWE_DEBUG && console.log("[Bookmark] Starting restoration, bookmarks:", bookmarks?.length, "paragraphs structure:", paragraphs?.length, paragraphs?.[0]?.length, paragraphs?.[0]?.[0]?.length);
+
   const tokenMap = _buildTokenMap(paragraphs);
 
   for (const bookmark of bookmarks) {
+    MWE_DEBUG && console.log("[Bookmark] Processing:", bookmark["origin"], "is_mwe:", bookmark["is_mwe"], "t_total_token:", bookmark["t_total_token"]);
+
     const result = _findTokenForBookmark(bookmark, tokenMap, paragraphs);
-    if (!result) continue;
+    if (!result) {
+      MWE_DEBUG && console.log("[Bookmark] Token not found for:", bookmark["origin"]);
+      continue;
+    }
 
     const { token: targetToken, sentenceTokens } = result;
+    MWE_DEBUG && console.log("[Bookmark] Found token:", targetToken.text, "sentenceTokens count:", sentenceTokens.length);
 
     // Skip if token already has a bookmark
-    if (targetToken.bookmark) continue;
+    if (targetToken.bookmark) {
+      MWE_DEBUG && console.log("[Bookmark] Token already has bookmark, skipping");
+      continue;
+    }
 
     if (bookmark["is_mwe"]) {
       const validation = _validateMweBookmark(bookmark, targetToken, sentenceTokens);
+      MWE_DEBUG && console.log("[Bookmark] MWE validation:", validation);
       if (!validation.isValid) continue;
 
       if (validation.isSeparated) {
         // Use partnerTokens (array) if available, otherwise partnerToken (single)
         const partners = validation.partnerTokens || validation.partnerToken;
+        MWE_DEBUG && console.log("[Bookmark] Restoring separated MWE with partners:", partners);
         _restoreSeparatedMwe(bookmark, targetToken, partners);
         continue;
       }
     }
 
-    _restoreContiguousBookmark(bookmark, targetToken, sentenceTokens);
+    const success = _restoreContiguousBookmark(bookmark, targetToken, sentenceTokens);
+    MWE_DEBUG && console.log("[Bookmark] Contiguous restore result:", success, "mergedTokens:", targetToken.mergedTokens?.length);
   }
 }

@@ -248,8 +248,6 @@ const TranslatableText = styled.div`
   z-orig span {
     border-bottom: 1px dashed ${zeeguuOrange};
     border-radius: 0.35rem;
-    padding-left: 0.3rem;
-    margin-left: 0.3rem;
   }
 
   z-tag z-orig {
