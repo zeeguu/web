@@ -1,7 +1,5 @@
 import { useState } from "react";
-import { getIsDev } from "../HelperFunctions";
-
-const isDev = getIsDev();
+import { isDev } from "../config";
 
 /**
  * A button that only renders in development mode.
