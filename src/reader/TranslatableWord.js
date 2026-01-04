@@ -7,8 +7,6 @@ import redirect from "../utils/routing/routing";
 import LinkOffIcon from "@mui/icons-material/LinkOff";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 
-// Debug flag: always show MWE indicators (not just on hover)
-const MWE_ALWAYS_SHOW_HINTS = true;
 
 export default function TranslatableWord({
   interactiveText,
@@ -279,9 +277,9 @@ export default function TranslatableWord({
       }
     }
 
-    // Debug mode: always show MWE hints for untranslated MWEs
+    // Add MWE hint class for untranslated MWEs (visibility controlled by CSS data-show-mwe-hints)
     const hasMWEGroup = word.token?.mwe_group_id;
-    if (MWE_ALWAYS_SHOW_HINTS && hasMWEGroup && !isMWEWord()) {
+    if (hasMWEGroup && !isMWEWord()) {
       allClasses.push("mwe-hover-hint");
       allClasses.push(getMWEColorClass());
     }
