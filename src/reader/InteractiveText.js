@@ -416,152 +416,67 @@ function _findTokenForBookmark(bookmark, tokenMap, paragraphs) {
 }
 
 /**
- * Restore an MWE bookmark - handles adjacent and separated MWEs.
- * Returns true if successfully restored, false to skip.
+ * Validate MWE bookmark words match the tokens.
+ * Returns { isValid, isSeparated, partnerToken } or { isValid: false }.
  */
-function _restoreMweBookmark(bookmark, targetToken, sentenceTokens) {
+function _validateMweBookmark(bookmark, targetToken, sentenceTokens) {
   const bookmarkWords = tokenize(bookmark["origin"]);
   const firstWord = bookmarkWords[0];
   const secondWord = bookmarkWords.length > 1 ? bookmarkWords[1] : null;
   const targetWord = removePunctuation(targetToken.text);
-  const targetTokenI = targetToken.token_i;
   const storedPartnerTokenI = bookmark["mwe_partner_token_i"];
 
-  MWE_DEBUG && console.log("[MWE-RESTORE] Checking:", { origin: bookmark["origin"], firstWord, secondWord, targetWord, storedPartnerTokenI });
+  MWE_DEBUG && console.log("[MWE] Validating:", { origin: bookmark["origin"], firstWord, secondWord, targetWord, storedPartnerTokenI });
 
   // First word must match
   if (removePunctuation(firstWord).toLowerCase() !== targetWord.toLowerCase()) {
-    MWE_DEBUG && console.log("[MWE-RESTORE] First word mismatch, skipping");
-    return false;
+    MWE_DEBUG && console.log("[MWE] First word mismatch, skipping");
+    return { isValid: false };
   }
 
-  // Verify partner word matches (prevents wrong MWE attachment)
-  if (storedPartnerTokenI != null && secondWord != null) {
-    const partnerToken = sentenceTokens.find(t => t.token_i === storedPartnerTokenI);
-    if (partnerToken) {
+  // Find partner token
+  let partnerToken = null;
+  let isSeparated = false;
+
+  if (storedPartnerTokenI != null && storedPartnerTokenI !== targetToken.token_i) {
+    partnerToken = sentenceTokens.find(t => t.token_i === storedPartnerTokenI);
+    if (partnerToken && secondWord) {
+      // Verify partner word matches
       const partnerWord = removePunctuation(partnerToken.text).toLowerCase();
       const expectedWord = removePunctuation(secondWord).toLowerCase();
       if (partnerWord !== expectedWord) {
-        MWE_DEBUG && console.log("[MWE-RESTORE] Partner word mismatch:", { expected: expectedWord, found: partnerWord });
-        return false;
+        MWE_DEBUG && console.log("[MWE] Partner word mismatch:", { expected: expectedWord, found: partnerWord });
+        return { isValid: false };
       }
+      isSeparated = Math.abs(storedPartnerTokenI - targetToken.token_i) > 1;
     }
   }
 
-  // Attach bookmark
+  return { isValid: true, isSeparated, partnerToken };
+}
+
+/**
+ * Restore a separated MWE - style all partner words, don't fuse.
+ * Used when MWE words have other words between them (e.g., "ruft ... an").
+ */
+function _restoreSeparatedMwe(bookmark, targetToken, partnerToken) {
   targetToken.bookmark = bookmark;
   targetToken.mergedTokens = [{ ...targetToken, bookmark: null }];
+  targetToken.mweExpression = bookmark["origin"];
 
-  // Try restoration strategies in order of preference
-  if (_restoreMweByStoredPartner(bookmark, targetToken, sentenceTokens, storedPartnerTokenI, targetTokenI)) {
-    return true;
-  }
-  if (_restoreMweByGroupId(bookmark, targetToken, sentenceTokens, targetTokenI)) {
-    return true;
-  }
-  if (_restoreMweByTotalTokens(bookmark, targetToken, sentenceTokens, targetTokenI)) {
-    return true;
-  }
-
-  MWE_DEBUG && console.log("MWE bookmark applied:", targetToken.text);
-  return true;
-}
-
-/** Restore MWE using stored partner token index */
-function _restoreMweByStoredPartner(bookmark, targetToken, sentenceTokens, storedPartnerTokenI, targetTokenI) {
-  if (storedPartnerTokenI == null || storedPartnerTokenI === targetTokenI) return false;
-
-  const partnerToken = sentenceTokens.find(t => t.token_i === storedPartnerTokenI);
-  if (!partnerToken) return false;
-
-  const gap = Math.abs(storedPartnerTokenI - targetTokenI);
-
-  if (gap === 1) {
-    // Adjacent: fuse into single word
-    const tokens = [targetToken, partnerToken].sort((a, b) => a.token_i - b.token_i);
-    targetToken.text = tokens.map(t => t.text).join(" ");
-    partnerToken.skipRender = true;
-    targetToken.mergedTokens.push({ ...partnerToken, bookmark: null });
-  } else {
-    // Separated: style both, translation on first
-    targetToken.mweExpression = bookmark["origin"];
+  if (partnerToken) {
     partnerToken.mweExpression = bookmark["origin"];
-    MWE_DEBUG && console.log("[MWE-RESTORE] Separated MWE:", { target: targetToken.text, partner: partnerToken.text });
-  }
-  return true;
-}
-
-/** Restore MWE using mwe_group_id matching (fallback for older bookmarks) */
-function _restoreMweByGroupId(bookmark, targetToken, sentenceTokens, targetTokenI) {
-  if (!targetToken.mwe_group_id) return false;
-
-  const mweGroupId = targetToken.mwe_group_id;
-  const allPartners = [{ token: targetToken, tokenI: targetTokenI }];
-
-  for (const token of sentenceTokens) {
-    if (token !== targetToken && token.mwe_group_id === mweGroupId) {
-      allPartners.push({ token, tokenI: token.token_i });
-    }
-  }
-  allPartners.sort((a, b) => a.tokenI - b.tokenI);
-
-  if (allPartners.length <= 1) return false;
-
-  // Check if contiguous
-  const isContiguous = allPartners.every((p, i) =>
-    i === 0 || p.tokenI - allPartners[i - 1].tokenI === 1
-  );
-
-  MWE_DEBUG && console.log("[MWE-RESTORE] group_id matching:", { mweGroupId, partners: allPartners.map(p => p.token.text), isContiguous });
-
-  if (isContiguous) {
-    // Adjacent: fuse
-    const partnerTexts = [];
-    for (const { token } of allPartners) {
-      partnerTexts.push(token.text);
-      if (token !== targetToken) {
-        token.skipRender = true;
-        targetToken.mergedTokens.push({ ...token, bookmark: null });
-      }
-    }
-    targetToken.text = partnerTexts.join(" ");
-  } else {
-    // Separated: style all
-    for (const { token } of allPartners) {
-      token.mweExpression = bookmark["origin"];
-    }
-  }
-  return true;
-}
-
-/** Restore MWE using t_total_token (fallback for summaries without mwe_group_id) */
-function _restoreMweByTotalTokens(bookmark, targetToken, sentenceTokens, targetTokenI) {
-  const totalTokens = bookmark["t_total_token"];
-  if (!totalTokens || totalTokens <= 1) return false;
-
-  MWE_DEBUG && console.log("[MWE-RESTORE] Using t_total_token fallback:", totalTokens);
-
-  const tokensToFuse = [targetToken];
-  for (let i = 1; i < totalTokens; i++) {
-    const nextToken = sentenceTokens.find(t => t.token_i === targetTokenI + i);
-    if (nextToken) {
-      tokensToFuse.push(nextToken);
-      nextToken.skipRender = true;
-      targetToken.mergedTokens.push({ ...nextToken, bookmark: null });
-    }
   }
 
-  if (tokensToFuse.length > 1) {
-    targetToken.text = tokensToFuse.map(t => t.text).join(" ");
-  }
+  MWE_DEBUG && console.log("[MWE] Separated - styling both:", { target: targetToken.text, partner: partnerToken?.text });
   return true;
 }
 
 /**
- * Restore a regular (non-MWE) bookmark - validates words and merges tokens.
- * Returns true if successfully restored, false to skip.
+ * Restore a contiguous (adjacent) bookmark - fuse tokens into one.
+ * Works for both MWE and non-MWE multi-word bookmarks.
  */
-function _restoreRegularBookmark(bookmark, targetToken, sentenceTokens) {
+function _restoreContiguousBookmark(bookmark, targetToken, sentenceTokens) {
   const bookmarkWords = tokenize(bookmark["origin"]);
   const token_i_in_sentence = targetToken.token_i;
 
@@ -626,9 +541,16 @@ function _updateTokensWithBookmarks(bookmarks, paragraphs) {
     if (targetToken.bookmark) continue;
 
     if (bookmark["is_mwe"]) {
-      _restoreMweBookmark(bookmark, targetToken, sentenceTokens);
+      const validation = _validateMweBookmark(bookmark, targetToken, sentenceTokens);
+      if (!validation.isValid) continue;
+
+      if (validation.isSeparated) {
+        _restoreSeparatedMwe(bookmark, targetToken, validation.partnerToken);
+      } else {
+        _restoreContiguousBookmark(bookmark, targetToken, sentenceTokens);
+      }
     } else {
-      _restoreRegularBookmark(bookmark, targetToken, sentenceTokens);
+      _restoreContiguousBookmark(bookmark, targetToken, sentenceTokens);
     }
   }
 }
