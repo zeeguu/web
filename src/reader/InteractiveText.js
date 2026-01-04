@@ -546,11 +546,10 @@ function _updateTokensWithBookmarks(bookmarks, paragraphs) {
 
       if (validation.isSeparated) {
         _restoreSeparatedMwe(bookmark, targetToken, validation.partnerToken);
-      } else {
-        _restoreContiguousBookmark(bookmark, targetToken, sentenceTokens);
+        continue;
       }
-    } else {
-      _restoreContiguousBookmark(bookmark, targetToken, sentenceTokens);
     }
+
+    _restoreContiguousBookmark(bookmark, targetToken, sentenceTokens);
   }
 }
