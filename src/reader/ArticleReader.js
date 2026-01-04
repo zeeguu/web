@@ -27,8 +27,8 @@ import strings from "../i18n/definitions";
 import useUserPreferences from "../hooks/useUserPreferences";
 import ArticleStatInfo from "../components/ArticleStatInfo";
 import DigitalTimer from "../components/DigitalTimer";
+import DevButton from "../components/DevButton";
 import { APIContext } from "../contexts/APIContext";
-import { isDev } from "../config";
 
 // UMR stands for historical reasons for: Unified Multilingual Reader
 export const WEB_READER = "UMR";
@@ -337,33 +337,19 @@ export default function ArticleReader({ teacherArticleID }) {
           </s.ArticleInfoContainer>
           <hr></hr>
 
-          {isDev && (
-            <div style={{ marginBottom: "1em" }}>
-              <button
-                onClick={() => {
-                  if (window.confirm("This will delete the tokenization cache and all your bookmarks for this article. Continue?")) {
-                    api.clearArticleCache(articleID, (result) => {
-                      alert(`Cleared cache: ${result.cache_deleted}, bookmarks deleted: ${result.bookmarks_deleted}`);
-                      window.location.reload();
-                    }, (error) => {
-                      alert("Failed to clear cache: " + error);
-                    });
-                  }
-                }}
-                style={{
-                  padding: "0.5em 1em",
-                  backgroundColor: "#ff6b6b",
-                  color: "white",
-                  border: "none",
-                  borderRadius: "4px",
-                  cursor: "pointer",
-                  fontSize: "0.9em",
-                }}
-              >
-                🔄 Re-tokenize (Dev)
-              </button>
-            </div>
-          )}
+          <DevButton
+            confirmMessage="This will delete the tokenization cache and all your bookmarks for this article. Continue?"
+            onClick={() => {
+              api.clearArticleCache(articleID, (result) => {
+                alert(`Cleared cache: ${result.cache_deleted}, bookmarks deleted: ${result.bookmarks_deleted}`);
+                window.location.reload();
+              }, (error) => {
+                alert("Failed to clear cache: " + error);
+              });
+            }}
+          >
+            Re-tokenize (Dev)
+          </DevButton>
 
           {articleInfo.img_url && (
             <s.ArticleImgContainer>
