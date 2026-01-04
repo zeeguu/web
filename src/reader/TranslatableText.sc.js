@@ -2,6 +2,10 @@ import styled from "styled-components";
 import { almostBlack, zeeguuOrange, zeeguuTransparentMediumOrange } from "../components/colors";
 
 const TranslatableText = styled.div`
+  /* MWE adjacent color - used for contiguous MWEs */
+  --mwe-adjacent-color: rgb(200, 140, 60);
+  --mwe-adjacent-bg: rgb(255, 240, 220);
+
   /* ========================================================================
    * BASE Z-TAG STYLES
    * ======================================================================== */
@@ -113,13 +117,13 @@ const TranslatableText = styled.div`
 
   /* --- MWE Adjacent: Translated adjacent (non-separated) MWEs use darker orange --- */
   z-tag.mwe-adjacent {
-    --mwe-color: rgb(200, 140, 60);
-    --mwe-tran-bg: rgb(255, 240, 220);
+    --mwe-color: var(--mwe-adjacent-color);
+    --mwe-tran-bg: var(--mwe-adjacent-bg);
   }
   z-tag.mwe-adjacent z-orig {
-    color: rgb(200, 140, 60) !important;
+    color: var(--mwe-adjacent-color) !important;
     font-weight: 600;
-    text-decoration: underline dotted rgb(200, 140, 60);
+    text-decoration: underline dotted var(--mwe-adjacent-color);
     text-decoration-thickness: 2px;
     text-underline-offset: 3px;
   }
@@ -128,7 +132,7 @@ const TranslatableText = styled.div`
     border: none !important;
   }
   z-tag.mwe-adjacent z-tran {
-    background-color: rgb(255, 240, 220) !important;
+    background-color: var(--mwe-adjacent-bg) !important;
   }
 
   /* --- MWE Hover Hint: Subtle indicator for untranslated MWEs (only when showMweHints enabled) --- */
@@ -136,7 +140,7 @@ const TranslatableText = styled.div`
   &[data-show-mwe-hints="true"] z-tag.mwe-hover-hint {
     text-decoration: underline dotted;
     text-decoration-thickness: 2px;
-    text-decoration-color: rgb(200, 140, 60);
+    text-decoration-color: var(--mwe-adjacent-color);
     text-underline-offset: 3px;
   }
   &[data-show-mwe-hints="true"] z-tag.mwe-hover-hint[class*="mwe-color-"] {
@@ -178,7 +182,7 @@ const TranslatableText = styled.div`
     text-decoration-line: underline !important;
     text-decoration-style: solid !important;
     text-decoration-thickness: 3px !important;
-    text-decoration-color: var(--mwe-color, rgb(200, 140, 60)) !important;
+    text-decoration-color: var(--mwe-color, var(--mwe-adjacent-color)) !important;
   }
   /* Words WITH translation (has z-orig) */
   z-tag.mwe-hover-active:has(z-orig) {
@@ -189,7 +193,7 @@ const TranslatableText = styled.div`
     text-decoration-line: underline !important;
     text-decoration-style: solid !important;
     text-decoration-thickness: 3px !important;
-    text-decoration-color: var(--mwe-color, rgb(200, 140, 60)) !important;
+    text-decoration-color: var(--mwe-color, var(--mwe-adjacent-color)) !important;
     border: none !important;
   }
 
