@@ -12,6 +12,7 @@ export function TranslatableText({
   highlightExpression,
   leftEllipsis,
   rightEllipsis,
+  showMweHints,
   // exercise related
   isExerciseOver,
   clozeWord, // Word(s) to hide and replace with underlines/placeholders in cloze exercises
@@ -377,5 +378,5 @@ export function TranslatableText({
     }
   }
 
-  return <s.TranslatableText>{renderedText}</s.TranslatableText>;
+  return <s.TranslatableText data-show-mwe-hints={showMweHints === true}>{renderedText}</s.TranslatableText>;
 }

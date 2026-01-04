@@ -131,15 +131,15 @@ const TranslatableText = styled.div`
     background-color: rgb(255, 240, 220) !important;
   }
 
-  /* --- MWE Hover Hint: Subtle indicator for untranslated MWEs --- */
+  /* --- MWE Hover Hint: Subtle indicator for untranslated MWEs (only when showMweHints enabled) --- */
   /* Adjacent MWEs use darker orange, separated MWEs use their assigned color */
-  z-tag.mwe-hover-hint {
+  &[data-show-mwe-hints="true"] z-tag.mwe-hover-hint {
     text-decoration: underline dotted;
     text-decoration-thickness: 2px;
     text-decoration-color: rgb(200, 140, 60);
     text-underline-offset: 3px;
   }
-  z-tag.mwe-hover-hint[class*="mwe-color-"] {
+  &[data-show-mwe-hints="true"] z-tag.mwe-hover-hint[class*="mwe-color-"] {
     text-decoration-color: var(--mwe-color);
   }
 
@@ -149,8 +149,8 @@ const TranslatableText = styled.div`
     font-weight: 600;
     background-color: var(--mwe-bg);
   }
-  /* Underline on z-tag when no translation visible */
-  z-tag[class*="mwe-color-"]:not(.mwe-hover-hint):not(:has(z-orig)) {
+  /* Underline on z-tag when no translation visible (only when showMweHints is enabled) */
+  &[data-show-mwe-hints="true"] z-tag[class*="mwe-color-"]:not(.mwe-hover-hint):not(:has(z-orig)) {
     text-decoration: underline dotted var(--mwe-color);
     text-decoration-thickness: 2px;
     text-underline-offset: 3px;

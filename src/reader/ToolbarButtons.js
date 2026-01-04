@@ -1,6 +1,6 @@
 import toggle from "../utils/misc/toggle";
 import * as React from "react";
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import FormGroup from "@mui/material/FormGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import FormHelperText from "@mui/material/FormHelperText";
@@ -13,21 +13,38 @@ export default function ToolbarButtons({
   setTranslating,
   pronouncing,
   setPronouncing,
+  showMweHints,
+  setShowMweHints,
 }) {
   const [showOptions, setShowOptions] = useState(false);
+  const menuRef = useRef(null);
+
+  // Close menu when clicking outside
+  useEffect(() => {
+    if (!showOptions) return;
+
+    function handleClickOutside(event) {
+      if (menuRef.current && !menuRef.current.contains(event.target)) {
+        setShowOptions(false);
+      }
+    }
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [showOptions]);
 
   return (
-    <div style={{ position: "relative", display: "inline-block" }}>
-      <SettingsRoundedIcon 
-        style={{ 
-          fontSize: "1.4em", 
+    <div ref={menuRef} style={{ position: "relative", display: "inline-block" }}>
+      <SettingsRoundedIcon
+        style={{
+          fontSize: "1.4em",
           cursor: "pointer",
           color: "#999"
         }}
         title="Click word options"
         onClick={() => setShowOptions(!showOptions)}
       />
-      
+
       {showOptions && (
         <div style={{
           position: "absolute",
@@ -63,6 +80,17 @@ export default function ToolbarButtons({
                 }
                 className={pronouncing ? "selected" : ""}
                 label={<small>{"Hear pronunciation"}</small>}
+              />
+              <FormHelperText style={{ marginTop: "0.5rem" }}>{<small>{"Debug:"}</small>}</FormHelperText>
+              <FormControlLabel
+                checked={showMweHints}
+                control={
+                  <Android12Switch
+                    onClick={(e) => toggle(showMweHints, setShowMweHints)}
+                  />
+                }
+                className={showMweHints ? "selected" : ""}
+                label={<small>{"Show MWE hints"}</small>}
               />
             </FormGroup>
           </ThemeProvider>

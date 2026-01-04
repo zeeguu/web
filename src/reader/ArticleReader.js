@@ -61,7 +61,7 @@ export default function ArticleReader({ teacherArticleID }) {
 
   const [interactiveTitle, setInteractiveTitle] = useState();
   const [interactiveFragments, setInteractiveFragments] = useState();
-  const { translateInReader, pronounceInReader, updateTranslateInReader, updatePronounceInReader } =
+  const { translateInReader, pronounceInReader, updateTranslateInReader, updatePronounceInReader, showMweHints, updateShowMweHints } =
     useUserPreferences(api);
   const [readerReady, setReaderReady] = useState();
   const [answerSubmitted, setAnswerSubmitted] = useState(false);
@@ -301,6 +301,8 @@ export default function ArticleReader({ teacherArticleID }) {
         pronouncing={pronounceInReader}
         setTranslating={updateTranslateInReader}
         setPronouncing={updatePronounceInReader}
+        showMweHints={showMweHints}
+        setShowMweHints={updateShowMweHints}
         url={articleInfo.url}
         UMR_SOURCE={WEB_READER}
         articleProgress={scrollPosition}
@@ -324,6 +326,7 @@ export default function ArticleReader({ teacherArticleID }) {
               translating={translateInReader}
               pronouncing={pronounceInReader}
               setIsRendered={setReaderReady}
+              showMweHints={showMweHints}
             />
           </h1>
 
@@ -389,6 +392,7 @@ export default function ArticleReader({ teacherArticleID }) {
                   pronouncing={pronounceInReader}
                   setIsRendered={setReaderReady}
                   updateBookmarks={fetchBookmarks}
+                  showMweHints={showMweHints}
                 />
               ))}
           </s.MainText>
