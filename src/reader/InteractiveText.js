@@ -434,14 +434,14 @@ function _validateMweBookmark(bookmark, targetToken, sentenceTokens) {
     return { isValid: false };
   }
 
-  // Find partner token
+  // Find partner token - try stored index first, then mwe_group_id fallback
   let partnerToken = null;
   let isSeparated = false;
 
   if (storedPartnerTokenI != null && storedPartnerTokenI !== targetToken.token_i) {
+    // Strategy 1: Use stored partner index
     partnerToken = sentenceTokens.find(t => t.token_i === storedPartnerTokenI);
     if (partnerToken && secondWord) {
-      // Verify partner word matches
       const partnerWord = removePunctuation(partnerToken.text).toLowerCase();
       const expectedWord = removePunctuation(secondWord).toLowerCase();
       if (partnerWord !== expectedWord) {
@@ -449,6 +449,19 @@ function _validateMweBookmark(bookmark, targetToken, sentenceTokens) {
         return { isValid: false };
       }
       isSeparated = Math.abs(storedPartnerTokenI - targetToken.token_i) > 1;
+    }
+  } else if (targetToken.mwe_group_id) {
+    // Strategy 2: Find partners via mwe_group_id (fallback for older bookmarks)
+    const partners = sentenceTokens.filter(t =>
+      t !== targetToken && t.mwe_group_id === targetToken.mwe_group_id
+    );
+    if (partners.length > 0) {
+      // Check if contiguous with all partners
+      const allIndices = [targetToken.token_i, ...partners.map(p => p.token_i)].sort((a, b) => a - b);
+      isSeparated = !allIndices.every((idx, i) => i === 0 || idx - allIndices[i - 1] === 1);
+      MWE_DEBUG && console.log("[MWE] Found partners via group_id:", { partners: partners.map(p => p.text), isSeparated });
+      // Return all partners for separated MWEs
+      return { isValid: true, isSeparated, partnerTokens: partners };
     }
   }
 
@@ -459,16 +472,18 @@ function _validateMweBookmark(bookmark, targetToken, sentenceTokens) {
  * Restore a separated MWE - style all partner words, don't fuse.
  * Used when MWE words have other words between them (e.g., "ruft ... an").
  */
-function _restoreSeparatedMwe(bookmark, targetToken, partnerToken) {
+function _restoreSeparatedMwe(bookmark, targetToken, partnerTokens) {
   targetToken.bookmark = bookmark;
   targetToken.mergedTokens = [{ ...targetToken, bookmark: null }];
   targetToken.mweExpression = bookmark["origin"];
 
-  if (partnerToken) {
-    partnerToken.mweExpression = bookmark["origin"];
+  // Style all partner tokens
+  const partners = Array.isArray(partnerTokens) ? partnerTokens : (partnerTokens ? [partnerTokens] : []);
+  for (const partner of partners) {
+    partner.mweExpression = bookmark["origin"];
   }
 
-  MWE_DEBUG && console.log("[MWE] Separated - styling both:", { target: targetToken.text, partner: partnerToken?.text });
+  MWE_DEBUG && console.log("[MWE] Separated - styling all:", { target: targetToken.text, partners: partners.map(p => p.text) });
   return true;
 }
 
@@ -545,7 +560,9 @@ function _updateTokensWithBookmarks(bookmarks, paragraphs) {
       if (!validation.isValid) continue;
 
       if (validation.isSeparated) {
-        _restoreSeparatedMwe(bookmark, targetToken, validation.partnerToken);
+        // Use partnerTokens (array) if available, otherwise partnerToken (single)
+        const partners = validation.partnerTokens || validation.partnerToken;
+        _restoreSeparatedMwe(bookmark, targetToken, partners);
         continue;
       }
     }
