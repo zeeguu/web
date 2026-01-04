@@ -20,6 +20,8 @@ export default function TopToolbar({
   pronouncing,
   setTranslating,
   setPronouncing,
+  showMweHints,
+  setShowMweHints,
   articleProgress,
   timer,
   reportBroken,
@@ -107,6 +109,8 @@ export default function TopToolbar({
               pronouncing={pronouncing}
               setTranslating={setTranslating}
               setPronouncing={setPronouncing}
+              showMweHints={showMweHints}
+              setShowMweHints={setShowMweHints}
             />
           </div>
         </s.TopbarButtonsContainer>

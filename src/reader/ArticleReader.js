@@ -28,6 +28,7 @@ import useUserPreferences from "../hooks/useUserPreferences";
 import ArticleStatInfo from "../components/ArticleStatInfo";
 import DigitalTimer from "../components/DigitalTimer";
 import { APIContext } from "../contexts/APIContext";
+import { isDev } from "../config";
 
 // UMR stands for historical reasons for: Unified Multilingual Reader
 export const WEB_READER = "UMR";
@@ -55,10 +56,12 @@ export default function ArticleReader({ teacherArticleID }) {
   last_reading_percentage = last_reading_percentage === "undefined" ? null : Number(last_reading_percentage);
 
   const [articleInfo, setArticleInfo] = useState();
+  const [loadingProgress, setLoadingProgress] = useState(null);
+  const [showSlowLoadingHint, setShowSlowLoadingHint] = useState(false);
 
   const [interactiveTitle, setInteractiveTitle] = useState();
   const [interactiveFragments, setInteractiveFragments] = useState();
-  const { translateInReader, pronounceInReader, updateTranslateInReader, updatePronounceInReader } =
+  const { translateInReader, pronounceInReader, updateTranslateInReader, updatePronounceInReader, showMweHints, updateShowMweHints } =
     useUserPreferences(api);
   const [readerReady, setReaderReady] = useState();
   const [answerSubmitted, setAnswerSubmitted] = useState(false);
@@ -121,6 +124,16 @@ export default function ArticleReader({ teacherArticleID }) {
     // eslint-disable-next-line
   }, [articleID]);
 
+  // Show "this can take a bit" hint after 5 seconds if still loading
+  useEffect(() => {
+    if (articleInfo) {
+      setShowSlowLoadingHint(false);
+      return;
+    }
+    const timer = setTimeout(() => setShowSlowLoadingHint(true), 5000);
+    return () => clearTimeout(timer);
+  }, [articleInfo]);
+
   const handleFocus = () => {
     onFocus(api, articleID, WEB_READER);
   };
@@ -161,7 +174,8 @@ export default function ArticleReader({ teacherArticleID }) {
     // Initialize scroll tracking using the hook
     initializeScrollTracking();
 
-    api.getArticleInfo(articleID, (articleInfo) => {
+    const handleArticleLoaded = (articleInfo) => {
+      setLoadingProgress(null);
       setInteractiveFragments(
         articleInfo.tokenized_fragments.map(
           (each) =>
@@ -204,7 +218,17 @@ export default function ArticleReader({ teacherArticleID }) {
       // Session is now created by useReadingSession hook when articleInfo becomes available
       api.setArticleOpened(articleInfo.id);
       api.logUserActivity(api.OPEN_ARTICLE, articleID, "", WEB_READER);
-    });
+    };
+
+    api.getArticleInfoWithProgress(
+      articleID,
+      (progress) => setLoadingProgress(progress),
+      handleArticleLoaded,
+      (error) => {
+        console.error('Failed to load article:', error);
+        setLoadingProgress({ message: 'Error loading article', step: 0, total: 1 });
+      }
+    );
 
     window.addEventListener("focus", handleFocus);
     window.addEventListener("blur", handleBlur);
@@ -229,7 +253,25 @@ export default function ArticleReader({ teacherArticleID }) {
   }
 
   if (!articleInfo || !interactiveFragments) {
-    return <LoadingAnimation />;
+    return (
+      <LoadingAnimation showReportIssue={false}>
+        {loadingProgress && (
+          <div style={{ textAlign: 'center', marginTop: '1em' }}>
+            <div>{loadingProgress.message}</div>
+            {loadingProgress.total > 0 && (
+              <div style={{ marginTop: '0.5em', color: '#666' }}>
+                Step {loadingProgress.step} of {loadingProgress.total}
+              </div>
+            )}
+          </div>
+        )}
+        {showSlowLoadingHint && (
+          <div style={{ textAlign: 'center', marginTop: '1.5em', color: '#888', fontSize: '0.9em' }}>
+            This can take a moment for longer articles...
+          </div>
+        )}
+      </LoadingAnimation>
+    );
   }
 
   const setLikedState = (state) => {
@@ -259,6 +301,8 @@ export default function ArticleReader({ teacherArticleID }) {
         pronouncing={pronounceInReader}
         setTranslating={updateTranslateInReader}
         setPronouncing={updatePronounceInReader}
+        showMweHints={showMweHints}
+        setShowMweHints={updateShowMweHints}
         url={articleInfo.url}
         UMR_SOURCE={WEB_READER}
         articleProgress={scrollPosition}
@@ -282,6 +326,7 @@ export default function ArticleReader({ teacherArticleID }) {
               translating={translateInReader}
               pronouncing={pronounceInReader}
               setIsRendered={setReaderReady}
+              showMweHints={showMweHints}
             />
           </h1>
 
@@ -291,6 +336,34 @@ export default function ArticleReader({ teacherArticleID }) {
             {!articleInfo.parent_url && <ArticleSource url={articleInfo.url} />}
           </s.ArticleInfoContainer>
           <hr></hr>
+
+          {isDev && (
+            <div style={{ marginBottom: "1em" }}>
+              <button
+                onClick={() => {
+                  if (window.confirm("This will delete the tokenization cache and all your bookmarks for this article. Continue?")) {
+                    api.clearArticleCache(articleID, (result) => {
+                      alert(`Cleared cache: ${result.cache_deleted}, bookmarks deleted: ${result.bookmarks_deleted}`);
+                      window.location.reload();
+                    }, (error) => {
+                      alert("Failed to clear cache: " + error);
+                    });
+                  }
+                }}
+                style={{
+                  padding: "0.5em 1em",
+                  backgroundColor: "#ff6b6b",
+                  color: "white",
+                  border: "none",
+                  borderRadius: "4px",
+                  cursor: "pointer",
+                  fontSize: "0.9em",
+                }}
+              >
+                🔄 Re-tokenize (Dev)
+              </button>
+            </div>
+          )}
 
           {articleInfo.img_url && (
             <s.ArticleImgContainer>
@@ -319,6 +392,7 @@ export default function ArticleReader({ teacherArticleID }) {
                   pronouncing={pronounceInReader}
                   setIsRendered={setReaderReady}
                   updateBookmarks={fetchBookmarks}
+                  showMweHints={showMweHints}
                 />
               ))}
           </s.MainText>
