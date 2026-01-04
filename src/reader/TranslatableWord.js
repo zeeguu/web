@@ -156,151 +156,93 @@ export default function TranslatableWord({
   }
 
   // Check if this word has MWE partners in the same sentence
-  // Only apply MWE styling when there are 2+ MWE words in the same sentence
   function hasMWEPartnersInSameSentence() {
     if (!word.token.mwe_group_id) return false;
-    // findMWEPartners returns all partners in the same sentence (including self)
-    const partners = word.findMWEPartners();
-    return partners.length > 1;
+    return word.findMWEPartners().length > 1;
   }
 
-  // MWE (Multi-Word Expression) hover handlers - work for all MWEs (even untranslated)
   function handleMouseEnter() {
-    if (hasAnyMWE() && setHighlightedMWEGroupId) {
+    if (hasMWEPartnersInSameSentence() && setHighlightedMWEGroupId) {
       setHighlightedMWEGroupId(word.token.mwe_group_id);
     }
   }
 
   function handleMouseLeave() {
-    if (hasAnyMWE() && setHighlightedMWEGroupId) {
+    if (hasMWEPartnersInSameSentence() && setHighlightedMWEGroupId) {
       setHighlightedMWEGroupId(null);
     }
   }
 
-  // Check if this word is part of any MWE with partners in same sentence (for hover hints)
-  function hasAnyMWE() {
-    return hasMWEPartnersInSameSentence();
-  }
-
-  // Check if this word is part of a translated MWE (for permanent styling)
-  // Always show MWE styling for translated MWEs, even if alone in sentence
-  // (the translation is still for the full MWE expression)
-  function isMWEWord() {
-    // Case 1: Word has mwe_group_id and the group has been translated
-    if (word.token.mwe_group_id && mweGroupsWithTranslations?.has(word.token.mwe_group_id)) {
-      return true;
-    }
-    // Case 2: Word has an MWE bookmark (restored from previous session)
-    // mweExpression is set when restoring MWE bookmarks
-    if (word.mweExpression && word.translation) {
-      return true;
-    }
-    // Case 3: Separated MWE partner (has mweExpression but not the main bookmark)
-    if (word.isMwePartner && word.mweExpression) {
-      return true;
-    }
+  // Check if this word is part of a translated MWE
+  function isTranslatedMWE() {
+    if (word.token.mwe_group_id && mweGroupsWithTranslations?.has(word.token.mwe_group_id)) return true;
+    if (word.mweExpression && word.translation) return true;
+    if (word.isMwePartner && word.mweExpression) return true;
     return false;
   }
 
-  // Check if this MWE has separated parts (non-adjacent words)
-  // Only separated MWEs need color coding to show which parts belong together
-  function isSeparatedMWE() {
-    return word.token.mwe_is_separated === true;
-  }
-
-  // Get the color class for this MWE word (mwe-color-0 through mwe-color-4)
-  // Only returns a color class for separated MWEs - adjacent MWEs don't need colors
+  // Get color class for separated MWEs (mwe-color-0 through mwe-color-4)
   function getMWEColorClass() {
-    // Only apply colors for separated MWEs
-    if (!isSeparatedMWE()) {
-      return "";
-    }
+    if (!word.token.mwe_is_separated) return "";
     if (word.token.mwe_group_id && mweGroupColorMap) {
       const colorIndex = mweGroupColorMap[word.token.mwe_group_id];
-      if (colorIndex !== undefined) {
-        return `mwe-color-${colorIndex}`;
-      }
+      if (colorIndex !== undefined) return `mwe-color-${colorIndex}`;
     }
-    // Fallback for MWE bookmarks without a mapped color
-    if (word.mweExpression) {
-      return "mwe-color-0"; // Default to violet
-    }
-    return "";
+    return word.mweExpression ? "mwe-color-0" : "";
   }
 
-  // Check if this word should be highlighted as part of an MWE (on hover)
-  // Works for all MWE words, even untranslated ones (to hint at the connection)
-  function isMWEHighlighted() {
-    if (!highlightedMWEGroupId) return false;
-    if (word.token.mwe_group_id !== highlightedMWEGroupId) return false;
-    return hasMWEPartnersInSameSentence();
+  // Get punctuation-related CSS classes
+  function getPunctuationClasses(word) {
+    const classes = [];
+    if (word.token.is_like_num) classes.push("number");
+
+    if (word.token.has_space !== undefined) {
+      // Stanza tokenizer
+      if (word.token.is_punct || word.token.is_like_symbol) classes.push("no-hover");
+    } else {
+      // NLTK tokenizer
+      if (word.token.is_punct) {
+        classes.push("punct", "no-hover");
+      }
+      if (word.token.is_left_punct ||
+          (word.token.is_punct && word.prev && [":", ".", ","].includes(word.prev.word.trim()))) {
+        classes.push("left-punct");
+      }
+      if (["–", "—", """, "'", '"'].includes(word.word.trim())) {
+        classes.push("no-margin");
+      }
+    }
+    return classes;
+  }
+
+  // Get MWE-related CSS classes
+  function getMWEClasses(word) {
+    const classes = [];
+    const groupId = word.token?.mwe_group_id;
+    if (!groupId) return classes;
+
+    const translated = isTranslatedMWE();
+    const colorClass = getMWEColorClass();
+    const isHighlighted = highlightedMWEGroupId === groupId && hasMWEPartnersInSameSentence();
+    const isLoading = loadingMWEGroupId === groupId;
+
+    if (translated) {
+      classes.push(colorClass || "mwe-adjacent");
+    } else {
+      classes.push("mwe-hover-hint", colorClass);
+    }
+
+    if (isLoading) classes.push("mwe-loading", colorClass);
+    if (isHighlighted) {
+      classes.push("mwe-hover-active");
+      if (!translated) classes.push(colorClass);
+    }
+
+    return classes;
   }
 
   function getWordClass(word) {
-    /*
-    Function determines which class to be assigned to the word object.
-    Mainly, to render the punctuation cases that need to be handled differently.
-    By default, all punctuation words are assigned the class "punct", which means they
-    are moved slightly to the left, to be close to the previous tokens.
-    - left_punct means that the punctuation is moved a bit to the right, for example ( 
-    */
-    const noMarginPunctuation = ["–", "—", "“", "‘", '"'];
-    let allClasses = [];
-    if (word.token.has_space !== undefined) {
-      // from stanza, has_space property
-      if (word.token.is_punct || word.token.is_like_symbol) allClasses.push("no-hover");
-      // Note: has_space === false is handled in the render by not adding a trailing space
-      // We do NOT add the no-space CSS class here because that adds negative margin
-      // which is only appropriate for punctuation, not for regular words like clitics
-    } else {
-      // we are in NLTK
-      if (word.token.is_punct) {
-        allClasses.push("punct");
-        allClasses.push("no-hover");
-      }
-      if (
-        word.token.is_left_punct ||
-        (word.token.is_punct && word.prev && [":", ".", ","].includes(word.prev.word.trim()))
-      )
-        allClasses.push("left-punct");
-      if (noMarginPunctuation.includes(word.word.trim())) allClasses.push("no-margin");
-    }
-    if (word.token.is_like_num) allClasses.push("number");
-    // Add permanent MWE color class only if this MWE has been translated
-    if (isMWEWord()) {
-      const colorClass = getMWEColorClass();
-      if (colorClass) {
-        allClasses.push(colorClass);
-      } else {
-        // Adjacent (non-separated) MWEs get darker orange styling
-        allClasses.push("mwe-adjacent");
-      }
-    }
-
-    // Add MWE hint class for untranslated MWEs (visibility controlled by CSS data-show-mwe-hints)
-    const hasMWEGroup = word.token?.mwe_group_id;
-    if (hasMWEGroup && !isMWEWord()) {
-      allClasses.push("mwe-hover-hint");
-      allClasses.push(getMWEColorClass());
-    }
-
-    // Add MWE loading class when this word's MWE group is being translated
-    // This makes ALL partner words pulse together in the MWE color
-    if (hasMWEGroup && loadingMWEGroupId === hasMWEGroup) {
-      allClasses.push("mwe-loading");
-      allClasses.push(getMWEColorClass());
-    }
-
-    // Add MWE highlight class on hover - works for all MWEs (even untranslated)
-    if (isMWEHighlighted()) {
-      allClasses.push("mwe-hover-active");
-      if (!isMWEWord()) {
-        // Untranslated MWEs also need the color class
-        allClasses.push(getMWEColorClass());
-      }
-    }
-
-    return allClasses.join(" ");
+    return [...getPunctuationClasses(word), ...getMWEClasses(word)].filter(Boolean).join(" ");
   }
 
   const wordClass = getWordClass(word);
