@@ -271,7 +271,7 @@ export default function TranslatableWord({
       </>
     );
 
-  //disableTranslation so user cannot translate words that are being tested
+  // Render simple (non-translated) word: no translation yet, or translation disabled (e.g., in exercises)
   if ((!isWordTranslating && !word.translation && !isClickedToPronounce) || disableTranslation) {
     return (
       <>
