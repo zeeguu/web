@@ -191,8 +191,8 @@ export default function TranslatableWord({
     return word.mweExpression ? "mwe-color-0" : "";
   }
 
-  // Get punctuation-related CSS classes
-  function getPunctuationClasses(word) {
+  // Get CSS classes for special tokens (punctuation, numbers, symbols)
+  function getSpecialTokenClasses(word) {
     const classes = [];
     if (word.token.is_like_num) classes.push("number");
 
@@ -242,7 +242,7 @@ export default function TranslatableWord({
   }
 
   function getWordClass(word) {
-    return [...getPunctuationClasses(word), ...getMWEClasses(word)].filter(Boolean).join(" ");
+    return [...getSpecialTokenClasses(word), ...getMWEClasses(word)].filter(Boolean).join(" ");
   }
 
   const wordClass = getWordClass(word);
