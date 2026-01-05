@@ -145,12 +145,11 @@ const TranslatableText = styled.div`
   &[data-show-mwe-hints="true"] z-tag.mwe-hover-hint[class*="mwe-color-"] {
     text-decoration-color: var(--mwe-color);
   }
-  /* Mobile fallback: solid thin underline (dotted doesn't render on some mobile browsers) */
+  /* Mobile fallback: subtle background (text-decoration doesn't render on inline-block in mobile browsers) */
   @media (max-width: 768px) {
     &[data-show-mwe-hints="true"] z-tag.mwe-hover-hint {
-      text-decoration: underline solid;
-      text-decoration-thickness: 1px;
-      background-color: yellow; /* DEBUG - remove after testing */
+      text-decoration: none;
+      background-color: rgba(200, 140, 60, 0.12);
     }
   }
 
