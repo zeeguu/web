@@ -1,6 +1,9 @@
 import { v4 as uuid } from "uuid";
 import { List, Item } from "linked-list";
 
+// Set to true to enable verbose MWE debugging
+const MWE_DEBUG = false;
+
 export class Word extends Item {
   constructor(token) {
     super();
@@ -10,14 +13,54 @@ export class Word extends Item {
     this.translation = null;
     this.total_tokens = 1;
     if (bookmark) {
-      this.word = bookmark.origin;
-      this.translation = bookmark.translation;
-      this.total_tokens = bookmark.t_total_token;
-      this.bookmark_id = bookmark.id;
+      if (bookmark.is_mwe) {
+        this.translation = bookmark.translation;
+        this.bookmark_id = bookmark.id;
+        this.mweExpression = bookmark.origin;
+        // For contiguous MWEs with merged tokens, show combined text
+        if (token.mergedTokens && token.mergedTokens.length > 1) {
+          // Join respecting has_space property (like hyphenated words)
+          this.word = token.mergedTokens.reduce((acc, t, i) => {
+            if (i === 0) return t.text.trim();
+            const prev = token.mergedTokens[i - 1];
+            const separator = prev.has_space === false ? "" : " ";
+            return acc + separator + t.text.trim();
+          }, "");
+          this.total_tokens = token.mergedTokens.length;
+        } else {
+          // Separated MWE - keep original token text
+          this.total_tokens = 1;
+        }
+      } else {
+        // For single-word bookmarks, keep original token text (preserves case)
+        // For multi-word, reconstruct from merged tokens to preserve original case
+        if (bookmark.t_total_token === 1) {
+          // Single word: keep token.text (e.g., "Dingue" not "dingue")
+          // this.word is already set to token.text above
+        } else if (token.mergedTokens && token.mergedTokens.length > 1) {
+          // Multi-word: reconstruct from merged tokens to preserve original case
+          this.word = token.mergedTokens.map((t) => t.text).join(" ");
+        } else {
+          // Fallback to bookmark.origin if no merged tokens available
+          this.word = bookmark.origin;
+        }
+        this.translation = bookmark.translation;
+        this.total_tokens = bookmark.t_total_token;
+        this.bookmark_id = bookmark.id;
+      }
     }
     this.token = token;
     if (token.mergedTokens) this.mergedTokens = [...token.mergedTokens];
     else this.mergedTokens = [{ ...token }];
+    // For separated MWE partners: token has mweExpression but no bookmark
+    // Transfer it to the Word so it gets MWE styling
+    if (token.mweExpression && !this.mweExpression) {
+      this.mweExpression = token.mweExpression;
+    }
+    // Transfer isMwePartner flag for separated MWE partners
+    if (token.isMwePartner) {
+      this.isMwePartner = true;
+    }
   }
 
   updateTranslation(translation, service_name, bookmark_id) {
@@ -94,16 +137,180 @@ export class Word extends Item {
     // api: this is needed because we want to delete the previous
     // bookmark in the case of a fusion; no need to save the partial
     // translations to the DB; we used to do that; but it was just
-    // poluting the DB and the
+    // polluting the DB
     let newWord = this;
-    if (this.prev && this.prev.translation) {
+
+    // Don't fuse with neighbors that are part of an MWE (e.g., particle verbs)
+    // MWEs should stand alone as their own unit
+    const prevIsMWE = this.prev?.token?.mwe_group_id;
+    const nextIsMWE = this.next?.token?.mwe_group_id;
+
+    if (this.prev && this.prev.translation && !prevIsMWE) {
       newWord = this.fuseWithPrevious(api);
     }
 
-    if (this.next && this.next.translation) {
+    if (this.next && this.next.translation && !nextIsMWE) {
       newWord = this.fuseWithNext(api);
     }
     return newWord;
+  }
+
+  /**
+   * Check if this word is part of a Multi-Word Expression (MWE).
+   * MWE metadata comes from the backend MWE detector.
+   *
+   * LIMITATION: MWE groupings are determined by the backend during tokenization.
+   * If the backend incorrectly identifies an MWE (e.g., "sollte belastet" instead
+   * of "sollte belastet werden"), the user cannot currently correct this on the
+   * frontend. They can only:
+   * 1. Delete the incorrect MWE translation
+   * 2. Report the issue via "Report Issue" button
+   * 3. Translate words individually
+   *
+   * Future improvement: Add an "Edit MWE" dialog that allows users to:
+   * - Break/ungroup incorrectly detected MWEs
+   * - Extend MWEs to include additional words
+   * - Store corrections and potentially send them back to improve the detector
+   */
+  isMWE() {
+    return !!this.token.mwe_group_id;
+  }
+
+  /**
+   * Get the MWE group ID for this word.
+   */
+  getMWEGroupId() {
+    return this.token.mwe_group_id;
+  }
+
+  /**
+   * Find all MWE partner Word objects in the linked list.
+   * Returns array of Word objects that share the same mwe_group_id.
+   */
+  findMWEPartners() {
+    if (!this.isMWE()) return [this];
+
+    const groupId = this.getMWEGroupId();
+    const sentenceIndex = this.token.sent_i;
+    const partners = [this];
+
+    // Search backwards in linked list for partners in same sentence
+    let current = this.prev;
+    while (current && current.token.sent_i === sentenceIndex) {
+      if (current.token.mwe_group_id === groupId) {
+        partners.unshift(current);
+      }
+      current = current.prev;
+    }
+
+    // Search forwards in linked list for partners in same sentence
+    current = this.next;
+    while (current && current.token.sent_i === sentenceIndex) {
+      if (current.token.mwe_group_id === groupId) {
+        partners.push(current);
+      }
+      current = current.next;
+    }
+
+    return partners;
+  }
+
+  /**
+   * Prepare MWE for translation.
+   * - Adjacent MWE words: fuse visually into single word with combined translation
+   * - Non-adjacent MWE words (gaps in between): keep separate, use combined expression for translation only
+   */
+  fuseMWEPartners(api) {
+    const partners = this.findMWEPartners();
+    if (partners.length <= 1) return this;
+
+    // Helper to join words without space after hyphen (e.g., "și-" + "a" → "și-a")
+    const joinWords = (words) => {
+      return words.reduce((acc, word, i) => {
+        if (i === 0) return word;
+        // Don't add space if previous word ends with hyphen
+        const prevWord = words[i - 1];
+        if (prevWord.endsWith("-")) return acc + word;
+        return acc + " " + word;
+      }, "");
+    };
+
+    // Build combined expression text (for translation)
+    const combinedExpression = joinWords(partners.map((p) => p.word));
+
+    // Check if all partners are adjacent (no gaps > 1)
+    let allAdjacent = true;
+    for (let i = 1; i < partners.length; i++) {
+      const gap = partners[i].token.token_i - partners[i - 1].token.token_i;
+      if (gap > 1) {
+        allAdjacent = false;
+        break;
+      }
+    }
+
+    // If first partner already has translation, don't create another
+    const firstPartner = partners[0];
+    if (firstPartner.translation) {
+      MWE_DEBUG && console.log("MWE already translated, skipping:", combinedExpression);
+      return null; // Signal to not translate
+    }
+
+    // Find groups of TRULY ADJACENT partners to fuse
+    // Only fuse words that are directly next to each other (gap == 1)
+    // Words with anything between them should NOT be fused visually
+    let fusionGroups = [];
+    let currentGroup = [partners[0]];
+
+    for (let i = 1; i < partners.length; i++) {
+      const gap = partners[i].token.token_i - partners[i - 1].token.token_i;
+      if (gap === 1) {
+        // Truly adjacent - fuse with current group
+        currentGroup.push(partners[i]);
+      } else {
+        // Not adjacent (has words between) - start a new group
+        fusionGroups.push(currentGroup);
+        currentGroup = [partners[i]];
+      }
+    }
+    fusionGroups.push(currentGroup);
+
+    // Only fuse the first group (which contains the head word)
+    // Other groups stay as separate words with MWE styling
+    const mainGroup = fusionGroups[0];
+    const mainExpression = joinWords(mainGroup.map((p) => p.word));
+
+    MWE_DEBUG &&
+      console.log("MWE fusion:", {
+        fullExpression: combinedExpression,
+        fusedExpression: mainExpression,
+        numGroups: fusionGroups.length,
+        separated: this.token?.mwe_is_separated,
+      });
+
+    // Always use first word as the visual head, regardless of mwe_role
+    // mwe_role indicates the linguistic/semantic head from the backend,
+    // but for UI we want the first word to remain visible and show combined text
+    let headWord = mainGroup[0];
+
+    // Update head word with fused group info
+    let mergedTokens = mainGroup.map((p) => ({ ...p.token }));
+    headWord.word = mainExpression;
+    headWord.mweExpression = combinedExpression; // Keep full expression for translation
+    headWord.mergedTokens = mergedTokens;
+    headWord.total_tokens = mainGroup.length;
+
+    // Remove other partners in the main group from the list
+    for (const partner of mainGroup) {
+      if (partner !== headWord) {
+        partner.token.skipRender = true;
+        partner.detach();
+      }
+    }
+
+    // Partners in other groups keep their styling but stay in place
+    // (they'll show MWE color but won't be fused)
+
+    return headWord;
   }
 
   // Prevent circular reference issues during JSON serialization (e.g., Sentry Replay)

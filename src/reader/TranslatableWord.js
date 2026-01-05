@@ -7,6 +7,7 @@ import redirect from "../utils/routing/routing";
 import LinkOffIcon from "@mui/icons-material/LinkOff";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 
+
 export default function TranslatableWord({
   interactiveText,
   word,
@@ -14,6 +15,12 @@ export default function TranslatableWord({
   translating,
   pronouncing,
   disableTranslation,
+  highlightedMWEGroupId,
+  setHighlightedMWEGroupId,
+  loadingMWEGroupId,
+  setLoadingMWEGroupId,
+  mweGroupColorMap,
+  mweGroupsWithTranslations,
 }) {
   const [showingAlterMenu, setShowingAlterMenu] = useState(false);
   const [refToTranslation, clickedOutsideTranslation] = useClickOutside();
@@ -33,17 +40,10 @@ export default function TranslatableWord({
   }, [word]);
 
   function clickOnWord(e, word) {
-    if (
-      word.token.is_like_num ||
-      (word.token.is_punct && word.word.length === 1)
-    )
-      return;
+    if (word.token.is_like_num || (word.token.is_punct && word.word.length === 1)) return;
     if (word.translation) {
       if (pronouncing) interactiveText.pronounce(word);
-      if (
-        (translating && !isTranslationVisible) ||
-        (!translating && isTranslationVisible)
-      )
+      if ((translating && !isTranslationVisible) || (!translating && isTranslationVisible))
         setIsTranslationVisible(!isTranslationVisible);
       return;
     }
@@ -52,20 +52,31 @@ export default function TranslatableWord({
         setIsLoading(true);
         setPreviousWord(word.word);
         setIsWordTranslating(true);
+        // Set MWE group loading state so all partner words pulse together
+        const mweGroupId = word.token?.mwe_group_id;
+        if (mweGroupId && setLoadingMWEGroupId) {
+          setLoadingMWEGroupId(mweGroupId);
+        }
+        // For MWE words, update prevWord to fused text and trigger re-render
+        // This ensures the loading animation shows "suntem prezenți" not just "suntem"
+        const onFusionComplete = mweGroupId ? () => {
+          setPreviousWord(word.word); // word.word is now the fused MWE text
+          wordUpdated();
+        } : null;
         interactiveText.translate(word, true, () => {
           wordUpdated();
           setIsLoading(false);
           setIsWordTranslating(false);
           setIsTranslationVisible(true);
-        });
+          // Clear MWE loading state
+          if (mweGroupId && setLoadingMWEGroupId) {
+            setLoadingMWEGroupId(null);
+          }
+        }, onFusionComplete);
       } else {
         // For non-translatable words in exercises, track the click
-        console.log("Clicking on non-translatable word:", word.word, "disableTranslation:", disableTranslation);
         if (interactiveText.trackWordClick) {
-          console.log("Calling trackWordClick for:", word.word);
           interactiveText.trackWordClick(word);
-        } else {
-          console.log("trackWordClick method not available on interactiveText");
         }
       }
     }
@@ -82,10 +93,11 @@ export default function TranslatableWord({
     }
     setShowingAlterMenu(true);
     if (!hasFetchedAlternatives)
-      interactiveText.alternativeTranslations(word, () => {
-        wordUpdated(word);
-        setHasFetchedAlternatives(true);
-      });
+      interactiveText.alternativeTranslations(
+        word,
+        () => wordUpdated(word), // Called for each translation as it arrives
+        () => setHasFetchedAlternatives(true), // Called when all done
+      );
   }
 
   function unlinkLastWord(e, word) {
@@ -127,64 +139,120 @@ export default function TranslatableWord({
       (error) => {
         // onError
         console.log(error);
-        alert(
-          "something went wrong and we could not delete the bookmark; try again later.",
-        );
+        alert("something went wrong and we could not delete the bookmark; try again later.");
       },
     );
   }
 
   function selectAlternative(alternative, preferredSource) {
-    interactiveText.selectAlternative(
-      word,
-      alternative,
-      preferredSource,
-      () => {
-        wordUpdated();
-        setShowingAlterMenu(false);
-      },
-    );
+    interactiveText.selectAlternative(word, alternative, preferredSource, () => {
+      wordUpdated();
+      setShowingAlterMenu(false);
+    });
   }
 
   function hideAlterMenu() {
     setShowingAlterMenu(false);
   }
 
-  function getWordClass(word) {
-    /*
-    Function determines which class to be assigned to the word object.
-    Mainly, to render the punctuation cases that need to be handled differently.
-    By default, all punctuation words are assigned the class "punct", which means they
-    are moved slightly to the left, to be close to the previous tokens.
-    - left_punct means that the punctuation is moved a bit to the right, for example ( 
-    */
-    const noMarginPunctuation = ["–", "—", "“", "‘", '"'];
-    let allClasses = [];
-    if (word.token.has_space !== undefined) {
-      // from stanza, has_space property
-      if (word.token.is_punct || word.token.is_like_symbol)
-        allClasses.push("no-hover");
-    } else {
-      // we are in NLTK
-      if (word.token.is_punct) {
-        allClasses.push("punct");
-        allClasses.push("no-hover");
-      }
-      if (
-        word.token.is_left_punct ||
-        (word.token.is_punct &&
-          word.prev &&
-          [":", ".", ","].includes(word.prev.word.trim()))
-      )
-        allClasses.push("left-punct");
-      if (noMarginPunctuation.includes(word.word.trim()))
-        allClasses.push("no-margin");
+  // Check if this word has MWE partners in the same sentence
+  function hasMWEPartnersInSameSentence() {
+    if (!word.token.mwe_group_id) return false;
+    return word.findMWEPartners().length > 1;
+  }
+
+  function handleMouseEnter() {
+    if (hasMWEPartnersInSameSentence() && setHighlightedMWEGroupId) {
+      setHighlightedMWEGroupId(word.token.mwe_group_id);
     }
-    if (word.token.is_like_num) allClasses.push("number");
-    return allClasses.join(" ");
+  }
+
+  function handleMouseLeave() {
+    if (hasMWEPartnersInSameSentence() && setHighlightedMWEGroupId) {
+      setHighlightedMWEGroupId(null);
+    }
+  }
+
+  // Check if this word is part of a translated MWE
+  function isTranslatedMWE() {
+    if (word.token.mwe_group_id && mweGroupsWithTranslations?.has(word.token.mwe_group_id)) return true;
+    if (word.mweExpression && word.translation) return true;
+    if (word.isMwePartner && word.mweExpression) return true;
+    return false;
+  }
+
+  // Get color class for separated MWEs (mwe-color-0 through mwe-color-4)
+  function getMWEColorClass() {
+    if (!word.token.mwe_is_separated) return "";
+    if (word.token.mwe_group_id && mweGroupColorMap) {
+      const colorIndex = mweGroupColorMap[word.token.mwe_group_id];
+      if (colorIndex !== undefined) return `mwe-color-${colorIndex}`;
+    }
+    return word.mweExpression ? "mwe-color-0" : "";
+  }
+
+  // Get CSS classes for special tokens (punctuation, numbers, symbols)
+  function getSpecialTokenClasses(word) {
+    const classes = [];
+    if (word.token.is_like_num) classes.push("number");
+
+    if (word.token.has_space !== undefined) {
+      // Stanza tokenizer
+      if (word.token.is_punct || word.token.is_like_symbol) classes.push("no-hover");
+    } else {
+      // NLTK tokenizer
+      if (word.token.is_punct) {
+        classes.push("punct", "no-hover");
+      }
+      if (word.token.is_left_punct ||
+          (word.token.is_punct && word.prev && [":", ".", ","].includes(word.prev.word.trim()))) {
+        classes.push("left-punct");
+      }
+      if (["–", "—", "\u201c", "\u2019", '"'].includes(word.word.trim())) {
+        classes.push("no-margin");
+      }
+    }
+    return classes;
+  }
+
+  // Get MWE-related CSS classes
+  function getMWEClasses(word) {
+    const classes = [];
+    const groupId = word.token?.mwe_group_id;
+    if (!groupId) return classes;
+
+    const translated = isTranslatedMWE();
+    const colorClass = getMWEColorClass();
+    const isHighlighted = highlightedMWEGroupId === groupId && hasMWEPartnersInSameSentence();
+    const isLoading = loadingMWEGroupId === groupId;
+
+    if (translated) {
+      classes.push(colorClass || "mwe-adjacent");
+    } else {
+      classes.push("mwe-hover-hint", colorClass);
+    }
+
+    if (isLoading) classes.push("mwe-loading", colorClass);
+    if (isHighlighted) {
+      classes.push("mwe-hover-active");
+      if (!translated) classes.push(colorClass);
+    }
+
+    return classes;
+  }
+
+  function getWordClass(word) {
+    return [...getSpecialTokenClasses(word), ...getMWEClasses(word)].filter(Boolean).join(" ");
   }
 
   const wordClass = getWordClass(word);
+
+  // Don't render words that have been fused into an MWE (marked for skip)
+  // This prevents duplication during loading animation when fuseMWEPartners
+  // has already run but the component is still mounted
+  if (word.token?.skipRender) {
+    return null;
+  }
 
   if (word.token.is_like_email)
     return (
@@ -203,15 +271,17 @@ export default function TranslatableWord({
       </>
     );
 
-  //disableTranslation so user cannot translate words that are being tested
-  if (
-    (!isWordTranslating && !word.translation && !isClickedToPronounce) ||
-    disableTranslation
-  ) {
+  // Render simple (non-translated) word: no translation yet, or translation disabled (e.g., in exercises)
+  if ((!isWordTranslating && !word.translation && !isClickedToPronounce) || disableTranslation) {
     return (
       <>
-        <z-tag class={wordClass} onClick={(e) => clickOnWord(e, word)}>
-          {word.word + (word.token.has_space === true ? " " : "")}
+        <z-tag
+          class={wordClass}
+          onClick={(e) => clickOnWord(e, word)}
+          onMouseEnter={handleMouseEnter}
+          onMouseLeave={handleMouseLeave}
+        >
+          {word.word + (word.token.has_space === true && !word.word.endsWith("-") && !word.next?.word?.startsWith("-") ? " " : "")}
         </z-tag>
       </>
     );
@@ -219,27 +289,23 @@ export default function TranslatableWord({
 
   return (
     <>
-      <z-tag className={wordClass}>
-        {word.translation && isTranslationVisible && (
-          <z-tran
-            chosen={word.translation}
-            translation0={word.translation}
-            ref={refToTranslation}
-          >
+      <z-tag class={wordClass} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
+        {word.translation && (isTranslationVisible || word.isTranslationVisible) && (
+          <z-tran chosen={word.translation} translation0={word.translation} ref={refToTranslation}>
             <span className="translationContainer">
               <span className="hide low-oppacity translation-icon">
                 <VisibilityOffIcon
                   fontSize="8px"
                   onClick={(e) => {
-                    setIsTranslationVisible(!isTranslationVisible);
+                    // Toggle both React state and word object flag
+                    const newVisibility = !(isTranslationVisible || word.isTranslationVisible);
+                    setIsTranslationVisible(newVisibility);
+                    word.isTranslationVisible = newVisibility;
                     setShowingAlterMenu(false);
                   }}
                 />
               </span>
-              <span
-                className="translation"
-                onClick={(e) => toggleAlterMenu(e, word)}
-              >
+              <span className="translation" onClick={(e) => toggleAlterMenu(e, word)}>
                 {word.translation}
               </span>
               <span className="arrow" onClick={(e) => toggleAlterMenu(e, word)}>
@@ -262,10 +328,7 @@ export default function TranslatableWord({
           {isWordTranslating ? (
             <span className={isLoading ? " loading" : ""}> {prevWord} </span>
           ) : (
-            <span
-              className={isLoading ? " loading" : ""}
-              onClick={(e) => clickOnWord(e, word)}
-            >
+            <span className={isLoading ? " loading" : ""} onClick={(e) => clickOnWord(e, word)}>
               {word.word}{" "}
             </span>
           )}

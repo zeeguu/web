@@ -104,9 +104,9 @@ const StyledButton = styled.button`
   align-items: center;
   justify-content: center;
 
-  // Primary
+  // Primary (use $primary to avoid passing to DOM)
   ${(props) =>
-    props.primary &&
+    props.$primary &&
     css`
       background-color: ${zeeguuOrange};
       :hover {
@@ -114,9 +114,9 @@ const StyledButton = styled.button`
       }
     `}
 
-  // Secondary
+  // Secondary (use $secondary to avoid passing to DOM)
   ${(props) =>
-    props.secondary &&
+    props.$secondary &&
     css`
       background-color: white;
       :hover {
@@ -125,15 +125,15 @@ const StyledButton = styled.button`
       border: 2px solid ${zeeguuOrange};
 
       ${(props) =>
-        props.disabled &&
+        props.$disabled &&
         css`
           border: none;
         `}
     `}
-  
+
   // Navigation used together with <NavigateNextIcon /> or <NavigateBeforeIcon />
   ${(props) =>
-    props.navigation &&
+    props.$navigation &&
     css`
       background-color: white;
       :hover {
@@ -143,7 +143,7 @@ const StyledButton = styled.button`
 
     // Disabled
     ${(props) =>
-    props.disabled &&
+    props.$disabled &&
     css`
       background-color: ${lightGrey};
       cursor: not-allowed;

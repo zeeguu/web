@@ -190,6 +190,73 @@ Zeeguu_API.prototype.getArticleInfo = function (articleID, callback) {
   this._getJSON(`user_article?article_id=${articleID}`, callback);
 };
 
+/**
+ * Get article info with streaming progress updates via SSE
+ *
+ * @param {string} articleID - The article ID
+ * @param {Function} onProgress - Callback for progress updates: {message, step, total}
+ * @param {Function} onComplete - Callback when article data is ready
+ * @param {Function} onError - Callback for errors
+ */
+Zeeguu_API.prototype.getArticleInfoWithProgress = function (articleID, onProgress, onComplete, onError) {
+  const url = this._appendSessionToUrl(`user_article_stream?article_id=${articleID}`);
+
+  const eventSource = new EventSource(url);
+
+  eventSource.addEventListener('progress', (event) => {
+    try {
+      const data = JSON.parse(event.data);
+      if (onProgress) {
+        onProgress(data);
+      }
+    } catch (e) {
+      console.error('Failed to parse progress event:', e);
+    }
+  });
+
+  eventSource.addEventListener('complete', (event) => {
+    try {
+      const data = JSON.parse(event.data);
+      eventSource.close();
+      if (onComplete) {
+        onComplete(data);
+      }
+    } catch (e) {
+      console.error('Failed to parse complete event:', e);
+      eventSource.close();
+      if (onError) {
+        onError('Failed to parse article data');
+      }
+    }
+  });
+
+  eventSource.addEventListener('error', (event) => {
+    // Check if it's an SSE error event with data
+    if (event.data) {
+      try {
+        const data = JSON.parse(event.data);
+        eventSource.close();
+        if (onError) {
+          onError(data.error || 'Unknown error');
+        }
+      } catch (e) {
+        eventSource.close();
+        if (onError) {
+          onError('Stream error');
+        }
+      }
+    } else {
+      // Connection error - fall back to regular API
+      eventSource.close();
+      console.log('SSE connection failed, falling back to regular API');
+      this.getArticleInfo(articleID, onComplete);
+    }
+  });
+
+  // Return a function to close the connection if needed
+  return () => eventSource.close();
+};
+
 Zeeguu_API.prototype.getArticleSummaryInfo = function (articleID, callback) {
   this._getJSON(`user_article_summary?article_id=${articleID}`, callback);
 };
@@ -381,6 +448,18 @@ Zeeguu_API.prototype.hideArticle = function (articleId, callback) {
 Zeeguu_API.prototype.reportBrokenArticle = function (articleId, reason, callback, onError) {
   let param = qs.stringify({ article_id: articleId, reason: reason });
   this._post(`/report_broken_article`, param, (response) => {
+    try {
+      callback(JSON.parse(response));
+    } catch (e) {
+      if (onError) {
+        onError("Failed to parse response");
+      }
+    }
+  }, onError);
+};
+
+Zeeguu_API.prototype.clearArticleCache = function (articleId, callback, onError) {
+  this._post(`/clear_article_cache/${articleId}`, "", (response) => {
     try {
       callback(JSON.parse(response));
     } catch (e) {

@@ -1,4 +1,4 @@
-import { useState, useEffect, createElement } from "react";
+import { useState, useEffect, useMemo, createElement } from "react";
 import TranslatableWord from "./TranslatableWord";
 import * as s from "./TranslatableText.sc";
 import { removePunctuation } from "../utils/text/preprocessing";
@@ -12,6 +12,7 @@ export function TranslatableText({
   highlightExpression,
   leftEllipsis,
   rightEllipsis,
+  showMweHints,
   // exercise related
   isExerciseOver,
   clozeWord, // Word(s) to hide and replace with underlines/placeholders in cloze exercises
@@ -24,7 +25,10 @@ export function TranslatableText({
   const [clozeWordIds, setClozeWordIds] = useState([]);
   const [paragraphs, setParagraphs] = useState([]);
   const [firstClozeWordId, setFirstClozeWordId] = useState(0);
-  const [renderedText, setRenderedText] = useState();
+  const [highlightedMWEGroupId, setHighlightedMWEGroupId] = useState(null);
+  const [loadingMWEGroupId, setLoadingMWEGroupId] = useState(null);
+  const [mweGroupColorMap, setMweGroupColorMap] = useState({});
+  const [mweGroupsWithTranslations, setMweGroupsWithTranslations] = useState(new Set());
   const divType = interactiveText.formatting ? interactiveText.formatting : "div";
 
   useEffect(() => {
@@ -34,25 +38,85 @@ export function TranslatableText({
     if (clozeWord) {
       findClozeWords();
     }
-    if (interactiveText) setParagraphs(interactiveText.getParagraphs());
+    if (interactiveText) {
+      setParagraphs(interactiveText.getParagraphs());
+      // Build MWE group to color index mapping
+      buildMweColorMap();
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [interactiveText]);
 
-  useEffect(() => {
-    setRenderedText(
-      paragraphs.map((par, index) =>
-        createElement(
-          divType,
-          { className: `textParagraph ${divType}`, key: index },
-          <>
-            {index === 0 && leftEllipsis && <>...</>}
-            {par.getWords().map((word) => renderWordJSX(word))}
-            {index === 0 && rightEllipsis && <>...</>}
-          </>,
-        ),
+  function buildMweColorMap() {
+    const groupsWithTranslations = new Set();
+    const colorMap = {};
+
+    // Track color assignment per sentence - colors reset for each new sentence
+    let currentSentI = -1;
+    let colorIndex = 0;
+    const sentenceMweGroups = new Set(); // MWE groups seen in current sentence
+
+    for (const par of interactiveText.paragraphsAsLinkedWordLists) {
+      let word = par.linkedWords.head;
+      while (word) {
+        if (word.token.mwe_group_id) {
+          const groupId = word.token.mwe_group_id;
+          const sentI = word.token.sent_i;
+
+          // Reset color index when entering a new sentence
+          if (sentI !== currentSentI) {
+            currentSentI = sentI;
+            colorIndex = 0;
+            sentenceMweGroups.clear();
+          }
+
+          // Assign color for this group if not already assigned in this sentence
+          if (!sentenceMweGroups.has(groupId)) {
+            sentenceMweGroups.add(groupId);
+            colorMap[groupId] = colorIndex % 5;
+            colorIndex++;
+          }
+
+          if (word.translation) {
+            groupsWithTranslations.add(groupId);
+          }
+        }
+        word = word.next;
+      }
+    }
+
+    setMweGroupColorMap(colorMap);
+    setMweGroupsWithTranslations(groupsWithTranslations);
+  }
+
+  function updateMweGroupsWithTranslations() {
+    const groupsWithTranslations = new Set();
+    for (const par of interactiveText.paragraphsAsLinkedWordLists) {
+      let word = par.linkedWords.head;
+      while (word) {
+        if (word.token.mwe_group_id && word.translation) {
+          groupsWithTranslations.add(word.token.mwe_group_id);
+        }
+        word = word.next;
+      }
+    }
+    setMweGroupsWithTranslations(groupsWithTranslations);
+  }
+
+  // Use useMemo instead of useEffect to compute rendered text synchronously
+  // This prevents the blink when MWE words are fused (useEffect runs after paint)
+  const renderedText = useMemo(() => {
+    return paragraphs.map((par, index) =>
+      createElement(
+        divType,
+        { className: `textParagraph ${divType}`, key: index },
+        <>
+          {index === 0 && leftEllipsis && <>...</>}
+          {par.getWords().map((word) => renderWordJSX(word))}
+          {index === 0 && rightEllipsis && <>...</>}
+        </>,
       ),
     );
-    //eslint-disable-next-line
+    //eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     paragraphs,
     translationCount,
@@ -60,9 +124,16 @@ export function TranslatableText({
     pronouncing,
     isExerciseOver,
     clozeWord,
+    clozeWordIds,
     nonTranslatableWords,
+    nonTranslatableWordIds,
     rightEllipsis,
     leftEllipsis,
+    highlightedMWEGroupId,
+    loadingMWEGroupId,
+    mweGroupColorMap,
+    mweGroupsWithTranslations,
+    firstClozeWordId,
   ]);
 
   useEffect(() => {
@@ -71,6 +142,7 @@ export function TranslatableText({
 
   function wordUpdated() {
     setTranslationCount(translationCount + 1);
+    updateMweGroupsWithTranslations();
     if (updateBookmarks) updateBookmarks();
   }
 
@@ -202,6 +274,12 @@ export function TranslatableText({
             translating={translating}
             pronouncing={pronouncing}
             disableTranslation={disableTranslation}
+            highlightedMWEGroupId={highlightedMWEGroupId}
+            setHighlightedMWEGroupId={setHighlightedMWEGroupId}
+            loadingMWEGroupId={loadingMWEGroupId}
+            setLoadingMWEGroupId={setLoadingMWEGroupId}
+            mweGroupColorMap={mweGroupColorMap}
+            mweGroupsWithTranslations={mweGroupsWithTranslations}
           />
         );
       }
@@ -219,6 +297,12 @@ export function TranslatableText({
             translating={translating}
             pronouncing={pronouncing}
             disableTranslation={disableTranslation}
+            highlightedMWEGroupId={highlightedMWEGroupId}
+            setHighlightedMWEGroupId={setHighlightedMWEGroupId}
+            loadingMWEGroupId={loadingMWEGroupId}
+            setLoadingMWEGroupId={setLoadingMWEGroupId}
+            mweGroupColorMap={mweGroupColorMap}
+            mweGroupsWithTranslations={mweGroupsWithTranslations}
           />
         );
       }
@@ -283,10 +367,16 @@ export function TranslatableText({
           translating={translating}
           pronouncing={pronouncing}
           disableTranslation={disableTranslation}
+          highlightedMWEGroupId={highlightedMWEGroupId}
+          setHighlightedMWEGroupId={setHighlightedMWEGroupId}
+          loadingMWEGroupId={loadingMWEGroupId}
+          setLoadingMWEGroupId={setLoadingMWEGroupId}
+          mweGroupColorMap={mweGroupColorMap}
+          mweGroupsWithTranslations={mweGroupsWithTranslations}
         />
       );
     }
   }
 
-  return <s.TranslatableText>{renderedText}</s.TranslatableText>;
+  return <s.TranslatableText data-show-mwe-hints={showMweHints === true}>{renderedText}</s.TranslatableText>;
 }

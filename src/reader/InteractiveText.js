@@ -1,9 +1,10 @@
 import LinkedWordList from "./LinkedWordListClass";
 import ZeeguuSpeech from "../speech/APIBasedSpeech";
-import { tokenize } from "../utils/text/preprocessing";
-import { removePunctuation } from "../utils/text/preprocessing";
-import isNullOrUndefinied from "../utils/misc/isNullOrUndefinied";
 import { EXERCISE_TYPES } from "../exercises/ExerciseTypeConstants";
+import { updateTokensWithBookmarks } from "./bookmarkRestoration";
+
+// Set to true to enable verbose MWE/bookmark debugging
+const MWE_DEBUG = false;
 
 // We try to capture about a full sentence around a word.
 const MAX_WORD_EXPANSION_COUNT = 28;
@@ -36,7 +37,6 @@ export default class InteractiveText {
     getBrowsingSessionId = () => null,
     getReadingSessionId = () => null,
   ) {
-    // beginning of the constructor
     this.api = api;
     this.sourceId = sourceId;
     this.language = language;
@@ -51,8 +51,10 @@ export default class InteractiveText {
     // bookmark / text are part of the content or stand by themselves.
     this.previousBookmarks = previousBookmarks;
     this.paragraphs = tokenizedParagraphs;
-    _updateTokensWithBookmarks(this.previousBookmarks, this.paragraphs);
-    this.paragraphsAsLinkedWordLists = this.paragraphs.map((sent) => new LinkedWordList(sent));
+    updateTokensWithBookmarks(this.previousBookmarks, this.paragraphs);
+    this.paragraphsAsLinkedWordLists = this.paragraphs.map(
+      (sent) => new LinkedWordList(sent),
+    );
     if (language !== zeeguuSpeech.language) {
       this.zeeguuSpeech = new ZeeguuSpeech(api, language);
     } else {
@@ -65,22 +67,52 @@ export default class InteractiveText {
   }
 
 
-  translate(word, fuseWithNeighbours, onSuccess) {
-    console.log(`[INTERACTIVE-TEXT] translate() called`, {
-      timestamp: new Date().toISOString(),
-      word: word.word,
-      fuseWithNeighbours,
-      source: this.source,
-      sourceId: this.sourceId
-    });
-
+  translate(word, fuseWithNeighbours, onSuccess, onFusionComplete = null) {
     let context, cParagraph_i, cSent_i, cToken_i, leftEllipsis, rightEllipsis;
 
     [context, cParagraph_i, cSent_i, cToken_i, leftEllipsis, rightEllipsis] = this.getContextAndCoordinates(word);
-    if (fuseWithNeighbours) word = word.fuseWithNeighborsIfNeeded(this.api);
+
+    // MWE-aware fusion:
+    // - If word is part of an MWE, fuse only with MWE partners (not neighbors)
+    // - Otherwise, use normal neighbor fusion
+    if (word.isMWE && word.isMWE()) {
+      word = word.fuseMWEPartners(this.api);
+      // If null, MWE partner already has translation - don't create duplicate
+      if (word === null) {
+        onSuccess();
+        return;
+      }
+      // Trigger re-render after fusion so UI shows fused word immediately
+      if (onFusionComplete) onFusionComplete();
+    } else if (fuseWithNeighbours) {
+      word = word.fuseWithNeighborsIfNeeded(this.api);
+    }
     let wordSent_i = word.token.sent_i - cSent_i;
     let wordToken_i = word.token.token_i - cToken_i;
-    console.log(word);
+
+    // Use mweExpression for translation if available (separated MWEs)
+    const textToTranslate = word.mweExpression || word.word;
+    const isMweExpression = !!word.mweExpression;
+
+    // Check if this is a separated MWE (has gaps between parts)
+    // Backend sets mwe_is_separated=true when MWE words aren't contiguous
+    const isSeparatedMwe = !!word.token?.mwe_is_separated;
+
+    // Get MWE partner token index (for proper bookmark restoration)
+    // mwe_partner_indices is always a single-element array (head -> [dep] or dep -> [head])
+    const mwePartnerTokenI = word.token?.mwe_partner_indices?.[0] ?? null;
+
+    // Get full sentence for LLM translation context (only needed for separated MWEs)
+    let mweSentence = null;
+    if (isSeparatedMwe) {
+      mweSentence = this._getSentenceText(word);
+    }
+
+    MWE_DEBUG && console.log("MWE translating:", {
+      text: textToTranslate,
+      isMwe: isMweExpression,
+      separated: isSeparatedMwe,
+    });
 
     const browsingSessionId = this.getBrowsingSessionId?.();
     const readingSessionId = this.getReadingSessionId?.();
@@ -89,7 +121,7 @@ export default class InteractiveText {
       .getOneTranslation(
         this.language,
         localStorage.native_language,
-        word.word,
+        textToTranslate,
         [wordSent_i, wordToken_i, word.total_tokens],
         context,
         [cParagraph_i, cSent_i, cToken_i],
@@ -104,29 +136,30 @@ export default class InteractiveText {
           : "reading",
         browsingSessionId,
         readingSessionId,
+        isMweExpression,
+        isSeparatedMwe,
+        mweSentence,
+        mwePartnerTokenI,
       )
-      .then((response) => {
-        console.log(`[INTERACTIVE-TEXT] Translation response received`, { timestamp: new Date().toISOString(), word: word.word });
-        return response.data;
-      })
+      .then((response) => response.data)
       .then((data) => {
-        console.log(`[INTERACTIVE-TEXT] Translation data processed`, { timestamp: new Date().toISOString(), word: word.word, translation: data.translation });
         word.updateTranslation(data.translation, data.service_name, data.bookmark_id);
+        // Mark word's translation as visible so the component renders it
+        // This is especially important for MWEs where clicking any word
+        // applies translation to the first word
+        word.isTranslationVisible = true;
         onSuccess();
       })
       .catch((e) => {
-        console.error(`[INTERACTIVE-TEXT] Translation ERROR`, { timestamp: new Date().toISOString(), word: word.word, error: e.message, code: e.code });
-        console.error(e);
-        console.log("could not retreive translation");
+        console.error("Translation failed:", e);
       });
 
     this.api.logUserActivity(this.translationEvent, null, word.word, this.source, this.sourceId);
   }
 
   selectAlternative(word, alternative, preferredSource, onSuccess) {
-    let context;
-    [context] = this.getContextAndCoordinates(word);
-    this.api.updateBookmark(word.bookmark_id, word.word, alternative, context, this.contextIdentifier);
+    // Simple translation-only update - preserves all position data
+    this.api.updateBookmarkTranslation(word.bookmark_id, alternative);
     word.translation = alternative;
     word.service_name = "Own alternative selection";
 
@@ -136,39 +169,46 @@ export default class InteractiveText {
     onSuccess();
   }
 
-  alternativeTranslations(word, onSuccess) {
+  alternativeTranslations(word, onUpdate, onComplete) {
     let context;
     [context] = this.getContextAndCoordinates(word);
-    this.api
-      .getMultipleTranslations(
-        this.language,
-        localStorage.native_language,
-        word.word,
-        context,
-        -1,
-        word.service_name,
-        word.translation,
-        this.sourceId,
-      )
-      .then((response) => response.json())
-      .then((data) => {
-        word.alternatives = data.translations;
-        onSuccess();
-      });
+    // Use mweExpression for MWEs (e.g., "har været" instead of just "har")
+    const textToTranslate = word.mweExpression || word.word;
+    const isSeparatedMwe = !!word.token?.mwe_is_separated;
+    // Get full sentence for separated MWEs
+    const fullSentenceContext = isSeparatedMwe ? this._getSentenceText(word) : null;
+
+    // Initialize alternatives array for streaming
+    word.alternatives = [];
+
+    this.api.getTranslationsStreaming(
+      this.language,
+      localStorage.native_language,
+      textToTranslate,
+      context,
+      // Called for each translation as it arrives
+      (translation) => {
+        word.alternatives.push(translation);
+        onUpdate && onUpdate();
+      },
+      // Called when all translations are done
+      () => {
+        onComplete && onComplete();
+      },
+      isSeparatedMwe,
+      fullSentenceContext,
+    );
   }
 
   playAll() {
-    console.log("playing all");
     this.zeeguuSpeech.playAll(this.sourceId);
   }
 
   pause() {
-    console.log("pausing");
     this.zeeguuSpeech.pause();
   }
 
   resume() {
-    console.log("resuming");
     this.zeeguuSpeech.resume();
   }
 
@@ -176,6 +216,29 @@ export default class InteractiveText {
     this.zeeguuSpeech.speakOut(word.word);
 
     this.api.logUserActivity(this.api.SPEAK_TEXT, null, word.word, this.source, this.sourceId);
+  }
+
+  /**
+   * Get the full sentence text containing this word.
+   * Used for LLM translation of separated MWEs, which need sentence context.
+   */
+  _getSentenceText(word) {
+    const sentenceIndex = word.token.sent_i;
+    const parts = [];
+
+    // Go backwards to start of sentence
+    let current = word;
+    while (current.prev && current.prev.token.sent_i === sentenceIndex) {
+      current = current.prev;
+    }
+
+    // Build sentence from start to end
+    while (current && current.token.sent_i === sentenceIndex) {
+      parts.push(current.word);
+      current = current.next;
+    }
+
+    return parts.join(" ");
   }
 
   getContextAndCoordinates(word) {
@@ -191,7 +254,9 @@ export default class InteractiveText {
       let count = 0;
       while (count < maxLeftContextLength && currentWord.prev && !currentWord.token.is_sent_start) {
         currentWord = currentWord.prev;
-        contextBuilder = currentWord.word + (currentWord.token.has_space ? " " : "") + contextBuilder;
+        // Don't add space after words ending with hyphen (e.g., "l-" + "a" -> "l-a")
+        const addSpace = currentWord.token.has_space && !currentWord.word.endsWith("-");
+        contextBuilder = currentWord.word + (addSpace ? " " : "") + contextBuilder;
         count++;
         if (currentWord.token.is_sent_start || currentWord.token.token_i === 0) {
           break;
@@ -215,7 +280,9 @@ export default class InteractiveText {
         if (currentWord.token.is_sent_start && currentWord.token.sent_i !== currentWord.prev.token.sent_i) {
           break;
         }
-        contextBuilder = contextBuilder + (currentWord.prev.token.has_space ? " " : "") + currentWord.word;
+        // Don't add space after words ending with hyphen (e.g., "l-" + "a" -> "l-a")
+        const addSpace = currentWord.prev.token.has_space && !currentWord.prev.word.endsWith("-");
+        contextBuilder = contextBuilder + (addSpace ? " " : "") + currentWord.word;
         count++;
         currentWord = currentWord.next;
       }
@@ -275,108 +342,9 @@ export default class InteractiveText {
       // If we are not at the start of the sentence, we need leftEllipsis.
       leftEllipsis = token_i !== 0;
 
-      console.log("Budget: ", budget);
-      console.log("Final context: ", context, "(", context.split(" ").length, " words)");
-      console.log(paragraph_i, sent_i, token_i, leftEllipsis, rightEllipsis);
-
       return [context, paragraph_i, sent_i, token_i, leftEllipsis, rightEllipsis];
     }
 
     return radialExpansionContext(word);
-  }
-}
-
-function _updateTokensWithBookmarks(bookmarks, paragraphs) {
-  function areCoordinatesInParagraphMatrix(target_s_i, target_t_i, paragraphs) {
-    // This can happen when we update the tokenizer, but do not update the bookmarks.
-    // They might become misaligned and point to a non existing token.
-    return target_s_i < paragraphs[0].length && target_t_i < paragraphs[0][target_s_i].length;
-  }
-
-  if (!bookmarks) return;
-
-  for (let i = 0; i < bookmarks.length; i++) {
-    let bookmark = bookmarks[i];
-    let target_p_i, target_s_i, target_t_i;
-    let target_token;
-    target_p_i = 0;
-    target_s_i = bookmark["context_sent"] + bookmark["t_sentence_i"];
-    target_t_i = bookmark["context_token"] + bookmark["t_token_i"];
-
-    // If any the coordinates are null / undefined, we skip.
-
-    if (
-      isNullOrUndefinied(target_s_i) ||
-      isNullOrUndefinied(target_t_i) ||
-      !areCoordinatesInParagraphMatrix(target_s_i, target_t_i, paragraphs)
-    ) {
-      continue;
-    }
-
-    target_token = paragraphs[target_p_i][target_s_i][target_t_i];
-
-    /**
-     * Before we update the target token we want to check two cases:
-     * 1. The bookmark isn't defined.
-     * If the bookmark is defined it means a bookmark is trying to override another
-     * previous bookmark.
-     * 2. The bookmark text, doesn't match the token.
-     * In this case, we might have an error in the coordinates, and for that reason
-     * we don't update the original text.
-     */
-
-    if (target_token.bookmark) {
-      continue;
-    }
-    let bookmarkTokensSimplified = tokenize(bookmark["origin"]);
-    // Text and Bookmark will have different tokenization.
-    let bookmark_i = 0;
-    let text_i = 0;
-    let shouldSkipBookmarkUpdate = false;
-    while (bookmark_i < bookmarkTokensSimplified.length) {
-      let bookmark_word = removePunctuation(bookmarkTokensSimplified[bookmark_i]);
-      // If token is empty, due to removing punctuation, skip.
-      if (bookmark_word.length === 0) {
-        bookmark_i++;
-        continue;
-      }
-      let text_word = removePunctuation(paragraphs[target_p_i][target_s_i][target_t_i + text_i + bookmark_i].text);
-      // If text is empty and there is more text in the sentence, we update the
-      // text pointer.
-      if (text_word.length === 0 && target_t_i + text_i + bookmark_i + 1 < paragraphs[target_p_i][target_s_i].length) {
-        text_i++;
-        continue;
-      }
-      // If the tokens don't match, we break and skip this bookmark.
-
-      if (bookmark_word !== text_word) {
-        shouldSkipBookmarkUpdate = true;
-        break;
-      }
-      bookmark_i++;
-    }
-    if (shouldSkipBookmarkUpdate) {
-      continue;
-    }
-    // Because we are trying to find the tokens, we might skip some tokens that
-    // weren't included in the original bookmark. E.g. This, is a -> 4 tokens not 3.
-    if (bookmark.t_total_token < text_i + bookmark_i) bookmark.total_tokens = text_i + bookmark_i;
-    target_token.bookmark = bookmark;
-
-    /**
-     * When rendering the words in the frontend, we alter the word object to be composed
-     * of multiple tokens.
-     * In case of deleting a bookmark, we need to make sure that all the tokens are
-     * available to re-render the original text.
-     * To do this, we need to ensure that the stored token is stored without a bookmark,
-     * so when those are retrieved the token is seen as a token rather than a bookmark.
-     */
-    target_token.mergedTokens = [{ ...target_token, bookmark: null }];
-    for (let i = 1; i < bookmark["t_total_token"]; i++) {
-      target_token.mergedTokens.push({
-        ...paragraphs[target_p_i][target_s_i][target_t_i + i],
-      });
-      paragraphs[target_p_i][target_s_i][target_t_i + i].skipRender = true;
-    }
   }
 }

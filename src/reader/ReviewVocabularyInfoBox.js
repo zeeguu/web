@@ -31,7 +31,7 @@ export default function ReviewVocabularyInfoBox({
       <s.CenteredContent>
         {bookmarks.length > 0 && (
           <StyledButton
-            primary
+            $primary
             onClick={handleButtonClick}
             style={{ marginLeft: "auto", marginBottom: "5em" }}
           >
