@@ -136,7 +136,6 @@ const TranslatableText = styled.div`
   }
 
   /* --- MWE Hover Hint: Subtle indicator for untranslated MWEs (only when showMweHints enabled) --- */
-  /* Note: text-decoration dotted may not render on some mobile browsers - acceptable for debug feature */
   &[data-show-mwe-hints="true"] z-tag.mwe-hover-hint {
     text-decoration: underline dotted;
     text-decoration-thickness: 2px;
@@ -145,6 +144,13 @@ const TranslatableText = styled.div`
   }
   &[data-show-mwe-hints="true"] z-tag.mwe-hover-hint[class*="mwe-color-"] {
     text-decoration-color: var(--mwe-color);
+  }
+  /* Mobile fallback: solid thin underline (dotted doesn't render on some mobile browsers) */
+  @media (max-width: 768px) {
+    &[data-show-mwe-hints="true"] z-tag.mwe-hover-hint {
+      text-decoration: underline solid;
+      text-decoration-thickness: 1px;
+    }
   }
 
   /* --- MWE Translated: Permanent styling for translated MWE words --- */
