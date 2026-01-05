@@ -208,7 +208,7 @@ export default function TranslatableWord({
           (word.token.is_punct && word.prev && [":", ".", ","].includes(word.prev.word.trim()))) {
         classes.push("left-punct");
       }
-      if (["–", "—", """, "'", '"'].includes(word.word.trim())) {
+      if (["–", "—", "\u201c", "\u2019", '"'].includes(word.word.trim())) {
         classes.push("no-margin");
       }
     }
