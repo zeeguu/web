@@ -150,6 +150,7 @@ const TranslatableText = styled.div`
     &[data-show-mwe-hints="true"] z-tag.mwe-hover-hint {
       text-decoration: underline solid;
       text-decoration-thickness: 1px;
+      background-color: yellow; /* DEBUG - remove after testing */
     }
   }
 
