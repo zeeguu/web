@@ -180,17 +180,6 @@ export default function UpgradeAccountModal({
     );
   }
 
-  function handleSkipConfirmation() {
-    // Allow user to continue without confirming (soft confirmation)
-    LocalStorage.clearAnonCredentials();
-    api.getUserDetails((user) => {
-      setUserDetails(user);
-      LocalStorage.setUserInfo(user);
-      if (onSuccess) onSuccess();
-      onClose();
-    });
-  }
-
   function handleDismiss() {
     LocalStorage.setAnonUpgradeDismissed(true);
     onClose();
@@ -310,14 +299,6 @@ export default function UpgradeAccountModal({
             </div>
 
             <div className="buttons">
-              <button
-                type="button"
-                className="btn btn-secondary"
-                onClick={handleSkipConfirmation}
-                disabled={isSubmitting}
-              >
-                Skip for now
-              </button>
               <button
                 type="submit"
                 className="btn btn-primary"
