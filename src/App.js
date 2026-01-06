@@ -16,6 +16,7 @@ import { SpeechContext } from "./contexts/SpeechContext";
 import { API_ENDPOINT, APP_DOMAIN } from "./appConstants";
 
 import { getSharedSession, removeSharedUserInfo, saveSharedUserInfo, initializeSession } from "./utils/cookies/userInfo";
+import { Capacitor } from "@capacitor/core";
 
 import MainAppRouter from "./MainAppRouter";
 import { ToastContainer } from "react-toastify";
@@ -25,6 +26,21 @@ import SessionStorage from "./assorted/SessionStorage";
 import useRedirectLink from "./hooks/useRedirectLink";
 import useLocationTracker from "./hooks/useLocationTracker";
 import LoadingAnimation from "./components/LoadingAnimation";
+
+// Helper to detect if we're in a Capacitor native app
+const isCapacitor = () => {
+  const platform = Capacitor.getPlatform();
+  return platform === "ios" || platform === "android";
+};
+
+// Generate a UUID v4
+function generateUUID() {
+  return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function (c) {
+    const r = (Math.random() * 16) | 0;
+    const v = c === "x" ? r : (r & 0x3) | 0x8;
+    return v.toString(16);
+  });
+}
 
 // Wrapper component to use location tracker inside Router context
 function LocationTrackingWrapper({ children }) {
@@ -116,8 +132,58 @@ function App() {
       );
     } else {
       // No session - user is not logged in
-      setUserDetails({});
-      setUserPreferences({});
+      // On mobile (Capacitor), try to restore anonymous session if credentials exist
+      if (isCapacitor()) {
+        tryRestoreAnonymousSession();
+      } else {
+        setUserDetails({});
+        setUserPreferences({});
+      }
+    }
+
+    // Try to restore an existing anonymous session (returning user)
+    function tryRestoreAnonymousSession() {
+      const anonCredentials = LocalStorage.getAnonCredentials();
+
+      if (anonCredentials) {
+        // Try to log in with existing anonymous credentials
+        console.log("Found anonymous credentials, attempting login...");
+        api.logInAnon(
+          anonCredentials.uuid,
+          anonCredentials.password,
+          (session) => {
+            console.log("Anonymous login successful");
+            api.session = session;
+            saveSharedUserInfo({ name: "Guest", native_language: "en" }, session);
+            loadUserDetailsAfterLogin();
+          },
+          (error) => {
+            // Login failed - credentials might be invalid
+            console.log("Anonymous login failed, clearing credentials...", error);
+            LocalStorage.clearAnonCredentials();
+            // Let them go through language preferences again
+            setUserDetails({});
+            setUserPreferences({});
+          },
+        );
+      } else {
+        // No stored credentials - new user, will go through language preferences
+        // The account will be created after they complete LanguagePreferences
+        setUserDetails({});
+        setUserPreferences({});
+      }
+    }
+
+    function loadUserDetailsAfterLogin() {
+      api.getUserDetails((userDetails) => {
+        LocalStorage.setUserInfo(userDetails);
+        api.getUserPreferences((userPreferences) => {
+          LocalStorage.setUserPreferences(userPreferences);
+          setZeeguuSpeech(new ZeeguuSpeech(api, userDetails.learned_language));
+          setUserDetails(userDetails);
+          setUserPreferences(userPreferences);
+        });
+      });
     }
 
     // Log out user on zeeguu.org if they log out of the extension
@@ -135,6 +201,7 @@ function App() {
   function logout() {
     LocalStorage.deleteUserInfo();
     LocalStorage.deleteUserPreferences();
+    LocalStorage.clearAnonCredentials(); // Clear anonymous credentials on logout
     setUserDetails({});
     setUserPreferences({});
 
@@ -145,6 +212,7 @@ function App() {
     console.log("HANDLE SUCCESSFUL SIGN IN");
     api.session = sessionId;
     LocalStorage.setUserInfo(userInfo);
+    LocalStorage.clearAnonCredentials(); // Clear anonymous credentials on real login
 
     // TODO: Should this be moved to Settings.loadUsrePreferences?
     api.getUserPreferences((preferences) => {

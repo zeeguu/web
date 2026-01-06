@@ -131,3 +131,89 @@ Zeeguu_API.prototype.resetPassword = function (
     onError,
   );
 };
+
+Zeeguu_API.prototype.addAnonUser = function (
+  uuid,
+  password,
+  languagePrefs,
+  onSuccess,
+  onError,
+) {
+  let url = this.baseAPIurl + `/add_anon_user`;
+  let body = `uuid=${uuid}&password=${password}`;
+
+  if (languagePrefs?.learned_language) {
+    body += `&learned_language_code=${languagePrefs.learned_language}`;
+  }
+  if (languagePrefs?.native_language) {
+    body += `&native_language_code=${languagePrefs.native_language}`;
+  }
+  if (languagePrefs?.learned_cefr_level) {
+    body += `&learned_cefr_level=${languagePrefs.learned_cefr_level}`;
+  }
+
+  return fetch(url, {
+    method: "POST",
+    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    body: body,
+  })
+    .then((response) => {
+      if (response.ok) {
+        response.text().then((session) => {
+          this.session = session;
+          onSuccess(session);
+        });
+      } else if (response.status === 400) {
+        response.json().then((json) => {
+          onError(json.message);
+        });
+      } else {
+        onError("Something went wrong. Try again or contact us.");
+      }
+    })
+    .catch((error) => {
+      onError(error.message);
+    });
+};
+
+Zeeguu_API.prototype.logInAnon = function (uuid, password, onSuccess, onError) {
+  let url = this.baseAPIurl + `/get_anon_session/${uuid}`;
+  this.apiLog(`/get_anon_session/${uuid}`);
+
+  fetch(url, {
+    method: "POST",
+    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    body: `password=${password}`,
+  })
+    .then((response) => {
+      if (response.ok) {
+        response.text().then((session) => {
+          this.session = session;
+          onSuccess(session);
+        });
+      } else {
+        onError("Invalid credentials");
+      }
+    })
+    .catch((error) => {
+      onError(error.message);
+    });
+};
+
+Zeeguu_API.prototype.upgradeAnonUser = function (
+  email,
+  username,
+  password,
+  onSuccess,
+  onError,
+) {
+  let body = `email=${encodeURIComponent(email)}&username=${encodeURIComponent(username)}`;
+  if (password) {
+    body += `&password=${encodeURIComponent(password)}`;
+  }
+  this._post("upgrade_anon_user", body, onSuccess, onError);
+};
+
+Zeeguu_API.prototype.confirmEmail = function (code, onSuccess, onError) {
+  this._post("confirm_email", `code=${encodeURIComponent(code)}`, onSuccess, onError);
+};

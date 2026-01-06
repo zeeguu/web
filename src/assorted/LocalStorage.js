@@ -14,6 +14,12 @@ const LocalStorage = {
     SelectedTimePeriod: "selected_time_period",
     Features: "features",
     IsStudent: "is_student",
+
+    // Anonymous user keys
+    AnonUUID: "anon_uuid",
+    AnonPassword: "anon_password",
+    AnonFirstUseDate: "anon_first_use_date",
+    AnonUpgradeDismissed: "anon_upgrade_dismissed",
     AudioExperimentNoOfSessions: "audio_experiment_no_of_sessions",
     DisplayedAudioExperimentPopup: "audio_experiment_displayed_popup",
     AudioExperimentCompleted: "audio_experiment_completed",
@@ -266,6 +272,52 @@ const LocalStorage = {
 
   setLastVisitedTeacherPage: function (path) {
     localStorage[this.Keys.LastVisitedTeacherPage] = path;
+  },
+
+  // Anonymous user methods
+  getAnonCredentials: function () {
+    const uuid = localStorage[this.Keys.AnonUUID];
+    const password = localStorage[this.Keys.AnonPassword];
+    if (uuid && password) {
+      return { uuid, password };
+    }
+    return null;
+  },
+
+  setAnonCredentials: function (uuid, password) {
+    localStorage[this.Keys.AnonUUID] = uuid;
+    localStorage[this.Keys.AnonPassword] = password;
+    if (!localStorage[this.Keys.AnonFirstUseDate]) {
+      localStorage[this.Keys.AnonFirstUseDate] = new Date().toISOString();
+    }
+  },
+
+  clearAnonCredentials: function () {
+    localStorage.removeItem(this.Keys.AnonUUID);
+    localStorage.removeItem(this.Keys.AnonPassword);
+    localStorage.removeItem(this.Keys.AnonFirstUseDate);
+    localStorage.removeItem(this.Keys.AnonUpgradeDismissed);
+  },
+
+  getAnonFirstUseDate: function () {
+    const dateStr = localStorage[this.Keys.AnonFirstUseDate];
+    return dateStr ? new Date(dateStr) : null;
+  },
+
+  getDaysSinceFirstUse: function () {
+    const firstUse = this.getAnonFirstUseDate();
+    if (!firstUse) return 0;
+    const now = new Date();
+    const diffMs = now - firstUse;
+    return Math.floor(diffMs / (1000 * 60 * 60 * 24));
+  },
+
+  isAnonUpgradeDismissed: function () {
+    return localStorage[this.Keys.AnonUpgradeDismissed] === "true";
+  },
+
+  setAnonUpgradeDismissed: function (dismissed) {
+    localStorage[this.Keys.AnonUpgradeDismissed] = dismissed ? "true" : "false";
   },
 };
 

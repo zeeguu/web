@@ -1,8 +1,10 @@
-import { useEffect, useContext } from "react";
+import { useEffect, useContext, useState } from "react";
 import { useLocation } from "react-router-dom/cjs/react-router-dom";
 import { SystemLanguagesContext } from "../../contexts/SystemLanguagesContext";
+import { APIContext } from "../../contexts/APIContext";
 import { useHistory } from "react-router-dom/cjs/react-router-dom";
 import { Link } from "react-router-dom";
+import { Capacitor } from "@capacitor/core";
 
 import { CEFR_LEVELS } from "../../assorted/cefrLevels";
 import { setTitle } from "../../assorted/setTitle";
@@ -15,6 +17,7 @@ import useFormField from "../../hooks/useFormField";
 import validateRules from "../../assorted/validateRules";
 import { NonEmptyValidator } from "../../utils/ValidatorRule/Validator";
 import strings from "../../i18n/definitions";
+import { saveSharedUserInfo, setUserSession } from "../../utils/cookies/userInfo";
 
 import PreferencesPage from "../_pages_shared/PreferencesPage";
 import Header from "../_pages_shared/Header";
@@ -28,10 +31,34 @@ import Button from "../_pages_shared/Button.sc";
 import RoundedForwardArrow from "@mui/icons-material/ArrowForwardRounded";
 import LoadingAnimation from "../../components/LoadingAnimation";
 
+// Helper to detect if we're in a Capacitor native app
+const isCapacitor = () => {
+  const platform = Capacitor.getPlatform();
+  return platform === "ios" || platform === "android";
+};
+
+// Check if anonymous mode is enabled (for testing on web)
+// Use: /language_preferences?anon=1
+const isAnonModeEnabled = () => {
+  const params = new URLSearchParams(window.location.search);
+  return params.get("anon") === "1" || isCapacitor();
+};
+
+// Generate a UUID v4
+function generateUUID() {
+  return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function (c) {
+    const r = (Math.random() * 16) | 0;
+    const v = c === "x" ? r : (r & 0x3) | 0x8;
+    return v.toString(16);
+  });
+}
+
 export default function LanguagePreferences() {
   const history = useHistory();
   const location = useLocation();
+  const api = useContext(APIContext);
   const { sortedSystemLanguages } = useContext(SystemLanguagesContext);
+  const [isCreatingAccount, setIsCreatingAccount] = useState(false);
 
   function getQueryParam(name) {
     const params = new URLSearchParams(location.search);
@@ -107,9 +134,60 @@ export default function LanguagePreferences() {
         validateLearnedCEFRLevel,
         validateTranslationLanguage,
       ])
-    )
+    ) {
       scrollToTop();
-    else history.push("/account_details");
+      return;
+    }
+
+    // On mobile (Capacitor) or if ?anon=1, create anonymous account and go to interests
+    if (isAnonModeEnabled()) {
+      createAnonymousAccountAndContinue();
+    } else {
+      // On web, go to account creation page
+      history.push("/account_details");
+    }
+  }
+
+  function createAnonymousAccountAndContinue() {
+    setIsCreatingAccount(true);
+    const uuid = generateUUID();
+    const password = generateUUID();
+
+    api.addAnonUser(
+      uuid,
+      password,
+      {
+        learned_language: learnedLanguage,
+        native_language: translationLanguage,
+        learned_cefr_level: learnedCEFRLevel,
+      },
+      (session) => {
+        // Store credentials for future sessions
+        LocalStorage.setAnonCredentials(uuid, password);
+
+        // Set the session
+        setUserSession(session);
+        api.session = session;
+
+        saveSharedUserInfo(
+          { name: "Guest", native_language: translationLanguage },
+          session
+        );
+
+        setIsCreatingAccount(false);
+
+        // Small delay to ensure storage is written before redirect
+        setTimeout(() => {
+          window.location.href = "/select_interests";
+        }, 100);
+      },
+      (error) => {
+        console.error("Failed to create anonymous account:", error);
+        setIsCreatingAccount(false);
+        // Fall back to regular account creation
+        history.push("/account_details");
+      }
+    );
   }
 
   return (
@@ -173,8 +251,10 @@ export default function LanguagePreferences() {
               type={"submit"}
               className={"full-width-btn"}
               onClick={validateAndRedirect}
+              disabled={isCreatingAccount}
             >
-              {strings.next} <RoundedForwardArrow />
+              {isCreatingAccount ? "Setting up..." : strings.next}{" "}
+              {!isCreatingAccount && <RoundedForwardArrow />}
             </Button>
           </ButtonContainer>
           <p className="centered">
