@@ -94,7 +94,7 @@ export default function AlterMenu({
       )}
       {word.alternatives !== undefined && word.mweExpression && ungroupMwe && (
         <div className="removeLink" onClick={(e) => ungroupMwe(e, word)}>
-          Ungroup words
+          Not a phrase
         </div>
       )}
       {word.alternatives !== undefined && (
