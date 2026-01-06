@@ -136,13 +136,21 @@ const TranslatableText = styled.div`
   }
 
   /* --- MWE Hover Hint: Subtle indicator for untranslated MWEs (only when showMweHints enabled) --- */
-  /* Using border-bottom instead of text-decoration for better mobile support */
   &[data-show-mwe-hints="true"] z-tag.mwe-hover-hint {
-    border-bottom: 2px dotted var(--mwe-adjacent-color);
-    padding-bottom: 1px;
+    text-decoration: underline dotted;
+    text-decoration-thickness: 2px;
+    text-decoration-color: var(--mwe-adjacent-color);
+    text-underline-offset: 3px;
   }
   &[data-show-mwe-hints="true"] z-tag.mwe-hover-hint[class*="mwe-color-"] {
-    border-bottom-color: var(--mwe-color);
+    text-decoration-color: var(--mwe-color);
+  }
+  /* Mobile fallback: subtle background (text-decoration doesn't render on inline-block in mobile browsers) */
+  @media (max-width: 768px) {
+    &[data-show-mwe-hints="true"] z-tag.mwe-hover-hint {
+      text-decoration: none;
+      background-color: rgba(200, 140, 60, 0.12);
+    }
   }
 
   /* --- MWE Translated: Permanent styling for translated MWE words --- */
