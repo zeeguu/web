@@ -111,7 +111,7 @@ export default function SideNavLanguageOption({ screenWidth }) {
         }
         title={`${languageDisplayed} (${currentCefrLevel}) - Click name to change language, click level to change it`}
         screenWidth={screenWidth}
-        onClick={() => {}} // Disable default click behavior since we handle clicks on individual elements
+        onClick={() => setShowLanguageModal(true)} // Opens modal when clicking icon (especially important at medium widths where only icon is visible)
       />
       <LanguageModal
         prefixMsg={"Sidebar"}
