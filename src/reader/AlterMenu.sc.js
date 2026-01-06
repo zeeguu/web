@@ -1,11 +1,6 @@
 import styled from "styled-components";
 
-import {
-  almostBlack,
-  zeeguuDarkRed,
-  zeeguuLightYellow,
-  zeeguuVeryLightYellow,
-} from "../components/colors";
+import { almostBlack, zeeguuDarkRed, zeeguuLightYellow, zeeguuVeryLightYellow } from "../components/colors";
 
 const AlterMenuSC = styled.div`
   font-size: medium;
@@ -29,6 +24,7 @@ const AlterMenuSC = styled.div`
     line-height: 1em;
     cursor: pointer;
     margin-top: 0.2em;
+    margin-left: 0.2em;
     font-weight: 500;
 
     &:hover {
@@ -38,6 +34,13 @@ const AlterMenuSC = styled.div`
 
   .selected {
     font-weight: 600;
+  }
+
+  .noAlternatives {
+    color: gray;
+    font-style: italic;
+    margin: 0.3em 0.2em;
+    font-size: small;
   }
 
   .ownTranslationInput {
@@ -78,11 +81,11 @@ const AlterMenuSC = styled.div`
   .removeLink {
     //text-decoration: underline;
     margin-top: 0.2rem;
-    padding-top: 0.2rem;
-    margin-bottom: -0.2rem;
-    border-top: 1px solid ${zeeguuDarkRed} !important;
+    padding-bottom: 0.2rem;
+    margin-bottom: 0.2rem;
+    //border-bottom: 1px solid ${zeeguuDarkRed} !important;
     color: ${zeeguuDarkRed};
-    font-size: small;
+    //font-size: small;
 
     &:hover {
       filter: brightness(110%);

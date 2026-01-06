@@ -49,38 +49,48 @@ export default function AlterMenu({
 
   return (
     <AlterMenuSC ref={refToAlterMenu}>
+      {/* Actions - always available, don't depend on alternatives */}
+      {word.mweExpression && ungroupMwe && (
+        <div className="removeLink" onClick={(e) => ungroupMwe(e, word)}>
+          Ungroup expression
+        </div>
+      )}
+      <div className="removeLink" onClick={(e) => deleteTranslation(e, word)}>
+        Delete translation
+      </div>
+
       {/* Alternatives section - shows spinner while loading */}
       {!hasAlternativesLoaded ? (
-        <LoadingAnimation
-          specificStyle={{ height: "3.5rem", margin: "1rem 3.1rem" }}
-          delay={0}
-        ></LoadingAnimation>
+        <LoadingAnimation specificStyle={{ height: "3.5rem", margin: "1rem 3.1rem" }} delay={0}></LoadingAnimation>
       ) : (
         <>
-          {word.alternatives.map((each, index) => (
-            <div
-              key={`${each.translation}-${each.source}-${index}`}
-              onClick={(e) =>
-                selectAlternative(each.translation, shortenSource(each))
-              }
-              className={
-                each.translation === word.translation
-                  ? "additionalTrans selected"
-                  : "additionalTrans"
-              }
-            >
-              {each.translation}
-              <div
-                style={{
-                  marginTop: "-4px",
-                  fontSize: 8,
-                  color: "rgb(240,204,160)",
-                }}
-              >
-                {shortenSource(each)}
-              </div>
-            </div>
-          ))}
+          {word.alternatives.filter((each) => each.translation !== word.translation).length > 0 ? (
+            <>
+              <div style={{ color: "orange", fontSize: "small" }}>Choose alternative</div>
+              {word.alternatives
+                .filter((each) => each.translation !== word.translation)
+                .map((each, index) => (
+                  <div
+                    key={`${each.translation}-${each.source}-${index}`}
+                    onClick={(e) => selectAlternative(each.translation, shortenSource(each))}
+                    className="additionalTrans"
+                  >
+                    {each.translation}
+                    <div
+                      style={{
+                        marginTop: "-4px",
+                        fontSize: 8,
+                        color: "rgb(240,204,160)",
+                      }}
+                    >
+                      {shortenSource(each)}
+                    </div>
+                  </div>
+                ))}
+            </>
+          ) : (
+            <div className="noAlternatives">No alternative found</div>
+          )}
           <input
             autoComplete="off"
             className="ownTranslationInput matchWidth"
@@ -93,16 +103,6 @@ export default function AlterMenu({
           />
         </>
       )}
-
-      {/* Actions - always available, don't depend on alternatives */}
-      {word.mweExpression && ungroupMwe && (
-        <div className="removeLink" onClick={(e) => ungroupMwe(e, word)}>
-          Not a phrase
-        </div>
-      )}
-      <div className="removeLink" onClick={(e) => deleteTranslation(e, word)}>
-        Delete Translation
-      </div>
     </AlterMenuSC>
   );
 }
