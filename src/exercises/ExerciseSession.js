@@ -33,7 +33,7 @@ const BOOKMARKS_DUE_REVIEW = false;
 export default function ExerciseSession({ articleID, backButtonAction, toScheduledExercises, source }) {
   const api = useContext(APIContext);
   const speech = useContext(SpeechContext);
-  const { userDetails } = useContext(UserContext);
+  const { userDetails, userPreferences } = useContext(UserContext);
   const { setContextualInfo } = useFeedbackContext();
   const history = useHistory();
 
@@ -102,14 +102,12 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
   }
 
   function initializeExerciseSessionComponent() {
-    api.getUserPreferences((preferences) => {
-      if (SessionStorage.getAudioExercisesEnabled() === undefined)
-        // If the user doesn't go through the login (or has it cached, we need to set it at the start of the exercises.)
-        // TODO: Move the UserContext?
-        SessionStorage.setAudioExercisesEnabled(
-          preferences["audio_exercises"] === undefined || preferences["audio_exercises"] === "true",
-        );
-    });
+    // Use cached preferences from UserContext instead of making an API call
+    if (SessionStorage.getAudioExercisesEnabled() === undefined && userPreferences) {
+      SessionStorage.setAudioExercisesEnabled(
+        userPreferences["audio_exercises"] === undefined || userPreferences["audio_exercises"] === "true",
+      );
+    }
 
     api.logUserActivity(
       articleID ? api.TO_EXERCISES_AFTER_REVIEW : api.SCHEDULED_EXERCISES_OPEN,
@@ -159,17 +157,21 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
 
   function getBookmarksAndAssignThemToExercises() {
     if (articleID) {
-      // TODO: Mircea: Consider creating an endpoint that merges these two
-      // calls so we only send a single call
-      api.getArticleInfo(articleID, (articleInfo) => {
-        api.wordsToStudyForArticle(articleID, true, (bookmarks) => {
-          hideExerciseCounter(); // for article bookmarks we do not show the counter
+      // Fetch article info and words in parallel for faster loading
+      const articleInfoPromise = new Promise((resolve) => {
+        api.getArticleInfo(articleID, resolve);
+      });
+      const wordsPromise = new Promise((resolve) => {
+        api.wordsToStudyForArticle(articleID, true, resolve);
+      });
 
-          setArticleTitle(articleInfo.title);
-          setArticleURL(articleInfo.url);
-          setTitle('Exercises for "' + articleInfo.title + '"');
-          initializeExercisesForBookmarks(bookmarks);
-        });
+      Promise.all([articleInfoPromise, wordsPromise]).then(([articleInfo, bookmarks]) => {
+        hideExerciseCounter(); // for article bookmarks we do not show the counter
+
+        setArticleTitle(articleInfo.title);
+        setArticleURL(articleInfo.url);
+        setTitle('Exercises for "' + articleInfo.title + '"');
+        initializeExercisesForBookmarks(bookmarks);
       });
     } else {
       api.getBookmarksRecommendedForPractice((bookmarks) => initializeExercisesForBookmarks(bookmarks));
