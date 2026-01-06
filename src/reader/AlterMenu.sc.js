@@ -78,14 +78,15 @@ const AlterMenuSC = styled.div`
     }
   }
 
+  .actionsSection {
+    margin-top: 0.4rem;
+    padding-top: 0.3rem;
+    border-top: 1px solid ${zeeguuDarkRed};
+  }
+
   .removeLink {
-    //text-decoration: underline;
     margin-top: 0.2rem;
-    padding-bottom: 0.2rem;
-    margin-bottom: 0.2rem;
-    //border-bottom: 1px solid ${zeeguuDarkRed} !important;
     color: ${zeeguuDarkRed};
-    //font-size: small;
 
     &:hover {
       filter: brightness(110%);

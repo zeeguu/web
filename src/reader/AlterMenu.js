@@ -49,16 +49,6 @@ export default function AlterMenu({
 
   return (
     <AlterMenuSC ref={refToAlterMenu}>
-      {/* Actions - always available, don't depend on alternatives */}
-      {word.mweExpression && ungroupMwe && (
-        <div className="removeLink" onClick={(e) => ungroupMwe(e, word)}>
-          Ungroup expression
-        </div>
-      )}
-      <div className="removeLink" onClick={(e) => deleteTranslation(e, word)}>
-        Delete translation
-      </div>
-
       {/* Alternatives section - shows spinner while loading */}
       {!hasAlternativesLoaded ? (
         <LoadingAnimation specificStyle={{ height: "3.5rem", margin: "1rem 3.1rem" }} delay={0}></LoadingAnimation>
@@ -101,6 +91,18 @@ export default function AlterMenu({
             onKeyDown={(e) => handleKeyDown(e)}
             placeholder="Add own translation..."
           />
+
+          {/* Actions - shown after alternatives load */}
+          <div className="actionsSection">
+            {word.mweExpression && ungroupMwe && (
+              <div className="removeLink" onClick={(e) => ungroupMwe(e, word)}>
+                Ungroup expression
+              </div>
+            )}
+            <div className="removeLink" onClick={(e) => deleteTranslation(e, word)}>
+              Delete translation
+            </div>
+          </div>
         </>
       )}
     </AlterMenuSC>
