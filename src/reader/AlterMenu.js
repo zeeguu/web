@@ -10,12 +10,10 @@ export default function AlterMenu({
   deleteTranslation,
   ungroupMwe,
   clickedOutsideTranslation,
+  alternativesLoaded,
 }) {
   const [refToAlterMenu, clickedOutsideAlterMenu] = useClickOutside();
   const [inputValue, setInputValue] = useState("");
-
-  // Alternatives load asynchronously - show spinner while loading
-  const hasAlternativesLoaded = word.alternatives !== undefined;
 
   useEffect(() => {
     if (clickedOutsideAlterMenu && clickedOutsideTranslation) {
@@ -47,64 +45,63 @@ export default function AlterMenu({
     return word.source;
   }
 
+  const filteredAlternatives = word.alternatives?.filter((each) => each.translation !== word.translation) || [];
+  const hasAlternatives = filteredAlternatives.length > 0;
+
   return (
     <AlterMenuSC ref={refToAlterMenu}>
-      {/* Alternatives section - shows spinner while loading */}
-      {!hasAlternativesLoaded ? (
-        <LoadingAnimation specificStyle={{ height: "3.5rem", margin: "1rem 3.1rem" }} delay={0}></LoadingAnimation>
-      ) : (
+      {/* Alternatives section - streams as they arrive */}
+      {hasAlternatives && (
         <>
-          {word.alternatives.filter((each) => each.translation !== word.translation).length > 0 ? (
-            <>
-              <div style={{ color: "orange", fontSize: "small" }}>Choose alternative</div>
-              {word.alternatives
-                .filter((each) => each.translation !== word.translation)
-                .map((each, index) => (
-                  <div
-                    key={`${each.translation}-${each.source}-${index}`}
-                    onClick={(e) => selectAlternative(each.translation, shortenSource(each))}
-                    className="additionalTrans"
-                  >
-                    {each.translation}
-                    <div
-                      style={{
-                        marginTop: "-4px",
-                        fontSize: 8,
-                        color: "rgb(240,204,160)",
-                      }}
-                    >
-                      {shortenSource(each)}
-                    </div>
-                  </div>
-                ))}
-            </>
-          ) : (
-            <div className="noAlternatives">No alternative found</div>
-          )}
-          <input
-            autoComplete="off"
-            className="ownTranslationInput matchWidth"
-            type="text"
-            id="#userAlternative"
-            value={inputValue}
-            onChange={(e) => setInputValue(e.target.value)}
-            onKeyDown={(e) => handleKeyDown(e)}
-            placeholder="Add own translation..."
-          />
-
-          {/* Actions - shown after alternatives load */}
-          <div className="actionsSection">
-            {word.mweExpression && ungroupMwe && (
-              <div className="removeLink" onClick={(e) => ungroupMwe(e, word)}>
-                Ungroup expression
+          <div style={{ color: "orange", fontSize: "small" }}>Choose alternative</div>
+          {filteredAlternatives.map((each, index) => (
+            <div
+              key={`${each.translation}-${each.source}-${index}`}
+              onClick={(e) => selectAlternative(each.translation, shortenSource(each))}
+              className="additionalTrans"
+            >
+              {each.translation}
+              <div
+                style={{
+                  marginTop: "-4px",
+                  fontSize: 8,
+                  color: "rgb(240,204,160)",
+                }}
+              >
+                {shortenSource(each)}
               </div>
-            )}
-            <div className="removeLink" onClick={(e) => deleteTranslation(e, word)}>
-              Delete translation
             </div>
-          </div>
+          ))}
         </>
       )}
+      {/* Show spinner while still loading */}
+      {!alternativesLoaded && (
+        <LoadingAnimation specificStyle={{ transform: "scale(0.4)", height: "2rem", margin: "0.5rem 0 -0.5rem 0" }} delay={0}></LoadingAnimation>
+      )}
+      {/* Only show "no alternatives" when done loading and none found */}
+      {alternativesLoaded && !hasAlternatives && (
+        <div className="noAlternatives">No alternative found</div>
+      )}
+      <input
+        autoComplete="off"
+        className="ownTranslationInput matchWidth"
+        type="text"
+        id="#userAlternative"
+        value={inputValue}
+        onChange={(e) => setInputValue(e.target.value)}
+        onKeyDown={(e) => handleKeyDown(e)}
+        placeholder="Add own translation..."
+      />
+      <div className="actionsSection">
+        {word.mweExpression && ungroupMwe && (
+          <div className="removeLink" onClick={(e) => ungroupMwe(e, word)}>
+            Ungroup expression
+          </div>
+        )}
+        <div className="removeLink" onClick={(e) => deleteTranslation(e, word)}>
+          Delete translation
+        </div>
+      </div>
     </AlterMenuSC>
   );
 }

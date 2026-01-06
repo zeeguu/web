@@ -372,6 +372,7 @@ export default function TranslatableWord({
               clickedOutsideTranslation={clickedOutsideTranslation}
               deleteTranslation={deleteTranslation}
               ungroupMwe={ungroupMwe}
+              alternativesLoaded={hasFetchedAlternatives}
             />
           )}
         </z-orig>
