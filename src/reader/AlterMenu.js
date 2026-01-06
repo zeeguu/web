@@ -8,6 +8,7 @@ export default function AlterMenu({
   hideAlterMenu,
   selectAlternative,
   deleteTranslation,
+  ungroupMwe,
   clickedOutsideTranslation,
 }) {
   const [refToAlterMenu, clickedOutsideAlterMenu] = useClickOutside();
@@ -90,6 +91,11 @@ export default function AlterMenu({
             placeholder="Add own translation..."
           />
         </>
+      )}
+      {word.alternatives !== undefined && word.mweExpression && ungroupMwe && (
+        <div className="removeLink" onClick={(e) => ungroupMwe(e, word)}>
+          Ungroup words
+        </div>
       )}
       {word.alternatives !== undefined && (
         <div className="removeLink" onClick={(e) => deleteTranslation(e, word)}>

@@ -144,6 +144,49 @@ export default function TranslatableWord({
     );
   }
 
+  function ungroupMwe(e, word) {
+    // Get article_id from context identifier
+    const articleId = interactiveText.contextIdentifier?.article_id;
+    const mweExpression = word.mweExpression;
+    const sentenceText = word.getSentenceText?.() || "";
+    const bookmarkId = word.bookmark_id;
+    const sentI = word.token?.sent_i;
+
+    if (!articleId || !mweExpression || !sentenceText || !bookmarkId) {
+      console.error("Missing data for MWE ungroup:", { articleId, mweExpression, sentenceText, bookmarkId });
+      return;
+    }
+
+    interactiveText.api.disableMweGrouping(
+      articleId,
+      mweExpression,
+      sentenceText,
+      bookmarkId,
+      () => {
+        // Success - split the word back into components and clear MWE metadata
+        word.splitAndClearMWE();
+
+        // Update disabledMweGroups immediately so subsequent clicks don't trigger MWE behavior
+        if (sentI != null && interactiveText.disabledMweGroups) {
+          if (!interactiveText.disabledMweGroups[sentI]) {
+            interactiveText.disabledMweGroups[sentI] = [];
+          }
+          const normalizedExpression = mweExpression.toLowerCase().trim();
+          if (!interactiveText.disabledMweGroups[sentI].includes(normalizedExpression)) {
+            interactiveText.disabledMweGroups[sentI].push(normalizedExpression);
+          }
+        }
+
+        setShowingAlterMenu(false);
+        wordUpdated();
+      },
+      (error) => {
+        console.error("Failed to ungroup MWE:", error);
+        alert("Could not ungroup words. Please try again.");
+      },
+    );
+  }
+
   function selectAlternative(alternative, preferredSource) {
     interactiveText.selectAlternative(word, alternative, preferredSource, () => {
       wordUpdated();
@@ -162,8 +205,13 @@ export default function TranslatableWord({
   }
 
   function handleMouseEnter() {
-    if (hasMWEPartnersInSameSentence() && setHighlightedMWEGroupId) {
-      setHighlightedMWEGroupId(word.token.mwe_group_id);
+    const groupId = word.token?.mwe_group_id;
+    const sentI = word.token?.sent_i;
+    const disabledExpressions = sentI != null ? interactiveText.disabledMweGroups?.[sentI] : null;
+    const mweExpression = word.getMWEExpression?.();
+    const isDisabled = mweExpression && disabledExpressions?.includes(mweExpression);
+    if (hasMWEPartnersInSameSentence() && setHighlightedMWEGroupId && !isDisabled) {
+      setHighlightedMWEGroupId(groupId);
     }
   }
 
@@ -220,6 +268,12 @@ export default function TranslatableWord({
     const classes = [];
     const groupId = word.token?.mwe_group_id;
     if (!groupId) return classes;
+
+    // Skip MWE styling if user has disabled this expression
+    const sentI = word.token?.sent_i;
+    const disabledExpressions = sentI != null ? interactiveText.disabledMweGroups?.[sentI] : null;
+    const mweExpression = word.getMWEExpression?.();
+    if (mweExpression && disabledExpressions?.includes(mweExpression)) return classes;
 
     const translated = isTranslatedMWE();
     const colorClass = getMWEColorClass();
@@ -340,6 +394,7 @@ export default function TranslatableWord({
               hideAlterMenu={hideAlterMenu}
               clickedOutsideTranslation={clickedOutsideTranslation}
               deleteTranslation={deleteTranslation}
+              ungroupMwe={ungroupMwe}
             />
           )}
         </z-orig>

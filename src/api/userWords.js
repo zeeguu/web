@@ -118,6 +118,41 @@ Zeeguu_API.prototype.deleteBookmark = function (
   this._post(`delete_bookmark/${bookmark_id}`, "", callback, onError);
 };
 
+Zeeguu_API.prototype.disableMweGrouping = function (
+  articleId,
+  mweExpression,
+  sentenceText,
+  bookmarkId,
+  callback,
+  onError,
+) {
+  const payload = JSON.stringify({
+    article_id: articleId,
+    mwe_expression: mweExpression,
+    sentence_text: sentenceText,
+    bookmark_id: bookmarkId,
+  });
+
+  fetch(this._appendSessionToUrl("disable_mwe_grouping"), {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: payload,
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      if (data.success) {
+        if (callback) callback(data);
+      } else {
+        if (onError) onError(data);
+      }
+    })
+    .catch((error) => {
+      if (onError) onError({ error: "Network error", detail: error.message });
+    });
+};
+
 Zeeguu_API.prototype.setIsFitForStudy = function (bookmark_id) {
   this._post(`is_fit_for_study/${bookmark_id}`);
 };

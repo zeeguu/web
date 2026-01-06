@@ -36,6 +36,7 @@ export default class InteractiveText {
     formatting,
     getBrowsingSessionId = () => null,
     getReadingSessionId = () => null,
+    disabledMweGroups = [],
   ) {
     this.api = api;
     this.sourceId = sourceId;
@@ -46,6 +47,8 @@ export default class InteractiveText {
     this.contextIdentifier = contextIdentifier;
     this.getBrowsingSessionId = getBrowsingSessionId;
     this.getReadingSessionId = getReadingSessionId;
+    // disabledMweGroups is a dict: {sent_i: [mwe_group_ids]}
+    this.disabledMweGroups = disabledMweGroups || {};
 
     // Might be worth to store a flag to keep track of wether or not the
     // bookmark / text are part of the content or stand by themselves.
@@ -73,9 +76,15 @@ export default class InteractiveText {
     [context, cParagraph_i, cSent_i, cToken_i, leftEllipsis, rightEllipsis] = this.getContextAndCoordinates(word);
 
     // MWE-aware fusion:
-    // - If word is part of an MWE, fuse only with MWE partners (not neighbors)
+    // - If word is part of an MWE and expression is not disabled, fuse with MWE partners
+    // - Skip MWE fusion if user has disabled this expression
     // - Otherwise, use normal neighbor fusion
-    if (word.isMWE && word.isMWE()) {
+    const sentI = word.token?.sent_i;
+    const disabledExpressionsForSentence = sentI != null ? this.disabledMweGroups[sentI] : null;
+    const mweExpression = word.getMWEExpression?.();
+    const isMweDisabled = mweExpression && disabledExpressionsForSentence?.includes(mweExpression);
+
+    if (word.isMWE && word.isMWE() && !isMweDisabled) {
       word = word.fuseMWEPartners(this.api);
       // If null, MWE partner already has translation - don't create duplicate
       if (word === null) {
