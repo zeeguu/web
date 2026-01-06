@@ -147,6 +147,10 @@ export default class InteractiveText {
         // This is especially important for MWEs where clicking any word
         // applies translation to the first word
         word.isTranslationVisible = true;
+
+        // Dispatch event for bookmark creation (used by useAnonymousUpgrade)
+        window.dispatchEvent(new CustomEvent('zeeguu-bookmark-created'));
+
         onSuccess();
       })
       .catch((e) => {

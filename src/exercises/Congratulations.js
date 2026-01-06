@@ -18,6 +18,7 @@ import { UserContext } from "../contexts/UserContext";
 import { ExercisesCounterContext } from "./ExercisesCounterContext";
 import ExerciseProgressSummary from "./ExercisesProgressSummary";
 import { WEB_READER } from "../reader/ArticleReader";
+import useAnonymousUpgrade from "../hooks/useAnonymousUpgrade";
 
 export default function Congratulations({
   // Props from router
@@ -63,6 +64,7 @@ export default function Congratulations({
   const [username, setUsername] = useState();
 
   const { isMobile } = useScreenWidth();
+  const { isAnonymous, checkUpgradeTrigger } = useAnonymousUpgrade();
 
   function deleteBookmark(bookmark) {
     setCorrectBookmarksToDisplay(correctBookmarksToDisplay.filter((e) => e.id !== bookmark.id));
@@ -74,6 +76,11 @@ export default function Congratulations({
     setTotalBookmarksReviewed(incorrectBookmarksToDisplay.length + correctBookmarksToDisplay.length);
     api.logUserActivity(api.COMPLETED_EXERCISES, articleID, "", source);
     updateExercisesCounter();
+
+    // Prompt anonymous users to create account after exercises
+    if (isAnonymous) {
+      checkUpgradeTrigger("exercises");
+    }
     // eslint-disable-next-line
   }, []);
   

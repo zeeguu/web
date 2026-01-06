@@ -22,6 +22,8 @@ import LoadingAnimation from "./components/LoadingAnimation";
 import { getSharedSession } from "./utils/cookies/userInfo";
 import LocalStorage from "./assorted/LocalStorage";
 import { Capacitor } from "@capacitor/core";
+import useAnonymousUpgrade from "./hooks/useAnonymousUpgrade";
+import UpgradeAccountModal from "./components/UpgradeAccountModal";
 
 // Lazy load separate parts of the app
 const LazyTeacherRouter = lazy(() => import("./teacher/_routing/_TeacherRouter"));
@@ -71,8 +73,22 @@ function HomePage() {
 }
 
 export default function MainAppRouter({ hasExtension, handleSuccessfulLogIn }) {
+  const {
+    shouldShowUpgrade,
+    triggerReason,
+    bookmarkCount,
+    dismissUpgrade,
+  } = useAnonymousUpgrade();
+
   return (
-    <Switch>
+    <>
+      <UpgradeAccountModal
+        open={shouldShowUpgrade}
+        onClose={dismissUpgrade}
+        triggerReason={triggerReason}
+        bookmarkCount={bookmarkCount}
+      />
+      <Switch>
       <Route path="/log_in" render={() => <LogIn handleSuccessfulLogIn={handleSuccessfulLogIn} />} />
       <Route path="/account_details" render={() => <CreateAccount handleSuccessfulLogIn={handleSuccessfulLogIn} />} />
 
@@ -125,5 +141,6 @@ export default function MainAppRouter({ hasExtension, handleSuccessfulLogIn }) {
       <Route path="/keyboard-test" component={KeyboardTest} />
       <Route path="*" component={NotFound} />
     </Switch>
+    </>
   );
 }
