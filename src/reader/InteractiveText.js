@@ -72,9 +72,8 @@ export default class InteractiveText {
 
     [context, cParagraph_i, cSent_i, cToken_i, leftEllipsis, rightEllipsis] = this.getContextAndCoordinates(word);
 
-    // MWE-aware fusion:
-    // - If word is part of an MWE, fuse only with MWE partners (not neighbors)
-    // - Otherwise, use normal neighbor fusion
+    // MWE-aware fusion: if word is part of an MWE, fuse with partners
+    // (disabled MWEs have their metadata cleared by backend, so isMWE() returns false)
     if (word.isMWE && word.isMWE()) {
       word = word.fuseMWEPartners(this.api);
       // If null, MWE partner already has translation - don't create duplicate

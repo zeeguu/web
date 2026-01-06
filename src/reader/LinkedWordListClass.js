@@ -83,6 +83,53 @@ export class Word extends Item {
     this.detach();
   }
 
+  /**
+   * Split this word back into components and clear all MWE metadata.
+   * Used when user explicitly ungroups an MWE via "Ungroup words".
+   * Clears mwe_group_id so the words behave like normal non-MWE words.
+   * Also clears MWE data from any partner words in the same sentence (for separated MWEs).
+   */
+  splitAndClearMWE() {
+    // For separated MWEs, find and clear MWE data from partner words first
+    // (before we lose track of them by clearing our own mwe_group_id)
+    if (this.token.mwe_group_id) {
+      const partners = this.findMWEPartners();
+      for (const partner of partners) {
+        if (partner !== this) {
+          // Clear MWE metadata from partner's token
+          delete partner.token.mwe_group_id;
+          delete partner.token.mwe_role;
+          delete partner.token.mwe_is_separated;
+          delete partner.token.mwe_partner_indices;
+          delete partner.mweExpression;
+          delete partner.isMwePartner;
+        }
+      }
+    }
+
+    // Clear MWE metadata from all merged tokens before creating new words
+    const clearedTokens = this.mergedTokens.map((token) => {
+      const cleared = { ...token };
+      delete cleared.mwe_group_id;
+      delete cleared.mwe_role;
+      delete cleared.mwe_is_separated;
+      delete cleared.mwe_partner_indices;
+      delete cleared.mweExpression;
+      delete cleared.isMwePartner;
+      return cleared;
+    });
+
+    let wordList = clearedTokens.map((each) => new Word(each));
+    this.append(wordList[0]);
+
+    for (let i = 0; i < wordList.length - 1; i++) {
+      wordList[i].append(wordList[i + 1]);
+    }
+
+    this.detach();
+    return wordList;
+  }
+
   unlinkLastWord() {
     let wordList = this.mergedTokens.map((each) => new Word(each));
     this.append(wordList[0]);
@@ -213,6 +260,39 @@ export class Word extends Item {
     }
 
     return partners;
+  }
+
+  /**
+   * Get the MWE expression text by joining all partner words.
+   * Used for checking against disabled MWE expressions.
+   */
+  getMWEExpression() {
+    if (!this.isMWE()) return null;
+    const partners = this.findMWEPartners();
+    return partners.map(p => p.word.trim()).join(" ").toLowerCase();
+  }
+
+  /**
+   * Get the text of the sentence containing this word.
+   * Used for computing sentence hash for MWE override storage.
+   */
+  getSentenceText() {
+    const sentenceIndex = this.token.sent_i;
+    const words = [];
+
+    // Collect all words in this sentence by traversing backwards then forwards
+    let current = this;
+    while (current.prev && current.prev.token.sent_i === sentenceIndex) {
+      current = current.prev;
+    }
+
+    // Now traverse forwards collecting all words in this sentence
+    while (current && current.token.sent_i === sentenceIndex) {
+      words.push(current.word);
+      current = current.next;
+    }
+
+    return words.join(" ");
   }
 
   /**
