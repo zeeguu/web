@@ -14,6 +14,9 @@ export default function AlterMenu({
   const [refToAlterMenu, clickedOutsideAlterMenu] = useClickOutside();
   const [inputValue, setInputValue] = useState("");
 
+  // Alternatives load asynchronously - show spinner while loading
+  const hasAlternativesLoaded = word.alternatives !== undefined;
+
   useEffect(() => {
     if (clickedOutsideAlterMenu && clickedOutsideTranslation) {
       hideAlterMenu();
@@ -46,40 +49,38 @@ export default function AlterMenu({
 
   return (
     <AlterMenuSC ref={refToAlterMenu}>
-      {word.alternatives === undefined ? (
+      {/* Alternatives section - shows spinner while loading */}
+      {!hasAlternativesLoaded ? (
         <LoadingAnimation
           specificStyle={{ height: "3.5rem", margin: "1rem 3.1rem" }}
           delay={0}
         ></LoadingAnimation>
       ) : (
-        word.alternatives.map((each, index) => (
-          <div
-            key={`${each.translation}-${each.source}-${index}`}
-            onClick={(e) =>
-              selectAlternative(each.translation, shortenSource(each))
-            }
-            className={
-              each.translation === word.translation
-                ? "additionalTrans selected"
-                : "additionalTrans"
-            }
-          >
-            {each.translation}
-            <div
-              style={{
-                marginTop: "-4px",
-
-                fontSize: 8,
-                color: "rgb(240,204,160)",
-              }}
-            >
-              {shortenSource(each)}
-            </div>
-          </div>
-        ))
-      )}
-      {word.alternatives !== undefined && (
         <>
+          {word.alternatives.map((each, index) => (
+            <div
+              key={`${each.translation}-${each.source}-${index}`}
+              onClick={(e) =>
+                selectAlternative(each.translation, shortenSource(each))
+              }
+              className={
+                each.translation === word.translation
+                  ? "additionalTrans selected"
+                  : "additionalTrans"
+              }
+            >
+              {each.translation}
+              <div
+                style={{
+                  marginTop: "-4px",
+                  fontSize: 8,
+                  color: "rgb(240,204,160)",
+                }}
+              >
+                {shortenSource(each)}
+              </div>
+            </div>
+          ))}
           <input
             autoComplete="off"
             className="ownTranslationInput matchWidth"
@@ -92,16 +93,16 @@ export default function AlterMenu({
           />
         </>
       )}
-      {word.alternatives !== undefined && word.mweExpression && ungroupMwe && (
+
+      {/* Actions - always available, don't depend on alternatives */}
+      {word.mweExpression && ungroupMwe && (
         <div className="removeLink" onClick={(e) => ungroupMwe(e, word)}>
           Not a phrase
         </div>
       )}
-      {word.alternatives !== undefined && (
-        <div className="removeLink" onClick={(e) => deleteTranslation(e, word)}>
-          Delete Translation
-        </div>
-      )}
+      <div className="removeLink" onClick={(e) => deleteTranslation(e, word)}>
+        Delete Translation
+      </div>
     </AlterMenuSC>
   );
 }
