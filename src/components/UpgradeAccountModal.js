@@ -198,6 +198,7 @@ export default function UpgradeAccountModal({
     if (triggerReason === "bookmarks") return `You've saved ${bookmarkCount} words!`;
     if (triggerReason === "days") return "Welcome back!";
     if (triggerReason === "settings") return "Save Your Settings";
+    if (triggerReason === "exercises") return "Great practice session!";
     return "Create Your Account";
   };
 
@@ -210,6 +211,8 @@ export default function UpgradeAccountModal({
       return "You've been learning for a few days now. Create an account to keep your progress.";
     if (triggerReason === "settings")
       return "Create an account to save your preferences and keep your progress across devices.";
+    if (triggerReason === "exercises")
+      return "Create an account to save your progress and keep practicing.";
     return "Save your progress and access your vocabulary from any device.";
   };
 
