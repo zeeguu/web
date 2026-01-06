@@ -192,7 +192,6 @@ export default function ArticleReader({ teacherArticleID }) {
               each.formatting,
               null, // getBrowsingSessionId - not used in article reader
               getReadingSessionId,
-              articleInfo.disabled_mwe_groups || [],
             ),
         ),
       );
@@ -211,7 +210,6 @@ export default function ArticleReader({ teacherArticleID }) {
           null, // formatting
           null, // getBrowsingSessionId
           getReadingSessionId,
-          articleInfo.disabled_mwe_groups || [],
         ),
       );
       setArticleInfo(articleInfo);
