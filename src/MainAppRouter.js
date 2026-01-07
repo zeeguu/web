@@ -13,6 +13,7 @@ import LanguagePreferences from "./pages/onboarding/LanguagePreferences";
 import ArticlesRouter from "./articles/_ArticlesRouter";
 import NotFound from "./pages/NotFound";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
+import HowToDeleteAccount from "./pages/HowToDeleteAccount";
 import ExercisesRouter from "./exercises/ExercisesRouter";
 import WordsRouter from "./words/_WordsRouter";
 import ReadingHistory from "./words/WordHistory";
@@ -101,6 +102,7 @@ export default function MainAppRouter({ hasExtension, handleSuccessfulLogIn }) {
       <Route path="/install_extension" component={InstallExtension} />
       <Route path="/reset_pass" component={ResetPassword} />
       <Route path="/privacy" component={PrivacyPolicy} />
+      <Route path="/howto/delete_account" component={HowToDeleteAccount} />
       <Route path="/render" component={NoSidebarRouter} />
 
       <PrivateRoute path="/account_deletion" component={DeleteAccount} />
