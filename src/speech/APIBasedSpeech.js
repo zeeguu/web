@@ -10,6 +10,10 @@ const ZeeguuSpeech = class {
     this.pronunciationPlayer.autoplay = true;
     this.isCurrentlySpeaking = false;
     this.lastSetter = null;
+
+    // Rate limiting - prevent spam from buggy clients
+    this.lastSpeakTime = 0;
+    this.lastSpokenWord = null;
   }
 
   resetClip() {
@@ -27,6 +31,14 @@ const ZeeguuSpeech = class {
   }
 
   async speakOut(word, setIsSpeaking) {
+    const now = Date.now();
+    // Rate limit: same word can only be requested once per 500ms
+    if (word === this.lastSpokenWord && now - this.lastSpeakTime < 500) {
+      return;
+    }
+    this.lastSpeakTime = now;
+    this.lastSpokenWord = word;
+
     if (this.isCurrentlySpeaking) {
       this.stopAudio();
     }

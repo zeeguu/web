@@ -68,6 +68,12 @@ Zeeguu_API.prototype.USER_DASHBOARD_PERIOD_CHANGE = "UD - USER DASHBOARD PERIOD 
 Zeeguu_API.prototype.USER_DASHBOARD_TIME_COUNT_CHANGE = "UD - USER DASHBOARD TIME COUNT CHANGE";
 Zeeguu_API.prototype.USER_DASHBOARD_DATE_CHANGE = "UD - USER DASHBOARD DATE CHANGE";
 
+// Rate limiting state for logUserActivity - prevents spam from buggy clients
+const activityRateLimiter = {
+  lastEventKey: null,
+  lastEventTime: 0,
+};
+
 Zeeguu_API.prototype.logUserActivity = function (event, article_id = "", value = "", extra_data = "", source_id = "") {
   // TODO: think about -- what if you have a video_id?
   /**
@@ -79,6 +85,15 @@ Zeeguu_API.prototype.logUserActivity = function (event, article_id = "", value =
    * @param {string} [extra_data=""] - Extra data related to the event.
    * @param {string} [source_id=""] - The ID of source associated with the event.
    */
+
+  // Rate limit: same event+value can only be logged once per 500ms
+  const eventKey = `${event}:${value}:${source_id}`;
+  const now = Date.now();
+  if (eventKey === activityRateLimiter.lastEventKey && now - activityRateLimiter.lastEventTime < 500) {
+    return;
+  }
+  activityRateLimiter.lastEventKey = eventKey;
+  activityRateLimiter.lastEventTime = now;
 
   let event_information = {
     time: new Date().toJSON(),

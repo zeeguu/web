@@ -42,6 +42,9 @@ export default function useSession({
     sessionIdRef.current = sessionId;
   }, [sessionId]);
 
+  // Rate limiting - prevent upload spam from buggy clients
+  const lastUploadTimeRef = useRef(0);
+
   // Track whether session has been started
   const [hasStarted, setHasStarted] = useState(false);
   const hasStartedRef = useRef(false);
@@ -99,9 +102,14 @@ export default function useSession({
     });
   }, [api, methods]);
 
-  // Upload current duration to server
+  // Upload current duration to server (rate limited to prevent spam)
   const upload = useCallback(() => {
+    const now = Date.now();
+    // Rate limit: max once per 5 seconds to prevent buggy clients from spamming
+    if (now - lastUploadTimeRef.current < 5000) return;
+
     if (sessionIdRef.current && sessionDurationRef.current > 0 && methods) {
+      lastUploadTimeRef.current = now;
       methods.update(sessionIdRef.current, sessionDurationRef.current);
     }
   }, [methods]);
