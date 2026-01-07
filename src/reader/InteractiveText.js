@@ -217,9 +217,22 @@ export default class InteractiveText {
 
   pronounce(word, callback) {
     // Use mweExpression for MWEs so we speak the full expression, not just the clicked word
-    const textToSpeak = word.mweExpression || word.word;
-    this.zeeguuSpeech.speakOut(textToSpeak);
+    let textToSpeak = word.mweExpression || word.word;
 
+    // For unfused MWEs (first click before translation), compute expression from partners
+    if (!word.mweExpression && word.isMWE && word.isMWE()) {
+      const partners = word.findMWEPartners();
+      if (partners.length > 1) {
+        // Join words, handling hyphens (no space after hyphen-ending words)
+        textToSpeak = partners.reduce((acc, p, i) => {
+          if (i === 0) return p.word;
+          if (partners[i - 1].word.endsWith("-")) return acc + p.word;
+          return acc + " " + p.word;
+        }, "");
+      }
+    }
+
+    this.zeeguuSpeech.speakOut(textToSpeak);
     this.api.logUserActivity(this.api.SPEAK_TEXT, null, textToSpeak, this.source, this.sourceId);
   }
 
