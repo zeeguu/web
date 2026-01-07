@@ -216,12 +216,15 @@ export default class InteractiveText {
   }
 
   pronounce(word, callback) {
-    // Use mweExpression for MWEs so we speak the full expression, not just the clicked word
-    let textToSpeak = word.mweExpression || word.word;
+    let textToSpeak = word.word;
 
-    // For unfused MWEs (first click before translation), compute expression from partners
-    if (!word.mweExpression && word.isMWE && word.isMWE()) {
-      const partners = word.findMWEPartners();
+    // Check for MWE expression - either already set or compute from partners
+    if (word.mweExpression) {
+      // Already has expression (from fusion or bookmark restoration)
+      textToSpeak = word.mweExpression;
+    } else if (word.token?.mwe_group_id) {
+      // Unfused MWE - compute full expression from partners
+      const partners = word.findMWEPartners?.() || [word];
       if (partners.length > 1) {
         // Join words, handling hyphens (no space after hyphen-ending words)
         textToSpeak = partners.reduce((acc, p, i) => {
