@@ -1,0 +1,52 @@
+default_platform(:android)
+
+platform :android do
+
+  desc "Build and upload to Google Play Internal Testing"
+  lane :beta do |options|
+    # Build the release AAB
+    gradle(
+      task: "bundle",
+      build_type: "Release",
+      project_dir: "."
+    )
+
+    # Upload to Play Store internal testing track
+    upload_to_play_store(
+      track: "internal",
+      aab: "app/build/outputs/bundle/release/app-release.aab",
+      skip_upload_metadata: true,
+      skip_upload_images: true,
+      skip_upload_screenshots: true
+    )
+  end
+
+  desc "Build and upload to Google Play Production"
+  lane :release do |options|
+    # Build the release AAB
+    gradle(
+      task: "bundle",
+      build_type: "Release",
+      project_dir: "."
+    )
+
+    # Upload to Play Store with metadata and screenshots
+    upload_to_play_store(
+      track: "production",
+      aab: "app/build/outputs/bundle/release/app-release.aab",
+      skip_upload_metadata: false,
+      skip_upload_images: false,
+      skip_upload_screenshots: false
+    )
+  end
+
+  desc "Just build the AAB (no upload)"
+  lane :build do
+    gradle(
+      task: "bundle",
+      build_type: "Release",
+      project_dir: "."
+    )
+  end
+
+end

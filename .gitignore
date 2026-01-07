@@ -44,6 +44,15 @@ ios/App/App.ipa
 ios/App/*.dSYM.zip
 ios/App/fastlane/report.xml
 ios/App/fastlane/screenshots/
+ios/App/fastlane/screenshots-backup/
+ios/App/fastlane/Preview.html
 ios/App/App.xcodeproj/xcshareddata/
+
+# Android secrets and signing
+android/app/*.jks
+android/keystore.properties
+android/*.json
+android/fastlane/play-store-credentials.json
+android/fastlane/report.xml
 
 *.md

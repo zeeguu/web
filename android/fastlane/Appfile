@@ -1,0 +1,5 @@
+# Path to the JSON key file for Google Play Console API
+json_key_file(ENV["GOOGLE_PLAY_JSON_KEY"] || "play-store-credentials.json")
+
+# Package name
+package_name("org.zeeguu.app")

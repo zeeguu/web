@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      width: 1290px;
+      height: 2796px;
+      background: linear-gradient(180deg, #FDF6E9 0%, #F9E4C8 100%);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 100px 60px;
+    }
+    .headline {
+      font-size: 140px;
+      font-weight: 700;
+      color: #3D3D3D;
+      text-align: center;
+      line-height: 1.1;
+      margin-bottom: 60px;
+    }
+    .subheadline {
+      font-size: 70px;
+      color: #666;
+      text-align: center;
+      line-height: 1.4;
+      margin-bottom: 100px;
+    }
+    .topics-grid {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 28px;
+      width: 100%;
+      max-width: 1150px;
+    }
+    .topic {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      background: #fff;
+      border: 3px solid #E8E8E8;
+      border-radius: 28px;
+      padding: 32px 44px;
+      font-size: 64px;
+      color: #3D3D3D;
+    }
+    .topic.selected {
+      background: #FFF8ED;
+      border-color: #F0A030;
+    }
+    .topic .icon {
+      font-size: 58px;
+    }
+    .checkmark {
+      color: #F0A030;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <h1 class="headline">Follow topics<br>you care about</h1>
+  <p class="subheadline">Get articles that match your interests</p>
+  <div class="topics-grid">
+    <div class="topic selected"><span class="icon">🌍</span> World News <span class="checkmark">✓</span></div>
+    <div class="topic selected"><span class="icon">💻</span> Technology <span class="checkmark">✓</span></div>
+    <div class="topic"><span class="icon">⚽</span> Sports</div>
+    <div class="topic selected"><span class="icon">🔬</span> Science <span class="checkmark">✓</span></div>
+    <div class="topic"><span class="icon">🎬</span> Entertainment</div>
+    <div class="topic"><span class="icon">💼</span> Business</div>
+    <div class="topic selected"><span class="icon">🌱</span> Environment <span class="checkmark">✓</span></div>
+    <div class="topic"><span class="icon">🏛️</span> Politics</div>
+    <div class="topic"><span class="icon">🎨</span> Culture</div>
+    <div class="topic"><span class="icon">🍳</span> Food</div>
+  </div>
+</body>
+</html>

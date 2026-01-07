@@ -1,0 +1,5 @@
+- Try Zeeguu without signing up - create an account later to save your progress
+- Better phrase detection - tap multi-word expressions to translate them together
+- Improved translation alternatives menu
+- Optimized layout for smaller screens
+- Bug fixes and performance improvements
