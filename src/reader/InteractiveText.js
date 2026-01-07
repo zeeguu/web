@@ -216,9 +216,11 @@ export default class InteractiveText {
   }
 
   pronounce(word, callback) {
-    this.zeeguuSpeech.speakOut(word.word);
+    // Use mweExpression for MWEs so we speak the full expression, not just the clicked word
+    const textToSpeak = word.mweExpression || word.word;
+    this.zeeguuSpeech.speakOut(textToSpeak);
 
-    this.api.logUserActivity(this.api.SPEAK_TEXT, null, word.word, this.source, this.sourceId);
+    this.api.logUserActivity(this.api.SPEAK_TEXT, null, textToSpeak, this.source, this.sourceId);
   }
 
   /**
