@@ -41,8 +41,23 @@ export default function TranslatableWord({
 
   function clickOnWord(e, word) {
     if (word.token.is_like_num || (word.token.is_punct && word.word.length === 1)) return;
+
+    // Compute MWE expression BEFORE any fusion happens (for pronunciation)
+    // Must do this early because translate() will detach partner words
+    let mweTextToSpeak = null;
+    if (word.token?.mwe_group_id && word.findMWEPartners) {
+      const partners = word.findMWEPartners();
+      if (partners.length > 1) {
+        mweTextToSpeak = partners.reduce((acc, p, i) => {
+          if (i === 0) return p.word;
+          if (partners[i - 1].word.endsWith("-")) return acc + p.word;
+          return acc + " " + p.word;
+        }, "");
+      }
+    }
+
     if (word.translation) {
-      if (pronouncing) interactiveText.pronounce(word);
+      if (pronouncing) interactiveText.pronounce(word, null, mweTextToSpeak);
       if ((translating && !isTranslationVisible) || (!translating && isTranslationVisible))
         setIsTranslationVisible(!isTranslationVisible);
       return;
@@ -82,7 +97,7 @@ export default function TranslatableWord({
     }
     if (pronouncing || isClickedToPronounce) {
       setIsClickedToPronounce(true);
-      interactiveText.pronounce(word);
+      interactiveText.pronounce(word, null, mweTextToSpeak);
     }
   }
 

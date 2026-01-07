@@ -215,25 +215,10 @@ export default class InteractiveText {
     this.zeeguuSpeech.resume();
   }
 
-  pronounce(word, callback) {
-    let textToSpeak = word.word;
-
-    // Check for MWE expression - either already set or compute from partners
-    if (word.mweExpression) {
-      // Already has expression (from fusion or bookmark restoration)
-      textToSpeak = word.mweExpression;
-    } else if (word.token?.mwe_group_id) {
-      // Unfused MWE - compute full expression from partners
-      const partners = word.findMWEPartners?.() || [word];
-      if (partners.length > 1) {
-        // Join words, handling hyphens (no space after hyphen-ending words)
-        textToSpeak = partners.reduce((acc, p, i) => {
-          if (i === 0) return p.word;
-          if (partners[i - 1].word.endsWith("-")) return acc + p.word;
-          return acc + " " + p.word;
-        }, "");
-      }
-    }
+  pronounce(word, callback, precomputedMweText = null) {
+    // Use pre-computed MWE text if provided (computed before fusion detaches partners)
+    // Otherwise fall back to word.mweExpression or word.word
+    const textToSpeak = precomputedMweText || word.mweExpression || word.word;
 
     this.zeeguuSpeech.speakOut(textToSpeak);
     this.api.logUserActivity(this.api.SPEAK_TEXT, null, textToSpeak, this.source, this.sourceId);
