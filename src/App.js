@@ -161,14 +161,14 @@ function App() {
             // Login failed - credentials might be invalid
             console.log("Anonymous login failed, clearing credentials...", error);
             LocalStorage.clearAnonCredentials();
-            // Let them go through language preferences again
+            // Let them go through welcome flow again
             setUserDetails({});
             setUserPreferences({});
           },
         );
       } else {
-        // No stored credentials - new user, will go through language preferences
-        // The account will be created after they complete LanguagePreferences
+        // No stored credentials - new user, will go through welcome flow
+        // (welcome -> login or language_preferences -> anonymous account)
         setUserDetails({});
         setUserPreferences({});
       }

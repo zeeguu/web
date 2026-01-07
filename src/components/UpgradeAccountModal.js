@@ -39,6 +39,13 @@ const ModalContent = styled.div`
     justify-content: flex-end;
   }
 
+  .choice-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75em;
+    margin-bottom: 1em;
+  }
+
   .btn {
     padding: 0.75em 1.5em;
     border-radius: 0.5em;
@@ -66,6 +73,11 @@ const ModalContent = styled.div`
     background-color: #e0e0e0;
   }
 
+  .btn-full-width {
+    width: 100%;
+    text-align: center;
+  }
+
   .error-message {
     color: #d32f2f;
     margin-bottom: 1em;
@@ -88,6 +100,18 @@ const ModalContent = styled.div`
     letter-spacing: 0.5em;
     padding: 0.5em;
   }
+
+  .back-link {
+    margin-top: 1em;
+    text-align: center;
+    font-size: 0.9rem;
+  }
+
+  .back-link a {
+    color: #0077cc;
+    cursor: pointer;
+    text-decoration: underline;
+  }
 `;
 
 export default function UpgradeAccountModal({
@@ -101,7 +125,7 @@ export default function UpgradeAccountModal({
   const { setUserDetails } = useContext(UserContext);
   const [errorMessage, setErrorMessage] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [step, setStep] = useState("register"); // "register" or "confirm"
+  const [step, setStep] = useState("choice"); // "choice", "register", "login", or "confirm"
   const [userEmail, setUserEmail] = useState("");
 
   const [name, setName, validateName, isNameValid, nameMsg] = useFormField("", [
@@ -118,6 +142,16 @@ export default function UpgradeAccountModal({
       NonEmptyValidator("Please enter a password"),
       MinimumLengthValidator(4, "Password must be at least 4 characters"),
     ]);
+
+  // Login form fields
+  const [loginEmail, setLoginEmail, validateLoginEmail, isLoginEmailValid, loginEmailMsg] =
+    useFormField("", [
+      NonEmptyValidator("Please enter your email"),
+      EmailValidator,
+    ]);
+
+  const [loginPassword, setLoginPassword, validateLoginPassword, isLoginPasswordValid, loginPasswordMsg] =
+    useFormField("", [NonEmptyValidator("Please enter your password")]);
 
   const [confirmCode, setConfirmCode] = useState("");
 
@@ -180,6 +214,39 @@ export default function UpgradeAccountModal({
     );
   }
 
+  function handleLogin(e) {
+    e.preventDefault();
+    setErrorMessage("");
+
+    if (!validateRules([validateLoginEmail, validateLoginPassword])) {
+      return;
+    }
+
+    setIsSubmitting(true);
+
+    api.logIn(
+      loginEmail,
+      loginPassword,
+      (error) => {
+        setIsSubmitting(false);
+        setErrorMessage(error || "Could not log in. Please check your credentials.");
+      },
+      (sessionId) => {
+        // Clear anonymous credentials
+        LocalStorage.clearAnonCredentials();
+
+        // Refresh user details
+        api.getUserDetails((user) => {
+          setUserDetails(user);
+          LocalStorage.setUserInfo(user);
+          setIsSubmitting(false);
+          if (onSuccess) onSuccess();
+          onClose();
+        });
+      },
+    );
+  }
+
   function handleDismiss() {
     LocalStorage.setAnonUpgradeDismissed(true);
     onClose();
@@ -187,7 +254,7 @@ export default function UpgradeAccountModal({
 
   function handleClose() {
     // Reset state when closing
-    setStep("register");
+    setStep("choice");
     setConfirmCode("");
     setErrorMessage("");
     onClose();
@@ -195,25 +262,25 @@ export default function UpgradeAccountModal({
 
   const getTitle = () => {
     if (step === "confirm") return "Check your email";
+    if (step === "login") return "Log In";
+    if (step === "register") return "Create Account";
+    // Choice step - show trigger-based titles
     if (triggerReason === "bookmarks") return `You've saved ${bookmarkCount} words!`;
     if (triggerReason === "days") return "Welcome back!";
     if (triggerReason === "settings") return "Save Your Settings";
     if (triggerReason === "exercises") return "Great practice session!";
-    return "Create Your Account";
+    return "Save Your Progress";
   };
 
   const getSubtitle = () => {
     if (step === "confirm")
       return `We sent a confirmation code to ${userEmail}`;
-    if (triggerReason === "bookmarks")
-      return "Create an account to keep your vocabulary safe and sync across devices.";
-    if (triggerReason === "days")
-      return "You've been learning for a few days now. Create an account to keep your progress.";
-    if (triggerReason === "settings")
-      return "Create an account to save your preferences and keep your progress across devices.";
-    if (triggerReason === "exercises")
-      return "Create an account to save your progress and keep practicing.";
-    return "Save your progress and access your vocabulary from any device.";
+    if (step === "login")
+      return "Log in to your existing Zeeguu account.";
+    if (step === "register")
+      return "Create a new account to save your progress.";
+    // Choice step - ask if they have an account
+    return "Do you already have a Zeeguu account?";
   };
 
   return (
@@ -224,7 +291,86 @@ export default function UpgradeAccountModal({
 
         {errorMessage && <div className="error-message">{errorMessage}</div>}
 
-        {step === "register" ? (
+        {step === "choice" && (
+          <>
+            <div className="choice-buttons">
+              <button
+                type="button"
+                className="btn btn-primary btn-full-width"
+                onClick={() => setStep("login")}
+              >
+                Yes, log me in
+              </button>
+              <button
+                type="button"
+                className="btn btn-secondary btn-full-width"
+                onClick={() => setStep("register")}
+              >
+                No, create a new account
+              </button>
+            </div>
+            {triggerReason !== "settings" && (
+              <div className="buttons">
+                <button
+                  type="button"
+                  className="btn btn-secondary"
+                  onClick={handleDismiss}
+                >
+                  Maybe later
+                </button>
+              </div>
+            )}
+          </>
+        )}
+
+        {step === "login" && (
+          <form onSubmit={handleLogin}>
+            <div className="form-fields">
+              <InputField
+                type="email"
+                label="Email"
+                id="login-email"
+                name="email"
+                placeholder="your@email.com"
+                value={loginEmail}
+                onChange={(e) => setLoginEmail(e.target.value)}
+                isError={!isLoginEmailValid}
+                errorMessage={loginEmailMsg}
+                autoFocus
+              />
+
+              <InputField
+                type="password"
+                label="Password"
+                id="login-password"
+                name="password"
+                placeholder="Your password"
+                value={loginPassword}
+                onChange={(e) => setLoginPassword(e.target.value)}
+                isError={!isLoginPasswordValid}
+                errorMessage={loginPasswordMsg}
+              />
+            </div>
+
+            <div className="buttons">
+              <button
+                type="submit"
+                className="btn btn-primary"
+                disabled={isSubmitting}
+              >
+                {isSubmitting ? "Logging in..." : "Log In"}
+              </button>
+            </div>
+
+            <div className="back-link">
+              <a onClick={() => { setStep("choice"); setErrorMessage(""); }}>
+                Back
+              </a>
+            </div>
+          </form>
+        )}
+
+        {step === "register" && (
           <form onSubmit={handleUpgrade}>
             <div className="form-fields">
               <InputField
@@ -266,16 +412,6 @@ export default function UpgradeAccountModal({
             </div>
 
             <div className="buttons">
-              {triggerReason !== "settings" && (
-                <button
-                  type="button"
-                  className="btn btn-secondary"
-                  onClick={handleDismiss}
-                  disabled={isSubmitting}
-                >
-                  Maybe later
-                </button>
-              )}
               <button
                 type="submit"
                 className="btn btn-primary"
@@ -284,8 +420,16 @@ export default function UpgradeAccountModal({
                 {isSubmitting ? "Creating..." : "Create Account"}
               </button>
             </div>
+
+            <div className="back-link">
+              <a onClick={() => { setStep("choice"); setErrorMessage(""); }}>
+                Back
+              </a>
+            </div>
           </form>
-        ) : (
+        )}
+
+        {step === "confirm" && (
           <form onSubmit={handleConfirm}>
             <div className="form-fields">
               <InputField

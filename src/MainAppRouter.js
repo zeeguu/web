@@ -10,6 +10,7 @@ import NoSidebarRouter from "./NoSidebarRouter";
 import LogIn from "./pages/LogIn";
 import CreateAccount from "./pages/onboarding/CreateAccount";
 import LanguagePreferences from "./pages/onboarding/LanguagePreferences";
+import Welcome from "./pages/onboarding/Welcome";
 import ArticlesRouter from "./articles/_ArticlesRouter";
 import NotFound from "./pages/NotFound";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
@@ -66,8 +67,8 @@ function HomePage() {
 
   // Not logged in - show appropriate page
   if (isCapacitor()) {
-    // Mobile app: go to language preferences (start of registration)
-    return <Redirect to="/language_preferences" />;
+    // Mobile app: go to welcome page (ask if they have an account)
+    return <Redirect to="/welcome" />;
   }
   // Web: show full landing page
   return <LandingPage />;
@@ -96,6 +97,7 @@ export default function MainAppRouter({ hasExtension, handleSuccessfulLogIn }) {
       <Route path="/create_account" component={LanguagePreferences} />
 
       <Route path="/language_preferences" component={LanguagePreferences} />
+      <Route path="/welcome" component={Welcome} />
 
       <Route path="/" exact component={HomePage} />
       <Route path="/extension_installed" component={ExtensionInstalled} />
