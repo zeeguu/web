@@ -9,16 +9,27 @@ function popNElementsFromList(l, n) {
   return a;
 }
 
-function distinctContexts(potentialBookmarks) {
-  let potentialBookmarkContexts = potentialBookmarks.map((bookmark) => bookmark.context);
-  let distinctContextsCount = new Set(potentialBookmarkContexts).size;
-  return distinctContextsCount === potentialBookmarkContexts.length;
+// Optimized: Check distinctness without creating intermediate arrays
+function hasDistinctContexts(bookmarks, count, startIndex = 0) {
+  const seen = new Set();
+  const end = Math.min(startIndex + count, bookmarks.length);
+  for (let i = startIndex; i < end; i++) {
+    const context = bookmarks[i].context;
+    if (seen.has(context)) return false;
+    seen.add(context);
+  }
+  return true;
 }
 
-function distinctTranslations(potentialBookmarks) {
-  let potentialBookmarkContexts = potentialBookmarks.map((bookmark) => bookmark.to);
-  let distinctContextsCount = new Set(potentialBookmarkContexts).size;
-  return distinctContextsCount === potentialBookmarkContexts.length;
+function hasDistinctTranslations(bookmarks, count, startIndex = 0) {
+  const seen = new Set();
+  const end = Math.min(startIndex + count, bookmarks.length);
+  for (let i = startIndex; i < end; i++) {
+    const translation = bookmarks[i].to;
+    if (seen.has(translation)) return false;
+    seen.add(translation);
+  }
+  return true;
 }
 
 function groupByLevel(items) {
@@ -33,20 +44,20 @@ function groupByLevel(items) {
 }
 
 function assignBookmarks(currentBookmarks, currentExercises) {
-  /* 
+  /*
     Attempts to assign all currentExercises given the currentBookmarks.
     if there is no exercise for these bookmarks, assign a default one.
-  
+
     Does all the checks that are required to ensure quality exercises
     are generated for the Extended Sequence
-    
-    We shuffle the list every loop to ensure variation of the sequence of exercises.
   */
-  let suitableExerciseFound = false;
-  let possibleExercises = [...currentExercises];
+  // Shuffle once at the start for variation
+  let possibleExercises = shuffle([...currentExercises]);
   let exerciseList = [];
-  while (!suitableExerciseFound) {
-    possibleExercises = shuffle(possibleExercises);
+
+  while (possibleExercises.length > 0) {
+    let suitableExerciseFound = false;
+
     for (let i = 0; i < possibleExercises.length; i++) {
       let selectedExerciseType = possibleExercises[i];
       let requiredBookmarks = selectedExerciseType.requiredBookmarks;
@@ -54,8 +65,8 @@ function assignBookmarks(currentBookmarks, currentExercises) {
 
       if (
         requiredBookmarks <= availableBookmarks &&
-        distinctContexts(currentBookmarks.slice(0, requiredBookmarks)) &&
-        distinctTranslations(currentBookmarks.slice(0, requiredBookmarks))
+        hasDistinctContexts(currentBookmarks, requiredBookmarks) &&
+        hasDistinctTranslations(currentBookmarks, requiredBookmarks)
       ) {
         let testedBookmarks = popNElementsFromList(currentBookmarks, selectedExerciseType.testedBookmarks);
         // This is done to avoid sequences that are too small
@@ -70,18 +81,23 @@ function assignBookmarks(currentBookmarks, currentExercises) {
         };
         exerciseList.push(exercise);
         suitableExerciseFound = true;
+        break; // Found a suitable exercise, exit the for loop
       }
 
-      if (!suitableExerciseFound) {
-        possibleExercises = removeAllMatchingItemFromList(selectedExerciseType, possibleExercises);
-        // Fallback to default sequence if no suitable exercises are found
-        if (possibleExercises.length === 0) {
-          console.error("Couldn't find a sequence, resorting to default sequence.");
-          return assignBookmarksToDefaultSequence(currentBookmarks, currentExercises);
-        }
-      }
+      // Remove this exercise type from consideration
+      possibleExercises = removeAllMatchingItemFromList(selectedExerciseType, possibleExercises);
+      i--; // Adjust index since we removed an item
     }
+
+    if (!suitableExerciseFound) {
+      // Fallback to default sequence if no suitable exercises are found
+      console.error("Couldn't find a sequence, resorting to default sequence.");
+      return assignBookmarksToDefaultSequence(currentBookmarks, currentExercises);
+    }
+
+    return exerciseList;
   }
+
   return exerciseList;
 }
 
@@ -119,7 +135,7 @@ function assignBookmarksToDefaultSequence(bookmarks, exerciseTypesList) {
 
     if (
       bookmark_i + currExRequiredBookmarks <= bookmarks.length &&
-      distinctTranslations(bookmarks.slice(bookmark_i, bookmark_i + currExRequiredBookmarks))
+      hasDistinctTranslations(bookmarks, currExRequiredBookmarks, bookmark_i)
     ) {
       let exercise = {
         type: exerciseTypesList[exerciseType_i].type,
