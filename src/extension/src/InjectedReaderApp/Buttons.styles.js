@@ -181,3 +181,15 @@ export let NavigationButton = styled.button`
       border-radius: 10px;
     `}
 `;
+
+export const ArticleActionUndoButton = styled.button`
+  cursor: pointer;
+  margin-left: 8px;
+  font-style: italic;
+  font-size: inherit;
+  color: inherit;
+  text-decoration: underline;
+  background: inherit;
+  border: 1px solid transparent;
+`;
+

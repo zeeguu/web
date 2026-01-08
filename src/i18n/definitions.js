@@ -332,11 +332,12 @@ let strings = new LocalizedStrings(
       // SaveArticleButton
       saveArticleAddedToast: "Article added to your Saves!",
       saveArticleRemovedToast: "Article removed from your Saves!",
-      saveArticleUndo: "Undo?",
       saveArticleButtonSave: "Save",
       saveArticleButtonUnsave: "Unsave",
+      articleActionUndo: "Undo?",
 
-      //SortingButtons
+
+        //SortingButtons
       sortBy: "Sort by:",
       difficulty: "Difficulty",
 
@@ -1132,7 +1133,15 @@ let strings = new LocalizedStrings(
       sortBy: "Sorter efter:",
       difficulty: "Sværhedsgrad",
 
-      //Interests
+      // SaveArticleButton
+      saveArticleAddedToast: "Artikel added to your Saves!",
+      saveArticleRemovedToast: "Article removed from your Saves!",
+      saveArticleButtonSave: "Save",
+      saveArticleButtonUnsave: "Unsave",
+      articleActionUndo: "Undo?",
+
+
+        //Interests
       interests: "Interesseret",
       nonInterests: "Uinteresseret",
 

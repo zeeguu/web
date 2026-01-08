@@ -1,4 +1,6 @@
 import { toast, Slide } from "react-toastify";
+import strings from "../../i18n/definitions";
+import {ArticleActionUndoButton} from "../../extension/src/InjectedReaderApp/Buttons.styles";
 
 let activeToastId = null;
 
@@ -7,25 +9,15 @@ export function showSingleActionToast(message, onClickUndo, duration = 3000, cla
         <span>
             {message}
             {onClickUndo && (
-                <button
+                <ArticleActionUndoButton
                     onClick={() => {
                         onClickUndo?.();
                         if (activeToastId) toast.dismiss(activeToastId);
                         activeToastId = null;
                     }}
-                    style={{
-                        cursor: "pointer",
-                        marginLeft: "6px",
-                        fontStyle: "italic",
-                        color: "inherit",
-                        textDecoration: "underline",
-                        background: "inherit",
-                        border: "1px solid transparent",
-                        padding: 0,
-                    }}
                 >
-                    Undo?
-                </button>
+                    {strings.articleActionUndo}
+                </ArticleActionUndoButton>
             )}
         </span>
     );
