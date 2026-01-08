@@ -40,15 +40,13 @@ const TopTabs = styled.div`
     display: flex;
     width: 100%;
     margin: 0;
-    padding-right: 0.1rem;
-    padding-bottom: 0.5rem;
 
     ${({ currentMode }) =>
       currentMode === "swiper"
         ? `
         position: absolute;
         top: 50%;
-        left: 1rem;
+        left: 0.3rem;
         transform: translateY(-50%);
         width: auto;
       `
@@ -97,7 +95,7 @@ const TopTabs = styled.div`
 
     .headmenuTab {
       margin-top: 0;
-      font-size: 1.0em;
+      font-size: 0.8em;
       line-height: 7ex;
     }
 
