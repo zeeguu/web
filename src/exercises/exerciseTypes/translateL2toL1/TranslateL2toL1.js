@@ -3,7 +3,7 @@ import * as s from "../Exercise.sc.js";
 import { EXERCISE_TYPES } from "../../ExerciseTypeConstants.js";
 import strings from "../../../i18n/definitions.js";
 import LoadingAnimation from "../../../components/LoadingAnimation.js";
-import InteractiveText from "../../../reader/InteractiveText.js";
+import InteractiveExerciseText from "../../../reader/InteractiveExerciseText.js";
 import { SpeechContext } from "../../../contexts/SpeechContext.js";
 import BottomInput from "../BottomInput.js";
 import WordProgressBar from "../../progressBars/WordProgressBar.js";
@@ -50,8 +50,15 @@ export default function TranslateL2toL1({
       return;
     }
 
+    const expectedPosition = {
+      sentenceIndex: exerciseBookmark.t_sentence_i,
+      tokenIndex: exerciseBookmark.t_token_i,
+      totalTokens: exerciseBookmark.t_total_token || 1,
+      contextOffset: exerciseBookmark.context_sent || 0
+    };
+
     setInteractiveText(
-      new InteractiveText(
+      new InteractiveExerciseText(
         exerciseBookmark.context_tokenized,
         exerciseBookmark.source_id,
         api,
@@ -61,6 +68,9 @@ export default function TranslateL2toL1({
         EXERCISE_TYPE,
         speech,
         exerciseBookmark.context_identifier,
+        null, // formatting
+        exerciseBookmark.from, // expectedSolution
+        expectedPosition, // expectedPosition
       ),
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
