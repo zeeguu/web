@@ -37,6 +37,10 @@ Zeeguu_API.prototype.getUserWordsRecommendedForPractice = function (callback) {
   this._getJSON(`user_words_recommended_for_practice`, callback);
 };
 
+Zeeguu_API.prototype.getNextWordDueTime = function (callback) {
+  this._getJSON(`next_word_due_time`, callback);
+};
+
 Zeeguu_API.prototype.getUserWordsNextInLearning = function (callback) {
   this._getJSON(`user_words_next_in_learning`, callback);
 };

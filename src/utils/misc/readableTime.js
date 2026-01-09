@@ -53,6 +53,7 @@ function estimateReadingTime(wordCount) {
   // Let'say a language lerner takes 160 WPM + Wait + Translation Words
   return timeToHumanReadable(Math.ceil(wordCount / 160) * 60, "minutes");
 }
+
 export {
   secondsToMinutes,
   secondsToHours,
