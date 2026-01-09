@@ -8,6 +8,7 @@ import { CenteredColumn } from "./Congratulations.sc";
 import { removeArrayDuplicates } from "../utils/basic/arrays";
 import { LoadingAnimation } from "../components/LoadingAnimation.sc";
 import { timeToHumanReadable } from "../utils/misc/readableTime";
+import { formatDistanceToNow } from "date-fns";
 import CollapsablePanel from "../components/CollapsablePanel";
 import Pluralize from "../utils/text/pluralize";
 import BackArrow from "../pages/Settings/settings_pages_shared/BackArrow";
@@ -62,6 +63,7 @@ export default function Congratulations({
   );
   const [totalBookmarksReviewed, setTotalBookmarksReviewed] = useState();
   const [username, setUsername] = useState();
+  const [nextWordDueText, setNextWordDueText] = useState(null);
 
   const { isMobile } = useScreenWidth();
   const { isAnonymous, checkUpgradeTrigger } = useAnonymousUpgrade();
@@ -76,6 +78,13 @@ export default function Congratulations({
     setTotalBookmarksReviewed(incorrectBookmarksToDisplay.length + correctBookmarksToDisplay.length);
     api.logUserActivity(api.COMPLETED_EXERCISES, articleID, "", source);
     updateExercisesCounter();
+
+    // Fetch next word due time for the message
+    api.getNextWordDueTime((nextTime) => {
+      if (nextTime && new Date(nextTime) > new Date()) {
+        setNextWordDueText("in " + formatDistanceToNow(new Date(nextTime)));
+      }
+    });
 
     // Prompt anonymous users to create account after exercises
     if (isAnonymous) {
@@ -176,8 +185,10 @@ export default function Congratulations({
         {isOutOfWordsToday && (
           <YellowMessageBox>
             <p>
-              There are no more words for you to practice today. Come back tomorrow to see the words that you should
-              practice again according to our spaced-repetition schedule.
+              There are no more words for you to practice at the moment.
+              {nextWordDueText
+                ? ` Come back ${nextWordDueText} to see the words that you should practice again.`
+                : " Come back later to see the words that you should practice again."}
             </p>
           </YellowMessageBox>
         )}

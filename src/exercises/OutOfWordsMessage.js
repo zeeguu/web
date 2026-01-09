@@ -5,16 +5,23 @@ import BackArrow from "../pages/Settings/settings_pages_shared/BackArrow";
 import { Link } from "react-router-dom";
 import { useContext, useEffect, useState } from "react";
 import { APIContext } from "../contexts/APIContext";
+import { formatDistanceToNow } from "date-fns";
 
 export default function OutOfWordsMessage({ goBackAction }) {
   const { isMobile } = useScreenWidth();
   const api = useContext(APIContext);
 
   const [totalInLearning, setTotalInLearning] = useState();
+  const [nextWordDueText, setNextWordDueText] = useState(null);
 
   useEffect(() => {
     api.getCountOfAllScheduledWords((totalInLearning) => {
       setTotalInLearning(totalInLearning);
+    });
+    api.getNextWordDueTime((nextTime) => {
+      if (nextTime && new Date(nextTime) > new Date()) {
+        setNextWordDueText("in " + formatDistanceToNow(new Date(nextTime)));
+      }
     });
   }, []);
 
@@ -25,13 +32,16 @@ export default function OutOfWordsMessage({ goBackAction }) {
         <br />
         <br />
 
-        <h2>No more exercises today. Come back tomorrow! :)</h2>
+        <h2>
+          Nothing more to study at the moment.
+          {nextWordDueText ? ` Come back ${nextWordDueText}!` : ""} :)
+        </h2>
 
         <br />
         <br />
         <p>
           Words are scheduled for exercises according to spaced-repetition principles and you already practiced the
-          words that were due today 🎉
+          words that were due at this moment 🎉
         </p>
 
         <br />
