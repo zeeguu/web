@@ -1,5 +1,6 @@
-- Try Zeeguu without signing up - create an account later to save your progress
-- Better phrase detection - tap multi-word expressions to translate them together
-- Improved translation alternatives menu
-- Optimized layout for smaller screens
+- New welcome screen for first-time users
+- Prompt to save your progress after completing exercises
+- "Not a phrase" option to override phrase detection
+- Improved pronunciation for multi-word expressions
+- New screenshots showing more app features
 - Bug fixes and performance improvements
