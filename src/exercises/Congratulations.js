@@ -7,8 +7,7 @@ import { useLocation, useHistory } from "react-router-dom";
 import { CenteredColumn } from "./Congratulations.sc";
 import { removeArrayDuplicates } from "../utils/basic/arrays";
 import { LoadingAnimation } from "../components/LoadingAnimation.sc";
-import { timeToHumanReadable } from "../utils/misc/readableTime";
-import { formatDistanceToNow } from "date-fns";
+import { timeToHumanReadable, formatFutureDueTime } from "../utils/misc/readableTime";
 import CollapsablePanel from "../components/CollapsablePanel";
 import Pluralize from "../utils/text/pluralize";
 import BackArrow from "../pages/Settings/settings_pages_shared/BackArrow";
@@ -82,7 +81,7 @@ export default function Congratulations({
     // Fetch next word due time for the message
     api.getNextWordDueTime((nextTime) => {
       if (nextTime && new Date(nextTime) > new Date()) {
-        setNextWordDueText("in " + formatDistanceToNow(new Date(nextTime)));
+        setNextWordDueText(formatFutureDueTime(new Date(nextTime)));
       }
     });
 
@@ -187,8 +186,8 @@ export default function Congratulations({
             <p>
               There are no more words for you to practice at the moment.
               {nextWordDueText
-                ? ` Come back ${nextWordDueText} to see the words that you should practice again.`
-                : " Come back later to see the words that you should practice again."}
+                ? ` New words will be ready to practice ${nextWordDueText}.`
+                : " Come back later to practice more words."}
             </p>
           </YellowMessageBox>
         )}

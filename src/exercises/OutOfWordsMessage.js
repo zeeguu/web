@@ -5,7 +5,7 @@ import BackArrow from "../pages/Settings/settings_pages_shared/BackArrow";
 import { Link } from "react-router-dom";
 import { useContext, useEffect, useState } from "react";
 import { APIContext } from "../contexts/APIContext";
-import { formatDistanceToNow } from "date-fns";
+import { formatFutureDueTime } from "../utils/misc/readableTime";
 
 export default function OutOfWordsMessage({ goBackAction }) {
   const { isMobile } = useScreenWidth();
@@ -20,7 +20,7 @@ export default function OutOfWordsMessage({ goBackAction }) {
     });
     api.getNextWordDueTime((nextTime) => {
       if (nextTime && new Date(nextTime) > new Date()) {
-        setNextWordDueText("in " + formatDistanceToNow(new Date(nextTime)));
+        setNextWordDueText(formatFutureDueTime(new Date(nextTime)));
       }
     });
   }, []);
@@ -34,7 +34,10 @@ export default function OutOfWordsMessage({ goBackAction }) {
 
         <h2>
           Nothing more to study at the moment.
-          {nextWordDueText ? ` Come back ${nextWordDueText}!` : ""} :)
+          {nextWordDueText
+            ? ` New words will be ready to practice ${nextWordDueText}.`
+            : ""}{" "}
+          :)
         </h2>
 
         <br />
