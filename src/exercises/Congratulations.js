@@ -10,8 +10,6 @@ import { LoadingAnimation } from "../components/LoadingAnimation.sc";
 import { timeToHumanReadable, formatFutureDueTime } from "../utils/misc/readableTime";
 import CollapsablePanel from "../components/CollapsablePanel";
 import Pluralize from "../utils/text/pluralize";
-import BackArrow from "../pages/Settings/settings_pages_shared/BackArrow";
-import useScreenWidth from "../hooks/useScreenWidth";
 import { StyledButton } from "../components/allButtons.sc";
 import { APIContext } from "../contexts/APIContext";
 import { UserContext } from "../contexts/UserContext";
@@ -64,7 +62,6 @@ export default function Congratulations({
   const [username, setUsername] = useState();
   const [nextWordDueText, setNextWordDueText] = useState(null);
 
-  const { isMobile } = useScreenWidth();
   const { isAnonymous, checkUpgradeTrigger } = useAnonymousUpgrade();
 
   function deleteBookmark(bookmark) {
@@ -128,10 +125,9 @@ export default function Congratulations({
   return (
     <>
       <s.NarrowColumn className="narrowColumn">
-        {isMobile && <BackArrow func={backButtonAction} />}
         <CenteredColumn className="centeredColumn">
           <h1>
-            {strings.goodJob} {username}!
+            {strings.goodJob}{isAnonymous ? "" : ` ${username}`}!
           </h1>
         </CenteredColumn>
          <CenteredColumn className="centeredColumn">

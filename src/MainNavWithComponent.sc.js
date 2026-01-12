@@ -20,6 +20,7 @@ const AppContent = styled.section`
   transition: 0.3s ease-in-out;
   padding: 0 0.2rem 0 0.2rem;
   overflow-x: hidden;
+  overflow-y: auto;
   top: 0;
 
   margin-left: ${({ $screenWidth }) => {

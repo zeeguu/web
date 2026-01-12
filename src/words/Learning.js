@@ -9,6 +9,8 @@ import { WEB_READER } from "../reader/ArticleReader";
 import CollapsablePanel from "../components/CollapsablePanel";
 import { StyledButton } from "../components/allButtons.sc";
 import AddCustomWordModal from "./AddCustomWordModal";
+import Tooltip from "../components/TooltipWrapper";
+import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
 
 import { APIContext } from "../contexts/APIContext";
 import { ExercisesCounterContext } from "../exercises/ExercisesCounterContext";
@@ -116,18 +118,22 @@ export default function Learning() {
         <span style={{ color: "gray", fontWeight: "lighter" }}>
           ({count} {count === 1 ? "word" : "words"})
         </span>
+        {level === 1 && (
+          <Tooltip label="Words progress through 4 levels with increasingly harder exercises. Answer correctly on two different days to advance to the next level.">
+            <HelpOutlineIcon style={{ fontSize: "1em", marginLeft: "0.3em", color: "#888", cursor: "help", verticalAlign: "middle" }} />
+          </Tooltip>
+        )}
       </>
     );
   }
 
   return (
     <>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1em" }}>
-        <p style={{ margin: 0 }}>
-          Words in your exercises grouped by level. Each level has progressively harder exercises. When you answer a
-          word correctly on two different days, it moves to the next level.
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1em", marginLeft: "1em" }}>
+        <p style={{ margin: "0 1em 0 0", fontSize: "0.9em", color: "#555" }}>
+          Words you translate while reading are automatically scheduled for exercises and shown here. You can also add words manually.
         </p>
-        <StyledButton onClick={() => setShowAddWordModal(true)}>+</StyledButton>
+        <StyledButton onClick={() => setShowAddWordModal(true)} style={{ whiteSpace: "nowrap" }}>+ Add</StyledButton>
       </div>
 
       {showAddWordModal && (

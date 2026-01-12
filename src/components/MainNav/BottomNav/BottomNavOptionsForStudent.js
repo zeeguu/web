@@ -2,7 +2,6 @@ import { useLocation } from "react-router-dom/cjs/react-router-dom";
 import NotificationIcon from "../../NotificationIcon";
 import BottomNavOption from "./BottomNavOption";
 import NavigationOptions from "../navigationOptions";
-import BottomNavLanguageOption from "./BottomNavLanguageOption";
 import { useContext } from "react";
 import { ExercisesCounterContext } from "../../../exercises/ExercisesCounterContext";
 
@@ -24,7 +23,6 @@ export default function BottomNavOptionsForStudent() {
       />
       {Feature.is_enabled("daily_audio") && <BottomNavOption {...NavigationOptions.dailyAudio} currentPath={path} />}
       <BottomNavOption {...NavigationOptions.words} currentPath={path} />
-      <BottomNavLanguageOption />
     </>
   );
 }
