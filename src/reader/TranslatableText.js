@@ -29,6 +29,7 @@ export function TranslatableText({
   const [loadingMWEGroupId, setLoadingMWEGroupId] = useState(null);
   const [mweGroupColorMap, setMweGroupColorMap] = useState({});
   const [mweGroupsWithTranslations, setMweGroupsWithTranslations] = useState(new Set());
+  const [highlightSolutionExpression, setHighlightSolutionExpression] = useState(false);
   const divType = interactiveText.formatting ? interactiveText.formatting : "div";
 
   useEffect(() => {
@@ -134,6 +135,7 @@ export function TranslatableText({
     mweGroupColorMap,
     mweGroupsWithTranslations,
     firstClozeWordId,
+    highlightSolutionExpression,
   ]);
 
   useEffect(() => {
@@ -287,6 +289,9 @@ export function TranslatableText({
       if (isWordHighlighted) {
         return <span key={word.id} style={{ color: orange500, fontWeight: "bold" }}>{word.word + " "}</span>;
       }
+      // In exercise context, disable MWE hover highlighting entirely.
+      // Instead, use solution expression highlighting for multi-word bookmarks.
+      const inExerciseContext = !!nonTranslatableWords;
       if (!clozeWord) {
         return (
           <TranslatableWord
@@ -297,12 +302,15 @@ export function TranslatableText({
             translating={translating}
             pronouncing={pronouncing}
             disableTranslation={disableTranslation}
-            highlightedMWEGroupId={highlightedMWEGroupId}
-            setHighlightedMWEGroupId={setHighlightedMWEGroupId}
+            highlightedMWEGroupId={inExerciseContext ? null : highlightedMWEGroupId}
+            setHighlightedMWEGroupId={inExerciseContext ? null : setHighlightedMWEGroupId}
             loadingMWEGroupId={loadingMWEGroupId}
             setLoadingMWEGroupId={setLoadingMWEGroupId}
             mweGroupColorMap={mweGroupColorMap}
             mweGroupsWithTranslations={mweGroupsWithTranslations}
+            solutionWordIds={inExerciseContext ? nonTranslatableWordIds : null}
+            highlightSolutionExpression={highlightSolutionExpression}
+            setHighlightSolutionExpression={inExerciseContext ? setHighlightSolutionExpression : null}
           />
         );
       }
@@ -367,12 +375,15 @@ export function TranslatableText({
           translating={translating}
           pronouncing={pronouncing}
           disableTranslation={disableTranslation}
-          highlightedMWEGroupId={highlightedMWEGroupId}
-          setHighlightedMWEGroupId={setHighlightedMWEGroupId}
+          highlightedMWEGroupId={inExerciseContext ? null : highlightedMWEGroupId}
+          setHighlightedMWEGroupId={inExerciseContext ? null : setHighlightedMWEGroupId}
           loadingMWEGroupId={loadingMWEGroupId}
           setLoadingMWEGroupId={setLoadingMWEGroupId}
           mweGroupColorMap={mweGroupColorMap}
           mweGroupsWithTranslations={mweGroupsWithTranslations}
+          solutionWordIds={inExerciseContext ? nonTranslatableWordIds : null}
+          highlightSolutionExpression={highlightSolutionExpression}
+          setHighlightSolutionExpression={inExerciseContext ? setHighlightSolutionExpression : null}
         />
       );
     }

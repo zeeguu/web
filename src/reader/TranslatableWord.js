@@ -21,6 +21,10 @@ export default function TranslatableWord({
   setLoadingMWEGroupId,
   mweGroupColorMap,
   mweGroupsWithTranslations,
+  // Exercise solution highlighting props
+  solutionWordIds,
+  highlightSolutionExpression,
+  setHighlightSolutionExpression,
 }) {
   const [showingAlterMenu, setShowingAlterMenu] = useState(false);
   const [refToTranslation, clickedOutsideTranslation] = useClickOutside();
@@ -206,7 +210,18 @@ export default function TranslatableWord({
     return word.findMWEPartners().length > 1;
   }
 
+  // Check if this word is part of the solution expression (for exercises)
+  function isPartOfSolution() {
+    return solutionWordIds && solutionWordIds.includes(word.id);
+  }
+
   function handleMouseEnter() {
+    // Solution expression highlighting for exercises (multi-word bookmarks)
+    if (isPartOfSolution() && setHighlightSolutionExpression) {
+      setHighlightSolutionExpression(true);
+      return; // Don't also do MWE highlighting
+    }
+    // Regular MWE highlighting for reader
     const groupId = word.token?.mwe_group_id;
     if (hasMWEPartnersInSameSentence() && setHighlightedMWEGroupId) {
       setHighlightedMWEGroupId(groupId);
@@ -214,6 +229,12 @@ export default function TranslatableWord({
   }
 
   function handleMouseLeave() {
+    // Solution expression highlighting for exercises
+    if (isPartOfSolution() && setHighlightSolutionExpression) {
+      setHighlightSolutionExpression(false);
+      return;
+    }
+    // Regular MWE highlighting for reader
     if (hasMWEPartnersInSameSentence() && setHighlightedMWEGroupId) {
       setHighlightedMWEGroupId(null);
     }
@@ -287,8 +308,16 @@ export default function TranslatableWord({
     return classes;
   }
 
+  // Get CSS classes for solution expression highlighting in exercises
+  function getSolutionHighlightClasses() {
+    if (highlightSolutionExpression && isPartOfSolution()) {
+      return ["solution-hover-active"];
+    }
+    return [];
+  }
+
   function getWordClass(word) {
-    return [...getSpecialTokenClasses(word), ...getMWEClasses(word)].filter(Boolean).join(" ");
+    return [...getSpecialTokenClasses(word), ...getMWEClasses(word), ...getSolutionHighlightClasses()].filter(Boolean).join(" ");
   }
 
   const wordClass = getWordClass(word);

@@ -204,6 +204,17 @@ const TranslatableText = styled.div`
   }
 
   /* ========================================================================
+   * SOLUTION EXPRESSION HOVER (for exercises with multi-word bookmarks)
+   * Highlights all words in the solution when hovering any of them
+   * Uses same styling as regular word hover
+   * ======================================================================== */
+  z-tag.solution-hover-active {
+    text-decoration: underline;
+    text-decoration-thickness: 3px;
+    text-decoration-color: rgb(255, 229, 158);
+  }
+
+  /* ========================================================================
    * REGULAR WORD HOVER (non-MWE)
    * ======================================================================== */
   z-tag:hover {
