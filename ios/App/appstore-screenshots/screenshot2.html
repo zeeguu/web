@@ -19,30 +19,86 @@
       justify-content: center;
       padding: 100px 60px;
     }
+    .logo {
+      font-size: 72px;
+      font-weight: 700;
+      color: #F0A030;
+      margin-bottom: 100px;
+    }
     .headline {
       font-size: 160px;
       font-weight: 700;
       color: #3D3D3D;
       text-align: center;
       line-height: 1.1;
-      margin-bottom: 80px;
+      margin-bottom: 60px;
     }
     .subheadline {
-      font-size: 80px;
+      font-size: 70px;
       color: #666;
       text-align: center;
       line-height: 1.4;
-      margin-bottom: 120px;
+      margin-bottom: 100px;
     }
-    .illustration {
-      width: 1100px;
+    .levels-container {
+      display: flex;
+      flex-direction: column;
+      gap: 40px;
+      width: 100%;
+      max-width: 1000px;
+    }
+    .level-row {
+      display: flex;
+      justify-content: center;
+      gap: 30px;
+    }
+    .level {
+      width: 280px;
+      height: 280px;
+      background: #fff;
+      border: 4px solid #E8E8E8;
       border-radius: 40px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-size: 90px;
+      font-weight: 700;
+      color: #3D3D3D;
+    }
+    .level.selected {
+      background: #F0A030;
+      border-color: #F0A030;
+      color: #fff;
+    }
+    .level-label {
+      font-size: 36px;
+      font-weight: 400;
+      margin-top: 10px;
+      opacity: 0.7;
+    }
+    .level.selected .level-label {
+      opacity: 1;
     }
   </style>
 </head>
 <body>
-  <h1 class="headline">Get translations and<br>pronunciations everywhere</h1>
-  <p class="subheadline">Tap any word to see its meaning and hear how it's pronounced.</p>
-  <img class="illustration" src="../../../public/static/images/translation-pronunciation.png" alt="">
+  <div class="logo">Zeeguu</div>
+  <h1 class="headline">Read at<br>your own level</h1>
+  <p class="subheadline">Daily news adjusted to your level (A1 to C2)</p>
+  <div class="levels-container">
+    <div class="level-row">
+      <div class="level">A1<span class="level-label">Beginner</span></div>
+      <div class="level">A2<span class="level-label">Elementary</span></div>
+    </div>
+    <div class="level-row">
+      <div class="level selected">B1<span class="level-label">Intermediate</span></div>
+      <div class="level">B2<span class="level-label">Upper Int.</span></div>
+    </div>
+    <div class="level-row">
+      <div class="level">C1<span class="level-label">Advanced</span></div>
+      <div class="level">C2<span class="level-label">Proficient</span></div>
+    </div>
+  </div>
 </body>
 </html>

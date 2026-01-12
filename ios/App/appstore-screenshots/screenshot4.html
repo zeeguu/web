@@ -23,63 +23,91 @@
       font-size: 72px;
       font-weight: 700;
       color: #F0A030;
-      margin-bottom: 100px;
+      margin-bottom: 60px;
     }
     .headline {
-      font-size: 140px;
+      font-size: 160px;
       font-weight: 700;
       color: #3D3D3D;
       text-align: center;
       line-height: 1.1;
-      margin-bottom: 80px;
+      margin-bottom: 60px;
     }
     .subheadline {
-      font-size: 80px;
+      font-size: 70px;
       color: #666;
       text-align: center;
       line-height: 1.4;
       margin-bottom: 100px;
     }
-    .languages-grid {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 24px;
+    .exercises-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 40px;
       width: 100%;
-      max-width: 1150px;
+      max-width: 1100px;
     }
-    .language-btn {
-      display: flex;
-      align-items: center;
-      gap: 24px;
+    .exercise {
       background: #fff;
-      border: 3px solid #E8E8E8;
-      border-radius: 28px;
-      padding: 32px 44px;
-      font-size: 73px;
-      color: #3D3D3D;
+      border: 4px solid #E8E8E8;
+      border-radius: 40px;
+      padding: 50px 40px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
     }
-    .flag {
-      font-size: 67px;
+    .exercise .icon {
+      font-size: 100px;
+      margin-bottom: 30px;
+    }
+    .exercise .name {
+      font-size: 52px;
+      font-weight: 600;
+      color: #3D3D3D;
+      margin-bottom: 15px;
+    }
+    .exercise .desc {
+      font-size: 38px;
+      color: #888;
     }
   </style>
 </head>
 <body>
   <div class="logo">Zeeguu</div>
-  <h1 class="headline">Choose your<br>language and<br>start reading</h1>
-  <p class="subheadline">11 languages supported</p>
-  <div class="languages-grid">
-    <div class="language-btn"><span class="flag">🇩🇰</span> Danish</div>
-    <div class="language-btn"><span class="flag">🇳🇱</span> Dutch</div>
-    <div class="language-btn"><span class="flag">🇬🇧</span> English</div>
-    <div class="language-btn"><span class="flag">🇫🇷</span> French</div>
-    <div class="language-btn"><span class="flag">🇩🇪</span> German</div>
-    <div class="language-btn"><span class="flag">🇬🇷</span> Greek</div>
-    <div class="language-btn"><span class="flag">🇮🇹</span> Italian</div>
-    <div class="language-btn"><span class="flag">🇵🇹</span> Portuguese</div>
-    <div class="language-btn"><span class="flag">🇷🇴</span> Romanian</div>
-    <div class="language-btn"><span class="flag">🇪🇸</span> Spanish</div>
-    <div class="language-btn"><span class="flag">🇸🇪</span> Swedish</div>
+  <h1 class="headline">Practice words<br>you looked up</h1>
+  <p class="subheadline">We prioritize words you need.<br>Spaced repetition ensures retention.</p>
+  <div class="exercises-grid">
+    <div class="exercise">
+      <span class="icon">🎯</span>
+      <span class="name">Multiple Choice</span>
+      <span class="desc">Pick the right answer</span>
+    </div>
+    <div class="exercise">
+      <span class="icon">✍️</span>
+      <span class="name">Typing</span>
+      <span class="desc">Write the translation</span>
+    </div>
+    <div class="exercise">
+      <span class="icon">🔀</span>
+      <span class="name">Word Order</span>
+      <span class="desc">Arrange the words</span>
+    </div>
+    <div class="exercise">
+      <span class="icon">📝</span>
+      <span class="name">Fill the Gap</span>
+      <span class="desc">Complete the sentence</span>
+    </div>
+    <div class="exercise">
+      <span class="icon">🎧</span>
+      <span class="name">Listening</span>
+      <span class="desc">Type what you hear</span>
+    </div>
+    <div class="exercise">
+      <span class="icon">🗣️</span>
+      <span class="name">Speaking</span>
+      <span class="desc">Say it out loud</span>
+    </div>
   </div>
 </body>
 </html>

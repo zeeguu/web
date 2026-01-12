@@ -19,8 +19,14 @@
       justify-content: center;
       padding: 100px 60px;
     }
+    .logo {
+      font-size: 72px;
+      font-weight: 700;
+      color: #F0A030;
+      margin-bottom: 60px;
+    }
     .headline {
-      font-size: 140px;
+      font-size: 160px;
       font-weight: 700;
       color: #3D3D3D;
       text-align: center;
@@ -32,54 +38,93 @@
       color: #666;
       text-align: center;
       line-height: 1.4;
-      margin-bottom: 100px;
+      margin-bottom: 120px;
     }
-    .topics-grid {
+    .audio-card {
+      background: #fff;
+      border: 4px solid #E8E8E8;
+      border-radius: 50px;
+      padding: 80px 100px;
       display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 28px;
+      flex-direction: column;
+      align-items: center;
       width: 100%;
-      max-width: 1150px;
+      max-width: 1000px;
     }
-    .topic {
+    .headphones {
+      font-size: 180px;
+      margin-bottom: 60px;
+    }
+    .waveform {
       display: flex;
       align-items: center;
-      gap: 20px;
-      background: #fff;
-      border: 3px solid #E8E8E8;
-      border-radius: 28px;
-      padding: 32px 44px;
-      font-size: 64px;
+      gap: 12px;
+      margin-bottom: 60px;
+    }
+    .bar {
+      width: 24px;
+      background: #F0A030;
+      border-radius: 12px;
+    }
+    .audio-title {
+      font-size: 56px;
+      font-weight: 600;
       color: #3D3D3D;
+      margin-bottom: 20px;
     }
-    .topic.selected {
-      background: #FFF8ED;
-      border-color: #F0A030;
+    .audio-desc {
+      font-size: 44px;
+      color: #888;
+      text-align: center;
     }
-    .topic .icon {
-      font-size: 58px;
+    .play-btn {
+      width: 160px;
+      height: 160px;
+      background: #F0A030;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: 50px;
     }
-    .checkmark {
-      color: #F0A030;
-      font-weight: bold;
+    .play-icon {
+      width: 0;
+      height: 0;
+      border-top: 40px solid transparent;
+      border-bottom: 40px solid transparent;
+      border-left: 60px solid #fff;
+      margin-left: 10px;
     }
   </style>
 </head>
 <body>
-  <h1 class="headline">Follow topics<br>you care about</h1>
-  <p class="subheadline">Get articles that match your interests</p>
-  <div class="topics-grid">
-    <div class="topic selected"><span class="icon">🌍</span> World News <span class="checkmark">✓</span></div>
-    <div class="topic selected"><span class="icon">💻</span> Technology <span class="checkmark">✓</span></div>
-    <div class="topic"><span class="icon">⚽</span> Sports</div>
-    <div class="topic selected"><span class="icon">🔬</span> Science <span class="checkmark">✓</span></div>
-    <div class="topic"><span class="icon">🎬</span> Entertainment</div>
-    <div class="topic"><span class="icon">💼</span> Business</div>
-    <div class="topic selected"><span class="icon">🌱</span> Environment <span class="checkmark">✓</span></div>
-    <div class="topic"><span class="icon">🏛️</span> Politics</div>
-    <div class="topic"><span class="icon">🎨</span> Culture</div>
-    <div class="topic"><span class="icon">🍳</span> Food</div>
+  <div class="logo">Zeeguu</div>
+  <h1 class="headline">Listen to audio<br>lessons daily</h1>
+  <p class="subheadline">Personalized based on words you're learning</p>
+  <div class="audio-card">
+    <span class="headphones">🎧</span>
+    <div class="waveform">
+      <div class="bar" style="height: 60px;"></div>
+      <div class="bar" style="height: 100px;"></div>
+      <div class="bar" style="height: 140px;"></div>
+      <div class="bar" style="height: 80px;"></div>
+      <div class="bar" style="height: 180px;"></div>
+      <div class="bar" style="height: 120px;"></div>
+      <div class="bar" style="height: 200px;"></div>
+      <div class="bar" style="height: 160px;"></div>
+      <div class="bar" style="height: 100px;"></div>
+      <div class="bar" style="height: 180px;"></div>
+      <div class="bar" style="height: 140px;"></div>
+      <div class="bar" style="height: 80px;"></div>
+      <div class="bar" style="height: 120px;"></div>
+      <div class="bar" style="height: 60px;"></div>
+      <div class="bar" style="height: 100px;"></div>
+    </div>
+    <div class="audio-title">Listen & Learn</div>
+    <div class="audio-desc">Hear articles read aloud while<br>following along with the text</div>
+    <div class="play-btn">
+      <div class="play-icon"></div>
+    </div>
   </div>
 </body>
 </html>

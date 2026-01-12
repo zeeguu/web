@@ -8,7 +8,7 @@ const Heading = styled.h1`
   font-weight: 700;
   margin: 0;
   @media (max-width: 768px) {
-    text-align: left;
+    text-align: center;
   }
 
   @media (max-width: 576px) {
