@@ -10,6 +10,12 @@ import redirect from "../../utils/routing/routing";
 import SessionStorage from "../../assorted/SessionStorage";
 import { APP_DOMAIN } from "../../appConstants";
 import { APIContext } from "../../contexts/APIContext";
+import { Capacitor } from "@capacitor/core";
+
+const isCapacitor = () => {
+  const platform = Capacitor.getPlatform();
+  return platform === "android" || platform === "ios";
+};
 
 const TIME_BEFORE_REDIRECT = 5000;
 
@@ -73,7 +79,7 @@ export default function DeleteAccount() {
         {currentStatus === DeletionStatus.OK && (
           <>
             <p>Thank you for taking the time to try out Zeeguu!</p>
-            <p>You can close this tab.</p>
+            {!isCapacitor() && <p>You can close this tab.</p>}
           </>
         )}
         {currentStatus === DeletionStatus.ERRORED && (

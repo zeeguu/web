@@ -11,7 +11,9 @@ import validateRules from "../assorted/validateRules";
 import { APIContext } from "../contexts/APIContext";
 import { UserContext } from "../contexts/UserContext";
 import LocalStorage from "../assorted/LocalStorage";
+import { toast } from "react-toastify";
 import styled from "styled-components";
+import Button from "../pages/_pages_shared/Button.sc";
 
 const ModalContent = styled.div`
   h2 {
@@ -46,38 +48,6 @@ const ModalContent = styled.div`
     margin-bottom: 1em;
   }
 
-  .btn {
-    padding: 0.75em 1.5em;
-    border-radius: 0.5em;
-    border: none;
-    cursor: pointer;
-    font-size: 1rem;
-    font-weight: 500;
-  }
-
-  .btn-primary {
-    background-color: #0077cc;
-    color: white;
-  }
-
-  .btn-primary:hover {
-    background-color: #005fa3;
-  }
-
-  .btn-secondary {
-    background-color: #f0f0f0;
-    color: #333;
-  }
-
-  .btn-secondary:hover {
-    background-color: #e0e0e0;
-  }
-
-  .btn-full-width {
-    width: 100%;
-    text-align: center;
-  }
-
   .error-message {
     color: #d32f2f;
     margin-bottom: 1em;
@@ -108,9 +78,33 @@ const ModalContent = styled.div`
   }
 
   .back-link a {
-    color: #0077cc;
+    color: hsl(36, 100%, 40%);
     cursor: pointer;
     text-decoration: underline;
+  }
+
+  .back-link a:hover {
+    color: hsl(36, 100%, 32%);
+  }
+
+  .password-field-wrapper {
+    position: relative;
+  }
+
+  .password-toggle {
+    position: absolute;
+    right: 0.75rem;
+    top: 2.1rem;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0.25rem 0.5rem;
+    font-size: 0.85rem;
+    color: #666;
+  }
+
+  .password-toggle:hover {
+    color: #333;
   }
 `;
 
@@ -127,6 +121,7 @@ export default function UpgradeAccountModal({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [step, setStep] = useState("choice"); // "choice", "register", "login", or "confirm"
   const [userEmail, setUserEmail] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
 
   const [name, setName, validateName, isNameValid, nameMsg] = useFormField("", [
     NonEmptyValidator("Please enter your name"),
@@ -203,6 +198,7 @@ export default function UpgradeAccountModal({
           setUserDetails(user);
           LocalStorage.setUserInfo(user);
           setIsSubmitting(false);
+          toast.success("Account created successfully!");
           if (onSuccess) onSuccess();
           onClose();
         });
@@ -294,30 +290,30 @@ export default function UpgradeAccountModal({
         {step === "choice" && (
           <>
             <div className="choice-buttons">
-              <button
+              <Button
                 type="button"
-                className="btn btn-primary btn-full-width"
+                className="full-width-btn"
                 onClick={() => setStep("login")}
               >
                 Yes, log me in
-              </button>
-              <button
+              </Button>
+              <Button
                 type="button"
-                className="btn btn-secondary btn-full-width"
+                className="grey full-width-btn"
                 onClick={() => setStep("register")}
               >
                 No, create a new account
-              </button>
+              </Button>
             </div>
             {triggerReason !== "settings" && (
               <div className="buttons">
-                <button
+                <Button
                   type="button"
-                  className="btn btn-secondary"
+                  className="grey"
                   onClick={handleDismiss}
                 >
                   Maybe later
-                </button>
+                </Button>
               </div>
             )}
           </>
@@ -353,13 +349,12 @@ export default function UpgradeAccountModal({
             </div>
 
             <div className="buttons">
-              <button
+              <Button
                 type="submit"
-                className="btn btn-primary"
                 disabled={isSubmitting}
               >
                 {isSubmitting ? "Logging in..." : "Log In"}
-              </button>
+              </Button>
             </div>
 
             <div className="back-link">
@@ -398,27 +393,36 @@ export default function UpgradeAccountModal({
                 errorMessage={emailMsg}
               />
 
-              <InputField
-                type="password"
-                label="Password"
-                id="upgrade-password"
-                name="password"
-                placeholder="Choose a password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                isError={!isPasswordValid}
-                errorMessage={passwordMsg}
-              />
+              <div className="password-field-wrapper">
+                <InputField
+                  type={showPassword ? "text" : "password"}
+                  label="Password"
+                  id="upgrade-password"
+                  name="password"
+                  placeholder="Choose a password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  isError={!isPasswordValid}
+                  errorMessage={passwordMsg}
+                />
+                <button
+                  type="button"
+                  className="password-toggle"
+                  onClick={() => setShowPassword(!showPassword)}
+                  aria-label={showPassword ? "Hide password" : "Show password"}
+                >
+                  {showPassword ? "Hide" : "Show"}
+                </button>
+              </div>
             </div>
 
             <div className="buttons">
-              <button
+              <Button
                 type="submit"
-                className="btn btn-primary"
                 disabled={isSubmitting}
               >
                 {isSubmitting ? "Creating..." : "Create Account"}
-              </button>
+              </Button>
             </div>
 
             <div className="back-link">
@@ -446,13 +450,12 @@ export default function UpgradeAccountModal({
             </div>
 
             <div className="buttons">
-              <button
+              <Button
                 type="submit"
-                className="btn btn-primary"
                 disabled={isSubmitting}
               >
                 {isSubmitting ? "Confirming..." : "Confirm"}
-              </button>
+              </Button>
             </div>
           </form>
         )}

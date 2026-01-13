@@ -11,7 +11,7 @@ const PageBackground = styled.div`
   min-height: 100dvh;
   height: 100%;
   background: ${zeeguuOrange};
-  overflow-y: scroll;
+  overflow-y: auto;
 
   .bold {
     font-weight: 600;

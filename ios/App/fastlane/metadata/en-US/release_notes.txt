@@ -1,6 +1,7 @@
-- New welcome screen for first-time users
-- Prompt to save your progress after completing exercises
-- "Not a phrase" option to override phrase detection
-- Improved pronunciation for multi-word expressions
-- New screenshots showing more app features
-- Bug fixes and performance improvements
+- Show/hide password toggle when creating an account
+- Success notification after account creation
+- Consistent orange button styling throughout the app
+- Updated App Store screenshots
+- UI improvements: Dynamic Island awareness, clearer exercise messages
+- Fixed unwanted page scrolling on Welcome and completion screens
+- Bug fixes and improvements
