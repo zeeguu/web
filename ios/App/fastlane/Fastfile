@@ -34,6 +34,12 @@ platform :ios do
       xcodeproj: "App.xcodeproj"
     )
 
+    # Get the marketing version from the project
+    version = get_version_number(
+      xcodeproj: "App.xcodeproj",
+      target: "App"
+    )
+
     # Build the app
     build_app(
       workspace: "App.xcworkspace",
@@ -44,6 +50,7 @@ platform :ios do
 
     # Upload to App Store Connect
     upload_to_app_store(
+      app_version: version,
       skip_metadata: false,
       skip_screenshots: false,
       overwrite_screenshots: true,
