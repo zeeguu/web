@@ -21,7 +21,7 @@ export function wordsAsTile(words) {
   return capitalized_comma_separated_words;
 }
 
-export default function TodayAudio() {
+export default function TodayAudio({ setShowTabs }) {
   const api = useContext(APIContext);
   const { userDetails } = useContext(UserContext);
   const [isLoading, setIsLoading] = useState(false);
@@ -104,6 +104,15 @@ export default function TodayAudio() {
   const listeningSession = useListeningSession(lessonData?.lesson_id);
 
   let words = lessonData?.words || [];
+
+  // Control tab visibility - hide tabs when showing empty state
+  useEffect(() => {
+    if (setShowTabs) {
+      // Hide tabs only when we know user can't generate a lesson and has no lesson
+      const shouldHideTabs = canGenerateLesson === false && !lessonData;
+      setShowTabs(!shouldHideTabs);
+    }
+  }, [canGenerateLesson, lessonData, setShowTabs]);
 
   // Update page title and playback time when lessonData changes
   useEffect(() => {
