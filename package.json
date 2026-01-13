@@ -108,7 +108,9 @@
     "ios:version": "grep MARKETING_VERSION ios/App/App.xcodeproj/project.pbxproj | head -1 && cd ios/App && agvtool what-version",
     "ios:bump": "cd ios/App && agvtool new-marketing-version",
     "ios:beta": "npm run ios:build && cd ios/App && fastlane beta",
-    "ios:release": "npm run ios:build && cd ios/App && fastlane release"
+    "ios:release": "npm run ios:build && cd ios/App && fastlane release",
+    "ios:copy-screenshots": "node ios/App/appstore-screenshots/copy-to-fastlane.js",
+    "ios:render-screenshots": "node ios/App/appstore-screenshots/render.js"
   },
   "browserslist": {
     "production": [
