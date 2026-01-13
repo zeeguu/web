@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
 import LoadingAnimation from "../components/LoadingAnimation";
+import EmptyState from "../components/EmptyState";
 import { setTitle } from "../assorted/setTitle";
 import strings from "../i18n/definitions";
 import Word from "./Word";
@@ -142,9 +143,10 @@ export default function Learning() {
 
       <>
         {inLearning.length === 0 && (
-          <p style={{ color: "gray", fontStyle: "italic" }}>
-            No words in your exercises yet. Translate words while reading to add them.
-          </p>
+          <EmptyState
+            message="No words in your exercises yet. Translate words while reading to add them."
+            fillHeight={false}
+          />
         )}
 
         {[1, 2, 3, 4].map(

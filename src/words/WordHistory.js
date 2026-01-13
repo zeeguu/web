@@ -6,7 +6,7 @@ import strings from "../i18n/definitions";
 import * as sc from "../components/ColumnWidth.sc";
 import { setTitle } from "../assorted/setTitle";
 import { PageTitle } from "../components/PageTitle";
-import Infobox from "../components/Infobox";
+import EmptyState from "../components/EmptyState";
 import { APIContext } from "../contexts/APIContext";
 
 export default function ReadingHistory() {
@@ -38,7 +38,10 @@ export default function ReadingHistory() {
     <sc.NarrowColumn>
       <PageTitle>{strings.wordHistoryTitle}</PageTitle>
       {wordsByDay.length === 0 && (
-        <Infobox>You don't have any translations yet.</Infobox>
+        <EmptyState
+          message="You don't have any translations yet."
+          fillHeight={false}
+        />
       )}
       {wordsByDay.map((day) => (
         <WordsOnDate key={day.date} day={day} notifyDelete={onNotifyDelete} />

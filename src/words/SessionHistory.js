@@ -1,9 +1,9 @@
 import { useState, useEffect, useContext } from "react";
 import { Link } from "react-router-dom";
 import LoadingAnimation from "../components/LoadingAnimation";
+import EmptyState from "../components/EmptyState";
 import strings from "../i18n/definitions";
 import { setTitle } from "../assorted/setTitle";
-import Infobox from "../components/Infobox";
 import { APIContext } from "../contexts/APIContext";
 import { SpeechContext } from "../contexts/SpeechContext";
 import styled from "styled-components";
@@ -921,7 +921,10 @@ export default function SessionHistory() {
       {loading && <LoadingAnimation />}
 
       {!loading && sessions && sessions.length === 0 && (
-        <Infobox>No activity recorded for {getDisplayLabel().toLowerCase()}.</Infobox>
+        <EmptyState
+          message={`No activity recorded for ${getDisplayLabel().toLowerCase()}.`}
+          fillHeight={false}
+        />
       )}
 
       {!loading && sessions && sessions.length > 0 && <Summary sessions={sessions} label="Overview" />}

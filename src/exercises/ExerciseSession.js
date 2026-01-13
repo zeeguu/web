@@ -241,7 +241,8 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
   }, [currentExerciseType, selectedExerciseBookmark, currentBookmarksToStudy, setContextualInfo]);
 
   if (isOutOfWordsToday) {
-    return <OutOfWordsMessage goBackAction={backButtonAction} />;
+    const hasAnyWords = (userDetails?.bookmark_count || 0) > 0;
+    return <OutOfWordsMessage hasAnyWords={hasAnyWords} />;
   }
 
   // Show loading screen until session is created and bookmarks are loaded

@@ -3,6 +3,7 @@ import { orange500, orange600, orange800, zeeguuOrange } from "../components/col
 import { APIContext } from "../contexts/APIContext";
 import { UserContext } from "../contexts/UserContext";
 import LoadingAnimation from "../components/LoadingAnimation";
+import EmptyState from "../components/EmptyState";
 import CustomAudioPlayer from "../components/CustomAudioPlayer";
 import FeedbackModal from "../components/FeedbackModal";
 import { FEEDBACK_OPTIONS, FEEDBACK_CODES_NAME, FEEDBACK_CODES } from "../components/FeedbackConstants";
@@ -242,20 +243,9 @@ export default function TodayAudio() {
     // Cannot generate lesson - show error immediately
     if (canGenerateLesson === false) {
       return (
-        <div
-          style={{
-            padding: "20px",
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            justifyContent: "center",
-            minHeight: "400px",
-          }}
-        >
-          <p style={{ textAlign: "center", maxWidth: "500px", color: "#666", fontSize: "16px", lineHeight: "1.6" }}>
-            You need more words in your learning vocabulary to generate an audio lesson. Try reading more articles and translating more words first.
-          </p>
-        </div>
+        <EmptyState
+          message="You need more words in your learning vocabulary to generate an audio lesson. Try reading more articles and translating words first."
+        />
       );
     }
 
