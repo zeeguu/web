@@ -36,11 +36,22 @@ async function renderScreenshots() {
       await page.evaluate((w, h) => {
         // Base design is for iPhone (1290x2796)
         const baseWidth = 1290;
-        const scale = w / baseWidth;
+        const baseHeight = 2796;
+
+        // Scale to fit both dimensions
+        const scaleW = w / baseWidth;
+        const scaleH = h / baseHeight;
+        const scale = Math.min(scaleW, scaleH);
+
+        // Center the content
+        const scaledWidth = baseWidth * scale;
+        const scaledHeight = baseHeight * scale;
+        const offsetX = (w - scaledWidth) / 2;
+        const offsetY = (h - scaledHeight) / 2;
 
         document.body.style.width = baseWidth + 'px';
-        document.body.style.height = (h / scale) + 'px';
-        document.body.style.transform = `scale(${scale})`;
+        document.body.style.height = baseHeight + 'px';
+        document.body.style.transform = `translate(${offsetX}px, ${offsetY}px) scale(${scale})`;
         document.body.style.transformOrigin = 'top left';
       }, device.width, device.height);
 
