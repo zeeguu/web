@@ -19,11 +19,21 @@
       justify-content: center;
       padding: 100px 60px;
     }
+    .logo-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-bottom: 80px;
+    }
+    .logo-img {
+      width: 120px;
+      height: 120px;
+      margin-bottom: 20px;
+    }
     .logo {
       font-size: 72px;
       font-weight: 700;
       color: #F0A030;
-      margin-bottom: 80px;
     }
     .headline {
       font-size: 160px;
@@ -75,7 +85,10 @@
   </style>
 </head>
 <body>
-  <div class="logo">Zeeguu</div>
+  <div class="logo-container">
+    <img class="logo-img" src="../../../public/static/images/zeeguuLogo.svg" alt="">
+    <div class="logo">Zeeguu</div>
+  </div>
   <h1 class="headline">Start now!</h1>
   <p class="subheadline">Pick your language and begin learning</p>
   <div class="languages-grid">

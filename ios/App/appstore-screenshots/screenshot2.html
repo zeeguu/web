@@ -19,11 +19,21 @@
       justify-content: center;
       padding: 100px 60px;
     }
+    .logo-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-bottom: 100px;
+    }
+    .logo-img {
+      width: 120px;
+      height: 120px;
+      margin-bottom: 20px;
+    }
     .logo {
       font-size: 72px;
       font-weight: 700;
       color: #F0A030;
-      margin-bottom: 100px;
     }
     .headline {
       font-size: 160px;
@@ -83,7 +93,10 @@
   </style>
 </head>
 <body>
-  <div class="logo">Zeeguu</div>
+  <div class="logo-container">
+    <img class="logo-img" src="../../../public/static/images/zeeguuLogo.svg" alt="">
+    <div class="logo">Zeeguu</div>
+  </div>
   <h1 class="headline">Read at<br>your own level</h1>
   <p class="subheadline">Daily news adjusted to your level (A1 to C2)</p>
   <div class="levels-container">
