@@ -10,8 +10,6 @@ import { CEFR_LEVELS } from "../../assorted/cefrLevels";
 import { setTitle } from "../../assorted/setTitle";
 
 import { scrollToTop } from "../../utils/misc/scrollToTop";
-import { Validator } from "../../utils/ValidatorRule/Validator";
-import useShadowRef from "../../hooks/useShadowRef";
 import LocalStorage from "../../assorted/LocalStorage";
 import useFormField from "../../hooks/useFormField";
 import validateRules from "../../assorted/validateRules";
@@ -80,19 +78,8 @@ export default function LanguagePreferences() {
     NonEmptyValidator("Please select a language."),
   );
 
-  const learnedLanguageRef = useShadowRef(learnedLanguage);
-  const [
-    translationLanguage,
-    setTranslationLanguage,
-    validateTranslationLanguage,
-    isTranslationLanguageValid,
-    translationLanguageErrorMsg,
-  ] = useFormField("en", [
-    NonEmptyValidator("Please select a language."),
-    new Validator((translationLanguage) => {
-      return translationLanguage !== learnedLanguageRef.current;
-    }, "Your Translation language needs to be different than your learned language."),
-  ]);
+  // Hardcode translation language to English - users can change in settings if needed
+  const translationLanguage = "en";
   const [
     learnedCEFRLevel,
     setLearnedCEFRLevel,
@@ -120,7 +107,7 @@ export default function LanguagePreferences() {
 
   useEffect(() => {
     LocalStorage.setNativeLanguage(translationLanguage);
-  }, [translationLanguage]);
+  }, []);
 
   if (!sortedSystemLanguages) {
     return <LoadingAnimation />;
@@ -132,7 +119,6 @@ export default function LanguagePreferences() {
       !validateRules([
         validateLearnedLanguage,
         validateLearnedCEFRLevel,
-        validateTranslationLanguage,
       ])
     ) {
       scrollToTop();
@@ -227,21 +213,6 @@ export default function LanguagePreferences() {
               errorMessage={learnedCEFRLevelMsg}
               onChange={(e) => {
                 setLearnedCEFRLevel(e.target.value);
-              }}
-            />
-
-            <Selector
-              selectedValue={translationLanguage}
-              label={strings.baseLanguage}
-              placeholder={strings.baseLanguagePlaceholder}
-              optionLabel={(e) => e.name}
-              optionValue={(e) => e.code}
-              id={"translation-languages"}
-              isError={!isTranslationLanguageValid}
-              errorMessage={translationLanguageErrorMsg}
-              options={sortedSystemLanguages.native_languages}
-              onChange={(e) => {
-                setTranslationLanguage(e.target.value);
               }}
             />
           </FormSection>

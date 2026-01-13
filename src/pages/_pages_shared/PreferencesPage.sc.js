@@ -2,16 +2,20 @@ import styled, { css } from "styled-components";
 import { zeeguuOrange } from "../../components/colors";
 
 const PageBackground = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  width: 100vw;
-  min-height: 100dvh;
-  height: 100%;
   background: ${zeeguuOrange};
-  overflow-y: auto;
+  overflow: hidden;
+  padding-top: env(safe-area-inset-top, 0px);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
 
   .bold {
     font-weight: 600;
@@ -38,11 +42,13 @@ const PageContainer = styled.div`
   justify-content: center;
   box-sizing: border-box;
   max-width: 80%;
+  max-height: 85%;
   border-radius: 1em;
 
   width: 47rem;
   padding: 2rem 6rem;
   margin: 1rem;
+  overflow-y: auto;
 
   background-color: white;
 
