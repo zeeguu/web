@@ -2,6 +2,6 @@
 - Success notification after account creation
 - Consistent orange button styling throughout the app
 - Updated App Store screenshots
-- UI improvements: Dynamic Island awareness, clearer exercise messages
+- UI improvements: Dynamic Island awareness, cleaner empty states
 - Fixed unwanted page scrolling on Welcome and completion screens
 - Bug fixes and improvements
