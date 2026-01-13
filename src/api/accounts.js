@@ -1,4 +1,5 @@
 import { Zeeguu_API } from "./classDef";
+import { getPlatform } from "../utils/misc/browserDetection";
 
 Zeeguu_API.prototype.getUserDetails = function (callback) {
   this._getJSON("get_user_details", callback);
@@ -24,7 +25,8 @@ Zeeguu_API.prototype.addUser = function (
       `&username=${userInfo.name}` +
       `&learned_language=${userInfo.learned_language}` +
       `&native_language=${userInfo.native_language}` +
-      `&learned_cefr_level=${userInfo.learned_cefr_level}`,
+      `&learned_cefr_level=${userInfo.learned_cefr_level}` +
+      `&platform=${getPlatform()}`,
   })
     .then((response) => {
       if (response.ok) {
@@ -62,7 +64,8 @@ Zeeguu_API.prototype.addBasicUser = function (
     headers: { "Content-Type": "application/x-www-form-urlencoded" },
     body:
       `password=${password}&invite_code=${invite_code}` +
-      `&username=${userInfo.name}`,
+      `&username=${userInfo.name}` +
+      `&platform=${getPlatform()}`,
   })
     .then((response) => {
       if (response.ok) {
@@ -140,7 +143,7 @@ Zeeguu_API.prototype.addAnonUser = function (
   onError,
 ) {
   let url = this.baseAPIurl + `/add_anon_user`;
-  let body = `uuid=${uuid}&password=${password}`;
+  let body = `uuid=${uuid}&password=${password}&platform=${getPlatform()}`;
 
   if (languagePrefs?.learned_language) {
     body += `&learned_language_code=${languagePrefs.learned_language}`;

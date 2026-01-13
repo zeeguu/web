@@ -1,5 +1,9 @@
 import { Zeeguu_API } from "./classDef";
 import qs from "qs";
+import { getPlatform } from "../utils/misc/browserDetection";
+
+// Cache platform once at module load - avoids repeated detection on every activity log
+const PLATFORM = getPlatform();
 
 // Reader Opening Actions
 Zeeguu_API.prototype.CLICKED_ARTICLE = "CLICKED ARTICLE";
@@ -102,6 +106,7 @@ Zeeguu_API.prototype.logUserActivity = function (event, article_id = "", value =
     extra_data: extra_data,
     article_id: article_id,
     source_id: source_id,
+    platform: PLATFORM,
   };
 
   const currentDate = new Date();
