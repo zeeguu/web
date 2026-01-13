@@ -73,27 +73,33 @@ const Zeeguu_API = class {
     if (callback) {
       fetch(url, params)
         .then((response) => {
-          // Check for HTTP errors before processing response
-          if (!response.ok) {
-            // Create error with status code and message
-            const error = new Error(`HTTP ${response.status}: ${response.statusText}`);
-            error.status = response.status;
-            error.response = response;
-            throw error;
+          if (response.ok) {
+            return getJson ? response.json() : response.text();
           }
-          return getJson ? response.json() : response.text();
+          // Error response - try to get message from JSON body
+          return response.json().then(
+            (data) => Promise.reject(data.message || `HTTP ${response.status}`),
+            () => Promise.reject(`HTTP ${response.status}`)
+          );
         })
         .then((data) => callback(data))
-        .catch((e) => {
-          // Call onError if provided, otherwise log the error
+        .catch((errorMessage) => {
           if (onError) {
-            onError(e);
+            onError(errorMessage);
           } else {
-            console.error("API request failed:", e);
+            console.error("API request failed:", errorMessage);
           }
         });
     } else {
-      return fetch(url, params);
+      return fetch(url, params).then((response) => {
+        if (response.ok) {
+          return response;
+        }
+        return response.json().then(
+          (data) => Promise.reject(data.message || `HTTP ${response.status}`),
+          () => Promise.reject(`HTTP ${response.status}`)
+        );
+      });
     }
   }
 

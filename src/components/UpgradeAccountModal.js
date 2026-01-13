@@ -36,7 +36,7 @@ const ModalContent = styled.div`
   .buttons {
     display: flex;
     gap: 1em;
-    justify-content: flex-end;
+    justify-content: center;
   }
 
   .choice-buttons {
