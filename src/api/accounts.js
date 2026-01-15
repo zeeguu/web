@@ -129,7 +129,7 @@ Zeeguu_API.prototype.resetPassword = function (
 ) {
   this._post(
     `reset_password/${email}`,
-    `code=${code}&password=${newPass}`,
+    `code=${encodeURIComponent(code)}&password=${encodeURIComponent(newPass)}`,
     callback,
     onError,
   );
