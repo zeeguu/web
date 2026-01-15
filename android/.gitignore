@@ -75,6 +75,9 @@ fastlane/Preview.html
 fastlane/screenshots
 fastlane/test_output
 fastlane/readme.md
+fastlane/metadata/android/en-US/images/phoneScreenshots/
+fastlane/metadata/android/en-US/images/sevenInchScreenshots/
+fastlane/metadata/android/en-US/images/tenInchScreenshots/
 
 # Version control
 vcs.xml
