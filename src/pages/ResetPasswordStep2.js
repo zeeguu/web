@@ -63,8 +63,7 @@ export default function ResetPasswordStep2({ email, isLoggedIn }) {
       },
       (e) => {
         console.log(e);
-        setFailure(true);
-        setErrorMessage("Something went wrong, please contact us.");
+        setErrorMessage(e || "Something went wrong, please contact us.");
       },
     );
   }
