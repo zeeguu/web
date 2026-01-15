@@ -1,7 +1,2 @@
-- Show/hide password toggle when creating an account
-- Success notification after account creation
-- Consistent orange button styling throughout the app
-- Updated App Store screenshots
-- UI improvements: Dynamic Island awareness, cleaner empty states
-- Fixed unwanted page scrolling on Welcome and completion screens
-- Bug fixes and improvements
+- Fixed password reset for passwords containing special characters
+- Better error messages on the password reset page

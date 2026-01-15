@@ -31,6 +31,14 @@ Build and upload to TestFlight
 
 Build and upload to App Store (for review)
 
+### ios release_force
+
+```sh
+[bundle exec] fastlane ios release_force
+```
+
+Build, upload to App Store, and submit for review
+
 ### ios build
 
 ```sh
