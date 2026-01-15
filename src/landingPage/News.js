@@ -17,6 +17,19 @@ export default function News() {
     <>
       <h2>{strings.news}</h2>
 
+      <h3>2026</h3>
+
+      {item(
+        strings.jan,
+        <>
+          The Zeeguu iOS app is released in the{" "}
+          <a href="https://apps.apple.com/us/app/zeeguu-news-for-learners/id6756917355" target="_blank" rel="noopener noreferrer">
+            App Store
+          </a>
+          !
+        </>,
+      )}
+
       <h3>2025</h3>
 
       {item(
