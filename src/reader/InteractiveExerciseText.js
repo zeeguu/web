@@ -232,6 +232,25 @@ export default class InteractiveExerciseText extends InteractiveText {
     return null;
   }
 
+  // Get the full token object at a specific position in the context
+  getTokenAtPosition(sentenceIndex, tokenIndex, contextOffset = 0) {
+    if (!this.paragraphsAsLinkedWordLists || !this.paragraphsAsLinkedWordLists[0]) {
+      return null;
+    }
+
+    let currentWord = this.paragraphsAsLinkedWordLists[0].linkedWords.head;
+    const targetSentenceIndex = sentenceIndex + contextOffset;
+
+    while (currentWord) {
+      if (currentWord.token.sent_i === targetSentenceIndex && currentWord.token.token_i === tokenIndex) {
+        return currentWord.token;
+      }
+      currentWord = currentWord.next;
+    }
+
+    return null;
+  }
+
   // Check if a word should be highlighted (for solution display)
   shouldHighlightWord(word) {
     if (!this.expectedSolution || !word.token) return false;
@@ -243,16 +262,26 @@ export default class InteractiveExerciseText extends InteractiveText {
     if (!solutionWords.includes(wordToCheck)) return false;
 
     // Check if we have valid position info
-    const hasValidPosition = this.expectedPosition && 
-                            this.expectedPosition.sentenceIndex !== null && 
+    const hasValidPosition = this.expectedPosition &&
+                            this.expectedPosition.sentenceIndex !== null &&
                             this.expectedPosition.tokenIndex !== null;
-    
+
     // If we have position info, use the same prioritized logic as click detection
     if (hasValidPosition) {
       const targetSentenceIndex = this.expectedPosition.sentenceIndex;
       const targetTokenIndex = this.expectedPosition.tokenIndex;
       const contextOffset = this.expectedPosition.contextOffset || 0;
       const adjustedSentIndex = word.token.sent_i - contextOffset;
+
+      // For multi-word expressions, check if this word is in the same MWE group as the target
+      if (solutionWords.length > 1 && word.token.mwe_group_id) {
+        // Find the token at the bookmark position to get its MWE group
+        const targetToken = this.getTokenAtPosition(targetSentenceIndex, targetTokenIndex, contextOffset);
+        if (targetToken && targetToken.mwe_group_id === word.token.mwe_group_id) {
+          console.log(`✓ HIGHLIGHTING: MWE group match for "${word.word}" (group: ${word.token.mwe_group_id})`);
+          return true;
+        }
+      }
 
       // FIRST: Try the original bookmark position (most reliable when correct)
       // Use targetTotalTokens from bookmark for multi-word solutions

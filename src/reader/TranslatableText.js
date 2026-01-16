@@ -230,10 +230,11 @@ export function TranslatableText({
 
     // Position-based highlighting for exercises
     let isWordHighlighted = false;
-    if (isExerciseOver && interactiveText.shouldHighlightWord) {
+    if (highlightExpression && interactiveText && interactiveText.shouldHighlightWord) {
+      // Use position-aware highlighting when available (handles phrases like "at stå" correctly)
       isWordHighlighted = interactiveText.shouldHighlightWord(word);
     } else if (highlightExpression) {
-      // Fallback to word-based highlighting for non-exercises
+      // Fallback to word-based highlighting for non-exercise contexts
       const highlightedWords = highlightExpression.split(" ").map((w) => removePunctuation(w).toLowerCase());
       isWordHighlighted = highlightedWords.includes(removePunctuation(word.word).toLowerCase());
     }
