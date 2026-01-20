@@ -203,15 +203,14 @@ export default function NextNavigation({
       )}
       <SolutionFeedbackLinks
         exerciseBookmarks={exerciseBookmarks}
-        prefixMsg={`Exercise URL: ${createShareableUrl()}`}
+        exerciseBookmark={exerciseBookmark}
         handleShowSolution={handleShowSolution}
-        toggleShow={toggleShow}
         isExerciseOver={isExerciseOver}
-        bookmarkLearned={bookmarkLearned}
         shareableUrl={createShareableUrl()}
         exerciseType={exerciseType}
         disableAudio={disableAudio}
         setIsExerciseOver={setIsExerciseOver}
+        onWordRemovedFromExercises={onWordRemovedFromExercises}
       />
       <FeedbackModal
         open={showFeedbackModal}
