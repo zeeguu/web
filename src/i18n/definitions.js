@@ -407,7 +407,7 @@ let strings = new LocalizedStrings(
       //CelebrationModal
       celebrationTitle: "Congratulations, you've learned a new word!",
       celebrationMsg:
-        "You can now understand and use this word, so it won't be tested in the exercises anymore. Keep up the good work!",
+        "You can now understand, use, and even write this word, so it won't be tested in the exercises anymore. Keep up the good work!",
 
       //WordEditAccordion
       deleteWord: "Delete Word",
