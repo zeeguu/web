@@ -1,2 +1,3 @@
-- Fixed password reset for passwords containing special characters
-- Better error messages on the password reset page
+- New "I know this word" button lets you skip words you already know
+- Fixed phrase highlighting in exercises
+- Improved session tracking across devices
