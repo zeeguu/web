@@ -1,5 +1,6 @@
 import { Zeeguu_API } from "./classDef";
 import qs from "qs";
+import { getPlatform } from "../utils/misc/browserDetection";
 
 Zeeguu_API.prototype.readingSessionCreate = function (articleId, readingSource, callback) {
   // the API expects the article_id to be an integer
@@ -11,7 +12,7 @@ Zeeguu_API.prototype.readingSessionCreate = function (articleId, readingSource, 
 
   this._post(
     `reading_session_start`,
-    qs.stringify({ article_id: articleId, reading_source: readingSource }),
+    qs.stringify({ article_id: articleId, reading_source: readingSource, platform: getPlatform() }),
     after_extracting_json
   );
 };

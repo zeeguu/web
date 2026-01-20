@@ -1,5 +1,6 @@
 import { Zeeguu_API } from "./classDef";
 import qs from "qs";
+import { getPlatform } from "../utils/misc/browserDetection";
 
 Zeeguu_API.prototype.listeningSessionCreate = function (lessonId, callback) {
   const after_extracting_json = function (json) {
@@ -9,7 +10,7 @@ Zeeguu_API.prototype.listeningSessionCreate = function (lessonId, callback) {
 
   this._post(
     `listening_session_start`,
-    qs.stringify({ lesson_id: lessonId }),
+    qs.stringify({ lesson_id: lessonId, platform: getPlatform() }),
     after_extracting_json
   );
 };

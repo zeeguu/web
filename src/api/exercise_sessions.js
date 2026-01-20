@@ -1,5 +1,6 @@
 import { Zeeguu_API } from "./classDef";
 import qs from "qs";
+import { getPlatform } from "../utils/misc/browserDetection";
 
 // Consistent naming with other session types (reading, browsing, listening)
 Zeeguu_API.prototype.exerciseSessionCreate = function (callback) {
@@ -7,7 +8,11 @@ Zeeguu_API.prototype.exerciseSessionCreate = function (callback) {
     let id = JSON.parse(json).id;
     callback(id);
   };
-  this._post(`exercise_session_start`, null, after_extracting_json);
+  this._post(
+    `exercise_session_start`,
+    qs.stringify({ platform: getPlatform() }),
+    after_extracting_json
+  );
 };
 
 Zeeguu_API.prototype.exerciseSessionUpdate = function (
@@ -36,7 +41,11 @@ Zeeguu_API.prototype.exerciseSessionEnd = function (
 
 // Backwards compatibility aliases (can be removed once all usages are migrated)
 Zeeguu_API.prototype.startLoggingExerciseSessionToDB = function (callback) {
-  this._post(`exercise_session_start`, null, callback);
+  this._post(
+    `exercise_session_start`,
+    qs.stringify({ platform: getPlatform() }),
+    callback
+  );
 };
 
 Zeeguu_API.prototype.updateExerciseSession = function (sessionId, duration) {
