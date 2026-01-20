@@ -1,5 +1,6 @@
 import { Zeeguu_API } from "./classDef";
 import qs from "qs";
+import { getPlatform } from "../utils/misc/browserDetection";
 
 // **********
 // CREATE WATCHING SESSION
@@ -11,9 +12,14 @@ Zeeguu_API.prototype.createWatchingSession = function (videoId, callback) {
     callback(video_id);
   };
 
-  this._post(`watching_session_start`, qs.stringify({ video_id: videoId }), onSuccess, (error) => {
-    console.error(error);
-  });
+  this._post(
+    `watching_session_start`,
+    qs.stringify({ video_id: videoId, platform: getPlatform() }),
+    onSuccess,
+    (error) => {
+      console.error(error);
+    }
+  );
 };
 
 // **********
