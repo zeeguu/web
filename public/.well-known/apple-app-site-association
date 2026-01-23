@@ -1,0 +1,14 @@
+{
+  "applinks": {
+    "apps": [],
+    "details": [
+      {
+        "appID": "E9Y43LYCSK.org.zeeguu.app",
+        "paths": [
+          "/read/article*",
+          "/exercise/*"
+        ]
+      }
+    ]
+  }
+}

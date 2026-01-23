@@ -1,0 +1,15 @@
+[
+  {
+    "relation": [
+      "delegate_permission/common.handle_all_urls",
+      "delegate_permission/common.get_login_creds"
+    ],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "org.zeeguu.app",
+      "sha256_cert_fingerprints": [
+        "BE:43:A6:46:D2:B6:E5:4F:42:B2:93:40:A3:AE:FC:91:F3:2B:D8:FB:0E:66:EC:20:8F:EE:CA:6E:E9:FE:44:0C"
+      ]
+    }
+  }
+]
