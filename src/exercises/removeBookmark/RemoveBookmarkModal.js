@@ -36,7 +36,7 @@ export default function RemoveBookmarkModal({
   }, [open]);
 
   const possibleReasons = [
-    ["learned_already", "I know this word"],
+    ["declared_known", "I know this word"],
     ["bad_translation", "Bad translation"],
     ["other", "Other"],
   ];
