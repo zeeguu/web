@@ -9,6 +9,7 @@ import Confetti from "react-confetti";
 import SessionStorage from "../../assorted/SessionStorage.js";
 import { SpeechContext } from "../../contexts/SpeechContext.js";
 import { EXERCISE_TYPES } from "../ExerciseTypeConstants";
+import { WEB_URL } from "../../config";
 
 import CelebrationModal from "../CelebrationModal";
 import { getStaticPath } from "../../utils/misc/staticPath.js";
@@ -105,19 +106,20 @@ export default function NextNavigation({
   const isExerciseCorrect = (isCorrect && !isMatchExercise) || isCorrectMatch;
 
   // Create shareable URL for feedback purposes
+  // Use WEB_URL instead of window.location.origin to avoid capacitor://localhost in mobile apps
   const createShareableUrl = () => {
     const exerciseTypeName = getExerciseTypeName(exerciseType);
 
     // For multi-bookmark exercises (Match, MultipleChoice, MultipleChoiceContext), include all bookmark IDs
     if (EXERCISE_TYPES.isMultiBookmarkExercise(exerciseType) && exerciseBookmarks && exerciseBookmarks.length > 1) {
       const bookmarkIds = exerciseBookmarks.map((b) => b.id).join(",");
-      return `${window.location.origin}/exercise/${exerciseTypeName}/${bookmarkIds}`;
+      return `${WEB_URL}/exercise/${exerciseTypeName}/${bookmarkIds}`;
     }
 
     // For single bookmark exercises
     if (!exerciseBookmark) return "";
     const bookmarkId = exerciseBookmark.id;
-    return `${window.location.origin}/exercise/${exerciseTypeName}/${bookmarkId}`;
+    return `${WEB_URL}/exercise/${exerciseTypeName}/${bookmarkId}`;
   };
 
   const showConffetti = isUserAndAnswerCorrect && (isMatchBookmarkProgression || bookmarkLearned);
