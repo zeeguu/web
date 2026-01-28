@@ -19,7 +19,7 @@ export default function UserDashboard() {
     setTotalTranslated,
     setTotalInLearning,
     setTotalLearned,
-    setWeeklyPracticed,
+    setWeeklyExercises,
     setWeeklyReadingMinutes,
   } = useContext(ProgressContext);
 
@@ -57,8 +57,8 @@ export default function UserDashboard() {
       setTotalLearned(totalLearnedCount);
     });
 
-    api.getPracticedBookmarksCountThisWeek((count) => {
-      setWeeklyPracticed(count);
+    api.getExercisesCompletedThisWeek((count) => {
+      setWeeklyExercises(count);
     });
     // eslint-disable-next-line
   }, []);

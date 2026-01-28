@@ -11,7 +11,7 @@ function ProgressProvider({ children }) {
   const [weeklyTranslated, setWeeklyTranslated] = useState(null);
   const [weeklyReadingMinutes, setWeeklyReadingMinutes] = useState(null);
   const [daysPracticed, setDaysPracticed] = useState(null);
-  const [weeklyPracticed, setWeeklyPracticed] = useState(null); //not implemented yet
+  const [weeklyExercises, setWeeklyExercises] = useState(null);
   const [totalInLearning, setTotalInLearning] = useState(null);
   const [totalTranslated, setTotalTranslated] = useState(null);
   const [totalReadingMinutes, setTotalReadingMinutes] = useState(null);
@@ -40,8 +40,8 @@ function ProgressProvider({ children }) {
         setTotalReadingMinutes,
         totalLearned,
         setTotalLearned,
-        weeklyPracticed,
-        setWeeklyPracticed,
+        weeklyExercises,
+        setWeeklyExercises,
       }}
   >
     {children}

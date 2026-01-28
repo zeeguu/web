@@ -43,8 +43,8 @@ const StatValue = styled.span`
 export default function SideNavProgressStats({ screenWidth }) {
   const api = useContext(APIContext);
   const { userDetails } = useContext(UserContext);
-  const { weeklyReadingMinutes, setWeeklyReadingMinutes, weeklyPracticed, setWeeklyPracticed, daysPracticed } = useContext(ProgressContext);
-  const { weeklyProgressOverview } = getTopBarData({ weeklyReadingMinutes, daysPracticed, weeklyPracticed });
+  const { weeklyReadingMinutes, setWeeklyReadingMinutes, weeklyExercises, setWeeklyExercises, daysPracticed } = useContext(ProgressContext);
+  const { weeklyProgressOverview } = getTopBarData({ weeklyReadingMinutes, daysPracticed, weeklyExercises });
   const [showModalData, setShowModalData] = useState(null);
 
   const isCollapsed = screenWidth <= MEDIUM_WIDTH;
@@ -55,8 +55,8 @@ export default function SideNavProgressStats({ screenWidth }) {
       setWeeklyReadingMinutes(readingMinsPerWeek);
     });
 
-    api.getPracticedBookmarksCountThisWeek((count) => {
-      setWeeklyPracticed(count);
+    api.getExercisesCompletedThisWeek((count) => {
+      setWeeklyExercises(count);
     });
   }, [userDetails.learned_language]);
 
@@ -89,8 +89,8 @@ export default function SideNavProgressStats({ screenWidth }) {
             <StatValue>{weeklyProgressOverview[0].value}</StatValue>
           </StatItem>
         )}
-        {savedItems.includes("wordsPracticedTopBar") && weeklyProgressOverview[1] && (
-          <StatItem onClick={() => handleOpenModal("wordsPracticedTopBar", weeklyProgressOverview[1])}>
+        {savedItems.includes("exercisesTopBar") && weeklyProgressOverview[1] && (
+          <StatItem onClick={() => handleOpenModal("exercisesTopBar", weeklyProgressOverview[1])}>
             <NavIcon name={weeklyProgressOverview[1].icon} color="white" size="1.1em" />
             <StatValue>{weeklyProgressOverview[1].value}</StatValue>
           </StatItem>

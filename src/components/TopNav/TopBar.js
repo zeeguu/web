@@ -13,8 +13,8 @@ import { useLocation } from "react-router-dom";
 
 export default function TopBar() {
   const api = useContext(APIContext)
-  const {weeklyReadingMinutes, setWeeklyReadingMinutes, weeklyPracticed, setWeeklyPracticed, daysPracticed} = useContext(ProgressContext);
-  const {weeklyProgressOverview} = getTopBarData({weeklyReadingMinutes, daysPracticed, weeklyPracticed});
+  const {weeklyReadingMinutes, setWeeklyReadingMinutes, weeklyExercises, setWeeklyExercises, daysPracticed} = useContext(ProgressContext);
+  const {weeklyProgressOverview} = getTopBarData({weeklyReadingMinutes, daysPracticed, weeklyExercises});
   const [showModalData, setShowModalData] = useState(null);
   const { userDetails } = useContext(UserContext);
   const location = useLocation();
@@ -27,8 +27,8 @@ export default function TopBar() {
       setWeeklyReadingMinutes(readingMinsPerWeek);
     });
 
-    api.getPracticedBookmarksCountThisWeek((count) => {
-      setWeeklyPracticed(count);
+    api.getExercisesCompletedThisWeek((count) => {
+      setWeeklyExercises(count);
     });
   }, [userDetails.learned_language]);
 
@@ -60,8 +60,8 @@ export default function TopBar() {
   return (
     <>
     <s.StatContainer>
-   {savedItems.includes("wordsPracticedTopBar") && (
-  <s.ClickableStat onClick={() => handleOpenModal("wordsPracticedTopBar", weeklyProgressOverview[1])}>
+   {savedItems.includes("exercisesTopBar") && (
+  <s.ClickableStat onClick={() => handleOpenModal("exercisesTopBar", weeklyProgressOverview[1])}>
      <NavIcon name={weeklyProgressOverview[1].icon} color={zeeguuOrange} />
     <s.StatNumber>{weeklyProgressOverview[1].value}</s.StatNumber>
   </s.ClickableStat>

@@ -45,10 +45,10 @@ export default function TopbarIconPreferences(){
         <Main>
             <FormSection>
                 <IconRow>
-                <Checkbox checked={whichItems.includes("wordsPracticedTopBar")} onChange={(e) => handleIconPreferences(e, "wordsPracticedTopBar")}/>
+                <Checkbox checked={whichItems.includes("exercisesTopBar")} onChange={(e) => handleIconPreferences(e, "exercisesTopBar")}/>
                 <AdjustedIcon>
-                <NavIcon name="words"/>
-                <Description>{strings.wordsPracticedThisWeek}</Description>
+                <NavIcon name="exercises"/>
+                <Description>{strings.exercisesThisWeek}</Description>
                 </AdjustedIcon>
                </IconRow>
                <IconRow>

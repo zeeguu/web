@@ -80,7 +80,7 @@ let strings = new LocalizedStrings(
       //Progress Items
       iconTextWeeklyArticles: "Weekly minutes read",
       iconTextWeeklyWordsTranslated: "Weekly words translated",
-      iconTextWeeklyWordsPracticed: "Weekly words practiced",
+      iconTextWeeklyExercises: "Weekly exercises",
       iconTextDailyStreak: "Daily streak",
 
       iconTextTotalArticles: "Minutes read",
@@ -97,6 +97,9 @@ let strings = new LocalizedStrings(
       wordsTranslatedTextStart: "You have translated",
       wordsPracticedTextStart: "You have practiced",
       wordsLearnedTextStart: "You have learned",
+      exercisesTextStart: "You have completed",
+      exercisesTextEnd: "exercises this week.",
+      exercisesTextEndSingle: "exercise this week.",
 
       wordsTextWeeklyEnd: "words this week.",
       wordsTextWeeklyEndSingle: "word this week.",
@@ -143,7 +146,7 @@ let strings = new LocalizedStrings(
 
       //Topbar preferences display
       progressIconPreferences: "Progress Icon Preferences",
-      wordsPracticedThisWeek: "Words practiced this week",
+      exercisesThisWeek: "Exercises this week",
       articlesReadThisWeek: "Articles read this week",
       dailyStreak: "Daily streak",
 
@@ -938,7 +941,7 @@ let strings = new LocalizedStrings(
       //Progress Items
       iconTextWeeklyArticles: "Læste artikler pr. uge",
       iconTextWeeklyWordsTranslated: "Oversatte ord pr. uge",
-      iconTextWeeklyWordsPracticed: "Ord øvet pr. uge",
+      iconTextWeeklyExercises: "Øvelser pr. uge",
       iconTextDailyStreak: "Daglig streak",
 
       iconTextTotalArticles: "Læste artikler",
@@ -953,6 +956,9 @@ let strings = new LocalizedStrings(
       wordsTranslatedTextStart: "Du har oversat",
       wordsPracticedTextStart: "Du har øvet",
       wordsLearnedTextStart: "Du har lært",
+      exercisesTextStart: "Du har gennemført",
+      exercisesTextEnd: "øvelser i denne uge.",
+      exercisesTextEndSingle: "øvelse i denne uge.",
 
       wordsTextWeeklyEnd: "ord i denne uge. Du er godt i gang!",
       wordsTextTotalEnd: "siden du begyndte at bruge Zeeguu. Hvor er du god!",

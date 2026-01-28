@@ -9,7 +9,7 @@ import LoadingAnimation from "../components/LoadingAnimation";
 
 export default function ExercisesProgressSummary() {
     const api = useContext(APIContext);
-    const { daysPracticed, totalLearned, setTotalLearned, totalInLearning, setTotalInLearning, weeklyPracticed, setWeeklyPracticed } = useContext(ProgressContext);
+    const { daysPracticed, totalLearned, setTotalLearned, totalInLearning, setTotalInLearning, weeklyExercises, setWeeklyExercises } = useContext(ProgressContext);
     const [randomItems, setRandomItems] = useState([]);
 
     useEffect(() => {
@@ -17,19 +17,19 @@ export default function ExercisesProgressSummary() {
         daysPracticed != null &&
         totalLearned != null &&
         totalInLearning != null &&
-        weeklyPracticed != null;
+        weeklyExercises != null;
 
         if (allValuesReady){
           const summary = getExerciseProgressSummary({
             totalInLearning,
             totalLearned,
             daysPracticed,
-            weeklyPracticed,
+            weeklyExercises,
           }).exerciseProgressSummary;
         const twoRandomItems = selectTwoRandomItems(summary);
         setRandomItems(twoRandomItems);
         }
-    },[daysPracticed, totalLearned, totalInLearning, weeklyPracticed]);
+    },[daysPracticed, totalLearned, totalInLearning, weeklyExercises]);
     
     useEffect(() =>{
     api.getAllScheduledBookmarks(false, (bookmarks) => {
@@ -40,15 +40,15 @@ export default function ExercisesProgressSummary() {
       setTotalLearned(totalLearnedCount)
     });
 
-    api.getPracticedBookmarksCountThisWeek((count) => {
-      setWeeklyPracticed(count);
+    api.getExercisesCompletedThisWeek((count) => {
+      setWeeklyExercises(count);
     });
     }, []);
     
       if (
     totalInLearning === undefined ||
     totalLearned === undefined ||
-    weeklyPracticed === undefined ||
+    weeklyExercises === undefined ||
     daysPracticed === undefined
   ) {
     return <LoadingAnimation />

@@ -8,8 +8,8 @@ import ProgressModal from "../components/progress_tracking/ProgressModal";
 import { ProgressContext} from "../contexts/ProgressContext";
 
 export default function ProgressOverview(){
-    const { daysPracticed, weeklyTranslated, weeklyReadingMinutes, totalInLearning, totalLearned, totalTranslated, totalReadingMinutes, weeklyPracticed } = useContext(ProgressContext);
-    const {weeklyProgressOverview} = getWeeklyProgressOverviewItems({weeklyTranslated, weeklyReadingMinutes, daysPracticed, weeklyPracticed});    
+    const { daysPracticed, weeklyTranslated, weeklyReadingMinutes, totalInLearning, totalLearned, totalTranslated, totalReadingMinutes, weeklyExercises } = useContext(ProgressContext);
+    const {weeklyProgressOverview} = getWeeklyProgressOverviewItems({weeklyTranslated, weeklyReadingMinutes, daysPracticed, weeklyExercises});    
     const {totalProgressOverview} = getTotalProgressOverviewItems({totalInLearning, totalLearned, totalTranslated, totalReadingMinutes});
     const [showModalData, setShowModalData] = useState(null);
     return (
