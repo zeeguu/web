@@ -43,6 +43,14 @@ export default function MainNavWithComponent(props) {
     // eslint-disable-next-line
   }, [path]);
 
+  // Scroll to top when navigating between main sections
+  useEffect(() => {
+    const scrollHolder = document.getElementById("scrollHolder");
+    if (scrollHolder) {
+      scrollHolder.scrollTo(0, 0);
+    }
+  }, [path]);
+
   return (
     <MainNavContext.Provider
       value={{
