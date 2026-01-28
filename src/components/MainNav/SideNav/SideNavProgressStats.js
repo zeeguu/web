@@ -1,10 +1,10 @@
 import { useEffect, useState, useContext } from "react";
 import styled from "styled-components";
 import NavIcon from "../NavIcon";
-import { getTopBarData } from "../../../utils/progressTracking/progressData";
+import { getTopBarData, DEFAULT_TOPBAR_PREFS } from "../../../utils/progressTracking/progressData";
 import { APIContext } from "../../../contexts/APIContext";
 import { ProgressContext } from "../../../contexts/ProgressContext";
-import { calculateWeeklyReadingMinutes, calculateConsecutivePracticeWeeks } from "../../../utils/progressTracking/progressHelpers";
+import { calculateWeeklyReadingMinutes } from "../../../utils/progressTracking/progressHelpers";
 import { UserContext } from "../../../contexts/UserContext";
 import { MEDIUM_WIDTH } from "../screenSize";
 import ProgressModal from "../../progress_tracking/ProgressModal";
@@ -40,17 +40,11 @@ const StatValue = styled.span`
   font-weight: 500;
 `;
 
-const DEFAULT_TOPBAR_PREFS = [
-  "wordsPracticedTopBar",
-  "articleMinutesTopBar",
-  "streakTopBar"
-];
-
 export default function SideNavProgressStats({ screenWidth }) {
   const api = useContext(APIContext);
   const { userDetails } = useContext(UserContext);
-  const { weeksPracticed, setWeeksPracticed, weeklyReadingMinutes, setWeeklyReadingMinutes, weeklyPracticed, setWeeklyPracticed } = useContext(ProgressContext);
-  const { weeklyProgressOverview } = getTopBarData({ weeklyReadingMinutes, weeksPracticed, weeklyPracticed });
+  const { weeklyReadingMinutes, setWeeklyReadingMinutes, weeklyExercises, setWeeklyExercises, daysPracticed } = useContext(ProgressContext);
+  const { weeklyProgressOverview } = getTopBarData({ weeklyReadingMinutes, daysPracticed, weeklyExercises });
   const [showModalData, setShowModalData] = useState(null);
 
   const isCollapsed = screenWidth <= MEDIUM_WIDTH;
@@ -59,12 +53,10 @@ export default function SideNavProgressStats({ screenWidth }) {
     api.getUserActivityByDay((activity) => {
       const readingMinsPerWeek = calculateWeeklyReadingMinutes(activity.reading);
       setWeeklyReadingMinutes(readingMinsPerWeek);
-      const weeks = calculateConsecutivePracticeWeeks(activity);
-      setWeeksPracticed(weeks);
     });
 
-    api.getPracticedBookmarksCountThisWeek((count) => {
-      setWeeklyPracticed(count);
+    api.getExercisesCompletedThisWeek((count) => {
+      setWeeklyExercises(count);
     });
   }, [userDetails.learned_language]);
 
@@ -97,8 +89,8 @@ export default function SideNavProgressStats({ screenWidth }) {
             <StatValue>{weeklyProgressOverview[0].value}</StatValue>
           </StatItem>
         )}
-        {savedItems.includes("wordsPracticedTopBar") && weeklyProgressOverview[1] && (
-          <StatItem onClick={() => handleOpenModal("wordsPracticedTopBar", weeklyProgressOverview[1])}>
+        {savedItems.includes("exercisesTopBar") && weeklyProgressOverview[1] && (
+          <StatItem onClick={() => handleOpenModal("exercisesTopBar", weeklyProgressOverview[1])}>
             <NavIcon name={weeklyProgressOverview[1].icon} color="white" size="1.1em" />
             <StatValue>{weeklyProgressOverview[1].value}</StatValue>
           </StatItem>

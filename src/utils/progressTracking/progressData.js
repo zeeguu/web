@@ -1,5 +1,11 @@
 import strings from "../../i18n/definitions";
 
+export const DEFAULT_TOPBAR_PREFS = [
+  "exercisesTopBar",
+  "articleMinutesTopBar",
+  "streakTopBar",
+];
+
   
 export function getTotalMinutesRead(totalReadingMinutes){
     const totalMinutesRead = totalReadingMinutes;
@@ -109,33 +115,33 @@ export function getTotalWordsLearned(totalLearned){
     return weeklyTranslatedWords;
   }
 
-    export function getWeeklyStreak(weeksPracticed){
-    const weeklyStreak = weeksPracticed;
-    const streakWeekly = {
+    export function getDailyStreak(daysPracticed){
+    const dailyStreak = daysPracticed ?? 0;
+    const streakDaily = {
         icon: "headerStreak",
-        iconText: strings.iconTextWeeklyStreak,
-        value: weeklyStreak,
+        iconText: strings.iconTextDailyStreak,
+        value: dailyStreak,
         asteriks: strings.streakAsteriks,
-        beforeText: (weeklyStreak === 1 ? strings.streakTextStartSingle : strings.streakTextStart),
-        afterText: (weeklyStreak === 1 ? strings.streakTextEndSingle : strings.streakTextEnd) + (weeklyStreak>0 ? " " + strings.positiveFeedbackMsg3 : ""),
+        beforeText: (dailyStreak === 1 ? strings.streakTextStartSingle : strings.streakTextStart),
+        afterText: (dailyStreak === 1 ? strings.streakTextEndSingle : strings.streakTextEnd) + (dailyStreak>0 ? " " + strings.positiveFeedbackMsg3 : ""),
         modal: {
             linkText: "See reading and practice stats",
             linkTo: "user_dashboard?tab=time",
             size: 90,
-            unit: "weeks",
+            unit: "days",
         }
     }
-    return streakWeekly;
+    return streakDaily;
   }
 
-  export function getWeeklyWordsPracticed(weeklyPracticed){
-    const weeklyPracticedWords = weeklyPracticed;
-    const weeklyWordsPracticed = {
+  export function getWeeklyExercises(weeklyExercises){
+    const exerciseCount = weeklyExercises ?? 0;
+    const weeklyExercisesData = {
         icon: "exercises",
-        iconText: strings.iconTextWeeklyWordsPracticed,
-        value: weeklyPracticedWords,
-        beforeText: strings.wordsPracticedTextStart,
-        afterText: (weeklyPracticedWords === 1 ? strings.wordsTextWeeklyEndSingle : strings.wordsTextWeeklyEnd) + (weeklyPracticedWords > 0 ? " " + strings.positiveFeedbackMsg4 : ""),
+        iconText: strings.iconTextWeeklyExercises,
+        value: exerciseCount,
+        beforeText: strings.exercisesTextStart,
+        afterText: (exerciseCount === 1 ? strings.exercisesTextEndSingle : strings.exercisesTextEnd) + (exerciseCount > 0 ? " " + strings.positiveFeedbackMsg4 : ""),
         modal: {
             linkText: "See your word learning progress",
             linkTo: "words",
@@ -143,18 +149,18 @@ export function getTotalWordsLearned(totalLearned){
             unit: "",
         }
     }
-    return weeklyWordsPracticed;
+    return weeklyExercisesData;
   }
 
-  export function getTopBarData({weeklyReadingMinutes, weeksPracticed, weeklyPracticed}){
+  export function getTopBarData({weeklyReadingMinutes, daysPracticed, weeklyExercises}){
     const weeklyArticlesRead = getWeeklyMinutesRead(weeklyReadingMinutes);
-    const weeklyWordsPracticed = getWeeklyWordsPracticed(weeklyPracticed);
-    const weeklyStreak = getWeeklyStreak(weeksPracticed);
+    const weeklyExercisesData = getWeeklyExercises(weeklyExercises);
+    const dailyStreak = getDailyStreak(daysPracticed);
 
     const weeklyProgressOverview = [
         weeklyArticlesRead,
-        weeklyWordsPracticed,
-        weeklyStreak,
+        weeklyExercisesData,
+        dailyStreak,
     ];
 
     return{
@@ -181,17 +187,17 @@ export function getTotalWordsLearned(totalLearned){
     };
 }
 
-export function getWeeklyProgressOverviewItems({weeklyTranslated, weeklyReadingMinutes, weeksPracticed, weeklyPracticed}){
+export function getWeeklyProgressOverviewItems({weeklyTranslated, weeklyReadingMinutes, daysPracticed, weeklyExercises}){
     const weeklyArticlesRead = getWeeklyMinutesRead(weeklyReadingMinutes);
     const weeklyWordsTranslated = getWeeklyWordsTranslated(weeklyTranslated);
-    const weeklyWordsPracticed = getWeeklyWordsPracticed(weeklyPracticed);
-    const weeklyStreak = getWeeklyStreak(weeksPracticed)
+    const weeklyExercisesData = getWeeklyExercises(weeklyExercises);
+    const dailyStreak = getDailyStreak(daysPracticed)
 
     const weeklyProgressOverview = [
         weeklyArticlesRead,
         weeklyWordsTranslated,
-        weeklyWordsPracticed,
-        weeklyStreak,
+        weeklyExercisesData,
+        dailyStreak,
     ];
 
     return{
@@ -200,18 +206,18 @@ export function getWeeklyProgressOverviewItems({weeklyTranslated, weeklyReadingM
 
 }
 
-export function getExerciseProgressSummary({totalInLearning, totalLearned, weeksPracticed, weeklyPracticed}){
+export function getExerciseProgressSummary({totalInLearning, totalLearned, daysPracticed, weeklyExercises}){
     const totalWordsPracticed = getTotalWordsPracticed(totalInLearning, totalLearned);
     const totalWordsLearned = getTotalWordsLearned(totalLearned)
-    const weeklyStreak = getWeeklyStreak(weeksPracticed);
-    const weeklyWordsPracticed = getWeeklyWordsPracticed(weeklyPracticed);
+    const dailyStreak = getDailyStreak(daysPracticed);
+    const weeklyExercisesData = getWeeklyExercises(weeklyExercises);
 
 
     const exerciseProgressSummary = [
         totalWordsPracticed,
         totalWordsLearned,
-        weeklyStreak,
-        weeklyWordsPracticed,
+        dailyStreak,
+        weeklyExercisesData,
     ];
 
     return{
@@ -219,19 +225,19 @@ export function getExerciseProgressSummary({totalInLearning, totalLearned, weeks
     };
 }
 
-export function getArticlesProgressSummary({weeklyTranslated, weeklyMinutesRead, weeksPracticed, totalTranslated, totalReadingMinutes }){
-    const weeklyStreak = getWeeklyStreak(weeksPracticed);
+export function getArticlesProgressSummary({weeklyTranslated, weeklyReadingMinutes, daysPracticed, totalTranslated, totalReadingMinutes }){
+    const dailyStreak = getDailyStreak(daysPracticed);
     const totalWordsTranslated = getTotalWordsTranslated(totalTranslated);
     const totalMinutesRead = getTotalMinutesRead(totalReadingMinutes);
-    const weeklyReadingMinutes = getWeeklyMinutesRead(weeklyMinutesRead);
+    const weeklyMinutesRead = getWeeklyMinutesRead(weeklyReadingMinutes);
     const weeklyTranslatedWords = getWeeklyWordsTranslated(weeklyTranslated);
 
 
     const articlesProgressSummary = [
         totalWordsTranslated,
         totalMinutesRead,
-        weeklyStreak,
-        weeklyReadingMinutes,
+        dailyStreak,
+        weeklyMinutesRead,
         weeklyTranslatedWords
     ];
 

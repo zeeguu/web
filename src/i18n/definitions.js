@@ -80,8 +80,8 @@ let strings = new LocalizedStrings(
       //Progress Items
       iconTextWeeklyArticles: "Weekly minutes read",
       iconTextWeeklyWordsTranslated: "Weekly words translated",
-      iconTextWeeklyWordsPracticed: "Weekly words practiced",
-      iconTextWeeklyStreak: "Weekly streak",
+      iconTextWeeklyExercises: "Weekly exercises",
+      iconTextDailyStreak: "Daily streak",
 
       iconTextTotalArticles: "Minutes read",
       iconTextTotalWordsTranslated: "Words translated",
@@ -97,17 +97,33 @@ let strings = new LocalizedStrings(
       wordsTranslatedTextStart: "You have translated",
       wordsPracticedTextStart: "You have practiced",
       wordsLearnedTextStart: "You have learned",
+      exercisesTextStart: "You have completed",
+      exercisesTextEnd: "exercises this week.",
+      exercisesTextEndSingle: "exercise this week.",
 
       wordsTextWeeklyEnd: "words this week.",
       wordsTextWeeklyEndSingle: "word this week.",
       wordsTextTotalEnd: "words in total since you started using Zeeguu.",
       wordsTextTotalEndSingle: "word in total since you started using Zeeguu.",
 
-      streakTextStart: "You have practiced* every week for",
-      streakTextStartSingle: "You have practiced* for",
-      streakTextEnd: "weeks straight.",
-      streakTextEndSingle: "week straight.",
-      streakAsteriks: "*minimum 5 minutes in a day",
+      streakTextStart: "You have been active every day for",
+      streakTextStartSingle: "You have been active for",
+      streakTextEnd: "days straight.",
+      streakTextEndSingle: "day straight.",
+      streakAsteriks: "",
+
+      //Streak banner & milestones
+      streakDay: "day",
+      streakDayStreak: "day streak",
+      streakMilestoneYear: "A whole year of learning!",
+      streakMilestoneTripleDigits: "Triple digits!",
+      streakMilestoneHalfway: "Halfway to 100!",
+      streakMilestoneMonth: "A full month!",
+      streakMilestoneTwoWeeks: "Two weeks strong!",
+      streakMilestoneWeek: "A full week!",
+      streakMilestoneAlmostWeek: "Almost a week!",
+      streakMilestoneKeepGoing: "Keep it going!",
+      streakMilestoneGreatStart: "Great start!",
 
       //Positive feedback
       positiveFeedbackMsg1: "You are doing great!",
@@ -130,9 +146,9 @@ let strings = new LocalizedStrings(
 
       //Topbar preferences display
       progressIconPreferences: "Progress Icon Preferences",
-      wordsPracticedThisWeek: "Words practiced this week",
+      exercisesThisWeek: "Exercises this week",
       articlesReadThisWeek: "Articles read this week",
-      weeklyStreak: "Weekly streak",
+      dailyStreak: "Daily streak",
 
       //LanguagePreferences
       languagePreferences: "Language Preferences",
@@ -925,8 +941,8 @@ let strings = new LocalizedStrings(
       //Progress Items
       iconTextWeeklyArticles: "Læste artikler pr. uge",
       iconTextWeeklyWordsTranslated: "Oversatte ord pr. uge",
-      iconTextWeeklyWordsPracticed: "Ord øvet pr. uge",
-      iconTextWeeklyStreak: "Ugentlig streak",
+      iconTextWeeklyExercises: "Øvelser pr. uge",
+      iconTextDailyStreak: "Daglig streak",
 
       iconTextTotalArticles: "Læste artikler",
       iconTextTotalWordsTranslated: "Oversatte ord",
@@ -940,9 +956,25 @@ let strings = new LocalizedStrings(
       wordsTranslatedTextStart: "Du har oversat",
       wordsPracticedTextStart: "Du har øvet",
       wordsLearnedTextStart: "Du har lært",
+      exercisesTextStart: "Du har gennemført",
+      exercisesTextEnd: "øvelser i denne uge.",
+      exercisesTextEndSingle: "øvelse i denne uge.",
 
       wordsTextWeeklyEnd: "ord i denne uge. Du er godt i gang!",
       wordsTextTotalEnd: "siden du begyndte at bruge Zeeguu. Hvor er du god!",
+
+      //Streak banner & milestones
+      streakDay: "dag",
+      streakDayStreak: "dages streak",
+      streakMilestoneYear: "Et helt år med læring!",
+      streakMilestoneTripleDigits: "Trecifret!",
+      streakMilestoneHalfway: "Halvvejs til 100!",
+      streakMilestoneMonth: "En hel måned!",
+      streakMilestoneTwoWeeks: "To uger i træk!",
+      streakMilestoneWeek: "En hel uge!",
+      streakMilestoneAlmostWeek: "Næsten en uge!",
+      streakMilestoneKeepGoing: "Bliv ved!",
+      streakMilestoneGreatStart: "Flot start!",
 
       //CreateAccount
       nameIsRequired: "Vi mangler et navn.",

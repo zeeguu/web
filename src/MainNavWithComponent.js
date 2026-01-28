@@ -8,6 +8,9 @@ import * as s from "./MainNavWithComponent.sc";
 import { ExercisesCounterContext } from "./exercises/ExercisesCounterContext";
 
 import useExercisesCounterNotification from "./hooks/useExercisesCounterNotification";
+import useStreakMilestone from "./hooks/useStreakMilestone";
+import StreakBanner from "./components/StreakBanner";
+import { MOBILE_WIDTH } from "./components/MainNav/screenSize";
 
 export default function MainNavWithComponent(props) {
   const { children: appContent } = props;
@@ -24,6 +27,8 @@ export default function MainNavWithComponent(props) {
   } = useExercisesCounterNotification();
 
   const path = useLocation().pathname;
+
+  useStreakMilestone();
 
   //Initial state and setter passed to the value prop of the MainNavContext.Provider
   const [mainNavProperties, setMainNavProperties] = useState({
@@ -66,6 +71,7 @@ export default function MainNavWithComponent(props) {
             $screenWidth={screenWidth}
             id="scrollHolder"
           >
+            {screenWidth <= MOBILE_WIDTH && <StreakBanner />}
             {appContent}
           </s.AppContent>
         </s.MainNavWithComponent>

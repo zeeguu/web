@@ -84,6 +84,10 @@ Zeeguu_API.prototype.getPracticedBookmarksCountThisWeek = function (callback) {
   this._getJSON("practiced_user_word_count_this_week", callback);
 }
 
+Zeeguu_API.prototype.getExercisesCompletedThisWeek = function (callback) {
+  this._getJSON("exercises_completed_this_week", callback);
+}
+
 Zeeguu_API.prototype.getBookmarksCountByLevel = function (callback) {
   let payload = {
      with_context: true,

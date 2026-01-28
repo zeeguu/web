@@ -267,8 +267,8 @@ function App() {
                   logoutMethod: logout,
                 }}
               >
-                <ProgressProvider>
-                  <APIContext.Provider value={api}>
+                <APIContext.Provider value={api}>
+                  <ProgressProvider>
                     <FeedbackContextProvider>
                       {/* Routing*/}
 
@@ -289,8 +289,8 @@ function App() {
                         theme="light"
                       />
                     </FeedbackContextProvider>
-                  </APIContext.Provider>
-                </ProgressProvider>
+                  </ProgressProvider>
+                </APIContext.Provider>
               </UserContext.Provider>
             </RoutingContext.Provider>
           </LocationTrackingWrapper>
