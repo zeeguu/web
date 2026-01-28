@@ -12,4 +12,10 @@ const Header = styled.header`
   ${BaseSectionStyle}
 `;
 
-export { Header };
+const Version = styled.span`
+  font-size: 0.75rem;
+  color: #999;
+  margin-top: -1rem;
+`;
+
+export { Header, Version };

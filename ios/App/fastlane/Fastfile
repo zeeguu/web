@@ -77,7 +77,12 @@ platform :ios do
       workspace: "App.xcworkspace",
       scheme: "App",
       export_method: "app-store",
-      clean: true
+      clean: true,
+      export_options: {
+        provisioningProfiles: {
+          "org.zeeguu.app" => "Zeeguu App Store Distribution"
+        }
+      }
     )
 
     # Upload to App Store Connect and submit for review

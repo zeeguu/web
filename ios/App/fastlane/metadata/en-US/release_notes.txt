@@ -1,1 +1,4 @@
-- Share article and exercise links with friends - they now open directly in the app
+- Daily streak tracking to keep you motivated
+- "I know this word" button to skip words you already know
+- Share links that open directly in the app
+- Shows exercises completed this week

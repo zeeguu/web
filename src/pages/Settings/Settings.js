@@ -10,6 +10,7 @@ import LogOutButton from "./LogOutButton";
 import ButtonContainer from "../_pages_shared/ButtonContainer.sc";
 import UpgradeAccountModal from "../../components/UpgradeAccountModal";
 import LocalStorage from "../../assorted/LocalStorage";
+import { APP_VERSION } from "../../appVersion";
 
 import * as s from "./Settings.sc";
 
@@ -81,9 +82,11 @@ export default function Settings() {
         </ListOfSettingsItems>
       )}
 
-      <ButtonContainer className={"adaptive-alignment-horizontal"} style={{marginTop: "1em", marginBottom: "3em"}}>
+      <ButtonContainer className={"adaptive-alignment-horizontal"} style={{marginTop: "1em", marginBottom: "1em"}}>
         <LogOutButton />
       </ButtonContainer>
+
+      <s.Version>v{APP_VERSION}</s.Version>
     </s.StyledWrapper>
   );
 }

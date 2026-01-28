@@ -8,4 +8,11 @@ const StyledWrapper = styled.div`
   gap: 1rem;
 `;
 
-export { StyledWrapper };
+const Version = styled.div`
+  font-size: 0.75rem;
+  color: #999;
+  text-align: center;
+  margin-bottom: 2rem;
+`;
+
+export { StyledWrapper, Version };
