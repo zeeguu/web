@@ -109,6 +109,19 @@ let strings = new LocalizedStrings(
       streakTextEndSingle: "day straight.",
       streakAsteriks: "",
 
+      //Streak banner & milestones
+      streakDay: "day",
+      streakDayStreak: "day streak",
+      streakMilestoneYear: "A whole year of learning!",
+      streakMilestoneTripleDigits: "Triple digits!",
+      streakMilestoneHalfway: "Halfway to 100!",
+      streakMilestoneMonth: "A full month!",
+      streakMilestoneTwoWeeks: "Two weeks strong!",
+      streakMilestoneWeek: "A full week!",
+      streakMilestoneAlmostWeek: "Almost a week!",
+      streakMilestoneKeepGoing: "Keep it going!",
+      streakMilestoneGreatStart: "Great start!",
+
       //Positive feedback
       positiveFeedbackMsg1: "You are doing great!",
       positiveFeedbackMsg2: "Keep up the good work!",
@@ -943,6 +956,19 @@ let strings = new LocalizedStrings(
 
       wordsTextWeeklyEnd: "ord i denne uge. Du er godt i gang!",
       wordsTextTotalEnd: "siden du begyndte at bruge Zeeguu. Hvor er du god!",
+
+      //Streak banner & milestones
+      streakDay: "dag",
+      streakDayStreak: "dages streak",
+      streakMilestoneYear: "Et helt år med læring!",
+      streakMilestoneTripleDigits: "Trecifret!",
+      streakMilestoneHalfway: "Halvvejs til 100!",
+      streakMilestoneMonth: "En hel måned!",
+      streakMilestoneTwoWeeks: "To uger i træk!",
+      streakMilestoneWeek: "En hel uge!",
+      streakMilestoneAlmostWeek: "Næsten en uge!",
+      streakMilestoneKeepGoing: "Bliv ved!",
+      streakMilestoneGreatStart: "Flot start!",
 
       //CreateAccount
       nameIsRequired: "Vi mangler et navn.",

@@ -1,19 +1,23 @@
 import { useEffect, useContext } from "react";
 import { toast } from "react-toastify";
 import { ProgressContext } from "../contexts/ProgressContext";
+import strings from "../i18n/definitions";
 
 const MILESTONES = [2, 3, 5, 7, 14, 30, 50, 100, 200, 365];
 
 function getMilestoneMessage(days) {
-  if (days >= 365) return `${days} days! A whole year of learning!`;
-  if (days >= 100) return `${days} days! Triple digits!`;
-  if (days >= 50) return `${days}-day streak! Halfway to 100!`;
-  if (days >= 30) return `${days} days! A full month!`;
-  if (days >= 14) return `${days}-day streak! Two weeks strong!`;
-  if (days >= 7) return `${days}-day streak! A full week!`;
-  if (days >= 5) return `${days}-day streak! Almost a week!`;
-  if (days >= 3) return `${days}-day streak! Keep it going!`;
-  return `${days}-day streak! Great start!`;
+  let suffix;
+  if (days >= 365) suffix = strings.streakMilestoneYear;
+  else if (days >= 100) suffix = strings.streakMilestoneTripleDigits;
+  else if (days >= 50) suffix = strings.streakMilestoneHalfway;
+  else if (days >= 30) suffix = strings.streakMilestoneMonth;
+  else if (days >= 14) suffix = strings.streakMilestoneTwoWeeks;
+  else if (days >= 7) suffix = strings.streakMilestoneWeek;
+  else if (days >= 5) suffix = strings.streakMilestoneAlmostWeek;
+  else if (days >= 3) suffix = strings.streakMilestoneKeepGoing;
+  else suffix = strings.streakMilestoneGreatStart;
+
+  return `${days} ${strings.streakDayStreak}! ${suffix}`;
 }
 
 export default function useStreakMilestone() {

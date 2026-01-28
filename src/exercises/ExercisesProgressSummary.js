@@ -9,7 +9,7 @@ import LoadingAnimation from "../components/LoadingAnimation";
 
 export default function ExercisesProgressSummary() {
     const api = useContext(APIContext);
-    const { daysPracticed, setDaysPracticed, totalLearned, setTotalLearned, totalInLearning, setTotalInLearning, weeklyPracticed, setWeeklyPracticed } = useContext(ProgressContext);
+    const { daysPracticed, totalLearned, setTotalLearned, totalInLearning, setTotalInLearning, weeklyPracticed, setWeeklyPracticed } = useContext(ProgressContext);
     const [randomItems, setRandomItems] = useState([]);
 
     useEffect(() => {
@@ -42,10 +42,6 @@ export default function ExercisesProgressSummary() {
 
     api.getPracticedBookmarksCountThisWeek((count) => {
       setWeeklyPracticed(count);
-    });
-
-    api.getDailyStreak((data) => {
-        setDaysPracticed(data.daily_streak);
     });
     }, []);
     

@@ -8,7 +8,7 @@ import * as s from "../components/progress_tracking/ProgressItems.sc";
 
 export default function ArticlesProgressSummary() {
     const api = useContext(APIContext);
-    const { weeklyReadingMinutes, setWeeklyReadingMinutes, weeklyTranslated, setWeeklyTranslated, daysPracticed, setDaysPracticed, totalTranslated, setTotalTranslated, totalReadingMinutes, setTotalReadingMinutes} = useContext(ProgressContext);
+    const { weeklyReadingMinutes, setWeeklyReadingMinutes, weeklyTranslated, setWeeklyTranslated, daysPracticed, totalTranslated, setTotalTranslated, totalReadingMinutes, setTotalReadingMinutes} = useContext(ProgressContext);
     const [randomItems, setRandomItems] = useState([]);
 
     useEffect(() => {
@@ -52,10 +52,6 @@ export default function ArticlesProgressSummary() {
 
           const readingMinsPerWeek = calculateWeeklyReadingMinutes(activity.reading);
           setWeeklyReadingMinutes(readingMinsPerWeek);
-        });
-
-        api.getDailyStreak((data) => {
-          setDaysPracticed(data.daily_streak);
         });
     }, []);
 

@@ -43,7 +43,7 @@ const StatValue = styled.span`
 export default function SideNavProgressStats({ screenWidth }) {
   const api = useContext(APIContext);
   const { userDetails } = useContext(UserContext);
-  const { daysPracticed, setDaysPracticed, weeklyReadingMinutes, setWeeklyReadingMinutes, weeklyPracticed, setWeeklyPracticed } = useContext(ProgressContext);
+  const { weeklyReadingMinutes, setWeeklyReadingMinutes, weeklyPracticed, setWeeklyPracticed, daysPracticed } = useContext(ProgressContext);
   const { weeklyProgressOverview } = getTopBarData({ weeklyReadingMinutes, daysPracticed, weeklyPracticed });
   const [showModalData, setShowModalData] = useState(null);
 
@@ -53,10 +53,6 @@ export default function SideNavProgressStats({ screenWidth }) {
     api.getUserActivityByDay((activity) => {
       const readingMinsPerWeek = calculateWeeklyReadingMinutes(activity.reading);
       setWeeklyReadingMinutes(readingMinsPerWeek);
-    });
-
-    api.getDailyStreak((data) => {
-      setDaysPracticed(data.daily_streak);
     });
 
     api.getPracticedBookmarksCountThisWeek((count) => {

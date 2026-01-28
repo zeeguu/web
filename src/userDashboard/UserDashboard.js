@@ -19,7 +19,6 @@ export default function UserDashboard() {
     setTotalTranslated,
     setTotalInLearning,
     setTotalLearned,
-    setDaysPracticed,
     setWeeklyPracticed,
     setWeeklyReadingMinutes,
   } = useContext(ProgressContext);
@@ -48,10 +47,6 @@ export default function UserDashboard() {
 
       const readingMinsPerWeek = calculateWeeklyReadingMinutes(activity.reading);
       setWeeklyReadingMinutes(readingMinsPerWeek);
-    });
-
-    api.getDailyStreak((data) => {
-      setDaysPracticed(data.daily_streak);
     });
 
     api.getAllScheduledBookmarks(false, (bookmarks) => {

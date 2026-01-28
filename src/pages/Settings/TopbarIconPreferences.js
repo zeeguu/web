@@ -10,15 +10,10 @@ import ButtonContainer from "../_pages_shared/ButtonContainer.sc";
 import Button  from "../_pages_shared/Button.sc";
 import NavIcon from "../../components/MainNav/NavIcon";
 import {IconRow, AdjustedIcon, Description} from "./TopbarIconPreferences.sc";
-import { useEffect, useState, React } from "react";
+import { useState } from "react";
 import { DEFAULT_TOPBAR_PREFS } from "../../utils/progressTracking/progressData";
 
 export default function TopbarIconPreferences(){
-    useEffect(() => {
-        const savedPrefs = JSON.parse(localStorage.getItem("topBarPrefs")) || [];
-        setWhichItems(savedPrefs);
-      }, []);
-
     const [whichItems, setWhichItems] = useState(() => {
         return JSON.parse(localStorage.getItem("topBarPrefs") || "null") || DEFAULT_TOPBAR_PREFS;
     });
@@ -38,7 +33,6 @@ export default function TopbarIconPreferences(){
       function handleSave(e){
         e.preventDefault();
         localStorage.setItem("topBarPrefs", JSON.stringify(whichItems));
-        console.log("Saved topBarPrefs:", whichItems);
         window.location.reload();
     }
     

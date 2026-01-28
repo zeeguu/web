@@ -1,6 +1,7 @@
 import { useContext } from "react";
 import { ProgressContext } from "../contexts/ProgressContext";
 import LocalFireDepartmentIcon from "@mui/icons-material/LocalFireDepartment";
+import strings from "../i18n/definitions";
 import * as s from "./StreakBanner.sc";
 
 export default function StreakBanner() {
@@ -12,7 +13,7 @@ export default function StreakBanner() {
     <s.StreakBannerContainer>
       <LocalFireDepartmentIcon sx={{ color: "#ff9800", fontSize: "1.2rem" }} />
       <s.StreakValue>{daysPracticed}</s.StreakValue>
-      <s.StreakLabel>{daysPracticed === 1 ? "day" : "day streak"}</s.StreakLabel>
+      <s.StreakLabel>{daysPracticed === 1 ? strings.streakDay : strings.streakDayStreak}</s.StreakLabel>
     </s.StreakBannerContainer>
   );
 }

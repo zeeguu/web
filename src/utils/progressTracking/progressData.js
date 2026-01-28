@@ -116,7 +116,7 @@ export function getTotalWordsLearned(totalLearned){
   }
 
     export function getDailyStreak(daysPracticed){
-    const dailyStreak = daysPracticed;
+    const dailyStreak = daysPracticed ?? 0;
     const streakDaily = {
         icon: "headerStreak",
         iconText: strings.iconTextDailyStreak,
@@ -225,11 +225,11 @@ export function getExerciseProgressSummary({totalInLearning, totalLearned, daysP
     };
 }
 
-export function getArticlesProgressSummary({weeklyTranslated, weeklyMinutesRead, daysPracticed, totalTranslated, totalReadingMinutes }){
+export function getArticlesProgressSummary({weeklyTranslated, weeklyReadingMinutes, daysPracticed, totalTranslated, totalReadingMinutes }){
     const dailyStreak = getDailyStreak(daysPracticed);
     const totalWordsTranslated = getTotalWordsTranslated(totalTranslated);
     const totalMinutesRead = getTotalMinutesRead(totalReadingMinutes);
-    const weeklyReadingMinutes = getWeeklyMinutesRead(weeklyMinutesRead);
+    const weeklyMinutesRead = getWeeklyMinutesRead(weeklyReadingMinutes);
     const weeklyTranslatedWords = getWeeklyWordsTranslated(weeklyTranslated);
 
 
@@ -237,7 +237,7 @@ export function getArticlesProgressSummary({weeklyTranslated, weeklyMinutesRead,
         totalWordsTranslated,
         totalMinutesRead,
         dailyStreak,
-        weeklyReadingMinutes,
+        weeklyMinutesRead,
         weeklyTranslatedWords
     ];
 

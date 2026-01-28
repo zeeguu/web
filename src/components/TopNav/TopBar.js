@@ -13,7 +13,7 @@ import { useLocation } from "react-router-dom";
 
 export default function TopBar() {
   const api = useContext(APIContext)
-  const {daysPracticed, setDaysPracticed, weeklyReadingMinutes, setWeeklyReadingMinutes, weeklyPracticed, setWeeklyPracticed} = useContext(ProgressContext);
+  const {weeklyReadingMinutes, setWeeklyReadingMinutes, weeklyPracticed, setWeeklyPracticed, daysPracticed} = useContext(ProgressContext);
   const {weeklyProgressOverview} = getTopBarData({weeklyReadingMinutes, daysPracticed, weeklyPracticed});
   const [showModalData, setShowModalData] = useState(null);
   const { userDetails } = useContext(UserContext);
@@ -22,24 +22,16 @@ export default function TopBar() {
   
 
   useEffect(() => {
-    const savedPrefs = JSON.parse(localStorage.getItem("topBarPrefs")) || [];
-    setWhichItems(savedPrefs);
-
-  api.getUserActivityByDay((activity) => {
+    api.getUserActivityByDay((activity) => {
       const readingMinsPerWeek = calculateWeeklyReadingMinutes(activity.reading);
       setWeeklyReadingMinutes(readingMinsPerWeek);
     });
 
-  api.getDailyStreak((data) => {
-      setDaysPracticed(data.daily_streak);
-    });
-
-  api.getPracticedBookmarksCountThisWeek((count) => {
+    api.getPracticedBookmarksCountThisWeek((count) => {
       setWeeklyPracticed(count);
     });
   }, [userDetails.learned_language]);
-  
-  const [whichItems, setWhichItems] = useState([]);
+
   const savedItems = JSON.parse(localStorage.getItem("topBarPrefs") || "null") || DEFAULT_TOPBAR_PREFS;
   
   const handleOpenModal = (key, item) => {
