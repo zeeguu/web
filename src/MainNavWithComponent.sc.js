@@ -10,6 +10,7 @@ const MainNavWithComponent = styled.div`
   display: flex;
   justify-content: space-around;
   flex-direction: ${({ $screenWidth }) => ($screenWidth <= MOBILE_WIDTH ? "column" : "row")};
+  overflow: hidden;
 `;
 
 const AppContent = styled.section`
