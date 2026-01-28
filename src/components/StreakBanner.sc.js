@@ -10,6 +10,11 @@ const StreakBannerContainer = styled.div`
   border-bottom: 1px solid #ffe59e;
   font-size: 0.85rem;
   color: #7a5c00;
+  cursor: pointer;
+
+  &:hover {
+    background: linear-gradient(135deg, #fff3cd, #ffe59e);
+  }
 `;
 
 const StreakValue = styled.span`

@@ -72,7 +72,7 @@ export default function TopBar() {
     <s.StatNumber>{weeklyProgressOverview[0].value}</s.StatNumber>
   </s.ClickableStat>
 )}
- {savedItems.includes("streakTopBar") && (
+ {savedItems.includes("streakTopBar") && daysPracticed >= 2 && (
   <s.ClickableStat onClick={() => handleOpenModal("streakTopBar", weeklyProgressOverview[2])}>
   <NavIcon name={weeklyProgressOverview[2].icon} color={zeeguuOrange} />
   <s.StatNumber>{weeklyProgressOverview[2].value}</s.StatNumber>

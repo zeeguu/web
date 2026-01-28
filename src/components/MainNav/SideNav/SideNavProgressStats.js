@@ -95,7 +95,7 @@ export default function SideNavProgressStats({ screenWidth }) {
             <StatValue>{weeklyProgressOverview[1].value}</StatValue>
           </StatItem>
         )}
-        {savedItems.includes("streakTopBar") && weeklyProgressOverview[2] && (
+        {savedItems.includes("streakTopBar") && weeklyProgressOverview[2] && daysPracticed >= 2 && (
           <StatItem onClick={() => handleOpenModal("streakTopBar", weeklyProgressOverview[2])}>
             <NavIcon name={weeklyProgressOverview[2].icon} color="white" size="1.1em" />
             <StatValue>{weeklyProgressOverview[2].value}</StatValue>
