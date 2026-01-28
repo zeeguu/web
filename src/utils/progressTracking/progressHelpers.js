@@ -111,6 +111,56 @@ export function calculateConsecutivePracticeWeeks(activity) {
   return streak;
 }
 
+export function calculateConsecutivePracticeDays(activity) {
+  if (!activity || !Array.isArray(activity.reading) || !Array.isArray(activity.exercises)) {
+    return 0;
+  }
+
+  const allEntries = [...activity.reading, ...activity.exercises];
+
+  // Combine exercise and reading seconds for the same date
+  const dateToSeconds = {};
+  allEntries.forEach(({ date, seconds }) => {
+    if (!date) return;
+    if (!dateToSeconds[date]) {
+      dateToSeconds[date] = 0;
+    }
+    dateToSeconds[date] += seconds;
+  });
+
+  // Collect dates with ≥5 minutes of practice
+  const practicedDays = new Set();
+  Object.entries(dateToSeconds).forEach(([date, seconds]) => {
+    if (seconds >= 300) {
+      const d = new Date(date);
+      d.setHours(0, 0, 0, 0);
+      practicedDays.add(d.toDateString());
+    }
+  });
+
+  if (practicedDays.size === 0) return 0;
+
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  // Build streak backwards from yesterday
+  let streak = 0;
+  let checkDate = new Date(today);
+  checkDate.setDate(checkDate.getDate() - 1);
+
+  while (practicedDays.has(checkDate.toDateString())) {
+    streak++;
+    checkDate.setDate(checkDate.getDate() - 1);
+  }
+
+  // If the user has practiced today, include today
+  if (practicedDays.has(today.toDateString())) {
+    streak++;
+  }
+
+  return streak;
+}
+
 export function calculateWeeklyReadingMinutes(readingActivity) {
   const { startOfWeek, endOfWeek } = getCurrentWeekRange();
   const weeklyReadingSeconds = readingActivity.reduce((sum, entry) => {

@@ -9,7 +9,6 @@ import {
   getWeeklyTranslatedWordsCount,
   calculateTotalReadingMinutes,
   calculateWeeklyReadingMinutes,
-  calculateConsecutivePracticeWeeks,
 } from "../utils/progressTracking/progressHelpers";
 
 export default function UserDashboard() {
@@ -20,7 +19,7 @@ export default function UserDashboard() {
     setTotalTranslated,
     setTotalInLearning,
     setTotalLearned,
-    setWeeksPracticed,
+    setDaysPracticed,
     setWeeklyPracticed,
     setWeeklyReadingMinutes,
   } = useContext(ProgressContext);
@@ -49,9 +48,10 @@ export default function UserDashboard() {
 
       const readingMinsPerWeek = calculateWeeklyReadingMinutes(activity.reading);
       setWeeklyReadingMinutes(readingMinsPerWeek);
+    });
 
-      const weeksPracticed = calculateConsecutivePracticeWeeks(activity);
-      setWeeksPracticed(weeksPracticed);
+    api.getDailyStreak((data) => {
+      setDaysPracticed(data.daily_streak);
     });
 
     api.getAllScheduledBookmarks(false, (bookmarks) => {

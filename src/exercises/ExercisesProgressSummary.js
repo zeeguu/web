@@ -3,18 +3,18 @@ import NavIcon from "../components/MainNav/NavIcon";
 import { getExerciseProgressSummary } from "../utils/progressTracking/progressData";
 import * as s from "../components/progress_tracking/ProgressItems.sc";
 import { ProgressContext } from "../contexts/ProgressContext";
-import { calculateConsecutivePracticeWeeks, selectTwoRandomItems } from "../utils/progressTracking/progressHelpers";
+import { selectTwoRandomItems } from "../utils/progressTracking/progressHelpers";
 import { APIContext } from "../contexts/APIContext";
 import LoadingAnimation from "../components/LoadingAnimation";
 
 export default function ExercisesProgressSummary() {
     const api = useContext(APIContext);
-    const { weeksPracticed, setWeeksPracticed, totalLearned, setTotalLearned, totalInLearning, setTotalInLearning, weeklyPracticed, setWeeklyPracticed } = useContext(ProgressContext);
+    const { daysPracticed, setDaysPracticed, totalLearned, setTotalLearned, totalInLearning, setTotalInLearning, weeklyPracticed, setWeeklyPracticed } = useContext(ProgressContext);
     const [randomItems, setRandomItems] = useState([]);
 
     useEffect(() => {
       const allValuesReady =
-        weeksPracticed != null &&
+        daysPracticed != null &&
         totalLearned != null &&
         totalInLearning != null &&
         weeklyPracticed != null;
@@ -23,14 +23,13 @@ export default function ExercisesProgressSummary() {
           const summary = getExerciseProgressSummary({
             totalInLearning,
             totalLearned,
-            weeksPracticed,
+            daysPracticed,
             weeklyPracticed,
           }).exerciseProgressSummary;
-          console.log("summary,", summary);
         const twoRandomItems = selectTwoRandomItems(summary);
         setRandomItems(twoRandomItems);
         }
-    },[weeksPracticed, totalLearned, totalInLearning, weeklyPracticed]);
+    },[daysPracticed, totalLearned, totalInLearning, weeklyPracticed]);
     
     useEffect(() =>{
     api.getAllScheduledBookmarks(false, (bookmarks) => {
@@ -45,9 +44,8 @@ export default function ExercisesProgressSummary() {
       setWeeklyPracticed(count);
     });
 
-    api.getUserActivityByDay((activity) => {
-        const weeksPracticed = calculateConsecutivePracticeWeeks(activity);
-        setWeeksPracticed(weeksPracticed);
+    api.getDailyStreak((data) => {
+        setDaysPracticed(data.daily_streak);
     });
     }, []);
     
@@ -55,16 +53,17 @@ export default function ExercisesProgressSummary() {
     totalInLearning === undefined ||
     totalLearned === undefined ||
     weeklyPracticed === undefined ||
-    weeksPracticed === undefined
+    daysPracticed === undefined
   ) {
     return <LoadingAnimation />
   }
 
     return (
         <s.ProgressItemsContainer >
-        {randomItems.map((item) => (
+        {randomItems.map((item, index) => (
           <s.ProgressOverviewItem
-            style={{ cursor: 'default', 
+            key={index}
+            style={{ cursor: 'default',
             pointerEvents: 'none' }}
           >
             <s.IconWithValueAndLabel>

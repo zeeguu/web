@@ -11,19 +11,13 @@ import Button  from "../_pages_shared/Button.sc";
 import NavIcon from "../../components/MainNav/NavIcon";
 import {IconRow, AdjustedIcon, Description} from "./TopbarIconPreferences.sc";
 import { useEffect, useState, React } from "react";
+import { DEFAULT_TOPBAR_PREFS } from "../../utils/progressTracking/progressData";
 
 export default function TopbarIconPreferences(){
     useEffect(() => {
         const savedPrefs = JSON.parse(localStorage.getItem("topBarPrefs")) || [];
-        console.log('savedPrefs', savedPrefs );
         setWhichItems(savedPrefs);
       }, []);
-
-    const DEFAULT_TOPBAR_PREFS = [
-        "wordsPracticedTopBar",
-        "articleMinutesTopBar",
-        "streakTopBar"
-    ];
 
     const [whichItems, setWhichItems] = useState(() => {
         return JSON.parse(localStorage.getItem("topBarPrefs") || "null") || DEFAULT_TOPBAR_PREFS;
@@ -74,7 +68,7 @@ export default function TopbarIconPreferences(){
                 <Checkbox checked={whichItems.includes("streakTopBar")} onChange={(e) => handleIconPreferences(e, "streakTopBar")}/>
                 <AdjustedIcon>
                 <NavIcon name="headerStreak"/>
-                <Description>{strings.weeklyStreak}</Description>
+                <Description>{strings.dailyStreak}</Description>
                 </AdjustedIcon>
                </IconRow>
             </FormSection>

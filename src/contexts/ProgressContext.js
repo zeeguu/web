@@ -5,7 +5,7 @@ const ProgressContext = createContext()
 function ProgressProvider({ children }) {
   const [weeklyTranslated, setWeeklyTranslated] = useState(null);
   const [weeklyReadingMinutes, setWeeklyReadingMinutes] = useState(null);
-  const [weeksPracticed, setWeeksPracticed] = useState(0);  
+  const [daysPracticed, setDaysPracticed] = useState(0);
   const [weeklyPracticed, setWeeklyPracticed] = useState(null); //not implemented yet
   const [totalInLearning, setTotalInLearning] = useState(null);
   const [totalTranslated, setTotalTranslated] = useState(null);
@@ -19,8 +19,8 @@ function ProgressProvider({ children }) {
         setWeeklyTranslated,
         weeklyReadingMinutes,
         setWeeklyReadingMinutes,
-        weeksPracticed,
-        setWeeksPracticed,
+        daysPracticed,
+        setDaysPracticed,
         totalInLearning,
         setTotalInLearning,
         totalTranslated,

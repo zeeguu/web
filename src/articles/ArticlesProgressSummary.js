@@ -3,19 +3,19 @@ import NavIcon from "../components/MainNav/NavIcon";
 import { getArticlesProgressSummary } from "../utils/progressTracking/progressData";
 import { APIContext } from "../contexts/APIContext";
 import { ProgressContext } from "../contexts/ProgressContext";
-import { calculateTotalReadingMinutes, getWeeklyTranslatedWordsCount, calculateWeeklyReadingMinutes, calculateConsecutivePracticeWeeks, selectTwoRandomItems } from "../utils/progressTracking/progressHelpers";
+import { calculateTotalReadingMinutes, getWeeklyTranslatedWordsCount, calculateWeeklyReadingMinutes, selectTwoRandomItems } from "../utils/progressTracking/progressHelpers";
 import * as s from "../components/progress_tracking/ProgressItems.sc";
 
 export default function ArticlesProgressSummary() {
     const api = useContext(APIContext);
-    const { weeklyReadingMinutes, setWeeklyReadingMinutes, weeklyTranslated, setWeeklyTranslated, weeksPracticed, setWeeksPracticed, totalTranslated, setTotalTranslated, totalReadingMinutes, setTotalReadingMinutes} = useContext(ProgressContext);
+    const { weeklyReadingMinutes, setWeeklyReadingMinutes, weeklyTranslated, setWeeklyTranslated, daysPracticed, setDaysPracticed, totalTranslated, setTotalTranslated, totalReadingMinutes, setTotalReadingMinutes} = useContext(ProgressContext);
     const [randomItems, setRandomItems] = useState([]);
 
     useEffect(() => {
       const allValuesReady =
         weeklyReadingMinutes != null &&
         weeklyTranslated != null &&
-        weeksPracticed != null &&
+        daysPracticed != null &&
         totalTranslated != null &&
         totalReadingMinutes != null;
     
@@ -23,7 +23,7 @@ export default function ArticlesProgressSummary() {
         const summary = getArticlesProgressSummary({
           weeklyTranslated,
           weeklyReadingMinutes,
-          weeksPracticed,
+          daysPracticed,
           totalTranslated,
           totalReadingMinutes,
         }).articlesProgressSummary;
@@ -33,7 +33,7 @@ export default function ArticlesProgressSummary() {
     }, [
       weeklyReadingMinutes,
       weeklyTranslated,
-      weeksPracticed,
+      daysPracticed,
       totalTranslated,
       totalReadingMinutes
     ]);
@@ -52,17 +52,19 @@ export default function ArticlesProgressSummary() {
 
           const readingMinsPerWeek = calculateWeeklyReadingMinutes(activity.reading);
           setWeeklyReadingMinutes(readingMinsPerWeek);
+        });
 
-          const weeksPracticed = calculateConsecutivePracticeWeeks(activity);
-          setWeeksPracticed(weeksPracticed);
-    });
+        api.getDailyStreak((data) => {
+          setDaysPracticed(data.daily_streak);
+        });
     }, []);
 
     return (
         <s.ProgressItemsContainer >
-        {randomItems.map((item) => (
+        {randomItems.map((item, index) => (
           <s.ProgressOverviewItem
-            style={{ cursor: 'default', 
+            key={index}
+            style={{ cursor: 'default',
             pointerEvents: 'none' }}
           >
             <s.IconWithValueAndLabel>

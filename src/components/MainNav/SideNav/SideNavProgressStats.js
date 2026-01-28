@@ -1,10 +1,10 @@
 import { useEffect, useState, useContext } from "react";
 import styled from "styled-components";
 import NavIcon from "../NavIcon";
-import { getTopBarData } from "../../../utils/progressTracking/progressData";
+import { getTopBarData, DEFAULT_TOPBAR_PREFS } from "../../../utils/progressTracking/progressData";
 import { APIContext } from "../../../contexts/APIContext";
 import { ProgressContext } from "../../../contexts/ProgressContext";
-import { calculateWeeklyReadingMinutes, calculateConsecutivePracticeWeeks } from "../../../utils/progressTracking/progressHelpers";
+import { calculateWeeklyReadingMinutes } from "../../../utils/progressTracking/progressHelpers";
 import { UserContext } from "../../../contexts/UserContext";
 import { MEDIUM_WIDTH } from "../screenSize";
 import ProgressModal from "../../progress_tracking/ProgressModal";
@@ -40,17 +40,11 @@ const StatValue = styled.span`
   font-weight: 500;
 `;
 
-const DEFAULT_TOPBAR_PREFS = [
-  "wordsPracticedTopBar",
-  "articleMinutesTopBar",
-  "streakTopBar"
-];
-
 export default function SideNavProgressStats({ screenWidth }) {
   const api = useContext(APIContext);
   const { userDetails } = useContext(UserContext);
-  const { weeksPracticed, setWeeksPracticed, weeklyReadingMinutes, setWeeklyReadingMinutes, weeklyPracticed, setWeeklyPracticed } = useContext(ProgressContext);
-  const { weeklyProgressOverview } = getTopBarData({ weeklyReadingMinutes, weeksPracticed, weeklyPracticed });
+  const { daysPracticed, setDaysPracticed, weeklyReadingMinutes, setWeeklyReadingMinutes, weeklyPracticed, setWeeklyPracticed } = useContext(ProgressContext);
+  const { weeklyProgressOverview } = getTopBarData({ weeklyReadingMinutes, daysPracticed, weeklyPracticed });
   const [showModalData, setShowModalData] = useState(null);
 
   const isCollapsed = screenWidth <= MEDIUM_WIDTH;
@@ -59,8 +53,10 @@ export default function SideNavProgressStats({ screenWidth }) {
     api.getUserActivityByDay((activity) => {
       const readingMinsPerWeek = calculateWeeklyReadingMinutes(activity.reading);
       setWeeklyReadingMinutes(readingMinsPerWeek);
-      const weeks = calculateConsecutivePracticeWeeks(activity);
-      setWeeksPracticed(weeks);
+    });
+
+    api.getDailyStreak((data) => {
+      setDaysPracticed(data.daily_streak);
     });
 
     api.getPracticedBookmarksCountThisWeek((count) => {

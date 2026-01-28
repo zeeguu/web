@@ -81,7 +81,7 @@ let strings = new LocalizedStrings(
       iconTextWeeklyArticles: "Weekly minutes read",
       iconTextWeeklyWordsTranslated: "Weekly words translated",
       iconTextWeeklyWordsPracticed: "Weekly words practiced",
-      iconTextWeeklyStreak: "Weekly streak",
+      iconTextDailyStreak: "Daily streak",
 
       iconTextTotalArticles: "Minutes read",
       iconTextTotalWordsTranslated: "Words translated",
@@ -103,11 +103,11 @@ let strings = new LocalizedStrings(
       wordsTextTotalEnd: "words in total since you started using Zeeguu.",
       wordsTextTotalEndSingle: "word in total since you started using Zeeguu.",
 
-      streakTextStart: "You have practiced* every week for",
-      streakTextStartSingle: "You have practiced* for",
-      streakTextEnd: "weeks straight.",
-      streakTextEndSingle: "week straight.",
-      streakAsteriks: "*minimum 5 minutes in a day",
+      streakTextStart: "You have been active every day for",
+      streakTextStartSingle: "You have been active for",
+      streakTextEnd: "days straight.",
+      streakTextEndSingle: "day straight.",
+      streakAsteriks: "",
 
       //Positive feedback
       positiveFeedbackMsg1: "You are doing great!",
@@ -132,7 +132,7 @@ let strings = new LocalizedStrings(
       progressIconPreferences: "Progress Icon Preferences",
       wordsPracticedThisWeek: "Words practiced this week",
       articlesReadThisWeek: "Articles read this week",
-      weeklyStreak: "Weekly streak",
+      dailyStreak: "Daily streak",
 
       //LanguagePreferences
       languagePreferences: "Language Preferences",
@@ -926,7 +926,7 @@ let strings = new LocalizedStrings(
       iconTextWeeklyArticles: "Læste artikler pr. uge",
       iconTextWeeklyWordsTranslated: "Oversatte ord pr. uge",
       iconTextWeeklyWordsPracticed: "Ord øvet pr. uge",
-      iconTextWeeklyStreak: "Ugentlig streak",
+      iconTextDailyStreak: "Daglig streak",
 
       iconTextTotalArticles: "Læste artikler",
       iconTextTotalWordsTranslated: "Oversatte ord",
