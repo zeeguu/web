@@ -3,6 +3,8 @@ import { zeeguuOrange, zeeguuTransparentLightYellow, almostBlack } from "../comp
 
 const PageWrapper = styled.div`
   width: 100%;
+  height: 100%;
+  overflow: auto;
 `;
 
 const Header = styled.header``;
