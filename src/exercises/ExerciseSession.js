@@ -360,6 +360,11 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
     }
 
     api.uploadExerciseFeedback(reason, currentExerciseType, 0, word_id, exerciseSessionId);
+
+    // Auto-advance to next exercise after a short delay for toast visibility
+    setTimeout(() => {
+      moveToNextExercise();
+    }, 500);
   }
 
   function handleExampleUpdate(updateData) {
