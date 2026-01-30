@@ -156,6 +156,25 @@ export default function LandingPage() {
         </s.PageSectionWrapper>
 
         <s.PageSectionWrapper>
+          <s.PageSection style={{ textAlign: "center", maxWidth: "32em" }}>
+            <h2>Research</h2>
+            <p>
+              Zeeguu is developed as part of ongoing research into personalized language learning.
+              Our work has been published in peer-reviewed venues and is openly available.
+            </p>
+            <p>
+              <a
+                href="https://mircealungu.com/projects/zeeguu"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Learn more about the research behind Zeeguu
+              </a>
+            </p>
+          </s.PageSection>
+        </s.PageSectionWrapper>
+
+        <s.PageSectionWrapper>
           <s.AdaptableColumn>
             <News />
           </s.AdaptableColumn>

@@ -3,15 +3,11 @@ import strings from "../i18n/definitions";
 export default function Contributors() {
   function member(name, role) {
     return (
-      <>
-        <small>
-          <b>{name}</b>
-          <br />
-          {role}
-        </small>
+      <p>
+        <b>{name}</b>
         <br />
-        <br />
-      </>
+        {role}
+      </p>
     );
   }
 

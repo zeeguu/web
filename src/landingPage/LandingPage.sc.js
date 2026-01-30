@@ -103,7 +103,7 @@ const AdaptableColumn = styled.div`
 
   p {
     line-height: 145%;
-    font-size: 1rem;
+    font-size: 1.2rem;
   }
 
   @media (min-width: 768px) {
