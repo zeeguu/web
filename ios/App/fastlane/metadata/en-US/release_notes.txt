@@ -1,4 +1,3 @@
-- Daily streak tracking to keep you motivated
-- "I know this word" button to skip words you already know
-- Share links that open directly in the app
-- Shows exercises completed this week
+- Auto-advance to next exercise after marking a word as known
+- Improved exercise layout with inline speaker button
+- Fix for keyboard causing screen to shift on iOS
