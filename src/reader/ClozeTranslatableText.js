@@ -31,6 +31,7 @@ export function ClozeTranslatableText({
   canTypeInline = false, // Whether this exercise type allows inline typing
   answerLanguageCode = null, // Language code for the answer
   suppressOSKeyboard = false, // Whether to suppress the OS keyboard
+  aboveClozeElement = null, // Element to render above the cloze placeholder
 }) {
   const [translationCount, setTranslationCount] = useState(0);
   const [clozeWordIds, setClozeWordIds] = useState([]);
@@ -352,102 +353,46 @@ export function ClozeTranslatableText({
           measureTextWidth(currentValue) : // Exact fit when finalized
           Math.max(currentValue.length * 0.8, 4); // Generous width during typing
         
-        console.log('Debug:', { currentValue, inputWidth, isCorrectAnswer, isExerciseOver });
-        
+        const isOver = isCorrectAnswer || isExerciseOver;
+
         return (
-          <span 
+          <s.ClozeWrapper
             key={word.id}
-            style={{ 
-              position: 'relative',
-              display: 'inline-block',
-              marginRight: '0.25em',
-              marginLeft: '0.25em',
-              cursor: (isCorrectAnswer || isExerciseOver) ? 'default' : 'text'
-            }}
+            $isOver={isOver}
             onClick={() => {
-              if (!isCorrectAnswer && !isExerciseOver) {
-                // Don't hide hint immediately on click - let user see it until they type
-                if (inputRef.current) {
-                  inputRef.current.focus();
-                }
+              if (!isOver && inputRef.current) {
+                inputRef.current.focus();
               }
             }}
           >
-            <style>{`
-              @keyframes correctAnswer {
-                0% { 
-                  color: inherit;
-                  font-weight: normal;
-                }
-                100% { 
-                  color: ${orange600} !important;
-                  font-weight: 700;
-                }
-              }
-              
-              @keyframes pulseUnderline {
-                0%, 100% { 
-                  border-bottom-color: #333;
-                }
-                50% { 
-                  border-bottom-color: #666;
-                }
-              }
-            `}</style>
-            <>
-              {showHint && hintVisible && inputValue === '' && !isExerciseOver && (
-                <div
-                  style={{
-                    position: 'absolute',
-                    top: '50%',
-                    left: '50%',
-                    transform: 'translate(-50%, -50%)',
-                    fontSize: '0.7em',
-                    color: '#999',
-                    opacity: 0.8,
-                    pointerEvents: 'none',
-                    whiteSpace: 'nowrap'
-                  }}
-                >
-                  tap to type
-                </div>
-              )}
-              <input
-                ref={inputRef}
-                type="text"
-                value={isExerciseOver && !isCorrectAnswer ? clozeWord : inputValue}
-                placeholder={placeholder}
-                onChange={handleInputChange}
-                onKeyPress={handleInputKeyPress}
-                onFocus={() => {
-                  // Don't hide hint immediately on focus - let user see it until they type
-                  // The hint will be hidden when they actually start typing in handleInputChange
-                }}
-                disabled={isCorrectAnswer || isExerciseOver}
-                style={{
-                  border: 'none',
-                  borderBottom: `${canTypeInline ? '2px dotted' : '1px solid'} ${isExerciseOver || isCorrectAnswer ? orange600 : '#333'}`,
-                  background: 'transparent',
-                  outline: 'none',
-                  fontSize: 'inherit',
-                  fontFamily: 'inherit',
-                  textAlign: (isCorrectAnswer || isExerciseOver) ? 'center' : 'left',
-                  width: `${inputWidth}em`,
-                  maxWidth: `${inputWidth}em`,
-                  minWidth: (isCorrectAnswer || isExerciseOver) ? '2em' : '4em',
-                  padding: '2px 4px',
-                  margin: '0',
-                  color: isExerciseOver || isCorrectAnswer ? orange600 : 'inherit',
-                  fontWeight: isExerciseOver || isCorrectAnswer ? '700' : 'normal',
-                  cursor: isCorrectAnswer || isExerciseOver ? 'default' : 'text',
-                  animation: isCorrectAnswer ? 'correctAnswer 0.6s ease-out forwards' : (inputValue === '' ? 'pulseUnderline 2s ease-in-out infinite' : 'none'),
-                  opacity: isCorrectAnswer || isExerciseOver ? '1 !important' : '1',
-                }}
-                autoComplete="off"
-                spellCheck="false"
-              />
-            </>
-          </span>
+            {canTypeInline ? (
+              <s.ClozeInputWrapper>
+                {showHint && hintVisible && inputValue === '' && !isExerciseOver && (
+                  <s.ClozeHint>tap to type</s.ClozeHint>
+                )}
+                <s.ClozeInput
+                  ref={inputRef}
+                  type="text"
+                  value={isExerciseOver && !isCorrectAnswer ? clozeWord : inputValue}
+                  placeholder={placeholder}
+                  onChange={handleInputChange}
+                  onKeyPress={handleInputKeyPress}
+                  disabled={isOver}
+                  $isOver={isOver}
+                  $isCorrect={isCorrectAnswer}
+                  $isEmpty={inputValue === ''}
+                  $width={inputWidth}
+                  autoComplete="off"
+                  spellCheck="false"
+                />
+              </s.ClozeInputWrapper>
+            ) : (
+              <s.ClozeStaticPlaceholder $isOver={isExerciseOver}>
+                {isExerciseOver ? clozeWord : '\u00A0'}
+              </s.ClozeStaticPlaceholder>
+            )}
+            {aboveClozeElement && !isExerciseOver && aboveClozeElement}
+          </s.ClozeWrapper>
         );
       }
 

@@ -95,7 +95,7 @@ export default function TranslateWhatYouHear({
         {strings.translateWhatYouHearHeadline}
       </div>
 
-      {/* Context - always at the top, never moves */}
+      {/* Context with speaker button above the placeholder */}
       <ClozeContextWithExchange
         exerciseBookmark={exerciseBookmark}
         interactiveText={interactiveText}
@@ -111,27 +111,24 @@ export default function TranslateWhatYouHear({
         shouldFocus={false} // Don't focus the hidden input - uses bottom input
         showHint={false} // Don't show "tap to type" hint - uses bottom input
         canTypeInline={false}
+        aboveClozeElement={
+          <SpeakButton
+            bookmarkToStudy={exerciseBookmark}
+            styling="inline"
+            parentIsSpeakingControl={isButtonSpeaking}
+          />
+        }
       />
 
-      {/* Button/Solution area - maintain consistent height, placed below context */}
-      <div style={{ minHeight: '120px', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', marginTop: '2em' }}>
-        {!isExerciseOver ? (
-          <s.CenteredRowTall>
-            <SpeakButton
-              bookmarkToStudy={exerciseBookmark}
-              styling="large"
-              parentIsSpeakingControl={isButtonSpeaking}
-            />
-          </s.CenteredRowTall>
-        ) : (
-          <>
-            <h1 className="wordInContextHeadline" style={{ margin: '0.25em 0' }}>
-              {exerciseBookmark.to}
-            </h1>
-            {bookmarkProgressBar}
-          </>
-        )}
-      </div>
+      {/* Solution area - only shown when exercise is over */}
+      {isExerciseOver && (
+        <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', marginTop: '1em' }}>
+          <h1 className="wordInContextHeadline" style={{ margin: '0.25em 0' }}>
+            {exerciseBookmark.to}
+          </h1>
+          {bookmarkProgressBar}
+        </div>
+      )}
 
       {/* Bottom input - only during exercise */}
       {!isExerciseOver && (

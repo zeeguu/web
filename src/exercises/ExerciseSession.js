@@ -251,6 +251,10 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
   }
 
   function moveToNextExercise() {
+    // Dismiss keyboard before changing exercises to prevent iOS viewport shift bug
+    if (document.activeElement) {
+      document.activeElement.blur();
+    }
     speech.stopAudio();
     LocalStorage.setLastExerciseCompleteDate(new Date().toDateString());
     setIsExerciseOver(false);

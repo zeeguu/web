@@ -37,6 +37,7 @@ const ClozeContextWithExchange = forwardRef(function ClozeContextWithExchange(
     showHint = true,
     canTypeInline = false,
     showCloze = true, // New prop to control whether to show a cloze/blank
+    aboveClozeElement = null, // Element to render above the cloze placeholder
   },
   ref,
 ) {
@@ -78,6 +79,7 @@ const ClozeContextWithExchange = forwardRef(function ClozeContextWithExchange(
           canTypeInline={canTypeInline}
           answerLanguageCode={answerLanguageCode}
           suppressOSKeyboard={suppressOSKeyboard}
+          aboveClozeElement={aboveClozeElement}
         />
         {onExampleUpdated && isExerciseOver && (
           <div

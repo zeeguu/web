@@ -1,5 +1,5 @@
-import styled from "styled-components";
-import { almostBlack, zeeguuOrange, zeeguuTransparentMediumOrange } from "../components/colors";
+import styled, { keyframes } from "styled-components";
+import { almostBlack, zeeguuOrange, zeeguuTransparentMediumOrange, orange600 } from "../components/colors";
 
 const TranslatableText = styled.div`
   /* MWE adjacent color - used for contiguous MWEs */
@@ -458,4 +458,83 @@ const TranslatableText = styled.div`
   }
 `;
 
-export { TranslatableText };
+/* ========================================================================
+ * CLOZE EXERCISE STYLES
+ * ======================================================================== */
+
+const pulseUnderline = keyframes`
+  0%, 100% { border-bottom-color: #333; }
+  50% { border-bottom-color: #666; }
+`;
+
+const correctAnswerAnimation = keyframes`
+  0% { color: inherit; font-weight: normal; }
+  100% { color: ${orange600}; font-weight: 700; }
+`;
+
+const ClozeWrapper = styled.span`
+  position: relative;
+  display: inline-flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 0.25em;
+  margin-right: 0.25em;
+  cursor: ${props => props.$isOver ? 'default' : 'text'};
+`;
+
+const ClozeInputWrapper = styled.span`
+  position: relative;
+`;
+
+const ClozeHint = styled.div`
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 0.7em;
+  color: #999;
+  opacity: 0.8;
+  pointer-events: none;
+  white-space: nowrap;
+`;
+
+const ClozeInput = styled.input`
+  border: none;
+  border-bottom: 2px dotted ${props => props.$isOver ? orange600 : '#333'};
+  background: transparent;
+  outline: none;
+  font-size: inherit;
+  font-family: inherit;
+  text-align: ${props => props.$isOver ? 'center' : 'left'};
+  width: ${props => props.$width}em;
+  max-width: ${props => props.$width}em;
+  min-width: ${props => props.$isOver ? '2em' : '4em'};
+  padding: 2px 4px;
+  margin: 0;
+  color: ${props => props.$isOver ? orange600 : 'inherit'};
+  font-weight: ${props => props.$isOver ? '700' : 'normal'};
+  cursor: ${props => props.$isOver ? 'default' : 'text'};
+  animation: ${props => {
+    if (props.$isCorrect) return `${correctAnswerAnimation} 0.6s ease-out forwards`;
+    if (props.$isEmpty) return `${pulseUnderline} 2s ease-in-out infinite`;
+    return 'none';
+  }};
+`;
+
+const ClozeStaticPlaceholder = styled.span`
+  border-bottom: 1px solid ${props => props.$isOver ? orange600 : '#333'};
+  display: inline-block;
+  min-width: 4em;
+  color: ${props => props.$isOver ? orange600 : 'inherit'};
+  font-weight: ${props => props.$isOver ? '700' : 'normal'};
+  text-align: center;
+`;
+
+export {
+  TranslatableText,
+  ClozeWrapper,
+  ClozeInputWrapper,
+  ClozeHint,
+  ClozeInput,
+  ClozeStaticPlaceholder,
+};

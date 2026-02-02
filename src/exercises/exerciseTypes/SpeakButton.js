@@ -26,6 +26,15 @@ const small_next_style = {
   loader_height: 30,
 };
 
+const inline_style = {
+  // Icon properties - roughly 1em for compact inline use
+  img_height: 20,
+  img_width: 20,
+  // Loader properties
+  loader_width: 20,
+  loader_height: 20,
+};
+
 const large_style = {
   // Icon properties
   img_height: 60,
@@ -56,6 +65,7 @@ const square_style = {
 const styles = {
   small: small_style,
   next: small_next_style,
+  inline: inline_style,
   large: large_style,
   selected: selected_style,
   square: square_style,
