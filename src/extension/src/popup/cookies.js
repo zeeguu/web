@@ -13,12 +13,47 @@ export async function isLoggedIn(cookieUrl) {
 
 export async function getUserInfo(cookieUrl, setUser) {
   try {
-    const [nameCookie, nativeLangCookie, sessionCookie] = await Promise.all([
+    // Try multiple URL variations for Firefox compatibility
+    const urlVariations = [
+      cookieUrl,
+      "https://zeeguu.org",
+      "https://www.zeeguu.org"
+    ];
+
+    let nameCookie = null;
+    let nativeLangCookie = null;
+    let sessionCookie = null;
+
+    // Try direct cookie access first
+    [nameCookie, nativeLangCookie, sessionCookie] = await Promise.all([
       cookies.get({ url: cookieUrl, name: "name" }),
       cookies.get({ url: cookieUrl, name: "nativeLanguage" }),
       cookies.get({ url: cookieUrl, name: "sessionID" })
     ]);
-    
+
+    // If session cookie not found, try other URL variations (Firefox issue)
+    if (!sessionCookie) {
+      for (const url of urlVariations) {
+        try {
+          const allCookies = await cookies.getAll({ url });
+          if (allCookies && allCookies.length > 0) {
+            if (!nameCookie) {
+              nameCookie = allCookies.find(c => c.name === "name");
+            }
+            if (!nativeLangCookie) {
+              nativeLangCookie = allCookies.find(c => c.name === "nativeLanguage");
+            }
+            if (!sessionCookie) {
+              sessionCookie = allCookies.find(c => c.name === "sessionID");
+            }
+            if (sessionCookie) break;
+          }
+        } catch (e) {
+          // Continue to next URL
+        }
+      }
+    }
+
     if (nameCookie) {
       setUser((prevState) => ({ ...prevState, name: decodeURI(nameCookie.value) }));
     }

@@ -13,6 +13,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 
 
+## [2.5.13] - 2026-02-04
+
+### Fixed
+- Fix Firefox cookie access by adding zeeguu.org (without www) to permissions
+- Fix Firefox session retrieval with URL variations fallback
+- Improve error messages (show "Connection error" instead of "Language not supported" for API errors)
+
 ## [2.5.12] - 2026-02-04
 
 ### Fixed

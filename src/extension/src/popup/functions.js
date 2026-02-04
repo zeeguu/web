@@ -293,7 +293,9 @@ export function checkLanguageSupport(
           // Handle authentication and other API errors
           console.error("Language detection API error:", error);
 
-          if (error.status === 401) {
+          // Check for 401 - error might be a string like "HTTP 401" or an object
+          const is401 = error === 401 || error?.status === 401 || (typeof error === 'string' && error.includes('401'));
+          if (is401) {
             // 401 Unauthorized - session is invalid
             console.log("Session invalid - clearing stale cookies");
 
@@ -320,8 +322,11 @@ export function checkLanguageSupport(
               setLoadingProgress("Session expired. Please close this popup and click the extension icon again.");
             }
           } else {
-            // Other errors - treat as language not supported
+            // Other errors - show a more accurate message
             setLanguageSupported(false);
+            if (setLoadingProgress) {
+              setLoadingProgress("Connection error. Please check your internet and try again.");
+            }
           }
         }
       );
