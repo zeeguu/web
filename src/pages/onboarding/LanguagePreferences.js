@@ -75,7 +75,7 @@ export default function LanguagePreferences() {
     useFormField(getInitialLearnedLanguage(), NonEmptyValidator("Please select a language."));
 
   // Hardcode translation language to English - users can change in settings if needed
-  const translationLanguage = "en";
+  const translationLanguage = nativeLanguage;
   const [
     learnedCEFRLevel,
     setLearnedCEFRLevel,
@@ -100,7 +100,7 @@ export default function LanguagePreferences() {
 
   useEffect(() => {
     LocalStorage.setNativeLanguage(translationLanguage);
-  }, []);
+  }, [nativeLanguage]);
 
   if (!sortedSystemLanguages) {
     return <LoadingAnimation />;
