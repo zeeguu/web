@@ -67,16 +67,12 @@ export default function LanguagePreferences() {
     const selectedLanguage = getQueryParam("selected_language");
     return selectedLanguage || "";
   }
-  const [
-    learnedLanguage,
-    setLearnedLanguage,
-    validateLearnedLanguage,
-    isLearnedLanguageValid,
-    learnedLanguageMsg,
-  ] = useFormField(
-    getInitialLearnedLanguage(),
-    NonEmptyValidator("Please select a language."),
-  );
+
+  const [nativeLanguage, setNativeLanguage, validateNativeLanguage, isNativeLanguageValid, nativeLanguageMsg] =
+    useFormField("", NonEmptyValidator("Please select a language."));
+
+  const [learnedLanguage, setLearnedLanguage, validateLearnedLanguage, isLearnedLanguageValid, learnedLanguageMsg] =
+    useFormField(getInitialLearnedLanguage(), NonEmptyValidator("Please select a language."));
 
   // Hardcode translation language to English - users can change in settings if needed
   const translationLanguage = "en";
@@ -86,10 +82,7 @@ export default function LanguagePreferences() {
     validateLearnedCEFRLevel,
     isLearnedCEFRLevelValid,
     learnedCEFRLevelMsg,
-  ] = useFormField(
-    "",
-    NonEmptyValidator("Please select a level for your learned language."),
-  );
+  ] = useFormField("", NonEmptyValidator("Please select a level for your learned language."));
 
   useEffect(() => {
     setTitle(strings.languagePreferences);
@@ -113,14 +106,16 @@ export default function LanguagePreferences() {
     return <LoadingAnimation />;
   }
 
+  console.log(sortedSystemLanguages.native_languages);
+  console.log(learnedLanguage);
+
+  const availableNativeLanguages = sortedSystemLanguages.native_languages.filter(
+    (each) => each.code != learnedLanguage,
+  );
+
   function validateAndRedirect(e) {
     e.preventDefault();
-    if (
-      !validateRules([
-        validateLearnedLanguage,
-        validateLearnedCEFRLevel,
-      ])
-    ) {
+    if (!validateRules([validateLearnedLanguage, validateLearnedCEFRLevel])) {
       scrollToTop();
       return;
     }
@@ -155,10 +150,7 @@ export default function LanguagePreferences() {
         setUserSession(session);
         api.session = session;
 
-        saveSharedUserInfo(
-          { name: "Guest", native_language: translationLanguage },
-          session
-        );
+        saveSharedUserInfo({ name: "Guest", native_language: translationLanguage }, session);
 
         setIsCreatingAccount(false);
 
@@ -172,16 +164,14 @@ export default function LanguagePreferences() {
         setIsCreatingAccount(false);
         // Fall back to regular account creation
         history.push("/account_details");
-      }
+      },
     );
   }
 
   return (
     <PreferencesPage pageWidth={"narrow"}>
       <Header>
-        <Heading>
-          What language would&nbsp;you&nbsp;like&nbsp;to&nbsp;learn?
-        </Heading>
+        <Heading>What language would&nbsp;you&nbsp;like&nbsp;to&nbsp;learn?</Heading>
       </Header>
       <Main>
         <Form action={""}>
@@ -189,7 +179,7 @@ export default function LanguagePreferences() {
             <Selector
               selectedValue={learnedLanguage}
               label={strings.learnedLanguage}
-              placeholder={strings.learnedLanguagePlaceholder}
+              placeholder={strings.languageSelectorPlaceholder}
               optionLabel={(e) => e.name}
               optionValue={(e) => e.code}
               id={"practiced-languages"}
@@ -215,6 +205,21 @@ export default function LanguagePreferences() {
                 setLearnedCEFRLevel(e.target.value);
               }}
             />
+
+            <Selector
+              selectedValue={nativeLanguage}
+              label={strings.nativeLanguage}
+              placeholder={strings.languageSelectorPlaceholder}
+              optionLabel={(e) => e.name}
+              optionValue={(e) => e.code}
+              id={"native-languages"}
+              options={availableNativeLanguages}
+              isError={!isLearnedLanguageValid}
+              errorMessage={learnedLanguageMsg}
+              onChange={(e) => {
+                setNativeLanguage(e.target.value);
+              }}
+            />
           </FormSection>
           <p className="centered">{strings.youCanChangeLater}</p>
           <ButtonContainer className={"padding-medium"}>
@@ -224,8 +229,7 @@ export default function LanguagePreferences() {
               onClick={validateAndRedirect}
               disabled={isCreatingAccount}
             >
-              {isCreatingAccount ? "Setting up..." : strings.next}{" "}
-              {!isCreatingAccount && <RoundedForwardArrow />}
+              {isCreatingAccount ? "Setting up..." : strings.next} {!isCreatingAccount && <RoundedForwardArrow />}
             </Button>
           </ButtonContainer>
           <p className="centered">

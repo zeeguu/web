@@ -37,7 +37,7 @@ let strings = new LocalizedStrings(
       fullName: "Full Name",
       fullNamePlaceholder: "First and last name",
       learnedLanguage: "I want to learn",
-      learnedLanguagePlaceholder: "Select language",
+      languageSelectorPlaceholder: "Select language",
       plsProvideValidEmail: "Please provide a valid email.",
       plsAcceptPrivacyNotice: "Please accept Privacy Notice",
       password: "Password",
@@ -589,7 +589,7 @@ let strings = new LocalizedStrings(
 
       deleteAccount: "Delete Account",
 
-      nativeLanguage: "Native Language",
+      nativeLanguage: "I want translations in",
       yourCurrentClassIs: "Your current class is: ",
       changeClass: "Change Class",
       addClass: "Add Class",
