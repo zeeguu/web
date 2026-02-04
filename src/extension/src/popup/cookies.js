@@ -84,7 +84,7 @@ export async function getIsLoggedIn(cookieUrl) {
       
       if (response.ok) {
         const result = await response.text();
-        if (result && result.trim().toLowerCase() === 'true') {
+        if (result && result.trim().toLowerCase() === 'ok') {
           BROWSER_API.storage.local.set({ loggedIn: true });
           return true;
         }

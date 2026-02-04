@@ -12,6 +12,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 
 
+
+## [2.5.12] - 2026-02-04
+
+### Fixed
+- Fix extension not loading after Vite migration (webpack compatibility for import.meta.env)
+- Fix session validation check (API returns "OK" not "true")
+- Fix crash when userDetails is undefined in ProgressContext
+- Fix webpack publicPath error for dynamic imports
+
 ## [2.5.11] - 2025-12-11
 
 ### Added

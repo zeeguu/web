@@ -21,7 +21,7 @@ function ProgressProvider({ children }) {
     api.getDailyStreak((data) => {
       setDaysPracticed(data.daily_streak);
     });
-  }, [userDetails.learned_language]);
+  }, [userDetails?.learned_language]);
 
   return (
     <ProgressContext.Provider
