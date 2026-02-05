@@ -4,6 +4,7 @@ import { APIContext } from "../contexts/APIContext";
 import { UserContext } from "../contexts/UserContext";
 import LoadingAnimation from "../components/LoadingAnimation";
 import EmptyState from "../components/EmptyState";
+import FullWidthErrorMsg from "../components/FullWidthErrorMsg.sc";
 import CustomAudioPlayer from "../components/CustomAudioPlayer";
 import FeedbackModal from "../components/FeedbackModal";
 import { FEEDBACK_OPTIONS, FEEDBACK_CODES_NAME, FEEDBACK_CODES } from "../components/FeedbackConstants";
@@ -271,18 +272,9 @@ export default function TodayAudio({ setShowTabs }) {
         }}
       >
         {error && (
-          <div style={{
-            color: "#721c24",
-            backgroundColor: "#f8d7da",
-            border: "1px solid #f5c6cb",
-            borderRadius: "4px",
-            padding: "12px 20px",
-            marginBottom: "20px",
-            maxWidth: "500px",
-            textAlign: "center"
-          }}>
+          <FullWidthErrorMsg style={{ marginBottom: "20px", maxWidth: "500px" }}>
             {error}
-          </div>
+          </FullWidthErrorMsg>
         )}
         <button
           onClick={handleGenerateLesson}
