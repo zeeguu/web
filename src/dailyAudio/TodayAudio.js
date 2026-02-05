@@ -270,6 +270,20 @@ export default function TodayAudio({ setShowTabs }) {
           minHeight: "400px",
         }}
       >
+        {error && (
+          <div style={{
+            color: "#721c24",
+            backgroundColor: "#f8d7da",
+            border: "1px solid #f5c6cb",
+            borderRadius: "4px",
+            padding: "12px 20px",
+            marginBottom: "20px",
+            maxWidth: "500px",
+            textAlign: "center"
+          }}>
+            {error}
+          </div>
+        )}
         <button
           onClick={handleGenerateLesson}
           style={{
