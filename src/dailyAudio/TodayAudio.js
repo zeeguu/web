@@ -55,10 +55,21 @@ export default function TodayAudio({ setShowTabs }) {
       setGenerationProgress(null);
     };
 
+    let lessonRetryCount = 0;
+    const MAX_LESSON_RETRIES = 3;
+
     const handleLessonReady = (data) => {
       if (data && data.lesson_id) {
         stopPolling();
         setLessonData(data);
+        lessonRetryCount = 0;
+      } else if (data && data.error) {
+        // Lesson exists but has an error (e.g., audio file not ready yet)
+        lessonRetryCount++;
+        if (lessonRetryCount >= MAX_LESSON_RETRIES) {
+          handleError(data.error);
+        }
+        // Otherwise, keep polling - the file might still be writing
       }
     };
 
