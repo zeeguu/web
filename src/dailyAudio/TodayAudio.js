@@ -11,7 +11,6 @@ import { FEEDBACK_OPTIONS, FEEDBACK_CODES_NAME, FEEDBACK_CODES } from "../compon
 import Word from "../words/Word";
 import useListeningSession from "../hooks/useListeningSession";
 
-const TWO_MIN = 120000; // 2 minutes in milliseconds
 
 export function wordsAsTile(words) {
   if (!words || !words.length) return "";
@@ -48,11 +47,9 @@ export default function TodayAudio({ setShowTabs }) {
 
     // Helper to stop polling and reset state
     let pollInterval;
-    let timeoutId;
 
     const stopPolling = () => {
       clearInterval(pollInterval);
-      clearTimeout(timeoutId);
       localStorage.removeItem(generatingKey);
       setIsGenerating(false);
       setGenerationProgress(null);
@@ -96,11 +93,6 @@ export default function TodayAudio({ setShowTabs }) {
         checkForLesson,
       );
     }, 1500);
-
-    // Timeout after 2 minutes
-    timeoutId = setTimeout(() => {
-      handleError("Lesson generation timed out. Please try again.");
-    }, TWO_MIN);
 
     // Cleanup on unmount
     return stopPolling;
