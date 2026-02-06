@@ -263,27 +263,8 @@ export default function TodayAudio({ setShowTabs }) {
     let progressPercent = 0;
 
     if (generationProgress) {
-      if (generationProgress.message) {
-        progressMessage = generationProgress.message;
-      } else {
-        // Build message from status
-        switch (generationProgress.status) {
-          case "pending":
-            progressMessage = "Starting lesson generation...";
-            break;
-          case "generating_script":
-            progressMessage = `Word ${generationProgress.current_word}/${generationProgress.total_words}: Creating script...`;
-            break;
-          case "synthesizing_audio":
-            progressMessage = `Word ${generationProgress.current_word}/${generationProgress.total_words}: Synthesizing audio...`;
-            break;
-          case "combining_audio":
-            progressMessage = `Word ${generationProgress.current_word}/${generationProgress.total_words}: Combining audio...`;
-            break;
-          default:
-            progressMessage = "Processing...";
-        }
-      }
+      // Use message from backend, with simple fallback
+      progressMessage = generationProgress.message || "Processing...";
 
       // Calculate progress percentage
       if (generationProgress.total_words > 0) {
