@@ -24,9 +24,8 @@ const Dot = styled.div`
 `;
 
 export default function DailyAudioNotificationDot({ status }) {
-  if (!status || status === "completed") {
-    return null;
-  }
+  // Parent already filters out null/completed, but keep defensive check
+  if (!status) return null;
 
   return <Dot className={status === "generating" ? "generating" : ""} />;
 }
