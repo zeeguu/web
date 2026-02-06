@@ -27,65 +27,85 @@ export default function TodayAudio({ setShowTabs }) {
   const { userDetails } = useContext(UserContext);
   const [isLoading, setIsLoading] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
+  const [generationProgress, setGenerationProgress] = useState(null);
 
-
-  // Check localStorage for ongoing generation
+  // Check localStorage for ongoing generation and poll for progress
   useEffect(() => {
     const generatingKey = `zeeguu_generating_lesson_${new Date().toDateString()}`;
     const isCurrentlyGenerating = localStorage.getItem(generatingKey);
     if (isCurrentlyGenerating) {
       setIsGenerating(true);
 
-      // Poll for lesson completion
+      // Poll for generation progress
       const pollInterval = setInterval(() => {
-        api.getTodaysLesson(
-          (data) => {
-            if (data && data.lesson_id) {
-              // Lesson is ready
-              clearInterval(pollInterval);
-              localStorage.removeItem(generatingKey);
-              setIsGenerating(false);
-              setLessonData(data);
-            }
-          },
-          (error) => {
-            // Only show error if it's not just "no lesson found"
-            if (!error.message.includes("No lesson generated yet today")) {
-              clearInterval(pollInterval);
-              localStorage.removeItem(generatingKey);
-              setIsGenerating(false);
-              setError(error.message);
-            }
-          },
-        );
-      }, 3000); // Poll every 3 seconds
+        // First check progress
+        api.getAudioLessonGenerationProgress(
+          (progress) => {
+            if (progress) {
+              setGenerationProgress(progress);
 
-      // Clear polling after 2 minutes (timeout) but check one more time
-      const timeoutId = setTimeout(() => {
-        // Final check before timing out
-        api.getTodaysLesson(
-          (data) => {
-            if (data && data.lesson_id) {
-              // Lesson was actually ready
-              clearInterval(pollInterval);
-              localStorage.removeItem(generatingKey);
-              setIsGenerating(false);
-              setLessonData(data);
+              // If generation is done, fetch the lesson
+              if (progress.status === "done") {
+                api.getTodaysLesson(
+                  (data) => {
+                    if (data && data.lesson_id) {
+                      clearInterval(pollInterval);
+                      localStorage.removeItem(generatingKey);
+                      setIsGenerating(false);
+                      setGenerationProgress(null);
+                      setLessonData(data);
+                    }
+                  },
+                  () => {},
+                );
+              } else if (progress.status === "error") {
+                clearInterval(pollInterval);
+                localStorage.removeItem(generatingKey);
+                setIsGenerating(false);
+                setGenerationProgress(null);
+                setError(progress.message || "Lesson generation failed. Please try again.");
+              }
             } else {
-              // Actually timed out
-              clearInterval(pollInterval);
-              localStorage.removeItem(generatingKey);
-              setIsGenerating(false);
-              setError("Lesson generation timed out. Please try again.");
+              // No progress record - check if lesson is ready
+              api.getTodaysLesson(
+                (data) => {
+                  if (data && data.lesson_id) {
+                    clearInterval(pollInterval);
+                    localStorage.removeItem(generatingKey);
+                    setIsGenerating(false);
+                    setGenerationProgress(null);
+                    setLessonData(data);
+                  }
+                },
+                () => {},
+              );
             }
           },
-          (error) => {
-            clearInterval(pollInterval);
-            localStorage.removeItem(generatingKey);
-            setIsGenerating(false);
-            setError("Lesson generation timed out. Please try again.");
+          () => {
+            // On error, fall back to checking lesson directly
+            api.getTodaysLesson(
+              (data) => {
+                if (data && data.lesson_id) {
+                  clearInterval(pollInterval);
+                  localStorage.removeItem(generatingKey);
+                  setIsGenerating(false);
+                  setGenerationProgress(null);
+                  setLessonData(data);
+                }
+              },
+              () => {},
+            );
           },
         );
+      }, 1500); // Poll every 1.5 seconds for more responsive updates
+
+      // Clear polling after 2 minutes (timeout)
+      const timeoutId = setTimeout(() => {
+        clearInterval(pollInterval);
+        localStorage.removeItem(generatingKey);
+        setIsGenerating(false);
+        setGenerationProgress(null);
+        setError("Lesson generation timed out. Please try again.");
       }, TWO_MIN);
 
       // Cleanup function to clear intervals if component unmounts
@@ -180,6 +200,7 @@ export default function TodayAudio({ setShowTabs }) {
 
     setIsGenerating(true);
     setError(null);
+    setGenerationProgress(null);
 
     // Set localStorage flag to track generation across page reloads
     localStorage.setItem(generatingKey, "true");
@@ -189,17 +210,25 @@ export default function TodayAudio({ setShowTabs }) {
         // Clear the localStorage flag when generation completes
         localStorage.removeItem(generatingKey);
         setIsGenerating(false);
+        setGenerationProgress(null);
         setLessonData(data);
       },
       (error) => {
+        // Check if generation is already in progress (409 Conflict)
+        if (error.message && error.message.toLowerCase().includes("already being generated")) {
+          // Don't clear the flag - keep polling for the existing generation
+          return;
+        }
+
         // Clear the localStorage flag on error
         localStorage.removeItem(generatingKey);
         setIsGenerating(false);
+        setGenerationProgress(null);
 
         // Check if the error is related to no words in learning
-        if (error.message && error.message.toLowerCase().includes("not enough words in learning")) {
+        if (error.message && error.message.toLowerCase().includes("not enough words")) {
           setError(
-            "Not enough words in learning to generate a lesson. Need at least 3 words that were not in audio lessons before",
+            "Not enough words in learning to generate a lesson. Need at least 2 words that were not in audio lessons before",
           );
         } else {
           setError(error.message || "Failed to generate daily lesson. Please try again.");
@@ -220,6 +249,43 @@ export default function TodayAudio({ setShowTabs }) {
   }
 
   if (isGenerating) {
+    // Build progress message
+    let progressMessage = "Generating your daily lesson...";
+    let progressPercent = 0;
+
+    if (generationProgress) {
+      if (generationProgress.message) {
+        progressMessage = generationProgress.message;
+      } else {
+        // Build message from status
+        switch (generationProgress.status) {
+          case "pending":
+            progressMessage = "Starting lesson generation...";
+            break;
+          case "generating_script":
+            progressMessage = `Word ${generationProgress.current_word}/${generationProgress.total_words}: Creating script...`;
+            break;
+          case "synthesizing_audio":
+            progressMessage = `Word ${generationProgress.current_word}/${generationProgress.total_words}: Synthesizing audio...`;
+            break;
+          case "combining_audio":
+            progressMessage = `Word ${generationProgress.current_word}/${generationProgress.total_words}: Combining audio...`;
+            break;
+          default:
+            progressMessage = "Processing...";
+        }
+      }
+
+      // Calculate progress percentage
+      if (generationProgress.total_words > 0 && generationProgress.total_steps > 0) {
+        const wordsCompleted = generationProgress.current_word - 1;
+        const stepsInCurrentWord = generationProgress.current_step / generationProgress.total_steps;
+        progressPercent = ((wordsCompleted + stepsInCurrentWord) / generationProgress.total_words) * 100;
+      } else if (generationProgress.current_word > 0 && generationProgress.total_words > 0) {
+        progressPercent = ((generationProgress.current_word - 1) / generationProgress.total_words) * 100;
+      }
+    }
+
     return (
       <div
         style={{
@@ -232,7 +298,32 @@ export default function TodayAudio({ setShowTabs }) {
         }}
       >
         <LoadingAnimation delay={0} reportIssueDelay={60000}>
-          <p>Generating your daily lesson... This may take a few minutes so feel free to go away and come back later</p>
+          <p style={{ marginBottom: "15px" }}>{progressMessage}</p>
+          {generationProgress && progressPercent > 0 && (
+            <div
+              style={{
+                width: "200px",
+                height: "8px",
+                backgroundColor: "#e0e0e0",
+                borderRadius: "4px",
+                overflow: "hidden",
+                marginBottom: "10px",
+              }}
+            >
+              <div
+                style={{
+                  width: `${Math.min(progressPercent, 100)}%`,
+                  height: "100%",
+                  backgroundColor: orange500,
+                  borderRadius: "4px",
+                  transition: "width 0.3s ease-in-out",
+                }}
+              />
+            </div>
+          )}
+          <p style={{ fontSize: "12px", color: "#666" }}>
+            Feel free to go away and come back later
+          </p>
         </LoadingAnimation>
       </div>
     );

@@ -206,3 +206,26 @@ Zeeguu_API.prototype.checkDailyLessonFeasibility = function (callback, onError) 
 };
 
 // Removed saveLessonProgress - use updateLessonState with "pause" action instead
+
+Zeeguu_API.prototype.getAudioLessonGenerationProgress = function (callback, onError) {
+  this.apiLog("GET audio_lesson_generation_progress");
+
+  fetch(this._appendSessionToUrl("audio_lesson_generation_progress"))
+    .then((response) => {
+      if (!response.ok) {
+        return response.json().then(data => {
+          throw new Error(data.error || "Network response was not ok");
+        });
+      }
+      return response.json();
+    })
+    .then((data) => {
+      callback(data.progress); // Returns null if no generation in progress
+    })
+    .catch((error) => {
+      console.error("Error getting generation progress:", error);
+      if (onError) {
+        onError(error);
+      }
+    });
+};
