@@ -178,37 +178,59 @@ export default function TodayAudio({ setShowTabs }) {
     );
   };
 
-  // Fetch lesson data on mount
+  // Fetch lesson data on mount - but check for active generation first
   useEffect(() => {
-    const generatingKey = `zeeguu_generating_lesson_${new Date().toDateString()}`;
-    const isGenerationInProgress = localStorage.getItem(generatingKey);
-
-    // If generation is in progress, don't fetch or check feasibility - let polling handle it
-    if (isGenerationInProgress) {
-      setIsLoading(false);
-      return;
-    }
-
-    // Check if there's already a lesson for today
     setIsLoading(true);
 
-    api.getTodaysLesson(
-      (data) => {
-        setIsLoading(false);
-        setLessonData(data);
-
-        // If no lesson exists, check if we can generate one
-        if (!data) {
-          checkLessonGenerationFeasibility();
+    // First, check if there's an active generation in progress
+    api.getAudioLessonGenerationProgress(
+      (progress) => {
+        if (progress && !["done", "error"].includes(progress.status)) {
+          // Generation in progress - let polling handle it
+          setIsLoading(false);
+          setIsGenerating(true);
+          setGenerationProgress(progress);
+          return;
         }
-      },
-      (error) => {
-        setIsLoading(false);
-        setError(error.message);
-        setLessonData(null);
 
-        // Even on error, check if generation is possible
-        checkLessonGenerationFeasibility();
+        // No active generation - check for existing lesson
+        api.getTodaysLesson(
+          (data) => {
+            setIsLoading(false);
+            setLessonData(data);
+
+            // If no lesson exists, check if we can generate one
+            if (!data) {
+              checkLessonGenerationFeasibility();
+            }
+          },
+          (error) => {
+            setIsLoading(false);
+            setError(error.message);
+            setLessonData(null);
+
+            // Even on error, check if generation is possible
+            checkLessonGenerationFeasibility();
+          },
+        );
+      },
+      () => {
+        // Progress API error - fall back to checking lesson
+        api.getTodaysLesson(
+          (data) => {
+            setIsLoading(false);
+            setLessonData(data);
+            if (!data) {
+              checkLessonGenerationFeasibility();
+            }
+          },
+          (error) => {
+            setIsLoading(false);
+            setError(error.message);
+            setLessonData(null);
+            checkLessonGenerationFeasibility();
+          },
+        );
       },
     );
   }, [api]);
