@@ -85,8 +85,24 @@ export default function TodayAudio({ setShowTabs }) {
               handleError(progress.message || "Lesson generation failed. Please try again.");
             }
           } else {
-            // No progress record - check if lesson is ready
-            checkForLesson();
+            // No progress record - check if lesson is ready, otherwise stop polling
+            api.getTodaysLesson(
+              (data) => {
+                if (data && data.lesson_id) {
+                  handleLessonReady(data);
+                } else {
+                  // No progress AND no lesson - generation must have failed silently
+                  stopPolling();
+                  // Let user try again by checking feasibility
+                  checkLessonGenerationFeasibility();
+                }
+              },
+              () => {
+                // API error - stop polling and let user retry
+                stopPolling();
+                checkLessonGenerationFeasibility();
+              },
+            );
           }
         },
         // On progress API error, fall back to checking lesson directly
@@ -153,14 +169,23 @@ export default function TodayAudio({ setShowTabs }) {
 
   // Fetch lesson data on mount
   useEffect(() => {
+    const generatingKey = `zeeguu_generating_lesson_${new Date().toDateString()}`;
+    const isGenerationInProgress = localStorage.getItem(generatingKey);
+
+    // If generation is in progress, don't fetch or check feasibility - let polling handle it
+    if (isGenerationInProgress) {
+      setIsLoading(false);
+      return;
+    }
+
     // Check if there's already a lesson for today
     setIsLoading(true);
 
     api.getTodaysLesson(
       (data) => {
         setIsLoading(false);
-        setLessonData(data); // data will be null if no lesson exists, or lesson object if it exists
-        
+        setLessonData(data);
+
         // If no lesson exists, check if we can generate one
         if (!data) {
           checkLessonGenerationFeasibility();
@@ -170,7 +195,7 @@ export default function TodayAudio({ setShowTabs }) {
         setIsLoading(false);
         setError(error.message);
         setLessonData(null);
-        
+
         // Even on error, check if generation is possible
         checkLessonGenerationFeasibility();
       },
