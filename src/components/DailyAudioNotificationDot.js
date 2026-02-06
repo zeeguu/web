@@ -1,43 +1,38 @@
 import styled, { keyframes, css } from "styled-components";
-import { orange500, zeeguuWarmYellow } from "./colors";
+import { orange500 } from "./colors";
 
 const pulse = keyframes`
-  0% { opacity: 1; transform: scale(1); }
-  50% { opacity: 0.6; transform: scale(1.1); }
-  100% { opacity: 1; transform: scale(1); }
+  0% { background-color: ${orange500}; }
+  50% { background-color: white; }
+  100% { background-color: ${orange500}; }
 `;
 
-const lightGray = "#b0b0b0";
+const lightGray = "#d0d0d0";
 
 const Dot = styled.div`
-  position: absolute;
-  top: 0;
-  right: 0.25rem;
-  width: 10px;
-  height: 10px;
+  width: 8px;
+  height: 8px;
   border-radius: 50%;
-  border: 2px solid white;
-  z-index: 1;
+  margin-left: -0.5rem;
+  flex-shrink: 0;
 
-  ${({ $status }) => {
+  ${({ $status, $isActive }) => {
     switch ($status) {
       case "available":
         return css`background-color: ${lightGray};`;
       case "generating":
-        return css`
-          background-color: ${zeeguuWarmYellow};
-          animation: ${pulse} 1.5s ease-in-out infinite;
-        `;
+        return css`animation: ${pulse} 1.5s ease-in-out infinite;`;
       case "ready":
       case "in_progress":
       default:
-        return css`background-color: ${orange500};`;
+        // White on orange sidebar, orange when selected (white bg)
+        return css`background-color: ${$isActive ? orange500 : "white"};`;
     }
   }}
 `;
 
-export default function DailyAudioNotificationDot({ status }) {
+export default function DailyAudioNotificationDot({ status, isActive }) {
   if (!status || status === "completed") return null;
 
-  return <Dot $status={status} />;
+  return <Dot $status={status} $isActive={isActive} />;
 }

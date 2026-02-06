@@ -6,7 +6,7 @@ let strings = new LocalizedStrings(
     en: {
       //Shared
       title: "Title",
-      words: "My Words",
+      words: "Words",
       readingCompletion: "Completion",
       lengthWithCapital: "Length",
       levelWithCapital: "Level",
@@ -294,7 +294,7 @@ let strings = new LocalizedStrings(
 
       //WordsRouter
       yourWordsHeadline: "Your Words",
-      activity: "My Activity",
+      activity: "Activity",
       historyTab: "History",
       statisticsTab: "Statistics",
       starred: "Starred",
@@ -900,7 +900,7 @@ let strings = new LocalizedStrings(
     da: {
       //Shared
       title: "Titel",
-      words: "Mine ord",
+      words: "Ord",
       lengthWithCapital: "Længde",
       levelWithCapital: "Sværhed",
       articles: "Læsning",
@@ -1108,7 +1108,7 @@ let strings = new LocalizedStrings(
 
       //WordsRouter
       yourWordsHeadline: "Dine ord",
-      activity: "Min aktivitet",
+      activity: "Aktivitet",
       historyTab: "Historik",
       statisticsTab: "Statistik",
       starred: "Stjernemarkerede",
