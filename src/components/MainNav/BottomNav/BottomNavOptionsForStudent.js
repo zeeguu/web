@@ -27,11 +27,7 @@ export default function BottomNavOptionsForStudent() {
       <BottomNavOption
         {...NavigationOptions.dailyAudio}
         currentPath={path}
-        notification={
-          dailyAudioStatus && dailyAudioStatus !== "completed" && (
-            <DailyAudioNotificationDot status={dailyAudioStatus} />
-          )
-        }
+        notification={<DailyAudioNotificationDot status={dailyAudioStatus} />}
       />
       <BottomNavOption {...NavigationOptions.words} currentPath={path} />
     </>

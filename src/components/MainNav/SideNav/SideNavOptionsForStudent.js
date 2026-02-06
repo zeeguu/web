@@ -32,11 +32,7 @@ export default function SideNavOptionsForStudent({ screenWidth }) {
         {...NavigationOptions.dailyAudio}
         currentPath={path}
         screenWidth={screenWidth}
-        notification={
-          dailyAudioStatus && dailyAudioStatus !== "completed" && (
-            <DailyAudioNotificationDot status={dailyAudioStatus} />
-          )
-        }
+        notification={<DailyAudioNotificationDot status={dailyAudioStatus} />}
       />
 
       <NavOption {...NavigationOptions.words} currentPath={path} screenWidth={screenWidth} />

@@ -1,11 +1,13 @@
-import styled, { keyframes } from "styled-components";
-import { orange500 } from "./colors";
+import styled, { keyframes, css } from "styled-components";
+import { orange500, zeeguuWarmYellow } from "./colors";
 
 const pulse = keyframes`
   0% { opacity: 1; transform: scale(1); }
   50% { opacity: 0.6; transform: scale(1.1); }
   100% { opacity: 1; transform: scale(1); }
 `;
+
+const lightGray = "#b0b0b0";
 
 const Dot = styled.div`
   position: absolute;
@@ -14,18 +16,28 @@ const Dot = styled.div`
   width: 10px;
   height: 10px;
   border-radius: 50%;
-  background-color: ${orange500};
   border: 2px solid white;
   z-index: 1;
 
-  &.generating {
-    animation: ${pulse} 1.5s ease-in-out infinite;
-  }
+  ${({ $status }) => {
+    switch ($status) {
+      case "available":
+        return css`background-color: ${lightGray};`;
+      case "generating":
+        return css`
+          background-color: ${zeeguuWarmYellow};
+          animation: ${pulse} 1.5s ease-in-out infinite;
+        `;
+      case "ready":
+      case "in_progress":
+      default:
+        return css`background-color: ${orange500};`;
+    }
+  }}
 `;
 
 export default function DailyAudioNotificationDot({ status }) {
-  // Parent already filters out null/completed, but keep defensive check
-  if (!status) return null;
+  if (!status || status === "completed") return null;
 
-  return <Dot className={status === "generating" ? "generating" : ""} />;
+  return <Dot $status={status} />;
 }
