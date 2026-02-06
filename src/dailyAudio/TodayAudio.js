@@ -46,83 +46,64 @@ export default function TodayAudio({ setShowTabs }) {
       return; // Effect will re-run with isGenerating=true
     }
 
+    // Helper to stop polling and reset state
+    let pollInterval;
+    let timeoutId;
+
+    const stopPolling = () => {
+      clearInterval(pollInterval);
+      clearTimeout(timeoutId);
+      localStorage.removeItem(generatingKey);
+      setIsGenerating(false);
+      setGenerationProgress(null);
+    };
+
+    const handleLessonReady = (data) => {
+      if (data && data.lesson_id) {
+        stopPolling();
+        setLessonData(data);
+      }
+    };
+
+    const handleError = (message) => {
+      stopPolling();
+      setError(message);
+    };
+
+    // Check if lesson is ready (used in multiple places)
+    const checkForLesson = () => {
+      api.getTodaysLesson(handleLessonReady, () => {});
+    };
+
     // Poll for generation progress
-    const pollInterval = setInterval(() => {
-      // First check progress
+    pollInterval = setInterval(() => {
       api.getAudioLessonGenerationProgress(
         (progress) => {
           if (progress) {
             setGenerationProgress(progress);
 
-            // If generation is done, fetch the lesson
             if (progress.status === "done") {
-              api.getTodaysLesson(
-                (data) => {
-                  if (data && data.lesson_id) {
-                    clearInterval(pollInterval);
-                    localStorage.removeItem(generatingKey);
-                    setIsGenerating(false);
-                    setGenerationProgress(null);
-                    setLessonData(data);
-                  }
-                },
-                () => {},
-              );
+              checkForLesson();
             } else if (progress.status === "error") {
-              clearInterval(pollInterval);
-              localStorage.removeItem(generatingKey);
-              setIsGenerating(false);
-              setGenerationProgress(null);
-              setError(progress.message || "Lesson generation failed. Please try again.");
+              handleError(progress.message || "Lesson generation failed. Please try again.");
             }
           } else {
             // No progress record - check if lesson is ready
-            api.getTodaysLesson(
-              (data) => {
-                if (data && data.lesson_id) {
-                  clearInterval(pollInterval);
-                  localStorage.removeItem(generatingKey);
-                  setIsGenerating(false);
-                  setGenerationProgress(null);
-                  setLessonData(data);
-                }
-              },
-              () => {},
-            );
+            checkForLesson();
           }
         },
-        () => {
-          // On error, fall back to checking lesson directly
-          api.getTodaysLesson(
-            (data) => {
-              if (data && data.lesson_id) {
-                clearInterval(pollInterval);
-                localStorage.removeItem(generatingKey);
-                setIsGenerating(false);
-                setGenerationProgress(null);
-                setLessonData(data);
-              }
-            },
-            () => {},
-          );
-        },
+        // On progress API error, fall back to checking lesson directly
+        checkForLesson,
       );
-    }, 1500); // Poll every 1.5 seconds for more responsive updates
+    }, 1500);
 
-    // Clear polling after 2 minutes (timeout)
-    const timeoutId = setTimeout(() => {
-      clearInterval(pollInterval);
-      localStorage.removeItem(generatingKey);
-      setIsGenerating(false);
-      setGenerationProgress(null);
-      setError("Lesson generation timed out. Please try again.");
+    // Timeout after 2 minutes
+    timeoutId = setTimeout(() => {
+      handleError("Lesson generation timed out. Please try again.");
     }, TWO_MIN);
 
-    // Cleanup function to clear intervals if component unmounts
-    return () => {
-      clearInterval(pollInterval);
-      clearTimeout(timeoutId);
-    };
+    // Cleanup on unmount
+    return stopPolling;
   }, [api, isGenerating]);
   const [openFeedback, setOpenFeedback] = useState(false);
   const [currentPlaybackTime, setCurrentPlaybackTime] = useState(0);
