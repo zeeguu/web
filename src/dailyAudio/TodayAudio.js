@@ -29,44 +29,33 @@ export default function TodayAudio({ setShowTabs }) {
   const [isGenerating, setIsGenerating] = useState(false);
   const [generationProgress, setGenerationProgress] = useState(null);
 
-  // Check localStorage for ongoing generation and poll for progress
+  // Poll for progress when generating
   useEffect(() => {
     const generatingKey = `zeeguu_generating_lesson_${new Date().toDateString()}`;
-    const isCurrentlyGenerating = localStorage.getItem(generatingKey);
-    if (isCurrentlyGenerating) {
+    const hasLocalStorageFlag = localStorage.getItem(generatingKey);
+
+    // Start polling if either: localStorage flag is set (page reload) or isGenerating is true (button click/409)
+    const shouldPoll = hasLocalStorageFlag || isGenerating;
+    if (!shouldPoll) {
+      return;
+    }
+
+    // Ensure UI shows generating state (for page reload case where isGenerating starts false)
+    if (hasLocalStorageFlag && !isGenerating) {
       setIsGenerating(true);
+      return; // Effect will re-run with isGenerating=true
+    }
 
-      // Poll for generation progress
-      const pollInterval = setInterval(() => {
-        // First check progress
-        api.getAudioLessonGenerationProgress(
-          (progress) => {
-            if (progress) {
-              setGenerationProgress(progress);
+    // Poll for generation progress
+    const pollInterval = setInterval(() => {
+      // First check progress
+      api.getAudioLessonGenerationProgress(
+        (progress) => {
+          if (progress) {
+            setGenerationProgress(progress);
 
-              // If generation is done, fetch the lesson
-              if (progress.status === "done") {
-                api.getTodaysLesson(
-                  (data) => {
-                    if (data && data.lesson_id) {
-                      clearInterval(pollInterval);
-                      localStorage.removeItem(generatingKey);
-                      setIsGenerating(false);
-                      setGenerationProgress(null);
-                      setLessonData(data);
-                    }
-                  },
-                  () => {},
-                );
-              } else if (progress.status === "error") {
-                clearInterval(pollInterval);
-                localStorage.removeItem(generatingKey);
-                setIsGenerating(false);
-                setGenerationProgress(null);
-                setError(progress.message || "Lesson generation failed. Please try again.");
-              }
-            } else {
-              // No progress record - check if lesson is ready
+            // If generation is done, fetch the lesson
+            if (progress.status === "done") {
               api.getTodaysLesson(
                 (data) => {
                   if (data && data.lesson_id) {
@@ -79,10 +68,15 @@ export default function TodayAudio({ setShowTabs }) {
                 },
                 () => {},
               );
+            } else if (progress.status === "error") {
+              clearInterval(pollInterval);
+              localStorage.removeItem(generatingKey);
+              setIsGenerating(false);
+              setGenerationProgress(null);
+              setError(progress.message || "Lesson generation failed. Please try again.");
             }
-          },
-          () => {
-            // On error, fall back to checking lesson directly
+          } else {
+            // No progress record - check if lesson is ready
             api.getTodaysLesson(
               (data) => {
                 if (data && data.lesson_id) {
@@ -95,26 +89,41 @@ export default function TodayAudio({ setShowTabs }) {
               },
               () => {},
             );
-          },
-        );
-      }, 1500); // Poll every 1.5 seconds for more responsive updates
+          }
+        },
+        () => {
+          // On error, fall back to checking lesson directly
+          api.getTodaysLesson(
+            (data) => {
+              if (data && data.lesson_id) {
+                clearInterval(pollInterval);
+                localStorage.removeItem(generatingKey);
+                setIsGenerating(false);
+                setGenerationProgress(null);
+                setLessonData(data);
+              }
+            },
+            () => {},
+          );
+        },
+      );
+    }, 1500); // Poll every 1.5 seconds for more responsive updates
 
-      // Clear polling after 2 minutes (timeout)
-      const timeoutId = setTimeout(() => {
-        clearInterval(pollInterval);
-        localStorage.removeItem(generatingKey);
-        setIsGenerating(false);
-        setGenerationProgress(null);
-        setError("Lesson generation timed out. Please try again.");
-      }, TWO_MIN);
+    // Clear polling after 2 minutes (timeout)
+    const timeoutId = setTimeout(() => {
+      clearInterval(pollInterval);
+      localStorage.removeItem(generatingKey);
+      setIsGenerating(false);
+      setGenerationProgress(null);
+      setError("Lesson generation timed out. Please try again.");
+    }, TWO_MIN);
 
-      // Cleanup function to clear intervals if component unmounts
-      return () => {
-        clearInterval(pollInterval);
-        clearTimeout(timeoutId);
-      };
-    }
-  }, [api]);
+    // Cleanup function to clear intervals if component unmounts
+    return () => {
+      clearInterval(pollInterval);
+      clearTimeout(timeoutId);
+    };
+  }, [api, isGenerating]);
   const [openFeedback, setOpenFeedback] = useState(false);
   const [currentPlaybackTime, setCurrentPlaybackTime] = useState(0);
   const [lessonData, setLessonData] = useState(null);
@@ -277,12 +286,13 @@ export default function TodayAudio({ setShowTabs }) {
       }
 
       // Calculate progress percentage
-      if (generationProgress.total_words > 0 && generationProgress.total_steps > 0) {
-        const wordsCompleted = generationProgress.current_word - 1;
-        const stepsInCurrentWord = generationProgress.current_step / generationProgress.total_steps;
+      if (generationProgress.total_words > 0) {
+        const wordsCompleted = Math.max(0, generationProgress.current_word - 1);
+        let stepsInCurrentWord = 0;
+        if (generationProgress.total_steps > 0) {
+          stepsInCurrentWord = generationProgress.current_step / generationProgress.total_steps;
+        }
         progressPercent = ((wordsCompleted + stepsInCurrentWord) / generationProgress.total_words) * 100;
-      } else if (generationProgress.current_word > 0 && generationProgress.total_words > 0) {
-        progressPercent = ((generationProgress.current_word - 1) / generationProgress.total_words) * 100;
       }
     }
 
