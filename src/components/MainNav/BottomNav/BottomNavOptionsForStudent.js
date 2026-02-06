@@ -7,7 +7,6 @@ import { useContext } from "react";
 import { UserContext } from "../../../contexts/UserContext";
 import { ExercisesCounterContext } from "../../../exercises/ExercisesCounterContext";
 
-import Feature from "../../../features/Feature";
 
 export default function BottomNavOptionsForStudent() {
   const path = useLocation().pathname;
@@ -25,17 +24,15 @@ export default function BottomNavOptionsForStudent() {
           hasExerciseNotification && <NotificationIcon position={"top-absolute"} text={totalExercisesInPipeline} />
         }
       />
-      {Feature.is_enabled("daily_audio") && (
-        <BottomNavOption
-          {...NavigationOptions.dailyAudio}
-          currentPath={path}
-          notification={
-            dailyAudioStatus && dailyAudioStatus !== "completed" && (
-              <DailyAudioNotificationDot status={dailyAudioStatus} />
-            )
-          }
-        />
-      )}
+      <BottomNavOption
+        {...NavigationOptions.dailyAudio}
+        currentPath={path}
+        notification={
+          dailyAudioStatus && dailyAudioStatus !== "completed" && (
+            <DailyAudioNotificationDot status={dailyAudioStatus} />
+          )
+        }
+      />
       <BottomNavOption {...NavigationOptions.words} currentPath={path} />
     </>
   );
