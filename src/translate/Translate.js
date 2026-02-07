@@ -4,6 +4,7 @@ import { APIContext } from "../contexts/APIContext";
 import { UserContext } from "../contexts/UserContext";
 import { ExercisesCounterContext } from "../exercises/ExercisesCounterContext";
 import { setTitle } from "../assorted/setTitle";
+import InputField from "../components/InputField";
 import LoadingAnimation from "../components/LoadingAnimation";
 import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 import * as s from "./Translate.sc";
@@ -250,16 +251,12 @@ export default function Translate() {
 
   return (
     <>
-      <s.PageTitle>Translate</s.PageTitle>
-
       <form onSubmit={handleSearch}>
         <s.SearchContainer>
-          <s.SearchInput
+          <InputField
             id="translate-input"
             label="Enter word or phrase"
             placeholder="e.g., hund, bonjour, casa..."
-            variant="outlined"
-            fullWidth
             value={searchWord}
             onChange={(e) => setSearchWord(e.target.value)}
             autoFocus

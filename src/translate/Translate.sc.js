@@ -1,39 +1,45 @@
 import styled from "styled-components";
-import { styled as muiStyled } from "@mui/material/styles";
-import TextField from "@mui/material/TextField";
+import { zeeguuOrange } from "../components/colors";
 
 export const SearchContainer = styled.div`
   display: flex;
   gap: 0.5rem;
   margin-bottom: 1.5rem;
-  align-items: flex-start;
-`;
+  align-items: flex-end;
+  flex-wrap: wrap;
 
-export const SearchInput = muiStyled(TextField)`
-  flex: 1;
+  @media (max-width: 500px) {
+    flex-direction: column;
+    align-items: stretch;
+  }
 `;
 
 export const TranslateButton = styled.button`
-  background-color: #0077b6;
+  background-color: ${zeeguuOrange};
   color: white;
   border: none;
-  border-radius: 0.5rem;
-  padding: 0.875rem 1.5rem;
+  border-radius: 0.3rem;
+  padding: 0 1.5rem;
   font-size: 1rem;
+  font-weight: 600;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
   min-width: 100px;
-  height: 56px;
+  height: 2.5rem;
 
   &:hover {
-    background-color: #005f8a;
+    opacity: 0.9;
   }
 
   &:disabled {
     background-color: #ccc;
     cursor: not-allowed;
+  }
+
+  @media (max-width: 500px) {
+    width: 100%;
   }
 `;
 
@@ -55,7 +61,7 @@ export const TranslationCard = styled.div`
   margin-bottom: 1rem;
 
   &:hover {
-    border-color: #0077b6;
+    border-color: ${zeeguuOrange};
   }
 `;
 
@@ -83,17 +89,18 @@ export const TranslationSource = styled.div`
 `;
 
 export const AddButton = styled.button`
-  background-color: #0077b6;
+  background-color: ${zeeguuOrange};
   color: white;
   border: none;
-  border-radius: 0.5rem;
+  border-radius: 0.3rem;
   padding: 0.5rem 1rem;
   font-size: 0.9rem;
+  font-weight: 600;
   cursor: pointer;
   white-space: nowrap;
 
   &:hover {
-    background-color: #005f8a;
+    opacity: 0.9;
   }
 
   &:disabled {
@@ -156,11 +163,4 @@ export const NoResults = styled.div`
   color: #666;
   padding: 2rem;
   font-style: italic;
-`;
-
-export const PageTitle = styled.h1`
-  font-size: 1.5rem;
-  font-weight: 600;
-  margin-bottom: 1.5rem;
-  color: #333;
 `;
