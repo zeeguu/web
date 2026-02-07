@@ -29,7 +29,7 @@ export default function BottomNavOptionsForStudent() {
         currentPath={path}
         notification={<DailyAudioNotificationDot status={dailyAudioStatus} />}
       />
-      <BottomNavOption {...NavigationOptions.words} currentPath={path} />
+      <BottomNavOption {...NavigationOptions.translate} currentPath={path} />
     </>
   );
 }

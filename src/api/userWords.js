@@ -296,12 +296,58 @@ Zeeguu_API.prototype.getGeneratedExamples = function (
   fromLang,
   toLang,
   callback,
-  errorCallback
+  errorCallback,
+  translation = ""
 ) {
-  const url = `generate_examples/${encodeURIComponent(word)}/${fromLang}/${toLang}`;
+  let url = `generate_examples/${encodeURIComponent(word)}/${fromLang}/${toLang}`;
+  if (translation) {
+    url += `?translation=${encodeURIComponent(translation)}`;
+  }
+
   this._getJSON(url, (result) => {
     // Extract examples from the response
     const examples = result.examples || [];
     if (callback) callback(examples);
   }, errorCallback);
+};
+
+/**
+ * Add a word to learning with LLM-optimized word form and example.
+ * The LLM normalizes the word (e.g., verb -> infinitive) and picks the best example.
+ */
+Zeeguu_API.prototype.addWordToLearning = function (
+  word,
+  translation,
+  fromLang,
+  toLang,
+  examples,
+  callback,
+  errorCallback
+) {
+  const payload = JSON.stringify({
+    word: word,
+    translation: translation,
+    from_lang: fromLang,
+    to_lang: toLang,
+    examples: examples
+  });
+
+  fetch(this._appendSessionToUrl("add_word_to_learning"), {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: payload
+  })
+  .then(response => response.json().then(data => ({ status: response.status, data })))
+  .then(({ status, data }) => {
+    if (status >= 200 && status < 300 && data.success) {
+      if (callback) callback(data);
+    } else {
+      if (errorCallback) errorCallback(data);
+    }
+  })
+  .catch(error => {
+    if (errorCallback) errorCallback({ error: "Network error", detail: error.message });
+  });
 };

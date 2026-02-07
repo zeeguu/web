@@ -2,7 +2,6 @@
 
 import { useState, useContext } from "react";
 import { APIContext } from "../../contexts/APIContext";
-import { UserContext } from "../../contexts/UserContext";
 import * as s from "./ReplaceExampleModal.sc";
 import * as exerciseStyles from "../exerciseTypes/Exercise.sc";
 import { BlueButton } from "../exerciseTypes/Exercise.sc";
@@ -17,35 +16,12 @@ export default function ReplaceExampleModal({
   label = "Change example", // customizable label
 }) {
   const api = useContext(APIContext);
-  const { userDetails } = useContext(UserContext);
   const [open, setOpen] = useState(false);
   const [pastContexts, setPastContexts] = useState([]);
   const [alternatives, setAlternatives] = useState([]);
   const [loading, setLoading] = useState(false);
   const [selectedExample, setSelectedExample] = useState(null);
   const [saving, setSaving] = useState(false);
-
-  // Get user's CEFR level
-  const getUserCEFRLevel = () => {
-    if (!userDetails?.learned_language) {
-      return "B1"; // Default fallback
-    }
-
-    const levelKey = userDetails.learned_language + "_cefr_level";
-    const levelNumber = userDetails[levelKey];
-
-    // Convert number to letter format
-    const levelMap = {
-      1: "A1",
-      2: "A2",
-      3: "B1",
-      4: "B2",
-      5: "C1",
-      6: "C2",
-    };
-
-    return levelMap[levelNumber?.toString()] || "B1";
-  };
 
   // Fetch past contexts (articles, videos, etc.)
   const fetchPastContexts = async () => {
@@ -100,8 +76,7 @@ export default function ReplaceExampleModal({
     }
 
     setLoading(true);
-    const userCEFRLevel = getUserCEFRLevel();
-    const url = `${api.baseAPIurl}/alternative_sentences/${exerciseBookmark.user_word_id}?cefr_level=${userCEFRLevel}&session=${api.session}`;
+    const url = `${api.baseAPIurl}/alternative_sentences/${exerciseBookmark.user_word_id}?session=${api.session}`;
 
     try {
       const response = await fetch(url, {

@@ -6,7 +6,7 @@ export default class NavigationOptions {
   // Student-specific options
   static articles = Object.freeze({
     linkTo: "/articles",
-    icon: <NavIcon name="home" />,
+    icon: <NavIcon name="read" />,
     text: strings.articles,
     isOnStudentSide: true,
   });
@@ -22,6 +22,13 @@ export default class NavigationOptions {
     linkTo: "/daily-audio",
     icon: <NavIcon name="dailyAudio" />,
     text: strings.dailyAudio,
+    isOnStudentSide: true,
+  });
+
+  static translate = Object.freeze({
+    linkTo: "/translate",
+    icon: <NavIcon name="translate" />,
+    text: strings.translate,
     isOnStudentSide: true,
   });
 
