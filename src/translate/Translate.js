@@ -4,6 +4,7 @@ import { APIContext } from "../contexts/APIContext";
 import { UserContext } from "../contexts/UserContext";
 import { ExercisesCounterContext } from "../exercises/ExercisesCounterContext";
 import { setTitle } from "../assorted/setTitle";
+import { getUserCEFRLevel } from "../utils/misc/getUserCEFRLevel";
 import LoadingAnimation from "../components/LoadingAnimation";
 import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 import * as s from "./Translate.sc";
@@ -50,15 +51,6 @@ export default function Translate() {
 
   const fromLang = userDetails?.learned_language;
   const toLang = userDetails?.native_language;
-
-  // Get user's CEFR level
-  const getUserCEFRLevel = () => {
-    if (!fromLang) return "B1";
-    const levelKey = fromLang + "_cefr_level";
-    const levelNumber = userDetails[levelKey];
-    const levelMap = { 1: "A1", 2: "A2", 3: "B1", 4: "B2", 5: "C1", 6: "C2" };
-    return levelMap[levelNumber?.toString()] || "B1";
-  };
 
   const [searchWord, setSearchWord] = useState("");
   const [translations, setTranslations] = useState([]);
@@ -187,7 +179,7 @@ export default function Translate() {
       [key]: { loading: true, examples: [], error: "" },
     }));
 
-    const cefrLevel = getUserCEFRLevel();
+    const cefrLevel = getUserCEFRLevel(userDetails);
 
     api.getGeneratedExamples(
       word,
@@ -225,7 +217,7 @@ export default function Translate() {
 
     const examples = state?.examples || [];
     const word = searchWordRef.current;
-    const cefrLevel = getUserCEFRLevel();
+    const cefrLevel = getUserCEFRLevel(userDetails);
 
     setAddingKey(key);
 
@@ -324,7 +316,7 @@ export default function Translate() {
                       onClick={() => handleAdd(t.translation)}
                       disabled={examplesLoading || isAdding}
                     >
-                      {isAdding ? "Adding..." : examplesLoading ? "..." : "Add"}
+                      {isAdding ? "Adding..." : examplesLoading ? "..." : "Add to exercises"}
                     </s.AddButton>
                   ) : null}
                 </s.TranslationHeader>
