@@ -1,3 +1,4 @@
+import React from "react";
 import * as s from "./NavOption.sc";
 import { isMediumScreenWidth } from "./screenSize";
 
@@ -36,7 +37,7 @@ export default function NavOption({
         <s.OptionContentWrapper $screenWidth={screenWidth}>
           <s.IconContainer>{icon}</s.IconContainer>
           <s.TextWrapper $screenWidth={screenWidth}>{text}</s.TextWrapper>
-          {notification}
+          {notification && React.cloneElement(notification, { isActive })}
         </s.OptionContentWrapper>
       </Component>
     </s.NavOption>

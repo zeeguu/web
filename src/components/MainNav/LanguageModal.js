@@ -121,12 +121,13 @@ export default function LanguageModal({ open, setOpen }) {
     };
 
     api.saveUserDetails(newUserDetails, setErrorMessage, () => {
-      setUserDetails(newUserDetails);
-
-      LocalStorage.setUserInfo(newUserDetails);
-      saveSharedUserInfo(newUserDetails);
-
-      setOpen(false); // Close modal after successful save
+      // Re-fetch user details to get updated daily_audio_status for new language
+      api.getUserDetails((freshUserDetails) => {
+        setUserDetails(freshUserDetails);
+        LocalStorage.setUserInfo(freshUserDetails);
+        saveSharedUserInfo(freshUserDetails);
+        setOpen(false); // Close modal after successful save
+      });
     });
   }
 

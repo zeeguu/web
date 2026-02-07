@@ -23,7 +23,7 @@ export function wordsAsTile(words) {
 
 export default function TodayAudio({ setShowTabs }) {
   const api = useContext(APIContext);
-  const { userDetails } = useContext(UserContext);
+  const { userDetails, setUserDetails } = useContext(UserContext);
   const [isLoading, setIsLoading] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
   const [generationProgress, setGenerationProgress] = useState(null);
@@ -62,6 +62,8 @@ export default function TodayAudio({ setShowTabs }) {
       if (data && data.lesson_id) {
         stopPolling();
         setLessonData(data);
+        // Update context to show lesson is ready
+        setUserDetails((prev) => ({ ...prev, daily_audio_status: data.is_completed ? "completed" : "ready" }));
         lessonRetryCount = 0;
       } else if (data && data.error) {
         // Lesson exists but has an error (e.g., audio file not ready yet)
@@ -168,6 +170,8 @@ export default function TodayAudio({ setShowTabs }) {
         setCanGenerateLesson(data.feasible);
         if (!data.feasible) {
           setError(data.message || "Not enough words available to generate a lesson.");
+          // Reset status to available since generation isn't possible
+          setUserDetails((prev) => ({ ...prev, daily_audio_status: null }));
         }
       },
       (error) => {
@@ -190,6 +194,8 @@ export default function TodayAudio({ setShowTabs }) {
           setIsLoading(false);
           setIsGenerating(true);
           setGenerationProgress(progress);
+          // Update context so navigation dot shows generating state
+          setUserDetails((prev) => ({ ...prev, daily_audio_status: "generating" }));
           return;
         }
 
@@ -208,6 +214,8 @@ export default function TodayAudio({ setShowTabs }) {
             setIsLoading(false);
             setError(error.message);
             setLessonData(null);
+            // Reset status on error
+            setUserDetails((prev) => ({ ...prev, daily_audio_status: null }));
 
             // Even on error, check if generation is possible
             checkLessonGenerationFeasibility();
@@ -228,6 +236,8 @@ export default function TodayAudio({ setShowTabs }) {
             setIsLoading(false);
             setError(error.message);
             setLessonData(null);
+            // Reset status on error
+            setUserDetails((prev) => ({ ...prev, daily_audio_status: null }));
             checkLessonGenerationFeasibility();
           },
         );
@@ -242,6 +252,9 @@ export default function TodayAudio({ setShowTabs }) {
     setError(null);
     setGenerationProgress(null);
 
+    // Update context so navigation dot shows generating state
+    setUserDetails((prev) => ({ ...prev, daily_audio_status: "generating" }));
+
     // Set localStorage flag to track generation across page reloads
     localStorage.setItem(generatingKey, "true");
 
@@ -252,6 +265,8 @@ export default function TodayAudio({ setShowTabs }) {
         setIsGenerating(false);
         setGenerationProgress(null);
         setLessonData(data);
+        // Update context to reflect lesson is ready
+        setUserDetails((prev) => ({ ...prev, daily_audio_status: "ready" }));
       },
       (error) => {
         // Check if generation is already in progress (409 Conflict)
@@ -264,6 +279,9 @@ export default function TodayAudio({ setShowTabs }) {
         localStorage.removeItem(generatingKey);
         setIsGenerating(false);
         setGenerationProgress(null);
+
+        // Reset status back to available on error
+        setUserDetails((prev) => ({ ...prev, daily_audio_status: null }));
 
         // Check if the error is related to no words in learning
         if (error.message && error.message.toLowerCase().includes("not enough words")) {
@@ -492,6 +510,8 @@ export default function TodayAudio({ setShowTabs }) {
                   is_completed: true,
                   completed_at: new Date().toISOString(),
                 }));
+                // Update context so navigation dot disappears
+                setUserDetails((prev) => ({ ...prev, daily_audio_status: "completed" }));
               });
             }
           }}

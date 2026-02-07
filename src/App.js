@@ -97,6 +97,42 @@ function App() {
     // eslint-disable-next-line
   }, [userDetails]);
 
+  // Poll for audio lesson generation progress when status is "generating"
+  useEffect(() => {
+    if (userDetails?.daily_audio_status !== "generating") return;
+
+    const pollInterval = setInterval(() => {
+      api.getAudioLessonGenerationProgress(
+        (progress) => {
+          if (!progress || progress.status === "done") {
+            // Generation finished - update status
+            setUserDetails((prev) => ({ ...prev, daily_audio_status: "ready" }));
+          } else if (progress.status === "error") {
+            // Generation failed - reset to available
+            setUserDetails((prev) => ({ ...prev, daily_audio_status: null }));
+          }
+          // Otherwise keep polling
+        },
+        () => {
+          // API error - check if lesson exists
+          api.getTodaysLesson(
+            (data) => {
+              if (data?.lesson_id) {
+                setUserDetails((prev) => ({
+                  ...prev,
+                  daily_audio_status: data.is_completed ? "completed" : "ready",
+                }));
+              }
+            },
+            () => {},
+          );
+        },
+      );
+    }, 3000);
+
+    return () => clearInterval(pollInterval);
+  }, [userDetails?.daily_audio_status, api]);
+
   useEffect(() => {
     // Wait for session to be initialized (especially important for Capacitor)
     if (!sessionInitialized) return;

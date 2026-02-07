@@ -16,6 +16,7 @@ import HeadphonesRoundedIcon from "@mui/icons-material/HeadphonesRounded";
 import LocalFireDepartmentIcon from '@mui/icons-material/LocalFireDepartment';
 import ArticleIcon from '@mui/icons-material/Article';
 import SchoolIcon from "@mui/icons-material/School";
+import AbcIcon from "@mui/icons-material/Abc";
 
 
 export default function NavIcon({ name, color, size }) {
@@ -31,7 +32,7 @@ const iconProps = {
     home: <HomeRoundedIcon />,
     exercises: <FitnessCenterRoundedIcon {...iconProps} />,
     dailyAudio: <HeadphonesRoundedIcon />,
-    words: <TranslateRoundedIcon {...iconProps} />,
+    words: <AbcIcon {...iconProps} />,
     history: <HistoryRoundedIcon />,
     statistics: <DonutSmallRoundedIcon />,
     settings: <SettingsRoundedIcon />,
@@ -42,7 +43,7 @@ const iconProps = {
     myTexts: <ChromeReaderModeRoundedIcon />,
     studentSite: <SchoolRoundedIcon />,
     more: <MoreHorizRoundedIcon />,
-    language: <LanguageRoundedIcon  />,
+    language: <TranslateRoundedIcon {...iconProps} />,
     headerArticles: <ArticleIcon {...iconProps} />,
     headerStreak: <LocalFireDepartmentIcon {...iconProps}/>,
     school: <SchoolIcon {...iconProps} />
