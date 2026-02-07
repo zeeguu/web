@@ -17,6 +17,7 @@ import PrivacyPolicy from "./pages/PrivacyPolicy";
 import HowToDeleteAccount from "./pages/HowToDeleteAccount";
 import ExercisesRouter from "./exercises/ExercisesRouter";
 import WordsRouter from "./words/_WordsRouter";
+import TranslateRouter from "./translate/_TranslateRouter";
 import ReadingHistory from "./words/WordHistory";
 import ActivityRouter from "./activity/_ActivityRouter";
 import ArticleReader from "./reader/ArticleReader";
@@ -118,6 +119,7 @@ export default function MainAppRouter({ hasExtension, handleSuccessfulLogIn }) {
       <PrivateRoute path="/watch/video" component={VideoPlayer} />
       <PrivateRouteWithMainNav path="/exercises" component={ExercisesRouter} />
       <PrivateRouteWithMainNav path="/daily-audio" component={DailyAudioRouter} />
+      <PrivateRouteWithMainNav path="/translate" component={TranslateRouter} />
       <PrivateRouteWithMainNav path="/words" component={WordsRouter} />
       <PrivateRouteWithMainNav path="/history" component={ReadingHistory} />
       <PrivateRouteWithMainNav path="/activity-history" component={ActivityRouter} />
