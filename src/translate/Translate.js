@@ -4,7 +4,6 @@ import { APIContext } from "../contexts/APIContext";
 import { UserContext } from "../contexts/UserContext";
 import { ExercisesCounterContext } from "../exercises/ExercisesCounterContext";
 import { setTitle } from "../assorted/setTitle";
-import { getUserCEFRLevel } from "../utils/misc/getUserCEFRLevel";
 import LoadingAnimation from "../components/LoadingAnimation";
 import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 import * as s from "./Translate.sc";
@@ -179,8 +178,6 @@ export default function Translate() {
       [key]: { loading: true, examples: [], error: "" },
     }));
 
-    const cefrLevel = getUserCEFRLevel(userDetails);
-
     api.getGeneratedExamples(
       word,
       fromLang,
@@ -201,8 +198,7 @@ export default function Translate() {
           [key]: { loading: false, examples: [], error: "Could not load examples" },
         }));
       },
-      translation,  // Pass translation for meaning-specific examples
-      cefrLevel     // Pass user's CEFR level
+      translation  // Pass translation for meaning-specific examples
     );
   }
 
@@ -217,7 +213,6 @@ export default function Translate() {
 
     const examples = state?.examples || [];
     const word = searchWordRef.current;
-    const cefrLevel = getUserCEFRLevel(userDetails);
 
     setAddingKey(key);
 
@@ -227,7 +222,6 @@ export default function Translate() {
       fromLang,
       toLang,
       examples,
-      cefrLevel,
       (result) => {
         setAddingKey(null);
         setAddedTranslations((prev) => new Set([...prev, key]));

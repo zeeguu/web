@@ -2,8 +2,6 @@
 
 import { useState, useContext } from "react";
 import { APIContext } from "../../contexts/APIContext";
-import { UserContext } from "../../contexts/UserContext";
-import { getUserCEFRLevel } from "../../utils/misc/getUserCEFRLevel";
 import * as s from "./ReplaceExampleModal.sc";
 import * as exerciseStyles from "../exerciseTypes/Exercise.sc";
 import { BlueButton } from "../exerciseTypes/Exercise.sc";
@@ -18,7 +16,6 @@ export default function ReplaceExampleModal({
   label = "Change example", // customizable label
 }) {
   const api = useContext(APIContext);
-  const { userDetails } = useContext(UserContext);
   const [open, setOpen] = useState(false);
   const [pastContexts, setPastContexts] = useState([]);
   const [alternatives, setAlternatives] = useState([]);
@@ -79,8 +76,7 @@ export default function ReplaceExampleModal({
     }
 
     setLoading(true);
-    const userCEFRLevel = getUserCEFRLevel(userDetails);
-    const url = `${api.baseAPIurl}/alternative_sentences/${exerciseBookmark.user_word_id}?cefr_level=${userCEFRLevel}&session=${api.session}`;
+    const url = `${api.baseAPIurl}/alternative_sentences/${exerciseBookmark.user_word_id}?session=${api.session}`;
 
     try {
       const response = await fetch(url, {

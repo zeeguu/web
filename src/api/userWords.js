@@ -297,14 +297,12 @@ Zeeguu_API.prototype.getGeneratedExamples = function (
   toLang,
   callback,
   errorCallback,
-  translation = "",
-  cefrLevel = ""
+  translation = ""
 ) {
   let url = `generate_examples/${encodeURIComponent(word)}/${fromLang}/${toLang}`;
-  const params = [];
-  if (translation) params.push(`translation=${encodeURIComponent(translation)}`);
-  if (cefrLevel) params.push(`cefr_level=${cefrLevel}`);
-  if (params.length > 0) url += `?${params.join("&")}`;
+  if (translation) {
+    url += `?translation=${encodeURIComponent(translation)}`;
+  }
 
   this._getJSON(url, (result) => {
     // Extract examples from the response
@@ -323,7 +321,6 @@ Zeeguu_API.prototype.addWordToLearning = function (
   fromLang,
   toLang,
   examples,
-  cefrLevel,
   callback,
   errorCallback
 ) {
@@ -332,8 +329,7 @@ Zeeguu_API.prototype.addWordToLearning = function (
     translation: translation,
     from_lang: fromLang,
     to_lang: toLang,
-    examples: examples,
-    cefr_level: cefrLevel
+    examples: examples
   });
 
   fetch(this._appendSessionToUrl("add_word_to_learning"), {
