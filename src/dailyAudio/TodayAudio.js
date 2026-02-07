@@ -485,6 +485,8 @@ export default function TodayAudio({ setShowTabs }) {
               api.updateLessonState(lessonData.lesson_id, "resume");
               // Start or resume listening session
               listeningSession.start();
+              // Update context so navigation dot disappears (in_progress)
+              setUserDetails((prev) => ({ ...prev, daily_audio_status: "in_progress" }));
             }
           }}
           onPause={() => {
