@@ -26,4 +26,13 @@ const StreakLabel = styled.span`
   font-weight: 400;
 `;
 
-export { StreakBannerContainer, StreakValue, StreakLabel };
+const FlagImage = styled.img`
+  width: 1rem;
+  height: 1rem;
+  vertical-align: middle;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 0.05rem solid #ccc;
+`;
+
+export { StreakBannerContainer, StreakValue, StreakLabel, FlagImage };

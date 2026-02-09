@@ -115,6 +115,7 @@ let strings = new LocalizedStrings(
 
       //Streak banner & milestones
       streakDay: "day",
+      streakStreak: "streak",
       streakDayStreak: "day streak",
       streakMilestoneYear: "A whole year of learning!",
       streakMilestoneTripleDigits: "Triple digits!",
@@ -968,6 +969,7 @@ let strings = new LocalizedStrings(
 
       //Streak banner & milestones
       streakDay: "dag",
+      streakStreak: "streak",
       streakDayStreak: "dages streak",
       streakMilestoneYear: "Et helt år med læring!",
       streakMilestoneTripleDigits: "Trecifret!",
