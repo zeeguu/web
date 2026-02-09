@@ -37,11 +37,16 @@ export default function useDeepLinkHandler() {
     };
 
     // Listen for app URL open events (when app is already running)
-    const listener = App.addListener("appUrlOpen", handleAppUrlOpen);
+    let listenerHandle = null;
+    App.addListener("appUrlOpen", handleAppUrlOpen).then((handle) => {
+      listenerHandle = handle;
+    });
 
     // Cleanup listener on unmount
     return () => {
-      listener.remove();
+      if (listenerHandle) {
+        listenerHandle.remove();
+      }
     };
   }, [history]);
 }
