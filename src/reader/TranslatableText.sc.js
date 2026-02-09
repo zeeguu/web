@@ -1,4 +1,4 @@
-import styled, { keyframes } from "styled-components";
+import styled, { keyframes, css } from "styled-components";
 import { almostBlack, zeeguuOrange, zeeguuTransparentMediumOrange, orange600 } from "../components/colors";
 
 const TranslatableText = styled.div`
@@ -515,8 +515,8 @@ const ClozeInput = styled.input`
   font-weight: ${props => props.$isOver ? '700' : 'normal'};
   cursor: ${props => props.$isOver ? 'default' : 'text'};
   animation: ${props => {
-    if (props.$isCorrect) return `${correctAnswerAnimation} 0.6s ease-out forwards`;
-    if (props.$isEmpty) return `${pulseUnderline} 2s ease-in-out infinite`;
+    if (props.$isCorrect) return css`${correctAnswerAnimation} 0.6s ease-out forwards`;
+    if (props.$isEmpty) return css`${pulseUnderline} 2s ease-in-out infinite`;
     return 'none';
   }};
 `;
