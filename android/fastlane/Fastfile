@@ -21,6 +21,25 @@ platform :android do
     )
   end
 
+  desc "Build and upload to Google Play Open Testing"
+  lane :open do |options|
+    # Build the release AAB
+    gradle(
+      task: "bundle",
+      build_type: "Release",
+      project_dir: "."
+    )
+
+    # Upload to Play Store open testing track (beta)
+    upload_to_play_store(
+      track: "beta",
+      aab: "app/build/outputs/bundle/release/app-release.aab",
+      skip_upload_metadata: true,
+      skip_upload_images: true,
+      skip_upload_screenshots: true
+    )
+  end
+
   desc "Build and upload to Google Play Production"
   lane :release do |options|
     # Build the release AAB
