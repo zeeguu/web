@@ -24,7 +24,8 @@ Zeeguu_API.prototype.browsingSessionUpdate = function (
     duration: currentDuration * 1000, // the API expects ms
   };
 
-  this._post(`browsing_session_update`, qs.stringify(payload));
+  // Use beacon to prevent "Failed to fetch" errors when user navigates away
+  this._postBeacon(`browsing_session_update`, qs.stringify(payload));
 };
 
 Zeeguu_API.prototype.browsingSessionEnd = function (
@@ -36,5 +37,6 @@ Zeeguu_API.prototype.browsingSessionEnd = function (
     duration: totalTime * 1000,
   };
 
-  this._post(`browsing_session_end`, qs.stringify(payload));
+  // Use beacon to prevent "Failed to fetch" errors when user navigates away
+  this._postBeacon(`browsing_session_end`, qs.stringify(payload));
 };

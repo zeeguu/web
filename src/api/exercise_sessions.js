@@ -24,7 +24,8 @@ Zeeguu_API.prototype.exerciseSessionUpdate = function (
     duration: currentDuration * 1000, // the API expects ms
   };
 
-  this._post(`exercise_session_update`, qs.stringify(payload));
+  // Use beacon to prevent "Failed to fetch" errors when user navigates away
+  this._postBeacon(`exercise_session_update`, qs.stringify(payload));
 };
 
 Zeeguu_API.prototype.exerciseSessionEnd = function (
@@ -36,7 +37,8 @@ Zeeguu_API.prototype.exerciseSessionEnd = function (
     duration: totalTime * 1000,
   };
 
-  this._post(`exercise_session_end`, qs.stringify(payload));
+  // Use beacon to prevent "Failed to fetch" errors when user navigates away
+  this._postBeacon(`exercise_session_end`, qs.stringify(payload));
 };
 
 // Backwards compatibility aliases (can be removed once all usages are migrated)
