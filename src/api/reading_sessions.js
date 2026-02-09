@@ -40,5 +40,5 @@ Zeeguu_API.prototype.readingSessionEnd = function (
   };
 
   // Use beacon to prevent "Load failed" errors when user navigates away
-  this._postBeacon(`reading_session_start`, qs.stringify(payload));
+  this._postBeacon(`reading_session_end`, qs.stringify(payload));
 };

@@ -31,14 +31,6 @@ Zeeguu_API.prototype.updateWatchingSession = function (watchingSessionId, curren
     duration: currentDurationInSeconds * 1000, //the API expects ms
   };
 
-  this._post(
-    `watching_session_update`,
-    qs.stringify(payload),
-    () => {
-      console.log("Watching session updated");
-    },
-    (error) => {
-      console.error(error);
-    },
-  );
+  // Use beacon to prevent "Failed to fetch" errors when user navigates away
+  this._postBeacon(`watching_session_update`, qs.stringify(payload));
 };
