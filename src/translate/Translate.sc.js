@@ -66,6 +66,28 @@ export const DirectionLabel = styled.span`
   border-radius: 0.25rem;
 `;
 
+export const SpeakButton = styled.button`
+  background: none;
+  border: none;
+  padding: 0.25rem;
+  cursor: pointer;
+  color: ${zeeguuOrange};
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: background-color 0.2s;
+
+  &:hover {
+    background-color: rgba(255, 140, 66, 0.1);
+  }
+
+  &:disabled {
+    color: #ccc;
+    cursor: not-allowed;
+  }
+`;
+
 export const TranslationCard = styled.div`
   background: white;
   border: 1px solid #e0e0e0;
