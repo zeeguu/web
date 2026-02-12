@@ -89,8 +89,7 @@ platform :ios do
     upload_to_app_store(
       app_version: version,
       skip_metadata: false,
-      skip_screenshots: false,
-      overwrite_screenshots: true,
+      skip_screenshots: true,
       submit_for_review: true,
       force: true
     )
