@@ -67,19 +67,28 @@ export const DirectionLabel = styled.span`
 `;
 
 export const DirectionToggle = styled.button`
-  font-size: 0.8rem;
-  font-weight: 400;
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 0.9rem;
   color: ${props => props.$canSwitch ? zeeguuOrange : '#666'};
-  background: #f0f0f0;
-  padding: 0.2rem 0.5rem;
+  background: #f5f5f5;
+  padding: 0.3rem 0.5rem;
   border-radius: 0.25rem;
-  border: none;
+  border: 1px solid #e0e0e0;
   cursor: ${props => props.$canSwitch ? 'pointer' : 'default'};
   transition: background-color 0.2s;
 
   &:hover {
-    background: ${props => props.$canSwitch ? '#e0e0e0' : '#f0f0f0'};
+    background: ${props => props.$canSwitch ? '#ebebeb' : '#f5f5f5'};
   }
+`;
+
+export const Flag = styled.img`
+  width: 20px;
+  height: 14px;
+  object-fit: cover;
+  border-radius: 2px;
 `;
 
 export const SpeakButton = styled.button`

@@ -9,6 +9,7 @@ import InputField from "../components/InputField";
 import LoadingAnimation from "../components/LoadingAnimation";
 import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 import VolumeUpIcon from "@mui/icons-material/VolumeUp";
+import SwapHorizIcon from "@mui/icons-material/SwapHoriz";
 import * as s from "./Translate.sc";
 
 // Highlight the target word(s) in a sentence - handles MWEs (multi-word expressions)
@@ -382,10 +383,10 @@ export default function Translate() {
                 $canSwitch={canSwitchDirection()}
                 title={canSwitchDirection() ? "Click to switch direction" : ""}
               >
-                {activeDirection === "toNative"
-                  ? `from ${learnedLang}`
-                  : `from ${nativeLang}`}
-                {canSwitchDirection() && " ⇄"}
+                <s.Flag src={`/static/flags-new/${activeDirection === "toNative" ? learnedLang : nativeLang}.svg`} alt="" />
+                <span>→</span>
+                <s.Flag src={`/static/flags-new/${activeDirection === "toNative" ? nativeLang : learnedLang}.svg`} alt="" />
+                {canSwitchDirection() && <SwapHorizIcon fontSize="small" style={{ marginLeft: '4px' }} />}
               </s.DirectionToggle>
             )}
           </s.ResultsHeader>
