@@ -10,7 +10,7 @@ import InputField from "../components/InputField";
 import LoadingAnimation from "../components/LoadingAnimation";
 import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 import VolumeUpIcon from "@mui/icons-material/VolumeUp";
-import SwapHorizIcon from "@mui/icons-material/SwapHoriz";
+import FlagOutlinedIcon from "@mui/icons-material/FlagOutlined";
 import { languageNames } from "../utils/languageDetection";
 import * as s from "./Translate.sc";
 
@@ -75,6 +75,8 @@ export default function Translate() {
   const [addedTranslations, setAddedTranslations] = useState(new Set());
   // Which translation is currently being added (loading state)
   const [addingKey, setAddingKey] = useState(null);
+  // Reported translations: Set of translation keys
+  const [reportedTranslations, setReportedTranslations] = useState(new Set());
 
   const { speak, isSpeaking } = useSpeech();
   const searchWordRef = useRef("");
@@ -346,12 +348,60 @@ export default function Translate() {
         updateExercisesCounter();
 
         const card = result.learning_card;
-        toast.success(`Added "${card.word}" to exercises`);
+        const bookmarkId = result.bookmark_id;
+
+        const handleUndo = () => {
+          api.deleteBookmark(bookmarkId, () => {
+            setAddedTranslations((prev) => {
+              const newSet = new Set(prev);
+              newSet.delete(key);
+              return newSet;
+            });
+            updateExercisesCounter();
+            toast.info("Removed from exercises");
+          });
+        };
+
+        toast.success(
+          <span>
+            Added "{card.word}" to exercises{" "}
+            <span
+              onClick={handleUndo}
+              style={{ textDecoration: "underline", cursor: "pointer" }}
+            >
+              Undo
+            </span>
+          </span>
+        );
       },
       (error) => {
         setAddingKey(null);
         const message = error?.detail || error?.error || "Failed to add word";
         toast.error(message);
+      },
+    );
+  }
+
+  function handleReport(translation) {
+    const key = getTranslationKey(translation);
+    const searchedWord = searchWordRef.current;
+
+    const wordToReport = activeDirection === "toNative" ? searchedWord : translation;
+    const translationToReport = activeDirection === "toNative" ? translation : searchedWord;
+
+    api.reportMeaning(
+      wordToReport,
+      translationToReport,
+      learnedLang,
+      nativeLang,
+      "bad_examples",
+      null,
+      () => {
+        setReportedTranslations((prev) => new Set([...prev, key]));
+        toast.success("Thanks for the feedback!");
+      },
+      () => {
+        toast.error("Failed to submit report");
       },
     );
   }
@@ -416,6 +466,8 @@ export default function Translate() {
             const card = cardState.card;
             // Skip examples for long phrases (4+ words)
             const isLongPhrase = searchWordRef.current.split(/\s+/).length > 3;
+            const isReported = reportedTranslations.has(key);
+            const isLoading = examplesLoading || cardState.loading;
 
             return (
               <s.TranslationCard key={index}>
@@ -453,10 +505,9 @@ export default function Translate() {
 
                 {!isLongPhrase && (
                   <s.ExamplesSection>
-                    {card && (card.explanation || card.word_cefr_level) && (
+                    {card?.explanation && (
                       <s.CardInfo>
-                        {card.word_cefr_level && <s.CefrBadge>{card.word_cefr_level}</s.CefrBadge>}
-                        {card.explanation && <s.CardExplanation>{card.explanation}</s.CardExplanation>}
+                        <s.CardExplanation>{card.explanation}</s.CardExplanation>
                       </s.CardInfo>
                     )}
 
@@ -480,6 +531,22 @@ export default function Translate() {
                           </s.ExampleRow>
                         );
                       })}
+
+                    {!isLoading && (
+                      isReported ? (
+                        <s.ReportedBadge>
+                          <FlagOutlinedIcon fontSize="small" />
+                          Reported
+                        </s.ReportedBadge>
+                      ) : (
+                        <s.ReportButton
+                          onClick={() => handleReport(t.translation)}
+                          title="Report issue with this translation"
+                        >
+                          <FlagOutlinedIcon fontSize="small" />
+                        </s.ReportButton>
+                      )
+                    )}
                   </s.ExamplesSection>
                 )}
               </s.TranslationCard>

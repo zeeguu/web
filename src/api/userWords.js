@@ -394,3 +394,45 @@ Zeeguu_API.prototype.previewLearningCard = function (
     if (errorCallback) errorCallback({ error: "Network error", detail: error.message });
   });
 };
+
+/**
+ * Report a problem with AI-generated content for a meaning.
+ */
+Zeeguu_API.prototype.reportMeaning = function (
+  word,
+  translation,
+  fromLang,
+  toLang,
+  reason,
+  comment,
+  callback,
+  errorCallback
+) {
+  const payload = JSON.stringify({
+    word,
+    translation,
+    from_lang: fromLang,
+    to_lang: toLang,
+    reason,
+    comment: comment || null
+  });
+
+  fetch(this._appendSessionToUrl("report_meaning"), {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: payload
+  })
+  .then(response => response.json().then(data => ({ status: response.status, data })))
+  .then(({ status, data }) => {
+    if (status >= 200 && status < 300 && data.success) {
+      if (callback) callback(data);
+    } else {
+      if (errorCallback) errorCallback(data);
+    }
+  })
+  .catch(error => {
+    if (errorCallback) errorCallback({ error: "Network error", detail: error.message });
+  });
+};
