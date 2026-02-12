@@ -66,21 +66,29 @@ export const DirectionLabel = styled.span`
   border-radius: 0.25rem;
 `;
 
+export const DirectionIndicator = styled.span`
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 0.9rem;
+  color: #666;
+`;
+
 export const DirectionToggle = styled.button`
   display: flex;
   align-items: center;
   gap: 0.3rem;
   font-size: 0.9rem;
-  color: ${props => props.$canSwitch ? zeeguuOrange : '#666'};
+  color: ${zeeguuOrange};
   background: #f5f5f5;
   padding: 0.3rem 0.5rem;
   border-radius: 0.25rem;
   border: 1px solid #e0e0e0;
-  cursor: ${props => props.$canSwitch ? 'pointer' : 'default'};
+  cursor: pointer;
   transition: background-color 0.2s;
 
   &:hover {
-    background: ${props => props.$canSwitch ? '#ebebeb' : '#f5f5f5'};
+    background: #ebebeb;
   }
 `;
 

@@ -378,16 +378,23 @@ export default function Translate() {
               </s.SpeakButton>
             )}
             {activeDirection && (
-              <s.DirectionToggle
-                onClick={canSwitchDirection() ? switchDirection : undefined}
-                $canSwitch={canSwitchDirection()}
-                title={canSwitchDirection() ? "Click to switch direction" : ""}
-              >
-                <s.Flag src={`/static/flags-new/${activeDirection === "toNative" ? learnedLang : nativeLang}.svg`} alt="" />
-                <span>→</span>
-                <s.Flag src={`/static/flags-new/${activeDirection === "toNative" ? nativeLang : learnedLang}.svg`} alt="" />
-                {canSwitchDirection() && <SwapHorizIcon fontSize="small" style={{ marginLeft: '4px' }} />}
-              </s.DirectionToggle>
+              canSwitchDirection() ? (
+                <s.DirectionToggle
+                  onClick={switchDirection}
+                  title="Click to switch direction"
+                >
+                  <s.Flag src={`/static/flags-new/${activeDirection === "toNative" ? learnedLang : nativeLang}.svg`} alt="" />
+                  <span>→</span>
+                  <s.Flag src={`/static/flags-new/${activeDirection === "toNative" ? nativeLang : learnedLang}.svg`} alt="" />
+                  <SwapHorizIcon fontSize="small" style={{ marginLeft: '4px' }} />
+                </s.DirectionToggle>
+              ) : (
+                <s.DirectionIndicator>
+                  <s.Flag src={`/static/flags-new/${activeDirection === "toNative" ? learnedLang : nativeLang}.svg`} alt="" />
+                  <span>→</span>
+                  <s.Flag src={`/static/flags-new/${activeDirection === "toNative" ? nativeLang : learnedLang}.svg`} alt="" />
+                </s.DirectionIndicator>
+              )
             )}
           </s.ResultsHeader>
 
