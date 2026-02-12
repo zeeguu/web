@@ -350,15 +350,15 @@ export default function Translate() {
           <s.TranslateButton type="submit" disabled={isLoading || !searchWord.trim()}>
             {isLoading ? "..." : "Translate"}
           </s.TranslateButton>
-          {activeDirection && (
-            <s.LanguageDetected>
-              Detected: {languageNames[activeDirection === "toNative" ? learnedLang : nativeLang] || (activeDirection === "toNative" ? learnedLang : nativeLang)}
-              {canSwitchDirection() && (
-                <s.SwitchLink onClick={switchDirection}>(switch)</s.SwitchLink>
-              )}
-            </s.LanguageDetected>
-          )}
         </s.SearchContainer>
+        {activeDirection && (
+          <s.LanguageDetected>
+            Detected: {languageNames[activeDirection === "toNative" ? learnedLang : nativeLang] || (activeDirection === "toNative" ? learnedLang : nativeLang)}
+            {canSwitchDirection() && (
+              <s.SwitchLink onClick={switchDirection}>(switch)</s.SwitchLink>
+            )}
+          </s.LanguageDetected>
+        )}
       </form>
 
       {error && <s.ErrorMessage>{error}</s.ErrorMessage>}

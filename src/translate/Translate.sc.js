@@ -66,12 +66,13 @@ export const DirectionLabel = styled.span`
   border-radius: 0.25rem;
 `;
 
-export const LanguageDetected = styled.span`
+export const LanguageDetected = styled.div`
   font-size: 0.85rem;
   color: #666;
   display: flex;
   align-items: center;
   gap: 0.3rem;
+  margin-top: 0.5rem;
 `;
 
 export const SwitchLink = styled.button`
