@@ -59,8 +59,10 @@ export default function Translate() {
   const [isLoading, setIsLoading] = useState(false);
   const [hasSearched, setHasSearched] = useState(false);
   const [error, setError] = useState("");
-  // Track which direction was detected: "toNative" (learned→native) or "toLearned" (native→learned)
-  const [detectedDirection, setDetectedDirection] = useState(null);
+  // Track which direction is active: "toNative" (learned→native) or "toLearned" (native→learned)
+  const [activeDirection, setActiveDirection] = useState(null);
+  // Store results for both directions so user can switch
+  const [bothResults, setBothResults] = useState({ toNative: [], toLearned: [] });
 
   // Examples state: { translationKey: { loading: bool, examples: [], error: string } }
   const [examplesState, setExamplesState] = useState({});
@@ -80,6 +82,37 @@ export default function Translate() {
 
   function getTranslationKey(translation) {
     return translation.toLowerCase();
+  }
+
+  function switchDirection() {
+    const newDirection = activeDirection === "toNative" ? "toLearned" : "toNative";
+    const newTranslations = newDirection === "toNative" ? bothResults.toNative : bothResults.toLearned;
+
+    if (newTranslations.length === 0) return; // Can't switch if no results in other direction
+
+    setActiveDirection(newDirection);
+    setTranslations(newTranslations);
+    // Don't clear examplesState/cardPreviews - keep cached data for when user switches back
+
+    // Only fetch examples for translations we haven't fetched yet
+    const word = searchWordRef.current;
+    const wordCount = word.split(/\s+/).length;
+    if (wordCount <= 3) {
+      const fromLang = newDirection === "toNative" ? learnedLang : nativeLang;
+      const toLang = newDirection === "toNative" ? nativeLang : learnedLang;
+      newTranslations.forEach((t) => {
+        const key = getTranslationKey(t.translation);
+        // Only fetch if we don't already have examples for this translation
+        if (!examplesState[key]) {
+          fetchExamplesForTranslation(word, t.translation, fromLang, toLang);
+        }
+      });
+    }
+  }
+
+  function canSwitchDirection() {
+    const otherResults = activeDirection === "toNative" ? bothResults.toLearned : bothResults.toNative;
+    return otherResults.length > 0;
   }
 
   // Check if input looks like a real word (not gibberish)
@@ -132,7 +165,8 @@ export default function Translate() {
     setCardPreviews({});
     setAddedTranslations(new Set());
     setAddingKey(null);
-    setDetectedDirection(null);
+    setActiveDirection(null);
+    setBothResults({ toNative: [], toLearned: [] });
 
     // Helper to filter valid translations
     const filterTranslations = (data, inputWord) => {
@@ -164,28 +198,23 @@ export default function Translate() {
         const toNativeResults = filterTranslations(toNativeData, word);
         const toLearnedResults = filterTranslations(toLearnedData, word);
 
-        // Pick the direction that returned meaningful results
-        // Prefer toNative if both have results (user is likely looking up a word they're learning)
-        let finalTranslations;
-        let direction;
+        // Store both results so user can switch
+        setBothResults({ toNative: toNativeResults, toLearned: toLearnedResults });
 
+        // Pick initial direction based on which has results
+        // Prefer native→learned when both have results (user wants to learn new words)
+        let direction;
         if (toNativeResults.length > 0 && toLearnedResults.length === 0) {
-          finalTranslations = toNativeResults;
           direction = "toNative";
-        } else if (toLearnedResults.length > 0 && toNativeResults.length === 0) {
-          finalTranslations = toLearnedResults;
-          direction = "toLearned";
-        } else if (toNativeResults.length > 0 && toLearnedResults.length > 0) {
-          // Both have results - prefer native→learned (user wants to learn new words)
-          finalTranslations = toLearnedResults;
+        } else if (toLearnedResults.length > 0) {
           direction = "toLearned";
         } else {
-          finalTranslations = [];
           direction = null;
         }
 
+        const finalTranslations = direction === "toNative" ? toNativeResults : toLearnedResults;
         setTranslations(finalTranslations);
-        setDetectedDirection(direction);
+        setActiveDirection(direction);
 
         // Auto-fetch examples for each translation (skip for long phrases)
         const wordCount = word.split(/\s+/).length;
@@ -281,8 +310,8 @@ export default function Translate() {
     const word = searchWordRef.current;
 
     // Use detected direction for language codes
-    const fromLang = detectedDirection === "toNative" ? learnedLang : nativeLang;
-    const toLang = detectedDirection === "toNative" ? nativeLang : learnedLang;
+    const fromLang = activeDirection === "toNative" ? learnedLang : nativeLang;
+    const toLang = activeDirection === "toNative" ? nativeLang : learnedLang;
 
     setAddingKey(key);
 
@@ -338,7 +367,7 @@ export default function Translate() {
         <s.ResultsContainer>
           <s.ResultsHeader>
             Translations for "{searchWordRef.current}"
-            {detectedDirection === "toNative" && (
+            {activeDirection === "toNative" && (
               <s.SpeakButton
                 onClick={() => speak(searchWordRef.current, learnedLang)}
                 disabled={isSpeaking}
@@ -347,12 +376,17 @@ export default function Translate() {
                 <VolumeUpIcon fontSize="small" />
               </s.SpeakButton>
             )}
-            {detectedDirection && (
-              <s.DirectionLabel>
-                {detectedDirection === "toNative"
-                  ? `${learnedLang} → ${nativeLang}`
-                  : `${nativeLang} → ${learnedLang}`}
-              </s.DirectionLabel>
+            {activeDirection && (
+              <s.DirectionToggle
+                onClick={canSwitchDirection() ? switchDirection : undefined}
+                $canSwitch={canSwitchDirection()}
+                title={canSwitchDirection() ? "Click to switch direction" : ""}
+              >
+                {activeDirection === "toNative"
+                  ? `from ${learnedLang}`
+                  : `from ${nativeLang}`}
+                {canSwitchDirection() && " ⇄"}
+              </s.DirectionToggle>
             )}
           </s.ResultsHeader>
 
@@ -374,7 +408,7 @@ export default function Translate() {
                   <s.TranslationInfo>
                     <s.TranslationRow>
                       <s.TranslationText>{t.translation}</s.TranslationText>
-                      {detectedDirection === "toLearned" && (
+                      {activeDirection === "toLearned" && (
                         <s.SpeakButton
                           onClick={() => speak(t.translation, learnedLang)}
                           disabled={isSpeaking}

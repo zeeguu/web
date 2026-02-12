@@ -66,6 +66,22 @@ export const DirectionLabel = styled.span`
   border-radius: 0.25rem;
 `;
 
+export const DirectionToggle = styled.button`
+  font-size: 0.8rem;
+  font-weight: 400;
+  color: ${props => props.$canSwitch ? zeeguuOrange : '#666'};
+  background: #f0f0f0;
+  padding: 0.2rem 0.5rem;
+  border-radius: 0.25rem;
+  border: none;
+  cursor: ${props => props.$canSwitch ? 'pointer' : 'default'};
+  transition: background-color 0.2s;
+
+  &:hover {
+    background: ${props => props.$canSwitch ? '#e0e0e0' : '#f0f0f0'};
+  }
+`;
+
 export const SpeakButton = styled.button`
   background: none;
   border: none;
