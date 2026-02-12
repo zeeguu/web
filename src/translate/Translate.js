@@ -10,6 +10,7 @@ import LoadingAnimation from "../components/LoadingAnimation";
 import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 import VolumeUpIcon from "@mui/icons-material/VolumeUp";
 import SwapHorizIcon from "@mui/icons-material/SwapHoriz";
+import { languageNames } from "../utils/languageDetection";
 import * as s from "./Translate.sc";
 
 // Highlight the target word(s) in a sentence - handles MWEs (multi-word expressions)
@@ -349,19 +350,13 @@ export default function Translate() {
           <s.TranslateButton type="submit" disabled={isLoading || !searchWord.trim()}>
             {isLoading ? "..." : "Translate"}
           </s.TranslateButton>
-          {activeDirection && canSwitchDirection() && (
-            <s.DirectionToggle onClick={switchDirection} title="Click to switch direction">
-              <s.Flag
-                src={`/static/flags-new/${activeDirection === "toNative" ? learnedLang : nativeLang}.svg`}
-                alt=""
-              />
-              <span>→</span>
-              <s.Flag
-                src={`/static/flags-new/${activeDirection === "toNative" ? nativeLang : learnedLang}.svg`}
-                alt=""
-              />
-              <SwapHorizIcon fontSize="small" style={{ marginLeft: "4px" }} />
-            </s.DirectionToggle>
+          {activeDirection && (
+            <s.LanguageDetected>
+              Detected: {languageNames[activeDirection === "toNative" ? learnedLang : nativeLang] || (activeDirection === "toNative" ? learnedLang : nativeLang)}
+              {canSwitchDirection() && (
+                <s.SwitchLink onClick={switchDirection}>(switch)</s.SwitchLink>
+              )}
+            </s.LanguageDetected>
           )}
         </s.SearchContainer>
       </form>

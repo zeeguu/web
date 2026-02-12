@@ -66,29 +66,25 @@ export const DirectionLabel = styled.span`
   border-radius: 0.25rem;
 `;
 
-export const DirectionIndicator = styled.span`
+export const LanguageDetected = styled.span`
+  font-size: 0.85rem;
+  color: #666;
   display: flex;
   align-items: center;
   gap: 0.3rem;
-  font-size: 0.9rem;
-  color: #666;
 `;
 
-export const DirectionToggle = styled.button`
-  display: flex;
-  align-items: center;
-  gap: 0.3rem;
-  font-size: 0.9rem;
+export const SwitchLink = styled.button`
+  background: none;
+  border: none;
   color: ${zeeguuOrange};
-  background: #f5f5f5;
-  padding: 0.3rem 0.5rem;
-  border-radius: 0.25rem;
-  border: 1px solid #e0e0e0;
+  font-size: 0.85rem;
   cursor: pointer;
-  transition: background-color 0.2s;
+  padding: 0;
+  text-decoration: underline;
 
   &:hover {
-    background: #ebebeb;
+    opacity: 0.8;
   }
 `;
 
