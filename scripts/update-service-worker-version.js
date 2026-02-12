@@ -3,28 +3,21 @@ const path = require('path');
 
 // Generate timestamp-based version
 const buildTimestamp = new Date().toISOString().replace(/[-:.]/g, '').slice(0, 14); // Format: YYYYMMDDHHMMSS
-const version = `v${buildTimestamp}`;
 
-console.log(`Updating service worker with version: ${version}`);
+console.log(`Generating service worker with version: v${buildTimestamp}`);
 
-// Path to the service worker - works from project root
-const serviceWorkerPath = path.join(process.cwd(), 'public/service-worker.js');
+// Paths
+const templatePath = path.join(process.cwd(), 'public/service-worker.template.js');
+const outputPath = path.join(process.cwd(), 'public/service-worker.js');
 
-// Read the service worker file
-let content = fs.readFileSync(serviceWorkerPath, 'utf8');
+// Read the template file
+let content = fs.readFileSync(templatePath, 'utf8');
 
-// Replace the version strings
-content = content.replace(
-  /const OFFLINE_CACHE = "offline-cache-v[^"]+";/,
-  `const OFFLINE_CACHE = "offline-cache-${version}";`
-);
+// Replace the placeholders with versioned cache names
+content = content.replace('__OFFLINE_CACHE_VERSION__', `offline-cache-v${buildTimestamp}`);
+content = content.replace('__DATA_CACHE_VERSION__', `data-cache-v${buildTimestamp}`);
 
-content = content.replace(
-  /const DATA_CACHE = "offline-cache-v[^"]+";/,
-  `const DATA_CACHE = "data-cache-${version}";`
-);
+// Write the generated service worker
+fs.writeFileSync(outputPath, content, 'utf8');
 
-// Write the updated content back
-fs.writeFileSync(serviceWorkerPath, content, 'utf8');
-
-console.log('Service worker version updated successfully!');
+console.log('Service worker generated successfully!');

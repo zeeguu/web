@@ -1,7 +1,7 @@
 // https://developer.mozilla.org/en-US/docs/Web/API/Cache
 
-const OFFLINE_CACHE = "offline-cache-v20260212T14301";
-const DATA_CACHE = "data-cache-v20250814T11364";
+const OFFLINE_CACHE = "__OFFLINE_CACHE_VERSION__";
+const DATA_CACHE = "__DATA_CACHE_VERSION__";
 const OFFLINE_URL = "offline.html";
 
 // These are the files downloaded into the cache for the PWA
@@ -191,7 +191,7 @@ self.addEventListener("activate", (event) => {
 // https://developer.mozilla.org/en-US/docs/Web/API/ServiceWorkerGlobalScope/fetch_event
 self.addEventListener("fetch", (event) => {
   const requestUrl = new URL(event.request.url);
-  
+
   // Add a parameter to track media control activations
   if (event.request.mode === "navigate" && event.request.referrer === "") {
     // This might be from a lock screen tap
@@ -204,7 +204,7 @@ self.addEventListener("fetch", (event) => {
     );
     return;
   }
-  
+
   if (event.request.mode === "navigate") {
     handleNavigationRequest(event);
   } else if (CACHE_STATIC_FILES.includes(requestUrl.pathname)) {
