@@ -417,9 +417,8 @@ Zeeguu_API.prototype.reportMeaning = function (
     comment: comment || null
   });
 
-  fetch(this.apiURL + "report_meaning", {
+  fetch(this._appendSessionToUrl("report_meaning"), {
     method: "POST",
-    credentials: "include",
     headers: {
       "Content-Type": "application/json",
     },

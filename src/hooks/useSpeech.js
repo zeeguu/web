@@ -1,57 +1,56 @@
-import { useState, useRef, useCallback, useContext } from "react";
+import { useState, useRef, useContext, useCallback } from "react";
 import { APIContext } from "../contexts/APIContext";
 
 /**
  * Hook for text-to-speech functionality.
- * Returns { speak, stop, isSpeaking }
+ *
+ * Usage:
+ *   const { speak, isSpeaking } = useSpeech();
+ *   <button onClick={() => speak("hund", "da")} disabled={isSpeaking}>
+ *     Listen
+ *   </button>
  */
 export default function useSpeech() {
   const api = useContext(APIContext);
   const [isSpeaking, setIsSpeaking] = useState(false);
   const audioRef = useRef(null);
 
-  const speak = useCallback(async (text, languageCode) => {
-    if (isSpeaking) {
-      // Stop current audio if playing
-      if (audioRef.current) {
-        audioRef.current.pause();
-        audioRef.current = null;
-      }
-      setIsSpeaking(false);
-      return;
+  // Lazy init audio element
+  const getAudio = useCallback(() => {
+    if (!audioRef.current) {
+      audioRef.current = new Audio();
     }
+    return audioRef.current;
+  }, []);
+
+  const speak = useCallback(async (text, languageCode) => {
+    if (isSpeaking || !text || !languageCode) return;
+
+    const audio = getAudio();
+
+    // Stop any current playback
+    audio.pause();
+    audio.currentTime = 0;
 
     setIsSpeaking(true);
-
     try {
-      const audioUrl = await api.getSpeechAudioUrl(text, languageCode);
-      const audio = new Audio(audioUrl);
-      audioRef.current = audio;
-
-      audio.onended = () => {
-        setIsSpeaking(false);
-        audioRef.current = null;
-      };
-
-      audio.onerror = () => {
-        setIsSpeaking(false);
-        audioRef.current = null;
-      };
-
+      const linkToMp3 = await api.fetchLinkToSpeechMp3(text, languageCode);
+      audio.src = linkToMp3;
+      audio.onended = () => setIsSpeaking(false);
+      audio.onerror = () => setIsSpeaking(false);
       await audio.play();
-    } catch (error) {
-      console.error("Speech error:", error);
+    } catch (err) {
+      console.error("Speech error:", err);
       setIsSpeaking(false);
     }
-  }, [api, isSpeaking]);
+  }, [api, isSpeaking, getAudio]);
 
   const stop = useCallback(() => {
-    if (audioRef.current) {
-      audioRef.current.pause();
-      audioRef.current = null;
-    }
+    const audio = getAudio();
+    audio.pause();
+    audio.currentTime = 0;
     setIsSpeaking(false);
-  }, []);
+  }, [getAudio]);
 
   return { speak, stop, isSpeaking };
 }

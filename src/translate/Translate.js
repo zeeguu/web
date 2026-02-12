@@ -348,7 +348,31 @@ export default function Translate() {
         updateExercisesCounter();
 
         const card = result.learning_card;
-        toast.success(`Added "${card.word}" to exercises`);
+        const bookmarkId = result.bookmark_id;
+
+        const handleUndo = () => {
+          api.deleteBookmark(bookmarkId, () => {
+            setAddedTranslations((prev) => {
+              const newSet = new Set(prev);
+              newSet.delete(key);
+              return newSet;
+            });
+            updateExercisesCounter();
+            toast.info("Removed from exercises");
+          });
+        };
+
+        toast.success(
+          <span>
+            Added "{card.word}" to exercises{" "}
+            <span
+              onClick={handleUndo}
+              style={{ textDecoration: "underline", cursor: "pointer" }}
+            >
+              Undo
+            </span>
+          </span>
+        );
       },
       (error) => {
         setAddingKey(null);
@@ -362,7 +386,6 @@ export default function Translate() {
     const key = getTranslationKey(translation);
     const searchedWord = searchWordRef.current;
 
-    // Determine which is the learned word based on direction
     const wordToReport = activeDirection === "toNative" ? searchedWord : translation;
     const translationToReport = activeDirection === "toNative" ? translation : searchedWord;
 
@@ -371,7 +394,7 @@ export default function Translate() {
       translationToReport,
       learnedLang,
       nativeLang,
-      "bad_examples", // Default reason - could add a dropdown later
+      "bad_examples",
       null,
       () => {
         setReportedTranslations((prev) => new Set([...prev, key]));
@@ -436,7 +459,6 @@ export default function Translate() {
             const key = getTranslationKey(t.translation);
             const isAdded = addedTranslations.has(key);
             const isAdding = addingKey === key;
-            const isReported = reportedTranslations.has(key);
             const state = examplesState[key] || { loading: false, examples: [], error: "" };
             const cardState = cardPreviews[key] || { loading: false, card: null, error: "" };
             const examplesLoading = state.loading;
@@ -444,6 +466,8 @@ export default function Translate() {
             const card = cardState.card;
             // Skip examples for long phrases (4+ words)
             const isLongPhrase = searchWordRef.current.split(/\s+/).length > 3;
+            const isReported = reportedTranslations.has(key);
+            const isLoading = examplesLoading || cardState.loading;
 
             return (
               <s.TranslationCard key={index}>
@@ -481,10 +505,9 @@ export default function Translate() {
 
                 {!isLongPhrase && (
                   <s.ExamplesSection>
-                    {card && (card.explanation || card.word_cefr_level) && (
+                    {card?.explanation && (
                       <s.CardInfo>
-                        {card.word_cefr_level && <s.CefrBadge>{card.word_cefr_level}</s.CefrBadge>}
-                        {card.explanation && <s.CardExplanation>{card.explanation}</s.CardExplanation>}
+                        <s.CardExplanation>{card.explanation}</s.CardExplanation>
                       </s.CardInfo>
                     )}
 
@@ -509,7 +532,7 @@ export default function Translate() {
                         );
                       })}
 
-                    {!examplesLoading && !cardState.loading && (
+                    {!isLoading && (
                       isReported ? (
                         <s.ReportedBadge>
                           <FlagOutlinedIcon fontSize="small" />

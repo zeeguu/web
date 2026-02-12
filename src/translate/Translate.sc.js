@@ -51,6 +51,71 @@ export const ResultsHeader = styled.h3`
   margin-bottom: 1rem;
   font-weight: 500;
   color: #333;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+`;
+
+export const DirectionLabel = styled.span`
+  font-size: 0.8rem;
+  font-weight: 400;
+  color: #666;
+  background: #f0f0f0;
+  padding: 0.2rem 0.5rem;
+  border-radius: 0.25rem;
+`;
+
+export const LanguageDetected = styled.div`
+  font-size: 0.85rem;
+  color: #666;
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  margin-top: 0.5rem;
+`;
+
+export const SwitchLink = styled.button`
+  background: none;
+  border: none;
+  color: ${zeeguuOrange};
+  font-size: 0.85rem;
+  cursor: pointer;
+  padding: 0;
+  text-decoration: underline;
+
+  &:hover {
+    opacity: 0.8;
+  }
+`;
+
+export const Flag = styled.img`
+  width: 20px;
+  height: 14px;
+  object-fit: cover;
+  border-radius: 2px;
+`;
+
+export const SpeakButton = styled.button`
+  background: none;
+  border: none;
+  padding: 0.25rem;
+  cursor: pointer;
+  color: ${zeeguuOrange};
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: background-color 0.2s;
+
+  &:hover {
+    background-color: rgba(255, 140, 66, 0.1);
+  }
+
+  &:disabled {
+    color: #ccc;
+    cursor: not-allowed;
+  }
 `;
 
 export const TranslationCard = styled.div`
@@ -76,11 +141,16 @@ export const TranslationInfo = styled.div`
   flex: 1;
 `;
 
+export const TranslationRow = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+`;
+
 export const TranslationText = styled.div`
   font-size: 1.2rem;
   font-weight: 600;
   color: #333;
-  margin-bottom: 0.25rem;
 `;
 
 export const TranslationSource = styled.div`
@@ -120,6 +190,29 @@ export const AddedBadge = styled.span`
 
 export const ExamplesSection = styled.div`
   margin-top: 0.5rem;
+`;
+
+export const CardInfo = styled.div`
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+`;
+
+export const CefrBadge = styled.span`
+  background: ${zeeguuOrange};
+  color: white;
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.2rem 0.4rem;
+  border-radius: 0.25rem;
+  flex-shrink: 0;
+`;
+
+export const CardExplanation = styled.div`
+  font-size: 0.9rem;
+  color: #555;
+  line-height: 1.4;
 `;
 
 export const ExamplesLoading = styled.div`
@@ -170,91 +263,21 @@ export const ReportButton = styled.button`
   border: none;
   padding: 0.25rem;
   cursor: pointer;
-  color: #999;
+  color: #ccc;
   display: flex;
   align-items: center;
-  justify-content: center;
-  border-radius: 50%;
-  transition: all 0.2s;
+  margin-top: 0.5rem;
 
   &:hover {
-    color: #dc3545;
-    background-color: rgba(220, 53, 69, 0.1);
+    color: #999;
   }
 `;
 
 export const ReportedBadge = styled.span`
-  color: #dc3545;
+  color: #999;
   font-size: 0.8rem;
   display: flex;
   align-items: center;
   gap: 0.25rem;
-`;
-
-export const LanguageDetected = styled.div`
-  font-size: 0.85rem;
-  color: #666;
   margin-top: 0.5rem;
-`;
-
-export const SwitchLink = styled.span`
-  color: ${zeeguuOrange};
-  cursor: pointer;
-  margin-left: 0.5rem;
-
-  &:hover {
-    text-decoration: underline;
-  }
-`;
-
-export const TranslationRow = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-`;
-
-export const SpeakButton = styled.button`
-  background: none;
-  border: none;
-  padding: 0.25rem;
-  cursor: pointer;
-  color: #666;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 50%;
-  transition: all 0.2s;
-
-  &:hover {
-    color: ${zeeguuOrange};
-    background-color: rgba(255, 140, 66, 0.1);
-  }
-
-  &:disabled {
-    color: #ccc;
-    cursor: not-allowed;
-  }
-`;
-
-export const CardInfo = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  margin-bottom: 0.5rem;
-  flex-wrap: wrap;
-`;
-
-export const CefrBadge = styled.span`
-  background-color: #e8f4f8;
-  color: #0066cc;
-  font-size: 0.75rem;
-  font-weight: 600;
-  padding: 0.2rem 0.5rem;
-  border-radius: 0.25rem;
-`;
-
-export const CardExplanation = styled.span`
-  font-size: 0.9rem;
-  color: #555;
-  font-style: italic;
 `;
