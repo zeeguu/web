@@ -176,9 +176,9 @@ export default function Translate() {
           finalTranslations = toLearnedResults;
           direction = "toLearned";
         } else if (toNativeResults.length > 0 && toLearnedResults.length > 0) {
-          // Both have results - prefer learned→native (more common use case)
-          finalTranslations = toNativeResults;
-          direction = "toNative";
+          // Both have results - prefer native→learned (user wants to learn new words)
+          finalTranslations = toLearnedResults;
+          direction = "toLearned";
         } else {
           finalTranslations = [];
           direction = null;
