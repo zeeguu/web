@@ -106,12 +106,21 @@ export default function ArticleReader({ teacherArticleID }) {
   }
 
   useEffect(() => {
+    // Reset state when articleID changes (e.g., deep link to new article)
+    setArticleInfo(undefined);
+    setInteractiveFragments(undefined);
+    setInteractiveTitle(undefined);
+    setLoadingProgress(null);
+    setShowSlowLoadingHint(false);
+    setAnswerSubmitted(false);
+    setBookmarks([]);
+
     onCreate();
     return () => {
       componentWillUnmount();
     };
     // eslint-disable-next-line
-  }, []);
+  }, [articleID]);
 
   const fetchBookmarks = () => {
     api.bookmarksForArticle(articleID, (bookmarks) => {

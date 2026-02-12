@@ -25,6 +25,7 @@ import { setUser } from "@sentry/react";
 import SessionStorage from "./assorted/SessionStorage";
 import useRedirectLink from "./hooks/useRedirectLink";
 import useLocationTracker from "./hooks/useLocationTracker";
+import useDeepLinkHandler from "./hooks/useDeepLinkHandler";
 import LoadingAnimation from "./components/LoadingAnimation";
 
 // Helper to detect if we're in a Capacitor native app
@@ -45,6 +46,7 @@ function generateUUID() {
 // Wrapper component to use location tracker inside Router context
 function LocationTrackingWrapper({ children }) {
   useLocationTracker();
+  useDeepLinkHandler();
   return children;
 }
 

@@ -116,7 +116,16 @@ export default function IndividualExercise() {
   }, [exerciseType, bookmarkId, setContextualInfo]);
 
   // Fetch bookmark data when bookmarkId is provided
+  // Reset exercise state when bookmarkId changes (e.g., deep link to different exercise)
   useEffect(() => {
+    // Reset all exercise state for new bookmark
+    setIsExerciseOver(false);
+    setIsCorrect(null);
+    setIsShowSolution(false);
+    setMessage("");
+    setExerciseMessageToAPI({});
+    setBookmarkData(null);
+
     if (bookmarkId && api) {
       setLoading(true);
 
@@ -147,7 +156,7 @@ export default function IndividualExercise() {
         });
       }
     }
-  }, [bookmarkId, api]);
+  }, [bookmarkId, exerciseType, api]);
 
   // Decode URL parameters
   const decodedWord = decodeURIComponent(word || "house");
