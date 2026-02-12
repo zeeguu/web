@@ -111,11 +111,16 @@ export const TranslationInfo = styled.div`
   flex: 1;
 `;
 
+export const TranslationRow = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+`;
+
 export const TranslationText = styled.div`
   font-size: 1.2rem;
   font-weight: 600;
   color: #333;
-  margin-bottom: 0.25rem;
 `;
 
 export const TranslationSource = styled.div`

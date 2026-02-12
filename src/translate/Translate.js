@@ -389,7 +389,18 @@ export default function Translate() {
               <s.TranslationCard key={index}>
                 <s.TranslationHeader>
                   <s.TranslationInfo>
-                    <s.TranslationText>{t.translation}</s.TranslationText>
+                    <s.TranslationRow>
+                      <s.TranslationText>{t.translation}</s.TranslationText>
+                      {detectedDirection === "toLearned" && (
+                        <s.SpeakButton
+                          onClick={() => speakWord(t.translation, learnedLang)}
+                          disabled={isSpeaking}
+                          title="Listen to pronunciation"
+                        >
+                          <VolumeUpIcon fontSize="small" />
+                        </s.SpeakButton>
+                      )}
+                    </s.TranslationRow>
                     <s.TranslationSource>{t.service_name}</s.TranslationSource>
                   </s.TranslationInfo>
 
