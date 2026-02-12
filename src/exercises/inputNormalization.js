@@ -1,7 +1,9 @@
 import removeAccents from "remove-accents";
 
-function removeQuotes(x) {
-  return x.replace(/[^a-zA-Z ]/g, "");
+function removePunctuation(x) {
+  // Remove punctuation and special characters, but keep letters from all alphabets (Latin, Greek, Cyrillic, etc.)
+  // \p{L} matches any Unicode letter
+  return x.replace(/[^\p{L} ]/gu, "");
 }
 
 function normalizeCase(x) {
@@ -9,7 +11,7 @@ function normalizeCase(x) {
 }
 
 function normalizeAnswer(x) {
-  return removeQuotes(removeAccents(normalizeCase(x)));
+  return removePunctuation(removeAccents(normalizeCase(x)));
 }
 
 export { normalizeAnswer };
