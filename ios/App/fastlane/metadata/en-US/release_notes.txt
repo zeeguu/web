@@ -1,3 +1,7 @@
-- Fixed an issue where articles shared to the app wouldn't load if the reader was already open
-- Fixed exercises not resetting properly when navigating via deep links
-- Improved app reliability when switching between screens
+- Enhanced Translate tab with bidirectional translation support
+- Added speak buttons to hear pronunciations in the Translate tab
+- CEFR level badges now displayed for translations
+- Added undo option for accidental actions
+- Fixed exercise answer validation for Greek and non-Latin scripts
+- Improved session handling when navigating between pages
+
