@@ -349,6 +349,20 @@ export default function Translate() {
           <s.TranslateButton type="submit" disabled={isLoading || !searchWord.trim()}>
             {isLoading ? "..." : "Translate"}
           </s.TranslateButton>
+          {activeDirection && canSwitchDirection() && (
+            <s.DirectionToggle onClick={switchDirection} title="Click to switch direction">
+              <s.Flag
+                src={`/static/flags-new/${activeDirection === "toNative" ? learnedLang : nativeLang}.svg`}
+                alt=""
+              />
+              <span>→</span>
+              <s.Flag
+                src={`/static/flags-new/${activeDirection === "toNative" ? nativeLang : learnedLang}.svg`}
+                alt=""
+              />
+              <SwapHorizIcon fontSize="small" style={{ marginLeft: "4px" }} />
+            </s.DirectionToggle>
+          )}
         </s.SearchContainer>
       </form>
 
@@ -373,33 +387,6 @@ export default function Translate() {
                 <VolumeUpIcon fontSize="small" />
               </s.SpeakButton>
             )}
-            {activeDirection &&
-              (canSwitchDirection() ? (
-                <s.DirectionToggle onClick={switchDirection} title="Click to switch direction">
-                  <s.Flag
-                    src={`/static/flags-new/${activeDirection === "toNative" ? learnedLang : nativeLang}.svg`}
-                    alt=""
-                  />
-                  <span>→</span>
-                  <s.Flag
-                    src={`/static/flags-new/${activeDirection === "toNative" ? nativeLang : learnedLang}.svg`}
-                    alt=""
-                  />
-                  <SwapHorizIcon fontSize="small" style={{ marginLeft: "4px" }} />
-                </s.DirectionToggle>
-              ) : (
-                <s.DirectionIndicator>
-                  <s.Flag
-                    src={`/static/flags-new/${activeDirection === "toNative" ? learnedLang : nativeLang}.svg`}
-                    alt=""
-                  />
-                  <span>→</span>
-                  <s.Flag
-                    src={`/static/flags-new/${activeDirection === "toNative" ? nativeLang : learnedLang}.svg`}
-                    alt=""
-                  />
-                </s.DirectionIndicator>
-              ))}
           </s.ResultsHeader>
 
           {translations.map((t, index) => {
