@@ -8,49 +8,42 @@ export default class NavigationOptions {
     linkTo: "/articles",
     icon: <NavIcon name="read" />,
     text: strings.articles,
-    isOnStudentSide: true,
   });
 
   static exercises = Object.freeze({
     linkTo: "/exercises",
     icon: <NavIcon name="exercises" />,
     text: strings.exercises,
-    isOnStudentSide: true,
   });
 
   static dailyAudio = Object.freeze({
     linkTo: "/daily-audio",
     icon: <NavIcon name="dailyAudio" />,
     text: strings.dailyAudio,
-    isOnStudentSide: true,
   });
 
   static translate = Object.freeze({
     linkTo: "/translate",
     icon: <NavIcon name="translate" />,
     text: strings.translate,
-    isOnStudentSide: true,
   });
 
   static words = Object.freeze({
     linkTo: "/words",
     icon: <NavIcon name="words" />,
     text: strings.words,
-    isOnStudentSide: true,
   });
 
   static activity = Object.freeze({
     linkTo: "/activity-history",
     icon: <NavIcon name="history" />,
     text: strings.activity,
-    isOnStudentSide: true,
   });
 
   static statistics = Object.freeze({
     linkTo: "/user_dashboard",
     icon: <NavIcon name="statistics" />,
     text: strings.userDashboard,
-    isOnStudentSide: true,
   });
 
   static get teacherSite() {
@@ -58,7 +51,6 @@ export default class NavigationOptions {
       linkTo: LocalStorage.getLastVisitedTeacherPage(),
       icon: <NavIcon name="teacherSite" />,
       text: strings.teacherSite,
-      isOnStudentSide: true,
     });
   }
 
@@ -67,21 +59,18 @@ export default class NavigationOptions {
     linkTo: "/teacher/classes",
     icon: <NavIcon name="myClassrooms" />,
     text: strings.myClasses,
-    isOnStudentSide: false,
   });
 
   static myTexts = Object.freeze({
     linkTo: "/teacher/texts",
     icon: <NavIcon name="myTexts" />,
     text: strings.myTexts,
-    isOnStudentSide: false,
   });
 
   static studentSite = Object.freeze({
     linkTo: "/articles",
     icon: <NavIcon name="studentSite" />,
     text: strings.studentSite,
-    isOnStudentSide: false,
   });
 
   //Shared options
@@ -89,6 +78,5 @@ export default class NavigationOptions {
     linkTo: "/account_settings",
     icon: <NavIcon name="settings" />,
     text: strings.settings,
-    isOnStudentSide: true,
   });
 }

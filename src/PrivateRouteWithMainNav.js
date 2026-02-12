@@ -26,7 +26,9 @@ export const PrivateRouteWithMainNav = ({ component: Component, ...rest }) => {
     <Route
       {...rest}
       render={() => (
-        <MainNavWithComponent>{<Component {...rest} />}</MainNavWithComponent>
+        <MainNavWithComponent>
+          <Component />
+        </MainNavWithComponent>
       )}
     />
   );

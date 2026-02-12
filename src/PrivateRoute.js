@@ -35,9 +35,7 @@ const PrivateRoute = ({ component: Component, ...rest }) => {
       );
     }
   }
-  return (
-    <Route {...rest} render={(props) => <Component {...rest} {...props} />} />
-  );
+  return <Route {...rest} render={() => <Component />} />;
 };
 
 export { PrivateRoute };
