@@ -164,3 +164,29 @@ export const NoResults = styled.div`
   padding: 2rem;
   font-style: italic;
 `;
+
+export const ReportButton = styled.button`
+  background: none;
+  border: none;
+  padding: 0.25rem;
+  cursor: pointer;
+  color: #999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: all 0.2s;
+
+  &:hover {
+    color: #dc3545;
+    background-color: rgba(220, 53, 69, 0.1);
+  }
+`;
+
+export const ReportedBadge = styled.span`
+  color: #dc3545;
+  font-size: 0.8rem;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+`;

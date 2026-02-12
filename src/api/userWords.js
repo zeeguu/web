@@ -297,12 +297,14 @@ Zeeguu_API.prototype.getGeneratedExamples = function (
   toLang,
   callback,
   errorCallback,
-  translation = ""
+  translation = "",
+  cefrLevel = ""
 ) {
   let url = `generate_examples/${encodeURIComponent(word)}/${fromLang}/${toLang}`;
-  if (translation) {
-    url += `?translation=${encodeURIComponent(translation)}`;
-  }
+  const params = new URLSearchParams();
+  if (translation) params.append("translation", translation);
+  if (cefrLevel) params.append("cefr_level", cefrLevel);
+  if (params.toString()) url += `?${params.toString()}`;
 
   this._getJSON(url, (result) => {
     // Extract examples from the response
@@ -334,6 +336,90 @@ Zeeguu_API.prototype.addWordToLearning = function (
 
   fetch(this._appendSessionToUrl("add_word_to_learning"), {
     method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: payload
+  })
+  .then(response => response.json().then(data => ({ status: response.status, data })))
+  .then(({ status, data }) => {
+    if (status >= 200 && status < 300 && data.success) {
+      if (callback) callback(data);
+    } else {
+      if (errorCallback) errorCallback(data);
+    }
+  })
+  .catch(error => {
+    if (errorCallback) errorCallback({ error: "Network error", detail: error.message });
+  });
+};
+
+/**
+ * Preview a learning card without saving it.
+ * Returns the LLM-optimized word form, translation, and explanation.
+ */
+Zeeguu_API.prototype.previewLearningCard = function (
+  word,
+  translation,
+  fromLang,
+  toLang,
+  examples,
+  callback,
+  errorCallback
+) {
+  const payload = JSON.stringify({
+    word: word,
+    translation: translation,
+    from_lang: fromLang,
+    to_lang: toLang,
+    examples: examples
+  });
+
+  fetch(this._appendSessionToUrl("preview_learning_card"), {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: payload
+  })
+  .then(response => response.json().then(data => ({ status: response.status, data })))
+  .then(({ status, data }) => {
+    if (status >= 200 && status < 300 && !data.error) {
+      if (callback) callback(data);
+    } else {
+      if (errorCallback) errorCallback(data);
+    }
+  })
+  .catch(error => {
+    if (errorCallback) errorCallback({ error: "Network error", detail: error.message });
+  });
+};
+
+/**
+ * Report a problem with AI-generated content for a meaning.
+ */
+Zeeguu_API.prototype.reportMeaning = function (
+  word,
+  translation,
+  fromLang,
+  toLang,
+  reason,
+  comment,
+  callback,
+  errorCallback
+) {
+  const payload = JSON.stringify({
+    word,
+    translation,
+    from_lang: fromLang,
+    to_lang: toLang,
+    reason,
+    comment: comment || null
+  });
+
+  fetch(this.apiURL + "report_meaning", {
+    method: "POST",
+    credentials: "include",
     headers: {
       "Content-Type": "application/json",
     },
