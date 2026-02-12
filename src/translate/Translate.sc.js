@@ -190,3 +190,71 @@ export const ReportedBadge = styled.span`
   align-items: center;
   gap: 0.25rem;
 `;
+
+export const LanguageDetected = styled.div`
+  font-size: 0.85rem;
+  color: #666;
+  margin-top: 0.5rem;
+`;
+
+export const SwitchLink = styled.span`
+  color: ${zeeguuOrange};
+  cursor: pointer;
+  margin-left: 0.5rem;
+
+  &:hover {
+    text-decoration: underline;
+  }
+`;
+
+export const TranslationRow = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+`;
+
+export const SpeakButton = styled.button`
+  background: none;
+  border: none;
+  padding: 0.25rem;
+  cursor: pointer;
+  color: #666;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: all 0.2s;
+
+  &:hover {
+    color: ${zeeguuOrange};
+    background-color: rgba(255, 140, 66, 0.1);
+  }
+
+  &:disabled {
+    color: #ccc;
+    cursor: not-allowed;
+  }
+`;
+
+export const CardInfo = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+  flex-wrap: wrap;
+`;
+
+export const CefrBadge = styled.span`
+  background-color: #e8f4f8;
+  color: #0066cc;
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.2rem 0.5rem;
+  border-radius: 0.25rem;
+`;
+
+export const CardExplanation = styled.span`
+  font-size: 0.9rem;
+  color: #555;
+  font-style: italic;
+`;
