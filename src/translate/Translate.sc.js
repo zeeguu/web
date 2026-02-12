@@ -51,6 +51,19 @@ export const ResultsHeader = styled.h3`
   margin-bottom: 1rem;
   font-weight: 500;
   color: #333;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+`;
+
+export const DirectionLabel = styled.span`
+  font-size: 0.8rem;
+  font-weight: 400;
+  color: #666;
+  background: #f0f0f0;
+  padding: 0.2rem 0.5rem;
+  border-radius: 0.25rem;
 `;
 
 export const TranslationCard = styled.div`
@@ -120,6 +133,24 @@ export const AddedBadge = styled.span`
 
 export const ExamplesSection = styled.div`
   margin-top: 0.5rem;
+`;
+
+export const CardExplanation = styled.div`
+  font-size: 0.95rem;
+  color: #444;
+  padding: 0.5rem 0.75rem;
+  margin-bottom: 0.5rem;
+  background: #f0f7ff;
+  border-left: 3px solid #4a90d9;
+  border-radius: 0 0.25rem 0.25rem 0;
+`;
+
+export const LevelNote = styled.div`
+  font-size: 0.85rem;
+  color: #666;
+  padding: 0.25rem 0;
+  margin-bottom: 0.5rem;
+  font-style: italic;
 `;
 
 export const ExamplesLoading = styled.div`

@@ -49,17 +49,21 @@ export default function Translate() {
   const { userDetails } = useContext(UserContext);
   const { updateExercisesCounter } = useContext(ExercisesCounterContext);
 
-  const fromLang = userDetails?.learned_language;
-  const toLang = userDetails?.native_language;
+  const learnedLang = userDetails?.learned_language;
+  const nativeLang = userDetails?.native_language;
 
   const [searchWord, setSearchWord] = useState("");
   const [translations, setTranslations] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [hasSearched, setHasSearched] = useState(false);
   const [error, setError] = useState("");
+  // Track which direction was detected: "toNative" (learned→native) or "toLearned" (native→learned)
+  const [detectedDirection, setDetectedDirection] = useState(null);
 
   // Examples state: { translationKey: { loading: bool, examples: [], error: string } }
   const [examplesState, setExamplesState] = useState({});
+  // Learning card previews: { translationKey: { loading: bool, card: {...}, error: string } }
+  const [cardPreviews, setCardPreviews] = useState({});
   // Added translations: Set of translation keys
   const [addedTranslations, setAddedTranslations] = useState(new Set());
   // Which translation is currently being added (loading state)
@@ -122,56 +126,82 @@ export default function Translate() {
     setHasSearched(true);
     setTranslations([]);
     setExamplesState({});
+    setCardPreviews({});
     setAddedTranslations(new Set());
     setAddingKey(null);
+    setDetectedDirection(null);
 
-    api.getMultipleTranslations(
-      fromLang,
-      toLang,
-      word,
-      "", // empty context for dictionary lookup
-      10,
-      null,
-      null,
-      null,
-      false,
-      null,
-    ).then((response) => {
-      return response.json();
-    }).then((data) => {
-      setIsLoading(false);
-      if (data && data.translations) {
-        // Remove duplicates and filter out malformed responses
-        const seen = new Set();
-        const uniqueTranslations = data.translations.filter((t) => {
-          if (t.translation.length > 100) return false;
-          const key = t.translation.toLowerCase();
-          if (seen.has(key)) return false;
-          // Skip if translation is just echoing the input (nothing found)
-          if (!isValidTranslation(t.translation, word)) return false;
-          seen.add(key);
-          return true;
-        });
-        setTranslations(uniqueTranslations);
+    // Helper to filter valid translations
+    const filterTranslations = (data, inputWord) => {
+      if (!data || !data.translations) return [];
+      const seen = new Set();
+      return data.translations.filter((t) => {
+        if (t.translation.length > 100) return false;
+        const key = t.translation.toLowerCase();
+        if (seen.has(key)) return false;
+        if (!isValidTranslation(t.translation, inputWord)) return false;
+        seen.add(key);
+        return true;
+      });
+    };
+
+    // Call both directions in parallel
+    const toNativePromise = api.getMultipleTranslations(
+      learnedLang, nativeLang, word, "", 10, null, null, null, false, null
+    ).then(r => r.json());
+
+    const toLearnedPromise = api.getMultipleTranslations(
+      nativeLang, learnedLang, word, "", 10, null, null, null, false, null
+    ).then(r => r.json());
+
+    Promise.all([toNativePromise, toLearnedPromise])
+      .then(([toNativeData, toLearnedData]) => {
+        setIsLoading(false);
+
+        const toNativeResults = filterTranslations(toNativeData, word);
+        const toLearnedResults = filterTranslations(toLearnedData, word);
+
+        // Pick the direction that returned meaningful results
+        // Prefer toNative if both have results (user is likely looking up a word they're learning)
+        let finalTranslations;
+        let direction;
+
+        if (toNativeResults.length > 0 && toLearnedResults.length === 0) {
+          finalTranslations = toNativeResults;
+          direction = "toNative";
+        } else if (toLearnedResults.length > 0 && toNativeResults.length === 0) {
+          finalTranslations = toLearnedResults;
+          direction = "toLearned";
+        } else if (toNativeResults.length > 0 && toLearnedResults.length > 0) {
+          // Both have results - prefer learned→native (more common use case)
+          finalTranslations = toNativeResults;
+          direction = "toNative";
+        } else {
+          finalTranslations = [];
+          direction = null;
+        }
+
+        setTranslations(finalTranslations);
+        setDetectedDirection(direction);
 
         // Auto-fetch examples for each translation (skip for long phrases)
         const wordCount = word.split(/\s+/).length;
-        if (wordCount <= 3) {
-          uniqueTranslations.forEach((t) => {
-            fetchExamplesForTranslation(word, t.translation);
+        if (wordCount <= 3 && finalTranslations.length > 0) {
+          const fromLang = direction === "toNative" ? learnedLang : nativeLang;
+          const toLang = direction === "toNative" ? nativeLang : learnedLang;
+          finalTranslations.forEach((t) => {
+            fetchExamplesForTranslation(word, t.translation, fromLang, toLang);
           });
         }
-      } else {
-        setTranslations([]);
-      }
-    }).catch((err) => {
-      setIsLoading(false);
-      setError("Failed to get translations. Please try again.");
-      console.error(err);
-    });
+      })
+      .catch((err) => {
+        setIsLoading(false);
+        setError("Failed to get translations. Please try again.");
+        console.error(err);
+      });
   }
 
-  function fetchExamplesForTranslation(word, translation) {
+  function fetchExamplesForTranslation(word, translation, fromLang, toLang) {
     const key = getTranslationKey(translation);
 
     setExamplesState((prev) => ({
@@ -192,6 +222,9 @@ export default function Translate() {
           ...prev,
           [key]: { loading: false, examples: exampleSentences, error: "" },
         }));
+
+        // Now fetch the learning card preview with the examples
+        fetchCardPreview(word, translation, fromLang, toLang, exampleSentences);
       },
       () => {
         setExamplesState((prev) => ({
@@ -200,6 +233,35 @@ export default function Translate() {
         }));
       },
       translation  // Pass translation for meaning-specific examples
+    );
+  }
+
+  function fetchCardPreview(word, translation, fromLang, toLang, examples) {
+    const key = getTranslationKey(translation);
+
+    setCardPreviews((prev) => ({
+      ...prev,
+      [key]: { loading: true, card: null, error: "" },
+    }));
+
+    api.previewLearningCard(
+      word,
+      translation,
+      fromLang,
+      toLang,
+      examples,
+      (card) => {
+        setCardPreviews((prev) => ({
+          ...prev,
+          [key]: { loading: false, card: card, error: "" },
+        }));
+      },
+      () => {
+        setCardPreviews((prev) => ({
+          ...prev,
+          [key]: { loading: false, card: null, error: "" },
+        }));
+      }
     );
   }
 
@@ -215,6 +277,10 @@ export default function Translate() {
     const examples = state?.examples || [];
     const word = searchWordRef.current;
 
+    // Use detected direction for language codes
+    const fromLang = detectedDirection === "toNative" ? learnedLang : nativeLang;
+    const toLang = detectedDirection === "toNative" ? nativeLang : learnedLang;
+
     setAddingKey(key);
 
     api.addWordToLearning(
@@ -229,17 +295,7 @@ export default function Translate() {
         updateExercisesCounter();
 
         const card = result.learning_card;
-        toast.success(
-          <div>
-            <div><strong>{card.word}</strong> = {card.translation}</div>
-            {card.explanation && (
-              <div style={{ fontSize: "0.85em", marginTop: "4px", opacity: 0.9 }}>
-                {card.explanation}
-              </div>
-            )}
-          </div>,
-          { autoClose: 6000 }
-        );
+        toast.success(`Added "${card.word}" to exercises`);
       },
       (error) => {
         setAddingKey(null);
@@ -277,15 +333,26 @@ export default function Translate() {
 
       {!isLoading && translations.length > 0 && (
         <s.ResultsContainer>
-          <s.ResultsHeader>Translations for "{searchWordRef.current}":</s.ResultsHeader>
+          <s.ResultsHeader>
+            Translations for "{searchWordRef.current}"
+            {detectedDirection && (
+              <s.DirectionLabel>
+                {detectedDirection === "toNative"
+                  ? `${learnedLang} → ${nativeLang}`
+                  : `${nativeLang} → ${learnedLang}`}
+              </s.DirectionLabel>
+            )}
+          </s.ResultsHeader>
 
           {translations.map((t, index) => {
             const key = getTranslationKey(t.translation);
             const isAdded = addedTranslations.has(key);
             const isAdding = addingKey === key;
             const state = examplesState[key] || { loading: false, examples: [], error: "" };
+            const cardState = cardPreviews[key] || { loading: false, card: null, error: "" };
             const examplesLoading = state.loading;
             const hasExamples = state.examples.length > 0;
+            const card = cardState.card;
             // Skip examples for long phrases (4+ words)
             const isLongPhrase = searchWordRef.current.split(/\s+/).length > 3;
 
@@ -305,24 +372,32 @@ export default function Translate() {
                   ) : !isLongPhrase ? (
                     <s.AddButton
                       onClick={() => handleAdd(t.translation)}
-                      disabled={examplesLoading || isAdding}
+                      disabled={examplesLoading || cardState.loading || isAdding}
                     >
-                      {isAdding ? "Adding..." : examplesLoading ? "..." : "Add to exercises"}
+                      {isAdding ? "Adding..." : (examplesLoading || cardState.loading) ? "..." : "Add to exercises"}
                     </s.AddButton>
                   ) : null}
                 </s.TranslationHeader>
 
                 {!isLongPhrase && (
                   <s.ExamplesSection>
-                    {examplesLoading && (
-                      <s.ExamplesLoading>Loading examples...</s.ExamplesLoading>
+                    {card && card.explanation && (
+                      <s.CardExplanation>{card.explanation}</s.CardExplanation>
+                    )}
+
+                    {card && card.level_note && (
+                      <s.LevelNote>{card.level_note}</s.LevelNote>
+                    )}
+
+                    {(examplesLoading || cardState.loading) && (
+                      <s.ExamplesLoading>Loading...</s.ExamplesLoading>
                     )}
 
                     {state.error && (
                       <s.NoExamples>{state.error}</s.NoExamples>
                     )}
 
-                    {!examplesLoading && !state.error && !hasExamples && (
+                    {!examplesLoading && !cardState.loading && !state.error && !hasExamples && (
                       <s.NoExamples>No examples available</s.NoExamples>
                     )}
 

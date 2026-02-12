@@ -351,3 +351,44 @@ Zeeguu_API.prototype.addWordToLearning = function (
     if (errorCallback) errorCallback({ error: "Network error", detail: error.message });
   });
 };
+
+/**
+ * Preview a learning card without saving it.
+ * Returns the LLM-optimized word form, translation, and explanation.
+ */
+Zeeguu_API.prototype.previewLearningCard = function (
+  word,
+  translation,
+  fromLang,
+  toLang,
+  examples,
+  callback,
+  errorCallback
+) {
+  const payload = JSON.stringify({
+    word: word,
+    translation: translation,
+    from_lang: fromLang,
+    to_lang: toLang,
+    examples: examples
+  });
+
+  fetch(this._appendSessionToUrl("preview_learning_card"), {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: payload
+  })
+  .then(response => response.json().then(data => ({ status: response.status, data })))
+  .then(({ status, data }) => {
+    if (status >= 200 && status < 300 && !data.error) {
+      if (callback) callback(data);
+    } else {
+      if (errorCallback) errorCallback(data);
+    }
+  })
+  .catch(error => {
+    if (errorCallback) errorCallback({ error: "Network error", detail: error.message });
+  });
+};
