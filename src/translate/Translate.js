@@ -4,6 +4,7 @@ import { APIContext } from "../contexts/APIContext";
 import { UserContext } from "../contexts/UserContext";
 import { ExercisesCounterContext } from "../exercises/ExercisesCounterContext";
 import { setTitle } from "../assorted/setTitle";
+import { numericToCefr } from "../utils/misc/cefrHelpers";
 import useSpeech from "../hooks/useSpeech";
 import InputField from "../components/InputField";
 import LoadingAnimation from "../components/LoadingAnimation";
@@ -53,6 +54,8 @@ export default function Translate() {
 
   const learnedLang = userDetails?.learned_language;
   const nativeLang = userDetails?.native_language;
+  // Get user's CEFR level for the learned language (stored as numeric 1-6)
+  const userCefrLevel = numericToCefr(userDetails?.[learnedLang + "_max"]);
 
   const [searchWord, setSearchWord] = useState("");
   const [translations, setTranslations] = useState([]);
@@ -280,6 +283,7 @@ export default function Translate() {
         }));
       },
       translation, // Pass translation for meaning-specific examples
+      userCefrLevel, // Pass user's CEFR level for appropriate difficulty
     );
   }
 

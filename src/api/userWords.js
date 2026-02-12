@@ -297,12 +297,14 @@ Zeeguu_API.prototype.getGeneratedExamples = function (
   toLang,
   callback,
   errorCallback,
-  translation = ""
+  translation = "",
+  cefrLevel = ""
 ) {
   let url = `generate_examples/${encodeURIComponent(word)}/${fromLang}/${toLang}`;
-  if (translation) {
-    url += `?translation=${encodeURIComponent(translation)}`;
-  }
+  const params = new URLSearchParams();
+  if (translation) params.append("translation", translation);
+  if (cefrLevel) params.append("cefr_level", cefrLevel);
+  if (params.toString()) url += `?${params.toString()}`;
 
   this._getJSON(url, (result) => {
     // Extract examples from the response
