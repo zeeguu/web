@@ -1,5 +1,11 @@
 import InteractiveText from "./InteractiveText.js";
 
+// Helper function to normalize strings for comparison
+// Handles Greek and other languages with diacritical marks
+function normalizeForComparison(str) {
+  return str.normalize('NFC').toLowerCase();
+}
+
 export default class InteractiveExerciseText extends InteractiveText {
   constructor(
     tokenizedParagraphs,
@@ -62,8 +68,8 @@ export default class InteractiveExerciseText extends InteractiveText {
 
     // Check if this word is part of the expected solution
     if (this.expectedSolution && this.onSolutionFound) {
-      const solutionWords = this.expectedSolution.split(" ").map((w) => w.toLowerCase());
-      const clickedWord = word.word.toLowerCase();
+      const solutionWords = this.expectedSolution.split(" ").map((w) => normalizeForComparison(w));
+      const clickedWord = normalizeForComparison(word.word);
 
       // First check if the word matches any word in the solution
       if (solutionWords.includes(clickedWord)) {
@@ -109,7 +115,7 @@ export default class InteractiveExerciseText extends InteractiveText {
 
           // Check if there's actually a word at the bookmark position
           const wordAtBookmarkPosition = this.getWordAtPosition(targetSentenceIndex, targetTokenIndex, contextOffset);
-          if (wordAtBookmarkPosition && solutionWords.includes(wordAtBookmarkPosition.toLowerCase())) {
+          if (wordAtBookmarkPosition && solutionWords.includes(normalizeForComparison(wordAtBookmarkPosition))) {
             // The bookmark position points to a different instance of the solution word
             console.log("✗ CLICK DETECTION: Different instance of solution word at bookmark position - rejecting click");
             console.log(`  Word at bookmark position: "${wordAtBookmarkPosition}" at sent_i=${targetSentenceIndex}, token_i=${targetTokenIndex}`);
@@ -179,14 +185,14 @@ export default class InteractiveExerciseText extends InteractiveText {
 
     while (currentWord) {
       // Check if this word starts a match for the solution phrase
-      if (currentWord.word.toLowerCase() === solutionWords[0]) {
+      if (normalizeForComparison(currentWord.word) === solutionWords[0]) {
         // Try to match the complete solution phrase starting from this position
         let tempWord = currentWord;
         let matchedWords = [];
         let allMatched = true;
 
         for (let i = 0; i < solutionWords.length && tempWord; i++) {
-          if (tempWord.word.toLowerCase() === solutionWords[i]) {
+          if (normalizeForComparison(tempWord.word) === solutionWords[i]) {
             matchedWords.push({
               word: tempWord.word,
               sentenceIndex: tempWord.token.sent_i - contextOffset,
@@ -255,8 +261,8 @@ export default class InteractiveExerciseText extends InteractiveText {
   shouldHighlightWord(word) {
     if (!this.expectedSolution || !word.token) return false;
 
-    const solutionWords = this.expectedSolution.split(" ").map((w) => w.toLowerCase());
-    const wordToCheck = word.word.toLowerCase();
+    const solutionWords = this.expectedSolution.split(" ").map((w) => normalizeForComparison(w));
+    const wordToCheck = normalizeForComparison(word.word);
 
     // First check if the word matches
     if (!solutionWords.includes(wordToCheck)) return false;
@@ -303,7 +309,7 @@ export default class InteractiveExerciseText extends InteractiveText {
 
       // FALLBACK: Check if bookmark position is invalid due to tokenization change
       const wordAtBookmarkPosition = this.getWordAtPosition(targetSentenceIndex, targetTokenIndex, contextOffset);
-      if (wordAtBookmarkPosition && solutionWords.includes(wordAtBookmarkPosition.toLowerCase())) {
+      if (wordAtBookmarkPosition && solutionWords.includes(normalizeForComparison(wordAtBookmarkPosition))) {
         // Bookmark position points to a different instance - don't highlight this word
         if (solutionWords.includes(wordToCheck)) {
           console.log(`✗ HIGHLIGHTING: Different instance at bookmark position - not highlighting "${word.word}"`);
