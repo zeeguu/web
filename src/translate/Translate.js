@@ -4,6 +4,7 @@ import { APIContext } from "../contexts/APIContext";
 import { UserContext } from "../contexts/UserContext";
 import { ExercisesCounterContext } from "../exercises/ExercisesCounterContext";
 import { setTitle } from "../assorted/setTitle";
+import useSpeech from "../hooks/useSpeech";
 import InputField from "../components/InputField";
 import LoadingAnimation from "../components/LoadingAnimation";
 import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
@@ -69,31 +70,13 @@ export default function Translate() {
   const [addedTranslations, setAddedTranslations] = useState(new Set());
   // Which translation is currently being added (loading state)
   const [addingKey, setAddingKey] = useState(null);
-  // Speaking state
-  const [isSpeaking, setIsSpeaking] = useState(false);
 
+  const { speak, isSpeaking } = useSpeech();
   const searchWordRef = useRef("");
-  const audioRef = useRef(new Audio());
 
   useEffect(() => {
     setTitle("Translate");
   }, []);
-
-  async function speakWord(word, languageCode) {
-    if (isSpeaking) return;
-
-    setIsSpeaking(true);
-    try {
-      const linkToMp3 = await api.fetchLinkToSpeechMp3(word, languageCode);
-      audioRef.current.src = linkToMp3;
-      audioRef.current.onended = () => setIsSpeaking(false);
-      audioRef.current.onerror = () => setIsSpeaking(false);
-      await audioRef.current.play();
-    } catch (err) {
-      console.error("Speech error:", err);
-      setIsSpeaking(false);
-    }
-  }
 
   function getTranslationKey(translation) {
     return translation.toLowerCase();
@@ -357,7 +340,7 @@ export default function Translate() {
             Translations for "{searchWordRef.current}"
             {detectedDirection === "toNative" && (
               <s.SpeakButton
-                onClick={() => speakWord(searchWordRef.current, learnedLang)}
+                onClick={() => speak(searchWordRef.current, learnedLang)}
                 disabled={isSpeaking}
                 title="Listen to pronunciation"
               >
@@ -393,7 +376,7 @@ export default function Translate() {
                       <s.TranslationText>{t.translation}</s.TranslationText>
                       {detectedDirection === "toLearned" && (
                         <s.SpeakButton
-                          onClick={() => speakWord(t.translation, learnedLang)}
+                          onClick={() => speak(t.translation, learnedLang)}
                           disabled={isSpeaking}
                           title="Listen to pronunciation"
                         >
