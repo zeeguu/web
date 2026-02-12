@@ -44,6 +44,8 @@ export default defineConfig(({ mode }) => ({
     outDir: 'build',
     chunkSizeWarningLimit: 1000, // KB - our main bundle is ~779 KB
     rollupOptions: {
+      // Externalize Capacitor native-only modules (not available in web builds)
+      external: ['@capacitor/app'],
       output: {
         entryFileNames: 'static/js/[name].[hash].js',
         chunkFileNames: 'static/js/[name].[hash].chunk.js',
