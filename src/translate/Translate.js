@@ -20,21 +20,19 @@ function highlightTargetWord(sentence, targetWord) {
   const targetWords = targetWord.trim().split(/\s+/);
 
   // Build stems for each word (first 4 chars for fuzzy matching)
-  const stems = targetWords.map(word => {
+  const stems = targetWords.map((word) => {
     const escaped = word.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
     return escaped.slice(0, Math.min(4, escaped.length)).toLowerCase();
   });
 
   // Build regex that matches any of the word stems
-  const stemPatterns = stems.map(stem => `\\b${stem}\\p{L}*`).join("|");
+  const stemPatterns = stems.map((stem) => `\\b${stem}\\p{L}*`).join("|");
   const regex = new RegExp(`(${stemPatterns})`, "giu");
 
   return sentence.split(regex).map((part, index) => {
     const partLower = part.toLowerCase();
     // Check if this part matches any of our stems
-    const isMatch = stems.some(stem =>
-      partLower.startsWith(stem) && part.match(/^\p{L}+$/u)
-    );
+    const isMatch = stems.some((stem) => partLower.startsWith(stem) && part.match(/^\p{L}+$/u));
 
     if (isMatch) {
       return (
@@ -184,13 +182,13 @@ export default function Translate() {
     };
 
     // Call both directions in parallel
-    const toNativePromise = api.getMultipleTranslations(
-      learnedLang, nativeLang, word, "", 10, null, null, null, false, null
-    ).then(r => r.json());
+    const toNativePromise = api
+      .getMultipleTranslations(learnedLang, nativeLang, word, "", 10, null, null, null, false, null)
+      .then((r) => r.json());
 
-    const toLearnedPromise = api.getMultipleTranslations(
-      nativeLang, learnedLang, word, "", 10, null, null, null, false, null
-    ).then(r => r.json());
+    const toLearnedPromise = api
+      .getMultipleTranslations(nativeLang, learnedLang, word, "", 10, null, null, null, false, null)
+      .then((r) => r.json());
 
     Promise.all([toNativePromise, toLearnedPromise])
       .then(([toNativeData, toLearnedData]) => {
@@ -248,9 +246,7 @@ export default function Translate() {
       toLang,
       (examples) => {
         // Extract just the sentence text from examples (may be objects or strings)
-        const exampleSentences = (examples || []).map(ex =>
-          typeof ex === 'string' ? ex : ex.sentence || ex
-        );
+        const exampleSentences = (examples || []).map((ex) => (typeof ex === "string" ? ex : ex.sentence || ex));
         setExamplesState((prev) => ({
           ...prev,
           [key]: { loading: false, examples: exampleSentences, error: "" },
@@ -265,7 +261,7 @@ export default function Translate() {
           [key]: { loading: false, examples: [], error: "Could not load examples" },
         }));
       },
-      translation  // Pass translation for meaning-specific examples
+      translation, // Pass translation for meaning-specific examples
     );
   }
 
@@ -294,7 +290,7 @@ export default function Translate() {
           ...prev,
           [key]: { loading: false, card: null, error: "" },
         }));
-      }
+      },
     );
   }
 
@@ -334,7 +330,7 @@ export default function Translate() {
         setAddingKey(null);
         const message = error?.detail || error?.error || "Failed to add word";
         toast.error(message);
-      }
+      },
     );
   }
 
@@ -367,7 +363,7 @@ export default function Translate() {
       {!isLoading && translations.length > 0 && (
         <s.ResultsContainer>
           <s.ResultsHeader>
-            Translations for "{searchWordRef.current}"
+            Translations for <b>{searchWordRef.current}</b>
             {activeDirection === "toNative" && (
               <s.SpeakButton
                 onClick={() => speak(searchWordRef.current, learnedLang)}
@@ -377,25 +373,33 @@ export default function Translate() {
                 <VolumeUpIcon fontSize="small" />
               </s.SpeakButton>
             )}
-            {activeDirection && (
-              canSwitchDirection() ? (
-                <s.DirectionToggle
-                  onClick={switchDirection}
-                  title="Click to switch direction"
-                >
-                  <s.Flag src={`/static/flags-new/${activeDirection === "toNative" ? learnedLang : nativeLang}.svg`} alt="" />
+            {activeDirection &&
+              (canSwitchDirection() ? (
+                <s.DirectionToggle onClick={switchDirection} title="Click to switch direction">
+                  <s.Flag
+                    src={`/static/flags-new/${activeDirection === "toNative" ? learnedLang : nativeLang}.svg`}
+                    alt=""
+                  />
                   <span>→</span>
-                  <s.Flag src={`/static/flags-new/${activeDirection === "toNative" ? nativeLang : learnedLang}.svg`} alt="" />
-                  <SwapHorizIcon fontSize="small" style={{ marginLeft: '4px' }} />
+                  <s.Flag
+                    src={`/static/flags-new/${activeDirection === "toNative" ? nativeLang : learnedLang}.svg`}
+                    alt=""
+                  />
+                  <SwapHorizIcon fontSize="small" style={{ marginLeft: "4px" }} />
                 </s.DirectionToggle>
               ) : (
                 <s.DirectionIndicator>
-                  <s.Flag src={`/static/flags-new/${activeDirection === "toNative" ? learnedLang : nativeLang}.svg`} alt="" />
+                  <s.Flag
+                    src={`/static/flags-new/${activeDirection === "toNative" ? learnedLang : nativeLang}.svg`}
+                    alt=""
+                  />
                   <span>→</span>
-                  <s.Flag src={`/static/flags-new/${activeDirection === "toNative" ? nativeLang : learnedLang}.svg`} alt="" />
+                  <s.Flag
+                    src={`/static/flags-new/${activeDirection === "toNative" ? nativeLang : learnedLang}.svg`}
+                    alt=""
+                  />
                 </s.DirectionIndicator>
-              )
-            )}
+              ))}
           </s.ResultsHeader>
 
           {translations.map((t, index) => {
@@ -439,40 +443,34 @@ export default function Translate() {
                       onClick={() => handleAdd(t.translation)}
                       disabled={examplesLoading || cardState.loading || isAdding}
                     >
-                      {isAdding ? "Adding..." : (examplesLoading || cardState.loading) ? "..." : "Add to exercises"}
+                      {isAdding ? "Adding..." : examplesLoading || cardState.loading ? "..." : "Add to exercises"}
                     </s.AddButton>
                   ) : null}
                 </s.TranslationHeader>
 
                 {!isLongPhrase && (
                   <s.ExamplesSection>
-                    {card && card.explanation && (
-                      <s.CardExplanation>{card.explanation}</s.CardExplanation>
+                    {card && (card.explanation || card.word_cefr_level) && (
+                      <s.CardInfo>
+                        {card.word_cefr_level && <s.CefrBadge>{card.word_cefr_level}</s.CefrBadge>}
+                        {card.explanation && <s.CardExplanation>{card.explanation}</s.CardExplanation>}
+                      </s.CardInfo>
                     )}
 
-                    {card && card.level_note && (
-                      <s.LevelNote>{card.level_note}</s.LevelNote>
-                    )}
+                    {(examplesLoading || cardState.loading) && <s.ExamplesLoading>Loading...</s.ExamplesLoading>}
 
-                    {(examplesLoading || cardState.loading) && (
-                      <s.ExamplesLoading>Loading...</s.ExamplesLoading>
-                    )}
-
-                    {state.error && (
-                      <s.NoExamples>{state.error}</s.NoExamples>
-                    )}
+                    {state.error && <s.NoExamples>{state.error}</s.NoExamples>}
 
                     {!examplesLoading && !cardState.loading && !state.error && !hasExamples && (
                       <s.NoExamples>No examples available</s.NoExamples>
                     )}
 
-                    {hasExamples && state.examples.map((example, exIndex) => (
-                      <s.ExampleRow key={exIndex}>
-                        <s.ExampleText>
-                          {highlightTargetWord(example, searchWordRef.current)}
-                        </s.ExampleText>
-                      </s.ExampleRow>
-                    ))}
+                    {hasExamples &&
+                      state.examples.map((example, exIndex) => (
+                        <s.ExampleRow key={exIndex}>
+                          <s.ExampleText>{highlightTargetWord(example, searchWordRef.current)}</s.ExampleText>
+                        </s.ExampleRow>
+                      ))}
                   </s.ExamplesSection>
                 )}
               </s.TranslationCard>

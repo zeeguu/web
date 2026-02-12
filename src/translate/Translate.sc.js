@@ -195,22 +195,27 @@ export const ExamplesSection = styled.div`
   margin-top: 0.5rem;
 `;
 
-export const CardExplanation = styled.div`
-  font-size: 0.95rem;
-  color: #444;
-  padding: 0.5rem 0.75rem;
+export const CardInfo = styled.div`
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
   margin-bottom: 0.5rem;
-  background: #f0f7ff;
-  border-left: 3px solid #4a90d9;
-  border-radius: 0 0.25rem 0.25rem 0;
 `;
 
-export const LevelNote = styled.div`
-  font-size: 0.85rem;
-  color: #666;
-  padding: 0.25rem 0;
-  margin-bottom: 0.5rem;
-  font-style: italic;
+export const CefrBadge = styled.span`
+  background: ${zeeguuOrange};
+  color: white;
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.2rem 0.4rem;
+  border-radius: 0.25rem;
+  flex-shrink: 0;
+`;
+
+export const CardExplanation = styled.div`
+  font-size: 0.9rem;
+  color: #555;
+  line-height: 1.4;
 `;
 
 export const ExamplesLoading = styled.div`
