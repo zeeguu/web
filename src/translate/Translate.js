@@ -98,13 +98,18 @@ export default function Translate() {
     const word = searchWordRef.current;
     const wordCount = word.split(/\s+/).length;
     if (wordCount <= 3) {
-      const fromLang = newDirection === "toNative" ? learnedLang : nativeLang;
-      const toLang = newDirection === "toNative" ? nativeLang : learnedLang;
+      // Examples should ALWAYS be in the learned language
       newTranslations.forEach((t) => {
-        const key = getTranslationKey(t.translation);
+        const displayKey = getTranslationKey(t.translation);
         // Only fetch if we don't already have examples for this translation
-        if (!examplesState[key]) {
-          fetchExamplesForTranslation(word, t.translation, fromLang, toLang);
+        if (!examplesState[displayKey]) {
+          if (newDirection === "toNative") {
+            // Generate examples for the searched word (learned lang)
+            fetchExamplesForTranslation(displayKey, word, t.translation, learnedLang, nativeLang);
+          } else {
+            // Generate examples for the translation (learned lang)
+            fetchExamplesForTranslation(displayKey, t.translation, word, learnedLang, nativeLang);
+          }
         }
       });
     }
@@ -219,10 +224,21 @@ export default function Translate() {
         // Auto-fetch examples for each translation (skip for long phrases)
         const wordCount = word.split(/\s+/).length;
         if (wordCount <= 3 && finalTranslations.length > 0) {
-          const fromLang = direction === "toNative" ? learnedLang : nativeLang;
-          const toLang = direction === "toNative" ? nativeLang : learnedLang;
+          // Examples should ALWAYS be in the learned language
+          // displayKey is based on what's shown in the UI (t.translation)
+          // When toNative: word is learned, translation is native → examples for word
+          // When toLearned: translation is learned, word is native → examples for translation
           finalTranslations.forEach((t) => {
-            fetchExamplesForTranslation(word, t.translation, fromLang, toLang);
+            const displayKey = getTranslationKey(t.translation);
+            if (direction === "toNative") {
+              // User searched in learned language, got native translation
+              // Generate examples for the searched word (learned lang)
+              fetchExamplesForTranslation(displayKey, word, t.translation, learnedLang, nativeLang);
+            } else {
+              // User searched in native language, got learned translation
+              // Generate examples for the translation (learned lang)
+              fetchExamplesForTranslation(displayKey, t.translation, word, learnedLang, nativeLang);
+            }
           });
         }
       })
@@ -233,12 +249,13 @@ export default function Translate() {
       });
   }
 
-  function fetchExamplesForTranslation(word, translation, fromLang, toLang) {
-    const key = getTranslationKey(translation);
-
+  // displayKey: the key used for caching (based on what's displayed in UI)
+  // word: the word in learned language (for generating examples)
+  // translation: the translation in native language
+  function fetchExamplesForTranslation(displayKey, word, translation, fromLang, toLang) {
     setExamplesState((prev) => ({
       ...prev,
-      [key]: { loading: true, examples: [], error: "" },
+      [displayKey]: { loading: true, examples: [], error: "" },
     }));
 
     api.getGeneratedExamples(
@@ -250,28 +267,26 @@ export default function Translate() {
         const exampleSentences = (examples || []).map((ex) => (typeof ex === "string" ? ex : ex.sentence || ex));
         setExamplesState((prev) => ({
           ...prev,
-          [key]: { loading: false, examples: exampleSentences, error: "" },
+          [displayKey]: { loading: false, examples: exampleSentences, error: "" },
         }));
 
         // Now fetch the learning card preview with the examples
-        fetchCardPreview(word, translation, fromLang, toLang, exampleSentences);
+        fetchCardPreview(displayKey, word, translation, fromLang, toLang, exampleSentences);
       },
       () => {
         setExamplesState((prev) => ({
           ...prev,
-          [key]: { loading: false, examples: [], error: "Could not load examples" },
+          [displayKey]: { loading: false, examples: [], error: "Could not load examples" },
         }));
       },
       translation, // Pass translation for meaning-specific examples
     );
   }
 
-  function fetchCardPreview(word, translation, fromLang, toLang, examples) {
-    const key = getTranslationKey(translation);
-
+  function fetchCardPreview(displayKey, word, translation, fromLang, toLang, examples) {
     setCardPreviews((prev) => ({
       ...prev,
-      [key]: { loading: true, card: null, error: "" },
+      [displayKey]: { loading: true, card: null, error: "" },
     }));
 
     api.previewLearningCard(
@@ -283,13 +298,13 @@ export default function Translate() {
       (card) => {
         setCardPreviews((prev) => ({
           ...prev,
-          [key]: { loading: false, card: card, error: "" },
+          [displayKey]: { loading: false, card: card, error: "" },
         }));
       },
       () => {
         setCardPreviews((prev) => ({
           ...prev,
-          [key]: { loading: false, card: null, error: "" },
+          [displayKey]: { loading: false, card: null, error: "" },
         }));
       },
     );
@@ -305,19 +320,21 @@ export default function Translate() {
     }
 
     const examples = state?.examples || [];
-    const word = searchWordRef.current;
+    const searchedWord = searchWordRef.current;
 
-    // Use detected direction for language codes
-    const fromLang = activeDirection === "toNative" ? learnedLang : nativeLang;
-    const toLang = activeDirection === "toNative" ? nativeLang : learnedLang;
+    // Always add word in learned language with translation in native language
+    // When toNative: searched word is learned, translation is native
+    // When toLearned: searched word is native, translation is learned (swap them)
+    const wordToLearn = activeDirection === "toNative" ? searchedWord : translation;
+    const nativeTranslation = activeDirection === "toNative" ? translation : searchedWord;
 
     setAddingKey(key);
 
     api.addWordToLearning(
-      word,
-      translation,
-      fromLang,
-      toLang,
+      wordToLearn,
+      nativeTranslation,
+      learnedLang,
+      nativeLang,
       examples,
       (result) => {
         setAddingKey(null);
@@ -448,11 +465,17 @@ export default function Translate() {
                     )}
 
                     {hasExamples &&
-                      state.examples.map((example, exIndex) => (
-                        <s.ExampleRow key={exIndex}>
-                          <s.ExampleText>{highlightTargetWord(example, searchWordRef.current)}</s.ExampleText>
-                        </s.ExampleRow>
-                      ))}
+                      state.examples.map((example, exIndex) => {
+                        // Highlight the word being learned (in learned language)
+                        // toNative: searched word is in learned lang
+                        // toLearned: translation (t.translation) is in learned lang
+                        const wordToHighlight = activeDirection === "toNative" ? searchWordRef.current : t.translation;
+                        return (
+                          <s.ExampleRow key={exIndex}>
+                            <s.ExampleText>{highlightTargetWord(example, wordToHighlight)}</s.ExampleText>
+                          </s.ExampleRow>
+                        );
+                      })}
                   </s.ExamplesSection>
                 )}
               </s.TranslationCard>
