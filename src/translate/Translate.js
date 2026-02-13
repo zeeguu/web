@@ -426,7 +426,7 @@ export default function Translate() {
           <s.LanguageDetected>
             Detected: {languageNames[activeDirection === "toNative" ? learnedLang : nativeLang] || (activeDirection === "toNative" ? learnedLang : nativeLang)}
             {canSwitchDirection() && (
-              <s.SwitchLink onClick={switchDirection}>(switch)</s.SwitchLink>
+              <s.SwitchLink type="button" onClick={switchDirection}>(switch)</s.SwitchLink>
             )}
           </s.LanguageDetected>
         )}
