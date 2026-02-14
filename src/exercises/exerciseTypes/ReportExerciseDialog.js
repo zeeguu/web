@@ -126,12 +126,12 @@ export default function ReportExerciseDialog({
             ))}
           </div>
         ) : (
-          <div style={{ display: "flex", alignItems: "flex-end", gap: "0.5rem" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "0.75rem", marginTop: "0.5rem" }}>
             <TextField
               autoFocus
               fullWidth
               size="small"
-              label="Describe the issue"
+              placeholder="Describe the issue..."
               value={comment}
               onChange={(e) => setComment(e.target.value)}
               disabled={isSubmitting}
@@ -141,11 +141,26 @@ export default function ReportExerciseDialog({
                   handleSubmitOther();
                 }
               }}
+              sx={{
+                "& .MuiOutlinedInput-root": {
+                  borderRadius: "8px",
+                },
+              }}
             />
             <IconButton
               onClick={handleSubmitOther}
               disabled={isSubmitting || !comment.trim()}
-              color="primary"
+              sx={{
+                backgroundColor: comment.trim() ? "#f0a000" : "#eee",
+                color: comment.trim() ? "white" : "#999",
+                "&:hover": {
+                  backgroundColor: comment.trim() ? "#d89000" : "#ddd",
+                },
+                "&.Mui-disabled": {
+                  backgroundColor: "#eee",
+                  color: "#999",
+                },
+              }}
             >
               <SendIcon />
             </IconButton>

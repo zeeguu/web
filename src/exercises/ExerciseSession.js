@@ -27,6 +27,8 @@ import isEmptyDictionary from "../utils/misc/isEmptyDictionary";
 import WordProgressBar from "./progressBars/WordProgressBar";
 import { getExerciseTypeName } from "./exerciseTypes/exerciseTypeNames";
 import { useFeedbackContext } from "../contexts/FeedbackContext";
+import FlagOutlinedIcon from "@mui/icons-material/FlagOutlined";
+import ReportExerciseDialog from "./exerciseTypes/ReportExerciseDialog";
 
 const BOOKMARKS_DUE_REVIEW = false;
 
