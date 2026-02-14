@@ -1,4 +1,3 @@
-import { useState } from "react";
 import strings from "../../i18n/definitions";
 import * as s from "./Exercise.sc";
 import { toast } from "react-toastify";
@@ -6,8 +5,6 @@ import useScreenWidth from "../../hooks/useScreenWidth";
 import DisableAudioSession from "./DisableAudioSession";
 import { EXERCISE_TYPES } from "../ExerciseTypeConstants";
 import SessionStorage from "../../assorted/SessionStorage";
-import FlagOutlinedIcon from "@mui/icons-material/FlagOutlined";
-import ReportExerciseDialog from "./ReportExerciseDialog";
 
 export default function SolutionFeedbackLinks({
   exerciseBookmarks,
@@ -21,8 +18,6 @@ export default function SolutionFeedbackLinks({
   onWordRemovedFromExercises,
 }) {
   const { isMobile } = useScreenWidth();
-  const [reportDialogOpen, setReportDialogOpen] = useState(false);
-  const [isReported, setIsReported] = useState(false);
 
   function handleIKnowThisWord() {
     if (onWordRemovedFromExercises && exerciseBookmark) {
@@ -30,18 +25,6 @@ export default function SolutionFeedbackLinks({
       toast.success(`"${exerciseBookmark.from}" removed from practice`);
     }
   }
-
-  function handleReportClose(reported) {
-    setReportDialogOpen(false);
-    if (reported) {
-      setIsReported(true);
-    }
-  }
-
-  // Get context as string for the report
-  const contextUsed = exerciseBookmark?.context_tokenized
-    ? exerciseBookmark.context_tokenized.map(t => t.text || t).join("")
-    : exerciseBookmark?.context || "";
 
   return (
     <>
@@ -63,21 +46,6 @@ export default function SolutionFeedbackLinks({
               <DisableAudioSession handleDisabledAudio={disableAudio} setIsCorrect={setIsExerciseOver} />
             )}
           </>
-        )}
-
-        {/* Report button - always visible */}
-        {isReported ? (
-          <s.ReportedBadge>
-            <FlagOutlinedIcon fontSize="small" />
-            Reported
-          </s.ReportedBadge>
-        ) : (
-          <s.ReportButton
-            onClick={() => setReportDialogOpen(true)}
-            title="Report issue with this exercise"
-          >
-            <FlagOutlinedIcon fontSize="small" />
-          </s.ReportButton>
         )}
       </s.CenteredWordRow>
 
@@ -105,15 +73,6 @@ export default function SolutionFeedbackLinks({
           )}
         </s.CenteredWordRow>
       )}
-
-      <ReportExerciseDialog
-        open={reportDialogOpen}
-        onClose={handleReportClose}
-        bookmarkId={exerciseBookmark?.id}
-        exerciseSource={exerciseType}
-        isExerciseOver={isExerciseOver}
-        contextUsed={contextUsed}
-      />
     </>
   );
 }

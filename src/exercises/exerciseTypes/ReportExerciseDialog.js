@@ -90,7 +90,7 @@ export default function ReportExerciseDialog({
   return (
     <Dialog open={open} onClose={() => handleClose(false)} maxWidth="xs" fullWidth>
       <DialogTitle sx={{ pb: 1, pr: 6 }}>
-        What's wrong?
+        What's wrong with the exercise?
         <IconButton
           aria-label="close"
           onClick={() => handleClose(false)}
