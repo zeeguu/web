@@ -51,9 +51,12 @@ export default function SolutionFeedbackLinks({
 
       {isExerciseOver && (
         <s.CenteredWordRow style={{ gap: "1em", flexWrap: "wrap", marginBottom: isMobile ? "2rem" : "1rem" }}>
-          <s.StyledGreyButton className="styledGreyButton" onClick={handleIKnowThisWord}>
-            {strings.iKnowThisWord}
-          </s.StyledGreyButton>
+          {/* Hide "I know this word" for multi-bookmark exercises like Match */}
+          {!EXERCISE_TYPES.isMultiBookmarkExercise(exerciseType) && (
+            <s.StyledGreyButton className="styledGreyButton" onClick={handleIKnowThisWord}>
+              {strings.iKnowThisWord}
+            </s.StyledGreyButton>
+          )}
           {shareableUrl && (
             <s.StyledGreyButton
               className="styledGreyButton"
