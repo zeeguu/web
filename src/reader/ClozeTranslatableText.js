@@ -222,9 +222,12 @@ export function ClozeTranslatableText({
     if (e.target.value.length > 0) {
       setHintVisible(false);
     }
-    
+
     let value = e.target.value;
-    
+
+    // Save cursor position before any modifications
+    const cursorPosition = e.target.selectionStart;
+
     // Match capitalization of the solution
     if (clozeWord && value) {
       const solution = clozeWord;
@@ -236,12 +239,15 @@ export function ClozeTranslatableText({
           // Otherwise make it lowercase
           value = value.toLowerCase();
         }
-        
+
         // Update the input value to match our formatting
         e.target.value = value;
+
+        // Restore cursor position after setting value
+        e.target.setSelectionRange(cursorPosition, cursorPosition);
       }
     }
-    
+
     if (onInputChange) {
       onInputChange(value, e.target);
     }
