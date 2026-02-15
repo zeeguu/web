@@ -1,7 +1,5 @@
-- Enhanced Translate tab with bidirectional translation support
-- Added speak buttons to hear pronunciations in the Translate tab
-- CEFR level badges now displayed for translations
-- Added undo option for accidental actions
-- Fixed exercise answer validation for Greek and non-Latin scripts
-- Improved session handling when navigating between pages
-
+- New: Report broken exercises with a flag button
+- Improved Translate page with language auto-detection indicator
+- Fixed language switch button on Translate page
+- Better font support for all languages and special characters
+- Improved exercise UI for Match exercises
