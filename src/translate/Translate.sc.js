@@ -1,6 +1,19 @@
 import styled from "styled-components";
 import { zeeguuOrange } from "../components/colors";
 
+export const LabelRow = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.3rem;
+`;
+
+export const Label = styled.label`
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: #333;
+`;
+
 export const SearchContainer = styled.div`
   display: flex;
   gap: 0.5rem;
@@ -72,7 +85,6 @@ export const LanguageDetected = styled.div`
   display: flex;
   align-items: center;
   gap: 0.3rem;
-  margin-top: 0.5rem;
 `;
 
 export const SwitchLink = styled.button`
@@ -83,10 +95,16 @@ export const SwitchLink = styled.button`
   cursor: pointer;
   padding: 0;
   text-decoration: underline;
+  margin-left: 0.5rem;
 
   &:hover {
     opacity: 0.8;
   }
+`;
+
+export const DetectionMode = styled.span`
+  color: #999;
+  font-style: italic;
 `;
 
 export const Flag = styled.img`

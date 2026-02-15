@@ -64,6 +64,8 @@ export default function Translate() {
   const [error, setError] = useState("");
   // Track which direction is active: "toNative" (learned→native) or "toLearned" (native→learned)
   const [activeDirection, setActiveDirection] = useState(null);
+  // Track if user manually switched direction (vs auto-detected)
+  const [isManualDirection, setIsManualDirection] = useState(false);
   // Store results for both directions so user can switch
   const [bothResults, setBothResults] = useState({ toNative: [], toLearned: [] });
 
@@ -96,6 +98,7 @@ export default function Translate() {
     if (newTranslations.length === 0) return; // Can't switch if no results in other direction
 
     setActiveDirection(newDirection);
+    setIsManualDirection(true);
     setTranslations(newTranslations);
     // Don't clear examplesState/cardPreviews - keep cached data for when user switches back
 
@@ -176,6 +179,7 @@ export default function Translate() {
     setAddedTranslations(new Set());
     setAddingKey(null);
     setActiveDirection(null);
+    setIsManualDirection(false);
     setBothResults({ toNative: [], toLearned: [] });
 
     // Helper to filter valid translations
@@ -409,10 +413,22 @@ export default function Translate() {
   return (
     <>
       <form onSubmit={handleSearch}>
+        <s.LabelRow>
+          <s.Label>Enter word or phrase</s.Label>
+          {activeDirection && (
+            <s.LanguageDetected>
+              {languageNames[activeDirection === "toNative" ? learnedLang : nativeLang] || (activeDirection === "toNative" ? learnedLang : nativeLang)}
+              {" "}
+              <s.DetectionMode>({isManualDirection ? "manual" : "auto"})</s.DetectionMode>
+              {canSwitchDirection() && (
+                <s.SwitchLink type="button" onClick={switchDirection}>switch</s.SwitchLink>
+              )}
+            </s.LanguageDetected>
+          )}
+        </s.LabelRow>
         <s.SearchContainer>
           <InputField
             id="translate-input"
-            label="Enter word or phrase"
             placeholder="e.g., hund, bonjour, casa..."
             value={searchWord}
             onChange={(e) => setSearchWord(e.target.value)}
@@ -422,14 +438,6 @@ export default function Translate() {
             {isLoading ? "..." : "Translate"}
           </s.TranslateButton>
         </s.SearchContainer>
-        {activeDirection && (
-          <s.LanguageDetected>
-            Detected: {languageNames[activeDirection === "toNative" ? learnedLang : nativeLang] || (activeDirection === "toNative" ? learnedLang : nativeLang)}
-            {canSwitchDirection() && (
-              <s.SwitchLink type="button" onClick={switchDirection}>(switch)</s.SwitchLink>
-            )}
-          </s.LanguageDetected>
-        )}
       </form>
 
       {error && <s.ErrorMessage>{error}</s.ErrorMessage>}
