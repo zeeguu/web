@@ -27,6 +27,8 @@ import isEmptyDictionary from "../utils/misc/isEmptyDictionary";
 import WordProgressBar from "./progressBars/WordProgressBar";
 import { getExerciseTypeName } from "./exerciseTypes/exerciseTypeNames";
 import { useFeedbackContext } from "../contexts/FeedbackContext";
+import FlagOutlinedIcon from "@mui/icons-material/FlagOutlined";
+import ReportExerciseDialog from "./exerciseTypes/ReportExerciseDialog";
 
 const BOOKMARKS_DUE_REVIEW = false;
 
@@ -64,6 +66,8 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
   const [totalPracticedBookmarksInSession, setTotalPracticedBookmarksInSession] = useState(0);
   const [exerciseMessageForAPI, setExerciseMessageForAPI] = useState({});
   const [isSessionLoading, setIsSessionLoading] = useState(true); // New loading state
+  const [reportDialogOpen, setReportDialogOpen] = useState(false);
+  const [isReported, setIsReported] = useState(false);
   const currentIndexRef = useShadowRef(currentIndex);
   const hasKeptExercisingRef = useShadowRef(hasKeptExercising);
 
@@ -262,6 +266,7 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
     setExerciseMessageForAPI({});
     setIsCorrect(null);
     setShowFeedbackButtons(false);
+    setIsReported(false); // Reset report state for new exercise
     const newIndex = currentIndex + 1;
 
     if (newIndex === fullExerciseProgression.length) {
@@ -425,18 +430,30 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
       <s.ExercisesColumn>
         <div id="exerciseTopbar">
           <div id="topbarRow">
-            {userDetails?.name === "Mircea" && (
-              <div
+            {/* Report exercise issue button */}
+            {isReported ? (
+              <div style={{ display: "flex", alignItems: "center", color: "#999", fontSize: "0.8rem", gap: "0.25rem" }}>
+                <FlagOutlinedIcon fontSize="small" />
+                Reported
+              </div>
+            ) : (
+              <button
+                onClick={() => setReportDialogOpen(true)}
+                title="Report issue with this exercise"
                 style={{
+                  background: "none",
+                  border: "none",
+                  padding: "0.25rem",
+                  cursor: "pointer",
+                  color: "#ccc",
                   display: "flex",
                   alignItems: "center",
-                  fontSize: "0.8rem",
-                  color: "#666",
-                  fontWeight: "500",
                 }}
+                onMouseOver={(e) => e.currentTarget.style.color = "#999"}
+                onMouseOut={(e) => e.currentTarget.style.color = "#ccc"}
               >
-                {getExerciseTypeName(currentExerciseType)}
-              </div>
+                <FlagOutlinedIcon fontSize="small" />
+              </button>
             )}
 
             <div style={{ display: "flex", alignItems: "center", marginLeft: "auto" }}>
@@ -512,6 +529,22 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
           </p>
         )}
       </s.ExercisesColumn>
+
+      <ReportExerciseDialog
+        open={reportDialogOpen}
+        onClose={(reported) => {
+          setReportDialogOpen(false);
+          if (reported) setIsReported(true);
+        }}
+        bookmarkId={selectedExerciseBookmark?.id || currentBookmarksToStudy?.[0]?.id}
+        exerciseSource={getExerciseTypeName(currentExerciseType)}
+        isExerciseOver={isExerciseOver}
+        contextUsed={
+          selectedExerciseBookmark?.context_tokenized
+            ? selectedExerciseBookmark.context_tokenized.map(t => t.text || t).join("")
+            : selectedExerciseBookmark?.context || currentBookmarksToStudy?.[0]?.context || ""
+        }
+      />
     </NarrowColumn>
   );
 }

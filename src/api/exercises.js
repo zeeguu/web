@@ -143,3 +143,41 @@ Zeeguu_API.prototype.getSmallerContext = function (contextBookmark, wordBookmark
   };
   return this._post(`/get_smaller_context`, qs.stringify(payload), callback);
 };
+
+Zeeguu_API.prototype.reportExerciseIssue = function (
+  bookmarkId,
+  exerciseSource,
+  reason,
+  comment,
+  contextUsed,
+  callback,
+  errorCallback
+) {
+  const payload = JSON.stringify({
+    bookmark_id: bookmarkId,
+    exercise_source: exerciseSource,
+    reason,
+    comment: comment || null,
+    context_used: contextUsed || null
+  });
+
+  fetch(this._appendSessionToUrl("report_exercise_issue"), {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: payload
+  })
+  .then(response => response.json().then(data => ({ status: response.status, data })))
+  .then(({ status, data }) => {
+    if (status >= 200 && status < 300 && data.success) {
+      if (callback) callback(data);
+    } else {
+      if (errorCallback) errorCallback(data);
+    }
+  })
+  .catch(error => {
+    console.error("Error reporting exercise issue:", error);
+    if (errorCallback) errorCallback({ error: "Network error" });
+  });
+};

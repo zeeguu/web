@@ -511,6 +511,28 @@ let MultipleChoiceContext = styled.div`
   }
 `;
 
+let ReportButton = styled.button`
+  background: none;
+  border: none;
+  padding: 0.25rem;
+  cursor: pointer;
+  color: #ccc;
+  display: flex;
+  align-items: center;
+
+  &:hover {
+    color: #999;
+  }
+`;
+
+let ReportedBadge = styled.span`
+  color: #999;
+  font-size: 0.8rem;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+`;
+
 export {
   Exercise,
   FeedbackButton,
@@ -540,6 +562,8 @@ export {
   EditSpeakButtonHolder,
   OrangeButtonMessage,
   MultipleChoiceContext,
+  ReportButton,
+  ReportedBadge,
 };
 
 export default StyledButton;
