@@ -13,6 +13,7 @@ import { APIContext } from "../../contexts/APIContext";
 // Chips shown during exercise (before answering)
 const DURING_EXERCISE_OPTIONS = [
   { value: "word_not_shown", label: "Word not shown" },
+  { value: "wrong_highlighting", label: "Wrong highlighting" },
   { value: "context_confusing", label: "Context confusing" },
   { value: "other", label: "Other..." },
 ];
@@ -20,6 +21,7 @@ const DURING_EXERCISE_OPTIONS = [
 // Chips shown after exercise (after answering)
 const AFTER_EXERCISE_OPTIONS = [
   { value: "wrong_translation", label: "Wrong translation" },
+  { value: "wrong_highlighting", label: "Wrong highlighting" },
   { value: "context_wrong", label: "Context wrong" },
   { value: "other", label: "Other..." },
 ];
