@@ -35,8 +35,8 @@ export default function NavOption({
         aria-label={ariaLabel}
       >
         <s.OptionContentWrapper $screenWidth={screenWidth}>
-          <s.IconContainer>{icon}</s.IconContainer>
-          <s.TextWrapper $screenWidth={screenWidth}>{text}</s.TextWrapper>
+          {icon && <s.IconContainer>{icon}</s.IconContainer>}
+          <s.TextWrapper $screenWidth={screenWidth} $hasIcon={!!icon}>{text}</s.TextWrapper>
           {notification && React.cloneElement(notification, { isActive })}
         </s.OptionContentWrapper>
       </Component>

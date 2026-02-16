@@ -445,6 +445,21 @@ Zeeguu_API.prototype.hideArticle = function (articleId, callback) {
   this._post(`/hide_article`, param, callback);
 };
 
+Zeeguu_API.prototype.unhideArticle = function (articleId, callback) {
+  let param = qs.stringify({ article_id: articleId, hidden: "false" });
+  this._post(`/hide_article`, param, callback);
+};
+
+Zeeguu_API.prototype.getHiddenUserArticles = function (page, callback) {
+  this._getJSON(`user_articles/hidden/${page}`, (articles) => {
+    const ids = articles.map((o) => o.id);
+    const deduplicated = articles.filter(
+      ({ id }, index) => !ids.includes(id, index + 1),
+    );
+    callback(deduplicated);
+  });
+};
+
 Zeeguu_API.prototype.reportBrokenArticle = function (articleId, reason, callback, onError) {
   let param = qs.stringify({ article_id: articleId, reason: reason });
   this._post(`/report_broken_article`, param, (response) => {

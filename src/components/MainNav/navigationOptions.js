@@ -40,6 +40,24 @@ export default class NavigationOptions {
     text: strings.activity,
   });
 
+  static myArticles = Object.freeze({
+    linkTo: "/my-articles",
+    icon: <NavIcon name="myTexts" />,
+    text: strings.myArticles,
+  });
+
+  static myWords = Object.freeze({
+    linkTo: "/words",
+    icon: <NavIcon name="words" />,
+    text: strings.myWords,
+  });
+
+  static myActivity = Object.freeze({
+    linkTo: "/activity-history",
+    icon: <NavIcon name="history" />,
+    text: strings.myActivity,
+  });
+
   static statistics = Object.freeze({
     linkTo: "/user_dashboard",
     icon: <NavIcon name="statistics" />,

@@ -58,13 +58,19 @@ export default function MoreOptionsPanel({
           {isOnStudentSide && (
             <>
               <NavOption
-                {...NavigationOptions.words}
+                {...NavigationOptions.myArticles}
                 currentPath={currentPath}
                 onClick={handleHideMoreOptions}
               />
 
               <NavOption
-                {...NavigationOptions.activity}
+                {...NavigationOptions.myWords}
+                currentPath={currentPath}
+                onClick={handleHideMoreOptions}
+              />
+
+              <NavOption
+                {...NavigationOptions.myActivity}
                 currentPath={currentPath}
                 onClick={handleHideMoreOptions}
               />

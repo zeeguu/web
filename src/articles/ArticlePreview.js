@@ -31,6 +31,8 @@ export default function ArticlePreview({
   setDoNotShowRedirectionModal_UserPreference,
   notifyArticleClick,
   onArticleHidden,
+  onUnhideArticle,
+  isHiddenView = false,
 }) {
   const api = useContext(APIContext);
   const getBrowsingSessionId = useContext(BrowsingSessionContext);
@@ -147,6 +149,15 @@ export default function ArticlePreview({
     });
   }
 
+  function handleUnhideArticle() {
+    if (onUnhideArticle) {
+      setIsAnimatingOut(true);
+      setTimeout(() => {
+        onUnhideArticle(article.id);
+      }, 300);
+    }
+  }
+
   function titleLink(article) {
     let linkToRedirect = `/read/article?id=${article.id}`;
     let open_in_zeeguu = (
@@ -210,7 +221,7 @@ export default function ArticlePreview({
     else return open_externally_without_modal;
   }
 
-  if (isHidden) {
+  if (isHidden && !isHiddenView) {
     return null;
   }
 
@@ -345,15 +356,23 @@ export default function ArticlePreview({
               </span>
             </div>
             <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-              <SaveArticleButton
-                article={article}
-                isArticleSaved={isArticleSaved}
-                setIsArticleSaved={setIsArticleSaved}
-                variant="muted"
-              />
-              <ActionButton onClick={handleHideArticle} variant="muted">
-                Hide
-              </ActionButton>
+              {!isHiddenView && (
+                <SaveArticleButton
+                  article={article}
+                  isArticleSaved={isArticleSaved}
+                  setIsArticleSaved={setIsArticleSaved}
+                  variant="muted"
+                />
+              )}
+              {isHiddenView ? (
+                <ActionButton onClick={handleUnhideArticle} variant="muted">
+                  Unhide
+                </ActionButton>
+              ) : (
+                <ActionButton onClick={handleHideArticle} variant="muted">
+                  Hide
+                </ActionButton>
+              )}
             </div>
           </div>
         </s.Summary>

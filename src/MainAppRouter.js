@@ -20,6 +20,7 @@ import WordsRouter from "./words/_WordsRouter";
 import TranslateRouter from "./translate/_TranslateRouter";
 import ReadingHistory from "./words/WordHistory";
 import ActivityRouter from "./activity/_ActivityRouter";
+import MyArticlesRouter from "./myArticles/_MyArticlesRouter";
 import ArticleReader from "./reader/ArticleReader";
 import LoadingAnimation from "./components/LoadingAnimation";
 import { getSharedSession } from "./utils/cookies/userInfo";
@@ -120,6 +121,7 @@ export default function MainAppRouter({ hasExtension, handleSuccessfulLogIn }) {
       <PrivateRouteWithMainNav path="/exercises" component={ExercisesRouter} />
       <PrivateRouteWithMainNav path="/daily-audio" component={DailyAudioRouter} />
       <PrivateRouteWithMainNav path="/translate" component={TranslateRouter} />
+      <PrivateRouteWithMainNav path="/my-articles" component={MyArticlesRouter} />
       <PrivateRouteWithMainNav path="/words" component={WordsRouter} />
       <PrivateRouteWithMainNav path="/history" component={ReadingHistory} />
       <PrivateRouteWithMainNav path="/activity-history" component={ActivityRouter} />

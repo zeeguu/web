@@ -96,6 +96,7 @@ const TextWrapper = styled.span`
   transition: opacity 0.3s ease-in-out;
   width: fit-content;
   user-select: none;
+  padding-left: ${({ $hasIcon }) => ($hasIcon ? "0" : "1rem")};
 
   ${({ $screenWidth }) =>
     $screenWidth <= MEDIUM_WIDTH &&
