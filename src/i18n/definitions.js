@@ -288,6 +288,7 @@ let strings = new LocalizedStrings(
 
       //ArticleRouter
       homeTab: "Home",
+      recommended: "Recommended",
       classroomTab: "Classroom",
       bookmarkedTab: "Bookmarked",
       saved: "Saves",
@@ -297,6 +298,11 @@ let strings = new LocalizedStrings(
       //WordsRouter
       yourWordsHeadline: "Your Words",
       activity: "Activity",
+      myArticles: "My Articles",
+      myWords: "My Words",
+      myActivity: "My Activity",
+      hidden: "Hidden",
+      noHiddenArticles: "You have no hidden articles.",
       historyTab: "History",
       statisticsTab: "Statistics",
       starred: "Starred",
@@ -1106,6 +1112,7 @@ let strings = new LocalizedStrings(
 
       //ArticleRouter
       homeTab: "Hjem",
+      recommended: "Anbefalet",
       classroomTab: "Klasse",
       bookmarkedTab: "Bogmærker",
       saved: "Gemt",
@@ -1114,6 +1121,11 @@ let strings = new LocalizedStrings(
       //WordsRouter
       yourWordsHeadline: "Dine ord",
       activity: "Aktivitet",
+      myArticles: "Mine artikler",
+      myWords: "Mine ord",
+      myActivity: "Min aktivitet",
+      hidden: "Skjulte",
+      noHiddenArticles: "Du har ingen skjulte artikler.",
       historyTab: "Historik",
       statisticsTab: "Statistik",
       starred: "Stjernemarkerede",

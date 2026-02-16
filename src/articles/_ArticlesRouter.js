@@ -21,9 +21,8 @@ export default function ArticlesRouter({ hasExtension, isChrome }) {
   const { getBrowsingSessionId } = useBrowsingSession();
 
   const tabsAndLinks = [
-    { text: strings.homeTab, link: "/articles", action: <CustomizeGear /> },
+    { text: strings.recommended, link: "/articles", action: <CustomizeGear /> },
     { text: strings.search, link: "/articles/mySearches" },
-    { text: strings.saved, link: "/articles/ownTexts" },
     LocalStorage.isStudent() && { text: strings.classroomTab, link: "/articles/classroom" },
   ].filter(Boolean);
 
