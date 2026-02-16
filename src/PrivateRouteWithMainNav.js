@@ -25,12 +25,8 @@ export const PrivateRouteWithMainNav = ({ component: Component, ...rest }) => {
   }
 
   // Check email verification - redirect to verify page if not verified
-  // Skip for anonymous users
-  if (
-    userDetails &&
-    !userDetails.is_anonymous &&
-    userDetails.email_verified === false
-  ) {
+  // Uses backend-computed field that considers grandfathering for existing users
+  if (userDetails && userDetails.requires_email_verification) {
     return (
       <Redirect
         to={{
