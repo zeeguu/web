@@ -450,14 +450,14 @@ Zeeguu_API.prototype.unhideArticle = function (articleId, callback) {
   this._post(`/hide_article`, param, callback);
 };
 
-Zeeguu_API.prototype.getHiddenUserArticles = function (page, callback) {
+Zeeguu_API.prototype.getHiddenUserArticles = function (page, callback, onError) {
   this._getJSON(`user_articles/hidden/${page}`, (articles) => {
     const ids = articles.map((o) => o.id);
     const deduplicated = articles.filter(
       ({ id }, index) => !ids.includes(id, index + 1),
     );
     callback(deduplicated);
-  });
+  }, onError);
 };
 
 Zeeguu_API.prototype.reportBrokenArticle = function (articleId, reason, callback, onError) {

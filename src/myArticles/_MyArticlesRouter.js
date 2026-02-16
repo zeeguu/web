@@ -1,23 +1,13 @@
-import React, { useState, useContext, useEffect } from "react";
+import React from "react";
+import { Switch } from "react-router-dom";
 import { PrivateRoute } from "../PrivateRoute";
 import * as s from "../components/ColumnWidth.sc";
 import TopTabs from "../components/TopTabs";
 import strings from "../i18n/definitions";
-import SavedArticles from "./SavedArticles";
+import OwnArticles from "../articles/OwnArticles";
 import HiddenArticles from "./HiddenArticles";
-import { APIContext } from "../contexts/APIContext";
 
 export default function MyArticlesRouter() {
-  const api = useContext(APIContext);
-  const [hiddenCount, setHiddenCount] = useState(0);
-
-  useEffect(() => {
-    // Get count of hidden articles
-    api.getHiddenUserArticles(0, (articles) => {
-      setHiddenCount(articles.length);
-    });
-  }, [api]);
-
   const tabsAndLinks = [
     {
       text: strings.saved,
@@ -26,7 +16,6 @@ export default function MyArticlesRouter() {
     {
       text: strings.hidden,
       link: "/my-articles/hidden",
-      counter: hiddenCount > 0 ? hiddenCount : null,
     },
   ];
 
@@ -34,8 +23,10 @@ export default function MyArticlesRouter() {
     <s.NarrowColumn>
       <TopTabs title={strings.myArticles} tabsAndLinks={tabsAndLinks} />
 
-      <PrivateRoute exact path="/my-articles" component={SavedArticles} />
-      <PrivateRoute path="/my-articles/hidden" component={HiddenArticles} />
+      <Switch>
+        <PrivateRoute exact path="/my-articles" component={OwnArticles} />
+        <PrivateRoute path="/my-articles/hidden" component={HiddenArticles} />
+      </Switch>
     </s.NarrowColumn>
   );
 }
