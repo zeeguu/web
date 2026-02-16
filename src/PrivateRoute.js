@@ -10,11 +10,15 @@ import { UserContext } from "./contexts/UserContext";
 //- they cannot access the content of Zeeguu and will be redirected to the login-page
 
 const PrivateRoute = ({ component: Component, ...rest }) => {
-  const { session } = useContext(UserContext);
+  const { session, userDetails } = useContext(UserContext);
 
   const isAccountDelition = window.location.href.includes(
     APP_DOMAIN + "account_deletion",
   );
+  const isVerifyEmailPage = window.location.href.includes(
+    APP_DOMAIN + "verify_email",
+  );
+
   if (!session) {
     if (isAccountDelition) {
       return (
@@ -35,6 +39,24 @@ const PrivateRoute = ({ component: Component, ...rest }) => {
       );
     }
   }
+
+  // Check email verification - redirect to verify page if not verified
+  // Skip for anonymous users and if already on verify_email page
+  if (
+    userDetails &&
+    !userDetails.is_anonymous &&
+    userDetails.email_verified === false &&
+    !isVerifyEmailPage
+  ) {
+    return (
+      <Redirect
+        to={{
+          pathname: "/verify_email",
+        }}
+      />
+    );
+  }
+
   return <Route {...rest} render={() => <Component />} />;
 };
 

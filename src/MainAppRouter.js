@@ -4,6 +4,7 @@ import LandingPage from "./landingPage/LandingPage";
 import ExtensionInstalled from "./pages/onboarding/ExtensionInstalled";
 import InstallExtension from "./pages/onboarding/InstallExtension";
 import SelectInterests from "./pages/onboarding/SelectInterests";
+import VerifyEmail from "./pages/onboarding/VerifyEmail";
 import ExcludeWords from "./pages/onboarding/ExcludeWords";
 import ResetPassword from "./pages/ResetPassword";
 import NoSidebarRouter from "./NoSidebarRouter";
@@ -110,6 +111,8 @@ export default function MainAppRouter({ hasExtension, handleSuccessfulLogIn }) {
       <Route path="/render" component={NoSidebarRouter} />
 
       <PrivateRoute path="/account_deletion" component={DeleteAccount} />
+
+      <PrivateRoute path="/verify_email" component={VerifyEmail} />
 
       <PrivateRoute path="/select_interests" hasExtension={hasExtension} component={SelectInterests} />
 

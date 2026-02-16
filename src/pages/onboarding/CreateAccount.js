@@ -140,7 +140,8 @@ export default function CreateAccount({ handleSuccessfulLogIn }) {
           handleSuccessfulLogIn(user, session, false);
           setUserDetails(userInfo);
           saveSharedUserInfo(userInfo);
-          history.push("/select_interests");
+          // Redirect to email verification instead of select_interests
+          history.push("/verify_email");
         });
       },
       (error) => {

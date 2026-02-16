@@ -220,3 +220,7 @@ Zeeguu_API.prototype.upgradeAnonUser = function (
 Zeeguu_API.prototype.confirmEmail = function (code, onSuccess, onError) {
   this._post("confirm_email", `code=${encodeURIComponent(code)}`, onSuccess, onError);
 };
+
+Zeeguu_API.prototype.resendVerificationCode = function (onSuccess, onError) {
+  this._post("resend_verification_code", "", onSuccess, onError);
+};
