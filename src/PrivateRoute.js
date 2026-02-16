@@ -41,11 +41,10 @@ const PrivateRoute = ({ component: Component, ...rest }) => {
   }
 
   // Check email verification - redirect to verify page if not verified
-  // Skip for anonymous users and if already on verify_email page
+  // Uses backend-computed field that considers grandfathering for existing users
   if (
     userDetails &&
-    !userDetails.is_anonymous &&
-    userDetails.email_verified === false &&
+    userDetails.requires_email_verification &&
     !isVerifyEmailPage
   ) {
     return (
