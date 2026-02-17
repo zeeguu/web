@@ -84,7 +84,6 @@ export default function Translate() {
 
   const { speak, isSpeaking } = useSpeech();
   const searchWordRef = useRef("");
-  const formRef = useRef(null);
 
   useEffect(() => {
     setTitle("Translate");
@@ -93,14 +92,13 @@ export default function Translate() {
   // Handle searchWord passed from history navigation
   useEffect(() => {
     if (location.state?.searchWord) {
-      setSearchWord(location.state.searchWord);
-      // Trigger search after state is set
-      setTimeout(() => {
-        formRef.current?.requestSubmit();
-      }, 0);
+      const word = location.state.searchWord;
+      setSearchWord(word);
+      performSearch(word);
       // Clear the state so refreshing doesn't re-trigger
       window.history.replaceState({}, document.title);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [location.state]);
 
   function getTranslationKey(translation) {
@@ -172,14 +170,8 @@ export default function Translate() {
     return true;
   }
 
-  function handleSearch(e) {
-    e.preventDefault();
-    if (!searchWord.trim()) return;
-
-    const word = searchWord.trim();
-
-    // Validate input
-    if (!isValidWord(word)) {
+  function performSearch(word) {
+    if (!word || !isValidWord(word)) {
       setError("Please enter a valid word or phrase");
       return;
     }
@@ -272,6 +264,13 @@ export default function Translate() {
         setError("Failed to get translations. Please try again.");
         console.error(err);
       });
+  }
+
+  function handleSearch(e) {
+    e.preventDefault();
+    const word = searchWord.trim();
+    if (!word) return;
+    performSearch(word);
   }
 
   // displayKey: the key used for caching (based on what's displayed in UI)
@@ -428,7 +427,7 @@ export default function Translate() {
 
   return (
     <>
-      <form ref={formRef} onSubmit={handleSearch}>
+      <form onSubmit={handleSearch}>
         <s.LabelRow>
           <s.Label>Enter word or phrase</s.Label>
           {activeDirection && (
