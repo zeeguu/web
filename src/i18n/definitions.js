@@ -291,7 +291,7 @@ let strings = new LocalizedStrings(
       recommended: "Recommended",
       classroomTab: "Classroom",
       bookmarkedTab: "Bookmarked",
-      saved: "Saves",
+      saved: "Saved",
       forYou: "For You",
       search: "Search",
 
