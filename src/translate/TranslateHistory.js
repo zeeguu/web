@@ -105,6 +105,7 @@ export default function TranslateHistory() {
   useEffect(() => {
     setTitle("Translation History");
     loadHistory();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   function loadHistory() {

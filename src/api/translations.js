@@ -246,5 +246,5 @@ Zeeguu_API.prototype.basicTranlsate = function (from_lang, to_lang, phrase) {
 };
 
 Zeeguu_API.prototype.getTranslationHistory = function (limit = 50) {
-  return this.apiGet(`/translation_history?limit=${limit}`);
+  return this.apiGet(`/translation_history?limit=${limit}`).then((res) => res.data);
 };
