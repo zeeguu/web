@@ -72,17 +72,7 @@ export default function TranslateHistory() {
         >
           <s.TranslationHeader>
             <s.TranslationInfo>
-              <s.TranslationText>
-                {item.search_word}
-                {item.translation && (
-                  <span style={{ fontWeight: 400, color: "#666", marginLeft: "0.5rem" }}>
-                    → {item.translation}
-                  </span>
-                )}
-              </s.TranslationText>
-              <s.TranslationSource>
-                {item.from_language} → {item.to_language}
-              </s.TranslationSource>
+              <s.TranslationText>{item.search_word}</s.TranslationText>
             </s.TranslationInfo>
             <s.TranslationSource>{formatTime(item.search_time)}</s.TranslationSource>
           </s.TranslationHeader>

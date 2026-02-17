@@ -94,7 +94,7 @@ export default function Translate() {
     if (location.state?.searchWord) {
       const word = location.state.searchWord;
       setSearchWord(word);
-      performSearch(word);
+      performSearch(word, true); // Skip logging - already in history
       // Clear the state so refreshing doesn't re-trigger
       window.history.replaceState({}, document.title);
     }
@@ -170,7 +170,7 @@ export default function Translate() {
     return true;
   }
 
-  function performSearch(word) {
+  function performSearch(word, skipHistory = false) {
     if (!word || !isValidWord(word)) {
       setError("Please enter a valid word or phrase");
       return;
@@ -237,6 +237,11 @@ export default function Translate() {
         const finalTranslations = direction === "toNative" ? toNativeResults : toLearnedResults;
         setTranslations(finalTranslations);
         setActiveDirection(direction);
+
+        // Log to history (only for new searches, not from history navigation)
+        if (!skipHistory && finalTranslations.length > 0) {
+          api.logTranslationSearch(word);
+        }
 
         // Auto-fetch examples for each translation (skip for long phrases)
         const wordCount = word.split(/\s+/).length;
