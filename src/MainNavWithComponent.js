@@ -11,6 +11,7 @@ import useExercisesCounterNotification from "./hooks/useExercisesCounterNotifica
 import useStreakMilestone from "./hooks/useStreakMilestone";
 import StreakBanner from "./components/StreakBanner";
 import { MOBILE_WIDTH } from "./components/MainNav/screenSize";
+import DailyFeedbackBanner from "./components/DailyFeedbackBanner";
 
 export default function MainNavWithComponent(props) {
   const { children: appContent } = props;
@@ -80,6 +81,7 @@ export default function MainNavWithComponent(props) {
             id="scrollHolder"
           >
             {screenWidth <= MOBILE_WIDTH && <StreakBanner />}
+            {screenWidth <= MOBILE_WIDTH && <DailyFeedbackBanner />}
             {appContent}
           </s.AppContent>
         </s.MainNavWithComponent>
