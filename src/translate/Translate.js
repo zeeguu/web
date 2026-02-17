@@ -1,4 +1,5 @@
 import React, { useContext, useState, useEffect, useRef } from "react";
+import { useLocation } from "react-router-dom";
 import { toast } from "react-toastify";
 import { APIContext } from "../contexts/APIContext";
 import { UserContext } from "../contexts/UserContext";
@@ -51,6 +52,7 @@ export default function Translate() {
   const api = useContext(APIContext);
   const { userDetails } = useContext(UserContext);
   const { updateExercisesCounter } = useContext(ExercisesCounterContext);
+  const location = useLocation();
 
   const learnedLang = userDetails?.learned_language;
   const nativeLang = userDetails?.native_language;
@@ -82,10 +84,24 @@ export default function Translate() {
 
   const { speak, isSpeaking } = useSpeech();
   const searchWordRef = useRef("");
+  const formRef = useRef(null);
 
   useEffect(() => {
     setTitle("Translate");
   }, []);
+
+  // Handle searchWord passed from history navigation
+  useEffect(() => {
+    if (location.state?.searchWord) {
+      setSearchWord(location.state.searchWord);
+      // Trigger search after state is set
+      setTimeout(() => {
+        formRef.current?.requestSubmit();
+      }, 0);
+      // Clear the state so refreshing doesn't re-trigger
+      window.history.replaceState({}, document.title);
+    }
+  }, [location.state]);
 
   function getTranslationKey(translation) {
     return translation.toLowerCase();
@@ -412,7 +428,7 @@ export default function Translate() {
 
   return (
     <>
-      <form onSubmit={handleSearch}>
+      <form ref={formRef} onSubmit={handleSearch}>
         <s.LabelRow>
           <s.Label>Enter word or phrase</s.Label>
           {activeDirection && (
