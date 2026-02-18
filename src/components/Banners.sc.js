@@ -1,35 +1,34 @@
 import styled from "styled-components";
 
-const StreakBannerContainer = styled.div`
+const BaseBanner = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 0.4rem;
   padding: 0.4rem 0.8rem;
-  background: linear-gradient(135deg, #fff8e1, #fff3cd);
-  border-bottom: 1px solid #ffe59e;
   font-size: 0.85rem;
-  color: #7a5c00;
   cursor: pointer;
+`;
+const StreakBannerContainer = styled(BaseBanner)`
+  background: linear-gradient(135deg, #fff8e1, #fff3cd);
+  color: #7a5c00;
+  border-bottom: 1px solid #ffe59e;
 
   &:hover {
     background: linear-gradient(135deg, #fff3cd, #ffe59e);
   }
 `;
-const DailyFeedbackBannerContainer = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.4rem;
-  padding: 0.4rem 0.8rem;
-  background: linear-gradient(135deg, #fff8e1, #fff3cd);
-  border-bottom: 1px solid #ffe59e;
-  font-size: 0.85rem;
-  color: #7a5c00;
-  cursor: pointer;
+const DailyFeedbackBannerContainer = styled(BaseBanner)`
+  background: linear-gradient(135deg, #e1f5fe, #b3e5fc);
+  color: #01579b;
+  border-bottom: 1px solid #81d1f6;
 
   &:hover {
-    background: linear-gradient(135deg, #fff3cd, #ffe59e);
+    background: linear-gradient(135deg, #b3e5fc, #81d4fa);
+  }
+
+  a {
+    color: inherit;
   }
 `;
 

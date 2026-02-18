@@ -1,9 +1,5 @@
 import { useContext, useState } from "react";
-import { useHistory } from "react-router-dom";
-import { ProgressContext } from "../contexts/ProgressContext";
-import { UserContext } from "../contexts/UserContext";
-import strings from "../i18n/definitions";
-import * as s from "./StreakBanner.sc";
+import * as s from "./Banners.sc";
 import Feature from "../features/Feature";
 
 export default function DailyFeedbackBanner() {
@@ -14,11 +10,10 @@ export default function DailyFeedbackBanner() {
     localStorage.setItem("last_date", new Date().toDateString());
   }
   function didWeGetFeedbackToday() {
-    let last_date = localStorage.getItem("last_date");
+    let lastDate = localStorage.getItem("last_date");
     let today = new Date().toDateString();
 
-    return today == last_date;
-    //return today == last_date ? true : false;
+    return today === lastDate;
   }
   if (didWeGetFeedbackToday()) return null;
   if (!Feature.daily_feedback()) return null;
