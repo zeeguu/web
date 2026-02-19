@@ -13,6 +13,9 @@ import { APP_DOMAIN } from "./appConstants";
 export const PrivateRouteWithMainNav = ({ component: Component, ...rest }) => {
   const { session, userDetails } = useContext(UserContext);
 
+  // Separate Route-specific props from component props
+  const { path, exact, strict, sensitive, ...componentProps } = rest;
+
   if (!session) {
     return (
       <Redirect
@@ -39,9 +42,9 @@ export const PrivateRouteWithMainNav = ({ component: Component, ...rest }) => {
   return (
     <Route
       {...rest}
-      render={() => (
+      render={(routeProps) => (
         <MainNavWithComponent>
-          <Component />
+          <Component {...routeProps} {...componentProps} />
         </MainNavWithComponent>
       )}
     />

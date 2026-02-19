@@ -12,6 +12,9 @@ import { UserContext } from "./contexts/UserContext";
 const PrivateRoute = ({ component: Component, ...rest }) => {
   const { session, userDetails } = useContext(UserContext);
 
+  // Separate Route-specific props from component props
+  const { path, exact, strict, sensitive, ...componentProps } = rest;
+
   const isAccountDelition = window.location.href.includes(
     APP_DOMAIN + "account_deletion",
   );
@@ -56,7 +59,7 @@ const PrivateRoute = ({ component: Component, ...rest }) => {
     );
   }
 
-  return <Route {...rest} render={() => <Component />} />;
+  return <Route {...rest} render={(routeProps) => <Component {...routeProps} {...componentProps} />} />;
 };
 
 export { PrivateRoute };
