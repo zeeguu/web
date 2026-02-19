@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import * as s from './VirtualKeyboard.sc';
+import { insertAtCursor } from '../../utils/input/cursorAwareInsert';
 
 // Special characters for each language
 const LANGUAGE_SPECIAL_CHARS = {
@@ -49,21 +50,7 @@ export default function SpecialCharacterBar({
   const chars = isShift ? charSet.uppercase : charSet.lowercase;
 
   const handleKeyClick = (char) => {
-    // If we have access to the input, insert at cursor position
-    if (inputRef?.current) {
-      const input = inputRef.current;
-      const start = input.selectionStart || 0;
-      const end = input.selectionEnd || 0;
-      const value = input.value;
-      const newValue = value.slice(0, start) + char + value.slice(end);
-
-      input.value = newValue;
-      input.setSelectionRange(start + 1, start + 1);
-      input.focus();
-      onKeyPress(newValue);
-    } else {
-      onKeyPress(currentValue + char);
-    }
+    insertAtCursor(inputRef, char, currentValue, onKeyPress);
 
     if (isShift) {
       setIsShift(false);

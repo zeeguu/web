@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { getScriptType, SCRIPT_TYPES } from '../../utils/misc/languageScripts';
+import { insertAtCursor } from '../../utils/input/cursorAwareInsert';
 import GreekKeyboard from './GreekKeyboard';
 import DanishKeyboard from './DanishKeyboard';
 
@@ -52,41 +53,7 @@ export default function VirtualKeyboard({
 
   // Handle key press from virtual keyboard
   const handleKeyPress = (key) => {
-    // If we have access to the input, insert at cursor position
-    if (inputRef?.current) {
-      const input = inputRef.current;
-      const start = input.selectionStart || 0;
-      const end = input.selectionEnd || 0;
-      const value = input.value;
-
-      let newValue;
-      let newCursorPos;
-
-      if (key === 'BACKSPACE') {
-        if (start > 0) {
-          newValue = value.slice(0, start - 1) + value.slice(end);
-          newCursorPos = start - 1;
-        } else {
-          return; // Nothing to delete
-        }
-      } else {
-        newValue = value.slice(0, start) + key + value.slice(end);
-        newCursorPos = start + 1;
-      }
-
-      // Update input and restore cursor
-      input.value = newValue;
-      input.setSelectionRange(newCursorPos, newCursorPos);
-      input.focus();
-      onInput(newValue);
-    } else {
-      // Fallback: append to end
-      if (key === 'BACKSPACE') {
-        onInput(currentValue.slice(0, -1));
-      } else {
-        onInput(currentValue + key);
-      }
-    }
+    insertAtCursor(inputRef, key, currentValue, onInput);
   };
 
   // Select the appropriate keyboard component based on script type
