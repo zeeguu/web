@@ -20,7 +20,8 @@ export default function VirtualKeyboard({
   onInput,
   currentValue = '',
   initialCollapsed = false,
-  onCollapsedChange
+  onCollapsedChange,
+  inputRef = null, // Optional ref to input element for cursor-aware insertion
 }) {
   // Load collapsed state from localStorage
   const getInitialCollapsedState = () => {
@@ -51,12 +52,38 @@ export default function VirtualKeyboard({
 
   // Handle key press from virtual keyboard
   const handleKeyPress = (key) => {
-    if (key === 'BACKSPACE') {
-      // Remove last character
-      onInput(currentValue.slice(0, -1));
+    // If we have direct access to the input, insert at cursor position
+    if (inputRef?.current) {
+      const input = inputRef.current;
+      const start = input.selectionStart || 0;
+      const end = input.selectionEnd || 0;
+      const value = input.value;
+
+      if (key === 'BACKSPACE') {
+        if (start > 0) {
+          const newValue = value.slice(0, start - 1) + value.slice(end);
+          input.value = newValue;
+          input.setSelectionRange(start - 1, start - 1);
+          // Update width (monospace: 1ch = 1 char)
+          input.style.width = `${Math.max(newValue.length + 1, 3)}ch`;
+          onInput(newValue);
+        }
+      } else {
+        const newValue = value.slice(0, start) + key + value.slice(end);
+        input.value = newValue;
+        input.setSelectionRange(start + 1, start + 1);
+        // Update width (monospace: 1ch = 1 char)
+        input.style.width = `${Math.max(newValue.length + 1, 3)}ch`;
+        onInput(newValue);
+      }
+      input.focus();
     } else {
-      // Add character to end
-      onInput(currentValue + key);
+      // Fallback: append to end (original behavior)
+      if (key === 'BACKSPACE') {
+        onInput(currentValue.slice(0, -1));
+      } else {
+        onInput(currentValue + key);
+      }
     }
   };
 

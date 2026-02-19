@@ -504,7 +504,7 @@ const ClozeInput = styled.input`
   background: transparent;
   outline: none;
   font-size: inherit;
-  font-family: inherit;
+  font-family: monospace !important;
   text-align: ${props => props.$isOver ? 'center' : 'left'};
   width: ${props => props.$width}em;
   max-width: ${props => props.$width}em;

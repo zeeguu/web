@@ -32,6 +32,7 @@ export function ClozeTranslatableText({
   answerLanguageCode = null, // Language code for the answer
   suppressOSKeyboard = false, // Whether to suppress the OS keyboard
   aboveClozeElement = null, // Element to render above the cloze placeholder
+  onInputRefReady = null, // Callback to expose inputRef to parent
 }) {
   const [translationCount, setTranslationCount] = useState(0);
   const [clozeWordIds, setClozeWordIds] = useState([]);
@@ -41,7 +42,7 @@ export function ClozeTranslatableText({
   const [renderedText, setRenderedText] = useState();
   const [hintVisible, setHintVisible] = useState(true);
   const inputRef = useRef(null);
-  
+
   const divType = interactiveText.formatting ? interactiveText.formatting : "div";
 
   useEffect(() => {
@@ -80,7 +81,6 @@ export function ClozeTranslatableText({
     nonTranslatableWords,
     rightEllipsis,
     leftEllipsis,
-    inputValue,
     isCorrectAnswer,
     hintVisible,
   ]);
@@ -89,12 +89,37 @@ export function ClozeTranslatableText({
     if (setIsRendered) setIsRendered(true);
   }, [setIsRendered]);
 
+  // Expose inputRef to parent component
+  useEffect(() => {
+    if (onInputRefReady) {
+      onInputRefReady(inputRef);
+    }
+  }, [onInputRefReady]);
+
   // Blur input when virtual keyboard is shown to hide native keyboard
   useEffect(() => {
     if (suppressOSKeyboard && inputRef.current) {
       inputRef.current.blur();
     }
   }, [suppressOSKeyboard]);
+
+  // Show correct answer when exercise ends (for uncontrolled input)
+  useEffect(() => {
+    if (isExerciseOver && !isCorrectAnswer && inputRef.current) {
+      inputRef.current.value = clozeWord;
+    }
+  }, [isExerciseOver, isCorrectAnswer, clozeWord]);
+
+  // Sync input value when changed externally (e.g., virtual keyboard)
+  // This is needed because we use uncontrolled input (defaultValue)
+  useEffect(() => {
+    if (inputRef.current && inputRef.current.value !== inputValue) {
+      inputRef.current.value = inputValue;
+      // Also update width
+      const newWidth = Math.max(inputValue.length + 1, 3);
+      inputRef.current.style.width = `${newWidth}ch`;
+    }
+  }, [inputValue]);
 
   function wordUpdated() {
     setTranslationCount(translationCount + 1);
@@ -248,6 +273,11 @@ export function ClozeTranslatableText({
       }
     }
 
+    // Update width directly on DOM (bypasses React state)
+    // With monospace font, 1ch = 1 character exactly
+    const newWidth = Math.max(value.length + 1, 3);
+    e.target.style.width = `${newWidth}ch`;
+
     if (onInputChange) {
       onInputChange(value, e.target);
     }
@@ -331,35 +361,12 @@ export function ClozeTranslatableText({
 
       if (clozeWordIds[0] === word.id) {
         // Inline input field for cloze exercise
-        const currentValue = isExerciseOver && !isCorrectAnswer ? clozeWord : inputValue;
-        
-        // Function to measure actual text width
-        const measureTextWidth = (text) => {
-          if (!text) return 4; // Default for empty text
-          
-          // Create a temporary span to measure text
-          const span = document.createElement('span');
-          span.style.visibility = 'hidden';
-          span.style.position = 'absolute';
-          span.style.whiteSpace = 'nowrap';
-          span.style.fontSize = 'inherit';
-          span.style.fontFamily = 'inherit';
-          span.style.fontWeight = (isCorrectAnswer || isExerciseOver) ? '700' : 'normal';
-          span.textContent = text;
-          
-          document.body.appendChild(span);
-          const width = span.getBoundingClientRect().width;
-          document.body.removeChild(span);
-          
-          // Convert to em units (approximately) and add some padding
-          return (width / 16) + 0.5; // Assuming 1em ≈ 16px, plus padding
-        };
-        
-        const inputWidth = (isCorrectAnswer || isExerciseOver) ? 
-          measureTextWidth(currentValue) : // Exact fit when finalized
-          Math.max(currentValue.length * 0.8, 4); // Generous width during typing
-        
         const isOver = isCorrectAnswer || isExerciseOver;
+
+        // Calculate initial width (monospace: 1ch = 1 char)
+        const initialWidth = isOver
+          ? Math.max(clozeWord.length + 1, 3)
+          : Math.max((inputValue?.length || 0) + 1, 3);
 
         return (
           <s.ClozeWrapper
@@ -373,21 +380,21 @@ export function ClozeTranslatableText({
           >
             {canTypeInline ? (
               <s.ClozeInputWrapper>
-                {showHint && hintVisible && inputValue === '' && !isExerciseOver && (
+                {showHint && hintVisible && !isExerciseOver && (
                   <s.ClozeHint>tap to type</s.ClozeHint>
                 )}
                 <s.ClozeInput
                   ref={inputRef}
                   type="text"
-                  value={isExerciseOver && !isCorrectAnswer ? clozeWord : inputValue}
+                  defaultValue={inputValue}
                   placeholder={placeholder}
                   onChange={handleInputChange}
                   onKeyPress={handleInputKeyPress}
                   disabled={isOver}
                   $isOver={isOver}
                   $isCorrect={isCorrectAnswer}
-                  $isEmpty={inputValue === ''}
-                  $width={inputWidth}
+                  $isEmpty={hintVisible}
+                  style={{ width: `${initialWidth}ch` }}
                   autoComplete="off"
                   spellCheck="false"
                 />

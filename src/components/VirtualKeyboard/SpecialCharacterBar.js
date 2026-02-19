@@ -38,7 +38,8 @@ export function hasSpecialCharacters(languageCode) {
 export default function SpecialCharacterBar({
   languageCode,
   onKeyPress,
-  currentValue = ''
+  currentValue = '',
+  inputRef = null, // Optional ref to input element for cursor-aware insertion
 }) {
   const [isShift, setIsShift] = useState(false);
 
@@ -48,7 +49,23 @@ export default function SpecialCharacterBar({
   const chars = isShift ? charSet.uppercase : charSet.lowercase;
 
   const handleKeyClick = (char) => {
-    onKeyPress(currentValue + char);
+    // If we have direct access to the input, insert at cursor position
+    if (inputRef?.current) {
+      const input = inputRef.current;
+      const start = input.selectionStart || 0;
+      const end = input.selectionEnd || 0;
+      const value = input.value;
+      const newValue = value.slice(0, start) + char + value.slice(end);
+      input.value = newValue;
+      input.setSelectionRange(start + 1, start + 1);
+      // Update width (monospace: 1ch = 1 char)
+      input.style.width = `${Math.max(newValue.length + 1, 3)}ch`;
+      onKeyPress(newValue);
+      input.focus();
+    } else {
+      // Fallback: append to end
+      onKeyPress(currentValue + char);
+    }
     if (isShift) {
       setIsShift(false);
     }
