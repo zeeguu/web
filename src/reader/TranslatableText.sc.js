@@ -484,6 +484,7 @@ const ClozeWrapper = styled.span`
 
 const ClozeInputWrapper = styled.span`
   position: relative;
+  display: inline-block;
 `;
 
 const ClozeHint = styled.div`
@@ -504,11 +505,11 @@ const ClozeInput = styled.input`
   background: transparent;
   outline: none;
   font-size: inherit;
-  font-family: inherit;
+  font-family: monospace !important;
   text-align: ${props => props.$isOver ? 'center' : 'left'};
-  width: ${props => props.$width}em;
-  max-width: ${props => props.$width}em;
-  min-width: ${props => props.$isOver ? '2em' : '4em'};
+  width: ${props => props.$width}ch;
+  max-width: ${props => props.$width}ch;
+  min-width: ${props => props.$isOver ? '2ch' : '8ch'};
   padding: 2px 4px;
   margin: 0;
   color: ${props => props.$isOver ? orange600 : 'inherit'};
