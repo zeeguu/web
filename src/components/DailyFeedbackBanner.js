@@ -1,21 +1,16 @@
-import { useContext, useState } from "react";
+import { useState } from "react";
 import * as s from "./Banners.sc";
 import Feature from "../features/Feature";
+import LocalStorage from "../assorted/LocalStorage.js";
 
 export default function DailyFeedbackBanner() {
-  const [showDailyFeedback, setShowDailyFeedback] = useState(true);
+  const [showDailyFeedback, setShowDailyFeedback] = useState(() => !LocalStorage.didShowDailyFeedbackToday());
 
   function handleClick() {
     setShowDailyFeedback(false);
-    localStorage.setItem("last_date", new Date().toDateString());
+    LocalStorage.setDailyFeedbackShown();
   }
-  function didWeGetFeedbackToday() {
-    let lastDate = localStorage.getItem("last_date");
-    let today = new Date().toDateString();
 
-    return today === lastDate;
-  }
-  if (didWeGetFeedbackToday()) return null;
   if (!Feature.daily_feedback()) return null;
 
   if (!showDailyFeedback) return null;
