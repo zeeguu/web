@@ -33,7 +33,7 @@ export function ClozeTranslatableText({
   answerLanguageCode = null, // Language code for the answer
   suppressOSKeyboard = false, // Whether to suppress the OS keyboard
   aboveClozeElement = null, // Element to render above the cloze placeholder
-  onInputRefReady = null, // Callback to expose inputRef to parent
+  onInputRef = null, // Callback to expose inputRef to parent
 }) {
   const [translationCount, setTranslationCount] = useState(0);
   const [hintVisible, setHintVisible] = useState(true);
@@ -145,8 +145,8 @@ export function ClozeTranslatableText({
 
   // Expose inputRef to parent for virtual keyboard
   useEffect(() => {
-    if (onInputRefReady) onInputRefReady(inputRef);
-  }, [onInputRefReady]);
+    if (onInputRef) onInputRef(inputRef);
+  }, [onInputRef]);
 
   // Blur input when virtual keyboard is shown to hide native keyboard
   useEffect(() => {

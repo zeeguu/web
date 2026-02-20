@@ -81,7 +81,7 @@ const ClozeContextWithExchange = forwardRef(function ClozeContextWithExchange(
           answerLanguageCode={answerLanguageCode}
           suppressOSKeyboard={suppressOSKeyboard}
           aboveClozeElement={aboveClozeElement}
-          onInputRefReady={(ref) => { clozeInputRef.current = ref; }}
+          onInputRef={(ref) => { clozeInputRef.current = ref; }}
         />
         {onExampleUpdated && isExerciseOver && (
           <div
