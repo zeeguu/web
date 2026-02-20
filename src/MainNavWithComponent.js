@@ -81,7 +81,7 @@ export default function MainNavWithComponent(props) {
             id="scrollHolder"
           >
             {screenWidth <= MOBILE_WIDTH && <StreakBanner />}
-            {screenWidth <= MOBILE_WIDTH && <DailyFeedbackBanner />}
+            {screenWidth <= MOBILE_WIDTH && Feature.daily_feedback() && <DailyFeedbackBanner />}
             {appContent}
           </s.AppContent>
         </s.MainNavWithComponent>

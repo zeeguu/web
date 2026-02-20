@@ -11,8 +11,6 @@ export default function DailyFeedbackBanner() {
     LocalStorage.setDailyFeedbackShown();
   }
 
-  if (!Feature.daily_feedback()) return null;
-
   if (!showDailyFeedback) return null;
   return (
     <s.DailyFeedbackBannerContainer>
