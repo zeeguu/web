@@ -1,6 +1,5 @@
-import { useState, useEffect, createElement, useRef, useMemo } from "react";
+import { useState, useEffect, createElement, useMemo } from "react";
 import TranslatableWord from "./TranslatableWord";
-import ClozeInputField from "./ClozeInputField";
 import * as s from "./TranslatableText.sc";
 import { removePunctuation } from "../utils/text/preprocessing";
 import { orange600 } from "../components/colors";
@@ -17,27 +16,13 @@ export function ClozeTranslatableText({
   rightEllipsis,
   // exercise related
   isExerciseOver,
-  clozeWord, // Word(s) to hide and replace with input field
+  clozeWord, // Word(s) to hide and replace with slot
   nonTranslatableWords, // Word(s) that should not be clickable for translation
-  overrideBookmarkHighlightText,
   updateBookmarks,
-  // cloze specific props
-  onInputChange,
-  onInputSubmit,
-  inputValue = "",
-  placeholder = "",
-  isCorrectAnswer = false,
-  shouldFocus = true,
-  showHint = true, // Whether to show "tap to type" hint
-  canTypeInline = false, // Whether this exercise type allows inline typing
-  answerLanguageCode = null, // Language code for the answer
-  suppressOSKeyboard = false, // Whether to suppress the OS keyboard
-  aboveClozeElement = null, // Element to render above the cloze placeholder
-  onInputRef = null, // Callback to expose inputRef to parent
+  // render prop for cloze slot
+  renderClozeSlot = null, // (wordId) => ReactElement
 }) {
   const [translationCount, setTranslationCount] = useState(0);
-  const [hintVisible, setHintVisible] = useState(true);
-  const inputRef = useRef(null);
 
   const divType = interactiveText.formatting ? interactiveText.formatting : "div";
 
@@ -143,66 +128,9 @@ export function ClozeTranslatableText({
     if (setIsRendered) setIsRendered(true);
   }, [setIsRendered]);
 
-  // Expose inputRef to parent for virtual keyboard
-  useEffect(() => {
-    if (onInputRef) onInputRef(inputRef);
-  }, [onInputRef]);
-
-  // Blur input when virtual keyboard is shown to hide native keyboard
-  useEffect(() => {
-    if (suppressOSKeyboard && inputRef.current) {
-      inputRef.current.blur();
-    }
-  }, [suppressOSKeyboard]);
-
   function wordUpdated() {
     setTranslationCount(translationCount + 1);
     if (updateBookmarks) updateBookmarks();
-  }
-
-  function handleInputKeyPress(e) {
-    if (e.key === 'Enter') {
-      e.preventDefault();
-      if (onInputSubmit) {
-        onInputSubmit(e.target.value, e.target);
-      }
-    }
-  }
-
-  function handleInputChange(e) {
-    // Only hide hint when user actually has typed something
-    if (e.target.value.length > 0) {
-      setHintVisible(false);
-    }
-
-    let value = e.target.value;
-
-    // Save cursor position before any modifications
-    const cursorPosition = e.target.selectionStart;
-
-    // Match capitalization of the solution
-    if (clozeWord && value) {
-      const solution = clozeWord;
-      if (solution.length > 0) {
-        // If solution starts with uppercase, capitalize first letter
-        if (solution[0] === solution[0].toUpperCase()) {
-          value = value.charAt(0).toUpperCase() + value.slice(1).toLowerCase();
-        } else {
-          // Otherwise make it lowercase
-          value = value.toLowerCase();
-        }
-
-        // Update the input value to match our formatting
-        e.target.value = value;
-
-        // Restore cursor position after setting value
-        e.target.setSelectionRange(cursorPosition, cursorPosition);
-      }
-    }
-
-    if (onInputChange) {
-      onInputChange(value, e.target);
-    }
   }
 
   // Render a single word - this is now a pure function of its inputs
@@ -261,26 +189,9 @@ export function ClozeTranslatableText({
         );
       }
 
-      // Render the cloze input for the first cloze word
-      if (clozeWordIds[0] === word.id) {
-        return (
-          <ClozeInputField
-            key={word.id}
-            wordId={word.id}
-            inputRef={inputRef}
-            inputValue={inputValue}
-            clozeWord={clozeWord}
-            placeholder={placeholder}
-            isExerciseOver={isExerciseOver}
-            isCorrectAnswer={isCorrectAnswer}
-            canTypeInline={canTypeInline}
-            showHint={showHint}
-            hintVisible={hintVisible}
-            aboveClozeElement={aboveClozeElement}
-            onInputChange={handleInputChange}
-            onInputKeyPress={handleInputKeyPress}
-          />
-        );
+      // Render the cloze slot for the first cloze word
+      if (clozeWordIds[0] === word.id && renderClozeSlot) {
+        return renderClozeSlot(word.id);
       }
 
       if (disableTranslation) {
