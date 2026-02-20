@@ -8,7 +8,7 @@ import shuffle from "../../../assorted/fisherYatesShuffle";
 import { removePunctuation, tokenize } from "../../../utils/text/preprocessing";
 import useSubSessionTimer from "../../../hooks/useSubSessionTimer.js";
 import { removeArrayDuplicates } from "../../../utils/basic/arrays.js";
-import { TranslatableText } from "../../../reader/TranslatableText.js";
+import { ClozeTranslatableText } from "../../components/ClozeTranslatableText.js";
 import InteractiveText from "../../../reader/InteractiveText.js";
 import { SpeechContext } from "../../../contexts/SpeechContext.js";
 import { APIContext } from "../../../contexts/APIContext.js";
@@ -966,11 +966,18 @@ export default function OrderWords({
         <div className="headline headlineOrderWords">{strings.orderTheWordsToMakeTheHighlightedPhrase}</div>
         {isCorrect && (
           <div className="contextExample" style={{ marginBottom: "2em" }}>
-            <TranslatableText
+            <ClozeTranslatableText
               interactiveText={interactiveText}
               translating={true}
               pronouncing={false}
-              highlightExpression={removePunctuation(exerciseContext)}
+              isExerciseOver={isCorrect}
+              clozePhrase={removePunctuation(exerciseContext)}
+              nonTranslatableWords={removePunctuation(exerciseContext)}
+              renderClozeSlot={(wordId) => (
+                <span key={wordId} style={{ color: "#f8bb86", fontWeight: "bold" }}>
+                  {exerciseContext + " "}
+                </span>
+              )}
             />
           </div>
         )}
