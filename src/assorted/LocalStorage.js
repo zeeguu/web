@@ -32,6 +32,7 @@ const LocalStorage = {
     lastExerciseCompleteDate: "last_exercise_complete_date",
     LastVisitedPage: "last_visited_page",
     LastVisitedTeacherPage: "last_visited_teacher_page",
+    DailyFeedbackLastShown: "daily_feedback_last_shown",
   },
 
   userInfo: function () {
@@ -318,6 +319,15 @@ const LocalStorage = {
 
   setAnonUpgradeDismissed: function (dismissed) {
     localStorage[this.Keys.AnonUpgradeDismissed] = dismissed ? "true" : "false";
+  },
+
+  didShowDailyFeedbackToday: function () {
+    const lastDate = localStorage[this.Keys.DailyFeedbackLastShown];
+    return lastDate === new Date().toDateString();
+  },
+
+  setDailyFeedbackShown: function () {
+    localStorage[this.Keys.DailyFeedbackLastShown] = new Date().toDateString();
   },
 };
 

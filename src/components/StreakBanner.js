@@ -4,7 +4,7 @@ import { ProgressContext } from "../contexts/ProgressContext";
 import { UserContext } from "../contexts/UserContext";
 import LocalFireDepartmentIcon from "@mui/icons-material/LocalFireDepartment";
 import strings from "../i18n/definitions";
-import * as s from "./StreakBanner.sc";
+import * as s from "./Banners.sc";
 
 export default function StreakBanner() {
   const { daysPracticed } = useContext(ProgressContext);
@@ -18,11 +18,7 @@ export default function StreakBanner() {
       <LocalFireDepartmentIcon sx={{ color: "#ff9800", fontSize: "1.2rem" }} />
       <s.StreakValue>{daysPracticed}</s.StreakValue>
       <s.StreakLabel>
-        {strings.streakDay}{" "}
-        <s.FlagImage
-          src={`/static/flags-new/${userDetails?.learned_language}.svg`}
-          alt=""
-        />{" "}
+        {strings.streakDay} <s.FlagImage src={`/static/flags-new/${userDetails?.learned_language}.svg`} alt="" />{" "}
         {strings.streakStreak}
       </s.StreakLabel>
     </s.StreakBannerContainer>
