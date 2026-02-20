@@ -4,11 +4,11 @@ import { findClozeWordIds } from "../utils/findClozeWordIds.js";
 import ReplaceExampleModal from "../replaceExample/ReplaceExampleModal.js";
 
 /**
- * Displays exercise context with optional word highlighting.
+ * Displays exercise context with word highlighting (no cloze input).
  * Used by exercises that don't need a cloze blank (e.g., click-word, multiple-choice).
  *
- * Uses ClozeTranslatableText with empty clozeWordIds to get exercise features
- * (nonTranslatableWords, highlighting) without showing a blank.
+ * Highlights the target expression when highlightExpression is provided.
+ * Uses ClozeTranslatableText without renderClozeSlot for highlighting only.
  */
 const ContextWithExchange = forwardRef(function ContextWithExchange(
   {

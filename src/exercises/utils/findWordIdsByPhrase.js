@@ -16,17 +16,17 @@ export function findWordIdsByPhrase(interactiveText, phrase) {
   const paragraphs = interactiveText.paragraphsAsLinkedWordLists;
   if (!paragraphs || !paragraphs[0]) return [];
 
-  const targetWords = phrase.split(" ");
+  const targetWords = phrase.split(" ").map(w => removePunctuation(w).toLowerCase());
   let word = paragraphs[0].linkedWords.head;
 
   while (word) {
-    if (removePunctuation(word.word).toLowerCase() === targetWords[0].toLowerCase()) {
+    if (removePunctuation(word.word).toLowerCase() === targetWords[0]) {
       let matchedIds = [];
       let currentWord = word;
       let matched = true;
 
       for (let i = 0; i < targetWords.length; i++) {
-        if (currentWord && removePunctuation(currentWord.word).toLowerCase() === targetWords[i].toLowerCase()) {
+        if (currentWord && removePunctuation(currentWord.word).toLowerCase() === targetWords[i]) {
           matchedIds.push(currentWord.id);
           currentWord = currentWord.next;
         } else {

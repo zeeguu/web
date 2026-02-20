@@ -45,11 +45,11 @@ export function ClozeTranslatableText({
     if (!nonTranslatableWords || !interactiveText || isExerciseOver) return [];
 
     const targetWords = nonTranslatableWords.split(" ").map(w => removePunctuation(w).toLowerCase());
-    const paragraphs = interactiveText.paragraphsAsLinkedWordLists;
-    if (!paragraphs || !paragraphs[0]) return [];
+    const linkedWordLists = interactiveText.paragraphsAsLinkedWordLists;
+    if (!linkedWordLists || !linkedWordLists[0]) return [];
 
     const foundIds = [];
-    let word = paragraphs[0].linkedWords.head;
+    let word = linkedWordLists[0].linkedWords.head;
 
     while (word) {
       if (removePunctuation(word.word).toLowerCase() === targetWords[0]) {
