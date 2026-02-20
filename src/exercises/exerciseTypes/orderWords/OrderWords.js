@@ -10,7 +10,6 @@ import useSubSessionTimer from "../../../hooks/useSubSessionTimer.js";
 import { removeArrayDuplicates } from "../../../utils/basic/arrays.js";
 import { TranslatableText } from "../../../reader/TranslatableText.js";
 import InteractiveText from "../../../reader/InteractiveText.js";
-import ClozeStaticReveal from "../../components/ClozeStaticReveal.js";
 import { SpeechContext } from "../../../contexts/SpeechContext.js";
 import { APIContext } from "../../../contexts/APIContext.js";
 import { CORRECT, HINT, SOLUTION } from "../../ExerciseConstants.js";
@@ -965,34 +964,13 @@ export default function OrderWords({
     <>
       <sOW.ExerciseOW className="orderWords" onTouchMove={handleTouchScroll} id="orderExercise">
         <div className="headline headlineOrderWords">{strings.orderTheWordsToMakeTheHighlightedPhrase}</div>
-        {isCorrect && EXERCISE_TYPE === TYPE_L1_CONSTRUCTION && (
+        {isCorrect && (
           <div className="contextExample" style={{ marginBottom: "2em" }}>
             <TranslatableText
-              isExerciseOver={isCorrect}
               interactiveText={interactiveText}
               translating={true}
               pronouncing={false}
-              clozeWord={removePunctuation(exerciseContext)}
-              nonTranslatableWords={removePunctuation(exerciseContext)}
-              renderClozeSlot={(word) => (
-                <ClozeStaticReveal key={word.id} word={word} isExerciseOver={isCorrect} />
-              )}
-            />
-          </div>
-        )}
-        {isCorrect && EXERCISE_TYPE === TYPE_L2_CONSTRUCTION && (
-          <div className="contextExample" style={{ marginBottom: "2em" }}>
-            <TranslatableText
-              isExerciseOver={isCorrect}
-              interactiveText={interactiveText}
-              translating={true}
-              pronouncing={false}
-              clozeWord={removePunctuation(exerciseContext)}
-              nonTranslatableWords={removePunctuation(exerciseContext)}
-              overrideBookmarkHighlightText={exerciseText}
-              renderClozeSlot={(word) => (
-                <ClozeStaticReveal key={word.id} word={word} isExerciseOver={isCorrect} />
-              )}
+              highlightExpression={removePunctuation(exerciseContext)}
             />
           </div>
         )}
