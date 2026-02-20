@@ -10,6 +10,7 @@ import useSubSessionTimer from "../../../hooks/useSubSessionTimer.js";
 import { removeArrayDuplicates } from "../../../utils/basic/arrays.js";
 import { TranslatableText } from "../../../reader/TranslatableText.js";
 import InteractiveText from "../../../reader/InteractiveText.js";
+import ClozeStaticReveal from "../../components/ClozeStaticReveal.js";
 import { SpeechContext } from "../../../contexts/SpeechContext.js";
 import { APIContext } from "../../../contexts/APIContext.js";
 import { CORRECT, HINT, SOLUTION } from "../../ExerciseConstants.js";
@@ -973,6 +974,9 @@ export default function OrderWords({
               pronouncing={false}
               clozeWord={removePunctuation(exerciseContext)}
               nonTranslatableWords={removePunctuation(exerciseContext)}
+              renderClozeSlot={(word) => (
+                <ClozeStaticReveal key={word.id} word={word} isExerciseOver={isCorrect} />
+              )}
             />
           </div>
         )}
@@ -986,6 +990,9 @@ export default function OrderWords({
               clozeWord={removePunctuation(exerciseContext)}
               nonTranslatableWords={removePunctuation(exerciseContext)}
               overrideBookmarkHighlightText={exerciseText}
+              renderClozeSlot={(word) => (
+                <ClozeStaticReveal key={word.id} word={word} isExerciseOver={isCorrect} />
+              )}
             />
           </div>
         )}

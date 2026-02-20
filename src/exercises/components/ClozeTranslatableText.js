@@ -1,8 +1,8 @@
 import { useState, useEffect, createElement, useMemo } from "react";
-import TranslatableWord from "./TranslatableWord";
-import * as s from "./TranslatableText.sc";
-import { removePunctuation } from "../utils/text/preprocessing";
-import { orange600 } from "../components/colors";
+import TranslatableWord from "../../reader/TranslatableWord";
+import * as s from "../../reader/TranslatableText.sc";
+import { removePunctuation } from "../../utils/text/preprocessing";
+import { orange600 } from "../../components/colors";
 
 /**
  * Renders translatable text with a "slot" for cloze exercises.

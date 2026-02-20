@@ -1,6 +1,6 @@
 import { forwardRef, useContext, useState, useRef } from "react";
-import { ClozeTranslatableText } from "../../reader/ClozeTranslatableText.js";
-import ClozeInputField from "../../reader/ClozeInputField.js";
+import { ClozeTranslatableText } from "./ClozeTranslatableText.js";
+import ClozeInputField from "./ClozeInputField.js";
 import ReplaceExampleModal from "../replaceExample/ReplaceExampleModal.js";
 import VirtualKeyboard from "../../components/VirtualKeyboard/VirtualKeyboard.js";
 import SpecialCharacterBar, { hasSpecialCharacters } from "../../components/VirtualKeyboard/SpecialCharacterBar.js";

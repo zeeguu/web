@@ -1,4 +1,4 @@
-import { orange500 } from "../components/colors";
+import { orange500 } from "../../components/colors";
 
 /**
  * Static cloze placeholder that shows an underline during exercise,

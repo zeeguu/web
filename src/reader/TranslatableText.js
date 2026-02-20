@@ -1,6 +1,5 @@
 import { useState, useEffect, useMemo, createElement } from "react";
 import TranslatableWord from "./TranslatableWord";
-import ClozeStaticReveal from "./ClozeStaticReveal";
 import * as s from "./TranslatableText.sc";
 import { removePunctuation } from "../utils/text/preprocessing";
 import { orange500 } from "../components/colors";
@@ -16,10 +15,11 @@ export function TranslatableText({
   showMweHints,
   // exercise related
   isExerciseOver,
-  clozeWord, // Word(s) to hide and replace with underlines/placeholders in cloze exercises
+  clozeWord, // Word(s) to hide and replace with slot
   nonTranslatableWords, // Word(s) that should not be clickable for translation
   overrideBookmarkHighlightText, // boldAndDeactivatedText -- used in OrderWords
-  updateBookmarks, // callback - should be probably named: notifyWordTranslated --- actually only used once in ArticleReader, in quite a bad way. consider alterantoves
+  updateBookmarks, // callback - should be probably named: notifyWordTranslated
+  renderClozeSlot = null, // (word) => ReactElement - renders the cloze slot
 }) {
   const [translationCount, setTranslationCount] = useState(0);
   const [nonTranslatableWordIds, setNonTranslatableWordIds] = useState([]);
@@ -317,8 +317,8 @@ export function TranslatableText({
         );
       }
 
-      if (clozeWordIds[0] === word.id) {
-        return <ClozeStaticReveal key={word.id} word={word} isExerciseOver={isExerciseOver} />;
+      if (clozeWordIds[0] === word.id && renderClozeSlot) {
+        return renderClozeSlot(word);
       }
 
       if (disableTranslation) {

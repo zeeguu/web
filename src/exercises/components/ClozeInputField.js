@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import * as s from "./TranslatableText.sc";
+import * as s from "../../reader/TranslatableText.sc";
 
 /**
  * Self-contained cloze input field component.
