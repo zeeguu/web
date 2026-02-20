@@ -3,7 +3,14 @@ import * as s from "./TranslatableText.sc";
 
 /**
  * Self-contained cloze input field component.
- * Handles its own state (hint visibility) and input processing (auto-capitalization).
+ *
+ * Owns all input-specific concerns:
+ * - Hint visibility state ("tap to type")
+ * - Auto-capitalization to match solution
+ * - Ref management for virtual keyboard integration
+ * - OS keyboard suppression when virtual keyboard is active
+ *
+ * This keeps ClozeTranslatableText focused on text rendering only.
  */
 export default function ClozeInputField({
   wordId,

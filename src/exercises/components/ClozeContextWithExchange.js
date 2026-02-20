@@ -7,6 +7,16 @@ import SpecialCharacterBar, { hasSpecialCharacters } from "../../components/Virt
 import { needsVirtualKeyboard } from "../../utils/misc/languageScripts.js";
 import { UserContext } from "../../contexts/UserContext.js";
 
+/**
+ * Orchestrates cloze exercises by combining:
+ * - ClozeTranslatableText: renders text with a slot for the cloze input
+ * - ClozeInputField: the actual input (provided via render prop)
+ * - VirtualKeyboard/SpecialCharacterBar: language-specific input aids
+ *
+ * This component owns the cloze-specific props and passes them to
+ * ClozeInputField via the renderClozeSlot render prop pattern.
+ */
+
 // Check localStorage for keyboard collapsed state
 const getInitialKeyboardCollapsed = () => {
   try {

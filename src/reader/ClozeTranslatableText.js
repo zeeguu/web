@@ -4,6 +4,18 @@ import * as s from "./TranslatableText.sc";
 import { removePunctuation } from "../utils/text/preprocessing";
 import { orange600 } from "../components/colors";
 
+/**
+ * Renders translatable text with a "slot" for cloze exercises.
+ *
+ * This component is intentionally decoupled from input handling.
+ * It only knows how to:
+ * - Render translatable words
+ * - Find where the cloze word is
+ * - Call renderClozeSlot(wordId) at that position
+ *
+ * The parent provides the actual cloze input via the render prop,
+ * keeping all input-specific logic (hints, keyboards, etc.) separate.
+ */
 export function ClozeTranslatableText({
   interactiveText,
   translating,
