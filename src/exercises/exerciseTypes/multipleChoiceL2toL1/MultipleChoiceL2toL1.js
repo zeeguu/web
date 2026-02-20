@@ -69,11 +69,6 @@ export default function MultipleChoiceL2toL1({
       contextOffset: exerciseBookmark.context_sent || 0
     };
 
-    console.log("=== MultipleChoiceL2toL1 DEBUG ===");
-    console.log("Exercise bookmark:", exerciseBookmark);
-    console.log("Word to highlight:", exerciseBookmark.from);
-    console.log("Expected position:", expectedPosition);
-
     setInteractiveText(
       new InteractiveExerciseText(
         exerciseBookmark.context_tokenized,
