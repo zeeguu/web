@@ -1,10 +1,22 @@
-import { forwardRef, useContext, useState } from "react";
-import { ClozeTranslatableText } from "../../reader/ClozeTranslatableText.js";
+import { forwardRef, useContext, useState, useRef, useMemo } from "react";
+import { ClozeTranslatableText } from "./ClozeTranslatableText.js";
+import ClozeInputField from "./ClozeInputField.js";
 import ReplaceExampleModal from "../replaceExample/ReplaceExampleModal.js";
 import VirtualKeyboard from "../../components/VirtualKeyboard/VirtualKeyboard.js";
 import SpecialCharacterBar, { hasSpecialCharacters } from "../../components/VirtualKeyboard/SpecialCharacterBar.js";
 import { needsVirtualKeyboard } from "../../utils/misc/languageScripts.js";
 import { UserContext } from "../../contexts/UserContext.js";
+import { findClozeWordIds } from "../utils/findClozeWordIds.js";
+
+/**
+ * Orchestrates cloze exercises by combining:
+ * - ClozeTranslatableText: renders text with a slot for the cloze input
+ * - ClozeInputField: the actual input (provided via render prop)
+ * - VirtualKeyboard/SpecialCharacterBar: language-specific input aids
+ *
+ * This component owns the cloze-specific props and passes them to
+ * ClozeInputField via the renderClozeSlot render prop pattern.
+ */
 
 // Check localStorage for keyboard collapsed state
 const getInitialKeyboardCollapsed = () => {
@@ -26,29 +38,34 @@ const ClozeContextWithExchange = forwardRef(function ClozeContextWithExchange(
     onExampleUpdated,
     translating = true,
     pronouncing = false,
-    highlightExpression,
     // cloze specific props
     onInputChange,
     onInputSubmit,
     inputValue,
     placeholder,
     isCorrectAnswer,
-    shouldFocus,
     showHint = true,
     canTypeInline = false,
-    showCloze = true, // New prop to control whether to show a cloze/blank
+    showCloze = true, // Control whether to show a cloze/blank
     aboveClozeElement = null, // Element to render above the cloze placeholder
   },
   ref,
 ) {
   const { userDetails } = useContext(UserContext);
   const [isKeyboardCollapsed, setIsKeyboardCollapsed] = useState(getInitialKeyboardCollapsed);
+  const clozeInputRef = useRef(null);
 
   // Determine the language for the answer (L2 for this exercise type)
   const answerLanguageCode = exerciseBookmark?.from_lang;
   const showVirtualKeyboard =
     answerLanguageCode && needsVirtualKeyboard(answerLanguageCode, userDetails?.id) && canTypeInline && !isExerciseOver;
   const suppressOSKeyboard = showVirtualKeyboard && !isKeyboardCollapsed;
+
+  // Compute cloze word IDs from bookmark position (stable reference)
+  const clozeWordIds = useMemo(() => {
+    if (!showCloze) return [];
+    return findClozeWordIds(interactiveText, exerciseBookmark);
+  }, [interactiveText, exerciseBookmark, showCloze]);
 
   return (
     <div style={{ textAlign: "center" }}>
@@ -64,22 +81,28 @@ const ClozeContextWithExchange = forwardRef(function ClozeContextWithExchange(
           pronouncing={pronouncing}
           translatedWords={translatedWords}
           setTranslatedWords={setTranslatedWords}
-          clozeWord={showCloze ? exerciseBookmark.from : null} // Only pass clozeWord if we want a blank
+          clozeWordIds={clozeWordIds}
           nonTranslatableWords={exerciseBookmark.from}
           leftEllipsis={exerciseBookmark.left_ellipsis}
           rightEllipsis={exerciseBookmark.right_ellipsis}
-          highlightExpression={highlightExpression}
-          onInputChange={onInputChange}
-          onInputSubmit={onInputSubmit}
-          inputValue={inputValue}
-          placeholder={placeholder}
-          isCorrectAnswer={isCorrectAnswer}
-          shouldFocus={shouldFocus}
-          showHint={showHint}
-          canTypeInline={canTypeInline}
-          answerLanguageCode={answerLanguageCode}
-          suppressOSKeyboard={suppressOSKeyboard}
-          aboveClozeElement={aboveClozeElement}
+          renderClozeSlot={(wordId) => (
+            <ClozeInputField
+              key={wordId}
+              wordId={wordId}
+              clozePhrase={exerciseBookmark.from}
+              inputValue={inputValue}
+              placeholder={placeholder}
+              isExerciseOver={isExerciseOver}
+              isCorrectAnswer={isCorrectAnswer}
+              canTypeInline={canTypeInline}
+              showHint={showHint}
+              aboveClozeElement={aboveClozeElement}
+              suppressOSKeyboard={suppressOSKeyboard}
+              onInputChange={onInputChange}
+              onInputSubmit={onInputSubmit}
+              onInputRef={(ref) => { clozeInputRef.current = ref; }}
+            />
+          )}
         />
         {onExampleUpdated && isExerciseOver && (
           <div
@@ -109,6 +132,7 @@ const ClozeContextWithExchange = forwardRef(function ClozeContextWithExchange(
             currentValue={inputValue}
             initialCollapsed={false}
             onCollapsedChange={setIsKeyboardCollapsed}
+            inputRef={clozeInputRef.current}
           />
         </div>
       )}
@@ -121,6 +145,7 @@ const ClozeContextWithExchange = forwardRef(function ClozeContextWithExchange(
             languageCode={answerLanguageCode}
             onKeyPress={onInputChange}
             currentValue={inputValue}
+            inputRef={clozeInputRef.current}
           />
         </div>
       )}

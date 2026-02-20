@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { getScriptType, SCRIPT_TYPES } from '../../utils/misc/languageScripts';
+import { insertAtCursor } from '../../utils/input/cursorAwareInsert';
 import GreekKeyboard from './GreekKeyboard';
 import DanishKeyboard from './DanishKeyboard';
 
@@ -20,7 +21,8 @@ export default function VirtualKeyboard({
   onInput,
   currentValue = '',
   initialCollapsed = false,
-  onCollapsedChange
+  onCollapsedChange,
+  inputRef = null, // Optional ref to input for cursor-aware insertion
 }) {
   // Load collapsed state from localStorage
   const getInitialCollapsedState = () => {
@@ -51,13 +53,7 @@ export default function VirtualKeyboard({
 
   // Handle key press from virtual keyboard
   const handleKeyPress = (key) => {
-    if (key === 'BACKSPACE') {
-      // Remove last character
-      onInput(currentValue.slice(0, -1));
-    } else {
-      // Add character to end
-      onInput(currentValue + key);
-    }
+    insertAtCursor(inputRef, key, currentValue, onInput);
   };
 
   // Select the appropriate keyboard component based on script type

@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useContext } from "react";
+import { useState, useEffect, useRef, useContext, useMemo } from "react";
 import * as sOW from "./ExerciseTypeOW.sc.js";
 import OrderWordsInput from "./OrderWordsInput.js";
 import LoadingAnimation from "../../../components/LoadingAnimation";
@@ -8,11 +8,12 @@ import shuffle from "../../../assorted/fisherYatesShuffle";
 import { removePunctuation, tokenize } from "../../../utils/text/preprocessing";
 import useSubSessionTimer from "../../../hooks/useSubSessionTimer.js";
 import { removeArrayDuplicates } from "../../../utils/basic/arrays.js";
-import { TranslatableText } from "../../../reader/TranslatableText.js";
+import { ClozeTranslatableText } from "../../components/ClozeTranslatableText.js";
 import InteractiveText from "../../../reader/InteractiveText.js";
 import { SpeechContext } from "../../../contexts/SpeechContext.js";
 import { APIContext } from "../../../contexts/APIContext.js";
 import { CORRECT, HINT, SOLUTION } from "../../ExerciseConstants.js";
+import { findWordIdsByPhrase } from "../../utils/findWordIdsByPhrase.js";
 
 export default function OrderWords({
   bookmarksToStudy,
@@ -83,6 +84,12 @@ export default function OrderWords({
   const scrollY = useRef();
   const speech = useContext(SpeechContext);
   const exerciseBookmark = bookmarksToStudy[0];
+
+  // Compute cloze word IDs for the highlight phrase
+  const clozeWordIds = useMemo(() => {
+    if (!interactiveText || !exerciseContext) return [];
+    return findWordIdsByPhrase(interactiveText, removePunctuation(exerciseContext));
+  }, [interactiveText, exerciseContext]);
 
   // Exercise Functions / Setup / Handle Interactions
 
@@ -964,28 +971,20 @@ export default function OrderWords({
     <>
       <sOW.ExerciseOW className="orderWords" onTouchMove={handleTouchScroll} id="orderExercise">
         <div className="headline headlineOrderWords">{strings.orderTheWordsToMakeTheHighlightedPhrase}</div>
-        {isCorrect && EXERCISE_TYPE === TYPE_L1_CONSTRUCTION && (
+        {isCorrect && (
           <div className="contextExample" style={{ marginBottom: "2em" }}>
-            <TranslatableText
-              isExerciseOver={isCorrect}
+            <ClozeTranslatableText
               interactiveText={interactiveText}
               translating={true}
               pronouncing={false}
-              clozeWord={removePunctuation(exerciseContext)}
-              nonTranslatableWords={removePunctuation(exerciseContext)}
-            />
-          </div>
-        )}
-        {isCorrect && EXERCISE_TYPE === TYPE_L2_CONSTRUCTION && (
-          <div className="contextExample" style={{ marginBottom: "2em" }}>
-            <TranslatableText
               isExerciseOver={isCorrect}
-              interactiveText={interactiveText}
-              translating={true}
-              pronouncing={false}
-              clozeWord={removePunctuation(exerciseContext)}
+              clozeWordIds={clozeWordIds}
               nonTranslatableWords={removePunctuation(exerciseContext)}
-              overrideBookmarkHighlightText={exerciseText}
+              renderClozeSlot={(wordId) => (
+                <span key={wordId} style={{ color: "#f8bb86", fontWeight: "bold" }}>
+                  {exerciseContext + " "}
+                </span>
+              )}
             />
           </div>
         )}
