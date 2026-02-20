@@ -61,7 +61,7 @@ const ClozeContextWithExchange = forwardRef(function ClozeContextWithExchange(
     answerLanguageCode && needsVirtualKeyboard(answerLanguageCode, userDetails?.id) && canTypeInline && !isExerciseOver;
   const suppressOSKeyboard = showVirtualKeyboard && !isKeyboardCollapsed;
 
-  const clozeWord = showCloze ? exerciseBookmark.from : null;
+  const clozePhrase = showCloze ? exerciseBookmark.from : null;
 
   return (
     <div style={{ textAlign: "center" }}>
@@ -77,7 +77,7 @@ const ClozeContextWithExchange = forwardRef(function ClozeContextWithExchange(
           pronouncing={pronouncing}
           translatedWords={translatedWords}
           setTranslatedWords={setTranslatedWords}
-          clozeWord={clozeWord}
+          clozePhrase={clozePhrase}
           nonTranslatableWords={exerciseBookmark.from}
           leftEllipsis={exerciseBookmark.left_ellipsis}
           rightEllipsis={exerciseBookmark.right_ellipsis}
@@ -86,7 +86,7 @@ const ClozeContextWithExchange = forwardRef(function ClozeContextWithExchange(
             <ClozeInputField
               key={wordId}
               wordId={wordId}
-              clozeWord={exerciseBookmark.from}
+              clozePhrase={exerciseBookmark.from}
               inputValue={inputValue}
               placeholder={placeholder}
               isExerciseOver={isExerciseOver}

@@ -14,7 +14,7 @@ import * as s from "../../reader/TranslatableText.sc";
  */
 export default function ClozeInputField({
   wordId,
-  clozeWord,
+  clozePhrase,
   inputValue,
   placeholder = "",
   isExerciseOver = false,
@@ -31,7 +31,7 @@ export default function ClozeInputField({
   const inputRef = useRef(null);
 
   const isOver = isCorrectAnswer || isExerciseOver;
-  const currentValue = isExerciseOver && !isCorrectAnswer ? clozeWord : inputValue;
+  const currentValue = isExerciseOver && !isCorrectAnswer ? clozePhrase : inputValue;
 
   // With monospace font, 1ch = 1 character, so width is simple
   // Minimum 8ch to accommodate "tap to type" hint and avoid jumping when typing starts
@@ -70,10 +70,10 @@ export default function ClozeInputField({
     const cursorPosition = e.target.selectionStart;
 
     // Match capitalization of the solution
-    if (clozeWord && value) {
-      if (clozeWord.length > 0) {
+    if (clozePhrase && value) {
+      if (clozePhrase.length > 0) {
         // If solution starts with uppercase, capitalize first letter
-        if (clozeWord[0] === clozeWord[0].toUpperCase()) {
+        if (clozePhrase[0] === clozePhrase[0].toUpperCase()) {
           value = value.charAt(0).toUpperCase() + value.slice(1).toLowerCase();
         } else {
           // Otherwise make it lowercase
@@ -126,7 +126,7 @@ export default function ClozeInputField({
         </s.ClozeInputWrapper>
       ) : (
         <s.ClozeStaticPlaceholder $isOver={isExerciseOver}>
-          {isExerciseOver ? clozeWord : '\u00A0'}
+          {isExerciseOver ? clozePhrase : '\u00A0'}
         </s.ClozeStaticPlaceholder>
       )}
       {aboveClozeElement && !isExerciseOver && aboveClozeElement}

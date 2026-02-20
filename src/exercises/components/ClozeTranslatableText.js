@@ -28,7 +28,7 @@ export function ClozeTranslatableText({
   rightEllipsis,
   // exercise related
   isExerciseOver,
-  clozeWord, // Word(s) to hide and replace with slot
+  clozePhrase, // Word(s) to hide and replace with slot
   nonTranslatableWords, // Word(s) that should not be clickable for translation
   updateBookmarks,
   // render prop for cloze slot
@@ -43,13 +43,13 @@ export function ClozeTranslatableText({
     return interactiveText ? interactiveText.getParagraphs() : [];
   }, [interactiveText]);
 
-  // Compute cloze word IDs once when interactiveText or clozeWord changes
-  const clozeWordIds = useMemo(() => {
-    if (!clozeWord || !interactiveText) return [];
+  // Compute cloze word IDs once when interactiveText or clozePhrase changes
+  const clozePhraseIds = useMemo(() => {
+    if (!clozePhrase || !interactiveText) return [];
 
     // If we have position-aware InteractiveExerciseText, use it to find the correct instance
     if (interactiveText.findSolutionPositionsInContext) {
-      const targetWords = clozeWord.split(" ").map(w => w.toLowerCase());
+      const targetWords = clozePhrase.split(" ").map(w => w.toLowerCase());
       const solutionPositions = interactiveText.findSolutionPositionsInContext(targetWords);
 
       if (solutionPositions.length > 0) {
@@ -72,7 +72,7 @@ export function ClozeTranslatableText({
     }
 
     // Fallback to word-based search
-    let targetWords = clozeWord.split(" ");
+    let targetWords = clozePhrase.split(" ");
     let word = interactiveText.paragraphsAsLinkedWordLists[0].linkedWords.head;
 
     while (word) {
@@ -99,7 +99,7 @@ export function ClozeTranslatableText({
     }
 
     return [];
-  }, [interactiveText, clozeWord]);
+  }, [interactiveText, clozePhrase]);
 
   // Compute non-translatable word IDs
   const nonTranslatableWordIds = useMemo(() => {
@@ -177,8 +177,8 @@ export function ClozeTranslatableText({
   }
 
   function renderWordJSX(word) {
-    const isFirstClozeWord = clozeWordIds[0] === word.id;
-    const isPartOfCloze = clozeWordIds.includes(word.id);
+    const isFirstClozeWord = clozePhraseIds[0] === word.id;
+    const isPartOfCloze = clozePhraseIds.includes(word.id);
 
     // Cloze slot: render input for first word, hide the rest
     if (isPartOfCloze && !isExerciseOver) {
