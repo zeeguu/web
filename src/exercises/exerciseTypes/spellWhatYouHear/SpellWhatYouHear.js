@@ -1,18 +1,15 @@
 import { useState, useEffect, useContext } from "react";
 import * as s from "../Exercise.sc.js";
-import BottomInput from "../BottomInput.js";
 import SpeakButton from "../SpeakButton.js";
 import strings from "../../../i18n/definitions.js";
 import { EXERCISE_TYPES } from "../../ExerciseTypeConstants.js";
 import SessionStorage from "../../../assorted/SessionStorage.js";
-import ContextWithExchange from "../../components/ContextWithExchange.js";
 import ClozeContextWithExchange from "../../components/ClozeContextWithExchange.js";
 import InteractiveText from "../../../reader/InteractiveText.js";
 import LoadingAnimation from "../../../components/LoadingAnimation.js";
 import { SpeechContext } from "../../../contexts/SpeechContext.js";
 import { removePunctuation } from "../../../utils/text/preprocessing.js";
 import { APIContext } from "../../../contexts/APIContext.js";
-import useInlineInputAutoFocus from "../../../hooks/useInlineInputAutoFocus.js";
 
 // The user has to write the word they hear. A context with the word omitted is shown.
 // This tests the user's active knowledge.
@@ -40,17 +37,8 @@ export default function SpellWhatYouHear({
   const [isButtonSpeaking, setIsButtonSpeaking] = useState(false);
   const [inputValue, setInputValue] = useState("");
   const [isCorrectAnswer, setIsCorrectAnswer] = useState(false);
-  const [useInlineInput, setUseInlineInput] = useState(true);
   const [shouldFocusInput, setShouldFocusInput] = useState(false);
   const exerciseBookmark = bookmarksToStudy[0];
-
-  // Auto-focus functionality for inline input
-  useInlineInputAutoFocus({
-    enabled: useInlineInput,
-    isExerciseOver,
-    hasInteractiveText: !!interactiveText,
-    exerciseClassName: 'spellWhatYouHear'
-  });
 
   async function handleSpeak() {
     setShouldFocusInput(false); // Unfocus during speech
@@ -70,7 +58,11 @@ export default function SpellWhatYouHear({
 
   useEffect(() => {
     if (!SessionStorage.isAudioExercisesEnabled()) moveToNextExercise();
-    
+
+    // Reset input state when context changes
+    setInputValue("");
+    setIsCorrectAnswer(false);
+
     // Validate that context_tokenized exists and is properly formatted
     if (!exerciseBookmark.context_tokenized || !Array.isArray(exerciseBookmark.context_tokenized)) {
       setInteractiveText(null);
@@ -149,32 +141,21 @@ export default function SpellWhatYouHear({
       </div>
 
       {/* Context - always at the top, never moves */}
-      {useInlineInput ? (
-        <ClozeContextWithExchange
-          exerciseBookmark={exerciseBookmark}
-          interactiveText={interactiveText}
-          translatedWords={null}
-          setTranslatedWords={() => {}}
-          isExerciseOver={isExerciseOver}
-          onExampleUpdated={onExampleUpdated}
-          onInputChange={handleInputChange}
-          onInputSubmit={handleInputSubmit}
-          inputValue={inputValue}
-          placeholder=""
-          isCorrectAnswer={isCorrectAnswer}
-          shouldFocus={shouldFocusInput}
-          canTypeInline={true}
-        />
-      ) : (
-        <ContextWithExchange
-          exerciseBookmark={exerciseBookmark}
-          interactiveText={interactiveText}
-          translatedWords={null}
-          setTranslatedWords={() => {}}
-          isExerciseOver={isExerciseOver}
-          onExampleUpdated={onExampleUpdated}
-        />
-      )}
+      <ClozeContextWithExchange
+        exerciseBookmark={exerciseBookmark}
+        interactiveText={interactiveText}
+        translatedWords={null}
+        setTranslatedWords={() => {}}
+        isExerciseOver={isExerciseOver}
+        onExampleUpdated={onExampleUpdated}
+        onInputChange={handleInputChange}
+        onInputSubmit={handleInputSubmit}
+        inputValue={inputValue}
+        placeholder=""
+        isCorrectAnswer={isCorrectAnswer}
+        shouldFocus={shouldFocusInput}
+        canTypeInline={true}
+      />
 
       {/* Button/Solution area - maintain consistent height, placed below context */}
       <div style={{ minHeight: '120px', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', marginTop: '2em' }}>
@@ -195,18 +176,6 @@ export default function SpellWhatYouHear({
           </>
         )}
       </div>
-
-      {/* Bottom input - only during exercise and when not using inline input */}
-      {!isExerciseOver && !useInlineInput && (
-        <BottomInput
-          handleCorrectAnswer={notifyCorrectAnswer}
-          handleIncorrectAnswer={handleIncorrectAnswer}
-          handleExerciseCompleted={notifyExerciseCompleted}
-          setIsCorrect={setIsCorrect}
-          exerciseBookmark={exerciseBookmark}
-          notifyOfUserAttempt={notifyOfUserAttempt}
-        />
-      )}
     </s.Exercise>
   );
 }

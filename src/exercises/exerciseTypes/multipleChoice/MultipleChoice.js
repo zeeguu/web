@@ -40,14 +40,16 @@ export default function MultipleChoice({
     speech.stopAudio(); // Stop any pending speech from previous exercise
     resetSubSessionTimer();
     setExerciseType(EXERCISE_TYPE);
+
+    // Fetch similar words only once on mount - don't re-fetch on context change
+    // to avoid giving away the answer
+    api.wordsSimilarTo(exerciseBookmark.id, (words) => {
+      consolidateChoiceOptions(words);
+    });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
-    api.wordsSimilarTo(exerciseBookmark.id, (words) => {
-      consolidateChoiceOptions(words);
-    });
-    
     // Validate that context_tokenized exists and is properly formatted
     if (!exerciseBookmark.context_tokenized || !Array.isArray(exerciseBookmark.context_tokenized)) {
       setInteractiveText(null);

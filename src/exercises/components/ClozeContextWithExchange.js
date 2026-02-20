@@ -1,7 +1,7 @@
 import { forwardRef, useContext, useState, useRef, useMemo } from "react";
 import { ClozeTranslatableText } from "./ClozeTranslatableText.js";
 import ClozeInputField from "./ClozeInputField.js";
-import ReplaceExampleModal from "../replaceExample/ReplaceExampleModal.js";
+import ContextNavigationControls from "./ContextNavigationControls.js";
 import VirtualKeyboard from "../../components/VirtualKeyboard/VirtualKeyboard.js";
 import SpecialCharacterBar, { hasSpecialCharacters } from "../../components/VirtualKeyboard/SpecialCharacterBar.js";
 import { needsVirtualKeyboard } from "../../utils/misc/languageScripts.js";
@@ -69,59 +69,49 @@ const ClozeContextWithExchange = forwardRef(function ClozeContextWithExchange(
 
   return (
     <div style={{ textAlign: "center" }}>
-      <div
-        className="contextExample"
-        style={{ display: "inline-block", position: "relative", textAlign: "left" }}
-        ref={ref}
+      {/* Navigation controls wrap context for swipe support */}
+      <ContextNavigationControls
+        exerciseBookmark={exerciseBookmark}
+        onExampleUpdated={onExampleUpdated}
+        isExerciseOver={isExerciseOver}
       >
-        <ClozeTranslatableText
-          isExerciseOver={isExerciseOver}
-          interactiveText={interactiveText}
-          translating={translating}
-          pronouncing={pronouncing}
-          translatedWords={translatedWords}
-          setTranslatedWords={setTranslatedWords}
-          clozeWordIds={clozeWordIds}
-          nonTranslatableWords={exerciseBookmark.from}
-          leftEllipsis={exerciseBookmark.left_ellipsis}
-          rightEllipsis={exerciseBookmark.right_ellipsis}
-          renderClozeSlot={(wordId) => (
-            <ClozeInputField
-              key={wordId}
-              wordId={wordId}
-              clozePhrase={exerciseBookmark.from}
-              inputValue={inputValue}
-              placeholder={placeholder}
-              isExerciseOver={isExerciseOver}
-              isCorrectAnswer={isCorrectAnswer}
-              canTypeInline={canTypeInline}
-              showHint={showHint}
-              aboveClozeElement={aboveClozeElement}
-              suppressOSKeyboard={suppressOSKeyboard}
-              onInputChange={onInputChange}
-              onInputSubmit={onInputSubmit}
-              onInputRef={(ref) => { clozeInputRef.current = ref; }}
-            />
-          )}
-        />
-        {onExampleUpdated && isExerciseOver && (
-          <div
-            style={{
-              position: "absolute",
-              right: 0,
-              top: "100%",
-              marginTop: "0.1em",
-              fontSize: "0.7em",
-            }}
-          >
-            <ReplaceExampleModal
-              exerciseBookmark={exerciseBookmark}
-              onExampleUpdated={onExampleUpdated}
-              renderAs="link"
-            />
-          </div>
-        )}
-      </div>
+        <div
+          className="contextExample"
+          style={{ display: "inline-block", position: "relative", textAlign: "left" }}
+          ref={ref}
+        >
+          <ClozeTranslatableText
+            isExerciseOver={isExerciseOver}
+            interactiveText={interactiveText}
+            translating={translating}
+            pronouncing={pronouncing}
+            translatedWords={translatedWords}
+            setTranslatedWords={setTranslatedWords}
+            clozeWordIds={clozeWordIds}
+            nonTranslatableWords={exerciseBookmark.from}
+            leftEllipsis={exerciseBookmark.left_ellipsis}
+            rightEllipsis={exerciseBookmark.right_ellipsis}
+            renderClozeSlot={(wordId) => (
+              <ClozeInputField
+                key={wordId}
+                wordId={wordId}
+                clozePhrase={exerciseBookmark.from}
+                inputValue={inputValue}
+                placeholder={placeholder}
+                isExerciseOver={isExerciseOver}
+                isCorrectAnswer={isCorrectAnswer}
+                canTypeInline={canTypeInline}
+                showHint={showHint}
+                aboveClozeElement={aboveClozeElement}
+                suppressOSKeyboard={suppressOSKeyboard}
+                onInputChange={onInputChange}
+                onInputSubmit={onInputSubmit}
+                onInputRef={(ref) => { clozeInputRef.current = ref; }}
+              />
+            )}
+          />
+        </div>
+      </ContextNavigationControls>
 
       {/* Virtual Keyboard - shown below the context for non-Roman alphabets */}
       {showVirtualKeyboard && (

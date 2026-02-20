@@ -1,7 +1,7 @@
 import { forwardRef, useMemo } from "react";
 import { ClozeTranslatableText } from "./ClozeTranslatableText.js";
 import { findClozeWordIds } from "../utils/findClozeWordIds.js";
-import ReplaceExampleModal from "../replaceExample/ReplaceExampleModal.js";
+import ContextNavigationControls from "./ContextNavigationControls.js";
 
 /**
  * Displays exercise context with word highlighting (no cloze input).
@@ -33,41 +33,31 @@ const ContextWithExchange = forwardRef(function ContextWithExchange(
 
   return (
     <div style={{ textAlign: "center" }}>
-      <div
-        className="contextExample"
-        style={{ display: "inline-block", position: "relative", textAlign: "left" }}
-        ref={ref}
+      {/* Navigation controls wrap context for swipe support */}
+      <ContextNavigationControls
+        exerciseBookmark={exerciseBookmark}
+        onExampleUpdated={onExampleUpdated}
+        isExerciseOver={isExerciseOver}
       >
-        <ClozeTranslatableText
-          isExerciseOver={isExerciseOver}
-          interactiveText={interactiveText}
-          translating={translating}
-          pronouncing={pronouncing}
-          translatedWords={translatedWords}
-          setTranslatedWords={setTranslatedWords}
-          clozeWordIds={clozeWordIds}
-          nonTranslatableWords={exerciseBookmark.from}
-          leftEllipsis={exerciseBookmark.left_ellipsis}
-          rightEllipsis={exerciseBookmark.right_ellipsis}
-        />
-        {onExampleUpdated && isExerciseOver && (
-          <div
-            style={{
-              position: "absolute",
-              right: 0,
-              top: "100%",
-              marginTop: "0.1em",
-              fontSize: "0.7em"
-            }}
-          >
-            <ReplaceExampleModal
-              exerciseBookmark={exerciseBookmark}
-              onExampleUpdated={onExampleUpdated}
-              renderAs="link"
-            />
-          </div>
-        )}
-      </div>
+        <div
+          className="contextExample"
+          style={{ display: "inline-block", position: "relative", textAlign: "left" }}
+          ref={ref}
+        >
+          <ClozeTranslatableText
+            isExerciseOver={isExerciseOver}
+            interactiveText={interactiveText}
+            translating={translating}
+            pronouncing={pronouncing}
+            translatedWords={translatedWords}
+            setTranslatedWords={setTranslatedWords}
+            clozeWordIds={clozeWordIds}
+            nonTranslatableWords={exerciseBookmark.from}
+            leftEllipsis={exerciseBookmark.left_ellipsis}
+            rightEllipsis={exerciseBookmark.right_ellipsis}
+          />
+        </div>
+      </ContextNavigationControls>
     </div>
   );
 });

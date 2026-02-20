@@ -8,10 +8,7 @@ import { SpeechContext } from "../../../contexts/SpeechContext.js";
 import { EXERCISE_TYPES } from "../../ExerciseTypeConstants.js";
 import { removePunctuation } from "../../../utils/text/preprocessing";
 import { APIContext } from "../../../contexts/APIContext.js";
-import ContextWithExchange from "../../components/ContextWithExchange.js";
 import ClozeContextWithExchange from "../../components/ClozeContextWithExchange.js";
-import AnimatedBottomInput from "../../components/AnimatedBottomInput.js";
-import useInlineInputAutoFocus from "../../../hooks/useInlineInputAutoFocus.js";
 
 // The user has to type the correct translation of a given L1 word in a L2 context. The L2 word is omitted in the context, so the user has to fill in the blank.
 // This tests the user's active knowledge.
@@ -35,24 +32,18 @@ export default function FindWordInContextCloze({
   const [interactiveText, setInteractiveText] = useState();
   const [inputValue, setInputValue] = useState("");
   const [isCorrectAnswer, setIsCorrectAnswer] = useState(false);
-  const [useInlineInput, setUseInlineInput] = useState(true); // Toggle between inline and bottom input
   const speech = useContext(SpeechContext);
   const exerciseBookmark = bookmarksToStudy[0];
   const contextRef = useRef(null);
-  const inputRef = useRef(null);
-
-  // Auto-focus functionality for inline input
-  useInlineInputAutoFocus({
-    enabled: useInlineInput,
-    isExerciseOver,
-    hasInteractiveText: !!interactiveText,
-    exerciseClassName: 'findWordInContextCloze'
-  });
 
   useEffect(() => {
     speech.stopAudio(); // Stop any pending speech from previous exercise
     setExerciseType(EXERCISE_TYPE);
-    
+
+    // Reset input state when context changes
+    setInputValue("");
+    setIsCorrectAnswer(false);
+
     // Validate that context_tokenized exists and is properly formatted
     if (!exerciseBookmark.context_tokenized || !Array.isArray(exerciseBookmark.context_tokenized)) {
       setInteractiveText(null);
@@ -123,48 +114,22 @@ export default function FindWordInContextCloze({
       <div style={{ visibility: isExerciseOver ? 'visible' : 'hidden', minHeight: '60px' }}>
         {bookmarkProgressBar || <div style={{ height: '60px', width: '30%', margin: '0.1em auto 0.5em auto' }}></div>}
       </div>
-      {useInlineInput ? (
-        <ClozeContextWithExchange
-          ref={contextRef}
-          exerciseBookmark={exerciseBookmark}
-          interactiveText={interactiveText}
-          translatedWords={null}
-          setTranslatedWords={() => {}}
-          isExerciseOver={isExerciseOver}
-          onExampleUpdated={onExampleUpdated}
-          onInputChange={handleInputChange}
-          onInputSubmit={handleInputSubmit}
-          inputValue={inputValue}
-          placeholder=""
-          isCorrectAnswer={isCorrectAnswer}
-          shouldFocus={true}
-          canTypeInline={true}
-        />
-      ) : (
-        <ContextWithExchange
-          ref={contextRef}
-          exerciseBookmark={exerciseBookmark}
-          interactiveText={interactiveText}
-          translatedWords={null}
-          setTranslatedWords={() => {}}
-          isExerciseOver={isExerciseOver}
-          onExampleUpdated={onExampleUpdated}
-        />
-      )}
-
-      {!isExerciseOver && !useInlineInput && (
-        <>
-          <AnimatedBottomInput
-            handleCorrectAnswer={notifyCorrectAnswer}
-            handleIncorrectAnswer={handleIncorrectAnswer}
-            handleExerciseCompleted={notifyExerciseCompleted}
-            setIsCorrect={setIsCorrect}
-            exerciseBookmark={exerciseBookmark}
-            notifyOfUserAttempt={notifyOfUserAttempt}
-            ref={inputRef}
-          />
-        </>
-      )}
+      <ClozeContextWithExchange
+        ref={contextRef}
+        exerciseBookmark={exerciseBookmark}
+        interactiveText={interactiveText}
+        translatedWords={null}
+        setTranslatedWords={() => {}}
+        isExerciseOver={isExerciseOver}
+        onExampleUpdated={onExampleUpdated}
+        onInputChange={handleInputChange}
+        onInputSubmit={handleInputSubmit}
+        inputValue={inputValue}
+        placeholder=""
+        isCorrectAnswer={isCorrectAnswer}
+        shouldFocus={true}
+        canTypeInline={true}
+      />
     </s.Exercise>
   );
 }
