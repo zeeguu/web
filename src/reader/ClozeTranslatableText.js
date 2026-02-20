@@ -145,85 +145,56 @@ export function ClozeTranslatableText({
     if (updateBookmarks) updateBookmarks();
   }
 
-  // Render a single word - this is now a pure function of its inputs
+  function isHighlighted(word) {
+    if (interactiveText.shouldHighlightWord) {
+      return interactiveText.shouldHighlightWord(word);
+    }
+    if (highlightExpression) {
+      const highlightedWords = highlightExpression.split(" ").map((w) => removePunctuation(w));
+      return highlightedWords.includes(removePunctuation(word.word));
+    }
+    return false;
+  }
+
+  function renderHighlightedWord(word) {
+    return <span key={word.id} style={{ color: orange600, fontWeight: "bold" }}>{word.word + " "}</span>;
+  }
+
+  function renderTranslatableWord(word) {
+    return (
+      <TranslatableWord
+        interactiveText={interactiveText}
+        key={word.id}
+        word={word}
+        wordUpdated={wordUpdated}
+        translating={translating}
+        pronouncing={pronouncing}
+        translatedWords={translatedWords}
+        setTranslatedWords={setTranslatedWords}
+        disableTranslation={nonTranslatableWordIds.includes(word.id)}
+      />
+    );
+  }
+
   function renderWordJSX(word) {
-    const disableTranslation = nonTranslatableWordIds.includes(word.id);
-    const isClozeWord = clozeWordIds.includes(word.id);
+    const isFirstClozeWord = clozeWordIds[0] === word.id;
+    const isPartOfCloze = clozeWordIds.includes(word.id);
 
-    // Check if this word should be highlighted
-    let isWordHighlighted = false;
-    if (!isClozeWord) {
-      if (interactiveText.shouldHighlightWord) {
-        isWordHighlighted = interactiveText.shouldHighlightWord(word);
-      } else if (highlightExpression) {
-        const highlightedWords = highlightExpression.split(" ").map((word) => removePunctuation(word));
-        isWordHighlighted = highlightedWords.includes(removePunctuation(word.word));
-      }
-    }
-
-    // Handle exercise over state for non-cloze words
-    if (isExerciseOver && !isClozeWord) {
-      if (isWordHighlighted) {
-        return <span key={word.id} style={{ color: orange600, fontWeight: "bold" }}>{word.word + " "}</span>;
-      }
-      return (
-        <TranslatableWord
-          interactiveText={interactiveText}
-          key={word.id}
-          word={word}
-          wordUpdated={wordUpdated}
-          translating={translating}
-          pronouncing={pronouncing}
-          translatedWords={translatedWords}
-          setTranslatedWords={setTranslatedWords}
-          disableTranslation={disableTranslation}
-        />
-      );
-    }
-
-    if (!isExerciseOver || clozeWordIds[0] === word.id) {
-      if (isWordHighlighted) {
-        return <span key={word.id} style={{ color: orange600, fontWeight: "bold" }}>{word.word + " "}</span>;
-      }
-      if (!clozeWord || translatedWords) {
-        return (
-          <TranslatableWord
-            interactiveText={interactiveText}
-            key={word.id}
-            word={word}
-            wordUpdated={wordUpdated}
-            translating={translating}
-            pronouncing={pronouncing}
-            translatedWords={translatedWords}
-            setTranslatedWords={setTranslatedWords}
-            disableTranslation={disableTranslation}
-          />
-        );
-      }
-
-      // Render the cloze slot for the first cloze word
-      if (clozeWordIds[0] === word.id && renderClozeSlot) {
+    // Cloze slot: render input for first word, hide the rest
+    if (isPartOfCloze && !isExerciseOver) {
+      if (isFirstClozeWord && renderClozeSlot) {
         return renderClozeSlot(word.id);
       }
-
-      if (disableTranslation) {
-        return "";
-      }
-
-      return (
-        <TranslatableWord
-          interactiveText={interactiveText}
-          key={word.id}
-          word={word}
-          wordUpdated={wordUpdated}
-          translating={translating}
-          pronouncing={pronouncing}
-          translatedWords={translatedWords}
-          setTranslatedWords={setTranslatedWords}
-          disableTranslation={disableTranslation}
-        />
-      );
+      return ""; // Hide other words in multi-word cloze
     }
+
+    // Highlighted words get special styling
+    if (isHighlighted(word)) {
+      return renderHighlightedWord(word);
+    }
+
+    // Everything else is a translatable word
+    return renderTranslatableWord(word);
   }
 
   // Render paragraphs directly - no state storage
