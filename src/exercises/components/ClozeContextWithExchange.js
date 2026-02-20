@@ -1,4 +1,4 @@
-import { forwardRef, useContext, useState, useRef } from "react";
+import { forwardRef, useContext, useState, useRef, useMemo } from "react";
 import { ClozeTranslatableText } from "./ClozeTranslatableText.js";
 import ClozeInputField from "./ClozeInputField.js";
 import ReplaceExampleModal from "../replaceExample/ReplaceExampleModal.js";
@@ -6,6 +6,7 @@ import VirtualKeyboard from "../../components/VirtualKeyboard/VirtualKeyboard.js
 import SpecialCharacterBar, { hasSpecialCharacters } from "../../components/VirtualKeyboard/SpecialCharacterBar.js";
 import { needsVirtualKeyboard } from "../../utils/misc/languageScripts.js";
 import { UserContext } from "../../contexts/UserContext.js";
+import { findClozeWordIds } from "../utils/findClozeWordIds.js";
 
 /**
  * Orchestrates cloze exercises by combining:
@@ -37,7 +38,6 @@ const ClozeContextWithExchange = forwardRef(function ClozeContextWithExchange(
     onExampleUpdated,
     translating = true,
     pronouncing = false,
-    highlightExpression,
     // cloze specific props
     onInputChange,
     onInputSubmit,
@@ -61,7 +61,11 @@ const ClozeContextWithExchange = forwardRef(function ClozeContextWithExchange(
     answerLanguageCode && needsVirtualKeyboard(answerLanguageCode, userDetails?.id) && canTypeInline && !isExerciseOver;
   const suppressOSKeyboard = showVirtualKeyboard && !isKeyboardCollapsed;
 
-  const clozePhrase = showCloze ? exerciseBookmark.from : null;
+  // Compute cloze word IDs from bookmark position (stable reference)
+  const clozeWordIds = useMemo(() => {
+    if (!showCloze) return [];
+    return findClozeWordIds(interactiveText, exerciseBookmark);
+  }, [interactiveText, exerciseBookmark, showCloze]);
 
   return (
     <div style={{ textAlign: "center" }}>
@@ -77,11 +81,10 @@ const ClozeContextWithExchange = forwardRef(function ClozeContextWithExchange(
           pronouncing={pronouncing}
           translatedWords={translatedWords}
           setTranslatedWords={setTranslatedWords}
-          clozePhrase={clozePhrase}
+          clozeWordIds={clozeWordIds}
           nonTranslatableWords={exerciseBookmark.from}
           leftEllipsis={exerciseBookmark.left_ellipsis}
           rightEllipsis={exerciseBookmark.right_ellipsis}
-          highlightExpression={highlightExpression}
           renderClozeSlot={(wordId) => (
             <ClozeInputField
               key={wordId}

@@ -1,4 +1,4 @@
-import { useState, useEffect, createElement, useMemo } from "react";
+import { useState, createElement, useMemo } from "react";
 import TranslatableWord from "../../reader/TranslatableWord";
 import * as s from "../../reader/TranslatableText.sc";
 import { removePunctuation } from "../../utils/text/preprocessing";
@@ -10,7 +10,7 @@ import { orange600 } from "../../components/colors";
  * This component is intentionally decoupled from input handling.
  * It only knows how to:
  * - Render translatable words
- * - Find where the cloze word is
+ * - Use provided clozeWordIds to determine slot position
  * - Call renderClozeSlot(wordId) at that position
  *
  * The parent provides the actual cloze input via the render prop,
@@ -22,15 +22,12 @@ export function ClozeTranslatableText({
   pronouncing,
   translatedWords,
   setTranslatedWords,
-  setIsRendered,
-  highlightExpression,
   leftEllipsis,
   rightEllipsis,
   // exercise related
   isExerciseOver,
-  clozePhrase, // Word(s) to hide and replace with slot
-  nonTranslatableWords, // Word(s) that should not be clickable for translation
-  updateBookmarks,
+  clozeWordIds = [], // Word IDs to hide and replace with slot (computed by parent)
+  nonTranslatableWords, // Phrase that should not be clickable anywhere (prevents cheating)
   // render prop for cloze slot
   renderClozeSlot = null, // (wordId) => ReactElement
 }) {
@@ -43,81 +40,27 @@ export function ClozeTranslatableText({
     return interactiveText ? interactiveText.getParagraphs() : [];
   }, [interactiveText]);
 
-  // Compute cloze word IDs once when interactiveText or clozePhrase changes
-  const clozePhraseIds = useMemo(() => {
-    if (!clozePhrase || !interactiveText) return [];
-
-    // If we have position-aware InteractiveExerciseText, use it to find the correct instance
-    if (interactiveText.findSolutionPositionsInContext) {
-      const targetWords = clozePhrase.split(" ").map(w => w.toLowerCase());
-      const solutionPositions = interactiveText.findSolutionPositionsInContext(targetWords);
-
-      if (solutionPositions.length > 0) {
-        let word = interactiveText.paragraphsAsLinkedWordLists[0].linkedWords.head;
-        let foundIds = [];
-        while (word) {
-          for (const pos of solutionPositions) {
-            const contextOffset = interactiveText.expectedPosition?.contextOffset || 0;
-            const adjustedSentIndex = word.token.sent_i - contextOffset;
-            if (adjustedSentIndex === pos.sentenceIndex && word.token.token_i === pos.tokenIndex) {
-              foundIds.push(word.id);
-            }
-          }
-          word = word.next;
-        }
-        if (foundIds.length > 0) {
-          return foundIds;
-        }
-      }
-    }
-
-    // Fallback to word-based search
-    let targetWords = clozePhrase.split(" ");
-    let word = interactiveText.paragraphsAsLinkedWordLists[0].linkedWords.head;
-
-    while (word) {
-      if (removePunctuation(word.word).toLowerCase() === targetWords[0].toLowerCase()) {
-        let copyOfFoundIds = [];
-        let currentWord = word;
-        let matched = true;
-
-        for (let index = 0; index < targetWords.length; index++) {
-          if (currentWord && removePunctuation(currentWord.word).toLowerCase() === targetWords[index].toLowerCase()) {
-            copyOfFoundIds.push(currentWord.id);
-            currentWord = currentWord.next;
-          } else {
-            matched = false;
-            break;
-          }
-        }
-
-        if (matched && copyOfFoundIds.length === targetWords.length) {
-          return copyOfFoundIds;
-        }
-      }
-      word = word.next;
-    }
-
-    return [];
-  }, [interactiveText, clozePhrase]);
-
-  // Compute non-translatable word IDs
+  // Find ALL instances of the non-translatable phrase (prevents cheating by clicking other instances)
   const nonTranslatableWordIds = useMemo(() => {
-    if (!nonTranslatableWords || !interactiveText) return [];
+    if (!nonTranslatableWords || !interactiveText || isExerciseOver) return [];
 
-    let targetWords = nonTranslatableWords.split(" ");
-    let word = interactiveText.paragraphsAsLinkedWordLists[0].linkedWords.head;
-    let foundIds = [];
+    const targetWords = nonTranslatableWords.split(" ").map(w => removePunctuation(w).toLowerCase());
+    const paragraphs = interactiveText.paragraphsAsLinkedWordLists;
+    if (!paragraphs || !paragraphs[0]) return [];
+
+    const foundIds = [];
+    let word = paragraphs[0].linkedWords.head;
 
     while (word) {
-      if (removePunctuation(word.word).toLowerCase() === targetWords[0].toLowerCase()) {
-        let tempIds = [];
+      if (removePunctuation(word.word).toLowerCase() === targetWords[0]) {
+        // Check if this starts a match
         let currentWord = word;
+        let matchedIds = [];
         let matched = true;
 
-        for (let index = 0; index < targetWords.length; index++) {
-          if (currentWord && removePunctuation(currentWord.word).toLowerCase() === targetWords[index].toLowerCase()) {
-            tempIds.push(currentWord.id);
+        for (const target of targetWords) {
+          if (currentWord && removePunctuation(currentWord.word).toLowerCase() === target) {
+            matchedIds.push(currentWord.id);
             currentWord = currentWord.next;
           } else {
             matched = false;
@@ -125,35 +68,18 @@ export function ClozeTranslatableText({
           }
         }
 
-        if (matched && tempIds.length === targetWords.length) {
-          foundIds = tempIds;
-          break;
+        if (matched) {
+          foundIds.push(...matchedIds);
         }
       }
       word = word.next;
     }
 
     return foundIds;
-  }, [interactiveText, nonTranslatableWords]);
-
-  useEffect(() => {
-    if (setIsRendered) setIsRendered(true);
-  }, [setIsRendered]);
+  }, [interactiveText, nonTranslatableWords, isExerciseOver]);
 
   function wordUpdated() {
     setTranslationCount(translationCount + 1);
-    if (updateBookmarks) updateBookmarks();
-  }
-
-  function isHighlighted(word) {
-    if (interactiveText.shouldHighlightWord) {
-      return interactiveText.shouldHighlightWord(word);
-    }
-    if (highlightExpression) {
-      const highlightedWords = highlightExpression.split(" ").map((w) => removePunctuation(w));
-      return highlightedWords.includes(removePunctuation(word.word));
-    }
-    return false;
   }
 
   function renderHighlightedWord(word) {
@@ -177,19 +103,19 @@ export function ClozeTranslatableText({
   }
 
   function renderWordJSX(word) {
-    const isFirstClozeWord = clozePhraseIds[0] === word.id;
-    const isPartOfCloze = clozePhraseIds.includes(word.id);
+    const isPartOfCloze = clozeWordIds.includes(word.id);
 
-    // Cloze slot: render input for first word, hide the rest
-    if (isPartOfCloze && !isExerciseOver) {
-      if (isFirstClozeWord && renderClozeSlot) {
+    // During exercise with cloze slot: show slot for first cloze word, hide the rest
+    if (isPartOfCloze && !isExerciseOver && renderClozeSlot) {
+      const isFirstClozeWord = clozeWordIds[0] === word.id;
+      if (isFirstClozeWord) {
         return renderClozeSlot(word.id);
       }
       return ""; // Hide other words in multi-word cloze
     }
 
-    // Highlighted words get special styling
-    if (isHighlighted(word)) {
+    // Highlight cloze words (when no renderClozeSlot, or after exercise)
+    if (isPartOfCloze) {
       return renderHighlightedWord(word);
     }
 

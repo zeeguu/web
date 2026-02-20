@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useContext } from "react";
+import { useState, useEffect, useRef, useContext, useMemo } from "react";
 import * as sOW from "./ExerciseTypeOW.sc.js";
 import OrderWordsInput from "./OrderWordsInput.js";
 import LoadingAnimation from "../../../components/LoadingAnimation";
@@ -13,6 +13,7 @@ import InteractiveText from "../../../reader/InteractiveText.js";
 import { SpeechContext } from "../../../contexts/SpeechContext.js";
 import { APIContext } from "../../../contexts/APIContext.js";
 import { CORRECT, HINT, SOLUTION } from "../../ExerciseConstants.js";
+import { findWordIdsByPhrase } from "../../utils/findWordIdsByPhrase.js";
 
 export default function OrderWords({
   bookmarksToStudy,
@@ -83,6 +84,12 @@ export default function OrderWords({
   const scrollY = useRef();
   const speech = useContext(SpeechContext);
   const exerciseBookmark = bookmarksToStudy[0];
+
+  // Compute cloze word IDs for the highlight phrase
+  const clozeWordIds = useMemo(() => {
+    if (!interactiveText || !exerciseContext) return [];
+    return findWordIdsByPhrase(interactiveText, removePunctuation(exerciseContext));
+  }, [interactiveText, exerciseContext]);
 
   // Exercise Functions / Setup / Handle Interactions
 
@@ -971,7 +978,7 @@ export default function OrderWords({
               translating={true}
               pronouncing={false}
               isExerciseOver={isCorrect}
-              clozePhrase={removePunctuation(exerciseContext)}
+              clozeWordIds={clozeWordIds}
               nonTranslatableWords={removePunctuation(exerciseContext)}
               renderClozeSlot={(wordId) => (
                 <span key={wordId} style={{ color: "#f8bb86", fontWeight: "bold" }}>

@@ -1,8 +1,6 @@
 import { useState, useEffect, useMemo, createElement } from "react";
 import TranslatableWord from "./TranslatableWord";
 import * as s from "./TranslatableText.sc";
-import { removePunctuation } from "../utils/text/preprocessing";
-import { orange500 } from "../components/colors";
 
 /**
  * Renders interactive translatable text for the reader.
@@ -13,27 +11,20 @@ export function TranslatableText({
   translating,
   pronouncing,
   setIsRendered,
-  highlightExpression,
   leftEllipsis,
   rightEllipsis,
   showMweHints,
-  nonTranslatableWords, // Word(s) that should not be clickable for translation
   updateBookmarks,
 }) {
   const [translationCount, setTranslationCount] = useState(0);
-  const [nonTranslatableWordIds, setNonTranslatableWordIds] = useState([]);
   const [paragraphs, setParagraphs] = useState([]);
   const [highlightedMWEGroupId, setHighlightedMWEGroupId] = useState(null);
   const [loadingMWEGroupId, setLoadingMWEGroupId] = useState(null);
   const [mweGroupColorMap, setMweGroupColorMap] = useState({});
   const [mweGroupsWithTranslations, setMweGroupsWithTranslations] = useState(new Set());
-  const [highlightSolutionExpression, setHighlightSolutionExpression] = useState(false);
   const divType = interactiveText.formatting ? interactiveText.formatting : "div";
 
   useEffect(() => {
-    if (nonTranslatableWords) {
-      findNonTranslatableWords();
-    }
     if (interactiveText) {
       setParagraphs(interactiveText.getParagraphs());
       buildMweColorMap();
@@ -112,15 +103,12 @@ export function TranslatableText({
     translationCount,
     translating,
     pronouncing,
-    nonTranslatableWords,
-    nonTranslatableWordIds,
     rightEllipsis,
     leftEllipsis,
     highlightedMWEGroupId,
     loadingMWEGroupId,
     mweGroupColorMap,
     mweGroupsWithTranslations,
-    highlightSolutionExpression,
   ]);
 
   useEffect(() => {
@@ -133,61 +121,7 @@ export function TranslatableText({
     if (updateBookmarks) updateBookmarks();
   }
 
-  function findNonTranslatableWords() {
-    if (!nonTranslatableWords) return;
-    let targetWords = nonTranslatableWords.split(" ");
-    let word = interactiveText.paragraphsAsLinkedWordLists[0].linkedWords.head;
-
-    while (word) {
-      let wordMatches = false;
-      for (let targetWord of targetWords) {
-        if (removePunctuation(word.word).toLowerCase() === targetWord.toLowerCase()) {
-          wordMatches = true;
-          break;
-        }
-      }
-
-      if (wordMatches) {
-        let tempWord = word;
-        let tempFoundIds = [];
-        let matched = true;
-
-        for (let index = 0; index < targetWords.length && tempWord; index++) {
-          if (removePunctuation(tempWord.word).toLowerCase() === targetWords[index].toLowerCase()) {
-            tempFoundIds.push(tempWord.id);
-            tempWord = tempWord.next;
-          } else {
-            matched = false;
-            break;
-          }
-        }
-
-        if (matched && tempFoundIds.length === targetWords.length) {
-          setNonTranslatableWordIds(tempFoundIds);
-          break;
-        }
-      }
-      word = word.next;
-    }
-  }
-
   function renderWordJSX(word) {
-    const disableTranslation = nonTranslatableWordIds.includes(word.id);
-
-    let isWordHighlighted = false;
-    if (highlightExpression && interactiveText && interactiveText.shouldHighlightWord) {
-      isWordHighlighted = interactiveText.shouldHighlightWord(word);
-    } else if (highlightExpression) {
-      const highlightedWords = highlightExpression.split(" ").map((w) => removePunctuation(w).toLowerCase());
-      isWordHighlighted = highlightedWords.includes(removePunctuation(word.word).toLowerCase());
-    }
-
-    if (isWordHighlighted) {
-      return <span key={word.id} style={{ color: orange500, fontWeight: "bold" }}>{word.word + " "}</span>;
-    }
-
-    const inExerciseContext = !!nonTranslatableWords;
-
     return (
       <TranslatableWord
         interactiveText={interactiveText}
@@ -196,16 +130,12 @@ export function TranslatableText({
         wordUpdated={wordUpdated}
         translating={translating}
         pronouncing={pronouncing}
-        disableTranslation={disableTranslation}
-        highlightedMWEGroupId={inExerciseContext ? null : highlightedMWEGroupId}
-        setHighlightedMWEGroupId={inExerciseContext ? null : setHighlightedMWEGroupId}
+        highlightedMWEGroupId={highlightedMWEGroupId}
+        setHighlightedMWEGroupId={setHighlightedMWEGroupId}
         loadingMWEGroupId={loadingMWEGroupId}
         setLoadingMWEGroupId={setLoadingMWEGroupId}
         mweGroupColorMap={mweGroupColorMap}
         mweGroupsWithTranslations={mweGroupsWithTranslations}
-        solutionWordIds={inExerciseContext ? nonTranslatableWordIds : null}
-        highlightSolutionExpression={highlightSolutionExpression}
-        setHighlightSolutionExpression={inExerciseContext ? setHighlightSolutionExpression : null}
       />
     );
   }

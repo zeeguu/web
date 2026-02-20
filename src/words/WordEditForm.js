@@ -197,6 +197,11 @@ export default function WordEditForm({
           }}
         />
       )}
+      {window.location.hostname === "localhost" && bookmark?.id && (
+        <div style={{ marginTop: "1em", fontSize: "0.7em", color: "#999", textAlign: "right" }}>
+          id: {bookmark.id}
+        </div>
+      )}
     </>
   );
 }
