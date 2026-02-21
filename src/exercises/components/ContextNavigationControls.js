@@ -1,4 +1,4 @@
-import { useState, useContext, useEffect } from "react";
+import { useState, useContext, useEffect, useCallback } from "react";
 import { useSwipeable } from "react-swipeable";
 import { APIContext } from "../../contexts/APIContext";
 import { toast } from "react-toastify";
@@ -147,19 +147,19 @@ export default function ContextNavigationControls({
     }
   };
 
-  const handlePrevious = () => {
+  const handlePrevious = useCallback(() => {
     if (isSaving || currentIndex <= 0) return;
     const newIndex = currentIndex - 1;
     setCurrentIndex(newIndex);
     selectContext(contexts[newIndex]);
-  };
+  }, [isSaving, currentIndex, contexts]);
 
-  const handleNext = () => {
+  const handleNext = useCallback(() => {
     if (isSaving || currentIndex >= contexts.length - 1) return;
     const newIndex = currentIndex + 1;
     setCurrentIndex(newIndex);
     selectContext(contexts[newIndex]);
-  };
+  }, [isSaving, currentIndex, contexts]);
 
   if (!onExampleUpdated) return null;
 
@@ -167,6 +167,27 @@ export default function ContextNavigationControls({
   const canGoPrevious = currentIndex > 0;
   const canGoNext = currentIndex < contexts.length - 1;
   const currentContext = contexts[currentIndex];
+
+  // Keyboard arrow navigation for desktop
+  useEffect(() => {
+    if (!hasMultipleContexts) return;
+
+    const handleKeyDown = (e) => {
+      // Don't interfere with input fields
+      if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+
+      if (e.key === 'ArrowLeft' && canGoPrevious) {
+        e.preventDefault();
+        handlePrevious();
+      } else if (e.key === 'ArrowRight' && canGoNext) {
+        e.preventDefault();
+        handleNext();
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [hasMultipleContexts, canGoPrevious, canGoNext, handlePrevious, handleNext]);
 
   // Swipe handlers for mobile navigation
   const swipeHandlers = useSwipeable({
