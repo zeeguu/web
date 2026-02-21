@@ -1,5 +1,5 @@
-- New: Report broken exercises with a flag button
-- Improved Translate page with language auto-detection indicator
-- Fixed language switch button on Translate page
-- Better font support for all languages and special characters
-- Improved exercise UI for Match exercises
+- Switch between exercise examples with swipe gestures or arrow keys
+- Fixed cursor jumping issue when typing in exercises
+- Added My Articles section with ability to hide articles
+- Email verification flow for new signups
+- Streak banner now shows flag first
