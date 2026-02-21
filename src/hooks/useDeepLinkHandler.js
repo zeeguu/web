@@ -1,7 +1,6 @@
 import { useEffect } from "react";
 import { useHistory } from "react-router-dom";
 import { Capacitor } from "@capacitor/core";
-import { App } from "@capacitor/app";
 
 /**
  * Handles deep links when the app is already running.
@@ -14,6 +13,12 @@ export default function useDeepLinkHandler() {
   useEffect(() => {
     // Only set up listener on native platforms (iOS/Android)
     if (Capacitor.getPlatform() === "web") {
+      return;
+    }
+
+    // Check if the App plugin is available
+    if (!Capacitor.isPluginAvailable("App")) {
+      console.warn("App plugin not available");
       return;
     }
 
@@ -38,9 +43,18 @@ export default function useDeepLinkHandler() {
       }
     };
 
-    App.addListener("appUrlOpen", handleAppUrlOpen).then((handle) => {
-      listenerHandle = handle;
-    });
+    // Import dynamically only when we know we're on native and plugin is available
+    const setupListener = async () => {
+      try {
+        const { App } = await import("@capacitor/app");
+        const handle = await App.addListener("appUrlOpen", handleAppUrlOpen);
+        listenerHandle = handle;
+      } catch (error) {
+        console.error("Failed to setup deep link listener:", error);
+      }
+    };
+
+    setupListener();
 
     // Cleanup listener on unmount
     return () => {
