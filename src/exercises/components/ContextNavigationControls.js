@@ -168,35 +168,6 @@ export default function ContextNavigationControls({
   const canGoNext = currentIndex < contexts.length - 1;
   const currentContext = contexts[currentIndex];
 
-  // Determine source text for current context - only show if there's an article title
-  const getSourceDisplay = () => {
-    // Before contexts are loaded, check exerciseBookmark
-    if (!currentContext) {
-      if (exerciseBookmark?.title) {
-        return (
-          <span>
-            From: <a href={`/read/article?id=${exerciseBookmark.source_id}`} target="_blank" rel="noopener noreferrer">{exerciseBookmark.title}</a>
-          </span>
-        );
-      }
-      return null;
-    }
-
-    // For any context with a title, show the source
-    if (currentContext.title) {
-      return (
-        <span>
-          From: <a href={`/read/article?id=${currentContext.source_id}`} target="_blank" rel="noopener noreferrer">{currentContext.title}</a>
-        </span>
-      );
-    }
-
-    // No title = generated or unknown source, show nothing
-    return null;
-  };
-
-  const sourceDisplay = getSourceDisplay();
-
   // Swipe handlers for mobile navigation
   const swipeHandlers = useSwipeable({
     onSwipedLeft: () => hasMultipleContexts && canGoNext && handleNext(),
@@ -216,12 +187,8 @@ export default function ContextNavigationControls({
       )}
 
       {/* Navigation controls */}
-      <s.NavigationContainer>
-        <s.SourceInfo>
-          {sourceDisplay}
-        </s.SourceInfo>
-
-        {hasMultipleContexts && (
+      {hasMultipleContexts && (
+        <s.NavigationContainer>
           <s.ArrowsContainer>
             <s.ArrowButton
               onClick={handlePrevious}
@@ -243,8 +210,8 @@ export default function ContextNavigationControls({
               <ArrowForwardRoundedIcon fontSize="inherit" />
             </s.ArrowButton>
           </s.ArrowsContainer>
-        )}
-      </s.NavigationContainer>
+        </s.NavigationContainer>
+      )}
     </div>
   );
 }

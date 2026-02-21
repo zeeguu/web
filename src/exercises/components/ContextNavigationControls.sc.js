@@ -6,26 +6,7 @@ export const NavigationContainer = styled.div`
   font-size: 0.7em;
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  padding: 0 0.5em;
-`;
-
-export const SourceInfo = styled.div`
-  color: ${darkGrey};
-  font-size: 1em;
-  max-width: 60%;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-
-  a {
-    color: ${darkGrey};
-    text-decoration: underline;
-
-    &:hover {
-      color: ${veryDarkGrey};
-    }
-  }
+  justify-content: center;
 `;
 
 export const ArrowsContainer = styled.div`
