@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { useHistory } from "react-router-dom";
 import { Capacitor } from "@capacitor/core";
+import { App } from "@capacitor/app";
 
 /**
  * Handles deep links when the app is already running.
@@ -37,12 +38,8 @@ export default function useDeepLinkHandler() {
       }
     };
 
-    // Dynamically import @capacitor/app only on native platforms
-    // This prevents the web build from failing due to missing dependency
-    import("@capacitor/app").then(({ App }) => {
-      App.addListener("appUrlOpen", handleAppUrlOpen).then((handle) => {
-        listenerHandle = handle;
-      });
+    App.addListener("appUrlOpen", handleAppUrlOpen).then((handle) => {
+      listenerHandle = handle;
     });
 
     // Cleanup listener on unmount
