@@ -12,6 +12,7 @@ import useStreakMilestone from "./hooks/useStreakMilestone";
 import StreakBanner from "./components/StreakBanner";
 import { MOBILE_WIDTH } from "./components/MainNav/screenSize";
 import DailyFeedbackBanner from "./components/DailyFeedbackBanner";
+import Feature from "./features/Feature";
 
 export default function MainNavWithComponent(props) {
   const { children: appContent } = props;
