@@ -91,6 +91,7 @@ platform :ios do
       skip_metadata: false,
       skip_screenshots: true,
       submit_for_review: true,
+      automatic_release: true,
       force: true
     )
   end
