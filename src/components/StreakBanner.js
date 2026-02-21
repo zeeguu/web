@@ -15,12 +15,12 @@ export default function StreakBanner() {
 
   return (
     <s.StreakBannerContainer onClick={() => history.push("/user_dashboard?tab=time")}>
-      <LocalFireDepartmentIcon sx={{ color: "#ff9800", fontSize: "1.2rem" }} />
+      <s.FlagImage src={`/static/flags-new/${userDetails?.learned_language}.svg`} alt="" />
       <s.StreakValue>{daysPracticed}</s.StreakValue>
       <s.StreakLabel>
-        {strings.streakDay} <s.FlagImage src={`/static/flags-new/${userDetails?.learned_language}.svg`} alt="" />{" "}
-        {strings.streakStreak}
+        {strings.streakDay} {strings.streakStreak}
       </s.StreakLabel>
+      <LocalFireDepartmentIcon sx={{ color: "#ff9800", fontSize: "1.2rem" }} />
     </s.StreakBannerContainer>
   );
 }
