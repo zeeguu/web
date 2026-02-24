@@ -23,5 +23,6 @@ import "./userVideos";
 import "./watching_sessions";
 import "./dailyAudio";
 import "./sessionHistory";
+import "./badges";
 
 export default Zeeguu_API;
