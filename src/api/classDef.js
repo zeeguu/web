@@ -1,5 +1,6 @@
 import fetch from "cross-fetch";
 import axios from "axios";
+import * as Sentry from "@sentry/react";
 
 const Zeeguu_API = class {
   constructor(baseAPIurl) {
@@ -43,13 +44,22 @@ const Zeeguu_API = class {
   _getJSON(endpoint, callback) {
     this.apiLog("GET" + endpoint);
     fetch(this._appendSessionToUrl(endpoint, this.session))
-      .then((response) => response.json())
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status} on GET ${endpoint}`);
+        }
+        return response.json();
+      })
       .then((data) => {
-        //do whatever it is you need to do with the fetched data...
         callback(data);
       })
       .catch((e) => {
-        console.log(e);
+        console.error(`API error on GET ${endpoint}:`, e);
+        Sentry.captureException(e, {
+          tags: { endpoint, method: "GET" },
+        });
+        // Call callback with null so components don't hang on loading forever
+        callback(null);
       });
   }
 
