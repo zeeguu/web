@@ -1,4 +1,4 @@
-import { useState, useContext, useEffect, useCallback } from "react";
+import { useState, useContext, useEffect, useCallback, useRef } from "react";
 import { useSwipeable } from "react-swipeable";
 import { APIContext } from "../../contexts/APIContext";
 import { toast } from "react-toastify";
@@ -17,6 +17,22 @@ export default function ContextNavigationControls({
   const [hasFetched, setHasFetched] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [slideDirection, setSlideDirection] = useState(null); // 'left' or 'right'
+  const [animationPhase, setAnimationPhase] = useState('idle'); // 'idle', 'exiting', 'entering'
+  const contentRef = useRef(null);
+
+  // Handle slide-in animation when new content arrives
+  useEffect(() => {
+    if (!isSaving && slideDirection && animationPhase === 'exiting') {
+      // Content just loaded - position it off-screen on opposite side, then slide in
+      setAnimationPhase('entering');
+      // Use requestAnimationFrame to ensure the entering position is applied before animating
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          setAnimationPhase('idle');
+        });
+      });
+    }
+  }, [isSaving, slideDirection, animationPhase]);
 
   // Fetch contexts eagerly on mount
   useEffect(() => {
@@ -150,6 +166,7 @@ export default function ContextNavigationControls({
   const handleNext = useCallback(() => {
     if (isSaving || contexts.length <= 1) return;
     setSlideDirection('left');
+    setAnimationPhase('exiting');
     const newIndex = (currentIndex + 1) % contexts.length;
     setCurrentIndex(newIndex);
     selectContext(contexts[newIndex]);
@@ -159,6 +176,7 @@ export default function ContextNavigationControls({
   const handlePrevious = useCallback(() => {
     if (isSaving || contexts.length <= 1) return;
     setSlideDirection('right');
+    setAnimationPhase('exiting');
     const newIndex = (currentIndex - 1 + contexts.length) % contexts.length;
     setCurrentIndex(newIndex);
     selectContext(contexts[newIndex]);
@@ -204,13 +222,18 @@ export default function ContextNavigationControls({
       {children && (
         <div
           {...swipeHandlers}
+          ref={contentRef}
           style={{
             touchAction: "pan-y",
-            opacity: isSaving ? 0.2 : 1,
-            transform: isSaving
-              ? `translateX(${slideDirection === 'left' ? '-100%' : slideDirection === 'right' ? '100%' : '0'})`
+            opacity: animationPhase === 'exiting' ? 0 : 1,
+            transform: animationPhase === 'exiting'
+              ? `translateX(${slideDirection === 'left' ? '-100%' : '100%'})`
+              : animationPhase === 'entering'
+              ? `translateX(${slideDirection === 'left' ? '100%' : '-100%'})`
               : 'translateX(0)',
-            transition: "opacity 0.2s ease-out, transform 0.25s ease-out",
+            transition: animationPhase === 'entering'
+              ? 'none'
+              : 'opacity 0.2s ease-out, transform 0.25s ease-out',
           }}
         >
           {children}
