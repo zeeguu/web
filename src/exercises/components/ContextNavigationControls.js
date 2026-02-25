@@ -17,21 +17,16 @@ export default function ContextNavigationControls({
   const [hasFetched, setHasFetched] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [slideDirection, setSlideDirection] = useState(null); // 'left' or 'right'
-  const [animationPhase, setAnimationPhase] = useState('idle'); // 'idle', 'exiting', 'entering'
+  const [isExiting, setIsExiting] = useState(false);
+  const [isEntering, setIsEntering] = useState(false);
 
-  // Handle slide-in animation when new content arrives
+  // When API call completes, trigger enter animation
   useEffect(() => {
-    if (!isSaving && slideDirection && animationPhase === 'exiting') {
-      // Content just loaded - position it off-screen on opposite side, then slide in
-      setAnimationPhase('entering');
-      // Use requestAnimationFrame to ensure the entering position is applied before animating
-      requestAnimationFrame(() => {
-        requestAnimationFrame(() => {
-          setAnimationPhase('idle');
-        });
-      });
+    if (!isSaving && isExiting) {
+      setIsExiting(false);
+      setIsEntering(true);
     }
-  }, [isSaving, slideDirection, animationPhase]);
+  }, [isSaving, isExiting]);
 
   // Fetch contexts eagerly on mount
   useEffect(() => {
@@ -165,7 +160,7 @@ export default function ContextNavigationControls({
   const handleNext = useCallback(() => {
     if (isSaving || contexts.length <= 1) return;
     setSlideDirection('left');
-    setAnimationPhase('exiting');
+    setIsExiting(true);
     const newIndex = (currentIndex + 1) % contexts.length;
     setCurrentIndex(newIndex);
     selectContext(contexts[newIndex]);
@@ -175,7 +170,7 @@ export default function ContextNavigationControls({
   const handlePrevious = useCallback(() => {
     if (isSaving || contexts.length <= 1) return;
     setSlideDirection('right');
-    setAnimationPhase('exiting');
+    setIsExiting(true);
     const newIndex = (currentIndex - 1 + contexts.length) % contexts.length;
     setCurrentIndex(newIndex);
     selectContext(contexts[newIndex]);
@@ -216,26 +211,18 @@ export default function ContextNavigationControls({
   });
 
   return (
-    <div style={{ overflow: 'hidden' }}>
+    <s.SlideContainer>
       {/* Swipeable content area */}
       {children && (
-        <div
+        <s.SlideContent
           {...swipeHandlers}
-          style={{
-            touchAction: "pan-y",
-            opacity: animationPhase === 'exiting' ? 0 : 1,
-            transform: animationPhase === 'exiting'
-              ? `translateX(${slideDirection === 'left' ? '-100%' : '100%'})`
-              : animationPhase === 'entering'
-              ? `translateX(${slideDirection === 'left' ? '100%' : '-100%'})`
-              : 'translateX(0)',
-            transition: animationPhase === 'entering'
-              ? 'none'
-              : 'opacity 0.2s ease-out, transform 0.25s ease-out',
-          }}
+          $exiting={isExiting}
+          $entering={isEntering}
+          $direction={slideDirection}
+          onAnimationEnd={() => setIsEntering(false)}
         >
           {children}
-        </div>
+        </s.SlideContent>
       )}
 
       {/* Navigation controls */}
@@ -249,6 +236,6 @@ export default function ContextNavigationControls({
           </s.ChangeExampleLink>
         </s.NavigationContainer>
       )}
-    </div>
+    </s.SlideContainer>
   );
 }
