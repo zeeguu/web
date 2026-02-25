@@ -208,9 +208,9 @@ export default function ContextNavigationControls({
             touchAction: "pan-y",
             opacity: isSaving ? 0.2 : 1,
             transform: isSaving
-              ? `translateX(${slideDirection === 'left' ? '-20px' : slideDirection === 'right' ? '20px' : '0'})`
+              ? `translateX(${slideDirection === 'left' ? '-100%' : slideDirection === 'right' ? '100%' : '0'})`
               : 'translateX(0)',
-            transition: "opacity 0.15s ease-out, transform 0.15s ease-out",
+            transition: "opacity 0.2s ease-out, transform 0.25s ease-out",
           }}
         >
           {children}
