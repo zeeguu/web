@@ -90,6 +90,24 @@ export default function NextNavigation({
     // eslint-disable-next-line
   }, [isExerciseOver]);
 
+  // Allow pressing Enter to continue to next exercise when exercise is over
+  useEffect(() => {
+    if (!isExerciseOver) return;
+
+    const handleKeyDown = (e) => {
+      // Don't interfere with input fields
+      if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+
+      if (e.key === 'Enter' && !isAutoPronouncing) {
+        e.preventDefault();
+        moveToNextExercise();
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isExerciseOver, isAutoPronouncing, moveToNextExercise]);
+
   useEffect(() => {
     if (isDeleted) {
       moveToNextExercise();
