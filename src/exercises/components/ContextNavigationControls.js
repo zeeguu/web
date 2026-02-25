@@ -20,7 +20,8 @@ export default function ContextNavigationControls({
   const [isExiting, setIsExiting] = useState(false);
   const [isEntering, setIsEntering] = useState(false);
 
-  // When API call completes, trigger enter animation
+  // Transition from exiting to entering when isSaving becomes false.
+  // isSaving is set to false in the finally block of selectContext after the API call.
   useEffect(() => {
     if (!isSaving && isExiting) {
       setIsExiting(false);
