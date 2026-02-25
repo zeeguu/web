@@ -192,7 +192,7 @@ export default function ContextNavigationControls({
           {...swipeHandlers}
           style={{
             touchAction: "pan-y",
-            opacity: isSaving ? 0.4 : 1,
+            opacity: isSaving ? 0.2 : 1,
             transition: "opacity 0.15s ease-out",
           }}
         >
