@@ -216,7 +216,7 @@ export default function ContextNavigationControls({
   });
 
   return (
-    <div>
+    <div style={{ overflow: 'hidden' }}>
       {/* Swipeable content area */}
       {children && (
         <div
