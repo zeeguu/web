@@ -68,6 +68,7 @@ const Exercise = styled.div`
     margin-right: 2em;
     font-weight: 500;
     line-height: 1.4em;
+    min-height: 4.5em; /* Prevent layout jump when example length changes */
   }
 
   .learningCycleIndicator {
