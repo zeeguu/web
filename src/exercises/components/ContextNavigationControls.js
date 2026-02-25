@@ -16,6 +16,7 @@ export default function ContextNavigationControls({
   const [isLoading, setIsLoading] = useState(false);
   const [hasFetched, setHasFetched] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
+  const [slideDirection, setSlideDirection] = useState(null); // 'left' or 'right'
 
   // Fetch contexts eagerly on mount
   useEffect(() => {
@@ -145,10 +146,20 @@ export default function ContextNavigationControls({
     }
   };
 
-  // Cycle to the next example (wraps around)
-  const handleChangeExample = useCallback(() => {
+  // Go to next example (swipe left / button click)
+  const handleNext = useCallback(() => {
     if (isSaving || contexts.length <= 1) return;
+    setSlideDirection('left');
     const newIndex = (currentIndex + 1) % contexts.length;
+    setCurrentIndex(newIndex);
+    selectContext(contexts[newIndex]);
+  }, [isSaving, currentIndex, contexts]);
+
+  // Go to previous example (swipe right)
+  const handlePrevious = useCallback(() => {
+    if (isSaving || contexts.length <= 1) return;
+    setSlideDirection('right');
+    const newIndex = (currentIndex - 1 + contexts.length) % contexts.length;
     setCurrentIndex(newIndex);
     selectContext(contexts[newIndex]);
   }, [isSaving, currentIndex, contexts]);
@@ -157,7 +168,7 @@ export default function ContextNavigationControls({
 
   const hasMultipleContexts = contexts.length > 1;
 
-  // Keyboard arrow navigation for desktop (arrows cycle through examples)
+  // Keyboard arrow navigation for desktop
   useEffect(() => {
     if (!hasMultipleContexts) return;
 
@@ -165,20 +176,23 @@ export default function ContextNavigationControls({
       // Don't interfere with input fields
       if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
 
-      if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
+      if (e.key === 'ArrowRight') {
         e.preventDefault();
-        handleChangeExample();
+        handleNext();
+      } else if (e.key === 'ArrowLeft') {
+        e.preventDefault();
+        handlePrevious();
       }
     };
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [hasMultipleContexts, handleChangeExample]);
+  }, [hasMultipleContexts, handleNext, handlePrevious]);
 
   // Swipe handlers for mobile navigation
   const swipeHandlers = useSwipeable({
-    onSwipedLeft: () => hasMultipleContexts && handleChangeExample(),
-    onSwipedRight: () => hasMultipleContexts && handleChangeExample(),
+    onSwipedLeft: () => hasMultipleContexts && handleNext(),
+    onSwipedRight: () => hasMultipleContexts && handlePrevious(),
     trackMouse: false,
     preventScrollOnSwipe: true,
     delta: 50, // minimum swipe distance
@@ -193,7 +207,10 @@ export default function ContextNavigationControls({
           style={{
             touchAction: "pan-y",
             opacity: isSaving ? 0.2 : 1,
-            transition: "opacity 0.15s ease-out",
+            transform: isSaving
+              ? `translateX(${slideDirection === 'left' ? '-20px' : slideDirection === 'right' ? '20px' : '0'})`
+              : 'translateX(0)',
+            transition: "opacity 0.15s ease-out, transform 0.15s ease-out",
           }}
         >
           {children}
@@ -204,7 +221,7 @@ export default function ContextNavigationControls({
       {hasMultipleContexts && (
         <s.NavigationContainer>
           <s.ChangeExampleLink
-            onClick={handleChangeExample}
+            onClick={handleNext}
             disabled={isSaving}
           >
             {isSaving ? "loading..." : "change example"}
