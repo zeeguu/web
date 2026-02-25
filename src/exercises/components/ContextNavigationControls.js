@@ -215,7 +215,7 @@ export default function ContextNavigationControls({
     <s.SlideContainer>
       {/* Left arrow */}
       {hasMultipleContexts && (
-        <s.NavArrow $side="left" onClick={handlePrevious} disabled={isSaving}>
+        <s.NavArrow onClick={handlePrevious} disabled={isSaving}>
           ‹
         </s.NavArrow>
       )}
@@ -235,7 +235,7 @@ export default function ContextNavigationControls({
 
       {/* Right arrow */}
       {hasMultipleContexts && (
-        <s.NavArrow $side="right" onClick={handleNext} disabled={isSaving}>
+        <s.NavArrow onClick={handleNext} disabled={isSaving}>
           ›
         </s.NavArrow>
       )}
