@@ -250,7 +250,7 @@ let FeedbackButton = styled(OrangeButton)`
 
   &:focus {
     outline: none;
-    box-shadow: 0 0 0 3px rgba(255, 200, 100, 0.8);
+    box-shadow: 0 0 0 3px rgba(255, 170, 50, 0.9);
   }
 
   &:disabled {
