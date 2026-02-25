@@ -15,6 +15,7 @@ import LikeFeedBackBox from "./LikeFeedbackBox";
 import { extractVideoIDFromURL } from "../utils/misc/youtube";
 
 import ArticleSource from "./ArticleSource";
+import ShareArticle from "./ShareArticle";
 import ReportBroken from "./ReportBroken";
 
 import TopToolbar from "./TopToolbar";
@@ -343,6 +344,7 @@ export default function ArticleReader({ teacherArticleID }) {
           <s.ArticleInfoContainer>
             <ArticleStatInfo articleInfo={articleInfo}></ArticleStatInfo>
             {!articleInfo.parent_url && <ArticleSource url={articleInfo.url} />}
+            <ShareArticle articleID={articleID} />
           </s.ArticleInfoContainer>
           <hr></hr>
 
