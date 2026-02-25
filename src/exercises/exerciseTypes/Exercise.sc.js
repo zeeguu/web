@@ -247,7 +247,11 @@ let OrangeButtonMessage = styled(StyledButton)`
 let FeedbackButton = styled(OrangeButton)`
   height: fit-content;
   width: fit-content;
-  outline: none;
+
+  &:focus {
+    outline: 2px solid white;
+    outline-offset: 2px;
+  }
 
   &:disabled {
     cursor: default;

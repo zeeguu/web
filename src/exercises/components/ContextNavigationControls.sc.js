@@ -46,7 +46,7 @@ export const ChangeExampleLink = styled.button`
   padding: 0.3em 0.6em;
   cursor: pointer;
   color: ${darkGrey};
-  font-size: 0.85em;
+  font-size: small;
   text-decoration: underline;
   text-underline-offset: 2px;
 
