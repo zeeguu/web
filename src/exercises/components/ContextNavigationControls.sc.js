@@ -1,5 +1,5 @@
 import styled, { css, keyframes } from "styled-components";
-import { darkGrey, zeeguuOrange } from "../../components/colors";
+import { darkGrey } from "../../components/colors";
 
 const slideInFromRight = keyframes`
   from { transform: translateX(100%); opacity: 0; }
@@ -13,10 +13,14 @@ const slideInFromLeft = keyframes`
 
 export const SlideContainer = styled.div`
   overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 `;
 
 export const SlideContent = styled.div`
   touch-action: pan-y;
+  flex: 1;
 
   ${props => props.$exiting && css`
     opacity: 0;
@@ -33,29 +37,23 @@ export const SlideContent = styled.div`
   `}
 `;
 
-export const NavigationContainer = styled.div`
-  margin-top: 0.5em;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-`;
-
-export const ChangeExampleLink = styled.button`
+export const NavArrow = styled.button`
   background: none;
   border: none;
-  padding: 0.3em 0.6em;
+  padding: 0.5em;
   cursor: pointer;
-  color: ${darkGrey};
-  font-size: small;
-  text-decoration: underline;
-  text-underline-offset: 2px;
+  color: #ccc;
+  font-size: 1.5em;
+  line-height: 1;
+  user-select: none;
+  flex-shrink: 0;
 
   &:hover:not(:disabled) {
-    color: ${zeeguuOrange};
+    color: ${darkGrey};
   }
 
   &:disabled {
-    opacity: 0.5;
+    opacity: 0.3;
     cursor: default;
   }
 `;

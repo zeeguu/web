@@ -213,6 +213,13 @@ export default function ContextNavigationControls({
 
   return (
     <s.SlideContainer>
+      {/* Left arrow */}
+      {hasMultipleContexts && (
+        <s.NavArrow $side="left" onClick={handlePrevious} disabled={isSaving}>
+          ‹
+        </s.NavArrow>
+      )}
+
       {/* Swipeable content area */}
       {children && (
         <s.SlideContent
@@ -226,16 +233,11 @@ export default function ContextNavigationControls({
         </s.SlideContent>
       )}
 
-      {/* Navigation controls */}
+      {/* Right arrow */}
       {hasMultipleContexts && (
-        <s.NavigationContainer>
-          <s.ChangeExampleLink
-            onClick={handleNext}
-            disabled={isSaving}
-          >
-            {isSaving ? "loading..." : "change example"}
-          </s.ChangeExampleLink>
-        </s.NavigationContainer>
+        <s.NavArrow $side="right" onClick={handleNext} disabled={isSaving}>
+          ›
+        </s.NavArrow>
       )}
     </s.SlideContainer>
   );
