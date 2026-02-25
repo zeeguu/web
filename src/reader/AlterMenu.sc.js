@@ -17,7 +17,6 @@ const AlterMenuSC = styled.div`
 
   .additionalTrans {
     height: 100%;
-    text-transform: lowercase;
     white-space: normal;
     border-bottom: 1px solid ${zeeguuLightYellow} !important;
     color: ${almostBlack};
