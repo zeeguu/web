@@ -188,7 +188,14 @@ export default function ContextNavigationControls({
     <div>
       {/* Swipeable content area */}
       {children && (
-        <div {...swipeHandlers} style={{ touchAction: "pan-y" }}>
+        <div
+          {...swipeHandlers}
+          style={{
+            touchAction: "pan-y",
+            opacity: isSaving ? 0.4 : 1,
+            transition: "opacity 0.15s ease-out",
+          }}
+        >
           {children}
         </div>
       )}
@@ -200,7 +207,7 @@ export default function ContextNavigationControls({
             onClick={handleChangeExample}
             disabled={isSaving}
           >
-            change example
+            {isSaving ? "loading..." : "change example"}
           </s.ChangeExampleLink>
         </s.NavigationContainer>
       )}
