@@ -1,4 +1,4 @@
-import { useState, useContext, useEffect, useCallback, useRef } from "react";
+import { useState, useContext, useEffect, useCallback } from "react";
 import { useSwipeable } from "react-swipeable";
 import { APIContext } from "../../contexts/APIContext";
 import { toast } from "react-toastify";
@@ -18,7 +18,6 @@ export default function ContextNavigationControls({
   const [isSaving, setIsSaving] = useState(false);
   const [slideDirection, setSlideDirection] = useState(null); // 'left' or 'right'
   const [animationPhase, setAnimationPhase] = useState('idle'); // 'idle', 'exiting', 'entering'
-  const contentRef = useRef(null);
 
   // Handle slide-in animation when new content arrives
   useEffect(() => {
@@ -222,7 +221,6 @@ export default function ContextNavigationControls({
       {children && (
         <div
           {...swipeHandlers}
-          ref={contentRef}
           style={{
             touchAction: "pan-y",
             opacity: animationPhase === 'exiting' ? 0 : 1,
