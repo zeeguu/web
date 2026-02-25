@@ -120,8 +120,7 @@ export default function Learned() {
         </div>
         <br />
         <div style={{ textAlign: "left", marginLeft: "1em", fontSize: "smaller" }}>
-          A word is learned when done correctly in exercises in all the four levels. Or when it is marked as{" "}
-          <i>"too easy"</i> by you after you have done several exercises with it.
+          A word is learned when done correctly in exercises in all the four levels.
         </div>
 
         <br />

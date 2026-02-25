@@ -383,7 +383,7 @@ let strings = new LocalizedStrings(
 
       //Learned
       learnedWordsAreMsg:
-        "Learned words are words that were correct in exercises on four different days or words that have been tagged to be 'Too easy'.",
+        "Learned words are words that were correct in exercises on all four levels.",
       numberOfLearnedWordsMsg: "You have learned {0} words so far.",
       correctOn: "Correct on: ",
 
