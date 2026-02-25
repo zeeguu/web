@@ -2,8 +2,6 @@ import { useState, useContext, useEffect, useCallback } from "react";
 import { useSwipeable } from "react-swipeable";
 import { APIContext } from "../../contexts/APIContext";
 import { toast } from "react-toastify";
-import ArrowBackRoundedIcon from "@mui/icons-material/ArrowBackRounded";
-import ArrowForwardRoundedIcon from "@mui/icons-material/ArrowForwardRounded";
 import * as s from "./ContextNavigationControls.sc";
 
 export default function ContextNavigationControls({
@@ -147,16 +145,10 @@ export default function ContextNavigationControls({
     }
   };
 
-  const handlePrevious = useCallback(() => {
-    if (isSaving || currentIndex <= 0) return;
-    const newIndex = currentIndex - 1;
-    setCurrentIndex(newIndex);
-    selectContext(contexts[newIndex]);
-  }, [isSaving, currentIndex, contexts]);
-
-  const handleNext = useCallback(() => {
-    if (isSaving || currentIndex >= contexts.length - 1) return;
-    const newIndex = currentIndex + 1;
+  // Cycle to the next example (wraps around)
+  const handleChangeExample = useCallback(() => {
+    if (isSaving || contexts.length <= 1) return;
+    const newIndex = (currentIndex + 1) % contexts.length;
     setCurrentIndex(newIndex);
     selectContext(contexts[newIndex]);
   }, [isSaving, currentIndex, contexts]);
@@ -164,11 +156,8 @@ export default function ContextNavigationControls({
   if (!onExampleUpdated) return null;
 
   const hasMultipleContexts = contexts.length > 1;
-  const canGoPrevious = currentIndex > 0;
-  const canGoNext = currentIndex < contexts.length - 1;
-  const currentContext = contexts[currentIndex];
 
-  // Keyboard arrow navigation for desktop
+  // Keyboard arrow navigation for desktop (arrows cycle through examples)
   useEffect(() => {
     if (!hasMultipleContexts) return;
 
@@ -176,23 +165,20 @@ export default function ContextNavigationControls({
       // Don't interfere with input fields
       if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
 
-      if (e.key === 'ArrowLeft' && canGoPrevious) {
+      if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
         e.preventDefault();
-        handlePrevious();
-      } else if (e.key === 'ArrowRight' && canGoNext) {
-        e.preventDefault();
-        handleNext();
+        handleChangeExample();
       }
     };
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [hasMultipleContexts, canGoPrevious, canGoNext, handlePrevious, handleNext]);
+  }, [hasMultipleContexts, handleChangeExample]);
 
   // Swipe handlers for mobile navigation
   const swipeHandlers = useSwipeable({
-    onSwipedLeft: () => hasMultipleContexts && canGoNext && handleNext(),
-    onSwipedRight: () => hasMultipleContexts && canGoPrevious && handlePrevious(),
+    onSwipedLeft: () => hasMultipleContexts && handleChangeExample(),
+    onSwipedRight: () => hasMultipleContexts && handleChangeExample(),
     trackMouse: false,
     preventScrollOnSwipe: true,
     delta: 50, // minimum swipe distance
@@ -210,27 +196,12 @@ export default function ContextNavigationControls({
       {/* Navigation controls */}
       {hasMultipleContexts && (
         <s.NavigationContainer>
-          <s.ArrowsContainer>
-            <s.ArrowButton
-              onClick={handlePrevious}
-              disabled={!canGoPrevious || isSaving}
-              title="Previous example"
-            >
-              <ArrowBackRoundedIcon fontSize="inherit" />
-            </s.ArrowButton>
-
-            <s.ContextIndicator>
-              {currentIndex + 1}/{contexts.length}
-            </s.ContextIndicator>
-
-            <s.ArrowButton
-              onClick={handleNext}
-              disabled={!canGoNext || isSaving}
-              title="Next example"
-            >
-              <ArrowForwardRoundedIcon fontSize="inherit" />
-            </s.ArrowButton>
-          </s.ArrowsContainer>
+          <s.ChangeExampleLink
+            onClick={handleChangeExample}
+            disabled={isSaving}
+          >
+            change example
+          </s.ChangeExampleLink>
         </s.NavigationContainer>
       )}
     </div>
