@@ -1,6 +1,7 @@
 import ArticleListBrowser from "./ArticleListBrowser";
 import BookmarkedArticles from "./BookmarkedArticles";
 
+import { Redirect } from "react-router-dom";
 import { PrivateRoute } from "../PrivateRoute";
 import ClassroomArticles from "./ClassroomArticles";
 import TopTabs from "../components/TopTabs";
@@ -19,10 +20,15 @@ import CustomizeGear from "./CustomizeGear";
 
 export default function ArticlesRouter({ hasExtension, isChrome }) {
   const { getBrowsingSessionId } = useBrowsingSession();
+  const hideRecommendations = LocalStorage.hasFeature("hide_recommendations");
 
   const tabsAndLinks = [
-    { text: strings.recommended, link: "/articles", action: <CustomizeGear /> },
-    { text: strings.search, link: "/articles/mySearches" },
+    !hideRecommendations && {
+      text: strings.recommended,
+      link: "/articles",
+      action: <CustomizeGear />,
+    },
+    !hideRecommendations && { text: strings.search, link: "/articles/mySearches" },
     LocalStorage.isStudent() && { text: strings.classroomTab, link: "/articles/classroom" },
   ].filter(Boolean);
 
@@ -32,13 +38,17 @@ export default function ArticlesRouter({ hasExtension, isChrome }) {
       <s.NarrowColumn>
         <TopTabs title={strings.articles} tabsAndLinks={tabsAndLinks} />
 
-        <PrivateRoute
-          path="/articles"
-          exact
-          component={ArticleListBrowser}
-          hasExtension={hasExtension}
-          isChrome={isChrome}
-        />
+        {hideRecommendations ? (
+          <Redirect from="/articles" exact to="/articles/classroom" />
+        ) : (
+          <PrivateRoute
+            path="/articles"
+            exact
+            component={ArticleListBrowser}
+            hasExtension={hasExtension}
+            isChrome={isChrome}
+          />
+        )}
         <PrivateRoute
           path="/articles/bookmarked"
           component={BookmarkedArticles}
