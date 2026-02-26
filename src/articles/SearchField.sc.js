@@ -28,7 +28,7 @@ const SearchInput = styled.input`
   height: 1.5em;
   box-sizing: border-box;
   width: 50%;
-  font-size: 0.9rem;
+  font-size: 1rem; /* Must be >= 16px to prevent iOS auto-zoom on focus */
   height: 2.5rem;
   padding: 0 1rem;
   margin: 0;
