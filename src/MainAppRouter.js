@@ -50,7 +50,7 @@ import DailyAudioRouter from "./dailyAudio/_DailyAudioRouter";
 import IndividualExercise from "./pages/IndividualExercise";
 import Swiper from "./swiper/Swiper";
 import KeyboardTest from "./pages/KeyboardTest";
-import Badges from "./Badges";
+import Badges from "./badges/Badges";
 
 // Helper to detect if we're in a Capacitor native app
 const isCapacitor = () => {
@@ -110,7 +110,6 @@ export default function MainAppRouter({ hasExtension, handleSuccessfulLogIn }) {
       <Route path="/privacy" component={PrivacyPolicy} />
       <Route path="/howto/delete_account" component={HowToDeleteAccount} />
       <Route path="/render" component={NoSidebarRouter} />
-      <Route path="/badges" component={Badges} />
 
       <PrivateRoute path="/account_deletion" component={DeleteAccount} />
 
@@ -140,6 +139,7 @@ export default function MainAppRouter({ hasExtension, handleSuccessfulLogIn }) {
         component={ExercisesForArticle}
         source={WEB_READER}
       />
+      <PrivateRouteWithMainNav path="/badges" component={Badges} />
       <PrivateRouteWithMainNav path="/exercise/:exerciseType/:bookmarkId" component={IndividualExercise} />
       <PrivateRouteWithMainNav path="/exercise-test/:exerciseType/:bookmarkId" component={IndividualExercise} />
       <PrivateRouteWithMainNav
