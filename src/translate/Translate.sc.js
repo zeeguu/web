@@ -58,6 +58,7 @@ export const TranslateButton = styled.button`
 
 export const ResultsContainer = styled.div`
   margin-top: 1rem;
+  padding-bottom: 1rem;
 `;
 
 export const ResultsHeader = styled.h3`

@@ -1,5 +1,8 @@
 import styled from "styled-components";
 
+// Footer height: 0.5rem (top padding) + 3rem (button height) + 0.5rem (bottom padding) + safe-area-inset for notched devices
+export const FOOTER_HEIGHT = "4rem + env(safe-area-inset-bottom, 0px)";
+
 const BottomNav = styled.nav`
   box-sizing: border-box;
   width: 100%;
