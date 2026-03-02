@@ -22,6 +22,7 @@ export const BadgeCard = styled.div`
   box-shadow: 0 6px 16px rgba(0,0,0,0.08);
   cursor: pointer;
   transition: transform 0.15s ease;
+  position: relative;
 
   &:hover {
     transform: translateY(-3px);

@@ -13,6 +13,8 @@ import StreakBanner from "./components/StreakBanner";
 import { MOBILE_WIDTH } from "./components/MainNav/screenSize";
 import DailyFeedbackBanner from "./components/DailyFeedbackBanner";
 import Feature from "./features/Feature";
+import useBadgeCounterNotification from "@/hooks/useBadgeCounterNotification";
+import { BadgeCounterContext } from "@/badges/BadgeCounterContext";
 
 export default function MainNavWithComponent(props) {
   const { children: appContent } = props;
@@ -27,6 +29,9 @@ export default function MainNavWithComponent(props) {
     incrementExerciseCounter,
     hideExerciseCounter,
   } = useExercisesCounterNotification();
+
+
+  const badgeCounter = useBadgeCounterNotification();
 
   const path = useLocation().pathname;
 
@@ -70,22 +75,24 @@ export default function MainNavWithComponent(props) {
           hideExerciseCounter: hideExerciseCounter,
         }}
       >
-        <s.MainNavWithComponent $screenWidth={screenWidth}>
-          <MainNav screenWidth={screenWidth} />
-          <s.AppContent
-            // Update the key when the learned_language changes to trigger a re-render
-            // of the app content that needs real-time updates. This is a smoother
-            // alternative to window.location.reload() when switching the practiced language in navigation.
-            key={userDetails.learned_language}
-            $currentPath={path}
-            $screenWidth={screenWidth}
-            id="scrollHolder"
-          >
-            {screenWidth <= MOBILE_WIDTH && <StreakBanner />}
-            {screenWidth <= MOBILE_WIDTH && Feature.daily_feedback() && <DailyFeedbackBanner />}
-            {appContent}
-          </s.AppContent>
-        </s.MainNavWithComponent>
+        <BadgeCounterContext.Provider value={badgeCounter}>
+          <s.MainNavWithComponent $screenWidth={screenWidth}>
+            <MainNav screenWidth={screenWidth} />
+            <s.AppContent
+              // Update the key when the learned_language changes to trigger a re-render
+              // of the app content that needs real-time updates. This is a smoother
+              // alternative to window.location.reload() when switching the practiced language in navigation.
+              key={userDetails.learned_language}
+              $currentPath={path}
+              $screenWidth={screenWidth}
+              id="scrollHolder"
+            >
+              {screenWidth <= MOBILE_WIDTH && <StreakBanner />}
+              {screenWidth <= MOBILE_WIDTH && Feature.daily_feedback() && <DailyFeedbackBanner />}
+              {appContent}
+            </s.AppContent>
+          </s.MainNavWithComponent>
+        </BadgeCounterContext.Provider>
       </ExercisesCounterContext.Provider>
     </MainNavContext.Provider>
   );

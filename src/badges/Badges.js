@@ -1,6 +1,7 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import { APIContext } from "../contexts/APIContext";
-import * as s from "./userBadges.sc.js";
+import * as s from "./Badges.sc.js";
+import NotificationIcon from "@/components/NotificationIcon";
 
 export default function Badges() {
   const api = useContext(APIContext);
@@ -10,9 +11,15 @@ export default function Badges() {
   const [selectedBadge, setSelectedBadge] = useState(null);
   const [currentLevelIndex, setCurrentLevelIndex] = useState(0);
 
+  //TODO remove this
+  const hasFetched = useRef(false);
+
   useEffect(() => {
+    if (hasFetched.current) return;
+    hasFetched.current = true;
+
     //TODO
-    const userId = 1
+    const userId = 1;
     api.getBadgesForUser(userId, (data) => {
       setBadges(data);
       setTopBadges(getTopBadgeLevels(data));
@@ -69,6 +76,7 @@ export default function Badges() {
       <s.BadgesRow>
         {topBadges.map((b) => (
           <s.BadgeCard key={b.badge_id} achieved={b.level.achieved} onClick={() => openBadge(b.badge_id)}>
+            {!b.level.is_shown && b.level.achieved && <NotificationIcon text="NEW" position="top-absolute" />}
             <div className="icon-container">
               <img src={getIcon(b.level)} style={iconStyle(b.level.achieved)} />
             </div>

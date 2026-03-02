@@ -6,6 +6,7 @@ import strings from "../i18n/definitions";
 import { Switch } from "react-router-dom";
 import SessionHistory from "../words/SessionHistory";
 import UserDashboard from "../userDashboard/UserDashboard";
+import Badges from "@/badges/Badges";
 
 export default function ActivityRouter() {
   const tabsAndLinks = [
@@ -16,6 +17,10 @@ export default function ActivityRouter() {
     {
       text: strings.statisticsTab,
       link: "/activity-history/statistics",
+    },
+    {
+      text: strings.badges,
+      link: "/badges",
     }
   ];
 
@@ -26,6 +31,7 @@ export default function ActivityRouter() {
 
         <PrivateRoute exact path="/activity-history" component={SessionHistory} />
         <PrivateRoute path="/activity-history/statistics" component={UserDashboard} />
+        <PrivateRoute path="/badges" component={Badges}/>
       </s.NarrowColumn>
     </Switch>
   );
