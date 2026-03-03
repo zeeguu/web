@@ -149,6 +149,7 @@
   },
   "overrides": {
     "d3-color": "3.1.0",
-    "nth-check": "2.1.1"
+    "nth-check": "2.1.1",
+    "serialize-javascript": "^7.0.3"
   }
 }
