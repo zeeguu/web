@@ -29,6 +29,7 @@ import LocalStorage from "./assorted/LocalStorage";
 import { Capacitor } from "@capacitor/core";
 import useAnonymousUpgrade from "./hooks/useAnonymousUpgrade";
 import UpgradeAccountModal from "./components/UpgradeAccountModal";
+import Friends from "./pages/Friends"; 
 
 // Lazy load separate parts of the app
 const LazyTeacherRouter = lazy(() => import("./teacher/_routing/_TeacherRouter"));
@@ -102,6 +103,7 @@ export default function MainAppRouter({ hasExtension, handleSuccessfulLogIn }) {
       <Route path="/language_preferences" component={LanguagePreferences} />
       <Route path="/welcome" component={Welcome} />
 
+
       <Route path="/" exact component={HomePage} />
       <Route path="/extension_installed" component={ExtensionInstalled} />
       <Route path="/install_extension" component={InstallExtension} />
@@ -118,6 +120,7 @@ export default function MainAppRouter({ hasExtension, handleSuccessfulLogIn }) {
 
       <PrivateRoute path="/exclude_words" hasExtension={hasExtension} component={ExcludeWords} />
 
+      <PrivateRouteWithMainNav path="/friends" component={Friends} />
       <PrivateRouteWithMainNav path="/articles" component={ArticlesRouter} />
       <PrivateRouteWithMainNav path="/swiper" component={Swiper} />
       <PrivateRoute path="/watch/video" component={VideoPlayer} />
