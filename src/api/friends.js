@@ -19,54 +19,28 @@ Zeeguu_API.prototype.getFriendRequests = function(callback) {
   });
 }
 
-Zeeguu_API.prototype.sendFriendRequest = function(receiver_id, onSuccess, onError) {
-  this.apiPost("send_friend_request", { receiver_id }, false).then((response) => {
-    if (response.ok) {
-      onSuccess();
-    } else {
-      response.json().then((json) => {
-        onError(json.message);
-      });
-    }
-  });
+Zeeguu_API.prototype.getPendingFriendRequests = function(callback) {
+  return this._getJSON("/get_pending_friend_requests" , (data) => {
+    callback(data);
+  } );
 }
 
-Zeeguu_API.prototype.deleteFriendRequest = function(receiver_id, onSuccess, onError) {
-  this.apiPost("delete_friend_request", { receiver_id }, false).then((response) => {
-    if (response.ok) {
-      onSuccess();
-    } else {
-      response.json().then((json) => {
-        onError(json.message);
-      });
-    }
-  });
+
+Zeeguu_API.prototype.sendFriendRequest = function(receiver_id) {
+  return this.apiPost("/send_friend_request", { receiver_id }, false);
 }
 
-Zeeguu_API.prototype.acceptFriendRequest = function(sender_id, onSuccess, onError) {
-  this.apiPost(`/accept_friend_request`, { sender_id }, false).then((response) => {
-    if (response.ok) {
-      onSuccess();
-    } else {
-      response.json().then((json) => {
-        onError(json.message);
-      });
-    }
-  });
+Zeeguu_API.prototype.deleteFriendRequest = function(receiver_id) {
+  return this.apiPost("/delete_friend_request", { receiver_id }, false);
 }
 
-Zeeguu_API.prototype.rejectFriendRequest = function(sender_id, onSuccess, onError) {
-  this.apiPost(`/reject_friend_request`, { sender_id }, false).then((response) => {
-    if (response.ok) {
-      onSuccess();
-    } else {
-      response.json().then((json) => {
-        onError(json.message);
-      });
-    }
-  });
+Zeeguu_API.prototype.acceptFriendRequest = function(sender_id) {
+  return this.apiPost(`/accept_friend_request`, { sender_id }, false);
 }
 
+Zeeguu_API.prototype.rejectFriendRequest = function(sender_id) {
+  return this.apiPost(`/reject_friend_request`, { sender_id }, false);
+}
 Zeeguu_API.prototype.unfriend = function(receiver_id) {
   return this.apiPost("/unfriend", { receiver_id }, false);
 }

@@ -14,11 +14,15 @@ function Friends() {
   const [searchingNewFriends, setSearchingNewFriends] = useState(false);
   const [newFriendError, setNewFriendError] = useState(null);
   const [pendingSearch, setPendingSearch] = useState("");
-  const [sendingRequestId, setSendingRequestId] = useState(null);
+  const [sendingRequestId, setSendingRequestId] = useState([null]);
   const [sentRequests, setSentRequests] = useState([]);
   const [friendRequests, setFriendRequests] = useState([]);
   const [loadingRequests, setLoadingRequests] = useState(true);
   const [errorRequests, setErrorRequests] = useState(null);
+  const [pendingRequests, setPendingRequests] = useState([]);
+  const [loadingPending, setLoadingPending] = useState(true);
+  const [errorPending, setErrorPending] = useState(null);
+  const [acceptedRequests, setAcceptedRequests] = useState([]);
 
   useEffect(() => {
     api.getFriends((data) => {
@@ -39,6 +43,19 @@ function Friends() {
       (err) => {
         setErrorRequests("Failed to fetch friend requests");
         setLoadingRequests(false);
+      }
+    );
+  }, [api]);
+
+  useEffect(() => {
+    api.getPendingFriendRequests(
+      (data) => {
+        setPendingRequests(data);
+        setLoadingPending(false);
+      },
+      (err) => {
+        setErrorPending("Failed to fetch sent friend requests");
+        setLoadingPending(false);
       }
     );
   }, [api]);
@@ -65,21 +82,74 @@ function Friends() {
 
   const handleSendFriendRequest = (receiver_id) => {
     setSendingRequestId(receiver_id);
-    api.sendFriendRequest(receiver_id, (response) => {
-      setSendingRequestId(null);
-      setSentRequests((prev) => [...prev, receiver_id]);
-    });
+    api.sendFriendRequest(receiver_id)
+      .then((response) => {
+        // setSendingRequestId(null);
+        if (response.status === 200) {
+          console.log("Friend request sent successfully");
+          setSentRequests((prev) => [...prev, receiver_id]);
+        } else {
+          response.json().then((json) => {
+            alert(json.error || "Failed to send friend request.");
+          });
+        }
+      })
+      .catch(() => {
+        setSendingRequestId(null);
+        alert("Failed to send friend request.");
+      });
   };
 
   const handleAcceptFriendRequest = (sender_id) => {
-    api.acceptFriendRequest(sender_id, (response) => {
-      // Remove the accepted request from the list
-      setFriendRequests((prev) => prev.filter((req) => req.sender_id !== sender_id));
-      // Fetch updated friends list
-      api.getFriends((data) => {
-        setFriends(data);
+    api.acceptFriendRequest(sender_id)
+      .then((response) => {
+        console.log("Accept friend request response:", response);
+        if (response.status === 200) {
+          setAcceptedRequests((prev) => [...prev, sender_id]);
+          setFriendRequests((prev) => prev.map((req) =>
+            req.sender.id === sender_id ? { ...req, accepted: true } : req
+          ));
+        } else {
+          response.json().then((json) => {
+            alert(json.message || "Failed to accept friend request.");
+          });
+        }
+      })
+      .catch(() => {
+        alert("Failed to accept friend request.");
       });
-    });
+  };
+
+  const handleUnfriend = (friend_id) => {
+    api.unfriend(friend_id)
+      .then((response) => {
+        if (response.ok) {
+          setFriends((prev) => prev.filter((friend) => friend.id !== friend_id));
+        } else {
+          response.json().then((json) => {
+            alert(json.message || "Failed to unfriend user.");
+          });
+        }
+      })
+      .catch(() => {
+        alert("Failed to unfriend user.");
+      });
+  };
+
+  const handleCancelFriendRequest = (receiver_id) => {
+    api.deleteFriendRequest(receiver_id)
+      .then((response) => {
+        if (response.status === 200) {
+          setPendingRequests((prev) => prev.filter((req) => req.receiver.id !== receiver_id));
+        } else {
+          response.json().then((json) => {
+            alert(json.message || "Failed to cancel friend request.");
+          });
+        }
+      })
+      .catch(() => {
+        alert("Failed to cancel friend request.");
+      });
   };
 
   return (
@@ -96,6 +166,12 @@ function Friends() {
                 <span role="img" aria-label="friend" style={{ fontSize: "1.5em" }}>👤</span>
                 <span>{friend.name}</span>
                 <span style={{ color: "gray", marginLeft: "0.5em" }}>@{friend.username}</span>
+                <button
+                  style={{ marginLeft: "1em", padding: "0.3em 0.8em", borderRadius: "4px", border: "1px solid #ccc", background: "#ffe0e0", cursor: "pointer" }}
+                  onClick={() => handleUnfriend(friend.id)}
+                >
+                  Unfriend
+                </button>
               </li>
             ))}
           </ul>
@@ -146,10 +222,33 @@ function Friends() {
                 <span>{req.sender.name}</span>
                 <span style={{ color: "gray", marginLeft: "0.5em" }}>@{req.sender.username}</span>
                 <button
-                  style={{ marginLeft: "1em", padding: "0.3em 0.8em", borderRadius: "4px", border: "1px solid #ccc", background: "#e0ffe0", cursor: "pointer" }}
+                  style={{ marginLeft: "1em", padding: "0.3em 0.8em", borderRadius: "4px", border: "1px solid #ccc", background: req.accepted ? "#e0ffe0" : "#e0ffe0", cursor: req.accepted ? "default" : "pointer" }}
                   onClick={() => handleAcceptFriendRequest(req.sender.id)}
+                  disabled={req.accepted || acceptedRequests.includes(req.sender.id)}
                 >
-                  Accept
+                  {req.accepted || acceptedRequests.includes(req.sender.id) ? "Accepted" : "Accept"}
+                </button>
+              </li>
+            ))}
+          </ul>
+        )}
+        <hr style={{ margin: "2em 0", width: "100%" }} />
+        <h2>Sent Friend Requests</h2>
+        {loadingPending && <p>Loading sent friend requests...</p>}
+        {errorPending && <p style={{ color: "red" }}>{errorPending}</p>}
+        {!loadingPending && pendingRequests.length === 0 && <p>No sent friend requests.</p>}
+        {!loadingPending && pendingRequests.length > 0 && (
+          <ul>
+            {pendingRequests.map((req) => (
+              <li key={req.id} style={{ display: "flex", alignItems: "center", gap: "0.5em" }}>
+                <span role="img" aria-label="sent-request" style={{ fontSize: "1.5em" }}>📤</span>
+                <span>{req.receiver.name}</span>
+                <span style={{ color: "gray", marginLeft: "0.5em" }}>@{req.receiver.username}</span>
+                <button
+                  style={{ marginLeft: "1em", padding: "0.3em 0.8em", borderRadius: "4px", border: "1px solid #ccc", background: "#ffe0e0", cursor: "pointer" }}
+                  onClick={() => handleCancelFriendRequest(req.receiver.id)}
+                >
+                  Cancel
                 </button>
               </li>
             ))}
