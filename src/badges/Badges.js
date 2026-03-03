@@ -18,9 +18,7 @@ export default function Badges() {
     if (hasFetched.current) return;
     hasFetched.current = true;
 
-    //TODO
-    const userId = 1;
-    api.getBadgesForUser(userId, (data) => {
+    api.getBadgesForUser((data) => {
       setBadges(data);
       setTopBadges(getTopBadgeLevels(data));
     });
