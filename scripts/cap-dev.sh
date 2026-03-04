@@ -2,8 +2,8 @@
 set -e
 
 PLATFORM=$1
-if [ "$PLATFORM" != "ios" ] && [ "$PLATFORM" != "android" ]; then
-  echo "Usage: $0 <ios|android>"
+if [ "$PLATFORM" != "ios" ] && [ "$PLATFORM" != "android" ] && [ "$PLATFORM" != "both" ]; then
+  echo "Usage: $0 <ios|android|both>"
   exit 1
 fi
 
@@ -27,15 +27,22 @@ until curl -s -o /dev/null http://$IP:$PORT 2>/dev/null; do
 done
 echo "Vite is ready."
 
-# Sync with live reload URL and open IDE
-LIVE_RELOAD_URL=$URL npx cap sync $PLATFORM
-npx cap open $PLATFORM
-
-if [ "$PLATFORM" = "ios" ]; then
-  echo "Hit Run in Xcode. CSS/JS changes will hot-reload."
+if [ "$PLATFORM" = "both" ]; then
+  LIVE_RELOAD_URL=$URL npx cap sync ios
+  LIVE_RELOAD_URL=$URL npx cap sync android
+  npx cap open ios
+  npx cap open android
+  echo "Hit Run in both Xcode and Android Studio. CSS/JS changes will hot-reload."
 else
-  echo "Hit Run in Android Studio. CSS/JS changes will hot-reload."
+  LIVE_RELOAD_URL=$URL npx cap sync $PLATFORM
+  npx cap open $PLATFORM
+  if [ "$PLATFORM" = "ios" ]; then
+    echo "Hit Run in Xcode. CSS/JS changes will hot-reload."
+  else
+    echo "Hit Run in Android Studio. CSS/JS changes will hot-reload."
+  fi
 fi
+
 echo "Press Ctrl+C to stop."
 
 # Keep running until Ctrl+C
