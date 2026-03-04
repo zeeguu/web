@@ -109,6 +109,7 @@
     "android:open": "npm run android:build && npx cap open android",
     "android:beta": "npm run android:build && cd android && fastlane beta",
     "android:release": "npm run android:build && cd android && fastlane release",
+    "ios:dev": "bash scripts/ios-dev.sh",
     "ios:build": "npm run build && npx cap sync ios",
     "ios:open": "npm run ios:build && npx cap open ios",
     "ios:version": "grep MARKETING_VERSION ios/App/App.xcodeproj/project.pbxproj | head -1 && cd ios/App && agvtool what-version",

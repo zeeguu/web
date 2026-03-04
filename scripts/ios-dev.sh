@@ -1,0 +1,32 @@
+#!/bin/bash
+set -e
+
+IP=$(ipconfig getifaddr en0)
+if [ -z "$IP" ]; then
+  echo "Could not detect local IP. Are you connected to Wi-Fi?"
+  exit 1
+fi
+
+PORT=3000
+URL="http://$IP:$PORT"
+echo "Starting Vite dev server at $URL ..."
+
+# Start Vite in background, bound to all interfaces
+npx vite --host &
+VITE_PID=$!
+
+# Wait for Vite to be ready
+until curl -s -o /dev/null http://$IP:$PORT 2>/dev/null; do
+  sleep 0.5
+done
+echo "Vite is ready."
+
+# Sync with live reload URL and open Xcode
+LIVE_RELOAD_URL=$URL npx cap sync ios
+npx cap open ios
+
+echo "Hit Run in Xcode. CSS/JS changes will hot-reload."
+echo "Press Ctrl+C to stop."
+
+# Keep running until Ctrl+C
+wait $VITE_PID
