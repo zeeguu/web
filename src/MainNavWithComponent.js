@@ -70,7 +70,7 @@ export default function MainNavWithComponent(props) {
           hideExerciseCounter: hideExerciseCounter,
         }}
       >
-        <s.MainNavWithComponent $screenWidth={screenWidth} $currentPath={path}>
+        <s.MainNavWithComponent $screenWidth={screenWidth}>
           <MainNav screenWidth={screenWidth} />
           <s.AppContent
             // Update the key when the learned_language changes to trigger a re-render

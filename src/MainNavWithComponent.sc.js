@@ -6,13 +6,7 @@ import { PAGES_WITHOUT_BOTTOM_NAV } from "./components/MainNav/BottomNav/pagesWi
 const MainNavWithComponent = styled.div`
   box-sizing: border-box;
   top: 0;
-  height: ${({ $screenWidth, $currentPath }) => {
-    if ($screenWidth <= MOBILE_WIDTH && !PAGES_WITHOUT_BOTTOM_NAV.some((page) => $currentPath.startsWith(page))) {
-      return "calc(100% - 4rem)";
-    } else {
-      return "100%";
-    }
-  }};
+  height: 100%;
   display: flex;
   justify-content: space-around;
   flex-direction: ${({ $screenWidth }) => ($screenWidth <= MOBILE_WIDTH ? "column" : "row")};
