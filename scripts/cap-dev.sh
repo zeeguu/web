@@ -1,6 +1,12 @@
 #!/bin/bash
 set -e
 
+PLATFORM=$1
+if [ "$PLATFORM" != "ios" ] && [ "$PLATFORM" != "android" ]; then
+  echo "Usage: $0 <ios|android>"
+  exit 1
+fi
+
 IP=$(ipconfig getifaddr en0)
 if [ -z "$IP" ]; then
   echo "Could not detect local IP. Are you connected to Wi-Fi?"
@@ -21,11 +27,15 @@ until curl -s -o /dev/null http://$IP:$PORT 2>/dev/null; do
 done
 echo "Vite is ready."
 
-# Sync with live reload URL and open Xcode
-LIVE_RELOAD_URL=$URL npx cap sync ios
-npx cap open ios
+# Sync with live reload URL and open IDE
+LIVE_RELOAD_URL=$URL npx cap sync $PLATFORM
+npx cap open $PLATFORM
 
-echo "Hit Run in Xcode. CSS/JS changes will hot-reload."
+if [ "$PLATFORM" = "ios" ]; then
+  echo "Hit Run in Xcode. CSS/JS changes will hot-reload."
+else
+  echo "Hit Run in Android Studio. CSS/JS changes will hot-reload."
+fi
 echo "Press Ctrl+C to stop."
 
 # Keep running until Ctrl+C
