@@ -1,57 +1,55 @@
-import React, { useContext, useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { APIContext } from "../contexts/APIContext";
 import * as s from "./Badges.sc.js";
 import NotificationIcon from "@/components/NotificationIcon";
 
 export default function Badges() {
   const api = useContext(APIContext);
+  const defaultLogoPath = "../../../public/static/images/zeeguuLogo.svg";
 
   const [badges, setBadges] = useState([]);
-  const [topBadges, setTopBadges] = useState([]);
   const [selectedBadge, setSelectedBadge] = useState(null);
   const [currentLevelIndex, setCurrentLevelIndex] = useState(0);
 
-  //TODO remove this
-  const hasFetched = useRef(false);
+  const topBadges = badges.map((badge) => {
+    const achieved = badge.levels.filter((l) => l.achieved);
+    const top = achieved.length > 0 ? achieved[achieved.length - 1] : badge.levels[0];
+
+    return {
+      badge_id: badge.badge_id,
+      level: top,
+    };
+  });
 
   useEffect(() => {
-    if (hasFetched.current) return;
-    hasFetched.current = true;
-
     api.getBadgesForUser((data) => {
-      setBadges(data);
-      setTopBadges(getTopBadgeLevels(data));
+      const normalized = data.map((badge) => ({
+        ...badge,
+        levels: badge.levels.map((lvl) => ({
+          ...lvl,
+          name: lvl.name ? lvl.name : `${badge.name} (Level ${lvl.badge_level})`,
+          description: badge.description.replace("{target_value}", lvl.target_value),
+        })),
+      }));
+
+      setBadges(normalized);
     });
   }, []);
-
-  const getTopBadgeLevels = (badges) =>
-    badges.map((badge) => {
-      const achieved = badge.levels.filter((l) => l.achieved);
-      const top = achieved.length > 0 ? achieved[achieved.length - 1] : badge.levels[0];
-      return {
-        badge_id: badge.badge_id,
-        name: badge.name,
-        level: {
-          ...top,
-          description: badge.description.replace("{target_value}", top.target_value),
-        },
-      };
-    });
 
   const openBadge = (id) => {
     const fullBadge = badges.find((b) => b.badge_id === id);
     if (!fullBadge) return;
 
-    const levels = fullBadge.levels.map((lvl) => ({
-      ...lvl,
-      description: fullBadge.description.replace("{target_value}", lvl.target_value),
-    }));
+    setSelectedBadge(fullBadge);
 
-    setSelectedBadge({ ...fullBadge, levels });
-    const firstUnachieved = levels.findIndex((l) => !l.achieved);
-    setCurrentLevelIndex(firstUnachieved > 0 ? firstUnachieved - 1 : 0);
+    const firstUnachieved = fullBadge.levels.findIndex((l) => !l.achieved);
+
+    if (firstUnachieved === -1) {
+      setCurrentLevelIndex(fullBadge.levels.length - 1);
+    } else {
+      setCurrentLevelIndex(Math.max(firstUnachieved - 1, 0));
+    }
   };
-
   const formatDateTime = (iso) =>
     iso
       ? new Date(iso).toLocaleString("en-GB", {
@@ -64,7 +62,7 @@ export default function Badges() {
         })
       : "—";
 
-  const getIcon = (level) => (level.achieved ? level.icon_url : "../../public/static/images/zeeguuLogo.svg");
+  const getIcon = (level) => (level.icon_url ? level.icon_url : defaultLogoPath);
   const iconStyle = (achieved) => ({ filter: achieved ? "none" : "grayscale(100%)", opacity: achieved ? 1 : 0.5 });
 
   return (
@@ -76,19 +74,14 @@ export default function Badges() {
           <s.BadgeCard key={b.badge_id} achieved={b.level.achieved} onClick={() => openBadge(b.badge_id)}>
             {!b.level.is_shown && b.level.achieved && <NotificationIcon text="NEW" position="top-absolute" />}
             <div className="icon-container">
-              <img src={getIcon(b.level)} style={iconStyle(b.level.achieved)} />
+              <img
+                src={getIcon(b.level)}
+                style={iconStyle(b.level.achieved)}
+                alt={`Icon representing ${b.level.name}`}
+              />
             </div>
 
-            <h3>
-              {b.level.name ? (
-                b.level.name
-              ) : (
-                <>
-                  <div>{b.name}</div>
-                  <div>{`(Level ${b.level.badge_level})`}</div>
-                </>
-              )}
-            </h3>
+            <h3>{b.level.name}</h3>
           </s.BadgeCard>
         ))}
       </s.BadgesRow>
@@ -96,27 +89,33 @@ export default function Badges() {
       {selectedBadge && (
         <s.ModalOverlay onClick={() => setSelectedBadge(null)}>
           <s.BadgePanel onClick={(e) => e.stopPropagation()}>
-            <h2>
-              {selectedBadge.levels[currentLevelIndex].name ||
-                `${selectedBadge.name} (Level ${selectedBadge.levels[currentLevelIndex].badge_level})`}
-            </h2>
-
+            <h2>{selectedBadge.levels[currentLevelIndex].name}</h2>
             <div className="level-info">
               <img
-                src={
-                  selectedBadge.levels[currentLevelIndex].achieved
-                    ? selectedBadge.levels[currentLevelIndex].icon_url
-                    : "../../public/static/images/zeeguuLogo.svg"
-                }
-                style={{
-                  filter: selectedBadge.levels[currentLevelIndex].achieved ? "none" : "grayscale(100%)",
-                  opacity: selectedBadge.levels[currentLevelIndex].achieved ? 1 : 0.5,
-                  marginBottom: "0.5rem",
-                }}
+                src={getIcon(selectedBadge.levels[currentLevelIndex])}
+                style={iconStyle(selectedBadge.levels[currentLevelIndex].achieved)}
+                alt={`Icon representing ${selectedBadge.levels[currentLevelIndex].name}`}
               />
               <div>{selectedBadge.levels[currentLevelIndex].description}</div>
-              {selectedBadge.levels[currentLevelIndex].achieved && (
+              {selectedBadge.levels[currentLevelIndex].achieved ? (
                 <s.AchievedAtBox>{`Achieved at: ${formatDateTime(selectedBadge.levels[currentLevelIndex].achieved_at)}`}</s.AchievedAtBox>
+              ) : (
+                <s.ProgressWrapper>
+                  <s.ProgressBar>
+                    <s.ProgressFill
+                      style={{
+                        width: `${
+                          (Math.min(selectedBadge.current_value, selectedBadge.levels[currentLevelIndex].target_value) /
+                            selectedBadge.levels[currentLevelIndex].target_value) *
+                          100
+                        }%`,
+                      }}
+                    />
+                  </s.ProgressBar>
+                  <s.ProgressText>
+                    {selectedBadge.current_value} / {selectedBadge.levels[currentLevelIndex].target_value}
+                  </s.ProgressText>
+                </s.ProgressWrapper>
               )}
             </div>
 

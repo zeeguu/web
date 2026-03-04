@@ -125,3 +125,33 @@ export const AchievedAtBox = styled.div`
   border-radius: 12px;
   font-size: 0.85rem;
 `;
+
+export const ProgressWrapper = styled.div`
+  width: 100%;
+  margin-top: 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+`;
+
+export const ProgressBar = styled.div`
+  width: 60%;
+  height: 10px;
+  background-color: #e5e5e5;
+  border-radius: 6px;
+  overflow: hidden;
+`;
+
+export const ProgressFill = styled.div`
+  height: 100%;
+  background-color: #F0A030;
+  transition: width 0.3s ease;
+`;
+
+export const ProgressText = styled.div`
+  margin-top: 6px;
+  font-size: 0.85rem;
+  text-align: right;
+  color: #666;
+`;
