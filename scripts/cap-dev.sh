@@ -17,6 +17,9 @@ PORT=3000
 URL="http://$IP:$PORT"
 echo "Starting Vite dev server at $URL ..."
 
+# Route API calls through Vite proxy to avoid CORS issues in mobile WebViews
+export VITE_API_URL="$URL/zeeguu-api"
+
 # Start Vite in background, bound to all interfaces
 npx vite --host &
 VITE_PID=$!
