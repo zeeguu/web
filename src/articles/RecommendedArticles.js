@@ -12,7 +12,7 @@ import * as s from "../components/TopMessage.sc";
 import { APIContext } from "../contexts/APIContext";
 export default function RecommendedArticles() {
   const api = useContext(APIContext);
-  const cachedArticles = api.getCached("user_articles/foryou");
+  const cachedArticles = api.getCachedRecommendedArticles();
   const [articleList, setArticleList] = useState(cachedArticles);
   const [originalList, setOriginalList] = useState(cachedArticles);
 
@@ -38,9 +38,15 @@ export default function RecommendedArticles() {
     // eslint-disable-next-line
   }, []);
 
-  usePullToRefresh(() => {
+  const refreshing = usePullToRefresh(() => {
     api.invalidateCache();
-    fetchArticles();
+    return new Promise((resolve) => {
+      api.getRecommendedArticles((articles) => {
+        setArticleList(articles);
+        setOriginalList(articles);
+        resolve();
+      });
+    });
   });
 
   if (articleList == null) {
@@ -53,6 +59,11 @@ export default function RecommendedArticles() {
 
   return (
     <>
+      {refreshing && (
+        <div style={{ textAlign: "center", padding: "0.5rem", color: "#999", fontSize: "0.85rem" }}>
+          Refreshing...
+        </div>
+      )}
       <br />
       <br />
       <SortingButtons articleList={articleList} originalList={originalList} setArticleList={setArticleList} />

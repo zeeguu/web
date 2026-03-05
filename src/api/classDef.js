@@ -17,7 +17,6 @@ const Zeeguu_API = class {
   getCached(endpoint) {
     const cached = this._cache.get(endpoint);
     if (cached && Date.now() - cached.time < CACHE_TTL) {
-      console.log("GETTING THE CACHED VERSION!")
       return cached.data;
     }
     return null;
@@ -60,11 +59,9 @@ const Zeeguu_API = class {
     if (useCache) {
       const cached = this._cache.get(endpoint);
       if (cached && Date.now() - cached.time < CACHE_TTL) {
-        console.log("CACHE HIT:", endpoint);
         callback(cached.data);
         return;
       }
-      console.log("CACHE MISS:", endpoint);
     }
 
     this.apiLog("GET" + endpoint);

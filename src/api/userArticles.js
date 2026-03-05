@@ -98,6 +98,10 @@ Zeeguu_API.prototype.getRecommendedArticles = function (callback) {
   );
 };
 
+Zeeguu_API.prototype.getCachedRecommendedArticles = function () {
+  return this.getCached("user_articles/foryou");
+};
+
 Zeeguu_API.prototype.getSavedUserArticles = function (page, callback) {
   this._getJSON(`user_articles/saved/${page}`, (articles) => {
     // sometimes we get duplicates from the server
