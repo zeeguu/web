@@ -38,7 +38,7 @@ export default function RecommendedArticles() {
     // eslint-disable-next-line
   }, []);
 
-  const refreshing = usePullToRefresh(() => {
+  const { refreshing, pullDistance } = usePullToRefresh(() => {
     api.invalidateCache();
     return new Promise((resolve) => {
       api.getRecommendedArticles((articles) => {
@@ -59,9 +59,17 @@ export default function RecommendedArticles() {
 
   return (
     <>
-      {refreshing && (
-        <div style={{ textAlign: "center", padding: "0.5rem", color: "#999", fontSize: "0.85rem" }}>
-          Refreshing...
+      {(pullDistance > 0 || refreshing) && (
+        <div style={{
+          textAlign: "center",
+          padding: "0.3rem",
+          color: "#999",
+          fontSize: "0.85rem",
+          height: refreshing ? "2rem" : `${pullDistance}px`,
+          overflow: "hidden",
+          transition: refreshing ? "none" : "height 0.1s",
+        }}>
+          {refreshing ? "Refreshing..." : pullDistance > 30 ? "↓ Release to refresh" : "↓ Pull to refresh"}
         </div>
       )}
       <br />
