@@ -45,6 +45,7 @@ export default function useScrollTracking({
   // Use shadow refs for values that change frequently
   const viewPortSettingsRef = useShadowRef(viewPortSettings);
   const sessionDurationRef = useShadowRef(sessionDuration);
+  const articleInfoRef = useShadowRef(articleInfo);
 
   /**
    * Calculate the scroll ratio (0-1) representing how far down the page we are
@@ -113,7 +114,7 @@ export default function useScrollTracking({
    */
   const uploadScrollActivity = () => {
     const readingSessionId = getReadingSessionId?.();
-    if (!readingSessionId || !articleID || !articleInfo) return;
+    if (!readingSessionId || !articleID || !articleInfoRef.current) return;
     
     // Update reading session duration
     if (api.readingSessionUpdate) {
@@ -134,7 +135,7 @@ export default function useScrollTracking({
         articleID,
         viewPortSettingsRef.current, // Optimized viewport settings
         JSON.stringify(scrollEvents.current).slice(0, 4096), // Limit data size
-        articleInfo.source_id
+        articleInfoRef.current.source_id
       );
       
       // Don't clear events - keep them for the final scroll event
@@ -145,7 +146,7 @@ export default function useScrollTracking({
    * Send final scroll event (typically called on component unmount)
    */
   const sendFinalScrollEvent = () => {
-    if (!articleID || !articleInfo || !viewPortSettingsRef.current) return;
+    if (!articleID || !articleInfoRef.current || !viewPortSettingsRef.current) return;
     
     console.log('🏁 Sending final SCROLL event:', {
       articleID,
@@ -159,7 +160,7 @@ export default function useScrollTracking({
       articleID,
       viewPortSettingsRef.current,
       JSON.stringify(scrollEvents.current).slice(0, 4096),
-      articleInfo.source_id
+      articleInfoRef.current.source_id
     );
   };
 
