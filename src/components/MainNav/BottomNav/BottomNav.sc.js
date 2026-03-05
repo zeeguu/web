@@ -1,10 +1,9 @@
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 
 const BottomNav = styled.nav`
   box-sizing: border-box;
   width: 100%;
-  position: fixed;
-  bottom: 0;
+  flex-shrink: 0;
   padding: 0.5rem 1rem 0.5rem 1rem;
   padding-bottom: calc(0.5rem + env(safe-area-inset-bottom, 0px));
   background-color: ${({ theme }) => theme.navBg};
