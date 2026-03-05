@@ -17,6 +17,18 @@ import { MOBILE_WIDTH } from "./components/MainNav/screenSize";
 import DailyFeedbackBanner from "./components/DailyFeedbackBanner";
 import Feature from "./features/Feature";
 
+// Desktop (flex row):               Mobile (flex column):
+// ┌──────────┬──────────────────┐   ┌──────────────────┐
+// │ SideNav  │                  │   │   AppContent      │
+// │ (fixed   │   AppContent     │   │   (scrollable)    │
+// │  width,  │   (flex-grow,    │   │                   │
+// │  scroll) │    scrollable)   │   ├──────────────────┤
+// └──────────┴──────────────────┘   │   BottomNav       │
+//                                   └──────────────────┘
+//
+// Both layouts use flex. Each child only declares its own size —
+// the parent flex container handles positioning.
+
 export default function AppLayout(props) {
   const { children: appContent } = props;
   const { screenWidth } = useScreenWidth();
