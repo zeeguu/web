@@ -7,7 +7,7 @@ import useScreenWidth from "./hooks/useScreenWidth";
 import SideNav from "./components/MainNav/SideNav/SideNav";
 import BottomNav from "./components/MainNav/BottomNav/BottomNav";
 import { mainNavTheme } from "./components/MainNav/mainNavTheme";
-import * as s from "./MainNavWithComponent.sc";
+import * as s from "./AppLayout.sc";
 import { ExercisesCounterContext } from "./exercises/ExercisesCounterContext";
 
 import useExercisesCounterNotification from "./hooks/useExercisesCounterNotification";
@@ -17,7 +17,7 @@ import { MOBILE_WIDTH } from "./components/MainNav/screenSize";
 import DailyFeedbackBanner from "./components/DailyFeedbackBanner";
 import Feature from "./features/Feature";
 
-export default function MainNavWithComponent(props) {
+export default function AppLayout(props) {
   const { children: appContent } = props;
   const { screenWidth } = useScreenWidth();
   const { userDetails } = useContext(UserContext);
@@ -74,16 +74,13 @@ export default function MainNavWithComponent(props) {
         }}
       >
         <ThemeProvider theme={mainNavProperties.isOnStudentSide ? mainNavTheme.student : mainNavTheme.teacher}>
-          <s.MainNavWithComponent $screenWidth={screenWidth}>
-            <s.NavArea>
-              {screenWidth > MOBILE_WIDTH && <SideNav screenWidth={screenWidth} />}
-            </s.NavArea>
+          <s.AppLayout $screenWidth={screenWidth}>
+            {screenWidth > MOBILE_WIDTH && <SideNav screenWidth={screenWidth} />}
             <s.AppContent
               // Update the key when the learned_language changes to trigger a re-render
               // of the app content that needs real-time updates. This is a smoother
               // alternative to window.location.reload() when switching the practiced language in navigation.
               key={userDetails.learned_language}
-              $screenWidth={screenWidth}
               id="scrollHolder"
             >
               {screenWidth <= MOBILE_WIDTH && <StreakBanner />}
@@ -91,7 +88,7 @@ export default function MainNavWithComponent(props) {
               {appContent}
             </s.AppContent>
             {screenWidth <= MOBILE_WIDTH && <BottomNav />}
-          </s.MainNavWithComponent>
+          </s.AppLayout>
         </ThemeProvider>
       </ExercisesCounterContext.Provider>
     </MainNavContext.Provider>

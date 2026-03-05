@@ -1,7 +1,7 @@
 import React, { useContext } from "react";
 import { Route, Redirect } from "react-router-dom";
 import { UserContext } from "./contexts/UserContext";
-import MainNavWithComponent from "./MainNavWithComponent";
+import AppLayout from "./AppLayout";
 import { APP_DOMAIN } from "./appConstants";
 
 // inspired from:
@@ -10,7 +10,7 @@ import { APP_DOMAIN } from "./appConstants";
 //PrivateRoute ensure that is a user isn't logged in
 //- they cannot access the content of Zeeguu and will be redirected to the login-page
 
-export const PrivateRouteWithMainNav = ({ component: Component, ...rest }) => {
+export const PrivateRouteWithLayout = ({ component: Component, ...rest }) => {
   const { session, userDetails } = useContext(UserContext);
 
   // Separate Route-specific props from component props
@@ -43,9 +43,9 @@ export const PrivateRouteWithMainNav = ({ component: Component, ...rest }) => {
     <Route
       {...rest}
       render={(routeProps) => (
-        <MainNavWithComponent>
+        <AppLayout>
           <Component {...routeProps} {...componentProps} />
-        </MainNavWithComponent>
+        </AppLayout>
       )}
     />
   );
