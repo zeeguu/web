@@ -4,8 +4,7 @@ import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
 import { useContext, useState } from "react";
-import Chip from "@mui/material/Chip";
-import ReportProblemRoundedIcon from "@mui/icons-material/ReportProblemRounded";
+import FlagOutlinedIcon from "@mui/icons-material/FlagOutlined";
 import IconButton from "@mui/material/IconButton";
 import SendIcon from "@mui/icons-material/Send";
 import Alert from "@mui/material/Alert";
@@ -71,18 +70,11 @@ export default function ReportBroken({ articleID, sourceID, UMR_SOURCE }) {
 
   return (
     <>
-      <div style={{ marginLeft: "5px" }}>
-        <Chip
-          label="Report broken article"
-          component="a"
-          onClick={handleClickOpen}
-          variant="outlined"
-          clickable
-          color="warning"
-          size="small"
-          icon={<ReportProblemRoundedIcon />}
-        />
-      </div>
+      <FlagOutlinedIcon
+        onClick={handleClickOpen}
+        aria-label="Report broken article"
+        style={{ fontSize: "1.4em", cursor: "pointer", color: "#999" }}
+      />
       <Dialog open={open} onClose={handleClose}>
         <DialogTitle>
           <b>Report broken article</b>

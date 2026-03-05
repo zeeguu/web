@@ -21,6 +21,7 @@ import TopToolbar from "./TopToolbar";
 import ReviewVocabularyInfoBox from "./ReviewVocabularyInfoBox";
 import ArticleAuthors from "./ArticleAuthors";
 import useShadowRef from "../hooks/useShadowRef";
+import useSwipeBack from "../hooks/useSwipeBack";
 import useScrollTracking from "../hooks/useScrollTracking";
 import useReadingSession from "../hooks/useReadingSession";
 import strings from "../i18n/definitions";
@@ -48,6 +49,7 @@ export function onBlur(api, articleID, source) {
 }
 
 export default function ArticleReader({ teacherArticleID }) {
+  useSwipeBack();
   const api = useContext(APIContext);
   let articleID = "";
   let query = useQuery();
@@ -61,7 +63,7 @@ export default function ArticleReader({ teacherArticleID }) {
 
   const [interactiveTitle, setInteractiveTitle] = useState();
   const [interactiveFragments, setInteractiveFragments] = useState();
-  const { translateInReader, pronounceInReader, updateTranslateInReader, updatePronounceInReader, showMweHints, updateShowMweHints } =
+  const { translateInReader, pronounceInReader, updateTranslateInReader, updatePronounceInReader, showMweHints, updateShowMweHints, showReadingTimer, updateShowReadingTimer } =
     useUserPreferences(api);
   const [readerReady, setReaderReady] = useState();
   const [answerSubmitted, setAnswerSubmitted] = useState(false);
@@ -312,15 +314,19 @@ export default function ArticleReader({ teacherArticleID }) {
         setPronouncing={updatePronounceInReader}
         showMweHints={showMweHints}
         setShowMweHints={updateShowMweHints}
+        showReadingTimer={showReadingTimer}
+        setShowReadingTimer={updateShowReadingTimer}
         url={articleInfo.url}
         UMR_SOURCE={WEB_READER}
         articleProgress={scrollPosition}
         timer={
-          <DigitalTimer
-            sessionDuration={sessionDuration}
-            isTimerActive={isTimerActive}
-            showClock={true}
-          ></DigitalTimer>
+          showReadingTimer ? (
+            <DigitalTimer
+              sessionDuration={sessionDuration}
+              isTimerActive={isTimerActive}
+              showClock={true}
+            />
+          ) : null
         }
         reportBroken={
           <ReportBroken UMR_SOURCE={WEB_READER} history={history} articleID={articleID} />

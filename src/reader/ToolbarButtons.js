@@ -15,6 +15,8 @@ export default function ToolbarButtons({
   setPronouncing,
   showMweHints,
   setShowMweHints,
+  showReadingTimer,
+  setShowReadingTimer,
 }) {
   const [showOptions, setShowOptions] = useState(false);
   const menuRef = useRef(null);
@@ -80,6 +82,16 @@ export default function ToolbarButtons({
                 }
                 className={pronouncing ? "selected" : ""}
                 label={<small>{"Hear pronunciation"}</small>}
+              />
+              <FormControlLabel
+                checked={showReadingTimer}
+                control={
+                  <Android12Switch
+                    onClick={(e) => toggle(showReadingTimer, setShowReadingTimer)}
+                  />
+                }
+                className={showReadingTimer ? "selected" : ""}
+                label={<small>{"Show reading timer"}</small>}
               />
               <FormHelperText style={{ marginTop: "0.5rem" }}>{<small>{"Debug:"}</small>}</FormHelperText>
               <FormControlLabel
