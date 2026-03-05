@@ -62,7 +62,7 @@ export default function ToolbarButtons({
         }}>
           <ThemeProvider theme={t}>
             <FormGroup>
-              <FormHelperText>{<small>{"Click word(s) to:"}</small>}</FormHelperText>
+              <FormHelperText>{"Click word(s) to:"}</FormHelperText>
               <FormControlLabel
                 checked={translating}
                 control={
@@ -71,7 +71,7 @@ export default function ToolbarButtons({
                   />
                 }
                 className={translating ? "selected" : ""}
-                label={<small>{"See translation"}</small>}
+                label={"See translation"}
               />
               <FormControlLabel
                 checked={pronouncing}
@@ -81,7 +81,7 @@ export default function ToolbarButtons({
                   />
                 }
                 className={pronouncing ? "selected" : ""}
-                label={<small>{"Hear pronunciation"}</small>}
+                label={"Hear pronunciation"}
               />
               <FormControlLabel
                 checked={showReadingTimer}
@@ -91,9 +91,9 @@ export default function ToolbarButtons({
                   />
                 }
                 className={showReadingTimer ? "selected" : ""}
-                label={<small>{"Show reading timer"}</small>}
+                label={"Show reading timer"}
               />
-              <FormHelperText style={{ marginTop: "0.5rem" }}>{<small>{"Debug:"}</small>}</FormHelperText>
+              <FormHelperText style={{ marginTop: "0.5rem" }}>{<small>{"Experimental:"}</small>}</FormHelperText>
               <FormControlLabel
                 checked={showMweHints}
                 control={
@@ -102,7 +102,7 @@ export default function ToolbarButtons({
                   />
                 }
                 className={showMweHints ? "selected" : ""}
-                label={<small>{"Show MWE hints"}</small>}
+                label={"Show multi-word expressions hints"}
               />
             </FormGroup>
           </ThemeProvider>

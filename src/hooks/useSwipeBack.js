@@ -8,6 +8,11 @@ export default function useSwipeBack() {
     let startX = 0;
     let startY = 0;
     let tracking = false;
+    let page = null;
+
+    function getPage() {
+      return document.getElementById("root")?.firstElementChild || document.body;
+    }
 
     function onTouchStart(e) {
       const touch = e.touches[0];
@@ -15,11 +20,24 @@ export default function useSwipeBack() {
         startX = touch.clientX;
         startY = touch.clientY;
         tracking = true;
+        page = getPage();
+        page.style.transition = "none";
       }
     }
 
     function onTouchMove(e) {
-      // no-op, just let the gesture continue
+      if (!tracking) return;
+      const dx = Math.max(0, e.touches[0].clientX - startX);
+      const dy = Math.abs(e.touches[0].clientY - startY);
+      if (dy > dx) {
+        // vertical scroll — cancel
+        tracking = false;
+        page.style.transform = "";
+        page.style.transition = "";
+        return;
+      }
+      page.style.transform = `translateX(${dx}px)`;
+      page.style.opacity = `${1 - dx / window.innerWidth * 0.5}`;
     }
 
     function onTouchEnd(e) {
@@ -31,7 +49,24 @@ export default function useSwipeBack() {
       const dy = Math.abs(touch.clientY - startY);
 
       if (dx >= 80 && dx > dy) {
-        history.goBack();
+        // Animate off-screen, then navigate
+        page.style.transition = "transform 0.2s ease-out, opacity 0.2s ease-out";
+        page.style.transform = `translateX(${window.innerWidth}px)`;
+        page.style.opacity = "0";
+        setTimeout(() => {
+          page.style.transition = "";
+          page.style.transform = "";
+          page.style.opacity = "";
+          history.goBack();
+        }, 200);
+      } else {
+        // Snap back
+        page.style.transition = "transform 0.15s ease-out, opacity 0.15s ease-out";
+        page.style.transform = "";
+        page.style.opacity = "";
+        setTimeout(() => {
+          page.style.transition = "";
+        }, 150);
       }
     }
 

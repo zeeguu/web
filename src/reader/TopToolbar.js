@@ -103,7 +103,7 @@ export default function TopToolbar({
               </>
             )}
           </div>
-          <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", marginRight: "1rem" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "1rem", marginRight: "1rem" }}>
             {reportBroken}
             <ToolbarButtons
               translating={translating}

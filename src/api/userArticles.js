@@ -28,7 +28,8 @@ Zeeguu_API.prototype.getUserArticles = function (callback, options = {}) {
   }
   const queryString = params.length > 0 ? "?" + params.join("&") : "";
 
-  this._getJSON("user_articles/recommended" + queryString, (articles) => {
+  this._getJSON("user_articles/recommended" + queryString,
+      (articles) => {
     // sometimes we get duplicates from the server
     // deduplicate them here
     // fast deduplication cf. https://stackoverflow.com/a/64791605/1200070
@@ -38,7 +39,7 @@ Zeeguu_API.prototype.getUserArticles = function (callback, options = {}) {
     );
     console.log(deduplicated);
     callback(deduplicated);
-  });
+  }, true);
 };
 
 /**
@@ -84,13 +85,17 @@ Zeeguu_API.prototype.getMoreUserArticles = function (count, page, callback, opti
 };
 
 Zeeguu_API.prototype.getRecommendedArticles = function (callback) {
-  this._getJSON("user_articles/foryou", (articles) => {
-    const ids = articles.map((o) => o.id);
-    const deduplicated = articles.filter(
-      ({ id }, index) => !ids.includes(id, index + 1),
-    );
-    callback(deduplicated);
-  });
+  this._getJSON(
+    "user_articles/foryou",
+    (articles) => {
+      const ids = articles.map((o) => o.id);
+      const deduplicated = articles.filter(
+        ({ id }, index) => !ids.includes(id, index + 1),
+      );
+      callback(deduplicated);
+    },
+    true,
+  );
 };
 
 Zeeguu_API.prototype.getSavedUserArticles = function (page, callback) {

@@ -1,10 +1,26 @@
 import fetch from "cross-fetch";
 import axios from "axios";
 
+const CACHE_TTL = 5 * 60 * 1000; // 5 minutes
+
 const Zeeguu_API = class {
   constructor(baseAPIurl) {
     this.baseAPIurl = baseAPIurl;
+    this._cache = new Map();
     //this.session = currentSession; is instantiated in App when the user logs in (causes error to actually instantiate it here).
+  }
+
+  invalidateCache() {
+    this._cache.clear();
+  }
+
+  getCached(endpoint) {
+    const cached = this._cache.get(endpoint);
+    if (cached && Date.now() - cached.time < CACHE_TTL) {
+      console.log("GETTING THE CACHED VERSION!")
+      return cached.data;
+    }
+    return null;
   }
 
   apiLog(what) {
@@ -40,12 +56,24 @@ const Zeeguu_API = class {
       });
   }
 
-  _getJSON(endpoint, callback) {
+  _getJSON(endpoint, callback, useCache = false) {
+    if (useCache) {
+      const cached = this._cache.get(endpoint);
+      if (cached && Date.now() - cached.time < CACHE_TTL) {
+        console.log("CACHE HIT:", endpoint);
+        callback(cached.data);
+        return;
+      }
+      console.log("CACHE MISS:", endpoint);
+    }
+
     this.apiLog("GET" + endpoint);
     fetch(this._appendSessionToUrl(endpoint, this.session))
       .then((response) => response.json())
       .then((data) => {
-        //do whatever it is you need to do with the fetched data...
+        if (useCache) {
+          this._cache.set(endpoint, { data, time: Date.now() });
+        }
         callback(data);
       })
       .catch((e) => {

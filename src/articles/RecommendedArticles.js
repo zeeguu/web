@@ -1,4 +1,4 @@
-import { useEffect, useState, useContext } from "react";
+import { useEffect, useState, useContext, useCallback } from "react";
 import LoadingAnimation from "../components/LoadingAnimation";
 import { setTitle } from "../assorted/setTitle";
 import strings from "../i18n/definitions";
@@ -6,13 +6,15 @@ import strings from "../i18n/definitions";
 import ArticlePreview from "./ArticlePreview";
 
 import SortingButtons from "./SortingButtons";
+import usePullToRefresh from "../hooks/usePullToRefresh";
 
 import * as s from "../components/TopMessage.sc";
 import { APIContext } from "../contexts/APIContext";
 export default function RecommendedArticles() {
   const api = useContext(APIContext);
-  const [articleList, setArticleList] = useState(null);
-  const [originalList, setOriginalList] = useState(null);
+  const cachedArticles = api.getCached("user_articles/foryou");
+  const [articleList, setArticleList] = useState(cachedArticles);
+  const [originalList, setOriginalList] = useState(cachedArticles);
 
   const handleArticleHidden = (articleId) => {
     const updatedList = articleList.filter((item) => item.id !== articleId);
@@ -23,15 +25,23 @@ export default function RecommendedArticles() {
     }
   };
 
-  useEffect(() => {
-    setTitle("Recommended Articles");
-
+  const fetchArticles = useCallback(() => {
     api.getRecommendedArticles((articles) => {
       setArticleList(articles);
       setOriginalList(articles);
     });
+  }, [api]);
+
+  useEffect(() => {
+    setTitle("Recommended Articles");
+    fetchArticles();
     // eslint-disable-next-line
   }, []);
+
+  usePullToRefresh(() => {
+    api.invalidateCache();
+    fetchArticles();
+  });
 
   if (articleList == null) {
     return <LoadingAnimation />;
