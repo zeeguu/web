@@ -36,7 +36,14 @@ export default defineConfig(({ mode }) => ({
   // Development server settings
   server: {
     port: 3000,
-    open: true
+    open: true,
+    proxy: {
+      '/zeeguu-api': {
+        target: 'https://api.zeeguu.org',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/zeeguu-api/, ''),
+      },
+    },
   },
 
   // Build settings
