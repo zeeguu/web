@@ -5,7 +5,7 @@ const TopTabsWrapper = styled.div`
   position: sticky;
   top: 0;
   z-index: 100;
-  background: white;
+  background: var(--bg-primary);
   transition: transform 0.3s ease-in-out;
   padding-top: 0.5em;
 
@@ -41,7 +41,7 @@ const TopTabs = styled.div`
   .headmenuTab,
   a {
     text-decoration: none;
-    color: black;
+    color: var(--text-primary);
   }
 
   .headmenuTab:hover,
@@ -67,12 +67,12 @@ const TopTabs = styled.div`
       font-size: 1em;
       font-weight: 500;
       line-height: 7ex;
-      color: ${darkGrey};
+      color: var(--text-muted);
     }
 
     .headmenuTab.active {
       font-weight: 700;
-      color: black;
+      color: var(--text-primary);
     }
 
     .row__bar {

@@ -34,7 +34,7 @@ let ArticleReader = styled.div`
   }
 
   hr {
-    border-top: 1px solid #f6f6f6;
+    border-top: 1px solid var(--border-light);
   }
 `;
 
@@ -110,7 +110,7 @@ const ToolbarWrapper = styled.div`
   position: -webkit-sticky;
   top: 0;
   z-index: 1000;
-  background-color: white;
+  background-color: var(--bg-primary);
   padding-top: 1.5rem;
 `;
 
@@ -244,7 +244,7 @@ let _BottomButton = styled(BigSquareButton)`
 `;
 
 let WhiteButton = styled(_BottomButton)`
-  background-color: white;
+  background-color: var(--bg-primary);
   color: orange !important;
 
   display: inline;
@@ -334,8 +334,8 @@ let NavigationLink = styled(Link)`
 `;
 
 let InteractiveBox = styled.div`
-  border: 1px solid ${lighterBlue};
-  background-color: white;
+  border: 1px solid var(--border-light);
+  background-color: var(--card-bg);
   border-radius: 0.5em;
   display: flex;
   flex-direction: column;
@@ -369,7 +369,7 @@ let InteractiveBox = styled.div`
 `;
 
 let InvisibleBox = styled.div`
-  background-color: white;
+  background-color: var(--bg-primary);
   display: flex;
   flex-direction: column;
   padding: 0.5em 0em 0em 0em;
@@ -403,8 +403,8 @@ let ExtraSpaceAtTheBottom = styled.div`
 `;
 
 let CombinedBox = styled.div`
-  border: 1px solid ${lighterBlue};
-  background-color: white;
+  border: 1px solid var(--border-light);
+  background-color: var(--card-bg);
   border-radius: 0.5em;
   padding: 2em 0em 2em 0em;
   margin-top: 1em;
@@ -432,7 +432,7 @@ let CombinedBox = styled.div`
 
 const ReadingTime = styled.div`
   font-size: 0.9em;
-  color: #888;
+  color: var(--text-muted);
   margin-bottom: 0.5em;
 `;
 

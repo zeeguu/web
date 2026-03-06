@@ -17,18 +17,18 @@ const SettingsItem = styled.li`
   box-sizing: border-box;
   display: flex;
   list-style-type: none;
-  border: 2px solid ${lightGrey};
+  border: 2px solid var(--border-color);
   height: 56px;
   width: 100%;
   cursor: pointer;
   transition: 0.3s ease-in-out;
 
   &:hover {
-    background-color: #f6f6f6;
+    background-color: var(--hover-bg);
   }
 
   &:active {
-    background-color: #ededed;
+    background-color: var(--active-bg);
   }
 `;
 

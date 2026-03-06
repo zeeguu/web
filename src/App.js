@@ -27,6 +27,8 @@ import useRedirectLink from "./hooks/useRedirectLink";
 import useLocationTracker from "./hooks/useLocationTracker";
 import useDeepLinkHandler from "./hooks/useDeepLinkHandler";
 import LoadingAnimation from "./components/LoadingAnimation";
+import useTheme from "./hooks/useTheme";
+import { ThemeContext } from "./contexts/ThemeContext";
 
 // Helper to detect if we're in a Capacitor native app
 const isCapacitor = () => {
@@ -52,6 +54,7 @@ function LocationTrackingWrapper({ children }) {
 
 function App() {
   const [api] = useState(new Zeeguu_API(API_ENDPOINT));
+  const themeValue = useTheme();
 
   useUILanguage();
 
@@ -290,6 +293,7 @@ function App() {
 
 
   return (
+    <ThemeContext.Provider value={themeValue}>
     <SystemLanguagesContext.Provider value={{ systemLanguages, sortedSystemLanguages }}>
       <SpeechContext.Provider value={zeeguuSpeech}>
         <BrowserRouter>
@@ -324,7 +328,7 @@ function App() {
                         pauseOnFocusLoss
                         draggable
                         pauseOnHover
-                        theme="light"
+                        theme={themeValue.isDark ? "dark" : "light"}
                       />
                     </FeedbackContextProvider>
                   </ProgressProvider>
@@ -335,6 +339,7 @@ function App() {
         </BrowserRouter>
       </SpeechContext.Provider>
     </SystemLanguagesContext.Provider>
+    </ThemeContext.Provider>
   );
 }
 

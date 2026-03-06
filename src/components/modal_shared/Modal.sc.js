@@ -12,7 +12,7 @@ const ModalWrapper = styled(Box)`
   width: 50%;
   max-width: 500px;
   max-height: 90%;
-  background-color: white;
+  background-color: var(--card-bg);
   border: 0 !important;
   border-radius: 0.65em;
   padding: 32px 48px 32px 48px;
@@ -37,7 +37,7 @@ const ModalWrapper = styled(Box)`
 
   p.extra-small {
     font-size: 0.8rem;
-    color: gray;
+    color: var(--text-muted);
   }
 
   a {

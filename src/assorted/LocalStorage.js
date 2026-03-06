@@ -33,6 +33,8 @@ const LocalStorage = {
     LastVisitedPage: "last_visited_page",
     LastVisitedTeacherPage: "last_visited_teacher_page",
     DailyFeedbackLastShown: "daily_feedback_last_shown",
+    // Keep in sync with index.html inline theme script
+    ThemePreference: "zeeguu-theme-preference",
   },
 
   userInfo: function () {
@@ -319,6 +321,18 @@ const LocalStorage = {
 
   setAnonUpgradeDismissed: function (dismissed) {
     localStorage[this.Keys.AnonUpgradeDismissed] = dismissed ? "true" : "false";
+  },
+
+  getThemePreference: function () {
+    return localStorage.getItem(this.Keys.ThemePreference);
+  },
+
+  setThemePreference: function (theme) {
+    localStorage.setItem(this.Keys.ThemePreference, theme);
+  },
+
+  clearThemePreference: function () {
+    localStorage.removeItem(this.Keys.ThemePreference);
   },
 
   didShowDailyFeedbackToday: function () {

@@ -1,3 +1,103 @@
+:root {
+  --bg-primary: #ffffff;
+  --bg-secondary: #f6f6f6;
+  --bg-tertiary: #efefef;
+  --text-primary: #333333;
+  --text-secondary: #575757;
+  --text-muted: #808080;
+  --text-faint: #999999;
+  --border-color: #c1c1c1;
+  --border-light: #e0e0e0;
+  --link-color: rgb(164, 106, 0);
+  --shadow-color: rgba(0, 0, 0, 0.12);
+  --modal-overlay: rgba(0, 0, 0, 0.5);
+  --card-bg: #ffffff;
+  --hover-bg: #f6f6f6;
+  --active-bg: #ededed;
+
+  --streak-banner-bg: linear-gradient(135deg, #fff8e1, #fff3cd);
+  --streak-banner-text: #7a5c00;
+  --streak-banner-border: #ffe59e;
+  --streak-banner-hover: linear-gradient(135deg, #fff3cd, #ffe59e);
+
+  --feedback-banner-bg: linear-gradient(135deg, #e1f5fe, #b3e5fc);
+  --feedback-banner-text: #01579b;
+  --feedback-banner-border: #81d1f6;
+  --feedback-banner-hover: linear-gradient(135deg, #b3e5fc, #81d4fa);
+
+  --action-btn-text: #8b5f28;
+  --action-btn-bg: #fff5e6;
+  --action-btn-hover-bg: #f0e6cc;
+  --action-btn-muted-text: #999;
+  --action-btn-muted-bg: #fafafa;
+  --action-btn-muted-border: #f0f0f0;
+  --action-btn-muted-hover-bg: #f0f0f0;
+  --action-btn-muted-hover-text: #666;
+
+  --badge-bg: #e3f2fd;
+  --badge-text: hsl(216, 100%, 57%);
+  --tag-bg: hsl(216, 100%, 97%);
+
+  --search-tag-bg: #fef3c7;
+  --search-tag-border: #b45309;
+  --search-tag-text: #92400e;
+
+  --input-bg: #ffffff;
+  --input-border: #c1c1c1;
+
+  color-scheme: light;
+}
+
+:root[data-theme="dark"] {
+  --bg-primary: #1a1a2e;
+  --bg-secondary: #252540;
+  --bg-tertiary: #2a2a45;
+  --text-primary: #e0e0e0;
+  --text-secondary: #b0b0b0;
+  --text-muted: #888888;
+  --text-faint: #777777;
+  --border-color: #3a3a55;
+  --border-light: #333350;
+  --link-color: #ffbb54;
+  --shadow-color: rgba(0, 0, 0, 0.3);
+  --modal-overlay: rgba(0, 0, 0, 0.7);
+  --card-bg: #222240;
+  --hover-bg: #2e2e4a;
+  --active-bg: #353555;
+
+  --streak-banner-bg: linear-gradient(135deg, #2a2540, #302848);
+  --streak-banner-text: #ffcc66;
+  --streak-banner-border: #3a3555;
+  --streak-banner-hover: linear-gradient(135deg, #302848, #3a3050);
+
+  --feedback-banner-bg: linear-gradient(135deg, #1a2540, #1e2d4a);
+  --feedback-banner-text: #81d4fa;
+  --feedback-banner-border: #2a3555;
+  --feedback-banner-hover: linear-gradient(135deg, #1e2d4a, #253555);
+
+  --action-btn-text: #ffcc66;
+  --action-btn-bg: #2a2540;
+  --action-btn-hover-bg: #353050;
+  --action-btn-muted-text: #999;
+  --action-btn-muted-bg: #252540;
+  --action-btn-muted-border: #3a3a55;
+  --action-btn-muted-hover-bg: #2e2e4a;
+  --action-btn-muted-hover-text: #bbb;
+
+  --badge-bg: #1a2540;
+  --badge-text: #81b4ff;
+  --tag-bg: #1e2540;
+
+  --search-tag-bg: #2a2520;
+  --search-tag-border: #b45309;
+  --search-tag-text: #ffcc66;
+
+  --input-bg: #2a2a45;
+  --input-border: #3a3a55;
+
+  color-scheme: dark;
+}
+
 html,
 #root,
 body {
@@ -11,7 +111,9 @@ body {
   padding-bottom: env(safe-area-inset-bottom);
   padding-left: env(safe-area-inset-left);
   padding-right: env(safe-area-inset-right);
-  background-color: white;
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  transition: background-color 0.2s ease, color 0.2s ease;
   font-family:
     "Montserrat",
     -apple-system,
@@ -50,6 +152,9 @@ button {
 
 input {
   margin: 0;
+  background-color: var(--input-bg);
+  color: var(--text-primary);
+  border-color: var(--input-border);
   font-family:
     "Montserrat",
     -apple-system,
@@ -86,8 +191,17 @@ legend {
   -moz-osx-font-smoothing: grayscale;
 }
 
+select {
+  background-color: var(--input-bg);
+  color: var(--text-primary);
+  border-color: var(--input-border);
+}
+
 textarea {
   margin: 0;
+  background-color: var(--input-bg);
+  color: var(--text-primary);
+  border-color: var(--input-border);
   font-family:
     "Montserrat",
     -apple-system,
@@ -108,13 +222,13 @@ textarea {
 a {
   text-decoration: none;
   font-weight: 500;
-  color: rgb(164, 106, 0);
+  color: var(--link-color);
 }
 
 .link-style {
   text-decoration: none;
   font-weight: 500;
-  color: rgb(164, 106, 0);
+  color: var(--link-color);
   cursor: pointer;
 }
 
