@@ -1,13 +1,12 @@
 import React, { useContext, useEffect, useState } from "react";
-import { orange500, orange600, orange800, zeeguuOrange } from "../components/colors";
+import { orange500, zeeguuOrange } from "../components/colors";
 import { APIContext } from "../contexts/APIContext";
 import { UserContext } from "../contexts/UserContext";
 import LoadingAnimation from "../components/LoadingAnimation";
 import EmptyState from "../components/EmptyState";
-import FullWidthErrorMsg from "../components/FullWidthErrorMsg.sc";
 import CustomAudioPlayer from "../components/CustomAudioPlayer";
 import FeedbackModal from "../components/FeedbackModal";
-import { FEEDBACK_OPTIONS, FEEDBACK_CODES_NAME, FEEDBACK_CODES } from "../components/FeedbackConstants";
+import { FEEDBACK_OPTIONS, FEEDBACK_CODES_NAME } from "../components/FeedbackConstants";
 import Word from "../words/Word";
 import useListeningSession from "../hooks/useListeningSession";
 
@@ -285,22 +284,30 @@ export default function TodayAudio({ setShowTabs }) {
 
         // Check if the error is related to no words in learning
         if (error.message && error.message.toLowerCase().includes("not enough words")) {
+          setCanGenerateLesson(false);
           setError(
             "Not enough words in learning to generate a lesson. Need at least 2 words that were not in audio lessons before",
           );
         } else {
+          setCanGenerateLesson(false);
           setError(error.message || "Failed to generate daily lesson. Please try again.");
         }
       },
     );
   };
 
+  // Auto-generate lesson when feasible and no lesson exists
+  useEffect(() => {
+    if (canGenerateLesson === true && !lessonData && !isGenerating && !isLoading) {
+      handleGenerateLesson();
+    }
+  }, [canGenerateLesson, lessonData, isGenerating, isLoading]);
 
   if (isLoading) {
     return (
       <div style={{ padding: "20px" }}>
         <LoadingAnimation>
-          <p>Checking for existing lesson...</p>
+          <p>Preparing your daily lesson...</p>
         </LoadingAnimation>
       </div>
     );
@@ -370,18 +377,7 @@ export default function TodayAudio({ setShowTabs }) {
   }
 
   if (!lessonData) {
-    // Still checking if generation is possible
-    if (canGenerateLesson === null) {
-      return (
-        <div style={{ padding: "20px" }}>
-          <LoadingAnimation>
-            <p>Checking if audio lesson generation is possible...</p>
-          </LoadingAnimation>
-        </div>
-      );
-    }
-
-    // Cannot generate lesson - show error immediately
+    // Cannot generate lesson
     if (canGenerateLesson === false) {
       return (
         <EmptyState
@@ -390,69 +386,12 @@ export default function TodayAudio({ setShowTabs }) {
       );
     }
 
-    // Can generate lesson - show the generate button
+    // Still checking feasibility, or about to auto-trigger generation
     return (
-      <div
-        style={{
-          padding: "20px",
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          justifyContent: "center",
-          minHeight: "400px",
-        }}
-      >
-        {error && (
-          <FullWidthErrorMsg style={{ marginBottom: "20px", maxWidth: "500px" }}>
-            {error}
-          </FullWidthErrorMsg>
-        )}
-        <button
-          onClick={handleGenerateLesson}
-          style={{
-            width: "150px",
-            height: "150px",
-            borderRadius: "50%",
-            backgroundColor: orange500,
-            color: "white",
-            border: "none",
-            fontSize: "16px",
-            fontWeight: "600",
-            cursor: "pointer",
-            boxShadow: `0px 0.3rem ${orange800}`,
-            transition: "all 0.3s ease-in-out",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            textAlign: "center",
-            lineHeight: "1.2",
-          }}
-          onMouseEnter={(e) => {
-            e.target.style.backgroundColor = orange600;
-          }}
-          onMouseLeave={(e) => {
-            e.target.style.backgroundColor = orange500;
-            e.target.style.boxShadow = `0px 0.3rem ${orange800}`;
-            e.target.style.transform = "translateY(0)";
-          }}
-          onMouseDown={(e) => {
-            e.target.style.boxShadow = "none";
-            e.target.style.transform = "translateY(0.2em)";
-            e.target.style.transition = "all 0.08s ease-in";
-          }}
-          onMouseUp={(e) => {
-            e.target.style.boxShadow = `0px 0.3rem ${orange800}`;
-            e.target.style.transform = "translateY(0)";
-            e.target.style.transition = "all 0.3s ease-in-out";
-          }}
-        >
-          Generate
-          <br />
-          Daily Lesson
-        </button>
-        <p style={{ marginBottom: "20px", textAlign: "center", maxWidth: "500px" }}>
-          Push the button for... an audio lesson for you based on the words you are currently learning.
-        </p>
+      <div style={{ padding: "20px" }}>
+        <LoadingAnimation>
+          <p>Preparing your daily lesson...</p>
+        </LoadingAnimation>
       </div>
     );
   }
