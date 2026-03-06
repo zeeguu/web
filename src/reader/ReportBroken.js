@@ -70,11 +70,13 @@ export default function ReportBroken({ articleID, sourceID, UMR_SOURCE }) {
 
   return (
     <>
-      <FlagOutlinedIcon
+      <div
         onClick={handleClickOpen}
         aria-label="Report broken article"
-        style={{ fontSize: "1.4em", cursor: "pointer", color: "#999" }}
-      />
+        style={{ padding: "0.5rem", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}
+      >
+        <FlagOutlinedIcon style={{ fontSize: "1.4em", color: "#999" }} />
+      </div>
       <Dialog open={open} onClose={handleClose}>
         <DialogTitle>
           <b>Report broken article</b>
@@ -128,7 +130,7 @@ export default function ReportBroken({ articleID, sourceID, UMR_SOURCE }) {
               </IconButton>
               <TextField
                 id="outlined-multiline-flexible"
-                label="Report article"
+                label="Type problem here"
                 multiline={true}
                 minRows={2}
                 maxRows={3}

@@ -9,7 +9,7 @@ const BackArrow = styled.button`
   color: ${darkGrey};
   background: none;
   border: none;
-  padding: 0;
+  padding: 0.5rem;
   margin: 0;
   &:hover {
     color: ${veryDarkGrey};

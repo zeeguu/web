@@ -6,6 +6,7 @@ import { RoutingContext } from "../contexts/RoutingContext";
 import * as s from "./ArticleReader.sc";
 
 import ToolbarButtons from "./ToolbarButtons";
+import ShareArticle from "./ShareArticle";
 
 import BackArrow from "../pages/Settings/settings_pages_shared/BackArrow";
 import useScreenWidth from "../hooks/useScreenWidth";
@@ -103,8 +104,9 @@ export default function TopToolbar({
               </>
             )}
           </div>
-          <div style={{ display: "flex", alignItems: "center", gap: "1rem", marginRight: "1rem" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "0.25rem", marginRight: "0.5rem" }}>
             {reportBroken}
+            <ShareArticle articleID={articleID} />
             <ToolbarButtons
               translating={translating}
               pronouncing={pronouncing}

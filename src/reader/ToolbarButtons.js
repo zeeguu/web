@@ -37,15 +37,13 @@ export default function ToolbarButtons({
 
   return (
     <div ref={menuRef} style={{ position: "relative", display: "inline-block" }}>
-      <SettingsRoundedIcon
-        style={{
-          fontSize: "1.4em",
-          cursor: "pointer",
-          color: "#999"
-        }}
-        title="Click word options"
+      <div
         onClick={() => setShowOptions(!showOptions)}
-      />
+        title="Click word options"
+        style={{ padding: "0.5rem", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}
+      >
+        <SettingsRoundedIcon style={{ fontSize: "1.4em", color: "#999" }} />
+      </div>
 
       {showOptions && (
         <div style={{
