@@ -38,10 +38,12 @@ export default function Learning() {
 
   useEffect(() => {
     api.getAllScheduledBookmarks(false, (bookmarks) => {
-      setInLearning(bookmarks);
+      // Handle API errors - bookmarks will be null if request failed
+      const safeBookmarks = bookmarks || [];
+      setInLearning(safeBookmarks);
 
       let words_byLevel = { 0: [], 1: [], 2: [], 3: [], 4: [] };
-      bookmarks.forEach((word) => {
+      safeBookmarks.forEach((word) => {
         words_byLevel[word.level] = [...words_byLevel[word.level], word];
       });
 
@@ -54,8 +56,8 @@ export default function Learning() {
     });
 
     api.getBookmarksNextInLearning((bookmarks) => {
-      setNextInLearning(bookmarks);
-      console.log(bookmarks);
+      // Handle API errors - bookmarks will be null if request failed
+      setNextInLearning(bookmarks || []);
     });
 
     setTitle(strings.titleToLearnWords);
