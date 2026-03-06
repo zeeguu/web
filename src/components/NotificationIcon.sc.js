@@ -25,11 +25,7 @@ const NotificationIcon = styled.div`
   cursor: default;
   div {
     display: flex;
-    background: radial-gradient(
-      circle,
-      rgb(255 67 92) 95%,
-      rgba(42, 8, 12, 0.5) 100%
-    );
+    background: white;
     border-radius: 1000px;
     border: 0.12rem solid white;
     z-index: 99;
@@ -40,8 +36,8 @@ const NotificationIcon = styled.div`
     justify-content: center;
     align-items: center;
     font-size: x-small;
-    font-weight: 500;
-    color: white;
+    font-weight: 600;
+    color: #333;
     @media (max-width: 990px) {
       font-size: x-small;
     }

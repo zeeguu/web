@@ -10,8 +10,10 @@ const Dot = styled.div`
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  margin-left: -0.5rem;
-  flex-shrink: 0;
+  position: absolute;
+  top: 0;
+  left: calc(50% + 0.5rem);
+  z-index: 1;
 
   ${({ $status, $isActive }) => {
     switch ($status) {
