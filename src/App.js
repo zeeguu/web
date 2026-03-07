@@ -34,6 +34,12 @@ const isCapacitor = () => {
   return platform === "ios" || platform === "android";
 };
 
+// Android WebView doesn't support env(safe-area-inset-bottom),
+// so we set a CSS variable as a fallback for bottom padding
+if (Capacitor.getPlatform() === "android") {
+  document.documentElement.style.setProperty("--safe-area-bottom", "1rem");
+}
+
 // Generate a UUID v4
 function generateUUID() {
   return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function (c) {

@@ -1,10 +1,13 @@
 import { useContext, useEffect, useState } from "react";
 import { useLocation } from "react-router-dom/cjs/react-router-dom";
+import { ThemeProvider } from "styled-components";
 import { MainNavContext } from "./contexts/MainNavContext";
 import { UserContext } from "./contexts/UserContext";
 import useScreenWidth from "./hooks/useScreenWidth";
-import MainNav from "./components/MainNav/MainNav";
-import * as s from "./MainNavWithComponent.sc";
+import SideNav from "./components/MainNav/SideNav/SideNav";
+import BottomNav from "./components/MainNav/BottomNav/BottomNav";
+import { mainNavTheme } from "./components/MainNav/mainNavTheme";
+import * as s from "./AppLayout.sc";
 import { ExercisesCounterContext } from "./exercises/ExercisesCounterContext";
 
 import useExercisesCounterNotification from "./hooks/useExercisesCounterNotification";
@@ -14,7 +17,19 @@ import { MOBILE_WIDTH } from "./components/MainNav/screenSize";
 import DailyFeedbackBanner from "./components/DailyFeedbackBanner";
 import Feature from "./features/Feature";
 
-export default function MainNavWithComponent(props) {
+// Desktop (flex row):               Mobile (flex column):
+// ┌──────────┬──────────────────┐   ┌──────────────────┐
+// │ SideNav  │                  │   │   AppContent      │
+// │ (fixed   │   AppContent     │   │   (scrollable)    │
+// │  width,  │   (flex-grow,    │   │                   │
+// │  scroll) │    scrollable)   │   ├──────────────────┤
+// └──────────┴──────────────────┘   │   BottomNav       │
+//                                   └──────────────────┘
+//
+// Both layouts use flex. Each child only declares its own size —
+// the parent flex container handles positioning.
+
+export default function AppLayout(props) {
   const { children: appContent } = props;
   const { screenWidth } = useScreenWidth();
   const { userDetails } = useContext(UserContext);
@@ -70,22 +85,23 @@ export default function MainNavWithComponent(props) {
           hideExerciseCounter: hideExerciseCounter,
         }}
       >
-        <s.MainNavWithComponent $screenWidth={screenWidth}>
-          <MainNav screenWidth={screenWidth} />
-          <s.AppContent
-            // Update the key when the learned_language changes to trigger a re-render
-            // of the app content that needs real-time updates. This is a smoother
-            // alternative to window.location.reload() when switching the practiced language in navigation.
-            key={userDetails.learned_language}
-            $currentPath={path}
-            $screenWidth={screenWidth}
-            id="scrollHolder"
-          >
-            {screenWidth <= MOBILE_WIDTH && <StreakBanner />}
-            {screenWidth <= MOBILE_WIDTH && Feature.daily_feedback() && <DailyFeedbackBanner />}
-            {appContent}
-          </s.AppContent>
-        </s.MainNavWithComponent>
+        <ThemeProvider theme={mainNavProperties.isOnStudentSide ? mainNavTheme.student : mainNavTheme.teacher}>
+          <s.AppLayout $screenWidth={screenWidth}>
+            {screenWidth > MOBILE_WIDTH && <SideNav screenWidth={screenWidth} />}
+            <s.AppContent
+              // Update the key when the learned_language changes to trigger a re-render
+              // of the app content that needs real-time updates. This is a smoother
+              // alternative to window.location.reload() when switching the practiced language in navigation.
+              key={userDetails.learned_language}
+              id="scrollHolder"
+            >
+              {screenWidth <= MOBILE_WIDTH && <StreakBanner />}
+              {screenWidth <= MOBILE_WIDTH && Feature.daily_feedback() && <DailyFeedbackBanner />}
+              {appContent}
+            </s.AppContent>
+            {screenWidth <= MOBILE_WIDTH && <BottomNav />}
+          </s.AppLayout>
+        </ThemeProvider>
       </ExercisesCounterContext.Provider>
     </MainNavContext.Provider>
   );
