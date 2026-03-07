@@ -9,6 +9,7 @@ import FeedbackModal from "../components/FeedbackModal";
 import { FEEDBACK_OPTIONS, FEEDBACK_CODES_NAME } from "../components/FeedbackConstants";
 import Word from "../words/Word";
 import useListeningSession from "../hooks/useListeningSession";
+import { AUDIO_STATUS, GENERATION_PROGRESS } from "./AudioLessonConstants";
 
 
 export function wordsAsTile(words) {
@@ -62,7 +63,7 @@ export default function TodayAudio({ setShowTabs }) {
         stopPolling();
         setLessonData(data);
         // Update context to show lesson is ready
-        setUserDetails((prev) => ({ ...prev, daily_audio_status: data.is_completed ? "completed" : "ready" }));
+        setUserDetails((prev) => ({ ...prev, daily_audio_status: data.is_completed ? AUDIO_STATUS.COMPLETED : AUDIO_STATUS.READY }));
         lessonRetryCount = 0;
       } else if (data && data.error) {
         // Lesson exists but has an error (e.g., audio file not ready yet)
@@ -91,9 +92,9 @@ export default function TodayAudio({ setShowTabs }) {
           if (progress) {
             setGenerationProgress(progress);
 
-            if (progress.status === "done") {
+            if (progress.status === GENERATION_PROGRESS.DONE) {
               checkForLesson();
-            } else if (progress.status === "error") {
+            } else if (progress.status === GENERATION_PROGRESS.ERROR) {
               handleError(progress.message || "Lesson generation failed. Please try again.");
             }
           } else {
@@ -188,13 +189,13 @@ export default function TodayAudio({ setShowTabs }) {
     // First, check if there's an active generation in progress
     api.getAudioLessonGenerationProgress(
       (progress) => {
-        if (progress && !["done", "error"].includes(progress.status)) {
+        if (progress && ![GENERATION_PROGRESS.DONE, GENERATION_PROGRESS.ERROR].includes(progress.status)) {
           // Generation in progress - let polling handle it
           setIsLoading(false);
           setIsGenerating(true);
           setGenerationProgress(progress);
           // Update context so navigation dot shows generating state
-          setUserDetails((prev) => ({ ...prev, daily_audio_status: "generating" }));
+          setUserDetails((prev) => ({ ...prev, daily_audio_status: AUDIO_STATUS.GENERATING }));
           return;
         }
 
@@ -252,20 +253,23 @@ export default function TodayAudio({ setShowTabs }) {
     setGenerationProgress(null);
 
     // Update context so navigation dot shows generating state
-    setUserDetails((prev) => ({ ...prev, daily_audio_status: "generating" }));
+    setUserDetails((prev) => ({ ...prev, daily_audio_status: AUDIO_STATUS.GENERATING }));
 
     // Set localStorage flag to track generation across page reloads
     localStorage.setItem(generatingKey, "true");
 
     api.generateDailyLesson(
       (data) => {
-        // Clear the localStorage flag when generation completes
+        if (data.status === AUDIO_STATUS.GENERATING) {
+          // Generation started in background — polling will deliver the lesson
+          return;
+        }
+        // Existing lesson returned directly
         localStorage.removeItem(generatingKey);
         setIsGenerating(false);
         setGenerationProgress(null);
         setLessonData(data);
-        // Update context to reflect lesson is ready
-        setUserDetails((prev) => ({ ...prev, daily_audio_status: "ready" }));
+        setUserDetails((prev) => ({ ...prev, daily_audio_status: AUDIO_STATUS.READY }));
       },
       (error) => {
         // Check if generation is already in progress (409 Conflict)
@@ -425,7 +429,7 @@ export default function TodayAudio({ setShowTabs }) {
               // Start or resume listening session
               listeningSession.start();
               // Update context so navigation dot disappears (in_progress)
-              setUserDetails((prev) => ({ ...prev, daily_audio_status: "in_progress" }));
+              setUserDetails((prev) => ({ ...prev, daily_audio_status: AUDIO_STATUS.IN_PROGRESS }));
             }
           }}
           onPause={() => {
@@ -452,7 +456,7 @@ export default function TodayAudio({ setShowTabs }) {
                   completed_at: new Date().toISOString(),
                 }));
                 // Update context so navigation dot disappears
-                setUserDetails((prev) => ({ ...prev, daily_audio_status: "completed" }));
+                setUserDetails((prev) => ({ ...prev, daily_audio_status: AUDIO_STATUS.COMPLETED }));
               });
             }
           }}
