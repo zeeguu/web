@@ -91,7 +91,6 @@ const ProgressItemsContainer = styled.div`
   flex-direction: column;
   width: 70%;
   padding-bottom: 1em;
-  margin-left: 10em;
 
   @media (max-width: 768px) {
   width: 80%;

@@ -8,6 +8,7 @@ export const BadgesRow = styled.div`
   display: flex;
   gap: 1.5rem;
   flex-wrap: wrap;
+  justify-content: center;
 `;
 
 export const BadgeCard = styled.div`

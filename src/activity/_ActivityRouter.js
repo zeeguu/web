@@ -20,7 +20,7 @@ export default function ActivityRouter() {
     },
     {
       text: strings.badges,
-      link: "/badges",
+      link: "/activity-history/badges",
     }
   ];
 
@@ -31,7 +31,7 @@ export default function ActivityRouter() {
 
         <PrivateRoute exact path="/activity-history" component={SessionHistory} />
         <PrivateRoute path="/activity-history/statistics" component={UserDashboard} />
-        <PrivateRoute path="/badges" component={Badges}/>
+        <PrivateRoute path="/activity-history/badges" component={Badges}/>
       </s.NarrowColumn>
     </Switch>
   );

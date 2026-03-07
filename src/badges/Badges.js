@@ -68,8 +68,6 @@ export default function Badges() {
 
   return (
     <s.Container>
-      <h1>My Badges</h1>
-
       <s.BadgesRow>
         {topBadges.map((b) => (
           <s.BadgeCard key={b.badge_id} achieved={b.level.achieved} onClick={() => openBadge(b.badge_id)}>
