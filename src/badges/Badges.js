@@ -5,6 +5,7 @@ import NotificationIcon from "@/components/NotificationIcon";
 
 export default function Badges() {
   const api = useContext(APIContext);
+  const iconBasePath = "../../../public/static/badges/";
   const defaultLogoPath = "../../../public/static/images/zeeguuLogo.svg";
 
   const [badges, setBadges] = useState([]);
@@ -62,7 +63,7 @@ export default function Badges() {
         })
       : "—";
 
-  const getIcon = (level) => (level.icon_url ? level.icon_url : defaultLogoPath);
+  const getIcon = (level) => (level.icon_name ? iconBasePath + level.icon_name : defaultLogoPath);
   const iconStyle = (achieved) => ({ filter: achieved ? "none" : "grayscale(100%)", opacity: achieved ? 1 : 0.5 });
 
   return (
