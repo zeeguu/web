@@ -101,16 +101,12 @@ function App() {
   }, [userDetails]);
 
   // Poll for audio lesson generation progress when status is "generating"
-  // Skip polling when on the daily-audio page — TodayAudio handles it there
+  // Skip individual ticks when on /daily-audio — TodayAudio handles polling there
   useEffect(() => {
     if (userDetails?.daily_audio_status !== AUDIO_STATUS.GENERATING) return;
-    if (window.location.pathname.startsWith("/daily-audio")) return;
 
     const pollInterval = setInterval(() => {
-      if (window.location.pathname.startsWith("/daily-audio")) {
-        clearInterval(pollInterval);
-        return;
-      }
+      if (window.location.pathname.startsWith("/daily-audio")) return;
 
       api.getAudioLessonGenerationProgress(
         (progress) => {
