@@ -43,6 +43,7 @@ import { PrivateRouteWithLayout } from "./PrivateRouteWithLayout";
 import { PrivateRoute } from "./PrivateRoute";
 import DeleteAccount from "./pages/DeleteAccount/DeleteAccount";
 import SettingsRouter from "./pages/Settings/_SettingsRouter";
+import ProfileRouter from "./profile/_ProfileRouter";
 import ExercisesForArticle from "./exercises/ExercisesForArticle";
 import { WEB_READER } from "./reader/ArticleReader";
 import VideoPlayer from "./videos/VideoPlayer";
@@ -129,6 +130,7 @@ export default function MainAppRouter({ hasExtension, handleSuccessfulLogIn }) {
       <PrivateRouteWithLayout path="/history" component={ReadingHistory} />
       <PrivateRouteWithLayout path="/activity-history" component={ActivityRouter} />
       <PrivateRouteWithLayout path="/account_settings" component={SettingsRouter} />
+      <PrivateRouteWithLayout path="/profile" component={ProfileRouter} />
       <PrivateRouteWithLayout path="/teacher" component={TeacherRouter} />
       <PrivateRouteWithLayout path="/read/article" component={ArticleReader} />
       <Redirect from="/user_dashboard" to="/activity-history/statistics" />

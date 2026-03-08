@@ -583,6 +583,9 @@ let strings = new LocalizedStrings(
       wordsIncorrect: "Words you didn't get correct in exercises",
       wordsCorrect: "Words you got correct in exercises",
 
+      // Profile
+      titleUserProfile: "Profile",
+
       //Settings
       //Settings categories
       myAccount: "My Account",
