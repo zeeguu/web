@@ -205,7 +205,7 @@ export default function TodayAudio({ setShowTabs }) {
           setIsLoading(false);
           setIsGenerating(true);
           setGenerationProgress(progress);
-              // Update context so navigation dot shows generating state
+          // Update context so navigation dot shows generating state
           setUserDetails((prev) => ({ ...prev, daily_audio_status: AUDIO_STATUS.GENERATING }));
           return;
         }
@@ -314,8 +314,6 @@ export default function TodayAudio({ setShowTabs }) {
     );
   };
 
-  // No auto-generate — user must click the button
-
   if (isLoading) {
     return (
       <div style={{ padding: "20px" }}>
@@ -356,9 +354,9 @@ export default function TodayAudio({ setShowTabs }) {
           minHeight: "400px",
         }}
       >
-        <h1 style={{ color: orange600, marginBottom: "8px", fontSize: "24px", fontWeight: "700" }}>
+        <h2 style={{ color: zeeguuOrange, marginBottom: "10px" }}>
           Generating your daily lesson...
-        </h1>
+        </h2>
         <p style={{ color: "#333", marginBottom: "20px", fontSize: "16px", textAlign: "center" }}>
           This can take a while. Feel free to browse — you'll find it here when it's ready.
         </p>
