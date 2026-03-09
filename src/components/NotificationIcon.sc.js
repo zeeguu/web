@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { orange300, orange500, orange700 } from "./colors";
+import { orange500 } from "./colors";
 // Source: https://loading.io/css/
 const NotificationIcon = styled.div`
   &.top {
@@ -29,7 +29,7 @@ const NotificationIcon = styled.div`
     display: flex;
     background: ${({ $isActive }) => ($isActive ? orange500 : "white")};
     border-radius: 1000px;
-    border: 0.12rem solid ${({ $isActive }) => ($isActive ? orange500 : "white")};
+    border: 0.12rem solid ${({ $isActive }) => ($isActive ? "white" : orange500)};
     z-index: 99;
     padding: 0.1em 0.5em;
     min-width: 0.1em;

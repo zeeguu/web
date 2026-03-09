@@ -2,6 +2,13 @@ import NavIcon from "./NavIcon";
 import strings from "../../i18n/definitions";
 import LocalStorage from "../../assorted/LocalStorage";
 
+export function isNavOptionActive(linkTo, currentPath) {
+  // Special case: Home should be active for both /articles and /swiper
+  return linkTo === "/articles"
+    ? currentPath?.includes("/articles") || currentPath?.includes("/swiper")
+    : currentPath?.includes(linkTo);
+}
+
 export default class NavigationOptions {
   // Student-specific options
   static articles = Object.freeze({
