@@ -1,3 +1,4 @@
+import React from "react";
 import * as s from "./BottomNavOption.sc";
 
 export default function BottomNavOption({
@@ -24,7 +25,7 @@ export default function BottomNavOption({
         aria-haspopup={ariaHasPopup}
         aria-label={ariaLabel}
       >
-        {notification}
+        {notification && React.cloneElement(notification, { isActive })}
         <s.IconSpan $isActive={isActive}>{icon}</s.IconSpan>
         {text}
       </Component>
