@@ -156,7 +156,6 @@ export default function TodayAudio({ setShowTabs }) {
       
       // Initialize playback time from lesson data
       const initialTime = lessonData.pause_position_seconds || lessonData.position_seconds || lessonData.progress_seconds || 0;
-      console.log('Setting initial playback time:', initialTime);
       setCurrentPlaybackTime(initialTime);
     } else {
       document.title = "Zeeguu: Audio Lesson";
@@ -286,14 +285,14 @@ export default function TodayAudio({ setShowTabs }) {
         // Reset status back to available on error
         setUserDetails((prev) => ({ ...prev, daily_audio_status: null }));
 
+        setCanGenerateLesson(false);
+
         // Check if the error is related to no words in learning
         if (error.message && error.message.toLowerCase().includes("not enough words")) {
-          setCanGenerateLesson(false);
           setError(
             "Not enough words in learning to generate a lesson. Need at least 2 words that were not in audio lessons before",
           );
         } else {
-          setCanGenerateLesson(false);
           setError(error.message || "Failed to generate daily lesson. Please try again.");
         }
       },
@@ -437,7 +436,6 @@ export default function TodayAudio({ setShowTabs }) {
             listeningSession.pause();
           }}
           onProgressUpdate={(progressSeconds) => {
-            console.log('Updating playback time:', progressSeconds);
             setCurrentPlaybackTime(progressSeconds);
             if (lessonData.lesson_id) {
               // Use pause action to save progress position
@@ -460,16 +458,7 @@ export default function TodayAudio({ setShowTabs }) {
               });
             }
           }}
-          onError={() => {
-            // If direct URL fails, try fetching as blob
-            fetch(lessonData.audio_url)
-              .then((response) => response.blob())
-              .then((blob) => {
-                const blobUrl = URL.createObjectURL(blob);
-                // Note: Custom player will need to handle blob URLs
-              })
-              .catch((err) => {});
-          }}
+          onError={() => {}}
           style={{
             width: "100%",
             marginBottom: "20px",
@@ -532,12 +521,8 @@ export default function TodayAudio({ setShowTabs }) {
         </div>
 
         <FeedbackModal
-          prefixMsg={lessonData ? 
-            (() => {
-              const prefixMsg = `Daily Audio Lesson - Playback time: ${Math.floor(currentPlaybackTime / 60)}:${(currentPlaybackTime % 60).toFixed(0).padStart(2, '0')} | Lesson ID: ${lessonData.lesson_id} | Words: ${wordsAsTile(lessonData.words)} | Date: ${new Date(lessonData.created_at || Date.now()).toLocaleDateString()}`;
-              console.log('Feedback prefix message:', prefixMsg);
-              return prefixMsg;
-            })()
+          prefixMsg={lessonData
+            ? `Daily Audio Lesson - Playback time: ${Math.floor(currentPlaybackTime / 60)}:${(currentPlaybackTime % 60).toFixed(0).padStart(2, '0')} | Lesson ID: ${lessonData.lesson_id} | Words: ${wordsAsTile(lessonData.words)} | Date: ${new Date(lessonData.created_at || Date.now()).toLocaleDateString()}`
             : "Daily Audio Lesson Feedback"
           }
           open={openFeedback}
