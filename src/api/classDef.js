@@ -2,10 +2,25 @@ import fetch from "cross-fetch";
 import axios from "axios";
 import * as Sentry from "@sentry/react";
 
+const CACHE_TTL = 5 * 60 * 1000; // 5 minutes
+
 const Zeeguu_API = class {
   constructor(baseAPIurl) {
     this.baseAPIurl = baseAPIurl;
+    this._cache = new Map();
     //this.session = currentSession; is instantiated in App when the user logs in (causes error to actually instantiate it here).
+  }
+
+  invalidateCache() {
+    this._cache.clear();
+  }
+
+  getCached(endpoint) {
+    const cached = this._cache.get(endpoint);
+    if (cached && Date.now() - cached.time < CACHE_TTL) {
+      return cached.data;
+    }
+    return null;
   }
 
   apiLog(what) {
@@ -41,7 +56,15 @@ const Zeeguu_API = class {
       });
   }
 
-  _getJSON(endpoint, callback) {
+  _getJSON(endpoint, callback, useCache = false) {
+    if (useCache) {
+      const cached = this._cache.get(endpoint);
+      if (cached && Date.now() - cached.time < CACHE_TTL) {
+        callback(cached.data);
+        return;
+      }
+    }
+
     this.apiLog("GET" + endpoint);
     fetch(this._appendSessionToUrl(endpoint, this.session))
       .then((response) => {
@@ -51,6 +74,9 @@ const Zeeguu_API = class {
         return response.json();
       })
       .then((data) => {
+        if (useCache) {
+          this._cache.set(endpoint, { data, time: Date.now() });
+        }
         callback(data);
       })
       .catch((e) => {

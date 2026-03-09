@@ -6,6 +6,7 @@ import { RoutingContext } from "../contexts/RoutingContext";
 import * as s from "./ArticleReader.sc";
 
 import ToolbarButtons from "./ToolbarButtons";
+import ShareArticle from "./ShareArticle";
 
 import BackArrow from "../pages/Settings/settings_pages_shared/BackArrow";
 import useScreenWidth from "../hooks/useScreenWidth";
@@ -22,6 +23,8 @@ export default function TopToolbar({
   setPronouncing,
   showMweHints,
   setShowMweHints,
+  showReadingTimer,
+  setShowReadingTimer,
   articleProgress,
   timer,
   reportBroken,
@@ -56,11 +59,11 @@ export default function TopToolbar({
     <s.ToolbarWrapper>
       <s.Toolbar>
         <s.TopbarButtonsContainer $screenWidth={screenWidth}>
-          <div style={{ display: "flex", alignItems: "center", marginLeft: "1rem" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", marginLeft: "0.25rem" }}>
             {isMobile && <BackArrow />}
-            {!isMobile && timer}
+            {timer}
           </div>
-          <div style={{ display: "flex", gap: "0.5rem" }}>
+          <div style={{ display: "flex", gap: "1rem" }}>
             {user.is_teacher && (
               <>
                 {teacherArticleID && !isMobile && (
@@ -101,9 +104,9 @@ export default function TopToolbar({
               </>
             )}
           </div>
-          <div style={{ display: "flex", alignItems: "center", gap: "1rem", marginRight: "1rem" }}>
-            {isMobile && timer}
+          <div style={{ display: "flex", alignItems: "center", gap: "0.25rem", marginRight: "0.5rem" }}>
             {reportBroken}
+            <ShareArticle articleID={articleID} />
             <ToolbarButtons
               translating={translating}
               pronouncing={pronouncing}
@@ -111,12 +114,14 @@ export default function TopToolbar({
               setPronouncing={setPronouncing}
               showMweHints={showMweHints}
               setShowMweHints={setShowMweHints}
+              showReadingTimer={showReadingTimer}
+              setShowReadingTimer={setShowReadingTimer}
             />
           </div>
         </s.TopbarButtonsContainer>
 
         <progress
-          style={{ margin: "0px", marginBottom: "0.5rem", marginTop: isMobile ? "0" : "1rem" }}
+          style={{ margin: "0" }}
           value={articleProgress}
         />
       </s.Toolbar>
