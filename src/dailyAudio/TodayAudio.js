@@ -162,8 +162,18 @@ export default function TodayAudio({ setShowTabs }) {
     }
   }, [lessonData]);
 
+  const failedKey = `zeeguu_generation_failed_${new Date().toDateString()}`;
+
   // Check if lesson generation is possible
   const checkLessonGenerationFeasibility = () => {
+    // If generation already failed this session, don't retry on refresh
+    const previousError = sessionStorage.getItem(failedKey);
+    if (previousError) {
+      setCanGenerateLesson(false);
+      setError(previousError);
+      return;
+    }
+
     api.checkDailyLessonFeasibility(
       (data) => {
         setCanGenerateLesson(data.feasible);
@@ -265,6 +275,7 @@ export default function TodayAudio({ setShowTabs }) {
         }
         // Existing lesson returned directly
         localStorage.removeItem(generatingKey);
+        sessionStorage.removeItem(failedKey);
         setIsGenerating(false);
         setGenerationProgress(null);
         setLessonData(data);
@@ -288,13 +299,15 @@ export default function TodayAudio({ setShowTabs }) {
         setCanGenerateLesson(false);
 
         // Check if the error is related to no words in learning
+        let errorMsg;
         if (error.message && error.message.toLowerCase().includes("not enough words")) {
-          setError(
-            "Not enough words in learning to generate a lesson. Need at least 2 words that were not in audio lessons before",
-          );
+          errorMsg = "Not enough words in learning to generate a lesson. Need at least 2 words that were not in audio lessons before";
         } else {
-          setError(error.message || "Failed to generate daily lesson. Please try again.");
+          errorMsg = error.message || "Failed to generate daily lesson. Please try again.";
         }
+        setError(errorMsg);
+        // Remember failure so refresh doesn't retry and show loading again
+        sessionStorage.setItem(failedKey, errorMsg);
       },
     );
   };
