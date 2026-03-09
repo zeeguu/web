@@ -24,13 +24,14 @@ export function wordsAsTile(words) {
 export default function TodayAudio({ setShowTabs }) {
   const api = useContext(APIContext);
   const { userDetails, setUserDetails } = useContext(UserContext);
+  const lang = userDetails?.learned_language || "";
   const [isLoading, setIsLoading] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
   const [generationProgress, setGenerationProgress] = useState(null);
 
   // Poll for progress when generating
   useEffect(() => {
-    const generatingKey = `zeeguu_generating_lesson_${new Date().toDateString()}`;
+    const generatingKey = `zeeguu_generating_lesson_${lang}_${new Date().toDateString()}`;
     const hasLocalStorageFlag = localStorage.getItem(generatingKey);
 
     // Start polling if either: localStorage flag is set (page reload) or isGenerating is true (button click/409)
@@ -162,7 +163,7 @@ export default function TodayAudio({ setShowTabs }) {
     }
   }, [lessonData]);
 
-  const failedKey = `zeeguu_generation_failed_${new Date().toDateString()}`;
+  const failedKey = `zeeguu_generation_failed_${lang}_${new Date().toDateString()}`;
 
   // Check if lesson generation is possible
   const checkLessonGenerationFeasibility = () => {
@@ -255,7 +256,7 @@ export default function TodayAudio({ setShowTabs }) {
   }, [api]);
 
   const handleGenerateLesson = () => {
-    const generatingKey = `zeeguu_generating_lesson_${new Date().toDateString()}`;
+    const generatingKey = `zeeguu_generating_lesson_${lang}_${new Date().toDateString()}`;
 
     setIsGenerating(true);
     setError(null);
