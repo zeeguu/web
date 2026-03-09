@@ -5,8 +5,8 @@ import LocalStorage from "../../assorted/LocalStorage";
 export function isNavOptionActive(linkTo, currentPath) {
   // Special case: Home should be active for both /articles and /swiper
   return linkTo === "/articles"
-    ? currentPath?.includes("/articles") || currentPath?.includes("/swiper")
-    : currentPath?.includes(linkTo);
+    ? currentPath?.startsWith("/articles") || currentPath?.startsWith("/swiper")
+    : currentPath?.startsWith(linkTo);
 }
 
 export default class NavigationOptions {
