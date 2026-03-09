@@ -1,5 +1,6 @@
 import fetch from "cross-fetch";
 import axios from "axios";
+import * as Sentry from "@sentry/react";
 
 const CACHE_TTL = 5 * 60 * 1000; // 5 minutes
 
@@ -66,7 +67,12 @@ const Zeeguu_API = class {
 
     this.apiLog("GET" + endpoint);
     fetch(this._appendSessionToUrl(endpoint, this.session))
-      .then((response) => response.json())
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status} on GET ${endpoint}`);
+        }
+        return response.json();
+      })
       .then((data) => {
         if (useCache) {
           this._cache.set(endpoint, { data, time: Date.now() });
@@ -74,7 +80,12 @@ const Zeeguu_API = class {
         callback(data);
       })
       .catch((e) => {
-        console.log(e);
+        console.error(`API error on GET ${endpoint}:`, e);
+        Sentry.captureException(e, {
+          tags: { endpoint, method: "GET" },
+        });
+        // Call callback with null so components don't hang on loading forever
+        callback(null);
       });
   }
 

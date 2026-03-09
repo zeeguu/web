@@ -51,12 +51,18 @@ export default function SideNavProgressStats({ screenWidth }) {
 
   useEffect(() => {
     api.getUserActivityByDay((activity) => {
-      const readingMinsPerWeek = calculateWeeklyReadingMinutes(activity.reading);
-      setWeeklyReadingMinutes(readingMinsPerWeek);
+      // Handle API errors - activity will be null if request failed
+      if (activity && activity.reading) {
+        const readingMinsPerWeek = calculateWeeklyReadingMinutes(activity.reading);
+        setWeeklyReadingMinutes(readingMinsPerWeek);
+      }
     });
 
     api.getExercisesCompletedThisWeek((count) => {
-      setWeeklyExercises(count);
+      // Handle API errors - count will be null if request failed
+      if (count !== null) {
+        setWeeklyExercises(count);
+      }
     });
   }, [userDetails.learned_language]);
 

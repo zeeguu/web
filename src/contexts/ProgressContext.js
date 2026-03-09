@@ -18,6 +18,7 @@ function ProgressProvider({ children }) {
   const [totalLearned, setTotalLearned] = useState(null);
 
   useEffect(() => {
+    if (!userDetails?.learned_language) return;
     api.getDailyStreak((data) => {
       setDaysPracticed(data.daily_streak);
     });

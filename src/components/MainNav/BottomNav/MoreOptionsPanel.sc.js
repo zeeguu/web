@@ -5,7 +5,9 @@ const MoreOptionsWrapper = styled.div`
   width: 100%;
   height: 100%;
   z-index: 2;
-  position: absolute;
+  position: fixed;
+  top: 0;
+  left: 0;
   animation: ${({ $overlayTransition }) => $overlayTransition} 0.3s ease-in-out
     forwards;
 `;

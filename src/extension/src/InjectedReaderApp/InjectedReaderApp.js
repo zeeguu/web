@@ -160,7 +160,6 @@ export function InjectedReaderApp({ modalIsOpen, setModalIsOpen, api, url, autho
     scrollEvents,
   } = useScrollTracking({
     api,
-    articleID,
     articleInfo,
     getReadingSessionId,
     sessionDuration,

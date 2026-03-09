@@ -92,7 +92,6 @@ export default function ArticleReader({ teacherArticleID }) {
     initializeScrollTracking,
   } = useScrollTracking({
     api,
-    articleID,
     articleInfo,
     getReadingSessionId,
     sessionDuration,
