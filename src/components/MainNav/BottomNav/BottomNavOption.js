@@ -1,4 +1,6 @@
+import React from "react";
 import * as s from "./BottomNavOption.sc";
+import { isNavOptionActive } from "../navigationOptions";
 
 export default function BottomNavOption({
   currentPath,
@@ -11,10 +13,7 @@ export default function BottomNavOption({
   ariaLabel,
 }) {
   const Component = linkTo ? s.StyledLink : s.StyledButton;
-  // Special case: Home should be active for both /articles and /swiper
-  const isActive = linkTo === "/articles" 
-    ? (currentPath?.includes("/articles") || currentPath?.includes("/swiper"))
-    : currentPath?.includes(linkTo);
+  const isActive = isNavOptionActive(linkTo, currentPath);
 
   return (
     <s.BottomNavOption>
@@ -24,7 +23,7 @@ export default function BottomNavOption({
         aria-haspopup={ariaHasPopup}
         aria-label={ariaLabel}
       >
-        {notification}
+        {notification && React.cloneElement(notification, { isActive })}
         <s.IconSpan $isActive={isActive}>{icon}</s.IconSpan>
         {text}
       </Component>
