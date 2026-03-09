@@ -361,7 +361,7 @@ export default function TodayAudio({ setShowTabs }) {
           minHeight: "400px",
         }}
       >
-        <LoadingAnimation delay={0} reportIssueDelay={60000}>
+        <LoadingAnimation delay={0} showReportIssue={false}>
           <p style={{ marginBottom: "15px" }}>{progressMessage}</p>
           {generationProgress && progressPercent > 0 && (
             <div
