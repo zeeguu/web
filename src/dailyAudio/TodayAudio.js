@@ -302,12 +302,12 @@ export default function TodayAudio({ setShowTabs }) {
         let errorMsg;
         if (error.message && error.message.toLowerCase().includes("not enough words")) {
           errorMsg = "Not enough words in learning to generate a lesson. Need at least 2 words that were not in audio lessons before";
+          // Only cache permanent errors — not transient network failures
+          localStorage.setItem(failedKey, errorMsg);
         } else {
           errorMsg = error.message || "Failed to generate daily lesson. Please try again.";
         }
         setError(errorMsg);
-        // Remember failure so refresh doesn't retry and show loading again
-        localStorage.setItem(failedKey, errorMsg);
       },
     );
   };
