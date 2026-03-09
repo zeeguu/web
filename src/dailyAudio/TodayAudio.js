@@ -361,6 +361,7 @@ export default function TodayAudio({ setShowTabs }) {
           minHeight: "400px",
         }}
       >
+        <h2 style={{ color: zeeguuOrange, marginBottom: "20px" }}>Generating Personalized Audio Lesson</h2>
         <LoadingAnimation delay={0} showReportIssue={false}>
           <p style={{ marginBottom: "15px" }}>{progressMessage}</p>
           {generationProgress && progressPercent > 0 && (
