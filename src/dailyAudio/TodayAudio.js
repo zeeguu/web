@@ -167,7 +167,7 @@ export default function TodayAudio({ setShowTabs }) {
   // Check if lesson generation is possible
   const checkLessonGenerationFeasibility = () => {
     // If generation already failed this session, don't retry on refresh
-    const previousError = sessionStorage.getItem(failedKey);
+    const previousError = localStorage.getItem(failedKey);
     if (previousError) {
       setCanGenerateLesson(false);
       setError(previousError);
@@ -275,7 +275,7 @@ export default function TodayAudio({ setShowTabs }) {
         }
         // Existing lesson returned directly
         localStorage.removeItem(generatingKey);
-        sessionStorage.removeItem(failedKey);
+        localStorage.removeItem(failedKey);
         setIsGenerating(false);
         setGenerationProgress(null);
         setLessonData(data);
@@ -307,7 +307,7 @@ export default function TodayAudio({ setShowTabs }) {
         }
         setError(errorMsg);
         // Remember failure so refresh doesn't retry and show loading again
-        sessionStorage.setItem(failedKey, errorMsg);
+        localStorage.setItem(failedKey, errorMsg);
       },
     );
   };
