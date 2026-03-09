@@ -397,7 +397,7 @@ export default function TodayAudio({ setShowTabs }) {
     if (canGenerateLesson === false) {
       return (
         <EmptyState
-          message="You need more words in your learning vocabulary to generate an audio lesson. Try reading more articles and translating words first."
+          message={error || "You need more words in your learning vocabulary to generate an audio lesson. Try reading more articles and translating words first."}
         />
       );
     }
