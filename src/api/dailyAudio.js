@@ -1,5 +1,6 @@
 import { Zeeguu_API } from "./classDef";
 import { AUDIO_STATUS } from "../dailyAudio/AudioLessonConstants";
+import * as Sentry from "@sentry/react";
 
 function getTimezoneOffsetMinutes() {
   return new Date().getTimezoneOffset() * -1;
@@ -32,9 +33,9 @@ Zeeguu_API.prototype.getTodaysLesson = function (callback, onError) {
       }
     })
     .catch((error) => {
-      // Don't log expected "no lesson" errors
       if (!error.message.includes("No lesson generated yet today")) {
         console.error("Error getting today's lesson:", error);
+        Sentry.captureException(error, { tags: { endpoint: "get_todays_lesson" } });
       }
       if (onError) {
         onError(error);
@@ -75,6 +76,7 @@ Zeeguu_API.prototype.generateDailyLesson = function (callback, onError) {
     })
     .catch((error) => {
       console.error("Error generating daily lesson:", error);
+      Sentry.captureException(error, { tags: { endpoint: "generate_daily_lesson" } });
       if (onError) {
         onError(error);
       }
@@ -102,6 +104,7 @@ Zeeguu_API.prototype.deleteTodaysLesson = function (callback, onError) {
     })
     .catch((error) => {
       console.error("Error deleting today's lesson:", error);
+      Sentry.captureException(error, { tags: { endpoint: "delete_todays_lesson" } });
       if (onError) {
         onError(error);
       }
@@ -144,6 +147,7 @@ Zeeguu_API.prototype.getPastDailyLessons = function (limit, offset, callback, on
     })
     .catch((error) => {
       console.error("Error getting past daily lessons:", error);
+      Sentry.captureException(error, { tags: { endpoint: "past_daily_lessons" } });
       if (onError) {
         onError(error);
       }
@@ -180,6 +184,7 @@ Zeeguu_API.prototype.updateLessonState = function (lessonId, action, positionSec
     })
     .catch((error) => {
       console.error("Error updating lesson state:", error);
+      Sentry.captureException(error, { tags: { endpoint: "update_lesson_state" } });
       if (onError) {
         onError(error);
       }
