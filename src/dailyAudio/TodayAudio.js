@@ -361,9 +361,11 @@ export default function TodayAudio({ setShowTabs }) {
           minHeight: "400px",
         }}
       >
-        <h2 style={{ color: zeeguuOrange, marginBottom: "20px" }}>Generating Personalized Audio Lesson</h2>
         <LoadingAnimation delay={0} showReportIssue={false}>
-          <p style={{ marginBottom: "15px" }}>{progressMessage}</p>
+          <h2 style={{ color: zeeguuOrange, marginTop: "10px", marginBottom: "5px", fontSize: "18px" }}>
+            Generating Your Audio Lesson
+          </h2>
+          <p style={{ marginBottom: "15px", color: "#666" }}>{progressMessage}</p>
           {generationProgress && progressPercent > 0 && (
             <div
               style={{
@@ -386,8 +388,8 @@ export default function TodayAudio({ setShowTabs }) {
               />
             </div>
           )}
-          <p style={{ fontSize: "12px", color: "#666" }}>
-            Feel free to go away and come back later
+          <p style={{ fontSize: "12px", color: "#999" }}>
+            You can leave this page — your lesson will be ready when you return
           </p>
         </LoadingAnimation>
       </div>
