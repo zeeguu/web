@@ -1,9 +1,10 @@
 import React, { useContext, useEffect, useState } from "react";
-import { orange500, zeeguuOrange } from "../components/colors";
+import { orange500, orange600, orange800, zeeguuOrange } from "../components/colors";
 import { APIContext } from "../contexts/APIContext";
 import { UserContext } from "../contexts/UserContext";
 import LoadingAnimation from "../components/LoadingAnimation";
 import EmptyState from "../components/EmptyState";
+import FullWidthErrorMsg from "../components/FullWidthErrorMsg.sc";
 import CustomAudioPlayer from "../components/CustomAudioPlayer";
 import FeedbackModal from "../components/FeedbackModal";
 import { FEEDBACK_OPTIONS, FEEDBACK_CODES_NAME } from "../components/FeedbackConstants";
@@ -204,7 +205,7 @@ export default function TodayAudio({ setShowTabs }) {
           setIsLoading(false);
           setIsGenerating(true);
           setGenerationProgress(progress);
-          // Update context so navigation dot shows generating state
+              // Update context so navigation dot shows generating state
           setUserDetails((prev) => ({ ...prev, daily_audio_status: AUDIO_STATUS.GENERATING }));
           return;
         }
@@ -313,12 +314,7 @@ export default function TodayAudio({ setShowTabs }) {
     );
   };
 
-  // Auto-generate lesson when feasible and no lesson exists
-  useEffect(() => {
-    if (canGenerateLesson === true && !lessonData && !isGenerating && !isLoading) {
-      handleGenerateLesson();
-    }
-  }, [canGenerateLesson, lessonData, isGenerating, isLoading]);
+  // No auto-generate — user must click the button
 
   if (isLoading) {
     return (
@@ -331,22 +327,21 @@ export default function TodayAudio({ setShowTabs }) {
   }
 
   if (isGenerating) {
-    // Build progress message
-    let progressMessage = "Generating your daily lesson...";
-    let progressPercent = 0;
+    // Build progress detail (e.g., "Word 2/3: Synthesizing man voice")
+    let progressDetail = "Starting...";
+    let progressPercent = 1; // Start at 1% so the bar is visible immediately
 
     if (generationProgress) {
-      // Use message from backend, with simple fallback
-      progressMessage = generationProgress.message || "Processing...";
+      progressDetail = generationProgress.message || "Processing...";
 
-      // Calculate progress percentage
+      // Calculate progress percentage (minimum 1%)
       if (generationProgress.total_words > 0) {
         const wordsCompleted = Math.max(0, generationProgress.current_word - 1);
         let stepsInCurrentWord = 0;
         if (generationProgress.total_steps > 0) {
           stepsInCurrentWord = generationProgress.current_step / generationProgress.total_steps;
         }
-        progressPercent = ((wordsCompleted + stepsInCurrentWord) / generationProgress.total_words) * 100;
+        progressPercent = Math.max(1, ((wordsCompleted + stepsInCurrentWord) / generationProgress.total_words) * 100);
       }
     }
 
@@ -361,37 +356,33 @@ export default function TodayAudio({ setShowTabs }) {
           minHeight: "400px",
         }}
       >
-        <LoadingAnimation delay={0} showReportIssue={false}>
-          <h2 style={{ color: zeeguuOrange, marginTop: "10px", marginBottom: "5px", fontSize: "18px" }}>
-            Generating Your Audio Lesson
-          </h2>
-          <p style={{ marginBottom: "15px", color: "#666" }}>{progressMessage}</p>
-          {generationProgress && progressPercent > 0 && (
-            <div
-              style={{
-                width: "200px",
-                height: "8px",
-                backgroundColor: "#e0e0e0",
-                borderRadius: "4px",
-                overflow: "hidden",
-                marginBottom: "10px",
-              }}
-            >
-              <div
-                style={{
-                  width: `${Math.min(progressPercent, 100)}%`,
-                  height: "100%",
-                  backgroundColor: orange500,
-                  borderRadius: "4px",
-                  transition: "width 0.3s ease-in-out",
-                }}
-              />
-            </div>
-          )}
-          <p style={{ fontSize: "12px", color: "#999" }}>
-            You can leave this page — your lesson will be ready when you return
-          </p>
-        </LoadingAnimation>
+        <h1 style={{ color: orange600, marginBottom: "8px", fontSize: "24px", fontWeight: "700" }}>
+          Generating your daily lesson...
+        </h1>
+        <p style={{ color: "#333", marginBottom: "20px", fontSize: "16px", textAlign: "center" }}>
+          This can take a while. Feel free to browse — you'll find it here when it's ready.
+        </p>
+        <div
+          style={{
+            width: "200px",
+            height: "8px",
+            backgroundColor: "#e0e0e0",
+            borderRadius: "4px",
+            overflow: "hidden",
+            marginBottom: "10px",
+          }}
+        >
+          <div
+            style={{
+              width: `${Math.min(progressPercent, 100)}%`,
+              height: "100%",
+              backgroundColor: orange500,
+              borderRadius: "4px",
+              transition: "width 1s ease-in-out",
+            }}
+          />
+        </div>
+        <p style={{ fontSize: "12px", color: "#999" }}>{progressDetail}</p>
       </div>
     );
   }
@@ -406,11 +397,79 @@ export default function TodayAudio({ setShowTabs }) {
       );
     }
 
-    // Still checking feasibility, or about to auto-trigger generation
+    // Can generate lesson - show the generate button
+    if (canGenerateLesson === true) {
+      return (
+        <div
+          style={{
+            padding: "20px",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            minHeight: "400px",
+          }}
+        >
+          {error && (
+            <FullWidthErrorMsg style={{ marginBottom: "20px", maxWidth: "500px" }}>
+              {error}
+            </FullWidthErrorMsg>
+          )}
+          <button
+            onClick={handleGenerateLesson}
+            style={{
+              width: "150px",
+              height: "150px",
+              borderRadius: "50%",
+              backgroundColor: orange500,
+              color: "white",
+              border: "none",
+              fontSize: "16px",
+              fontWeight: "600",
+              cursor: "pointer",
+              boxShadow: `0px 0.3rem ${orange800}`,
+              transition: "all 0.3s ease-in-out",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              textAlign: "center",
+              lineHeight: "1.2",
+            }}
+            onMouseEnter={(e) => {
+              e.target.style.backgroundColor = orange600;
+            }}
+            onMouseLeave={(e) => {
+              e.target.style.backgroundColor = orange500;
+              e.target.style.boxShadow = `0px 0.3rem ${orange800}`;
+              e.target.style.transform = "translateY(0)";
+            }}
+            onMouseDown={(e) => {
+              e.target.style.boxShadow = "none";
+              e.target.style.transform = "translateY(0.2em)";
+              e.target.style.transition = "all 0.08s ease-in";
+            }}
+            onMouseUp={(e) => {
+              e.target.style.boxShadow = `0px 0.3rem ${orange800}`;
+              e.target.style.transform = "translateY(0)";
+              e.target.style.transition = "all 0.3s ease-in-out";
+            }}
+          >
+            Generate
+            <br />
+            Daily Lesson
+          </button>
+          <p style={{ marginBottom: "20px", textAlign: "center", maxWidth: "500px" }}>
+            Push the button for... an audio lesson for you based on the words you are currently learning.
+          </p>
+        </div>
+      );
+    }
+
+    // Still checking feasibility
     return (
       <div style={{ padding: "20px" }}>
         <LoadingAnimation>
-          <p>Preparing your daily lesson...</p>
+          <p>Checking...</p>
         </LoadingAnimation>
       </div>
     );
