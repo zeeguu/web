@@ -352,20 +352,6 @@ export default function ArticleReader({ teacherArticleID }) {
           </s.ArticleInfoContainer>
           <hr></hr>
 
-          <DevButton
-            confirmMessage="This will delete the tokenization cache and all your bookmarks for this article. Continue?"
-            onClick={() => {
-              api.clearArticleCache(articleID, (result) => {
-                alert(`Cleared cache: ${result.cache_deleted}, bookmarks deleted: ${result.bookmarks_deleted}`);
-                window.location.reload();
-              }, (error) => {
-                alert("Failed to clear cache: " + error);
-              });
-            }}
-          >
-            Re-tokenize (Dev)
-          </DevButton>
-
           {articleInfo.img_url && (
             <s.ArticleImgContainer>
               <s.ArticleImg alt="article image" src={articleInfo.img_url} />
