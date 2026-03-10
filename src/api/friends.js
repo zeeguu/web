@@ -7,23 +7,11 @@ Zeeguu_API.prototype.getFriends = function(callback) {
   });
 }
 
-// Zeeguu_API.prototype.searchNewFriends = function(username, callback) {
-//   this._getJSON(`discover_friends/${username}`, (data) => {
-//     callback(data);
-//   });
-// }
-
 Zeeguu_API.prototype.getFriendRequests = function(callback) {
   this._getJSON(`get_friend_requests`, (data) => {
     callback(data);
   });
 }
-
-// Zeeguu_API.prototype.getPendingFriendRequests = function(callback) {
-//   return this._getJSON("/get_pending_friend_requests" , (data) => {
-//     callback(data);
-//   } );
-// }
 
 Zeeguu_API.prototype.searchUsers = function(username, callback) {
   this._getJSON(`search_users/${username}`, (data) => {
