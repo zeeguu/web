@@ -150,83 +150,105 @@ function Friends() {
       });
   };
 
+  const handleResetSearch = () => {
+    setPendingSearch("");
+    setNewFriendResults([]);
+    setNewFriendError(null);
+  };
+
   return (
-      <CenteredContainer>
-          <h1>Friends</h1>
-          {loading && <p>Loading friends...</p>}
-          {error && <p style={{ color: "red" }}>{error}</p>}
-          {!loading && friends.length === 0 && <p>You have no friends yet.</p>}
-          {!loading && friends.length > 0 && (
-            <ul>
-              {friends.map((friend) => (
-                <li key={friend.id} style={{ display: "flex", alignItems: "center", gap: "0.5em" }}>
-                  <span role="img" aria-label="friend" style={{ fontSize: "1.5em" }}>👤</span>
-                  <span>{friend.name}</span>
-                  <span style={{ color: "gray", marginLeft: "0.5em" }}>@{friend.username}</span>
-                  <button
-                    style={{ marginLeft: "1em", padding: "0.3em 0.8em", borderRadius: "4px", border: "1px solid #ccc", background: "#ffe0e0", cursor: "pointer" }}
-                    onClick={() => handleUnfriend(friend.id)}
-                  >
-                    Unfriend
-                  </button>
-                </li>
-              ))}
-            </ul>
-          )}
-          <hr style={{ margin: "2em 0", width: "100%" }} />
-          <h2>Find New Friends</h2>
-          <SearchBar
-            value={pendingSearch}
-            onChange={e => setPendingSearch(e.target.value)}
-            placeholder="Search for new friends..."
-            onSearch={handleNewFriendSearch}
-          />
+    <CenteredContainer>
+      <h1>Friends</h1>
+      {loading && <p>Loading friends...</p>}
+      {error && <p style={{ color: "red" }}>{error}</p>}
+      {!loading && friends.length === 0 && <p>You have no friends yet.</p>}
+      {!loading && friends.length > 0 && (
+        <ul>
+          {friends.map((friend) => (
+            <li key={friend.id} style={{ display: "flex", alignItems: "center", gap: "0.5em" }}>
+              <span role="img" aria-label="friend" style={{ fontSize: "1.5em" }}>👤</span>
+              <span>{friend.name}</span>
+              <span style={{ color: "gray", marginLeft: "0.5em" }}>@{friend.username}</span>
+              <button
+                style={{ marginLeft: "1em", padding: "0.3em 0.8em", borderRadius: "4px", border: "1px solid #ccc", background: "#ffe0e0", cursor: "pointer" }}
+                onClick={() => handleUnfriend(friend.id)}
+              >
+                Unfriend
+              </button>
+            </li>
+          ))}
+        </ul>
+      )}
+      <hr style={{ margin: "2em 0", width: "100%" }} />
+      <h2>Find New Friends</h2>
+      <div style={{ display: "flex", alignItems: "center", gap: "1em" }}>
+        <SearchBar
+          value={pendingSearch}
+          onChange={e => setPendingSearch(e.target.value)}
+          placeholder="Search for new friends..."
+          onSearch={handleNewFriendSearch}
+        />
+        <button
+          style={{ padding: "0.3em 0.8em", borderRadius: "4px", border: "1px solid #ccc", background: "#f5f5f5", cursor: "pointer" }}
+          onClick={handleResetSearch}
+          disabled={!pendingSearch && newFriendResults.length === 0 && !newFriendError}
+        >
+          Reset Search
+        </button>
+      </div>
           {searchingNewFriends && <p>Searching...</p>}
           {newFriendError && <p style={{ color: "red" }}>{newFriendError}</p>}
           {pendingSearch && !searchingNewFriends && newFriendResults.length === 0 && <p>Press Enter to search...</p>}
           {newFriendResults.length > 0 && (
             <ul>
               {newFriendResults.map((result) => {
-                const { user, friendship, friend_request } = result;
-                let statusLabel = null;
-                let button = null;
-                if (friendship) {
-                  statusLabel = <span style={{ color: 'green', marginLeft: '1em' }}>Already friends</span>;
-                } else if (friend_request) {
-                  if (friend_request.status === 'pending') {
-                    if (friend_request.sender_id === user.id) {
-                      statusLabel = <span style={{ color: 'orange', marginLeft: '1em' }}>They sent you a request</span>;
-                    } else {
-                      statusLabel = <span style={{ color: 'orange', marginLeft: '1em' }}>Request sent</span>;
-                    }
-                  } else if (friend_request.status === 'accepted') {
+                  const { user, friendship, friend_request } = result;
+                  let statusLabel = null;
+                  let button = null;
+                  if (friendship) {
                     statusLabel = <span style={{ color: 'green', marginLeft: '1em' }}>Already friends</span>;
+                  } else if (friend_request) {
+                    if (friend_request.status === 'pending') {
+                      if (friend_request.sender_id === user.id) {
+                        statusLabel = <span style={{ color: 'orange', marginLeft: '1em' }}>They sent you a request</span>;
+                      } else {
+                        button = (
+                          <button
+                            style={{ marginLeft: "1em", padding: "0.3em 0.8em", borderRadius: "4px", border: "1px solid #ccc", background: "#ffe0e0", cursor: "pointer" }}
+                            onClick={() => handleCancelFriendRequest(user.id)}
+                          >
+                            Cancel Request
+                          </button>
+                        );
+                      }
+                    } else if (friend_request.status === 'accepted') {
+                      statusLabel = <span style={{ color: 'green', marginLeft: '1em' }}>Already friends</span>;
+                    }
+                  } else {
+                    button = (
+                      <button
+                        style={{ marginLeft: "1em", padding: "0.3em 0.8em", borderRadius: "4px", border: "1px solid #ccc", background: "#e0f7fa", cursor: "pointer" }}
+                        onClick={() => handleSendFriendRequest(user.id)}
+                        disabled={sendingRequestId === user.id || sentRequests.includes(user.id)}
+                      >
+                        {sentRequests.includes(user.id)
+                          ? "Sent"
+                          : sendingRequestId === user.id
+                          ? "Sending..."
+                          : "Send Friend Request"}
+                      </button>
+                    );
                   }
-                } else {
-                  button = (
-                    <button
-                      style={{ marginLeft: "1em", padding: "0.3em 0.8em", borderRadius: "4px", border: "1px solid #ccc", background: "#e0f7fa", cursor: "pointer" }}
-                      onClick={() => handleSendFriendRequest(user.id)}
-                      disabled={sendingRequestId === user.id || sentRequests.includes(user.id)}
-                    >
-                      {sentRequests.includes(user.id)
-                        ? "Sent"
-                        : sendingRequestId === user.id
-                        ? "Sending..."
-                        : "Send Friend Request"}
-                    </button>
+                  return (
+                    <li key={user.id} style={{ display: "flex", alignItems: "center", gap: "0.5em" }}>
+                      <span role="img" aria-label="user" style={{ fontSize: "1.5em" }}>🧑</span>
+                      <span>{user.name}</span>
+                      <span style={{ color: "gray", marginLeft: "0.5em" }}>@{user.username}</span>
+                      {statusLabel}
+                      {button}
+                    </li>
                   );
-                }
-                return (
-                  <li key={user.id} style={{ display: "flex", alignItems: "center", gap: "0.5em" }}>
-                    <span role="img" aria-label="user" style={{ fontSize: "1.5em" }}>🧑</span>
-                    <span>{user.name}</span>
-                    <span style={{ color: "gray", marginLeft: "0.5em" }}>@{user.username}</span>
-                    {statusLabel}
-                    {button}
-                  </li>
-                );
-              })}
+                })}
             </ul>
           )}
           <hr style={{ margin: "2em 0", width: "100%" }} />
