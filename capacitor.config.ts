@@ -8,7 +8,9 @@ const config: CapacitorConfig = {
     // Allow loading resources from your API
     cleartext: true,
     // This helps with CORS issues in the WebView
-    androidScheme: 'https'
+    androidScheme: 'https',
+    // Set by ios:dev / android:dev scripts for live reload
+    ...(process.env.LIVE_RELOAD_URL ? { url: process.env.LIVE_RELOAD_URL } : {}),
   },
   ios: {
     // Enable Web Inspector for debugging (even in release builds)

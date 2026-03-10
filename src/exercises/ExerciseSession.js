@@ -399,10 +399,6 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
       setFullExerciseProgression(updatedProgression);
       setCurrentBookmarksToStudy(updatedProgression[currentIndex].bookmarks);
       setSelectedExerciseBookmark(updatedBookmark);
-
-      setTimeout(() => {
-        setReload(!reload);
-      }, 100);
     }
   }
 

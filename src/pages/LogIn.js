@@ -40,6 +40,7 @@ export default function LogIn({ handleSuccessfulLogIn }) {
     passwordErrorMsg,
   ] = useFormField("", NonEmptyValidator("Please enter your password."));
   const [errorMessage, setErrorMessage] = useState("");
+  const [isLoggingIn, setIsLoggingIn] = useState(false);
 
   useEffect(() => {
     scrollToTop();
@@ -53,11 +54,21 @@ export default function LogIn({ handleSuccessfulLogIn }) {
     e.preventDefault();
     setErrorMessage("");
     if (!validateRules([validateEmail, validatePassword])) return;
-    api.logIn(email, password, setErrorMessage, (sessionId) => {
-      api.getUserDetails((userInfo) => {
-        handleSuccessfulLogIn(userInfo, sessionId);
-      });
-    });
+    setIsLoggingIn(true);
+    api.logIn(
+      email,
+      password,
+      (err) => {
+        setIsLoggingIn(false);
+        setErrorMessage(err);
+      },
+      (sessionId) => {
+        api.getUserDetails((userInfo) => {
+          setIsLoggingIn(false);
+          handleSuccessfulLogIn(userInfo, sessionId);
+        });
+      },
+    );
   }
 
   return (
@@ -108,8 +119,9 @@ export default function LogIn({ handleSuccessfulLogIn }) {
               type={"submit"}
               className={"full-width-btn"}
               onClick={handleLogIn}
+              disabled={isLoggingIn}
             >
-              {strings.login}
+              {isLoggingIn ? "Logging in..." : strings.login}
             </Button>
           </ButtonContainer>
         </Form>

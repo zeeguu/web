@@ -4,7 +4,7 @@ import { SpeechContext } from "../contexts/SpeechContext";
 import { APIContext } from "../contexts/APIContext";
 import { useFeedbackContext } from "../contexts/FeedbackContext";
 import { NarrowColumn } from "../components/ColumnWidth.sc";
-import { PrivateRouteWithMainNav } from "../PrivateRouteWithMainNav";
+import { PrivateRouteWithLayout } from "../PrivateRouteWithLayout";
 import WordProgressBar from "../exercises/progressBars/WordProgressBar";
 import * as s from "../exercises/Exercises.sc";
 

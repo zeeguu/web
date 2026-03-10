@@ -40,7 +40,7 @@ const TeacherRouter = (props) => (
     <LazyTeacherRouter {...props} />
   </Suspense>
 );
-import { PrivateRouteWithMainNav } from "./PrivateRouteWithMainNav";
+import { PrivateRouteWithLayout } from "./PrivateRouteWithLayout";
 import { PrivateRoute } from "./PrivateRoute";
 import DeleteAccount from "./pages/DeleteAccount/DeleteAccount";
 import SettingsRouter from "./pages/Settings/_SettingsRouter";
@@ -120,38 +120,38 @@ export default function MainAppRouter({ hasExtension, handleSuccessfulLogIn }) {
 
       <PrivateRoute path="/exclude_words" hasExtension={hasExtension} component={ExcludeWords} />
 
-      <PrivateRouteWithMainNav path="/friends" component={Friends} />
-      <PrivateRouteWithMainNav path="/articles" component={ArticlesRouter} />
-      <PrivateRouteWithMainNav path="/swiper" component={Swiper} />
+      <PrivateRouteWithLayout path="/friends" component={Friends} />
+      <PrivateRouteWithLayout path="/articles" component={ArticlesRouter} />
+      <PrivateRouteWithLayout path="/swiper" component={Swiper} />
       <PrivateRoute path="/watch/video" component={VideoPlayer} />
-      <PrivateRouteWithMainNav path="/exercises" component={ExercisesRouter} />
-      <PrivateRouteWithMainNav path="/daily-audio" component={DailyAudioRouter} />
-      <PrivateRouteWithMainNav path="/translate" component={TranslateRouter} />
-      <PrivateRouteWithMainNav path="/my-articles" component={MyArticlesRouter} />
-      <PrivateRouteWithMainNav path="/words" component={WordsRouter} />
-      <PrivateRouteWithMainNav path="/history" component={ReadingHistory} />
-      <PrivateRouteWithMainNav path="/activity-history" component={ActivityRouter} />
-      <PrivateRouteWithMainNav path="/account_settings" component={SettingsRouter} />
-      <PrivateRouteWithMainNav path="/teacher" component={TeacherRouter} />
-      <PrivateRouteWithMainNav path="/read/article" component={ArticleReader} />
+      <PrivateRouteWithLayout path="/exercises" component={ExercisesRouter} />
+      <PrivateRouteWithLayout path="/daily-audio" component={DailyAudioRouter} />
+      <PrivateRouteWithLayout path="/translate" component={TranslateRouter} />
+      <PrivateRouteWithLayout path="/my-articles" component={MyArticlesRouter} />
+      <PrivateRouteWithLayout path="/words" component={WordsRouter} />
+      <PrivateRouteWithLayout path="/history" component={ReadingHistory} />
+      <PrivateRouteWithLayout path="/activity-history" component={ActivityRouter} />
+      <PrivateRouteWithLayout path="/account_settings" component={SettingsRouter} />
+      <PrivateRouteWithLayout path="/teacher" component={TeacherRouter} />
+      <PrivateRouteWithLayout path="/read/article" component={ArticleReader} />
       <Redirect from="/user_dashboard" to="/activity-history/statistics" />
-      <PrivateRouteWithMainNav path="/search" component={ArticlesRouter} />
-      <PrivateRouteWithMainNav
+      <PrivateRouteWithLayout path="/search" component={ArticlesRouter} />
+      <PrivateRouteWithLayout
         path="/articleWordReview/:articleID"
         component={ExercisesForArticle}
         source={WEB_READER}
       />
-      <PrivateRouteWithMainNav path="/exercise/:exerciseType/:bookmarkId" component={IndividualExercise} />
-      <PrivateRouteWithMainNav path="/exercise-test/:exerciseType/:bookmarkId" component={IndividualExercise} />
-      <PrivateRouteWithMainNav
+      <PrivateRouteWithLayout path="/exercise/:exerciseType/:bookmarkId" component={IndividualExercise} />
+      <PrivateRouteWithLayout path="/exercise-test/:exerciseType/:bookmarkId" component={IndividualExercise} />
+      <PrivateRouteWithLayout
         path="/exercise-test/:exerciseType/:word/:translation/:context/:tokenized"
         component={IndividualExercise}
       />
-      <PrivateRouteWithMainNav
+      <PrivateRouteWithLayout
         path="/exercise-test/:exerciseType/:word/:translation/:context"
         component={IndividualExercise}
       />
-      <PrivateRouteWithMainNav path="/exercise-test" component={IndividualExercise} />
+      <PrivateRouteWithLayout path="/exercise-test" component={IndividualExercise} />
       <Route path="/keyboard-test" component={KeyboardTest} />
       <Route path="*" component={NotFound} />
     </Switch>

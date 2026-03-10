@@ -15,6 +15,8 @@ export default function ToolbarButtons({
   setPronouncing,
   showMweHints,
   setShowMweHints,
+  showReadingTimer,
+  setShowReadingTimer,
 }) {
   const [showOptions, setShowOptions] = useState(false);
   const menuRef = useRef(null);
@@ -35,15 +37,13 @@ export default function ToolbarButtons({
 
   return (
     <div ref={menuRef} style={{ position: "relative", display: "inline-block" }}>
-      <SettingsRoundedIcon
-        style={{
-          fontSize: "1.4em",
-          cursor: "pointer",
-          color: "#999"
-        }}
-        title="Click word options"
+      <div
         onClick={() => setShowOptions(!showOptions)}
-      />
+        title="Click word options"
+        style={{ padding: "0.5rem", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}
+      >
+        <SettingsRoundedIcon style={{ fontSize: "1.4em", color: "#999" }} />
+      </div>
 
       {showOptions && (
         <div style={{
@@ -60,7 +60,7 @@ export default function ToolbarButtons({
         }}>
           <ThemeProvider theme={t}>
             <FormGroup>
-              <FormHelperText>{<small>{"Click word(s) to:"}</small>}</FormHelperText>
+              <FormHelperText>{"Click word(s) to:"}</FormHelperText>
               <FormControlLabel
                 checked={translating}
                 control={
@@ -69,7 +69,7 @@ export default function ToolbarButtons({
                   />
                 }
                 className={translating ? "selected" : ""}
-                label={<small>{"See translation"}</small>}
+                label={"See translation"}
               />
               <FormControlLabel
                 checked={pronouncing}
@@ -79,9 +79,19 @@ export default function ToolbarButtons({
                   />
                 }
                 className={pronouncing ? "selected" : ""}
-                label={<small>{"Hear pronunciation"}</small>}
+                label={"Hear pronunciation"}
               />
-              <FormHelperText style={{ marginTop: "0.5rem" }}>{<small>{"Debug:"}</small>}</FormHelperText>
+              <FormControlLabel
+                checked={showReadingTimer}
+                control={
+                  <Android12Switch
+                    onClick={(e) => toggle(showReadingTimer, setShowReadingTimer)}
+                  />
+                }
+                className={showReadingTimer ? "selected" : ""}
+                label={"Show reading timer"}
+              />
+              <FormHelperText style={{ marginTop: "0.5rem" }}>{<small>{"Experimental:"}</small>}</FormHelperText>
               <FormControlLabel
                 checked={showMweHints}
                 control={
@@ -90,7 +100,7 @@ export default function ToolbarButtons({
                   />
                 }
                 className={showMweHints ? "selected" : ""}
-                label={<small>{"Show MWE hints"}</small>}
+                label={"Show multi-word expressions hints"}
               />
             </FormGroup>
           </ThemeProvider>

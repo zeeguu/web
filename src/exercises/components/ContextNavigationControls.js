@@ -2,8 +2,6 @@ import { useState, useContext, useEffect, useCallback } from "react";
 import { useSwipeable } from "react-swipeable";
 import { APIContext } from "../../contexts/APIContext";
 import { toast } from "react-toastify";
-import ArrowBackRoundedIcon from "@mui/icons-material/ArrowBackRounded";
-import ArrowForwardRoundedIcon from "@mui/icons-material/ArrowForwardRounded";
 import * as s from "./ContextNavigationControls.sc";
 
 export default function ContextNavigationControls({
@@ -18,6 +16,18 @@ export default function ContextNavigationControls({
   const [isLoading, setIsLoading] = useState(false);
   const [hasFetched, setHasFetched] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
+  const [slideDirection, setSlideDirection] = useState(null); // 'left' or 'right'
+  const [isExiting, setIsExiting] = useState(false);
+  const [isEntering, setIsEntering] = useState(false);
+
+  // Transition from exiting to entering when isSaving becomes false.
+  // isSaving is set to false in the finally block of selectContext after the API call.
+  useEffect(() => {
+    if (!isSaving && isExiting) {
+      setIsExiting(false);
+      setIsEntering(true);
+    }
+  }, [isSaving, isExiting]);
 
   // Fetch contexts eagerly on mount
   useEffect(() => {
@@ -147,16 +157,22 @@ export default function ContextNavigationControls({
     }
   };
 
-  const handlePrevious = useCallback(() => {
-    if (isSaving || currentIndex <= 0) return;
-    const newIndex = currentIndex - 1;
+  // Go to next example (swipe left / button click)
+  const handleNext = useCallback(() => {
+    if (isSaving || contexts.length <= 1) return;
+    setSlideDirection('left');
+    setIsExiting(true);
+    const newIndex = (currentIndex + 1) % contexts.length;
     setCurrentIndex(newIndex);
     selectContext(contexts[newIndex]);
   }, [isSaving, currentIndex, contexts]);
 
-  const handleNext = useCallback(() => {
-    if (isSaving || currentIndex >= contexts.length - 1) return;
-    const newIndex = currentIndex + 1;
+  // Go to previous example (swipe right)
+  const handlePrevious = useCallback(() => {
+    if (isSaving || contexts.length <= 1) return;
+    setSlideDirection('right');
+    setIsExiting(true);
+    const newIndex = (currentIndex - 1 + contexts.length) % contexts.length;
     setCurrentIndex(newIndex);
     selectContext(contexts[newIndex]);
   }, [isSaving, currentIndex, contexts]);
@@ -164,9 +180,6 @@ export default function ContextNavigationControls({
   if (!onExampleUpdated) return null;
 
   const hasMultipleContexts = contexts.length > 1;
-  const canGoPrevious = currentIndex > 0;
-  const canGoNext = currentIndex < contexts.length - 1;
-  const currentContext = contexts[currentIndex];
 
   // Keyboard arrow navigation for desktop
   useEffect(() => {
@@ -176,63 +189,56 @@ export default function ContextNavigationControls({
       // Don't interfere with input fields
       if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
 
-      if (e.key === 'ArrowLeft' && canGoPrevious) {
-        e.preventDefault();
-        handlePrevious();
-      } else if (e.key === 'ArrowRight' && canGoNext) {
+      if (e.key === 'ArrowRight') {
         e.preventDefault();
         handleNext();
+      } else if (e.key === 'ArrowLeft') {
+        e.preventDefault();
+        handlePrevious();
       }
     };
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [hasMultipleContexts, canGoPrevious, canGoNext, handlePrevious, handleNext]);
+  }, [hasMultipleContexts, handleNext, handlePrevious]);
 
   // Swipe handlers for mobile navigation
   const swipeHandlers = useSwipeable({
-    onSwipedLeft: () => hasMultipleContexts && canGoNext && handleNext(),
-    onSwipedRight: () => hasMultipleContexts && canGoPrevious && handlePrevious(),
+    onSwipedLeft: () => hasMultipleContexts && handleNext(),
+    onSwipedRight: () => hasMultipleContexts && handlePrevious(),
     trackMouse: false,
     preventScrollOnSwipe: true,
     delta: 50, // minimum swipe distance
   });
 
   return (
-    <div>
+    <s.SlideContainer>
+      {/* Left arrow */}
+      {hasMultipleContexts && (
+        <s.NavArrow onClick={handlePrevious} disabled={isSaving}>
+          ‹
+        </s.NavArrow>
+      )}
+
       {/* Swipeable content area */}
       {children && (
-        <div {...swipeHandlers} style={{ touchAction: "pan-y" }}>
+        <s.SlideContent
+          {...swipeHandlers}
+          $exiting={isExiting}
+          $entering={isEntering}
+          $direction={slideDirection}
+          onAnimationEnd={() => setIsEntering(false)}
+        >
           {children}
-        </div>
+        </s.SlideContent>
       )}
 
-      {/* Navigation controls */}
+      {/* Right arrow */}
       {hasMultipleContexts && (
-        <s.NavigationContainer>
-          <s.ArrowsContainer>
-            <s.ArrowButton
-              onClick={handlePrevious}
-              disabled={!canGoPrevious || isSaving}
-              title="Previous example"
-            >
-              <ArrowBackRoundedIcon fontSize="inherit" />
-            </s.ArrowButton>
-
-            <s.ContextIndicator>
-              {currentIndex + 1}/{contexts.length}
-            </s.ContextIndicator>
-
-            <s.ArrowButton
-              onClick={handleNext}
-              disabled={!canGoNext || isSaving}
-              title="Next example"
-            >
-              <ArrowForwardRoundedIcon fontSize="inherit" />
-            </s.ArrowButton>
-          </s.ArrowsContainer>
-        </s.NavigationContainer>
+        <s.NavArrow onClick={handleNext} disabled={isSaving}>
+          ›
+        </s.NavArrow>
       )}
-    </div>
+    </s.SlideContainer>
   );
 }

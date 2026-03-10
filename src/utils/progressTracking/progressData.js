@@ -17,7 +17,7 @@ export function getTotalMinutesRead(totalReadingMinutes){
         afterText: (totalMinutesRead === 1 ? strings.articlesReadTotalTextEndSingle : strings.articlesReadTotalTextEnd) + (totalMinutesRead>0 ? " " + strings.positiveFeedbackMsg1 : ""),
         modal: {
             linkText: "See reading and practice stats",
-            linkTo: "user_dashboard?tab=time",
+            linkTo: "/user_dashboard?tab=time",
             size: 90,
             unit: "minutes"
         }
@@ -35,7 +35,7 @@ export function getTotalMinutesRead(totalReadingMinutes){
         afterText: (totalTranslatedWords === 1 ? strings.wordsTextWeeklyEndSingle : strings.wordsTextTotalEnd) + (totalTranslatedWords>0 ? " " + strings.positiveFeedbackMsg2 : ""),
         modal: {
             linkText: "See all translated words",
-            linkTo: "history",
+            linkTo: "/history",
             size: 90,
             unit: "",
         }
@@ -53,7 +53,7 @@ export function getTotalWordsPracticed(totalInLearning, totalLearned){
         afterText: (totalPracticedWords === 1 ? strings.wordsTextTotalEndSingle : strings.wordsTextTotalEnd) + (totalPracticedWords>0 ? " " + strings.positiveFeedbackMsg3 : ""),
         modal: {
             linkText: "See your word learning progress",
-            linkTo: "words",
+            linkTo: "/words",
             size: 90,
             unit: "",
         }
@@ -71,7 +71,7 @@ export function getTotalWordsLearned(totalLearned){
         afterText: (totalLearnedWords === 1 ? strings.wordsTextTotalEndSingle : strings.wordsTextTotalEnd) + (totalLearnedWords>0 ? " " + strings.positiveFeedbackMsg4 : ""),
         modal: {
             linkText: "See your learned words",
-            linkTo: "words/learned",
+            linkTo: "/words/learned",
             size: 90,
             unit: "",
         }
@@ -89,7 +89,7 @@ export function getTotalWordsLearned(totalLearned){
         afterText: (weeklyMinutesRead === 1 ? strings.articlesReadWeeklyTextEndSingle : strings.articlesReadWeeklyTextEnd) + (weeklyMinutesRead>0 ? " " + strings.positiveFeedbackMsg1 : ""),
         modal: {
             linkText: "See reading and practice stats",
-            linkTo: "user_dashboard?tab=time",
+            linkTo: "/user_dashboard?tab=time",
             size: 90,
             unit: "minutes",
         }
@@ -107,7 +107,7 @@ export function getTotalWordsLearned(totalLearned){
         afterText: (weeklyWordsTranslated === 1 ? strings.wordsTextWeeklyEndSingle : strings.wordsTextWeeklyEnd) + (weeklyWordsTranslated>0 ? " " + strings.positiveFeedbackMsg2 : ""),
         modal: {
             linkText: "See all translated words",
-            linkTo: "history",
+            linkTo: "/history",
             size: 90,
             unit: "",
         }
@@ -126,7 +126,7 @@ export function getTotalWordsLearned(totalLearned){
         afterText: (dailyStreak === 1 ? strings.streakTextEndSingle : strings.streakTextEnd) + (dailyStreak>0 ? " " + strings.positiveFeedbackMsg3 : ""),
         modal: {
             linkText: "See reading and practice stats",
-            linkTo: "user_dashboard?tab=time",
+            linkTo: "/user_dashboard?tab=time",
             size: 90,
             unit: "days",
         }
@@ -144,7 +144,7 @@ export function getTotalWordsLearned(totalLearned){
         afterText: (exerciseCount === 1 ? strings.exercisesTextEndSingle : strings.exercisesTextEnd) + (exerciseCount > 0 ? " " + strings.positiveFeedbackMsg4 : ""),
         modal: {
             linkText: "See your word learning progress",
-            linkTo: "words",
+            linkTo: "/words",
             size: 90,
             unit: "",
         }
