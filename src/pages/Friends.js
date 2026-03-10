@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useContext } from "react";
+import { toast } from "react-toastify";
 import MainNavWithComponent from "../MainNavWithComponent";
 import CenteredContainer from "../components/CenteredContainer";
 import { APIContext } from "../contexts/APIContext";
@@ -47,18 +48,19 @@ function Friends() {
     );
   }, [api]);
 
-  useEffect(() => {
-    api.getPendingFriendRequests(
-      (data) => {
-        setPendingRequests(data);
-        setLoadingPending(false);
-      },
-      (err) => {
-        setErrorPending("Failed to fetch sent friend requests");
-        setLoadingPending(false);
-      }
-    );
-  }, [api]);
+  // For now we don't show sent friend requests
+  // useEffect(() => {
+  //   api.getPendingFriendRequests(
+  //     (data) => {
+  //       setPendingRequests(data);
+  //       setLoadingPending(false);
+  //     },
+  //     (err) => {
+  //       setErrorPending("Failed to fetch sent friend requests");
+  //       setLoadingPending(false);
+  //     }
+  //   );
+  // }, [api]);
 
   const handleNewFriendSearch = () => {
     if (pendingSearch.trim().length < 2) {
@@ -68,7 +70,7 @@ function Friends() {
     }
     setSearchingNewFriends(true);
     setNewFriendError(null);
-    api.searchNewFriends(pendingSearch,
+    api.searchUsers(pendingSearch,
       (results) => {
         setNewFriendResults(results);
         setSearchingNewFriends(false);
@@ -90,20 +92,19 @@ function Friends() {
           setSentRequests((prev) => [...prev, receiver_id]);
         } else {
           response.json().then((json) => {
-            alert(json.error || "Failed to send friend request.");
+            toast.error(json.error || "Failed to send friend request.");
           });
         }
       })
       .catch(() => {
         setSendingRequestId(null);
-        alert("Failed to send friend request.");
+        toast.error("Failed to send friend request.");
       });
   };
 
   const handleAcceptFriendRequest = (sender_id) => {
     api.acceptFriendRequest(sender_id)
       .then((response) => {
-        console.log("Accept friend request response:", response);
         if (response.status === 200) {
           setAcceptedRequests((prev) => [...prev, sender_id]);
           setFriendRequests((prev) => prev.map((req) =>
@@ -111,28 +112,44 @@ function Friends() {
           ));
         } else {
           response.json().then((json) => {
-            alert(json.message || "Failed to accept friend request.");
+            toast.error(json.message || "Failed to accept friend request.");
           });
         }
       })
       .catch(() => {
-        alert("Failed to accept friend request.");
+        toast.error("Failed to accept friend request.");
+      });
+  };
+
+  const handleRejectFriendRequest = (sender_id) => {
+    api.rejectFriendRequest(sender_id)
+      .then((response) => {
+        if (response.status === 200) {
+          setFriendRequests((prev) => prev.filter((req) => req.sender.id !== sender_id));
+        } else {
+          response.json().then((json) => {
+            toast.error(json.message || "Failed to reject friend request.");
+          });
+        }
+      })
+      .catch(() => {
+        toast.error("Failed to reject friend request.");
       });
   };
 
   const handleUnfriend = (friend_id) => {
     api.unfriend(friend_id)
       .then((response) => {
-        if (response.ok) {
+        if (response.status === 200) {
           setFriends((prev) => prev.filter((friend) => friend.id !== friend_id));
         } else {
           response.json().then((json) => {
-            alert(json.message || "Failed to unfriend user.");
+            toast.error(json.message || "Failed to unfriend user.");
           });
         }
       })
       .catch(() => {
-        alert("Failed to unfriend user.");
+        toast.error("Failed to unfriend user.");
       });
   };
 
@@ -143,12 +160,12 @@ function Friends() {
           setPendingRequests((prev) => prev.filter((req) => req.receiver.id !== receiver_id));
         } else {
           response.json().then((json) => {
-            alert(json.message || "Failed to cancel friend request.");
+            toast.error(json.message || "Failed to cancel friend request.");
           });
         }
       })
       .catch(() => {
-        alert("Failed to cancel friend request.");
+        toast.error("Failed to cancel friend request.");
       });
   };
 
@@ -186,27 +203,50 @@ function Friends() {
         />
         {searchingNewFriends && <p>Searching...</p>}
         {newFriendError && <p style={{ color: "red" }}>{newFriendError}</p>}
-        {pendingSearch && !searchingNewFriends && newFriendResults.length === 0 && <p>No users found.</p>}
+        {pendingSearch && !searchingNewFriends && newFriendResults.length === 0 && <p>Press Enter to search...</p>}
         {newFriendResults.length > 0 && (
           <ul>
-            {newFriendResults.map((user) => (
-              <li key={user.id} style={{ display: "flex", alignItems: "center", gap: "0.5em" }}>
-                <span role="img" aria-label="user" style={{ fontSize: "1.5em" }}>🧑</span>
-                <span>{user.name}</span>
-                <span style={{ color: "gray", marginLeft: "0.5em" }}>@{user.username}</span>
-                <button
-                  style={{ marginLeft: "1em", padding: "0.3em 0.8em", borderRadius: "4px", border: "1px solid #ccc", background: "#e0f7fa", cursor: "pointer" }}
-                  onClick={() => handleSendFriendRequest(user.id)}
-                  disabled={sendingRequestId === user.id || sentRequests.includes(user.id)}
-                >
-                  {sentRequests.includes(user.id)
-                    ? "Sent"
-                    : sendingRequestId === user.id
-                    ? "Sending..."
-                    : "Send Friend Request"}
-                </button>
-              </li>
-            ))}
+            {newFriendResults.map((result) => {
+              const { user, friendship, friend_request } = result;
+              let statusLabel = null;
+              let button = null;
+              if (friendship) {
+                statusLabel = <span style={{ color: 'green', marginLeft: '1em' }}>Already friends</span>;
+              } else if (friend_request) {
+                if (friend_request.status === 'pending') {
+                  if (friend_request.sender_id === user.id) {
+                    statusLabel = <span style={{ color: 'orange', marginLeft: '1em' }}>They sent you a request</span>;
+                  } else {
+                    statusLabel = <span style={{ color: 'orange', marginLeft: '1em' }}>Request sent</span>;
+                  }
+                } else if (friend_request.status === 'accepted') {
+                  statusLabel = <span style={{ color: 'green', marginLeft: '1em' }}>Already friends</span>;
+                }
+              } else {
+                button = (
+                  <button
+                    style={{ marginLeft: "1em", padding: "0.3em 0.8em", borderRadius: "4px", border: "1px solid #ccc", background: "#e0f7fa", cursor: "pointer" }}
+                    onClick={() => handleSendFriendRequest(user.id)}
+                    disabled={sendingRequestId === user.id || sentRequests.includes(user.id)}
+                  >
+                    {sentRequests.includes(user.id)
+                      ? "Sent"
+                      : sendingRequestId === user.id
+                      ? "Sending..."
+                      : "Send Friend Request"}
+                  </button>
+                );
+              }
+              return (
+                <li key={user.id} style={{ display: "flex", alignItems: "center", gap: "0.5em" }}>
+                  <span role="img" aria-label="user" style={{ fontSize: "1.5em" }}>🧑</span>
+                  <span>{user.name}</span>
+                  <span style={{ color: "gray", marginLeft: "0.5em" }}>@{user.username}</span>
+                  {statusLabel}
+                  {button}
+                </li>
+              );
+            })}
           </ul>
         )}
         <hr style={{ margin: "2em 0", width: "100%" }} />
@@ -228,12 +268,20 @@ function Friends() {
                 >
                   {req.accepted || acceptedRequests.includes(req.sender.id) ? "Accepted" : "Accept"}
                 </button>
+                {!req.accepted && !acceptedRequests.includes(req.sender.id) && (
+                  <button
+                    style={{ marginLeft: "0.5em", padding: "0.3em 0.8em", borderRadius: "4px", border: "1px solid #ccc", background: "#ffe0e0", cursor: "pointer" }}
+                    onClick={() => handleRejectFriendRequest(req.sender.id)}
+                  >
+                    Reject
+                  </button>
+                )}
               </li>
             ))}
           </ul>
         )}
         <hr style={{ margin: "2em 0", width: "100%" }} />
-        <h2>Sent Friend Requests</h2>
+        {/* <h2>Sent Friend Requests</h2>
         {loadingPending && <p>Loading sent friend requests...</p>}
         {errorPending && <p style={{ color: "red" }}>{errorPending}</p>}
         {!loadingPending && pendingRequests.length === 0 && <p>No sent friend requests.</p>}
@@ -253,7 +301,7 @@ function Friends() {
               </li>
             ))}
           </ul>
-        )}
+        )} */}
       </CenteredContainer>
     </MainNavWithComponent>
   );
