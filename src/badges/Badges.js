@@ -68,7 +68,7 @@ export default function Badges() {
       {levels.map((level) => (
         <s.BadgeCard key={level.user_badge_level_id} achieved={level.achieved}>
           {!level.is_shown && level.achieved && (
-            <NotificationIcon text="NEW" position="card-corner" />
+            <NotificationIcon text="NEW" position="card-corner" isActive={true} />
           )}
 
           <div className="icon-container">
