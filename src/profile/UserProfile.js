@@ -100,11 +100,13 @@ export default function UserProfile() {
   const [learnedLanguages, setLearnedLanguages] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
   const [editedName, setEditedName] = useState(userDetails?.name || "");
+  const [editedUsername, setEditedUsername] = useState(userDetails?.username || "");
   const [activeTab, setActiveTab] = useState("overview");
 
   useEffect(() => {
     console.log(userDetails);
     setEditedName(userDetails?.name || "");
+    setEditedUsername(userDetails?.username || "");
   }, [userDetails]);
 
   useEffect(() => {
@@ -128,7 +130,15 @@ export default function UserProfile() {
                 type="text"
                 value={editedName}
                 onChange={e => setEditedName(e.target.value)}
-                style={{ marginBottom: "0.5em", fontSize: "1em", padding: "0.4em 1em", borderRadius: "8px", border: "1px solid #ccc" }}
+                placeholder="Full Name"
+                style={{ marginBottom: "0.5em", fontSize: "1em", padding: "0.4em 1em", borderRadius: "8px", border: "1px solid #ccc", display: "block" }}
+              />
+              <input
+                type="text"
+                value={editedUsername}
+                onChange={e => setEditedUsername(e.target.value)}
+                placeholder="Username"
+                style={{ marginBottom: "0.5em", fontSize: "1em", padding: "0.4em 1em", borderRadius: "8px", border: "1px solid #ccc", display: "block" }}
               />
               <button className="edit-btn" onClick={() => setIsEditing(false)} style={{ marginRight: "0.5em" }}>Save</button>
               <button className="edit-btn" onClick={() => setIsEditing(false)} style={{ background: "#eee", color: "#333" }}>Cancel</button>
@@ -141,7 +151,8 @@ export default function UserProfile() {
           <img className="profile-img" src="../static/images/zeeguuLogo.svg" alt="ProfileIcon" />
         </div>
         <div className="profile-info">
-          <div>{userDetails.name}</div>
+          <div><strong>Full Name:</strong> {userDetails.name}</div>
+          <div><strong>Username:</strong> {userDetails.username}</div>
           <div>Languages: </div>
           {learnedLanguages?.map((language) => (
             <DynamicFlagImage key={`user-profile-lang-${language.code}`} languageCode={language.code} />
