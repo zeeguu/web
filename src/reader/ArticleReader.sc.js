@@ -57,6 +57,7 @@ let TopbarButtonsContainer = styled.div`
   flex-direction: row;
   justify-content: space-between;
   margin-bottom: 0;
+  padding: 0.5em;
 `;
 
 let TopReaderButtonsContainer = styled.div`
@@ -111,7 +112,7 @@ const ToolbarWrapper = styled.div`
   top: 0;
   z-index: 1000;
   background-color: var(--bg-primary);
-  padding-top: 1.5rem;
+  padding: 0.4rem 0 0.3rem;
 `;
 
 let Toolbar = styled.div`
@@ -136,14 +137,14 @@ let Toolbar = styled.div`
 
   progress[value] {
     --color: linear-gradient(89.5deg, ${zeeguuOrange}, ${zeeguuLightYellow} 100%); /* the progress color */
-    --background: ${lightGrey}; /* the background color */
+    --background: white; /* invisible until progress fills in */
 
     -webkit-appearance: none;
     -moz-appearance: none;
     appearance: none;
     border: none;
     width: 100%;
-    height: 0.2em;
+    height: 1px;
     border-radius: 10em;
     background: var(--background);
     transition: all 0.1s linear 0s;

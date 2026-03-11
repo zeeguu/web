@@ -10,8 +10,20 @@ const Dot = styled.div`
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  margin-left: -0.5rem;
-  flex-shrink: 0;
+  z-index: 1;
+
+  ${({ $sidebar }) =>
+    $sidebar
+      ? css`
+          position: relative;
+          margin-left: -0.4rem;
+          flex-shrink: 0;
+        `
+      : css`
+          position: absolute;
+          top: 0;
+          left: calc(50% + 0.5rem);
+        `}
 
   ${({ $status, $isActive }) => {
     switch ($status) {
@@ -31,9 +43,9 @@ const Dot = styled.div`
   }}
 `;
 
-export default function DailyAudioNotificationDot({ status, isActive }) {
+export default function DailyAudioNotificationDot({ status, isActive, sidebar }) {
   // Only show for generating (spinner) or ready (new lesson waiting)
   if (!status || status === "completed" || status === "available" || status === "in_progress") return null;
 
-  return <Dot $status={status} $isActive={isActive} />;
+  return <Dot $status={status} $isActive={isActive} $sidebar={sidebar} />;
 }

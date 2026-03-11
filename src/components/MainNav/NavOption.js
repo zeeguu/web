@@ -1,6 +1,7 @@
 import React from "react";
 import * as s from "./NavOption.sc";
 import { isMediumScreenWidth } from "./screenSize";
+import { isNavOptionActive } from "./navigationOptions";
 
 export default function NavOption({
   linkTo,
@@ -16,10 +17,7 @@ export default function NavOption({
   ariaLabel,
 }) {
   const Component = linkTo ? s.RouterLink : s.OptionButton;
-  // Special case: Home should be active for both /articles and /swiper
-  const isActive = linkTo === "/articles" 
-    ? (currentPath?.includes("/articles") || currentPath?.includes("/swiper"))
-    : currentPath?.includes(linkTo);
+  const isActive = isNavOptionActive(linkTo, currentPath);
   const elementTitle = isMediumScreenWidth(screenWidth) ? (title ? title : text) : "";
 
   return (
