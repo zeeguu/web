@@ -34,8 +34,33 @@ import Modal from "../../components/modal_shared/Modal";
 import * as sC from "../../components/modal_shared/Checkbox.sc";
 import * as sI from "../../components/InputField.sc";
 import leoProfanity from "leo-profanity";
+import { remove as removeDiacritics } from "diacritics";
 
 export default function CreateAccount({ handleSuccessfulLogIn }) {
+        // Normalization and profanity check utilities
+        function normalizeUsername(username) {
+          let name = username.toLowerCase();
+          name = name.normalize("NFKD");
+          name = removeDiacritics(name);
+          const leetMap = {
+            "0": "o",
+            "1": "i",
+            "3": "e",
+            "4": "a",
+            "5": "s",
+            "7": "t",
+            "@": "a",
+            "$": "s"
+          };
+          name = name.replace(/[013457@$]/g, c => leetMap[c]);
+          name = name.replace(/[^a-z]/g, "");
+          return name;
+        }
+
+        function isValidUsername(username) {
+          const normalized = normalizeUsername(username);
+          return !leoProfanity.check(normalized);
+        }
       // Ensure leo-profanity dictionary is loaded
       useEffect(() => {
         leoProfanity.loadDictionary();
@@ -225,9 +250,7 @@ export default function CreateAccount({ handleSuccessfulLogIn }) {
               value={name}
               onChange={(e) => {
                 setName(e.target.value);
-                console.log("Profanity check for name:", e.target.value, leoProfanity.check(e.target.value));
-                setProfanityName(leoProfanity.check(e.target.value));
-                // setProfanityNameTouched(false);
+                setProfanityName(!isValidUsername(e.target.value));
               }}
               onBlur={() => setProfanityNameTouched(true)}
               isError={!isNameValid || profanityName}
