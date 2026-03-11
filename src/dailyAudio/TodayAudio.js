@@ -223,12 +223,11 @@ export default function TodayAudio({ setShowTabs }) {
           },
           (error) => {
             setIsLoading(false);
-            setError(error.message);
             setLessonData(null);
             // Reset status on error
             setUserDetails((prev) => ({ ...prev, daily_audio_status: null }));
 
-            // Even on error, check if generation is possible
+            // Don't show technical errors (e.g., "Audio file not found") — just let user regenerate
             checkLessonGenerationFeasibility();
           },
         );
@@ -245,7 +244,6 @@ export default function TodayAudio({ setShowTabs }) {
           },
           (error) => {
             setIsLoading(false);
-            setError(error.message);
             setLessonData(null);
             // Reset status on error
             setUserDetails((prev) => ({ ...prev, daily_audio_status: null }));
@@ -358,7 +356,8 @@ export default function TodayAudio({ setShowTabs }) {
           Generating your daily lesson...
         </h2>
         <p style={{ color: "#333", marginBottom: "20px", fontSize: "16px", textAlign: "center" }}>
-          This can take a while. Feel free to browse — you'll find it here when it's ready.
+          This can take a while.<br />
+          Feel free to browse — you'll find it here when it's ready.
         </p>
         <div
           style={{
@@ -457,7 +456,7 @@ export default function TodayAudio({ setShowTabs }) {
             Daily Lesson
           </button>
           <p style={{ marginBottom: "20px", textAlign: "center", maxWidth: "500px" }}>
-            Push the button for... an audio lesson for you based on the words you are currently learning.
+            Generate a personalized audio lesson based on the words you're learning.
           </p>
         </div>
       );
