@@ -1,10 +1,15 @@
 import { Zeeguu_API } from "./classDef";
+import { AUDIO_STATUS } from "../dailyAudio/AudioLessonConstants";
+import * as Sentry from "@sentry/react";
+
+function getTimezoneOffsetMinutes() {
+  return new Date().getTimezoneOffset() * -1;
+}
 
 Zeeguu_API.prototype.getTodaysLesson = function (callback, onError) {
   this.apiLog("GET get_todays_lesson");
   
-  // Get user's timezone offset in minutes
-  const timezoneOffset = new Date().getTimezoneOffset() * -1; // Flip sign to get offset from UTC
+  const timezoneOffset = getTimezoneOffsetMinutes();
   
   fetch(this._appendSessionToUrl(`get_todays_lesson?timezone_offset=${timezoneOffset}`))
     .then((response) => {
@@ -28,9 +33,9 @@ Zeeguu_API.prototype.getTodaysLesson = function (callback, onError) {
       }
     })
     .catch((error) => {
-      // Don't log expected "no lesson" errors
       if (!error.message.includes("No lesson generated yet today")) {
         console.error("Error getting today's lesson:", error);
+        Sentry.captureException(error, { tags: { endpoint: "get_todays_lesson" } });
       }
       if (onError) {
         onError(error);
@@ -40,12 +45,11 @@ Zeeguu_API.prototype.getTodaysLesson = function (callback, onError) {
 
 Zeeguu_API.prototype.generateDailyLesson = function (callback, onError) {
   this.apiLog("POST generate_daily_lesson");
-  
+
   const formData = new FormData();
-  // Add user's timezone offset
-  const timezoneOffset = new Date().getTimezoneOffset() * -1; // Flip sign to get offset from UTC
+  const timezoneOffset = getTimezoneOffsetMinutes();
   formData.append("timezone_offset", timezoneOffset);
-  
+
   fetch(this._appendSessionToUrl("generate_daily_lesson"), {
     method: "POST",
     body: formData,
@@ -59,8 +63,11 @@ Zeeguu_API.prototype.generateDailyLesson = function (callback, onError) {
       return response.json();
     })
     .then((data) => {
-      if (data.audio_url) {
-        // Convert relative audio URL to full URL with session
+      if (data.status === AUDIO_STATUS.GENERATING) {
+        // Generation started in background — polling will handle the rest
+        callback(data);
+      } else if (data.audio_url) {
+        // Existing lesson returned directly
         const audioUrl = `${this.baseAPIurl}${data.audio_url}?session=${this.session}`;
         callback({ ...data, audio_url: audioUrl });
       } else {
@@ -69,6 +76,7 @@ Zeeguu_API.prototype.generateDailyLesson = function (callback, onError) {
     })
     .catch((error) => {
       console.error("Error generating daily lesson:", error);
+      Sentry.captureException(error, { tags: { endpoint: "generate_daily_lesson" } });
       if (onError) {
         onError(error);
       }
@@ -78,8 +86,7 @@ Zeeguu_API.prototype.generateDailyLesson = function (callback, onError) {
 Zeeguu_API.prototype.deleteTodaysLesson = function (callback, onError) {
   this.apiLog("DELETE delete_todays_lesson");
   
-  // Get user's timezone offset in minutes
-  const timezoneOffset = new Date().getTimezoneOffset() * -1; // Flip sign to get offset from UTC
+  const timezoneOffset = getTimezoneOffsetMinutes();
   
   fetch(this._appendSessionToUrl(`delete_todays_lesson?timezone_offset=${timezoneOffset}`), {
     method: "DELETE",
@@ -97,6 +104,7 @@ Zeeguu_API.prototype.deleteTodaysLesson = function (callback, onError) {
     })
     .catch((error) => {
       console.error("Error deleting today's lesson:", error);
+      Sentry.captureException(error, { tags: { endpoint: "delete_todays_lesson" } });
       if (onError) {
         onError(error);
       }
@@ -111,8 +119,7 @@ Zeeguu_API.prototype.getPastDailyLessons = function (limit, offset, callback, on
   if (limit) params.push(`limit=${limit}`);
   if (offset) params.push(`offset=${offset}`);
   
-  // Add user's timezone offset
-  const timezoneOffset = new Date().getTimezoneOffset() * -1; // Flip sign to get offset from UTC
+  const timezoneOffset = getTimezoneOffsetMinutes();
   params.push(`timezone_offset=${timezoneOffset}`);
   
   if (params.length > 0) {
@@ -140,6 +147,7 @@ Zeeguu_API.prototype.getPastDailyLessons = function (limit, offset, callback, on
     })
     .catch((error) => {
       console.error("Error getting past daily lessons:", error);
+      Sentry.captureException(error, { tags: { endpoint: "past_daily_lessons" } });
       if (onError) {
         onError(error);
       }
@@ -176,6 +184,7 @@ Zeeguu_API.prototype.updateLessonState = function (lessonId, action, positionSec
     })
     .catch((error) => {
       console.error("Error updating lesson state:", error);
+      Sentry.captureException(error, { tags: { endpoint: "update_lesson_state" } });
       if (onError) {
         onError(error);
       }

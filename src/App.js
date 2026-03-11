@@ -14,6 +14,7 @@ import useUILanguage from "./assorted/hooks/uiLanguageHook";
 import ZeeguuSpeech from "./speech/APIBasedSpeech";
 import { SpeechContext } from "./contexts/SpeechContext";
 import { API_ENDPOINT, APP_DOMAIN } from "./appConstants";
+import { AUDIO_STATUS, GENERATION_PROGRESS } from "./dailyAudio/AudioLessonConstants";
 
 import { getSharedSession, removeSharedUserInfo, saveSharedUserInfo, initializeSession } from "./utils/cookies/userInfo";
 import { Capacitor } from "@capacitor/core";
@@ -106,29 +107,28 @@ function App() {
   }, [userDetails]);
 
   // Poll for audio lesson generation progress when status is "generating"
+  // Skip individual ticks when on /daily-audio — TodayAudio handles polling there
   useEffect(() => {
-    if (userDetails?.daily_audio_status !== "generating") return;
+    if (userDetails?.daily_audio_status !== AUDIO_STATUS.GENERATING) return;
 
     const pollInterval = setInterval(() => {
+      if (window.location.pathname.startsWith("/daily-audio")) return;
+
       api.getAudioLessonGenerationProgress(
         (progress) => {
-          if (!progress || progress.status === "done") {
-            // Generation finished - update status
-            setUserDetails((prev) => ({ ...prev, daily_audio_status: "ready" }));
-          } else if (progress.status === "error") {
-            // Generation failed - reset to available
+          if (!progress || progress.status === GENERATION_PROGRESS.DONE) {
+            setUserDetails((prev) => ({ ...prev, daily_audio_status: AUDIO_STATUS.READY }));
+          } else if (progress.status === GENERATION_PROGRESS.ERROR) {
             setUserDetails((prev) => ({ ...prev, daily_audio_status: null }));
           }
-          // Otherwise keep polling
         },
         () => {
-          // API error - check if lesson exists
           api.getTodaysLesson(
             (data) => {
               if (data?.lesson_id) {
                 setUserDetails((prev) => ({
                   ...prev,
-                  daily_audio_status: data.is_completed ? "completed" : "ready",
+                  daily_audio_status: data.is_completed ? AUDIO_STATUS.COMPLETED : AUDIO_STATUS.READY,
                 }));
               }
             },

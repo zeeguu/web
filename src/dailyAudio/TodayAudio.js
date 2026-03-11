@@ -7,9 +7,10 @@ import EmptyState from "../components/EmptyState";
 import FullWidthErrorMsg from "../components/FullWidthErrorMsg.sc";
 import CustomAudioPlayer from "../components/CustomAudioPlayer";
 import FeedbackModal from "../components/FeedbackModal";
-import { FEEDBACK_OPTIONS, FEEDBACK_CODES_NAME, FEEDBACK_CODES } from "../components/FeedbackConstants";
+import { FEEDBACK_OPTIONS, FEEDBACK_CODES_NAME } from "../components/FeedbackConstants";
 import Word from "../words/Word";
 import useListeningSession from "../hooks/useListeningSession";
+import { AUDIO_STATUS, GENERATION_PROGRESS } from "./AudioLessonConstants";
 
 
 export function wordsAsTile(words) {
@@ -24,13 +25,14 @@ export function wordsAsTile(words) {
 export default function TodayAudio({ setShowTabs }) {
   const api = useContext(APIContext);
   const { userDetails, setUserDetails } = useContext(UserContext);
+  const lang = userDetails?.learned_language || "";
   const [isLoading, setIsLoading] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
   const [generationProgress, setGenerationProgress] = useState(null);
 
   // Poll for progress when generating
   useEffect(() => {
-    const generatingKey = `zeeguu_generating_lesson_${new Date().toDateString()}`;
+    const generatingKey = `zeeguu_generating_lesson_${lang}_${new Date().toDateString()}`;
     const hasLocalStorageFlag = localStorage.getItem(generatingKey);
 
     // Start polling if either: localStorage flag is set (page reload) or isGenerating is true (button click/409)
@@ -63,7 +65,7 @@ export default function TodayAudio({ setShowTabs }) {
         stopPolling();
         setLessonData(data);
         // Update context to show lesson is ready
-        setUserDetails((prev) => ({ ...prev, daily_audio_status: data.is_completed ? "completed" : "ready" }));
+        setUserDetails((prev) => ({ ...prev, daily_audio_status: data.is_completed ? AUDIO_STATUS.COMPLETED : AUDIO_STATUS.READY }));
         lessonRetryCount = 0;
       } else if (data && data.error) {
         // Lesson exists but has an error (e.g., audio file not ready yet)
@@ -92,9 +94,9 @@ export default function TodayAudio({ setShowTabs }) {
           if (progress) {
             setGenerationProgress(progress);
 
-            if (progress.status === "done") {
+            if (progress.status === GENERATION_PROGRESS.DONE) {
               checkForLesson();
-            } else if (progress.status === "error") {
+            } else if (progress.status === GENERATION_PROGRESS.ERROR) {
               handleError(progress.message || "Lesson generation failed. Please try again.");
             }
           } else {
@@ -156,15 +158,24 @@ export default function TodayAudio({ setShowTabs }) {
       
       // Initialize playback time from lesson data
       const initialTime = lessonData.pause_position_seconds || lessonData.position_seconds || lessonData.progress_seconds || 0;
-      console.log('Setting initial playback time:', initialTime);
       setCurrentPlaybackTime(initialTime);
     } else {
       document.title = "Zeeguu: Audio Lesson";
     }
   }, [lessonData]);
 
+  const failedKey = `zeeguu_generation_failed_${lang}_${new Date().toDateString()}`;
+
   // Check if lesson generation is possible
   const checkLessonGenerationFeasibility = () => {
+    // If generation already failed this session, don't retry on refresh
+    const previousError = localStorage.getItem(failedKey);
+    if (previousError) {
+      setCanGenerateLesson(false);
+      setError(previousError);
+      return;
+    }
+
     api.checkDailyLessonFeasibility(
       (data) => {
         setCanGenerateLesson(data.feasible);
@@ -189,13 +200,13 @@ export default function TodayAudio({ setShowTabs }) {
     // First, check if there's an active generation in progress
     api.getAudioLessonGenerationProgress(
       (progress) => {
-        if (progress && !["done", "error"].includes(progress.status)) {
+        if (progress && ![GENERATION_PROGRESS.DONE, GENERATION_PROGRESS.ERROR].includes(progress.status)) {
           // Generation in progress - let polling handle it
           setIsLoading(false);
           setIsGenerating(true);
           setGenerationProgress(progress);
           // Update context so navigation dot shows generating state
-          setUserDetails((prev) => ({ ...prev, daily_audio_status: "generating" }));
+          setUserDetails((prev) => ({ ...prev, daily_audio_status: AUDIO_STATUS.GENERATING }));
           return;
         }
 
@@ -212,12 +223,11 @@ export default function TodayAudio({ setShowTabs }) {
           },
           (error) => {
             setIsLoading(false);
-            setError(error.message);
             setLessonData(null);
             // Reset status on error
             setUserDetails((prev) => ({ ...prev, daily_audio_status: null }));
 
-            // Even on error, check if generation is possible
+            // Don't show technical errors (e.g., "Audio file not found") — just let user regenerate
             checkLessonGenerationFeasibility();
           },
         );
@@ -234,7 +244,6 @@ export default function TodayAudio({ setShowTabs }) {
           },
           (error) => {
             setIsLoading(false);
-            setError(error.message);
             setLessonData(null);
             // Reset status on error
             setUserDetails((prev) => ({ ...prev, daily_audio_status: null }));
@@ -246,27 +255,31 @@ export default function TodayAudio({ setShowTabs }) {
   }, [api]);
 
   const handleGenerateLesson = () => {
-    const generatingKey = `zeeguu_generating_lesson_${new Date().toDateString()}`;
+    const generatingKey = `zeeguu_generating_lesson_${lang}_${new Date().toDateString()}`;
 
     setIsGenerating(true);
     setError(null);
     setGenerationProgress(null);
 
     // Update context so navigation dot shows generating state
-    setUserDetails((prev) => ({ ...prev, daily_audio_status: "generating" }));
+    setUserDetails((prev) => ({ ...prev, daily_audio_status: AUDIO_STATUS.GENERATING }));
 
     // Set localStorage flag to track generation across page reloads
     localStorage.setItem(generatingKey, "true");
 
     api.generateDailyLesson(
       (data) => {
-        // Clear the localStorage flag when generation completes
+        if (data.status === AUDIO_STATUS.GENERATING) {
+          // Generation started in background — polling will deliver the lesson
+          return;
+        }
+        // Existing lesson returned directly
         localStorage.removeItem(generatingKey);
+        localStorage.removeItem(failedKey);
         setIsGenerating(false);
         setGenerationProgress(null);
         setLessonData(data);
-        // Update context to reflect lesson is ready
-        setUserDetails((prev) => ({ ...prev, daily_audio_status: "ready" }));
+        setUserDetails((prev) => ({ ...prev, daily_audio_status: AUDIO_STATUS.READY }));
       },
       (error) => {
         // Check if generation is already in progress (409 Conflict)
@@ -283,46 +296,48 @@ export default function TodayAudio({ setShowTabs }) {
         // Reset status back to available on error
         setUserDetails((prev) => ({ ...prev, daily_audio_status: null }));
 
+        setCanGenerateLesson(false);
+
         // Check if the error is related to no words in learning
+        let errorMsg;
         if (error.message && error.message.toLowerCase().includes("not enough words")) {
-          setError(
-            "Not enough words in learning to generate a lesson. Need at least 2 words that were not in audio lessons before",
-          );
+          errorMsg = "Not enough words in learning to generate a lesson. Need at least 2 words that were not in audio lessons before";
+          // Only cache permanent errors — not transient network failures
+          localStorage.setItem(failedKey, errorMsg);
         } else {
-          setError(error.message || "Failed to generate daily lesson. Please try again.");
+          errorMsg = error.message || "Failed to generate daily lesson. Please try again.";
         }
+        setError(errorMsg);
       },
     );
   };
-
 
   if (isLoading) {
     return (
       <div style={{ padding: "20px" }}>
         <LoadingAnimation>
-          <p>Checking for existing lesson...</p>
+          <p>Preparing your daily lesson...</p>
         </LoadingAnimation>
       </div>
     );
   }
 
   if (isGenerating) {
-    // Build progress message
-    let progressMessage = "Generating your daily lesson...";
-    let progressPercent = 0;
+    // Build progress detail (e.g., "Word 2/3: Synthesizing man voice")
+    let progressDetail = "Starting...";
+    let progressPercent = 1; // Start at 1% so the bar is visible immediately
 
     if (generationProgress) {
-      // Use message from backend, with simple fallback
-      progressMessage = generationProgress.message || "Processing...";
+      progressDetail = generationProgress.message || "Processing...";
 
-      // Calculate progress percentage
+      // Calculate progress percentage (minimum 1%)
       if (generationProgress.total_words > 0) {
         const wordsCompleted = Math.max(0, generationProgress.current_word - 1);
         let stepsInCurrentWord = 0;
         if (generationProgress.total_steps > 0) {
           stepsInCurrentWord = generationProgress.current_step / generationProgress.total_steps;
         }
-        progressPercent = ((wordsCompleted + stepsInCurrentWord) / generationProgress.total_words) * 100;
+        progressPercent = Math.max(1, ((wordsCompleted + stepsInCurrentWord) / generationProgress.total_words) * 100);
       }
     }
 
@@ -337,122 +352,122 @@ export default function TodayAudio({ setShowTabs }) {
           minHeight: "400px",
         }}
       >
-        <LoadingAnimation delay={0} reportIssueDelay={60000}>
-          <p style={{ marginBottom: "15px" }}>{progressMessage}</p>
-          {generationProgress && progressPercent > 0 && (
-            <div
-              style={{
-                width: "200px",
-                height: "8px",
-                backgroundColor: "#e0e0e0",
-                borderRadius: "4px",
-                overflow: "hidden",
-                marginBottom: "10px",
-              }}
-            >
-              <div
-                style={{
-                  width: `${Math.min(progressPercent, 100)}%`,
-                  height: "100%",
-                  backgroundColor: orange500,
-                  borderRadius: "4px",
-                  transition: "width 0.3s ease-in-out",
-                }}
-              />
-            </div>
-          )}
-          <p style={{ fontSize: "12px", color: "#666" }}>
-            Feel free to go away and come back later
-          </p>
-        </LoadingAnimation>
+        <h2 style={{ color: zeeguuOrange, marginBottom: "10px" }}>
+          Generating your daily lesson...
+        </h2>
+        <p style={{ color: "#333", marginBottom: "20px", fontSize: "16px", textAlign: "center" }}>
+          This can take a while.<br />
+          Feel free to browse — you'll find it here when it's ready.
+        </p>
+        <div
+          style={{
+            width: "200px",
+            height: "8px",
+            backgroundColor: "#e0e0e0",
+            borderRadius: "4px",
+            overflow: "hidden",
+            marginBottom: "10px",
+          }}
+        >
+          <div
+            style={{
+              width: `${Math.min(progressPercent, 100)}%`,
+              height: "100%",
+              backgroundColor: orange500,
+              borderRadius: "4px",
+              transition: "width 1s ease-in-out",
+            }}
+          />
+        </div>
+        <p style={{ fontSize: "12px", color: "#999" }}>{progressDetail}</p>
       </div>
     );
   }
 
   if (!lessonData) {
-    // Still checking if generation is possible
-    if (canGenerateLesson === null) {
-      return (
-        <div style={{ padding: "20px" }}>
-          <LoadingAnimation>
-            <p>Checking if audio lesson generation is possible...</p>
-          </LoadingAnimation>
-        </div>
-      );
-    }
-
-    // Cannot generate lesson - show error immediately
+    // Cannot generate lesson
     if (canGenerateLesson === false) {
       return (
         <EmptyState
-          message="You need more words in your learning vocabulary to generate an audio lesson. Try reading more articles and translating words first."
+          message={error || "You need more words in your learning vocabulary to generate an audio lesson. Try reading more articles and translating words first."}
         />
       );
     }
 
     // Can generate lesson - show the generate button
-    return (
-      <div
-        style={{
-          padding: "20px",
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          justifyContent: "center",
-          minHeight: "400px",
-        }}
-      >
-        {error && (
-          <FullWidthErrorMsg style={{ marginBottom: "20px", maxWidth: "500px" }}>
-            {error}
-          </FullWidthErrorMsg>
-        )}
-        <button
-          onClick={handleGenerateLesson}
+    if (canGenerateLesson === true) {
+      return (
+        <div
           style={{
-            width: "150px",
-            height: "150px",
-            borderRadius: "50%",
-            backgroundColor: orange500,
-            color: "white",
-            border: "none",
-            fontSize: "16px",
-            fontWeight: "600",
-            cursor: "pointer",
-            boxShadow: `0px 0.3rem ${orange800}`,
-            transition: "all 0.3s ease-in-out",
+            padding: "20px",
             display: "flex",
+            flexDirection: "column",
             alignItems: "center",
             justifyContent: "center",
-            textAlign: "center",
-            lineHeight: "1.2",
-          }}
-          onMouseEnter={(e) => {
-            e.target.style.backgroundColor = orange600;
-          }}
-          onMouseLeave={(e) => {
-            e.target.style.backgroundColor = orange500;
-            e.target.style.boxShadow = `0px 0.3rem ${orange800}`;
-            e.target.style.transform = "translateY(0)";
-          }}
-          onMouseDown={(e) => {
-            e.target.style.boxShadow = "none";
-            e.target.style.transform = "translateY(0.2em)";
-            e.target.style.transition = "all 0.08s ease-in";
-          }}
-          onMouseUp={(e) => {
-            e.target.style.boxShadow = `0px 0.3rem ${orange800}`;
-            e.target.style.transform = "translateY(0)";
-            e.target.style.transition = "all 0.3s ease-in-out";
+            minHeight: "400px",
           }}
         >
-          Generate
-          <br />
-          Daily Lesson
-        </button>
-        <p style={{ marginBottom: "20px", textAlign: "center", maxWidth: "500px" }}>
-          Push the button for... an audio lesson for you based on the words you are currently learning.
-        </p>
+          {error && (
+            <FullWidthErrorMsg style={{ marginBottom: "20px", maxWidth: "500px" }}>
+              {error}
+            </FullWidthErrorMsg>
+          )}
+          <button
+            onClick={handleGenerateLesson}
+            style={{
+              width: "150px",
+              height: "150px",
+              borderRadius: "50%",
+              backgroundColor: orange500,
+              color: "white",
+              border: "none",
+              fontSize: "16px",
+              fontWeight: "600",
+              cursor: "pointer",
+              boxShadow: `0px 0.3rem ${orange800}`,
+              transition: "all 0.3s ease-in-out",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              textAlign: "center",
+              lineHeight: "1.2",
+            }}
+            onMouseEnter={(e) => {
+              e.target.style.backgroundColor = orange600;
+            }}
+            onMouseLeave={(e) => {
+              e.target.style.backgroundColor = orange500;
+              e.target.style.boxShadow = `0px 0.3rem ${orange800}`;
+              e.target.style.transform = "translateY(0)";
+            }}
+            onMouseDown={(e) => {
+              e.target.style.boxShadow = "none";
+              e.target.style.transform = "translateY(0.2em)";
+              e.target.style.transition = "all 0.08s ease-in";
+            }}
+            onMouseUp={(e) => {
+              e.target.style.boxShadow = `0px 0.3rem ${orange800}`;
+              e.target.style.transform = "translateY(0)";
+              e.target.style.transition = "all 0.3s ease-in-out";
+            }}
+          >
+            Generate
+            <br />
+            Daily Lesson
+          </button>
+          <p style={{ marginBottom: "20px", textAlign: "center", maxWidth: "500px" }}>
+            Generate a personalized audio lesson based on the words you're learning.
+          </p>
+        </div>
+      );
+    }
+
+    // Still checking feasibility
+    return (
+      <div style={{ padding: "20px" }}>
+        <LoadingAnimation>
+          <p>Checking...</p>
+        </LoadingAnimation>
       </div>
     );
   }
@@ -486,7 +501,7 @@ export default function TodayAudio({ setShowTabs }) {
               // Start or resume listening session
               listeningSession.start();
               // Update context so navigation dot disappears (in_progress)
-              setUserDetails((prev) => ({ ...prev, daily_audio_status: "in_progress" }));
+              setUserDetails((prev) => ({ ...prev, daily_audio_status: AUDIO_STATUS.IN_PROGRESS }));
             }
           }}
           onPause={() => {
@@ -494,7 +509,6 @@ export default function TodayAudio({ setShowTabs }) {
             listeningSession.pause();
           }}
           onProgressUpdate={(progressSeconds) => {
-            console.log('Updating playback time:', progressSeconds);
             setCurrentPlaybackTime(progressSeconds);
             if (lessonData.lesson_id) {
               // Use pause action to save progress position
@@ -513,20 +527,11 @@ export default function TodayAudio({ setShowTabs }) {
                   completed_at: new Date().toISOString(),
                 }));
                 // Update context so navigation dot disappears
-                setUserDetails((prev) => ({ ...prev, daily_audio_status: "completed" }));
+                setUserDetails((prev) => ({ ...prev, daily_audio_status: AUDIO_STATUS.COMPLETED }));
               });
             }
           }}
-          onError={() => {
-            // If direct URL fails, try fetching as blob
-            fetch(lessonData.audio_url)
-              .then((response) => response.blob())
-              .then((blob) => {
-                const blobUrl = URL.createObjectURL(blob);
-                // Note: Custom player will need to handle blob URLs
-              })
-              .catch((err) => {});
-          }}
+          onError={() => {}}
           style={{
             width: "100%",
             marginBottom: "20px",
@@ -589,12 +594,8 @@ export default function TodayAudio({ setShowTabs }) {
         </div>
 
         <FeedbackModal
-          prefixMsg={lessonData ? 
-            (() => {
-              const prefixMsg = `Daily Audio Lesson - Playback time: ${Math.floor(currentPlaybackTime / 60)}:${(currentPlaybackTime % 60).toFixed(0).padStart(2, '0')} | Lesson ID: ${lessonData.lesson_id} | Words: ${wordsAsTile(lessonData.words)} | Date: ${new Date(lessonData.created_at || Date.now()).toLocaleDateString()}`;
-              console.log('Feedback prefix message:', prefixMsg);
-              return prefixMsg;
-            })()
+          prefixMsg={lessonData
+            ? `Daily Audio Lesson - Playback time: ${Math.floor(currentPlaybackTime / 60)}:${(currentPlaybackTime % 60).toFixed(0).padStart(2, '0')} | Lesson ID: ${lessonData.lesson_id} | Words: ${wordsAsTile(lessonData.words)} | Date: ${new Date(lessonData.created_at || Date.now()).toLocaleDateString()}`
             : "Daily Audio Lesson Feedback"
           }
           open={openFeedback}

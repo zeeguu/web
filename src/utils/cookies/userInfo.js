@@ -95,7 +95,6 @@ function getSharedSession() {
     if (!sessionLoaded) {
       console.warn("getSharedSession called before initializeSession - session may be undefined");
     }
-    console.log("getSharedSession returning:", cachedSession ? "session exists" : "NULL");
     return cachedSession;
   } else {
     return getSharedSessionFromCookies();
