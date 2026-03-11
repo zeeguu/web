@@ -11,8 +11,8 @@ const FullWidthListItem = styled.li`
   flex-direction: row;
   padding: 0.75rem 1rem;
   border-radius: 0.3rem;
-  color: ${veryDarkGrey};
-  background-color: #f6f6f6;
+  color: var(--text-secondary);
+  background-color: var(--bg-secondary);
   font-weight: 600;
   margin: 0;
   flex: 1;
@@ -50,7 +50,7 @@ const ListButton = styled.button`
   background-color: inherit;
 
   &:hover {
-    background-color: #f6f6f6;
+    background-color: var(--bg-secondary);
   }
 `;
 

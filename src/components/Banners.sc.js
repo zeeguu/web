@@ -10,21 +10,21 @@ const BaseBanner = styled.div`
   cursor: pointer;
 `;
 const StreakBannerContainer = styled(BaseBanner)`
-  background: linear-gradient(135deg, #fff8e1, #fff3cd);
-  color: #7a5c00;
-  border-bottom: 1px solid #ffe59e;
+  background: var(--streak-banner-bg);
+  color: var(--streak-banner-text);
+  border-bottom: 1px solid var(--streak-banner-border);
 
   &:hover {
-    background: linear-gradient(135deg, #fff3cd, #ffe59e);
+    background: var(--streak-banner-hover);
   }
 `;
 const DailyFeedbackBannerContainer = styled(BaseBanner)`
-  background: linear-gradient(135deg, #e1f5fe, #b3e5fc);
-  color: #01579b;
-  border-bottom: 1px solid #81d1f6;
+  background: var(--feedback-banner-bg);
+  color: var(--feedback-banner-text);
+  border-bottom: 1px solid var(--feedback-banner-border);
 
   &:hover {
-    background: linear-gradient(135deg, #b3e5fc, #81d4fa);
+    background: var(--feedback-banner-hover);
   }
 
   a {
@@ -47,7 +47,7 @@ const FlagImage = styled.img`
   vertical-align: middle;
   border-radius: 50%;
   object-fit: cover;
-  border: 0.05rem solid #ccc;
+  border: 0.05rem solid var(--border-color);
 `;
 
 export { StreakBannerContainer, StreakValue, StreakLabel, FlagImage, DailyFeedbackBannerContainer };
