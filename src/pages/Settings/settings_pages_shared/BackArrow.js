@@ -1,5 +1,5 @@
 import { useHistory } from "react-router-dom";
-import ArrowBackRoundedIcon from "@mui/icons-material/ArrowBackRounded";
+import ChevronLeftRoundedIcon from "@mui/icons-material/ChevronLeftRounded";
 import * as s from "./BackArrow.sc";
 
 export default function BackArrow({ redirectLink, func }) {
@@ -25,7 +25,7 @@ export default function BackArrow({ redirectLink, func }) {
             : history.goBack()
       }
     >
-      <ArrowBackRoundedIcon /> Back
+      <ChevronLeftRoundedIcon style={{ fontSize: "2rem" }} />
     </s.BackArrow>
   );
 }

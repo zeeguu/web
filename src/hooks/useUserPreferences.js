@@ -6,6 +6,7 @@ const PRONOUNCE_IN_READER = "pronounce_reader";
 const AUDIO_EXERCISES = "audio_exercises";
 const MAX_WORDS_TO_SCHEDULE = "max_words_to_schedule";
 const SHOW_MWE_HINTS = "show_mwe_hints";
+const SHOW_READING_TIMER = "show_reading_timer";
 
 export default function useUserPreferences(api) {
   const [audioExercises, setAudioExercises] = useState(true);
@@ -13,6 +14,7 @@ export default function useUserPreferences(api) {
   const [pronounceInReader, setPronounceInReader] = useState(true);
   const [maxWordsToSchedule, setMaxWordsToSchedule] = useState(15);
   const [showMweHints, setShowMweHints] = useState(false);
+  const [showReadingTimer, setShowReadingTimer] = useState(false);
 
   function _boolPreferenceParse(preferences, key) {
     return preferences[key] === undefined || preferences[key] === "true";
@@ -55,6 +57,13 @@ export default function useUserPreferences(api) {
     });
   }
 
+  function updateShowReadingTimer(value) {
+    setShowReadingTimer(value);
+    api.saveUserPreferences({
+      [SHOW_READING_TIMER]: value,
+    });
+  }
+
   useEffect(() => {
     api.getUserPreferences((preferences) => {
       console.log(preferences);
@@ -63,6 +72,7 @@ export default function useUserPreferences(api) {
       setPronounceInReader(_boolPreferenceParse(preferences, PRONOUNCE_IN_READER));
       setMaxWordsToSchedule(parseInt(preferences[MAX_WORDS_TO_SCHEDULE]));
       setShowMweHints(preferences[SHOW_MWE_HINTS] === "true");
+      setShowReadingTimer(preferences[SHOW_READING_TIMER] === "true");
     });
   }, [api]);
 
@@ -77,5 +87,7 @@ export default function useUserPreferences(api) {
     updateMaxWordsToSchedule,
     showMweHints,
     updateShowMweHints,
+    showReadingTimer,
+    updateShowReadingTimer,
   };
 }

@@ -261,7 +261,6 @@ const TranslatableText = styled.div`
     max-width: 100%;
     font-weight: 600;
     color: ${almostBlack};
-    text-transform: lowercase;
     text-align: left;
     display: flex;
   }

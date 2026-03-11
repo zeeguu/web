@@ -68,6 +68,7 @@ const Exercise = styled.div`
     margin-right: 2em;
     font-weight: 500;
     line-height: 1.4em;
+    min-height: 4.5em; /* Prevent layout jump when example length changes */
   }
 
   .learningCycleIndicator {
@@ -246,7 +247,11 @@ let OrangeButtonMessage = styled(StyledButton)`
 let FeedbackButton = styled(OrangeButton)`
   height: fit-content;
   width: fit-content;
-  outline: none;
+
+  &:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.3);
+  }
 
   &:disabled {
     cursor: default;

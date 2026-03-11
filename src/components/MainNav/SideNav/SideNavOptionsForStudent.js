@@ -26,7 +26,7 @@ export default function SideNavOptionsForStudent({ screenWidth }) {
         currentPath={path}
         screenWidth={screenWidth}
         notification={
-          hasExerciseNotification && <NotificationIcon position={"top-absolute"} text={totalExercisesInPipeline} />
+          hasExerciseNotification && <NotificationIcon position={"top"} text={totalExercisesInPipeline} />
         }
       />
 
@@ -34,7 +34,7 @@ export default function SideNavOptionsForStudent({ screenWidth }) {
         {...NavigationOptions.dailyAudio}
         currentPath={path}
         screenWidth={screenWidth}
-        notification={<DailyAudioNotificationDot status={dailyAudioStatus} />}
+        notification={<DailyAudioNotificationDot status={dailyAudioStatus} sidebar />}
       />
 
       <NavOption {...NavigationOptions.translate} currentPath={path} screenWidth={screenWidth} />

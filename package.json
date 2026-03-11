@@ -105,10 +105,13 @@
     "ext:publish": "npm run ext:publish:chrome && npm run ext:publish:firefox",
     "ext:zipSources": "cd src/extension && zip -FSr zeeguu-reader-source-code.zip . -x 'build/*' 'node_modules/*' 'src/zeeguu-react/node_modules/*' 'src/zeeguu-react/build/*' '.git/*' build.zip '.idea/*'",
     "prebuild": "BROWSERSLIST_IGNORE_OLD_DATA=1 node scripts/update-service-worker-version.js",
+    "mobile:dev": "bash scripts/cap-dev.sh both",
+    "android:dev": "bash scripts/cap-dev.sh android",
     "android:build": "npm run build && npx cap sync android",
     "android:open": "npm run android:build && npx cap open android",
     "android:beta": "npm run android:build && cd android && fastlane beta",
     "android:release": "npm run android:build && cd android && fastlane release",
+    "ios:dev": "bash scripts/cap-dev.sh ios",
     "ios:build": "npm run build && npx cap sync ios",
     "ios:open": "npm run ios:build && npx cap open ios",
     "ios:version": "grep MARKETING_VERSION ios/App/App.xcodeproj/project.pbxproj | head -1 && cd ios/App && agvtool what-version",
@@ -132,17 +135,11 @@
     ]
   },
   "devDependencies": {
-    "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
-    "@babel/plugin-transform-runtime": "^7.17.0",
     "@babel/preset-env": "^7.16.11",
     "@babel/preset-react": "^7.28.5",
     "@vitejs/plugin-react": "^5.1.1",
-    "babel-core": "^6.26.3",
     "babel-loader": "^8.2.3",
-    "babel-plugin-react-require": "^3.1.3",
     "babel-plugin-styled-components": "^2.1.4",
-    "babel-preset-es2015": "^6.24.1",
-    "babel-preset-stage-0": "^6.24.1",
     "jsdom": "^27.0.1",
     "prettier": "3.2.5",
     "svg-inline-loader": "^0.8.2",
@@ -155,6 +152,7 @@
   },
   "overrides": {
     "d3-color": "3.1.0",
-    "nth-check": "2.1.1"
+    "nth-check": "2.1.1",
+    "serialize-javascript": "^7.0.3"
   }
 }

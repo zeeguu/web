@@ -8,7 +8,6 @@ import useShadowRef from "./useShadowRef";
  * 
  * @param {Object} config - Configuration object
  * @param {Object} config.api - The Zeeguu API instance
- * @param {string} config.articleID - The current article ID
  * @param {Object} config.articleInfo - Article information including source_id
  * @param {Function} config.getReadingSessionId - Function to get current reading session ID
  * @param {number} config.sessionDuration - Current session duration in seconds
@@ -27,7 +26,6 @@ import useShadowRef from "./useShadowRef";
  */
 export default function useScrollTracking({
   api,
-  articleID,
   articleInfo,
   getReadingSessionId,
   sessionDuration,
@@ -114,7 +112,7 @@ export default function useScrollTracking({
    */
   const uploadScrollActivity = () => {
     const readingSessionId = getReadingSessionId?.();
-    if (!readingSessionId || !articleID || !articleInfoRef.current) return;
+    if (!readingSessionId || !articleInfoRef.current) return;
     
     // Update reading session duration
     if (api.readingSessionUpdate) {
@@ -124,7 +122,7 @@ export default function useScrollTracking({
     // Send periodic SCROLL events with accumulated scroll data
     if (scrollEvents.current && scrollEvents.current.length > 0 && viewPortSettingsRef.current) {
       console.log('📊 Sending periodic SCROLL event:', {
-        articleID,
+        articleID: articleInfoRef.current.id,
         scrollEventsCount: scrollEvents.current.length,
         scrollData: scrollEvents.current.slice(0, 5), // Show first 5 entries for debugging
         viewportSettings: JSON.parse(viewPortSettingsRef.current || '{}') // Show the viewport settings
@@ -132,7 +130,7 @@ export default function useScrollTracking({
       
       api.logUserActivity(
         api.SCROLL,
-        articleID,
+        articleInfoRef.current.id,
         viewPortSettingsRef.current, // Optimized viewport settings
         JSON.stringify(scrollEvents.current).slice(0, 4096), // Limit data size
         articleInfoRef.current.source_id
@@ -146,10 +144,10 @@ export default function useScrollTracking({
    * Send final scroll event (typically called on component unmount)
    */
   const sendFinalScrollEvent = () => {
-    if (!articleID || !articleInfoRef.current || !viewPortSettingsRef.current) return;
+    if (!articleInfoRef.current || !viewPortSettingsRef.current) return;
     
     console.log('🏁 Sending final SCROLL event:', {
-      articleID,
+      articleID: articleInfoRef.current.id,
       scrollEventsCount: scrollEvents.current.length,
       scrollData: scrollEvents.current.slice(0, 5), // Show first 5 entries for debugging
       viewportSettings: JSON.parse(viewPortSettingsRef.current || '{}') // Show the viewport settings
@@ -157,7 +155,7 @@ export default function useScrollTracking({
     
     api.logUserActivity(
       api.SCROLL,
-      articleID,
+      articleInfoRef.current.id,
       viewPortSettingsRef.current,
       JSON.stringify(scrollEvents.current).slice(0, 4096),
       articleInfoRef.current.source_id
