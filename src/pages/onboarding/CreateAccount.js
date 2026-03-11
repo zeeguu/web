@@ -33,8 +33,17 @@ import Modal from "../../components/modal_shared/Modal";
 
 import * as sC from "../../components/modal_shared/Checkbox.sc";
 import * as sI from "../../components/InputField.sc";
+import leoProfanity from "leo-profanity";
 
 export default function CreateAccount({ handleSuccessfulLogIn }) {
+      // Ensure leo-profanity dictionary is loaded
+      useEffect(() => {
+        leoProfanity.loadDictionary();
+        leoProfanity.getDictionary(); // Log the loaded dictionary to verify
+      }, []);
+    const [profanityName, setProfanityName] = useState(false);
+    const [profanityNameTouched, setProfanityNameTouched] = useState(false);
+    const [profanityUsername, setProfanityUsername] = useState(false);
   const api = useContext(APIContext);
   const history = useHistory();
   const { userDetails, setUserDetails } = useContext(UserContext);
@@ -107,8 +116,23 @@ export default function CreateAccount({ handleSuccessfulLogIn }) {
 
   function handleCreate(e) {
     e.preventDefault();
-    // If users have the same error, there wouldn't be a scroll.
     setErrorMessage("");
+    // Profanity check
+    if (leoProfanity.check(name)) {
+      setProfanityName(true);
+      scrollToTop();
+      return;
+    } else {
+      setProfanityName(false);
+    }
+    // Username field not present, but if you add it, use below:
+    // if (leoProfanity.check(username)) {
+    //   setProfanityUsername(true);
+    //   scrollToTop();
+    //   return;
+    // } else {
+    //   setProfanityUsername(false);
+    // }
     if (
       !validateRules([
         validateName,
@@ -201,10 +225,19 @@ export default function CreateAccount({ handleSuccessfulLogIn }) {
               value={name}
               onChange={(e) => {
                 setName(e.target.value);
+                console.log("Profanity check for name:", e.target.value, leoProfanity.check(e.target.value));
+                setProfanityName(leoProfanity.check(e.target.value));
+                // setProfanityNameTouched(false);
               }}
-              isError={!isNameValid}
+              onBlur={() => setProfanityNameTouched(true)}
+              isError={!isNameValid || profanityName}
               errorMessage={nameMsg}
             />
+            {profanityName && (
+              <span style={{ color: 'red', fontSize: '0.95em', marginTop: '0.25em', display: 'block' }}>
+                Inappropriate words detected in name.
+              </span>
+            )}
 
             <InputField
               type={"email"}
