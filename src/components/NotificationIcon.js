@@ -7,10 +7,11 @@ export default function NotificationIcon({
   position,
   style,
   tooltipText,
+  isActive,
 }) {
   const notificationLocation = position ? position : "top";
   return (
-    <s.NotificationIcon className={notificationLocation} style={style}>
+    <s.NotificationIcon className={notificationLocation} style={style} $isActive={isActive}>
       <Tooltip title={tooltipText}>
         <div>{text}</div>
       </Tooltip>
