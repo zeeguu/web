@@ -25,12 +25,25 @@ export default function useDeepLinkHandler() {
     let listenerHandle = null;
 
     const handleAppUrlOpen = (event) => {
-      // event.url is something like "https://zeeguu.org/read/article?id=123"
       const url = event.url;
 
       try {
         const parsedUrl = new URL(url);
-        // Get the path and search params (e.g., "/read/article?id=123")
+
+        // Custom URL scheme from iOS Share Extension
+        // e.g. org.zeeguu.app://shared-article?url=https%3A%2F%2Fexample.com
+        if (parsedUrl.protocol === "org.zeeguu.app:") {
+          const sharedUrl = parsedUrl.searchParams.get("url");
+          if (sharedUrl) {
+            history.push(
+              `/shared-article?url=${encodeURIComponent(sharedUrl)}`,
+            );
+            return;
+          }
+        }
+
+        // Existing: deep link to zeeguu.org
+        // e.g. "https://zeeguu.org/read/article?id=123"
         const fullPath = parsedUrl.pathname + parsedUrl.search;
 
         console.log("Deep link received:", url);
