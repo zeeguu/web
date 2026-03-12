@@ -1,4 +1,5 @@
 import { useState } from "react";
+import * as s from "./FriendRow.sc";
 import LocalFireDepartmentIcon from "@mui/icons-material/LocalFireDepartment";
 import PersonAddIcon from "@mui/icons-material/PersonAdd";
 import MarkEmailReadIcon from "@mui/icons-material/MarkEmailRead";
@@ -31,104 +32,55 @@ export default function FriendRow({
     if (rowType === "search") {
       if (friendship && friendship.friend_request_status === "accepted") {
         return (
-          <span
-            style={{
-              color: "green",
-              display: "flex",
-              alignItems: "center",
-              gap: "0.4em",
-            }}
-          >
-            <PersonIcon
-              sx={{ color: "#2ecc40", fontSize: "1.4rem", verticalAlign: "middle" }}
-            />
+          <s.AlreadyFriends>
+            <PersonIcon sx={{ color: "#2ecc40", fontSize: "1.4rem", verticalAlign: "middle" }} />
             <span>Already friends</span>
-          </span>
+          </s.AlreadyFriends>
         );
       }
 
       if (friendship && friendship.friend_request_status === "pending") {
         if (friendship.sender_id === user?.id) {
-          return <span style={{ color: "orange" }}>They sent you a request</span>;
+          return <s.RequestSent>They sent you a request</s.RequestSent>;
         }
-
         return (
-          <button
-            style={{
-              padding: "0.3em 0.8em",
-              borderRadius: "4px",
-              border: "1px solid #ccc",
-              background: "#ffe0e0",
-              cursor: "pointer",
-              display: "flex",
-              alignItems: "center",
-              gap: "0.4em",
-            }}
-            onClick={() => onCancelRequest?.(user?.id)}
-          >
-            <CancelScheduleSendIcon
-              sx={{ color: "#e74c3c", fontSize: "1.2rem", verticalAlign: "middle" }}
-            />
+          <s.ActionButton variant="cancel" onClick={() => onCancelRequest?.(user?.id)}>
+            <CancelScheduleSendIcon sx={{ color: "#e74c3c", fontSize: "1.2rem", verticalAlign: "middle" }} />
             <span>Cancel Request</span>
-          </button>
+          </s.ActionButton>
         );
       }
-
       return (
-        <button
-          style={{
-            padding: "0.3em 0.8em",
-            borderRadius: "4px",
-            border: "1px solid #ccc",
-            background: "#e0f7fa",
-            cursor: "pointer",
-            display: "flex",
-            alignItems: "center",
-            gap: "0.4em",
-          }}
+        <s.ActionButton
+          variant="add"
           onClick={() => onSendRequest?.(user?.id)}
           disabled={isSending || isSent}
         >
           {isSent ? (
             <>
-              <MarkEmailReadIcon
-                sx={{ color: "#2ecc40", fontSize: "1.4rem", verticalAlign: "middle" }}
-              />
+              <MarkEmailReadIcon sx={{ color: "#2ecc40", fontSize: "1.4rem", verticalAlign: "middle" }} />
               <span>Sent</span>
             </>
           ) : isSending ? (
             <>
-              <SendIcon
-                sx={{ color: "#3498db", fontSize: "1.4rem", verticalAlign: "middle" }}
-              />
+              <SendIcon sx={{ color: "#3498db", fontSize: "1.4rem", verticalAlign: "middle" }} />
               <span>Sending...</span>
             </>
           ) : (
             <>
-              <PersonAddIcon
-                sx={{ color: "#3498db", fontSize: "1.4rem", verticalAlign: "middle" }}
-              />
+              <PersonAddIcon sx={{ color: "#3498db", fontSize: "1.4rem", verticalAlign: "middle" }} />
               <span>Add Friend</span>
             </>
           )}
-        </button>
+        </s.ActionButton>
       );
     }
 
     if (rowType === "request") {
       return (
         <>
-          <button
-            style={{
-              padding: "0.3em 0.8em",
-              borderRadius: "4px",
-              border: "1px solid #ccc",
-              background: "#e0ffe0",
-              cursor: requestAccepted ? "default" : "pointer",
-              display: "flex",
-              alignItems: "center",
-              gap: "0.4em",
-            }}
+          <s.ActionButton
+            variant="accept"
             onClick={() => onAcceptRequest?.(user?.id)}
             disabled={requestAccepted}
           >
@@ -140,24 +92,12 @@ export default function FriendRow({
                 <span>Accept</span>
               </>
             )}
-          </button>
+          </s.ActionButton>
           {!requestAccepted && (
-            <button
-              style={{
-                padding: "0.3em 0.8em",
-                borderRadius: "4px",
-                border: "1px solid #ccc",
-                background: "#ffe0e0",
-                cursor: "pointer",
-                display: "flex",
-                alignItems: "center",
-                gap: "0.4em",
-              }}
-              onClick={() => onRejectRequest?.(user?.id)}
-            >
+            <s.ActionButton variant="reject" onClick={() => onRejectRequest?.(user?.id)}>
               <ClearIcon sx={{ color: "#e74c3c", fontSize: "1.4rem", verticalAlign: "middle" }} />
               <span>Reject</span>
-            </button>
+            </s.ActionButton>
           )}
         </>
       );
@@ -165,63 +105,28 @@ export default function FriendRow({
 
     return (
       <>
-        <button
-          style={{
-            padding: "0.3em 0.8em",
-            borderRadius: "4px",
-            border: "1px solid #ccc",
-            background: "#ffe0e0",
-            cursor: "pointer",
-          }}
-          onClick={() => setModalOpen(true)}
-        >
+        <s.ActionButton variant="unfriend" onClick={() => setModalOpen(true)}>
           <PersonRemoveIcon sx={{ color: "#e74c3c", fontSize: "1.4rem", verticalAlign: "middle" }} />
-          <span style={{ marginLeft: "0.4em" }}>Unfriend</span>
-        </button>
+          <s.UnfriendSpan>Unfriend</s.UnfriendSpan>
+        </s.ActionButton>
       </>
     );
   };
 
   return (
     <>
-      <li
-        style={{
-          display: "flex",
-          alignItems: "center",
-          gap: "1em",
-          padding: "0.5em 0",
-        }}
-      >
-        <span role="img" aria-label="friend" style={{ fontSize: "2em" }}>
-          👤
-        </span>
-        <span style={{ fontWeight: 600 }}>{user?.name}</span>
-        <span style={{ color: "gray" }}>@{user?.username}</span>
+      <s.FriendRowLi>
+        <s.FriendIcon role="img" aria-label="friend">👤</s.FriendIcon>
+        <s.FriendName>{user?.name}</s.FriendName>
+        <s.FriendUsername>@{user?.username}</s.FriendUsername>
         {rowType === "friend" && (
-          <span
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: "0.3em",
-              color: "#ff9800",
-              fontWeight: 500,
-            }}
-          >
+          <s.StreakContainer>
             <LocalFireDepartmentIcon sx={{ color: "#ff9800", fontSize: "1.4rem" }} />
             <span>{resolvedStreak}</span>
-          </span>
+          </s.StreakContainer>
         )}
-        <div
-          style={{
-            marginLeft: "auto",
-            display: "flex",
-            alignItems: "center",
-            gap: "0.5em",
-          }}
-        >
-          {renderActions()}
-        </div>
-      </li>
+        <s.ActionsContainer>{renderActions()}</s.ActionsContainer>
+      </s.FriendRowLi>
       <ConfirmUnfriendModal
         open={modalOpen}
         onClose={() => setModalOpen(false)}
