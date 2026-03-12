@@ -7,6 +7,7 @@ import DynamicFlagImage from "../components/DynamicFlagImage";
 import { ProgressContext } from "../contexts/ProgressContext";
 import * as s from "./UserProfile.sc.js";
 import LocalFireDepartmentIcon from "@mui/icons-material/LocalFireDepartment";
+import FriendsTabContent from "./FriendsTabContent";
 
 export default function UserProfile() {
   const api = useContext(APIContext);
@@ -94,7 +95,7 @@ export default function UserProfile() {
         </s.TabBar>
         <s.TabContent>
           {activeTab === "overview" && <div>Overview content goes here.</div>}
-          {activeTab === "friends" && <div>Friends content goes here.</div>}
+          {activeTab === "friends" && <FriendsTabContent />}
           {activeTab === "badges" && <div>Badges content goes here.</div>}
         </s.TabContent>
       </s.TabsSection>
