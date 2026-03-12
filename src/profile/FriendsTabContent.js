@@ -17,7 +17,7 @@ export default function FriendsTabContent() {
   const [pendingSearch, setPendingSearch] = useState("");
   const [newFriendResults, setNewFriendResults] = useState([]);
   const [newFriendError, setNewFriendError] = useState(null);
-  const [searchingNewFriends, setSearchingNewFriends] = useState(false);
+  const [searchingNewFriends, setSearchingNewFriends] = useState(null);
   const [sendingRequestId, setSendingRequestId] = useState(null);
   const [sentRequests, setSentRequests] = useState([]);
 
@@ -26,6 +26,7 @@ export default function FriendsTabContent() {
     if (pendingSearch === "") {
       setNewFriendResults([]);
       setNewFriendError(null);
+      setSearchingNewFriends(null)
     }
   }, [pendingSearch]);
 
@@ -205,12 +206,15 @@ export default function FriendsTabContent() {
       {pendingSearch ? (
         <div>
           <h3>Users</h3>
-          {newFriendResults.length === 0 && (
-            <>
+            {newFriendResults.length === 0 && searchingNewFriends === null && (
               <p>Press Enter to search...</p>
-              {searchingNewFriends && <p>Searching...</p>}
-            </>
-          )}
+            )}
+            {newFriendResults.length === 0 && searchingNewFriends === true && pendingSearch.trim().length >= 2 && (
+              <p>Searching...</p>
+            )}
+            {newFriendResults.length === 0 && searchingNewFriends === false && pendingSearch.trim().length >= 2 && (
+              <p>No users...</p>
+            )}
           {newFriendResults.length > 0 && (
             <ul>
               {newFriendResults.map((result) => {
