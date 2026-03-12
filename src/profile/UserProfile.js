@@ -7,6 +7,12 @@ import DynamicFlagImage from "../components/DynamicFlagImage";
 import { ProgressContext } from "../contexts/ProgressContext";
 import * as s from "./UserProfile.sc.js";
 import LocalFireDepartmentIcon from "@mui/icons-material/LocalFireDepartment";
+import Modal from "../components/modal_shared/Modal";
+import Header from "../components/modal_shared/Header.sc";
+import Heading from "../components/modal_shared/Heading.sc";
+import Main from "../components/modal_shared/Main.sc";
+
+const MAX_VISIBLE_LANGUAGES = 3;
 
 export default function UserProfile() {
   const api = useContext(APIContext);
@@ -14,6 +20,7 @@ export default function UserProfile() {
   const { daysPracticed } = useContext(ProgressContext);
   const [allDailyStreakInfo, setAllDailyStreakInfo] = useState(null);
   const [activeTab, setActiveTab] = useState("overview");
+  const [showLanguagesModal, setShowLanguagesModal] = useState(false);
 
   useEffect(() => {
     console.log(userDetails);
@@ -45,6 +52,11 @@ export default function UserProfile() {
     { key: "badges", label: "Badges" },
   ];
 
+  const visibleLanguages = allDailyStreakInfo?.slice(0, MAX_VISIBLE_LANGUAGES);
+  const overflowCount = allDailyStreakInfo
+    ? (allDailyStreakInfo.length > MAX_VISIBLE_LANGUAGES ? allDailyStreakInfo.length - MAX_VISIBLE_LANGUAGES : 0)
+    : 0;
+
   return (
     <s.ProfileWrapper>
       <s.HeaderCard>
@@ -56,9 +68,12 @@ export default function UserProfile() {
 
           <div className="meta">
             <span className="label">Active languages:</span>
-            {allDailyStreakInfo?.map((streakInfo) => (
+            {visibleLanguages?.map((streakInfo) => (
               <DynamicFlagImage key={streakInfo.language.code} languageCode={streakInfo.language.code} />
             ))}
+            {overflowCount > 0 && (
+              <s.OverflowBubble onClick={() => setShowLanguagesModal(true)}>+{overflowCount}</s.OverflowBubble>
+            )}
           </div>
 
           <div className="meta">
@@ -95,6 +110,32 @@ export default function UserProfile() {
           {activeTab === "badges" && <div>Badges content goes here.</div>}
         </s.TabContent>
       </s.TabsSection>
+
+      <Modal open={showLanguagesModal} onClose={() => setShowLanguagesModal(false)}>
+        <Header>
+          <Heading>Active Languages</Heading>
+        </Header>
+        <Main>
+          <s.LanguagesGrid>
+            {allDailyStreakInfo?.map((streakInfo) => (
+              <s.LanguageCard key={streakInfo.language.code}>
+                <DynamicFlagImage languageCode={streakInfo.language.code} />
+                <span className="language-name">{streakInfo.language.language}</span>
+                <div className="streaks-info">
+                  <div className="streak-item">
+                    <LocalFireDepartmentIcon sx={{ color: "#ff9800", fontSize: "1rem" }} />
+                    <span>{streakInfo.current_streak ?? 0}</span>
+                  </div>
+                  <div className="streak-item max-streak">
+                    <LocalFireDepartmentIcon sx={{ color: "#e65100", fontSize: "1rem" }} />
+                    <span>{streakInfo.max_streak ?? 0}</span>
+                  </div>
+                </div>
+              </s.LanguageCard>
+            ))}
+          </s.LanguagesGrid>
+        </Main>
+      </Modal>
     </s.ProfileWrapper>
   );
 }

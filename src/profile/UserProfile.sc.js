@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { almostBlack, blue100, blue200, darkGrey, orange400, orange500, zeeguuOrange } from "../components/colors";
+import { almostBlack, blue100, blue200, darkGrey, lightGrey, orange500, zeeguuOrange } from "../components/colors";
 
 export const ProfileWrapper = styled.div`
   display: flex;
@@ -147,4 +147,87 @@ export const TabBar = styled.div`
 export const TabContent = styled.div`
   min-height: 120px;
   padding: 1rem 0 0;
+`;
+
+export const OverflowBubble = styled.button`
+  box-sizing: content-box;
+  width: 1.75rem;
+  height: 1.75rem;
+  padding: 0;
+  border-radius: 50%;
+  background: ${blue100};
+  border: 0.08rem solid ${blue200};
+  color: ${almostBlack};
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s;
+
+  &:hover {
+    background: ${blue200};
+  }
+`;
+
+export const LanguagesGrid = styled.div`
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  padding: 0;
+`;
+
+export const LanguageCard = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+  padding: 0 0.75rem 0 0.5rem;
+  height: 2.75rem;
+  border-radius: 2rem;
+  border: solid 0.1rem ${lightGrey};
+  box-shadow: 0 0.1rem ${lightGrey};
+  white-space: nowrap;
+  flex: 1 1 calc(50% - 2rem);
+  min-width: 11rem;
+  background: white;
+  margin-bottom: 0.2rem;
+
+  .language-name {
+    font-weight: 600;
+    font-size: 1rem;
+    color: ${almostBlack};
+    text-transform: capitalize;
+    flex: 1;
+  }
+
+  .streaks-info {
+    display: flex;
+    align-items: center;
+    margin-left: auto;
+    padding-left: 0.75em;
+    border-left: 1px solid rgba(128, 128, 128, 0.3);
+    height: 1.5em;
+    gap: 0.4rem;
+    flex: 1;
+    justify-content: end;
+  }
+
+  .streak-item {
+    display: flex;
+    align-items: center;
+    gap: 0.1rem;
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: ${orange500};
+        flex: 1;
+  }
+
+  .max-streak {
+    color: #e65100;
+  }
 `;
