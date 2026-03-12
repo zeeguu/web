@@ -2,6 +2,8 @@ import { useContext, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import SearchBar from "../components/SearchBar";
 import { APIContext } from "../contexts/APIContext";
+import LocalFireDepartmentIcon from "@mui/icons-material/LocalFireDepartment";
+
 
 export default function FriendsTabContent() {
   const api = useContext(APIContext);
@@ -174,42 +176,7 @@ export default function FriendsTabContent() {
 
   return (
     <div>
-      <h3>My Friends</h3>
-      {loadingFriends && <p>Loading friends...</p>}
-      {friendsError && <p style={{ color: "red" }}>{friendsError}</p>}
-      {!loadingFriends && !friendsError && friends.length === 0 && (
-        <p>You have no friends yet.</p>
-      )}
-      {!loadingFriends && friends.length > 0 && (
-        <ul>
-          {friends.map((friend) => (
-            <li
-              key={friend.id}
-              style={{ display: "flex", alignItems: "center", gap: "0.5em" }}
-            >
-              <span>{friend.name}</span>
-              <span style={{ color: "gray" }}>@{friend.username}</span>
-              <button
-                style={{
-                  marginLeft: "1em",
-                  padding: "0.3em 0.8em",
-                  borderRadius: "4px",
-                  border: "1px solid #ccc",
-                  background: "#ffe0e0",
-                  cursor: "pointer",
-                }}
-                onClick={() => handleUnfriend(friend.id)}
-              >
-                Unfriend
-              </button>
-            </li>
-          ))}
-        </ul>
-      )}
-
-      <hr style={{ margin: "2em 0", width: "100%" }} />
-
-      <h3>Find New Friends</h3>
+      {/* <h3>Friends</h3> */}
       <div style={{ display: "flex", alignItems: "center", gap: "1em" }}>
         <SearchBar
           value={pendingSearch}
@@ -314,8 +281,6 @@ export default function FriendsTabContent() {
         </ul>
       )}
 
-      <hr style={{ margin: "2em 0", width: "100%" }} />
-
       <h3>Incoming Friend Requests</h3>
       {loadingRequests && <p>Loading friend requests...</p>}
       {requestsError && <p style={{ color: "red" }}>{requestsError}</p>}
@@ -360,6 +325,48 @@ export default function FriendsTabContent() {
                   Reject
                 </button>
               )}
+            </li>
+          ))}
+        </ul>
+      )}
+
+      <hr style={{ margin: "2em 0", width: "100%" }} />
+
+      {/* <h3>My Friends</h3> */}
+      {loadingFriends && <p>Loading friends...</p>}
+      {friendsError && <p style={{ color: "red" }}>{friendsError}</p>}
+      {!loadingFriends && !friendsError && friends.length === 0 && (
+        <p>You have no friends yet.</p>
+      )}
+      {!loadingFriends && friends.length > 0 && (
+        <ul>
+          {friends.map((friend) => (
+            <li
+              key={friend.id}
+              style={{ display: "flex", alignItems: "center", gap: "1em", padding: "0.5em 0" }}
+            >
+              {/* Avatar/icon: fallback to emoji if no image */}
+              <span role="img" aria-label="friend" style={{ fontSize: "2em" }}>👤</span>
+              <span style={{ fontWeight: 600 }}>{friend.name}</span>
+              <span style={{ color: "gray" }}>@{friend.username}</span>
+              {/* Friend streak: fallback to 0 if missing */}
+              <span style={{ display: "flex", alignItems: "center", gap: "0.3em", color: "#ff9800", fontWeight: 500 }}>
+                <LocalFireDepartmentIcon sx={{ color: "#ff9800", fontSize: "1.4rem" }} />
+                <span>{friend.friend_streak ?? 0}</span>
+              </span>
+              <button
+                style={{
+                  marginLeft: "auto",
+                  padding: "0.3em 0.8em",
+                  borderRadius: "4px",
+                  border: "1px solid #ccc",
+                  background: "#ffe0e0",
+                  cursor: "pointer",
+                }}
+                onClick={() => handleUnfriend(friend.id)}
+              >
+                Unfriend
+              </button>
             </li>
           ))}
         </ul>
