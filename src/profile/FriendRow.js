@@ -1,9 +1,14 @@
+import { useState } from "react";
 import LocalFireDepartmentIcon from "@mui/icons-material/LocalFireDepartment";
 import PersonAddIcon from "@mui/icons-material/PersonAdd";
 import MarkEmailReadIcon from "@mui/icons-material/MarkEmailRead";
 import SendIcon from "@mui/icons-material/Send";
 import PersonIcon from "@mui/icons-material/Person";
 import CancelScheduleSendIcon from "@mui/icons-material/CancelScheduleSend";
+import PersonRemoveIcon from "@mui/icons-material/PersonRemove";
+import CheckIcon from "@mui/icons-material/Check";
+import ClearIcon from "@mui/icons-material/Clear";
+import ConfirmUnfriendModal from "./ConfirmUnfriendModal";
 
 export default function FriendRow({
   user,
@@ -20,6 +25,7 @@ export default function FriendRow({
 }) {
   const resolvedStreak = streak ?? user?.friend_streak ?? 0;
   const friendship = user?.friendship;
+  const [modalOpen, setModalOpen] = useState(false);
 
   const renderActions = () => {
     if (rowType === "search") {
@@ -130,18 +136,7 @@ export default function FriendRow({
               "Accepted"
             ) : (
               <>
-                <svg
-                  width="18"
-                  height="18"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  style={{ verticalAlign: "middle" }}
-                >
-                  <path
-                    d="M9 16.2l-4.2-4.2c-.4-.4-.4-1 0-1.4s1-.4 1.4 0l3.5 3.5 7.5-7.5c.4-.4 1-.4 1.4 0s.4 1 0 1.4l-8.2 8.2c-.4.4-1 .4-1.4 0z"
-                    fill="#2ecc40"
-                  />
-                </svg>
+                <CheckIcon sx={{ color: "#2ecc40", fontSize: "1.4rem", verticalAlign: "middle" }} />
                 <span>Accept</span>
               </>
             )}
@@ -160,18 +155,7 @@ export default function FriendRow({
               }}
               onClick={() => onRejectRequest?.(user?.id)}
             >
-              <svg
-                width="18"
-                height="18"
-                viewBox="0 0 24 24"
-                fill="none"
-                style={{ verticalAlign: "middle" }}
-              >
-                <path
-                  d="M18.3 5.7c.4.4.4 1 0 1.4L13.4 12l4.9 4.9c.4.4.4 1 0 1.4s-1 .4-1.4 0L12 13.4l-4.9 4.9c-.4.4-1 .4-1.4 0s-.4-1 0-1.4l4.9-4.9-4.9-4.9c-.4-.4-.4-1 0-1.4s1-.4 1.4 0l4.9 4.9 4.9-4.9c.4-.4 1-.4 1.4 0z"
-                  fill="#e74c3c"
-                />
-              </svg>
+              <ClearIcon sx={{ color: "#e74c3c", fontSize: "1.4rem", verticalAlign: "middle" }} />
               <span>Reject</span>
             </button>
           )}
@@ -180,57 +164,71 @@ export default function FriendRow({
     }
 
     return (
-      <button
-        style={{
-          padding: "0.3em 0.8em",
-          borderRadius: "4px",
-          border: "1px solid #ccc",
-          background: "#ffe0e0",
-          cursor: "pointer",
-        }}
-        onClick={() => onUnfriend?.(user?.id)}
-      >
-        Unfriend
-      </button>
+      <>
+        <button
+          style={{
+            padding: "0.3em 0.8em",
+            borderRadius: "4px",
+            border: "1px solid #ccc",
+            background: "#ffe0e0",
+            cursor: "pointer",
+          }}
+          onClick={() => setModalOpen(true)}
+        >
+          <PersonRemoveIcon sx={{ color: "#e74c3c", fontSize: "1.4rem", verticalAlign: "middle" }} />
+          <span style={{ marginLeft: "0.4em" }}>Unfriend</span>
+        </button>
+      </>
     );
   };
 
   return (
-    <li
-      style={{
-        display: "flex",
-        alignItems: "center",
-        gap: "1em",
-        padding: "0.5em 0",
-      }}
-    >
-      <span role="img" aria-label="friend" style={{ fontSize: "2em" }}>
-        👤
-      </span>
-      <span style={{ fontWeight: 600 }}>{user?.name}</span>
-      <span style={{ color: "gray" }}>@{user?.username}</span>
-      <span
+    <>
+      <li
         style={{
           display: "flex",
           alignItems: "center",
-          gap: "0.3em",
-          color: "#ff9800",
-          fontWeight: 500,
+          gap: "1em",
+          padding: "0.5em 0",
         }}
       >
-        <LocalFireDepartmentIcon sx={{ color: "#ff9800", fontSize: "1.4rem" }} />
-        <span>{resolvedStreak}</span>
-      </span>
-      <div
-        style={{
-          marginLeft: "auto",
-          display: "flex",
-          alignItems: "center",
-          gap: "0.5em",
+        <span role="img" aria-label="friend" style={{ fontSize: "2em" }}>
+          👤
+        </span>
+        <span style={{ fontWeight: 600 }}>{user?.name}</span>
+        <span style={{ color: "gray" }}>@{user?.username}</span>
+        <span
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: "0.3em",
+            color: "#ff9800",
+            fontWeight: 500,
+          }}
+        >
+          <LocalFireDepartmentIcon sx={{ color: "#ff9800", fontSize: "1.4rem" }} />
+          <span>{resolvedStreak}</span>
+        </span>
+        <div
+          style={{
+            marginLeft: "auto",
+            display: "flex",
+            alignItems: "center",
+            gap: "0.5em",
+          }}
+        >
+          {renderActions()}
+        </div>
+      </li>
+      <ConfirmUnfriendModal
+        open={modalOpen}
+        onClose={() => setModalOpen(false)}
+        onConfirm={() => {
+          setModalOpen(false);
+          onUnfriend?.(user?.id);
         }}
-      >
-        {renderActions()}
-      </div>
-    </li>
+        friendName={user?.name}
+      />
+    </>
   );
 }
