@@ -197,18 +197,20 @@ export default function FriendRow({
         </span>
         <span style={{ fontWeight: 600 }}>{user?.name}</span>
         <span style={{ color: "gray" }}>@{user?.username}</span>
-        <span
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: "0.3em",
-            color: "#ff9800",
-            fontWeight: 500,
-          }}
-        >
-          <LocalFireDepartmentIcon sx={{ color: "#ff9800", fontSize: "1.4rem" }} />
-          <span>{resolvedStreak}</span>
-        </span>
+        {rowType === "friend" && (
+          <span
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "0.3em",
+              color: "#ff9800",
+              fontWeight: 500,
+            }}
+          >
+            <LocalFireDepartmentIcon sx={{ color: "#ff9800", fontSize: "1.4rem" }} />
+            <span>{resolvedStreak}</span>
+          </span>
+        )}
         <div
           style={{
             marginLeft: "auto",
