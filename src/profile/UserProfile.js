@@ -12,7 +12,7 @@ export default function UserProfile() {
   const api = useContext(APIContext);
   const { userDetails } = useContext(UserContext);
   const { daysPracticed } = useContext(ProgressContext);
-  const [learnedLanguages, setLearnedLanguages] = useState(null);
+  const [allDailyStreakInfo, setAllDailyStreakInfo] = useState(null);
   const [activeTab, setActiveTab] = useState("overview");
 
   useEffect(() => {
@@ -28,15 +28,13 @@ export default function UserProfile() {
   }, []);
 
   useEffect(() => {
-    api.getUserLanguages((data) => {
-      data.sort(function(a, b) {
+    api.getAllDailyStreak((data) => {
+      data.sort(function (a, b) {
         const keyA = a.max_streak;
         const keyB = b.max_streak;
-        console.log(keyA);
-        console.log(keyB);
-        return keyA > keyB ? 1 : -1;
+        return keyA > keyB ? -1 : 1;
       });
-      setLearnedLanguages(data);
+      setAllDailyStreakInfo(data);
       console.log(data);
     });
   }, [api]);
@@ -58,8 +56,8 @@ export default function UserProfile() {
 
           <div className="meta">
             <span className="label">Active languages:</span>
-            {learnedLanguages?.map((lang) => (
-              <DynamicFlagImage key={lang.code} languageCode={lang.code} />
+            {allDailyStreakInfo?.map((streakInfo) => (
+              <DynamicFlagImage key={streakInfo.language.code} languageCode={streakInfo.language.code} />
             ))}
           </div>
 
@@ -71,10 +69,9 @@ export default function UserProfile() {
           <s.StatsRow>
             <div className="stat">
               <div className="stat-streak-wrapper">
-                <LocalFireDepartmentIcon sx={{ color: "#ff9800", fontSize: "1.4rem" }} />
+                <LocalFireDepartmentIcon sx={{ color: "#ff9800", fontSize: "1.2rem" }} />
                 <span className="stat-value">{daysPracticed ?? "-"}</span>
               </div>
-              <span className="stat-label">Current daily streak</span>
             </div>
           </s.StatsRow>
         </div>

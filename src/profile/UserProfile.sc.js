@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { blue100, blue200, blue700, almostBlack, darkGrey, zeeguuOrange } from "../components/colors";
+import { almostBlack, blue100, blue200, darkGrey, orange400, orange500, zeeguuOrange } from "../components/colors";
 
 export const ProfileWrapper = styled.div`
   display: flex;
@@ -45,7 +45,7 @@ export const HeaderCard = styled.div`
     font-size: 1.4rem;
     font-weight: 700;
     color: ${almostBlack};
-    
+
     @media (max-width: 768px) {
       justify-content: center;
     }
@@ -82,26 +82,22 @@ export const StatsRow = styled.div`
   .stat {
     display: flex;
     align-items: center;
-    gap: 0.4rem;
+    gap: 0.5rem;
     background: ${blue100};
     border-radius: 8px;
     padding: 0.6rem 1rem;
   }
-  
+
   .stat-streak-wrapper {
     display: flex;
     align-items: center;
+    gap: 0.1rem;
   }
 
   .stat-value {
-    font-size: 1.4rem;
-    font-weight: 700;
-    color: ${blue700};
-  }
-
-  .stat-label {
-    font-size: 0.8rem;
-    color: ${darkGrey};
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: ${orange500};
   }
 `;
 
@@ -128,16 +124,22 @@ export const TabBar = styled.div`
     cursor: pointer;
     font-weight: 500;
     margin-bottom: -2px;
-    transition: color 0.2s, border-color 0.2s;
-
-    &:hover {
-      color: ${almostBlack};
-    }
+    transition:
+      color 0.2s,
+      border-color 0.2s;
 
     &.active {
       color: ${zeeguuOrange};
       border-bottom-color: ${zeeguuOrange};
       font-weight: 600;
+    }
+
+    &:hover {
+      color: ${orange500};
+    }
+
+    &.active:hover {
+      border-bottom-color: ${orange500};
     }
   }
 `;
