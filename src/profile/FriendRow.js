@@ -85,7 +85,10 @@ export default function FriendRow({
             disabled={requestAccepted}
           >
             {requestAccepted ? (
-              "Accepted"
+              <>
+                <CheckIcon sx={{ color: "#2ecc40", fontSize: "1.4rem", verticalAlign: "middle" }} />
+                <span>Accepted</span>
+              </>
             ) : (
               <>
                 <CheckIcon sx={{ color: "#2ecc40", fontSize: "1.4rem", verticalAlign: "middle" }} />
