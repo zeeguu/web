@@ -4,7 +4,6 @@ import SearchBar from "../components/SearchBar";
 import { APIContext } from "../contexts/APIContext";
 import FriendRow from "./FriendRow";
 
-
 export default function FriendsTabContent() {
   const api = useContext(APIContext);
   const [friends, setFriends] = useState([]);
@@ -21,6 +20,14 @@ export default function FriendsTabContent() {
   const [searchingNewFriends, setSearchingNewFriends] = useState(false);
   const [sendingRequestId, setSendingRequestId] = useState(null);
   const [sentRequests, setSentRequests] = useState([]);
+
+  // Reset search results when search bar is empty
+  useEffect(() => {
+    if (pendingSearch === "") {
+      setNewFriendResults([]);
+      setNewFriendError(null);
+    }
+  }, [pendingSearch]);
 
   useEffect(() => {
     api.getFriends((data) => {
@@ -96,7 +103,14 @@ export default function FriendsTabContent() {
           setNewFriendResults((prev) =>
             prev.map((item) =>
               item.user.id === receiverId
-                ? { ...item, friend_request: null }
+                ? {
+                    ...item,
+                    friend_request: null,
+                    user: {
+                      ...item.user,
+                      friendship: null,
+                    },
+                  }
                 : item,
             ),
           );
@@ -176,195 +190,87 @@ export default function FriendsTabContent() {
 
   return (
     <div>
-      {/* <h3>Friends</h3> */}
       <div style={{ display: "flex", alignItems: "center", gap: "1em" }}>
         <SearchBar
           value={pendingSearch}
           onChange={(e) => setPendingSearch(e.target.value)}
-          placeholder="Search for new friends..."
+          placeholder="Search with name or username..."
           onSearch={handleNewFriendSearch}
         />
-        <button
-          style={{
-            padding: "0.3em 0.8em",
-            borderRadius: "4px",
-            border: "1px solid #ccc",
-            background: "#f5f5f5",
-            cursor: "pointer",
-          }}
-          onClick={handleResetSearch}
-          disabled={!pendingSearch && newFriendResults.length === 0 && !newFriendError}
-        >
-          Reset Search
-        </button>
       </div>
 
-      {searchingNewFriends && <p>Searching...</p>}
       {newFriendError && <p style={{ color: "red" }}>{newFriendError}</p>}
-      {pendingSearch && !searchingNewFriends && newFriendResults.length === 0 && (
-        <p>Press Enter to search...</p>
-      )}
-      {newFriendResults.length > 0 && (
-        <ul>
-          {newFriendResults.map((result) => {
-            const { user, friendship, friend_request: friendRequest } = result;
-            let statusLabel = null;
-            let button = null;
 
-            if (friendship || friendRequest?.status === "accepted") {
-              statusLabel = (
-                <span style={{ color: "green", marginLeft: "1em" }}>
-                  Already friends
-                </span>
-              );
-            } else if (friendRequest?.status === "pending") {
-              if (friendRequest.sender_id === user.id) {
-                statusLabel = (
-                  <span style={{ color: "orange", marginLeft: "1em" }}>
-                    They sent you a request
-                  </span>
+      {/* Only show Users section when searching */}
+      {pendingSearch ? (
+        <div>
+          <h3>Users</h3>
+          {newFriendResults.length === 0 && (
+            <>
+              <p>Press Enter to search...</p>
+              {searchingNewFriends && <p>Searching...</p>}
+            </>
+          )}
+          {newFriendResults.length > 0 && (
+            <ul>
+              {newFriendResults.map((result) => {
+                const { user } = result;
+                return (
+                  <FriendRow
+                    key={user.id}
+                    user={user}
+                    rowType="search"
+                    isSending={sendingRequestId === user.id}
+                    isSent={sentRequests.includes(user.id)}
+                    onSendRequest={handleSendFriendRequest}
+                    onCancelRequest={handleCancelFriendRequest}
+                  />
                 );
-              } else {
-                button = (
-                  <button
-                    style={{
-                      marginLeft: "1em",
-                      padding: "0.3em 0.8em",
-                      borderRadius: "4px",
-                      border: "1px solid #ccc",
-                      background: "#ffe0e0",
-                      cursor: "pointer",
-                    }}
-                    onClick={() => handleCancelFriendRequest(user.id)}
-                  >
-                    Cancel Request
-                  </button>
-                );
-              }
-            } else {
-              button = (
-                <button
-                  style={{
-                    marginLeft: "1em",
-                    padding: "0.3em 0.8em",
-                    borderRadius: "4px",
-                    border: "1px solid #ccc",
-                    background: "#e0f7fa",
-                    cursor: "pointer",
-                  }}
-                  onClick={() => handleSendFriendRequest(user.id)}
-                  disabled={
-                    sendingRequestId === user.id || sentRequests.includes(user.id)
-                  }
-                >
-                  {sentRequests.includes(user.id)
-                    ? "Sent"
-                    : sendingRequestId === user.id
-                      ? "Sending..."
-                      : "Send Friend Request"}
-                </button>
-              );
-            }
+              })}
+            </ul>
+          )}
+        </div>
+      ) : (
+        <>
+          {/* Friend Requests section only if there are requests */}
+          {!loadingRequests && friendRequests.length > 0 && (
+            <div>
+              <h3>Friend Requests</h3>
+              {requestsError && <p style={{ color: "red" }}>{requestsError}</p>}
+              <ul>
+                {friendRequests.map((req) => (
+                  <FriendRow
+                    key={req.id}
+                    user={req.sender}
+                    rowType="request"
+                    requestAccepted={req.accepted}
+                    onAcceptRequest={handleAcceptFriendRequest}
+                    onRejectRequest={handleRejectFriendRequest}
+                  />
+                ))}
+              </ul>
+            </div>
+          )}
 
-            return (
-              <FriendRow
-                key={user.id}
-                user={user}
-                rightContent={statusLabel || button}
-              />
-            );
-          })}
-        </ul>
-      )}
-
-      <h3>Friend Requests</h3>
-      {loadingRequests && <p>Loading friend requests...</p>}
-      {requestsError && <p style={{ color: "red" }}>{requestsError}</p>}
-      {!loadingRequests && friendRequests.length > 0 && (
-        <ul>
-          {friendRequests.map((req) => (
-            <FriendRow
-              key={req.id}
-              user={req.sender}
-              rightContent={
-                <>
-                  <button
-                    style={{
-                      padding: "0.3em 0.8em",
-                      borderRadius: "4px",
-                      border: "1px solid #ccc",
-                      background: req.accepted ? "#e0ffe0" : "#e0ffe0",
-                      cursor: req.accepted ? "default" : "pointer",
-                      display: "flex",
-                      alignItems: "center",
-                      gap: "0.4em",
-                    }}
-                    onClick={() => handleAcceptFriendRequest(req.sender.id)}
-                    disabled={req.accepted}
-                  >
-                    {req.accepted ? (
-                      "Accepted"
-                    ) : (
-                      <>
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" style={{ verticalAlign: "middle" }}><path d="M9 16.2l-4.2-4.2c-.4-.4-.4-1 0-1.4s1-.4 1.4 0l3.5 3.5 7.5-7.5c.4-.4 1-.4 1.4 0s.4 1 0 1.4l-8.2 8.2c-.4.4-1 .4-1.4 0z" fill="#2ecc40"/></svg>
-                        <span>Accept</span>
-                      </>
-                    )}
-                  </button>
-                  {!req.accepted && (
-                    <button
-                      style={{
-                        padding: "0.3em 0.8em",
-                        borderRadius: "4px",
-                        border: "1px solid #ccc",
-                        background: "#ffe0e0",
-                        cursor: "pointer",
-                        display: "flex",
-                        alignItems: "center",
-                        gap: "0.4em",
-                      }}
-                      onClick={() => handleRejectFriendRequest(req.sender.id)}
-                    >
-                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" style={{ verticalAlign: "middle" }}><path d="M18.3 5.7c.4.4.4 1 0 1.4L13.4 12l4.9 4.9c.4.4.4 1 0 1.4s-1 .4-1.4 0L12 13.4l-4.9 4.9c-.4.4-1 .4-1.4 0s-.4-1 0-1.4l4.9-4.9-4.9-4.9c-.4-.4-.4-1 0-1.4s1-.4 1.4 0l4.9 4.9 4.9-4.9c.4-.4 1-.4 1.4 0z" fill="#e74c3c"/></svg>
-                      <span>Reject</span>
-                    </button>
-                  )}
-                </>
-              }
-            />
-          ))}
-        </ul>
-      )}
-
-      <h3>Friends</h3>
-      {loadingFriends && <p>Loading friends...</p>}
-      {friendsError && <p style={{ color: "red" }}>{friendsError}</p>}
-      {!loadingFriends && !friendsError && friends.length === 0 && (
-        <p>You have no friends yet.</p>
-      )}
-      {!loadingFriends && friends.length > 0 && (
-        <ul>
-          {friends.map((friend) => (
-            <FriendRow
-              key={friend.id}
-              user={friend}
-              rightContent={
-                <button
-                  style={{
-                    padding: "0.3em 0.8em",
-                    borderRadius: "4px",
-                    border: "1px solid #ccc",
-                    background: "#ffe0e0",
-                    cursor: "pointer",
-                  }}
-                  onClick={() => handleUnfriend(friend.id)}
-                >
-                  Unfriend
-                </button>
-              }
-            />
-          ))}
-        </ul>
+          <h3>Friends</h3>
+          {loadingFriends && <p>Loading friends...</p>}
+          {friendsError && <p style={{ color: "red" }}>{friendsError}</p>}
+          {!loadingFriends && !friendsError && friends.length === 0 && (
+            <p>You have no friends yet.</p>
+          )}
+          {!loadingFriends && friends.length > 0 && (
+            <ul>
+              {friends.map((friend) => (
+                <FriendRow
+                  key={friend.id}
+                  user={friend}
+                  rowType="friend"
+                  onUnfriend={handleUnfriend}
+                />
+              ))}
+            </ul>
+          )}
+        </>
       )}
     </div>
   );

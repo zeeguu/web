@@ -1,7 +1,199 @@
 import LocalFireDepartmentIcon from "@mui/icons-material/LocalFireDepartment";
+import PersonAddIcon from "@mui/icons-material/PersonAdd";
+import MarkEmailReadIcon from "@mui/icons-material/MarkEmailRead";
+import SendIcon from "@mui/icons-material/Send";
+import PersonIcon from "@mui/icons-material/Person";
+import CancelScheduleSendIcon from "@mui/icons-material/CancelScheduleSend";
 
-export default function FriendRow({ user, streak, rightContent }) {
+export default function FriendRow({
+  user,
+  streak,
+  rowType = "friend",
+  requestAccepted = false,
+  isSending = false,
+  isSent = false,
+  onSendRequest,
+  onCancelRequest,
+  onAcceptRequest,
+  onRejectRequest,
+  onUnfriend,
+}) {
   const resolvedStreak = streak ?? user?.friend_streak ?? 0;
+  const friendship = user?.friendship;
+
+  const renderActions = () => {
+    if (rowType === "search") {
+      if (friendship && friendship.friend_request_status === "accepted") {
+        return (
+          <span
+            style={{
+              color: "green",
+              display: "flex",
+              alignItems: "center",
+              gap: "0.4em",
+            }}
+          >
+            <PersonIcon
+              sx={{ color: "#2ecc40", fontSize: "1.4rem", verticalAlign: "middle" }}
+            />
+            <span>Already friends</span>
+          </span>
+        );
+      }
+
+      if (friendship && friendship.friend_request_status === "pending") {
+        if (friendship.sender_id === user?.id) {
+          return <span style={{ color: "orange" }}>They sent you a request</span>;
+        }
+
+        return (
+          <button
+            style={{
+              padding: "0.3em 0.8em",
+              borderRadius: "4px",
+              border: "1px solid #ccc",
+              background: "#ffe0e0",
+              cursor: "pointer",
+              display: "flex",
+              alignItems: "center",
+              gap: "0.4em",
+            }}
+            onClick={() => onCancelRequest?.(user?.id)}
+          >
+            <CancelScheduleSendIcon
+              sx={{ color: "#e74c3c", fontSize: "1.2rem", verticalAlign: "middle" }}
+            />
+            <span>Cancel Request</span>
+          </button>
+        );
+      }
+
+      return (
+        <button
+          style={{
+            padding: "0.3em 0.8em",
+            borderRadius: "4px",
+            border: "1px solid #ccc",
+            background: "#e0f7fa",
+            cursor: "pointer",
+            display: "flex",
+            alignItems: "center",
+            gap: "0.4em",
+          }}
+          onClick={() => onSendRequest?.(user?.id)}
+          disabled={isSending || isSent}
+        >
+          {isSent ? (
+            <>
+              <MarkEmailReadIcon
+                sx={{ color: "#2ecc40", fontSize: "1.4rem", verticalAlign: "middle" }}
+              />
+              <span>Sent</span>
+            </>
+          ) : isSending ? (
+            <>
+              <SendIcon
+                sx={{ color: "#3498db", fontSize: "1.4rem", verticalAlign: "middle" }}
+              />
+              <span>Sending...</span>
+            </>
+          ) : (
+            <>
+              <PersonAddIcon
+                sx={{ color: "#3498db", fontSize: "1.4rem", verticalAlign: "middle" }}
+              />
+              <span>Add Friend</span>
+            </>
+          )}
+        </button>
+      );
+    }
+
+    if (rowType === "request") {
+      return (
+        <>
+          <button
+            style={{
+              padding: "0.3em 0.8em",
+              borderRadius: "4px",
+              border: "1px solid #ccc",
+              background: "#e0ffe0",
+              cursor: requestAccepted ? "default" : "pointer",
+              display: "flex",
+              alignItems: "center",
+              gap: "0.4em",
+            }}
+            onClick={() => onAcceptRequest?.(user?.id)}
+            disabled={requestAccepted}
+          >
+            {requestAccepted ? (
+              "Accepted"
+            ) : (
+              <>
+                <svg
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  style={{ verticalAlign: "middle" }}
+                >
+                  <path
+                    d="M9 16.2l-4.2-4.2c-.4-.4-.4-1 0-1.4s1-.4 1.4 0l3.5 3.5 7.5-7.5c.4-.4 1-.4 1.4 0s.4 1 0 1.4l-8.2 8.2c-.4.4-1 .4-1.4 0z"
+                    fill="#2ecc40"
+                  />
+                </svg>
+                <span>Accept</span>
+              </>
+            )}
+          </button>
+          {!requestAccepted && (
+            <button
+              style={{
+                padding: "0.3em 0.8em",
+                borderRadius: "4px",
+                border: "1px solid #ccc",
+                background: "#ffe0e0",
+                cursor: "pointer",
+                display: "flex",
+                alignItems: "center",
+                gap: "0.4em",
+              }}
+              onClick={() => onRejectRequest?.(user?.id)}
+            >
+              <svg
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="none"
+                style={{ verticalAlign: "middle" }}
+              >
+                <path
+                  d="M18.3 5.7c.4.4.4 1 0 1.4L13.4 12l4.9 4.9c.4.4.4 1 0 1.4s-1 .4-1.4 0L12 13.4l-4.9 4.9c-.4.4-1 .4-1.4 0s-.4-1 0-1.4l4.9-4.9-4.9-4.9c-.4-.4-.4-1 0-1.4s1-.4 1.4 0l4.9 4.9 4.9-4.9c.4-.4 1-.4 1.4 0z"
+                  fill="#e74c3c"
+                />
+              </svg>
+              <span>Reject</span>
+            </button>
+          )}
+        </>
+      );
+    }
+
+    return (
+      <button
+        style={{
+          padding: "0.3em 0.8em",
+          borderRadius: "4px",
+          border: "1px solid #ccc",
+          background: "#ffe0e0",
+          cursor: "pointer",
+        }}
+        onClick={() => onUnfriend?.(user?.id)}
+      >
+        Unfriend
+      </button>
+    );
+  };
 
   return (
     <li
@@ -37,7 +229,7 @@ export default function FriendRow({ user, streak, rightContent }) {
           gap: "0.5em",
         }}
       >
-        {rightContent}
+        {renderActions()}
       </div>
     </li>
   );
