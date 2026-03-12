@@ -906,6 +906,10 @@ let strings = new LocalizedStrings(
       exercisesInTheLast: " exercises in the last ",
       wordsNotStudiedInZeeguu: "Words Not Studied in Zeeguu",
       systemLanguage: "System Language",
+
+      // Badges
+      badges: "Badges",
+      myBadges: "My Badges",
     },
 
     da: {

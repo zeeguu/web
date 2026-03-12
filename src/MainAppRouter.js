@@ -29,6 +29,7 @@ import LocalStorage from "./assorted/LocalStorage";
 import { Capacitor } from "@capacitor/core";
 import useAnonymousUpgrade from "./hooks/useAnonymousUpgrade";
 import UpgradeAccountModal from "./components/UpgradeAccountModal";
+import Friends from "./pages/Friends"; 
 
 // Lazy load separate parts of the app
 const LazyTeacherRouter = lazy(() => import("./teacher/_routing/_TeacherRouter"));
@@ -51,6 +52,7 @@ import DailyAudioRouter from "./dailyAudio/_DailyAudioRouter";
 import IndividualExercise from "./pages/IndividualExercise";
 import Swiper from "./swiper/Swiper";
 import KeyboardTest from "./pages/KeyboardTest";
+import Badges from "./badges/Badges";
 
 // Helper to detect if we're in a Capacitor native app
 const isCapacitor = () => {
@@ -103,6 +105,7 @@ export default function MainAppRouter({ hasExtension, handleSuccessfulLogIn }) {
       <Route path="/language_preferences" component={LanguagePreferences} />
       <Route path="/welcome" component={Welcome} />
 
+
       <Route path="/" exact component={HomePage} />
       <Route path="/extension_installed" component={ExtensionInstalled} />
       <Route path="/install_extension" component={InstallExtension} />
@@ -119,6 +122,7 @@ export default function MainAppRouter({ hasExtension, handleSuccessfulLogIn }) {
 
       <PrivateRoute path="/exclude_words" hasExtension={hasExtension} component={ExcludeWords} />
 
+      <PrivateRouteWithLayout path="/friends" component={Friends} />
       <PrivateRouteWithLayout path="/articles" component={ArticlesRouter} />
       <PrivateRouteWithLayout path="/swiper" component={Swiper} />
       <PrivateRoute path="/watch/video" component={VideoPlayer} />
@@ -140,6 +144,7 @@ export default function MainAppRouter({ hasExtension, handleSuccessfulLogIn }) {
         component={ExercisesForArticle}
         source={WEB_READER}
       />
+      <PrivateRouteWithLayout path="/badges" component={Badges} />
       <PrivateRouteWithLayout path="/exercise/:exerciseType/:bookmarkId" component={IndividualExercise} />
       <PrivateRouteWithLayout path="/exercise-test/:exerciseType/:bookmarkId" component={IndividualExercise} />
       <PrivateRouteWithLayout

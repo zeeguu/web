@@ -10,6 +10,8 @@ import NavIcon from "../NavIcon";
 import LanguageModal from "../LanguageModal";
 import navLanguages from "../navLanguages";
 import * as s from "./MoreOptionsPanel.sc";
+import { BadgeCounterContext } from "@/badges/BadgeCounterContext";
+import NotificationIcon from "@/components/NotificationIcon";
 
 export default function MoreOptionsPanel({
   overlayTransition,
@@ -30,6 +32,7 @@ export default function MoreOptionsPanel({
     const languageName = navLanguages[languageCode];
     return languageName || "Language";
   }, [userDetails.learned_language]);
+  const { hasBadgeNotification, totalNumberOfBadges } = useContext(BadgeCounterContext);
 
   return (
     <s.MoreOptionsWrapper
@@ -73,6 +76,11 @@ export default function MoreOptionsPanel({
                 {...NavigationOptions.myActivity}
                 currentPath={currentPath}
                 onClick={handleHideMoreOptions}
+                notification={
+                  hasBadgeNotification && (
+                    <NotificationIcon position={"top-absolute"} text={totalNumberOfBadges} />
+                  )
+                }
               />
 
               {userDetails.is_teacher && (
