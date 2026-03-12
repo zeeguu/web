@@ -281,34 +281,46 @@ export default function FriendsTabContent() {
         </ul>
       )}
 
-      <h3>Incoming Friend Requests</h3>
+      <h3>Friend Requests</h3>
       {loadingRequests && <p>Loading friend requests...</p>}
       {requestsError && <p style={{ color: "red" }}>{requestsError}</p>}
-      {!loadingRequests && !requestsError && friendRequests.length === 0 && (
-        <p>No incoming friend requests.</p>
-      )}
       {!loadingRequests && friendRequests.length > 0 && (
         <ul>
           {friendRequests.map((req) => (
             <li
               key={req.id}
-              style={{ display: "flex", alignItems: "center", gap: "0.5em" }}
+              style={{ display: "flex", alignItems: "center", gap: "1em", padding: "0.5em 0" }}
             >
-              <span>{req.sender.name}</span>
+              {/* Avatar/icon: fallback to emoji if no image */}
+              <span role="img" aria-label="friend" style={{ fontSize: "2em" }}>👤</span>
+              <span style={{ fontWeight: 600 }}>{req.sender.name}</span>
               <span style={{ color: "gray" }}>@{req.sender.username}</span>
+              {/* Friend streak: fallback to 0 if missing */}
+              <span style={{ display: "flex", alignItems: "center", gap: "0.3em", color: "#ff9800", fontWeight: 500 }}>
+                <LocalFireDepartmentIcon sx={{ color: "#ff9800", fontSize: "1.4rem" }} />
+                <span>{req.sender.friend_streak ?? 0}</span>
+              </span>
               <button
                 style={{
-                  marginLeft: "1em",
+                  marginLeft: "auto",
                   padding: "0.3em 0.8em",
                   borderRadius: "4px",
                   border: "1px solid #ccc",
                   background: req.accepted ? "#e0ffe0" : "#e0ffe0",
                   cursor: req.accepted ? "default" : "pointer",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "0.4em"
                 }}
                 onClick={() => handleAcceptFriendRequest(req.sender.id)}
                 disabled={req.accepted}
               >
-                {req.accepted ? "Accepted" : "Accept"}
+                {req.accepted ? "Accepted" : (
+                  <>
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" style={{ verticalAlign: "middle" }}><path d="M9 16.2l-4.2-4.2c-.4-.4-.4-1 0-1.4s1-.4 1.4 0l3.5 3.5 7.5-7.5c.4-.4 1-.4 1.4 0s.4 1 0 1.4l-8.2 8.2c-.4.4-1 .4-1.4 0z" fill="#2ecc40"/></svg>
+                    <span>Accept</span>
+                  </>
+                )}
               </button>
               {!req.accepted && (
                 <button
@@ -319,10 +331,14 @@ export default function FriendsTabContent() {
                     border: "1px solid #ccc",
                     background: "#ffe0e0",
                     cursor: "pointer",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "0.4em"
                   }}
                   onClick={() => handleRejectFriendRequest(req.sender.id)}
                 >
-                  Reject
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" style={{ verticalAlign: "middle" }}><path d="M18.3 5.7c.4.4.4 1 0 1.4L13.4 12l4.9 4.9c.4.4.4 1 0 1.4s-1 .4-1.4 0L12 13.4l-4.9 4.9c-.4.4-1 .4-1.4 0s-.4-1 0-1.4l4.9-4.9-4.9-4.9c-.4-.4-.4-1 0-1.4s1-.4 1.4 0l4.9 4.9 4.9-4.9c.4-.4 1-.4 1.4 0z" fill="#e74c3c"/></svg>
+                  <span>Reject</span>
                 </button>
               )}
             </li>
@@ -330,9 +346,7 @@ export default function FriendsTabContent() {
         </ul>
       )}
 
-      <hr style={{ margin: "2em 0", width: "100%" }} />
-
-      {/* <h3>My Friends</h3> */}
+      <h3>Friends</h3>
       {loadingFriends && <p>Loading friends...</p>}
       {friendsError && <p style={{ color: "red" }}>{friendsError}</p>}
       {!loadingFriends && !friendsError && friends.length === 0 && (
