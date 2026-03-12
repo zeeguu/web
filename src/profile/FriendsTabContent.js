@@ -2,7 +2,7 @@ import { useContext, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import SearchBar from "../components/SearchBar";
 import { APIContext } from "../contexts/APIContext";
-import LocalFireDepartmentIcon from "@mui/icons-material/LocalFireDepartment";
+import FriendRow from "./FriendRow";
 
 
 export default function FriendsTabContent() {
@@ -267,15 +267,11 @@ export default function FriendsTabContent() {
             }
 
             return (
-              <li
+              <FriendRow
                 key={user.id}
-                style={{ display: "flex", alignItems: "center", gap: "0.5em" }}
-              >
-                <span>{user.name}</span>
-                <span style={{ color: "gray" }}>@{user.username}</span>
-                {statusLabel}
-                {button}
-              </li>
+                user={user}
+                rightContent={statusLabel || button}
+              />
             );
           })}
         </ul>
@@ -287,61 +283,55 @@ export default function FriendsTabContent() {
       {!loadingRequests && friendRequests.length > 0 && (
         <ul>
           {friendRequests.map((req) => (
-            <li
+            <FriendRow
               key={req.id}
-              style={{ display: "flex", alignItems: "center", gap: "1em", padding: "0.5em 0" }}
-            >
-              {/* Avatar/icon: fallback to emoji if no image */}
-              <span role="img" aria-label="friend" style={{ fontSize: "2em" }}>👤</span>
-              <span style={{ fontWeight: 600 }}>{req.sender.name}</span>
-              <span style={{ color: "gray" }}>@{req.sender.username}</span>
-              {/* Friend streak: fallback to 0 if missing */}
-              <span style={{ display: "flex", alignItems: "center", gap: "0.3em", color: "#ff9800", fontWeight: 500 }}>
-                <LocalFireDepartmentIcon sx={{ color: "#ff9800", fontSize: "1.4rem" }} />
-                <span>{req.sender.friend_streak ?? 0}</span>
-              </span>
-              <button
-                style={{
-                  marginLeft: "auto",
-                  padding: "0.3em 0.8em",
-                  borderRadius: "4px",
-                  border: "1px solid #ccc",
-                  background: req.accepted ? "#e0ffe0" : "#e0ffe0",
-                  cursor: req.accepted ? "default" : "pointer",
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "0.4em"
-                }}
-                onClick={() => handleAcceptFriendRequest(req.sender.id)}
-                disabled={req.accepted}
-              >
-                {req.accepted ? "Accepted" : (
-                  <>
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" style={{ verticalAlign: "middle" }}><path d="M9 16.2l-4.2-4.2c-.4-.4-.4-1 0-1.4s1-.4 1.4 0l3.5 3.5 7.5-7.5c.4-.4 1-.4 1.4 0s.4 1 0 1.4l-8.2 8.2c-.4.4-1 .4-1.4 0z" fill="#2ecc40"/></svg>
-                    <span>Accept</span>
-                  </>
-                )}
-              </button>
-              {!req.accepted && (
-                <button
-                  style={{
-                    marginLeft: "0.5em",
-                    padding: "0.3em 0.8em",
-                    borderRadius: "4px",
-                    border: "1px solid #ccc",
-                    background: "#ffe0e0",
-                    cursor: "pointer",
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "0.4em"
-                  }}
-                  onClick={() => handleRejectFriendRequest(req.sender.id)}
-                >
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" style={{ verticalAlign: "middle" }}><path d="M18.3 5.7c.4.4.4 1 0 1.4L13.4 12l4.9 4.9c.4.4.4 1 0 1.4s-1 .4-1.4 0L12 13.4l-4.9 4.9c-.4.4-1 .4-1.4 0s-.4-1 0-1.4l4.9-4.9-4.9-4.9c-.4-.4-.4-1 0-1.4s1-.4 1.4 0l4.9 4.9 4.9-4.9c.4-.4 1-.4 1.4 0z" fill="#e74c3c"/></svg>
-                  <span>Reject</span>
-                </button>
-              )}
-            </li>
+              user={req.sender}
+              rightContent={
+                <>
+                  <button
+                    style={{
+                      padding: "0.3em 0.8em",
+                      borderRadius: "4px",
+                      border: "1px solid #ccc",
+                      background: req.accepted ? "#e0ffe0" : "#e0ffe0",
+                      cursor: req.accepted ? "default" : "pointer",
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "0.4em",
+                    }}
+                    onClick={() => handleAcceptFriendRequest(req.sender.id)}
+                    disabled={req.accepted}
+                  >
+                    {req.accepted ? (
+                      "Accepted"
+                    ) : (
+                      <>
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" style={{ verticalAlign: "middle" }}><path d="M9 16.2l-4.2-4.2c-.4-.4-.4-1 0-1.4s1-.4 1.4 0l3.5 3.5 7.5-7.5c.4-.4 1-.4 1.4 0s.4 1 0 1.4l-8.2 8.2c-.4.4-1 .4-1.4 0z" fill="#2ecc40"/></svg>
+                        <span>Accept</span>
+                      </>
+                    )}
+                  </button>
+                  {!req.accepted && (
+                    <button
+                      style={{
+                        padding: "0.3em 0.8em",
+                        borderRadius: "4px",
+                        border: "1px solid #ccc",
+                        background: "#ffe0e0",
+                        cursor: "pointer",
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "0.4em",
+                      }}
+                      onClick={() => handleRejectFriendRequest(req.sender.id)}
+                    >
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" style={{ verticalAlign: "middle" }}><path d="M18.3 5.7c.4.4.4 1 0 1.4L13.4 12l4.9 4.9c.4.4.4 1 0 1.4s-1 .4-1.4 0L12 13.4l-4.9 4.9c-.4.4-1 .4-1.4 0s-.4-1 0-1.4l4.9-4.9-4.9-4.9c-.4-.4-.4-1 0-1.4s1-.4 1.4 0l4.9 4.9 4.9-4.9c.4-.4 1-.4 1.4 0z" fill="#e74c3c"/></svg>
+                      <span>Reject</span>
+                    </button>
+                  )}
+                </>
+              }
+            />
           ))}
         </ul>
       )}
@@ -355,33 +345,24 @@ export default function FriendsTabContent() {
       {!loadingFriends && friends.length > 0 && (
         <ul>
           {friends.map((friend) => (
-            <li
+            <FriendRow
               key={friend.id}
-              style={{ display: "flex", alignItems: "center", gap: "1em", padding: "0.5em 0" }}
-            >
-              {/* Avatar/icon: fallback to emoji if no image */}
-              <span role="img" aria-label="friend" style={{ fontSize: "2em" }}>👤</span>
-              <span style={{ fontWeight: 600 }}>{friend.name}</span>
-              <span style={{ color: "gray" }}>@{friend.username}</span>
-              {/* Friend streak: fallback to 0 if missing */}
-              <span style={{ display: "flex", alignItems: "center", gap: "0.3em", color: "#ff9800", fontWeight: 500 }}>
-                <LocalFireDepartmentIcon sx={{ color: "#ff9800", fontSize: "1.4rem" }} />
-                <span>{friend.friend_streak ?? 0}</span>
-              </span>
-              <button
-                style={{
-                  marginLeft: "auto",
-                  padding: "0.3em 0.8em",
-                  borderRadius: "4px",
-                  border: "1px solid #ccc",
-                  background: "#ffe0e0",
-                  cursor: "pointer",
-                }}
-                onClick={() => handleUnfriend(friend.id)}
-              >
-                Unfriend
-              </button>
-            </li>
+              user={friend}
+              rightContent={
+                <button
+                  style={{
+                    padding: "0.3em 0.8em",
+                    borderRadius: "4px",
+                    border: "1px solid #ccc",
+                    background: "#ffe0e0",
+                    cursor: "pointer",
+                  }}
+                  onClick={() => handleUnfriend(friend.id)}
+                >
+                  Unfriend
+                </button>
+              }
+            />
           ))}
         </ul>
       )}
