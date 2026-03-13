@@ -123,6 +123,8 @@ export default function LanguageModal({ open, setOpen }) {
     api.saveUserDetails(newUserDetails, setErrorMessage, () => {
       // Re-fetch user details to get updated daily_audio_status for new language
       api.getUserDetails((freshUserDetails) => {
+        // Clear cached API responses (e.g. articles) so that the key-based
+        // remount in AppLayout fetches fresh data for the new language
         api.invalidateCache();
         setUserDetails(freshUserDetails);
         LocalStorage.setUserInfo(freshUserDetails);
