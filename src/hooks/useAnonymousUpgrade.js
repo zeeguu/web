@@ -3,7 +3,7 @@ import { useLocation } from "react-router-dom";
 import { UserContext } from "../contexts/UserContext";
 import LocalStorage from "../assorted/LocalStorage";
 
-const BOOKMARK_THRESHOLD = 5;
+const BOOKMARK_THRESHOLD = 50;
 const DAYS_THRESHOLD = 3;
 
 // Settings paths that should trigger upgrade prompt for anonymous users
@@ -110,9 +110,7 @@ export default function useAnonymousUpgrade() {
   useEffect(() => {
     if (!isAnonymous || settingsPromptShown) return;
 
-    const isSettingsPage = SETTINGS_PATHS_THAT_TRIGGER.some(
-      (path) => location.pathname === path
-    );
+    const isSettingsPage = SETTINGS_PATHS_THAT_TRIGGER.some((path) => location.pathname === path);
 
     if (isSettingsPage) {
       // Small delay so page renders first
@@ -132,9 +130,9 @@ export default function useAnonymousUpgrade() {
       setSessionBookmarks((prev) => prev + 1);
     };
 
-    window.addEventListener('zeeguu-bookmark-created', handleBookmarkCreated);
+    window.addEventListener("zeeguu-bookmark-created", handleBookmarkCreated);
     return () => {
-      window.removeEventListener('zeeguu-bookmark-created', handleBookmarkCreated);
+      window.removeEventListener("zeeguu-bookmark-created", handleBookmarkCreated);
     };
   }, [isAnonymous]);
 
