@@ -384,6 +384,74 @@ export default function UpgradeAccountModal({ open, onClose, onSuccess, triggerR
             <div className="back-link">
               <a
                 onClick={() => {
+                  if (isSubmitting) return;
+                  setIsSubmitting(true);
+                  setErrorMessage("");
+                  api.requestEmailVerification(
+                    userEmail,
+                    () => {
+                      setIsSubmitting(false);
+                      toast.success("Code resent!");
+                    },
+                    (err) => {
+                      setIsSubmitting(false);
+                      setErrorMessage(err || "Could not resend code.");
+                    },
+                  );
+                }}
+              >
+                Resend code
+              </a>
+              {" | "}
+              <a
+                onClick={() => {
+                  setStep("email");
+                  setConfirmCode("");
+                  setErrorMessage("");
+                }}
+              >
+                Change email
+              </a>
+            </div>
+          </form>
+        )}
+
+        {step === "password" && (
+          <form onSubmit={handleSetPassword}>
+            <div className="form-fields">
+              <div className="password-field-wrapper">
+                <InputField
+                  type={showPassword ? "text" : "password"}
+                  label="Password"
+                  id="upgrade-password"
+                  name="password"
+                  placeholder="Choose a password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  isError={!isPasswordValid}
+                  errorMessage={passwordMsg}
+                  autoFocus
+                />
+                <button
+                  type="button"
+                  className="password-toggle"
+                  onClick={() => setShowPassword(!showPassword)}
+                  aria-label={showPassword ? "Hide password" : "Show password"}
+                >
+                  {showPassword ? "Hide" : "Show"}
+                </button>
+              </div>
+            </div>
+
+            <div className="buttons">
+              <Button type="submit" disabled={isSubmitting}>
+                {isSubmitting ? "Saving..." : "Save password"}
+              </Button>
+            </div>
+
+            <div className="back-link">
+              <a
+                onClick={() => {
                   setErrorMessage("");
                   api.requestEmailVerification(
                     userEmail,

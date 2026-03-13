@@ -19,10 +19,6 @@ const LocalStorage = {
     AnonUUID: "anon_uuid",
     AnonPassword: "anon_password",
     AnonFirstUseDate: "anon_first_use_date",
-    AnonUpgradeDismissed: "anon_upgrade_dismissed",
-    AnonUpgradePendingEmail: "anon_upgrade_pending_email",
-    AnonUpgradePendingStep: "anon_upgrade_pending_step",
-    AnonUpgradePendingCode: "anon_upgrade_pending_code",
     AudioExperimentNoOfSessions: "audio_experiment_no_of_sessions",
     DisplayedAudioExperimentPopup: "audio_experiment_displayed_popup",
     AudioExperimentCompleted: "audio_experiment_completed",
@@ -326,14 +322,6 @@ const LocalStorage = {
     const now = new Date();
     const diffMs = now - firstUse;
     return Math.floor(diffMs / (1000 * 60 * 60 * 24));
-  },
-
-  isAnonUpgradeDismissed: function () {
-    return localStorage[this.Keys.AnonUpgradeDismissed] === "true";
-  },
-
-  setAnonUpgradeDismissed: function (dismissed) {
-    localStorage[this.Keys.AnonUpgradeDismissed] = dismissed ? "true" : "false";
   },
 
   getThemePreference: function () {
