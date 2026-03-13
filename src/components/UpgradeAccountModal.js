@@ -2,7 +2,11 @@ import { useState, useContext } from "react";
 import Modal from "./modal_shared/Modal";
 import InputField from "./InputField";
 import useFormField from "../hooks/useFormField";
-import { EmailValidator, MinimumLengthValidator, NonEmptyValidator } from "../utils/ValidatorRule/Validator";
+import {
+  EmailValidator,
+  MinimumLengthValidator,
+  NonEmptyValidator,
+} from "../utils/ValidatorRule/Validator";
 import validateRules from "../assorted/validateRules";
 import { APIContext } from "../contexts/APIContext";
 import { UserContext } from "../contexts/UserContext";
@@ -35,13 +39,6 @@ const ModalContent = styled.div`
     display: flex;
     gap: 1em;
     justify-content: center;
-  }
-
-  .choice-buttons {
-    display: flex;
-    flex-direction: column;
-    gap: 0.75em;
-    margin-bottom: 1em;
   }
 
   .error-message {
@@ -104,39 +101,46 @@ const ModalContent = styled.div`
   }
 `;
 
-export default function UpgradeAccountModal({ open, onClose, onSuccess, triggerReason, bookmarkCount }) {
+export default function UpgradeAccountModal({
+  open,
+  onClose,
+  onSuccess,
+  triggerReason,
+  bookmarkCount,
+}) {
   const api = useContext(APIContext);
   const { setUserDetails } = useContext(UserContext);
   const [errorMessage, setErrorMessage] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [step, setStep] = useState("choice"); // "choice", "register", "login", or "confirm"
-  const [userEmail, setUserEmail] = useState("");
   const [showPassword, setShowPassword] = useState(false);
 
-  const [name, setName, validateName, isNameValid, nameMsg] = useFormField("", [
-    NonEmptyValidator("Please enter your name"),
-  ]);
+  // Restore pending upgrade state if user closed the app mid-flow
+  // Since user stays anonymous throughout, this is just for UX convenience
+  const pending = LocalStorage.getAnonUpgradePending();
+  const [step, setStep] = useState(pending ? pending.step : "email");
+  const [userEmail, setUserEmail] = useState(pending ? pending.email : "");
+  const [pendingCode, setPendingCode] = useState(pending ? pending.code : null);
 
-  const [email, setEmail, validateEmail, isEmailValid, emailMsg] = useFormField("", [
-    NonEmptyValidator("Please enter an email"),
-    EmailValidator,
-  ]);
+  const [email, setEmail, validateEmail, isEmailValid, emailMsg] = useFormField(
+    "",
+    [NonEmptyValidator("Please enter an email"), EmailValidator],
+  );
 
-  const [password, setPassword, validatePassword, isPasswordValid, passwordMsg] = useFormField("", [
-    NonEmptyValidator("Please enter a password"),
-    MinimumLengthValidator(4, "Password must be at least 4 characters"),
-  ]);
+  const [password, setPassword, validatePassword, isPasswordValid, passwordMsg] =
+    useFormField("", [
+      NonEmptyValidator("Please enter a password"),
+      MinimumLengthValidator(4, "Password must be at least 4 characters"),
+    ]);
 
   // Login form fields
-  const [loginEmail, setLoginEmail, validateLoginEmail, isLoginEmailValid, loginEmailMsg] = useFormField("", [
-    NonEmptyValidator("Please enter your email"),
-    EmailValidator,
-  ]);
+  const [loginEmail, setLoginEmail, validateLoginEmail, isLoginEmailValid, loginEmailMsg] =
+    useFormField("", [
+      NonEmptyValidator("Please enter your email"),
+      EmailValidator,
+    ]);
 
-  const [loginPassword, setLoginPassword, validateLoginPassword, isLoginPasswordValid, loginPasswordMsg] = useFormField(
-    "",
-    [NonEmptyValidator("Please enter your password")],
-  );
+  const [loginPassword, setLoginPassword, validateLoginPassword, isLoginPasswordValid, loginPasswordMsg] =
+    useFormField("", [NonEmptyValidator("Please enter your password")]);
 
   const [confirmCode, setConfirmCode] = useState("");
 
@@ -144,24 +148,24 @@ export default function UpgradeAccountModal({ open, onClose, onSuccess, triggerR
     e.preventDefault();
     setErrorMessage("");
 
-    if (!validateRules([validateName, validateEmail, validatePassword])) {
+    if (!validateRules([validateEmail])) {
       return;
     }
 
     setIsSubmitting(true);
 
-    api.upgradeAnonUser(
+    // Send verification code without changing the user — they stay anonymous
+    api.requestEmailVerification(
       email,
-      name,
-      password,
       () => {
         setIsSubmitting(false);
         setUserEmail(email);
         setStep("confirm");
+        LocalStorage.setAnonUpgradePending(email, "confirm");
       },
       (error) => {
         setIsSubmitting(false);
-        setErrorMessage(error || "Could not upgrade account. Please try again.");
+        setErrorMessage(error || "Could not send confirmation. Please try again.");
       },
     );
   }
@@ -175,27 +179,54 @@ export default function UpgradeAccountModal({ open, onClose, onSuccess, triggerR
       return;
     }
 
+    // Just store the code and move to password step — no backend call yet
+    setPendingCode(confirmCode);
+    setStep("password");
+    LocalStorage.setAnonUpgradePending(userEmail, "password", confirmCode);
+  }
+
+  function handleSetPassword(e) {
+    e.preventDefault();
+    setErrorMessage("");
+
+    if (!validateRules([validatePassword])) {
+      return;
+    }
+
     setIsSubmitting(true);
 
-    api.confirmEmail(
-      confirmCode,
+    // Complete the upgrade atomically: verify code + set email + set password + mark verified
+    const codeToUse = pendingCode || confirmCode;
+
+    api.completeAccountUpgrade(
+      userEmail,
+      codeToUse,
+      password,
       () => {
-        // Clear anonymous credentials
+        // Clear anonymous and pending upgrade credentials
         LocalStorage.clearAnonCredentials();
+        LocalStorage.clearAnonUpgradePending();
 
         // Refresh user details
         api.getUserDetails((user) => {
           setUserDetails(user);
           LocalStorage.setUserInfo(user);
           setIsSubmitting(false);
-          toast.success("Account created successfully!");
+          toast.success("Account set up!");
           if (onSuccess) onSuccess();
           onClose();
         });
       },
       (error) => {
         setIsSubmitting(false);
-        setErrorMessage(error || "Invalid code. Please try again.");
+        // If code is expired or invalid, go back to email step so they can get a new code
+        if (error && (error.includes("expired") || error.includes("No verification"))) {
+          setStep("email");
+          setConfirmCode("");
+          setPendingCode(null);
+          LocalStorage.clearAnonUpgradePending();
+        }
+        setErrorMessage(error || "Could not complete account setup. Please try again.");
       },
     );
   }
@@ -218,14 +249,16 @@ export default function UpgradeAccountModal({ open, onClose, onSuccess, triggerR
         setErrorMessage(error || "Could not log in. Please check your credentials.");
       },
       (sessionId) => {
-        // Clear anonymous credentials
+        // Clear anonymous and pending upgrade credentials
         LocalStorage.clearAnonCredentials();
+        LocalStorage.clearAnonUpgradePending();
 
         // Refresh user details
         api.getUserDetails((user) => {
           setUserDetails(user);
           LocalStorage.setUserInfo(user);
           setIsSubmitting(false);
+          toast.success("Welcome back!");
           if (onSuccess) onSuccess();
           onClose();
         });
@@ -233,24 +266,16 @@ export default function UpgradeAccountModal({ open, onClose, onSuccess, triggerR
     );
   }
 
-  function handleDismiss() {
-    LocalStorage.setAnonUpgradeDismissed(true);
-    onClose();
-  }
-
   function handleClose() {
-    // Reset state when closing
-    setStep("choice");
-    setConfirmCode("");
-    setErrorMessage("");
-    onClose();
+    // Modal cannot be dismissed — user must complete upgrade or login
+    return;
   }
 
   const getTitle = () => {
     if (step === "confirm") return "Check your email";
+    if (step === "password") return "Choose a password";
     if (step === "login") return "Log In";
-    if (step === "register") return "Create Account";
-    // Choice step - show trigger-based titles
+    // Email step - show trigger-based titles
     if (triggerReason === "bookmarks") return `You've saved ${bookmarkCount} words!`;
     if (triggerReason === "days") return "Welcome back!";
     if (triggerReason === "settings") return "Save Your Settings";
@@ -259,11 +284,13 @@ export default function UpgradeAccountModal({ open, onClose, onSuccess, triggerR
   };
 
   const getSubtitle = () => {
-    if (step === "confirm") return `We sent a confirmation code to ${userEmail}`;
-    if (step === "login") return "Log in to your existing Zeeguu account.";
-    if (step === "register") return "Create a new account to save your progress.";
-    // Choice step - ask if they have an account
-    return "Finish setting up your account to keep your progress!";
+    if (step === "confirm")
+      return `We sent a confirmation code to ${userEmail}`;
+    if (step === "password")
+      return "Set a password so you can log in on other devices.";
+    if (step === "login")
+      return "Log in to your existing Zeeguu account.";
+    return "Please confirm your email to continue.";
   };
 
   return (
@@ -274,24 +301,35 @@ export default function UpgradeAccountModal({ open, onClose, onSuccess, triggerR
 
         {errorMessage && <div className="error-message">{errorMessage}</div>}
 
-        {step === "choice" && (
-          <>
-            <div className="choice-buttons">
-              <Button type="button" className="full-width-btn" onClick={() => setStep("register")}>
-                Continue setup
-              </Button>
-              <Button type="button" className="grey full-width-btn" onClick={() => setStep("login")}>
-                I already have an account
+        {step === "email" && (
+          <form onSubmit={handleUpgrade}>
+            <div className="form-fields">
+              <InputField
+                type="email"
+                label="Email"
+                id="upgrade-email"
+                name="email"
+                placeholder="your@email.com"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                isError={!isEmailValid}
+                errorMessage={emailMsg}
+                autoFocus
+              />
+            </div>
+
+            <div className="buttons">
+              <Button type="submit" disabled={isSubmitting}>
+                {isSubmitting ? "Sending code..." : "Send confirmation code"}
               </Button>
             </div>
-            {triggerReason !== "settings" && (
-              <div className="buttons">
-                <Button type="button" className="grey" onClick={handleDismiss}>
-                  Maybe later
-                </Button>
-              </div>
-            )}
-          </>
+
+            <div className="back-link">
+              <a onClick={() => { setStep("login"); setErrorMessage(""); }}>
+                I already have an account
+              </a>
+            </div>
+          </form>
         )}
 
         {step === "login" && (
@@ -330,82 +368,7 @@ export default function UpgradeAccountModal({ open, onClose, onSuccess, triggerR
             </div>
 
             <div className="back-link">
-              <a
-                onClick={() => {
-                  setStep("choice");
-                  setErrorMessage("");
-                }}
-              >
-                Back
-              </a>
-            </div>
-          </form>
-        )}
-
-        {step === "register" && (
-          <form onSubmit={handleUpgrade}>
-            <div className="form-fields">
-              <InputField
-                type="text"
-                label="Name"
-                id="upgrade-name"
-                name="name"
-                placeholder="Your name"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                isError={!isNameValid}
-                errorMessage={nameMsg}
-                autoFocus
-              />
-
-              <InputField
-                type="email"
-                label="Email"
-                id="upgrade-email"
-                name="email"
-                placeholder="your@email.com"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                isError={!isEmailValid}
-                errorMessage={emailMsg}
-              />
-
-              <div className="password-field-wrapper">
-                <InputField
-                  type={showPassword ? "text" : "password"}
-                  label="Password"
-                  id="upgrade-password"
-                  name="password"
-                  placeholder="Choose a password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  isError={!isPasswordValid}
-                  errorMessage={passwordMsg}
-                />
-                <button
-                  type="button"
-                  className="password-toggle"
-                  onClick={() => setShowPassword(!showPassword)}
-                  aria-label={showPassword ? "Hide password" : "Show password"}
-                >
-                  {showPassword ? "Hide" : "Show"}
-                </button>
-              </div>
-            </div>
-
-            <div className="buttons">
-              <Button type="submit" disabled={isSubmitting}>
-                {isSubmitting ? "Creating..." : "Create Account"}
-              </Button>
-            </div>
-
-            <div className="back-link">
-              <a
-                onClick={() => {
-                  setStep("choice");
-                  setErrorMessage("");
-                }}
-              >
+              <a onClick={() => { setStep("email"); setErrorMessage(""); }}>
                 Back
               </a>
             </div>
@@ -431,6 +394,63 @@ export default function UpgradeAccountModal({ open, onClose, onSuccess, triggerR
             <div className="buttons">
               <Button type="submit" disabled={isSubmitting}>
                 {isSubmitting ? "Confirming..." : "Confirm"}
+              </Button>
+            </div>
+
+            <div className="back-link">
+              <a onClick={() => {
+                setErrorMessage("");
+                api.requestEmailVerification(
+                  userEmail,
+                  () => { toast.success("Code resent!"); },
+                  (err) => { setErrorMessage(err || "Could not resend code."); },
+                );
+              }}>
+                Resend code
+              </a>
+              {" | "}
+              <a onClick={() => {
+                setStep("email");
+                setConfirmCode("");
+                setErrorMessage("");
+                LocalStorage.clearAnonUpgradePending();
+              }}>
+                Change email
+              </a>
+            </div>
+          </form>
+        )}
+
+        {step === "password" && (
+          <form onSubmit={handleSetPassword}>
+            <div className="form-fields">
+              <div className="password-field-wrapper">
+                <InputField
+                  type={showPassword ? "text" : "password"}
+                  label="Password"
+                  id="upgrade-password"
+                  name="password"
+                  placeholder="Choose a password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  isError={!isPasswordValid}
+                  errorMessage={passwordMsg}
+                  autoFocus
+                />
+                <button
+                  type="button"
+                  className="password-toggle"
+                  onClick={() => setShowPassword(!showPassword)}
+                  aria-label={showPassword ? "Hide password" : "Show password"}
+                >
+                  {showPassword ? "Hide" : "Show"}
+                </button>
+              </div>
+            </div>
+
+            <div className="buttons">
+              <Button type="submit" disabled={isSubmitting}>
+                {isSubmitting ? "Saving..." : "Save password"}
               </Button>
             </div>
           </form>

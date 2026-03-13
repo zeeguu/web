@@ -20,6 +20,9 @@ const LocalStorage = {
     AnonPassword: "anon_password",
     AnonFirstUseDate: "anon_first_use_date",
     AnonUpgradeDismissed: "anon_upgrade_dismissed",
+    AnonUpgradePendingEmail: "anon_upgrade_pending_email",
+    AnonUpgradePendingStep: "anon_upgrade_pending_step",
+    AnonUpgradePendingCode: "anon_upgrade_pending_code",
     AudioExperimentNoOfSessions: "audio_experiment_no_of_sessions",
     DisplayedAudioExperimentPopup: "audio_experiment_displayed_popup",
     AudioExperimentCompleted: "audio_experiment_completed",
@@ -33,6 +36,7 @@ const LocalStorage = {
     LastVisitedPage: "last_visited_page",
     LastVisitedTeacherPage: "last_visited_teacher_page",
     DailyFeedbackLastShown: "daily_feedback_last_shown",
+    InviteCode: "invite_code",
     // Keep in sync with index.html inline theme script
     ThemePreference: "zeeguu-theme-preference",
   },
@@ -73,6 +77,35 @@ const LocalStorage = {
 
   setNativeLanguage: function (nativeLanguage) {
     localStorage[this.Keys.NativeLanguage] = nativeLanguage;
+  },
+
+  getInviteCode: function () {
+    return localStorage[this.Keys.InviteCode] || "";
+  },
+
+  setInviteCode: function (inviteCode) {
+    localStorage[this.Keys.InviteCode] = inviteCode;
+  },
+
+  getAnonUpgradePending: function () {
+    const email = localStorage[this.Keys.AnonUpgradePendingEmail];
+    const step = localStorage[this.Keys.AnonUpgradePendingStep];
+    if (email && step) return { email, step, code: localStorage[this.Keys.AnonUpgradePendingCode] || null };
+    return null;
+  },
+
+  setAnonUpgradePending: function (email, step, code) {
+    localStorage[this.Keys.AnonUpgradePendingEmail] = email;
+    localStorage[this.Keys.AnonUpgradePendingStep] = step;
+    if (code !== undefined) {
+      localStorage[this.Keys.AnonUpgradePendingCode] = code;
+    }
+  },
+
+  clearAnonUpgradePending: function () {
+    delete localStorage[this.Keys.AnonUpgradePendingEmail];
+    delete localStorage[this.Keys.AnonUpgradePendingStep];
+    delete localStorage[this.Keys.AnonUpgradePendingCode];
   },
 
   selectedTimePeriod: function () {
@@ -159,6 +192,7 @@ const LocalStorage = {
   },
 
   setUserPreferences: function (preferences) {
+    if (!preferences) return;
     if (preferences["productive_exercises"] !== undefined) {
       localStorage[this.Keys.ProductiveExercisesEnabled] = preferences["productive_exercises"];
     }
