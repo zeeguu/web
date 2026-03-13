@@ -19,7 +19,7 @@ const SETTINGS_PATHS_THAT_TRIGGER = [
  * Hook to manage anonymous user upgrade prompts.
  *
  * Triggers upgrade prompt when:
- * - User has saved 5+ bookmarks, OR
+ * - User has saved 50+ bookmarks, OR
  * - User returns after 3+ days, OR
  * - User visits settings pages (they want to customize = invested)
  *
@@ -47,12 +47,6 @@ export default function useAnonymousUpgrade() {
   function checkUpgradeTrigger(reason = null) {
     // Don't show if not anonymous
     if (!isAnonymous) {
-      setShouldShowUpgrade(false);
-      return;
-    }
-
-    // Don't show if already dismissed (except for settings - always allow that)
-    if (LocalStorage.isAnonUpgradeDismissed() && reason !== "settings") {
       setShouldShowUpgrade(false);
       return;
     }

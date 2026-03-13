@@ -2,11 +2,7 @@ import { useState, useContext } from "react";
 import Modal from "./modal_shared/Modal";
 import InputField from "./InputField";
 import useFormField from "../hooks/useFormField";
-import {
-  EmailValidator,
-  MinimumLengthValidator,
-  NonEmptyValidator,
-} from "../utils/ValidatorRule/Validator";
+import { EmailValidator, MinimumLengthValidator, NonEmptyValidator } from "../utils/ValidatorRule/Validator";
 import validateRules from "../assorted/validateRules";
 import { APIContext } from "../contexts/APIContext";
 import { UserContext } from "../contexts/UserContext";
@@ -101,13 +97,7 @@ const ModalContent = styled.div`
   }
 `;
 
-export default function UpgradeAccountModal({
-  open,
-  onClose,
-  onSuccess,
-  triggerReason,
-  bookmarkCount,
-}) {
+export default function UpgradeAccountModal({ open, onClose, onSuccess, triggerReason, bookmarkCount }) {
   const api = useContext(APIContext);
   const { setUserDetails } = useContext(UserContext);
   const [errorMessage, setErrorMessage] = useState("");
@@ -116,33 +106,54 @@ export default function UpgradeAccountModal({
 
   // Restore pending upgrade state if user closed the app mid-flow
   // Since user stays anonymous throughout, this is just for UX convenience
-  const pending = LocalStorage.getAnonUpgradePending();
-  const [step, setStep] = useState(pending ? pending.step : "email");
-  const [userEmail, setUserEmail] = useState(pending ? pending.email : "");
-  const [pendingCode, setPendingCode] = useState(pending ? pending.code : null);
+  const [step, setStep] = useState(() => {
+    const p = LocalStorage.getAnonUpgradePending();
+    return p ? p.step : "email";
+  });
+  const [userEmail, setUserEmail] = useState(() => {
+    const p = LocalStorage.getAnonUpgradePending();
+    return p ? p.email : "";
+  });
+  const [pendingCode, setPendingCode] = useState(() => {
+    const p = LocalStorage.getAnonUpgradePending();
+    return p ? p.code : null;
+  });
 
-  const [email, setEmail, validateEmail, isEmailValid, emailMsg] = useFormField(
-    "",
-    [NonEmptyValidator("Please enter an email"), EmailValidator],
-  );
+  const [email, setEmail, validateEmail, isEmailValid, emailMsg] = useFormField("", [
+    NonEmptyValidator("Please enter an email"),
+    EmailValidator,
+  ]);
 
-  const [password, setPassword, validatePassword, isPasswordValid, passwordMsg] =
-    useFormField("", [
-      NonEmptyValidator("Please enter a password"),
-      MinimumLengthValidator(4, "Password must be at least 4 characters"),
-    ]);
+  const [password, setPassword, validatePassword, isPasswordValid, passwordMsg] = useFormField("", [
+    NonEmptyValidator("Please enter a password"),
+    MinimumLengthValidator(4, "Password must be at least 4 characters"),
+  ]);
 
   // Login form fields
-  const [loginEmail, setLoginEmail, validateLoginEmail, isLoginEmailValid, loginEmailMsg] =
-    useFormField("", [
-      NonEmptyValidator("Please enter your email"),
-      EmailValidator,
-    ]);
+  const [loginEmail, setLoginEmail, validateLoginEmail, isLoginEmailValid, loginEmailMsg] = useFormField("", [
+    NonEmptyValidator("Please enter your email"),
+    EmailValidator,
+  ]);
 
-  const [loginPassword, setLoginPassword, validateLoginPassword, isLoginPasswordValid, loginPasswordMsg] =
-    useFormField("", [NonEmptyValidator("Please enter your password")]);
+  const [loginPassword, setLoginPassword, validateLoginPassword, isLoginPasswordValid, loginPasswordMsg] = useFormField(
+    "",
+    [NonEmptyValidator("Please enter your password")],
+  );
 
   const [confirmCode, setConfirmCode] = useState("");
+
+  function finishUpgrade(toastMessage) {
+    LocalStorage.clearAnonCredentials();
+    LocalStorage.clearAnonUpgradePending();
+    api.getUserDetails((user) => {
+      setUserDetails(user);
+      LocalStorage.setUserInfo(user);
+      setIsSubmitting(false);
+      toast.success(toastMessage);
+      if (onSuccess) onSuccess();
+      onClose();
+    });
+  }
 
   function handleUpgrade(e) {
     e.preventDefault();
@@ -203,19 +214,7 @@ export default function UpgradeAccountModal({
       codeToUse,
       password,
       () => {
-        // Clear anonymous and pending upgrade credentials
-        LocalStorage.clearAnonCredentials();
-        LocalStorage.clearAnonUpgradePending();
-
-        // Refresh user details
-        api.getUserDetails((user) => {
-          setUserDetails(user);
-          LocalStorage.setUserInfo(user);
-          setIsSubmitting(false);
-          toast.success("Account set up!");
-          if (onSuccess) onSuccess();
-          onClose();
-        });
+        finishUpgrade("Account set up!");
       },
       (error) => {
         setIsSubmitting(false);
@@ -249,26 +248,17 @@ export default function UpgradeAccountModal({
         setErrorMessage(error || "Could not log in. Please check your credentials.");
       },
       (sessionId) => {
-        // Clear anonymous and pending upgrade credentials
-        LocalStorage.clearAnonCredentials();
-        LocalStorage.clearAnonUpgradePending();
-
-        // Refresh user details
-        api.getUserDetails((user) => {
-          setUserDetails(user);
-          LocalStorage.setUserInfo(user);
-          setIsSubmitting(false);
-          toast.success("Welcome back!");
-          if (onSuccess) onSuccess();
-          onClose();
-        });
+        finishUpgrade("Welcome back!");
       },
     );
   }
 
   function handleClose() {
-    // Modal cannot be dismissed — user must complete upgrade or login
-    return;
+    setStep("email");
+    setConfirmCode("");
+    setErrorMessage("");
+    LocalStorage.clearAnonUpgradePending();
+    onClose();
   }
 
   const getTitle = () => {
@@ -284,12 +274,9 @@ export default function UpgradeAccountModal({
   };
 
   const getSubtitle = () => {
-    if (step === "confirm")
-      return `We sent a confirmation code to ${userEmail}`;
-    if (step === "password")
-      return "Set a password so you can log in on other devices.";
-    if (step === "login")
-      return "Log in to your existing Zeeguu account.";
+    if (step === "confirm") return `We sent a confirmation code to ${userEmail}`;
+    if (step === "password") return "Set a password so you can log in on other devices.";
+    if (step === "login") return "Log in to your existing Zeeguu account.";
     return "Please confirm your email to continue.";
   };
 
@@ -325,7 +312,12 @@ export default function UpgradeAccountModal({
             </div>
 
             <div className="back-link">
-              <a onClick={() => { setStep("login"); setErrorMessage(""); }}>
+              <a
+                onClick={() => {
+                  setStep("login");
+                  setErrorMessage("");
+                }}
+              >
                 I already have an account
               </a>
             </div>
@@ -368,7 +360,12 @@ export default function UpgradeAccountModal({
             </div>
 
             <div className="back-link">
-              <a onClick={() => { setStep("email"); setErrorMessage(""); }}>
+              <a
+                onClick={() => {
+                  setStep("email");
+                  setErrorMessage("");
+                }}
+              >
                 Back
               </a>
             </div>
@@ -380,10 +377,12 @@ export default function UpgradeAccountModal({
             <div className="form-fields">
               <InputField
                 type="text"
+                inputMode="numeric"
+                pattern="[0-9]*"
                 label="Confirmation Code"
                 id="confirm-code"
                 name="code"
-                placeholder="Enter code"
+                placeholder="1234"
                 value={confirmCode}
                 onChange={(e) => setConfirmCode(e.target.value)}
                 className="code-input"
@@ -398,23 +397,96 @@ export default function UpgradeAccountModal({
             </div>
 
             <div className="back-link">
-              <a onClick={() => {
-                setErrorMessage("");
-                api.requestEmailVerification(
-                  userEmail,
-                  () => { toast.success("Code resent!"); },
-                  (err) => { setErrorMessage(err || "Could not resend code."); },
-                );
-              }}>
+              <a
+                onClick={() => {
+                  setErrorMessage("");
+                  api.requestEmailVerification(
+                    userEmail,
+                    () => {
+                      toast.success("Code resent!");
+                    },
+                    (err) => {
+                      setErrorMessage(err || "Could not resend code.");
+                    },
+                  );
+                }}
+              >
                 Resend code
               </a>
               {" | "}
-              <a onClick={() => {
-                setStep("email");
-                setConfirmCode("");
-                setErrorMessage("");
-                LocalStorage.clearAnonUpgradePending();
-              }}>
+              <a
+                onClick={() => {
+                  setStep("email");
+                  setConfirmCode("");
+                  setErrorMessage("");
+                  LocalStorage.clearAnonUpgradePending();
+                }}
+              >
+                Change email
+              </a>
+            </div>
+          </form>
+        )}
+
+        {step === "password" && (
+          <form onSubmit={handleSetPassword}>
+            <div className="form-fields">
+              <div className="password-field-wrapper">
+                <InputField
+                  type={showPassword ? "text" : "password"}
+                  label="Password"
+                  id="upgrade-password"
+                  name="password"
+                  placeholder="Choose a password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  isError={!isPasswordValid}
+                  errorMessage={passwordMsg}
+                  autoFocus
+                />
+                <button
+                  type="button"
+                  className="password-toggle"
+                  onClick={() => setShowPassword(!showPassword)}
+                  aria-label={showPassword ? "Hide password" : "Show password"}
+                >
+                  {showPassword ? "Hide" : "Show"}
+                </button>
+              </div>
+            </div>
+
+            <div className="buttons">
+              <Button type="submit" disabled={isSubmitting}>
+                {isSubmitting ? "Saving..." : "Save password"}
+              </Button>
+            </div>
+
+            <div className="back-link">
+              <a
+                onClick={() => {
+                  setErrorMessage("");
+                  api.requestEmailVerification(
+                    userEmail,
+                    () => {
+                      toast.success("Code resent!");
+                    },
+                    (err) => {
+                      setErrorMessage(err || "Could not resend code.");
+                    },
+                  );
+                }}
+              >
+                Resend code
+              </a>
+              {" | "}
+              <a
+                onClick={() => {
+                  setStep("email");
+                  setConfirmCode("");
+                  setErrorMessage("");
+                  LocalStorage.clearAnonUpgradePending();
+                }}
+              >
                 Change email
               </a>
             </div>

@@ -76,7 +76,6 @@ const Zeeguu_API = class {
     fetch(this._appendSessionToUrl(endpoint, this.session))
       .then((response) => {
         if (!response.ok) {
-          check403ForPendingUpgrade(response.status);
           throw new Error(`HTTP ${response.status} on GET ${endpoint}`);
         }
         return response.json();
@@ -120,11 +119,10 @@ const Zeeguu_API = class {
           if (response.ok) {
             return getJson ? response.json() : response.text();
           }
-          check403ForPendingUpgrade(response.status);
           // Error response - try to get message from JSON body
           return response.json().then(
             (data) => Promise.reject(data.message || `HTTP ${response.status}`),
-            () => Promise.reject(`HTTP ${response.status}`)
+            () => Promise.reject(`HTTP ${response.status}`),
           );
         })
         .then((data) => callback(data))
@@ -142,7 +140,7 @@ const Zeeguu_API = class {
         }
         return response.json().then(
           (data) => Promise.reject(data.message || `HTTP ${response.status}`),
-          () => Promise.reject(`HTTP ${response.status}`)
+          () => Promise.reject(`HTTP ${response.status}`),
         );
       });
     }
@@ -175,7 +173,11 @@ const Zeeguu_API = class {
 
     const headers = isForm ? { "Content-Type": "multipart/form-data" } : { "Content-Type": "application/json" };
 
-    console.log(`[FRONTEND-API] POST ${endpoint} - START`, { timestamp: new Date().toISOString(), endpoint, dataSize: data ? JSON.stringify(data).length : 0 });
+    console.log(`[FRONTEND-API] POST ${endpoint} - START`, {
+      timestamp: new Date().toISOString(),
+      endpoint,
+      dataSize: data ? JSON.stringify(data).length : 0,
+    });
 
     const startTime = performance.now();
     try {
@@ -187,7 +189,11 @@ const Zeeguu_API = class {
         data: data,
       });
       const elapsed = performance.now() - startTime;
-      console.log(`[FRONTEND-API] POST ${endpoint} - SUCCESS`, { timestamp: new Date().toISOString(), elapsed: `${elapsed.toFixed(2)}ms`, status: res.status });
+      console.log(`[FRONTEND-API] POST ${endpoint} - SUCCESS`, {
+        timestamp: new Date().toISOString(),
+        elapsed: `${elapsed.toFixed(2)}ms`,
+        status: res.status,
+      });
       return res;
     } catch (error) {
       const elapsed = performance.now() - startTime;
@@ -196,7 +202,7 @@ const Zeeguu_API = class {
         elapsed: `${elapsed.toFixed(2)}ms`,
         error: error.message,
         code: error.code,
-        response: error.response?.status
+        response: error.response?.status,
       });
       if (error.response?.status) {
         check403ForPendingUpgrade(error.response.status);
