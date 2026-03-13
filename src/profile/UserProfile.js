@@ -5,38 +5,24 @@ import strings from "../i18n/definitions";
 import { APIContext } from "../contexts/APIContext";
 import DynamicFlagImage from "../components/DynamicFlagImage";
 import { ProgressContext } from "../contexts/ProgressContext";
-import * as s from "./UserProfile.sc.js";
+import * as s from "./UserProfile.sc";
 import LocalFireDepartmentIcon from "@mui/icons-material/LocalFireDepartment";
+import EditIcon from "@mui/icons-material/Edit";
+import { useHistory } from "react-router-dom";
 import Modal from "../components/modal_shared/Modal";
 import Header from "../components/modal_shared/Header.sc";
 import Heading from "../components/modal_shared/Heading.sc";
 import Main from "../components/modal_shared/Main.sc";
-import {
-  AVATAR_BACKGROUND_COLORS,
-  AVATAR_CHARACTER_COLORS,
-  AVATAR_IMAGES,
-  getAvatarImageById,
-  getSavedBackgroundColor,
-  getSavedCharacterColor,
-  getSavedCharacterId,
-  saveCharacterBackgroundColor,
-  saveCharacterColor,
-  saveCharacterId,
-} from "./avatarOptions";
-
-const MAX_VISIBLE_LANGUAGES = 3;
+import { orange100, orange600 } from "../components/colors";
 
 export default function UserProfile() {
+  const history = useHistory();
   const api = useContext(APIContext);
   const { userDetails } = useContext(UserContext);
   const { daysPracticed } = useContext(ProgressContext);
   const [allDailyStreakInfo, setAllDailyStreakInfo] = useState(null);
   const [activeTab, setActiveTab] = useState("overview");
   const [showLanguagesModal, setShowLanguagesModal] = useState(false);
-  const [showAvatarModal, setShowAvatarModal] = useState(false);
-  const [selectedCharacterId, setSelectedCharacterId] = useState(getSavedCharacterId);
-  const [selectedCharacterColor, setSelectedCharacterColor] = useState(getSavedCharacterColor);
-  const [selectedBackgroundColor, setSelectedBackgroundColor] = useState(getSavedBackgroundColor);
 
   const tabs = [
     { key: "overview", label: "Overview" },
@@ -44,12 +30,11 @@ export default function UserProfile() {
     { key: "badges", label: "Badges" },
   ];
 
-  const currentAvatarImage = getAvatarImageById(selectedCharacterId);
-
-  const visibleLanguages = allDailyStreakInfo?.slice(0, MAX_VISIBLE_LANGUAGES);
+  const max_visible_languages = 3;
+  const visibleLanguages = allDailyStreakInfo?.slice(0, max_visible_languages);
   const overflowCount = allDailyStreakInfo
-    ? allDailyStreakInfo.length > MAX_VISIBLE_LANGUAGES
-      ? allDailyStreakInfo.length - MAX_VISIBLE_LANGUAGES
+    ? allDailyStreakInfo.length > max_visible_languages
+      ? allDailyStreakInfo.length - max_visible_languages
       : 0
     : 0;
 
@@ -72,11 +57,20 @@ export default function UserProfile() {
   return (
     <s.ProfileWrapper>
       <s.HeaderCard>
-        <s.AvatarWrapper onClick={() => setShowAvatarModal(true)} $backgroundColor={selectedBackgroundColor}>
-          <s.AvatarImage $imageSource={currentAvatarImage.src} $color={selectedCharacterColor} />
-        </s.AvatarWrapper>
+        <s.EditProfileButton onClick={() => history.push("/account_settings/profile_details")}>
+          <EditIcon sx={{ fontSize: "1rem" }} />
+        </s.EditProfileButton>
+        <s.AvatarBackground $backgroundColor={userDetails.user_avatar?.background_color || orange100}>
+          <s.AvatarImage
+            $imageSource={`/static/avatars/${userDetails.user_avatar?.image_name || "elephant.svg"}`}
+            $color={userDetails.user_avatar?.character_color || orange600}
+          />
+        </s.AvatarBackground>
         <div>
-          <h2 className="username">{userDetails.name}</h2>
+          <div className="name-wrapper">
+            <h2 className="username">{userDetails.username}</h2>
+            {userDetails.name && <h2 className="display-name">({userDetails.name})</h2>}
+          </div>
 
           <div className="meta">
             <span className="label">Active languages:</span>
@@ -122,66 +116,6 @@ export default function UserProfile() {
           {activeTab === "badges" && <div>Badges content goes here.</div>}
         </s.TabContent>
       </s.TabsSection>
-
-      <Modal open={showAvatarModal} onClose={() => setShowAvatarModal(false)}>
-        <Header>
-          <Heading>Choose Your Avatar</Heading>
-        </Header>
-        <Main>
-          <s.PickerSection>
-            <span className="picker-label">Character</span>
-            <s.PickerGrid>
-              {AVATAR_IMAGES.map((avatar) => (
-                <s.AvatarOption
-                  key={avatar.id}
-                  $selected={selectedCharacterId === avatar.id}
-                  $backgroundColor={selectedBackgroundColor}
-                  onClick={() => {
-                    setSelectedCharacterId(avatar.id);
-                    saveCharacterId(avatar.id);
-                  }}
-                >
-                  <s.AvatarImage $imageSource={avatar.src} $color={selectedCharacterColor} />
-                </s.AvatarOption>
-              ))}
-            </s.PickerGrid>
-          </s.PickerSection>
-
-          <s.PickerSection>
-            <span className="picker-label">Character Color</span>
-            <s.PickerGrid>
-              {AVATAR_CHARACTER_COLORS.map((color) => (
-                <s.ColorOption
-                  key={color}
-                  $backgroundColor={color}
-                  $selected={selectedCharacterColor === color}
-                  onClick={() => {
-                    setSelectedCharacterColor(color);
-                    saveCharacterColor(color);
-                  }}
-                />
-              ))}
-            </s.PickerGrid>
-          </s.PickerSection>
-
-          <s.PickerSection>
-            <span className="picker-label">Background Color</span>
-            <s.PickerGrid>
-              {AVATAR_BACKGROUND_COLORS.map((color) => (
-                <s.ColorOption
-                  key={color}
-                  $backgroundColor={color}
-                  $selected={selectedBackgroundColor === color}
-                  onClick={() => {
-                    setSelectedBackgroundColor(color);
-                    saveCharacterBackgroundColor(color);
-                  }}
-                />
-              ))}
-            </s.PickerGrid>
-          </s.PickerSection>
-        </Main>
-      </Modal>
 
       <Modal open={showLanguagesModal} onClose={() => setShowLanguagesModal(false)}>
         <Header>
