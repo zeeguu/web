@@ -540,7 +540,7 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
         isExerciseOver={isExerciseOver}
         contextUsed={
           selectedExerciseBookmark?.context_tokenized
-            ? selectedExerciseBookmark.context_tokenized.map(t => t.text || t).join("")
+            ? selectedExerciseBookmark.context_tokenized.map(t => typeof t === "string" ? t : (t.text ?? "")).join("")
             : selectedExerciseBookmark?.context || currentBookmarksToStudy?.[0]?.context || ""
         }
       />
