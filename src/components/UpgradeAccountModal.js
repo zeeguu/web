@@ -104,20 +104,9 @@ export default function UpgradeAccountModal({ open, onClose, onSuccess, triggerR
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
 
-  // Restore pending upgrade state if user closed the app mid-flow
-  // Since user stays anonymous throughout, this is just for UX convenience
-  const [step, setStep] = useState(() => {
-    const p = LocalStorage.getAnonUpgradePending();
-    return p ? p.step : "email";
-  });
-  const [userEmail, setUserEmail] = useState(() => {
-    const p = LocalStorage.getAnonUpgradePending();
-    return p ? p.email : "";
-  });
-  const [pendingCode, setPendingCode] = useState(() => {
-    const p = LocalStorage.getAnonUpgradePending();
-    return p ? p.code : null;
-  });
+  const [step, setStep] = useState("email");
+  const [userEmail, setUserEmail] = useState("");
+  const [pendingCode, setPendingCode] = useState(null);
 
   const [email, setEmail, validateEmail, isEmailValid, emailMsg] = useFormField("", [
     NonEmptyValidator("Please enter an email"),
@@ -144,7 +133,6 @@ export default function UpgradeAccountModal({ open, onClose, onSuccess, triggerR
 
   function finishUpgrade(toastMessage) {
     LocalStorage.clearAnonCredentials();
-    LocalStorage.clearAnonUpgradePending();
     api.getUserDetails((user) => {
       setUserDetails(user);
       LocalStorage.setUserInfo(user);
@@ -172,7 +160,6 @@ export default function UpgradeAccountModal({ open, onClose, onSuccess, triggerR
         setIsSubmitting(false);
         setUserEmail(email);
         setStep("confirm");
-        LocalStorage.setAnonUpgradePending(email, "confirm");
       },
       (error) => {
         setIsSubmitting(false);
@@ -193,7 +180,6 @@ export default function UpgradeAccountModal({ open, onClose, onSuccess, triggerR
     // Just store the code and move to password step — no backend call yet
     setPendingCode(confirmCode);
     setStep("password");
-    LocalStorage.setAnonUpgradePending(userEmail, "password", confirmCode);
   }
 
   function handleSetPassword(e) {
@@ -223,7 +209,6 @@ export default function UpgradeAccountModal({ open, onClose, onSuccess, triggerR
           setStep("email");
           setConfirmCode("");
           setPendingCode(null);
-          LocalStorage.clearAnonUpgradePending();
         }
         setErrorMessage(error || "Could not complete account setup. Please try again.");
       },
@@ -393,6 +378,70 @@ export default function UpgradeAccountModal({ open, onClose, onSuccess, triggerR
             <div className="buttons">
               <Button type="submit" disabled={isSubmitting}>
                 {isSubmitting ? "Confirming..." : "Confirm"}
+              </Button>
+            </div>
+
+            <div className="back-link">
+              <a
+                onClick={() => {
+                  setErrorMessage("");
+                  api.requestEmailVerification(
+                    userEmail,
+                    () => {
+                      toast.success("Code resent!");
+                    },
+                    (err) => {
+                      setErrorMessage(err || "Could not resend code.");
+                    },
+                  );
+                }}
+              >
+                Resend code
+              </a>
+              {" | "}
+              <a
+                onClick={() => {
+                  setStep("email");
+                  setConfirmCode("");
+                  setErrorMessage("");
+                }}
+              >
+                Change email
+              </a>
+            </div>
+          </form>
+        )}
+
+        {step === "password" && (
+          <form onSubmit={handleSetPassword}>
+            <div className="form-fields">
+              <div className="password-field-wrapper">
+                <InputField
+                  type={showPassword ? "text" : "password"}
+                  label="Password"
+                  id="upgrade-password"
+                  name="password"
+                  placeholder="Choose a password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  isError={!isPasswordValid}
+                  errorMessage={passwordMsg}
+                  autoFocus
+                />
+                <button
+                  type="button"
+                  className="password-toggle"
+                  onClick={() => setShowPassword(!showPassword)}
+                  aria-label={showPassword ? "Hide password" : "Show password"}
+                >
+                  {showPassword ? "Hide" : "Show"}
+                </button>
+              </div>
+            </div>
+
+            <div className="buttons">
+              <Button type="submit" disabled={isSubmitting}>
+                {isSubmitting ? "Saving..." : "Save password"}
               </Button>
             </div>
 

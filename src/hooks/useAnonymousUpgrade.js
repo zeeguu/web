@@ -84,13 +84,6 @@ export default function useAnonymousUpgrade() {
   // Check on mount and when userDetails changes
   useEffect(() => {
     if (userDetails && !hasChecked) {
-      // If there's a pending upgrade (user was mid-flow), show immediately
-      if (isAnonymous && LocalStorage.getAnonUpgradePending()) {
-        checkUpgradeTrigger("pending");
-        setHasChecked(true);
-        return;
-      }
-
       checkUpgradeTrigger();
       setHasChecked(true);
     }

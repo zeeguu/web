@@ -76,6 +76,7 @@ const Zeeguu_API = class {
     fetch(this._appendSessionToUrl(endpoint, this.session))
       .then((response) => {
         if (!response.ok) {
+
           throw new Error(`HTTP ${response.status} on GET ${endpoint}`);
         }
         return response.json();
@@ -119,6 +120,7 @@ const Zeeguu_API = class {
           if (response.ok) {
             return getJson ? response.json() : response.text();
           }
+
           // Error response - try to get message from JSON body
           return response.json().then(
             (data) => Promise.reject(data.message || `HTTP ${response.status}`),

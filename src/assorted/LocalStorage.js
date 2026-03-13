@@ -87,27 +87,6 @@ const LocalStorage = {
     localStorage[this.Keys.InviteCode] = inviteCode;
   },
 
-  getAnonUpgradePending: function () {
-    const email = localStorage[this.Keys.AnonUpgradePendingEmail];
-    const step = localStorage[this.Keys.AnonUpgradePendingStep];
-    if (email && step) return { email, step, code: localStorage[this.Keys.AnonUpgradePendingCode] || null };
-    return null;
-  },
-
-  setAnonUpgradePending: function (email, step, code) {
-    localStorage[this.Keys.AnonUpgradePendingEmail] = email;
-    localStorage[this.Keys.AnonUpgradePendingStep] = step;
-    if (code !== undefined) {
-      localStorage[this.Keys.AnonUpgradePendingCode] = code;
-    }
-  },
-
-  clearAnonUpgradePending: function () {
-    delete localStorage[this.Keys.AnonUpgradePendingEmail];
-    delete localStorage[this.Keys.AnonUpgradePendingStep];
-    delete localStorage[this.Keys.AnonUpgradePendingCode];
-  },
-
   selectedTimePeriod: function () {
     return localStorage[this.Keys.SelectedTimePeriod] ? localStorage[this.Keys.SelectedTimePeriod] : 30;
   },
