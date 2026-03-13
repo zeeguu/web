@@ -42,8 +42,7 @@ export default function CreateAccount({ handleSuccessfulLogIn }) {
   const learnedLanguage = LocalStorage.getLearnedLanguage();
   const nativeLanguage = LocalStorage.getNativeLanguage();
   const learnedCefrLevel = LocalStorage.getLearnedCefrLevel();
-
-  const [inviteCode, setInviteCode] = useFormField("", []);
+  const inviteCode = LocalStorage.getInviteCode();
 
   const [name, setName, validateName, isNameValid, nameMsg] = useFormField("", [
     NonEmptyValidator("Please enter a name."),
@@ -175,23 +174,6 @@ export default function CreateAccount({ handleSuccessfulLogIn }) {
         <Form action={""} method={"POST"}>
           {errorMessage && <FullWidthErrorMsg>{errorMessage}</FullWidthErrorMsg>}
           <FormSection>
-            <InputField
-              type={"text"}
-              label={strings.inviteCode + " (optional)"}
-              id={"invite-code"}
-              name={"invite-code"}
-              placeholder={strings.inviteCodePlaceholder}
-              value={inviteCode}
-              onChange={(e) => {
-                setInviteCode(e.target.value);
-              }}
-              helperText={
-                <div>
-                  Only needed if you received one from a teacher or researcher.
-                </div>
-              }
-            />
-
             <InputField
               type={"text"}
               label={strings.fullName}

@@ -69,7 +69,7 @@ export default function LanguagePreferences() {
   }
 
   const [nativeLanguage, setNativeLanguage, validateNativeLanguage, isNativeLanguageValid, nativeLanguageMsg] =
-    useFormField("", NonEmptyValidator("Please select a language."));
+    useFormField("en", NonEmptyValidator("Please select a language."));
 
   const [learnedLanguage, setLearnedLanguage, validateLearnedLanguage, isLearnedLanguageValid, learnedLanguageMsg] =
     useFormField(getInitialLearnedLanguage(), NonEmptyValidator("Please select a language."));

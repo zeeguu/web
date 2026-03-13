@@ -37,13 +37,6 @@ const ModalContent = styled.div`
     justify-content: center;
   }
 
-  .choice-buttons {
-    display: flex;
-    flex-direction: column;
-    gap: 0.75em;
-    margin-bottom: 1em;
-  }
-
   .error-message {
     color: #d32f2f;
     margin-bottom: 1em;
@@ -109,13 +102,11 @@ export default function UpgradeAccountModal({ open, onClose, onSuccess, triggerR
   const { setUserDetails } = useContext(UserContext);
   const [errorMessage, setErrorMessage] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [step, setStep] = useState("choice"); // "choice", "register", "login", or "confirm"
-  const [userEmail, setUserEmail] = useState("");
   const [showPassword, setShowPassword] = useState(false);
 
-  const [name, setName, validateName, isNameValid, nameMsg] = useFormField("", [
-    NonEmptyValidator("Please enter your name"),
-  ]);
+  const [step, setStep] = useState("email");
+  const [userEmail, setUserEmail] = useState("");
+  const [pendingCode, setPendingCode] = useState(null);
 
   const [email, setEmail, validateEmail, isEmailValid, emailMsg] = useFormField("", [
     NonEmptyValidator("Please enter an email"),
@@ -140,20 +131,31 @@ export default function UpgradeAccountModal({ open, onClose, onSuccess, triggerR
 
   const [confirmCode, setConfirmCode] = useState("");
 
+  function finishUpgrade(toastMessage) {
+    LocalStorage.clearAnonCredentials();
+    api.getUserDetails((user) => {
+      setUserDetails(user);
+      LocalStorage.setUserInfo(user);
+      setIsSubmitting(false);
+      toast.success(toastMessage);
+      if (onSuccess) onSuccess();
+      onClose();
+    });
+  }
+
   function handleUpgrade(e) {
     e.preventDefault();
     setErrorMessage("");
 
-    if (!validateRules([validateName, validateEmail, validatePassword])) {
+    if (!validateRules([validateEmail])) {
       return;
     }
 
     setIsSubmitting(true);
 
-    api.upgradeAnonUser(
+    // Send verification code without changing the user — they stay anonymous
+    api.requestEmailVerification(
       email,
-      name,
-      password,
       () => {
         setIsSubmitting(false);
         setUserEmail(email);
@@ -161,7 +163,7 @@ export default function UpgradeAccountModal({ open, onClose, onSuccess, triggerR
       },
       (error) => {
         setIsSubmitting(false);
-        setErrorMessage(error || "Could not upgrade account. Please try again.");
+        setErrorMessage(error || "Could not send confirmation. Please try again.");
       },
     );
   }
@@ -175,27 +177,40 @@ export default function UpgradeAccountModal({ open, onClose, onSuccess, triggerR
       return;
     }
 
+    // Just store the code and move to password step — no backend call yet
+    setPendingCode(confirmCode);
+    setStep("password");
+  }
+
+  function handleSetPassword(e) {
+    e.preventDefault();
+    setErrorMessage("");
+
+    if (!validateRules([validatePassword])) {
+      return;
+    }
+
     setIsSubmitting(true);
 
-    api.confirmEmail(
-      confirmCode,
-      () => {
-        // Clear anonymous credentials
-        LocalStorage.clearAnonCredentials();
+    // Complete the upgrade atomically: verify code + set email + set password + mark verified
+    const codeToUse = pendingCode || confirmCode;
 
-        // Refresh user details
-        api.getUserDetails((user) => {
-          setUserDetails(user);
-          LocalStorage.setUserInfo(user);
-          setIsSubmitting(false);
-          toast.success("Account created successfully!");
-          if (onSuccess) onSuccess();
-          onClose();
-        });
+    api.completeAccountUpgrade(
+      userEmail,
+      codeToUse,
+      password,
+      () => {
+        finishUpgrade("Account set up!");
       },
       (error) => {
         setIsSubmitting(false);
-        setErrorMessage(error || "Invalid code. Please try again.");
+        // If code is expired or invalid, go back to email step so they can get a new code
+        if (error && (error.includes("expired") || error.includes("No verification"))) {
+          setStep("email");
+          setConfirmCode("");
+          setPendingCode(null);
+        }
+        setErrorMessage(error || "Could not complete account setup. Please try again.");
       },
     );
   }
@@ -218,39 +233,24 @@ export default function UpgradeAccountModal({ open, onClose, onSuccess, triggerR
         setErrorMessage(error || "Could not log in. Please check your credentials.");
       },
       (sessionId) => {
-        // Clear anonymous credentials
-        LocalStorage.clearAnonCredentials();
-
-        // Refresh user details
-        api.getUserDetails((user) => {
-          setUserDetails(user);
-          LocalStorage.setUserInfo(user);
-          setIsSubmitting(false);
-          if (onSuccess) onSuccess();
-          onClose();
-        });
+        finishUpgrade("Welcome back!");
       },
     );
   }
 
-  function handleDismiss() {
-    LocalStorage.setAnonUpgradeDismissed(true);
-    onClose();
-  }
-
   function handleClose() {
-    // Reset state when closing
-    setStep("choice");
+    setStep("email");
     setConfirmCode("");
     setErrorMessage("");
+    LocalStorage.clearAnonUpgradePending();
     onClose();
   }
 
   const getTitle = () => {
     if (step === "confirm") return "Check your email";
+    if (step === "password") return "Choose a password";
     if (step === "login") return "Log In";
-    if (step === "register") return "Create Account";
-    // Choice step - show trigger-based titles
+    // Email step - show trigger-based titles
     if (triggerReason === "bookmarks") return `You've saved ${bookmarkCount} words!`;
     if (triggerReason === "days") return "Welcome back!";
     if (triggerReason === "settings") return "Save Your Settings";
@@ -260,10 +260,9 @@ export default function UpgradeAccountModal({ open, onClose, onSuccess, triggerR
 
   const getSubtitle = () => {
     if (step === "confirm") return `We sent a confirmation code to ${userEmail}`;
+    if (step === "password") return "Set a password so you can log in on other devices.";
     if (step === "login") return "Log in to your existing Zeeguu account.";
-    if (step === "register") return "Create a new account to save your progress.";
-    // Choice step - ask if they have an account
-    return "Finish setting up your account to keep your progress!";
+    return "Please confirm your email to continue.";
   };
 
   return (
@@ -274,24 +273,40 @@ export default function UpgradeAccountModal({ open, onClose, onSuccess, triggerR
 
         {errorMessage && <div className="error-message">{errorMessage}</div>}
 
-        {step === "choice" && (
-          <>
-            <div className="choice-buttons">
-              <Button type="button" className="full-width-btn" onClick={() => setStep("register")}>
-                Continue setup
-              </Button>
-              <Button type="button" className="grey full-width-btn" onClick={() => setStep("login")}>
-                I already have an account
+        {step === "email" && (
+          <form onSubmit={handleUpgrade}>
+            <div className="form-fields">
+              <InputField
+                type="email"
+                label="Email"
+                id="upgrade-email"
+                name="email"
+                placeholder="your@email.com"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                isError={!isEmailValid}
+                errorMessage={emailMsg}
+                autoFocus
+              />
+            </div>
+
+            <div className="buttons">
+              <Button type="submit" disabled={isSubmitting}>
+                {isSubmitting ? "Sending code..." : "Send confirmation code"}
               </Button>
             </div>
-            {triggerReason !== "settings" && (
-              <div className="buttons">
-                <Button type="button" className="grey" onClick={handleDismiss}>
-                  Maybe later
-                </Button>
-              </div>
-            )}
-          </>
+
+            <div className="back-link">
+              <a
+                onClick={() => {
+                  setStep("login");
+                  setErrorMessage("");
+                }}
+              >
+                I already have an account
+              </a>
+            </div>
+          </form>
         )}
 
         {step === "login" && (
@@ -332,77 +347,7 @@ export default function UpgradeAccountModal({ open, onClose, onSuccess, triggerR
             <div className="back-link">
               <a
                 onClick={() => {
-                  setStep("choice");
-                  setErrorMessage("");
-                }}
-              >
-                Back
-              </a>
-            </div>
-          </form>
-        )}
-
-        {step === "register" && (
-          <form onSubmit={handleUpgrade}>
-            <div className="form-fields">
-              <InputField
-                type="text"
-                label="Name"
-                id="upgrade-name"
-                name="name"
-                placeholder="Your name"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                isError={!isNameValid}
-                errorMessage={nameMsg}
-                autoFocus
-              />
-
-              <InputField
-                type="email"
-                label="Email"
-                id="upgrade-email"
-                name="email"
-                placeholder="your@email.com"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                isError={!isEmailValid}
-                errorMessage={emailMsg}
-              />
-
-              <div className="password-field-wrapper">
-                <InputField
-                  type={showPassword ? "text" : "password"}
-                  label="Password"
-                  id="upgrade-password"
-                  name="password"
-                  placeholder="Choose a password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  isError={!isPasswordValid}
-                  errorMessage={passwordMsg}
-                />
-                <button
-                  type="button"
-                  className="password-toggle"
-                  onClick={() => setShowPassword(!showPassword)}
-                  aria-label={showPassword ? "Hide password" : "Show password"}
-                >
-                  {showPassword ? "Hide" : "Show"}
-                </button>
-              </div>
-            </div>
-
-            <div className="buttons">
-              <Button type="submit" disabled={isSubmitting}>
-                {isSubmitting ? "Creating..." : "Create Account"}
-              </Button>
-            </div>
-
-            <div className="back-link">
-              <a
-                onClick={() => {
-                  setStep("choice");
+                  setStep("email");
                   setErrorMessage("");
                 }}
               >
@@ -417,10 +362,12 @@ export default function UpgradeAccountModal({ open, onClose, onSuccess, triggerR
             <div className="form-fields">
               <InputField
                 type="text"
+                inputMode="numeric"
+                pattern="[0-9]*"
                 label="Confirmation Code"
                 id="confirm-code"
                 name="code"
-                placeholder="Enter code"
+                placeholder="1234"
                 value={confirmCode}
                 onChange={(e) => setConfirmCode(e.target.value)}
                 className="code-input"
@@ -431,6 +378,268 @@ export default function UpgradeAccountModal({ open, onClose, onSuccess, triggerR
             <div className="buttons">
               <Button type="submit" disabled={isSubmitting}>
                 {isSubmitting ? "Confirming..." : "Confirm"}
+              </Button>
+            </div>
+
+            <div className="back-link">
+              <a
+                onClick={() => {
+                  if (isSubmitting) return;
+                  setIsSubmitting(true);
+                  setErrorMessage("");
+                  api.requestEmailVerification(
+                    userEmail,
+                    () => {
+                      setIsSubmitting(false);
+                      toast.success("Code resent!");
+                    },
+                    (err) => {
+                      setIsSubmitting(false);
+                      setErrorMessage(err || "Could not resend code.");
+                    },
+                  );
+                }}
+              >
+                Resend code
+              </a>
+              {" | "}
+              <a
+                onClick={() => {
+                  setStep("email");
+                  setConfirmCode("");
+                  setErrorMessage("");
+                }}
+              >
+                Change email
+              </a>
+            </div>
+          </form>
+        )}
+
+        {step === "password" && (
+          <form onSubmit={handleSetPassword}>
+            <div className="form-fields">
+              <div className="password-field-wrapper">
+                <InputField
+                  type={showPassword ? "text" : "password"}
+                  label="Password"
+                  id="upgrade-password"
+                  name="password"
+                  placeholder="Choose a password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  isError={!isPasswordValid}
+                  errorMessage={passwordMsg}
+                  autoFocus
+                />
+                <button
+                  type="button"
+                  className="password-toggle"
+                  onClick={() => setShowPassword(!showPassword)}
+                  aria-label={showPassword ? "Hide password" : "Show password"}
+                >
+                  {showPassword ? "Hide" : "Show"}
+                </button>
+              </div>
+            </div>
+
+            <div className="buttons">
+              <Button type="submit" disabled={isSubmitting}>
+                {isSubmitting ? "Saving..." : "Save password"}
+              </Button>
+            </div>
+
+            <div className="back-link">
+              <a
+                onClick={() => {
+                  setErrorMessage("");
+                  api.requestEmailVerification(
+                    userEmail,
+                    () => {
+                      toast.success("Code resent!");
+                    },
+                    (err) => {
+                      setErrorMessage(err || "Could not resend code.");
+                    },
+                  );
+                }}
+              >
+                Resend code
+              </a>
+              {" | "}
+              <a
+                onClick={() => {
+                  setStep("email");
+                  setConfirmCode("");
+                  setErrorMessage("");
+                }}
+              >
+                Change email
+              </a>
+            </div>
+          </form>
+        )}
+
+        {step === "password" && (
+          <form onSubmit={handleSetPassword}>
+            <div className="form-fields">
+              <div className="password-field-wrapper">
+                <InputField
+                  type={showPassword ? "text" : "password"}
+                  label="Password"
+                  id="upgrade-password"
+                  name="password"
+                  placeholder="Choose a password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  isError={!isPasswordValid}
+                  errorMessage={passwordMsg}
+                  autoFocus
+                />
+                <button
+                  type="button"
+                  className="password-toggle"
+                  onClick={() => setShowPassword(!showPassword)}
+                  aria-label={showPassword ? "Hide password" : "Show password"}
+                >
+                  {showPassword ? "Hide" : "Show"}
+                </button>
+              </div>
+            </div>
+
+            <div className="buttons">
+              <Button type="submit" disabled={isSubmitting}>
+                {isSubmitting ? "Saving..." : "Save password"}
+              </Button>
+            </div>
+
+            <div className="back-link">
+              <a
+                onClick={() => {
+                  setErrorMessage("");
+                  api.requestEmailVerification(
+                    userEmail,
+                    () => {
+                      toast.success("Code resent!");
+                    },
+                    (err) => {
+                      setErrorMessage(err || "Could not resend code.");
+                    },
+                  );
+                }}
+              >
+                Resend code
+              </a>
+              {" | "}
+              <a
+                onClick={() => {
+                  setStep("email");
+                  setConfirmCode("");
+                  setErrorMessage("");
+                  LocalStorage.clearAnonUpgradePending();
+                }}
+              >
+                Change email
+              </a>
+            </div>
+          </form>
+        )}
+
+        {step === "password" && (
+          <form onSubmit={handleSetPassword}>
+            <div className="form-fields">
+              <div className="password-field-wrapper">
+                <InputField
+                  type={showPassword ? "text" : "password"}
+                  label="Password"
+                  id="upgrade-password"
+                  name="password"
+                  placeholder="Choose a password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  isError={!isPasswordValid}
+                  errorMessage={passwordMsg}
+                  autoFocus
+                />
+                <button
+                  type="button"
+                  className="password-toggle"
+                  onClick={() => setShowPassword(!showPassword)}
+                  aria-label={showPassword ? "Hide password" : "Show password"}
+                >
+                  {showPassword ? "Hide" : "Show"}
+                </button>
+              </div>
+            </div>
+
+            <div className="buttons">
+              <Button type="submit" disabled={isSubmitting}>
+                {isSubmitting ? "Saving..." : "Save password"}
+              </Button>
+            </div>
+
+            <div className="back-link">
+              <a
+                onClick={() => {
+                  setErrorMessage("");
+                  api.requestEmailVerification(
+                    userEmail,
+                    () => {
+                      toast.success("Code resent!");
+                    },
+                    (err) => {
+                      setErrorMessage(err || "Could not resend code.");
+                    },
+                  );
+                }}
+              >
+                Resend code
+              </a>
+              {" | "}
+              <a
+                onClick={() => {
+                  setStep("email");
+                  setConfirmCode("");
+                  setErrorMessage("");
+                  LocalStorage.clearAnonUpgradePending();
+                }}
+              >
+                Change email
+              </a>
+            </div>
+          </form>
+        )}
+
+        {step === "password" && (
+          <form onSubmit={handleSetPassword}>
+            <div className="form-fields">
+              <div className="password-field-wrapper">
+                <InputField
+                  type={showPassword ? "text" : "password"}
+                  label="Password"
+                  id="upgrade-password"
+                  name="password"
+                  placeholder="Choose a password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  isError={!isPasswordValid}
+                  errorMessage={passwordMsg}
+                  autoFocus
+                />
+                <button
+                  type="button"
+                  className="password-toggle"
+                  onClick={() => setShowPassword(!showPassword)}
+                  aria-label={showPassword ? "Hide password" : "Show password"}
+                >
+                  {showPassword ? "Hide" : "Show"}
+                </button>
+              </div>
+            </div>
+
+            <div className="buttons">
+              <Button type="submit" disabled={isSubmitting}>
+                {isSubmitting ? "Saving..." : "Save password"}
               </Button>
             </div>
           </form>
