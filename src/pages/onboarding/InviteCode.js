@@ -39,24 +39,19 @@ export default function InviteCode() {
   return (
     <PreferencesPage pageWidth={"narrow"}>
       <Header>
-        <Heading>Do you have an invite code?</Heading>
+        <Heading>Invite Code</Heading>
       </Header>
       <Main>
         <Form action={""}>
           <FormSection>
             <InputField
               type={"text"}
-              label={strings.inviteCode + " (optional)"}
+              label={"If you received a code from a teacher or researcher, enter it here"}
               id={"invite-code"}
               name={"invite-code"}
               placeholder={strings.inviteCodePlaceholder}
               value={inviteCode}
               onChange={(e) => setInviteCode(e.target.value)}
-              helperText={
-                <div>
-                  Only needed if you received one from a teacher or researcher.
-                </div>
-              }
             />
           </FormSection>
           <ButtonContainer className={"padding-medium"}>
@@ -65,7 +60,7 @@ export default function InviteCode() {
               className={"full-width-btn"}
               onClick={handleNext}
             >
-              {strings.next} <RoundedForwardArrow />
+              {inviteCode ? strings.next : "Skip"} <RoundedForwardArrow />
             </Button>
           </ButtonContainer>
           <p className="centered">

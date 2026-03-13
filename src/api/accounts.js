@@ -1,5 +1,6 @@
 import { Zeeguu_API } from "./classDef";
 import { getPlatform } from "../utils/misc/browserDetection";
+import qs from "qs";
 
 Zeeguu_API.prototype.getUserDetails = function (callback) {
   this._getJSON("get_user_details", callback);
@@ -203,24 +204,18 @@ Zeeguu_API.prototype.logInAnon = function (uuid, password, onSuccess, onError) {
     });
 };
 
-Zeeguu_API.prototype.upgradeAnonUser = function (
-  email,
-  username,
-  password,
-  onSuccess,
-  onError,
-) {
-  let body = `email=${encodeURIComponent(email)}&username=${encodeURIComponent(username)}`;
-  if (password) {
-    body += `&password=${encodeURIComponent(password)}`;
-  }
-  this._post("upgrade_anon_user", body, onSuccess, onError);
-};
-
 Zeeguu_API.prototype.confirmEmail = function (code, onSuccess, onError) {
   this._post("confirm_email", `code=${encodeURIComponent(code)}`, onSuccess, onError);
 };
 
 Zeeguu_API.prototype.resendVerificationCode = function (onSuccess, onError) {
   this._post("resend_verification_code", "", onSuccess, onError);
+};
+
+Zeeguu_API.prototype.requestEmailVerification = function (email, onSuccess, onError) {
+  this._post("request_email_verification", qs.stringify({ email }), onSuccess, onError);
+};
+
+Zeeguu_API.prototype.completeAccountUpgrade = function (email, code, password, onSuccess, onError) {
+  this._post("complete_account_upgrade", qs.stringify({ email, code, password }), onSuccess, onError);
 };
