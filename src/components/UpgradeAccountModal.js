@@ -2,11 +2,7 @@ import { useState, useContext } from "react";
 import Modal from "./modal_shared/Modal";
 import InputField from "./InputField";
 import useFormField from "../hooks/useFormField";
-import {
-  EmailValidator,
-  MinimumLengthValidator,
-  NonEmptyValidator,
-} from "../utils/ValidatorRule/Validator";
+import { EmailValidator, MinimumLengthValidator, NonEmptyValidator } from "../utils/ValidatorRule/Validator";
 import validateRules from "../assorted/validateRules";
 import { APIContext } from "../contexts/APIContext";
 import { UserContext } from "../contexts/UserContext";
@@ -108,13 +104,7 @@ const ModalContent = styled.div`
   }
 `;
 
-export default function UpgradeAccountModal({
-  open,
-  onClose,
-  onSuccess,
-  triggerReason,
-  bookmarkCount,
-}) {
+export default function UpgradeAccountModal({ open, onClose, onSuccess, triggerReason, bookmarkCount }) {
   const api = useContext(APIContext);
   const { setUserDetails } = useContext(UserContext);
   const [errorMessage, setErrorMessage] = useState("");
@@ -127,26 +117,26 @@ export default function UpgradeAccountModal({
     NonEmptyValidator("Please enter your name"),
   ]);
 
-  const [email, setEmail, validateEmail, isEmailValid, emailMsg] = useFormField(
-    "",
-    [NonEmptyValidator("Please enter an email"), EmailValidator],
-  );
+  const [email, setEmail, validateEmail, isEmailValid, emailMsg] = useFormField("", [
+    NonEmptyValidator("Please enter an email"),
+    EmailValidator,
+  ]);
 
-  const [password, setPassword, validatePassword, isPasswordValid, passwordMsg] =
-    useFormField("", [
-      NonEmptyValidator("Please enter a password"),
-      MinimumLengthValidator(4, "Password must be at least 4 characters"),
-    ]);
+  const [password, setPassword, validatePassword, isPasswordValid, passwordMsg] = useFormField("", [
+    NonEmptyValidator("Please enter a password"),
+    MinimumLengthValidator(4, "Password must be at least 4 characters"),
+  ]);
 
   // Login form fields
-  const [loginEmail, setLoginEmail, validateLoginEmail, isLoginEmailValid, loginEmailMsg] =
-    useFormField("", [
-      NonEmptyValidator("Please enter your email"),
-      EmailValidator,
-    ]);
+  const [loginEmail, setLoginEmail, validateLoginEmail, isLoginEmailValid, loginEmailMsg] = useFormField("", [
+    NonEmptyValidator("Please enter your email"),
+    EmailValidator,
+  ]);
 
-  const [loginPassword, setLoginPassword, validateLoginPassword, isLoginPasswordValid, loginPasswordMsg] =
-    useFormField("", [NonEmptyValidator("Please enter your password")]);
+  const [loginPassword, setLoginPassword, validateLoginPassword, isLoginPasswordValid, loginPasswordMsg] = useFormField(
+    "",
+    [NonEmptyValidator("Please enter your password")],
+  );
 
   const [confirmCode, setConfirmCode] = useState("");
 
@@ -269,14 +259,11 @@ export default function UpgradeAccountModal({
   };
 
   const getSubtitle = () => {
-    if (step === "confirm")
-      return `We sent a confirmation code to ${userEmail}`;
-    if (step === "login")
-      return "Log in to your existing Zeeguu account.";
-    if (step === "register")
-      return "Create a new account to save your progress.";
+    if (step === "confirm") return `We sent a confirmation code to ${userEmail}`;
+    if (step === "login") return "Log in to your existing Zeeguu account.";
+    if (step === "register") return "Create a new account to save your progress.";
     // Choice step - ask if they have an account
-    return "Do you already have a Zeeguu account?";
+    return "Finish setting up your account to keep your progress!";
   };
 
   return (
@@ -290,28 +277,16 @@ export default function UpgradeAccountModal({
         {step === "choice" && (
           <>
             <div className="choice-buttons">
-              <Button
-                type="button"
-                className="full-width-btn"
-                onClick={() => setStep("login")}
-              >
-                Yes, log me in
+              <Button type="button" className="full-width-btn" onClick={() => setStep("register")}>
+                Continue setup
               </Button>
-              <Button
-                type="button"
-                className="grey full-width-btn"
-                onClick={() => setStep("register")}
-              >
-                No, create a new account
+              <Button type="button" className="grey full-width-btn" onClick={() => setStep("login")}>
+                I already have an account
               </Button>
             </div>
             {triggerReason !== "settings" && (
               <div className="buttons">
-                <Button
-                  type="button"
-                  className="grey"
-                  onClick={handleDismiss}
-                >
+                <Button type="button" className="grey" onClick={handleDismiss}>
                   Maybe later
                 </Button>
               </div>
@@ -349,16 +324,18 @@ export default function UpgradeAccountModal({
             </div>
 
             <div className="buttons">
-              <Button
-                type="submit"
-                disabled={isSubmitting}
-              >
+              <Button type="submit" disabled={isSubmitting}>
                 {isSubmitting ? "Logging in..." : "Log In"}
               </Button>
             </div>
 
             <div className="back-link">
-              <a onClick={() => { setStep("choice"); setErrorMessage(""); }}>
+              <a
+                onClick={() => {
+                  setStep("choice");
+                  setErrorMessage("");
+                }}
+              >
                 Back
               </a>
             </div>
@@ -417,16 +394,18 @@ export default function UpgradeAccountModal({
             </div>
 
             <div className="buttons">
-              <Button
-                type="submit"
-                disabled={isSubmitting}
-              >
+              <Button type="submit" disabled={isSubmitting}>
                 {isSubmitting ? "Creating..." : "Create Account"}
               </Button>
             </div>
 
             <div className="back-link">
-              <a onClick={() => { setStep("choice"); setErrorMessage(""); }}>
+              <a
+                onClick={() => {
+                  setStep("choice");
+                  setErrorMessage("");
+                }}
+              >
                 Back
               </a>
             </div>
@@ -450,10 +429,7 @@ export default function UpgradeAccountModal({
             </div>
 
             <div className="buttons">
-              <Button
-                type="submit"
-                disabled={isSubmitting}
-              >
+              <Button type="submit" disabled={isSubmitting}>
                 {isSubmitting ? "Confirming..." : "Confirm"}
               </Button>
             </div>
