@@ -63,4 +63,18 @@ const FlagImage = styled.img`
   border: 0.05rem solid var(--border-color);
 `;
 
-export { TopBarContainer, StreakValue, StreakLabel, FlagImage, FlagButton, StreakInfo, DailyFeedbackBannerContainer };
+const DailyFeedbackLink = styled.a`
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--feedback-banner-text);
+  background: var(--feedback-banner-bg);
+  padding: 0.2rem 0.6rem;
+  border-radius: 0.8rem;
+  text-decoration: none;
+
+  &:hover {
+    background: var(--feedback-banner-hover);
+  }
+`;
+
+export { TopBarContainer, StreakValue, StreakLabel, FlagImage, FlagButton, StreakInfo, DailyFeedbackBannerContainer, DailyFeedbackLink };

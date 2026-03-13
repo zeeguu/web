@@ -4,14 +4,24 @@ import { UserContext } from "../contexts/UserContext";
 import LocalFireDepartmentIcon from "@mui/icons-material/LocalFireDepartment";
 import strings from "../i18n/definitions";
 import LanguageModal from "./MainNav/LanguageModal";
+import Feature from "../features/Feature";
+import LocalStorage from "../assorted/LocalStorage.js";
 import * as s from "./Banners.sc";
 
 export default function TopBar() {
   const { daysPracticed } = useContext(ProgressContext);
   const { userDetails } = useContext(UserContext);
   const [showLanguageModal, setShowLanguageModal] = useState(false);
+  const [showDailyFeedback, setShowDailyFeedback] = useState(
+    () => Feature.daily_feedback() && !LocalStorage.didShowDailyFeedbackToday(),
+  );
 
   const hasStreak = daysPracticed && daysPracticed >= 2;
+
+  function handleFeedbackClick() {
+    setShowDailyFeedback(false);
+    LocalStorage.setDailyFeedbackShown();
+  }
 
   return (
     <>
@@ -22,6 +32,15 @@ export default function TopBar() {
         >
           <s.FlagImage src={`/static/flags-new/${userDetails?.learned_language}.svg`} alt="" />
         </s.FlagButton>
+        {showDailyFeedback && (
+          <s.DailyFeedbackLink
+            href="https://forms.gle/h5JQmVrnZNnuvSPw9"
+            target="_blank"
+            onClick={handleFeedbackClick}
+          >
+            Daily Feedback
+          </s.DailyFeedbackLink>
+        )}
         {hasStreak && (
           <s.StreakInfo>
             <s.StreakValue>{daysPracticed}</s.StreakValue>
