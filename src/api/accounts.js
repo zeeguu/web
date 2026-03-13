@@ -224,3 +224,16 @@ Zeeguu_API.prototype.confirmEmail = function (code, onSuccess, onError) {
 Zeeguu_API.prototype.resendVerificationCode = function (onSuccess, onError) {
   this._post("resend_verification_code", "", onSuccess, onError);
 };
+
+Zeeguu_API.prototype.requestEmailVerification = function (email, onSuccess, onError) {
+  this._post("request_email_verification", `email=${encodeURIComponent(email)}`, onSuccess, onError);
+};
+
+Zeeguu_API.prototype.completeAccountUpgrade = function (email, code, password, onSuccess, onError) {
+  this._post(
+    "complete_account_upgrade",
+    `email=${encodeURIComponent(email)}&code=${encodeURIComponent(code)}&password=${encodeURIComponent(password)}`,
+    onSuccess,
+    onError,
+  );
+};

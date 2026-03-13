@@ -33,6 +33,7 @@ const LocalStorage = {
     LastVisitedPage: "last_visited_page",
     LastVisitedTeacherPage: "last_visited_teacher_page",
     DailyFeedbackLastShown: "daily_feedback_last_shown",
+    InviteCode: "invite_code",
     // Keep in sync with index.html inline theme script
     ThemePreference: "zeeguu-theme-preference",
   },
@@ -74,6 +75,15 @@ const LocalStorage = {
   setNativeLanguage: function (nativeLanguage) {
     localStorage[this.Keys.NativeLanguage] = nativeLanguage;
   },
+
+  getInviteCode: function () {
+    return localStorage[this.Keys.InviteCode] || "";
+  },
+
+  setInviteCode: function (inviteCode) {
+    localStorage[this.Keys.InviteCode] = inviteCode;
+  },
+
 
   selectedTimePeriod: function () {
     return localStorage[this.Keys.SelectedTimePeriod] ? localStorage[this.Keys.SelectedTimePeriod] : 30;
@@ -159,6 +169,7 @@ const LocalStorage = {
   },
 
   setUserPreferences: function (preferences) {
+    if (!preferences) return;
     if (preferences["productive_exercises"] !== undefined) {
       localStorage[this.Keys.ProductiveExercisesEnabled] = preferences["productive_exercises"];
     }
