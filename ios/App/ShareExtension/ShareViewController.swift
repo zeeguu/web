@@ -23,7 +23,7 @@ class ShareViewController: UIViewController {
         for item in extensionItems {
             guard let attachments = item.attachments else { continue }
             for provider in attachments {
-                if let url = extractSharedURL(from: provider) {
+                if extractSharedURL(from: provider) {
                     return  // extractSharedURL handles the async loading
                 }
             }
