@@ -9,7 +9,6 @@ import ListOfSettingsItems from "./settings_pages_shared/ListOfSettingsItems";
 import LogOutButton from "./LogOutButton";
 import ButtonContainer from "../_pages_shared/ButtonContainer.sc";
 import UpgradeAccountModal from "../../components/UpgradeAccountModal";
-import LocalStorage from "../../assorted/LocalStorage";
 import { APP_VERSION } from "../../appVersion";
 import DarkModeToggle from "./DarkModeToggle";
 
@@ -24,8 +23,6 @@ export default function Settings() {
   }, []);
 
   const isAnonymous = userDetails?.is_anonymous;
-
-  function handleUpgradeSuccess() {}
 
   return (
     <s.StyledWrapper>
@@ -42,7 +39,6 @@ export default function Settings() {
       <UpgradeAccountModal
         open={showUpgradeModal}
         onClose={() => setShowUpgradeModal(false)}
-        onSuccess={handleUpgradeSuccess}
         triggerReason="settings"
         bookmarkCount={userDetails?.bookmark_count || 0}
       />
