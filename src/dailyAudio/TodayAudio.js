@@ -355,7 +355,7 @@ export default function TodayAudio({ setShowTabs }) {
         <h2 style={{ color: zeeguuOrange, marginBottom: "10px" }}>
           Generating your daily lesson...
         </h2>
-        <p style={{ color: "#333", marginBottom: "20px", fontSize: "16px", textAlign: "center" }}>
+        <p style={{ color: "var(--text-primary)", marginBottom: "20px", fontSize: "16px", textAlign: "center" }}>
           This can take a while.<br />
           Feel free to browse — you'll find it here when it's ready.
         </p>
@@ -363,7 +363,7 @@ export default function TodayAudio({ setShowTabs }) {
           style={{
             width: "200px",
             height: "8px",
-            backgroundColor: "#e0e0e0",
+            backgroundColor: "var(--border-light)",
             borderRadius: "4px",
             overflow: "hidden",
             marginBottom: "10px",
@@ -379,7 +379,7 @@ export default function TodayAudio({ setShowTabs }) {
             }}
           />
         </div>
-        <p style={{ fontSize: "12px", color: "#999" }}>{progressDetail}</p>
+        <p style={{ fontSize: "12px", color: "var(--text-faint)" }}>{progressDetail}</p>
       </div>
     );
   }
@@ -546,7 +546,7 @@ export default function TodayAudio({ setShowTabs }) {
               marginBottom: "20px",
               marginTop: "20px",
               padding: "12px",
-              backgroundColor: "#f8fff9",
+              backgroundColor: "var(--bg-secondary)",
               border: "1px solid #28a745",
               borderRadius: "4px",
             }}
@@ -560,7 +560,7 @@ export default function TodayAudio({ setShowTabs }) {
         {/* Display word details with type badges */}
         {words && words.length > 0 && (
           <div style={{ marginTop: "30px", marginBottom: "20px" }}>
-            <h3 style={{ fontSize: "16px", fontWeight: "600", marginBottom: "12px", color: "#333" }}>
+            <h3 style={{ fontSize: "16px", fontWeight: "600", marginBottom: "12px", color: "var(--text-primary)" }}>
               Words in this lesson
             </h3>
             {words.map((word, index) => (
@@ -580,7 +580,7 @@ export default function TodayAudio({ setShowTabs }) {
             onClick={() => setOpenFeedback(true)}
             style={{
               backgroundColor: "transparent",
-              color: "#999",
+              color: "var(--text-faint)",
               border: "none",
               borderRadius: "0",
               padding: "4px 8px",

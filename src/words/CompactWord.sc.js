@@ -2,8 +2,8 @@ import styled from "styled-components";
 
 const CompactWord = styled.div`
   display: inline-block;
-  background-color: #f8f9fa;
-  border: 1px solid #e9ecef;
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border-light);
   border-radius: 4px;
   padding: 4px 8px;
   margin: 8px 0.5em 0 0;
@@ -23,11 +23,11 @@ const WordContent = styled.div`
   .rank {
     font-weight: 300;
     font-size: 0.7em;
-    color: #888;
+    color: var(--text-muted);
   }
   
   .separator {
-    color: #666;
+    color: var(--text-secondary);
     font-weight: 300;
   }
   
@@ -39,10 +39,10 @@ const WordContent = styled.div`
   .user-added {
     margin-left: 4px;
     font-size: 0.6em;
-    background-color: #e3f2fd;
+    background-color: var(--bg-tertiary);
     padding: 1px 3px;
     border-radius: 2px;
-    color: #1976d2;
+    color: var(--text-secondary);
   }
 `;
 
