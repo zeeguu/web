@@ -1,5 +1,5 @@
 import styled, { css } from "styled-components";
-import { blue100, blue700, blue900, lightGrey, veryLightGrey } from "../colors";
+import { blue700 } from "../colors";
 
 const StyledRadioGroup = styled.div`
   all: unset;
@@ -39,7 +39,7 @@ const StyledInput = styled.input`
 
 const OptionLabel = styled.label`
   cursor: pointer;
-  color: black;
+  color: var(--text-primary);
   margin: 0;
   display: flex;
   flex-direction: row;
@@ -51,8 +51,8 @@ const OptionLabel = styled.label`
   padding: 0 1.2rem;
   height: 2.75rem;
   border-radius: 2rem;
-  border: solid 0.1rem ${lightGrey};
-  box-shadow: 0px 0.1rem ${lightGrey};
+  border: solid 0.1rem var(--border-color);
+  box-shadow: 0px 0.1rem var(--border-color);
   white-space: nowrap;
   transition: all 300ms ease-in-out;
   margin-bottom: 0.2rem;
@@ -66,18 +66,18 @@ const OptionLabel = styled.label`
     `}
 
   &:hover {
-    background-color: ${veryLightGrey};
+    background-color: var(--hover-bg);
   }
 
   ${StyledInput}:checked + &:hover {
-    background-color: ${blue100};
+    background-color: var(--badge-bg);
   }
 
   ${StyledInput}:checked + & {
-    background-color: ${blue100};
+    background-color: var(--badge-bg);
     border-color: ${blue700};
     box-shadow: 0px 0.1rem ${blue700};
-    color: ${blue900};
+    color: var(--badge-text);
   }
 
   &:active,

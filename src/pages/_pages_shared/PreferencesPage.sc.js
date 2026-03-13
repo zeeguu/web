@@ -12,7 +12,7 @@ const PageBackground = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  background: ${zeeguuOrange};
+  background: var(--prefs-page-bg, ${zeeguuOrange});
   overflow: hidden;
   padding-top: env(safe-area-inset-top, 0px);
   padding-bottom: var(--safe-area-bottom, env(safe-area-inset-bottom, 0px));
@@ -50,7 +50,7 @@ const PageContainer = styled.div`
   margin: 1rem;
   overflow-y: auto;
 
-  background-color: white;
+  background-color: var(--card-bg);
 
   @media (max-width: 1200px) {
     padding: 2rem 4.25rem;

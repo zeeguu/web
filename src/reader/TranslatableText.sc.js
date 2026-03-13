@@ -500,7 +500,7 @@ const ClozeHint = styled.div`
 
 const ClozeInput = styled.input`
   border: none;
-  border-bottom: 2px dotted ${props => props.$isOver ? orange600 : '#333'};
+  border-bottom: 2px dotted ${props => props.$isOver ? orange600 : 'var(--text-muted)'};
   background: transparent;
   outline: none;
   font-size: inherit;
@@ -522,7 +522,7 @@ const ClozeInput = styled.input`
 `;
 
 const ClozeStaticPlaceholder = styled.span`
-  border-bottom: 1px solid ${props => props.$isOver ? orange600 : '#333'};
+  border-bottom: 1px solid ${props => props.$isOver ? orange600 : 'var(--text-muted)'};
   display: inline-block;
   min-width: 4em;
   color: ${props => props.$isOver ? orange600 : 'inherit'};

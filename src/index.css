@@ -95,6 +95,16 @@
   --input-bg: #2a2a45;
   --input-border: #3a3a55;
 
+  --prefs-page-bg: #1a1a2e;
+
+  --exercise-btn-border: hsl(54, 100%, 95%);
+  --exercise-btn-focus: rgba(255, 187, 84, 0.6);
+
+  --progress-bar-bg: #3a3a55;
+  --progress-bar-gradient: linear-gradient(180deg, #33334d, #44446a);
+  --progress-circle-bg: #3a3a55;
+  --progress-circle-border: #50507a;
+
   color-scheme: dark;
 }
 

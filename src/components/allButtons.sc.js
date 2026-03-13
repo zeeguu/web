@@ -22,7 +22,7 @@ const RoundButton = styled.div`
 `;
 
 const WhiteRoundButton = styled(RoundButton)`
-  background-color: white;
+  background-color: var(--card-bg);
   color: ${zeeguuOrange} !important;
   border: 2px solid ${zeeguuOrange};
   &:hover {

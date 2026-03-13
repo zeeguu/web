@@ -37,7 +37,7 @@ const ExForm = styled.div`
   transition: all 0.5s;
   width: 100%;
   margin: 0 auto;
-  background-color: rgba(241, 240, 240, 0.274);
+  background-color: var(--card-bg);
   min-height: 500px;
   padding-bottom: 1rem;
 

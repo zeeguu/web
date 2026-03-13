@@ -203,11 +203,11 @@ export default function NextNavigation({
               </s.EditSpeakButtonHolder>
             )}
             <s.FeedbackButton
+              className="next-btn"
               onClick={(e) => !isAutoPronouncing && moveToNextExercise()}
               autoFocus
               style={{
-                backgroundColor: isAutoPronouncing ? "#f0f5f0" : undefined,
-                color: isAutoPronouncing ? "#cccccc" : undefined,
+                opacity: isAutoPronouncing ? 0.4 : undefined,
                 cursor: isAutoPronouncing ? "default" : "pointer",
               }}
             >
