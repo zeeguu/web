@@ -11,13 +11,10 @@ const Zeeguu_API = class {
     //this.session = currentSession; is instantiated in App when the user logs in (causes error to actually instantiate it here).
   }
 
-  invalidateCache() {
-    this._cache.clear();
-  }
-
   // Cache keys include the learned language so switching languages
   // naturally serves fresh data without needing to invalidate
   _cacheKey(endpoint) {
+    // Key must match LocalStorage.Keys.LearnedLanguage in assorted/LocalStorage.js
     const lang = localStorage.getItem("learned_language") || "";
     return `${lang}:${endpoint}`;
   }
@@ -64,9 +61,12 @@ const Zeeguu_API = class {
   }
 
   _getJSON(endpoint, callback, useCache = false) {
-    if (useCache) {
-      const key = this._cacheKey(endpoint);
-      const cached = this._cache.get(key);
+    // Capture the cache key once so the read and write use the same
+    // language, even if the user switches language mid-flight
+    const cacheKey = useCache ? this._cacheKey(endpoint) : null;
+
+    if (cacheKey) {
+      const cached = this._cache.get(cacheKey);
       if (cached && Date.now() - cached.time < CACHE_TTL) {
         callback(cached.data);
         return;
@@ -82,8 +82,8 @@ const Zeeguu_API = class {
         return response.json();
       })
       .then((data) => {
-        if (useCache) {
-          this._cache.set(this._cacheKey(endpoint), { data, time: Date.now() });
+        if (cacheKey) {
+          this._cache.set(cacheKey, { data, time: Date.now() });
         }
         callback(data);
       })
