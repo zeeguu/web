@@ -1,5 +1,4 @@
 import styled from "styled-components";
-import { blue100 } from "../components/colors";
 
 const UnfinishedArticlesBox = styled.div`
   display: flex;
@@ -7,7 +6,7 @@ const UnfinishedArticlesBox = styled.div`
   flex-direction: column;
   align-items: start;
   margin: 0.5em 0;
-  background-color: ${blue100};
+  background-color: var(--card-bg);
   border-radius: 2em;
   padding: 0.5em 1em;
   @media (max-width: 576px) {
