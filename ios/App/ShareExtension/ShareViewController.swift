@@ -1,15 +1,12 @@
 import UIKit
-import Social
 import UniformTypeIdentifiers
 
-class ShareViewController: SLComposeServiceViewController {
+class ShareViewController: UIViewController {
 
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        handleSharedItems()
-    }
+    private let appURLScheme = "org.zeeguu.app"
 
-    override func didSelectPost() {
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
         handleSharedItems()
     }
 
@@ -30,7 +27,7 @@ class ShareViewController: SLComposeServiceViewController {
                             self?.close()
                             return
                         }
-                        self?.openMainApp(with: url)
+                        self?.saveAndOpenApp(url: url)
                     }
                     return
                 }
@@ -43,7 +40,7 @@ class ShareViewController: SLComposeServiceViewController {
                             self?.close()
                             return
                         }
-                        self?.openMainApp(with: url)
+                        self?.saveAndOpenApp(url: url)
                     }
                     return
                 }
@@ -53,31 +50,33 @@ class ShareViewController: SLComposeServiceViewController {
         close()
     }
 
-    private func openMainApp(with url: URL) {
-        let encodedUrl = url.absoluteString.addingPercentEncoding(
-            withAllowedCharacters: .urlQueryAllowed
-        ) ?? url.absoluteString
-
-        guard let appUrl = URL(string: "org.zeeguu.app://shared-article?url=\(encodedUrl)") else {
-            close()
-            return
-        }
-
-        // Share Extensions cannot call UIApplication.shared.openURL directly.
-        // Use the responder chain workaround.
-        var responder: UIResponder? = self as UIResponder
-        let selector = sel_registerName("openURL:")
-        while responder != nil {
-            if responder!.responds(to: selector) {
-                responder!.perform(selector, with: appUrl)
-                break
+    private func saveAndOpenApp(url: URL) {
+        if let encodedUrl = url.absoluteString.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed),
+           let appURL = URL(string: "\(appURLScheme)://shared-article?url=\(encodedUrl)") {
+            DispatchQueue.main.async {
+                self.openContainingApp(appURL)
+                self.close()
             }
-            responder = responder?.next
+        } else {
+            close()
         }
+    }
 
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { [weak self] in
-            self?.close()
-        }
+    /// iOS 18-compatible way to open the containing app.
+    /// Uses runtime to avoid APPLICATION_EXTENSION_API_ONLY restriction,
+    /// while calling the non-deprecated open(_:options:completionHandler:) which works on iOS 18.
+    /// (The old selector-based openURL: was broken by Apple in iOS 18.)
+    private func openContainingApp(_ url: URL) {
+        guard let appClass = NSClassFromString("UIApplication") as? NSObject.Type else { return }
+        guard let app = appClass.perform(NSSelectorFromString("sharedApplication"))?.takeUnretainedValue() as? NSObject else { return }
+
+        let openSel = NSSelectorFromString("openURL:options:completionHandler:")
+        guard app.responds(to: openSel) else { return }
+
+        let imp = app.method(for: openSel)
+        typealias F = @convention(c) (NSObject, Selector, URL, [String: Any], ((Bool) -> Void)?) -> Void
+        let open = unsafeBitCast(imp, to: F.self)
+        open(app, openSel, url, [:], nil)
     }
 
     private func extractURL(from text: String) -> URL? {
