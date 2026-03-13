@@ -27,7 +27,7 @@ class ShareViewController: UIViewController {
                             self?.close()
                             return
                         }
-                        self?.saveAndOpenApp(url: url)
+                        self?.openInApp(url: url)
                     }
                     return
                 }
@@ -40,7 +40,7 @@ class ShareViewController: UIViewController {
                             self?.close()
                             return
                         }
-                        self?.saveAndOpenApp(url: url)
+                        self?.openInApp(url: url)
                     }
                     return
                 }
@@ -50,7 +50,7 @@ class ShareViewController: UIViewController {
         close()
     }
 
-    private func saveAndOpenApp(url: URL) {
+    private func openInApp(url: URL) {
         if let encodedUrl = url.absoluteString.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed),
            let appURL = URL(string: "\(appURLScheme)://shared-article?url=\(encodedUrl)") {
             DispatchQueue.main.async {
