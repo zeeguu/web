@@ -6,33 +6,32 @@ import strings from "../i18n/definitions";
 import LanguageModal from "./MainNav/LanguageModal";
 import * as s from "./Banners.sc";
 
-export default function StreakBanner() {
+export default function TopBar() {
   const { daysPracticed } = useContext(ProgressContext);
   const { userDetails } = useContext(UserContext);
   const [showLanguageModal, setShowLanguageModal] = useState(false);
 
-  if (!daysPracticed || daysPracticed < 2) return null;
+  const hasStreak = daysPracticed && daysPracticed >= 2;
 
   return (
     <>
-      <s.StreakBannerContainer>
+      <s.TopBarContainer>
         <s.FlagButton
-          onClick={(e) => {
-            e.stopPropagation();
-            setShowLanguageModal(true);
-          }}
+          onClick={() => setShowLanguageModal(true)}
           aria-label="Change language"
         >
           <s.FlagImage src={`/static/flags-new/${userDetails?.learned_language}.svg`} alt="" />
         </s.FlagButton>
-        <s.StreakInfo>
-          <s.StreakValue>{daysPracticed}</s.StreakValue>
-          <s.StreakLabel>
-            {strings.streakDay} {strings.streakStreak}
-          </s.StreakLabel>
-          <LocalFireDepartmentIcon sx={{ color: "#ff9800", fontSize: "1.2rem" }} />
-        </s.StreakInfo>
-      </s.StreakBannerContainer>
+        {hasStreak && (
+          <s.StreakInfo>
+            <s.StreakValue>{daysPracticed}</s.StreakValue>
+            <s.StreakLabel>
+              {strings.streakDay} {strings.streakStreak}
+            </s.StreakLabel>
+            <LocalFireDepartmentIcon sx={{ color: "#ff9800", fontSize: "1.2rem" }} />
+          </s.StreakInfo>
+        )}
+      </s.TopBarContainer>
       <LanguageModal
         open={showLanguageModal}
         setOpen={() => setShowLanguageModal(false)}

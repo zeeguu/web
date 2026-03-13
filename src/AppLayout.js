@@ -12,7 +12,7 @@ import { ExercisesCounterContext } from "./exercises/ExercisesCounterContext";
 
 import useExercisesCounterNotification from "./hooks/useExercisesCounterNotification";
 import useStreakMilestone from "./hooks/useStreakMilestone";
-import StreakBanner from "./components/StreakBanner";
+import TopBar from "./components/TopBar";
 import { MOBILE_WIDTH } from "./components/MainNav/screenSize";
 import DailyFeedbackBanner from "./components/DailyFeedbackBanner";
 import Feature from "./features/Feature";
@@ -95,7 +95,7 @@ export default function AppLayout(props) {
               key={userDetails.learned_language}
               id="scrollHolder"
             >
-              {screenWidth <= MOBILE_WIDTH && <StreakBanner />}
+              {screenWidth <= MOBILE_WIDTH && <TopBar />}
               {screenWidth <= MOBILE_WIDTH && Feature.daily_feedback() && <DailyFeedbackBanner />}
               {appContent}
             </s.AppContent>

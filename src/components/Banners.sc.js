@@ -9,7 +9,7 @@ const BaseBanner = styled.div`
   font-size: 0.85rem;
   cursor: pointer;
 `;
-const StreakBannerContainer = styled(BaseBanner)`
+const TopBarContainer = styled(BaseBanner)`
   background: var(--streak-banner-bg);
   color: var(--streak-banner-text);
   border-bottom: 1px solid var(--streak-banner-border);
@@ -63,4 +63,4 @@ const FlagImage = styled.img`
   border: 0.05rem solid var(--border-color);
 `;
 
-export { StreakBannerContainer, StreakValue, StreakLabel, FlagImage, FlagButton, StreakInfo, DailyFeedbackBannerContainer };
+export { TopBarContainer, StreakValue, StreakLabel, FlagImage, FlagButton, StreakInfo, DailyFeedbackBannerContainer };
