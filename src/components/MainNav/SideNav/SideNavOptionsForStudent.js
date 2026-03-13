@@ -7,12 +7,10 @@ import NavigationOptions from "../navigationOptions";
 import NotificationIcon from "../../NotificationIcon";
 import DailyAudioNotificationDot from "../../DailyAudioNotificationDot";
 import { ExercisesCounterContext } from "../../../exercises/ExercisesCounterContext";
-import { BadgeCounterContext } from "@/badges/BadgeCounterContext";
 
 export default function SideNavOptionsForStudent({ screenWidth }) {
   const { userDetails } = useContext(UserContext);
   const { hasExerciseNotification, totalExercisesInPipeline } = useContext(ExercisesCounterContext);
-  const { hasBadgeNotification, totalNumberOfBadges } = useContext(BadgeCounterContext);
 
   const path = useLocation().pathname;
   const dailyAudioStatus = userDetails?.daily_audio_status;
@@ -43,9 +41,7 @@ export default function SideNavOptionsForStudent({ screenWidth }) {
 
       <NavOption {...NavigationOptions.myWords} currentPath={path} screenWidth={screenWidth} />
 
-      <NavOption {...NavigationOptions.myActivity} currentPath={path} screenWidth={screenWidth} notification={
-          hasBadgeNotification && <NotificationIcon position={"top-absolute"} text={totalNumberOfBadges} />
-        }/>
+      <NavOption {...NavigationOptions.myActivity} currentPath={path} screenWidth={screenWidth} />
 
       {userDetails.is_teacher && (
         <NavOption {...NavigationOptions.teacherSite} currentPath={path} screenWidth={screenWidth} />

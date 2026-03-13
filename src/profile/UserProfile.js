@@ -14,6 +14,8 @@ import Header from "../components/modal_shared/Header.sc";
 import Heading from "../components/modal_shared/Heading.sc";
 import Main from "../components/modal_shared/Main.sc";
 import { orange100, orange600 } from "../components/colors";
+import Badges from "@/badges/Badges";
+import { BadgeCounterContext } from "@/badges/BadgeCounterContext";
 
 export default function UserProfile() {
   const history = useHistory();
@@ -23,11 +25,15 @@ export default function UserProfile() {
   const [allDailyStreakInfo, setAllDailyStreakInfo] = useState(null);
   const [activeTab, setActiveTab] = useState("overview");
   const [showLanguagesModal, setShowLanguagesModal] = useState(false);
+  const { hasBadgeNotification, totalNumberOfBadges } = useContext(BadgeCounterContext);
 
   const tabs = [
     { key: "overview", label: "Overview" },
     { key: "friends", label: "Friends" },
-    { key: "badges", label: "Badges" },
+    {
+      key: "badges",
+      label: `Badges${hasBadgeNotification ? ` (${totalNumberOfBadges})` : ""}`,
+    },
   ];
 
   const max_visible_languages = 3;
@@ -113,7 +119,7 @@ export default function UserProfile() {
         <s.TabContent>
           {activeTab === "overview" && <div>Overview content goes here.</div>}
           {activeTab === "friends" && <div>Friends content goes here.</div>}
-          {activeTab === "badges" && <div>Badges content goes here.</div>}
+          {activeTab === "badges" && <Badges />}
         </s.TabContent>
       </s.TabsSection>
 

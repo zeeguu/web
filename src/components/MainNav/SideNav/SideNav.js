@@ -10,6 +10,7 @@ import FeedbackButton from "../../FeedbackButton";
 import NavigationOptions from "../navigationOptions";
 import SideNavLanguageOption from "./SideNavLanguageOption";
 import * as s from "./SideNav.sc";
+import SideNavProfileOption from "@/components/MainNav/SideNav/SideNavProfileOption";
 
 export default function SideNav({ screenWidth }) {
   const { userDetails } = useContext(UserContext);
@@ -51,6 +52,7 @@ export default function SideNav({ screenWidth }) {
           <FeedbackButton screenWidth={screenWidth} />
         </s.NavList>
         {isOnStudentSide && <SideNavProgressStats screenWidth={screenWidth} />}
+        {isOnStudentSide && <SideNavProfileOption screenWidth={screenWidth} />}
       </s.BottomSection>
     </s.SideNav>
   );
