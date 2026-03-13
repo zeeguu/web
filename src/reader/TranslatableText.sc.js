@@ -462,7 +462,7 @@ const TranslatableText = styled.div`
  * ======================================================================== */
 
 const pulseUnderline = keyframes`
-  0%, 100% { border-bottom-color: var(--cloze-underline); }
+  0%, 100% { border-bottom-color: var(--cloze-underline, #999); }
   50% { border-bottom-color: var(--cloze-underline-pulse, #999); }
 `;
 
@@ -492,7 +492,7 @@ const ClozeHint = styled.div`
   left: 50%;
   transform: translate(-50%, -50%);
   font-size: 0.7em;
-  color: #999;
+  color: var(--text-faint);
   opacity: 0.8;
   pointer-events: none;
   white-space: nowrap;
