@@ -20,6 +20,7 @@ const francToZeeguuLanguageMap = {
 
 // Mapping from language codes to readable names
 export const languageNames = {
+  el: "Greek",
   de: "German",
   es: "Spanish",
   fr: "French",

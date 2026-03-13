@@ -13,6 +13,10 @@ export default function InputField({
   errorMessage,
   children,
   autoFocus,
+  lang,
+  spellCheck,
+  inputRef,
+  inputMode,
 }) {
   return (
     <s.FieldLabelContainer>
@@ -27,6 +31,10 @@ export default function InputField({
           placeholder={placeholder}
           onChange={onChange}
           autoFocus={autoFocus}
+          lang={lang}
+          spellCheck={spellCheck}
+          ref={inputRef}
+          inputMode={inputMode}
         />
         {children}
       </s.InputWrapper>

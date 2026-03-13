@@ -5,7 +5,7 @@ const TopTabsWrapper = styled.div`
   position: sticky;
   top: 0;
   z-index: 100;
-  background: var(--bg-primary);
+  background: var(--bg-secondary);
   transition: transform 0.3s ease-in-out;
   padding-top: 0.5em;
 
