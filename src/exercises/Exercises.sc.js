@@ -17,7 +17,7 @@ const ExercisesColumn = styled.div`
 
   #exerciseTopbar {
     width: 100%;
-    padding: 0.15rem 0;
+    padding: 0.5rem 0;
   }
 
   #topbarRow {
@@ -27,6 +27,7 @@ const ExercisesColumn = styled.div`
     justify-content: space-between;
     margin-bottom: 0;
     min-height: 1.25rem;
+    padding: 0 0.25rem;
   }
 `;
 
