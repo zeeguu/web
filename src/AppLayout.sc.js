@@ -14,7 +14,7 @@ const AppContent = styled.section`
   flex-grow: 1;
   overflow-y: auto;
   overflow-x: hidden;
-  padding: 0 0.2rem 0 0.2rem;
+  padding: 0;
 `;
 
 export { AppLayout, AppContent };
