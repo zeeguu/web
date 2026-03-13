@@ -8,7 +8,6 @@ const ExercisesColumn = styled.div`
   padding-top: 2rem;
   display: flex;
   flex-direction: column;
-  height: 100%;
   @media (max-width: 700px) {
     padding-top: 0.5rem;
   }
