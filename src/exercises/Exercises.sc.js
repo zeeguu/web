@@ -69,7 +69,6 @@ const ExForm = styled.div`
 
     img {
       width: 60px;
-      mix-blend-mode: multiply;
       height: auto;
     }
     p {
@@ -85,14 +84,13 @@ const ExForm = styled.div`
     margin-top: 1.5em;
     margin-left: auto;
     margin-right: auto;
-    border: 0.125em solid #99e47f;
+    border: 0.125em solid var(--success-border);
     border-radius: 0.5em;
-    background-color: #f1f7f2;
+    background-color: var(--success-bg);
     width: 70%;
 
     img {
       width: 60px;
-      mix-blend-mode: multiply;
       height: auto;
       margin: 0.5em;
     }

@@ -45,6 +45,10 @@
 
   --input-bg: #ffffff;
   --input-border: #c1c1c1;
+  --cloze-underline: #999;
+  --cloze-underline-pulse: #666;
+  --success-bg: #f1f7f2;
+  --success-border: #99e47f;
 
   color-scheme: light;
 }
@@ -95,6 +99,10 @@
 
   --input-bg: #2a2a45;
   --input-border: #3a3a55;
+  --cloze-underline: #ccc;
+  --cloze-underline-pulse: #eee;
+  --success-bg: #1a2e1a;
+  --success-border: #4a8a3a;
 
   --prefs-page-bg: #1a1a2e;
   --exercise-card-bg: #2a2a48;
