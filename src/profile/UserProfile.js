@@ -11,6 +11,18 @@ import Modal from "../components/modal_shared/Modal";
 import Header from "../components/modal_shared/Header.sc";
 import Heading from "../components/modal_shared/Heading.sc";
 import Main from "../components/modal_shared/Main.sc";
+import {
+  AVATAR_BACKGROUND_COLORS,
+  AVATAR_CHARACTER_COLORS,
+  AVATAR_IMAGES,
+  getAvatarImageById,
+  getSavedBackgroundColor,
+  getSavedCharacterColor,
+  getSavedCharacterId,
+  saveCharacterBackgroundColor,
+  saveCharacterColor,
+  saveCharacterId,
+} from "./avatarOptions";
 
 const MAX_VISIBLE_LANGUAGES = 3;
 
@@ -21,14 +33,25 @@ export default function UserProfile() {
   const [allDailyStreakInfo, setAllDailyStreakInfo] = useState(null);
   const [activeTab, setActiveTab] = useState("overview");
   const [showLanguagesModal, setShowLanguagesModal] = useState(false);
+  const [showAvatarModal, setShowAvatarModal] = useState(false);
+  const [selectedCharacterId, setSelectedCharacterId] = useState(getSavedCharacterId);
+  const [selectedCharacterColor, setSelectedCharacterColor] = useState(getSavedCharacterColor);
+  const [selectedBackgroundColor, setSelectedBackgroundColor] = useState(getSavedBackgroundColor);
 
-  useEffect(() => {
-    console.log(userDetails);
-  }, [userDetails]);
+  const tabs = [
+    { key: "overview", label: "Overview" },
+    { key: "friends", label: "Friends" },
+    { key: "badges", label: "Badges" },
+  ];
 
-  useEffect(() => {
-    console.log(daysPracticed);
-  }, [daysPracticed]);
+  const currentAvatarImage = getAvatarImageById(selectedCharacterId);
+
+  const visibleLanguages = allDailyStreakInfo?.slice(0, MAX_VISIBLE_LANGUAGES);
+  const overflowCount = allDailyStreakInfo
+    ? allDailyStreakInfo.length > MAX_VISIBLE_LANGUAGES
+      ? allDailyStreakInfo.length - MAX_VISIBLE_LANGUAGES
+      : 0
+    : 0;
 
   useEffect(() => {
     setTitle(strings.titleUserProfile);
@@ -46,23 +69,12 @@ export default function UserProfile() {
     });
   }, [api]);
 
-  const tabs = [
-    { key: "overview", label: "Overview" },
-    { key: "friends", label: "Friends" },
-    { key: "badges", label: "Badges" },
-  ];
-
-  const visibleLanguages = allDailyStreakInfo?.slice(0, MAX_VISIBLE_LANGUAGES);
-  const overflowCount = allDailyStreakInfo
-    ? (allDailyStreakInfo.length > MAX_VISIBLE_LANGUAGES ? allDailyStreakInfo.length - MAX_VISIBLE_LANGUAGES : 0)
-    : 0;
-
   return (
     <s.ProfileWrapper>
       <s.HeaderCard>
-        <div className="avatar">
-          <img src="../static/images/zeeguuLogo.svg" alt="Profile" />
-        </div>
+        <s.AvatarWrapper onClick={() => setShowAvatarModal(true)} $backgroundColor={selectedBackgroundColor}>
+          <s.AvatarImage $imageSource={currentAvatarImage.src} $color={selectedCharacterColor} />
+        </s.AvatarWrapper>
         <div>
           <h2 className="username">{userDetails.name}</h2>
 
@@ -110,6 +122,66 @@ export default function UserProfile() {
           {activeTab === "badges" && <div>Badges content goes here.</div>}
         </s.TabContent>
       </s.TabsSection>
+
+      <Modal open={showAvatarModal} onClose={() => setShowAvatarModal(false)}>
+        <Header>
+          <Heading>Choose Your Avatar</Heading>
+        </Header>
+        <Main>
+          <s.PickerSection>
+            <span className="picker-label">Character</span>
+            <s.PickerGrid>
+              {AVATAR_IMAGES.map((avatar) => (
+                <s.AvatarOption
+                  key={avatar.id}
+                  $selected={selectedCharacterId === avatar.id}
+                  $backgroundColor={selectedBackgroundColor}
+                  onClick={() => {
+                    setSelectedCharacterId(avatar.id);
+                    saveCharacterId(avatar.id);
+                  }}
+                >
+                  <s.AvatarImage $imageSource={avatar.src} $color={selectedCharacterColor} />
+                </s.AvatarOption>
+              ))}
+            </s.PickerGrid>
+          </s.PickerSection>
+
+          <s.PickerSection>
+            <span className="picker-label">Character Color</span>
+            <s.PickerGrid>
+              {AVATAR_CHARACTER_COLORS.map((color) => (
+                <s.ColorOption
+                  key={color}
+                  $backgroundColor={color}
+                  $selected={selectedCharacterColor === color}
+                  onClick={() => {
+                    setSelectedCharacterColor(color);
+                    saveCharacterColor(color);
+                  }}
+                />
+              ))}
+            </s.PickerGrid>
+          </s.PickerSection>
+
+          <s.PickerSection>
+            <span className="picker-label">Background Color</span>
+            <s.PickerGrid>
+              {AVATAR_BACKGROUND_COLORS.map((color) => (
+                <s.ColorOption
+                  key={color}
+                  $backgroundColor={color}
+                  $selected={selectedBackgroundColor === color}
+                  onClick={() => {
+                    setSelectedBackgroundColor(color);
+                    saveCharacterBackgroundColor(color);
+                  }}
+                />
+              ))}
+            </s.PickerGrid>
+          </s.PickerSection>
+        </Main>
+      </Modal>
 
       <Modal open={showLanguagesModal} onClose={() => setShowLanguagesModal(false)}>
         <Header>

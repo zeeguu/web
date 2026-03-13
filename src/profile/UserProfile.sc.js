@@ -1,5 +1,16 @@
 import styled from "styled-components";
-import { almostBlack, blue100, blue200, darkGrey, lightGrey, orange500, zeeguuOrange } from "../components/colors";
+import {
+  almostBlack,
+  blue100,
+  blue200,
+  darkGrey,
+  lightGrey,
+  orange100,
+  orange400,
+  orange500,
+  orange600,
+  zeeguuOrange,
+} from "../components/colors";
 
 export const ProfileWrapper = styled.div`
   display: flex;
@@ -21,23 +32,6 @@ export const HeaderCard = styled.div`
     flex-direction: column;
     text-align: center;
     padding: 1.5rem;
-  }
-
-  .avatar {
-    width: 8rem;
-    height: 8rem;
-    border-radius: 50%;
-    background: ${blue100};
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-    border: 3px solid ${blue200};
-
-    img {
-      width: 6rem;
-      height: 6rem;
-    }
   }
 
   .username {
@@ -124,9 +118,7 @@ export const TabBar = styled.div`
     cursor: pointer;
     font-weight: 500;
     margin-bottom: -2px;
-    transition:
-      color 0.2s,
-      border-color 0.2s;
+    transition: color 0.2s, border-color 0.2s;
 
     &.active {
       color: ${zeeguuOrange};
@@ -224,10 +216,123 @@ export const LanguageCard = styled.div`
     font-weight: 600;
     font-size: 0.9rem;
     color: ${orange500};
-        flex: 1;
+    flex: 1;
   }
 
   .max-streak {
     color: #e65100;
+  }
+`;
+
+export const AvatarWrapper = styled.button`
+  width: 9rem;
+  height: 9rem;
+  border-radius: 50%;
+  background: ${orange100};
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  border: none ${orange400};
+  cursor: pointer;
+  padding: 0;
+  transition: border-color 0.2s, transform 0.2s;
+  background: ${({ $backgroundColor }) => ($backgroundColor)};
+
+  &:hover {
+    border: 3px solid ${orange400};
+    transform: scale(1.05);
+  }
+`;
+
+export const AvatarImage = styled.div`
+  width: 70%;
+  height: 70%;
+  background-color: ${({ $color }) => ($color)};
+  mask-image: url(${({ $imageSource }) => ($imageSource)});
+  mask-size: contain;
+  mask-repeat: no-repeat;
+  mask-position: center;
+  -webkit-mask-image: url(${({ $imageSource }) => ($imageSource)});
+  -webkit-mask-size: contain;
+  -webkit-mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+`;
+
+export const PickerSection = styled.div`
+  margin-bottom: 1.5rem;
+
+  .picker-label {
+    display: block;
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: ${darkGrey};
+    margin-bottom: 0.5rem;
+    text-align: center;
+  }
+`;
+
+export const PickerGrid = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+`;
+
+export const AvatarOption = styled.button`
+  width: 5rem;
+  height: 5rem;
+  border-radius: 50%;
+  border: 2px solid ${({ $selected }) => ($selected ? orange600 : lightGrey)};
+  background: white;
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: border-color 0.2s, transform 0.15s;
+  background: ${({ $backgroundColor }) => $backgroundColor};
+
+  &:hover {
+    border-color: ${orange600};
+    transform: scale(1.1);
+  }
+
+  img {
+    width: 70%;
+    height: 70%;
+  }
+`;
+
+export const ColorOption = styled.button`
+  width: 2.5rem;
+  height: 2.5rem;
+  background: ${({ $backgroundColor }) => $backgroundColor};
+  border-radius: 50%;
+  border: 2px solid ${({ $selected }) => ($selected ? orange600 : lightGrey)};
+  cursor: pointer;
+  padding: 0;
+  transition: border-color 0.2s, transform 0.15s;
+  transform: ${({ $selected }) => ($selected ? "scale(1.2)" : "none")};
+
+  &:hover {
+    border-color: ${orange600};
+    transform: scale(1.2);
+  }
+`;
+
+export const AvatarPreview = styled.div`
+  width: 5rem;
+  height: 5rem;
+  border-radius: 50%;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 1rem auto 0;
+  background: ${({ $backgroundColor }) => $backgroundColor};
+
+  img {
+    width: 70%;
+    height: 70%;
   }
 `;
