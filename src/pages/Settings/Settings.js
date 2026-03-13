@@ -25,10 +25,7 @@ export default function Settings() {
 
   const isAnonymous = userDetails?.is_anonymous;
 
-  function handleUpgradeSuccess() {
-    // Clear the dismissed flag so the modal logic works correctly
-    LocalStorage.setAnonUpgradeDismissed(false);
-  }
+  function handleUpgradeSuccess() {}
 
   return (
     <s.StyledWrapper>

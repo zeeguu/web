@@ -129,7 +129,7 @@ export default function LogIn({ handleSuccessfulLogIn }) {
       <Footer>
         <p className="centered">
           {strings.dontHaveAnAccount + " "}
-          <Link className="bold underlined-link" to="/language_preferences">
+          <Link className="bold underlined-link" to="/invite_code">
             {strings.getStarted}
           </Link>
         </p>

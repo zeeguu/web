@@ -20,7 +20,7 @@ export default function LandingPageTopNav() {
           "Zeeguu"}
       </TopNavOption>
       <TopNavOption to="/log_in">{strings.login}</TopNavOption>
-      <TopNavOption callToAction to="/language_preferences">
+      <TopNavOption callToAction to="/invite_code">
         {strings.register}
       </TopNavOption>
     </TopNav>
