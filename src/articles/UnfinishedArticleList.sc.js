@@ -6,7 +6,7 @@ const UnfinishedArticlesBox = styled.div`
   flex-direction: column;
   align-items: start;
   margin: 0.5em 0;
-  background-color: var(--card-bg);
+  background-color: var(--continue-card-bg);
   border-radius: 2em;
   padding: 0.5em 1em;
   @media (max-width: 576px) {

@@ -441,14 +441,14 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
                   border: "none",
                   padding: "0.25rem",
                   cursor: "pointer",
-                  color: "#ccc",
+                  color: "grey",
                   display: "flex",
                   alignItems: "center",
                   gap: "0.25rem",
                   fontSize: "0.8rem",
                 }}
                 onMouseOver={(e) => e.currentTarget.style.color = "#999"}
-                onMouseOut={(e) => e.currentTarget.style.color = "#ccc"}
+                onMouseOut={(e) => e.currentTarget.style.color = "grey"}
               >
                 <FlagOutlinedIcon fontSize="small" />
                 Report

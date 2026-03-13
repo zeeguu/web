@@ -227,7 +227,7 @@ let OrangeButton = styled(StyledButton)`
   justify-content: center;
   align-items: center;
 
-  color: #3d2800;
+  color: var(--orange-btn-text, white);
   background-color: ${zeeguuOrange};
   margin: 1em;
 `;
