@@ -15,8 +15,15 @@ const Zeeguu_API = class {
     this._cache.clear();
   }
 
+  // Cache keys include the learned language so switching languages
+  // naturally serves fresh data without needing to invalidate
+  _cacheKey(endpoint) {
+    const lang = localStorage.getItem("learned_language") || "";
+    return `${lang}:${endpoint}`;
+  }
+
   getCached(endpoint) {
-    const cached = this._cache.get(endpoint);
+    const cached = this._cache.get(this._cacheKey(endpoint));
     if (cached && Date.now() - cached.time < CACHE_TTL) {
       return cached.data;
     }
@@ -58,7 +65,8 @@ const Zeeguu_API = class {
 
   _getJSON(endpoint, callback, useCache = false) {
     if (useCache) {
-      const cached = this._cache.get(endpoint);
+      const key = this._cacheKey(endpoint);
+      const cached = this._cache.get(key);
       if (cached && Date.now() - cached.time < CACHE_TTL) {
         callback(cached.data);
         return;
@@ -75,7 +83,7 @@ const Zeeguu_API = class {
       })
       .then((data) => {
         if (useCache) {
-          this._cache.set(endpoint, { data, time: Date.now() });
+          this._cache.set(this._cacheKey(endpoint), { data, time: Date.now() });
         }
         callback(data);
       })
