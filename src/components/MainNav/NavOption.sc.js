@@ -107,6 +107,7 @@ const TextWrapper = styled.span`
 `;
 
 const IconContainer = styled.span`
+  position: relative;
   width: 2.8rem;
   min-width: 2.8rem;
   height: 2.8rem;
