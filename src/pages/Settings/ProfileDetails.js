@@ -88,6 +88,9 @@ export default function ProfileDetails() {
       name: displayName,
       username: username,
       email: email,
+      avatar_image_name: selectedCharacterId,
+      avatar_character_color: selectedCharacterColor,
+      avatar_background_color: selectedBackgroundColor,
     };
     api.saveUserDetails(newUserDetails, setErrorMessage, () => {
       setUserDetails(newUserDetails);
