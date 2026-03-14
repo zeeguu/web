@@ -89,7 +89,7 @@ export default function ProfileDetails() {
     setErrorMessage("");
     if (!validateRules([validateDisplayName, validateUsername, validateEmail])) return;
 
-    const newUserDetails = {
+    const payload = {
       ...userDetails,
       name: displayName,
       username: username,
@@ -98,7 +98,18 @@ export default function ProfileDetails() {
       avatar_character_color: selectedAvatarCharacterColor,
       avatar_background_color: selectedAvatarBackgroundColor,
     };
-    api.saveUserDetails(newUserDetails, setErrorMessage, () => {
+    api.saveUserDetails(payload, setErrorMessage, () => {
+      const newUserDetails = {
+        ...userDetails,
+        name: displayName,
+        username: username,
+        email: email,
+        user_avatar: {
+          image_name: selectedAvatarCharacterId,
+          character_color: selectedAvatarCharacterColor,
+          background_color: selectedAvatarBackgroundColor,
+        },
+      };
       setUserDetails(newUserDetails);
       LocalStorage.setUserInfo(newUserDetails);
       saveSharedUserInfo(newUserDetails);
