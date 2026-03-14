@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { almostBlack, zeeguuOrange, zeeguuDarkOrange, blue600, blue400, blue100 } from "../components/colors";
+import { zeeguuOrange, zeeguuDarkOrange, blue600, blue400 } from "../components/colors";
 
 const ArticlePreview = styled.div`
   margin-bottom: 1em;
@@ -120,8 +120,8 @@ const UrlSource = styled.span`
 
 const SimplifiedLabel = styled.span`
   font-size: 0.75em;
-  color: ${blue600};
-  background-color: #e3f2fd;
+  color: var(--badge-text);
+  background-color: var(--badge-bg);
   padding: 2px 6px;
   border-radius: 3px;
   margin-left: 0.3em;
@@ -162,7 +162,7 @@ const UnfinishedArticleStats = styled.div`
 
 let Summary = styled.div`
   font-size: 1.3em;
-  color: ${almostBlack};
+  color: var(--text-primary);
   line-height: 1.5em;
   margin-top: 0.36em;
   width: 40em;
@@ -220,7 +220,7 @@ let UrlTopics = styled.div`
     font-weight: 500;
     text-align: center;
     vertical-align: middle;
-    background-color: ${blue100};
+    background-color: var(--tag-bg);
   }
 
   .cancelButton {

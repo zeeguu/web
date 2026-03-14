@@ -49,7 +49,7 @@ ios/App/fastlane/report.xml
 ios/App/fastlane/screenshots/
 ios/App/fastlane/screenshots-backup/
 ios/App/fastlane/Preview.html
-ios/App/App.xcodeproj/xcshareddata/
+ios/App/App.xcodeproj/xcshareddata/WorkspaceSettings.xcsettings
 
 # Android secrets and signing
 android/app/*.jks

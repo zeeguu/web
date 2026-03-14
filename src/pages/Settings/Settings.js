@@ -11,6 +11,7 @@ import ButtonContainer from "../_pages_shared/ButtonContainer.sc";
 import UpgradeAccountModal from "../../components/UpgradeAccountModal";
 import LocalStorage from "../../assorted/LocalStorage";
 import { APP_VERSION } from "../../appVersion";
+import DarkModeToggle from "./DarkModeToggle";
 
 import * as s from "./Settings.sc";
 
@@ -24,10 +25,7 @@ export default function Settings() {
 
   const isAnonymous = userDetails?.is_anonymous;
 
-  function handleUpgradeSuccess() {
-    // Clear the dismissed flag so the modal logic works correctly
-    LocalStorage.setAnonUpgradeDismissed(false);
-  }
+  function handleUpgradeSuccess() {}
 
   return (
     <s.StyledWrapper>
@@ -74,6 +72,10 @@ export default function Settings() {
         <SettingsItem path={"/account_settings/topbar_progress_display"}>
           {strings.progressIconPreferences}
         </SettingsItem>
+      </ListOfSettingsItems>
+
+      <ListOfSettingsItems header={"Appearance"}>
+        <DarkModeToggle />
       </ListOfSettingsItems>
 
       {!isAnonymous && (

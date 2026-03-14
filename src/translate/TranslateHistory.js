@@ -56,7 +56,7 @@ export default function TranslateHistory() {
   if (historyItems.length === 0) {
     return (
       <s.NoResults>
-        No translation history yet. Search for words in the Translate tab to see them here.
+        Words searched in the Translate tab will appear here.
       </s.NoResults>
     );
   }

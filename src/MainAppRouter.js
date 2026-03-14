@@ -12,6 +12,7 @@ import LogIn from "./pages/LogIn";
 import CreateAccount from "./pages/onboarding/CreateAccount";
 import LanguagePreferences from "./pages/onboarding/LanguagePreferences";
 import Welcome from "./pages/onboarding/Welcome";
+import InviteCode from "./pages/onboarding/InviteCode";
 import ArticlesRouter from "./articles/_ArticlesRouter";
 import NotFound from "./pages/NotFound";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
@@ -23,6 +24,7 @@ import ReadingHistory from "./words/WordHistory";
 import ActivityRouter from "./activity/_ActivityRouter";
 import MyArticlesRouter from "./myArticles/_MyArticlesRouter";
 import ArticleReader from "./reader/ArticleReader";
+import SharedArticleHandler from "./reader/SharedArticleHandler";
 import LoadingAnimation from "./components/LoadingAnimation";
 import { getSharedSession } from "./utils/cookies/userInfo";
 import LocalStorage from "./assorted/LocalStorage";
@@ -99,8 +101,9 @@ export default function MainAppRouter({ hasExtension, handleSuccessfulLogIn }) {
       <Route path="/log_in" render={() => <LogIn handleSuccessfulLogIn={handleSuccessfulLogIn} />} />
       <Route path="/account_details" render={() => <CreateAccount handleSuccessfulLogIn={handleSuccessfulLogIn} />} />
 
-      <Route path="/create_account" component={LanguagePreferences} />
+      <Route path="/create_account" component={InviteCode} />
 
+      <Route path="/invite_code" component={InviteCode} />
       <Route path="/language_preferences" component={LanguagePreferences} />
       <Route path="/welcome" component={Welcome} />
 
@@ -134,6 +137,7 @@ export default function MainAppRouter({ hasExtension, handleSuccessfulLogIn }) {
       <PrivateRouteWithLayout path="/activity-history" component={ActivityRouter} />
       <PrivateRouteWithLayout path="/account_settings" component={SettingsRouter} />
       <PrivateRouteWithLayout path="/teacher" component={TeacherRouter} />
+      <PrivateRouteWithLayout path="/shared-article" component={SharedArticleHandler} />
       <PrivateRouteWithLayout path="/read/article" component={ArticleReader} />
       <Redirect from="/user_dashboard" to="/activity-history/statistics" />
       <PrivateRouteWithLayout path="/search" component={ArticlesRouter} />

@@ -47,7 +47,7 @@ export default function Welcome() {
   }
 
   function handleNewUser() {
-    history.push("/language_preferences");
+    history.push("/invite_code");
   }
 
   return (

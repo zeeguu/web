@@ -1,13 +1,13 @@
 import styled from "styled-components";
-import { blue100 } from "../components/colors";
 
 const UnfinishedArticlesBox = styled.div`
+  position: relative;
   display: flex;
   width: 95%;
   flex-direction: column;
   align-items: start;
   margin: 0.5em 0;
-  background-color: ${blue100};
+  background-color: var(--continue-card-bg);
   border-radius: 2em;
   padding: 0.5em 1em;
   @media (max-width: 576px) {
@@ -22,4 +22,21 @@ const UnfishedArticleBoxTitle = styled.h3`
   margin-bottom: -0.7em;
 `;
 
-export { UnfinishedArticlesBox, UnfishedArticleBoxTitle };
+const CloseButton = styled.button`
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  color: var(--text-muted);
+  display: flex;
+  z-index: 1;
+
+  &:hover {
+    color: var(--text-primary);
+  }
+`;
+
+export { UnfinishedArticlesBox, UnfishedArticleBoxTitle, CloseButton };

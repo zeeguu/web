@@ -8,7 +8,6 @@ const ExercisesColumn = styled.div`
   padding-top: 2rem;
   display: flex;
   flex-direction: column;
-  height: 100%;
   @media (max-width: 700px) {
     padding-top: 0.5rem;
   }
@@ -17,7 +16,7 @@ const ExercisesColumn = styled.div`
 
   #exerciseTopbar {
     width: 100%;
-    padding: 0.15rem 0;
+    padding: 0.5rem 0;
   }
 
   #topbarRow {
@@ -27,6 +26,7 @@ const ExercisesColumn = styled.div`
     justify-content: space-between;
     margin-bottom: 0;
     min-height: 1.25rem;
+    padding: 0 0.25rem;
   }
 `;
 
@@ -37,7 +37,7 @@ const ExForm = styled.div`
   transition: all 0.5s;
   width: 100%;
   margin: 0 auto;
-  background-color: rgba(241, 240, 240, 0.274);
+  background-color: var(--exercise-card-bg, rgba(241, 240, 240, 0.274));
   min-height: 500px;
   padding-bottom: 1rem;
 
@@ -68,7 +68,6 @@ const ExForm = styled.div`
 
     img {
       width: 60px;
-      mix-blend-mode: multiply;
       height: auto;
     }
     p {
@@ -84,14 +83,13 @@ const ExForm = styled.div`
     margin-top: 1.5em;
     margin-left: auto;
     margin-right: auto;
-    border: 0.125em solid #99e47f;
+    border: 0.125em solid var(--success-border);
     border-radius: 0.5em;
-    background-color: #f1f7f2;
+    background-color: var(--success-bg);
     width: 70%;
 
     img {
       width: 60px;
-      mix-blend-mode: multiply;
       height: auto;
       margin: 0.5em;
     }
