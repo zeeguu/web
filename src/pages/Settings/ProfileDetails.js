@@ -67,9 +67,9 @@ export default function ProfileDetails() {
       setUsername(userDetails.username);
       setEmail(userDetails.email);
 
-      setSelectedCharacterId(AVATAR_IMAGES.find(entry => entry.src === `/static/avatars/${userDetails.user_avatar.image_name}`)?.id);
-      setSelectedCharacterColor(AVATAR_CHARACTER_COLORS.find(value => value === userDetails.user_avatar.character_color));
-      setSelectedBackgroundColor(AVATAR_BACKGROUND_COLORS.find(value => value === userDetails.user_avatar.background_color));
+      setSelectedCharacterId(AVATAR_IMAGES.find(entry => entry.src === `/static/avatars/${userDetails.user_avatar?.image_name}`)?.id);
+      setSelectedCharacterColor(AVATAR_CHARACTER_COLORS.find(value => value === userDetails.user_avatar?.character_color));
+      setSelectedBackgroundColor(AVATAR_BACKGROUND_COLORS.find(value => value === userDetails.user_avatar?.background_color));
     }
 
     return () => {
