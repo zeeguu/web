@@ -9,22 +9,35 @@ const BaseBanner = styled.div`
   font-size: 0.85rem;
   cursor: pointer;
 `;
-const StreakBannerContainer = styled(BaseBanner)`
-  background: linear-gradient(135deg, #fff8e1, #fff3cd);
-  color: #7a5c00;
-  border-bottom: 1px solid #ffe59e;
+const TopBarContainer = styled(BaseBanner)`
+  background: var(--streak-banner-bg);
+  color: var(--streak-banner-text);
+  border-bottom: 1px solid var(--streak-banner-border);
+  cursor: default;
+  justify-content: space-between;
+`;
 
-  &:hover {
-    background: linear-gradient(135deg, #fff3cd, #ffe59e);
-  }
+const FlagButton = styled.button`
+  background: none;
+  border: none;
+  padding: 0.2rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+`;
+
+const StreakInfo = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
 `;
 const DailyFeedbackBannerContainer = styled(BaseBanner)`
-  background: linear-gradient(135deg, #e1f5fe, #b3e5fc);
-  color: #01579b;
-  border-bottom: 1px solid #81d1f6;
+  background: var(--feedback-banner-bg);
+  color: var(--feedback-banner-text);
+  border-bottom: 1px solid var(--feedback-banner-border);
 
   &:hover {
-    background: linear-gradient(135deg, #b3e5fc, #81d4fa);
+    background: var(--feedback-banner-hover);
   }
 
   a {
@@ -42,12 +55,26 @@ const StreakLabel = styled.span`
 `;
 
 const FlagImage = styled.img`
-  width: 1rem;
-  height: 1rem;
+  width: 1.4rem;
+  height: 1.4rem;
   vertical-align: middle;
   border-radius: 50%;
   object-fit: cover;
-  border: 0.05rem solid #ccc;
+  border: 0.05rem solid var(--border-color);
 `;
 
-export { StreakBannerContainer, StreakValue, StreakLabel, FlagImage, DailyFeedbackBannerContainer };
+const DailyFeedbackLink = styled.a`
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--feedback-banner-text);
+  background: var(--feedback-banner-bg);
+  padding: 0.2rem 0.6rem;
+  border-radius: 0.8rem;
+  text-decoration: none;
+
+  &:hover {
+    background: var(--feedback-banner-hover);
+  }
+`;
+
+export { TopBarContainer, StreakValue, StreakLabel, FlagImage, FlagButton, StreakInfo, DailyFeedbackBannerContainer, DailyFeedbackLink };

@@ -4,7 +4,6 @@ const NarrowColumn = styled.div`
   max-width: 768px;
   margin-left: auto;
   margin-right: auto;
-  height: 100%;
   padding: 1px;
 `;
 

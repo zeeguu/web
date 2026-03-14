@@ -246,11 +246,11 @@ export default function ArticlePreview({
             {topicOrigin === TopicOriginType.INFERRED && (
               <HighlightOffRoundedIcon
                 className="cancelButton"
-                sx={{ color: '#aaa', fontSize: '1rem', strokeWidth: 0.5 }}
+                sx={{ color: 'var(--text-faint)', fontSize: '1rem', strokeWidth: 0.5 }}
                 onClick={(e) => {
                   e.stopPropagation();
                   setShowInferredTopic(false);
-                  toast("Your preference was saved.");
+                  toast("Thanks for your feedback.");
                   api.removeMLSuggestion(article.id, topicTitle);
                 }}
               />
@@ -262,9 +262,9 @@ export default function ArticlePreview({
             <span
               key={`search-${i}`}
               style={{
-                backgroundColor: "#fef3c7",
-                border: "solid 1px #b45309",
-                color: "#92400e",
+                backgroundColor: "var(--search-tag-bg)",
+                border: "solid 1px var(--search-tag-border)",
+                color: "var(--search-tag-text)",
               }}
             >
               🔍 <Link to={`/search?search=${encodeURIComponent(search)}`} style={{ color: "inherit", textDecoration: "none" }}>{search}</Link>
@@ -275,9 +275,9 @@ export default function ArticlePreview({
 
       {/* Show teacher name for classroom articles */}
       {article.uploader_name && (
-        <div style={{ marginTop: "8px", marginBottom: "8px", fontSize: "0.9em", color: "#666" }}>
+        <div style={{ marginTop: "8px", marginBottom: "8px", fontSize: "0.9em", color: "var(--text-muted)" }}>
           <span style={{ fontWeight: "500" }}>Shared by:</span>{" "}
-          <span style={{ color: "#333" }}>{article.uploader_name}</span>
+          <span style={{ color: "var(--text-primary)" }}>{article.uploader_name}</span>
         </div>
       )}
 
@@ -313,7 +313,7 @@ export default function ArticlePreview({
         )}
 
         {/* Source and time */}
-        <span style={{ fontSize: 'small', marginLeft: '8px', color: '#666' }}>
+        <span style={{ fontSize: 'small', marginLeft: '8px', color: 'var(--text-muted)' }}>
           from{' '}
           <a
             href={article.parent_url || article.url}

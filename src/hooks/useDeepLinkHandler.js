@@ -25,18 +25,10 @@ export default function useDeepLinkHandler() {
     let listenerHandle = null;
 
     const handleAppUrlOpen = (event) => {
-      // event.url is something like "https://zeeguu.org/read/article?id=123"
-      const url = event.url;
-
       try {
-        const parsedUrl = new URL(url);
-        // Get the path and search params (e.g., "/read/article?id=123")
+        // Deep links to zeeguu.org, e.g. "https://zeeguu.org/read/article?id=123"
+        const parsedUrl = new URL(event.url);
         const fullPath = parsedUrl.pathname + parsedUrl.search;
-
-        console.log("Deep link received:", url);
-        console.log("Navigating to:", fullPath);
-
-        // Navigate to the path
         history.push(fullPath);
       } catch (error) {
         console.error("Failed to parse deep link URL:", error);

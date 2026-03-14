@@ -56,11 +56,11 @@ const LevelIndicator = styled.div`
     position: relative;
     width: 100%;
     height: 5px;
-    background-color: #e0e0e0;
+    background-color: var(--progress-bar-bg, #e0e0e0);
     border-radius: 5px;
     border: 2px solid transparent; /* Transparent border for gradient effect */
-    background-image: linear-gradient(180deg, #c4c4c4, #f7f7f7),
-      linear-gradient(180deg, #c4c4c4, #f7f7f7); /* Gradient for the border */
+    background-image: var(--progress-bar-gradient, linear-gradient(180deg, #c4c4c4, #f7f7f7)),
+      var(--progress-bar-gradient, linear-gradient(180deg, #c4c4c4, #f7f7f7)); /* Gradient for the border */
     background-origin: border-box;
   }
 
@@ -92,9 +92,9 @@ const LevelIndicator = styled.div`
     height: 12px;
     font-size: 10px;
     color: white;
-    background-color: #e0e0e0;
+    background-color: var(--progress-circle-bg, #e0e0e0);
     border-radius: 50%;
-    border: 2px solid #c4c4c4;
+    border: 2px solid var(--progress-circle-border, #c4c4c4);
     z-index: 1;
     box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.2);
     transition:
@@ -165,7 +165,7 @@ const LevelIndicator = styled.div`
     .level-circle {
       width: 10px;
       height: 10px;
-      border: 1px solid #c4c4c4;
+      border: 1px solid var(--progress-circle-border, #c4c4c4);
     }
 
     .level-circle.filled::before {

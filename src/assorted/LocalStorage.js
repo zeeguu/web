@@ -19,7 +19,6 @@ const LocalStorage = {
     AnonUUID: "anon_uuid",
     AnonPassword: "anon_password",
     AnonFirstUseDate: "anon_first_use_date",
-    AnonUpgradeDismissed: "anon_upgrade_dismissed",
     AudioExperimentNoOfSessions: "audio_experiment_no_of_sessions",
     DisplayedAudioExperimentPopup: "audio_experiment_displayed_popup",
     AudioExperimentCompleted: "audio_experiment_completed",
@@ -33,6 +32,9 @@ const LocalStorage = {
     LastVisitedPage: "last_visited_page",
     LastVisitedTeacherPage: "last_visited_teacher_page",
     DailyFeedbackLastShown: "daily_feedback_last_shown",
+    InviteCode: "invite_code",
+    // Keep in sync with index.html inline theme script
+    ThemePreference: "zeeguu-theme-preference",
   },
 
   userInfo: function () {
@@ -71,6 +73,14 @@ const LocalStorage = {
 
   setNativeLanguage: function (nativeLanguage) {
     localStorage[this.Keys.NativeLanguage] = nativeLanguage;
+  },
+
+  getInviteCode: function () {
+    return localStorage[this.Keys.InviteCode] || "";
+  },
+
+  setInviteCode: function (inviteCode) {
+    localStorage[this.Keys.InviteCode] = inviteCode;
   },
 
   selectedTimePeriod: function () {
@@ -157,6 +167,7 @@ const LocalStorage = {
   },
 
   setUserPreferences: function (preferences) {
+    if (!preferences) return;
     if (preferences["productive_exercises"] !== undefined) {
       localStorage[this.Keys.ProductiveExercisesEnabled] = preferences["productive_exercises"];
     }
@@ -313,12 +324,16 @@ const LocalStorage = {
     return Math.floor(diffMs / (1000 * 60 * 60 * 24));
   },
 
-  isAnonUpgradeDismissed: function () {
-    return localStorage[this.Keys.AnonUpgradeDismissed] === "true";
+  getThemePreference: function () {
+    return localStorage.getItem(this.Keys.ThemePreference);
   },
 
-  setAnonUpgradeDismissed: function (dismissed) {
-    localStorage[this.Keys.AnonUpgradeDismissed] = dismissed ? "true" : "false";
+  setThemePreference: function (theme) {
+    localStorage.setItem(this.Keys.ThemePreference, theme);
+  },
+
+  clearThemePreference: function () {
+    localStorage.removeItem(this.Keys.ThemePreference);
   },
 
   didShowDailyFeedbackToday: function () {

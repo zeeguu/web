@@ -108,6 +108,7 @@ export default function ArticleListBrowser({ content, searchQuery, searchPublish
       const updatedOriginalList = originalList.filter((item) => item.id !== articleId);
       setOriginalList(updatedOriginalList);
     }
+    setUnfinishedArticles(prev => prev ? prev.filter((item) => item.id !== articleId) : prev);
   };
 
   useEffect(() => {
@@ -192,7 +193,7 @@ export default function ArticleListBrowser({ content, searchQuery, searchPublish
     <>
       {!searchQuery && (
         <>
-          <UnfinishedArticlesList unfinishedArticles={unfinishedArticles} />
+          <UnfinishedArticlesList unfinishedArticles={unfinishedArticles} onArticleHidden={handleArticleHidden} />
           {areVideosAvailable && (
             <s.SortHolder
               style={{

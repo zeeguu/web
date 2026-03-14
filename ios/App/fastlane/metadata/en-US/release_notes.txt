@@ -1,5 +1,6 @@
-- Switch between exercise examples with swipe gestures or arrow keys
-- Fixed cursor jumping issue when typing in exercises
-- Added My Articles section with ability to hide articles
-- Email verification flow for new signups
-- Streak banner now shows flag first
+- Share articles to Zeeguu directly from your phone's share sheet
+- Share button in article toolbar
+- Dark mode with automatic OS preference detection
+- Fixed bug in daily audio lessons
+- Dismiss button on "Continue where you left off" card
+- Fixed sticky tab bar and scroll issues on mobile

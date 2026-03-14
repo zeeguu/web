@@ -13,9 +13,9 @@ let Word = styled.div`
   margin-right: ${props => props.compact ? '0.5em' : '0'};
   transition: all 1s ease-out;
   overflow: hidden;
-  background-color: ${props => props.compact ? '#f8f9fa' : 'transparent'};
+  background-color: ${props => props.compact ? 'var(--bg-secondary)' : 'transparent'};
   border-radius: ${props => props.compact ? '4px' : '0'};
-  border: ${props => props.compact ? '1px solid #e9ecef' : 'none'};
+  border: ${props => props.compact ? '1px solid var(--border-light)' : 'none'};
 
   &.removing {
     height: 0;
@@ -99,7 +99,7 @@ let WordPair = styled.div`
     margin-top: 0px;
     margin-bottom: 0px;
     font-weight: 300;
-    ${props => props.compact && 'color: #666;'}
+    ${props => props.compact && 'color: var(--text-secondary);'}
   }
 `;
 
