@@ -13,7 +13,12 @@ import Modal from "../components/modal_shared/Modal";
 import Header from "../components/modal_shared/Header.sc";
 import Heading from "../components/modal_shared/Heading.sc";
 import Main from "../components/modal_shared/Main.sc";
-import { orange100, orange600 } from "../components/colors";
+import {
+  AVATAR_IMAGE_MAP,
+  validatedAvatarBackgroundColor,
+  validatedAvatarCharacterColor,
+  validatedAvatarCharacterId,
+} from "./avatarOptions";
 import Badges from "@/badges/Badges";
 import { BadgeCounterContext } from "@/badges/BadgeCounterContext";
 
@@ -26,6 +31,9 @@ export default function UserProfile() {
   const [activeTab, setActiveTab] = useState("overview");
   const [showLanguagesModal, setShowLanguagesModal] = useState(false);
   const { hasBadgeNotification, totalNumberOfBadges } = useContext(BadgeCounterContext);
+  const [avatarCharacterId, setAvatarCharacterId] = useState();
+  const [avatarCharacterColor, setAvatarCharacterColor] = useState();
+  const [avatarBackgroundColor, setAvatarBackgroundColor] = useState();
 
   const tabs = [
     { key: "overview", label: "Overview" },
@@ -56,9 +64,12 @@ export default function UserProfile() {
         return keyA > keyB ? -1 : 1;
       });
       setAllDailyStreakInfo(data);
-      console.log(data);
     });
-  }, [api]);
+
+    setAvatarCharacterId(validatedAvatarCharacterId(userDetails.user_avatar?.image_name));
+    setAvatarCharacterColor(validatedAvatarCharacterColor(userDetails.user_avatar?.character_color));
+    setAvatarBackgroundColor(validatedAvatarBackgroundColor(userDetails.user_avatar?.background_color));
+  }, [userDetails, api]);
 
   return (
     <s.ProfileWrapper>
@@ -66,11 +77,8 @@ export default function UserProfile() {
         <s.EditProfileButton onClick={() => history.push("/account_settings/profile_details")}>
           <EditIcon sx={{ fontSize: "1rem" }} />
         </s.EditProfileButton>
-        <s.AvatarBackground $backgroundColor={userDetails.user_avatar?.background_color || orange100}>
-          <s.AvatarImage
-            $imageSource={`/static/avatars/${userDetails.user_avatar?.image_name || "elephant.svg"}`}
-            $color={userDetails.user_avatar?.character_color || orange600}
-          />
+        <s.AvatarBackground $backgroundColor={avatarBackgroundColor}>
+          <s.AvatarImage $imageSource={AVATAR_IMAGE_MAP[avatarCharacterId]} $color={avatarCharacterColor} />
         </s.AvatarBackground>
         <div>
           <div className="name-wrapper">

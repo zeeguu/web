@@ -1,10 +1,9 @@
-import { useHistory } from "react-router-dom";
-import { useState, useEffect, useContext, useRef } from "react";
+import { Link, useHistory } from "react-router-dom";
+import { useContext, useEffect, useRef, useState } from "react";
 import { UserContext } from "../../contexts/UserContext";
 import { saveSharedUserInfo } from "../../utils/cookies/userInfo";
 import { setTitle } from "../../assorted/setTitle";
 import { APIContext } from "../../contexts/APIContext";
-import { Link } from "react-router-dom";
 import LocalStorage from "../../assorted/LocalStorage";
 import strings from "../../i18n/definitions";
 import Form from "../_pages_shared/Form.sc";
@@ -25,10 +24,17 @@ import validateRules from "../../assorted/validateRules";
 import { useLocation } from "react-router-dom/cjs/react-router-dom";
 import FullWidthConfirmMsg from "../../components/FullWidthConfirmMsg.sc";
 import Modal from "../../components/modal_shared/Modal";
-import { AVATAR_BACKGROUND_COLORS, AVATAR_CHARACTER_COLORS, AVATAR_IMAGES } from "../../profile/avatarOptions";
+import {
+  AVATAR_BACKGROUND_COLORS,
+  AVATAR_CHARACTER_COLORS,
+  AVATAR_CHARACTER_IDS,
+  AVATAR_IMAGE_MAP,
+  validatedAvatarBackgroundColor,
+  validatedAvatarCharacterColor,
+  validatedAvatarCharacterId,
+} from "../../profile/avatarOptions";
 import { AvatarBackground, AvatarImage } from "../../profile/UserProfile.sc";
 import * as s from "./ProfileDetails.sc";
-import { orange100, orange600 } from "../../components/colors";
 
 export default function ProfileDetails() {
   const api = useContext(APIContext);
@@ -39,9 +45,9 @@ export default function ProfileDetails() {
   const history = useHistory();
   const isPageMounted = useRef(true);
   const [showAvatarModal, setShowAvatarModal] = useState(false);
-  const [selectedCharacterId, setSelectedCharacterId] = useState();
-  const [selectedCharacterColor, setSelectedCharacterColor] = useState();
-  const [selectedBackgroundColor, setSelectedBackgroundColor] = useState();
+  const [selectedAvatarCharacterId, setSelectedAvatarCharacterId] = useState();
+  const [selectedAvatarCharacterColor, setSelectedAvatarCharacterColor] = useState();
+  const [selectedAvatarBackgroundColor, setSelectedAvatarBackgroundColor] = useState();
 
   const [displayName, setDisplayName, validateDisplayName, isDisplayNameValid, displayNameErrorMessage] = useFormField(
     "",
@@ -67,9 +73,9 @@ export default function ProfileDetails() {
       setUsername(userDetails.username);
       setEmail(userDetails.email);
 
-      setSelectedCharacterId(AVATAR_IMAGES.find(entry => entry.src === `/static/avatars/${userDetails.user_avatar?.image_name}`)?.id);
-      setSelectedCharacterColor(AVATAR_CHARACTER_COLORS.find(value => value === userDetails.user_avatar?.character_color));
-      setSelectedBackgroundColor(AVATAR_BACKGROUND_COLORS.find(value => value === userDetails.user_avatar?.background_color));
+      setSelectedAvatarCharacterId(validatedAvatarCharacterId(userDetails.user_avatar?.image_name));
+      setSelectedAvatarCharacterColor(validatedAvatarCharacterColor(userDetails.user_avatar?.character_color));
+      setSelectedAvatarBackgroundColor(validatedAvatarBackgroundColor(userDetails.user_avatar?.background_color));
     }
 
     return () => {
@@ -88,9 +94,9 @@ export default function ProfileDetails() {
       name: displayName,
       username: username,
       email: email,
-      avatar_image_name: selectedCharacterId,
-      avatar_character_color: selectedCharacterColor,
-      avatar_background_color: selectedBackgroundColor,
+      avatar_image_name: selectedAvatarCharacterId,
+      avatar_character_color: selectedAvatarCharacterColor,
+      avatar_background_color: selectedAvatarBackgroundColor,
     };
     api.saveUserDetails(newUserDetails, setErrorMessage, () => {
       setUserDetails(newUserDetails);
@@ -122,11 +128,11 @@ export default function ProfileDetails() {
               <AvatarBackground
                 className="clickable"
                 onClick={() => setShowAvatarModal(true)}
-                $backgroundColor={userDetails.user_avatar?.background_color || orange100}
+                $backgroundColor={selectedAvatarBackgroundColor}
               >
                 <AvatarImage
-                  $imageSource={`/static/avatars/${userDetails.user_avatar?.image_name || "elephant.svg"}`}
-                  $color={userDetails.user_avatar?.character_color || orange600}
+                  $imageSource={AVATAR_IMAGE_MAP[selectedAvatarCharacterId]}
+                  $color={selectedAvatarCharacterColor}
                 />
               </AvatarBackground>
             </s.AvatarWrapper>
@@ -195,16 +201,16 @@ export default function ProfileDetails() {
           <s.PickerSection>
             <span className="picker-label">Character</span>
             <s.PickerGrid>
-              {AVATAR_IMAGES.map((avatar) => (
+              {AVATAR_CHARACTER_IDS.map((id) => (
                 <s.AvatarOption
-                  key={avatar.id}
-                  $selected={selectedCharacterId === avatar.id}
-                  $backgroundColor={selectedBackgroundColor}
+                  key={id}
+                  $selected={selectedAvatarCharacterId === id}
+                  $backgroundColor={selectedAvatarBackgroundColor}
                   onClick={() => {
-                    setSelectedCharacterId(avatar.id);
+                    setSelectedAvatarCharacterId(id);
                   }}
                 >
-                  <AvatarImage $imageSource={avatar.src} $color={selectedCharacterColor} />
+                  <AvatarImage $imageSource={AVATAR_IMAGE_MAP[id]} $color={selectedAvatarCharacterColor} />
                 </s.AvatarOption>
               ))}
             </s.PickerGrid>
@@ -217,9 +223,9 @@ export default function ProfileDetails() {
                 <s.ColorOption
                   key={color}
                   $backgroundColor={color}
-                  $selected={selectedCharacterColor === color}
+                  $selected={selectedAvatarCharacterColor === color}
                   onClick={() => {
-                    setSelectedCharacterColor(color);
+                    setSelectedAvatarCharacterColor(color);
                   }}
                 />
               ))}
@@ -233,9 +239,9 @@ export default function ProfileDetails() {
                 <s.ColorOption
                   key={color}
                   $backgroundColor={color}
-                  $selected={selectedBackgroundColor === color}
+                  $selected={selectedAvatarBackgroundColor === color}
                   onClick={() => {
-                    setSelectedBackgroundColor(color);
+                    setSelectedAvatarBackgroundColor(color);
                   }}
                 />
               ))}
