@@ -1,10 +1,6 @@
 import styled from "styled-components";
 import {
-  almostBlack,
   blue100,
-  blue200,
-  darkGrey,
-  lightGrey,
   orange100,
   orange400,
   orange500,
@@ -20,11 +16,11 @@ export const ProfileWrapper = styled.div`
 
 export const HeaderCard = styled.div`
   position: relative;
-  background: white;
+  background: var(--card-bg);
   border-radius: 8px;
   padding: 1rem;
   margin-bottom: 1.5rem;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 1px 3px var(--shadow-color);
   display: flex;
   align-items: center;
   gap: 2rem;
@@ -52,18 +48,18 @@ export const HeaderCard = styled.div`
   }
 
   .username {
-    color: ${almostBlack};
+    color: var(--text-primary);
   }
 
   .display-name {
-    color: ${darkGrey};
+    color: var(--text-secondary);
   }
 
   .meta {
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    color: ${darkGrey};
+    color: var(--text-secondary);
     font-size: 0.9rem;
     margin-top: 0.4rem;
 
@@ -74,7 +70,7 @@ export const HeaderCard = styled.div`
 
   .label {
     font-weight: 600;
-    color: #555;
+    color: var(--text-secondary);
   }
 `;
 
@@ -91,7 +87,7 @@ export const StatsRow = styled.div`
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    background: ${blue100};
+    background: var(--light-badge-bg);
     border-radius: 8px;
     padding: 0.6rem 1rem;
   }
@@ -118,7 +114,7 @@ export const EditProfileButton = styled.button`
   border-radius: 50%;
   border: none;
   background: ${veryLightGrey};
-  color: ${darkGrey};
+  color: var(--text-secondary);
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -134,16 +130,16 @@ export const EditProfileButton = styled.button`
 `;
 
 export const TabsSection = styled.div`
-  background: white;
+  background: var(--card-bg);
   border-radius: 8px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 1px 3px var(--shadow-color);
   padding: 1rem;
 `;
 
 export const TabBar = styled.div`
   display: flex;
   gap: 0.25rem;
-  border-bottom: 2px solid #eee;
+  border-bottom: 2px solid var(--border-light);
   margin-bottom: 1rem;
 
   button {
@@ -152,7 +148,7 @@ export const TabBar = styled.div`
     border: none;
     border-bottom: 2px solid transparent;
     background: none;
-    color: ${darkGrey};
+    color: var(--text-secondary);
     cursor: pointer;
     font-weight: 500;
     margin-bottom: -2px;
@@ -187,9 +183,9 @@ export const OverflowBubble = styled.button`
   height: 1.75rem;
   padding: 0;
   border-radius: 50%;
-  background: ${blue100};
-  border: 0.08rem solid ${blue200};
-  color: ${almostBlack};
+  background: var(--light-badge-bg);
+  border: 0.08rem solid var(--border-light);
+  color: var(--text-primary);
   font-size: 0.75rem;
   font-weight: 600;
   cursor: pointer;
@@ -199,7 +195,7 @@ export const OverflowBubble = styled.button`
   transition: background 0.2s;
 
   &:hover {
-    background: ${blue200};
+    background: var(--tag-bg);
   }
 `;
 
@@ -221,18 +217,18 @@ export const LanguageCard = styled.div`
   padding: 0 0.75rem 0 0.5rem;
   height: 2.75rem;
   border-radius: 2rem;
-  border: solid 0.1rem ${lightGrey};
-  box-shadow: 0 0.1rem ${lightGrey};
+  border: solid 0.1rem var(--border-color);
+  box-shadow: 0 0.1rem var(--border-color);
   white-space: nowrap;
   flex: 1 1 calc(50% - 2rem);
   min-width: 11rem;
-  background: white;
+  background: var(--card-bg);
   margin-bottom: 0.2rem;
 
   .language-name {
     font-weight: 600;
     font-size: 1rem;
-    color: ${almostBlack};
+    color: var(--text-primary);
     text-transform: capitalize;
     flex: 1;
   }
@@ -242,7 +238,7 @@ export const LanguageCard = styled.div`
     align-items: center;
     margin-left: auto;
     padding-left: 0.75em;
-    border-left: 1px solid rgba(128, 128, 128, 0.3);
+    border-left: 1px solid var(--border-light);
     height: 1.5em;
     gap: 0.4rem;
     flex: 1;
@@ -260,7 +256,7 @@ export const LanguageCard = styled.div`
   }
 
   .max-streak {
-    color: #e65100;
+    color: var(--link-color);
   }
 `;
 

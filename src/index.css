@@ -36,8 +36,10 @@
   --action-btn-muted-hover-text: #666;
 
   --badge-bg: #e3f2fd;
+  --light-badge-bg: #e3f2fd;
   --badge-text: hsl(216, 100%, 57%);
   --tag-bg: hsl(216, 100%, 97%);
+  --light-tag-bg: hsl(216, 100%, 97%);
 
   --search-tag-bg: #fef3c7;
   --search-tag-border: #b45309;
@@ -49,6 +51,8 @@
   --cloze-underline-pulse: #666;
   --success-bg: #f1f7f2;
   --success-border: #99e47f;
+
+  --achieved-bg: rgba(90,189,92,0.35);
 
   color-scheme: light;
 }
@@ -90,8 +94,10 @@
   --action-btn-muted-hover-text: #bbb;
 
   --badge-bg: #1a2540;
+  --light-badge-bg: #2c3760;
   --badge-text: #81b4ff;
   --tag-bg: #1e2540;
+  --light-tag-bg: #2f375c;
 
   --search-tag-bg: #2a2520;
   --search-tag-border: #b45309;
@@ -116,6 +122,8 @@
   --progress-bar-gradient: linear-gradient(180deg, #33334d, #44446a);
   --progress-circle-bg: #3a3a55;
   --progress-circle-border: #50507a;
+
+  --achieved-bg: rgba(53, 193, 55, 0.35);
 
   color-scheme: dark;
 }
