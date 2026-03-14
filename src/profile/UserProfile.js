@@ -19,8 +19,8 @@ import {
   validatedAvatarCharacterColor,
   validatedAvatarCharacterId,
 } from "./avatarOptions";
-import Badges from "@/badges/Badges";
-import { BadgeCounterContext } from "@/badges/BadgeCounterContext";
+import Badges from "../badges/Badges";
+import { BadgeCounterContext } from "../badges/BadgeCounterContext";
 
 export default function UserProfile() {
   const history = useHistory();

@@ -14,8 +14,8 @@ import useExercisesCounterNotification from "./hooks/useExercisesCounterNotifica
 import useStreakMilestone from "./hooks/useStreakMilestone";
 import TopBar from "./components/TopBar";
 import { MOBILE_WIDTH } from "./components/MainNav/screenSize";
-import useBadgeCounterNotification from "@/hooks/useBadgeCounterNotification";
-import { BadgeCounterContext } from "@/badges/BadgeCounterContext";
+import useBadgeCounterNotification from "./hooks/useBadgeCounterNotification";
+import { BadgeCounterContext } from "./badges/BadgeCounterContext";
 
 // Desktop (flex row):               Mobile (flex column):
 // ┌──────────┬──────────────────┐   ┌──────────────────┐

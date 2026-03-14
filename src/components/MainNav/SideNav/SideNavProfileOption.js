@@ -13,8 +13,8 @@ import {
   validatedAvatarCharacterColor,
   validatedAvatarCharacterId,
 } from "../../../profile/avatarOptions";
-import { BadgeCounterContext } from "@/badges/BadgeCounterContext";
-import NotificationIcon from "@/components/NotificationIcon";
+import { BadgeCounterContext } from "../../../badges/BadgeCounterContext";
+import NotificationIcon from "../../../components/NotificationIcon";
 
 const NavAvatar = styled(AvatarBackground)`
   width: ${({ $screenWidth }) => ($screenWidth < 768 ? "1.4rem" : "1.8rem")};

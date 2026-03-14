@@ -10,7 +10,7 @@ import NavIcon from "../NavIcon";
 import LanguageModal from "../LanguageModal";
 import navLanguages from "../navLanguages";
 import * as s from "./MoreOptionsPanel.sc";
-import SideNavProfileOption from "@/components/MainNav/SideNav/SideNavProfileOption";
+import SideNavProfileOption from "../SideNav/SideNavProfileOption";
 
 export default function MoreOptionsPanel({
   overlayTransition,

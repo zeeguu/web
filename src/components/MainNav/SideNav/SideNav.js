@@ -4,13 +4,13 @@ import { UserContext } from "../../../contexts/UserContext";
 import { MainNavContext } from "../../../contexts/MainNavContext";
 import SideNavOptionsForStudent from "./SideNavOptionsForStudent";
 import SideNavOptionsForTeacher from "./SideNavOptionsForTeacher";
+import SideNavProfileOption from "./SideNavProfileOption";
 import SideNavProgressStats from "./SideNavProgressStats";
 import NavOption from "../NavOption";
 import FeedbackButton from "../../FeedbackButton";
 import NavigationOptions from "../navigationOptions";
 import SideNavLanguageOption from "./SideNavLanguageOption";
 import * as s from "./SideNav.sc";
-import SideNavProfileOption from "@/components/MainNav/SideNav/SideNavProfileOption";
 
 export default function SideNav({ screenWidth }) {
   const { userDetails } = useContext(UserContext);

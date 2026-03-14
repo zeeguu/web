@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { zeeguuOrange } from "@/components/colors";
+import { zeeguuOrange } from "../components/colors";
 
 export const BadgeContainer = styled.div`
   display: grid;
