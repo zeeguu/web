@@ -150,7 +150,7 @@ export default function CreateAccount({ handleSuccessfulLogIn }) {
   }
 
   return (
-    <PreferencesPage pageWidth={"narrow"}>
+    <PreferencesPage pageWidth={"narrow"} isBackgroundFixed={true}>
       <Modal
         open={showPrivacyNotice}
         onClose={() => {

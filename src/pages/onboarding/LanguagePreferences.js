@@ -169,7 +169,7 @@ export default function LanguagePreferences() {
   }
 
   return (
-    <PreferencesPage pageWidth={"narrow"}>
+    <PreferencesPage pageWidth={"narrow"} isBackgroundFixed={true}>
       <Header>
         <Heading>What language would&nbsp;you&nbsp;like&nbsp;to&nbsp;learn?</Heading>
       </Header>

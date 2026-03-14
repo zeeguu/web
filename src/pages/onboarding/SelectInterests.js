@@ -27,7 +27,7 @@ export default function SelectInterests() {
   }, []);
 
   return (
-    <PreferencesPage>
+    <PreferencesPage isBackgroundFixed={true}>
       <Header>
         <Heading>What would you like to read&nbsp;about?</Heading>
       </Header>

@@ -72,7 +72,7 @@ export default function LogIn({ handleSuccessfulLogIn }) {
   }
 
   return (
-    <PreferencesPage pageWidth={"narrow"}>
+    <PreferencesPage pageWidth={"narrow"} isBackgroundFixed={true}>
       <Header>
         <Heading>Login</Heading>
       </Header>

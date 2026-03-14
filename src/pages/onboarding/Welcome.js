@@ -51,7 +51,7 @@ export default function Welcome() {
   }
 
   return (
-    <PreferencesPage pageWidth={"narrow"}>
+    <PreferencesPage pageWidth={"narrow"} isBackgroundFixed={true}>
       <Header>
         <Heading>Welcome to Zeeguu</Heading>
       </Header>
