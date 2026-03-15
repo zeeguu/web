@@ -17,8 +17,8 @@ import { BadgeCounterContext } from "../../../badges/BadgeCounterContext";
 import NotificationIcon from "../../../components/NotificationIcon";
 
 const NavAvatar = styled(AvatarBackground)`
-  width: ${({ $screenWidth }) => ($screenWidth < 768 ? "1.4rem" : "1.8rem")};
-  height: ${({ $screenWidth }) => ($screenWidth < 768 ? "1.4rem" : "1.8rem")};
+  width: 1.8rem;
+  height: 1.8rem;
   padding: 2px;
 `;
 
