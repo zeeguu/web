@@ -89,26 +89,26 @@ export default function ProfileDetails() {
     setErrorMessage("");
     if (!validateRules([validateDisplayName, validateUsername, validateEmail])) return;
 
-    const payload = {
-      ...userDetails,
+    const updatedFormValues = {
       name: displayName,
       username: username,
       email: email,
-      avatar_image_name: selectedAvatarCharacterId,
-      avatar_character_color: selectedAvatarCharacterColor,
-      avatar_background_color: selectedAvatarBackgroundColor,
+    };
+    const updatedAvatarValues = {
+      image_name: selectedAvatarCharacterId,
+      character_color: selectedAvatarCharacterColor,
+      background_color: selectedAvatarBackgroundColor,
+    };
+    const payload = {
+      ...userDetails,
+      ...updatedFormValues,
+      ...Object.fromEntries(Object.entries(updatedAvatarValues).map(([key, value]) => [`avatar_${key}`, value])),
     };
     api.saveUserDetails(payload, setErrorMessage, () => {
       const newUserDetails = {
         ...userDetails,
-        name: displayName,
-        username: username,
-        email: email,
-        user_avatar: {
-          image_name: selectedAvatarCharacterId,
-          character_color: selectedAvatarCharacterColor,
-          background_color: selectedAvatarBackgroundColor,
-        },
+        ...updatedFormValues,
+        user_avatar: updatedAvatarValues,
       };
       setUserDetails(newUserDetails);
       LocalStorage.setUserInfo(newUserDetails);
