@@ -3,6 +3,7 @@ import { useHistory, useParams } from "react-router-dom";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import LocalFireDepartmentIcon from "@mui/icons-material/LocalFireDepartment";
 import PersonRemoveIcon from "@mui/icons-material/PersonRemove";
+import PersonAddIcon from "@mui/icons-material/PersonAdd";
 import ConfirmUnfriendModal from "./ConfirmUnfriendModal";
 import { setTitle } from "../assorted/setTitle";
 import { UserContext } from "../contexts/UserContext";
@@ -58,6 +59,7 @@ export default function UserProfile() {
   const [loadingFriendDetails, setLoadingFriendDetails] = useState(false);
   const [friendDetailsError, setFriendDetailsError] = useState(null);
   const [unfriendModalOpen, setUnfriendModalOpen] = useState(false);
+  const [friendRequestSent, setFriendRequestSent] = useState(false);
 
   const isFriendProfile = Boolean(friendUserId);
 
@@ -133,6 +135,34 @@ export default function UserProfile() {
   const streakValue = isFriendProfile
     ? friendDetails?.mutual_streak ?? "-"
     : daysPracticed ?? "-";
+
+  const handleSendFriendRequest = () => {
+    api.sendFriendRequest(friendUserId).then((response) => {
+      if (response.status === 200) {
+        setFriendRequestSent(true);
+      } else {
+        response.json().then((json) => {
+          setFriendDetailsError(json.error || "Failed to send friend request.");
+        });
+      }
+    }).catch(() => {
+      setFriendDetailsError("Failed to send friend request.");
+    });
+  };
+
+  const handleCancelFriendRequest = () => {
+    api.deleteFriendRequest(friendUserId).then((response) => {
+      if (response.status === 200) {
+        setFriendRequestSent(false);
+      } else {
+        response.json().then((json) => {
+          setFriendDetailsError(json.message || "Failed to cancel friend request.");
+        });
+      }
+    }).catch(() => {
+      setFriendDetailsError("Failed to cancel friend request.");
+    });
+  };
 
   const handleUnfriend = () => {
     api.unfriend(friendUserId).then((response) => {
@@ -235,6 +265,44 @@ export default function UserProfile() {
                   <span>Unfriend</span>
                 </button>
               )}
+              {isFriendProfile && !isFriend && !friendRequestSent && (
+                <button
+                  onClick={handleSendFriendRequest}
+                  style={{
+                    display: "inline-flex",
+                    alignItems: "center",
+                    gap: "0.4rem",
+                    border: "1px solid #3498db",
+                    borderRadius: "6px",
+                    background: "#fff",
+                    color: "#3498db",
+                    padding: "0.4rem 0.75rem",
+                    cursor: "pointer",
+                  }}
+                >
+                  <PersonAddIcon sx={{ fontSize: "1.2rem" }} />
+                  <span>Add friend</span>
+                </button>
+              )}
+              {isFriendProfile && !isFriend && friendRequestSent && (
+                <button
+                  onClick={handleCancelFriendRequest}
+                  style={{
+                    display: "inline-flex",
+                    alignItems: "center",
+                    gap: "0.4rem",
+                    border: "1px solid #e67e22",
+                    borderRadius: "6px",
+                    background: "#fff",
+                    color: "#e67e22",
+                    padding: "0.4rem 0.75rem",
+                    cursor: "pointer",
+                  }}
+                >
+                  <PersonAddIcon sx={{ fontSize: "1.2rem" }} />
+                  <span>Cancel request</span>
+                </button>
+              )}
             </div>
             <div>
               <h2 className="username">{displayName}</h2>
@@ -285,20 +353,22 @@ export default function UserProfile() {
             </div>
           </s.HeaderCard>
 
-          <s.TabsSection>
-            <s.TabBar>
-              {tabs.map((tab) => (
-                <button
-                  key={tab.key}
-                  className={activeTab === tab.key ? "active" : ""}
-                  onClick={() => setActiveTab(tab.key)}
-                >
-                  {tab.label}
-                </button>
-              ))}
-            </s.TabBar>
-            <s.TabContent>{renderTabContent()}</s.TabContent>
-          </s.TabsSection>
+          {(!isFriendProfile || isFriend) && (
+            <s.TabsSection>
+              <s.TabBar>
+                {tabs.map((tab) => (
+                  <button
+                    key={tab.key}
+                    className={activeTab === tab.key ? "active" : ""}
+                    onClick={() => setActiveTab(tab.key)}
+                  >
+                    {tab.label}
+                  </button>
+                ))}
+              </s.TabBar>
+              <s.TabContent>{renderTabContent()}</s.TabContent>
+            </s.TabsSection>
+          )}
         </>
       )}
 

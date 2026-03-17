@@ -284,6 +284,7 @@ export default function FriendsTabContent({ friendUserId }) {
                     isSent={sentRequests.includes(user.id)}
                     onSendRequest={handleSendFriendRequest}
                     onCancelRequest={handleCancelFriendRequest}
+                    onViewProfile={handleViewFriendProfile}
                   />
                 );
               })}

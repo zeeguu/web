@@ -60,18 +60,21 @@ export default function FriendRow({
           </s.ActionButton>
         );
       }
+      if (isSent) {
+        return (
+          <s.ActionButton variant="cancel" onClick={() => onCancelRequest?.(user?.id)}>
+            <CancelScheduleSendIcon sx={{ color: "#e74c3c", fontSize: "1.2rem", verticalAlign: "middle" }} />
+            <span>Cancel Request</span>
+          </s.ActionButton>
+        );
+      }
       return (
         <s.ActionButton
           variant="add"
           onClick={() => onSendRequest?.(user?.id)}
-          disabled={isSending || isSent}
+          disabled={isSending}
         >
-          {isSent ? (
-            <>
-              <MarkEmailReadIcon sx={{ color: "#2ecc40", fontSize: "1.4rem", verticalAlign: "middle" }} />
-              <span>Sent</span>
-            </>
-          ) : isSending ? (
+          {isSending ? (
             <>
               <SendIcon sx={{ color: "#3498db", fontSize: "1.4rem", verticalAlign: "middle" }} />
               <span>Sending...</span>
@@ -133,8 +136,16 @@ export default function FriendRow({
   return (
     <>
       <s.FriendRowLi>
-        <s.FriendIcon role="img" aria-label="friend">👤</s.FriendIcon>
-        <s.FriendUsername>@{user?.username}</s.FriendUsername>
+        <s.FriendIcon
+          role="img"
+          aria-label="friend"
+          onClick={() => onViewProfile?.(user?.id)}
+          style={onViewProfile ? { cursor: "pointer" } : undefined}
+        >👤</s.FriendIcon>
+        <s.FriendUsername
+          onClick={() => onViewProfile?.(user?.id)}
+          style={onViewProfile ? { cursor: "pointer", textDecoration: "underline" } : undefined}
+        >@{user?.username}</s.FriendUsername>
         <s.FriendName>{user?.name}</s.FriendName>
         {rowType === "friend" && (
           <s.StreakContainer>
