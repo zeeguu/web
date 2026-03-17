@@ -32,8 +32,10 @@ const Input = styled.input`
   height: 2.5rem;
   padding: 0 1rem;
   margin: 0;
-  border: 1.5px solid ${lightGrey};
+  border: 1.5px solid var(--input-border);
   border-radius: 0.3rem;
+  background-color: var(--input-bg);
+  color: var(--text-primary);
 
   &.error {
     border: 1.5px solid ${zeeguuRed};

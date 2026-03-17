@@ -30,11 +30,11 @@ export default function LandingPage() {
   }
 
   function handleLanguageSelect(selectedLanguage) {
-    history.push(`/language_preferences?selected_language=${selectedLanguage}`);
+    history.push(`/invite_code?selected_language=${selectedLanguage}`);
   }
 
   function handleRegisterClick() {
-    history.push(`/language_preferences`);
+    history.push(`/invite_code`);
   }
 
   return (

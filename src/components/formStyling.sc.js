@@ -11,7 +11,8 @@ let formStyling = css`
   select {
     border: 1px solid ${zeeguuOrange};
     border-radius: 5px;
-    color: ${almostBlack};
+    color: var(--text-primary);
+    background-color: var(--input-bg);
     margin-bottom: 1em;
     font-size: large;
     padding: 0.5em 0.5em;

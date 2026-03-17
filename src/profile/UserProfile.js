@@ -5,63 +5,99 @@ import strings from "../i18n/definitions";
 import { APIContext } from "../contexts/APIContext";
 import DynamicFlagImage from "../components/DynamicFlagImage";
 import { ProgressContext } from "../contexts/ProgressContext";
-import * as s from "./UserProfile.sc.js";
+import * as s from "./UserProfile.sc";
 import LocalFireDepartmentIcon from "@mui/icons-material/LocalFireDepartment";
+<<<<<<< feature/profile-friends
 import FriendsTabContent from "./FriendsTabContent";
+=======
+import EditIcon from "@mui/icons-material/Edit";
+import { useHistory } from "react-router-dom";
+import Modal from "../components/modal_shared/Modal";
+import Header from "../components/modal_shared/Header.sc";
+import Heading from "../components/modal_shared/Heading.sc";
+import Main from "../components/modal_shared/Main.sc";
+import {
+  AVATAR_IMAGE_MAP,
+  validatedAvatarBackgroundColor,
+  validatedAvatarCharacterColor,
+  validatedAvatarCharacterId,
+} from "./avatarOptions";
+import Badges from "../badges/Badges";
+import { BadgeCounterContext } from "../badges/BadgeCounterContext";
+>>>>>>> feature/profile
 
 export default function UserProfile() {
+  const history = useHistory();
   const api = useContext(APIContext);
   const { userDetails } = useContext(UserContext);
   const { daysPracticed } = useContext(ProgressContext);
-  const [learnedLanguages, setLearnedLanguages] = useState(null);
+  const [allDailyStreakInfo, setAllDailyStreakInfo] = useState(null);
   const [activeTab, setActiveTab] = useState("overview");
+  const [showLanguagesModal, setShowLanguagesModal] = useState(false);
+  const { hasBadgeNotification, totalNumberOfBadges } = useContext(BadgeCounterContext);
+  const [avatarCharacterId, setAvatarCharacterId] = useState();
+  const [avatarCharacterColor, setAvatarCharacterColor] = useState();
+  const [avatarBackgroundColor, setAvatarBackgroundColor] = useState();
 
-  useEffect(() => {
-    console.log(userDetails);
-  }, [userDetails]);
+  const tabs = [
+    { key: "overview", label: "Overview" },
+    { key: "friends", label: "Friends" },
+    {
+      key: "badges",
+      label: `Badges${hasBadgeNotification ? ` (${totalNumberOfBadges})` : ""}`,
+    },
+  ];
 
-  useEffect(() => {
-    console.log(daysPracticed);
-  }, [daysPracticed]);
+  const max_visible_languages = 3;
+  const visibleLanguages = allDailyStreakInfo?.slice(0, max_visible_languages);
+  const overflowCount = allDailyStreakInfo
+    ? allDailyStreakInfo.length > max_visible_languages
+      ? allDailyStreakInfo.length - max_visible_languages
+      : 0
+    : 0;
 
   useEffect(() => {
     setTitle(strings.titleUserProfile);
   }, []);
 
   useEffect(() => {
-    api.getUserLanguages((data) => {
-      data.sort(function(a, b) {
+    api.getAllDailyStreak((data) => {
+      data.sort(function (a, b) {
         const keyA = a.max_streak;
         const keyB = b.max_streak;
-        console.log(keyA);
-        console.log(keyB);
-        return keyA > keyB ? 1 : -1;
+        return keyA > keyB ? -1 : 1;
       });
-      setLearnedLanguages(data);
-      console.log(data);
+      setAllDailyStreakInfo(data);
     });
-  }, [api]);
 
-  const tabs = [
-    { key: "overview", label: "Overview" },
-    { key: "friends", label: "Friends" },
-    { key: "badges", label: "Badges" },
-  ];
+    setAvatarCharacterId(validatedAvatarCharacterId(userDetails.user_avatar?.image_name));
+    setAvatarCharacterColor(validatedAvatarCharacterColor(userDetails.user_avatar?.character_color));
+    setAvatarBackgroundColor(validatedAvatarBackgroundColor(userDetails.user_avatar?.background_color));
+  }, [userDetails, api]);
 
   return (
     <s.ProfileWrapper>
       <s.HeaderCard>
-        <div className="avatar">
-          <img src="../static/images/zeeguuLogo.svg" alt="Profile" />
-        </div>
+        <s.EditProfileButton onClick={() => history.push("/account_settings/profile_details")}>
+          <EditIcon sx={{ fontSize: "1rem" }} />
+        </s.EditProfileButton>
+        <s.AvatarBackground $backgroundColor={avatarBackgroundColor}>
+          <s.AvatarImage $imageSource={AVATAR_IMAGE_MAP[avatarCharacterId]} $color={avatarCharacterColor} />
+        </s.AvatarBackground>
         <div>
-          <h2 className="username">{userDetails.name}</h2>
+          <div className="name-wrapper">
+            <h2 className="username">{userDetails.username}</h2>
+            {userDetails.name && <h2 className="display-name">({userDetails.name})</h2>}
+          </div>
 
           <div className="meta">
             <span className="label">Active languages:</span>
-            {learnedLanguages?.map((lang) => (
-              <DynamicFlagImage key={lang.code} languageCode={lang.code} />
+            {visibleLanguages?.map((streakInfo) => (
+              <DynamicFlagImage key={streakInfo.language.code} languageCode={streakInfo.language.code} />
             ))}
+            {overflowCount > 0 && (
+              <s.OverflowBubble onClick={() => setShowLanguagesModal(true)}>+{overflowCount}</s.OverflowBubble>
+            )}
           </div>
 
           <div className="meta">
@@ -72,10 +108,9 @@ export default function UserProfile() {
           <s.StatsRow>
             <div className="stat">
               <div className="stat-streak-wrapper">
-                <LocalFireDepartmentIcon sx={{ color: "#ff9800", fontSize: "1.4rem" }} />
+                <LocalFireDepartmentIcon sx={{ color: "#ff9800", fontSize: "1.2rem" }} />
                 <span className="stat-value">{daysPracticed ?? "-"}</span>
               </div>
-              <span className="stat-label">Current daily streak</span>
             </div>
           </s.StatsRow>
         </div>
@@ -95,10 +130,41 @@ export default function UserProfile() {
         </s.TabBar>
         <s.TabContent>
           {activeTab === "overview" && <div>Overview content goes here.</div>}
+<<<<<<< feature/profile-friends
           {activeTab === "friends" && <FriendsTabContent />}
           {activeTab === "badges" && <div>Badges content goes here.</div>}
+=======
+          {activeTab === "friends" && <div>Friends content goes here.</div>}
+          {activeTab === "badges" && <Badges />}
+>>>>>>> feature/profile
         </s.TabContent>
       </s.TabsSection>
+
+      <Modal open={showLanguagesModal} onClose={() => setShowLanguagesModal(false)}>
+        <Header>
+          <Heading>Active Languages</Heading>
+        </Header>
+        <Main>
+          <s.LanguagesGrid>
+            {allDailyStreakInfo?.map((streakInfo) => (
+              <s.LanguageCard key={streakInfo.language.code}>
+                <DynamicFlagImage languageCode={streakInfo.language.code} />
+                <span className="language-name">{streakInfo.language.language}</span>
+                <div className="streaks-info">
+                  <div className="streak-item">
+                    <LocalFireDepartmentIcon sx={{ color: "#ff9800", fontSize: "1rem" }} />
+                    <span>{streakInfo.current_streak ?? 0}</span>
+                  </div>
+                  <div className="streak-item max-streak">
+                    <LocalFireDepartmentIcon sx={{ color: "#e65100", fontSize: "1rem" }} />
+                    <span>{streakInfo.max_streak ?? 0}</span>
+                  </div>
+                </div>
+              </s.LanguageCard>
+            ))}
+          </s.LanguagesGrid>
+        </Main>
+      </Modal>
     </s.ProfileWrapper>
   );
 }

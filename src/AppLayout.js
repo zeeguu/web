@@ -12,12 +12,10 @@ import { ExercisesCounterContext } from "./exercises/ExercisesCounterContext";
 
 import useExercisesCounterNotification from "./hooks/useExercisesCounterNotification";
 import useStreakMilestone from "./hooks/useStreakMilestone";
-import StreakBanner from "./components/StreakBanner";
+import TopBar from "./components/TopBar";
 import { MOBILE_WIDTH } from "./components/MainNav/screenSize";
-import DailyFeedbackBanner from "./components/DailyFeedbackBanner";
-import Feature from "./features/Feature";
-import useBadgeCounterNotification from "@/hooks/useBadgeCounterNotification";
-import { BadgeCounterContext } from "@/badges/BadgeCounterContext";
+import useBadgeCounterNotification from "./hooks/useBadgeCounterNotification";
+import { BadgeCounterContext } from "./badges/BadgeCounterContext";
 
 // Desktop (flex row):               Mobile (flex column):
 // ┌──────────┬──────────────────┐   ┌──────────────────┐
@@ -101,8 +99,7 @@ export default function AppLayout(props) {
                 key={userDetails.learned_language}
                 id="scrollHolder"
               >
-                {screenWidth <= MOBILE_WIDTH && <StreakBanner />}
-                {screenWidth <= MOBILE_WIDTH && Feature.daily_feedback() && <DailyFeedbackBanner />}
+                {screenWidth <= MOBILE_WIDTH && <TopBar />}
                 {appContent}
               </s.AppContent>
               {screenWidth <= MOBILE_WIDTH && <BottomNav />}

@@ -1,7 +1,7 @@
 import { useState, useContext, useEffect, useCallback } from "react";
 import { useSwipeable } from "react-swipeable";
 import { APIContext } from "../../contexts/APIContext";
-import { toast } from "react-toastify";
+import * as Sentry from "@sentry/react";
 import * as s from "./ContextNavigationControls.sc";
 
 export default function ContextNavigationControls({
@@ -139,7 +139,10 @@ export default function ContextNavigationControls({
 
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
-        toast.error(errorData.error || `Failed to update example`);
+        Sentry.captureMessage(errorData.error || "Failed to update example", {
+          level: "warning",
+          extra: { errorData, userWordId: exerciseBookmark?.user_word_id },
+        });
         return;
       }
 
@@ -151,7 +154,9 @@ export default function ContextNavigationControls({
       });
     } catch (error) {
       console.error("Failed to save context:", error);
-      toast.error("Failed to update example");
+      Sentry.captureException(error, {
+        extra: { userWordId: exerciseBookmark?.user_word_id },
+      });
     } finally {
       setIsSaving(false);
     }
