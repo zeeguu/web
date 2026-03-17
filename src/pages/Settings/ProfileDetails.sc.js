@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { darkGrey, lightGrey, orange600 } from "../../components/colors";
+import { almostBlack, darkGrey, lightGrey, orange600 } from "../../components/colors";
 
 export const AvatarWrapper = styled.div`
   display: flex;
@@ -29,7 +29,7 @@ export const AvatarOption = styled.button`
   width: 5rem;
   height: 5rem;
   border-radius: 50%;
-  border: 2px solid ${({ $selected }) => ($selected ? orange600 : lightGrey)};
+  border: 2px solid ${({ $selected }) => ($selected ? "black" : lightGrey)};
   background: white;
   cursor: pointer;
   padding: 0;
@@ -42,7 +42,6 @@ export const AvatarOption = styled.button`
   background: ${({ $backgroundColor }) => $backgroundColor};
 
   &:hover {
-    border-color: ${orange600};
     transform: scale(1.1);
   }
 
@@ -57,7 +56,7 @@ export const ColorOption = styled.button`
   height: 2.5rem;
   background: ${({ $backgroundColor }) => $backgroundColor};
   border-radius: 50%;
-  border: 2px solid ${({ $selected }) => ($selected ? orange600 : lightGrey)};
+  border: 2px solid ${({ $selected }) => ($selected ? "black" : lightGrey)};
   cursor: pointer;
   padding: 0;
   transition:
@@ -66,7 +65,6 @@ export const ColorOption = styled.button`
   transform: ${({ $selected }) => ($selected ? "scale(1.2)" : "none")};
 
   &:hover {
-    border-color: ${orange600};
     transform: scale(1.2);
   }
 `;

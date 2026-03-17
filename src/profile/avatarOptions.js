@@ -1,5 +1,5 @@
 const AVATAR_ASSETS_PATH = "/static/avatars/";
-export const AVATAR_CHARACTER_IDS = ["elephant", "owl", "wolf"];
+export const AVATAR_CHARACTER_IDS = ["elephant", "cat", "dog", "owl"];
 export const AVATAR_IMAGE_MAP = Object.fromEntries(
   AVATAR_CHARACTER_IDS.map((id) => {
     return [id, `${AVATAR_ASSETS_PATH}${id}.svg`];

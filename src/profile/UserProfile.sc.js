@@ -269,7 +269,6 @@ export const AvatarBackground = styled.div`
   justify-content: center;
   flex-shrink: 0;
   border: none;
-  padding: 10px;
   background: ${({ $backgroundColor }) => $backgroundColor};
 
   &.clickable {
