@@ -2,6 +2,8 @@ import { useContext, useEffect, useMemo, useState } from "react";
 import { useHistory, useParams } from "react-router-dom";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import LocalFireDepartmentIcon from "@mui/icons-material/LocalFireDepartment";
+import PersonRemoveIcon from "@mui/icons-material/PersonRemove";
+import ConfirmUnfriendModal from "./ConfirmUnfriendModal";
 import { setTitle } from "../assorted/setTitle";
 import { UserContext } from "../contexts/UserContext";
 import strings from "../i18n/definitions";
@@ -55,6 +57,7 @@ export default function UserProfile() {
   const [friendDetails, setFriendDetails] = useState(null);
   const [loadingFriendDetails, setLoadingFriendDetails] = useState(false);
   const [friendDetailsError, setFriendDetailsError] = useState(null);
+  const [unfriendModalOpen, setUnfriendModalOpen] = useState(false);
 
   const isFriendProfile = Boolean(friendUserId);
 
@@ -125,9 +128,25 @@ export default function UserProfile() {
   }, [friendDetails, isFriendProfile, learnedLanguages, profile]);
 
   // Get streak value based on whether it's a friend profile or own profile
+  const isFriend = Boolean(friendDetails?.friends_since);
+
   const streakValue = isFriendProfile
     ? friendDetails?.mutual_streak ?? "-"
     : daysPracticed ?? "-";
+
+  const handleUnfriend = () => {
+    api.unfriend(friendUserId).then((response) => {
+      if (response.status === 200) {
+        setUnfriendModalOpen(false);
+      } else {
+        response.json().then((json) => {
+          setFriendDetailsError(json.message || "Failed to unfriend user.");
+        });
+      }
+    }).catch(() => {
+      setFriendDetailsError("Failed to unfriend user.");
+    });
+  };
 
   const showLoadingProfile = isFriendProfile && loadingFriendDetails;
   const profileError = isFriendProfile ? friendDetailsError : null;
@@ -193,8 +212,29 @@ export default function UserProfile() {
       {!showLoadingProfile && !profileError && (
         <>
           <s.HeaderCard>
-            <div className="avatar">
-              <img src="../static/images/zeeguuLogo.svg" alt={isFriendProfile ? "Friend profile" : "Profile"} />
+            <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "0.75rem", flexShrink: 0 }}>
+              <div className="avatar">
+                <img src="../static/images/zeeguuLogo.svg" alt={isFriendProfile ? "Friend profile" : "Profile"} />
+              </div>
+              {isFriendProfile && isFriend && (
+                <button
+                  onClick={() => setUnfriendModalOpen(true)}
+                  style={{
+                    display: "inline-flex",
+                    alignItems: "center",
+                    gap: "0.4rem",
+                    border: "1px solid #e74c3c",
+                    borderRadius: "6px",
+                    background: "#fff",
+                    color: "#e74c3c",
+                    padding: "0.4rem 0.75rem",
+                    cursor: "pointer",
+                  }}
+                >
+                  <PersonRemoveIcon sx={{ fontSize: "1.2rem" }} />
+                  <span>Unfriend</span>
+                </button>
+              )}
             </div>
             <div>
               <h2 className="username">{displayName}</h2>
@@ -222,24 +262,26 @@ export default function UserProfile() {
                 {formatDate(profile?.created_at ?? friendDetails?.created_at ?? "UNKNOWN")}
               </div>
 
-              {isFriendProfile && (
+              {isFriendProfile && isFriend && (
                 <div className="meta">
                   <span className="label">Friends since:</span>
                   {formatDate(friendDetails?.friends_since)}
                 </div>
               )}
 
-              <s.StatsRow>
-                <div className="stat">
-                  <div className="stat-streak-wrapper">
-                    <LocalFireDepartmentIcon sx={{ color: "#ff9800", fontSize: "1.4rem" }} />
-                    <span className="stat-value">{streakValue}</span>
+              {(!isFriendProfile || isFriend) && (
+                <s.StatsRow>
+                  <div className="stat">
+                    <div className="stat-streak-wrapper">
+                      <LocalFireDepartmentIcon sx={{ color: "#ff9800", fontSize: "1.4rem" }} />
+                      <span className="stat-value">{streakValue}</span>
+                    </div>
+                    <span className="stat-label">
+                      {isFriendProfile ? "Mutual streak" : "Current daily streak"}
+                    </span>
                   </div>
-                  <span className="stat-label">
-                    {isFriendProfile ? "Mutual streak" : "Current daily streak"}
-                  </span>
-                </div>
-              </s.StatsRow>
+                </s.StatsRow>
+              )}
             </div>
           </s.HeaderCard>
 
@@ -259,6 +301,13 @@ export default function UserProfile() {
           </s.TabsSection>
         </>
       )}
+
+      <ConfirmUnfriendModal
+        open={unfriendModalOpen}
+        onClose={() => setUnfriendModalOpen(false)}
+        onConfirm={handleUnfriend}
+        friendName={displayName}
+      />
     </s.ProfileWrapper>
   );
 }
