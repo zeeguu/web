@@ -7,6 +7,12 @@ Zeeguu_API.prototype.getFriends = function(callback) {
   });
 }
 
+Zeeguu_API.prototype.getFriendsForUser = function(userId, callback) {
+  this._getJSON(`get_friends/${userId}`, (data) => {
+    callback(data);
+  });
+}
+
 Zeeguu_API.prototype.getFriendRequests = function(callback) {
   this._getJSON(`get_friend_requests`, (data) => {
     callback(data);

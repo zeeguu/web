@@ -30,6 +30,15 @@ export default function FriendRow({
   const [modalOpen, setModalOpen] = useState(false);
 
   const renderActions = () => {
+    if (rowType === "view-only") {
+      return (
+        <s.ActionButton variant="view" onClick={() => onViewProfile?.(user?.id)}>
+          <PersonIcon sx={{ color: "#3498db", fontSize: "1.4rem", verticalAlign: "middle" }} />
+          <span>View Profile</span>
+        </s.ActionButton>
+      );
+    }
+
     if (rowType === "search") {
       if (friendship && friendship.friend_request_status === "accepted") {
         return (

@@ -10,6 +10,7 @@ import DynamicFlagImage from "../components/DynamicFlagImage";
 import { ProgressContext } from "../contexts/ProgressContext";
 import * as s from "./UserProfile.sc.js";
 import FriendsTabContent from "./FriendsTabContent";
+import Badges from "../badges/Badges";
 
 function normalizeLanguageCodes(friendDetails, profile) {
   const languages =
@@ -123,12 +124,9 @@ export default function UserProfile() {
     return learnedLanguages.map((language) => language?.code).filter(Boolean);
   }, [friendDetails, isFriendProfile, learnedLanguages, profile]);
 
+  // Get streak value based on whether it's a friend profile or own profile
   const streakValue = isFriendProfile
-    ? profile?.friend_streak ??
-      friendDetails?.friend_streak ??
-      profile?.streak ??
-      friendDetails?.streak ??
-      "-"
+    ? friendDetails?.mutual_streak ?? "-"
     : daysPracticed ?? "-";
 
   const showLoadingProfile = isFriendProfile && loadingFriendDetails;
@@ -140,6 +138,24 @@ export default function UserProfile() {
     { key: "friends", label: "Friends" },
     { key: "badges", label: "Badges" },
   ];
+
+  const renderTabContent = () => {
+    if (activeTab === "overview") {
+      return isFriendProfile
+        ? <div>Overview content for this friend goes here.</div>
+        : <div>Overview content goes here.</div>;
+    }
+
+    if (activeTab === "friends") {
+      return <FriendsTabContent friendUserId={friendUserId} />;
+    }
+
+    if (activeTab === "badges") {
+      return <Badges userId={friendUserId} />;
+    }
+
+    return null;
+  };
 
   return (
     <s.ProfileWrapper>
@@ -203,8 +219,15 @@ export default function UserProfile() {
 
               <div className="meta">
                 <span className="label">Member since:</span>
-                {formatDate(profile?.created_at ?? friendDetails?.created_at)}
+                {formatDate(profile?.created_at ?? friendDetails?.created_at ?? "UNKNOWN")}
               </div>
+
+              {isFriendProfile && (
+                <div className="meta">
+                  <span className="label">Friends since:</span>
+                  {formatDate(friendDetails?.friends_since)}
+                </div>
+              )}
 
               <s.StatsRow>
                 <div className="stat">
@@ -213,33 +236,27 @@ export default function UserProfile() {
                     <span className="stat-value">{streakValue}</span>
                   </div>
                   <span className="stat-label">
-                    {isFriendProfile ? "Friend streak" : "Current daily streak"}
+                    {isFriendProfile ? "Mutual streak" : "Current daily streak"}
                   </span>
                 </div>
               </s.StatsRow>
             </div>
           </s.HeaderCard>
 
-          {!isFriendProfile && (
-            <s.TabsSection>
-              <s.TabBar>
-                {tabs.map((tab) => (
-                  <button
-                    key={tab.key}
-                    className={activeTab === tab.key ? "active" : ""}
-                    onClick={() => setActiveTab(tab.key)}
-                  >
-                    {tab.label}
-                  </button>
-                ))}
-              </s.TabBar>
-              <s.TabContent>
-                {activeTab === "overview" && <div>Overview content goes here.</div>}
-                {activeTab === "friends" && <FriendsTabContent />}
-                {activeTab === "badges" && <div>Badges content goes here.</div>}
-              </s.TabContent>
-            </s.TabsSection>
-          )}
+          <s.TabsSection>
+            <s.TabBar>
+              {tabs.map((tab) => (
+                <button
+                  key={tab.key}
+                  className={activeTab === tab.key ? "active" : ""}
+                  onClick={() => setActiveTab(tab.key)}
+                >
+                  {tab.label}
+                </button>
+              ))}
+            </s.TabBar>
+            <s.TabContent>{renderTabContent()}</s.TabContent>
+          </s.TabsSection>
         </>
       )}
     </s.ProfileWrapper>
