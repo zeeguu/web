@@ -12,6 +12,7 @@ import navLanguages from "../navLanguages";
 import * as s from "./MoreOptionsPanel.sc";
 import { BadgeCounterContext } from "@/badges/BadgeCounterContext";
 import NotificationIcon from "@/components/NotificationIcon";
+import { FriendRequestContext } from "../../../contexts/FriendRequestContext";
 
 export default function MoreOptionsPanel({
   overlayTransition,
@@ -33,6 +34,7 @@ export default function MoreOptionsPanel({
     return languageName || "Language";
   }, [userDetails.learned_language]);
   const { hasBadgeNotification, totalNumberOfBadges } = useContext(BadgeCounterContext);
+  const { hasFriendRequestNotification, friendRequestCount } = useContext(FriendRequestContext);
 
   return (
     <s.MoreOptionsWrapper
@@ -79,6 +81,17 @@ export default function MoreOptionsPanel({
                 notification={
                   hasBadgeNotification && (
                     <NotificationIcon position={"top-absolute"} text={totalNumberOfBadges} />
+                  )
+                }
+              />
+
+              <NavOption
+                {...NavigationOptions.profile}
+                currentPath={currentPath}
+                onClick={handleHideMoreOptions}
+                notification={
+                  hasFriendRequestNotification && (
+                    <NotificationIcon position={"top-absolute"} text={friendRequestCount} />
                   )
                 }
               />

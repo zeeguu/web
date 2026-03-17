@@ -18,6 +18,8 @@ import DailyFeedbackBanner from "./components/DailyFeedbackBanner";
 import Feature from "./features/Feature";
 import useBadgeCounterNotification from "@/hooks/useBadgeCounterNotification";
 import { BadgeCounterContext } from "@/badges/BadgeCounterContext";
+import useFriendRequestNotification from "./hooks/useFriendRequestNotification";
+import { FriendRequestContext } from "./contexts/FriendRequestContext";
 
 // Desktop (flex row):               Mobile (flex column):
 // ┌──────────┬──────────────────┐   ┌──────────────────┐
@@ -47,6 +49,7 @@ export default function AppLayout(props) {
 
 
   const badgeCounter = useBadgeCounterNotification();
+  const friendRequestNotification = useFriendRequestNotification();
 
   const path = useLocation().pathname;
 
@@ -91,6 +94,7 @@ export default function AppLayout(props) {
         }}
       >
         <BadgeCounterContext.Provider value={badgeCounter}>
+          <FriendRequestContext.Provider value={friendRequestNotification}>
           <ThemeProvider theme={mainNavProperties.isOnStudentSide ? mainNavTheme.student : mainNavTheme.teacher}>
             <s.AppLayout $screenWidth={screenWidth}>
               {screenWidth > MOBILE_WIDTH && <SideNav screenWidth={screenWidth} />}
@@ -108,6 +112,7 @@ export default function AppLayout(props) {
               {screenWidth <= MOBILE_WIDTH && <BottomNav />}
             </s.AppLayout>
           </ThemeProvider>
+          </FriendRequestContext.Provider>
         </BadgeCounterContext.Provider>
       </ExercisesCounterContext.Provider>
     </MainNavContext.Provider>

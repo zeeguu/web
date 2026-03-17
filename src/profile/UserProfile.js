@@ -16,6 +16,7 @@ import DynamicFlagImage from "../components/DynamicFlagImage";
 import { ProgressContext } from "../contexts/ProgressContext";
 import * as s from "./UserProfile.sc.js";
 import FriendsTabContent from "./FriendsTabContent";
+import { FriendRequestContext } from "../contexts/FriendRequestContext";
 import Badges from "../badges/Badges";
 
 function normalizeLanguageCodes(friendDetails, profile) {
@@ -52,6 +53,7 @@ function formatDate(dateString) {
 
 export default function UserProfile() {
   const api = useContext(APIContext);
+  const { friendRequestCount } = useContext(FriendRequestContext);
   const history = useHistory();
   const { friendUserId } = useParams();
   const { userDetails } = useContext(UserContext);
@@ -220,7 +222,7 @@ export default function UserProfile() {
 
   const tabs = [
     { key: "overview", label: "Overview" },
-    { key: "friends", label: "Friends" },
+    { key: "friends", label: friendRequestCount > 0 ? `Friends (${friendRequestCount})` : "Friends" },
     { key: "badges", label: "Badges" },
   ];
 

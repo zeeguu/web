@@ -45,8 +45,7 @@ export default function SideNavOptionsForStudent({ screenWidth }) {
 
       <NavOption {...NavigationOptions.myActivity} currentPath={path} screenWidth={screenWidth} notification={
           hasBadgeNotification && <NotificationIcon position={"top-absolute"} text={totalNumberOfBadges} />
-        }/>
-
+        }/> 
       {userDetails.is_teacher && (
         <NavOption {...NavigationOptions.teacherSite} currentPath={path} screenWidth={screenWidth} />
       )}
