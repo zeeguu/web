@@ -120,8 +120,8 @@ export default function FriendRow({
     <>
       <s.FriendRowLi>
         <s.FriendIcon role="img" aria-label="friend">👤</s.FriendIcon>
-        <s.FriendName>{user?.name}</s.FriendName>
         <s.FriendUsername>@{user?.username}</s.FriendUsername>
+        <s.FriendName>{user?.name}</s.FriendName>
         {rowType === "friend" && (
           <s.StreakContainer>
             <LocalFireDepartmentIcon sx={{ color: "#ff9800", fontSize: "1.4rem" }} />
