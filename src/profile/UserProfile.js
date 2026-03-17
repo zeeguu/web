@@ -7,9 +7,7 @@ import DynamicFlagImage from "../components/DynamicFlagImage";
 import { ProgressContext } from "../contexts/ProgressContext";
 import * as s from "./UserProfile.sc";
 import LocalFireDepartmentIcon from "@mui/icons-material/LocalFireDepartment";
-<<<<<<< feature/profile-friends
 import FriendsTabContent from "./FriendsTabContent";
-=======
 import EditIcon from "@mui/icons-material/Edit";
 import { useHistory } from "react-router-dom";
 import Modal from "../components/modal_shared/Modal";
@@ -24,7 +22,6 @@ import {
 } from "./avatarOptions";
 import Badges from "../badges/Badges";
 import { BadgeCounterContext } from "../badges/BadgeCounterContext";
->>>>>>> feature/profile
 
 export default function UserProfile() {
   const history = useHistory();
@@ -130,13 +127,8 @@ export default function UserProfile() {
         </s.TabBar>
         <s.TabContent>
           {activeTab === "overview" && <div>Overview content goes here.</div>}
-<<<<<<< feature/profile-friends
           {activeTab === "friends" && <FriendsTabContent />}
-          {activeTab === "badges" && <div>Badges content goes here.</div>}
-=======
-          {activeTab === "friends" && <div>Friends content goes here.</div>}
           {activeTab === "badges" && <Badges />}
->>>>>>> feature/profile
         </s.TabContent>
       </s.TabsSection>
 
