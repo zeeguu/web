@@ -4,6 +4,9 @@ import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import LocalFireDepartmentIcon from "@mui/icons-material/LocalFireDepartment";
 import PersonRemoveIcon from "@mui/icons-material/PersonRemove";
 import PersonAddIcon from "@mui/icons-material/PersonAdd";
+import CancelScheduleSendIcon from "@mui/icons-material/CancelScheduleSend";
+import CheckIcon from "@mui/icons-material/Check";
+import ClearIcon from "@mui/icons-material/Clear";
 import ConfirmUnfriendModal from "./ConfirmUnfriendModal";
 import { setTitle } from "../assorted/setTitle";
 import { UserContext } from "../contexts/UserContext";
@@ -59,7 +62,8 @@ export default function UserProfile() {
   const [loadingFriendDetails, setLoadingFriendDetails] = useState(false);
   const [friendDetailsError, setFriendDetailsError] = useState(null);
   const [unfriendModalOpen, setUnfriendModalOpen] = useState(false);
-  const [friendRequestSent, setFriendRequestSent] = useState(false);
+  // localFriendship mirrors friendDetails.friendship and is updated optimistically after mutations
+  const [localFriendship, setLocalFriendship] = useState(null);
 
   const isFriendProfile = Boolean(friendUserId);
 
@@ -113,6 +117,7 @@ export default function UserProfile() {
       }
 
       setFriendDetails(data);
+      setLocalFriendship(data?.friendship ?? null);
       setLoadingFriendDetails(false);
     });
   }, [api, friendUserId, isFriendProfile]);
@@ -130,16 +135,19 @@ export default function UserProfile() {
   }, [friendDetails, isFriendProfile, learnedLanguages, profile]);
 
   // Get streak value based on whether it's a friend profile or own profile
-  const isFriend = Boolean(friendDetails?.friends_since);
+  const isFriend = localFriendship?.friend_request_status === "accepted";
+  // If sender_id matches the friend's ID, they sent the request to us; otherwise we sent it to them
+  const pendingFromMe = localFriendship?.friend_request_status === "pending" && Number(localFriendship?.sender_id) !== Number(friendUserId);
+  const pendingFromThem = localFriendship?.friend_request_status === "pending" && Number(localFriendship?.sender_id) === Number(friendUserId);
 
   const streakValue = isFriendProfile
-    ? friendDetails?.mutual_streak ?? "-"
+    ? localFriendship?.friend_streak ?? "-"
     : daysPracticed ?? "-";
 
   const handleSendFriendRequest = () => {
-    api.sendFriendRequest(friendUserId).then((response) => {
+    api.sendFriendRequest(friendUserId).then((response) => {  
       if (response.status === 200) {
-        setFriendRequestSent(true);
+        setLocalFriendship({ friend_request_status: "pending", sender_id: null });
       } else {
         response.json().then((json) => {
           setFriendDetailsError(json.error || "Failed to send friend request.");
@@ -153,7 +161,7 @@ export default function UserProfile() {
   const handleCancelFriendRequest = () => {
     api.deleteFriendRequest(friendUserId).then((response) => {
       if (response.status === 200) {
-        setFriendRequestSent(false);
+        setLocalFriendship(null);
       } else {
         response.json().then((json) => {
           setFriendDetailsError(json.message || "Failed to cancel friend request.");
@@ -161,6 +169,34 @@ export default function UserProfile() {
       }
     }).catch(() => {
       setFriendDetailsError("Failed to cancel friend request.");
+    });
+  };
+
+  const handleAcceptFriendRequest = () => {
+    api.acceptFriendRequest(friendUserId).then((response) => {
+      if (response.status === 200) {
+        setLocalFriendship({ friend_request_status: "accepted" });
+      } else {
+        response.json().then((json) => {
+          setFriendDetailsError(json.message || "Failed to accept friend request.");
+        });
+      }
+    }).catch(() => {
+      setFriendDetailsError("Failed to accept friend request.");
+    });
+  };
+
+  const handleRejectFriendRequest = () => {
+    api.rejectFriendRequest(friendUserId).then((response) => {
+      if (response.status === 200) {
+        setLocalFriendship(null);
+      } else {
+        response.json().then((json) => {
+          setFriendDetailsError(json.message || "Failed to reject friend request.");
+        });
+      }
+    }).catch(() => {
+      setFriendDetailsError("Failed to reject friend request.");
     });
   };
 
@@ -265,7 +301,7 @@ export default function UserProfile() {
                   <span>Unfriend</span>
                 </button>
               )}
-              {isFriendProfile && !isFriend && !friendRequestSent && (
+              {isFriendProfile && !isFriend && !pendingFromMe && !pendingFromThem && (
                 <button
                   onClick={handleSendFriendRequest}
                   style={{
@@ -284,7 +320,7 @@ export default function UserProfile() {
                   <span>Add friend</span>
                 </button>
               )}
-              {isFriendProfile && !isFriend && friendRequestSent && (
+              {isFriendProfile && pendingFromMe && (
                 <button
                   onClick={handleCancelFriendRequest}
                   style={{
@@ -299,9 +335,47 @@ export default function UserProfile() {
                     cursor: "pointer",
                   }}
                 >
-                  <PersonAddIcon sx={{ fontSize: "1.2rem" }} />
+                  <CancelScheduleSendIcon sx={{ fontSize: "1.2rem" }} />
                   <span>Cancel request</span>
                 </button>
+              )}
+              {isFriendProfile && pendingFromThem && (
+                <div style={{ display: "flex", flexDirection: "column", gap: "0.4rem" }}>
+                  <button
+                    onClick={handleAcceptFriendRequest}
+                    style={{
+                      display: "inline-flex",
+                      alignItems: "center",
+                      gap: "0.4rem",
+                      border: "1px solid #2ecc71",
+                      borderRadius: "6px",
+                      background: "#fff",
+                      color: "#2ecc71",
+                      padding: "0.4rem 0.75rem",
+                      cursor: "pointer",
+                    }}
+                  >
+                    <CheckIcon sx={{ fontSize: "1.2rem" }} />
+                    <span>Accept request</span>
+                  </button>
+                  <button
+                    onClick={handleRejectFriendRequest}
+                    style={{
+                      display: "inline-flex",
+                      alignItems: "center",
+                      gap: "0.4rem",
+                      border: "1px solid #e74c3c",
+                      borderRadius: "6px",
+                      background: "#fff",
+                      color: "#e74c3c",
+                      padding: "0.4rem 0.75rem",
+                      cursor: "pointer",
+                    }}
+                  >
+                    <ClearIcon sx={{ fontSize: "1.2rem" }} />
+                    <span>Reject request</span>
+                  </button>
+                </div>
               )}
             </div>
             <div>
@@ -333,7 +407,7 @@ export default function UserProfile() {
               {isFriendProfile && isFriend && (
                 <div className="meta">
                   <span className="label">Friends since:</span>
-                  {formatDate(friendDetails?.friends_since)}
+                  {formatDate(localFriendship?.created_at)}
                 </div>
               )}
 

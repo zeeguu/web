@@ -307,6 +307,7 @@ export default function FriendsTabContent({ friendUserId }) {
                     requestAccepted={req.accepted}
                     onAcceptRequest={handleAcceptFriendRequest}
                     onRejectRequest={handleRejectFriendRequest}
+                    onViewProfile={handleViewFriendProfile}
                   />
                 ))}
               </ul>
