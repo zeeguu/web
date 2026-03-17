@@ -59,6 +59,8 @@ export const ActionButton = styled.button`
         return "#ffe0e0";
       case "add":
         return "#e0f7fa";
+      case "view":
+        return "#e6f1ff";
       case "accept":
         return "#e0ffe0";
       case "reject":

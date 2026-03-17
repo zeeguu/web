@@ -23,6 +23,7 @@ export default function FriendRow({
   onAcceptRequest,
   onRejectRequest,
   onUnfriend,
+  onViewProfile,
 }) {
   const resolvedStreak = streak ?? user?.friend_streak ?? 0;
   const friendship = user?.friendship;
@@ -108,6 +109,10 @@ export default function FriendRow({
 
     return (
       <>
+        <s.ActionButton variant="view" onClick={() => onViewProfile?.(user?.id)}>
+          <PersonIcon sx={{ color: "#3498db", fontSize: "1.4rem", verticalAlign: "middle" }} />
+          <span>View Profile</span>
+        </s.ActionButton>
         <s.ActionButton variant="unfriend" onClick={() => setModalOpen(true)}>
           <PersonRemoveIcon sx={{ color: "#e74c3c", fontSize: "1.4rem", verticalAlign: "middle" }} />
           <s.UnfriendSpan>Unfriend</s.UnfriendSpan>

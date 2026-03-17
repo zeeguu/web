@@ -19,6 +19,12 @@ Zeeguu_API.prototype.searchUsers = function(username, callback) {
   });
 }
 
+Zeeguu_API.prototype.getFriendDetails = function(friend_user_id, callback) {
+  this._getJSON(`get_user_details/${friend_user_id}`, (data) => {
+    callback(data);
+  });
+}
+
 Zeeguu_API.prototype.sendFriendRequest = function(receiver_id) {
   return this.apiPost("/send_friend_request", { receiver_id }, false);
 }

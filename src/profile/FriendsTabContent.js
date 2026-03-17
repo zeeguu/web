@@ -1,4 +1,5 @@
 import { useContext, useEffect, useState } from "react";
+import { useHistory } from "react-router-dom";
 import { toast } from "react-toastify";
 import SearchBar from "../components/SearchBar";
 import { APIContext } from "../contexts/APIContext";
@@ -6,6 +7,7 @@ import FriendRow from "./FriendRow";
 
 export default function FriendsTabContent() {
   const api = useContext(APIContext);
+  const history = useHistory();
   const [friends, setFriends] = useState([]);
   const [loadingFriends, setLoadingFriends] = useState(true);
   const [friendsError, setFriendsError] = useState(null);
@@ -183,6 +185,14 @@ export default function FriendsTabContent() {
       });
   };
 
+  const handleViewFriendProfile = (friendId) => {
+    if (!friendId) {
+      return;
+    }
+
+    history.push(`/profile/friend/${friendId}`);
+  };
+
   const handleResetSearch = () => {
     setPendingSearch("");
     setNewFriendResults([]);
@@ -270,6 +280,7 @@ export default function FriendsTabContent() {
                   user={friend}
                   rowType="friend"
                   onUnfriend={handleUnfriend}
+                  onViewProfile={handleViewFriendProfile}
                 />
               ))}
             </ul>

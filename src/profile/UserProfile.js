@@ -1,4 +1,7 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useMemo, useState } from "react";
+import { useHistory, useParams } from "react-router-dom";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import LocalFireDepartmentIcon from "@mui/icons-material/LocalFireDepartment";
 import { setTitle } from "../assorted/setTitle";
 import { UserContext } from "../contexts/UserContext";
 import strings from "../i18n/definitions";
@@ -6,41 +9,131 @@ import { APIContext } from "../contexts/APIContext";
 import DynamicFlagImage from "../components/DynamicFlagImage";
 import { ProgressContext } from "../contexts/ProgressContext";
 import * as s from "./UserProfile.sc.js";
-import LocalFireDepartmentIcon from "@mui/icons-material/LocalFireDepartment";
 import FriendsTabContent from "./FriendsTabContent";
+
+function normalizeLanguageCodes(friendDetails, profile) {
+  const languages =
+    friendDetails?.learned_languages ??
+    friendDetails?.languages ??
+    profile?.learned_languages ??
+    profile?.languages ??
+    [];
+
+  if (!Array.isArray(languages)) {
+    return [];
+  }
+
+  return languages
+    .map((language) =>
+      typeof language === "string" ? language : language?.code,
+    )
+    .filter(Boolean);
+}
+
+function formatDate(dateString) {
+  if (!dateString) {
+    return "-";
+  }
+
+  const parsedDate = new Date(dateString);
+  if (Number.isNaN(parsedDate.getTime())) {
+    return "-";
+  }
+
+  return parsedDate.toLocaleDateString();
+}
 
 export default function UserProfile() {
   const api = useContext(APIContext);
+  const history = useHistory();
+  const { friendUserId } = useParams();
   const { userDetails } = useContext(UserContext);
   const { daysPracticed } = useContext(ProgressContext);
-  const [learnedLanguages, setLearnedLanguages] = useState(null);
+  const [learnedLanguages, setLearnedLanguages] = useState([]);
   const [activeTab, setActiveTab] = useState("overview");
+  const [friendDetails, setFriendDetails] = useState(null);
+  const [loadingFriendDetails, setLoadingFriendDetails] = useState(false);
+  const [friendDetailsError, setFriendDetailsError] = useState(null);
+
+  const isFriendProfile = Boolean(friendUserId);
 
   useEffect(() => {
-    console.log(userDetails);
-  }, [userDetails]);
+    setTitle(isFriendProfile ? "Friend Profile" : strings.titleUserProfile);
+  }, [isFriendProfile]);
 
   useEffect(() => {
-    console.log(daysPracticed);
-  }, [daysPracticed]);
+    if (isFriendProfile) {
+      return;
+    }
 
-  useEffect(() => {
-    setTitle(strings.titleUserProfile);
-  }, []);
-
-  useEffect(() => {
     api.getUserLanguages((data) => {
-      data.sort(function(a, b) {
-        const keyA = a.max_streak;
-        const keyB = b.max_streak;
-        console.log(keyA);
-        console.log(keyB);
+      if (!Array.isArray(data)) {
+        setLearnedLanguages([]);
+        return;
+      }
+
+      const sortedLanguages = [...data].sort((a, b) => {
+        const keyA = a?.max_streak ?? 0;
+        const keyB = b?.max_streak ?? 0;
         return keyA > keyB ? 1 : -1;
       });
-      setLearnedLanguages(data);
-      console.log(data);
+
+      setLearnedLanguages(sortedLanguages);
     });
-  }, [api]);
+  }, [api, isFriendProfile]);
+
+  useEffect(() => {
+    if (!isFriendProfile) {
+      setFriendDetails(null);
+      setFriendDetailsError(null);
+      setLoadingFriendDetails(false);
+      return;
+    }
+
+    setLoadingFriendDetails(true);
+    setFriendDetailsError(null);
+
+    api.getFriendDetails(friendUserId, (data) => {
+      if (!data) {
+        setFriendDetailsError("Failed to fetch friend profile.");
+        setLoadingFriendDetails(false);
+        return;
+      }
+
+      if (data.error) {
+        setFriendDetailsError(data.error);
+        setLoadingFriendDetails(false);
+        return;
+      }
+
+      setFriendDetails(data);
+      setLoadingFriendDetails(false);
+    });
+  }, [api, friendUserId, isFriendProfile]);
+
+  const profile = isFriendProfile
+    ? friendDetails?.user ?? friendDetails ?? {}
+    : userDetails ?? {};
+
+  const languageCodes = useMemo(() => {
+    if (isFriendProfile) {
+      return normalizeLanguageCodes(friendDetails, profile);
+    }
+
+    return learnedLanguages.map((language) => language?.code).filter(Boolean);
+  }, [friendDetails, isFriendProfile, learnedLanguages, profile]);
+
+  const streakValue = isFriendProfile
+    ? profile?.friend_streak ??
+      friendDetails?.friend_streak ??
+      profile?.streak ??
+      friendDetails?.streak ??
+      "-"
+    : daysPracticed ?? "-";
+
+  const showLoadingProfile = isFriendProfile && loadingFriendDetails;
+  const profileError = isFriendProfile ? friendDetailsError : null;
+  const displayName = profile?.name || profile?.username || "-";
 
   const tabs = [
     { key: "overview", label: "Overview" },
@@ -50,55 +143,105 @@ export default function UserProfile() {
 
   return (
     <s.ProfileWrapper>
-      <s.HeaderCard>
-        <div className="avatar">
-          <img src="../static/images/zeeguuLogo.svg" alt="Profile" />
+      {isFriendProfile && (
+        <div style={{ marginBottom: "0.8rem" }}>
+          <button
+            onClick={() => {
+              if (history.length > 1) {
+                history.goBack();
+                return;
+              }
+
+              history.push("/profile");
+            }}
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              gap: "0.4rem",
+              border: "1px solid #d0d0d0",
+              borderRadius: "6px",
+              background: "#fff",
+              padding: "0.4rem 0.75rem",
+              cursor: "pointer",
+            }}
+          >
+            <ArrowBackIcon sx={{ fontSize: "1.2rem" }} />
+            <span>Back to Profile</span>
+          </button>
         </div>
-        <div>
-          <h2 className="username">{userDetails.name}</h2>
+      )}
 
-          <div className="meta">
-            <span className="label">Active languages:</span>
-            {learnedLanguages?.map((lang) => (
-              <DynamicFlagImage key={lang.code} languageCode={lang.code} />
-            ))}
-          </div>
+      {showLoadingProfile && <p>Loading friend profile...</p>}
+      {profileError && <p style={{ color: "red" }}>{profileError}</p>}
 
-          <div className="meta">
-            <span className="label">Member since:</span>
-            {userDetails.created_at ? new Date(userDetails.created_at).toLocaleDateString() : "-"}
-          </div>
-
-          <s.StatsRow>
-            <div className="stat">
-              <div className="stat-streak-wrapper">
-                <LocalFireDepartmentIcon sx={{ color: "#ff9800", fontSize: "1.4rem" }} />
-                <span className="stat-value">{daysPracticed ?? "-"}</span>
-              </div>
-              <span className="stat-label">Current daily streak</span>
+      {!showLoadingProfile && !profileError && (
+        <>
+          <s.HeaderCard>
+            <div className="avatar">
+              <img src="../static/images/zeeguuLogo.svg" alt={isFriendProfile ? "Friend profile" : "Profile"} />
             </div>
-          </s.StatsRow>
-        </div>
-      </s.HeaderCard>
+            <div>
+              <h2 className="username">{displayName}</h2>
 
-      <s.TabsSection>
-        <s.TabBar>
-          {tabs.map((tab) => (
-            <button
-              key={tab.key}
-              className={activeTab === tab.key ? "active" : ""}
-              onClick={() => setActiveTab(tab.key)}
-            >
-              {tab.label}
-            </button>
-          ))}
-        </s.TabBar>
-        <s.TabContent>
-          {activeTab === "overview" && <div>Overview content goes here.</div>}
-          {activeTab === "friends" && <FriendsTabContent />}
-          {activeTab === "badges" && <div>Badges content goes here.</div>}
-        </s.TabContent>
-      </s.TabsSection>
+              {isFriendProfile && (
+                <div className="meta">
+                  <span className="label">Username:</span>
+                  {profile?.username ? `@${profile.username}` : "-"}
+                </div>
+              )}
+
+              <div className="meta">
+                <span className="label">Active languages:</span>
+                {languageCodes.length > 0 ? (
+                  languageCodes.map((languageCode) => (
+                    <DynamicFlagImage key={languageCode} languageCode={languageCode} />
+                  ))
+                ) : (
+                  <span>-</span>
+                )}
+              </div>
+
+              <div className="meta">
+                <span className="label">Member since:</span>
+                {formatDate(profile?.created_at ?? friendDetails?.created_at)}
+              </div>
+
+              <s.StatsRow>
+                <div className="stat">
+                  <div className="stat-streak-wrapper">
+                    <LocalFireDepartmentIcon sx={{ color: "#ff9800", fontSize: "1.4rem" }} />
+                    <span className="stat-value">{streakValue}</span>
+                  </div>
+                  <span className="stat-label">
+                    {isFriendProfile ? "Friend streak" : "Current daily streak"}
+                  </span>
+                </div>
+              </s.StatsRow>
+            </div>
+          </s.HeaderCard>
+
+          {!isFriendProfile && (
+            <s.TabsSection>
+              <s.TabBar>
+                {tabs.map((tab) => (
+                  <button
+                    key={tab.key}
+                    className={activeTab === tab.key ? "active" : ""}
+                    onClick={() => setActiveTab(tab.key)}
+                  >
+                    {tab.label}
+                  </button>
+                ))}
+              </s.TabBar>
+              <s.TabContent>
+                {activeTab === "overview" && <div>Overview content goes here.</div>}
+                {activeTab === "friends" && <FriendsTabContent />}
+                {activeTab === "badges" && <div>Badges content goes here.</div>}
+              </s.TabContent>
+            </s.TabsSection>
+          )}
+        </>
+      )}
     </s.ProfileWrapper>
   );
 }
