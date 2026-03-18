@@ -31,20 +31,100 @@ import {
 } from "./avatarOptions";
 import { BadgeCounterContext } from "../badges/BadgeCounterContext";
 
-//function normalizeLanguageCodes(friendDetails, profile) {
-//  const languages =
-//    friendDetails?.learned_languages ??
-//    friendDetails?.languages ??
-//    profile?.learned_languages ??
-//    profile?.languages ??
-//    [];
-//
-//  if (!Array.isArray(languages)) {
-//    return [];
-//  }
-//
-//  return languages.map((language) => (typeof language === "string" ? language : language?.code)).filter(Boolean);
-//}
+function normalizeLanguageCode(code) {
+  if (typeof code !== "string") {
+    return null;
+  }
+
+  const normalized = code.trim().toLowerCase();
+  return normalized || null;
+}
+
+function normalizeProfileLanguages(friendDetails, profile, explicitLanguages = null) {
+  const languages =
+    explicitLanguages ??
+    friendDetails?.learned_languages ??
+    friendDetails?.languages ??
+    friendDetails?.user?.learned_languages ??
+    friendDetails?.user?.languages ??
+    profile?.learned_languages ??
+    profile?.languages ??
+    [];
+
+  if (!Array.isArray(languages)) {
+    return [];
+  }
+
+  const normalized = languages
+    .map((language) => {
+      if (!language) {
+        return null;
+      }
+
+      if (typeof language === "string") {
+        const code = normalizeLanguageCode(language);
+        return code ? { code, language } : null;
+      }
+
+      const code = normalizeLanguageCode(
+        language?.language?.code ?? language.code ?? language.language_code,
+      );
+
+      if (!code) {
+        return null;
+      }
+
+      return {
+        code,
+        language:
+          language?.language?.language ??
+          language?.language?.name ??
+          language.language_name ??
+          language.language ??
+          language.name ??
+          code,
+      };
+    })
+    .filter(Boolean);
+
+  if (normalized.length > 0) {
+    // Keep language chips stable by de-duplicating repeated codes from mixed API payloads.
+    const seenCodes = new Set();
+    return normalized.filter((language) => {
+      if (seenCodes.has(language.code)) {
+        return false;
+      }
+
+      seenCodes.add(language.code);
+      return true;
+    });
+  }
+
+  const singleLanguageCode =
+    normalizeLanguageCode(friendDetails?.learned_language) ??
+    normalizeLanguageCode(friendDetails?.learned_language_code) ??
+    normalizeLanguageCode(friendDetails?.user?.learned_language) ??
+    normalizeLanguageCode(friendDetails?.user?.learned_language_code) ??
+    normalizeLanguageCode(profile?.learned_language) ??
+    normalizeLanguageCode(profile?.learned_language_code);
+
+  return singleLanguageCode ? [{ code: singleLanguageCode, language: singleLanguageCode }] : [];
+}
+
+function resolveLanguageCode(languageEntry) {
+  return languageEntry?.language?.code ?? languageEntry?.code ?? languageEntry?.language_code ?? null;
+}
+
+function resolveLanguageName(languageEntry) {
+  return (
+    languageEntry?.language?.language ??
+    languageEntry?.language?.name ??
+    languageEntry?.name ??
+    languageEntry?.language ??
+    languageEntry?.code ??
+    "Unknown"
+  );
+}
 
 function formatDate(dateString) {
   if (!dateString) {
@@ -70,6 +150,7 @@ export default function UserProfile() {
   const [friendDetails, setFriendDetails] = useState(null);
   const [loadingFriendDetails, setLoadingFriendDetails] = useState(false);
   const [friendDetailsError, setFriendDetailsError] = useState(null);
+  const [friendLanguages, setFriendLanguages] = useState([]);
   const [unfriendModalOpen, setUnfriendModalOpen] = useState(false);
   // localFriendship mirrors friendDetails.friendship and is updated optimistically after mutations
   const [localFriendship, setLocalFriendship] = useState(null);
@@ -84,17 +165,6 @@ export default function UserProfile() {
   const [activeTab, setActiveTab] = useState("overview");
   const [showLanguagesModal, setShowLanguagesModal] = useState(false);
   const { hasBadgeNotification, totalNumberOfBadges } = useContext(BadgeCounterContext);
-  const [avatarCharacterId, setAvatarCharacterId] = useState();
-  const [avatarCharacterColor, setAvatarCharacterColor] = useState();
-  const [avatarBackgroundColor, setAvatarBackgroundColor] = useState();
-
-  const max_visible_languages = 3;
-  const visibleLanguages = allDailyStreakInfo?.slice(0, max_visible_languages);
-  const overflowCount = allDailyStreakInfo
-    ? allDailyStreakInfo.length > max_visible_languages
-      ? allDailyStreakInfo.length - max_visible_languages
-      : 0
-    : 0;
 
   useEffect(() => {
     if (isFriendProfile) {
@@ -122,11 +192,13 @@ export default function UserProfile() {
       setFriendDetails(null);
       setFriendDetailsError(null);
       setLoadingFriendDetails(false);
+      setFriendLanguages([]);
       return;
     }
 
     setLoadingFriendDetails(true);
     setFriendDetailsError(null);
+    setFriendLanguages([]);
 
     api.getFriendDetails(friendUserId, (data) => {
       if (!data) {
@@ -145,11 +217,32 @@ export default function UserProfile() {
       setLocalFriendship(data?.friendship ?? null);
       setLoadingFriendDetails(false);
     });
+
   }, [api, friendUserId, isFriendProfile]);
 
   const profile = isFriendProfile
     ? friendDetails?.user ?? friendDetails ?? {}
     : userDetails ?? {};
+
+  const avatarCharacterId = validatedAvatarCharacterId(profile?.user_avatar?.image_name);
+  const avatarCharacterColor = validatedAvatarCharacterColor(profile?.user_avatar?.character_color);
+  const avatarBackgroundColor = validatedAvatarBackgroundColor(profile?.user_avatar?.background_color);
+
+  const maxVisibleLanguages = 3;
+  const ownProfileLanguages = Array.isArray(allDailyStreakInfo) ? allDailyStreakInfo : [];
+  const friendProfileLanguages = isFriendProfile
+    ? normalizeProfileLanguages(
+      friendDetails,
+      profile,
+      friendLanguages.length > 0 ? friendLanguages : null,
+    )
+    : [];
+  const profileLanguages = isFriendProfile ? friendProfileLanguages : ownProfileLanguages;
+  const visibleLanguages = profileLanguages.slice(0, maxVisibleLanguages);
+  const overflowCount =
+    profileLanguages.length > maxVisibleLanguages
+      ? profileLanguages.length - maxVisibleLanguages
+      : 0;
 
   // Get streak value based on whether it's a friend profile or own profile
   const isFriend = localFriendship?.friend_request_status === "accepted";
@@ -237,19 +330,26 @@ export default function UserProfile() {
   const displayName = profile?.name || profile?.username || "-";
 
   useEffect(() => {
+    if (isFriendProfile) {
+      setAllDailyStreakInfo([]);
+      return;
+    }
+
     api.getAllDailyStreak((data) => {
-      data.sort(function (a, b) {
+      if (!Array.isArray(data)) {
+        setAllDailyStreakInfo([]);
+        return;
+      }
+
+      const sorted = [...data].sort((a, b) => {
         const keyA = a.max_streak;
         const keyB = b.max_streak;
         return keyA > keyB ? -1 : 1;
       });
-      setAllDailyStreakInfo(data);
-    });
 
-    setAvatarCharacterId(validatedAvatarCharacterId(userDetails.user_avatar?.image_name));
-    setAvatarCharacterColor(validatedAvatarCharacterColor(userDetails.user_avatar?.character_color));
-    setAvatarBackgroundColor(validatedAvatarBackgroundColor(userDetails.user_avatar?.background_color));
-  }, [userDetails, api]);
+      setAllDailyStreakInfo(sorted);
+    });
+  }, [api, isFriendProfile]);
 
   const tabs = [
     { key: "overview", label: "Overview" },
@@ -352,17 +452,35 @@ export default function UserProfile() {
                   </>
                 )}
               </s.FriendActionsContainer>
-              <s.FriendAvatarColumn>
-                <div className="avatar">
-                  <img src="../static/images/zeeguuLogo.svg" alt="Friend profile" />
+              <s.AvatarBackground $backgroundColor={avatarBackgroundColor}>
+                <s.AvatarImage $imageSource={AVATAR_IMAGE_MAP[avatarCharacterId]} $color={avatarCharacterColor} />
+              </s.AvatarBackground>
+              <div>
+                <div className="name-wrapper">
+                  <h2 className="username">{profile?.username || "-"}</h2>
+                  {profile?.name && <h2 className="display-name">({profile.name})</h2>}
                 </div>
-              </s.FriendAvatarColumn>
-              <s.FriendDetails>
-                <h2 className="username">{displayName}</h2>
 
                 <div className="meta">
-                  <span className="label">Username:</span>
-                  {profile?.username ? `@${profile.username}` : "-"}
+                  <span className="label">Active languages:</span>
+                  {visibleLanguages.map((language, index) => {
+                    const languageCode = resolveLanguageCode(language);
+
+                    if (!languageCode) {
+                      return null;
+                    }
+
+                    return (
+                      <DynamicFlagImage
+                        key={`${languageCode}-${index}`}
+                        languageCode={languageCode}
+                      />
+                    );
+                  })}
+                  {overflowCount > 0 && (
+                    <s.OverflowBubble onClick={() => setShowLanguagesModal(true)}>+{overflowCount}</s.OverflowBubble>
+                  )}
+                  {visibleLanguages.length === 0 && "-"}
                 </div>
 
                 <div className="meta">
@@ -388,7 +506,7 @@ export default function UserProfile() {
                     </div>
                   </s.StatsRow>
                 )}
-              </s.FriendDetails>
+              </div>
             </s.HeaderCard>
           ) : (
             <s.HeaderCard>
@@ -400,23 +518,30 @@ export default function UserProfile() {
               </s.AvatarBackground>
               <div>
                 <div className="name-wrapper">
-                  <h2 className="username">{userDetails.username}</h2>
-                  {userDetails.name && <h2 className="display-name">({userDetails.name})</h2>}
+                  <h2 className="username">{profile?.username || "-"}</h2>
+                  {profile?.name && <h2 className="display-name">({profile.name})</h2>}
                 </div>
 
                 <div className="meta">
                   <span className="label">Active languages:</span>
-                  {visibleLanguages?.map((streakInfo) => (
-                    <DynamicFlagImage key={streakInfo.language.code} languageCode={streakInfo.language.code} />
-                  ))}
+                  {visibleLanguages.map((streakInfo, index) => {
+                    const languageCode = resolveLanguageCode(streakInfo);
+
+                    if (!languageCode) {
+                      return null;
+                    }
+
+                    return <DynamicFlagImage key={`${languageCode}-${index}`} languageCode={languageCode} />;
+                  })}
                   {overflowCount > 0 && (
                     <s.OverflowBubble onClick={() => setShowLanguagesModal(true)}>+{overflowCount}</s.OverflowBubble>
                   )}
+                  {visibleLanguages.length === 0 && "-"}
                 </div>
 
                 <div className="meta">
                   <span className="label">Member since:</span>
-                  {userDetails.created_at ? new Date(userDetails.created_at).toLocaleDateString() : "-"}
+                  {profile?.created_at ? new Date(profile.created_at).toLocaleDateString() : "-"}
                 </div>
 
                 <s.StatsRow>
@@ -462,24 +587,40 @@ export default function UserProfile() {
           <Heading>Active Languages</Heading>
         </Header>
         <Main>
-          <s.LanguagesGrid>
-            {allDailyStreakInfo?.map((streakInfo) => (
-              <s.LanguageCard key={streakInfo.language.code}>
-                <DynamicFlagImage languageCode={streakInfo.language.code} />
-                <span className="language-name">{streakInfo.language.language}</span>
-                <div className="streaks-info">
-                  <div className="streak-item">
-                    <LocalFireDepartmentIcon sx={{ color: "#ff9800", fontSize: "1rem" }} />
-                    <span>{streakInfo.current_streak ?? 0}</span>
+          {isFriendProfile ? (
+            <s.LanguagesGrid>
+              {profileLanguages.map((language, index) => {
+                const languageCode = resolveLanguageCode(language);
+                const languageName = resolveLanguageName(language);
+
+                return (
+                  <s.LanguageCard key={`${languageCode ?? languageName}-${index}`}>
+                    {languageCode && <DynamicFlagImage languageCode={languageCode} />}
+                    <span className="language-name">{languageName}</span>
+                  </s.LanguageCard>
+                );
+              })}
+            </s.LanguagesGrid>
+          ) : (
+            <s.LanguagesGrid>
+              {profileLanguages.map((streakInfo) => (
+                <s.LanguageCard key={streakInfo.language.code}>
+                  <DynamicFlagImage languageCode={streakInfo.language.code} />
+                  <span className="language-name">{streakInfo.language.language}</span>
+                  <div className="streaks-info">
+                    <div className="streak-item">
+                      <LocalFireDepartmentIcon sx={{ color: "#ff9800", fontSize: "1rem" }} />
+                      <span>{streakInfo.current_streak ?? 0}</span>
+                    </div>
+                    <div className="streak-item max-streak">
+                      <LocalFireDepartmentIcon sx={{ color: "#e65100", fontSize: "1rem" }} />
+                      <span>{streakInfo.max_streak ?? 0}</span>
+                    </div>
                   </div>
-                  <div className="streak-item max-streak">
-                    <LocalFireDepartmentIcon sx={{ color: "#e65100", fontSize: "1rem" }} />
-                    <span>{streakInfo.max_streak ?? 0}</span>
-                  </div>
-                </div>
-              </s.LanguageCard>
-            ))}
-          </s.LanguagesGrid>
+                </s.LanguageCard>
+              ))}
+            </s.LanguagesGrid>
+          )}
         </Main>
       </Modal>
     </s.ProfileWrapper>
