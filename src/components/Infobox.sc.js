@@ -1,5 +1,4 @@
 import styled from "styled-components";
-import { zeeguuVeryLightOrange } from "./colors";
 
 const Infobox = styled.div`
   display: flex;
@@ -8,7 +7,7 @@ const Infobox = styled.div`
   align-items: center;
   gap: 0.5em;
   margin: 1em 0;
-  background-color: #fff2dd;
+  background-color: var(--infobox-bg);
   border-radius: 2em;
   padding: 1em 2em;
 

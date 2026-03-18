@@ -11,11 +11,7 @@ export default function ToggleEditReviewWords({ setInEditMode, inEditMode }) {
           control={<Android12Switch />}
           className={inEditMode ? "selected" : ""}
           onClick={(e) => setInEditMode(!inEditMode)}
-          label={
-            <span style={{ fontWeight: "500" }}>
-              {"Manage Words for Exercises"}
-            </span>
-          }
+          label={<span style={{ fontWeight: "500" }}>{"Manage Words for Exercises"}</span>}
         />
       </FormGroup>
     </ThemeProvider>
