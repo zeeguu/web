@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useLayoutEffect, useState } from "react";
 import { useClickOutside } from "react-click-outside-hook";
 import { AlterMenuSC } from "./AlterMenu.sc";
 import LoadingAnimation from "../components/LoadingAnimation";
@@ -14,6 +14,18 @@ export default function AlterMenu({
 }) {
   const [refToAlterMenu, clickedOutsideAlterMenu] = useClickOutside();
   const [inputValue, setInputValue] = useState("");
+
+  useLayoutEffect(() => {
+    const el = refToAlterMenu.current;
+    if (el) {
+      // Reset to default (left-aligned) to measure natural position
+      el.style.right = "";
+      const rect = el.getBoundingClientRect();
+      if (rect.right > window.innerWidth) {
+        el.style.right = "0";
+      }
+    }
+  });
 
   useEffect(() => {
     if (clickedOutsideAlterMenu && clickedOutsideTranslation) {

@@ -8,6 +8,7 @@ const AlterMenuSC = styled.div`
   text-align: left;
 
   position: absolute;
+  min-width: 14em;
   max-width: 30em;
   background-color: ${zeeguuVeryLightYellow};
   border-radius: 0.5em;
@@ -55,7 +56,7 @@ const AlterMenuSC = styled.div`
     color: ${almostBlack};
     border-radius: 0.4em;
     font-weight: 400;
-    font-size: small;
+    font-size: 16px;
 
     &:hover {
       filter: brightness(98%);

@@ -13,6 +13,7 @@ const TranslatableText = styled.div`
     white-space: break-spaces;
     cursor: pointer;
     display: inline-block;
+    position: relative;
     margin: 0;
     line-height: 29px;
   }
