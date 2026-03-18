@@ -11,9 +11,9 @@ const _topNavShared = css`
 
 const TopNavWrapper = styled.div`
   ${_topNavShared};
-  background-color: white;
+  background-color: var(--bg-primary);
   justify-content: center;
-  background: white;
+  background: var(--bg-primary);
   padding: 0 3rem;
 
   @media (max-width: 576px) {

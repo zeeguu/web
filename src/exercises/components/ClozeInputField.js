@@ -111,6 +111,7 @@ export default function ClozeInputField({
           <s.ClozeInput
             ref={inputRef}
             type="text"
+            inputMode={suppressOSKeyboard ? "none" : undefined}
             value={currentValue}
             placeholder={placeholder}
             onChange={handleChange}

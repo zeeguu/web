@@ -1,5 +1,6 @@
 import styled, { keyframes, css } from "styled-components";
 import { orange500 } from "./colors";
+import { AUDIO_STATUS } from "../dailyAudio/AudioLessonConstants";
 
 const spin = keyframes`
   0% { transform: rotate(0deg); }
@@ -27,17 +28,15 @@ const Dot = styled.div`
 
   ${({ $status, $isActive }) => {
     switch ($status) {
-      case "generating":
+      case AUDIO_STATUS.GENERATING:
         return css`
           border: 2px solid transparent;
           border-top-color: ${$isActive ? orange500 : "white"};
           background-color: transparent;
           animation: ${spin} 1.5s linear infinite;
         `;
-      case "ready":
-      case "in_progress":
+      case AUDIO_STATUS.READY:
       default:
-        // White on orange sidebar, orange when selected (white bg)
         return css`background-color: ${$isActive ? orange500 : "white"};`;
     }
   }}
@@ -45,7 +44,7 @@ const Dot = styled.div`
 
 export default function DailyAudioNotificationDot({ status, isActive, sidebar }) {
   // Only show for generating (spinner) or ready (new lesson waiting)
-  if (!status || status === "completed" || status === "available" || status === "in_progress") return null;
+  if (!status || status === AUDIO_STATUS.COMPLETED || status === AUDIO_STATUS.IN_PROGRESS) return null;
 
   return <Dot $status={status} $isActive={isActive} $sidebar={sidebar} />;
 }

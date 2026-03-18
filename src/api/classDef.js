@@ -1,6 +1,13 @@
 import fetch from "cross-fetch";
 import axios from "axios";
 import * as Sentry from "@sentry/react";
+import LocalStorage from "../assorted/LocalStorage";
+
+function check403ForPendingUpgrade(status) {
+  if (status === 403 && LocalStorage.getAnonUpgradePending()) {
+    window.dispatchEvent(new CustomEvent("zeeguu-email-not-verified"));
+  }
+}
 
 const CACHE_TTL = 5 * 60 * 1000; // 5 minutes
 
@@ -11,12 +18,16 @@ const Zeeguu_API = class {
     //this.session = currentSession; is instantiated in App when the user logs in (causes error to actually instantiate it here).
   }
 
-  invalidateCache() {
-    this._cache.clear();
+  // Cache keys include the learned language so switching languages
+  // naturally serves fresh data without needing to invalidate
+  _cacheKey(endpoint) {
+    // Key must match LocalStorage.Keys.LearnedLanguage in assorted/LocalStorage.js
+    const lang = localStorage.getItem("learned_language") || "";
+    return `${lang}:${endpoint}`;
   }
 
   getCached(endpoint) {
-    const cached = this._cache.get(endpoint);
+    const cached = this._cache.get(this._cacheKey(endpoint));
     if (cached && Date.now() - cached.time < CACHE_TTL) {
       return cached.data;
     }
@@ -57,8 +68,12 @@ const Zeeguu_API = class {
   }
 
   _getJSON(endpoint, callback, useCache = false) {
-    if (useCache) {
-      const cached = this._cache.get(endpoint);
+    // Capture the cache key once so the read and write use the same
+    // language, even if the user switches language mid-flight
+    const cacheKey = useCache ? this._cacheKey(endpoint) : null;
+
+    if (cacheKey) {
+      const cached = this._cache.get(cacheKey);
       if (cached && Date.now() - cached.time < CACHE_TTL) {
         callback(cached.data);
         return;
@@ -69,13 +84,14 @@ const Zeeguu_API = class {
     fetch(this._appendSessionToUrl(endpoint, this.session))
       .then((response) => {
         if (!response.ok) {
+
           throw new Error(`HTTP ${response.status} on GET ${endpoint}`);
         }
         return response.json();
       })
       .then((data) => {
-        if (useCache) {
-          this._cache.set(endpoint, { data, time: Date.now() });
+        if (cacheKey) {
+          this._cache.set(cacheKey, { data, time: Date.now() });
         }
         callback(data);
       })
@@ -112,10 +128,11 @@ const Zeeguu_API = class {
           if (response.ok) {
             return getJson ? response.json() : response.text();
           }
+
           // Error response - try to get message from JSON body
           return response.json().then(
             (data) => Promise.reject(data.message || `HTTP ${response.status}`),
-            () => Promise.reject(`HTTP ${response.status}`)
+            () => Promise.reject(`HTTP ${response.status}`),
           );
         })
         .then((data) => callback(data))
@@ -133,7 +150,7 @@ const Zeeguu_API = class {
         }
         return response.json().then(
           (data) => Promise.reject(data.message || `HTTP ${response.status}`),
-          () => Promise.reject(`HTTP ${response.status}`)
+          () => Promise.reject(`HTTP ${response.status}`),
         );
       });
     }
@@ -166,7 +183,11 @@ const Zeeguu_API = class {
 
     const headers = isForm ? { "Content-Type": "multipart/form-data" } : { "Content-Type": "application/json" };
 
-    console.log(`[FRONTEND-API] POST ${endpoint} - START`, { timestamp: new Date().toISOString(), endpoint, dataSize: data ? JSON.stringify(data).length : 0 });
+    console.log(`[FRONTEND-API] POST ${endpoint} - START`, {
+      timestamp: new Date().toISOString(),
+      endpoint,
+      dataSize: data ? JSON.stringify(data).length : 0,
+    });
 
     const startTime = performance.now();
     try {
@@ -178,7 +199,11 @@ const Zeeguu_API = class {
         data: data,
       });
       const elapsed = performance.now() - startTime;
-      console.log(`[FRONTEND-API] POST ${endpoint} - SUCCESS`, { timestamp: new Date().toISOString(), elapsed: `${elapsed.toFixed(2)}ms`, status: res.status });
+      console.log(`[FRONTEND-API] POST ${endpoint} - SUCCESS`, {
+        timestamp: new Date().toISOString(),
+        elapsed: `${elapsed.toFixed(2)}ms`,
+        status: res.status,
+      });
       return res;
     } catch (error) {
       const elapsed = performance.now() - startTime;
@@ -187,8 +212,11 @@ const Zeeguu_API = class {
         elapsed: `${elapsed.toFixed(2)}ms`,
         error: error.message,
         code: error.code,
-        response: error.response?.status
+        response: error.response?.status,
       });
+      if (error.response?.status) {
+        check403ForPendingUpgrade(error.response.status);
+      }
       throw error;
     }
   }

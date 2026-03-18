@@ -1,15 +1,15 @@
 import styled from "styled-components";
-import { zeeguuOrange, zeeguuDarkOrange, almostBlack } from "../colors";
+import { zeeguuOrange, zeeguuDarkOrange } from "../colors";
 
 export const KeyboardContainer = styled.div`
-  background: white;
-  border: 2px solid #ddd;
+  background: var(--card-bg);
+  border: 2px solid var(--border-color);
   border-radius: 6px;
   padding: 8px;
   margin-top: 1em;
   margin-left: auto;
   margin-right: auto;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 8px var(--shadow-color);
   max-width: 400px;
   width: 100%;
   box-sizing: border-box;
@@ -30,7 +30,7 @@ export const KeyboardHeader = styled.div`
   align-items: center;
   margin-bottom: 0.5em;
   padding-bottom: 0.5em;
-  border-bottom: 1px solid #eee;
+  border-bottom: 1px solid var(--border-light);
 
   @media (max-width: 768px) {
     padding-left: 6px;
@@ -41,7 +41,7 @@ export const KeyboardHeader = styled.div`
 export const KeyboardTitle = styled.h3`
   margin: 0;
   font-size: 0.8em;
-  color: ${almostBlack};
+  color: var(--text-primary);
   font-weight: 600;
 `;
 
@@ -51,7 +51,7 @@ export const CollapseButton = styled.button`
   font-size: 1.2em;
   cursor: pointer;
   padding: 0.2em 0.5em;
-  color: #666;
+  color: var(--text-muted);
 
   &:hover {
     color: ${zeeguuOrange};
@@ -59,8 +59,8 @@ export const CollapseButton = styled.button`
 `;
 
 export const CollapsedKeyboard = styled.div`
-  background: white;
-  border: 2px solid #ddd;
+  background: var(--card-bg);
+  border: 2px solid var(--border-color);
   border-radius: 8px;
   padding: 0.8em 1.5em;
   margin-top: 1em;
@@ -72,11 +72,11 @@ export const CollapsedKeyboard = styled.div`
 
   &:hover {
     border-color: ${zeeguuOrange};
-    background: #f9f9f9;
+    background: var(--hover-bg);
   }
 
   span {
-    color: ${almostBlack};
+    color: var(--text-primary);
     font-weight: 500;
   }
 `;
@@ -86,8 +86,8 @@ export const KeyboardIcon = styled.span`
 `;
 
 export const CollapsedKeyboardWithKeys = styled.div`
-  background: white;
-  border: 2px solid #ddd;
+  background: var(--card-bg);
+  border: 2px solid var(--border-color);
   border-radius: 8px;
   padding: 8px;
   margin-top: 1em;
@@ -115,13 +115,13 @@ export const SpecialKeysRow = styled.div`
 `;
 
 export const ExpandButton = styled.button`
-  background: #f5f5f5;
-  border: 1px solid #bbb;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
   border-radius: 3px;
   font-size: 16px;
   cursor: pointer;
   padding: 8px 12px;
-  color: #666;
+  color: var(--text-muted);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -167,7 +167,7 @@ export const KeyRow = styled.div`
 export const AccentRow = styled(KeyRow)`
   margin-bottom: 0.5em;
   padding-bottom: 0.5em;
-  border-bottom: 1px solid #eee;
+  border-bottom: 1px solid var(--border-light);
 `;
 
 export const Key = styled.button`
@@ -175,8 +175,8 @@ export const Key = styled.button`
   width: calc((100% - 8 * 2px) / 9);
   height: 42px;
   padding: 4px;
-  background: white;
-  border: 1px solid #ccc;
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
   border-radius: 3px;
   font-size: 20px;
   cursor: pointer;
@@ -186,6 +186,7 @@ export const Key = styled.button`
   font-family: Arial, sans-serif;
   flex-shrink: 0;
   box-sizing: border-box;
+  color: var(--text-primary);
   -webkit-tap-highlight-color: transparent;
 
   /* Only apply hover on devices that support it (not touch) */
@@ -197,7 +198,7 @@ export const Key = styled.button`
       border-color: ${zeeguuDarkOrange};
       color: white;
       transform: translateY(-1px);
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 2px 4px var(--shadow-color);
     }
   }
 
@@ -219,9 +220,9 @@ export const SpecialKey = styled(Key)`
   width: auto;
   min-width: calc((100% - 8 * 2px) / 9 * 2.5);
   font-size: 16px;
-  background: ${props => props.isActive ? zeeguuOrange : '#f5f5f5'};
-  color: ${props => props.isActive ? 'white' : almostBlack};
-  border-color: ${props => props.isActive ? zeeguuDarkOrange : '#bbb'};
+  background: ${props => props.isActive ? zeeguuOrange : 'var(--bg-secondary)'};
+  color: ${props => props.isActive ? 'white' : 'var(--text-primary)'};
+  border-color: ${props => props.isActive ? zeeguuDarkOrange : 'var(--border-color)'};
 
   @media (hover: hover) {
     &:hover {
@@ -240,7 +241,7 @@ export const SpaceKey = styled(Key)`
   width: auto;
   flex: 1;
   font-size: 14px;
-  background: #f5f5f5;
+  background: var(--bg-secondary);
 
   @media (max-width: 768px) {
     font-size: 11px;

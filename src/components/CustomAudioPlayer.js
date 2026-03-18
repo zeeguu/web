@@ -534,7 +534,7 @@ export default function CustomAudioPlayer({
     <div
       style={{
         ...style,
-        backgroundColor: "#f8f9fa",
+        backgroundColor: "var(--card-bg)",
         borderRadius: "12px",
         padding: "20px",
         margin: "0 auto",
@@ -572,7 +572,7 @@ export default function CustomAudioPlayer({
               height: "44px",
               borderRadius: "50%",
               border: `2px solid ${isLoading ? "#ccc" : zeeguuOrange}`,
-              backgroundColor: "white",
+              backgroundColor: "var(--card-bg)",
               color: isLoading ? "#ccc" : zeeguuOrange,
               cursor: isLoading ? "not-allowed" : "pointer",
               display: "flex",
@@ -653,7 +653,7 @@ export default function CustomAudioPlayer({
               height: "44px",
               borderRadius: "50%",
               border: `2px solid ${isLoading ? "#ccc" : zeeguuOrange}`,
-              backgroundColor: "white",
+              backgroundColor: "var(--card-bg)",
               color: isLoading ? "#ccc" : zeeguuOrange,
               cursor: isLoading ? "not-allowed" : "pointer",
               display: "flex",
@@ -692,7 +692,7 @@ export default function CustomAudioPlayer({
               padding: "6px 12px",
               borderRadius: "20px",
               border: `1px solid ${zeeguuOrange}`,
-              backgroundColor: "white",
+              backgroundColor: "var(--card-bg)",
               color: zeeguuOrange,
               cursor: isLoading ? "not-allowed" : "pointer",
               fontSize: "14px",
@@ -734,7 +734,7 @@ export default function CustomAudioPlayer({
           style={{
             flex: 1,
             height: "8px",
-            backgroundColor: "#e0e0e0",
+            backgroundColor: "var(--border-light)",
             borderRadius: "4px",
             cursor: "pointer",
             position: "relative",
@@ -771,7 +771,7 @@ export default function CustomAudioPlayer({
 
         {/* Time Display */}
         <div style={{ minWidth: "100px", textAlign: "right" }}>
-          <div style={{ fontSize: "14px", fontWeight: "600", color: "#888" }}>
+          <div style={{ fontSize: "14px", fontWeight: "600", color: "var(--text-muted)" }}>
             {formatTime(currentTime)} / {formatTime(duration, true)}
           </div>
         </div>

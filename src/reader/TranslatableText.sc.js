@@ -462,8 +462,8 @@ const TranslatableText = styled.div`
  * ======================================================================== */
 
 const pulseUnderline = keyframes`
-  0%, 100% { border-bottom-color: #333; }
-  50% { border-bottom-color: #666; }
+  0%, 100% { border-bottom-color: var(--cloze-underline, #999); }
+  50% { border-bottom-color: var(--cloze-underline-pulse, #999); }
 `;
 
 const correctAnswerAnimation = keyframes`
@@ -492,7 +492,7 @@ const ClozeHint = styled.div`
   left: 50%;
   transform: translate(-50%, -50%);
   font-size: 0.7em;
-  color: #999;
+  color: var(--text-faint);
   opacity: 0.8;
   pointer-events: none;
   white-space: nowrap;
@@ -500,7 +500,7 @@ const ClozeHint = styled.div`
 
 const ClozeInput = styled.input`
   border: none;
-  border-bottom: 2px dotted ${props => props.$isOver ? orange600 : '#333'};
+  border-bottom: 2px dotted ${props => props.$isOver ? orange600 : 'var(--cloze-underline)'};
   background: transparent;
   outline: none;
   font-size: inherit;
@@ -522,7 +522,7 @@ const ClozeInput = styled.input`
 `;
 
 const ClozeStaticPlaceholder = styled.span`
-  border-bottom: 1px solid ${props => props.$isOver ? orange600 : '#333'};
+  border-bottom: 1px solid ${props => props.$isOver ? orange600 : 'var(--text-muted)'};
   display: inline-block;
   min-width: 4em;
   color: ${props => props.$isOver ? orange600 : 'inherit'};

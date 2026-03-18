@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import { APIContext } from "../contexts/APIContext";
 import * as s from "./Badges.sc.js";
-import NotificationIcon from "@/components/NotificationIcon";
+import NotificationIcon from "../components/NotificationIcon";
 
 export default function Badges({ userId }) {
   const api = useContext(APIContext);

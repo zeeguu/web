@@ -21,13 +21,13 @@ const getButtonStyles = (variant) => {
 
   const variants = {
     default: {
-      color: "#8b5f28",
-      backgroundColor: "#fff5e6",
+      color: "var(--action-btn-text)",
+      backgroundColor: "var(--action-btn-bg)",
     },
     muted: {
-      color: "#999",
-      backgroundColor: "#fafafa",
-      border: "1px solid #f0f0f0",
+      color: "var(--action-btn-muted-text)",
+      backgroundColor: "var(--action-btn-muted-bg)",
+      border: "1px solid var(--action-btn-muted-border)",
     },
   };
 
@@ -48,12 +48,12 @@ export default function ActionButton({ children, onClick, variant = "default", a
   const getHoverStyles = (variant) => {
     const hoverVariants = {
       default: {
-        backgroundColor: "#f0e6cc",
-        color: "#8b5f28",
+        backgroundColor: "var(--action-btn-hover-bg)",
+        color: "var(--action-btn-text)",
       },
       muted: {
-        backgroundColor: "#f0f0f0",
-        color: "#666",
+        backgroundColor: "var(--action-btn-muted-hover-bg)",
+        color: "var(--action-btn-muted-hover-text)",
       },
     };
     return hoverVariants[variant];

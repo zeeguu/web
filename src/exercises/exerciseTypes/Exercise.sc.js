@@ -227,7 +227,7 @@ let OrangeButton = styled(StyledButton)`
   justify-content: center;
   align-items: center;
 
-  color: white;
+  color: var(--orange-btn-text, white);
   background-color: ${zeeguuOrange};
   margin: 1em;
 `;
@@ -248,14 +248,19 @@ let FeedbackButton = styled(OrangeButton)`
   height: fit-content;
   width: fit-content;
 
-  &:focus {
+  &:focus,
+  &:focus-visible {
     outline: none;
-    box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 0 0 3px var(--exercise-btn-focus, rgba(0, 0, 0, 0.3));
   }
 
   &:disabled {
     cursor: default;
     text-decoration: line-through;
+  }
+
+  &.next-btn {
+    border: 0.125em solid var(--exercise-btn-border, rgba(0, 0, 0, 0.15));
   }
 `;
 

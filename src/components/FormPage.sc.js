@@ -56,7 +56,7 @@ let FormContainer = styled.div`
     width: 22em;
   }
 
-  background-color: white;
+  background-color: var(--card-bg);
 
   ${formStyling}
 `;
@@ -76,7 +76,7 @@ let FormLink = styled.div`
 
 let DeleteAccountButton = styled.button`
   border: 0px;
-  background: white;
+  background: var(--card-bg);
   margin-bottom: 3em;
   margin-top: 0em;
   overflow: hidden;

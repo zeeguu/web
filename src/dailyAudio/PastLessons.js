@@ -80,8 +80,7 @@ export default function PastLessons() {
 
       {pastLessons.length === 0 && !isLoading && !error && (
         <div style={{ textAlign: "center", color: "#666", marginTop: "40px" }}>
-          <p>You haven't generated any audio lessons yet.</p>
-          <p>Create your first lesson in the "Today" tab!</p>
+          <p>There are no past lessons to display.</p>
         </div>
       )}
 

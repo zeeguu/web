@@ -78,11 +78,7 @@ platform :ios do
       scheme: "App",
       export_method: "app-store",
       clean: true,
-      export_options: {
-        provisioningProfiles: {
-          "org.zeeguu.app" => "Zeeguu App Store Distribution"
-        }
-      }
+      xcargs: "-allowProvisioningUpdates"
     )
 
     # Upload to App Store Connect and submit for review

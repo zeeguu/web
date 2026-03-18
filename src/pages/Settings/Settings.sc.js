@@ -10,7 +10,7 @@ const StyledWrapper = styled.div`
 
 const Version = styled.div`
   font-size: 0.75rem;
-  color: #999;
+  color: var(--text-faint);
   text-align: center;
   margin-bottom: 2rem;
 `;

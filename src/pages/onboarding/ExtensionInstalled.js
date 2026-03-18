@@ -43,7 +43,7 @@ export default function ExtensionInstalled() {
             </Button>
           ) : (
             <>
-              <Button className={"full-width-btn"} onClick={() => history.push("/language_preferences")}>
+              <Button className={"full-width-btn"} onClick={() => history.push("/invite_code")}>
                 {strings.createAccount}
               </Button>
               <Button className={"full-width-btn"} onClick={() => history.push("/log_in")}>

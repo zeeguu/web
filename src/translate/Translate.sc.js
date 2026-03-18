@@ -1,17 +1,39 @@
 import styled from "styled-components";
 import { zeeguuOrange } from "../components/colors";
 
-export const LabelRow = styled.div`
+export const DirectionSelector = styled.div`
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  margin-bottom: 0.3rem;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
 `;
 
-export const Label = styled.label`
+export const LanguageLabel = styled.span`
   font-weight: 600;
-  font-size: 0.9rem;
-  color: #333;
+  font-size: 1rem;
+  color: var(--text-primary);
+  min-width: 80px;
+  text-align: center;
+`;
+
+export const SwapButton = styled.button`
+  background: none;
+  border: 1px solid #ddd;
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: ${zeeguuOrange};
+  transition: background-color 0.2s;
+
+  &:hover {
+    background-color: rgba(255, 140, 66, 0.1);
+    border-color: ${zeeguuOrange};
+  }
 `;
 
 export const SearchContainer = styled.div`
@@ -63,56 +85,13 @@ export const ResultsContainer = styled.div`
 export const ResultsHeader = styled.h3`
   margin-bottom: 1rem;
   font-weight: 500;
-  color: #333;
+  color: var(--text-primary);
   display: flex;
   align-items: center;
   gap: 0.75rem;
   flex-wrap: wrap;
 `;
 
-export const DirectionLabel = styled.span`
-  font-size: 0.8rem;
-  font-weight: 400;
-  color: #666;
-  background: #f0f0f0;
-  padding: 0.2rem 0.5rem;
-  border-radius: 0.25rem;
-`;
-
-export const LanguageDetected = styled.div`
-  font-size: 0.85rem;
-  color: #666;
-  display: flex;
-  align-items: center;
-  gap: 0.3rem;
-`;
-
-export const SwitchLink = styled.button`
-  background: none;
-  border: none;
-  color: ${zeeguuOrange};
-  font-size: 0.85rem;
-  cursor: pointer;
-  padding: 0;
-  text-decoration: underline;
-  margin-left: 0.5rem;
-
-  &:hover {
-    opacity: 0.8;
-  }
-`;
-
-export const DetectionMode = styled.span`
-  color: #999;
-  font-style: italic;
-`;
-
-export const Flag = styled.img`
-  width: 20px;
-  height: 14px;
-  object-fit: cover;
-  border-radius: 2px;
-`;
 
 export const SpeakButton = styled.button`
   background: none;
@@ -168,7 +147,7 @@ export const TranslationRow = styled.div`
 export const TranslationText = styled.div`
   font-size: 1.2rem;
   font-weight: 600;
-  color: #333;
+  color: var(--text-primary);
 `;
 
 export const TranslationSource = styled.div`
@@ -215,16 +194,6 @@ export const CardInfo = styled.div`
   align-items: flex-start;
   gap: 0.5rem;
   margin-bottom: 0.5rem;
-`;
-
-export const CefrBadge = styled.span`
-  background: ${zeeguuOrange};
-  color: white;
-  font-size: 0.75rem;
-  font-weight: 600;
-  padding: 0.2rem 0.4rem;
-  border-radius: 0.25rem;
-  flex-shrink: 0;
 `;
 
 export const CardExplanation = styled.div`

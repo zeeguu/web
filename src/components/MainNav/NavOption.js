@@ -18,7 +18,8 @@ export default function NavOption({
 }) {
   const Component = linkTo ? s.RouterLink : s.OptionButton;
   const isActive = isNavOptionActive(linkTo, currentPath);
-  const elementTitle = isMediumScreenWidth(screenWidth) ? (title ? title : text) : "";
+  const isCollapsed = isMediumScreenWidth(screenWidth);
+  const elementTitle = isCollapsed ? (title ? title : text) : "";
 
   return (
     <s.NavOption>
@@ -33,9 +34,14 @@ export default function NavOption({
         aria-label={ariaLabel}
       >
         <s.OptionContentWrapper $screenWidth={screenWidth}>
-          {icon && <s.IconContainer>{icon}</s.IconContainer>}
+          {icon && (
+            <s.IconContainer>
+              {icon}
+              {isCollapsed && notification && React.cloneElement(notification, { isActive, position: "top-absolute", sidebar: false })}
+            </s.IconContainer>
+          )}
           <s.TextWrapper $screenWidth={screenWidth} $hasIcon={!!icon}>{text}</s.TextWrapper>
-          {notification && React.cloneElement(notification, { isActive })}
+          {!isCollapsed && notification && React.cloneElement(notification, { isActive })}
         </s.OptionContentWrapper>
       </Component>
     </s.NavOption>

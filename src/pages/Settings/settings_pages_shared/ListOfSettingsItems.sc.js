@@ -5,7 +5,7 @@ const SettingsSection = styled.section`
   width: 100%;
 
   h2 {
-    color: grey;
+    color: var(--text-muted);
     font-size: 0.9rem;
     margin: 0 0 0.5rem 0;
   }
