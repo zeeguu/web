@@ -1,7 +1,7 @@
 import styled from "styled-components";
 
 const MoreInfoBoxContainer = styled.div`
-  background-color: #fff2dd;
+  background-color: var(--infobox-bg);
   padding: 1.5em 2em;
   margin-top: 1em;
   margin-bottom: 1em;
@@ -16,12 +16,10 @@ const MoreInfoBoxContainer = styled.div`
   h3 {
     margin: 0 0 0.5em 0;
     font-size: 1em;
-    color: #1f2937;
   }
 
   p {
     margin: 0.5em 0;
-    color: #4b5563;
     line-height: 1.6;
     font-size: 0.9em;
   }

@@ -13,7 +13,6 @@ import ArticlesProgressSummary from "../articles/ArticlesProgressSummary";
 import { StyledButton } from "../components/allButtons.sc.js";
 import Tooltip from "@mui/material/Tooltip";
 import { CenteredContent } from "../components/ColumnWidth.sc";
-import moreInfoIcon from "/static/icons/more-info-icon.png";
 import MoreInfoBox from "../components/MoreInfoBox";
 import { isDesktopScreenWidth } from "../components/MainNav/screenSize";
 import { WordsSection, WordsListColumn, InfoBoxColumn, InfoIcon } from "./WordsToReview.sc";
@@ -137,8 +136,6 @@ export default function WordsToReview({
             >
               You might see these words in your exercises:
               <InfoIcon
-                src={moreInfoIcon}
-                alt="info"
                 onClick={() => setShowMoreInfo(showMoreInfo === "willBeInExercises" ? null : "willBeInExercises")}
               />
             </h3>
@@ -195,8 +192,6 @@ export default function WordsToReview({
             >
               You won't see these words in your exercises:
               <InfoIcon
-                src={moreInfoIcon}
-                alt="info"
                 onClick={() => setShowMoreInfo(showMoreInfo === "wontBeInExercises" ? null : "wontBeInExercises")}
               />
             </h3>

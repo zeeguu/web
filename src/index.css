@@ -15,6 +15,8 @@
   --continue-card-bg: hsl(216, 100%, 97%);
   --hover-bg: #f6f6f6;
   --active-bg: #ededed;
+  --infobox-bg: #fff2dd;
+  --more-info-icon: url("/static/icons/more-info-icon.png");
 
   --streak-banner-bg: linear-gradient(135deg, #fff8e1, #fff3cd);
   --streak-banner-text: #7a5c00;
@@ -69,6 +71,8 @@
   --card-bg: #222240;
   --hover-bg: #2e2e4a;
   --active-bg: #353555;
+  --infobox-bg: #3f3360;
+  --more-info-icon: url("/static/icons/more-info-icon-dark.png");
 
   --streak-banner-bg: linear-gradient(135deg, #2a2540, #302848);
   --streak-banner-text: #ffcc66;
@@ -135,7 +139,9 @@ body {
   padding-right: env(safe-area-inset-right);
   background-color: var(--bg-primary);
   color: var(--text-primary);
-  transition: background-color 0.2s ease, color 0.2s ease;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease;
   font-family:
     "Montserrat",
     -apple-system,
@@ -255,6 +261,5 @@ a {
 }
 
 code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
-    monospace;
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New", monospace;
 }

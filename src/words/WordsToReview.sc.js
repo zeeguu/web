@@ -65,12 +65,15 @@ const InfoBoxColumn = styled.div`
   }
 `;
 
-const InfoIcon = styled.img`
+const InfoIcon = styled.div`
   width: 22px;
   height: 22px;
   cursor: pointer;
   flex-shrink: 0;
   margin-top: -0.7em;
+  background-image: var(--more-info-icon);
+  background-size: contain;
+  background-repeat: no-repeat;
 `;
 
 export { EditWordsToExerciseButton, WordsSection, WordsListColumn, InfoBoxColumn, InfoIcon };

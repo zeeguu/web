@@ -1,5 +1,4 @@
 import * as s from "./Infobox.sc";
-import { APP_DOMAIN } from "../appConstants";
 import infoIcon from "/static/icons/info-info-icon.png";
 
 export default function Infobox({ children }) {
