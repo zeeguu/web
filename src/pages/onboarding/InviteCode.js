@@ -51,7 +51,7 @@ export default function InviteCode() {
               name={"invite-code"}
               placeholder={strings.inviteCodePlaceholder}
               value={inviteCode}
-              onChange={(e) => setInviteCode(e.target.value)}
+              onChange={(e) => setInviteCode(e.target.value.toLowerCase())}
             />
           </FormSection>
           <ButtonContainer className={"padding-medium"}>

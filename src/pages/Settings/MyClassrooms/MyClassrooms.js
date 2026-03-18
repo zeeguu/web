@@ -67,7 +67,7 @@ export default function MyClassrooms() {
   }
 
   function handleInviteCodeChange(event) {
-    setInviteCode(event.target.value);
+    setInviteCode(event.target.value.toLowerCase());
   }
 
   function leaveClassroom(e, cohort) {
