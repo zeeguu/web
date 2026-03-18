@@ -21,7 +21,7 @@ const WordsForArticleContainer = styled.div`
 const LeftContent = styled.div`
   flex: 1;
   max-width: auto;
-  margin-left: 20%;
+  margin-left: 15%;
   margin-right: 5%;
   width: 100%;
   padding: 1px;

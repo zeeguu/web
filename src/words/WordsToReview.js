@@ -126,7 +126,14 @@ export default function WordsToReview({
         <WordsSection>
           <WordsListColumn>
             <h3
-              style={{ display: "flex", alignItems: "flex-start", gap: "0.3rem", margin: "0", marginBottom: "0.5rem" }}
+              style={{
+                display: "flex",
+                alignItems: "flex-start",
+                gap: "0.3rem",
+                margin: "0",
+                marginBottom: "0.5rem",
+                marginTop: "0.5rem",
+              }}
             >
               You might see these words in your exercises:
               <InfoIcon
@@ -177,7 +184,14 @@ export default function WordsToReview({
         <WordsSection>
           <WordsListColumn>
             <h3
-              style={{ display: "flex", alignItems: "flex-start", gap: "0.3rem", margin: "0", marginBottom: "0.5rem" }}
+              style={{
+                display: "flex",
+                alignItems: "flex-start",
+                gap: "0.3rem",
+                margin: "0",
+                marginBottom: "0.5rem",
+                marginTop: "0.5rem",
+              }}
             >
               You won't see these words in your exercises:
               <InfoIcon

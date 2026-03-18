@@ -16,8 +16,7 @@ export default function InfoBoxWordsToReview({
       <p>
         We have selected{" "}
         <b>
-          {wordsSelectedByZeeguu_Counter} out of {totalWordsTranslated}{" "}
-          translated words for you to practice.{" "}
+          {wordsSelectedByZeeguu_Counter} out of {totalWordsTranslated} translated words for you to practice.{" "}
         </b>
         <span
           className="link-style"
@@ -30,7 +29,7 @@ export default function InfoBoxWordsToReview({
         .
       </p>
       <p>
-        <b>To manually add or remove words, use the toggle below.</b>
+        <b>Try using the toggle below to add or remove words.</b>
       </p>
     </>
   );
@@ -47,7 +46,7 @@ export default function InfoBoxWordsToReview({
         translated words will be used in exercises.{" "}
       </p>
       <p>
-        <b>To manually add or remove words, use the toggle below.</b>
+        <b>Try using the toggle below to add or remove words.</b>
       </p>
     </>
   );
@@ -55,14 +54,11 @@ export default function InfoBoxWordsToReview({
   const NoWordsSelected = (
     <>
       <p>
-        <b>We are not able to schedule words for you.</b>
+        <b>No words available for exercises.</b>
       </p>
+      {<p>Words may be unavailable if already learned or unsuitable for exercises.</p>}
       <p>
-        This can happen when the words you translated can't be used in
-        exercises, or because you have learned these words.
-      </p>
-      <p>
-        <b>To manually add or remove words, use the toggle below.</b>
+        <b>Try using the toggle below to add or remove words.</b>
       </p>
     </>
   );

@@ -3,7 +3,7 @@ import { MoreInfoBoxContainer } from "./MoreInfoBox.sc.js";
 export default function MoreInfoBox({ type }) {
   const contentMap = {
     willBeInExercises: {
-      mainInfo: "These words might appear in your exercises depending on your current exercise scheduling.",
+      mainInfo: "These words might appear in your exercises depending on your current scheduling.",
       extraInfo: "You can always change the amount of Words in Learning in Settings",
     },
     wontBeInExercises: {
