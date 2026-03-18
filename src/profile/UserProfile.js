@@ -280,8 +280,8 @@ export default function UserProfile() {
   return (
     <s.ProfileWrapper>
       {isFriendProfile && (
-        <div style={{ marginBottom: "0.8rem" }}>
-          <button
+        <s.BackNavigation>
+          <s.BackButton
             onClick={() => {
               if (history.length > 1) {
                 history.goBack();
@@ -290,131 +290,73 @@ export default function UserProfile() {
 
               history.push("/profile");
             }}
-            style={{
-              display: "inline-flex",
-              alignItems: "center",
-              gap: "0.4rem",
-              border: "1px solid #d0d0d0",
-              borderRadius: "6px",
-              background: "#fff",
-              padding: "0.4rem 0.75rem",
-              cursor: "pointer",
-            }}
           >
             <ArrowBackIcon sx={{ fontSize: "1.2rem" }} />
             <span>Back to Profile</span>
-          </button>
-        </div>
+          </s.BackButton>
+        </s.BackNavigation>
       )}
 
       {showLoadingProfile && <p>Loading friend profile...</p>}
-      {profileError && <p style={{ color: "red" }}>{profileError}</p>}
+      {profileError && <s.ErrorText>{profileError}</s.ErrorText>}
 
       {!showLoadingProfile && !profileError && (
         <>
           {isFriendProfile ? (
             <s.HeaderCard>
-              <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "0.75rem", flexShrink: 0 }}>
-                <div className="avatar">
-                  <img src="../static/images/zeeguuLogo.svg" alt="Friend profile" />
-                </div>
+              <s.FriendActionsContainer>
                 {isFriend && (
-                  <button
+                  <s.FriendActionButton
+                    $variant="danger"
                     onClick={() => setUnfriendModalOpen(true)}
-                    style={{
-                      display: "inline-flex",
-                      alignItems: "center",
-                      gap: "0.4rem",
-                      border: "1px solid #e74c3c",
-                      borderRadius: "6px",
-                      background: "#fff",
-                      color: "#e74c3c",
-                      padding: "0.4rem 0.75rem",
-                      cursor: "pointer",
-                    }}
                   >
                     <PersonRemoveIcon sx={{ fontSize: "1.2rem" }} />
                     <span>Unfriend</span>
-                  </button>
+                  </s.FriendActionButton>
                 )}
                 {!isFriend && !pendingFromMe && !pendingFromThem && (
-                  <button
+                  <s.FriendActionButton
+                    $variant="primary"
                     onClick={handleSendFriendRequest}
-                    style={{
-                      display: "inline-flex",
-                      alignItems: "center",
-                      gap: "0.4rem",
-                      border: "1px solid #3498db",
-                      borderRadius: "6px",
-                      background: "#fff",
-                      color: "#3498db",
-                      padding: "0.4rem 0.75rem",
-                      cursor: "pointer",
-                    }}
                   >
                     <PersonAddIcon sx={{ fontSize: "1.2rem" }} />
                     <span>Add friend</span>
-                  </button>
+                  </s.FriendActionButton>
                 )}
                 {pendingFromMe && (
-                  <button
+                  <s.FriendActionButton
+                    $variant="warning"
                     onClick={handleCancelFriendRequest}
-                    style={{
-                      display: "inline-flex",
-                      alignItems: "center",
-                      gap: "0.4rem",
-                      border: "1px solid #e67e22",
-                      borderRadius: "6px",
-                      background: "#fff",
-                      color: "#e67e22",
-                      padding: "0.4rem 0.75rem",
-                      cursor: "pointer",
-                    }}
                   >
                     <CancelScheduleSendIcon sx={{ fontSize: "1.2rem" }} />
                     <span>Cancel request</span>
-                  </button>
+                  </s.FriendActionButton>
                 )}
                 {pendingFromThem && (
-                  <div style={{ display: "flex", flexDirection: "column", gap: "0.4rem" }}>
-                    <button
+                  <>
+                    <s.FriendActionButton
+                      $variant="success"
                       onClick={handleAcceptFriendRequest}
-                      style={{
-                        display: "inline-flex",
-                        alignItems: "center",
-                        gap: "0.4rem",
-                        border: "1px solid #2ecc71",
-                        borderRadius: "6px",
-                        background: "#fff",
-                        color: "#2ecc71",
-                        padding: "0.4rem 0.75rem",
-                        cursor: "pointer",
-                      }}
                     >
                       <CheckIcon sx={{ fontSize: "1.2rem" }} />
                       <span>Accept request</span>
-                    </button>
-                    <button
+                    </s.FriendActionButton>
+                    <s.FriendActionButton
+                      $variant="danger"
                       onClick={handleRejectFriendRequest}
-                      style={{
-                        display: "inline-flex",
-                        alignItems: "center",
-                        gap: "0.4rem",
-                        border: "1px solid #e74c3c",
-                        borderRadius: "6px",
-                        background: "#fff",
-                        color: "#e74c3c",
-                        padding: "0.4rem 0.75rem",
-                        cursor: "pointer",
-                      }}
                     >
                       <ClearIcon sx={{ fontSize: "1.2rem" }} />
                       <span>Reject request</span>
-                    </button>
-                  </div>
+                    </s.FriendActionButton>
+                  </>
                 )}
-              </div>
-              <div>
+              </s.FriendActionsContainer>
+              <s.FriendAvatarColumn>
+                <div className="avatar">
+                  <img src="../static/images/zeeguuLogo.svg" alt="Friend profile" />
+                </div>
+              </s.FriendAvatarColumn>
+              <s.FriendDetails>
                 <h2 className="username">{displayName}</h2>
 
                 <div className="meta">
@@ -445,7 +387,7 @@ export default function UserProfile() {
                     </div>
                   </s.StatsRow>
                 )}
-              </div>
+              </s.FriendDetails>
             </s.HeaderCard>
           ) : (
             <s.HeaderCard>

@@ -14,6 +14,39 @@ export const ProfileWrapper = styled.div`
   margin-top: 1rem;
 `;
 
+export const BackNavigation = styled.div`
+  margin-bottom: 0.8rem;
+`;
+
+export const BackButton = styled.button`
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  border: 1px solid var(--border-light);
+  border-radius: 6px;
+  background: var(--card-bg);
+  color: var(--text-primary);
+  padding: 0.4rem 0.75rem;
+  cursor: pointer;
+  transition:
+    background 0.2s,
+    border-color 0.2s;
+
+  &:hover {
+    background: var(--hover-bg);
+    border-color: var(--border-color);
+  }
+`;
+
+export const ErrorText = styled.p`
+  margin: 0.5rem 0;
+  color: #c0392b;
+
+  :root[data-theme="dark"] & {
+    color: #ff8a80;
+  }
+`;
+
 export const HeaderCard = styled.div`
   position: relative;
   background: var(--card-bg);
@@ -126,6 +159,75 @@ export const EditProfileButton = styled.button`
   &:hover {
     background: ${orange100};
     color: ${orange500};
+  }
+`;
+
+export const FriendActionsContainer = styled.div`
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  align-items: flex-end;
+
+  @media (max-width: 768px) {
+    position: static;
+    width: 100%;
+    align-items: center;
+    margin-bottom: 0.75rem;
+  }
+`;
+
+export const FriendActionButton = styled.button`
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  border-radius: 6px;
+  border: 1px solid
+    ${({ $variant }) => {
+      switch ($variant) {
+        case "danger":
+          return "#e74c3c";
+        case "success":
+          return "#2ecc71";
+        case "warning":
+          return "#e67e22";
+        default:
+          return "#3498db";
+      }
+    }};
+  background: #fff;
+  color:
+    ${({ $variant }) => {
+      switch ($variant) {
+        case "danger":
+          return "#e74c3c";
+        case "success":
+          return "#2ecc71";
+        case "warning":
+          return "#e67e22";
+        default:
+          return "#3498db";
+      }
+    }};
+  padding: 0.4rem 0.75rem;
+  cursor: pointer;
+`;
+
+export const FriendAvatarColumn = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  flex-shrink: 0;
+`;
+
+export const FriendDetails = styled.div`
+  padding-right: 12rem;
+
+  @media (max-width: 768px) {
+    padding-right: 0;
   }
 `;
 
