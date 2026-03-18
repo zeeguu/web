@@ -14,7 +14,7 @@ Zeeguu_API.prototype.validateInviteCode = function (invite_code, onSuccess, onEr
   fetch(`${this.baseAPIurl}/validate_invite_code/${encodeURIComponent(invite_code)}`)
     .then((response) => {
       if (response.ok) {
-        onSuccess();
+        response.json().then((data) => onSuccess(data.name));
       } else {
         onError();
       }

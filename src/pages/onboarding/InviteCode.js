@@ -1,6 +1,7 @@
 import { useEffect, useState, useContext } from "react";
 import { useHistory, useLocation } from "react-router-dom";
 import { Link } from "react-router-dom";
+import { toast } from "react-toastify";
 import { setTitle } from "../../assorted/setTitle";
 import LocalStorage from "../../assorted/LocalStorage";
 import strings from "../../i18n/definitions";
@@ -49,7 +50,10 @@ export default function InviteCode() {
 
     api.validateInviteCode(
       inviteCode.trim(),
-      () => {
+      (cohortName) => {
+        if (cohortName) {
+          toast.success(`Welcome to "${cohortName}"!`);
+        }
         LocalStorage.setInviteCode(inviteCode.trim());
         goToNext();
       },
