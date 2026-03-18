@@ -31,7 +31,7 @@ let EditWordsToExerciseButton = styled.button`
 const WordsSection = styled.div`
   display: grid;
   grid-template-columns: auto auto;
-
+  gap: 0.3em;
   width: fit-content;
 
   @media (max-width: 768px) {

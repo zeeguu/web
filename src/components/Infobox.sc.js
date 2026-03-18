@@ -8,7 +8,7 @@ const Infobox = styled.div`
   align-items: center;
   gap: 0.5em;
   margin: 1em 0;
-  background-color: ${zeeguuVeryLightOrange};
+  background-color: #fff2dd;
   border-radius: 2em;
   padding: 1em 2em;
 
