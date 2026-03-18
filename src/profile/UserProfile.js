@@ -1,4 +1,4 @@
-import { useContext, useEffect, useMemo, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useHistory, useParams } from "react-router-dom";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import LocalFireDepartmentIcon from "@mui/icons-material/LocalFireDepartment";
@@ -14,29 +14,37 @@ import strings from "../i18n/definitions";
 import { APIContext } from "../contexts/APIContext";
 import DynamicFlagImage from "../components/DynamicFlagImage";
 import { ProgressContext } from "../contexts/ProgressContext";
-import * as s from "./UserProfile.sc.js";
 import FriendsTabContent from "./FriendsTabContent";
 import { FriendRequestContext } from "../contexts/FriendRequestContext";
 import Badges from "../badges/Badges";
+import * as s from "./UserProfile.sc";
+import EditIcon from "@mui/icons-material/Edit";
+import Modal from "../components/modal_shared/Modal";
+import Header from "../components/modal_shared/Header.sc";
+import Heading from "../components/modal_shared/Heading.sc";
+import Main from "../components/modal_shared/Main.sc";
+import {
+  AVATAR_IMAGE_MAP,
+  validatedAvatarBackgroundColor,
+  validatedAvatarCharacterColor,
+  validatedAvatarCharacterId,
+} from "./avatarOptions";
+import { BadgeCounterContext } from "../badges/BadgeCounterContext";
 
-function normalizeLanguageCodes(friendDetails, profile) {
-  const languages =
-    friendDetails?.learned_languages ??
-    friendDetails?.languages ??
-    profile?.learned_languages ??
-    profile?.languages ??
-    [];
-
-  if (!Array.isArray(languages)) {
-    return [];
-  }
-
-  return languages
-    .map((language) =>
-      typeof language === "string" ? language : language?.code,
-    )
-    .filter(Boolean);
-}
+//function normalizeLanguageCodes(friendDetails, profile) {
+//  const languages =
+//    friendDetails?.learned_languages ??
+//    friendDetails?.languages ??
+//    profile?.learned_languages ??
+//    profile?.languages ??
+//    [];
+//
+//  if (!Array.isArray(languages)) {
+//    return [];
+//  }
+//
+//  return languages.map((language) => (typeof language === "string" ? language : language?.code)).filter(Boolean);
+//}
 
 function formatDate(dateString) {
   if (!dateString) {
@@ -50,34 +58,15 @@ function formatDate(dateString) {
 
   return parsedDate.toLocaleDateString();
 }
-import * as s from "./UserProfile.sc";
-import LocalFireDepartmentIcon from "@mui/icons-material/LocalFireDepartment";
-import FriendsTabContent from "./FriendsTabContent";
-import EditIcon from "@mui/icons-material/Edit";
-import { useHistory } from "react-router-dom";
-import Modal from "../components/modal_shared/Modal";
-import Header from "../components/modal_shared/Header.sc";
-import Heading from "../components/modal_shared/Heading.sc";
-import Main from "../components/modal_shared/Main.sc";
-import {
-  AVATAR_IMAGE_MAP,
-  validatedAvatarBackgroundColor,
-  validatedAvatarCharacterColor,
-  validatedAvatarCharacterId,
-} from "./avatarOptions";
-import Badges from "../badges/Badges";
-import { BadgeCounterContext } from "../badges/BadgeCounterContext";
 
 export default function UserProfile() {
-  const history = useHistory();
   const api = useContext(APIContext);
   const { friendRequestCount } = useContext(FriendRequestContext);
   const history = useHistory();
   const { friendUserId } = useParams();
   const { userDetails } = useContext(UserContext);
   const { daysPracticed } = useContext(ProgressContext);
-  const [learnedLanguages, setLearnedLanguages] = useState([]);
-  const [activeTab, setActiveTab] = useState("overview");
+  //const [learnedLanguages, setLearnedLanguages] = useState([]);
   const [friendDetails, setFriendDetails] = useState(null);
   const [loadingFriendDetails, setLoadingFriendDetails] = useState(false);
   const [friendDetailsError, setFriendDetailsError] = useState(null);
@@ -90,6 +79,7 @@ export default function UserProfile() {
   useEffect(() => {
     setTitle(isFriendProfile ? "Friend Profile" : strings.titleUserProfile);
   }, [isFriendProfile]);
+
   const [allDailyStreakInfo, setAllDailyStreakInfo] = useState(null);
   const [activeTab, setActiveTab] = useState("overview");
   const [showLanguagesModal, setShowLanguagesModal] = useState(false);
@@ -97,15 +87,6 @@ export default function UserProfile() {
   const [avatarCharacterId, setAvatarCharacterId] = useState();
   const [avatarCharacterColor, setAvatarCharacterColor] = useState();
   const [avatarBackgroundColor, setAvatarBackgroundColor] = useState();
-
-  const tabs = [
-    { key: "overview", label: "Overview" },
-    { key: "friends", label: "Friends" },
-    {
-      key: "badges",
-      label: `Badges${hasBadgeNotification ? ` (${totalNumberOfBadges})` : ""}`,
-    },
-  ];
 
   const max_visible_languages = 3;
   const visibleLanguages = allDailyStreakInfo?.slice(0, max_visible_languages);
@@ -122,17 +103,17 @@ export default function UserProfile() {
 
     api.getUserLanguages((data) => {
       if (!Array.isArray(data)) {
-        setLearnedLanguages([]);
+        //setLearnedLanguages([]);
         return;
       }
 
-      const sortedLanguages = [...data].sort((a, b) => {
-        const keyA = a?.max_streak ?? 0;
-        const keyB = b?.max_streak ?? 0;
-        return keyA > keyB ? 1 : -1;
-      });
+      //const sortedLanguages = [...data].sort((a, b) => {
+      //  const keyA = a?.max_streak ?? 0;
+      //  const keyB = b?.max_streak ?? 0;
+      //  return keyA > keyB ? 1 : -1;
+      //});
 
-      setLearnedLanguages(sortedLanguages);
+      //setLearnedLanguages(sortedLanguages);
     });
   }, [api, isFriendProfile]);
 
@@ -169,14 +150,6 @@ export default function UserProfile() {
   const profile = isFriendProfile
     ? friendDetails?.user ?? friendDetails ?? {}
     : userDetails ?? {};
-
-  const languageCodes = useMemo(() => {
-    if (isFriendProfile) {
-      return normalizeLanguageCodes(friendDetails, profile);
-    }
-
-    return learnedLanguages.map((language) => language?.code).filter(Boolean);
-  }, [friendDetails, isFriendProfile, learnedLanguages, profile]);
 
   // Get streak value based on whether it's a friend profile or own profile
   const isFriend = localFriendship?.friend_request_status === "accepted";
@@ -262,11 +235,6 @@ export default function UserProfile() {
   const profileError = isFriendProfile ? friendDetailsError : null;
   const displayName = profile?.name || profile?.username || "-";
 
-  const tabs = [
-    { key: "overview", label: "Overview" },
-    { key: "friends", label: friendRequestCount > 0 ? `Friends (${friendRequestCount})` : "Friends" },
-    { key: "badges", label: "Badges" },
-  ];
   useEffect(() => {
     api.getAllDailyStreak((data) => {
       data.sort(function (a, b) {
@@ -281,6 +249,15 @@ export default function UserProfile() {
     setAvatarCharacterColor(validatedAvatarCharacterColor(userDetails.user_avatar?.character_color));
     setAvatarBackgroundColor(validatedAvatarBackgroundColor(userDetails.user_avatar?.background_color));
   }, [userDetails, api]);
+
+  const tabs = [
+    { key: "overview", label: "Overview" },
+    { key: "friends", label: friendRequestCount > 0 ? `Friends (${friendRequestCount})` : "Friends" },
+    {
+      key: "badges",
+      label: `Badges${hasBadgeNotification ? ` (${totalNumberOfBadges})` : ""}`,
+    },
+  ];
 
   const renderTabContent = () => {
     if (activeTab === "overview") {
@@ -335,89 +312,15 @@ export default function UserProfile() {
 
       {!showLoadingProfile && !profileError && (
         <>
-          <s.HeaderCard>
-            <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "0.75rem", flexShrink: 0 }}>
-              <div className="avatar">
-                <img src="../static/images/zeeguuLogo.svg" alt={isFriendProfile ? "Friend profile" : "Profile"} />
-              </div>
-              {isFriendProfile && isFriend && (
-                <button
-                  onClick={() => setUnfriendModalOpen(true)}
-                  style={{
-                    display: "inline-flex",
-                    alignItems: "center",
-                    gap: "0.4rem",
-                    border: "1px solid #e74c3c",
-                    borderRadius: "6px",
-                    background: "#fff",
-                    color: "#e74c3c",
-                    padding: "0.4rem 0.75rem",
-                    cursor: "pointer",
-                  }}
-                >
-                  <PersonRemoveIcon sx={{ fontSize: "1.2rem" }} />
-                  <span>Unfriend</span>
-                </button>
-              )}
-              {isFriendProfile && !isFriend && !pendingFromMe && !pendingFromThem && (
-                <button
-                  onClick={handleSendFriendRequest}
-                  style={{
-                    display: "inline-flex",
-                    alignItems: "center",
-                    gap: "0.4rem",
-                    border: "1px solid #3498db",
-                    borderRadius: "6px",
-                    background: "#fff",
-                    color: "#3498db",
-                    padding: "0.4rem 0.75rem",
-                    cursor: "pointer",
-                  }}
-                >
-                  <PersonAddIcon sx={{ fontSize: "1.2rem" }} />
-                  <span>Add friend</span>
-                </button>
-              )}
-              {isFriendProfile && pendingFromMe && (
-                <button
-                  onClick={handleCancelFriendRequest}
-                  style={{
-                    display: "inline-flex",
-                    alignItems: "center",
-                    gap: "0.4rem",
-                    border: "1px solid #e67e22",
-                    borderRadius: "6px",
-                    background: "#fff",
-                    color: "#e67e22",
-                    padding: "0.4rem 0.75rem",
-                    cursor: "pointer",
-                  }}
-                >
-                  <CancelScheduleSendIcon sx={{ fontSize: "1.2rem" }} />
-                  <span>Cancel request</span>
-                </button>
-              )}
-              {isFriendProfile && pendingFromThem && (
-                <div style={{ display: "flex", flexDirection: "column", gap: "0.4rem" }}>
+          {isFriendProfile ? (
+            <s.HeaderCard>
+              <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "0.75rem", flexShrink: 0 }}>
+                <div className="avatar">
+                  <img src="../static/images/zeeguuLogo.svg" alt="Friend profile" />
+                </div>
+                {isFriend && (
                   <button
-                    onClick={handleAcceptFriendRequest}
-                    style={{
-                      display: "inline-flex",
-                      alignItems: "center",
-                      gap: "0.4rem",
-                      border: "1px solid #2ecc71",
-                      borderRadius: "6px",
-                      background: "#fff",
-                      color: "#2ecc71",
-                      padding: "0.4rem 0.75rem",
-                      cursor: "pointer",
-                    }}
-                  >
-                    <CheckIcon sx={{ fontSize: "1.2rem" }} />
-                    <span>Accept request</span>
-                  </button>
-                  <button
-                    onClick={handleRejectFriendRequest}
+                    onClick={() => setUnfriendModalOpen(true)}
                     style={{
                       display: "inline-flex",
                       alignItems: "center",
@@ -430,60 +333,160 @@ export default function UserProfile() {
                       cursor: "pointer",
                     }}
                   >
-                    <ClearIcon sx={{ fontSize: "1.2rem" }} />
-                    <span>Reject request</span>
+                    <PersonRemoveIcon sx={{ fontSize: "1.2rem" }} />
+                    <span>Unfriend</span>
                   </button>
-                </div>
-              )}
-            </div>
-            <div>
-              <h2 className="username">{displayName}</h2>
+                )}
+                {!isFriend && !pendingFromMe && !pendingFromThem && (
+                  <button
+                    onClick={handleSendFriendRequest}
+                    style={{
+                      display: "inline-flex",
+                      alignItems: "center",
+                      gap: "0.4rem",
+                      border: "1px solid #3498db",
+                      borderRadius: "6px",
+                      background: "#fff",
+                      color: "#3498db",
+                      padding: "0.4rem 0.75rem",
+                      cursor: "pointer",
+                    }}
+                  >
+                    <PersonAddIcon sx={{ fontSize: "1.2rem" }} />
+                    <span>Add friend</span>
+                  </button>
+                )}
+                {pendingFromMe && (
+                  <button
+                    onClick={handleCancelFriendRequest}
+                    style={{
+                      display: "inline-flex",
+                      alignItems: "center",
+                      gap: "0.4rem",
+                      border: "1px solid #e67e22",
+                      borderRadius: "6px",
+                      background: "#fff",
+                      color: "#e67e22",
+                      padding: "0.4rem 0.75rem",
+                      cursor: "pointer",
+                    }}
+                  >
+                    <CancelScheduleSendIcon sx={{ fontSize: "1.2rem" }} />
+                    <span>Cancel request</span>
+                  </button>
+                )}
+                {pendingFromThem && (
+                  <div style={{ display: "flex", flexDirection: "column", gap: "0.4rem" }}>
+                    <button
+                      onClick={handleAcceptFriendRequest}
+                      style={{
+                        display: "inline-flex",
+                        alignItems: "center",
+                        gap: "0.4rem",
+                        border: "1px solid #2ecc71",
+                        borderRadius: "6px",
+                        background: "#fff",
+                        color: "#2ecc71",
+                        padding: "0.4rem 0.75rem",
+                        cursor: "pointer",
+                      }}
+                    >
+                      <CheckIcon sx={{ fontSize: "1.2rem" }} />
+                      <span>Accept request</span>
+                    </button>
+                    <button
+                      onClick={handleRejectFriendRequest}
+                      style={{
+                        display: "inline-flex",
+                        alignItems: "center",
+                        gap: "0.4rem",
+                        border: "1px solid #e74c3c",
+                        borderRadius: "6px",
+                        background: "#fff",
+                        color: "#e74c3c",
+                        padding: "0.4rem 0.75rem",
+                        cursor: "pointer",
+                      }}
+                    >
+                      <ClearIcon sx={{ fontSize: "1.2rem" }} />
+                      <span>Reject request</span>
+                    </button>
+                  </div>
+                )}
+              </div>
+              <div>
+                <h2 className="username">{displayName}</h2>
 
-              {isFriendProfile && (
                 <div className="meta">
                   <span className="label">Username:</span>
                   {profile?.username ? `@${profile.username}` : "-"}
                 </div>
-              )}
 
-              <div className="meta">
-                <span className="label">Active languages:</span>
-                {languageCodes.length > 0 ? (
-                  languageCodes.map((languageCode) => (
-                    <DynamicFlagImage key={languageCode} languageCode={languageCode} />
-                  ))
-                ) : (
-                  <span>-</span>
+                <div className="meta">
+                  <span className="label">Member since:</span>
+                  {formatDate(profile?.created_at ?? friendDetails?.created_at ?? "UNKNOWN")}
+                </div>
+
+                {isFriend && (
+                  <div className="meta">
+                    <span className="label">Friends since:</span>
+                    {formatDate(localFriendship?.created_at)}
+                  </div>
+                )}
+
+                {isFriend && (
+                  <s.StatsRow>
+                    <div className="stat">
+                      <div className="stat-streak-wrapper">
+                        <LocalFireDepartmentIcon sx={{ color: "#ff9800", fontSize: "1.4rem" }} />
+                        <span className="stat-value">{streakValue}</span>
+                      </div>
+                      <span className="stat-label">Mutual streak</span>
+                    </div>
+                  </s.StatsRow>
                 )}
               </div>
-
-              <div className="meta">
-                <span className="label">Member since:</span>
-                {formatDate(profile?.created_at ?? friendDetails?.created_at ?? "UNKNOWN")}
-              </div>
-
-              {isFriendProfile && isFriend && (
-                <div className="meta">
-                  <span className="label">Friends since:</span>
-                  {formatDate(localFriendship?.created_at)}
+            </s.HeaderCard>
+          ) : (
+            <s.HeaderCard>
+              <s.EditProfileButton onClick={() => history.push("/account_settings/profile_details")}>
+                <EditIcon sx={{ fontSize: "1rem" }} />
+              </s.EditProfileButton>
+              <s.AvatarBackground $backgroundColor={avatarBackgroundColor}>
+                <s.AvatarImage $imageSource={AVATAR_IMAGE_MAP[avatarCharacterId]} $color={avatarCharacterColor} />
+              </s.AvatarBackground>
+              <div>
+                <div className="name-wrapper">
+                  <h2 className="username">{userDetails.username}</h2>
+                  {userDetails.name && <h2 className="display-name">({userDetails.name})</h2>}
                 </div>
-              )}
 
-              {(!isFriendProfile || isFriend) && (
+                <div className="meta">
+                  <span className="label">Active languages:</span>
+                  {visibleLanguages?.map((streakInfo) => (
+                    <DynamicFlagImage key={streakInfo.language.code} languageCode={streakInfo.language.code} />
+                  ))}
+                  {overflowCount > 0 && (
+                    <s.OverflowBubble onClick={() => setShowLanguagesModal(true)}>+{overflowCount}</s.OverflowBubble>
+                  )}
+                </div>
+
+                <div className="meta">
+                  <span className="label">Member since:</span>
+                  {userDetails.created_at ? new Date(userDetails.created_at).toLocaleDateString() : "-"}
+                </div>
+
                 <s.StatsRow>
                   <div className="stat">
                     <div className="stat-streak-wrapper">
-                      <LocalFireDepartmentIcon sx={{ color: "#ff9800", fontSize: "1.4rem" }} />
-                      <span className="stat-value">{streakValue}</span>
+                      <LocalFireDepartmentIcon sx={{ color: "#ff9800", fontSize: "1.2rem" }} />
+                      <span className="stat-value">{daysPracticed ?? "-"}</span>
                     </div>
-                    <span className="stat-label">
-                      {isFriendProfile ? "Mutual streak" : "Current daily streak"}
-                    </span>
                   </div>
                 </s.StatsRow>
-              )}
-            </div>
-          </s.HeaderCard>
+              </div>
+            </s.HeaderCard>
+          )}
 
           {(!isFriendProfile || isFriend) && (
             <s.TabsSection>
@@ -510,63 +513,6 @@ export default function UserProfile() {
         onConfirm={handleUnfriend}
         friendName={displayName}
       />
-      <s.HeaderCard>
-        <s.EditProfileButton onClick={() => history.push("/account_settings/profile_details")}>
-          <EditIcon sx={{ fontSize: "1rem" }} />
-        </s.EditProfileButton>
-        <s.AvatarBackground $backgroundColor={avatarBackgroundColor}>
-          <s.AvatarImage $imageSource={AVATAR_IMAGE_MAP[avatarCharacterId]} $color={avatarCharacterColor} />
-        </s.AvatarBackground>
-        <div>
-          <div className="name-wrapper">
-            <h2 className="username">{userDetails.username}</h2>
-            {userDetails.name && <h2 className="display-name">({userDetails.name})</h2>}
-          </div>
-
-          <div className="meta">
-            <span className="label">Active languages:</span>
-            {visibleLanguages?.map((streakInfo) => (
-              <DynamicFlagImage key={streakInfo.language.code} languageCode={streakInfo.language.code} />
-            ))}
-            {overflowCount > 0 && (
-              <s.OverflowBubble onClick={() => setShowLanguagesModal(true)}>+{overflowCount}</s.OverflowBubble>
-            )}
-          </div>
-
-          <div className="meta">
-            <span className="label">Member since:</span>
-            {userDetails.created_at ? new Date(userDetails.created_at).toLocaleDateString() : "-"}
-          </div>
-
-          <s.StatsRow>
-            <div className="stat">
-              <div className="stat-streak-wrapper">
-                <LocalFireDepartmentIcon sx={{ color: "#ff9800", fontSize: "1.2rem" }} />
-                <span className="stat-value">{daysPracticed ?? "-"}</span>
-              </div>
-            </div>
-          </s.StatsRow>
-        </div>
-      </s.HeaderCard>
-
-      <s.TabsSection>
-        <s.TabBar>
-          {tabs.map((tab) => (
-            <button
-              key={tab.key}
-              className={activeTab === tab.key ? "active" : ""}
-              onClick={() => setActiveTab(tab.key)}
-            >
-              {tab.label}
-            </button>
-          ))}
-        </s.TabBar>
-        <s.TabContent>
-          {activeTab === "overview" && <div>Overview content goes here.</div>}
-          {activeTab === "friends" && <FriendsTabContent />}
-          {activeTab === "badges" && <Badges />}
-        </s.TabContent>
-      </s.TabsSection>
 
       <Modal open={showLanguagesModal} onClose={() => setShowLanguagesModal(false)}>
         <Header>
