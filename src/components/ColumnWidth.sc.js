@@ -49,7 +49,7 @@ const ContentOnRow = styled.div`
   display: flex;
   flex-direction: row;
   align-items: center;
-  margin: 1em;
+  margin: 0.5em;
   button {
     margin: 0.2em;
   }

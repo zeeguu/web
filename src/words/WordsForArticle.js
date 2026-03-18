@@ -3,12 +3,12 @@ import { WEB_READER } from "../reader/ArticleReader";
 import { useState, useEffect, useContext } from "react";
 import LoadingAnimation from "../components/LoadingAnimation";
 import WordsToReview from "./WordsToReview";
-import { NarrowColumn } from "../components/ColumnWidth.sc";
 import { setTitle } from "../assorted/setTitle";
 import BackArrow from "../pages/Settings/settings_pages_shared/BackArrow";
 import useScreenWidth from "../hooks/useScreenWidth";
 import { isDesktopScreenWidth } from "../components/MainNav/screenSize";
 import { APIContext } from "../contexts/APIContext.js";
+import { WordsForArticleContainer, LeftContent } from "./WordsForArticle.sc.js";
 
 function fit_for_study(words) {
   return words.filter((b) => b.fit_for_study || b.starred).length > 0;
@@ -21,6 +21,7 @@ export default function WordsForArticle() {
   const [words, setWords] = useState(null);
   const [articleInfo, setArticleInfo] = useState(null);
   const [exercisesEnabled, setExercisesEnabled] = useState(false);
+  const [showMoreInfo, setShowMoreInfo] = useState(null);
   const { screenWidth } = useScreenWidth();
   const desktopTopMargin = isDesktopScreenWidth(screenWidth) ? { marginTop: "2em" } : {};
 
@@ -74,17 +75,22 @@ export default function WordsForArticle() {
   }
 
   return (
-    <NarrowColumn style={desktopTopMargin}>
-      <BackArrow />
-      <WordsToReview
-        words={words}
-        deleteBookmark={deleteBookmark}
-        articleInfo={articleInfo}
-        notifyWordChanged={notifyWordChanged}
-        source={WEB_READER}
-        toExercises={toExercises}
-        exercisesEnabled={exercisesEnabled}
-      />
-    </NarrowColumn>
+    <WordsForArticleContainer>
+      <LeftContent>
+        <BackArrow />
+        <WordsToReview
+          words={words}
+          deleteBookmark={deleteBookmark}
+          articleInfo={articleInfo}
+          notifyWordChanged={notifyWordChanged}
+          source={WEB_READER}
+          toExercises={toExercises}
+          exercisesEnabled={exercisesEnabled}
+          showMoreInfo={showMoreInfo}
+          setShowMoreInfo={setShowMoreInfo}
+          screenWidth={screenWidth}
+        />
+      </LeftContent>
+    </WordsForArticleContainer>
   );
 }
