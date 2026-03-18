@@ -221,6 +221,7 @@ export default function UserProfile() {
     api.unfriend(friendUserId).then((response) => {
       if (response.status === 200) {
         setUnfriendModalOpen(false);
+        setLocalFriendship(null);
       } else {
         response.json().then((json) => {
           setFriendDetailsError(json.message || "Failed to unfriend user.");
