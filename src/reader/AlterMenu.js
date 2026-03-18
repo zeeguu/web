@@ -25,7 +25,7 @@ export default function AlterMenu({
         el.style.right = "0";
       }
     }
-  });
+  }, [alternativesLoaded]);
 
   useEffect(() => {
     if (clickedOutsideAlterMenu && clickedOutsideTranslation) {
