@@ -2,7 +2,7 @@ import Word from "./Word";
 import { ContentOnRow } from "../reader/ArticleReader.sc";
 import strings from "../i18n/definitions";
 import Infobox from "../components/Infobox";
-import { useState, useEffect} from "react";
+import { useState, useEffect } from "react";
 import { tokenize } from "../utils/text/preprocessing";
 import ExplainBookmarkSelectionModal from "../components/ExplainBookmarkSelectionModal";
 import { MAX_BOOKMARKS_TO_STUDY_PER_ARTICLE } from "../exercises/ExerciseConstants";
@@ -10,7 +10,13 @@ import { USER_WORD_PREFERENCE } from "./userBookmarkPreferences";
 import InfoBoxWordsToReview from "./InfoBoxWordsToReview";
 import ToggleEditReviewWords from "./ToggleEditReviewWords";
 import ArticlesProgressSummary from "../articles/ArticlesProgressSummary";
-
+import { StyledButton } from "../components/allButtons.sc.js";
+import Tooltip from "@mui/material/Tooltip";
+import { CenteredContent } from "../components/ColumnWidth.sc";
+import moreInfoIcon from "/static/icons/more-info-icon.png";
+import MoreInfoBox from "../components/MoreInfoBox";
+import { isDesktopScreenWidth } from "../components/MainNav/screenSize";
+import { WordsSection, WordsListColumn, InfoBoxColumn, InfoIcon } from "./WordsToReview.sc";
 
 export default function WordsToReview({
   words,
@@ -18,22 +24,22 @@ export default function WordsToReview({
   deleteBookmark,
   notifyWordChanged,
   source,
+  toExercises,
+  exercisesEnabled,
+  showMoreInfo,
+  setShowMoreInfo,
 }) {
   console.log("articleInfo:", articleInfo);
   const totalWordsTranslated = words.length;
   const [inEditMode, setInEditMode] = useState(false);
   const [wordsForExercises, setWordsForExercises] = useState([]);
-  const [wordsExcludedForExercises, setWordsExcludedForExercises] = useState(
-    [],
-  );
+  const [wordsExcludedForExercises, setWordsExcludedForExercises] = useState([]);
   // how many of the words were set by zeeguu
-  const [wordsSelectedByZeeguu_Counter, setWordsSelectedByZeeguu_Counter] =
-    useState();
+  const [wordsSelectedByZeeguu_Counter, setWordsSelectedByZeeguu_Counter] = useState();
   const [wordsEditedByUser_Counter, setWordsEditedByUser_Counter] = useState();
   const [wordsExpressions, setWordsExpressions] = useState([]);
-  const [showExplainWordSelectionModal, setShowExplainWordSelectionModal] =
-    useState(false);
-  
+  const [showExplainWordSelectionModal, setShowExplainWordSelectionModal] = useState(false);
+
   useEffect(() => {
     let newWordsForExercises = [];
     let newWordsExcludedExercises = [];
@@ -45,14 +51,10 @@ export default function WordsToReview({
 
     for (let i = 0; i < words.length; i++) {
       let word = words[i];
-      if (
-        word.fit_for_study &&
-        word.user_preference === USER_WORD_PREFERENCE.NO_PREFERENCE
-      )
+      if (word.fit_for_study && word.user_preference === USER_WORD_PREFERENCE.NO_PREFERENCE)
         _wordsSelectedByZeeguu_Counter += 1;
 
-      if (word.user_preference !== USER_WORD_PREFERENCE.NO_PREFERENCE)
-        _wordsEditedByUser_Counter += 1;
+      if (word.user_preference !== USER_WORD_PREFERENCE.NO_PREFERENCE) _wordsEditedByUser_Counter += 1;
 
       if (tokenize(word.from).length >= 3) newWordExpressions.push(word);
       else if (!word.fit_for_study) newWordsExcludedExercises.push(word);
@@ -76,13 +78,11 @@ export default function WordsToReview({
             {articleInfo.title}
           </p>
         </div>
-        <ArticlesProgressSummary/>
         <Infobox>
           <div>
             <p>You didn't translate any words in this article.</p>
           </div>
         </Infobox>
-
       </>
     );
 
@@ -119,84 +119,108 @@ export default function WordsToReview({
           totalWordsTranslated={totalWordsTranslated}
           showExplainWordSelectionModal={showExplainWordSelectionModal}
           setShowExplainWordSelectionModal={setShowExplainWordSelectionModal}
-          toggleEditWordsComponent={
-            <ToggleEditReviewWords
-              setInEditMode={setInEditMode}
-              inEditMode={inEditMode}
-            />
-          }
+          toggleEditWordsComponent={<ToggleEditReviewWords setInEditMode={setInEditMode} inEditMode={inEditMode} />}
         />
-        
       )}
       {wordsForExercises.length > 0 && (
-        <>
-          <ArticlesProgressSummary />
-          <h3>You will see these words in your exercises:</h3>
-          {wordsForExercises.map((each) => (
-            <ContentOnRow className="contentOnRow">
-              <Word
-                key={each.id}
-                bookmark={each}
-                notifyDelete={deleteBookmark}
-                hideStar={true}
-                notifyWordChange={notifyWordChanged}
-                source={source}
-                isReview={inEditMode}
-                hideLevelIndicator={true}
+        <WordsSection>
+          <WordsListColumn>
+            <h3
+              style={{ display: "flex", alignItems: "flex-start", gap: "0.3rem", margin: "0", marginBottom: "0.5rem" }}
+            >
+              You might see these words in your exercises:
+              <InfoIcon
+                src={moreInfoIcon}
+                alt="info"
+                onClick={() => setShowMoreInfo(showMoreInfo === "willBeInExercises" ? null : "willBeInExercises")}
               />
-            </ContentOnRow>          
-          ))}
-        </>
+            </h3>
+            {wordsForExercises.map((each) => (
+              <ContentOnRow className="contentOnRow">
+                <Word
+                  key={each.id}
+                  bookmark={each}
+                  notifyDelete={deleteBookmark}
+                  hideStar={true}
+                  notifyWordChange={notifyWordChanged}
+                  source={source}
+                  isReview={inEditMode}
+                  hideLevelIndicator={true}
+                />
+              </ContentOnRow>
+            ))}
+          </WordsListColumn>
+          <InfoBoxColumn>
+            {showMoreInfo === "willBeInExercises" && <MoreInfoBox type="willBeInExercises" />}
+          </InfoBoxColumn>
+        </WordsSection>
       )}
+      <CenteredContent style={{ marginBottom: "2em" }}>
+        {!exercisesEnabled ? (
+          <Tooltip title="You need to translate words in the article first." arrow>
+            <span>
+              <StyledButton disabled style={{ backgroundColor: "#AAB1DE", color: "white" }}>
+                {strings.toPracticeWords}
+              </StyledButton>
+            </span>
+          </Tooltip>
+        ) : (
+          <StyledButton navigation onClick={toExercises} style={{ backgroundColor: "#AAB1DE", color: "white" }}>
+            {strings.toPracticeWords}
+          </StyledButton>
+        )}
+      </CenteredContent>
       {((wordsExcludedForExercises.length > 0 && totalWordsTranslated < 10) ||
-        (inEditMode && wordsExcludedForExercises.length > 0)) && (
-        <>
-          <h3>
-            You <u>won't see</u> these words in your exercises:
-          </h3>
-          {wordsExcludedForExercises.map((each) => (
-            <ContentOnRow className="contentOnRow">
-              <Word
-                key={each.id}
-                bookmark={each}
-                notifyDelete={deleteBookmark}
-                notifyWordChange={notifyWordChanged}
-                source={source}
-                isReview={inEditMode}
-                hideLevelIndicator={true}
-              />
-            </ContentOnRow>
-          ))}
-        </>
-      )}
-      {((wordsExpressions.length > 0 && totalWordsTranslated < 10) ||
+        (wordsExpressions.length > 0 && totalWordsTranslated < 10) ||
+        (inEditMode && wordsExcludedForExercises.length > 0) ||
         (inEditMode && wordsExpressions.length > 0)) && (
-        <>
-          <h3>These words can't appear in exercises:</h3>
-          <Infobox>
-            <div>
-              <p>
-                <b>
-                  Translations composed of 3 or more words are not used in the
-                  exercises.{" "}
-                </b>
-              </p>
-              <p>You can still review them in Words or History tab.</p>
-            </div>
-          </Infobox>
-          {wordsExpressions.map((each) => (
-            <ContentOnRow className="contentOnRow">
-              <Word
-                key={each.id}
-                bookmark={each}
-                notifyDelete={deleteBookmark}
-                notifyWordChange={notifyWordChanged}
-                source={source}
-                isReview={inEditMode}
-              /> 
-            </ContentOnRow>
-          ))}
-        </>
+        <WordsSection>
+          <WordsListColumn>
+            <h3
+              style={{ display: "flex", alignItems: "flex-start", gap: "0.3rem", margin: "0", marginBottom: "0.5rem" }}
+            >
+              You won't see these words in your exercises:
+              <InfoIcon
+                src={moreInfoIcon}
+                alt="info"
+                onClick={() => setShowMoreInfo(showMoreInfo === "wontBeInExercises" ? null : "wontBeInExercises")}
+              />
+            </h3>
+            {wordsExcludedForExercises.map((each) => (
+              <ContentOnRow className="contentOnRow">
+                <Word
+                  key={each.id}
+                  bookmark={each}
+                  notifyDelete={deleteBookmark}
+                  notifyWordChange={notifyWordChanged}
+                  source={source}
+                  isReview={inEditMode}
+                  hideLevelIndicator={true}
+                />
+              </ContentOnRow>
+            ))}
+            {((wordsExpressions.length > 0 && totalWordsTranslated < 10) ||
+              (inEditMode && wordsExpressions.length > 0)) && (
+              <>
+                {wordsExpressions.map((each) => (
+                  <ContentOnRow className="contentOnRow">
+                    <Word
+                      key={each.id}
+                      bookmark={each}
+                      notifyDelete={deleteBookmark}
+                      notifyWordChange={notifyWordChanged}
+                      source={source}
+                      isReview={inEditMode}
+                    />
+                  </ContentOnRow>
+                ))}
+              </>
+            )}
+          </WordsListColumn>
+          <InfoBoxColumn>
+            {showMoreInfo === "wontBeInExercises" && <MoreInfoBox type="wontBeInExercises" />}
+          </InfoBoxColumn>
+        </WordsSection>
       )}
     </>
   );
