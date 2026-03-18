@@ -166,23 +166,6 @@ export default function FriendsTabContent() {
       });
   };
 
-  const handleUnfriend = (friendId) => {
-    api
-      .unfriend(friendId)
-      .then((response) => {
-        if (response.status === 200) {
-          setFriends((prev) => prev.filter((friend) => friend.id !== friendId));
-        } else {
-          response.json().then((json) => {
-            toast.error(json.message || "Failed to unfriend user.");
-          });
-        }
-      })
-      .catch(() => {
-        toast.error("Failed to unfriend user.");
-      });
-  };
-
   const handleResetSearch = () => {
     setPendingSearch("");
     setNewFriendResults([]);
@@ -269,7 +252,6 @@ export default function FriendsTabContent() {
                   key={friend.id}
                   user={friend}
                   rowType="friend"
-                  onUnfriend={handleUnfriend}
                 />
               ))}
             </ul>
