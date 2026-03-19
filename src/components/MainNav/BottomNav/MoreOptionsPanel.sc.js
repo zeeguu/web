@@ -4,7 +4,7 @@ const MoreOptionsWrapper = styled.div`
   background-color: rgba(0, 0, 0, 0.6);
   width: 100%;
   height: 100%;
-  z-index: 2;
+  z-index: 1001;
   position: fixed;
   top: 0;
   left: 0;
@@ -19,7 +19,7 @@ const MoreOptionsPanel = styled.nav`
   width: 100%;
   position: fixed;
   bottom: 0;
-  z-index: 2;
+  z-index: 1001;
   border-radius: 1rem 1rem 0 0;
   padding: 1rem 1rem 2rem 1rem;
   box-shadow: 0 -0.25rem 1.25rem rgba(0, 0, 0, 0.1);

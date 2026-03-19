@@ -230,7 +230,7 @@ export default function ArticlePreview({
       style={{
         maxHeight: isAnimatingOut ? "0" : "1000px",
         opacity: isAnimatingOut ? "0" : "1",
-        overflow: "hidden",
+        overflow: isAnimatingOut ? "hidden" : "visible",
         transition: "max-height 0.3s ease-out, opacity 0.3s ease-out",
         marginBottom: isAnimatingOut ? "0" : undefined,
       }}

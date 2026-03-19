@@ -1,9 +1,11 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import { useHistory, useLocation } from "react-router-dom";
 import { Link } from "react-router-dom";
+import { toast } from "react-toastify";
 import { setTitle } from "../../assorted/setTitle";
 import LocalStorage from "../../assorted/LocalStorage";
 import strings from "../../i18n/definitions";
+import { APIContext } from "../../contexts/APIContext";
 
 import PreferencesPage from "../_pages_shared/PreferencesPage";
 import Header from "../_pages_shared/Header";
@@ -19,21 +21,46 @@ import RoundedForwardArrow from "@mui/icons-material/ArrowForwardRounded";
 export default function InviteCode() {
   const history = useHistory();
   const location = useLocation();
+  const api = useContext(APIContext);
   const [inviteCode, setInviteCode] = useState("");
+  const [error, setError] = useState("");
 
   useEffect(() => {
     setTitle("Invite Code");
   }, []);
 
-  function handleNext(e) {
-    e.preventDefault();
-    LocalStorage.setInviteCode(inviteCode);
-    // Forward any query params (e.g. selected_language) to the next step
+  function goToNext() {
     const params = new URLSearchParams(location.search);
     const next = params.get("selected_language")
       ? `/language_preferences?selected_language=${params.get("selected_language")}`
       : "/language_preferences";
     history.push(next);
+  }
+
+  function handleNext(e) {
+    e.preventDefault();
+    setError("");
+
+    // Empty = skip, no validation needed
+    if (!inviteCode.trim()) {
+      LocalStorage.setInviteCode("");
+      goToNext();
+      return;
+    }
+
+    api.validateInviteCode(
+      inviteCode.trim(),
+      (cohortName) => {
+        if (cohortName) {
+          toast.success(`Welcome to "${cohortName}"!`);
+        }
+        LocalStorage.setInviteCode(inviteCode.trim());
+        goToNext();
+      },
+      () => {
+        setError("This invite code is not recognized. Please check and try again.");
+      },
+    );
   }
 
   return (
@@ -51,7 +78,12 @@ export default function InviteCode() {
               name={"invite-code"}
               placeholder={strings.inviteCodePlaceholder}
               value={inviteCode}
-              onChange={(e) => setInviteCode(e.target.value)}
+              onChange={(e) => {
+                setInviteCode(e.target.value.toLowerCase());
+                setError("");
+              }}
+              isError={!!error}
+              errorMessage={error}
             />
           </FormSection>
           <ButtonContainer className={"padding-medium"}>
