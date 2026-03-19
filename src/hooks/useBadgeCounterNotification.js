@@ -23,26 +23,8 @@ export default function useBadgeCounterNotification() {
     });
   }
 
-  function decrementBadgeCounter() {
-    setTotalNumberOfBadges((c) => Math.max(c - 1, 0));
-    setHasBadgeNotification(true);
-  }
-
-  function incrementBadgeCounter() {
-    setTotalNumberOfBadges(totalNumberOfBadges + 1);
-    setHasBadgeNotification(true);
-  }
-
-  function hideBadgeCounter() {
-    setHasBadgeNotification(false);
-  }
-
   return {
     hasBadgeNotification,
     totalNumberOfBadges,
-    updateBadgeCounter,
-    decrementBadgeCounter,
-    incrementBadgeCounter,
-    hideBadgeCounter,
   };
 }

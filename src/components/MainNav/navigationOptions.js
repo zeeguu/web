@@ -71,11 +71,6 @@ export default class NavigationOptions {
     text: strings.userDashboard,
   });
 
-  static profile = Object.freeze({
-    linkTo: "/profile",
-    text: "Profile",
-  });
-
   static get teacherSite() {
     return Object.freeze({
       linkTo: LocalStorage.getLastVisitedTeacherPage(),
@@ -112,7 +107,6 @@ export default class NavigationOptions {
 
   static profile = Object.freeze({
     linkTo: "/profile",
-    icon: <NavIcon name="profile" />,
     text: strings.titleUserProfile,
   });
 }
