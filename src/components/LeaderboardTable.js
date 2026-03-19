@@ -79,6 +79,30 @@ function collectEntryTokens(entry) {
   return tokens;
 }
 
+function formatDateLabel(date) {
+  return date.toLocaleDateString(undefined, {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+  });
+}
+
+function getCurrentLeaderboardPeriodLabel() {
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = now.getMonth();
+  const day = now.getDate();
+
+  const fromDate = day <= 15
+    ? new Date(year, month, 1)
+    : new Date(year, month, 16);
+  const toDate = day <= 15
+    ? new Date(year, month, 15)
+    : new Date(year, month + 1, 0);
+
+  return `${formatDateLabel(fromDate)} - ${formatDateLabel(toDate)}`;
+}
+
 function LeaderboardTable({
   title,
   endpointMethod,
@@ -131,9 +155,30 @@ function LeaderboardTable({
     [isDark],
   );
 
+  const periodLabel = useMemo(() => getCurrentLeaderboardPeriodLabel(), []);
+
   return (
     <section style={{ width: "100%", maxWidth: "760px", marginTop: "2em" }}>
-      <h2>{title}</h2>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "baseline",
+          gap: "0.75em",
+          flexWrap: "wrap",
+        }}
+      >
+        <h2 style={{ margin: 0 }}>{title}</h2>
+        <p
+          style={{
+            margin: 0,
+            fontSize: "0.95em",
+            color: isDark ? "#c6c6c6" : "#555",
+          }}
+        >
+          Current period: {periodLabel}
+        </p>
+      </div>
 
       {isLoading && <p>Loading leaderboard...</p>}
       {!isLoading && error && <p style={{ color: "#b00020" }}>{error}</p>}
