@@ -8,20 +8,19 @@ function LeaderboardRow({
   emphasizeTopRanks = 3,
   showUsernameColumn = true,
   highlight = false,
+  isDark = false,
 }) {
   const usernameText = username ? `@${username}` : "-";
+  const highlightStyle = highlight
+    ? {
+        background: isDark ? "#5f3d00" : "#ffe082",
+        boxShadow: `0 0 0 2px ${isDark ? "#ffca28" : "#ffb300"} inset`,
+        color: isDark ? "#fff7e0" : "inherit",
+      }
+    : undefined;
 
   return (
-    <tr
-      style={
-        highlight
-          ? {
-              background: "#ffe082",
-              boxShadow: "0 0 0 2px #ffb300 inset",
-            }
-          : undefined
-      }
-    >
+    <tr style={highlightStyle}>
       <td
         style={{
           padding: "0.5em",
@@ -35,7 +34,7 @@ function LeaderboardRow({
       <td style={{ padding: "0.5em", border: "1px solid #ddd" }}>{name}</td>
 
       {showUsernameColumn && (
-        <td style={{ padding: "0.5em", border: "1px solid #ddd", color: "#666" }}>
+        <td style={{ padding: "0.5em", border: "1px solid #ddd", color: isDark ? "#b5b5b5" : "#666" }}>
           {usernameText}
         </td>
       )}

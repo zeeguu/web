@@ -178,6 +178,7 @@ function LeaderboardTable({
                   ]}
                   showUsernameColumn={false}
                   highlight={isCurrentUser}
+                  isDark={isDark}
                 />
               );
             })}
