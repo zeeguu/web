@@ -2,14 +2,16 @@ import { useState } from "react";
 import * as s from "./FriendRow.sc";
 import LocalFireDepartmentIcon from "@mui/icons-material/LocalFireDepartment";
 import PersonAddIcon from "@mui/icons-material/PersonAdd";
-import MarkEmailReadIcon from "@mui/icons-material/MarkEmailRead";
 import SendIcon from "@mui/icons-material/Send";
 import PersonIcon from "@mui/icons-material/Person";
 import CancelScheduleSendIcon from "@mui/icons-material/CancelScheduleSend";
-import PersonRemoveIcon from "@mui/icons-material/PersonRemove";
 import CheckIcon from "@mui/icons-material/Check";
 import ClearIcon from "@mui/icons-material/Clear";
-import ConfirmUnfriendModal from "./ConfirmUnfriendModal";
+import DynamicFlagImage from "../components/DynamicFlagImage";
+import Modal from "../components/modal_shared/Modal";
+import Header from "../components/modal_shared/Header.sc";
+import Heading from "../components/modal_shared/Heading.sc";
+import Main from "../components/modal_shared/Main.sc";
 
 export default function FriendRow({
   user,
@@ -22,13 +24,28 @@ export default function FriendRow({
   onCancelRequest,
   onAcceptRequest,
   onRejectRequest,
-  onUnfriend,
+  onViewProfile,
 }) {
+  const maxVisibleLanguages = 3;
   const resolvedStreak = streak ?? user?.friend_streak ?? 0;
   const friendship = user?.friendship;
-  const [modalOpen, setModalOpen] = useState(false);
+  const languages = user?.languages ?? [];
+  const [showLanguagesModal, setShowLanguagesModal] = useState(false);
+  const visibleLanguages = languages.slice(0, maxVisibleLanguages);
+  const overflowCount =
+    languages.length > maxVisibleLanguages
+      ? languages.length - maxVisibleLanguages
+      : 0;
+  const languageListLabel = languages
+    .map((language) => language.language || language.code)
+    .filter(Boolean)
+    .join(", ");
 
   const renderActions = () => {
+    if (rowType === "view-only") {
+      return null;
+    }
+
     if (rowType === "search") {
       if (friendship && friendship.friend_request_status === "accepted") {
         return (
@@ -44,7 +61,15 @@ export default function FriendRow({
           return <s.RequestSent>They sent you a request</s.RequestSent>;
         }
         return (
-          <s.ActionButton variant="cancel" onClick={() => onCancelRequest?.(user?.id)}>
+          <s.ActionButton $variant="cancel" onClick={() => onCancelRequest?.(user?.id)}>
+            <CancelScheduleSendIcon sx={{ color: "#e74c3c", fontSize: "1.2rem", verticalAlign: "middle" }} />
+            <span>Cancel Request</span>
+          </s.ActionButton>
+        );
+      }
+      if (isSent) {
+        return (
+          <s.ActionButton $variant="cancel" onClick={() => onCancelRequest?.(user?.id)}>
             <CancelScheduleSendIcon sx={{ color: "#e74c3c", fontSize: "1.2rem", verticalAlign: "middle" }} />
             <span>Cancel Request</span>
           </s.ActionButton>
@@ -52,16 +77,11 @@ export default function FriendRow({
       }
       return (
         <s.ActionButton
-          variant="add"
+          $variant="add"
           onClick={() => onSendRequest?.(user?.id)}
-          disabled={isSending || isSent}
+          disabled={isSending}
         >
-          {isSent ? (
-            <>
-              <MarkEmailReadIcon sx={{ color: "#2ecc40", fontSize: "1.4rem", verticalAlign: "middle" }} />
-              <span>Sent</span>
-            </>
-          ) : isSending ? (
+          {isSending ? (
             <>
               <SendIcon sx={{ color: "#3498db", fontSize: "1.4rem", verticalAlign: "middle" }} />
               <span>Sending...</span>
@@ -80,7 +100,7 @@ export default function FriendRow({
       return (
         <>
           <s.ActionButton
-            variant="accept"
+            $variant="accept"
             onClick={() => onAcceptRequest?.(user?.id)}
             disabled={requestAccepted}
           >
@@ -97,7 +117,7 @@ export default function FriendRow({
             )}
           </s.ActionButton>
           {!requestAccepted && (
-            <s.ActionButton variant="reject" onClick={() => onRejectRequest?.(user?.id)}>
+            <s.ActionButton $variant="reject" onClick={() => onRejectRequest?.(user?.id)}>
               <ClearIcon sx={{ color: "#e74c3c", fontSize: "1.4rem", verticalAlign: "middle" }} />
               <span>Reject</span>
             </s.ActionButton>
@@ -106,39 +126,67 @@ export default function FriendRow({
       );
     }
 
-    return (
-      <>
-        <s.ActionButton variant="unfriend" onClick={() => setModalOpen(true)}>
-          <PersonRemoveIcon sx={{ color: "#e74c3c", fontSize: "1.4rem", verticalAlign: "middle" }} />
-          <s.UnfriendSpan>Unfriend</s.UnfriendSpan>
-        </s.ActionButton>
-      </>
-    );
+    return null;
   };
+
+  const actions = renderActions();
 
   return (
     <>
       <s.FriendRowLi>
-        <s.FriendIcon role="img" aria-label="friend">👤</s.FriendIcon>
-        <s.FriendUsername>@{user?.username}</s.FriendUsername>
-        <s.FriendName>{user?.name}</s.FriendName>
         {rowType === "friend" && (
           <s.StreakContainer>
             <LocalFireDepartmentIcon sx={{ color: "#ff9800", fontSize: "1.4rem" }} />
             <span>{resolvedStreak}</span>
           </s.StreakContainer>
         )}
-        <s.ActionsContainer>{renderActions()}</s.ActionsContainer>
+        <s.FriendIcon
+          role="img"
+          aria-label="friend"
+          $clickable={Boolean(onViewProfile)}
+          onClick={() => onViewProfile?.(user?.id)}
+        >👤</s.FriendIcon>
+        <s.FriendUsername
+          $clickable={Boolean(onViewProfile)}
+          onClick={() => onViewProfile?.(user?.id)}
+        >@{user?.username}</s.FriendUsername>
+        {user?.name && <s.FriendName>({user.name})</s.FriendName>}
+        {rowType === "friend" && (
+          <s.LanguagesMeta title={languageListLabel || "No active languages"}>
+            {visibleLanguages.map((language) => (
+              <DynamicFlagImage
+                key={language.id || language.code}
+                languageCode={language.code}
+              />
+            ))}
+            {overflowCount > 0 && (
+              <s.LanguageOverflowBubble type="button" onClick={() => setShowLanguagesModal(true)}>
+                +{overflowCount}
+              </s.LanguageOverflowBubble>
+            )}
+            {languages.length === 0 && <s.NoLanguages>-</s.NoLanguages>}
+          </s.LanguagesMeta>
+        )}
+        {actions && <s.ActionsContainer>{actions}</s.ActionsContainer>}
       </s.FriendRowLi>
-      <ConfirmUnfriendModal
-        open={modalOpen}
-        onClose={() => setModalOpen(false)}
-        onConfirm={() => {
-          setModalOpen(false);
-          onUnfriend?.(user?.id);
-        }}
-        friendName={user?.name}
-      />
+
+      {rowType === "friend" && (
+        <Modal open={showLanguagesModal} onClose={() => setShowLanguagesModal(false)}>
+          <Header>
+            <Heading>Active Languages</Heading>
+          </Header>
+          <Main>
+            <s.LanguagesList>
+              {languages.map((language) => (
+                <s.LanguageItem key={language.id || language.code}>
+                  {language.code && <DynamicFlagImage languageCode={language.code} />}
+                  <span>{language.language || language.code || "Unknown"}</span>
+                </s.LanguageItem>
+              ))}
+            </s.LanguagesList>
+          </Main>
+        </Modal>
+      )}
     </>
   );
 }

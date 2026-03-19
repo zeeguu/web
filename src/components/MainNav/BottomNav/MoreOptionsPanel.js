@@ -10,6 +10,9 @@ import NavIcon from "../NavIcon";
 import LanguageModal from "../LanguageModal";
 import navLanguages from "../navLanguages";
 import * as s from "./MoreOptionsPanel.sc";
+import { BadgeCounterContext } from "@/badges/BadgeCounterContext";
+import NotificationIcon from "@/components/NotificationIcon";
+import { FriendRequestContext } from "../../../contexts/FriendRequestContext";
 import SideNavProfileOption from "../SideNav/SideNavProfileOption";
 
 export default function MoreOptionsPanel({
@@ -31,6 +34,8 @@ export default function MoreOptionsPanel({
     const languageName = navLanguages[languageCode];
     return languageName || "Language";
   }, [userDetails.learned_language]);
+  const { hasBadgeNotification, totalNumberOfBadges } = useContext(BadgeCounterContext);
+  const { hasFriendRequestNotification, friendRequestCount } = useContext(FriendRequestContext);
 
   return (
     <s.MoreOptionsWrapper
@@ -74,6 +79,17 @@ export default function MoreOptionsPanel({
                 {...NavigationOptions.myActivity}
                 currentPath={currentPath}
                 onClick={handleHideMoreOptions}
+              />
+
+              <NavOption
+                {...NavigationOptions.profile}
+                currentPath={currentPath}
+                onClick={handleHideMoreOptions}
+                notification={
+                  hasFriendRequestNotification && (
+                    <NotificationIcon position={"top-absolute"} text={friendRequestCount} />
+                  )
+                }
               />
 
               {userDetails.is_teacher && (

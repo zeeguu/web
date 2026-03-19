@@ -1,11 +1,13 @@
 import { useContext, useEffect, useState } from "react";
+import { useHistory } from "react-router-dom";
 import { toast } from "react-toastify";
 import SearchBar from "../components/SearchBar";
 import { APIContext } from "../contexts/APIContext";
 import FriendRow from "./FriendRow";
 
-export default function FriendsTabContent() {
+export default function FriendsTabContent({ friendUserId }) {
   const api = useContext(APIContext);
+  const history = useHistory();
   const [friends, setFriends] = useState([]);
   const [loadingFriends, setLoadingFriends] = useState(true);
   const [friendsError, setFriendsError] = useState(null);
@@ -21,6 +23,11 @@ export default function FriendsTabContent() {
   const [sendingRequestId, setSendingRequestId] = useState(null);
   const [sentRequests, setSentRequests] = useState([]);
 
+  // Friend-of-friend state (used when viewing someone else's profile)
+  const [friendsFriends, setFriendsFriends] = useState([]);
+  const [loadingFriendsFriends, setLoadingFriendsFriends] = useState(false);
+  const [friendsFriendsError, setFriendsFriendsError] = useState(null);
+
   // Reset search results when search bar is empty
   useEffect(() => {
     if (pendingSearch === "") {
@@ -31,6 +38,7 @@ export default function FriendsTabContent() {
   }, [pendingSearch]);
 
   useEffect(() => {
+    if (friendUserId) return;
     api.getFriends((data) => {
       if (!data) {
         setFriendsError("Failed to fetch friends");
@@ -40,9 +48,10 @@ export default function FriendsTabContent() {
       setFriends(data);
       setLoadingFriends(false);
     });
-  }, [api]);
+  }, [api, friendUserId]);
 
   useEffect(() => {
+    if (friendUserId) return;
     api.getFriendRequests((data) => {
       if (!data) {
         setRequestsError("Failed to fetch friend requests");
@@ -52,7 +61,22 @@ export default function FriendsTabContent() {
       setFriendRequests(data);
       setLoadingRequests(false);
     });
-  }, [api]);
+  }, [api, friendUserId]);
+
+  useEffect(() => {
+    if (!friendUserId) return;
+    setLoadingFriendsFriends(true);
+    setFriendsFriendsError(null);
+    api.getFriendsForUser(friendUserId, (data) => {
+      if (!data) {
+        setFriendsFriendsError("Failed to fetch friends.");
+        setLoadingFriendsFriends(false);
+        return;
+      }
+      setFriendsFriends(data);
+      setLoadingFriendsFriends(false);
+    });
+  }, [api, friendUserId]);
 
   const handleNewFriendSearch = () => {
     if (pendingSearch.trim().length < 2) {
@@ -183,6 +207,14 @@ export default function FriendsTabContent() {
       });
   };
 
+  const handleViewFriendProfile = (friendId) => {
+    if (!friendId) {
+      return;
+    }
+
+    history.push(`/profile/friend/${friendId}`);
+  };
+
   const handleResetSearch = () => {
     setPendingSearch("");
     setNewFriendResults([]);
@@ -191,6 +223,30 @@ export default function FriendsTabContent() {
 
   return (
     <div>
+      {/* Friend-of-friend read-only view */}
+      {friendUserId ? (
+        <>
+          <h3>Friends</h3>
+          {loadingFriendsFriends && <p>Loading friends...</p>}
+          {friendsFriendsError && <p style={{ color: "red" }}>{friendsFriendsError}</p>}
+          {!loadingFriendsFriends && !friendsFriendsError && friendsFriends.length === 0 && (
+            <p>This user has no friends yet.</p>
+          )}
+          {friendsFriends.length > 0 && (
+            <ul>
+              {friendsFriends.map((friend) => (
+                <FriendRow
+                  key={friend.id}
+                  user={friend}
+                  rowType="view-only"
+                  onViewProfile={handleViewFriendProfile}
+                />
+              ))}
+            </ul>
+          )}
+        </>
+      ) : (
+        <div>
       <div style={{ display: "flex", alignItems: "center", gap: "1em" }}>
         <SearchBar
           value={pendingSearch}
@@ -228,6 +284,7 @@ export default function FriendsTabContent() {
                     isSent={sentRequests.includes(user.id)}
                     onSendRequest={handleSendFriendRequest}
                     onCancelRequest={handleCancelFriendRequest}
+                    onViewProfile={handleViewFriendProfile}
                   />
                 );
               })}
@@ -250,6 +307,7 @@ export default function FriendsTabContent() {
                     requestAccepted={req.accepted}
                     onAcceptRequest={handleAcceptFriendRequest}
                     onRejectRequest={handleRejectFriendRequest}
+                    onViewProfile={handleViewFriendProfile}
                   />
                 ))}
               </ul>
@@ -270,11 +328,14 @@ export default function FriendsTabContent() {
                   user={friend}
                   rowType="friend"
                   onUnfriend={handleUnfriend}
+                  onViewProfile={handleViewFriendProfile}
                 />
               ))}
             </ul>
           )}
         </>
+      )}
+    </div>
       )}
     </div>
   );

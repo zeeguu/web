@@ -109,4 +109,10 @@ export default class NavigationOptions {
     icon: <NavIcon name="settings" />,
     text: strings.settings,
   });
+
+  static profile = Object.freeze({
+    linkTo: "/profile",
+    icon: <NavIcon name="profile" />,
+    text: strings.titleUserProfile,
+  });
 }

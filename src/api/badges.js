@@ -4,6 +4,10 @@ Zeeguu_API.prototype.getBadgesForUser = function(callback) {
   this._getJSON(`/badges`, callback);
 };
 
+Zeeguu_API.prototype.getBadgesForFriend = function(userId, callback) {
+  this._getJSON(`/badges/${userId}`, callback);
+};
+
 Zeeguu_API.prototype.getNotShownUserBadges = function (callback) {
   this._getJSON(`/badges/count_not_shown`, callback);
 };
