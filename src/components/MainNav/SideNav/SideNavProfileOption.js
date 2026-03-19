@@ -15,6 +15,7 @@ import {
 } from "../../../profile/avatarOptions";
 import { BadgeCounterContext } from "../../../badges/BadgeCounterContext";
 import NotificationIcon from "../../../components/NotificationIcon";
+import { FriendRequestContext } from "../../../contexts/FriendRequestContext";
 
 const NavAvatar = styled(AvatarBackground)`
   width: 1.8rem;
@@ -27,6 +28,7 @@ export default function SideNavProfileOption({ screenWidth }) {
   const path = useLocation().pathname;
   const isActive = isNavOptionActive(NavigationOptions.profile.linkTo, path);
   const { hasBadgeNotification, totalNumberOfBadges } = useContext(BadgeCounterContext);
+  const { hasFriendRequestNotification, friendRequestCount } = useContext(FriendRequestContext);
   const [avatarCharacterId, setAvatarCharacterId] = useState();
   const [avatarCharacterColor, setAvatarCharacterColor] = useState();
   const [avatarBackgroundColor, setAvatarBackgroundColor] = useState();
@@ -60,7 +62,11 @@ export default function SideNavProfileOption({ screenWidth }) {
       }
       currentPath={path}
       screenWidth={screenWidth}
-      notification={hasBadgeNotification && <NotificationIcon position={"top-absolute"} text={totalNumberOfBadges} />}
+      notification={
+        (hasBadgeNotification || hasFriendRequestNotification) && (
+          <NotificationIcon position={"top-absolute"} text={totalNumberOfBadges + friendRequestCount} />
+        )
+      }
     />
   );
 }
