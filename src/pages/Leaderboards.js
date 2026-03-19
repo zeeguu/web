@@ -37,6 +37,16 @@ function Leaderboards() {
       />
 
       <LeaderboardTable
+        title="Exercises Done Leaderboard"
+        endpointMethod="getExercisesDoneLeaderboard"
+        metricLabel="Exercises Done"
+        metricKey="exercises_done"
+        formatMetric={(value) => `${value}`}
+        errorMessage="Could not load exercises done leaderboard."
+        emptyMessage="No exercises done leaderboard data available yet."
+      />
+
+      <LeaderboardTable
         title="Read Articles Leaderboard"
         endpointMethod="getReadArticlesLeaderboard"
         metricLabel="Articles Read"

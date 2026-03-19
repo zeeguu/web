@@ -89,3 +89,13 @@ Zeeguu_API.prototype.getReadingSessionsLeaderboard = function(fromDate, toDate, 
     callback,
   );
 };
+
+Zeeguu_API.prototype.getExercisesDoneLeaderboard = function(fromDate, toDate, callback) {
+  fetchLeaderboardByDateRange(
+    this,
+    "friends_exercises_done_leaderboard",
+    fromDate,
+    toDate,
+    callback,
+  );
+};
