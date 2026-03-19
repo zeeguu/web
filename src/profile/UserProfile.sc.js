@@ -99,6 +99,10 @@ export const HeaderCard = styled.div`
     @media (max-width: 768px) {
       justify-content: center;
     }
+    
+    .flag-image-wrapper {
+      cursor: pointer;
+    }
   }
 
   .label {
@@ -132,7 +136,7 @@ export const StatsRow = styled.div`
   }
 
   .stat-value {
-    font-size: 1.2rem;
+    font-size: 1rem;
     font-weight: 600;
     color: ${orange500};
   }

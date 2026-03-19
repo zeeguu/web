@@ -8,6 +8,10 @@ Zeeguu_API.prototype.getDailyStreak = function (callback) {
   this._getJSON("daily_streak", callback);
 };
 
-Zeeguu_API.prototype.getAllDailyStreak = function (callback) {
+Zeeguu_API.prototype.getAllDailyStreakForUser = function (callback) {
   this._getJSON("all_daily_streak", callback);
+};
+
+Zeeguu_API.prototype.getAllDailyStreakForFriend = function (userId, callback) {
+  this._getJSON(`all_daily_streak/${userId}`, callback);
 };
