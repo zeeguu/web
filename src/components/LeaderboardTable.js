@@ -111,17 +111,69 @@ function LeaderboardTable({
   formatMetric = (value) => String(value),
   emptyMessage = "No leaderboard data available yet.",
   errorMessage = "Could not load leaderboard.",
+  leaderboards = null,
 }) {
   const api = useContext(APIContext);
   const { isDark } = useContext(ThemeContext);
   const { userDetails } = useContext(UserContext);
+  const resolvedLeaderboards = useMemo(() => {
+    if (Array.isArray(leaderboards) && leaderboards.length > 0) {
+      return leaderboards.map((item, index) => ({
+        key: item.key || `leaderboard-${index}`,
+        tabLabel: item.tabLabel || item.metricLabel || item.title || `Metric ${index + 1}`,
+        title: item.title || title || `Leaderboard ${index + 1}`,
+        endpointMethod: item.endpointMethod,
+        metricLabel: item.metricLabel || metricLabel || "Metric",
+        metricKey: item.metricKey,
+        formatMetric: item.formatMetric || formatMetric,
+        emptyMessage: item.emptyMessage || emptyMessage,
+        errorMessage: item.errorMessage || errorMessage,
+      }));
+    }
+
+    return [{
+      key: "default",
+      tabLabel: metricLabel || "Metric",
+      title,
+      endpointMethod,
+      metricLabel,
+      metricKey,
+      formatMetric,
+      emptyMessage,
+      errorMessage,
+    }];
+  }, [
+    leaderboards,
+    title,
+    endpointMethod,
+    metricLabel,
+    metricKey,
+    formatMetric,
+    emptyMessage,
+    errorMessage,
+  ]);
+  const [selectedLeaderboardKey, setSelectedLeaderboardKey] = useState(() => resolvedLeaderboards[0]?.key || "default");
   const [leaderboardData, setLeaderboardData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    if (!endpointMethod || typeof api[endpointMethod] !== "function") {
-      setError(errorMessage);
+    if (!resolvedLeaderboards.some((item) => item.key === selectedLeaderboardKey)) {
+      setSelectedLeaderboardKey(resolvedLeaderboards[0]?.key || "default");
+    }
+  }, [resolvedLeaderboards, selectedLeaderboardKey]);
+
+  const activeLeaderboard = useMemo(() => (
+    resolvedLeaderboards.find((item) => item.key === selectedLeaderboardKey) || resolvedLeaderboards[0]
+  ), [resolvedLeaderboards, selectedLeaderboardKey]);
+
+  const activeEndpointMethod = activeLeaderboard?.endpointMethod;
+  const activeMetricKey = activeLeaderboard?.metricKey;
+  const activeErrorMessage = activeLeaderboard?.errorMessage || errorMessage;
+
+  useEffect(() => {
+    if (!activeEndpointMethod || typeof api[activeEndpointMethod] !== "function") {
+      setError(activeErrorMessage);
       setLeaderboardData([]);
       setIsLoading(false);
       return;
@@ -130,22 +182,22 @@ function LeaderboardTable({
     setIsLoading(true);
     setError(null);
 
-    api[endpointMethod]((data) => {
+    api[activeEndpointMethod]((data) => {
       if (!Array.isArray(data)) {
-        setError(errorMessage);
+        setError(activeErrorMessage);
         setLeaderboardData([]);
         setIsLoading(false);
         return;
       }
 
       const sorted = [...data].sort(
-        (a, b) => getMetricValue(b, metricKey) - getMetricValue(a, metricKey),
+        (a, b) => getMetricValue(b, activeMetricKey) - getMetricValue(a, activeMetricKey),
       );
 
       setLeaderboardData(sorted);
       setIsLoading(false);
     });
-  }, [api, endpointMethod, errorMessage, metricKey]);
+  }, [api, activeEndpointMethod, activeMetricKey, activeErrorMessage]);
 
   const tableHeaderStyle = useMemo(
     () => ({
@@ -168,7 +220,7 @@ function LeaderboardTable({
           flexWrap: "wrap",
         }}
       >
-        <h2 style={{ margin: 0 }}>{title}</h2>
+        <h2 style={{ margin: 0 }}>{activeLeaderboard?.title || title}</h2>
         <p
           style={{
             margin: 0,
@@ -180,9 +232,35 @@ function LeaderboardTable({
         </p>
       </div>
 
+      {resolvedLeaderboards.length > 1 && (
+        <div style={{ display: "flex", gap: "0.5em", flexWrap: "wrap", marginTop: "0.75em" }}>
+          {resolvedLeaderboards.map((item) => {
+            const isActive = item.key === selectedLeaderboardKey;
+            return (
+              <button
+                key={item.key}
+                type="button"
+                onClick={() => setSelectedLeaderboardKey(item.key)}
+                style={{
+                  borderRadius: "999px",
+                  border: `1px solid ${isActive ? "#1f6feb" : "#c8d1dc"}`,
+                  background: isActive ? "#1f6feb" : (isDark ? "#20262e" : "#fff"),
+                  color: isActive ? "#fff" : (isDark ? "#d4d8dd" : "#2f3b4b"),
+                  padding: "0.35em 0.85em",
+                  cursor: "pointer",
+                  fontWeight: isActive ? 600 : 500,
+                }}
+              >
+                {item.tabLabel}
+              </button>
+            );
+          })}
+        </div>
+      )}
+
       {isLoading && <p>Loading leaderboard...</p>}
       {!isLoading && error && <p style={{ color: "#b00020" }}>{error}</p>}
-      {!isLoading && !error && leaderboardData.length === 0 && <p>{emptyMessage}</p>}
+      {!isLoading && !error && leaderboardData.length === 0 && <p>{activeLeaderboard?.emptyMessage || emptyMessage}</p>}
 
       {!isLoading && !error && leaderboardData.length > 0 && (
         <table style={{ width: "100%", borderCollapse: "collapse" }}>
@@ -190,12 +268,12 @@ function LeaderboardTable({
             <tr style={tableHeaderStyle}>
               <th style={{ padding: "0.5em", border: "1px solid #ddd" }}>Rank</th>
               <th style={{ padding: "0.5em", border: "1px solid #ddd" }}>User</th>
-              <th style={{ padding: "0.5em", border: "1px solid #ddd" }}>{metricLabel}</th>
+              <th style={{ padding: "0.5em", border: "1px solid #ddd" }}>{activeLeaderboard?.metricLabel || metricLabel}</th>
             </tr>
           </thead>
           <tbody>
             {leaderboardData.map((entry, index) => {
-              const metricValue = getMetricValue(entry, metricKey);
+              const metricValue = getMetricValue(entry, activeLeaderboard?.metricKey);
               const userEntry = entry?.user || entry;
               const identityTokens = collectIdentityTokens(userDetails);
               const entryTokens = collectEntryTokens(entry);
@@ -211,13 +289,13 @@ function LeaderboardTable({
 
               return (
                 <LeaderboardRow
-                  key={`${title}-${findFirstDefinedValue(userEntry, ["id", "user_id", "userId", "username", "name"]) || index}`}
+                  key={`${activeLeaderboard?.title || title}-${findFirstDefinedValue(userEntry, ["id", "user_id", "userId", "username", "name"]) || index}`}
                   rank={index + 1}
                   name={isCurrentUser ? `${resolvedName} (You)` : resolvedName}
                   metrics={[
                     {
-                      key: `${metricLabel}-${index}`,
-                      value: formatMetric(metricValue),
+                      key: `${activeLeaderboard?.metricLabel || metricLabel}-${index}`,
+                      value: (activeLeaderboard?.formatMetric || formatMetric)(metricValue),
                       align: "center",
                     },
                   ]}
