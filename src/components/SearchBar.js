@@ -1,4 +1,5 @@
 import React from "react";
+import * as s from "./SearchBar.sc";
 
 const SearchBar = ({ value, onChange, placeholder, onSearch }) => {
   const handleKeyDown = (e) => {
@@ -8,35 +9,21 @@ const SearchBar = ({ value, onChange, placeholder, onSearch }) => {
   };
 
   return (
-    <div style={{ display: "flex", gap: "0.5em", width: "100%", maxWidth: "400px", marginBottom: "1em" }}>
-      <input
+    <s.SearchBarContainer>
+      <s.SearchInput
         type="text"
         value={value}
         onChange={onChange}
         onKeyDown={handleKeyDown}
         placeholder={placeholder || "Search..."}
-        style={{
-          padding: "0.5em 1em",
-          borderRadius: "4px",
-          border: "1px solid #ccc",
-          width: "100%",
-          fontSize: "1em"
-        }}
       />
-      <button
+      <s.SearchButton
         type="button"
         onClick={onSearch}
-        style={{
-          padding: "0.5em 1em",
-          borderRadius: "4px",
-          border: "1px solid #ccc",
-          background: "#eee",
-          cursor: "pointer"
-        }}
       >
         Search
-      </button>
-    </div>
+      </s.SearchButton>
+    </s.SearchBarContainer>
   );
 };
 

@@ -31,7 +31,6 @@ import LocalStorage from "./assorted/LocalStorage";
 import { Capacitor } from "@capacitor/core";
 import useAnonymousUpgrade from "./hooks/useAnonymousUpgrade";
 import UpgradeAccountModal from "./components/UpgradeAccountModal";
-import Friends from "./pages/Friends"; 
 
 // Lazy load separate parts of the app
 const LazyTeacherRouter = lazy(() => import("./teacher/_routing/_TeacherRouter"));
@@ -46,6 +45,7 @@ import { PrivateRouteWithLayout } from "./PrivateRouteWithLayout";
 import { PrivateRoute } from "./PrivateRoute";
 import DeleteAccount from "./pages/DeleteAccount/DeleteAccount";
 import SettingsRouter from "./pages/Settings/_SettingsRouter";
+import ProfileRouter from "./profile/_ProfileRouter";
 import ExercisesForArticle from "./exercises/ExercisesForArticle";
 import { WEB_READER } from "./reader/ArticleReader";
 import VideoPlayer from "./videos/VideoPlayer";
@@ -53,7 +53,6 @@ import DailyAudioRouter from "./dailyAudio/_DailyAudioRouter";
 import IndividualExercise from "./pages/IndividualExercise";
 import Swiper from "./swiper/Swiper";
 import KeyboardTest from "./pages/KeyboardTest";
-import Badges from "./badges/Badges";
 
 // Helper to detect if we're in a Capacitor native app
 const isCapacitor = () => {
@@ -124,7 +123,6 @@ export default function MainAppRouter({ hasExtension, handleSuccessfulLogIn }) {
 
       <PrivateRoute path="/exclude_words" hasExtension={hasExtension} component={ExcludeWords} />
 
-      <PrivateRouteWithLayout path="/friends" component={Friends} />
       <PrivateRouteWithLayout path="/articles" component={ArticlesRouter} />
       <PrivateRouteWithLayout path="/swiper" component={Swiper} />
       <PrivateRoute path="/watch/video" component={VideoPlayer} />
@@ -136,6 +134,7 @@ export default function MainAppRouter({ hasExtension, handleSuccessfulLogIn }) {
       <PrivateRouteWithLayout path="/history" component={ReadingHistory} />
       <PrivateRouteWithLayout path="/activity-history" component={ActivityRouter} />
       <PrivateRouteWithLayout path="/account_settings" component={SettingsRouter} />
+      <PrivateRouteWithLayout path="/profile" component={ProfileRouter} />
       <PrivateRouteWithLayout path="/teacher" component={TeacherRouter} />
       <PrivateRouteWithLayout path="/shared-article" component={SharedArticleHandler} />
       <PrivateRouteWithLayout path="/read/article" component={ArticleReader} />
@@ -146,7 +145,6 @@ export default function MainAppRouter({ hasExtension, handleSuccessfulLogIn }) {
         component={ExercisesForArticle}
         source={WEB_READER}
       />
-      <PrivateRouteWithLayout path="/badges" component={Badges} />
       <PrivateRouteWithLayout path="/exercise/:exerciseType/:bookmarkId" component={IndividualExercise} />
       <PrivateRouteWithLayout path="/exercise-test/:exerciseType/:bookmarkId" component={IndividualExercise} />
       <PrivateRouteWithLayout

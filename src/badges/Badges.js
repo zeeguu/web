@@ -1,9 +1,9 @@
 import React, { useContext, useEffect, useState } from "react";
 import { APIContext } from "../contexts/APIContext";
 import * as s from "./Badges.sc.js";
-import NotificationIcon from "@/components/NotificationIcon";
+import NotificationIcon from "../components/NotificationIcon";
 
-export default function Badges() {
+export default function Badges({ userId }) {
   const api = useContext(APIContext);
 
   const iconBasePath = "../../../public/static/badges/";
@@ -12,36 +12,42 @@ export default function Badges() {
   const [levels, setLevels] = useState([]);
 
   useEffect(() => {
-  api.getBadgesForUser((data) => {
-    const allLevels = [];
-    let hasNewBadges = false;
+    const handleData = (data) => {
+      const allLevels = [];
+      let hasNewBadges = false;
 
-    data.forEach((badge) => {
-      badge.levels.forEach((lvl) => {
-        const level = {
-          ...lvl,
-          badgeName: badge.name,
-          current_value: badge.current_value,
-          description: lvl.description
-            ? lvl.description.replace("{target_value}", lvl.target_value)
-            : badge.description.replace("{target_value}", lvl.target_value),
-        };
+      data.forEach((badge) => {
+        badge.levels.forEach((lvl) => {
+          const level = {
+            ...lvl,
+            badgeName: badge.name,
+            current_value: badge.current_value,
+            description: lvl.description
+              ? lvl.description.replace("{target_value}", lvl.target_value)
+              : badge.description.replace("{target_value}", lvl.target_value),
+          };
 
-        if (level.achieved && !level.is_shown) {
-          hasNewBadges = true;
-        }
+          if (level.achieved && !level.is_shown) {
+            hasNewBadges = true;
+          }
 
-        allLevels.push(level);
+          allLevels.push(level);
+        });
       });
-    });
 
-    setLevels(allLevels);
+      setLevels(allLevels);
 
-    if (hasNewBadges) {
-      api.updateNotShownForUser();
+      if (!userId && hasNewBadges) {
+        api.updateNotShownForUser();
+      }
+    };
+
+    if (userId) {
+      api.getBadgesForFriend(userId, handleData);
+    } else {
+      api.getBadgesForUser(handleData);
     }
-  });
-}, []);
+  }, [api, userId]);
 
   const getIcon = (level) =>
     level.icon_name ? iconBasePath + level.icon_name : defaultLogoPath;
@@ -53,21 +59,17 @@ export default function Badges() {
 
   const formatDateTime = (iso) =>
     iso
-      ? new Date(iso).toLocaleString("en-GB", {
-          day: "2-digit",
-          month: "2-digit",
-          year: "numeric",
-          hour: "2-digit",
-          minute: "2-digit",
-          hour12: false,
-        })
+      ? new Date(iso).toLocaleString(undefined, {
+          dateStyle: "short",
+          timeStyle: "short",
+        }).replace(",", "")
       : "—";
 
   return (
     <s.BadgeContainer>
-      {levels.map((level) => (
-        <s.BadgeCard key={level.user_badge_level_id} achieved={level.achieved}>
-          {!level.is_shown && level.achieved && (
+      {levels.map((level, index) => (
+        <s.BadgeCard key={index}>
+          {!userId && !level.is_shown && level.achieved && (
             <NotificationIcon text="NEW" position="card-corner" isActive={true} />
           )}
 
