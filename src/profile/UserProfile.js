@@ -30,6 +30,7 @@ import {
   validatedAvatarCharacterId,
 } from "./avatarOptions";
 import { BadgeCounterContext } from "../badges/BadgeCounterContext";
+import LoadingAnimation from "../components/LoadingAnimation";
 
 export default function UserProfile() {
   const api = useContext(APIContext);
@@ -39,30 +40,32 @@ export default function UserProfile() {
   const { daysPracticed } = useContext(ProgressContext);
   const [activeLanguages, setActiveLanguages] = useState([]);
   const maxVisibleLanguages = 3;
-  const [visibleLanguages, setVisibleLanguages] = useState([]);
-  const [overflowCount, setOverflowCount] = useState(0);
-  const [showLanguagesModal, setShowLanguagesModal] = useState(false);
-  const [avatarCharacterId, setAvatarCharacterId] = useState(null);
-  const [avatarCharacterColor, setAvatarCharacterColor] = useState(null);
-  const [avatarBackgroundColor, setAvatarBackgroundColor] = useState(null);
+  const visibleLanguages = activeLanguages.slice(0, maxVisibleLanguages);
+  const overflowCount = Math.max(0, activeLanguages.length - maxVisibleLanguages);
+  const [languagesModalOpen, setLanguagesModalOpen] = useState(false);
+  const avatarCharacterId = validatedAvatarCharacterId(profile?.user_avatar?.image_name);
+  const avatarCharacterColor = validatedAvatarCharacterColor(profile?.user_avatar?.character_color);
+  const avatarBackgroundColor = validatedAvatarBackgroundColor(profile?.user_avatar?.background_color);
   const [activeTab, setActiveTab] = useState("overview");
   const { friendRequestCount } = useContext(FriendRequestContext);
   const { hasBadgeNotification, totalNumberOfBadges } = useContext(BadgeCounterContext);
-
   const { friendUserId } = useParams();
-  const isOwnProfile = !friendUserId || String(friendUserId) === String(userDetails?.id);
+  const [isOwnProfile, setIsOwnProfile] = useState(!friendUserId);
+  const [loadingFriendDetails, setLoadingFriendDetails] = useState(!!friendUserId);
   const [friendDetailsError, setFriendDetailsError] = useState(null);
-  const [loadingFriendDetails, setLoadingFriendDetails] = useState(false);
   const [unfriendModalOpen, setUnfriendModalOpen] = useState(false);
-  const [isFriendAccepted, setIsFriendAccepted] = useState(false);
-  // If sender_id matches the friend's ID, they sent the request to us; otherwise we sent it to them
-  const [pendingFromMe, setPendingFromMe] = useState(false);
-  const [pendingFromThem, setPendingFromThem] = useState(false);
-  // Get streak value based on whether it's a friend profile or own profile
-  const [streakValue, setStreakValue] = useState(0);
+  const friendship = profile?.friendship;
+  const isFriendAccepted = friendship?.friend_request_status === "accepted";
+  const pendingFromMe =
+    friendship?.friend_request_status === "pending" && Number(friendship?.sender_id) !== Number(friendUserId);
+  const pendingFromThem =
+    friendship?.friend_request_status === "pending" && Number(friendship?.sender_id) === Number(friendUserId);
+  const streakValue = isOwnProfile ? daysPracticed : friendship?.friend_streak;
 
   useEffect(() => {
-    const setActiveLanguagesCallback = (data) => {
+    if (!api) return;
+
+    const handleLanguagesData = (data) => {
       if (!data) {
         setActiveLanguages([]);
         return;
@@ -75,23 +78,24 @@ export default function UserProfile() {
       setActiveLanguages(sorted);
     };
 
-    if (isOwnProfile) {
+    if (!friendUserId) {
+      setIsOwnProfile(true);
       setProfile(userDetails);
-      setStreakValue(daysPracticed);
       setFriendDetailsError(null);
       setLoadingFriendDetails(false);
+      setActiveTab("overview");
       setTitle(strings.titleUserProfile);
-      api.getAllDailyStreakForUser((data) => setActiveLanguagesCallback(data));
+      api.getAllDailyStreakForUser(handleLanguagesData);
       return;
     }
 
+    setIsOwnProfile(false);
     setLoadingFriendDetails(true);
     setFriendDetailsError(null);
-
     api.getFriendDetails(friendUserId, (data) => {
       if (!data) {
         setProfile({});
-        setFriendDetailsError("Failed to fetch friend profile.");
+        setFriendDetailsError("Failed to fetch profile.");
         setLoadingFriendDetails(false);
         setTitle(strings.titleFriendProfile);
         return;
@@ -105,36 +109,25 @@ export default function UserProfile() {
         return;
       }
 
-      setProfile(data);
-      setStreakValue(data?.friendship?.friend_streak ?? "—");
-      setLoadingFriendDetails(false);
-      setTitle(`${data.username}'s ${strings.titleUserProfileDefault}`);
-      api.getAllDailyStreakForFriend(friendUserId, (data) => setActiveLanguagesCallback(data));
+      const isSameUser = data.username === userDetails?.username;
+      if (isSameUser) {
+        setIsOwnProfile(true);
+        setProfile(userDetails);
+        setFriendDetailsError(null);
+        setLoadingFriendDetails(false);
+        setActiveTab("overview");
+        setTitle(strings.titleUserProfile);
+        api.getAllDailyStreakForUser(handleLanguagesData);
+      } else {
+        setProfile(data);
+        setFriendDetailsError(null);
+        setLoadingFriendDetails(false);
+        setActiveTab("overview");
+        setTitle(`${data.username}'s ${strings.titleUserProfileDefault}`);
+        api.getAllDailyStreakForFriend(friendUserId, handleLanguagesData);
+      }
     });
-  }, [api, friendUserId, isOwnProfile, userDetails, daysPracticed]);
-
-  useEffect(() => {
-    setIsFriendAccepted(profile?.friendship?.friend_request_status === "accepted");
-    setPendingFromMe(
-      profile?.friendship?.friend_request_status === "pending" &&
-        Number(profile?.friendship?.sender_id) !== Number(friendUserId),
-    );
-    setPendingFromThem(
-      profile?.friendship?.friend_request_status === "pending" &&
-        Number(profile?.friendship?.sender_id) === Number(friendUserId),
-    );
-  }, [profile]);
-
-  useEffect(() => {
-    setVisibleLanguages(activeLanguages.slice(0, maxVisibleLanguages));
-    setOverflowCount(activeLanguages.length > maxVisibleLanguages ? activeLanguages.length - maxVisibleLanguages : 0);
-  }, [activeLanguages]);
-
-  useEffect(() => {
-    setAvatarCharacterId(validatedAvatarCharacterId(profile?.user_avatar?.image_name));
-    setAvatarCharacterColor(validatedAvatarCharacterColor(profile?.user_avatar?.character_color));
-    setAvatarBackgroundColor(validatedAvatarBackgroundColor(profile?.user_avatar?.background_color));
-  }, [profile]);
+  }, [api, userDetails, friendUserId]);
 
   const updateProfileFriendship = (newFriendship) => {
     setProfile((prev) => ({ ...prev, friendship: newFriendship }));
@@ -230,11 +223,11 @@ export default function UserProfile() {
     { key: "overview", label: "Overview" },
     {
       key: "friends",
-      label: `Friends${friendRequestCount > 0 && !!isOwnProfile ? ` (${friendRequestCount})` : ""}`,
+      label: `Friends${isOwnProfile && friendRequestCount > 0 ? ` (${friendRequestCount})` : ""}`,
     },
     {
       key: "badges",
-      label: `Badges${hasBadgeNotification && !!isOwnProfile ? ` (${totalNumberOfBadges})` : ""}`,
+      label: `Badges${isOwnProfile && hasBadgeNotification ? ` (${totalNumberOfBadges})` : ""}`,
     },
   ];
 
@@ -265,174 +258,178 @@ export default function UserProfile() {
   return (
     <s.ProfileWrapper>
       {!isOwnProfile && (
-        <s.BackNavigation>
-          <s.BackButton
-            onClick={() => {
-              history.push("/profile");
-            }}
-          >
-            <ArrowBackIcon sx={{ fontSize: "1.2rem" }} />
-            <span>Back to Profile</span>
-          </s.BackButton>
-        </s.BackNavigation>
-      )}
+        <>
+          <s.BackNavigation>
+            <s.BackButton
+              onClick={() => {
+                history.push("/profile");
+              }}
+            >
+              <ArrowBackIcon sx={{ fontSize: "1.2rem" }} />
+              <span>Back to Profile</span>
+            </s.BackButton>
+          </s.BackNavigation>
 
-      {!isOwnProfile && loadingFriendDetails && <p>Loading friend profile...</p>}
-      {!isOwnProfile && friendDetailsError && <s.ErrorText>{friendDetailsError}</s.ErrorText>}
+          {loadingFriendDetails && (
+            <LoadingAnimation delay={100} children={<p>Loading friend profile...</p>}></LoadingAnimation>
+          )}
+          {friendDetailsError && <s.ErrorText>{friendDetailsError}</s.ErrorText>}
+        </>
+      )}
 
       {(isOwnProfile || (!loadingFriendDetails && !friendDetailsError)) && (
-        <s.HeaderCard>
-          {isOwnProfile ? (
-            <s.EditProfileButton onClick={() => history.push("/account_settings/profile_details")}>
-              <EditIcon sx={{ fontSize: "1rem" }} />
-            </s.EditProfileButton>
-          ) : (
-            <s.FriendActionsContainer>
-              {isFriendAccepted && (
-                <s.FriendActionButton $variant="danger" onClick={() => setUnfriendModalOpen(true)}>
-                  <PersonRemoveIcon sx={{ fontSize: "1.2rem" }} />
-                  <span>Unfriend</span>
-                </s.FriendActionButton>
-              )}
-              {!isFriendAccepted && !pendingFromMe && !pendingFromThem && (
-                <s.FriendActionButton $variant="primary" onClick={handleSendFriendRequest}>
-                  <PersonAddIcon sx={{ fontSize: "1.2rem" }} />
-                  <span>Add friend</span>
-                </s.FriendActionButton>
-              )}
-              {pendingFromMe && (
-                <s.FriendActionButton $variant="warning" onClick={handleCancelFriendRequest}>
-                  <CancelScheduleSendIcon sx={{ fontSize: "1.2rem" }} />
-                  <span>Cancel request</span>
-                </s.FriendActionButton>
-              )}
-              {pendingFromThem && (
-                <>
-                  <s.FriendActionButton $variant="success" onClick={handleAcceptFriendRequest}>
-                    <CheckIcon sx={{ fontSize: "1.2rem" }} />
-                    <span>Accept request</span>
+        <>
+          <s.HeaderCard>
+            {isOwnProfile ? (
+              <s.EditProfileButton onClick={() => history.push("/account_settings/profile_details")}>
+                <EditIcon sx={{ fontSize: "1rem" }} />
+              </s.EditProfileButton>
+            ) : (
+              <s.FriendActionsContainer>
+                {isFriendAccepted && (
+                  <s.FriendActionButton $variant="danger" onClick={() => setUnfriendModalOpen(true)}>
+                    <PersonRemoveIcon sx={{ fontSize: "1.2rem" }} />
+                    <span>Unfriend</span>
                   </s.FriendActionButton>
-                  <s.FriendActionButton $variant="danger" onClick={handleRejectFriendRequest}>
-                    <ClearIcon sx={{ fontSize: "1.2rem" }} />
-                    <span>Reject request</span>
+                )}
+                {!isFriendAccepted && !pendingFromMe && !pendingFromThem && (
+                  <s.FriendActionButton $variant="primary" onClick={handleSendFriendRequest}>
+                    <PersonAddIcon sx={{ fontSize: "1.2rem" }} />
+                    <span>Add friend</span>
                   </s.FriendActionButton>
-                </>
+                )}
+                {pendingFromMe && (
+                  <s.FriendActionButton $variant="warning" onClick={handleCancelFriendRequest}>
+                    <CancelScheduleSendIcon sx={{ fontSize: "1.2rem" }} />
+                    <span>Cancel request</span>
+                  </s.FriendActionButton>
+                )}
+                {pendingFromThem && (
+                  <>
+                    <s.FriendActionButton $variant="success" onClick={handleAcceptFriendRequest}>
+                      <CheckIcon sx={{ fontSize: "1.2rem" }} />
+                      <span>Accept request</span>
+                    </s.FriendActionButton>
+                    <s.FriendActionButton $variant="danger" onClick={handleRejectFriendRequest}>
+                      <ClearIcon sx={{ fontSize: "1.2rem" }} />
+                      <span>Reject request</span>
+                    </s.FriendActionButton>
+                  </>
+                )}
+              </s.FriendActionsContainer>
+            )}
+
+            <s.AvatarBackground $backgroundColor={avatarBackgroundColor}>
+              <s.AvatarImage $imageSource={AVATAR_IMAGE_MAP[avatarCharacterId]} $color={avatarCharacterColor} />
+            </s.AvatarBackground>
+
+            <div>
+              <div className="name-wrapper">
+                <h2 className="username">{profile?.username || "-"}</h2>
+                {profile?.name && <h2 className="display-name">({profile.name})</h2>}
+              </div>
+
+              <div className="meta">
+                <span className="label">Active languages:</span>
+                {visibleLanguages.length > 0 ? (
+                  <>
+                    {visibleLanguages.map((languageInfo, index) => (
+                      <span
+                        className="flag-image-wrapper"
+                        key={`${languageInfo.language.code}-${index}`}
+                        onClick={() => setLanguagesModalOpen(true)}
+                      >
+                        <DynamicFlagImage languageCode={languageInfo.language.code} />
+                      </span>
+                    ))}
+                    {overflowCount > 0 && (
+                      <s.OverflowBubble onClick={() => setLanguagesModalOpen(true)}>+{overflowCount}</s.OverflowBubble>
+                    )}
+                  </>
+                ) : (
+                  "—"
+                )}
+              </div>
+
+              <div className="meta">
+                <span className="label">Member since:</span>
+                {formatDate(profile?.created_at)}
+              </div>
+
+              {!isOwnProfile && isFriendAccepted && (
+                <div className="meta">
+                  <span className="label">Friends since:</span>
+                  {formatDate(profile?.friendship?.created_at)}
+                </div>
               )}
-            </s.FriendActionsContainer>
+
+              {(isOwnProfile || isFriendAccepted) && (
+                <s.StatsRow>
+                  <div className="stat">
+                    <div className="stat-streak-wrapper">
+                      <LocalFireDepartmentIcon sx={{ color: "#ff9800", fontSize: "1.2rem" }} />
+                      <span className="stat-value">{streakValue ?? "—"}</span>
+                      <span className="stat-label">{isFriendAccepted ? "day friend streak" : "day streak"}</span>
+                    </div>
+                  </div>
+                </s.StatsRow>
+              )}
+            </div>
+          </s.HeaderCard>
+
+          {(isOwnProfile || isFriendAccepted) && (
+            <s.TabsSection>
+              <s.TabBar>
+                {tabs.map((tab) => (
+                  <button
+                    key={tab.key}
+                    className={activeTab === tab.key ? "active" : ""}
+                    onClick={() => setActiveTab(tab.key)}
+                  >
+                    {tab.label}
+                  </button>
+                ))}
+              </s.TabBar>
+              <s.TabContent>{renderTabContent()}</s.TabContent>
+            </s.TabsSection>
           )}
 
-          <s.AvatarBackground $backgroundColor={avatarBackgroundColor}>
-            <s.AvatarImage $imageSource={AVATAR_IMAGE_MAP[avatarCharacterId]} $color={avatarCharacterColor} />
-          </s.AvatarBackground>
+          <ConfirmUnfriendModal
+            open={unfriendModalOpen}
+            onClose={() => setUnfriendModalOpen(false)}
+            onConfirm={handleUnfriend}
+            friendName={profile?.name || profile?.username}
+          />
 
-          <div>
-            <div className="name-wrapper">
-              <h2 className="username">{profile?.username || "-"}</h2>
-              {profile?.name && <h2 className="display-name">({profile.name})</h2>}
-            </div>
-
-            <div className="meta">
-              <span className="label">Active languages:</span>
-              {visibleLanguages.length > 0 ? (
-                <>
-                  {visibleLanguages.map((languageInfo, index) => (
-                    <span
-                      className="flag-image-wrapper"
-                      key={`${languageInfo.language.code}-${index}`}
-                      onClick={() => setShowLanguagesModal(true)}
-                    >
-                      <DynamicFlagImage languageCode={languageInfo.language.code} />
-                    </span>
-                  ))}
-                  {overflowCount > 0 && (
-                    <s.OverflowBubble onClick={() => setShowLanguagesModal(true)}>
-                      +{overflowCount}
-                    </s.OverflowBubble>
-                  )}
-                </>
-              ) : (
-                "—"
-              )}
-            </div>
-
-            <div className="meta">
-              <span className="label">Member since:</span>
-              {formatDate(profile?.created_at)}
-            </div>
-
-            {isFriendAccepted && (
-              <div className="meta">
-                <span className="label">Friends since:</span>
-                {formatDate(profile?.friendship?.created_at)}
-              </div>
-            )}
-
-            {(isOwnProfile || isFriendAccepted) && (
-              <s.StatsRow>
-                <div className="stat">
-                  <div className="stat-streak-wrapper">
-                    <LocalFireDepartmentIcon sx={{ color: "#ff9800", fontSize: "1.2rem" }} />
-                    <span className="stat-value">{streakValue}</span>
-                  </div>
-                  {isFriendAccepted && <span className="stat-label">Mutual streak</span>}
-                </div>
-              </s.StatsRow>
-            )}
-          </div>
-        </s.HeaderCard>
+          <Modal open={languagesModalOpen} onClose={() => setLanguagesModalOpen(false)}>
+            <Header>
+              <Heading>{isOwnProfile ? "Your" : `${profile?.username}'s`} Languages</Heading>
+            </Header>
+            <Main>
+              <s.LanguagesGrid>
+                {activeLanguages.map((languageInfo) => (
+                  <s.LanguageCard key={languageInfo.language.code}>
+                    <DynamicFlagImage languageCode={languageInfo.language.code} />
+                    <span className="language-name">{languageInfo.language.language}</span>
+                    {(isOwnProfile || isFriendAccepted) && (
+                      <div className="streaks-info">
+                        <div className="streak-item">
+                          <LocalFireDepartmentIcon sx={{ color: "#ff9800", fontSize: "1rem" }} />
+                          <span>{languageInfo.current_streak ?? 0}</span>
+                        </div>
+                        <div className="streak-item max-streak">
+                          <LocalFireDepartmentIcon sx={{ color: "#e65100", fontSize: "1rem" }} />
+                          <span>{languageInfo.max_streak ?? 0}</span>
+                        </div>
+                      </div>
+                    )}
+                  </s.LanguageCard>
+                ))}
+              </s.LanguagesGrid>
+            </Main>
+          </Modal>
+        </>
       )}
-
-      {(isOwnProfile || isFriendAccepted) && (
-        <s.TabsSection>
-          <s.TabBar>
-            {tabs.map((tab) => (
-              <button
-                key={tab.key}
-                className={activeTab === tab.key ? "active" : ""}
-                onClick={() => setActiveTab(tab.key)}
-              >
-                {tab.label}
-              </button>
-            ))}
-          </s.TabBar>
-          <s.TabContent>{renderTabContent()}</s.TabContent>
-        </s.TabsSection>
-      )}
-
-      <ConfirmUnfriendModal
-        open={unfriendModalOpen}
-        onClose={() => setUnfriendModalOpen(false)}
-        onConfirm={handleUnfriend}
-        friendName={profile?.name || profile?.username}
-      />
-
-      <Modal open={showLanguagesModal} onClose={() => setShowLanguagesModal(false)}>
-        <Header>
-          <Heading>{isOwnProfile ? "Your" : `${profile?.username}'s`} Languages</Heading>
-        </Header>
-        <Main>
-          <s.LanguagesGrid>
-            {activeLanguages.map((languageInfo) => (
-              <s.LanguageCard key={languageInfo.language.code}>
-                <DynamicFlagImage languageCode={languageInfo.language.code} />
-                <span className="language-name">{languageInfo.language.language}</span>
-                {(isOwnProfile || isFriendAccepted) && (
-                  <div className="streaks-info">
-                    <div className="streak-item">
-                      <LocalFireDepartmentIcon sx={{ color: "#ff9800", fontSize: "1rem" }} />
-                      <span>{languageInfo.current_streak ?? 0}</span>
-                    </div>
-                    <div className="streak-item max-streak">
-                      <LocalFireDepartmentIcon sx={{ color: "#e65100", fontSize: "1rem" }} />
-                      <span>{languageInfo.max_streak ?? 0}</span>
-                    </div>
-                  </div>
-                )}
-              </s.LanguageCard>
-            ))}
-          </s.LanguagesGrid>
-        </Main>
-      </Modal>
     </s.ProfileWrapper>
   );
 }

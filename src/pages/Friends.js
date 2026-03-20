@@ -4,6 +4,8 @@ import CenteredContainer from "../components/CenteredContainer";
 import { APIContext } from "../contexts/APIContext";
 import SearchBar from "../components/SearchBar";
 
+// TODO remove this file if not needed anymore
+
 function Friends() {
   const api = useContext(APIContext);
   const [friends, setFriends] = useState([]);

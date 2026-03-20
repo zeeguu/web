@@ -136,9 +136,17 @@ export const StatsRow = styled.div`
   }
 
   .stat-value {
+    color: ${orange500};
+    margin-right: 0.3rem;
+  }
+  
+  .stat-label {
+    color: var(--text-secondary);
+  }
+  
+  .stat-value, .stat-label {
     font-size: 1rem;
     font-weight: 600;
-    color: ${orange500};
   }
 `;
 

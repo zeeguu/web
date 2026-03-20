@@ -51,8 +51,8 @@ export default function SideNav({ screenWidth }) {
           />
           <FeedbackButton screenWidth={screenWidth} />
         </s.NavList>
-        {isOnStudentSide && <SideNavProgressStats screenWidth={screenWidth} />}
         {isOnStudentSide && <SideNavProfileOption screenWidth={screenWidth} />}
+        {isOnStudentSide && <SideNavProgressStats screenWidth={screenWidth} />}
       </s.BottomSection>
     </s.SideNav>
   );

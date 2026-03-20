@@ -212,7 +212,7 @@ export default function FriendsTabContent({ friendUserId }) {
       return;
     }
 
-    history.push(`/profile/friend/${friendId}`);
+    history.push(`/profile/${friendId}`);
   };
 
   const handleResetSearch = () => {
