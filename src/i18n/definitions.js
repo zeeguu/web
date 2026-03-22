@@ -35,6 +35,10 @@ let strings = new LocalizedStrings(
       emailPlaceholder: "example@email.com",
       zeeguuTeamEmail: "zeeguu.team@gmail.com",
       name: "Name",
+      displayName: "Display Name",
+      displayNamePlaceholder: "Your name",
+      username: "Username",
+      usernamePlaceholder: "Your username",
       fullName: "Full Name",
       fullNamePlaceholder: "First and last name",
       learnedLanguage: "I want to learn",
@@ -582,6 +586,11 @@ let strings = new LocalizedStrings(
       payMoreAttentionTo: "Pay more attention to these words:",
       wordsIncorrect: "Words you didn't get correct in exercises",
       wordsCorrect: "Words you got correct in exercises",
+
+      // Profile
+      titleUserProfile: "Your Profile",
+      titleFriendProfile: "Friend's Profile",
+      titleUserProfileDefault: "Profile",
 
       //Settings
       //Settings categories

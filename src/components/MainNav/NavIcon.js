@@ -18,6 +18,7 @@ import ArticleIcon from '@mui/icons-material/Article';
 import SchoolIcon from "@mui/icons-material/School";
 import AbcIcon from "@mui/icons-material/Abc";
 import MenuBookRoundedIcon from "@mui/icons-material/MenuBookRounded";
+import PeopleAltRoundedIcon from "@mui/icons-material/PeopleAltRounded";
 
 
 export default function NavIcon({ name, color, size }) {
@@ -49,7 +50,8 @@ const iconProps = {
     language: <LanguageRoundedIcon {...iconProps} />,
     headerArticles: <ArticleIcon {...iconProps} />,
     headerStreak: <LocalFireDepartmentIcon {...iconProps}/>,
-    school: <SchoolIcon {...iconProps} />
+    school: <SchoolIcon {...iconProps} />,
+    profile: <PeopleAltRoundedIcon {...iconProps} />,
   };
   return navIcons[name] || "";
 }
