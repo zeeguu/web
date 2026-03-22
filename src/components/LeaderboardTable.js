@@ -4,11 +4,11 @@ import { APIContext } from "../contexts/APIContext";
 import { ThemeContext } from "../contexts/ThemeContext";
 import { UserContext } from "../contexts/UserContext";
 
-function getMetricValue(entry, metricKey) {
+function getMetricValue(entry) {
   if (!entry || typeof entry !== "object") return 0;
 
-  if (metricKey && Number.isFinite(Number(entry[metricKey]))) {
-    return Number(entry[metricKey]);
+  if (Number.isFinite(Number(entry.value))) {
+    return Number(entry.value);
   }
 
   const fallbackMetric = Object.keys(entry)
@@ -36,19 +36,10 @@ function findFirstDefinedValue(objectLike, keys = []) {
   return undefined;
 }
 
-function hasCurrentUserFlag(objectLike) {
-  if (!objectLike || typeof objectLike !== "object") return false;
-
-  const possibleFlags = ["is_current_user", "current_user", "is_me", "me", "self"];
-  return possibleFlags.some((flag) => objectLike[flag] === true);
-}
-
 function collectIdentityTokens(userDetails) {
-  const idToken = normalizeValue(findFirstDefinedValue(userDetails, ["id", "user_id", "userId"]));
   const usernameToken = normalizeValue(findFirstDefinedValue(userDetails, ["username", "name"]));
-//   const emailToken = normalizeValue(findFirstDefinedValue(userDetails, ["email"]));
 
-  return [idToken, usernameToken].filter(Boolean);
+  return [usernameToken].filter(Boolean);
 }
 
 function collectEntryTokens(entry) {
@@ -62,7 +53,7 @@ function collectEntryTokens(entry) {
       if (!normalized) return;
 
       const key = normalizeValue(keyHint);
-      if (!key || key.includes("id") || key.includes("user") || key.includes("name") || key.includes("email")) {
+      if (!key || key.includes("user") || key.includes("name")) {
         tokens.add(normalized);
       }
       return;
@@ -87,27 +78,33 @@ function formatDateLabel(date) {
   });
 }
 
-function getCurrentLeaderboardPeriodLabel() {
+function computeHalfMonthPeriod() {
   const now = new Date();
   const year = now.getFullYear();
   const month = now.getMonth();
   const day = now.getDate();
 
-  const fromDate = day <= 15
-    ? new Date(year, month, 1)
-    : new Date(year, month, 16);
-  const toDate = day <= 15
-    ? new Date(year, month, 15)
-    : new Date(year, month + 1, 0);
+  let from, to;
 
-  return `${formatDateLabel(fromDate)} - ${formatDateLabel(toDate)}`;
+  if (day <= 15) {
+    from = new Date(year - 1, month, 1);
+    to = new Date(year, month, 15);
+  } else {
+    from = new Date(year - 1, month, 16);
+    to = new Date(year, month + 1, 0);
+  }
+
+  const pad = (n) => String(n).padStart(2, "0");
+
+  const fromStr = `${from.getFullYear()}-${pad(from.getMonth() + 1)}-${pad(from.getDate())}`;
+  const toStr = `${to.getFullYear()}-${pad(to.getMonth() + 1)}-${pad(to.getDate())}`;
+
+  return { from, to, fromStr, toStr };
 }
 
 function LeaderboardTable({
   title,
-  endpointMethod,
   metricLabel,
-  metricKey,
   formatMetric = (value) => String(value),
   emptyMessage = "No leaderboard data available yet.",
   errorMessage = "Could not load leaderboard.",
@@ -116,15 +113,16 @@ function LeaderboardTable({
   const api = useContext(APIContext);
   const { isDark } = useContext(ThemeContext);
   const { userDetails } = useContext(UserContext);
+
+  const period = useMemo(() => computeHalfMonthPeriod(), []);
+
   const resolvedLeaderboards = useMemo(() => {
     if (Array.isArray(leaderboards) && leaderboards.length > 0) {
       return leaderboards.map((item, index) => ({
         key: item.key || `leaderboard-${index}`,
         tabLabel: item.tabLabel || item.metricLabel || item.title || `Metric ${index + 1}`,
         title: item.title || title || `Leaderboard ${index + 1}`,
-        endpointMethod: item.endpointMethod,
         metricLabel: item.metricLabel || metricLabel || "Metric",
-        metricKey: item.metricKey,
         formatMetric: item.formatMetric || formatMetric,
         emptyMessage: item.emptyMessage || emptyMessage,
         errorMessage: item.errorMessage || errorMessage,
@@ -135,9 +133,7 @@ function LeaderboardTable({
       key: "default",
       tabLabel: metricLabel || "Metric",
       title,
-      endpointMethod,
       metricLabel,
-      metricKey,
       formatMetric,
       emptyMessage,
       errorMessage,
@@ -145,9 +141,7 @@ function LeaderboardTable({
   }, [
     leaderboards,
     title,
-    endpointMethod,
     metricLabel,
-    metricKey,
     formatMetric,
     emptyMessage,
     errorMessage,
@@ -167,12 +161,10 @@ function LeaderboardTable({
     resolvedLeaderboards.find((item) => item.key === selectedLeaderboardKey) || resolvedLeaderboards[0]
   ), [resolvedLeaderboards, selectedLeaderboardKey]);
 
-  const activeEndpointMethod = activeLeaderboard?.endpointMethod;
-  const activeMetricKey = activeLeaderboard?.metricKey;
   const activeErrorMessage = activeLeaderboard?.errorMessage || errorMessage;
 
   useEffect(() => {
-    if (!activeEndpointMethod || typeof api[activeEndpointMethod] !== "function") {
+    if (!selectedLeaderboardKey) {
       setError(activeErrorMessage);
       setLeaderboardData([]);
       setIsLoading(false);
@@ -182,7 +174,7 @@ function LeaderboardTable({
     setIsLoading(true);
     setError(null);
 
-    api[activeEndpointMethod]((data) => {
+    api.getLeaderboard(selectedLeaderboardKey, period.fromStr, period.toStr, (data) => {
       if (!Array.isArray(data)) {
         setError(activeErrorMessage);
         setLeaderboardData([]);
@@ -191,13 +183,13 @@ function LeaderboardTable({
       }
 
       const sorted = [...data].sort(
-        (a, b) => getMetricValue(b, activeMetricKey) - getMetricValue(a, activeMetricKey),
+        (a, b) => getMetricValue(b) - getMetricValue(a),
       );
 
       setLeaderboardData(sorted);
       setIsLoading(false);
     });
-  }, [api, activeEndpointMethod, activeMetricKey, activeErrorMessage]);
+  }, [api, activeErrorMessage, selectedLeaderboardKey, period.fromStr, period.toStr]);
 
   const tableHeaderStyle = useMemo(
     () => ({
@@ -207,7 +199,7 @@ function LeaderboardTable({
     [isDark],
   );
 
-  const periodLabel = useMemo(() => getCurrentLeaderboardPeriodLabel(), []);
+  const periodLabel = `${formatDateLabel(period.from)} - ${formatDateLabel(period.to)}`;
 
   return (
     <section style={{ width: "100%", maxWidth: "760px", marginTop: "2em" }}>
@@ -273,7 +265,7 @@ function LeaderboardTable({
           </thead>
           <tbody>
             {leaderboardData.map((entry, index) => {
-              const metricValue = getMetricValue(entry, activeLeaderboard?.metricKey);
+              const metricValue = getMetricValue(entry);
               const userEntry = entry?.user || entry;
               const identityTokens = collectIdentityTokens(userDetails);
               const entryTokens = collectEntryTokens(entry);
@@ -289,7 +281,7 @@ function LeaderboardTable({
 
               return (
                 <LeaderboardRow
-                  key={`${activeLeaderboard?.title || title}-${findFirstDefinedValue(userEntry, ["id", "user_id", "userId", "username", "name"]) || index}`}
+                  key={`${activeLeaderboard?.title || title}-${findFirstDefinedValue(userEntry, ["username", "name"]) || index}`}
                   rank={index + 1}
                   name={isCurrentUser ? `${resolvedName} (You)` : resolvedName}
                   metrics={[

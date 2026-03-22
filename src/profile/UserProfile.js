@@ -31,6 +31,7 @@ import {
 } from "./avatarOptions";
 import { BadgeCounterContext } from "../badges/BadgeCounterContext";
 import LoadingAnimation from "../components/LoadingAnimation";
+import Leaderboards from "@/pages/Leaderboards";
 
 export default function UserProfile() {
   const api = useContext(APIContext);
@@ -229,6 +230,7 @@ export default function UserProfile() {
       key: "badges",
       label: `Badges${isOwnProfile && hasBadgeNotification ? ` (${totalNumberOfBadges})` : ""}`,
     },
+    ...(isOwnProfile ? [{ key: "leaderboards", label: "Leaderboards" }] : []),
   ];
 
   const renderTabContent = () => {
@@ -246,6 +248,10 @@ export default function UserProfile() {
 
     if (activeTab === "badges") {
       return <Badges userId={friendUserId} />;
+    }
+
+    if (activeTab === "leaderboards") {
+      return <Leaderboards/>;
     }
 
     return null;
