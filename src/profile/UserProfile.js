@@ -36,7 +36,7 @@ import Leaderboards from "@/pages/Leaderboards";
 export default function UserProfile() {
   const api = useContext(APIContext);
   const history = useHistory();
-  const [profile, setProfile] = useState(null);
+  const [profileData, setProfileData] = useState(null);
   const { userDetails } = useContext(UserContext);
   const { daysPracticed } = useContext(ProgressContext);
   const [activeLanguages, setActiveLanguages] = useState([]);
@@ -44,94 +44,79 @@ export default function UserProfile() {
   const visibleLanguages = activeLanguages.slice(0, maxVisibleLanguages);
   const overflowCount = Math.max(0, activeLanguages.length - maxVisibleLanguages);
   const [languagesModalOpen, setLanguagesModalOpen] = useState(false);
-  const avatarCharacterId = validatedAvatarCharacterId(profile?.user_avatar?.image_name);
-  const avatarCharacterColor = validatedAvatarCharacterColor(profile?.user_avatar?.character_color);
-  const avatarBackgroundColor = validatedAvatarBackgroundColor(profile?.user_avatar?.background_color);
+  const avatarCharacterId = validatedAvatarCharacterId(profileData?.user_avatar?.image_name);
+  const avatarCharacterColor = validatedAvatarCharacterColor(profileData?.user_avatar?.character_color);
+  const avatarBackgroundColor = validatedAvatarBackgroundColor(profileData?.user_avatar?.background_color);
   const [activeTab, setActiveTab] = useState("overview");
   const { friendRequestCount } = useContext(FriendRequestContext);
   const { hasBadgeNotification, totalNumberOfBadges } = useContext(BadgeCounterContext);
   const { friendUserId } = useParams();
   const [isOwnProfile, setIsOwnProfile] = useState(!friendUserId);
-  const [loadingFriendDetails, setLoadingFriendDetails] = useState(!!friendUserId);
+  const [loadingProfileDetails, setLoadingProfileDetails] = useState(!!friendUserId);
   const [friendDetailsError, setFriendDetailsError] = useState(null);
   const [unfriendModalOpen, setUnfriendModalOpen] = useState(false);
-  const friendship = profile?.friendship;
+  const friendship = profileData?.friendship;
   const isFriendAccepted = friendship?.friend_request_status === "accepted";
   const pendingFromMe =
     friendship?.friend_request_status === "pending" && Number(friendship?.sender_id) !== Number(friendUserId);
   const pendingFromThem =
     friendship?.friend_request_status === "pending" && Number(friendship?.sender_id) === Number(friendUserId);
-  const streakValue = isOwnProfile ? daysPracticed : friendship?.friend_streak;
+  const streakValue = (isOwnProfile ? daysPracticed : friendship?.friend_streak) ?? 0;
+
+  const activeLanguagesCallback = (data) => {
+    setLoadingProfileDetails(false);
+    if (!data) {
+      setActiveLanguages([]);
+      return;
+    }
+    const sorted = [...data].sort((a, b) => {
+      const keyA = a.max_streak;
+      const keyB = b.max_streak;
+      return keyA > keyB ? -1 : 1;
+    });
+    setActiveLanguages(sorted);
+  };
+
+  const updateProfileView = (profileData, errorMsg, title) => {
+    setProfileData(profileData);
+    setFriendDetailsError(errorMsg);
+    setTitle(title);
+  };
 
   useEffect(() => {
     if (!api) return;
 
-    const handleLanguagesData = (data) => {
-      if (!data) {
-        setActiveLanguages([]);
-        return;
-      }
-      const sorted = [...data].sort((a, b) => {
-        const keyA = a.max_streak;
-        const keyB = b.max_streak;
-        return keyA > keyB ? -1 : 1;
-      });
-      setActiveLanguages(sorted);
-    };
+    setLoadingProfileDetails(true);
+    setActiveTab("overview");
 
     if (!friendUserId) {
       setIsOwnProfile(true);
-      setProfile(userDetails);
-      setFriendDetailsError(null);
-      setLoadingFriendDetails(false);
-      setActiveTab("overview");
-      setTitle(strings.titleUserProfile);
-      api.getAllDailyStreakForUser(handleLanguagesData);
+      updateProfileView(userDetails, null, strings.titleOwnProfile);
+      api.getAllDailyStreakForUser(activeLanguagesCallback);
       return;
     }
 
     setIsOwnProfile(false);
-    setLoadingFriendDetails(true);
     setFriendDetailsError(null);
     api.getFriendDetails(friendUserId, (data) => {
-      if (!data) {
-        setProfile({});
-        setFriendDetailsError("Failed to fetch profile.");
-        setLoadingFriendDetails(false);
-        setTitle(strings.titleFriendProfile);
-        return;
-      }
-
-      if (data.error) {
-        setProfile({});
-        setFriendDetailsError(data.error);
-        setLoadingFriendDetails(false);
-        setTitle(strings.titleFriendProfile);
+      if (!data || data.error) {
+        updateProfileView({}, data?.error || "Failed to fetch profile.", strings.titleUserProfileDefault);
+        setLoadingProfileDetails(false);
         return;
       }
 
       const isSameUser = data.username === userDetails?.username;
       if (isSameUser) {
-        setIsOwnProfile(true);
-        setProfile(userDetails);
-        setFriendDetailsError(null);
-        setLoadingFriendDetails(false);
-        setActiveTab("overview");
-        setTitle(strings.titleUserProfile);
-        api.getAllDailyStreakForUser(handleLanguagesData);
+        history.push("/profile");
       } else {
-        setProfile(data);
-        setFriendDetailsError(null);
-        setLoadingFriendDetails(false);
-        setActiveTab("overview");
-        setTitle(`${data.username}'s ${strings.titleUserProfileDefault}`);
-        api.getAllDailyStreakForFriend(friendUserId, handleLanguagesData);
+        updateProfileView(data, null, `${data.username}'s ${strings.titleUserProfilePostfix}`);
+        api.getAllDailyStreakForFriend(friendUserId, activeLanguagesCallback);
       }
     });
   }, [api, userDetails, friendUserId]);
 
   const updateProfileFriendship = (newFriendship) => {
-    setProfile((prev) => ({ ...prev, friendship: newFriendship }));
+    setProfileData((prev) => ({ ...prev, friendship: newFriendship }));
   };
 
   const handleSendFriendRequest = () => {
@@ -275,15 +260,18 @@ export default function UserProfile() {
               <span>Back to Profile</span>
             </s.BackButton>
           </s.BackNavigation>
-
-          {loadingFriendDetails && (
-            <LoadingAnimation delay={100} children={<p>Loading friend profile...</p>}></LoadingAnimation>
-          )}
-          {friendDetailsError && <s.ErrorText>{friendDetailsError}</s.ErrorText>}
         </>
       )}
 
-      {(isOwnProfile || (!loadingFriendDetails && !friendDetailsError)) && (
+      {loadingProfileDetails && (
+        <LoadingAnimation delay={0}>
+          <p>Loading {!isOwnProfile ? "friend" : ""} profile...</p>
+        </LoadingAnimation>
+      )}
+
+      {!isOwnProfile && <>{friendDetailsError && <s.ErrorText>{friendDetailsError}</s.ErrorText>}</>}
+
+      {!loadingProfileDetails && !friendDetailsError && (
         <>
           <s.HeaderCard>
             {isOwnProfile ? (
@@ -331,8 +319,8 @@ export default function UserProfile() {
 
             <div>
               <div className="name-wrapper">
-                <h2 className="username">{profile?.username || "-"}</h2>
-                {profile?.name && <h2 className="display-name">({profile.name})</h2>}
+                <h2 className="username">{profileData?.username ?? "—"}</h2>
+                {profileData?.name && <h2 className="display-name">({profileData.name})</h2>}
               </div>
 
               <div className="meta">
@@ -359,13 +347,13 @@ export default function UserProfile() {
 
               <div className="meta">
                 <span className="label">Member since:</span>
-                {formatDate(profile?.created_at)}
+                {formatDate(profileData?.created_at)}
               </div>
 
               {!isOwnProfile && isFriendAccepted && (
                 <div className="meta">
                   <span className="label">Friends since:</span>
-                  {formatDate(profile?.friendship?.created_at)}
+                  {formatDate(profileData?.friendship?.created_at)}
                 </div>
               )}
 
@@ -374,7 +362,7 @@ export default function UserProfile() {
                   <div className="stat">
                     <div className="stat-streak-wrapper">
                       <LocalFireDepartmentIcon sx={{ color: "#ff9800", fontSize: "1.2rem" }} />
-                      <span className="stat-value">{streakValue ?? "—"}</span>
+                      <span className="stat-value">{streakValue}</span>
                       <span className="stat-label">{isFriendAccepted ? "day friend streak" : "day streak"}</span>
                     </div>
                   </div>
@@ -404,12 +392,12 @@ export default function UserProfile() {
             open={unfriendModalOpen}
             onClose={() => setUnfriendModalOpen(false)}
             onConfirm={handleUnfriend}
-            friendName={profile?.name || profile?.username}
+            friendName={profileData?.name ?? profileData?.username}
           />
 
           <Modal open={languagesModalOpen} onClose={() => setLanguagesModalOpen(false)}>
             <Header>
-              <Heading>{isOwnProfile ? "Your" : `${profile?.username}'s`} Languages</Heading>
+              <Heading>{isOwnProfile ? "Your" : `${profileData?.username}'s`} Languages</Heading>
             </Header>
             <Main>
               <s.LanguagesGrid>

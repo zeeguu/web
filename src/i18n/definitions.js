@@ -588,9 +588,9 @@ let strings = new LocalizedStrings(
       wordsCorrect: "Words you got correct in exercises",
 
       // Profile
-      titleUserProfile: "Your Profile",
-      titleFriendProfile: "Friend's Profile",
-      titleUserProfileDefault: "Profile",
+      titleOwnProfile: "Your Profile",
+      titleUserProfilePostfix: "Profile",
+      titleUserProfileDefault: "User's Profile",
 
       //Settings
       //Settings categories

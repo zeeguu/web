@@ -107,6 +107,6 @@ export default class NavigationOptions {
 
   static profile = Object.freeze({
     linkTo: "/profile",
-    text: strings.titleUserProfile,
+    text: strings.titleOwnProfile,
   });
 }
