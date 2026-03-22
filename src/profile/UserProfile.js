@@ -32,6 +32,7 @@ import {
 import { BadgeCounterContext } from "../badges/BadgeCounterContext";
 import LoadingAnimation from "../components/LoadingAnimation";
 import Leaderboards from "@/pages/Leaderboards";
+import Stack from "@mui/material/Stack";
 
 export default function UserProfile() {
   const api = useContext(APIContext);
@@ -47,7 +48,7 @@ export default function UserProfile() {
   const avatarCharacterId = validatedAvatarCharacterId(profileData?.user_avatar?.image_name);
   const avatarCharacterColor = validatedAvatarCharacterColor(profileData?.user_avatar?.character_color);
   const avatarBackgroundColor = validatedAvatarBackgroundColor(profileData?.user_avatar?.background_color);
-  const [activeTab, setActiveTab] = useState("overview");
+  const [activeTab, setActiveTab] = useState("badges");
   const { friendRequestCount } = useContext(FriendRequestContext);
   const { hasBadgeNotification, totalNumberOfBadges } = useContext(BadgeCounterContext);
   const { friendUserId } = useParams();
@@ -87,7 +88,7 @@ export default function UserProfile() {
     if (!api) return;
 
     setLoadingProfileDetails(true);
-    setActiveTab("overview");
+    setActiveTab("badges");
 
     if (!friendUserId) {
       setIsOwnProfile(true);
@@ -206,33 +207,25 @@ export default function UserProfile() {
   };
 
   const tabs = [
-    { key: "overview", label: "Overview" },
-    {
-      key: "friends",
-      label: `Friends${isOwnProfile && friendRequestCount > 0 ? ` (${friendRequestCount})` : ""}`,
-    },
     {
       key: "badges",
       label: `Badges${isOwnProfile && hasBadgeNotification ? ` (${totalNumberOfBadges})` : ""}`,
+    },
+    {
+      key: "friends",
+      label: `Friends${isOwnProfile && friendRequestCount > 0 ? ` (${friendRequestCount})` : ""}`,
     },
     ...(isOwnProfile ? [{ key: "leaderboards", label: "Leaderboards" }] : []),
   ];
 
   const renderTabContent = () => {
-    if (activeTab === "overview") {
-      return !isOwnProfile ? (
-        <div>Overview content for this friend goes here.</div>
-      ) : (
-        <div>Overview content goes here.</div>
-      );
-    }
+
+     if (activeTab === "badges") {
+       return <Badges userId={friendUserId} />;
+     }
 
     if (activeTab === "friends") {
       return <FriendsTabContent friendUserId={friendUserId} />;
-    }
-
-    if (activeTab === "badges") {
-      return <Badges userId={friendUserId} />;
     }
 
     if (activeTab === "leaderboards") {
@@ -361,7 +354,20 @@ export default function UserProfile() {
                 <s.StatsRow>
                   <div className="stat">
                     <div className="stat-streak-wrapper">
-                      <LocalFireDepartmentIcon sx={{ color: "#ff9800", fontSize: "1.2rem" }} />
+                      {isFriendAccepted ? (
+                        <Stack direction="row" spacing={-1.2} alignItems="center">
+                          <LocalFireDepartmentIcon
+                            sx={{
+                              color: "#ff9800",
+                              fontSize: "1.2rem",
+                              filter: "drop-shadow(2px 0 0 var(--light-badge-bg)) drop-shadow(0 2px 0 var(--light-badge-bg))",
+                            }}
+                          />
+                          <LocalFireDepartmentIcon sx={{ color: "#ff9800", fontSize: "1.2rem" }} />
+                        </Stack>
+                      ) : (
+                        <LocalFireDepartmentIcon sx={{ color: "#ff9800", fontSize: "1.2rem" }} />
+                      )}
                       <span className="stat-value">{streakValue}</span>
                       <span className="stat-label">{isFriendAccepted ? "day friend streak" : "day streak"}</span>
                     </div>

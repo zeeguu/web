@@ -4,6 +4,7 @@ import { toast } from "react-toastify";
 import SearchBar from "../components/SearchBar";
 import { APIContext } from "../contexts/APIContext";
 import FriendRow from "./FriendRow";
+import { FriendRequestContext } from "@/contexts/FriendRequestContext";
 
 export default function FriendsTabContent({ friendUserId }) {
   const api = useContext(APIContext);
@@ -27,6 +28,8 @@ export default function FriendsTabContent({ friendUserId }) {
   const [friendsFriends, setFriendsFriends] = useState([]);
   const [loadingFriendsFriends, setLoadingFriendsFriends] = useState(false);
   const [friendsFriendsError, setFriendsFriendsError] = useState(null);
+
+  const { updateFriendRequestCounter } = useContext(FriendRequestContext);
 
   // Reset search results when search bar is empty
   useEffect(() => {
@@ -78,28 +81,38 @@ export default function FriendsTabContent({ friendUserId }) {
     });
   }, [api, friendUserId]);
 
-  const handleNewFriendSearch = () => {
-    if (pendingSearch.trim().length < 2) {
-      setNewFriendError("Please enter at least 2 letters.");
+  useEffect(() => {
+    const query = pendingSearch.trim();
+
+    if (query.length < 2) {
       setNewFriendResults([]);
+      setNewFriendError(null);
+      setSearchingNewFriends(null);
       return;
     }
 
-    setSearchingNewFriends(true);
-    setNewFriendError(null);
+    const timeout = setTimeout(() => {
+      setSearchingNewFriends(true);
+      setNewFriendError(null);
 
-    api.searchUsers(pendingSearch, (results) => {
-      setSearchingNewFriends(false);
-      if (!results) {
-        setNewFriendError("Failed to search for users");
-        setNewFriendResults([]);
-        return;
-      }
-      setNewFriendResults(results);
-    });
-  };
+      api.searchUsers(query, (results) => {
+        setSearchingNewFriends(false);
 
-  const handleSendFriendRequest = (receiverId) => {
+        if (!results) {
+          setNewFriendError("Failed to search for users");
+          setNewFriendResults([]);
+          return;
+        }
+
+        setNewFriendResults(results);
+      });
+    }, 300);
+
+    return () => clearTimeout(timeout);
+  }, [pendingSearch, api]);
+
+  const handleSendFriendRequest = (event, receiverId) => {
+    event.stopPropagation();
     setSendingRequestId(receiverId);
     api
       .sendFriendRequest(receiverId)
@@ -119,7 +132,8 @@ export default function FriendsTabContent({ friendUserId }) {
       });
   };
 
-  const handleCancelFriendRequest = (receiverId) => {
+  const handleCancelFriendRequest = (event, receiverId) => {
+    event.stopPropagation();
     api
       .deleteFriendRequest(receiverId)
       .then((response) => {
@@ -150,7 +164,8 @@ export default function FriendsTabContent({ friendUserId }) {
       });
   };
 
-  const handleAcceptFriendRequest = (senderId) => {
+  const handleAcceptFriendRequest = (event, senderId) => {
+    event.stopPropagation();
     api
       .acceptFriendRequest(senderId)
       .then((response) => {
@@ -160,6 +175,7 @@ export default function FriendsTabContent({ friendUserId }) {
               req.sender.id === senderId ? { ...req, accepted: true } : req,
             ),
           );
+          updateFriendRequestCounter();
         } else {
           response.json().then((json) => {
             toast.error(json.message || "Failed to accept friend request.");
@@ -171,7 +187,8 @@ export default function FriendsTabContent({ friendUserId }) {
       });
   };
 
-  const handleRejectFriendRequest = (senderId) => {
+  const handleRejectFriendRequest = (event, senderId) => {
+    event.stopPropagation();
     api
       .rejectFriendRequest(senderId)
       .then((response) => {
@@ -179,6 +196,7 @@ export default function FriendsTabContent({ friendUserId }) {
           setFriendRequests((prev) =>
             prev.filter((req) => req.sender.id !== senderId),
           );
+          updateFriendRequestCounter();
         } else {
           response.json().then((json) => {
             toast.error(json.message || "Failed to reject friend request.");
@@ -215,12 +233,6 @@ export default function FriendsTabContent({ friendUserId }) {
     history.push(`/profile/${friendId}`);
   };
 
-  const handleResetSearch = () => {
-    setPendingSearch("");
-    setNewFriendResults([]);
-    setNewFriendError(null);
-  };
-
   return (
     <div>
       {/* Friend-of-friend read-only view */}
@@ -251,8 +263,7 @@ export default function FriendsTabContent({ friendUserId }) {
         <SearchBar
           value={pendingSearch}
           onChange={(e) => setPendingSearch(e.target.value)}
-          placeholder="Search with name or username..."
-          onSearch={handleNewFriendSearch}
+          placeholder="Search for users..."
         />
       </div>
 

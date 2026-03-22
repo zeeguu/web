@@ -43,22 +43,25 @@ export const FriendRowLi = styled.li`
   align-items: center;
   gap: 1em;
   padding: 0.5em 0;
+  cursor: ${({ $clickable }) => ($clickable ? "pointer" : "default")};
+  &:hover:not(:has(button:hover)) {
+    background: var(--tag-bg);
+  }
 `;
 
 export const FriendIcon = styled.span`
   font-size: 2em;
   color: var(--text-secondary);
-  cursor: ${({ $clickable }) => ($clickable ? "pointer" : "default")};
 `;
 
 export const FriendName = styled.span`
   font-weight: 600;
+  color: var(--text-secondary);
 `;
 
 export const FriendUsername = styled.span`
-  color: var(--text-secondary);
-  cursor: ${({ $clickable }) => ($clickable ? "pointer" : "default")};
-  text-decoration: ${({ $clickable }) => ($clickable ? "underline" : "none")};
+  font-weight: 600;
+  color: var(--text-primary);
 `;
 
 export const LanguagesMeta = styled.div`

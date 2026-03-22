@@ -17,12 +17,6 @@ const SearchBar = ({ value, onChange, placeholder, onSearch }) => {
         onKeyDown={handleKeyDown}
         placeholder={placeholder || "Search..."}
       />
-      <s.SearchButton
-        type="button"
-        onClick={onSearch}
-      >
-        Search
-      </s.SearchButton>
     </s.SearchBarContainer>
   );
 };

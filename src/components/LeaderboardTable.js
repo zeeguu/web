@@ -202,7 +202,7 @@ function LeaderboardTable({
   const periodLabel = `${formatDateLabel(period.from)} - ${formatDateLabel(period.to)}`;
 
   return (
-    <section style={{ width: "100%", maxWidth: "760px", marginTop: "2em" }}>
+    <section style={{ width: "100%", maxWidth: "760px"}}>
       <div
         style={{
           display: "flex",
@@ -212,7 +212,6 @@ function LeaderboardTable({
           flexWrap: "wrap",
         }}
       >
-        <h2 style={{ margin: 0 }}>{activeLeaderboard?.title || title}</h2>
         <p
           style={{
             margin: 0,
@@ -276,14 +275,14 @@ function LeaderboardTable({
                 typeof userEntry === "string"
                   ? userEntry
                   : userEntry?.username
-                    ? `@${userEntry.username} (${userEntry?.name || "Unknown"})`
+                    ? `${userEntry.username} (${userEntry?.name || "Unknown"})`
                     : (userEntry?.name || "Unknown");
 
               return (
                 <LeaderboardRow
                   key={`${activeLeaderboard?.title || title}-${findFirstDefinedValue(userEntry, ["username", "name"]) || index}`}
                   rank={index + 1}
-                  name={isCurrentUser ? `${resolvedName} (You)` : resolvedName}
+                  name={isCurrentUser ? <b>You</b> : resolvedName}
                   metrics={[
                     {
                       key: `${activeLeaderboard?.metricLabel || metricLabel}-${index}`,

@@ -18,9 +18,9 @@ import NotificationIcon from "../../../components/NotificationIcon";
 import { FriendRequestContext } from "../../../contexts/FriendRequestContext";
 
 const NavAvatar = styled(AvatarBackground)`
-  width: 1.8rem;
-  height: 1.8rem;
-  padding: 2px;
+  width: 2rem;
+  height: 2rem;
+  padding: 3px;
 `;
 
 export default function SideNavProfileOption({ screenWidth }) {
@@ -44,7 +44,6 @@ export default function SideNavProfileOption({ screenWidth }) {
       linkTo={NavigationOptions.profile.linkTo}
       icon={
         <NavAvatar
-          $screenWidth={screenWidth}
           $backgroundColor={avatarBackgroundColor}
           $isActive={isNavOptionActive(NavigationOptions.profile.linkTo, path)}
         >
