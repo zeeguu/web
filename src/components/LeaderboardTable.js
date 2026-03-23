@@ -3,6 +3,7 @@ import LeaderboardRow from "./LeaderboardRow";
 import { APIContext } from "../contexts/APIContext";
 import { ThemeContext } from "../contexts/ThemeContext";
 import { UserContext } from "../contexts/UserContext";
+import { orange300 } from "@/components/colors";
 
 function getMetricValue(entry) {
   if (!entry || typeof entry !== "object") return 0;
@@ -131,25 +132,19 @@ function LeaderboardTable({
       }));
     }
 
-    return [{
-      key: "default",
-      tabLabel: metricLabel || "Metric",
-      title,
-      icon,
-      metricLabel,
-      formatMetric,
-      emptyMessage,
-      errorMessage,
-    }];
-  }, [
-    leaderboards,
-    title,
-    icon,
-    metricLabel,
-    formatMetric,
-    emptyMessage,
-    errorMessage,
-  ]);
+    return [
+      {
+        key: "default",
+        tabLabel: metricLabel || "Metric",
+        title,
+        icon,
+        metricLabel,
+        formatMetric,
+        emptyMessage,
+        errorMessage,
+      },
+    ];
+  }, [leaderboards, title, icon, metricLabel, formatMetric, emptyMessage, errorMessage]);
   const [selectedLeaderboardKey, setSelectedLeaderboardKey] = useState(() => resolvedLeaderboards[0]?.key || "default");
   const [leaderboardData, setLeaderboardData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -161,9 +156,10 @@ function LeaderboardTable({
     }
   }, [resolvedLeaderboards, selectedLeaderboardKey]);
 
-  const activeLeaderboard = useMemo(() => (
-    resolvedLeaderboards.find((item) => item.key === selectedLeaderboardKey) || resolvedLeaderboards[0]
-  ), [resolvedLeaderboards, selectedLeaderboardKey]);
+  const activeLeaderboard = useMemo(
+    () => resolvedLeaderboards.find((item) => item.key === selectedLeaderboardKey) || resolvedLeaderboards[0],
+    [resolvedLeaderboards, selectedLeaderboardKey],
+  );
 
   const activeErrorMessage = activeLeaderboard?.errorMessage || errorMessage;
 
@@ -235,7 +231,7 @@ function LeaderboardTable({
   const periodLabel = `${formatDateLabel(period.from)} - ${formatDateLabel(period.to)}`;
 
   return (
-    <section style={{ width: "100%", maxWidth: "760px"}}>
+    <section style={{ width: "100%", maxWidth: "760px" }}>
       <div
         style={{
           display: "flex",
@@ -259,48 +255,46 @@ function LeaderboardTable({
       </div>
 
       {resolvedLeaderboards.length > 1 && (
-  <div
-    style={{
-      display: "inline-flex",
-      borderRadius: "10px",
-      overflow: "hidden",
-      marginTop: "1em",
-      marginBottom: "1em",
-    }}
-  >
-    {resolvedLeaderboards.map((item, idx) => {
-      const isActive = item.key === selectedLeaderboardKey;
-      return (
-        <button
-          key={item.key}
-          type="button"
-          onClick={() => setSelectedLeaderboardKey(item.key)}
+        <div
           style={{
-            display: "flex",
-            fontSize: "1em",
-            alignItems: "center",
-            justifyContent: "center",
-            gap: "0.35em",
-            padding: "0.75em 0.75em",
-            background: isActive ? 'var(--badge-bg)' : 'var(--active-bg)',
-            color: 'var(--text-secondary)',
-            border: "none",
-            cursor: "pointer",
-            fontWeight: isActive ? 500 : 400,
-            transition: "background 0.2s",
-            boxShadow: isActive
-            ? "0 4px 10px rgba(0,0,0,0.25)"
-            : "0 1px 2px rgba(0,0,0,0.1)",
-            transform: isActive ? "translateY(-1px)" : "none",
+            display: "inline-flex",
+            borderRadius: "10px",
+            overflow: "hidden",
+            marginTop: "1em",
+            marginBottom: "1em",
           }}
         >
-          {item.icon && React.createElement(item.icon, { fontSize: "small" })}
-          <span>{item.tabLabel}</span>
-        </button>
-      );
-    })}
-  </div>
-)}
+          {resolvedLeaderboards.map((item, idx) => {
+            const isActive = item.key === selectedLeaderboardKey;
+            return (
+              <button
+                key={item.key}
+                type="button"
+                onClick={() => setSelectedLeaderboardKey(item.key)}
+                style={{
+                  display: "flex",
+                  fontSize: "1em",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: "0.35em",
+                  padding: "0.75em 0.75em",
+                  background: isActive ? orange300 : "var(--active-bg)",
+                  color: isActive ? "var(--text-primary)" : "var(--text-secondary)",
+                  border: "none",
+                  cursor: "pointer",
+                  fontWeight: isActive ? 500 : 400,
+                  transition: "background 0.2s",
+                  boxShadow: isActive ? "0 4px 10px rgba(0,0,0,0.25)" : "0 1px 2px rgba(0,0,0,0.1)",
+                  transform: isActive ? "translateY(-1px)" : "none",
+                }}
+              >
+                {item.icon && React.createElement(item.icon, { fontSize: "small" })}
+                <span>{item.tabLabel}</span>
+              </button>
+            );
+          })}
+        </div>
+      )}
 
       {isLoading && <p>Loading leaderboard...</p>}
       {!isLoading && error && <p style={{ color: "#b00020" }}>{error}</p>}
@@ -310,9 +304,9 @@ function LeaderboardTable({
         <table style={{ width: "100%", borderCollapse: "collapse" }}>
           <thead>
             <tr>
-              <th style={{ padding: "0.5em"}}>Rank</th>
-              <th style={{ padding: "0.5em"}}>User</th>
-              <th style={{ padding: "0.5em"}}>{activeLeaderboard?.metricLabel || metricLabel}</th>
+              <th style={{ padding: "0.5em" }}>Rank</th>
+              <th style={{ padding: "0.5em" }}>User</th>
+              <th style={{ padding: "0.5em" }}>{activeLeaderboard?.metricLabel || metricLabel}</th>
             </tr>
           </thead>
           <tbody>
@@ -322,14 +316,14 @@ function LeaderboardTable({
               const identityTokens = collectIdentityTokens(userDetails);
               const entryTokens = collectEntryTokens(entry);
 
-              const isCurrentUser = (identityTokens.length > 0 && identityTokens.some((token) => entryTokens.has(token)));
+              const isCurrentUser = identityTokens.length > 0 && identityTokens.some((token) => entryTokens.has(token));
 
               const resolvedName =
                 typeof userEntry === "string"
                   ? userEntry
                   : userEntry?.username
                     ? `${userEntry.username} (${userEntry?.name || "Unknown"})`
-                    : (userEntry?.name || "Unknown");
+                    : userEntry?.name || "Unknown";
 
               return (
                 <LeaderboardRow
