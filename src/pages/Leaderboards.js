@@ -1,6 +1,8 @@
 import React, { useMemo } from "react";
-import CenteredContainer from "../components/CenteredContainer";
 import LeaderboardTable from "../components/LeaderboardTable";
+import FitnessCenterRoundedIcon from "@mui/icons-material/FitnessCenterRounded";
+import MenuBookRoundedIcon from "@mui/icons-material/MenuBookRounded";
+import AccessAlarmsRoundedIcon from '@mui/icons-material/AccessAlarmsRounded';
 
 function formatDuration(ms) {
   if (!ms || ms <= 0) return "0s";
@@ -20,34 +22,57 @@ function formatDuration(ms) {
 
 function Leaderboards() {
   const leaderboards = useMemo(() => [
-    {
-      key: "exercises_done",
-      tabLabel: "Exercises",
-      title: "Exercises Leaderboard",
-      metricLabel: "Exercises Done",
-      formatMetric: (value) => `${value}`,
-      errorMessage: "Could not load exercises leaderboard.",
-      emptyMessage: "No exercises leaderboard data available yet.",
-    },
-    {
-      key: "reading_sessions",
-      tabLabel: "Reading Sessions",
-      title: "Reading Sessions Leaderboard",
-      metricLabel: "Sessions",
-      formatMetric: (value) => `${formatDuration(value)}`,
-      errorMessage: "Could not load reading sessions leaderboard.",
-      emptyMessage: "No reading sessions leaderboard data available yet.",
-    },
-    {
-      key: "articles_read",
-      tabLabel: "Read Articles",
-      title: "Read Articles Leaderboard",
-      metricLabel: "Articles Read",
-      formatMetric: (value) => `${value}`,
-      errorMessage: "Could not load read articles leaderboard.",
-      emptyMessage: "No read articles leaderboard data available yet.",
-    },
-  ], []);
+  {
+    key: "exercises_done",
+    tabLabel: "Exercises Done",
+    title: "Exercises Leaderboard",
+    icon: FitnessCenterRoundedIcon,
+    metricLabel: "Exercises Done",
+    formatMetric: (value) => `${value}`,
+    errorMessage: "Could not load exercises leaderboard.",
+    emptyMessage: "No exercises leaderboard data available yet.",
+  },
+  {
+    key: "reading_time",
+    tabLabel: "Reading Time",
+    title: "Reading Time Leaderboard",
+    icon: AccessAlarmsRoundedIcon,
+    metricLabel: "Time Spent",
+    formatMetric: (value) => `${formatDuration(value)}`,
+    errorMessage: "Could not load reading time leaderboard.",
+    emptyMessage: "No reading time leaderboard data available yet.",
+  },
+  {
+    key: "listening_time",
+    tabLabel: "Listening Time",
+    title: "Listening Time Leaderboard",
+    icon: AccessAlarmsRoundedIcon,
+    metricLabel: "Time Spent",
+    formatMetric: (value) => `${formatDuration(value)}`,
+    errorMessage: "Could not load listening time leaderboard.",
+    emptyMessage: "No listening time leaderboard data available yet.",
+  },
+  {
+    key: "exercise_time",
+    tabLabel: "Exercise Time",
+    title: "Exercise Time Leaderboard",
+    icon: AccessAlarmsRoundedIcon,
+    metricLabel: "Time Spent",
+    formatMetric: (value) => `${formatDuration(value)}`,
+    errorMessage: "Could not load exercise time leaderboard.",
+    emptyMessage: "No exercise time leaderboard data available yet.",
+  },
+  {
+    key: "articles_read",
+    tabLabel: "Read Articles",
+    title: "Read Articles Leaderboard",
+    icon: MenuBookRoundedIcon,
+    metricLabel: "Articles Read",
+    formatMetric: (value) => `${value}`,
+    errorMessage: "Could not load read articles leaderboard.",
+    emptyMessage: "No read articles leaderboard data available yet.",
+  },
+], []);
 
   return (
     <LeaderboardTable leaderboards={leaderboards} />

@@ -105,6 +105,7 @@ function computeHalfMonthPeriod() {
 function LeaderboardTable({
   title,
   metricLabel,
+  icon,
   formatMetric = (value) => String(value),
   emptyMessage = "No leaderboard data available yet.",
   errorMessage = "Could not load leaderboard.",
@@ -124,6 +125,7 @@ function LeaderboardTable({
         title: item.title || title || `Leaderboard ${index + 1}`,
         metricLabel: item.metricLabel || metricLabel || "Metric",
         formatMetric: item.formatMetric || formatMetric,
+        icon: item.icon || icon,
         emptyMessage: item.emptyMessage || emptyMessage,
         errorMessage: item.errorMessage || errorMessage,
       }));
@@ -133,6 +135,7 @@ function LeaderboardTable({
       key: "default",
       tabLabel: metricLabel || "Metric",
       title,
+      icon,
       metricLabel,
       formatMetric,
       emptyMessage,
@@ -141,6 +144,7 @@ function LeaderboardTable({
   }, [
     leaderboards,
     title,
+    icon,
     metricLabel,
     formatMetric,
     emptyMessage,
@@ -182,14 +186,43 @@ function LeaderboardTable({
         return;
       }
 
-      const sorted = [...data].sort(
-        (a, b) => getMetricValue(b) - getMetricValue(a),
-      );
+      const rankedData = assignRanks(data);
+      setLeaderboardData(rankedData);
 
-      setLeaderboardData(sorted);
       setIsLoading(false);
     });
   }, [api, activeErrorMessage, selectedLeaderboardKey, period.fromStr, period.toStr]);
+
+  function assignRanks(data) {
+    if (!Array.isArray(data)) return [];
+
+    const sorted = [...data].sort((a, b) => {
+      const valueDiff = getMetricValue(b) - getMetricValue(a);
+      if (valueDiff !== 0) return valueDiff;
+
+      const usernameA = (a.user?.username || a.user?.name || "").toLowerCase();
+      const usernameB = (b.user?.username || b.user?.name || "").toLowerCase();
+      return usernameA.localeCompare(usernameB);
+    });
+
+    let lastValue = null;
+    let lastRank = 0;
+
+    return sorted.map((entry, index) => {
+      const value = getMetricValue(entry);
+      let rank;
+
+      if (value === lastValue) {
+        rank = lastRank;
+      } else {
+        rank = index + 1;
+        lastValue = value;
+        lastRank = rank;
+      }
+
+      return { ...entry, rank };
+    });
+  }
 
   const tableHeaderStyle = useMemo(
     () => ({
@@ -206,16 +239,18 @@ function LeaderboardTable({
       <div
         style={{
           display: "flex",
+          alignItems: "center",
           justifyContent: "space-between",
-          alignItems: "baseline",
-          gap: "0.75em",
           flexWrap: "wrap",
+          gap: "0.5em",
+          margin: "0",
+          padding: "0",
         }}
       >
         <p
           style={{
-            margin: 0,
-            fontSize: "0.95em",
+            marginLeft: "0.5em",
+            fontSize: "0.90em",
             color: isDark ? "#c6c6c6" : "#555",
           }}
         >
@@ -224,30 +259,48 @@ function LeaderboardTable({
       </div>
 
       {resolvedLeaderboards.length > 1 && (
-        <div style={{ display: "flex", gap: "0.5em", flexWrap: "wrap", marginTop: "0.75em" }}>
-          {resolvedLeaderboards.map((item) => {
-            const isActive = item.key === selectedLeaderboardKey;
-            return (
-              <button
-                key={item.key}
-                type="button"
-                onClick={() => setSelectedLeaderboardKey(item.key)}
-                style={{
-                  borderRadius: "999px",
-                  border: `1px solid ${isActive ? "#1f6feb" : "#c8d1dc"}`,
-                  background: isActive ? "#1f6feb" : (isDark ? "#20262e" : "#fff"),
-                  color: isActive ? "#fff" : (isDark ? "#d4d8dd" : "#2f3b4b"),
-                  padding: "0.35em 0.85em",
-                  cursor: "pointer",
-                  fontWeight: isActive ? 600 : 500,
-                }}
-              >
-                {item.tabLabel}
-              </button>
-            );
-          })}
-        </div>
-      )}
+  <div
+    style={{
+      display: "inline-flex",
+      borderRadius: "10px",
+      overflow: "hidden",
+      marginTop: "1em",
+      marginBottom: "1em",
+    }}
+  >
+    {resolvedLeaderboards.map((item, idx) => {
+      const isActive = item.key === selectedLeaderboardKey;
+      return (
+        <button
+          key={item.key}
+          type="button"
+          onClick={() => setSelectedLeaderboardKey(item.key)}
+          style={{
+            display: "flex",
+            fontSize: "1em",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: "0.35em",
+            padding: "0.75em 0.75em",
+            background: isActive ? 'var(--badge-bg)' : 'var(--active-bg)',
+            color: 'var(--text-secondary)',
+            border: "none",
+            cursor: "pointer",
+            fontWeight: isActive ? 500 : 400,
+            transition: "background 0.2s",
+            boxShadow: isActive
+            ? "0 4px 10px rgba(0,0,0,0.25)"
+            : "0 1px 2px rgba(0,0,0,0.1)",
+            transform: isActive ? "translateY(-1px)" : "none",
+          }}
+        >
+          {item.icon && React.createElement(item.icon, { fontSize: "small" })}
+          <span>{item.tabLabel}</span>
+        </button>
+      );
+    })}
+  </div>
+)}
 
       {isLoading && <p>Loading leaderboard...</p>}
       {!isLoading && error && <p style={{ color: "#b00020" }}>{error}</p>}
@@ -256,10 +309,10 @@ function LeaderboardTable({
       {!isLoading && !error && leaderboardData.length > 0 && (
         <table style={{ width: "100%", borderCollapse: "collapse" }}>
           <thead>
-            <tr style={tableHeaderStyle}>
-              <th style={{ padding: "0.5em", border: "1px solid #ddd" }}>Rank</th>
-              <th style={{ padding: "0.5em", border: "1px solid #ddd" }}>User</th>
-              <th style={{ padding: "0.5em", border: "1px solid #ddd" }}>{activeLeaderboard?.metricLabel || metricLabel}</th>
+            <tr>
+              <th style={{ padding: "0.5em"}}>Rank</th>
+              <th style={{ padding: "0.5em"}}>User</th>
+              <th style={{ padding: "0.5em"}}>{activeLeaderboard?.metricLabel || metricLabel}</th>
             </tr>
           </thead>
           <tbody>
@@ -281,8 +334,8 @@ function LeaderboardTable({
               return (
                 <LeaderboardRow
                   key={`${activeLeaderboard?.title || title}-${findFirstDefinedValue(userEntry, ["username", "name"]) || index}`}
-                  rank={index + 1}
-                  name={isCurrentUser ? <b>You</b> : resolvedName}
+                  rank={entry.rank}
+                  name={resolvedName}
                   metrics={[
                     {
                       key: `${activeLeaderboard?.metricLabel || metricLabel}-${index}`,
