@@ -16,7 +16,6 @@
   --hover-bg: #f6f6f6;
   --active-bg: #ededed;
   --infobox-bg: #fff2dd;
-  --more-info-icon: url("/static/icons/more-info-icon.png");
 
   --streak-banner-bg: linear-gradient(135deg, #fff8e1, #fff3cd);
   --streak-banner-text: #7a5c00;
@@ -47,6 +46,8 @@
   --search-tag-border: #b45309;
   --search-tag-text: #92400e;
 
+  --info-icon-color: #ffbb54;
+
   --input-bg: #ffffff;
   --input-border: #c1c1c1;
   --cloze-underline: #999;
@@ -74,7 +75,6 @@
   --hover-bg: #2e2e4a;
   --active-bg: #353555;
   --infobox-bg: #3f3360;
-  --more-info-icon: url("/static/icons/more-info-icon-dark.png");
 
   --streak-banner-bg: linear-gradient(135deg, #2a2540, #302848);
   --streak-banner-text: #ffcc66;
@@ -104,6 +104,8 @@
   --search-tag-bg: #2a2520;
   --search-tag-border: #b45309;
   --search-tag-text: #ffcc66;
+
+  --info-icon-color: #aab1de;
 
   --input-bg: #2a2a45;
   --input-border: #3a3a55;
