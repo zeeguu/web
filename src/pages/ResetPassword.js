@@ -51,7 +51,7 @@ export default function ResetPassword() {
   }, []);
 
   return (
-    <PreferencesPage pageWidth={"narrow"}>
+    <PreferencesPage pageWidth={"narrow"} isBackgroundFixed={true}>
       <Header>
         <Heading>Reset Password</Heading>
       </Header>

@@ -23,7 +23,7 @@ export default function InstallExtension() {
   }, []);
 
   return (
-    <PreferencesPage>
+    <PreferencesPage isBackgroundFixed={true}>
       <Header>
         <Heading>
           Read any article on the web<br></br>
