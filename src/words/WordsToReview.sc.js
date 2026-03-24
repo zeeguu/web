@@ -76,5 +76,13 @@ const InfoIcon = styled.div`
   background-repeat: no-repeat;
 `;
 
-export { EditWordsToExerciseButton, WordsSection, WordsListColumn, InfoBoxColumn, InfoIcon };
-//
+const SectionHeading = styled.h3`
+  display: flex;
+  align-items: flex-start;
+  gap: 0.3rem;
+  margin: 0;
+  margin-bottom: 0.5rem;
+  margin-top: 0.5rem;
+`;
+
+export { EditWordsToExerciseButton, WordsSection, WordsListColumn, InfoBoxColumn, InfoIcon, SectionHeading };

@@ -14,7 +14,7 @@ import Tooltip from "@mui/material/Tooltip";
 import { CenteredContent } from "../components/ColumnWidth.sc";
 import MoreInfoBox from "../components/MoreInfoBox";
 import { isDesktopScreenWidth } from "../components/MainNav/screenSize";
-import { WordsSection, WordsListColumn, InfoBoxColumn, InfoIcon } from "./WordsToReview.sc";
+import { WordsSection, WordsListColumn, InfoBoxColumn, InfoIcon, SectionHeading } from "./WordsToReview.sc";
 
 export default function WordsToReview({
   words,
@@ -123,21 +123,12 @@ export default function WordsToReview({
       {wordsForExercises.length > 0 && (
         <WordsSection>
           <WordsListColumn>
-            <h3
-              style={{
-                display: "flex",
-                alignItems: "flex-start",
-                gap: "0.3rem",
-                margin: "0",
-                marginBottom: "0.5rem",
-                marginTop: "0.5rem",
-              }}
-            >
+            <SectionHeading>
               You might see these words in your exercises:
               <InfoIcon
                 onClick={() => setShowMoreInfo(showMoreInfo === "willBeInExercises" ? null : "willBeInExercises")}
               />
-            </h3>
+            </SectionHeading>
             {wordsForExercises.map((each) => (
               <ContentOnRow className="contentOnRow" key={each.id}>
                 <Word
@@ -176,21 +167,12 @@ export default function WordsToReview({
         (inEditMode && wordsExpressions.length > 0)) && (
         <WordsSection>
           <WordsListColumn>
-            <h3
-              style={{
-                display: "flex",
-                alignItems: "flex-start",
-                gap: "0.3rem",
-                margin: "0",
-                marginBottom: "0.5rem",
-                marginTop: "0.5rem",
-              }}
-            >
+            <SectionHeading>
               You won't see these words in your exercises:
               <InfoIcon
                 onClick={() => setShowMoreInfo(showMoreInfo === "wontBeInExercises" ? null : "wontBeInExercises")}
               />
-            </h3>
+            </SectionHeading>
             {wordsExcludedForExercises.map((each) => (
               <ContentOnRow className="contentOnRow" key={each.id}>
                 <Word
