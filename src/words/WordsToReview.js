@@ -9,7 +9,6 @@ import { MAX_BOOKMARKS_TO_STUDY_PER_ARTICLE } from "../exercises/ExerciseConstan
 import { USER_WORD_PREFERENCE } from "./userBookmarkPreferences";
 import InfoBoxWordsToReview from "./InfoBoxWordsToReview";
 import ToggleEditReviewWords from "./ToggleEditReviewWords";
-import ArticlesProgressSummary from "../articles/ArticlesProgressSummary";
 import { StyledButton } from "../components/allButtons.sc.js";
 import Tooltip from "@mui/material/Tooltip";
 import { CenteredContent } from "../components/ColumnWidth.sc";
@@ -163,13 +162,11 @@ export default function WordsToReview({
         {!exercisesEnabled ? (
           <Tooltip title="You need to translate words in the article first." arrow>
             <span>
-              <StyledButton disabled style={{ backgroundColor: "#AAB1DE", color: "white" }}>
-                {strings.toPracticeWords}
-              </StyledButton>
+              <StyledButton disabled>{strings.toPracticeWords}</StyledButton>
             </span>
           </Tooltip>
         ) : (
-          <StyledButton navigation onClick={toExercises} style={{ backgroundColor: "#AAB1DE", color: "white" }}>
+          <StyledButton navigation onClick={toExercises}>
             {strings.toPracticeWords}
           </StyledButton>
         )}
