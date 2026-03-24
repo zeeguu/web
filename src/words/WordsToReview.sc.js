@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import { zeeguuOrange } from "../components/colors";
+import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
 
 let EditWordsToExerciseButton = styled.button`
   color: black;
@@ -65,15 +66,15 @@ const InfoBoxColumn = styled.div`
   }
 `;
 
-const InfoIcon = styled.div`
-  width: 22px;
-  height: 22px;
+const InfoIcon = styled(HelpOutlineIcon)`
   cursor: pointer;
   flex-shrink: 0;
   margin-top: -0.7em;
-  background-image: var(--more-info-icon);
-  background-size: contain;
-  background-repeat: no-repeat;
+  font-size: 24px;
+  color: var(--info-icon-color);
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
 `;
 
 const SectionHeading = styled.h3`
