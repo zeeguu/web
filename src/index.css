@@ -47,6 +47,8 @@
   --search-tag-text: #92400e;
 
   --info-icon-color: #ffbb54;
+  --speak-button-bg: #ffbb54;
+  --edit-icon: url("/static/images/file_rename_orange_36dp.svg");
 
   --input-bg: #ffffff;
   --input-border: #c1c1c1;
@@ -105,7 +107,9 @@
   --search-tag-border: #b45309;
   --search-tag-text: #ffcc66;
 
-  --info-icon-color: #aab1de;
+  --info-icon-bg: #aab1de;
+  --speak-button-bg: #aab1de;
+  --edit-icon: url("/static/images/file_rename_purple_36dp.svg");
 
   --input-bg: #2a2a45;
   --input-border: #3a3a55;

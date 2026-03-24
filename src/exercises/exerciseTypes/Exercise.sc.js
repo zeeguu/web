@@ -228,7 +228,7 @@ let OrangeButton = styled(StyledButton)`
   align-items: center;
 
   color: var(--orange-btn-text, white);
-  background-color: ${zeeguuOrange};
+  background-color: var(--speak-button-bg);
   margin: 1em;
 `;
 
@@ -428,7 +428,7 @@ let StyledGreyButton = styled.button`
 let BlueButton = styled.button`
   background-color: #f8f9fa !important;
   border: 1px solid #dee2e6 !important;
-  color: #1976D2 !important;
+  color: #1976d2 !important;
   padding: 0.25rem 0.5rem !important;
   border-radius: 0.25rem !important;
   text-decoration: none !important;
@@ -438,12 +438,12 @@ let BlueButton = styled.button`
   transition: all 0.15s ease-in-out !important;
   margin: 0 !important;
   font-family: inherit !important;
-  
+
   &:hover {
     background-color: #e9ecef !important;
     border-color: #adb5bd !important;
   }
-  
+
   &:active {
     background-color: #dee2e6 !important;
     border-color: #adb5bd !important;
