@@ -322,8 +322,8 @@ export default function TranslatableWord({
 
   function formatWordText(text) {
     let content = text;
-    if (word.token.is_bold) content = <strong>{content}</strong>;
-    if (word.token.is_italic) content = <em>{content}</em>;
+    if (word.token?.is_bold) content = <strong>{content}</strong>;
+    if (word.token?.is_italic) content = <em>{content}</em>;
     return content;
   }
 
