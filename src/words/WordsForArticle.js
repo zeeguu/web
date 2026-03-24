@@ -5,8 +5,6 @@ import LoadingAnimation from "../components/LoadingAnimation";
 import WordsToReview from "./WordsToReview";
 import { setTitle } from "../assorted/setTitle";
 import BackArrow from "../pages/Settings/settings_pages_shared/BackArrow";
-import useScreenWidth from "../hooks/useScreenWidth";
-import { isDesktopScreenWidth } from "../components/MainNav/screenSize";
 import { APIContext } from "../contexts/APIContext.js";
 import { WordsForArticleContainer, LeftContent } from "./WordsForArticle.sc.js";
 
@@ -22,8 +20,6 @@ export default function WordsForArticle() {
   const [articleInfo, setArticleInfo] = useState(null);
   const [exercisesEnabled, setExercisesEnabled] = useState(false);
   const [showMoreInfo, setShowMoreInfo] = useState(null);
-  const { screenWidth } = useScreenWidth();
-  const desktopTopMargin = isDesktopScreenWidth(screenWidth) ? { marginTop: "2em" } : {};
 
   useEffect(() => {
     api.prioritizeBookmarksToStudy(articleID, setWords);
@@ -88,7 +84,6 @@ export default function WordsForArticle() {
           exercisesEnabled={exercisesEnabled}
           showMoreInfo={showMoreInfo}
           setShowMoreInfo={setShowMoreInfo}
-          screenWidth={screenWidth}
         />
       </LeftContent>
     </WordsForArticleContainer>
