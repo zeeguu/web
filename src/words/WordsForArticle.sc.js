@@ -5,16 +5,15 @@ const WordsForArticleContainer = styled.div`
   gap: 2em;
   width: 100%;
   flex-wrap: wrap;
-  padding: 0 2em;
 
   @media (max-width: 768px) {
     gap: 1em;
-    padding: 0 1em;
+    padding: 0;
   }
 
   @media (max-width: 576px) {
     gap: 0.5em;
-    padding: 0 0.5em;
+    padding: 0;
   }
 `;
 
@@ -31,11 +30,11 @@ const LeftContent = styled.div`
     margin-left: 5%;
     margin-right: 5%;
     margin-top: 0;
-  }
 
-  @media (max-width: 576px) {
-    margin-left: 5%;
-    margin-right: 5%;
+    > div[class*="Infobox"] {
+      margin-left: auto;
+      margin-right: auto;
+    }
   }
 `;
 
