@@ -320,6 +320,13 @@ export default function TranslatableWord({
     return [...getSpecialTokenClasses(word), ...getMWEClasses(word), ...getSolutionHighlightClasses()].filter(Boolean).join(" ");
   }
 
+  function formatWordText(text) {
+    let content = text;
+    if (word.token.is_bold) content = <strong>{content}</strong>;
+    if (word.token.is_italic) content = <em>{content}</em>;
+    return content;
+  }
+
   const wordClass = getWordClass(word);
 
   // Don't render words that have been fused into an MWE (marked for skip)
@@ -356,7 +363,7 @@ export default function TranslatableWord({
           onMouseEnter={handleMouseEnter}
           onMouseLeave={handleMouseLeave}
         >
-          {word.word + (word.token.has_space === true && !word.word.endsWith("-") && !word.next?.word?.startsWith("-") ? " " : "")}
+          {formatWordText(word.word)}{word.token.has_space === true && !word.word.endsWith("-") && !word.next?.word?.startsWith("-") ? " " : ""}
         </z-tag>
       </>
     );
@@ -401,10 +408,10 @@ export default function TranslatableWord({
         )}
         <z-orig>
           {isWordTranslating ? (
-            <span className={isLoading ? " loading" : ""}> {prevWord} </span>
+            <span className={isLoading ? " loading" : ""}> {formatWordText(prevWord)} </span>
           ) : (
             <span className={isLoading ? " loading" : ""} onClick={(e) => clickOnWord(e, word)}>
-              {word.word}{" "}
+              {formatWordText(word.word)}{" "}
             </span>
           )}
           {showingAlterMenu && (
