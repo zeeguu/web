@@ -139,9 +139,8 @@ export default function WordsToReview({
               />
             </h3>
             {wordsForExercises.map((each) => (
-              <ContentOnRow className="contentOnRow">
+              <ContentOnRow className="contentOnRow" key={each.id}>
                 <Word
-                  key={each.id}
                   bookmark={each}
                   notifyDelete={deleteBookmark}
                   hideStar={true}
@@ -193,9 +192,8 @@ export default function WordsToReview({
               />
             </h3>
             {wordsExcludedForExercises.map((each) => (
-              <ContentOnRow className="contentOnRow">
+              <ContentOnRow className="contentOnRow" key={each.id}>
                 <Word
-                  key={each.id}
                   bookmark={each}
                   notifyDelete={deleteBookmark}
                   notifyWordChange={notifyWordChanged}
@@ -209,9 +207,8 @@ export default function WordsToReview({
               (inEditMode && wordsExpressions.length > 0)) && (
               <>
                 {wordsExpressions.map((each) => (
-                  <ContentOnRow className="contentOnRow">
+                  <ContentOnRow className="contentOnRow" key={each.id}>
                     <Word
-                      key={each.id}
                       bookmark={each}
                       notifyDelete={deleteBookmark}
                       notifyWordChange={notifyWordChanged}
