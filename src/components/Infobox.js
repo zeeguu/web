@@ -1,10 +1,10 @@
 import * as s from "./Infobox.sc";
-import infoIcon from "/static/icons/info-info-icon.png";
+import { APP_DOMAIN } from "../appConstants";
 
 export default function Infobox({ children }) {
   return (
     <s.Infobox>
-      <img src={infoIcon} alt="" />
+      <img src={APP_DOMAIN + "/static/icons/info-info-icon.png"} alt="" />
       {children}
     </s.Infobox>
   );
