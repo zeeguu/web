@@ -4,7 +4,6 @@ import strings from "../i18n/definitions";
 import Infobox from "../components/Infobox";
 import { useState, useEffect } from "react";
 import { tokenize } from "../utils/text/preprocessing";
-import ExplainBookmarkSelectionModal from "../components/ExplainBookmarkSelectionModal";
 import { MAX_BOOKMARKS_TO_STUDY_PER_ARTICLE } from "../exercises/ExerciseConstants";
 import { USER_WORD_PREFERENCE } from "./userBookmarkPreferences";
 import InfoBoxWordsToReview from "./InfoBoxWordsToReview";
@@ -13,7 +12,6 @@ import { StyledButton } from "../components/allButtons.sc.js";
 import Tooltip from "@mui/material/Tooltip";
 import { CenteredContent } from "../components/ColumnWidth.sc";
 import MoreInfoBox from "../components/MoreInfoBox";
-import { isDesktopScreenWidth } from "../components/MainNav/screenSize";
 import { WordsSection, WordsListColumn, InfoBoxColumn, InfoIcon, SectionHeading } from "./WordsToReview.sc";
 
 export default function WordsToReview({
@@ -32,30 +30,14 @@ export default function WordsToReview({
   const [inEditMode, setInEditMode] = useState(false);
   const [wordsForExercises, setWordsForExercises] = useState([]);
   const [wordsExcludedForExercises, setWordsExcludedForExercises] = useState([]);
-  // how many of the words were set by zeeguu
-  const [wordsSelectedByZeeguu_Counter, setWordsSelectedByZeeguu_Counter] = useState();
-  const [wordsEditedByUser_Counter, setWordsEditedByUser_Counter] = useState();
   const [wordsExpressions, setWordsExpressions] = useState([]);
-  const [showExplainWordSelectionModal, setShowExplainWordSelectionModal] = useState(false);
   useEffect(() => {
     let newWordsForExercises = [];
     let newWordsExcludedExercises = [];
     let newWordExpressions = [];
 
-    // Keep track how many words Zeeguu selected
-    let _wordsSelectedByZeeguu_Counter = 0;
-    let _wordsEditedByUser_Counter = 0;
-
     for (let i = 0; i < words.length; i++) {
       let word = words[i];
-      if (
-        word.fit_for_study &&
-        (word.user_preference === USER_WORD_PREFERENCE.NO_PREFERENCE || word.user_preference == null)
-      )
-        _wordsSelectedByZeeguu_Counter += 1;
-
-      if (word.user_preference !== USER_WORD_PREFERENCE.NO_PREFERENCE && word.user_preference != null)
-        _wordsEditedByUser_Counter += 1;
 
       if (tokenize(word.from).length >= 3) newWordExpressions.push(word);
       else if (!word.fit_for_study) newWordsExcludedExercises.push(word);
@@ -64,8 +46,6 @@ export default function WordsToReview({
     setWordsForExercises(newWordsForExercises);
     setWordsExcludedForExercises(newWordsExcludedExercises);
     setWordsExpressions(newWordExpressions);
-    setWordsSelectedByZeeguu_Counter(_wordsSelectedByZeeguu_Counter);
-    setWordsEditedByUser_Counter(_wordsEditedByUser_Counter);
   }, [words]);
 
   if (words.length === 0)
@@ -87,22 +67,11 @@ export default function WordsToReview({
       </>
     );
 
-  const hasNoWordsSelected = wordsForExercises.length === 0;
-  const hasZeeguuSelectWords =
-    totalWordsTranslated > MAX_BOOKMARKS_TO_STUDY_PER_ARTICLE &&
-    wordsEditedByUser_Counter === 0 &&
-    wordsForExercises.length > 0;
-  const hasUserEditedWords =
-    totalWordsTranslated > MAX_BOOKMARKS_TO_STUDY_PER_ARTICLE &&
-    wordsEditedByUser_Counter > 0 &&
-    wordsForExercises.length > 0;
+  const hasNoWordsTranslated = totalWordsTranslated === 0;
+  const hasUserTranslatedWords = totalWordsTranslated > 0;
 
   return (
     <>
-      <ExplainBookmarkSelectionModal
-        open={showExplainWordSelectionModal}
-        setShowExplainBookmarkSelectionModal={setShowExplainWordSelectionModal}
-      ></ExplainBookmarkSelectionModal>
       <div style={{ marginTop: "5%" }}>
         <h1>{strings.ReviewTranslations}</h1>
         <p>
@@ -110,19 +79,12 @@ export default function WordsToReview({
           {articleInfo.title}
         </p>
       </div>
-      {(hasNoWordsSelected || hasZeeguuSelectWords || hasUserEditedWords) && (
-        <InfoBoxWordsToReview
-          hasZeeguuSelectWords={hasZeeguuSelectWords}
-          hasUserEditedWords={hasUserEditedWords}
-          hasNoWordsSelected={hasNoWordsSelected}
-          wordsForExercises_Counter={wordsForExercises.length}
-          wordsSelectedByZeeguu_Counter={wordsSelectedByZeeguu_Counter}
-          totalWordsTranslated={totalWordsTranslated}
-          showExplainWordSelectionModal={showExplainWordSelectionModal}
-          setShowExplainWordSelectionModal={setShowExplainWordSelectionModal}
-          toggleEditWordsComponent={<ToggleEditReviewWords setInEditMode={setInEditMode} inEditMode={inEditMode} />}
-        />
-      )}
+      <InfoBoxWordsToReview
+        hasNoWordsTranslated={hasNoWordsTranslated}
+        hasUserTranslatedWords={hasUserTranslatedWords}
+        totalWordsTranslated={totalWordsTranslated}
+        toggleEditWordsComponent={<ToggleEditReviewWords setInEditMode={setInEditMode} inEditMode={inEditMode} />}
+      />
       {wordsForExercises.length > 0 && (
         <WordsSection>
           <WordsListColumn>
