@@ -1,6 +1,14 @@
 import styled from "styled-components";
 
 const actionVariantStyles = {
+  unfriend: {
+    lightBg: "#ffe9e7",
+    lightBorder: "#f5c4be",
+    lightText: "#b4493f",
+    darkBg: "#4a2b2b",
+    darkBorder: "#8e4747",
+    darkText: "#ff9f94",
+  },
   cancel: {
     lightBg: "#ffe9e7",
     lightBorder: "#f5c4be",
@@ -47,11 +55,6 @@ export const FriendRowLi = styled.li`
   &:hover:not(:has(button:hover)) {
     background: var(--tag-bg);
   }
-`;
-
-export const FriendIcon = styled.span`
-  font-size: 2em;
-  color: var(--text-secondary);
 `;
 
 export const FriendName = styled.span`
@@ -171,6 +174,10 @@ export const ActionButton = styled.button`
 
   &:disabled {
     opacity: 0.8;
+  }
+  
+  &:hover {
+    filter: brightness(95%);
   }
 
   :root[data-theme="dark"] & {

@@ -86,7 +86,7 @@ export default function FriendRow({
         return (
           <s.ActionButton $variant="cancel" onClick={(event) => onCancelRequest?.(event, user?.id)}>
             <CancelScheduleSendIcon sx={{ color: "#e74c3c", fontSize: "1.2rem", verticalAlign: "middle" }} />
-            <span>Cancel Request</span>
+            <span>Cancel</span>
           </s.ActionButton>
         );
       }
@@ -94,7 +94,7 @@ export default function FriendRow({
         return (
           <s.ActionButton $variant="cancel" onClick={(event) => onCancelRequest?.(event, user?.id)}>
             <CancelScheduleSendIcon sx={{ color: "#e74c3c", fontSize: "1.2rem", verticalAlign: "middle" }} />
-            <span>Cancel Request</span>
+            <span>Cancel</span>
           </s.ActionButton>
         );
       }
@@ -108,7 +108,7 @@ export default function FriendRow({
           ) : (
             <>
               <PersonAddIcon sx={{ color: "#3498db", fontSize: "1.4rem", verticalAlign: "middle" }} />
-              <span>Add Friend</span>
+              <span>Add</span>
             </>
           )}
         </s.ActionButton>
@@ -156,7 +156,7 @@ export default function FriendRow({
                 sx={{
                   color: "#ff9800",
                   fontSize: "1.4rem",
-                  filter: "drop-shadow(2px 0 0 white) drop-shadow(0 2px 0 white)",
+                  filter: "drop-shadow(2px 0 0 var(--card-bg)) drop-shadow(0 2px 0 var(--card-bg))",
                 }}
               />
               <LocalFireDepartmentIcon sx={{ color: "#ff9800", fontSize: "1.4rem" }} />

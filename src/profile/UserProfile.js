@@ -33,6 +33,7 @@ import LoadingAnimation from "../components/LoadingAnimation";
 import Button from "../pages/_pages_shared/Button.sc";
 import Leaderboards from "../pages/Leaderboards";
 import Stack from "@mui/material/Stack";
+import { ActionButton } from "./FriendRow.sc";
 
 export default function UserProfile() {
   const api = useContext(APIContext);
@@ -250,14 +251,16 @@ export default function UserProfile() {
       {!isOwnProfile && (
         <>
           <s.BackNavigation>
-            <s.BackButton
+            <Button
+              type={"button"}
+              className={"small"}
               onClick={() => {
                 history.push("/profile");
               }}
             >
               <ArrowBackIcon sx={{ fontSize: "1.2rem" }} />
               <span>Back to Profile</span>
-            </s.BackButton>
+            </Button>
           </s.BackNavigation>
         </>
       )}
@@ -280,33 +283,33 @@ export default function UserProfile() {
             ) : (
               <s.FriendActionsContainer>
                 {isFriendAccepted && (
-                  <s.FriendActionButton $variant="danger" onClick={() => setUnfriendModalOpen(true)}>
-                    <PersonRemoveIcon sx={{ fontSize: "1.2rem" }} />
+                  <ActionButton $variant="unfriend" onClick={() => setUnfriendModalOpen(true)}>
+                    <PersonRemoveIcon sx={{ fontSize: "1rem" }} />
                     <span>Unfriend</span>
-                  </s.FriendActionButton>
+                  </ActionButton>
                 )}
                 {!isFriendAccepted && !pendingFromMe && !pendingFromThem && (
-                  <s.FriendActionButton $variant="primary" onClick={handleSendFriendRequest}>
-                    <PersonAddIcon sx={{ fontSize: "1.2rem" }} />
-                    <span>Add friend</span>
-                  </s.FriendActionButton>
+                  <ActionButton $variant="add" onClick={handleSendFriendRequest}>
+                    <PersonAddIcon sx={{ fontSize: "1rem" }} />
+                    <span>Add</span>
+                  </ActionButton>
                 )}
                 {pendingFromMe && (
-                  <s.FriendActionButton $variant="warning" onClick={handleCancelFriendRequest}>
-                    <CancelScheduleSendIcon sx={{ fontSize: "1.2rem" }} />
-                    <span>Cancel request</span>
-                  </s.FriendActionButton>
+                  <ActionButton $variant="cancel" onClick={handleCancelFriendRequest}>
+                    <CancelScheduleSendIcon sx={{ fontSize: "1rem" }} />
+                    <span>Cancel</span>
+                  </ActionButton>
                 )}
                 {pendingFromThem && (
                   <>
-                    <s.FriendActionButton $variant="success" onClick={handleAcceptFriendRequest}>
-                      <CheckIcon sx={{ fontSize: "1.2rem" }} />
-                      <span>Accept request</span>
-                    </s.FriendActionButton>
-                    <s.FriendActionButton $variant="danger" onClick={handleRejectFriendRequest}>
-                      <ClearIcon sx={{ fontSize: "1.2rem" }} />
-                      <span>Reject request</span>
-                    </s.FriendActionButton>
+                    <ActionButton $variant="accept" onClick={handleAcceptFriendRequest}>
+                      <CheckIcon sx={{ fontSize: "1rem" }} />
+                      <span>Accept</span>
+                    </ActionButton>
+                    <ActionButton $variant="reject" onClick={handleRejectFriendRequest}>
+                      <ClearIcon sx={{ fontSize: "1rem" }} />
+                      <span>Reject</span>
+                    </ActionButton>
                   </>
                 )}
               </s.FriendActionsContainer>
@@ -367,7 +370,7 @@ export default function UserProfile() {
                               color: "#ff9800",
                               fontSize: "1.2rem",
                               filter:
-                                "drop-shadow(2px 0 0 var(--light-badge-bg)) drop-shadow(0 2px 0 var(--light-badge-bg))",
+                                "drop-shadow(2px 0 0 var(--streak-banner-border)) drop-shadow(0 2px 0 var(--streak-banner-border))",
                             }}
                           />
                           <LocalFireDepartmentIcon sx={{ color: "#ff9800", fontSize: "1.2rem" }} />

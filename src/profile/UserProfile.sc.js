@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { orange100, orange500 } from "../components/colors";
+import { orange500 } from "../components/colors";
 
 export const ProfileWrapper = styled.div`
   display: flex;
@@ -9,26 +9,6 @@ export const ProfileWrapper = styled.div`
 
 export const BackNavigation = styled.div`
   margin-bottom: 0.8rem;
-`;
-
-export const BackButton = styled.button`
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4rem;
-  border: 1px solid var(--border-light);
-  border-radius: 6px;
-  background: var(--card-bg);
-  color: var(--text-primary);
-  padding: 0.4rem 0.75rem;
-  cursor: pointer;
-  transition:
-    background 0.3s,
-    border-color 0.3s;
-
-  &:hover {
-    background: var(--hover-bg);
-    border-color: var(--border-color);
-  }
 `;
 
 export const ErrorText = styled.p`
@@ -167,7 +147,7 @@ export const EditProfileButton = styled.button`
 
 export const FriendActionsContainer = styled.div`
   position: absolute;
-  top: 1rem;
+  bottom: 1rem;
   right: 1rem;
   display: flex;
   flex-direction: column;
@@ -180,41 +160,6 @@ export const FriendActionsContainer = styled.div`
     align-items: center;
     margin-bottom: 0.75rem;
   }
-`;
-
-export const FriendActionButton = styled.button`
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4rem;
-  border-radius: 6px;
-  border: 1px solid
-    ${({ $variant }) => {
-      switch ($variant) {
-        case "danger":
-          return "#e74c3c";
-        case "success":
-          return "#2ecc71";
-        case "warning":
-          return "#e67e22";
-        default:
-          return "#3498db";
-      }
-    }};
-  background: #fff;
-  color: ${({ $variant }) => {
-    switch ($variant) {
-      case "danger":
-        return "#e74c3c";
-      case "success":
-        return "#2ecc71";
-      case "warning":
-        return "#e67e22";
-      default:
-        return "#3498db";
-    }
-  }};
-  padding: 0.4rem 0.75rem;
-  cursor: pointer;
 `;
 
 export const TabsSection = styled.div`
