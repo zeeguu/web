@@ -443,11 +443,12 @@ const TranslatableText = styled.div`
     strong,
     b {
       font-weight: bold;
-      color: ${almostBlack};
+      color: inherit;
     }
     em,
     i {
       font-style: italic;
+      color: inherit;
     }
 
     &.h1 + .textParagraph,

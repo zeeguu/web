@@ -192,11 +192,17 @@ export class Word extends Item {
     const prevIsMWE = this.prev?.token?.mwe_group_id;
     const nextIsMWE = this.next?.token?.mwe_group_id;
 
-    if (this.prev && this.prev.translation && !prevIsMWE) {
+    // Don't fuse across bold/italic boundaries
+    const prevBoldMismatch = !!this.prev?.token?.is_bold !== !!this.token?.is_bold;
+    const prevItalicMismatch = !!this.prev?.token?.is_italic !== !!this.token?.is_italic;
+    const nextBoldMismatch = !!this.next?.token?.is_bold !== !!this.token?.is_bold;
+    const nextItalicMismatch = !!this.next?.token?.is_italic !== !!this.token?.is_italic;
+
+    if (this.prev && this.prev.translation && !prevIsMWE && !prevBoldMismatch && !prevItalicMismatch) {
       newWord = this.fuseWithPrevious(api);
     }
 
-    if (this.next && this.next.translation && !nextIsMWE) {
+    if (this.next && this.next.translation && !nextIsMWE && !nextBoldMismatch && !nextItalicMismatch) {
       newWord = this.fuseWithNext(api);
     }
     return newWord;
