@@ -37,7 +37,6 @@ export default function WordsToReview({
   const [wordsEditedByUser_Counter, setWordsEditedByUser_Counter] = useState();
   const [wordsExpressions, setWordsExpressions] = useState([]);
   const [showExplainWordSelectionModal, setShowExplainWordSelectionModal] = useState(false);
-
   useEffect(() => {
     let newWordsForExercises = [];
     let newWordsExcludedExercises = [];
@@ -49,10 +48,14 @@ export default function WordsToReview({
 
     for (let i = 0; i < words.length; i++) {
       let word = words[i];
-      if (word.fit_for_study && word.user_preference === USER_WORD_PREFERENCE.NO_PREFERENCE)
+      if (
+        word.fit_for_study &&
+        (word.user_preference === USER_WORD_PREFERENCE.NO_PREFERENCE || word.user_preference == null)
+      )
         _wordsSelectedByZeeguu_Counter += 1;
 
-      if (word.user_preference !== USER_WORD_PREFERENCE.NO_PREFERENCE) _wordsEditedByUser_Counter += 1;
+      if (word.user_preference !== USER_WORD_PREFERENCE.NO_PREFERENCE && word.user_preference != null)
+        _wordsEditedByUser_Counter += 1;
 
       if (tokenize(word.from).length >= 3) newWordExpressions.push(word);
       else if (!word.fit_for_study) newWordsExcludedExercises.push(word);
@@ -163,8 +166,8 @@ export default function WordsToReview({
       </CenteredContent>
       {((wordsExcludedForExercises.length > 0 && totalWordsTranslated < 10) ||
         (wordsExpressions.length > 0 && totalWordsTranslated < 10) ||
-        (inEditMode && wordsExcludedForExercises.length > 0) ||
-        (inEditMode && wordsExpressions.length > 0)) && (
+        wordsExcludedForExercises.length > 0 ||
+        wordsExpressions.length > 0) && (
         <WordsSection>
           <WordsListColumn>
             <SectionHeading>
@@ -185,8 +188,7 @@ export default function WordsToReview({
                 />
               </ContentOnRow>
             ))}
-            {((wordsExpressions.length > 0 && totalWordsTranslated < 10) ||
-              (inEditMode && wordsExpressions.length > 0)) && (
+            {wordsExpressions.length > 0 && (
               <>
                 {wordsExpressions.map((each) => (
                   <ContentOnRow className="contentOnRow" key={each.id}>
