@@ -1,12 +1,5 @@
 import styled from "styled-components";
-import {
-  blue100,
-  orange100,
-  orange400,
-  orange500,
-  veryLightGrey,
-  zeeguuOrange,
-} from "../components/colors";
+import { orange100, orange500 } from "../components/colors";
 
 export const ProfileWrapper = styled.div`
   display: flex;
@@ -29,8 +22,8 @@ export const BackButton = styled.button`
   padding: 0.4rem 0.75rem;
   cursor: pointer;
   transition:
-    background 0.2s,
-    border-color 0.2s;
+    background 0.3s,
+    border-color 0.3s;
 
   &:hover {
     background: var(--hover-bg);
@@ -99,7 +92,7 @@ export const HeaderCard = styled.div`
     @media (max-width: 768px) {
       justify-content: center;
     }
-    
+
     .flag-image-wrapper {
       cursor: pointer;
     }
@@ -124,7 +117,7 @@ export const StatsRow = styled.div`
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    background: var(--light-badge-bg);
+    background: var(--streak-banner-border);
     border-radius: 8px;
     padding: 0.6rem 1rem;
   }
@@ -136,15 +129,16 @@ export const StatsRow = styled.div`
   }
 
   .stat-value {
-    color: ${orange500};
+    color: #ff9800;
     margin-right: 0.3rem;
   }
-  
+
   .stat-label {
     color: var(--text-secondary);
   }
-  
-  .stat-value, .stat-label {
+
+  .stat-value,
+  .stat-label {
     font-size: 1rem;
     font-weight: 600;
   }
@@ -158,18 +152,15 @@ export const EditProfileButton = styled.button`
   height: 2rem;
   border-radius: 50%;
   border: none;
-  background: ${veryLightGrey};
+  background: var(--streak-banner-border);
   color: var(--text-secondary);
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition:
-    background 0.2s,
-    color 0.2s;
 
   &:hover {
-    background: ${orange100};
+    background: var(--streak-banner-hover);
     color: ${orange500};
   }
 `;
@@ -210,37 +201,20 @@ export const FriendActionButton = styled.button`
       }
     }};
   background: #fff;
-  color:
-    ${({ $variant }) => {
-      switch ($variant) {
-        case "danger":
-          return "#e74c3c";
-        case "success":
-          return "#2ecc71";
-        case "warning":
-          return "#e67e22";
-        default:
-          return "#3498db";
-      }
-    }};
+  color: ${({ $variant }) => {
+    switch ($variant) {
+      case "danger":
+        return "#e74c3c";
+      case "success":
+        return "#2ecc71";
+      case "warning":
+        return "#e67e22";
+      default:
+        return "#3498db";
+    }
+  }};
   padding: 0.4rem 0.75rem;
   cursor: pointer;
-`;
-
-export const FriendAvatarColumn = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.75rem;
-  flex-shrink: 0;
-`;
-
-export const FriendDetails = styled.div`
-  padding-right: 12rem;
-
-  @media (max-width: 768px) {
-    padding-right: 0;
-  }
 `;
 
 export const TabsSection = styled.div`
@@ -267,12 +241,12 @@ export const TabBar = styled.div`
     font-weight: 500;
     margin-bottom: -2px;
     transition:
-      color 0.2s,
-      border-color 0.2s;
+      color 0.3s,
+      border-color 0.5s;
 
     &.active {
-      color: ${zeeguuOrange};
-      border-bottom-color: ${zeeguuOrange};
+      color: #ff9800;
+      border-bottom-color: #ff9800;
       font-weight: 600;
     }
 
@@ -297,7 +271,7 @@ export const OverflowBubble = styled.button`
   height: 1.75rem;
   padding: 0;
   border-radius: 50%;
-  background: var(--light-badge-bg);
+  background: var(--streak-banner-border);
   border: 0.08rem solid var(--border-light);
   color: var(--text-primary);
   font-size: 0.75rem;
@@ -306,11 +280,17 @@ export const OverflowBubble = styled.button`
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: background 0.2s;
 
   &:hover {
-    background: var(--tag-bg);
+    background: var(--streak-banner-hover);
+    color: ${orange500};
   }
+`;
+
+export const UnfriendModalButtonWrapper = styled.div`
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
 `;
 
 export const LanguagesGrid = styled.div`
@@ -365,12 +345,7 @@ export const LanguageCard = styled.div`
     gap: 0.1rem;
     font-weight: 600;
     font-size: 0.9rem;
-    color: ${orange500};
     flex: 1;
-  }
-
-  .max-streak {
-    color: var(--link-color);
   }
 `;
 
@@ -384,14 +359,15 @@ export const AvatarBackground = styled.div`
   flex-shrink: 0;
   border: none;
   background: ${({ $backgroundColor }) => $backgroundColor};
+  position: relative;
 
   &.clickable {
     border: 3px solid transparent;
     cursor: pointer;
-    transition: border-color 0.2s;
 
-    &:hover {
-      border-color: ${orange400};
+    &:hover button {
+      background: var(--streak-banner-hover);
+      color: ${orange500};
     }
   }
 `;

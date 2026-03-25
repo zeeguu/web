@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useHistory, useParams } from "react-router-dom";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import LocalFireDepartmentIcon from "@mui/icons-material/LocalFireDepartment";
@@ -7,7 +7,6 @@ import PersonAddIcon from "@mui/icons-material/PersonAdd";
 import CancelScheduleSendIcon from "@mui/icons-material/CancelScheduleSend";
 import CheckIcon from "@mui/icons-material/Check";
 import ClearIcon from "@mui/icons-material/Clear";
-import ConfirmUnfriendModal from "./ConfirmUnfriendModal";
 import { setTitle } from "../assorted/setTitle";
 import { UserContext } from "../contexts/UserContext";
 import strings from "../i18n/definitions";
@@ -31,7 +30,8 @@ import {
 } from "./avatarOptions";
 import { BadgeCounterContext } from "../badges/BadgeCounterContext";
 import LoadingAnimation from "../components/LoadingAnimation";
-import Leaderboards from "@/pages/Leaderboards";
+import Button from "../pages/_pages_shared/Button.sc";
+import Leaderboards from "../pages/Leaderboards";
 import Stack from "@mui/material/Stack";
 
 export default function UserProfile() {
@@ -64,6 +64,20 @@ export default function UserProfile() {
     friendship?.friend_request_status === "pending" && Number(friendship?.sender_id) === Number(friendUserId);
   const streakValue = (isOwnProfile ? daysPracticed : friendship?.friend_streak) ?? 0;
 
+  const resetProfileState = () => {
+    setProfileData(null);
+    setActiveLanguages([]);
+    setActiveTab("badges");
+    setLoadingProfileDetails(true);
+    setFriendDetailsError(null);
+  };
+
+  const updateProfileView = (profileData, errorMsg, title) => {
+    setProfileData(profileData);
+    setFriendDetailsError(errorMsg);
+    setTitle(title);
+  };
+
   const activeLanguagesCallback = (data) => {
     setLoadingProfileDetails(false);
     if (!data) {
@@ -78,17 +92,10 @@ export default function UserProfile() {
     setActiveLanguages(sorted);
   };
 
-  const updateProfileView = (profileData, errorMsg, title) => {
-    setProfileData(profileData);
-    setFriendDetailsError(errorMsg);
-    setTitle(title);
-  };
-
   useEffect(() => {
     if (!api) return;
 
-    setLoadingProfileDetails(true);
-    setActiveTab("badges");
+    resetProfileState();
 
     if (!friendUserId) {
       setIsOwnProfile(true);
@@ -219,17 +226,16 @@ export default function UserProfile() {
   ];
 
   const renderTabContent = () => {
-
-     if (activeTab === "badges") {
-       return <Badges userId={friendUserId} />;
-     }
+    if (activeTab === "badges") {
+      return <Badges userId={friendUserId} />;
+    }
 
     if (activeTab === "friends") {
       return <FriendsTabContent friendUserId={friendUserId} />;
     }
 
     if (activeTab === "leaderboards") {
-      return <Leaderboards/>;
+      return <Leaderboards />;
     }
 
     return null;
@@ -360,7 +366,8 @@ export default function UserProfile() {
                             sx={{
                               color: "#ff9800",
                               fontSize: "1.2rem",
-                              filter: "drop-shadow(2px 0 0 var(--light-badge-bg)) drop-shadow(0 2px 0 var(--light-badge-bg))",
+                              filter:
+                                "drop-shadow(2px 0 0 var(--light-badge-bg)) drop-shadow(0 2px 0 var(--light-badge-bg))",
                             }}
                           />
                           <LocalFireDepartmentIcon sx={{ color: "#ff9800", fontSize: "1.2rem" }} />
@@ -394,12 +401,24 @@ export default function UserProfile() {
             </s.TabsSection>
           )}
 
-          <ConfirmUnfriendModal
-            open={unfriendModalOpen}
-            onClose={() => setUnfriendModalOpen(false)}
-            onConfirm={handleUnfriend}
-            friendName={profileData?.name ?? profileData?.username}
-          />
+          <Modal open={unfriendModalOpen} onClose={() => setUnfriendModalOpen(false)}>
+            <Header>
+              <Heading>Confirm Unfriend</Heading>
+            </Header>
+            <Main>
+              <div>
+                Are you sure you want to unfriend <b>{profileData?.name ?? profileData?.username}</b>?
+              </div>
+              <s.UnfriendModalButtonWrapper>
+                <Button type={"button"} className={"small grey"} onClick={() => setUnfriendModalOpen(false)}>
+                  Cancel
+                </Button>
+                <Button type={"button"} className={"small warning"} onClick={handleUnfriend}>
+                  Unfriend
+                </Button>
+              </s.UnfriendModalButtonWrapper>
+            </Main>
+          </Modal>
 
           <Modal open={languagesModalOpen} onClose={() => setLanguagesModalOpen(false)}>
             <Header>

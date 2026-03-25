@@ -1,5 +1,5 @@
 import { Link, useHistory } from "react-router-dom";
-import { useContext, useEffect, useRef, useState } from "react";
+import React, { Fragment, useContext, useEffect, useRef, useState } from "react";
 import { UserContext } from "../../contexts/UserContext";
 import { saveSharedUserInfo } from "../../utils/cookies/userInfo";
 import { setTitle } from "../../assorted/setTitle";
@@ -35,6 +35,8 @@ import {
 } from "../../profile/avatarOptions";
 import { AvatarBackground, AvatarImage } from "../../profile/UserProfile.sc";
 import * as s from "./ProfileDetails.sc";
+import EditIcon from "@mui/icons-material/Edit";
+import CheckIcon from "@mui/icons-material/Check";
 
 export default function ProfileDetails() {
   const api = useContext(APIContext);
@@ -145,6 +147,9 @@ export default function ProfileDetails() {
                   $imageSource={AVATAR_IMAGE_MAP[selectedAvatarCharacterId]}
                   $color={selectedAvatarCharacterColor}
                 />
+                <s.EditAvatarButton type="button" onClick={() => setShowAvatarModal(true)}>
+                  <EditIcon sx={{ fontSize: "1rem" }} />
+                </s.EditAvatarButton>
               </AvatarBackground>
             </s.AvatarWrapper>
             <InputField
@@ -222,6 +227,11 @@ export default function ProfileDetails() {
                   }}
                 >
                   <AvatarImage $imageSource={AVATAR_IMAGE_MAP[id]} $color={selectedAvatarCharacterColor} />
+                  {selectedAvatarCharacterId === id && (
+                    <s.SelectionCheckmark $mini={false}>
+                      <CheckIcon sx={{ fontSize: "inherit" }} />
+                    </s.SelectionCheckmark>
+                  )}
                 </s.AvatarOption>
               ))}
             </s.PickerGrid>
@@ -238,7 +248,13 @@ export default function ProfileDetails() {
                   onClick={() => {
                     setSelectedAvatarCharacterColor(color);
                   }}
-                />
+                >
+                  {selectedAvatarCharacterColor === color && (
+                    <s.SelectionCheckmark $mini={true}>
+                      <CheckIcon sx={{ fontSize: "inherit" }} />
+                    </s.SelectionCheckmark>
+                  )}
+                </s.ColorOption>
               ))}
             </s.PickerGrid>
           </s.PickerSection>
@@ -254,10 +270,22 @@ export default function ProfileDetails() {
                   onClick={() => {
                     setSelectedAvatarBackgroundColor(color);
                   }}
-                />
+                >
+                  {selectedAvatarBackgroundColor === color && (
+                    <s.SelectionCheckmark $mini={true}>
+                      <CheckIcon sx={{ fontSize: "inherit" }} />
+                    </s.SelectionCheckmark>
+                  )}
+                </s.ColorOption>
               ))}
             </s.PickerGrid>
           </s.PickerSection>
+
+          <s.ConfirmButtonWrapper>
+            <Button type={"button"} className={"small"} onClick={() => setShowAvatarModal(false)}>
+              Set
+            </Button>
+          </s.ConfirmButtonWrapper>
         </Main>
       </Modal>
     </PreferencesPage>
