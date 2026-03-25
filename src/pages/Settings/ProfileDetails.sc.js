@@ -44,7 +44,7 @@ export const PickerSection = styled.div`
 export const PickerGrid = styled.div`
   display: flex;
   flex-wrap: wrap;
-  gap: 0.5rem;
+  gap: 0.7rem;
 `;
 
 export const AvatarOption = styled.button`
