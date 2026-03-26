@@ -34,11 +34,15 @@ import {
   validatedAvatarCharacterId,
 } from "../../profile/avatarOptions";
 import { AvatarBackground, AvatarImage } from "../../profile/UserProfile.sc";
+import Feature from "../../features/Feature";
 import * as s from "./ProfileDetails.sc";
 
 export default function ProfileDetails() {
   const api = useContext(APIContext);
+  const isGamificationEnabled = Feature.gamification();
   const state = useLocation().state || {};
+  const fallbackRedirectPath = isGamificationEnabled ? "/profile" : "/account_settings";
+  const redirectPath = ["/profile", "/account_settings"].includes(state.from) ? state.from : fallbackRedirectPath;
   const successfullyChangedPassword = "passwordChanged" in state ? state.passwordChanged : false;
   const [errorMessage, setErrorMessage] = useState("");
   const { userDetails, setUserDetails } = useContext(UserContext);
@@ -102,18 +106,20 @@ export default function ProfileDetails() {
     const payload = {
       ...userDetails,
       ...updatedFormValues,
-      ...Object.fromEntries(Object.entries(updatedAvatarValues).map(([key, value]) => [`avatar_${key}`, value])),
+      ...(isGamificationEnabled
+        ? Object.fromEntries(Object.entries(updatedAvatarValues).map(([key, value]) => [`avatar_${key}`, value]))
+        : {}),
     };
     api.saveUserDetails(payload, setErrorMessage, () => {
       const newUserDetails = {
         ...userDetails,
         ...updatedFormValues,
-        user_avatar: updatedAvatarValues,
+        ...(isGamificationEnabled ? { user_avatar: updatedAvatarValues } : {}),
       };
       setUserDetails(newUserDetails);
       LocalStorage.setUserInfo(newUserDetails);
       saveSharedUserInfo(newUserDetails);
-      history.push("/profile");
+      history.push(redirectPath);
     });
   }
 
@@ -122,7 +128,7 @@ export default function ProfileDetails() {
   }
   return (
     <PreferencesPage layoutVariant={"minimalistic-top-aligned"}>
-      <BackArrow redirectLink={"/profile"} />
+      <BackArrow redirectLink={redirectPath} />
       <Header withoutLogo>
         <Heading>{strings.profileDetails}</Heading>
         {successfullyChangedPassword && (
@@ -135,18 +141,20 @@ export default function ProfileDetails() {
         <Form>
           {errorMessage && <FullWidthErrorMsg>{errorMessage}</FullWidthErrorMsg>}
           <FormSection>
-            <s.AvatarWrapper>
-              <AvatarBackground
-                className="clickable"
-                onClick={() => setShowAvatarModal(true)}
-                $backgroundColor={selectedAvatarBackgroundColor}
-              >
-                <AvatarImage
-                  $imageSource={AVATAR_IMAGE_MAP[selectedAvatarCharacterId]}
-                  $color={selectedAvatarCharacterColor}
-                />
-              </AvatarBackground>
-            </s.AvatarWrapper>
+            {isGamificationEnabled && (
+              <s.AvatarWrapper>
+                <AvatarBackground
+                  className="clickable"
+                  onClick={() => setShowAvatarModal(true)}
+                  $backgroundColor={selectedAvatarBackgroundColor}
+                >
+                  <AvatarImage
+                    $imageSource={AVATAR_IMAGE_MAP[selectedAvatarCharacterId]}
+                    $color={selectedAvatarCharacterColor}
+                  />
+                </AvatarBackground>
+              </s.AvatarWrapper>
+            )}
             <InputField
               type={"text"}
               label={strings.displayName}
@@ -204,62 +212,64 @@ export default function ProfileDetails() {
         </Form>
       </Main>
 
-      <Modal open={showAvatarModal} onClose={() => setShowAvatarModal(false)}>
-        <Header withoutLogo>
-          <Heading>Choose Your Avatar</Heading>
-        </Header>
-        <Main>
-          <s.PickerSection>
-            <span className="picker-label">Character</span>
-            <s.PickerGrid>
-              {AVATAR_CHARACTER_IDS.map((id) => (
-                <s.AvatarOption
-                  key={id}
-                  $selected={selectedAvatarCharacterId === id}
-                  $backgroundColor={selectedAvatarBackgroundColor}
-                  onClick={() => {
-                    setSelectedAvatarCharacterId(id);
-                  }}
-                >
-                  <AvatarImage $imageSource={AVATAR_IMAGE_MAP[id]} $color={selectedAvatarCharacterColor} />
-                </s.AvatarOption>
-              ))}
-            </s.PickerGrid>
-          </s.PickerSection>
+      {isGamificationEnabled && (
+        <Modal open={showAvatarModal} onClose={() => setShowAvatarModal(false)}>
+          <Header withoutLogo>
+            <Heading>Choose Your Avatar</Heading>
+          </Header>
+          <Main>
+            <s.PickerSection>
+              <span className="picker-label">Character</span>
+              <s.PickerGrid>
+                {AVATAR_CHARACTER_IDS.map((id) => (
+                  <s.AvatarOption
+                    key={id}
+                    $selected={selectedAvatarCharacterId === id}
+                    $backgroundColor={selectedAvatarBackgroundColor}
+                    onClick={() => {
+                      setSelectedAvatarCharacterId(id);
+                    }}
+                  >
+                    <AvatarImage $imageSource={AVATAR_IMAGE_MAP[id]} $color={selectedAvatarCharacterColor} />
+                  </s.AvatarOption>
+                ))}
+              </s.PickerGrid>
+            </s.PickerSection>
 
-          <s.PickerSection>
-            <span className="picker-label">Character Color</span>
-            <s.PickerGrid>
-              {AVATAR_CHARACTER_COLORS.map((color) => (
-                <s.ColorOption
-                  key={color}
-                  $backgroundColor={color}
-                  $selected={selectedAvatarCharacterColor === color}
-                  onClick={() => {
-                    setSelectedAvatarCharacterColor(color);
-                  }}
-                />
-              ))}
-            </s.PickerGrid>
-          </s.PickerSection>
+            <s.PickerSection>
+              <span className="picker-label">Character Color</span>
+              <s.PickerGrid>
+                {AVATAR_CHARACTER_COLORS.map((color) => (
+                  <s.ColorOption
+                    key={color}
+                    $backgroundColor={color}
+                    $selected={selectedAvatarCharacterColor === color}
+                    onClick={() => {
+                      setSelectedAvatarCharacterColor(color);
+                    }}
+                  />
+                ))}
+              </s.PickerGrid>
+            </s.PickerSection>
 
-          <s.PickerSection>
-            <span className="picker-label">Background Color</span>
-            <s.PickerGrid>
-              {AVATAR_BACKGROUND_COLORS.map((color) => (
-                <s.ColorOption
-                  key={color}
-                  $backgroundColor={color}
-                  $selected={selectedAvatarBackgroundColor === color}
-                  onClick={() => {
-                    setSelectedAvatarBackgroundColor(color);
-                  }}
-                />
-              ))}
-            </s.PickerGrid>
-          </s.PickerSection>
-        </Main>
-      </Modal>
+            <s.PickerSection>
+              <span className="picker-label">Background Color</span>
+              <s.PickerGrid>
+                {AVATAR_BACKGROUND_COLORS.map((color) => (
+                  <s.ColorOption
+                    key={color}
+                    $backgroundColor={color}
+                    $selected={selectedAvatarBackgroundColor === color}
+                    onClick={() => {
+                      setSelectedAvatarBackgroundColor(color);
+                    }}
+                  />
+                ))}
+              </s.PickerGrid>
+            </s.PickerSection>
+          </Main>
+        </Modal>
+      )}
     </PreferencesPage>
   );
 }
