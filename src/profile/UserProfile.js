@@ -54,7 +54,7 @@ export default function UserProfile() {
   const { hasBadgeNotification, totalNumberOfBadges } = useContext(BadgeCounterContext);
   const { friendUserId } = useParams();
   const [isOwnProfile, setIsOwnProfile] = useState(!friendUserId);
-  const [loadingProfileDetails, setLoadingProfileDetails] = useState(!!friendUserId);
+  const [loadingProfileDetails, setLoadingProfileDetails] = useState(true);
   const [friendDetailsError, setFriendDetailsError] = useState(null);
   const [unfriendModalOpen, setUnfriendModalOpen] = useState(false);
   const friendship = profileData?.friendship;

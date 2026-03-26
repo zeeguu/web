@@ -49,8 +49,7 @@ export default function Badges({ userId }) {
     }
   }, [api, userId]);
 
-  const getIcon = (level) =>
-    level.icon_name ? iconBasePath + level.icon_name : defaultLogoPath;
+  const getIcon = (level) => (level.icon_name ? iconBasePath + level.icon_name : defaultLogoPath);
 
   const iconStyle = (achieved) => ({
     filter: achieved ? "none" : "grayscale(100%)",
@@ -59,10 +58,12 @@ export default function Badges({ userId }) {
 
   const formatDateTime = (iso) =>
     iso
-      ? new Date(iso).toLocaleString(undefined, {
-          dateStyle: "short",
-          timeStyle: "short",
-        }).replace(",", "")
+      ? new Date(iso)
+          .toLocaleString(undefined, {
+            dateStyle: "short",
+            timeStyle: "short",
+          })
+          .replace(",", "")
       : "—";
 
   return (
@@ -74,11 +75,7 @@ export default function Badges({ userId }) {
           )}
 
           <div className="icon-container">
-            <img
-              src={getIcon(level)}
-              style={iconStyle(level.achieved)}
-              alt={level.name}
-            />
+            <img src={getIcon(level)} style={iconStyle(level.achieved)} alt={level.name} />
           </div>
 
           <h3>{level.name || `Level ${level.badge_level}`}</h3>
@@ -92,11 +89,7 @@ export default function Badges({ userId }) {
               <s.ProgressBar>
                 <s.ProgressFill
                   style={{
-                    width: `${
-                      (Math.min(level.current_value, level.target_value) /
-                        level.target_value) *
-                      100
-                    }%`,
+                    width: `${(Math.min(level.current_value, level.target_value) / level.target_value) * 100}%`,
                   }}
                 />
               </s.ProgressBar>
