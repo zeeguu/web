@@ -84,10 +84,10 @@ export default function UserProfile() {
 
   useEffect(() => {
     if (!api) return;
-
+   
     setLoadingProfileDetails(true);
     setActiveTab("overview");
-
+    
     if (!friendUserId) {
       setIsOwnProfile(true);
       updateProfileView(userDetails, null, strings.titleOwnProfile);
