@@ -34,13 +34,17 @@ import {
   validatedAvatarCharacterId,
 } from "../../profile/avatarOptions";
 import { AvatarBackground, AvatarImage } from "../../profile/UserProfile.sc";
+import Feature from "../../features/Feature";
 import * as s from "./ProfileDetails.sc";
 import EditIcon from "@mui/icons-material/Edit";
 import CheckIcon from "@mui/icons-material/Check";
 
 export default function ProfileDetails() {
   const api = useContext(APIContext);
+  const isGamificationEnabled = Feature.gamification();
   const state = useLocation().state || {};
+  const fallbackRedirectPath = isGamificationEnabled ? "/profile" : "/account_settings";
+  const redirectPath = ["/profile", "/account_settings"].includes(state.from) ? state.from : fallbackRedirectPath;
   const successfullyChangedPassword = "passwordChanged" in state ? state.passwordChanged : false;
   const [errorMessage, setErrorMessage] = useState("");
   const { userDetails, setUserDetails } = useContext(UserContext);
@@ -104,18 +108,20 @@ export default function ProfileDetails() {
     const payload = {
       ...userDetails,
       ...updatedFormValues,
-      ...Object.fromEntries(Object.entries(updatedAvatarValues).map(([key, value]) => [`avatar_${key}`, value])),
+      ...(isGamificationEnabled
+        ? Object.fromEntries(Object.entries(updatedAvatarValues).map(([key, value]) => [`avatar_${key}`, value]))
+        : {}),
     };
     api.saveUserDetails(payload, setErrorMessage, () => {
       const newUserDetails = {
         ...userDetails,
         ...updatedFormValues,
-        user_avatar: updatedAvatarValues,
+        ...(isGamificationEnabled ? { user_avatar: updatedAvatarValues } : {}),
       };
       setUserDetails(newUserDetails);
       LocalStorage.setUserInfo(newUserDetails);
       saveSharedUserInfo(newUserDetails);
-      history.push("/profile");
+      history.push(redirectPath);
     });
   }
 
@@ -124,7 +130,7 @@ export default function ProfileDetails() {
   }
   return (
     <PreferencesPage layoutVariant={"minimalistic-top-aligned"}>
-      <BackArrow redirectLink={"/profile"} />
+      <BackArrow redirectLink={redirectPath} />
       <Header withoutLogo>
         <Heading>{strings.profileDetails}</Heading>
         {successfullyChangedPassword && (
@@ -137,7 +143,8 @@ export default function ProfileDetails() {
         <Form>
           {errorMessage && <FullWidthErrorMsg>{errorMessage}</FullWidthErrorMsg>}
           <FormSection>
-            <s.AvatarWrapper>
+            {isGamificationEnabled && (
+              <s.AvatarWrapper>
               <AvatarBackground
                 className="clickable"
                 onClick={() => setShowAvatarModal(true)}
@@ -152,6 +159,7 @@ export default function ProfileDetails() {
                 </s.EditAvatarButton>
               </AvatarBackground>
             </s.AvatarWrapper>
+            )}
             <InputField
               type={"text"}
               label={strings.displayName}
@@ -209,7 +217,8 @@ export default function ProfileDetails() {
         </Form>
       </Main>
 
-      <Modal open={showAvatarModal} onClose={() => setShowAvatarModal(false)}>
+      {isGamificationEnabled && (
+        <Modal open={showAvatarModal} onClose={() => setShowAvatarModal(false)}>
         <Header withoutLogo>
           <Heading>Choose Your Avatar</Heading>
         </Header>
@@ -288,6 +297,7 @@ export default function ProfileDetails() {
           </s.ConfirmButtonWrapper>
         </Main>
       </Modal>
+      )}
     </PreferencesPage>
   );
 }

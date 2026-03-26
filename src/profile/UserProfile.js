@@ -292,7 +292,14 @@ export default function UserProfile() {
         <>
           <s.HeaderCard>
             {isOwnProfile ? (
-              <s.EditProfileButton onClick={() => history.push("/account_settings/profile_details")}>
+              <s.EditProfileButton
+                onClick={() =>
+                  history.push({
+                    pathname: "/account_settings/profile_details",
+                    state: { from: "/profile" },
+                  })
+                }
+              >
                 <EditIcon sx={{ fontSize: "1rem" }} />
               </s.EditProfileButton>
             ) : (
