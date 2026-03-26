@@ -31,7 +31,7 @@ export default function SharedArticleHandler() {
           }
 
           const artinfo = typeof result === "string" ? JSON.parse(result) : result;
-          history.replace("/read/article?id=" + artinfo.id);
+          history.replace("/read/article?id=" + artinfo.id + "&source=share");
         } catch (e) {
           setStatus("error");
           setErrorMessage("Could not process this article.");
