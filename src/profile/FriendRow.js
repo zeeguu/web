@@ -73,7 +73,7 @@ export default function FriendRow({
       if (friendship && friendship.friend_request_status === "accepted") {
         return (
           <s.AlreadyFriends>
-            <PersonIcon sx={{ color: "#2ecc40", fontSize: "1.4rem", verticalAlign: "middle" }} />
+            <PersonIcon sx={{ color: "#2ecc40", fontSize: "1rem", verticalAlign: "middle" }} />
             <span>Already friends</span>
           </s.AlreadyFriends>
         );
@@ -85,7 +85,7 @@ export default function FriendRow({
         }
         return (
           <s.ActionButton $variant="cancel" onClick={(event) => onCancelRequest?.(event, user?.id)}>
-            <CancelScheduleSendIcon sx={{ color: "#e74c3c", fontSize: "1.2rem", verticalAlign: "middle" }} />
+            <CancelScheduleSendIcon sx={{ color: "#e74c3c", fontSize: "1rem", verticalAlign: "middle" }} />
             <span>Cancel</span>
           </s.ActionButton>
         );
@@ -93,7 +93,7 @@ export default function FriendRow({
       if (isSent) {
         return (
           <s.ActionButton $variant="cancel" onClick={(event) => onCancelRequest?.(event, user?.id)}>
-            <CancelScheduleSendIcon sx={{ color: "#e74c3c", fontSize: "1.2rem", verticalAlign: "middle" }} />
+            <CancelScheduleSendIcon sx={{ color: "#e74c3c", fontSize: "1rem", verticalAlign: "middle" }} />
             <span>Cancel</span>
           </s.ActionButton>
         );
@@ -102,12 +102,12 @@ export default function FriendRow({
         <s.ActionButton $variant="add" onClick={(event) => onSendRequest?.(event, user?.id)} disabled={isSending}>
           {isSending ? (
             <>
-              <SendIcon sx={{ color: "#3498db", fontSize: "1.4rem", verticalAlign: "middle" }} />
+              <SendIcon sx={{ color: "#3498db", fontSize: "1rem", verticalAlign: "middle" }} />
               <span>Sending...</span>
             </>
           ) : (
             <>
-              <PersonAddIcon sx={{ color: "#3498db", fontSize: "1.4rem", verticalAlign: "middle" }} />
+              <PersonAddIcon sx={{ color: "#3498db", fontSize: "1rem", verticalAlign: "middle" }} />
               <span>Add</span>
             </>
           )}
@@ -121,19 +121,19 @@ export default function FriendRow({
           <s.ActionButton $variant="accept" onClick={(event) => onAcceptRequest?.(event, user?.id)} disabled={requestAccepted}>
             {requestAccepted ? (
               <>
-                <CheckIcon sx={{ color: "#2ecc40", fontSize: "1.4rem", verticalAlign: "middle" }} />
+                <CheckIcon sx={{ color: "#2ecc40", fontSize: "1rem", verticalAlign: "middle" }} />
                 <span>Accepted</span>
               </>
             ) : (
               <>
-                <CheckIcon sx={{ color: "#2ecc40", fontSize: "1.4rem", verticalAlign: "middle" }} />
+                <CheckIcon sx={{ color: "#2ecc40", fontSize: "1rem", verticalAlign: "middle" }} />
                 <span>Accept</span>
               </>
             )}
           </s.ActionButton>
           {!requestAccepted && (
             <s.ActionButton $variant="reject" onClick={(event) => onRejectRequest?.(event, user?.id)}>
-              <ClearIcon sx={{ color: "#e74c3c", fontSize: "1.4rem", verticalAlign: "middle" }} />
+              <ClearIcon sx={{ color: "#e74c3c", fontSize: "1rem", verticalAlign: "middle" }} />
               <span>Reject</span>
             </s.ActionButton>
           )}

@@ -40,6 +40,11 @@ export const HeaderCard = styled.div`
   .name-wrapper {
     display: flex;
     gap: 1rem;
+
+    @media (max-width: 768px) {
+      flex-direction: column;
+      gap: 0.5rem;
+    }
   }
 
   .username,
@@ -50,11 +55,16 @@ export const HeaderCard = styled.div`
 
     @media (max-width: 768px) {
       justify-content: center;
+      margin-top: 0;
     }
   }
 
   .username {
     color: var(--text-primary);
+    
+    @media (max-width: 768px) {
+      margin-bottom: 0;
+    }
   }
 
   .display-name {

@@ -10,42 +10,56 @@ export default function Badges({ userId }) {
   const defaultLogoPath = "../../../public/static/images/zeeguuLogo.svg";
 
   const [levels, setLevels] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  const fetchBadgesCallback = (data) => {
+    if (!data || data.error) {
+      setError(data?.error || "Could not load badges.");
+      setIsLoading(false);
+      return;
+    }
+
+    const allLevels = [];
+    let hasNewBadges = false;
+
+    data.forEach((badge) => {
+      badge.levels.forEach((lvl) => {
+        const level = {
+          ...lvl,
+          badgeName: badge.name,
+          current_value: badge.current_value,
+          description: lvl.description
+            ? lvl.description.replace("{target_value}", lvl.target_value)
+            : badge.description.replace("{target_value}", lvl.target_value),
+        };
+
+        if (level.achieved && !level.is_shown) {
+          hasNewBadges = true;
+        }
+
+        allLevels.push(level);
+      });
+    });
+
+    setLevels(allLevels);
+
+    if (!userId && hasNewBadges) {
+      api.updateNotShownForUser();
+    }
+
+    setIsLoading(false);
+    setError(null);
+  };
 
   useEffect(() => {
-    const handleData = (data) => {
-      const allLevels = [];
-      let hasNewBadges = false;
-
-      data.forEach((badge) => {
-        badge.levels.forEach((lvl) => {
-          const level = {
-            ...lvl,
-            badgeName: badge.name,
-            current_value: badge.current_value,
-            description: lvl.description
-              ? lvl.description.replace("{target_value}", lvl.target_value)
-              : badge.description.replace("{target_value}", lvl.target_value),
-          };
-
-          if (level.achieved && !level.is_shown) {
-            hasNewBadges = true;
-          }
-
-          allLevels.push(level);
-        });
-      });
-
-      setLevels(allLevels);
-
-      if (!userId && hasNewBadges) {
-        api.updateNotShownForUser();
-      }
-    };
+    setIsLoading(true);
+    setError(null);
 
     if (userId) {
-      api.getBadgesForFriend(userId, handleData);
+      api.getBadgesForFriend(userId, fetchBadgesCallback);
     } else {
-      api.getBadgesForUser(handleData);
+      api.getBadgesForUser(fetchBadgesCallback);
     }
   }, [api, userId]);
 
@@ -67,40 +81,47 @@ export default function Badges({ userId }) {
       : "—";
 
   return (
-    <s.BadgeContainer>
-      {levels.map((level, index) => (
-        <s.BadgeCard key={index}>
-          {!userId && !level.is_shown && level.achieved && (
-            <NotificationIcon text="NEW" position="card-corner" isActive={true} />
-          )}
+    <>
+      {isLoading && <p>Loading badges...</p>}
+      {!isLoading && error && <p style={{ color: "#b00020" }}>{error}</p>}
 
-          <div className="icon-container">
-            <img src={getIcon(level)} style={iconStyle(level.achieved)} alt={level.name} />
-          </div>
+      {!isLoading && !error && (
+        <s.BadgeContainer>
+          {levels.map((level, index) => (
+            <s.BadgeCard key={index}>
+              {!userId && !level.is_shown && level.achieved && (
+                <NotificationIcon text="NEW" position="card-corner" isActive={true} />
+              )}
 
-          <h3>{level.name || `Level ${level.badge_level}`}</h3>
+              <div className="icon-container">
+                <img src={getIcon(level)} style={iconStyle(level.achieved)} alt={level.name} />
+              </div>
 
-          <div>{level.description}</div>
+              <h3>{level.name || `Level ${level.badge_level}`}</h3>
 
-          {level.achieved ? (
-            <s.AchievedAtBox>{formatDateTime(level.achieved_at)}</s.AchievedAtBox>
-          ) : (
-            <s.ProgressWrapper>
-              <s.ProgressBar>
-                <s.ProgressFill
-                  style={{
-                    width: `${(Math.min(level.current_value, level.target_value) / level.target_value) * 100}%`,
-                  }}
-                />
-              </s.ProgressBar>
+              <div>{level.description}</div>
 
-              <s.ProgressText>
-                {level.current_value} / {level.target_value}
-              </s.ProgressText>
-            </s.ProgressWrapper>
-          )}
-        </s.BadgeCard>
-      ))}
-    </s.BadgeContainer>
+              {level.achieved ? (
+                <s.AchievedAtBox>{formatDateTime(level.achieved_at)}</s.AchievedAtBox>
+              ) : (
+                <s.ProgressWrapper>
+                  <s.ProgressBar>
+                    <s.ProgressFill
+                      style={{
+                        width: `${(Math.min(level.current_value, level.target_value) / level.target_value) * 100}%`,
+                      }}
+                    />
+                  </s.ProgressBar>
+
+                  <s.ProgressText>
+                    {level.current_value} / {level.target_value}
+                  </s.ProgressText>
+                </s.ProgressWrapper>
+              )}
+            </s.BadgeCard>
+          ))}
+        </s.BadgeContainer>
+      )}
+    </>
   );
 }

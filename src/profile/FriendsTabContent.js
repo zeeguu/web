@@ -6,7 +6,7 @@ import { APIContext } from "../contexts/APIContext";
 import FriendRow from "./FriendRow";
 import { FriendRequestContext } from "@/contexts/FriendRequestContext";
 
-export default function FriendsTabContent({ friendUserId }) {
+export default function FriendsTabContent({ friendUserId, navigationHandler }) {
   const api = useContext(APIContext);
   const history = useHistory();
   const [friends, setFriends] = useState([]);
@@ -36,7 +36,7 @@ export default function FriendsTabContent({ friendUserId }) {
     if (pendingSearch === "") {
       setNewFriendResults([]);
       setNewFriendError(null);
-      setSearchingNewFriends(null)
+      setSearchingNewFriends(null);
     }
   }, [pendingSearch]);
 
@@ -171,9 +171,7 @@ export default function FriendsTabContent({ friendUserId }) {
       .then((response) => {
         if (response.status === 200) {
           setFriendRequests((prev) =>
-            prev.map((req) =>
-              req.sender.id === senderId ? { ...req, accepted: true } : req,
-            ),
+            prev.map((req) => (req.sender.id === senderId ? { ...req, accepted: true } : req)),
           );
           updateFriendRequestCounter();
         } else {
@@ -193,9 +191,7 @@ export default function FriendsTabContent({ friendUserId }) {
       .rejectFriendRequest(senderId)
       .then((response) => {
         if (response.status === 200) {
-          setFriendRequests((prev) =>
-            prev.filter((req) => req.sender.id !== senderId),
-          );
+          setFriendRequests((prev) => prev.filter((req) => req.sender.id !== senderId));
           updateFriendRequestCounter();
         } else {
           response.json().then((json) => {
@@ -226,11 +222,11 @@ export default function FriendsTabContent({ friendUserId }) {
   };
 
   const handleViewFriendProfile = (friendId) => {
-    if (!friendId) {
+    if (!friendId || !navigationHandler) {
       return;
     }
 
-    history.push(`/profile/${friendId}`);
+    navigationHandler(`/profile/${friendId}`);
   };
 
   return (
@@ -247,106 +243,97 @@ export default function FriendsTabContent({ friendUserId }) {
           {friendsFriends.length > 0 && (
             <ul>
               {friendsFriends.map((friend) => (
-                <FriendRow
-                  key={friend.id}
-                  user={friend}
-                  rowType="view-only"
-                  onViewProfile={handleViewFriendProfile}
-                />
+                <FriendRow key={friend.id} user={friend} rowType="view-only" onViewProfile={handleViewFriendProfile} />
               ))}
             </ul>
           )}
         </>
       ) : (
         <div>
-      <div style={{ display: "flex", alignItems: "center", gap: "1em" }}>
-        <SearchBar
-          value={pendingSearch}
-          onChange={(e) => setPendingSearch(e.target.value)}
-          placeholder="Search for users..."
-        />
-      </div>
+          <div style={{ display: "flex", alignItems: "center", gap: "1em" }}>
+            <SearchBar
+              value={pendingSearch}
+              onChange={(e) => setPendingSearch(e.target.value)}
+              placeholder="Search for users..."
+            />
+          </div>
 
-      {newFriendError && <p style={{ color: "red" }}>{newFriendError}</p>}
+          {newFriendError && <p style={{ color: "red" }}>{newFriendError}</p>}
 
-      {/* Only show Users section when searching */}
-      {pendingSearch ? (
-        <div>
-          <h3>Users</h3>
-            {newFriendResults.length === 0 && searchingNewFriends === null && (
-              <p>Press Enter to search...</p>
-            )}
-            {newFriendResults.length === 0 && searchingNewFriends === true && pendingSearch.trim().length >= 2 && (
-              <p>Searching...</p>
-            )}
-            {newFriendResults.length === 0 && searchingNewFriends === false && pendingSearch.trim().length >= 2 && (
-              <p>No users...</p>
-            )}
-          {newFriendResults.length > 0 && (
-            <ul>
-              {newFriendResults.map((result) => {
-                const { user } = result;
-                return (
-                  <FriendRow
-                    key={user.id}
-                    user={user}
-                    rowType="search"
-                    isSending={sendingRequestId === user.id}
-                    isSent={sentRequests.includes(user.id)}
-                    onSendRequest={handleSendFriendRequest}
-                    onCancelRequest={handleCancelFriendRequest}
-                    onViewProfile={handleViewFriendProfile}
-                  />
-                );
-              })}
-            </ul>
+          {/* Only show Users section when searching */}
+          {pendingSearch ? (
+            <div>
+              <h3>Users</h3>
+              {newFriendResults.length === 0 && searchingNewFriends === null && <p>Press Enter to search...</p>}
+              {newFriendResults.length === 0 && searchingNewFriends === true && pendingSearch.trim().length >= 2 && (
+                <p>Searching...</p>
+              )}
+              {newFriendResults.length === 0 && searchingNewFriends === false && pendingSearch.trim().length >= 2 && (
+                <p>No users...</p>
+              )}
+              {newFriendResults.length > 0 && (
+                <ul>
+                  {newFriendResults.map((result) => {
+                    const { user } = result;
+                    return (
+                      <FriendRow
+                        key={user.id}
+                        user={user}
+                        rowType="search"
+                        isSending={sendingRequestId === user.id}
+                        isSent={sentRequests.includes(user.id)}
+                        onSendRequest={handleSendFriendRequest}
+                        onCancelRequest={handleCancelFriendRequest}
+                        onViewProfile={handleViewFriendProfile}
+                      />
+                    );
+                  })}
+                </ul>
+              )}
+            </div>
+          ) : (
+            <>
+              {/* Friend Requests section only if there are requests */}
+              {!loadingRequests && friendRequests.length > 0 && (
+                <div>
+                  <h3>Friend Requests</h3>
+                  {requestsError && <p style={{ color: "red" }}>{requestsError}</p>}
+                  <ul>
+                    {friendRequests.map((req) => (
+                      <FriendRow
+                        key={req.id}
+                        user={req.sender}
+                        rowType="request"
+                        requestAccepted={req.accepted}
+                        onAcceptRequest={handleAcceptFriendRequest}
+                        onRejectRequest={handleRejectFriendRequest}
+                        onViewProfile={handleViewFriendProfile}
+                      />
+                    ))}
+                  </ul>
+                </div>
+              )}
+
+              <h3>Friends</h3>
+              {loadingFriends && <p>Loading friends...</p>}
+              {friendsError && <p style={{ color: "red" }}>{friendsError}</p>}
+              {!loadingFriends && !friendsError && friends.length === 0 && <p>You have no friends yet.</p>}
+              {!loadingFriends && friends.length > 0 && (
+                <ul>
+                  {friends.map((friend) => (
+                    <FriendRow
+                      key={friend.id}
+                      user={friend}
+                      rowType="friend"
+                      onUnfriend={handleUnfriend}
+                      onViewProfile={handleViewFriendProfile}
+                    />
+                  ))}
+                </ul>
+              )}
+            </>
           )}
         </div>
-      ) : (
-        <>
-          {/* Friend Requests section only if there are requests */}
-          {!loadingRequests && friendRequests.length > 0 && (
-            <div>
-              <h3>Friend Requests</h3>
-              {requestsError && <p style={{ color: "red" }}>{requestsError}</p>}
-              <ul>
-                {friendRequests.map((req) => (
-                  <FriendRow
-                    key={req.id}
-                    user={req.sender}
-                    rowType="request"
-                    requestAccepted={req.accepted}
-                    onAcceptRequest={handleAcceptFriendRequest}
-                    onRejectRequest={handleRejectFriendRequest}
-                    onViewProfile={handleViewFriendProfile}
-                  />
-                ))}
-              </ul>
-            </div>
-          )}
-
-          <h3>Friends</h3>
-          {loadingFriends && <p>Loading friends...</p>}
-          {friendsError && <p style={{ color: "red" }}>{friendsError}</p>}
-          {!loadingFriends && !friendsError && friends.length === 0 && (
-            <p>You have no friends yet.</p>
-          )}
-          {!loadingFriends && friends.length > 0 && (
-            <ul>
-              {friends.map((friend) => (
-                <FriendRow
-                  key={friend.id}
-                  user={friend}
-                  rowType="friend"
-                  onUnfriend={handleUnfriend}
-                  onViewProfile={handleViewFriendProfile}
-                />
-              ))}
-            </ul>
-          )}
-        </>
-      )}
-    </div>
       )}
     </div>
   );

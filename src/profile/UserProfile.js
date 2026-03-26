@@ -93,10 +93,15 @@ export default function UserProfile() {
     setActiveLanguages(sorted);
   };
 
-  useEffect(() => {
-    if (!api) return;
+  const handleUserProfileNavigation = (target) => {
+    setLoadingProfileDetails(true);
+    history.push(target);
+  };
 
+  useEffect(() => {
     resetProfileState();
+
+    if (!api) return;
 
     if (!friendUserId) {
       setIsOwnProfile(true);
@@ -116,7 +121,7 @@ export default function UserProfile() {
 
       const isSameUser = data.username === userDetails?.username;
       if (isSameUser) {
-        history.push("/profile");
+        handleUserProfileNavigation("/profile");
       } else {
         updateProfileView(data, null, `${data.username}'s ${strings.titleUserProfilePostfix}`);
         api.getAllDailyStreakForFriend(friendUserId, activeLanguagesCallback);
@@ -232,7 +237,7 @@ export default function UserProfile() {
     }
 
     if (activeTab === "friends") {
-      return <FriendsTabContent friendUserId={friendUserId} />;
+      return <FriendsTabContent friendUserId={friendUserId} navigationHandler={handleUserProfileNavigation} />;
     }
 
     if (activeTab === "leaderboards") {
@@ -255,7 +260,7 @@ export default function UserProfile() {
               type={"button"}
               className={"small"}
               onClick={() => {
-                history.push("/profile");
+                handleUserProfileNavigation("/profile");
               }}
             >
               <ArrowBackIcon sx={{ fontSize: "1.2rem" }} />

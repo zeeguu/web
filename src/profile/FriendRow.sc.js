@@ -155,7 +155,8 @@ export const RequestSent = styled.span`
 `;
 
 export const ActionButton = styled.button`
-  padding: 0.3em 0.8em;
+  font-size: 0.9rem;
+  padding: 0.5em 0.8em;
   border-radius: 4px;
   border: 1px solid
     ${({ $variant }) => actionVariantValue($variant, "lightBorder", "var(--border-light)")};
