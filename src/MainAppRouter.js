@@ -53,6 +53,7 @@ import DailyAudioRouter from "./dailyAudio/_DailyAudioRouter";
 import IndividualExercise from "./pages/IndividualExercise";
 import Swiper from "./swiper/Swiper";
 import KeyboardTest from "./pages/KeyboardTest";
+import Feature from "./features/Feature";
 
 // Helper to detect if we're in a Capacitor native app
 const isCapacitor = () => {
@@ -134,7 +135,12 @@ export default function MainAppRouter({ hasExtension, handleSuccessfulLogIn }) {
       <PrivateRouteWithLayout path="/history" component={ReadingHistory} />
       <PrivateRouteWithLayout path="/activity-history" component={ActivityRouter} />
       <PrivateRouteWithLayout path="/account_settings" component={SettingsRouter} />
-      <PrivateRouteWithLayout path="/profile" component={ProfileRouter} />
+      {/* Only include profile router if gamification is enabled */}
+      {Feature.gamification() ? (
+        <PrivateRouteWithLayout path="/profile" component={ProfileRouter} />
+      ) : (
+        <Route path="/profile" component={NotFound} />
+      )}
       <PrivateRouteWithLayout path="/teacher" component={TeacherRouter} />
       <PrivateRouteWithLayout path="/shared-article" component={SharedArticleHandler} />
       <PrivateRouteWithLayout path="/read/article" component={ArticleReader} />
