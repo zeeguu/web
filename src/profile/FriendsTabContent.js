@@ -1,5 +1,4 @@
 import { useContext, useEffect, useState } from "react";
-import { useHistory } from "react-router-dom";
 import { toast } from "react-toastify";
 import SearchBar from "../components/SearchBar";
 import { APIContext } from "../contexts/APIContext";
@@ -8,7 +7,6 @@ import { FriendRequestContext } from "@/contexts/FriendRequestContext";
 
 export default function FriendsTabContent({ friendUserId, navigationHandler }) {
   const api = useContext(APIContext);
-  const history = useHistory();
   const [friends, setFriends] = useState([]);
   const [loadingFriends, setLoadingFriends] = useState(true);
   const [friendsError, setFriendsError] = useState(null);
@@ -30,15 +28,6 @@ export default function FriendsTabContent({ friendUserId, navigationHandler }) {
   const [friendsFriendsError, setFriendsFriendsError] = useState(null);
 
   const { updateFriendRequestCounter } = useContext(FriendRequestContext);
-
-  // Reset search results when search bar is empty
-  useEffect(() => {
-    if (pendingSearch === "") {
-      setNewFriendResults([]);
-      setNewFriendError(null);
-      setSearchingNewFriends(null);
-    }
-  }, [pendingSearch]);
 
   useEffect(() => {
     if (friendUserId) return;
@@ -82,16 +71,26 @@ export default function FriendsTabContent({ friendUserId, navigationHandler }) {
   }, [api, friendUserId]);
 
   useEffect(() => {
+    if (pendingSearch === "") {
+      setNewFriendResults([]);
+      setNewFriendError(null);
+      setSearchingNewFriends(null);
+    }
+    const searchTimeout = handlePendingSearchChange(false);
+    return () => clearTimeout(searchTimeout);
+  }, [pendingSearch, api]);
+
+  const handlePendingSearchChange = (isEnterSearch) => {
     const query = pendingSearch.trim();
 
-    if (query.length < 2) {
+    if (query.length < 2 && !isEnterSearch) {
       setNewFriendResults([]);
       setNewFriendError(null);
       setSearchingNewFriends(null);
       return;
     }
 
-    const timeout = setTimeout(() => {
+    return setTimeout(() => {
       setSearchingNewFriends(true);
       setNewFriendError(null);
 
@@ -107,9 +106,7 @@ export default function FriendsTabContent({ friendUserId, navigationHandler }) {
         setNewFriendResults(results);
       });
     }, 300);
-
-    return () => clearTimeout(timeout);
-  }, [pendingSearch, api]);
+  };
 
   const handleSendFriendRequest = (event, receiverId) => {
     event.stopPropagation();
@@ -255,6 +252,7 @@ export default function FriendsTabContent({ friendUserId, navigationHandler }) {
               value={pendingSearch}
               onChange={(e) => setPendingSearch(e.target.value)}
               placeholder="Search for users..."
+              onSearch={() => handlePendingSearchChange(true)}
             />
           </div>
 
@@ -264,13 +262,11 @@ export default function FriendsTabContent({ friendUserId, navigationHandler }) {
           {pendingSearch ? (
             <div>
               <h3>Users</h3>
-              {newFriendResults.length === 0 && searchingNewFriends === null && <p>Press Enter to search...</p>}
-              {newFriendResults.length === 0 && searchingNewFriends === true && pendingSearch.trim().length >= 2 && (
-                <p>Searching...</p>
+              {newFriendResults.length === 0 && searchingNewFriends === null && (
+                <p>Continue typing or press Enter to search...</p>
               )}
-              {newFriendResults.length === 0 && searchingNewFriends === false && pendingSearch.trim().length >= 2 && (
-                <p>No users...</p>
-              )}
+              {newFriendResults.length === 0 && searchingNewFriends === true && <p>Searching...</p>}
+              {newFriendResults.length === 0 && searchingNewFriends === false && <p>No users...</p>}
               {newFriendResults.length > 0 && (
                 <ul>
                   {newFriendResults.map((result) => {
