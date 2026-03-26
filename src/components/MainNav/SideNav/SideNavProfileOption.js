@@ -16,6 +16,7 @@ import {
 import { BadgeCounterContext } from "../../../badges/BadgeCounterContext";
 import NotificationIcon from "../../../components/NotificationIcon";
 import { FriendRequestContext } from "../../../contexts/FriendRequestContext";
+import Feature from "../../../features/Feature";
 
 const NavAvatar = styled(AvatarBackground)`
   width: 1.8rem;
@@ -38,6 +39,10 @@ export default function SideNavProfileOption({ screenWidth }) {
     setAvatarCharacterColor(validatedAvatarCharacterColor(userDetails.user_avatar?.character_color));
     setAvatarBackgroundColor(validatedAvatarBackgroundColor(userDetails.user_avatar?.background_color));
   }, [userDetails]);
+
+  if (!Feature.gamification()) {
+    return null;
+  }
 
   return (
     <NavOption
