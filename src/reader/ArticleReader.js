@@ -235,9 +235,9 @@ export default function ArticleReader({ teacherArticleID }) {
       api.setArticleOpened(articleInfo.id);
       api.logUserActivity(api.OPEN_ARTICLE, articleID, "", WEB_READER);
 
-      // Show language modal for shared/deeplinked articles
+      // Show language modal for deeplinked articles (share is handled in SharedArticleHandler)
       if (
-        (entrySource === "share" || entrySource === "deeplink") &&
+        entrySource === "deeplink" &&
         !articleInfo.url?.includes("#translated-from-") &&
         !teacherArticleID
       ) {
@@ -368,6 +368,7 @@ export default function ArticleReader({ teacherArticleID }) {
       {showLanguageModal && (
         <ArticleLanguageModal
           articleLanguage={articleInfo.language}
+          articleTitle={articleInfo.title}
           learnedLanguage={userDetails.learned_language}
           source={entrySource}
           onTranslateAndAdapt={handleTranslateAndAdapt}
