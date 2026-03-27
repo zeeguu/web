@@ -122,6 +122,10 @@ export default function ArticleReader({ teacherArticleID }) {
     setShowLanguageModal(false);
     setIsProcessingArticle(false);
 
+    if (query.get("noTranslate") === "true") {
+      updateTranslateInReader(false);
+    }
+
     onCreate();
     return () => {
       componentWillUnmount();

@@ -87,7 +87,7 @@ export default function SharedArticleHandler() {
   };
 
   const handleReadOriginal = () => {
-    navigateToArticle(articleInfo.id);
+    history.replace("/read/article?id=" + articleInfo.id + "&noTranslate=true");
   };
 
   const handleReadAsIs = () => {
