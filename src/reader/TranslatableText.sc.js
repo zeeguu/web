@@ -182,37 +182,31 @@ const TranslatableText = styled.div`
     background-color: var(--mwe-tran-bg) !important;
   }
 
-  /* --- MWE Hover Active: Solid underline when hovering MWE partner words --- */
-  /* Adjacent MWEs use darker orange, separated MWEs use their assigned color */
-  /* Words WITHOUT translation (no z-orig) */
-  z-tag.mwe-hover-active:not(:has(z-orig)) {
-    text-decoration-line: underline !important;
-    text-decoration-style: solid !important;
-    text-decoration-thickness: 3px !important;
-    text-decoration-color: var(--mwe-color, var(--mwe-adjacent-color)) !important;
-  }
-  /* Words WITH translation (has z-orig) */
-  z-tag.mwe-hover-active:has(z-orig) {
-    text-decoration: none !important;
-  }
-  z-tag.mwe-hover-active z-orig,
-  z-tag.mwe-hover-active z-orig span {
-    text-decoration-line: underline !important;
-    text-decoration-style: solid !important;
-    text-decoration-thickness: 3px !important;
-    text-decoration-color: var(--mwe-color, var(--mwe-adjacent-color)) !important;
-    border: none !important;
-  }
+  /* --- MWE & Solution Hover Active: desktop only --- */
+  @media (hover: hover) {
+    z-tag.mwe-hover-active:not(:has(z-orig)) {
+      text-decoration-line: underline !important;
+      text-decoration-style: solid !important;
+      text-decoration-thickness: 3px !important;
+      text-decoration-color: var(--mwe-color, var(--mwe-adjacent-color)) !important;
+    }
+    z-tag.mwe-hover-active:has(z-orig) {
+      text-decoration: none !important;
+    }
+    z-tag.mwe-hover-active z-orig,
+    z-tag.mwe-hover-active z-orig span {
+      text-decoration-line: underline !important;
+      text-decoration-style: solid !important;
+      text-decoration-thickness: 3px !important;
+      text-decoration-color: var(--mwe-color, var(--mwe-adjacent-color)) !important;
+      border: none !important;
+    }
 
-  /* ========================================================================
-   * SOLUTION EXPRESSION HOVER (for exercises with multi-word bookmarks)
-   * Highlights all words in the solution when hovering any of them
-   * Uses same styling as regular word hover
-   * ======================================================================== */
-  z-tag.solution-hover-active {
-    text-decoration: underline;
-    text-decoration-thickness: 3px;
-    text-decoration-color: rgb(255, 229, 158);
+    z-tag.solution-hover-active {
+      text-decoration: underline;
+      text-decoration-thickness: 3px;
+      text-decoration-color: rgb(255, 229, 158);
+    }
   }
 
   /* ========================================================================
