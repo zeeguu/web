@@ -34,7 +34,7 @@ public class MainActivity extends BridgeActivity {
                         String path = "/shared-article?url=" + encodedUrl;
                         getBridge().getWebView().post(() -> {
                             getBridge().getWebView().evaluateJavascript(
-                                "window.location.href = '" + path + "';",
+                                "window.history.pushState({}, '', '" + path + "'); window.dispatchEvent(new PopStateEvent('popstate'));",
                                 null
                             );
                         });

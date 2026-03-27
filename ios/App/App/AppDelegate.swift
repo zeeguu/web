@@ -17,7 +17,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
                 if let vc = self.window?.rootViewController as? CAPBridgeViewController,
                    let webView = vc.bridge?.webView {
-                    webView.evaluateJavaScript("window.location.href = '\(path)';", completionHandler: nil)
+                    webView.evaluateJavaScript("window.history.pushState({}, '', '\(path)'); window.dispatchEvent(new PopStateEvent('popstate'));", completionHandler: nil)
                 }
             }
             return true
