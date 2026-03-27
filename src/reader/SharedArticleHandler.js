@@ -107,7 +107,7 @@ export default function SharedArticleHandler() {
     return (
       <ArticleLanguageModal
         articleLanguage={articleInfo.language}
-        articleTitle={articleInfo.title}
+
         learnedLanguage={userDetails.learned_language}
         source="share"
         onTranslateAndAdapt={handleTranslateAndAdapt}

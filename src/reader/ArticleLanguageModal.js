@@ -7,7 +7,6 @@ function langName(code) {
 
 export default function ArticleLanguageModal({
   articleLanguage,
-  articleTitle,
   learnedLanguage,
   source,
   onTranslateAndAdapt,
@@ -17,9 +16,7 @@ export default function ArticleLanguageModal({
   isLoading,
 }) {
   const isSameLanguage = articleLanguage === learnedLanguage;
-  const titleLine = articleTitle
-    ? `"${articleTitle}" is in ${langName(articleLanguage)}`
-    : `This article is in ${langName(articleLanguage)}`;
+  const titleLine = `This article is in ${langName(articleLanguage)}`;
 
   if (isSameLanguage) {
     return (
