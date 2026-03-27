@@ -15,7 +15,7 @@ export default function SharedArticleHandler() {
 
   const [status, setStatus] = useState("loading");
   const [errorMessage, setErrorMessage] = useState("");
-  const [articleInfo, setArticleInfo] = useState(null);
+  const [articleDetection, setArticleDetection] = useState(null);
   const [isProcessing, setIsProcessing] = useState(false);
 
   useEffect(() => {
@@ -25,23 +25,12 @@ export default function SharedArticleHandler() {
       return;
     }
 
-    api.findOrCreateArticle(
-      { url: sharedUrl, withContent: false },
+    // Lightweight detection: just get language + title, no DB creation
+    api.detectArticleInfo(
+      sharedUrl,
       (result) => {
-        try {
-          if (typeof result === "string" && result.includes("Language not supported")) {
-            setStatus("error");
-            setErrorMessage("This article's language is not supported by Zeeguu.");
-            return;
-          }
-
-          const artinfo = typeof result === "string" ? JSON.parse(result) : result;
-          setArticleInfo(artinfo);
-          setStatus("choice");
-        } catch (e) {
-          setStatus("error");
-          setErrorMessage("Could not process this article.");
-        }
+        setArticleDetection(result);
+        setStatus("choice");
       },
       (error) => {
         setStatus("error");
@@ -56,42 +45,75 @@ export default function SharedArticleHandler() {
     history.replace("/read/article?id=" + id);
   };
 
+  // Create the article in DB (deferred until user makes a choice)
+  const createAndNavigate = (noTranslate) => {
+    setIsProcessing(true);
+    setStatus("loading");
+    api.findOrCreateArticle(
+      { url: sharedUrl },
+      (result) => {
+        const artinfo = typeof result === "string" ? JSON.parse(result) : result;
+        if (noTranslate) {
+          history.replace("/read/article?id=" + artinfo.id + "&noTranslate=true");
+        } else {
+          navigateToArticle(artinfo.id);
+        }
+      },
+      (error) => {
+        setStatus("error");
+        setErrorMessage("Could not process this article.");
+      }
+    );
+  };
+
   const handleTranslateAndAdapt = () => {
     setIsProcessing(true);
     setStatus("loading");
     api.translateAndAdaptArticle(
-      articleInfo.url,
+      sharedUrl,
       userDetails.learned_language,
       (result) => navigateToArticle(result.id),
       (error) => {
         console.error("Translation failed:", error);
-        navigateToArticle(articleInfo.id);
+        // Fall back to creating original article
+        createAndNavigate(false);
       },
     );
   };
 
   const handleSimplify = () => {
+    // Need to create article first, then simplify
     setIsProcessing(true);
     setStatus("loading");
-    api.simplifyArticle(articleInfo.id, (result) => {
-      if (result.status === "success" && result.levels) {
-        const simplified = result.levels.find((l) => !l.is_original);
-        if (simplified) {
-          navigateToArticle(simplified.id);
-          return;
-        }
+    api.findOrCreateArticle(
+      { url: sharedUrl },
+      (result) => {
+        const artinfo = typeof result === "string" ? JSON.parse(result) : result;
+        api.simplifyArticle(artinfo.id, (simplifyResult) => {
+          if (simplifyResult.status === "success" && simplifyResult.levels) {
+            const simplified = simplifyResult.levels.find((l) => !l.is_original);
+            if (simplified) {
+              navigateToArticle(simplified.id);
+              return;
+            }
+          }
+          console.error("Simplification failed:", simplifyResult.message);
+          navigateToArticle(artinfo.id);
+        });
+      },
+      (error) => {
+        setStatus("error");
+        setErrorMessage("Could not process this article.");
       }
-      console.error("Simplification failed:", result.message);
-      navigateToArticle(articleInfo.id);
-    });
+    );
   };
 
   const handleReadOriginal = () => {
-    history.replace("/read/article?id=" + articleInfo.id + "&noTranslate=true");
+    createAndNavigate(true);
   };
 
   const handleReadAsIs = () => {
-    navigateToArticle(articleInfo.id);
+    createAndNavigate(false);
   };
 
   if (status === "loading") {
@@ -103,11 +125,10 @@ export default function SharedArticleHandler() {
     );
   }
 
-  if (status === "choice" && articleInfo) {
+  if (status === "choice" && articleDetection) {
     return (
       <ArticleLanguageModal
-        articleLanguage={articleInfo.language}
-
+        articleLanguage={articleDetection.language}
         learnedLanguage={userDetails.learned_language}
         source="share"
         onTranslateAndAdapt={handleTranslateAndAdapt}

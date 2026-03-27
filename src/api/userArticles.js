@@ -297,9 +297,18 @@ Zeeguu_API.prototype.findOrCreateArticle = function (articleInfo, callback, onEr
     siteName: articleInfo.siteName,
     imageUrl: articleInfo.imageUrl,
     preExtracted: articleInfo.preExtracted,
-    withContent: articleInfo.withContent !== false ? "true" : "false",
   };
   this._post(`/find_or_create_article`, qs.stringify(article), callback, onError);
+};
+
+Zeeguu_API.prototype.detectArticleInfo = function (url, callback, onError) {
+  this._post(`/detect_article_info`, qs.stringify({ url }), (response) => {
+    try {
+      callback(JSON.parse(response));
+    } catch (e) {
+      if (onError) onError("Failed to parse response");
+    }
+  }, onError);
 };
 
 Zeeguu_API.prototype.removeMLSuggestion = function (
