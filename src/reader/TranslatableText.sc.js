@@ -216,28 +216,30 @@ const TranslatableText = styled.div`
   }
 
   /* ========================================================================
-   * REGULAR WORD HOVER (non-MWE)
+   * REGULAR WORD HOVER (non-MWE) — desktop only
    * ======================================================================== */
-  z-tag:hover {
-    text-decoration: underline;
-    text-decoration-thickness: 3px;
-    text-decoration-color: rgb(255, 229, 158);
-  }
-  /* Don't underline translation box - only underline z-orig */
-  z-tag:hover:has(z-orig) {
-    text-decoration: none;
-  }
-  z-tag:hover z-orig {
-    text-decoration: underline;
-    text-decoration-thickness: 3px;
-    text-decoration-color: rgb(255, 229, 158);
-  }
-  /* MWE words use their color on hover */
-  z-tag[class*="mwe-color-"]:hover {
-    text-decoration-color: var(--mwe-color) !important;
-  }
-  z-tag[class*="mwe-color-"]:hover z-orig {
-    text-decoration-color: var(--mwe-color) !important;
+  @media (hover: hover) {
+    z-tag:hover {
+      text-decoration: underline;
+      text-decoration-thickness: 3px;
+      text-decoration-color: rgb(255, 229, 158);
+    }
+    /* Don't underline translation box - only underline z-orig */
+    z-tag:hover:has(z-orig) {
+      text-decoration: none;
+    }
+    z-tag:hover z-orig {
+      text-decoration: underline;
+      text-decoration-thickness: 3px;
+      text-decoration-color: rgb(255, 229, 158);
+    }
+    /* MWE words use their color on hover */
+    z-tag[class*="mwe-color-"]:hover {
+      text-decoration-color: var(--mwe-color) !important;
+    }
+    z-tag[class*="mwe-color-"]:hover z-orig {
+      text-decoration-color: var(--mwe-color) !important;
+    }
   }
 
   /* ========================================================================
