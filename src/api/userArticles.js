@@ -297,6 +297,7 @@ Zeeguu_API.prototype.findOrCreateArticle = function (articleInfo, callback, onEr
     siteName: articleInfo.siteName,
     imageUrl: articleInfo.imageUrl,
     preExtracted: articleInfo.preExtracted,
+    withContent: articleInfo.withContent !== false ? "true" : "false",
   };
   this._post(`/find_or_create_article`, qs.stringify(article), callback, onError);
 };

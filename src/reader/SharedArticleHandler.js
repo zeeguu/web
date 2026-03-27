@@ -26,7 +26,7 @@ export default function SharedArticleHandler() {
     }
 
     api.findOrCreateArticle(
-      { url: sharedUrl },
+      { url: sharedUrl, withContent: false },
       (result) => {
         try {
           if (typeof result === "string" && result.includes("Language not supported")) {
