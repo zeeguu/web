@@ -19,8 +19,8 @@ Zeeguu_API.prototype.getFriendRequests = function(callback) {
   });
 }
 
-Zeeguu_API.prototype.searchUsers = function(username, callback) {
-  this._getJSON(`search_users/${username}`, (data) => {
+Zeeguu_API.prototype.searchUsers = function(search_term, callback) {
+  this._getJSON(`search_users?query=${encodeURIComponent(search_term)}`, (data) => {
     callback(data);
   });
 }
