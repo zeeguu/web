@@ -1,6 +1,7 @@
-- Share articles to Zeeguu directly from your phone's share sheet
-- Share button in article toolbar
-- Dark mode with automatic OS preference detection
-- Fixed bug in daily audio lessons
-- Dismiss button on "Continue where you left off" card
-- Fixed sticky tab bar and scroll issues on mobile
+- Language selection when sharing articles — choose to translate, simplify, or read as-is
+- Disable translations when reading articles in your native language
+- Fix hover underlines on touch devices
+- Faster article sharing with instant share modal
+- Fix invite code handling (auto-lowercase, validation during onboarding)
+- Fix menu positioning and overflow issues
+- Fix preferences page layout
