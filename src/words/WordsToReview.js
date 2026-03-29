@@ -83,13 +83,14 @@ export default function WordsToReview({
         hasNoWordsTranslated={hasNoWordsTranslated}
         hasUserTranslatedWords={hasUserTranslatedWords}
         totalWordsTranslated={totalWordsTranslated}
+        wordsForExercisesCount={wordsForExercises.length}
         toggleEditWordsComponent={<ToggleEditReviewWords setInEditMode={setInEditMode} inEditMode={inEditMode} />}
       />
       {wordsForExercises.length > 0 && (
         <WordsSection>
           <WordsListColumn>
             <SectionHeading>
-              You might see these words in your exercises:
+              Will appear in exercises
               <InfoIcon
                 onClick={() => setShowMoreInfo(showMoreInfo === "willBeInExercises" ? null : "willBeInExercises")}
               />
@@ -133,7 +134,7 @@ export default function WordsToReview({
         <WordsSection>
           <WordsListColumn>
             <SectionHeading>
-              You won't see these words in your exercises:
+              Not included in exercises
               <InfoIcon
                 onClick={() => setShowMoreInfo(showMoreInfo === "wontBeInExercises" ? null : "wontBeInExercises")}
               />
