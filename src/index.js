@@ -23,6 +23,11 @@ Sentry.init({
   enabled: import.meta.env.PROD, // cf: https://stackoverflow.com/a/70537824
 });
 
+window.zeeguuNavigate = (path) => {
+  window.history.pushState({}, "", path);
+  window.dispatchEvent(new PopStateEvent("popstate"));
+};
+
 const root = createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
