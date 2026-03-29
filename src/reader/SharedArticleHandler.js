@@ -41,8 +41,9 @@ export default function SharedArticleHandler() {
     );
   }, [sharedUrl]);
 
-  const navigateToArticle = (id) => {
-    history.replace("/read/article?id=" + id);
+  const navigateToArticle = (id, noTranslate) => {
+    const path = "/read/article?id=" + id + (noTranslate ? "&noTranslate=true" : "");
+    history.replace(path);
   };
 
   // Create the article in DB (deferred until user makes a choice)
@@ -53,11 +54,7 @@ export default function SharedArticleHandler() {
       { url: sharedUrl },
       (result) => {
         const artinfo = typeof result === "string" ? JSON.parse(result) : result;
-        if (noTranslate) {
-          history.replace("/read/article?id=" + artinfo.id + "&noTranslate=true");
-        } else {
-          navigateToArticle(artinfo.id);
-        }
+        navigateToArticle(artinfo.id, noTranslate);
       },
       (error) => {
         setStatus("error");
