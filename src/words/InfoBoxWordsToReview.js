@@ -1,40 +1,16 @@
 import Infobox from "../components/Infobox";
 
-export default function InfoBoxWordsToReview({
-  hasNoWordsTranslated,
-  hasUserTranslatedWords,
-  totalWordsTranslated,
-  wordsForExercisesCount,
-  toggleEditWordsComponent,
-}) {
-  const UserTranslatedWords = (
-    <>
-      <p>
-        <b>
-          You translated {totalWordsTranslated} {totalWordsTranslated === 1 ? "word" : "words"}.{" "}
-          {wordsForExercisesCount > 0 &&
-            (wordsForExercisesCount === totalWordsTranslated
-              ? "They will eventually appear in your exercises."
-              : `${wordsForExercisesCount} will eventually appear in your exercises.`)}
-        </b>
-      </p>
-      <p>Use the toggle to exclude words you don't want to practice.</p>
-    </>
-  );
-  const NoWordsTranslated = (
-    <>
-      <p>
-        <b>You haven't translated any words yet.</b>
-      </p>
-      <p>Use the toggle to exclude words you don't want to practice.</p>
-    </>
-  );
-
+export default function InfoBoxWordsToReview({ toggleEditWordsComponent }) {
   return (
     <Infobox>
       <div>
-        {hasUserTranslatedWords && UserTranslatedWords}
-        {hasNoWordsTranslated && NoWordsTranslated}
+        <p>
+          <b>How words are added to exercises</b>
+        </p>
+        <p>
+          New words are introduced as soon as you learn earlier ones, based on spaced repetition. More important words are
+          added first.
+        </p>
         {toggleEditWordsComponent}
       </div>
     </Infobox>

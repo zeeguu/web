@@ -4,8 +4,6 @@ import strings from "../i18n/definitions";
 import Infobox from "../components/Infobox";
 import { useState, useEffect } from "react";
 import { tokenize } from "../utils/text/preprocessing";
-import { MAX_BOOKMARKS_TO_STUDY_PER_ARTICLE } from "../exercises/ExerciseConstants";
-import { USER_WORD_PREFERENCE } from "./userBookmarkPreferences";
 import InfoBoxWordsToReview from "./InfoBoxWordsToReview";
 import ToggleEditReviewWords from "./ToggleEditReviewWords";
 import { StyledButton } from "../components/allButtons.sc.js";
@@ -25,8 +23,6 @@ export default function WordsToReview({
   showMoreInfo,
   setShowMoreInfo,
 }) {
-  console.log("articleInfo:", articleInfo);
-  const totalWordsTranslated = words.length;
   const [inEditMode, setInEditMode] = useState(false);
   const [wordsForExercises, setWordsForExercises] = useState([]);
   const [wordsExcludedForExercises, setWordsExcludedForExercises] = useState([]);
@@ -67,9 +63,6 @@ export default function WordsToReview({
       </>
     );
 
-  const hasNoWordsTranslated = totalWordsTranslated === 0;
-  const hasUserTranslatedWords = totalWordsTranslated > 0;
-
   return (
     <>
       <div style={{ marginTop: "5%" }}>
@@ -80,20 +73,15 @@ export default function WordsToReview({
         </p>
       </div>
       <InfoBoxWordsToReview
-        hasNoWordsTranslated={hasNoWordsTranslated}
-        hasUserTranslatedWords={hasUserTranslatedWords}
-        totalWordsTranslated={totalWordsTranslated}
-        wordsForExercisesCount={wordsForExercises.length}
-        toggleEditWordsComponent={<ToggleEditReviewWords setInEditMode={setInEditMode} inEditMode={inEditMode} />}
+        toggleEditWordsComponent={
+          <ToggleEditReviewWords setInEditMode={setInEditMode} inEditMode={inEditMode} />
+        }
       />
       {wordsForExercises.length > 0 && (
         <WordsSection>
           <WordsListColumn>
             <SectionHeading>
               Will appear in exercises
-              <InfoIcon
-                onClick={() => setShowMoreInfo(showMoreInfo === "willBeInExercises" ? null : "willBeInExercises")}
-              />
             </SectionHeading>
             {wordsForExercises.map((each) => (
               <ContentOnRow className="contentOnRow" key={each.id}>
@@ -109,9 +97,7 @@ export default function WordsToReview({
               </ContentOnRow>
             ))}
           </WordsListColumn>
-          <InfoBoxColumn>
-            {showMoreInfo === "willBeInExercises" && <MoreInfoBox type="willBeInExercises" />}
-          </InfoBoxColumn>
+          <InfoBoxColumn />
         </WordsSection>
       )}
       <CenteredContent style={{ marginBottom: "2em" }}>
@@ -127,10 +113,7 @@ export default function WordsToReview({
           </StyledButton>
         )}
       </CenteredContent>
-      {((wordsExcludedForExercises.length > 0 && totalWordsTranslated < 10) ||
-        (wordsExpressions.length > 0 && totalWordsTranslated < 10) ||
-        wordsExcludedForExercises.length > 0 ||
-        wordsExpressions.length > 0) && (
+      {(wordsExcludedForExercises.length > 0 || wordsExpressions.length > 0) && (
         <WordsSection>
           <WordsListColumn>
             <SectionHeading>
