@@ -12,42 +12,45 @@ function applyTheme(theme) {
   document.documentElement.setAttribute("data-theme", theme);
 }
 
+function resolveTheme(preference) {
+  if (preference === "dark" || preference === "light") return preference;
+  return getOSTheme();
+}
+
 export default function useTheme() {
-  const [theme, setTheme] = useState(() => {
-    return LocalStorage.getThemePreference() || getOSTheme();
-  });
+  const [preference, setPreferenceState] = useState(
+    () => LocalStorage.getThemePreference() || "auto",
+  );
+
+  const theme = resolveTheme(preference);
 
   useEffect(() => {
     applyTheme(theme);
   }, [theme]);
 
-  // Listen for OS theme changes (only when user hasn't set a preference)
+  // Listen for OS theme changes (only applies when preference is "auto")
   useEffect(() => {
     const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
-    const handleChange = (e) => {
-      if (!LocalStorage.getThemePreference()) {
-        setTheme(e.matches ? "dark" : "light");
+    const handleChange = () => {
+      if (preference === "auto") {
+        applyTheme(getOSTheme());
       }
     };
     mediaQuery.addEventListener("change", handleChange);
     return () => mediaQuery.removeEventListener("change", handleChange);
-  }, []);
+  }, [preference]);
 
-  const toggleTheme = useCallback(() => {
-    setTheme((prev) => {
-      const next = prev === "dark" ? "light" : "dark";
-      LocalStorage.setThemePreference(next);
-      return next;
-    });
-  }, []);
-
-  const resetToOS = useCallback(() => {
-    LocalStorage.clearThemePreference();
-    setTheme(getOSTheme());
+  const setPreference = useCallback((value) => {
+    setPreferenceState(value);
+    if (value === "auto") {
+      LocalStorage.clearThemePreference();
+    } else {
+      LocalStorage.setThemePreference(value);
+    }
   }, []);
 
   return useMemo(
-    () => ({ theme, toggleTheme, resetToOS, isDark: theme === "dark" }),
-    [theme, toggleTheme, resetToOS],
+    () => ({ theme, preference, setPreference, isDark: theme === "dark" }),
+    [theme, preference, setPreference],
   );
 }
