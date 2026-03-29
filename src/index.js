@@ -23,7 +23,11 @@ Sentry.init({
   enabled: import.meta.env.PROD, // cf: https://stackoverflow.com/a/70537824
 });
 
-window.zeeguuNavigate = (path) => {
+// Called from native iOS/Android code to navigate the React app.
+// Native code can only run raw JS in the WebView — it can't access
+// React Router's history.replace(). pushState updates the URL, and
+// the popstate event tells React Router to render the new route.
+window.reactNavigateFromNative = (path) => {
   window.history.pushState({}, "", path);
   window.dispatchEvent(new PopStateEvent("popstate"));
 };
