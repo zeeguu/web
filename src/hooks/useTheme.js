@@ -21,24 +21,28 @@ export default function useTheme() {
   const [preference, setPreferenceState] = useState(
     () => LocalStorage.getThemePreference() || "auto",
   );
-
-  const theme = resolveTheme(preference);
+  const [theme, setTheme] = useState(() => resolveTheme(preference));
 
   useEffect(() => {
     applyTheme(theme);
   }, [theme]);
 
-  // Listen for OS theme changes (only applies when preference is "auto")
+  // When preference changes explicitly, update resolved theme
+  useEffect(() => {
+    setTheme(resolveTheme(preference));
+  }, [preference]);
+
+  // Listen for OS theme changes so "auto" stays in sync
   useEffect(() => {
     const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
-    const handleChange = () => {
-      if (preference === "auto") {
-        applyTheme(getOSTheme());
+    const handleChange = (e) => {
+      if (!LocalStorage.getThemePreference()) {
+        setTheme(e.matches ? "dark" : "light");
       }
     };
     mediaQuery.addEventListener("change", handleChange);
     return () => mediaQuery.removeEventListener("change", handleChange);
-  }, [preference]);
+  }, []);
 
   const setPreference = useCallback((value) => {
     setPreferenceState(value);
