@@ -63,11 +63,11 @@ function Leaderboards() {
     emptyMessage: "No exercise time leaderboard data available yet.",
   },
   {
-    key: "articles_read",
+    key: "read_articles",
     tabLabel: "Read Articles",
     title: "Read Articles Leaderboard",
     icon: MenuBookRoundedIcon,
-    metricLabel: "Articles Read",
+    metricLabel: "Read Articles",
     formatMetric: (value) => `${value}`,
     errorMessage: "Could not load read articles leaderboard.",
     emptyMessage: "No read articles leaderboard data available yet.",

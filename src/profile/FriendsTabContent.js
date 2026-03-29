@@ -44,7 +44,7 @@ export default function FriendsTabContent({ friendUserId, navigationHandler }) {
 
   useEffect(() => {
     if (friendUserId) return;
-    api.getFriendRequests((data) => {
+    api.getReceivedFriendRequests((data) => {
       if (!data) {
         setRequestsError("Failed to fetch friend requests");
         setLoadingRequests(false);

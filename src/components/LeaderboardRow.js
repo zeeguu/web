@@ -1,17 +1,15 @@
 import React from "react";
 import { zeeguuOrange } from "@/components/colors";
+import UserBaseInfo from "@/profile/UserBaseInfo";
 
 function LeaderboardRow({
   rank,
-  name,
-  username,
+  user,
   metrics = [],
   emphasizeTopRanks = 3,
-  showUsernameColumn = true,
   highlight = false,
   isDark = false,
 }) {
-  const usernameText = username ? `@${username}` : "-";
   const highlightStyle = highlight
     ? {
         background: "rgba(255, 187, 84, 0.2)",
@@ -31,8 +29,16 @@ function LeaderboardRow({
       >
         {rank}
       </td>
-      <td style={{ padding: "0.5em", borderBottom: "1px solid #ddd" }}>
-        {name}{" "}
+      <td
+        style={{
+          padding: "0.5em",
+          borderBottom: "1px solid #ddd",
+          display: "flex",
+          alignItems: "center",
+          gap: "0.5em",
+        }}
+      >
+        <UserBaseInfo user={user} />
         {highlight && (
           <span
             style={{
@@ -42,19 +48,13 @@ function LeaderboardRow({
               borderRadius: "6px",
               background: zeeguuOrange,
               color: "white",
-              marginLeft: "0.25em"
+              marginLeft: "0.25em",
             }}
           >
             YOU
           </span>
         )}
       </td>
-
-      {showUsernameColumn && (
-        <td style={{ padding: "0.5em", borderBottom: "1px solid #ddd", color: isDark ? "#b5b5b5" : "#666" }}>
-          {usernameText}
-        </td>
-      )}
 
       {metrics.map((metric) => (
         <td

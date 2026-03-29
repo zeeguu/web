@@ -329,7 +329,7 @@ function LeaderboardTable({
                 <LeaderboardRow
                   key={`${activeLeaderboard?.title || title}-${findFirstDefinedValue(userEntry, ["username", "name"]) || index}`}
                   rank={entry.rank}
-                  name={resolvedName}
+                  user={userEntry}
                   metrics={[
                     {
                       key: `${activeLeaderboard?.metricLabel || metricLabel}-${index}`,
@@ -337,7 +337,6 @@ function LeaderboardTable({
                       align: "center",
                     },
                   ]}
-                  showUsernameColumn={false}
                   highlight={isCurrentUser}
                   isDark={isDark}
                 />

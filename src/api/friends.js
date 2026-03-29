@@ -13,8 +13,8 @@ Zeeguu_API.prototype.getFriendsForUser = function(userId, callback) {
   });
 }
 
-Zeeguu_API.prototype.getFriendRequests = function(callback) {
-  this._getJSON(`get_friend_requests`, (data) => {
+Zeeguu_API.prototype.getReceivedFriendRequests = function(callback) {
+  this._getJSON(`get_received_friend_requests`, (data) => {
     callback(data);
   });
 }

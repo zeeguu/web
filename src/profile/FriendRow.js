@@ -13,20 +13,7 @@ import Modal from "../components/modal_shared/Modal";
 import Header from "../components/modal_shared/Header.sc";
 import Heading from "../components/modal_shared/Heading.sc";
 import Main from "../components/modal_shared/Main.sc";
-import { AvatarBackground, AvatarImage } from "./UserProfile.sc";
-import {
-  AVATAR_IMAGE_MAP,
-  validatedAvatarBackgroundColor,
-  validatedAvatarCharacterColor,
-  validatedAvatarCharacterId,
-} from "./avatarOptions";
-import styled from "styled-components";
-
-const FriendRowAvatar = styled(AvatarBackground)`
-  width: 2rem;
-  height: 2rem;
-  padding: 3px;
-`;
+import UserBaseInfo from "@/profile/UserBaseInfo";
 
 export default function FriendRow({
   user,
@@ -46,23 +33,12 @@ export default function FriendRow({
   const friendship = user?.friendship;
   const languages = user?.languages ?? [];
   const [showLanguagesModal, setShowLanguagesModal] = useState(false);
-  const [selectedAvatarCharacterId, setSelectedAvatarCharacterId] = useState();
-  const [selectedAvatarCharacterColor, setSelectedAvatarCharacterColor] = useState();
-  const [selectedAvatarBackgroundColor, setSelectedAvatarBackgroundColor] = useState();
   const visibleLanguages = languages.slice(0, maxVisibleLanguages);
   const overflowCount = languages.length > maxVisibleLanguages ? languages.length - maxVisibleLanguages : 0;
   const languageListLabel = languages
     .map((language) => language.language || language.code)
     .filter(Boolean)
     .join(", ");
-
-  useEffect(() => {
-    if (user) {
-      setSelectedAvatarCharacterId(validatedAvatarCharacterId(user.user_avatar?.image_name));
-      setSelectedAvatarCharacterColor(validatedAvatarCharacterColor(user.user_avatar?.character_color));
-      setSelectedAvatarBackgroundColor(validatedAvatarBackgroundColor(user.user_avatar?.background_color));
-    }
-  }, [user]);
 
   const renderActions = () => {
     if (rowType === "view-only") {
@@ -165,18 +141,11 @@ export default function FriendRow({
             <span>{resolvedStreak}</span>
           </s.StreakContainer>
         )}
-        <FriendRowAvatar $backgroundColor={selectedAvatarBackgroundColor}>
-          <AvatarImage
-            $imageSource={AVATAR_IMAGE_MAP[selectedAvatarCharacterId]}
-            $color={selectedAvatarCharacterColor}
-          />
-        </FriendRowAvatar>
-        <s.FriendUsername>{user?.username}</s.FriendUsername>
-        {user?.name && <s.FriendName>({user.name})</s.FriendName>}
+        <UserBaseInfo user={user} />
         {rowType === "friend" && (
           <s.LanguagesMeta title={languageListLabel || "No active languages"}>
-            {visibleLanguages.map((language) => (
-              <DynamicFlagImage key={language.id || language.code} languageCode={language.code} />
+            {visibleLanguages.map((entry) => (
+              <DynamicFlagImage key={entry.language.id || entry.language.code} languageCode={entry.language.code} />
             ))}
             {overflowCount > 0 && (
               <s.LanguageOverflowBubble type="button" onClick={() => setShowLanguagesModal(true)}>
