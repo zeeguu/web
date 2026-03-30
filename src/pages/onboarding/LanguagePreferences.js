@@ -192,7 +192,7 @@ export default function LanguagePreferences() {
               selectedValue={learnedCEFRLevel}
               label={strings.levelOfLearnedLanguage}
               placeholder={strings.levelOfLearnedLanguagePlaceholder}
-              optionLabel={(e) => e.description ? `${e.label} – ${e.description}` : e.label}
+              optionLabel={(e) => e.label}
               optionValue={(e) => e.value}
               id={"level-of-practiced-languages"}
               options={CEFR_LEVELS}
@@ -202,6 +202,11 @@ export default function LanguagePreferences() {
                 setLearnedCEFRLevel(e.target.value);
               }}
             />
+            {CEFR_LEVELS.find((l) => l.value === learnedCEFRLevel)?.description && (
+              <p style={{ fontSize: "0.85em", color: "#888", margin: "-4px 0 8px" }}>
+                {CEFR_LEVELS.find((l) => l.value === learnedCEFRLevel).description}
+              </p>
+            )}
 
             <Selector
               selectedValue={nativeLanguage}

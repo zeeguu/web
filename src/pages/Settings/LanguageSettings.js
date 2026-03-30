@@ -143,13 +143,18 @@ export default function LanguageSettings() {
             <Selector
               id={"cefr-levels-selector"}
               options={CEFR_LEVELS}
-              optionLabel={(e) => e.description ? `${e.label} – ${e.description}` : e.label}
+              optionLabel={(e) => e.label}
               optionValue={(e) => e.value}
               onChange={(e) => {
                 setCEFR(parseInt(e.target.value));
               }}
               selectedValue={CEFR}
             />
+            {CEFR_LEVELS.find((l) => l.value === String(CEFR))?.description && (
+              <p style={{ fontSize: "0.85em", color: "#888", margin: "-4px 0 8px" }}>
+                {CEFR_LEVELS.find((l) => l.value === String(CEFR)).description}
+              </p>
+            )}
           </FormSection>
 
           <FormSection>
