@@ -20,11 +20,9 @@ export default function Match({
   setSelectedExerciseBookmark,
   setExerciseType,
   isExerciseOver,
-  notifyExerciseCompleted,
   reload,
   setReload,
   resetSubSessionTimer,
-  bookmarkProgressBar,
 }) {
   const RIGHT = true;
   const LEFT = !RIGHT;
@@ -54,7 +52,6 @@ export default function Match({
   const speech = useContext(SpeechContext);
 
   async function handleSpeak(bookmark) {
-    console.log("Speaking..." + bookmark.from);
     if (autoPronounceBookmark) {
       await speech.speakOut(bookmark.from, setIsPronouncing);
     }
