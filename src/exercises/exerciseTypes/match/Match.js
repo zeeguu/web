@@ -99,7 +99,7 @@ export default function Match({
           setTimeout(() => {
             setListOfSolvedBookmarks([..._listOfSolvedBookmarks, lastBookmark.id]);
             notifyExerciseCompleted("", lastBookmark, true);
-          }, 600);
+          }, 800);
         } else if (_listOfSolvedBookmarks.length === bookmarksToStudy.length) {
           // All pairs solved (only reachable if there was just 1 bookmark)
           notifyCorrectAnswer(selectedLeftBookmark, true);
