@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import SpeakButton from "../SpeakButton";
 import * as s from "../Exercise.sc";
 import { removePunctuation } from "../../../utils/text/preprocessing";
@@ -82,21 +82,15 @@ function MatchInput({
     border: `0.15em solid ${zeeguuOrange}`,
   };
 
-  const [leftBookmarksShuffled, setLeftBookmarkShuffled] = useState();
-  const [rightBookmarksShuffled, setRightBookmarkShuffled] = useState();
   const RIGHT = true;
   const LEFT = !RIGHT;
 
-  useEffect(() => {
-    // Seed from bookmark IDs so the same set always produces the same order —
-    // this makes the shuffle stable across React StrictMode's double-mount.
-    // Left and right use adjacent seeds to guarantee different orderings.
-    const seed = exerciseBookmarks.reduce((acc, b) => acc + b.id, 0);
-    setLeftBookmarkShuffled(seededShuffle(exerciseBookmarks, seed));
-    setRightBookmarkShuffled(seededShuffle(exerciseBookmarks, seed + 1));
-  }, [exerciseBookmarks]);
-
-  if (!leftBookmarksShuffled || !rightBookmarksShuffled) return <></>;
+  // Lazy initialisation: compute once on mount so the state is never undefined
+  // and there's no blank render between mount and the first effect flush.
+  // Seeded from bookmark IDs so StrictMode's remount produces the identical order.
+  const seed = exerciseBookmarks.reduce((acc, b) => acc + b.id, 0);
+  const [leftBookmarksShuffled] = useState(() => seededShuffle(exerciseBookmarks, seed));
+  const [rightBookmarksShuffled] = useState(() => seededShuffle(exerciseBookmarks, seed + 1));
 
   function isSameBookmark(b1, b2) {
     if (b1 === null || b2 === null || b1 === undefined || b2 === undefined) return false;
