@@ -16,7 +16,7 @@ import {
   tableau_9,
   tableau_10,
 } from "../../../components/colors";
-import shuffle from "../../../assorted/fisherYatesShuffle.js";
+import { seededShuffle } from "../../../assorted/fisherYatesShuffle.js";
 
 function MatchInput({
   exerciseBookmarks,
@@ -88,10 +88,12 @@ function MatchInput({
   const LEFT = !RIGHT;
 
   useEffect(() => {
-    // Shuffling is in place so we need to unpack otherwise
-    // they result in the same.
-    setLeftBookmarkShuffled(shuffle([...exerciseBookmarks]));
-    setRightBookmarkShuffled(shuffle([...exerciseBookmarks]));
+    // Seed from bookmark IDs so the same set always produces the same order —
+    // this makes the shuffle stable across React StrictMode's double-mount.
+    // Left and right use adjacent seeds to guarantee different orderings.
+    const seed = exerciseBookmarks.reduce((acc, b) => acc + b.id, 0);
+    setLeftBookmarkShuffled(seededShuffle(exerciseBookmarks, seed));
+    setRightBookmarkShuffled(seededShuffle(exerciseBookmarks, seed + 1));
   }, [exerciseBookmarks]);
 
   if (!leftBookmarksShuffled || !rightBookmarksShuffled) return <></>;
