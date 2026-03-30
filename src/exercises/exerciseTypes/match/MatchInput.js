@@ -1,8 +1,6 @@
 import { useState } from "react";
-import SpeakButton from "../SpeakButton";
 import * as s from "../Exercise.sc";
 import { removePunctuation } from "../../../utils/text/preprocessing";
-import EditBookmarkButton from "../../../words/EditBookmarkButton.js";
 import {
   zeeguuOrange,
   tableau_1,
@@ -27,11 +25,6 @@ function MatchInput({
   listOfSolvedBookmarks,
   wrongAnimationsDictionary,
   setWrongAnimationsDictionary,
-  isExerciseOver,
-  reload,
-  setReload,
-  notifyBookmarkDeletion,
-  isPronouncing,
 }) {
   const answerColors = [
     {
@@ -107,36 +100,12 @@ function MatchInput({
       isSameBookmark(selectedRightBookmark, bookmark) ? setSelectedRightBookmark() : setSelectedRightBookmark(bookmark);
   }
 
-  function renderSolutionButton(b, key, solvedIndex, word) {
-    const small = "small";
-    const match = "match";
-
-    return (
-      <s.ButtonRow key={key}>
-        <EditBookmarkButton
-          bookmark={b}
-          styling={match}
-          reload={reload}
-          setReload={setReload}
-          notifyDelete={() => notifyBookmarkDeletion(b)}
-        />
-        <s.MatchingWords className="matchingWords" style={answerColors[solvedIndex]}>
-          {removePunctuation(word)}
-        </s.MatchingWords>
-        <s.MatchSpeakButtonHolder>
-          <SpeakButton bookmarkToStudy={b} styling={small} parentIsSpeakingControl={isPronouncing} />
-        </s.MatchSpeakButtonHolder>
-      </s.ButtonRow>
-    );
-  }
-
   function renderButton(b, index, side) {
     let key = side === LEFT ? "L2_" + index : "L1_" + index;
     let solvedIndex = listOfSolvedBookmarks.indexOf(b.id);
     let selectedBookmark = side === LEFT ? selectedLeftBookmark : selectedRightBookmark;
     let word = side === LEFT ? b.from : b.to;
     let isWrong = wrongAnimationsDictionary[side].includes(b.id);
-    if (isExerciseOver && side === LEFT) return renderSolutionButton(b, key, solvedIndex, word);
     if (isWrong)
       return (
         <s.AnimatedMatchButton
