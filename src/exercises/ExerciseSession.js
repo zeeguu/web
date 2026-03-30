@@ -456,15 +456,17 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
             )}
 
             <div style={{ display: "flex", alignItems: "center", marginLeft: "auto" }}>
-              <DigitalTimer
-                sessionDuration={sessionDuration}
-                isTimerActive={isTimerActive}
-                showClock={false}
-                style={{
-                  width: "3em",
-                  color: "grey",
-                }}
-              />
+              {userPreferences?.["show_reading_timer"] === "true" && (
+                <DigitalTimer
+                  sessionDuration={sessionDuration}
+                  isTimerActive={isTimerActive}
+                  showClock={false}
+                  style={{
+                    width: "3em",
+                    color: "grey",
+                  }}
+                />
+              )}
             </div>
           </div>
           <ExerciseSessionProgressBar
