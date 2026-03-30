@@ -47,7 +47,11 @@ export default function Match({
   }, []);
 
   useEffect(() => {
-    if (isExerciseOver) setListOfSolvedBookmarks(bookmarksToStudy.map((bookmark) => bookmark.id));
+    if (isExerciseOver)
+      setListOfSolvedBookmarks((prev) => {
+        const remaining = bookmarksToStudy.map((b) => b.id).filter((id) => !prev.includes(id));
+        return [...prev, ...remaining];
+      });
   }, [isExerciseOver]);
 
   const speech = useContext(SpeechContext);
