@@ -161,22 +161,8 @@ function App() {
     // Only validate if there is a session.
     if (api.session !== undefined && api.session !== null) {
       api.isValidSession(
-        () => {
-          api.getUserDetails((userDetails) => {
-            if (!userDetails) return;
-            LocalStorage.setUserInfo(userDetails);
-            api.getUserPreferences((userPreferences) => {
-              LocalStorage.setUserPreferences(userPreferences);
-
-              setZeeguuSpeech(new ZeeguuSpeech(api, userDetails.learned_language));
-              setUserDetails(userDetails);
-              setUserPreferences(userPreferences);
-            });
-          });
-        },
-        () => {
-          logout();
-        },
+        () => { loadUserDetails(); },
+        () => { logout(); },
       );
     } else {
       // No session - user is not logged in
@@ -203,7 +189,7 @@ function App() {
             console.log("Anonymous login successful");
             api.session = session;
             saveSharedUserInfo({ name: "Guest", native_language: "en" }, session);
-            loadUserDetailsAfterLogin();
+            loadUserDetails();
           },
           (error) => {
             // Login failed - credentials might be invalid
@@ -222,9 +208,8 @@ function App() {
       }
     }
 
-    function loadUserDetailsAfterLogin() {
-      api.getUserDetails((userDetails) => {
-        if (!userDetails) return;
+    function loadUserDetails() {
+      function apply(userDetails) {
         LocalStorage.setUserInfo(userDetails);
         api.getUserPreferences((userPreferences) => {
           LocalStorage.setUserPreferences(userPreferences);
@@ -232,6 +217,18 @@ function App() {
           setUserDetails(userDetails);
           setUserPreferences(userPreferences);
         });
+      }
+
+      api.getUserDetails((userDetails) => {
+        if (!userDetails) {
+          // Server was just confirmed up; retry once on transient network failure
+          api.getUserDetails((userDetails) => {
+            if (!userDetails) { logout(); return; }
+            apply(userDetails);
+          });
+          return;
+        }
+        apply(userDetails);
       });
     }
 
