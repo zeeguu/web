@@ -10,11 +10,11 @@ export default function useSelectInterest(api) {
 
   useEffect(() => {
     api.getAvailableTopics((data) => {
-      setAvailableTopics(data);
+      if (data) setAvailableTopics(data);
     });
 
     api.getSubscribedTopics((data) => {
-      setSubscribedTopics(data);
+      if (data) setSubscribedTopics(data);
     });
 
     //custom interest filters

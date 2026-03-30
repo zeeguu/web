@@ -263,6 +263,7 @@ function App() {
 
     // TODO: Should this be moved to Settings.loadUsrePreferences?
     api.getUserPreferences((preferences) => {
+      if (!preferences) return;
       SessionStorage.setAudioExercisesEnabled(
         preferences["audio_exercises"] === undefined || preferences["audio_exercises"] === "true",
       );
