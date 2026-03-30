@@ -143,7 +143,7 @@ export default function LanguageSettings() {
             <Selector
               id={"cefr-levels-selector"}
               options={CEFR_LEVELS}
-              optionLabel={(e) => e.label}
+              optionLabel={(e) => e.description ? `${e.label} – ${e.description}` : e.label}
               optionValue={(e) => e.value}
               onChange={(e) => {
                 setCEFR(parseInt(e.target.value));

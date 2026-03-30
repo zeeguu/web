@@ -612,6 +612,12 @@ let strings = new LocalizedStrings(
       upperIntermediate: "Upper Intermediate",
       advanced: "Advanced",
       proficiency: "Proficiency",
+      beginnerDescription: "Can understand and use basic everyday expressions",
+      elementaryDescription: "Can communicate in simple, routine situations",
+      intermediateDescription: "Can handle most situations while travelling",
+      upperIntermediateDescription: "Can interact fluently with native speakers",
+      advancedDescription: "Can use language flexibly for social and professional purposes",
+      proficiencyDescription: "Can understand virtually everything heard or read",
 
       //_ActivityInsightsRouter
       backTo: "Back to ",
@@ -1329,6 +1335,12 @@ let strings = new LocalizedStrings(
       upperIntermediate: "Meget øvet",
       advanced: "Avanceret",
       proficiency: "Meget avanceret",
+      beginnerDescription: "Kan forstå og bruge grundlæggende hverdagsudtryk",
+      elementaryDescription: "Kan kommunikere i enkle og rutineprægede situationer",
+      intermediateDescription: "Kan klare sig i de fleste situationer ved rejser",
+      upperIntermediateDescription: "Kan interagere flydende med modersmålstalende",
+      advancedDescription: "Kan bruge sproget fleksibelt til sociale og professionelle formål",
+      proficiencyDescription: "Kan forstå næsten alt, der høres eller læses",
 
       //_ActivityInsightsRouter
       backTo: "Tilbage til ",

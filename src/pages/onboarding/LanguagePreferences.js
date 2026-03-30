@@ -195,7 +195,7 @@ export default function LanguagePreferences() {
               selectedValue={learnedCEFRLevel}
               label={strings.levelOfLearnedLanguage}
               placeholder={strings.levelOfLearnedLanguagePlaceholder}
-              optionLabel={(e) => e.label}
+              optionLabel={(e) => e.description ? `${e.label} – ${e.description}` : e.label}
               optionValue={(e) => e.value}
               id={"level-of-practiced-languages"}
               options={CEFR_LEVELS}
