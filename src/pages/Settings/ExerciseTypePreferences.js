@@ -25,6 +25,7 @@ export default function ExerciseTypePreferences() {
   const history = useHistory();
 
   const [audioExercises, setAudioExercises] = useState(true);
+  const [showTimer, setShowTimer] = useState(false);
   let preferenceNotSet = LocalStorage.getProductiveExercisesEnabled() === undefined;
 
   const [productiveExercises, setProductiveExercises] = useState(
@@ -43,6 +44,7 @@ export default function ExerciseTypePreferences() {
         (preferences["audio_exercises"] === undefined || preferences["audio_exercises"] === "true") &&
           SessionStorage.isAudioExercisesEnabled(),
       );
+      setShowTimer(preferences["show_reading_timer"] === "true");
     });
   }, [session, api]);
 
@@ -66,6 +68,7 @@ export default function ExerciseTypePreferences() {
     api.saveUserPreferences({
       audio_exercises: audioExercises,
       productive_exercises: productiveExercises,
+      show_reading_timer: showTimer,
     });
     history.goBack();
   }
@@ -97,6 +100,16 @@ export default function ExerciseTypePreferences() {
               onChange={toggleAutoPronounceState}
             />
           </FormSection>
+
+          <FormSection>
+            <Checkbox
+              id="show-timer-checkbox"
+              label={<>Show activity timer in reader and exercises</>}
+              checked={showTimer}
+              onChange={() => setShowTimer((state) => !state)}
+            />
+          </FormSection>
+
           <ButtonContainer className={"adaptive-alignment-horizontal"}>
             <Button type={"submit"} onClick={handleSave}>
               {strings.save}
