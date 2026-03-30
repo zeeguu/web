@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
+import { SpeechContext } from "../../../contexts/SpeechContext.js";
 import * as s from "../Exercise.sc";
 import { removePunctuation } from "../../../utils/text/preprocessing";
 import {
@@ -75,6 +76,9 @@ function MatchInput({
     border: `0.15em solid ${zeeguuOrange}`,
   };
 
+  const speech = useContext(SpeechContext);
+  const [isPronouncing, setIsPronouncing] = useState(false);
+
   const RIGHT = true;
   const LEFT = !RIGHT;
 
@@ -121,12 +125,22 @@ function MatchInput({
           {removePunctuation(word)}
         </s.AnimatedMatchButton>
       );
-    if (solvedIndex !== -1)
+    if (solvedIndex !== -1) {
+      const isSpeakable = side === LEFT && !isPronouncing;
       return (
-        <s.MatchingWords className="matchingWords" style={answerColors[solvedIndex]} key={key}>
+        <s.MatchingWords
+          className="matchingWords"
+          style={{
+            ...answerColors[solvedIndex],
+            ...(side === LEFT && { textDecoration: "underline dotted", cursor: "pointer" }),
+          }}
+          onClick={isSpeakable ? () => speech.speakOut(b.from, setIsPronouncing) : undefined}
+          key={key}
+        >
           {removePunctuation(word)}
         </s.MatchingWords>
       );
+    }
     return (
       <s.MatchButton
         style={isSameBookmark(b, selectedBookmark) ? selectedButtonColor : {}}
