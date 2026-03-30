@@ -1,10 +1,10 @@
 import styled from "styled-components";
-import { blue100, blue700, blue900, lightGrey, darkGrey, veryLightGrey } from "./colors";
+import { blue100, blue700, blue900, lightGrey, darkGrey } from "./colors";
 
 const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: 0.4rem;
   width: 100%;
 `;
 
@@ -15,47 +15,46 @@ const Label = styled.label`
   font-weight: 600;
 `;
 
-const Card = styled.div`
+const PillRow = styled.div`
   display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  padding: 0.6rem 0.9rem;
-  border-radius: 0.4rem;
+  gap: 0.3rem;
+`;
+
+const Pill = styled.button`
+  flex: 1;
+  padding: 0.45rem 0;
+  border-radius: 2rem;
   border: 1.5px solid ${({ $selected }) => ($selected ? blue700 : lightGrey)};
-  background-color: ${({ $selected }) => ($selected ? blue100 : "#fff")};
+  background: ${({ $selected }) => ($selected ? blue100 : "#fff")};
+  color: ${({ $selected }) => ($selected ? blue900 : "black")};
+  font-family: inherit;
+  font-size: 0.8rem;
+  font-weight: 700;
   cursor: pointer;
   transition: border-color 150ms, background-color 150ms;
-  user-select: none;
-
-  &:hover {
-    border-color: ${({ $selected }) => ($selected ? blue700 : darkGrey)};
-    background-color: ${({ $selected }) => ($selected ? blue100 : veryLightGrey)};
-  }
 
   &:active {
-    transform: scale(0.99);
+    transform: scale(0.96);
+    transition: transform 80ms;
   }
 `;
 
-const Band = styled.span`
-  flex-shrink: 0;
-  font-size: 0.85rem;
-  font-weight: 700;
-  color: ${({ $selected }) => ($selected ? blue900 : darkGrey)};
-  width: 1.8rem;
-  text-align: center;
+const HintBox = styled.div`
+  min-height: 2.4rem;
+  padding: 0.3rem 0.1rem;
 `;
 
-const LevelName = styled.span`
-  font-size: 0.9rem;
-  font-weight: 600;
-  color: ${({ $selected }) => ($selected ? blue900 : "black")};
-`;
-
-const Description = styled.span`
-  font-size: 0.8rem;
-  color: ${({ $selected }) => ($selected ? blue700 : darkGrey)};
+const HintLabel = styled.span`
   display: block;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: ${blue900};
+`;
+
+const HintDescription = styled.span`
+  display: block;
+  font-size: 0.8rem;
+  color: ${darkGrey};
 `;
 
 const ErrorMsg = styled.p`
@@ -65,30 +64,37 @@ const ErrorMsg = styled.p`
 `;
 
 export default function CefrLevelSelector({ levels, selectedValue, onChange, label, isError, errorMessage }) {
+  const selected = levels.find((l) => l.value === selectedValue);
+
   return (
-    <Wrapper role="radiogroup" aria-label={label}>
+    <Wrapper>
       {label && <Label>{label}</Label>}
-      {levels.map((level) => {
-        const [band, name] = level.label.split(" | ");
-        const isSelected = level.value === selectedValue;
-        return (
-          <Card
-            key={level.value}
-            $selected={isSelected}
-            onClick={() => onChange(level.value)}
-            role="radio"
-            aria-checked={isSelected}
-            tabIndex={0}
-            onKeyDown={(e) => (e.key === " " || e.key === "Enter") && onChange(level.value)}
-          >
-            <Band $selected={isSelected}>{band}</Band>
-            <div>
-              <LevelName $selected={isSelected}>{name}</LevelName>
-              {level.description && <Description $selected={isSelected}>{level.description}</Description>}
-            </div>
-          </Card>
-        );
-      })}
+      <PillRow role="radiogroup" aria-label={label}>
+        {levels.map((level) => {
+          const band = level.label.split(" | ")[0];
+          const isSelected = level.value === selectedValue;
+          return (
+            <Pill
+              key={level.value}
+              type="button"
+              $selected={isSelected}
+              onClick={() => onChange(level.value)}
+              role="radio"
+              aria-checked={isSelected}
+            >
+              {band}
+            </Pill>
+          );
+        })}
+      </PillRow>
+      <HintBox>
+        {selected && (
+          <>
+            <HintLabel>{selected.label}</HintLabel>
+            {selected.description && <HintDescription>{selected.description}</HintDescription>}
+          </>
+        )}
+      </HintBox>
       {isError && errorMessage && <ErrorMsg>{errorMessage}</ErrorMsg>}
     </Wrapper>
   );
