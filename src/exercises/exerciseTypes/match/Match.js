@@ -88,7 +88,7 @@ export default function Match({
         setListOfSolvedBookmarks(_listOfSolvedBookmarks);
 
         if (_listOfSolvedBookmarks.length === bookmarksToStudy.length) {
-          notifyExerciseCompleted("", null, true);
+          notifyCorrectAnswer(selectedLeftBookmark, true);
         } else {
           notifyCorrectAnswer(selectedLeftBookmark, false);
         }
