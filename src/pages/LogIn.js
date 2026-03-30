@@ -63,9 +63,7 @@ export default function LogIn({ handleSuccessfulLogIn }) {
         setErrorMessage(err);
       },
       (sessionId) => {
-        api.getUserDetails((userInfo) => {
-          handleSuccessfulLogIn(userInfo, sessionId);
-        });
+        api.getUserDetails((userInfo) => handleSuccessfulLogIn(userInfo, sessionId));
       },
     );
   }
@@ -97,7 +95,7 @@ export default function LogIn({ handleSuccessfulLogIn }) {
             />
 
             <InputField
-              type={"Password"}
+              type={"password"}
               label={strings.password}
               id={"password"}
               name={"password"}
