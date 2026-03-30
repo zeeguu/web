@@ -19,7 +19,7 @@ export default function useSelectInterest(api) {
 
     //custom interest filters
     api.getSubscribedSearchers((data) => {
-      setSubscribedSearches(data);
+      if (data) setSubscribedSearches(data);
     });
   }, [api]);
 
@@ -68,11 +68,7 @@ export default function useSelectInterest(api) {
   }
 
   function isSubscribed(topic) {
-    return subscribedTopics
-      .map((subscribedTopic) => subscribedTopic.id)
-      .includes(topic.id)
-      ? true
-      : false;
+    return subscribedTopics.some((t) => t.id === topic.id);
   }
 
   function subscribeToEmail(search) {
