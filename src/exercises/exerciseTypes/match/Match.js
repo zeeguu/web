@@ -86,13 +86,16 @@ export default function Match({
         setListOfSolvedBookmarks(_listOfSolvedBookmarks);
 
         if (_listOfSolvedBookmarks.length === bookmarksToStudy.length - 1) {
-          // One pair left — auto-complete it. The user has no real choice at this
-          // point so we don't score it as a correct answer, but we still track
-          // the word (so it shows in History) with a neutral outcome.
+          // One pair left — auto-complete it after a short delay so the reveal
+          // feels animated. The user has no real choice at this point so we don't
+          // score it as a correct answer, but we still track the word (so it
+          // shows in History) with a neutral outcome.
           notifyCorrectAnswer(selectedLeftBookmark, false);
           const lastBookmark = bookmarksToStudy.find((b) => !_listOfSolvedBookmarks.includes(b.id));
-          setListOfSolvedBookmarks([..._listOfSolvedBookmarks, lastBookmark.id]);
-          notifyExerciseCompleted("", lastBookmark, true);
+          setTimeout(() => {
+            setListOfSolvedBookmarks([..._listOfSolvedBookmarks, lastBookmark.id]);
+            notifyExerciseCompleted("", lastBookmark, true);
+          }, 300);
         } else if (_listOfSolvedBookmarks.length === bookmarksToStudy.length) {
           // All pairs solved (only reachable if there was just 1 bookmark)
           notifyCorrectAnswer(selectedLeftBookmark, true);
