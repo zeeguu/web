@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { useHistory } from "react-router-dom";
 import ExerciseSessionProgressBar from "./ExerciseSessionProgressBar";
 import * as s from "./Exercises.sc";
@@ -68,6 +68,7 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
   const [isSessionLoading, setIsSessionLoading] = useState(true); // New loading state
   const [reportDialogOpen, setReportDialogOpen] = useState(false);
   const [isReported, setIsReported] = useState(false);
+  const initGenRef = useRef(0); // incremented on each init; lets async callbacks detect stale mounts
   const currentIndexRef = useShadowRef(currentIndex);
   const hasKeptExercisingRef = useShadowRef(hasKeptExercising);
 
@@ -86,7 +87,8 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
   const { isMobile } = useScreenWidth();
 
   useEffect(() => {
-    initializeExerciseSessionComponent();
+    const gen = ++initGenRef.current;
+    initializeExerciseSessionComponent(gen);
     return () => {
       cleanupExerciseSessionComponent();
     };
@@ -105,7 +107,7 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
     api.logUserActivity(api.EXERCISE_UNFOCUSED, articleID || "", "", source || "");
   }
 
-  function initializeExerciseSessionComponent() {
+  function initializeExerciseSessionComponent(gen) {
     // Use cached preferences from UserContext instead of making an API call
     if (SessionStorage.getAudioExercisesEnabled() === undefined && userPreferences) {
       SessionStorage.setAudioExercisesEnabled(
@@ -128,10 +130,11 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
     // GET THE BOOKMARKS THAT ARE TO BE STUDIED
     // ========================================
     resetExerciseSessionState();
-    getBookmarksAndAssignThemToExercises();
+    getBookmarksAndAssignThemToExercises(gen);
   }
 
-  function initializeExercisesForBookmarks(bookmarks) {
+  function initializeExercisesForBookmarks(bookmarks, gen) {
+    if (gen !== initGenRef.current) return; // stale: a newer init has superseded this one
     if (bookmarks.length === 0) {
       setIsOutOfWordsToday(true);
       setIsSessionLoading(false); // No exercises to load
@@ -159,7 +162,7 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
     setCurrentIndex(0);
   }
 
-  function getBookmarksAndAssignThemToExercises() {
+  function getBookmarksAndAssignThemToExercises(gen) {
     if (articleID) {
       // Fetch article info and words in parallel for faster loading
       const articleInfoPromise = new Promise((resolve) => {
@@ -175,10 +178,10 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
         setArticleTitle(articleInfo.title);
         setArticleURL(articleInfo.url);
         setTitle('Exercises for "' + articleInfo.title + '"');
-        initializeExercisesForBookmarks(bookmarks);
+        initializeExercisesForBookmarks(bookmarks, gen);
       });
     } else {
-      api.getBookmarksRecommendedForPractice((bookmarks) => initializeExercisesForBookmarks(bookmarks));
+      api.getBookmarksRecommendedForPractice((bookmarks) => initializeExercisesForBookmarks(bookmarks, gen));
       setTitle("Zeeguu: Vocabulary Exercises (𝄂𝄂—𝄂𝄂)", "");
     }
   }
