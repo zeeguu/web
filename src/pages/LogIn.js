@@ -64,7 +64,6 @@ export default function LogIn({ handleSuccessfulLogIn }) {
       },
       (sessionId) => {
         api.getUserDetails((userInfo) => {
-          setIsLoggingIn(false);
           handleSuccessfulLogIn(userInfo, sessionId);
         });
       },
