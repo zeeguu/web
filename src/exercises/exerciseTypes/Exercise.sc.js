@@ -210,6 +210,11 @@ let MatchButton = styled(StyledButton)`
   }
 `;
 
+const fadeIn = keyframes`
+  from { opacity: 0; }
+  to { opacity: 1; }
+`;
+
 let MatchingWords = styled.p`
   margin-top: 1.6em;
   margin-bottom: 1.1em;
@@ -282,11 +287,6 @@ let RightFeedbackButton = styled(FeedbackButton)`
   @media (max-width: 250px) {
     order: 3;
   }
-`;
-
-const fadeIn = keyframes`
-  from { opacity: 0; }
-  to { opacity: 1; }
 `;
 
 const shake = keyframes`
