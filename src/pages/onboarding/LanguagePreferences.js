@@ -7,6 +7,7 @@ import { Link } from "react-router-dom";
 import { Capacitor } from "@capacitor/core";
 
 import { CEFR_LEVELS } from "../../assorted/cefrLevels";
+import CefrLevelSelector from "../../components/CefrLevelSelector";
 import { setTitle } from "../../assorted/setTitle";
 
 import { scrollToTop } from "../../utils/misc/scrollToTop";
@@ -188,25 +189,14 @@ export default function LanguagePreferences() {
               }}
             />
 
-            <Selector
+            <CefrLevelSelector
+              levels={CEFR_LEVELS}
               selectedValue={learnedCEFRLevel}
               label={strings.levelOfLearnedLanguage}
-              placeholder={strings.levelOfLearnedLanguagePlaceholder}
-              optionLabel={(e) => e.label}
-              optionValue={(e) => e.value}
-              id={"level-of-practiced-languages"}
-              options={CEFR_LEVELS}
               isError={!isLearnedCEFRLevelValid}
               errorMessage={learnedCEFRLevelMsg}
-              onChange={(e) => {
-                setLearnedCEFRLevel(e.target.value);
-              }}
+              onChange={(value) => setLearnedCEFRLevel(value)}
             />
-            {CEFR_LEVELS.find((l) => l.value === learnedCEFRLevel)?.description && (
-              <p style={{ fontSize: "0.85em", color: "#888", margin: "-4px 0 8px" }}>
-                {CEFR_LEVELS.find((l) => l.value === learnedCEFRLevel).description}
-              </p>
-            )}
 
             <Selector
               selectedValue={nativeLanguage}
