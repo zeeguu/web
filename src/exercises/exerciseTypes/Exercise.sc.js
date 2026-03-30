@@ -218,6 +218,7 @@ let MatchingWords = styled.p`
   padding-left: 0.5em;
   font-size: 1.125em;
   margin-right: 1em;
+  animation: ${fadeIn} 0.4s ease;
 `;
 
 let OrangeButton = styled(StyledButton)`
@@ -281,6 +282,11 @@ let RightFeedbackButton = styled(FeedbackButton)`
   @media (max-width: 250px) {
     order: 3;
   }
+`;
+
+const fadeIn = keyframes`
+  from { opacity: 0; }
+  to { opacity: 1; }
 `;
 
 const shake = keyframes`
