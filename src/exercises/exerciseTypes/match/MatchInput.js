@@ -110,21 +110,6 @@ function MatchInput({
     let selectedBookmark = side === LEFT ? selectedLeftBookmark : selectedRightBookmark;
     let word = side === LEFT ? b.from : b.to;
     let isWrong = wrongAnimationsDictionary[side].includes(b.id);
-    if (isWrong)
-      return (
-        <s.AnimatedMatchButton
-          key={key}
-          style={isSameBookmark(b, selectedBookmark) ? selectedButtonColor : {}}
-          onClick={(e) => handleClick(e, b, side)}
-          onAnimationEnd={() => {
-            let _newWrongAnimationDictionary = { ...wrongAnimationsDictionary };
-            _newWrongAnimationDictionary[side] = _newWrongAnimationDictionary[side].filter((id) => id !== b.id);
-            setWrongAnimationsDictionary(_newWrongAnimationDictionary);
-          }}
-        >
-          {removePunctuation(word)}
-        </s.AnimatedMatchButton>
-      );
     if (solvedIndex !== -1) {
       const isSpeakable = side === LEFT && !isPronouncing;
       return (
@@ -141,6 +126,21 @@ function MatchInput({
         </s.MatchingWords>
       );
     }
+    if (isWrong)
+      return (
+        <s.AnimatedMatchButton
+          key={key}
+          style={isSameBookmark(b, selectedBookmark) ? selectedButtonColor : {}}
+          onClick={(e) => handleClick(e, b, side)}
+          onAnimationEnd={() => {
+            let _newWrongAnimationDictionary = { ...wrongAnimationsDictionary };
+            _newWrongAnimationDictionary[side] = _newWrongAnimationDictionary[side].filter((id) => id !== b.id);
+            setWrongAnimationsDictionary(_newWrongAnimationDictionary);
+          }}
+        >
+          {removePunctuation(word)}
+        </s.AnimatedMatchButton>
+      );
     return (
       <s.MatchButton
         style={isSameBookmark(b, selectedBookmark) ? selectedButtonColor : {}}
