@@ -148,9 +148,6 @@ function App() {
     // Wait for session to be initialized (especially important for Capacitor)
     if (!sessionInitialized) return;
 
-    console.log("Got the API URL:" + API_ENDPOINT);
-    console.log("Got the Domain URL:" + APP_DOMAIN);
-    console.log("Extension ID: " + import.meta.env.VITE_EXTENSION_ID);
     // when creating the app component we also load the
     // user details from the server; this also ensures that
     // we get the latest feature flags for this user and save
@@ -194,20 +191,15 @@ function App() {
       const anonCredentials = LocalStorage.getAnonCredentials();
 
       if (anonCredentials) {
-        // Try to log in with existing anonymous credentials
-        console.log("Found anonymous credentials, attempting login...");
         api.logInAnon(
           anonCredentials.uuid,
           anonCredentials.password,
           (session) => {
-            console.log("Anonymous login successful");
             api.session = session;
             saveSharedUserInfo({ name: "Guest", native_language: "en" }, session);
             loadUserDetailsAfterLogin();
           },
           (error) => {
-            // Login failed - credentials might be invalid
-            console.log("Anonymous login failed, clearing credentials...", error);
             LocalStorage.clearAnonCredentials();
             // Let them go through welcome flow again
             setUserDetails({});
@@ -257,7 +249,6 @@ function App() {
   }
 
   function handleSuccessfulLogIn(userInfo, sessionId, redirectToArticle = true) {
-    console.log("HANDLE SUCCESSFUL SIGN IN");
     api.session = sessionId;
     LocalStorage.setUserInfo(userInfo);
     LocalStorage.clearAnonCredentials(); // Clear anonymous credentials on real login
@@ -281,8 +272,6 @@ function App() {
       is_student: userInfo.is_student,
     };
 
-    console.log("setting new user value: ");
-    console.log(JSON.stringify(newUserValue));
     setUser(newUserValue);
 
     // If a redirect link exists, uses it to redirect the user,
