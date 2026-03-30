@@ -106,9 +106,6 @@ export default function LanguagePreferences() {
     return <LoadingAnimation />;
   }
 
-  console.log(sortedSystemLanguages.native_languages);
-  console.log(learnedLanguage);
-
   const availableNativeLanguages = sortedSystemLanguages.native_languages.filter(
     (each) => each.code != learnedLanguage,
   );
