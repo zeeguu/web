@@ -221,11 +221,13 @@ function App() {
 
       api.getUserDetails((userDetails) => {
         if (!userDetails) {
-          // Server was just confirmed up; retry once on transient network failure
-          api.getUserDetails((userDetails) => {
-            if (!userDetails) { logout(); return; }
-            apply(userDetails);
-          });
+          // Server was just confirmed up; wait briefly and retry once on transient network failure
+          setTimeout(() => {
+            api.getUserDetails((userDetails) => {
+              if (!userDetails) { logout(); return; }
+              apply(userDetails);
+            });
+          }, 1000);
           return;
         }
         apply(userDetails);
