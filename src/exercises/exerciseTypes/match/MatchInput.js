@@ -117,7 +117,7 @@ function MatchInput({
           className="matchingWords"
           style={{
             ...answerColors[solvedIndex],
-            ...(side === LEFT && { textDecoration: "underline dotted", cursor: "pointer" }),
+            ...(side === LEFT && { textDecoration: "underline dotted", textUnderlineOffset: "6px", cursor: "pointer" }),
           }}
           onClick={isSpeakable ? () => speech.speakOut(b.from, setIsPronouncing) : undefined}
           key={key}
