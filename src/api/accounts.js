@@ -98,7 +98,6 @@ Zeeguu_API.prototype.logIn = function (email, password, onError, onSuccess) {
       // https://stackoverflow.com/a/45366905/1200070
       response.json().then((data) => {
         if (response.status === 200) {
-          console.log("GOT SESSOIN: " + data);
           this.session = data.session;
           onSuccess(data.session);
           return;
