@@ -163,6 +163,7 @@ function App() {
       api.isValidSession(
         () => {
           api.getUserDetails((userDetails) => {
+            if (!userDetails) return;
             LocalStorage.setUserInfo(userDetails);
             api.getUserPreferences((userPreferences) => {
               LocalStorage.setUserPreferences(userPreferences);
@@ -223,6 +224,7 @@ function App() {
 
     function loadUserDetailsAfterLogin() {
       api.getUserDetails((userDetails) => {
+        if (!userDetails) return;
         LocalStorage.setUserInfo(userDetails);
         api.getUserPreferences((userPreferences) => {
           LocalStorage.setUserPreferences(userPreferences);
@@ -263,6 +265,7 @@ function App() {
 
     // TODO: Should this be moved to Settings.loadUsrePreferences?
     api.getUserPreferences((preferences) => {
+      if (!preferences) return;
       SessionStorage.setAudioExercisesEnabled(
         preferences["audio_exercises"] === undefined || preferences["audio_exercises"] === "true",
       );
