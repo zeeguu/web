@@ -30,7 +30,6 @@ export default function MultipleChoiceContext({
   const [exerciseBookmark, setExerciseBookmark] = useState({ ...bookmarksToStudy[0], isExercise: true });
   const [clickedIndex, setClickedIndex] = useState(null);
   const [clickedOption, setClickedOption] = useState(null);
-  const [wordInContextHeadline, setWordInContextHeadline] = useState(removePunctuation(bookmarksToStudy[0].from));
   const isExerciseOverRef = useShadowRef(isExerciseOver);
 
   useEffect(() => {
@@ -78,7 +77,6 @@ export default function MultipleChoiceContext({
     setClickedOption(index);
     if (selectedChoiceId === exerciseBookmark.id) {
       setClickedIndex(index);
-      setWordInContextHeadline(removePunctuation(exerciseBookmark.to));
       notifyCorrectAnswer(exerciseBookmark);
     } else {
       setClickedIndex(null);
@@ -113,7 +111,9 @@ export default function MultipleChoiceContext({
         {strings.multipleChoiceContextHeadline}
       </div>
 
-      <h1 className="wordInContextHeadline">{wordInContextHeadline}</h1>
+      <h1 className="wordInContextHeadline">
+        {isExerciseOver ? removePunctuation(exerciseBookmark.to) : removePunctuation(exerciseBookmark.from)}
+      </h1>
       <div style={{ visibility: isExerciseOver ? 'visible' : 'hidden' }}>
         {bookmarkProgressBar}
       </div>
