@@ -28,6 +28,7 @@ import useRedirectLink from "./hooks/useRedirectLink";
 import useLocationTracker from "./hooks/useLocationTracker";
 import useDeepLinkHandler from "./hooks/useDeepLinkHandler";
 import LoadingAnimation from "./components/LoadingAnimation";
+import ServerErrorModal from "./components/ServerErrorModal";
 import useTheme from "./hooks/useTheme";
 import { ThemeContext } from "./contexts/ThemeContext";
 
@@ -68,6 +69,7 @@ function App() {
   const [userDetails, setUserDetails] = useState();
   const [userPreferences, setUserPreferences] = useState();
   const [sessionInitialized, setSessionInitialized] = useState(false);
+  const [serverError, setServerError] = useState(false);
 
   const [isExtensionAvailable] = useExtensionCommunication();
   const [zeeguuSpeech, setZeeguuSpeech] = useState(false);
@@ -144,6 +146,21 @@ function App() {
     return () => clearInterval(pollInterval);
   }, [userDetails?.daily_audio_status, api]);
 
+  function loadUserDetails() {
+    api.getUserDetails((userDetails) => {
+      if (!userDetails) { setServerError(true); return; }
+      LocalStorage.setUserInfo(userDetails);
+      api.getUserPreferences((userPreferences) => {
+        if (!userPreferences) { setServerError(true); return; }
+        LocalStorage.setUserPreferences(userPreferences);
+        setZeeguuSpeech(new ZeeguuSpeech(api, userDetails.learned_language));
+        setUserDetails(userDetails);
+        setUserPreferences(userPreferences);
+        setServerError(false);
+      });
+    });
+  }
+
   useEffect(() => {
     // Wait for session to be initialized (especially important for Capacitor)
     if (!sessionInitialized) return;
@@ -208,32 +225,6 @@ function App() {
       }
     }
 
-    function loadUserDetails() {
-      function apply(userDetails) {
-        LocalStorage.setUserInfo(userDetails);
-        api.getUserPreferences((userPreferences) => {
-          LocalStorage.setUserPreferences(userPreferences);
-          setZeeguuSpeech(new ZeeguuSpeech(api, userDetails.learned_language));
-          setUserDetails(userDetails);
-          setUserPreferences(userPreferences);
-        });
-      }
-
-      api.getUserDetails((userDetails) => {
-        if (!userDetails) {
-          // Server was just confirmed up; wait briefly and retry once on transient network failure
-          setTimeout(() => {
-            api.getUserDetails((userDetails) => {
-              if (!userDetails) { logout(); return; }
-              apply(userDetails);
-            });
-          }, 1000);
-          return;
-        }
-        apply(userDetails);
-      });
-    }
-
     // Log out user on zeeguu.org if they log out of the extension
     const interval = setInterval(() => {
       if (!getSharedSession()) {
@@ -293,6 +284,10 @@ function App() {
 
   //Setting up the routing context to be able to use the cancel-button in EditText correctly
   const [returnPath, setReturnPath] = useState("");
+
+  if (serverError) {
+    return <ServerErrorModal onRetry={() => { setServerError(false); loadUserDetails(); }} />;
+  }
 
   // Wait for session initialization and user details loading
   if (!sessionInitialized || userDetails === undefined) {
