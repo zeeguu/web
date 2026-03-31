@@ -37,21 +37,14 @@ export default function EditBookmarkButton({
         if (response === "OK") {
           // delete was successful; log and close
           if (notifyDelete) notifyDelete(bookmark);
-          api.logUserActivity(
-            api.DELETE_WORD,
-            bookmark.article_id,
-            bookmark.from,
-            SOURCE_FOR_API_BOOKMARK_DELETE,
-          );
+          api.logUserActivity(api.DELETE_WORD, bookmark.article_id, bookmark.from, SOURCE_FOR_API_BOOKMARK_DELETE);
           handleClose();
         }
       },
       (error) => {
         // onError
         console.log(error);
-        alert(
-          "something went wrong and we could not delete the bookmark; try again later.",
-        );
+        alert("something went wrong and we could not delete the bookmark; try again later.");
       },
     );
   }
@@ -61,13 +54,7 @@ export default function EditBookmarkButton({
     setErrorMessage();
   }
 
-  function updateBookmark(
-    bookmark,
-    newWord,
-    newTranslation,
-    newContext,
-    newFitForStudy,
-  ) {
+  function updateBookmark(bookmark, newWord, newTranslation, newContext, newFitForStudy) {
     console.log(
       "Sending to the API. New word: ",
       newWord,
@@ -83,15 +70,13 @@ export default function EditBookmarkButton({
       bookmark.context,
     );
     if (!isTextInSentence(newWord, newContext)) {
-      setErrorMessage(
-        `'${newWord}' is not present in the context. Make sure the context contains the word.`,
-      );
+      setErrorMessage(`'${newWord}' is not present in the context. Make sure the context contains the word.`);
       return;
     }
 
     // Validate that the word appears only once in the context to avoid ambiguous positioning
     const validation = validateWordInContext(newWord, newContext);
-    
+
     if (!validation.valid) {
       setErrorMessage(validation.errorMessage);
       return;
@@ -101,13 +86,7 @@ export default function EditBookmarkButton({
     // The server might return a different bookmark/UserWord after the update
 
     api
-      .updateBookmark(
-        bookmark.id,
-        newWord,
-        newTranslation,
-        newContext,
-        bookmark.context_identifier,
-      )
+      .updateBookmark(bookmark.id, newWord, newTranslation, newContext, bookmark.context_identifier)
       .then((response) => {
         // Check if the response is an error from backend validation
         if (response.status >= 400) {
@@ -160,11 +139,11 @@ export default function EditBookmarkButton({
       })
       .catch((error) => {
         console.error("Error updating bookmark:", error);
-        
+
         // Try to parse backend error response
         let errorMessage = "Failed to update bookmark. Please try again.";
         try {
-          if (typeof error.message === 'string') {
+          if (typeof error.message === "string") {
             const errorData = JSON.parse(error.message);
             if (errorData.detail) {
               errorMessage = errorData.detail;
@@ -175,7 +154,7 @@ export default function EditBookmarkButton({
         } catch (e) {
           // If parsing fails, use default message
         }
-        
+
         setErrorMessage(errorMessage);
       });
   }
@@ -184,26 +163,11 @@ export default function EditBookmarkButton({
   return (
     <div>
       {styling === "exercise" ? (
-        <s.EditButton onClick={handleOpen}>
-          <img
-            src={getStaticPath("images", "file_rename_orange_36dp.svg")}
-            alt="edit"
-          />
-        </s.EditButton>
+        <s.EditButton onClick={handleOpen} />
       ) : styling === "match" ? (
-        <sc.EditIconNoPadding onClick={handleOpen}>
-          <img
-            src={getStaticPath("images", "file_rename_orange_36dp.svg")}
-            alt="edit"
-          />
-        </sc.EditIconNoPadding>
+        <sc.EditIconNoPadding onClick={handleOpen} />
       ) : (
-        <sc.EditIcon onClick={handleOpen}>
-          <img
-            src={getStaticPath("images", "file_rename_orange_36dp.svg")}
-            alt="edit"
-          />
-        </sc.EditIcon>
+        <sc.EditIcon onClick={handleOpen} />
       )}
       <Modal
         open={open}

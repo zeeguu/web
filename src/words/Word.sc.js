@@ -6,16 +6,16 @@ let Word = styled.div`
   flex-direction: row;
   align-items: center;
   gap: 1em;
-  width: ${props => props.compact ? 'auto' : '100%'};
-  min-height: ${props => props.compact ? '30px' : '50px'};
-  padding: ${props => props.compact ? '4px 8px' : '6px 0'};
-  margin-bottom: ${props => props.compact ? '0' : '3px'};
-  margin-right: ${props => props.compact ? '0.5em' : '0'};
+  width: ${(props) => (props.compact ? "auto" : "100%")};
+  min-height: ${(props) => (props.compact ? "30px" : "50px")};
+  padding: ${(props) => (props.compact ? "4px 8px" : "6px 0")};
+  margin-bottom: ${(props) => (props.compact ? "0" : "3px")};
+  margin-right: ${(props) => (props.compact ? "0.5em" : "0")};
   transition: all 1s ease-out;
   overflow: hidden;
-  background-color: ${props => props.compact ? 'var(--bg-secondary)' : 'transparent'};
-  border-radius: ${props => props.compact ? '4px' : '0'};
-  border: ${props => props.compact ? '1px solid var(--border-light)' : 'none'};
+  background-color: ${(props) => (props.compact ? "var(--bg-secondary)" : "transparent")};
+  border-radius: ${(props) => (props.compact ? "4px" : "0")};
+  border: ${(props) => (props.compact ? "1px solid var(--border-light)" : "none")};
 
   &.removing {
     height: 0;
@@ -57,14 +57,16 @@ let EditIcon = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
+  align-items: center;
 
   margin-left: 0.3em;
   margin-right: 0.3em;
-
-  img {
-    height: 26px;
-    width: 26px;
-  }
+  width: 26px;
+  height: 26px;
+  background-image: var(--edit-icon);
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
 `;
 
 let EditIconNoPadding = styled.div`
@@ -74,23 +76,25 @@ let EditIconNoPadding = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
-
-  img {
-    height: 26px;
-    width: 26px;
-  }
+  align-items: center;
+  width: 26px;
+  height: 26px;
+  background-image: var(--edit-icon);
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
 `;
 
 let WordPair = styled.div`
   word-break: auto-phrase;
   display: flex;
-  flex-direction: ${props => props.compact ? 'row' : 'column'};
+  flex-direction: ${(props) => (props.compact ? "row" : "column")};
   justify-content: center;
-  align-items: ${props => props.compact ? 'center' : 'flex-start'};
-  margin-left: ${props => props.compact ? '0.5em' : '1em'};
-  margin-right: ${props => props.compact ? '0' : '1.5em'};
-  gap: ${props => props.compact ? '0.3em' : '0'};
-  font-size: ${props => props.compact ? '0.9em' : '1em'};
+  align-items: ${(props) => (props.compact ? "center" : "flex-start")};
+  margin-left: ${(props) => (props.compact ? "0.5em" : "1em")};
+  margin-right: ${(props) => (props.compact ? "0" : "1.5em")};
+  gap: ${(props) => (props.compact ? "0.3em" : "0")};
+  font-size: ${(props) => (props.compact ? "0.9em" : "1em")};
 
   .from {
     font-weight: 600;
@@ -99,7 +103,7 @@ let WordPair = styled.div`
     margin-top: 0px;
     margin-bottom: 0px;
     font-weight: 300;
-    ${props => props.compact && 'color: var(--text-secondary);'}
+    ${(props) => props.compact && "color: var(--text-secondary);"}
   }
 `;
 

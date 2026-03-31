@@ -7,6 +7,7 @@ import { Link } from "react-router-dom";
 import { Capacitor } from "@capacitor/core";
 
 import { CEFR_LEVELS } from "../../assorted/cefrLevels";
+import CefrLevelSelector from "../../components/CefrLevelSelector";
 import { setTitle } from "../../assorted/setTitle";
 
 import { scrollToTop } from "../../utils/misc/scrollToTop";
@@ -106,9 +107,6 @@ export default function LanguagePreferences() {
     return <LoadingAnimation />;
   }
 
-  console.log(sortedSystemLanguages.native_languages);
-  console.log(learnedLanguage);
-
   const availableNativeLanguages = sortedSystemLanguages.native_languages.filter(
     (each) => each.code != learnedLanguage,
   );
@@ -169,7 +167,7 @@ export default function LanguagePreferences() {
   }
 
   return (
-    <PreferencesPage pageWidth={"narrow"}>
+    <PreferencesPage pageWidth={"narrow"} isBackgroundFixed={true}>
       <Header>
         <Heading>What language would&nbsp;you&nbsp;like&nbsp;to&nbsp;learn?</Heading>
       </Header>
@@ -191,19 +189,13 @@ export default function LanguagePreferences() {
               }}
             />
 
-            <Selector
+            <CefrLevelSelector
+              levels={CEFR_LEVELS}
               selectedValue={learnedCEFRLevel}
               label={strings.levelOfLearnedLanguage}
-              placeholder={strings.levelOfLearnedLanguagePlaceholder}
-              optionLabel={(e) => e.label}
-              optionValue={(e) => e.value}
-              id={"level-of-practiced-languages"}
-              options={CEFR_LEVELS}
               isError={!isLearnedCEFRLevelValid}
               errorMessage={learnedCEFRLevelMsg}
-              onChange={(e) => {
-                setLearnedCEFRLevel(e.target.value);
-              }}
+              onChange={(value) => setLearnedCEFRLevel(value)}
             />
 
             <Selector

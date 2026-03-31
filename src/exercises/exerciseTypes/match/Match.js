@@ -24,7 +24,6 @@ export default function Match({
   reload,
   setReload,
   resetSubSessionTimer,
-  bookmarkProgressBar,
 }) {
   const RIGHT = true;
   const LEFT = !RIGHT;
@@ -48,13 +47,16 @@ export default function Match({
   }, []);
 
   useEffect(() => {
-    if (isExerciseOver) setListOfSolvedBookmarks(bookmarksToStudy.map((bookmark) => bookmark.id));
+    if (isExerciseOver)
+      setListOfSolvedBookmarks((prev) => {
+        const remaining = bookmarksToStudy.map((b) => b.id).filter((id) => !prev.includes(id));
+        return [...prev, ...remaining];
+      });
   }, [isExerciseOver]);
 
   const speech = useContext(SpeechContext);
 
   async function handleSpeak(bookmark) {
-    console.log("Speaking..." + bookmark.from);
     if (autoPronounceBookmark) {
       await speech.speakOut(bookmark.from, setIsPronouncing);
     }
@@ -87,8 +89,20 @@ export default function Match({
 
         setListOfSolvedBookmarks(_listOfSolvedBookmarks);
 
-        if (_listOfSolvedBookmarks.length === bookmarksToStudy.length) {
-          notifyExerciseCompleted("", null, true);
+        if (_listOfSolvedBookmarks.length === bookmarksToStudy.length - 1) {
+          // One pair left — auto-complete it after a short delay so the reveal
+          // feels animated. The user has no real choice at this point so we don't
+          // score it as a correct answer, but we still track the word (so it
+          // shows in History) with a neutral outcome.
+          notifyCorrectAnswer(selectedLeftBookmark, false);
+          const lastBookmark = bookmarksToStudy.find((b) => !_listOfSolvedBookmarks.includes(b.id));
+          setTimeout(() => {
+            setListOfSolvedBookmarks([..._listOfSolvedBookmarks, lastBookmark.id]);
+            notifyExerciseCompleted("", lastBookmark, true);
+          }, 800);
+        } else if (_listOfSolvedBookmarks.length === bookmarksToStudy.length) {
+          // All pairs solved (only reachable if there was just 1 bookmark)
+          notifyCorrectAnswer(selectedLeftBookmark, true);
         } else {
           notifyCorrectAnswer(selectedLeftBookmark, false);
         }

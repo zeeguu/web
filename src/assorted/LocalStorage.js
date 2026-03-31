@@ -167,7 +167,6 @@ const LocalStorage = {
   },
 
   setUserPreferences: function (preferences) {
-    if (!preferences) return;
     if (preferences["productive_exercises"] !== undefined) {
       localStorage[this.Keys.ProductiveExercisesEnabled] = preferences["productive_exercises"];
     }

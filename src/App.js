@@ -7,7 +7,7 @@ import { RoutingContext } from "./contexts/RoutingContext";
 import { FeedbackContextProvider } from "./contexts/FeedbackContext";
 import LocalStorage from "./assorted/LocalStorage";
 import { APIContext } from "./contexts/APIContext";
-import Zeeguu_API from "./api/Zeeguu_API";
+import Zeeguu_API, { ServerUnavailableError } from "./api/Zeeguu_API";
 import { ProgressProvider } from "./contexts/ProgressContext";
 import useUILanguage from "./assorted/hooks/uiLanguageHook";
 
@@ -28,6 +28,7 @@ import useRedirectLink from "./hooks/useRedirectLink";
 import useLocationTracker from "./hooks/useLocationTracker";
 import useDeepLinkHandler from "./hooks/useDeepLinkHandler";
 import LoadingAnimation from "./components/LoadingAnimation";
+import ServerErrorModal from "./components/ServerErrorModal";
 import useTheme from "./hooks/useTheme";
 import { ThemeContext } from "./contexts/ThemeContext";
 
@@ -68,6 +69,7 @@ function App() {
   const [userDetails, setUserDetails] = useState();
   const [userPreferences, setUserPreferences] = useState();
   const [sessionInitialized, setSessionInitialized] = useState(false);
+  const [serverError, setServerError] = useState(false);
 
   const [isExtensionAvailable] = useExtensionCommunication();
   const [zeeguuSpeech, setZeeguuSpeech] = useState(false);
@@ -144,6 +146,22 @@ function App() {
     return () => clearInterval(pollInterval);
   }, [userDetails?.daily_audio_status, api]);
 
+  async function loadUserDetails() {
+    try {
+      const userDetails = await api.getUserDetails();
+      LocalStorage.setUserInfo(userDetails);
+      const userPreferences = await api.getUserPreferences();
+      LocalStorage.setUserPreferences(userPreferences);
+      setZeeguuSpeech(new ZeeguuSpeech(api, userDetails.learned_language));
+      setUserDetails(userDetails);
+      setUserPreferences(userPreferences);
+      setServerError(false);
+    } catch (e) {
+      if (e instanceof ServerUnavailableError) setServerError(true);
+      else throw e;
+    }
+  }
+
   useEffect(() => {
     // Wait for session to be initialized (especially important for Capacitor)
     if (!sessionInitialized) return;
@@ -161,21 +179,8 @@ function App() {
     // Only validate if there is a session.
     if (api.session !== undefined && api.session !== null) {
       api.isValidSession(
-        () => {
-          api.getUserDetails((userDetails) => {
-            LocalStorage.setUserInfo(userDetails);
-            api.getUserPreferences((userPreferences) => {
-              LocalStorage.setUserPreferences(userPreferences);
-
-              setZeeguuSpeech(new ZeeguuSpeech(api, userDetails.learned_language));
-              setUserDetails(userDetails);
-              setUserPreferences(userPreferences);
-            });
-          });
-        },
-        () => {
-          logout();
-        },
+        () => { loadUserDetails(); },
+        () => { logout(); },
       );
     } else {
       // No session - user is not logged in
@@ -202,7 +207,7 @@ function App() {
             console.log("Anonymous login successful");
             api.session = session;
             saveSharedUserInfo({ name: "Guest", native_language: "en" }, session);
-            loadUserDetailsAfterLogin();
+            loadUserDetails();
           },
           (error) => {
             // Login failed - credentials might be invalid
@@ -219,18 +224,6 @@ function App() {
         setUserDetails({});
         setUserPreferences({});
       }
-    }
-
-    function loadUserDetailsAfterLogin() {
-      api.getUserDetails((userDetails) => {
-        LocalStorage.setUserInfo(userDetails);
-        api.getUserPreferences((userPreferences) => {
-          LocalStorage.setUserPreferences(userPreferences);
-          setZeeguuSpeech(new ZeeguuSpeech(api, userDetails.learned_language));
-          setUserDetails(userDetails);
-          setUserPreferences(userPreferences);
-        });
-      });
     }
 
     // Log out user on zeeguu.org if they log out of the extension
@@ -262,7 +255,7 @@ function App() {
     LocalStorage.clearAnonCredentials(); // Clear anonymous credentials on real login
 
     // TODO: Should this be moved to Settings.loadUsrePreferences?
-    api.getUserPreferences((preferences) => {
+    api.getUserPreferences().then((preferences) => {
       SessionStorage.setAudioExercisesEnabled(
         preferences["audio_exercises"] === undefined || preferences["audio_exercises"] === "true",
       );
@@ -291,6 +284,10 @@ function App() {
 
   //Setting up the routing context to be able to use the cancel-button in EditText correctly
   const [returnPath, setReturnPath] = useState("");
+
+  if (serverError) {
+    return <ServerErrorModal onRetry={() => { setServerError(false); loadUserDetails(); }} />;
+  }
 
   // Wait for session initialization and user details loading
   if (!sessionInitialized || userDetails === undefined) {

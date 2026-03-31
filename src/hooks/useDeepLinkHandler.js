@@ -29,7 +29,8 @@ export default function useDeepLinkHandler() {
         // Deep links to zeeguu.org, e.g. "https://zeeguu.org/read/article?id=123"
         const parsedUrl = new URL(event.url);
         const fullPath = parsedUrl.pathname + parsedUrl.search;
-        history.push(fullPath);
+        const separator = fullPath.includes("?") ? "&" : "?";
+        history.push(fullPath + separator + "source=deeplink");
       } catch (error) {
         console.error("Failed to parse deep link URL:", error);
       }

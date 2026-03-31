@@ -34,7 +34,7 @@
     // and src/hooks/useTheme.js
     (function() {
         var stored = localStorage.getItem('zeeguu-theme-preference');
-        var theme = stored || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+        var theme = (stored === 'dark' || stored === 'light') ? stored : (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
         document.documentElement.setAttribute('data-theme', theme);
     })();
 </script>

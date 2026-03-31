@@ -59,7 +59,7 @@ export default function DeleteAccount() {
   if (currentStatus === DeletionStatus.UNDEFINED) return <LoadingAnimation />;
 
   return (
-    <PreferencesPage>
+    <PreferencesPage isBackgroundFixed={true}>
       <Header>
         <Heading>{headingMsg}</Heading>
       </Header>
