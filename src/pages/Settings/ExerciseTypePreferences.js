@@ -38,7 +38,7 @@ export default function ExerciseTypePreferences() {
   }, []);
 
   useEffect(() => {
-    api.getUserPreferences((preferences) => {
+    api.getUserPreferences().then((preferences) => {
       setAudioExercises(
         (preferences["audio_exercises"] === undefined || preferences["audio_exercises"] === "true") &&
           SessionStorage.isAudioExercisesEnabled(),

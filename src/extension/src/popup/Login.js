@@ -11,11 +11,10 @@ export default function Login({ setLoggedIn, handleSuccessfulSignIn, api }) {
 
   function handleSignIn(e) {
     e.preventDefault();
-    api.signIn(email, password, setErrorMessage, (sessionId) => {
+    api.signIn(email, password, setErrorMessage, async (sessionId) => {
       BROWSER_API.storage.local.set({ loggedIn: true });
-      api.getUserDetails((userInfo) => {
-        handleSuccessfulSignIn(userInfo, sessionId);
-      });
+      const userInfo = await api.getUserDetails();
+      handleSuccessfulSignIn(userInfo, sessionId);
     });
   }
 

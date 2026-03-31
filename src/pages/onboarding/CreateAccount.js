@@ -134,14 +134,13 @@ export default function CreateAccount({ handleSuccessfulLogIn }) {
       inviteCode,
       password,
       userInfo,
-      (session) => {
-        api.getUserDetails((user) => {
-          handleSuccessfulLogIn(user, session, false);
-          setUserDetails(userInfo);
-          saveSharedUserInfo(userInfo);
-          // Redirect to email verification instead of select_interests
-          history.push("/verify_email");
-        });
+      async (session) => {
+        const user = await api.getUserDetails();
+        handleSuccessfulLogIn(user, session, false);
+        setUserDetails(userInfo);
+        saveSharedUserInfo(userInfo);
+        // Redirect to email verification instead of select_interests
+        history.push("/verify_email");
       },
       (error) => {
         setErrorMessage(error);

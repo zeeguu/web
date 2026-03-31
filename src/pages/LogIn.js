@@ -62,8 +62,9 @@ export default function LogIn({ handleSuccessfulLogIn }) {
         setIsLoggingIn(false);
         setErrorMessage(err);
       },
-      (sessionId) => {
-        api.getUserDetails((userInfo) => handleSuccessfulLogIn(userInfo, sessionId));
+      async (sessionId) => {
+        const userInfo = await api.getUserDetails();
+        handleSuccessfulLogIn(userInfo, sessionId);
       },
     );
   }
