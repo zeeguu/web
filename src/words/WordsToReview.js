@@ -4,13 +4,19 @@ import strings from "../i18n/definitions";
 import Infobox from "../components/Infobox";
 import { useState, useEffect } from "react";
 import { tokenize } from "../utils/text/preprocessing";
-import InfoBoxWordsToReview from "./InfoBoxWordsToReview";
 import ToggleEditReviewWords from "./ToggleEditReviewWords";
 import { StyledButton } from "../components/allButtons.sc.js";
 import Tooltip from "@mui/material/Tooltip";
 import { CenteredContent } from "../components/ColumnWidth.sc";
 import MoreInfoBox from "../components/MoreInfoBox";
-import { WordsSection, WordsListColumn, InfoBoxColumn, InfoIcon, SectionHeading } from "./WordsToReview.sc";
+import {
+  WordsSection,
+  WordsListColumn,
+  InfoBoxColumn,
+  InfoIcon,
+  SectionHeading,
+  ToggleContainer,
+} from "./WordsToReview.sc";
 
 export default function WordsToReview({
   words,
@@ -72,16 +78,17 @@ export default function WordsToReview({
           {articleInfo.title}
         </p>
       </div>
-      <InfoBoxWordsToReview
-        toggleEditWordsComponent={
-          <ToggleEditReviewWords setInEditMode={setInEditMode} inEditMode={inEditMode} />
-        }
-      />
+      <ToggleContainer>
+        <ToggleEditReviewWords setInEditMode={setInEditMode} inEditMode={inEditMode} />
+      </ToggleContainer>
       {wordsForExercises.length > 0 && (
         <WordsSection>
           <WordsListColumn>
             <SectionHeading>
-              Will appear in exercises
+              Will eventually appear in exercises
+              <InfoIcon
+                onClick={() => setShowMoreInfo(showMoreInfo === "howWordsAreAdded" ? null : "howWordsAreAdded")}
+              />{" "}
             </SectionHeading>
             {wordsForExercises.map((each) => (
               <ContentOnRow className="contentOnRow" key={each.id}>
@@ -97,7 +104,9 @@ export default function WordsToReview({
               </ContentOnRow>
             ))}
           </WordsListColumn>
-          <InfoBoxColumn />
+          <InfoBoxColumn>
+            {showMoreInfo === "howWordsAreAdded" && <MoreInfoBox type="howWordsAreAdded" />}
+          </InfoBoxColumn>
         </WordsSection>
       )}
       <CenteredContent style={{ marginBottom: "2em" }}>
