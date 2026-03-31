@@ -70,11 +70,9 @@ const InfoIcon = styled(HelpOutlineIcon)`
   cursor: pointer;
   flex-shrink: 0;
   margin-top: -0.7em;
-  font-size: 24px;
+  font-size: 22px !important;
   color: var(--info-icon-color);
   border-radius: 50%;
-  width: 32px;
-  height: 32px;
 `;
 
 const SectionHeading = styled.h3`
@@ -86,4 +84,36 @@ const SectionHeading = styled.h3`
   margin-top: 0.5rem;
 `;
 
-export { EditWordsToExerciseButton, WordsSection, WordsListColumn, InfoBoxColumn, InfoIcon, SectionHeading };
+const ToggleContainer = styled.div`
+  display: flex;
+  width: 80%;
+  flex-direction: row;
+  align-items: left;
+  gap: 0.5em;
+  margin: 1em 0;
+  background-color: var(--infobox-bg);
+  border-radius: 2em;
+  padding: 0.7em 2em;
+
+  p {
+    margin-top: 0.5em;
+  }
+  img {
+    width: 60px;
+    margin: 0.5em;
+  }
+
+  @media (max-width: 576px) {
+    margin: 0.8em 0;
+    flex-direction: column;
+  }
+`;
+export {
+  EditWordsToExerciseButton,
+  WordsSection,
+  WordsListColumn,
+  InfoBoxColumn,
+  InfoIcon,
+  SectionHeading,
+  ToggleContainer,
+};
