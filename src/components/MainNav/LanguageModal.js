@@ -120,14 +120,13 @@ export default function LanguageModal({ open, setOpen }) {
       learned_language: lang_code,
     };
 
-    api.saveUserDetails(newUserDetails, setErrorMessage, () => {
+    api.saveUserDetails(newUserDetails, setErrorMessage, async () => {
       // Re-fetch user details to get updated daily_audio_status for new language
-      api.getUserDetails((freshUserDetails) => {
-        setUserDetails(freshUserDetails);
-        LocalStorage.setUserInfo(freshUserDetails);
-        saveSharedUserInfo(freshUserDetails);
-        setOpen(false); // Close modal after successful save
-      });
+      const freshUserDetails = await api.getUserDetails();
+      setUserDetails(freshUserDetails);
+      LocalStorage.setUserInfo(freshUserDetails);
+      saveSharedUserInfo(freshUserDetails);
+      setOpen(false); // Close modal after successful save
     });
   }
 

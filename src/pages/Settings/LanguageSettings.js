@@ -150,6 +150,11 @@ export default function LanguageSettings() {
               }}
               selectedValue={CEFR}
             />
+            {CEFR_LEVELS.find((l) => l.value === String(CEFR))?.description && (
+              <p style={{ fontSize: "0.85em", color: "#888", margin: "-4px 0 8px" }}>
+                {CEFR_LEVELS.find((l) => l.value === String(CEFR)).description}
+              </p>
+            )}
           </FormSection>
 
           <FormSection>

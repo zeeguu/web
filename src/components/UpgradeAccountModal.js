@@ -131,16 +131,15 @@ export default function UpgradeAccountModal({ open, onClose, onSuccess, triggerR
 
   const [confirmCode, setConfirmCode] = useState("");
 
-  function finishUpgrade(toastMessage) {
+  async function finishUpgrade(toastMessage) {
     LocalStorage.clearAnonCredentials();
-    api.getUserDetails((user) => {
-      setUserDetails(user);
-      LocalStorage.setUserInfo(user);
-      setIsSubmitting(false);
-      toast.success(toastMessage);
-      if (onSuccess) onSuccess();
-      onClose();
-    });
+    const user = await api.getUserDetails();
+    setUserDetails(user);
+    LocalStorage.setUserInfo(user);
+    setIsSubmitting(false);
+    toast.success(toastMessage);
+    if (onSuccess) onSuccess();
+    onClose();
   }
 
   function handleUpgrade(e) {

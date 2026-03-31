@@ -1,5 +1,5 @@
 import styled, { css } from "styled-components";
-import { zeeguuOrange, lightOrange, lightGrey } from "./colors";
+import { zeeguuOrange, lightOrange } from "./colors";
 import MUISearchIcon from "@mui/icons-material/Search";
 
 const RoundButton = styled.div`
@@ -73,8 +73,8 @@ const ClearSearchButton = styled.div`
       transparent 56%,
       transparent 100%
     ),
-    -webkit-linear-gradient(45deg, transparent 0%, transparent 46%, gray 46%, gray
-          56%, transparent 56%, transparent 100%);
+    -webkit-linear-gradient(45deg, transparent 0%, transparent 46%, gray 46%, gray 56%, transparent 56%, transparent
+          100%);
   background-color: white;
 `;
 
@@ -133,9 +133,10 @@ const StyledButton = styled.button`
 
   // Navigation used together with <NavigateNextIcon /> or <NavigateBeforeIcon />
   ${(props) =>
-    props.$navigation &&
+    (props.$navigation || props.navigation) &&
     css`
-      background-color: white;
+      background-color: var(--action-btn-secondary-color-bg);
+      color: var(--action-btn-secondary-color-text);
       :hover {
         text-decoration: underline;
       }
@@ -143,9 +144,10 @@ const StyledButton = styled.button`
 
     // Disabled
     ${(props) =>
-    props.$disabled &&
+    (props.$disabled || props.disabled) &&
     css`
-      background-color: ${lightGrey};
+      background-color: var(--action-btn-secondary-color-bg);
+      color: var(--action-btn-secondary-color-text);
       cursor: not-allowed;
     `}
 `;

@@ -3,15 +3,10 @@ import { WEB_READER } from "../reader/ArticleReader";
 import { useState, useEffect, useContext } from "react";
 import LoadingAnimation from "../components/LoadingAnimation";
 import WordsToReview from "./WordsToReview";
-import { NarrowColumn, CenteredContent } from "../components/ColumnWidth.sc";
 import { setTitle } from "../assorted/setTitle";
-import strings from "../i18n/definitions";
-import { StyledButton } from "../components/allButtons.sc.js";
-import Tooltip from "@mui/material/Tooltip";
 import BackArrow from "../pages/Settings/settings_pages_shared/BackArrow";
-import useScreenWidth from "../hooks/useScreenWidth";
-import { isDesktopScreenWidth } from "../components/MainNav/screenSize";
 import { APIContext } from "../contexts/APIContext.js";
+import { WordsForArticleContainer, LeftContent } from "./WordsForArticle.sc.js";
 
 function fit_for_study(words) {
   return words.filter((b) => b.fit_for_study || b.starred).length > 0;
@@ -24,8 +19,7 @@ export default function WordsForArticle() {
   const [words, setWords] = useState(null);
   const [articleInfo, setArticleInfo] = useState(null);
   const [exercisesEnabled, setExercisesEnabled] = useState(false);
-  const { screenWidth } = useScreenWidth();
-  const desktopTopMargin = isDesktopScreenWidth(screenWidth) ? { marginTop: "2em" } : {};
+  const [showMoreInfo, setShowMoreInfo] = useState(null);
 
   useEffect(() => {
     api.prioritizeBookmarksToStudy(articleID, setWords);
@@ -71,41 +65,27 @@ export default function WordsForArticle() {
     }
   };
 
-  const toScheduledExercises = async (e) => {
-    history.push(`/exercises/}`);
-  };
-
   function logGoingToExercisesAfterReview(e) {
     console.log("logGoingToExercisesAfterReview called");
     return api.logUserActivity(api.TO_EXERCISES_AFTER_REVIEW, articleID, "", WEB_READER);
   }
 
   return (
-    <NarrowColumn style={desktopTopMargin}>
-      <BackArrow />
-      <WordsToReview
-        words={words}
-        deleteBookmark={deleteBookmark}
-        articleInfo={articleInfo}
-        notifyWordChanged={notifyWordChanged}
-        source={WEB_READER}
-      />
-      <CenteredContent style={{ marginBottom: "2em" }}>
-        {!exercisesEnabled ? (
-          <Tooltip title="You need to translate words in the article first." arrow>
-            <span>
-              <StyledButton disabled>{strings.toPracticeWords}</StyledButton>
-            </span>
-          </Tooltip>
-        ) : (
-          <StyledButton navigation onClick={toExercises}>
-            {strings.toPracticeWords}
-          </StyledButton>
-        )}
-        <StyledButton primary onClick={toScheduledExercises}>
-          Scheduled Exercises
-        </StyledButton>
-      </CenteredContent>
-    </NarrowColumn>
+    <WordsForArticleContainer>
+      <LeftContent>
+        <BackArrow />
+        <WordsToReview
+          words={words}
+          deleteBookmark={deleteBookmark}
+          articleInfo={articleInfo}
+          notifyWordChanged={notifyWordChanged}
+          source={WEB_READER}
+          toExercises={toExercises}
+          exercisesEnabled={exercisesEnabled}
+          showMoreInfo={showMoreInfo}
+          setShowMoreInfo={setShowMoreInfo}
+        />
+      </LeftContent>
+    </WordsForArticleContainer>
   );
 }

@@ -65,7 +65,7 @@ export default function useUserPreferences(api) {
   }
 
   useEffect(() => {
-    api.getUserPreferences((preferences) => {
+    api.getUserPreferences().then((preferences) => {
       console.log(preferences);
       setAudioExercises(_boolPreferenceParse(preferences, AUDIO_EXERCISES) && SessionStorage.isAudioExercisesEnabled());
       setTranslateInReader(_boolPreferenceParse(preferences, TRANSLATE_IN_READER));

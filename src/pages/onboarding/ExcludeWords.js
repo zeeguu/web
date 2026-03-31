@@ -78,7 +78,7 @@ export default function ExcludeWords({ hasExtension }) {
   }, []);
 
   return (
-    <PreferencesPage>
+    <PreferencesPage isBackgroundFixed={true}>
       <Header>
         <Heading>Would you like to exclude articles and exercises containing particular words or&nbsp;phrases?</Heading>
       </Header>

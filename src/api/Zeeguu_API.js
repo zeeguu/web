@@ -1,4 +1,5 @@
-import { Zeeguu_API } from "./classDef";
+import { Zeeguu_API, ServerUnavailableError } from "./classDef";
+export { ServerUnavailableError };
 import "./feature_toggles";
 import "./accounts";
 import "./userDetails";
