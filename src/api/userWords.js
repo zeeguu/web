@@ -47,7 +47,7 @@ Zeeguu_API.prototype.topBookmarks = function (count, callback) {
 
 Zeeguu_API.prototype.bookmarksForArticle = function (articleId, callback) {
   this._getJSON(`bookmarks_for_article/${articleId}`, (result) =>
-    callback(result.bookmarks),
+    callback(result ? result.bookmarks : null),
   );
 };
 
@@ -193,6 +193,7 @@ Zeeguu_API.prototype.prioritizeBookmarksToStudy = function (
   }
 
   this.bookmarksForArticle(articleID, (bookmarks) => {
+    if (!bookmarks) return;
     let hasUserEditedWords = bookmarks.some(
       (each) => each.user_preference !== 0,
     );

@@ -19,7 +19,7 @@ export default function WordsRouter() {
   useEffect(() => {
     // Get count of words in learning
     api.getAllScheduledBookmarks(false, (bookmarks) => {
-      setLearningCount(bookmarks.length);
+      if (bookmarks) setLearningCount(bookmarks.length);
     });
 
     // Get count of learned words

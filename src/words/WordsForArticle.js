@@ -30,8 +30,10 @@ export default function WordsForArticle() {
   useEffect(() => {
     api.prioritizeBookmarksToStudy(articleID, setWords);
     api.getArticleInfo(articleID, (data) => {
-      setArticleInfo(data);
-      setTitle('Words in "' + data.title + '"');
+      if (data) {
+        setArticleInfo(data);
+        setTitle('Words in "' + data.title + '"');
+      }
     });
 
     api.logUserActivity(api.WORDS_REVIEW, articleID, "", WEB_READER);
