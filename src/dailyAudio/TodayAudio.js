@@ -22,6 +22,8 @@ export function wordsAsTile(words) {
   return capitalized_comma_separated_words;
 }
 
+const TOPIC_STORAGE_KEY_PREFIX = "zeeguu_lesson_topic_";
+
 export default function TodayAudio({ setShowTabs }) {
   const api = useContext(APIContext);
   const { userDetails, setUserDetails } = useContext(UserContext);
@@ -29,6 +31,9 @@ export default function TodayAudio({ setShowTabs }) {
   const [isLoading, setIsLoading] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
   const [generationProgress, setGenerationProgress] = useState(null);
+  const [topicSuggestion, setTopicSuggestion] = useState(
+    () => localStorage.getItem(TOPIC_STORAGE_KEY_PREFIX + lang) || "",
+  );
 
   // Poll for progress when generating
   useEffect(() => {
@@ -151,10 +156,11 @@ export default function TodayAudio({ setShowTabs }) {
   // Update page title and playback time when lessonData changes
   useEffect(() => {
     if (lessonData && lessonData.words) {
+      const topicPrefix = lessonData.topic_suggestion ? `${lessonData.topic_suggestion}: ` : "";
       document.title = `[${new Date().toLocaleDateString("en-US", {
         month: "short",
         day: "numeric",
-      })}] Daily Audio: ${wordsAsTile(words)}`;
+      })}] Daily Audio: ${topicPrefix}${wordsAsTile(words)}`;
       
       // Initialize playback time from lesson data
       const initialTime = lessonData.pause_position_seconds || lessonData.position_seconds || lessonData.progress_seconds || 0;
@@ -267,6 +273,7 @@ export default function TodayAudio({ setShowTabs }) {
     // Set localStorage flag to track generation across page reloads
     localStorage.setItem(generatingKey, "true");
 
+    const trimmedTopic = topicSuggestion.trim() || null;
     api.generateDailyLesson(
       (data) => {
         if (data.status === AUDIO_STATUS.GENERATING) {
@@ -309,6 +316,7 @@ export default function TodayAudio({ setShowTabs }) {
         }
         setError(errorMsg);
       },
+      trimmedTopic,
     );
   };
 
@@ -458,6 +466,32 @@ export default function TodayAudio({ setShowTabs }) {
           <p style={{ marginBottom: "20px", textAlign: "center", maxWidth: "500px" }}>
             Generate a personalized audio lesson based on the words you're learning.
           </p>
+          <input
+            type="text"
+            placeholder="Topic (optional), e.g. app usability"
+            maxLength={24}
+            value={topicSuggestion}
+            onChange={(e) => {
+              const val = e.target.value;
+              setTopicSuggestion(val);
+              if (val.trim()) {
+                localStorage.setItem(TOPIC_STORAGE_KEY_PREFIX + lang, val);
+              } else {
+                localStorage.removeItem(TOPIC_STORAGE_KEY_PREFIX + lang);
+              }
+            }}
+            style={{
+              width: "100%",
+              maxWidth: "300px",
+              padding: "8px 12px",
+              border: "1px solid var(--border-light)",
+              borderRadius: "4px",
+              fontSize: "14px",
+              color: "var(--text-primary)",
+              backgroundColor: "var(--bg-secondary)",
+              textAlign: "center",
+            }}
+          />
         </div>
       );
     }
@@ -477,7 +511,9 @@ export default function TodayAudio({ setShowTabs }) {
     <div style={{ padding: "20px" }}>
       <h2 style={{ color: zeeguuOrange, marginBottom: "10px", display: "flex", alignItems: "center", gap: "8px" }}>
         {lessonData.is_completed && <span style={{ color: "#28a745", fontSize: "20px" }}>✓</span>}
-        {wordsAsTile(words)}
+        {lessonData.topic_suggestion
+          ? `${lessonData.topic_suggestion}: ${wordsAsTile(words)}`
+          : wordsAsTile(words)}
       </h2>
 
       {error && <div style={{ color: "red", marginBottom: "20px" }}>{error}</div>}
