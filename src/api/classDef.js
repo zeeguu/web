@@ -3,6 +3,13 @@ import axios from "axios";
 import * as Sentry from "@sentry/react";
 import LocalStorage from "../assorted/LocalStorage";
 
+export class ServerUnavailableError extends Error {
+  constructor() {
+    super("Server returned no data");
+    this.name = "ServerUnavailableError";
+  }
+}
+
 function check403ForPendingUpgrade(status) {
   if (status === 403 && LocalStorage.getAnonUpgradePending()) {
     window.dispatchEvent(new CustomEvent("zeeguu-email-not-verified"));
@@ -103,6 +110,15 @@ const Zeeguu_API = class {
         // Call callback with null so components don't hang on loading forever
         callback(null);
       });
+  }
+
+  _getJSONPromise(endpoint, useCache = false) {
+    return new Promise((resolve, reject) => {
+      this._getJSON(endpoint, (result) => {
+        if (!result) reject(new ServerUnavailableError());
+        else resolve(result);
+      }, useCache);
+    });
   }
 
   //returning text or json based on the boolean getJson

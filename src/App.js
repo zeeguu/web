@@ -7,7 +7,7 @@ import { RoutingContext } from "./contexts/RoutingContext";
 import { FeedbackContextProvider } from "./contexts/FeedbackContext";
 import LocalStorage from "./assorted/LocalStorage";
 import { APIContext } from "./contexts/APIContext";
-import Zeeguu_API from "./api/Zeeguu_API";
+import Zeeguu_API, { ServerUnavailableError } from "./api/Zeeguu_API";
 import { ProgressProvider } from "./contexts/ProgressContext";
 import useUILanguage from "./assorted/hooks/uiLanguageHook";
 
@@ -146,19 +146,20 @@ function App() {
     return () => clearInterval(pollInterval);
   }, [userDetails?.daily_audio_status, api]);
 
-  function loadUserDetails() {
-    api.getUserDetails((userDetails) => {
-      if (!userDetails) { setServerError(true); return; }
+  async function loadUserDetails() {
+    try {
+      const userDetails = await api.getUserDetails();
       LocalStorage.setUserInfo(userDetails);
-      api.getUserPreferences((userPreferences) => {
-        if (!userPreferences) { setServerError(true); return; }
-        LocalStorage.setUserPreferences(userPreferences);
-        setZeeguuSpeech(new ZeeguuSpeech(api, userDetails.learned_language));
-        setUserDetails(userDetails);
-        setUserPreferences(userPreferences);
-        setServerError(false);
-      });
-    });
+      const userPreferences = await api.getUserPreferences();
+      LocalStorage.setUserPreferences(userPreferences);
+      setZeeguuSpeech(new ZeeguuSpeech(api, userDetails.learned_language));
+      setUserDetails(userDetails);
+      setUserPreferences(userPreferences);
+      setServerError(false);
+    } catch (e) {
+      if (e instanceof ServerUnavailableError) setServerError(true);
+      else throw e;
+    }
   }
 
   useEffect(() => {
