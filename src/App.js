@@ -255,8 +255,7 @@ function App() {
     LocalStorage.clearAnonCredentials(); // Clear anonymous credentials on real login
 
     // TODO: Should this be moved to Settings.loadUsrePreferences?
-    api.getUserPreferences((preferences) => {
-      if (!preferences) return;
+    api.getUserPreferences().then((preferences) => {
       SessionStorage.setAudioExercisesEnabled(
         preferences["audio_exercises"] === undefined || preferences["audio_exercises"] === "true",
       );
