@@ -226,14 +226,14 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
     // For Match exercises, include all bookmark IDs
     if (exerciseTypeName === "Match" && currentBookmarksToStudy && currentBookmarksToStudy.length > 1) {
       const bookmarkIds = currentBookmarksToStudy.map((b) => b.id).join(",");
-      return `${window.location.origin}/exercise/${exerciseTypeName}/${bookmarkIds}`;
+      return `https://zeeguu.org/exercise/${exerciseTypeName}/${bookmarkIds}`;
     }
 
     // For single bookmark exercises
     if (!selectedExerciseBookmark) return "";
     const bookmarkId = selectedExerciseBookmark.id;
 
-    return `${window.location.origin}/exercise/${exerciseTypeName}/${bookmarkId}`;
+    return `https://zeeguu.org/exercise/${exerciseTypeName}/${bookmarkId}`;
   };
 
   // Update feedback context with current exercise URL
