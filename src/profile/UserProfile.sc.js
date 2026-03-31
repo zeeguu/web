@@ -220,10 +220,10 @@ export const TabContent = styled.div`
   padding: 1rem 0 0;
 `;
 
-export const OverflowBubble = styled.button`
+export const LanguageOverflowBubble = styled.button`
   box-sizing: content-box;
-  width: 1.75rem;
-  height: 1.75rem;
+  width: ${({ $size }) => $size ?? "1.75rem"};
+  height: ${({ $size }) => $size ?? "1.75rem"};
   padding: 0;
   border-radius: 50%;
   background: var(--streak-banner-border);

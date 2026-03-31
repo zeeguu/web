@@ -17,14 +17,6 @@ const actionVariantStyles = {
     darkBorder: "#8e4747",
     darkText: "#ff9f94",
   },
-  add: {
-    lightBg: "#e6f5ff",
-    lightBorder: "#b7daf6",
-    lightText: "#1f6fb2",
-    darkBg: "#20364d",
-    darkBorder: "#3a628a",
-    darkText: "#8bc7ff",
-  },
   accept: {
     lightBg: "#e8f8ea",
     lightBorder: "#bbe6c0",
@@ -43,8 +35,7 @@ const actionVariantStyles = {
   },
 };
 
-const actionVariantValue = (variant, tone, fallback) =>
-  actionVariantStyles[variant]?.[tone] ?? fallback;
+const actionVariantValue = (variant, tone, fallback) => actionVariantStyles[variant]?.[tone] ?? fallback;
 
 export const FriendRowLi = styled.li`
   display: flex;
@@ -52,19 +43,10 @@ export const FriendRowLi = styled.li`
   gap: 1em;
   padding: 0.5em 0;
   cursor: ${({ $clickable }) => ($clickable ? "pointer" : "default")};
+
   &:hover:not(:has(button:hover)) {
     background: var(--tag-bg);
   }
-`;
-
-export const FriendName = styled.span`
-  font-weight: 600;
-  color: var(--text-secondary);
-`;
-
-export const FriendUsername = styled.span`
-  font-weight: 600;
-  color: var(--text-primary);
 `;
 
 export const LanguagesMeta = styled.div`
@@ -72,48 +54,6 @@ export const LanguagesMeta = styled.div`
   align-items: center;
   gap: 0.35rem;
   margin-left: auto;
-`;
-
-export const LanguageOverflowBubble = styled.button`
-  box-sizing: content-box;
-  width: 1.2rem;
-  height: 1.2rem;
-  padding: 0;
-  border-radius: 50%;
-  background: var(--light-badge-bg);
-  border: 0.08rem solid var(--border-light);
-  color: var(--text-primary);
-  font-size: 0.65rem;
-  font-weight: 600;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  &:hover {
-    background: var(--tag-bg);
-  }
-`;
-
-export const NoLanguages = styled.span`
-  color: var(--text-secondary);
-  font-size: 0.9rem;
-`;
-
-export const LanguagesList = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-`;
-
-export const LanguageItem = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.45rem 0.7rem;
-  border: 1px solid var(--border-light);
-  border-radius: 999px;
-  background: var(--card-bg);
 `;
 
 export const StreakContainer = styled.span`
@@ -158,15 +98,13 @@ export const ActionButton = styled.button`
   font-size: 0.9rem;
   padding: 0.5em 0.8em;
   border-radius: 4px;
-  border: 1px solid
-    ${({ $variant }) => actionVariantValue($variant, "lightBorder", "var(--border-light)")};
+  border: 1px solid ${({ $variant }) => actionVariantValue($variant, "lightBorder", "var(--border-light)")};
   display: flex;
   align-items: center;
   gap: 0.4em;
   background: ${({ $variant }) => actionVariantValue($variant, "lightBg", "var(--card-bg)")};
   color: ${({ $variant }) => actionVariantValue($variant, "lightText", "var(--text-primary)")};
-  cursor: ${({ disabled, $variant }) =>
-    disabled || $variant === "accepted" ? "default" : "pointer"};
+  cursor: ${({ disabled, $variant }) => (disabled || $variant === "accepted" ? "default" : "pointer")};
   transition:
     background 0.2s,
     border-color 0.2s,
@@ -176,7 +114,7 @@ export const ActionButton = styled.button`
   &:disabled {
     opacity: 0.8;
   }
-  
+
   &:hover {
     filter: brightness(95%);
   }
@@ -187,4 +125,3 @@ export const ActionButton = styled.button`
     color: ${({ $variant }) => actionVariantValue($variant, "darkText", "var(--text-primary)")};
   }
 `;
-

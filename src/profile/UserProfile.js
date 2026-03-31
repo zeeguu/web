@@ -344,7 +344,9 @@ export default function UserProfile() {
                       </span>
                     ))}
                     {overflowCount > 0 && (
-                      <s.OverflowBubble onClick={() => setLanguagesModalOpen(true)}>+{overflowCount}</s.OverflowBubble>
+                      <s.LanguageOverflowBubble $isSmallSized={false} onClick={() => setLanguagesModalOpen(true)}>
+                        +{overflowCount}
+                      </s.LanguageOverflowBubble>
                     )}
                   </>
                 ) : (
