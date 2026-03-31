@@ -144,7 +144,6 @@ const LocalStorage = {
   },
 
   setUserInfo: function (info) {
-    if (!info) return;
     localStorage[this.Keys.LearnedLanguage] = info.learned_language;
     localStorage[this.Keys.NativeLanguage] = info.native_language;
     localStorage[this.Keys.IsTeacher] = info.is_teacher;
