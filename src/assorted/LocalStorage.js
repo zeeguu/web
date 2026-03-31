@@ -35,6 +35,10 @@ const LocalStorage = {
     InviteCode: "invite_code",
     // Keep in sync with index.html inline theme script
     ThemePreference: "zeeguu-theme-preference",
+
+    // Anonymous upgrade flow
+    AnonUpgradePending: "anon_upgrade_pending",
+    AnonUpgradeDismissed: "anon_upgrade_dismissed",
   },
 
   userInfo: function () {
@@ -343,6 +347,18 @@ const LocalStorage = {
 
   setDailyFeedbackShown: function () {
     localStorage[this.Keys.DailyFeedbackLastShown] = new Date().toDateString();
+  },
+
+  getAnonUpgradePending: function () {
+    return localStorage.getItem(this.Keys.AnonUpgradePending);
+  },
+
+  setAnonUpgradePending: function (value) {
+    localStorage.setItem(this.Keys.AnonUpgradePending, value);
+  },
+
+  clearAnonUpgradePending: function () {
+    localStorage.removeItem(this.Keys.AnonUpgradePending);
   },
 };
 
