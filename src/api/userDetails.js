@@ -1,7 +1,8 @@
 import { Zeeguu_API } from "./classDef";
 import qs from "qs";
 
-Zeeguu_API.prototype.getUserDetails = function () {
+Zeeguu_API.prototype.getUserDetails = function (callback) {
+  if (callback) { this._getJSON("get_user_details", callback); return; }
   return this._getJSONPromise("get_user_details");
 };
 
@@ -43,7 +44,8 @@ Zeeguu_API.prototype.modifyCEFRlevel = function (
 };
 
 // Topics that can be subscribed to
-Zeeguu_API.prototype.getUserPreferences = function () {
+Zeeguu_API.prototype.getUserPreferences = function (callback) {
+  if (callback) { this._getJSON("user_preferences", callback); return; }
   return this._getJSONPromise("user_preferences");
 };
 
