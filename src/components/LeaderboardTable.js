@@ -1,4 +1,6 @@
 import React, { useContext, useEffect, useMemo, useState } from "react";
+import ChevronLeftRoundedIcon from "@mui/icons-material/ChevronLeftRounded";
+import ChevronRightRoundedIcon from "@mui/icons-material/ChevronRightRounded";
 import LeaderboardRow from "./LeaderboardRow";
 import { APIContext } from "../contexts/APIContext";
 import { ThemeContext } from "../contexts/ThemeContext";
@@ -79,15 +81,18 @@ function formatDateLabel(date) {
   });
 }
 
-function computeHalfMonthPeriod() {
+function computeHalfMonthPeriod(monthShift = 0) {
   const now = new Date();
-  const year = now.getFullYear();
-  const month = now.getMonth();
   const day = now.getDate();
+  const isFirstHalf = day <= 15;
+
+  const baseDate = new Date(now.getFullYear(), now.getMonth() + monthShift, 1);
+  const year = baseDate.getFullYear();
+  const month = baseDate.getMonth();
 
   let from, to;
 
-  if (day <= 15) {
+  if (isFirstHalf) {
     from = new Date(year - 1, month, 1);
     to = new Date(year, month, 15);
   } else {
@@ -115,8 +120,9 @@ function LeaderboardTable({
   const api = useContext(APIContext);
   const { isDark } = useContext(ThemeContext);
   const { userDetails } = useContext(UserContext);
+  const [periodShiftInMonths, setPeriodShiftInMonths] = useState(0);
 
-  const period = useMemo(() => computeHalfMonthPeriod(), []);
+  const period = useMemo(() => computeHalfMonthPeriod(periodShiftInMonths), [periodShiftInMonths]);
 
   const resolvedLeaderboards = useMemo(() => {
     if (Array.isArray(leaderboards) && leaderboards.length > 0) {
@@ -237,21 +243,52 @@ function LeaderboardTable({
           display: "flex",
           alignItems: "center",
           justifyContent: "space-between",
-          flexWrap: "wrap",
           gap: "0.5em",
           margin: "0",
           padding: "0",
         }}
       >
-        <p
+        <button
+          type="button"
+          onClick={() => setPeriodShiftInMonths((prev) => prev - 1)}
+          aria-label="Previous period"
           style={{
-            marginLeft: "0.5em",
-            fontSize: "0.90em",
-            color: isDark ? "#c6c6c6" : "#555",
+            padding: 0,
+            border: "none",
+            background: "transparent",
+            color: isDark ? "#f1f1f1" : "#222",
+            cursor: "pointer",
           }}
         >
-          Current period: {periodLabel}
+          <ChevronLeftRoundedIcon fontSize="large" />
+        </button>
+        <p
+          style={{
+            margin: 0,
+            fontSize: "0.90em",
+            color: isDark ? "#c6c6c6" : "#555",
+            textAlign: "center",
+            flex: 1,
+          }}
+        >
+          Period: {periodLabel}
         </p>
+        <button
+          type="button"
+          onClick={() => setPeriodShiftInMonths((prev) => Math.min(prev + 1, 0))}
+          disabled={periodShiftInMonths >= 0}
+          aria-label="Next period"
+          style={{
+            padding: 0,
+            border: "none",
+            background: "transparent",
+            color: isDark ? "#f1f1f1" : "#222",
+            cursor: periodShiftInMonths >= 0 ? "not-allowed" : "pointer",
+            opacity: periodShiftInMonths >= 0 ? 0.55 : 1,
+          }}
+        >
+          <ChevronLeftRoundedIcon fontSize="large" style={{ transform: "rotate(180deg)" }} />
+        </button>
       </div>
 
       {resolvedLeaderboards.length > 1 && (
