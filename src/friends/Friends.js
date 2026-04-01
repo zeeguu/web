@@ -3,9 +3,9 @@ import { toast } from "react-toastify";
 import SearchBar from "../components/SearchBar";
 import { APIContext } from "../contexts/APIContext";
 import FriendRow from "./FriendRow";
-import { FriendRequestContext } from "@/contexts/FriendRequestContext";
+import { FriendRequestContext } from "../contexts/FriendRequestContext";
 
-export default function FriendsTabContent({ friendUserId, navigationHandler }) {
+export default function Friends({ friendUsername, navigationHandler }) {
   const api = useContext(APIContext);
   const [friends, setFriends] = useState([]);
   const [loadingFriends, setLoadingFriends] = useState(true);
@@ -16,10 +16,10 @@ export default function FriendsTabContent({ friendUserId, navigationHandler }) {
   const [requestsError, setRequestsError] = useState(null);
 
   const [pendingSearch, setPendingSearch] = useState("");
-  const [newFriendResults, setNewFriendResults] = useState([]);
+  const [searchResults, setSearchResults] = useState([]);
   const [newFriendError, setNewFriendError] = useState(null);
   const [searchingNewFriends, setSearchingNewFriends] = useState(null);
-  const [sendingRequestId, setSendingRequestId] = useState(null);
+  const [sendingRequestUsername, setSendingRequestUsername] = useState(null);
   const [sentRequests, setSentRequests] = useState([]);
 
   // Friend-of-friend state (used when viewing someone else's profile)
@@ -30,7 +30,7 @@ export default function FriendsTabContent({ friendUserId, navigationHandler }) {
   const { updateFriendRequestCounter } = useContext(FriendRequestContext);
 
   useEffect(() => {
-    if (friendUserId) return;
+    if (friendUsername) return;
     api.getFriends((data) => {
       if (!data) {
         setFriendsError("Failed to fetch friends");
@@ -40,11 +40,11 @@ export default function FriendsTabContent({ friendUserId, navigationHandler }) {
       setFriends(data);
       setLoadingFriends(false);
     });
-  }, [api, friendUserId]);
+  }, [api, friendUsername]);
 
   useEffect(() => {
-    if (friendUserId) return;
-    api.getFriendRequests((data) => {
+    if (friendUsername) return;
+    api.getReceivedFriendRequests((data) => {
       if (!data) {
         setRequestsError("Failed to fetch friend requests");
         setLoadingRequests(false);
@@ -53,13 +53,13 @@ export default function FriendsTabContent({ friendUserId, navigationHandler }) {
       setFriendRequests(data);
       setLoadingRequests(false);
     });
-  }, [api, friendUserId]);
+  }, [api, friendUsername]);
 
   useEffect(() => {
-    if (!friendUserId) return;
+    if (!friendUsername) return;
     setLoadingFriendsFriends(true);
     setFriendsFriendsError(null);
-    api.getFriendsForUser(friendUserId, (data) => {
+    api.getFriendsForUser(friendUsername, (data) => {
       if (!data) {
         setFriendsFriendsError("Failed to fetch friends.");
         setLoadingFriendsFriends(false);
@@ -68,11 +68,11 @@ export default function FriendsTabContent({ friendUserId, navigationHandler }) {
       setFriendsFriends(data);
       setLoadingFriendsFriends(false);
     });
-  }, [api, friendUserId]);
+  }, [api, friendUsername]);
 
   useEffect(() => {
     if (pendingSearch === "") {
-      setNewFriendResults([]);
+      setSearchResults([]);
       setNewFriendError(null);
       setSearchingNewFriends(null);
     }
@@ -84,7 +84,7 @@ export default function FriendsTabContent({ friendUserId, navigationHandler }) {
     const query = pendingSearch.trim();
 
     if (query.length < 2 && !isEnterSearch) {
-      setNewFriendResults([]);
+      setSearchResults([]);
       setNewFriendError(null);
       setSearchingNewFriends(null);
       return;
@@ -99,24 +99,24 @@ export default function FriendsTabContent({ friendUserId, navigationHandler }) {
 
         if (!results) {
           setNewFriendError("Failed to search for users");
-          setNewFriendResults([]);
+          setSearchResults([]);
           return;
         }
 
-        setNewFriendResults(results);
+        setSearchResults(results);
       });
     }, 300);
   };
 
-  const handleSendFriendRequest = (event, receiverId) => {
+  const handleSendFriendRequest = (event, receiverUsername) => {
     event.stopPropagation();
-    setSendingRequestId(receiverId);
+    setSendingRequestUsername(receiverUsername);
     api
-      .sendFriendRequest(receiverId)
+      .sendFriendRequest(receiverUsername)
       .then((response) => {
-        setSendingRequestId(null);
+        setSendingRequestUsername(null);
         if (response.status === 200) {
-          setSentRequests((prev) => [...prev, receiverId]);
+          setSentRequests((prev) => [...prev, receiverUsername]);
         } else {
           response.json().then((json) => {
             toast.error(json.error || "Failed to send friend request.");
@@ -124,30 +124,27 @@ export default function FriendsTabContent({ friendUserId, navigationHandler }) {
         }
       })
       .catch(() => {
-        setSendingRequestId(null);
+        setSendingRequestUsername(null);
         toast.error("Failed to send friend request.");
       });
   };
 
-  const handleCancelFriendRequest = (event, receiverId) => {
+  const handleCancelFriendRequest = (event, receiverUsername) => {
     event.stopPropagation();
     api
-      .deleteFriendRequest(receiverId)
+      .deleteFriendRequest(receiverUsername)
       .then((response) => {
         if (response.status === 200) {
-          setSentRequests((prev) => prev.filter((id) => id !== receiverId));
-          setNewFriendResults((prev) =>
-            prev.map((item) =>
-              item.user.id === receiverId
+          setSentRequests((prev) => prev.filter((username) => username !== receiverUsername));
+          setSearchResults((prev) =>
+            prev.map((user) =>
+              user.username === receiverUsername
                 ? {
-                    ...item,
+                    ...user,
                     friend_request: null,
-                    user: {
-                      ...item.user,
-                      friendship: null,
-                    },
+                    friendship: null,
                   }
-                : item,
+                : user,
             ),
           );
         } else {
@@ -161,14 +158,14 @@ export default function FriendsTabContent({ friendUserId, navigationHandler }) {
       });
   };
 
-  const handleAcceptFriendRequest = (event, senderId) => {
+  const handleAcceptFriendRequest = (event, senderUsername) => {
     event.stopPropagation();
     api
-      .acceptFriendRequest(senderId)
+      .acceptFriendRequest(senderUsername)
       .then((response) => {
         if (response.status === 200) {
           setFriendRequests((prev) =>
-            prev.map((req) => (req.sender.id === senderId ? { ...req, accepted: true } : req)),
+            prev.map((req) => (req.sender.username === senderUsername ? { ...req, friend_request_status: "accepted" } : req)),
           );
           updateFriendRequestCounter();
         } else {
@@ -182,13 +179,13 @@ export default function FriendsTabContent({ friendUserId, navigationHandler }) {
       });
   };
 
-  const handleRejectFriendRequest = (event, senderId) => {
+  const handleRejectFriendRequest = (event, senderUsername) => {
     event.stopPropagation();
     api
-      .rejectFriendRequest(senderId)
+      .rejectFriendRequest(senderUsername)
       .then((response) => {
         if (response.status === 200) {
-          setFriendRequests((prev) => prev.filter((req) => req.sender.id !== senderId));
+          setFriendRequests((prev) => prev.filter((req) => req.sender.username !== senderUsername));
           updateFriendRequestCounter();
         } else {
           response.json().then((json) => {
@@ -201,35 +198,17 @@ export default function FriendsTabContent({ friendUserId, navigationHandler }) {
       });
   };
 
-  const handleUnfriend = (friendId) => {
-    api
-      .unfriend(friendId)
-      .then((response) => {
-        if (response.status === 200) {
-          setFriends((prev) => prev.filter((friend) => friend.id !== friendId));
-        } else {
-          response.json().then((json) => {
-            toast.error(json.message || "Failed to unfriend user.");
-          });
-        }
-      })
-      .catch(() => {
-        toast.error("Failed to unfriend user.");
-      });
-  };
-
-  const handleViewFriendProfile = (friendId) => {
-    if (!friendId || !navigationHandler) {
+  const handleViewFriendProfile = (friendUsername) => {
+    if (!friendUsername || !navigationHandler) {
       return;
     }
-
-    navigationHandler(`/profile/${friendId}`);
+    navigationHandler(friendUsername);
   };
 
   return (
     <div>
       {/* Friend-of-friend read-only view */}
-      {friendUserId ? (
+      {friendUsername ? (
         <>
           <h3>Friends</h3>
           {loadingFriendsFriends && <p>Loading friends...</p>}
@@ -239,8 +218,13 @@ export default function FriendsTabContent({ friendUserId, navigationHandler }) {
           )}
           {friendsFriends.length > 0 && (
             <ul>
-              {friendsFriends.map((friend) => (
-                <FriendRow key={friend.id} user={friend} rowType="view-only" onViewProfile={handleViewFriendProfile} />
+              {friendsFriends.map((friend, index) => (
+                <FriendRow
+                  key={`friend-${index}`}
+                  user={friend}
+                  rowType="view-only"
+                  onViewProfile={handleViewFriendProfile}
+                />
               ))}
             </ul>
           )}
@@ -262,22 +246,21 @@ export default function FriendsTabContent({ friendUserId, navigationHandler }) {
           {pendingSearch ? (
             <div>
               <h3>Users</h3>
-              {newFriendResults.length === 0 && searchingNewFriends === null && (
+              {searchResults.length === 0 && searchingNewFriends === null && (
                 <p>Continue typing or press Enter to search...</p>
               )}
-              {newFriendResults.length === 0 && searchingNewFriends === true && <p>Searching...</p>}
-              {newFriendResults.length === 0 && searchingNewFriends === false && <p>No users...</p>}
-              {newFriendResults.length > 0 && (
+              {searchResults.length === 0 && searchingNewFriends === true && <p>Searching...</p>}
+              {searchResults.length === 0 && searchingNewFriends === false && <p>No users...</p>}
+              {searchResults.length > 0 && (
                 <ul>
-                  {newFriendResults.map((result) => {
-                    const { user } = result;
+                  {searchResults.map((searchResult, index) => {
                     return (
                       <FriendRow
-                        key={user.id}
-                        user={user}
+                        key={`friend-search-result-${index}`}
+                        user={searchResult}
                         rowType="search"
-                        isSending={sendingRequestId === user.id}
-                        isSent={sentRequests.includes(user.id)}
+                        isSending={sendingRequestUsername === searchResult.username}
+                        isSent={sentRequests.includes(searchResult.username)}
                         onSendRequest={handleSendFriendRequest}
                         onCancelRequest={handleCancelFriendRequest}
                         onViewProfile={handleViewFriendProfile}
@@ -295,12 +278,12 @@ export default function FriendsTabContent({ friendUserId, navigationHandler }) {
                   <h3>Friend Requests</h3>
                   {requestsError && <p style={{ color: "red" }}>{requestsError}</p>}
                   <ul>
-                    {friendRequests.map((req) => (
+                    {friendRequests.map((req, index) => (
                       <FriendRow
-                        key={req.id}
+                        key={`friend-request-${index}`}
                         user={req.sender}
                         rowType="request"
-                        requestAccepted={req.accepted}
+                        friendRequestAccepted={req.friend_request_status === "accepted"}
                         onAcceptRequest={handleAcceptFriendRequest}
                         onRejectRequest={handleRejectFriendRequest}
                         onViewProfile={handleViewFriendProfile}
@@ -316,12 +299,11 @@ export default function FriendsTabContent({ friendUserId, navigationHandler }) {
               {!loadingFriends && !friendsError && friends.length === 0 && <p>You have no friends yet.</p>}
               {!loadingFriends && friends.length > 0 && (
                 <ul>
-                  {friends.map((friend) => (
+                  {friends.map((friend, index) => (
                     <FriendRow
-                      key={friend.id}
+                      key={`friend-${index}`}
                       user={friend}
                       rowType="friend"
-                      onUnfriend={handleUnfriend}
                       onViewProfile={handleViewFriendProfile}
                     />
                   ))}

@@ -12,6 +12,7 @@ let lightBlue = "#54cdff";
 let lighterBlue = "#CCDEFF";
 let darkBlue = "#2f77ad";
 let transparentDarkGreen = "rgb(0 80 20 / 50%)";
+let lightPurple = "#aab1de";
 
 /* 
   A NEW APPROACH TO DEFINING AND NAMING COLORS:
@@ -162,4 +163,5 @@ export {
   white,
   gray,
   setColors,
+  lightPurple,
 };

@@ -7,7 +7,7 @@ export default function ProfileRouter() {
   return (
     <s.NarrowColumn>
       <Switch>
-        <PrivateRoute exact path="/profile/:friendUserId" component={UserProfile} />
+        <PrivateRoute exact path="/profile/:friendUsername" component={UserProfile} />
         <PrivateRoute exact path="/profile" component={UserProfile} />
       </Switch>
     </s.NarrowColumn>

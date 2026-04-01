@@ -37,7 +37,7 @@ export default function ExcludedKeywords() {
     setTitle("Filters");
 
     // Load user preferences
-    api.getUserPreferences((preferences) => {
+    api.getUserPreferences().then((preferences) => {
       setFilterDisturbingContent(preferences.filter_disturbing_content === "true");
       setPreferencesLoaded(true);
     });

@@ -64,7 +64,7 @@ export default function InviteCode() {
   }
 
   return (
-    <PreferencesPage pageWidth={"narrow"}>
+    <PreferencesPage pageWidth={"narrow"} isBackgroundFixed={true}>
       <Header>
         <Heading>Invite Code</Heading>
       </Header>

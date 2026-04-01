@@ -1,27 +1,8 @@
-import React, { useMemo } from "react";
-import LeaderboardTable from "../components/LeaderboardTable";
 import FitnessCenterRoundedIcon from "@mui/icons-material/FitnessCenterRounded";
 import MenuBookRoundedIcon from "@mui/icons-material/MenuBookRounded";
-import AccessAlarmsRoundedIcon from '@mui/icons-material/AccessAlarmsRounded';
+import AccessAlarmsRoundedIcon from "@mui/icons-material/AccessAlarmsRounded";
 
-function formatDuration(ms) {
-  if (!ms || ms <= 0) return "0s";
-
-  const totalSeconds = Math.floor(ms / 1000);
-  const hours = Math.floor(totalSeconds / 3600);
-  const minutes = Math.floor((totalSeconds % 3600) / 60);
-  const seconds = totalSeconds % 60;
-
-  const parts = [];
-  if (hours) parts.push(`${hours}h`);
-  if (minutes) parts.push(`${minutes}m`);
-  if (seconds || parts.length === 0) parts.push(`${seconds}s`);
-
-  return parts.join(" ");
-}
-
-function Leaderboards() {
-  const leaderboards = useMemo(() => [
+export const LEADERBOARD_TYPES = [
   {
     key: "exercises_done",
     tabLabel: "Exercises Done",
@@ -63,20 +44,29 @@ function Leaderboards() {
     emptyMessage: "No exercise time leaderboard data available yet.",
   },
   {
-    key: "articles_read",
+    key: "read_articles",
     tabLabel: "Read Articles",
     title: "Read Articles Leaderboard",
     icon: MenuBookRoundedIcon,
-    metricLabel: "Articles Read",
+    metricLabel: "Read Articles",
     formatMetric: (value) => `${value}`,
     errorMessage: "Could not load read articles leaderboard.",
     emptyMessage: "No read articles leaderboard data available yet.",
   },
-], []);
+];
 
-  return (
-    <LeaderboardTable leaderboards={leaderboards} />
-  );
+function formatDuration(ms) {
+  if (!ms || ms <= 0) return "0s";
+
+  const totalSeconds = Math.floor(ms / 1000);
+  const hours = Math.floor(totalSeconds / 3600);
+  const minutes = Math.floor((totalSeconds % 3600) / 60);
+  const seconds = totalSeconds % 60;
+
+  const parts = [];
+  if (hours) parts.push(`${hours}h`);
+  if (minutes) parts.push(`${minutes}m`);
+  if (seconds || parts.length === 0) parts.push(`${seconds}s`);
+
+  return parts.join(" ");
 }
-
-export default Leaderboards;

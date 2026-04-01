@@ -5,7 +5,8 @@ import LeaderboardRow from "./LeaderboardRow";
 import { APIContext } from "../contexts/APIContext";
 import { ThemeContext } from "../contexts/ThemeContext";
 import { UserContext } from "../contexts/UserContext";
-import { orange300 } from "@/components/colors";
+import { orange300 } from "../components/colors";
+import { LEADERBOARD_TYPES } from "./leaderboardTypes";
 
 function getMetricValue(entry) {
   if (!entry || typeof entry !== "object") return 0;
@@ -94,14 +95,15 @@ function computeWeeklyPeriod(weekShift = 0) {
   return { from, to, fromStr, toStr };
 }
 
-function LeaderboardTable({
+function Leaderboards({
   title,
   metricLabel,
   icon,
   formatMetric = (value) => String(value),
   emptyMessage = "No leaderboard data available yet.",
   errorMessage = "Could not load leaderboard.",
-  leaderboards = null,
+  leaderboards = LEADERBOARD_TYPES,
+  navigationHandler,
 }) {
   const api = useContext(APIContext);
   const { isDark } = useContext(ThemeContext);
@@ -221,6 +223,13 @@ function LeaderboardTable({
   );
 
   const periodLabel = `${formatDateLabel(period.from)} - ${formatDateLabel(period.to)}`;
+
+  const handleViewFriendProfile = (friendId) => {
+    if (!friendId || !navigationHandler) {
+      return;
+    }
+    navigationHandler(friendId);
+  };
 
   return (
     <section style={{ width: "100%", maxWidth: "760px" }}>
@@ -352,7 +361,7 @@ function LeaderboardTable({
                 <LeaderboardRow
                   key={`${activeLeaderboard?.title || title}-${findFirstDefinedValue(userEntry, ["username", "name"]) || index}`}
                   rank={entry.rank}
-                  name={resolvedName}
+                  user={userEntry}
                   metrics={[
                     {
                       key: `${activeLeaderboard?.metricLabel || metricLabel}-${index}`,
@@ -360,9 +369,9 @@ function LeaderboardTable({
                       align: "center",
                     },
                   ]}
-                  showUsernameColumn={false}
                   highlight={isCurrentUser}
                   isDark={isDark}
+                  onViewProfile={handleViewFriendProfile}
                 />
               );
             })}
@@ -373,4 +382,4 @@ function LeaderboardTable({
   );
 }
 
-export default LeaderboardTable;
+export default Leaderboards;

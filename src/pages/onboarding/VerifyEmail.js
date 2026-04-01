@@ -71,7 +71,7 @@ export default function VerifyEmail() {
   }
 
   return (
-    <PreferencesPage pageWidth={"narrow"}>
+    <PreferencesPage pageWidth={"narrow"} isBackgroundFixed={true}>
       <Header>
         <Heading>Verify Your Email</Heading>
       </Header>

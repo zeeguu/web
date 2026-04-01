@@ -13,7 +13,7 @@ import strings from "../i18n/definitions";
 import { APIContext } from "../contexts/APIContext";
 import DynamicFlagImage from "../components/DynamicFlagImage";
 import { ProgressContext } from "../contexts/ProgressContext";
-import FriendsTabContent from "./FriendsTabContent";
+import Friends from "../friends/Friends";
 import { FriendRequestContext } from "../contexts/FriendRequestContext";
 import Badges from "../badges/Badges";
 import * as s from "./UserProfile.sc";
@@ -31,9 +31,9 @@ import {
 import { BadgeCounterContext } from "../badges/BadgeCounterContext";
 import LoadingAnimation from "../components/LoadingAnimation";
 import Button from "../pages/_pages_shared/Button.sc";
-import Leaderboards from "../pages/Leaderboards";
 import Stack from "@mui/material/Stack";
-import { ActionButton } from "./FriendRow.sc";
+import { FriendActionButton } from "../friends/FriendRow.sc";
+import Leaderboards from "../leaderboards/Leaderboards";
 
 export default function UserProfile() {
   const api = useContext(APIContext);
@@ -52,17 +52,17 @@ export default function UserProfile() {
   const [activeTab, setActiveTab] = useState("badges");
   const { friendRequestCount } = useContext(FriendRequestContext);
   const { hasBadgeNotification, totalNumberOfBadges } = useContext(BadgeCounterContext);
-  const { friendUserId } = useParams();
-  const [isOwnProfile, setIsOwnProfile] = useState(!friendUserId);
+  const { friendUsername } = useParams();
+  const [isOwnProfile, setIsOwnProfile] = useState(!friendUsername);
   const [loadingProfileDetails, setLoadingProfileDetails] = useState(true);
   const [friendDetailsError, setFriendDetailsError] = useState(null);
   const [unfriendModalOpen, setUnfriendModalOpen] = useState(false);
   const friendship = profileData?.friendship;
   const isFriendAccepted = friendship?.friend_request_status === "accepted";
   const pendingFromMe =
-    friendship?.friend_request_status === "pending" && Number(friendship?.sender_id) !== Number(friendUserId);
+    friendship?.friend_request_status === "pending" && friendship?.sender_username !== friendUsername;
   const pendingFromThem =
-    friendship?.friend_request_status === "pending" && Number(friendship?.sender_id) === Number(friendUserId);
+    friendship?.friend_request_status === "pending" && friendship?.sender_username === friendUsername;
   const streakValue = (isOwnProfile ? daysPracticed : friendship?.friend_streak) ?? 0;
 
   const resetProfileState = () => {
@@ -95,7 +95,7 @@ export default function UserProfile() {
 
   const handleUserProfileNavigation = (target) => {
     setLoadingProfileDetails(true);
-    history.push(target);
+    history.push(target ? `/profile/${target}` : "/profile");
   };
 
   useEffect(() => {
@@ -103,7 +103,7 @@ export default function UserProfile() {
 
     if (!api) return;
 
-    if (!friendUserId) {
+    if (!friendUsername) {
       setIsOwnProfile(true);
       updateProfileView(userDetails, null, strings.titleOwnProfile);
       api.getAllDailyStreakForUser(activeLanguagesCallback);
@@ -112,7 +112,7 @@ export default function UserProfile() {
 
     setIsOwnProfile(false);
     setFriendDetailsError(null);
-    api.getFriendDetails(friendUserId, (data) => {
+    api.getFriendDetails(friendUsername, (data) => {
       if (!data || data.error) {
         updateProfileView({}, data?.error || "Failed to fetch profile.", strings.titleUserProfileDefault);
         setLoadingProfileDetails(false);
@@ -121,13 +121,13 @@ export default function UserProfile() {
 
       const isSameUser = data.username === userDetails?.username;
       if (isSameUser) {
-        handleUserProfileNavigation("/profile");
+        handleUserProfileNavigation(null);
       } else {
         updateProfileView(data, null, `${data.username}'s ${strings.titleUserProfilePostfix}`);
-        api.getAllDailyStreakForFriend(friendUserId, activeLanguagesCallback);
+        api.getAllDailyStreakForFriend(friendUsername, activeLanguagesCallback);
       }
     });
-  }, [api, userDetails, friendUserId]);
+  }, [api, userDetails, friendUsername]);
 
   const updateProfileFriendship = (newFriendship) => {
     setProfileData((prev) => ({ ...prev, friendship: newFriendship }));
@@ -135,10 +135,10 @@ export default function UserProfile() {
 
   const handleSendFriendRequest = () => {
     api
-      .sendFriendRequest(friendUserId)
+      .sendFriendRequest(friendUsername)
       .then((response) => {
         if (response.status === 200) {
-          updateProfileFriendship({ friend_request_status: "pending", sender_id: null });
+          updateProfileFriendship({ friend_request_status: "pending", sender_username: null });
         } else {
           response.json().then((json) => {
             setFriendDetailsError(json.error || "Failed to send friend request.");
@@ -152,7 +152,7 @@ export default function UserProfile() {
 
   const handleCancelFriendRequest = () => {
     api
-      .deleteFriendRequest(friendUserId)
+      .deleteFriendRequest(friendUsername)
       .then((response) => {
         if (response.status === 200) {
           updateProfileFriendship(null);
@@ -169,7 +169,7 @@ export default function UserProfile() {
 
   const handleAcceptFriendRequest = () => {
     api
-      .acceptFriendRequest(friendUserId)
+      .acceptFriendRequest(friendUsername)
       .then((response) => {
         if (response.status === 200) {
           updateProfileFriendship({ friend_request_status: "accepted" });
@@ -186,7 +186,7 @@ export default function UserProfile() {
 
   const handleRejectFriendRequest = () => {
     api
-      .rejectFriendRequest(friendUserId)
+      .rejectFriendRequest(friendUsername)
       .then((response) => {
         if (response.status === 200) {
           updateProfileFriendship(null);
@@ -203,7 +203,7 @@ export default function UserProfile() {
 
   const handleUnfriend = () => {
     api
-      .unfriend(friendUserId)
+      .unfriend(friendUsername)
       .then((response) => {
         if (response.status === 200) {
           setUnfriendModalOpen(false);
@@ -233,15 +233,15 @@ export default function UserProfile() {
 
   const renderTabContent = () => {
     if (activeTab === "badges") {
-      return <Badges userId={friendUserId} />;
+      return <Badges username={friendUsername} />;
     }
 
     if (activeTab === "friends") {
-      return <FriendsTabContent friendUserId={friendUserId} navigationHandler={handleUserProfileNavigation} />;
+      return <Friends friendUsername={friendUsername} navigationHandler={handleUserProfileNavigation} />;
     }
 
     if (activeTab === "leaderboards") {
-      return <Leaderboards />;
+      return <Leaderboards navigationHandler={handleUserProfileNavigation} />;
     }
 
     return null;
@@ -260,7 +260,7 @@ export default function UserProfile() {
               type={"button"}
               className={"small"}
               onClick={() => {
-                handleUserProfileNavigation("/profile");
+                handleUserProfileNavigation(null);
               }}
             >
               <ArrowBackIcon sx={{ fontSize: "1.2rem" }} />
@@ -288,33 +288,33 @@ export default function UserProfile() {
             ) : (
               <s.FriendActionsContainer>
                 {isFriendAccepted && (
-                  <ActionButton $variant="unfriend" onClick={() => setUnfriendModalOpen(true)}>
+                  <FriendActionButton $variant="cancel" onClick={() => setUnfriendModalOpen(true)}>
                     <PersonRemoveIcon sx={{ fontSize: "1rem" }} />
                     <span>Unfriend</span>
-                  </ActionButton>
+                  </FriendActionButton>
                 )}
                 {!isFriendAccepted && !pendingFromMe && !pendingFromThem && (
-                  <ActionButton $variant="add" onClick={handleSendFriendRequest}>
+                  <FriendActionButton $variant="add" onClick={handleSendFriendRequest}>
                     <PersonAddIcon sx={{ fontSize: "1rem" }} />
                     <span>Add</span>
-                  </ActionButton>
+                  </FriendActionButton>
                 )}
                 {pendingFromMe && (
-                  <ActionButton $variant="cancel" onClick={handleCancelFriendRequest}>
+                  <FriendActionButton $variant="cancel" onClick={handleCancelFriendRequest}>
                     <CancelScheduleSendIcon sx={{ fontSize: "1rem" }} />
                     <span>Cancel</span>
-                  </ActionButton>
+                  </FriendActionButton>
                 )}
                 {pendingFromThem && (
                   <>
-                    <ActionButton $variant="accept" onClick={handleAcceptFriendRequest}>
+                    <FriendActionButton $variant="accept" onClick={handleAcceptFriendRequest}>
                       <CheckIcon sx={{ fontSize: "1rem" }} />
                       <span>Accept</span>
-                    </ActionButton>
-                    <ActionButton $variant="reject" onClick={handleRejectFriendRequest}>
+                    </FriendActionButton>
+                    <FriendActionButton $variant="reject" onClick={handleRejectFriendRequest}>
                       <ClearIcon sx={{ fontSize: "1rem" }} />
                       <span>Reject</span>
-                    </ActionButton>
+                    </FriendActionButton>
                   </>
                 )}
               </s.FriendActionsContainer>
@@ -344,7 +344,9 @@ export default function UserProfile() {
                       </span>
                     ))}
                     {overflowCount > 0 && (
-                      <s.OverflowBubble onClick={() => setLanguagesModalOpen(true)}>+{overflowCount}</s.OverflowBubble>
+                      <s.LanguageOverflowBubble $isSmallSized={false} onClick={() => setLanguagesModalOpen(true)}>
+                        +{overflowCount}
+                      </s.LanguageOverflowBubble>
                     )}
                   </>
                 ) : (

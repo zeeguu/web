@@ -21,6 +21,7 @@ import ActionButton from "../components/ActionButton";
 import { getHighestCefrLevel } from "../utils/misc/cefrHelpers";
 import getDomainName from "../utils/misc/getDomainName";
 import HighlightOffRoundedIcon from "@mui/icons-material/HighlightOffRounded";
+import OpenInNewRoundedIcon from "@mui/icons-material/OpenInNewRounded";
 import { TopicOriginType } from "../appConstants";
 
 export default function ArticlePreview({
@@ -187,7 +188,7 @@ export default function ArticlePreview({
             handleOpenRedirectionModal();
           }}
         >
-          Read Full
+          Open Externally <OpenInNewRoundedIcon style={{ fontSize: 16, marginLeft: 4 }} />
         </ActionButton>
       </>
     );
@@ -202,7 +203,7 @@ export default function ArticlePreview({
         href={article.url}
         onClick={handleArticleClick}
       >
-        Read Full
+        Open Externally <OpenInNewRoundedIcon style={{ fontSize: 16, marginLeft: 4 }} />
       </ActionButton>
     );
 

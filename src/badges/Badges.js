@@ -3,7 +3,7 @@ import { APIContext } from "../contexts/APIContext";
 import * as s from "./Badges.sc.js";
 import NotificationIcon from "../components/NotificationIcon";
 
-export default function Badges({ userId }) {
+export default function Badges({ username }) {
   const api = useContext(APIContext);
 
   const iconBasePath = "../../../public/static/badges/";
@@ -44,7 +44,7 @@ export default function Badges({ userId }) {
 
     setLevels(allLevels);
 
-    if (!userId && hasNewBadges) {
+    if (!username && hasNewBadges) {
       api.updateNotShownForUser();
     }
 
@@ -56,12 +56,12 @@ export default function Badges({ userId }) {
     setIsLoading(true);
     setError(null);
 
-    if (userId) {
-      api.getBadgesForFriend(userId, fetchBadgesCallback);
+    if (username) {
+      api.getBadgesForFriend(username, fetchBadgesCallback);
     } else {
       api.getBadgesForUser(fetchBadgesCallback);
     }
-  }, [api, userId]);
+  }, [api, username]);
 
   const getIcon = (level) => (level.icon_name ? iconBasePath + level.icon_name : defaultLogoPath);
 
@@ -89,7 +89,7 @@ export default function Badges({ userId }) {
         <s.BadgeContainer>
           {levels.map((level, index) => (
             <s.BadgeCard key={index}>
-              {!userId && !level.is_shown && level.achieved && (
+              {!username && !level.is_shown && level.achieved && (
                 <NotificationIcon text="NEW" position="card-corner" isActive={true} />
               )}
 

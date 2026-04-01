@@ -15,7 +15,7 @@ export default function useFriendRequestNotification() {
   }, [path]);
 
   function updateFriendRequestCounter() {
-    api.getFriendRequests((data) => {
+    api.getReceivedFriendRequests((data) => {
       const count = Array.isArray(data) ? data.filter((req) => !req.accepted).length : 0;
       setFriendRequestCount(count);
     });
