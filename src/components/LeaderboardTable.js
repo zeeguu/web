@@ -81,24 +81,10 @@ function formatDateLabel(date) {
   });
 }
 
-function computeHalfMonthPeriod(monthShift = 0) {
+function computeWeeklyPeriod(weekShift = 0) {
   const now = new Date();
-  const day = now.getDate();
-  const isFirstHalf = day <= 15;
-
-  const baseDate = new Date(now.getFullYear(), now.getMonth() + monthShift, 1);
-  const year = baseDate.getFullYear();
-  const month = baseDate.getMonth();
-
-  let from, to;
-
-  if (isFirstHalf) {
-    from = new Date(year - 1, month, 1);
-    to = new Date(year, month, 15);
-  } else {
-    from = new Date(year - 1, month, 16);
-    to = new Date(year, month + 1, 0);
-  }
+  const to = new Date(now.getFullYear(), now.getMonth(), now.getDate() + weekShift * 7);
+  const from = new Date(to.getFullYear(), to.getMonth(), to.getDate() - 6);
 
   const pad = (n) => String(n).padStart(2, "0");
 
@@ -120,9 +106,9 @@ function LeaderboardTable({
   const api = useContext(APIContext);
   const { isDark } = useContext(ThemeContext);
   const { userDetails } = useContext(UserContext);
-  const [periodShiftInMonths, setPeriodShiftInMonths] = useState(0);
+  const [periodShiftInWeeks, setPeriodShiftInWeeks] = useState(0);
 
-  const period = useMemo(() => computeHalfMonthPeriod(periodShiftInMonths), [periodShiftInMonths]);
+  const period = useMemo(() => computeWeeklyPeriod(periodShiftInWeeks), [periodShiftInWeeks]);
 
   const resolvedLeaderboards = useMemo(() => {
     if (Array.isArray(leaderboards) && leaderboards.length > 0) {
@@ -250,7 +236,7 @@ function LeaderboardTable({
       >
         <button
           type="button"
-          onClick={() => setPeriodShiftInMonths((prev) => prev - 1)}
+          onClick={() => setPeriodShiftInWeeks((prev) => prev - 1)}
           aria-label="Previous period"
           style={{
             padding: 0,
@@ -275,16 +261,16 @@ function LeaderboardTable({
         </p>
         <button
           type="button"
-          onClick={() => setPeriodShiftInMonths((prev) => Math.min(prev + 1, 0))}
-          disabled={periodShiftInMonths >= 0}
+          onClick={() => setPeriodShiftInWeeks((prev) => Math.min(prev + 1, 0))}
+          disabled={periodShiftInWeeks >= 0}
           aria-label="Next period"
           style={{
             padding: 0,
             border: "none",
             background: "transparent",
             color: isDark ? "#f1f1f1" : "#222",
-            cursor: periodShiftInMonths >= 0 ? "not-allowed" : "pointer",
-            opacity: periodShiftInMonths >= 0 ? 0.55 : 1,
+            cursor: periodShiftInWeeks >= 0 ? "not-allowed" : "pointer",
+            opacity: periodShiftInWeeks >= 0 ? 0.55 : 1,
           }}
         >
           <ChevronLeftRoundedIcon fontSize="large" style={{ transform: "rotate(180deg)" }} />
