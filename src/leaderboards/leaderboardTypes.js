@@ -40,6 +40,11 @@ export const LEADERBOARD_TYPES = [
   },
 ];
 
+export const LEADERBOARD_SCOPES = {
+  FRIENDS: "friends",
+  COHORT: "cohort",
+};
+
 function formatDuration(ms) {
   if (!ms || ms <= 0) return "0s";
 

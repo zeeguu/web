@@ -34,6 +34,7 @@ import Button from "../pages/_pages_shared/Button.sc";
 import Stack from "@mui/material/Stack";
 import { FriendActionButton } from "../friends/FriendRow.sc";
 import Leaderboards from "../leaderboards/Leaderboards";
+import { LEADERBOARD_SCOPES } from "../leaderboards/leaderboardTypes";
 
 export default function UserProfile() {
   const api = useContext(APIContext);
@@ -228,7 +229,12 @@ export default function UserProfile() {
       key: "friends",
       label: `Friends${isOwnProfile && friendRequestCount > 0 ? ` (${friendRequestCount})` : ""}`,
     },
-    ...(isOwnProfile ? [{ key: "leaderboards", label: "Leaderboards" }] : []),
+    ...(isOwnProfile
+      ? [
+          { key: "friendLeaderboards", label: "Friend Leaderboards" },
+          { key: "cohortLeaderboards", label: "Classroom Leaderboards" },
+        ]
+      : []),
   ];
 
   const renderTabContent = () => {
@@ -240,8 +246,12 @@ export default function UserProfile() {
       return <Friends friendUsername={friendUsername} navigationHandler={handleUserProfileNavigation} />;
     }
 
-    if (activeTab === "leaderboards") {
-      return <Leaderboards navigationHandler={handleUserProfileNavigation} />;
+    if (activeTab === "friendLeaderboards") {
+      return <Leaderboards navigationHandler={handleUserProfileNavigation} scope={LEADERBOARD_SCOPES.FRIENDS}/>;
+    }
+    
+    if (activeTab === "cohortLeaderboards") {
+      return <Leaderboards navigationHandler={handleUserProfileNavigation} scope={LEADERBOARD_SCOPES.COHORT}/>;
     }
 
     return null;

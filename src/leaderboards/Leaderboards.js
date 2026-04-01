@@ -4,7 +4,7 @@ import { APIContext } from "../contexts/APIContext";
 import { ThemeContext } from "../contexts/ThemeContext";
 import { UserContext } from "../contexts/UserContext";
 import * as s from "./Leaderboards.sc";
-import { LEADERBOARD_TYPES } from "./leaderboardTypes";
+import { LEADERBOARD_SCOPES, LEADERBOARD_TYPES } from "./leaderboardTypes";
 
 function getMetricValue(entry) {
   return Number(entry.value || 0);
@@ -45,6 +45,7 @@ function computeHalfMonthPeriod() {
 export default function Leaderboards({
   emptyMessage = "No leaderboard data available yet.",
   errorMessage = "Could not load leaderboard.",
+  scope,
   leaderboardTypes = LEADERBOARD_TYPES,
   navigationHandler,
 }) {
@@ -55,6 +56,8 @@ export default function Leaderboards({
   const period = useMemo(() => computeHalfMonthPeriod(), []);
 
   const [selectedLeaderboardKey, setSelectedLeaderboardKey] = useState(() => leaderboardTypes[0]?.key || "default");
+  const [cohorts, setCohorts] = useState([]);
+  const [selectedCohort, setSelectedCohort] = useState(null);
   const [leaderboardData, setLeaderboardData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -63,6 +66,19 @@ export default function Leaderboards({
     () => leaderboardTypes.find((item) => item.key === selectedLeaderboardKey) || leaderboardTypes[0],
     [leaderboardTypes, selectedLeaderboardKey],
   );
+
+  function handleData(data) {
+    if (!Array.isArray(data)) {
+      setError(errorMessage);
+      setLeaderboardData([]);
+      setIsLoading(false);
+      return;
+    }
+
+    const rankedData = assignRanks(data);
+    setLeaderboardData(rankedData);
+    setIsLoading(false);
+  }
 
   useEffect(() => {
     if (!selectedLeaderboardKey) {
@@ -75,20 +91,24 @@ export default function Leaderboards({
     setIsLoading(true);
     setError(null);
 
-    api.getLeaderboard(selectedLeaderboardKey, period.fromStr, period.toStr, (data) => {
-      if (!Array.isArray(data)) {
-        setError(errorMessage);
-        setLeaderboardData([]);
-        setIsLoading(false);
-        return;
-      }
+    if (scope === LEADERBOARD_SCOPES.FRIENDS) {
+      api.getFriendsLeaderboard(selectedLeaderboardKey, period.fromStr, period.toStr, handleData);
+    } else if (scope === LEADERBOARD_SCOPES.COHORT) {
+      if (!selectedCohort) return;
+      api.getCohortLeaderboard(selectedCohort, selectedLeaderboardKey, period.fromStr, period.toStr, handleData);
+    }
+  }, [api, selectedLeaderboardKey, period.fromStr, period.toStr, scope]);
 
-      const rankedData = assignRanks(data);
-      setLeaderboardData(rankedData);
-
-      setIsLoading(false);
-    });
-  }, [api, selectedLeaderboardKey, period.fromStr, period.toStr]);
+  useEffect(() => {
+    if (scope === LEADERBOARD_SCOPES.COHORT) {
+      api.getStudent((data) => {
+        if (data?.cohorts?.length) {
+          setCohorts(data.cohorts);
+          setSelectedCohort(data.cohorts[0].id);
+        }
+      });
+    }
+  }, [api, scope]);
 
   function assignRanks(data) {
     if (!Array.isArray(data)) return [];
@@ -148,6 +168,23 @@ export default function Leaderboards({
             );
           })}
         </s.TabsWrapper>
+      )}
+
+      {scope === LEADERBOARD_SCOPES.COHORT && cohorts.length > 0 && (
+        <div style={{ marginBottom: "1rem" }}>
+          <label htmlFor="cohort-select">Select Cohort: </label>
+          <select
+            id="cohort-select"
+            value={selectedCohort || ""}
+            onChange={(e) => setSelectedCohort(Number(e.target.value))}
+          >
+            {cohorts.map((c) => (
+              <option key={c.id} value={c.id}>
+                {c.name}
+              </option>
+            ))}
+          </select>
+        </div>
       )}
 
       {isLoading && <p>Loading leaderboard...</p>}
