@@ -7,69 +7,7 @@ import * as s from "./Leaderboards.sc";
 import { LEADERBOARD_TYPES } from "./leaderboardTypes";
 
 function getMetricValue(entry) {
-  if (!entry || typeof entry !== "object") return 0;
-
-  if (Number.isFinite(Number(entry.value))) {
-    return Number(entry.value);
-  }
-
-  const fallbackMetric = Object.keys(entry)
-    .filter((key) => key !== "user")
-    .map((key) => entry[key])
-    .find((value) => Number.isFinite(Number(value)));
-
-  return Number.isFinite(Number(fallbackMetric)) ? Number(fallbackMetric) : 0;
-}
-
-function normalizeValue(value) {
-  if (value === null || value === undefined) return "";
-  return String(value).trim().toLowerCase();
-}
-
-function findFirstDefinedValue(objectLike, keys = []) {
-  if (!objectLike || typeof objectLike !== "object") return undefined;
-
-  for (const key of keys) {
-    if (objectLike[key] !== undefined && objectLike[key] !== null) {
-      return objectLike[key];
-    }
-  }
-
-  return undefined;
-}
-
-function collectIdentityTokens(userDetails) {
-  const usernameToken = normalizeValue(findFirstDefinedValue(userDetails, ["username", "name"]));
-
-  return [usernameToken].filter(Boolean);
-}
-
-function collectEntryTokens(entry) {
-  const tokens = new Set();
-
-  function visit(value, keyHint = "") {
-    if (value === null || value === undefined) return;
-
-    if (typeof value === "string" || typeof value === "number") {
-      const normalized = normalizeValue(value);
-      if (!normalized) return;
-
-      const key = normalizeValue(keyHint);
-      if (!key || key.includes("user") || key.includes("name")) {
-        tokens.add(normalized);
-      }
-      return;
-    }
-
-    if (typeof value !== "object") return;
-
-    Object.entries(value).forEach(([k, v]) => visit(v, k));
-  }
-
-  visit(entry?.user, "user");
-  visit(entry, "entry");
-
-  return tokens;
+  return Number(entry.value || 0);
 }
 
 function formatDateLabel(date) {
@@ -104,13 +42,10 @@ function computeHalfMonthPeriod() {
   return { from, to, fromStr, toStr };
 }
 
-function Leaderboards({
-  metricLabel,
-  icon,
-  formatMetric = (value) => String(value),
+export default function Leaderboards({
   emptyMessage = "No leaderboard data available yet.",
   errorMessage = "Could not load leaderboard.",
-  leaderboards = LEADERBOARD_TYPES,
+  leaderboardTypes = LEADERBOARD_TYPES,
   navigationHandler,
 }) {
   const api = useContext(APIContext);
@@ -119,41 +54,14 @@ function Leaderboards({
 
   const period = useMemo(() => computeHalfMonthPeriod(), []);
 
-  const resolvedLeaderboards = useMemo(() => {
-    if (Array.isArray(leaderboards) && leaderboards.length > 0) {
-      return leaderboards.map((item, index) => ({
-        key: item.key || `leaderboard-${index}`,
-        tabLabel: item.tabLabel || item.metricLabel || `Metric ${index + 1}`,
-        metricLabel: item.metricLabel || metricLabel || "Metric",
-        formatMetric: item.formatMetric || formatMetric,
-        icon: item.icon || icon,
-      }));
-    }
-
-    return [
-      {
-        key: "default",
-        tabLabel: metricLabel || "Metric",
-        icon,
-        metricLabel,
-        formatMetric,
-      },
-    ];
-  }, [leaderboards, icon, metricLabel, formatMetric]);
-  const [selectedLeaderboardKey, setSelectedLeaderboardKey] = useState(() => resolvedLeaderboards[0]?.key || "default");
+  const [selectedLeaderboardKey, setSelectedLeaderboardKey] = useState(() => leaderboardTypes[0]?.key || "default");
   const [leaderboardData, setLeaderboardData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  useEffect(() => {
-    if (!resolvedLeaderboards.some((item) => item.key === selectedLeaderboardKey)) {
-      setSelectedLeaderboardKey(resolvedLeaderboards[0]?.key || "default");
-    }
-  }, [resolvedLeaderboards, selectedLeaderboardKey]);
-
   const activeLeaderboard = useMemo(
-    () => resolvedLeaderboards.find((item) => item.key === selectedLeaderboardKey) || resolvedLeaderboards[0],
-    [resolvedLeaderboards, selectedLeaderboardKey],
+    () => leaderboardTypes.find((item) => item.key === selectedLeaderboardKey) || leaderboardTypes[0],
+    [leaderboardTypes, selectedLeaderboardKey],
   );
 
   useEffect(() => {
@@ -188,9 +96,8 @@ function Leaderboards({
     const sorted = [...data].sort((a, b) => {
       const valueDiff = getMetricValue(b) - getMetricValue(a);
       if (valueDiff !== 0) return valueDiff;
-
-      const usernameA = (a.user?.username || a.user?.name || "").toLowerCase();
-      const usernameB = (b.user?.username || b.user?.name || "").toLowerCase();
+      const usernameA = a.user?.username.toLowerCase();
+      const usernameB = b.user?.username.toLowerCase();
       return usernameA.localeCompare(usernameB);
     });
 
@@ -228,9 +135,9 @@ function Leaderboards({
         <s.PeriodLabel>Current period: {periodLabel}</s.PeriodLabel>
       </s.Header>
 
-      {resolvedLeaderboards.length > 1 && (
+      {leaderboardTypes.length > 1 && (
         <s.TabsWrapper>
-          {resolvedLeaderboards.map((item) => {
+          {leaderboardTypes.map((item) => {
             const isActive = item.key === selectedLeaderboardKey;
 
             return (
@@ -259,21 +166,22 @@ function Leaderboards({
           <tbody>
             {leaderboardData.map((entry, index) => {
               const metricValue = getMetricValue(entry);
-              const userEntry = entry?.user || entry;
-              const identityTokens = collectIdentityTokens(userDetails);
-              const entryTokens = collectEntryTokens(entry);
+              const userEntry = entry?.user;
 
-              const isCurrentUser = identityTokens.length > 0 && identityTokens.some((token) => entryTokens.has(token));
+              const isCurrentUser =
+                userDetails?.username &&
+                userEntry?.username &&
+                userDetails.username.toLowerCase() === userEntry.username.toLowerCase();
 
               return (
                 <LeaderboardRow
-                  key={`${selectedLeaderboardKey}-${userEntry.username}`}
+                  key={`${selectedLeaderboardKey}-${userEntry?.username || index}`}
                   rank={entry.rank}
                   user={userEntry}
                   metrics={[
                     {
-                      key: `${activeLeaderboard?.metricLabel || metricLabel}-${index}`,
-                      value: (activeLeaderboard?.formatMetric || formatMetric)(metricValue),
+                      key: `${activeLeaderboard?.metricLabel}-${index}`,
+                      value: activeLeaderboard.formatMetric(metricValue),
                       align: "center",
                     },
                   ]}
@@ -289,5 +197,3 @@ function Leaderboards({
     </s.Container>
   );
 }
-
-export default Leaderboards;

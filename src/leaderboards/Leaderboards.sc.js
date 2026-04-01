@@ -43,8 +43,7 @@ export const TabButton = styled.button`
   font-weight: ${({ $active }) => ($active ? 500 : 400)};
 
   transition: background 0.2s;
-  box-shadow: ${({ $active }) =>
-    $active ? "0 4px 10px rgba(0,0,0,0.25)" : "0 1px 2px rgba(0,0,0,0.1)"};
+  box-shadow: ${({ $active }) => ($active ? "0 4px 10px rgba(0,0,0,0.25)" : "0 1px 2px rgba(0,0,0,0.1)")};
 
   transform: ${({ $active }) => ($active ? "translateY(-1px)" : "none")};
 `;
@@ -57,9 +56,3 @@ export const Table = styled.table`
 export const TableHeadCell = styled.th`
   padding: 0.5em;
 `;
-
-export const ErrorText = styled.p`
-  color: #b00020;
-`;
-
-export const InfoText = styled.p``;
