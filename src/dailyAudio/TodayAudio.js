@@ -64,6 +64,8 @@ export default function TodayAudio({ setShowTabs }) {
 
     let lessonRetryCount = 0;
     const MAX_LESSON_RETRIES = 3;
+    let noProgressCount = 0;
+    const MAX_NO_PROGRESS_RETRIES = 5;
 
     const handleLessonReady = (data) => {
       if (data && data.lesson_id) {
@@ -97,6 +99,7 @@ export default function TodayAudio({ setShowTabs }) {
       api.getAudioLessonGenerationProgress(
         (progress) => {
           if (progress) {
+            noProgressCount = 0;
             setGenerationProgress(progress);
 
             if (progress.status === GENERATION_PROGRESS.DONE) {
@@ -105,20 +108,24 @@ export default function TodayAudio({ setShowTabs }) {
               handleError(progress.message || "Lesson generation failed. Please try again.");
             }
           } else {
-            // No progress record - check if lesson is ready, otherwise stop polling
+            // No progress record - might be a brief gap (e.g., lesson was
+            // regenerated and progress hasn't appeared yet). Retry a few
+            // times before giving up.
+            noProgressCount++;
+            if (noProgressCount <= MAX_NO_PROGRESS_RETRIES) {
+              return; // keep polling
+            }
+            // Exhausted retries — check if a lesson appeared, otherwise stop
             api.getTodaysLesson(
               (data) => {
                 if (data && data.lesson_id) {
                   handleLessonReady(data);
                 } else {
-                  // No progress AND no lesson - generation must have failed silently
                   stopPolling();
-                  // Let user try again by checking feasibility
                   checkLessonGenerationFeasibility();
                 }
               },
               () => {
-                // API error - stop polling and let user retry
                 stopPolling();
                 checkLessonGenerationFeasibility();
               },
