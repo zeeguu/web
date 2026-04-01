@@ -13,7 +13,7 @@ import strings from "../i18n/definitions";
 import { APIContext } from "../contexts/APIContext";
 import DynamicFlagImage from "../components/DynamicFlagImage";
 import { ProgressContext } from "../contexts/ProgressContext";
-import FriendsTabContent from "./FriendsTabContent";
+import Friends from "../friends/Friends";
 import { FriendRequestContext } from "../contexts/FriendRequestContext";
 import Badges from "../badges/Badges";
 import * as s from "./UserProfile.sc";
@@ -31,9 +31,9 @@ import {
 import { BadgeCounterContext } from "../badges/BadgeCounterContext";
 import LoadingAnimation from "../components/LoadingAnimation";
 import Button from "../pages/_pages_shared/Button.sc";
-import Leaderboards from "../pages/Leaderboards";
 import Stack from "@mui/material/Stack";
-import { ActionButton } from "./FriendRow.sc";
+import { FriendActionButton } from "../friends/FriendRow.sc";
+import Leaderboards from "../leaderboards/Leaderboards";
 
 export default function UserProfile() {
   const api = useContext(APIContext);
@@ -95,7 +95,7 @@ export default function UserProfile() {
 
   const handleUserProfileNavigation = (target) => {
     setLoadingProfileDetails(true);
-    history.push(target);
+    history.push(target ? `/profile/${target}` : "/profile");
   };
 
   useEffect(() => {
@@ -228,7 +228,7 @@ export default function UserProfile() {
       key: "friends",
       label: `Friends${isOwnProfile && friendRequestCount > 0 ? ` (${friendRequestCount})` : ""}`,
     },
-    ...(isOwnProfile ? [{ key: "leaderboards", label: "Leaderboards" }] : []),
+    ...(isOwnProfile ? [{ key: "leaderboards", label: "LeaderboardTypes" }] : []),
   ];
 
   const renderTabContent = () => {
@@ -237,11 +237,11 @@ export default function UserProfile() {
     }
 
     if (activeTab === "friends") {
-      return <FriendsTabContent friendUserId={friendUserId} navigationHandler={handleUserProfileNavigation} />;
+      return <Friends friendUserId={friendUserId} navigationHandler={handleUserProfileNavigation} />;
     }
 
     if (activeTab === "leaderboards") {
-      return <Leaderboards />;
+      return <Leaderboards navigationHandler={handleUserProfileNavigation} />;
     }
 
     return null;
@@ -260,7 +260,7 @@ export default function UserProfile() {
               type={"button"}
               className={"small"}
               onClick={() => {
-                handleUserProfileNavigation("/profile");
+                handleUserProfileNavigation(null);
               }}
             >
               <ArrowBackIcon sx={{ fontSize: "1.2rem" }} />
@@ -288,33 +288,33 @@ export default function UserProfile() {
             ) : (
               <s.FriendActionsContainer>
                 {isFriendAccepted && (
-                  <ActionButton $variant="unfriend" onClick={() => setUnfriendModalOpen(true)}>
+                  <FriendActionButton $variant="cancel" onClick={() => setUnfriendModalOpen(true)}>
                     <PersonRemoveIcon sx={{ fontSize: "1rem" }} />
                     <span>Unfriend</span>
-                  </ActionButton>
+                  </FriendActionButton>
                 )}
                 {!isFriendAccepted && !pendingFromMe && !pendingFromThem && (
-                  <ActionButton $variant="add" onClick={handleSendFriendRequest}>
+                  <FriendActionButton $variant="add" onClick={handleSendFriendRequest}>
                     <PersonAddIcon sx={{ fontSize: "1rem" }} />
                     <span>Add</span>
-                  </ActionButton>
+                  </FriendActionButton>
                 )}
                 {pendingFromMe && (
-                  <ActionButton $variant="cancel" onClick={handleCancelFriendRequest}>
+                  <FriendActionButton $variant="cancel" onClick={handleCancelFriendRequest}>
                     <CancelScheduleSendIcon sx={{ fontSize: "1rem" }} />
                     <span>Cancel</span>
-                  </ActionButton>
+                  </FriendActionButton>
                 )}
                 {pendingFromThem && (
                   <>
-                    <ActionButton $variant="accept" onClick={handleAcceptFriendRequest}>
+                    <FriendActionButton $variant="accept" onClick={handleAcceptFriendRequest}>
                       <CheckIcon sx={{ fontSize: "1rem" }} />
                       <span>Accept</span>
-                    </ActionButton>
-                    <ActionButton $variant="reject" onClick={handleRejectFriendRequest}>
+                    </FriendActionButton>
+                    <FriendActionButton $variant="reject" onClick={handleRejectFriendRequest}>
                       <ClearIcon sx={{ fontSize: "1rem" }} />
                       <span>Reject</span>
-                    </ActionButton>
+                    </FriendActionButton>
                   </>
                 )}
               </s.FriendActionsContainer>

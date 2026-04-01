@@ -5,7 +5,7 @@ import { APIContext } from "../contexts/APIContext";
 import FriendRow from "./FriendRow";
 import { FriendRequestContext } from "../contexts/FriendRequestContext";
 
-export default function FriendsTabContent({ friendUserId, navigationHandler }) {
+export default function Friends({ friendUserId, navigationHandler }) {
   const api = useContext(APIContext);
   const [friends, setFriends] = useState([]);
   const [loadingFriends, setLoadingFriends] = useState(true);
@@ -202,7 +202,7 @@ export default function FriendsTabContent({ friendUserId, navigationHandler }) {
     if (!friendId || !navigationHandler) {
       return;
     }
-    navigationHandler(`/profile/${friendId}`);
+    navigationHandler(friendId);
   };
 
   return (

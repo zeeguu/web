@@ -1,7 +1,12 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
-import { AvatarBackground, AvatarImage } from "./UserProfile.sc";
-import { AVATAR_IMAGE_MAP, validatedAvatarBackgroundColor, validatedAvatarCharacterColor, validatedAvatarCharacterId } from "./avatarOptions";
+import { AvatarBackground, AvatarImage } from "../profile/UserProfile.sc";
+import {
+  AVATAR_IMAGE_MAP,
+  validatedAvatarBackgroundColor,
+  validatedAvatarCharacterColor,
+  validatedAvatarCharacterId,
+} from "../profile/avatarOptions";
 
 const Avatar = styled(AvatarBackground)`
   width: 2.5rem;
