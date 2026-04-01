@@ -15,7 +15,7 @@ export default function LeaderboardRow({
     <s.StyledTableRow
       $highlight={highlight}
       $isDark={isDark}
-      onClick={() => onViewProfile?.(user.id)} // TODO this does not work currently. After we switch from user IDs to usernames, it will be solved
+      onClick={() => onViewProfile?.(user.username)}
       $clickable={Boolean(onViewProfile)}
     >
       <s.RankCell $rank={rank} $emphasizeTopRanks={emphasizeTopRanks}>

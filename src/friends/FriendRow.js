@@ -47,11 +47,11 @@ export default function FriendRow({
       }
 
       if (user.friend_request?.friend_request_status === "pending") {
-        if (user.friend_request.sender.id === user.id) {
+        if (user.friend_request.sender.username === user.username) {
           return <s.RequestSent>They sent you a request</s.RequestSent>;
         }
         return (
-          <s.FriendActionButton $variant="cancel" onClick={(event) => onCancelRequest?.(event, user.id)}>
+          <s.FriendActionButton $variant="cancel" onClick={(event) => onCancelRequest?.(event, user.username)}>
             <CancelScheduleSendIcon sx={{ color: "#e74c3c", fontSize: "1rem", verticalAlign: "middle" }} />
             <span>Cancel</span>
           </s.FriendActionButton>
@@ -60,7 +60,7 @@ export default function FriendRow({
 
       if (isSent) {
         return (
-          <s.FriendActionButton $variant="cancel" onClick={(event) => onCancelRequest?.(event, user.id)}>
+          <s.FriendActionButton $variant="cancel" onClick={(event) => onCancelRequest?.(event, user.username)}>
             <CancelScheduleSendIcon sx={{ color: "#e74c3c", fontSize: "1rem", verticalAlign: "middle" }} />
             <span>Cancel</span>
           </s.FriendActionButton>
@@ -68,7 +68,7 @@ export default function FriendRow({
       }
 
       return (
-        <s.FriendActionButton $variant="add" onClick={(event) => onSendRequest?.(event, user.id)} disabled={isSending}>
+        <s.FriendActionButton $variant="add" onClick={(event) => onSendRequest?.(event, user.username)} disabled={isSending}>
           {isSending ? (
             <>
               <SendIcon sx={{ color: "#3498db", fontSize: "1rem", verticalAlign: "middle" }} />
@@ -92,11 +92,11 @@ export default function FriendRow({
         </s.FriendActionButton>
       ) : (
         <>
-          <s.FriendActionButton $variant="accept" onClick={(event) => onAcceptRequest?.(event, user.id)}>
+          <s.FriendActionButton $variant="accept" onClick={(event) => onAcceptRequest?.(event, user.username)}>
             <CheckIcon sx={{ color: "#2ecc40", fontSize: "1rem", verticalAlign: "middle" }} />
             <span>Accept</span>
           </s.FriendActionButton>
-          <s.FriendActionButton $variant="reject" onClick={(event) => onRejectRequest?.(event, user.id)}>
+          <s.FriendActionButton $variant="reject" onClick={(event) => onRejectRequest?.(event, user.username)}>
             <ClearIcon sx={{ color: "#e74c3c", fontSize: "1rem", verticalAlign: "middle" }} />
             <span>Reject</span>
           </s.FriendActionButton>
@@ -110,7 +110,7 @@ export default function FriendRow({
   const actions = renderActions();
 
   return (
-    <s.FriendRowLi onClick={() => onViewProfile?.(user.id)} $clickable={Boolean(onViewProfile)}>
+    <s.FriendRowLi onClick={() => onViewProfile?.(user.username)} $clickable={Boolean(onViewProfile)}>
       {rowType === "friend" && (
         <s.StreakContainer>
           <Stack direction="row" spacing={-1.2} alignItems="center">

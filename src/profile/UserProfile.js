@@ -52,17 +52,17 @@ export default function UserProfile() {
   const [activeTab, setActiveTab] = useState("badges");
   const { friendRequestCount } = useContext(FriendRequestContext);
   const { hasBadgeNotification, totalNumberOfBadges } = useContext(BadgeCounterContext);
-  const { friendUserId } = useParams();
-  const [isOwnProfile, setIsOwnProfile] = useState(!friendUserId);
+  const { friendUsername } = useParams();
+  const [isOwnProfile, setIsOwnProfile] = useState(!friendUsername);
   const [loadingProfileDetails, setLoadingProfileDetails] = useState(true);
   const [friendDetailsError, setFriendDetailsError] = useState(null);
   const [unfriendModalOpen, setUnfriendModalOpen] = useState(false);
   const friendship = profileData?.friendship;
   const isFriendAccepted = friendship?.friend_request_status === "accepted";
   const pendingFromMe =
-    friendship?.friend_request_status === "pending" && Number(friendship?.sender_id) !== Number(friendUserId);
+    friendship?.friend_request_status === "pending" && friendship?.sender_username !== friendUsername;
   const pendingFromThem =
-    friendship?.friend_request_status === "pending" && Number(friendship?.sender_id) === Number(friendUserId);
+    friendship?.friend_request_status === "pending" && friendship?.sender_username === friendUsername;
   const streakValue = (isOwnProfile ? daysPracticed : friendship?.friend_streak) ?? 0;
 
   const resetProfileState = () => {
@@ -103,7 +103,7 @@ export default function UserProfile() {
 
     if (!api) return;
 
-    if (!friendUserId) {
+    if (!friendUsername) {
       setIsOwnProfile(true);
       updateProfileView(userDetails, null, strings.titleOwnProfile);
       api.getAllDailyStreakForUser(activeLanguagesCallback);
@@ -112,7 +112,7 @@ export default function UserProfile() {
 
     setIsOwnProfile(false);
     setFriendDetailsError(null);
-    api.getFriendDetails(friendUserId, (data) => {
+    api.getFriendDetails(friendUsername, (data) => {
       if (!data || data.error) {
         updateProfileView({}, data?.error || "Failed to fetch profile.", strings.titleUserProfileDefault);
         setLoadingProfileDetails(false);
@@ -121,13 +121,13 @@ export default function UserProfile() {
 
       const isSameUser = data.username === userDetails?.username;
       if (isSameUser) {
-        handleUserProfileNavigation("/profile");
+        handleUserProfileNavigation(null);
       } else {
         updateProfileView(data, null, `${data.username}'s ${strings.titleUserProfilePostfix}`);
-        api.getAllDailyStreakForFriend(friendUserId, activeLanguagesCallback);
+        api.getAllDailyStreakForFriend(friendUsername, activeLanguagesCallback);
       }
     });
-  }, [api, userDetails, friendUserId]);
+  }, [api, userDetails, friendUsername]);
 
   const updateProfileFriendship = (newFriendship) => {
     setProfileData((prev) => ({ ...prev, friendship: newFriendship }));
@@ -135,10 +135,10 @@ export default function UserProfile() {
 
   const handleSendFriendRequest = () => {
     api
-      .sendFriendRequest(friendUserId)
+      .sendFriendRequest(friendUsername)
       .then((response) => {
         if (response.status === 200) {
-          updateProfileFriendship({ friend_request_status: "pending", sender_id: null });
+          updateProfileFriendship({ friend_request_status: "pending", sender_username: null });
         } else {
           response.json().then((json) => {
             setFriendDetailsError(json.error || "Failed to send friend request.");
@@ -152,7 +152,7 @@ export default function UserProfile() {
 
   const handleCancelFriendRequest = () => {
     api
-      .deleteFriendRequest(friendUserId)
+      .deleteFriendRequest(friendUsername)
       .then((response) => {
         if (response.status === 200) {
           updateProfileFriendship(null);
@@ -169,7 +169,7 @@ export default function UserProfile() {
 
   const handleAcceptFriendRequest = () => {
     api
-      .acceptFriendRequest(friendUserId)
+      .acceptFriendRequest(friendUsername)
       .then((response) => {
         if (response.status === 200) {
           updateProfileFriendship({ friend_request_status: "accepted" });
@@ -186,7 +186,7 @@ export default function UserProfile() {
 
   const handleRejectFriendRequest = () => {
     api
-      .rejectFriendRequest(friendUserId)
+      .rejectFriendRequest(friendUsername)
       .then((response) => {
         if (response.status === 200) {
           updateProfileFriendship(null);
@@ -203,7 +203,7 @@ export default function UserProfile() {
 
   const handleUnfriend = () => {
     api
-      .unfriend(friendUserId)
+      .unfriend(friendUsername)
       .then((response) => {
         if (response.status === 200) {
           setUnfriendModalOpen(false);
@@ -228,16 +228,16 @@ export default function UserProfile() {
       key: "friends",
       label: `Friends${isOwnProfile && friendRequestCount > 0 ? ` (${friendRequestCount})` : ""}`,
     },
-    ...(isOwnProfile ? [{ key: "leaderboards", label: "LeaderboardTypes" }] : []),
+    ...(isOwnProfile ? [{ key: "leaderboards", label: "Leaderboards" }] : []),
   ];
 
   const renderTabContent = () => {
     if (activeTab === "badges") {
-      return <Badges userId={friendUserId} />;
+      return <Badges username={friendUsername} />;
     }
 
     if (activeTab === "friends") {
-      return <Friends friendUserId={friendUserId} navigationHandler={handleUserProfileNavigation} />;
+      return <Friends friendUsername={friendUsername} navigationHandler={handleUserProfileNavigation} />;
     }
 
     if (activeTab === "leaderboards") {
