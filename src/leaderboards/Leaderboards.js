@@ -3,7 +3,7 @@ import LeaderboardRow from "./LeaderboardRow";
 import { APIContext } from "../contexts/APIContext";
 import { ThemeContext } from "../contexts/ThemeContext";
 import { UserContext } from "../contexts/UserContext";
-import { orange300 } from "../components/colors";
+import * as s from "./Leaderboards.sc";
 import { LEADERBOARD_TYPES } from "./leaderboardTypes";
 
 function getMetricValue(entry) {
@@ -105,7 +105,6 @@ function computeHalfMonthPeriod() {
 }
 
 function Leaderboards({
-  title,
   metricLabel,
   icon,
   formatMetric = (value) => String(value),
@@ -124,13 +123,10 @@ function Leaderboards({
     if (Array.isArray(leaderboards) && leaderboards.length > 0) {
       return leaderboards.map((item, index) => ({
         key: item.key || `leaderboard-${index}`,
-        tabLabel: item.tabLabel || item.metricLabel || item.title || `Metric ${index + 1}`,
-        title: item.title || title || `Leaderboard ${index + 1}`,
+        tabLabel: item.tabLabel || item.metricLabel || `Metric ${index + 1}`,
         metricLabel: item.metricLabel || metricLabel || "Metric",
         formatMetric: item.formatMetric || formatMetric,
         icon: item.icon || icon,
-        emptyMessage: item.emptyMessage || emptyMessage,
-        errorMessage: item.errorMessage || errorMessage,
       }));
     }
 
@@ -138,15 +134,12 @@ function Leaderboards({
       {
         key: "default",
         tabLabel: metricLabel || "Metric",
-        title,
         icon,
         metricLabel,
         formatMetric,
-        emptyMessage,
-        errorMessage,
       },
     ];
-  }, [leaderboards, title, icon, metricLabel, formatMetric, emptyMessage, errorMessage]);
+  }, [leaderboards, icon, metricLabel, formatMetric]);
   const [selectedLeaderboardKey, setSelectedLeaderboardKey] = useState(() => resolvedLeaderboards[0]?.key || "default");
   const [leaderboardData, setLeaderboardData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -163,11 +156,9 @@ function Leaderboards({
     [resolvedLeaderboards, selectedLeaderboardKey],
   );
 
-  const activeErrorMessage = activeLeaderboard?.errorMessage || errorMessage;
-
   useEffect(() => {
     if (!selectedLeaderboardKey) {
-      setError(activeErrorMessage);
+      setError(errorMessage);
       setLeaderboardData([]);
       setIsLoading(false);
       return;
@@ -178,7 +169,7 @@ function Leaderboards({
 
     api.getLeaderboard(selectedLeaderboardKey, period.fromStr, period.toStr, (data) => {
       if (!Array.isArray(data)) {
-        setError(activeErrorMessage);
+        setError(errorMessage);
         setLeaderboardData([]);
         setIsLoading(false);
         return;
@@ -189,7 +180,7 @@ function Leaderboards({
 
       setIsLoading(false);
     });
-  }, [api, activeErrorMessage, selectedLeaderboardKey, period.fromStr, period.toStr]);
+  }, [api, selectedLeaderboardKey, period.fromStr, period.toStr]);
 
   function assignRanks(data) {
     if (!Array.isArray(data)) return [];
@@ -222,14 +213,6 @@ function Leaderboards({
     });
   }
 
-  const tableHeaderStyle = useMemo(
-    () => ({
-      background: isDark ? "#2b2b2b" : "#f5f5f5",
-      color: isDark ? "#f1f1f1" : "#222",
-    }),
-    [isDark],
-  );
-
   const periodLabel = `${formatDateLabel(period.from)} - ${formatDateLabel(period.to)}`;
 
   const handleViewFriendProfile = (friendId) => {
@@ -240,82 +223,37 @@ function Leaderboards({
   };
 
   return (
-    <section style={{ width: "100%", maxWidth: "760px" }}>
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          flexWrap: "wrap",
-          gap: "0.5em",
-          margin: "0",
-          padding: "0",
-        }}
-      >
-        <p
-          style={{
-            marginLeft: "0.5em",
-            fontSize: "0.90em",
-            color: isDark ? "#c6c6c6" : "#555",
-          }}
-        >
-          Current period: {periodLabel}
-        </p>
-      </div>
+    <s.Container>
+      <s.Header>
+        <s.PeriodLabel>Current period: {periodLabel}</s.PeriodLabel>
+      </s.Header>
 
       {resolvedLeaderboards.length > 1 && (
-        <div
-          style={{
-            display: "inline-flex",
-            borderRadius: "10px",
-            overflow: "hidden",
-            marginTop: "1em",
-            marginBottom: "1em",
-          }}
-        >
-          {resolvedLeaderboards.map((item, idx) => {
+        <s.TabsWrapper>
+          {resolvedLeaderboards.map((item) => {
             const isActive = item.key === selectedLeaderboardKey;
+
             return (
-              <button
-                key={item.key}
-                type="button"
-                onClick={() => setSelectedLeaderboardKey(item.key)}
-                style={{
-                  display: "flex",
-                  fontSize: "1em",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  gap: "0.35em",
-                  padding: "0.75em 0.75em",
-                  background: isActive ? orange300 : "var(--active-bg)",
-                  color: isActive ? "var(--text-primary)" : "var(--text-secondary)",
-                  border: "none",
-                  cursor: "pointer",
-                  fontWeight: isActive ? 500 : 400,
-                  transition: "background 0.2s",
-                  boxShadow: isActive ? "0 4px 10px rgba(0,0,0,0.25)" : "0 1px 2px rgba(0,0,0,0.1)",
-                  transform: isActive ? "translateY(-1px)" : "none",
-                }}
-              >
+              <s.TabButton key={item.key} $active={isActive} onClick={() => setSelectedLeaderboardKey(item.key)}>
                 {item.icon && React.createElement(item.icon, { fontSize: "small" })}
                 <span>{item.tabLabel}</span>
-              </button>
+              </s.TabButton>
             );
           })}
-        </div>
+        </s.TabsWrapper>
       )}
 
       {isLoading && <p>Loading leaderboard...</p>}
       {!isLoading && error && <p style={{ color: "#b00020" }}>{error}</p>}
-      {!isLoading && !error && leaderboardData.length === 0 && <p>{activeLeaderboard?.emptyMessage || emptyMessage}</p>}
+      {!isLoading && !error && leaderboardData.length === 0 && <p>{emptyMessage}</p>}
 
       {!isLoading && !error && leaderboardData.length > 0 && (
-        <table style={{ width: "100%", borderCollapse: "collapse" }}>
+        <s.Table>
           <thead>
             <tr>
-              <th style={{ padding: "0.5em" }}>Rank</th>
-              <th style={{ padding: "0.5em" }}>User</th>
-              <th style={{ padding: "0.5em" }}>{activeLeaderboard?.metricLabel || metricLabel}</th>
+              <s.TableHeadCell>Rank</s.TableHeadCell>
+              <s.TableHeadCell>User</s.TableHeadCell>
+              <s.TableHeadCell>{activeLeaderboard?.metricLabel}</s.TableHeadCell>
             </tr>
           </thead>
           <tbody>
@@ -327,16 +265,9 @@ function Leaderboards({
 
               const isCurrentUser = identityTokens.length > 0 && identityTokens.some((token) => entryTokens.has(token));
 
-              const resolvedName =
-                typeof userEntry === "string"
-                  ? userEntry
-                  : userEntry?.username
-                    ? `${userEntry.username} (${userEntry?.name || "Unknown"})`
-                    : userEntry?.name || "Unknown";
-
               return (
                 <LeaderboardRow
-                  key={`${activeLeaderboard?.title || title}-${findFirstDefinedValue(userEntry, ["username", "name"]) || index}`}
+                  key={`${selectedLeaderboardKey}-${userEntry.username}`}
                   rank={entry.rank}
                   user={userEntry}
                   metrics={[
@@ -353,9 +284,9 @@ function Leaderboards({
               );
             })}
           </tbody>
-        </table>
+        </s.Table>
       )}
-    </section>
+    </s.Container>
   );
 }
 
