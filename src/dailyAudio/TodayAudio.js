@@ -11,7 +11,19 @@ import { FEEDBACK_OPTIONS, FEEDBACK_CODES_NAME } from "../components/FeedbackCon
 import Word from "../words/Word";
 import useListeningSession from "../hooks/useListeningSession";
 import { AUDIO_STATUS, GENERATION_PROGRESS } from "./AudioLessonConstants";
+import {
+  SuggestionWrapper,
+  PillRow,
+  TypePill,
+  SuggestionInput,
+  HintText,
+} from "./TopicSuggestion.sc";
 
+const SUGGESTION_TYPES = {
+  words: { label: "Words only", placeholder: null, hint: null },
+  topic: { label: "Topic", placeholder: "e.g. cooking, sports", hint: "The lesson will revolve around this theme" },
+  situation: { label: "Situation", placeholder: "e.g. at a restaurant, job interview", hint: "The lesson will be a roleplay in this scenario" },
+};
 
 export function wordsAsTile(words) {
   if (!words || !words.length) return "";
@@ -23,6 +35,7 @@ export function wordsAsTile(words) {
 }
 
 const TOPIC_STORAGE_KEY_PREFIX = "zeeguu_lesson_topic_";
+const TOPIC_TYPE_STORAGE_KEY_PREFIX = "zeeguu_lesson_topic_type_";
 
 export default function TodayAudio({ setShowTabs }) {
   const api = useContext(APIContext);
@@ -33,6 +46,9 @@ export default function TodayAudio({ setShowTabs }) {
   const [generationProgress, setGenerationProgress] = useState(null);
   const [topicSuggestion, setTopicSuggestion] = useState(
     () => localStorage.getItem(TOPIC_STORAGE_KEY_PREFIX + lang) || "",
+  );
+  const [suggestionType, setSuggestionType] = useState(
+    () => localStorage.getItem(TOPIC_TYPE_STORAGE_KEY_PREFIX + lang) || "words",
   );
 
   // Poll for progress when generating
@@ -281,6 +297,7 @@ export default function TodayAudio({ setShowTabs }) {
     localStorage.setItem(generatingKey, "true");
 
     const trimmedTopic = topicSuggestion.trim() || null;
+    const typeToSend = trimmedTopic && suggestionType !== "words" ? suggestionType : null;
     api.generateDailyLesson(
       (data) => {
         if (data.status === AUDIO_STATUS.GENERATING) {
@@ -324,6 +341,7 @@ export default function TodayAudio({ setShowTabs }) {
         setError(errorMsg);
       },
       trimmedTopic,
+      typeToSend,
     );
   };
 
@@ -473,32 +491,49 @@ export default function TodayAudio({ setShowTabs }) {
           <p style={{ marginBottom: "20px", textAlign: "center", maxWidth: "500px" }}>
             Generate a personalized audio lesson based on the words you're learning.
           </p>
-          <input
-            type="text"
-            placeholder="Topic (optional), e.g. app usability"
-            maxLength={24}
-            value={topicSuggestion}
-            onChange={(e) => {
-              const val = e.target.value;
-              setTopicSuggestion(val);
-              if (val.trim()) {
-                localStorage.setItem(TOPIC_STORAGE_KEY_PREFIX + lang, val);
-              } else {
-                localStorage.removeItem(TOPIC_STORAGE_KEY_PREFIX + lang);
-              }
-            }}
-            style={{
-              width: "100%",
-              maxWidth: "300px",
-              padding: "8px 12px",
-              border: "1px solid var(--border-light)",
-              borderRadius: "4px",
-              fontSize: "14px",
-              color: "var(--text-primary)",
-              backgroundColor: "var(--bg-secondary)",
-              textAlign: "center",
-            }}
-          />
+          <SuggestionWrapper>
+            <PillRow role="radiogroup" aria-label="Suggestion type">
+              {Object.entries(SUGGESTION_TYPES).map(([key, { label }]) => (
+                <TypePill
+                  key={key}
+                  type="button"
+                  $selected={suggestionType === key}
+                  role="radio"
+                  aria-checked={suggestionType === key}
+                  onClick={() => {
+                    if (suggestionType === key) return;
+                    setSuggestionType(key);
+                    localStorage.setItem(TOPIC_TYPE_STORAGE_KEY_PREFIX + lang, key);
+                    if (key === "words") {
+                      setTopicSuggestion("");
+                      localStorage.removeItem(TOPIC_STORAGE_KEY_PREFIX + lang);
+                    }
+                  }}
+                >
+                  {label}
+                </TypePill>
+              ))}
+            </PillRow>
+            <div style={{ visibility: suggestionType === "words" ? "hidden" : "visible", display: "flex", flexDirection: "column", alignItems: "center", gap: "0.5rem", width: "100%" }}>
+              <SuggestionInput
+                type="text"
+                placeholder={SUGGESTION_TYPES[suggestionType]?.placeholder || ""}
+                maxLength={48}
+                value={topicSuggestion}
+                tabIndex={suggestionType === "words" ? -1 : 0}
+                onChange={(e) => {
+                  const val = e.target.value;
+                  setTopicSuggestion(val);
+                  if (val.trim()) {
+                    localStorage.setItem(TOPIC_STORAGE_KEY_PREFIX + lang, val);
+                  } else {
+                    localStorage.removeItem(TOPIC_STORAGE_KEY_PREFIX + lang);
+                  }
+                }}
+              />
+              <HintText>{SUGGESTION_TYPES[suggestionType]?.hint || "\u00A0"}</HintText>
+            </div>
+          </SuggestionWrapper>
         </div>
       );
     }
