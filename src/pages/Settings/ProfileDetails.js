@@ -39,7 +39,7 @@ import * as s from "./ProfileDetails.sc";
 
 export default function ProfileDetails() {
   const api = useContext(APIContext);
-  const isGamificationEnabled = Feature.gamification();
+  const isGamificationEnabled = Feature.has_gamification();
   const state = useLocation().state || {};
   const fallbackRedirectPath = isGamificationEnabled ? "/profile" : "/account_settings";
   const redirectPath = ["/profile", "/account_settings"].includes(state.from) ? state.from : fallbackRedirectPath;

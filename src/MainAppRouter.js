@@ -136,7 +136,7 @@ export default function MainAppRouter({ hasExtension, handleSuccessfulLogIn }) {
       <PrivateRouteWithLayout path="/activity-history" component={ActivityRouter} />
       <PrivateRouteWithLayout path="/account_settings" component={SettingsRouter} />
       {/* Only include profile router if gamification is enabled */}
-      {Feature.gamification() ? (
+      {Feature.has_gamification() ? (
         <PrivateRouteWithLayout path="/profile" component={ProfileRouter} />
       ) : (
         <Route path="/profile" component={NotFound} />
