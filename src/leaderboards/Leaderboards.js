@@ -1,4 +1,6 @@
 import React, { useContext, useEffect, useMemo, useState } from "react";
+import ChevronLeftRoundedIcon from "@mui/icons-material/ChevronLeftRounded";
+import ChevronRightRoundedIcon from "@mui/icons-material/ChevronRightRounded";
 import LeaderboardRow from "./LeaderboardRow";
 import { APIContext } from "../contexts/APIContext";
 import { ThemeContext } from "../contexts/ThemeContext";
@@ -18,21 +20,10 @@ function formatDateLabel(date) {
   });
 }
 
-function computeHalfMonthPeriod() {
+function computeWeeklyPeriod(weekShift = 0) {
   const now = new Date();
-  const year = now.getFullYear();
-  const month = now.getMonth();
-  const day = now.getDate();
-
-  let from, to;
-
-  if (day <= 15) {
-    from = new Date(year - 1, month, 1);
-    to = new Date(year, month, 15);
-  } else {
-    from = new Date(year - 1, month, 16);
-    to = new Date(year, month + 1, 0);
-  }
+  const to = new Date(now.getFullYear(), now.getMonth(), now.getDate() + weekShift * 7);
+  const from = new Date(to.getFullYear(), to.getMonth(), to.getDate() - 6);
 
   const pad = (n) => String(n).padStart(2, "0");
 
@@ -52,8 +43,9 @@ export default function Leaderboards({
   const api = useContext(APIContext);
   const { isDark } = useContext(ThemeContext);
   const { userDetails } = useContext(UserContext);
+  const [periodShiftInWeeks, setPeriodShiftInWeeks] = useState(0);
 
-  const period = useMemo(() => computeHalfMonthPeriod(), []);
+  const period = useMemo(() => computeWeeklyPeriod(periodShiftInWeeks), [periodShiftInWeeks]);
 
   const [selectedLeaderboardKey, setSelectedLeaderboardKey] = useState(() => leaderboardTypes[0]?.key || "default");
   const [cohorts, setCohorts] = useState([]);
@@ -151,9 +143,39 @@ export default function Leaderboards({
 
   return (
     <s.Container>
-      <s.Header>
-        <s.PeriodLabel>Current period: {periodLabel}</s.PeriodLabel>
-      </s.Header>
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          gap: "0.5em",
+          margin: "0",
+          padding: "0",
+        }}
+      >
+        <s.PeriodNavButton
+          type="button"
+          onClick={() => setPeriodShiftInWeeks((prev) => prev - 1)}
+          aria-label="Previous period"
+          $isDark={isDark}
+        >
+          <ChevronLeftRoundedIcon fontSize="large" />
+        </s.PeriodNavButton>
+        <s.PeriodLabel $isDark={isDark}>
+          Period: {periodLabel}
+        </s.PeriodLabel>
+        {periodShiftInWeeks < 0 && (
+          <s.PeriodNavButton
+            type="button"
+            onClick={() => setPeriodShiftInWeeks((prev) => Math.min(prev + 1, 0))}
+            aria-label="Next period"
+            $isDark={isDark}
+          >
+            <ChevronRightRoundedIcon fontSize="large" />
+          </s.PeriodNavButton>
+        )}
+        {periodShiftInWeeks >= 0 && <s.PeriodNavSpacer aria-hidden="true" />}
+      </div>
 
       {leaderboardTypes.length > 1 && (
         <s.TabsWrapper>
