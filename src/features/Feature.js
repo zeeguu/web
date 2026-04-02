@@ -20,7 +20,7 @@ const Feature = {
     return this.is_enabled("audio_exercises");
   },
 
-  gamification: function () {
+  has_gamification: function () {
     return this.is_enabled("gamification");
   },
 

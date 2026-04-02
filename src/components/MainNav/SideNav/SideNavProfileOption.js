@@ -40,7 +40,7 @@ export default function SideNavProfileOption({ screenWidth }) {
     setAvatarBackgroundColor(validatedAvatarBackgroundColor(userDetails.user_avatar?.background_color));
   }, [userDetails]);
 
-  if (!Feature.gamification()) {
+  if (!Feature.has_gamification()) {
     return null;
   }
 
