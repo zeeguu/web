@@ -22,8 +22,6 @@ export const PeriodNavSpacer = styled.div`
   flex-shrink: 0;
 `;
 
-
-
 export const Container = styled.section`
 width: 100%;
 max-width: 760px;
@@ -37,13 +35,6 @@ flex-wrap: wrap;
 gap: 0.5em;
 `;
 
-// export const PeriodLabel = styled.p`
-//   margin: 0;
-//   font-size: 0.9em;
-//   color: ${({ $isDark }) => ($isDark ? "#c6c6c6" : "#555")};
-//   text-align: center;
-//   flex: 1;
-// `;
 export const PeriodLabel = styled.p`
   margin-left: 0.5em;
   font-size: 0.9em;
