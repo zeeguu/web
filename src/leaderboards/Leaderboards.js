@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useMemo, useState } from "react";
 import ChevronLeftRoundedIcon from "@mui/icons-material/ChevronLeftRounded";
 import ChevronRightRoundedIcon from "@mui/icons-material/ChevronRightRounded";
 import LeaderboardRow from "./LeaderboardRow";
-import { PeriodLabel, PeriodNavButton } from "./Leaderboards.sc";
+import { PeriodLabel, PeriodNavButton, PeriodNavSpacer } from "./Leaderboards.sc";
 import { APIContext } from "../contexts/APIContext";
 import { ThemeContext } from "../contexts/ThemeContext";
 import { UserContext } from "../contexts/UserContext";
@@ -255,15 +255,17 @@ function Leaderboards({
         <PeriodLabel $isDark={isDark}>
           Period: {periodLabel}
         </PeriodLabel>
-        <PeriodNavButton
-          type="button"
-          onClick={() => setPeriodShiftInWeeks((prev) => Math.min(prev + 1, 0))}
-          disabled={periodShiftInWeeks >= 0}
-          aria-label="Next period"
-          $isDark={isDark}
-        >
-          <ChevronRightRoundedIcon fontSize="large" />
-        </PeriodNavButton>
+        {periodShiftInWeeks < 0 && (
+          <PeriodNavButton
+            type="button"
+            onClick={() => setPeriodShiftInWeeks((prev) => Math.min(prev + 1, 0))}
+            aria-label="Next period"
+            $isDark={isDark}
+          >
+            <ChevronRightRoundedIcon fontSize="large" />
+          </PeriodNavButton>
+        )}
+        {periodShiftInWeeks >= 0 && <PeriodNavSpacer aria-hidden="true" />}
       </div>
 
       {resolvedLeaderboards.length > 1 && (
