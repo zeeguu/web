@@ -6,54 +6,44 @@ export const LEADERBOARD_TYPES = [
   {
     key: "exercises_done",
     tabLabel: "Exercises Done",
-    title: "Exercises Leaderboard",
     icon: FitnessCenterRoundedIcon,
     metricLabel: "Exercises Done",
-    formatMetric: (value) => `${value}`,
-    errorMessage: "Could not load exercises leaderboard.",
-    emptyMessage: "No exercises leaderboard data available yet.",
+    formatMetric: (value) => `${value}`
   },
   {
     key: "reading_time",
     tabLabel: "Reading Time",
-    title: "Reading Time Leaderboard",
     icon: AccessAlarmsRoundedIcon,
     metricLabel: "Time Spent",
-    formatMetric: (value) => `${formatDuration(value)}`,
-    errorMessage: "Could not load reading time leaderboard.",
-    emptyMessage: "No reading time leaderboard data available yet.",
+    formatMetric: (value) => `${formatDuration(value)}`
   },
   {
     key: "listening_time",
     tabLabel: "Listening Time",
-    title: "Listening Time Leaderboard",
     icon: AccessAlarmsRoundedIcon,
     metricLabel: "Time Spent",
-    formatMetric: (value) => `${formatDuration(value)}`,
-    errorMessage: "Could not load listening time leaderboard.",
-    emptyMessage: "No listening time leaderboard data available yet.",
+    formatMetric: (value) => `${formatDuration(value)}`
   },
   {
     key: "exercise_time",
     tabLabel: "Exercise Time",
-    title: "Exercise Time Leaderboard",
     icon: AccessAlarmsRoundedIcon,
     metricLabel: "Time Spent",
-    formatMetric: (value) => `${formatDuration(value)}`,
-    errorMessage: "Could not load exercise time leaderboard.",
-    emptyMessage: "No exercise time leaderboard data available yet.",
+    formatMetric: (value) => `${formatDuration(value)}`
   },
   {
     key: "read_articles",
     tabLabel: "Read Articles",
-    title: "Read Articles Leaderboard",
     icon: MenuBookRoundedIcon,
     metricLabel: "Read Articles",
-    formatMetric: (value) => `${value}`,
-    errorMessage: "Could not load read articles leaderboard.",
-    emptyMessage: "No read articles leaderboard data available yet.",
+    formatMetric: (value) => `${value}`
   },
 ];
+
+export const LEADERBOARD_SCOPES = {
+  FRIENDS: "friends",
+  COHORT: "cohort",
+};
 
 function formatDuration(ms) {
   if (!ms || ms <= 0) return "0s";

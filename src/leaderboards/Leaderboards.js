@@ -2,77 +2,14 @@ import React, { useContext, useEffect, useMemo, useState } from "react";
 import ChevronLeftRoundedIcon from "@mui/icons-material/ChevronLeftRounded";
 import ChevronRightRoundedIcon from "@mui/icons-material/ChevronRightRounded";
 import LeaderboardRow from "./LeaderboardRow";
-import { PeriodLabel, PeriodNavButton, PeriodNavSpacer } from "./Leaderboards.sc";
 import { APIContext } from "../contexts/APIContext";
 import { ThemeContext } from "../contexts/ThemeContext";
 import { UserContext } from "../contexts/UserContext";
-import { orange300 } from "../components/colors";
-import { LEADERBOARD_TYPES } from "./leaderboardTypes";
+import * as s from "./Leaderboards.sc";
+import { LEADERBOARD_SCOPES, LEADERBOARD_TYPES } from "./leaderboardTypes";
 
 function getMetricValue(entry) {
-  if (!entry || typeof entry !== "object") return 0;
-
-  if (Number.isFinite(Number(entry.value))) {
-    return Number(entry.value);
-  }
-
-  const fallbackMetric = Object.keys(entry)
-    .filter((key) => key !== "user")
-    .map((key) => entry[key])
-    .find((value) => Number.isFinite(Number(value)));
-
-  return Number.isFinite(Number(fallbackMetric)) ? Number(fallbackMetric) : 0;
-}
-
-function normalizeValue(value) {
-  if (value === null || value === undefined) return "";
-  return String(value).trim().toLowerCase();
-}
-
-function findFirstDefinedValue(objectLike, keys = []) {
-  if (!objectLike || typeof objectLike !== "object") return undefined;
-
-  for (const key of keys) {
-    if (objectLike[key] !== undefined && objectLike[key] !== null) {
-      return objectLike[key];
-    }
-  }
-
-  return undefined;
-}
-
-function collectIdentityTokens(userDetails) {
-  const usernameToken = normalizeValue(findFirstDefinedValue(userDetails, ["username", "name"]));
-
-  return [usernameToken].filter(Boolean);
-}
-
-function collectEntryTokens(entry) {
-  const tokens = new Set();
-
-  function visit(value, keyHint = "") {
-    if (value === null || value === undefined) return;
-
-    if (typeof value === "string" || typeof value === "number") {
-      const normalized = normalizeValue(value);
-      if (!normalized) return;
-
-      const key = normalizeValue(keyHint);
-      if (!key || key.includes("user") || key.includes("name")) {
-        tokens.add(normalized);
-      }
-      return;
-    }
-
-    if (typeof value !== "object") return;
-
-    Object.entries(value).forEach(([k, v]) => visit(v, k));
-  }
-
-  visit(entry?.user, "user");
-  visit(entry, "entry");
-
-  return tokens;
+  return Number(entry.value || 0);
 }
 
 function formatDateLabel(date) {
@@ -96,14 +33,11 @@ function computeWeeklyPeriod(weekShift = 0) {
   return { from, to, fromStr, toStr };
 }
 
-function Leaderboards({
-  title,
-  metricLabel,
-  icon,
-  formatMetric = (value) => String(value),
+export default function Leaderboards({
   emptyMessage = "No leaderboard data available yet.",
   errorMessage = "Could not load leaderboard.",
-  leaderboards = LEADERBOARD_TYPES,
+  scope,
+  leaderboardTypes = LEADERBOARD_TYPES,
   navigationHandler,
 }) {
   const api = useContext(APIContext);
@@ -113,54 +47,34 @@ function Leaderboards({
 
   const period = useMemo(() => computeWeeklyPeriod(periodShiftInWeeks), [periodShiftInWeeks]);
 
-  const resolvedLeaderboards = useMemo(() => {
-    if (Array.isArray(leaderboards) && leaderboards.length > 0) {
-      return leaderboards.map((item, index) => ({
-        key: item.key || `leaderboard-${index}`,
-        tabLabel: item.tabLabel || item.metricLabel || item.title || `Metric ${index + 1}`,
-        title: item.title || title || `Leaderboard ${index + 1}`,
-        metricLabel: item.metricLabel || metricLabel || "Metric",
-        formatMetric: item.formatMetric || formatMetric,
-        icon: item.icon || icon,
-        emptyMessage: item.emptyMessage || emptyMessage,
-        errorMessage: item.errorMessage || errorMessage,
-      }));
-    }
-
-    return [
-      {
-        key: "default",
-        tabLabel: metricLabel || "Metric",
-        title,
-        icon,
-        metricLabel,
-        formatMetric,
-        emptyMessage,
-        errorMessage,
-      },
-    ];
-  }, [leaderboards, title, icon, metricLabel, formatMetric, emptyMessage, errorMessage]);
-  const [selectedLeaderboardKey, setSelectedLeaderboardKey] = useState(() => resolvedLeaderboards[0]?.key || "default");
+  const [selectedLeaderboardKey, setSelectedLeaderboardKey] = useState(() => leaderboardTypes[0]?.key || "default");
+  const [cohorts, setCohorts] = useState([]);
+  const [selectedCohort, setSelectedCohort] = useState(null);
   const [leaderboardData, setLeaderboardData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  useEffect(() => {
-    if (!resolvedLeaderboards.some((item) => item.key === selectedLeaderboardKey)) {
-      setSelectedLeaderboardKey(resolvedLeaderboards[0]?.key || "default");
-    }
-  }, [resolvedLeaderboards, selectedLeaderboardKey]);
-
   const activeLeaderboard = useMemo(
-    () => resolvedLeaderboards.find((item) => item.key === selectedLeaderboardKey) || resolvedLeaderboards[0],
-    [resolvedLeaderboards, selectedLeaderboardKey],
+    () => leaderboardTypes.find((item) => item.key === selectedLeaderboardKey) || leaderboardTypes[0],
+    [leaderboardTypes, selectedLeaderboardKey],
   );
 
-  const activeErrorMessage = activeLeaderboard?.errorMessage || errorMessage;
+  function handleData(data) {
+    if (!Array.isArray(data)) {
+      setError(errorMessage);
+      setLeaderboardData([]);
+      setIsLoading(false);
+      return;
+    }
+
+    const rankedData = assignRanks(data);
+    setLeaderboardData(rankedData);
+    setIsLoading(false);
+  }
 
   useEffect(() => {
     if (!selectedLeaderboardKey) {
-      setError(activeErrorMessage);
+      setError(errorMessage);
       setLeaderboardData([]);
       setIsLoading(false);
       return;
@@ -169,20 +83,24 @@ function Leaderboards({
     setIsLoading(true);
     setError(null);
 
-    api.getLeaderboard(selectedLeaderboardKey, period.fromStr, period.toStr, (data) => {
-      if (!Array.isArray(data)) {
-        setError(activeErrorMessage);
-        setLeaderboardData([]);
-        setIsLoading(false);
-        return;
-      }
+    if (scope === LEADERBOARD_SCOPES.FRIENDS) {
+      api.getFriendsLeaderboard(selectedLeaderboardKey, period.fromStr, period.toStr, handleData);
+    } else if (scope === LEADERBOARD_SCOPES.COHORT) {
+      if (!selectedCohort) return;
+      api.getCohortLeaderboard(selectedCohort, selectedLeaderboardKey, period.fromStr, period.toStr, handleData);
+    }
+  }, [api, selectedLeaderboardKey, period.fromStr, period.toStr, scope]);
 
-      const rankedData = assignRanks(data);
-      setLeaderboardData(rankedData);
-
-      setIsLoading(false);
-    });
-  }, [api, activeErrorMessage, selectedLeaderboardKey, period.fromStr, period.toStr]);
+  useEffect(() => {
+    if (scope === LEADERBOARD_SCOPES.COHORT) {
+      api.getStudent((data) => {
+        if (data?.cohorts?.length) {
+          setCohorts(data.cohorts);
+          setSelectedCohort(data.cohorts[0].id);
+        }
+      });
+    }
+  }, [api, scope]);
 
   function assignRanks(data) {
     if (!Array.isArray(data)) return [];
@@ -190,9 +108,8 @@ function Leaderboards({
     const sorted = [...data].sort((a, b) => {
       const valueDiff = getMetricValue(b) - getMetricValue(a);
       if (valueDiff !== 0) return valueDiff;
-
-      const usernameA = (a.user?.username || a.user?.name || "").toLowerCase();
-      const usernameB = (b.user?.username || b.user?.name || "").toLowerCase();
+      const usernameA = a.user?.username.toLowerCase();
+      const usernameB = b.user?.username.toLowerCase();
       return usernameA.localeCompare(usernameB);
     });
 
@@ -215,14 +132,6 @@ function Leaderboards({
     });
   }
 
-  const tableHeaderStyle = useMemo(
-    () => ({
-      background: isDark ? "#2b2b2b" : "#f5f5f5",
-      color: isDark ? "#f1f1f1" : "#222",
-    }),
-    [isDark],
-  );
-
   const periodLabel = `${formatDateLabel(period.from)} - ${formatDateLabel(period.to)}`;
 
   const handleViewFriendProfile = (friendId) => {
@@ -233,7 +142,7 @@ function Leaderboards({
   };
 
   return (
-    <section style={{ width: "100%", maxWidth: "760px" }}>
+    <s.Container>
       <div
         style={{
           display: "flex",
@@ -244,110 +153,94 @@ function Leaderboards({
           padding: "0",
         }}
       >
-        <PeriodNavButton
+        <s.PeriodNavButton
           type="button"
           onClick={() => setPeriodShiftInWeeks((prev) => prev - 1)}
           aria-label="Previous period"
           $isDark={isDark}
         >
           <ChevronLeftRoundedIcon fontSize="large" />
-        </PeriodNavButton>
-        <PeriodLabel $isDark={isDark}>
+        </s.PeriodNavButton>
+        <s.PeriodLabel $isDark={isDark}>
           Period: {periodLabel}
-        </PeriodLabel>
+        </s.PeriodLabel>
         {periodShiftInWeeks < 0 && (
-          <PeriodNavButton
+          <s.PeriodNavButton
             type="button"
             onClick={() => setPeriodShiftInWeeks((prev) => Math.min(prev + 1, 0))}
             aria-label="Next period"
             $isDark={isDark}
           >
             <ChevronRightRoundedIcon fontSize="large" />
-          </PeriodNavButton>
+          </s.PeriodNavButton>
         )}
-        {periodShiftInWeeks >= 0 && <PeriodNavSpacer aria-hidden="true" />}
+        {periodShiftInWeeks >= 0 && <s.PeriodNavSpacer aria-hidden="true" />}
       </div>
 
-      {resolvedLeaderboards.length > 1 && (
-        <div
-          style={{
-            display: "inline-flex",
-            borderRadius: "10px",
-            overflow: "hidden",
-            marginTop: "1em",
-            marginBottom: "1em",
-          }}
-        >
-          {resolvedLeaderboards.map((item, idx) => {
+      {leaderboardTypes.length > 1 && (
+        <s.TabsWrapper>
+          {leaderboardTypes.map((item) => {
             const isActive = item.key === selectedLeaderboardKey;
+
             return (
-              <button
-                key={item.key}
-                type="button"
-                onClick={() => setSelectedLeaderboardKey(item.key)}
-                style={{
-                  display: "flex",
-                  fontSize: "1em",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  gap: "0.35em",
-                  padding: "0.75em 0.75em",
-                  background: isActive ? orange300 : "var(--active-bg)",
-                  color: isActive ? "var(--text-primary)" : "var(--text-secondary)",
-                  border: "none",
-                  cursor: "pointer",
-                  fontWeight: isActive ? 500 : 400,
-                  transition: "background 0.2s",
-                  boxShadow: isActive ? "0 4px 10px rgba(0,0,0,0.25)" : "0 1px 2px rgba(0,0,0,0.1)",
-                  transform: isActive ? "translateY(-1px)" : "none",
-                }}
-              >
+              <s.TabButton key={item.key} $active={isActive} onClick={() => setSelectedLeaderboardKey(item.key)}>
                 {item.icon && React.createElement(item.icon, { fontSize: "small" })}
                 <span>{item.tabLabel}</span>
-              </button>
+              </s.TabButton>
             );
           })}
+        </s.TabsWrapper>
+      )}
+
+      {scope === LEADERBOARD_SCOPES.COHORT && cohorts.length > 0 && (
+        <div style={{ marginBottom: "1rem" }}>
+          <label htmlFor="cohort-select">Select Cohort: </label>
+          <select
+            id="cohort-select"
+            value={selectedCohort || ""}
+            onChange={(e) => setSelectedCohort(Number(e.target.value))}
+          >
+            {cohorts.map((c) => (
+              <option key={c.id} value={c.id}>
+                {c.name}
+              </option>
+            ))}
+          </select>
         </div>
       )}
 
       {isLoading && <p>Loading leaderboard...</p>}
       {!isLoading && error && <p style={{ color: "#b00020" }}>{error}</p>}
-      {!isLoading && !error && leaderboardData.length === 0 && <p>{activeLeaderboard?.emptyMessage || emptyMessage}</p>}
+      {!isLoading && !error && leaderboardData.length === 0 && <p>{emptyMessage}</p>}
 
       {!isLoading && !error && leaderboardData.length > 0 && (
-        <table style={{ width: "100%", borderCollapse: "collapse" }}>
+        <s.Table>
           <thead>
             <tr>
-              <th style={{ padding: "0.5em" }}>Rank</th>
-              <th style={{ padding: "0.5em" }}>User</th>
-              <th style={{ padding: "0.5em" }}>{activeLeaderboard?.metricLabel || metricLabel}</th>
+              <s.TableHeadCell>Rank</s.TableHeadCell>
+              <s.TableHeadCell>User</s.TableHeadCell>
+              <s.TableHeadCell>{activeLeaderboard?.metricLabel}</s.TableHeadCell>
             </tr>
           </thead>
           <tbody>
             {leaderboardData.map((entry, index) => {
               const metricValue = getMetricValue(entry);
-              const userEntry = entry?.user || entry;
-              const identityTokens = collectIdentityTokens(userDetails);
-              const entryTokens = collectEntryTokens(entry);
+              const userEntry = entry?.user;
 
-              const isCurrentUser = identityTokens.length > 0 && identityTokens.some((token) => entryTokens.has(token));
-
-              const resolvedName =
-                typeof userEntry === "string"
-                  ? userEntry
-                  : userEntry?.username
-                    ? `${userEntry.username} (${userEntry?.name || "Unknown"})`
-                    : userEntry?.name || "Unknown";
+              const isCurrentUser =
+                userDetails?.username &&
+                userEntry?.username &&
+                userDetails.username.toLowerCase() === userEntry.username.toLowerCase();
 
               return (
                 <LeaderboardRow
-                  key={`${activeLeaderboard?.title || title}-${findFirstDefinedValue(userEntry, ["username", "name"]) || index}`}
+                  key={`${selectedLeaderboardKey}-${userEntry?.username || index}`}
                   rank={entry.rank}
                   user={userEntry}
                   metrics={[
                     {
-                      key: `${activeLeaderboard?.metricLabel || metricLabel}-${index}`,
-                      value: (activeLeaderboard?.formatMetric || formatMetric)(metricValue),
+                      key: `${activeLeaderboard?.metricLabel}-${index}`,
+                      value: activeLeaderboard.formatMetric(metricValue),
                       align: "center",
                     },
                   ]}
@@ -358,10 +251,8 @@ function Leaderboards({
               );
             })}
           </tbody>
-        </table>
+        </s.Table>
       )}
-    </section>
+    </s.Container>
   );
 }
-
-export default Leaderboards;
