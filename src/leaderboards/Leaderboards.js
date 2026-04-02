@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useMemo, useState } from "react";
 import ChevronLeftRoundedIcon from "@mui/icons-material/ChevronLeftRounded";
 import ChevronRightRoundedIcon from "@mui/icons-material/ChevronRightRounded";
 import LeaderboardRow from "./LeaderboardRow";
+import { PeriodLabel, PeriodNavButton } from "./Leaderboards.sc";
 import { APIContext } from "../contexts/APIContext";
 import { ThemeContext } from "../contexts/ThemeContext";
 import { UserContext } from "../contexts/UserContext";
@@ -243,47 +244,26 @@ function Leaderboards({
           padding: "0",
         }}
       >
-        <button
+        <PeriodNavButton
           type="button"
           onClick={() => setPeriodShiftInWeeks((prev) => prev - 1)}
           aria-label="Previous period"
-          style={{
-            padding: 0,
-            border: "none",
-            background: "transparent",
-            color: isDark ? "#f1f1f1" : "#222",
-            cursor: "pointer",
-          }}
+          $isDark={isDark}
         >
           <ChevronLeftRoundedIcon fontSize="large" />
-        </button>
-        <p
-          style={{
-            margin: 0,
-            fontSize: "0.90em",
-            color: isDark ? "#c6c6c6" : "#555",
-            textAlign: "center",
-            flex: 1,
-          }}
-        >
+        </PeriodNavButton>
+        <PeriodLabel $isDark={isDark}>
           Period: {periodLabel}
-        </p>
-        <button
+        </PeriodLabel>
+        <PeriodNavButton
           type="button"
           onClick={() => setPeriodShiftInWeeks((prev) => Math.min(prev + 1, 0))}
           disabled={periodShiftInWeeks >= 0}
           aria-label="Next period"
-          style={{
-            padding: 0,
-            border: "none",
-            background: "transparent",
-            color: isDark ? "#f1f1f1" : "#222",
-            cursor: periodShiftInWeeks >= 0 ? "not-allowed" : "pointer",
-            opacity: periodShiftInWeeks >= 0 ? 0.55 : 1,
-          }}
+          $isDark={isDark}
         >
-          <ChevronLeftRoundedIcon fontSize="large" style={{ transform: "rotate(180deg)" }} />
-        </button>
+          <ChevronRightRoundedIcon fontSize="large" />
+        </PeriodNavButton>
       </div>
 
       {resolvedLeaderboards.length > 1 && (
