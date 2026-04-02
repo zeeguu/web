@@ -49,7 +49,9 @@ export default function Settings() {
 
       <ListOfSettingsItems header={isAnonymous ? "Language" : strings.myAccount}>
         {!isAnonymous && (
-          <SettingsItem path={"/account_settings/profile_details"}>{strings.profileDetails}</SettingsItem>
+          <SettingsItem path={"/account_settings/profile_details"} state={{ from: "/account_settings" }}>
+            {strings.profileDetails}
+          </SettingsItem>
         )}
         <SettingsItem path={"/account_settings/language_settings"}>{strings.languageSettings}</SettingsItem>
 
