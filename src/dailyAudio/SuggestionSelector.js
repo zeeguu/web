@@ -40,8 +40,6 @@ export function getSavedSuggestion(lang) {
 }
 
 export default function SuggestionSelector({ suggestionType, setSuggestionType, suggestion, setSuggestion, lang }) {
-  const inputRef = useRef(null);
-
   return (
     <SuggestionWrapper>
       <PillRow role="radiogroup" aria-label="Dialogue context">
