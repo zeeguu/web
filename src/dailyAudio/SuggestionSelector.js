@@ -43,29 +43,6 @@ export default function SuggestionSelector({ suggestionType, setSuggestionType, 
   return (
     <SuggestionWrapper>
 
-      <InputArea $hidden={suggestionType === "auto"}>
-        <ClearableInput
-          placeholder={SUGGESTION_TYPES[suggestionType]?.placeholder || ""}
-          maxLength={MAX_SUGGESTION_LENGTH}
-          value={suggestion}
-          tabIndex={suggestionType === "auto" ? -1 : 0}
-          onChange={(e) => {
-            const val = e.target.value.replace(/\n/g, " ");
-            setSuggestion(val);
-            const key = suggestionKey(suggestionType, lang);
-            if (val.trim()) {
-              localStorage.setItem(key, val);
-            } else {
-              localStorage.removeItem(key);
-            }
-          }}
-          onClear={() => {
-            setSuggestion("");
-            localStorage.removeItem(suggestionKey(suggestionType, lang));
-          }}
-        />
-      </InputArea>
-
       <PillRow role="radiogroup" aria-label="Dialogue context">
         {Object.entries(SUGGESTION_TYPES).map(([key, { label }]) => (
           <SelectablePill
@@ -89,6 +66,29 @@ export default function SuggestionSelector({ suggestionType, setSuggestionType, 
       <DescriptionText>
         {SUGGESTION_TYPES[suggestionType].description}
       </DescriptionText>
+
+      <InputArea $hidden={suggestionType === "auto"}>
+        <ClearableInput
+          placeholder={SUGGESTION_TYPES[suggestionType]?.placeholder || ""}
+          maxLength={MAX_SUGGESTION_LENGTH}
+          value={suggestion}
+          tabIndex={suggestionType === "auto" ? -1 : 0}
+          onChange={(e) => {
+            const val = e.target.value.replace(/\n/g, " ");
+            setSuggestion(val);
+            const key = suggestionKey(suggestionType, lang);
+            if (val.trim()) {
+              localStorage.setItem(key, val);
+            } else {
+              localStorage.removeItem(key);
+            }
+          }}
+          onClear={() => {
+            setSuggestion("");
+            localStorage.removeItem(suggestionKey(suggestionType, lang));
+          }}
+        />
+      </InputArea>
 
     </SuggestionWrapper>
   );

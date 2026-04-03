@@ -26,6 +26,7 @@ export const GenerateButton = styled.button`
   justify-content: center;
   text-align: center;
   line-height: 1.2;
+  margin-top: 20px;
   margin-bottom: 30px;
 
   &:hover {

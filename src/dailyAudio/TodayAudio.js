@@ -407,11 +407,6 @@ export default function TodayAudio({ setShowTabs }) {
               {error}
             </FullWidthErrorMsg>
           )}
-          <GenerateButton onClick={handleGenerateLesson}>
-            Generate
-            <br />
-            Daily Lesson
-          </GenerateButton>
           <SuggestionSelector
             suggestionType={suggestionType}
             setSuggestionType={setSuggestionType}
@@ -419,6 +414,11 @@ export default function TodayAudio({ setShowTabs }) {
             setSuggestion={setSuggestion}
             lang={lang}
           />
+          <GenerateButton onClick={handleGenerateLesson}>
+            Generate
+            <br />
+            Daily Lesson
+          </GenerateButton>
         </GenerateView>
       );
     }
