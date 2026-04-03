@@ -51,8 +51,8 @@ export function wordsAsTile(words) {
   return capitalized_comma_separated_words;
 }
 
-const SUGGESTION_STORAGE_KEY_PREFIX = "zeeguu_lesson_topic_";
-const SUGGESTION_TYPE_STORAGE_KEY_PREFIX = "zeeguu_lesson_topic_type_";
+const SELECTED_SUGGESTION_TYPE = "zeeguu_lesson_topic_type_";
+const suggestionKey = (type, lang) => `zeeguu_lesson_suggestion_${type}_${lang}`;
 
 export default function TodayAudio({ setShowTabs }) {
   const api = useContext(APIContext);
@@ -61,12 +61,13 @@ export default function TodayAudio({ setShowTabs }) {
   const [isLoading, setIsLoading] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
   const [generationProgress, setGenerationProgress] = useState(null);
-  const [suggestion, setSuggestion] = useState(
-    () => localStorage.getItem(SUGGESTION_STORAGE_KEY_PREFIX + lang) || "",
-  );
   const [suggestionType, setSuggestionType] = useState(
-    () => localStorage.getItem(SUGGESTION_TYPE_STORAGE_KEY_PREFIX + lang) || "auto",
+    () => localStorage.getItem(SELECTED_SUGGESTION_TYPE + lang) || "auto",
   );
+  const [suggestion, setSuggestion] = useState(() => {
+    const savedType = localStorage.getItem(SELECTED_SUGGESTION_TYPE + lang) || "auto";
+    return localStorage.getItem(suggestionKey(savedType, lang)) || "";
+  });
 
   // Poll for progress when generating
   useEffect(() => {
@@ -479,11 +480,8 @@ export default function TodayAudio({ setShowTabs }) {
                   onClick={() => {
                     if (suggestionType === key) return;
                     setSuggestionType(key);
-                    localStorage.setItem(SUGGESTION_TYPE_STORAGE_KEY_PREFIX + lang, key);
-                    if (key === "auto") {
-                      setSuggestion("");
-                      localStorage.removeItem(SUGGESTION_STORAGE_KEY_PREFIX + lang);
-                    }
+                    localStorage.setItem(SELECTED_SUGGESTION_TYPE + lang, key);
+                    setSuggestion(key === "auto" ? "" : localStorage.getItem(suggestionKey(key, lang)) || "");
                   }}
                 >
                   {label}
@@ -503,10 +501,11 @@ export default function TodayAudio({ setShowTabs }) {
                 onChange={(e) => {
                   const val = e.target.value.replace(/\n/g, " ");
                   setSuggestion(val);
+                  const key = suggestionKey(suggestionType, lang);
                   if (val.trim()) {
-                    localStorage.setItem(SUGGESTION_STORAGE_KEY_PREFIX + lang, val);
+                    localStorage.setItem(key, val);
                   } else {
-                    localStorage.removeItem(SUGGESTION_STORAGE_KEY_PREFIX + lang);
+                    localStorage.removeItem(key);
                   }
                 }}
               />
