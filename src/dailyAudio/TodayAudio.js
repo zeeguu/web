@@ -14,7 +14,7 @@ import { AUDIO_STATUS, GENERATION_PROGRESS } from "./AudioLessonConstants";
 import {
   SuggestionWrapper,
   PillRow,
-  TypePill,
+  SelectablePill,
   SuggestionInput,
   HintText,
   DescriptionText,
@@ -463,7 +463,7 @@ export default function TodayAudio({ setShowTabs }) {
           <SuggestionWrapper>
             <PillRow role="radiogroup" aria-label="Dialogue context">
               {Object.entries(SUGGESTION_TYPES).map(([key, { label }]) => (
-                <TypePill
+                <SelectablePill
                   key={key}
                   type="button"
                   $selected={suggestionType === key}
@@ -477,7 +477,7 @@ export default function TodayAudio({ setShowTabs }) {
                   }}
                 >
                   {label}
-                </TypePill>
+                </SelectablePill>
               ))}
             </PillRow>
             <DescriptionText>

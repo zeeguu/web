@@ -15,7 +15,7 @@ export const PillRow = styled.div`
   gap: 0.4rem;
 `;
 
-export const TypePill = styled.button`
+export const SelectablePill = styled.button`
   padding: 0.4rem 1rem;
   border-radius: 2rem;
   border: 1.5px solid ${({ $selected }) => ($selected ? blue700 : lightGrey)};
