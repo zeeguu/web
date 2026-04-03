@@ -11,7 +11,7 @@ export const PeriodNavButton = styled.button`
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  color: ${({ $isDark }) => ($isDark ? "#f1f1f1" : "#222")};
+  color: var(--text-primary);
   cursor: ${({ disabled }) => (disabled ? "not-allowed" : "pointer")};
   opacity: ${({ disabled }) => (disabled ? 0.55 : 1)};
 `;
@@ -27,18 +27,10 @@ width: 100%;
 max-width: 760px;
 `;
 
-export const Header = styled.div`
-display: flex;
-align-items: center;
-justify-content: space-between;
-flex-wrap: wrap;
-gap: 0.5em;
-`;
-
 export const PeriodLabel = styled.p`
   margin-left: 0.5em;
   font-size: 0.9em;
-  color: ${({ $isDark }) => ($isDark ? "#c6c6c6" : "#555")};
+  color: var(--text-secondary);
 `;
 
 export const TabsWrapper = styled.div`
@@ -64,7 +56,7 @@ export const TabButton = styled.button`
   font-weight: ${({ $active }) => ($active ? 500 : 400)};
 
   transition: background 0.2s;
-  box-shadow: ${({ $active }) => ($active ? "0 4px 10px rgba(0,0,0,0.25)" : "0 1px 2px rgba(0,0,0,0.1)")};
+  box-shadow: ${({ $active }) => ($active ? "0 4px 10px var(--shadow-color)" : "0 1px 2px var(--shadow-color)")};
 
   transform: ${({ $active }) => ($active ? "translateY(-1px)" : "none")};
 `;

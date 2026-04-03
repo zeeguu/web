@@ -3,7 +3,7 @@ import styled from "styled-components";
 
 export const StyledTableRow = styled.tr`
   border-bottom: 1px solid #ddd;
-  color: ${({ $isDark }) => ($isDark ? "#fff7e0" : "inherit")};
+  color: var(--text-primary);
   cursor: ${({ $clickable }) => ($clickable ? "pointer" : "default")};
 
   & td {

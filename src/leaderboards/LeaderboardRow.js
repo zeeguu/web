@@ -8,13 +8,11 @@ export default function LeaderboardRow({
   metrics = [],
   emphasizeTopRanks = 3,
   highlight = false,
-  isDark = false,
   onViewProfile,
 }) {
   return (
     <s.StyledTableRow
       $highlight={highlight}
-      $isDark={isDark}
       onClick={() => onViewProfile?.(user.username)}
       $clickable={Boolean(onViewProfile)}
     >

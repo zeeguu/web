@@ -41,7 +41,6 @@ export default function Leaderboards({
   navigationHandler,
 }) {
   const api = useContext(APIContext);
-  const { isDark } = useContext(ThemeContext);
   const { userDetails } = useContext(UserContext);
   const [periodShiftInWeeks, setPeriodShiftInWeeks] = useState(0);
 
@@ -157,11 +156,10 @@ export default function Leaderboards({
           type="button"
           onClick={() => setPeriodShiftInWeeks((prev) => prev - 1)}
           aria-label="Previous period"
-          $isDark={isDark}
         >
           <ChevronLeftRoundedIcon fontSize="large" />
         </s.PeriodNavButton>
-        <s.PeriodLabel $isDark={isDark}>
+        <s.PeriodLabel>
           Period: {periodLabel}
         </s.PeriodLabel>
         {periodShiftInWeeks < 0 && (
@@ -169,7 +167,6 @@ export default function Leaderboards({
             type="button"
             onClick={() => setPeriodShiftInWeeks((prev) => Math.min(prev + 1, 0))}
             aria-label="Next period"
-            $isDark={isDark}
           >
             <ChevronRightRoundedIcon fontSize="large" />
           </s.PeriodNavButton>
@@ -245,7 +242,6 @@ export default function Leaderboards({
                     },
                   ]}
                   highlight={isCurrentUser}
-                  isDark={isDark}
                   onViewProfile={handleViewFriendProfile}
                 />
               );
