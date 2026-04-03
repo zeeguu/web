@@ -39,6 +39,73 @@ import * as s from "./ProfileDetails.sc";
 import EditIcon from "@mui/icons-material/Edit";
 import CheckIcon from "@mui/icons-material/Check";
 
+function normalizeProfileSaveError(error) {
+  const fallback = "Unable to save profile details. Please try again.";
+
+  const toFriendlyMessage = (value) => {
+    if (value === undefined || value === null) return "";
+    const message = String(value).trim();
+    if (!message) return "";
+
+    const lower = message.toLowerCase();
+    if (lower === "failed to fetch") {
+      return "Could not reach the server. Please check your connection and try again.";
+    }
+    if (message.startsWith("HTTP 409")) {
+      return "That username is already taken. Please choose another one.";
+    }
+    if (message.startsWith("HTTP 5")) {
+      return "The server had a problem while saving your profile. Please try again.";
+    }
+    if (message.startsWith("HTTP 4")) {
+      return "Could not save profile details. Please review the form and try again.";
+    }
+
+    return message;
+  };
+
+  if (!error) return fallback;
+
+  if (typeof error === "string") {
+    return toFriendlyMessage(error) || fallback;
+  }
+
+  if (error instanceof Error) {
+    return toFriendlyMessage(error.message) || fallback;
+  }
+
+  if (Array.isArray(error)) {
+    const message = error.map((item) => normalizeProfileSaveError(item)).filter(Boolean).join(" ").trim();
+    return message || fallback;
+  }
+
+  if (typeof error === "object") {
+    const usernameErrors = error.username || error.user_name;
+    if (Array.isArray(usernameErrors) && usernameErrors.length) {
+      return toFriendlyMessage(usernameErrors.join(" ")) || fallback;
+    }
+    if (typeof usernameErrors === "string") {
+      return toFriendlyMessage(usernameErrors) || fallback;
+    }
+
+    if (typeof error.message === "string") {
+      return toFriendlyMessage(error.message) || fallback;
+    }
+    if (typeof error.error === "string") {
+      return toFriendlyMessage(error.error) || fallback;
+    }
+
+    const combined = Object.values(error)
+      .flatMap((value) => (Array.isArray(value) ? value : [value]))
+      .filter((value) => typeof value === "string")
+      .join(" ")
+      .trim();
+    return toFriendlyMessage(combined) || fallback;
+  }
+
+  return toFriendlyMessage(error) || fallback;
+}
+
 export default function ProfileDetails() {
   const api = useContext(APIContext);
   const isGamificationEnabled = Feature.has_gamification();
@@ -112,7 +179,7 @@ export default function ProfileDetails() {
         ? Object.fromEntries(Object.entries(updatedAvatarValues).map(([key, value]) => [`avatar_${key}`, value]))
         : {}),
     };
-    api.saveUserDetails(payload, setErrorMessage, () => {
+    api.saveUserDetails(payload, (error) => setErrorMessage(normalizeProfileSaveError(error)), () => {
       const newUserDetails = {
         ...userDetails,
         ...updatedFormValues,
