@@ -531,7 +531,11 @@ export default function TodayAudio({ setShowTabs }) {
                   }
                 }}
               />
-              <HintText>{SUGGESTION_TYPES[suggestionType]?.hint || "\u00A0"}</HintText>
+              <HintText>
+                {topicSuggestion.length >= 40
+                  ? `${topicSuggestion.length}/48`
+                  : SUGGESTION_TYPES[suggestionType]?.hint || "\u00A0"}
+              </HintText>
             </div>
           </SuggestionWrapper>
         </div>
