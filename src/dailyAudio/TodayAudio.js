@@ -23,6 +23,10 @@ import {
 import { VerticalCentering, GenerateButton } from "./GenerateButton.sc";
 import { LessonWrapper, LessonTitle, SuggestionSubtitle, CompletionCheck } from "./LessonView.sc";
 
+function shortDate() {
+  return `[${new Date().toLocaleDateString("en-US", { month: "short", day: "numeric" })}]`;
+}
+
 const MAX_SUGGESTION_LENGTH = 80;
 
 const SUGGESTION_TYPES = {
@@ -198,10 +202,7 @@ export default function TodayAudio({ setShowTabs }) {
   // Update page title and playback time when lessonData changes
   useEffect(() => {
     if (lessonData && lessonData.words) {
-      document.title = `[${new Date().toLocaleDateString("en-US", {
-        month: "short",
-        day: "numeric",
-      })}] Daily Audio: ${wordsAsTile(words)}`;
+      document.title = shortDate() + " Daily Audio: " + wordsAsTile(words);
       
       // Initialize playback time from lesson data
       const initialTime = lessonData.pause_position_seconds || lessonData.position_seconds || lessonData.progress_seconds || 0;
