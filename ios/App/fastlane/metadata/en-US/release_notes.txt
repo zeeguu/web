@@ -1,7 +1,12 @@
-- Language selection when sharing articles — choose to translate, simplify, or read as-is
-- Disable translations when reading articles in your native language
-- Fix hover underlines on touch devices
-- Faster article sharing with instant share modal
-- Fix invite code handling (auto-lowercase, validation during onboarding)
-- Fix menu positioning and overflow issues
-- Fix preferences page layout
+- Suggest topics for audio lessons
+- Retry dialog on server connection failure at startup
+- Fix null crashes when API returns empty responses
+- Auto-complete last pair in Match exercise
+- Fix layout shift in Match exercise at end
+- Preserve solved-word colors when exercise ends
+- Light / Auto / Dark theme selector
+- CEFR level selector with descriptions in onboarding
+- Improved word review page with info boxes
+- Dark mode fixes for speaker and edit buttons
+- Fix "Log In" flash on successful login
+- Change external article button to "Open Externally"
