@@ -1,7 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import { APIContext } from "../contexts/APIContext";
 import * as s from "./Badges.sc.js";
-import NotificationIcon from "../components/NotificationIcon";
 
 export default function Badges({ username }) {
   const api = useContext(APIContext);
@@ -89,17 +88,12 @@ export default function Badges({ username }) {
         <s.BadgeContainer>
           {levels.map((level, index) => (
             <s.BadgeCard key={index}>
-              {!username && !level.is_shown && level.achieved && (
-                <NotificationIcon text="NEW" position="card-corner" isActive={true} />
-              )}
-
-              <div className="icon-container">
-                <img src={getIcon(level)} style={iconStyle(level.achieved)} alt={level.name} />
-              </div>
-
-              <h3>{level.name || `Level ${level.badge_level}`}</h3>
-
-              <div>{level.description}</div>
+              {!username && !level.is_shown && level.achieved && <s.NewTag>NEW</s.NewTag>}
+              <s.IconContainer>
+                <s.BadgeIcon src={getIcon(level)} style={iconStyle(level.achieved)} alt={level.name} />
+              </s.IconContainer>
+              <s.BadgeTitle>{level.name || `Level ${level.badge_level}`}</s.BadgeTitle>
+              <s.BadgeDescription>{level.description}</s.BadgeDescription>
 
               {level.achieved ? (
                 <s.AchievedAtBox>{formatDateTime(level.achieved_at)}</s.AchievedAtBox>
