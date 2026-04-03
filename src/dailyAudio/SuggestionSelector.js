@@ -34,7 +34,14 @@ const SUGGESTION_TYPES = {
 const SELECTED_SUGGESTION_TYPE = "audio_lesson_suggestion_type_";
 const suggestionKey = (type, lang) => `audio_lesson_suggestion_${type}_${lang}`;
 
-export { SUGGESTION_TYPES, suggestionKey, SELECTED_SUGGESTION_TYPE, MAX_SUGGESTION_LENGTH };
+export function getSavedSuggestion(lang) {
+  const savedType = localStorage.getItem(SELECTED_SUGGESTION_TYPE + lang) || "auto";
+  return localStorage.getItem(suggestionKey(savedType, lang)) || "";
+}
+
+export function getSavedSuggestionType(lang) {
+  return localStorage.getItem(SELECTED_SUGGESTION_TYPE + lang) || "auto";
+}
 
 export default function SuggestionSelector({ suggestionType, setSuggestionType, suggestion, setSuggestion, lang }) {
   const inputRef = useRef(null);

@@ -12,7 +12,7 @@ import Word from "../words/Word";
 import useListeningSession from "../hooks/useListeningSession";
 import { AUDIO_STATUS, GENERATION_PROGRESS } from "./AudioLessonConstants";
 import { VerticalCentering, GenerateButton } from "./GenerateButton.sc";
-import SuggestionSelector, { SELECTED_SUGGESTION_TYPE, suggestionKey } from "./SuggestionSelector";
+import SuggestionSelector, { getSavedSuggestion, getSavedSuggestionType } from "./SuggestionSelector";
 import { LessonWrapper, LessonTitle, SuggestionSubtitle, CompletionCheck } from "./LessonView.sc";
 
 function shortDate() {
@@ -36,11 +36,10 @@ export default function TodayAudio({ setShowTabs }) {
   const [isGenerating, setIsGenerating] = useState(false);
   const [generationProgress, setGenerationProgress] = useState(null);
   const [suggestionType, setSuggestionType] = useState(
-    () => localStorage.getItem(SELECTED_SUGGESTION_TYPE + lang) || "auto",
+    () => getSavedSuggestionType(lang),
   );
   const [suggestion, setSuggestion] = useState(() => {
-    const savedType = localStorage.getItem(SELECTED_SUGGESTION_TYPE + lang) || "auto";
-    return localStorage.getItem(suggestionKey(savedType, lang)) || "";
+    return getSavedSuggestion(lang);
   });
 
   // Poll for progress when generating
@@ -285,7 +284,7 @@ export default function TodayAudio({ setShowTabs }) {
     localStorage.setItem(generatingKey, "true");
 
     const trimmedSuggestion = suggestion.trim() || null;
-    const typeToSend = trimmedSuggestion && suggestionType !== "auto" ? suggestionType : null;
+    const suggestionTypeToSend = trimmedSuggestion && suggestionType !== "auto" ? suggestionType : null;
     api.generateDailyLesson(
       (data) => {
         if (data.status === AUDIO_STATUS.GENERATING) {
@@ -329,7 +328,7 @@ export default function TodayAudio({ setShowTabs }) {
         setError(errorMsg);
       },
       trimmedSuggestion,
-      typeToSend,
+      suggestionTypeToSend,
     );
   };
 
