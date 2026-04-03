@@ -56,6 +56,7 @@ export const HeaderCard = styled.div`
     @media (max-width: 768px) {
       justify-content: center;
       margin-top: 0;
+      font-size: 1.25rem;
     }
   }
 
@@ -195,9 +196,8 @@ export const TabBar = styled.div`
     cursor: pointer;
     font-weight: 500;
     margin-bottom: -2px;
-    transition:
-      color 0.3s,
-      border-color 0.5s;
+    transition: color 0.3s,
+    border-color 0.5s;
 
     &.active {
       color: #ff9800;
@@ -212,6 +212,16 @@ export const TabBar = styled.div`
     &.active:hover {
       border-bottom-color: ${orange500};
     }
+
+    @media (max-width: 768px) {
+      padding-left: 0.8rem;
+      padding-right: 0.8rem;
+    }
+  }
+
+  @media (max-width: 768px) {
+    overflow-x: auto;
+    overflow-y: hidden;
   }
 `;
 

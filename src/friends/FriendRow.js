@@ -10,6 +10,7 @@ import DynamicFlagImage from "../components/DynamicFlagImage";
 import { LanguageOverflowBubble } from "../profile/UserProfile.sc";
 import UserBaseInfo from "../components/UserBaseInfo";
 import * as s from "./FriendRow.sc";
+import useScreenWidth from "../hooks/useScreenWidth";
 
 export default function FriendRow({
   user,
@@ -23,7 +24,8 @@ export default function FriendRow({
   onRejectRequest,
   onViewProfile,
 }) {
-  const maxVisibleLanguages = 3;
+  const { isMobile } = useScreenWidth();
+  const maxVisibleLanguages = isMobile ? 1 : 3;
   const languages =
     user.languages?.sort((a, b) => {
       const keyA = a.max_streak;
@@ -68,7 +70,11 @@ export default function FriendRow({
       }
 
       return (
-        <s.FriendActionButton $variant="add" onClick={(event) => onSendRequest?.(event, user.username)} disabled={isSending}>
+        <s.FriendActionButton
+          $variant="add"
+          onClick={(event) => onSendRequest?.(event, user.username)}
+          disabled={isSending}
+        >
           {isSending ? (
             <>
               <SendIcon sx={{ color: "#3498db", fontSize: "1rem", verticalAlign: "middle" }} />
@@ -135,10 +141,12 @@ export default function FriendRow({
             <DynamicFlagImage
               key={entry.language.id || entry.language.code}
               languageCode={entry.language.code}
-              size={"1.2rem"}
+              size={isMobile ? "1.2rem" : "1.4rem"}
             />
           ))}
-          {overflowCount > 0 && <LanguageOverflowBubble $size={"1.2rem"}>+{overflowCount}</LanguageOverflowBubble>}
+          {overflowCount > 0 && (
+            <LanguageOverflowBubble $size={isMobile ? "1.2rem" : "1.4rem"}>+{overflowCount}</LanguageOverflowBubble>
+          )}
         </s.LanguagesMeta>
       )}
       {actions && <s.ActionsContainer>{actions}</s.ActionsContainer>}

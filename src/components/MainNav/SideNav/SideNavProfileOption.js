@@ -17,6 +17,7 @@ import { BadgeCounterContext } from "../../../badges/BadgeCounterContext";
 import NotificationIcon from "../../../components/NotificationIcon";
 import { FriendRequestContext } from "../../../contexts/FriendRequestContext";
 import Feature from "../../../features/Feature";
+import { MEDIUM_WIDTH } from "../screenSize";
 
 const NavAvatar = styled(AvatarBackground)`
   width: 2rem;
@@ -47,6 +48,7 @@ export default function SideNavProfileOption({ screenWidth }) {
   return (
     <NavOption
       linkTo={NavigationOptions.profile.linkTo}
+      overflowEnabled={true}
       icon={
         <NavAvatar
           $backgroundColor={avatarBackgroundColor}
@@ -56,19 +58,27 @@ export default function SideNavProfileOption({ screenWidth }) {
         </NavAvatar>
       }
       text={
-        <span
+        <div
           style={{
             color: isActive ? avatarCharacterColor : undefined,
+            overflow: "hidden",
+            whiteSpace: "nowrap",
+            textOverflow: "ellipsis",
+            maxWidth: "100%",
           }}
         >
           {userDetails?.username || "Profile"}
-        </span>
+        </div>
       }
       currentPath={path}
       screenWidth={screenWidth}
       notification={
         (hasBadgeNotification || hasFriendRequestNotification) && (
-          <NotificationIcon position={"top-absolute"} text={totalNumberOfBadges + friendRequestCount} />
+          <NotificationIcon
+            position={"top-absolute"}
+            style={screenWidth > MEDIUM_WIDTH || !screenWidth ? { top: "-0.5rem", right: "-0.5rem" } : {}}
+            text={totalNumberOfBadges + friendRequestCount}
+          />
         )
       }
     />

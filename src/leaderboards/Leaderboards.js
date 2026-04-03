@@ -107,7 +107,11 @@ export default function Leaderboards({
     if (scope === LEADERBOARD_SCOPES.FRIENDS) {
       api.getFriendsLeaderboard(selectedLeaderboardKey, period.fromStr, period.toStr, handleData);
     } else if (scope === LEADERBOARD_SCOPES.COHORT) {
-      if (!selectedCohort) return;
+      if (!selectedCohort) {
+        setLeaderboardData([]);
+        setIsLoading(false);
+        return;
+      }
       api.getCohortLeaderboard(selectedCohort, selectedLeaderboardKey, period.fromStr, period.toStr, handleData);
     }
   }, [api, selectedLeaderboardKey, period.fromStr, period.toStr, scope, selectedCohort]);
@@ -236,9 +240,9 @@ export default function Leaderboards({
         <s.Table>
           <thead>
             <tr>
-              <s.TableHeadCell>Rank</s.TableHeadCell>
-              <s.TableHeadCell>User</s.TableHeadCell>
-              <s.TableHeadCell>{activeLeaderboard?.metricLabel}</s.TableHeadCell>
+              <s.TableHeadCell style={{width: "10%"}}>Rank</s.TableHeadCell>
+              <s.TableHeadCell style={{width: "65%"}}>User</s.TableHeadCell>
+              <s.TableHeadCell style={{width: "25%"}}>{activeLeaderboard?.metricLabel}</s.TableHeadCell>
             </tr>
           </thead>
           <tbody>

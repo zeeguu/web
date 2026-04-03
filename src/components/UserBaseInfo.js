@@ -1,28 +1,12 @@
 import React, { useEffect, useState } from "react";
-import styled from "styled-components";
-import { AvatarBackground, AvatarImage } from "../profile/UserProfile.sc";
+import { AvatarImage } from "../profile/UserProfile.sc";
 import {
   AVATAR_IMAGE_MAP,
   validatedAvatarBackgroundColor,
   validatedAvatarCharacterColor,
   validatedAvatarCharacterId,
 } from "../profile/avatarOptions";
-
-const Avatar = styled(AvatarBackground)`
-  width: 2.5rem;
-  height: 2.5rem;
-  padding: 3px;
-`;
-
-const Username = styled.span`
-  font-weight: 600;
-  margin-left: 0.5rem;
-`;
-
-const Name = styled.span`
-  margin-left: 0.25rem;
-  color: #777;
-`;
+import * as s from "./UserBaseInfo.sc";
 
 export default function UserBaseInfo({ user }) {
   const [selectedAvatarCharacterId, setSelectedAvatarCharacterId] = useState();
@@ -39,14 +23,13 @@ export default function UserBaseInfo({ user }) {
 
   return (
     <>
-      <Avatar $backgroundColor={selectedAvatarBackgroundColor}>
-        <AvatarImage
-          $imageSource={AVATAR_IMAGE_MAP[selectedAvatarCharacterId]}
-          $color={selectedAvatarCharacterColor}
-        />
-      </Avatar>
-      <Username>{user?.username}</Username>
-      {user?.name && <Name>({user.name})</Name>}
+      <s.Avatar $backgroundColor={selectedAvatarBackgroundColor}>
+        <AvatarImage $imageSource={AVATAR_IMAGE_MAP[selectedAvatarCharacterId]} $color={selectedAvatarCharacterColor} />
+      </s.Avatar>
+      <s.UserNameWrapper>
+        <s.Username>{user?.username}</s.Username>
+        {user?.name && <s.Name>({user.name})</s.Name>}
+      </s.UserNameWrapper>
     </>
   );
 }

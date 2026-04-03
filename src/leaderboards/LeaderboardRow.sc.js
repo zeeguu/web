@@ -25,6 +25,7 @@ export const UserDataCell = styled.td`
   display: flex;
   align-items: center;
   gap: 0.5em;
+  min-width: 0;
 `;
 
 export const SelfLabel = styled.span`

@@ -55,6 +55,12 @@ export const TabsWrapper = styled.div`
   margin-top: 1em;
   margin-bottom: 1em;
   width: 100%;
+  
+  @media (max-width: 768px) {
+    font-size: 0.85rem;
+    overflow-x: auto;
+    overflow-y: hidden;
+  }
 `;
 
 export const TabButton = styled.button`
@@ -81,6 +87,11 @@ export const TabButton = styled.button`
 export const Table = styled.table`
   width: 100%;
   border-collapse: collapse;
+  table-layout: fixed;
+  
+  @media (max-width: 768px) {
+    font-size: 0.85rem;
+  }
 `;
 
 export const TableHeadCell = styled.th`

@@ -165,7 +165,9 @@ export default function Friends({ friendUsername, navigationHandler }) {
       .then((response) => {
         if (response.status === 200) {
           setFriendRequests((prev) =>
-            prev.map((req) => (req.sender.username === senderUsername ? { ...req, friend_request_status: "accepted" } : req)),
+            prev.map((req) =>
+              req.sender.username === senderUsername ? { ...req, friend_request_status: "accepted" } : req,
+            ),
           );
           updateFriendRequestCounter();
         } else {
@@ -217,7 +219,7 @@ export default function Friends({ friendUsername, navigationHandler }) {
             <p>This user has no friends yet.</p>
           )}
           {friendsFriends.length > 0 && (
-            <ul>
+            <ul style={{ padding: 0 }}>
               {friendsFriends.map((friend, index) => (
                 <FriendRow
                   key={`friend-${index}`}
@@ -252,7 +254,7 @@ export default function Friends({ friendUsername, navigationHandler }) {
               {searchResults.length === 0 && searchingNewFriends === true && <p>Searching...</p>}
               {searchResults.length === 0 && searchingNewFriends === false && <p>No users...</p>}
               {searchResults.length > 0 && (
-                <ul>
+                <ul style={{ padding: 0 }}>
                   {searchResults.map((searchResult, index) => {
                     return (
                       <FriendRow
@@ -277,7 +279,7 @@ export default function Friends({ friendUsername, navigationHandler }) {
                 <div>
                   <h3>Friend Requests</h3>
                   {requestsError && <p style={{ color: "red" }}>{requestsError}</p>}
-                  <ul>
+                  <ul style={{ padding: 0, marginBottom: "2rem" }}>
                     {friendRequests.map((req, index) => (
                       <FriendRow
                         key={`friend-request-${index}`}
@@ -298,7 +300,7 @@ export default function Friends({ friendUsername, navigationHandler }) {
               {friendsError && <p style={{ color: "red" }}>{friendsError}</p>}
               {!loadingFriends && !friendsError && friends.length === 0 && <p>You have no friends yet.</p>}
               {!loadingFriends && friends.length > 0 && (
-                <ul>
+                <ul style={{ padding: 0 }}>
                   {friends.map((friend, index) => (
                     <FriendRow
                       key={`friend-${index}`}

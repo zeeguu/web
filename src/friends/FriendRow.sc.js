@@ -47,6 +47,10 @@ export const FriendRowLi = styled.li`
   &:hover:not(:has(button:hover)) {
     background: var(--row-hover-bg);
   }
+
+  @media (max-width: 768px) {
+    font-size: 0.85rem;
+  }
 `;
 
 export const LanguagesMeta = styled.div`

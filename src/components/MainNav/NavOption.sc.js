@@ -104,6 +104,12 @@ const TextWrapper = styled.span`
       opacity: 0;
       width: 0;
     `}
+  
+  ${({ $overflowEnabled }) =>
+    $overflowEnabled &&
+    css`
+      min-width: 0;
+    `}
 `;
 
 const IconContainer = styled.span`
@@ -123,16 +129,24 @@ const OptionContentWrapper = styled.span`
   display: flex;
   flex-direction: row;
   align-items: center;
-  justify-content: center;
+  justify-content: ${({ $overflowEnabled }) => ($overflowEnabled ? "left" : "center")};
   gap: 0.76rem;
-  width: fit-content;
-  padding: 0 1.8rem 0 0;
+  width: ${({ $overflowEnabled, $screenWidth }) =>
+    $overflowEnabled && $screenWidth > MOBILE_WIDTH ? "100%" : "fit-content"};
+  padding: ${({ $overflowEnabled }) => ($overflowEnabled ? "0 0.5rem 0 0" : "0 1.8rem 0 0")};
   height: 2rem;
 
   ${({ $screenWidth }) =>
     $screenWidth <= MEDIUM_WIDTH &&
     css`
       padding: 0;
+    `}
+
+  ${({ $screenWidth, $overflowEnabled }) =>
+    $screenWidth <= MEDIUM_WIDTH &&
+    $overflowEnabled &&
+    css`
+      gap: 0;
     `}
 `;
 
