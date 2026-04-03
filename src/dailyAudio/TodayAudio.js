@@ -19,12 +19,12 @@ import {
   HintText,
 } from "./TopicSuggestion.sc";
 
-const MAX_SUGGESTION_LENGTH = 48;
+const MAX_SUGGESTION_LENGTH = 80;
 
 const SUGGESTION_TYPES = {
-  words: { label: "Words only", placeholder: null, hint: null },
-  topic: { label: "Topic", placeholder: "e.g. cooking, sports", hint: "The lesson will revolve around this theme" },
-  situation: { label: "Situation", placeholder: "e.g. at a restaurant, job interview", hint: "The lesson will be a roleplay in this scenario" },
+  auto: { label: "Automatic", placeholder: null, hint: null },
+  topic: { label: "Topic", placeholder: "e.g. cooking, sports", hint: "Dialogues will be themed around this topic" },
+  situation: { label: "Situation", placeholder: "e.g. at a restaurant, job interview", hint: "Dialogues will simulate this real-life scenario" },
 };
 
 export function wordsAsTile(words) {
@@ -50,7 +50,7 @@ export default function TodayAudio({ setShowTabs }) {
     () => localStorage.getItem(TOPIC_STORAGE_KEY_PREFIX + lang) || "",
   );
   const [suggestionType, setSuggestionType] = useState(
-    () => localStorage.getItem(TOPIC_TYPE_STORAGE_KEY_PREFIX + lang) || "words",
+    () => localStorage.getItem(TOPIC_TYPE_STORAGE_KEY_PREFIX + lang) || "auto",
   );
 
   // Poll for progress when generating
@@ -299,7 +299,7 @@ export default function TodayAudio({ setShowTabs }) {
     localStorage.setItem(generatingKey, "true");
 
     const trimmedTopic = topicSuggestion.trim() || null;
-    const typeToSend = trimmedTopic && suggestionType !== "words" ? suggestionType : null;
+    const typeToSend = trimmedTopic && suggestionType !== "auto" ? suggestionType : null;
     api.generateDailyLesson(
       (data) => {
         if (data.status === AUDIO_STATUS.GENERATING) {
@@ -491,10 +491,11 @@ export default function TodayAudio({ setShowTabs }) {
             Daily Lesson
           </button>
           <p style={{ marginBottom: "20px", textAlign: "center", maxWidth: "500px" }}>
-            Generate a personalized audio lesson based on the words you're learning.
+            A listening lesson with three of your words, each practiced in a short dialogue.
           </p>
           <SuggestionWrapper>
-            <PillRow role="radiogroup" aria-label="Suggestion type">
+            <PillRow role="radiogroup" aria-label="Dialogue context">
+              <span style={{ fontSize: "0.8rem", fontWeight: 600, color: "var(--text-secondary)", alignSelf: "center" }}>Context:</span>
               {Object.entries(SUGGESTION_TYPES).map(([key, { label }]) => (
                 <TypePill
                   key={key}
@@ -506,7 +507,7 @@ export default function TodayAudio({ setShowTabs }) {
                     if (suggestionType === key) return;
                     setSuggestionType(key);
                     localStorage.setItem(TOPIC_TYPE_STORAGE_KEY_PREFIX + lang, key);
-                    if (key === "words") {
+                    if (key === "auto") {
                       setTopicSuggestion("");
                       localStorage.removeItem(TOPIC_STORAGE_KEY_PREFIX + lang);
                     }
@@ -516,13 +517,13 @@ export default function TodayAudio({ setShowTabs }) {
                 </TypePill>
               ))}
             </PillRow>
-            <div style={{ visibility: suggestionType === "words" ? "hidden" : "visible", display: "flex", flexDirection: "column", alignItems: "center", gap: "0.5rem", width: "100%" }}>
+            <div style={{ visibility: suggestionType === "auto" ? "hidden" : "visible", display: "flex", flexDirection: "column", alignItems: "center", gap: "0.5rem", width: "100%" }}>
               <SuggestionInput
-                type="text"
+                rows={1}
                 placeholder={SUGGESTION_TYPES[suggestionType]?.placeholder || ""}
                 maxLength={MAX_SUGGESTION_LENGTH}
                 value={topicSuggestion}
-                tabIndex={suggestionType === "words" ? -1 : 0}
+                tabIndex={suggestionType === "auto" ? -1 : 0}
                 onChange={(e) => {
                   const val = e.target.value;
                   setTopicSuggestion(val);

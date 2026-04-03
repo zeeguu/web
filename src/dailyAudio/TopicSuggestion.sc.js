@@ -33,7 +33,7 @@ export const TypePill = styled.button`
   }
 `;
 
-export const SuggestionInput = styled.input`
+export const SuggestionInput = styled.textarea`
   width: 100%;
   padding: 8px 12px;
   border: 1px solid var(--border-light);
@@ -43,6 +43,10 @@ export const SuggestionInput = styled.input`
   color: var(--text-primary);
   background-color: var(--bg-secondary);
   text-align: center;
+  resize: none;
+  overflow: hidden;
+  min-height: 2.4rem;
+  field-sizing: content;
 `;
 
 export const HintText = styled.p`
