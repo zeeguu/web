@@ -1,14 +1,11 @@
-import React, { useRef } from "react";
-import CancelIcon from "@mui/icons-material/Cancel";
+import React from "react";
+import ClearableInput from "../components/ClearableInput";
 import {
   SuggestionWrapper,
   PillRow,
   SelectablePill,
-  SuggestionInput,
   DescriptionText,
   InputArea,
-  InputWrapper,
-  ClearButton,
 } from "./TopicSuggestion.sc";
 
 const MAX_SUGGESTION_LENGTH = 80;
@@ -70,37 +67,26 @@ export default function SuggestionSelector({ suggestionType, setSuggestionType, 
         {SUGGESTION_TYPES[suggestionType].description}
       </DescriptionText>
       <InputArea $hidden={suggestionType === "auto"}>
-        <InputWrapper>
-          <SuggestionInput
-            ref={inputRef}
-            rows={1}
-            placeholder={SUGGESTION_TYPES[suggestionType]?.placeholder || ""}
-            maxLength={MAX_SUGGESTION_LENGTH}
-            value={suggestion}
-            tabIndex={suggestionType === "auto" ? -1 : 0}
-            onChange={(e) => {
-              const val = e.target.value.replace(/\n/g, " ");
-              setSuggestion(val);
-              const key = suggestionKey(suggestionType, lang);
-              if (val.trim()) {
-                localStorage.setItem(key, val);
-              } else {
-                localStorage.removeItem(key);
-              }
-            }}
-          />
-          {suggestion && (
-            <ClearButton
-              onClick={() => {
-                setSuggestion("");
-                localStorage.removeItem(suggestionKey(suggestionType, lang));
-                inputRef.current?.focus();
-              }}
-            >
-              <CancelIcon fontSize="inherit" />
-            </ClearButton>
-          )}
-        </InputWrapper>
+        <ClearableInput
+          placeholder={SUGGESTION_TYPES[suggestionType]?.placeholder || ""}
+          maxLength={MAX_SUGGESTION_LENGTH}
+          value={suggestion}
+          tabIndex={suggestionType === "auto" ? -1 : 0}
+          onChange={(e) => {
+            const val = e.target.value.replace(/\n/g, " ");
+            setSuggestion(val);
+            const key = suggestionKey(suggestionType, lang);
+            if (val.trim()) {
+              localStorage.setItem(key, val);
+            } else {
+              localStorage.removeItem(key);
+            }
+          }}
+          onClear={() => {
+            setSuggestion("");
+            localStorage.removeItem(suggestionKey(suggestionType, lang));
+          }}
+        />
       </InputArea>
     </SuggestionWrapper>
   );

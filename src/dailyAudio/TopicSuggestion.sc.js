@@ -33,20 +33,6 @@ export const SelectablePill = styled.button`
   }
 `;
 
-export const SuggestionInput = styled.textarea`
-  width: 100%;
-  padding: 12px 32px 12px 12px;
-  border: 1px solid var(--border-light);
-  border-radius: 4px;
-  font-size: 16px;
-  font-family: inherit;
-  color: var(--text-primary);
-  background-color: var(--bg-secondary);
-  text-align: center;
-  resize: none;
-  field-sizing: content;
-`;
-
 export const DescriptionText = styled.p`
   font-size: 0.9rem;
   color: var(--text-secondary);
@@ -69,27 +55,4 @@ export const InputArea = styled.div`
   visibility: ${({ $hidden }) => ($hidden ? "hidden" : "visible")};
 `;
 
-export const InputWrapper = styled.div`
-  position: relative;
-  width: 100%;
-  display: flex;
-  align-items: center;
-`;
 
-export const ClearButton = styled.span`
-  position: absolute;
-  right: 8px;
-  top: 50%;
-  transform: translateY(-50%);
-  cursor: pointer;
-  color: var(--text-secondary);
-  font-size: 18px;
-  display: flex;
-`;
-
-export const HintText = styled.p`
-  font-size: 0.75rem;
-  color: var(--text-secondary);
-  margin: 0;
-  text-align: center;
-`;
