@@ -3,7 +3,6 @@ import ChevronLeftRoundedIcon from "@mui/icons-material/ChevronLeftRounded";
 import ChevronRightRoundedIcon from "@mui/icons-material/ChevronRightRounded";
 import LeaderboardRow from "./LeaderboardRow";
 import { APIContext } from "../contexts/APIContext";
-import { ThemeContext } from "../contexts/ThemeContext";
 import { UserContext } from "../contexts/UserContext";
 import * as s from "./Leaderboards.sc";
 import { LEADERBOARD_SCOPES, LEADERBOARD_TYPES } from "./leaderboardTypes";
@@ -159,9 +158,7 @@ export default function Leaderboards({
         >
           <ChevronLeftRoundedIcon fontSize="large" />
         </s.PeriodNavButton>
-        <s.PeriodLabel>
-          Period: {periodLabel}
-        </s.PeriodLabel>
+        <s.PeriodLabel>Period: {periodLabel}</s.PeriodLabel>
         {periodShiftInWeeks < 0 && (
           <s.PeriodNavButton
             type="button"
