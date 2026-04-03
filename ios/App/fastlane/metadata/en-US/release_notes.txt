@@ -1,12 +1,5 @@
-- Suggest topics for audio lessons
-- Retry dialog on server connection failure at startup
-- Fix null crashes when API returns empty responses
-- Auto-complete last pair in Match exercise
-- Fix layout shift in Match exercise at end
-- Preserve solved-word colors when exercise ends
-- Light / Auto / Dark theme selector
-- CEFR level selector with descriptions in onboarding
-- Improved word review page with info boxes
-- Dark mode fixes for speaker and edit buttons
-- Fix "Log In" flash on successful login
-- Change external article button to "Open Externally"
+- Choose context for audio lessons: Automatic, Topic, or Situation
+- Situation mode generates roleplay dialogues in real-world scenarios
+- Topic mode themes dialogues around a chosen subject
+- Per-type suggestion text remembered across sessions
+- Cleaner lesson view with word title and suggestion subtitle
