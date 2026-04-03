@@ -37,9 +37,6 @@ export default function LessonPlaybackView({
       {error && <div style={{ color: "red", marginBottom: "20px" }}>{error}</div>}
 
       <div>
-        {!lessonData.is_completed && (
-          <p style={{ marginBottom: "20px" }}>Here's your daily lesson! Listen to improve your comprehension skills.</p>
-        )}
 
         <CustomAudioPlayer
           src={lessonData.audio_url}
