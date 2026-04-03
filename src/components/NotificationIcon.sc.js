@@ -16,12 +16,6 @@ const NotificationIcon = styled.div`
     z-index: 1;
   }
 
-  div {
-    border: none;
-    border-radius: 0 8px 0 8px;
-  }
-}
-
   &.bottom {
     top: 0.15em;
     left: 0.05em;
