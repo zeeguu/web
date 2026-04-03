@@ -18,7 +18,7 @@ const SUGGESTION_TYPES = {
   },
   topic: {
     label: "Topic",
-    description: "A listening lesson with three of your words, each practiced in a short dialogue on a given topic.",
+    description: "A listening lesson with three of your words, each practiced in a short dialogue between two people discussing the topic.",
     placeholder: "e.g. cooking, sports",
   },
   situation: {
