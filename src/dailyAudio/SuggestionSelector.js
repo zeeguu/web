@@ -6,7 +6,7 @@ import {
   SelectablePill,
   DescriptionText,
   InputArea,
-} from "./TopicSuggestion.sc";
+} from "./SuggestionSelector.sc";
 
 const MAX_SUGGESTION_LENGTH = 80;
 
@@ -42,6 +42,7 @@ export function getSavedSuggestion(lang) {
 export default function SuggestionSelector({ suggestionType, setSuggestionType, suggestion, setSuggestion, lang }) {
   return (
     <SuggestionWrapper>
+
       <PillRow role="radiogroup" aria-label="Dialogue context">
         {Object.entries(SUGGESTION_TYPES).map(([key, { label }]) => (
           <SelectablePill
@@ -61,9 +62,11 @@ export default function SuggestionSelector({ suggestionType, setSuggestionType, 
           </SelectablePill>
         ))}
       </PillRow>
+
       <DescriptionText>
         {SUGGESTION_TYPES[suggestionType].description}
       </DescriptionText>
+
       <InputArea $hidden={suggestionType === "auto"}>
         <ClearableInput
           placeholder={SUGGESTION_TYPES[suggestionType]?.placeholder || ""}
@@ -86,6 +89,7 @@ export default function SuggestionSelector({ suggestionType, setSuggestionType, 
           }}
         />
       </InputArea>
+
     </SuggestionWrapper>
   );
 }

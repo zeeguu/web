@@ -4,7 +4,7 @@ import { APIContext } from "../contexts/APIContext";
 import { UserContext } from "../contexts/UserContext";
 import LoadingAnimation from "../components/LoadingAnimation";
 import CustomAudioPlayer from "../components/CustomAudioPlayer";
-import { wordsAsTile } from "./TodayAudio";
+import { wordsAsTile } from "./audioUtils";
 
 export default function PastLessons() {
   const api = useContext(APIContext);

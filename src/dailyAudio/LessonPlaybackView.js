@@ -3,9 +3,10 @@ import CustomAudioPlayer from "../components/CustomAudioPlayer";
 import FeedbackModal from "../components/FeedbackModal";
 import { FEEDBACK_OPTIONS, FEEDBACK_CODES_NAME } from "../components/FeedbackConstants";
 import Word from "../words/Word";
+import { successGreen } from "../components/colors";
 import { AUDIO_STATUS } from "./AudioLessonConstants";
 import { LessonWrapper, LessonTitle, SuggestionSubtitle, CompletionCheck } from "./LessonView.sc";
-import { wordsAsTile } from "./TodayAudio";
+import { wordsAsTile } from "./audioUtils";
 
 export default function LessonPlaybackView({
   lessonData,
@@ -97,7 +98,7 @@ export default function LessonPlaybackView({
               borderRadius: "4px",
             }}
           >
-            <span style={{ color: "#28a745", fontWeight: "500", fontSize: "14px" }}>
+            <span style={{ color: successGreen, fontWeight: "500", fontSize: "14px" }}>
               ✓ Lesson completed! Great job on finishing today's lesson.
             </span>
           </div>

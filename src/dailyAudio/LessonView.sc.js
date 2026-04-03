@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { zeeguuOrange } from "../components/colors";
+import { zeeguuOrange, successGreen } from "../components/colors";
 
 export const LessonWrapper = styled.div`
   padding: 20px;
@@ -20,6 +20,6 @@ export const SuggestionSubtitle = styled.p`
 `;
 
 export const CompletionCheck = styled.span`
-  color: #28a745;
+  color: ${successGreen};
   font-size: 20px;
 `;
