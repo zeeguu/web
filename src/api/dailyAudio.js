@@ -43,14 +43,14 @@ Zeeguu_API.prototype.getTodaysLesson = function (callback, onError) {
     });
 };
 
-Zeeguu_API.prototype.generateDailyLesson = function (callback, onError, topicSuggestion, suggestionType) {
+Zeeguu_API.prototype.generateDailyLesson = function (callback, onError, suggestion, suggestionType) {
   this.apiLog("POST generate_daily_lesson");
 
   const formData = new FormData();
   const timezoneOffset = getTimezoneOffsetMinutes();
   formData.append("timezone_offset", timezoneOffset);
-  if (topicSuggestion) {
-    formData.append("topic_suggestion", topicSuggestion);
+  if (suggestion) {
+    formData.append("suggestion", suggestion);
     if (suggestionType) {
       formData.append("suggestion_type", suggestionType);
     }

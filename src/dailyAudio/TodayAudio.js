@@ -51,8 +51,8 @@ export function wordsAsTile(words) {
   return capitalized_comma_separated_words;
 }
 
-const TOPIC_STORAGE_KEY_PREFIX = "zeeguu_lesson_topic_";
-const TOPIC_TYPE_STORAGE_KEY_PREFIX = "zeeguu_lesson_topic_type_";
+const SUGGESTION_STORAGE_KEY_PREFIX = "zeeguu_lesson_topic_";
+const SUGGESTION_TYPE_STORAGE_KEY_PREFIX = "zeeguu_lesson_topic_type_";
 
 export default function TodayAudio({ setShowTabs }) {
   const api = useContext(APIContext);
@@ -61,11 +61,11 @@ export default function TodayAudio({ setShowTabs }) {
   const [isLoading, setIsLoading] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
   const [generationProgress, setGenerationProgress] = useState(null);
-  const [topicSuggestion, setTopicSuggestion] = useState(
-    () => localStorage.getItem(TOPIC_STORAGE_KEY_PREFIX + lang) || "",
+  const [suggestion, setSuggestion] = useState(
+    () => localStorage.getItem(SUGGESTION_STORAGE_KEY_PREFIX + lang) || "",
   );
   const [suggestionType, setSuggestionType] = useState(
-    () => localStorage.getItem(TOPIC_TYPE_STORAGE_KEY_PREFIX + lang) || "auto",
+    () => localStorage.getItem(SUGGESTION_TYPE_STORAGE_KEY_PREFIX + lang) || "auto",
   );
 
   // Poll for progress when generating
@@ -196,7 +196,7 @@ export default function TodayAudio({ setShowTabs }) {
   // Update page title and playback time when lessonData changes
   useEffect(() => {
     if (lessonData && lessonData.words) {
-      const topicPrefix = lessonData.topic_suggestion ? `${lessonData.topic_suggestion}: ` : "";
+      const topicPrefix = lessonData.suggestion ? `${lessonData.suggestion}: ` : "";
       document.title = `[${new Date().toLocaleDateString("en-US", {
         month: "short",
         day: "numeric",
@@ -313,7 +313,7 @@ export default function TodayAudio({ setShowTabs }) {
     // Set localStorage flag to track generation across page reloads
     localStorage.setItem(generatingKey, "true");
 
-    const trimmedTopic = topicSuggestion.trim() || null;
+    const trimmedTopic = suggestion.trim() || null;
     const typeToSend = trimmedTopic && suggestionType !== "auto" ? suggestionType : null;
     api.generateDailyLesson(
       (data) => {
@@ -479,10 +479,10 @@ export default function TodayAudio({ setShowTabs }) {
                   onClick={() => {
                     if (suggestionType === key) return;
                     setSuggestionType(key);
-                    localStorage.setItem(TOPIC_TYPE_STORAGE_KEY_PREFIX + lang, key);
+                    localStorage.setItem(SUGGESTION_TYPE_STORAGE_KEY_PREFIX + lang, key);
                     if (key === "auto") {
-                      setTopicSuggestion("");
-                      localStorage.removeItem(TOPIC_STORAGE_KEY_PREFIX + lang);
+                      setSuggestion("");
+                      localStorage.removeItem(SUGGESTION_STORAGE_KEY_PREFIX + lang);
                     }
                   }}
                 >
@@ -498,21 +498,21 @@ export default function TodayAudio({ setShowTabs }) {
                 rows={1}
                 placeholder={SUGGESTION_TYPES[suggestionType]?.placeholder || ""}
                 maxLength={MAX_SUGGESTION_LENGTH}
-                value={topicSuggestion}
+                value={suggestion}
                 tabIndex={suggestionType === "auto" ? -1 : 0}
                 onChange={(e) => {
                   const val = e.target.value.replace(/\n/g, " ");
-                  setTopicSuggestion(val);
+                  setSuggestion(val);
                   if (val.trim()) {
-                    localStorage.setItem(TOPIC_STORAGE_KEY_PREFIX + lang, val);
+                    localStorage.setItem(SUGGESTION_STORAGE_KEY_PREFIX + lang, val);
                   } else {
-                    localStorage.removeItem(TOPIC_STORAGE_KEY_PREFIX + lang);
+                    localStorage.removeItem(SUGGESTION_STORAGE_KEY_PREFIX + lang);
                   }
                 }}
               />
               <HintText>
-                {topicSuggestion.length >= MAX_SUGGESTION_LENGTH - 8
-                  ? `${topicSuggestion.length}/${MAX_SUGGESTION_LENGTH}`
+                {suggestion.length >= MAX_SUGGESTION_LENGTH - 8
+                  ? `${suggestion.length}/${MAX_SUGGESTION_LENGTH}`
                   : "\u00A0"}
               </HintText>
             </InputArea>
@@ -534,13 +534,13 @@ export default function TodayAudio({ setShowTabs }) {
 
   return (
     <div style={{ padding: "20px" }}>
-      <h2 style={{ color: zeeguuOrange, marginBottom: lessonData.topic_suggestion ? "4px" : "10px", display: "flex", alignItems: "center", gap: "8px" }}>
+      <h2 style={{ color: zeeguuOrange, marginBottom: lessonData.suggestion ? "4px" : "10px", display: "flex", alignItems: "center", gap: "8px" }}>
         {lessonData.is_completed && <span style={{ color: "#28a745", fontSize: "20px" }}>✓</span>}
         {wordsAsTile(words)}
       </h2>
-      {lessonData.topic_suggestion && (
+      {lessonData.suggestion && (
         <p style={{ fontSize: "0.85rem", color: "var(--text-secondary)", marginBottom: "10px" }}>
-          {lessonData.suggestion_type === "situation" ? "Situation" : "Topic"}: {lessonData.topic_suggestion}
+          {lessonData.suggestion_type === "situation" ? "Situation" : "Topic"}: {lessonData.suggestion}
         </p>
       )}
 
