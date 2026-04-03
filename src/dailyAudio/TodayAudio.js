@@ -7,7 +7,7 @@ import EmptyState from "../components/EmptyState";
 import FullWidthErrorMsg from "../components/FullWidthErrorMsg.sc";
 import useListeningSession from "../hooks/useListeningSession";
 import { AUDIO_STATUS, GENERATION_PROGRESS } from "./AudioLessonConstants";
-import { VerticalCentering, GenerateButton } from "./GenerateButton.sc";
+import { GenerateView, GenerateButton } from "./GenerateButton.sc";
 import SuggestionSelector, { getSavedSuggestion, getSavedSuggestionType } from "./SuggestionSelector";
 import LessonPlaybackView from "./LessonPlaybackView";
 import { wordsAsTile, shortDate } from "./audioUtils";
@@ -401,7 +401,7 @@ export default function TodayAudio({ setShowTabs }) {
     // Can generate lesson - show the generate button
     if (canGenerateLesson === true) {
       return (
-        <VerticalCentering>
+        <GenerateView>
           {error && (
             <FullWidthErrorMsg style={{ marginBottom: "20px", maxWidth: "500px" }}>
               {error}
@@ -419,7 +419,7 @@ export default function TodayAudio({ setShowTabs }) {
             setSuggestion={setSuggestion}
             lang={lang}
           />
-        </VerticalCentering>
+        </GenerateView>
       );
     }
 
