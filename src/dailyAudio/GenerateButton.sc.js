@@ -1,6 +1,15 @@
 import styled from "styled-components";
 import { orange500, orange600, orange800 } from "../components/colors";
 
+export const CenteringContainer = styled.div`
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: calc(100vh - 260px);
+`;
+
 export const GenerateButton = styled.button`
   width: 150px;
   height: 150px;

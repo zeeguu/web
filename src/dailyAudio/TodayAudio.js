@@ -20,7 +20,8 @@ import {
   DescriptionText,
   InputArea,
 } from "./TopicSuggestion.sc";
-import { GenerateButton } from "./GenerateButton.sc";
+import { CenteringContainer, GenerateButton } from "./GenerateButton.sc";
+import { LessonWrapper, LessonTitle, SuggestionSubtitle, CompletionCheck } from "./LessonView.sc";
 
 const MAX_SUGGESTION_LENGTH = 80;
 
@@ -447,16 +448,7 @@ export default function TodayAudio({ setShowTabs }) {
     // Can generate lesson - show the generate button
     if (canGenerateLesson === true) {
       return (
-        <div
-          style={{
-            padding: "20px",
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            justifyContent: "center",
-            minHeight: "calc(100vh - 260px)",
-          }}
-        >
+        <CenteringContainer>
           {error && (
             <FullWidthErrorMsg style={{ marginBottom: "20px", maxWidth: "500px" }}>
               {error}
@@ -515,7 +507,7 @@ export default function TodayAudio({ setShowTabs }) {
               </HintText>
             </InputArea>
           </SuggestionWrapper>
-        </div>
+        </CenteringContainer>
       );
     }
 
@@ -531,15 +523,15 @@ export default function TodayAudio({ setShowTabs }) {
 
 
   return (
-    <div style={{ padding: "20px" }}>
-      <h2 style={{ color: zeeguuOrange, marginBottom: lessonData.suggestion ? "4px" : "10px", display: "flex", alignItems: "center", gap: "8px" }}>
-        {lessonData.is_completed && <span style={{ color: "#28a745", fontSize: "20px" }}>✓</span>}
+    <LessonWrapper>
+      <LessonTitle $compact={!!lessonData.suggestion}>
+        {lessonData.is_completed && <CompletionCheck>✓</CompletionCheck>}
         {wordsAsTile(words)}
-      </h2>
+      </LessonTitle>
       {lessonData.suggestion && (
-        <p style={{ fontSize: "0.85rem", color: "var(--text-secondary)", marginBottom: "10px" }}>
+        <SuggestionSubtitle>
           {lessonData.suggestion_type === "situation" ? "Situation" : "Topic"}: {lessonData.suggestion}
-        </p>
+        </SuggestionSubtitle>
       )}
 
       {error && <div style={{ color: "red", marginBottom: "20px" }}>{error}</div>}
@@ -666,6 +658,6 @@ export default function TodayAudio({ setShowTabs }) {
           preselectedCategory={FEEDBACK_CODES_NAME.DAILY_AUDIO}
         />
       </div>
-    </div>
+    </LessonWrapper>
   );
 }
