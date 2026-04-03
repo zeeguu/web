@@ -15,12 +15,6 @@ const NotificationIcon = styled.div`
     position: absolute;
     z-index: 1;
   }
-  
-  &.card-corner {
-  position: absolute;
-  top: 0;
-  right: 0;
-  z-index: 2;
 
   div {
     border: none;

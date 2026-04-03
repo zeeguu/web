@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { zeeguuOrange } from "../components/colors";
+import { orange500, zeeguuOrange } from "../components/colors";
 
 export const BadgeContainer = styled.div`
   display: grid;
@@ -25,34 +25,34 @@ export const BadgeCard = styled.div`
   transition: transform 0.15s ease;
   gap: 10px;
   cursor: default;
+`;
 
-  .icon-container {
-    width: 80px;
-    height: 80px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-bottom: 0.5rem;
-  }
+export const IconContainer = styled.div`
+  width: 80px;
+  height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 0.5rem;
+`;
 
-  img {
-    width: 80px;
-    height: 80px;
-    object-fit: contain;
-  }
+export const BadgeIcon = styled.img`
+  width: 80px;
+  height: 80px;
+  object-fit: contain;
+`;
 
-  h3 {
-    text-align: center;
-    font-size: 0.9rem;
-    margin: 6px 0;
-    color: var(--text-primary);
-  }
+export const BadgeTitle = styled.h3`
+  text-align: center;
+  font-size: 0.9rem;
+  margin: 6px 0;
+  color: var(--text-primary);
+`;
 
-  div {
-    text-align: center;
-    font-size: 0.85rem;
-    color: var(--text-secondary);
-  }
+export const BadgeDescription = styled.div`
+  text-align: center;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
 `;
 
 export const AchievedAtBox = styled.div`
@@ -93,4 +93,20 @@ export const ProgressText = styled.div`
   font-size: 0.85rem;
   text-align: right;
   color: var(--text-muted);
+`;
+
+export const NewTag = styled.div`
+  position: absolute;
+  top: 0;
+  right: 0;
+  z-index: 2;
+
+  background: ${orange500};
+  color: var(--card-bg);
+
+  padding: 0.2em 0.6em;
+  font-size: 0.7rem;
+  font-weight: 700;
+
+  border-radius: 0 8px 0 8px;
 `;
