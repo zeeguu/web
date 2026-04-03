@@ -20,7 +20,7 @@ import {
   DescriptionText,
   InputArea,
 } from "./TopicSuggestion.sc";
-import { CenteringContainer, GenerateButton } from "./GenerateButton.sc";
+import { VerticalCentering, GenerateButton } from "./GenerateButton.sc";
 import { LessonWrapper, LessonTitle, SuggestionSubtitle, CompletionCheck } from "./LessonView.sc";
 
 const MAX_SUGGESTION_LENGTH = 80;
@@ -448,7 +448,7 @@ export default function TodayAudio({ setShowTabs }) {
     // Can generate lesson - show the generate button
     if (canGenerateLesson === true) {
       return (
-        <CenteringContainer>
+        <VerticalCentering>
           {error && (
             <FullWidthErrorMsg style={{ marginBottom: "20px", maxWidth: "500px" }}>
               {error}
@@ -507,7 +507,7 @@ export default function TodayAudio({ setShowTabs }) {
               </HintText>
             </InputArea>
           </SuggestionWrapper>
-        </CenteringContainer>
+        </VerticalCentering>
       );
     }
 

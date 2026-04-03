@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import { orange500, orange600, orange800 } from "../components/colors";
 
-export const CenteringContainer = styled.div`
+export const VerticalCentering = styled.div`
   padding: 20px;
   display: flex;
   flex-direction: column;
