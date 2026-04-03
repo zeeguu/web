@@ -19,6 +19,8 @@ import {
   HintText,
 } from "./TopicSuggestion.sc";
 
+const MAX_SUGGESTION_LENGTH = 48;
+
 const SUGGESTION_TYPES = {
   words: { label: "Words only", placeholder: null, hint: null },
   topic: { label: "Topic", placeholder: "e.g. cooking, sports", hint: "The lesson will revolve around this theme" },
@@ -518,7 +520,7 @@ export default function TodayAudio({ setShowTabs }) {
               <SuggestionInput
                 type="text"
                 placeholder={SUGGESTION_TYPES[suggestionType]?.placeholder || ""}
-                maxLength={48}
+                maxLength={MAX_SUGGESTION_LENGTH}
                 value={topicSuggestion}
                 tabIndex={suggestionType === "words" ? -1 : 0}
                 onChange={(e) => {
@@ -532,8 +534,8 @@ export default function TodayAudio({ setShowTabs }) {
                 }}
               />
               <HintText>
-                {topicSuggestion.length >= 40
-                  ? `${topicSuggestion.length}/48`
+                {topicSuggestion.length >= MAX_SUGGESTION_LENGTH - 8
+                  ? `${topicSuggestion.length}/${MAX_SUGGESTION_LENGTH}`
                   : SUGGESTION_TYPES[suggestionType]?.hint || "\u00A0"}
               </HintText>
             </div>
