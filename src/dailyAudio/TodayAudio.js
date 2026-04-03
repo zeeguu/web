@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import { orange500, orange600, orange800, zeeguuOrange } from "../components/colors";
+import { orange500, zeeguuOrange } from "../components/colors";
 import { APIContext } from "../contexts/APIContext";
 import { UserContext } from "../contexts/UserContext";
 import LoadingAnimation from "../components/LoadingAnimation";
@@ -17,14 +17,29 @@ import {
   TypePill,
   SuggestionInput,
   HintText,
+  GenerateButton,
+  DescriptionText,
+  InputArea,
 } from "./TopicSuggestion.sc";
 
 const MAX_SUGGESTION_LENGTH = 80;
 
 const SUGGESTION_TYPES = {
-  auto: { label: "Automatic", placeholder: null, hint: null },
-  topic: { label: "Topic", placeholder: "e.g. cooking, sports", hint: "Dialogues will be themed around this topic" },
-  situation: { label: "Situation", placeholder: "e.g. at a restaurant, job interview", hint: "Dialogues will simulate this real-life scenario" },
+  auto: {
+    label: "Automatic",
+    description: "A listening lesson with three of your words, each in a short dialogue.",
+    placeholder: null,
+  },
+  topic: {
+    label: "Topic",
+    description: "A listening lesson with three of your words, each practiced in a short dialogue on a given topic.",
+    placeholder: "e.g. cooking, sports",
+  },
+  situation: {
+    label: "Situation",
+    description: "A listening lesson with three of your words, each practiced in a dialogue simulating a real-world scenario.",
+    placeholder: "e.g. at a restaurant, job interview",
+  },
 };
 
 export function wordsAsTile(words) {
@@ -439,7 +454,7 @@ export default function TodayAudio({ setShowTabs }) {
             flexDirection: "column",
             alignItems: "center",
             justifyContent: "center",
-            minHeight: "400px",
+            minHeight: "calc(100vh - 260px)",
           }}
         >
           {error && (
@@ -447,55 +462,13 @@ export default function TodayAudio({ setShowTabs }) {
               {error}
             </FullWidthErrorMsg>
           )}
-          <button
-            onClick={handleGenerateLesson}
-            style={{
-              width: "150px",
-              height: "150px",
-              borderRadius: "50%",
-              backgroundColor: orange500,
-              color: "white",
-              border: "none",
-              fontSize: "16px",
-              fontWeight: "600",
-              cursor: "pointer",
-              boxShadow: `0px 0.3rem ${orange800}`,
-              transition: "all 0.3s ease-in-out",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              textAlign: "center",
-              lineHeight: "1.2",
-            }}
-            onMouseEnter={(e) => {
-              e.target.style.backgroundColor = orange600;
-            }}
-            onMouseLeave={(e) => {
-              e.target.style.backgroundColor = orange500;
-              e.target.style.boxShadow = `0px 0.3rem ${orange800}`;
-              e.target.style.transform = "translateY(0)";
-            }}
-            onMouseDown={(e) => {
-              e.target.style.boxShadow = "none";
-              e.target.style.transform = "translateY(0.2em)";
-              e.target.style.transition = "all 0.08s ease-in";
-            }}
-            onMouseUp={(e) => {
-              e.target.style.boxShadow = `0px 0.3rem ${orange800}`;
-              e.target.style.transform = "translateY(0)";
-              e.target.style.transition = "all 0.3s ease-in-out";
-            }}
-          >
+          <GenerateButton onClick={handleGenerateLesson}>
             Generate
             <br />
             Daily Lesson
-          </button>
-          <p style={{ marginBottom: "20px", textAlign: "center", maxWidth: "500px" }}>
-            A listening lesson with three of your words, each practiced in a short dialogue.
-          </p>
+          </GenerateButton>
           <SuggestionWrapper>
             <PillRow role="radiogroup" aria-label="Dialogue context">
-              <span style={{ fontSize: "0.8rem", fontWeight: 600, color: "var(--text-secondary)", alignSelf: "center" }}>Context:</span>
               {Object.entries(SUGGESTION_TYPES).map(([key, { label }]) => (
                 <TypePill
                   key={key}
@@ -517,7 +490,10 @@ export default function TodayAudio({ setShowTabs }) {
                 </TypePill>
               ))}
             </PillRow>
-            <div style={{ visibility: suggestionType === "auto" ? "hidden" : "visible", display: "flex", flexDirection: "column", alignItems: "center", gap: "0.5rem", width: "100%" }}>
+            <DescriptionText>
+              {SUGGESTION_TYPES[suggestionType].description}
+            </DescriptionText>
+            <InputArea $hidden={suggestionType === "auto"}>
               <SuggestionInput
                 rows={1}
                 placeholder={SUGGESTION_TYPES[suggestionType]?.placeholder || ""}
@@ -525,7 +501,7 @@ export default function TodayAudio({ setShowTabs }) {
                 value={topicSuggestion}
                 tabIndex={suggestionType === "auto" ? -1 : 0}
                 onChange={(e) => {
-                  const val = e.target.value;
+                  const val = e.target.value.replace(/\n/g, " ");
                   setTopicSuggestion(val);
                   if (val.trim()) {
                     localStorage.setItem(TOPIC_STORAGE_KEY_PREFIX + lang, val);
@@ -537,9 +513,9 @@ export default function TodayAudio({ setShowTabs }) {
               <HintText>
                 {topicSuggestion.length >= MAX_SUGGESTION_LENGTH - 8
                   ? `${topicSuggestion.length}/${MAX_SUGGESTION_LENGTH}`
-                  : SUGGESTION_TYPES[suggestionType]?.hint || "\u00A0"}
+                  : "\u00A0"}
               </HintText>
-            </div>
+            </InputArea>
           </SuggestionWrapper>
         </div>
       );
@@ -558,12 +534,15 @@ export default function TodayAudio({ setShowTabs }) {
 
   return (
     <div style={{ padding: "20px" }}>
-      <h2 style={{ color: zeeguuOrange, marginBottom: "10px", display: "flex", alignItems: "center", gap: "8px" }}>
+      <h2 style={{ color: zeeguuOrange, marginBottom: lessonData.topic_suggestion ? "4px" : "10px", display: "flex", alignItems: "center", gap: "8px" }}>
         {lessonData.is_completed && <span style={{ color: "#28a745", fontSize: "20px" }}>✓</span>}
-        {lessonData.topic_suggestion
-          ? `${lessonData.topic_suggestion}: ${wordsAsTile(words)}`
-          : wordsAsTile(words)}
+        {wordsAsTile(words)}
       </h2>
+      {lessonData.topic_suggestion && (
+        <p style={{ fontSize: "0.85rem", color: "var(--text-secondary)", marginBottom: "10px" }}>
+          {lessonData.suggestion_type === "situation" ? "Situation" : "Topic"}: {lessonData.topic_suggestion}
+        </p>
+      )}
 
       {error && <div style={{ color: "red", marginBottom: "20px" }}>{error}</div>}
 
