@@ -17,10 +17,10 @@ import {
   TypePill,
   SuggestionInput,
   HintText,
-  GenerateButton,
   DescriptionText,
   InputArea,
 } from "./TopicSuggestion.sc";
+import { GenerateButton } from "./GenerateButton.sc";
 
 const MAX_SUGGESTION_LENGTH = 80;
 
