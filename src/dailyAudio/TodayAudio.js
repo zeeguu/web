@@ -51,8 +51,8 @@ export function wordsAsTile(words) {
   return capitalized_comma_separated_words;
 }
 
-const SELECTED_SUGGESTION_TYPE = "zeeguu_lesson_suggestion_type_";
-const suggestionKey = (type, lang) => `zeeguu_lesson_suggestion_${type}_${lang}`;
+const SELECTED_SUGGESTION_TYPE = "audio_lesson_suggestion_type_";
+const suggestionKey = (type, lang) => `audio_lesson_suggestion_${type}_${lang}`;
 
 export default function TodayAudio({ setShowTabs }) {
   const api = useContext(APIContext);
