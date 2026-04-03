@@ -1,5 +1,4 @@
 import styled from "styled-components";
-import { orange300 } from "../components/colors";
 
 export const PeriodNavButton = styled.button`
   padding: 0;
@@ -23,14 +22,30 @@ export const PeriodNavSpacer = styled.div`
 `;
 
 export const Container = styled.section`
-width: 100%;
-max-width: 760px;
+  width: 100%;
+  max-width: 760px;
+`;
+
+export const PeriodContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  margin-left: 0.5em;
+  gap: 0.1em;
+`;
+
+export const WeekLabel = styled.p`
+  margin: 0;
+  font-size: 1em;
+  font-weight: 600;
+  color: var(--text-primary);
+  text-align: center;
 `;
 
 export const PeriodLabel = styled.p`
-  margin-left: 0.5em;
-  font-size: 0.9em;
+  margin: 0;
+  font-size: 0.85em;
   color: var(--text-secondary);
+  text-align: center;
 `;
 
 export const TabsWrapper = styled.div`
@@ -39,6 +54,7 @@ export const TabsWrapper = styled.div`
   overflow: hidden;
   margin-top: 1em;
   margin-bottom: 1em;
+  width: 100%;
 `;
 
 export const TabButton = styled.button`
@@ -50,8 +66,9 @@ export const TabButton = styled.button`
   padding: 0.75em;
   border: none;
   cursor: pointer;
+  flex: 1;
 
-  background: ${({ $active }) => ($active ? orange300 : "var(--active-bg)")};
+  background: ${({ $active }) => ($active ? "#ff9800" : "var(--active-bg)")};
   color: ${({ $active }) => ($active ? "var(--text-primary)" : "var(--text-secondary)")};
   font-weight: ${({ $active }) => ($active ? 500 : 400)};
 

@@ -45,7 +45,7 @@ export const FriendRowLi = styled.li`
   cursor: ${({ $clickable }) => ($clickable ? "pointer" : "default")};
 
   &:hover:not(:has(button:hover)) {
-    background: var(--tag-bg);
+    background: var(--row-hover-bg);
   }
 `;
 

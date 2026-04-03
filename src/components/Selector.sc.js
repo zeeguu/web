@@ -13,7 +13,7 @@ const SelectStyledContainer = styled.div`
   width: 100%;
   border-radius: 0.25em;
   cursor: pointer;
-  background-color: #fff;
+  background-color: var(--input-bg);
   display: grid;
   grid-template-areas: "select";
   align-items: center;
@@ -36,9 +36,9 @@ const Select = styled.select`
   box-sizing: border-box;
   height: 2.69rem;
   appearance: none;
-  border: 1.5px solid ${lightGrey};
+  border: 1.5px solid var(--input-border);
   border-radius: 0.3rem;
-  background-color: transparent;
+  background-color: var(--input-bg);
   padding: 0 2.25rem 0 1rem;
   margin: 0;
   width: 100%;

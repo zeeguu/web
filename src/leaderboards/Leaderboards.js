@@ -6,6 +6,7 @@ import { APIContext } from "../contexts/APIContext";
 import { UserContext } from "../contexts/UserContext";
 import * as s from "./Leaderboards.sc";
 import { LEADERBOARD_SCOPES, LEADERBOARD_TYPES } from "./leaderboardTypes";
+import Selector from "../components/Selector";
 
 function getMetricValue(entry) {
   return Number(entry.value || 0);
@@ -21,15 +22,37 @@ function formatDateLabel(date) {
 
 function computeWeeklyPeriod(weekShift = 0) {
   const now = new Date();
-  const to = new Date(now.getFullYear(), now.getMonth(), now.getDate() + weekShift * 7);
-  const from = new Date(to.getFullYear(), to.getMonth(), to.getDate() - 6);
+
+  const day = now.getDay();
+  const diff = day === 0 ? -6 : 1 - day;
+
+  const monday = new Date(now);
+  monday.setDate(now.getDate() + diff + weekShift * 7);
+
+  const sunday = new Date(monday);
+  sunday.setDate(monday.getDate() + 6);
+
+  const temp = new Date(monday);
+  temp.setDate(temp.getDate() + 3);
+
+  const year = temp.getFullYear();
+  const week1 = new Date(year, 0, 4);
+
+  const week = 1 + Math.round(((temp - week1) / 86400000 - 3 + ((week1.getDay() + 6) % 7)) / 7);
 
   const pad = (n) => String(n).padStart(2, "0");
 
-  const fromStr = `${from.getFullYear()}-${pad(from.getMonth() + 1)}-${pad(from.getDate())}`;
-  const toStr = `${to.getFullYear()}-${pad(to.getMonth() + 1)}-${pad(to.getDate())}`;
+  const fromStr = `${monday.getFullYear()}-${pad(monday.getMonth() + 1)}-${pad(monday.getDate())}`;
+  const toStr = `${sunday.getFullYear()}-${pad(sunday.getMonth() + 1)}-${pad(sunday.getDate())}`;
 
-  return { from, to, fromStr, toStr };
+  return {
+    from: monday,
+    to: sunday,
+    fromStr,
+    toStr,
+    week,
+    year,
+  };
 }
 
 export default function Leaderboards({
@@ -87,7 +110,7 @@ export default function Leaderboards({
       if (!selectedCohort) return;
       api.getCohortLeaderboard(selectedCohort, selectedLeaderboardKey, period.fromStr, period.toStr, handleData);
     }
-  }, [api, selectedLeaderboardKey, period.fromStr, period.toStr, scope]);
+  }, [api, selectedLeaderboardKey, period.fromStr, period.toStr, scope, selectedCohort]);
 
   useEffect(() => {
     if (scope === LEADERBOARD_SCOPES.COHORT) {
@@ -130,8 +153,6 @@ export default function Leaderboards({
     });
   }
 
-  const periodLabel = `${formatDateLabel(period.from)} - ${formatDateLabel(period.to)}`;
-
   const handleViewFriendProfile = (friendId) => {
     if (!friendId || !navigationHandler) {
       return;
@@ -158,7 +179,14 @@ export default function Leaderboards({
         >
           <ChevronLeftRoundedIcon fontSize="large" />
         </s.PeriodNavButton>
-        <s.PeriodLabel>Period: {periodLabel}</s.PeriodLabel>
+        <s.PeriodContainer>
+          <s.WeekLabel>
+            Week {period.week}, {period.year}
+          </s.WeekLabel>
+          <s.PeriodLabel>
+            {formatDateLabel(period.from)} - {formatDateLabel(period.to)}
+          </s.PeriodLabel>
+        </s.PeriodContainer>
         {periodShiftInWeeks < 0 && (
           <s.PeriodNavButton
             type="button"
@@ -186,20 +214,17 @@ export default function Leaderboards({
         </s.TabsWrapper>
       )}
 
-      {scope === LEADERBOARD_SCOPES.COHORT && cohorts.length > 0 && (
-        <div style={{ marginBottom: "1rem" }}>
-          <label htmlFor="cohort-select">Select Cohort: </label>
-          <select
+      {scope === LEADERBOARD_SCOPES.COHORT && cohorts.length > 1 && (
+        <div style={{ marginBottom: "1rem", width: "fit-content" }}>
+          <Selector
             id="cohort-select"
-            value={selectedCohort || ""}
+            options={cohorts.map((c) => ({ value: c.id, label: c.name }))}
+            selectedValue={selectedCohort}
             onChange={(e) => setSelectedCohort(Number(e.target.value))}
-          >
-            {cohorts.map((c) => (
-              <option key={c.id} value={c.id}>
-                {c.name}
-              </option>
-            ))}
-          </select>
+            optionLabel={(option) => option.label}
+            optionValue={(option) => option.value}
+            placeholder="Select a classroom"
+          />
         </div>
       )}
 

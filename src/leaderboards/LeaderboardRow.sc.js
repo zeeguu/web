@@ -1,4 +1,3 @@
-import { zeeguuOrange } from "../components/colors";
 import styled from "styled-components";
 
 export const StyledTableRow = styled.tr`
@@ -7,11 +6,11 @@ export const StyledTableRow = styled.tr`
   cursor: ${({ $clickable }) => ($clickable ? "pointer" : "default")};
 
   & td {
-    background: ${({ $highlight }) => ($highlight ? "rgba(255, 187, 84, 0.2)" : "none")};
+    background: ${({ $highlight }) => ($highlight ? "var(--row-hover-bg)" : "none")};
   }
 
   &:hover td {
-    background: ${({ $highlight }) => ($highlight ? "rgba(255, 187, 84, 0.3)" : "rgba(255, 187, 84, 0.15)")};
+    background: var(--row-hover-bg);
   }
 `;
 
@@ -33,7 +32,7 @@ export const SelfLabel = styled.span`
   font-weight: 600;
   padding: 0.2em 0.5em;
   border-radius: 6px;
-  background: ${zeeguuOrange};
+  background: #ff9800;
   color: white;
   margin-left: 0.25em;
 `;

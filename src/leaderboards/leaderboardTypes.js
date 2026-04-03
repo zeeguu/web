@@ -4,29 +4,8 @@ import AccessAlarmsRoundedIcon from "@mui/icons-material/AccessAlarmsRounded";
 
 export const LEADERBOARD_TYPES = [
   {
-    key: "exercises_done",
-    tabLabel: "Exercises Done",
-    icon: FitnessCenterRoundedIcon,
-    metricLabel: "Exercises Done",
-    formatMetric: (value) => `${value}`
-  },
-  {
     key: "reading_time",
     tabLabel: "Reading Time",
-    icon: AccessAlarmsRoundedIcon,
-    metricLabel: "Time Spent",
-    formatMetric: (value) => `${formatDuration(value)}`
-  },
-  {
-    key: "listening_time",
-    tabLabel: "Listening Time",
-    icon: AccessAlarmsRoundedIcon,
-    metricLabel: "Time Spent",
-    formatMetric: (value) => `${formatDuration(value)}`
-  },
-  {
-    key: "exercise_time",
-    tabLabel: "Exercise Time",
     icon: AccessAlarmsRoundedIcon,
     metricLabel: "Time Spent",
     formatMetric: (value) => `${formatDuration(value)}`
@@ -37,6 +16,20 @@ export const LEADERBOARD_TYPES = [
     icon: MenuBookRoundedIcon,
     metricLabel: "Read Articles",
     formatMetric: (value) => `${value}`
+  },
+  {
+    key: "exercises_done",
+    tabLabel: "Correct Exercises",
+    icon: FitnessCenterRoundedIcon,
+    metricLabel: "Exercises Done",
+    formatMetric: (value) => `${value}`
+  },
+  {
+    key: "listening_time",
+    tabLabel: "Listening Time",
+    icon: AccessAlarmsRoundedIcon,
+    metricLabel: "Time Spent",
+    formatMetric: (value) => `${formatDuration(value)}`
   },
 ];
 

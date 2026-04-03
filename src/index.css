@@ -61,6 +61,8 @@
 
   --achieved-bg: rgba(90,189,92,0.35);
 
+  --row-hover-bg: rgba(255, 187, 84, 0.2);
+
   color-scheme: light;
 }
 
@@ -138,6 +140,8 @@
   --progress-circle-border: #50507a;
 
   --achieved-bg: rgba(53, 193, 55, 0.35);
+
+  --row-hover-bg: #353555;
 
   color-scheme: dark;
 }
