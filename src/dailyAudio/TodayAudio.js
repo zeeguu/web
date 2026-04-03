@@ -197,11 +197,10 @@ export default function TodayAudio({ setShowTabs }) {
   // Update page title and playback time when lessonData changes
   useEffect(() => {
     if (lessonData && lessonData.words) {
-      const topicPrefix = lessonData.suggestion ? `${lessonData.suggestion}: ` : "";
       document.title = `[${new Date().toLocaleDateString("en-US", {
         month: "short",
         day: "numeric",
-      })}] Daily Audio: ${topicPrefix}${wordsAsTile(words)}`;
+      })}] Daily Audio: ${wordsAsTile(words)}`;
       
       // Initialize playback time from lesson data
       const initialTime = lessonData.pause_position_seconds || lessonData.position_seconds || lessonData.progress_seconds || 0;
@@ -314,8 +313,8 @@ export default function TodayAudio({ setShowTabs }) {
     // Set localStorage flag to track generation across page reloads
     localStorage.setItem(generatingKey, "true");
 
-    const trimmedTopic = suggestion.trim() || null;
-    const typeToSend = trimmedTopic && suggestionType !== "auto" ? suggestionType : null;
+    const trimmedSuggestion = suggestion.trim() || null;
+    const typeToSend = trimmedSuggestion && suggestionType !== "auto" ? suggestionType : null;
     api.generateDailyLesson(
       (data) => {
         if (data.status === AUDIO_STATUS.GENERATING) {
@@ -358,7 +357,7 @@ export default function TodayAudio({ setShowTabs }) {
         }
         setError(errorMsg);
       },
-      trimmedTopic,
+      trimmedSuggestion,
       typeToSend,
     );
   };
