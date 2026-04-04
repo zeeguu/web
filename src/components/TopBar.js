@@ -4,6 +4,7 @@ import { UserContext } from "../contexts/UserContext";
 import LocalFireDepartmentIcon from "@mui/icons-material/LocalFireDepartment";
 import strings from "../i18n/definitions";
 import LanguageModal from "./MainNav/LanguageModal";
+import LanguageStreakBar from "./LanguageStreakBar";
 import Feature from "../features/Feature";
 import LocalStorage from "../assorted/LocalStorage.js";
 import * as s from "./Banners.sc";
@@ -15,6 +16,7 @@ export default function TopBar() {
   const [showDailyFeedback, setShowDailyFeedback] = useState(
     () => Feature.daily_feedback() && !LocalStorage.didShowDailyFeedbackToday(),
   );
+  const [hasMultipleLanguages, setHasMultipleLanguages] = useState(false);
 
   const hasStreak = daysPracticed && daysPracticed >= 2;
 
@@ -26,12 +28,14 @@ export default function TopBar() {
   return (
     <>
       <s.TopBarContainer>
-        <s.FlagButton
-          onClick={() => setShowLanguageModal(true)}
-          aria-label="Change language"
-        >
-          <s.FlagImage src={`/static/flags-new/${userDetails?.learned_language}.svg`} alt="" />
-        </s.FlagButton>
+        {!hasMultipleLanguages && (
+          <s.FlagButton
+            onClick={() => setShowLanguageModal(true)}
+            aria-label="Change language"
+          >
+            <s.FlagImage src={`/static/flags-new/${userDetails?.learned_language}.svg`} alt="" />
+          </s.FlagButton>
+        )}
         {showDailyFeedback && (
           <s.DailyFeedbackLink
             href="https://forms.gle/h5JQmVrnZNnuvSPw9"
@@ -41,7 +45,8 @@ export default function TopBar() {
             Daily Feedback
           </s.DailyFeedbackLink>
         )}
-        {hasStreak && (
+        <LanguageStreakBar onMultipleLanguages={setHasMultipleLanguages} />
+        {!hasMultipleLanguages && hasStreak && (
           <s.StreakInfo>
             <s.StreakValue>{daysPracticed}</s.StreakValue>
             <s.StreakLabel>
