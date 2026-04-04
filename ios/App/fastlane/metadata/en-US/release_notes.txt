@@ -1,5 +1,6 @@
 - Choose context for audio lessons: Automatic, Topic, or Situation
 - Situation mode generates roleplay dialogues in real-world scenarios
 - Topic mode themes dialogues around a chosen subject
-- Per-type suggestion text remembered across sessions
-- Cleaner lesson view with word title and suggestion subtitle
+- Past lessons now show their topic or situation context
+- Language streak bar for quick switching between languages
+- Dark mode improvements
