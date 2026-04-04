@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useCallback, useContext, useState } from "react";
 import { ProgressContext } from "../contexts/ProgressContext";
 import { UserContext } from "../contexts/UserContext";
 import LocalFireDepartmentIcon from "@mui/icons-material/LocalFireDepartment";
@@ -8,6 +8,8 @@ import LanguageStreakBar from "./LanguageStreakBar";
 import Feature from "../features/Feature";
 import LocalStorage from "../assorted/LocalStorage.js";
 import * as s from "./Banners.sc";
+
+const fireIconSx = { color: "#ff9800", fontSize: "1.2rem" };
 
 export default function TopBar() {
   const { daysPracticed } = useContext(ProgressContext);
@@ -19,6 +21,8 @@ export default function TopBar() {
   const [hasMultipleLanguages, setHasMultipleLanguages] = useState(false);
 
   const hasStreak = daysPracticed && daysPracticed >= 2;
+  const closeLanguageModal = useCallback(() => setShowLanguageModal(false), []);
+  const openLanguageModal = useCallback(() => setShowLanguageModal(true), []);
 
   function handleFeedbackClick() {
     setShowDailyFeedback(false);
@@ -30,7 +34,7 @@ export default function TopBar() {
       <s.TopBarContainer>
         {!hasMultipleLanguages && (
           <s.FlagButton
-            onClick={() => setShowLanguageModal(true)}
+            onClick={openLanguageModal}
             aria-label="Change language"
           >
             <s.FlagImage src={`/static/flags-new/${userDetails?.learned_language}.svg`} alt="" />
@@ -47,7 +51,7 @@ export default function TopBar() {
         )}
         <LanguageStreakBar
           onMultipleLanguages={setHasMultipleLanguages}
-          onOpenModal={() => setShowLanguageModal(true)}
+          onOpenModal={openLanguageModal}
         />
         {!hasMultipleLanguages && hasStreak && (
           <s.StreakInfo>
@@ -55,13 +59,13 @@ export default function TopBar() {
             <s.StreakLabel>
               {strings.streakDay} {strings.streakStreak}
             </s.StreakLabel>
-            <LocalFireDepartmentIcon sx={{ color: "#ff9800", fontSize: "1.2rem" }} />
+            <LocalFireDepartmentIcon sx={fireIconSx} />
           </s.StreakInfo>
         )}
       </s.TopBarContainer>
       <LanguageModal
         open={showLanguageModal}
-        setOpen={() => setShowLanguageModal(false)}
+        setOpen={closeLanguageModal}
       />
     </>
   );

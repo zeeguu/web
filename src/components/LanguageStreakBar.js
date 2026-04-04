@@ -66,6 +66,9 @@ const StreakNumber = styled.span`
   color: inherit;
 `;
 
+const fireIconSx = { color: "#ff9800", fontSize: "0.9rem" };
+const moreIconSx = { fontSize: "1.2rem" };
+
 const MoreButton = styled.button`
   background: none;
   border: none;
@@ -109,12 +112,10 @@ export default function LanguageStreakBar({ onMultipleLanguages, onOpenModal }) 
 
   if (displayList.length <= 1) return null;
 
-  const visible = displayList.slice(0, 4);
-
   return (
     <Wrapper>
       <Bar>
-        {visible.map((lang) => {
+        {displayList.map((lang) => {
           const isActive = lang.code === currentCode;
           return (
             <LanguageItem
@@ -129,7 +130,7 @@ export default function LanguageStreakBar({ onMultipleLanguages, onOpenModal }) 
               />
               {lang.daily_streak >= 2 && (
                 <>
-                  <LocalFireDepartmentIcon sx={{ color: "#ff9800", fontSize: "0.9rem" }} />
+                  <LocalFireDepartmentIcon sx={fireIconSx} />
                   <StreakNumber>{lang.daily_streak}</StreakNumber>
                 </>
               )}
@@ -138,7 +139,7 @@ export default function LanguageStreakBar({ onMultipleLanguages, onOpenModal }) 
         })}
       </Bar>
       <MoreButton onClick={onOpenModal} title="More languages">
-        <MoreHorizIcon sx={{ fontSize: "1.2rem" }} />
+        <MoreHorizIcon sx={moreIconSx} />
       </MoreButton>
     </Wrapper>
   );

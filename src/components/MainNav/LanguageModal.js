@@ -21,6 +21,8 @@ import { saveSharedUserInfo } from "../../utils/cookies/userInfo.js";
 import styled from "styled-components";
 
 const MAX_MODAL_LANGUAGES = 7;
+const fireIconSx = { color: "#ff9800", fontSize: "0.9rem" };
+const spinnerSx = { color: "var(--streak-banner-text)" };
 
 const CefrSection = styled.span`
   display: flex;
@@ -89,8 +91,8 @@ export default function LanguageModal({ open, setOpen }) {
 
     return () => {
       cancelled = true;
-      setActiveLanguages(undefined);
-      setLearnedLanguageCode(undefined);
+      setActiveLanguages(null);
+      setLearnedLanguageCode(null);
     };
   }, [open, api, session]);
 
@@ -161,7 +163,7 @@ export default function LanguageModal({ open, setOpen }) {
           {isSwitching ? (
             <div style={{ display: "flex", flexDirection: "column", alignItems: "center", padding: "2rem 0", gap: "1rem" }}>
               <DynamicFlagImage languageCode={learnedLanguageCode} />
-              <CircularProgress size={24} sx={{ color: "var(--streak-banner-text)" }} />
+              <CircularProgress size={24} sx={spinnerSx} />
             </div>
           ) : (
             <>
@@ -179,7 +181,7 @@ export default function LanguageModal({ open, setOpen }) {
                       {e.language}
                       {streaksByCode[e.code] >= 2 && (
                         <StreakBadge>
-                          <LocalFireDepartmentIcon sx={{ color: "#ff9800", fontSize: "0.9rem" }} />
+                          <LocalFireDepartmentIcon sx={fireIconSx} />
                           {streaksByCode[e.code]}
                         </StreakBadge>
                       )}
