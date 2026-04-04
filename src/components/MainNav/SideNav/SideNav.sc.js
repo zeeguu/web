@@ -12,7 +12,7 @@ const BottomSection = styled.div`
   flex-shrink: 0;
   box-sizing: border-box;
   background-color: ${({ theme }) => theme.navBg};
-  padding: 1rem 0.5rem 1rem 0.5rem;
+  padding: 1rem 0;
 `;
 
 const SideNav = styled.nav`

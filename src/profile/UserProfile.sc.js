@@ -39,30 +39,33 @@ export const HeaderCard = styled.div`
 
   .name-wrapper {
     display: flex;
-    gap: 1rem;
+    column-gap: 1rem;
+    flex-wrap: wrap;
+    margin: 1rem 0;
+    padding-right: 2rem;
 
     @media (max-width: 768px) {
       flex-direction: column;
       gap: 0.5rem;
+      margin-top: 0;
     }
   }
 
   .username,
   .display-name {
-    margin-bottom: 1rem;
+    margin: 0;
     font-size: 1.4rem;
     font-weight: 700;
 
     @media (max-width: 768px) {
       justify-content: center;
-      margin-top: 0;
       font-size: 1.25rem;
     }
   }
 
   .username {
     color: var(--text-primary);
-    
+
     @media (max-width: 768px) {
       margin-bottom: 0;
     }
