@@ -15,13 +15,14 @@ import AddRoundedIcon from "@mui/icons-material/AddRounded";
 import CircularProgress from "@mui/material/CircularProgress";
 import LocalFireDepartmentIcon from "@mui/icons-material/LocalFireDepartment";
 import DynamicFlagImage from "../DynamicFlagImage.js";
+import { streakFireOrange } from "../colors.js";
 import { CEFR_LEVELS } from "../../assorted/cefrLevels.js";
 import LocalStorage from "../../assorted/LocalStorage.js";
 import { saveSharedUserInfo } from "../../utils/cookies/userInfo.js";
 import styled from "styled-components";
 
 const MAX_MODAL_LANGUAGES = 7;
-const fireIconSx = { color: "#ff9800", fontSize: "0.9rem" };
+const fireIconSx = { color: streakFireOrange, fontSize: "0.9rem" };
 const spinnerSx = { color: "var(--streak-banner-text)" };
 
 const CefrSection = styled.span`
@@ -40,7 +41,7 @@ const StreakBadge = styled.span`
   margin-left: 0.5em;
   font-size: 0.85em;
   font-weight: 600;
-  color: #ff9800;
+  color: ${streakFireOrange};
 `;
 
 const CefrSelect = styled.select`

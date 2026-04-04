@@ -2,6 +2,7 @@ import { useContext, useEffect, useState } from "react";
 import { APIContext } from "../contexts/APIContext";
 import { UserContext } from "../contexts/UserContext";
 import { switchLanguage } from "../utils/languageSwitcher";
+import { streakFireOrange } from "./colors";
 import LocalFireDepartmentIcon from "@mui/icons-material/LocalFireDepartment";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import styled from "styled-components";
@@ -66,7 +67,7 @@ const StreakNumber = styled.span`
   color: inherit;
 `;
 
-const fireIconSx = { color: "#ff9800", fontSize: "0.9rem" };
+const fireIconSx = { color: streakFireOrange, fontSize: "0.9rem" };
 const moreIconSx = { fontSize: "1.2rem" };
 
 const MoreButton = styled.button`

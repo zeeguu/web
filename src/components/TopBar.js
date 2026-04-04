@@ -7,9 +7,10 @@ import LanguageModal from "./MainNav/LanguageModal";
 import LanguageStreakBar from "./LanguageStreakBar";
 import Feature from "../features/Feature";
 import LocalStorage from "../assorted/LocalStorage.js";
+import { streakFireOrange } from "./colors";
 import * as s from "./Banners.sc";
 
-const fireIconSx = { color: "#ff9800", fontSize: "1.2rem" };
+const fireIconSx = { color: streakFireOrange, fontSize: "1.2rem" };
 
 export default function TopBar() {
   const { daysPracticed } = useContext(ProgressContext);
