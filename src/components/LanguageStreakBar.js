@@ -19,6 +19,8 @@ const Bar = styled.div`
   align-items: center;
   gap: 0.4rem;
   overflow: hidden;
+  flex: 1;
+  min-width: 0;
 `;
 
 const LanguageItem = styled.button`
@@ -79,6 +81,7 @@ const MoreButton = styled.button`
   align-items: center;
   color: inherit;
   opacity: 0.7;
+  flex-shrink: 0;
 
   &:hover {
     opacity: 1;
