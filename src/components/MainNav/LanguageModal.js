@@ -13,6 +13,7 @@ import Heading from "../modal_shared/Heading.sc.js";
 import RadioGroup from "./RadioGroup.js";
 import ReactLink from "../ReactLink.sc.js";
 import AddRoundedIcon from "@mui/icons-material/AddRounded";
+import LocalFireDepartmentIcon from "@mui/icons-material/LocalFireDepartment";
 import DynamicFlagImage from "../DynamicFlagImage.js";
 import { CEFR_LEVELS } from "../../assorted/cefrLevels.js";
 import styled from "styled-components";
@@ -24,6 +25,16 @@ const CefrSection = styled.span`
   padding-left: 0.75em;
   border-left: 1px solid rgba(128, 128, 128, 0.3);
   height: 1.5em;
+`;
+
+const StreakBadge = styled.span`
+  display: flex;
+  align-items: center;
+  gap: 0.2em;
+  margin-left: 0.5em;
+  font-size: 0.85em;
+  font-weight: 600;
+  color: #ff9800;
 `;
 
 const CefrSelect = styled.select`
@@ -52,6 +63,7 @@ export default function LanguageModal({ open, setOpen }) {
 
   const [learnedLanguageCode, setLearnedLanguageCode] = useState(null);
   const [activeLanguages, setActiveLanguages] = useState(null);
+  const [streaksByCode, setStreaksByCode] = useState({});
 
   useEffect(() => {
     if (open) {
@@ -59,6 +71,12 @@ export default function LanguageModal({ open, setOpen }) {
 
       api.getUserLanguages((data) => {
         setActiveLanguages(data);
+      });
+
+      api.getAllLanguageStreaks((data) => {
+        const map = {};
+        data.forEach((l) => { map[l.code] = l.daily_streak; });
+        setStreaksByCode(map);
       });
     }
     return () => {
@@ -107,9 +125,9 @@ export default function LanguageModal({ open, setOpen }) {
     return filteredLanguages.sort((a, b) => {
       if (a.code === userDetails.learned_language) return -1;
       if (b.code === userDetails.learned_language) return 1;
-      return 0;
+      return (streaksByCode[b.code] || 0) - (streaksByCode[a.code] || 0);
     });
-  }, [activeLanguages, userDetails.native_language, userDetails.learned_language]);
+  }, [activeLanguages, userDetails.native_language, userDetails.learned_language, streaksByCode]);
 
   function updateLearnedLanguage(lang_code) {
     setLearnedLanguageCode(lang_code);
@@ -144,9 +162,9 @@ export default function LanguageModal({ open, setOpen }) {
         <Form>
           <FormSection>
             <RadioGroup
-              radioGroupLabel="Select the language you want to practice:"
+              radioGroupLabel=""
               name="active-language"
-              options={reorderedLanguages}
+              options={reorderedLanguages.slice(0, 7)}
               selectedValue={learnedLanguageCode}
               onChange={(e) => {
                 updateLearnedLanguage(e.target.value);
@@ -154,6 +172,12 @@ export default function LanguageModal({ open, setOpen }) {
               optionLabel={(e) => (
                 <>
                   {e.language}
+                  {streaksByCode[e.code] >= 2 && (
+                    <StreakBadge>
+                      <LocalFireDepartmentIcon sx={{ color: "#ff9800", fontSize: "0.9rem" }} />
+                      {streaksByCode[e.code]}
+                    </StreakBadge>
+                  )}
                   <CefrSection>
                     <CefrSelect
                       value={getCefrLevelValueForLanguage(e.code)}

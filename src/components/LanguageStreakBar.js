@@ -8,27 +8,50 @@ import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import LanguageModal from "./MainNav/LanguageModal";
 import styled from "styled-components";
 
-const MAX_VISIBLE = 4;
+const Wrapper = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-left: auto;
+`;
 
 const Bar = styled.div`
   display: flex;
   align-items: center;
-  gap: 0.6rem;
+  gap: 0.4rem;
+  overflow: hidden;
 `;
 
 const LanguageItem = styled.button`
   display: flex;
   align-items: center;
   gap: 0.25rem;
-  background: ${({ $active }) => ($active ? "rgba(255,255,255,0.25)" : "none")};
-  border: ${({ $active }) => ($active ? "1px solid rgba(255,255,255,0.3)" : "1px solid transparent")};
+  background: none;
+  border: ${({ $active }) => ($active ? "2px solid var(--streak-banner-text)" : "2px solid transparent")};
   border-radius: 1rem;
-  padding: 0.15rem 0.5rem 0.15rem 0.2rem;
+  padding: 0.15rem 0.4rem 0.15rem 0.2rem;
   cursor: pointer;
   transition: background 0.15s;
+  flex-shrink: 0;
+
+  opacity: ${({ $active }) => ($active ? "1" : "0.6")};
 
   &:hover {
-    background: rgba(255, 255, 255, 0.15);
+    opacity: 1;
+    background: var(--streak-banner-hover);
+  }
+
+  &:nth-child(n+4) {
+    display: none;
+  }
+
+  @media (min-width: 400px) {
+    &:nth-child(n+4) {
+      display: flex;
+    }
+    &:nth-child(n+5) {
+      display: none;
+    }
   }
 `;
 
@@ -37,7 +60,7 @@ const Flag = styled.img`
   height: 1.3rem;
   border-radius: 50%;
   object-fit: cover;
-  border: 0.05rem solid rgba(255, 255, 255, 0.3);
+  border: 1px solid var(--streak-banner-border);
 `;
 
 const StreakNumber = styled.span`
@@ -94,34 +117,51 @@ export default function LanguageStreakBar({ onMultipleLanguages }) {
 
   if (languageStreaks.length <= 1) return null;
 
-  const visible = languageStreaks.slice(0, MAX_VISIBLE);
-  const hasMore = languageStreaks.length > MAX_VISIBLE;
+  const currentCode = userDetails.learned_language;
+
+  // Current language first, then others by streak descending
+  const currentLang = languageStreaks.find((l) => l.code === currentCode);
+  const others = languageStreaks.filter(
+    (l) => l.code !== currentCode && l.daily_streak >= 2,
+  );
+  const displayList = [...(currentLang ? [currentLang] : []), ...others];
+
+  if (displayList.length <= 1) return null;
+
+  const visible = displayList.slice(0, 4);
 
   return (
     <>
-      <Bar>
-        {visible.map((lang) => (
-          <LanguageItem
-            key={lang.code}
-            $active={lang.code === userDetails.learned_language}
-            onClick={() => switchLanguage(lang.code)}
-            title={lang.language}
-          >
-            <Flag src={`/static/flags-new/${lang.code}.svg`} alt={lang.language} />
-            {lang.daily_streak > 0 && (
-              <>
-                <LocalFireDepartmentIcon sx={{ color: "#ff9800", fontSize: "0.9rem" }} />
-                <StreakNumber>{lang.daily_streak}</StreakNumber>
-              </>
-            )}
-          </LanguageItem>
-        ))}
-        {hasMore && (
-          <MoreButton onClick={() => setShowLanguageModal(true)} title="More languages">
-            <MoreHorizIcon sx={{ fontSize: "1.2rem" }} />
-          </MoreButton>
-        )}
-      </Bar>
+      <Wrapper>
+        <Bar>
+          {visible.map((lang) => {
+            const isActive = lang.code === currentCode;
+            return (
+              <LanguageItem
+                key={lang.code}
+                $active={isActive}
+                onClick={() => switchLanguage(lang.code)}
+                title={lang.language}
+              >
+                <Flag
+                  $active={isActive}
+                  src={`/static/flags-new/${lang.code}.svg`}
+                  alt={lang.language}
+                />
+                {lang.daily_streak >= 2 && (
+                  <>
+                    <LocalFireDepartmentIcon sx={{ color: "#ff9800", fontSize: "0.9rem" }} />
+                    <StreakNumber>{lang.daily_streak}</StreakNumber>
+                  </>
+                )}
+              </LanguageItem>
+            );
+          })}
+        </Bar>
+        <MoreButton onClick={() => setShowLanguageModal(true)} title="More languages">
+          <MoreHorizIcon sx={{ fontSize: "1.2rem" }} />
+        </MoreButton>
+      </Wrapper>
       <LanguageModal open={showLanguageModal} setOpen={() => setShowLanguageModal(false)} />
     </>
   );
