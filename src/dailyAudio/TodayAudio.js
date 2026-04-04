@@ -272,6 +272,14 @@ export default function TodayAudio({ setShowTabs }) {
     api.generateDailyLesson(
       (data) => {
         if (data.status === AUDIO_STATUS.GENERATING) {
+          // Update suggestion with canonical form from validator
+          if (data.suggestion && data.suggestion !== suggestion) {
+            setSuggestion(data.suggestion);
+            if (suggestionType !== "auto") {
+              const key = `audio_lesson_suggestion_${suggestionType}_${lang}`;
+              localStorage.setItem(key, data.suggestion);
+            }
+          }
           // Generation started in background — polling will deliver the lesson
           return;
         }
@@ -297,6 +305,14 @@ export default function TodayAudio({ setShowTabs }) {
 
         // Reset status back to available on error
         setUserDetails((prev) => ({ ...prev, daily_audio_status: null }));
+
+        // Check if the error is a topic rejection (user can try a different topic)
+        const isSuggestionRejection = error.message && error.message.toLowerCase().includes("can't generate a lesson for this");
+        if (isSuggestionRejection) {
+          // Don't disable generation — user can edit the topic and try again
+          setError(error.message);
+          return;
+        }
 
         setCanGenerateLesson(false);
 

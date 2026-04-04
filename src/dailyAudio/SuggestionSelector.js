@@ -18,12 +18,12 @@ const SUGGESTION_TYPES = {
   },
   topic: {
     label: "Topic",
-    description: "A listening lesson with three of your words, each practiced in a short dialogue between two people discussing the topic of your choice.",
+    description: "A listening lesson with a conversation about a topic of your choice.",
     placeholder: "e.g. cooking, sports",
   },
   situation: {
     label: "Situation",
-    description: "A listening lesson with three of your words, each practiced in a dialogue simulating a situation of your choice.",
+    description: "A listening lesson with a conversation simulating a real-world situation of your choice.",
     placeholder: "e.g. at a restaurant, job interview",
   },
 };

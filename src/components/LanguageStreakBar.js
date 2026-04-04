@@ -2,7 +2,7 @@ import { useContext, useEffect, useState } from "react";
 import { APIContext } from "../contexts/APIContext";
 import { UserContext } from "../contexts/UserContext";
 import { switchLanguage } from "../utils/languageSwitcher";
-import { streakFireOrange, zeeguuOrange } from "./colors";
+import { streakFireOrange, zeeguuOrange, lightPurple } from "./colors";
 import LocalFireDepartmentIcon from "@mui/icons-material/LocalFireDepartment";
 import styled from "styled-components";
 
@@ -18,8 +18,8 @@ const LanguageItem = styled.button`
   display: flex;
   align-items: center;
   gap: 0.25rem;
-  background: ${({ $active }) => ($active ? "var(--streak-banner-hover)" : "none")};
-  border: ${({ $active }) => ($active ? `1.5px solid ${zeeguuOrange}` : "1.5px solid transparent")};
+  background: ${({ $active }) => ($active ? `${lightPurple}33` : "none")};
+  border: ${({ $active }) => ($active ? `1.5px solid ${lightPurple}` : "1.5px solid transparent")};
   border-radius: 1rem;
   padding: 0.15rem 0.4rem 0.15rem 0.2rem;
   cursor: pointer;
