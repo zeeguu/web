@@ -45,7 +45,10 @@ export default function TopBar() {
             Daily Feedback
           </s.DailyFeedbackLink>
         )}
-        <LanguageStreakBar onMultipleLanguages={setHasMultipleLanguages} />
+        <LanguageStreakBar
+          onMultipleLanguages={setHasMultipleLanguages}
+          onOpenModal={() => setShowLanguageModal(true)}
+        />
         {!hasMultipleLanguages && hasStreak && (
           <s.StreakInfo>
             <s.StreakValue>{daysPracticed}</s.StreakValue>

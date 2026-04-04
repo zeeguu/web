@@ -1,11 +1,9 @@
 import { useContext, useEffect, useState } from "react";
 import { APIContext } from "../contexts/APIContext";
 import { UserContext } from "../contexts/UserContext";
-import LocalStorage from "../assorted/LocalStorage";
-import { saveSharedUserInfo } from "../utils/cookies/userInfo";
+import { switchLanguage } from "../utils/languageSwitcher";
 import LocalFireDepartmentIcon from "@mui/icons-material/LocalFireDepartment";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
-import LanguageModal from "./MainNav/LanguageModal";
 import styled from "styled-components";
 
 const Wrapper = styled.div`
@@ -33,7 +31,6 @@ const LanguageItem = styled.button`
   cursor: pointer;
   transition: background 0.15s;
   flex-shrink: 0;
-
   opacity: ${({ $active }) => ($active ? "1" : "0.6")};
 
   &:hover {
@@ -84,42 +81,26 @@ const MoreButton = styled.button`
   }
 `;
 
-export default function LanguageStreakBar({ onMultipleLanguages }) {
+export default function LanguageStreakBar({ onMultipleLanguages, onOpenModal }) {
   const api = useContext(APIContext);
   const { userDetails, setUserDetails } = useContext(UserContext);
   const [languageStreaks, setLanguageStreaks] = useState([]);
-  const [showLanguageModal, setShowLanguageModal] = useState(false);
 
   useEffect(() => {
+    let cancelled = false;
     api.getAllLanguageStreaks((data) => {
+      if (cancelled) return;
       setLanguageStreaks(data);
       if (onMultipleLanguages) {
         onMultipleLanguages(data.length > 1);
       }
     });
+    return () => { cancelled = true; };
   }, [api, userDetails.learned_language]);
-
-  function switchLanguage(langCode) {
-    if (langCode === userDetails.learned_language) return;
-
-    const newUserDetails = {
-      ...userDetails,
-      learned_language: langCode,
-    };
-
-    api.saveUserDetails(newUserDetails, () => {}, async () => {
-      const freshUserDetails = await api.getUserDetails();
-      setUserDetails(freshUserDetails);
-      LocalStorage.setUserInfo(freshUserDetails);
-      saveSharedUserInfo(freshUserDetails);
-    });
-  }
 
   if (languageStreaks.length <= 1) return null;
 
   const currentCode = userDetails.learned_language;
-
-  // Current language first, then others by streak descending
   const currentLang = languageStreaks.find((l) => l.code === currentCode);
   const others = languageStreaks.filter(
     (l) => l.code !== currentCode && l.daily_streak >= 2,
@@ -131,38 +112,34 @@ export default function LanguageStreakBar({ onMultipleLanguages }) {
   const visible = displayList.slice(0, 4);
 
   return (
-    <>
-      <Wrapper>
-        <Bar>
-          {visible.map((lang) => {
-            const isActive = lang.code === currentCode;
-            return (
-              <LanguageItem
-                key={lang.code}
-                $active={isActive}
-                onClick={() => switchLanguage(lang.code)}
-                title={lang.language}
-              >
-                <Flag
-                  $active={isActive}
-                  src={`/static/flags-new/${lang.code}.svg`}
-                  alt={lang.language}
-                />
-                {lang.daily_streak >= 2 && (
-                  <>
-                    <LocalFireDepartmentIcon sx={{ color: "#ff9800", fontSize: "0.9rem" }} />
-                    <StreakNumber>{lang.daily_streak}</StreakNumber>
-                  </>
-                )}
-              </LanguageItem>
-            );
-          })}
-        </Bar>
-        <MoreButton onClick={() => setShowLanguageModal(true)} title="More languages">
-          <MoreHorizIcon sx={{ fontSize: "1.2rem" }} />
-        </MoreButton>
-      </Wrapper>
-      <LanguageModal open={showLanguageModal} setOpen={() => setShowLanguageModal(false)} />
-    </>
+    <Wrapper>
+      <Bar>
+        {visible.map((lang) => {
+          const isActive = lang.code === currentCode;
+          return (
+            <LanguageItem
+              key={lang.code}
+              $active={isActive}
+              onClick={() => switchLanguage(api, userDetails, setUserDetails, lang.code)}
+              title={lang.language}
+            >
+              <Flag
+                src={`/static/flags-new/${lang.code}.svg`}
+                alt={lang.language}
+              />
+              {lang.daily_streak >= 2 && (
+                <>
+                  <LocalFireDepartmentIcon sx={{ color: "#ff9800", fontSize: "0.9rem" }} />
+                  <StreakNumber>{lang.daily_streak}</StreakNumber>
+                </>
+              )}
+            </LanguageItem>
+          );
+        })}
+      </Bar>
+      <MoreButton onClick={onOpenModal} title="More languages">
+        <MoreHorizIcon sx={{ fontSize: "1.2rem" }} />
+      </MoreButton>
+    </Wrapper>
   );
 }
