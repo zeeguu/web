@@ -4,23 +4,14 @@ import { UserContext } from "../contexts/UserContext";
 import { switchLanguage } from "../utils/languageSwitcher";
 import { streakFireOrange, zeeguuOrange } from "./colors";
 import LocalFireDepartmentIcon from "@mui/icons-material/LocalFireDepartment";
-import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import styled from "styled-components";
-
-const Wrapper = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 0.4rem;
-  margin-left: auto;
-`;
 
 const Bar = styled.div`
   display: flex;
   align-items: center;
   gap: 0.4rem;
   overflow: hidden;
-  flex: 1;
-  min-width: 0;
+  margin-left: auto;
 `;
 
 const LanguageItem = styled.button`
@@ -70,23 +61,6 @@ const StreakNumber = styled.span`
 `;
 
 const fireIconSx = { color: streakFireOrange, fontSize: "0.9rem" };
-const moreIconSx = { fontSize: "1.2rem" };
-
-const MoreButton = styled.button`
-  background: none;
-  border: none;
-  padding: 0.15rem;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  color: inherit;
-  opacity: 0.7;
-  flex-shrink: 0;
-
-  &:hover {
-    opacity: 1;
-  }
-`;
 
 export default function LanguageStreakBar({ onMultipleLanguages, onOpenModal }) {
   const api = useContext(APIContext);
@@ -117,34 +91,29 @@ export default function LanguageStreakBar({ onMultipleLanguages, onOpenModal }) 
   if (displayList.length <= 1) return null;
 
   return (
-    <Wrapper>
-      <Bar>
-        {displayList.map((lang) => {
-          const isActive = lang.code === currentCode;
-          return (
-            <LanguageItem
-              key={lang.code}
-              $active={isActive}
-              onClick={() => switchLanguage(api, userDetails, setUserDetails, lang.code)}
-              title={lang.language}
-            >
-              <Flag
-                src={`/static/flags-new/${lang.code}.svg`}
-                alt={lang.language}
-              />
-              {lang.daily_streak >= 2 && (
-                <>
-                  <LocalFireDepartmentIcon sx={fireIconSx} />
-                  <StreakNumber>{lang.daily_streak}</StreakNumber>
-                </>
-              )}
-            </LanguageItem>
-          );
-        })}
-      </Bar>
-      <MoreButton onClick={onOpenModal} title="More languages">
-        <MoreHorizIcon sx={moreIconSx} />
-      </MoreButton>
-    </Wrapper>
+    <Bar>
+      {displayList.map((lang) => {
+        const isActive = lang.code === currentCode;
+        return (
+          <LanguageItem
+            key={lang.code}
+            $active={isActive}
+            onClick={() => isActive ? onOpenModal() : switchLanguage(api, userDetails, setUserDetails, lang.code)}
+            title={lang.language}
+          >
+            <Flag
+              src={`/static/flags-new/${lang.code}.svg`}
+              alt={lang.language}
+            />
+            {lang.daily_streak >= 2 && (
+              <>
+                <LocalFireDepartmentIcon sx={fireIconSx} />
+                <StreakNumber>{lang.daily_streak}</StreakNumber>
+              </>
+            )}
+          </LanguageItem>
+        );
+      })}
+    </Bar>
   );
 }
