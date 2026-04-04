@@ -126,7 +126,7 @@ export default function PastLessons() {
                   {lesson.suggestion && (
                     <span
                       style={{
-                        fontSize: "13px",
+                        fontSize: "15px",
                         color: "var(--text-secondary, #666)",
                       }}
                     >
