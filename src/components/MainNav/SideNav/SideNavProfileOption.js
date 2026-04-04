@@ -17,7 +17,6 @@ import { BadgeCounterContext } from "../../../badges/BadgeCounterContext";
 import NotificationIcon from "../../../components/NotificationIcon";
 import { FriendRequestContext } from "../../../contexts/FriendRequestContext";
 import Feature from "../../../features/Feature";
-import { MEDIUM_WIDTH } from "../screenSize";
 
 const NavAvatar = styled(AvatarBackground)`
   width: 2rem;
@@ -74,11 +73,7 @@ export default function SideNavProfileOption({ screenWidth }) {
       screenWidth={screenWidth}
       notification={
         (hasBadgeNotification || hasFriendRequestNotification) && (
-          <NotificationIcon
-            position={"top-absolute"}
-            style={screenWidth > MEDIUM_WIDTH || !screenWidth ? { top: "-0.5rem", right: "-0.5rem" } : {}}
-            text={totalNumberOfBadges + friendRequestCount}
-          />
+          <NotificationIcon position={"top"} text={totalNumberOfBadges + friendRequestCount} />
         )
       }
     />
