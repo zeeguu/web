@@ -29,7 +29,7 @@ const SUGGESTION_TYPES = {
 };
 
 const SELECTED_SUGGESTION_TYPE = "audio_lesson_suggestion_type_";
-const suggestionKey = (type, lang) => `audio_lesson_suggestion_${type}_${lang}`;
+export const suggestionKey = (type, lang) => `audio_lesson_suggestion_${type}_${lang}`;
 
 export function getSavedSuggestionType(lang) {
   return localStorage.getItem(SELECTED_SUGGESTION_TYPE + lang) || "auto";

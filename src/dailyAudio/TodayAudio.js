@@ -8,7 +8,7 @@ import FullWidthErrorMsg from "../components/FullWidthErrorMsg.sc";
 import useListeningSession from "../hooks/useListeningSession";
 import { AUDIO_STATUS, GENERATION_PROGRESS } from "./AudioLessonConstants";
 import { GenerateView, GenerateButton } from "./GenerateButton.sc";
-import SuggestionSelector, { getSavedSuggestion, getSavedSuggestionType } from "./SuggestionSelector";
+import SuggestionSelector, { getSavedSuggestion, getSavedSuggestionType, suggestionKey } from "./SuggestionSelector";
 import LessonPlaybackView from "./LessonPlaybackView";
 import { wordsAsTile, shortDate } from "./audioUtils";
 
@@ -276,8 +276,7 @@ export default function TodayAudio({ setShowTabs }) {
           if (data.suggestion && data.suggestion !== suggestion) {
             setSuggestion(data.suggestion);
             if (suggestionType !== "auto") {
-              const key = `audio_lesson_suggestion_${suggestionType}_${lang}`;
-              localStorage.setItem(key, data.suggestion);
+              localStorage.setItem(suggestionKey(suggestionType, lang), data.suggestion);
             }
           }
           // Generation started in background — polling will deliver the lesson
