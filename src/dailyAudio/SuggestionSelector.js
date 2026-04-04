@@ -23,7 +23,7 @@ const SUGGESTION_TYPES = {
   },
   situation: {
     label: "Situation",
-    description: "A listening lesson with three of your words, each practiced in a dialogue simulating a real-world scenario.",
+    description: "A listening lesson with three of your words, each practiced in a dialogue simulating a situation of your choice.",
     placeholder: "e.g. at a restaurant, job interview",
   },
 };
