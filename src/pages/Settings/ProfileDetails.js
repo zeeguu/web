@@ -19,7 +19,7 @@ import BackArrow from "./settings_pages_shared/BackArrow";
 import FullWidthErrorMsg from "../../components/FullWidthErrorMsg.sc";
 import LoadingAnimation from "../../components/LoadingAnimation";
 import useFormField from "../../hooks/useFormField";
-import { EmailValidator, NonEmptyValidator } from "../../utils/ValidatorRule/Validator";
+import { EmailValidator, NonEmptyOrWhitespaceOnlyValidator } from "../../utils/ValidatorRule/Validator";
 import validateRules from "../../assorted/validateRules";
 import { useLocation } from "react-router-dom/cjs/react-router-dom";
 import FullWidthConfirmMsg from "../../components/FullWidthConfirmMsg.sc";
@@ -39,73 +39,6 @@ import * as s from "./ProfileDetails.sc";
 import EditIcon from "@mui/icons-material/Edit";
 import CheckIcon from "@mui/icons-material/Check";
 
-function normalizeProfileSaveError(error) {
-  const fallback = "Unable to save profile details. Please try again.";
-
-  const toFriendlyMessage = (value) => {
-    if (value === undefined || value === null) return "";
-    const message = String(value).trim();
-    if (!message) return "";
-
-    const lower = message.toLowerCase();
-    if (lower === "failed to fetch") {
-      return "Could not reach the server. Please check your connection and try again.";
-    }
-    if (message.startsWith("HTTP 409")) {
-      return "That username is already taken. Please choose another one.";
-    }
-    if (message.startsWith("HTTP 5")) {
-      return "The server had a problem while saving your profile. Please try again.";
-    }
-    if (message.startsWith("HTTP 4")) {
-      return "Could not save profile details. Please review the form and try again.";
-    }
-
-    return message;
-  };
-
-  if (!error) return fallback;
-
-  if (typeof error === "string") {
-    return toFriendlyMessage(error) || fallback;
-  }
-
-  if (error instanceof Error) {
-    return toFriendlyMessage(error.message) || fallback;
-  }
-
-  if (Array.isArray(error)) {
-    const message = error.map((item) => normalizeProfileSaveError(item)).filter(Boolean).join(" ").trim();
-    return message || fallback;
-  }
-
-  if (typeof error === "object") {
-    const usernameErrors = error.username || error.user_name;
-    if (Array.isArray(usernameErrors) && usernameErrors.length) {
-      return toFriendlyMessage(usernameErrors.join(" ")) || fallback;
-    }
-    if (typeof usernameErrors === "string") {
-      return toFriendlyMessage(usernameErrors) || fallback;
-    }
-
-    if (typeof error.message === "string") {
-      return toFriendlyMessage(error.message) || fallback;
-    }
-    if (typeof error.error === "string") {
-      return toFriendlyMessage(error.error) || fallback;
-    }
-
-    const combined = Object.values(error)
-      .flatMap((value) => (Array.isArray(value) ? value : [value]))
-      .filter((value) => typeof value === "string")
-      .join(" ")
-      .trim();
-    return toFriendlyMessage(combined) || fallback;
-  }
-
-  return toFriendlyMessage(error) || fallback;
-}
-
 export default function ProfileDetails() {
   const api = useContext(APIContext);
   const isGamificationEnabled = Feature.has_gamification();
@@ -122,16 +55,18 @@ export default function ProfileDetails() {
   const [selectedAvatarCharacterColor, setSelectedAvatarCharacterColor] = useState();
   const [selectedAvatarBackgroundColor, setSelectedAvatarBackgroundColor] = useState();
 
+  const default_error_message = "Unable to save profile details. Please try again.";
+
   const [displayName, setDisplayName, validateDisplayName, isDisplayNameValid, displayNameErrorMessage] = useFormField(
     "",
-    NonEmptyValidator("Please provide a display name."),
+    NonEmptyOrWhitespaceOnlyValidator("Please provide a display name."),
   );
   const [username, setUsername, validateUsername, isUsernameValid, usernameErrorMessage] = useFormField(
     "",
-    NonEmptyValidator("Please provide a username."),
+    NonEmptyOrWhitespaceOnlyValidator("Please provide a username."),
   );
   const [email, setEmail, validateEmail, isEmailValid, emailErrorMessage] = useFormField("", [
-    NonEmptyValidator("Please provide an email."),
+    NonEmptyOrWhitespaceOnlyValidator("Please provide an email."),
     EmailValidator,
   ]);
 
@@ -163,9 +98,9 @@ export default function ProfileDetails() {
     if (!validateRules([validateDisplayName, validateUsername, validateEmail])) return;
 
     const updatedFormValues = {
-      name: displayName,
-      username: username,
-      email: email,
+      name: displayName.trim(),
+      username: username.trim(),
+      email: email.trim(),
     };
     const updatedAvatarValues = {
       image_name: selectedAvatarCharacterId,
@@ -179,17 +114,21 @@ export default function ProfileDetails() {
         ? Object.fromEntries(Object.entries(updatedAvatarValues).map(([key, value]) => [`avatar_${key}`, value]))
         : {}),
     };
-    api.saveUserDetails(payload, (error) => setErrorMessage(normalizeProfileSaveError(error)), () => {
-      const newUserDetails = {
-        ...userDetails,
-        ...updatedFormValues,
-        ...(isGamificationEnabled ? { user_avatar: updatedAvatarValues } : {}),
-      };
-      setUserDetails(newUserDetails);
-      LocalStorage.setUserInfo(newUserDetails);
-      saveSharedUserInfo(newUserDetails);
-      history.push(redirectPath);
-    });
+    api.saveUserDetails(
+      payload,
+      (error) => setErrorMessage(error ?? default_error_message),
+      () => {
+        const newUserDetails = {
+          ...userDetails,
+          ...updatedFormValues,
+          ...(isGamificationEnabled ? { user_avatar: updatedAvatarValues } : {}),
+        };
+        setUserDetails(newUserDetails);
+        LocalStorage.setUserInfo(newUserDetails);
+        saveSharedUserInfo(newUserDetails);
+        history.push(redirectPath);
+      },
+    );
   }
 
   if (!userDetails) {
@@ -212,20 +151,20 @@ export default function ProfileDetails() {
           <FormSection>
             {isGamificationEnabled && (
               <s.AvatarWrapper>
-              <AvatarBackground
-                className="clickable"
-                onClick={() => setShowAvatarModal(true)}
-                $backgroundColor={selectedAvatarBackgroundColor}
-              >
-                <AvatarImage
-                  $imageSource={AVATAR_IMAGE_MAP[selectedAvatarCharacterId]}
-                  $color={selectedAvatarCharacterColor}
-                />
-                <s.EditAvatarButton type="button" onClick={() => setShowAvatarModal(true)}>
-                  <EditIcon sx={{ fontSize: "1rem" }} />
-                </s.EditAvatarButton>
-              </AvatarBackground>
-            </s.AvatarWrapper>
+                <AvatarBackground
+                  className="clickable"
+                  onClick={() => setShowAvatarModal(true)}
+                  $backgroundColor={selectedAvatarBackgroundColor}
+                >
+                  <AvatarImage
+                    $imageSource={AVATAR_IMAGE_MAP[selectedAvatarCharacterId]}
+                    $color={selectedAvatarCharacterColor}
+                  />
+                  <s.EditAvatarButton type="button" onClick={() => setShowAvatarModal(true)}>
+                    <EditIcon sx={{ fontSize: "1rem" }} />
+                  </s.EditAvatarButton>
+                </AvatarBackground>
+              </s.AvatarWrapper>
             )}
             <InputField
               type={"text"}
@@ -286,84 +225,84 @@ export default function ProfileDetails() {
 
       {isGamificationEnabled && (
         <Modal open={showAvatarModal} onClose={() => setShowAvatarModal(false)}>
-        <Header withoutLogo>
-          <Heading>Choose Your Avatar</Heading>
-        </Header>
-        <Main>
-          <s.PickerSection>
-            <span className="picker-label">Character</span>
-            <s.PickerGrid>
-              {AVATAR_CHARACTER_IDS.map((id) => (
-                <s.AvatarOption
-                  key={id}
-                  $selected={selectedAvatarCharacterId === id}
-                  $backgroundColor={selectedAvatarBackgroundColor}
-                  onClick={() => {
-                    setSelectedAvatarCharacterId(id);
-                  }}
-                >
-                  <AvatarImage $imageSource={AVATAR_IMAGE_MAP[id]} $color={selectedAvatarCharacterColor} />
-                  {selectedAvatarCharacterId === id && (
-                    <s.SelectionCheckmark $mini={false}>
-                      <CheckIcon sx={{ fontSize: "inherit" }} />
-                    </s.SelectionCheckmark>
-                  )}
-                </s.AvatarOption>
-              ))}
-            </s.PickerGrid>
-          </s.PickerSection>
+          <Header withoutLogo>
+            <Heading>Choose Your Avatar</Heading>
+          </Header>
+          <Main>
+            <s.PickerSection>
+              <span className="picker-label">Character</span>
+              <s.PickerGrid>
+                {AVATAR_CHARACTER_IDS.map((id) => (
+                  <s.AvatarOption
+                    key={id}
+                    $selected={selectedAvatarCharacterId === id}
+                    $backgroundColor={selectedAvatarBackgroundColor}
+                    onClick={() => {
+                      setSelectedAvatarCharacterId(id);
+                    }}
+                  >
+                    <AvatarImage $imageSource={AVATAR_IMAGE_MAP[id]} $color={selectedAvatarCharacterColor} />
+                    {selectedAvatarCharacterId === id && (
+                      <s.SelectionCheckmark $mini={false}>
+                        <CheckIcon sx={{ fontSize: "inherit" }} />
+                      </s.SelectionCheckmark>
+                    )}
+                  </s.AvatarOption>
+                ))}
+              </s.PickerGrid>
+            </s.PickerSection>
 
-          <s.PickerSection>
-            <span className="picker-label">Character Color</span>
-            <s.PickerGrid>
-              {AVATAR_CHARACTER_COLORS.map((color) => (
-                <s.ColorOption
-                  key={color}
-                  $backgroundColor={color}
-                  $selected={selectedAvatarCharacterColor === color}
-                  onClick={() => {
-                    setSelectedAvatarCharacterColor(color);
-                  }}
-                >
-                  {selectedAvatarCharacterColor === color && (
-                    <s.SelectionCheckmark $mini={true}>
-                      <CheckIcon sx={{ fontSize: "inherit" }} />
-                    </s.SelectionCheckmark>
-                  )}
-                </s.ColorOption>
-              ))}
-            </s.PickerGrid>
-          </s.PickerSection>
+            <s.PickerSection>
+              <span className="picker-label">Character Color</span>
+              <s.PickerGrid>
+                {AVATAR_CHARACTER_COLORS.map((color) => (
+                  <s.ColorOption
+                    key={color}
+                    $backgroundColor={color}
+                    $selected={selectedAvatarCharacterColor === color}
+                    onClick={() => {
+                      setSelectedAvatarCharacterColor(color);
+                    }}
+                  >
+                    {selectedAvatarCharacterColor === color && (
+                      <s.SelectionCheckmark $mini={true}>
+                        <CheckIcon sx={{ fontSize: "inherit" }} />
+                      </s.SelectionCheckmark>
+                    )}
+                  </s.ColorOption>
+                ))}
+              </s.PickerGrid>
+            </s.PickerSection>
 
-          <s.PickerSection>
-            <span className="picker-label">Background Color</span>
-            <s.PickerGrid>
-              {AVATAR_BACKGROUND_COLORS.map((color) => (
-                <s.ColorOption
-                  key={color}
-                  $backgroundColor={color}
-                  $selected={selectedAvatarBackgroundColor === color}
-                  onClick={() => {
-                    setSelectedAvatarBackgroundColor(color);
-                  }}
-                >
-                  {selectedAvatarBackgroundColor === color && (
-                    <s.SelectionCheckmark $mini={true}>
-                      <CheckIcon sx={{ fontSize: "inherit" }} />
-                    </s.SelectionCheckmark>
-                  )}
-                </s.ColorOption>
-              ))}
-            </s.PickerGrid>
-          </s.PickerSection>
+            <s.PickerSection>
+              <span className="picker-label">Background Color</span>
+              <s.PickerGrid>
+                {AVATAR_BACKGROUND_COLORS.map((color) => (
+                  <s.ColorOption
+                    key={color}
+                    $backgroundColor={color}
+                    $selected={selectedAvatarBackgroundColor === color}
+                    onClick={() => {
+                      setSelectedAvatarBackgroundColor(color);
+                    }}
+                  >
+                    {selectedAvatarBackgroundColor === color && (
+                      <s.SelectionCheckmark $mini={true}>
+                        <CheckIcon sx={{ fontSize: "inherit" }} />
+                      </s.SelectionCheckmark>
+                    )}
+                  </s.ColorOption>
+                ))}
+              </s.PickerGrid>
+            </s.PickerSection>
 
-          <s.ConfirmButtonWrapper>
-            <Button type={"button"} className={"small"} onClick={() => setShowAvatarModal(false)}>
-              Set
-            </Button>
-          </s.ConfirmButtonWrapper>
-        </Main>
-      </Modal>
+            <s.ConfirmButtonWrapper>
+              <Button type={"button"} className={"small"} onClick={() => setShowAvatarModal(false)}>
+                Set
+              </Button>
+            </s.ConfirmButtonWrapper>
+          </Main>
+        </Modal>
       )}
     </PreferencesPage>
   );
