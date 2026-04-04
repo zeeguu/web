@@ -272,13 +272,6 @@ export default function TodayAudio({ setShowTabs }) {
     api.generateDailyLesson(
       (data) => {
         if (data.status === AUDIO_STATUS.GENERATING) {
-          // Update suggestion with canonical form from validator
-          if (data.suggestion && data.suggestion !== suggestion) {
-            setSuggestion(data.suggestion);
-            if (suggestionType !== "auto") {
-              localStorage.setItem(suggestionKey(suggestionType, lang), data.suggestion);
-            }
-          }
           // Generation started in background — polling will deliver the lesson
           return;
         }
