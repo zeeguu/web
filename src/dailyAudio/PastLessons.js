@@ -121,18 +121,8 @@ export default function PastLessons() {
                       month: "short",
                       day: "numeric",
                     })}
-                    : {wordsAsTile(lesson.words)}
+                    : {lesson.title || wordsAsTile(lesson.words)}
                   </h3>
-                  {lesson.title && (
-                    <span style={{ fontSize: "15px", color: "var(--text-secondary, #666)" }}>
-                      {lesson.title}
-                    </span>
-                  )}
-                  {!lesson.title && lesson.canonical_suggestion && (
-                    <span style={{ fontSize: "15px", color: "var(--text-secondary, #666)" }}>
-                      {lesson.lesson_type === "situation" ? "Situation" : "Topic"}: {lesson.canonical_suggestion}
-                    </span>
-                  )}
                   {lesson.is_completed && lesson.completed_at && (
                     <span
                       style={{
