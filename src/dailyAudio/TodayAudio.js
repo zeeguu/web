@@ -1,26 +1,16 @@
 import React, { useContext, useEffect, useState } from "react";
-import { orange500, orange600, orange800, zeeguuOrange } from "../components/colors";
+import { orange500, zeeguuOrange } from "../components/colors";
 import { APIContext } from "../contexts/APIContext";
 import { UserContext } from "../contexts/UserContext";
 import LoadingAnimation from "../components/LoadingAnimation";
 import EmptyState from "../components/EmptyState";
 import FullWidthErrorMsg from "../components/FullWidthErrorMsg.sc";
-import CustomAudioPlayer from "../components/CustomAudioPlayer";
-import FeedbackModal from "../components/FeedbackModal";
-import { FEEDBACK_OPTIONS, FEEDBACK_CODES_NAME } from "../components/FeedbackConstants";
-import Word from "../words/Word";
 import useListeningSession from "../hooks/useListeningSession";
 import { AUDIO_STATUS, GENERATION_PROGRESS } from "./AudioLessonConstants";
-
-
-export function wordsAsTile(words) {
-  if (!words || !words.length) return "";
-
-  const comma_separated_words = words.map((word) => word.origin || word).join(", ");
-  const capitalized_comma_separated_words =
-    comma_separated_words.charAt(0).toUpperCase() + comma_separated_words.slice(1);
-  return capitalized_comma_separated_words;
-}
+import { GenerateView, GenerateButton } from "./GenerateButton.sc";
+import SuggestionSelector, { getSavedSuggestion, getSavedSuggestionType } from "./SuggestionSelector";
+import LessonPlaybackView from "./LessonPlaybackView";
+import { wordsAsTile, shortDate } from "./audioUtils";
 
 export default function TodayAudio({ setShowTabs }) {
   const api = useContext(APIContext);
@@ -29,6 +19,12 @@ export default function TodayAudio({ setShowTabs }) {
   const [isLoading, setIsLoading] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
   const [generationProgress, setGenerationProgress] = useState(null);
+  const [suggestionType, setSuggestionType] = useState(
+    () => getSavedSuggestionType(lang),
+  );
+  const [suggestion, setSuggestion] = useState(() => {
+    return getSavedSuggestion(lang);
+  });
 
   // Poll for progress when generating
   useEffect(() => {
@@ -59,6 +55,8 @@ export default function TodayAudio({ setShowTabs }) {
 
     let lessonRetryCount = 0;
     const MAX_LESSON_RETRIES = 3;
+    let noProgressCount = 0;
+    const MAX_NO_PROGRESS_RETRIES = 5;
 
     const handleLessonReady = (data) => {
       if (data && data.lesson_id) {
@@ -92,6 +90,7 @@ export default function TodayAudio({ setShowTabs }) {
       api.getAudioLessonGenerationProgress(
         (progress) => {
           if (progress) {
+            noProgressCount = 0;
             setGenerationProgress(progress);
 
             if (progress.status === GENERATION_PROGRESS.DONE) {
@@ -100,20 +99,24 @@ export default function TodayAudio({ setShowTabs }) {
               handleError(progress.message || "Lesson generation failed. Please try again.");
             }
           } else {
-            // No progress record - check if lesson is ready, otherwise stop polling
+            // No progress record - might be a brief gap (e.g., lesson was
+            // regenerated and progress hasn't appeared yet). Retry a few
+            // times before giving up.
+            noProgressCount++;
+            if (noProgressCount <= MAX_NO_PROGRESS_RETRIES) {
+              return; // keep polling
+            }
+            // Exhausted retries — check if a lesson appeared, otherwise stop
             api.getTodaysLesson(
               (data) => {
                 if (data && data.lesson_id) {
                   handleLessonReady(data);
                 } else {
-                  // No progress AND no lesson - generation must have failed silently
                   stopPolling();
-                  // Let user try again by checking feasibility
                   checkLessonGenerationFeasibility();
                 }
               },
               () => {
-                // API error - stop polling and let user retry
                 stopPolling();
                 checkLessonGenerationFeasibility();
               },
@@ -151,10 +154,7 @@ export default function TodayAudio({ setShowTabs }) {
   // Update page title and playback time when lessonData changes
   useEffect(() => {
     if (lessonData && lessonData.words) {
-      document.title = `[${new Date().toLocaleDateString("en-US", {
-        month: "short",
-        day: "numeric",
-      })}] Daily Audio: ${wordsAsTile(words)}`;
+      document.title = shortDate() + " Daily Audio: " + wordsAsTile(words);
       
       // Initialize playback time from lesson data
       const initialTime = lessonData.pause_position_seconds || lessonData.position_seconds || lessonData.progress_seconds || 0;
@@ -267,6 +267,8 @@ export default function TodayAudio({ setShowTabs }) {
     // Set localStorage flag to track generation across page reloads
     localStorage.setItem(generatingKey, "true");
 
+    const trimmedSuggestion = suggestion.trim() || null;
+    const suggestionTypeToSend = trimmedSuggestion && suggestionType !== "auto" ? suggestionType : null;
     api.generateDailyLesson(
       (data) => {
         if (data.status === AUDIO_STATUS.GENERATING) {
@@ -309,6 +311,8 @@ export default function TodayAudio({ setShowTabs }) {
         }
         setError(errorMsg);
       },
+      trimmedSuggestion,
+      suggestionTypeToSend,
     );
   };
 
@@ -397,68 +401,25 @@ export default function TodayAudio({ setShowTabs }) {
     // Can generate lesson - show the generate button
     if (canGenerateLesson === true) {
       return (
-        <div
-          style={{
-            padding: "20px",
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            justifyContent: "center",
-            minHeight: "400px",
-          }}
-        >
+        <GenerateView>
           {error && (
             <FullWidthErrorMsg style={{ marginBottom: "20px", maxWidth: "500px" }}>
               {error}
             </FullWidthErrorMsg>
           )}
-          <button
-            onClick={handleGenerateLesson}
-            style={{
-              width: "150px",
-              height: "150px",
-              borderRadius: "50%",
-              backgroundColor: orange500,
-              color: "white",
-              border: "none",
-              fontSize: "16px",
-              fontWeight: "600",
-              cursor: "pointer",
-              boxShadow: `0px 0.3rem ${orange800}`,
-              transition: "all 0.3s ease-in-out",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              textAlign: "center",
-              lineHeight: "1.2",
-            }}
-            onMouseEnter={(e) => {
-              e.target.style.backgroundColor = orange600;
-            }}
-            onMouseLeave={(e) => {
-              e.target.style.backgroundColor = orange500;
-              e.target.style.boxShadow = `0px 0.3rem ${orange800}`;
-              e.target.style.transform = "translateY(0)";
-            }}
-            onMouseDown={(e) => {
-              e.target.style.boxShadow = "none";
-              e.target.style.transform = "translateY(0.2em)";
-              e.target.style.transition = "all 0.08s ease-in";
-            }}
-            onMouseUp={(e) => {
-              e.target.style.boxShadow = `0px 0.3rem ${orange800}`;
-              e.target.style.transform = "translateY(0)";
-              e.target.style.transition = "all 0.3s ease-in-out";
-            }}
-          >
+          <SuggestionSelector
+            suggestionType={suggestionType}
+            setSuggestionType={setSuggestionType}
+            suggestion={suggestion}
+            setSuggestion={setSuggestion}
+            lang={lang}
+          />
+          <GenerateButton onClick={handleGenerateLesson}>
             Generate
             <br />
             Daily Lesson
-          </button>
-          <p style={{ marginBottom: "20px", textAlign: "center", maxWidth: "500px" }}>
-            Generate a personalized audio lesson based on the words you're learning.
-          </p>
-        </div>
+          </GenerateButton>
+        </GenerateView>
       );
     }
 
@@ -474,136 +435,17 @@ export default function TodayAudio({ setShowTabs }) {
 
 
   return (
-    <div style={{ padding: "20px" }}>
-      <h2 style={{ color: zeeguuOrange, marginBottom: "10px", display: "flex", alignItems: "center", gap: "8px" }}>
-        {lessonData.is_completed && <span style={{ color: "#28a745", fontSize: "20px" }}>✓</span>}
-        {wordsAsTile(words)}
-      </h2>
-
-      {error && <div style={{ color: "red", marginBottom: "20px" }}>{error}</div>}
-
-      <div>
-        {!lessonData.is_completed && (
-          <p style={{ marginBottom: "20px" }}>Here's your daily lesson! Listen to improve your comprehension skills.</p>
-        )}
-
-        <CustomAudioPlayer
-          src={lessonData.audio_url}
-          initialProgress={
-            lessonData.pause_position_seconds || lessonData.position_seconds || lessonData.progress_seconds || 0
-          }
-          language={userDetails?.learned_language}
-          title={lessonData.words ? wordsAsTile(lessonData.words) : "Daily Audio Lesson"}
-          artist="Zeeguu Daily Lesson"
-          onPlay={() => {
-            if (lessonData.lesson_id) {
-              api.updateLessonState(lessonData.lesson_id, "resume");
-              // Start or resume listening session
-              listeningSession.start();
-              // Update context so navigation dot disappears (in_progress)
-              setUserDetails((prev) => ({ ...prev, daily_audio_status: AUDIO_STATUS.IN_PROGRESS }));
-            }
-          }}
-          onPause={() => {
-            // Pause listening session (accumulates time, doesn't end)
-            listeningSession.pause();
-          }}
-          onProgressUpdate={(progressSeconds) => {
-            setCurrentPlaybackTime(progressSeconds);
-            if (lessonData.lesson_id) {
-              // Use pause action to save progress position
-              api.updateLessonState(lessonData.lesson_id, "pause", progressSeconds);
-            }
-          }}
-          onEnded={() => {
-            // End listening session when audio ends
-            listeningSession.end();
-            if (lessonData.lesson_id) {
-              api.updateLessonState(lessonData.lesson_id, "complete", null, () => {
-                // Update local state to show completion immediately
-                setLessonData((prev) => ({
-                  ...prev,
-                  is_completed: true,
-                  completed_at: new Date().toISOString(),
-                }));
-                // Update context so navigation dot disappears
-                setUserDetails((prev) => ({ ...prev, daily_audio_status: AUDIO_STATUS.COMPLETED }));
-              });
-            }
-          }}
-          onError={() => {}}
-          style={{
-            width: "100%",
-            marginBottom: "20px",
-            maxWidth: "600px",
-            margin: "0 auto 20px auto",
-          }}
-        />
-
-        {lessonData.is_completed && (
-          <div
-            style={{
-              marginBottom: "20px",
-              marginTop: "20px",
-              padding: "12px",
-              backgroundColor: "var(--bg-secondary)",
-              border: "1px solid #28a745",
-              borderRadius: "4px",
-            }}
-          >
-            <span style={{ color: "#28a745", fontWeight: "500", fontSize: "14px" }}>
-              ✓ Lesson completed! Great job on finishing today's lesson.
-            </span>
-          </div>
-        )}
-
-        {/* Display word details with type badges */}
-        {words && words.length > 0 && (
-          <div style={{ marginTop: "30px", marginBottom: "20px" }}>
-            <h3 style={{ fontSize: "16px", fontWeight: "600", marginBottom: "12px", color: "var(--text-primary)" }}>
-              Words in this lesson
-            </h3>
-            {words.map((word, index) => (
-              <Word
-                key={index}
-                bookmark={word}
-                disableEdit={true}
-                compact={true}
-                showRanking={false}
-              />
-            ))}
-          </div>
-        )}
-
-        <div style={{ marginTop: "40px", textAlign: "center" }}>
-          <button
-            onClick={() => setOpenFeedback(true)}
-            style={{
-              backgroundColor: "transparent",
-              color: "var(--text-faint)",
-              border: "none",
-              borderRadius: "0",
-              padding: "4px 8px",
-              fontSize: "12px",
-              cursor: "pointer",
-              textDecoration: "underline",
-            }}
-          >
-            Feedback
-          </button>
-        </div>
-
-        <FeedbackModal
-          prefixMsg={lessonData
-            ? `Daily Audio Lesson - Playback time: ${Math.floor(currentPlaybackTime / 60)}:${(currentPlaybackTime % 60).toFixed(0).padStart(2, '0')} | Lesson ID: ${lessonData.lesson_id} | Words: ${wordsAsTile(lessonData.words)} | Date: ${new Date(lessonData.created_at || Date.now()).toLocaleDateString()}`
-            : "Daily Audio Lesson Feedback"
-          }
-          open={openFeedback}
-          setOpen={setOpenFeedback}
-          componentCategories={FEEDBACK_OPTIONS.ALL}
-          preselectedCategory={FEEDBACK_CODES_NAME.DAILY_AUDIO}
-        />
-      </div>
-    </div>
+    <LessonPlaybackView
+      lessonData={lessonData}
+      setLessonData={setLessonData}
+      words={words}
+      error={error}
+      api={api}
+      userDetails={userDetails}
+      setUserDetails={setUserDetails}
+      listeningSession={listeningSession}
+      currentPlaybackTime={currentPlaybackTime}
+      setCurrentPlaybackTime={setCurrentPlaybackTime}
+    />
   );
 }

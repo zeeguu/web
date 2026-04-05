@@ -1,7 +1,6 @@
-- Language selection when sharing articles — choose to translate, simplify, or read as-is
-- Disable translations when reading articles in your native language
-- Fix hover underlines on touch devices
-- Faster article sharing with instant share modal
-- Fix invite code handling (auto-lowercase, validation during onboarding)
-- Fix menu positioning and overflow issues
-- Fix preferences page layout
+- Choose context for audio lessons: Automatic, Topic, or Situation
+- Situation mode generates roleplay dialogues in real-world scenarios
+- Topic mode themes dialogues around a chosen subject
+- Past lessons now show their topic or situation context
+- Language streak bar for quick switching between languages
+- Dark mode improvements
