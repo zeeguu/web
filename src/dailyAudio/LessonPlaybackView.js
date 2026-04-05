@@ -29,7 +29,7 @@ export default function LessonPlaybackView({
         {lessonData.title || wordsAsTile(words)}
       </LessonTitle>
       {lessonData.canonical_suggestion && (
-        <SuggestionSubtitle>Suggestion: {lessonData.canonical_suggestion}</SuggestionSubtitle>
+        <SuggestionSubtitle>Suggestion: <b>{lessonData.canonical_suggestion}</b></SuggestionSubtitle>
       )}
 
       {error && <div style={{ color: "red", marginBottom: "20px" }}>{error}</div>}
