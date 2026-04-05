@@ -265,8 +265,17 @@ export const LanguagesGrid = styled.div`
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
+  align-content: flex-start;
   gap: 0.5rem;
   padding: 0;
+  width: 100%;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    align-items: center;
+    max-height: none;
+    overflow-y: visible;
+  }
 `;
 
 export const LanguageCard = styled.div`
@@ -276,14 +285,13 @@ export const LanguageCard = styled.div`
   gap: 0.5rem;
   font-size: 1rem;
   font-weight: 600;
-  padding: 0 0.75rem 0 0.5rem;
-  height: 2.75rem;
+  padding: 0.1rem 0.75rem 0.1rem 0.5rem;
+  min-height: 2.75rem;
+  min-width: 11rem;
   border-radius: 2rem;
   border: solid 0.1rem var(--border-color);
   box-shadow: 0 0.1rem var(--border-color);
   white-space: nowrap;
-  flex: 1 1 calc(50% - 2rem);
-  min-width: 11rem;
   background: var(--card-bg);
   margin-bottom: 0.2rem;
 
@@ -293,6 +301,7 @@ export const LanguageCard = styled.div`
     color: var(--text-primary);
     text-transform: capitalize;
     flex: 1;
+    white-space: wrap;
   }
 
   .streaks-info {
@@ -303,7 +312,6 @@ export const LanguageCard = styled.div`
     border-left: 1px solid var(--border-light);
     height: 1.5em;
     gap: 0.4rem;
-    flex: 1;
     justify-content: end;
   }
 
@@ -313,7 +321,7 @@ export const LanguageCard = styled.div`
     gap: 0.1rem;
     font-weight: 600;
     font-size: 0.9rem;
-    flex: 1;
+    justify-content: center;
   }
 `;
 
