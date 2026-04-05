@@ -130,7 +130,7 @@ export default function PastLessons() {
                         color: "var(--text-secondary, #666)",
                       }}
                     >
-                      {lesson.canonical_suggestion_type === "situation" ? "Situation" : "Topic"}: {lesson.canonical_suggestion}
+                      {lesson.lesson_type === "situation" ? "Situation" : "Topic"}: {lesson.canonical_suggestion}
                     </span>
                   )}
                   {lesson.is_completed && lesson.completed_at && (

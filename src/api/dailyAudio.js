@@ -52,7 +52,7 @@ Zeeguu_API.prototype.generateDailyLesson = function (callback, onError, suggesti
   if (suggestion) {
     formData.append("suggestion", suggestion);
     if (suggestionType) {
-      formData.append("suggestion_type", suggestionType);
+      formData.append("lesson_type", suggestionType);
     }
   }
 

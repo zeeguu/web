@@ -28,11 +28,11 @@ const SUGGESTION_TYPES = {
   },
 };
 
-const SELECTED_SUGGESTION_TYPE = "audio_lesson_suggestion_type_";
+const SELECTED_LESSON_TYPE = "audio_lesson_lesson_type_";
 export const suggestionKey = (type, lang) => `audio_lesson_suggestion_${type}_${lang}`;
 
 export function getSavedSuggestionType(lang) {
-  return localStorage.getItem(SELECTED_SUGGESTION_TYPE + lang) || "auto";
+  return localStorage.getItem(SELECTED_LESSON_TYPE + lang) || "auto";
 }
 
 export function getSavedSuggestion(lang) {
@@ -54,7 +54,7 @@ export default function SuggestionSelector({ suggestionType, setSuggestionType, 
             onClick={() => {
               if (suggestionType === key) return;
               setSuggestionType(key);
-              localStorage.setItem(SELECTED_SUGGESTION_TYPE + lang, key);
+              localStorage.setItem(SELECTED_LESSON_TYPE + lang, key);
               setSuggestion(key === "auto" ? "" : localStorage.getItem(suggestionKey(key, lang)) || "");
             }}
           >

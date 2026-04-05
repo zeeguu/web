@@ -30,7 +30,7 @@ export default function LessonPlaybackView({
       </LessonTitle>
       {lessonData.canonical_suggestion && (
         <SuggestionSubtitle>
-          {lessonData.canonical_suggestion_type === "situation" ? "Situation" : "Topic"}: {lessonData.canonical_suggestion}
+          {lessonData.lesson_type === "situation" ? "Situation" : "Topic"}: {lessonData.canonical_suggestion}
         </SuggestionSubtitle>
       )}
 
