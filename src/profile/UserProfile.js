@@ -91,7 +91,7 @@ export default function UserProfile() {
 
   const handleUserProfileNavigation = (target) => {
     setLoadingProfileDetails(true);
-    history.push(target ? `/profile/${target}` : "/profile");
+    history.push(target ? `/profile/${encodeURIComponent(target)}` : "/profile");
   };
 
   useEffect(() => {

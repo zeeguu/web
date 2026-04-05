@@ -16,6 +16,6 @@ Zeeguu_API.prototype.getAllDailyStreakForUser = function (callback) {
   this._getJSON("all_language_streaks_detailed", callback);
 };
 
-Zeeguu_API.prototype.getAllDailyStreakForFriend = function (userId, callback) {
-  this._getJSON(`all_language_streaks_detailed/${userId}`, callback);
+Zeeguu_API.prototype.getAllDailyStreakForFriend = function (username, callback) {
+  this._getJSON(`all_language_streaks_detailed/${username}`, callback);
 };
