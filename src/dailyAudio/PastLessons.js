@@ -4,7 +4,7 @@ import { APIContext } from "../contexts/APIContext";
 import { UserContext } from "../contexts/UserContext";
 import LoadingAnimation from "../components/LoadingAnimation";
 import CustomAudioPlayer from "../components/CustomAudioPlayer";
-import { wordsAsTile } from "./TodayAudio";
+import { wordsAsTile } from "./audioUtils";
 
 export default function PastLessons() {
   const api = useContext(APIContext);
@@ -123,6 +123,16 @@ export default function PastLessons() {
                     })}
                     : {wordsAsTile(lesson.words)}
                   </h3>
+                  {lesson.suggestion && (
+                    <span
+                      style={{
+                        fontSize: "15px",
+                        color: "var(--text-secondary, #666)",
+                      }}
+                    >
+                      {lesson.suggestion_type === "situation" ? "Situation" : "Topic"}: {lesson.suggestion}
+                    </span>
+                  )}
                   {lesson.is_completed && lesson.completed_at && (
                     <span
                       style={{

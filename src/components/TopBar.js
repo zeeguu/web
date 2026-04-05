@@ -1,12 +1,16 @@
-import { useContext, useState } from "react";
+import { useCallback, useContext, useState } from "react";
 import { ProgressContext } from "../contexts/ProgressContext";
 import { UserContext } from "../contexts/UserContext";
 import LocalFireDepartmentIcon from "@mui/icons-material/LocalFireDepartment";
 import strings from "../i18n/definitions";
 import LanguageModal from "./MainNav/LanguageModal";
+import LanguageStreakBar from "./LanguageStreakBar";
 import Feature from "../features/Feature";
 import LocalStorage from "../assorted/LocalStorage.js";
+import { streakFireOrange } from "./colors";
 import * as s from "./Banners.sc";
+
+const fireIconSx = { color: streakFireOrange, fontSize: "1.2rem" };
 
 export default function TopBar() {
   const { daysPracticed } = useContext(ProgressContext);
@@ -15,8 +19,11 @@ export default function TopBar() {
   const [showDailyFeedback, setShowDailyFeedback] = useState(
     () => Feature.daily_feedback() && !LocalStorage.didShowDailyFeedbackToday(),
   );
+  const [hasMultipleLanguages, setHasMultipleLanguages] = useState(false);
 
   const hasStreak = daysPracticed && daysPracticed >= 2;
+  const closeLanguageModal = useCallback(() => setShowLanguageModal(false), []);
+  const openLanguageModal = useCallback(() => setShowLanguageModal(true), []);
 
   function handleFeedbackClick() {
     setShowDailyFeedback(false);
@@ -26,12 +33,14 @@ export default function TopBar() {
   return (
     <>
       <s.TopBarContainer>
-        <s.FlagButton
-          onClick={() => setShowLanguageModal(true)}
-          aria-label="Change language"
-        >
-          <s.FlagImage src={`/static/flags-new/${userDetails?.learned_language}.svg`} alt="" />
-        </s.FlagButton>
+        {!hasMultipleLanguages && (
+          <s.FlagButton
+            onClick={openLanguageModal}
+            aria-label="Change language"
+          >
+            <s.FlagImage src={`/static/flags-new/${userDetails?.learned_language}.svg`} alt="" />
+          </s.FlagButton>
+        )}
         {showDailyFeedback && (
           <s.DailyFeedbackLink
             href="https://forms.gle/h5JQmVrnZNnuvSPw9"
@@ -41,19 +50,23 @@ export default function TopBar() {
             Daily Feedback
           </s.DailyFeedbackLink>
         )}
-        {hasStreak && (
+        <LanguageStreakBar
+          onMultipleLanguages={setHasMultipleLanguages}
+          onOpenModal={openLanguageModal}
+        />
+        {!hasMultipleLanguages && hasStreak && (
           <s.StreakInfo>
             <s.StreakValue>{daysPracticed}</s.StreakValue>
             <s.StreakLabel>
               {strings.streakDay} {strings.streakStreak}
             </s.StreakLabel>
-            <LocalFireDepartmentIcon sx={{ color: "#ff9800", fontSize: "1.2rem" }} />
+            <LocalFireDepartmentIcon sx={fireIconSx} />
           </s.StreakInfo>
         )}
       </s.TopBarContainer>
       <LanguageModal
         open={showLanguageModal}
-        setOpen={() => setShowLanguageModal(false)}
+        setOpen={closeLanguageModal}
       />
     </>
   );
