@@ -24,13 +24,13 @@ export default function LessonPlaybackView({
 
   return (
     <LessonWrapper>
-      <LessonTitle $compact={!!lessonData.suggestion}>
+      <LessonTitle $compact={!!lessonData.canonical_suggestion}>
         {lessonData.is_completed && <CompletionCheck>✓</CompletionCheck>}
         {wordsAsTile(words)}
       </LessonTitle>
-      {lessonData.suggestion && (
+      {lessonData.canonical_suggestion && (
         <SuggestionSubtitle>
-          {lessonData.suggestion_type === "situation" ? "Situation" : "Topic"}: {lessonData.suggestion}
+          {lessonData.canonical_suggestion_type === "situation" ? "Situation" : "Topic"}: {lessonData.canonical_suggestion}
         </SuggestionSubtitle>
       )}
 
