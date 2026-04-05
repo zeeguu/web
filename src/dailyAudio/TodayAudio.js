@@ -357,13 +357,13 @@ export default function TodayAudio({ setShowTabs }) {
       progressDetail = generationProgress.message || "Processing...";
 
       // Calculate progress percentage (minimum 1%)
-      if (generationProgress.total_words > 0) {
-        const wordsCompleted = Math.max(0, generationProgress.current_word - 1);
-        let stepsInCurrentWord = 0;
+      if (generationProgress.total_segments > 0) {
+        const segmentsCompleted = Math.max(0, generationProgress.current_segment - 1);
+        let stepsInCurrentSegment = 0;
         if (generationProgress.total_steps > 0) {
-          stepsInCurrentWord = generationProgress.current_step / generationProgress.total_steps;
+          stepsInCurrentSegment = generationProgress.current_step / generationProgress.total_steps;
         }
-        progressPercent = Math.max(1, ((wordsCompleted + stepsInCurrentWord) / generationProgress.total_words) * 100);
+        progressPercent = Math.max(1, ((segmentsCompleted + stepsInCurrentSegment) / generationProgress.total_segments) * 100);
       }
     }
 
