@@ -218,12 +218,14 @@ export default function ContextNavigationControls({
 
   return (
     <s.SlideContainer>
-      {/* Left arrow */}
-      {hasMultipleContexts && (
-        <s.NavArrow onClick={handlePrevious} disabled={isSaving}>
-          ‹
-        </s.NavArrow>
-      )}
+      {/* Left arrow - always rendered to reserve space and prevent layout shift */}
+      <s.NavArrow
+        onClick={handlePrevious}
+        disabled={isSaving}
+        $hidden={!hasMultipleContexts}
+      >
+        ‹
+      </s.NavArrow>
 
       {/* Swipeable content area */}
       {children && (
@@ -238,12 +240,14 @@ export default function ContextNavigationControls({
         </s.SlideContent>
       )}
 
-      {/* Right arrow */}
-      {hasMultipleContexts && (
-        <s.NavArrow onClick={handleNext} disabled={isSaving}>
-          ›
-        </s.NavArrow>
-      )}
+      {/* Right arrow - always rendered to reserve space and prevent layout shift */}
+      <s.NavArrow
+        onClick={handleNext}
+        disabled={isSaving}
+        $hidden={!hasMultipleContexts}
+      >
+        ›
+      </s.NavArrow>
     </s.SlideContainer>
   );
 }
