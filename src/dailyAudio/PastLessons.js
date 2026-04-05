@@ -123,13 +123,13 @@ export default function PastLessons() {
                     })}
                     : {wordsAsTile(lesson.words)}
                   </h3>
-                  {lesson.canonical_suggestion && (
-                    <span
-                      style={{
-                        fontSize: "15px",
-                        color: "var(--text-secondary, #666)",
-                      }}
-                    >
+                  {lesson.title && (
+                    <span style={{ fontSize: "15px", color: "var(--text-secondary, #666)" }}>
+                      {lesson.title}
+                    </span>
+                  )}
+                  {!lesson.title && lesson.canonical_suggestion && (
+                    <span style={{ fontSize: "15px", color: "var(--text-secondary, #666)" }}>
                       {lesson.lesson_type === "situation" ? "Situation" : "Topic"}: {lesson.canonical_suggestion}
                     </span>
                   )}

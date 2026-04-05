@@ -28,7 +28,10 @@ export default function LessonPlaybackView({
         {lessonData.is_completed && <CompletionCheck>✓</CompletionCheck>}
         {wordsAsTile(words)}
       </LessonTitle>
-      {lessonData.canonical_suggestion && (
+      {lessonData.title && (
+        <SuggestionSubtitle>{lessonData.title}</SuggestionSubtitle>
+      )}
+      {!lessonData.title && lessonData.canonical_suggestion && (
         <SuggestionSubtitle>
           {lessonData.lesson_type === "situation" ? "Situation" : "Topic"}: {lessonData.canonical_suggestion}
         </SuggestionSubtitle>
