@@ -85,8 +85,7 @@ export default function TodayAudio({ setShowTabs }) {
       api.getTodaysLesson(handleLessonReady, () => {});
     };
 
-    // Poll for generation progress
-    pollInterval = setInterval(() => {
+    const pollForProgress = () => {
       api.getAudioLessonGenerationProgress(
         (progress) => {
           if (progress) {
@@ -126,10 +125,25 @@ export default function TodayAudio({ setShowTabs }) {
         // On progress API error, fall back to checking lesson directly
         checkForLesson,
       );
-    }, 1500);
+    };
+
+    // Poll for generation progress
+    pollInterval = setInterval(pollForProgress, 1500);
+
+    // Browsers throttle setInterval for background tabs, so check
+    // immediately when the user returns to the app
+    const onVisibilityChange = () => {
+      if (!document.hidden) {
+        pollForProgress();
+      }
+    };
+    document.addEventListener("visibilitychange", onVisibilityChange);
 
     // Cleanup on unmount
-    return stopPolling;
+    return () => {
+      stopPolling();
+      document.removeEventListener("visibilitychange", onVisibilityChange);
+    };
   }, [api, isGenerating]);
   const [openFeedback, setOpenFeedback] = useState(false);
   const [currentPlaybackTime, setCurrentPlaybackTime] = useState(0);
