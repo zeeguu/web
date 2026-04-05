@@ -26,12 +26,7 @@ export default function FriendRow({
 }) {
   const { isMobile } = useScreenWidth();
   const maxVisibleLanguages = isMobile ? 1 : 3;
-  const languages =
-    user.languages?.sort((a, b) => {
-      const keyA = a.max_streak;
-      const keyB = b.max_streak;
-      return keyA > keyB ? -1 : 1;
-    }) ?? [];
+  const languages = user.languages ?? []
   const visibleLanguages = languages.slice(0, maxVisibleLanguages);
   const overflowCount = languages.length > maxVisibleLanguages ? languages.length - maxVisibleLanguages : 0;
 
@@ -139,8 +134,8 @@ export default function FriendRow({
         <s.LanguagesMeta>
           {visibleLanguages.map((entry) => (
             <DynamicFlagImage
-              key={entry.language.id || entry.language.code}
-              languageCode={entry.language.code}
+              key={`${user.username}-${entry.code}`}
+              languageCode={entry.code}
               size={isMobile ? "1.2rem" : "1.4rem"}
             />
           ))}

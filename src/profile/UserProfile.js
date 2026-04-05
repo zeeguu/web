@@ -86,12 +86,7 @@ export default function UserProfile() {
       setActiveLanguages([]);
       return;
     }
-    const sorted = [...data].sort((a, b) => {
-      const keyA = a.max_streak;
-      const keyB = b.max_streak;
-      return keyA > keyB ? -1 : 1;
-    });
-    setActiveLanguages(sorted);
+    setActiveLanguages(data);
   };
 
   const handleUserProfileNavigation = (target) => {
@@ -354,10 +349,10 @@ export default function UserProfile() {
                     {visibleLanguages.map((languageInfo, index) => (
                       <span
                         className="flag-image-wrapper"
-                        key={`${languageInfo.language.code}-${index}`}
+                        key={`${languageInfo.code}-${index}`}
                         onClick={() => setLanguagesModalOpen(true)}
                       >
-                        <DynamicFlagImage languageCode={languageInfo.language.code} />
+                        <DynamicFlagImage languageCode={languageInfo.code} />
                       </span>
                     ))}
                     {overflowCount > 0 && (
@@ -454,18 +449,18 @@ export default function UserProfile() {
             <Main>
               <s.LanguagesGrid>
                 {activeLanguages.map((languageInfo) => (
-                  <s.LanguageCard key={languageInfo.language.code}>
-                    <DynamicFlagImage languageCode={languageInfo.language.code} />
-                    <span className="language-name">{languageInfo.language.language}</span>
+                  <s.LanguageCard key={languageInfo.code}>
+                    <DynamicFlagImage languageCode={languageInfo.code} />
+                    <span className="language-name">{languageInfo.language}</span>
                     {(isOwnProfile || isFriendAccepted) && (
                       <div className="streaks-info">
                         <div className="streak-item">
                           <LocalFireDepartmentIcon sx={{ color: "#ff9800", fontSize: "1rem" }} />
-                          <span>{languageInfo.current_streak ?? 0}</span>
+                          <span>{languageInfo.daily_streak}</span>
                         </div>
                         <div className="streak-item max-streak">
                           <LocalFireDepartmentIcon sx={{ color: "#e65100", fontSize: "1rem" }} />
-                          <span>{languageInfo.max_streak ?? 0}</span>
+                          <span>{languageInfo.max_streak}</span>
                         </div>
                       </div>
                     )}
