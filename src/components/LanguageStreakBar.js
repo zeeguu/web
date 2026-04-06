@@ -72,54 +72,82 @@ const StreakNumber = styled.span`
 const fireIconSx = { color: streakFireOrange, fontSize: "0.9rem" };
 const fireIconGraySx = { color: "var(--text-faint, #999)", fontSize: "0.9rem" };
 
+function streaksChanged(prev, next) {
+  if (prev.length !== next.length) return true;
+  for (let i = 0; i < prev.length; i++) {
+    if (prev[i].code !== next[i].code ||
+        prev[i].daily_streak !== next[i].daily_streak ||
+        prev[i].practiced_today !== next[i].practiced_today) return true;
+  }
+  return false;
+}
+
 export default function LanguageStreakBar({ onMultipleLanguages, onOpenModal }) {
   const api = useContext(APIContext);
   const { userDetails, setUserDetails } = useContext(UserContext);
   const [languageStreaks, setLanguageStreaks] = useState([]);
   const [justPracticed, setJustPracticed] = useState({});
   const prevPracticedRef = useRef({});
+  const prevMultipleRef = useRef(null);
+  const animationTimerRef = useRef(null);
+  const onMultipleLanguagesRef = useRef(onMultipleLanguages);
+  onMultipleLanguagesRef.current = onMultipleLanguages;
 
-  function fetchStreaks() {
-    api.getAllLanguageStreaks((data) => {
-      // Detect transitions from not-practiced to practiced
-      const newJustPracticed = {};
-      const prev = prevPracticedRef.current;
-      data.forEach((lang) => {
-        if (lang.practiced_today && prev[lang.code] === false) {
-          newJustPracticed[lang.code] = true;
+  useEffect(() => {
+    function fetchStreaks() {
+      api.getAllLanguageStreaks((data) => {
+        const newJustPracticed = {};
+        const prev = prevPracticedRef.current;
+        data.forEach((lang) => {
+          if (lang.practiced_today && prev[lang.code] === false) {
+            newJustPracticed[lang.code] = true;
+          }
+        });
+
+        const currentPracticed = {};
+        data.forEach((lang) => { currentPracticed[lang.code] = lang.practiced_today; });
+        prevPracticedRef.current = currentPracticed;
+
+        if (Object.keys(newJustPracticed).length > 0) {
+          setJustPracticed(newJustPracticed);
+          clearTimeout(animationTimerRef.current);
+          animationTimerRef.current = setTimeout(() => setJustPracticed({}), 600);
+        }
+
+        setLanguageStreaks((prev) => streaksChanged(prev, data) ? data : prev);
+
+        const hasMultiple = data.length > 1;
+        if (hasMultiple !== prevMultipleRef.current) {
+          prevMultipleRef.current = hasMultiple;
+          onMultipleLanguagesRef.current?.(hasMultiple);
         }
       });
+    }
 
-      // Update prev reference
-      const currentPracticed = {};
-      data.forEach((lang) => { currentPracticed[lang.code] = lang.practiced_today; });
-      prevPracticedRef.current = currentPracticed;
-
-      // Trigger animation for newly practiced languages
-      if (Object.keys(newJustPracticed).length > 0) {
-        setJustPracticed(newJustPracticed);
-        setTimeout(() => setJustPracticed({}), 600);
-      }
-
-      setLanguageStreaks(data);
-      if (onMultipleLanguages) {
-        onMultipleLanguages(data.length > 1);
-      }
-    });
-  }
-
-  // Initial fetch + poll
-  useEffect(() => {
     fetchStreaks();
-    const interval = setInterval(fetchStreaks, POLL_INTERVAL_MS);
-    return () => clearInterval(interval);
+    let interval = setInterval(fetchStreaks, POLL_INTERVAL_MS);
+
+    const onVisibilityChange = () => {
+      if (document.hidden) {
+        clearInterval(interval);
+      } else {
+        fetchStreaks();
+        interval = setInterval(fetchStreaks, POLL_INTERVAL_MS);
+      }
+    };
+    document.addEventListener("visibilitychange", onVisibilityChange);
+
+    return () => {
+      clearInterval(interval);
+      clearTimeout(animationTimerRef.current);
+      document.removeEventListener("visibilitychange", onVisibilityChange);
+    };
   }, [api, userDetails.learned_language]);
 
   if (languageStreaks.length <= 1) return null;
 
   const currentCode = userDetails.learned_language;
 
-  // Keep API order (by streak descending), always include current language
   const displayList = languageStreaks.filter(
     (l) => l.code === currentCode || l.daily_streak >= 2,
   );
