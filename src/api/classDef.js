@@ -179,6 +179,10 @@ const Zeeguu_API = class {
    * sendBeacon is designed for this use case and won't be cancelled.
    */
   _postBeacon(endpoint, body) {
+    // sendBeacon is blocked cross-origin from localhost; fall back to regular post
+    if (window.location.hostname === "localhost") {
+      return this._post(endpoint, body);
+    }
     const url = this._appendSessionToUrl(endpoint);
     const blob = new Blob([body], { type: "application/x-www-form-urlencoded" });
     const success = navigator.sendBeacon(url, blob);
