@@ -103,7 +103,11 @@ export default function LanguageStreakBar({ onMultipleLanguages, onOpenModal }) 
 
       setLanguageStreaks(data);
       if (onMultipleLanguages) {
-        onMultipleLanguages(data.length > 1);
+        const currentCode = userDetails.learned_language;
+        const visible = data.filter(
+          (l) => l.code === currentCode || l.daily_streak >= 2,
+        );
+        onMultipleLanguages(visible.length > 1);
       }
     });
   }
@@ -119,10 +123,12 @@ export default function LanguageStreakBar({ onMultipleLanguages, onOpenModal }) 
 
   const currentCode = userDetails.learned_language;
 
-  // Keep API order (by streak descending), always include current language
-  const displayList = languageStreaks.filter(
-    (l) => l.code === currentCode || l.daily_streak >= 2,
+  // Current language first so it's never hidden by CSS, then others by streak
+  const currentLang = languageStreaks.find((l) => l.code === currentCode);
+  const others = languageStreaks.filter(
+    (l) => l.code !== currentCode && l.daily_streak >= 2,
   );
+  const displayList = [...(currentLang ? [currentLang] : []), ...others];
 
   if (displayList.length <= 1) return null;
 
