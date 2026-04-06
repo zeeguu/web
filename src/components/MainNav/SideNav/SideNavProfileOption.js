@@ -19,9 +19,9 @@ import { FriendRequestContext } from "../../../contexts/FriendRequestContext";
 import Feature from "../../../features/Feature";
 
 const NavAvatar = styled(AvatarBackground)`
-  width: 1.8rem;
-  height: 1.8rem;
-  padding: 2px;
+  width: 2rem;
+  height: 2rem;
+  padding: 3px;
 `;
 
 export default function SideNavProfileOption({ screenWidth }) {
@@ -47,9 +47,9 @@ export default function SideNavProfileOption({ screenWidth }) {
   return (
     <NavOption
       linkTo={NavigationOptions.profile.linkTo}
+      overflowEnabled={true}
       icon={
         <NavAvatar
-          $screenWidth={screenWidth}
           $backgroundColor={avatarBackgroundColor}
           $isActive={isNavOptionActive(NavigationOptions.profile.linkTo, path)}
         >
@@ -57,19 +57,23 @@ export default function SideNavProfileOption({ screenWidth }) {
         </NavAvatar>
       }
       text={
-        <span
+        <div
           style={{
             color: isActive ? avatarCharacterColor : undefined,
+            overflow: "hidden",
+            whiteSpace: "nowrap",
+            textOverflow: "ellipsis",
+            maxWidth: "100%",
           }}
         >
           {userDetails?.username || "Profile"}
-        </span>
+        </div>
       }
       currentPath={path}
       screenWidth={screenWidth}
       notification={
         (hasBadgeNotification || hasFriendRequestNotification) && (
-          <NotificationIcon position={"top-absolute"} text={totalNumberOfBadges + friendRequestCount} />
+          <NotificationIcon position={"top"} text={totalNumberOfBadges + friendRequestCount} />
         )
       }
     />

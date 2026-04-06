@@ -1,5 +1,5 @@
 import { Link, useHistory } from "react-router-dom";
-import { useContext, useEffect, useRef, useState } from "react";
+import React, { Fragment, useContext, useEffect, useRef, useState } from "react";
 import { UserContext } from "../../contexts/UserContext";
 import { saveSharedUserInfo } from "../../utils/cookies/userInfo";
 import { setTitle } from "../../assorted/setTitle";
@@ -19,7 +19,7 @@ import BackArrow from "./settings_pages_shared/BackArrow";
 import FullWidthErrorMsg from "../../components/FullWidthErrorMsg.sc";
 import LoadingAnimation from "../../components/LoadingAnimation";
 import useFormField from "../../hooks/useFormField";
-import { EmailValidator, NonEmptyValidator } from "../../utils/ValidatorRule/Validator";
+import { EmailValidator, NonEmptyOrWhitespaceOnlyValidator } from "../../utils/ValidatorRule/Validator";
 import validateRules from "../../assorted/validateRules";
 import { useLocation } from "react-router-dom/cjs/react-router-dom";
 import FullWidthConfirmMsg from "../../components/FullWidthConfirmMsg.sc";
@@ -36,6 +36,8 @@ import {
 import { AvatarBackground, AvatarImage } from "../../profile/UserProfile.sc";
 import Feature from "../../features/Feature";
 import * as s from "./ProfileDetails.sc";
+import EditIcon from "@mui/icons-material/Edit";
+import CheckIcon from "@mui/icons-material/Check";
 
 export default function ProfileDetails() {
   const api = useContext(APIContext);
@@ -53,16 +55,18 @@ export default function ProfileDetails() {
   const [selectedAvatarCharacterColor, setSelectedAvatarCharacterColor] = useState();
   const [selectedAvatarBackgroundColor, setSelectedAvatarBackgroundColor] = useState();
 
+  const default_error_message = "Unable to save profile details. Please try again.";
+
   const [displayName, setDisplayName, validateDisplayName, isDisplayNameValid, displayNameErrorMessage] = useFormField(
     "",
-    NonEmptyValidator("Please provide a display name."),
+    NonEmptyOrWhitespaceOnlyValidator("Please provide a display name."),
   );
   const [username, setUsername, validateUsername, isUsernameValid, usernameErrorMessage] = useFormField(
     "",
-    NonEmptyValidator("Please provide a username."),
+    NonEmptyOrWhitespaceOnlyValidator("Please provide a username."),
   );
   const [email, setEmail, validateEmail, isEmailValid, emailErrorMessage] = useFormField("", [
-    NonEmptyValidator("Please provide an email."),
+    NonEmptyOrWhitespaceOnlyValidator("Please provide an email."),
     EmailValidator,
   ]);
 
@@ -94,9 +98,9 @@ export default function ProfileDetails() {
     if (!validateRules([validateDisplayName, validateUsername, validateEmail])) return;
 
     const updatedFormValues = {
-      name: displayName,
-      username: username,
-      email: email,
+      name: displayName.trim(),
+      username: username.trim(),
+      email: email.trim(),
     };
     const updatedAvatarValues = {
       image_name: selectedAvatarCharacterId,
@@ -110,17 +114,21 @@ export default function ProfileDetails() {
         ? Object.fromEntries(Object.entries(updatedAvatarValues).map(([key, value]) => [`avatar_${key}`, value]))
         : {}),
     };
-    api.saveUserDetails(payload, setErrorMessage, () => {
-      const newUserDetails = {
-        ...userDetails,
-        ...updatedFormValues,
-        ...(isGamificationEnabled ? { user_avatar: updatedAvatarValues } : {}),
-      };
-      setUserDetails(newUserDetails);
-      LocalStorage.setUserInfo(newUserDetails);
-      saveSharedUserInfo(newUserDetails);
-      history.push(redirectPath);
-    });
+    api.saveUserDetails(
+      payload,
+      (error) => setErrorMessage(error ?? default_error_message),
+      () => {
+        const newUserDetails = {
+          ...userDetails,
+          ...updatedFormValues,
+          ...(isGamificationEnabled ? { user_avatar: updatedAvatarValues } : {}),
+        };
+        setUserDetails(newUserDetails);
+        LocalStorage.setUserInfo(newUserDetails);
+        saveSharedUserInfo(newUserDetails);
+        history.push(redirectPath);
+      },
+    );
   }
 
   if (!userDetails) {
@@ -152,6 +160,9 @@ export default function ProfileDetails() {
                     $imageSource={AVATAR_IMAGE_MAP[selectedAvatarCharacterId]}
                     $color={selectedAvatarCharacterColor}
                   />
+                  <s.EditAvatarButton type="button" onClick={() => setShowAvatarModal(true)}>
+                    <EditIcon sx={{ fontSize: "1rem" }} />
+                  </s.EditAvatarButton>
                 </AvatarBackground>
               </s.AvatarWrapper>
             )}
@@ -231,6 +242,11 @@ export default function ProfileDetails() {
                     }}
                   >
                     <AvatarImage $imageSource={AVATAR_IMAGE_MAP[id]} $color={selectedAvatarCharacterColor} />
+                    {selectedAvatarCharacterId === id && (
+                      <s.SelectionCheckmark $mini={false}>
+                        <CheckIcon sx={{ fontSize: "inherit" }} />
+                      </s.SelectionCheckmark>
+                    )}
                   </s.AvatarOption>
                 ))}
               </s.PickerGrid>
@@ -247,7 +263,13 @@ export default function ProfileDetails() {
                     onClick={() => {
                       setSelectedAvatarCharacterColor(color);
                     }}
-                  />
+                  >
+                    {selectedAvatarCharacterColor === color && (
+                      <s.SelectionCheckmark $mini={true}>
+                        <CheckIcon sx={{ fontSize: "inherit" }} />
+                      </s.SelectionCheckmark>
+                    )}
+                  </s.ColorOption>
                 ))}
               </s.PickerGrid>
             </s.PickerSection>
@@ -263,10 +285,22 @@ export default function ProfileDetails() {
                     onClick={() => {
                       setSelectedAvatarBackgroundColor(color);
                     }}
-                  />
+                  >
+                    {selectedAvatarBackgroundColor === color && (
+                      <s.SelectionCheckmark $mini={true}>
+                        <CheckIcon sx={{ fontSize: "inherit" }} />
+                      </s.SelectionCheckmark>
+                    )}
+                  </s.ColorOption>
                 ))}
               </s.PickerGrid>
             </s.PickerSection>
+
+            <s.ConfirmButtonWrapper>
+              <Button type={"button"} className={"small"} onClick={() => setShowAvatarModal(false)}>
+                Set
+              </Button>
+            </s.ConfirmButtonWrapper>
           </Main>
         </Modal>
       )}

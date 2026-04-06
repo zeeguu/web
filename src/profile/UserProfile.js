@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useHistory, useParams } from "react-router-dom";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import LocalFireDepartmentIcon from "@mui/icons-material/LocalFireDepartment";
@@ -7,14 +7,13 @@ import PersonAddIcon from "@mui/icons-material/PersonAdd";
 import CancelScheduleSendIcon from "@mui/icons-material/CancelScheduleSend";
 import CheckIcon from "@mui/icons-material/Check";
 import ClearIcon from "@mui/icons-material/Clear";
-import ConfirmUnfriendModal from "./ConfirmUnfriendModal";
 import { setTitle } from "../assorted/setTitle";
 import { UserContext } from "../contexts/UserContext";
 import strings from "../i18n/definitions";
 import { APIContext } from "../contexts/APIContext";
 import DynamicFlagImage from "../components/DynamicFlagImage";
 import { ProgressContext } from "../contexts/ProgressContext";
-import FriendsTabContent from "./FriendsTabContent";
+import Friends from "../friends/Friends";
 import { FriendRequestContext } from "../contexts/FriendRequestContext";
 import Badges from "../badges/Badges";
 import * as s from "./UserProfile.sc";
@@ -31,6 +30,11 @@ import {
 } from "./avatarOptions";
 import { BadgeCounterContext } from "../badges/BadgeCounterContext";
 import LoadingAnimation from "../components/LoadingAnimation";
+import Button from "../pages/_pages_shared/Button.sc";
+import Stack from "@mui/material/Stack";
+import { FriendActionButton } from "../friends/FriendRow.sc";
+import Leaderboards from "../leaderboards/Leaderboards";
+import { LEADERBOARD_SCOPES } from "../leaderboards/leaderboardTypes";
 
 export default function UserProfile() {
   const api = useContext(APIContext);
@@ -46,34 +50,28 @@ export default function UserProfile() {
   const avatarCharacterId = validatedAvatarCharacterId(profileData?.user_avatar?.image_name);
   const avatarCharacterColor = validatedAvatarCharacterColor(profileData?.user_avatar?.character_color);
   const avatarBackgroundColor = validatedAvatarBackgroundColor(profileData?.user_avatar?.background_color);
-  const [activeTab, setActiveTab] = useState("overview");
+  const [activeTab, setActiveTab] = useState("badges");
   const { friendRequestCount } = useContext(FriendRequestContext);
   const { hasBadgeNotification, totalNumberOfBadges } = useContext(BadgeCounterContext);
-  const { friendUserId } = useParams();
-  const [isOwnProfile, setIsOwnProfile] = useState(!friendUserId);
-  const [loadingProfileDetails, setLoadingProfileDetails] = useState(!!friendUserId);
+  const { friendUsername } = useParams();
+  const [isOwnProfile, setIsOwnProfile] = useState(!friendUsername);
+  const [loadingProfileDetails, setLoadingProfileDetails] = useState(true);
   const [friendDetailsError, setFriendDetailsError] = useState(null);
   const [unfriendModalOpen, setUnfriendModalOpen] = useState(false);
   const friendship = profileData?.friendship;
-  const isFriendAccepted = friendship?.friend_request_status === "accepted";
+  const isFriendAccepted = friendship?.is_accepted === true;
   const pendingFromMe =
-    friendship?.friend_request_status === "pending" && Number(friendship?.sender_id) !== Number(friendUserId);
+    friendship?.is_accepted === false && friendship?.sender_username !== friendUsername;
   const pendingFromThem =
-    friendship?.friend_request_status === "pending" && Number(friendship?.sender_id) === Number(friendUserId);
+    friendship?.is_accepted === false && friendship?.sender_username === friendUsername;
   const streakValue = (isOwnProfile ? daysPracticed : friendship?.friend_streak) ?? 0;
 
-  const activeLanguagesCallback = (data) => {
-    setLoadingProfileDetails(false);
-    if (!data) {
-      setActiveLanguages([]);
-      return;
-    }
-    const sorted = [...data].sort((a, b) => {
-      const keyA = a.max_streak;
-      const keyB = b.max_streak;
-      return keyA > keyB ? -1 : 1;
-    });
-    setActiveLanguages(sorted);
+  const resetProfileState = () => {
+    setProfileData(null);
+    setActiveLanguages([]);
+    setActiveTab("badges");
+    setLoadingProfileDetails(true);
+    setFriendDetailsError(null);
   };
 
   const updateProfileView = (profileData, errorMsg, title) => {
@@ -82,13 +80,26 @@ export default function UserProfile() {
     setTitle(title);
   };
 
-  useEffect(() => {
-    if (!api) return;
-   
+  const activeLanguagesCallback = (data) => {
+    setLoadingProfileDetails(false);
+    if (!data) {
+      setActiveLanguages([]);
+      return;
+    }
+    setActiveLanguages(data);
+  };
+
+  const handleUserProfileNavigation = (target) => {
     setLoadingProfileDetails(true);
-    setActiveTab("overview");
-    
-    if (!friendUserId) {
+    history.push(target ? `/profile/${encodeURIComponent(target)}` : "/profile");
+  };
+
+  useEffect(() => {
+    resetProfileState();
+
+    if (!api) return;
+
+    if (!friendUsername) {
       setIsOwnProfile(true);
       updateProfileView(userDetails, null, strings.titleOwnProfile);
       api.getAllDailyStreakForUser(activeLanguagesCallback);
@@ -97,7 +108,7 @@ export default function UserProfile() {
 
     setIsOwnProfile(false);
     setFriendDetailsError(null);
-    api.getFriendDetails(friendUserId, (data) => {
+    api.getFriendDetails(friendUsername, (data) => {
       if (!data || data.error) {
         updateProfileView({}, data?.error || "Failed to fetch profile.", strings.titleUserProfileDefault);
         setLoadingProfileDetails(false);
@@ -106,13 +117,13 @@ export default function UserProfile() {
 
       const isSameUser = data.username === userDetails?.username;
       if (isSameUser) {
-        history.push("/profile");
+        handleUserProfileNavigation(null);
       } else {
         updateProfileView(data, null, `${data.username}'s ${strings.titleUserProfilePostfix}`);
-        api.getAllDailyStreakForFriend(friendUserId, activeLanguagesCallback);
+        api.getAllDailyStreakForFriend(friendUsername, activeLanguagesCallback);
       }
     });
-  }, [api, userDetails, friendUserId]);
+  }, [api, userDetails, friendUsername]);
 
   const updateProfileFriendship = (newFriendship) => {
     setProfileData((prev) => ({ ...prev, friendship: newFriendship }));
@@ -120,10 +131,10 @@ export default function UserProfile() {
 
   const handleSendFriendRequest = () => {
     api
-      .sendFriendRequest(friendUserId)
+      .sendFriendRequest(friendUsername)
       .then((response) => {
         if (response.status === 200) {
-          updateProfileFriendship({ friend_request_status: "pending", sender_id: null });
+          updateProfileFriendship({ is_accepted: false, sender_username: null });
         } else {
           response.json().then((json) => {
             setFriendDetailsError(json.error || "Failed to send friend request.");
@@ -137,7 +148,7 @@ export default function UserProfile() {
 
   const handleCancelFriendRequest = () => {
     api
-      .deleteFriendRequest(friendUserId)
+      .deleteFriendRequest(friendUsername)
       .then((response) => {
         if (response.status === 200) {
           updateProfileFriendship(null);
@@ -154,10 +165,10 @@ export default function UserProfile() {
 
   const handleAcceptFriendRequest = () => {
     api
-      .acceptFriendRequest(friendUserId)
+      .acceptFriendRequest(friendUsername)
       .then((response) => {
         if (response.status === 200) {
-          updateProfileFriendship({ friend_request_status: "accepted" });
+          updateProfileFriendship({ is_accepted: true });
         } else {
           response.json().then((json) => {
             setFriendDetailsError(json.message || "Failed to accept friend request.");
@@ -171,7 +182,7 @@ export default function UserProfile() {
 
   const handleRejectFriendRequest = () => {
     api
-      .rejectFriendRequest(friendUserId)
+      .rejectFriendRequest(friendUsername)
       .then((response) => {
         if (response.status === 200) {
           updateProfileFriendship(null);
@@ -188,7 +199,7 @@ export default function UserProfile() {
 
   const handleUnfriend = () => {
     api
-      .unfriend(friendUserId)
+      .unfriend(friendUsername)
       .then((response) => {
         if (response.status === 200) {
           setUnfriendModalOpen(false);
@@ -205,32 +216,37 @@ export default function UserProfile() {
   };
 
   const tabs = [
-    { key: "overview", label: "Overview" },
-    {
-      key: "friends",
-      label: `Friends${isOwnProfile && friendRequestCount > 0 ? ` (${friendRequestCount})` : ""}`,
-    },
     {
       key: "badges",
       label: `Badges${isOwnProfile && hasBadgeNotification ? ` (${totalNumberOfBadges})` : ""}`,
     },
+    {
+      key: "friends",
+      label: `Friends${isOwnProfile && friendRequestCount > 0 ? ` (${friendRequestCount})` : ""}`,
+    },
+    ...(isOwnProfile
+      ? [
+          { key: "friendLeaderboards", label: "Friend Leaderboards" },
+          { key: "cohortLeaderboards", label: "Classroom Leaderboards" },
+        ]
+      : []),
   ];
 
   const renderTabContent = () => {
-    if (activeTab === "overview") {
-      return !isOwnProfile ? (
-        <div>Overview content for this friend goes here.</div>
-      ) : (
-        <div>Overview content goes here.</div>
-      );
+    if (activeTab === "badges") {
+      return <Badges username={friendUsername} />;
     }
 
     if (activeTab === "friends") {
-      return <FriendsTabContent friendUserId={friendUserId} />;
+      return <Friends friendUsername={friendUsername} navigationHandler={handleUserProfileNavigation} />;
     }
 
-    if (activeTab === "badges") {
-      return <Badges userId={friendUserId} />;
+    if (activeTab === "friendLeaderboards") {
+      return <Leaderboards navigationHandler={handleUserProfileNavigation} scope={LEADERBOARD_SCOPES.FRIENDS}/>;
+    }
+    
+    if (activeTab === "cohortLeaderboards") {
+      return <Leaderboards navigationHandler={handleUserProfileNavigation} scope={LEADERBOARD_SCOPES.COHORT}/>;
     }
 
     return null;
@@ -245,14 +261,16 @@ export default function UserProfile() {
       {!isOwnProfile && (
         <>
           <s.BackNavigation>
-            <s.BackButton
+            <Button
+              type={"button"}
+              className={"small"}
               onClick={() => {
-                history.push("/profile");
+                handleUserProfileNavigation(null);
               }}
             >
               <ArrowBackIcon sx={{ fontSize: "1.2rem" }} />
               <span>Back to Profile</span>
-            </s.BackButton>
+            </Button>
           </s.BackNavigation>
         </>
       )}
@@ -282,33 +300,33 @@ export default function UserProfile() {
             ) : (
               <s.FriendActionsContainer>
                 {isFriendAccepted && (
-                  <s.FriendActionButton $variant="danger" onClick={() => setUnfriendModalOpen(true)}>
-                    <PersonRemoveIcon sx={{ fontSize: "1.2rem" }} />
+                  <FriendActionButton $variant="cancel" onClick={() => setUnfriendModalOpen(true)}>
+                    <PersonRemoveIcon sx={{ fontSize: "1rem" }} />
                     <span>Unfriend</span>
-                  </s.FriendActionButton>
+                  </FriendActionButton>
                 )}
                 {!isFriendAccepted && !pendingFromMe && !pendingFromThem && (
-                  <s.FriendActionButton $variant="primary" onClick={handleSendFriendRequest}>
-                    <PersonAddIcon sx={{ fontSize: "1.2rem" }} />
-                    <span>Add friend</span>
-                  </s.FriendActionButton>
+                  <FriendActionButton $variant="add" onClick={handleSendFriendRequest}>
+                    <PersonAddIcon sx={{ fontSize: "1rem" }} />
+                    <span>Add</span>
+                  </FriendActionButton>
                 )}
                 {pendingFromMe && (
-                  <s.FriendActionButton $variant="warning" onClick={handleCancelFriendRequest}>
-                    <CancelScheduleSendIcon sx={{ fontSize: "1.2rem" }} />
-                    <span>Cancel request</span>
-                  </s.FriendActionButton>
+                  <FriendActionButton $variant="cancel" onClick={handleCancelFriendRequest}>
+                    <CancelScheduleSendIcon sx={{ fontSize: "1rem" }} />
+                    <span>Cancel</span>
+                  </FriendActionButton>
                 )}
                 {pendingFromThem && (
                   <>
-                    <s.FriendActionButton $variant="success" onClick={handleAcceptFriendRequest}>
-                      <CheckIcon sx={{ fontSize: "1.2rem" }} />
-                      <span>Accept request</span>
-                    </s.FriendActionButton>
-                    <s.FriendActionButton $variant="danger" onClick={handleRejectFriendRequest}>
-                      <ClearIcon sx={{ fontSize: "1.2rem" }} />
-                      <span>Reject request</span>
-                    </s.FriendActionButton>
+                    <FriendActionButton $variant="accept" onClick={handleAcceptFriendRequest}>
+                      <CheckIcon sx={{ fontSize: "1rem" }} />
+                      <span>Accept</span>
+                    </FriendActionButton>
+                    <FriendActionButton $variant="reject" onClick={handleRejectFriendRequest}>
+                      <ClearIcon sx={{ fontSize: "1rem" }} />
+                      <span>Reject</span>
+                    </FriendActionButton>
                   </>
                 )}
               </s.FriendActionsContainer>
@@ -331,14 +349,16 @@ export default function UserProfile() {
                     {visibleLanguages.map((languageInfo, index) => (
                       <span
                         className="flag-image-wrapper"
-                        key={`${languageInfo.language.code}-${index}`}
+                        key={`${languageInfo.code}-${index}`}
                         onClick={() => setLanguagesModalOpen(true)}
                       >
-                        <DynamicFlagImage languageCode={languageInfo.language.code} />
+                        <DynamicFlagImage languageCode={languageInfo.code} />
                       </span>
                     ))}
                     {overflowCount > 0 && (
-                      <s.OverflowBubble onClick={() => setLanguagesModalOpen(true)}>+{overflowCount}</s.OverflowBubble>
+                      <s.LanguageOverflowBubble $isSmallSized={false} onClick={() => setLanguagesModalOpen(true)}>
+                        +{overflowCount}
+                      </s.LanguageOverflowBubble>
                     )}
                   </>
                 ) : (
@@ -362,7 +382,21 @@ export default function UserProfile() {
                 <s.StatsRow>
                   <div className="stat">
                     <div className="stat-streak-wrapper">
-                      <LocalFireDepartmentIcon sx={{ color: "#ff9800", fontSize: "1.2rem" }} />
+                      {isFriendAccepted ? (
+                        <Stack direction="row" spacing={-1.2} alignItems="center">
+                          <LocalFireDepartmentIcon
+                            sx={{
+                              color: "#ff9800",
+                              fontSize: "1.2rem",
+                              filter:
+                                "drop-shadow(2px 0 0 var(--streak-banner-border)) drop-shadow(0 2px 0 var(--streak-banner-border))",
+                            }}
+                          />
+                          <LocalFireDepartmentIcon sx={{ color: "#ff9800", fontSize: "1.2rem" }} />
+                        </Stack>
+                      ) : (
+                        <LocalFireDepartmentIcon sx={{ color: "#ff9800", fontSize: "1.2rem" }} />
+                      )}
                       <span className="stat-value">{streakValue}</span>
                       <span className="stat-label">{isFriendAccepted ? "day friend streak" : "day streak"}</span>
                     </div>
@@ -389,12 +423,24 @@ export default function UserProfile() {
             </s.TabsSection>
           )}
 
-          <ConfirmUnfriendModal
-            open={unfriendModalOpen}
-            onClose={() => setUnfriendModalOpen(false)}
-            onConfirm={handleUnfriend}
-            friendName={profileData?.name ?? profileData?.username}
-          />
+          <Modal open={unfriendModalOpen} onClose={() => setUnfriendModalOpen(false)}>
+            <Header>
+              <Heading>Confirm Unfriend</Heading>
+            </Header>
+            <Main>
+              <div>
+                Are you sure you want to unfriend <b>{profileData?.name ?? profileData?.username}</b>?
+              </div>
+              <s.UnfriendModalButtonWrapper>
+                <Button type={"button"} className={"small grey"} onClick={() => setUnfriendModalOpen(false)}>
+                  Cancel
+                </Button>
+                <Button type={"button"} className={"small warning"} onClick={handleUnfriend}>
+                  Unfriend
+                </Button>
+              </s.UnfriendModalButtonWrapper>
+            </Main>
+          </Modal>
 
           <Modal open={languagesModalOpen} onClose={() => setLanguagesModalOpen(false)}>
             <Header>
@@ -403,18 +449,18 @@ export default function UserProfile() {
             <Main>
               <s.LanguagesGrid>
                 {activeLanguages.map((languageInfo) => (
-                  <s.LanguageCard key={languageInfo.language.code}>
-                    <DynamicFlagImage languageCode={languageInfo.language.code} />
-                    <span className="language-name">{languageInfo.language.language}</span>
+                  <s.LanguageCard key={languageInfo.code}>
+                    <DynamicFlagImage languageCode={languageInfo.code} />
+                    <span className="language-name">{languageInfo.language}</span>
                     {(isOwnProfile || isFriendAccepted) && (
                       <div className="streaks-info">
                         <div className="streak-item">
                           <LocalFireDepartmentIcon sx={{ color: "#ff9800", fontSize: "1rem" }} />
-                          <span>{languageInfo.current_streak ?? 0}</span>
+                          <span>{languageInfo.daily_streak}</span>
                         </div>
                         <div className="streak-item max-streak">
                           <LocalFireDepartmentIcon sx={{ color: "#e65100", fontSize: "1rem" }} />
-                          <span>{languageInfo.max_streak ?? 0}</span>
+                          <span>{languageInfo.max_streak}</span>
                         </div>
                       </div>
                     )}

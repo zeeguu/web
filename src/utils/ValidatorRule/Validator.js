@@ -26,6 +26,12 @@ function NonEmptyValidator(msg = "Field cannot be empty.") {
   }, msg);
 }
 
+function NonEmptyOrWhitespaceOnlyValidator(msg = "Field cannot be empty.") {
+  return new Validator((value) => {
+    return value !== null && value !== undefined && value.trim() !== "";
+  }, msg);
+}
+
 function PositiveIntegerValidator(msg = "Please provide a positive number") {
   return new Validator((value) => {
     return value >= 1;
@@ -56,6 +62,7 @@ export {
   Validator,
   EmailValidator,
   NonEmptyValidator,
+  NonEmptyOrWhitespaceOnlyValidator,
   MinimumLengthValidator,
   validateMultipleRules,
   PositiveIntegerValidator,

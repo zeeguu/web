@@ -1,12 +1,5 @@
 import styled from "styled-components";
-import {
-  blue100,
-  orange100,
-  orange400,
-  orange500,
-  veryLightGrey,
-  zeeguuOrange,
-} from "../components/colors";
+import { orange500 } from "../components/colors";
 
 export const ProfileWrapper = styled.div`
   display: flex;
@@ -16,26 +9,6 @@ export const ProfileWrapper = styled.div`
 
 export const BackNavigation = styled.div`
   margin-bottom: 0.8rem;
-`;
-
-export const BackButton = styled.button`
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4rem;
-  border: 1px solid var(--border-light);
-  border-radius: 6px;
-  background: var(--card-bg);
-  color: var(--text-primary);
-  padding: 0.4rem 0.75rem;
-  cursor: pointer;
-  transition:
-    background 0.2s,
-    border-color 0.2s;
-
-  &:hover {
-    background: var(--hover-bg);
-    border-color: var(--border-color);
-  }
 `;
 
 export const ErrorText = styled.p`
@@ -66,22 +39,36 @@ export const HeaderCard = styled.div`
 
   .name-wrapper {
     display: flex;
-    gap: 1rem;
+    column-gap: 1rem;
+    flex-wrap: wrap;
+    margin: 1rem 0;
+    padding-right: 2rem;
+
+    @media (max-width: 768px) {
+      flex-direction: column;
+      gap: 0.5rem;
+      margin-top: 0;
+    }
   }
 
   .username,
   .display-name {
-    margin-bottom: 1rem;
+    margin: 0;
     font-size: 1.4rem;
     font-weight: 700;
 
     @media (max-width: 768px) {
       justify-content: center;
+      font-size: 1.25rem;
     }
   }
 
   .username {
     color: var(--text-primary);
+
+    @media (max-width: 768px) {
+      margin-bottom: 0;
+    }
   }
 
   .display-name {
@@ -99,7 +86,7 @@ export const HeaderCard = styled.div`
     @media (max-width: 768px) {
       justify-content: center;
     }
-    
+
     .flag-image-wrapper {
       cursor: pointer;
     }
@@ -124,7 +111,7 @@ export const StatsRow = styled.div`
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    background: var(--light-badge-bg);
+    background: var(--streak-banner-border);
     border-radius: 8px;
     padding: 0.6rem 1rem;
   }
@@ -136,15 +123,16 @@ export const StatsRow = styled.div`
   }
 
   .stat-value {
-    color: ${orange500};
+    color: #ff9800;
     margin-right: 0.3rem;
   }
-  
+
   .stat-label {
     color: var(--text-secondary);
   }
-  
-  .stat-value, .stat-label {
+
+  .stat-value,
+  .stat-label {
     font-size: 1rem;
     font-weight: 600;
   }
@@ -158,25 +146,22 @@ export const EditProfileButton = styled.button`
   height: 2rem;
   border-radius: 50%;
   border: none;
-  background: ${veryLightGrey};
+  background: var(--streak-banner-border);
   color: var(--text-secondary);
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition:
-    background 0.2s,
-    color 0.2s;
 
   &:hover {
-    background: ${orange100};
+    background: var(--streak-banner-hover);
     color: ${orange500};
   }
 `;
 
 export const FriendActionsContainer = styled.div`
   position: absolute;
-  top: 1rem;
+  bottom: 1rem;
   right: 1rem;
   display: flex;
   flex-direction: column;
@@ -188,58 +173,6 @@ export const FriendActionsContainer = styled.div`
     width: 100%;
     align-items: center;
     margin-bottom: 0.75rem;
-  }
-`;
-
-export const FriendActionButton = styled.button`
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4rem;
-  border-radius: 6px;
-  border: 1px solid
-    ${({ $variant }) => {
-      switch ($variant) {
-        case "danger":
-          return "#e74c3c";
-        case "success":
-          return "#2ecc71";
-        case "warning":
-          return "#e67e22";
-        default:
-          return "#3498db";
-      }
-    }};
-  background: #fff;
-  color:
-    ${({ $variant }) => {
-      switch ($variant) {
-        case "danger":
-          return "#e74c3c";
-        case "success":
-          return "#2ecc71";
-        case "warning":
-          return "#e67e22";
-        default:
-          return "#3498db";
-      }
-    }};
-  padding: 0.4rem 0.75rem;
-  cursor: pointer;
-`;
-
-export const FriendAvatarColumn = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.75rem;
-  flex-shrink: 0;
-`;
-
-export const FriendDetails = styled.div`
-  padding-right: 12rem;
-
-  @media (max-width: 768px) {
-    padding-right: 0;
   }
 `;
 
@@ -266,13 +199,12 @@ export const TabBar = styled.div`
     cursor: pointer;
     font-weight: 500;
     margin-bottom: -2px;
-    transition:
-      color 0.2s,
-      border-color 0.2s;
+    transition: color 0.3s,
+    border-color 0.5s;
 
     &.active {
-      color: ${zeeguuOrange};
-      border-bottom-color: ${zeeguuOrange};
+      color: #ff9800;
+      border-bottom-color: #ff9800;
       font-weight: 600;
     }
 
@@ -283,6 +215,16 @@ export const TabBar = styled.div`
     &.active:hover {
       border-bottom-color: ${orange500};
     }
+
+    @media (max-width: 768px) {
+      padding-left: 0.8rem;
+      padding-right: 0.8rem;
+    }
+  }
+
+  @media (max-width: 768px) {
+    overflow-x: auto;
+    overflow-y: hidden;
   }
 `;
 
@@ -291,13 +233,13 @@ export const TabContent = styled.div`
   padding: 1rem 0 0;
 `;
 
-export const OverflowBubble = styled.button`
+export const LanguageOverflowBubble = styled.button`
   box-sizing: content-box;
-  width: 1.75rem;
-  height: 1.75rem;
+  width: ${({ $size }) => $size ?? "1.75rem"};
+  height: ${({ $size }) => $size ?? "1.75rem"};
   padding: 0;
   border-radius: 50%;
-  background: var(--light-badge-bg);
+  background: var(--streak-banner-border);
   border: 0.08rem solid var(--border-light);
   color: var(--text-primary);
   font-size: 0.75rem;
@@ -306,19 +248,34 @@ export const OverflowBubble = styled.button`
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: background 0.2s;
 
   &:hover {
-    background: var(--tag-bg);
+    background: var(--streak-banner-hover);
+    color: ${orange500};
   }
+`;
+
+export const UnfriendModalButtonWrapper = styled.div`
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
 `;
 
 export const LanguagesGrid = styled.div`
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
+  align-content: flex-start;
   gap: 0.5rem;
   padding: 0;
+  width: 100%;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    align-items: center;
+    max-height: none;
+    overflow-y: visible;
+  }
 `;
 
 export const LanguageCard = styled.div`
@@ -328,14 +285,13 @@ export const LanguageCard = styled.div`
   gap: 0.5rem;
   font-size: 1rem;
   font-weight: 600;
-  padding: 0 0.75rem 0 0.5rem;
-  height: 2.75rem;
+  padding: 0.1rem 0.75rem 0.1rem 0.5rem;
+  min-height: 2.75rem;
+  min-width: 11rem;
   border-radius: 2rem;
   border: solid 0.1rem var(--border-color);
   box-shadow: 0 0.1rem var(--border-color);
   white-space: nowrap;
-  flex: 1 1 calc(50% - 2rem);
-  min-width: 11rem;
   background: var(--card-bg);
   margin-bottom: 0.2rem;
 
@@ -345,6 +301,7 @@ export const LanguageCard = styled.div`
     color: var(--text-primary);
     text-transform: capitalize;
     flex: 1;
+    white-space: wrap;
   }
 
   .streaks-info {
@@ -355,7 +312,6 @@ export const LanguageCard = styled.div`
     border-left: 1px solid var(--border-light);
     height: 1.5em;
     gap: 0.4rem;
-    flex: 1;
     justify-content: end;
   }
 
@@ -365,12 +321,7 @@ export const LanguageCard = styled.div`
     gap: 0.1rem;
     font-weight: 600;
     font-size: 0.9rem;
-    color: ${orange500};
-    flex: 1;
-  }
-
-  .max-streak {
-    color: var(--link-color);
+    justify-content: center;
   }
 `;
 
@@ -384,14 +335,15 @@ export const AvatarBackground = styled.div`
   flex-shrink: 0;
   border: none;
   background: ${({ $backgroundColor }) => $backgroundColor};
+  position: relative;
 
   &.clickable {
     border: 3px solid transparent;
     cursor: pointer;
-    transition: border-color 0.2s;
 
-    &:hover {
-      border-color: ${orange400};
+    &:hover button {
+      background: var(--streak-banner-hover);
+      color: ${orange500};
     }
   }
 `;
