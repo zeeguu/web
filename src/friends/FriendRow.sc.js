@@ -100,10 +100,12 @@ export const RequestSent = styled.span`
 
 export const FriendActionButton = styled.button`
   font-size: 0.9rem;
+  min-width: 7rem;
   padding: 0.5em 0.8em;
   border-radius: 4px;
   border: 1px solid ${({ $variant }) => actionVariantValue($variant, "lightBorder", "var(--border-light)")};
   display: flex;
+  justify-content: center;
   align-items: center;
   gap: 0.4em;
   background: ${({ $variant }) => actionVariantValue($variant, "lightBg", "var(--card-bg)")};

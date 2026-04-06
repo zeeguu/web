@@ -166,7 +166,7 @@ export default function Friends({ friendUsername, navigationHandler }) {
         if (response.status === 200) {
           setFriendRequests((prev) =>
             prev.map((req) =>
-              req.sender.username === senderUsername ? { ...req, friend_request_status: "accepted" } : req,
+              req.sender.username === senderUsername ? { ...req, is_accepted: true } : req,
             ),
           );
           updateFriendRequestCounter();
@@ -285,7 +285,7 @@ export default function Friends({ friendUsername, navigationHandler }) {
                         key={`friend-request-${index}`}
                         user={req.sender}
                         rowType="request"
-                        friendRequestAccepted={req.friend_request_status === "accepted"}
+                        friendRequestAccepted={req.is_accepted}
                         onAcceptRequest={handleAcceptFriendRequest}
                         onRejectRequest={handleRejectFriendRequest}
                         onViewProfile={handleViewFriendProfile}

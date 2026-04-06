@@ -43,7 +43,7 @@ export default function FriendRow({
         );
       }
 
-      if (user.friend_request?.friend_request_status === "pending") {
+      if (user.friend_request) {
         if (user.friend_request.sender.username === user.username) {
           return <s.RequestSent>They sent you a request</s.RequestSent>;
         }

@@ -59,11 +59,11 @@ export default function UserProfile() {
   const [friendDetailsError, setFriendDetailsError] = useState(null);
   const [unfriendModalOpen, setUnfriendModalOpen] = useState(false);
   const friendship = profileData?.friendship;
-  const isFriendAccepted = friendship?.friend_request_status === "accepted";
+  const isFriendAccepted = friendship?.is_accepted === true;
   const pendingFromMe =
-    friendship?.friend_request_status === "pending" && friendship?.sender_username !== friendUsername;
+    friendship?.is_accepted === false && friendship?.sender_username !== friendUsername;
   const pendingFromThem =
-    friendship?.friend_request_status === "pending" && friendship?.sender_username === friendUsername;
+    friendship?.is_accepted === false && friendship?.sender_username === friendUsername;
   const streakValue = (isOwnProfile ? daysPracticed : friendship?.friend_streak) ?? 0;
 
   const resetProfileState = () => {
@@ -134,7 +134,7 @@ export default function UserProfile() {
       .sendFriendRequest(friendUsername)
       .then((response) => {
         if (response.status === 200) {
-          updateProfileFriendship({ friend_request_status: "pending", sender_username: null });
+          updateProfileFriendship({ is_accepted: false, sender_username: null });
         } else {
           response.json().then((json) => {
             setFriendDetailsError(json.error || "Failed to send friend request.");
@@ -168,7 +168,7 @@ export default function UserProfile() {
       .acceptFriendRequest(friendUsername)
       .then((response) => {
         if (response.status === 200) {
-          updateProfileFriendship({ friend_request_status: "accepted" });
+          updateProfileFriendship({ is_accepted: true });
         } else {
           response.json().then((json) => {
             setFriendDetailsError(json.message || "Failed to accept friend request.");
