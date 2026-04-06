@@ -143,7 +143,7 @@ export default function LanguageStreakBar({ onMultipleLanguages, onOpenModal }) 
               src={`/static/flags-new/${lang.code}.svg`}
               alt={lang.language}
             />
-            {lang.daily_streak >= 2 && (
+            {(lang.daily_streak >= 1 || isActive) && (
               <>
                 <LocalFireDepartmentIcon sx={practiced ? fireIconSx : fireIconGraySx} />
                 <StreakNumber $practiced={practiced} $justPracticed={animating}>
