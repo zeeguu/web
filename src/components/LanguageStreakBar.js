@@ -6,7 +6,8 @@ import { streakFireOrange, lightPurple } from "./colors";
 import LocalFireDepartmentIcon from "@mui/icons-material/LocalFireDepartment";
 import styled, { keyframes } from "styled-components";
 
-const POLL_INTERVAL_MS = 60_000;
+const POLL_FAST_MS = 5_000;
+const POLL_SLOW_MS = 60_000;
 
 const pulse = keyframes`
   0% { transform: scale(1); }
@@ -26,14 +27,14 @@ const LanguageItem = styled.button`
   display: flex;
   align-items: center;
   gap: 0.25rem;
-  background: ${({ $active }) => ($active ? `${lightPurple}33` : "none")};
-  border: ${({ $active }) => ($active ? `1.5px solid ${lightPurple}` : "1.5px solid transparent")};
+  background: transparent;
+  border: none;
+  box-shadow: none;
   border-radius: 1rem;
   padding: 0.15rem 0.4rem 0.15rem 0.2rem;
   cursor: pointer;
-  transition: background 0.15s;
+  transition: background 0.2s, box-shadow 0.2s, opacity 0.2s;
   flex-shrink: 0;
-  opacity: ${({ $active }) => ($active ? "1" : "0.6")};
 
   &:hover {
     opacity: 1;
@@ -72,28 +73,20 @@ const StreakNumber = styled.span`
 const fireIconSx = { color: streakFireOrange, fontSize: "0.9rem" };
 const fireIconGraySx = { color: "var(--text-faint, #999)", fontSize: "0.9rem" };
 
-function streaksChanged(prev, next) {
-  if (prev.length !== next.length) return true;
-  for (let i = 0; i < prev.length; i++) {
-    if (prev[i].code !== next[i].code ||
-        prev[i].daily_streak !== next[i].daily_streak ||
-        prev[i].practiced_today !== next[i].practiced_today) return true;
-  }
-  return false;
-}
-
 export default function LanguageStreakBar({ onMultipleLanguages, onOpenModal }) {
   const api = useContext(APIContext);
   const { userDetails, setUserDetails } = useContext(UserContext);
   const [languageStreaks, setLanguageStreaks] = useState([]);
   const [justPracticed, setJustPracticed] = useState({});
   const prevPracticedRef = useRef({});
-  const prevMultipleRef = useRef(null);
-  const animationTimerRef = useRef(null);
-  const onMultipleLanguagesRef = useRef(onMultipleLanguages);
-  onMultipleLanguagesRef.current = onMultipleLanguages;
+  const intervalRef = useRef(null);
 
   useEffect(() => {
+    function setPollingRate(ms) {
+      clearInterval(intervalRef.current);
+      intervalRef.current = setInterval(fetchStreaks, ms);
+    }
+
     function fetchStreaks() {
       api.getAllLanguageStreaks((data) => {
         const newJustPracticed = {};
@@ -110,47 +103,42 @@ export default function LanguageStreakBar({ onMultipleLanguages, onOpenModal }) 
 
         if (Object.keys(newJustPracticed).length > 0) {
           setJustPracticed(newJustPracticed);
-          clearTimeout(animationTimerRef.current);
-          animationTimerRef.current = setTimeout(() => setJustPracticed({}), 600);
+          setTimeout(() => setJustPracticed({}), 600);
         }
 
-        setLanguageStreaks((prev) => streaksChanged(prev, data) ? data : prev);
+        // Slow down polling once current language is practiced
+        const current = data.find((l) => l.code === userDetails.learned_language);
+        if (current?.practiced_today) {
+          setPollingRate(POLL_SLOW_MS);
+        }
 
-        const hasMultiple = data.length > 1;
-        if (hasMultiple !== prevMultipleRef.current) {
-          prevMultipleRef.current = hasMultiple;
-          onMultipleLanguagesRef.current?.(hasMultiple);
+        setLanguageStreaks(data);
+        if (onMultipleLanguages) {
+          const currentCode = userDetails.learned_language;
+          const visible = data.filter(
+            (l) => l.code === currentCode || l.daily_streak >= 2,
+          );
+          onMultipleLanguages(visible.length > 1);
         }
       });
     }
 
     fetchStreaks();
-    let interval = setInterval(fetchStreaks, POLL_INTERVAL_MS);
+    setPollingRate(POLL_FAST_MS);
 
-    const onVisibilityChange = () => {
-      if (document.hidden) {
-        clearInterval(interval);
-      } else {
-        fetchStreaks();
-        interval = setInterval(fetchStreaks, POLL_INTERVAL_MS);
-      }
-    };
-    document.addEventListener("visibilitychange", onVisibilityChange);
-
-    return () => {
-      clearInterval(interval);
-      clearTimeout(animationTimerRef.current);
-      document.removeEventListener("visibilitychange", onVisibilityChange);
-    };
+    return () => clearInterval(intervalRef.current);
   }, [api, userDetails.learned_language]);
 
   if (languageStreaks.length <= 1) return null;
 
   const currentCode = userDetails.learned_language;
 
-  const displayList = languageStreaks.filter(
-    (l) => l.code === currentCode || l.daily_streak >= 2,
+  // Current language first so it's never hidden by CSS, then others by streak
+  const currentLang = languageStreaks.find((l) => l.code === currentCode);
+  const others = languageStreaks.filter(
+    (l) => l.code !== currentCode && l.daily_streak >= 2,
   );
+  const displayList = [...(currentLang ? [currentLang] : []), ...others];
 
   if (displayList.length <= 1) return null;
 
@@ -163,9 +151,13 @@ export default function LanguageStreakBar({ onMultipleLanguages, onOpenModal }) 
         return (
           <LanguageItem
             key={lang.code}
-            $active={isActive}
             onClick={() => isActive ? onOpenModal() : switchLanguage(api, userDetails, setUserDetails, lang.code)}
             title={lang.language}
+            style={{
+              opacity: isActive ? 1 : 0.7,
+              background: isActive ? `${lightPurple}33` : "transparent",
+              boxShadow: isActive ? `inset 0 0 0 1.5px ${lightPurple}` : "none",
+            }}
           >
             <Flag
               src={`/static/flags-new/${lang.code}.svg`}

@@ -315,7 +315,6 @@ export default function TodayAudio({ setShowTabs }) {
         // Check if the error is a topic rejection (user can try a different topic)
         const isSuggestionRejection = error.message && error.message.toLowerCase().includes("can't generate a lesson for this");
         if (isSuggestionRejection) {
-          // Don't disable generation — user can edit the topic and try again
           setError(error.message);
           return;
         }
