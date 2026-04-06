@@ -3,4 +3,7 @@
 - Topic mode themes dialogues around a chosen subject
 - Past lessons now show their topic or situation context
 - Language streak bar for quick switching between languages
+- Streak bar now shows even with a single language
+- Sound chime when you achieve a daily streak
+- Fix audio lesson state not resetting on language switch
 - Dark mode improvements
