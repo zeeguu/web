@@ -26,6 +26,15 @@ export default function TodayAudio({ setShowTabs }) {
     return getSavedSuggestion(lang);
   });
 
+  // Re-initialize state when language changes
+  useEffect(() => {
+    setSuggestionType(getSavedSuggestionType(lang));
+    setSuggestion(getSavedSuggestion(lang));
+    setLessonData(null);
+    setError(null);
+    setCanGenerateLesson(null);
+  }, [lang]);
+
   // Poll for progress when generating
   useEffect(() => {
     const generatingKey = `zeeguu_generating_lesson_${lang}_${new Date().toDateString()}`;
@@ -267,7 +276,7 @@ export default function TodayAudio({ setShowTabs }) {
         );
       },
     );
-  }, [api]);
+  }, [api, lang]);
 
   const handleGenerateLesson = () => {
     const generatingKey = `zeeguu_generating_lesson_${lang}_${new Date().toDateString()}`;
