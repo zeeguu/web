@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { orange500 } from "../components/colors";
+import { orange500, streakFireOrange } from "../components/colors";
 
 export const ProfileWrapper = styled.div`
   display: flex;
@@ -123,7 +123,7 @@ export const StatsRow = styled.div`
   }
 
   .stat-value {
-    color: #ff9800;
+    color: ${streakFireOrange};
     margin-right: 0.3rem;
   }
 
@@ -203,8 +203,8 @@ export const TabBar = styled.div`
     border-color 0.5s;
 
     &.active {
-      color: #ff9800;
-      border-bottom-color: #ff9800;
+      color: ${streakFireOrange};
+      border-bottom-color: ${streakFireOrange};
       font-weight: 600;
     }
 

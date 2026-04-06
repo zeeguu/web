@@ -5,8 +5,8 @@ import * as s from "./Badges.sc.js";
 export default function Badges({ username }) {
   const api = useContext(APIContext);
 
-  const iconBasePath = "../../../public/static/badges/";
-  const defaultLogoPath = "../../../public/static/images/zeeguuLogo.svg";
+  const iconBasePath = "static/badges/";
+  const defaultLogoPath = "static/images/zeeguuLogo.svg";
 
   const [levels, setLevels] = useState([]);
   const [isLoading, setIsLoading] = useState(true);

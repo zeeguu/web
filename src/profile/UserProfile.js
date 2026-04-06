@@ -35,6 +35,7 @@ import Stack from "@mui/material/Stack";
 import { FriendActionButton } from "../friends/FriendRow.sc";
 import Leaderboards from "../leaderboards/Leaderboards";
 import { LEADERBOARD_SCOPES } from "../leaderboards/leaderboardTypes";
+import { streakFireOrange } from "../components/colors.js";
 
 export default function UserProfile() {
   const api = useContext(APIContext);
@@ -386,16 +387,16 @@ export default function UserProfile() {
                         <Stack direction="row" spacing={-1.2} alignItems="center">
                           <LocalFireDepartmentIcon
                             sx={{
-                              color: "#ff9800",
+                              color: streakFireOrange,
                               fontSize: "1.2rem",
                               filter:
                                 "drop-shadow(2px 0 0 var(--streak-banner-border)) drop-shadow(0 2px 0 var(--streak-banner-border))",
                             }}
                           />
-                          <LocalFireDepartmentIcon sx={{ color: "#ff9800", fontSize: "1.2rem" }} />
+                          <LocalFireDepartmentIcon sx={{ color: streakFireOrange, fontSize: "1.2rem" }} />
                         </Stack>
                       ) : (
-                        <LocalFireDepartmentIcon sx={{ color: "#ff9800", fontSize: "1.2rem" }} />
+                        <LocalFireDepartmentIcon sx={{ color: streakFireOrange, fontSize: "1.2rem" }} />
                       )}
                       <span className="stat-value">{streakValue}</span>
                       <span className="stat-label">{isFriendAccepted ? "day friend streak" : "day streak"}</span>
@@ -455,7 +456,7 @@ export default function UserProfile() {
                     {(isOwnProfile || isFriendAccepted) && (
                       <div className="streaks-info">
                         <div className="streak-item">
-                          <LocalFireDepartmentIcon sx={{ color: "#ff9800", fontSize: "1rem" }} />
+                          <LocalFireDepartmentIcon sx={{ color: streakFireOrange, fontSize: "1rem" }} />
                           <span>{languageInfo.daily_streak}</span>
                         </div>
                         <div className="streak-item max-streak">

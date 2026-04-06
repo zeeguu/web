@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { streakFireOrange } from "../components/colors";
 
 export const PeriodNavButton = styled.button`
   padding: 0;
@@ -74,7 +75,7 @@ export const TabButton = styled.button`
   cursor: pointer;
   flex: 1;
 
-  background: ${({ $active }) => ($active ? "#ff9800" : "var(--active-bg)")};
+  background: ${({ $active }) => ($active ? streakFireOrange : "var(--active-bg)")};
   color: ${({ $active }) => ($active ? "var(--text-primary)" : "var(--text-secondary)")};
   font-weight: ${({ $active }) => ($active ? 500 : 400)};
 

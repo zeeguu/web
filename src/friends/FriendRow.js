@@ -11,6 +11,7 @@ import { LanguageOverflowBubble } from "../profile/UserProfile.sc";
 import UserBaseInfo from "../components/UserBaseInfo";
 import * as s from "./FriendRow.sc";
 import useScreenWidth from "../hooks/useScreenWidth";
+import { streakFireOrange } from "../components/colors.js";
 
 export default function FriendRow({
   user,
@@ -117,12 +118,12 @@ export default function FriendRow({
           <Stack direction="row" spacing={-1.2} alignItems="center">
             <LocalFireDepartmentIcon
               sx={{
-                color: "#ff9800",
+                color: streakFireOrange,
                 fontSize: "1.4rem",
                 filter: "drop-shadow(2px 0 0 var(--card-bg)) drop-shadow(0 2px 0 var(--card-bg))",
               }}
             />
-            <LocalFireDepartmentIcon sx={{ color: "#ff9800", fontSize: "1.4rem" }} />
+            <LocalFireDepartmentIcon sx={{ color: streakFireOrange, fontSize: "1.4rem" }} />
           </Stack>
           <span>{user.friendship.friend_streak ?? 0}</span>
         </s.StreakContainer>

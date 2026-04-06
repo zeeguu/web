@@ -1,6 +1,5 @@
 import styled from "styled-components";
-import { orange500 } from "../../components/colors";
-import CheckIcon from "@mui/icons-material/Check";
+import { orange500, streakFireOrange } from "../../components/colors";
 
 export const AvatarWrapper = styled.div`
   display: flex;
@@ -103,7 +102,7 @@ export const SelectionCheckmark = styled.div`
   padding: 2px;
   border-radius: 50%;
   background: var(--streak-banner-border);
-  stroke: #ff9800;
+  stroke: ${streakFireOrange};
   stroke-width: 3;
   display: flex;
   justify-content: center;
