@@ -194,9 +194,11 @@ export default function TodayAudio({ setShowTabs }) {
       (data) => {
         setCanGenerateLesson(data.feasible);
         if (!data.feasible) {
-          setError(data.message || "Not enough words available to generate a lesson.");
-          // Reset status to available since generation isn't possible
-          setUserDetails((prev) => ({ ...prev, daily_audio_status: null }));
+          setError("Not enough words for a vocabulary lesson. Try a Topic or Situation instead!");
+          // If user had auto selected, switch to topic
+          if (suggestionType === "auto") {
+            setSuggestionType("topic");
+          }
         }
       },
       (error) => {
@@ -324,9 +326,7 @@ export default function TodayAudio({ setShowTabs }) {
         // Check if the error is related to no words in learning
         let errorMsg;
         if (error.message && error.message.toLowerCase().includes("not enough words")) {
-          errorMsg = "Not enough words in learning to generate a lesson. Need at least 2 words that were not in audio lessons before";
-          // Only cache permanent errors — not transient network failures
-          localStorage.setItem(failedKey, errorMsg);
+          errorMsg = "Not enough words for a vocabulary lesson. Try a Topic or Situation instead!";
         } else {
           errorMsg = error.message || "Failed to generate daily lesson. Please try again.";
         }
@@ -410,17 +410,9 @@ export default function TodayAudio({ setShowTabs }) {
   }
 
   if (!lessonData) {
-    // Cannot generate lesson
-    if (canGenerateLesson === false) {
-      return (
-        <EmptyState
-          message={error || "You need more words in your learning vocabulary to generate an audio lesson. Try reading more articles and translating words first."}
-        />
-      );
-    }
-
-    // Can generate lesson - show the generate button
-    if (canGenerateLesson === true) {
+    if (canGenerateLesson !== null) {
+      const autoDisabled = canGenerateLesson === false;
+      const canGenerate = !autoDisabled || suggestionType !== "auto";
       return (
         <GenerateView>
           {error && (
@@ -434,8 +426,13 @@ export default function TodayAudio({ setShowTabs }) {
             suggestion={suggestion}
             setSuggestion={setSuggestion}
             lang={lang}
+            autoDisabled={autoDisabled}
           />
-          <GenerateButton onClick={handleGenerateLesson}>
+          <GenerateButton
+            onClick={handleGenerateLesson}
+            disabled={!canGenerate}
+            style={{ opacity: canGenerate ? 1 : 0.4 }}
+          >
             Generate
             <br />
             Daily Lesson

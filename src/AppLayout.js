@@ -90,11 +90,12 @@ export default function AppLayout(props) {
               // Update the key when the learned_language changes to trigger a re-render
               // of the app content that needs real-time updates. This is a smoother
               // alternative to window.location.reload() when switching the practiced language in navigation.
-              key={userDetails.learned_language}
               id="scrollHolder"
             >
               {screenWidth <= MOBILE_WIDTH && <TopBar />}
-              {appContent}
+              <div key={userDetails.learned_language}>
+                {appContent}
+              </div>
             </s.AppContent>
             {screenWidth <= MOBILE_WIDTH && <BottomNav />}
           </s.AppLayout>

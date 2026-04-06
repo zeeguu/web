@@ -23,6 +23,7 @@ import styled from "styled-components";
 
 const MAX_MODAL_LANGUAGES = 7;
 const fireIconSx = { color: streakFireOrange, fontSize: "0.9rem" };
+const fireIconGraySx = { color: "var(--text-faint, #999)", fontSize: "0.9rem" };
 const spinnerSx = { color: "var(--streak-banner-text)" };
 
 const CefrSection = styled.span`
@@ -41,7 +42,7 @@ const StreakBadge = styled.span`
   margin-left: 0.5em;
   font-size: 0.85em;
   font-weight: 600;
-  color: ${streakFireOrange};
+  color: ${({ $practiced }) => ($practiced ? streakFireOrange : "var(--text-faint, #999)")};
 `;
 
 const CefrSelect = styled.select`
@@ -71,6 +72,7 @@ export default function LanguageModal({ open, setOpen }) {
   const [learnedLanguageCode, setLearnedLanguageCode] = useState(null);
   const [activeLanguages, setActiveLanguages] = useState(null);
   const [streaksByCode, setStreaksByCode] = useState({});
+  const [practicedByCode, setPracticedByCode] = useState({});
   const [isSwitching, setIsSwitching] = useState(false);
 
   useEffect(() => {
@@ -85,9 +87,14 @@ export default function LanguageModal({ open, setOpen }) {
 
     api.getAllLanguageStreaks((data) => {
       if (cancelled) return;
-      const map = {};
-      data.forEach((l) => { map[l.code] = l.daily_streak; });
-      setStreaksByCode(map);
+      const streakMap = {};
+      const practicedMap = {};
+      data.forEach((l) => {
+        streakMap[l.code] = l.daily_streak;
+        practicedMap[l.code] = l.practiced_today;
+      });
+      setStreaksByCode(streakMap);
+      setPracticedByCode(practicedMap);
     });
 
     return () => {
@@ -177,12 +184,14 @@ export default function LanguageModal({ open, setOpen }) {
                   onChange={(e) => {
                     updateLearnedLanguage(e.target.value);
                   }}
-                  optionLabel={(e) => (
+                  optionLabel={(e) => {
+                    const practiced = practicedByCode[e.code];
+                    return (
                     <>
                       {e.language}
-                      {streaksByCode[e.code] >= 2 && (
-                        <StreakBadge>
-                          <LocalFireDepartmentIcon sx={fireIconSx} />
+                      {streaksByCode[e.code] >= 1 && (
+                        <StreakBadge $practiced={practiced}>
+                          <LocalFireDepartmentIcon sx={practiced ? fireIconSx : fireIconGraySx} />
                           {streaksByCode[e.code]}
                         </StreakBadge>
                       )}
@@ -200,7 +209,7 @@ export default function LanguageModal({ open, setOpen }) {
                         </CefrSelect>
                       </CefrSection>
                     </>
-                  )}
+                  ); }}
                   optionValue={(e) => e.code}
                   optionId={(e) => e.id}
                   dynamicIcon={(e) => <DynamicFlagImage languageCode={e.code} />}
