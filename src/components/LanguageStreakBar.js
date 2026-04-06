@@ -1,17 +1,17 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { APIContext } from "../contexts/APIContext";
 import { UserContext } from "../contexts/UserContext";
 import { switchLanguage } from "../utils/languageSwitcher";
-import { streakFireOrange, zeeguuOrange } from "./colors";
+import { streakFireOrange, lightPurple } from "./colors";
 import LocalFireDepartmentIcon from "@mui/icons-material/LocalFireDepartment";
-import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
-import styled from "styled-components";
+import styled, { keyframes } from "styled-components";
 
-const Wrapper = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 0.4rem;
-  margin-left: auto;
+const POLL_INTERVAL_MS = 60_000;
+
+const pulse = keyframes`
+  0% { transform: scale(1); }
+  50% { transform: scale(1.4); }
+  100% { transform: scale(1); }
 `;
 
 const Bar = styled.div`
@@ -19,14 +19,15 @@ const Bar = styled.div`
   align-items: center;
   gap: 0.4rem;
   overflow: hidden;
+  margin-left: auto;
 `;
 
 const LanguageItem = styled.button`
   display: flex;
   align-items: center;
   gap: 0.25rem;
-  background: ${({ $active }) => ($active ? "var(--streak-banner-hover)" : "none")};
-  border: ${({ $active }) => ($active ? `1.5px solid ${zeeguuOrange}` : "1.5px solid transparent")};
+  background: ${({ $active }) => ($active ? `${lightPurple}33` : "none")};
+  border: ${({ $active }) => ($active ? `1.5px solid ${lightPurple}` : "1.5px solid transparent")};
   border-radius: 1rem;
   padding: 0.15rem 0.4rem 0.15rem 0.2rem;
   cursor: pointer;
@@ -43,7 +44,7 @@ const LanguageItem = styled.button`
     display: none;
   }
 
-  @media (min-width: 400px) {
+  @media (min-width: 500px) {
     &:nth-child(n+4) {
       display: flex;
     }
@@ -64,84 +65,95 @@ const Flag = styled.img`
 const StreakNumber = styled.span`
   font-weight: 700;
   font-size: 0.85rem;
-  color: inherit;
+  color: ${({ $practiced }) => ($practiced ? "var(--streak-banner-text)" : "var(--text-faint, #999)")};
+  animation: ${({ $justPracticed }) => ($justPracticed ? pulse : "none")} 0.5s ease-out;
 `;
 
 const fireIconSx = { color: streakFireOrange, fontSize: "0.9rem" };
-const moreIconSx = { fontSize: "1.2rem" };
-
-const MoreButton = styled.button`
-  background: none;
-  border: none;
-  padding: 0.15rem;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  color: inherit;
-  opacity: 0.7;
-
-  &:hover {
-    opacity: 1;
-  }
-`;
+const fireIconGraySx = { color: "var(--text-faint, #999)", fontSize: "0.9rem" };
 
 export default function LanguageStreakBar({ onMultipleLanguages, onOpenModal }) {
   const api = useContext(APIContext);
   const { userDetails, setUserDetails } = useContext(UserContext);
   const [languageStreaks, setLanguageStreaks] = useState([]);
+  const [justPracticed, setJustPracticed] = useState({});
+  const prevPracticedRef = useRef({});
 
-  useEffect(() => {
-    let cancelled = false;
+  function fetchStreaks() {
     api.getAllLanguageStreaks((data) => {
-      if (cancelled) return;
+      // Detect transitions from not-practiced to practiced
+      const newJustPracticed = {};
+      const prev = prevPracticedRef.current;
+      data.forEach((lang) => {
+        if (lang.practiced_today && prev[lang.code] === false) {
+          newJustPracticed[lang.code] = true;
+        }
+      });
+
+      // Update prev reference
+      const currentPracticed = {};
+      data.forEach((lang) => { currentPracticed[lang.code] = lang.practiced_today; });
+      prevPracticedRef.current = currentPracticed;
+
+      // Trigger animation for newly practiced languages
+      if (Object.keys(newJustPracticed).length > 0) {
+        setJustPracticed(newJustPracticed);
+        setTimeout(() => setJustPracticed({}), 600);
+      }
+
       setLanguageStreaks(data);
       if (onMultipleLanguages) {
         onMultipleLanguages(data.length > 1);
       }
     });
-    return () => { cancelled = true; };
+  }
+
+  // Initial fetch + poll
+  useEffect(() => {
+    fetchStreaks();
+    const interval = setInterval(fetchStreaks, POLL_INTERVAL_MS);
+    return () => clearInterval(interval);
   }, [api, userDetails.learned_language]);
 
   if (languageStreaks.length <= 1) return null;
 
   const currentCode = userDetails.learned_language;
-  const currentLang = languageStreaks.find((l) => l.code === currentCode);
-  const others = languageStreaks.filter(
-    (l) => l.code !== currentCode && l.daily_streak >= 2,
+
+  // Keep API order (by streak descending), always include current language
+  const displayList = languageStreaks.filter(
+    (l) => l.code === currentCode || l.daily_streak >= 2,
   );
-  const displayList = [...(currentLang ? [currentLang] : []), ...others];
 
   if (displayList.length <= 1) return null;
 
   return (
-    <Wrapper>
-      <Bar>
-        {displayList.map((lang) => {
-          const isActive = lang.code === currentCode;
-          return (
-            <LanguageItem
-              key={lang.code}
-              $active={isActive}
-              onClick={() => switchLanguage(api, userDetails, setUserDetails, lang.code)}
-              title={lang.language}
-            >
-              <Flag
-                src={`/static/flags-new/${lang.code}.svg`}
-                alt={lang.language}
-              />
-              {lang.daily_streak >= 2 && (
-                <>
-                  <LocalFireDepartmentIcon sx={fireIconSx} />
-                  <StreakNumber>{lang.daily_streak}</StreakNumber>
-                </>
-              )}
-            </LanguageItem>
-          );
-        })}
-      </Bar>
-      <MoreButton onClick={onOpenModal} title="More languages">
-        <MoreHorizIcon sx={moreIconSx} />
-      </MoreButton>
-    </Wrapper>
+    <Bar>
+      {displayList.map((lang) => {
+        const isActive = lang.code === currentCode;
+        const practiced = lang.practiced_today;
+        const animating = justPracticed[lang.code];
+        return (
+          <LanguageItem
+            key={lang.code}
+            $active={isActive}
+            onClick={() => isActive ? onOpenModal() : switchLanguage(api, userDetails, setUserDetails, lang.code)}
+            title={lang.language}
+          >
+            <Flag
+              src={`/static/flags-new/${lang.code}.svg`}
+              alt={lang.language}
+            />
+            {(lang.daily_streak >= 1 || isActive) && (
+              <>
+                <LocalFireDepartmentIcon sx={practiced ? fireIconSx : fireIconGraySx} />
+                <StreakNumber $practiced={practiced} $justPracticed={animating}>
+                  {lang.daily_streak}
+                </StreakNumber>
+              </>
+            )}
+          </LanguageItem>
+        );
+      })}
+    </Bar>
   );
 }
