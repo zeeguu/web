@@ -8,7 +8,7 @@ import FullWidthErrorMsg from "../components/FullWidthErrorMsg.sc";
 import useListeningSession from "../hooks/useListeningSession";
 import { AUDIO_STATUS, GENERATION_PROGRESS } from "./AudioLessonConstants";
 import { GenerateView, GenerateButton } from "./GenerateButton.sc";
-import SuggestionSelector, { getSavedSuggestion, getSavedSuggestionType } from "./SuggestionSelector";
+import SuggestionSelector, { getSavedSuggestion, getSavedSuggestionType, suggestionKey } from "./SuggestionSelector";
 import LessonPlaybackView from "./LessonPlaybackView";
 import { wordsAsTile, shortDate } from "./audioUtils";
 
@@ -85,8 +85,7 @@ export default function TodayAudio({ setShowTabs }) {
       api.getTodaysLesson(handleLessonReady, () => {});
     };
 
-    // Poll for generation progress
-    pollInterval = setInterval(() => {
+    const pollForProgress = () => {
       api.getAudioLessonGenerationProgress(
         (progress) => {
           if (progress) {
@@ -126,10 +125,25 @@ export default function TodayAudio({ setShowTabs }) {
         // On progress API error, fall back to checking lesson directly
         checkForLesson,
       );
-    }, 1500);
+    };
+
+    // Poll for generation progress
+    pollInterval = setInterval(pollForProgress, 1500);
+
+    // Browsers throttle setInterval for background tabs, so check
+    // immediately when the user returns to the app
+    const onVisibilityChange = () => {
+      if (!document.hidden) {
+        pollForProgress();
+      }
+    };
+    document.addEventListener("visibilitychange", onVisibilityChange);
 
     // Cleanup on unmount
-    return stopPolling;
+    return () => {
+      stopPolling();
+      document.removeEventListener("visibilitychange", onVisibilityChange);
+    };
   }, [api, isGenerating]);
   const [openFeedback, setOpenFeedback] = useState(false);
   const [currentPlaybackTime, setCurrentPlaybackTime] = useState(0);
@@ -298,6 +312,14 @@ export default function TodayAudio({ setShowTabs }) {
         // Reset status back to available on error
         setUserDetails((prev) => ({ ...prev, daily_audio_status: null }));
 
+        // Check if the error is a topic rejection (user can try a different topic)
+        const isSuggestionRejection = error.message && error.message.toLowerCase().includes("can't generate a lesson for this");
+        if (isSuggestionRejection) {
+          // Don't disable generation — user can edit the topic and try again
+          setError(error.message);
+          return;
+        }
+
         setCanGenerateLesson(false);
 
         // Check if the error is related to no words in learning
@@ -335,13 +357,13 @@ export default function TodayAudio({ setShowTabs }) {
       progressDetail = generationProgress.message || "Processing...";
 
       // Calculate progress percentage (minimum 1%)
-      if (generationProgress.total_words > 0) {
-        const wordsCompleted = Math.max(0, generationProgress.current_word - 1);
-        let stepsInCurrentWord = 0;
+      if (generationProgress.total_segments > 0) {
+        const segmentsCompleted = Math.max(0, generationProgress.current_segment - 1);
+        let stepsInCurrentSegment = 0;
         if (generationProgress.total_steps > 0) {
-          stepsInCurrentWord = generationProgress.current_step / generationProgress.total_steps;
+          stepsInCurrentSegment = generationProgress.current_step / generationProgress.total_steps;
         }
-        progressPercent = Math.max(1, ((wordsCompleted + stepsInCurrentWord) / generationProgress.total_words) * 100);
+        progressPercent = Math.max(1, ((segmentsCompleted + stepsInCurrentSegment) / generationProgress.total_segments) * 100);
       }
     }
 
