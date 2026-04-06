@@ -1,4 +1,5 @@
 import { useCallback, useContext, useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { APIContext } from "../contexts/APIContext";
 import { UserContext } from "../contexts/UserContext";
 import { switchLanguage } from "../utils/languageSwitcher";
@@ -6,6 +7,7 @@ import { streakFireOrange, lightPurple } from "./colors";
 import LocalFireDepartmentIcon from "@mui/icons-material/LocalFireDepartment";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import styled, { keyframes } from "styled-components";
+import playStreakChime from "../utils/streakChime";
 
 const POLL_FAST_MS = 5_000;
 const POLL_SLOW_MS = 60_000;
@@ -17,6 +19,36 @@ const pulse = keyframes`
   0% { transform: scale(1); }
   50% { transform: scale(1.4); }
   100% { transform: scale(1); }
+`;
+
+const slideDownUp = keyframes`
+  0% { transform: translateY(-100%); }
+  12% { transform: translateY(0); }
+  80% { transform: translateY(0); }
+  100% { transform: translateY(-100%); }
+`;
+
+const PeekOverlay = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  background: var(--streak-banner-bg);
+  color: var(--streak-banner-text);
+  border-bottom: 1px solid var(--streak-banner-border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.4rem 0.8rem;
+  animation: ${slideDownUp} 2.5s ease-in-out forwards;
+`;
+
+const PeekStreakNumber = styled.span`
+  font-weight: 700;
+  font-size: 0.85rem;
+  color: var(--streak-banner-text);
+  animation: ${pulse} 0.6s ease-out 0.35s both;
 `;
 
 const Wrapper = styled.div`
@@ -120,9 +152,12 @@ export default function LanguageStreakBar({ onMultipleLanguages, onOpenModal }) 
   const [justPracticed, setJustPracticed] = useState({});
   const [switchingTo, setSwitchingTo] = useState(null);
   const [maxSlots, setMaxSlots] = useState(4);
+  const [showPeek, setShowPeek] = useState(false);
   const prevPracticedRef = useRef({});
   const intervalRef = useRef(null);
   const wrapperRef = useRef(null);
+  const isVisibleRef = useRef(true);
+  const peekLangsRef = useRef({});
 
   const updateSlots = useCallback(() => {
     setMaxSlots(computeMaxSlots(wrapperRef.current));
@@ -133,6 +168,19 @@ export default function LanguageStreakBar({ onMultipleLanguages, onOpenModal }) 
     window.addEventListener("resize", updateSlots);
     return () => window.removeEventListener("resize", updateSlots);
   }, [updateSlots]);
+
+  const hasStreaks = languageStreaks.length > 0;
+  useEffect(() => {
+    if (!hasStreaks) return;
+    const el = wrapperRef.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => { isVisibleRef.current = entry.isIntersecting; },
+      { threshold: 0.1 },
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [hasStreaks]);
 
   useEffect(() => {
     function setPollingRate(ms) {
@@ -157,6 +205,11 @@ export default function LanguageStreakBar({ onMultipleLanguages, onOpenModal }) 
         if (Object.keys(newJustPracticed).length > 0) {
           setJustPracticed(newJustPracticed);
           setTimeout(() => setJustPracticed({}), 600);
+          playStreakChime();
+          if (!isVisibleRef.current) {
+            peekLangsRef.current = newJustPracticed;
+            setShowPeek(true);
+          }
         }
 
         const current = data.find((l) => l.code === userDetails.learned_language);
@@ -198,44 +251,76 @@ export default function LanguageStreakBar({ onMultipleLanguages, onOpenModal }) 
   }
 
   return (
-    <Wrapper ref={wrapperRef}>
-      <Bar>
-        {visible.map((lang) => {
-          const isActive = lang.code === currentCode;
-          const practiced = lang.practiced_today;
-          const animating = justPracticed[lang.code];
-          return (
-            <LanguageItem
-              key={lang.code}
-              onClick={() => handleClick(lang.code)}
-              title={lang.language}
-              style={{
-                opacity: isActive ? 1 : 0.7,
-                background: isActive && visible.length > 1 ? `${lightPurple}33` : "transparent",
-                boxShadow: isActive && visible.length > 1 ? `inset 0 0 0 1.5px ${lightPurple}` : "none",
-              }}
-            >
-              <Flag
-                src={`/static/flags-new/${lang.code}.svg`}
-                alt={lang.language}
-              />
-              {(lang.daily_streak >= 1 || isActive) && (
-                <>
-                  <LocalFireDepartmentIcon sx={practiced ? fireIconSx : fireIconGraySx} />
-                  <StreakNumber $practiced={practiced} $justPracticed={animating}>
-                    {lang.daily_streak}
-                  </StreakNumber>
-                </>
-              )}
-            </LanguageItem>
-          );
-        })}
-      </Bar>
-      {hasHiddenStreaks && (
-        <MoreButton onClick={onOpenModal} title="More languages">
-          <MoreHorizIcon sx={moreIconSx} />
-        </MoreButton>
+    <>
+      <Wrapper ref={wrapperRef}>
+        <Bar>
+          {visible.map((lang) => {
+            const isActive = lang.code === currentCode;
+            const practiced = lang.practiced_today;
+            const animating = justPracticed[lang.code];
+            return (
+              <LanguageItem
+                key={lang.code}
+                onClick={() => handleClick(lang.code)}
+                title={lang.language}
+                style={{
+                  opacity: isActive ? 1 : 0.7,
+                  background: isActive && visible.length > 1 ? `${lightPurple}33` : "transparent",
+                  boxShadow: isActive && visible.length > 1 ? `inset 0 0 0 1.5px ${lightPurple}` : "none",
+                }}
+              >
+                <Flag
+                  src={`/static/flags-new/${lang.code}.svg`}
+                  alt={lang.language}
+                />
+                {(lang.daily_streak >= 1 || isActive) && (
+                  <>
+                    <LocalFireDepartmentIcon sx={practiced ? fireIconSx : fireIconGraySx} />
+                    <StreakNumber $practiced={practiced} $justPracticed={animating}>
+                      {lang.daily_streak}
+                    </StreakNumber>
+                  </>
+                )}
+              </LanguageItem>
+            );
+          })}
+        </Bar>
+        {hasHiddenStreaks && (
+          <MoreButton onClick={onOpenModal} title="More languages">
+            <MoreHorizIcon sx={moreIconSx} />
+          </MoreButton>
+        )}
+      </Wrapper>
+      {showPeek && createPortal(
+        <PeekOverlay onAnimationEnd={() => setShowPeek(false)}>
+          <Bar>
+            {visible.map((lang) => {
+              const isPeeked = peekLangsRef.current[lang.code];
+              return (
+                <LanguageItem key={lang.code} as="div" style={{ cursor: "default" }}>
+                  <Flag
+                    src={`/static/flags-new/${lang.code}.svg`}
+                    alt={lang.language}
+                  />
+                  {(lang.daily_streak >= 1 || lang.code === currentCode) && (
+                    <>
+                      <LocalFireDepartmentIcon sx={lang.practiced_today ? fireIconSx : fireIconGraySx} />
+                      {isPeeked ? (
+                        <PeekStreakNumber>{lang.daily_streak}</PeekStreakNumber>
+                      ) : (
+                        <StreakNumber $practiced={lang.practiced_today}>
+                          {lang.daily_streak}
+                        </StreakNumber>
+                      )}
+                    </>
+                  )}
+                </LanguageItem>
+              );
+            })}
+          </Bar>
+        </PeekOverlay>,
+        document.body,
       )}
-    </Wrapper>
+    </>
   );
 }
