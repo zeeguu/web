@@ -24,14 +24,12 @@ export default function LessonPlaybackView({
 
   return (
     <LessonWrapper>
-      <LessonTitle $compact={!!lessonData.suggestion}>
+      <LessonTitle>
         {lessonData.is_completed && <CompletionCheck>✓</CompletionCheck>}
-        {wordsAsTile(words)}
+        {lessonData.title || wordsAsTile(words)}
       </LessonTitle>
-      {lessonData.suggestion && (
-        <SuggestionSubtitle>
-          {lessonData.suggestion_type === "situation" ? "Situation" : "Topic"}: {lessonData.suggestion}
-        </SuggestionSubtitle>
+      {lessonData.canonical_suggestion && (
+        <SuggestionSubtitle>{lessonData.lesson_type === "situation" ? "Situation" : "Topic"}: <b>{lessonData.canonical_suggestion}</b></SuggestionSubtitle>
       )}
 
       {error && <div style={{ color: "red", marginBottom: "20px" }}>{error}</div>}
@@ -118,7 +116,7 @@ export default function LessonPlaybackView({
           </div>
         )}
 
-        <div style={{ marginTop: "40px", textAlign: "center" }}>
+        <div style={{ marginTop: "40px", textAlign: "center", display: "flex", justifyContent: "center", gap: "16px" }}>
           <button
             onClick={() => setOpenFeedback(true)}
             style={{
@@ -134,6 +132,29 @@ export default function LessonPlaybackView({
           >
             Feedback
           </button>
+          {userDetails?.name === "Mircea" && (
+            <button
+              onClick={() => {
+                if (window.confirm("Delete today's lesson?")) {
+                  api.deleteTodaysLesson(
+                    () => window.location.reload(),
+                    (err) => alert("Failed to delete: " + err.message),
+                  );
+                }
+              }}
+              style={{
+                backgroundColor: "transparent",
+                color: "var(--text-faint)",
+                border: "none",
+                padding: "4px 8px",
+                fontSize: "12px",
+                cursor: "pointer",
+                textDecoration: "underline",
+              }}
+            >
+              Delete lesson
+            </button>
+          )}
         </div>
 
         <FeedbackModal

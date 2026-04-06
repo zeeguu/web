@@ -6,7 +6,8 @@ import { streakFireOrange, lightPurple } from "./colors";
 import LocalFireDepartmentIcon from "@mui/icons-material/LocalFireDepartment";
 import styled, { keyframes } from "styled-components";
 
-const POLL_INTERVAL_MS = 60_000;
+const POLL_FAST_MS = 5_000;
+const POLL_SLOW_MS = 60_000;
 
 const pulse = keyframes`
   0% { transform: scale(1); }
@@ -26,16 +27,14 @@ const LanguageItem = styled.button`
   display: flex;
   align-items: center;
   gap: 0.25rem;
-  background: ${({ $active }) => ($active ? `${lightPurple}33` : "none")};
+  background: transparent;
   border: none;
-  outline: ${({ $active }) => ($active ? `1.5px solid ${lightPurple}` : "none")};
-  outline-offset: -1.5px;
+  box-shadow: none;
   border-radius: 1rem;
   padding: 0.15rem 0.4rem 0.15rem 0.2rem;
   cursor: pointer;
-  transition: background 0.15s;
+  transition: background 0.2s, box-shadow 0.2s, opacity 0.2s;
   flex-shrink: 0;
-  opacity: ${({ $active }) => ($active ? "1" : "0.6")};
 
   &:hover {
     opacity: 1;
@@ -80,45 +79,54 @@ export default function LanguageStreakBar({ onMultipleLanguages, onOpenModal }) 
   const [languageStreaks, setLanguageStreaks] = useState([]);
   const [justPracticed, setJustPracticed] = useState({});
   const prevPracticedRef = useRef({});
+  const intervalRef = useRef(null);
 
-  function fetchStreaks() {
-    api.getAllLanguageStreaks((data) => {
-      // Detect transitions from not-practiced to practiced
-      const newJustPracticed = {};
-      const prev = prevPracticedRef.current;
-      data.forEach((lang) => {
-        if (lang.practiced_today && prev[lang.code] === false) {
-          newJustPracticed[lang.code] = true;
+  useEffect(() => {
+    function setPollingRate(ms) {
+      clearInterval(intervalRef.current);
+      intervalRef.current = setInterval(fetchStreaks, ms);
+    }
+
+    function fetchStreaks() {
+      api.getAllLanguageStreaks((data) => {
+        const newJustPracticed = {};
+        const prev = prevPracticedRef.current;
+        data.forEach((lang) => {
+          if (lang.practiced_today && prev[lang.code] === false) {
+            newJustPracticed[lang.code] = true;
+          }
+        });
+
+        const currentPracticed = {};
+        data.forEach((lang) => { currentPracticed[lang.code] = lang.practiced_today; });
+        prevPracticedRef.current = currentPracticed;
+
+        if (Object.keys(newJustPracticed).length > 0) {
+          setJustPracticed(newJustPracticed);
+          setTimeout(() => setJustPracticed({}), 600);
+        }
+
+        // Slow down polling once current language is practiced
+        const current = data.find((l) => l.code === userDetails.learned_language);
+        if (current?.practiced_today) {
+          setPollingRate(POLL_SLOW_MS);
+        }
+
+        setLanguageStreaks(data);
+        if (onMultipleLanguages) {
+          const currentCode = userDetails.learned_language;
+          const visible = data.filter(
+            (l) => l.code === currentCode || l.daily_streak >= 2,
+          );
+          onMultipleLanguages(visible.length > 1);
         }
       });
+    }
 
-      // Update prev reference
-      const currentPracticed = {};
-      data.forEach((lang) => { currentPracticed[lang.code] = lang.practiced_today; });
-      prevPracticedRef.current = currentPracticed;
-
-      // Trigger animation for newly practiced languages
-      if (Object.keys(newJustPracticed).length > 0) {
-        setJustPracticed(newJustPracticed);
-        setTimeout(() => setJustPracticed({}), 600);
-      }
-
-      setLanguageStreaks(data);
-      if (onMultipleLanguages) {
-        const currentCode = userDetails.learned_language;
-        const visible = data.filter(
-          (l) => l.code === currentCode || l.daily_streak >= 2,
-        );
-        onMultipleLanguages(visible.length > 1);
-      }
-    });
-  }
-
-  // Initial fetch + poll
-  useEffect(() => {
     fetchStreaks();
-    const interval = setInterval(fetchStreaks, POLL_INTERVAL_MS);
-    return () => clearInterval(interval);
+    setPollingRate(POLL_FAST_MS);
+
+    return () => clearInterval(intervalRef.current);
   }, [api, userDetails.learned_language]);
 
   if (languageStreaks.length <= 1) return null;
@@ -143,9 +151,13 @@ export default function LanguageStreakBar({ onMultipleLanguages, onOpenModal }) 
         return (
           <LanguageItem
             key={lang.code}
-            $active={isActive}
             onClick={() => isActive ? onOpenModal() : switchLanguage(api, userDetails, setUserDetails, lang.code)}
             title={lang.language}
+            style={{
+              opacity: isActive ? 1 : 0.7,
+              background: isActive ? `${lightPurple}33` : "transparent",
+              boxShadow: isActive ? `inset 0 0 0 1.5px ${lightPurple}` : "none",
+            }}
           >
             <Flag
               src={`/static/flags-new/${lang.code}.svg`}
