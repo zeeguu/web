@@ -65,8 +65,7 @@ export default function SuggestionSelector({ suggestionType, setSuggestionType, 
             {label}
           </SelectablePill>
           );
-        }
-        ))}
+        })}
       </PillRow>
 
       <DescriptionText>
