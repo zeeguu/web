@@ -118,6 +118,7 @@ export default function LanguageStreakBar({ onMultipleLanguages, onOpenModal }) 
   const { userDetails, setUserDetails } = useContext(UserContext);
   const [languageStreaks, setLanguageStreaks] = useState([]);
   const [justPracticed, setJustPracticed] = useState({});
+  const [switchingTo, setSwitchingTo] = useState(null);
   const [maxSlots, setMaxSlots] = useState(4);
   const prevPracticedRef = useRef({});
   const intervalRef = useRef(null);
@@ -182,10 +183,21 @@ export default function LanguageStreakBar({ onMultipleLanguages, onOpenModal }) 
 
   if (languageStreaks.length <= 1) return null;
 
-  const currentCode = userDetails.learned_language;
+  const currentCode = switchingTo || userDetails.learned_language;
   const visible = pickVisible(languageStreaks, currentCode, maxSlots);
 
   if (visible.length <= 1) return null;
+
+  function handleClick(langCode) {
+    if (langCode === currentCode) {
+      onOpenModal();
+    } else {
+      setSwitchingTo(langCode);
+      switchLanguage(api, userDetails, setUserDetails, langCode, () => {
+        setSwitchingTo(null);
+      });
+    }
+  }
 
   return (
     <Wrapper ref={wrapperRef}>
@@ -197,7 +209,7 @@ export default function LanguageStreakBar({ onMultipleLanguages, onOpenModal }) 
           return (
             <LanguageItem
               key={lang.code}
-              onClick={() => isActive ? onOpenModal() : switchLanguage(api, userDetails, setUserDetails, lang.code)}
+              onClick={() => handleClick(lang.code)}
               title={lang.language}
               style={{
                 opacity: isActive ? 1 : 0.7,
