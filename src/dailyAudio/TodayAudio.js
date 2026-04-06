@@ -415,11 +415,6 @@ export default function TodayAudio({ setShowTabs }) {
       const canGenerate = suggestionType !== "auto" || !autoDisabled;
       return (
         <GenerateView>
-          {showError && (
-            <FullWidthErrorMsg style={{ marginBottom: "20px", maxWidth: "500px" }}>
-              {error}
-            </FullWidthErrorMsg>
-          )}
           <SuggestionSelector
             suggestionType={suggestionType}
             setSuggestionType={setSuggestionType}
@@ -428,12 +423,16 @@ export default function TodayAudio({ setShowTabs }) {
             lang={lang}
             autoDisabled={autoDisabled}
           />
-          {canGenerate && (
+          {canGenerate ? (
             <GenerateButton onClick={handleGenerateLesson}>
               Generate
               <br />
               Daily Lesson
             </GenerateButton>
+          ) : (
+            <p style={{ color: "var(--text-secondary)", textAlign: "center", maxWidth: "300px", marginTop: "20px" }}>
+              {error || "Not enough words for a vocabulary lesson. Try a Topic or Situation instead!"}
+            </p>
           )}
         </GenerateView>
       );
