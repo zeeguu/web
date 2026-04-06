@@ -7,6 +7,7 @@ import { UserContext } from "../contexts/UserContext";
 import * as s from "./Leaderboards.sc";
 import { LEADERBOARD_SCOPES, LEADERBOARD_TYPES } from "./leaderboardTypes";
 import Selector from "../components/Selector";
+import { endOfWeek, getISOWeek, getISOWeekYear, startOfWeek } from "date-fns";
 
 function getMetricValue(entry) {
   return Number(entry.value || 0);
@@ -22,28 +23,18 @@ function formatDateLabel(date) {
 
 function computeWeeklyPeriod(weekShift = 0) {
   const now = new Date();
+  const now_shifted = new Date(now.getTime() + weekShift * 7 * 24 * 60 * 60 * 1000);
 
-  const day = now.getDay();
-  const diff = day === 0 ? -6 : 1 - day;
+  const monday = startOfWeek(now_shifted, { weekStartsOn: 1 });
+  const sunday = endOfWeek(now_shifted, { weekStartsOn: 1 });
 
-  const monday = new Date(now);
-  monday.setDate(now.getDate() + diff + weekShift * 7);
-
-  const sunday = new Date(monday);
-  sunday.setDate(monday.getDate() + 6);
-
-  const temp = new Date(monday);
-  temp.setDate(temp.getDate() + 3);
-
-  const year = temp.getFullYear();
-  const week1 = new Date(year, 0, 4);
-
-  const week = 1 + Math.round(((temp - week1) / 86400000 - 3 + ((week1.getDay() + 6) % 7)) / 7);
+  const week = getISOWeek(now_shifted);
+  const year = getISOWeekYear(now_shifted);
 
   const pad = (n) => String(n).padStart(2, "0");
 
-  const fromStr = `${monday.getFullYear()}-${pad(monday.getMonth() + 1)}-${pad(monday.getDate())}`;
-  const toStr = `${sunday.getFullYear()}-${pad(sunday.getMonth() + 1)}-${pad(sunday.getDate())}`;
+  const fromStr = `${monday.getFullYear()}-${pad(monday.getMonth() + 1)}-${pad(monday.getDate())}T00:00:00`;
+  const toStr = `${sunday.getFullYear()}-${pad(sunday.getMonth() + 1)}-${pad(sunday.getDate())}T23:59:59`;
 
   return {
     from: monday,
@@ -240,9 +231,9 @@ export default function Leaderboards({
         <s.Table>
           <thead>
             <tr>
-              <s.TableHeadCell style={{width: "10%"}}>Rank</s.TableHeadCell>
-              <s.TableHeadCell style={{width: "65%"}}>User</s.TableHeadCell>
-              <s.TableHeadCell style={{width: "25%"}}>{activeLeaderboard?.metricLabel}</s.TableHeadCell>
+              <s.TableHeadCell style={{ width: "10%" }}>Rank</s.TableHeadCell>
+              <s.TableHeadCell style={{ width: "65%" }}>User</s.TableHeadCell>
+              <s.TableHeadCell style={{ width: "25%" }}>{activeLeaderboard?.metricLabel}</s.TableHeadCell>
             </tr>
           </thead>
           <tbody>
