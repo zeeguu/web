@@ -160,8 +160,7 @@ export default function TodayAudio({ setShowTabs }) {
   useEffect(() => {
     if (setShowTabs) {
       // Hide tabs only when we know user can't generate a lesson and has no lesson
-      const shouldHideTabs = canGenerateLesson === false && !lessonData;
-      setShowTabs(!shouldHideTabs);
+      setShowTabs(true);
     }
   }, [canGenerateLesson, lessonData, setShowTabs]);
 

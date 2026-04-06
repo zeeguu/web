@@ -45,7 +45,6 @@ export default function SuggestionSelector({ suggestionType, setSuggestionType, 
 
       <PillRow role="radiogroup" aria-label="Dialogue context">
         {Object.entries(SUGGESTION_TYPES).map(([key, { label }]) => {
-          const disabled = key === "auto" && autoDisabled;
           return (
           <SelectablePill
             key={key}
@@ -53,10 +52,8 @@ export default function SuggestionSelector({ suggestionType, setSuggestionType, 
             $selected={suggestionType === key}
             role="radio"
             aria-checked={suggestionType === key}
-            disabled={disabled}
-            style={disabled ? { opacity: 0.4 } : {}}
             onClick={() => {
-              if (disabled || suggestionType === key) return;
+              if (suggestionType === key) return;
               setSuggestionType(key);
               localStorage.setItem(SELECTED_LESSON_TYPE + lang, key);
               setSuggestion(key === "auto" ? "" : localStorage.getItem(suggestionKey(key, lang)) || "");
