@@ -2,7 +2,7 @@ import { useContext, useEffect, useState } from "react";
 import { APIContext } from "../contexts/APIContext";
 import { UserContext } from "../contexts/UserContext";
 import { switchLanguage } from "../utils/languageSwitcher";
-import { streakFireOrange, zeeguuOrange, lightPurple } from "./colors";
+import { streakFireOrange, lightPurple } from "./colors";
 import LocalFireDepartmentIcon from "@mui/icons-material/LocalFireDepartment";
 import styled from "styled-components";
 
@@ -36,7 +36,7 @@ const LanguageItem = styled.button`
     display: none;
   }
 
-  @media (min-width: 400px) {
+  @media (min-width: 500px) {
     &:nth-child(n+4) {
       display: flex;
     }
@@ -57,10 +57,20 @@ const Flag = styled.img`
 const StreakNumber = styled.span`
   font-weight: 700;
   font-size: 0.85rem;
-  color: inherit;
+  color: ${({ $practiced }) => ($practiced ? "var(--streak-banner-text)" : "var(--text-faint, #999)")};
+  ${({ $practiced }) => $practiced && `
+    animation: streakPulse 0.4s ease-out;
+  `}
+
+  @keyframes streakPulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.3); }
+    100% { transform: scale(1); }
+  }
 `;
 
 const fireIconSx = { color: streakFireOrange, fontSize: "0.9rem" };
+const fireIconGraySx = { color: "var(--text-faint, #999)", fontSize: "0.9rem" };
 
 export default function LanguageStreakBar({ onMultipleLanguages, onOpenModal }) {
   const api = useContext(APIContext);
@@ -82,11 +92,11 @@ export default function LanguageStreakBar({ onMultipleLanguages, onOpenModal }) 
   if (languageStreaks.length <= 1) return null;
 
   const currentCode = userDetails.learned_language;
-  const currentLang = languageStreaks.find((l) => l.code === currentCode);
-  const others = languageStreaks.filter(
-    (l) => l.code !== currentCode && l.daily_streak >= 2,
+
+  // Keep API order (by streak descending), always include current language
+  const displayList = languageStreaks.filter(
+    (l) => l.code === currentCode || l.daily_streak >= 2,
   );
-  const displayList = [...(currentLang ? [currentLang] : []), ...others];
 
   if (displayList.length <= 1) return null;
 
@@ -94,6 +104,7 @@ export default function LanguageStreakBar({ onMultipleLanguages, onOpenModal }) 
     <Bar>
       {displayList.map((lang) => {
         const isActive = lang.code === currentCode;
+        const practiced = lang.practiced_today;
         return (
           <LanguageItem
             key={lang.code}
@@ -107,8 +118,8 @@ export default function LanguageStreakBar({ onMultipleLanguages, onOpenModal }) 
             />
             {lang.daily_streak >= 2 && (
               <>
-                <LocalFireDepartmentIcon sx={fireIconSx} />
-                <StreakNumber>{lang.daily_streak}</StreakNumber>
+                <LocalFireDepartmentIcon sx={practiced ? fireIconSx : fireIconGraySx} />
+                <StreakNumber $practiced={practiced}>{lang.daily_streak}</StreakNumber>
               </>
             )}
           </LanguageItem>
