@@ -412,10 +412,11 @@ export default function TodayAudio({ setShowTabs }) {
   if (!lessonData) {
     if (canGenerateLesson !== null) {
       const autoDisabled = canGenerateLesson === false;
-      const canGenerate = !autoDisabled || suggestionType !== "auto";
+      const showError = error && suggestionType === "auto";
+      const canGenerate = suggestionType !== "auto" || !autoDisabled;
       return (
         <GenerateView>
-          {error && (
+          {showError && (
             <FullWidthErrorMsg style={{ marginBottom: "20px", maxWidth: "500px" }}>
               {error}
             </FullWidthErrorMsg>
@@ -428,15 +429,13 @@ export default function TodayAudio({ setShowTabs }) {
             lang={lang}
             autoDisabled={autoDisabled}
           />
-          <GenerateButton
-            onClick={handleGenerateLesson}
-            disabled={!canGenerate}
-            style={{ opacity: canGenerate ? 1 : 0.4 }}
-          >
-            Generate
-            <br />
-            Daily Lesson
-          </GenerateButton>
+          {canGenerate && (
+            <GenerateButton onClick={handleGenerateLesson}>
+              Generate
+              <br />
+              Daily Lesson
+            </GenerateButton>
+          )}
         </GenerateView>
       );
     }
