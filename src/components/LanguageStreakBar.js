@@ -1,10 +1,18 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { APIContext } from "../contexts/APIContext";
 import { UserContext } from "../contexts/UserContext";
 import { switchLanguage } from "../utils/languageSwitcher";
 import { streakFireOrange, lightPurple } from "./colors";
 import LocalFireDepartmentIcon from "@mui/icons-material/LocalFireDepartment";
-import styled from "styled-components";
+import styled, { keyframes } from "styled-components";
+
+const POLL_INTERVAL_MS = 60_000;
+
+const pulse = keyframes`
+  0% { transform: scale(1); }
+  50% { transform: scale(1.4); }
+  100% { transform: scale(1); }
+`;
 
 const Bar = styled.div`
   display: flex;
@@ -58,15 +66,7 @@ const StreakNumber = styled.span`
   font-weight: 700;
   font-size: 0.85rem;
   color: ${({ $practiced }) => ($practiced ? "var(--streak-banner-text)" : "var(--text-faint, #999)")};
-  ${({ $practiced }) => $practiced && `
-    animation: streakPulse 0.4s ease-out;
-  `}
-
-  @keyframes streakPulse {
-    0% { transform: scale(1); }
-    50% { transform: scale(1.3); }
-    100% { transform: scale(1); }
-  }
+  animation: ${({ $justPracticed }) => ($justPracticed ? pulse : "none")} 0.5s ease-out;
 `;
 
 const fireIconSx = { color: streakFireOrange, fontSize: "0.9rem" };
@@ -76,17 +76,43 @@ export default function LanguageStreakBar({ onMultipleLanguages, onOpenModal }) 
   const api = useContext(APIContext);
   const { userDetails, setUserDetails } = useContext(UserContext);
   const [languageStreaks, setLanguageStreaks] = useState([]);
+  const [justPracticed, setJustPracticed] = useState({});
+  const prevPracticedRef = useRef({});
 
-  useEffect(() => {
-    let cancelled = false;
+  function fetchStreaks() {
     api.getAllLanguageStreaks((data) => {
-      if (cancelled) return;
+      // Detect transitions from not-practiced to practiced
+      const newJustPracticed = {};
+      const prev = prevPracticedRef.current;
+      data.forEach((lang) => {
+        if (lang.practiced_today && prev[lang.code] === false) {
+          newJustPracticed[lang.code] = true;
+        }
+      });
+
+      // Update prev reference
+      const currentPracticed = {};
+      data.forEach((lang) => { currentPracticed[lang.code] = lang.practiced_today; });
+      prevPracticedRef.current = currentPracticed;
+
+      // Trigger animation for newly practiced languages
+      if (Object.keys(newJustPracticed).length > 0) {
+        setJustPracticed(newJustPracticed);
+        setTimeout(() => setJustPracticed({}), 600);
+      }
+
       setLanguageStreaks(data);
       if (onMultipleLanguages) {
         onMultipleLanguages(data.length > 1);
       }
     });
-    return () => { cancelled = true; };
+  }
+
+  // Initial fetch + poll
+  useEffect(() => {
+    fetchStreaks();
+    const interval = setInterval(fetchStreaks, POLL_INTERVAL_MS);
+    return () => clearInterval(interval);
   }, [api, userDetails.learned_language]);
 
   if (languageStreaks.length <= 1) return null;
@@ -105,6 +131,7 @@ export default function LanguageStreakBar({ onMultipleLanguages, onOpenModal }) 
       {displayList.map((lang) => {
         const isActive = lang.code === currentCode;
         const practiced = lang.practiced_today;
+        const animating = justPracticed[lang.code];
         return (
           <LanguageItem
             key={lang.code}
@@ -119,7 +146,9 @@ export default function LanguageStreakBar({ onMultipleLanguages, onOpenModal }) 
             {lang.daily_streak >= 2 && (
               <>
                 <LocalFireDepartmentIcon sx={practiced ? fireIconSx : fireIconGraySx} />
-                <StreakNumber $practiced={practiced}>{lang.daily_streak}</StreakNumber>
+                <StreakNumber $practiced={practiced} $justPracticed={animating}>
+                  {lang.daily_streak}
+                </StreakNumber>
               </>
             )}
           </LanguageItem>
