@@ -166,11 +166,7 @@ export default function LanguageStreakBar({ onMultipleLanguages, onOpenModal }) 
 
         setLanguageStreaks(data);
         if (onMultipleLanguages) {
-          const currentCode = userDetails.learned_language;
-          const visible = data.filter(
-            (l) => l.code === currentCode || l.daily_streak >= 1,
-          );
-          onMultipleLanguages(visible.length > 1);
+          onMultipleLanguages(true);
         }
       });
     }
@@ -181,12 +177,14 @@ export default function LanguageStreakBar({ onMultipleLanguages, onOpenModal }) 
     return () => clearInterval(intervalRef.current);
   }, [api, userDetails.learned_language]);
 
-  if (languageStreaks.length <= 1) return null;
+  if (languageStreaks.length === 0) return null;
 
   const currentCode = switchingTo || userDetails.learned_language;
   const visible = pickVisible(languageStreaks, currentCode, maxSlots);
-
-  if (visible.length <= 1) return null;
+  const eligible = languageStreaks.filter(
+    (l) => l.code === currentCode || l.daily_streak >= 1,
+  );
+  const hasHiddenStreaks = eligible.length > visible.length;
 
   function handleClick(langCode) {
     if (langCode === currentCode) {
@@ -213,8 +211,8 @@ export default function LanguageStreakBar({ onMultipleLanguages, onOpenModal }) 
               title={lang.language}
               style={{
                 opacity: isActive ? 1 : 0.7,
-                background: isActive ? `${lightPurple}33` : "transparent",
-                boxShadow: isActive ? `inset 0 0 0 1.5px ${lightPurple}` : "none",
+                background: isActive && visible.length > 1 ? `${lightPurple}33` : "transparent",
+                boxShadow: isActive && visible.length > 1 ? `inset 0 0 0 1.5px ${lightPurple}` : "none",
               }}
             >
               <Flag
@@ -233,9 +231,11 @@ export default function LanguageStreakBar({ onMultipleLanguages, onOpenModal }) 
           );
         })}
       </Bar>
-      <MoreButton onClick={onOpenModal} title="More languages">
-        <MoreHorizIcon sx={moreIconSx} />
-      </MoreButton>
+      {hasHiddenStreaks && (
+        <MoreButton onClick={onOpenModal} title="More languages">
+          <MoreHorizIcon sx={moreIconSx} />
+        </MoreButton>
+      )}
     </Wrapper>
   );
 }
