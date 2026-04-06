@@ -27,7 +27,9 @@ const LanguageItem = styled.button`
   align-items: center;
   gap: 0.25rem;
   background: ${({ $active }) => ($active ? `${lightPurple}33` : "none")};
-  border: ${({ $active }) => ($active ? `1.5px solid ${lightPurple}` : "1.5px solid transparent")};
+  border: none;
+  outline: ${({ $active }) => ($active ? `1.5px solid ${lightPurple}` : "none")};
+  outline-offset: -1.5px;
   border-radius: 1rem;
   padding: 0.15rem 0.4rem 0.15rem 0.2rem;
   cursor: pointer;
