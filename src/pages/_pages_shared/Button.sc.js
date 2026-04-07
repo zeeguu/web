@@ -68,7 +68,8 @@ const Button = styled.button`
     }
   }
 
-  &:active {
+  &:active,
+  &.pressed {
     box-shadow: none;
     transform: translateY(0.2em);
     transition: all ease-in 0.08s;

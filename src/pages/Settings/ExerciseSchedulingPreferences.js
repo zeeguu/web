@@ -36,7 +36,7 @@ export default function ExerciseSchedulingPreferences() {
   }, []);
 
   useEffect(() => {
-    api.getUserPreferences((preferences) => {
+    api.getUserPreferences().then((preferences) => {
       setMaxWordsToSchedule(preferences[PREF_KEY_MAX_WORDS_TO_SCHEDULE]);
     });
   }, [session, api]);

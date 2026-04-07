@@ -62,17 +62,15 @@ export default function LogIn({ handleSuccessfulLogIn }) {
         setIsLoggingIn(false);
         setErrorMessage(err);
       },
-      (sessionId) => {
-        api.getUserDetails((userInfo) => {
-          setIsLoggingIn(false);
-          handleSuccessfulLogIn(userInfo, sessionId);
-        });
+      async (sessionId) => {
+        const userInfo = await api.getUserDetails();
+        handleSuccessfulLogIn(userInfo, sessionId);
       },
     );
   }
 
   return (
-    <PreferencesPage pageWidth={"narrow"}>
+    <PreferencesPage pageWidth={"narrow"} isBackgroundFixed={true}>
       <Header>
         <Heading>Login</Heading>
       </Header>
@@ -98,7 +96,7 @@ export default function LogIn({ handleSuccessfulLogIn }) {
             />
 
             <InputField
-              type={"Password"}
+              type={"password"}
               label={strings.password}
               id={"password"}
               name={"password"}
@@ -117,7 +115,7 @@ export default function LogIn({ handleSuccessfulLogIn }) {
           <ButtonContainer className={"padding-medium"}>
             <Button
               type={"submit"}
-              className={"full-width-btn"}
+              className={`full-width-btn${isLoggingIn ? " pressed" : ""}`}
               onClick={handleLogIn}
               disabled={isLoggingIn}
             >

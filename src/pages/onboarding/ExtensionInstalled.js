@@ -24,7 +24,7 @@ export default function ExtensionInstalled() {
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
-    <PreferencesPage>
+    <PreferencesPage isBackgroundFixed={true}>
       <Header>
         <Heading>
           Right-click to&nbsp; activate the&nbsp;Zeeguu&nbsp;

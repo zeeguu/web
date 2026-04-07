@@ -210,6 +210,11 @@ let MatchButton = styled(StyledButton)`
   }
 `;
 
+const fadeIn = keyframes`
+  from { opacity: 0; }
+  to { opacity: 1; }
+`;
+
 let MatchingWords = styled.p`
   margin-top: 1.6em;
   margin-bottom: 1.1em;
@@ -218,6 +223,7 @@ let MatchingWords = styled.p`
   padding-left: 0.5em;
   font-size: 1.125em;
   margin-right: 1em;
+  animation: ${fadeIn} 0.4s ease;
 `;
 
 let OrangeButton = styled(StyledButton)`

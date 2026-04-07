@@ -13,7 +13,7 @@ const SelectStyledContainer = styled.div`
   width: 100%;
   border-radius: 0.25em;
   cursor: pointer;
-  background-color: #fff;
+  background-color: var(--input-bg, #fff);
   display: grid;
   grid-template-areas: "select";
   align-items: center;
@@ -44,6 +44,7 @@ const Select = styled.select`
   width: 100%;
   font-family: inherit;
   font-size: 0.9rem;
+  color: var(--text-primary, inherit);
   cursor: inherit;
   line-height: inherit;
   grid-area: select;

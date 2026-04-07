@@ -59,3 +59,13 @@ android/fastlane/play-store-credentials.json
 android/fastlane/report.xml
 
 *.md
+
+# Claude Code
+.claude/
+
+# Eclipse/Buildship IDE files (Android Studio)
+android/.project
+android/.settings/
+android/app/.classpath
+android/app/.project
+android/app/.settings/

@@ -4,7 +4,7 @@ import { APIContext } from "../contexts/APIContext";
 import { UserContext } from "../contexts/UserContext";
 import LoadingAnimation from "../components/LoadingAnimation";
 import CustomAudioPlayer from "../components/CustomAudioPlayer";
-import { wordsAsTile } from "./TodayAudio";
+import { wordsAsTile } from "./audioUtils";
 
 export default function PastLessons() {
   const api = useContext(APIContext);
@@ -121,7 +121,7 @@ export default function PastLessons() {
                       month: "short",
                       day: "numeric",
                     })}
-                    : {wordsAsTile(lesson.words)}
+                    : {lesson.title || wordsAsTile(lesson.words)}
                   </h3>
                   {lesson.is_completed && lesson.completed_at && (
                     <span

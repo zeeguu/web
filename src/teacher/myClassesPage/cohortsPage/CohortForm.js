@@ -82,9 +82,13 @@ const CohortForm = ({ cohort, setForceUpdate, setShowCohortForm, cohorts }) => {
   };
 
   function handleChange(event) {
+    let value = event.target.value;
+    if (event.target.name === "invite_code") {
+      value = value.toLowerCase();
+    }
     setState({
       ...state,
-      [event.target.name]: event.target.value,
+      [event.target.name]: value,
     });
   }
 
@@ -110,7 +114,7 @@ const CohortForm = ({ cohort, setForceUpdate, setShowCohortForm, cohorts }) => {
 
   const invalidInviteCode = () => {
     const invalid = cohorts.filter(
-      (cohort) => cohort.inv_code === state.invite_code,
+      (cohort) => cohort.inv_code.toLowerCase() === state.invite_code.toLowerCase(),
     );
     return invalid.length > 0;
   };

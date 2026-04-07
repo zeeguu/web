@@ -5,7 +5,7 @@ import Main from "./_pages_shared/Main.sc";
 import { Link } from "react-router-dom";
 export default function NotFound() {
   return (
-    <PreferencesPage pageWidth={"narrow"}>
+    <PreferencesPage pageWidth={"narrow"} isBackgroundFixed={true}>
       <Header>
         <Heading>Ooops!</Heading>
       </Header>

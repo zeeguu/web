@@ -1,6 +1,9 @@
-- Share articles to Zeeguu directly from your phone's share sheet
-- Share button in article toolbar
-- Dark mode with automatic OS preference detection
-- Fixed bug in daily audio lessons
-- Dismiss button on "Continue where you left off" card
-- Fixed sticky tab bar and scroll issues on mobile
+- Choose context for audio lessons: Automatic, Topic, or Situation
+- Situation mode generates roleplay dialogues in real-world scenarios
+- Topic mode themes dialogues around a chosen subject
+- Past lessons now show their topic or situation context
+- Language streak bar for quick switching between languages
+- Streak bar now shows even with a single language
+- Sound chime when you achieve a daily streak
+- Fix audio lesson state not resetting on language switch
+- Dark mode improvements

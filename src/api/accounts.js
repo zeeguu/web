@@ -10,6 +10,18 @@ Zeeguu_API.prototype.isValidSession = function (onSuccess, onError) {
   this._getPlainText("validate", onSuccess, onError);
 };
 
+Zeeguu_API.prototype.validateInviteCode = function (invite_code, onSuccess, onError) {
+  fetch(`${this.baseAPIurl}/validate_invite_code/${encodeURIComponent(invite_code)}`)
+    .then((response) => {
+      if (response.ok) {
+        response.json().then((data) => onSuccess(data.name));
+      } else {
+        onError();
+      }
+    })
+    .catch(() => onError());
+};
+
 Zeeguu_API.prototype.addUser = function (invite_code, password, userInfo, onSuccess, onError) {
   let url = this.baseAPIurl + `/add_user/${userInfo.email}`;
   return fetch(url, {
