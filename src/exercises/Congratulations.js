@@ -4,7 +4,7 @@ import { YellowMessageBox } from "../components/TopMessage.sc";
 import strings from "../i18n/definitions";
 import { useState, useEffect, useContext } from "react";
 import { useLocation, useHistory } from "react-router-dom";
-import { CenteredColumn } from "./Congratulations.sc";
+import { CenteredColumn, SummaryTextWrapper } from "./Congratulations.sc";
 import { removeArrayDuplicates } from "../utils/basic/arrays";
 import { LoadingAnimation } from "../components/LoadingAnimation.sc";
 import { timeToHumanReadable, formatFutureDueTime } from "../utils/misc/readableTime";
@@ -131,7 +131,7 @@ export default function Congratulations({
           </h1>
         </CenteredColumn>
          <CenteredColumn className="centeredColumn">
-        <div style={{ marginLeft: "1em", display: "flex", flexDirection: "column", justifyContent:"center" }}>
+        <SummaryTextWrapper>
           <p style={{ textAlign: "center" }}>
             You have just done <b>{totalPracticedBookmarksInSession}</b>{" "}
             
@@ -143,7 +143,7 @@ export default function Congratulations({
               </p>
             )}
           </p>
-        </div>
+        </SummaryTextWrapper>
         {articleID && (
           <p>
             You practiced words from: <a href={articleURL}>{articleTitle}</a>

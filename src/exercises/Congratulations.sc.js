@@ -17,4 +17,12 @@ const CenteredRow = styled.div`
   }
 `;
 
-export { CenteredColumn, CenteredRow };
+const SummaryTextWrapper = styled.div`
+  margin-left: 1em;
+  margin-right: 1em;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+`;
+
+export { CenteredColumn, CenteredRow, SummaryTextWrapper };
