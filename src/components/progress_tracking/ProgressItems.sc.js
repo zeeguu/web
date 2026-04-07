@@ -4,11 +4,12 @@ import { zeeguuWarmYellow, veryLightGrey} from "../colors";
 const ProgressOverviewItem = styled.div`
   width: 285px;    
   display: flex;
+  align-items: center;
   background-color: white;
   border:2px solid ${zeeguuWarmYellow};
   border-radius: 4px;
   padding: 1.5em;
-  height: 60px;
+  min-height: 60px;
   cursor: pointer;
   &:hover {
     background-color: ${veryLightGrey};
@@ -17,7 +18,7 @@ const ProgressOverviewItem = styled.div`
   @media (max-width: 768px) {
     width: 100%;
     max-width: 20em;
-    height: 3.5em; 
+    min-height: 3.5em; 
   }
 `;
 
@@ -26,7 +27,6 @@ const IconWithValueAndLabel = styled.div`
   flex-direction: column;
   align-items: center;
   text-align: center;
-  margin-top: -0.5em;
 `;
 
 const IconAndValue = styled.div`
@@ -46,33 +46,32 @@ const Value = styled.div`
 `;
 
 const Label = styled.div`
-  font-size: 0.7em;
-  margin-top: -0.3em;
+  font-size: 0.9em;
   letter-spacing: 0.04em;
 
   @media (max-width: 768px) {
-    font-size: 0.55em;
+    font-size: 0.8em;
   }
 `;
 
 const ProgressDescription = styled.div`
   display: flex;
   width: 60%;
-  font-size: 0.75rem;
+  font-size: 1rem;
   align-items: center;
   text-align: left;
   margin-left: 2.9em;
   letter-spacing: 0.03em;
 
   @media (max-width: 768px) {
-    font-size: 0.6em;
+    font-size: 0.8rem;
     padding-top: 0.5rem;
     padding-bottom: 0.5rem;
     
   }
   
   @media (max-width: 375px) {
-    font-size: 0.56em;
+    font-size: 0.7rem;
     padding-top: 0.5rem;
     padding-bottom: 0.5rem;
   }
