@@ -135,11 +135,15 @@ export default function useListeningSession(lessonId) {
     isPlayingRef.current = false;
   }, [api, getTotalElapsedSeconds, stopUpdateTimer]);
 
-  // Cleanup on unmount
+  // End any active session on unmount OR when the lessonId changes (e.g.,
+  // when the user toggles their learned language and TodayAudio resets
+  // lessonData to null). Without lessonId in the deps, the interval timer
+  // and session refs persisted across language toggles, so the next 10s
+  // tick would push a listeningSessionUpdate that the backend then
+  // credited to the *new* language.
   useEffect(() => {
     return () => {
       stopUpdateTimer();
-      // End any active session
       if (sessionIdRef.current) {
         let total = accumulatedSecondsRef.current;
         if (segmentStartRef.current) {
@@ -147,8 +151,13 @@ export default function useListeningSession(lessonId) {
         }
         api?.listeningSessionEnd(sessionIdRef.current, total);
       }
+      // Reset state so a new lessonId starts from scratch
+      sessionIdRef.current = null;
+      accumulatedSecondsRef.current = 0;
+      segmentStartRef.current = null;
+      isPlayingRef.current = false;
     };
-  }, [api, stopUpdateTimer]);
+  }, [api, stopUpdateTimer, lessonId]);
 
   return {
     start,
