@@ -5,11 +5,10 @@ let YellowMessageBox = styled.div`
   display: flex;
   flex-direction: column;
   text-align: center;
-  margin: auto;
+  margin: 2em auto;
   background-color: ${zeeguuVeryLightOrange};
   border-radius: 1em;
   max-width: 80%;
-  margin: 2em;
   padding: 0.5em 0.5em;
   font-size: large;
   @media (max-width: 720px) {
