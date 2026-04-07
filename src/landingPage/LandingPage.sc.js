@@ -1,5 +1,5 @@
 import styled, { css } from "styled-components";
-import { zeeguuOrange, zeeguuTransparentLightYellow, almostBlack } from "../components/colors";
+import { zeeguuOrange, zeeguuTransparentLightYellow } from "../components/colors";
 
 const PageWrapper = styled.div`
   width: 100%;
@@ -48,7 +48,7 @@ const HeroSection = styled.section`
 
   h1 {
     ${_sharedHeader}
-    color: ${almostBlack};
+    color: var(--text-primary);
     font-size: 3rem;
     margin: 0;
 
@@ -61,7 +61,7 @@ const HeroSection = styled.section`
     font-size: 1.25rem;
     font-weight: 500;
     line-height: 150%;
-    color: ${almostBlack};
+    color: var(--text-primary);
   }
 `;
 
@@ -123,6 +123,14 @@ const PageSectionWrapper = styled.div`
     background-color: white;
   }
 
+  [data-theme="dark"] & {
+    background-color: var(--bg-secondary);
+
+    &:nth-child(odd) {
+      background-color: var(--bg-primary);
+    }
+  }
+
   @media (max-width: 576px) {
     padding: 3rem 1rem;
   }
@@ -137,7 +145,7 @@ const PageSection = styled.section`
   p {
     line-height: 150%;
     font-size: 1.2rem;
-    color: ${almostBlack};
+    color: var(--text-primary);
     font-weight: 500;
     margin: 0;
   }
@@ -157,7 +165,7 @@ const PageSection = styled.section`
 
   h2 {
     font-size: 2.25rem;
-    color: ${almostBlack};
+    color: var(--text-primary);
     margin: 0;
     text-align: center;
 
@@ -176,7 +184,7 @@ const PageSection = styled.section`
 
   h3 {
     font-size: 1.5rem;
-    color: ${almostBlack};
+    color: var(--text-primary);
     margin: 0;
   }
 
@@ -207,7 +215,7 @@ const PageSection = styled.section`
 
   li {
     font-size: 1.2rem;
-    color: ${almostBlack};
+    color: var(--text-primary);
     font-weight: 500;
     line-height: 145%;
     text-align: left;
