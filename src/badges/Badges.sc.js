@@ -78,6 +78,14 @@ export const BadgeTitle = styled.div`
   color: var(--text-primary);
 `;
 
+export const Stars = styled.div`
+  font-size: 1rem;
+  letter-spacing: 2px;
+  color: ${zeeguuOrange};
+  text-align: center;
+  width: 100%;
+`;
+
 export const BadgeDescription = styled.div`
   text-align: center;
   font-size: 0.85rem;
