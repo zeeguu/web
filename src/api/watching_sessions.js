@@ -34,3 +34,16 @@ Zeeguu_API.prototype.updateWatchingSession = function (watchingSessionId, curren
   // Use beacon to prevent "Failed to fetch" errors when user navigates away
   this._postBeacon(`watching_session_update`, qs.stringify(payload));
 };
+
+// **********
+// END WATCHING SESSION
+// **********
+Zeeguu_API.prototype.endWatchingSession = function (watchingSessionId, currentDurationInSeconds) {
+  let payload = {
+    id: watchingSessionId,
+    duration: currentDurationInSeconds * 1000, //the API expects ms
+  };
+
+  // Use beacon to prevent "Failed to fetch" errors when user navigates away
+  this._postBeacon(`watching_session_end`, qs.stringify(payload));
+};
