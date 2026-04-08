@@ -48,23 +48,32 @@ export const BadgeCard = styled.div`
 `;
 
 export const IconContainer = styled.div`
-  width: 80px;
-  height: 80px;
+  width: 150px;
+  height: 150px;
   display: flex;
   align-items: center;
   justify-content: center;
   margin-bottom: 0.5rem;
+
+  @media (max-width: 768px) {
+    width: 120px;
+    height: 120px;
+  }
 `;
 
 export const BadgeIcon = styled.img`
-  width: 80px;
-  height: 80px;
+  width: 100%;
+  height: 100%;
   object-fit: contain;
 `;
 
-export const BadgeTitle = styled.h3`
+export const BadgeTitle = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
   text-align: center;
   font-size: 0.9rem;
+  font-weight: bold;
   margin: 6px 0;
   color: var(--text-primary);
 `;

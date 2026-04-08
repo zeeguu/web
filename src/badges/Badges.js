@@ -92,9 +92,11 @@ export default function Badges({ username }) {
               <s.IconContainer>
                 <s.BadgeIcon src={getIcon(level)} style={iconStyle(level.achieved)} alt={level.name} />
               </s.IconContainer>
-              <s.BadgeTitle>{level.name || `Level ${level.badge_level}`}</s.BadgeTitle>
+              <s.BadgeTitle>
+                <div>{level.badgeName}</div>
+                <div>{`Level ${level.badge_level}`}</div>
+              </s.BadgeTitle>
               <s.BadgeDescription>{level.description}</s.BadgeDescription>
-
               {level.achieved ? (
                 <s.AchievedAtBox>{formatDateTime(level.achieved_at)}</s.AchievedAtBox>
               ) : (
