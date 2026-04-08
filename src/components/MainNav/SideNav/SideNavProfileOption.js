@@ -24,7 +24,7 @@ const NavAvatar = styled(AvatarBackground)`
   padding: 3px;
 `;
 
-export default function SideNavProfileOption({ screenWidth }) {
+export default function SideNavProfileOption({ screenWidth, onClick = () => {} }) {
   const { userDetails } = useContext(UserContext);
   const path = useLocation().pathname;
   const isActive = isNavOptionActive(NavigationOptions.profile.linkTo, path);
@@ -48,6 +48,7 @@ export default function SideNavProfileOption({ screenWidth }) {
     <NavOption
       linkTo={NavigationOptions.profile.linkTo}
       overflowEnabled={true}
+      onClick={onClick}
       icon={
         <NavAvatar
           $backgroundColor={avatarBackgroundColor}

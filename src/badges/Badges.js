@@ -1,6 +1,10 @@
 import React, { useContext, useEffect, useState } from "react";
 import { APIContext } from "../contexts/APIContext";
 import * as s from "./Badges.sc.js";
+import Modal from "../components/modal_shared/Modal";
+import Header from "../components/modal_shared/Header.sc";
+import Heading from "../components/modal_shared/Heading.sc";
+import Main from "../components/modal_shared/Main.sc";
 
 export default function Badges({ username }) {
   const api = useContext(APIContext);
@@ -11,6 +15,7 @@ export default function Badges({ username }) {
   const [badges, setBadges] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [selectedBadge, setSelectedBadge] = useState(null);
 
   const fetchBadgesCallback = (data) => {
     if (!data || data.error) {
@@ -63,11 +68,6 @@ export default function Badges({ username }) {
 
   const getIcon = (level) => (level.icon_name ? iconBasePath + level.icon_name : defaultLogoPath);
 
-  const iconStyle = (achieved) => ({
-    filter: achieved ? "none" : "grayscale(100%)",
-    opacity: achieved ? 1 : 0.5,
-  });
-
   const formatDateTime = (iso) =>
     iso
       ? new Date(iso)
@@ -77,8 +77,6 @@ export default function Badges({ username }) {
           })
           .replace(",", "")
       : "—";
-
-  const renderStars = (achievedCount) => "★".repeat(achievedCount);
 
   return (
     <>
@@ -96,45 +94,90 @@ export default function Badges({ username }) {
             const hasNewBadge = !username && badge.levels.some((l) => l.achieved && !l.is_shown);
 
             return (
-              <s.BadgeCard key={index}>
+              <s.BadgeCard key={index} onClick={() => setSelectedBadge(badge)}>
                 {hasNewBadge && <s.NewTag>NEW</s.NewTag>}
                 <s.IconContainer>
-                  <s.BadgeIcon
-                    src={getIcon(iconLevel)}
-                    style={iconStyle(achievedCount > 0)}
-                    alt={badge.name}
-                  />
+                  <s.BadgeIcon src={getIcon(iconLevel)} $achieved={achievedCount > 0} alt={badge.name} />
                 </s.IconContainer>
                 <s.BadgeTitle>
                   <div>{badge.name}</div>
-                  {achievedCount > 0 && (
-                    <s.Stars>{renderStars(achievedCount)}</s.Stars>
-                  )}
+                  <div>Level {nextLevel.badge_level}</div>
                 </s.BadgeTitle>
                 <s.BadgeDescription>{displayLevel.description}</s.BadgeDescription>
                 {nextLevel ? (
-                  <s.ProgressWrapper>
-                    <s.ProgressBar>
-                      <s.ProgressFill
-                        style={{
-                          width: `${(Math.min(badge.current_value, nextLevel.target_value) / nextLevel.target_value) * 100}%`,
-                        }}
-                      />
-                    </s.ProgressBar>
-                    <s.ProgressText>
-                      {badge.current_value} / {nextLevel.target_value}
-                    </s.ProgressText>
-                  </s.ProgressWrapper>
+                  <div className="card-bottom">
+                    <s.ProgressWrapper>
+                      <s.ProgressBar>
+                        <s.ProgressFill
+                          style={{
+                            width: `${(Math.min(badge.current_value, nextLevel.target_value) / nextLevel.target_value) * 100}%`,
+                          }}
+                          $isCurrent={true}
+                        />
+                      </s.ProgressBar>
+                      <s.ProgressText>
+                        {badge.current_value} / {nextLevel.target_value}
+                      </s.ProgressText>
+                    </s.ProgressWrapper>
+                  </div>
                 ) : (
-                  <s.AchievedAtBox>
-                    {formatDateTime(badge.levels[badge.levels.length - 1].achieved_at)}
-                  </s.AchievedAtBox>
+                  <s.AchievedAtBox>{formatDateTime(badge.levels[badge.levels.length - 1].achieved_at)}</s.AchievedAtBox>
                 )}
               </s.BadgeCard>
             );
           })}
         </s.BadgeContainer>
       )}
+      {selectedBadge &&
+        (() => {
+          const highestAchieved = [...selectedBadge.levels].reverse().find((l) => l.achieved);
+          const nextLevel = selectedBadge.levels.find((l) => !l.achieved);
+
+          return (
+            <Modal
+              open={!!selectedBadge}
+              onClose={() => setSelectedBadge(null)}
+              style={{ maxWidth: "400px", width: "90%", margin: "auto" }}
+            >
+              <Header>
+                <s.IconContainer>
+                  <s.BadgeIcon
+                    src={getIcon(highestAchieved || selectedBadge.levels[0])}
+                    $achieved={!!highestAchieved}
+                  />
+                </s.IconContainer>
+                <Heading style={{ textAlign: "center" }}>{selectedBadge.name}</Heading>
+              </Header>
+
+              <Main style={{ gap: "0" }}>
+                {selectedBadge.levels.map((level, i) => (
+                  <s.LevelRow key={i} $achieved={level.achieved} $isCurrent={level === nextLevel}>
+                    {level.achieved && !level.is_shown && <s.NewTag>New</s.NewTag>}
+                    <s.LevelTitle>Level {level.badge_level}</s.LevelTitle>
+                    <s.BadgeDescription>{level.description}</s.BadgeDescription>
+                    {level.achieved ? (
+                      <s.AchievedAtBox>{formatDateTime(level.achieved_at)}</s.AchievedAtBox>
+                    ) : (
+                      <s.ProgressWrapper>
+                        <s.ProgressBar>
+                          <s.ProgressFill
+                            style={{
+                              width: `${(Math.min(selectedBadge.current_value, level.target_value) / level.target_value) * 100}%`,
+                            }}
+                            $isCurrent={level === nextLevel}
+                          />
+                        </s.ProgressBar>
+                        <s.ProgressText>
+                          {selectedBadge.current_value} / {level.target_value}
+                        </s.ProgressText>
+                      </s.ProgressWrapper>
+                    )}
+                  </s.LevelRow>
+                ))}
+              </Main>
+            </Modal>
+          );
+        })()}
     </>
   );
 }
