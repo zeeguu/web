@@ -117,61 +117,56 @@ export default function LanguageModal({ open, setOpen }) {
     });
   }
 
+  const switchingBody = (
+    <div style={{ display: "flex", flexDirection: "column", alignItems: "center", padding: "2rem 0", gap: "1rem" }}>
+      <DynamicFlagImage languageCode={learnedLanguageCode} />
+      <CircularProgress size={24} sx={spinnerSx} />
+    </div>
+  );
+
+  const languageListBody = (
+    <>
+      <FormSection>
+        <RadioGroup
+          radioGroupLabel=""
+          name="active-language"
+          options={reorderedLanguages.slice(0, MAX_MODAL_LANGUAGES)}
+          selectedValue={learnedLanguageCode}
+          onChange={(e) => updateLearnedLanguage(e.target.value)}
+          optionLabel={(e) => (
+            <LanguageOptionLabel
+              languageName={e.language}
+              streak={streaksByCode[e.code] || 0}
+              practiced={practicedByCode[e.code]}
+              cefrLevelValue={getCefrLevelValueForLanguage(e.code)}
+              onCefrLevelChange={(newLevel, ev) => handleCefrLevelChange(e.code, newLevel, ev)}
+            />
+          )}
+          optionValue={(e) => e.code}
+          optionId={(e) => e.id}
+          dynamicIcon={(e) => <DynamicFlagImage languageCode={e.code} />}
+          radiosContentLeftAligned
+        />
+      </FormSection>
+      <ButtonContainer className={"adaptive-alignment-horizontal"}>
+        <ReactLink className="small" onClick={() => setOpen(false)} to="/account_settings/language_settings">
+          <AddRoundedIcon /> More language settings
+        </ReactLink>
+      </ButtonContainer>
+    </>
+  );
+
   return (
     <>
-    {confirmModal}
-    <Modal
-      open={open}
-      onClose={() => {
-        setOpen(false);
-      }}
-    >
-      <Header withoutLogo>
-        <Heading>{isSwitching ? "Changing language..." : "Your Active Languages:"}</Heading>
-      </Header>
-      <Main>
-        <Form>
-          {isSwitching ? (
-            <div style={{ display: "flex", flexDirection: "column", alignItems: "center", padding: "2rem 0", gap: "1rem" }}>
-              <DynamicFlagImage languageCode={learnedLanguageCode} />
-              <CircularProgress size={24} sx={spinnerSx} />
-            </div>
-          ) : (
-            <>
-              <FormSection>
-                <RadioGroup
-                  radioGroupLabel=""
-                  name="active-language"
-                  options={reorderedLanguages.slice(0, MAX_MODAL_LANGUAGES)}
-                  selectedValue={learnedLanguageCode}
-                  onChange={(e) => {
-                    updateLearnedLanguage(e.target.value);
-                  }}
-                  optionLabel={(e) => (
-                    <LanguageOptionLabel
-                      languageName={e.language}
-                      streak={streaksByCode[e.code] || 0}
-                      practiced={practicedByCode[e.code]}
-                      cefrLevelValue={getCefrLevelValueForLanguage(e.code)}
-                      onCefrLevelChange={(newLevel, ev) => handleCefrLevelChange(e.code, newLevel, ev)}
-                    />
-                  )}
-                  optionValue={(e) => e.code}
-                  optionId={(e) => e.id}
-                  dynamicIcon={(e) => <DynamicFlagImage languageCode={e.code} />}
-                  radiosContentLeftAligned
-                />
-              </FormSection>
-              <ButtonContainer className={"adaptive-alignment-horizontal"}>
-                <ReactLink className="small" onClick={() => setOpen(false)} to="/account_settings/language_settings">
-                  <AddRoundedIcon /> More language settings
-                </ReactLink>
-              </ButtonContainer>
-            </>
-          )}
-        </Form>
-      </Main>
-    </Modal>
+      {confirmModal}
+      <Modal open={open} onClose={() => setOpen(false)}>
+        <Header withoutLogo>
+          <Heading>{isSwitching ? "Changing language..." : "Your Active Languages:"}</Heading>
+        </Header>
+        <Main>
+          <Form>{isSwitching ? switchingBody : languageListBody}</Form>
+        </Main>
+      </Modal>
     </>
   );
 }
