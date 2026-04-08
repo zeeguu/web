@@ -35,7 +35,8 @@ export default function useExerciseSession(enabled = true) {
     }
   }, [enabled, session.hasStarted, session.start]);
 
-  // Provide backwards-compatible API
+  // Getter (not a value) so consumers can read the *current* sessionId at
+  // interaction time, not a stale capture from when they were rendered.
   const getExerciseSessionId = useCallback(() => session.getSessionId(), [session]);
 
   return {

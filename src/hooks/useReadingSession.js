@@ -37,7 +37,8 @@ export default function useReadingSession(articleId, readingSource = "web", enab
     }
   }, [enabled, articleId, session]);
 
-  // Provide backwards-compatible API
+  // Getter (not a value) so consumers can read the *current* sessionId at
+  // interaction time, not a stale capture from when they were rendered.
   const getReadingSessionId = useCallback(() => session.getSessionId(), [session]);
 
   return {

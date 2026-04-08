@@ -25,7 +25,9 @@ export default function useBrowsingSession() {
     sessionKey: userDetails?.learned_language,
   });
 
-  // Provide backwards-compatible API
+  // Getter (not a value) so consumers like InteractiveText can read the
+  // *current* sessionId at interaction time, not a stale capture from
+  // when they were rendered.
   const getBrowsingSessionId = useCallback(() => session.getSessionId(), [session]);
 
   return {
