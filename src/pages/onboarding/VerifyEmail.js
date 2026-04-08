@@ -16,11 +16,13 @@ import InputField from "../../components/InputField";
 import Footer from "../_pages_shared/Footer.sc";
 import ButtonContainer from "../_pages_shared/ButtonContainer.sc";
 import Button from "../_pages_shared/Button.sc";
+import LocalStorage from "../../assorted/LocalStorage";
+import { saveSharedUserInfo } from "../../utils/cookies/userInfo";
 
 export default function VerifyEmail() {
   const api = useContext(APIContext);
   const history = useHistory();
-  const { userDetails } = useContext(UserContext);
+  const { userDetails, setUserDetails } = useContext(UserContext);
 
   const [code, setCode] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
@@ -43,8 +45,12 @@ export default function VerifyEmail() {
 
     api.confirmEmail(
       code.trim(),
-      () => {
+      async () => {
         // Success - redirect to select interests
+        const user = await api.getUserDetails();
+        setUserDetails(user);
+        LocalStorage.setUserInfo(user);
+        saveSharedUserInfo(user);
         history.push("/select_interests");
       },
       (error) => {
