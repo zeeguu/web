@@ -3,7 +3,12 @@ import { useIdleTimer } from "react-idle-timer";
 import { APIContext } from "../contexts/APIContext";
 
 /**
- * Generic hook for tracking activity sessions (reading, browsing, listening, exercise).
+ * Generic hook for tracking activity sessions (reading, browsing, exercise).
+ *
+ * Listening sessions use a separate `useListeningSession` hook because their
+ * time model is fundamentally different — wall-clock accumulation across
+ * play/pause segments, no DOM-event-based idle detection (audio playing is
+ * activity), and explicit pause/resume.
  *
  * Handles all common session logic:
  * - Session creation, updates, and ending
@@ -14,16 +19,17 @@ import { APIContext } from "../contexts/APIContext";
  * - Cleanup on unmount or when sessionKey changes
  *
  * @param {object} config - Configuration object
- * @param {string} config.type - Session type: 'reading' | 'browsing' | 'listening' | 'exercise'
- * @param {string|number} config.resourceId - ID of the resource (articleId, lessonId, etc.)
+ * @param {string} config.type - Session type: 'reading' | 'browsing' | 'exercise'
+ * @param {string|number} config.resourceId - ID of the resource (articleId, etc.)
  * @param {object} config.createParams - Additional params for session creation (e.g., { reading_source: 'web' })
  * @param {number} config.idleTimeout - Idle timeout in ms (default: 30000)
  * @param {number} config.uploadInterval - How often to upload in seconds (default: 10)
  * @param {boolean} config.autoStart - Start session immediately on mount (default: false)
  * @param {boolean} config.startOnActivity - Start session on first user activity (default: false)
- * @param {*} config.sessionKey - When this value changes, the current session is ended
- *   and the hook resets so a new one can start. Pass `userDetails.learned_language`
- *   to scope a session to a single language.
+ * @param {*} config.sessionKey - When this value changes, the current session is
+ *   ended and the hook resets so a new one can start. Use this for any value
+ *   whose change conceptually invalidates the current session (e.g., pass
+ *   `userDetails.learned_language` to scope a session to a single language).
  *
  * @returns {object} - Session state and controls
  */
@@ -77,11 +83,6 @@ export default function useSession({
       create: (callback) => api.browsingSessionCreate(callback),
       update: (id, dur) => api.browsingSessionUpdate(id, dur),
       end: (id, dur) => api.browsingSessionEnd(id, dur),
-    },
-    listening: {
-      create: (callback) => api.listeningSessionCreate(resourceId, callback),
-      update: (id, dur) => api.listeningSessionUpdate(id, dur),
-      end: (id, dur) => api.listeningSessionEnd(id, dur),
     },
     exercise: {
       create: (callback) => api.exerciseSessionCreate(callback),
@@ -228,12 +229,10 @@ export default function useSession({
     }
   }, [autoStart, resourceId, start]);
 
-  // End any active session on unmount OR when sessionKey changes (e.g., the
-  // user toggles learned_language). Without this, the session keeps
-  // accumulating time against the old language until the host component
-  // unmounts — which for browsing/exercise typically only happens on a
-  // route change, not on a language toggle. Reset all state so the next
-  // sessionKey value can start a fresh session cleanly.
+  // End any active session on unmount OR when sessionKey changes. Browsing
+  // and exercise host components don't unmount on a language toggle, just
+  // re-render, so without this the session would keep accumulating time
+  // against the old language indefinitely.
   useEffect(() => {
     return () => {
       if (sessionIdRef.current && methods) {
@@ -242,14 +241,15 @@ export default function useSession({
       sessionIdRef.current = null;
       sessionDurationRef.current = 0;
       hasStartedRef.current = false;
+      lastUploadTimeRef.current = 0;
       setSessionId(null);
       setSessionDuration(0);
       setHasStarted(false);
       setIsTimerActive(false);
     };
-    // `methods` is intentionally omitted: it's recreated every render, so
-    // including it would re-run the effect constantly. Closure-capturing
-    // the current value at cleanup time is what we want.
+    // `methods` is intentionally omitted: it's recreated every render so
+    // including it would re-run the effect constantly. The cleanup captures
+    // the current value at the time the previous effect ran.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sessionKey]);
 

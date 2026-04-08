@@ -1,4 +1,4 @@
-import { useCallback, useContext, useEffect, useRef } from "react";
+import { useCallback, useContext, useEffect } from "react";
 import useSession from "./useSession";
 import { UserContext } from "../contexts/UserContext";
 
@@ -9,6 +9,8 @@ import { UserContext } from "../contexts/UserContext";
  * - Start when exercises are loaded (enabled=true)
  * - Use 30 second idle timeout
  * - Track time spent doing exercises
+ * - Are scoped to a single learned_language; toggling language ends the
+ *   current session and starts a fresh one for the new language.
  *
  * This is a thin wrapper around the generic useSession hook.
  *
@@ -17,33 +19,21 @@ import { UserContext } from "../contexts/UserContext";
  */
 export default function useExerciseSession(enabled = true) {
   const { userDetails } = useContext(UserContext);
-  const learnedLanguage = userDetails?.learned_language;
   const session = useSession({
     type: "exercise",
     idleTimeout: 30_000, // 30 seconds
     autoStart: false, // We control start via enabled parameter
-    // Scope each session to a single learned_language so a language toggle
-    // ends the current session and a fresh one starts for the new language.
-    sessionKey: learnedLanguage,
+    sessionKey: userDetails?.learned_language,
   });
 
-  // Track if we've started to avoid double-starting
-  const hasStartedRef = useRef(false);
-
-  // Allow a fresh start after a language toggle (useSession resets its
-  // internal state on sessionKey change; this resets the wrapper's guard).
+  // useSession.start() is internally idempotent and useSession resets
+  // hasStarted on sessionKey change, so this naturally re-fires after a
+  // language toggle.
   useEffect(() => {
-    hasStartedRef.current = false;
-  }, [learnedLanguage]);
-
-  // Start session when enabled (re-fires after a language toggle because
-  // hasStartedRef has been reset above)
-  useEffect(() => {
-    if (enabled && !hasStartedRef.current) {
+    if (enabled && !session.hasStarted) {
       session.start();
-      hasStartedRef.current = true;
     }
-  }, [enabled, session, learnedLanguage]);
+  }, [enabled, session.hasStarted, session.start]);
 
   // Provide backwards-compatible API
   const getExerciseSessionId = useCallback(() => session.getSessionId(), [session]);

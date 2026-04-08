@@ -9,6 +9,8 @@ import { UserContext } from "../contexts/UserContext";
  * - Start only after the first meaningful interaction (scroll, click on article action)
  * - Use a shorter idle timeout (15 seconds vs 30 seconds)
  * - Track time spent browsing articles
+ * - Are scoped to a single learned_language; toggling language ends the
+ *   current session and the next interaction starts a fresh one.
  *
  * This is a thin wrapper around the generic useSession hook.
  *
@@ -20,8 +22,6 @@ export default function useBrowsingSession() {
     type: "browsing",
     idleTimeout: 15_000, // 15 seconds (shorter than reading's 30 seconds)
     startOnActivity: true, // Start on first user interaction
-    // Scope each session to a single learned_language so a language toggle
-    // ends the current session and the next interaction starts a fresh one.
     sessionKey: userDetails?.learned_language,
   });
 
