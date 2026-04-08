@@ -1,5 +1,5 @@
 import { useCallback, useContext } from "react";
-import useSession from "./useSession";
+import useDomActivitySession from "./useDomActivitySession";
 import { UserContext } from "../contexts/UserContext";
 
 /**
@@ -18,7 +18,7 @@ import { UserContext } from "../contexts/UserContext";
  */
 export default function useBrowsingSession() {
   const { userDetails } = useContext(UserContext);
-  const session = useSession({
+  const session = useDomActivitySession({
     type: "browsing",
     idleTimeout: 15_000, // 15 seconds (shorter than reading's 30 seconds)
     startOnActivity: true, // Start on first user interaction

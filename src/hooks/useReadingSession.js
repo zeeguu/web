@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef } from "react";
-import useSession from "./useSession";
+import useDomActivitySession from "./useDomActivitySession";
 
 /**
  * Hook for tracking article reading sessions.
@@ -18,7 +18,7 @@ import useSession from "./useSession";
  * @returns {object} - { readingSessionId, getReadingSessionId, duration, ... }
  */
 export default function useReadingSession(articleId, readingSource = "web", enabled = true) {
-  const session = useSession({
+  const session = useDomActivitySession({
     type: "reading",
     resourceId: articleId,
     createParams: { reading_source: readingSource },

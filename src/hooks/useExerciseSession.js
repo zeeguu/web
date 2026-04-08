@@ -1,5 +1,5 @@
 import { useCallback, useContext, useEffect } from "react";
-import useSession from "./useSession";
+import useDomActivitySession from "./useDomActivitySession";
 import { UserContext } from "../contexts/UserContext";
 
 /**
@@ -19,7 +19,7 @@ import { UserContext } from "../contexts/UserContext";
  */
 export default function useExerciseSession(enabled = true) {
   const { userDetails } = useContext(UserContext);
-  const session = useSession({
+  const session = useDomActivitySession({
     type: "exercise",
     idleTimeout: 30_000, // 30 seconds
     autoStart: false, // We control start via enabled parameter
