@@ -5,6 +5,7 @@ import { UserContext } from "../contexts/UserContext";
 import ChoiceModal from "../components/modal_shared/ChoiceModal";
 import useQuery from "./useQuery";
 import { switchLanguage } from "../utils/languageSwitcher";
+import { LANGUAGE_CODE_TO_NAME } from "../utils/misc/languageCodeToName";
 
 const READER_PATH = "/read/article";
 
@@ -68,10 +69,12 @@ export default function useGuardedLanguageSwitch() {
     setPending(null);
   }
 
+  const targetLanguageName = pending ? LANGUAGE_CODE_TO_NAME[pending.langCode] || pending.langCode : "";
+
   const confirmModal = pending ? (
     <ChoiceModal
       title="Switch language?"
-      subtitle="Your current article will be saved for later."
+      subtitle={`Your current article will be saved for later, and you'll be taken to your ${targetLanguageName} home.`}
       primaryLabel="Switch"
       secondaryLabel="Keep reading"
       onPrimary={handleConfirm}
