@@ -103,7 +103,7 @@ export default function UserProfile() {
     if (!friendUsername) {
       setIsOwnProfile(true);
       updateProfileView(userDetails, null, strings.titleOwnProfile);
-      api.getAllDailyStreakForUser(activeLanguagesCallback);
+      api.getAllLanguageStreaksDetailed(activeLanguagesCallback);
       return;
     }
 
@@ -121,7 +121,7 @@ export default function UserProfile() {
         handleUserProfileNavigation(null);
       } else {
         updateProfileView(data, null, `${data.username}'s ${strings.titleUserProfilePostfix}`);
-        api.getAllDailyStreakForFriend(friendUsername, activeLanguagesCallback);
+        api.getAllLanguageStreaksDetailedForFriend(friendUsername, activeLanguagesCallback);
       }
     });
   }, [api, userDetails, friendUsername]);
@@ -228,7 +228,7 @@ export default function UserProfile() {
     ...(isOwnProfile
       ? [
           { key: "friendLeaderboards", label: "Friend Leaderboards" },
-          { key: "cohortLeaderboards", label: "Classroom Leaderboards" },
+          ...(profileData?.is_student ? [{ key: "cohortLeaderboards", label: "Classroom Leaderboards" }] : []),
         ]
       : []),
   ];

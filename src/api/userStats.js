@@ -12,10 +12,10 @@ Zeeguu_API.prototype.getAllLanguageStreaks = function (callback) {
   this._getJSON("all_language_streaks", callback);
 };
 
-Zeeguu_API.prototype.getAllDailyStreakForUser = function (callback) {
+Zeeguu_API.prototype.getAllLanguageStreaksDetailed = function (callback) {
   this._getJSON("all_language_streaks_detailed", callback);
 };
 
-Zeeguu_API.prototype.getAllDailyStreakForFriend = function (username, callback) {
+Zeeguu_API.prototype.getAllLanguageStreaksDetailedForFriend = function (username, callback) {
   this._getJSON(`all_language_streaks_detailed/${username}`, callback);
 };
