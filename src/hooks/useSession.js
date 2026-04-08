@@ -11,7 +11,7 @@ import { APIContext } from "../contexts/APIContext";
  * - Idle detection (pauses timer after timeout)
  * - Focus/blur handling (pauses on blur, resumes on focus)
  * - Periodic uploads (every 10 seconds)
- * - Cleanup on unmount
+ * - Cleanup on unmount or when sessionKey changes
  *
  * @param {object} config - Configuration object
  * @param {string} config.type - Session type: 'reading' | 'browsing' | 'listening' | 'exercise'
@@ -21,6 +21,9 @@ import { APIContext } from "../contexts/APIContext";
  * @param {number} config.uploadInterval - How often to upload in seconds (default: 10)
  * @param {boolean} config.autoStart - Start session immediately on mount (default: false)
  * @param {boolean} config.startOnActivity - Start session on first user activity (default: false)
+ * @param {*} config.sessionKey - When this value changes, the current session is ended
+ *   and the hook resets so a new one can start. Pass `userDetails.learned_language`
+ *   to scope a session to a single language.
  *
  * @returns {object} - Session state and controls
  */
@@ -32,6 +35,7 @@ export default function useSession({
   uploadInterval = 10,
   autoStart = false,
   startOnActivity = false,
+  sessionKey,
 } = {}) {
   const api = useContext(APIContext);
 
@@ -224,18 +228,30 @@ export default function useSession({
     }
   }, [autoStart, resourceId, start]);
 
-  // Cleanup on unmount
+  // End any active session on unmount OR when sessionKey changes (e.g., the
+  // user toggles learned_language). Without this, the session keeps
+  // accumulating time against the old language until the host component
+  // unmounts — which for browsing/exercise typically only happens on a
+  // route change, not on a language toggle. Reset all state so the next
+  // sessionKey value can start a fresh session cleanly.
   useEffect(() => {
     return () => {
-      if (sessionIdRef.current) {
-        // Use refs for latest values in cleanup
-        if (methods) {
-          methods.end(sessionIdRef.current, sessionDurationRef.current);
-        }
+      if (sessionIdRef.current && methods) {
+        methods.end(sessionIdRef.current, sessionDurationRef.current);
       }
+      sessionIdRef.current = null;
+      sessionDurationRef.current = 0;
+      hasStartedRef.current = false;
+      setSessionId(null);
+      setSessionDuration(0);
+      setHasStarted(false);
+      setIsTimerActive(false);
     };
+    // `methods` is intentionally omitted: it's recreated every render, so
+    // including it would re-run the effect constantly. Closure-capturing
+    // the current value at cleanup time is what we want.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [sessionKey]);
 
   // Getter for session ID (reads from ref for latest value)
   const getSessionId = useCallback(() => sessionIdRef.current, []);

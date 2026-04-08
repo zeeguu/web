@@ -1,5 +1,6 @@
-import { useCallback } from "react";
+import { useCallback, useContext } from "react";
 import useSession from "./useSession";
+import { UserContext } from "../contexts/UserContext";
 
 /**
  * Hook for tracking article browsing sessions.
@@ -14,10 +15,14 @@ import useSession from "./useSession";
  * @returns {object} - { browsingSessionId, getBrowsingSessionId, hasSessionStarted, activityTimer }
  */
 export default function useBrowsingSession() {
+  const { userDetails } = useContext(UserContext);
   const session = useSession({
     type: "browsing",
     idleTimeout: 15_000, // 15 seconds (shorter than reading's 30 seconds)
     startOnActivity: true, // Start on first user interaction
+    // Scope each session to a single learned_language so a language toggle
+    // ends the current session and the next interaction starts a fresh one.
+    sessionKey: userDetails?.learned_language,
   });
 
   // Provide backwards-compatible API
