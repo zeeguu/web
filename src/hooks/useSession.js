@@ -97,7 +97,7 @@ export default function useSession({
   useEffect(() => {
     return () => {
       if (sessionIdRef.current && methods) {
-        const duration = getCurrentDurationRef.current?.() ?? 0;
+        const duration = getCurrentDurationRef.current();
         console.log(
           `Ending ${type} session:`,
           sessionIdRef.current,

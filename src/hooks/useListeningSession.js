@@ -56,22 +56,16 @@ export default function useListeningSession(lessonId) {
   // (LessonPlaybackView) only knows "user pressed play."
   const start = useCallback(() => {
     if (!lessonId) return;
-
-    if (session.getSessionId()) {
-      // Resume an existing session — keep accumulatedSecondsRef intact.
-      segmentStartRef.current = Date.now();
-      isPlayingRef.current = true;
-      startUpdateTimer();
-      console.log("Resumed listening session:", session.getSessionId());
-      return;
+    const isResume = !!session.getSessionId();
+    if (!isResume) {
+      // First play of this lesson — start a fresh session on the server.
+      accumulatedSecondsRef.current = 0;
+      session.start();
     }
-
-    // First play of this lesson — start a fresh session on the server.
     segmentStartRef.current = Date.now();
-    accumulatedSecondsRef.current = 0;
     isPlayingRef.current = true;
-    session.start();
     startUpdateTimer();
+    if (isResume) console.log("Resumed listening session:", session.getSessionId());
   }, [lessonId, session, startUpdateTimer]);
 
   // Pause — accumulate the current segment, stop the timer, flush progress.
@@ -99,12 +93,6 @@ export default function useListeningSession(lessonId) {
     }
   }, [session, getCurrentDuration, stopUpdateTimer]);
 
-  // Resume is just start() when there's already a session id.
-  const resume = useCallback(() => {
-    if (isPlayingRef.current) return;
-    start();
-  }, [start]);
-
   // End the session completely (audio playback finished).
   const end = useCallback(() => {
     stopUpdateTimer();
@@ -130,12 +118,5 @@ export default function useListeningSession(lessonId) {
     };
   }, [lessonId, stopUpdateTimer]);
 
-  return {
-    start,
-    pause,
-    resume,
-    end,
-    isPlaying: isPlayingRef.current,
-    getSessionId: session.getSessionId,
-  };
+  return { start, pause, end };
 }

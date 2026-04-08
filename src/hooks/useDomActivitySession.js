@@ -59,13 +59,6 @@ export default function useDomActivitySession({
     setIsTimerActive(false);
   }, [session]);
 
-  const reset = useCallback(() => {
-    setHasStarted(false);
-    setIsTimerActive(false);
-    setSessionDuration(0);
-    sessionDurationRef.current = 0;
-  }, []);
-
   // Idle timer wires DOM events into our active/idle state. On first
   // interaction (when startOnActivity is set), this is also what kicks
   // off a new session.
@@ -152,7 +145,5 @@ export default function useDomActivitySession({
     isTimerActive,
     start,
     end,
-    upload: session.upload,
-    reset,
   };
 }
