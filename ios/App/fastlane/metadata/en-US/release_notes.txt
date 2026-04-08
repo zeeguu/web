@@ -2,6 +2,6 @@
 - Switching language while reading now asks first, saves the article, and takes you to your new language home
 - Fix: browsing, exercise, and listening sessions now end properly when you toggle language
 - Fix: listening sessions end when switching between audio lessons
-- Landing page now reads correctly in dark mode and announces the Android app
+- Landing page polished for dark mode
 - Dark-mode polish for the Words to Review controls
 - Security updates to dependencies
