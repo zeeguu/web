@@ -149,6 +149,15 @@ export default function useListeningSession(lessonId) {
         if (segmentStartRef.current) {
           total += Math.floor((Date.now() - segmentStartRef.current) / 1000);
         }
+        console.log(
+          "Ending listening session:",
+          sessionIdRef.current,
+          "total duration:",
+          total,
+          "seconds (lessonId now:",
+          lessonId,
+          ")",
+        );
         api?.listeningSessionEnd(sessionIdRef.current, total);
       }
       // Reset state so a new lessonId starts from scratch

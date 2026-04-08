@@ -103,9 +103,10 @@ export default function useSession({
     sessionDurationRef.current = 0;
 
     methods.create((id) => {
+      console.log(`Started ${type} session:`, id, "(sessionKey:", sessionKey, ")");
       setSessionId(id);
     });
-  }, [api, methods]);
+  }, [api, methods, type, sessionKey]);
 
   // Upload current duration to server (rate limited to prevent spam)
   const upload = useCallback(() => {
@@ -236,6 +237,15 @@ export default function useSession({
   useEffect(() => {
     return () => {
       if (sessionIdRef.current && methods) {
+        console.log(
+          `Ending ${type} session:`,
+          sessionIdRef.current,
+          "duration:",
+          sessionDurationRef.current,
+          "seconds (sessionKey was:",
+          sessionKey,
+          ")",
+        );
         methods.end(sessionIdRef.current, sessionDurationRef.current);
       }
       sessionIdRef.current = null;
