@@ -16,7 +16,7 @@ import {
   FullscreenButton,
 } from "./VideoPlayer.sc";
 import LoadingAnimation from "../components/LoadingAnimation";
-import useActivityTimer from "../hooks/useActivityTimer";
+import useWatchingSession from "../hooks/useWatchingSession";
 import useShadowRef from "../hooks/useShadowRef";
 import { WEB_READER } from "../reader/ArticleReader";
 import FullscreenIcon from "@mui/icons-material/Fullscreen";
@@ -52,11 +52,13 @@ export default function VideoPlayer() {
   const [translatedWords, setTranslatedWords] = useState(new Map());
   const [currentInteractiveCaption, setCurrentInteractiveCaption] = useState(null);
   const [interactiveTitle, setInteractiveTitle] = useState(null);
-  const [watchingSessionId, setWatchingSessionId] = useState(null);
-  const [activityTimer] = useActivityTimer(updateWatchingSession);
 
-  const activityTimerRef = useShadowRef(activityTimer);
-  const watchingSessionIdRef = useShadowRef(watchingSessionId);
+  // Watching session tracking — start/update/end + idle/focus handling
+  // are all owned by the hook. The hook will create the session as soon
+  // as videoID is set, periodically update it while the user is active,
+  // and end it on unmount or videoID change.
+  useWatchingSession(videoID);
+
   const playerRef = useShadowRef(player);
   const videoIDRef = useShadowRef(videoID);
 
@@ -92,10 +94,7 @@ export default function VideoPlayer() {
       setTitle(video.title);
     });
 
-    api.createWatchingSession(videoID, (sessionID) => {
-      setWatchingSessionId(sessionID);
-      api.setVideoOpened(videoID);
-    });
+    api.setVideoOpened(videoID);
 
     // TODO: Figure out why do we have this twice both here and in the main useEffect - Both here and in the ArticleReader
     // Based on testing, this does not seem to be needed
@@ -106,20 +105,10 @@ export default function VideoPlayer() {
   function onComponentUnmount() {
     console.log("Component will unmount...");
 
-    console.log("Updating watching session...");
-    updateWatchingSession();
-
     console.log("Updating playback position...");
     updatePlaybackPosition();
 
     window.removeEventListener("beforeunload", onComponentUnmount);
-  }
-
-  function updateWatchingSession() {
-    // It can happen that the timer already ticks before we have a watching session from the server.
-    if (watchingSessionIdRef.current) {
-      api.updateWatchingSession(watchingSessionIdRef.current, activityTimerRef.current);
-    }
   }
 
   function updatePlaybackPosition() {

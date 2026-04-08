@@ -4,17 +4,20 @@ import useSession from "./useSession";
 
 // DOM activity strategy on top of useSession: 1Hz tick counter, idle
 // detection via useIdleTimer, focus/blur pause/resume. Used by reading,
-// browsing, and exercise sessions. Listening uses useListeningSession
-// instead because audio playing is its own activity model.
+// browsing, exercise, and watching sessions. Listening uses
+// useListeningSession instead because audio playing is its own activity
+// model.
 export default function useDomActivitySession({
-  type,
-  resourceId,
-  createParams = {},
+  label,
+  apiCreate,
+  apiUpdate,
+  apiEnd,
+  sessionKey,
+  enabled = true,
   idleTimeout = 30000,
   uploadInterval = 10,
   autoStart = false,
   startOnActivity = false,
-  sessionKey,
 } = {}) {
   const [sessionDuration, setSessionDuration] = useState(0);
   const sessionDurationRef = useRef(0);
@@ -31,15 +34,14 @@ export default function useDomActivitySession({
   const [isTimerActive, setIsTimerActive] = useState(false);
   const [isFocused, setIsFocused] = useState(true);
 
-  // The lifecycle primitive needs a way to read the current duration
-  // when it flushes (on update or cleanup). Just hand it our ref.
   const getCurrentDuration = useCallback(() => sessionDurationRef.current, []);
 
   const session = useSession({
-    type,
     sessionKey,
-    resourceId,
-    createParams,
+    label,
+    apiCreate,
+    apiUpdate,
+    apiEnd,
     getCurrentDuration,
   });
 
@@ -132,10 +134,10 @@ export default function useDomActivitySession({
     };
   }, [isTimerActive, session, resetIdleTimer]);
 
-  // Auto-start if configured.
+  // Auto-start if configured and enabled (e.g., resource id is loaded).
   useEffect(() => {
-    if (autoStart && resourceId) start();
-  }, [autoStart, resourceId, start]);
+    if (autoStart && enabled) start();
+  }, [autoStart, enabled, start]);
 
   return {
     sessionId: session.sessionId,

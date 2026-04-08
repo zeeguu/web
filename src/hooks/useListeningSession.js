@@ -1,5 +1,6 @@
-import { useEffect, useRef, useCallback } from "react";
+import { useEffect, useRef, useCallback, useContext } from "react";
 import useSession from "./useSession";
+import { APIContext } from "../contexts/APIContext";
 
 const UPDATE_INTERVAL = 10000; // Update session every 10 seconds while playing
 
@@ -9,6 +10,8 @@ const UPDATE_INTERVAL = 10000; // Update session every 10 seconds while playing
 // as the sessionKey — changing it (or setting it to undefined on a
 // language toggle) ends the current session.
 export default function useListeningSession(lessonId) {
+  const api = useContext(APIContext);
+
   // Wall-clock segment tracking — the audio-specific time model.
   const segmentStartRef = useRef(null); // when the current play segment started
   const accumulatedSecondsRef = useRef(0); // total from all completed segments
@@ -26,9 +29,11 @@ export default function useListeningSession(lessonId) {
   }, []);
 
   const session = useSession({
-    type: "listening",
+    label: "listening",
     sessionKey: lessonId,
-    resourceId: lessonId,
+    apiCreate: (cb) => api.listeningSessionCreate(lessonId, cb),
+    apiUpdate: (id, dur) => api.listeningSessionUpdate(id, dur),
+    apiEnd: (id, dur) => api.listeningSessionEnd(id, dur),
     getCurrentDuration,
   });
 
