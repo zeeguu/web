@@ -78,6 +78,21 @@ export default function Badges({ username }) {
           .replace(",", "")
       : "—";
 
+  const getBadgeMeta = (badge) => {
+    const achievedLevels = badge.levels.filter((l) => l.achieved);
+    const highestAchieved = [...badge.levels].reverse().find((l) => l.achieved);
+    const nextLevel = badge.levels.find((l) => !l.achieved) || highestAchieved;
+
+    return {
+      achievedCount: achievedLevels.length,
+      highestAchieved,
+      nextLevel,
+      iconLevel: highestAchieved || badge.levels[0],
+      displayLevel: nextLevel || badge.levels[badge.levels.length - 1],
+      hasNewBadge: !username && badge.levels.some((l) => l.achieved && !l.is_shown),
+    };
+  };
+
   return (
     <>
       {isLoading && <p>Loading badges...</p>}
@@ -86,37 +101,32 @@ export default function Badges({ username }) {
       {!isLoading && !error && (
         <s.BadgeContainer>
           {badges.map((badge, index) => {
-            const achievedCount = badge.levels.filter((l) => l.achieved).length;
-            const nextLevel = badge.levels.find((l) => !l.achieved);
-            const highestAchieved = [...badge.levels].reverse().find((l) => l.achieved);
-            const iconLevel = highestAchieved || badge.levels[0];
-            const displayLevel = nextLevel || badge.levels[badge.levels.length - 1];
-            const hasNewBadge = !username && badge.levels.some((l) => l.achieved && !l.is_shown);
+            const meta = getBadgeMeta(badge);
 
             return (
               <s.BadgeCard key={index} onClick={() => setSelectedBadge(badge)}>
-                {hasNewBadge && <s.NewTag>NEW</s.NewTag>}
+                {meta.hasNewBadge && <s.NewTag>NEW</s.NewTag>}
                 <s.IconContainer>
-                  <s.BadgeIcon src={getIcon(iconLevel)} $achieved={achievedCount > 0} alt={badge.name} />
+                  <s.BadgeIcon src={getIcon(meta.iconLevel)} $achieved={meta.achievedCount > 0} alt={badge.name} />
                 </s.IconContainer>
                 <s.BadgeTitle>
                   <div>{badge.name}</div>
-                  <div>Level {nextLevel.badge_level}</div>
+                  <div>Level {meta.nextLevel.badge_level}</div>
                 </s.BadgeTitle>
-                <s.BadgeDescription>{displayLevel.description}</s.BadgeDescription>
-                {nextLevel ? (
+                <s.BadgeDescription>{meta.displayLevel.description}</s.BadgeDescription>
+                {!meta.nextLevel.achieved ? (
                   <div className="card-bottom">
                     <s.ProgressWrapper>
                       <s.ProgressBar>
                         <s.ProgressFill
                           style={{
-                            width: `${(Math.min(badge.current_value, nextLevel.target_value) / nextLevel.target_value) * 100}%`,
+                            width: `${(Math.min(badge.current_value, meta.nextLevel.target_value) / meta.nextLevel.target_value) * 100}%`,
                           }}
                           $isCurrent={true}
                         />
                       </s.ProgressBar>
                       <s.ProgressText>
-                        {badge.current_value} / {nextLevel.target_value}
+                        {badge.current_value} / {meta.nextLevel.target_value}
                       </s.ProgressText>
                     </s.ProgressWrapper>
                   </div>
@@ -130,8 +140,7 @@ export default function Badges({ username }) {
       )}
       {selectedBadge &&
         (() => {
-          const highestAchieved = [...selectedBadge.levels].reverse().find((l) => l.achieved);
-          const nextLevel = selectedBadge.levels.find((l) => !l.achieved);
+          const meta = getBadgeMeta(selectedBadge);
 
           return (
             <Modal
@@ -142,8 +151,8 @@ export default function Badges({ username }) {
               <Header>
                 <s.IconContainer>
                   <s.BadgeIcon
-                    src={getIcon(highestAchieved || selectedBadge.levels[0])}
-                    $achieved={!!highestAchieved}
+                    src={getIcon(meta.highestAchieved || selectedBadge.levels[0])}
+                    $achieved={!!meta.highestAchieved}
                   />
                 </s.IconContainer>
                 <Heading style={{ textAlign: "center" }}>{selectedBadge.name}</Heading>
@@ -151,7 +160,7 @@ export default function Badges({ username }) {
 
               <Main style={{ gap: "0" }}>
                 {selectedBadge.levels.map((level, i) => (
-                  <s.LevelRow key={i} $achieved={level.achieved} $isCurrent={level === nextLevel}>
+                  <s.LevelRow key={i} $achieved={level.achieved} $isCurrent={level === meta.nextLevel}>
                     {level.achieved && !level.is_shown && <s.NewTag>New</s.NewTag>}
                     <s.LevelTitle>Level {level.badge_level}</s.LevelTitle>
                     <s.BadgeDescription>{level.description}</s.BadgeDescription>
@@ -164,7 +173,7 @@ export default function Badges({ username }) {
                             style={{
                               width: `${(Math.min(selectedBadge.current_value, level.target_value) / level.target_value) * 100}%`,
                             }}
-                            $isCurrent={level === nextLevel}
+                            $isCurrent={level === meta.nextLevel}
                           />
                         </s.ProgressBar>
                         <s.ProgressText>
