@@ -388,10 +388,8 @@ export default function TodayAudio({ setShowTabs }) {
         <h2 style={{ color: zeeguuOrange, marginBottom: "10px" }}>
           Generating your daily lesson...
         </h2>
-        <p style={{ color: "var(--text-primary)", marginBottom: "20px", fontSize: "16px", textAlign: "center" }}>
-          This can take a while.<br />
-          Feel free to browse — you'll find it here when it's ready.
-        </p>
+
+
         <div
           style={{
             width: "200px",
@@ -400,6 +398,7 @@ export default function TodayAudio({ setShowTabs }) {
             borderRadius: "4px",
             overflow: "hidden",
             marginBottom: "10px",
+            marginTop: "10px",
           }}
         >
           <div
@@ -413,6 +412,12 @@ export default function TodayAudio({ setShowTabs }) {
           />
         </div>
         <p style={{ fontSize: "12px", color: "var(--text-faint)" }}>{progressDetail}</p>
+
+        <p style={{ color: "var(--text-primary)", marginBottom: "20px", fontSize: "16px", textAlign: "center" }}>
+          This can take a while.<br />
+          Feel free to browse — you'll find it here when it's ready.
+        </p>
+
       </div>
     );
   }
