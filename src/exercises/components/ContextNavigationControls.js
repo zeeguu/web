@@ -3,6 +3,10 @@ import { useSwipeable } from "react-swipeable";
 import { APIContext } from "../../contexts/APIContext";
 import * as Sentry from "@sentry/react";
 import * as s from "./ContextNavigationControls.sc";
+import useKeyboardNavigation from "../../hooks/useKeyboardNavigation";
+
+// Must match the exit transition duration in ContextNavigationControls.sc.js
+const EXIT_ANIMATION_MS = 200;
 
 export default function ContextNavigationControls({
   exerciseBookmark,
@@ -16,7 +20,7 @@ export default function ContextNavigationControls({
   const [isLoading, setIsLoading] = useState(false);
   const [hasFetched, setHasFetched] = useState(false);
   const [isAnimating, setIsAnimating] = useState(false);
-  const [slideDirection, setSlideDirection] = useState(null); // 'left' or 'right'
+  const [slideDirection, setSlideDirection] = useState(null);
   const [isExiting, setIsExiting] = useState(false);
   const [isEntering, setIsEntering] = useState(false);
 
@@ -47,9 +51,7 @@ export default function ContextNavigationControls({
 
       const normalizeSentence = (s) =>
         s?.trim().toLowerCase().replace(/\s+/g, " ") || "";
-      const currentSentenceNormalized = normalizeSentence(
-        exerciseBookmark?.context,
-      );
+      const currentNormalized = normalizeSentence(exerciseBookmark?.context);
 
       if (pastResponse?.ok) {
         const contentType = pastResponse.headers.get("content-type");
@@ -59,7 +61,7 @@ export default function ContextNavigationControls({
             .filter(
               (ctx) =>
                 !ctx.is_preferred &&
-                normalizeSentence(ctx.context) !== currentSentenceNormalized,
+                normalizeSentence(ctx.context) !== currentNormalized,
             )
             .map((ctx) => ({
               id: ctx.bookmark_id,
@@ -79,7 +81,7 @@ export default function ContextNavigationControls({
         alternatives = (altData.examples || [])
           .filter(
             (example) =>
-              normalizeSentence(example.sentence) !== currentSentenceNormalized,
+              normalizeSentence(example.sentence) !== currentNormalized,
           )
           .map((example) => ({
             ...example,
@@ -87,8 +89,6 @@ export default function ContextNavigationControls({
           }));
       }
 
-      // Current context is always first — include the full bookmark so swiping
-      // back restores the original content via the same optimistic path.
       const currentContext = {
         id: exerciseBookmark.id,
         sentence: exerciseBookmark.context,
@@ -111,143 +111,73 @@ export default function ContextNavigationControls({
     }
   };
 
-  const selectContext = (context) => {
-    // If we have a pre-formed bookmark, update UI instantly
-    if (context.bookmark) {
-      onExampleUpdated({
-        selectedExample: context,
-        updatedBookmark: context.bookmark,
-      });
+  // ── Switching context ───────────────────────────────────────────────
 
-      // Persist preference server-side (skip for original card — it's already preferred)
-      if (!context.isCurrent) {
-        const url = `${api.baseAPIurl}/set_preferred_bookmark/${exerciseBookmark.user_word_id}?session=${api.session}`;
-        const payload = { bookmark_id: context.bookmark.id };
-        fetch(url, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(payload),
-        }).catch((error) => {
-          Sentry.captureException(error, {
-            extra: { userWordId: exerciseBookmark?.user_word_id },
-          });
-        });
-      }
-      return;
-    }
+  /** Update the exercise UI to show a different context's content. */
+  function applyContext(context) {
+    if (!context.bookmark) return;
+    onExampleUpdated({
+      selectedExample: context,
+      updatedBookmark: context.bookmark,
+    });
+  }
 
-    // Fallback for contexts without pre-formed bookmark: fire POST
-    let url, payload;
-    if (context.isFromHistory) {
-      url = `${api.baseAPIurl}/set_preferred_bookmark/${exerciseBookmark.user_word_id}?session=${api.session}`;
-      payload = { bookmark_id: context.id };
-    } else {
-      url = `${api.baseAPIurl}/set_preferred_example/${exerciseBookmark.user_word_id}?session=${api.session}`;
-      payload = { sentence_id: context.id };
-    }
+  /** Tell the server which bookmark the user prefers (fire-and-forget). */
+  function persistPreference(context) {
+    if (context.isCurrent || !context.bookmark) return;
 
+    const url = `${api.baseAPIurl}/set_preferred_bookmark/${exerciseBookmark.user_word_id}?session=${api.session}`;
     fetch(url, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload),
-    })
-      .then((response) => {
-        if (!response.ok) {
-          response
-            .json()
-            .catch(() => ({}))
-            .then((errorData) => {
-              Sentry.captureMessage(
-                errorData.error || "Failed to update example",
-                {
-                  level: "warning",
-                  extra: {
-                    errorData,
-                    userWordId: exerciseBookmark?.user_word_id,
-                  },
-                },
-              );
-            });
-          return;
-        }
-        return response.json();
-      })
-      .then((data) => {
-        if (data?.updated_bookmark) {
-          onExampleUpdated({
-            selectedExample: context,
-            updatedBookmark: data.updated_bookmark,
-          });
-        }
-      })
-      .catch((error) => {
-        Sentry.captureException(error, {
-          extra: { userWordId: exerciseBookmark?.user_word_id },
-        });
+      body: JSON.stringify({ bookmark_id: context.bookmark.id }),
+    }).catch((error) => {
+      Sentry.captureException(error, {
+        extra: { userWordId: exerciseBookmark?.user_word_id },
       });
-  };
+    });
+  }
 
-  // Go to next example (swipe left / button click)
-  const handleNext = useCallback(() => {
-    if (isAnimating || contexts.length <= 1) return;
-    setIsAnimating(true);
-    setSlideDirection("left");
-    setIsExiting(true);
-    const newIndex = (currentIndex + 1) % contexts.length;
-    setCurrentIndex(newIndex);
+  // ── Navigation ──────────────────────────────────────────────────────
 
-    // After exit animation (200ms), swap content and start enter animation
-    setTimeout(() => {
-      selectContext(contexts[newIndex]);
-      setIsExiting(false);
-      setIsEntering(true);
-    }, 200);
-  }, [isAnimating, currentIndex, contexts]);
+  /** Navigate to a neighbouring card. direction: 'left' (next) or 'right' (previous). */
+  const navigate = useCallback(
+    (direction) => {
+      if (isAnimating || contexts.length <= 1) return;
 
-  // Go to previous example (swipe right)
-  const handlePrevious = useCallback(() => {
-    if (isAnimating || contexts.length <= 1) return;
-    setIsAnimating(true);
-    setSlideDirection("right");
-    setIsExiting(true);
-    const newIndex = (currentIndex - 1 + contexts.length) % contexts.length;
-    setCurrentIndex(newIndex);
+      const delta = direction === "left" ? 1 : -1;
+      const newIndex =
+        (currentIndex + delta + contexts.length) % contexts.length;
+      const target = contexts[newIndex];
 
-    // After exit animation (200ms), swap content and start enter animation
-    setTimeout(() => {
-      selectContext(contexts[newIndex]);
-      setIsExiting(false);
-      setIsEntering(true);
-    }, 200);
-  }, [isAnimating, currentIndex, contexts]);
+      setIsAnimating(true);
+      setSlideDirection(direction);
+      setIsExiting(true);
+      setCurrentIndex(newIndex);
+
+      // After the exit animation, swap content and slide the new card in.
+      setTimeout(() => {
+        applyContext(target);
+        persistPreference(target);
+        setIsExiting(false);
+        setIsEntering(true);
+      }, EXIT_ANIMATION_MS);
+    },
+    [isAnimating, currentIndex, contexts],
+  );
 
   if (!onExampleUpdated) return null;
 
   const hasMultipleContexts = contexts.length > 1;
 
-  // Keyboard arrow navigation for desktop
-  useEffect(() => {
-    if (!hasMultipleContexts) return;
-
-    const handleKeyDown = (e) => {
-      if (e.target.tagName === "INPUT" || e.target.tagName === "TEXTAREA")
-        return;
-      if (e.key === "ArrowRight") {
-        e.preventDefault();
-        handleNext();
-      } else if (e.key === "ArrowLeft") {
-        e.preventDefault();
-        handlePrevious();
-      }
-    };
-
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [hasMultipleContexts, handleNext, handlePrevious]);
+  useKeyboardNavigation({
+    ArrowRight: () => navigate("left"),
+    ArrowLeft: () => navigate("right"),
+  }, hasMultipleContexts);
 
   const swipeHandlers = useSwipeable({
-    onSwipedLeft: () => hasMultipleContexts && handleNext(),
-    onSwipedRight: () => hasMultipleContexts && handlePrevious(),
+    onSwipedLeft: () => hasMultipleContexts && navigate("left"),
+    onSwipedRight: () => hasMultipleContexts && navigate("right"),
     trackMouse: false,
     preventScrollOnSwipe: true,
     delta: 50,
@@ -256,7 +186,7 @@ export default function ContextNavigationControls({
   return (
     <s.SlideContainer>
       <s.NavArrow
-        onClick={handlePrevious}
+        onClick={() => navigate("right")}
         disabled={isAnimating}
         $hidden={!hasMultipleContexts}
       >
@@ -279,7 +209,7 @@ export default function ContextNavigationControls({
       )}
 
       <s.NavArrow
-        onClick={handleNext}
+        onClick={() => navigate("left")}
         disabled={isAnimating}
         $hidden={!hasMultipleContexts}
       >
