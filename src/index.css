@@ -63,6 +63,8 @@
 
   --row-hover-bg: rgba(255, 187, 84, 0.2);
 
+  --badge-progress-bg: #e5e5e5;
+
   color-scheme: light;
 }
 
@@ -142,6 +144,8 @@
   --achieved-bg: rgba(53, 193, 55, 0.35);
 
   --row-hover-bg: #353555;
+
+  --badge-progress-bg: #3a3a55;
 
   color-scheme: dark;
 }
