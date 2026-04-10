@@ -92,8 +92,8 @@ let strings = new LocalizedStrings(
       articlesReadTextStart: "You have read for",
       articlesReadWeeklyTextEnd: "minutes this week.",
       articlesReadWeeklyTextEndSingle: "minute this week.",
-      articlesReadTotalTextEnd: "minutes in total since you started using Zeeguu.",
-      articlesReadTotalTextEndSingle: "minute in total since you started using Zeeguu.",
+      articlesReadTotalTextEnd: "minutes in total.",
+      articlesReadTotalTextEndSingle: "minute in total.",
 
       wordsTranslatedTextStart: "You have translated",
       wordsPracticedTextStart: "You have practiced",
@@ -104,8 +104,8 @@ let strings = new LocalizedStrings(
 
       wordsTextWeeklyEnd: "words this week.",
       wordsTextWeeklyEndSingle: "word this week.",
-      wordsTextTotalEnd: "words in total since you started using Zeeguu.",
-      wordsTextTotalEndSingle: "word in total since you started using Zeeguu.",
+      wordsTextTotalEnd: "words in total.",
+      wordsTextTotalEndSingle: "word in total.",
 
       streakTextStart: "You have been active every day for",
       streakTextStartSingle: "You have been active for",
@@ -574,14 +574,14 @@ let strings = new LocalizedStrings(
       backToWords: "Back to Words",
       keepExercising: "Keep Practicing",
       startLearningNewWords: "Start Learning New Words",
-      goToExercises: "Go to Exercises",
+      goToExercises: "Exercises",
 
       //CongratulationsPage
       goodJob: "Good Job, ",
       correct: "You got the following words correct:",
       payMoreAttentionTo: "Pay more attention to these words:",
-      wordsIncorrect: "Words you didn't get correct in exercises",
-      wordsCorrect: "Words you got correct in exercises",
+      wordsIncorrect: "Words you didn't get correct in exercises:",
+      wordsCorrect: "Words you got correct in exercises:",
 
       //Settings
       //Settings categories

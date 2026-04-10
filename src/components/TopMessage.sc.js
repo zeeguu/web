@@ -1,12 +1,11 @@
 import styled from "styled-components";
-import { zeeguuVeryLightOrange } from "./colors";
 
 let YellowMessageBox = styled.div`
   display: flex;
   flex-direction: column;
   text-align: center;
   margin: 2em auto;
-  background-color: ${zeeguuVeryLightOrange};
+  background-color: var(--infobox-bg);
   border-radius: 1em;
   max-width: 80%;
   padding: 0.5em 0.5em;

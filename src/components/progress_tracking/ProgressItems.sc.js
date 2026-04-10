@@ -1,15 +1,17 @@
 import styled from "styled-components";
-import { zeeguuWarmYellow, veryLightGrey} from "../colors";
+import { zeeguuWarmYellow, veryLightGrey, zeeguuOrange} from "../colors";
+
 
 const ProgressOverviewItem = styled.div`
-  width: 285px;    
+  min-width: 285px;
+  max-width: 400px;    
   display: flex;
   align-items: center;
-  background-color: white;
-  border:2px solid ${zeeguuWarmYellow};
-  border-radius: 4px;
-  padding: 1.5em;
-  min-height: 60px;
+  border:2px solid var(--info-icon-color);
+  background-color: var(--infobox-bg); 
+  border-radius: 8px;
+  padding: 1.1em 1.25em;
+  min-height: 52px;
   cursor: pointer;
   &:hover {
     background-color: ${veryLightGrey};
@@ -18,7 +20,7 @@ const ProgressOverviewItem = styled.div`
   @media (max-width: 768px) {
     width: 100%;
     max-width: 20em;
-    min-height: 3.5em; 
+    min-height: 3em; 
   }
 `;
 
@@ -37,7 +39,7 @@ const IconAndValue = styled.div`
 
 const Icon = styled.div`
   font-size: 2em;
-  color: ${zeeguuWarmYellow};
+  color: ${zeeguuOrange};
 `;
 
 const Value = styled.div`
@@ -57,7 +59,7 @@ const Label = styled.div`
 const ProgressDescription = styled.div`
   display: flex;
   width: 60%;
-  font-size: 1rem;
+  font-size: 0.9rem;
   align-items: center;
   text-align: left;
   margin-left: 2.9em;
@@ -81,8 +83,12 @@ const ProgressItemsContainer = styled.div`
   display: flex;
   flex-wrap: wrap;
   gap: 2rem;
-  justify-content: center;
+  justify-content: start;
   padding: 1em;
+  @media (max-width: 768px) {
+    justify-content: center;
+  }
+  
   `;
 
   const ProgressOverviewContainer = styled.div`

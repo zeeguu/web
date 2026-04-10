@@ -3,7 +3,7 @@ import NavIcon from "../components/MainNav/NavIcon";
 import { getExerciseProgressSummary } from "../utils/progressTracking/progressData";
 import * as s from "../components/progress_tracking/ProgressItems.sc";
 import { ProgressContext } from "../contexts/ProgressContext";
-import { selectTwoRandomItems } from "../utils/progressTracking/progressHelpers";
+import { selectOneRandomItems } from "../utils/progressTracking/progressHelpers";
 import { APIContext } from "../contexts/APIContext";
 import LoadingAnimation from "../components/LoadingAnimation";
 
@@ -26,8 +26,8 @@ export default function ExercisesProgressSummary() {
             daysPracticed,
             weeklyExercises,
           }).exerciseProgressSummary;
-        const twoRandomItems = selectTwoRandomItems(summary);
-        setRandomItems(twoRandomItems);
+        const oneRandomItem = selectOneRandomItems(summary);
+        setRandomItems(oneRandomItem);
         }
     },[daysPracticed, totalLearned, totalInLearning, weeklyExercises]);
     

@@ -14,7 +14,6 @@ const RoundButton = styled.div`
   color: white !important;
   font-weight: 500;
   text-align: center;
-  vertical
 
   cursor: pointer;
   margin-top: 3px;
@@ -36,7 +35,6 @@ const OrangeRoundButton = styled(RoundButton)`
   &:hover {
     filter: brightness(105%);
   }
-  .
 `;
 
 const SearchIcon = styled(MUISearchIcon)`
@@ -106,7 +104,7 @@ const StyledButton = styled.button`
 
   // Primary (use $primary to avoid passing to DOM)
   ${(props) =>
-    props.$primary &&
+    (props.$primary || props.primary) &&
     css`
       background-color: ${zeeguuOrange};
       :hover {
@@ -116,7 +114,7 @@ const StyledButton = styled.button`
 
   // Secondary (use $secondary to avoid passing to DOM)
   ${(props) =>
-    props.$secondary &&
+    (props.$secondary || props.secondary) &&
     css`
       background-color: white;
       :hover {

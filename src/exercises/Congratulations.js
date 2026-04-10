@@ -4,11 +4,18 @@ import { YellowMessageBox } from "../components/TopMessage.sc";
 import strings from "../i18n/definitions";
 import { useState, useEffect, useContext } from "react";
 import { useLocation, useHistory } from "react-router-dom";
-import { CenteredColumn, SummaryTextWrapper } from "./Congratulations.sc";
+import {
+  CenteredColumn,
+  SummaryTextWrapper,
+  WordList,
+  ExercisesFrom,
+  CongratulationsContainer,
+  GoodJobTitle,
+  ProgressionButtonsRow,
+} from "./Congratulations.sc";
 import { removeArrayDuplicates } from "../utils/basic/arrays";
 import { LoadingAnimation } from "../components/LoadingAnimation.sc";
 import { timeToHumanReadable, formatFutureDueTime } from "../utils/misc/readableTime";
-import CollapsablePanel from "../components/CollapsablePanel";
 import Pluralize from "../utils/text/pluralize";
 import { StyledButton } from "../components/allButtons.sc";
 import { APIContext } from "../contexts/APIContext";
@@ -100,23 +107,20 @@ export default function Congratulations({
     if (articleID)
       return (
         <>
-          <StyledButton secondary onClick={keepExercisingAction} disabled={isKeepExercisingDisabled}>
+          <StyledButton navigation onClick={keepExercisingAction} disabled={isKeepExercisingDisabled}>
             {strings.keepExercising}
-          </StyledButton>
-          <StyledButton primary onClick={toScheduledExercises}>
-            {strings.goToExercises}
           </StyledButton>
         </>
       );
     else if (!isOutOfWordsToday)
       return (
-        <StyledButton primary onClick={keepExercisingAction} disabled={isKeepExercisingDisabled}>
+        <StyledButton navigation onClick={keepExercisingAction} disabled={isKeepExercisingDisabled}>
           {strings.keepExercising}
         </StyledButton>
       );
     else
       return (
-        <StyledButton primary onClick={backButtonAction}>
+        <StyledButton navigation onClick={backButtonAction}>
           {strings.goToReading}
         </StyledButton>
       );
@@ -124,81 +128,58 @@ export default function Congratulations({
 
   return (
     <>
-      <s.NarrowColumn className="narrowColumn">
+      <CongratulationsContainer>
         <CenteredColumn className="centeredColumn">
-          <h1>
+          {articleID && (
+            <ExercisesFrom>
+              From: <a href={articleURL}>{articleTitle}</a>
+            </ExercisesFrom>
+          )}
+          <GoodJobTitle>
             {strings.goodJob}{isAnonymous ? "" : ` ${username}`}!
-          </h1>
-        </CenteredColumn>
-         <CenteredColumn className="centeredColumn">
+          </GoodJobTitle>
+          </CenteredColumn> 
+
         <SummaryTextWrapper>
-          <p style={{ textAlign: "center" }}>
-            You have just done <b>{totalPracticedBookmarksInSession}</b>{" "}
+          <p>
+            You have done <b>{totalPracticedBookmarksInSession}</b>{" "}
             
-            {Pluralize.exercise(totalPracticedBookmarksInSession)} in <b>{timeToHumanReadable(checkpointTime)}</b>. Here are some highlights of your current progress you have made.
-            {articleID && (
-              <p>
-                These words are now part of your vocabulary exercises, using spaced repetition and smart learning
-                techniques to help you remember them better.
-              </p>
-            )}
+            {Pluralize.exercise(totalPracticedBookmarksInSession)} in <b>{timeToHumanReadable(checkpointTime)}</b>.
           </p>
         </SummaryTextWrapper>
-        {articleID && (
-          <p>
-            You practiced words from: <a href={articleURL}>{articleTitle}</a>
-          </p>
-          
-        )}
-        </CenteredColumn>
-        <ExerciseProgressSummary/>
-        {incorrectBookmarksToDisplay.length > 0 && (
-          <CollapsablePanel
-            children={incorrectBookmarksToDisplay.map((each) => (
+
+        <ExerciseProgressSummary /> 
+          {incorrectBookmarksToDisplay.length > 0 && (
+            <WordList>
+              <b>{strings.wordsIncorrect}</b>
+              {incorrectBookmarksToDisplay.map((each) => (
               <s.ContentOnRow className="contentOnRow" key={"row_" + each.id}>
-                <Word key={each.id} bookmark={each} notifyDelete={deleteBookmark} source={source} isOnCongratulationsPage={true}  />
+              <Word key={each.id} bookmark={each} notifyDelete={deleteBookmark} source={source} isOnCongratulationsPage={true} />
               </s.ContentOnRow>
-            ))}
-            topMessage={strings.wordsIncorrect}
-            defaultOpen={true}
-          ></CollapsablePanel>
-        )}
-        <br />
+              ))}
+            </WordList>
+          )}
+        
         {correctBookmarksToDisplay.length > 0 && (
-          <CollapsablePanel
-            children={correctBookmarksToDisplay.map((each) => (
+          <WordList>
+            <b>{strings.wordsCorrect}</b>
+            {correctBookmarksToDisplay.map((each) => (
               <s.ContentOnRow className="contentOnRow" key={"row_" + each.id}>
                 <Word key={each.id} bookmark={each} notifyDelete={deleteBookmark} source={source} isOnCongratulationsPage={true} />
               </s.ContentOnRow>
             ))}
-            topMessage={strings.wordsCorrect}
-            defaultOpen={true}
-          ></CollapsablePanel>
+          </WordList>
         )}
 
-        <br />
-        {isOutOfWordsToday && (
-          <YellowMessageBox>
-            <p>
-              There are no more words for you to practice at the moment.
-              {nextWordDueText
-                ? ` New words will be ready to practice ${nextWordDueText}.`
-                : " Come back later to practice more words."}
-            </p>
-          </YellowMessageBox>
-        )}
         {!isOutOfWordsToday && (
           <>
-            <YellowMessageBox>
-              <p>There are words that we recommend you still practice today. Do you want do to it now?</p>
-
-              <CenteredColumn className="contentOnRow" style={{ marginTop: "-1em", justifyContent: "space-around" }}>
-                {progressionButtonRender()}
-              </CenteredColumn>
-            </YellowMessageBox>
+            <ProgressionButtonsRow>
+              {progressionButtonRender()}
+            </ProgressionButtonsRow>
           </>
         )}
-      </s.NarrowColumn>
+        <br />
+      </CongratulationsContainer>
     </>
   );
 }

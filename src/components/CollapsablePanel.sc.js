@@ -2,14 +2,14 @@ import styled from "styled-components";
 
 let CollapsableContainer = styled.div`
   display: flex;
-  border-bottom: solid 1px;
+  /* border-bottom: solid 1px; */
   border-color: #757575;
   align-items: center;
   justify-content: space-between;
   padding: 0px 1em 0.5em;
-  margin-bottom: 4px;
-  margin-top: 4em;
-  width: 100%;
+  margin-bottom: 0.3em;
+  margin-top: 1em;
+  
 
   .arrow {
     font-size: xx-large;
