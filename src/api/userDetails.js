@@ -5,6 +5,10 @@ Zeeguu_API.prototype.getUserDetails = function () {
   return this._getJSONPromise("get_user_details");
 };
 
+Zeeguu_API.prototype.setUserTimezone = function (timezone) {
+  return this._post(`user_timezone`, qs.stringify({ timezone }));
+};
+
 Zeeguu_API.prototype.getUserLanguages = function (callback) {
   this._getJSON("user_languages", callback);
 };
