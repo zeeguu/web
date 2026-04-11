@@ -1,8 +1,8 @@
 import { useContext, useEffect } from "react";
 import { Capacitor } from "@capacitor/core";
+import * as Sentry from "@sentry/react";
 import { APIContext } from "../contexts/APIContext";
-
-const STORAGE_KEY = "reported_timezone";
+import LocalStorage from "../assorted/LocalStorage";
 
 function detectTimezone() {
   try {
@@ -15,10 +15,13 @@ function detectTimezone() {
 function reportIfChanged(api) {
   const tz = detectTimezone();
   if (!tz) return;
-  if (localStorage.getItem(STORAGE_KEY) === tz) return;
+  if (localStorage.getItem(LocalStorage.Keys.ReportedTimezone) === tz) return;
   api.setUserTimezone(tz)
-    .then(() => localStorage.setItem(STORAGE_KEY, tz))
-    .catch((err) => console.warn("Failed to report timezone:", err));
+    .then(() => localStorage.setItem(LocalStorage.Keys.ReportedTimezone, tz))
+    .catch((err) => {
+      Sentry.captureException(err);
+      console.warn("Failed to report timezone:", err);
+    });
 }
 
 export default function useReportTimezone() {
@@ -44,6 +47,7 @@ export default function useReportTimezone() {
           if (isActive) reportIfChanged(api);
         });
       } catch (err) {
+        Sentry.captureException(err);
         console.warn("Failed to attach appStateChange listener:", err);
       }
     })();
