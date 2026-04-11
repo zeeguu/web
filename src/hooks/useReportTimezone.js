@@ -32,6 +32,9 @@ export default function useReportTimezone() {
 
     reportIfChanged(api);
 
+    // Native apps stay in memory across backgrounding, so a traveler who
+    // lands and unlocks their phone won't trigger a fresh mount — listen for
+    // resume to catch the tz change. Web gets a new mount on next page load.
     if (Capacitor.getPlatform() === "web") {
       return;
     }
