@@ -12,10 +12,10 @@ export default function Badges({ username }) {
   const iconBasePath = "static/badges/";
   const defaultLogoPath = "static/images/zeeguuLogo.svg";
 
-  const [badges, setBadges] = useState([]);
+  const [activityTypes, setActivityTypes] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [selectedBadge, setSelectedBadge] = useState(null);
+  const [selectedActivityType, setSelectedActivityType] = useState(null);
 
   const fetchBadgesCallback = (data) => {
     if (!data || data.error) {
@@ -26,26 +26,26 @@ export default function Badges({ username }) {
 
     let hasNewBadges = false;
 
-    const processedBadges = data.map((badge) => {
-      const processedLevels = badge.levels.map((lvl) => ({
+    const processedActivityTypes = data.map((activity_type) => {
+      const processedBadges = activity_type.badges.map((lvl) => ({
         ...lvl,
         description: lvl.description
-          ? lvl.description.replace("{target_value}", lvl.target_value)
-          : badge.description.replace("{target_value}", lvl.target_value),
+          ? lvl.description.replace("{threshold}", lvl.threshold)
+          : activity_type.description.replace("{threshold}", lvl.threshold),
       }));
 
-      processedLevels.forEach((lvl) => {
-        if (lvl.achieved && !lvl.is_shown) hasNewBadges = true;
+      processedBadges.forEach((badge) => {
+        if (badge.achieved && !badge.is_shown) hasNewBadges = true;
       });
 
       return {
-        name: badge.name,
-        current_value: badge.current_value,
-        levels: processedLevels,
+        name: activity_type.name,
+        current_value: activity_type.current_value,
+        badges: processedBadges,
       };
     });
 
-    setBadges(processedBadges);
+    setActivityTypes(processedActivityTypes);
 
     if (!username && hasNewBadges) {
       api.updateNotShownForUser();
@@ -66,7 +66,7 @@ export default function Badges({ username }) {
     }
   }, [api, username]);
 
-  const getIcon = (level) => (level.icon_name ? iconBasePath + level.icon_name : defaultLogoPath);
+  const getIcon = (badge) => (badge.icon_name ? iconBasePath + badge.icon_name : defaultLogoPath);
 
   const formatDateTime = (iso) =>
     iso
@@ -78,18 +78,18 @@ export default function Badges({ username }) {
           .replace(",", "")
       : "—";
 
-  const getBadgeMeta = (badge) => {
-    const achievedLevels = badge.levels.filter((l) => l.achieved);
-    const highestAchieved = [...badge.levels].reverse().find((l) => l.achieved);
-    const nextLevel = badge.levels.find((l) => !l.achieved) || highestAchieved;
+  const getActivityTypeMeta = (activityType) => {
+    const achievedBadges = activityType.badges.filter((b) => b.achieved);
+    const highestAchieved = [...activityType.badges].reverse().find((b) => b.achieved);
+    const nextLevel = activityType.badges.find((b) => !b.achieved) || highestAchieved;
 
     return {
-      achievedCount: achievedLevels.length,
+      achievedCount: achievedBadges.length,
       highestAchieved,
       nextLevel,
-      iconLevel: highestAchieved || badge.levels[0],
-      displayLevel: nextLevel || badge.levels[badge.levels.length - 1],
-      hasNewBadge: !username && badge.levels.some((l) => l.achieved && !l.is_shown),
+      iconLevel: highestAchieved || activityType.badges[0],
+      displayLevel: nextLevel || activityType.badges[activityType.badges.length - 1],
+      hasNewBadge: !username && activityType.badges.some((b) => b.achieved && !b.is_shown),
     };
   };
 
@@ -100,18 +100,21 @@ export default function Badges({ username }) {
 
       {!isLoading && !error && (
         <s.BadgeContainer>
-          {badges.map((badge, index) => {
-            const meta = getBadgeMeta(badge);
+          {activityTypes.map((activityType, index) => {
+            const meta = getActivityTypeMeta(activityType);
 
             return (
-              <s.BadgeCard key={index} onClick={() => setSelectedBadge(badge)}>
+              <s.BadgeCard key={index} onClick={() => setSelectedActivityType(activityType)}>
                 {meta.hasNewBadge && <s.NewTag>NEW</s.NewTag>}
                 <s.IconContainer>
-                  <s.BadgeIcon src={getIcon(meta.iconLevel)} $achieved={meta.achievedCount > 0} alt={badge.name} />
+                  <s.BadgeIcon
+                    src={getIcon(meta.iconLevel)}
+                    $achieved={meta.achievedCount > 0}
+                    alt={activityType.name}
+                  />
                 </s.IconContainer>
                 <s.BadgeTitle>
-                  <div>{badge.name}</div>
-                  <div>Level {meta.nextLevel.badge_level}</div>
+                  <div>{meta.nextLevel.name}</div>
                 </s.BadgeTitle>
                 <s.BadgeDescription>{meta.displayLevel.description}</s.BadgeDescription>
                 {!meta.nextLevel.achieved ? (
@@ -120,64 +123,65 @@ export default function Badges({ username }) {
                       <s.ProgressBar>
                         <s.ProgressFill
                           style={{
-                            width: `${(Math.min(badge.current_value, meta.nextLevel.target_value) / meta.nextLevel.target_value) * 100}%`,
+                            width: `${(Math.min(activityType.current_value, meta.nextLevel.threshold) / meta.nextLevel.threshold) * 100}%`,
                           }}
                           $isCurrent={true}
                         />
                       </s.ProgressBar>
                       <s.ProgressText>
-                        {badge.current_value} / {meta.nextLevel.target_value}
+                        {activityType.current_value} / {meta.nextLevel.threshold}
                       </s.ProgressText>
                     </s.ProgressWrapper>
                   </div>
                 ) : (
-                  <s.AchievedAtBox>{formatDateTime(badge.levels[badge.levels.length - 1].achieved_at)}</s.AchievedAtBox>
+                  <s.AchievedAtBox>
+                    {formatDateTime(activityType.badges[activityType.badges.length - 1].achieved_at)}
+                  </s.AchievedAtBox>
                 )}
               </s.BadgeCard>
             );
           })}
         </s.BadgeContainer>
       )}
-      {selectedBadge &&
+      {selectedActivityType &&
         (() => {
-          const meta = getBadgeMeta(selectedBadge);
+          const meta = getActivityTypeMeta(selectedActivityType);
 
           return (
             <Modal
-              open={!!selectedBadge}
-              onClose={() => setSelectedBadge(null)}
+              open={!!selectedActivityType}
+              onClose={() => setSelectedActivityType(null)}
               style={{ maxWidth: "400px", width: "90%", margin: "auto" }}
             >
               <Header>
                 <s.IconContainer>
                   <s.BadgeIcon
-                    src={getIcon(meta.highestAchieved || selectedBadge.levels[0])}
+                    src={getIcon(meta.highestAchieved || selectedActivityType.badges[0])}
                     $achieved={!!meta.highestAchieved}
                   />
                 </s.IconContainer>
-                <Heading style={{ textAlign: "center" }}>{selectedBadge.name}</Heading>
               </Header>
 
               <Main style={{ gap: "0" }}>
-                {selectedBadge.levels.map((level, i) => (
-                  <s.LevelRow key={i} $achieved={level.achieved} $isCurrent={level === meta.nextLevel}>
-                    {level.achieved && !level.is_shown && <s.NewTag>New</s.NewTag>}
-                    <s.LevelTitle>Level {level.badge_level}</s.LevelTitle>
-                    <s.BadgeDescription>{level.description}</s.BadgeDescription>
-                    {level.achieved ? (
-                      <s.AchievedAtBox>{formatDateTime(level.achieved_at)}</s.AchievedAtBox>
+                {selectedActivityType.badges.map((badge, i) => (
+                  <s.LevelRow key={i} $achieved={badge.achieved} $isCurrent={badge === meta.nextLevel}>
+                    {badge.achieved && !badge.is_shown && <s.NewTag>New</s.NewTag>}
+                    <s.LevelTitle>{badge.name}</s.LevelTitle>
+                    <s.BadgeDescription>{badge.description}</s.BadgeDescription>
+                    {badge.achieved ? (
+                      <s.AchievedAtBox>{formatDateTime(badge.achieved_at)}</s.AchievedAtBox>
                     ) : (
                       <s.ProgressWrapper>
                         <s.ProgressBar>
                           <s.ProgressFill
                             style={{
-                              width: `${(Math.min(selectedBadge.current_value, level.target_value) / level.target_value) * 100}%`,
+                              width: `${(Math.min(selectedActivityType.current_value, badge.threshold) / badge.threshold) * 100}%`,
                             }}
-                            $isCurrent={level === meta.nextLevel}
+                            $isCurrent={badge === meta.nextLevel}
                           />
                         </s.ProgressBar>
                         <s.ProgressText>
-                          {selectedBadge.current_value} / {level.target_value}
+                          {selectedActivityType.current_value} / {badge.threshold}
                         </s.ProgressText>
                       </s.ProgressWrapper>
                     )}
