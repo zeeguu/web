@@ -107,22 +107,18 @@ export default function Congratulations({
     if (articleID)
       return (
         <>
-          <StyledButton navigation onClick={keepExercisingAction} disabled={isKeepExercisingDisabled}>
+          <StyledButton $navigation onClick={keepExercisingAction} $disabled={isKeepExercisingDisabled} disabled={isKeepExercisingDisabled}>
             {strings.keepExercising}
           </StyledButton>
         </>
       );
-    else if (!isOutOfWordsToday)
+    else if (isOutOfWordsToday)
       return (
-        <StyledButton navigation onClick={keepExercisingAction} disabled={isKeepExercisingDisabled}>
-          {strings.keepExercising}
-        </StyledButton>
-      );
-    else
-      return (
-        <StyledButton navigation onClick={backButtonAction}>
-          {strings.goToReading}
-        </StyledButton>
+        <>
+          <StyledButton $navigation onClick={keepExercisingAction} $disabled={isKeepExercisingDisabled} disabled={isKeepExercisingDisabled}>
+            {strings.keepExercising}
+          </StyledButton>
+        </>
       );
   }
 
@@ -170,15 +166,11 @@ export default function Congratulations({
             ))}
           </WordList>
         )}
-
-        {!isOutOfWordsToday && (
-          <>
-            <ProgressionButtonsRow>
-              {progressionButtonRender()}
-            </ProgressionButtonsRow>
-          </>
-        )}
-        <br />
+        <>
+          <ProgressionButtonsRow>
+            {progressionButtonRender()}
+          </ProgressionButtonsRow>
+        </>
       </CongratulationsContainer>
     </>
   );

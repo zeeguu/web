@@ -306,7 +306,7 @@ let NavigationLink = styled(Link)`
 
   // Primary
   ${(props) =>
-    props.primary &&
+    props.$primary &&
     css`
       background-color: orange !important;
       color: white !important;
@@ -317,14 +317,14 @@ let NavigationLink = styled(Link)`
     `}
   // Secondary
   ${(props) =>
-    props.secondary &&
+    props.$secondary &&
     css`
       background-color: white !important;
       color: orange !important;
     `}
     // Disabled
     ${(props) =>
-    props.disabled &&
+    props.$disabled &&
     css`
       background-color: white !important;
       color: #999999 !important;

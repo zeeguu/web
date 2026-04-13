@@ -11,7 +11,7 @@ export function AddFromZeeguuOption() {
       <div className="description">
         <Link className="link" to="/articles">
           {strings.articleFromZeeguuToClass}{" "}
-          <StyledButton primary className="add-btn">
+          <StyledButton $primary className="add-btn">
             +
           </StyledButton>
         </Link>
@@ -32,7 +32,7 @@ export function TypeCopyPasteOption() {
           onClick={() => setReturnPath("/teacher/texts/AddTextOptions")}
         >
           {strings.copyPasteArticleToClass}{" "}
-          <StyledButton primary className="add-btn">
+          <StyledButton $primary className="add-btn">
             +
           </StyledButton>
         </Link>
@@ -46,7 +46,7 @@ export function AddURLOption(props) {
     <s.StyledAddTextOptions>
       <div className="description" onClick={props.onClick}>
         {strings.urlUploadToClass}
-        <StyledButton primary className="add-btn">
+        <StyledButton $primary className="add-btn">
           +
         </StyledButton>
       </div>

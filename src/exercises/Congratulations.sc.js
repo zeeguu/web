@@ -78,6 +78,7 @@ const ProgressionButtonsRow = styled.div`
   align-items: center;
   flex-wrap: wrap;
   gap: 1em;
+  margin-bottom: 2em;
 
   & > button {
     min-width: 250px;

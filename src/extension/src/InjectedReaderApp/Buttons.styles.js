@@ -140,7 +140,7 @@ export let NavigationButton = styled.button`
     `}
   // Primary
   ${(props) =>
-    props.primary &&
+    props.$primary &&
     css`
       color: ${colors.white} !important;
       background-color: ${colors.darkBlue} !important;
@@ -154,7 +154,7 @@ export let NavigationButton = styled.button`
     `}
   // Secondary
   ${(props) =>
-    props.secondary &&
+    props.$secondary &&
     css`
       color: ${colors.white} !important;
       background-color: ${colors.darkBlue} !important;
@@ -168,7 +168,7 @@ export let NavigationButton = styled.button`
     `}
     // Disabled
     ${(props) =>
-    props.disabled &&
+    props.$disabled &&
     css`
       background-color: ${colors.white} !important;
       color: ${colors.gray} !important;

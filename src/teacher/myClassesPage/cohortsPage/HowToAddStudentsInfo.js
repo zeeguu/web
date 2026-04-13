@@ -17,7 +17,7 @@ const HowToAddStudentsInfo = ({ setShowAddStudentInfo, inviteCode }) => {
         <p>{strings.invitecodeInformation}</p>
       </div>
       <PopupButtonWrapper>
-        <StyledButton primary onClick={() => setShowAddStudentInfo(false)}>
+        <StyledButton $primary onClick={() => setShowAddStudentInfo(false)}>
           {strings.goToClass}
         </StyledButton>
       </PopupButtonWrapper>

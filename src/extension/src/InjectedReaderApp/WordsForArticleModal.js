@@ -96,15 +96,15 @@ export default function WordsForArticleModal({ api, articleID, openArticle }) {
             arrow
           >
             <span>
-              <StyledButton disabled>{strings.toPracticeWords}</StyledButton>
+              <StyledButton $disabled disabled>{strings.toPracticeWords}</StyledButton>
             </span>
           </Tooltip>
         ) : (
-          <StyledButton navigation onClick={toExercises}>
+          <StyledButton $navigation onClick={toExercises}>
             {strings.toPracticeWords}
           </StyledButton>
         )}
-        <StyledButton primary onClick={toScheduledExercises}>
+        <StyledButton $primary onClick={toScheduledExercises}>
           Scheduled Exercises
         </StyledButton>
       </CenteredContent>

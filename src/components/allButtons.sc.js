@@ -104,7 +104,7 @@ const StyledButton = styled.button`
 
   // Primary (use $primary to avoid passing to DOM)
   ${(props) =>
-    (props.$primary || props.primary) &&
+    props.$primary &&
     css`
       background-color: ${zeeguuOrange};
       :hover {
@@ -114,7 +114,7 @@ const StyledButton = styled.button`
 
   // Secondary (use $secondary to avoid passing to DOM)
   ${(props) =>
-    (props.$secondary || props.secondary) &&
+    props.$secondary &&
     css`
       background-color: white;
       :hover {
@@ -131,7 +131,7 @@ const StyledButton = styled.button`
 
   // Navigation used together with <NavigateNextIcon /> or <NavigateBeforeIcon />
   ${(props) =>
-    (props.$navigation || props.navigation) &&
+    props.$navigation &&
     css`
       background-color: var(--action-btn-secondary-color-bg);
       color: var(--action-btn-secondary-color-text);
@@ -142,7 +142,7 @@ const StyledButton = styled.button`
 
     // Disabled
     ${(props) =>
-    (props.$disabled || props.disabled) &&
+    props.$disabled &&
     css`
       background-color: var(--action-btn-secondary-color-bg);
       color: var(--action-btn-secondary-color-text);
