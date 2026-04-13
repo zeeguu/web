@@ -112,7 +112,7 @@ export default function Congratulations({
           </StyledButton>
         </>
       );
-    else if (isOutOfWordsToday)
+    else if (!isOutOfWordsToday)
       return (
         <>
           <StyledButton $navigation onClick={keepExercisingAction} $disabled={isKeepExercisingDisabled} disabled={isKeepExercisingDisabled}>
