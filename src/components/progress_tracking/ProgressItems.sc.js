@@ -7,7 +7,6 @@ const ProgressOverviewItem = styled.div`
   max-width: 400px;    
   display: flex;
   align-items: center;
-  border:2px solid var(--info-icon-color);
   background-color: var(--infobox-bg); 
   border-radius: 8px;
   padding: 1.1em 1.25em;
