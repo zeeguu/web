@@ -23,16 +23,37 @@ async function scrapeActiveTab(tab) {
   const article = new Readability(doc).parse();
   if (!article) throw new Error("Readability could not extract an article from this page.");
 
-  const ogImage = doc.querySelector('meta[property="og:image"]')?.getAttribute("content") || null;
-
   return {
     url,
     rawHtml: article.content,
     textContent: article.textContent,
     title: article.title,
     author: article.byline,
-    imageUrl: ogImage,
+    imageUrl: extractImageUrl(doc, article.content),
   };
+}
+
+function extractImageUrl(pageDoc, articleHtml) {
+  const meta = (selector) =>
+    pageDoc.querySelector(selector)?.getAttribute("content") || null;
+  const metaImage =
+    meta('meta[property="og:image"]') ||
+    meta('meta[property="og:image:secure_url"]') ||
+    meta('meta[name="twitter:image"]') ||
+    meta('meta[name="twitter:image:src"]');
+  if (metaImage) return metaImage;
+
+  // Fall back to the first usable <img> inside Readability's cleaned content.
+  const articleDoc = new DOMParser().parseFromString(articleHtml || "", "text/html");
+  for (const img of articleDoc.querySelectorAll("img")) {
+    const src = img.getAttribute("src") || img.getAttribute("data-src");
+    if (!src) continue;
+    if (src.startsWith("data:")) continue;
+    if (/icon|placeholder/i.test(src)) continue;
+    if (/\.(gif|svg)(\?|$)/i.test(src)) continue;
+    return src;
+  }
+  return null;
 }
 
 export async function sendTabToZeeguu(api, tab) {
