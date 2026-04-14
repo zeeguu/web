@@ -22,21 +22,21 @@ const STATES = {
 async function scrapeActiveTab(tab) {
   const [result] = await BROWSER_API.scripting.executeScript({
     target: { tabId: tab.id },
-    func: () => {
-      const htmlClone = document.documentElement.cloneNode(true);
-      return {
-        url: document.location.href,
-        rawHtml: htmlClone.outerHTML,
-      };
-    },
+    func: () => ({
+      url: document.location.href,
+      fullHtml: document.documentElement.outerHTML,
+    }),
   });
-  const { url, rawHtml } = result.result;
+  const { url, fullHtml } = result.result;
 
-  const doc = new DOMParser().parseFromString(rawHtml, "text/html");
+  const doc = new DOMParser().parseFromString(fullHtml, "text/html");
   const base = doc.createElement("base");
   base.href = url;
   doc.head.prepend(base);
 
+  // Send Readability's cleaned HTML, not the full outerHTML — the raw DOM
+  // of modern pages (social widgets, SPA shells, inline scripts) easily
+  // blows past server body-size limits.
   const article = new Readability(doc).parse();
   if (!article) throw new Error("Readability could not extract an article from this page.");
 
@@ -44,7 +44,7 @@ async function scrapeActiveTab(tab) {
 
   return {
     url,
-    rawHtml,
+    rawHtml: article.content,
     textContent: article.textContent,
     title: article.title,
     author: article.byline,
