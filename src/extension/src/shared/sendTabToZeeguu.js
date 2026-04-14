@@ -28,7 +28,7 @@ async function scrapeActiveTab(tab) {
 
   return {
     url,
-    rawHtml: fullHtml,
+    rawHtml: article.content,
     textContent: article.textContent,
     title: article.title,
     author: article.byline,
