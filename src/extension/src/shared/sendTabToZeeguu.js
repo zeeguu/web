@@ -17,33 +17,38 @@ async function scrapeActiveTab(tab) {
   base.href = url;
   doc.head.prepend(base);
 
-  // Send Readability's cleaned HTML, not the full outerHTML — the raw DOM
-  // of modern pages (social widgets, SPA shells, inline scripts) easily
-  // blows past server body-size limits.
+  // Extract metadata from <head> BEFORE running Readability — it mutates
+  // the document it parses, and og:image / twitter:image live in <head>.
+  const metaImage = extractMetaImage(doc);
+
+  // Readability.parse mutates `doc` — anything we want from the head has to
+  // be captured above. A fresh parse guards our fallback img scan.
   const article = new Readability(doc).parse();
   if (!article) throw new Error("Readability could not extract an article from this page.");
 
   return {
     url,
-    rawHtml: article.content,
+    rawHtml: fullHtml,
     textContent: article.textContent,
     title: article.title,
     author: article.byline,
-    imageUrl: extractImageUrl(doc, article.content),
+    imageUrl: metaImage || firstImageIn(article.content),
   };
 }
 
-function extractImageUrl(pageDoc, articleHtml) {
+function extractMetaImage(pageDoc) {
   const meta = (selector) =>
     pageDoc.querySelector(selector)?.getAttribute("content") || null;
-  const metaImage =
+  return (
     meta('meta[property="og:image"]') ||
     meta('meta[property="og:image:secure_url"]') ||
     meta('meta[name="twitter:image"]') ||
-    meta('meta[name="twitter:image:src"]');
-  if (metaImage) return metaImage;
+    meta('meta[name="twitter:image:src"]') ||
+    null
+  );
+}
 
-  // Fall back to the first usable <img> inside Readability's cleaned content.
+function firstImageIn(articleHtml) {
   const articleDoc = new DOMParser().parseFromString(articleHtml || "", "text/html");
   for (const img of articleDoc.querySelectorAll("img")) {
     const src = img.getAttribute("src") || img.getAttribute("data-src");
