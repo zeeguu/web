@@ -12,6 +12,7 @@ export default function SharedArticleHandler() {
   const history = useHistory();
   const query = useQuery();
   const sharedUrl = query.get("url");
+  const uploadId = query.get("upload_id");
 
   const [status, setStatus] = useState("loading");
   const [errorMessage, setErrorMessage] = useState("");
@@ -19,6 +20,25 @@ export default function SharedArticleHandler() {
   const [isProcessing, setIsProcessing] = useState(false);
 
   useEffect(() => {
+    if (uploadId) {
+      api.getArticleUpload(
+        uploadId,
+        (upload) => {
+          setArticleDetection({
+            language: upload.language,
+            title: upload.title,
+            url: upload.url,
+          });
+          setStatus("choice");
+        },
+        () => {
+          setStatus("error");
+          setErrorMessage("Could not load the uploaded article.");
+        }
+      );
+      return;
+    }
+
     if (!sharedUrl) {
       setStatus("error");
       setErrorMessage("No URL provided.");
@@ -39,49 +59,57 @@ export default function SharedArticleHandler() {
         );
       }
     );
-  }, [sharedUrl]);
+  }, [sharedUrl, uploadId]);
 
   const navigateToArticle = (id, noTranslate) => {
     const path = "/read/article?id=" + id + (noTranslate ? "&noTranslate=true" : "");
     history.replace(path);
   };
 
-  // Create the article in DB (deferred until user makes a choice)
-  const createAndNavigate = (noTranslate) => {
+  const beginProcessing = () => {
     setIsProcessing(true);
     setStatus("loading");
+  };
+
+  const onConversionError = () => {
+    setStatus("error");
+    setErrorMessage("Could not process this article.");
+  };
+
+  const runArticleConversion = (apiFn, noTranslate) => {
+    beginProcessing();
+    apiFn(uploadId, (result) => navigateToArticle(result.id, noTranslate), onConversionError);
+  };
+
+  const createAndNavigate = (noTranslate) => {
+    beginProcessing();
     api.findOrCreateArticle(
       { url: sharedUrl },
       (result) => {
         const artinfo = typeof result === "string" ? JSON.parse(result) : result;
         navigateToArticle(artinfo.id, noTranslate);
       },
-      (error) => {
-        setStatus("error");
-        setErrorMessage("Could not process this article.");
-      }
+      onConversionError,
     );
   };
 
   const handleTranslateAndAdapt = () => {
-    setIsProcessing(true);
-    setStatus("loading");
+    if (uploadId) return runArticleConversion(api.translateAndAdaptArticleUpload.bind(api));
+    beginProcessing();
     api.translateAndAdaptArticle(
       sharedUrl,
       userDetails.learned_language,
       (result) => navigateToArticle(result.id),
       (error) => {
         console.error("Translation failed:", error);
-        // Fall back to creating original article
         createAndNavigate(false);
       },
     );
   };
 
   const handleSimplify = () => {
-    // Need to create article first, then simplify
-    setIsProcessing(true);
-    setStatus("loading");
+    if (uploadId) return runArticleConversion(api.simplifyArticleUpload.bind(api));
+    beginProcessing();
     api.findOrCreateArticle(
       { url: sharedUrl },
       (result) => {
@@ -98,18 +126,17 @@ export default function SharedArticleHandler() {
           navigateToArticle(artinfo.id);
         });
       },
-      (error) => {
-        setStatus("error");
-        setErrorMessage("Could not process this article.");
-      }
+      onConversionError,
     );
   };
 
   const handleReadOriginal = () => {
+    if (uploadId) return runArticleConversion(api.promoteArticleUpload.bind(api), true);
     createAndNavigate(true);
   };
 
   const handleReadAsIs = () => {
+    if (uploadId) return runArticleConversion(api.promoteArticleUpload.bind(api), false);
     createAndNavigate(false);
   };
 
@@ -143,7 +170,7 @@ export default function SharedArticleHandler() {
         <h2>Could not open article</h2>
         <p>{errorMessage}</p>
         <p style={{ color: "#666", fontSize: "0.9em", wordBreak: "break-all" }}>
-          {sharedUrl}
+          {sharedUrl || (uploadId ? `upload #${uploadId}` : null)}
         </p>
         <button
           onClick={() => history.push("/articles")}
