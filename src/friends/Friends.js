@@ -81,7 +81,10 @@ export default function Friends({ friendUsername, navigationHandler }) {
   }, [pendingSearch, api]);
 
   const handlePendingSearchChange = (isEnterSearch) => {
-    const query = pendingSearch.trim();
+    // Remove unsupported characters and trim whitespace for better search results and to prevent errors
+    // The name and email column in the backend only support utf8_bin collation.
+    // The pendingSearch still allows users to type unsupported characters, but they are stripped out before searching. 
+    const query = pendingSearch.replace(/[\u{10000}-\u{10FFFF}]/gu, "").trim();
 
     if (query.length < 2 && !isEnterSearch) {
       setSearchResults([]);
