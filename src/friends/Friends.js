@@ -84,6 +84,8 @@ export default function Friends({ friendUsername, navigationHandler }) {
     // Remove unsupported characters and trim whitespace for better search results and to prevent errors
     // The name and email column in the backend only support utf8_bin collation.
     // The pendingSearch still allows users to type unsupported characters, but they are stripped out before searching. 
+    // REGEX matches characters in the Unicode range U+10000 to U+10FFFF, which includes emoji and many rare characters.
+    // The 'u' flag enables Unicode mode, 'g' flag enables global search to replace all occurrences.
     const query = pendingSearch.replace(/[\u{10000}-\u{10FFFF}]/gu, "").trim();
 
     if (query.length < 2 && !isEnterSearch) {
