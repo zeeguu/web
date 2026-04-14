@@ -71,14 +71,14 @@ export default function SharedArticleHandler() {
     setStatus("loading");
   };
 
-  const onDerivationError = () => {
+  const onConversionError = () => {
     setStatus("error");
     setErrorMessage("Could not process this article.");
   };
 
-  const runUploadDerivation = (apiFn, noTranslate) => {
+  const runArticleConversion = (apiFn, noTranslate) => {
     beginProcessing();
-    apiFn(uploadId, (result) => navigateToArticle(result.id, noTranslate), onDerivationError);
+    apiFn(uploadId, (result) => navigateToArticle(result.id, noTranslate), onConversionError);
   };
 
   const createAndNavigate = (noTranslate) => {
@@ -89,12 +89,12 @@ export default function SharedArticleHandler() {
         const artinfo = typeof result === "string" ? JSON.parse(result) : result;
         navigateToArticle(artinfo.id, noTranslate);
       },
-      onDerivationError,
+      onConversionError,
     );
   };
 
   const handleTranslateAndAdapt = () => {
-    if (uploadId) return runUploadDerivation(api.translateAndAdaptArticleUpload.bind(api));
+    if (uploadId) return runArticleConversion(api.translateAndAdaptArticleUpload.bind(api));
     beginProcessing();
     api.translateAndAdaptArticle(
       sharedUrl,
@@ -108,7 +108,7 @@ export default function SharedArticleHandler() {
   };
 
   const handleSimplify = () => {
-    if (uploadId) return runUploadDerivation(api.simplifyArticleUpload.bind(api));
+    if (uploadId) return runArticleConversion(api.simplifyArticleUpload.bind(api));
     beginProcessing();
     api.findOrCreateArticle(
       { url: sharedUrl },
@@ -126,17 +126,17 @@ export default function SharedArticleHandler() {
           navigateToArticle(artinfo.id);
         });
       },
-      onDerivationError,
+      onConversionError,
     );
   };
 
   const handleReadOriginal = () => {
-    if (uploadId) return runUploadDerivation(api.promoteArticleUpload.bind(api), true);
+    if (uploadId) return runArticleConversion(api.promoteArticleUpload.bind(api), true);
     createAndNavigate(true);
   };
 
   const handleReadAsIs = () => {
-    if (uploadId) return runUploadDerivation(api.promoteArticleUpload.bind(api), false);
+    if (uploadId) return runArticleConversion(api.promoteArticleUpload.bind(api), false);
     createAndNavigate(false);
   };
 
