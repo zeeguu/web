@@ -12,6 +12,7 @@ export default function SharedArticleHandler() {
   const history = useHistory();
   const query = useQuery();
   const sharedUrl = query.get("url");
+  const uploadId = query.get("upload_id");
 
   const [status, setStatus] = useState("loading");
   const [errorMessage, setErrorMessage] = useState("");
@@ -19,6 +20,25 @@ export default function SharedArticleHandler() {
   const [isProcessing, setIsProcessing] = useState(false);
 
   useEffect(() => {
+    if (uploadId) {
+      api.getArticleUpload(
+        uploadId,
+        (upload) => {
+          setArticleDetection({
+            language: upload.language,
+            title: upload.title,
+            url: upload.url,
+          });
+          setStatus("choice");
+        },
+        () => {
+          setStatus("error");
+          setErrorMessage("Could not load the uploaded article.");
+        }
+      );
+      return;
+    }
+
     if (!sharedUrl) {
       setStatus("error");
       setErrorMessage("No URL provided.");
@@ -39,14 +59,19 @@ export default function SharedArticleHandler() {
         );
       }
     );
-  }, [sharedUrl]);
+  }, [sharedUrl, uploadId]);
 
   const navigateToArticle = (id, noTranslate) => {
     const path = "/read/article?id=" + id + (noTranslate ? "&noTranslate=true" : "");
     history.replace(path);
   };
 
-  // Create the article in DB (deferred until user makes a choice)
+  const onDerivationError = () => {
+    setStatus("error");
+    setErrorMessage("Could not process this article.");
+  };
+
+  // URL-based (iOS share) path: create the article in DB on choice.
   const createAndNavigate = (noTranslate) => {
     setIsProcessing(true);
     setStatus("loading");
@@ -56,32 +81,43 @@ export default function SharedArticleHandler() {
         const artinfo = typeof result === "string" ? JSON.parse(result) : result;
         navigateToArticle(artinfo.id, noTranslate);
       },
-      (error) => {
-        setStatus("error");
-        setErrorMessage("Could not process this article.");
-      }
+      onDerivationError,
     );
   };
 
   const handleTranslateAndAdapt = () => {
     setIsProcessing(true);
     setStatus("loading");
+    if (uploadId) {
+      api.translateAndAdaptArticleUpload(
+        uploadId,
+        (result) => navigateToArticle(result.id),
+        onDerivationError,
+      );
+      return;
+    }
     api.translateAndAdaptArticle(
       sharedUrl,
       userDetails.learned_language,
       (result) => navigateToArticle(result.id),
       (error) => {
         console.error("Translation failed:", error);
-        // Fall back to creating original article
         createAndNavigate(false);
       },
     );
   };
 
   const handleSimplify = () => {
-    // Need to create article first, then simplify
     setIsProcessing(true);
     setStatus("loading");
+    if (uploadId) {
+      api.simplifyArticleUpload(
+        uploadId,
+        (result) => navigateToArticle(result.id),
+        onDerivationError,
+      );
+      return;
+    }
     api.findOrCreateArticle(
       { url: sharedUrl },
       (result) => {
@@ -98,18 +134,35 @@ export default function SharedArticleHandler() {
           navigateToArticle(artinfo.id);
         });
       },
-      (error) => {
-        setStatus("error");
-        setErrorMessage("Could not process this article.");
-      }
+      onDerivationError,
     );
   };
 
   const handleReadOriginal = () => {
+    if (uploadId) {
+      setIsProcessing(true);
+      setStatus("loading");
+      api.promoteArticleUpload(
+        uploadId,
+        (artinfo) => navigateToArticle(artinfo.id, true),
+        onDerivationError,
+      );
+      return;
+    }
     createAndNavigate(true);
   };
 
   const handleReadAsIs = () => {
+    if (uploadId) {
+      setIsProcessing(true);
+      setStatus("loading");
+      api.promoteArticleUpload(
+        uploadId,
+        (artinfo) => navigateToArticle(artinfo.id, false),
+        onDerivationError,
+      );
+      return;
+    }
     createAndNavigate(false);
   };
 
@@ -143,7 +196,7 @@ export default function SharedArticleHandler() {
         <h2>Could not open article</h2>
         <p>{errorMessage}</p>
         <p style={{ color: "#666", fontSize: "0.9em", wordBreak: "break-all" }}>
-          {sharedUrl}
+          {sharedUrl || (uploadId && `upload #${uploadId}`)}
         </p>
         <button
           onClick={() => history.push("/articles")}
