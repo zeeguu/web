@@ -35,7 +35,7 @@ export const BadgeCard = styled.div`
 
   box-shadow: 0 1px 3px var(--shadow-color);
   gap: 10px;
-  cursor: default;
+  cursor: pointer;
 
   @media (max-width: 768px) {
     min-width: auto;
