@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { TranslatableText } from "../../../reader/TranslatableText";
-import { InvisibleBox, StyledBox } from "./InjectedReaderApp.styles";
+import { FeedbackIntro, InvisibleBox, StyledBox } from "./InjectedReaderApp.styles";
 import ReviewVocabularyInfoBox from "../../../reader/ReviewVocabularyInfoBox";
 import LikeFeedbackBox from "../../../reader/LikeFeedbackBox";
 import DifficultyFeedbackBox from "../../../reader/DifficultyFeedbackBox";
@@ -120,18 +120,9 @@ export function ArticleRenderer({
             openReview={openReview}
           />
           <StyledBox>
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "center",
-                textAlign: "center",
-                paddingRight: "2em",
-                paddingLeft: "2em",
-                color: "#333333",
-              }}
-            >
+            <FeedbackIntro>
               Zeeguu can make better personalized recommendations based on your feedback.
-            </div>
+            </FeedbackIntro>
             <LikeFeedbackBox articleInfo={articleInfo} setLikedState={setLikedState} />
             <DifficultyFeedbackBox
               articleInfo={articleInfo}

@@ -4,7 +4,8 @@ import { darkGrey, veryDarkGrey } from "../../../components/colors";
 const BackArrow = styled.button`
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
+  align-self: flex-start;
   cursor: pointer;
   color: ${darkGrey};
   background: none;

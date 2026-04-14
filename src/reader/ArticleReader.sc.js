@@ -405,7 +405,7 @@ let ExtraSpaceAtTheBottom = styled.div`
 
 let CombinedBox = styled.div`
   border: 1px solid var(--border-light);
-  background-color: var(--card-bg);
+  background-color: var(--bg-primary);
   border-radius: 0.5em;
   padding: 2em 0em 2em 0em;
   margin-top: 1em;
@@ -437,6 +437,18 @@ const ReadingTime = styled.div`
   margin-bottom: 0.5em;
 `;
 
+const FeedbackOptionsRow = styled(CenteredContent)`
+  width: 100%;
+  box-sizing: border-box;
+  padding: 0 1.5rem;
+  gap: 1rem;
+
+  @media (max-width: 480px) {
+    padding: 0 0.5rem;
+    gap: 0.5rem;
+  }
+`;
+
 export {
   ArticleReader,
   ArticleTopics,
@@ -463,4 +475,5 @@ export {
   InvisibleBox,
   CombinedBox,
   ToolbarWrapper,
+  FeedbackOptionsRow,
 };

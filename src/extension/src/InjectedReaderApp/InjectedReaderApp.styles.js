@@ -364,7 +364,7 @@ export const StyledHeading = styled.div`
 
 export const StyledBox = styled.div`
   border: 1px solid ${colors.lighterBlue};
-  background-color: white;
+  background-color: var(--bg-primary);
   border-radius: 0.5em;
   display: flex;
   flex-direction: column;
@@ -389,10 +389,23 @@ export const StyledBox = styled.div`
     background-color: #ffd047 !important;
     color: white !important;
   }
+
+  > * {
+    background-color: inherit;
+  }
+`;
+
+export const FeedbackIntro = styled.div`
+  display: flex;
+  justify-content: center;
+  text-align: center;
+  padding-right: 2em;
+  padding-left: 2em;
+  color: #333333;
 `;
 
 export const InvisibleBox = styled.div`
-  background-color: white;
+  background-color: var(--bg-primary);
   display: flex;
   flex-direction: column;
   padding: 0.5em 0em 0em 0em;

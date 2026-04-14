@@ -34,7 +34,7 @@ export default function DifficultyFeedbackBox({
     <>
     <s.InvisibleBox>
       <h4>How easy was this text?</h4>
-      <s.CenteredContent>
+      <s.FeedbackOptionsRow>
         {Object.keys(FEEDBACK_OPTIONS).map((option) => {
           const emojiSize = { fontSize: '2.5em' };
 
@@ -84,7 +84,7 @@ export default function DifficultyFeedbackBox({
             </s.WhiteButton>
           );
         })}
-      </s.CenteredContent>
+      </s.FeedbackOptionsRow>
     </s.InvisibleBox>
     </>
   );
