@@ -1,11 +1,11 @@
 /*global chrome*/
-import { Readability } from "@mozilla/readability";
 import { useEffect, useState } from "react";
 
 import logo from "../../../../public/static/images/zeeguu128.png";
 import Zeeguu_API from "../../../api/Zeeguu_API";
 import { API_URL, WEB_URL } from "../../../config";
 import { EXTENSION_SOURCE } from "../constants";
+import { isUnsupportedTab, sendTabToZeeguu } from "../shared/sendTabToZeeguu";
 import { BROWSER_API } from "../utils/browserApi";
 import { getUserInfoDictFromCookies } from "./cookies";
 import { BottomContainer, HeadingContainer, MiddleContainer, NotifyButton, PopUp } from "./Popup.styles";
@@ -18,39 +18,6 @@ const STATES = {
   UNSUPPORTED_PAGE: "unsupported_page",
   ERROR: "error",
 };
-
-async function scrapeActiveTab(tab) {
-  const [result] = await BROWSER_API.scripting.executeScript({
-    target: { tabId: tab.id },
-    func: () => ({
-      url: document.location.href,
-      fullHtml: document.documentElement.outerHTML,
-    }),
-  });
-  const { url, fullHtml } = result.result;
-
-  const doc = new DOMParser().parseFromString(fullHtml, "text/html");
-  const base = doc.createElement("base");
-  base.href = url;
-  doc.head.prepend(base);
-
-  // Send Readability's cleaned HTML, not the full outerHTML — the raw DOM
-  // of modern pages (social widgets, SPA shells, inline scripts) easily
-  // blows past server body-size limits.
-  const article = new Readability(doc).parse();
-  if (!article) throw new Error("Readability could not extract an article from this page.");
-
-  const ogImage = doc.querySelector('meta[property="og:image"]')?.getAttribute("content") || null;
-
-  return {
-    url,
-    rawHtml: article.content,
-    textContent: article.textContent,
-    title: article.title,
-    author: article.byline,
-    imageUrl: ogImage,
-  };
-}
 
 export default function Popup({ loggedIn }) {
   const api = new Zeeguu_API(API_URL);
@@ -70,7 +37,7 @@ export default function Popup({ loggedIn }) {
       api.session = user.session;
 
       const [tab] = await BROWSER_API.tabs.query({ active: true, currentWindow: true });
-      if (!tab?.url || /^chrome(-extension)?:\/\//.test(tab.url) || tab.url.includes("zeeguu.org")) {
+      if (isUnsupportedTab(tab)) {
         setState(STATES.UNSUPPORTED_PAGE);
         return;
       }
@@ -79,23 +46,8 @@ export default function Popup({ loggedIn }) {
 
       try {
         setState(STATES.SCRAPING);
-        const scraped = await scrapeActiveTab(tab);
-
         setState(STATES.UPLOADING);
-        const upload = await new Promise((resolve, reject) =>
-          api.createArticleUpload(
-            {
-              url: scraped.url,
-              raw_html: scraped.rawHtml,
-              text_content: scraped.textContent,
-              title: scraped.title || "",
-              image_url: scraped.imageUrl || "",
-              author: scraped.author || "",
-            },
-            resolve,
-            reject,
-          ),
-        );
+        const upload = await sendTabToZeeguu(api, tab);
 
         setState(STATES.OPENING);
         await BROWSER_API.tabs.create({ url: `${WEB_URL}/shared-article?upload_id=${upload.id}` });
