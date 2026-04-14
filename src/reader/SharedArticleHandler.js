@@ -66,15 +66,23 @@ export default function SharedArticleHandler() {
     history.replace(path);
   };
 
+  const beginProcessing = () => {
+    setIsProcessing(true);
+    setStatus("loading");
+  };
+
   const onDerivationError = () => {
     setStatus("error");
     setErrorMessage("Could not process this article.");
   };
 
-  // URL-based (iOS share) path: create the article in DB on choice.
+  const runUploadDerivation = (apiFn, noTranslate) => {
+    beginProcessing();
+    apiFn(uploadId, (result) => navigateToArticle(result.id, noTranslate), onDerivationError);
+  };
+
   const createAndNavigate = (noTranslate) => {
-    setIsProcessing(true);
-    setStatus("loading");
+    beginProcessing();
     api.findOrCreateArticle(
       { url: sharedUrl },
       (result) => {
@@ -86,16 +94,8 @@ export default function SharedArticleHandler() {
   };
 
   const handleTranslateAndAdapt = () => {
-    setIsProcessing(true);
-    setStatus("loading");
-    if (uploadId) {
-      api.translateAndAdaptArticleUpload(
-        uploadId,
-        (result) => navigateToArticle(result.id),
-        onDerivationError,
-      );
-      return;
-    }
+    if (uploadId) return runUploadDerivation(api.translateAndAdaptArticleUpload.bind(api));
+    beginProcessing();
     api.translateAndAdaptArticle(
       sharedUrl,
       userDetails.learned_language,
@@ -108,16 +108,8 @@ export default function SharedArticleHandler() {
   };
 
   const handleSimplify = () => {
-    setIsProcessing(true);
-    setStatus("loading");
-    if (uploadId) {
-      api.simplifyArticleUpload(
-        uploadId,
-        (result) => navigateToArticle(result.id),
-        onDerivationError,
-      );
-      return;
-    }
+    if (uploadId) return runUploadDerivation(api.simplifyArticleUpload.bind(api));
+    beginProcessing();
     api.findOrCreateArticle(
       { url: sharedUrl },
       (result) => {
@@ -139,30 +131,12 @@ export default function SharedArticleHandler() {
   };
 
   const handleReadOriginal = () => {
-    if (uploadId) {
-      setIsProcessing(true);
-      setStatus("loading");
-      api.promoteArticleUpload(
-        uploadId,
-        (artinfo) => navigateToArticle(artinfo.id, true),
-        onDerivationError,
-      );
-      return;
-    }
+    if (uploadId) return runUploadDerivation(api.promoteArticleUpload.bind(api), true);
     createAndNavigate(true);
   };
 
   const handleReadAsIs = () => {
-    if (uploadId) {
-      setIsProcessing(true);
-      setStatus("loading");
-      api.promoteArticleUpload(
-        uploadId,
-        (artinfo) => navigateToArticle(artinfo.id, false),
-        onDerivationError,
-      );
-      return;
-    }
+    if (uploadId) return runUploadDerivation(api.promoteArticleUpload.bind(api), false);
     createAndNavigate(false);
   };
 
@@ -196,7 +170,7 @@ export default function SharedArticleHandler() {
         <h2>Could not open article</h2>
         <p>{errorMessage}</p>
         <p style={{ color: "#666", fontSize: "0.9em", wordBreak: "break-all" }}>
-          {sharedUrl || (uploadId && `upload #${uploadId}`)}
+          {sharedUrl || (uploadId ? `upload #${uploadId}` : null)}
         </p>
         <button
           onClick={() => history.push("/articles")}

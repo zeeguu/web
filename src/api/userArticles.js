@@ -321,13 +321,7 @@ Zeeguu_API.prototype.removeMLSuggestion = function (
 };
 
 Zeeguu_API.prototype.createArticleUpload = function (payload, callback, onError) {
-  this._post(`/article_upload/create`, qs.stringify(payload), (response) => {
-    try {
-      callback(JSON.parse(response));
-    } catch (e) {
-      if (onError) onError("Failed to parse response");
-    }
-  }, onError);
+  this._post(`/article_upload/create`, qs.stringify(payload), callback, onError, true);
 };
 
 Zeeguu_API.prototype.getArticleUpload = function (uploadId, callback) {
@@ -335,21 +329,15 @@ Zeeguu_API.prototype.getArticleUpload = function (uploadId, callback) {
 };
 
 Zeeguu_API.prototype.promoteArticleUpload = function (uploadId, callback, onError) {
-  this._post(`/article_upload/${uploadId}/promote_to_article`, "", (response) => {
-    try { callback(JSON.parse(response)); } catch (e) { if (onError) onError(e); }
-  }, onError);
+  this._post(`/article_upload/${uploadId}/promote_to_article`, "", callback, onError, true);
 };
 
 Zeeguu_API.prototype.simplifyArticleUpload = function (uploadId, callback, onError) {
-  this._post(`/article_upload/${uploadId}/simplify`, "", (response) => {
-    try { callback(JSON.parse(response)); } catch (e) { if (onError) onError(e); }
-  }, onError);
+  this._post(`/article_upload/${uploadId}/simplify`, "", callback, onError, true);
 };
 
 Zeeguu_API.prototype.translateAndAdaptArticleUpload = function (uploadId, callback, onError) {
-  this._post(`/article_upload/${uploadId}/translate_and_adapt`, "", (response) => {
-    try { callback(JSON.parse(response)); } catch (e) { if (onError) onError(e); }
-  }, onError);
+  this._post(`/article_upload/${uploadId}/translate_and_adapt`, "", callback, onError, true);
 };
 
 Zeeguu_API.prototype.makePersonalCopy = function (articleId, callback) {
