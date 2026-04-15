@@ -23,9 +23,9 @@ export default function ArticleLanguageModal({
     return (
       <ChoiceModal
         title={articleTitle}
-        message={`This article is in ${articleLangName}. Do you want it simplified?`}
-        primaryLabel="Simplify to my level"
-        secondaryLabel="Read without simplification"
+        message="Do you want it simplified to your level?"
+        primaryLabel="Simplify"
+        secondaryLabel="Read as is"
         loadingLabel="Simplifying..."
         onPrimary={onSimplify}
         onSecondary={onReadAsIs}
@@ -38,8 +38,8 @@ export default function ArticleLanguageModal({
   return (
     <ChoiceModal
       title={articleTitle}
-      message={`This article is in ${articleLangName}. You're learning ${langName(learnedLanguage)}.`}
-      primaryLabel={`Translate & adapt to ${langName(learnedLanguage)} at my level`}
+      message={`This article is in ${articleLangName}. Do you want it translated to ${langName(learnedLanguage)} at your level?`}
+      primaryLabel="Translate"
       secondaryLabel="Read original"
       loadingLabel="Translating..."
       onPrimary={onTranslateAndAdapt}
