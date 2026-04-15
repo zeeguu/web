@@ -143,7 +143,9 @@ export default function SharedArticleHandler() {
   if (status === "loading") {
     return (
       <div style={{ textAlign: "center", padding: "4em 2em" }}>
-        <LoadingAnimation />
+        {/* Simplification / translation routinely take 15-25s — hold back the
+            "Report Issue" affordance so users don't think something's broken. */}
+        <LoadingAnimation reportIssueDelay={30000} />
         <p>{isProcessing ? "Preparing article..." : "Opening article..."}</p>
       </div>
     );
@@ -152,6 +154,7 @@ export default function SharedArticleHandler() {
   if (status === "choice" && articleDetection) {
     return (
       <ArticleLanguageModal
+        articleTitle={articleDetection.title}
         articleLanguage={articleDetection.language}
         learnedLanguage={userDetails.learned_language}
         source="share"

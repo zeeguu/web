@@ -73,8 +73,7 @@ export default function useGuardedLanguageSwitch() {
 
   const confirmModal = pending ? (
     <ChoiceModal
-      title="Switch language?"
-      subtitle={`Your current article will be saved for later, and you'll be taken to your ${targetLanguageName} home.`}
+      message={`Switch to ${targetLanguageName}? Your current article will be saved for later, and you'll be taken to your ${targetLanguageName} home.`}
       primaryLabel="Switch"
       secondaryLabel="Keep reading"
       onPrimary={handleConfirm}

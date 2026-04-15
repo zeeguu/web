@@ -4,13 +4,26 @@ import { zeeguuOrange } from "../colors";
 
 const Content = styled.div`
   text-align: center;
-  padding: 0.5em 0;
+  /* Top+side padding keeps the title clear of the absolutely-positioned
+     close button at top-right. */
+  padding: 2em 2em 0.5em 2em;
 `;
 
-const Subtitle = styled.p`
-  color: var(--text-muted, #666);
-  margin-bottom: 1.5em;
-  font-size: 0.95rem;
+const Title = styled.h3`
+  color: var(--text-primary, #222);
+  margin: 0 0 2.2em 0;
+  font-size: 1.05rem;
+  line-height: 1.35;
+  font-weight: 600;
+  overflow-wrap: break-word;
+`;
+
+const Message = styled.p`
+  color: var(--text-primary, #222);
+  text-align: center !important;
+  margin: 0 0 2.2em 0 !important;
+  font-size: 1.05rem;
+  line-height: 1.5;
 `;
 
 const ButtonStack = styled.div`
@@ -27,7 +40,9 @@ const ActionButton = styled.button`
   border-radius: 0.5em;
   border: ${(props) => (props.$primary ? "none" : `1.5px solid ${zeeguuOrange}`)};
   background-color: ${(props) => (props.$primary ? zeeguuOrange : "transparent")};
-  color: ${(props) => (props.$primary ? "white" : zeeguuOrange)};
+  /* Dark text on the orange fill — white-on-orange is low-contrast
+     for accessibility, and it washes out visually in dark mode. */
+  color: ${(props) => (props.$primary ? "#1a1a2e" : zeeguuOrange)};
   font-size: 0.95rem;
   font-weight: 600;
   cursor: pointer;
@@ -63,12 +78,12 @@ const Spinner = styled.span`
 `;
 
 /**
- * A reusable modal with a title, subtitle, and two action buttons.
+ * A reusable modal with a single message and two action buttons.
  * The `primaryFirst` prop controls which button gets the filled style.
  */
 export default function ChoiceModal({
   title,
-  subtitle,
+  message,
   primaryLabel,
   secondaryLabel,
   onPrimary,
@@ -80,8 +95,8 @@ export default function ChoiceModal({
   return (
     <Modal open={true} onClose={onSecondary}>
       <Content>
-        <h3>{title}</h3>
-        <Subtitle>{subtitle}</Subtitle>
+        {title && <Title>{title}</Title>}
+        <Message>{message}</Message>
         <ButtonStack>
           <ActionButton
             $primary={primaryFirst}
