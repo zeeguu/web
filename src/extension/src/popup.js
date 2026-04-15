@@ -4,39 +4,17 @@ import Popup from './popup/Popup';
 import { getIsLoggedIn } from './popup/cookies';
 import { WEB_URL } from '../../config';
 import { PopUp } from './popup/Popup.styles';
-import { LoadingCircle } from './popup/PopupLoading.styles';
 
-// Main App component that handles login state
 function App() {
-  console.log("Firefox popup App component loaded");
-  const [loggedIn, setLoggedIn] = React.useState(null); // null = checking, true/false = determined
-  
+  const [loggedIn, setLoggedIn] = React.useState(null);
+
   React.useEffect(() => {
-    // Check if user is logged in
-    async function checkLogin() {
-      try {
-        const isLoggedIn = await getIsLoggedIn(WEB_URL);
-        setLoggedIn(!!isLoggedIn); // Convert to boolean
-      } catch (error) {
-        console.error('Error checking login:', error);
-        setLoggedIn(false); // Default to not logged in on error
-      }
-    }
-    
-    checkLogin();
+    getIsLoggedIn(WEB_URL)
+      .then((ok) => setLoggedIn(!!ok))
+      .catch(() => setLoggedIn(false));
   }, []);
-  
-  // Show loading state while checking login
-  if (loggedIn === null) {
-    return (
-      <PopUp style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '10px' }}>
-        <LoadingCircle />
-        <span style={{ fontSize: '12px', color: '#666' }}>Checking login...</span>
-      </PopUp>
-    );
-  }
-  
-  // Render the actual popup
+
+  if (loggedIn === null) return <PopUp />;
   return <Popup loggedIn={loggedIn} />;
 }
 
