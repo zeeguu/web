@@ -13,6 +13,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 
 
+
+## [2.5.14] - 2026-04-15
+
+### Changed
+- Extension is now a thin shim: scrapes the active tab, uploads to Zeeguu, opens the article on zeeguu.org where simplify / translate-and-adapt / read-original / read-as-is are offered
+- All reading, translation, and vocabulary UI now lives on zeeguu.org — the in-page injected reader has been removed
+- Article extraction uses Mozilla Readability only; per-publisher cleanup rules (BBC, Le Monde, Politiken, Der Spiegel, …) are no longer needed and have been removed
+
+### Fixed
+- Firefox: popup got stuck on "Opening…" because the browser-API shim preferred the callback-style `chrome` global over Firefox's promise-based `browser`
+
 ## [2.5.13] - 2026-02-04
 
 ### Fixed

@@ -88,7 +88,7 @@
     "ext:buildFirefoxDev": "npm run ext:buildUnix:popup && npm run ext:build:bg && npm run ext:build:izo && cd src/extension && rm ./build/manifest.* && cp ./manifest.firefox.dev.json ./build/manifest.json",
     "ext:buildFirefoxWindows": "cd src/extension && npm-run-all buildWindows:* && npm-run-all build:* && copy .\\public\\manifest.firefox.json .\\build\\manifest.json /Y",
     "ext:buildFirefoxWindowsDev": "cd src/extension && npm-run-all buildWindows:* && npm-run-all build:* && copy .\\public\\manifest.firefox.dev.json .\\build\\manifest.json /Y",
-    "ext:pubFirefox": "cd src/extension && (cd build && zip -FSr ../build.zip *) && npm-run-all zipSources && open https://addons.mozilla.org/en-US/developers/addons",
+    "ext:pubFirefox": "(cd src/extension/build && zip -FSr ../build.zip *) && npm run ext:zipSources && open https://addons.mozilla.org/en-US/developers/addons",
     "ext:pub-ci": "cd src/extension && (cd src && git clone -b development https://github.com/zeeguu-ecosystem/zeeguu-react.git && cd zeeguu-react && npm ci) && cp ./public/manifest.chrome.json ./build/manifest.json && npm-run-all build:* && zip -FSr build.zip build",
     "ext:pub-ci-firefox": "cd src/extension && (cd src && git clone -b development https://github.com/zeeguu-ecosystem/zeeguu-react.git && cd zeeguu-react && npm ci) && npm run buildFirefox && zip -FSr build.zip build",
     "ext:zip-build": "cd src/extension && (cd build && zip -r ../build.zip . -x \"*.DS_Store\" \"debug*\" \"test-*\" \"simple.html\")",
