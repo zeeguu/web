@@ -11,7 +11,7 @@ const Content = styled.div`
 
 const Title = styled.h3`
   color: var(--text-primary, #222);
-  margin: 0 0 1.5em 0;
+  margin: 0 0 2.2em 0;
   font-size: 1.05rem;
   line-height: 1.35;
   font-weight: 600;
@@ -21,7 +21,7 @@ const Title = styled.h3`
 const Message = styled.p`
   color: var(--text-primary, #222);
   text-align: center !important;
-  margin: 0 0 3em 0 !important;
+  margin: 0 0 2.2em 0 !important;
   font-size: 1.05rem;
   line-height: 1.5;
 `;
@@ -40,7 +40,9 @@ const ActionButton = styled.button`
   border-radius: 0.5em;
   border: ${(props) => (props.$primary ? "none" : `1.5px solid ${zeeguuOrange}`)};
   background-color: ${(props) => (props.$primary ? zeeguuOrange : "transparent")};
-  color: ${(props) => (props.$primary ? "white" : zeeguuOrange)};
+  /* Dark text on the orange fill — white-on-orange is low-contrast
+     for accessibility, and it washes out visually in dark mode. */
+  color: ${(props) => (props.$primary ? "#1a1a2e" : zeeguuOrange)};
   font-size: 0.95rem;
   font-weight: 600;
   cursor: pointer;
