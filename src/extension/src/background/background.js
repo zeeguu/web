@@ -1,11 +1,11 @@
 import { BROWSER_API } from "../utils/browserApi";
 import { WEB_URL, WEB_LOGIN_URL, API_URL } from "../../../config";
 
-// Debug logging to check API URL configuration in background script
-import { setCurrentURL, setUserInLocalStorage, getCurrentTab } from "../popup/functions";
+import { getCurrentTab } from "../popup/functions";
 import { getIsLoggedIn, getUserInfoDictFromCookies } from "../popup/cookies";
 import Zeeguu_API from "../../../api/Zeeguu_API";
 import { EXTENSION_SOURCE } from "../constants";
+import { isUnsupportedTab, sendTabToZeeguu } from "../shared/sendTabToZeeguu";
 
 // Montserrat font
 const googleFontUrl =
@@ -104,34 +104,27 @@ const contextMenuReadArticle = {
 };
 
 async function startReader() {
-  let user_logged_in = await getIsLoggedIn(WEB_URL);
-  let tab = await getCurrentTab();
+  const tab = await getCurrentTab();
+  const user_logged_in = await getIsLoggedIn(WEB_URL);
   if (!user_logged_in) {
-    // The user is not logged in, send them to Zeeguu.
     BROWSER_API.tabs.update(tab.id, {
       url: WEB_LOGIN_URL + "?redirectLink=" + tab.url,
     });
-  } else {
-    try {
-      let api = new Zeeguu_API(API_URL);
-      let userData = await getUserInfoDictFromCookies(WEB_URL);
-      setUserInLocalStorage(userData, api);
-      await api.logUserActivity(api.OPEN_CONTEXT, "", tab.url, EXTENSION_SOURCE);
-    } catch (err) {
-      console.error(`failed to execute script: ${err}`);
-    } finally {
-      BROWSER_API.scripting
-        .executeScript({
-          target: { tabId: tab.id },
-          files: ["contentScript.js"],
-          func: setCurrentURL(tab.url),
-        })
-        .then(() => {
-          // console.log("Zeeguu code injected successfully!");
-          // console.log("Adding Zeeguu font-styling...");
-          injectFontAndStyles(tab.id);
-        });
-    }
+    return;
+  }
+  if (isUnsupportedTab(tab)) return;
+
+  try {
+    const api = new Zeeguu_API(API_URL);
+    const userData = await getUserInfoDictFromCookies(WEB_URL);
+    api.session = userData.session;
+    await api.logUserActivity(api.OPEN_CONTEXT, "", tab.url, EXTENSION_SOURCE);
+    const upload = await sendTabToZeeguu(api, tab);
+    BROWSER_API.tabs.create({
+      url: `${WEB_URL}/shared-article?upload_id=${upload.id}`,
+    });
+  } catch (err) {
+    console.error("Context-menu send failed:", err);
   }
 }
 
