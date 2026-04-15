@@ -6,6 +6,7 @@ function langName(code) {
 }
 
 export default function ArticleLanguageModal({
+  articleTitle,
   articleLanguage,
   learnedLanguage,
   source,
@@ -21,6 +22,7 @@ export default function ArticleLanguageModal({
   if (isSameLanguage) {
     return (
       <ChoiceModal
+        title={articleTitle}
         message={`This article is in ${articleLangName}. Do you want it simplified?`}
         primaryLabel="Simplify to my level"
         secondaryLabel="Read without simplification"
@@ -35,6 +37,7 @@ export default function ArticleLanguageModal({
 
   return (
     <ChoiceModal
+      title={articleTitle}
       message={`This article is in ${articleLangName}. You're learning ${langName(learnedLanguage)}.`}
       primaryLabel={`Translate & adapt to ${langName(learnedLanguage)} at my level`}
       secondaryLabel="Read original"
