@@ -1,7 +1,7 @@
 import { useContext, useEffect, useMemo, useState } from "react";
 import { APIContext } from "../../contexts/APIContext.js";
 import { UserContext } from "../../contexts/UserContext.js";
-import { switchLanguage } from "../../utils/languageSwitcher.js";
+import useGuardedLanguageSwitch from "../../hooks/useGuardedLanguageSwitch.js";
 import Modal from "../modal_shared/Modal.js";
 import Form from "../../pages/_pages_shared/Form.sc.js";
 import ButtonContainer from "../modal_shared/ButtonContainer.sc.js";
@@ -13,64 +13,24 @@ import RadioGroup from "./RadioGroup.js";
 import ReactLink from "../ReactLink.sc.js";
 import AddRoundedIcon from "@mui/icons-material/AddRounded";
 import CircularProgress from "@mui/material/CircularProgress";
-import LocalFireDepartmentIcon from "@mui/icons-material/LocalFireDepartment";
 import DynamicFlagImage from "../DynamicFlagImage.js";
-import { streakFireOrange } from "../colors.js";
-import { CEFR_LEVELS } from "../../assorted/cefrLevels.js";
+import LanguageOptionLabel from "./LanguageOptionLabel.js";
 import LocalStorage from "../../assorted/LocalStorage.js";
 import { saveSharedUserInfo } from "../../utils/cookies/userInfo.js";
-import styled from "styled-components";
 
 const MAX_MODAL_LANGUAGES = 7;
-const fireIconSx = { color: streakFireOrange, fontSize: "0.9rem" };
 const spinnerSx = { color: "var(--streak-banner-text)" };
-
-const CefrSection = styled.span`
-  display: flex;
-  align-items: center;
-  margin-left: auto;
-  padding-left: 0.75em;
-  border-left: 1px solid rgba(128, 128, 128, 0.3);
-  height: 1.5em;
-`;
-
-const StreakBadge = styled.span`
-  display: flex;
-  align-items: center;
-  gap: 0.2em;
-  margin-left: 0.5em;
-  font-size: 0.85em;
-  font-weight: 600;
-  color: ${streakFireOrange};
-`;
-
-const CefrSelect = styled.select`
-  font-size: 0.9em;
-  font-weight: 600;
-  padding: 0.2em 0.3em;
-  border: none;
-  background: transparent;
-  cursor: pointer;
-  color: inherit;
-
-  &:hover {
-    background: rgba(0, 0, 0, 0.05);
-    border-radius: 0.3em;
-  }
-
-  &:focus {
-    outline: none;
-  }
-`;
 
 export default function LanguageModal({ open, setOpen }) {
   const api = useContext(APIContext);
   const { userDetails, setUserDetails, session } = useContext(UserContext);
+  const { requestSwitch, confirmModal, willConfirm } = useGuardedLanguageSwitch();
   const [, setErrorMessage] = useState("");
 
   const [learnedLanguageCode, setLearnedLanguageCode] = useState(null);
   const [activeLanguages, setActiveLanguages] = useState(null);
   const [streaksByCode, setStreaksByCode] = useState({});
+  const [practicedByCode, setPracticedByCode] = useState({});
   const [isSwitching, setIsSwitching] = useState(false);
 
   useEffect(() => {
@@ -85,9 +45,14 @@ export default function LanguageModal({ open, setOpen }) {
 
     api.getAllLanguageStreaks((data) => {
       if (cancelled) return;
-      const map = {};
-      data.forEach((l) => { map[l.code] = l.daily_streak; });
-      setStreaksByCode(map);
+      const streakMap = {};
+      const practicedMap = {};
+      data.forEach((l) => {
+        streakMap[l.code] = l.daily_streak;
+        practicedMap[l.code] = l.practiced_today;
+      });
+      setStreaksByCode(streakMap);
+      setPracticedByCode(practicedMap);
     });
 
     return () => {
@@ -142,80 +107,66 @@ export default function LanguageModal({ open, setOpen }) {
 
   function updateLearnedLanguage(lang_code) {
     setLearnedLanguageCode(lang_code);
-    setIsSwitching(true);
-    switchLanguage(api, userDetails, setUserDetails, lang_code, () => {
+    // Skip the in-modal "switching" spinner when a confirmation will be shown
+    // on top — otherwise the underlying modal hides its content while the user
+    // is still deciding whether to switch.
+    if (!willConfirm) setIsSwitching(true);
+    requestSwitch(lang_code, () => {
       setIsSwitching(false);
       setOpen(false);
     });
   }
 
-  return (
-    <Modal
-      open={open}
-      onClose={() => {
-        setOpen(false);
-      }}
-    >
-      <Header withoutLogo>
-        <Heading>{isSwitching ? "Changing language..." : "Your Active Languages:"}</Heading>
-      </Header>
-      <Main>
-        <Form>
-          {isSwitching ? (
-            <div style={{ display: "flex", flexDirection: "column", alignItems: "center", padding: "2rem 0", gap: "1rem" }}>
-              <DynamicFlagImage languageCode={learnedLanguageCode} />
-              <CircularProgress size={24} sx={spinnerSx} />
-            </div>
-          ) : (
-            <>
-              <FormSection>
-                <RadioGroup
-                  radioGroupLabel=""
-                  name="active-language"
-                  options={reorderedLanguages.slice(0, MAX_MODAL_LANGUAGES)}
-                  selectedValue={learnedLanguageCode}
-                  onChange={(e) => {
-                    updateLearnedLanguage(e.target.value);
-                  }}
-                  optionLabel={(e) => (
-                    <>
-                      {e.language}
-                      {streaksByCode[e.code] >= 2 && (
-                        <StreakBadge>
-                          <LocalFireDepartmentIcon sx={fireIconSx} />
-                          {streaksByCode[e.code]}
-                        </StreakBadge>
-                      )}
-                      <CefrSection>
-                        <CefrSelect
-                          value={getCefrLevelValueForLanguage(e.code)}
-                          onClick={(ev) => ev.stopPropagation()}
-                          onChange={(ev) => handleCefrLevelChange(e.code, ev.target.value, ev)}
-                        >
-                          {CEFR_LEVELS.map((level) => (
-                            <option key={level.value} value={level.value}>
-                              {level.label.split(" | ")[0]}
-                            </option>
-                          ))}
-                        </CefrSelect>
-                      </CefrSection>
-                    </>
-                  )}
-                  optionValue={(e) => e.code}
-                  optionId={(e) => e.id}
-                  dynamicIcon={(e) => <DynamicFlagImage languageCode={e.code} />}
-                  radiosContentLeftAligned
-                />
-              </FormSection>
-              <ButtonContainer className={"adaptive-alignment-horizontal"}>
-                <ReactLink className="small" onClick={() => setOpen(false)} to="/account_settings/language_settings">
-                  <AddRoundedIcon /> More language settings
-                </ReactLink>
-              </ButtonContainer>
-            </>
+  const switchingBody = (
+    <div style={{ display: "flex", flexDirection: "column", alignItems: "center", padding: "2rem 0", gap: "1rem" }}>
+      <DynamicFlagImage languageCode={learnedLanguageCode} />
+      <CircularProgress size={24} sx={spinnerSx} />
+    </div>
+  );
+
+  const languageListBody = (
+    <>
+      <FormSection>
+        <RadioGroup
+          radioGroupLabel=""
+          name="active-language"
+          options={reorderedLanguages.slice(0, MAX_MODAL_LANGUAGES)}
+          selectedValue={learnedLanguageCode}
+          onChange={(e) => updateLearnedLanguage(e.target.value)}
+          optionLabel={(e) => (
+            <LanguageOptionLabel
+              languageName={e.language}
+              streak={streaksByCode[e.code] || 0}
+              practiced={practicedByCode[e.code]}
+              cefrLevelValue={getCefrLevelValueForLanguage(e.code)}
+              onCefrLevelChange={(newLevel, ev) => handleCefrLevelChange(e.code, newLevel, ev)}
+            />
           )}
-        </Form>
-      </Main>
-    </Modal>
+          optionValue={(e) => e.code}
+          optionId={(e) => e.id}
+          dynamicIcon={(e) => <DynamicFlagImage languageCode={e.code} />}
+          radiosContentLeftAligned
+        />
+      </FormSection>
+      <ButtonContainer className={"adaptive-alignment-horizontal"}>
+        <ReactLink className="small" onClick={() => setOpen(false)} to="/account_settings/language_settings">
+          <AddRoundedIcon /> More language settings
+        </ReactLink>
+      </ButtonContainer>
+    </>
+  );
+
+  return (
+    <>
+      {confirmModal}
+      <Modal open={open} onClose={() => setOpen(false)}>
+        <Header withoutLogo>
+          <Heading>{isSwitching ? "Changing language..." : "Your Active Languages:"}</Heading>
+        </Header>
+        <Main>
+          <Form>{isSwitching ? switchingBody : languageListBody}</Form>
+        </Main>
+      </Modal>
+    </>
   );
 }

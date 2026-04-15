@@ -26,6 +26,15 @@ export default function TodayAudio({ setShowTabs }) {
     return getSavedSuggestion(lang);
   });
 
+  // Re-initialize state when language changes
+  useEffect(() => {
+    setSuggestionType(getSavedSuggestionType(lang));
+    setSuggestion(getSavedSuggestion(lang));
+    setLessonData(null);
+    setError(null);
+    setCanGenerateLesson(null);
+  }, [lang]);
+
   // Poll for progress when generating
   useEffect(() => {
     const generatingKey = `zeeguu_generating_lesson_${lang}_${new Date().toDateString()}`;
@@ -160,8 +169,7 @@ export default function TodayAudio({ setShowTabs }) {
   useEffect(() => {
     if (setShowTabs) {
       // Hide tabs only when we know user can't generate a lesson and has no lesson
-      const shouldHideTabs = canGenerateLesson === false && !lessonData;
-      setShowTabs(!shouldHideTabs);
+      setShowTabs(true);
     }
   }, [canGenerateLesson, lessonData, setShowTabs]);
 
@@ -194,9 +202,11 @@ export default function TodayAudio({ setShowTabs }) {
       (data) => {
         setCanGenerateLesson(data.feasible);
         if (!data.feasible) {
-          setError(data.message || "Not enough words available to generate a lesson.");
-          // Reset status to available since generation isn't possible
-          setUserDetails((prev) => ({ ...prev, daily_audio_status: null }));
+          setError("Not enough words for a vocabulary lesson. Try a Topic or Situation instead!");
+          // If user had auto selected, switch to topic
+          if (suggestionType === "auto") {
+            setSuggestionType("topic");
+          }
         }
       },
       (error) => {
@@ -266,7 +276,7 @@ export default function TodayAudio({ setShowTabs }) {
         );
       },
     );
-  }, [api]);
+  }, [api, lang]);
 
   const handleGenerateLesson = () => {
     const generatingKey = `zeeguu_generating_lesson_${lang}_${new Date().toDateString()}`;
@@ -315,7 +325,6 @@ export default function TodayAudio({ setShowTabs }) {
         // Check if the error is a topic rejection (user can try a different topic)
         const isSuggestionRejection = error.message && error.message.toLowerCase().includes("can't generate a lesson for this");
         if (isSuggestionRejection) {
-          // Don't disable generation — user can edit the topic and try again
           setError(error.message);
           return;
         }
@@ -325,9 +334,7 @@ export default function TodayAudio({ setShowTabs }) {
         // Check if the error is related to no words in learning
         let errorMsg;
         if (error.message && error.message.toLowerCase().includes("not enough words")) {
-          errorMsg = "Not enough words in learning to generate a lesson. Need at least 2 words that were not in audio lessons before";
-          // Only cache permanent errors — not transient network failures
-          localStorage.setItem(failedKey, errorMsg);
+          errorMsg = "Not enough words for a vocabulary lesson. Try a Topic or Situation instead!";
         } else {
           errorMsg = error.message || "Failed to generate daily lesson. Please try again.";
         }
@@ -381,10 +388,8 @@ export default function TodayAudio({ setShowTabs }) {
         <h2 style={{ color: zeeguuOrange, marginBottom: "10px" }}>
           Generating your daily lesson...
         </h2>
-        <p style={{ color: "var(--text-primary)", marginBottom: "20px", fontSize: "16px", textAlign: "center" }}>
-          This can take a while.<br />
-          Feel free to browse — you'll find it here when it's ready.
-        </p>
+
+
         <div
           style={{
             width: "200px",
@@ -393,6 +398,7 @@ export default function TodayAudio({ setShowTabs }) {
             borderRadius: "4px",
             overflow: "hidden",
             marginBottom: "10px",
+            marginTop: "10px",
           }}
         >
           <div
@@ -406,41 +412,42 @@ export default function TodayAudio({ setShowTabs }) {
           />
         </div>
         <p style={{ fontSize: "12px", color: "var(--text-faint)" }}>{progressDetail}</p>
+
+        <p style={{ color: "var(--text-primary)", marginBottom: "20px", fontSize: "16px", textAlign: "center" }}>
+          This can take a while.<br />
+          Feel free to browse — you'll find it here when it's ready.
+        </p>
+
       </div>
     );
   }
 
   if (!lessonData) {
-    // Cannot generate lesson
-    if (canGenerateLesson === false) {
-      return (
-        <EmptyState
-          message={error || "You need more words in your learning vocabulary to generate an audio lesson. Try reading more articles and translating words first."}
-        />
-      );
-    }
-
-    // Can generate lesson - show the generate button
-    if (canGenerateLesson === true) {
+    if (canGenerateLesson !== null) {
+      const autoDisabled = canGenerateLesson === false;
+      const showError = error && suggestionType === "auto";
+      const canGenerate = suggestionType !== "auto" || !autoDisabled;
       return (
         <GenerateView>
-          {error && (
-            <FullWidthErrorMsg style={{ marginBottom: "20px", maxWidth: "500px" }}>
-              {error}
-            </FullWidthErrorMsg>
-          )}
           <SuggestionSelector
             suggestionType={suggestionType}
             setSuggestionType={setSuggestionType}
             suggestion={suggestion}
             setSuggestion={setSuggestion}
             lang={lang}
+            autoDisabled={autoDisabled}
           />
-          <GenerateButton onClick={handleGenerateLesson}>
-            Generate
-            <br />
-            Daily Lesson
-          </GenerateButton>
+          {canGenerate ? (
+            <GenerateButton onClick={handleGenerateLesson}>
+              Generate
+              <br />
+              Daily Lesson
+            </GenerateButton>
+          ) : (
+            <p style={{ color: "var(--text-secondary)", textAlign: "center", maxWidth: "300px", marginTop: "20px" }}>
+              {error || "Not enough words for a vocabulary lesson. Try a Topic or Situation instead!"}
+            </p>
+          )}
         </GenerateView>
       );
     }

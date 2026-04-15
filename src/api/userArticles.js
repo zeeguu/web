@@ -320,6 +320,26 @@ Zeeguu_API.prototype.removeMLSuggestion = function (
   this._post(`/remove_ml_suggestion`, param, callback);
 };
 
+Zeeguu_API.prototype.createArticleUpload = function (payload, callback, onError) {
+  this._post(`/article_upload/create`, qs.stringify(payload), callback, onError, true);
+};
+
+Zeeguu_API.prototype.getArticleUpload = function (uploadId, callback) {
+  this._getJSON(`article_upload/${uploadId}`, callback);
+};
+
+Zeeguu_API.prototype.promoteArticleUpload = function (uploadId, callback, onError) {
+  this._post(`/article_upload/${uploadId}/promote_to_article`, "", callback, onError, true);
+};
+
+Zeeguu_API.prototype.simplifyArticleUpload = function (uploadId, callback, onError) {
+  this._post(`/article_upload/${uploadId}/simplify`, "", callback, onError, true);
+};
+
+Zeeguu_API.prototype.translateAndAdaptArticleUpload = function (uploadId, callback, onError) {
+  this._post(`/article_upload/${uploadId}/translate_and_adapt`, "", callback, onError, true);
+};
+
 Zeeguu_API.prototype.makePersonalCopy = function (articleId, callback) {
   let param = qs.stringify({ article_id: articleId });
   this._post(`/make_personal_copy`, param, callback);

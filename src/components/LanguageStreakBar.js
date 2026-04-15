@@ -1,12 +1,19 @@
-import { useContext, useEffect, useRef, useState } from "react";
+import { useCallback, useContext, useEffect, useRef, useState } from "react";
+import { toast } from "react-toastify";
 import { APIContext } from "../contexts/APIContext";
 import { UserContext } from "../contexts/UserContext";
-import { switchLanguage } from "../utils/languageSwitcher";
+import useGuardedLanguageSwitch from "../hooks/useGuardedLanguageSwitch";
 import { streakFireOrange, lightPurple } from "./colors";
 import LocalFireDepartmentIcon from "@mui/icons-material/LocalFireDepartment";
+import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import styled, { keyframes } from "styled-components";
+import playStreakChime from "../utils/streakChime";
 
-const POLL_INTERVAL_MS = 60_000;
+const POLL_FAST_MS = 5_000;
+const POLL_SLOW_MS = 60_000;
+const ITEM_WIDTH_PX = 75; // approximate width of one language item
+const MORE_BUTTON_PX = 30;
+const BAR_GAP_PX = 6;
 
 const pulse = keyframes`
   0% { transform: scale(1); }
@@ -14,43 +21,53 @@ const pulse = keyframes`
   100% { transform: scale(1); }
 `;
 
+const Wrapper = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-left: auto;
+`;
+
 const Bar = styled.div`
   display: flex;
   align-items: center;
   gap: 0.4rem;
-  overflow: hidden;
-  margin-left: auto;
 `;
+
+const MoreButton = styled.button`
+  background: none;
+  border: none;
+  padding: 0.1rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  color: inherit;
+  opacity: 0.6;
+  flex-shrink: 0;
+
+  &:hover {
+    opacity: 1;
+  }
+`;
+
+const moreIconSx = { fontSize: "1.1rem" };
 
 const LanguageItem = styled.button`
   display: flex;
   align-items: center;
   gap: 0.25rem;
-  background: ${({ $active }) => ($active ? `${lightPurple}33` : "none")};
-  border: ${({ $active }) => ($active ? `1.5px solid ${lightPurple}` : "1.5px solid transparent")};
+  background: transparent;
+  border: none;
+  box-shadow: none;
   border-radius: 1rem;
   padding: 0.15rem 0.4rem 0.15rem 0.2rem;
   cursor: pointer;
-  transition: background 0.15s;
+  transition: background 0.3s, box-shadow 0.3s, opacity 0.3s;
   flex-shrink: 0;
-  opacity: ${({ $active }) => ($active ? "1" : "0.6")};
 
   &:hover {
     opacity: 1;
     background: var(--streak-banner-hover);
-  }
-
-  &:nth-child(n+4) {
-    display: none;
-  }
-
-  @media (min-width: 500px) {
-    &:nth-child(n+4) {
-      display: flex;
-    }
-    &:nth-child(n+5) {
-      display: none;
-    }
   }
 `;
 
@@ -72,28 +89,60 @@ const StreakNumber = styled.span`
 const fireIconSx = { color: streakFireOrange, fontSize: "0.9rem" };
 const fireIconGraySx = { color: "var(--text-faint, #999)", fontSize: "0.9rem" };
 
-function streaksChanged(prev, next) {
-  if (prev.length !== next.length) return true;
-  for (let i = 0; i < prev.length; i++) {
-    if (prev[i].code !== next[i].code ||
-        prev[i].daily_streak !== next[i].daily_streak ||
-        prev[i].practiced_today !== next[i].practiced_today) return true;
+function computeMaxSlots(wrapperEl) {
+  if (!wrapperEl) return 4;
+  const available = wrapperEl.parentElement.clientWidth - wrapperEl.offsetLeft - MORE_BUTTON_PX;
+  return Math.max(2, Math.min(4, Math.floor(available / (ITEM_WIDTH_PX + BAR_GAP_PX))));
+}
+
+function pickVisible(allLangs, currentCode, maxSlots) {
+  // Keep streak-descending order (from API), ensure current language has a slot
+  const eligible = allLangs.filter(
+    (l) => l.code === currentCode || l.daily_streak >= 1,
+  );
+
+  if (eligible.length <= maxSlots) return eligible;
+
+  // Take top N by streak, but guarantee current language
+  const top = eligible.slice(0, maxSlots);
+  const currentInTop = top.find((l) => l.code === currentCode);
+  if (!currentInTop) {
+    const currentLang = eligible.find((l) => l.code === currentCode);
+    if (currentLang) {
+      top[maxSlots - 1] = currentLang; // replace last slot
+    }
   }
-  return false;
+  return top;
 }
 
 export default function LanguageStreakBar({ onMultipleLanguages, onOpenModal }) {
   const api = useContext(APIContext);
-  const { userDetails, setUserDetails } = useContext(UserContext);
+  const { userDetails } = useContext(UserContext);
+  const { requestSwitch, confirmModal, willConfirm } = useGuardedLanguageSwitch();
   const [languageStreaks, setLanguageStreaks] = useState([]);
   const [justPracticed, setJustPracticed] = useState({});
+  const [switchingTo, setSwitchingTo] = useState(null);
+  const [maxSlots, setMaxSlots] = useState(4);
   const prevPracticedRef = useRef({});
-  const prevMultipleRef = useRef(null);
-  const animationTimerRef = useRef(null);
-  const onMultipleLanguagesRef = useRef(onMultipleLanguages);
-  onMultipleLanguagesRef.current = onMultipleLanguages;
+  const intervalRef = useRef(null);
+  const wrapperRef = useRef(null);
+
+  const updateSlots = useCallback(() => {
+    setMaxSlots(computeMaxSlots(wrapperRef.current));
+  }, []);
 
   useEffect(() => {
+    updateSlots();
+    window.addEventListener("resize", updateSlots);
+    return () => window.removeEventListener("resize", updateSlots);
+  }, [updateSlots]);
+
+  useEffect(() => {
+    function setPollingRate(ms) {
+      clearInterval(intervalRef.current);
+      intervalRef.current = setInterval(fetchStreaks, ms);
+    }
+
     function fetchStreaks() {
       api.getAllLanguageStreaks((data) => {
         const newJustPracticed = {};
@@ -110,78 +159,94 @@ export default function LanguageStreakBar({ onMultipleLanguages, onOpenModal }) 
 
         if (Object.keys(newJustPracticed).length > 0) {
           setJustPracticed(newJustPracticed);
-          clearTimeout(animationTimerRef.current);
-          animationTimerRef.current = setTimeout(() => setJustPracticed({}), 600);
+          setTimeout(() => setJustPracticed({}), 600);
+          playStreakChime();
+          const lang = data.find((l) => newJustPracticed[l.code]);
+          if (lang) {
+            toast(`🔥 ${lang.daily_streak} day streak!`, { autoClose: 3000 });
+          }
         }
 
-        setLanguageStreaks((prev) => streaksChanged(prev, data) ? data : prev);
+        const current = data.find((l) => l.code === userDetails.learned_language);
+        if (current?.practiced_today) {
+          setPollingRate(POLL_SLOW_MS);
+        }
 
-        const hasMultiple = data.length > 1;
-        if (hasMultiple !== prevMultipleRef.current) {
-          prevMultipleRef.current = hasMultiple;
-          onMultipleLanguagesRef.current?.(hasMultiple);
+        setLanguageStreaks(data);
+        if (onMultipleLanguages) {
+          onMultipleLanguages(true);
         }
       });
     }
 
     fetchStreaks();
-    let interval = setInterval(fetchStreaks, POLL_INTERVAL_MS);
+    setPollingRate(POLL_FAST_MS);
 
-    const onVisibilityChange = () => {
-      if (document.hidden) {
-        clearInterval(interval);
-      } else {
-        fetchStreaks();
-        interval = setInterval(fetchStreaks, POLL_INTERVAL_MS);
-      }
-    };
-    document.addEventListener("visibilitychange", onVisibilityChange);
-
-    return () => {
-      clearInterval(interval);
-      clearTimeout(animationTimerRef.current);
-      document.removeEventListener("visibilitychange", onVisibilityChange);
-    };
+    return () => clearInterval(intervalRef.current);
   }, [api, userDetails.learned_language]);
 
-  if (languageStreaks.length <= 1) return null;
+  if (languageStreaks.length === 0) return null;
 
-  const currentCode = userDetails.learned_language;
-
-  const displayList = languageStreaks.filter(
-    (l) => l.code === currentCode || l.daily_streak >= 2,
+  const currentCode = switchingTo || userDetails.learned_language;
+  const visible = pickVisible(languageStreaks, currentCode, maxSlots);
+  const eligible = languageStreaks.filter(
+    (l) => l.code === currentCode || l.daily_streak >= 1,
   );
+  const hasHiddenStreaks = eligible.length > visible.length;
 
-  if (displayList.length <= 1) return null;
+  function handleClick(langCode) {
+    if (langCode === currentCode) {
+      onOpenModal();
+    } else {
+      // Skip optimistic highlight when a confirmation will be shown — the
+      // user might cancel, in which case the bar would have been lying.
+      if (!willConfirm) setSwitchingTo(langCode);
+      requestSwitch(langCode, () => {
+        setSwitchingTo(null);
+      });
+    }
+  }
 
   return (
-    <Bar>
-      {displayList.map((lang) => {
-        const isActive = lang.code === currentCode;
-        const practiced = lang.practiced_today;
-        const animating = justPracticed[lang.code];
-        return (
-          <LanguageItem
-            key={lang.code}
-            $active={isActive}
-            onClick={() => isActive ? onOpenModal() : switchLanguage(api, userDetails, setUserDetails, lang.code)}
-            title={lang.language}
-          >
-            <Flag
-              src={`/static/flags-new/${lang.code}.svg`}
-              alt={lang.language}
-            />
-            {(lang.daily_streak >= 1 || isActive) && (
-              <>
-                <LocalFireDepartmentIcon sx={practiced ? fireIconSx : fireIconGraySx} />
-                <StreakNumber $practiced={practiced} $justPracticed={animating}>
-                  {lang.daily_streak}
-                </StreakNumber>
-              </>
-            )}
-          </LanguageItem>
-        );
-      })}
-    </Bar>
+    <Wrapper ref={wrapperRef}>
+      {confirmModal}
+      <Bar>
+        {visible.map((lang) => {
+          const isActive = lang.code === currentCode;
+          const practiced = lang.practiced_today;
+          const animating = justPracticed[lang.code];
+          return (
+            <LanguageItem
+              key={lang.code}
+              onClick={() => handleClick(lang.code)}
+              title={lang.language}
+              style={{
+                opacity: isActive ? 1 : 0.7,
+                background: isActive && visible.length > 1 ? `${lightPurple}33` : "transparent",
+                boxShadow: isActive && visible.length > 1 ? `inset 0 0 0 1.5px ${lightPurple}` : "none",
+              }}
+            >
+              <Flag
+                src={`/static/flags-new/${lang.code}.svg`}
+                alt={lang.language}
+              />
+              {(lang.daily_streak >= 1 || isActive) && (
+                <>
+                  <LocalFireDepartmentIcon sx={practiced ? fireIconSx : fireIconGraySx} />
+                  <StreakNumber $practiced={practiced} $justPracticed={animating}>
+                    {lang.daily_streak}
+                  </StreakNumber>
+                </>
+              )}
+            </LanguageItem>
+          );
+        })}
+      </Bar>
+      {hasHiddenStreaks && (
+        <MoreButton onClick={onOpenModal} title="More languages">
+          <MoreHorizIcon sx={moreIconSx} />
+        </MoreButton>
+      )}
+    </Wrapper>
   );
 }

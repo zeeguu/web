@@ -27,6 +27,8 @@
   --feedback-banner-border: #81d1f6;
   --feedback-banner-hover: linear-gradient(135deg, #b3e5fc, #81d4fa);
 
+  --title-color: #9c7130;
+
   --action-btn-text: #8b5f28;
   --action-btn-bg: #fff5e6;
   --action-btn-hover-bg: #f0e6cc;
@@ -95,6 +97,8 @@
   --feedback-banner-text: #81d4fa;
   --feedback-banner-border: #2a3555;
   --feedback-banner-hover: linear-gradient(135deg, #1e2d4a, #253555);
+
+  --title-color: #ffbb54;
 
   --action-btn-text: #ffcc66;
   --action-btn-bg: #2a2540;

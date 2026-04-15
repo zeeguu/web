@@ -12,6 +12,7 @@ import { ExercisesCounterContext } from "./exercises/ExercisesCounterContext";
 
 import useExercisesCounterNotification from "./hooks/useExercisesCounterNotification";
 import useStreakMilestone from "./hooks/useStreakMilestone";
+import useReportTimezone from "./hooks/useReportTimezone";
 import TopBar from "./components/TopBar";
 import { MOBILE_WIDTH } from "./components/MainNav/screenSize";
 import DailyFeedbackBanner from "./components/DailyFeedbackBanner";
@@ -54,6 +55,7 @@ export default function AppLayout(props) {
   const path = useLocation().pathname;
 
   useStreakMilestone();
+  useReportTimezone();
 
   //Initial state and setter passed to the value prop of the MainNavContext.Provider
   const [mainNavProperties, setMainNavProperties] = useState({
@@ -95,22 +97,21 @@ export default function AppLayout(props) {
       >
         <BadgeCounterContext.Provider value={badgeCounter}>
           <FriendRequestContext.Provider value={friendRequestNotification}>
-          <ThemeProvider theme={mainNavProperties.isOnStudentSide ? mainNavTheme.student : mainNavTheme.teacher}>
-            <s.AppLayout $screenWidth={screenWidth}>
-              {screenWidth > MOBILE_WIDTH && <SideNav screenWidth={screenWidth} />}
-              <s.AppContent
-                // Update the key when the learned_language changes to trigger a re-render
-                // of the app content that needs real-time updates. This is a smoother
-                // alternative to window.location.reload() when switching the practiced language in navigation.
-                key={userDetails.learned_language}
-                id="scrollHolder"
-              >
-                {screenWidth <= MOBILE_WIDTH && <TopBar />}
-                {appContent}
-              </s.AppContent>
-              {screenWidth <= MOBILE_WIDTH && <BottomNav />}
-            </s.AppLayout>
-          </ThemeProvider>
+            <ThemeProvider theme={mainNavProperties.isOnStudentSide ? mainNavTheme.student : mainNavTheme.teacher}>
+              <s.AppLayout $screenWidth={screenWidth}>
+                {screenWidth > MOBILE_WIDTH && <SideNav screenWidth={screenWidth} />}
+                <s.AppContent
+                  // Update the key when the learned_language changes to trigger a re-render
+                  // of the app content that needs real-time updates. This is a smoother
+                  // alternative to window.location.reload() when switching the practiced language in navigation.
+                  id="scrollHolder"
+                >
+                  {screenWidth <= MOBILE_WIDTH && <TopBar />}
+                  <div key={userDetails.learned_language}>{appContent}</div>
+                </s.AppContent>
+                {screenWidth <= MOBILE_WIDTH && <BottomNav />}
+              </s.AppLayout>
+            </ThemeProvider>
           </FriendRequestContext.Provider>
         </BadgeCounterContext.Provider>
       </ExercisesCounterContext.Provider>

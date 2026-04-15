@@ -12,8 +12,8 @@ const MAX_SUGGESTION_LENGTH = 80;
 
 const SUGGESTION_TYPES = {
   auto: {
-    label: "Automatic",
-    description: "A listening lesson with three of your words, each in a short dialogue.",
+    label: "Vocabulary",
+    description: "A listening lesson focused on three words from your study list, each in a short dialogue.",
     placeholder: null,
   },
   topic: {
@@ -39,12 +39,13 @@ export function getSavedSuggestion(lang) {
   return localStorage.getItem(suggestionKey(getSavedSuggestionType(lang), lang)) || "";
 }
 
-export default function SuggestionSelector({ suggestionType, setSuggestionType, suggestion, setSuggestion, lang }) {
+export default function SuggestionSelector({ suggestionType, setSuggestionType, suggestion, setSuggestion, lang, autoDisabled }) {
   return (
     <SuggestionWrapper>
 
       <PillRow role="radiogroup" aria-label="Dialogue context">
-        {Object.entries(SUGGESTION_TYPES).map(([key, { label }]) => (
+        {Object.entries(SUGGESTION_TYPES).map(([key, { label }]) => {
+          return (
           <SelectablePill
             key={key}
             type="button"
@@ -60,7 +61,8 @@ export default function SuggestionSelector({ suggestionType, setSuggestionType, 
           >
             {label}
           </SelectablePill>
-        ))}
+          );
+        })}
       </PillRow>
 
       <DescriptionText>

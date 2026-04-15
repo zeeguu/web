@@ -120,7 +120,8 @@
     "ios:release": "npm run ios:build && cd ios/App && fastlane release",
     "ios:release-force": "npm run ios:build && cd ios/App && fastlane release_force",
     "ios:copy-screenshots": "node ios/App/appstore-screenshots/copy-to-fastlane.js",
-    "ios:render-screenshots": "node ios/App/appstore-screenshots/render.js"
+    "ios:render-screenshots": "node ios/App/appstore-screenshots/render.js",
+    "ios:render-live-screenshots": "node ios/App/appstore-screenshots/render-live.js"
   },
   "browserslist": {
     "production": [
