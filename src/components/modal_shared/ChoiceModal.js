@@ -7,10 +7,18 @@ const Content = styled.div`
   padding: 0.5em 0;
 `;
 
+const Title = styled.h3`
+  color: var(--title-color, var(--text-primary, #222));
+  margin: 0 0 0.6em 0;
+  font-size: 1.3rem;
+  line-height: 1.35;
+  font-weight: 600;
+`;
+
 const Message = styled.p`
   color: var(--text-primary, #222);
-  margin: 0.5em 0 2.5em 0;
-  font-size: 1.15rem;
+  margin: 0 0 2.5em 0;
+  font-size: 1.05rem;
   line-height: 1.5;
 `;
 
@@ -68,6 +76,7 @@ const Spinner = styled.span`
  * The `primaryFirst` prop controls which button gets the filled style.
  */
 export default function ChoiceModal({
+  title,
   message,
   primaryLabel,
   secondaryLabel,
@@ -80,6 +89,7 @@ export default function ChoiceModal({
   return (
     <Modal open={true} onClose={onSecondary}>
       <Content>
+        {title && <Title>{title}</Title>}
         <Message>{message}</Message>
         <ButtonStack>
           <ActionButton

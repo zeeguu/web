@@ -154,6 +154,7 @@ export default function SharedArticleHandler() {
   if (status === "choice" && articleDetection) {
     return (
       <ArticleLanguageModal
+        articleTitle={articleDetection.title}
         articleLanguage={articleDetection.language}
         learnedLanguage={userDetails.learned_language}
         source="share"
