@@ -4,15 +4,15 @@ import { zeeguuOrange } from "../colors";
 
 const Content = styled.div`
   text-align: center;
-  /* Horizontal padding keeps the title clear of the absolutely-positioned
-     close button on narrow widths. */
-  padding: 1em 1.5em 0.5em 1.5em;
+  /* Top+side padding keeps the title clear of the absolutely-positioned
+     close button at top-right. */
+  padding: 2em 2em 0.5em 2em;
 `;
 
 const Title = styled.h3`
   color: var(--text-primary, #222);
   margin: 0 0 1.5em 0;
-  font-size: 1.3rem;
+  font-size: 1.05rem;
   line-height: 1.35;
   font-weight: 600;
   overflow-wrap: break-word;
