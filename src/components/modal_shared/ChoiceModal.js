@@ -4,20 +4,24 @@ import { zeeguuOrange } from "../colors";
 
 const Content = styled.div`
   text-align: center;
-  padding: 0.5em 0;
+  /* Horizontal padding keeps the title clear of the absolutely-positioned
+     close button on narrow widths. */
+  padding: 1em 1.5em 0.5em 1.5em;
 `;
 
 const Title = styled.h3`
-  color: var(--title-color, var(--text-primary, #222));
-  margin: 0 0 0.6em 0;
+  color: var(--text-primary, #222);
+  margin: 0 0 1.5em 0;
   font-size: 1.3rem;
   line-height: 1.35;
   font-weight: 600;
+  overflow-wrap: break-word;
 `;
 
 const Message = styled.p`
   color: var(--text-primary, #222);
-  margin: 0 0 2.5em 0;
+  text-align: center !important;
+  margin: 0 0 3em 0 !important;
   font-size: 1.05rem;
   line-height: 1.5;
 `;
