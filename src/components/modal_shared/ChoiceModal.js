@@ -7,10 +7,11 @@ const Content = styled.div`
   padding: 0.5em 0;
 `;
 
-const Subtitle = styled.p`
-  color: var(--text-muted, #666);
-  margin-bottom: 1.5em;
-  font-size: 0.95rem;
+const Message = styled.p`
+  color: var(--text-primary, #222);
+  margin: 0.5em 0 2.5em 0;
+  font-size: 1.15rem;
+  line-height: 1.5;
 `;
 
 const ButtonStack = styled.div`
@@ -63,12 +64,11 @@ const Spinner = styled.span`
 `;
 
 /**
- * A reusable modal with a title, subtitle, and two action buttons.
+ * A reusable modal with a single message and two action buttons.
  * The `primaryFirst` prop controls which button gets the filled style.
  */
 export default function ChoiceModal({
-  title,
-  subtitle,
+  message,
   primaryLabel,
   secondaryLabel,
   onPrimary,
@@ -80,8 +80,7 @@ export default function ChoiceModal({
   return (
     <Modal open={true} onClose={onSecondary}>
       <Content>
-        <h3>{title}</h3>
-        <Subtitle>{subtitle}</Subtitle>
+        <Message>{message}</Message>
         <ButtonStack>
           <ActionButton
             $primary={primaryFirst}

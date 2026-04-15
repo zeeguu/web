@@ -16,13 +16,12 @@ export default function ArticleLanguageModal({
   isLoading,
 }) {
   const isSameLanguage = articleLanguage === learnedLanguage;
-  const titleLine = `This article is in ${langName(articleLanguage)}`;
+  const articleLangName = langName(articleLanguage);
 
   if (isSameLanguage) {
     return (
       <ChoiceModal
-        title={titleLine}
-        subtitle="Would you like it simplified to your level?"
+        message={`This article is in ${articleLangName}. Do you want it simplified?`}
         primaryLabel="Simplify to my level"
         secondaryLabel="Read without simplification"
         loadingLabel="Simplifying..."
@@ -36,8 +35,7 @@ export default function ArticleLanguageModal({
 
   return (
     <ChoiceModal
-      title={titleLine}
-      subtitle={`You're learning ${langName(learnedLanguage)}`}
+      message={`This article is in ${articleLangName}. You're learning ${langName(learnedLanguage)}.`}
       primaryLabel={`Translate & adapt to ${langName(learnedLanguage)} at my level`}
       secondaryLabel="Read original"
       loadingLabel="Translating..."
