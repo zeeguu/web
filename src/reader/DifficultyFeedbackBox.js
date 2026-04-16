@@ -21,33 +21,6 @@ const Emoji = styled.span`
   display: inline-block;
 `;
 
-const SemanticButton = styled(s.WhiteButton)`
-  && {
-    color: ${(p) => p.$color} !important;
-    border-color: ${(p) => p.$color} !important;
-  }
-  && svg {
-    color: ${(p) => p.$color} !important;
-  }
-  &&.selected,
-  &&.selected:hover {
-    background-color: ${(p) => p.$color} !important;
-    border-color: ${(p) => p.$color} !important;
-    color: #fff !important;
-  }
-  &&.selected svg {
-    color: #fff !important;
-  }
-  &&.hovered {
-    background-color: ${(p) => p.$color}22 !important;
-    border-color: ${(p) => p.$color} !important;
-    color: ${(p) => p.$color} !important;
-  }
-  &&.hovered svg {
-    color: ${(p) => p.$color} !important;
-  }
-`;
-
 export default function DifficultyFeedbackBox({
   articleInfo,
   updateArticleDifficultyFeedback,
@@ -76,9 +49,10 @@ export default function DifficultyFeedbackBox({
           };
 
           return (
-            <SemanticButton
+            <s.WhiteButton
               key={key}
               $color={color}
+              $selectedTextColor="#fff"
               className={classNames.join(" ")}
               onClick={handleClick}
               onMouseEnter={() => setIsHovered(key)}
@@ -87,7 +61,7 @@ export default function DifficultyFeedbackBox({
               <Emoji>{emoji}</Emoji>
               <br />
               {label}
-            </SemanticButton>
+            </s.WhiteButton>
           );
         })}
       </s.CenteredContent>

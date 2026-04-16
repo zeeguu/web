@@ -1,4 +1,4 @@
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { playTapChime } from "../utils/chimes";
 
 // One bouncy button per call site. `bouncingKey` identifies which button is
@@ -7,6 +7,8 @@ import { playTapChime } from "../utils/chimes";
 export default function useTapBounce() {
   const [bouncingKey, setBouncingKey] = useState(null);
   const timer = useRef();
+
+  useEffect(() => () => clearTimeout(timer.current), []);
 
   const trigger = useCallback((key) => {
     playTapChime();

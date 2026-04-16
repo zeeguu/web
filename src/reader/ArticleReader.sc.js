@@ -251,14 +251,18 @@ const tapBounce = keyframes`
   100% { transform: scale(1); }
 `;
 
+// Outlined choice button: idle shows accent border+text, `.selected` fills with
+// the accent, `.hovered` tints at 22/255 alpha. Accent defaults to
+// zeeguuOrange; pass $color (+ optional $selectedTextColor, default #111) to
+// get a semantic variant (e.g. green for "just right", red for the extremes).
 let WhiteButton = styled(_BottomButton)`
   background-color: var(--bg-primary);
-  color: ${zeeguuOrange} !important;
+  color: ${(p) => p.$color || zeeguuOrange} !important;
 
   display: inline;
   align-items: center;
   justify-content: center;
-  border: 1.5px solid ${zeeguuOrange};
+  border: 1.5px solid ${(p) => p.$color || zeeguuOrange};
   border-radius: 0.5em;
     ${(props) =>
       props.small &&
@@ -281,21 +285,21 @@ let WhiteButton = styled(_BottomButton)`
 
   &&.selected,
   &&.selected:hover {
-    background-color: ${zeeguuOrange} !important;
-    border-color: ${zeeguuOrange} !important;
-    color: #111 !important;
+    background-color: ${(p) => p.$color || zeeguuOrange} !important;
+    border-color: ${(p) => p.$color || zeeguuOrange} !important;
+    color: ${(p) => p.$selectedTextColor || "#111"} !important;
   }
   &&.selected svg {
-    color: #111 !important;
+    color: ${(p) => p.$selectedTextColor || "#111"} !important;
   }
 
   &&.hovered {
-    background-color: ${zeeguuTransparentMediumOrange} !important;
-    border-color: ${zeeguuOrange} !important;
-    color: ${zeeguuOrange} !important;
+    background-color: ${(p) => (p.$color && `${p.$color}22`) || zeeguuTransparentMediumOrange} !important;
+    border-color: ${(p) => p.$color || zeeguuOrange} !important;
+    color: ${(p) => p.$color || zeeguuOrange} !important;
   }
   &&.hovered svg {
-    color: ${zeeguuOrange} !important;
+    color: ${(p) => p.$color || zeeguuOrange} !important;
   }
 `;
 
@@ -419,22 +423,6 @@ let InvisibleBox = styled.div`
   h5,
   p {
     text-align: center;
-  }
-  .selected {
-    background-color: ${zeeguuWarmYellow} !important;
-    border-color: ${zeeguuWarmYellow} !important;
-    color: #1a1a2e !important;
-  }
-  .selected svg {
-    color: #1a1a2e !important;
-  }
-  .hovered {
-    background-color: ${zeeguuTransparentMediumOrange} !important;
-    border-color: ${zeeguuOrange} !important;
-    color: ${zeeguuOrange} !important;
-  }
-  .hovered svg {
-    color: ${zeeguuOrange} !important;
   }
 `;
 

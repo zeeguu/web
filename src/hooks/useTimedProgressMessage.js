@@ -4,9 +4,11 @@ import { useEffect, useState } from "react";
 // a real progress stream yet (extension upload → simplify / translate /
 // promote routinely take 15-25s of silent LLM work).
 //
-// Callers pass a stages array sorted by `atSeconds`; the hook returns the
-// message whose threshold has just been crossed. Pass null to stop the timer
-// and reset — e.g. when leaving the loading state.
+// Callers pass a stages array sorted by `atSeconds`; the hook swaps `message`
+// at each threshold via a single setTimeout per stage, so re-renders fire
+// only at stage transitions (not on a 500ms timer). Pass null to reset.
+// IMPORTANT: pass a stable stages reference (module-scope or useMemo) —
+// a fresh literal each render would restart all timers on every render.
 //
 //   const stages = [
 //     { atSeconds: 0,  message: "Sending article to Zeeguu…" },
@@ -15,26 +17,21 @@ import { useEffect, useState } from "react";
 //   ];
 //   const msg = useTimedProgressMessage(isProcessing ? stages : null);
 export default function useTimedProgressMessage(stages) {
-  const [elapsed, setElapsed] = useState(0);
+  const [message, setMessage] = useState(null);
 
   useEffect(() => {
-    if (!stages) {
-      setElapsed(0);
+    if (!stages || !stages.length) {
+      setMessage(null);
       return;
     }
-    const start = Date.now();
-    const id = setInterval(
-      () => setElapsed(Math.floor((Date.now() - start) / 1000)),
-      500,
-    );
-    return () => clearInterval(id);
+    setMessage(stages[0].message);
+    const timers = stages
+      .slice(1)
+      .map((stage) =>
+        setTimeout(() => setMessage(stage.message), stage.atSeconds * 1000),
+      );
+    return () => timers.forEach(clearTimeout);
   }, [stages]);
 
-  if (!stages || !stages.length) return null;
-  let current = stages[0].message;
-  for (const stage of stages) {
-    if (elapsed >= stage.atSeconds) current = stage.message;
-    else break;
-  }
-  return current;
+  return message;
 }
