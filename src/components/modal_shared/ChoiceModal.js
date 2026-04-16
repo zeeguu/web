@@ -10,7 +10,7 @@ const Content = styled.div`
 `;
 
 const Title = styled.h3`
-  color: var(--text-primary, #222);
+  color: ${zeeguuOrange};
   margin: 0 0 2.2em 0;
   font-size: 1.05rem;
   line-height: 1.35;
