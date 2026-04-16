@@ -5,7 +5,6 @@ import { UserContext } from "../contexts/UserContext";
 import { SpeechContext } from "../contexts/SpeechContext";
 import { TranslatableText } from "./TranslatableText";
 import InteractiveText from "./InteractiveText";
-import { random } from "../utils/basic/arrays";
 
 import LoadingAnimation from "../components/LoadingAnimation";
 import { setTitle } from "../assorted/setTitle";
@@ -67,7 +66,6 @@ export default function ArticleReader({ teacherArticleID }) {
   const { translateInReader, pronounceInReader, updateTranslateInReader, updatePronounceInReader, showMweHints, updateShowMweHints, showReadingTimer, updateShowReadingTimer } =
     useUserPreferences(api);
   const [readerReady, setReaderReady] = useState();
-  const [answerSubmitted, setAnswerSubmitted] = useState(false);
   const [clickedOnReviewVocab, setClickedOnReviewVocab] = useState(false);
   const [showLanguageModal, setShowLanguageModal] = useState(false);
   const [isProcessingArticle, setIsProcessingArticle] = useState(false);
@@ -117,7 +115,6 @@ export default function ArticleReader({ teacherArticleID }) {
     setInteractiveTitle(undefined);
     setLoadingProgress(null);
     setShowSlowLoadingHint(false);
-    setAnswerSubmitted(false);
     setBookmarks([]);
     setShowLanguageModal(false);
     setIsProcessingArticle(false);
@@ -356,7 +353,6 @@ export default function ArticleReader({ teacherArticleID }) {
   const setLikedState = (state) => {
     let newArticleInfo = { ...articleInfo, liked: state };
     api.setArticleInfo(newArticleInfo, () => {
-      setAnswerSubmitted(true);
       setArticleInfo(newArticleInfo);
     });
     api.logUserActivity(api.LIKE_ARTICLE, articleID, state, WEB_READER);
@@ -365,7 +361,6 @@ export default function ArticleReader({ teacherArticleID }) {
   const updateArticleDifficultyFeedback = (answer) => {
     let newArticleInfo = { ...articleInfo, relative_difficulty: answer };
     api.submitArticleDifficultyFeedback({ article_id: articleInfo.id, difficulty: answer }, () => {
-      setAnswerSubmitted(true);
       setArticleInfo(newArticleInfo);
     });
     api.logUserActivity(api.DIFFICULTY_FEEDBACK, articleID, answer, WEB_READER);
@@ -481,11 +476,6 @@ export default function ArticleReader({ teacherArticleID }) {
                 articleInfo={articleInfo}
                 updateArticleDifficultyFeedback={updateArticleDifficultyFeedback}
               />
-              {answerSubmitted && (
-                <s.InvisibleBox>
-                  <h3 align="center">Thank You {random(["🤗", "🙏", "😊", "🎉"])}</h3>
-                </s.InvisibleBox>
-              )}
             </s.CombinedBox>
           </div>
         )}
