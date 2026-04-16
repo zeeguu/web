@@ -25,7 +25,6 @@ const Wrapper = styled.div`
   display: flex;
   align-items: center;
   gap: 0.4rem;
-  margin-left: auto;
 `;
 
 const Bar = styled.div`

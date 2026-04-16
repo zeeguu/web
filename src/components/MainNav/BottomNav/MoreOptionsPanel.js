@@ -87,7 +87,7 @@ export default function MoreOptionsPanel({
           <NavOption {...NavigationOptions.settings} currentPath={path} onClick={handleHideMoreOptions} />
 
           <FeedbackButton />
-          {isOnStudentSide && <SideNavProfileOption onClick={handleHideMoreOptions}/>}
+          {/* {isOnStudentSide && <SideNavProfileOption onClick={handleHideMoreOptions}/>} */}
         </s.MoreOptionsList>
       </s.MoreOptionsPanel>
 

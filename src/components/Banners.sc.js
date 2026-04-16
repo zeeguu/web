@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { AvatarBackground } from "../profile/UserProfile.sc";
 
 const BaseBanner = styled.div`
   display: flex;
@@ -77,4 +78,21 @@ const DailyFeedbackLink = styled.a`
   }
 `;
 
-export { TopBarContainer, StreakValue, StreakLabel, FlagImage, FlagButton, StreakInfo, DailyFeedbackBannerContainer, DailyFeedbackLink };
+const ProfileAvatarButton = styled.button`
+  background: none;
+  border: none;
+  padding: 0.2rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  position: relative;
+  flex-shrink: 0;
+`;
+
+const TopBarNavAvatar = styled(AvatarBackground)`
+  width: 1.8rem;
+  height: 1.8rem;
+  padding: 2px;
+`;
+
+export { TopBarContainer, StreakValue, StreakLabel, FlagImage, FlagButton, StreakInfo, DailyFeedbackBannerContainer, DailyFeedbackLink, ProfileAvatarButton, TopBarNavAvatar };
