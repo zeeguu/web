@@ -30,10 +30,6 @@ export function playStreakChime() {
   blip({ from: 300, ramp: [[900, 0.08], [600, 0.15]], peak: 0.2, duration: 0.2 });
 }
 
-export function playCorrectChime() {
-  blip({ from: 500, ramp: [[900, 0.15]], peak: 0.12 });
-}
-
 export function playTapChime() {
   blip({ from: 700, ramp: [[500, 0.08]], peak: 0.05 });
 }
