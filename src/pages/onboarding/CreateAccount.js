@@ -11,7 +11,6 @@ import {
   EmailValidator,
   MinimumLengthValidator,
   NonEmptyValidator,
-  Utf8Mb3Validator,
   Validator,
 } from "../../utils/ValidatorRule/Validator";
 import { setTitle } from "../../assorted/setTitle";
@@ -47,12 +46,10 @@ export default function CreateAccount({ handleSuccessfulLogIn }) {
 
   const [name, setName, validateName, isNameValid, nameMsg] = useFormField("", [
     NonEmptyValidator("Please enter a name."),
-    Utf8Mb3Validator(),
   ]);
   const [email, setEmail, validateEmail, isEmailValid, emailMsg] = useFormField("", [
     NonEmptyValidator("Please enter an e-mail."),
     EmailValidator,
-    Utf8Mb3Validator(),
   ]);
   const [password, setPassword, validatePassword, isPasswordValid, passwordMsg] = useFormField("", [
     NonEmptyValidator("Please enter a password."),

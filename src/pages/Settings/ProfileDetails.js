@@ -19,7 +19,7 @@ import BackArrow from "./settings_pages_shared/BackArrow";
 import FullWidthErrorMsg from "../../components/FullWidthErrorMsg.sc";
 import LoadingAnimation from "../../components/LoadingAnimation";
 import useFormField from "../../hooks/useFormField";
-import { EmailValidator, NonEmptyOrWhitespaceOnlyValidator, Utf8Mb3Validator } from "../../utils/ValidatorRule/Validator";
+import { EmailValidator, NonEmptyOrWhitespaceOnlyValidator } from "../../utils/ValidatorRule/Validator";
 import validateRules from "../../assorted/validateRules";
 import { useLocation } from "react-router-dom/cjs/react-router-dom";
 import FullWidthConfirmMsg from "../../components/FullWidthConfirmMsg.sc";
@@ -59,21 +59,15 @@ export default function ProfileDetails() {
 
   const [displayName, setDisplayName, validateDisplayName, isDisplayNameValid, displayNameErrorMessage] = useFormField(
     "",
-    [
-      NonEmptyOrWhitespaceOnlyValidator("Please provide a display name."),
-      Utf8Mb3Validator(),
-    ],
+    NonEmptyOrWhitespaceOnlyValidator("Please provide a display name."),
   );
   const [username, setUsername, validateUsername, isUsernameValid, usernameErrorMessage] = useFormField(
-    "", [
-      NonEmptyOrWhitespaceOnlyValidator("Please provide a username."),
-      Utf8Mb3Validator(),
-    ]
+    "",
+    NonEmptyOrWhitespaceOnlyValidator("Please provide a username."),
   );
   const [email, setEmail, validateEmail, isEmailValid, emailErrorMessage] = useFormField("", [
     NonEmptyOrWhitespaceOnlyValidator("Please provide an email."),
     EmailValidator,
-    Utf8Mb3Validator(),
   ]);
 
   useEffect(() => {

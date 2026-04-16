@@ -44,14 +44,6 @@ function MinimumLengthValidator(n_chars, msg) {
   }, msg);
 }
 
-// MySQL utf8 (utf8mb3) only supports Unicode up to U+FFFF.
-// Characters beyond that (e.g. emoji, rare scripts) require utf8mb4.
-function Utf8Mb3Validator(msg = "Unsupported characters detected. Please remove any emoji or special symbols.") {
-  return new Validator((value) => {
-    return !/[\u{10000}-\u{10FFFF}]/u.test(value);
-  }, msg);
-}
-
 function validateMultipleRules(value, ValidatorRuleList, setErrorMsg) {
   let isValid = true;
   for (let i = 0; i < ValidatorRuleList.length; i++) {
@@ -72,7 +64,6 @@ export {
   NonEmptyValidator,
   NonEmptyOrWhitespaceOnlyValidator,
   MinimumLengthValidator,
-  Utf8Mb3Validator,
   validateMultipleRules,
   PositiveIntegerValidator,
 };
