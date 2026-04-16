@@ -75,6 +75,17 @@ BROWSER_API.runtime.onInstalled.addListener(function (object) {
   }
 });
 
+// Dev builds use a manifest whose name ends with "(DEV)" — flag the toolbar
+// icon so the unpacked build is visually distinct from the store-installed one.
+(() => {
+  const { name } = BROWSER_API.runtime.getManifest();
+  if (!name.includes("(DEV)")) return;
+  const action = BROWSER_API.action || BROWSER_API.browserAction;
+  if (!action) return;
+  action.setBadgeText({ text: "DEV" });
+  action.setBadgeBackgroundColor({ color: "#c00" });
+})();
+
 BROWSER_API.runtime.onMessage.addListener(async function (request) {
   if (request.type === "SPEAK") {
     try {
