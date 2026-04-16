@@ -8,7 +8,6 @@ import LocalStorage from "../assorted/LocalStorage";
 import {
   NonEmptyValidator,
   EmailValidator,
-  Utf8Mb3Validator
 } from "../utils/ValidatorRule/Validator";
 import validateRules from "../assorted/validateRules";
 import strings from "../i18n/definitions";
@@ -32,7 +31,6 @@ export default function LogIn({ handleSuccessfulLogIn }) {
     useFormField("", [
       NonEmptyValidator("Please provide an email."),
       EmailValidator,
-      Utf8Mb3Validator(),
     ]);
   const [
     password,
