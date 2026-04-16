@@ -1,7 +1,7 @@
-import styled, { css } from "styled-components";
+import styled, { css, keyframes } from "styled-components";
 import { BigSquareButton } from "../components/allButtons.sc";
 
-import { lighterBlue, lightGrey, zeeguuLightYellow, zeeguuOrange, zeeguuWarmYellow } from "../components/colors";
+import { lighterBlue, lightGrey, zeeguuLightYellow, zeeguuOrange, zeeguuTransparentMediumOrange, zeeguuWarmYellow } from "../components/colors";
 
 import { CenteredContent, ContentOnRow, NarrowColumn } from "../components/ColumnWidth.sc";
 
@@ -244,14 +244,22 @@ let _BottomButton = styled(BigSquareButton)`
   }
 `;
 
+const tapBounce = keyframes`
+  0%   { transform: scale(1); }
+  40%  { transform: scale(1.08); }
+  70%  { transform: scale(0.96); }
+  100% { transform: scale(1); }
+`;
+
 let WhiteButton = styled(_BottomButton)`
   background-color: var(--bg-primary);
-  color: orange !important;
+  color: ${zeeguuOrange} !important;
 
   display: inline;
   align-items: center;
   justify-content: center;
-  border: none //Small
+  border: 1.5px solid ${zeeguuOrange};
+  border-radius: 0.5em;
     ${(props) =>
       props.small &&
       css`
@@ -266,6 +274,29 @@ let WhiteButton = styled(_BottomButton)`
         border-width: 1px;
         background-color: hsla(21, 15%, 99%, 1);
       `};
+
+  &.tap-bouncing {
+    animation: ${tapBounce} 0.22s ease-out;
+  }
+
+  &&.selected,
+  &&.selected:hover {
+    background-color: ${zeeguuOrange} !important;
+    border-color: ${zeeguuOrange} !important;
+    color: #111 !important;
+  }
+  &&.selected svg {
+    color: #111 !important;
+  }
+
+  &&.hovered {
+    background-color: ${zeeguuTransparentMediumOrange} !important;
+    border-color: ${zeeguuOrange} !important;
+    color: ${zeeguuOrange} !important;
+  }
+  &&.hovered svg {
+    color: ${zeeguuOrange} !important;
+  }
 `;
 
 let OrangeButton = styled(_BottomButton)`
@@ -391,11 +422,19 @@ let InvisibleBox = styled.div`
   }
   .selected {
     background-color: ${zeeguuWarmYellow} !important;
-    color: white !important;
+    border-color: ${zeeguuWarmYellow} !important;
+    color: #1a1a2e !important;
+  }
+  .selected svg {
+    color: #1a1a2e !important;
   }
   .hovered {
-    background-color: ${zeeguuLightYellow} !important;
-    color: white !important;
+    background-color: ${zeeguuTransparentMediumOrange} !important;
+    border-color: ${zeeguuOrange} !important;
+    color: ${zeeguuOrange} !important;
+  }
+  .hovered svg {
+    color: ${zeeguuOrange} !important;
   }
 `;
 

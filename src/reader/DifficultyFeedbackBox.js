@@ -1,91 +1,96 @@
 import * as s from "./ArticleReader.sc";
 
 import { useState } from "react";
-import SentimentVerySatisfiedOutlinedIcon from '@mui/icons-material/SentimentVerySatisfiedOutlined';
-import MoodBadOutlinedIcon from '@mui/icons-material/MoodBadOutlined';
-import EmojiEmotionsIcon from '@mui/icons-material/EmojiEmotions';
-import MoodBadTwoToneIcon from '@mui/icons-material/MoodBadTwoTone';
-import SentimentNeutralTwoToneIcon from '@mui/icons-material/SentimentNeutralTwoTone';
-import SentimentVerySatisfiedTwoToneIcon from '@mui/icons-material/SentimentVerySatisfiedTwoTone';
-import SentimentNeutralOutlinedIcon from '@mui/icons-material/SentimentNeutralOutlined';
+import styled from "styled-components";
+import useTapBounce from "../hooks/useTapBounce";
 
-let FEEDBACK_OPTIONS = { "Easy": 1, "Ok": 3, "Difficult": 5 };
+// "Just right" is the ideal challenge level for language learning — too easy
+// or too hard are both suboptimal, so they share the "negative" color.
+const COLOR_POSITIVE = "#7fb77f";
+const COLOR_NEGATIVE = "#e08a8a";
+
+const FEEDBACK_OPTIONS = [
+  { key: "Easy", label: "Too easy", value: 1, color: COLOR_NEGATIVE, emoji: "🥱" },
+  { key: "Ok", label: "Just right", value: 3, color: COLOR_POSITIVE, emoji: "😊" },
+  { key: "Difficult", label: "Too hard", value: 5, color: COLOR_NEGATIVE, emoji: "😣" },
+];
+
+const Emoji = styled.span`
+  font-size: 2.2em;
+  line-height: 1;
+  display: inline-block;
+`;
+
+const SemanticButton = styled(s.WhiteButton)`
+  && {
+    color: ${(p) => p.$color} !important;
+    border-color: ${(p) => p.$color} !important;
+  }
+  && svg {
+    color: ${(p) => p.$color} !important;
+  }
+  &&.selected,
+  &&.selected:hover {
+    background-color: ${(p) => p.$color} !important;
+    border-color: ${(p) => p.$color} !important;
+    color: #fff !important;
+  }
+  &&.selected svg {
+    color: #fff !important;
+  }
+  &&.hovered {
+    background-color: ${(p) => p.$color}22 !important;
+    border-color: ${(p) => p.$color} !important;
+    color: ${(p) => p.$color} !important;
+  }
+  &&.hovered svg {
+    color: ${(p) => p.$color} !important;
+  }
+`;
 
 export default function DifficultyFeedbackBox({
   articleInfo,
   updateArticleDifficultyFeedback,
 }) {
-  const [isHovered, setIsHovered] = useState(false);
+  const [isHovered, setIsHovered] = useState("");
+  const { bouncingKey, trigger } = useTapBounce();
 
-  const difficultyToOption = (difficulty) => {
-    if (difficulty === 1) return "Easy";
-    else if (difficulty === 3) return "Ok";
-    else if (difficulty === 5) return "Difficult";
-  };
-  const difficultyFeedback = difficultyToOption(articleInfo.relative_difficulty);
-
-  const hasInteraction = (option) => {
-    const optionIsHovered = isHovered === option;
-    const optionIsSelected = difficultyFeedback === option;
-    return optionIsHovered || optionIsSelected;
-  }
+  const selectedValue = articleInfo.relative_difficulty;
 
   return (
-    <>
     <s.InvisibleBox>
-      <h4>How easy was this text?</h4>
+      <h4>How difficult was the text?</h4>
       <s.CenteredContent>
-        {Object.keys(FEEDBACK_OPTIONS).map((option) => {
-          const emojiSize = { fontSize: '2.5em' };
+        {FEEDBACK_OPTIONS.map(({ key, label, value, color, emoji }) => {
+          const isSelected = selectedValue === value;
+          const isActiveHover = isHovered === key && !isSelected;
 
-          const handleMouseEnter = () => {
-            setIsHovered(option);
-          };
+          const classNames = [];
+          if (isSelected) classNames.push("selected");
+          else if (isActiveHover) classNames.push("hovered");
+          if (bouncingKey === key) classNames.push("tap-bouncing");
 
-          const handleMouseLeave = () => {
-            setIsHovered('');
-          };
-
-          const emojiComponent = () => {
-            switch (option) {
-              case 'Easy':
-                return hasInteraction(option) ? (
-                  <SentimentVerySatisfiedTwoToneIcon sx={emojiSize} />
-                ) : (
-                  <SentimentVerySatisfiedOutlinedIcon sx={emojiSize} />
-                );
-              case 'Difficult':
-                return hasInteraction(option) ? (
-                  <MoodBadTwoToneIcon sx={emojiSize} />
-                ) : (
-                  <MoodBadOutlinedIcon sx={emojiSize} />
-                );
-              case 'Ok':
-                return hasInteraction(option) ? (
-                  <SentimentNeutralTwoToneIcon sx={emojiSize} />
-                ) : (
-                  <SentimentNeutralOutlinedIcon sx={emojiSize} />
-                );
-              default:
-                return <EmojiEmotionsIcon sx={emojiSize} />;
-            }
+          const handleClick = () => {
+            trigger(key);
+            updateArticleDifficultyFeedback(value);
           };
 
           return (
-            <s.WhiteButton
-              key={option}
-              onClick={(e) => updateArticleDifficultyFeedback(FEEDBACK_OPTIONS[option])}
-              onMouseEnter={handleMouseEnter}
-              onMouseLeave={handleMouseLeave}
+            <SemanticButton
+              key={key}
+              $color={color}
+              className={classNames.join(" ")}
+              onClick={handleClick}
+              onMouseEnter={() => setIsHovered(key)}
+              onMouseLeave={() => setIsHovered("")}
             >
-              {emojiComponent()}
+              <Emoji>{emoji}</Emoji>
               <br />
-              {option}
-            </s.WhiteButton>
+              {label}
+            </SemanticButton>
           );
         })}
       </s.CenteredContent>
     </s.InvisibleBox>
-    </>
   );
 }

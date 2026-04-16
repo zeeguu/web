@@ -283,7 +283,10 @@ export default function ArticleReader({ teacherArticleID }) {
 
   if (!articleInfo || !interactiveFragments) {
     return (
-      <LoadingAnimation showReportIssue={false}>
+      <LoadingAnimation
+        showReportIssue={false}
+        specificStyle={{ minHeight: "70vh", justifyContent: "center" }}
+      >
         {loadingProgress && (
           <div style={{ textAlign: 'center', marginTop: '1em' }}>
             <div>{loadingProgress.message}</div>
