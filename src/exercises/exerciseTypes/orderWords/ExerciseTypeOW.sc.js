@@ -343,7 +343,7 @@ let OrangeItemCompact = styled(StyledButton)`
   justify-content: center;
   align-items: center;
   font-size: normal !important;
-  color: white;
+  color: var(--orange-btn-text);
   height: 34px;
   touch-action: none;
   background-color: ${zeeguuOrange};

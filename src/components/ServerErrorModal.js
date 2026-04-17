@@ -21,7 +21,7 @@ const RetryButton = styled.button`
   border-radius: 0.5em;
   border: none;
   background-color: ${zeeguuOrange};
-  color: white;
+  color: var(--orange-btn-text);
   font-size: 0.95rem;
   font-weight: 600;
   cursor: pointer;

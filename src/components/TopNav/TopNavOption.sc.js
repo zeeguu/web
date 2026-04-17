@@ -38,7 +38,7 @@ const TopNavLink = styled(Link)`
       transition: all 300ms ease-in-out;
 
       &:hover {
-        color: white;
+        color: var(--orange-btn-text);
         background-color: ${orange600};
         border: solid 0.1rem ${orange600};
         box-shadow: 0px 0.1rem ${orange800};
