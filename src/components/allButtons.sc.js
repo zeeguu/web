@@ -14,7 +14,7 @@ const RoundButton = styled.div`
   color: white !important;
   font-weight: 500;
   text-align: center;
-  vertical
+  vertical-align: middle;
 
   cursor: pointer;
   margin-top: 3px;
@@ -36,7 +36,6 @@ const OrangeRoundButton = styled(RoundButton)`
   &:hover {
     filter: brightness(105%);
   }
-  .
 `;
 
 const SearchIcon = styled(MUISearchIcon)`
