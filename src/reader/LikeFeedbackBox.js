@@ -1,4 +1,5 @@
 import * as s from "./ArticleReader.sc";
+import { ChoiceButton } from "../components/ChoiceButton.sc";
 import strings from "../i18n/definitions";
 import { useState } from "react";
 import useTapBounce from "../hooks/useTapBounce";
@@ -37,22 +38,22 @@ export default function LikeFeedbackBox({
       <h4>{strings.didYouEnjoyMsg}</h4>
 
       <s.CenteredContent>
-        <s.WhiteButton
+        <ChoiceButton
           onClick={() => handleClick("yes", true)}
           className={classFor("yes", articleInfo.liked === true)}
           onMouseEnter={() => handleMouseEnter("yes")}
           onMouseLeave={() => handleMouseLeave()}
         >
           {strings.yes}
-        </s.WhiteButton>
-        <s.WhiteButton
+        </ChoiceButton>
+        <ChoiceButton
           onClick={() => handleClick("no", false)}
           className={classFor("no", articleInfo.liked === false)}
           onMouseEnter={() => handleMouseEnter("no")}
           onMouseLeave={() => handleMouseLeave()}
         >
           {strings.no}
-        </s.WhiteButton>
+        </ChoiceButton>
       </s.CenteredContent>
     </s.InvisibleBox>
   );

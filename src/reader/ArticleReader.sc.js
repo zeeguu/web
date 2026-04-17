@@ -1,7 +1,7 @@
-import styled, { css, keyframes } from "styled-components";
+import styled, { css } from "styled-components";
 import { BigSquareButton } from "../components/allButtons.sc";
 
-import { lighterBlue, lightGrey, zeeguuLightYellow, zeeguuOrange, zeeguuTransparentMediumOrange, zeeguuWarmYellow } from "../components/colors";
+import { lighterBlue, lightGrey, zeeguuLightYellow, zeeguuOrange, zeeguuWarmYellow } from "../components/colors";
 
 import { CenteredContent, ContentOnRow, NarrowColumn } from "../components/ColumnWidth.sc";
 
@@ -244,65 +244,6 @@ let _BottomButton = styled(BigSquareButton)`
   }
 `;
 
-const tapBounce = keyframes`
-  0%   { transform: scale(1); }
-  40%  { transform: scale(1.08); }
-  70%  { transform: scale(0.96); }
-  100% { transform: scale(1); }
-`;
-
-// Outlined choice button: idle shows accent border+text, `.selected` fills with
-// the accent, `.hovered` tints at 22/255 alpha. Accent defaults to
-// zeeguuOrange; pass $color (+ optional $selectedTextColor, default #111) to
-// get a semantic variant (e.g. green for "just right", red for the extremes).
-let WhiteButton = styled(_BottomButton)`
-  background-color: var(--bg-primary);
-  color: ${(p) => p.$color || zeeguuOrange} !important;
-
-  display: inline;
-  align-items: center;
-  justify-content: center;
-  border: 1.5px solid ${(p) => p.$color || zeeguuOrange};
-  border-radius: 0.5em;
-    ${(props) =>
-      props.small &&
-      css`
-        font-size: 10px;
-      `}
-    // Gray
-    ${(props) =>
-      props.small &&
-      css`
-        color: hsla(21, 15%, 60%, 1) !important;
-        border-color: hsla(21, 15%, 60%, 1);
-        border-width: 1px;
-        background-color: hsla(21, 15%, 99%, 1);
-      `};
-
-  &.tap-bouncing {
-    animation: ${tapBounce} 0.22s ease-out;
-  }
-
-  &&.selected,
-  &&.selected:hover {
-    background-color: ${(p) => p.$color || zeeguuOrange} !important;
-    border-color: ${(p) => p.$color || zeeguuOrange} !important;
-    color: ${(p) => p.$selectedTextColor || "#111"} !important;
-  }
-  &&.selected svg {
-    color: ${(p) => p.$selectedTextColor || "#111"} !important;
-  }
-
-  &&.hovered {
-    background-color: ${(p) => (p.$color && `${p.$color}22`) || zeeguuTransparentMediumOrange} !important;
-    border-color: ${(p) => p.$color || zeeguuOrange} !important;
-    color: ${(p) => p.$color || zeeguuOrange} !important;
-  }
-  &&.hovered svg {
-    color: ${(p) => p.$color || zeeguuOrange} !important;
-  }
-`;
-
 let OrangeButton = styled(_BottomButton)`
   background-color: orange;
 
@@ -477,7 +418,6 @@ export {
   Title,
   BookmarkButton,
   MainText,
-  WhiteButton,
   OrangeButton,
   InteractiveBox,
   CenteredContent,

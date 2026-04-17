@@ -1,4 +1,5 @@
 import * as s from "./ArticleReader.sc";
+import { ChoiceButton } from "../components/ChoiceButton.sc";
 
 import { useState } from "react";
 import styled from "styled-components";
@@ -49,7 +50,7 @@ export default function DifficultyFeedbackBox({
           };
 
           return (
-            <s.WhiteButton
+            <ChoiceButton
               key={key}
               $color={color}
               $selectedTextColor="#fff"
@@ -61,7 +62,7 @@ export default function DifficultyFeedbackBox({
               <Emoji>{emoji}</Emoji>
               <br />
               {label}
-            </s.WhiteButton>
+            </ChoiceButton>
           );
         })}
       </s.CenteredContent>
