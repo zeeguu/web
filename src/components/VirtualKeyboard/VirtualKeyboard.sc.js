@@ -221,13 +221,13 @@ export const SpecialKey = styled(Key)`
   min-width: calc((100% - 8 * 2px) / 9 * 2.5);
   font-size: 16px;
   background: ${props => props.isActive ? zeeguuOrange : 'var(--bg-secondary)'};
-  color: ${props => props.isActive ? 'white' : 'var(--text-primary)'};
+  color: ${props => props.isActive ? 'var(--orange-btn-text)' : 'var(--text-primary)'};
   border-color: ${props => props.isActive ? zeeguuDarkOrange : 'var(--border-color)'};
 
   @media (hover: hover) {
     &:hover {
       background: ${zeeguuOrange};
-      color: white;
+      color: var(--orange-btn-text);
     }
   }
 

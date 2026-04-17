@@ -441,7 +441,7 @@ export default function TodayAudio({ setShowTabs }) {
             <GenerateButton onClick={handleGenerateLesson}>
               Generate
               <br />
-              Daily Lesson
+              Lesson
             </GenerateButton>
           ) : (
             <p style={{ color: "var(--text-secondary)", textAlign: "center", maxWidth: "300px", marginTop: "20px" }}>

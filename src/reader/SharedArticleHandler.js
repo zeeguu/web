@@ -54,6 +54,7 @@ export default function SharedArticleHandler() {
             language: upload.language,
             title: upload.title,
             url: upload.url,
+            img_url: upload.img_url || null,
           });
           setStatus("choice");
         },
@@ -188,6 +189,7 @@ export default function SharedArticleHandler() {
       <ArticleLanguageModal
         articleTitle={articleDetection.title}
         articleLanguage={articleDetection.language}
+        articleImage={articleDetection.img_url}
         learnedLanguage={userDetails.learned_language}
         source="share"
         onTranslateAndAdapt={handleTranslateAndAdapt}

@@ -13,7 +13,7 @@ import {
 
 const Button = styled.button`
   cursor: pointer;
-  color: white;
+  color: var(--orange-btn-text);
   border: none;
   margin: 0;
   display: flex;
@@ -49,6 +49,7 @@ const Button = styled.button`
   }
 
   &.warning {
+    color: white;
     background-color: red;
     box-shadow: 0 0.2em ${zeeguuRed};
   }
@@ -97,6 +98,7 @@ const Button = styled.button`
   }
 
   &.blue-btn {
+    color: white;
     background-color: ${blue700};
     box-shadow: 0px 0.2rem ${blue800};
   }

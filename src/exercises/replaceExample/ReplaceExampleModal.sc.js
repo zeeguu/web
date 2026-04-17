@@ -149,7 +149,7 @@ export const TranslationText = styled.div`
 
 export const LevelBadge = styled.span`
   background-color: ${zeeguuOrange};
-  color: white;
+  color: var(--orange-btn-text);
   padding: 0.2rem 0.5rem;
   border-radius: 4px;
   font-size: 0.8rem;
@@ -222,7 +222,7 @@ export const CancelButton = styled.button`
 export const SaveButton = styled.button`
   background: ${zeeguuOrange};
   border: 2px solid ${zeeguuOrange};
-  color: white;
+  color: var(--orange-btn-text);
   padding: 0.75rem 1.5rem;
   border-radius: 6px;
   cursor: pointer;
