@@ -6,6 +6,7 @@ const Heading = styled.h2`
   text-align: center;
   font-weight: 700;
   margin: 0;
+  color: var(--text-primary);
 
   &.small {
     font-size: 1.125rem;
