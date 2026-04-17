@@ -53,4 +53,4 @@ const ChoiceButton = styled.button`
   }
 `;
 
-export { ChoiceButton, tapBounce };
+export { ChoiceButton };
