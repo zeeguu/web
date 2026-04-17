@@ -63,6 +63,7 @@
     "dev": "vite",
     "local": "VITE_API_URL='http://localhost:9001' vite",
     "remote": "VITE_API_URL='https://api.zeeguu.org' vite",
+    "screenshots": "cd ios/App/appstore-screenshots && rm -f output/*.png && BASE_URL=${BASE_URL:-http://localhost:3000} node render-live.js && node render.js && node copy-to-fastlane.js",
     "test": "vitest",
     "build": "vite build",
     "build:with-sourcemaps": "vite build --sourcemap && npm run sentry:sourcemaps",
