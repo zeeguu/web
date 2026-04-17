@@ -89,7 +89,7 @@ const TitleContainer = styled.div`
 
 const Title = styled.div`
   font-size: 1.4em;
-  color: ${zeeguuDarkOrange};
+  color: var(--title-color);
   padding-right: 0.3em;
   font-weight: 500;
   display: block;

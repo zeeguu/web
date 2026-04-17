@@ -1,5 +1,6 @@
-import { useCallback, useEffect, useRef } from "react";
-import useSession from "./useSession";
+import { useCallback, useContext } from "react";
+import useDomActivitySession from "./useDomActivitySession";
+import { APIContext } from "../contexts/APIContext";
 
 /**
  * Hook for tracking article reading sessions.
@@ -10,34 +11,25 @@ import useSession from "./useSession";
  * - Track time spent reading articles
  * - Support both web and extension sources
  *
- * This is a thin wrapper around the generic useSession hook.
- *
  * @param {string|number} articleId - The article being read
  * @param {string} readingSource - 'web' or 'extension'
  * @param {boolean} enabled - Whether to start the session (default: true)
- * @returns {object} - { readingSessionId, getReadingSessionId, duration, ... }
  */
 export default function useReadingSession(articleId, readingSource = "web", enabled = true) {
-  const session = useSession({
-    type: "reading",
-    resourceId: articleId,
-    createParams: { reading_source: readingSource },
-    idleTimeout: 30_000, // 30 seconds
-    autoStart: false, // We control start via enabled parameter
+  const api = useContext(APIContext);
+  const session = useDomActivitySession({
+    label: "reading",
+    sessionKey: articleId,
+    enabled: enabled && !!articleId,
+    autoStart: true,
+    idleTimeout: 30_000,
+    apiCreate: (cb) => api.readingSessionCreate(articleId, readingSource, cb),
+    apiUpdate: (id, dur) => api.readingSessionUpdate(id, dur),
+    apiEnd: (id, dur) => api.readingSessionEnd(id, dur),
   });
 
-  // Track if we've started to avoid double-starting
-  const hasStartedRef = useRef(false);
-
-  // Start session when enabled and articleId are ready
-  useEffect(() => {
-    if (enabled && articleId && !hasStartedRef.current) {
-      session.start();
-      hasStartedRef.current = true;
-    }
-  }, [enabled, articleId, session]);
-
-  // Provide backwards-compatible API
+  // Getter (not a value) so consumers can read the *current* sessionId at
+  // interaction time, not a stale capture from when they were rendered.
   const getReadingSessionId = useCallback(() => session.getSessionId(), [session]);
 
   return {

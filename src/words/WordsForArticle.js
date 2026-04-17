@@ -71,7 +71,7 @@ export default function WordsForArticle() {
   }
 
   return (
-    <WordsForArticleContainer>
+    <WordsForArticleContainer onClick={() => setShowMoreInfo(null)}>
       <LeftContent>
         <BackArrow />
         <WordsToReview

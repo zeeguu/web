@@ -244,30 +244,6 @@ let _BottomButton = styled(BigSquareButton)`
   }
 `;
 
-let WhiteButton = styled(_BottomButton)`
-  background-color: var(--bg-primary);
-  color: orange !important;
-
-  display: inline;
-  align-items: center;
-  justify-content: center;
-  border: none //Small
-    ${(props) =>
-      props.small &&
-      css`
-        font-size: 10px;
-      `}
-    // Gray
-    ${(props) =>
-      props.small &&
-      css`
-        color: hsla(21, 15%, 60%, 1) !important;
-        border-color: hsla(21, 15%, 60%, 1);
-        border-width: 1px;
-        background-color: hsla(21, 15%, 99%, 1);
-      `};
-`;
-
 let OrangeButton = styled(_BottomButton)`
   background-color: orange;
 
@@ -389,14 +365,6 @@ let InvisibleBox = styled.div`
   p {
     text-align: center;
   }
-  .selected {
-    background-color: ${zeeguuWarmYellow} !important;
-    color: white !important;
-  }
-  .hovered {
-    background-color: ${zeeguuLightYellow} !important;
-    color: white !important;
-  }
 `;
 
 let ExtraSpaceAtTheBottom = styled.div`
@@ -462,7 +430,6 @@ export {
   Title,
   BookmarkButton,
   MainText,
-  WhiteButton,
   OrangeButton,
   InteractiveBox,
   CenteredContent,

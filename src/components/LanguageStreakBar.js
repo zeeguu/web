@@ -2,12 +2,12 @@ import { useCallback, useContext, useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
 import { APIContext } from "../contexts/APIContext";
 import { UserContext } from "../contexts/UserContext";
-import { switchLanguage } from "../utils/languageSwitcher";
+import useGuardedLanguageSwitch from "../hooks/useGuardedLanguageSwitch";
 import { streakFireOrange, lightPurple } from "./colors";
 import LocalFireDepartmentIcon from "@mui/icons-material/LocalFireDepartment";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import styled, { keyframes } from "styled-components";
-import playStreakChime from "../utils/streakChime";
+import { playStreakChime } from "../utils/chimes";
 
 const POLL_FAST_MS = 5_000;
 const POLL_SLOW_MS = 60_000;
@@ -117,7 +117,8 @@ function pickVisible(allLangs, currentCode, maxSlots) {
 
 export default function LanguageStreakBar({ onMultipleLanguages, onOpenModal }) {
   const api = useContext(APIContext);
-  const { userDetails, setUserDetails } = useContext(UserContext);
+  const { userDetails } = useContext(UserContext);
+  const { requestSwitch, confirmModal, willConfirm } = useGuardedLanguageSwitch();
   const [languageStreaks, setLanguageStreaks] = useState([]);
   const [justPracticed, setJustPracticed] = useState({});
   const [switchingTo, setSwitchingTo] = useState(null);
@@ -197,8 +198,10 @@ export default function LanguageStreakBar({ onMultipleLanguages, onOpenModal }) 
     if (langCode === currentCode) {
       onOpenModal();
     } else {
-      setSwitchingTo(langCode);
-      switchLanguage(api, userDetails, setUserDetails, langCode, () => {
+      // Skip optimistic highlight when a confirmation will be shown — the
+      // user might cancel, in which case the bar would have been lying.
+      if (!willConfirm) setSwitchingTo(langCode);
+      requestSwitch(langCode, () => {
         setSwitchingTo(null);
       });
     }
@@ -206,6 +209,7 @@ export default function LanguageStreakBar({ onMultipleLanguages, onOpenModal }) 
 
   return (
     <Wrapper ref={wrapperRef}>
+      {confirmModal}
       <Bar>
         {visible.map((lang) => {
           const isActive = lang.code === currentCode;

@@ -1,5 +1,7 @@
-import { useCallback } from "react";
-import useSession from "./useSession";
+import { useCallback, useContext } from "react";
+import useDomActivitySession from "./useDomActivitySession";
+import { UserContext } from "../contexts/UserContext";
+import { APIContext } from "../contexts/APIContext";
 
 /**
  * Hook for tracking article browsing sessions.
@@ -8,19 +10,25 @@ import useSession from "./useSession";
  * - Start only after the first meaningful interaction (scroll, click on article action)
  * - Use a shorter idle timeout (15 seconds vs 30 seconds)
  * - Track time spent browsing articles
- *
- * This is a thin wrapper around the generic useSession hook.
- *
- * @returns {object} - { browsingSessionId, getBrowsingSessionId, hasSessionStarted, activityTimer }
+ * - Are scoped to a single learned_language; toggling language ends the
+ *   current session and the next interaction starts a fresh one.
  */
 export default function useBrowsingSession() {
-  const session = useSession({
-    type: "browsing",
+  const api = useContext(APIContext);
+  const { userDetails } = useContext(UserContext);
+  const session = useDomActivitySession({
+    label: "browsing",
+    sessionKey: userDetails?.learned_language,
     idleTimeout: 15_000, // 15 seconds (shorter than reading's 30 seconds)
     startOnActivity: true, // Start on first user interaction
+    apiCreate: (cb) => api.browsingSessionCreate(cb),
+    apiUpdate: (id, dur) => api.browsingSessionUpdate(id, dur),
+    apiEnd: (id, dur) => api.browsingSessionEnd(id, dur),
   });
 
-  // Provide backwards-compatible API
+  // Getter (not a value) so consumers like InteractiveText can read the
+  // *current* sessionId at interaction time, not a stale capture from
+  // when they were rendered.
   const getBrowsingSessionId = useCallback(() => session.getSessionId(), [session]);
 
   return {

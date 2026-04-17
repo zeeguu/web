@@ -1,9 +1,7 @@
-- Choose context for audio lessons: Automatic, Topic, or Situation
-- Situation mode generates roleplay dialogues in real-world scenarios
-- Topic mode themes dialogues around a chosen subject
-- Past lessons now show their topic or situation context
-- Language streak bar for quick switching between languages
-- Streak bar now shows even with a single language
-- Sound chime when you achieve a daily streak
-- Fix audio lesson state not resetting on language switch
-- Dark mode improvements
+- Redesigned Words to Review page with clearer layout and info boxes
+- Switching language while reading now asks first, saves the article, and takes you to your new language home
+- Fix: browsing, exercise, and listening sessions now end properly when you toggle language
+- Fix: listening sessions end when switching between audio lessons
+- Landing page polished for dark mode
+- Dark-mode polish for the Words to Review controls
+- Security updates to dependencies

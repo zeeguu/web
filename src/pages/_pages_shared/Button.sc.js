@@ -1,8 +1,5 @@
 import styled from "styled-components";
 import {
-  almostBlack,
-  lightGrey,
-  veryLightGrey,
   blue600,
   blue700,
   blue800,
@@ -57,14 +54,14 @@ const Button = styled.button`
   }
 
   &.grey {
-    color: ${almostBlack};
+    color: var(--text-primary);
     font-weight: 700;
     background-color: transparent;
-    border: solid 0.1rem ${lightGrey};
-    box-shadow: 0 0.1rem ${lightGrey};
+    border: solid 0.1rem var(--border-color);
+    box-shadow: 0 0.1rem var(--border-color);
 
     &:hover {
-      background-color: ${veryLightGrey};
+      background-color: var(--hover-bg);
     }
   }
 

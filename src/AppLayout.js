@@ -12,6 +12,7 @@ import { ExercisesCounterContext } from "./exercises/ExercisesCounterContext";
 
 import useExercisesCounterNotification from "./hooks/useExercisesCounterNotification";
 import useStreakMilestone from "./hooks/useStreakMilestone";
+import useReportTimezone from "./hooks/useReportTimezone";
 import TopBar from "./components/TopBar";
 import { MOBILE_WIDTH } from "./components/MainNav/screenSize";
 
@@ -44,6 +45,7 @@ export default function AppLayout(props) {
   const path = useLocation().pathname;
 
   useStreakMilestone();
+  useReportTimezone();
 
   //Initial state and setter passed to the value prop of the MainNavContext.Provider
   const [mainNavProperties, setMainNavProperties] = useState({

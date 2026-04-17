@@ -87,7 +87,10 @@ export default function WordsToReview({
             <SectionHeading>
               Will eventually appear in exercises
               <InfoIcon
-                onClick={() => setShowMoreInfo(showMoreInfo === "howWordsAreAdded" ? null : "howWordsAreAdded")}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setShowMoreInfo(showMoreInfo === "howWordsAreAdded" ? null : "howWordsAreAdded");
+                }}
               />{" "}
             </SectionHeading>
             {wordsForExercises.map((each) => (
@@ -104,7 +107,7 @@ export default function WordsToReview({
               </ContentOnRow>
             ))}
           </WordsListColumn>
-          <InfoBoxColumn>
+          <InfoBoxColumn onClick={(e) => e.stopPropagation()}>
             {showMoreInfo === "howWordsAreAdded" && <MoreInfoBox type="howWordsAreAdded" />}
           </InfoBoxColumn>
         </WordsSection>
@@ -128,7 +131,10 @@ export default function WordsToReview({
             <SectionHeading>
               Not included in exercises
               <InfoIcon
-                onClick={() => setShowMoreInfo(showMoreInfo === "wontBeInExercises" ? null : "wontBeInExercises")}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setShowMoreInfo(showMoreInfo === "wontBeInExercises" ? null : "wontBeInExercises");
+                }}
               />
             </SectionHeading>
             {wordsExcludedForExercises.map((each) => (
@@ -159,7 +165,7 @@ export default function WordsToReview({
               </>
             )}
           </WordsListColumn>
-          <InfoBoxColumn>
+          <InfoBoxColumn onClick={(e) => e.stopPropagation()}>
             {showMoreInfo === "wontBeInExercises" && <MoreInfoBox type="wontBeInExercises" />}
           </InfoBoxColumn>
         </WordsSection>

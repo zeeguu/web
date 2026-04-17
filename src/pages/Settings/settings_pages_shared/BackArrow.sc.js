@@ -1,5 +1,4 @@
 import styled from "styled-components";
-import { darkGrey, veryDarkGrey } from "../../../components/colors";
 
 const BackArrow = styled.button`
   display: flex;
@@ -7,16 +6,16 @@ const BackArrow = styled.button`
   justify-content: flex-start;
   align-self: flex-start;
   cursor: pointer;
-  color: ${darkGrey};
+  color: var(--text-muted);
   background: none;
   border: none;
   padding: 0.5rem;
   margin: 0;
   &:hover {
-    color: ${veryDarkGrey};
+    color: var(--text-secondary);
   }
   &:active {
-    color: ${veryDarkGrey};
+    color: var(--text-secondary);
   }
 `;
 

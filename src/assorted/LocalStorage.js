@@ -35,6 +35,7 @@ const LocalStorage = {
     InviteCode: "invite_code",
     // Keep in sync with index.html inline theme script
     ThemePreference: "zeeguu-theme-preference",
+    ReportedTimezone: "reported_timezone",
   },
 
   userInfo: function () {
