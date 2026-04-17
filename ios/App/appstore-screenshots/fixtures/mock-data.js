@@ -66,6 +66,7 @@ const USER_DETAILS = {
 
 const USER_PREFERENCES = {
   audio_exercises: "true",
+  filter_disturbing_content: "true",
 };
 
 const SYSTEM_LANGUAGES = {
@@ -427,19 +428,20 @@ const NEXT_IN_LEARNING = [
 const TODAYS_LESSON = {
   lesson_id: 42,
   audio_url: "https://api.zeeguu.org/audio/daily_lessons/42.mp3",
-  duration_seconds: 285,
+  duration_seconds: 351,
   created_at: new Date().toISOString(),
+  title: "Marco e Anna parlano delle bevande",
   words: [
     makeBookmark(101, "pelle luminosa", "glowing skin", "Ha benefici per la pelle luminosa."),
     makeBookmark(104, "ortica", "nettle", "L'ortica è una pianta medicinale."),
     makeBookmark(108, "sapore", "taste", "Il sapore è dolce e fresco."),
   ],
-  pause_position_seconds: 0,
+  pause_position_seconds: 351,
   is_paused: false,
-  is_completed: false,
-  listened_count: 0,
-  canonical_suggestion: null,
-  lesson_type: "three_words_lesson",
+  is_completed: true,
+  listened_count: 1,
+  canonical_suggestion: "bevande naturali",
+  lesson_type: "topic",
 };
 
 const PAST_LESSONS = {
@@ -488,6 +490,40 @@ const PAST_LESSONS = {
   pagination: { total: 2, limit: 20, offset: 0, has_more: false },
 };
 
+// ─── Interests / Topics picker ─────────────────────────────────
+
+const SUBSCRIBED_TOPICS = [
+  { id: 2, title: "Health & Society" },
+  { id: 5, title: "Technology & Science" },
+];
+
+const AVAILABLE_TOPICS = [
+  { id: 1, title: "Arts" },
+  { id: 3, title: "Business" },
+  { id: 4, title: "Culture" },
+  { id: 6, title: "Environment" },
+  { id: 7, title: "Sports" },
+  { id: 8, title: "Food & Cooking" },
+  { id: 9, title: "Politics" },
+  { id: 10, title: "Travel" },
+];
+
+// ─── Filters page ──────────────────────────────────────────────
+
+const FILTERED_SEARCHES = [
+  { id: 71, search: "trump" },
+  { id: 72, search: "bitcoin" },
+];
+
+// ─── Share / Simplify prompt ───────────────────────────────────
+
+const DETECT_ARTICLE_INFO = {
+  language: "it",
+  title: "Nordic latte, la bevanda svedese detox per una pelle luminosa",
+  url: "https://vogue.it/article/nordic-latte",
+  img_url: `https://${FIXTURE_IMAGE_HOST}/article1-nordic-latte.jpg`,
+};
+
 // ─── Route matching ────────────────────────────────────────────
 
 function getResponse(url, method) {
@@ -533,6 +569,15 @@ function getResponse(url, method) {
   if (route === "user_words_next_in_learning") return NEXT_IN_LEARNING;
   if (route.startsWith("bookmarks_next_in_learning")) return NEXT_IN_LEARNING;
   if (route === "total_learned_bookmarks") return 47;
+
+  // ── Interests / Filters ──
+  if (route === "available_topics") return AVAILABLE_TOPICS;
+  if (route === "subscribed_topics") return SUBSCRIBED_TOPICS;
+  if (route === "subscribed_searches") return [];
+  if (route === "filtered_searches") return FILTERED_SEARCHES;
+
+  // ── Share / Simplify prompt ──
+  if (route === "detect_article_info") return DETECT_ARTICLE_INFO;
 
   // ── Daily Audio ──
   if (route === "get_todays_lesson") return TODAYS_LESSON;
