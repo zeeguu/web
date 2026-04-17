@@ -207,13 +207,14 @@ export default function ArticlePreview({
       </ActionButton>
     );
 
-    let should_open_in_zeeguu =
-      article.video ||
-      (!Feature.extension_experiment1() && !hasExtension) ||
-      article.has_personal_copy ||
-      article.has_uploader ||
-      isArticleSaved === true ||
-      article.parent_article_id; // Simplified articles (with parent_article_id) always open in Zeeguu reader
+    let is_saved = article.has_personal_copy || article.has_uploader || isArticleSaved === true;
+
+    let should_open_in_zeeguu = Feature.always_open_externally()
+      ? is_saved
+      : article.video ||
+        (!Feature.extension_experiment1() && !hasExtension) ||
+        is_saved ||
+        article.parent_article_id; // Simplified articles (with parent_article_id) always open in Zeeguu reader
 
     let should_open_with_modal = doNotShowRedirectionModal_UserPreference === false;
 
