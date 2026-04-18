@@ -1,5 +1,5 @@
 import styled, { css } from "styled-components";
-import { lightGrey, veryDarkGrey, zeeguuOrange, zeeguuRed } from "./colors";
+import { lightGrey, zeeguuOrange, zeeguuRed } from "./colors";
 
 const FieldLabelContainer = styled.div`
   width: 100%;
@@ -65,7 +65,7 @@ const BaseHelperTextStyle = css`
   align-items: flex-start;
   font-size: 0.8rem;
   font-weight: 500;
-  color: ${veryDarkGrey};
+  color: var(--text-secondary);
 
   a {
     font-weight: 600;

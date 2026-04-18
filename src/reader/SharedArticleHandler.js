@@ -3,8 +3,29 @@ import { useHistory } from "react-router-dom";
 import { APIContext } from "../contexts/APIContext";
 import { UserContext } from "../contexts/UserContext";
 import useQuery from "../hooks/useQuery";
+import useTimedProgressMessage from "../hooks/useTimedProgressMessage";
 import LoadingAnimation from "../components/LoadingAnimation";
 import ArticleLanguageModal from "./ArticleLanguageModal";
+
+const PROGRESS_STAGES = {
+  simplify: [
+    { atSeconds: 0, message: "Sending article to Zeeguu…" },
+    { atSeconds: 3, message: "Reading the article…" },
+    { atSeconds: 10, message: "Rewriting for your level…" },
+    { atSeconds: 25, message: "Almost there — longer articles take a moment…" },
+  ],
+  translate: [
+    { atSeconds: 0, message: "Sending article to Zeeguu…" },
+    { atSeconds: 3, message: "Reading the article…" },
+    { atSeconds: 8, message: "Translating and adapting to your level…" },
+    { atSeconds: 25, message: "Almost there — longer articles take a moment…" },
+  ],
+  promote: [
+    { atSeconds: 0, message: "Sending article to Zeeguu…" },
+    { atSeconds: 3, message: "Preparing the article…" },
+    { atSeconds: 10, message: "Almost ready…" },
+  ],
+};
 
 export default function SharedArticleHandler() {
   const api = useContext(APIContext);
@@ -18,6 +39,11 @@ export default function SharedArticleHandler() {
   const [errorMessage, setErrorMessage] = useState("");
   const [articleDetection, setArticleDetection] = useState(null);
   const [isProcessing, setIsProcessing] = useState(false);
+  const [processingAction, setProcessingAction] = useState(null);
+
+  const progressMessage = useTimedProgressMessage(
+    isProcessing && processingAction ? PROGRESS_STAGES[processingAction] : null,
+  );
 
   useEffect(() => {
     if (uploadId) {
@@ -28,6 +54,7 @@ export default function SharedArticleHandler() {
             language: upload.language,
             title: upload.title,
             url: upload.url,
+            img_url: upload.img_url || null,
           });
           setStatus("choice");
         },
@@ -66,8 +93,9 @@ export default function SharedArticleHandler() {
     history.replace(path);
   };
 
-  const beginProcessing = () => {
+  const beginProcessing = (action) => {
     setIsProcessing(true);
+    setProcessingAction(action);
     setStatus("loading");
   };
 
@@ -76,13 +104,13 @@ export default function SharedArticleHandler() {
     setErrorMessage("Could not process this article.");
   };
 
-  const runArticleConversion = (apiFn, noTranslate) => {
-    beginProcessing();
+  const runArticleConversion = (apiFn, action, noTranslate) => {
+    beginProcessing(action);
     apiFn(uploadId, (result) => navigateToArticle(result.id, noTranslate), onConversionError);
   };
 
-  const createAndNavigate = (noTranslate) => {
-    beginProcessing();
+  const createAndNavigate = (action, noTranslate) => {
+    beginProcessing(action);
     api.findOrCreateArticle(
       { url: sharedUrl },
       (result) => {
@@ -94,22 +122,22 @@ export default function SharedArticleHandler() {
   };
 
   const handleTranslateAndAdapt = () => {
-    if (uploadId) return runArticleConversion(api.translateAndAdaptArticleUpload.bind(api));
-    beginProcessing();
+    if (uploadId) return runArticleConversion(api.translateAndAdaptArticleUpload.bind(api), "translate");
+    beginProcessing("translate");
     api.translateAndAdaptArticle(
       sharedUrl,
       userDetails.learned_language,
       (result) => navigateToArticle(result.id),
       (error) => {
         console.error("Translation failed:", error);
-        createAndNavigate(false);
+        createAndNavigate("promote", false);
       },
     );
   };
 
   const handleSimplify = () => {
-    if (uploadId) return runArticleConversion(api.simplifyArticleUpload.bind(api));
-    beginProcessing();
+    if (uploadId) return runArticleConversion(api.simplifyArticleUpload.bind(api), "simplify");
+    beginProcessing("simplify");
     api.findOrCreateArticle(
       { url: sharedUrl },
       (result) => {
@@ -131,23 +159,28 @@ export default function SharedArticleHandler() {
   };
 
   const handleReadOriginal = () => {
-    if (uploadId) return runArticleConversion(api.promoteArticleUpload.bind(api), true);
-    createAndNavigate(true);
+    if (uploadId) return runArticleConversion(api.promoteArticleUpload.bind(api), "promote", true);
+    createAndNavigate("promote", true);
   };
 
   const handleReadAsIs = () => {
-    if (uploadId) return runArticleConversion(api.promoteArticleUpload.bind(api), false);
-    createAndNavigate(false);
+    if (uploadId) return runArticleConversion(api.promoteArticleUpload.bind(api), "promote", false);
+    createAndNavigate("promote", false);
   };
 
   if (status === "loading") {
+    const message = isProcessing
+      ? progressMessage || "Preparing article…"
+      : "Opening article…";
     return (
-      <div style={{ textAlign: "center", padding: "4em 2em" }}>
-        {/* Simplification / translation routinely take 15-25s — hold back the
-            "Report Issue" affordance so users don't think something's broken. */}
-        <LoadingAnimation reportIssueDelay={30000} />
-        <p>{isProcessing ? "Preparing article..." : "Opening article..."}</p>
-      </div>
+      <LoadingAnimation
+        /* Simplification / translation routinely take 15-25s — hold back the
+           "Report Issue" affordance so users don't think something's broken. */
+        reportIssueDelay={30000}
+        specificStyle={{ minHeight: "70vh", justifyContent: "center" }}
+      >
+        <div style={{ textAlign: "center", marginTop: "1em" }}>{message}</div>
+      </LoadingAnimation>
     );
   }
 
@@ -156,6 +189,7 @@ export default function SharedArticleHandler() {
       <ArticleLanguageModal
         articleTitle={articleDetection.title}
         articleLanguage={articleDetection.language}
+        articleImage={articleDetection.img_url}
         learnedLanguage={userDetails.learned_language}
         source="share"
         onTranslateAndAdapt={handleTranslateAndAdapt}

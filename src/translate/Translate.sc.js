@@ -51,7 +51,7 @@ export const SearchContainer = styled.div`
 
 export const TranslateButton = styled.button`
   background-color: ${zeeguuOrange};
-  color: white;
+  color: var(--orange-btn-text);
   border: none;
   border-radius: 0.3rem;
   padding: 0 1.5rem;
@@ -157,7 +157,7 @@ export const TranslationSource = styled.div`
 
 export const AddButton = styled.button`
   background-color: ${zeeguuOrange};
-  color: white;
+  color: var(--orange-btn-text);
   border: none;
   border-radius: 0.3rem;
   padding: 0.5rem 1rem;

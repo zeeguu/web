@@ -49,7 +49,7 @@ export default function SupportedNotificationNotInstalled({
         </ButtonContainer>
         {runningInChromeDesktop() && (
           <p className="small">
-            The Chrone Web Store extension also works in <b>Edge</b>,{" "}
+            The Chrome Web Store extension also works in <b>Edge</b>,{" "}
             <b>Opera</b>, <b>Arc</b>, <b>Vivaldi</b>, and <b>Brave</b> and other
             Chromium based browsers.
           </p>

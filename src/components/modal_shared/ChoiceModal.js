@@ -9,8 +9,16 @@ const Content = styled.div`
   padding: 2em 2em 0.5em 2em;
 `;
 
+const HeroImage = styled.img`
+  width: 100%;
+  height: 160px;
+  object-fit: cover;
+  border-radius: 0.5em;
+  margin-bottom: 1.2em;
+`;
+
 const Title = styled.h3`
-  color: var(--text-primary, #222);
+  color: ${zeeguuOrange};
   margin: 0 0 2.2em 0;
   font-size: 1.05rem;
   line-height: 1.35;
@@ -91,10 +99,12 @@ export default function ChoiceModal({
   isLoading,
   loadingLabel,
   primaryFirst = true,
+  heroImage,
 }) {
   return (
     <Modal open={true} onClose={onSecondary}>
       <Content>
+        {heroImage && <HeroImage src={heroImage} alt="" />}
         {title && <Title>{title}</Title>}
         <Message>{message}</Message>
         <ButtonStack>

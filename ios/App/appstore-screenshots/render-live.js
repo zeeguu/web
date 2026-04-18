@@ -5,8 +5,10 @@
  * Produces deterministic screenshots at iPhone and iPad sizes.
  *
  * Usage:
- *   node render-live.js
- *   BASE_URL=http://localhost:5173 node render-live.js   # use local dev server
+ *   node render-live.js                   # render all 9 live screens (localhost:3000)
+ *   node render-live.js 8 9               # only screenshots 08 and 09
+ *   node render-live.js 5-7               # range 05..07
+ *   BASE_URL=https://www.zeeguu.org node render-live.js   # use production
  */
 
 const puppeteer = require("puppeteer");
@@ -14,7 +16,7 @@ const path = require("path");
 const fs = require("fs");
 const { getResponse, FIXTURE_IMAGE_HOST } = require("./fixtures/mock-data");
 
-const BASE_URL = process.env.BASE_URL || "https://www.zeeguu.org";
+const BASE_URL = process.env.BASE_URL || "http://localhost:3000";
 
 // Apple required screenshot sizes
 // CSS px × deviceScaleFactor = actual pixel dimensions
@@ -25,28 +27,50 @@ const devices = [
   { name: "android-tablet", width: 600, height: 960, scale: 2 },  // → 1200×1920
 ];
 
-// Final ordering (interleaved with marketing screenshots from render.js):
-//  1. Marketing: "Follow topics you love"       (screenshot1.html)
-//  2. Live: Articles feed                       ← screenshot02
-//  3. Marketing: "Read at your own level"       (screenshot2.html)
-//  4. Live: Article reader                      ← screenshot04
-//  5. Marketing: "Practice words you looked up" (screenshot4.html)
-//  6. Live: Match exercise                      ← screenshot06
-//  7. Live: Multiple choice exercise            ← screenshot07
-//  8. Marketing: "Listen to audio lessons"      (screenshot5.html)
-//  9. Live: Daily audio                         ← screenshot09
-// 10. Marketing: "Start now!"                   (screenshot6.html)
+// Final ordering (slot 10 is the "Start now!" marketing slide from render.js):
+//  1. Live: Topics / Interests picker  ← screenshot01
+//  2. Live: Filters                    ← screenshot02
+//  3. Live: Articles feed              ← screenshot03
+//  4. Live: Simplify prompt            ← screenshot04
+//  5. Live: Article reader             ← screenshot05
+//  6. Live: Match exercise             ← screenshot06
+//  7. Live: Multiple choice exercise   ← screenshot07
+//  8. Live: Daily audio — generate     ← screenshot08
+//  9. Live: Daily audio — lesson ready ← screenshot09
+// 10. Marketing: "Start now!"          (screenshot6.html via render.js)
 const screens = [
-  { name: "screenshot02", path: "/articles", wait: 5000 },
-  { name: "screenshot04", path: "/read/article?id=1", wait: 6000 },
+  { name: "screenshot01", path: "/account_settings/interests?fromArticles=1", wait: 3000 },
+  { name: "screenshot02", path: "/account_settings/filters?fromArticles=1", wait: 3000 },
+  { name: "screenshot03", path: "/articles", wait: 5000 },
+  {
+    name: "screenshot04",
+    path: "/shared-article?url=https%3A%2F%2Fvogue.it%2Farticle%2Fnordic-latte",
+    wait: 4000,
+  },
+  { name: "screenshot05", path: "/read/article?id=1", wait: 6000 },
   { name: "screenshot06", path: "/exercise/Match/101,102,103", wait: 5000 },
   { name: "screenshot07", path: "/exercise/MultipleChoiceL2toL1/101,102,103", wait: 5000 },
+  {
+    name: "screenshot08",
+    path: "/daily-audio",
+    wait: 4000,
+    mockOverrides: { get_todays_lesson: { lesson: null } },
+    preLoad: async (page) => {
+      await page.evaluateOnNewDocument(() => {
+        localStorage.setItem("audio_lesson_lesson_type_it", "topic");
+        localStorage.setItem(
+          "audio_lesson_suggestion_topic_it",
+          "bevande naturali",
+        );
+      });
+    },
+  },
   { name: "screenshot09", path: "/daily-audio", wait: 5000 },
 ];
 
 const FIXTURE_IMAGES_DIR = path.join(__dirname, "fixtures", "images");
 
-function setupRequestInterception(page) {
+function setupRequestInterception(page, overrides = {}) {
   page.on("request", (request) => {
     const url = request.url();
 
@@ -94,6 +118,27 @@ function setupRequestInterception(page) {
         return;
       }
 
+      // Per-screen overrides take precedence over the shared mock fixture.
+      const routeMatch = url.match(/api\.zeeguu\.org\/+([^?]*)/);
+      const route = routeMatch ? routeMatch[1].replace(/^\/+/, "") : null;
+      if (route && Object.prototype.hasOwnProperty.call(overrides, route)) {
+        const override = overrides[route];
+        const isString = typeof override === "string";
+        request
+          .respond({
+            status: 200,
+            headers: {
+              "Access-Control-Allow-Origin": "*",
+              "Content-Type": isString
+                ? "text/plain; charset=utf-8"
+                : "application/json; charset=utf-8",
+            },
+            body: isString ? override : JSON.stringify(override),
+          })
+          .catch(() => {});
+        return;
+      }
+
       const response = getResponse(url, request.method());
       if (response !== null) {
         const isString = typeof response === "string";
@@ -130,9 +175,34 @@ function setupRequestInterception(page) {
   });
 }
 
+// Parse CLI args like `8`, `8 9`, `5-7` into a set of zero-padded screen numbers.
+// Empty set means "render all".
+function parseScreenFilter(argv) {
+  const selected = new Set();
+  for (const arg of argv) {
+    const range = arg.match(/^(\d+)-(\d+)$/);
+    if (range) {
+      const [lo, hi] = [parseInt(range[1]), parseInt(range[2])].sort((a, b) => a - b);
+      for (let i = lo; i <= hi; i++) selected.add(String(i).padStart(2, "0"));
+    } else if (/^\d+$/.test(arg)) {
+      selected.add(arg.padStart(2, "0"));
+    }
+  }
+  return selected;
+}
+
 async function renderScreenshots() {
   const outputDir = path.join(__dirname, "output");
   if (!fs.existsSync(outputDir)) fs.mkdirSync(outputDir, { recursive: true });
+
+  const selected = parseScreenFilter(process.argv.slice(2));
+  const activeScreens = selected.size
+    ? screens.filter((s) => selected.has(s.name.replace(/^screenshot/, "")))
+    : screens;
+  if (selected.size && !activeScreens.length) {
+    console.error(`No screens matched filter: ${[...selected].join(", ")}`);
+    process.exit(1);
+  }
 
   const browser = await puppeteer.launch({
     headless: "new",
@@ -140,8 +210,9 @@ async function renderScreenshots() {
   });
 
   for (const device of devices) {
-    for (const screen of screens) {
-      const label = `${screen.name}-${device.name}`;
+    for (const screen of activeScreens) {
+      const num = screen.name.replace(/^screenshot/, "");
+      const label = `screenshot-${device.name}-${num}`;
       console.log(`${label}...`);
 
       const page = await browser.newPage();
@@ -158,7 +229,7 @@ async function renderScreenshots() {
       ]);
 
       await page.setRequestInterception(true);
-      setupRequestInterception(page);
+      setupRequestInterception(page, screen.mockOverrides || {});
 
       // Set session cookie so the app thinks we're logged in
       const domain = new URL(BASE_URL).hostname;
@@ -168,6 +239,8 @@ async function renderScreenshots() {
         domain,
         path: "/",
       });
+
+      if (screen.preLoad) await screen.preLoad(page);
 
       try {
         await page.goto(`${BASE_URL}${screen.path}`, {
@@ -182,11 +255,25 @@ async function renderScreenshots() {
         if (screen.path.includes("/exercise/")) {
           await page.evaluate(() => {
             // The IndividualExercise component shows the type name as a small label
-            // Find and hide it (it's a plain text node like "MultipleChoiceL2toL1")
+            // (e.g. "Match", "MultipleChoiceL2toL1"). Match the bare component name
+            // exactly — a prefix match would also hide the instruction text
+            // ("Match each word with its translation").
+            const DEBUG_LABELS = new Set([
+              "Match",
+              "MultipleChoice",
+              "MultipleChoiceContext",
+              "MultipleChoiceL2toL1",
+              "MultipleChoiceAudio",
+              "TranslateL2toL1",
+              "TranslateWhatYouHear",
+              "SpellWhatYouHear",
+              "FindWordInContext",
+              "FindWordInContextCloze",
+              "ClickWordInContext",
+            ]);
             const allElements = document.querySelectorAll("*");
             for (const el of allElements) {
-              if (el.children.length === 0 &&
-                  el.textContent.match(/^(Match|MultipleChoice|Translate|SpellWhat|FindWord|ClickWord)/)) {
+              if (el.children.length === 0 && DEBUG_LABELS.has(el.textContent.trim())) {
                 el.style.display = "none";
               }
             }

@@ -8,6 +8,7 @@ function langName(code) {
 export default function ArticleLanguageModal({
   articleTitle,
   articleLanguage,
+  articleImage,
   learnedLanguage,
   source,
   onTranslateAndAdapt,
@@ -23,6 +24,7 @@ export default function ArticleLanguageModal({
     return (
       <ChoiceModal
         title={articleTitle}
+        heroImage={articleImage}
         message="Do you want it simplified to your level?"
         primaryLabel="Simplify"
         secondaryLabel="Read as is"
@@ -38,6 +40,7 @@ export default function ArticleLanguageModal({
   return (
     <ChoiceModal
       title={articleTitle}
+      heroImage={articleImage}
       message={`This article is in ${articleLangName}. Do you want it translated to ${langName(learnedLanguage)} at your level?`}
       primaryLabel="Translate"
       secondaryLabel="Read original"

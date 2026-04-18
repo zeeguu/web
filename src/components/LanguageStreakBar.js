@@ -7,7 +7,7 @@ import { streakFireOrange, lightPurple } from "./colors";
 import LocalFireDepartmentIcon from "@mui/icons-material/LocalFireDepartment";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import styled, { keyframes } from "styled-components";
-import playStreakChime from "../utils/streakChime";
+import { playStreakChime } from "../utils/chimes";
 
 const POLL_FAST_MS = 5_000;
 const POLL_SLOW_MS = 60_000;

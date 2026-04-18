@@ -335,7 +335,7 @@ let strings = new LocalizedStrings(
       source: "source",
       helpUsMsg:
         "Help us make Zeeguu even smarter by always letting us know whether you liked reading an article or not.",
-      didYouEnjoyMsg: "Did you enjoy the article?",
+      didYouEnjoyMsg: "Did you enjoy the topic of the article?",
       answeringMsg: "Zeeguu can make better personalized recommendations based on your feedback.",
       yes: "Yes",
       no: "No",
@@ -1166,7 +1166,7 @@ let strings = new LocalizedStrings(
       source: "kilde",
       helpUsMsg:
         "Hjælp os med at gøre Zeeguu endnu bedre ved at fortælle os, om du kunne lide at læse artiklen eller ej.",
-      didYouEnjoyMsg: "Kunne du lide artiklen?",
+      didYouEnjoyMsg: "Kunne du lide emnet i artiklen?",
       yes: "ja",
       no: "nej",
       reviewVocabulary: "Gennemse ordforråd",

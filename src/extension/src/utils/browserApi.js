@@ -1,12 +1,13 @@
 /*global chrome*/
 /*global browser*/
 
-// Simple browser detection for extension context
-function runningInChromeDesktop() {
-  return typeof chrome !== 'undefined' && chrome.runtime && chrome.runtime.id;
-}
-
-export const BROWSER_API = runningInChromeDesktop() ? chrome : browser;
+// Firefox exposes both `browser` (promise-based) and `chrome` (callback-based
+// compat shim). Our call sites `await` tabs/scripting APIs, so we must pick
+// `browser` on Firefox. Real Chrome has no `browser` global → falls back.
+export const BROWSER_API =
+  typeof browser !== 'undefined' && browser.runtime && browser.runtime.id
+    ? browser
+    : chrome;
 
 // Unified cookie API that works with both Chrome callbacks and Firefox promises
 export const cookies = {
