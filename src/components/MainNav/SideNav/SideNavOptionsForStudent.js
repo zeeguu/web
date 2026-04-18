@@ -14,6 +14,7 @@ export default function SideNavOptionsForStudent({ screenWidth }) {
 
   const path = useLocation().pathname;
   const dailyAudioStatus = userDetails?.daily_audio_status;
+  const hasVerbalFlashcardsFeature = userDetails?.features?.includes("verbal_flashcards");
 
   return (
     <>
@@ -27,6 +28,14 @@ export default function SideNavOptionsForStudent({ screenWidth }) {
           hasExerciseNotification && <NotificationIcon position={"top"} text={totalExercisesInPipeline} />
         }
       />
+        
+      {hasVerbalFlashcardsFeature && (
+        <NavOption
+          {...NavigationOptions.verbalFlashcards}
+          currentPath={path}
+          screenWidth={screenWidth}
+        />
+      )}
 
       <NavOption
         {...NavigationOptions.dailyAudio}

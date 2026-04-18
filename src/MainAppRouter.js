@@ -52,6 +52,7 @@ import DailyAudioRouter from "./dailyAudio/_DailyAudioRouter";
 import IndividualExercise from "./pages/IndividualExercise";
 import Swiper from "./swiper/Swiper";
 import KeyboardTest from "./pages/KeyboardTest";
+import VerbalFlashcardsRouter from "@/verbalFlashcards/VerbalFlashcardsRouter";
 
 // Helper to detect if we're in a Capacitor native app
 const isCapacitor = () => {
@@ -125,6 +126,7 @@ export default function MainAppRouter({ hasExtension, handleSuccessfulLogIn }) {
       <PrivateRouteWithLayout path="/swiper" component={Swiper} />
       <PrivateRoute path="/watch/video" component={VideoPlayer} />
       <PrivateRouteWithLayout path="/exercises" component={ExercisesRouter} />
+      <PrivateRouteWithLayout path="/verbalFlashcards" component={VerbalFlashcardsRouter} />    
       <PrivateRouteWithLayout path="/daily-audio" component={DailyAudioRouter} />
       <PrivateRouteWithLayout path="/translate" component={TranslateRouter} />
       <PrivateRouteWithLayout path="/my-articles" component={MyArticlesRouter} />
