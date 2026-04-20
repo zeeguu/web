@@ -7,7 +7,7 @@ import FullWidthImage from "../FullWidthImage";
 import Footer from "../modal_shared/Footer.sc";
 import ButtonContainer from "../modal_shared/ButtonContainer.sc";
 import Checkbox from "../modal_shared/Checkbox";
-import Button from "../../pages/_pages_shared/Button.sc";
+import { StyledButton } from "../allButtons.sc";
 import redirect from "../../utils/routing/routing";
 import * as s from "../modal_shared/Modal.sc";
 
@@ -54,14 +54,13 @@ export default function SupportedNotification({
   return (
     <Modal open={open} onClose={handleCancel}>
       <Header>
-        <Heading>
-          You are ready to&nbsp;continue<br></br>to the original article's website
+        <Heading style={{textAlign:"center"}}>
+          You will be redirected to the original article page       
         </Heading>
       </Header>
       <Main>
-        <p>
-          Once there, <s.Strong>right-click</s.Strong> anywhere on the page to open the browser's context menu, then
-          select the <s.Strong> Read with Zeeguu</s.Strong> option.
+        <p >
+          If you want to read it with Zeeguu please use our extension 
         </p>
         <FullWidthImage src={gifSrc} alt={""} />
       </Main>
@@ -72,9 +71,9 @@ export default function SupportedNotification({
           onChange={toggleRedirectCheckbox}
         />
         <ButtonContainer buttonCountNum={1}>
-          <Button className="small" onClick={() => handleOpenArticle(article)}>
-            Continue to article's website
-          </Button>
+          <StyledButton $primary style={{ minWidth: "230px" }} onClick={() => handleOpenArticle(article)}>
+            Continue
+          </StyledButton>
         </ButtonContainer>
       </Footer>
     </Modal>

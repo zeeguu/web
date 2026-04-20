@@ -35,7 +35,7 @@ const SegmentButton = styled.button`
     color 0.15s;
 
   background: ${({ $active }) => ($active ? orange500 : "transparent")};
-  color: ${({ $active }) => ($active ? "#fff" : "var(--text-secondary)")};
+  color: ${({ $active }) => ($active ? "var(--orange-btn-text)" : "var(--text-secondary)")};
 
   &:hover {
     background: ${({ $active }) => ($active ? orange500 : "var(--bg-secondary)")};

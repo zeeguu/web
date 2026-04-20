@@ -14,6 +14,7 @@ const RoundButton = styled.div`
   color: white !important;
   font-weight: 500;
   text-align: center;
+  vertical-align: middle;
 
   cursor: pointer;
   margin-top: 3px;

@@ -1,4 +1,5 @@
 import { isSupportedBrowser, isMobile } from "../../utils/misc/browserDetection";
+import { Capacitor } from "@capacitor/core";
 import MobileNotification from "./MobileNotification";
 import UnsupportedNotification from "./UnsupportedNotification";
 import SupportedNotification from "./SupportedNotification";
@@ -14,12 +15,17 @@ export default function RedirectionNotificationModal({
   setDoNotShowRedirectionModal_UserPreference,
   setIsArticleSaved, // related to the article's state
 }) {
+  const capacitorPlatform = Capacitor.getPlatform();
+  const isIOSDevice = capacitorPlatform === "ios" || /iPhone|iPad|iPod/i.test(navigator.userAgent);
+  const isAndroidDevice = capacitorPlatform === "android" || /Android/i.test(navigator.userAgent);
+
   const MOBILE_NOTIFICATION = (
     <MobileNotification
       article={article}
       setIsArticleSaved={setIsArticleSaved}
       handleCloseRedirectionModal={handleCloseRedirectionModal}
       setDoNotShowRedirectionModal_UserPreference={setDoNotShowRedirectionModal_UserPreference}
+      mobilePlatform={isIOSDevice ? "ios" : isAndroidDevice ? "android" : "mobile"}
       open={open}
     />
   );

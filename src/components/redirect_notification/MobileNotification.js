@@ -7,9 +7,9 @@ import Main from "../modal_shared/Main.sc";
 import Footer from "../modal_shared/Footer.sc";
 import ButtonContainer from "../modal_shared/ButtonContainer.sc";
 import Checkbox from "../modal_shared/Checkbox";
-import Button from "../../pages/_pages_shared/Button.sc";
-import AddToSavesButton from "../modal_shared/AddToSavesButton.sc";
-import BookmarkBorderIcon from "@mui/icons-material/BookmarkBorder";
+import { StyledButton } from "../allButtons.sc";
+import ShareAndroid from "@mui/icons-material/Share";
+import IosShareIcon from "@mui/icons-material/IosShare";
 import redirect from "../../utils/routing/routing";
 import { APIContext } from "../../contexts/APIContext";
 
@@ -18,6 +18,7 @@ export default function MobileNotification({
   setIsArticleSaved,
   handleCloseRedirectionModal,
   setDoNotShowRedirectionModal_UserPreference,
+  mobilePlatform = "mobile",
   open,
 }) {
   const api = useContext(APIContext);
@@ -64,32 +65,38 @@ export default function MobileNotification({
     setRedirectCheckbox(false); //clear the redirectCheckbox state
   }
 
+  const mobileHelpText = "and choose Zeeguu from the menu.";
+
+  const shareIconStyles = {
+    fontSize: "1.5rem",
+    verticalAlign: "text-bottom",
+    margin: "0 0.25rem",
+  };
+
+  const ShareIcon = mobilePlatform === "ios" ? IosShareIcon : ShareAndroid;
+
   return (
     <Modal open={open} onClose={handleCancel}>
       <Header>
-        <Heading>It looks like you are using&nbsp;a&nbsp;mobile device</Heading>
+        <Heading style={{textAlign:"center"}}>You will be redirected to the original article page</Heading>
       </Header>
       <Main>
         <p>
-          If you want to read articles with the help of Zeeguu on your mobile
-          device, you need to save them first by clicking the
-          <s.Strong> Add&nbsp;to&nbsp;Saves</s.Strong> button.
+          To read it with Zeeguu, tap
+          <ShareIcon sx={shareIconStyles} />
+          {mobileHelpText}
         </p>
       </Main>
-      <Footer>
+      <Footer >
         <Checkbox
           label={"Don't show this message again"}
           checked={redirectCheckbox}
           onChange={toggleRedirectCheckbox}
         />
         <ButtonContainer buttonCountNum={2}>
-          <Button className="small" onClick={() => handleOpenArticle(article)}>
-            Enter the article's website
-          </Button>
-          <AddToSavesButton onClick={handleSaveArticleFromTheModal}>
-            <BookmarkBorderIcon fontSize="small" />
-            Add to Saves
-          </AddToSavesButton>
+          <StyledButton $primary style={{ minWidth: "190px" }} onClick={() => handleOpenArticle(article)}>
+            Continue
+          </StyledButton>
         </ButtonContainer>
       </Footer>
     </Modal>

@@ -13,7 +13,8 @@ const Footer = styled.footer`
     text-decoration: underline;
   }
   @media (max-width: 576px) {
-    margin: 0.8em 0;
+    margin-top: 0.8em;
+    margin-bottom: 0;
   }
 `;
 

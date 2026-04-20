@@ -23,6 +23,10 @@ const Feature = {
   no_audio_exercises: function () {
     return this.is_enabled("no_audio_exercises");
   },
+
+  always_open_externally: function () {
+    return this.is_enabled("always_open_externally");
+  },
 };
 
 export default Feature;

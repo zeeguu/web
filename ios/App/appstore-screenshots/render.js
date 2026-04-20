@@ -8,18 +8,10 @@ const devices = [
   { name: 'android-tablet', width: 1200, height: 1920 },
 ];
 
-// Marketing screenshots mapped to final ordering positions:
-//  01: "Follow topics you love"
-//  02: "Read at your own level"
-//  05: "Practice words you looked up"
-//  08: "Listen to audio lessons daily"
-//  10: "Start now!"
-// (Live app screenshots fill 03, 04, 06, 07, 09 via render-live.js)
+// Only slot 10 ("Start now!" with language flags) is produced as marketing now;
+// live captures (render-live.js) fill slots 01–09. The other .html templates
+// are kept on disk in case we want to re-enable them later.
 const screenshots = [
-  { file: 'screenshot1.html', position: '01' },
-  { file: 'screenshot2.html', position: '03' },
-  { file: 'screenshot4.html', position: '05' },
-  { file: 'screenshot5.html', position: '08' },
   { file: 'screenshot6.html', position: '10' },
 ];
 
@@ -61,7 +53,7 @@ async function renderScreenshots() {
         document.body.style.transformOrigin = 'top left';
       }, device.width, device.height);
 
-      const outputName = `screenshot${entry.position}-${device.name}.png`;
+      const outputName = `screenshot-${device.name}-${entry.position}.png`;
       await page.screenshot({
         path: path.join(__dirname, 'output', outputName),
         fullPage: false

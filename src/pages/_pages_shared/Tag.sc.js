@@ -44,7 +44,7 @@ const Tag = styled.button`
   &.selected {
     border: 1.5px solid ${zeeguuOrange};
     background-color: ${zeeguuOrange};
-    color: white;
+    color: var(--orange-btn-text);
   }
 
   @media (max-width: 576px) {

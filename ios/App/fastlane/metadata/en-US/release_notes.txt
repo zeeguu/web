@@ -1,7 +1,7 @@
-- Redesigned Words to Review page with clearer layout and info boxes
-- Switching language while reading now asks first, saves the article, and takes you to your new language home
-- Fix: browsing, exercise, and listening sessions now end properly when you toggle language
-- Fix: listening sessions end when switching between audio lessons
-- Landing page polished for dark mode
-- Dark-mode polish for the Words to Review controls
-- Security updates to dependencies
+- Share an article into Zeeguu: the confirmation now shows the article's image so you know what you're about to read
+- Clearer settings: "Topics of Interest" (for what you like) and "Topics to Avoid" (for keywords to hide)
+- Simpler prompt when opening an article on its original website
+- Shorter "Generate Lesson" button on Daily Audio
+- Streaks now roll over based on your local timezone
+- Reader feedback polish: clearer colors, sounds, and copy
+- Dark-mode contrast improvements on orange buttons and helper text

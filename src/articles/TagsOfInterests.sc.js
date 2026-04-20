@@ -61,8 +61,8 @@ const TagsOfInterests = styled.div`
 
   .addInterestButton:hover,
   .addNonInterestButton:hover {
-    -webkit-text-fill-color: white;
-    color: white;
+    -webkit-text-fill-color: var(--orange-btn-text);
+    color: var(--orange-btn-text);
     background-color: ${zeeguuOrange};
   }
 
@@ -76,8 +76,8 @@ const TagsOfInterests = styled.div`
     padding: 0.2em 1em;
     margin-left: 0.2rem;
     background-color: ${zeeguuOrange};
-    -webkit-text-fill-color: white;
-    color: white;
+    -webkit-text-fill-color: var(--orange-btn-text);
+    color: var(--orange-btn-text);
     font-size: 1em;
     font-family: Montserrat;
     font-weight: 300;
@@ -134,8 +134,8 @@ const TagsOfInterests = styled.div`
 
   .interests {
     background-color: ${zeeguuOrange};
-    color: white;
-    -webkit-text-fill-color: white;
+    color: var(--orange-btn-text);
+    -webkit-text-fill-color: var(--orange-btn-text);
   }
 
   .interests.unsubscribed {
@@ -152,8 +152,8 @@ const TagsOfInterests = styled.div`
 
   .noninterest.subscribed {
     background-color: ${zeeguuOrange};
-    color: white;
-    -webkit-text-fill-color: white;
+    color: var(--orange-btn-text);
+    -webkit-text-fill-color: var(--orange-btn-text);
   }
 
   body.stop-scrolling {
@@ -360,7 +360,7 @@ const TagsOfInterests = styled.div`
   .sweet-alert a {
     background-color: ${zeeguuOrange};
     font-family: Montserrat;
-    color: white;
+    color: var(--orange-btn-text);
     width: 120px;
     border: none;
     box-shadow: none;
