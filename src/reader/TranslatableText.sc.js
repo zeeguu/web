@@ -489,7 +489,7 @@ const ClozeHint = styled.div`
   left: 50%;
   transform: translate(-50%, -50%);
   font-size: 0.7em;
-  color: var(--text-faint);
+  color: var(--text-muted);
   opacity: 0.8;
   pointer-events: none;
   white-space: nowrap;

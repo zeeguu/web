@@ -25,7 +25,7 @@ const Exercise = styled.div`
   .headlineWithMoreSpace {
     font-size: small;
     font-weight: 600;
-    color: gray;
+    color: var(--text-muted);
     margin-top: 0.5em;
     margin-bottom: 2em;
     /* font-weight: 600; */
@@ -420,7 +420,7 @@ let StyledGreyButton = styled.button`
   border: none !important;
   padding: 0 !important;
   margin-top: 1em;
-  color: gray;
+  color: var(--text-muted);
   text-decoration: underline;
   font-size: small !important;
   font-weight: 500;

@@ -67,7 +67,7 @@ export default function Word({
     return <></>;
   }
 
-  let style_grayed_out = { color: darkGrey };
+  let style_grayed_out = { color: "var(--text-muted)" };
   if (!isGrayedOut && bookmark.fit_for_study) {
     style_grayed_out = {};
   }

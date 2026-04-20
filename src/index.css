@@ -2,16 +2,16 @@
   --bg-primary: #ffffff;
   --bg-secondary: #f6f6f6;
   --bg-tertiary: #efefef;
-  --text-primary: #333333;
+  --text-primary: #022161;
   --text-secondary: #575757;
-  --text-muted: #808080;
+  --text-muted: #687797;
   --text-faint: #999999;
   --border-color: #c1c1c1;
   --border-light: #e0e0e0;
   --link-color: rgb(164, 106, 0);
   --shadow-color: rgba(0, 0, 0, 0.12);
   --modal-overlay: rgba(0, 0, 0, 0.5);
-  --card-bg: #ffffff;
+  --card-bg: #FFFDF8;
   --continue-card-bg: hsl(216, 100%, 97%);
   --hover-bg: #f6f6f6;
   --active-bg: #ededed;
@@ -37,8 +37,8 @@
   --action-btn-muted-border: #f0f0f0;
   --action-btn-muted-hover-bg: #f0f0f0;
   --action-btn-muted-hover-text: #666;
-  --action-btn-secondary-color-bg: #aab1de;
-  --action-btn-secondary-color-text: #ffffff;
+  --action-btn-secondary-color-bg: #DBECFF;
+  --action-btn-secondary-color-text: #022161;
 
   --badge-bg: #e3f2fd;
   --badge-text: hsl(216, 100%, 57%);
@@ -48,7 +48,7 @@
   --search-tag-border: #b45309;
   --search-tag-text: #92400e;
 
-  --info-icon-color: #ffbb54;
+  --info-icon-color: #ffbb55;
   --speak-button-bg: #ffbb54;
   --edit-icon: url("/static/images/file_rename_orange_36dp.svg");
 

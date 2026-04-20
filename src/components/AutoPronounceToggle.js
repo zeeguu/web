@@ -37,7 +37,7 @@ const ToggleSwitch = styled.div`
 const ToggleLabel = styled.span`
   font-size: 11px;
   font-weight: 500;
-  color: #666;
+  color: var(--text-muted);
 `;
 
 export default function AutoPronounceToggle({ enabled, onToggle }) {
