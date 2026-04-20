@@ -76,7 +76,7 @@ export const BadgeIcon = styled.img`
     !$achieved &&
     `
     filter: grayscale(100%);
-    opacity: 0.25;
+    opacity: 0.4;
   `}
 `;
 
