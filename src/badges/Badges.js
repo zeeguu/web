@@ -3,7 +3,6 @@ import { APIContext } from "../contexts/APIContext";
 import * as s from "./Badges.sc.js";
 import Modal from "../components/modal_shared/Modal";
 import Header from "../components/modal_shared/Header.sc";
-import Heading from "../components/modal_shared/Heading.sc";
 import Main from "../components/modal_shared/Main.sc";
 
 export default function Badges({ username }) {
