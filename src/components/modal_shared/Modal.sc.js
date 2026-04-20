@@ -26,7 +26,7 @@ const ModalWrapper = styled(Box)`
   p {
     width: 100%;
     line-height: 150%;
-    text-align: center;
+    text-align: left;
     font-size: 1rem;
     margin: 0;
   }

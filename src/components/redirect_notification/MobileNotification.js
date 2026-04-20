@@ -81,7 +81,7 @@ export default function MobileNotification({
         <Heading style={{textAlign:"center"}}>You will be redirected to the original article page</Heading>
       </Header>
       <Main>
-        <p>
+        <p style={{textAlign:"center"}}>
           To read it with Zeeguu, tap
           <ShareIcon sx={shareIconStyles} />
           {mobileHelpText}
