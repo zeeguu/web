@@ -9,6 +9,7 @@ import { MAX_WORDS_IN_BOOKMARK_FOR_EXERCISES } from "../exercises/ExerciseConsta
 import { getStaticPath } from "../utils/misc/staticPath";
 import { APIContext } from "../contexts/APIContext";
 import PhraseTypeBadge from "./PhraseTypeBadge";
+import { darkGrey } from "../components/colors";
 
 export default function Word({
   bookmark,
@@ -66,7 +67,7 @@ export default function Word({
     return <></>;
   }
 
-  let style_grayed_out = { color: "var(--text-muted)" };
+  let style_grayed_out = { color: darkGrey };
   if (!isGrayedOut && bookmark.fit_for_study) {
     style_grayed_out = {};
   }
