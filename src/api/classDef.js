@@ -104,8 +104,11 @@ const Zeeguu_API = class {
       })
       .catch((e) => {
         console.error(`API error on GET ${endpoint}:`, e);
-        // Only capture HTTP errors (server returned a bad status). Browser-level
-        // fetch failures (Failed to fetch / Load failed / AbortError) are noise.
+        // Only report errors with our thrown shape `HTTP <status> on GET ...`
+        // (see the !response.ok throw ~15 lines above). Anything else reaching
+        // this catch is a browser-level fetch failure — Failed to fetch, Load
+        // failed (iOS), NetworkError, AbortError — caused by the user's
+        // network, tab backgrounding, or navigation mid-request. Not bugs.
         if (/^HTTP \d+/.test(e.message)) {
           Sentry.captureException(e, {
             tags: { endpoint, method: "GET" },
