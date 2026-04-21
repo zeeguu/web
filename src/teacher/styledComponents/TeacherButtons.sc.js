@@ -27,7 +27,7 @@ const StyledButton = styled.button`
 
   //Primary
   ${(props) =>
-    props.primary &&
+    props.$primary &&
     css`
       color: white;
       background-color: ${darkBlue};
@@ -35,7 +35,7 @@ const StyledButton = styled.button`
     `}
   //Secondary
   ${(props) =>
-    props.secondary &&
+    props.$secondary &&
     css`
       border: 3px solid ${lightBlue};
     `}

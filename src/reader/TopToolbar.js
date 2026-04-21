@@ -68,7 +68,7 @@ export default function TopToolbar({
               <>
                 {teacherArticleID && !isMobile && (
                   <Link to={`/teacher/texts/editText/${articleID}`}>
-                    <StyledButton className="toolbar-btn" secondary studentView>
+                    <StyledButton className="toolbar-btn" $secondary studentView>
                       {strings.backToEditing}
                     </StyledButton>
                   </Link>

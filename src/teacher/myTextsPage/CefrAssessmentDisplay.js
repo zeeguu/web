@@ -259,9 +259,9 @@ export default function CefrAssessmentDisplay({
               </>
             )}
             <StyledButton
-              secondary
+              $secondary
               onClick={recomputeLLM}
-              disabled={isComputingLLM}
+              $disabled={isComputingLLM} disabled={isComputingLLM}
               style={{ marginLeft: "auto", fontSize: "0.9em", padding: "0.4rem 0.8rem" }}
             >
               {isComputingLLM ? "Computing..." : "Recompute LLM"}

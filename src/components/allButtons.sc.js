@@ -132,7 +132,7 @@ const StyledButton = styled.button`
 
   // Navigation used together with <NavigateNextIcon /> or <NavigateBeforeIcon />
   ${(props) =>
-    (props.$navigation || props.navigation) &&
+    props.$navigation &&
     css`
       background-color: var(--action-btn-secondary-color-bg);
       color: var(--action-btn-secondary-color-text);
@@ -143,7 +143,7 @@ const StyledButton = styled.button`
 
     // Disabled
     ${(props) =>
-    (props.$disabled || props.disabled) &&
+    props.$disabled &&
     css`
       background-color: var(--action-btn-secondary-color-bg);
       color: var(--action-btn-secondary-color-text);

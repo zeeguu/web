@@ -31,10 +31,10 @@ const DeleteTextWarning = ({
         <p>{strings.confirmDeleteText}</p>
       </div>
       <PopupButtonWrapper>
-        <StyledButton primary onClick={handleCancel}>
+        <StyledButton $primary onClick={handleCancel}>
           {strings.cancel}
         </StyledButton>
-        <StyledButton secondary onClick={handleDelete}>
+        <StyledButton $secondary onClick={handleDelete}>
           {strings.delete}
         </StyledButton>
       </PopupButtonWrapper>

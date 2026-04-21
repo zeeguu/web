@@ -40,7 +40,7 @@ export default function AllTexts() {
         <m.StyledMyTexts>
           <Link to="/teacher/texts/AddTextOptions">
             <TopButtonWrapper>
-              <StyledButton primary>{strings.addText}</StyledButton>
+              <StyledButton $primary>{strings.addText}</StyledButton>
             </TopButtonWrapper>
           </Link>
           <br />

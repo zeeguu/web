@@ -12,14 +12,14 @@ export const ViewAsStudentButton = ({ articleID, disabled, isNew }) => {
       {disabled ? (
         <StyledTooltip label={text}>
           <Link to={`/teacher/texts/editText/${articleID}/studentView`}>
-            <StyledButton secondary disabled={disabled}>
+            <StyledButton $secondary $disabled={disabled} disabled={disabled}>
               {strings.viewAsStudent}
             </StyledButton>
           </Link>
         </StyledTooltip>
       ) : (
         <Link to={`/teacher/texts/editText/${articleID}/studentView`}>
-          <StyledButton secondary disabled={disabled}>
+          <StyledButton $secondary $disabled={disabled} disabled={disabled}>
             {strings.viewAsStudent}
           </StyledButton>
         </Link>
@@ -35,12 +35,12 @@ export const ShareWithClassesButton = ({ onclick, disabled, isNew }) => {
     <Fragment>
       {disabled ? (
         <StyledTooltip label={text}>
-          <StyledButton secondary onClick={onclick} disabled={disabled}>
+          <StyledButton $secondary onClick={onclick} $disabled={disabled} disabled={disabled}>
             Edit
           </StyledButton>
         </StyledTooltip>
       ) : (
-        <StyledButton secondary onClick={onclick} disabled={disabled}>
+        <StyledButton $secondary onClick={onclick} $disabled={disabled} disabled={disabled}>
           Edit
         </StyledButton>
       )}

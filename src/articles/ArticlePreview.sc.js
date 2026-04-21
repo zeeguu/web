@@ -5,6 +5,7 @@ const ArticlePreview = styled.div`
   margin-bottom: 1em;
   margin-top: 2em;
   padding-left: 0.8em;
+  padding-right: 0.8em;
   padding-bottom: 1em;
 `;
 /*

@@ -38,10 +38,10 @@ const DeleteCohortWarning = ({
         </b>
       )}
       <PopupButtonWrapper>
-        <StyledButton primary onClick={handleCancel}>
+        <StyledButton $primary onClick={handleCancel}>
           {strings.cancel}
         </StyledButton>
-        <StyledButton secondary onClick={() => deleteCohort(cohort.id)}>
+        <StyledButton $secondary onClick={() => deleteCohort(cohort.id)}>
           {strings.delete}
         </StyledButton>
       </PopupButtonWrapper>

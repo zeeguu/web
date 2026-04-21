@@ -60,17 +60,17 @@ export default function ActivityInsightsRouter() {
             <Link
               to={`/teacher/classes/viewStudent/${studentID}/class/${cohortID}`}
             >
-              <StyledButton primary>{strings.seeReading}</StyledButton>
+              <StyledButton $primary>{strings.seeReading}</StyledButton>
             </Link>
           ) : (
             <Link
               to={`/teacher/classes/viewStudent/${studentID}/class/${cohortID}/exercises`}
             >
-              <StyledButton primary>{strings.seeExercises}</StyledButton>
+              <StyledButton $primary>{strings.seeExercises}</StyledButton>
             </Link>
           )}
           <Link to={`/teacher/classes/viewClass/${cohortID}`}>
-            <StyledButton secondary>
+            <StyledButton $secondary>
               {strings.backTo}
               {cohortName}
             </StyledButton>

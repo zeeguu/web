@@ -116,11 +116,11 @@ export default function WordsToReview({
         {!exercisesEnabled ? (
           <Tooltip title="You need to translate words in the article first." arrow>
             <span>
-              <StyledButton disabled>{strings.toPracticeWords}</StyledButton>
+              <StyledButton $disabled disabled>{strings.toPracticeWords}</StyledButton>
             </span>
           </Tooltip>
         ) : (
-          <StyledButton navigation onClick={toExercises}>
+          <StyledButton $navigation onClick={toExercises}>
             {strings.toPracticeWords}
           </StyledButton>
         )}

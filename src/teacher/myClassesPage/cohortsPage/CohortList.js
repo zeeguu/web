@@ -35,7 +35,7 @@ export default function CohortList({ cohorts, setForceUpdate }) {
   return (
     <>
       <TopButtonWrapper>
-        <StyledButton primary onClick={handleAddNewCohort}>
+        <StyledButton $primary onClick={handleAddNewCohort}>
           {strings.addClass}
         </StyledButton>
       </TopButtonWrapper>

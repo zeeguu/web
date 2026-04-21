@@ -94,7 +94,7 @@ export default function AddURLDialog({ setShowAddURLDialog }) {
       {showGuidance && <Error message={strings.nothingInInputField} />}
       {showError && <Error message={strings.invalidUrl} />}
       <PopupButtonWrapper>
-        <StyledButton primary onClick={getArticle}>
+        <StyledButton $primary onClick={getArticle}>
           {strings.saveAndEdit}
         </StyledButton>
       </PopupButtonWrapper>

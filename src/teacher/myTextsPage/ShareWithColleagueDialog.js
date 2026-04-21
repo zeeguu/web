@@ -52,7 +52,7 @@ const ShareWithCollegueDialog = ({ articleID, setShowDialog }) => {
           <h1>{strings.shareWithColleague}</h1>
           <p>{strings.yourColleagueShouldHaveTheTextShortly}</p>
           <PopupButtonWrapper>
-            <StyledButton primary onClick={() => setShowDialog(false)}>
+            <StyledButton $primary onClick={() => setShowDialog(false)}>
               {strings.ok}
             </StyledButton>
           </PopupButtonWrapper>
@@ -70,10 +70,10 @@ const ShareWithCollegueDialog = ({ articleID, setShowDialog }) => {
           </TitleInput>
           <Error message={errorMsg} />
           <PopupButtonWrapper>
-            <StyledButton secondary onClick={() => setShowDialog(false)}>
+            <StyledButton $secondary onClick={() => setShowDialog(false)}>
               {strings.cancel}
             </StyledButton>
-            <StyledButton primary onClick={shareText}>
+            <StyledButton $primary onClick={shareText}>
               {strings.share}
             </StyledButton>
           </PopupButtonWrapper>

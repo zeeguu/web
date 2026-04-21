@@ -59,18 +59,14 @@ export function calculateTotalReadingMinutes(readingActivity) {
   return Math.floor(totalReadingSeconds / 60);
 }
 
-export function selectTwoRandomItems(items) {
+export function selectOneRandomItems(items) {
   const nonZeroItems = items.filter((item) => item.value > 0);
 
-  if (nonZeroItems.length <= 2) {
+  if (nonZeroItems.length <= 1) {
     return nonZeroItems;
   }
   const firstIndex = Math.floor(Math.random() * nonZeroItems.length);
-  let secondIndex;
+  
 
-  do {
-    secondIndex = Math.floor(Math.random() * nonZeroItems.length);
-  } while (secondIndex === firstIndex);
-
-  return [nonZeroItems[firstIndex], nonZeroItems[secondIndex]];
+  return [nonZeroItems[firstIndex]];
 }

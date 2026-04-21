@@ -282,7 +282,7 @@ let NavigationLink = styled(Link)`
 
   // Primary
   ${(props) =>
-    props.primary &&
+    props.$primary &&
     css`
       background-color: orange !important;
       color: white !important;
@@ -293,14 +293,14 @@ let NavigationLink = styled(Link)`
     `}
   // Secondary
   ${(props) =>
-    props.secondary &&
+    props.$secondary &&
     css`
       background-color: white !important;
       color: orange !important;
     `}
     // Disabled
     ${(props) =>
-    props.disabled &&
+    props.$disabled &&
     css`
       background-color: white !important;
       color: #999999 !important;
@@ -373,7 +373,7 @@ let ExtraSpaceAtTheBottom = styled.div`
 
 let CombinedBox = styled.div`
   border: 1px solid var(--border-light);
-  background-color: var(--card-bg);
+  background-color: var(--bg-primary);
   border-radius: 0.5em;
   padding: 2em 0em 2em 0em;
   margin-top: 1em;
@@ -405,6 +405,18 @@ const ReadingTime = styled.div`
   margin-bottom: 0.5em;
 `;
 
+const FeedbackOptionsRow = styled(CenteredContent)`
+  width: 100%;
+  box-sizing: border-box;
+  padding: 0 1.5rem;
+  gap: 1rem;
+
+  @media (max-width: 480px) {
+    padding: 0 0.5rem;
+    gap: 0.5rem;
+  }
+`;
+
 export {
   ArticleReader,
   ArticleTopics,
@@ -430,4 +442,5 @@ export {
   InvisibleBox,
   CombinedBox,
   ToolbarWrapper,
+  FeedbackOptionsRow,
 };

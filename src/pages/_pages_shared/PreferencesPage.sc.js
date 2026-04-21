@@ -84,9 +84,9 @@ const PageContainer = styled.div`
         margin: 1rem;
       }
       @media (max-width: 576px) {
-        width: 100%;
+        width: calc(100% - 2em);
         padding: 1em;
-        margin: 1rem 0 0 0;
+        margin: 1rem 1em 0 1em;
       }
     `}
 `;
