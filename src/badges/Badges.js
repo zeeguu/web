@@ -1,5 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import { APIContext } from "../contexts/APIContext";
+import { BadgeCounterContext } from "./BadgeCounterContext";
 import * as s from "./Badges.sc.js";
 import Modal from "../components/modal_shared/Modal";
 import Header from "../components/modal_shared/Header.sc";
@@ -7,6 +8,7 @@ import Main from "../components/modal_shared/Main.sc";
 
 export default function Badges({ username }) {
   const api = useContext(APIContext);
+  const { updateBadgeCounter } = useContext(BadgeCounterContext);
 
   const iconBasePath = "static/badges/";
   const defaultLogoPath = "static/images/zeeguuLogo.svg";

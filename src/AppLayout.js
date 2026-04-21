@@ -70,6 +70,13 @@ export default function AppLayout(props) {
     // eslint-disable-next-line
   }, [path]);
 
+  // Refresh badge counter when the user enters the profile page
+  useEffect(() => {
+    if (path.startsWith("/profile")) {
+      badgeCounter.updateBadgeCounter();
+    }
+  });
+
   // Scroll to top when navigating between main sections
   useEffect(() => {
     const scrollHolder = document.getElementById("scrollHolder");
