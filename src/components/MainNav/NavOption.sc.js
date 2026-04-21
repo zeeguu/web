@@ -135,7 +135,6 @@ const OptionContentWrapper = styled.span`
   padding: ${({ $overflowEnabled }) => ($overflowEnabled ? "0 0.5rem 0 0" : "0 1.8rem 0 0")};
   height: 2rem;
 
-
   ${({ $screenWidth }) =>
     $screenWidth <= MEDIUM_WIDTH &&
     css`
