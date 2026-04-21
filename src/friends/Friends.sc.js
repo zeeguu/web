@@ -1,5 +1,5 @@
 import styled from "styled-components";
-export { ErrorText } from "../profile/UserProfile.sc";
+export { ErrorText } from "../components/usefulSnippets.sc";
 
 export const UnstyledList = styled.ul`
   padding: 0;
