@@ -30,6 +30,7 @@ Zeeguu_API.prototype.getUserArticles = function (callback, options = {}) {
 
   this._getJSON("user_articles/recommended" + queryString,
       (articles) => {
+    if (!articles) { callback([]); return; }
     // sometimes we get duplicates from the server
     // deduplicate them here
     // fast deduplication cf. https://stackoverflow.com/a/64791605/1200070

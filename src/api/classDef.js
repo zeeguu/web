@@ -104,9 +104,13 @@ const Zeeguu_API = class {
       })
       .catch((e) => {
         console.error(`API error on GET ${endpoint}:`, e);
-        Sentry.captureException(e, {
-          tags: { endpoint, method: "GET" },
-        });
+        // Only capture HTTP errors (server returned a bad status). Browser-level
+        // fetch failures (Failed to fetch / Load failed / AbortError) are noise.
+        if (/^HTTP \d+/.test(e.message)) {
+          Sentry.captureException(e, {
+            tags: { endpoint, method: "GET" },
+          });
+        }
         // Call callback with null so components don't hang on loading forever
         callback(null);
       });

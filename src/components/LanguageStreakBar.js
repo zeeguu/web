@@ -145,6 +145,7 @@ export default function LanguageStreakBar({ onMultipleLanguages, onOpenModal }) 
 
     function fetchStreaks() {
       api.getAllLanguageStreaks((data) => {
+        if (!data) return;
         const newJustPracticed = {};
         const prev = prevPracticedRef.current;
         data.forEach((lang) => {
