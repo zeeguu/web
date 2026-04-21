@@ -19,6 +19,7 @@ const LocalStorage = {
     AnonUUID: "anon_uuid",
     AnonPassword: "anon_password",
     AnonFirstUseDate: "anon_first_use_date",
+    AnonUpgradeDismissed: "anon_upgrade_dismissed",
     AudioExperimentNoOfSessions: "audio_experiment_no_of_sessions",
     DisplayedAudioExperimentPopup: "audio_experiment_displayed_popup",
     AudioExperimentCompleted: "audio_experiment_completed",
