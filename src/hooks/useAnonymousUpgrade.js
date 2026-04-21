@@ -42,6 +42,7 @@ export default function useAnonymousUpgrade() {
   const [triggerReason, setTriggerReason] = useState(null);
   const [hasChecked, setHasChecked] = useState(false);
   const [settingsPromptShown, setSettingsPromptShown] = useState(false);
+  const [profilePromptShown, setProfilePromptShown] = useState(false);
   // Track bookmarks added this session (added to server count)
   const [sessionBookmarks, setSessionBookmarks] = useState(0);
 
@@ -119,7 +120,7 @@ export default function useAnonymousUpgrade() {
 
   // Check when navigating to profile page
   useEffect(() => {
-    if (!isAnonymous) return;
+    if (!isAnonymous || profilePromptShown) return;
 
     const isProfilePage = PROFILE_PATHS_THAT_TRIGGER.some(
       (path) => location.pathname === path || location.pathname.startsWith(path + "/"),
@@ -127,11 +128,12 @@ export default function useAnonymousUpgrade() {
 
     if (isProfilePage) {
       const timer = setTimeout(() => {
+        setProfilePromptShown(true);
         checkUpgradeTrigger("profile");
       }, 300);
       return () => clearTimeout(timer);
     }
-  }, [location.pathname, isAnonymous]);
+  }, [location.pathname, isAnonymous, profilePromptShown]);
 
   // Listen for 403 errors when upgrade is pending (email not verified)
   useEffect(() => {

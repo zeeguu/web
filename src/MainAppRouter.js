@@ -1,5 +1,5 @@
 import { lazy, Suspense } from "react";
-import { Route, Switch, Redirect } from "react-router-dom";
+import { Route, Switch, Redirect, useHistory } from "react-router-dom";
 import LandingPage from "./landingPage/LandingPage";
 import ExtensionInstalled from "./pages/onboarding/ExtensionInstalled";
 import InstallExtension from "./pages/onboarding/InstallExtension";
@@ -82,6 +82,7 @@ function HomePage() {
 }
 
 export default function MainAppRouter({ hasExtension, handleSuccessfulLogIn }) {
+  const history = useHistory();
   const {
     shouldShowUpgrade,
     triggerReason,
@@ -89,11 +90,18 @@ export default function MainAppRouter({ hasExtension, handleSuccessfulLogIn }) {
     dismissUpgrade,
   } = useAnonymousUpgrade();
 
+  function handleUpgradeClose() {
+    if (triggerReason === "profile") {
+      history.goBack();
+    }
+    dismissUpgrade();
+  }
+
   return (
     <>
       <UpgradeAccountModal
         open={shouldShowUpgrade}
-        onClose={dismissUpgrade}
+        onClose={handleUpgradeClose}
         triggerReason={triggerReason}
         bookmarkCount={bookmarkCount}
       />
