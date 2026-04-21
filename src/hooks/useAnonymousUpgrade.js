@@ -15,6 +15,11 @@ const SETTINGS_PATHS_THAT_TRIGGER = [
   "/account_settings/interests",
 ];
 
+// Profile paths that should trigger upgrade prompt for anonymous users
+const PROFILE_PATHS_THAT_TRIGGER = [
+  "/profile",
+];
+
 /**
  * Hook to manage anonymous user upgrade prompts.
  *
@@ -111,6 +116,22 @@ export default function useAnonymousUpgrade() {
       return () => clearTimeout(timer);
     }
   }, [location.pathname, isAnonymous, settingsPromptShown]);
+
+  // Check when navigating to profile page
+  useEffect(() => {
+    if (!isAnonymous) return;
+
+    const isProfilePage = PROFILE_PATHS_THAT_TRIGGER.some(
+      (path) => location.pathname === path || location.pathname.startsWith(path + "/"),
+    );
+
+    if (isProfilePage) {
+      const timer = setTimeout(() => {
+        checkUpgradeTrigger("profile");
+      }, 300);
+      return () => clearTimeout(timer);
+    }
+  }, [location.pathname, isAnonymous]);
 
   // Listen for 403 errors when upgrade is pending (email not verified)
   useEffect(() => {

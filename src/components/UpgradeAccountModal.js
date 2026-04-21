@@ -262,6 +262,7 @@ export default function UpgradeAccountModal({ open, onClose, onSuccess, triggerR
     if (triggerReason === "days") return "Welcome back!";
     if (triggerReason === "settings") return "Save Your Settings";
     if (triggerReason === "exercises") return "Great practice session!";
+    if (triggerReason === "profile") return "Create an Account to View Your Profile";
     return "Save Your Progress";
   };
 
