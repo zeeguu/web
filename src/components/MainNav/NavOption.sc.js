@@ -131,9 +131,10 @@ const OptionContentWrapper = styled.span`
   align-items: center;
   justify-content: ${({ $overflowEnabled }) => ($overflowEnabled ? "left" : "center")};
   gap: 0.76rem;
-  width: "fit-content";
+  width: fit-content;
   padding: ${({ $overflowEnabled }) => ($overflowEnabled ? "0 0.5rem 0 0" : "0 1.8rem 0 0")};
   height: 2rem;
+
 
   ${({ $screenWidth }) =>
     $screenWidth <= MEDIUM_WIDTH &&
