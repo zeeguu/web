@@ -131,7 +131,7 @@ export default function FriendRow({
 
       <UserBaseInfo user={user} />
 
-      {rowType === "friend" && (
+      {(rowType === "friend" || rowType === "view-only") && (
         <s.LanguagesMeta>
           {visibleLanguages.map((entry) => (
             <DynamicFlagImage
@@ -145,6 +145,7 @@ export default function FriendRow({
           )}
         </s.LanguagesMeta>
       )}
+
       {actions && <s.ActionsContainer>{actions}</s.ActionsContainer>}
     </s.FriendRowLi>
   );
