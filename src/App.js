@@ -70,6 +70,7 @@ function App() {
   const [userPreferences, setUserPreferences] = useState();
   const [sessionInitialized, setSessionInitialized] = useState(false);
   const [serverError, setServerError] = useState(false);
+  const [apiDialogRetry, setApiDialogRetry] = useState(null);
 
   const [isExtensionAvailable] = useExtensionCommunication();
   const [zeeguuSpeech, setZeeguuSpeech] = useState(false);
@@ -82,6 +83,12 @@ function App() {
     initializeSession().then(() => {
       setSessionInitialized(true);
     });
+  }, []);
+
+  useEffect(() => {
+    const handler = (e) => setApiDialogRetry(() => e.detail.retry);
+    window.addEventListener("zeeguu-api-error", handler);
+    return () => window.removeEventListener("zeeguu-api-error", handler);
   }, []);
 
   useEffect(() => {
@@ -333,6 +340,15 @@ function App() {
                         pauseOnHover
                         theme={themeValue.isDark ? "dark" : "light"}
                       />
+                      {apiDialogRetry && (
+                        <ServerErrorModal
+                          onRetry={() => {
+                            const retryFn = apiDialogRetry;
+                            setApiDialogRetry(null);
+                            retryFn();
+                          }}
+                        />
+                      )}
                     </FeedbackContextProvider>
                   </ProgressProvider>
                 </APIContext.Provider>

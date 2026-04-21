@@ -31,43 +31,37 @@ export default function Friends({ friendUsername, navigationHandler }) {
 
   useEffect(() => {
     if (friendUsername) return;
-    api.getFriends((data) => {
-      if (!data) {
-        setFriendsError("Failed to fetch friends");
-        setLoadingFriends(false);
-        return;
-      }
-      setFriends(data);
+    let mounted = true;
+    api.getFriends({ onError: "dialog" }).then((data) => {
+      if (!mounted) return;
+      setFriends(data ?? []);
       setLoadingFriends(false);
     });
+    return () => { mounted = false; };
   }, [api, friendUsername]);
 
   useEffect(() => {
     if (friendUsername) return;
-    api.getReceivedFriendRequests((data) => {
-      if (!data) {
-        setRequestsError("Failed to fetch friend requests");
-        setLoadingRequests(false);
-        return;
-      }
-      setFriendRequests(data);
+    let mounted = true;
+    api.getReceivedFriendRequests({ onError: "silent" }).then((data) => {
+      if (!mounted) return;
+      setFriendRequests(data ?? []);
       setLoadingRequests(false);
     });
+    return () => { mounted = false; };
   }, [api, friendUsername]);
 
   useEffect(() => {
     if (!friendUsername) return;
+    let mounted = true;
     setLoadingFriendsFriends(true);
     setFriendsFriendsError(null);
-    api.getFriendsForUser(friendUsername, (data) => {
-      if (!data) {
-        setFriendsFriendsError("Failed to fetch friends.");
-        setLoadingFriendsFriends(false);
-        return;
-      }
-      setFriendsFriends(data);
+    api.getFriendsForUser(friendUsername, { onError: "dialog" }).then((data) => {
+      if (!mounted) return;
+      setFriendsFriends(data ?? []);
       setLoadingFriendsFriends(false);
     });
+    return () => { mounted = false; };
   }, [api, friendUsername]);
 
   useEffect(() => {
@@ -94,16 +88,9 @@ export default function Friends({ friendUsername, navigationHandler }) {
       setSearchingNewFriends(true);
       setNewFriendError(null);
 
-      api.searchUsers(query, (results) => {
+      api.searchUsers(query, { onError: "silent" }).then((results) => {
         setSearchingNewFriends(false);
-
-        if (!results) {
-          setNewFriendError("Failed to search for users");
-          setSearchResults([]);
-          return;
-        }
-
-        setSearchResults(results);
+        setSearchResults(Array.isArray(results) ? results : []);
       });
     }, 300);
   };
@@ -113,19 +100,13 @@ export default function Friends({ friendUsername, navigationHandler }) {
     setSendingRequestUsername(receiverUsername);
     api
       .sendFriendRequest(receiverUsername)
-      .then((response) => {
+      .then(() => {
         setSendingRequestUsername(null);
-        if (response.status === 200) {
-          setSentRequests((prev) => [...prev, receiverUsername]);
-        } else {
-          response.json().then((json) => {
-            toast.error(json.error || "Failed to send friend request.");
-          });
-        }
+        setSentRequests((prev) => [...prev, receiverUsername]);
       })
-      .catch(() => {
+      .catch((error) => {
         setSendingRequestUsername(null);
-        toast.error("Failed to send friend request.");
+        toast.error(error.response?.data?.error || "Failed to send friend request.");
       });
   };
 
@@ -133,28 +114,18 @@ export default function Friends({ friendUsername, navigationHandler }) {
     event.stopPropagation();
     api
       .deleteFriendRequest(receiverUsername)
-      .then((response) => {
-        if (response.status === 200) {
-          setSentRequests((prev) => prev.filter((username) => username !== receiverUsername));
-          setSearchResults((prev) =>
-            prev.map((user) =>
-              user.username === receiverUsername
-                ? {
-                    ...user,
-                    friend_request: null,
-                    friendship: null,
-                  }
-                : user,
-            ),
-          );
-        } else {
-          response.json().then((json) => {
-            toast.error(json.message || "Failed to cancel friend request.");
-          });
-        }
+      .then(() => {
+        setSentRequests((prev) => prev.filter((u) => u !== receiverUsername));
+        setSearchResults((prev) =>
+          prev.map((user) =>
+            user.username === receiverUsername
+              ? { ...user, friend_request: null, friendship: null }
+              : user,
+          ),
+        );
       })
-      .catch(() => {
-        toast.error("Failed to cancel friend request.");
+      .catch((error) => {
+        toast.error(error.response?.data?.message || "Failed to cancel friend request.");
       });
   };
 
@@ -162,22 +133,16 @@ export default function Friends({ friendUsername, navigationHandler }) {
     event.stopPropagation();
     api
       .acceptFriendRequest(senderUsername)
-      .then((response) => {
-        if (response.status === 200) {
-          setFriendRequests((prev) =>
-            prev.map((req) =>
-              req.sender.username === senderUsername ? { ...req, is_accepted: true } : req,
-            ),
-          );
-          updateFriendRequestCounter();
-        } else {
-          response.json().then((json) => {
-            toast.error(json.message || "Failed to accept friend request.");
-          });
-        }
+      .then(() => {
+        setFriendRequests((prev) =>
+          prev.map((req) =>
+            req.sender.username === senderUsername ? { ...req, is_accepted: true } : req,
+          ),
+        );
+        updateFriendRequestCounter();
       })
-      .catch(() => {
-        toast.error("Failed to accept friend request.");
+      .catch((error) => {
+        toast.error(error.response?.data?.message || "Failed to accept friend request.");
       });
   };
 
@@ -185,18 +150,12 @@ export default function Friends({ friendUsername, navigationHandler }) {
     event.stopPropagation();
     api
       .rejectFriendRequest(senderUsername)
-      .then((response) => {
-        if (response.status === 200) {
-          setFriendRequests((prev) => prev.filter((req) => req.sender.username !== senderUsername));
-          updateFriendRequestCounter();
-        } else {
-          response.json().then((json) => {
-            toast.error(json.message || "Failed to reject friend request.");
-          });
-        }
+      .then(() => {
+        setFriendRequests((prev) => prev.filter((req) => req.sender.username !== senderUsername));
+        updateFriendRequestCounter();
       })
-      .catch(() => {
-        toast.error("Failed to reject friend request.");
+      .catch((error) => {
+        toast.error(error.response?.data?.message || "Failed to reject friend request.");
       });
   };
 

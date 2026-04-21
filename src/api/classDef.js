@@ -121,6 +121,32 @@ const Zeeguu_API = class {
     });
   }
 
+  // Promise-based GET with declarative error handling.
+  // onError: "throw" (default) — rejects; "silent" — resolves null; "dialog" — shows retry modal.
+  _fetchJSON(endpoint, { onError = "throw" } = {}) {
+    const path = endpoint.startsWith("/") ? endpoint : `/${endpoint}`;
+    return this.apiGet(path)
+      .then((res) => res.data)
+      .catch((error) => {
+        if (onError === "silent") return null;
+        if (onError === "dialog") {
+          return new Promise((resolve) => {
+            window.dispatchEvent(
+              new CustomEvent("zeeguu-api-error", {
+                detail: {
+                  retry: () =>
+                    this.apiGet(path)
+                      .then((res) => resolve(res.data))
+                      .catch(() => resolve(null)),
+                },
+              }),
+            );
+          });
+        }
+        throw error;
+      });
+  }
+
   //returning text or json based on the boolean getJson
   _post(endpoint, body, callback, onError, getJson) {
     // TODO: Make sure that you either return a Promise or not. Now if a callback is passed we don't return anything otherwise we return a promise.

@@ -1,41 +1,28 @@
 import { Zeeguu_API } from "./classDef";
 
+Zeeguu_API.prototype.getFriends = function ({ onError } = {}) {
+  return this._fetchJSON("get_friends", { onError });
+};
 
-Zeeguu_API.prototype.getFriends = function(callback) {
-  this._getJSON(`get_friends`, (data) => {
-    callback(data);
-  });
-}
+Zeeguu_API.prototype.getFriendsForUser = function (username, { onError } = {}) {
+  return this._fetchJSON(`get_friends/${username}`, { onError });
+};
 
-Zeeguu_API.prototype.getFriendsForUser = function(username, callback) {
-  this._getJSON(`get_friends/${username}`, (data) => {
-    callback(data);
-  });
-}
+Zeeguu_API.prototype.getNumberOfReceivedFriendRequests = function ({ onError } = {}) {
+  return this._fetchJSON("get_number_of_received_friend_requests", { onError });
+};
 
-Zeeguu_API.prototype.getNumberOfReceivedFriendRequests = function(callback) {
-  this._getJSON(`get_number_of_received_friend_requests`, (data) => {
-    callback(data);
-  });
-}
+Zeeguu_API.prototype.getReceivedFriendRequests = function ({ onError } = {}) {
+  return this._fetchJSON("get_received_friend_requests", { onError });
+};
 
-Zeeguu_API.prototype.getReceivedFriendRequests = function(callback) {
-  this._getJSON(`get_received_friend_requests`, (data) => {
-    callback(data);
-  });
-}
+Zeeguu_API.prototype.searchUsers = function (search_term, { onError } = {}) {
+  return this._fetchJSON(`search_users?query=${encodeURIComponent(search_term)}`, { onError });
+};
 
-Zeeguu_API.prototype.searchUsers = function(search_term, callback) {
-  this._getJSON(`search_users?query=${encodeURIComponent(search_term)}`, (data) => {
-    callback(data);
-  });
-}
-
-Zeeguu_API.prototype.getFriendDetails = function(friend_username, callback) {
-  this._getJSON(`get_user_details/${friend_username}`, (data) => {
-    callback(data);
-  });
-}
+Zeeguu_API.prototype.getFriendDetails = function (friend_username, { onError } = {}) {
+  return this._fetchJSON(`get_user_details/${friend_username}`, { onError });
+};
 
 Zeeguu_API.prototype.sendFriendRequest = function(receiver_username) {
   return this.apiPost("/send_friend_request", { receiver_username }, false);

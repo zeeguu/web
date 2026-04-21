@@ -94,17 +94,24 @@ export default function Leaderboards({
 
     setIsLoading(true);
     setError(null);
+    let mounted = true;
 
     if (scope === LEADERBOARD_SCOPES.FRIENDS) {
-      api.getFriendsLeaderboard(selectedLeaderboardKey, period.fromStr, period.toStr, handleData);
+      api
+        .getFriendsLeaderboard(selectedLeaderboardKey, period.fromStr, period.toStr, { onError: "dialog" })
+        .then((data) => { if (mounted) handleData(data); });
     } else if (scope === LEADERBOARD_SCOPES.COHORT) {
       if (!selectedCohort) {
         setLeaderboardData([]);
         setIsLoading(false);
         return;
       }
-      api.getCohortLeaderboard(selectedCohort, selectedLeaderboardKey, period.fromStr, period.toStr, handleData);
+      api
+        .getCohortLeaderboard(selectedCohort, selectedLeaderboardKey, period.fromStr, period.toStr, { onError: "dialog" })
+        .then((data) => { if (mounted) handleData(data); });
     }
+
+    return () => { mounted = false; };
   }, [api, selectedLeaderboardKey, period.fromStr, period.toStr, scope, selectedCohort]);
 
   useEffect(() => {

@@ -55,14 +55,19 @@ export default function Badges({ username }) {
   };
 
   useEffect(() => {
+    let mounted = true;
     setIsLoading(true);
     setError(null);
 
-    if (username) {
-      api.getBadgesForFriend(username, fetchBadgesCallback);
-    } else {
-      api.getBadgesForUser(fetchBadgesCallback);
-    }
+    const fetchPromise = username
+      ? api.getBadgesForFriend(username, { onError: "dialog" })
+      : api.getBadgesForUser({ onError: "dialog" });
+
+    fetchPromise.then((data) => {
+      if (mounted) fetchBadgesCallback(data);
+    });
+
+    return () => { mounted = false; };
   }, [api, username]);
 
   const getIcon = (badge) => (badge.icon_name ? iconBasePath + badge.icon_name : defaultLogoPath);

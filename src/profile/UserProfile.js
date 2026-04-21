@@ -109,7 +109,9 @@ export default function UserProfile() {
 
     setIsOwnProfile(false);
     setFriendDetailsError(null);
-    api.getFriendDetails(friendUsername, (data) => {
+    let mounted = true;
+    api.getFriendDetails(friendUsername, { onError: "silent" }).then((data) => {
+      if (!mounted) return;
       if (!data || data.error) {
         updateProfileView({}, data?.error || "Failed to fetch profile.", strings.titleUserProfileDefault);
         setLoadingProfileDetails(false);
@@ -124,6 +126,7 @@ export default function UserProfile() {
         api.getAllLanguageStreaksDetailedForFriend(friendUsername, activeLanguagesCallback);
       }
     });
+    return () => { mounted = false; };
   }, [api, userDetails, friendUsername]);
 
   const updateProfileFriendship = (newFriendship) => {
@@ -133,86 +136,45 @@ export default function UserProfile() {
   const handleSendFriendRequest = () => {
     api
       .sendFriendRequest(friendUsername)
-      .then((response) => {
-        if (response.status === 200) {
-          updateProfileFriendship({ is_accepted: false, sender_username: null });
-        } else {
-          response.json().then((json) => {
-            setFriendDetailsError(json.error || "Failed to send friend request.");
-          });
-        }
-      })
-      .catch(() => {
-        setFriendDetailsError("Failed to send friend request.");
+      .then(() => { updateProfileFriendship({ is_accepted: false, sender_username: null }); })
+      .catch((error) => {
+        setFriendDetailsError(error.response?.data?.error || "Failed to send friend request.");
       });
   };
 
   const handleCancelFriendRequest = () => {
     api
       .deleteFriendRequest(friendUsername)
-      .then((response) => {
-        if (response.status === 200) {
-          updateProfileFriendship(null);
-        } else {
-          response.json().then((json) => {
-            setFriendDetailsError(json.message || "Failed to cancel friend request.");
-          });
-        }
-      })
-      .catch(() => {
-        setFriendDetailsError("Failed to cancel friend request.");
+      .then(() => { updateProfileFriendship(null); })
+      .catch((error) => {
+        setFriendDetailsError(error.response?.data?.message || "Failed to cancel friend request.");
       });
   };
 
   const handleAcceptFriendRequest = () => {
     api
       .acceptFriendRequest(friendUsername)
-      .then((response) => {
-        if (response.status === 200) {
-          updateProfileFriendship({ is_accepted: true });
-        } else {
-          response.json().then((json) => {
-            setFriendDetailsError(json.message || "Failed to accept friend request.");
-          });
-        }
-      })
-      .catch(() => {
-        setFriendDetailsError("Failed to accept friend request.");
+      .then(() => { updateProfileFriendship({ is_accepted: true }); })
+      .catch((error) => {
+        setFriendDetailsError(error.response?.data?.message || "Failed to accept friend request.");
       });
   };
 
   const handleRejectFriendRequest = () => {
     api
       .rejectFriendRequest(friendUsername)
-      .then((response) => {
-        if (response.status === 200) {
-          updateProfileFriendship(null);
-        } else {
-          response.json().then((json) => {
-            setFriendDetailsError(json.message || "Failed to reject friend request.");
-          });
-        }
-      })
-      .catch(() => {
-        setFriendDetailsError("Failed to reject friend request.");
+      .then(() => { updateProfileFriendship(null); })
+      .catch((error) => {
+        setFriendDetailsError(error.response?.data?.message || "Failed to reject friend request.");
       });
   };
 
   const handleUnfriend = () => {
     api
       .unfriend(friendUsername)
-      .then((response) => {
-        if (response.status === 200) {
-          setUnfriendModalOpen(false);
-          updateProfileFriendship(null);
-        } else {
-          response.json().then((json) => {
-            setFriendDetailsError(json.message || "Failed to unfriend user.");
-          });
-        }
-      })
-      .catch(() => {
-        setFriendDetailsError("Failed to unfriend user.");
+      .then(() => { setUnfriendModalOpen(false); updateProfileFriendship(null); })
+      .catch((error) => {
+        setFriendDetailsError(error.response?.data?.message || "Failed to unfriend user.");
       });
   };
 
