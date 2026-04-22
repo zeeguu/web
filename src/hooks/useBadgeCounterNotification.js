@@ -1,5 +1,4 @@
 import { useContext, useEffect, useState } from "react";
-import { useLocation } from "react-router-dom/cjs/react-router-dom";
 import { APIContext } from "../contexts/APIContext";
 
 export default function useBadgeCounterNotification() {
@@ -11,8 +10,6 @@ export default function useBadgeCounterNotification() {
 
   useEffect(() => {
     updateBadgeCounter();
-
-    // eslint-disable-next-line
   }, [path]);
 
   function updateBadgeCounter() {
@@ -26,5 +23,6 @@ export default function useBadgeCounterNotification() {
   return {
     hasBadgeNotification,
     totalNumberOfBadges,
+    updateBadgeCounter,
   };
 }

@@ -29,9 +29,7 @@ export default function Badges({ username }) {
     const processedActivityTypes = data.map((activity_type) => {
       const processedBadges = activity_type.badges.map((lvl) => ({
         ...lvl,
-        description: lvl.description
-          ? lvl.description.replace("{threshold}", lvl.threshold)
-          : activity_type.description.replace("{threshold}", lvl.threshold),
+        description: lvl.description?.replace("{threshold}", lvl.threshold) ?? ""
       }));
 
       processedBadges.forEach((badge) => {
