@@ -2,6 +2,7 @@ import { useContext, useEffect, useState } from "react";
 import { APIContext } from "../contexts/APIContext";
 
 export default function useBadgeCounterNotification() {
+  const path = useLocation().pathname;
   const api = useContext(APIContext);
 
   const [hasBadgeNotification, setHasBadgeNotification] = useState(false);
@@ -9,7 +10,7 @@ export default function useBadgeCounterNotification() {
 
   useEffect(() => {
     updateBadgeCounter();
-  }, []);
+  }, [path]);
 
   function updateBadgeCounter() {
     api.getNotShownUserBadges((badgeCount) => {
