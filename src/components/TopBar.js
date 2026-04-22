@@ -15,6 +15,7 @@ import { BadgeCounterContext } from "../badges/BadgeCounterContext";
 import { FriendRequestContext } from "../contexts/FriendRequestContext";
 import NotificationIcon from "./NotificationIcon";
 import Feature from "../features/Feature";
+import UpgradeAccountModal from "./UpgradeAccountModal";
 
 export default function TopBar() {
   const { userDetails } = useContext(UserContext);
@@ -36,6 +37,17 @@ export default function TopBar() {
   const closeLanguageModal = useCallback(() => setShowLanguageModal(false), []);
   const openLanguageModal = useCallback(() => setShowLanguageModal(true), []);
 
+  const isAnonymous = userDetails?.is_anonymous;
+  const [showUpgradeModal, setShowUpgradeModal] = useState(false);
+
+  const handleProfileClick = () => {
+    if (isAnonymous) {
+      setShowUpgradeModal(true);
+      return;
+    }
+    history.push("/profile");
+  };
+
   return (
     <>
       <s.TopBarContainer>
@@ -50,7 +62,7 @@ export default function TopBar() {
         />
         {Feature.has_gamification() && (
           <s.ProfileAvatarButton
-            onClick={() => history.push("/profile")}
+            onClick={handleProfileClick}
             aria-label="Go to profile"
           >
             <s.TopBarNavAvatar $backgroundColor={avatarBackgroundColor}>
@@ -65,6 +77,13 @@ export default function TopBar() {
       <LanguageModal
         open={showLanguageModal}
         setOpen={closeLanguageModal}
+      />
+      <UpgradeAccountModal
+        open={showUpgradeModal}
+        onClose={() => setShowUpgradeModal(false)}
+        onSuccess={() => {}}
+        triggerReason="profile"
+        bookmarkCount={userDetails?.bookmark_count || 0}
       />
     </>
   );

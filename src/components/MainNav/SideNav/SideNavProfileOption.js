@@ -17,6 +17,7 @@ import { BadgeCounterContext } from "../../../badges/BadgeCounterContext";
 import NotificationIcon from "../../../components/NotificationIcon";
 import { FriendRequestContext } from "../../../contexts/FriendRequestContext";
 import Feature from "../../../features/Feature";
+import UpgradeAccountModal from "../../UpgradeAccountModal";
 
 const NavAvatar = styled(AvatarBackground)`
   width: 2rem;
@@ -33,6 +34,17 @@ export default function SideNavProfileOption({ screenWidth, onClick = () => {} }
   const [avatarCharacterId, setAvatarCharacterId] = useState();
   const [avatarCharacterColor, setAvatarCharacterColor] = useState();
   const [avatarBackgroundColor, setAvatarBackgroundColor] = useState();
+  const isAnonymous = userDetails?.is_anonymous;
+  const [showUpgradeModal, setShowUpgradeModal] = useState(false);
+
+  const handleProfileClick = (e) => {
+    if (isAnonymous) {
+      e.preventDefault();
+      setShowUpgradeModal(true);
+      return;
+    }
+    onClick();
+  };
 
   useEffect(() => {
     setAvatarCharacterId(validatedAvatarCharacterId(userDetails.user_avatar?.image_name));
@@ -45,38 +57,47 @@ export default function SideNavProfileOption({ screenWidth, onClick = () => {} }
   }
 
   return (
-    <NavOption
-      linkTo={NavigationOptions.profile.linkTo}
-      overflowEnabled={true}
-      onClick={onClick}
-      icon={
-        <NavAvatar
-          $backgroundColor={avatarBackgroundColor}
-          $isActive={isNavOptionActive(NavigationOptions.profile.linkTo, path)}
-        >
-          <AvatarImage $imageSource={AVATAR_IMAGE_MAP[avatarCharacterId]} $color={avatarCharacterColor} />
-        </NavAvatar>
-      }
-      text={
-        <div
-          style={{
-            color: isActive ? avatarCharacterColor : undefined,
-            overflow: "hidden",
-            whiteSpace: "nowrap",
-            textOverflow: "ellipsis",
-            maxWidth: "100%",
-          }}
-        >
-          {userDetails?.username || "Profile"}
-        </div>
-      }
-      currentPath={path}
-      screenWidth={screenWidth}
-      notification={
-        (hasBadgeNotification || hasFriendRequestNotification) && (
-          <NotificationIcon position={"top"} text={totalNumberOfBadges + friendRequestCount} />
-        )
-      }
-    />
+    <>
+      <NavOption
+        linkTo={NavigationOptions.profile.linkTo}
+        overflowEnabled={true}
+        onClick={handleProfileClick}
+        icon={
+          <NavAvatar
+            $backgroundColor={avatarBackgroundColor}
+            $isActive={isNavOptionActive(NavigationOptions.profile.linkTo, path)}
+          >
+            <AvatarImage $imageSource={AVATAR_IMAGE_MAP[avatarCharacterId]} $color={avatarCharacterColor} />
+          </NavAvatar>
+        }
+        text={
+          <div
+            style={{
+              color: isActive ? avatarCharacterColor : undefined,
+              overflow: "hidden",
+              whiteSpace: "nowrap",
+              textOverflow: "ellipsis",
+              maxWidth: "100%",
+            }}
+          >
+            {userDetails?.username || "Profile"}
+          </div>
+        }
+        currentPath={path}
+        screenWidth={screenWidth}
+        notification={
+          (hasBadgeNotification || hasFriendRequestNotification) && (
+            <NotificationIcon position={"top"} text={totalNumberOfBadges + friendRequestCount} />
+          )
+        }
+      />
+      <UpgradeAccountModal
+        open={showUpgradeModal}
+        onClose={() => setShowUpgradeModal(false)}
+        onSuccess={() => {}}
+        triggerReason="profile"
+        bookmarkCount={userDetails?.bookmark_count || 0}
+      />
+    </>
   );
 }
