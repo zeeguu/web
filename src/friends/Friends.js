@@ -5,6 +5,7 @@ import { APIContext } from "../contexts/APIContext";
 import strings from "../i18n/definitions";
 import FriendRow from "./FriendRow";
 import { FriendRequestContext } from "../contexts/FriendRequestContext";
+import useFriendActions from "../hooks/useFriendActions";
 import * as s from "./Friends.sc";
 
 export default function Friends({ friendUsername, navigationHandler }) {
@@ -30,6 +31,8 @@ export default function Friends({ friendUsername, navigationHandler }) {
   const [friendsFriendsError, setFriendsFriendsError] = useState(null);
 
   const { updateFriendRequestCounter } = useContext(FriendRequestContext);
+  const { sendFriendRequest, cancelFriendRequest, acceptFriendRequest, rejectFriendRequest } =
+    useFriendActions();
 
   useEffect(() => {
     if (friendUsername) return;
@@ -113,93 +116,78 @@ export default function Friends({ friendUsername, navigationHandler }) {
   const handleSendFriendRequest = (event, receiverUsername) => {
     event.stopPropagation();
     setSendingRequestUsername(receiverUsername);
-    api
-      .sendFriendRequest(receiverUsername)
-      .then((response) => {
+    sendFriendRequest({
+      username: receiverUsername,
+      fallbackMessage: strings.failedToSendFriendRequest,
+      onSuccess: () => {
+        setSentRequests((prev) =>
+          prev.includes(receiverUsername) ? prev : [...prev, receiverUsername],
+        );
+      },
+      onError: (message) => {
+        toast.error(message || strings.failedToSendFriendRequest);
+      },
+      onSettled: () => {
         setSendingRequestUsername(null);
-        if (response.status === 200) {
-          setSentRequests((prev) => [...prev, receiverUsername]);
-        } else {
-          response.json().then((json) => {
-            toast.error(json.error || strings.failedToSendFriendRequest);
-          });
-        }
-      })
-      .catch(() => {
-        setSendingRequestUsername(null);
-        toast.error(strings.failedToSendFriendRequest);
-      });
+      },
+    });
   };
 
   const handleCancelFriendRequest = (event, receiverUsername) => {
     event.stopPropagation();
-    api
-      .deleteFriendRequest(receiverUsername)
-      .then((response) => {
-        if (response.status === 200) {
-          setSentRequests((prev) => prev.filter((username) => username !== receiverUsername));
-          setSearchResults((prev) =>
-            prev.map((user) =>
-              user.username === receiverUsername
-                ? {
-                    ...user,
-                    friend_request: null,
-                    friendship: null,
-                  }
-                : user,
-            ),
-          );
-        } else {
-          response.json().then((json) => {
-            toast.error(json.message || strings.failedToCancelFriendRequest);
-          });
-        }
-      })
-      .catch(() => {
-        toast.error(strings.failedToCancelFriendRequest);
-      });
+    cancelFriendRequest({
+      username: receiverUsername,
+      fallbackMessage: strings.failedToCancelFriendRequest,
+      onSuccess: () => {
+        setSentRequests((prev) => prev.filter((username) => username !== receiverUsername));
+        setSearchResults((prev) =>
+          prev.map((user) =>
+            user.username === receiverUsername
+              ? {
+                  ...user,
+                  friend_request: null,
+                  friendship: null,
+                }
+              : user,
+          ),
+        );
+      },
+      onError: (message) => {
+        toast.error(message || strings.failedToCancelFriendRequest);
+      },
+    });
   };
 
   const handleAcceptFriendRequest = (event, senderUsername) => {
     event.stopPropagation();
-    api
-      .acceptFriendRequest(senderUsername)
-      .then((response) => {
-        if (response.status === 200) {
-          setFriendRequests((prev) =>
-            prev.map((req) =>
-              req.sender.username === senderUsername ? { ...req, is_accepted: true } : req,
-            ),
-          );
-          updateFriendRequestCounter();
-        } else {
-          response.json().then((json) => {
-            toast.error(json.message || strings.failedToAcceptFriendRequest);
-          });
-        }
-      })
-      .catch(() => {
-        toast.error(strings.failedToAcceptFriendRequest);
-      });
+    acceptFriendRequest({
+      username: senderUsername,
+      fallbackMessage: strings.failedToAcceptFriendRequest,
+      onSuccess: () => {
+        setFriendRequests((prev) =>
+          prev.map((req) => (req.sender.username === senderUsername ? { ...req, is_accepted: true } : req)),
+        );
+        updateFriendRequestCounter();
+      },
+      onError: (message) => {
+        toast.error(message || strings.failedToAcceptFriendRequest);
+      },
+    });
   };
 
   const handleRejectFriendRequest = (event, senderUsername) => {
     event.stopPropagation();
-    api
-      .rejectFriendRequest(senderUsername)
-      .then((response) => {
-        if (response.status === 200) {
-          setFriendRequests((prev) => prev.filter((req) => req.sender.username !== senderUsername));
-          updateFriendRequestCounter();
-        } else {
-          response.json().then((json) => {
-            toast.error(json.message || strings.failedToRejectFriendRequest);
-          });
-        }
-      })
-      .catch(() => {
-        toast.error(strings.failedToRejectFriendRequest);
-      });
+    rejectFriendRequest({
+      username: senderUsername,
+      fallbackMessage: strings.failedToRejectFriendRequest,
+      onSuccess: () => {
+        setFriendRequests((prev) => prev.filter((req) => req.sender.username !== senderUsername));
+        updateFriendRequestCounter();
+      },
+      onError: (message) => {
+        toast.error(message || strings.failedToRejectFriendRequest);
+      },
+    });
   };
 
   const handleViewFriendProfile = (friendUsername) => {
