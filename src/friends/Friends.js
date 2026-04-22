@@ -2,6 +2,7 @@ import { useContext, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import SearchBar from "../components/SearchBar";
 import { APIContext } from "../contexts/APIContext";
+import strings from "../i18n/definitions";
 import FriendRow from "./FriendRow";
 import { FriendRequestContext } from "../contexts/FriendRequestContext";
 
@@ -119,13 +120,13 @@ export default function Friends({ friendUsername, navigationHandler }) {
           setSentRequests((prev) => [...prev, receiverUsername]);
         } else {
           response.json().then((json) => {
-            toast.error(json.error || "Failed to send friend request.");
+            toast.error(json.error || strings.failedToSendFriendRequest);
           });
         }
       })
       .catch(() => {
         setSendingRequestUsername(null);
-        toast.error("Failed to send friend request.");
+        toast.error(strings.failedToSendFriendRequest);
       });
   };
 
@@ -149,12 +150,12 @@ export default function Friends({ friendUsername, navigationHandler }) {
           );
         } else {
           response.json().then((json) => {
-            toast.error(json.message || "Failed to cancel friend request.");
+            toast.error(json.message || strings.failedToCancelFriendRequest);
           });
         }
       })
       .catch(() => {
-        toast.error("Failed to cancel friend request.");
+        toast.error(strings.failedToCancelFriendRequest);
       });
   };
 
@@ -172,12 +173,12 @@ export default function Friends({ friendUsername, navigationHandler }) {
           updateFriendRequestCounter();
         } else {
           response.json().then((json) => {
-            toast.error(json.message || "Failed to accept friend request.");
+            toast.error(json.message || strings.failedToAcceptFriendRequest);
           });
         }
       })
       .catch(() => {
-        toast.error("Failed to accept friend request.");
+        toast.error(strings.failedToAcceptFriendRequest);
       });
   };
 
@@ -191,12 +192,12 @@ export default function Friends({ friendUsername, navigationHandler }) {
           updateFriendRequestCounter();
         } else {
           response.json().then((json) => {
-            toast.error(json.message || "Failed to reject friend request.");
+            toast.error(json.message || strings.failedToRejectFriendRequest);
           });
         }
       })
       .catch(() => {
-        toast.error("Failed to reject friend request.");
+        toast.error(strings.failedToRejectFriendRequest);
       });
   };
 
@@ -212,11 +213,11 @@ export default function Friends({ friendUsername, navigationHandler }) {
       {/* Friend-of-friend read-only view */}
       {friendUsername ? (
         <>
-          <h3>Friends</h3>
-          {loadingFriendsFriends && <p>Loading friends...</p>}
+          <h3>{strings.friends}</h3>
+          {loadingFriendsFriends && <p>{strings.loadingFriends}</p>}
           {friendsFriendsError && <p style={{ color: "red" }}>{friendsFriendsError}</p>}
           {!loadingFriendsFriends && !friendsFriendsError && friendsFriends.length === 0 && (
-            <p>This user has no friends yet.</p>
+            <p>{strings.noFriendsForUser}</p>
           )}
           {friendsFriends.length > 0 && (
             <ul style={{ padding: 0 }}>
@@ -237,7 +238,7 @@ export default function Friends({ friendUsername, navigationHandler }) {
             <SearchBar
               value={pendingSearch}
               onChange={(e) => setPendingSearch(e.target.value)}
-              placeholder="Search for users..."
+              placeholder={strings.searchForUsersPlaceholder}
               onSearch={() => handlePendingSearchChange(true)}
             />
           </div>
@@ -247,12 +248,12 @@ export default function Friends({ friendUsername, navigationHandler }) {
           {/* Only show Users section when searching */}
           {pendingSearch ? (
             <div>
-              <h3>Users</h3>
+              <h3>{strings.users}</h3>
               {searchResults.length === 0 && searchingNewFriends === null && (
-                <p>Continue typing or press Enter to search...</p>
+                <p>{strings.continueTypingToSearch}</p>
               )}
-              {searchResults.length === 0 && searchingNewFriends === true && <p>Searching...</p>}
-              {searchResults.length === 0 && searchingNewFriends === false && <p>No users...</p>}
+              {searchResults.length === 0 && searchingNewFriends === true && <p>{strings.searching}</p>}
+              {searchResults.length === 0 && searchingNewFriends === false && <p>{strings.noUsers}</p>}
               {searchResults.length > 0 && (
                 <ul style={{ padding: 0 }}>
                   {searchResults.map((searchResult, index) => {
@@ -277,7 +278,7 @@ export default function Friends({ friendUsername, navigationHandler }) {
               {/* Friend Requests section only if there are requests */}
               {!loadingRequests && friendRequests.length > 0 && (
                 <div>
-                  <h3>Friend Requests</h3>
+                  <h3>{strings.friendRequests}</h3>
                   {requestsError && <p style={{ color: "red" }}>{requestsError}</p>}
                   <ul style={{ padding: 0, marginBottom: "2rem" }}>
                     {friendRequests.map((req, index) => (
@@ -295,10 +296,10 @@ export default function Friends({ friendUsername, navigationHandler }) {
                 </div>
               )}
 
-              <h3>Friends</h3>
-              {loadingFriends && <p>Loading friends...</p>}
+              <h3>{strings.friends}</h3>
+              {loadingFriends && <p>{strings.loadingFriends}</p>}
               {friendsError && <p style={{ color: "red" }}>{friendsError}</p>}
-              {!loadingFriends && !friendsError && friends.length === 0 && <p>You have no friends yet.</p>}
+              {!loadingFriends && !friendsError && friends.length === 0 && <p>{strings.noFriendsYet}</p>}
               {!loadingFriends && friends.length > 0 && (
                 <ul style={{ padding: 0 }}>
                   {friends.map((friend, index) => (
