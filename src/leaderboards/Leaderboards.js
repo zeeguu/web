@@ -1,4 +1,5 @@
 import React, { useContext, useEffect, useMemo, useState } from "react";
+import strings from "../i18n/definitions";
 import ChevronLeftRoundedIcon from "@mui/icons-material/ChevronLeftRounded";
 import ChevronRightRoundedIcon from "@mui/icons-material/ChevronRightRounded";
 import LeaderboardRow from "./LeaderboardRow";
@@ -47,8 +48,8 @@ function computeWeeklyPeriod(weekShift = 0) {
 }
 
 export default function Leaderboards({
-  emptyMessage = "No leaderboard data available yet.",
-  errorMessage = "Could not load leaderboard.",
+  emptyMessage = strings.noLeaderboardData,
+  errorMessage = strings.couldNotLoadLeaderboard,
   scope,
   leaderboardTypes = LEADERBOARD_TYPES,
   navigationHandler,
@@ -124,8 +125,8 @@ export default function Leaderboards({
     const sorted = [...data].sort((a, b) => {
       const valueDiff = getMetricValue(b) - getMetricValue(a);
       if (valueDiff !== 0) return valueDiff;
-      const usernameA = a.user?.username.toLowerCase();
-      const usernameB = b.user?.username.toLowerCase();
+      const usernameA = a.user?.username?.toLowerCase() ?? "";
+      const usernameB = b.user?.username?.toLowerCase() ?? "";
       return usernameA.localeCompare(usernameB);
     });
 
@@ -218,12 +219,12 @@ export default function Leaderboards({
             onChange={(e) => setSelectedCohort(Number(e.target.value))}
             optionLabel={(option) => option.label}
             optionValue={(option) => option.value}
-            placeholder="Select a classroom"
+            placeholder={strings.selectClassroom}
           />
         </div>
       )}
 
-      {isLoading && <p>Loading leaderboard...</p>}
+      {isLoading && <p>{strings.loadingLeaderboard}</p>}
       {!isLoading && error && <p style={{ color: "#b00020" }}>{error}</p>}
       {!isLoading && !error && leaderboardData.length === 0 && <p>{emptyMessage}</p>}
 
@@ -231,8 +232,8 @@ export default function Leaderboards({
         <s.Table>
           <thead>
             <tr>
-              <s.TableHeadCell style={{ width: "10%" }}>Rank</s.TableHeadCell>
-              <s.TableHeadCell style={{ width: "65%" }}>User</s.TableHeadCell>
+              <s.TableHeadCell style={{ width: "10%" }}>{strings.leaderboardRank}</s.TableHeadCell>
+              <s.TableHeadCell style={{ width: "65%" }}>{strings.leaderboardUser}</s.TableHeadCell>
               <s.TableHeadCell style={{ width: "25%" }}>{activeLeaderboard?.metricLabel}</s.TableHeadCell>
             </tr>
           </thead>

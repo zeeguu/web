@@ -2,8 +2,11 @@ import { useContext, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import SearchBar from "../components/SearchBar";
 import { APIContext } from "../contexts/APIContext";
+import strings from "../i18n/definitions";
 import FriendRow from "./FriendRow";
 import { FriendRequestContext } from "../contexts/FriendRequestContext";
+import useFriendActions from "../hooks/useFriendActions";
+import * as s from "./Friends.sc";
 
 export default function Friends({ friendUsername, navigationHandler }) {
   const api = useContext(APIContext);
@@ -28,6 +31,8 @@ export default function Friends({ friendUsername, navigationHandler }) {
   const [friendsFriendsError, setFriendsFriendsError] = useState(null);
 
   const { updateFriendRequestCounter } = useContext(FriendRequestContext);
+  const { sendFriendRequest, cancelFriendRequest, acceptFriendRequest, rejectFriendRequest } =
+    useFriendActions();
 
   useEffect(() => {
     if (friendUsername) return;
@@ -111,93 +116,78 @@ export default function Friends({ friendUsername, navigationHandler }) {
   const handleSendFriendRequest = (event, receiverUsername) => {
     event.stopPropagation();
     setSendingRequestUsername(receiverUsername);
-    api
-      .sendFriendRequest(receiverUsername)
-      .then((response) => {
+    sendFriendRequest({
+      username: receiverUsername,
+      fallbackMessage: strings.failedToSendFriendRequest,
+      onSuccess: () => {
+        setSentRequests((prev) =>
+          prev.includes(receiverUsername) ? prev : [...prev, receiverUsername],
+        );
+      },
+      onError: (message) => {
+        toast.error(message || strings.failedToSendFriendRequest);
+      },
+      onSettled: () => {
         setSendingRequestUsername(null);
-        if (response.status === 200) {
-          setSentRequests((prev) => [...prev, receiverUsername]);
-        } else {
-          response.json().then((json) => {
-            toast.error(json.error || "Failed to send friend request.");
-          });
-        }
-      })
-      .catch(() => {
-        setSendingRequestUsername(null);
-        toast.error("Failed to send friend request.");
-      });
+      },
+    });
   };
 
   const handleCancelFriendRequest = (event, receiverUsername) => {
     event.stopPropagation();
-    api
-      .deleteFriendRequest(receiverUsername)
-      .then((response) => {
-        if (response.status === 200) {
-          setSentRequests((prev) => prev.filter((username) => username !== receiverUsername));
-          setSearchResults((prev) =>
-            prev.map((user) =>
-              user.username === receiverUsername
-                ? {
-                    ...user,
-                    friend_request: null,
-                    friendship: null,
-                  }
-                : user,
-            ),
-          );
-        } else {
-          response.json().then((json) => {
-            toast.error(json.message || "Failed to cancel friend request.");
-          });
-        }
-      })
-      .catch(() => {
-        toast.error("Failed to cancel friend request.");
-      });
+    cancelFriendRequest({
+      username: receiverUsername,
+      fallbackMessage: strings.failedToCancelFriendRequest,
+      onSuccess: () => {
+        setSentRequests((prev) => prev.filter((username) => username !== receiverUsername));
+        setSearchResults((prev) =>
+          prev.map((user) =>
+            user.username === receiverUsername
+              ? {
+                  ...user,
+                  friend_request: null,
+                  friendship: null,
+                }
+              : user,
+          ),
+        );
+      },
+      onError: (message) => {
+        toast.error(message || strings.failedToCancelFriendRequest);
+      },
+    });
   };
 
   const handleAcceptFriendRequest = (event, senderUsername) => {
     event.stopPropagation();
-    api
-      .acceptFriendRequest(senderUsername)
-      .then((response) => {
-        if (response.status === 200) {
-          setFriendRequests((prev) =>
-            prev.map((req) =>
-              req.sender.username === senderUsername ? { ...req, is_accepted: true } : req,
-            ),
-          );
-          updateFriendRequestCounter();
-        } else {
-          response.json().then((json) => {
-            toast.error(json.message || "Failed to accept friend request.");
-          });
-        }
-      })
-      .catch(() => {
-        toast.error("Failed to accept friend request.");
-      });
+    acceptFriendRequest({
+      username: senderUsername,
+      fallbackMessage: strings.failedToAcceptFriendRequest,
+      onSuccess: () => {
+        setFriendRequests((prev) =>
+          prev.map((req) => (req.sender.username === senderUsername ? { ...req, is_accepted: true } : req)),
+        );
+        updateFriendRequestCounter();
+      },
+      onError: (message) => {
+        toast.error(message || strings.failedToAcceptFriendRequest);
+      },
+    });
   };
 
   const handleRejectFriendRequest = (event, senderUsername) => {
     event.stopPropagation();
-    api
-      .rejectFriendRequest(senderUsername)
-      .then((response) => {
-        if (response.status === 200) {
-          setFriendRequests((prev) => prev.filter((req) => req.sender.username !== senderUsername));
-          updateFriendRequestCounter();
-        } else {
-          response.json().then((json) => {
-            toast.error(json.message || "Failed to reject friend request.");
-          });
-        }
-      })
-      .catch(() => {
-        toast.error("Failed to reject friend request.");
-      });
+    rejectFriendRequest({
+      username: senderUsername,
+      fallbackMessage: strings.failedToRejectFriendRequest,
+      onSuccess: () => {
+        setFriendRequests((prev) => prev.filter((req) => req.sender.username !== senderUsername));
+        updateFriendRequestCounter();
+      },
+      onError: (message) => {
+        toast.error(message || strings.failedToRejectFriendRequest);
+      },
+    });
   };
 
   const handleViewFriendProfile = (friendUsername) => {
@@ -212,14 +202,14 @@ export default function Friends({ friendUsername, navigationHandler }) {
       {/* Friend-of-friend read-only view */}
       {friendUsername ? (
         <>
-          <h3>Friends</h3>
-          {loadingFriendsFriends && <p>Loading friends...</p>}
-          {friendsFriendsError && <p style={{ color: "red" }}>{friendsFriendsError}</p>}
+          <h3>{strings.friends}</h3>
+          {loadingFriendsFriends && <p>{strings.loadingFriends}</p>}
+          {friendsFriendsError && <s.ErrorText>{friendsFriendsError}</s.ErrorText>}
           {!loadingFriendsFriends && !friendsFriendsError && friendsFriends.length === 0 && (
-            <p>This user has no friends yet.</p>
+            <p>{strings.noFriendsForUser}</p>
           )}
           {friendsFriends.length > 0 && (
-            <ul style={{ padding: 0 }}>
+            <s.UnstyledList>
               {friendsFriends.map((friend, index) => (
                 <FriendRow
                   key={`friend-${index}`}
@@ -228,33 +218,33 @@ export default function Friends({ friendUsername, navigationHandler }) {
                   onViewProfile={handleViewFriendProfile}
                 />
               ))}
-            </ul>
+            </s.UnstyledList>
           )}
         </>
       ) : (
         <div>
-          <div style={{ display: "flex", alignItems: "center", gap: "1em" }}>
+          <s.SearchBarRow>
             <SearchBar
               value={pendingSearch}
               onChange={(e) => setPendingSearch(e.target.value)}
-              placeholder="Search for users..."
+              placeholder={strings.searchForUsersPlaceholder}
               onSearch={() => handlePendingSearchChange(true)}
             />
-          </div>
+          </s.SearchBarRow>
 
-          {newFriendError && <p style={{ color: "red" }}>{newFriendError}</p>}
+          {newFriendError && <s.ErrorText>{newFriendError}</s.ErrorText>}
 
           {/* Only show Users section when searching */}
           {pendingSearch ? (
             <div>
-              <h3>Users</h3>
+              <h3>{strings.users}</h3>
               {searchResults.length === 0 && searchingNewFriends === null && (
-                <p>Continue typing or press Enter to search...</p>
+                <p>{strings.continueTypingToSearch}</p>
               )}
-              {searchResults.length === 0 && searchingNewFriends === true && <p>Searching...</p>}
-              {searchResults.length === 0 && searchingNewFriends === false && <p>No users...</p>}
+              {searchResults.length === 0 && searchingNewFriends === true && <p>{strings.searching}</p>}
+              {searchResults.length === 0 && searchingNewFriends === false && <p>{strings.noUsers}</p>}
               {searchResults.length > 0 && (
-                <ul style={{ padding: 0 }}>
+                <s.UnstyledList>
                   {searchResults.map((searchResult, index) => {
                     return (
                       <FriendRow
@@ -269,7 +259,7 @@ export default function Friends({ friendUsername, navigationHandler }) {
                       />
                     );
                   })}
-                </ul>
+                </s.UnstyledList>
               )}
             </div>
           ) : (
@@ -277,9 +267,9 @@ export default function Friends({ friendUsername, navigationHandler }) {
               {/* Friend Requests section only if there are requests */}
               {!loadingRequests && friendRequests.length > 0 && (
                 <div>
-                  <h3>Friend Requests</h3>
-                  {requestsError && <p style={{ color: "red" }}>{requestsError}</p>}
-                  <ul style={{ padding: 0, marginBottom: "2rem" }}>
+                  <h3>{strings.friendRequests}</h3>
+                  {requestsError && <s.ErrorText>{requestsError}</s.ErrorText>}
+                  <s.UnstyledList $mb="2rem">
                     {friendRequests.map((req, index) => (
                       <FriendRow
                         key={`friend-request-${index}`}
@@ -291,16 +281,16 @@ export default function Friends({ friendUsername, navigationHandler }) {
                         onViewProfile={handleViewFriendProfile}
                       />
                     ))}
-                  </ul>
+                  </s.UnstyledList>
                 </div>
               )}
 
-              <h3>Friends</h3>
-              {loadingFriends && <p>Loading friends...</p>}
-              {friendsError && <p style={{ color: "red" }}>{friendsError}</p>}
-              {!loadingFriends && !friendsError && friends.length === 0 && <p>You have no friends yet.</p>}
+              <h3>{strings.friends}</h3>
+              {loadingFriends && <p>{strings.loadingFriends}</p>}
+              {friendsError && <s.ErrorText>{friendsError}</s.ErrorText>}
+              {!loadingFriends && !friendsError && friends.length === 0 && <p>{strings.noFriendsYet}</p>}
               {!loadingFriends && friends.length > 0 && (
-                <ul style={{ padding: 0 }}>
+                <s.UnstyledList>
                   {friends.map((friend, index) => (
                     <FriendRow
                       key={`friend-${index}`}
@@ -309,7 +299,7 @@ export default function Friends({ friendUsername, navigationHandler }) {
                       onViewProfile={handleViewFriendProfile}
                     />
                   ))}
-                </ul>
+                </s.UnstyledList>
               )}
             </>
           )}

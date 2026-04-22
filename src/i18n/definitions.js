@@ -592,6 +592,35 @@ let strings = new LocalizedStrings(
       titleUserProfilePostfix: "Profile",
       titleUserProfileDefault: "User's Profile",
 
+      // Badges
+      loadingBadges: "Loading badges...",
+      couldNotLoadBadges: "Could not load badges.",
+      badgeNewTag: "New",
+
+      // Friends
+      loadingFriends: "Loading friends...",
+      friends: "Friends",
+      noFriendsYet: "You have no friends yet.",
+      noFriendsForUser: "This user has no friends yet.",
+      friendRequests: "Friend Requests",
+      searchForUsersPlaceholder: "Search for users...",
+      users: "Users",
+      continueTypingToSearch: "Continue typing or press Enter to search...",
+      searching: "Searching...",
+      noUsers: "No users...",
+      failedToSendFriendRequest: "Failed to send friend request.",
+      failedToCancelFriendRequest: "Failed to cancel friend request.",
+      failedToAcceptFriendRequest: "Failed to accept friend request.",
+      failedToRejectFriendRequest: "Failed to reject friend request.",
+
+      // Leaderboards
+      loadingLeaderboard: "Loading leaderboard...",
+      noLeaderboardData: "No leaderboard data available yet.",
+      couldNotLoadLeaderboard: "Could not load leaderboard.",
+      leaderboardRank: "Rank",
+      leaderboardUser: "User",
+      selectClassroom: "Select a classroom",
+
       //Settings
       //Settings categories
       myAccount: "My Account",
@@ -1629,6 +1658,40 @@ let strings = new LocalizedStrings(
       exercisesInTheLast: " øvelser i en periode på ",
       wordsNotStudiedInZeeguu: "Ord ikke øvet i Zeeguu",
       systemLanguage: "Interface sprog",
+
+      // Profile
+      titleOwnProfile: "Din profil",
+      titleUserProfilePostfix: "Profil",
+      titleUserProfileDefault: "Brugers profil",
+
+      // Badges
+      loadingBadges: "Indlæser badges...",
+      couldNotLoadBadges: "Kunne ikke indlæse badges.",
+      badgeNewTag: "Ny",
+
+      // Friends
+      loadingFriends: "Indlæser venner...",
+      friends: "Venner",
+      noFriendsYet: "Du har ingen venner endnu.",
+      noFriendsForUser: "Denne bruger har ingen venner endnu.",
+      friendRequests: "Venneanmodninger",
+      searchForUsersPlaceholder: "Søg efter brugere...",
+      users: "Brugere",
+      continueTypingToSearch: "Fortsæt med at skrive eller tryk Enter for at søge...",
+      searching: "Søger...",
+      noUsers: "Ingen brugere...",
+      failedToSendFriendRequest: "Kunne ikke sende venneanmodning.",
+      failedToCancelFriendRequest: "Kunne ikke annullere venneanmodning.",
+      failedToAcceptFriendRequest: "Kunne ikke acceptere venneanmodning.",
+      failedToRejectFriendRequest: "Kunne ikke afvise venneanmodning.",
+
+      // Leaderboards
+      loadingLeaderboard: "Indlæser rangliste...",
+      noLeaderboardData: "Ingen ranglistedata tilgængelig endnu.",
+      couldNotLoadLeaderboard: "Kunne ikke indlæse rangliste.",
+      leaderboardRank: "Placering",
+      leaderboardUser: "Bruger",
+      selectClassroom: "Vælg en klasse",
     },
   },
   {
