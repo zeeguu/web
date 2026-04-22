@@ -75,7 +75,7 @@ export default function AppLayout(props) {
     if (path.startsWith("/profile")) {
       badgeCounter.updateBadgeCounter();
     }
-  });
+  }, [path]);
 
   // Scroll to top when navigating between main sections
   useEffect(() => {
