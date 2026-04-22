@@ -115,7 +115,7 @@ export default function UpgradeAccountModal({ open, onClose, onSuccess, triggerR
 
   const [password, setPassword, validatePassword, isPasswordValid, passwordMsg] = useFormField("", [
     NonEmptyValidator("Please enter a password"),
-    MinimumLengthValidator(4, "Password must be at least 4 characters"),
+    MinimumLengthValidator(3, "Password must be at least 4 characters"),
   ]);
 
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -249,7 +249,6 @@ export default function UpgradeAccountModal({ open, onClose, onSuccess, triggerR
     setConfirmCode("");
     setConfirmPassword("");
     setErrorMessage("");
-    LocalStorage.clearAnonUpgradePending();
     onClose();
   }
 
@@ -262,6 +261,7 @@ export default function UpgradeAccountModal({ open, onClose, onSuccess, triggerR
     if (triggerReason === "days") return "Welcome back!";
     if (triggerReason === "settings") return "Save Your Settings";
     if (triggerReason === "exercises") return "Great practice session!";
+    if (triggerReason === "profile") return "Create an Account to View Your Profile";
     return "Save Your Progress";
   };
 
