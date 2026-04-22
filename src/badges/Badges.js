@@ -8,7 +8,6 @@ import Main from "../components/modal_shared/Main.sc";
 
 export default function Badges({ username }) {
   const api = useContext(APIContext);
-  const { updateBadgeCounter } = useContext(BadgeCounterContext);
 
   const iconBasePath = "static/badges/";
   const defaultLogoPath = "static/images/zeeguuLogo.svg";
