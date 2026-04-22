@@ -1,6 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
 import { APIContext } from "../contexts/APIContext";
-import { BadgeCounterContext } from "./BadgeCounterContext";
 import * as s from "./Badges.sc.js";
 import Modal from "../components/modal_shared/Modal";
 import Header from "../components/modal_shared/Header.sc";
