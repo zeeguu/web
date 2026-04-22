@@ -1,5 +1,7 @@
 import styled from "styled-components";
 import { orange500, streakFireOrange } from "../components/colors";
+import { ErrorText } from "../components/usefulSnippets.sc";
+export { ErrorText };
 
 export const ProfileWrapper = styled.div`
   display: flex;
@@ -9,15 +11,6 @@ export const ProfileWrapper = styled.div`
 
 export const BackNavigation = styled.div`
   margin-bottom: 0.8rem;
-`;
-
-export const ErrorText = styled.p`
-  margin: 0.5rem 0;
-  color: #c0392b;
-
-  :root[data-theme="dark"] & {
-    color: #ff8a80;
-  }
 `;
 
 export const HeaderCard = styled.div`

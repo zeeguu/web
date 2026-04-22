@@ -5,6 +5,7 @@ import { APIContext } from "../contexts/APIContext";
 import strings from "../i18n/definitions";
 import FriendRow from "./FriendRow";
 import { FriendRequestContext } from "../contexts/FriendRequestContext";
+import * as s from "./Friends.sc";
 
 export default function Friends({ friendUsername, navigationHandler }) {
   const api = useContext(APIContext);
@@ -215,12 +216,12 @@ export default function Friends({ friendUsername, navigationHandler }) {
         <>
           <h3>{strings.friends}</h3>
           {loadingFriendsFriends && <p>{strings.loadingFriends}</p>}
-          {friendsFriendsError && <p style={{ color: "red" }}>{friendsFriendsError}</p>}
+          {friendsFriendsError && <s.ErrorText>{friendsFriendsError}</s.ErrorText>}
           {!loadingFriendsFriends && !friendsFriendsError && friendsFriends.length === 0 && (
             <p>{strings.noFriendsForUser}</p>
           )}
           {friendsFriends.length > 0 && (
-            <ul style={{ padding: 0 }}>
+            <s.UnstyledList>
               {friendsFriends.map((friend, index) => (
                 <FriendRow
                   key={`friend-${index}`}
@@ -229,21 +230,21 @@ export default function Friends({ friendUsername, navigationHandler }) {
                   onViewProfile={handleViewFriendProfile}
                 />
               ))}
-            </ul>
+            </s.UnstyledList>
           )}
         </>
       ) : (
         <div>
-          <div style={{ display: "flex", alignItems: "center", gap: "1em" }}>
+          <s.SearchBarRow>
             <SearchBar
               value={pendingSearch}
               onChange={(e) => setPendingSearch(e.target.value)}
               placeholder={strings.searchForUsersPlaceholder}
               onSearch={() => handlePendingSearchChange(true)}
             />
-          </div>
+          </s.SearchBarRow>
 
-          {newFriendError && <p style={{ color: "red" }}>{newFriendError}</p>}
+          {newFriendError && <s.ErrorText>{newFriendError}</s.ErrorText>}
 
           {/* Only show Users section when searching */}
           {pendingSearch ? (
@@ -255,7 +256,7 @@ export default function Friends({ friendUsername, navigationHandler }) {
               {searchResults.length === 0 && searchingNewFriends === true && <p>{strings.searching}</p>}
               {searchResults.length === 0 && searchingNewFriends === false && <p>{strings.noUsers}</p>}
               {searchResults.length > 0 && (
-                <ul style={{ padding: 0 }}>
+                <s.UnstyledList>
                   {searchResults.map((searchResult, index) => {
                     return (
                       <FriendRow
@@ -270,7 +271,7 @@ export default function Friends({ friendUsername, navigationHandler }) {
                       />
                     );
                   })}
-                </ul>
+                </s.UnstyledList>
               )}
             </div>
           ) : (
@@ -279,8 +280,8 @@ export default function Friends({ friendUsername, navigationHandler }) {
               {!loadingRequests && friendRequests.length > 0 && (
                 <div>
                   <h3>{strings.friendRequests}</h3>
-                  {requestsError && <p style={{ color: "red" }}>{requestsError}</p>}
-                  <ul style={{ padding: 0, marginBottom: "2rem" }}>
+                  {requestsError && <s.ErrorText>{requestsError}</s.ErrorText>}
+                  <s.UnstyledList $mb="2rem">
                     {friendRequests.map((req, index) => (
                       <FriendRow
                         key={`friend-request-${index}`}
@@ -292,16 +293,16 @@ export default function Friends({ friendUsername, navigationHandler }) {
                         onViewProfile={handleViewFriendProfile}
                       />
                     ))}
-                  </ul>
+                  </s.UnstyledList>
                 </div>
               )}
 
               <h3>{strings.friends}</h3>
               {loadingFriends && <p>{strings.loadingFriends}</p>}
-              {friendsError && <p style={{ color: "red" }}>{friendsError}</p>}
+              {friendsError && <s.ErrorText>{friendsError}</s.ErrorText>}
               {!loadingFriends && !friendsError && friends.length === 0 && <p>{strings.noFriendsYet}</p>}
               {!loadingFriends && friends.length > 0 && (
-                <ul style={{ padding: 0 }}>
+                <s.UnstyledList>
                   {friends.map((friend, index) => (
                     <FriendRow
                       key={`friend-${index}`}
@@ -310,7 +311,7 @@ export default function Friends({ friendUsername, navigationHandler }) {
                       onViewProfile={handleViewFriendProfile}
                     />
                   ))}
-                </ul>
+                </s.UnstyledList>
               )}
             </>
           )}
