@@ -124,8 +124,8 @@ export default function Leaderboards({
     const sorted = [...data].sort((a, b) => {
       const valueDiff = getMetricValue(b) - getMetricValue(a);
       if (valueDiff !== 0) return valueDiff;
-      const usernameA = a.user?.username.toLowerCase();
-      const usernameB = b.user?.username.toLowerCase();
+      const usernameA = a.user?.username?.toLowerCase() ?? "";
+      const usernameB = b.user?.username?.toLowerCase() ?? "";
       return usernameA.localeCompare(usernameB);
     });
 
