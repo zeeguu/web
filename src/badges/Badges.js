@@ -1,5 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import { APIContext } from "../contexts/APIContext";
+import strings from "../i18n/definitions";
 import * as s from "./Badges.sc.js";
 import Modal from "../components/modal_shared/Modal";
 import Header from "../components/modal_shared/Header.sc";
@@ -18,7 +19,7 @@ export default function Badges({ username }) {
 
   const fetchBadgesCallback = (data) => {
     if (!data || data.error) {
-      setError(data?.error || "Could not load badges.");
+      setError(data?.error || strings.couldNotLoadBadges);
       setIsLoading(false);
       return;
     }
@@ -94,7 +95,7 @@ export default function Badges({ username }) {
 
   return (
     <>
-      {isLoading && <p>Loading badges...</p>}
+      {isLoading && <p>{strings.loadingBadges}</p>}
       {!isLoading && error && <p style={{ color: "#b00020" }}>{error}</p>}
 
       {!isLoading && !error && (
@@ -104,7 +105,7 @@ export default function Badges({ username }) {
 
             return (
               <s.BadgeCard key={index} onClick={() => setSelectedActivityType(activityType)}>
-                {meta.hasNewBadge && <s.NewTag>NEW</s.NewTag>}
+                {meta.hasNewBadge && <s.NewTag>{strings.badgeNewTag}</s.NewTag>}
                 <s.IconContainer>
                   <s.BadgeIcon
                     src={getIcon(meta.iconLevel)}
@@ -164,7 +165,7 @@ export default function Badges({ username }) {
               <Main style={{ gap: "0" }}>
                 {selectedActivityType.badges.map((badge, i) => (
                   <s.LevelRow key={i} $achieved={badge.achieved} $isCurrent={badge === meta.nextLevel}>
-                    {badge.achieved && !badge.is_shown && <s.NewTag>New</s.NewTag>}
+                    {badge.achieved && !badge.is_shown && <s.NewTag>{strings.badgeNewTag}</s.NewTag>}
                     <s.LevelTitle>{badge.name}</s.LevelTitle>
                     <s.BadgeDescription>{badge.description}</s.BadgeDescription>
                     {badge.achieved ? (
