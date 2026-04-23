@@ -29,7 +29,7 @@ Zeeguu_API.prototype.addUser = function (invite_code, password, userInfo, onSucc
     headers: { "Content-Type": "application/x-www-form-urlencoded" },
     body:
       `password=${password}&invite_code=${invite_code}` +
-      `&username=${userInfo.name}` +
+      `&name=${userInfo.name}` +
       `&learned_language=${userInfo.learned_language}` +
       `&native_language=${userInfo.native_language}` +
       `&learned_cefr_level=${userInfo.learned_cefr_level}` +
@@ -64,7 +64,7 @@ Zeeguu_API.prototype.addBasicUser = function (invite_code, password, userInfo, o
     method: "POST",
     headers: { "Content-Type": "application/x-www-form-urlencoded" },
     body:
-      `password=${password}&invite_code=${invite_code}` + `&username=${userInfo.name}` + `&platform=${getPlatform()}`,
+      `password=${password}&invite_code=${invite_code}` + `&name=${userInfo.name}` + `&platform=${getPlatform()}`,
   })
     .then((response) => {
       if (response.ok) {
@@ -98,7 +98,6 @@ Zeeguu_API.prototype.logIn = function (email, password, onError, onSuccess) {
       // https://stackoverflow.com/a/45366905/1200070
       response.json().then((data) => {
         if (response.status === 200) {
-          console.log("GOT SESSOIN: " + data);
           this.session = data.session;
           onSuccess(data.session);
           return;
