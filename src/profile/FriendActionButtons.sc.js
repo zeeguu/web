@@ -13,6 +13,5 @@ export const FriendActionsContainer = styled.div`
     position: static;
     width: 100%;
     align-items: center;
-    margin-bottom: 0.75rem;
   }
 `;

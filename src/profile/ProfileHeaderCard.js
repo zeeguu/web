@@ -1,4 +1,3 @@
-import { FriendActionButtons } from "./FriendActionButtons";
 import EditIcon from "@mui/icons-material/Edit";
 import {
   AVATAR_IMAGE_MAP,
@@ -14,6 +13,7 @@ import * as s from "./ProfileHeaderCard.sc";
 import LocalFireDepartmentIcon from "@mui/icons-material/LocalFireDepartment";
 import { streakFireOrange } from "../components/colors";
 import { AvatarBackground, AvatarImage, LanguageOverflowBubble } from "./UserProfile.sc";
+import { FriendActionButtons } from "./FriendActionButtons";
 
 function formatDate(date) {
   return date ? new Date(date).toLocaleDateString() : "-";
@@ -25,7 +25,6 @@ export function ProfileHeaderCard({
   activeLanguages,
   onOpenLanguagesModal,
   onEditProfile,
-  onRequestUnfriend,
   friendActionHandlers,
 }) {
   const { daysPracticed } = useContext(ProgressContext);
@@ -43,21 +42,10 @@ export function ProfileHeaderCard({
 
   return (
     <s.HeaderCard>
-      {isOwnProfile ? (
+      {isOwnProfile && (
         <s.EditProfileButton onClick={onEditProfile}>
           <EditIcon sx={{ fontSize: "1rem" }} />
         </s.EditProfileButton>
-      ) : (
-        <FriendActionButtons
-          isFriendAccepted={isFriendAccepted}
-          pendingFromMe={pendingFromMe}
-          pendingFromThem={pendingFromThem}
-          onUnfriend={onRequestUnfriend}
-          onAdd={friendActionHandlers.onSend}
-          onCancel={friendActionHandlers.onCancel}
-          onAccept={friendActionHandlers.onAccept}
-          onReject={friendActionHandlers.onReject}
-        />
       )}
 
       <AvatarBackground $backgroundColor={avatarBackgroundColor}>
@@ -132,6 +120,15 @@ export function ProfileHeaderCard({
           </s.StatsRow>
         )}
       </div>
+
+      {!isOwnProfile && (
+        <FriendActionButtons
+          isFriendAccepted={isFriendAccepted}
+          pendingFromMe={pendingFromMe}
+          pendingFromThem={pendingFromThem}
+          friendActionHandlers={friendActionHandlers}
+        />
+      )}
     </s.HeaderCard>
   );
 }

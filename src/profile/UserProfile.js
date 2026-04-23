@@ -9,7 +9,7 @@ import Friends from "../friends/Friends";
 import { FriendRequestContext } from "../contexts/FriendRequestContext";
 import Badges from "../badges/Badges";
 import * as s from "./UserProfile.sc";
-import { BadgeCounterContext } from "../badges/BadgeCounterContext";
+import { BadgeCounterContext } from "../contexts/BadgeCounterContext";
 import LoadingAnimation from "../components/LoadingAnimation";
 import Button from "../pages/_pages_shared/Button.sc";
 import Leaderboards from "../leaderboards/Leaderboards";
@@ -28,7 +28,7 @@ export default function UserProfile() {
   const [activeLanguages, setActiveLanguages] = useState([]);
   const [languagesModalOpen, setLanguagesModalOpen] = useState(false);
   const [activeTab, setActiveTab] = useState("badges");
-  const { friendRequestCount } = useContext(FriendRequestContext);
+  const { hasFriendRequestNotification, friendRequestCount } = useContext(FriendRequestContext);
   const { hasBadgeNotification, totalNumberOfBadges } = useContext(BadgeCounterContext);
   const { friendUsername } = useParams();
   const [isOwnProfile, setIsOwnProfile] = useState(!friendUsername);
@@ -170,7 +170,8 @@ export default function UserProfile() {
   };
 
   const friendActionHandlers = {
-    onSend: handleSendFriendRequest,
+    onUnfriend: () => setUnfriendModalOpen(true),
+    onAdd: handleSendFriendRequest,
     onCancel: handleCancelFriendRequest,
     onAccept: handleAcceptFriendRequest,
     onReject: handleRejectFriendRequest,
@@ -183,7 +184,7 @@ export default function UserProfile() {
     },
     {
       key: "friends",
-      label: `Friends${isOwnProfile && friendRequestCount > 0 ? ` (${friendRequestCount})` : ""}`,
+      label: `Friends${isOwnProfile && hasFriendRequestNotification ? ` (${friendRequestCount})` : ""}`,
     },
     ...(isOwnProfile
       ? [
@@ -251,7 +252,6 @@ export default function UserProfile() {
                 state: { from: "/profile" },
               })
             }
-            onRequestUnfriend={() => setUnfriendModalOpen(true)}
             friendActionHandlers={friendActionHandlers}
           />
 
