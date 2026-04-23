@@ -5,7 +5,7 @@ import Main from "../components/modal_shared/Main.sc";
 import Button from "../pages/_pages_shared/Button.sc";
 import * as s from "./UnfriendConfirmModal.sc";
 
-export function UnfriendConfirmModal({ open, onClose, onConfirm, displayName }) {
+export function UnfriendConfirmModal({ open, onClose, onConfirm, displayName, isPendingConfirm }) {
   return (
     <Modal open={open} onClose={onClose}>
       <Header>
@@ -19,7 +19,7 @@ export function UnfriendConfirmModal({ open, onClose, onConfirm, displayName }) 
           <Button type={"button"} className={"small grey"} onClick={onClose}>
             Cancel
           </Button>
-          <Button type={"button"} className={"small warning"} onClick={onConfirm}>
+          <Button type={"button"} className={"small warning"} onClick={onConfirm} disabled={isPendingConfirm}>
             Unfriend
           </Button>
         </s.UnfriendModalButtonWrapper>

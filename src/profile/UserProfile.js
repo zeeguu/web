@@ -37,8 +37,44 @@ export default function UserProfile() {
   const [unfriendModalOpen, setUnfriendModalOpen] = useState(false);
   const friendship = profileData?.friendship;
   const isFriendAccepted = friendship?.is_accepted === true;
-  const { sendFriendRequest, cancelFriendRequest, acceptFriendRequest, rejectFriendRequest, unfriend } =
+  const { unfriend, sendFriendRequest, cancelFriendRequest, acceptFriendRequest, rejectFriendRequest } =
     useFriendActions();
+  const [isPendingFriendAction, setIsPendingFriendAction] = useState(false);
+
+  useEffect(() => {
+    loadProfile();
+  }, [api, userDetails, friendUsername]);
+
+  const loadProfile = () => {
+    resetProfileState();
+
+    if (!api) return;
+
+    if (!friendUsername) {
+      setIsOwnProfile(true);
+      updateProfileView(userDetails, null, strings.titleOwnProfile);
+      api.getAllLanguageStreaksDetailed(activeLanguagesCallback);
+      return;
+    }
+
+    setIsOwnProfile(false);
+    setFriendDetailsError(null);
+    api.getFriendDetails(friendUsername, (data) => {
+      if (!data || data.error) {
+        updateProfileView({}, data?.error || "Failed to fetch profile.", strings.titleUserProfileDefault);
+        setLoadingProfileDetails(false);
+        return;
+      }
+
+      const isSameUser = data.username === userDetails?.username;
+      if (isSameUser) {
+        handleUserProfileNavigation(null);
+      } else {
+        updateProfileView(data, null, `${data.username}'s ${strings.titleUserProfilePostfix}`);
+        api.getAllLanguageStreaksDetailedForFriend(friendUsername, activeLanguagesCallback);
+      }
+    });
+  };
 
   const resetProfileState = () => {
     setProfileData(null);
@@ -68,104 +104,48 @@ export default function UserProfile() {
     history.push(target ? `/profile/${encodeURIComponent(target)}` : "/profile");
   };
 
-  useEffect(() => {
-    resetProfileState();
-
-    if (!api) return;
-
-    if (!friendUsername) {
-      setIsOwnProfile(true);
-      updateProfileView(userDetails, null, strings.titleOwnProfile);
-      api.getAllLanguageStreaksDetailed(activeLanguagesCallback);
-      return;
-    }
-
-    setIsOwnProfile(false);
-    setFriendDetailsError(null);
-    api.getFriendDetails(friendUsername, (data) => {
-      if (!data || data.error) {
-        updateProfileView({}, data?.error || "Failed to fetch profile.", strings.titleUserProfileDefault);
-        setLoadingProfileDetails(false);
-        return;
-      }
-
-      const isSameUser = data.username === userDetails?.username;
-      if (isSameUser) {
-        handleUserProfileNavigation(null);
-      } else {
-        updateProfileView(data, null, `${data.username}'s ${strings.titleUserProfilePostfix}`);
-        api.getAllLanguageStreaksDetailedForFriend(friendUsername, activeLanguagesCallback);
-      }
-    });
-  }, [api, userDetails, friendUsername]);
-
   const updateProfileFriendship = (newFriendship) => {
     setProfileData((prev) => ({ ...prev, friendship: newFriendship }));
   };
 
+  const handleUnfriend = () => {
+    doFriendAction(unfriend, () => {
+      setUnfriendModalOpen(false);
+      loadProfile();
+    });
+  };
+
   const handleSendFriendRequest = () => {
-    sendFriendRequest({
-      username: friendUsername,
-      fallbackMessage: "Failed to send friend request.",
-      onSuccess: () => {
-        updateProfileFriendship({ is_accepted: false, sender_username: null });
-      },
-      onError: (errorMessage) => {
-        setFriendDetailsError(errorMessage || "Failed to send friend request.");
-      },
+    doFriendAction(sendFriendRequest, () => {
+      updateProfileFriendship({ is_accepted: false, sender_username: userDetails.username });
     });
   };
 
   const handleCancelFriendRequest = () => {
-    cancelFriendRequest({
-      username: friendUsername,
-      fallbackMessage: "Failed to cancel friend request.",
-      onSuccess: () => {
-        updateProfileFriendship(null);
-      },
-      onError: (errorMessage) => {
-        setFriendDetailsError(errorMessage || "Failed to cancel friend request.");
-      },
+    doFriendAction(cancelFriendRequest, () => {
+      updateProfileFriendship(null);
     });
   };
 
   const handleAcceptFriendRequest = () => {
-    acceptFriendRequest({
-      username: friendUsername,
-      fallbackMessage: "Failed to accept friend request.",
-      onSuccess: () => {
-        updateProfileFriendship({ is_accepted: true });
-      },
-      onError: (errorMessage) => {
-        setFriendDetailsError(errorMessage || "Failed to accept friend request.");
-      },
+    doFriendAction(acceptFriendRequest, () => {
+      loadProfile();
     });
   };
 
   const handleRejectFriendRequest = () => {
-    rejectFriendRequest({
-      username: friendUsername,
-      fallbackMessage: "Failed to reject friend request.",
-      onSuccess: () => {
-        updateProfileFriendship(null);
-      },
-      onError: (errorMessage) => {
-        setFriendDetailsError(errorMessage || "Failed to reject friend request.");
-      },
+    doFriendAction(rejectFriendRequest, () => {
+      updateProfileFriendship(null);
     });
   };
 
-  const handleUnfriend = () => {
-    unfriend({
+  const doFriendAction = (actionFn, onSuccess) => {
+    setIsPendingFriendAction(true);
+    actionFn({
       username: friendUsername,
-      fallbackMessage: "Failed to unfriend user.",
-      onSuccess: () => {
-        setUnfriendModalOpen(false);
-        updateProfileFriendship(null);
-      },
-      onError: (errorMessage) => {
-        setFriendDetailsError(errorMessage || "Failed to unfriend user.");
-      },
+      onSuccess: onSuccess,
+      onError: (message) => setFriendDetailsError(message),
+      onFinally: () => setIsPendingFriendAction(false),
     });
   };
 
@@ -253,6 +233,7 @@ export default function UserProfile() {
               })
             }
             friendActionHandlers={friendActionHandlers}
+            isPendingFriendAction={isPendingFriendAction}
           />
 
           {(isOwnProfile || isFriendAccepted) && (
@@ -266,6 +247,7 @@ export default function UserProfile() {
             onClose={() => setUnfriendModalOpen(false)}
             onConfirm={handleUnfriend}
             displayName={profileData?.name ?? profileData?.username}
+            isPendingConfirm={isPendingFriendAction}
           />
 
           <LanguagesModal

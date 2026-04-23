@@ -20,9 +20,9 @@ export default function Friends({ friendUsername, navigationHandler }) {
 
   const [pendingSearch, setPendingSearch] = useState("");
   const [searchResults, setSearchResults] = useState([]);
-  const [newFriendError, setNewFriendError] = useState(null);
-  const [searchingNewFriends, setSearchingNewFriends] = useState(null);
-  const [sendingRequestUsername, setSendingRequestUsername] = useState(null);
+  const [searchResultsError, setSearchResultsError] = useState(null);
+  const [isSearching, setIsSearching] = useState(null);
+  const [pendingFriendActions, setPendingFriendActions] = useState([]);
   const [sentRequests, setSentRequests] = useState([]);
 
   // Friend-of-friend state (used when viewing someone else's profile)
@@ -31,8 +31,7 @@ export default function Friends({ friendUsername, navigationHandler }) {
   const [friendsFriendsError, setFriendsFriendsError] = useState(null);
 
   const { updateFriendRequestCounter } = useContext(FriendRequestContext);
-  const { sendFriendRequest, cancelFriendRequest, acceptFriendRequest, rejectFriendRequest } =
-    useFriendActions();
+  const { sendFriendRequest, cancelFriendRequest, acceptFriendRequest, rejectFriendRequest } = useFriendActions();
 
   useEffect(() => {
     if (friendUsername) return;
@@ -78,8 +77,8 @@ export default function Friends({ friendUsername, navigationHandler }) {
   useEffect(() => {
     if (pendingSearch === "") {
       setSearchResults([]);
-      setNewFriendError(null);
-      setSearchingNewFriends(null);
+      setSearchResultsError(null);
+      setIsSearching(null);
     }
     const searchTimeout = handlePendingSearchChange(false);
     return () => clearTimeout(searchTimeout);
@@ -90,20 +89,20 @@ export default function Friends({ friendUsername, navigationHandler }) {
 
     if (query.length < 2 && !isEnterSearch) {
       setSearchResults([]);
-      setNewFriendError(null);
-      setSearchingNewFriends(null);
+      setSearchResultsError(null);
+      setIsSearching(null);
       return;
     }
 
     return setTimeout(() => {
-      setSearchingNewFriends(true);
-      setNewFriendError(null);
+      setIsSearching(true);
+      setSearchResultsError(null);
 
       api.searchUsers(query, (results) => {
-        setSearchingNewFriends(false);
+        setIsSearching(false);
 
         if (!results) {
-          setNewFriendError("Failed to search for users");
+          setSearchResultsError("Failed to search for users");
           setSearchResults([]);
           return;
         }
@@ -115,77 +114,55 @@ export default function Friends({ friendUsername, navigationHandler }) {
 
   const handleSendFriendRequest = (event, receiverUsername) => {
     event.stopPropagation();
-    setSendingRequestUsername(receiverUsername);
-    sendFriendRequest({
-      username: receiverUsername,
-      fallbackMessage: strings.failedToSendFriendRequest,
-      onSuccess: () => {
-        setSentRequests((prev) =>
-          prev.includes(receiverUsername) ? prev : [...prev, receiverUsername],
-        );
-      },
-      onError: (message) => {
-        toast.error(message || strings.failedToSendFriendRequest);
-      },
-      onSettled: () => {
-        setSendingRequestUsername(null);
-      },
+    doFriendAction(receiverUsername, sendFriendRequest, () => {
+      setSentRequests((prev) => [...prev, receiverUsername]);
     });
   };
 
   const handleCancelFriendRequest = (event, receiverUsername) => {
     event.stopPropagation();
-    cancelFriendRequest({
-      username: receiverUsername,
-      fallbackMessage: strings.failedToCancelFriendRequest,
-      onSuccess: () => {
-        setSentRequests((prev) => prev.filter((username) => username !== receiverUsername));
-        setSearchResults((prev) =>
-          prev.map((user) =>
-            user.username === receiverUsername
-              ? {
-                  ...user,
-                  friend_request: null,
-                  friendship: null,
-                }
-              : user,
-          ),
-        );
-      },
-      onError: (message) => {
-        toast.error(message || strings.failedToCancelFriendRequest);
-      },
+    doFriendAction(receiverUsername, cancelFriendRequest, () => {
+      setSentRequests((prev) => prev.filter((username) => username !== receiverUsername));
+      setSearchResults((prev) =>
+        prev.map((user) =>
+          user.username === receiverUsername
+            ? {
+                ...user,
+                friend_request: null,
+                friendship: null,
+              }
+            : user,
+        ),
+      );
     });
   };
 
   const handleAcceptFriendRequest = (event, senderUsername) => {
     event.stopPropagation();
-    acceptFriendRequest({
-      username: senderUsername,
-      fallbackMessage: strings.failedToAcceptFriendRequest,
-      onSuccess: () => {
-        setFriendRequests((prev) =>
-          prev.map((req) => (req.sender.username === senderUsername ? { ...req, is_accepted: true } : req)),
-        );
-        updateFriendRequestCounter();
-      },
-      onError: (message) => {
-        toast.error(message || strings.failedToAcceptFriendRequest);
-      },
+    doFriendAction(senderUsername, acceptFriendRequest, () => {
+      setFriendRequests((prev) =>
+        prev.map((req) => (req.sender.username === senderUsername ? { ...req, is_accepted: true } : req)),
+      );
+      updateFriendRequestCounter();
     });
   };
 
   const handleRejectFriendRequest = (event, senderUsername) => {
     event.stopPropagation();
-    rejectFriendRequest({
-      username: senderUsername,
-      fallbackMessage: strings.failedToRejectFriendRequest,
-      onSuccess: () => {
-        setFriendRequests((prev) => prev.filter((req) => req.sender.username !== senderUsername));
-        updateFriendRequestCounter();
-      },
-      onError: (message) => {
-        toast.error(message || strings.failedToRejectFriendRequest);
+    doFriendAction(senderUsername, rejectFriendRequest, () => {
+      setFriendRequests((prev) => prev.filter((req) => req.sender.username !== senderUsername));
+      updateFriendRequestCounter();
+    });
+  };
+
+  const doFriendAction = (username, actionFn, onSuccess) => {
+    setPendingFriendActions((prev) => [...prev, username]);
+    actionFn({
+      username: username,
+      onSuccess: onSuccess,
+      onError: (message) => toast.error(message),
+      onFinally: () => {
+        setPendingFriendActions((prev) => prev.filter((u) => u !== username));
       },
     });
   };
@@ -232,17 +209,15 @@ export default function Friends({ friendUsername, navigationHandler }) {
             />
           </s.SearchBarRow>
 
-          {newFriendError && <s.ErrorText>{newFriendError}</s.ErrorText>}
+          {searchResultsError && <s.ErrorText>{searchResultsError}</s.ErrorText>}
 
           {/* Only show Users section when searching */}
           {pendingSearch ? (
             <div>
               <h3>{strings.users}</h3>
-              {searchResults.length === 0 && searchingNewFriends === null && (
-                <p>{strings.continueTypingToSearch}</p>
-              )}
-              {searchResults.length === 0 && searchingNewFriends === true && <p>{strings.searching}</p>}
-              {searchResults.length === 0 && searchingNewFriends === false && <p>{strings.noUsers}</p>}
+              {searchResults.length === 0 && isSearching === null && <p>{strings.continueTypingToSearch}</p>}
+              {searchResults.length === 0 && isSearching === true && <p>{strings.searching}</p>}
+              {searchResults.length === 0 && isSearching === false && <p>{strings.noUsers}</p>}
               {searchResults.length > 0 && (
                 <s.UnstyledList>
                   {searchResults.map((searchResult, index) => {
@@ -251,7 +226,7 @@ export default function Friends({ friendUsername, navigationHandler }) {
                         key={`friend-search-result-${index}`}
                         user={searchResult}
                         rowType="search"
-                        isSending={sendingRequestUsername === searchResult.username}
+                        isPendingFriendAction={pendingFriendActions.includes(searchResult.username)}
                         isSent={sentRequests.includes(searchResult.username)}
                         onSendRequest={handleSendFriendRequest}
                         onCancelRequest={handleCancelFriendRequest}
@@ -275,6 +250,7 @@ export default function Friends({ friendUsername, navigationHandler }) {
                         key={`friend-request-${index}`}
                         user={req.sender}
                         rowType="request"
+                        isPendingFriendAction={pendingFriendActions.includes(req.sender.username)}
                         friendRequestAccepted={req.is_accepted}
                         onAcceptRequest={handleAcceptFriendRequest}
                         onRejectRequest={handleRejectFriendRequest}

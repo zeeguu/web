@@ -7,7 +7,18 @@ import CheckIcon from "@mui/icons-material/Check";
 import ClearIcon from "@mui/icons-material/Clear";
 import React from "react";
 
-export function FriendActionButtons({ isFriendAccepted, pendingFromMe, pendingFromThem, friendActionHandlers }) {
+export function FriendActionButtons({
+  profileData,
+  friendship,
+  isFriendAccepted,
+  friendActionHandlers,
+  isPendingFriendAction,
+}) {
+  const pendingRequestFromMe =
+    friendship?.is_accepted === false && friendship?.sender_username !== profileData?.username;
+  const pendingRequestFromThem =
+    friendship?.is_accepted === false && friendship?.sender_username === profileData?.username;
+
   return (
     <s.FriendActionsContainer>
       {isFriendAccepted && (
@@ -16,25 +27,33 @@ export function FriendActionButtons({ isFriendAccepted, pendingFromMe, pendingFr
           <span>Unfriend</span>
         </FriendActionButton>
       )}
-      {!isFriendAccepted && !pendingFromMe && !pendingFromThem && (
-        <FriendActionButton $variant="add" onClick={friendActionHandlers.onAdd}>
+      {!isFriendAccepted && !pendingRequestFromMe && !pendingRequestFromThem && (
+        <FriendActionButton $variant="add" onClick={friendActionHandlers.onAdd} disabled={isPendingFriendAction}>
           <PersonAddIcon sx={{ fontSize: "1rem" }} />
           <span>Add</span>
         </FriendActionButton>
       )}
-      {pendingFromMe && (
-        <FriendActionButton $variant="cancel" onClick={friendActionHandlers.onCancel}>
+      {pendingRequestFromMe && (
+        <FriendActionButton $variant="cancel" onClick={friendActionHandlers.onCancel} disabled={isPendingFriendAction}>
           <CancelScheduleSendIcon sx={{ fontSize: "1rem" }} />
           <span>Cancel</span>
         </FriendActionButton>
       )}
-      {pendingFromThem && (
+      {pendingRequestFromThem && (
         <>
-          <FriendActionButton $variant="accept" onClick={friendActionHandlers.onAccept}>
+          <FriendActionButton
+            $variant="accept"
+            onClick={friendActionHandlers.onAccept}
+            disabled={isPendingFriendAction}
+          >
             <CheckIcon sx={{ fontSize: "1rem" }} />
             <span>Accept</span>
           </FriendActionButton>
-          <FriendActionButton $variant="reject" onClick={friendActionHandlers.onReject}>
+          <FriendActionButton
+            $variant="reject"
+            onClick={friendActionHandlers.onReject}
+            disabled={isPendingFriendAction}
+          >
             <ClearIcon sx={{ fontSize: "1rem" }} />
             <span>Reject</span>
           </FriendActionButton>

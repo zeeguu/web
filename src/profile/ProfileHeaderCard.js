@@ -26,6 +26,7 @@ export function ProfileHeaderCard({
   onOpenLanguagesModal,
   onEditProfile,
   friendActionHandlers,
+  isPendingFriendAction,
 }) {
   const { daysPracticed } = useContext(ProgressContext);
   const maxVisibleLanguages = 3;
@@ -36,8 +37,6 @@ export function ProfileHeaderCard({
   const avatarBackgroundColor = validatedAvatarBackgroundColor(profileData?.user_avatar?.background_color);
   const friendship = profileData?.friendship;
   const isFriendAccepted = friendship?.is_accepted === true;
-  const pendingFromMe = friendship?.is_accepted === false && friendship?.sender_username !== profileData?.username;
-  const pendingFromThem = friendship?.is_accepted === false && friendship?.sender_username === profileData?.username;
   const streakValue = (isOwnProfile ? daysPracticed : friendship?.friend_streak) ?? 0;
 
   return (
@@ -123,10 +122,11 @@ export function ProfileHeaderCard({
 
       {!isOwnProfile && (
         <FriendActionButtons
+          profileData={profileData}
+          friendship={friendship}
           isFriendAccepted={isFriendAccepted}
-          pendingFromMe={pendingFromMe}
-          pendingFromThem={pendingFromThem}
           friendActionHandlers={friendActionHandlers}
+          isPendingFriendAction={isPendingFriendAction}
         />
       )}
     </s.HeaderCard>
