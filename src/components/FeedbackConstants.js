@@ -11,6 +11,7 @@ const FEEDBACK_CATEGORIES = [
   { id: 6, name: "Extension", key: "EXTENSION", urlPatterns: [] },
   { id: 7, name: "Other", key: "OTHER", urlPatterns: [] },
   { id: 8, name: "Daily Audio", key: "DAILY_AUDIO", urlPatterns: ["/daily-audio"] },
+  { id: 9, name: "Profile", key: "PROFILE", urlPatterns: ["/profile"] },
 ];
 
 // Auto-generated from single source of truth

@@ -24,5 +24,8 @@ import "./userVideos";
 import "./watching_sessions";
 import "./dailyAudio";
 import "./sessionHistory";
+import "./badges";
+import "./friends";
+import "./leaderboards";
 
 export default Zeeguu_API;

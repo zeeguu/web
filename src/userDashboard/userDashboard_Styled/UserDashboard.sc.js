@@ -5,7 +5,9 @@ import "react-datepicker/dist/react-datepicker.css";
 import { OrangeButton } from "../../reader/ArticleReader.sc";
 
 const UserDashboardTopContainer = styled.div`
-  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 `;
 
 const UserDashboardHelperText = styled(s.YellowMessageBox)`

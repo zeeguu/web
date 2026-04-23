@@ -15,6 +15,10 @@ import useStreakMilestone from "./hooks/useStreakMilestone";
 import useReportTimezone from "./hooks/useReportTimezone";
 import TopBar from "./components/TopBar";
 import { MOBILE_WIDTH } from "./components/MainNav/screenSize";
+import useBadgeCounterNotification from "./hooks/useBadgeCounterNotification";
+import { BadgeCounterContext } from "./contexts/BadgeCounterContext";
+import useFriendRequestNotification from "./hooks/useFriendRequestNotification";
+import { FriendRequestContext } from "./contexts/FriendRequestContext";
 
 // Desktop (flex row):               Mobile (flex column):
 // ┌──────────┬──────────────────┐   ┌──────────────────┐
@@ -41,6 +45,10 @@ export default function AppLayout(props) {
     incrementExerciseCounter,
     hideExerciseCounter,
   } = useExercisesCounterNotification();
+
+
+  const badgeCounter = useBadgeCounterNotification();
+  const friendRequestNotification = useFriendRequestNotification();
 
   const path = useLocation().pathname;
 
@@ -85,23 +93,25 @@ export default function AppLayout(props) {
           hideExerciseCounter: hideExerciseCounter,
         }}
       >
-        <ThemeProvider theme={mainNavProperties.isOnStudentSide ? mainNavTheme.student : mainNavTheme.teacher}>
-          <s.AppLayout $screenWidth={screenWidth}>
-            {screenWidth > MOBILE_WIDTH && <SideNav screenWidth={screenWidth} />}
-            <s.AppContent
-              // Update the key when the learned_language changes to trigger a re-render
-              // of the app content that needs real-time updates. This is a smoother
-              // alternative to window.location.reload() when switching the practiced language in navigation.
-              id="scrollHolder"
-            >
-              {screenWidth <= MOBILE_WIDTH && <TopBar />}
-              <div key={userDetails.learned_language}>
-                {appContent}
-              </div>
-            </s.AppContent>
-            {screenWidth <= MOBILE_WIDTH && <BottomNav />}
-          </s.AppLayout>
-        </ThemeProvider>
+        <BadgeCounterContext.Provider value={badgeCounter}>
+          <FriendRequestContext.Provider value={friendRequestNotification}>
+            <ThemeProvider theme={mainNavProperties.isOnStudentSide ? mainNavTheme.student : mainNavTheme.teacher}>
+              <s.AppLayout $screenWidth={screenWidth}>
+                {screenWidth > MOBILE_WIDTH && <SideNav screenWidth={screenWidth} />}
+                <s.AppContent
+                  // Update the key when the learned_language changes to trigger a re-render
+                  // of the app content that needs real-time updates. This is a smoother
+                  // alternative to window.location.reload() when switching the practiced language in navigation.
+                  id="scrollHolder"
+                >
+                  {screenWidth <= MOBILE_WIDTH && <TopBar />}
+                  <div key={userDetails.learned_language}>{appContent}</div>
+                </s.AppContent>
+                {screenWidth <= MOBILE_WIDTH && <BottomNav />}
+              </s.AppLayout>
+            </ThemeProvider>
+          </FriendRequestContext.Provider>
+        </BadgeCounterContext.Provider>
       </ExercisesCounterContext.Provider>
     </MainNavContext.Provider>
   );

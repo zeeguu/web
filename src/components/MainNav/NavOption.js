@@ -15,6 +15,7 @@ export default function NavOption({
   screenWidth,
   ariaHasPopup,
   ariaLabel,
+  overflowEnabled = false,
 }) {
   const Component = linkTo ? s.RouterLink : s.OptionButton;
   const isActive = isNavOptionActive(linkTo, currentPath);
@@ -33,14 +34,14 @@ export default function NavOption({
         aria-haspopup={ariaHasPopup}
         aria-label={ariaLabel}
       >
-        <s.OptionContentWrapper $screenWidth={screenWidth}>
+        <s.OptionContentWrapper $screenWidth={screenWidth} $overflowEnabled={overflowEnabled}>
           {icon && (
             <s.IconContainer>
               {icon}
               {isCollapsed && notification && React.cloneElement(notification, { isActive, position: "top-absolute", sidebar: false })}
             </s.IconContainer>
           )}
-          <s.TextWrapper $screenWidth={screenWidth} $hasIcon={!!icon}>{text}</s.TextWrapper>
+          <s.TextWrapper $screenWidth={screenWidth} $hasIcon={!!icon} $overflowEnabled={overflowEnabled}>{text}</s.TextWrapper>
           {!isCollapsed && notification && React.cloneElement(notification, { isActive })}
         </s.OptionContentWrapper>
       </Component>

@@ -4,6 +4,7 @@ import { UserContext } from "../../../contexts/UserContext";
 import { MainNavContext } from "../../../contexts/MainNavContext";
 import SideNavOptionsForStudent from "./SideNavOptionsForStudent";
 import SideNavOptionsForTeacher from "./SideNavOptionsForTeacher";
+import SideNavProfileOption from "./SideNavProfileOption";
 import SideNavProgressStats from "./SideNavProgressStats";
 import NavOption from "../NavOption";
 import FeedbackButton from "../../FeedbackButton";
@@ -50,6 +51,7 @@ export default function SideNav({ screenWidth }) {
           />
           <FeedbackButton screenWidth={screenWidth} />
         </s.NavList>
+        {isOnStudentSide && <SideNavProfileOption screenWidth={screenWidth} />}
         {isOnStudentSide && <SideNavProgressStats screenWidth={screenWidth} />}
       </s.BottomSection>
     </s.SideNav>
