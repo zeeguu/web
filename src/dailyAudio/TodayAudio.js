@@ -425,8 +425,31 @@ export default function TodayAudio({ setShowTabs }) {
   if (!lessonData) {
     if (canGenerateLesson !== null) {
       const autoDisabled = canGenerateLesson === false;
-      const showError = error && suggestionType === "auto";
       const canGenerate = suggestionType !== "auto" || !autoDisabled;
+
+      const errorMessage = error && (
+        <p style={{ color: "var(--text-secondary)", textAlign: "center", maxWidth: "320px", marginTop: "16px" }}>
+          {error}
+        </p>
+      );
+
+      const generateAction = (
+        <>
+          {errorMessage}
+          <GenerateButton onClick={handleGenerateLesson}>
+            Generate
+            <br />
+            Lesson
+          </GenerateButton>
+        </>
+      );
+
+      const cantGenerateMessage = (
+        <p style={{ color: "var(--text-secondary)", textAlign: "center", maxWidth: "300px", marginTop: "20px" }}>
+          {error || "Not enough words for a vocabulary lesson. Try a Topic or Situation instead!"}
+        </p>
+      );
+
       return (
         <GenerateView>
           <SuggestionSelector
@@ -437,17 +460,7 @@ export default function TodayAudio({ setShowTabs }) {
             lang={lang}
             autoDisabled={autoDisabled}
           />
-          {canGenerate ? (
-            <GenerateButton onClick={handleGenerateLesson}>
-              Generate
-              <br />
-              Lesson
-            </GenerateButton>
-          ) : (
-            <p style={{ color: "var(--text-secondary)", textAlign: "center", maxWidth: "300px", marginTop: "20px" }}>
-              {error || "Not enough words for a vocabulary lesson. Try a Topic or Situation instead!"}
-            </p>
-          )}
+          {canGenerate ? generateAction : cantGenerateMessage}
         </GenerateView>
       );
     }
