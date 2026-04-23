@@ -46,7 +46,7 @@ export default function Badges({ username }) {
     setBadgeCategories(processedBadgeCategories);
 
     if (!username && hasNewBadges) {
-      api.updateNotShownForUser();
+      api.markAllBadgesSeen();
     }
 
     setIsLoading(false);
@@ -58,9 +58,9 @@ export default function Badges({ username }) {
     setError(null);
 
     if (username) {
-      api.getBadgesForFriend(username, fetchBadgesCallback);
+      api.getFriendBadges(username, fetchBadgesCallback);
     } else {
-      api.getBadgesForUser(fetchBadgesCallback);
+      api.getMyBadges(fetchBadgesCallback);
     }
   }, [api, username]);
 

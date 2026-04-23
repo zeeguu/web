@@ -14,7 +14,7 @@ export default function useBadgeCounterNotification() {
   }, [path]);
 
   function updateBadgeCounter() {
-    api.getNotShownUserBadges((badgeCount) => {
+    api.getUnseenBadgeCount((badgeCount) => {
       setTotalNumberOfBadges(badgeCount);
 
       setHasBadgeNotification(badgeCount >= 1);

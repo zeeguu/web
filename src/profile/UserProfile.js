@@ -53,7 +53,7 @@ export default function UserProfile() {
     if (!friendUsername) {
       setIsOwnProfile(true);
       updateProfileView(userDetails, null, strings.titleOwnProfile);
-      api.getAllLanguageStreaksDetailed(activeLanguagesCallback);
+      api.getMyLanguageStreakHistory(activeLanguagesCallback);
       return;
     }
 
@@ -71,7 +71,7 @@ export default function UserProfile() {
         handleUserProfileNavigation(null);
       } else {
         updateProfileView(data, null, `${data.username}'s ${strings.titleUserProfilePostfix}`);
-        api.getAllLanguageStreaksDetailedForFriend(friendUsername, activeLanguagesCallback);
+        api.getFriendLanguageStreakHistory(friendUsername, activeLanguagesCallback);
       }
     });
   };
