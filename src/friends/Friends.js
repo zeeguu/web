@@ -63,7 +63,7 @@ export default function Friends({ friendUsername, navigationHandler }) {
     if (!friendUsername) return;
     setLoadingFriendsFriends(true);
     setFriendsFriendsError(null);
-    api.getFriendsForUser(friendUsername, (data) => {
+    api.getFriendsOf(friendUsername, (data) => {
       if (!data) {
         setFriendsFriendsError("Failed to fetch friends.");
         setLoadingFriendsFriends(false);
