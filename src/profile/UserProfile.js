@@ -29,7 +29,7 @@ export default function UserProfile() {
   const [languagesModalOpen, setLanguagesModalOpen] = useState(false);
   const [activeTab, setActiveTab] = useState("badges");
   const { hasFriendRequestNotification, friendRequestCount } = useContext(FriendRequestContext);
-  const { hasBadgeNotification, totalNumberOfBadges } = useContext(BadgeCounterContext);
+  const { hasBadgeNotification, totalNumberOfBadges, updateBadgeCounter } = useContext(BadgeCounterContext);
   const { friendUsername } = useParams();
   const [isOwnProfile, setIsOwnProfile] = useState(!friendUsername);
   const [loadingProfileDetails, setLoadingProfileDetails] = useState(true);
@@ -194,6 +194,13 @@ export default function UserProfile() {
     return null;
   };
 
+  const handleTabChange = (tabKey) => {
+    setActiveTab(tabKey);
+    if (isOwnProfile && hasBadgeNotification) {
+      updateBadgeCounter();
+    }
+  };
+
   return (
     <s.ProfileWrapper>
       {!isOwnProfile && (
@@ -237,7 +244,7 @@ export default function UserProfile() {
           />
 
           {(isOwnProfile || isFriendAccepted) && (
-            <ProfileTabs tabs={tabs} activeTab={activeTab} onTabChange={setActiveTab}>
+            <ProfileTabs tabs={tabs} activeTab={activeTab} onTabChange={handleTabChange}>
               {renderTabContent()}
             </ProfileTabs>
           )}
