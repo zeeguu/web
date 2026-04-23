@@ -79,7 +79,7 @@ export default function PastLessons() {
       {error && <div style={{ color: "red", marginBottom: "20px" }}>{error}</div>}
 
       {pastLessons.length === 0 && !isLoading && !error && (
-        <div style={{ textAlign: "center", color: "#666", marginTop: "40px" }}>
+        <div style={{ textAlign: "center", color: "var(--text-muted)", marginTop: "40px" }}>
           <p>There are no past lessons to display.</p>
         </div>
       )}
@@ -90,11 +90,11 @@ export default function PastLessons() {
             <div
               key={lesson.lesson_id}
               style={{
-                border: `1px solid ${lesson.is_completed ? "#28a745" : "#eee"}`,
+                border: `1px solid ${lesson.is_completed ? "#28a745" : "var(--border-light)"}`,
                 borderRadius: "8px",
                 padding: "16px",
                 marginBottom: "16px",
-                backgroundColor: lesson.is_completed ? "#f8fff9" : "#fafafa",
+                backgroundColor: "var(--bg-secondary)",
               }}
             >
               <div
