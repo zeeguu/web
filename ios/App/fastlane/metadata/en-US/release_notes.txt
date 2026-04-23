@@ -1,7 +1,7 @@
-- Share an article into Zeeguu: the confirmation now shows the article's image so you know what you're about to read
-- Clearer settings: "Topics of Interest" (for what you like) and "Topics to Avoid" (for keywords to hide)
-- Simpler prompt when opening an article on its original website
-- Shorter "Generate Lesson" button on Daily Audio
-- Streaks now roll over based on your local timezone
-- Reader feedback polish: clearer colors, sounds, and copy
-- Dark-mode contrast improvements on orange buttons and helper text
+- Now Playing lock screen now shows the lesson title and language
+- In-app seek buttons match the 10-second jump used on the lock screen
+- Pull-to-refresh on the article recommendations list
+- Clearer form validation on profile and sign-up pages
+- Past Lessons cards no longer render white in dark mode
+- Fixed landscape auto-magnify in the article reader
+- Better error messages when an audio lesson can't be generated for a chosen topic
