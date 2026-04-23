@@ -13,7 +13,7 @@ import {
   validatedAvatarCharacterColor,
   validatedAvatarCharacterId,
 } from "../../../profile/avatarOptions";
-import { BadgeCounterContext } from "../../../badges/BadgeCounterContext";
+import { BadgeCounterContext } from "../../../contexts/BadgeCounterContext";
 import NotificationIcon from "../../../components/NotificationIcon";
 import { FriendRequestContext } from "../../../contexts/FriendRequestContext";
 import Feature from "../../../features/Feature";

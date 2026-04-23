@@ -1,5 +1,6 @@
 import { useContext, useEffect, useState } from "react";
 import { APIContext } from "../contexts/APIContext";
+import { useLocation } from "react-router-dom/cjs/react-router-dom";
 
 export default function useBadgeCounterNotification() {
   const path = useLocation().pathname;

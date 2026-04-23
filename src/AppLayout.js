@@ -15,10 +15,8 @@ import useStreakMilestone from "./hooks/useStreakMilestone";
 import useReportTimezone from "./hooks/useReportTimezone";
 import TopBar from "./components/TopBar";
 import { MOBILE_WIDTH } from "./components/MainNav/screenSize";
-import DailyFeedbackBanner from "./components/DailyFeedbackBanner";
-import Feature from "./features/Feature";
-import useBadgeCounterNotification from "@/hooks/useBadgeCounterNotification";
-import { BadgeCounterContext } from "@/badges/BadgeCounterContext";
+import useBadgeCounterNotification from "./hooks/useBadgeCounterNotification";
+import { BadgeCounterContext } from "./contexts/BadgeCounterContext";
 import useFriendRequestNotification from "./hooks/useFriendRequestNotification";
 import { FriendRequestContext } from "./contexts/FriendRequestContext";
 

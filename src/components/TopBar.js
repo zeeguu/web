@@ -11,7 +11,7 @@ import {
   validatedAvatarCharacterColor,
   validatedAvatarCharacterId,
 } from "../profile/avatarOptions";
-import { BadgeCounterContext } from "../badges/BadgeCounterContext";
+import { BadgeCounterContext } from "../contexts/BadgeCounterContext";
 import { FriendRequestContext } from "../contexts/FriendRequestContext";
 import NotificationIcon from "./NotificationIcon";
 import Feature from "../features/Feature";
