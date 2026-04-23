@@ -2,13 +2,13 @@ import { Zeeguu_API } from "./classDef";
 
 
 Zeeguu_API.prototype.getFriends = function(callback) {
-  this._getJSON(`get_friends`, (data) => {
+  this._getJSON(`my_friends`, (data) => {
     callback(data);
   });
 }
 
-Zeeguu_API.prototype.getFriendsForUser = function(username, callback) {
-  this._getJSON(`get_friends/${username}`, (data) => {
+Zeeguu_API.prototype.getFriendsOf = function(username, callback) {
+  this._getJSON(`friends_of/${username}`, (data) => {
     callback(data);
   });
 }
@@ -32,7 +32,7 @@ Zeeguu_API.prototype.searchUsers = function(search_term, callback) {
 }
 
 Zeeguu_API.prototype.getFriendDetails = function(friend_username, callback) {
-  this._getJSON(`get_user_details/${friend_username}`, (data) => {
+  this._getJSON(`get_friend_details/${friend_username}`, (data) => {
     callback(data);
   });
 }
