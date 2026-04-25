@@ -29,6 +29,7 @@ export const HeaderCard = styled.div`
       flex-direction: column;
       gap: 0.5rem;
       margin-top: 0;
+      padding-right: 0;
     }
   }
 

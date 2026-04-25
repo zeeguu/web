@@ -136,15 +136,19 @@ export default function ProfileDetails() {
   }
   return (
     <PreferencesPage layoutVariant={"minimalistic-top-aligned"}>
-      <BackArrow redirectLink={redirectPath} />
-      <Header withoutLogo>
-        <Heading>{strings.profileDetails}</Heading>
-        {successfullyChangedPassword && (
-          <>
-            <FullWidthConfirmMsg>Password changed successfully!</FullWidthConfirmMsg>
-          </>
-        )}
-      </Header>
+      <s.HeaderWrapper>
+        <s.BackArrowWrapper>
+          <BackArrow redirectLink={redirectPath} />
+        </s.BackArrowWrapper>
+        <Header withoutLogo>
+          <Heading>{strings.profileDetails}</Heading>
+          {successfullyChangedPassword && (
+            <>
+              <FullWidthConfirmMsg>Password changed successfully!</FullWidthConfirmMsg>
+            </>
+          )}
+        </Header>
+      </s.HeaderWrapper>
       <Main>
         <Form>
           {errorMessage && <FullWidthErrorMsg>{errorMessage}</FullWidthErrorMsg>}
@@ -155,6 +159,7 @@ export default function ProfileDetails() {
                   className="clickable"
                   onClick={() => setShowAvatarModal(true)}
                   $backgroundColor={selectedAvatarBackgroundColor}
+                  style={{ width: "6rem", height: "6rem" }}
                 >
                   <AvatarImage
                     $imageSource={AVATAR_IMAGE_MAP[selectedAvatarCharacterId]}
