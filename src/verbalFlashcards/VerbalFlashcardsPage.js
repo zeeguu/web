@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useState, useRef, useCallback } from "rea
 import { useHistory } from "react-router-dom";
 import { APIContext } from "../contexts/APIContext";
 import { UserContext } from "../contexts/UserContext";
+import strings from "../i18n/definitions";
 import * as s from "./verbalFlashcards_Styled/VerbalFlashcards.sc.js";
 import {
   BETWEEN_CARDS_DELAY_MS,
@@ -32,7 +33,7 @@ export default function VerbalFlashcardsPage() {
   const [accuracyResult, setAccuracyResult] = useState(null);
   const [isRecording, setIsRecording] = useState(false);
   const [isCooldown, setIsCooldown] = useState(false);
-  const [statusMessage, setStatusMessage] = useState("Loading...");
+  const [statusMessage, setStatusMessage] = useState(strings.loadingMsg);
   const [statusType, setStatusType] = useState("idle");
   const [noiseSensitivity, setNoiseSensitivity] = useState("0.08");
   const [correctBookmarks, setCorrectBookmarks] = useState([]);
@@ -297,9 +298,9 @@ export default function VerbalFlashcardsPage() {
   }, []);
 
   const speakText = useCallback(
-    (textToSpeak, languageId, playbackStatusMessage = "Playing TTS audio...") => {
+    (textToSpeak, languageId, playbackStatusMessage = strings.verbalFlashcardsPlayingTtsAudio) => {
       if (!textToSpeak) {
-        updateStatusWithDebounce("No text available for TTS", "error");
+        updateStatusWithDebounce(strings.verbalFlashcardsNoTextAvailableForTts, "error");
         return Promise.resolve();
       }
 
@@ -317,13 +318,13 @@ export default function VerbalFlashcardsPage() {
       }
 
       isPlayingTtsRef.current = false;
-      updateStatusWithDebounce("Requesting TTS audio...", "processing", 0);
+      updateStatusWithDebounce(strings.verbalFlashcardsRequestingTtsAudio, "processing", 0);
 
       return api
         .fetchLinkToSpeechMp3(textToSpeak, languageId)
         .then((audioUrl) => {
           if (!audioUrl) {
-            updateStatusWithDebounce("TTS returned no audio path", "error", 0);
+            updateStatusWithDebounce(strings.verbalFlashcardsTtsReturnedNoAudioPath, "error", 0);
             return;
           }
 
@@ -342,7 +343,7 @@ export default function VerbalFlashcardsPage() {
                 ttsAudioRef.current = null;
               }
               isPlayingTtsRef.current = false;
-              updateStatusWithDebounce("Spoken prompt finished", "idle", 0);
+              updateStatusWithDebounce(strings.verbalFlashcardsSpokenPromptFinished, "idle", 0);
               resolve();
             };
 
@@ -352,7 +353,7 @@ export default function VerbalFlashcardsPage() {
                 ttsAudioRef.current = null;
               }
               isPlayingTtsRef.current = false;
-              updateStatusWithDebounce("TTS audio playback failed", "error", 0);
+              updateStatusWithDebounce(strings.verbalFlashcardsTtsAudioPlaybackFailed, "error", 0);
               resolve();
             };
 
@@ -362,7 +363,7 @@ export default function VerbalFlashcardsPage() {
                 ttsAudioRef.current = null;
               }
               isPlayingTtsRef.current = false;
-              updateStatusWithDebounce("TTS audio playback failed", "error", 0);
+              updateStatusWithDebounce(strings.verbalFlashcardsTtsAudioPlaybackFailed, "error", 0);
               resolve();
             });
           });
@@ -370,7 +371,7 @@ export default function VerbalFlashcardsPage() {
         .catch((err) => {
           console.error("TTS request failed:", err);
           isPlayingTtsRef.current = false;
-          updateStatusWithDebounce("TTS request failed", "error", 0);
+          updateStatusWithDebounce(strings.verbalFlashcardsTtsRequestFailed, "error", 0);
         });
     },
     [api, updateStatusWithDebounce],
@@ -389,18 +390,18 @@ export default function VerbalFlashcardsPage() {
 
   const speakFeedback = useCallback(
     (textToSpeak) => {
-      return speakText(textToSpeak, translationLanguageId, "Playing feedback...");
+      return speakText(textToSpeak, translationLanguageId, strings.verbalFlashcardsPlayingFeedback);
     },
     [speakText, translationLanguageId],
   );
 
   const speakFeedbackWithAnswer = useCallback(
     (introText, answerText) => {
-      return speakText(introText, translationLanguageId, "Playing feedback...").then(() => {
+      return speakText(introText, translationLanguageId, strings.verbalFlashcardsPlayingFeedback).then(() => {
         if (!answerText || !isPageActiveRef.current) {
           return;
         }
-        return speakText(answerText, learnedLanguageId, "Playing answer...");
+        return speakText(answerText, learnedLanguageId, strings.verbalFlashcardsPlayingAnswer);
       });
     },
     [learnedLanguageId, speakText, translationLanguageId],
@@ -428,7 +429,7 @@ export default function VerbalFlashcardsPage() {
           if (!canContinueFlow()) return;
           if (!response || response.error || response.success === false) {
             updateStatusWithDebounce(
-              `Could not save result${response?.error ? `: ${response.error}` : ""}`,
+              `${strings.verbalFlashcardsCouldNotSaveResult}${response?.error ? `: ${response.error}` : ""}`,
               "error",
               0,
             );
@@ -494,7 +495,7 @@ export default function VerbalFlashcardsPage() {
           }
           setIsCooldown(true);
           isCooldownRef.current = true;
-          updateStatusWithDebounce("Get ready to try again...", "cooldown", 0);
+          updateStatusWithDebounce(strings.verbalFlashcardsGetReadyToTryAgain, "cooldown", 0);
           interCardDelayTimeoutRef.current = setTimeout(() => {
             interCardDelayTimeoutRef.current = null;
             if (!canContinueFlow()) {
@@ -504,7 +505,7 @@ export default function VerbalFlashcardsPage() {
             }
             setIsCooldown(false);
             isCooldownRef.current = false;
-            updateStatusWithDebounce("Retrying the same card...", "processing", 0);
+            updateStatusWithDebounce(strings.verbalFlashcardsRetryingSameCard, "processing", 0);
             if (getCurrentCard()?.id === card.id) {
               beginCardFlowRef.current();
             }
@@ -539,7 +540,7 @@ export default function VerbalFlashcardsPage() {
       animationFrameRef.current = null;
     }
 
-    updateStatusWithDebounce("Processing...", "processing", 0);
+    updateStatusWithDebounce(strings.verbalFlashcardsProcessing, "processing", 0);
   }, [updateStatusWithDebounce]);
 
   const handleRecordingStop = useCallback(() => {
@@ -552,20 +553,20 @@ export default function VerbalFlashcardsPage() {
 
     if (!shouldProcessRecordingOnStopRef.current) {
       cleanupAudioResources();
-      updateStatusWithDebounce("Recording cancelled", "idle", 0);
+      updateStatusWithDebounce(strings.verbalFlashcardsRecordingCancelled, "idle", 0);
       return;
     }
 
     const currentCard = getCurrentCard();
 
     if (!currentCard) {
-      updateStatusWithDebounce("Error: No flashcard loaded", "error");
+      updateStatusWithDebounce(strings.verbalFlashcardsNoFlashcardLoaded, "error");
       cleanupAudioResources();
       return;
     }
 
     if (!audioChunksRef.current.length) {
-      updateStatusWithDebounce("No audio detected", "error");
+      updateStatusWithDebounce(strings.verbalFlashcardsNoAudioDetected, "error");
       cleanupAudioResources();
       return;
     }
@@ -573,7 +574,7 @@ export default function VerbalFlashcardsPage() {
     const mimeType = mediaRecorderRef.current?.mimeType || "audio/webm";
     const audioBlob = new Blob(audioChunksRef.current, { type: mimeType });
 
-    updateStatusWithDebounce("Processing...", "processing", 0);
+    updateStatusWithDebounce(strings.verbalFlashcardsProcessing, "processing", 0);
 
     api.transcribeAudio(audioBlob, (result) => {
       if (!canContinueFlow(flowRunId)) {
@@ -583,7 +584,7 @@ export default function VerbalFlashcardsPage() {
 
       if (result?.error) {
         console.error("Transcription error:", result.error);
-        updateStatusWithDebounce(`Error: ${result.error}`, "error");
+        updateStatusWithDebounce(`${strings.verbalFlashcardsErrorPrefix}: ${result.error}`, "error");
         cleanupAudioResources();
         return;
       }
@@ -599,7 +600,7 @@ export default function VerbalFlashcardsPage() {
 
         if (analysis?.error) {
           console.error("Pronunciation check error:", analysis.error);
-          updateStatusWithDebounce("Could not evaluate pronunciation. Please try again.", "error", 0);
+          updateStatusWithDebounce(strings.verbalFlashcardsCouldNotEvaluatePronunciation, "error", 0);
           cleanupAudioResources();
           return;
         } else {
@@ -666,7 +667,7 @@ export default function VerbalFlashcardsPage() {
             voiceStartedAtRef.current = now;
           }
 
-          updateStatusWithDebounce("🔴 Recording... Speak now", "recording", 0);
+          updateStatusWithDebounce(strings.verbalFlashcardsRecordingSpeakNow, "recording", 0);
         } else {
           const voicedFor = voiceStartedAtRef.current > 0 ? now - voiceStartedAtRef.current : 0;
 
@@ -680,7 +681,7 @@ export default function VerbalFlashcardsPage() {
             return;
           }
 
-          updateStatusWithDebounce("⏸️ Waiting for speech / silence...", "processing", 0);
+          updateStatusWithDebounce(strings.verbalFlashcardsWaitingForSpeech, "processing", 0);
         }
 
         animationFrameRef.current = requestAnimationFrame(detect);
@@ -693,7 +694,7 @@ export default function VerbalFlashcardsPage() {
       detect();
     } catch (error) {
       console.error("Silence detection setup error:", error);
-      updateStatusWithDebounce("Mic analysis error", "error");
+      updateStatusWithDebounce(strings.verbalFlashcardsMicAnalysisError, "error");
     }
   }, [noiseSensitivity, stopRecording, updateStatusWithDebounce]);
 
@@ -747,14 +748,14 @@ export default function VerbalFlashcardsPage() {
       setShowResult(false);
       setAccuracyResult(null);
 
-      updateStatusWithDebounce("🔴 Recording... Speak now", "recording", 0);
+      updateStatusWithDebounce(strings.verbalFlashcardsRecordingSpeakNow, "recording", 0);
       setupSilenceDetection();
     } catch (error) {
       console.error("Recording start error:", error);
       isStartingRecordingRef.current = false;
       isRecordingRef.current = false;
       setIsRecording(false);
-      updateStatusWithDebounce("Microphone permission needed", "error");
+      updateStatusWithDebounce(strings.verbalFlashcardsMicrophonePermissionNeeded, "error");
       cleanupAudioResources();
     }
   }, [cleanupAudioResources, handleRecordingStop, setupSilenceDetection, updateStatusWithDebounce]);
@@ -790,7 +791,7 @@ export default function VerbalFlashcardsPage() {
     const card = flashcardsRef.current[currentCardIndexRef.current];
     setIsCooldown(true);
     isCooldownRef.current = true;
-    updateStatusWithDebounce("Listen carefully...", "cooldown", 0);
+    updateStatusWithDebounce(strings.verbalFlashcardsListenCarefully, "cooldown", 0);
 
     const flowRunId = flowRunIdRef.current;
 
@@ -807,7 +808,7 @@ export default function VerbalFlashcardsPage() {
 
       setIsCooldown(false);
       isCooldownRef.current = false;
-      updateStatusWithDebounce("Starting microphone...", "processing", 0);
+      updateStatusWithDebounce(strings.verbalFlashcardsStartingMicrophone, "processing", 0);
 
       await openMicAndStartRecording();
     });
@@ -908,7 +909,7 @@ export default function VerbalFlashcardsPage() {
 
     return (
       <s.WordBreakdown>
-        <h5>Word breakdown:</h5>
+        <h5>{strings.verbalFlashcardsWordBreakdown}</h5>
         <s.WordList>
           {wordMatches.map((match, idx) => (
             <s.WordItem key={idx} $isCorrect={match.isCorrect}>
@@ -928,28 +929,28 @@ export default function VerbalFlashcardsPage() {
       <s.HeaderSection>
         <s.TitleSection>
           <s.TitleContainer>
-            <h2>Verbal Flashcards</h2>
+            <h2>{strings.verbalFlashcardsTitle}</h2>
           </s.TitleContainer>
           <s.FiltersContainer>
             <s.FilterSelect value={noiseSensitivity} onChange={(e) => setNoiseSensitivity(e.target.value)}>
-              <option value="0.03">Low Noise (Indoor)</option>
-              <option value="0.08">Medium Noise (Outdoor)</option>
-              <option value="0.11">High Noise (Street)</option>
+              <option value="0.03">{strings.verbalFlashcardsLowNoise}</option>
+              <option value="0.08">{strings.verbalFlashcardsMediumNoise}</option>
+              <option value="0.11">{strings.verbalFlashcardsHighNoise}</option>
             </s.FilterSelect>
           </s.FiltersContainer>
         </s.TitleSection>
 
         <s.StatsContainer>
           <s.StatItem>
-            <s.StatLabel>Progress:</s.StatLabel>
+            <s.StatLabel>{strings.verbalFlashcardsProgress}</s.StatLabel>
             <s.StatValue>{`${flashcards.length > 0 ? currentCardIndex + 1 : 0}/${flashcards.length}`}</s.StatValue>
           </s.StatItem>
           <s.StatItem>
-            <s.StatLabel>Score:</s.StatLabel>
+            <s.StatLabel>{strings.verbalFlashcardsScore}</s.StatLabel>
             <s.StatValue>{Math.round(totalScore)}</s.StatValue>
           </s.StatItem>
           <s.StatItem>
-            <s.StatLabel>Streak:</s.StatLabel>
+            <s.StatLabel>{strings.verbalFlashcardsStreak}</s.StatLabel>
             <s.StatValue $isStreak={currentStreak > 0}>{currentStreak}</s.StatValue>
           </s.StatItem>
         </s.StatsContainer>
@@ -960,17 +961,17 @@ export default function VerbalFlashcardsPage() {
           {loading ? (
             <s.LoadingState>
               <s.Spinner />
-              <p>Loading flashcards...</p>
+              <p>{strings.verbalFlashcardsLoading}</p>
             </s.LoadingState>
           ) : flashcards.length === 0 ? (
             <s.NoCardsMessage>
-              <p>No flashcards available.</p>
+              <p>{strings.verbalFlashcardsNoCards}</p>
             </s.NoCardsMessage>
           ) : (
             currentCard && (
               <>
                 <s.PromptSection>
-                  <s.PromptLabel>Say this:</s.PromptLabel>
+                  <s.PromptLabel>{strings.verbalFlashcardsSayThis}</s.PromptLabel>
                   <s.PromptText>{currentCard.prompt}</s.PromptText>
                 </s.PromptSection>
 
@@ -992,12 +993,12 @@ export default function VerbalFlashcardsPage() {
 
                 {showResult && accuracyResult && (
                   <s.ResultSection id="resultSection">
-                    <h4>Your attempt:</h4>
-                    <s.UserSpeech>{userSpeech || "No speech detected"}</s.UserSpeech>
+                    <h4>{strings.verbalFlashcardsYourAttempt}</h4>
+                    <s.UserSpeech>{userSpeech || strings.verbalFlashcardsNoSpeechDetected}</s.UserSpeech>
 
                     <s.FeedbackContainer>
                       <s.AccuracyMeter>
-                        <s.AccuracyLabel>Accuracy:</s.AccuracyLabel>
+                        <s.AccuracyLabel>{strings.verbalFlashcardsAccuracy}</s.AccuracyLabel>
                         <s.ProgressBar>
                           <s.ProgressFill
                             $accuracy={accuracyResult.accuracy}
@@ -1019,18 +1020,18 @@ export default function VerbalFlashcardsPage() {
                 <s.ActionButtons>
                   <s.NavigationButtons>
                     <s.NavButton onClick={prevCard} disabled={currentCardIndex === 0}>
-                      ← Previous
+                      {strings.verbalFlashcardsPrevious}
                     </s.NavButton>
                     <s.NavButton onClick={nextCard} disabled={currentCardIndex === flashcards.length - 1}>
-                      Next →
+                      {strings.verbalFlashcardsNext}
                     </s.NavButton>
                   </s.NavigationButtons>
 
                   <s.UtilityButtons>
-                    <s.UtilityButton onClick={shuffleCards} title="Shuffle cards">
+                    <s.UtilityButton onClick={shuffleCards} title={strings.verbalFlashcardsShuffleCards}>
                       🔄
                     </s.UtilityButton>
-                    <s.UtilityButton onClick={repeatCard} title="Repeat this card">
+                    <s.UtilityButton onClick={repeatCard} title={strings.verbalFlashcardsRepeatThisCard}>
                       🔁
                     </s.UtilityButton>
                   </s.UtilityButtons>
