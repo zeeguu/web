@@ -1,8 +1,5 @@
 import styled from "styled-components";
 import {
-  almostBlack,
-  lightGrey,
-  veryLightGrey,
   blue600,
   blue700,
   blue800,
@@ -16,7 +13,7 @@ import {
 
 const Button = styled.button`
   cursor: pointer;
-  color: white;
+  color: var(--orange-btn-text);
   border: none;
   margin: 0;
   display: flex;
@@ -52,23 +49,25 @@ const Button = styled.button`
   }
 
   &.warning {
+    color: white;
     background-color: red;
     box-shadow: 0 0.2em ${zeeguuRed};
   }
 
   &.grey {
-    color: ${almostBlack};
+    color: var(--text-primary);
     font-weight: 700;
     background-color: transparent;
-    border: solid 0.1rem ${lightGrey};
-    box-shadow: 0 0.1rem ${lightGrey};
+    border: solid 0.1rem var(--border-color);
+    box-shadow: 0 0.1rem var(--border-color);
 
     &:hover {
-      background-color: ${veryLightGrey};
+      background-color: var(--hover-bg);
     }
   }
 
-  &:active {
+  &:active,
+  &.pressed {
     box-shadow: none;
     transform: translateY(0.2em);
     transition: all ease-in 0.08s;
@@ -99,6 +98,7 @@ const Button = styled.button`
   }
 
   &.blue-btn {
+    color: white;
     background-color: ${blue700};
     box-shadow: 0px 0.2rem ${blue800};
   }

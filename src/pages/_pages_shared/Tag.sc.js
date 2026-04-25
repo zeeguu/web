@@ -1,6 +1,4 @@
 import styled from "styled-components";
-import { lightGrey } from "../../components/colors";
-import { almostBlack } from "../../components/colors";
 import {
   zeeguuOrange,
   blue200,
@@ -18,8 +16,8 @@ const Tag = styled.button`
   line-height: 150%;
   font-weight: 600;
   margin: 0.5rem;
-  border: 1.5px solid ${lightGrey};
-  color: ${almostBlack};
+  border: 1.5px solid var(--border-color);
+  color: var(--text-primary);
   border-radius: 2rem;
   padding: 0.75rem 1.5rem;
   background: none;
@@ -46,7 +44,7 @@ const Tag = styled.button`
   &.selected {
     border: 1.5px solid ${zeeguuOrange};
     background-color: ${zeeguuOrange};
-    color: white;
+    color: var(--orange-btn-text);
   }
 
   @media (max-width: 576px) {

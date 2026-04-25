@@ -67,11 +67,11 @@ export default function StudentsActivityOverview() {
       <s.WidestColumn>
         <div>
           <TopButtonWrapper>
-            <StyledButton primary onClick={() => setShowAddStudentsInfo(true)}>
+            <StyledButton $primary onClick={() => setShowAddStudentsInfo(true)}>
               {strings.addStudents}
             </StyledButton>
             <StyledButton
-              secondary
+              $secondary
               onClick={() => history.push("/teacher/classes")}
             >
               {strings.backToClasses}

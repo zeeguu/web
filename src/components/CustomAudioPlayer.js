@@ -4,7 +4,7 @@ import PlayArrowRoundedIcon from "@mui/icons-material/PlayArrowRounded";
 import PauseRoundedIcon from "@mui/icons-material/PauseRounded";
 import HourglassEmptyRoundedIcon from "@mui/icons-material/HourglassEmptyRounded";
 
-const SEEK_SECONDS = 5;
+const SEEK_SECONDS = 10;
 
 export default function CustomAudioPlayer({
   src,
@@ -644,7 +644,6 @@ export default function CustomAudioPlayer({
             )}
           </button>
 
-          {/* Forward 15s Button */}
           <button
             onClick={seekForward}
             disabled={isLoading}

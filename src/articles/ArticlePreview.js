@@ -21,6 +21,7 @@ import ActionButton from "../components/ActionButton";
 import { getHighestCefrLevel } from "../utils/misc/cefrHelpers";
 import getDomainName from "../utils/misc/getDomainName";
 import HighlightOffRoundedIcon from "@mui/icons-material/HighlightOffRounded";
+import OpenInNewRoundedIcon from "@mui/icons-material/OpenInNewRounded";
 import { TopicOriginType } from "../appConstants";
 
 export default function ArticlePreview({
@@ -187,7 +188,7 @@ export default function ArticlePreview({
             handleOpenRedirectionModal();
           }}
         >
-          Read Full
+          Open Externally <OpenInNewRoundedIcon style={{ fontSize: 16, marginLeft: 4 }} />
         </ActionButton>
       </>
     );
@@ -202,17 +203,18 @@ export default function ArticlePreview({
         href={article.url}
         onClick={handleArticleClick}
       >
-        Read Full
+        Open Externally <OpenInNewRoundedIcon style={{ fontSize: 16, marginLeft: 4 }} />
       </ActionButton>
     );
 
-    let should_open_in_zeeguu =
-      article.video ||
-      (!Feature.extension_experiment1() && !hasExtension) ||
-      article.has_personal_copy ||
-      article.has_uploader ||
-      isArticleSaved === true ||
-      article.parent_article_id; // Simplified articles (with parent_article_id) always open in Zeeguu reader
+    let is_saved = article.has_personal_copy || article.has_uploader || isArticleSaved === true;
+
+    let should_open_in_zeeguu = Feature.always_open_externally()
+      ? is_saved
+      : article.video ||
+        (!Feature.extension_experiment1() && !hasExtension) ||
+        is_saved ||
+        article.parent_article_id; // Simplified articles (with parent_article_id) always open in Zeeguu reader
 
     let should_open_with_modal = doNotShowRedirectionModal_UserPreference === false;
 

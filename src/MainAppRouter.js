@@ -45,6 +45,7 @@ import { PrivateRouteWithLayout } from "./PrivateRouteWithLayout";
 import { PrivateRoute } from "./PrivateRoute";
 import DeleteAccount from "./pages/DeleteAccount/DeleteAccount";
 import SettingsRouter from "./pages/Settings/_SettingsRouter";
+import ProfileRouter from "./profile/_ProfileRouter";
 import ExercisesForArticle from "./exercises/ExercisesForArticle";
 import { WEB_READER } from "./reader/ArticleReader";
 import VideoPlayer from "./videos/VideoPlayer";
@@ -53,6 +54,7 @@ import IndividualExercise from "./pages/IndividualExercise";
 import Swiper from "./swiper/Swiper";
 import KeyboardTest from "./pages/KeyboardTest";
 import VerbalFlashcardsRouter from "@/verbalFlashcards/VerbalFlashcardsRouter";
+import Feature from "./features/Feature";
 
 // Helper to detect if we're in a Capacitor native app
 const isCapacitor = () => {
@@ -106,6 +108,7 @@ export default function MainAppRouter({ hasExtension, handleSuccessfulLogIn }) {
       <Route path="/language_preferences" component={LanguagePreferences} />
       <Route path="/welcome" component={Welcome} />
 
+
       <Route path="/" exact component={HomePage} />
       <Route path="/extension_installed" component={ExtensionInstalled} />
       <Route path="/install_extension" component={InstallExtension} />
@@ -134,6 +137,12 @@ export default function MainAppRouter({ hasExtension, handleSuccessfulLogIn }) {
       <PrivateRouteWithLayout path="/history" component={ReadingHistory} />
       <PrivateRouteWithLayout path="/activity-history" component={ActivityRouter} />
       <PrivateRouteWithLayout path="/account_settings" component={SettingsRouter} />
+      {/* Only include profile router if gamification is enabled */}
+      {Feature.has_gamification() ? (
+        <PrivateRouteWithLayout path="/profile" component={ProfileRouter} />
+      ) : (
+        <Route path="/profile" component={NotFound} />
+      )}
       <PrivateRouteWithLayout path="/teacher" component={TeacherRouter} />
       <PrivateRouteWithLayout path="/shared-article" component={SharedArticleHandler} />
       <PrivateRouteWithLayout path="/read/article" component={ArticleReader} />

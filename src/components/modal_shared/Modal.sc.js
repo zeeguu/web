@@ -10,7 +10,7 @@ const ModalWrapper = styled(Box)`
   left: 50%;
   transform: translate(-50%, -50%);
   width: 50%;
-  max-width: 500px;
+  max-width: 600px;
   max-height: 90%;
   background-color: var(--card-bg);
   border: 0 !important;
@@ -54,7 +54,7 @@ const ModalWrapper = styled(Box)`
   }
 
   @media (max-width: 1200px) {
-    max-width: 500px;
+    max-width: 600px;
     width: 80%;
   }
 

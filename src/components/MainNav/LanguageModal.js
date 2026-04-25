@@ -1,8 +1,7 @@
 import { useContext, useEffect, useMemo, useState } from "react";
 import { APIContext } from "../../contexts/APIContext.js";
 import { UserContext } from "../../contexts/UserContext.js";
-import { saveSharedUserInfo } from "../../utils/cookies/userInfo.js";
-import LocalStorage from "../../assorted/LocalStorage.js";
+import useGuardedLanguageSwitch from "../../hooks/useGuardedLanguageSwitch.js";
 import Modal from "../modal_shared/Modal.js";
 import Form from "../../pages/_pages_shared/Form.sc.js";
 import ButtonContainer from "../modal_shared/ButtonContainer.sc.js";
@@ -13,57 +12,53 @@ import Heading from "../modal_shared/Heading.sc.js";
 import RadioGroup from "./RadioGroup.js";
 import ReactLink from "../ReactLink.sc.js";
 import AddRoundedIcon from "@mui/icons-material/AddRounded";
+import CircularProgress from "@mui/material/CircularProgress";
 import DynamicFlagImage from "../DynamicFlagImage.js";
-import { CEFR_LEVELS } from "../../assorted/cefrLevels.js";
-import styled from "styled-components";
+import LanguageOptionLabel from "./LanguageOptionLabel.js";
+import LocalStorage from "../../assorted/LocalStorage.js";
+import { saveSharedUserInfo } from "../../utils/cookies/userInfo.js";
 
-const CefrSection = styled.span`
-  display: flex;
-  align-items: center;
-  margin-left: auto;
-  padding-left: 0.75em;
-  border-left: 1px solid rgba(128, 128, 128, 0.3);
-  height: 1.5em;
-`;
-
-const CefrSelect = styled.select`
-  font-size: 0.9em;
-  font-weight: 600;
-  padding: 0.2em 0.3em;
-  border: none;
-  background: transparent;
-  cursor: pointer;
-  color: inherit;
-
-  &:hover {
-    background: rgba(0, 0, 0, 0.05);
-    border-radius: 0.3em;
-  }
-
-  &:focus {
-    outline: none;
-  }
-`;
+const MAX_MODAL_LANGUAGES = 7;
+const spinnerSx = { color: "var(--streak-banner-text)" };
 
 export default function LanguageModal({ open, setOpen }) {
   const api = useContext(APIContext);
   const { userDetails, setUserDetails, session } = useContext(UserContext);
+  const { requestSwitch, confirmModal, willConfirm } = useGuardedLanguageSwitch();
   const [, setErrorMessage] = useState("");
 
   const [learnedLanguageCode, setLearnedLanguageCode] = useState(null);
   const [activeLanguages, setActiveLanguages] = useState(null);
+  const [streaksByCode, setStreaksByCode] = useState({});
+  const [practicedByCode, setPracticedByCode] = useState({});
+  const [isSwitching, setIsSwitching] = useState(false);
 
   useEffect(() => {
-    if (open) {
-      setLearnedLanguageCode(userDetails.learned_language);
+    if (!open) return;
+    let cancelled = false;
 
-      api.getUserLanguages((data) => {
-        setActiveLanguages(data);
+    setLearnedLanguageCode(userDetails.learned_language);
+
+    api.getUserLanguages((data) => {
+      if (!cancelled) setActiveLanguages(data);
+    });
+
+    api.getAllLanguageStreaks((data) => {
+      if (cancelled) return;
+      const streakMap = {};
+      const practicedMap = {};
+      data.forEach((l) => {
+        streakMap[l.code] = l.daily_streak;
+        practicedMap[l.code] = l.practiced_today;
       });
-    }
+      setStreaksByCode(streakMap);
+      setPracticedByCode(practicedMap);
+    });
+
     return () => {
-      setActiveLanguages(undefined);
-      setLearnedLanguageCode(undefined);
+      cancelled = true;
+      setActiveLanguages(null);
+      setLearnedLanguageCode(null);
     };
   }, [open, api, session]);
 
@@ -74,7 +69,7 @@ export default function LanguageModal({ open, setOpen }) {
   };
 
   const handleCefrLevelChange = (languageCode, newLevel, e) => {
-    e.stopPropagation(); // Prevent triggering radio button
+    e.stopPropagation();
     const cefrKey = languageCode + "_cefr_level";
 
     const newUserDetails = {
@@ -92,7 +87,6 @@ export default function LanguageModal({ open, setOpen }) {
       setUserDetails(newUserDetails);
       LocalStorage.setUserInfo(newUserDetails);
       saveSharedUserInfo(newUserDetails);
-      // Reload if changing level for current language
       if (languageCode === userDetails.learned_language) {
         window.location.reload();
       }
@@ -107,82 +101,72 @@ export default function LanguageModal({ open, setOpen }) {
     return filteredLanguages.sort((a, b) => {
       if (a.code === userDetails.learned_language) return -1;
       if (b.code === userDetails.learned_language) return 1;
-      return 0;
+      return (streaksByCode[b.code] || 0) - (streaksByCode[a.code] || 0);
     });
-  }, [activeLanguages, userDetails.native_language, userDetails.learned_language]);
+  }, [activeLanguages, userDetails.native_language, userDetails.learned_language, streaksByCode]);
 
   function updateLearnedLanguage(lang_code) {
     setLearnedLanguageCode(lang_code);
-
-    // Automatically save the selection
-    const newUserDetails = {
-      ...userDetails,
-      learned_language: lang_code,
-    };
-
-    api.saveUserDetails(newUserDetails, setErrorMessage, () => {
-      // Re-fetch user details to get updated daily_audio_status for new language
-      api.getUserDetails((freshUserDetails) => {
-        setUserDetails(freshUserDetails);
-        LocalStorage.setUserInfo(freshUserDetails);
-        saveSharedUserInfo(freshUserDetails);
-        setOpen(false); // Close modal after successful save
-      });
+    // Skip the in-modal "switching" spinner when a confirmation will be shown
+    // on top — otherwise the underlying modal hides its content while the user
+    // is still deciding whether to switch.
+    if (!willConfirm) setIsSwitching(true);
+    requestSwitch(lang_code, () => {
+      setIsSwitching(false);
+      setOpen(false);
     });
   }
 
-  return (
-    <Modal
-      open={open}
-      onClose={() => {
-        setOpen(false);
-      }}
-    >
-      <Header withoutLogo>
-        <Heading>Your Active Languages:</Heading>
-      </Header>
-      <Main>
-        <Form>
-          <FormSection>
-            <RadioGroup
-              radioGroupLabel="Select the language you want to practice:"
-              name="active-language"
-              options={reorderedLanguages}
-              selectedValue={learnedLanguageCode}
-              onChange={(e) => {
-                updateLearnedLanguage(e.target.value);
-              }}
-              optionLabel={(e) => (
-                <>
-                  {e.language}
-                  <CefrSection>
-                    <CefrSelect
-                      value={getCefrLevelValueForLanguage(e.code)}
-                      onClick={(ev) => ev.stopPropagation()}
-                      onChange={(ev) => handleCefrLevelChange(e.code, ev.target.value, ev)}
-                    >
-                      {CEFR_LEVELS.map((level) => (
-                        <option key={level.value} value={level.value}>
-                          {level.label.split(" | ")[0]}
-                        </option>
-                      ))}
-                    </CefrSelect>
-                  </CefrSection>
-                </>
-              )}
-              optionValue={(e) => e.code}
-              optionId={(e) => e.id}
-              dynamicIcon={(e) => <DynamicFlagImage languageCode={e.code} />}
-              radiosContentLeftAligned
+  const switchingBody = (
+    <div style={{ display: "flex", flexDirection: "column", alignItems: "center", padding: "2rem 0", gap: "1rem" }}>
+      <DynamicFlagImage languageCode={learnedLanguageCode} />
+      <CircularProgress size={24} sx={spinnerSx} />
+    </div>
+  );
+
+  const languageListBody = (
+    <>
+      <FormSection>
+        <RadioGroup
+          radioGroupLabel=""
+          name="active-language"
+          options={reorderedLanguages.slice(0, MAX_MODAL_LANGUAGES)}
+          selectedValue={learnedLanguageCode}
+          onChange={(e) => updateLearnedLanguage(e.target.value)}
+          optionLabel={(e) => (
+            <LanguageOptionLabel
+              languageName={e.language}
+              streak={streaksByCode[e.code] || 0}
+              practiced={practicedByCode[e.code]}
+              cefrLevelValue={getCefrLevelValueForLanguage(e.code)}
+              onCefrLevelChange={(newLevel, ev) => handleCefrLevelChange(e.code, newLevel, ev)}
             />
-          </FormSection>
-          <ButtonContainer className={"adaptive-alignment-horizontal"}>
-            <ReactLink className="small" onClick={() => setOpen(false)} to="/account_settings/language_settings">
-              <AddRoundedIcon /> More language settings
-            </ReactLink>
-          </ButtonContainer>
-        </Form>
-      </Main>
-    </Modal>
+          )}
+          optionValue={(e) => e.code}
+          optionId={(e) => e.id}
+          dynamicIcon={(e) => <DynamicFlagImage languageCode={e.code} />}
+          radiosContentLeftAligned
+        />
+      </FormSection>
+      <ButtonContainer className={"adaptive-alignment-horizontal"}>
+        <ReactLink className="small" onClick={() => setOpen(false)} to="/account_settings/language_settings">
+          <AddRoundedIcon /> More language settings
+        </ReactLink>
+      </ButtonContainer>
+    </>
+  );
+
+  return (
+    <>
+      {confirmModal}
+      <Modal open={open} onClose={() => setOpen(false)}>
+        <Header withoutLogo>
+          <Heading>{isSwitching ? "Changing language..." : "Your Active Languages:"}</Heading>
+        </Header>
+        <Main>
+          <Form>{isSwitching ? switchingBody : languageListBody}</Form>
+        </Main>
+      </Modal>
+    </>
   );
 }

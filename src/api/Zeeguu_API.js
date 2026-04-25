@@ -1,4 +1,5 @@
-import { Zeeguu_API } from "./classDef";
+import { Zeeguu_API, ServerUnavailableError } from "./classDef";
+export { ServerUnavailableError };
 import "./feature_toggles";
 import "./accounts";
 import "./userDetails";
@@ -24,5 +25,8 @@ import "./watching_sessions";
 import "./dailyAudio";
 import "./sessionHistory";
 import "./verbal_flashcards";
+import "./badges";
+import "./friends";
+import "./leaderboards";
 
 export default Zeeguu_API;

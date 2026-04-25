@@ -83,7 +83,7 @@ export default function AddTeacherDialog({
       {showGuidance && <Error message={strings.youHaveToAddEmail} />}
       {showError && <Error message={strings.errorMSg} />}
       <PopupButtonWrapper>
-        <StyledButton primary onClick={shareWithColleague}>
+        <StyledButton $primary onClick={shareWithColleague}>
           {strings.addColleague}
         </StyledButton>
       </PopupButtonWrapper>

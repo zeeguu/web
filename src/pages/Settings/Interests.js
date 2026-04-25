@@ -8,7 +8,6 @@ import Main from "../_pages_shared/Main.sc";
 import Header from "../_pages_shared/Header";
 import Heading from "../_pages_shared/Heading.sc";
 import BackArrow from "./settings_pages_shared/BackArrow";
-import strings from "../../i18n/definitions";
 import { setTitle } from "../../assorted/setTitle";
 import { APIContext } from "../../contexts/APIContext";
 
@@ -18,15 +17,25 @@ export default function Interests() {
     useSelectInterest(api);
   const isFromArticles = useQuery().get("fromArticles") === "1";
   useEffect(() => {
-    setTitle(strings.interests);
+    setTitle("Topics of Interest");
   }, []);
   return (
     <PreferencesPage layoutVariant={"minimalistic-top-aligned"}>
       <BackArrow redirectLink={isFromArticles && "/articles"} />
       <Header withoutLogo>
-        <Heading>{strings.interests}</Heading>
+        <Heading>Topics of Interest</Heading>
       </Header>
       <Main>
+        <div
+          style={{
+            fontSize: "1rem",
+            marginBottom: 0,
+            textAlign: "left",
+            width: "100%",
+          }}
+        >
+          Show me articles about the following topics:
+        </div>
         <TagContainer>
           {allTopics.map((topic) => (
             <Tag

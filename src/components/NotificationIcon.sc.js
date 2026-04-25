@@ -39,7 +39,7 @@ const NotificationIcon = styled.div`
     align-items: center;
     font-size: x-small;
     font-weight: 800;
-    color: ${({ $isActive }) => ($isActive ? "white" : orange500)};
+    color: ${({ $isActive }) => ($isActive ? "var(--orange-btn-text)" : orange500)};
     @media (max-width: 990px) {
       font-size: x-small;
     }

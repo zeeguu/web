@@ -1,5 +1,5 @@
 :root {
-  --bg-primary: #ffffff;
+  --bg-primary: #FFFDF8;
   --bg-secondary: #f6f6f6;
   --bg-tertiary: #efefef;
   --text-primary: #333333;
@@ -11,10 +11,11 @@
   --link-color: rgb(164, 106, 0);
   --shadow-color: rgba(0, 0, 0, 0.12);
   --modal-overlay: rgba(0, 0, 0, 0.5);
-  --card-bg: #ffffff;
+  --card-bg: #FFFDF8;
   --continue-card-bg: hsl(216, 100%, 97%);
   --hover-bg: #f6f6f6;
   --active-bg: #ededed;
+  --infobox-bg: #fff2dd;
 
   --streak-banner-bg: linear-gradient(135deg, #fff8e1, #fff3cd);
   --streak-banner-text: #7a5c00;
@@ -26,6 +27,8 @@
   --feedback-banner-border: #81d1f6;
   --feedback-banner-hover: linear-gradient(135deg, #b3e5fc, #81d4fa);
 
+  --title-color: #9c7130;
+
   --action-btn-text: #8b5f28;
   --action-btn-bg: #fff5e6;
   --action-btn-hover-bg: #f0e6cc;
@@ -34,14 +37,22 @@
   --action-btn-muted-border: #f0f0f0;
   --action-btn-muted-hover-bg: #f0f0f0;
   --action-btn-muted-hover-text: #666;
+  --action-btn-secondary-color-bg: #DBECFF;
+  --action-btn-secondary-color-text: #022161;
 
   --badge-bg: #e3f2fd;
+  --light-badge-bg: #e3f2fd;
   --badge-text: hsl(216, 100%, 57%);
   --tag-bg: hsl(216, 100%, 97%);
+  --light-tag-bg: hsl(216, 100%, 97%);
 
   --search-tag-bg: #fef3c7;
   --search-tag-border: #b45309;
   --search-tag-text: #92400e;
+
+  --info-icon-color: #ffbb55; 
+  --speak-button-bg: #ffbb54;
+  --edit-icon: url("/static/images/file_rename_orange_36dp.svg");
 
   --input-bg: #ffffff;
   --input-border: #c1c1c1;
@@ -49,6 +60,14 @@
   --cloze-underline-pulse: #666;
   --success-bg: #f1f7f2;
   --success-border: #99e47f;
+
+  --achieved-bg: rgba(90,189,92,0.35);
+
+  --row-hover-bg: rgba(255, 187, 84, 0.2);
+
+  --badge-progress-bg: #e5e5e5;
+
+  --orange-btn-text: white;
 
   color-scheme: light;
 }
@@ -69,6 +88,7 @@
   --card-bg: #222240;
   --hover-bg: #2e2e4a;
   --active-bg: #353555;
+  --infobox-bg: #3f3360;
 
   --streak-banner-bg: linear-gradient(135deg, #2a2540, #302848);
   --streak-banner-text: #ffcc66;
@@ -80,6 +100,8 @@
   --feedback-banner-border: #2a3555;
   --feedback-banner-hover: linear-gradient(135deg, #1e2d4a, #253555);
 
+  --title-color: #ffbb54;
+
   --action-btn-text: #ffcc66;
   --action-btn-bg: #2a2540;
   --action-btn-hover-bg: #353050;
@@ -88,14 +110,22 @@
   --action-btn-muted-border: #3a3a55;
   --action-btn-muted-hover-bg: #2e2e4a;
   --action-btn-muted-hover-text: #bbb;
+  --action-btn-secondary-color-bg: #aab1de;
+  --action-btn-secondary-color-text: #3f3360;
 
   --badge-bg: #1a2540;
+  --light-badge-bg: #2c3760;
   --badge-text: #81b4ff;
   --tag-bg: #1e2540;
+  --light-tag-bg: #2f375c;
 
   --search-tag-bg: #2a2520;
   --search-tag-border: #b45309;
   --search-tag-text: #ffcc66;
+
+  --info-icon-color: #aab1de;
+  --speak-button-bg: #aab1de;
+  --edit-icon: url("/static/images/file_rename_purple_36dp.svg");
 
   --input-bg: #2a2a45;
   --input-border: #3a3a55;
@@ -117,6 +147,12 @@
   --progress-circle-bg: #3a3a55;
   --progress-circle-border: #50507a;
 
+  --achieved-bg: rgba(53, 193, 55, 0.35);
+
+  --row-hover-bg: #353555;
+
+  --badge-progress-bg: #3a3a55;
+
   color-scheme: dark;
 }
 
@@ -125,6 +161,8 @@ html,
 body {
   height: 100%;
   overflow: hidden;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
 }
 
 body {
@@ -135,7 +173,9 @@ body {
   padding-right: env(safe-area-inset-right);
   background-color: var(--bg-primary);
   color: var(--text-primary);
-  transition: background-color 0.2s ease, color 0.2s ease;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease;
   font-family:
     "Montserrat",
     -apple-system,
@@ -255,6 +295,5 @@ a {
 }
 
 code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
-    monospace;
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New", monospace;
 }

@@ -47,6 +47,8 @@ export const NavArrow = styled.button`
   line-height: 1;
   user-select: none;
   flex-shrink: 0;
+  visibility: ${props => props.$hidden ? 'hidden' : 'visible'};
+  pointer-events: ${props => props.$hidden ? 'none' : 'auto'};
 
   &:hover:not(:disabled) {
     color: ${darkGrey};

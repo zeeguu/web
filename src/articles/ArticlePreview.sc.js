@@ -5,6 +5,7 @@ const ArticlePreview = styled.div`
   margin-bottom: 1em;
   margin-top: 2em;
   padding-left: 0.8em;
+  padding-right: 0.8em;
   padding-bottom: 1em;
 `;
 /*
@@ -88,7 +89,7 @@ const TitleContainer = styled.div`
 
 const Title = styled.div`
   font-size: 1.4em;
-  color: ${zeeguuDarkOrange};
+  color: var(--title-color);
   padding-right: 0.3em;
   font-weight: 500;
   display: block;

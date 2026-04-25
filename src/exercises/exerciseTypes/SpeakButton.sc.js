@@ -25,6 +25,8 @@ let SpeakButton = styled(OrangeButton)`
   width: fit-content;
   outline: none;
   padding: 5px;
+  background-color: var(--speak-button-bg);
+
   &:selected {
     background-color: ${blue900};
   }

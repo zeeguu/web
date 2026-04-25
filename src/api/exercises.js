@@ -103,6 +103,45 @@ Zeeguu_API.prototype.uploadExerciseFinalizedData = function (
   this._post(`report_exercise_outcome`, qs.stringify(payload));
 };
 
+Zeeguu_API.prototype.getPastContexts = function (userWordId) {
+  return this._getJSONPromise(`past_contexts/${userWordId}`);
+};
+
+Zeeguu_API.prototype.getAlternativeSentences = function (userWordId) {
+  return this._getJSONPromise(`alternative_sentences/${userWordId}`);
+};
+
+/**
+ * Fetch past contexts and AI-generated alternatives for a word,
+ * sorted by sentence length, with the current exercise context first.
+ * Deduplication is handled server-side by the two endpoints.
+ */
+Zeeguu_API.prototype.fetchAndSortContexts = async function (exerciseBookmark) {
+  const [pastData, altData] = await Promise.all([
+    this.getPastContexts(exerciseBookmark.user_word_id).catch(() => null),
+    this.getAlternativeSentences(exerciseBookmark.user_word_id).catch(() => null),
+  ]);
+
+  const byLength = (a, b) => (a.sentence || a.context || "").length
+                            - (b.sentence || b.context || "").length;
+
+  return [
+    { isCurrent: true, bookmark: exerciseBookmark },
+    ...(pastData?.past_contexts || []).sort(byLength),
+    ...(altData?.examples || []).sort(byLength),
+  ];
+};
+
+Zeeguu_API.prototype.setPreferredBookmark = function (userWordId, bookmarkId) {
+  fetch(this._appendSessionToUrl(`set_preferred_bookmark/${userWordId}`), {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ bookmark_id: bookmarkId }),
+  }).catch((error) => {
+    console.error("Failed to persist preferred bookmark:", error);
+  });
+};
+
 Zeeguu_API.prototype.wordsSimilarTo = function (bookmark_id, callback) {
   this._getJSON(`similar_words/${bookmark_id}`, callback);
 };

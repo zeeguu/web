@@ -1,4 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
+import PullToRefresh from "react-simple-pull-to-refresh";
 import ArticlePreview from "./ArticlePreview";
 import SearchField from "./SearchField";
 import * as s from "./ArticleListBrowser.sc";
@@ -124,47 +125,56 @@ export default function ArticleListBrowser({ content, searchQuery, searchPublish
     LocalStorage.setDoNotShowRedirectionModal(doNotShowRedirectionModal_UserPreference);
   }, [doNotShowRedirectionModal_UserPreference]);
 
-  useEffect(() => {
-    resetPagination();
-    setSearchError(false);
-    if (searchQuery) {
-      setTitle(strings.titleSearch + ` '${searchQuery}'`);
-      setReloadingSearchArticles(true);
-      api.search(
-        searchQuery,
-        searchPublishPriority,
-        searchDifficultyPriority,
-        (articles) => {
-          setArticlesAndVideosList(articles);
-          setOriginalList([...articles]);
-          setReloadingSearchArticles(false);
-          articles.some((e) => e.video) ? setAreVideosAvailable(true) : setAreVideosAvailable(false);
-        },
-        (error) => {
-          setArticlesAndVideosList([]);
-          setOriginalList([]);
-          setReloadingSearchArticles(false);
-          setSearchError(true);
-        },
-      );
-    } else {
-      setTitle(strings.titleHome);
-      // First fetch unfinished articles, then fetch main articles
-      api.getUnfinishedUserReadingSessions((unfinished) => {
-        setUnfinishedArticles(unfinished);
-        api.getUserArticles((articles) => {
-          // Filter out unfinished articles from the main list
-          let filteredArticles = [...articles];
-          for (let i = 0; i < unfinished.length; i++) {
-            filteredArticles = filteredArticles.filter(
-              (article) => article.id !== unfinished[i].id,
-            );
-          }
-          setArticlesAndVideosList(filteredArticles);
-          setOriginalList([...filteredArticles]);
-          filteredArticles.some((e) => e.video) ? setAreVideosAvailable(true) : setAreVideosAvailable(false);
+  function loadArticles() {
+    return new Promise((resolve) => {
+      resetPagination();
+      setSearchError(false);
+      if (searchQuery) {
+        setTitle(strings.titleSearch + ` '${searchQuery}'`);
+        setReloadingSearchArticles(true);
+        api.search(
+          searchQuery,
+          searchPublishPriority,
+          searchDifficultyPriority,
+          (articles) => {
+            setArticlesAndVideosList(articles);
+            setOriginalList([...articles]);
+            setReloadingSearchArticles(false);
+            articles.some((e) => e.video) ? setAreVideosAvailable(true) : setAreVideosAvailable(false);
+            resolve();
+          },
+          (error) => {
+            setArticlesAndVideosList([]);
+            setOriginalList([]);
+            setReloadingSearchArticles(false);
+            setSearchError(true);
+            resolve();
+          },
+        );
+      } else {
+        setTitle(strings.titleHome);
+        api.getUnfinishedUserReadingSessions((unfinished) => {
+          setUnfinishedArticles(unfinished);
+          api.getUserArticles((articles) => {
+            let filteredArticles = [...articles];
+            for (let i = 0; i < unfinished.length; i++) {
+              filteredArticles = filteredArticles.filter(
+                (article) => article.id !== unfinished[i].id,
+              );
+            }
+            setArticlesAndVideosList(filteredArticles);
+            setOriginalList([...filteredArticles]);
+            filteredArticles.some((e) => e.video) ? setAreVideosAvailable(true) : setAreVideosAvailable(false);
+            resolve();
+          });
         });
-      });
+      }
+    });
+  }
+
+  useEffect(() => {
+    loadArticles();
+    if (!searchQuery) {
       window.addEventListener("scroll", handleScroll, true);
       return () => {
         window.removeEventListener("scroll", handleScroll, true);
@@ -190,7 +200,8 @@ export default function ArticleListBrowser({ content, searchQuery, searchPublish
   }
 
   return (
-    <>
+    <PullToRefresh onRefresh={loadArticles} pullingContent="">
+      <>
       {!searchQuery && (
         <>
           <UnfinishedArticlesList unfinishedArticles={unfinishedArticles} onArticleHidden={handleArticleHidden} />
@@ -266,6 +277,7 @@ export default function ArticleListBrowser({ content, searchQuery, searchPublish
           There are no more results.
         </div>
       )}
-    </>
+      </>
+    </PullToRefresh>
   );
 }

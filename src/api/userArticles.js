@@ -30,6 +30,7 @@ Zeeguu_API.prototype.getUserArticles = function (callback, options = {}) {
 
   this._getJSON("user_articles/recommended" + queryString,
       (articles) => {
+    if (!articles) { callback([]); return; }
     // sometimes we get duplicates from the server
     // deduplicate them here
     // fast deduplication cf. https://stackoverflow.com/a/64791605/1200070
@@ -301,6 +302,16 @@ Zeeguu_API.prototype.findOrCreateArticle = function (articleInfo, callback, onEr
   this._post(`/find_or_create_article`, qs.stringify(article), callback, onError);
 };
 
+Zeeguu_API.prototype.detectArticleInfo = function (url, callback, onError) {
+  this._post(`/detect_article_info`, qs.stringify({ url }), (response) => {
+    try {
+      callback(JSON.parse(response));
+    } catch (e) {
+      if (onError) onError("Failed to parse response");
+    }
+  }, onError);
+};
+
 Zeeguu_API.prototype.removeMLSuggestion = function (
   articleId,
   topic,
@@ -308,6 +319,26 @@ Zeeguu_API.prototype.removeMLSuggestion = function (
 ) {
   let param = qs.stringify({ article_id: articleId, topic: topic });
   this._post(`/remove_ml_suggestion`, param, callback);
+};
+
+Zeeguu_API.prototype.createArticleUpload = function (payload, callback, onError) {
+  this._post(`/article_upload/create`, qs.stringify(payload), callback, onError, true);
+};
+
+Zeeguu_API.prototype.getArticleUpload = function (uploadId, callback) {
+  this._getJSON(`article_upload/${uploadId}`, callback);
+};
+
+Zeeguu_API.prototype.promoteArticleUpload = function (uploadId, callback, onError) {
+  this._post(`/article_upload/${uploadId}/promote_to_article`, "", callback, onError, true);
+};
+
+Zeeguu_API.prototype.simplifyArticleUpload = function (uploadId, callback, onError) {
+  this._post(`/article_upload/${uploadId}/simplify`, "", callback, onError, true);
+};
+
+Zeeguu_API.prototype.translateAndAdaptArticleUpload = function (uploadId, callback, onError) {
+  this._post(`/article_upload/${uploadId}/translate_and_adapt`, "", callback, onError, true);
 };
 
 Zeeguu_API.prototype.makePersonalCopy = function (articleId, callback) {

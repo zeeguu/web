@@ -3,13 +3,13 @@ import * as s from "./Word.sc";
 import { useContext, useState } from "react";
 import SpeakButton from "../exercises/exerciseTypes/SpeakButton";
 import EditBookmarkButton from "./EditBookmarkButton";
-import { darkGrey } from "../components/colors";
 import { CenteredRow } from "../exercises/exerciseTypes/Exercise.sc";
 import { USER_WORD_PREFERENCE } from "./userBookmarkPreferences";
 import { MAX_WORDS_IN_BOOKMARK_FOR_EXERCISES } from "../exercises/ExerciseConstants";
 import { getStaticPath } from "../utils/misc/staticPath";
 import { APIContext } from "../contexts/APIContext";
 import PhraseTypeBadge from "./PhraseTypeBadge";
+import { darkGrey } from "../components/colors";
 
 export default function Word({
   bookmark,

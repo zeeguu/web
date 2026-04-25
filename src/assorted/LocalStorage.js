@@ -19,6 +19,7 @@ const LocalStorage = {
     AnonUUID: "anon_uuid",
     AnonPassword: "anon_password",
     AnonFirstUseDate: "anon_first_use_date",
+    AnonUpgradeDismissed: "anon_upgrade_dismissed",
     AudioExperimentNoOfSessions: "audio_experiment_no_of_sessions",
     DisplayedAudioExperimentPopup: "audio_experiment_displayed_popup",
     AudioExperimentCompleted: "audio_experiment_completed",
@@ -35,6 +36,7 @@ const LocalStorage = {
     InviteCode: "invite_code",
     // Keep in sync with index.html inline theme script
     ThemePreference: "zeeguu-theme-preference",
+    ReportedTimezone: "reported_timezone",
   },
 
   userInfo: function () {
@@ -167,7 +169,6 @@ const LocalStorage = {
   },
 
   setUserPreferences: function (preferences) {
-    if (!preferences) return;
     if (preferences["productive_exercises"] !== undefined) {
       localStorage[this.Keys.ProductiveExercisesEnabled] = preferences["productive_exercises"];
     }

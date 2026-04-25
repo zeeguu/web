@@ -78,6 +78,10 @@ let strings = new LocalizedStrings(
       emailPlaceholder: "example@email.com",
       zeeguuTeamEmail: "zeeguu.team@gmail.com",
       name: "Name",
+      displayName: "Display Name",
+      displayNamePlaceholder: "Your name",
+      username: "Username",
+      usernamePlaceholder: "Your username",
       fullName: "Full Name",
       fullNamePlaceholder: "First and last name",
       learnedLanguage: "I want to learn",
@@ -135,8 +139,8 @@ let strings = new LocalizedStrings(
       articlesReadTextStart: "You have read for",
       articlesReadWeeklyTextEnd: "minutes this week.",
       articlesReadWeeklyTextEndSingle: "minute this week.",
-      articlesReadTotalTextEnd: "minutes in total since you started using Zeeguu.",
-      articlesReadTotalTextEndSingle: "minute in total since you started using Zeeguu.",
+      articlesReadTotalTextEnd: "minutes in total.",
+      articlesReadTotalTextEndSingle: "minute in total.",
 
       wordsTranslatedTextStart: "You have translated",
       wordsPracticedTextStart: "You have practiced",
@@ -147,8 +151,8 @@ let strings = new LocalizedStrings(
 
       wordsTextWeeklyEnd: "words this week.",
       wordsTextWeeklyEndSingle: "word this week.",
-      wordsTextTotalEnd: "words in total since you started using Zeeguu.",
-      wordsTextTotalEndSingle: "word in total since you started using Zeeguu.",
+      wordsTextTotalEnd: "words in total.",
+      wordsTextTotalEndSingle: "word in total.",
 
       streakTextStart: "You have been active every day for",
       streakTextStartSingle: "You have been active for",
@@ -374,7 +378,7 @@ let strings = new LocalizedStrings(
       source: "source",
       helpUsMsg:
         "Help us make Zeeguu even smarter by always letting us know whether you liked reading an article or not.",
-      didYouEnjoyMsg: "Did you enjoy the article?",
+      didYouEnjoyMsg: "Did you enjoy the topic of the article?",
       answeringMsg: "Zeeguu can make better personalized recommendations based on your feedback.",
       yes: "Yes",
       no: "No",
@@ -617,14 +621,49 @@ let strings = new LocalizedStrings(
       backToWords: "Back to Words",
       keepExercising: "Keep Practicing",
       startLearningNewWords: "Start Learning New Words",
-      goToExercises: "Go to Exercises",
+      goToExercises: "Exercises",
 
       //CongratulationsPage
       goodJob: "Good Job, ",
       correct: "You got the following words correct:",
       payMoreAttentionTo: "Pay more attention to these words:",
-      wordsIncorrect: "Words you didn't get correct in exercises",
-      wordsCorrect: "Words you got correct in exercises",
+      wordsIncorrect: "Words you didn't get correct in exercises:",
+      wordsCorrect: "Words you got correct in exercises:",
+
+      // Profile
+      titleOwnProfile: "Your Profile",
+      titleUserProfilePostfix: "Profile",
+      titleUserProfileDefault: "User's Profile",
+
+      // Badges
+      loadingBadges: "Loading badges...",
+      couldNotLoadBadges: "Could not load badges.",
+      badgeNewTag: "New",
+
+      // Friends
+      loadingFriends: "Loading friends...",
+      friends: "Friends",
+      noFriendsYet: "You have no friends yet.",
+      noFriendsForUser: "This user has no friends yet.",
+      friendRequests: "Friend Requests",
+      searchForUsersPlaceholder: "Search for users...",
+      users: "Users",
+      continueTypingToSearch: "Continue typing or press Enter to search...",
+      searching: "Searching...",
+      noUsers: "No users...",
+      failedToUnfriendUser: "Failed to unfriend user.",
+      failedToSendFriendRequest: "Failed to send friend request.",
+      failedToCancelFriendRequest: "Failed to cancel friend request.",
+      failedToAcceptFriendRequest: "Failed to accept friend request.",
+      failedToRejectFriendRequest: "Failed to reject friend request.",
+
+      // Leaderboards
+      loadingLeaderboard: "Loading leaderboard...",
+      noLeaderboardData: "No leaderboard data available yet.",
+      couldNotLoadLeaderboard: "Could not load leaderboard.",
+      leaderboardRank: "Rank",
+      leaderboardUser: "User",
+      selectClassroom: "Select a classroom",
 
       //Settings
       //Settings categories
@@ -655,6 +694,12 @@ let strings = new LocalizedStrings(
       upperIntermediate: "Upper Intermediate",
       advanced: "Advanced",
       proficiency: "Proficiency",
+      beginnerDescription: "Can understand and use basic everyday expressions",
+      elementaryDescription: "Can communicate in simple, routine situations",
+      intermediateDescription: "Can handle most situations while travelling",
+      upperIntermediateDescription: "Can interact fluently with native speakers",
+      advancedDescription: "Can use language flexibly for social and professional purposes",
+      proficiencyDescription: "Can understand virtually everything heard or read",
 
       //_ActivityInsightsRouter
       backTo: "Back to ",
@@ -946,6 +991,10 @@ let strings = new LocalizedStrings(
       exercisesInTheLast: " exercises in the last ",
       wordsNotStudiedInZeeguu: "Words Not Studied in Zeeguu",
       systemLanguage: "System Language",
+
+      // Badges
+      badges: "Badges",
+      myBadges: "My Badges",
     },
 
     da: {
@@ -1233,7 +1282,7 @@ let strings = new LocalizedStrings(
       source: "kilde",
       helpUsMsg:
         "Hjælp os med at gøre Zeeguu endnu bedre ved at fortælle os, om du kunne lide at læse artiklen eller ej.",
-      didYouEnjoyMsg: "Kunne du lide artiklen?",
+      didYouEnjoyMsg: "Kunne du lide emnet i artiklen?",
       yes: "ja",
       no: "nej",
       reviewVocabulary: "Gennemse ordforråd",
@@ -1415,6 +1464,12 @@ let strings = new LocalizedStrings(
       upperIntermediate: "Meget øvet",
       advanced: "Avanceret",
       proficiency: "Meget avanceret",
+      beginnerDescription: "Kan forstå og bruge grundlæggende hverdagsudtryk",
+      elementaryDescription: "Kan kommunikere i enkle og rutineprægede situationer",
+      intermediateDescription: "Kan klare sig i de fleste situationer ved rejser",
+      upperIntermediateDescription: "Kan interagere flydende med modersmålstalende",
+      advancedDescription: "Kan bruge sproget fleksibelt til sociale og professionelle formål",
+      proficiencyDescription: "Kan forstå næsten alt, der høres eller læses",
 
       //_ActivityInsightsRouter
       backTo: "Tilbage til ",
@@ -1690,6 +1745,41 @@ let strings = new LocalizedStrings(
       exercisesInTheLast: " øvelser i en periode på ",
       wordsNotStudiedInZeeguu: "Ord ikke øvet i Zeeguu",
       systemLanguage: "Interface sprog",
+
+      // Profile
+      titleOwnProfile: "Din profil",
+      titleUserProfilePostfix: "Profil",
+      titleUserProfileDefault: "Brugers profil",
+
+      // Badges
+      loadingBadges: "Indlæser badges...",
+      couldNotLoadBadges: "Kunne ikke indlæse badges.",
+      badgeNewTag: "Ny",
+
+      // Friends
+      loadingFriends: "Indlæser venner...",
+      friends: "Venner",
+      noFriendsYet: "Du har ingen venner endnu.",
+      noFriendsForUser: "Denne bruger har ingen venner endnu.",
+      friendRequests: "Venneanmodninger",
+      searchForUsersPlaceholder: "Søg efter brugere...",
+      users: "Brugere",
+      continueTypingToSearch: "Fortsæt med at skrive eller tryk Enter for at søge...",
+      searching: "Søger...",
+      noUsers: "Ingen brugere...",
+      failedToUnfriendUser: "Bruger kunne ikke fjernes som ven.",
+      failedToSendFriendRequest: "Kunne ikke sende venneanmodning.",
+      failedToCancelFriendRequest: "Kunne ikke annullere venneanmodning.",
+      failedToAcceptFriendRequest: "Kunne ikke acceptere venneanmodning.",
+      failedToRejectFriendRequest: "Kunne ikke afvise venneanmodning.",
+
+      // Leaderboards
+      loadingLeaderboard: "Indlæser rangliste...",
+      noLeaderboardData: "Ingen ranglistedata tilgængelig endnu.",
+      couldNotLoadLeaderboard: "Kunne ikke indlæse rangliste.",
+      leaderboardRank: "Placering",
+      leaderboardUser: "Bruger",
+      selectClassroom: "Vælg en klasse",
     },
   },
   {

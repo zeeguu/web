@@ -268,7 +268,7 @@ export default function ReplaceExampleModal({
                 .map((example, index) => (
                   <s.ExampleOption
                     key={`past-${example.id}`}
-                    selected={selectedExample === example}
+                    $selected={selectedExample === example}
                     onClick={() => handleExampleSelect(example)}
                     style={{
                       visibility: selectedExample && selectedExample !== example ? "hidden" : "visible",
@@ -305,7 +305,7 @@ export default function ReplaceExampleModal({
                 .map((example, index) => (
                   <s.ExampleOption
                     key={`alt-${example.id || index}`}
-                    selected={selectedExample === example}
+                    $selected={selectedExample === example}
                     onClick={() => handleExampleSelect(example)}
                     style={{
                       visibility: selectedExample && selectedExample !== example ? "hidden" : "visible",

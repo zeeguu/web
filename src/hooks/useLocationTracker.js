@@ -18,6 +18,4 @@ export default function useLocationTracker() {
       LocalStorage.setLastVisitedPage(pathname);
     }
   }, [location]);
-
-  return null; // This hook doesn't render anything
 }

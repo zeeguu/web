@@ -13,7 +13,7 @@ export const PopUp = styled.div`
   min-height: 120px;
   border-radius: 10px;
   position: relative;
-  marign: 50px;
+  margin: 50px;
 `;
 
 export const BottomButton = styled.div`
@@ -47,7 +47,7 @@ export const NotifyButton = styled.button`
 
   //Small
   ${(props) =>
-    props.disabled &&
+    props.$disabled &&
     css`
       cursor: text;
       pointer-events: none;

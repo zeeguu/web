@@ -34,10 +34,10 @@ export default function ExcludedKeywords() {
   const isFromArticles = useQuery().get("fromArticles") === "1";
 
   useEffect(() => {
-    setTitle("Filters");
+    setTitle("Topics to Avoid");
 
     // Load user preferences
-    api.getUserPreferences((preferences) => {
+    api.getUserPreferences().then((preferences) => {
       setFilterDisturbingContent(preferences.filter_disturbing_content === "true");
       setPreferencesLoaded(true);
     });
@@ -72,7 +72,7 @@ export default function ExcludedKeywords() {
     <PreferencesPage layoutVariant={"minimalistic-top-aligned"}>
       <BackArrow redirectLink={isFromArticles && "/articles"} />
       <Header withoutLogo>
-        <Heading>Filters</Heading>
+        <Heading>Topics to Avoid</Heading>
       </Header>
       <Main>
         <div
@@ -83,7 +83,7 @@ export default function ExcludedKeywords() {
             width: "100%",
           }}
         >
-          Filter articles containing the following keywords:
+          Don't show articles containing the following keywords:
         </div>
         <TagContainer style={{ marginTop: "-1em" }}>
           {unwantedKeywords.map((keyword) => (
@@ -119,10 +119,10 @@ export default function ExcludedKeywords() {
                 disabled={!preferencesLoaded}
               />
             }
-            label="Filter disturbing news (violence, death, disasters)"
+            label="Avoid disturbing news (violence, death, disasters)"
             sx={{ '& .MuiTypography-root': { fontFamily: 'inherit' } }}
           />
-          <div style={{ fontSize: "0.9em", color: "#666", marginLeft: "32px", marginTop: "0.25em" }}>
+          <div style={{ fontSize: "0.9em", color: "var(--text-secondary)", marginLeft: "32px", marginTop: "0.25em" }}>
             When enabled, articles about violence, war, accidents, and other disturbing topics will be hidden from your
             recommendations.
           </div>

@@ -47,10 +47,10 @@ export default function CustomizeGear() {
       {showDropdown && (
         <s.DropdownMenu>
           <s.DropdownItem onClick={() => handleItemClick("/account_settings/interests?fromArticles=1")}>
-            Topics
+            Topics of Interest
           </s.DropdownItem>
           <s.DropdownItem onClick={() => handleItemClick("/account_settings/filters?fromArticles=1")}>
-            Filters
+            Topics to Avoid
           </s.DropdownItem>
         </s.DropdownMenu>
       )}

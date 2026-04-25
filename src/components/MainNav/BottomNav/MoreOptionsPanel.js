@@ -1,4 +1,4 @@
-import { useContext, useState, useMemo } from "react";
+import { useContext, useMemo, useState } from "react";
 import { UserContext } from "../../../contexts/UserContext";
 import { MainNavContext } from "../../../contexts/MainNavContext";
 import { useLocation } from "react-router-dom/cjs/react-router-dom";
@@ -10,6 +10,7 @@ import NavIcon from "../NavIcon";
 import LanguageModal from "../LanguageModal";
 import navLanguages from "../navLanguages";
 import * as s from "./MoreOptionsPanel.sc";
+import SideNavProfileOption from "../SideNav/SideNavProfileOption";
 
 export default function MoreOptionsPanel({
   overlayTransition,
@@ -46,10 +47,7 @@ export default function MoreOptionsPanel({
         }}
       >
         <s.CloseSection>
-          <s.CloseButton
-            aria-label="Close More Options panel"
-            onClick={handleHideMoreOptions}
-          >
+          <s.CloseButton aria-label="Close More Options panel" onClick={handleHideMoreOptions}>
             <CloseRoundedIcon fontSize="small" />
           </s.CloseButton>
         </s.CloseSection>
@@ -57,23 +55,11 @@ export default function MoreOptionsPanel({
         <s.MoreOptionsList>
           {isOnStudentSide && (
             <>
-              <NavOption
-                {...NavigationOptions.myArticles}
-                currentPath={currentPath}
-                onClick={handleHideMoreOptions}
-              />
+              <NavOption {...NavigationOptions.myArticles} currentPath={currentPath} onClick={handleHideMoreOptions} />
 
-              <NavOption
-                {...NavigationOptions.myWords}
-                currentPath={currentPath}
-                onClick={handleHideMoreOptions}
-              />
+              <NavOption {...NavigationOptions.myWords} currentPath={currentPath} onClick={handleHideMoreOptions} />
 
-              <NavOption
-                {...NavigationOptions.myActivity}
-                currentPath={currentPath}
-                onClick={handleHideMoreOptions}
-              />
+              <NavOption {...NavigationOptions.myActivity} currentPath={currentPath} onClick={handleHideMoreOptions} />
 
               {userDetails.is_teacher && (
                 <NavOption
@@ -86,11 +72,7 @@ export default function MoreOptionsPanel({
           )}
 
           {!isOnStudentSide && (
-            <NavOption
-              {...NavigationOptions.studentSite}
-              currentPath={currentPath}
-              onClick={handleHideMoreOptions}
-            />
+            <NavOption {...NavigationOptions.studentSite} currentPath={currentPath} onClick={handleHideMoreOptions} />
           )}
 
           {isOnStudentSide && (
@@ -102,13 +84,10 @@ export default function MoreOptionsPanel({
             />
           )}
 
-          <NavOption
-            {...NavigationOptions.settings}
-            currentPath={path}
-            onClick={handleHideMoreOptions}
-          />
+          <NavOption {...NavigationOptions.settings} currentPath={path} onClick={handleHideMoreOptions} />
 
           <FeedbackButton />
+          {isOnStudentSide && <SideNavProfileOption onClick={handleHideMoreOptions}/>}
         </s.MoreOptionsList>
       </s.MoreOptionsPanel>
 

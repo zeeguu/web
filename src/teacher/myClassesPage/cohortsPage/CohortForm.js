@@ -194,7 +194,7 @@ const CohortForm = ({ cohort, setForceUpdate, setShowCohortForm, cohorts }) => {
         <PopupButtonWrapper style={{ justifyContent: cohort ? "space-between" : "flex-end" }}>
           {cohort && (
             <StyledButton
-              secondary
+              $secondary
               onClick={() => setShowWarning(true)}
               style={{ opacity: 0.6 }}
             >
@@ -202,10 +202,10 @@ const CohortForm = ({ cohort, setForceUpdate, setShowCohortForm, cohorts }) => {
             </StyledButton>
           )}
           <StyledButton
-            primary
+            $primary
             onClick={submitForm}
             className="form-control"
-            disabled={!isValid}
+            $disabled={!isValid} disabled={!isValid}
           >
             {cohort ? strings.saveChanges : strings.createClass}
           </StyledButton>

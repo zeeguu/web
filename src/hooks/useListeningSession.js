@@ -1,32 +1,26 @@
 import { useEffect, useRef, useCallback, useContext } from "react";
+import useSession from "./useSession";
 import { APIContext } from "../contexts/APIContext";
 
-const UPDATE_INTERVAL = 10000; // Update session every 10 seconds
+const UPDATE_INTERVAL = 10000; // Update session every 10 seconds while playing
 
-/**
- * Hook for tracking audio listening sessions with accumulated time.
- *
- * Unlike reading/browsing sessions, listening sessions:
- * - Start explicitly when play is pressed (not on idle/activity detection)
- * - Track wall-clock time while audio is playing
- * - Pause/resume to accumulate time across play/pause cycles
- * - End on unmount or when audio completes
- * - Don't use idle detection (audio playing = active)
- *
- * @param {string|number} lessonId - The ID of the audio lesson
- * @returns {object} - { start, pause, resume, end, isActive }
- */
+// Audio activity strategy on top of useSession: wall-clock segment
+// tracking + play/pause/resume semantics. Audio playing IS the
+// activity, so this hook doesn't use idle detection. lessonId doubles
+// as the sessionKey — changing it (or setting it to undefined on a
+// language toggle) ends the current session.
 export default function useListeningSession(lessonId) {
   const api = useContext(APIContext);
 
-  const sessionIdRef = useRef(null);
-  const segmentStartRef = useRef(null); // When current play segment started
-  const accumulatedSecondsRef = useRef(0); // Total accumulated time from previous segments
-  const updateTimerRef = useRef(null);
+  // Wall-clock segment tracking — the audio-specific time model.
+  const segmentStartRef = useRef(null); // when the current play segment started
+  const accumulatedSecondsRef = useRef(0); // total from all completed segments
   const isPlayingRef = useRef(false);
+  const updateTimerRef = useRef(null);
 
-  // Calculate total elapsed seconds (accumulated + current segment)
-  const getTotalElapsedSeconds = useCallback(() => {
+  // Compute the live duration. Called by useSession on update/cleanup,
+  // and by us when logging.
+  const getCurrentDuration = useCallback(() => {
     let total = accumulatedSecondsRef.current;
     if (segmentStartRef.current) {
       total += Math.floor((Date.now() - segmentStartRef.current) / 1000);
@@ -34,19 +28,27 @@ export default function useListeningSession(lessonId) {
     return total;
   }, []);
 
-  // Start periodic update timer
-  const startUpdateTimer = useCallback(() => {
-    if (updateTimerRef.current) return; // Already running
+  const session = useSession({
+    label: "listening",
+    sessionKey: lessonId,
+    apiCreate: (cb) => api.listeningSessionCreate(lessonId, cb),
+    apiUpdate: (id, dur) => api.listeningSessionUpdate(id, dur),
+    apiEnd: (id, dur) => api.listeningSessionEnd(id, dur),
+    getCurrentDuration,
+  });
 
+  // Periodic upload while playing. Uses an imperative setInterval
+  // (not a state-driven effect) so we can start/stop it from
+  // start/pause/end without piggybacking on React state.
+  const startUpdateTimer = useCallback(() => {
+    if (updateTimerRef.current) return;
     updateTimerRef.current = setInterval(() => {
-      if (sessionIdRef.current && isPlayingRef.current) {
-        const elapsed = getTotalElapsedSeconds();
-        api.listeningSessionUpdate(sessionIdRef.current, elapsed);
+      if (session.getSessionId() && isPlayingRef.current) {
+        session.upload();
       }
     }, UPDATE_INTERVAL);
-  }, [api, getTotalElapsedSeconds]);
+  }, [session]);
 
-  // Stop periodic update timer
   const stopUpdateTimer = useCallback(() => {
     if (updateTimerRef.current) {
       clearInterval(updateTimerRef.current);
@@ -54,108 +56,72 @@ export default function useListeningSession(lessonId) {
     }
   }, []);
 
-  // Start a new listening session (first play)
+  // First play OR resume — depending on whether a session already exists.
+  // Both flows go through this single entry point because the consumer
+  // (LessonPlaybackView) only knows "user pressed play."
   const start = useCallback(() => {
-    if (!lessonId || !api) return;
-
-    // If already have a session, just resume
-    if (sessionIdRef.current) {
-      segmentStartRef.current = Date.now();
-      isPlayingRef.current = true;
-      startUpdateTimer();
-      return;
-    }
-
-    api.listeningSessionCreate(lessonId, (sessionId) => {
-      console.log("Started listening session:", sessionId);
-      sessionIdRef.current = sessionId;
-      segmentStartRef.current = Date.now();
+    if (!lessonId) return;
+    const isResume = !!session.getSessionId();
+    if (!isResume) {
+      // First play of this lesson — start a fresh session on the server.
       accumulatedSecondsRef.current = 0;
-      isPlayingRef.current = true;
-      startUpdateTimer();
-    });
-  }, [lessonId, api, startUpdateTimer]);
-
-  // Pause - stops tracking but keeps session alive
-  const pause = useCallback(() => {
-    if (!isPlayingRef.current) return;
-
-    // Accumulate time from this segment
-    if (segmentStartRef.current) {
-      accumulatedSecondsRef.current += Math.floor((Date.now() - segmentStartRef.current) / 1000);
-      segmentStartRef.current = null;
+      session.start();
     }
-
-    isPlayingRef.current = false;
-    stopUpdateTimer();
-
-    // Upload current progress
-    if (sessionIdRef.current && api) {
-      const elapsed = getTotalElapsedSeconds();
-      console.log("Paused listening session:", sessionIdRef.current, "accumulated:", elapsed, "seconds");
-      api.listeningSessionUpdate(sessionIdRef.current, elapsed);
-    }
-  }, [api, getTotalElapsedSeconds, stopUpdateTimer]);
-
-  // Resume - continues tracking the same session
-  const resume = useCallback(() => {
-    if (isPlayingRef.current) return;
-    if (!sessionIdRef.current) {
-      // No session yet, start a new one
-      start();
-      return;
-    }
-
     segmentStartRef.current = Date.now();
     isPlayingRef.current = true;
     startUpdateTimer();
-    console.log("Resumed listening session:", sessionIdRef.current);
-  }, [start, startUpdateTimer]);
+    if (isResume) console.log("Resumed listening session:", session.getSessionId());
+  }, [lessonId, session, startUpdateTimer]);
 
-  // End the session completely (on unmount or audio complete)
-  const end = useCallback(() => {
-    stopUpdateTimer();
+  // Pause — accumulate the current segment, stop the timer, flush progress.
+  // The session id stays alive so a subsequent resume can pick up where
+  // we left off.
+  const pause = useCallback(() => {
+    if (!isPlayingRef.current) return;
 
-    // Calculate final duration
     if (segmentStartRef.current) {
       accumulatedSecondsRef.current += Math.floor((Date.now() - segmentStartRef.current) / 1000);
       segmentStartRef.current = null;
     }
-
-    // End the session with final duration
-    if (sessionIdRef.current && api) {
-      const elapsed = getTotalElapsedSeconds();
-      console.log("Ending listening session:", sessionIdRef.current, "total duration:", elapsed, "seconds");
-      api.listeningSessionEnd(sessionIdRef.current, elapsed);
-    }
-
-    // Reset state
-    sessionIdRef.current = null;
-    accumulatedSecondsRef.current = 0;
     isPlayingRef.current = false;
-  }, [api, getTotalElapsedSeconds, stopUpdateTimer]);
+    stopUpdateTimer();
 
-  // Cleanup on unmount
+    if (session.getSessionId()) {
+      console.log(
+        "Paused listening session:",
+        session.getSessionId(),
+        "accumulated:",
+        getCurrentDuration(),
+        "seconds",
+      );
+      session.upload();
+    }
+  }, [session, getCurrentDuration, stopUpdateTimer]);
+
+  // End the session completely (audio playback finished).
+  const end = useCallback(() => {
+    stopUpdateTimer();
+    if (segmentStartRef.current) {
+      accumulatedSecondsRef.current += Math.floor((Date.now() - segmentStartRef.current) / 1000);
+      segmentStartRef.current = null;
+    }
+    isPlayingRef.current = false;
+    session.end();
+  }, [session, stopUpdateTimer]);
+
+  // Local cleanup: stop the imperative interval timer on unmount or
+  // lessonId change. The session itself is closed by useSession's own
+  // cleanup-on-sessionKey effect, which fires *after* this one (effect
+  // cleanups run in reverse declaration order) and reads the live
+  // duration via getCurrentDuration. We deliberately do NOT reset the
+  // segment refs here, because useSession's cleanup needs them to
+  // compute that final duration. The refs get reset on the next
+  // start() instead.
   useEffect(() => {
     return () => {
       stopUpdateTimer();
-      // End any active session
-      if (sessionIdRef.current) {
-        let total = accumulatedSecondsRef.current;
-        if (segmentStartRef.current) {
-          total += Math.floor((Date.now() - segmentStartRef.current) / 1000);
-        }
-        api?.listeningSessionEnd(sessionIdRef.current, total);
-      }
     };
-  }, [api, stopUpdateTimer]);
+  }, [lessonId, stopUpdateTimer]);
 
-  return {
-    start,
-    pause,
-    resume,
-    end,
-    isPlaying: isPlayingRef.current,
-    getSessionId: () => sessionIdRef.current,
-  };
+  return { start, pause, end };
 }

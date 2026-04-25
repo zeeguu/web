@@ -23,11 +23,11 @@ const DeleteStudentWarning = ({
         <p>{strings.howStudentsRejoinClass}</p>
       </div>
       <PopupButtonWrapper>
-        <StyledButton secondary onClick={removeStudent}>
+        <StyledButton $secondary onClick={removeStudent}>
           {strings.remove}
         </StyledButton>
         <StyledButton
-          primary
+          $primary
           onClick={() => setShowDeleteStudentWarning(false)}
         >
           {strings.cancel}

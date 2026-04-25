@@ -31,7 +31,7 @@ export default function TeacherTextPreview({ article }) {
                 to={`/teacher/texts/editText/${article.id}`}
                 onClick={() => setReturnPath("/teacher/texts")}
               >
-                <StyledButton secondary className="edit-btn">
+                <StyledButton $secondary className="edit-btn">
                   Edit
                 </StyledButton>
               </Link>

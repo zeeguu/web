@@ -108,20 +108,20 @@ export const ExamplesContainer = styled.div`
 `;
 
 export const ExampleOption = styled.div`
-  border: 2px solid ${(props) => (props.selected ? zeeguuOrange : lightGrey)};
+  border: 2px solid ${(props) => (props.$selected ? zeeguuOrange : lightGrey)};
   border-radius: 8px;
   padding: 1rem;
   margin-bottom: 1rem;
-  cursor: ${(props) => (props.disabled ? "default" : "pointer")};
+  cursor: ${(props) => (props.$disabled ? "default" : "pointer")};
   transition: all 0.2s ease;
-  background-color: ${(props) => (props.disabled ? "#f5f5f5" : props.selected ? zeeguuLightYellow + "20" : "white")};
-  opacity: ${(props) => (props.disabled ? 0.7 : 1)};
+  background-color: ${(props) => (props.$disabled ? "#f5f5f5" : props.$selected ? zeeguuLightYellow + "20" : "white")};
+  opacity: ${(props) => (props.$disabled ? 0.7 : 1)};
 
   text-align: left;
 
   &:hover {
     ${(props) =>
-      !props.disabled &&
+      !props.$disabled &&
       `
       border-color: ${zeeguuOrange};
       box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
@@ -149,7 +149,7 @@ export const TranslationText = styled.div`
 
 export const LevelBadge = styled.span`
   background-color: ${zeeguuOrange};
-  color: white;
+  color: var(--orange-btn-text);
   padding: 0.2rem 0.5rem;
   border-radius: 4px;
   font-size: 0.8rem;
@@ -222,7 +222,7 @@ export const CancelButton = styled.button`
 export const SaveButton = styled.button`
   background: ${zeeguuOrange};
   border: 2px solid ${zeeguuOrange};
-  color: white;
+  color: var(--orange-btn-text);
   padding: 0.75rem 1.5rem;
   border-radius: 6px;
   cursor: pointer;

@@ -5,7 +5,6 @@ import { UserContext } from "../contexts/UserContext";
 import { SpeechContext } from "../contexts/SpeechContext";
 import { TranslatableText } from "./TranslatableText";
 import InteractiveText from "./InteractiveText";
-import { random } from "../utils/basic/arrays";
 
 import LoadingAnimation from "../components/LoadingAnimation";
 import { setTitle } from "../assorted/setTitle";
@@ -30,6 +29,7 @@ import ArticleStatInfo from "../components/ArticleStatInfo";
 import DigitalTimer from "../components/DigitalTimer";
 import DevButton from "../components/DevButton";
 import { APIContext } from "../contexts/APIContext";
+import ArticleLanguageModal from "./ArticleLanguageModal";
 
 // UMR stands for historical reasons for: Unified Multilingual Reader
 export const WEB_READER = "UMR";
@@ -66,8 +66,10 @@ export default function ArticleReader({ teacherArticleID }) {
   const { translateInReader, pronounceInReader, updateTranslateInReader, updatePronounceInReader, showMweHints, updateShowMweHints, showReadingTimer, updateShowReadingTimer } =
     useUserPreferences(api);
   const [readerReady, setReaderReady] = useState();
-  const [answerSubmitted, setAnswerSubmitted] = useState(false);
   const [clickedOnReviewVocab, setClickedOnReviewVocab] = useState(false);
+  const [showLanguageModal, setShowLanguageModal] = useState(false);
+  const [isProcessingArticle, setIsProcessingArticle] = useState(false);
+  const entrySource = query.get("source"); // "share", "deeplink", or null
 
   const { userDetails } = useContext(UserContext);
   const history = useHistory();
@@ -113,8 +115,13 @@ export default function ArticleReader({ teacherArticleID }) {
     setInteractiveTitle(undefined);
     setLoadingProgress(null);
     setShowSlowLoadingHint(false);
-    setAnswerSubmitted(false);
     setBookmarks([]);
+    setShowLanguageModal(false);
+    setIsProcessingArticle(false);
+
+    if (query.get("noTranslate") === "true") {
+      updateTranslateInReader(false);
+    }
 
     onCreate();
     return () => {
@@ -228,6 +235,15 @@ export default function ArticleReader({ teacherArticleID }) {
       // Session is now created by useReadingSession hook when articleInfo becomes available
       api.setArticleOpened(articleInfo.id);
       api.logUserActivity(api.OPEN_ARTICLE, articleID, "", WEB_READER);
+
+      // Show language modal for deeplinked articles (share is handled in SharedArticleHandler)
+      if (
+        entrySource === "deeplink" &&
+        !articleInfo.url?.includes("#translated-from-") &&
+        !teacherArticleID
+      ) {
+        setShowLanguageModal(true);
+      }
     };
 
     api.getArticleInfoWithProgress(
@@ -264,7 +280,10 @@ export default function ArticleReader({ teacherArticleID }) {
 
   if (!articleInfo || !interactiveFragments) {
     return (
-      <LoadingAnimation showReportIssue={false}>
+      <LoadingAnimation
+        showReportIssue={false}
+        specificStyle={{ minHeight: "70vh", justifyContent: "center" }}
+      >
         {loadingProgress && (
           <div style={{ textAlign: 'center', marginTop: '1em' }}>
             <div>{loadingProgress.message}</div>
@@ -284,10 +303,56 @@ export default function ArticleReader({ teacherArticleID }) {
     );
   }
 
+  // --- Language modal handlers ---
+  const handleTranslateAndAdapt = () => {
+    setIsProcessingArticle(true);
+    api.translateAndAdaptArticle(
+      articleInfo.url,
+      userDetails.learned_language,
+      (result) => {
+        setIsProcessingArticle(false);
+        setShowLanguageModal(false);
+        history.replace("/read/article?id=" + result.id);
+      },
+      (error) => {
+        console.error("Translation failed:", error);
+        setIsProcessingArticle(false);
+        setShowLanguageModal(false);
+      },
+    );
+  };
+
+  const handleSimplify = () => {
+    setIsProcessingArticle(true);
+    api.simplifyArticle(articleInfo.id, (result) => {
+      setIsProcessingArticle(false);
+      setShowLanguageModal(false);
+      if (result.status === "success" && result.levels) {
+        // Navigate to the simplified version (non-original with matching or lower level)
+        const simplified = result.levels.find((l) => !l.is_original);
+        if (simplified) {
+          history.replace("/read/article?id=" + simplified.id);
+          return;
+        }
+      } else {
+        console.error("Simplification failed:", result.message);
+      }
+    });
+  };
+
+  const handleReadOriginal = () => {
+    setShowLanguageModal(false);
+    // Deactivate translations — they'd target a language the user isn't learning
+    updateTranslateInReader(false);
+  };
+
+  const handleReadAsIs = () => {
+    setShowLanguageModal(false);
+  };
+
   const setLikedState = (state) => {
     let newArticleInfo = { ...articleInfo, liked: state };
     api.setArticleInfo(newArticleInfo, () => {
-      setAnswerSubmitted(true);
       setArticleInfo(newArticleInfo);
     });
     api.logUserActivity(api.LIKE_ARTICLE, articleID, state, WEB_READER);
@@ -296,13 +361,25 @@ export default function ArticleReader({ teacherArticleID }) {
   const updateArticleDifficultyFeedback = (answer) => {
     let newArticleInfo = { ...articleInfo, relative_difficulty: answer };
     api.submitArticleDifficultyFeedback({ article_id: articleInfo.id, difficulty: answer }, () => {
-      setAnswerSubmitted(true);
       setArticleInfo(newArticleInfo);
     });
     api.logUserActivity(api.DIFFICULTY_FEEDBACK, articleID, answer, WEB_READER);
   };
   return (
     <>
+      {showLanguageModal && (
+        <ArticleLanguageModal
+          articleLanguage={articleInfo.language}
+
+          learnedLanguage={userDetails.learned_language}
+          source={entrySource}
+          onTranslateAndAdapt={handleTranslateAndAdapt}
+          onSimplify={handleSimplify}
+          onReadOriginal={handleReadOriginal}
+          onReadAsIs={handleReadAsIs}
+          isLoading={isProcessingArticle}
+        />
+      )}
       <TopToolbar
         user={userDetails}
         teacherArticleID={teacherArticleID}
@@ -399,11 +476,6 @@ export default function ArticleReader({ teacherArticleID }) {
                 articleInfo={articleInfo}
                 updateArticleDifficultyFeedback={updateArticleDifficultyFeedback}
               />
-              {answerSubmitted && (
-                <s.InvisibleBox>
-                  <h3 align="center">Thank You {random(["🤗", "🙏", "😊", "🎉"])}</h3>
-                </s.InvisibleBox>
-              )}
             </s.CombinedBox>
           </div>
         )}

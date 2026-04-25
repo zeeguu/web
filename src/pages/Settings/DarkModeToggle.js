@@ -1,19 +1,30 @@
 import { useContext } from "react";
-import { ThemeProvider } from "@mui/material/styles";
 import { ThemeContext } from "../../contexts/ThemeContext";
-import { t as muiToggleTheme } from "../../components/MUIToggleThemes";
-import Switch from "@mui/material/Switch";
 import * as s from "./DarkModeToggle.sc";
 
+const OPTIONS = [
+  { value: "light", label: "Light" },
+  { value: "auto", label: "Auto" },
+  { value: "dark", label: "Dark" },
+];
+
 export default function DarkModeToggle() {
-  const { isDark, toggleTheme } = useContext(ThemeContext);
+  const { preference, setPreference } = useContext(ThemeContext);
 
   return (
     <s.ToggleRow>
-      <span>Dark Mode</span>
-      <ThemeProvider theme={muiToggleTheme}>
-        <Switch checked={isDark} onChange={toggleTheme} />
-      </ThemeProvider>
+      <span>Theme</span>
+      <s.SegmentedControl>
+        {OPTIONS.map((opt) => (
+          <s.SegmentButton
+            key={opt.value}
+            $active={preference === opt.value}
+            onClick={() => setPreference(opt.value)}
+          >
+            {opt.label}
+          </s.SegmentButton>
+        ))}
+      </s.SegmentedControl>
     </s.ToggleRow>
   );
 }

@@ -1,6 +1,7 @@
-- Share articles to Zeeguu directly from your phone's share sheet
-- Share button in article toolbar
-- Dark mode with automatic OS preference detection
-- Fixed bug in daily audio lessons
-- Dismiss button on "Continue where you left off" card
-- Fixed sticky tab bar and scroll issues on mobile
+- Now Playing lock screen now shows the lesson title and language
+- In-app seek buttons match the 10-second jump used on the lock screen
+- Pull-to-refresh on the article recommendations list
+- Clearer form validation on profile and sign-up pages
+- Past Lessons cards no longer render white in dark mode
+- Fixed landscape auto-magnify in the article reader
+- Better error messages when an audio lesson can't be generated for a chosen topic

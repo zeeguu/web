@@ -20,6 +20,7 @@ function ProgressProvider({ children }) {
   useEffect(() => {
     if (!userDetails?.learned_language) return;
     api.getDailyStreak((data) => {
+      if (!data) return;
       setDaysPracticed(data.daily_streak);
     });
   }, [userDetails?.learned_language]);

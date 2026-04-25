@@ -27,15 +27,15 @@ export default function ExercisesRouter() {
   };
 
   return (
-    <s.NarrowColumn>
-      <Switch>
-        <PrivateRoute
-          path="/exercises/summary"
-          component={Congratulations}
-          backButtonAction={backToReadingAction}
-          keepExercisingAction={keepExercisingAction}
-          toScheduledExercises={toScheduledExercises}
-        />
+    <Switch>
+      <PrivateRoute
+        path="/exercises/summary"
+        component={Congratulations}
+        backButtonAction={backToReadingAction}
+        keepExercisingAction={keepExercisingAction}
+        toScheduledExercises={toScheduledExercises}
+      />
+      <s.NarrowColumn>
         <PrivateRoute
           path="/exercises/no-words"
           component={ExerciseSession}
@@ -52,7 +52,7 @@ export default function ExercisesRouter() {
           toScheduledExercises={toScheduledExercises}
           source={WEB_READER}
         />
-      </Switch>
-    </s.NarrowColumn>
+      </s.NarrowColumn>
+    </Switch>
   );
 }

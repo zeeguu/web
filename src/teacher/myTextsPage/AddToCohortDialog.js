@@ -128,7 +128,7 @@ export default function AddToCohortDialog({ setIsOpen, onCohortsUpdated }) {
           />
         ))}
       <PopupButtonWrapper>
-        <StyledButton secondary onClick={() => setIsOpen(false)}>
+        <StyledButton $secondary onClick={() => setIsOpen(false)}>
           Close
         </StyledButton>
       </PopupButtonWrapper>

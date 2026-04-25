@@ -12,6 +12,7 @@ let lightBlue = "#54cdff";
 let lighterBlue = "#CCDEFF";
 let darkBlue = "#2f77ad";
 let transparentDarkGreen = "rgb(0 80 20 / 50%)";
+let lightPurple = "#aab1de";
 
 /* 
   A NEW APPROACH TO DEFINING AND NAMING COLORS:
@@ -63,6 +64,8 @@ let zeeguuViolet = "#4a0d67";
 let darkGreen = "#006400";
 let alertGreen = "#4caf50"; //careful when changing this color. It is defined to match the color in the success-alert to undo feedback submits.
 let matchGreen = "#B3F78F";
+let successGreen = "#28a745";
+let streakFireOrange = "#ff9800";
 let translationHover = "#2f76ac";
 let lightOrange = "#ffe5b9";
 let brown = "#A46A00";
@@ -155,6 +158,7 @@ export {
   darkGreen,
   alertGreen,
   matchGreen,
+  successGreen,
   lightOrange,
   translationHover,
   brown,
@@ -162,4 +166,6 @@ export {
   white,
   gray,
   setColors,
+  lightPurple,
+  streakFireOrange,
 };

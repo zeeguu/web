@@ -271,13 +271,13 @@ export default function EditText() {
         <TopButtonWrapper style={{ justifyContent: "space-between" }}>
           <div style={{ display: "flex", gap: "0.5rem" }}>
             {!isNew && (
-              <StyledButton secondary onClick={() => setShowDeleteTextWarning(true)}>
+              <StyledButton $secondary onClick={() => setShowDeleteTextWarning(true)}>
                 {strings.delete}
               </StyledButton>
             )}
             <ViewAsStudentButton articleID={articleID} disabled={viewAsStudentAndShareDisabled} isNew={isNew} />
             <StyledButton
-              secondary
+              $secondary
               onClick={() => setShowShareWithColleagueDialog(true)}
               disabled={viewAsStudentAndShareDisabled}
             >
@@ -287,16 +287,16 @@ export default function EditText() {
           <div style={{ display: "flex", gap: "0.5rem" }}>
             {stateChanged && (
               <>
-                <StyledButton secondary onClick={handleCancel}>
+                <StyledButton $secondary onClick={handleCancel}>
                   {strings.cancel}
                 </StyledButton>
-                <StyledButton primary onClick={isNew ? uploadArticle : updateArticle} disabled={inputInvalid}>
+                <StyledButton $primary onClick={isNew ? uploadArticle : updateArticle} $disabled={inputInvalid} disabled={inputInvalid}>
                   {strings.save}
                 </StyledButton>
               </>
             )}
             {!stateChanged && (
-              <StyledButton primary onClick={handleBack}>
+              <StyledButton $primary onClick={handleBack}>
                 Close
               </StyledButton>
             )}

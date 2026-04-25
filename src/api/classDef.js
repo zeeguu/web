@@ -3,6 +3,13 @@ import axios from "axios";
 import * as Sentry from "@sentry/react";
 import LocalStorage from "../assorted/LocalStorage";
 
+export class ServerUnavailableError extends Error {
+  constructor() {
+    super("Server returned no data");
+    this.name = "ServerUnavailableError";
+  }
+}
+
 function check403ForPendingUpgrade(status) {
   if (status === 403 && LocalStorage.getAnonUpgradePending()) {
     window.dispatchEvent(new CustomEvent("zeeguu-email-not-verified"));
@@ -97,12 +104,28 @@ const Zeeguu_API = class {
       })
       .catch((e) => {
         console.error(`API error on GET ${endpoint}:`, e);
-        Sentry.captureException(e, {
-          tags: { endpoint, method: "GET" },
-        });
+        // Only report errors with our thrown shape `HTTP <status> on GET ...`
+        // (see the !response.ok throw ~15 lines above). Anything else reaching
+        // this catch is a browser-level fetch failure — Failed to fetch, Load
+        // failed (iOS), NetworkError, AbortError — caused by the user's
+        // network, tab backgrounding, or navigation mid-request. Not bugs.
+        if (/^HTTP \d+/.test(e.message)) {
+          Sentry.captureException(e, {
+            tags: { endpoint, method: "GET" },
+          });
+        }
         // Call callback with null so components don't hang on loading forever
         callback(null);
       });
+  }
+
+  _getJSONPromise(endpoint, useCache = false) {
+    return new Promise((resolve, reject) => {
+      this._getJSON(endpoint, (result) => {
+        if (!result) reject(new ServerUnavailableError());
+        else resolve(result);
+      }, useCache);
+    });
   }
 
   //returning text or json based on the boolean getJson
@@ -228,6 +251,10 @@ const Zeeguu_API = class {
    * sendBeacon is designed for this use case and won't be cancelled.
    */
   _postBeacon(endpoint, body) {
+    // sendBeacon is blocked cross-origin from localhost; fall back to regular post
+    if (window.location.hostname === "localhost") {
+      return this._post(endpoint, body);
+    }
     const url = this._appendSessionToUrl(endpoint);
     const blob = new Blob([body], { type: "application/x-www-form-urlencoded" });
     const success = navigator.sendBeacon(url, blob);

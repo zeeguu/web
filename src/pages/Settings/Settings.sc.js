@@ -1,8 +1,9 @@
 import styled from "styled-components";
 
 const StyledWrapper = styled.div`
-  width: 100%;
   display: flex;
+  padding-left: 1em;
+  padding-right: 1em;
   flex-direction: column;
   align-items: center;
   gap: 1rem;

@@ -21,10 +21,12 @@ import useFormField from "../../../hooks/useFormField";
 import { NonEmptyValidator } from "../../../utils/ValidatorRule/Validator";
 import { setTitle } from "../../../assorted/setTitle";
 import { APIContext } from "../../../contexts/APIContext";
+import LocalStorage from "../../../assorted/LocalStorage";
+import { saveSharedUserInfo } from "../../../utils/cookies/userInfo";
 
 export default function MyClassrooms() {
   const api = useContext(APIContext);
-  const { session } = useContext(UserContext);
+  const { session, setUserDetails } = useContext(UserContext);
 
   const [isLoading, setIsLoading] = useState(true);
   const [
@@ -46,6 +48,13 @@ export default function MyClassrooms() {
       setStudentCohorts(student.cohorts);
       setIsLoading(false);
     });
+  }
+
+  async function refreshUserDetails() {
+    const user = await api.getUserDetails();
+    setUserDetails(user);
+    LocalStorage.setUserInfo(user);
+    saveSharedUserInfo(user);
   }
 
   useEffect(() => {
@@ -77,6 +86,7 @@ export default function MyClassrooms() {
       (status) => {
         if (status === "OK") {
           updateValues();
+          refreshUserDetails();
           setShowJoinCohortError(false); //clear error message after successfully leaving the classroom
         } else {
           setShowJoinCohortError(true);
@@ -85,6 +95,7 @@ export default function MyClassrooms() {
       (error) => {
         setShowJoinCohortError(true);
         updateValues();
+        refreshUserDetails();
         console.log(error);
       },
     );
@@ -99,6 +110,7 @@ export default function MyClassrooms() {
       (status) => {
         if (status === "OK") {
           updateValues();
+          refreshUserDetails();
           setInviteCode("");
         } else {
           setShowJoinCohortError(true);
@@ -107,6 +119,7 @@ export default function MyClassrooms() {
       (error) => {
         setShowJoinCohortError(true);
         updateValues();
+        refreshUserDetails();
         console.log(error);
       },
     );
