@@ -131,6 +131,14 @@ export const ProgressWrapper = styled.div`
   gap: 3px;
   margin-top: 6px;
   width: 100%;
+  
+  span {
+    text-align: center;
+    font-size: 0.7rem;
+    font-weight: bold;
+    color: var(--text-secondary);
+  }
+  
 `;
 
 export const ProgressBar = styled.div`
