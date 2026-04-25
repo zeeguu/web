@@ -1,5 +1,7 @@
 import React, { useContext, useEffect, useState, useRef, useCallback } from "react";
 import { useHistory } from "react-router-dom";
+import ReplayIcon from "@mui/icons-material/Replay";
+import ShuffleIcon from "@mui/icons-material/Shuffle";
 import { APIContext } from "../contexts/APIContext";
 import { UserContext } from "../contexts/UserContext";
 import strings from "../i18n/definitions";
@@ -1028,11 +1030,19 @@ export default function VerbalFlashcardsPage() {
                   </s.NavigationButtons>
 
                   <s.UtilityButtons>
-                    <s.UtilityButton onClick={shuffleCards} title={strings.verbalFlashcardsShuffleCards}>
-                      🔄
+                    <s.UtilityButton
+                      onClick={shuffleCards}
+                      title={strings.verbalFlashcardsShuffleCards}
+                      aria-label={strings.verbalFlashcardsShuffleCards}
+                    >
+                      <ShuffleIcon fontSize="small" />
                     </s.UtilityButton>
-                    <s.UtilityButton onClick={repeatCard} title={strings.verbalFlashcardsRepeatThisCard}>
-                      🔁
+                    <s.UtilityButton
+                      onClick={repeatCard}
+                      title={strings.verbalFlashcardsRepeatThisCard}
+                      aria-label={strings.verbalFlashcardsRepeatThisCard}
+                    >
+                      <ReplayIcon fontSize="small" />
                     </s.UtilityButton>
                   </s.UtilityButtons>
                 </s.ActionButtons>
