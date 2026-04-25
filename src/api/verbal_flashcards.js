@@ -1,24 +1,6 @@
 // Frontend API client for verbal flashcards
 import { Zeeguu_API } from "./classDef";
 
-function deliver(callback, payload) {
-  if (callback) {
-    callback(payload);
-  }
-}
-
-function fetchJson(url, options, callback, errorLabel) {
-  fetch(url, options)
-    .then((response) => response.json())
-    .then((data) => {
-      deliver(callback, data);
-    })
-    .catch((error) => {
-      console.error(`${errorLabel}:`, error);
-      deliver(callback, { error: error.message });
-    });
-}
-
 Zeeguu_API.prototype.getFlashcards = function (params, callback) {
   const { limit, offset } = params || {};
   const queryParams = new URLSearchParams();
@@ -44,6 +26,7 @@ Zeeguu_API.prototype.submitFlashcardAnswer = function (
   responseTimeMs,
   sessionId,
   callback,
+  onError,
 ) {
   const payload = {
     flashcard_id: flashcardId,
@@ -54,51 +37,21 @@ Zeeguu_API.prototype.submitFlashcardAnswer = function (
     session_id: sessionId,
   };
 
-  fetchJson(
-    this._appendSessionToUrl("verbal_flashcards/submit"),
-    {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(payload),
-    },
-    callback,
-    "Submit error",
-  );
+  this._postJSON("verbal_flashcards/submit", payload, callback, onError);
 };
 
-Zeeguu_API.prototype.transcribeAudio = function (audioFile, callback) {
+Zeeguu_API.prototype.transcribeAudio = function (audioFile, callback, onError) {
   const formData = new FormData();
   formData.append("file", audioFile);
 
-  fetchJson(
-    this._appendSessionToUrl("verbal_flashcards/transcribe"),
-    {
-      method: "POST",
-      body: formData,
-    },
-    callback,
-    "Transcription error",
-  );
+  this._postFormData("verbal_flashcards/transcribe", formData, callback, onError);
 };
 
-Zeeguu_API.prototype.checkPronunciation = function (userSpeech, expectedText, callback) {
+Zeeguu_API.prototype.checkPronunciation = function (userSpeech, expectedText, callback, onError) {
   const payload = {
     user_speech: userSpeech,
     expected_text: expectedText,
   };
 
-  fetchJson(
-    this._appendSessionToUrl("verbal_flashcards/check_pronunciation"),
-    {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(payload),
-    },
-    callback,
-    "Pronunciation check error",
-  );
+  this._postJSON("verbal_flashcards/check_pronunciation", payload, callback, onError);
 };

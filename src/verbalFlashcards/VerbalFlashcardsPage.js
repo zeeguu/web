@@ -463,6 +463,9 @@ export default function VerbalFlashcardsPage() {
             }, BETWEEN_CARDS_DELAY_MS);
           });
         },
+        (error) => {
+          updateStatusWithDebounce(`${strings.verbalFlashcardsCouldNotSaveResult}: ${error}`, "error", 0);
+        },
       );
     },
     [
@@ -578,40 +581,55 @@ export default function VerbalFlashcardsPage() {
 
     updateStatusWithDebounce(strings.verbalFlashcardsProcessing, "processing", 0);
 
-    api.transcribeAudio(audioBlob, (result) => {
-      if (!canContinueFlow(flowRunId)) {
-        cleanupAudioResources();
-        return;
-      }
-
-      if (result?.error) {
-        console.error("Transcription error:", result.error);
-        updateStatusWithDebounce(`${strings.verbalFlashcardsErrorPrefix}: ${result.error}`, "error");
-        cleanupAudioResources();
-        return;
-      }
-
-      const transcription = result?.transcription || "";
-      const expectedText = currentCard.expectedText || currentCard.prompt;
-
-      api.checkPronunciation(transcription, expectedText, (analysis) => {
+    api.transcribeAudio(
+      audioBlob,
+      (result) => {
         if (!canContinueFlow(flowRunId)) {
           cleanupAudioResources();
           return;
         }
 
-        if (analysis?.error) {
-          console.error("Pronunciation check error:", analysis.error);
-          updateStatusWithDebounce(strings.verbalFlashcardsCouldNotEvaluatePronunciation, "error", 0);
+        if (result?.error) {
+          console.error("Transcription error:", result.error);
+          updateStatusWithDebounce(`${strings.verbalFlashcardsErrorPrefix}: ${result.error}`, "error");
           cleanupAudioResources();
           return;
-        } else {
-          displayResults(transcription, analysis);
-          cleanupAudioResources();
-          handleAttemptOutcome(currentCard, transcription, Boolean(analysis?.isAccepted));
         }
-      });
-    });
+
+        const transcription = result?.transcription || "";
+        const expectedText = currentCard.expectedText || currentCard.prompt;
+
+        api.checkPronunciation(
+          transcription,
+          expectedText,
+          (analysis) => {
+            if (!canContinueFlow(flowRunId)) {
+              cleanupAudioResources();
+              return;
+            }
+
+            if (analysis?.error) {
+              console.error("Pronunciation check error:", analysis.error);
+              updateStatusWithDebounce(strings.verbalFlashcardsCouldNotEvaluatePronunciation, "error", 0);
+              cleanupAudioResources();
+              return;
+            } else {
+              displayResults(transcription, analysis);
+              cleanupAudioResources();
+              handleAttemptOutcome(currentCard, transcription, Boolean(analysis?.isAccepted));
+            }
+          },
+          () => {
+            updateStatusWithDebounce(strings.verbalFlashcardsCouldNotEvaluatePronunciation, "error", 0);
+            cleanupAudioResources();
+          },
+        );
+      },
+      () => {
+        updateStatusWithDebounce(strings.verbalFlashcardsCouldNotEvaluatePronunciation, "error", 0);
+        cleanupAudioResources();
+      },
+    );
   }, [
     api,
     canContinueFlow,
