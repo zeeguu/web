@@ -23,6 +23,10 @@ const Feature = {
   no_audio_exercises: function () {
     return this.is_enabled("no_audio_exercises");
   },
+
+  verbal_flashcards: function () {
+    return this.is_enabled("verbal_flashcards");
+  },
 };
 
 export default Feature;

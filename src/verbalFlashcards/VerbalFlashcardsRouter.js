@@ -5,12 +5,12 @@ import Congratulations from "../exercises/Congratulations";
 import { useContext } from "react";
 import { APIContext } from "../contexts/APIContext";
 import { UserContext } from "../contexts/UserContext";
+import Feature from "../features/Feature";
 
 export default function VerbalFlashcardsRouter() {
     const api = useContext(APIContext);
     const { userDetails } = useContext(UserContext);
     const features = userDetails?.features;
-    const hasVerbalFlashcardsFeature = features?.includes("verbal_flashcards");
 
     const backToVerbalFlashcards = ({ history }) => {
         history.push('/verbalFlashcards');
@@ -21,7 +21,7 @@ export default function VerbalFlashcardsRouter() {
         return null;
     }
 
-    if (!hasVerbalFlashcardsFeature) {
+    if (!Feature.verbal_flashcards()) {
         return <Redirect to="/articles" />;
     }
 

@@ -7,6 +7,7 @@ import NavigationOptions from "../navigationOptions";
 import NotificationIcon from "../../NotificationIcon";
 import DailyAudioNotificationDot from "../../DailyAudioNotificationDot";
 import { ExercisesCounterContext } from "../../../exercises/ExercisesCounterContext";
+import Feature from "../../../features/Feature";
 
 export default function SideNavOptionsForStudent({ screenWidth }) {
   const { userDetails } = useContext(UserContext);
@@ -14,7 +15,6 @@ export default function SideNavOptionsForStudent({ screenWidth }) {
 
   const path = useLocation().pathname;
   const dailyAudioStatus = userDetails?.daily_audio_status;
-  const hasVerbalFlashcardsFeature = userDetails?.features?.includes("verbal_flashcards");
 
   return (
     <>
@@ -29,7 +29,7 @@ export default function SideNavOptionsForStudent({ screenWidth }) {
         }
       />
         
-      {hasVerbalFlashcardsFeature && (
+      {Feature.verbal_flashcards() && (
         <NavOption
           {...NavigationOptions.verbalFlashcards}
           currentPath={path}
