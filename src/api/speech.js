@@ -4,10 +4,9 @@ Zeeguu_API.prototype.fetchLinkToSpeechMp3 = async function (
   textToPronounce,
   language_code,
 ) {
-  const payload = `language_id=${encodeURIComponent(language_code)}&text=${encodeURIComponent(textToPronounce)}`;
   let linkToMp3 = await this._post(
     `text_to_speech`,
-    payload,
+    `language_id=${language_code}&text=${textToPronounce}`,
   ).then((response) => response.text());
 
   return this.baseAPIurl + linkToMp3;
