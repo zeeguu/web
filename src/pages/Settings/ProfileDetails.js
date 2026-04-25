@@ -229,7 +229,11 @@ export default function ProfileDetails() {
       </Main>
 
       {isGamificationEnabled && (
-        <Modal open={showAvatarModal} onClose={() => setShowAvatarModal(false)}>
+        <Modal
+          open={showAvatarModal}
+          onClose={() => setShowAvatarModal(false)}
+          style={{ maxHeight: "80%", margin: "auto" }}
+        >
           <Header withoutLogo>
             <Heading>Choose Your Avatar</Heading>
           </Header>
