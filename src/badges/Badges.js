@@ -68,12 +68,10 @@ export default function Badges({ username }) {
 
   const formatDateTime = (iso) =>
     iso
-      ? new Date(iso)
-          .toLocaleString(undefined, {
-            dateStyle: "short",
-            timeStyle: "short",
-          })
-          .replace(",", "")
+      ? new Date(iso).toLocaleString(undefined, {
+          dateStyle: "short",
+          timeStyle: "short",
+        })
       : "—";
 
   const getBadgeCategoryMeta = (badgeCategory) => {
