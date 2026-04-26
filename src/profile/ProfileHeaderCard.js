@@ -7,8 +7,6 @@ import {
 } from "./avatarOptions";
 import Stack from "@mui/material/Stack";
 import DynamicFlagImage from "../components/DynamicFlagImage";
-import { useContext } from "react";
-import { ProgressContext } from "../contexts/ProgressContext";
 import * as s from "./ProfileHeaderCard.sc";
 import LocalFireDepartmentIcon from "@mui/icons-material/LocalFireDepartment";
 import { streakFireOrange } from "../components/colors";
@@ -28,7 +26,6 @@ export function ProfileHeaderCard({
   friendActionHandlers,
   isPendingFriendAction,
 }) {
-  const { daysPracticed } = useContext(ProgressContext);
   const maxVisibleLanguages = 3;
   const visibleLanguages = activeLanguages.slice(0, maxVisibleLanguages);
   const overflowCount = Math.max(0, activeLanguages.length - maxVisibleLanguages);
@@ -37,7 +34,10 @@ export function ProfileHeaderCard({
   const avatarBackgroundColor = validatedAvatarBackgroundColor(profileData?.user_avatar?.background_color);
   const friendship = profileData?.friendship;
   const isFriendAccepted = friendship?.is_accepted === true;
-  const streakValue = (isOwnProfile ? daysPracticed : friendship?.friend_streak) ?? 0;
+  const streakValue =
+    (isOwnProfile
+      ? activeLanguages.find((l) => l.code === profileData.learned_language)?.daily_streak ?? 0
+      : friendship?.friend_streak) ?? 0;
 
   return (
     <s.HeaderCard>
