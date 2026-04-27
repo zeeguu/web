@@ -59,6 +59,6 @@ export const TabBar = styled.div`
 `;
 
 export const TabContent = styled.div`
-  min-height: 120px;
+  min-height: 100vh;
   padding: 1rem 0 0;
 `;
