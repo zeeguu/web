@@ -15,7 +15,9 @@ export const HeaderCard = styled.div`
   @media (max-width: 768px) {
     flex-direction: column;
     text-align: center;
-    padding: 1.5rem;
+    padding: 0.75rem 0 0.75rem;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
   }
 
   .name-wrapper {
@@ -27,9 +29,10 @@ export const HeaderCard = styled.div`
 
     @media (max-width: 768px) {
       flex-direction: column;
-      gap: 0.5rem;
+      gap: 0.25rem;
       margin-top: 0;
       padding-right: 0;
+      margin-bottom: 0.5rem;
     }
   }
 
@@ -99,6 +102,11 @@ export const EditProfileButton = styled.button`
     background: var(--streak-banner-hover);
     color: ${orange500};
   }
+
+  @media (max-width: 768px) {
+    top: 0.75rem;
+    right: 0.75rem;
+  }
 `;
 
 export const StatsRow = styled.div`
@@ -108,6 +116,7 @@ export const StatsRow = styled.div`
 
   @media (max-width: 768px) {
     justify-content: center;
+    margin-top: 0.5rem;
   }
 
   .stat {

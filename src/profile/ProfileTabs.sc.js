@@ -6,6 +6,10 @@ export const TabsSection = styled.div`
   border-radius: 8px;
   box-shadow: 0 1px 3px var(--shadow-color);
   padding: 1rem;
+  
+  @media (max-width: 768px) {
+    padding: 0.5rem 1rem;
+  }
 `;
 
 export const TabBar = styled.div`
