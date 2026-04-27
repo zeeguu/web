@@ -96,7 +96,7 @@ export const AlreadyFriends = styled.span`
   }
 
   @media (max-width: 768px) {
-    flex: 0;
+    width: min-content;
   }
 `;
 
