@@ -2,10 +2,6 @@ import { Zeeguu_API } from "./classDef";
 import { getPlatform } from "../utils/misc/browserDetection";
 import qs from "qs";
 
-Zeeguu_API.prototype.getUserDetails = function (callback) {
-  this._getJSON("get_user_details", callback);
-};
-
 Zeeguu_API.prototype.isValidSession = function (onSuccess, onError) {
   this._getPlainText("validate", onSuccess, onError);
 };
