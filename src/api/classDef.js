@@ -179,6 +179,71 @@ const Zeeguu_API = class {
     }
   }
 
+  _handlePostError(endpoint, method, error, onError) {
+    console.error(`API error on ${method} ${endpoint}:`, error);
+    Sentry.captureException(error instanceof Error ? error : new Error(error), {
+      tags: { endpoint, method },
+    });
+
+    if (onError) {
+      onError(error);
+    }
+  }
+
+  _parsePostJSONResponse(endpoint, response) {
+    if (response.ok) {
+      return response.json();
+    }
+
+    if (response.status) {
+      check403ForPendingUpgrade(response.status);
+    }
+
+    return response.json().then(
+      (data) => Promise.reject(data.message || data.error || `HTTP ${response.status} on POST ${endpoint}`),
+      () => Promise.reject(`HTTP ${response.status} on POST ${endpoint}`),
+    );
+  }
+
+  _postJSON(endpoint, body, callback, onError) {
+    this.apiLog("POST" + endpoint);
+
+    return fetch(this._appendSessionToUrl(endpoint), {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body),
+    })
+      .then((response) => this._parsePostJSONResponse(endpoint, response))
+      .then((data) => {
+        if (callback) {
+          callback(data);
+        }
+        return data;
+      })
+      .catch((error) => {
+        this._handlePostError(endpoint, "POST", error, onError);
+      });
+  }
+
+  _postFormData(endpoint, formData, callback, onError) {
+    this.apiLog("POST" + endpoint);
+
+    return fetch(this._appendSessionToUrl(endpoint), {
+      method: "POST",
+      body: formData,
+    })
+      .then((response) => this._parsePostJSONResponse(endpoint, response))
+      .then((data) => {
+        if (callback) {
+          callback(data);
+        }
+        return data;
+      })
+      .catch((error) => {
+        this._handlePostError(endpoint, "POST", error, onError);
+      });
+  }
+
   /**
    * Fire-and-forget POST using sendBeacon API.
    * Use this for analytics/session updates that should survive page navigation.

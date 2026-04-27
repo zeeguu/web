@@ -22,6 +22,12 @@ export default class NavigationOptions {
     icon: <NavIcon name="exercises" />,
     text: strings.exercises,
   });
+  
+  static verbalFlashcards = Object.freeze({
+    linkTo: "/verbalFlashcards",
+    icon: <NavIcon name="verbalFlashcards" />,
+    text: strings.verbalFlashcards,
+  })
 
   static dailyAudio = Object.freeze({
     linkTo: "/daily-audio",
