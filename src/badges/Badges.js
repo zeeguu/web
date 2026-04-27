@@ -29,11 +29,7 @@ export default function Badges({ username }) {
     const processedBadgeCategories = data.map((badge_category) => {
       const processedBadges = badge_category.badges.map((lvl) => ({
         ...lvl,
-        description: lvl.achieved
-          ? lvl.description.replace("{threshold}", lvl.threshold)
-          : lvl.threshold === 1
-            ? badge_category.singular_default_description.replace("{threshold}", lvl.threshold)
-            : badge_category.plural_default_description.replace("{threshold}", lvl.threshold),
+        description: lvl.achieved ? lvl.description : lvl.default_description,
       }));
 
       processedBadges.forEach((badge) => {
