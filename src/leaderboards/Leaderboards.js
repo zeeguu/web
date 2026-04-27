@@ -225,7 +225,6 @@ export default function Leaderboards({
                 $active={isActive}
                 onClick={() => handleTabClick(item)}
               >
-                {item.icon && React.createElement(item.icon, { fontSize: "small" })}
                 <span>{item.tabLabel}</span>
               </s.TabButton>
             );
