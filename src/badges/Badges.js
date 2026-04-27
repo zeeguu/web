@@ -68,12 +68,10 @@ export default function Badges({ username }) {
 
   const formatDateTime = (iso) =>
     iso
-      ? new Date(iso)
-          .toLocaleString(undefined, {
-            dateStyle: "short",
-            timeStyle: "short",
-          })
-          .replace(",", "")
+      ? new Date(iso).toLocaleString(undefined, {
+          dateStyle: "short",
+          timeStyle: "short",
+        })
       : "—";
 
   const getBadgeCategoryMeta = (badgeCategory) => {
@@ -149,7 +147,7 @@ export default function Badges({ username }) {
             <Modal
               open={!!selectedBadgeCategory}
               onClose={() => setSelectedBadgeCategory(null)}
-              style={{ maxWidth: "400px", width: "90%", margin: "auto" }}
+              style={{ maxHeight: "80%", margin: "auto" }}
             >
               <Header>
                 <s.IconContainer>

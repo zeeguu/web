@@ -69,7 +69,7 @@ export default function TopBar() {
               <AvatarImage $imageSource={AVATAR_IMAGE_MAP[avatarCharacterId]} $color={avatarCharacterColor} />
             </s.TopBarNavAvatar>
             {(hasBadgeNotification || hasFriendRequestNotification) && (
-              <NotificationIcon position={"top"} text={totalNumberOfBadges + friendRequestCount} />
+              <NotificationIcon position={"top-absolute"} style={{top: 0, right: 0}} text={totalNumberOfBadges + friendRequestCount} />
             )}
           </s.ProfileAvatarButton>
         )}

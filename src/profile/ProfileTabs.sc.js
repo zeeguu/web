@@ -6,6 +6,10 @@ export const TabsSection = styled.div`
   border-radius: 8px;
   box-shadow: 0 1px 3px var(--shadow-color);
   padding: 1rem;
+  
+  @media (max-width: 768px) {
+    padding: 0.5rem 1rem;
+  }
 `;
 
 export const TabBar = styled.div`
@@ -55,6 +59,6 @@ export const TabBar = styled.div`
 `;
 
 export const TabContent = styled.div`
-  min-height: 120px;
+  min-height: 100vh;
   padding: 1rem 0 0;
 `;

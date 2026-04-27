@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useMemo, useState } from "react";
+import React, { useContext, useEffect, useMemo, useRef, useState } from "react";
 import strings from "../i18n/definitions";
 import ChevronLeftRoundedIcon from "@mui/icons-material/ChevronLeftRounded";
 import ChevronRightRoundedIcon from "@mui/icons-material/ChevronRightRounded";
@@ -61,6 +61,7 @@ export default function Leaderboards({
   const period = useMemo(() => computeWeeklyPeriod(periodShiftInWeeks), [periodShiftInWeeks]);
 
   const [selectedLeaderboardKey, setSelectedLeaderboardKey] = useState(() => leaderboardTypes[0]?.key || "default");
+  const tabRefs = useRef({});
   const [cohorts, setCohorts] = useState([]);
   const [selectedCohort, setSelectedCohort] = useState(null);
   const [leaderboardData, setLeaderboardData] = useState([]);
@@ -119,6 +120,17 @@ export default function Leaderboards({
     }
   }, [api, scope]);
 
+  useEffect(() => {
+    const el = tabRefs.current[selectedLeaderboardKey];
+    if (el) {
+      el.scrollIntoView({
+        behavior: "smooth",
+        inline: "center",
+        block: "nearest",
+      });
+    }
+  }, [selectedLeaderboardKey]);
+
   function assignRanks(data) {
     if (!Array.isArray(data)) return [];
 
@@ -154,6 +166,10 @@ export default function Leaderboards({
       return;
     }
     navigationHandler(friendId);
+  };
+
+  const handleTabClick = (tab) => {
+    setSelectedLeaderboardKey(tab.key);
   };
 
   return (
@@ -201,8 +217,14 @@ export default function Leaderboards({
             const isActive = item.key === selectedLeaderboardKey;
 
             return (
-              <s.TabButton key={item.key} $active={isActive} onClick={() => setSelectedLeaderboardKey(item.key)}>
-                {item.icon && React.createElement(item.icon, { fontSize: "small" })}
+              <s.TabButton
+                key={item.key}
+                ref={(el) => {
+                  if (el) tabRefs.current[item.key] = el;
+                }}
+                $active={isActive}
+                onClick={() => handleTabClick(item)}
+              >
                 <span>{item.tabLabel}</span>
               </s.TabButton>
             );
