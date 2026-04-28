@@ -27,6 +27,6 @@ Zeeguu_API.prototype.leaveCohort = function (cohortID, callback) {
   Endpoint implementation:  https://github.com/zeeguu/api/blob/master/zeeguu/api/api/student.py
   */
 
-Zeeguu_API.prototype.getStudent = function (callback) {
-  this._getJSON(`/student_info`, callback);
+Zeeguu_API.prototype.getStudent = function (callback, onError) {
+  this._getJSON(`/student_info`, callback, { onError });
 };

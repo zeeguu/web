@@ -134,26 +134,37 @@ export default function IndividualExercise() {
         const bookmarkIds = bookmarkId.split(",");
         let fetchedBookmarks = [];
         let fetchCount = 0;
+        let aborted = false;
 
         bookmarkIds.forEach((id, index) => {
-          api.getBookmarkWithContext(id.trim(), (data) => {
-            fetchedBookmarks[index] = data;
-            fetchCount++;
-
-            if (fetchCount === bookmarkIds.length) {
-              console.log("Fetched multiple bookmark data:", fetchedBookmarks);
-              setBookmarkData(fetchedBookmarks);
+          api.getBookmarkWithContext(
+            id.trim(),
+            (data) => {
+              if (aborted) return;
+              fetchedBookmarks[index] = data;
+              fetchCount++;
+              if (fetchCount === bookmarkIds.length) {
+                setBookmarkData(fetchedBookmarks);
+                setLoading(false);
+              }
+            },
+            () => {
+              if (aborted) return;
+              aborted = true;
               setLoading(false);
-            }
-          });
+            },
+          );
         });
       } else {
         // Single bookmark
-        api.getBookmarkWithContext(bookmarkId, (data) => {
-          console.log("Fetched bookmark data:", data);
-          setBookmarkData(data);
-          setLoading(false);
-        });
+        api.getBookmarkWithContext(
+          bookmarkId,
+          (data) => {
+            setBookmarkData(data);
+            setLoading(false);
+          },
+          () => setLoading(false),
+        );
       }
     }
   }, [bookmarkId, exerciseType, api]);

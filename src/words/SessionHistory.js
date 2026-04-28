@@ -878,11 +878,18 @@ export default function SessionHistory() {
 
     setLoading(true);
     const { fromDate, toDate } = getDateRange();
-    api.getSessionHistoryByRange(fromDate.toISOString(), toDate.toISOString(), (data) => {
-      // Handle API errors - data will be null if request failed
-      setSessions(data || []);
-      setLoading(false);
-    });
+    api.getSessionHistoryByRange(
+      fromDate.toISOString(),
+      toDate.toISOString(),
+      (data) => {
+        setSessions(data);
+        setLoading(false);
+      },
+      () => {
+        setSessions([]);
+        setLoading(false);
+      },
+    );
     setTitle("My Activity");
   }, [api, timeRange, appliedFrom, appliedTo]);
 
