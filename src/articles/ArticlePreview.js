@@ -200,7 +200,7 @@ export default function ArticlePreview({
         as="a"
         target={isMobile ? "_self" : "_blank"}
         rel="noreferrer"
-        href={article.url}
+        href={article.parent_url || article.url}
         onClick={handleArticleClick}
       >
         Open Externally <OpenInNewRoundedIcon style={{ fontSize: 16, marginLeft: 4 }} />

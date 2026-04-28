@@ -50,7 +50,7 @@ export default function UnsupportedNotification({
 
   function handleOpenArticle(article) {
     handleSaveVisibilityPreferences(); //if user checked "Don't show this message again" or not
-    redirect(article.url, true);
+    redirect(article.parent_url || article.url, true);
   }
 
   // function below saves article, visibility preferences of the modal and closes it

@@ -43,7 +43,7 @@ export default function SupportedNotification({
   function handleOpenArticle(article) {
     handleModalVisibilityPreferences(); //if user checked "Don't show this message again" or not
     handleCloseRedirectionModal();
-    redirect(article.url, true);
+    redirect(article.parent_url || article.url, true);
   }
 
   function handleCancel() {
