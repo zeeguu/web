@@ -10,6 +10,7 @@ import { wordsAsTile } from "./audioUtils";
 export default function PastLessons() {
   const api = useContext(APIContext);
   const { userDetails } = useContext(UserContext);
+  const learnedLanguage = userDetails?.learned_language;
   const [pastLessons, setPastLessons] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -19,9 +20,17 @@ export default function PastLessons() {
 
   useEffect(() => {
     loadPastLessons(0, true);
-  }, [api]);
+  }, [api, learnedLanguage]);
 
   const loadPastLessons = (newOffset, reset = false) => {
+    if (reset) {
+      // Clear the visible list immediately so the user gets instant feedback
+      // (otherwise stale lessons from the previous language linger until the
+      // — sometimes slow — new fetch returns).
+      setPastLessons([]);
+      setOffset(0);
+      setHasMore(true);
+    }
     setIsLoading(true);
     setError(null);
 

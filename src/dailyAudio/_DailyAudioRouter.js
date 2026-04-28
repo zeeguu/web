@@ -7,20 +7,24 @@ import { Switch, useLocation } from "react-router-dom";
 import TodayAudio from "./TodayAudio";
 import PastLessons from "./PastLessons";
 import { APIContext } from "../contexts/APIContext";
+import { UserContext } from "../contexts/UserContext";
 
 export default function DailyAudioRouter() {
   const api = useContext(APIContext);
+  const { userDetails } = useContext(UserContext);
+  const learnedLanguage = userDetails?.learned_language;
   const location = useLocation();
   const [pastLessonsCount, setPastLessonsCount] = useState(0);
   const [showTabs, setShowTabs] = useState(true);
 
   useEffect(() => {
-    console.log("Get the count of past lessons");
+    // Reset immediately so the tab badge doesn't show a stale count from
+    // the previous language while the new request is in flight.
+    setPastLessonsCount(0);
     api.getPastDailyLessons(
       1, // limit
       0, // offset
       (data) => {
-        console.log(data.pagination);
         if (data.pagination && data.pagination.total !== undefined) {
           setPastLessonsCount(data.pagination.total);
         }
@@ -29,7 +33,7 @@ export default function DailyAudioRouter() {
         console.error("Error getting past lessons count:", error);
       },
     );
-  }, [api]);
+  }, [api, learnedLanguage]);
 
   // Always show tabs on past-lessons page
   useEffect(() => {
