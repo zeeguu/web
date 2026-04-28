@@ -114,6 +114,7 @@
     "ios:dev": "bash scripts/cap-dev.sh ios",
     "ios:build": "npm run build && npx cap sync ios",
     "ios:open": "npm run ios:build && npx cap open ios",
+    "ios:mir": "npm run ios:build && npx cap run ios --target 00008120-000A69560260201E",
     "ios:version": "grep MARKETING_VERSION ios/App/App.xcodeproj/project.pbxproj | head -1 && cd ios/App && agvtool what-version",
     "ios:bump": "cd ios/App && agvtool new-marketing-version",
     "ios:beta": "npm run ios:build && cd ios/App && fastlane beta",
