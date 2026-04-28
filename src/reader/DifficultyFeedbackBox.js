@@ -34,7 +34,7 @@ export default function DifficultyFeedbackBox({
   return (
     <s.InvisibleBox>
       <h4>How difficult was the text?</h4>
-      <s.CenteredContent>
+      <s.FeedbackOptionsRow>
         {FEEDBACK_OPTIONS.map(({ key, label, value, color, emoji }) => {
           const isSelected = selectedValue === value;
           const isActiveHover = isHovered === key && !isSelected;
@@ -65,7 +65,7 @@ export default function DifficultyFeedbackBox({
             </ChoiceButton>
           );
         })}
-      </s.CenteredContent>
+      </s.FeedbackOptionsRow>
     </s.InvisibleBox>
   );
 }

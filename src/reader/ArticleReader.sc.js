@@ -411,6 +411,14 @@ const FeedbackOptionsRow = styled(CenteredContent)`
   padding: 0 1.5rem;
   gap: 1rem;
 
+  /* Let ChoiceButtons share the row evenly and shrink below their natural
+     8em on narrow viewports — three buttons + margins overflow otherwise. */
+  > button {
+    flex: 0 1 8em;
+    min-width: 0;
+    margin: 0;
+  }
+
   @media (max-width: 480px) {
     padding: 0 0.5rem;
     gap: 0.5rem;
