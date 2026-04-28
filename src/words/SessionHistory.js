@@ -700,15 +700,22 @@ export default function SessionHistory() {
       return;
     }
     setLoadingBookmark(true);
-    api.getBookmarkWithContext(bookmarkId, (bookmark) => {
-      setLoadingBookmark(false);
-      if (bookmark && typeof bookmark.from === "string") {
-        setEditBookmark(bookmark);
-        setTimeout(() => setEditModalOpen(true), 0);
-      } else {
+    api.getBookmarkWithContext(
+      bookmarkId,
+      (bookmark) => {
+        setLoadingBookmark(false);
+        if (bookmark && typeof bookmark.from === "string") {
+          setEditBookmark(bookmark);
+          setTimeout(() => setEditModalOpen(true), 0);
+        } else {
+          toast.error("Could not load word details. Please try again.");
+        }
+      },
+      () => {
+        setLoadingBookmark(false);
         toast.error("Could not load word details. Please try again.");
-      }
-    });
+      },
+    );
   };
 
   const handleEditClose = () => {

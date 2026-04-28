@@ -59,7 +59,7 @@ export default function Badges({ username }) {
 
     const onLoadError = () => {
       setIsLoading(false);
-      setError("Could not load badges. Please try again later.");
+      setError(strings.couldNotLoadBadges);
     };
     if (username) {
       api.getFriendBadges(username, fetchBadgesCallback, onLoadError);

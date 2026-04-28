@@ -1,6 +1,6 @@
 import { Zeeguu_API } from "./classDef";
 
-function fetchFriendsLeaderboard(api, metric, fromDate, toDate, callback) {
+function fetchFriendsLeaderboard(api, metric, fromDate, toDate, callback, onError) {
   if (!metric || !fromDate || !toDate) {
     console.error("Leaderboard requires metric, fromDate, and toDate");
     callback([]);
@@ -13,12 +13,10 @@ function fetchFriendsLeaderboard(api, metric, fromDate, toDate, callback) {
     to_date: toDate,
   });
 
-  api._getJSON(`friends_leaderboard?${params.toString()}`, (data) => {
-    callback(data);
-  });
+  api._getJSON(`friends_leaderboard?${params.toString()}`, callback, { onError });
 }
 
-function fetchCohortLeaderboard(api, cohortId, metric, fromDate, toDate, callback) {
+function fetchCohortLeaderboard(api, cohortId, metric, fromDate, toDate, callback, onError) {
   if (!metric || !fromDate || !toDate) {
     console.error("Leaderboard requires metric, fromDate, and toDate");
     callback([]);
@@ -31,16 +29,14 @@ function fetchCohortLeaderboard(api, cohortId, metric, fromDate, toDate, callbac
     to_date: toDate,
   });
 
-  api._getJSON(`cohort_leaderboard/${cohortId}?${params.toString()}`, (data) => {
-    callback(data);
-  });
+  api._getJSON(`cohort_leaderboard/${cohortId}?${params.toString()}`, callback, { onError });
 }
 
 
-Zeeguu_API.prototype.getFriendsLeaderboard = function(metric, fromDate, toDate, callback) {
-  fetchFriendsLeaderboard(this, metric, fromDate, toDate, callback);
+Zeeguu_API.prototype.getFriendsLeaderboard = function(metric, fromDate, toDate, callback, onError) {
+  fetchFriendsLeaderboard(this, metric, fromDate, toDate, callback, onError);
 };
 
-Zeeguu_API.prototype.getCohortLeaderboard = function(cohortId, metric, fromDate, toDate, callback) {
-  fetchCohortLeaderboard(this, cohortId, metric, fromDate, toDate, callback);
+Zeeguu_API.prototype.getCohortLeaderboard = function(cohortId, metric, fromDate, toDate, callback, onError) {
+  fetchCohortLeaderboard(this, cohortId, metric, fromDate, toDate, callback, onError);
 };

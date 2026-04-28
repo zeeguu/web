@@ -98,15 +98,20 @@ export default function Leaderboards({
     setIsLoading(true);
     setError(null);
 
+    const handleLoadError = () => {
+      setError(errorMessage);
+      setLeaderboardData([]);
+      setIsLoading(false);
+    };
     if (scope === LEADERBOARD_SCOPES.FRIENDS) {
-      api.getFriendsLeaderboard(selectedLeaderboardKey, period.fromStr, period.toStr, handleData);
+      api.getFriendsLeaderboard(selectedLeaderboardKey, period.fromStr, period.toStr, handleData, handleLoadError);
     } else if (scope === LEADERBOARD_SCOPES.COHORT) {
       if (!selectedCohort) {
         setLeaderboardData([]);
         setIsLoading(false);
         return;
       }
-      api.getCohortLeaderboard(selectedCohort, selectedLeaderboardKey, period.fromStr, period.toStr, handleData);
+      api.getCohortLeaderboard(selectedCohort, selectedLeaderboardKey, period.fromStr, period.toStr, handleData, handleLoadError);
     }
   }, [api, selectedLeaderboardKey, period.fromStr, period.toStr, scope, selectedCohort]);
 
