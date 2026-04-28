@@ -95,59 +95,62 @@ export default function Badges({ username }) {
       {!isLoading && error && <p style={{ color: "#b00020" }}>{error}</p>}
 
       {!isLoading && !error && (
-        <s.BadgeContainer>
-          {badgeCategories.map((badgeCategory, index) => {
-            const meta = getBadgeCategoryMeta(badgeCategory);
+        <>
+          {badgeCategories.length > 0 ? (
+            <s.BadgeContainer>
+              {badgeCategories.map((badgeCategory, index) => {
+                const meta = getBadgeCategoryMeta(badgeCategory);
 
-            return (
-              <s.BadgeCard key={index} onClick={() => setSelectedBadgeCategory(badgeCategory)}>
-                {meta.hasNewBadge && <s.NewTag>{strings.badgeNewTag}</s.NewTag>}
-                <s.IconContainer>
-                  <s.BadgeIcon
-                    src={getIcon(meta.iconLevel)}
-                    $achieved={meta.achievedCount > 0}
-                    alt={badgeCategory.name}
-                  />
-                </s.IconContainer>
-                <s.BadgeTitle>
-                  <div>{meta.nextLevel.name}</div>
-                </s.BadgeTitle>
-                <s.BadgeDescription>{meta.displayLevel.description}</s.BadgeDescription>
-                {!meta.nextLevel.achieved ? (
-                  <div className="card-bottom">
-                    <s.ProgressWrapper>
-                      <s.ProgressBar>
-                        <s.ProgressFill
-                          style={{
-                            width: `${(Math.min(badgeCategory.current_value, meta.nextLevel.threshold) / meta.nextLevel.threshold) * 100}%`,
-                          }}
-                          $isCurrent={true}
-                        />
-                      </s.ProgressBar>
-                      <s.ProgressText>
-                        {badgeCategory.current_value} / {meta.nextLevel.threshold}
-                      </s.ProgressText>
-                    </s.ProgressWrapper>
-                  </div>
-                ) : (
-                  <s.AchievedAtBox>
-                    {formatDateTime(badgeCategory.badges[badgeCategory.badges.length - 1].achieved_at)}
-                  </s.AchievedAtBox>
-                )}
-              </s.BadgeCard>
-            );
-          })}
-        </s.BadgeContainer>
+                return (
+                  <s.BadgeCard key={index} onClick={() => setSelectedBadgeCategory(badgeCategory)}>
+                    {meta.hasNewBadge && <s.NewTag>{strings.badgeNewTag}</s.NewTag>}
+                    <s.IconContainer>
+                      <s.BadgeIcon
+                        src={getIcon(meta.iconLevel)}
+                        $achieved={meta.achievedCount > 0}
+                        alt={badgeCategory.name}
+                      />
+                    </s.IconContainer>
+                    <s.BadgeTitle>
+                      <div>{meta.nextLevel.name}</div>
+                    </s.BadgeTitle>
+                    <s.BadgeDescription>{meta.displayLevel.description}</s.BadgeDescription>
+                    {!meta.nextLevel.achieved ? (
+                      <div className="card-bottom">
+                        <s.ProgressWrapper>
+                          <s.ProgressBar>
+                            <s.ProgressFill
+                              style={{
+                                width: `${(Math.min(badgeCategory.current_value, meta.nextLevel.threshold) / meta.nextLevel.threshold) * 100}%`,
+                              }}
+                              $isCurrent={true}
+                            />
+                          </s.ProgressBar>
+                          <s.ProgressText>
+                            {badgeCategory.current_value} / {meta.nextLevel.threshold}
+                          </s.ProgressText>
+                        </s.ProgressWrapper>
+                      </div>
+                    ) : (
+                      <s.AchievedAtBox>
+                        {formatDateTime(badgeCategory.badges[badgeCategory.badges.length - 1].achieved_at)}
+                      </s.AchievedAtBox>
+                    )}
+                  </s.BadgeCard>
+                );
+              })}
+            </s.BadgeContainer>
+          ) : (
+            <p>{strings.noBadgesForUser}</p>
+          )}
+        </>
       )}
       {selectedBadgeCategory &&
         (() => {
           const meta = getBadgeCategoryMeta(selectedBadgeCategory);
 
           return (
-            <Modal
-              open={!!selectedBadgeCategory}
-              onClose={() => setSelectedBadgeCategory(null)}
-            >
+            <Modal open={!!selectedBadgeCategory} onClose={() => setSelectedBadgeCategory(null)}>
               <Header>
                 <s.IconContainer>
                   <s.BadgeIcon
