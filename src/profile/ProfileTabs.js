@@ -1,19 +1,9 @@
 import * as s from "./ProfileTabs.sc";
-import React, { useEffect, useRef } from "react";
+import React from "react";
+import { useScrollActiveIntoView } from "../hooks/useScrollActiveIntoView";
 
 export function ProfileTabs({ tabs, activeTab, onTabChange, children }) {
-  const tabRefs = useRef({});
-
-  useEffect(() => {
-    const el = tabRefs.current[activeTab];
-    if (el) {
-      el.scrollIntoView({
-        behavior: "smooth",
-        inline: "center",
-        block: "nearest",
-      });
-    }
-  }, [activeTab]);
+  const setTabRef = useScrollActiveIntoView(activeTab);
 
   const handleTabClick = (tab) => {
     onTabChange(tab.key);
@@ -25,9 +15,7 @@ export function ProfileTabs({ tabs, activeTab, onTabChange, children }) {
         {tabs.map((tab) => (
           <button
             key={tab.key}
-            ref={(el) => {
-              if (el) tabRefs.current[tab.key] = el;
-            }}
+            ref={setTabRef(tab.key)}
             className={activeTab === tab.key ? "active" : ""}
             onClick={() => handleTabClick(tab)}
           >

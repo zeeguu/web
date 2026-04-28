@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useMemo, useRef, useState } from "react";
+import React, { useContext, useEffect, useMemo, useState } from "react";
 import strings from "../i18n/definitions";
 import ChevronLeftRoundedIcon from "@mui/icons-material/ChevronLeftRounded";
 import ChevronRightRoundedIcon from "@mui/icons-material/ChevronRightRounded";
@@ -9,6 +9,7 @@ import * as s from "./Leaderboards.sc";
 import { LEADERBOARD_SCOPES, LEADERBOARD_TYPES } from "./leaderboardTypes";
 import Selector from "../components/Selector";
 import { endOfWeek, getISOWeek, getISOWeekYear, startOfWeek } from "date-fns";
+import { useScrollActiveIntoView } from "../hooks/useScrollActiveIntoView";
 
 function getMetricValue(entry) {
   return Number(entry.value || 0);
@@ -61,7 +62,7 @@ export default function Leaderboards({
   const period = useMemo(() => computeWeeklyPeriod(periodShiftInWeeks), [periodShiftInWeeks]);
 
   const [selectedLeaderboardKey, setSelectedLeaderboardKey] = useState(() => leaderboardTypes[0]?.key || "default");
-  const tabRefs = useRef({});
+  const setTabRef = useScrollActiveIntoView(selectedLeaderboardKey);
   const [cohorts, setCohorts] = useState([]);
   const [selectedCohort, setSelectedCohort] = useState(null);
   const [leaderboardData, setLeaderboardData] = useState([]);
@@ -119,17 +120,6 @@ export default function Leaderboards({
       });
     }
   }, [api, scope]);
-
-  useEffect(() => {
-    const el = tabRefs.current[selectedLeaderboardKey];
-    if (el) {
-      el.scrollIntoView({
-        behavior: "smooth",
-        inline: "center",
-        block: "nearest",
-      });
-    }
-  }, [selectedLeaderboardKey]);
 
   function assignRanks(data) {
     if (!Array.isArray(data)) return [];
@@ -219,9 +209,7 @@ export default function Leaderboards({
             return (
               <s.TabButton
                 key={item.key}
-                ref={(el) => {
-                  if (el) tabRefs.current[item.key] = el;
-                }}
+                ref={setTabRef(item.key)}
                 $active={isActive}
                 onClick={() => handleTabClick(item)}
               >
