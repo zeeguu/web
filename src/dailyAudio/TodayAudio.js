@@ -13,13 +13,18 @@ import SuggestionSelector, { getSavedSuggestion, getSavedSuggestionType, suggest
 import LessonPlaybackView from "./LessonPlaybackView";
 import { wordsAsTile, shortDate } from "./audioUtils";
 
-// Shown one-by-one before the backend starts reporting real progress
-// (i.e. before the first AudioLessonGenerationProgress record exists).
-// They describe phases that genuinely happen server-side during the gap.
+// Shown rotating during the backend phases that don't emit sub-step
+// progress (no record yet, "pending", "generating_script",
+// "combining_audio"). Only "synthesizing_audio" has a moving
+// step counter, so during that phase we surface the backend message
+// verbatim instead.
 const PLACEHOLDER_PROGRESS_MESSAGES = [
   "Warming up...",
   "Picking content for today's lesson...",
-  "Drafting the script...",
+  "Drafting the dialogue...",
+  "Picking interesting vocabulary...",
+  "Crafting natural conversation...",
+  "Adapting for your level...",
 ];
 const PLACEHOLDER_ROTATION_MS = 2500;
 
@@ -189,15 +194,15 @@ export default function TodayAudio({ setShowTabs }) {
     };
   }, [api, isGenerating]);
 
-  // Rotate placeholder messages while we're generating but the backend
-  // hasn't produced a real progress message yet — gives the user a
-  // sense of activity during the otherwise-silent startup gap. The
-  // backend creates a "pending" progress record almost immediately, so
-  // we can't gate on `generationProgress` being null; we have to gate
-  // on whether it has a human-readable `message`.
-  const hasRealProgressMessage = !!generationProgress?.message;
+  // Rotate placeholder messages whenever the bar isn't actually moving.
+  // Only "synthesizing_audio" emits a per-segment step counter; the
+  // other phases (no record yet, "pending", "generating_script",
+  // "combining_audio") sit on a static backend message for many
+  // seconds — looks like the bar is stuck without rotation.
+  const hasMovingProgress =
+    generationProgress?.status === GENERATION_PROGRESS.SYNTHESIZING_AUDIO;
   useEffect(() => {
-    if (!isGenerating || hasRealProgressMessage) {
+    if (!isGenerating || hasMovingProgress) {
       setPlaceholderIndex(0);
       return;
     }
@@ -205,7 +210,7 @@ export default function TodayAudio({ setShowTabs }) {
       setPlaceholderIndex((i) => i + 1);
     }, PLACEHOLDER_ROTATION_MS);
     return () => clearInterval(id);
-  }, [isGenerating, hasRealProgressMessage]);
+  }, [isGenerating, hasMovingProgress]);
 
   const [openFeedback, setOpenFeedback] = useState(false);
   const [currentPlaybackTime, setCurrentPlaybackTime] = useState(0);
@@ -414,7 +419,7 @@ export default function TodayAudio({ setShowTabs }) {
       PLACEHOLDER_PROGRESS_MESSAGES[placeholderIndex % PLACEHOLDER_PROGRESS_MESSAGES.length];
     let progressPercent = 1; // Start at 1% so the bar is visible immediately
 
-    if (hasRealProgressMessage) {
+    if (hasMovingProgress) {
       progressDetail = generationProgress.message;
 
       // Calculate progress percentage (minimum 1%)

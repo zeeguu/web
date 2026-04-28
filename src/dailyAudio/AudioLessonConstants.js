@@ -10,4 +10,9 @@ export const AUDIO_STATUS = {
 export const GENERATION_PROGRESS = {
   DONE: "done",
   ERROR: "error",
+  // Only phase that emits a moving sub-step counter (current_step /
+  // total_steps); the others ("pending", "generating_script",
+  // "combining_audio") sit on a static message for many seconds, so we
+  // rotate placeholders during them.
+  SYNTHESIZING_AUDIO: "synthesizing_audio",
 };
