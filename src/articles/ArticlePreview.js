@@ -227,7 +227,7 @@ export default function ArticlePreview({
     return null;
   }
 
-  const cefrLevel = article.metrics?.cefr_level || article.cefr_level || "B1";
+  const cefrLevel = article.metrics?.cefr_level || article.cefr_level;
 
   return (
     <s.ArticlePreview
@@ -298,10 +298,11 @@ export default function ArticlePreview({
 
       {/* Metadata row: CEFR level, simplified tag, source */}
       <div style={{ display: "flex", alignItems: "center", marginTop: "15px" }}>
-        {/* Difficulty (CEFR level) — hidden for the on-demand cohort, where
-            the feed shows originals and the level only matters at the
-            simplify-decision modal. Default users still see it here. */}
-        {!Feature.always_open_externally() && (
+        {/* Difficulty (CEFR level) — hidden for the on-demand cohort (feed
+            shows originals; level matters at the simplify-decision modal).
+            Also hidden when we don't actually know the level — better to
+            show nothing than to fake a default. */}
+        {cefrLevel && !Feature.always_open_externally() && (
           <div style={{ display: "flex", alignItems: "center", gap: "5px" }}>
             <img
               src={getStaticPath("icons", `${getHighestCefrLevel(cefrLevel)}-level-icon.png`)}
