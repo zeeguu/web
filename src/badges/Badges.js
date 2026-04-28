@@ -29,7 +29,7 @@ export default function Badges({ username }) {
     const processedBadgeCategories = data.map((badge_category) => {
       const processedBadges = badge_category.badges.map((lvl) => ({
         ...lvl,
-        description: lvl.achieved ? lvl.description : lvl.default_description,
+        description: lvl.achieved && lvl.achieved_description ? lvl.achieved_description : lvl.unachieved_description,
       }));
 
       processedBadges.forEach((badge) => {
