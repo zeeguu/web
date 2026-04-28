@@ -227,6 +227,8 @@ export default function ArticlePreview({
     return null;
   }
 
+  const cefrLevel = article.metrics?.cefr_level || article.cefr_level || "B1";
+
   return (
     <s.ArticlePreview
       style={{
@@ -302,14 +304,11 @@ export default function ArticlePreview({
         {!Feature.always_open_externally() && (
           <div style={{ display: "flex", alignItems: "center", gap: "5px" }}>
             <img
-              src={getStaticPath(
-                "icons",
-                `${getHighestCefrLevel(article.metrics?.cefr_level || article.cefr_level || "B1")}-level-icon.png`,
-              )}
+              src={getStaticPath("icons", `${getHighestCefrLevel(cefrLevel)}-level-icon.png`)}
               alt="difficulty icon"
               style={{ width: "16px", height: "16px" }}
             />
-            <span>{article.metrics?.cefr_level || article.cefr_level || "B1"}</span>
+            <span>{cefrLevel}</span>
           </div>
         )}
 
