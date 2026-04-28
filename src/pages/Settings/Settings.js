@@ -70,13 +70,11 @@ export default function Settings() {
         <SettingsItem path={"/account_settings/exercise_scheduling"}>Scheduling</SettingsItem>
       </ListOfSettingsItems>
 
-      <ListOfSettingsItems header={strings.topbarProgressDisplay}>
+      <ListOfSettingsItems header={"Display"}>
         <SettingsItem path={"/account_settings/topbar_progress_display"}>
           {strings.progressIconPreferences}
         </SettingsItem>
-      </ListOfSettingsItems>
-
-      <ListOfSettingsItems header={"Appearance"}>
+        <SettingsItem path={"/account_settings/display"}>Activity Timer</SettingsItem>
         <DarkModeToggle />
       </ListOfSettingsItems>
 

@@ -97,6 +97,7 @@ export default function ExerciseTypePreferences() {
               onChange={toggleAutoPronounceState}
             />
           </FormSection>
+
           <ButtonContainer className={"adaptive-alignment-horizontal"}>
             <Button type={"submit"} onClick={handleSave}>
               {strings.save}
