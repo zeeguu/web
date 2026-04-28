@@ -57,6 +57,11 @@ export const AvatarBackground = styled.div`
       color: ${orange500};
     }
   }
+  
+  @media (max-width: 768px) {
+    width: 7.5rem;
+    height: 7.5rem;
+  }
 `;
 
 export const AvatarImage = styled.div`

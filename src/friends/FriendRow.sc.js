@@ -76,7 +76,13 @@ export const ActionsContainer = styled.div`
   margin-left: auto;
   display: flex;
   align-items: center;
+  justify-content: flex-end;
   gap: 0.5em;
+  
+  @media (max-width: 768px) {
+    flex-wrap: wrap;
+    flex: 0 1 6rem;
+  }
 `;
 
 export const AlreadyFriends = styled.span`
@@ -87,6 +93,10 @@ export const AlreadyFriends = styled.span`
 
   :root[data-theme="dark"] & {
     color: #87d9a0;
+  }
+
+  @media (max-width: 768px) {
+    width: min-content;
   }
 `;
 
@@ -129,5 +139,10 @@ export const FriendActionButton = styled.button`
     border-color: ${({ $variant }) => actionVariantValue($variant, "darkBorder", "var(--border-light)")};
     background: ${({ $variant }) => actionVariantValue($variant, "darkBg", "var(--card-bg)")};
     color: ${({ $variant }) => actionVariantValue($variant, "darkText", "var(--text-primary)")};
+  }
+  
+  @media (max-width: 768px) {
+    font-size: 0.85rem;
+    min-width: 6rem;
   }
 `;

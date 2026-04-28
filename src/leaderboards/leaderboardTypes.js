@@ -1,35 +1,27 @@
-import FitnessCenterRoundedIcon from "@mui/icons-material/FitnessCenterRounded";
-import MenuBookRoundedIcon from "@mui/icons-material/MenuBookRounded";
-import AccessAlarmsRoundedIcon from "@mui/icons-material/AccessAlarmsRounded";
-
 export const LEADERBOARD_TYPES = [
   {
     key: "reading_time",
     tabLabel: "Reading Time",
-    icon: AccessAlarmsRoundedIcon,
     metricLabel: "Time Spent",
-    formatMetric: (value) => `${formatDuration(value)}`
+    formatMetric: (value) => `${formatDuration(value)}`,
   },
   {
     key: "read_articles",
     tabLabel: "Read Articles",
-    icon: MenuBookRoundedIcon,
     metricLabel: "Read Articles",
-    formatMetric: (value) => `${value}`
+    formatMetric: (value) => `${value}`,
   },
   {
     key: "exercises_done",
     tabLabel: "Correct Exercises",
-    icon: FitnessCenterRoundedIcon,
     metricLabel: "Exercises Done",
-    formatMetric: (value) => `${value}`
+    formatMetric: (value) => `${value}`,
   },
   {
     key: "listening_time",
     tabLabel: "Listening Time",
-    icon: AccessAlarmsRoundedIcon,
     metricLabel: "Time Spent",
-    formatMetric: (value) => `${formatDuration(value)}`
+    formatMetric: (value) => `${formatDuration(value)}`,
   },
 ];
 

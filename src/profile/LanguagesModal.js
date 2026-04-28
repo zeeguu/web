@@ -20,17 +20,17 @@ export function LanguagesModal({ open, onClose, isOwnProfile, profileData, activ
               <DynamicFlagImage languageCode={languageInfo.code} />
               <span className="language-name">{languageInfo.language}</span>
               {(isOwnProfile || profileData?.friendship?.is_accepted === true) && (
-                  <div className="streaks-info">
-                    <div className="streak-item">
-                      <LocalFireDepartmentIcon sx={{ color: streakFireOrange, fontSize: "1rem" }} />
-                      <span>{languageInfo.daily_streak}</span>
-                    </div>
-                    <div className="streak-item max-streak">
-                      <LocalFireDepartmentIcon sx={{ color: "#e65100", fontSize: "1rem" }} />
-                      <span>{languageInfo.max_streak}</span>
-                    </div>
+                <div className="streaks-info">
+                  <div className="streak-item">
+                    <LocalFireDepartmentIcon sx={{ color: streakFireOrange, fontSize: "1rem" }} />
+                    <span>{languageInfo.daily_streak}</span>
                   </div>
-                )}
+                  <div className="streak-item max-streak">
+                    <LocalFireDepartmentIcon sx={{ color: "#e65100", fontSize: "1rem" }} />
+                    <span>{languageInfo.max_streak}</span>
+                  </div>
+                </div>
+              )}
             </s.LanguageCard>
           ))}
         </s.LanguagesGrid>

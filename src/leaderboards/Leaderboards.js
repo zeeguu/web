@@ -9,6 +9,7 @@ import * as s from "./Leaderboards.sc";
 import { LEADERBOARD_SCOPES, LEADERBOARD_TYPES } from "./leaderboardTypes";
 import Selector from "../components/Selector";
 import { endOfWeek, getISOWeek, getISOWeekYear, startOfWeek } from "date-fns";
+import { useScrollActiveIntoView } from "../hooks/useScrollActiveIntoView";
 
 function getMetricValue(entry) {
   return Number(entry.value || 0);
@@ -61,6 +62,7 @@ export default function Leaderboards({
   const period = useMemo(() => computeWeeklyPeriod(periodShiftInWeeks), [periodShiftInWeeks]);
 
   const [selectedLeaderboardKey, setSelectedLeaderboardKey] = useState(() => leaderboardTypes[0]?.key || "default");
+  const setTabRef = useScrollActiveIntoView(selectedLeaderboardKey);
   const [cohorts, setCohorts] = useState([]);
   const [selectedCohort, setSelectedCohort] = useState(null);
   const [leaderboardData, setLeaderboardData] = useState([]);
@@ -156,6 +158,10 @@ export default function Leaderboards({
     navigationHandler(friendId);
   };
 
+  const handleTabClick = (tab) => {
+    setSelectedLeaderboardKey(tab.key);
+  };
+
   return (
     <s.Container>
       <div
@@ -201,8 +207,12 @@ export default function Leaderboards({
             const isActive = item.key === selectedLeaderboardKey;
 
             return (
-              <s.TabButton key={item.key} $active={isActive} onClick={() => setSelectedLeaderboardKey(item.key)}>
-                {item.icon && React.createElement(item.icon, { fontSize: "small" })}
+              <s.TabButton
+                key={item.key}
+                ref={setTabRef(item.key)}
+                $active={isActive}
+                onClick={() => handleTabClick(item)}
+              >
                 <span>{item.tabLabel}</span>
               </s.TabButton>
             );

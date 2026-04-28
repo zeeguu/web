@@ -7,8 +7,6 @@ import {
 } from "./avatarOptions";
 import Stack from "@mui/material/Stack";
 import DynamicFlagImage from "../components/DynamicFlagImage";
-import { useContext } from "react";
-import { ProgressContext } from "../contexts/ProgressContext";
 import * as s from "./ProfileHeaderCard.sc";
 import LocalFireDepartmentIcon from "@mui/icons-material/LocalFireDepartment";
 import { streakFireOrange } from "../components/colors";
@@ -28,7 +26,6 @@ export function ProfileHeaderCard({
   friendActionHandlers,
   isPendingFriendAction,
 }) {
-  const { daysPracticed } = useContext(ProgressContext);
   const maxVisibleLanguages = 3;
   const visibleLanguages = activeLanguages.slice(0, maxVisibleLanguages);
   const overflowCount = Math.max(0, activeLanguages.length - maxVisibleLanguages);
@@ -37,7 +34,7 @@ export function ProfileHeaderCard({
   const avatarBackgroundColor = validatedAvatarBackgroundColor(profileData?.user_avatar?.background_color);
   const friendship = profileData?.friendship;
   const isFriendAccepted = friendship?.is_accepted === true;
-  const streakValue = (isOwnProfile ? daysPracticed : friendship?.friend_streak) ?? 0;
+  const friendStreakValue = friendship?.friend_streak ?? 0;
 
   return (
     <s.HeaderCard>
@@ -87,17 +84,14 @@ export function ProfileHeaderCard({
         </div>
 
         {!isOwnProfile && isFriendAccepted && (
-          <div className="meta">
-            <span className="label">Friends since:</span>
-            {formatDate(profileData?.friendship?.created_at)}
-          </div>
-        )}
-
-        {(isOwnProfile || isFriendAccepted) && (
-          <s.StatsRow>
-            <div className="stat">
-              <div className="stat-streak-wrapper">
-                {isFriendAccepted ? (
+          <>
+            <div className="meta">
+              <span className="label">Friends since:</span>
+              {formatDate(profileData?.friendship?.created_at)}
+            </div>
+            <s.StatsRow>
+              <div className="stat">
+                <div className="stat-streak-wrapper">
                   <Stack direction="row" spacing={-1.2} alignItems="center">
                     <LocalFireDepartmentIcon
                       sx={{
@@ -109,14 +103,12 @@ export function ProfileHeaderCard({
                     />
                     <LocalFireDepartmentIcon sx={{ color: streakFireOrange, fontSize: "1.2rem" }} />
                   </Stack>
-                ) : (
-                  <LocalFireDepartmentIcon sx={{ color: streakFireOrange, fontSize: "1.2rem" }} />
-                )}
-                <span className="stat-value">{streakValue}</span>
-                <span className="stat-label">{isFriendAccepted ? "day friend streak" : "day streak"}</span>
+                  <span className="stat-value">{friendStreakValue}</span>
+                  <span className="stat-label">day friend streak</span>
+                </div>
               </div>
-            </div>
-          </s.StatsRow>
+            </s.StatsRow>
+          </>
         )}
       </div>
 

@@ -15,6 +15,7 @@ export const UserNameWrapper = styled.div`
 
   @media (max-width: 768px) {
     flex-direction: column;
+    flex: 1;
   }
 `;
 
