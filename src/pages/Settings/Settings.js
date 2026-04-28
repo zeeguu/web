@@ -76,6 +76,10 @@ export default function Settings() {
         </SettingsItem>
       </ListOfSettingsItems>
 
+      <ListOfSettingsItems header={"Display"}>
+        <SettingsItem path={"/account_settings/display"}>Display Preferences</SettingsItem>
+      </ListOfSettingsItems>
+
       <ListOfSettingsItems header={"Appearance"}>
         <DarkModeToggle />
       </ListOfSettingsItems>

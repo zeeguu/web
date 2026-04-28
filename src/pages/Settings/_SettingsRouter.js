@@ -10,6 +10,7 @@ import DeleteAccount from "./DeleteAccount";
 import ExcludedKeywords from "./ExcludedKeywords";
 import TopbarIconPreferences from "./TopbarIconPreferences";
 import ExerciseSchedulingPreferences from "./ExerciseSchedulingPreferences";
+import DisplayPreferences from "./DisplayPreferences";
 
 export default function SettingsRouter({ setUser }) {
   return (
@@ -28,6 +29,8 @@ export default function SettingsRouter({ setUser }) {
       <PrivateRoute path="/account_settings/exercise_scheduling" component={ExerciseSchedulingPreferences} />
 
       <PrivateRoute path="/account_settings/topbar_progress_display" component={TopbarIconPreferences}/>
+
+      <PrivateRoute path="/account_settings/display" component={DisplayPreferences} />
 
       <PrivateRoute path="/account_settings/my_classrooms" component={MyClassrooms} />
 
