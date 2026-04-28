@@ -15,7 +15,7 @@ export const HeaderCard = styled.div`
   @media (max-width: 768px) {
     flex-direction: column;
     text-align: center;
-    padding: 0.75rem 0 0.75rem;
+    padding: 0.75rem;
     gap: 0.5rem;
     margin-bottom: 1rem;
   }
@@ -24,7 +24,7 @@ export const HeaderCard = styled.div`
     display: flex;
     column-gap: 1rem;
     flex-wrap: wrap;
-    margin: 1rem 0;
+    margin-bottom: 1rem;
     padding-right: 2rem;
 
     @media (max-width: 768px) {
