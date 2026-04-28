@@ -30,18 +30,13 @@ export default function MultipleChoiceContext({
   const [exerciseBookmark, setExerciseBookmark] = useState({ ...bookmarksToStudy[0], isExercise: true });
   const [clickedIndex, setClickedIndex] = useState(null);
   const [clickedOption, setClickedOption] = useState(null);
-  const [wordInContextHeadline, setWordInContextHeadline] = useState(removePunctuation(bookmarksToStudy[0].from));
   const isExerciseOverRef = useShadowRef(isExerciseOver);
 
   useEffect(() => {
     speech.stopAudio(); // Stop any pending speech from previous exercise
     resetSubSessionTimer();
     setExerciseType(EXERCISE_TYPE);
-    let initExerciseBookmarks = [...bookmarksToStudy];
-    for (let i = 0; i < initExerciseBookmarks.length; i++) {
-      if (i === 0) initExerciseBookmarks[i].isExercise = true;
-      else initExerciseBookmarks[i].isExercise = false;
-    }
+    const initExerciseBookmarks = bookmarksToStudy.map((b, i) => ({ ...b, isExercise: i === 0 }));
     setExerciseBookmarks(shuffle(initExerciseBookmarks));
     // eslint-disable-next-line
   }, []);
@@ -73,12 +68,11 @@ export default function MultipleChoiceContext({
     // eslint-disable-next-line
   }, [reload, bookmarksToStudy]);
 
-  function notifyChoiceSelection(selectedChoiceId, selectedChoiceContext, index, e) {
+  function notifyChoiceSelection(selectedChoiceId, index, e) {
     if (isExerciseOver) return;
     setClickedOption(index);
     if (selectedChoiceId === exerciseBookmark.id) {
       setClickedIndex(index);
-      setWordInContextHeadline(removePunctuation(exerciseBookmark.to));
       notifyCorrectAnswer(exerciseBookmark);
     } else {
       setClickedIndex(null);
@@ -113,7 +107,9 @@ export default function MultipleChoiceContext({
         {strings.multipleChoiceContextHeadline}
       </div>
 
-      <h1 className="wordInContextHeadline">{wordInContextHeadline}</h1>
+      <h1 className="wordInContextHeadline">
+        {isExerciseOver ? removePunctuation(exerciseBookmark.to) : removePunctuation(exerciseBookmark.from)}
+      </h1>
       <div style={{ visibility: isExerciseOver ? 'visible' : 'hidden' }}>
         {bookmarkProgressBar}
       </div>
@@ -126,7 +122,7 @@ export default function MultipleChoiceContext({
             className={
               clickedOption !== null ? (index === clickedOption ? (option.isExercise ? "correct" : "wrong") : "") : ""
             }
-            onClick={(e) => notifyChoiceSelection(option.id, option.context, index, e)}
+            onClick={(e) => notifyChoiceSelection(option.id, index, e)}
           >
             {option.left_ellipsis && <>...</>}
             <span
