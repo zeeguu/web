@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useLayoutEffect, useRef } from "react";
 import styled from "styled-components";
 import CancelIcon from "@mui/icons-material/Cancel";
 
@@ -36,6 +36,17 @@ const ClearBtn = styled.span`
 
 export default function ClearableInput({ value, onChange, onClear, placeholder, maxLength, tabIndex, rows = 1, ...props }) {
   const inputRef = useRef(null);
+
+  // Auto-grow the textarea to fit its content. CSS `field-sizing: content`
+  // covers modern Chrome/Safari, but older WebViews (e.g. iOS 16 Capacitor)
+  // need this fallback so the field expands when the value wraps to
+  // multiple visual lines.
+  useLayoutEffect(() => {
+    const el = inputRef.current;
+    if (!el) return;
+    el.style.height = "auto";
+    el.style.height = `${el.scrollHeight}px`;
+  }, [value]);
 
   return (
     <Wrapper>
