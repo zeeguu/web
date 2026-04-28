@@ -131,10 +131,12 @@ export default function LanguagePreferences() {
     setIsCreatingAccount(true);
     const uuid = generateUUID();
     const password = generateUUID();
+    const inviteCode = LocalStorage.getInviteCode();
 
     api.addAnonUser(
       uuid,
       password,
+      inviteCode,
       {
         learned_language: learnedLanguage,
         native_language: translationLanguage,
