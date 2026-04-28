@@ -9,7 +9,7 @@ import * as s from "./LanguagesModal.sc";
 
 export function LanguagesModal({ open, onClose, isOwnProfile, profileData, activeLanguages }) {
   return (
-    <Modal open={open} onClose={onClose} style={{ maxHeight: "80%", margin: "auto" }}>
+    <Modal open={open} onClose={onClose}>
       <Header>
         <Heading>{isOwnProfile ? "Your" : `${profileData?.username}'s`} Languages</Heading>
       </Header>

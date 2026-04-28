@@ -232,7 +232,6 @@ export default function ProfileDetails() {
         <Modal
           open={showAvatarModal}
           onClose={() => setShowAvatarModal(false)}
-          style={{ maxHeight: "80%", margin: "auto" }}
         >
           <Header withoutLogo>
             <Heading>Choose Your Avatar</Heading>
