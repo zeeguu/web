@@ -161,9 +161,11 @@ export default function ArticlePreview({
 
   function titleLink(article) {
     let linkToRedirect = `/read/article?id=${article.id}`;
+    let is_saved = article.has_personal_copy || article.has_uploader || isArticleSaved === true;
+
     let open_in_zeeguu = (
       <ActionButton as={Link} to={linkToRedirect} onClick={handleArticleClick}>
-        Read Full
+        {is_saved ? "Open" : "Read Full"}
       </ActionButton>
     );
 
@@ -206,8 +208,6 @@ export default function ArticlePreview({
         Open Externally <OpenInNewRoundedIcon style={{ fontSize: 16, marginLeft: 4 }} />
       </ActionButton>
     );
-
-    let is_saved = article.has_personal_copy || article.has_uploader || isArticleSaved === true;
 
     let should_open_in_zeeguu = Feature.always_open_externally()
       ? is_saved
