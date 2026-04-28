@@ -76,15 +76,11 @@ const Zeeguu_API = class {
 
   _getJSON(endpoint, callback, options = false) {
     // Third arg accepts either a boolean (legacy `useCache`) or an
-    // options object `{ useCache, onError }`. Existing call sites that
-    // pass a boolean keep working; new callers pass an object to opt
-    // into explicit error handling.
-    const useCache = typeof options === "boolean"
-      ? options
-      : !!options.useCache;
-    const onError = typeof options === "boolean"
-      ? null
-      : options.onError || null;
+    // options object `{ useCache, onError }`. Normalize to the object
+    // form so the rest of the method only deals with one shape.
+    const opts = typeof options === "boolean" ? { useCache: options } : options;
+    const useCache = !!opts.useCache;
+    const onError = opts.onError ?? null;
 
     // Capture the cache key once so the read and write use the same
     // language, even if the user switches language mid-flight
@@ -125,16 +121,8 @@ const Zeeguu_API = class {
             tags: { endpoint, method: "GET" },
           });
         }
-        // Don't invoke the success callback on failure. Previously this
-        // path called `callback(null)`, which meant every consumer had
-        // to null-guard inside its callback or risk a crash (e.g.
-        // `setDaysPracticed(data.daily_streak)` with data === null).
-        // That's a poor default: the burden was on 77 call sites to
-        // remember a guard that scaled linearly with the API surface.
-        // Now: components stay in their initial state on failure, which
-        // is the correct "request never succeeded" semantics. Callers
-        // that want explicit failure handling pass `{ onError }` in the
-        // options object.
+        // On failure, skip the success callback so consumers stay in
+        // their initial state. Pass `{ onError }` for explicit handling.
         if (onError) onError(e);
       });
   }

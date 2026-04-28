@@ -145,7 +145,7 @@ Zeeguu_API.prototype.search = function (
   );
 };
 
-Zeeguu_API.prototype.latestSearch = function (term, callback) {
+Zeeguu_API.prototype.latestSearch = function (term, callback, onError) {
   return this._getJSON(`latest_search/${term}`, (articles) => {
     // sometimes we get duplicates from the server
     // deduplicate them here
@@ -155,7 +155,7 @@ Zeeguu_API.prototype.latestSearch = function (term, callback) {
       ({ id }, index) => !ids.includes(id, index + 1),
     );
     callback(deduplicated);
-  });
+  }, { onError });
 };
 
 Zeeguu_API.prototype.searchMore = function (
