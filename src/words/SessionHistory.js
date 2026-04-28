@@ -700,15 +700,23 @@ export default function SessionHistory() {
       return;
     }
     setLoadingBookmark(true);
-    api.getBookmarkWithContext(bookmarkId, (bookmark) => {
+    const dismissWithError = () => {
       setLoadingBookmark(false);
-      if (bookmark && typeof bookmark.from === "string") {
-        setEditBookmark(bookmark);
-        setTimeout(() => setEditModalOpen(true), 0);
-      } else {
-        toast.error("Could not load word details. Please try again.");
-      }
-    });
+      toast.error(strings.couldNotLoadWordDetails);
+    };
+    api.getBookmarkWithContext(
+      bookmarkId,
+      (bookmark) => {
+        if (bookmark && typeof bookmark.from === "string") {
+          setLoadingBookmark(false);
+          setEditBookmark(bookmark);
+          setTimeout(() => setEditModalOpen(true), 0);
+        } else {
+          dismissWithError();
+        }
+      },
+      dismissWithError,
+    );
   };
 
   const handleEditClose = () => {
@@ -878,11 +886,18 @@ export default function SessionHistory() {
 
     setLoading(true);
     const { fromDate, toDate } = getDateRange();
-    api.getSessionHistoryByRange(fromDate.toISOString(), toDate.toISOString(), (data) => {
-      // Handle API errors - data will be null if request failed
-      setSessions(data || []);
-      setLoading(false);
-    });
+    api.getSessionHistoryByRange(
+      fromDate.toISOString(),
+      toDate.toISOString(),
+      (data) => {
+        setSessions(data);
+        setLoading(false);
+      },
+      () => {
+        setSessions([]);
+        setLoading(false);
+      },
+    );
     setTitle("My Activity");
   }, [api, timeRange, appliedFrom, appliedTo]);
 

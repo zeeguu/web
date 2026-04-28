@@ -44,10 +44,13 @@ export default function MyClassrooms() {
 
   function updateValues() {
     setIsLoading(true);
-    api.getStudent((student) => {
-      setStudentCohorts(student.cohorts);
-      setIsLoading(false);
-    });
+    api.getStudent(
+      (student) => {
+        setStudentCohorts(student.cohorts);
+        setIsLoading(false);
+      },
+      () => setIsLoading(false),
+    );
   }
 
   async function refreshUserDetails() {

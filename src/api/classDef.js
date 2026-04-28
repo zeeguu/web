@@ -74,7 +74,14 @@ const Zeeguu_API = class {
       });
   }
 
-  _getJSON(endpoint, callback, useCache = false) {
+  _getJSON(endpoint, callback, options = false) {
+    // Third arg accepts either a boolean (legacy `useCache`) or an
+    // options object `{ useCache, onError }`. Normalize to the object
+    // form so the rest of the method only deals with one shape.
+    const opts = typeof options === "boolean" ? { useCache: options } : options;
+    const useCache = !!opts.useCache;
+    const onError = opts.onError ?? null;
+
     // Capture the cache key once so the read and write use the same
     // language, even if the user switches language mid-flight
     const cacheKey = useCache ? this._cacheKey(endpoint) : null;
@@ -114,17 +121,18 @@ const Zeeguu_API = class {
             tags: { endpoint, method: "GET" },
           });
         }
-        // Call callback with null so components don't hang on loading forever
-        callback(null);
+        // On failure, skip the success callback so consumers stay in
+        // their initial state. Pass `{ onError }` for explicit handling.
+        if (onError) onError(e);
       });
   }
 
   _getJSONPromise(endpoint, useCache = false) {
     return new Promise((resolve, reject) => {
-      this._getJSON(endpoint, (result) => {
-        if (!result) reject(new ServerUnavailableError());
-        else resolve(result);
-      }, useCache);
+      this._getJSON(endpoint, resolve, {
+        useCache,
+        onError: () => reject(new ServerUnavailableError()),
+      });
     });
   }
 

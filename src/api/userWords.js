@@ -101,8 +101,8 @@ Zeeguu_API.prototype.getBookmarksCountByLevel = function (callback) {
   );
 };
 
-Zeeguu_API.prototype.getBookmarkWithContext = function (bookmarkId, callback) {
-  this._getJSON(`bookmark_with_context/${bookmarkId}`, callback);
+Zeeguu_API.prototype.getBookmarkWithContext = function (bookmarkId, callback, onError) {
+  this._getJSON(`bookmark_with_context/${bookmarkId}`, callback, { onError });
 };
 
 // individual bookmark handling

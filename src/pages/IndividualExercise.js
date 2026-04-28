@@ -132,28 +132,24 @@ export default function IndividualExercise() {
       // Check if bookmarkId contains multiple IDs (comma-separated for Match exercises)
       if (bookmarkId.includes(",")) {
         const bookmarkIds = bookmarkId.split(",");
-        let fetchedBookmarks = [];
-        let fetchCount = 0;
-
-        bookmarkIds.forEach((id, index) => {
-          api.getBookmarkWithContext(id.trim(), (data) => {
-            fetchedBookmarks[index] = data;
-            fetchCount++;
-
-            if (fetchCount === bookmarkIds.length) {
-              console.log("Fetched multiple bookmark data:", fetchedBookmarks);
-              setBookmarkData(fetchedBookmarks);
-              setLoading(false);
-            }
-          });
-        });
+        const fetchOne = (id) =>
+          new Promise((resolve, reject) =>
+            api.getBookmarkWithContext(id.trim(), resolve, reject),
+          );
+        Promise.all(bookmarkIds.map(fetchOne))
+          .then(setBookmarkData)
+          .catch(() => {})
+          .finally(() => setLoading(false));
       } else {
         // Single bookmark
-        api.getBookmarkWithContext(bookmarkId, (data) => {
-          console.log("Fetched bookmark data:", data);
-          setBookmarkData(data);
-          setLoading(false);
-        });
+        api.getBookmarkWithContext(
+          bookmarkId,
+          (data) => {
+            setBookmarkData(data);
+            setLoading(false);
+          },
+          () => setLoading(false),
+        );
       }
     }
   }, [bookmarkId, exerciseType, api]);

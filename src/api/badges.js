@@ -1,11 +1,11 @@
 import { Zeeguu_API } from "./classDef";
 
-Zeeguu_API.prototype.getMyBadges = function(callback) {
-  this._getJSON(`/my_badges`, callback);
+Zeeguu_API.prototype.getMyBadges = function(callback, onError) {
+  this._getJSON(`/my_badges`, callback, { onError });
 };
 
-Zeeguu_API.prototype.getFriendBadges = function(username, callback) {
-  this._getJSON(`/friend_badges/${username}`, callback);
+Zeeguu_API.prototype.getFriendBadges = function(username, callback, onError) {
+  this._getJSON(`/friend_badges/${username}`, callback, { onError });
 };
 
 Zeeguu_API.prototype.getUnseenBadgeCount = function (callback) {

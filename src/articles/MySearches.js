@@ -29,11 +29,15 @@ export default function MySearches() {
   }, [subscribedSearches]);
 
   async function topArticlesForSearchTerm(searchTerm) {
-    return new Promise((resolve) => {
-      api.latestSearch(searchTerm, (articles) => {
-        const firstTwoArticles = articles.slice(0, 2);
-        resolve({ searchTerm, articles: firstTwoArticles });
-      });
+    return new Promise((resolve, reject) => {
+      api.latestSearch(
+        searchTerm,
+        (articles) => {
+          const firstTwoArticles = articles.slice(0, 2);
+          resolve({ searchTerm, articles: firstTwoArticles });
+        },
+        reject,
+      );
     });
   }
 
@@ -43,16 +47,22 @@ export default function MySearches() {
   }
 
   async function fetchData() {
-    subscribedSearchesWithTopArticles(subscribedSearches).then((results) => {
-      // Sort by most recent article in each search category
-      const sortedResults = [...results].sort((a, b) => {
-        const aDate = a.articles[0]?.published ? new Date(a.articles[0].published) : new Date(0);
-        const bDate = b.articles[0]?.published ? new Date(b.articles[0].published) : new Date(0);
-        return bDate - aDate; // Most recent first
+    subscribedSearchesWithTopArticles(subscribedSearches)
+      .then((results) => {
+        // Sort by most recent article in each search category
+        const sortedResults = [...results].sort((a, b) => {
+          const aDate = a.articles[0]?.published ? new Date(a.articles[0].published) : new Date(0);
+          const bDate = b.articles[0]?.published ? new Date(b.articles[0].published) : new Date(0);
+          return bDate - aDate; // Most recent first
+        });
+        setArticlesBySearchTerm(sortedResults);
+        setIsLoading(false);
+      })
+      .catch(() => {
+        // Show what we have on a failed search term, dismiss the spinner.
+        setArticlesBySearchTerm([]);
+        setIsLoading(false);
       });
-      setArticlesBySearchTerm(sortedResults);
-      setIsLoading(false);
-    });
   }
 
   if (isLoading) {
