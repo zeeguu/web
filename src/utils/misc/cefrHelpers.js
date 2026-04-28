@@ -8,6 +8,35 @@ const NUMERIC_TO_CEFR = {
   6: "C2",
 };
 
+const CEFR_ORDINAL = { A1: 1, A2: 2, B1: 3, B2: 4, C1: 5, C2: 6 };
+
+/**
+ * Decide whether the language-choice modal is worth showing for an article
+ * the user is about to read.
+ *
+ * Cross-language: always show — translate-and-adapt is real work regardless
+ * of the source CEFR.
+ *
+ * Same-language: only show if the article is strictly harder than the user's
+ * CEFR. If the article is already at or below their level, simplifying it
+ * down doesn't help (and the backend rejects it). When we don't have a
+ * solid level for either side, default to showing the modal — better to ask
+ * than to silently skip an offer.
+ */
+export function shouldShowLanguageChoice(
+  articleLanguage,
+  articleCefrLevel,
+  userDetails,
+) {
+  if (!userDetails) return true;
+  if (articleLanguage !== userDetails.learned_language) return true;
+
+  const userNumeric = userDetails[articleLanguage + "_cefr_level"];
+  const articleOrd = CEFR_ORDINAL[articleCefrLevel];
+  if (!articleOrd || !userNumeric) return true;
+  return articleOrd > Number(userNumeric);
+}
+
 /**
  * Convert numeric CEFR level to string.
  * User settings store levels as 1-6, API expects "A1"-"C2".

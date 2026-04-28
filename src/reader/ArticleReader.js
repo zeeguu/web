@@ -30,6 +30,7 @@ import DigitalTimer from "../components/DigitalTimer";
 import DevButton from "../components/DevButton";
 import { APIContext } from "../contexts/APIContext";
 import ArticleLanguageModal from "./ArticleLanguageModal";
+import { shouldShowLanguageChoice } from "../utils/misc/cefrHelpers";
 
 // UMR stands for historical reasons for: Unified Multilingual Reader
 export const WEB_READER = "UMR";
@@ -236,11 +237,16 @@ export default function ArticleReader({ teacherArticleID }) {
       api.setArticleOpened(articleInfo.id);
       api.logUserActivity(api.OPEN_ARTICLE, articleID, "", WEB_READER);
 
-      // Show language modal for deeplinked articles (share is handled in SharedArticleHandler)
+      // Show language modal for deeplinked articles (share is handled in
+      // SharedArticleHandler). Skip when same-language and the article is
+      // already at or below the user's level — simplifying down doesn't help
+      // and the backend rejects it. Cross-language always shows the modal
+      // so the user can opt into translate&adapt.
       if (
         entrySource === "deeplink" &&
         !articleInfo.url?.includes("#translated-from-") &&
-        !teacherArticleID
+        !teacherArticleID &&
+        shouldShowLanguageChoice(articleInfo.language, articleInfo.cefr_level, userDetails)
       ) {
         setShowLanguageModal(true);
       }

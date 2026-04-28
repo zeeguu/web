@@ -6,6 +6,7 @@ import useQuery from "../hooks/useQuery";
 import useTimedProgressMessage from "../hooks/useTimedProgressMessage";
 import LoadingAnimation from "../components/LoadingAnimation";
 import ArticleLanguageModal from "./ArticleLanguageModal";
+import { shouldShowLanguageChoice } from "../utils/misc/cefrHelpers";
 
 const PROGRESS_STAGES = {
   simplify: [
@@ -77,7 +78,28 @@ export default function SharedArticleHandler() {
       sharedUrl,
       (result) => {
         setArticleDetection(result);
-        setStatus("choice");
+        // Same-language articles already at or below the user's level don't
+        // benefit from simplification — skip the modal and just open the
+        // article as-is. Cross-language articles still get the choice
+        // because translate&adapt is real work regardless of source CEFR.
+        if (shouldShowLanguageChoice(result.language, result.cefr_level, userDetails)) {
+          setStatus("choice");
+          return;
+        }
+        setIsProcessing(true);
+        setProcessingAction("promote");
+        setStatus("loading");
+        api.findOrCreateArticle(
+          { url: sharedUrl },
+          (artinfo) => {
+            const parsed = typeof artinfo === "string" ? JSON.parse(artinfo) : artinfo;
+            history.replace("/read/article?id=" + parsed.id);
+          },
+          () => {
+            setStatus("error");
+            setErrorMessage("Could not process this article.");
+          },
+        );
       },
       (error) => {
         setStatus("error");
