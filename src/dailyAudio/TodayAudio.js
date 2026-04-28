@@ -1,4 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
+import { Capacitor } from "@capacitor/core";
 import { orange500, zeeguuOrange } from "../components/colors";
 import { APIContext } from "../contexts/APIContext";
 import { UserContext } from "../contexts/UserContext";
@@ -148,10 +149,32 @@ export default function TodayAudio({ setShowTabs }) {
     };
     document.addEventListener("visibilitychange", onVisibilityChange);
 
+    // Capacitor doesn't fire visibilitychange reliably on resume — also
+    // listen for the native lifecycle event so the lesson updates the
+    // moment the user returns to the app.
+    let appStateListenerHandle = null;
+    let appStateListenerCancelled = false;
+    if (Capacitor.getPlatform() !== "web" && Capacitor.isPluginAvailable("App")) {
+      (async () => {
+        try {
+          const { App } = await import("@capacitor/app");
+          const handle = await App.addListener("appStateChange", ({ isActive }) => {
+            if (isActive) pollForProgress();
+          });
+          if (appStateListenerCancelled) handle.remove();
+          else appStateListenerHandle = handle;
+        } catch {
+          // Best-effort — fall back to the interval timer
+        }
+      })();
+    }
+
     // Cleanup on unmount
     return () => {
       stopPolling();
       document.removeEventListener("visibilitychange", onVisibilityChange);
+      appStateListenerCancelled = true;
+      if (appStateListenerHandle) appStateListenerHandle.remove();
     };
   }, [api, isGenerating]);
   const [openFeedback, setOpenFeedback] = useState(false);
