@@ -163,7 +163,7 @@ export default function Badges({ username }) {
               <Main style={{ gap: "0" }}>
                 {selectedBadgeCategory.badges.map((badge, i) => (
                   <s.LevelRow key={i} $achieved={badge.achieved} $isCurrent={badge === meta.nextLevel}>
-                    {badge.achieved && !badge.is_shown && <s.NewTag>{strings.badgeNewTag}</s.NewTag>}
+                    {!username && badge.achieved && !badge.is_shown && <s.NewTag>{strings.badgeNewTag}</s.NewTag>}
                     <s.LevelTitle>{badge.name}</s.LevelTitle>
                     <s.BadgeDescription>{badge.description}</s.BadgeDescription>
                     {badge.achieved ? (
