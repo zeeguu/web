@@ -124,8 +124,11 @@ Zeeguu_API.prototype.resetPassword = function (email, code, newPass, callback, o
 
 Zeeguu_API.prototype.addAnonUser = function (uuid, password, invite_code, languagePrefs, onSuccess, onError) {
   let url = this.baseAPIurl + `/add_anon_user`;
-  let body = `uuid=${uuid}&password=${password}&invite_code=${invite_code}&platform=${getPlatform()}`;
+  let body = `uuid=${uuid}&password=${password}&platform=${getPlatform()}`;
 
+  if (invite_code) {
+    body += `&invite_code=${encodeURIComponent(invite_code)}`;
+  }
   if (languagePrefs?.learned_language) {
     body += `&learned_language_code=${languagePrefs.learned_language}`;
   }
