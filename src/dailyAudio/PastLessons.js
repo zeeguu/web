@@ -4,6 +4,7 @@ import { APIContext } from "../contexts/APIContext";
 import { UserContext } from "../contexts/UserContext";
 import LoadingAnimation from "../components/LoadingAnimation";
 import CustomAudioPlayer from "../components/CustomAudioPlayer";
+import { SuggestionSubtitle } from "./LessonView.sc";
 import { wordsAsTile } from "./audioUtils";
 
 export default function PastLessons() {
@@ -123,6 +124,12 @@ export default function PastLessons() {
                     })}
                     : {lesson.title || wordsAsTile(lesson.words)}
                   </h3>
+                  {lesson.canonical_suggestion && (
+                    <SuggestionSubtitle>
+                      {lesson.lesson_type === "situation" ? "Situation" : "Topic"}:{" "}
+                      <b>{lesson.canonical_suggestion}</b>
+                    </SuggestionSubtitle>
+                  )}
                   {lesson.is_completed && lesson.completed_at && (
                     <span
                       style={{
