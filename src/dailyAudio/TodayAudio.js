@@ -194,15 +194,18 @@ export default function TodayAudio({ setShowTabs }) {
     };
   }, [api, isGenerating]);
 
-  // Rotate placeholder messages whenever the bar isn't actually moving.
-  // Only "synthesizing_audio" emits a per-segment step counter; the
-  // other phases (no record yet, "pending", "generating_script",
-  // "combining_audio") sit on a static backend message for many
-  // seconds — looks like the bar is stuck without rotation.
-  const hasMovingProgress =
-    generationProgress?.status === GENERATION_PROGRESS.SYNTHESIZING_AUDIO;
+  // Rotate placeholder messages only during the early/long phases where
+  // the backend message sits static for many seconds with no sub-step
+  // progress (no record yet, "pending", "generating_script"). Once we
+  // hit "synthesizing_audio" the per-step counter takes over, and
+  // "combining_audio" / "done" are end states where we want the real
+  // message + a full bar rather than a fresh rotation cycle.
+  const showRealMessage =
+    generationProgress?.status === GENERATION_PROGRESS.SYNTHESIZING_AUDIO ||
+    generationProgress?.status === GENERATION_PROGRESS.COMBINING_AUDIO ||
+    generationProgress?.status === GENERATION_PROGRESS.DONE;
   useEffect(() => {
-    if (!isGenerating || hasMovingProgress) {
+    if (!isGenerating || showRealMessage) {
       setPlaceholderIndex(0);
       return;
     }
@@ -210,7 +213,7 @@ export default function TodayAudio({ setShowTabs }) {
       setPlaceholderIndex((i) => i + 1);
     }, PLACEHOLDER_ROTATION_MS);
     return () => clearInterval(id);
-  }, [isGenerating, hasMovingProgress]);
+  }, [isGenerating, showRealMessage]);
 
   const [openFeedback, setOpenFeedback] = useState(false);
   const [currentPlaybackTime, setCurrentPlaybackTime] = useState(0);
@@ -419,18 +422,21 @@ export default function TodayAudio({ setShowTabs }) {
       PLACEHOLDER_PROGRESS_MESSAGES[placeholderIndex % PLACEHOLDER_PROGRESS_MESSAGES.length];
     let progressPercent = 1; // Start at 1% so the bar is visible immediately
 
-    if (hasMovingProgress) {
-      progressDetail = generationProgress.message;
-
-      // Calculate progress percentage (minimum 1%)
-      if (generationProgress.total_segments > 0) {
-        const segmentsCompleted = Math.max(0, generationProgress.current_segment - 1);
-        let stepsInCurrentSegment = 0;
-        if (generationProgress.total_steps > 0) {
-          stepsInCurrentSegment = generationProgress.current_step / generationProgress.total_steps;
-        }
-        progressPercent = Math.max(1, ((segmentsCompleted + stepsInCurrentSegment) / generationProgress.total_segments) * 100);
+    // Always derive percent from the backend's segment/step counters
+    // when present — otherwise the bar would collapse back to 1% the
+    // moment status leaves "synthesizing_audio" (e.g. into combining
+    // or done), which looks like the lesson restarted.
+    if (generationProgress?.total_segments > 0) {
+      const segmentsCompleted = Math.max(0, generationProgress.current_segment - 1);
+      let stepsInCurrentSegment = 0;
+      if (generationProgress.total_steps > 0) {
+        stepsInCurrentSegment = generationProgress.current_step / generationProgress.total_steps;
       }
+      progressPercent = Math.max(1, ((segmentsCompleted + stepsInCurrentSegment) / generationProgress.total_segments) * 100);
+    }
+
+    if (showRealMessage) {
+      progressDetail = generationProgress.message || progressDetail;
     }
 
     return (
