@@ -227,6 +227,8 @@ export default function ArticlePreview({
     return null;
   }
 
+  const cefrLevel = article.metrics?.cefr_level || article.cefr_level;
+
   return (
     <s.ArticlePreview
       style={{
@@ -296,18 +298,20 @@ export default function ArticlePreview({
 
       {/* Metadata row: CEFR level, simplified tag, source */}
       <div style={{ display: "flex", alignItems: "center", marginTop: "15px" }}>
-        {/* Difficulty (CEFR level) */}
-        <div style={{ display: "flex", alignItems: "center", gap: "5px" }}>
-          <img
-            src={getStaticPath(
-              "icons",
-              `${getHighestCefrLevel(article.metrics?.cefr_level || article.cefr_level || "B1")}-level-icon.png`,
-            )}
-            alt="difficulty icon"
-            style={{ width: "16px", height: "16px" }}
-          />
-          <span>{article.metrics?.cefr_level || article.cefr_level || "B1"}</span>
-        </div>
+        {/* Difficulty (CEFR level) — hidden for the on-demand cohort (feed
+            shows originals; level matters at the simplify-decision modal).
+            Also hidden when we don't actually know the level — better to
+            show nothing than to fake a default. */}
+        {cefrLevel && !Feature.always_open_externally() && (
+          <div style={{ display: "flex", alignItems: "center", gap: "5px" }}>
+            <img
+              src={getStaticPath("icons", `${getHighestCefrLevel(cefrLevel)}-level-icon.png`)}
+              alt="difficulty icon"
+              style={{ width: "16px", height: "16px" }}
+            />
+            <span>{cefrLevel}</span>
+          </div>
+        )}
 
         {/* Simplified tag */}
         {article.parent_article_id && (

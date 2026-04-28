@@ -6,6 +6,7 @@ import useQuery from "../hooks/useQuery";
 import useTimedProgressMessage from "../hooks/useTimedProgressMessage";
 import LoadingAnimation from "../components/LoadingAnimation";
 import ArticleLanguageModal from "./ArticleLanguageModal";
+import { shouldShowLanguageChoice } from "../utils/misc/cefrHelpers";
 
 const PROGRESS_STAGES = {
   simplify: [
@@ -77,7 +78,18 @@ export default function SharedArticleHandler() {
       sharedUrl,
       (result) => {
         setArticleDetection(result);
-        setStatus("choice");
+        // Skip modal when simplification wouldn't help — see shouldShowLanguageChoice.
+        if (shouldShowLanguageChoice(result.language, result.cefr_level, userDetails)) {
+          setStatus("choice");
+          return;
+        }
+        // detect_article_info already created/found the article when it was
+        // cached — short-circuit to avoid a second findOrCreateArticle call.
+        if (result.exists && result.id) {
+          history.replace("/read/article?id=" + result.id);
+          return;
+        }
+        createAndNavigate("promote", false);
       },
       (error) => {
         setStatus("error");
@@ -189,6 +201,7 @@ export default function SharedArticleHandler() {
       <ArticleLanguageModal
         articleTitle={articleDetection.title}
         articleLanguage={articleDetection.language}
+        articleCefrLevel={articleDetection.cefr_level}
         articleImage={articleDetection.img_url}
         learnedLanguage={userDetails.learned_language}
         source="share"

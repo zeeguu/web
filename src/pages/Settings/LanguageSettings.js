@@ -5,6 +5,7 @@ import { APIContext } from "../../contexts/APIContext";
 import { UserContext } from "../../contexts/UserContext";
 import { saveSharedUserInfo } from "../../utils/cookies/userInfo";
 import { CEFR_LEVELS } from "../../assorted/cefrLevels";
+import { getUserCefrLevel } from "../../utils/misc/cefrHelpers";
 import strings from "../../i18n/definitions";
 import LocalStorage from "../../assorted/LocalStorage";
 import LoadingAnimation from "../../components/LoadingAnimation";
@@ -62,9 +63,7 @@ export default function LanguageSettings() {
   const isPageMounted = useRef(true);
 
   function setCEFRLevelFromUserContext(data) {
-    const levelKey = data.learned_language + "_cefr_level";
-    const levelNumber = data[levelKey];
-    setCEFR(levelNumber);
+    setCEFR(getUserCefrLevel(data, data.learned_language));
   }
 
   useEffect(() => {

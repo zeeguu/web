@@ -16,6 +16,7 @@ import CircularProgress from "@mui/material/CircularProgress";
 import DynamicFlagImage from "../DynamicFlagImage.js";
 import LanguageOptionLabel from "./LanguageOptionLabel.js";
 import LocalStorage from "../../assorted/LocalStorage.js";
+import { getUserCefrLevel } from "../../utils/misc/cefrHelpers.js";
 import { saveSharedUserInfo } from "../../utils/cookies/userInfo.js";
 
 const MAX_MODAL_LANGUAGES = 7;
@@ -63,9 +64,7 @@ export default function LanguageModal({ open, setOpen }) {
   }, [open, api, session]);
 
   const getCefrLevelValueForLanguage = (languageCode) => {
-    const cefrKey = languageCode + "_cefr_level";
-    const cefrLevel = userDetails[cefrKey];
-    return cefrLevel?.toString() || "1";
+    return getUserCefrLevel(userDetails, languageCode)?.toString() || "1";
   };
 
   const handleCefrLevelChange = (languageCode, newLevel, e) => {
