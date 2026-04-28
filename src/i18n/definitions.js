@@ -595,6 +595,7 @@ let strings = new LocalizedStrings(
       // Badges
       loadingBadges: "Loading badges...",
       couldNotLoadBadges: "Could not load badges.",
+      couldNotLoadWordDetails: "Could not load word details. Please try again.",
       noBadgesForUser: "This user hasn't earned any badges yet.",
       badgeNewTag: "New",
 
@@ -1669,6 +1670,7 @@ let strings = new LocalizedStrings(
       // Badges
       loadingBadges: "Indlæser badges...",
       couldNotLoadBadges: "Kunne ikke indlæse badges.",
+      couldNotLoadWordDetails: "Kunne ikke indlæse orddetaljer. Prøv igen.",
       noBadgesForUser: "Denne bruger har endnu ikke optjent nogle badges.",
       badgeNewTag: "Ny",
 

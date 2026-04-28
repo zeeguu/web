@@ -700,21 +700,22 @@ export default function SessionHistory() {
       return;
     }
     setLoadingBookmark(true);
+    const dismissWithError = () => {
+      setLoadingBookmark(false);
+      toast.error(strings.couldNotLoadWordDetails);
+    };
     api.getBookmarkWithContext(
       bookmarkId,
       (bookmark) => {
-        setLoadingBookmark(false);
         if (bookmark && typeof bookmark.from === "string") {
+          setLoadingBookmark(false);
           setEditBookmark(bookmark);
           setTimeout(() => setEditModalOpen(true), 0);
         } else {
-          toast.error("Could not load word details. Please try again.");
+          dismissWithError();
         }
       },
-      () => {
-        setLoadingBookmark(false);
-        toast.error("Could not load word details. Please try again.");
-      },
+      dismissWithError,
     );
   };
 
