@@ -1,4 +1,4 @@
-- Audio Lesson generation now shows rotating hints so the bar no longer looks stuck while the AI drafts the script.
+- Audio Lesson generation now shows rotating hints so the bar no longer looks stuck while the AI drafts the script — and no longer briefly resets to zero in the final seconds before the lesson appears.
 - Past Lessons now shows the topic for Topic and Situation lessons.
 - Switching languages refreshes article and lesson lists instantly instead of after a delay.
 - Audio Lessons now support imagined dialogues with named figures — try "interview with Einstein" or "chat with Cleopatra".
