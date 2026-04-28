@@ -8,6 +8,7 @@ function langName(code) {
 export default function ArticleLanguageModal({
   articleTitle,
   articleLanguage,
+  articleCefrLevel,
   articleImage,
   learnedLanguage,
   source,
@@ -19,13 +20,17 @@ export default function ArticleLanguageModal({
 }) {
   const isSameLanguage = articleLanguage === learnedLanguage;
   const articleLangName = langName(articleLanguage);
+  const levelClause = articleCefrLevel ? ` at ${articleCefrLevel} level` : "";
 
   if (isSameLanguage) {
+    const sameLangMessage = articleCefrLevel
+      ? `This article is${levelClause}. Do you want it simplified to your level?`
+      : "Do you want it simplified to your level?";
     return (
       <ChoiceModal
         title={articleTitle}
         heroImage={articleImage}
-        message="Do you want it simplified to your level?"
+        message={sameLangMessage}
         primaryLabel="Simplify"
         secondaryLabel="Read as is"
         loadingLabel="Simplifying..."
@@ -41,7 +46,7 @@ export default function ArticleLanguageModal({
     <ChoiceModal
       title={articleTitle}
       heroImage={articleImage}
-      message={`This article is in ${articleLangName}. Do you want it translated to ${langName(learnedLanguage)} at your level?`}
+      message={`This article is in ${articleLangName}${levelClause}. Do you want it translated to ${langName(learnedLanguage)} at your level?`}
       primaryLabel="Translate"
       secondaryLabel="Read original"
       loadingLabel="Translating..."

@@ -23,7 +23,7 @@ export default function DisplayPreferences() {
   const [showTimer, setShowTimer] = useState(false);
 
   useEffect(() => {
-    setTitle("Display");
+    setTitle("Activity Timer");
   }, []);
 
   useEffect(() => {
@@ -43,7 +43,7 @@ export default function DisplayPreferences() {
     <PreferencesPage layoutVariant={"minimalistic-top-aligned"}>
       <BackArrow />
       <Header withoutLogo>
-        <Heading>Display</Heading>
+        <Heading>Activity Timer</Heading>
       </Header>
       <Main>
         <Form>
