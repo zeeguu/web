@@ -13,6 +13,16 @@ import SuggestionSelector, { getSavedSuggestion, getSavedSuggestionType, suggest
 import LessonPlaybackView from "./LessonPlaybackView";
 import { wordsAsTile, shortDate } from "./audioUtils";
 
+// Shown one-by-one before the backend starts reporting real progress
+// (i.e. before the first AudioLessonGenerationProgress record exists).
+// They describe phases that genuinely happen server-side during the gap.
+const PLACEHOLDER_PROGRESS_MESSAGES = [
+  "Warming up...",
+  "Picking content for today's lesson...",
+  "Drafting the script...",
+];
+const PLACEHOLDER_ROTATION_MS = 2500;
+
 export default function TodayAudio({ setShowTabs }) {
   const api = useContext(APIContext);
   const { userDetails, setUserDetails } = useContext(UserContext);
@@ -20,6 +30,7 @@ export default function TodayAudio({ setShowTabs }) {
   const [isLoading, setIsLoading] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
   const [generationProgress, setGenerationProgress] = useState(null);
+  const [placeholderIndex, setPlaceholderIndex] = useState(0);
   const [suggestionType, setSuggestionType] = useState(
     () => getSavedSuggestionType(lang),
   );
@@ -177,6 +188,21 @@ export default function TodayAudio({ setShowTabs }) {
       if (appStateListenerHandle) appStateListenerHandle.remove();
     };
   }, [api, isGenerating]);
+
+  // Rotate placeholder messages while we're generating but the backend
+  // hasn't created its first progress record yet — gives the user a
+  // sense of activity during the otherwise-silent startup gap.
+  useEffect(() => {
+    if (!isGenerating || generationProgress) {
+      setPlaceholderIndex(0);
+      return;
+    }
+    const id = setInterval(() => {
+      setPlaceholderIndex((i) => i + 1);
+    }, PLACEHOLDER_ROTATION_MS);
+    return () => clearInterval(id);
+  }, [isGenerating, generationProgress]);
+
   const [openFeedback, setOpenFeedback] = useState(false);
   const [currentPlaybackTime, setCurrentPlaybackTime] = useState(0);
   const [lessonData, setLessonData] = useState(null);
@@ -380,7 +406,8 @@ export default function TodayAudio({ setShowTabs }) {
 
   if (isGenerating) {
     // Build progress detail (e.g., "Word 2/3: Synthesizing man voice")
-    let progressDetail = "Starting...";
+    let progressDetail =
+      PLACEHOLDER_PROGRESS_MESSAGES[placeholderIndex % PLACEHOLDER_PROGRESS_MESSAGES.length];
     let progressPercent = 1; // Start at 1% so the bar is visible immediately
 
     if (generationProgress) {
