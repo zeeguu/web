@@ -33,8 +33,8 @@ export function shouldShowLanguageChoice(
 
   const userNumeric = userDetails[articleLanguage + "_cefr_level"];
   const articleOrd = CEFR_ORDINAL[articleCefrLevel];
-  if (!articleOrd || !userNumeric) return true;
-  return articleOrd > Number(userNumeric);
+  if (!articleOrd || userNumeric == null) return true;
+  return articleOrd > userNumeric;
 }
 
 /**

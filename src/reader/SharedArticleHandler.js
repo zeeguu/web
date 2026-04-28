@@ -78,28 +78,18 @@ export default function SharedArticleHandler() {
       sharedUrl,
       (result) => {
         setArticleDetection(result);
-        // Same-language articles already at or below the user's level don't
-        // benefit from simplification — skip the modal and just open the
-        // article as-is. Cross-language articles still get the choice
-        // because translate&adapt is real work regardless of source CEFR.
+        // Skip modal when simplification wouldn't help — see shouldShowLanguageChoice.
         if (shouldShowLanguageChoice(result.language, result.cefr_level, userDetails)) {
           setStatus("choice");
           return;
         }
-        setIsProcessing(true);
-        setProcessingAction("promote");
-        setStatus("loading");
-        api.findOrCreateArticle(
-          { url: sharedUrl },
-          (artinfo) => {
-            const parsed = typeof artinfo === "string" ? JSON.parse(artinfo) : artinfo;
-            history.replace("/read/article?id=" + parsed.id);
-          },
-          () => {
-            setStatus("error");
-            setErrorMessage("Could not process this article.");
-          },
-        );
+        // detect_article_info already created/found the article when it was
+        // cached — short-circuit to avoid a second findOrCreateArticle call.
+        if (result.exists && result.id) {
+          history.replace("/read/article?id=" + result.id);
+          return;
+        }
+        createAndNavigate("promote", false);
       },
       (error) => {
         setStatus("error");

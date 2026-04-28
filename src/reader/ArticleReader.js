@@ -237,11 +237,8 @@ export default function ArticleReader({ teacherArticleID }) {
       api.setArticleOpened(articleInfo.id);
       api.logUserActivity(api.OPEN_ARTICLE, articleID, "", WEB_READER);
 
-      // Show language modal for deeplinked articles (share is handled in
-      // SharedArticleHandler). Skip when same-language and the article is
-      // already at or below the user's level — simplifying down doesn't help
-      // and the backend rejects it. Cross-language always shows the modal
-      // so the user can opt into translate&adapt.
+      // Deeplinked articles only — share flow is handled in SharedArticleHandler.
+      // Skip modal when simplification wouldn't help — see shouldShowLanguageChoice.
       if (
         entrySource === "deeplink" &&
         !articleInfo.url?.includes("#translated-from-") &&
