@@ -1,0 +1,6 @@
+- Audio Lesson progress bar no longer freezes or resets at the end of generation.
+- Ask for imagined dialogues with named figures (e.g. "interview with Einstein").
+- Tap Simplify to auto-save an article. Open Externally now opens the original page.
+- Smarter Simplify prompt: shows the article's level; skipped when not needed.
+- Many fewer stuck loading spinners on flaky network.
+- UI polish across leaderboards, profile, and difficulty cards.
