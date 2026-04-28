@@ -190,10 +190,14 @@ export default function TodayAudio({ setShowTabs }) {
   }, [api, isGenerating]);
 
   // Rotate placeholder messages while we're generating but the backend
-  // hasn't created its first progress record yet — gives the user a
-  // sense of activity during the otherwise-silent startup gap.
+  // hasn't produced a real progress message yet — gives the user a
+  // sense of activity during the otherwise-silent startup gap. The
+  // backend creates a "pending" progress record almost immediately, so
+  // we can't gate on `generationProgress` being null; we have to gate
+  // on whether it has a human-readable `message`.
+  const hasRealProgressMessage = !!generationProgress?.message;
   useEffect(() => {
-    if (!isGenerating || generationProgress) {
+    if (!isGenerating || hasRealProgressMessage) {
       setPlaceholderIndex(0);
       return;
     }
@@ -201,7 +205,7 @@ export default function TodayAudio({ setShowTabs }) {
       setPlaceholderIndex((i) => i + 1);
     }, PLACEHOLDER_ROTATION_MS);
     return () => clearInterval(id);
-  }, [isGenerating, generationProgress]);
+  }, [isGenerating, hasRealProgressMessage]);
 
   const [openFeedback, setOpenFeedback] = useState(false);
   const [currentPlaybackTime, setCurrentPlaybackTime] = useState(0);
@@ -410,8 +414,8 @@ export default function TodayAudio({ setShowTabs }) {
       PLACEHOLDER_PROGRESS_MESSAGES[placeholderIndex % PLACEHOLDER_PROGRESS_MESSAGES.length];
     let progressPercent = 1; // Start at 1% so the bar is visible immediately
 
-    if (generationProgress) {
-      progressDetail = generationProgress.message || "Processing...";
+    if (hasRealProgressMessage) {
+      progressDetail = generationProgress.message;
 
       // Calculate progress percentage (minimum 1%)
       if (generationProgress.total_segments > 0) {
@@ -461,7 +465,18 @@ export default function TodayAudio({ setShowTabs }) {
             }}
           />
         </div>
-        <p style={{ fontSize: "12px", color: "var(--text-faint)" }}>{progressDetail}</p>
+        <p
+          style={{
+            fontSize: "14px",
+            color: "var(--text-secondary)",
+            marginTop: "8px",
+            marginBottom: "16px",
+            minHeight: "1.4em",
+            transition: "opacity 0.3s ease-in-out",
+          }}
+        >
+          {progressDetail}
+        </p>
 
         <p style={{ color: "var(--text-primary)", marginBottom: "20px", fontSize: "16px", textAlign: "center" }}>
           This can take a while.<br />
