@@ -1,0 +1,11 @@
+- Audio Lesson generation now shows rotating hints so the bar no longer looks stuck while the AI drafts the script.
+- Past Lessons now shows the topic for Topic and Situation lessons.
+- Switching languages refreshes article and lesson lists instantly instead of after a delay.
+- Audio Lessons now support imagined dialogues with named figures — try "interview with Einstein" or "chat with Cleopatra".
+- Tap Simplify on an article and it's automatically saved to your library.
+- "Open externally" now opens the article's original page (not the simplified version). After saving, the button reads "Open".
+- Smarter Simplify prompt: shows the article's CEFR level, and skips the prompt when the article is already at or below your level.
+- Difficulty rating cards now fit comfortably on narrow phones; the suggestion input grows when you type multiple lines.
+- Many fewer stuck loading spinners — screens recover gracefully when the network glitches.
+- Multiple Choice exercises now show the translation (not the same word) when you tap Show Solution.
+- Various polish across leaderboards, badges, and the profile.
