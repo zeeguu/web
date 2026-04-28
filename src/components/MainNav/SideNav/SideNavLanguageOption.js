@@ -6,6 +6,7 @@ import NavOption from "../NavOption";
 import NavIcon from "../NavIcon";
 import navLanguages from "../navLanguages";
 import { CEFR_LEVELS } from "../../../assorted/cefrLevels";
+import { getUserCefrLevel } from "../../../utils/misc/cefrHelpers";
 import LocalStorage from "../../../assorted/LocalStorage";
 import { saveSharedUserInfo } from "../../../utils/cookies/userInfo";
 import styled from "styled-components";
@@ -49,9 +50,7 @@ export default function SideNavLanguageOption({ screenWidth }) {
   }, [userDetails.learned_language]);
 
   const currentCefrLevel = useMemo(() => {
-    const languageCode = userDetails.learned_language;
-    const cefrKey = languageCode + "_cefr_level";
-    const cefrLevel = userDetails[cefrKey];
+    const cefrLevel = getUserCefrLevel(userDetails, userDetails.learned_language);
     const level = CEFR_LEVELS.find(level => level.value === cefrLevel?.toString());
     return level ? level.label.split(' | ')[0] : 'A1';
   }, [userDetails.learned_language, userDetails]);
