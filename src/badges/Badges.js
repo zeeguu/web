@@ -29,7 +29,7 @@ export default function Badges({ username }) {
     const processedBadgeCategories = data.map((badge_category) => {
       const processedBadges = badge_category.badges.map((lvl) => ({
         ...lvl,
-        description: lvl.description?.replace("{threshold}", lvl.threshold) ?? ""
+        description: lvl.achieved && lvl.achieved_description ? lvl.achieved_description : lvl.unachieved_description,
       }));
 
       processedBadges.forEach((badge) => {
@@ -83,8 +83,7 @@ export default function Badges({ username }) {
       achievedCount: achievedBadges.length,
       highestAchieved,
       nextLevel,
-      iconLevel: highestAchieved || badgeCategory.badges[0],
-      displayLevel: nextLevel || badgeCategory.badges[badgeCategory.badges.length - 1],
+      currentLevel: highestAchieved || badgeCategory.badges[0],
       hasNewBadge: !username && badgeCategory.badges.some((b) => b.achieved && !b.is_shown),
     };
   };
@@ -106,18 +105,19 @@ export default function Badges({ username }) {
                     {meta.hasNewBadge && <s.NewTag>{strings.badgeNewTag}</s.NewTag>}
                     <s.IconContainer>
                       <s.BadgeIcon
-                        src={getIcon(meta.iconLevel)}
+                        src={getIcon(meta.currentLevel)}
                         $achieved={meta.achievedCount > 0}
                         alt={badgeCategory.name}
                       />
                     </s.IconContainer>
                     <s.BadgeTitle>
-                      <div>{meta.nextLevel.name}</div>
+                      <div>{meta.currentLevel.name}</div>
                     </s.BadgeTitle>
-                    <s.BadgeDescription>{meta.displayLevel.description}</s.BadgeDescription>
+                    <s.BadgeDescription>{meta.currentLevel.description}</s.BadgeDescription>
                     {!meta.nextLevel.achieved ? (
                       <div className="card-bottom">
                         <s.ProgressWrapper>
+                          {meta.currentLevel.achieved ? <span>Next level:</span> : <span>Unlock:</span>}
                           <s.ProgressBar>
                             <s.ProgressFill
                               style={{
@@ -163,7 +163,7 @@ export default function Badges({ username }) {
               <Main style={{ gap: "0" }}>
                 {selectedBadgeCategory.badges.map((badge, i) => (
                   <s.LevelRow key={i} $achieved={badge.achieved} $isCurrent={badge === meta.nextLevel}>
-                    {badge.achieved && !badge.is_shown && <s.NewTag>{strings.badgeNewTag}</s.NewTag>}
+                    {!username && badge.achieved && !badge.is_shown && <s.NewTag>{strings.badgeNewTag}</s.NewTag>}
                     <s.LevelTitle>{badge.name}</s.LevelTitle>
                     <s.BadgeDescription>{badge.description}</s.BadgeDescription>
                     {badge.achieved ? (
