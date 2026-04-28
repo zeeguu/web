@@ -370,7 +370,7 @@ export default function ArticleReader({ teacherArticleID }) {
       {showLanguageModal && (
         <ArticleLanguageModal
           articleLanguage={articleInfo.language}
-
+          articleCefrLevel={articleInfo.cefr_level}
           learnedLanguage={userDetails.learned_language}
           source={entrySource}
           onTranslateAndAdapt={handleTranslateAndAdapt}

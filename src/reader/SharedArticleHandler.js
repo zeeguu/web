@@ -189,6 +189,7 @@ export default function SharedArticleHandler() {
       <ArticleLanguageModal
         articleTitle={articleDetection.title}
         articleLanguage={articleDetection.language}
+        articleCefrLevel={articleDetection.cefr_level}
         articleImage={articleDetection.img_url}
         learnedLanguage={userDetails.learned_language}
         source="share"
