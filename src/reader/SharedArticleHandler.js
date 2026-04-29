@@ -56,6 +56,7 @@ export default function SharedArticleHandler() {
             title: upload.title,
             url: upload.url,
             img_url: upload.img_url || null,
+            cefr_level: upload.cefr_level || null,
           });
           setStatus("choice");
         },

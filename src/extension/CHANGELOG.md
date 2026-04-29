@@ -14,6 +14,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 
 
+## [2.5.15] - 2026-04-29
+
+### Fixed
+- Right-click "Read with Zeeguu" did nothing because the MV3 service worker has no `window` (broke `_postBeacon`) and no `DOMParser` (broke Readability). Parsing now runs inside the tab via an injected content script (`scrapeForUpload.js`); both popup and context-menu paths share it.
+
 ## [2.5.14] - 2026-04-15
 
 ### Changed

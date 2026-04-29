@@ -194,22 +194,23 @@ const Zeeguu_API = class {
    * sendBeacon is designed for this use case and won't be cancelled.
    */
   _postBeacon(endpoint, body) {
-    // sendBeacon is blocked cross-origin from localhost; fall back to regular post
-    if (window.location.hostname === "localhost") {
+    // The MV3 extension service worker has no `window` and no
+    // `navigator.sendBeacon` — guard both so SW callers don't ReferenceError.
+    const isLocalhost =
+      typeof window !== "undefined" && window.location?.hostname === "localhost";
+    if (isLocalhost) {
       return this._post(endpoint, body);
     }
     const url = this._appendSessionToUrl(endpoint);
-    const blob = new Blob([body], { type: "application/x-www-form-urlencoded" });
-    const success = navigator.sendBeacon(url, blob);
-    if (!success) {
-      // Fallback to fetch if sendBeacon fails (e.g., payload too large)
-      // Use catch to prevent unhandled rejection on navigation
-      fetch(url, {
-        method: "POST",
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: body,
-      }).catch(() => {});
+    if (typeof navigator !== "undefined" && typeof navigator.sendBeacon === "function") {
+      const blob = new Blob([body], { type: "application/x-www-form-urlencoded" });
+      if (navigator.sendBeacon(url, blob)) return;
     }
+    fetch(url, {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: body,
+    }).catch(() => {});
   }
 
   //migrated from old teacher zeeguu dashboard
