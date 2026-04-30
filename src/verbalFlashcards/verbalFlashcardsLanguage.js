@@ -55,7 +55,7 @@ const FEEDBACK_COPY = {
     finalIncorrectIntro: "Fangede det ikke. Det rigtige svar var",
   },
   en: {
-    successIntro: "Well done! The correct answer was",
+    successIntro: "Great job! The correct answer was",
     retryPrompt: "Almost there. Try again.",
     finalIncorrectIntro: "Didn't catch that. The correct answer was",
   },

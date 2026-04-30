@@ -443,9 +443,10 @@ export default function VerbalFlashcardsPage() {
           isResolvingCardRef.current = true;
           const feedbackMessage = feedbackAnalysis?.feedback;
           const spokenFeedback = feedbackMessage || (wasAccepted ? feedbackCopy.successIntro : feedbackCopy.finalIncorrectIntro);
+          const answerFeedbackIntro = wasAccepted ? feedbackCopy.successIntro : feedbackCopy.finalIncorrectIntro;
           const speakResolvedFeedback = feedbackAnalysis?.speakAnswerAfterFeedback
             ? () =>
-                speakFeedback(feedbackCopy.finalIncorrectIntro).then(() => {
+                speakFeedback(answerFeedbackIntro).then(() => {
                   if (!card.answer || !isPageActiveRef.current) {
                     return;
                   }
@@ -496,7 +497,7 @@ export default function VerbalFlashcardsPage() {
       attemptCountsRef.current[card.id] = nextAttemptCount;
 
       if (isCorrect) {
-        resolveCardAttempt(card, userAnswer, true, { feedback: feedbackMessage });
+        resolveCardAttempt(card, userAnswer, true, analysis);
         return;
       }
 
@@ -505,23 +506,10 @@ export default function VerbalFlashcardsPage() {
           if (!canContinueFlow()) {
             return;
           }
-          setIsCooldown(true);
-          isCooldownRef.current = true;
-          updateStatusWithDebounce(strings.verbalFlashcardsGetReadyToTryAgain, "cooldown", 0);
-          interCardDelayTimeoutRef.current = setTimeout(() => {
-            interCardDelayTimeoutRef.current = null;
-            if (!canContinueFlow()) {
-              setIsCooldown(false);
-              isCooldownRef.current = false;
-              return;
-            }
-            setIsCooldown(false);
-            isCooldownRef.current = false;
-            updateStatusWithDebounce(strings.verbalFlashcardsRetryingSameCard, "processing", 0);
-            if (getCurrentCard()?.id === card.id) {
-              beginCardFlowRef.current();
-            }
-          }, BETWEEN_CARDS_DELAY_MS);
+          updateStatusWithDebounce(strings.verbalFlashcardsRetryingSameCard, "processing", 0);
+          if (getCurrentCard()?.id === card.id) {
+            beginCardFlowRef.current();
+          }
         });
         return;
       }
@@ -533,8 +521,16 @@ export default function VerbalFlashcardsPage() {
 
   const feedbackForAttempt = useCallback(
     (card, analysis) => {
-      if (!card || !analysis || analysis.isAccepted) {
+      if (!card || !analysis) {
         return analysis;
+      }
+
+      if (analysis.isAccepted) {
+        return {
+          ...analysis,
+          feedback: `${feedbackCopy.successIntro} ${card.answer}`,
+          speakAnswerAfterFeedback: true,
+        };
       }
 
       const nextAttemptCount = (attemptCountsRef.current[card.id] || 0) + 1;
