@@ -1,17 +1,17 @@
-import * as s from "./TranslationPopup.sc";
+import * as s from "./MoreTranslationsPopup.sc";
 import Modal from "../../../components/modal_shared/Modal";
 import Main from "../../../components/modal_shared/Main.sc";
 import Footer from "../../../components/modal_shared/Footer.sc";
 import ButtonContainer from "../../../components/modal_shared/ButtonContainer.sc";
 import { StyledButton } from "../../../components/allButtons.sc";
 
-export default function TranslationPopup({ open, handleCancel, article }) {
+export default function MoreTranslationsPopup({ open, handleCancel, article }) {
     return (
         <Modal open={open} onClose={handleCancel} wrapperBackgroundColor="#fff1d4" >
-            <s.TranslationImage src="/static/images/translate.png" alt="Translation illustration" />
+            <s.MoreTranslationImage src="/static/images/MoreTranslation.png" alt="See more translations illustration" />
             <Main>
                 <p style={{ textAlign: "center", fontWeight: "500" }}>
-                    Tap on any word to translate it. <br/> Add at least 3 words to start learning them.
+                    Press  <s.ArrowIcon src="/static/icons/ArrowDown.svg" alt="Arrow icon" />    to see more translation options, to unselect a word press <s.DeleteTranslationText>Delete translation.</s.DeleteTranslationText>
                 </p>
             </Main>
             <Footer>
