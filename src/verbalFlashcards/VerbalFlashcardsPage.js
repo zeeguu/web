@@ -12,7 +12,7 @@ import {
   MIN_VOICE_BEFORE_STOP_ELIGIBLE_MS,
   SILENCE_THRESHOLD_MS,
   feedbackCopyForLanguage,
-  promptInstructionText,
+  promptInstructionIntroText,
   supportedRecordingMimeType,
 } from "./verbalFlashcardsLanguage.js";
 
@@ -382,10 +382,15 @@ export default function VerbalFlashcardsPage() {
   const playCardTts = useCallback(
     (card = null) => {
       const cardToSpeak = card || getCurrentCard();
-      const promptText = cardToSpeak?.prompt || "";
-      const textToSpeak = promptInstructionText(promptText, translationLanguageId, learnedLanguageId);
+      const answerText = cardToSpeak?.answer || "";
+      const introText = promptInstructionIntroText(translationLanguageId, learnedLanguageId);
 
-      return speakText(textToSpeak, translationLanguageId);
+      return speakText(introText, translationLanguageId).then(() => {
+        if (!answerText || !isPageActiveRef.current) {
+          return;
+        }
+        return speakText(answerText, learnedLanguageId, strings.verbalFlashcardsPlayingAnswer);
+      });
     },
     [getCurrentCard, learnedLanguageId, speakText, translationLanguageId],
   );
@@ -397,20 +402,8 @@ export default function VerbalFlashcardsPage() {
     [speakText, translationLanguageId],
   );
 
-  const speakFeedbackWithAnswer = useCallback(
-    (introText, answerText) => {
-      return speakText(introText, translationLanguageId, strings.verbalFlashcardsPlayingFeedback).then(() => {
-        if (!answerText || !isPageActiveRef.current) {
-          return;
-        }
-        return speakText(answerText, learnedLanguageId, strings.verbalFlashcardsPlayingAnswer);
-      });
-    },
-    [learnedLanguageId, speakText, translationLanguageId],
-  );
-
   const resolveCardAttempt = useCallback(
-    (card, userAnswer, isCorrect) => {
+    (card, userAnswer, isCorrect, feedbackAnalysis) => {
       if (!card || !canContinueFlow()) return;
       const responseTime = recordingStartedAtRef.current ? Date.now() - recordingStartedAtRef.current : 0;
       const exerciseSessionId = exerciseSessionIdRef.current;
@@ -448,9 +441,19 @@ export default function VerbalFlashcardsPage() {
           delete attemptCountsRef.current[card.id];
 
           isResolvingCardRef.current = true;
-          const feedbackIntro = wasAccepted ? feedbackCopy.successIntro : feedbackCopy.finalIncorrectIntro;
+          const feedbackMessage = feedbackAnalysis?.feedback;
+          const spokenFeedback = feedbackMessage || (wasAccepted ? feedbackCopy.successIntro : feedbackCopy.finalIncorrectIntro);
+          const speakResolvedFeedback = feedbackAnalysis?.speakAnswerAfterFeedback
+            ? () =>
+                speakFeedback(feedbackCopy.finalIncorrectIntro).then(() => {
+                  if (!card.answer || !isPageActiveRef.current) {
+                    return;
+                  }
+                  return speakText(card.answer, learnedLanguageId, strings.verbalFlashcardsPlayingAnswer);
+                })
+            : () => speakFeedback(spokenFeedback);
 
-          speakFeedbackWithAnswer(feedbackIntro, card.answer).finally(() => {
+          speakResolvedFeedback().finally(() => {
             if (!canContinueFlow()) {
               isResolvingCardRef.current = false;
               return;
@@ -473,8 +476,10 @@ export default function VerbalFlashcardsPage() {
       correctBookmarks,
       incorrectBookmarks,
       feedbackCopy,
+      learnedLanguageId,
       removeResolvedCard,
-      speakFeedbackWithAnswer,
+      speakFeedback,
+      speakText,
       totalPracticedBookmarksInSession,
       canContinueFlow,
       updateStatusWithDebounce,
@@ -482,19 +487,21 @@ export default function VerbalFlashcardsPage() {
   );
 
   const handleAttemptOutcome = useCallback(
-    (card, userAnswer, isCorrect) => {
+    (card, userAnswer, analysis) => {
       if (!card || !canContinueFlow()) return;
 
+      const isCorrect = Boolean(analysis?.isAccepted);
+      const feedbackMessage = analysis?.feedback || (isCorrect ? feedbackCopy.successIntro : feedbackCopy.retryPrompt);
       const nextAttemptCount = (attemptCountsRef.current[card.id] || 0) + 1;
       attemptCountsRef.current[card.id] = nextAttemptCount;
 
       if (isCorrect) {
-        resolveCardAttempt(card, userAnswer, true);
+        resolveCardAttempt(card, userAnswer, true, { feedback: feedbackMessage });
         return;
       }
 
       if (nextAttemptCount === 1) {
-        speakFeedback(feedbackCopy.retryPrompt).finally(() => {
+        speakFeedback(feedbackMessage).finally(() => {
           if (!canContinueFlow()) {
             return;
           }
@@ -519,9 +526,29 @@ export default function VerbalFlashcardsPage() {
         return;
       }
 
-      resolveCardAttempt(card, userAnswer, false);
+      resolveCardAttempt(card, userAnswer, false, analysis);
     },
     [feedbackCopy, getCurrentCard, resolveCardAttempt, speakFeedback, canContinueFlow],
+  );
+
+  const feedbackForAttempt = useCallback(
+    (card, analysis) => {
+      if (!card || !analysis || analysis.isAccepted) {
+        return analysis;
+      }
+
+      const nextAttemptCount = (attemptCountsRef.current[card.id] || 0) + 1;
+      if (nextAttemptCount < 2) {
+        return analysis;
+      }
+
+      return {
+        ...analysis,
+        feedback: `${feedbackCopy.finalIncorrectIntro} ${card.answer}`,
+        speakAnswerAfterFeedback: true,
+      };
+    },
+    [feedbackCopy],
   );
 
   const stopRecording = useCallback(() => {
@@ -597,7 +624,7 @@ export default function VerbalFlashcardsPage() {
         }
 
         const transcription = result?.transcription || "";
-        const expectedText = currentCard.expectedText || currentCard.prompt;
+        const expectedText = currentCard.answer;
 
         api.checkPronunciation(
           transcription,
@@ -614,9 +641,10 @@ export default function VerbalFlashcardsPage() {
               cleanupAudioResources();
               return;
             } else {
-              displayResults(transcription, analysis);
+              const analysisWithAttemptFeedback = feedbackForAttempt(currentCard, analysis);
+              displayResults(transcription, analysisWithAttemptFeedback);
               cleanupAudioResources();
-              handleAttemptOutcome(currentCard, transcription, Boolean(analysis?.isAccepted));
+              handleAttemptOutcome(currentCard, transcription, analysisWithAttemptFeedback);
             }
           },
           () => {
@@ -635,6 +663,7 @@ export default function VerbalFlashcardsPage() {
     canContinueFlow,
     cleanupAudioResources,
     displayResults,
+    feedbackForAttempt,
     getCurrentCard,
     handleAttemptOutcome,
     updateStatusWithDebounce,
