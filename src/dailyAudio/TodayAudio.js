@@ -439,6 +439,19 @@ export default function TodayAudio({ setShowTabs }) {
       progressDetail = generationProgress.message || progressDetail;
     }
 
+    let subtitle;
+    let bigTitle;
+    if (suggestionType === "topic") {
+      subtitle = "Generating a lesson on the topic";
+      bigTitle = suggestion;
+    } else if (suggestionType === "situation") {
+      subtitle = "Generating a lesson for the situation";
+      bigTitle = suggestion;
+    } else {
+      subtitle = "Generating a lesson with";
+      bigTitle = "Three of Your Study Words";
+    }
+
     return (
       <div
         style={{
@@ -446,53 +459,86 @@ export default function TodayAudio({ setShowTabs }) {
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
-          justifyContent: "center",
-          minHeight: "400px",
+          minHeight: "calc(100vh - 10rem)",
         }}
       >
-        <h2 style={{ color: zeeguuOrange, marginBottom: "10px" }}>
-          Generating your daily lesson...
-        </h2>
+        <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-start", marginTop: "8%", maxWidth: "320px", width: "100%" }}>
+          <p
+            style={{
+              fontSize: "14px",
+              color: "var(--text-secondary)",
+              margin: 0,
+              marginBottom: "4px",
+            }}
+          >
+            {subtitle}
+          </p>
+          <h1
+            style={{
+              color: zeeguuOrange,
+              margin: 0,
+              marginBottom: "20px",
+              fontSize: "2rem",
+            }}
+          >
+            {bigTitle}
+          </h1>
 
+          <div
+            style={{
+              width: "200px",
+              height: "8px",
+              backgroundColor: "var(--border-light)",
+              borderRadius: "4px",
+              overflow: "hidden",
+              marginBottom: "10px",
+              marginTop: "10px",
+            }}
+          >
+            <div
+              style={{
+                width: `${Math.min(progressPercent, 100)}%`,
+                height: "100%",
+                backgroundColor: orange500,
+                borderRadius: "4px",
+                transition: "width 1s ease-in-out",
+              }}
+            />
+          </div>
+          <p
+            style={{
+              fontSize: "14px",
+              color: "var(--text-secondary)",
+              marginTop: "8px",
+              marginBottom: "16px",
+              minHeight: "1.4em",
+              transition: "opacity 0.3s ease-in-out",
+            }}
+          >
+            {progressDetail}
+          </p>
+        </div>
+
+        <div style={{ flex: 1 }} />
 
         <div
           style={{
-            width: "200px",
-            height: "8px",
-            backgroundColor: "var(--border-light)",
-            borderRadius: "4px",
-            overflow: "hidden",
-            marginBottom: "10px",
-            marginTop: "10px",
+            backgroundColor: "var(--bg-secondary)",
+            border: "1px solid var(--border-light)",
+            borderRadius: "12px",
+            padding: "16px 20px",
+            maxWidth: "320px",
+            width: "100%",
+            boxSizing: "border-box",
           }}
         >
-          <div
-            style={{
-              width: `${Math.min(progressPercent, 100)}%`,
-              height: "100%",
-              backgroundColor: orange500,
-              borderRadius: "4px",
-              transition: "width 1s ease-in-out",
-            }}
-          />
+          <p style={{ color: "var(--text-primary)", margin: 0, fontSize: "16px", textAlign: "center" }}>
+            This can take a while.<br />
+            Feel free to browse — you'll find it here when it's ready.
+          </p>
         </div>
-        <p
-          style={{
-            fontSize: "14px",
-            color: "var(--text-secondary)",
-            marginTop: "8px",
-            marginBottom: "16px",
-            minHeight: "1.4em",
-            transition: "opacity 0.3s ease-in-out",
-          }}
-        >
-          {progressDetail}
-        </p>
 
-        <p style={{ color: "var(--text-primary)", marginBottom: "20px", fontSize: "16px", textAlign: "center" }}>
-          This can take a while.<br />
-          Feel free to browse — you'll find it here when it's ready.
-        </p>
+        <div style={{ flex: 1 }} />
 
       </div>
     );
