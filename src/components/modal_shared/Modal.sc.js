@@ -6,13 +6,14 @@ const ModalWrapper = styled(Box)`
   position: absolute;
   display: flex;
   flex-direction: column;
+  box-sizing: border-box;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
   width: 50%;
   max-width: 600px;
   max-height: 80%;
-  background-color: var(--card-bg);
+  background-color: ${({ $bg }) => $bg || "var(--card-bg)"};
   border: 0 !important;
   border-radius: 0.65em;
   padding: 32px 48px 32px 48px;
