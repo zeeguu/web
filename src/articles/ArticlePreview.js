@@ -180,14 +180,16 @@ export default function ArticlePreview({
     }
     if (should_open_with_modal) {
       return (
-        <span
+        <button
+          type="button"
           onClick={() => {
             handleArticleClick();
             handleOpenRedirectionModal();
           }}
+          style={{ background: "none", border: "none", padding: 0, cursor: "pointer" }}
         >
           {img}
-        </span>
+        </button>
       );
     }
     return (
