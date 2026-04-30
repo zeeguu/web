@@ -44,14 +44,15 @@ export default function CustomAudioPlayer({
     }
   }, [playbackRate]);
 
-  // Set up Media Session API for lock screen controls
+  // Set up Media Session API for lock screen controls.
+  // Only the currently-playing player owns navigator.mediaSession (it's a
+  // singleton), so we gate on isPlaying — otherwise 10 cards in a list each
+  // set metadata on mount and re-fetch the artwork. Position state lives in
+  // its own effect below so currentTime updates don't rebuild the metadata.
   useEffect(() => {
     if (!('mediaSession' in navigator)) return;
+    if (!isPlaying) return;
 
-    // Force clear any existing metadata first
-    navigator.mediaSession.metadata = null;
-    
-    // Set fresh metadata for lock screen
     navigator.mediaSession.metadata = new MediaMetadata({
       title: title,
       artist: artist,
@@ -62,11 +63,7 @@ export default function CustomAudioPlayer({
         { src: '/static/images/zeeguu128.png', sizes: '128x128', type: 'image/png' }
       ]
     });
-    
-    // Force set playback state
-    navigator.mediaSession.playbackState = 'none';
 
-    // Set up action handlers
     navigator.mediaSession.setActionHandler('play', () => {
       const audio = audioRef.current;
       if (audio && audio.paused) {
@@ -149,40 +146,35 @@ export default function CustomAudioPlayer({
       }
     });
 
-    // Update playback state
-    const updatePlaybackState = () => {
-      if (!('mediaSession' in navigator)) return;
-      
-      const audio = audioRef.current;
-      if (!audio) return;
-
-      navigator.mediaSession.playbackState = audio.paused ? 'paused' : 'playing';
-      
-      // Set position state for progress bar on lock screen
-      if ('setPositionState' in navigator.mediaSession) {
-        if (duration > 0) {
-          navigator.mediaSession.setPositionState({
-            duration: duration,
-            playbackRate: playbackRate,
-            position: currentTime
-          });
-        }
-      }
-    };
-
-    updatePlaybackState();
+    navigator.mediaSession.playbackState = 'playing';
 
     return () => {
-      // Clean up handlers when component unmounts
       if ('mediaSession' in navigator) {
         navigator.mediaSession.setActionHandler('play', null);
         navigator.mediaSession.setActionHandler('pause', null);
+        navigator.mediaSession.setActionHandler('previoustrack', null);
+        navigator.mediaSession.setActionHandler('nexttrack', null);
         navigator.mediaSession.setActionHandler('seekbackward', null);
         navigator.mediaSession.setActionHandler('seekforward', null);
         navigator.mediaSession.setActionHandler('seekto', null);
+        navigator.mediaSession.playbackState = 'paused';
       }
     };
-  }, [title, artist, language, duration, currentTime, playbackRate, isPlaying]);
+  }, [title, artist, language, isPlaying]);
+
+  // Position state for the lock-screen progress bar. Separate from the
+  // metadata effect so currentTime updates don't trigger an artwork refetch.
+  useEffect(() => {
+    if (!('mediaSession' in navigator)) return;
+    if (!isPlaying) return;
+    if (!('setPositionState' in navigator.mediaSession)) return;
+    if (duration <= 0) return;
+    navigator.mediaSession.setPositionState({
+      duration: duration,
+      playbackRate: playbackRate,
+      position: currentTime,
+    });
+  }, [isPlaying, duration, currentTime, playbackRate]);
 
   // Initialize Audio Context and handle visibility changes
   useEffect(() => {
