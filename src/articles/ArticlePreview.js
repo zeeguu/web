@@ -159,9 +159,53 @@ export default function ArticlePreview({
     }
   }
 
+  const is_saved = article.has_personal_copy || article.has_uploader || isArticleSaved === true;
+  const externalUrl = article.parent_url || article.url;
+  const should_open_in_zeeguu = Feature.always_open_externally()
+    ? is_saved
+    : article.video ||
+      (!Feature.extension_experiment1() && !hasExtension) ||
+      is_saved ||
+      article.parent_article_id; // Simplified articles (with parent_article_id) always open in Zeeguu reader
+  const should_open_with_modal = doNotShowRedirectionModal_UserPreference === false;
+
+  function imageLink() {
+    const img = <img alt="" src={article.img_url} style={{ cursor: "pointer" }} />;
+    if (should_open_in_zeeguu) {
+      return (
+        <Link to={`/read/article?id=${article.id}`} onClick={handleArticleClick}>
+          {img}
+        </Link>
+      );
+    }
+    if (should_open_with_modal) {
+      return (
+        <button
+          type="button"
+          onClick={() => {
+            handleArticleClick();
+            handleOpenRedirectionModal();
+          }}
+          style={{ background: "none", border: "none", padding: 0, cursor: "pointer" }}
+        >
+          {img}
+        </button>
+      );
+    }
+    return (
+      <a
+        target={isMobile ? "_self" : "_blank"}
+        rel="noreferrer"
+        href={externalUrl}
+        onClick={handleArticleClick}
+      >
+        {img}
+      </a>
+    );
+  }
+
   function titleLink(article) {
     let linkToRedirect = `/read/article?id=${article.id}`;
-    let is_saved = article.has_personal_copy || article.has_uploader || isArticleSaved === true;
 
     let open_in_zeeguu = (
       <ActionButton as={Link} to={linkToRedirect} onClick={handleArticleClick}>
@@ -202,21 +246,12 @@ export default function ArticlePreview({
         as="a"
         target={isMobile ? "_self" : "_blank"}
         rel="noreferrer"
-        href={article.parent_url || article.url}
+        href={externalUrl}
         onClick={handleArticleClick}
       >
         Open Externally <OpenInNewRoundedIcon style={{ fontSize: 16, marginLeft: 4 }} />
       </ActionButton>
     );
-
-    let should_open_in_zeeguu = Feature.always_open_externally()
-      ? is_saved
-      : article.video ||
-        (!Feature.extension_experiment1() && !hasExtension) ||
-        is_saved ||
-        article.parent_article_id; // Simplified articles (with parent_article_id) always open in Zeeguu reader
-
-    let should_open_with_modal = doNotShowRedirectionModal_UserPreference === false;
 
     if (should_open_in_zeeguu) return open_in_zeeguu;
     else if (should_open_with_modal) return open_externally_with_modal;
@@ -334,11 +369,7 @@ export default function ArticlePreview({
       </div>
 
       <s.ArticleContent>
-        {article.img_url && (
-          <Link to={`/read/article?id=${article.id}`} onClick={handleArticleClick}>
-            <img alt="" src={article.img_url} style={{ cursor: "pointer" }} />
-          </Link>
-        )}
+        {article.img_url && imageLink()}
         <s.Summary>
           {interactiveSummary ? (
             <TranslatableText interactiveText={interactiveSummary} translating={true} pronouncing={true} />
