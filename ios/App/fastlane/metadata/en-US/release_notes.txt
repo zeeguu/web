@@ -1,12 +1,5 @@
-- Audio Lesson generation now shows rotating hints so the bar no longer looks stuck while the AI drafts the script — and no longer briefly resets to zero in the final seconds before the lesson appears.
-- Past Lessons now shows the topic for Topic and Situation lessons.
-- Switching languages refreshes article and lesson lists instantly instead of after a delay.
-- Audio Lessons now support imagined dialogues with named figures — try "interview with Einstein" or "chat with Cleopatra".
-- Tap Simplify on an article and it's automatically saved to your library.
-- "Open externally" now opens the article's original page (not the simplified version). After saving, the button reads "Open".
-- Smarter Simplify prompt: shows the article's CEFR level, and skips the prompt when the article is already at or below your level.
-- Fixed share-to-Zeeguu from Safari on older iPhones.
-- Difficulty rating cards now fit comfortably on narrow phones; the suggestion input grows when you type multiple lines.
-- Many fewer stuck loading spinners — screens recover gracefully when the network glitches.
-- Multiple Choice exercises now show the translation (not the same word) when you tap Show Solution.
-- Various polish across leaderboards, badges, and the profile.
+- Daily Audio: the generation screen now shows the topic or situation as the title.
+- Past Lessons: replaying a lesson now counts toward your streak.
+- Article preview: tapping the image opens the article, matching the Open button.
+- Exercises: the "I know this word" link now appears on multiple-choice exercises (it was only showing on some types).
+- Fewer hiccups during long lessons: stopped repeatedly refetching now-playing artwork.
