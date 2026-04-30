@@ -2,7 +2,7 @@ import styled, { css } from "styled-components";
 import { zeeguuOrange } from "../../components/colors";
 
 const PageBackground = styled.div`
-  position: ${({ isBackgroundFixed }) => (isBackgroundFixed ? "fixed" : "static")};
+  position: ${({ $isBackgroundFixed }) => ($isBackgroundFixed ? "fixed" : "static")};
   top: 0;
   left: 0;
   right: 0;

@@ -7,7 +7,7 @@ export default function PreferencesPage({
   isBackgroundFixed,
 }) {
   return (
-    <s.PageBackground layoutVariant={layoutVariant} isBackgroundFixed={isBackgroundFixed}>
+    <s.PageBackground layoutVariant={layoutVariant} $isBackgroundFixed={isBackgroundFixed}>
       <s.PageContainer layoutVariant={layoutVariant} pageWidth={pageWidth}>
         <s.ContentWrapper>{children}</s.ContentWrapper>
       </s.PageContainer>

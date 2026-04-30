@@ -30,7 +30,7 @@ export default function LeaveClassroomModal({
         </Heading>
       </Header>
       <Footer>
-        <ButtonContainer buttonCountNum={1}>
+        <ButtonContainer $buttonCountNum={1}>
           <Button className="small" onClick={handleLeaveClassroom}>
             Leave the classroom
           </Button>
