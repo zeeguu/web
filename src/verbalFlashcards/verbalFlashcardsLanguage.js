@@ -52,14 +52,14 @@ const PROMPT_COPY = {
 
 const FEEDBACK_COPY = {
   da: {
-    successIntro: "Godt klaret! Det rigtige svar var",
+    successIntro: "Godt klaret. Det rigtige svar var:",
     retryPrompt: "Du er meget tæt på. Prøv igen.",
-    finalIncorrectIntro: "Fangede det ikke. Det rigtige svar var",
+    finalIncorrectIntro: "Fangede det ikke. Det rigtige svar var:",
   },
   en: {
-    successIntro: "Great job! The correct answer was",
+    successIntro: "Great job. The correct answer was:",
     retryPrompt: "Almost there. Try again.",
-    finalIncorrectIntro: "Didn't catch that. The correct answer was",
+    finalIncorrectIntro: "Didn't catch that. The correct answer was:",
   },
 };
 
