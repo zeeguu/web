@@ -7,10 +7,12 @@ import { UserContext } from "../contexts/UserContext";
 import strings from "../i18n/definitions";
 import * as s from "./verbalFlashcards_Styled/VerbalFlashcards.sc.js";
 import {
+  AFTER_TTS_BEFORE_RECORDING_MS,
   BETWEEN_CARDS_DELAY_MS,
   DEFAULT_LANGUAGE_ID,
   MIN_VOICE_BEFORE_STOP_ELIGIBLE_MS,
   SILENCE_THRESHOLD_MS,
+  TTS_PLAYBACK_PREROLL_MS,
   feedbackCopyForLanguage,
   promptInstructionIntroText,
   supportedRecordingMimeType,
@@ -336,9 +338,17 @@ export default function VerbalFlashcardsPage() {
 
           return new Promise((resolve) => {
             const audio = new Audio(audioUrl);
+            let didResolve = false;
             ttsAudioRef.current = audio;
             isPlayingTtsRef.current = true;
-            updateStatusWithDebounce(playbackStatusMessage, "recording", 0);
+
+            const resolvePlayback = () => {
+              if (didResolve) {
+                return;
+              }
+              didResolve = true;
+              resolve();
+            };
 
             audio.onended = () => {
               if (ttsAudioRef.current === audio) {
@@ -346,7 +356,7 @@ export default function VerbalFlashcardsPage() {
               }
               isPlayingTtsRef.current = false;
               updateStatusWithDebounce(strings.verbalFlashcardsSpokenPromptFinished, "idle", 0);
-              resolve();
+              resolvePlayback();
             };
 
             audio.onerror = (event) => {
@@ -356,18 +366,39 @@ export default function VerbalFlashcardsPage() {
               }
               isPlayingTtsRef.current = false;
               updateStatusWithDebounce(strings.verbalFlashcardsTtsAudioPlaybackFailed, "error", 0);
-              resolve();
+              resolvePlayback();
             };
 
-            audio.play().catch((err) => {
-              console.error("TTS playback start failed:", err);
-              if (ttsAudioRef.current === audio) {
-                ttsAudioRef.current = null;
+            const playWhenReady = () => {
+              if (playbackId !== ttsRequestIdRef.current || !isPageActiveRef.current) {
+                resolvePlayback();
+                return;
               }
-              isPlayingTtsRef.current = false;
-              updateStatusWithDebounce(strings.verbalFlashcardsTtsAudioPlaybackFailed, "error", 0);
-              resolve();
-            });
+              window.setTimeout(() => {
+                if (playbackId !== ttsRequestIdRef.current || !isPageActiveRef.current) {
+                  resolvePlayback();
+                  return;
+                }
+                updateStatusWithDebounce(playbackStatusMessage, "recording", 0);
+                audio.play().catch((err) => {
+                  console.error("TTS playback start failed:", err);
+                  if (ttsAudioRef.current === audio) {
+                    ttsAudioRef.current = null;
+                  }
+                  isPlayingTtsRef.current = false;
+                  updateStatusWithDebounce(strings.verbalFlashcardsTtsAudioPlaybackFailed, "error", 0);
+                  resolvePlayback();
+                });
+              }, TTS_PLAYBACK_PREROLL_MS);
+            };
+
+            audio.preload = "auto";
+            if (audio.readyState >= 3) {
+              playWhenReady();
+            } else {
+              audio.oncanplay = playWhenReady;
+              audio.load();
+            }
           });
         })
         .catch((err) => {
@@ -854,6 +885,11 @@ export default function VerbalFlashcardsPage() {
       setIsCooldown(false);
       isCooldownRef.current = false;
       updateStatusWithDebounce(strings.verbalFlashcardsStartingMicrophone, "processing", 0);
+
+      await new Promise((resolve) => window.setTimeout(resolve, AFTER_TTS_BEFORE_RECORDING_MS));
+      if (flowRunId !== flowRunIdRef.current) {
+        return;
+      }
 
       await openMicAndStartRecording();
     });

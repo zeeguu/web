@@ -2,6 +2,8 @@ export const DEFAULT_LANGUAGE_ID = "en";
 export const SILENCE_THRESHOLD_MS = 1500;
 export const MIN_VOICE_BEFORE_STOP_ELIGIBLE_MS = 120;
 export const BETWEEN_CARDS_DELAY_MS = 5000;
+export const TTS_PLAYBACK_PREROLL_MS = 120;
+export const AFTER_TTS_BEFORE_RECORDING_MS = 250;
 
 const SUPPORTED_RECORDING_MIME_TYPES = ["audio/webm;codecs=opus", "audio/webm", "audio/mp4"];
 
