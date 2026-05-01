@@ -34,3 +34,10 @@ export const SubtleTextButton = styled.button`
   cursor: pointer;
   text-decoration: underline;
 `;
+
+export const LessonActions = styled.div`
+  margin-top: 40px;
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+`;

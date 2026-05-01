@@ -5,7 +5,7 @@ import { FEEDBACK_OPTIONS, FEEDBACK_CODES_NAME } from "../components/FeedbackCon
 import Word from "../words/Word";
 import { successGreen } from "../components/colors";
 import { AUDIO_STATUS } from "./AudioLessonConstants";
-import { LessonWrapper, LessonTitle, LessonMetadata, CompletionCheck, SubtleTextButton } from "./LessonView.sc";
+import { LessonWrapper, LessonTitle, LessonMetadata, CompletionCheck, SubtleTextButton, LessonActions } from "./LessonView.sc";
 import { wordsAsTile } from "./audioUtils";
 import { languageNames } from "../utils/languageDetection";
 import { shareLessonLink } from "./shareLessonLink";
@@ -118,7 +118,7 @@ export default function LessonPlaybackView({
           </div>
         )}
 
-        <div style={{ marginTop: "40px", textAlign: "center", display: "flex", justifyContent: "center", gap: "16px" }}>
+        <LessonActions>
           {lessonData.lesson_id && (
             <SubtleTextButton
               onClick={() => shareLessonLink(lessonData.lesson_id, lessonData.title)}
@@ -143,7 +143,7 @@ export default function LessonPlaybackView({
               Delete lesson
             </SubtleTextButton>
           )}
-        </div>
+        </LessonActions>
 
         <FeedbackModal
           prefixMsg={lessonData
