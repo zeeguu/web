@@ -4,7 +4,7 @@ import { APIContext } from "../contexts/APIContext";
 import { UserContext } from "../contexts/UserContext";
 import CustomAudioPlayer from "../components/CustomAudioPlayer";
 import LoadingAnimation from "../components/LoadingAnimation";
-import { LessonWrapper, LessonTitle, SuggestionSubtitle, LessonLanguageBadge } from "./LessonView.sc";
+import { LessonWrapper, LessonTitle, SuggestionSubtitle } from "./LessonView.sc";
 import { BannerContainer, BannerMessage, BannerButton } from "./SharedLessonView.sc";
 import { languageNames } from "../utils/languageDetection";
 import useListeningSession from "../hooks/useListeningSession";
@@ -84,12 +84,15 @@ export default function SharedLessonView() {
   return (
     <LessonWrapper>
       <LessonTitle>{titleText}</LessonTitle>
-      {lessonLangName && <LessonLanguageBadge>{lessonLangName}</LessonLanguageBadge>}
-      {lessonData.canonical_suggestion && (
-        <SuggestionSubtitle>
-          {lessonData.lesson_type === "situation" ? "Situation" : "Topic"}: <b>{lessonData.canonical_suggestion}</b>
-        </SuggestionSubtitle>
-      )}
+      <SuggestionSubtitle>
+        Language: <b>{lessonLangName}</b>
+        {lessonData.canonical_suggestion && (
+          <>
+            {" · "}
+            {lessonData.lesson_type === "situation" ? "Situation" : "Topic"}: <b>{lessonData.canonical_suggestion}</b>
+          </>
+        )}
+      </SuggestionSubtitle>
 
       <CustomAudioPlayer
         src={lessonData.audio_url}
