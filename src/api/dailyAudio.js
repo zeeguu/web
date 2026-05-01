@@ -90,32 +90,11 @@ Zeeguu_API.prototype.generateDailyLesson = function (callback, onError, suggesti
 };
 
 Zeeguu_API.prototype.getSharedAudioLesson = function (lessonId, callback, onError) {
-  this.apiLog(`GET shared_audio_lesson/${lessonId}`);
-
-  fetch(`${this.baseAPIurl}/shared_audio_lesson/${lessonId}`)
-    .then((response) => {
-      if (!response.ok) {
-        return response.json().then((data) => {
-          throw new Error(data.error || "Network response was not ok");
-        });
-      }
-      return response.json();
-    })
-    .then((data) => {
-      if (data.audio_url) {
-        const audioUrl = `${this.baseAPIurl}${data.audio_url}`;
-        callback({ ...data, audio_url: audioUrl });
-      } else {
-        throw new Error("No audio URL in response");
-      }
-    })
-    .catch((error) => {
-      console.error("Error getting shared audio lesson:", error);
-      Sentry.captureException(error, { tags: { endpoint: "shared_audio_lesson" } });
-      if (onError) {
-        onError(error);
-      }
-    });
+  this._getJSON(
+    `shared_audio_lesson/${lessonId}`,
+    (data) => callback({ ...data, audio_url: `${this.baseAPIurl}${data.audio_url}` }),
+    { onError },
+  );
 };
 
 Zeeguu_API.prototype.deleteTodaysLesson = function (callback, onError) {
