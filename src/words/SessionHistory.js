@@ -16,11 +16,11 @@ import { isTextInSentence } from "../utils/text/expressions";
 import { validateWordInContext } from "../utils/validation/wordContextValidation";
 
 const SessionCard = styled.div`
-  background: white;
+  background: var(--card-bg);
   border-radius: 8px;
   padding: 1em;
   margin: 0.5em 0;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 1px 3px var(--shadow-color);
 `;
 
 const SessionHeader = styled.div`
@@ -32,12 +32,12 @@ const SessionHeader = styled.div`
 
 const SessionTime = styled.span`
   font-weight: 600;
-  color: #333;
+  color: var(--text-primary);
 `;
 
 const SessionDuration = styled.span`
   font-size: 0.9em;
-  color: #666;
+  color: var(--text-secondary);
 `;
 
 const SessionType = styled.span`
@@ -75,9 +75,10 @@ const ArticleTitle = styled.div`
   display: flex;
   align-items: center;
   gap: 0.5em;
+  color: var(--text-primary);
 
   a {
-    color: #1976d2;
+    color: var(--link-color);
     text-decoration: none;
     &:hover {
       text-decoration: underline;
@@ -109,16 +110,16 @@ const WordList = styled.div`
   gap: 0.6em;
   margin-top: 0.75em;
   padding-top: 0.5em;
-  border-top: 1px solid #eee;
+  border-top: 1px solid var(--border-light);
 `;
 
 const WordChip = styled.span`
-  background: white;
+  background: var(--card-bg);
   padding: 0.5em 0.8em;
   border-radius: 6px;
   font-size: 1em;
-  border: 1px solid #ddd;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  border: 1px solid var(--border-color);
+  box-shadow: 0 1px 2px var(--shadow-color);
 
   .origin {
     font-weight: 600;
@@ -130,12 +131,12 @@ const WordChip = styled.span`
   }
 
   .separator {
-    color: #999;
+    color: var(--text-faint);
     margin: 0 0.4em;
   }
 
   .translation {
-    color: #333;
+    color: var(--text-primary);
     font-weight: 600;
 
     &.clickable:hover {
@@ -187,7 +188,7 @@ const WordChip = styled.span`
 
 const ExerciseStats = styled.div`
   font-size: 0.9em;
-  color: #666;
+  color: var(--text-secondary);
   margin-bottom: 0.5em;
 `;
 
@@ -217,7 +218,7 @@ const FocusBadge = styled.span`
 
 const InfoNote = styled.div`
   font-size: 0.85em;
-  color: #666;
+  color: var(--text-secondary);
   font-style: italic;
   text-align: center;
   padding: 0.5em;
@@ -229,24 +230,24 @@ const DateHeader = styled.div`
   font-weight: 600;
   margin-top: 1.5em;
   margin-bottom: 0.5em;
-  color: #555;
-  border-bottom: 1px solid #eee;
+  color: var(--text-secondary);
+  border-bottom: 1px solid var(--border-light);
   padding-bottom: 0.3em;
 `;
 
 const SummaryCard = styled.div`
-  background: white;
+  background: var(--card-bg);
   border-radius: 8px;
   padding: 1.2em;
   margin-bottom: 1.5em;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 1px 3px var(--shadow-color);
 `;
 
 const SummaryTitle = styled.div`
   font-weight: 600;
   font-size: 1.1em;
   margin-bottom: 1em;
-  color: #333;
+  color: var(--text-primary);
 `;
 
 const StatsRow = styled.div`
@@ -264,20 +265,20 @@ const StatItem = styled.div`
   .label {
     font-size: 0.85em;
     font-weight: 600;
-    color: ${(props) => props.color || "#333"};
+    color: ${(props) => props.color || "var(--text-primary)"};
     margin-bottom: 0.2em;
   }
 
   .time {
     font-size: 1.4em;
     font-weight: 700;
-    color: ${(props) => props.color || "#333"};
+    color: ${(props) => props.color || "var(--text-primary)"};
   }
 
   .words {
     font-size: 0.9em;
     font-weight: 600;
-    color: ${(props) => props.color || "#333"};
+    color: ${(props) => props.color || "var(--text-primary)"};
     opacity: 0.7;
     margin-top: 0.1em;
   }
@@ -295,13 +296,13 @@ const BarRow = styled.div`
   .label {
     width: 80px;
     font-size: 0.85em;
-    color: #555;
+    color: var(--text-secondary);
   }
 
   .bar-wrapper {
     flex: 1;
     height: 20px;
-    background: #f0f0f0;
+    background: var(--bg-tertiary);
     border-radius: 4px;
     overflow: hidden;
   }
@@ -332,7 +333,7 @@ const BarRow = styled.div`
     width: 70px;
     text-align: right;
     font-size: 0.85em;
-    color: #666;
+    color: var(--text-secondary);
     margin-left: 0.5em;
   }
 `;
