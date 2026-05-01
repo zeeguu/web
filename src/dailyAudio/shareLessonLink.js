@@ -11,9 +11,7 @@ export async function shareLessonLink(lessonId, title) {
       await navigator.share({ title: shareTitle, url });
       return;
     } catch (e) {
-      // User dismissed the system share sheet — not an error worth surfacing.
       if (e?.name === "AbortError") return;
-      // Other failures (permission, unsupported content) → fall through to copy.
     }
   }
 
@@ -23,7 +21,7 @@ export async function shareLessonLink(lessonId, title) {
       alert("Lesson link copied to clipboard.");
       return;
     } catch (e) {
-      // Fall through to prompt.
+      // intentionally swallowed; fall through
     }
   }
 

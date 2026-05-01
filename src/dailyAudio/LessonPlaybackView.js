@@ -5,7 +5,7 @@ import { FEEDBACK_OPTIONS, FEEDBACK_CODES_NAME } from "../components/FeedbackCon
 import Word from "../words/Word";
 import { successGreen } from "../components/colors";
 import { AUDIO_STATUS } from "./AudioLessonConstants";
-import { LessonWrapper, LessonTitle, SuggestionSubtitle, CompletionCheck } from "./LessonView.sc";
+import { LessonWrapper, LessonTitle, SuggestionSubtitle, CompletionCheck, SubtleTextButton } from "./LessonView.sc";
 import { wordsAsTile } from "./audioUtils";
 import { languageNames } from "../utils/languageDetection";
 import { shareLessonLink } from "./shareLessonLink";
@@ -120,37 +120,15 @@ export default function LessonPlaybackView({
 
         <div style={{ marginTop: "40px", textAlign: "center", display: "flex", justifyContent: "center", gap: "16px" }}>
           {lessonData.lesson_id && (
-            <button
+            <SubtleTextButton
               onClick={() => shareLessonLink(lessonData.lesson_id, lessonData.title || wordsAsTile(lessonData.words))}
-              style={{
-                backgroundColor: "transparent",
-                color: "var(--text-faint)",
-                border: "none",
-                borderRadius: "0",
-                padding: "4px 8px",
-                fontSize: "12px",
-                cursor: "pointer",
-                textDecoration: "underline",
-              }}
             >
               Share
-            </button>
+            </SubtleTextButton>
           )}
-          <button
-            onClick={() => setOpenFeedback(true)}
-            style={{
-              backgroundColor: "transparent",
-              color: "var(--text-faint)",
-              border: "none",
-              borderRadius: "0",
-              padding: "4px 8px",
-              fontSize: "12px",
-              cursor: "pointer",
-              textDecoration: "underline",
-            }}
-          >
+          <SubtleTextButton onClick={() => setOpenFeedback(true)}>
             Feedback
-          </button>
+          </SubtleTextButton>
           {userDetails?.name === "Mircea" && (
             <button
               onClick={() => {

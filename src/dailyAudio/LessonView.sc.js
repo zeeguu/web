@@ -23,3 +23,14 @@ export const CompletionCheck = styled.span`
   color: ${successGreen};
   font-size: 20px;
 `;
+
+export const SubtleTextButton = styled.button`
+  background-color: transparent;
+  color: var(--text-faint);
+  border: none;
+  border-radius: 0;
+  padding: 4px 8px;
+  font-size: 12px;
+  cursor: pointer;
+  text-decoration: underline;
+`;

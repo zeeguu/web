@@ -5,9 +5,9 @@ import { UserContext } from "../contexts/UserContext";
 import CustomAudioPlayer from "../components/CustomAudioPlayer";
 import LoadingAnimation from "../components/LoadingAnimation";
 import { LessonWrapper, LessonTitle, SuggestionSubtitle } from "./LessonView.sc";
+import { BannerContainer, BannerMessage, BannerButton } from "./SharedLessonView.sc";
 import { wordsAsTile } from "./audioUtils";
 import { languageNames } from "../utils/languageDetection";
-import { zeeguuOrange } from "../components/colors";
 
 export default function SharedLessonView() {
   const api = useContext(APIContext);
@@ -44,15 +44,25 @@ export default function SharedLessonView() {
   }
 
   const lessonLang = lessonData.language_code;
-  const userLearns = userDetails?.learned_language;
-  const isLearnedByUser = userLearns && lessonLang && userLearns === lessonLang;
   const lessonLangName = languageNames[lessonLang] || lessonLang;
+  const isLearnedByUser = userDetails?.learned_language && lessonLang && userDetails.learned_language === lessonLang;
+  const titleText = lessonData.title || wordsAsTile(lessonData.words) || "Shared Audio Lesson";
+
+  const banner = isLearnedByUser
+    ? {
+        message: `Like this lesson? Generate your own ${lessonLangName} audio lesson on a topic you choose.`,
+        actionLabel: "Go to Daily Audio",
+        onAction: () => history.push("/daily-audio"),
+      }
+    : {
+        message: `This lesson is in ${lessonLangName}. Add ${lessonLangName} to your learning languages to start your own.`,
+        actionLabel: "Manage languages",
+        onAction: () => history.push("/account_settings/language_settings"),
+      };
 
   return (
     <LessonWrapper>
-      <LessonTitle>
-        {lessonData.title || wordsAsTile(lessonData.words)}
-      </LessonTitle>
+      <LessonTitle>{titleText}</LessonTitle>
       {lessonData.canonical_suggestion && (
         <SuggestionSubtitle>
           {lessonData.lesson_type === "situation" ? "Situation" : "Topic"}: <b>{lessonData.canonical_suggestion}</b>
@@ -62,7 +72,7 @@ export default function SharedLessonView() {
       <CustomAudioPlayer
         src={lessonData.audio_url}
         language={lessonLang}
-        title={lessonData.title || wordsAsTile(lessonData.words) || "Shared Audio Lesson"}
+        title={titleText}
         artist={`${lessonLangName} Audio Lesson`}
         style={{
           width: "100%",
@@ -72,53 +82,16 @@ export default function SharedLessonView() {
         }}
       />
 
-      {isLearnedByUser ? (
-        <ShareBanner
-          message={`Like this lesson? Generate your own ${lessonLangName} audio lesson on a topic you choose.`}
-          actionLabel="Go to Daily Audio"
-          onAction={() => history.push("/daily-audio")}
-        />
-      ) : (
-        <ShareBanner
-          message={`This lesson is in ${lessonLangName}. Add ${lessonLangName} to your learning languages to start your own.`}
-          actionLabel="Manage languages"
-          onAction={() => history.push("/account_settings/language_settings")}
-        />
-      )}
+      <ShareBanner {...banner} />
     </LessonWrapper>
   );
 }
 
 function ShareBanner({ message, actionLabel, onAction }) {
   return (
-    <div
-      style={{
-        marginTop: "30px",
-        padding: "16px",
-        backgroundColor: "var(--bg-secondary)",
-        border: `1px solid ${zeeguuOrange}`,
-        borderRadius: "6px",
-        display: "flex",
-        flexDirection: "column",
-        gap: "12px",
-        alignItems: "flex-start",
-      }}
-    >
-      <div style={{ color: "var(--text-primary)", fontSize: "14px" }}>{message}</div>
-      <button
-        onClick={onAction}
-        style={{
-          backgroundColor: zeeguuOrange,
-          color: "white",
-          border: "none",
-          borderRadius: "4px",
-          padding: "8px 16px",
-          fontSize: "14px",
-          cursor: "pointer",
-        }}
-      >
-        {actionLabel}
-      </button>
-    </div>
+    <BannerContainer>
+      <BannerMessage>{message}</BannerMessage>
+      <BannerButton onClick={onAction}>{actionLabel}</BannerButton>
+    </BannerContainer>
   );
 }
