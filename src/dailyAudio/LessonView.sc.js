@@ -19,6 +19,17 @@ export const SuggestionSubtitle = styled.p`
   margin-bottom: 10px;
 `;
 
+export const LessonLanguageBadge = styled.span`
+  display: inline-block;
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  background-color: var(--bg-secondary);
+  padding: 2px 10px;
+  border-radius: 12px;
+  margin-bottom: 10px;
+`;
+
 export const CompletionCheck = styled.span`
   color: ${successGreen};
   font-size: 20px;
