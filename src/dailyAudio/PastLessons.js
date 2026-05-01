@@ -5,7 +5,7 @@ import { UserContext } from "../contexts/UserContext";
 import LoadingAnimation from "../components/LoadingAnimation";
 import CustomAudioPlayer from "../components/CustomAudioPlayer";
 import useListeningSession from "../hooks/useListeningSession";
-import { SuggestionSubtitle } from "./LessonView.sc";
+import { LessonMetadata } from "./LessonView.sc";
 import { wordsAsTile } from "./audioUtils";
 
 export default function PastLessons() {
@@ -191,9 +191,9 @@ function PastLessonItem({ lesson, api, userDetails, onLessonCompleted }) {
             : {lesson.title || wordsAsTile(lesson.words)}
           </h3>
           {lesson.canonical_suggestion && (
-            <SuggestionSubtitle>
+            <LessonMetadata>
               {lesson.lesson_type === "situation" ? "Situation" : "Topic"}: <b>{lesson.canonical_suggestion}</b>
-            </SuggestionSubtitle>
+            </LessonMetadata>
           )}
           {lesson.is_completed && lesson.completed_at && (
             <span

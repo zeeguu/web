@@ -5,7 +5,7 @@ import { FEEDBACK_OPTIONS, FEEDBACK_CODES_NAME } from "../components/FeedbackCon
 import Word from "../words/Word";
 import { successGreen } from "../components/colors";
 import { AUDIO_STATUS } from "./AudioLessonConstants";
-import { LessonWrapper, LessonTitle, SuggestionSubtitle, CompletionCheck, SubtleTextButton } from "./LessonView.sc";
+import { LessonWrapper, LessonTitle, LessonMetadata, CompletionCheck, SubtleTextButton } from "./LessonView.sc";
 import { wordsAsTile } from "./audioUtils";
 import { languageNames } from "../utils/languageDetection";
 import { shareLessonLink } from "./shareLessonLink";
@@ -31,7 +31,7 @@ export default function LessonPlaybackView({
         {lessonData.title}
       </LessonTitle>
       {lessonData.canonical_suggestion && (
-        <SuggestionSubtitle>{lessonData.lesson_type === "situation" ? "Situation" : "Topic"}: <b>{lessonData.canonical_suggestion}</b></SuggestionSubtitle>
+        <LessonMetadata>{lessonData.lesson_type === "situation" ? "Situation" : "Topic"}: <b>{lessonData.canonical_suggestion}</b></LessonMetadata>
       )}
 
       {error && <div style={{ color: "red", marginBottom: "20px" }}>{error}</div>}
@@ -130,7 +130,7 @@ export default function LessonPlaybackView({
             Feedback
           </SubtleTextButton>
           {userDetails?.name === "Mircea" && (
-            <button
+            <SubtleTextButton
               onClick={() => {
                 if (window.confirm("Delete today's lesson?")) {
                   api.deleteTodaysLesson(
@@ -139,18 +139,9 @@ export default function LessonPlaybackView({
                   );
                 }
               }}
-              style={{
-                backgroundColor: "transparent",
-                color: "var(--text-faint)",
-                border: "none",
-                padding: "4px 8px",
-                fontSize: "12px",
-                cursor: "pointer",
-                textDecoration: "underline",
-              }}
             >
               Delete lesson
-            </button>
+            </SubtleTextButton>
           )}
         </div>
 

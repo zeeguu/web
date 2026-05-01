@@ -13,7 +13,7 @@ export const LessonTitle = styled.h2`
   gap: 8px;
 `;
 
-export const SuggestionSubtitle = styled.p`
+export const LessonMetadata = styled.p`
   font-size: 0.85rem;
   color: var(--text-secondary);
   margin-bottom: 10px;
