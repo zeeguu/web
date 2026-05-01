@@ -5,8 +5,9 @@ import { UserContext } from "../contexts/UserContext";
 import LoadingAnimation from "../components/LoadingAnimation";
 import CustomAudioPlayer from "../components/CustomAudioPlayer";
 import useListeningSession from "../hooks/useListeningSession";
-import { LessonMetadata } from "./LessonView.sc";
+import { LessonMetadata, SubtleTextButton } from "./LessonView.sc";
 import { wordsAsTile } from "./audioUtils";
+import { shareLessonLink } from "./shareLessonLink";
 
 export default function PastLessons() {
   const api = useContext(APIContext);
@@ -207,6 +208,11 @@ function PastLessonItem({ lesson, api, userDetails, onLessonCompleted }) {
             </span>
           )}
         </div>
+        {lesson.lesson_id && (
+          <SubtleTextButton onClick={() => shareLessonLink(lesson.lesson_id, lesson.title)}>
+            Share
+          </SubtleTextButton>
+        )}
       </div>
 
       {lesson.audio_url && (
