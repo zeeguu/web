@@ -8,6 +8,7 @@ import { LessonWrapper, LessonTitle, SuggestionSubtitle } from "./LessonView.sc"
 import { BannerContainer, BannerMessage, BannerButton } from "./SharedLessonView.sc";
 import { wordsAsTile } from "./audioUtils";
 import { languageNames } from "../utils/languageDetection";
+import useListeningSession from "../hooks/useListeningSession";
 
 export default function SharedLessonView() {
   const api = useContext(APIContext);
@@ -17,6 +18,7 @@ export default function SharedLessonView() {
 
   const [lessonData, setLessonData] = useState(null);
   const [error, setError] = useState(null);
+  const [userLanguages, setUserLanguages] = useState(null);
 
   useEffect(() => {
     api.getSharedAudioLesson(
@@ -24,7 +26,19 @@ export default function SharedLessonView() {
       (data) => setLessonData(data),
       (err) => setError(err.message || "Could not load shared lesson."),
     );
+    api.getUserLanguages((langs) => setUserLanguages(langs || []));
   }, [api, id]);
+
+  // Hook before any early return so the hook order stays stable across renders.
+  // Pass null when the user isn't learning this lesson's language → useListeningSession
+  // short-circuits internally and no session is recorded.
+  const lessonLang = lessonData?.language_code;
+  const isLearningLanguage = !!(
+    lessonLang && userLanguages?.some((l) => l.code === lessonLang)
+  );
+  const listeningSession = useListeningSession(
+    isLearningLanguage ? lessonData?.lesson_id : null,
+  );
 
   if (error) {
     return (
@@ -35,7 +49,7 @@ export default function SharedLessonView() {
     );
   }
 
-  if (!lessonData) {
+  if (!lessonData || userLanguages === null) {
     return (
       <LessonWrapper>
         <LoadingAnimation />
@@ -43,22 +57,30 @@ export default function SharedLessonView() {
     );
   }
 
-  const lessonLang = lessonData.language_code;
   const lessonLangName = languageNames[lessonLang] || lessonLang;
-  const isLearnedByUser = userDetails?.learned_language && lessonLang && userDetails.learned_language === lessonLang;
+  const isActiveLanguage = userDetails?.learned_language === lessonLang;
   const titleText = lessonData.title || wordsAsTile(lessonData.words) || "Shared Audio Lesson";
 
-  const banner = isLearnedByUser
-    ? {
-        message: `Like this lesson? Generate your own ${lessonLangName} audio lesson on a topic you choose.`,
-        actionLabel: "Go to Daily Audio",
-        onAction: () => history.push("/daily-audio"),
-      }
-    : {
-        message: `This lesson is in ${lessonLangName}. Add ${lessonLangName} to your learning languages to start your own.`,
-        actionLabel: "Manage languages",
-        onAction: () => history.push("/account_settings/language_settings"),
-      };
+  let banner;
+  if (isActiveLanguage) {
+    banner = {
+      message: `Like this lesson? Generate your own ${lessonLangName} audio lesson on a topic you choose.`,
+      actionLabel: "Go to Daily Audio",
+      onAction: () => history.push("/daily-audio"),
+    };
+  } else if (isLearningLanguage) {
+    banner = {
+      message: `You're learning ${lessonLangName} but it's not your active language. Switch to ${lessonLangName} to make this count toward today's progress.`,
+      actionLabel: "Switch active language",
+      onAction: () => history.push("/account_settings/language_settings"),
+    };
+  } else {
+    banner = {
+      message: `This lesson is in ${lessonLangName}. Add ${lessonLangName} to your learning languages to start your own.`,
+      actionLabel: "Manage languages",
+      onAction: () => history.push("/account_settings/language_settings"),
+    };
+  }
 
   return (
     <LessonWrapper>
@@ -74,6 +96,9 @@ export default function SharedLessonView() {
         language={lessonLang}
         title={titleText}
         artist={`${lessonLangName} Audio Lesson`}
+        onPlay={() => listeningSession.start()}
+        onPause={() => listeningSession.pause()}
+        onEnded={() => listeningSession.end()}
         style={{
           width: "100%",
           marginBottom: "20px",
