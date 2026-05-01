@@ -1,5 +1,5 @@
-- Daily Audio: the generation screen now shows the topic or situation as the title.
-- Past Lessons: replaying a lesson now counts toward your streak.
-- Article preview: tapping the image opens the article, matching the Open button.
-- Exercises: the "I know this word" link now appears on multiple-choice exercises (it was only showing on some types).
-- Fewer hiccups during long lessons: stopped repeatedly refetching now-playing artwork.
+- Share audio lessons with friends: a new Share button on Today's Lesson and on each Past Lesson card creates a link they can open to listen along. The shared view shows the lesson's language, a topic line, and a CTA inviting them to start their own.
+- When a friend opens a lesson in a language you're already learning, your listening time counts toward your daily progress (your word stats are not affected by their lesson).
+- Activity history now shows the lesson title for each listening session, instead of just "Listening".
+- Dark-mode fixes for Activity history and Translation history — text is now legible in dark mode.
+- Smaller polish: shorter redirection animation, language label inline with the topic on shared lessons.
