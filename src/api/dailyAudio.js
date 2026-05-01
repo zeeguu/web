@@ -7,40 +7,15 @@ function getTimezoneOffsetMinutes() {
 }
 
 Zeeguu_API.prototype.getTodaysLesson = function (callback, onError) {
-  this.apiLog("GET get_todays_lesson");
-  
-  const timezoneOffset = getTimezoneOffsetMinutes();
-  
-  fetch(this._appendSessionToUrl(`get_todays_lesson?timezone_offset=${timezoneOffset}`))
-    .then((response) => {
-      if (!response.ok) {
-        return response.json().then(data => {
-          throw new Error(data.error || "Network response was not ok");
-        });
-      }
-      return response.json();
-    })
-    .then((data) => {
-      if (data.lesson === null) {
-        // No lesson for today, call callback with null to indicate no lesson
-        callback(null);
-      } else if (data.audio_url) {
-        // Convert relative audio URL to full URL with session
-        const audioUrl = `${this.baseAPIurl}${data.audio_url}?session=${this.session}`;
-        callback({ ...data, audio_url: audioUrl });
-      } else {
-        throw new Error("No audio URL in response");
-      }
-    })
-    .catch((error) => {
-      if (!error.message.includes("No lesson generated yet today")) {
-        console.error("Error getting today's lesson:", error);
-        Sentry.captureException(error, { tags: { endpoint: "get_todays_lesson" } });
-      }
-      if (onError) {
-        onError(error);
-      }
-    });
+  this._getJSON(
+    `get_todays_lesson?timezone_offset=${getTimezoneOffsetMinutes()}`,
+    (data) => {
+      if (data.lesson === null) return callback(null);
+      const audioUrl = `${this.baseAPIurl}${data.audio_url}?session=${this.session}`;
+      callback({ ...data, audio_url: audioUrl });
+    },
+    { onError },
+  );
 };
 
 Zeeguu_API.prototype.generateDailyLesson = function (callback, onError, suggestion, suggestionType) {
@@ -89,6 +64,14 @@ Zeeguu_API.prototype.generateDailyLesson = function (callback, onError, suggesti
     });
 };
 
+Zeeguu_API.prototype.getSharedAudioLesson = function (lessonId, callback, onError) {
+  this._getJSON(
+    `shared_audio_lesson/${lessonId}`,
+    (data) => callback({ ...data, audio_url: `${this.baseAPIurl}${data.audio_url}` }),
+    { onError },
+  );
+};
+
 Zeeguu_API.prototype.deleteTodaysLesson = function (callback, onError) {
   this.apiLog("DELETE delete_todays_lesson");
   
@@ -118,46 +101,11 @@ Zeeguu_API.prototype.deleteTodaysLesson = function (callback, onError) {
 };
 
 Zeeguu_API.prototype.getPastDailyLessons = function (limit, offset, callback, onError) {
-  this.apiLog("GET past_daily_lessons");
-  
-  let url = "past_daily_lessons";
-  const params = [];
-  if (limit) params.push(`limit=${limit}`);
-  if (offset) params.push(`offset=${offset}`);
-  
-  const timezoneOffset = getTimezoneOffsetMinutes();
-  params.push(`timezone_offset=${timezoneOffset}`);
-  
-  if (params.length > 0) {
-    // Check if URL already has query parameters
-    url += url.includes('?') ? `&${params.join('&')}` : `?${params.join('&')}`;
-  }
-  
-  fetch(this._appendSessionToUrl(url))
-    .then((response) => {
-      if (!response.ok) {
-        // Try to parse as JSON first, but handle HTML responses
-        const contentType = response.headers.get("content-type");
-        if (contentType && contentType.includes("application/json")) {
-          return response.json().then(data => {
-            throw new Error(data.error || "Network response was not ok");
-          });
-        } else {
-          throw new Error(`Server error: ${response.status} ${response.statusText}`);
-        }
-      }
-      return response.json();
-    })
-    .then((data) => {
-      callback(data);
-    })
-    .catch((error) => {
-      console.error("Error getting past daily lessons:", error);
-      Sentry.captureException(error, { tags: { endpoint: "past_daily_lessons" } });
-      if (onError) {
-        onError(error);
-      }
-    });
+  const params = new URLSearchParams();
+  if (limit) params.set("limit", limit);
+  if (offset) params.set("offset", offset);
+  params.set("timezone_offset", getTimezoneOffsetMinutes());
+  this._getJSON(`past_daily_lessons?${params}`, callback, { onError });
 };
 
 Zeeguu_API.prototype.updateLessonState = function (lessonId, action, positionSeconds, callback, onError) {
@@ -198,49 +146,9 @@ Zeeguu_API.prototype.updateLessonState = function (lessonId, action, positionSec
 };
 
 Zeeguu_API.prototype.checkDailyLessonFeasibility = function (callback, onError) {
-  this.apiLog("GET check_daily_lesson_feasibility");
-  
-  fetch(this._appendSessionToUrl("check_daily_lesson_feasibility"))
-    .then((response) => {
-      if (!response.ok) {
-        return response.json().then(data => {
-          throw new Error(data.error || "Network response was not ok");
-        });
-      }
-      return response.json();
-    })
-    .then((data) => {
-      callback(data);
-    })
-    .catch((error) => {
-      console.error("Error checking daily lesson feasibility:", error);
-      if (onError) {
-        onError(error);
-      }
-    });
+  this._getJSON("check_daily_lesson_feasibility", callback, { onError });
 };
 
-// Removed saveLessonProgress - use updateLessonState with "pause" action instead
-
 Zeeguu_API.prototype.getAudioLessonGenerationProgress = function (callback, onError) {
-  this.apiLog("GET audio_lesson_generation_progress");
-
-  fetch(this._appendSessionToUrl("audio_lesson_generation_progress"))
-    .then((response) => {
-      if (!response.ok) {
-        return response.json().then(data => {
-          throw new Error(data.error || "Network response was not ok");
-        });
-      }
-      return response.json();
-    })
-    .then((data) => {
-      callback(data.progress); // Returns null if no generation in progress
-    })
-    .catch((error) => {
-      console.error("Error getting generation progress:", error);
-      if (onError) {
-        onError(error);
-      }
-    });
+  this._getJSON("audio_lesson_generation_progress", (data) => callback(data.progress), { onError });
 };

@@ -50,6 +50,7 @@ import ExercisesForArticle from "./exercises/ExercisesForArticle";
 import { WEB_READER } from "./reader/ArticleReader";
 import VideoPlayer from "./videos/VideoPlayer";
 import DailyAudioRouter from "./dailyAudio/_DailyAudioRouter";
+import SharedLessonView from "./dailyAudio/SharedLessonView";
 import IndividualExercise from "./pages/IndividualExercise";
 import Swiper from "./swiper/Swiper";
 import KeyboardTest from "./pages/KeyboardTest";
@@ -129,6 +130,7 @@ export default function MainAppRouter({ hasExtension, handleSuccessfulLogIn }) {
       <PrivateRoute path="/watch/video" component={VideoPlayer} />
       <PrivateRouteWithLayout path="/exercises" component={ExercisesRouter} />
       <PrivateRouteWithLayout path="/daily-audio" component={DailyAudioRouter} />
+      <PrivateRouteWithLayout path="/shared-lesson/:id" component={SharedLessonView} />
       <PrivateRouteWithLayout path="/translate" component={TranslateRouter} />
       <PrivateRouteWithLayout path="/my-articles" component={MyArticlesRouter} />
       <PrivateRouteWithLayout path="/words" component={WordsRouter} />

@@ -5,9 +5,10 @@ import { FEEDBACK_OPTIONS, FEEDBACK_CODES_NAME } from "../components/FeedbackCon
 import Word from "../words/Word";
 import { successGreen } from "../components/colors";
 import { AUDIO_STATUS } from "./AudioLessonConstants";
-import { LessonWrapper, LessonTitle, SuggestionSubtitle, CompletionCheck } from "./LessonView.sc";
+import { LessonWrapper, LessonTitle, LessonMetadata, CompletionCheck, SubtleTextButton, LessonActions } from "./LessonView.sc";
 import { wordsAsTile } from "./audioUtils";
 import { languageNames } from "../utils/languageDetection";
+import { shareLessonLink } from "./shareLessonLink";
 
 export default function LessonPlaybackView({
   lessonData,
@@ -27,10 +28,10 @@ export default function LessonPlaybackView({
     <LessonWrapper>
       <LessonTitle>
         {lessonData.is_completed && <CompletionCheck>✓</CompletionCheck>}
-        {lessonData.title || wordsAsTile(words)}
+        {lessonData.title}
       </LessonTitle>
       {lessonData.canonical_suggestion && (
-        <SuggestionSubtitle>{lessonData.lesson_type === "situation" ? "Situation" : "Topic"}: <b>{lessonData.canonical_suggestion}</b></SuggestionSubtitle>
+        <LessonMetadata>{lessonData.lesson_type === "situation" ? "Situation" : "Topic"}: <b>{lessonData.canonical_suggestion}</b></LessonMetadata>
       )}
 
       {error && <div style={{ color: "red", marginBottom: "20px" }}>{error}</div>}
@@ -43,7 +44,7 @@ export default function LessonPlaybackView({
             lessonData.pause_position_seconds || lessonData.position_seconds || lessonData.progress_seconds || 0
           }
           language={userDetails?.learned_language}
-          title={lessonData.title || wordsAsTile(lessonData.words) || "Daily Audio Lesson"}
+          title={lessonData.title || "Daily Audio Lesson"}
           artist={`${languageNames[userDetails?.learned_language] || "Zeeguu"} Audio Lesson`}
           onPlay={() => {
             if (lessonData.lesson_id) {
@@ -117,24 +118,19 @@ export default function LessonPlaybackView({
           </div>
         )}
 
-        <div style={{ marginTop: "40px", textAlign: "center", display: "flex", justifyContent: "center", gap: "16px" }}>
-          <button
-            onClick={() => setOpenFeedback(true)}
-            style={{
-              backgroundColor: "transparent",
-              color: "var(--text-faint)",
-              border: "none",
-              borderRadius: "0",
-              padding: "4px 8px",
-              fontSize: "12px",
-              cursor: "pointer",
-              textDecoration: "underline",
-            }}
-          >
+        <LessonActions>
+          {lessonData.lesson_id && (
+            <SubtleTextButton
+              onClick={() => shareLessonLink(lessonData.lesson_id, lessonData.title)}
+            >
+              Share
+            </SubtleTextButton>
+          )}
+          <SubtleTextButton onClick={() => setOpenFeedback(true)}>
             Feedback
-          </button>
+          </SubtleTextButton>
           {userDetails?.name === "Mircea" && (
-            <button
+            <SubtleTextButton
               onClick={() => {
                 if (window.confirm("Delete today's lesson?")) {
                   api.deleteTodaysLesson(
@@ -143,20 +139,11 @@ export default function LessonPlaybackView({
                   );
                 }
               }}
-              style={{
-                backgroundColor: "transparent",
-                color: "var(--text-faint)",
-                border: "none",
-                padding: "4px 8px",
-                fontSize: "12px",
-                cursor: "pointer",
-                textDecoration: "underline",
-              }}
             >
               Delete lesson
-            </button>
+            </SubtleTextButton>
           )}
-        </div>
+        </LessonActions>
 
         <FeedbackModal
           prefixMsg={lessonData
