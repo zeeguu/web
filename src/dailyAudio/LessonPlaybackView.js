@@ -8,6 +8,7 @@ import { AUDIO_STATUS } from "./AudioLessonConstants";
 import { LessonWrapper, LessonTitle, SuggestionSubtitle, CompletionCheck } from "./LessonView.sc";
 import { wordsAsTile } from "./audioUtils";
 import { languageNames } from "../utils/languageDetection";
+import { shareLessonLink } from "./shareLessonLink";
 
 export default function LessonPlaybackView({
   lessonData,
@@ -118,6 +119,23 @@ export default function LessonPlaybackView({
         )}
 
         <div style={{ marginTop: "40px", textAlign: "center", display: "flex", justifyContent: "center", gap: "16px" }}>
+          {lessonData.lesson_id && (
+            <button
+              onClick={() => shareLessonLink(lessonData.lesson_id, lessonData.title || wordsAsTile(lessonData.words))}
+              style={{
+                backgroundColor: "transparent",
+                color: "var(--text-faint)",
+                border: "none",
+                borderRadius: "0",
+                padding: "4px 8px",
+                fontSize: "12px",
+                cursor: "pointer",
+                textDecoration: "underline",
+              }}
+            >
+              Share
+            </button>
+          )}
           <button
             onClick={() => setOpenFeedback(true)}
             style={{
