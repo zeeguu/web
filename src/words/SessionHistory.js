@@ -639,6 +639,10 @@ function SessionItem({ session, onEditWord }) {
         </ArticleTitle>
       )}
 
+      {session.session_type === "audio" && session.lesson_title && (
+        <ArticleTitle>{session.lesson_title}</ArticleTitle>
+      )}
+
       {session.session_type === "exercise" && (
         <ExerciseStats>
           {session.word_count} words practiced - {session.accuracy}% correct
