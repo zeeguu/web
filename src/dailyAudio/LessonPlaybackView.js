@@ -28,7 +28,7 @@ export default function LessonPlaybackView({
     <LessonWrapper>
       <LessonTitle>
         {lessonData.is_completed && <CompletionCheck>✓</CompletionCheck>}
-        {lessonData.title || wordsAsTile(words)}
+        {lessonData.title}
       </LessonTitle>
       {lessonData.canonical_suggestion && (
         <SuggestionSubtitle>{lessonData.lesson_type === "situation" ? "Situation" : "Topic"}: <b>{lessonData.canonical_suggestion}</b></SuggestionSubtitle>
@@ -44,7 +44,7 @@ export default function LessonPlaybackView({
             lessonData.pause_position_seconds || lessonData.position_seconds || lessonData.progress_seconds || 0
           }
           language={userDetails?.learned_language}
-          title={lessonData.title || wordsAsTile(lessonData.words) || "Daily Audio Lesson"}
+          title={lessonData.title || "Daily Audio Lesson"}
           artist={`${languageNames[userDetails?.learned_language] || "Zeeguu"} Audio Lesson`}
           onPlay={() => {
             if (lessonData.lesson_id) {
@@ -121,7 +121,7 @@ export default function LessonPlaybackView({
         <div style={{ marginTop: "40px", textAlign: "center", display: "flex", justifyContent: "center", gap: "16px" }}>
           {lessonData.lesson_id && (
             <SubtleTextButton
-              onClick={() => shareLessonLink(lessonData.lesson_id, lessonData.title || wordsAsTile(lessonData.words))}
+              onClick={() => shareLessonLink(lessonData.lesson_id, lessonData.title)}
             >
               Share
             </SubtleTextButton>

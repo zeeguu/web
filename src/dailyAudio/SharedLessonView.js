@@ -6,7 +6,6 @@ import CustomAudioPlayer from "../components/CustomAudioPlayer";
 import LoadingAnimation from "../components/LoadingAnimation";
 import { LessonWrapper, LessonTitle, SuggestionSubtitle } from "./LessonView.sc";
 import { BannerContainer, BannerMessage, BannerButton } from "./SharedLessonView.sc";
-import { wordsAsTile } from "./audioUtils";
 import { languageNames } from "../utils/languageDetection";
 import useListeningSession from "../hooks/useListeningSession";
 
@@ -59,7 +58,7 @@ export default function SharedLessonView() {
 
   const lessonLangName = languageNames[lessonLang] || lessonLang;
   const isActiveLanguage = userDetails?.learned_language === lessonLang;
-  const titleText = lessonData.title || wordsAsTile(lessonData.words) || "Shared Audio Lesson";
+  const titleText = lessonData.title || "Shared Audio Lesson";
 
   let banner;
   if (isActiveLanguage) {
