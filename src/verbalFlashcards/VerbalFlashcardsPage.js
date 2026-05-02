@@ -1,21 +1,20 @@
-import React, { useContext, useEffect, useState, useRef, useCallback } from "react";
+import React, { useCallback, useContext, useEffect, useRef, useState } from "react";
 import { useHistory } from "react-router-dom";
-import ReplayIcon from "@mui/icons-material/Replay";
-import ShuffleIcon from "@mui/icons-material/Shuffle";
 import { APIContext } from "../contexts/APIContext";
 import { UserContext } from "../contexts/UserContext";
 import strings from "../i18n/definitions";
+import FlashcardsHeader from "./components/FlashcardsHeader";
+import FlashcardStage from "./components/FlashcardStage";
+import useAudioRecorder from "./hooks/useAudioRecorder";
+import useFlashcardExerciseSession from "./hooks/useFlashcardExerciseSession";
+import useVerbalFlashcardTTS from "./hooks/useVerbalFlashcardTTS";
 import * as s from "./verbalFlashcards_Styled/VerbalFlashcards.sc.js";
 import {
   AFTER_TTS_BEFORE_RECORDING_MS,
   BETWEEN_CARDS_DELAY_MS,
   DEFAULT_LANGUAGE_ID,
-  MIN_VOICE_BEFORE_STOP_ELIGIBLE_MS,
-  SILENCE_THRESHOLD_MS,
-  TTS_PLAYBACK_PREROLL_MS,
   feedbackCopyForLanguage,
   promptInstructionIntroText,
-  supportedRecordingMimeType,
 } from "./verbalFlashcardsLanguage.js";
 
 export default function VerbalFlashcardsPage() {
@@ -26,7 +25,6 @@ export default function VerbalFlashcardsPage() {
   const learnedLanguageId = userDetails?.learned_language || translationLanguageId;
   const feedbackCopy = feedbackCopyForLanguage(translationLanguageId);
 
-  // State
   const [flashcards, setFlashcards] = useState([]);
   const [currentCardIndex, setCurrentCardIndex] = useState(0);
   const [loading, setLoading] = useState(true);
@@ -35,7 +33,6 @@ export default function VerbalFlashcardsPage() {
   const [showResult, setShowResult] = useState(false);
   const [userSpeech, setUserSpeech] = useState("");
   const [accuracyResult, setAccuracyResult] = useState(null);
-  const [isRecording, setIsRecording] = useState(false);
   const [isCooldown, setIsCooldown] = useState(false);
   const [statusMessage, setStatusMessage] = useState(strings.loadingMsg);
   const [statusType, setStatusType] = useState("idle");
@@ -44,43 +41,26 @@ export default function VerbalFlashcardsPage() {
   const [incorrectBookmarks, setIncorrectBookmarks] = useState([]);
   const [totalPracticedBookmarksInSession, setTotalPracticedBookmarksInSession] = useState(0);
 
-  // Refs
-  const mediaRecorderRef = useRef(null);
-  const micStreamRef = useRef(null);
-  const audioChunksRef = useRef([]);
-
-  const audioContextRef = useRef(null);
-  const analyserRef = useRef(null);
-  const dataArrayRef = useRef(null);
-  const animationFrameRef = useRef(null);
-
   const statusUpdateTimeoutRef = useRef(null);
   const interCardDelayTimeoutRef = useRef(null);
-
   const currentCardIndexRef = useRef(0);
   const flashcardsRef = useRef([]);
-  const isRecordingRef = useRef(false);
   const isCooldownRef = useRef(false);
-  const isStartingRecordingRef = useRef(false);
-  const shouldProcessRecordingOnStopRef = useRef(false);
-
-  const lastVoiceDetectedAtRef = useRef(0);
-  const voiceStartedAtRef = useRef(0);
-  const recordingStartedAtRef = useRef(0);
-
-  const ttsAudioRef = useRef(null);
-  const ttsRequestIdRef = useRef(0);
-  const isPlayingTtsRef = useRef(false);
-  const exerciseSessionIdRef = useRef(null);
-  const pageSessionStartedAtRef = useRef(null);
-  const sessionEndedRef = useRef(false);
   const attemptCountsRef = useRef({});
   const beginCardFlowRef = useRef(() => {});
   const flowRunIdRef = useRef(0);
   const isResolvingCardRef = useRef(false);
-  const sessionCreateRequestIdRef = useRef(0);
   const lastAutoStartedFlowKeyRef = useRef(null);
   const isPageActiveRef = useRef(true);
+  const cleanupRecordingResourcesRef = useRef(() => {});
+
+  const {
+    endExerciseSessionIfNeeded,
+    exerciseSessionIdRef,
+    finishSessionAndGoToSummary,
+    startExerciseSession,
+    updateExerciseSessionProgress,
+  } = useFlashcardExerciseSession({ api, history });
 
   useEffect(() => {
     currentCardIndexRef.current = currentCardIndex;
@@ -89,10 +69,6 @@ export default function VerbalFlashcardsPage() {
   useEffect(() => {
     flashcardsRef.current = flashcards;
   }, [flashcards]);
-
-  useEffect(() => {
-    isRecordingRef.current = isRecording;
-  }, [isRecording]);
 
   useEffect(() => {
     isCooldownRef.current = isCooldown;
@@ -156,50 +132,6 @@ export default function VerbalFlashcardsPage() {
     [updateScoreAndStreak],
   );
 
-  const getElapsedSessionSeconds = useCallback(() => {
-    if (!pageSessionStartedAtRef.current) return 1;
-    return Math.max(1, Math.round((Date.now() - pageSessionStartedAtRef.current) / 1000));
-  }, []);
-
-  const startExerciseSession = useCallback(() => {
-    pageSessionStartedAtRef.current = Date.now();
-    sessionEndedRef.current = false;
-    exerciseSessionIdRef.current = null;
-    sessionCreateRequestIdRef.current += 1;
-    const requestId = sessionCreateRequestIdRef.current;
-
-    api.exerciseSessionCreate((sessionId) => {
-      if (sessionCreateRequestIdRef.current === requestId) {
-        exerciseSessionIdRef.current = sessionId;
-      }
-    });
-  }, [api]);
-
-  const endExerciseSessionIfNeeded = useCallback(() => {
-    if (sessionEndedRef.current) return;
-
-    const exerciseSessionId = exerciseSessionIdRef.current;
-    if (exerciseSessionId) {
-      api.exerciseSessionEnd(exerciseSessionId, getElapsedSessionSeconds());
-    }
-    sessionEndedRef.current = true;
-  }, [api, getElapsedSessionSeconds]);
-
-  const finishSessionAndGoToSummary = useCallback(
-    (nextCorrectBookmarks, nextIncorrectBookmarks, practicedCount) => {
-      endExerciseSessionIfNeeded();
-      history.push("/verbalFlashcards/summary", {
-        isOutOfWordsToday: true,
-        totalPracticedBookmarksInSession: practicedCount,
-        correctBookmarks: nextCorrectBookmarks,
-        incorrectBookmarks: nextIncorrectBookmarks,
-        exerciseSessionTimer: getElapsedSessionSeconds(),
-        source: "verbal_flashcards",
-      });
-    },
-    [endExerciseSessionIfNeeded, getElapsedSessionSeconds, history],
-  );
-
   const removeResolvedCard = useCallback(
     (card, nextCorrectBookmarks, nextIncorrectBookmarks, practicedCount) => {
       setFlashcards((prev) => {
@@ -249,166 +181,11 @@ export default function VerbalFlashcardsPage() {
     [api],
   );
 
-  const cleanupAudioResources = useCallback(() => {
-    if (animationFrameRef.current) {
-      cancelAnimationFrame(animationFrameRef.current);
-      animationFrameRef.current = null;
-    }
-
-    if (mediaRecorderRef.current && mediaRecorderRef.current.state === "recording") {
-      shouldProcessRecordingOnStopRef.current = false;
-      try {
-        mediaRecorderRef.current.stop();
-      } catch (e) {
-        console.warn(e);
-      }
-    }
-
-    ttsRequestIdRef.current += 1;
-    if (ttsAudioRef.current) {
-      try {
-        ttsAudioRef.current.pause();
-        ttsAudioRef.current.currentTime = 0;
-        ttsAudioRef.current.src = "";
-      } catch (e) {
-        console.warn(e);
-      }
-    }
-    ttsAudioRef.current = null;
-    isPlayingTtsRef.current = false;
-
-    mediaRecorderRef.current = null;
-
-    if (micStreamRef.current) {
-      micStreamRef.current.getTracks().forEach((track) => track.stop());
-      micStreamRef.current = null;
-    }
-
-    if (audioContextRef.current) {
-      audioContextRef.current.close().catch(console.warn);
-      audioContextRef.current = null;
-    }
-
-    analyserRef.current = null;
-    dataArrayRef.current = null;
-    audioChunksRef.current = [];
-    voiceStartedAtRef.current = 0;
-    lastVoiceDetectedAtRef.current = 0;
-    recordingStartedAtRef.current = 0;
-    shouldProcessRecordingOnStopRef.current = false;
-    isStartingRecordingRef.current = false;
-    isRecordingRef.current = false;
-    setIsRecording(false);
-  }, []);
-
-  const speakText = useCallback(
-    (textToSpeak, languageId, playbackStatusMessage = strings.verbalFlashcardsPlayingTtsAudio) => {
-      if (!textToSpeak) {
-        updateStatusWithDebounce(strings.verbalFlashcardsNoTextAvailableForTts, "error");
-        return Promise.resolve();
-      }
-
-      ttsRequestIdRef.current += 1;
-      const playbackId = ttsRequestIdRef.current;
-
-      if (ttsAudioRef.current) {
-        try {
-          ttsAudioRef.current.pause();
-          ttsAudioRef.current.currentTime = 0;
-        } catch (e) {
-          console.warn(e);
-        }
-        ttsAudioRef.current = null;
-      }
-
-      isPlayingTtsRef.current = false;
-      updateStatusWithDebounce(strings.verbalFlashcardsRequestingTtsAudio, "processing", 0);
-
-      return api
-        .fetchLinkToSpeechMp3(textToSpeak, languageId)
-        .then((audioUrl) => {
-          if (!audioUrl) {
-            updateStatusWithDebounce(strings.verbalFlashcardsTtsReturnedNoAudioPath, "error", 0);
-            return;
-          }
-
-          if (playbackId !== ttsRequestIdRef.current || !isPageActiveRef.current) {
-            return;
-          }
-
-          return new Promise((resolve) => {
-            const audio = new Audio(audioUrl);
-            let didResolve = false;
-            ttsAudioRef.current = audio;
-            isPlayingTtsRef.current = true;
-
-            const resolvePlayback = () => {
-              if (didResolve) {
-                return;
-              }
-              didResolve = true;
-              resolve();
-            };
-
-            audio.onended = () => {
-              if (ttsAudioRef.current === audio) {
-                ttsAudioRef.current = null;
-              }
-              isPlayingTtsRef.current = false;
-              updateStatusWithDebounce(strings.verbalFlashcardsSpokenPromptFinished, "idle", 0);
-              resolvePlayback();
-            };
-
-            audio.onerror = (event) => {
-              console.error("TTS audio error:", event);
-              if (ttsAudioRef.current === audio) {
-                ttsAudioRef.current = null;
-              }
-              isPlayingTtsRef.current = false;
-              updateStatusWithDebounce(strings.verbalFlashcardsTtsAudioPlaybackFailed, "error", 0);
-              resolvePlayback();
-            };
-
-            const playWhenReady = () => {
-              if (playbackId !== ttsRequestIdRef.current || !isPageActiveRef.current) {
-                resolvePlayback();
-                return;
-              }
-              window.setTimeout(() => {
-                if (playbackId !== ttsRequestIdRef.current || !isPageActiveRef.current) {
-                  resolvePlayback();
-                  return;
-                }
-                updateStatusWithDebounce(playbackStatusMessage, "recording", 0);
-                audio.play().catch((err) => {
-                  console.error("TTS playback start failed:", err);
-                  if (ttsAudioRef.current === audio) {
-                    ttsAudioRef.current = null;
-                  }
-                  isPlayingTtsRef.current = false;
-                  updateStatusWithDebounce(strings.verbalFlashcardsTtsAudioPlaybackFailed, "error", 0);
-                  resolvePlayback();
-                });
-              }, TTS_PLAYBACK_PREROLL_MS);
-            };
-
-            audio.preload = "auto";
-            if (audio.readyState >= 3) {
-              playWhenReady();
-            } else {
-              audio.oncanplay = playWhenReady;
-              audio.load();
-            }
-          });
-        })
-        .catch((err) => {
-          console.error("TTS request failed:", err);
-          isPlayingTtsRef.current = false;
-          updateStatusWithDebounce(strings.verbalFlashcardsTtsRequestFailed, "error", 0);
-        });
-    },
-    [api, updateStatusWithDebounce],
-  );
+  const { isPlayingTtsRef, speakText, stopTts } = useVerbalFlashcardTTS({
+    api,
+    isPageActiveRef,
+    updateStatusWithDebounce,
+  });
 
   const playCardTts = useCallback(
     (card = null) => {
@@ -434,15 +211,12 @@ export default function VerbalFlashcardsPage() {
   );
 
   const resolveCardAttempt = useCallback(
-    (card, userAnswer, isCorrect, feedbackAnalysis) => {
+    (card, userAnswer, isCorrect, feedbackAnalysis, recordingStartedAt) => {
       if (!card || !canContinueFlow()) return;
-      const responseTime = recordingStartedAtRef.current ? Date.now() - recordingStartedAtRef.current : 0;
+      const responseTime = recordingStartedAt ? Date.now() - recordingStartedAt : 0;
       const exerciseSessionId = exerciseSessionIdRef.current;
 
-      if (exerciseSessionId && pageSessionStartedAtRef.current) {
-        const elapsedSeconds = Math.max(1, Math.round((Date.now() - pageSessionStartedAtRef.current) / 1000));
-        api.exerciseSessionUpdate(exerciseSessionId, elapsedSeconds);
-      }
+      updateExerciseSessionProgress();
 
       api.submitFlashcardAnswer(
         card.id,
@@ -505,21 +279,22 @@ export default function VerbalFlashcardsPage() {
     },
     [
       api,
+      canContinueFlow,
       correctBookmarks,
-      incorrectBookmarks,
       feedbackCopy,
+      incorrectBookmarks,
       learnedLanguageId,
       removeResolvedCard,
       speakFeedback,
       speakText,
       totalPracticedBookmarksInSession,
-      canContinueFlow,
+      updateExerciseSessionProgress,
       updateStatusWithDebounce,
     ],
   );
 
   const handleAttemptOutcome = useCallback(
-    (card, userAnswer, analysis) => {
+    (card, userAnswer, analysis, recordingStartedAt) => {
       if (!card || !canContinueFlow()) return;
 
       const isCorrect = Boolean(analysis?.isAccepted);
@@ -528,7 +303,7 @@ export default function VerbalFlashcardsPage() {
       attemptCountsRef.current[card.id] = nextAttemptCount;
 
       if (isCorrect) {
-        resolveCardAttempt(card, userAnswer, true, analysis);
+        resolveCardAttempt(card, userAnswer, true, analysis, recordingStartedAt);
         return;
       }
 
@@ -545,9 +320,9 @@ export default function VerbalFlashcardsPage() {
         return;
       }
 
-      resolveCardAttempt(card, userAnswer, false, analysis);
+      resolveCardAttempt(card, userAnswer, false, analysis, recordingStartedAt);
     },
-    [feedbackCopy, getCurrentCard, resolveCardAttempt, speakFeedback, canContinueFlow],
+    [canContinueFlow, feedbackCopy, getCurrentCard, resolveCardAttempt, speakFeedback, updateStatusWithDebounce],
   );
 
   const feedbackForAttempt = useCallback(
@@ -578,263 +353,95 @@ export default function VerbalFlashcardsPage() {
     [feedbackCopy],
   );
 
-  const stopRecording = useCallback(() => {
-    const recorder = mediaRecorderRef.current;
+  const handleRecordingComplete = useCallback(
+    ({ audioBlob, flowRunId, recordingStartedAt }) => {
+      const currentCard = getCurrentCard();
 
-    if (recorder && recorder.state === "recording") {
-      shouldProcessRecordingOnStopRef.current = true;
-      try {
-        recorder.stop();
-      } catch (e) {
-        console.warn(e);
-      }
-    }
-
-    isRecordingRef.current = false;
-    setIsRecording(false);
-    isStartingRecordingRef.current = false;
-
-    if (animationFrameRef.current) {
-      cancelAnimationFrame(animationFrameRef.current);
-      animationFrameRef.current = null;
-    }
-
-    updateStatusWithDebounce(strings.verbalFlashcardsProcessing, "processing", 0);
-  }, [updateStatusWithDebounce]);
-
-  const handleRecordingStop = useCallback(() => {
-    const flowRunId = flowRunIdRef.current;
-
-    if (!canContinueFlow(flowRunId)) {
-      cleanupAudioResources();
-      return;
-    }
-
-    if (!shouldProcessRecordingOnStopRef.current) {
-      cleanupAudioResources();
-      updateStatusWithDebounce(strings.verbalFlashcardsRecordingCancelled, "idle", 0);
-      return;
-    }
-
-    const currentCard = getCurrentCard();
-
-    if (!currentCard) {
-      updateStatusWithDebounce(strings.verbalFlashcardsNoFlashcardLoaded, "error");
-      cleanupAudioResources();
-      return;
-    }
-
-    if (!audioChunksRef.current.length) {
-      updateStatusWithDebounce(strings.verbalFlashcardsNoAudioDetected, "error");
-      cleanupAudioResources();
-      return;
-    }
-
-    const mimeType = mediaRecorderRef.current?.mimeType || "audio/webm";
-    const audioBlob = new Blob(audioChunksRef.current, { type: mimeType });
-
-    updateStatusWithDebounce(strings.verbalFlashcardsProcessing, "processing", 0);
-
-    api.transcribeAudio(
-      audioBlob,
-      (result) => {
-        if (!canContinueFlow(flowRunId)) {
-          cleanupAudioResources();
-          return;
-        }
-
-        if (result?.error) {
-          console.error("Transcription error:", result.error);
-          updateStatusWithDebounce(`${strings.verbalFlashcardsErrorPrefix}: ${result.error}`, "error");
-          cleanupAudioResources();
-          return;
-        }
-
-        const transcription = result?.transcription || "";
-        const expectedText = currentCard.answer;
-
-        api.checkPronunciation(
-          transcription,
-          expectedText,
-          (analysis) => {
-            if (!canContinueFlow(flowRunId)) {
-              cleanupAudioResources();
-              return;
-            }
-
-            if (analysis?.error) {
-              console.error("Pronunciation check error:", analysis.error);
-              updateStatusWithDebounce(strings.verbalFlashcardsCouldNotEvaluatePronunciation, "error", 0);
-              cleanupAudioResources();
-              return;
-            } else {
-              const analysisWithAttemptFeedback = feedbackForAttempt(currentCard, analysis);
-              displayResults(transcription, analysisWithAttemptFeedback);
-              cleanupAudioResources();
-              handleAttemptOutcome(currentCard, transcription, analysisWithAttemptFeedback);
-            }
-          },
-          () => {
-            updateStatusWithDebounce(strings.verbalFlashcardsCouldNotEvaluatePronunciation, "error", 0);
-            cleanupAudioResources();
-          },
-        );
-      },
-      () => {
-        updateStatusWithDebounce(strings.verbalFlashcardsCouldNotEvaluatePronunciation, "error", 0);
-        cleanupAudioResources();
-      },
-    );
-  }, [
-    api,
-    canContinueFlow,
-    cleanupAudioResources,
-    displayResults,
-    feedbackForAttempt,
-    getCurrentCard,
-    handleAttemptOutcome,
-    updateStatusWithDebounce,
-  ]);
-
-  const setupSilenceDetection = useCallback(() => {
-    if (!micStreamRef.current) return;
-
-    try {
-      const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-      const analyser = audioContext.createAnalyser();
-      analyser.fftSize = 2048;
-      analyser.smoothingTimeConstant = 0.85;
-
-      const source = audioContext.createMediaStreamSource(micStreamRef.current);
-      source.connect(analyser);
-
-      const dataArray = new Uint8Array(analyser.frequencyBinCount);
-
-      audioContextRef.current = audioContext;
-      analyserRef.current = analyser;
-      dataArrayRef.current = dataArray;
-
-      const detect = () => {
-        if (!isRecordingRef.current || !analyserRef.current || !dataArrayRef.current) {
-          return;
-        }
-
-        analyserRef.current.getByteTimeDomainData(dataArrayRef.current);
-
-        let sumSquares = 0;
-        let maxSample = 0;
-
-        for (let i = 0; i < dataArrayRef.current.length; i++) {
-          const v = (dataArrayRef.current[i] - 128) / 128;
-          const abs = Math.abs(v);
-          if (abs > maxSample) maxSample = abs;
-          sumSquares += v * v;
-        }
-
-        const rms = Math.sqrt(sumSquares / dataArrayRef.current.length);
-        const threshold = parseFloat(noiseSensitivity);
-        const isVoiceFrame = maxSample > threshold || rms > threshold;
-        const now = Date.now();
-
-        if (isVoiceFrame) {
-          lastVoiceDetectedAtRef.current = now;
-
-          if (!voiceStartedAtRef.current) {
-            voiceStartedAtRef.current = now;
-          }
-
-          updateStatusWithDebounce(strings.verbalFlashcardsRecordingSpeakNow, "recording", 0);
-        } else {
-          const voicedFor = voiceStartedAtRef.current > 0 ? now - voiceStartedAtRef.current : 0;
-
-          const silenceDuration =
-            lastVoiceDetectedAtRef.current > 0
-              ? now - lastVoiceDetectedAtRef.current
-              : now - recordingStartedAtRef.current;
-
-          if (voicedFor >= MIN_VOICE_BEFORE_STOP_ELIGIBLE_MS && silenceDuration >= SILENCE_THRESHOLD_MS) {
-            stopRecording();
-            return;
-          }
-
-          updateStatusWithDebounce(strings.verbalFlashcardsWaitingForSpeech, "processing", 0);
-        }
-
-        animationFrameRef.current = requestAnimationFrame(detect);
-      };
-
-      if (audioContext.state === "suspended") {
-        audioContext.resume().catch(console.warn);
-      }
-
-      detect();
-    } catch (error) {
-      console.error("Silence detection setup error:", error);
-      updateStatusWithDebounce(strings.verbalFlashcardsMicAnalysisError, "error");
-    }
-  }, [noiseSensitivity, stopRecording, updateStatusWithDebounce]);
-
-  const openMicAndStartRecording = useCallback(async () => {
-    if (isStartingRecordingRef.current || isRecordingRef.current) return;
-    if (isCooldownRef.current) return;
-
-    try {
-      isStartingRecordingRef.current = true;
-
-      const stream = await navigator.mediaDevices.getUserMedia({
-        audio: {
-          echoCancellation: true,
-          noiseSuppression: true,
-          autoGainControl: true,
-        },
-      });
-
-      if (isCooldownRef.current) {
-        stream.getTracks().forEach((track) => track.stop());
-        isStartingRecordingRef.current = false;
+      if (!currentCard) {
+        updateStatusWithDebounce(strings.verbalFlashcardsNoFlashcardLoaded, "error");
+        cleanupRecordingResourcesRef.current();
         return;
       }
 
-      micStreamRef.current = stream;
+      api.transcribeAudio(
+        audioBlob,
+        (result) => {
+          if (!canContinueFlow(flowRunId)) {
+            cleanupRecordingResourcesRef.current();
+            return;
+          }
 
-      const mimeType = supportedRecordingMimeType();
-      mediaRecorderRef.current = mimeType ? new MediaRecorder(stream, { mimeType }) : new MediaRecorder(stream);
+          if (result?.error) {
+            console.error("Transcription error:", result.error);
+            updateStatusWithDebounce(`${strings.verbalFlashcardsErrorPrefix}: ${result.error}`, "error");
+            cleanupRecordingResourcesRef.current();
+            return;
+          }
 
-      audioChunksRef.current = [];
+          const transcription = result?.transcription || "";
+          const expectedText = currentCard.answer;
 
-      mediaRecorderRef.current.ondataavailable = (event) => {
-        if (event.data && event.data.size > 0) {
-          audioChunksRef.current.push(event.data);
-        }
-      };
+          api.checkPronunciation(
+            transcription,
+            expectedText,
+            (analysis) => {
+              if (!canContinueFlow(flowRunId)) {
+                cleanupRecordingResourcesRef.current();
+                return;
+              }
 
-      mediaRecorderRef.current.onstop = handleRecordingStop;
-      shouldProcessRecordingOnStopRef.current = true;
+              if (analysis?.error) {
+                console.error("Pronunciation check error:", analysis.error);
+                updateStatusWithDebounce(strings.verbalFlashcardsCouldNotEvaluatePronunciation, "error", 0);
+                cleanupRecordingResourcesRef.current();
+                return;
+              }
 
-      recordingStartedAtRef.current = Date.now();
-      lastVoiceDetectedAtRef.current = Date.now();
-      voiceStartedAtRef.current = 0;
+              const analysisWithAttemptFeedback = feedbackForAttempt(currentCard, analysis);
+              displayResults(transcription, analysisWithAttemptFeedback);
+              cleanupRecordingResourcesRef.current();
+              handleAttemptOutcome(currentCard, transcription, analysisWithAttemptFeedback, recordingStartedAt);
+            },
+            () => {
+              updateStatusWithDebounce(strings.verbalFlashcardsCouldNotEvaluatePronunciation, "error", 0);
+              cleanupRecordingResourcesRef.current();
+            },
+          );
+        },
+        () => {
+          updateStatusWithDebounce(strings.verbalFlashcardsCouldNotEvaluatePronunciation, "error", 0);
+          cleanupRecordingResourcesRef.current();
+        },
+      );
+    },
+    [
+      api,
+      canContinueFlow,
+      displayResults,
+      feedbackForAttempt,
+      getCurrentCard,
+      handleAttemptOutcome,
+      updateStatusWithDebounce,
+    ],
+  );
 
-      mediaRecorderRef.current.start();
+  const {
+    cleanupRecordingResources,
+    isRecording,
+    isRecordingRef,
+    isStartingRecordingRef,
+    micStreamRef,
+    openMicAndStartRecording,
+  } = useAudioRecorder({
+    canContinueFlow,
+    flowRunIdRef,
+    isCooldownRef,
+    noiseSensitivity,
+    onRecordingComplete: handleRecordingComplete,
+    updateStatusWithDebounce,
+  });
 
-      isRecordingRef.current = true;
-      setIsRecording(true);
-      isStartingRecordingRef.current = false;
-
-      setShowResult(false);
-      setAccuracyResult(null);
-
-      updateStatusWithDebounce(strings.verbalFlashcardsRecordingSpeakNow, "recording", 0);
-      setupSilenceDetection();
-    } catch (error) {
-      console.error("Recording start error:", error);
-      isStartingRecordingRef.current = false;
-      isRecordingRef.current = false;
-      setIsRecording(false);
-      updateStatusWithDebounce(strings.verbalFlashcardsMicrophonePermissionNeeded, "error");
-      cleanupAudioResources();
-    }
-  }, [cleanupAudioResources, handleRecordingStop, setupSilenceDetection, updateStatusWithDebounce]);
+  cleanupRecordingResourcesRef.current = cleanupRecordingResources;
 
   const cancelCountdown = useCallback(() => {
     if (interCardDelayTimeoutRef.current) {
@@ -851,11 +458,12 @@ export default function VerbalFlashcardsPage() {
   const stopCurrentFlow = useCallback(() => {
     flowRunIdRef.current += 1;
     cancelCountdown();
+    stopTts();
 
     if (isRecordingRef.current || isStartingRecordingRef.current || micStreamRef.current) {
-      cleanupAudioResources();
+      cleanupRecordingResources();
     }
-  }, [cancelCountdown, cleanupAudioResources]);
+  }, [cancelCountdown, cleanupRecordingResources, isRecordingRef, isStartingRecordingRef, micStreamRef, stopTts]);
 
   const beginCardFlow = useCallback(() => {
     if (flashcardsRef.current.length === 0) return;
@@ -891,6 +499,8 @@ export default function VerbalFlashcardsPage() {
         return;
       }
 
+      setShowResult(false);
+      setAccuracyResult(null);
       await openMicAndStartRecording();
     });
   }, [openMicAndStartRecording, playCardTts, resetCardUi, stopCurrentFlow, updateStatusWithDebounce]);
@@ -961,7 +571,7 @@ export default function VerbalFlashcardsPage() {
 
     lastAutoStartedFlowKeyRef.current = autoStartKey;
     beginCardFlow();
-  }, [currentCardIndex, flashcards, loading, beginCardFlow]);
+  }, [beginCardFlow, currentCardIndex, flashcards, isPlayingTtsRef, isRecordingRef, isStartingRecordingRef, loading]);
 
   useEffect(() => {
     const unlisten = history.listen(() => {
@@ -978,156 +588,44 @@ export default function VerbalFlashcardsPage() {
         clearTimeout(statusUpdateTimeoutRef.current);
       }
 
-      cleanupAudioResources();
+      stopTts();
+      cleanupRecordingResources();
       unlisten();
     };
-  }, [cancelCountdown, cleanupAudioResources, history, stopCurrentFlow]);
+  }, [cancelCountdown, cleanupRecordingResources, history, stopCurrentFlow, stopTts]);
 
   const currentCard = flashcards[currentCardIndex];
 
-  const renderWordBreakdown = (wordMatches) => {
-    if (!wordMatches || wordMatches.length === 0) return null;
-
-    return (
-      <s.WordBreakdown>
-        <h5>{strings.verbalFlashcardsWordBreakdown}</h5>
-        <s.WordList>
-          {wordMatches.map((match, idx) => (
-            <s.WordItem key={idx} $isCorrect={match.isCorrect}>
-              <s.WordText>{match.word}</s.WordText>
-              <s.WordPosition>{match.position + 1}</s.WordPosition>
-              <s.WordStatus>{match.isCorrect ? "✓" : "✗"}</s.WordStatus>
-              {match.suggestedWord && !match.isCorrect && <s.WordSuggestion>→ {match.suggestedWord}</s.WordSuggestion>}
-            </s.WordItem>
-          ))}
-        </s.WordList>
-      </s.WordBreakdown>
-    );
-  };
-
   return (
     <s.FlashcardsContainer>
-      <s.HeaderSection>
-        <s.TitleSection>
-          <s.TitleContainer>
-            <h2>{strings.verbalFlashcardsTitle}</h2>
-          </s.TitleContainer>
-          <s.FiltersContainer>
-            <s.FilterSelect value={noiseSensitivity} onChange={(e) => setNoiseSensitivity(e.target.value)}>
-              <option value="0.03">{strings.verbalFlashcardsLowNoise}</option>
-              <option value="0.08">{strings.verbalFlashcardsMediumNoise}</option>
-              <option value="0.11">{strings.verbalFlashcardsHighNoise}</option>
-            </s.FilterSelect>
-          </s.FiltersContainer>
-        </s.TitleSection>
-
-        <s.StatsContainer>
-          <s.StatItem>
-            <s.StatLabel>{strings.verbalFlashcardsProgress}</s.StatLabel>
-            <s.StatValue>{`${flashcards.length > 0 ? currentCardIndex + 1 : 0}/${flashcards.length}`}</s.StatValue>
-          </s.StatItem>
-          <s.StatItem>
-            <s.StatLabel>{strings.verbalFlashcardsScore}</s.StatLabel>
-            <s.StatValue>{Math.round(totalScore)}</s.StatValue>
-          </s.StatItem>
-          <s.StatItem>
-            <s.StatLabel>{strings.verbalFlashcardsStreak}</s.StatLabel>
-            <s.StatValue $isStreak={currentStreak > 0}>{currentStreak}</s.StatValue>
-          </s.StatItem>
-        </s.StatsContainer>
-      </s.HeaderSection>
+      <FlashcardsHeader
+        currentCardIndex={currentCardIndex}
+        currentStreak={currentStreak}
+        flashcardsCount={flashcards.length}
+        noiseSensitivity={noiseSensitivity}
+        setNoiseSensitivity={setNoiseSensitivity}
+        totalScore={totalScore}
+      />
 
       <s.Flashcard>
         <s.CardContent>
-          {loading ? (
-            <s.LoadingState>
-              <s.Spinner />
-              <p>{strings.verbalFlashcardsLoading}</p>
-            </s.LoadingState>
-          ) : flashcards.length === 0 ? (
-            <s.NoCardsMessage>
-              <p>{strings.verbalFlashcardsNoCards}</p>
-            </s.NoCardsMessage>
-          ) : (
-            currentCard && (
-              <>
-                <s.PromptSection>
-                  <s.PromptLabel>{strings.verbalFlashcardsSayThis}</s.PromptLabel>
-                  <s.PromptText>{currentCard.prompt}</s.PromptText>
-                </s.PromptSection>
-
-                <s.RecordingSection>
-                  <s.StatusMessage $statusType={statusType}>{statusMessage}</s.StatusMessage>
-
-                  {isRecording && (
-                    <s.RecordingVisualization>
-                      <s.SoundWave>
-                        <span></span>
-                        <span></span>
-                        <span></span>
-                        <span></span>
-                        <span></span>
-                      </s.SoundWave>
-                    </s.RecordingVisualization>
-                  )}
-                </s.RecordingSection>
-
-                {showResult && accuracyResult && (
-                  <s.ResultSection id="resultSection">
-                    <h4>{strings.verbalFlashcardsYourAttempt}</h4>
-                    <s.UserSpeech>{userSpeech || strings.verbalFlashcardsNoSpeechDetected}</s.UserSpeech>
-
-                    <s.FeedbackContainer>
-                      <s.AccuracyMeter>
-                        <s.AccuracyLabel>{strings.verbalFlashcardsAccuracy}</s.AccuracyLabel>
-                        <s.ProgressBar>
-                          <s.ProgressFill
-                            $accuracy={accuracyResult.accuracy}
-                            style={{ width: `${accuracyResult.accuracy}%` }}
-                          />
-                        </s.ProgressBar>
-                        <s.AccuracyPercentage>{accuracyResult.accuracy}%</s.AccuracyPercentage>
-                      </s.AccuracyMeter>
-
-                      <s.FeedbackMessage $feedbackType={accuracyResult.isAccepted ? "success" : "warning"}>
-                        {accuracyResult.feedback}
-                      </s.FeedbackMessage>
-                    </s.FeedbackContainer>
-
-                    {renderWordBreakdown(accuracyResult.wordMatches)}
-                  </s.ResultSection>
-                )}
-
-                <s.ActionButtons>
-                  <s.NavigationButtons>
-                    <s.NavButton onClick={prevCard} disabled={currentCardIndex === 0}>
-                      {strings.verbalFlashcardsPrevious}
-                    </s.NavButton>
-                    <s.NavButton onClick={nextCard} disabled={currentCardIndex === flashcards.length - 1}>
-                      {strings.verbalFlashcardsNext}
-                    </s.NavButton>
-                  </s.NavigationButtons>
-
-                  <s.UtilityButtons>
-                    <s.UtilityButton
-                      onClick={shuffleCards}
-                      title={strings.verbalFlashcardsShuffleCards}
-                      aria-label={strings.verbalFlashcardsShuffleCards}
-                    >
-                      <ShuffleIcon fontSize="small" />
-                    </s.UtilityButton>
-                    <s.UtilityButton
-                      onClick={repeatCard}
-                      title={strings.verbalFlashcardsRepeatThisCard}
-                      aria-label={strings.verbalFlashcardsRepeatThisCard}
-                    >
-                      <ReplayIcon fontSize="small" />
-                    </s.UtilityButton>
-                  </s.UtilityButtons>
-                </s.ActionButtons>
-              </>
-            )
-          )}
+          <FlashcardStage
+            accuracyResult={accuracyResult}
+            canGoNext={currentCardIndex < flashcards.length - 1}
+            canGoPrevious={currentCardIndex > 0}
+            currentCard={currentCard}
+            flashcardsCount={flashcards.length}
+            isRecording={isRecording}
+            loading={loading}
+            nextCard={nextCard}
+            prevCard={prevCard}
+            repeatCard={repeatCard}
+            showResult={showResult}
+            shuffleCards={shuffleCards}
+            statusMessage={statusMessage}
+            statusType={statusType}
+            userSpeech={userSpeech}
+          />
         </s.CardContent>
       </s.Flashcard>
     </s.FlashcardsContainer>

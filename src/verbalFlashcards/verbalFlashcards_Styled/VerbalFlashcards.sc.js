@@ -35,23 +35,8 @@ export const TitleContainer = styled.div`
 `;
 
 export const FiltersContainer = styled.div`
-  display: flex;
-  gap: 10px;
-  flex-wrap: wrap;
   margin-bottom: 15px;
-`;
-
-export const FilterSelect = styled.select`
-  padding: 8px 12px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  background: white;
-  cursor: pointer;
-  font-size: 14px;
-
-  &:hover {
-    border-color: ${zeeguuWarmYellow};
-  }
+  max-width: 260px;
 `;
 
 export const StatsContainer = styled.div`
@@ -382,7 +367,7 @@ export const WordSuggestion = styled.span`
   margin-left: auto;
 `;
 
-export const ActionButtons = styled.div`
+export const CardControls = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -397,52 +382,12 @@ export const ActionButtons = styled.div`
   }
 `;
 
-export const NavigationButtons = styled.div`
+export const CardNavigation = styled.div`
   display: flex;
   gap: 10px;
 `;
 
-export const NavButton = styled.button`
-  padding: 8px 16px;
-  background: ${zeeguuDarkOrange};
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-
-  &:hover:not(:disabled) {
-    background: ${zeeguuWarmYellow};
-    transform: translateY(-1px);
-  }
-
-  &:disabled {
-    background: #ccc;
-    cursor: not-allowed;
-    transform: none;
-  }
-`;
-
-export const UtilityButtons = styled.div`
+export const IconControls = styled.div`
   display: flex;
   gap: 10px;
-`;
-
-export const UtilityButton = styled.button`
-  width: 36px;
-  height: 36px;
-  background: #f5f5f5;
-  border: 1px solid #ddd;
-  border-radius: 50%;
-  cursor: pointer;
-  font-size: 18px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.3s ease;
-
-  &:hover {
-    background: #e0e0e0;
-    transform: scale(1.05);
-  }
 `;
