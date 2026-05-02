@@ -1,4 +1,4 @@
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import strings from "../../i18n/definitions";
 import {
   MIN_VOICE_BEFORE_STOP_ELIGIBLE_MS,
@@ -32,6 +32,11 @@ export default function useAudioRecorder({
   const lastVoiceDetectedAtRef = useRef(0);
   const voiceStartedAtRef = useRef(0);
   const recordingStartedAtRef = useRef(0);
+  const noiseSensitivityRef = useRef(noiseSensitivity);
+
+  useEffect(() => {
+    noiseSensitivityRef.current = noiseSensitivity;
+  }, [noiseSensitivity]);
 
   const cleanupRecordingResources = useCallback(() => {
     if (animationFrameRef.current) {
@@ -132,7 +137,7 @@ export default function useAudioRecorder({
         }
 
         const rms = Math.sqrt(sumSquares / dataArrayRef.current.length);
-        const threshold = parseFloat(noiseSensitivity);
+        const threshold = parseFloat(noiseSensitivityRef.current);
         const isVoiceFrame = maxSample > threshold || rms > threshold;
         const now = Date.now();
 
@@ -172,7 +177,7 @@ export default function useAudioRecorder({
       console.error("Silence detection setup error:", error);
       updateStatusWithDebounce(strings.verbalFlashcardsMicAnalysisError, "error");
     }
-  }, [noiseSensitivity, stopRecording, updateStatusWithDebounce]);
+  }, [stopRecording, updateStatusWithDebounce]);
 
   const handleRecordingStop = useCallback(() => {
     const flowRunId = flowRunIdRef.current;

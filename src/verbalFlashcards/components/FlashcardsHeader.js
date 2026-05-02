@@ -4,6 +4,7 @@ import * as s from "../verbalFlashcards_Styled/VerbalFlashcards.sc.js";
 
 export default function FlashcardsHeader({
   noiseSensitivity,
+  noiseSensitivityNoticeVisible,
   progressCurrent,
   progressTotal,
   setNoiseSensitivity,
@@ -30,6 +31,9 @@ export default function FlashcardsHeader({
             onChange={(e) => setNoiseSensitivity(e.target.value)}
             showPlaceholder={false}
           />
+          <s.SensitivityNotice $visible={noiseSensitivityNoticeVisible} aria-live="polite">
+            {strings.verbalFlashcardsNoiseSensitivityUpdated}
+          </s.SensitivityNotice>
         </s.FiltersContainer>
       </s.TitleSection>
 

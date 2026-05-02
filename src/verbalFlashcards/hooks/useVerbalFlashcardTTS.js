@@ -5,6 +5,7 @@ import { TTS_PLAYBACK_PREROLL_MS } from "../verbalFlashcardsLanguage";
 export default function useVerbalFlashcardTTS({ api, isPageActiveRef, updateStatusWithDebounce }) {
   const ttsAudioRef = useRef(null);
   const ttsRequestIdRef = useRef(0);
+  const resolvePlaybackRef = useRef(null);
   const isPlayingTtsRef = useRef(false);
 
   const stopTts = useCallback(() => {
@@ -12,9 +13,13 @@ export default function useVerbalFlashcardTTS({ api, isPageActiveRef, updateStat
 
     if (ttsAudioRef.current) {
       try {
+        ttsAudioRef.current.oncanplay = null;
+        ttsAudioRef.current.onended = null;
+        ttsAudioRef.current.onerror = null;
         ttsAudioRef.current.pause();
         ttsAudioRef.current.currentTime = 0;
-        ttsAudioRef.current.src = "";
+        ttsAudioRef.current.removeAttribute("src");
+        ttsAudioRef.current.load();
       } catch (e) {
         console.warn(e);
       }
@@ -22,6 +27,11 @@ export default function useVerbalFlashcardTTS({ api, isPageActiveRef, updateStat
 
     ttsAudioRef.current = null;
     isPlayingTtsRef.current = false;
+
+    if (resolvePlaybackRef.current) {
+      resolvePlaybackRef.current();
+      resolvePlaybackRef.current = null;
+    }
   }, []);
 
   const speakText = useCallback(
@@ -34,10 +44,20 @@ export default function useVerbalFlashcardTTS({ api, isPageActiveRef, updateStat
       ttsRequestIdRef.current += 1;
       const playbackId = ttsRequestIdRef.current;
 
+      if (resolvePlaybackRef.current) {
+        resolvePlaybackRef.current();
+        resolvePlaybackRef.current = null;
+      }
+
       if (ttsAudioRef.current) {
         try {
+          ttsAudioRef.current.oncanplay = null;
+          ttsAudioRef.current.onended = null;
+          ttsAudioRef.current.onerror = null;
           ttsAudioRef.current.pause();
           ttsAudioRef.current.currentTime = 0;
+          ttsAudioRef.current.removeAttribute("src");
+          ttsAudioRef.current.load();
         } catch (e) {
           console.warn(e);
         }
@@ -70,8 +90,13 @@ export default function useVerbalFlashcardTTS({ api, isPageActiveRef, updateStat
                 return;
               }
               didResolve = true;
+              if (resolvePlaybackRef.current === resolvePlayback) {
+                resolvePlaybackRef.current = null;
+              }
               resolve();
             };
+
+            resolvePlaybackRef.current = resolvePlayback;
 
             audio.onended = () => {
               if (ttsAudioRef.current === audio) {

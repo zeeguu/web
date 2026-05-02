@@ -61,6 +61,15 @@ export const FiltersContainer = styled.div`
   }
 `;
 
+export const SensitivityNotice = styled.div`
+  min-height: 1.2rem;
+  margin-top: 0.25rem;
+  color: #666;
+  font-size: 0.85rem;
+  opacity: ${(props) => (props.$visible ? 1 : 0)};
+  transition: opacity 0.18s ease;
+`;
+
 export const StatsContainer = styled.div`
   display: flex;
   justify-content: flex-start;

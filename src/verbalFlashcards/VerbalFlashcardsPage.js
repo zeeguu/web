@@ -36,12 +36,14 @@ export default function VerbalFlashcardsPage() {
   const [statusMessage, setStatusMessage] = useState(strings.loadingMsg);
   const [statusType, setStatusType] = useState("idle");
   const [noiseSensitivity, setNoiseSensitivity] = useState("0.08");
+  const [noiseSensitivityNoticeVisible, setNoiseSensitivityNoticeVisible] = useState(false);
   const [correctBookmarks, setCorrectBookmarks] = useState([]);
   const [incorrectBookmarks, setIncorrectBookmarks] = useState([]);
   const [totalPracticedBookmarksInSession, setTotalPracticedBookmarksInSession] = useState(0);
 
   const statusUpdateTimeoutRef = useRef(null);
   const interCardDelayTimeoutRef = useRef(null);
+  const noiseSensitivityNoticeTimeoutRef = useRef(null);
   const currentCardIndexRef = useRef(0);
   const flashcardsRef = useRef([]);
   const isCooldownRef = useRef(false);
@@ -84,6 +86,20 @@ export default function VerbalFlashcardsPage() {
     statusUpdateTimeoutRef.current = setTimeout(() => {
       statusUpdateTimeoutRef.current = null;
     }, delay);
+  }, []);
+
+  const updateNoiseSensitivity = useCallback((value) => {
+    setNoiseSensitivity(value);
+    setNoiseSensitivityNoticeVisible(true);
+
+    if (noiseSensitivityNoticeTimeoutRef.current) {
+      clearTimeout(noiseSensitivityNoticeTimeoutRef.current);
+    }
+
+    noiseSensitivityNoticeTimeoutRef.current = window.setTimeout(() => {
+      noiseSensitivityNoticeTimeoutRef.current = null;
+      setNoiseSensitivityNoticeVisible(false);
+    }, 1600);
   }, []);
 
   const canContinueFlow = useCallback((flowRunId = null) => {
@@ -175,12 +191,15 @@ export default function VerbalFlashcardsPage() {
   });
 
   const playCardTts = useCallback(
-    (card = null) => {
+    (card = null, flowRunId = flowRunIdRef.current) => {
       const cardToSpeak = card || getCurrentCard();
       const answerText = cardToSpeak?.answer || "";
       const introText = promptInstructionIntroText(translationLanguageId, learnedLanguageId);
 
       return speakText(introText, translationLanguageId).then(() => {
+        if (flowRunId !== flowRunIdRef.current) {
+          return;
+        }
         if (!answerText || !isPageActiveRef.current) {
           return;
         }
@@ -472,7 +491,7 @@ export default function VerbalFlashcardsPage() {
       return;
     }
 
-    playCardTts(card).finally(async () => {
+    playCardTts(card, flowRunId).finally(async () => {
       if (flowRunId !== flowRunIdRef.current) {
         return;
       }
@@ -575,6 +594,10 @@ export default function VerbalFlashcardsPage() {
         clearTimeout(statusUpdateTimeoutRef.current);
       }
 
+      if (noiseSensitivityNoticeTimeoutRef.current) {
+        clearTimeout(noiseSensitivityNoticeTimeoutRef.current);
+      }
+
       stopTts();
       cleanupRecordingResources();
       unlisten();
@@ -592,7 +615,8 @@ export default function VerbalFlashcardsPage() {
         progressCurrent={progressCurrent}
         progressTotal={progressTotal}
         noiseSensitivity={noiseSensitivity}
-        setNoiseSensitivity={setNoiseSensitivity}
+        noiseSensitivityNoticeVisible={noiseSensitivityNoticeVisible}
+        setNoiseSensitivity={updateNoiseSensitivity}
       />
 
       <s.Flashcard>
