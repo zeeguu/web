@@ -1,15 +1,11 @@
 import strings from "../../i18n/definitions";
 import * as s from "../verbalFlashcards_Styled/VerbalFlashcards.sc.js";
-import WordBreakdown from "./WordBreakdown";
 
-export default function FeedbackView({ accuracyResult, userSpeech }) {
+export default function FeedbackView({ accuracyResult }) {
   if (!accuracyResult) return null;
 
   return (
     <s.ResultSection id="resultSection">
-      <h4>{strings.verbalFlashcardsYourAttempt}</h4>
-      <s.UserSpeech>{userSpeech || strings.verbalFlashcardsNoSpeechDetected}</s.UserSpeech>
-
       <s.FeedbackContainer>
         <s.AccuracyMeter>
           <s.AccuracyLabel>{strings.verbalFlashcardsAccuracy}</s.AccuracyLabel>
@@ -23,8 +19,6 @@ export default function FeedbackView({ accuracyResult, userSpeech }) {
           {accuracyResult.feedback}
         </s.FeedbackMessage>
       </s.FeedbackContainer>
-
-      <WordBreakdown wordMatches={accuracyResult.wordMatches} />
     </s.ResultSection>
   );
 }

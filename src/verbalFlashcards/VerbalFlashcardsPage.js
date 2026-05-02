@@ -30,7 +30,6 @@ export default function VerbalFlashcardsPage() {
   const [loading, setLoading] = useState(true);
   const [initialFlashcardsCount, setInitialFlashcardsCount] = useState(0);
   const [showResult, setShowResult] = useState(false);
-  const [userSpeech, setUserSpeech] = useState("");
   const [accuracyResult, setAccuracyResult] = useState(null);
   const [isCooldown, setIsCooldown] = useState(false);
   const [statusMessage, setStatusMessage] = useState(strings.loadingMsg);
@@ -43,6 +42,7 @@ export default function VerbalFlashcardsPage() {
 
   const statusUpdateTimeoutRef = useRef(null);
   const interCardDelayTimeoutRef = useRef(null);
+  const interCardDelayIntervalRef = useRef(null);
   const noiseSensitivityNoticeTimeoutRef = useRef(null);
   const currentCardIndexRef = useRef(0);
   const flashcardsRef = useRef([]);
@@ -102,6 +102,44 @@ export default function VerbalFlashcardsPage() {
     }, 1600);
   }, []);
 
+  const clearInterCardDelay = useCallback(() => {
+    if (interCardDelayTimeoutRef.current) {
+      clearTimeout(interCardDelayTimeoutRef.current);
+      interCardDelayTimeoutRef.current = null;
+    }
+
+    if (interCardDelayIntervalRef.current) {
+      clearInterval(interCardDelayIntervalRef.current);
+      interCardDelayIntervalRef.current = null;
+    }
+  }, []);
+
+  const interCardCountdownMessage = useCallback((seconds) => {
+    return strings.verbalFlashcardsNextCardCountdown.replace("{seconds}", seconds);
+  }, []);
+
+  const startInterCardCountdown = useCallback(
+    (onComplete) => {
+      clearInterCardDelay();
+
+      let secondsRemaining = Math.ceil(BETWEEN_CARDS_DELAY_MS / 1000);
+      updateStatusWithDebounce(interCardCountdownMessage(secondsRemaining), "cooldown", 0);
+
+      interCardDelayIntervalRef.current = window.setInterval(() => {
+        secondsRemaining -= 1;
+        if (secondsRemaining > 0) {
+          updateStatusWithDebounce(interCardCountdownMessage(secondsRemaining), "cooldown", 0);
+        }
+      }, 1000);
+
+      interCardDelayTimeoutRef.current = window.setTimeout(() => {
+        clearInterCardDelay();
+        onComplete();
+      }, BETWEEN_CARDS_DELAY_MS);
+    },
+    [clearInterCardDelay, interCardCountdownMessage, updateStatusWithDebounce],
+  );
+
   const canContinueFlow = useCallback((flowRunId = null) => {
     if (!isPageActiveRef.current) return false;
     if (flowRunId !== null && flowRunId !== flowRunIdRef.current) return false;
@@ -115,12 +153,10 @@ export default function VerbalFlashcardsPage() {
   const resetCardUi = useCallback(() => {
     setShowResult(false);
     setAccuracyResult(null);
-    setUserSpeech("");
   }, []);
 
   const displayResults = useCallback(
-    (speech, analysis) => {
-      setUserSpeech(speech);
+    (analysis) => {
       setAccuracyResult(analysis);
       setShowResult(true);
 
@@ -193,17 +229,17 @@ export default function VerbalFlashcardsPage() {
   const playCardTts = useCallback(
     (card = null, flowRunId = flowRunIdRef.current) => {
       const cardToSpeak = card || getCurrentCard();
-      const answerText = cardToSpeak?.answer || "";
+      const promptText = cardToSpeak?.prompt || "";
       const introText = promptInstructionIntroText(translationLanguageId, learnedLanguageId);
 
       return speakText(introText, translationLanguageId).then(() => {
         if (flowRunId !== flowRunIdRef.current) {
           return;
         }
-        if (!answerText || !isPageActiveRef.current) {
+        if (!promptText || !isPageActiveRef.current) {
           return;
         }
-        return speakText(answerText, learnedLanguageId, strings.verbalFlashcardsPlayingAnswer);
+        return speakText(promptText, translationLanguageId, strings.verbalFlashcardsPlayingPrompt);
       });
     },
     [getCurrentCard, learnedLanguageId, speakText, translationLanguageId],
@@ -270,12 +306,11 @@ export default function VerbalFlashcardsPage() {
               isResolvingCardRef.current = false;
               return;
             }
-            interCardDelayTimeoutRef.current = setTimeout(() => {
-              interCardDelayTimeoutRef.current = null;
+            startInterCardCountdown(() => {
               isResolvingCardRef.current = false;
               if (!canContinueFlow()) return;
               removeResolvedCard(card, nextCorrectBookmarks, nextIncorrectBookmarks, practicedCount);
-            }, BETWEEN_CARDS_DELAY_MS);
+            });
           });
         },
         (error) => {
@@ -293,6 +328,7 @@ export default function VerbalFlashcardsPage() {
       removeResolvedCard,
       speakFeedback,
       speakText,
+      startInterCardCountdown,
       totalPracticedBookmarksInSession,
       updateExerciseSessionProgress,
       updateStatusWithDebounce,
@@ -404,7 +440,7 @@ export default function VerbalFlashcardsPage() {
               }
 
               const analysisWithAttemptFeedback = feedbackForAttempt(currentCard, analysis);
-              displayResults(transcription, analysisWithAttemptFeedback);
+              displayResults(analysisWithAttemptFeedback);
               cleanupRecordingResourcesRef.current();
               handleAttemptOutcome(currentCard, transcription, analysisWithAttemptFeedback, recordingStartedAt);
             },
@@ -450,16 +486,13 @@ export default function VerbalFlashcardsPage() {
   cleanupRecordingResourcesRef.current = cleanupRecordingResources;
 
   const cancelCountdown = useCallback(() => {
-    if (interCardDelayTimeoutRef.current) {
-      clearTimeout(interCardDelayTimeoutRef.current);
-      interCardDelayTimeoutRef.current = null;
-    }
+    clearInterCardDelay();
 
     isResolvingCardRef.current = false;
 
     setIsCooldown(false);
     isCooldownRef.current = false;
-  }, []);
+  }, [clearInterCardDelay]);
 
   const stopCurrentFlow = useCallback(() => {
     flowRunIdRef.current += 1;
@@ -636,7 +669,6 @@ export default function VerbalFlashcardsPage() {
             shuffleCards={shuffleCards}
             statusMessage={statusMessage}
             statusType={statusType}
-            userSpeech={userSpeech}
           />
         </s.CardContent>
       </s.Flashcard>

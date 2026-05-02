@@ -304,15 +304,6 @@ export const ResultSection = styled.div`
   }
 `;
 
-export const UserSpeech = styled.div`
-  background: white;
-  padding: 12px;
-  border-radius: 6px;
-  margin: 10px 0;
-  font-family: monospace;
-  word-break: break-word;
-`;
-
 export const FeedbackContainer = styled.div`
   margin: 15px 0;
 `;
@@ -378,64 +369,6 @@ export const FeedbackMessage = styled.div`
     if (props.$feedbackType === "warning") return "#ef6c00";
     return "#c62828";
   }};
-`;
-
-export const WordBreakdown = styled.div`
-  margin-top: 20px;
-
-  h5 {
-    margin: 0 0 10px 0;
-    color: #333;
-  }
-`;
-
-export const WordList = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-`;
-
-export const WordItem = styled.div`
-  display: grid;
-  grid-template-columns: minmax(80px, 1fr) minmax(32px, auto) minmax(24px, auto) minmax(0, 2fr);
-  align-items: center;
-  gap: 12px;
-  padding: 8px;
-  background: white;
-  border-radius: 6px;
-  font-size: 14px;
-  background: ${(props) => (props.$isCorrect ? "#c8e6c9" : "#ffebee")};
-  border-left: 4px solid ${(props) => (props.$isCorrect ? "#4caf50" : "#f44336")};
-
-  @media screen and (max-width: 520px) {
-    grid-template-columns: minmax(0, 1fr) auto auto;
-  }
-`;
-
-export const WordText = styled.span`
-  font-weight: bold;
-  min-width: 0;
-  overflow-wrap: anywhere;
-`;
-
-export const WordPosition = styled.span`
-  color: #666;
-  min-width: 40px;
-`;
-
-export const WordStatus = styled.span`
-  min-width: 30px;
-`;
-
-export const WordSuggestion = styled.span`
-  color: #666;
-  font-style: italic;
-  min-width: 0;
-  overflow-wrap: anywhere;
-
-  @media screen and (max-width: 520px) {
-    grid-column: 1 / -1;
-  }
 `;
 
 export const CardControls = styled.div`

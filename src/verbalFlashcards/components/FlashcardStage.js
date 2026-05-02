@@ -20,7 +20,6 @@ export default function FlashcardStage({
   shuffleCards,
   statusMessage,
   statusType,
-  userSpeech,
 }) {
   if (loading) {
     return (
@@ -45,7 +44,7 @@ export default function FlashcardStage({
     <>
       <FlashcardPrompt card={currentCard} />
       <RecordingControls isRecording={isRecording} statusMessage={statusMessage} statusType={statusType} />
-      {showResult && <FeedbackView accuracyResult={accuracyResult} userSpeech={userSpeech} />}
+      {showResult && <FeedbackView accuracyResult={accuracyResult} />}
       <CardNavigator
         canGoNext={canGoNext}
         canGoPrevious={canGoPrevious}
