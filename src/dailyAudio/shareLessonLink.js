@@ -1,5 +1,7 @@
+import { WEB_URL } from "../config";
+
 export function shareLessonUrl(lessonId) {
-  return `${window.location.origin}/shared-lesson/${lessonId}`;
+  return `${WEB_URL}/shared-lesson/${lessonId}`;
 }
 
 export async function shareLessonLink(lessonId, title) {
