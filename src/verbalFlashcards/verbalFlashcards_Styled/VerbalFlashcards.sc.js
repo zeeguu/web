@@ -2,85 +2,107 @@ import styled from "styled-components";
 import { zeeguuWarmYellow, zeeguuDarkOrange, zeeguuRed } from "../../components/colors";
 
 export const FlashcardsContainer = styled.div`
-  max-width: 800px;
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 960px;
   margin: 0 auto;
-  padding: 20px;
+  padding: 24px 20px;
 
   @media screen and (max-width: 768px) {
-    padding: 10px;
+    padding: 14px 12px;
+  }
+
+  @media screen and (max-width: 420px) {
+    padding: 10px 8px;
   }
 `;
 
 export const HeaderSection = styled.div`
+  box-sizing: border-box;
   margin-bottom: 20px;
   padding: 15px;
   background: #f5f5f5;
   border-radius: 8px;
+
+  @media screen and (max-width: 420px) {
+    padding: 12px;
+  }
 `;
 
 export const TitleSection = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
   margin-bottom: 15px;
+  flex-wrap: wrap;
 `;
 
 export const TitleContainer = styled.div`
   display: flex;
   align-items: center;
   gap: 10px;
-  margin-bottom: 15px;
+  min-width: 0;
 
   h2 {
     margin: 0;
     color: ${zeeguuDarkOrange};
+    overflow-wrap: anywhere;
   }
 `;
 
 export const FiltersContainer = styled.div`
-  margin-bottom: 15px;
+  flex: 0 1 280px;
   max-width: 260px;
+
+  @media screen and (max-width: 620px) {
+    flex-basis: 100%;
+    max-width: none;
+  }
 `;
 
 export const StatsContainer = styled.div`
   display: flex;
-  gap: 20px;
+  justify-content: flex-start;
   padding-top: 10px;
   border-top: 1px solid #ddd;
-  flex-wrap: wrap;
 
-  @media screen and (max-width: 768px) {
-    gap: 15px;
+  @media screen and (max-width: 520px) {
+    justify-content: stretch;
   }
 `;
 
-export const StatItem = styled.div`
+export const ProgressSummary = styled.div`
   display: flex;
-  gap: 8px;
   align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  min-width: 0;
+  padding: 8px 14px;
+  border-radius: 8px;
+  background: white;
+  box-shadow: inset 0 0 0 1px #e5e5e5;
+
+  @media screen and (max-width: 520px) {
+    width: 100%;
+  }
 `;
 
-export const StatLabel = styled.span`
+export const ProgressLabel = styled.span`
   font-weight: bold;
   color: #666;
 `;
 
-export const StatValue = styled.span`
-  color: ${(props) => (props.$isStreak ? zeeguuRed : "#333")};
-  font-weight: ${(props) => (props.$isStreak ? "bold" : "normal")};
-  animation: ${(props) => (props.$isStreak ? "pulse 0.5s ease" : "none")};
-
-  @keyframes pulse {
-    0%,
-    100% {
-      transform: scale(1);
-    }
-    50% {
-      transform: scale(1.1);
-    }
-  }
+export const ProgressValue = styled.span`
+  color: #333;
+  font-size: 1.1rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
 `;
 
 export const Flashcard = styled.div`
   background: white;
-  border-radius: 12px;
+  border-radius: 8px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   overflow: hidden;
 `;
@@ -91,11 +113,19 @@ export const CardContent = styled.div`
   @media screen and (max-width: 768px) {
     padding: 20px;
   }
+
+  @media screen and (max-width: 420px) {
+    padding: 16px 14px;
+  }
 `;
 
 export const LoadingState = styled.div`
   text-align: center;
   padding: 40px;
+
+  @media screen and (max-width: 420px) {
+    padding: 28px 12px;
+  }
 `;
 
 export const Spinner = styled.div`
@@ -126,6 +156,10 @@ export const NoCardsMessage = styled.div`
     font-size: 18px;
     color: #666;
   }
+
+  @media screen and (max-width: 420px) {
+    padding: 28px 12px;
+  }
 `;
 
 export const PromptSection = styled.div`
@@ -144,6 +178,7 @@ export const PromptText = styled.div`
   font-weight: bold;
   color: #333;
   margin: 15px 0;
+  overflow-wrap: anywhere;
 
   @media screen and (max-width: 768px) {
     font-size: 20px;
@@ -160,6 +195,7 @@ export const StatusMessage = styled.div`
   padding: 10px;
   border-radius: 8px;
   font-size: 14px;
+  overflow-wrap: anywhere;
   background: ${(props) => {
     if (props.$statusType === "recording") return "#ffebee";
     if (props.$statusType === "processing") return "#fff3e0";
@@ -253,6 +289,10 @@ export const ResultSection = styled.div`
     margin: 0 0 10px 0;
     color: #333;
   }
+
+  @media screen and (max-width: 420px) {
+    padding: 16px 12px;
+  }
 `;
 
 export const UserSpeech = styled.div`
@@ -273,15 +313,25 @@ export const AccuracyMeter = styled.div`
   align-items: center;
   gap: 10px;
   margin: 15px 0;
+
+  @media screen and (max-width: 520px) {
+    display: grid;
+    grid-template-columns: 1fr auto;
+  }
 `;
 
 export const AccuracyLabel = styled.span`
   font-size: 14px;
   color: #666;
+
+  @media screen and (max-width: 520px) {
+    grid-column: 1 / -1;
+  }
 `;
 
 export const ProgressBar = styled.div`
   flex: 1;
+  min-width: 0;
   height: 8px;
   background: #e0e0e0;
   border-radius: 4px;
@@ -308,6 +358,7 @@ export const FeedbackMessage = styled.div`
   padding: 12px;
   border-radius: 6px;
   margin: 10px 0;
+  overflow-wrap: anywhere;
   background: ${(props) => {
     if (props.$feedbackType === "success") return "#c8e6c9";
     if (props.$feedbackType === "warning") return "#ffe0b2";
@@ -336,7 +387,8 @@ export const WordList = styled.div`
 `;
 
 export const WordItem = styled.div`
-  display: flex;
+  display: grid;
+  grid-template-columns: minmax(80px, 1fr) minmax(32px, auto) minmax(24px, auto) minmax(0, 2fr);
   align-items: center;
   gap: 12px;
   padding: 8px;
@@ -345,11 +397,16 @@ export const WordItem = styled.div`
   font-size: 14px;
   background: ${(props) => (props.$isCorrect ? "#c8e6c9" : "#ffebee")};
   border-left: 4px solid ${(props) => (props.$isCorrect ? "#4caf50" : "#f44336")};
+
+  @media screen and (max-width: 520px) {
+    grid-template-columns: minmax(0, 1fr) auto auto;
+  }
 `;
 
 export const WordText = styled.span`
   font-weight: bold;
-  min-width: 100px;
+  min-width: 0;
+  overflow-wrap: anywhere;
 `;
 
 export const WordPosition = styled.span`
@@ -364,7 +421,12 @@ export const WordStatus = styled.span`
 export const WordSuggestion = styled.span`
   color: #666;
   font-style: italic;
-  margin-left: auto;
+  min-width: 0;
+  overflow-wrap: anywhere;
+
+  @media screen and (max-width: 520px) {
+    grid-column: 1 / -1;
+  }
 `;
 
 export const CardControls = styled.div`
@@ -378,16 +440,42 @@ export const CardControls = styled.div`
   gap: 15px;
 
   @media screen and (max-width: 768px) {
-    flex-direction: column;
+    align-items: stretch;
   }
 `;
 
 export const CardNavigation = styled.div`
   display: flex;
   gap: 10px;
+
+  & > button {
+    flex: 1 1 0;
+    margin: 0;
+    min-width: 8rem;
+  }
+
+  @media screen and (max-width: 768px) {
+    flex: 1 1 100%;
+  }
+
+  @media screen and (max-width: 520px) {
+    flex-direction: column;
+    width: 100%;
+
+    & > button {
+      width: 100%;
+      min-width: 0;
+    }
+  }
 `;
 
 export const IconControls = styled.div`
   display: flex;
   gap: 10px;
+  justify-content: flex-end;
+
+  @media screen and (max-width: 768px) {
+    width: 100%;
+    justify-content: center;
+  }
 `;

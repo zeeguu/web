@@ -28,8 +28,7 @@ export default function VerbalFlashcardsPage() {
   const [flashcards, setFlashcards] = useState([]);
   const [currentCardIndex, setCurrentCardIndex] = useState(0);
   const [loading, setLoading] = useState(true);
-  const [totalScore, setTotalScore] = useState(0);
-  const [currentStreak, setCurrentStreak] = useState(0);
+  const [initialFlashcardsCount, setInitialFlashcardsCount] = useState(0);
   const [showResult, setShowResult] = useState(false);
   const [userSpeech, setUserSpeech] = useState("");
   const [accuracyResult, setAccuracyResult] = useState(null);
@@ -103,24 +102,11 @@ export default function VerbalFlashcardsPage() {
     setUserSpeech("");
   }, []);
 
-  const updateScoreAndStreak = useCallback((analysis) => {
-    if (!analysis) return;
-
-    if (analysis.isAccepted) {
-      setTotalScore((prev) => prev + (analysis.accuracy || 0));
-      setCurrentStreak((prev) => prev + 1);
-      return;
-    }
-
-    setCurrentStreak(0);
-  }, []);
-
   const displayResults = useCallback(
     (speech, analysis) => {
       setUserSpeech(speech);
       setAccuracyResult(analysis);
       setShowResult(true);
-      updateScoreAndStreak(analysis);
 
       setTimeout(() => {
         const resultSection = document.getElementById("resultSection");
@@ -129,7 +115,7 @@ export default function VerbalFlashcardsPage() {
         }
       }, 100);
     },
-    [updateScoreAndStreak],
+    [],
   );
 
   const removeResolvedCard = useCallback(
@@ -163,6 +149,7 @@ export default function VerbalFlashcardsPage() {
       api.getFlashcards(null, (data) => {
         const cards = data.flashcards || [];
         setFlashcards(cards);
+        setInitialFlashcardsCount(cards.length);
         flashcardsRef.current = cards;
         attemptCountsRef.current = {};
 
@@ -595,16 +582,17 @@ export default function VerbalFlashcardsPage() {
   }, [cancelCountdown, cleanupRecordingResources, history, stopCurrentFlow, stopTts]);
 
   const currentCard = flashcards[currentCardIndex];
+  const progressTotal = initialFlashcardsCount;
+  const progressCurrent =
+    progressTotal > 0 ? Math.min(progressTotal - flashcards.length + currentCardIndex + 1, progressTotal) : 0;
 
   return (
     <s.FlashcardsContainer>
       <FlashcardsHeader
-        currentCardIndex={currentCardIndex}
-        currentStreak={currentStreak}
-        flashcardsCount={flashcards.length}
+        progressCurrent={progressCurrent}
+        progressTotal={progressTotal}
         noiseSensitivity={noiseSensitivity}
         setNoiseSensitivity={setNoiseSensitivity}
-        totalScore={totalScore}
       />
 
       <s.Flashcard>
