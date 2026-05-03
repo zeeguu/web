@@ -17,7 +17,7 @@ export default function Contributors() {
 
       {member("Mircea Lungu", "Production, Maintenance")}
 
-      {member("Anna Semeriuck", "Mobile Onboarding")}
+      {member("Anna Semeriuk", "Mobile Onboarding")}
 
       {member("Zalán Kálny", "Gamification and Friendships")}
       {member("Gábor Tódor", "Gamification and Friendships")}
