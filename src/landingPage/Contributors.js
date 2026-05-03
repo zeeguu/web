@@ -17,6 +17,12 @@ export default function Contributors() {
 
       {member("Mircea Lungu", "Production, Maintenance")}
 
+      {member("Anna Semeriuck", "Mobile Onboarding")}
+
+      {member("Zalán Kálny", "Gamification and Friendships")}
+      {member("Gábor Tódor", "Gamification and Friendships")}
+      {member("Nicklas Koch Rasmussen", "Gamification and Friendships")}
+
       {member("Tiago Ribeiro", "Development and ML Research")}
       {member("Sofia Henden", "Article browsing modes")}
       {member("Louise Sørensen", "Article browsing modes")}

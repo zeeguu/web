@@ -114,6 +114,49 @@ export default function LandingPage() {
                 src="static/images/spaced-repetition-calendar.png"
               />
             </s.ResponsiveRow>
+
+          </s.PageSection>
+        </s.PageSectionWrapper>
+        <s.PageSectionWrapper>
+          <s.PageSection>
+            <h2>What's new in&nbsp;2026?</h2>
+            <s.TripleRow>
+              <s.TripleCell>
+                <img
+                  alt="An Italian news article in the Zeeguu mobile app, with the option to translate it to your level"
+                  src="static/images/mobile-simplification.jpeg"
+                />
+                <h3>Articles adapted to your&nbsp;level</h3>
+                <p>
+                  Send any article in any language to Zeeguu — and it will be converted to your learned language
+                  at your&nbsp;level.
+                </p>
+              </s.TripleCell>
+
+              <s.TripleCell>
+                <img
+                  alt="A Zeeguu audio lesson generated for the topic of meeting another Danish learner at the polyglot gathering"
+                  src="static/images/mobile-audio-lesson.jpeg"
+                />
+                <h3>Audio lessons on any topic you&nbsp;choose</h3>
+                <p>
+                  Pick a topic — work, hobbies, travel, anything — and Zeeguu generates a personalized audio lesson
+                  for&nbsp;it. Perfect for a bike ride, a walk, or a&nbsp;commute.
+                </p>
+              </s.TripleCell>
+
+              <s.TripleCell>
+                <img
+                  alt="The Zeeguu mobile app showing a personalized news feed in Italian and the user's streaks across multiple languages"
+                  src="static/images/mobile-feed.jpeg"
+                />
+                <h3>On the go with iOS and&nbsp;Android</h3>
+                <p>
+                  Read, listen, and practice from your phone. Your streaks, vocabulary, and progress sync
+                  across&nbsp;devices, so you can pick up wherever you left&nbsp;off.
+                </p>
+              </s.TripleCell>
+            </s.TripleRow>
           </s.PageSection>
         </s.PageSectionWrapper>
         <s.PageSectionWrapper>
