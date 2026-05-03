@@ -23,6 +23,8 @@ export default function Contributors() {
       {member("Gábor Tódor", "Gamification and Friendships")}
       {member("Nicklas Koch Rasmussen", "Gamification and Friendships")}
 
+      {member("Anikó Veres", "Badge Design")}
+
       {member("Tiago Ribeiro", "Development and ML Research")}
       {member("Sofia Henden", "Article browsing modes")}
       {member("Louise Sørensen", "Article browsing modes")}
