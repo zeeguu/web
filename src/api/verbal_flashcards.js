@@ -47,11 +47,14 @@ Zeeguu_API.prototype.transcribeAudio = function (audioFile, callback, onError) {
   this._postFormData("verbal_flashcards/transcribe", formData, callback, onError);
 };
 
-Zeeguu_API.prototype.checkPronunciation = function (userSpeech, expectedText, callback, onError) {
+Zeeguu_API.prototype.checkPronunciation = function (userSpeech, expectedText, flashcardId, callback, onError) {
   const payload = {
     user_speech: userSpeech,
     expected_text: expectedText,
   };
+  if (flashcardId !== undefined && flashcardId !== null) {
+    payload.flashcard_id = flashcardId;
+  }
 
   this._postJSON("verbal_flashcards/check_pronunciation", payload, callback, onError);
 };

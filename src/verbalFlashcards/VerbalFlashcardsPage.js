@@ -311,13 +311,14 @@ export default function VerbalFlashcardsPage() {
       const feedbackMessage = feedbackAnalysis?.feedback;
       const spokenFeedback = feedbackMessage || (wasAccepted ? feedbackCopy.successIntro : feedbackCopy.finalIncorrectIntro);
       const answerFeedbackIntro = wasAccepted ? feedbackCopy.successIntro : feedbackCopy.finalIncorrectIntro;
+      const answerToSpeak = feedbackAnalysis?.matchedExpectedText || card.answer;
       const speakResolvedFeedback = feedbackAnalysis?.speakAnswerAfterFeedback
         ? () =>
             speakFeedback(answerFeedbackIntro).then(() => {
-              if (!card.answer || !isPageActiveRef.current) {
+              if (!answerToSpeak || !isPageActiveRef.current) {
                 return;
               }
-              return speakText(card.answer, learnedLanguageId, strings.verbalFlashcardsPlayingAnswer);
+              return speakText(answerToSpeak, learnedLanguageId, strings.verbalFlashcardsPlayingAnswer);
             })
         : () => speakFeedback(spokenFeedback);
 
@@ -392,9 +393,10 @@ export default function VerbalFlashcardsPage() {
       }
 
       if (analysis.isAccepted) {
+        const answerToShow = analysis.matchedExpectedText || card.answer;
         return {
           ...analysis,
-          feedback: `${feedbackCopy.successIntro} ${card.answer}`,
+          feedback: `${feedbackCopy.successIntro} ${answerToShow}`,
           speakAnswerAfterFeedback: true,
         };
       }
@@ -404,9 +406,10 @@ export default function VerbalFlashcardsPage() {
         return analysis;
       }
 
+      const answerToShow = analysis.matchedExpectedText || card.answer;
       return {
         ...analysis,
-        feedback: `${feedbackCopy.finalIncorrectIntro} ${card.answer}`,
+        feedback: `${feedbackCopy.finalIncorrectIntro} ${answerToShow}`,
         speakAnswerAfterFeedback: true,
       };
     },
@@ -444,6 +447,7 @@ export default function VerbalFlashcardsPage() {
           api.checkPronunciation(
             transcription,
             expectedText,
+            currentCard.id,
             (analysis) => {
               if (!canContinueFlow(flowRunId)) {
                 cleanupRecordingResourcesRef.current();
