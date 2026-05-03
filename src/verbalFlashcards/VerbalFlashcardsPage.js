@@ -57,8 +57,8 @@ export default function VerbalFlashcardsPage() {
 
   const {
     endExerciseSessionIfNeeded,
-    exerciseSessionIdRef,
     finishSessionAndGoToSummary,
+    getExerciseSessionId,
     startExerciseSession,
     updateExerciseSessionProgress,
   } = useFlashcardExerciseSession({ api, history });
@@ -153,6 +153,15 @@ export default function VerbalFlashcardsPage() {
   const resetCardUi = useCallback(() => {
     setShowResult(false);
     setAccuracyResult(null);
+  }, []);
+
+  const cardToSummaryBookmark = useCallback((card) => {
+    return {
+      ...card,
+      from: card.answer,
+      to: card.prompt,
+      fit_for_study: true,
+    };
   }, []);
 
   const displayResults = useCallback(
@@ -253,76 +262,85 @@ export default function VerbalFlashcardsPage() {
   );
 
   const resolveCardAttempt = useCallback(
-    (card, userAnswer, isCorrect, feedbackAnalysis, recordingStartedAt) => {
+    async (card, userAnswer, isCorrect, feedbackAnalysis, recordingStartedAt) => {
       if (!card || !canContinueFlow()) return;
       const responseTime = recordingStartedAt ? Date.now() - recordingStartedAt : 0;
-      const exerciseSessionId = exerciseSessionIdRef.current;
 
       updateExerciseSessionProgress();
 
-      api.submitFlashcardAnswer(
-        card.id,
-        userAnswer,
-        isCorrect,
-        "speech",
-        responseTime,
-        exerciseSessionId,
-        (response) => {
-          if (!canContinueFlow()) return;
+      const saveFlashcardAnswer = async () => {
+        try {
+          const exerciseSessionId = await getExerciseSessionId();
+          const response = await api.submitFlashcardAnswer(
+            card.id,
+            userAnswer,
+            isCorrect,
+            "speech",
+            responseTime,
+            exerciseSessionId,
+          );
+
           if (!response || response.error || response.success === false) {
-            updateStatusWithDebounce(
-              `${strings.verbalFlashcardsCouldNotSaveResult}${response?.error ? `: ${response.error}` : ""}`,
-              "error",
-              0,
-            );
-            return;
-          }
-
-          const wasAccepted = Boolean(response.is_correct);
-          const nextCorrectBookmarks = wasAccepted ? [...correctBookmarks, card] : correctBookmarks;
-          const nextIncorrectBookmarks = wasAccepted ? incorrectBookmarks : [...incorrectBookmarks, card];
-          const practicedCount = totalPracticedBookmarksInSession + 1;
-          setCorrectBookmarks(nextCorrectBookmarks);
-          setIncorrectBookmarks(nextIncorrectBookmarks);
-          setTotalPracticedBookmarksInSession(practicedCount);
-          delete attemptCountsRef.current[card.id];
-
-          isResolvingCardRef.current = true;
-          const feedbackMessage = feedbackAnalysis?.feedback;
-          const spokenFeedback = feedbackMessage || (wasAccepted ? feedbackCopy.successIntro : feedbackCopy.finalIncorrectIntro);
-          const answerFeedbackIntro = wasAccepted ? feedbackCopy.successIntro : feedbackCopy.finalIncorrectIntro;
-          const speakResolvedFeedback = feedbackAnalysis?.speakAnswerAfterFeedback
-            ? () =>
-                speakFeedback(answerFeedbackIntro).then(() => {
-                  if (!card.answer || !isPageActiveRef.current) {
-                    return;
-                  }
-                  return speakText(card.answer, learnedLanguageId, strings.verbalFlashcardsPlayingAnswer);
-                })
-            : () => speakFeedback(spokenFeedback);
-
-          speakResolvedFeedback().finally(() => {
-            if (!canContinueFlow()) {
-              isResolvingCardRef.current = false;
-              return;
+            console.error("Could not save verbal flashcard result:", response);
+            if (canContinueFlow() && getCurrentCard()?.id === card.id) {
+              updateStatusWithDebounce(
+                `${strings.verbalFlashcardsCouldNotSaveResult}${response?.error ? `: ${response.error}` : ""}`,
+                "error",
+                0,
+              );
             }
-            startInterCardCountdown(() => {
-              isResolvingCardRef.current = false;
-              if (!canContinueFlow()) return;
-              removeResolvedCard(card, nextCorrectBookmarks, nextIncorrectBookmarks, practicedCount);
-            });
-          });
-        },
-        (error) => {
-          updateStatusWithDebounce(`${strings.verbalFlashcardsCouldNotSaveResult}: ${error}`, "error", 0);
-        },
-      );
+          }
+        } catch (error) {
+          console.error("Could not save verbal flashcard result:", error);
+        }
+      };
+
+      void saveFlashcardAnswer();
+
+      const wasAccepted = Boolean(isCorrect);
+      const summaryBookmark = cardToSummaryBookmark(card);
+      const nextCorrectBookmarks = wasAccepted ? [...correctBookmarks, summaryBookmark] : correctBookmarks;
+      const nextIncorrectBookmarks = wasAccepted ? incorrectBookmarks : [...incorrectBookmarks, summaryBookmark];
+      const practicedCount = totalPracticedBookmarksInSession + 1;
+      setCorrectBookmarks(nextCorrectBookmarks);
+      setIncorrectBookmarks(nextIncorrectBookmarks);
+      setTotalPracticedBookmarksInSession(practicedCount);
+      delete attemptCountsRef.current[card.id];
+
+      isResolvingCardRef.current = true;
+      const feedbackMessage = feedbackAnalysis?.feedback;
+      const spokenFeedback = feedbackMessage || (wasAccepted ? feedbackCopy.successIntro : feedbackCopy.finalIncorrectIntro);
+      const answerFeedbackIntro = wasAccepted ? feedbackCopy.successIntro : feedbackCopy.finalIncorrectIntro;
+      const speakResolvedFeedback = feedbackAnalysis?.speakAnswerAfterFeedback
+        ? () =>
+            speakFeedback(answerFeedbackIntro).then(() => {
+              if (!card.answer || !isPageActiveRef.current) {
+                return;
+              }
+              return speakText(card.answer, learnedLanguageId, strings.verbalFlashcardsPlayingAnswer);
+            })
+        : () => speakFeedback(spokenFeedback);
+
+      speakResolvedFeedback().finally(() => {
+        if (!canContinueFlow()) {
+          isResolvingCardRef.current = false;
+          return;
+        }
+        startInterCardCountdown(() => {
+          isResolvingCardRef.current = false;
+          if (!canContinueFlow()) return;
+          removeResolvedCard(card, nextCorrectBookmarks, nextIncorrectBookmarks, practicedCount);
+        });
+      });
     },
     [
       api,
+      cardToSummaryBookmark,
       canContinueFlow,
       correctBookmarks,
       feedbackCopy,
+      getExerciseSessionId,
+      getCurrentCard,
       incorrectBookmarks,
       learnedLanguageId,
       removeResolvedCard,

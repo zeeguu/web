@@ -37,7 +37,7 @@ Zeeguu_API.prototype.submitFlashcardAnswer = function (
     session_id: sessionId,
   };
 
-  this._postJSON("verbal_flashcards/submit", payload, callback, onError);
+  return this._postJSON("verbal_flashcards/submit", payload, callback, onError);
 };
 
 Zeeguu_API.prototype.transcribeAudio = function (audioFile, callback, onError) {
