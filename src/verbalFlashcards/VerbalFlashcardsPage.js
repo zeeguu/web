@@ -496,6 +496,7 @@ export default function VerbalFlashcardsPage() {
     isStartingRecordingRef,
     micStreamRef,
     openMicAndStartRecording,
+    prepareMicrophone,
   } = useAudioRecorder({
     canContinueFlow,
     flowRunIdRef,
@@ -538,13 +539,14 @@ export default function VerbalFlashcardsPage() {
     isCooldownRef.current = true;
     updateStatusWithDebounce(strings.verbalFlashcardsListenCarefully, "cooldown", 0);
 
-    const flowRunId = flowRunIdRef.current;
-
     if (!card) {
       setIsCooldown(false);
       isCooldownRef.current = false;
       return;
     }
+
+    const flowRunId = flowRunIdRef.current;
+    const microphoneReady = prepareMicrophone().catch(() => null);
 
     playCardTts(card, flowRunId).finally(async () => {
       if (flowRunId !== flowRunIdRef.current) {
@@ -553,9 +555,14 @@ export default function VerbalFlashcardsPage() {
 
       setIsCooldown(false);
       isCooldownRef.current = false;
-      updateStatusWithDebounce(strings.verbalFlashcardsStartingMicrophone, "processing", 0);
+      updateStatusWithDebounce(strings.verbalFlashcardsPreparingMicrophone, "processing", 0);
 
       await new Promise((resolve) => window.setTimeout(resolve, AFTER_TTS_BEFORE_RECORDING_MS));
+      if (flowRunId !== flowRunIdRef.current) {
+        return;
+      }
+
+      await microphoneReady;
       if (flowRunId !== flowRunIdRef.current) {
         return;
       }
@@ -564,7 +571,7 @@ export default function VerbalFlashcardsPage() {
       setAccuracyResult(null);
       await openMicAndStartRecording();
     });
-  }, [openMicAndStartRecording, playCardTts, resetCardUi, stopCurrentFlow, updateStatusWithDebounce]);
+  }, [openMicAndStartRecording, playCardTts, prepareMicrophone, resetCardUi, stopCurrentFlow, updateStatusWithDebounce]);
 
   useEffect(() => {
     beginCardFlowRef.current = beginCardFlow;

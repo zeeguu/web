@@ -2,9 +2,18 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import strings from "../../i18n/definitions";
 import {
   MIN_VOICE_BEFORE_STOP_ELIGIBLE_MS,
+  RECORDING_PREROLL_MS,
   SILENCE_THRESHOLD_MS,
   supportedRecordingMimeType,
 } from "../verbalFlashcardsLanguage";
+
+const AUDIO_RECORDING_CONSTRAINTS = {
+  audio: {
+    echoCancellation: true,
+    noiseSuppression: true,
+    autoGainControl: true,
+  },
+};
 
 export default function useAudioRecorder({
   canContinueFlow,
@@ -28,10 +37,13 @@ export default function useAudioRecorder({
   const isRecordingRef = useRef(false);
   const isStartingRecordingRef = useRef(false);
   const shouldProcessRecordingOnStopRef = useRef(false);
+  const microphonePreparationPromiseRef = useRef(null);
+  const microphonePreparationTokenRef = useRef(0);
 
   const lastVoiceDetectedAtRef = useRef(0);
   const voiceStartedAtRef = useRef(0);
   const recordingStartedAtRef = useRef(0);
+  const recordingStopEligibleAtRef = useRef(0);
   const noiseSensitivityRef = useRef(noiseSensitivity);
 
   useEffect(() => {
@@ -39,6 +51,9 @@ export default function useAudioRecorder({
   }, [noiseSensitivity]);
 
   const cleanupRecordingResources = useCallback(() => {
+    microphonePreparationTokenRef.current += 1;
+    microphonePreparationPromiseRef.current = null;
+
     if (animationFrameRef.current) {
       cancelAnimationFrame(animationFrameRef.current);
       animationFrameRef.current = null;
@@ -71,11 +86,52 @@ export default function useAudioRecorder({
     voiceStartedAtRef.current = 0;
     lastVoiceDetectedAtRef.current = 0;
     recordingStartedAtRef.current = 0;
+    recordingStopEligibleAtRef.current = 0;
     shouldProcessRecordingOnStopRef.current = false;
     isStartingRecordingRef.current = false;
     isRecordingRef.current = false;
     setIsRecording(false);
   }, []);
+
+  const prepareMicrophone = useCallback(
+    async ({ showStatus = false } = {}) => {
+      if (micStreamRef.current && micStreamRef.current.active) {
+        return micStreamRef.current;
+      }
+
+      if (microphonePreparationPromiseRef.current) {
+        return microphonePreparationPromiseRef.current;
+      }
+
+      if (showStatus) {
+        updateStatusWithDebounce(strings.verbalFlashcardsPreparingMicrophone, "processing", 0);
+      }
+
+      const preparationToken = microphonePreparationTokenRef.current;
+      microphonePreparationPromiseRef.current = navigator.mediaDevices
+        .getUserMedia(AUDIO_RECORDING_CONSTRAINTS)
+        .then((stream) => {
+          if (preparationToken !== microphonePreparationTokenRef.current) {
+            stream.getTracks().forEach((track) => track.stop());
+            return null;
+          }
+
+          micStreamRef.current = stream;
+          return stream;
+        })
+        .catch((error) => {
+          console.error("Microphone preparation error:", error);
+          updateStatusWithDebounce(strings.verbalFlashcardsMicrophonePermissionNeeded, "error");
+          throw error;
+        })
+        .finally(() => {
+          microphonePreparationPromiseRef.current = null;
+        });
+
+      return microphonePreparationPromiseRef.current;
+    },
+    [updateStatusWithDebounce],
+  );
 
   const stopRecording = useCallback(() => {
     const recorder = mediaRecorderRef.current;
@@ -140,6 +196,7 @@ export default function useAudioRecorder({
         const threshold = parseFloat(noiseSensitivityRef.current);
         const isVoiceFrame = maxSample > threshold || rms > threshold;
         const now = Date.now();
+        const isPreroll = now < recordingStopEligibleAtRef.current;
 
         if (isVoiceFrame) {
           lastVoiceDetectedAtRef.current = now;
@@ -148,7 +205,11 @@ export default function useAudioRecorder({
             voiceStartedAtRef.current = now;
           }
 
-          updateStatusWithDebounce(strings.verbalFlashcardsRecordingSpeakNow, "recording", 0);
+          if (isPreroll) {
+            updateStatusWithDebounce(strings.verbalFlashcardsPreparingMicrophone, "processing", 0);
+          } else {
+            updateStatusWithDebounce(strings.verbalFlashcardsRecordingSpeakNow, "recording", 0);
+          }
         } else {
           const voicedFor = voiceStartedAtRef.current > 0 ? now - voiceStartedAtRef.current : 0;
 
@@ -157,12 +218,22 @@ export default function useAudioRecorder({
               ? now - lastVoiceDetectedAtRef.current
               : now - recordingStartedAtRef.current;
 
-          if (voicedFor >= MIN_VOICE_BEFORE_STOP_ELIGIBLE_MS && silenceDuration >= SILENCE_THRESHOLD_MS) {
+          if (
+            !isPreroll &&
+            voicedFor >= MIN_VOICE_BEFORE_STOP_ELIGIBLE_MS &&
+            silenceDuration >= SILENCE_THRESHOLD_MS
+          ) {
             stopRecording();
             return;
           }
 
-          updateStatusWithDebounce(strings.verbalFlashcardsWaitingForSpeech, "processing", 0);
+          if (isPreroll) {
+            updateStatusWithDebounce(strings.verbalFlashcardsPreparingMicrophone, "processing", 0);
+          } else if (voiceStartedAtRef.current > 0) {
+            updateStatusWithDebounce(strings.verbalFlashcardsWaitingForSpeech, "processing", 0);
+          } else {
+            updateStatusWithDebounce(strings.verbalFlashcardsStartingMicrophone, "recording", 0);
+          }
         }
 
         animationFrameRef.current = requestAnimationFrame(detect);
@@ -217,21 +288,17 @@ export default function useAudioRecorder({
     try {
       isStartingRecordingRef.current = true;
 
-      const stream = await navigator.mediaDevices.getUserMedia({
-        audio: {
-          echoCancellation: true,
-          noiseSuppression: true,
-          autoGainControl: true,
-        },
-      });
+      const stream = await prepareMicrophone({ showStatus: true });
 
-      if (isCooldownRef.current) {
-        stream.getTracks().forEach((track) => track.stop());
+      if (!stream) {
         isStartingRecordingRef.current = false;
         return;
       }
 
-      micStreamRef.current = stream;
+      if (isCooldownRef.current) {
+        isStartingRecordingRef.current = false;
+        return;
+      }
 
       const mimeType = supportedRecordingMimeType();
       mediaRecorderRef.current = mimeType ? new MediaRecorder(stream, { mimeType }) : new MediaRecorder(stream);
@@ -248,7 +315,8 @@ export default function useAudioRecorder({
       shouldProcessRecordingOnStopRef.current = true;
 
       recordingStartedAtRef.current = Date.now();
-      lastVoiceDetectedAtRef.current = Date.now();
+      recordingStopEligibleAtRef.current = recordingStartedAtRef.current + RECORDING_PREROLL_MS;
+      lastVoiceDetectedAtRef.current = 0;
       voiceStartedAtRef.current = 0;
 
       mediaRecorderRef.current.start();
@@ -257,7 +325,7 @@ export default function useAudioRecorder({
       setIsRecording(true);
       isStartingRecordingRef.current = false;
 
-      updateStatusWithDebounce(strings.verbalFlashcardsRecordingSpeakNow, "recording", 0);
+      updateStatusWithDebounce(strings.verbalFlashcardsPreparingMicrophone, "processing", 0);
       setupSilenceDetection();
     } catch (error) {
       console.error("Recording start error:", error);
@@ -271,6 +339,7 @@ export default function useAudioRecorder({
     cleanupRecordingResources,
     handleRecordingStop,
     isCooldownRef,
+    prepareMicrophone,
     setupSilenceDetection,
     updateStatusWithDebounce,
   ]);
@@ -282,6 +351,7 @@ export default function useAudioRecorder({
     isStartingRecordingRef,
     micStreamRef,
     openMicAndStartRecording,
+    prepareMicrophone,
     recordingStartedAtRef,
   };
 }
