@@ -23,7 +23,7 @@ Zeeguu_API.prototype.readingSessionUpdate = function (
 ) {
   let payload = {
     id: readingSessionId,
-    duration: currentDuration * 1000, //the API expects ms
+    duration: currentDuration, // the API expects seconds
   };
 
   // Use beacon to prevent "Load failed" errors when user navigates away
@@ -36,7 +36,7 @@ Zeeguu_API.prototype.readingSessionEnd = function (
 ) {
   let payload = {
     id: readingSessionId,
-    duration: totalTime * 1000,
+    duration: totalTime, // the API expects seconds
   };
 
   // Use beacon to prevent "Load failed" errors when user navigates away
