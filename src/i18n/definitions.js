@@ -62,6 +62,8 @@ let strings = new LocalizedStrings(
       verbalFlashcardsListenCarefully: "Listen carefully...",
       verbalFlashcardsPreparingMicrophone: "Getting ready...",
       verbalFlashcardsStartingMicrophone: "Your turn. Speak now...",
+      verbalFlashcardsUnsupportedTranslationLanguage:
+        "Verbal flashcards currently work only when your translation language is English or Danish. Change your translation language before using verbal flashcards.",
       dailyAudio: "Listen",
       translate: "Translate",
       today: "Today",
@@ -1065,6 +1067,8 @@ let strings = new LocalizedStrings(
       verbalFlashcardsListenCarefully: "Lyt godt efter...",
       verbalFlashcardsPreparingMicrophone: "Gør klar...",
       verbalFlashcardsStartingMicrophone: "Din tur. Tal nu...",
+      verbalFlashcardsUnsupportedTranslationLanguage:
+        "Udtale flashcards virker lige nu kun, når dit oversættelsessprog er engelsk eller dansk. Skift oversættelsessprog, før du bruger udtale flashcards.",
       code: "Kode",
       interest: "interesse",
       addTexts: "Tilføj tekster",
