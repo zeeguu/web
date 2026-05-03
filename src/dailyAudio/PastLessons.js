@@ -6,7 +6,6 @@ import LoadingAnimation from "../components/LoadingAnimation";
 import CustomAudioPlayer from "../components/CustomAudioPlayer";
 import useListeningSession from "../hooks/useListeningSession";
 import { LessonMetadata, SubtleTextButton } from "./LessonView.sc";
-import { wordsAsTile } from "./audioUtils";
 import { shareLessonLink } from "./shareLessonLink";
 
 export default function PastLessons() {
@@ -189,7 +188,7 @@ function PastLessonItem({ lesson, api, userDetails, onLessonCompleted }) {
               month: "short",
               day: "numeric",
             })}
-            : {lesson.title || wordsAsTile(lesson.words)}
+            : {lesson.title || "Past Audio Lesson"}
           </h3>
           {lesson.canonical_suggestion && (
             <LessonMetadata>
@@ -223,7 +222,7 @@ function PastLessonItem({ lesson, api, userDetails, onLessonCompleted }) {
               lesson.pause_position_seconds || lesson.position_seconds || lesson.progress_seconds || 0
             }
             language={userDetails?.learned_language}
-            title={lesson.words ? wordsAsTile(lesson.words) : "Past Audio Lesson"}
+            title={lesson.title || "Past Audio Lesson"}
             artist={`Zeeguu - ${new Date(lesson.created_on).toLocaleDateString()}`}
             onPlay={() => {
               if (lesson.lesson_id) {
