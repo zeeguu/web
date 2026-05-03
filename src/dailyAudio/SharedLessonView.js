@@ -3,11 +3,22 @@ import { useParams, useHistory } from "react-router-dom";
 import { APIContext } from "../contexts/APIContext";
 import { UserContext } from "../contexts/UserContext";
 import CustomAudioPlayer from "../components/CustomAudioPlayer";
+import CloseIconButton from "../components/CloseIconButton";
 import LoadingAnimation from "../components/LoadingAnimation";
 import { LessonWrapper, LessonTitle, LessonMetadata } from "./LessonView.sc";
-import { BannerContainer, BannerMessage, BannerButton } from "./SharedLessonView.sc";
+import {
+  LessonCard,
+  HeaderRow,
+  ShareNote,
+  BannerButton,
+} from "./SharedLessonView.sc";
 import { languageNames } from "../utils/languageDetection";
 import useListeningSession from "../hooks/useListeningSession";
+
+// Module-scope so it survives the AppLayout remount that fires when
+// userDetails.learned_language changes (see AppLayout.js — the content tree
+// is keyed on learned_language and thus fully unmounts/remounts on switch).
+let lastVisitedSharedLesson = null;
 
 export default function SharedLessonView() {
   const api = useContext(APIContext);
@@ -19,14 +30,37 @@ export default function SharedLessonView() {
   const [error, setError] = useState(null);
   const [userLanguages, setUserLanguages] = useState(null);
 
+  const activeLanguage = userDetails?.learned_language;
+  const shouldRedirectAfterLanguageSwitch =
+    !!activeLanguage &&
+    !!lastVisitedSharedLesson &&
+    lastVisitedSharedLesson.id === id &&
+    lastVisitedSharedLesson.language !== activeLanguage;
+
   useEffect(() => {
+    if (shouldRedirectAfterLanguageSwitch) return;
     api.getSharedAudioLesson(
       id,
       (data) => setLessonData(data),
       (err) => setError(err.message || "Could not load shared lesson."),
     );
     api.getUserLanguages((langs) => setUserLanguages(langs || []));
-  }, [api, id]);
+  }, [api, id, shouldRedirectAfterLanguageSwitch]);
+
+  useEffect(() => {
+    if (shouldRedirectAfterLanguageSwitch) {
+      lastVisitedSharedLesson = null;
+      history.replace("/daily-audio");
+      return;
+    }
+    if (!id || !activeLanguage) return;
+    lastVisitedSharedLesson = { id, language: activeLanguage };
+  }, [id, activeLanguage, history, shouldRedirectAfterLanguageSwitch]);
+
+  const handleClose = () => {
+    lastVisitedSharedLesson = null;
+    history.push("/daily-audio");
+  };
 
   // Hook before any early return so the hook order stays stable across renders.
   // Pass null when the user isn't learning this lesson's language → useListeningSession
@@ -42,8 +76,13 @@ export default function SharedLessonView() {
   if (error) {
     return (
       <LessonWrapper>
-        <h2>Could not open this lesson</h2>
-        <p>{error}</p>
+        <LessonCard>
+          <HeaderRow>
+            <h2>Could not open this lesson</h2>
+            <CloseIconButton onClick={handleClose} ariaLabel="Close shared lesson" />
+          </HeaderRow>
+          <p>{error}</p>
+        </LessonCard>
       </LessonWrapper>
     );
   }
@@ -83,43 +122,41 @@ export default function SharedLessonView() {
 
   return (
     <LessonWrapper>
-      <LessonTitle>{titleText}</LessonTitle>
-      <LessonMetadata>
-        Language: <b>{lessonLangName}</b>
-        {lessonData.canonical_suggestion && (
-          <>
-            {" · "}
-            {lessonData.lesson_type === "situation" ? "Situation" : "Topic"}: <b>{lessonData.canonical_suggestion}</b>
-          </>
-        )}
-      </LessonMetadata>
+      <LessonCard>
+        <HeaderRow>
+          <LessonTitle>{titleText}</LessonTitle>
+          <CloseIconButton onClick={handleClose} ariaLabel="Close shared lesson" />
+        </HeaderRow>
+        <LessonMetadata>
+          Language: <b>{lessonLangName}</b>
+          {lessonData.canonical_suggestion && (
+            <>
+              {" · "}
+              {lessonData.lesson_type === "situation" ? "Situation" : "Topic"}: <b>{lessonData.canonical_suggestion}</b>
+            </>
+          )}
+        </LessonMetadata>
 
-      <CustomAudioPlayer
-        src={lessonData.audio_url}
-        language={lessonLang}
-        title={titleText}
-        artist={`${lessonLangName} Audio Lesson`}
-        onPlay={() => listeningSession.start()}
-        onPause={() => listeningSession.pause()}
-        onEnded={() => listeningSession.end()}
-        style={{
-          width: "100%",
-          marginBottom: "20px",
-          maxWidth: "600px",
-          margin: "0 auto 20px auto",
-        }}
-      />
+        <CustomAudioPlayer
+          src={lessonData.audio_url}
+          language={lessonLang}
+          title={titleText}
+          artist={`${lessonLangName} Audio Lesson`}
+          onPlay={() => listeningSession.start()}
+          onPause={() => listeningSession.pause()}
+          onEnded={() => listeningSession.end()}
+          style={{
+            width: "100%",
+            maxWidth: "600px",
+            margin: "0 auto",
+          }}
+        />
+      </LessonCard>
 
-      <ShareBanner {...banner} />
+      <ShareNote>
+        <div>{banner.message}</div>
+        <BannerButton onClick={banner.onAction}>{banner.actionLabel}</BannerButton>
+      </ShareNote>
     </LessonWrapper>
-  );
-}
-
-function ShareBanner({ message, actionLabel, onAction }) {
-  return (
-    <BannerContainer>
-      <BannerMessage>{message}</BannerMessage>
-      <BannerButton onClick={onAction}>{actionLabel}</BannerButton>
-    </BannerContainer>
   );
 }

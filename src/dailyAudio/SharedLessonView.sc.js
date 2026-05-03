@@ -1,20 +1,27 @@
 import styled from "styled-components";
 import { zeeguuOrange } from "../components/colors";
 
-export const BannerContainer = styled.div`
-  margin-top: 30px;
+export const LessonCard = styled.div`
   padding: 16px;
   background-color: var(--bg-secondary);
   border: 1px solid ${zeeguuOrange};
   border-radius: 6px;
+`;
+
+export const HeaderRow = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+`;
+
+export const ShareNote = styled.div`
+  margin-top: 20px;
   display: flex;
   flex-direction: column;
   gap: 12px;
   align-items: flex-start;
-`;
-
-export const BannerMessage = styled.div`
-  color: var(--text-primary);
+  color: var(--text-secondary);
   font-size: 14px;
 `;
 
