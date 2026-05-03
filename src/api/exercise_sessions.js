@@ -3,15 +3,16 @@ import qs from "qs";
 import { getPlatform } from "../utils/misc/browserDetection";
 
 // Consistent naming with other session types (reading, browsing, listening)
-Zeeguu_API.prototype.exerciseSessionCreate = function (callback) {
+Zeeguu_API.prototype.exerciseSessionCreate = function (callback, onError) {
   const after_extracting_json = function (json) {
     let id = JSON.parse(json).id;
     callback(id);
   };
-  this._post(
+  return this._post(
     `exercise_session_start`,
     qs.stringify({ platform: getPlatform() }),
-    after_extracting_json
+    after_extracting_json,
+    onError
   );
 };
 

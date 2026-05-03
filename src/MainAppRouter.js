@@ -54,6 +54,7 @@ import SharedLessonView from "./dailyAudio/SharedLessonView";
 import IndividualExercise from "./pages/IndividualExercise";
 import Swiper from "./swiper/Swiper";
 import KeyboardTest from "./pages/KeyboardTest";
+import VerbalFlashcardsRouter from "@/verbalFlashcards/VerbalFlashcardsRouter";
 import Feature from "./features/Feature";
 
 // Helper to detect if we're in a Capacitor native app
@@ -129,6 +130,7 @@ export default function MainAppRouter({ hasExtension, handleSuccessfulLogIn }) {
       <PrivateRouteWithLayout path="/swiper" component={Swiper} />
       <PrivateRoute path="/watch/video" component={VideoPlayer} />
       <PrivateRouteWithLayout path="/exercises" component={ExercisesRouter} />
+      <PrivateRouteWithLayout path="/verbalFlashcards" component={VerbalFlashcardsRouter} />    
       <PrivateRouteWithLayout path="/daily-audio" component={DailyAudioRouter} />
       <PrivateRouteWithLayout path="/shared-lesson/:id" component={SharedLessonView} />
       <PrivateRouteWithLayout path="/translate" component={TranslateRouter} />
