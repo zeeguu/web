@@ -1,3 +1,1 @@
-- Shared audio lesson links now open directly in the app instead of falling through to the browser.
-- Shared lessons get a clear close button, and switching active language while viewing one returns you to your daily audio.
-- Lock-screen Now Playing title is restored for topic and situation lessons (no more blank artwork or degraded transport controls).
+- Lock-screen player: skip-back and skip-forward buttons now keep working after you pause, and the title and album art stay reliably visible when you switch between apps.
