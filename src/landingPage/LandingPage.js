@@ -126,7 +126,7 @@ export default function LandingPage() {
                   alt="An Italian news article in the Zeeguu mobile app, with the option to translate it to your level"
                   src="static/images/mobile-simplification.jpeg"
                 />
-                <h3>Articles adapted to your&nbsp;level</h3>
+                <h3>Any article, in your language and at your&nbsp;level</h3>
                 <p>
                   Send any article in any language to Zeeguu — and it will be converted to your learned language
                   at your&nbsp;level.
