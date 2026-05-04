@@ -1,10 +1,17 @@
 import strings from "../i18n/definitions";
 
 export default function Contributors() {
-  function member(name, role) {
+  function member(name, role, url) {
+    const nameNode = url ? (
+      <a href={url} target="_blank" rel="noopener noreferrer">
+        <b>{name}</b>
+      </a>
+    ) : (
+      <b>{name}</b>
+    );
     return (
       <p>
-        <b>{name}</b>
+        {nameNode}
         <br />
         {role}
       </p>
@@ -23,7 +30,7 @@ export default function Contributors() {
       {member("Gábor Tódor", "Gamification and Friendships")}
       {member("Nicklas Koch Rasmussen", "Gamification and Friendships")}
 
-      {member("Anikó Veres", "Badge Design")}
+      {member("Anikó Veres", "Badge Design", "https://www.behance.net/veresaniko")}
 
       {member("Tiago Ribeiro", "Development and ML Research")}
       {member("Sofia Henden", "Article browsing modes")}
