@@ -1,1 +1,3 @@
-- Fix: shared audio lesson links no longer point to localhost when shared from the iOS app — they now correctly open zeeguu.org for the recipient.
+- Shared audio lesson links now open directly in the app instead of falling through to the browser.
+- Shared lessons get a clear close button, and switching active language while viewing one returns you to your daily audio.
+- Lock-screen Now Playing title is restored for topic and situation lessons (no more blank artwork or degraded transport controls).
