@@ -148,15 +148,14 @@ export default function CustomAudioPlayer({
 
     navigator.mediaSession.playbackState = 'playing';
 
+    // Cleanup intentionally does NOT null action handlers. iOS only renders
+    // lock-screen seek/play buttons while their handlers are registered, and
+    // routes taps through them. Nulling on every pause meant the buttons went
+    // inert as soon as the user paused once. The next player to start playing
+    // will overwrite handlers on its own play transition; on unmount the
+    // stale handlers reference a null audioRef and no-op safely.
     return () => {
       if ('mediaSession' in navigator) {
-        navigator.mediaSession.setActionHandler('play', null);
-        navigator.mediaSession.setActionHandler('pause', null);
-        navigator.mediaSession.setActionHandler('previoustrack', null);
-        navigator.mediaSession.setActionHandler('nexttrack', null);
-        navigator.mediaSession.setActionHandler('seekbackward', null);
-        navigator.mediaSession.setActionHandler('seekforward', null);
-        navigator.mediaSession.setActionHandler('seekto', null);
         navigator.mediaSession.playbackState = 'paused';
       }
     };
