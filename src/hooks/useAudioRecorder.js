@@ -1,11 +1,22 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import strings from "../../i18n/definitions";
 import {
   MIN_VOICE_BEFORE_STOP_ELIGIBLE_MS,
   RECORDING_PREROLL_MS,
   SILENCE_THRESHOLD_MS,
   supportedRecordingMimeType,
-} from "../verbalFlashcardsLanguage";
+} from "../utils/audioRecording";
+
+const DEFAULT_STATUS_MESSAGES = {
+  preparingMicrophone: "Getting ready...",
+  microphonePermissionNeeded: "Microphone permission needed",
+  processing: "Processing...",
+  recordingSpeakNow: "Recording... Speak now",
+  waitingForSpeech: "Waiting for speech / silence...",
+  startingMicrophone: "Your turn. Speak now...",
+  micAnalysisError: "Mic analysis error",
+  recordingCancelled: "Recording cancelled",
+  noAudioDetected: "No audio detected",
+};
 
 const AUDIO_RECORDING_CONSTRAINTS = {
   audio: {
@@ -18,11 +29,17 @@ const AUDIO_RECORDING_CONSTRAINTS = {
 export default function useAudioRecorder({
   canContinueFlow,
   flowRunIdRef,
-  isCooldownRef,
+  isInputBlockedRef,
   noiseSensitivity,
   onRecordingComplete,
+  statusMessages = {},
   updateStatusWithDebounce,
 }) {
+  const messages = {
+    ...DEFAULT_STATUS_MESSAGES,
+    ...statusMessages,
+  };
+
   const [isRecording, setIsRecording] = useState(false);
 
   const mediaRecorderRef = useRef(null);
@@ -104,7 +121,7 @@ export default function useAudioRecorder({
       }
 
       if (showStatus) {
-        updateStatusWithDebounce(strings.verbalFlashcardsPreparingMicrophone, "processing", 0);
+        updateStatusWithDebounce(messages.preparingMicrophone, "processing", 0);
       }
 
       const preparationToken = microphonePreparationTokenRef.current;
@@ -121,7 +138,7 @@ export default function useAudioRecorder({
         })
         .catch((error) => {
           console.error("Microphone preparation error:", error);
-          updateStatusWithDebounce(strings.verbalFlashcardsMicrophonePermissionNeeded, "error");
+          updateStatusWithDebounce(messages.microphonePermissionNeeded, "error");
           throw error;
         })
         .finally(() => {
@@ -130,7 +147,7 @@ export default function useAudioRecorder({
 
       return microphonePreparationPromiseRef.current;
     },
-    [updateStatusWithDebounce],
+    [messages.microphonePermissionNeeded, messages.preparingMicrophone, updateStatusWithDebounce],
   );
 
   const stopRecording = useCallback(() => {
@@ -154,8 +171,8 @@ export default function useAudioRecorder({
       animationFrameRef.current = null;
     }
 
-    updateStatusWithDebounce(strings.verbalFlashcardsProcessing, "processing", 0);
-  }, [updateStatusWithDebounce]);
+    updateStatusWithDebounce(messages.processing, "processing", 0);
+  }, [messages.processing, updateStatusWithDebounce]);
 
   const setupSilenceDetection = useCallback(() => {
     if (!micStreamRef.current) return;
@@ -206,9 +223,9 @@ export default function useAudioRecorder({
           }
 
           if (isPreroll) {
-            updateStatusWithDebounce(strings.verbalFlashcardsPreparingMicrophone, "processing", 0);
+            updateStatusWithDebounce(messages.preparingMicrophone, "processing", 0);
           } else {
-            updateStatusWithDebounce(strings.verbalFlashcardsRecordingSpeakNow, "recording", 0);
+            updateStatusWithDebounce(messages.recordingSpeakNow, "recording", 0);
           }
         } else {
           const voicedFor = voiceStartedAtRef.current > 0 ? now - voiceStartedAtRef.current : 0;
@@ -228,11 +245,11 @@ export default function useAudioRecorder({
           }
 
           if (isPreroll) {
-            updateStatusWithDebounce(strings.verbalFlashcardsPreparingMicrophone, "processing", 0);
+            updateStatusWithDebounce(messages.preparingMicrophone, "processing", 0);
           } else if (voiceStartedAtRef.current > 0) {
-            updateStatusWithDebounce(strings.verbalFlashcardsWaitingForSpeech, "processing", 0);
+            updateStatusWithDebounce(messages.waitingForSpeech, "processing", 0);
           } else {
-            updateStatusWithDebounce(strings.verbalFlashcardsStartingMicrophone, "recording", 0);
+            updateStatusWithDebounce(messages.startingMicrophone, "recording", 0);
           }
         }
 
@@ -246,9 +263,17 @@ export default function useAudioRecorder({
       detect();
     } catch (error) {
       console.error("Silence detection setup error:", error);
-      updateStatusWithDebounce(strings.verbalFlashcardsMicAnalysisError, "error");
+      updateStatusWithDebounce(messages.micAnalysisError, "error");
     }
-  }, [stopRecording, updateStatusWithDebounce]);
+  }, [
+    messages.micAnalysisError,
+    messages.preparingMicrophone,
+    messages.recordingSpeakNow,
+    messages.startingMicrophone,
+    messages.waitingForSpeech,
+    stopRecording,
+    updateStatusWithDebounce,
+  ]);
 
   const handleRecordingStop = useCallback(() => {
     const flowRunId = flowRunIdRef.current;
@@ -260,12 +285,12 @@ export default function useAudioRecorder({
 
     if (!shouldProcessRecordingOnStopRef.current) {
       cleanupRecordingResources();
-      updateStatusWithDebounce(strings.verbalFlashcardsRecordingCancelled, "idle", 0);
+      updateStatusWithDebounce(messages.recordingCancelled, "idle", 0);
       return;
     }
 
     if (!audioChunksRef.current.length) {
-      updateStatusWithDebounce(strings.verbalFlashcardsNoAudioDetected, "error");
+      updateStatusWithDebounce(messages.noAudioDetected, "error");
       cleanupRecordingResources();
       return;
     }
@@ -273,17 +298,26 @@ export default function useAudioRecorder({
     const mimeType = mediaRecorderRef.current?.mimeType || "audio/webm";
     const audioBlob = new Blob(audioChunksRef.current, { type: mimeType });
 
-    updateStatusWithDebounce(strings.verbalFlashcardsProcessing, "processing", 0);
+    updateStatusWithDebounce(messages.processing, "processing", 0);
     onRecordingComplete({
       audioBlob,
       flowRunId,
       recordingStartedAt: recordingStartedAtRef.current,
     });
-  }, [canContinueFlow, cleanupRecordingResources, flowRunIdRef, onRecordingComplete, updateStatusWithDebounce]);
+  }, [
+    canContinueFlow,
+    cleanupRecordingResources,
+    flowRunIdRef,
+    messages.noAudioDetected,
+    messages.processing,
+    messages.recordingCancelled,
+    onRecordingComplete,
+    updateStatusWithDebounce,
+  ]);
 
   const openMicAndStartRecording = useCallback(async () => {
     if (isStartingRecordingRef.current || isRecordingRef.current) return;
-    if (isCooldownRef.current) return;
+    if (isInputBlockedRef.current) return;
 
     try {
       isStartingRecordingRef.current = true;
@@ -295,7 +329,7 @@ export default function useAudioRecorder({
         return;
       }
 
-      if (isCooldownRef.current) {
+      if (isInputBlockedRef.current) {
         isStartingRecordingRef.current = false;
         return;
       }
@@ -325,20 +359,22 @@ export default function useAudioRecorder({
       setIsRecording(true);
       isStartingRecordingRef.current = false;
 
-      updateStatusWithDebounce(strings.verbalFlashcardsPreparingMicrophone, "processing", 0);
+      updateStatusWithDebounce(messages.preparingMicrophone, "processing", 0);
       setupSilenceDetection();
     } catch (error) {
       console.error("Recording start error:", error);
       isStartingRecordingRef.current = false;
       isRecordingRef.current = false;
       setIsRecording(false);
-      updateStatusWithDebounce(strings.verbalFlashcardsMicrophonePermissionNeeded, "error");
+      updateStatusWithDebounce(messages.microphonePermissionNeeded, "error");
       cleanupRecordingResources();
     }
   }, [
     cleanupRecordingResources,
     handleRecordingStop,
-    isCooldownRef,
+    isInputBlockedRef,
+    messages.microphonePermissionNeeded,
+    messages.preparingMicrophone,
     prepareMicrophone,
     setupSilenceDetection,
     updateStatusWithDebounce,

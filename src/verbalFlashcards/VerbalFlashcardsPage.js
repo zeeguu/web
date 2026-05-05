@@ -5,7 +5,7 @@ import { UserContext } from "../contexts/UserContext";
 import strings from "../i18n/definitions";
 import FlashcardsHeader from "./components/FlashcardsHeader";
 import FlashcardStage from "./components/FlashcardStage";
-import useAudioRecorder from "./hooks/useAudioRecorder";
+import useAudioRecorder from "../hooks/useAudioRecorder";
 import useFlashcardExerciseSession from "./hooks/useFlashcardExerciseSession";
 import useVerbalFlashcardTTS from "./hooks/useVerbalFlashcardTTS";
 import * as s from "./verbalFlashcards_Styled/VerbalFlashcards.sc.js";
@@ -500,9 +500,20 @@ export default function VerbalFlashcardsPage() {
   } = useAudioRecorder({
     canContinueFlow,
     flowRunIdRef,
-    isCooldownRef,
+    isInputBlockedRef: isCooldownRef,
     noiseSensitivity,
     onRecordingComplete: handleRecordingComplete,
+    statusMessages: {
+      preparingMicrophone: strings.verbalFlashcardsPreparingMicrophone,
+      microphonePermissionNeeded: strings.verbalFlashcardsMicrophonePermissionNeeded,
+      processing: strings.verbalFlashcardsProcessing,
+      recordingSpeakNow: strings.verbalFlashcardsRecordingSpeakNow,
+      waitingForSpeech: strings.verbalFlashcardsWaitingForSpeech,
+      startingMicrophone: strings.verbalFlashcardsStartingMicrophone,
+      micAnalysisError: strings.verbalFlashcardsMicAnalysisError,
+      recordingCancelled: strings.verbalFlashcardsRecordingCancelled,
+      noAudioDetected: strings.verbalFlashcardsNoAudioDetected,
+    },
     updateStatusWithDebounce,
   });
 
