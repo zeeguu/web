@@ -25,8 +25,8 @@ const PageBackground = styled.div`
     text-decoration: underline;
   }
 
-  ${(props) =>
-    props.layoutVariant === "minimalistic-top-aligned" &&
+  ${({ $layoutVariant }) =>
+    $layoutVariant === "minimalistic-top-aligned" &&
     css`
       width: 100%;
       min-height: auto;
@@ -68,8 +68,8 @@ const PageContainer = styled.div`
     width: 95%;
   }
 
-  ${(props) =>
-    props.pageWidth === "narrow" &&
+  ${({ $pageWidth }) =>
+    $pageWidth === "narrow" &&
     css`
       width: 38rem;
       @media (max-width: 1200px) {
