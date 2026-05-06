@@ -444,6 +444,8 @@ export default function VerbalFlashcardsPage() {
           const transcription = result?.transcription || "";
           const expectedText = currentCard.answer;
 
+          console.log("[ASR] heard:", JSON.stringify(transcription), "expected:", JSON.stringify(expectedText));
+
           api.checkPronunciation(
             transcription,
             expectedText,
