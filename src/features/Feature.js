@@ -28,6 +28,10 @@ const Feature = {
     return this.is_enabled("no_audio_exercises");
   },
 
+  verbal_flashcards: function () {
+    return this.is_enabled("verbal_flashcards");
+  },
+  
   always_open_externally: function () {
     return this.is_enabled("always_open_externally");
   },

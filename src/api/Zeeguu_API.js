@@ -24,6 +24,7 @@ import "./userVideos";
 import "./watching_sessions";
 import "./dailyAudio";
 import "./sessionHistory";
+import "./verbal_flashcards";
 import "./badges";
 import "./friends";
 import "./leaderboards";

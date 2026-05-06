@@ -18,6 +18,7 @@ export default function Selector({
   onChange,
   label, // label above the field
   placeholder,
+  showPlaceholder = true,
   isError,
   errorMessage,
   id,
@@ -34,9 +35,11 @@ export default function Selector({
           onChange={onChange}
           className={`${isError && "error"}`}
         >
-          <option value={""} disabled>
-            {placeholder}
-          </option>
+          {showPlaceholder && placeholder && (
+            <option value={""} disabled>
+              {placeholder}
+            </option>
+          )}
 
           {options?.map((option) => (
             <option key={optionValue(option)} value={optionValue(option)}>
