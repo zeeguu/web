@@ -6,6 +6,7 @@ import strings from "../i18n/definitions";
 import FlashcardsHeader from "./components/FlashcardsHeader";
 import FlashcardStage from "./components/FlashcardStage";
 import useAudioRecorder from "../hooks/useAudioRecorder";
+import useFinalPracticeAttempt from "./hooks/useFinalPracticeAttempt";
 import useFlashcardExerciseSession from "./hooks/useFlashcardExerciseSession";
 import useVerbalFlashcardTTS from "./hooks/useVerbalFlashcardTTS";
 import * as s from "./verbalFlashcards_Styled/VerbalFlashcards.sc.js";
@@ -259,9 +260,28 @@ export default function VerbalFlashcardsPage() {
     [speakText, translationLanguageId],
   );
 
+  const {
+    clearFinalPractice,
+    handleFinalPracticeAnalysis,
+    handleFinalPracticeError,
+    promptFinalPracticeAfterAnswer,
+    statusForRetry,
+  } = useFinalPracticeAttempt({
+    canContinueFlow,
+    cleanupRecordingResourcesRef,
+    displayResults,
+    feedbackCopy,
+    getCurrentCard,
+    isResolvingCardRef,
+    removeResolvedCard,
+    speakFeedback,
+    startInterCardCountdown,
+  });
+
   const resolveCardAttempt = useCallback(
-    async (card, userAnswer, isCorrect, feedbackAnalysis, recordingStartedAt) => {
+    async (card, userAnswer, isCorrect, feedbackAnalysis, recordingStartedAt, options = {}) => {
       if (!card || !canContinueFlow()) return;
+      const { practiceAfterAnswer = false } = options;
       const responseTime = recordingStartedAt ? Date.now() - recordingStartedAt : 0;
 
       updateExerciseSessionProgress();
@@ -332,6 +352,21 @@ export default function VerbalFlashcardsPage() {
           isResolvingCardRef.current = false;
           return;
         }
+
+        if (practiceAfterAnswer) {
+          isResolvingCardRef.current = false;
+          promptFinalPracticeAfterAnswer(
+            {
+              card,
+              nextCorrectBookmarks,
+              nextIncorrectBookmarks,
+              practicedCount,
+            },
+            (cardId) => retrySameCardRecordingRef.current(cardId),
+          );
+          return;
+        }
+
         startInterCardCountdown(() => {
           isResolvingCardRef.current = false;
           if (!canContinueFlow()) return;
@@ -351,6 +386,7 @@ export default function VerbalFlashcardsPage() {
       learnedLanguageId,
       playPreloadedAudio,
       preloadText,
+      promptFinalPracticeAfterAnswer,
       removeResolvedCard,
       speakFeedback,
       speakText,
@@ -387,7 +423,9 @@ export default function VerbalFlashcardsPage() {
         return;
       }
 
-      resolveCardAttempt(card, userAnswer, false, analysis, recordingStartedAt);
+      resolveCardAttempt(card, userAnswer, false, analysis, recordingStartedAt, {
+        practiceAfterAnswer: true,
+      });
     },
     [canContinueFlow, feedbackCopy, getCurrentCard, resolveCardAttempt, speakFeedback, updateStatusWithDebounce],
   );
@@ -442,6 +480,9 @@ export default function VerbalFlashcardsPage() {
 
           if (result?.error) {
             console.error("Transcription error:", result.error);
+            if (handleFinalPracticeError(currentCard)) {
+              return;
+            }
             updateStatusWithDebounce(`${strings.verbalFlashcardsErrorPrefix}: ${result.error}`, "error");
             cleanupRecordingResourcesRef.current();
             return;
@@ -464,8 +505,15 @@ export default function VerbalFlashcardsPage() {
 
               if (analysis?.error) {
                 console.error("Pronunciation check error:", analysis.error);
+                if (handleFinalPracticeError(currentCard)) {
+                  return;
+                }
                 updateStatusWithDebounce(strings.verbalFlashcardsCouldNotEvaluatePronunciation, "error", 0);
                 cleanupRecordingResourcesRef.current();
+                return;
+              }
+
+              if (handleFinalPracticeAnalysis(currentCard, analysis)) {
                 return;
               }
 
@@ -475,12 +523,18 @@ export default function VerbalFlashcardsPage() {
               handleAttemptOutcome(currentCard, transcription, analysisWithAttemptFeedback, recordingStartedAt);
             },
             () => {
+              if (handleFinalPracticeError(currentCard)) {
+                return;
+              }
               updateStatusWithDebounce(strings.verbalFlashcardsCouldNotEvaluatePronunciation, "error", 0);
               cleanupRecordingResourcesRef.current();
             },
           );
         },
         () => {
+          if (handleFinalPracticeError(currentCard)) {
+            return;
+          }
           updateStatusWithDebounce(strings.verbalFlashcardsCouldNotEvaluatePronunciation, "error", 0);
           cleanupRecordingResourcesRef.current();
         },
@@ -492,6 +546,8 @@ export default function VerbalFlashcardsPage() {
       displayResults,
       feedbackForAttempt,
       getCurrentCard,
+      handleFinalPracticeAnalysis,
+      handleFinalPracticeError,
       handleAttemptOutcome,
       updateStatusWithDebounce,
     ],
@@ -538,13 +594,14 @@ export default function VerbalFlashcardsPage() {
 
   const stopCurrentFlow = useCallback(() => {
     flowRunIdRef.current += 1;
+    clearFinalPractice();
     cancelCountdown();
     stopTts();
 
     if (isRecordingRef.current || isStartingRecordingRef.current || micStreamRef.current) {
       cleanupRecordingResources();
     }
-  }, [cancelCountdown, cleanupRecordingResources, isRecordingRef, isStartingRecordingRef, micStreamRef, stopTts]);
+  }, [cancelCountdown, cleanupRecordingResources, clearFinalPractice, isRecordingRef, isStartingRecordingRef, micStreamRef, stopTts]);
 
   const retrySameCardRecording = useCallback(
     async (cardId) => {
@@ -555,10 +612,10 @@ export default function VerbalFlashcardsPage() {
       flowRunIdRef.current += 1;
       setIsCooldown(false);
       isCooldownRef.current = false;
-      updateStatusWithDebounce(strings.verbalFlashcardsStartingMicrophone, "recording", 0);
+      updateStatusWithDebounce(statusForRetry(cardId), "recording", 0);
       await openMicAndStartRecording();
     },
-    [canContinueFlow, getCurrentCard, openMicAndStartRecording, updateStatusWithDebounce],
+    [canContinueFlow, getCurrentCard, openMicAndStartRecording, statusForRetry, updateStatusWithDebounce],
   );
 
   useEffect(() => {
