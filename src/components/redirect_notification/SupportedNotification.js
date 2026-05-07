@@ -70,7 +70,7 @@ export default function SupportedNotification({
           checked={redirectCheckbox}
           onChange={toggleRedirectCheckbox}
         />
-        <ButtonContainer buttonCountNum={1}>
+        <ButtonContainer $buttonCountNum={1}>
           <StyledButton $primary style={{ minWidth: "230px" }} onClick={() => handleOpenArticle(article)}>
             Continue
           </StyledButton>

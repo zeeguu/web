@@ -93,7 +93,7 @@ export default function MobileNotification({
           checked={redirectCheckbox}
           onChange={toggleRedirectCheckbox}
         />
-        <ButtonContainer buttonCountNum={2}>
+        <ButtonContainer $buttonCountNum={2}>
           <StyledButton $primary style={{ minWidth: "190px" }} onClick={() => handleOpenArticle(article)}>
             Continue
           </StyledButton>

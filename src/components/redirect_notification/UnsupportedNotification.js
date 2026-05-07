@@ -123,7 +123,7 @@ export default function UnsupportedNotification({
           checked={redirectCheckbox}
           onChange={toggleRedirectCheckbox}
         />
-        <ButtonContainer buttonCountNum={2}>
+        <ButtonContainer $buttonCountNum={2}>
           <Button className="small" onClick={() => handleOpenArticle(article)}>
             Enter the article's website
           </Button>

@@ -36,7 +36,7 @@ export default function SupportedNotificationNotInstalled({
         />
       </Main>
       <Footer>
-        <ButtonContainer buttonCountNum={1}>
+        <ButtonContainer $buttonCountNum={1}>
           <Button
             className={"small"}
             onClick={() => {

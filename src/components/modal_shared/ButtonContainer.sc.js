@@ -10,13 +10,13 @@ const ButtonContainer = styled.div`
   align-items: center;
 
   ${(props) =>
-    props.buttonCountNum === 1 &&
+    props.$buttonCountNum === 1 &&
     css`
       justify-content: center;
     `}
 
   ${(props) =>
-    props.buttonCountNum > 1 &&
+    props.$buttonCountNum > 1 &&
     css`
       justify-content: space-between;
     `}

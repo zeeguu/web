@@ -53,7 +53,7 @@ export default function DeleteAccountButton() {
           </p>
         </Main>
         <Footer>
-          <ButtonContainer buttonCountNum={1}>
+          <ButtonContainer $buttonCountNum={1}>
             <Button className="warning small" onClick={handleUserConfirmation}>
               Delete my account
             </Button>
