@@ -14,7 +14,7 @@ import {
   BETWEEN_CARDS_DELAY_MS,
   DEFAULT_LANGUAGE_ID,
   feedbackCopyForLanguage,
-  promptInstructionIntroText,
+  promptInstructionText,
 } from "./verbalFlashcardsLanguage.js";
 
 export default function VerbalFlashcardsPage() {
@@ -22,7 +22,6 @@ export default function VerbalFlashcardsPage() {
   const { userDetails } = useContext(UserContext);
   const history = useHistory();
   const translationLanguageId = userDetails?.native_language || DEFAULT_LANGUAGE_ID;
-  const learnedLanguageId = userDetails?.learned_language || translationLanguageId;
   const feedbackCopy = feedbackCopyForLanguage(translationLanguageId);
 
   const [flashcards, setFlashcards] = useState([]);
@@ -239,19 +238,17 @@ export default function VerbalFlashcardsPage() {
     (card = null, flowRunId = flowRunIdRef.current) => {
       const cardToSpeak = card || getCurrentCard();
       const promptText = cardToSpeak?.prompt || "";
-      const introText = promptInstructionIntroText(translationLanguageId, learnedLanguageId);
-
-      return speakText(introText, translationLanguageId).then(() => {
+      if (!promptText || !isPageActiveRef.current) {
+        return Promise.resolve();
+      }
+      const fullPromptText = promptInstructionText(translationLanguageId, promptText);
+      return speakText(fullPromptText, translationLanguageId, strings.verbalFlashcardsPlayingPrompt).then(() => {
         if (flowRunId !== flowRunIdRef.current) {
           return;
         }
-        if (!promptText || !isPageActiveRef.current) {
-          return;
-        }
-        return speakText(promptText, translationLanguageId, strings.verbalFlashcardsPlayingPrompt);
       });
     },
-    [getCurrentCard, learnedLanguageId, speakText, translationLanguageId],
+    [getCurrentCard, speakText, translationLanguageId],
   );
 
   const speakFeedback = useCallback(
@@ -312,14 +309,9 @@ export default function VerbalFlashcardsPage() {
       const spokenFeedback = feedbackMessage || (wasAccepted ? feedbackCopy.successIntro : feedbackCopy.finalIncorrectIntro);
       const answerFeedbackIntro = wasAccepted ? feedbackCopy.successIntro : feedbackCopy.finalIncorrectIntro;
       const answerToSpeak = feedbackAnalysis?.matchedExpectedText || card.answer;
+      const resolvedAnswerFeedback = `${answerFeedbackIntro} ${answerToSpeak}`;
       const speakResolvedFeedback = feedbackAnalysis?.speakAnswerAfterFeedback
-        ? () =>
-            speakFeedback(answerFeedbackIntro).then(() => {
-              if (!answerToSpeak || !isPageActiveRef.current) {
-                return;
-              }
-              return speakText(answerToSpeak, learnedLanguageId, strings.verbalFlashcardsPlayingAnswer);
-            })
+        ? () => speakFeedback(resolvedAnswerFeedback)
         : () => speakFeedback(spokenFeedback);
 
       speakResolvedFeedback().finally(() => {
@@ -343,10 +335,8 @@ export default function VerbalFlashcardsPage() {
       getExerciseSessionId,
       getCurrentCard,
       incorrectBookmarks,
-      learnedLanguageId,
       removeResolvedCard,
       speakFeedback,
-      speakText,
       startInterCardCountdown,
       totalPracticedBookmarksInSession,
       updateExerciseSessionProgress,
