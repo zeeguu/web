@@ -229,7 +229,7 @@ export default function VerbalFlashcardsPage() {
     [api],
   );
 
-  const { isPlayingTtsRef, speakText, stopTts } = useVerbalFlashcardTTS({
+  const { isPlayingTtsRef, playPreloadedAudio, preloadText, speakText, stopTts } = useVerbalFlashcardTTS({
     api,
     isPageActiveRef,
     updateStatusWithDebounce,
@@ -311,13 +311,20 @@ export default function VerbalFlashcardsPage() {
       const answerFeedbackIntro = wasAccepted ? feedbackCopy.successIntro : feedbackCopy.finalIncorrectIntro;
       const answerToSpeak = feedbackAnalysis?.matchedExpectedText || card.answer;
       const speakResolvedFeedback = feedbackAnalysis?.speakAnswerAfterFeedback
-        ? () =>
-            speakFeedback(answerFeedbackIntro).then(() => {
+        ? () => {
+            const answerAudioPromise = preloadText(answerToSpeak, learnedLanguageId);
+            return speakFeedback(answerFeedbackIntro).then(() => {
               if (!answerToSpeak || !isPageActiveRef.current) {
                 return;
               }
-              return speakText(answerToSpeak, learnedLanguageId, strings.verbalFlashcardsPlayingAnswer);
-            })
+              return answerAudioPromise.then((audio) => {
+                if (audio) {
+                  return playPreloadedAudio(audio, strings.verbalFlashcardsPlayingAnswer);
+                }
+                return speakText(answerToSpeak, learnedLanguageId, strings.verbalFlashcardsPlayingAnswer);
+              });
+            });
+          }
         : () => speakFeedback(spokenFeedback);
 
       speakResolvedFeedback().finally(() => {
@@ -342,6 +349,8 @@ export default function VerbalFlashcardsPage() {
       getCurrentCard,
       incorrectBookmarks,
       learnedLanguageId,
+      playPreloadedAudio,
+      preloadText,
       removeResolvedCard,
       speakFeedback,
       speakText,
