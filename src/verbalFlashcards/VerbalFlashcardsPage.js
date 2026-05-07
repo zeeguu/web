@@ -22,6 +22,7 @@ export default function VerbalFlashcardsPage() {
   const { userDetails } = useContext(UserContext);
   const history = useHistory();
   const translationLanguageId = userDetails?.native_language || DEFAULT_LANGUAGE_ID;
+  const learnedLanguageId = userDetails?.learned_language || translationLanguageId;
   const feedbackCopy = feedbackCopyForLanguage(translationLanguageId);
 
   const [flashcards, setFlashcards] = useState([]);
@@ -47,7 +48,7 @@ export default function VerbalFlashcardsPage() {
   const flashcardsRef = useRef([]);
   const isCooldownRef = useRef(false);
   const attemptCountsRef = useRef({});
-  const beginCardFlowRef = useRef(() => {});
+  const retrySameCardRecordingRef = useRef(() => {});
   const flowRunIdRef = useRef(0);
   const isResolvingCardRef = useRef(false);
   const lastAutoStartedFlowKeyRef = useRef(null);
@@ -309,9 +310,14 @@ export default function VerbalFlashcardsPage() {
       const spokenFeedback = feedbackMessage || (wasAccepted ? feedbackCopy.successIntro : feedbackCopy.finalIncorrectIntro);
       const answerFeedbackIntro = wasAccepted ? feedbackCopy.successIntro : feedbackCopy.finalIncorrectIntro;
       const answerToSpeak = feedbackAnalysis?.matchedExpectedText || card.answer;
-      const resolvedAnswerFeedback = `${answerFeedbackIntro} ${answerToSpeak}`;
       const speakResolvedFeedback = feedbackAnalysis?.speakAnswerAfterFeedback
-        ? () => speakFeedback(resolvedAnswerFeedback)
+        ? () =>
+            speakFeedback(answerFeedbackIntro).then(() => {
+              if (!answerToSpeak || !isPageActiveRef.current) {
+                return;
+              }
+              return speakText(answerToSpeak, learnedLanguageId, strings.verbalFlashcardsPlayingAnswer);
+            })
         : () => speakFeedback(spokenFeedback);
 
       speakResolvedFeedback().finally(() => {
@@ -335,8 +341,10 @@ export default function VerbalFlashcardsPage() {
       getExerciseSessionId,
       getCurrentCard,
       incorrectBookmarks,
+      learnedLanguageId,
       removeResolvedCard,
       speakFeedback,
+      speakText,
       startInterCardCountdown,
       totalPracticedBookmarksInSession,
       updateExerciseSessionProgress,
@@ -363,9 +371,8 @@ export default function VerbalFlashcardsPage() {
           if (!canContinueFlow()) {
             return;
           }
-          updateStatusWithDebounce(strings.verbalFlashcardsRetryingSameCard, "processing", 0);
           if (getCurrentCard()?.id === card.id) {
-            beginCardFlowRef.current();
+            retrySameCardRecordingRef.current(card.id);
           }
         });
         return;
@@ -530,6 +537,25 @@ export default function VerbalFlashcardsPage() {
     }
   }, [cancelCountdown, cleanupRecordingResources, isRecordingRef, isStartingRecordingRef, micStreamRef, stopTts]);
 
+  const retrySameCardRecording = useCallback(
+    async (cardId) => {
+      if (!canContinueFlow()) return;
+      if (isResolvingCardRef.current) return;
+      if (getCurrentCard()?.id !== cardId) return;
+
+      flowRunIdRef.current += 1;
+      setIsCooldown(false);
+      isCooldownRef.current = false;
+      updateStatusWithDebounce(strings.verbalFlashcardsStartingMicrophone, "recording", 0);
+      await openMicAndStartRecording();
+    },
+    [canContinueFlow, getCurrentCard, openMicAndStartRecording, updateStatusWithDebounce],
+  );
+
+  useEffect(() => {
+    retrySameCardRecordingRef.current = retrySameCardRecording;
+  }, [retrySameCardRecording]);
+
   const beginCardFlow = useCallback(() => {
     if (flashcardsRef.current.length === 0) return;
     if (isResolvingCardRef.current) return;
@@ -575,10 +601,6 @@ export default function VerbalFlashcardsPage() {
       await openMicAndStartRecording();
     });
   }, [openMicAndStartRecording, playCardTts, prepareMicrophone, resetCardUi, stopCurrentFlow, updateStatusWithDebounce]);
-
-  useEffect(() => {
-    beginCardFlowRef.current = beginCardFlow;
-  }, [beginCardFlow]);
 
   const nextCard = useCallback(() => {
     if (currentCardIndexRef.current < flashcardsRef.current.length - 1) {

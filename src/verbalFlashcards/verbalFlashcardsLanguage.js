@@ -4,8 +4,8 @@ export const TTS_PLAYBACK_PREROLL_MS = 120;
 export const AFTER_TTS_BEFORE_RECORDING_MS = 80;
 
 const PROMPT_COPY = {
-  da: (promptText) => `Sig, ${promptText}`,
-  en: (promptText) => `Please say, ${promptText}`,
+  da: (promptText) => `Sig ${promptText}`,
+  en: (promptText) => `Please say ${promptText}`,
 };
 
 const FEEDBACK_COPY = {
