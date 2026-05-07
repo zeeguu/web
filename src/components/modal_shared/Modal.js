@@ -6,16 +6,18 @@ export default function Modal({
   children,
   open,
   onClose,
-  wrapperBackgroundColor = "var(--card-bg)"
+  wrapperBackgroundColor = "var(--card-bg)",
+  hideCloseButton = false,
 }) {
-  console.log("Modal source:", children?.type?.name, wrapperBackgroundColor);
   return (
     <ModalMui open={open} onClose={onClose}>
       <s.ModalWrapper $bg={wrapperBackgroundColor}>
         {children}
-        <s.CloseButton aria-label="Close Modal" onClick={onClose}>
-          <CloseRoundedIcon fontSize="medium" />
-        </s.CloseButton>
+        {!hideCloseButton && (
+          <s.CloseButton aria-label="Close Modal" onClick={onClose}>
+            <CloseRoundedIcon fontSize="medium" />
+          </s.CloseButton>
+        )}
       </s.ModalWrapper>
     </ModalMui>
   );

@@ -236,6 +236,7 @@ export default function ArticleReader({ teacherArticleID }) {
       // Session is now created by useReadingSession hook when articleInfo becomes available
       api.setArticleOpened(articleInfo.id);
       api.logUserActivity(api.OPEN_ARTICLE, articleID, "", WEB_READER);
+      window.dispatchEvent(new CustomEvent("zeeguu-article-opened"));
 
       // Deeplinked articles only — share flow is handled in SharedArticleHandler.
       // Skip modal when simplification wouldn't help — see shouldShowLanguageChoice.
