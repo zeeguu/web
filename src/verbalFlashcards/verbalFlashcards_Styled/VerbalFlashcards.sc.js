@@ -308,52 +308,6 @@ export const FeedbackContainer = styled.div`
   margin: 15px 0;
 `;
 
-export const AccuracyMeter = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin: 15px 0;
-
-  @media screen and (max-width: 520px) {
-    display: grid;
-    grid-template-columns: 1fr auto;
-  }
-`;
-
-export const AccuracyLabel = styled.span`
-  font-size: 14px;
-  color: #666;
-
-  @media screen and (max-width: 520px) {
-    grid-column: 1 / -1;
-  }
-`;
-
-export const ProgressBar = styled.div`
-  flex: 1;
-  min-width: 0;
-  height: 8px;
-  background: #e0e0e0;
-  border-radius: 4px;
-  overflow: hidden;
-`;
-
-export const ProgressFill = styled.div`
-  height: 100%;
-  background: ${(props) => {
-    if (props.$accuracy >= 70) return "#4caf50";
-    if (props.$accuracy >= 40) return "#ff9800";
-    return "#f44336";
-  }};
-  transition: width 0.5s ease;
-  border-radius: 4px;
-`;
-
-export const AccuracyPercentage = styled.span`
-  font-weight: bold;
-  min-width: 45px;
-`;
-
 export const FeedbackMessage = styled.div`
   padding: 12px;
   border-radius: 6px;
