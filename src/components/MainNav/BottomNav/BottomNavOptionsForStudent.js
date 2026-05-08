@@ -6,9 +6,6 @@ import NavigationOptions from "../navigationOptions";
 import { useContext } from "react";
 import { UserContext } from "../../../contexts/UserContext";
 import { ExercisesCounterContext } from "../../../exercises/ExercisesCounterContext";
-import Feature from "../../../features/Feature";
-import { hasSupportedVerbalFlashcardsLearnedLanguage } from "../../../verbalFlashcards/verbalFlashcardsAvailability";
-
 
 export default function BottomNavOptionsForStudent() {
   const path = useLocation().pathname;
@@ -26,9 +23,6 @@ export default function BottomNavOptionsForStudent() {
           hasExerciseNotification && <NotificationIcon position={"top-absolute"} text={totalExercisesInPipeline} />
         }
       />
-      {Feature.verbal_flashcards() && hasSupportedVerbalFlashcardsLearnedLanguage(userDetails) && (
-        <BottomNavOption {...NavigationOptions.verbalFlashcards} currentPath={path} />
-      )}
       <BottomNavOption
         {...NavigationOptions.dailyAudio}
         currentPath={path}

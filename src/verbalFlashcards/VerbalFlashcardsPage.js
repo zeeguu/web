@@ -55,6 +55,7 @@ export default function VerbalFlashcardsPage() {
   const lastAutoStartedFlowKeyRef = useRef(null);
   const isPageActiveRef = useRef(true);
   const cleanupRecordingResourcesRef = useRef(() => {});
+  const prepareMicrophoneRef = useRef(() => Promise.resolve(null));
 
   const {
     endExerciseSessionIfNeeded,
@@ -265,7 +266,6 @@ export default function VerbalFlashcardsPage() {
     handleFinalPracticeAnalysis,
     handleFinalPracticeError,
     promptFinalPracticeAfterAnswer,
-    statusForRetry,
   } = useFinalPracticeAttempt({
     canContinueFlow,
     cleanupRecordingResourcesRef,
@@ -273,6 +273,7 @@ export default function VerbalFlashcardsPage() {
     feedbackCopy,
     getCurrentCard,
     isResolvingCardRef,
+    prepareMicrophoneRef,
     removeResolvedCard,
     speakFeedback,
     startInterCardCountdown,
@@ -582,6 +583,7 @@ export default function VerbalFlashcardsPage() {
   });
 
   cleanupRecordingResourcesRef.current = cleanupRecordingResources;
+  prepareMicrophoneRef.current = prepareMicrophone;
 
   const cancelCountdown = useCallback(() => {
     clearInterCardDelay();
@@ -612,10 +614,10 @@ export default function VerbalFlashcardsPage() {
       flowRunIdRef.current += 1;
       setIsCooldown(false);
       isCooldownRef.current = false;
-      updateStatusWithDebounce(statusForRetry(cardId), "recording", 0);
+      updateStatusWithDebounce(strings.verbalFlashcardsPreparingMicrophone, "processing", 0);
       await openMicAndStartRecording();
     },
-    [canContinueFlow, getCurrentCard, openMicAndStartRecording, statusForRetry, updateStatusWithDebounce],
+    [canContinueFlow, getCurrentCard, openMicAndStartRecording, updateStatusWithDebounce],
   );
 
   useEffect(() => {

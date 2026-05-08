@@ -1,5 +1,4 @@
 import { useCallback, useRef } from "react";
-import strings from "../../i18n/definitions";
 
 export default function useFinalPracticeAttempt({
   canContinueFlow,
@@ -8,6 +7,7 @@ export default function useFinalPracticeAttempt({
   feedbackCopy,
   getCurrentCard,
   isResolvingCardRef,
+  prepareMicrophoneRef,
   removeResolvedCard,
   speakFeedback,
   startInterCardCountdown,
@@ -22,12 +22,6 @@ export default function useFinalPracticeAttempt({
     return finalPracticeResolutionRef.current?.card?.id === card?.id;
   }, []);
 
-  const statusForRetry = useCallback((cardId) => {
-    return finalPracticeResolutionRef.current?.card?.id === cardId
-      ? strings.verbalFlashcardsFinalPracticePrompt
-      : strings.verbalFlashcardsStartingMicrophone;
-  }, []);
-
   const promptFinalPracticeAfterAnswer = useCallback(
     (resolution, retrySameCardRecording) => {
       if (!resolution?.card) {
@@ -35,7 +29,14 @@ export default function useFinalPracticeAttempt({
       }
 
       finalPracticeResolutionRef.current = resolution;
-      speakFeedback(feedbackCopy.finalPracticePrompt).finally(() => {
+
+      const microphoneReady = prepareMicrophoneRef.current
+        ? prepareMicrophoneRef.current().catch(() => null)
+        : Promise.resolve(null);
+
+      speakFeedback(feedbackCopy.finalPracticePrompt).finally(async () => {
+        await microphoneReady;
+
         if (!canContinueFlow()) {
           return;
         }
@@ -44,7 +45,7 @@ export default function useFinalPracticeAttempt({
         }
       });
     },
-    [canContinueFlow, feedbackCopy, getCurrentCard, speakFeedback],
+    [canContinueFlow, feedbackCopy, getCurrentCard, prepareMicrophoneRef, speakFeedback],
   );
 
   const feedbackForFinalPractice = useCallback(
@@ -157,6 +158,5 @@ export default function useFinalPracticeAttempt({
     handleFinalPracticeAnalysis,
     handleFinalPracticeError,
     promptFinalPracticeAfterAnswer,
-    statusForRetry,
   };
 }
