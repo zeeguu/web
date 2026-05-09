@@ -15,7 +15,7 @@ const FEEDBACK_COPY = {
     finalIncorrectIntro: "Fangede det ikke. Det rigtige svar var:",
     finalPracticePrompt: "Prøv at sige det en gang til.",
     finalPracticeSuccess: "Godt klaret. Vi går videre.",
-    finalPracticeMoveOn: "Fangede det ikke helt. Vi går videre.",
+    finalPracticeMoveOn: "Okay. Vi går videre.",
   },
   en: {
     successIntro: "Great job. The correct answer was:",
@@ -23,7 +23,7 @@ const FEEDBACK_COPY = {
     finalIncorrectIntro: "Didn't catch that. The correct answer was:",
     finalPracticePrompt: "Try saying it one more time.",
     finalPracticeSuccess: "Well done. Let's move on.",
-    finalPracticeMoveOn: "Didn't quite catch that. Let's move on.",
+    finalPracticeMoveOn: "Ok. Let's move on.",
   },
 };
 
