@@ -1,7 +1,6 @@
 export const DEFAULT_LANGUAGE_ID = "en";
 export const BETWEEN_CARDS_DELAY_MS = 5000;
 export const TTS_PLAYBACK_PREROLL_MS = 120;
-export const AFTER_TTS_BEFORE_RECORDING_MS = 80;
 
 const PROMPT_COPY = {
   da: (promptText) => `Sig ${promptText}`,

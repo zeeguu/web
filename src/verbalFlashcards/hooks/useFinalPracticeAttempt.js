@@ -34,9 +34,9 @@ export default function useFinalPracticeAttempt({
         ? prepareMicrophoneRef.current().catch(() => null)
         : Promise.resolve(null);
 
-      speakFeedback(feedbackCopy.finalPracticePrompt).finally(async () => {
-        await microphoneReady;
+      void speakFeedback(feedbackCopy.finalPracticePrompt);
 
+      microphoneReady.then(() => {
         if (!canContinueFlow()) {
           return;
         }

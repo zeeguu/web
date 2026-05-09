@@ -1,9 +1,13 @@
 import * as s from "../verbalFlashcards_Styled/VerbalFlashcards.sc.js";
 
 export default function RecordingControls({ isRecording, statusMessage, statusType }) {
+  if (!isRecording && statusType !== "error") {
+    return null;
+  }
+
   return (
     <s.RecordingSection>
-      <s.StatusMessage $statusType={statusType}>{statusMessage}</s.StatusMessage>
+      {statusType === "error" && <s.StatusMessage $statusType={statusType}>{statusMessage}</s.StatusMessage>}
 
       {isRecording && (
         <s.RecordingVisualization>

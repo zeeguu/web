@@ -11,7 +11,6 @@ import useFlashcardExerciseSession from "./hooks/useFlashcardExerciseSession";
 import useVerbalFlashcardTTS from "./hooks/useVerbalFlashcardTTS";
 import * as s from "./verbalFlashcards_Styled/VerbalFlashcards.sc.js";
 import {
-  AFTER_TTS_BEFORE_RECORDING_MS,
   BETWEEN_CARDS_DELAY_MS,
   DEFAULT_LANGUAGE_ID,
   feedbackCopyForLanguage,
@@ -645,29 +644,19 @@ export default function VerbalFlashcardsPage() {
     const flowRunId = flowRunIdRef.current;
     const microphoneReady = prepareMicrophone().catch(() => null);
 
-    playCardTts(card, flowRunId).finally(async () => {
+    microphoneReady.then(async () => {
       if (flowRunId !== flowRunIdRef.current) {
         return;
       }
 
       setIsCooldown(false);
       isCooldownRef.current = false;
-      updateStatusWithDebounce(strings.verbalFlashcardsPreparingMicrophone, "processing", 0);
-
-      await new Promise((resolve) => window.setTimeout(resolve, AFTER_TTS_BEFORE_RECORDING_MS));
-      if (flowRunId !== flowRunIdRef.current) {
-        return;
-      }
-
-      await microphoneReady;
-      if (flowRunId !== flowRunIdRef.current) {
-        return;
-      }
-
       setShowResult(false);
       setAccuracyResult(null);
       await openMicAndStartRecording();
     });
+
+    void playCardTts(card, flowRunId);
   }, [openMicAndStartRecording, playCardTts, prepareMicrophone, resetCardUi, stopCurrentFlow, updateStatusWithDebounce]);
 
   const nextCard = useCallback(() => {
