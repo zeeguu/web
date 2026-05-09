@@ -234,6 +234,8 @@ function PastLessonRow({ lesson, onOpen }) {
   );
 }
 
+// Wrapped (rather than inlined into the Modal) so useListeningSession's
+// start/pause/end lifecycle is scoped to the modal's mount/unmount.
 function PastLessonPlayer({ lesson, api, userDetails, onLessonCompleted, onProgressUpdate }) {
   const listeningSession = useListeningSession(lesson.lesson_id);
   const titleText = pastLessonTitle(lesson);
@@ -262,7 +264,7 @@ function PastLessonPlayer({ lesson, api, userDetails, onLessonCompleted, onProgr
         initialProgress: lessonProgressSeconds(lesson),
         language: userDetails?.learned_language,
         title: lesson.title || "Past Audio Lesson",
-        artist: `Zeeguu - ${new Date(lesson.created_on).toLocaleDateString()}`,
+        artist: `Zeeguu - ${new Date(lesson.created_at).toLocaleDateString()}`,
         onPlay: () => {
           if (lesson.lesson_id) {
             api.updateLessonState(lesson.lesson_id, "resume");

@@ -2,6 +2,8 @@ import CustomAudioPlayer from "../components/CustomAudioPlayer";
 import { LessonTitle, LessonMetadata, CompletionCheck } from "./LessonView.sc";
 import { LessonCard, HeaderRow } from "./SharedLessonView.sc";
 
+// audioProps is forwarded to CustomAudioPlayer; metadata and headerAction
+// are JSX slots rendered above and beside the title.
 export default function LessonPlayerCard({
   title,
   isCompleted = false,
