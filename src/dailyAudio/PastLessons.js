@@ -5,7 +5,7 @@ import { UserContext } from "../contexts/UserContext";
 import LoadingAnimation from "../components/LoadingAnimation";
 import useListeningSession from "../hooks/useListeningSession";
 import { SubtleTextButton, CompletionCheck, LessonTitle, LessonMetadata } from "./LessonView.sc";
-import { LessonCard, HeaderRow } from "./SharedLessonView.sc";
+import { SubtleLessonCard, HeaderRow, ProgressBarTrack, ProgressBarFill } from "./SharedLessonView.sc";
 import LessonPlayerCard from "./LessonPlayerCard";
 import { shareLessonLink } from "./shareLessonLink";
 import Modal from "../components/modal_shared/Modal";
@@ -195,8 +195,7 @@ function PastLessonRow({ lesson, onOpen }) {
       : 0;
 
   return (
-    <LessonCard
-      $subtle
+    <SubtleLessonCard
       $isCompleted={lesson.is_completed}
       onClick={onOpen}
       style={{ marginBottom: "8px", cursor: "pointer" }}
@@ -228,24 +227,10 @@ function PastLessonRow({ lesson, onOpen }) {
           {lesson.lesson_type === "situation" ? "Situation" : "Topic"}: <b>{lesson.canonical_suggestion}</b>
         </LessonMetadata>
       )}
-      <div
-        style={{
-          height: "4px",
-          backgroundColor: "var(--border-light)",
-          borderRadius: "2px",
-          overflow: "hidden",
-          marginTop: "4px",
-        }}
-      >
-        <div
-          style={{
-            width: `${pct}%`,
-            height: "100%",
-            backgroundColor: lesson.is_completed ? successGreen : zeeguuOrange,
-          }}
-        />
-      </div>
-    </LessonCard>
+      <ProgressBarTrack>
+        <ProgressBarFill $pct={pct} $isCompleted={lesson.is_completed} />
+      </ProgressBarTrack>
+    </SubtleLessonCard>
   );
 }
 

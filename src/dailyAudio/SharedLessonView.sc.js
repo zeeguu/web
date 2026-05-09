@@ -3,15 +3,31 @@ import { zeeguuOrange, successGreen } from "../components/colors";
 
 export const LessonCard = styled.div`
   padding: 16px;
-  background-color: ${({ $subtle, $isCompleted }) =>
-    $subtle
-      ? $isCompleted
-        ? "rgba(40, 167, 69, 0.08)"
-        : "rgba(255, 187, 84, 0.06)"
-      : "transparent"};
-  border: ${({ $subtle, $isCompleted }) =>
-    $subtle ? "none" : `1px solid ${$isCompleted ? successGreen : zeeguuOrange}`};
+  background-color: transparent;
+  border: 1px solid ${({ $isCompleted }) => ($isCompleted ? successGreen : zeeguuOrange)};
   border-radius: 6px;
+`;
+
+export const SubtleLessonCard = styled.div`
+  padding: 16px;
+  background-color: ${({ $isCompleted }) =>
+    $isCompleted ? "rgba(40, 167, 69, 0.08)" : "rgba(255, 187, 84, 0.06)"};
+  border: none;
+  border-radius: 6px;
+`;
+
+export const ProgressBarTrack = styled.div`
+  height: 4px;
+  background-color: var(--border-light);
+  border-radius: 2px;
+  overflow: hidden;
+  margin-top: 4px;
+`;
+
+export const ProgressBarFill = styled.div`
+  height: 100%;
+  width: ${({ $pct }) => `${$pct}%`};
+  background-color: ${({ $isCompleted }) => ($isCompleted ? successGreen : zeeguuOrange)};
 `;
 
 export const HeaderRow = styled.div`
