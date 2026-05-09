@@ -9,6 +9,7 @@ import useAudioRecorder from "../hooks/useAudioRecorder";
 import useFinalPracticeAttempt from "./hooks/useFinalPracticeAttempt";
 import useFlashcardExerciseSession from "./hooks/useFlashcardExerciseSession";
 import useVerbalFlashcardTTS from "./hooks/useVerbalFlashcardTTS";
+import { isRevealAnswerIntent } from "./verbalFlashcardsIntent";
 import * as s from "./verbalFlashcards_Styled/VerbalFlashcards.sc.js";
 import {
   BETWEEN_CARDS_DELAY_MS,
@@ -328,7 +329,8 @@ export default function VerbalFlashcardsPage() {
       isResolvingCardRef.current = true;
       const feedbackMessage = feedbackAnalysis?.feedback;
       const spokenFeedback = feedbackMessage || (wasAccepted ? feedbackCopy.successIntro : feedbackCopy.finalIncorrectIntro);
-      const answerFeedbackIntro = wasAccepted ? feedbackCopy.successIntro : feedbackCopy.finalIncorrectIntro;
+      const answerFeedbackIntro =
+        feedbackAnalysis?.answerFeedbackIntro || (wasAccepted ? feedbackCopy.successIntro : feedbackCopy.finalIncorrectIntro);
       const answerToSpeak = feedbackAnalysis?.matchedExpectedText || card.answer;
       const speakResolvedFeedback = feedbackAnalysis?.speakAnswerAfterFeedback
         ? () => {
@@ -513,6 +515,24 @@ export default function VerbalFlashcardsPage() {
                 return;
               }
 
+              if (!analysis?.isAccepted && isRevealAnswerIntent(transcription)) {
+                const revealFeedback = {
+                  ...analysis,
+                  isAccepted: false,
+                  feedback: `${feedbackCopy.revealAnswerIntro} ${expectedText}`,
+                  matchedExpectedText: analysis?.matchedExpectedText || expectedText,
+                  answerFeedbackIntro: feedbackCopy.revealAnswerIntro,
+                  speakAnswerAfterFeedback: true,
+                };
+
+                displayResults(revealFeedback);
+                cleanupRecordingResourcesRef.current();
+                resolveCardAttempt(currentCard, transcription, false, revealFeedback, recordingStartedAt, {
+                  practiceAfterAnswer: true,
+                });
+                return;
+              }
+
               if (handleFinalPracticeAnalysis(currentCard, analysis)) {
                 return;
               }
@@ -545,10 +565,12 @@ export default function VerbalFlashcardsPage() {
       canContinueFlow,
       displayResults,
       feedbackForAttempt,
+      feedbackCopy,
       getCurrentCard,
       handleFinalPracticeAnalysis,
       handleFinalPracticeError,
       handleAttemptOutcome,
+      resolveCardAttempt,
       updateStatusWithDebounce,
     ],
   );
