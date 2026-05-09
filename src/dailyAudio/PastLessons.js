@@ -185,7 +185,7 @@ export default function PastLessons() {
   );
 }
 
-function PastLessonRow({ lesson, onOpen }) {
+export function PastLessonRow({ lesson, onOpen, leadLabel }) {
   const titleText = pastLessonTitle(lesson);
   const duration = lesson.duration_seconds || 0;
   const pct = lesson.is_completed
@@ -200,6 +200,19 @@ function PastLessonRow({ lesson, onOpen }) {
       onClick={onOpen}
       style={{ marginBottom: "8px", cursor: "pointer" }}
     >
+      {leadLabel && (
+        <div
+          style={{
+            fontSize: "11px",
+            color: "var(--text-secondary)",
+            textTransform: "uppercase",
+            letterSpacing: "0.05em",
+            marginBottom: "6px",
+          }}
+        >
+          {leadLabel}
+        </div>
+      )}
       <HeaderRow>
         <LessonTitle
           $compact
@@ -236,7 +249,7 @@ function PastLessonRow({ lesson, onOpen }) {
 
 // Wrapped (rather than inlined into the Modal) so useListeningSession's
 // start/pause/end lifecycle is scoped to the modal's mount/unmount.
-function PastLessonPlayer({ lesson, api, userDetails, onLessonCompleted, onProgressUpdate }) {
+export function PastLessonPlayer({ lesson, api, userDetails, onLessonCompleted, onProgressUpdate }) {
   const listeningSession = useListeningSession(lesson.lesson_id);
   const titleText = pastLessonTitle(lesson);
 
