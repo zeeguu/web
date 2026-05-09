@@ -248,7 +248,12 @@ export const SoundWave = styled.div`
     height: 20px;
     background: ${zeeguuRed};
     border-radius: 2px;
-    animation: wave 0.5s ease infinite alternate;
+    animation: ${(props) => (props.$isActive ? "wave 0.5s ease infinite alternate" : "none")};
+    opacity: ${(props) => (props.$isActive ? 1 : 0.55)};
+    transform: ${(props) => (props.$isActive ? "scaleY(1)" : "scaleY(0.45)")};
+    transition:
+      opacity 120ms ease,
+      transform 120ms ease;
   }
 
   span:nth-child(2) {

@@ -41,6 +41,7 @@ export default function useAudioRecorder({
   };
 
   const [isRecording, setIsRecording] = useState(false);
+  const [isAudioDetected, setIsAudioDetected] = useState(false);
 
   const mediaRecorderRef = useRef(null);
   const micStreamRef = useRef(null);
@@ -52,6 +53,7 @@ export default function useAudioRecorder({
   const animationFrameRef = useRef(null);
 
   const isRecordingRef = useRef(false);
+  const isAudioDetectedRef = useRef(false);
   const isStartingRecordingRef = useRef(false);
   const shouldProcessRecordingOnStopRef = useRef(false);
   const microphonePreparationPromiseRef = useRef(null);
@@ -67,6 +69,15 @@ export default function useAudioRecorder({
   useEffect(() => {
     noiseSensitivityRef.current = noiseSensitivity;
   }, [noiseSensitivity]);
+
+  const updateAudioDetected = useCallback((value) => {
+    if (isAudioDetectedRef.current === value) {
+      return;
+    }
+
+    isAudioDetectedRef.current = value;
+    setIsAudioDetected(value);
+  }, []);
 
   const cleanupRecordingResources = useCallback(() => {
     microphonePreparationTokenRef.current += 1;
@@ -109,8 +120,9 @@ export default function useAudioRecorder({
     shouldProcessRecordingOnStopRef.current = false;
     isStartingRecordingRef.current = false;
     isRecordingRef.current = false;
+    updateAudioDetected(false);
     setIsRecording(false);
-  }, []);
+  }, [updateAudioDetected]);
 
   const prepareMicrophone = useCallback(
     async ({ showStatus = false } = {}) => {
@@ -165,6 +177,7 @@ export default function useAudioRecorder({
     }
 
     isRecordingRef.current = false;
+    updateAudioDetected(false);
     setIsRecording(false);
     isStartingRecordingRef.current = false;
 
@@ -174,7 +187,7 @@ export default function useAudioRecorder({
     }
 
     updateStatusWithDebounce(messages.processing, "processing", 0);
-  }, [messages.processing, updateStatusWithDebounce]);
+  }, [messages.processing, updateAudioDetected, updateStatusWithDebounce]);
 
   const setupSilenceDetection = useCallback(() => {
     if (!micStreamRef.current) return;
@@ -216,6 +229,7 @@ export default function useAudioRecorder({
         const isVoiceFrame = maxSample > threshold || rms > threshold;
         const now = Date.now();
         const isPreroll = now < recordingStopEligibleAtRef.current;
+        updateAudioDetected(isVoiceFrame);
 
         if (isVoiceFrame) {
           lastVoiceDetectedAtRef.current = now;
@@ -274,6 +288,7 @@ export default function useAudioRecorder({
     messages.startingMicrophone,
     messages.waitingForSpeech,
     stopRecording,
+    updateAudioDetected,
     updateStatusWithDebounce,
   ]);
 
@@ -355,6 +370,7 @@ export default function useAudioRecorder({
       recordingFlowRunIdRef.current = flowRunIdRef.current;
       lastVoiceDetectedAtRef.current = 0;
       voiceStartedAtRef.current = 0;
+      updateAudioDetected(false);
 
       mediaRecorderRef.current.start();
 
@@ -380,11 +396,13 @@ export default function useAudioRecorder({
     messages.preparingMicrophone,
     prepareMicrophone,
     setupSilenceDetection,
+    updateAudioDetected,
     updateStatusWithDebounce,
   ]);
 
   return {
     cleanupRecordingResources,
+    isAudioDetected,
     isRecording,
     isRecordingRef,
     isStartingRecordingRef,

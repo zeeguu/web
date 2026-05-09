@@ -594,6 +594,7 @@ export default function VerbalFlashcardsPage() {
 
   const {
     cleanupRecordingResources,
+    isAudioDetected,
     isRecording,
     isRecordingRef,
     isStartingRecordingRef,
@@ -797,6 +798,7 @@ export default function VerbalFlashcardsPage() {
             canGoPrevious={currentCardIndex > 0}
             currentCard={currentCard}
             flashcardsCount={flashcards.length}
+            isAudioDetected={isAudioDetected}
             isRecording={isRecording}
             loading={loading}
             nextCardCountdown={nextCardCountdown}

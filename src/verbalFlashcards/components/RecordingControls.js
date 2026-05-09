@@ -1,6 +1,6 @@
 import * as s from "../verbalFlashcards_Styled/VerbalFlashcards.sc.js";
 
-export default function RecordingControls({ isRecording, statusMessage, statusType }) {
+export default function RecordingControls({ isAudioDetected, isRecording, statusMessage, statusType }) {
   if (!isRecording && statusType !== "error") {
     return null;
   }
@@ -11,7 +11,7 @@ export default function RecordingControls({ isRecording, statusMessage, statusTy
 
       {isRecording && (
         <s.RecordingVisualization>
-          <s.SoundWave>
+          <s.SoundWave $isActive={isAudioDetected}>
             <span></span>
             <span></span>
             <span></span>
