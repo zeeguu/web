@@ -3,28 +3,28 @@ export const BETWEEN_CARDS_DELAY_MS = 5000;
 export const TTS_PLAYBACK_PREROLL_MS = 120;
 
 const PROMPT_COPY = {
-  da: (promptText) => `Sig ${promptText}`,
-  en: (promptText) => `Please say ${promptText}`,
+  da: (promptText) => `Lad os prøve den her. Sig: ${promptText}.`,
+  en: (promptText) => `Let's try this one. Say: ${promptText}.`,
 };
 
 const FEEDBACK_COPY = {
   da: {
-    successIntro: "Godt klaret. Det rigtige svar var:",
-    retryPrompt: "Du er meget tæt på. Prøv igen.",
-    finalIncorrectIntro: "Fangede det ikke. Det rigtige svar var:",
+    successIntro: "Ja, lige præcis. Svaret er:",
+    retryPrompt: "Lad os prøve en gang til.",
+    finalIncorrectIntro: "Lad os høre svaret. Det er:",
     revealAnswerIntro: "Bare rolig. Svaret er:",
-    finalPracticePrompt: "Prøv at sige det en gang til.",
-    finalPracticeSuccess: "Godt klaret. Vi går videre.",
+    finalPracticePrompt: "Prøv nu selv at sige det.",
+    finalPracticeSuccess: "Flot. Vi går videre.",
     finalPracticeMoveOn: "Okay. Vi går videre.",
   },
   en: {
-    successIntro: "Great job. The correct answer was:",
-    retryPrompt: "Almost there. Try again.",
-    finalIncorrectIntro: "Didn't catch that. The correct answer was:",
+    successIntro: "Yes, exactly. The answer is:",
+    retryPrompt: "Let's try that once more.",
+    finalIncorrectIntro: "Let's listen to the answer. It is:",
     revealAnswerIntro: "No worries. The answer is:",
-    finalPracticePrompt: "Try saying it one more time.",
-    finalPracticeSuccess: "Well done. Let's move on.",
-    finalPracticeMoveOn: "Ok. Let's move on.",
+    finalPracticePrompt: "Now try saying it yourself.",
+    finalPracticeSuccess: "Nice. Let's keep going.",
+    finalPracticeMoveOn: "Okay. Let's keep going.",
   },
 };
 

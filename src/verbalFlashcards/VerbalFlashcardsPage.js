@@ -37,6 +37,7 @@ export default function VerbalFlashcardsPage() {
   const [statusType, setStatusType] = useState("idle");
   const [noiseSensitivity, setNoiseSensitivity] = useState("0.08");
   const [noiseSensitivityNoticeVisible, setNoiseSensitivityNoticeVisible] = useState(false);
+  const [nextCardCountdown, setNextCardCountdown] = useState(null);
   const [correctBookmarks, setCorrectBookmarks] = useState([]);
   const [incorrectBookmarks, setIncorrectBookmarks] = useState([]);
   const [totalPracticedBookmarksInSession, setTotalPracticedBookmarksInSession] = useState(0);
@@ -114,6 +115,8 @@ export default function VerbalFlashcardsPage() {
       clearInterval(interCardDelayIntervalRef.current);
       interCardDelayIntervalRef.current = null;
     }
+
+    setNextCardCountdown(null);
   }, []);
 
   const interCardCountdownMessage = useCallback((seconds) => {
@@ -125,11 +128,13 @@ export default function VerbalFlashcardsPage() {
       clearInterCardDelay();
 
       let secondsRemaining = Math.ceil(BETWEEN_CARDS_DELAY_MS / 1000);
+      setNextCardCountdown(secondsRemaining);
       updateStatusWithDebounce(interCardCountdownMessage(secondsRemaining), "cooldown", 0);
 
       interCardDelayIntervalRef.current = window.setInterval(() => {
         secondsRemaining -= 1;
         if (secondsRemaining > 0) {
+          setNextCardCountdown(secondsRemaining);
           updateStatusWithDebounce(interCardCountdownMessage(secondsRemaining), "cooldown", 0);
         }
       }, 1000);
@@ -449,7 +454,10 @@ export default function VerbalFlashcardsPage() {
 
       const nextAttemptCount = (attemptCountsRef.current[card.id] || 0) + 1;
       if (nextAttemptCount < 2) {
-        return analysis;
+        return {
+          ...analysis,
+          feedback: feedbackCopy.retryPrompt,
+        };
       }
 
       const answerToShow = analysis.matchedExpectedText || card.answer;
@@ -791,6 +799,7 @@ export default function VerbalFlashcardsPage() {
             flashcardsCount={flashcards.length}
             isRecording={isRecording}
             loading={loading}
+            nextCardCountdown={nextCardCountdown}
             nextCard={nextCard}
             prevCard={prevCard}
             showResult={showResult}

@@ -13,6 +13,7 @@ export default function FlashcardStage({
   flashcardsCount,
   isRecording,
   loading,
+  nextCardCountdown,
   nextCard,
   prevCard,
   showResult,
@@ -46,6 +47,7 @@ export default function FlashcardStage({
       <CardNavigator
         canGoNext={canGoNext}
         canGoPrevious={canGoPrevious}
+        nextCardCountdown={nextCardCountdown}
         nextCard={nextCard}
         prevCard={prevCard}
       />

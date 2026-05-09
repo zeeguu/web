@@ -5,9 +5,15 @@ import * as s from "../verbalFlashcards_Styled/VerbalFlashcards.sc.js";
 export default function CardNavigator({
   canGoNext,
   canGoPrevious,
+  nextCardCountdown,
   nextCard,
   prevCard,
 }) {
+  const nextLabel =
+    nextCardCountdown !== null
+      ? `${strings.verbalFlashcardsNext} (${nextCardCountdown})`
+      : strings.verbalFlashcardsNext;
+
   return (
     <s.CardControls>
       <s.CardNavigation>
@@ -15,7 +21,7 @@ export default function CardNavigator({
           {strings.verbalFlashcardsPrevious}
         </StyledButton>
         <StyledButton $navigation onClick={nextCard} disabled={!canGoNext} $disabled={!canGoNext}>
-          {strings.verbalFlashcardsNext}
+          {nextLabel}
         </StyledButton>
       </s.CardNavigation>
     </s.CardControls>
