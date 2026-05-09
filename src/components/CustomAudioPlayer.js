@@ -18,6 +18,7 @@ export default function CustomAudioPlayer({
   language,
   title = "Audio Lesson",
   artist = "Zeeguu",
+  autoPlay = false,
 }) {
   const getStoredSpeed = () => {
     if (!language) return 1.0;
@@ -308,6 +309,39 @@ export default function CustomAudioPlayer({
       };
     }
   }, [initialProgress]);
+
+  useEffect(() => {
+    if (!autoPlay) return;
+    const audio = audioRef.current;
+    if (!audio) return;
+
+    let started = false;
+    const tryStart = () => {
+      if (started) return;
+      started = true;
+      audio
+        .play()
+        .then(() => {
+          setIsPlaying(true);
+          onPlay && onPlay();
+          startProgressTimer();
+          if ("mediaSession" in navigator) {
+            navigator.mediaSession.playbackState = "playing";
+          }
+        })
+        .catch(() => {
+          // Autoplay blocked — user can still hit play.
+          started = false;
+        });
+    };
+
+    if (audio.readyState >= 3) {
+      tryStart();
+    } else {
+      audio.addEventListener("canplay", tryStart, { once: true });
+      return () => audio.removeEventListener("canplay", tryStart);
+    }
+  }, [autoPlay]);
 
   useEffect(() => {
     const audio = audioRef.current;

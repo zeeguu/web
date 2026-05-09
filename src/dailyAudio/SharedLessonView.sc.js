@@ -1,10 +1,16 @@
 import styled from "styled-components";
-import { zeeguuOrange } from "../components/colors";
+import { zeeguuOrange, successGreen } from "../components/colors";
 
 export const LessonCard = styled.div`
   padding: 16px;
-  background-color: var(--bg-secondary);
-  border: 1px solid ${zeeguuOrange};
+  background-color: ${({ $subtle, $isCompleted }) =>
+    $subtle
+      ? $isCompleted
+        ? "rgba(40, 167, 69, 0.08)"
+        : "rgba(255, 187, 84, 0.06)"
+      : "transparent"};
+  border: ${({ $subtle, $isCompleted }) =>
+    $subtle ? "none" : `1px solid ${$isCompleted ? successGreen : zeeguuOrange}`};
   border-radius: 6px;
 `;
 
