@@ -15,9 +15,7 @@ export default function FlashcardStage({
   loading,
   nextCard,
   prevCard,
-  repeatCard,
   showResult,
-  shuffleCards,
   statusMessage,
   statusType,
 }) {
@@ -50,8 +48,6 @@ export default function FlashcardStage({
         canGoPrevious={canGoPrevious}
         nextCard={nextCard}
         prevCard={prevCard}
-        repeatCard={repeatCard}
-        shuffleCards={shuffleCards}
       />
     </>
   );

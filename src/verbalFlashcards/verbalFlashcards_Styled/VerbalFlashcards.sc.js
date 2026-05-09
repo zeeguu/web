@@ -342,10 +342,12 @@ export const CardControls = styled.div`
 
 export const CardNavigation = styled.div`
   display: flex;
+  justify-content: space-between;
+  width: 100%;
   gap: 10px;
 
   & > button {
-    flex: 1 1 0;
+    flex: 0 1 auto;
     margin: 0;
     min-width: 8rem;
   }
@@ -355,23 +357,9 @@ export const CardNavigation = styled.div`
   }
 
   @media screen and (max-width: 520px) {
-    flex-direction: column;
-    width: 100%;
-
     & > button {
-      width: 100%;
+      flex: 1 1 0;
       min-width: 0;
     }
-  }
-`;
-
-export const IconControls = styled.div`
-  display: flex;
-  gap: 10px;
-  justify-content: flex-end;
-
-  @media screen and (max-width: 768px) {
-    width: 100%;
-    justify-content: center;
   }
 `;

@@ -61,6 +61,7 @@ export default function useAudioRecorder({
   const voiceStartedAtRef = useRef(0);
   const recordingStartedAtRef = useRef(0);
   const recordingStopEligibleAtRef = useRef(0);
+  const recordingFlowRunIdRef = useRef(null);
   const noiseSensitivityRef = useRef(noiseSensitivity);
 
   useEffect(() => {
@@ -104,6 +105,7 @@ export default function useAudioRecorder({
     lastVoiceDetectedAtRef.current = 0;
     recordingStartedAtRef.current = 0;
     recordingStopEligibleAtRef.current = 0;
+    recordingFlowRunIdRef.current = null;
     shouldProcessRecordingOnStopRef.current = false;
     isStartingRecordingRef.current = false;
     isRecordingRef.current = false;
@@ -276,9 +278,9 @@ export default function useAudioRecorder({
   ]);
 
   const handleRecordingStop = useCallback(() => {
-    const flowRunId = flowRunIdRef.current;
+    const flowRunId = recordingFlowRunIdRef.current;
 
-    if (!canContinueFlow(flowRunId)) {
+    if (flowRunId === null || !canContinueFlow(flowRunId)) {
       cleanupRecordingResources();
       return;
     }
@@ -350,6 +352,7 @@ export default function useAudioRecorder({
 
       recordingStartedAtRef.current = Date.now();
       recordingStopEligibleAtRef.current = recordingStartedAtRef.current + RECORDING_PREROLL_MS;
+      recordingFlowRunIdRef.current = flowRunIdRef.current;
       lastVoiceDetectedAtRef.current = 0;
       voiceStartedAtRef.current = 0;
 

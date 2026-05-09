@@ -465,6 +465,7 @@ export default function VerbalFlashcardsPage() {
   const handleRecordingComplete = useCallback(
     ({ audioBlob, flowRunId, recordingStartedAt }) => {
       const currentCard = getCurrentCard();
+      const recordingCardId = currentCard?.id;
 
       if (!currentCard) {
         updateStatusWithDebounce(strings.verbalFlashcardsNoFlashcardLoaded, "error");
@@ -475,7 +476,7 @@ export default function VerbalFlashcardsPage() {
       api.transcribeAudio(
         audioBlob,
         (result) => {
-          if (!canContinueFlow(flowRunId)) {
+          if (!canContinueFlow(flowRunId) || getCurrentCard()?.id !== recordingCardId) {
             cleanupRecordingResourcesRef.current();
             return;
           }
@@ -500,7 +501,7 @@ export default function VerbalFlashcardsPage() {
             expectedText,
             currentCard.id,
             (analysis) => {
-              if (!canContinueFlow(flowRunId)) {
+              if (!canContinueFlow(flowRunId) || getCurrentCard()?.id !== recordingCardId) {
                 cleanupRecordingResourcesRef.current();
                 return;
               }
@@ -543,6 +544,10 @@ export default function VerbalFlashcardsPage() {
               handleAttemptOutcome(currentCard, transcription, analysisWithAttemptFeedback, recordingStartedAt);
             },
             () => {
+              if (!canContinueFlow(flowRunId) || getCurrentCard()?.id !== recordingCardId) {
+                cleanupRecordingResourcesRef.current();
+                return;
+              }
               if (handleFinalPracticeError(currentCard)) {
                 return;
               }
@@ -552,6 +557,10 @@ export default function VerbalFlashcardsPage() {
           );
         },
         () => {
+          if (!canContinueFlow(flowRunId) || getCurrentCard()?.id !== recordingCardId) {
+            cleanupRecordingResourcesRef.current();
+            return;
+          }
           if (handleFinalPracticeError(currentCard)) {
             return;
           }
@@ -699,19 +708,6 @@ export default function VerbalFlashcardsPage() {
     }
   }, [stopCurrentFlow]);
 
-  const shuffleCards = useCallback(() => {
-    stopCurrentFlow();
-    const shuffled = [...flashcardsRef.current].sort(() => Math.random() - 0.5);
-    setFlashcards(shuffled);
-    flashcardsRef.current = shuffled;
-    setCurrentCardIndex(0);
-    currentCardIndexRef.current = 0;
-  }, [stopCurrentFlow]);
-
-  const repeatCard = useCallback(() => {
-    beginCardFlow();
-  }, [beginCardFlow]);
-
   useEffect(() => {
     isPageActiveRef.current = true;
     loadFlashcards();
@@ -797,9 +793,7 @@ export default function VerbalFlashcardsPage() {
             loading={loading}
             nextCard={nextCard}
             prevCard={prevCard}
-            repeatCard={repeatCard}
             showResult={showResult}
-            shuffleCards={shuffleCards}
             statusMessage={statusMessage}
             statusType={statusType}
           />
