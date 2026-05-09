@@ -10,6 +10,17 @@ import LessonPlayerCard from "./LessonPlayerCard";
 import { shareLessonLink } from "./shareLessonLink";
 import Modal from "../components/modal_shared/Modal";
 
+const lessonProgressSeconds = (lesson) =>
+  lesson.pause_position_seconds || lesson.position_seconds || lesson.progress_seconds || 0;
+
+const pastLessonTitle = (lesson) => {
+  const dateStr = new Date(lesson.created_at).toLocaleDateString("en-US", {
+    month: "short",
+    day: "numeric",
+  });
+  return `${dateStr}: ${lesson.title || "Past Audio Lesson"}`;
+};
+
 export default function PastLessons() {
   const api = useContext(APIContext);
   const { userDetails } = useContext(UserContext);
@@ -89,11 +100,13 @@ export default function PastLessons() {
   };
 
   const onProgressUpdate = (lessonId, progressSeconds) => {
-    setPastLessons((prev) =>
-      prev.map((l) =>
+    setPastLessons((prev) => {
+      const current = prev.find((l) => l.lesson_id === lessonId);
+      if (!current || current.pause_position_seconds === progressSeconds) return prev;
+      return prev.map((l) =>
         l.lesson_id === lessonId ? { ...l, pause_position_seconds: progressSeconds } : l,
-      ),
-    );
+      );
+    });
   };
 
   if (isLoading && pastLessons.length === 0) {
@@ -173,18 +186,12 @@ export default function PastLessons() {
 }
 
 function PastLessonRow({ lesson, onOpen }) {
-  const dateStr = new Date(lesson.created_at).toLocaleDateString("en-US", {
-    month: "short",
-    day: "numeric",
-  });
-  const titleText = `${dateStr}: ${lesson.title || "Past Audio Lesson"}`;
-
+  const titleText = pastLessonTitle(lesson);
   const duration = lesson.duration_seconds || 0;
-  const rawProgress = lesson.pause_position_seconds || lesson.position_seconds || lesson.progress_seconds || 0;
   const pct = lesson.is_completed
     ? 100
     : duration > 0
-      ? Math.min(100, (rawProgress / duration) * 100)
+      ? Math.min(100, (lessonProgressSeconds(lesson) / duration) * 100)
       : 0;
 
   return (
@@ -244,12 +251,7 @@ function PastLessonRow({ lesson, onOpen }) {
 
 function PastLessonPlayer({ lesson, api, userDetails, onLessonCompleted, onProgressUpdate }) {
   const listeningSession = useListeningSession(lesson.lesson_id);
-
-  const dateStr = new Date(lesson.created_at).toLocaleDateString("en-US", {
-    month: "short",
-    day: "numeric",
-  });
-  const titleText = `${dateStr}: ${lesson.title || "Past Audio Lesson"}`;
+  const titleText = pastLessonTitle(lesson);
 
   const metadata = lesson.canonical_suggestion ? (
     <>
@@ -272,8 +274,7 @@ function PastLessonPlayer({ lesson, api, userDetails, onLessonCompleted, onProgr
       audioProps={{
         src: `${api.baseAPIurl}${lesson.audio_url}?session=${api.session}`,
         autoPlay: true,
-        initialProgress:
-          lesson.pause_position_seconds || lesson.position_seconds || lesson.progress_seconds || 0,
+        initialProgress: lessonProgressSeconds(lesson),
         language: userDetails?.learned_language,
         title: lesson.title || "Past Audio Lesson",
         artist: `Zeeguu - ${new Date(lesson.created_on).toLocaleDateString()}`,
