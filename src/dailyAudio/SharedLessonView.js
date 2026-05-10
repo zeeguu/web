@@ -4,6 +4,7 @@ import { APIContext } from "../contexts/APIContext";
 import { UserContext } from "../contexts/UserContext";
 import CloseIconButton from "../components/CloseIconButton";
 import LoadingAnimation from "../components/LoadingAnimation";
+import * as s from "../components/ColumnWidth.sc";
 import { LessonWrapper } from "./LessonView.sc";
 import { LessonCard, HeaderRow, ShareNote, BannerButton } from "./SharedLessonView.sc";
 import LessonPlayerCard from "./LessonPlayerCard";
@@ -70,23 +71,27 @@ export default function SharedLessonView() {
 
   if (error) {
     return (
-      <LessonWrapper>
-        <LessonCard>
-          <HeaderRow>
-            <h2>Could not open this lesson</h2>
-            <CloseIconButton onClick={handleClose} ariaLabel="Close shared lesson" />
-          </HeaderRow>
-          <p>{error}</p>
-        </LessonCard>
-      </LessonWrapper>
+      <s.NarrowColumn>
+        <LessonWrapper>
+          <LessonCard>
+            <HeaderRow>
+              <h2>Could not open this lesson</h2>
+              <CloseIconButton onClick={handleClose} ariaLabel="Close shared lesson" />
+            </HeaderRow>
+            <p>{error}</p>
+          </LessonCard>
+        </LessonWrapper>
+      </s.NarrowColumn>
     );
   }
 
   if (!lessonData || userLanguages === null) {
     return (
-      <LessonWrapper>
-        <LoadingAnimation />
-      </LessonWrapper>
+      <s.NarrowColumn>
+        <LessonWrapper>
+          <LoadingAnimation />
+        </LessonWrapper>
+      </s.NarrowColumn>
     );
   }
 
@@ -128,26 +133,28 @@ export default function SharedLessonView() {
   );
 
   return (
-    <LessonWrapper>
-      <LessonPlayerCard
-        title={titleText}
-        metadata={metadata}
-        headerAction={<CloseIconButton onClick={handleClose} ariaLabel="Close shared lesson" />}
-        audioProps={{
-          src: lessonData.audio_url,
-          language: lessonLang,
-          title: titleText,
-          artist: `${lessonLangName} Audio Lesson`,
-          onPlay: () => listeningSession.start(),
-          onPause: () => listeningSession.pause(),
-          onEnded: () => listeningSession.end(),
-        }}
-      />
+    <s.NarrowColumn>
+      <LessonWrapper>
+        <LessonPlayerCard
+          title={titleText}
+          metadata={metadata}
+          headerAction={<CloseIconButton onClick={handleClose} ariaLabel="Close shared lesson" />}
+          audioProps={{
+            src: lessonData.audio_url,
+            language: lessonLang,
+            title: titleText,
+            artist: `${lessonLangName} Audio Lesson`,
+            onPlay: () => listeningSession.start(),
+            onPause: () => listeningSession.pause(),
+            onEnded: () => listeningSession.end(),
+          }}
+        />
 
-      <ShareNote>
-        <div>{banner.message}</div>
-        <BannerButton onClick={banner.onAction}>{banner.actionLabel}</BannerButton>
-      </ShareNote>
-    </LessonWrapper>
+        <ShareNote>
+          <div>{banner.message}</div>
+          <BannerButton onClick={banner.onAction}>{banner.actionLabel}</BannerButton>
+        </ShareNote>
+      </LessonWrapper>
+    </s.NarrowColumn>
   );
 }
