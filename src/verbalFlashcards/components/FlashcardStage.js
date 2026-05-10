@@ -11,13 +11,13 @@ export default function FlashcardStage({
   canGoPrevious,
   currentCard,
   flashcardsCount,
+  isAudioDetected,
   isRecording,
   loading,
+  nextCardCountdown,
   nextCard,
   prevCard,
-  repeatCard,
   showResult,
-  shuffleCards,
   statusMessage,
   statusType,
 }) {
@@ -43,15 +43,19 @@ export default function FlashcardStage({
   return (
     <>
       <FlashcardPrompt card={currentCard} />
-      <RecordingControls isRecording={isRecording} statusMessage={statusMessage} statusType={statusType} />
+      <RecordingControls
+        isAudioDetected={isAudioDetected}
+        isRecording={isRecording}
+        statusMessage={statusMessage}
+        statusType={statusType}
+      />
       {showResult && <FeedbackView accuracyResult={accuracyResult} />}
       <CardNavigator
         canGoNext={canGoNext}
         canGoPrevious={canGoPrevious}
+        nextCardCountdown={nextCardCountdown}
         nextCard={nextCard}
         prevCard={prevCard}
-        repeatCard={repeatCard}
-        shuffleCards={shuffleCards}
       />
     </>
   );
