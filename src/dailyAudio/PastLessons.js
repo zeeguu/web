@@ -245,7 +245,7 @@ export function PastLessonRow({ lesson, onOpen }) {
 // start/pause/end lifecycle is scoped to the modal's mount/unmount.
 export function PastLessonPlayer({ lesson, api, userDetails, onLessonCompleted, onProgressUpdate }) {
   const listeningSession = useListeningSession(lesson.lesson_id);
-  const networkUrl = `${api.baseAPIurl}${lesson.audio_url}?session=${api.session}`;
+  const networkUrl = `${api.baseAPIurl}${lesson.audio_url}`;
   const [audioSrc, setAudioSrc] = useState(null);
 
   useEffect(() => {

@@ -11,7 +11,7 @@ Zeeguu_API.prototype.getTodaysLesson = function (callback, onError) {
     `get_todays_lesson?timezone_offset=${getTimezoneOffsetMinutes()}`,
     (data) => {
       if (data.lesson === null) return callback(null);
-      const audioUrl = `${this.baseAPIurl}${data.audio_url}?session=${this.session}`;
+      const audioUrl = `${this.baseAPIurl}${data.audio_url}`;
       callback({ ...data, audio_url: audioUrl });
     },
     { onError },
@@ -49,7 +49,7 @@ Zeeguu_API.prototype.generateDailyLesson = function (callback, onError, suggesti
         callback(data);
       } else if (data.audio_url) {
         // Existing lesson returned directly
-        const audioUrl = `${this.baseAPIurl}${data.audio_url}?session=${this.session}`;
+        const audioUrl = `${this.baseAPIurl}${data.audio_url}`;
         callback({ ...data, audio_url: audioUrl });
       } else {
         throw new Error("No audio URL in response");
