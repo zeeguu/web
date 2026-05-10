@@ -330,16 +330,14 @@ export default function ArticleReader({ teacherArticleID }) {
     api.simplifyArticle(articleInfo.id, (result) => {
       setIsProcessingArticle(false);
       setShowLanguageModal(false);
-      if (result.status === "success" && result.levels) {
-        // Navigate to the simplified version (non-original with matching or lower level)
-        const simplified = result.levels.find((l) => !l.is_original);
-        if (simplified) {
-          history.replace("/read/article?id=" + simplified.id);
-          return;
-        }
-      } else {
-        console.error("Simplification failed:", result.message);
+      // Backend returns levels for both "success" (just simplified) and
+      // "already_done" (existing version at user's level) — handle both.
+      const simplified = result.levels?.find((l) => !l.is_original);
+      if (simplified) {
+        history.replace("/read/article?id=" + simplified.id);
+        return;
       }
+      console.error("Simplification failed:", result.message || result.error || result.status);
     });
   };
 
