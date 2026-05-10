@@ -69,7 +69,7 @@ export default function LessonPlaybackView({
                 setLessonData((prev) => ({
                   ...prev,
                   is_completed: true,
-                  completed_at: new Date().toISOString(),
+                  last_completed_at: new Date().toISOString(),
                 }));
                 setUserDetails((prev) => ({ ...prev, daily_audio_status: AUDIO_STATUS.COMPLETED }));
               });

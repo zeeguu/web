@@ -4,8 +4,8 @@ import { APIContext } from "../contexts/APIContext";
 import { UserContext } from "../contexts/UserContext";
 import LoadingAnimation from "../components/LoadingAnimation";
 import useListeningSession from "../hooks/useListeningSession";
-import { SubtleTextButton, CompletionCheck, LessonTitle, LessonMetadata } from "./LessonView.sc";
-import { SubtleLessonCard, HeaderRow, ProgressBarTrack, ProgressBarFill } from "./SharedLessonView.sc";
+import { SubtleTextButton, LessonTitle, LessonMetadata } from "./LessonView.sc";
+import { SubtleLessonCard, ProgressBarTrack, ProgressBarFill } from "./SharedLessonView.sc";
 import LessonPlayerCard from "./LessonPlayerCard";
 import { shareLessonLink } from "./shareLessonLink";
 import Modal from "../components/modal_shared/Modal";
@@ -13,13 +13,29 @@ import Modal from "../components/modal_shared/Modal";
 const lessonProgressSeconds = (lesson) =>
   lesson.pause_position_seconds || lesson.position_seconds || lesson.progress_seconds || 0;
 
-const pastLessonTitle = (lesson) => {
-  const dateStr = new Date(lesson.created_at).toLocaleDateString("en-US", {
+const lessonDateLabel = (lesson) =>
+  new Date(lesson.created_at).toLocaleDateString("en-US", {
     month: "short",
     day: "numeric",
   });
-  return `${dateStr}: ${lesson.title || "Past Audio Lesson"}`;
-};
+
+const lessonTitleText = (lesson) => lesson.title || "Past Audio Lesson";
+
+const titleWithDate = (lesson) => (
+  <>
+    <small
+      style={{
+        color: "var(--text-secondary)",
+        fontSize: "0.75em",
+        fontWeight: 400,
+        marginRight: "6px",
+      }}
+    >
+      [{lessonDateLabel(lesson)}]
+    </small>
+    {lessonTitleText(lesson)}
+  </>
+);
 
 export default function PastLessons() {
   const api = useContext(APIContext);
@@ -93,7 +109,7 @@ export default function PastLessons() {
     setPastLessons((prev) =>
       prev.map((l) =>
         l.lesson_id === lessonId
-          ? { ...l, is_completed: true, completed_at: new Date().toISOString() }
+          ? { ...l, is_completed: true, last_completed_at: new Date().toISOString() }
           : l,
       ),
     );
@@ -186,13 +202,13 @@ export default function PastLessons() {
 }
 
 export function PastLessonRow({ lesson, onOpen, leadLabel }) {
-  const titleText = pastLessonTitle(lesson);
   const duration = lesson.duration_seconds || 0;
-  const pct = lesson.is_completed
-    ? 100
-    : duration > 0
-      ? Math.min(100, (lessonProgressSeconds(lesson) / duration) * 100)
-      : 0;
+  const pct = duration > 0
+    ? Math.min(100, (lessonProgressSeconds(lesson) / duration) * 100)
+    : 0;
+  // Show the bar whenever there's meaningful progress and the user isn't
+  // sitting at the very end — covers both first-listen and re-listen.
+  const showBar = pct > 0 && pct < 99;
 
   return (
     <SubtleLessonCard
@@ -213,36 +229,26 @@ export function PastLessonRow({ lesson, onOpen, leadLabel }) {
           {leadLabel}
         </div>
       )}
-      <HeaderRow>
-        <LessonTitle
-          $compact
-          style={{
-            fontSize: "1rem",
-            color: lesson.is_completed ? successGreen : undefined,
-          }}
-        >
-          {titleText}
-          {lesson.is_completed && <> <CompletionCheck>✓</CompletionCheck></>}
-        </LessonTitle>
-        {lesson.lesson_id && (
-          <SubtleTextButton
-            onClick={(e) => {
-              e.stopPropagation();
-              shareLessonLink(lesson.lesson_id, lesson.title);
-            }}
-          >
-            Share
-          </SubtleTextButton>
-        )}
-      </HeaderRow>
+      <LessonTitle
+        $compact
+        style={{
+          fontSize: "1rem",
+          color: lesson.is_completed ? successGreen : "var(--text-primary)",
+          fontWeight: 500,
+        }}
+      >
+        {titleWithDate(lesson)}
+      </LessonTitle>
       {lesson.canonical_suggestion && (
-        <LessonMetadata>
+        <LessonMetadata style={{ marginBottom: showBar ? "8px" : 0 }}>
           {lesson.lesson_type === "situation" ? "Situation" : "Topic"}: <b>{lesson.canonical_suggestion}</b>
         </LessonMetadata>
       )}
-      <ProgressBarTrack>
-        <ProgressBarFill $pct={pct} $isCompleted={lesson.is_completed} />
-      </ProgressBarTrack>
+      {showBar && (
+        <ProgressBarTrack>
+          <ProgressBarFill $pct={pct} $isCompleted={false} />
+        </ProgressBarTrack>
+      )}
     </SubtleLessonCard>
   );
 }
@@ -251,7 +257,6 @@ export function PastLessonRow({ lesson, onOpen, leadLabel }) {
 // start/pause/end lifecycle is scoped to the modal's mount/unmount.
 export function PastLessonPlayer({ lesson, api, userDetails, onLessonCompleted, onProgressUpdate }) {
   const listeningSession = useListeningSession(lesson.lesson_id);
-  const titleText = pastLessonTitle(lesson);
 
   const metadata = lesson.canonical_suggestion ? (
     <>
@@ -261,10 +266,10 @@ export function PastLessonPlayer({ lesson, api, userDetails, onLessonCompleted, 
 
   return (
     <LessonPlayerCard
-      title={titleText}
+      title={titleWithDate(lesson)}
       isCompleted={lesson.is_completed}
       metadata={metadata}
-      headerAction={
+      footerAction={
         lesson.lesson_id && (
           <SubtleTextButton onClick={() => shareLessonLink(lesson.lesson_id, lesson.title)}>
             Share

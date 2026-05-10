@@ -12,8 +12,6 @@ import { AUDIO_STATUS, GENERATION_PROGRESS } from "./AudioLessonConstants";
 import { GenerateView, GenerateButton } from "./GenerateButton.sc";
 import SuggestionSelector, { getSavedSuggestion, getSavedSuggestionType, suggestionKey } from "./SuggestionSelector";
 import LessonPlaybackView from "./LessonPlaybackView";
-import Modal from "../components/modal_shared/Modal";
-import { PastLessonRow, PastLessonPlayer } from "./PastLessons";
 import { SubtleTextButton } from "./LessonView.sc";
 import { wordsAsTile, shortDate } from "./audioUtils";
 
@@ -224,8 +222,6 @@ export default function TodayAudio({ setShowTabs }) {
   const [lessonData, setLessonData] = useState(null);
   const [error, setError] = useState(null);
   const [canGenerateLesson, setCanGenerateLesson] = useState(null); // null = checking, true = can generate, false = cannot
-  const [unfinishedLesson, setUnfinishedLesson] = useState(null);
-  const [unfinishedOpen, setUnfinishedOpen] = useState(false);
   const history = useHistory();
 
   // Listening session tracking via hook
@@ -253,36 +249,6 @@ export default function TodayAudio({ setShowTabs }) {
       document.title = "Zeeguu: Audio Lesson";
     }
   }, [lessonData]);
-
-  // Fetch the most recent unfinished past lesson so we can offer it as a
-  // "continue listening" card on the empty Today view.
-  useEffect(() => {
-    if (lessonData) return;
-    api.getPastDailyLessons(
-      10,
-      0,
-      (data) => {
-        const unfinished = data?.lessons?.find(
-          (l) => !l.is_completed && l.audio_exists !== false,
-        );
-        setUnfinishedLesson(unfinished || null);
-      },
-      () => setUnfinishedLesson(null),
-    );
-  }, [api, lang, lessonData]);
-
-  const onUnfinishedCompleted = () => {
-    setUnfinishedLesson(null);
-    setUnfinishedOpen(false);
-  };
-
-  const onUnfinishedProgress = (lessonId, progressSeconds) => {
-    setUnfinishedLesson((prev) =>
-      prev && prev.lesson_id === lessonId && prev.pause_position_seconds !== progressSeconds
-        ? { ...prev, pause_position_seconds: progressSeconds }
-        : prev,
-    );
-  };
 
   const failedKey = `zeeguu_generation_failed_${lang}_${new Date().toDateString()}`;
 
@@ -609,21 +575,6 @@ export default function TodayAudio({ setShowTabs }) {
         </p>
       );
 
-      const unfinishedSection = unfinishedLesson && (
-        <div style={{ width: "100%", maxWidth: "600px", marginTop: "16px" }}>
-          <PastLessonRow
-            lesson={unfinishedLesson}
-            onOpen={() => setUnfinishedOpen(true)}
-            leadLabel="Continue listening"
-          />
-          <div style={{ textAlign: "right", marginTop: "4px" }}>
-            <SubtleTextButton onClick={() => history.push("/daily-audio/past-lessons")}>
-              More past lessons →
-            </SubtleTextButton>
-          </div>
-        </div>
-      );
-
       return (
         <GenerateView>
           <SuggestionSelector
@@ -635,18 +586,11 @@ export default function TodayAudio({ setShowTabs }) {
             autoDisabled={autoDisabled}
           />
           {canGenerate ? generateAction : cantGenerateMessage}
-          {unfinishedSection}
-          <Modal open={unfinishedOpen} onClose={() => setUnfinishedOpen(false)}>
-            {unfinishedOpen && unfinishedLesson && (
-              <PastLessonPlayer
-                lesson={unfinishedLesson}
-                api={api}
-                userDetails={userDetails}
-                onLessonCompleted={onUnfinishedCompleted}
-                onProgressUpdate={onUnfinishedProgress}
-              />
-            )}
-          </Modal>
+          <div style={{ marginTop: "24px" }}>
+            <SubtleTextButton onClick={() => history.push("/daily-audio/past-lessons")}>
+              See past lessons →
+            </SubtleTextButton>
+          </div>
         </GenerateView>
       );
     }

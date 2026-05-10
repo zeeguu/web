@@ -2,13 +2,16 @@ import CustomAudioPlayer from "../components/CustomAudioPlayer";
 import { LessonTitle, LessonMetadata, CompletionCheck } from "./LessonView.sc";
 import { LessonCard, HeaderRow } from "./SharedLessonView.sc";
 
-// audioProps is forwarded to CustomAudioPlayer; metadata and headerAction
-// are JSX slots rendered above and beside the title.
+// audioProps is forwarded to CustomAudioPlayer; metadata, headerAction,
+// and footerAction are JSX slots — header sits beside the title, footer
+// renders below the player (use it for wide buttons that would squeeze
+// the title if placed in the header).
 export default function LessonPlayerCard({
   title,
   isCompleted = false,
   metadata,
   headerAction,
+  footerAction,
   audioProps,
 }) {
   return (
@@ -30,6 +33,11 @@ export default function LessonPlayerCard({
           ...(audioProps?.style || {}),
         }}
       />
+      {footerAction && (
+        <div style={{ marginTop: "12px", textAlign: "center" }}>
+          {footerAction}
+        </div>
+      )}
     </LessonCard>
   );
 }
