@@ -266,6 +266,21 @@ export default function VerbalFlashcardsPage() {
     [speakText, translationLanguageId],
   );
 
+  const isLastCard = useCallback((card) => {
+    return flashcardsRef.current.length === 1 && flashcardsRef.current[0]?.id === card?.id;
+  }, []);
+
+  const speakSessionCompleteIfLastCard = useCallback(
+    (card) => {
+      if (!isLastCard(card)) {
+        return Promise.resolve();
+      }
+
+      return speakFeedback(feedbackCopy.sessionComplete);
+    },
+    [feedbackCopy, isLastCard, speakFeedback],
+  );
+
   const {
     clearFinalPractice,
     handleFinalPracticeAnalysis,
@@ -277,6 +292,7 @@ export default function VerbalFlashcardsPage() {
     displayResults,
     feedbackCopy,
     getCurrentCard,
+    isLastCard,
     isResolvingCardRef,
     prepareMicrophoneRef,
     removeResolvedCard,
@@ -374,10 +390,17 @@ export default function VerbalFlashcardsPage() {
           return;
         }
 
-        startInterCardCountdown(() => {
-          isResolvingCardRef.current = false;
-          if (!canContinueFlow()) return;
-          removeResolvedCard(card, nextCorrectBookmarks, nextIncorrectBookmarks, practicedCount);
+        speakSessionCompleteIfLastCard(card).finally(() => {
+          if (!canContinueFlow()) {
+            isResolvingCardRef.current = false;
+            return;
+          }
+
+          startInterCardCountdown(() => {
+            isResolvingCardRef.current = false;
+            if (!canContinueFlow()) return;
+            removeResolvedCard(card, nextCorrectBookmarks, nextIncorrectBookmarks, practicedCount);
+          });
         });
       });
     },
@@ -396,6 +419,7 @@ export default function VerbalFlashcardsPage() {
       promptFinalPracticeAfterAnswer,
       removeResolvedCard,
       speakFeedback,
+      speakSessionCompleteIfLastCard,
       speakText,
       startInterCardCountdown,
       totalPracticedBookmarksInSession,

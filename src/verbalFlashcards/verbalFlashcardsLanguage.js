@@ -1,5 +1,5 @@
 export const DEFAULT_LANGUAGE_ID = "en";
-export const BETWEEN_CARDS_DELAY_MS = 5000;
+export const BETWEEN_CARDS_DELAY_MS = 3000;
 export const TTS_PLAYBACK_PREROLL_MS = 120;
 
 const PROMPT_COPY = {
@@ -16,6 +16,8 @@ const FEEDBACK_COPY = {
     finalPracticePrompt: "Prøv nu selv at sige det.",
     finalPracticeSuccess: "Flot. Vi går videre.",
     finalPracticeMoveOn: "Okay. Vi går videre.",
+    sessionComplete: "Godt arbejde. Du er færdig for i dag.",
+    finalPracticeSessionComplete: "Godt arbejde. Du er færdig for i dag.",
   },
   en: {
     successIntro: "Yes, exactly. The answer is:",
@@ -25,6 +27,8 @@ const FEEDBACK_COPY = {
     finalPracticePrompt: "Now try saying it yourself.",
     finalPracticeSuccess: "Nice. Let's keep going.",
     finalPracticeMoveOn: "Okay. Let's keep going.",
+    sessionComplete: "Good work. You're done for today.",
+    finalPracticeSessionComplete: "Good work. You're done for today.",
   },
 };
 

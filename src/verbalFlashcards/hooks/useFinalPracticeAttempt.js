@@ -6,6 +6,7 @@ export default function useFinalPracticeAttempt({
   displayResults,
   feedbackCopy,
   getCurrentCard,
+  isLastCard,
   isResolvingCardRef,
   prepareMicrophoneRef,
   removeResolvedCard,
@@ -54,6 +55,13 @@ export default function useFinalPracticeAttempt({
         return analysis;
       }
 
+      if (isLastCard(card)) {
+        return {
+          ...analysis,
+          feedback: feedbackCopy.finalPracticeSessionComplete,
+        };
+      }
+
       if (analysis.isAccepted) {
         return {
           ...analysis,
@@ -66,7 +74,7 @@ export default function useFinalPracticeAttempt({
         feedback: feedbackCopy.finalPracticeMoveOn,
       };
     },
-    [feedbackCopy],
+    [feedbackCopy, isLastCard],
   );
 
   const finishFinalPracticeAttempt = useCallback(
@@ -114,7 +122,9 @@ export default function useFinalPracticeAttempt({
         return false;
       }
 
-      const fallbackFeedback = { feedback: feedbackCopy.finalPracticeMoveOn };
+      const fallbackFeedback = {
+        feedback: isLastCard(card) ? feedbackCopy.finalPracticeSessionComplete : feedbackCopy.finalPracticeMoveOn,
+      };
       displayResults(fallbackFeedback);
       cleanupRecordingResourcesRef.current();
       finishFinalPracticeAttempt(finalPracticeResolutionRef.current, fallbackFeedback);
@@ -125,6 +135,7 @@ export default function useFinalPracticeAttempt({
       displayResults,
       feedbackCopy,
       finishFinalPracticeAttempt,
+      isLastCard,
       isFinalPracticeAttemptForCard,
     ],
   );
