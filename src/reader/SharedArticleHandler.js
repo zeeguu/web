@@ -156,14 +156,17 @@ export default function SharedArticleHandler() {
       (result) => {
         const artinfo = typeof result === "string" ? JSON.parse(result) : result;
         api.simplifyArticle(artinfo.id, (simplifyResult) => {
-          if (simplifyResult.status === "success" && simplifyResult.levels) {
-            const simplified = simplifyResult.levels.find((l) => !l.is_original);
-            if (simplified) {
-              navigateToArticle(simplified.id);
-              return;
-            }
+          // Backend returns levels for both "success" (just simplified) and
+          // "already_done" (existing version at user's level) — handle both.
+          const simplified = simplifyResult.levels?.find((l) => !l.is_original);
+          if (simplified) {
+            navigateToArticle(simplified.id);
+            return;
           }
-          console.error("Simplification failed:", simplifyResult.message);
+          console.error(
+            "Simplification failed:",
+            simplifyResult.message || simplifyResult.error || simplifyResult.status,
+          );
           navigateToArticle(artinfo.id);
         });
       },
