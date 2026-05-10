@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import CustomAudioPlayer from "../components/CustomAudioPlayer";
 import FeedbackModal from "../components/FeedbackModal";
+import LoadingAnimation from "../components/LoadingAnimation";
 import { FEEDBACK_OPTIONS, FEEDBACK_CODES_NAME } from "../components/FeedbackConstants";
 import Word from "../words/Word";
 import { successGreen } from "../components/colors";
@@ -9,6 +10,7 @@ import { LessonWrapper, LessonTitle, LessonMetadata, CompletionCheck, SubtleText
 import { wordsAsTile } from "./audioUtils";
 import { languageNames } from "../utils/languageDetection";
 import { shareLessonLink } from "./shareLessonLink";
+import { getCachedAudioUrl } from "./audioCache";
 
 export default function LessonPlaybackView({
   lessonData,
@@ -23,6 +25,18 @@ export default function LessonPlaybackView({
   setCurrentPlaybackTime,
 }) {
   const [openFeedback, setOpenFeedback] = useState(false);
+  const [audioSrc, setAudioSrc] = useState(null);
+
+  useEffect(() => {
+    if (!lessonData?.audio_url) return;
+    let cancelled = false;
+    getCachedAudioUrl(lessonData.lesson_id, lessonData.audio_url).then((url) => {
+      if (!cancelled) setAudioSrc(url);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [lessonData?.lesson_id, lessonData?.audio_url]);
 
   return (
     <LessonWrapper>
@@ -38,8 +52,8 @@ export default function LessonPlaybackView({
 
       <div>
 
-        <CustomAudioPlayer
-          src={lessonData.audio_url}
+        {audioSrc ? <CustomAudioPlayer
+          src={audioSrc}
           initialProgress={
             lessonData.pause_position_seconds || lessonData.position_seconds || lessonData.progress_seconds || 0
           }
@@ -82,7 +96,7 @@ export default function LessonPlaybackView({
             maxWidth: "600px",
             margin: "0 auto 20px auto",
           }}
-        />
+        /> : <LoadingAnimation />}
 
         {lessonData.is_completed && (
           <div

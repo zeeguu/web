@@ -9,6 +9,7 @@ import { SubtleLessonCard, ProgressBarTrack, ProgressBarFill } from "./SharedLes
 import LessonPlayerCard from "./LessonPlayerCard";
 import { shareLessonLink } from "./shareLessonLink";
 import Modal from "../components/modal_shared/Modal";
+import { getCachedAudioUrl } from "./audioCache";
 
 const lessonProgressSeconds = (lesson) =>
   lesson.pause_position_seconds || lesson.position_seconds || lesson.progress_seconds || 0;
@@ -244,12 +245,26 @@ export function PastLessonRow({ lesson, onOpen }) {
 // start/pause/end lifecycle is scoped to the modal's mount/unmount.
 export function PastLessonPlayer({ lesson, api, userDetails, onLessonCompleted, onProgressUpdate }) {
   const listeningSession = useListeningSession(lesson.lesson_id);
+  const networkUrl = `${api.baseAPIurl}${lesson.audio_url}?session=${api.session}`;
+  const [audioSrc, setAudioSrc] = useState(null);
+
+  useEffect(() => {
+    let cancelled = false;
+    getCachedAudioUrl(lesson.lesson_id, networkUrl).then((url) => {
+      if (!cancelled) setAudioSrc(url);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [lesson.lesson_id, networkUrl]);
 
   const metadata = lesson.canonical_suggestion ? (
     <>
       {lesson.lesson_type === "situation" ? "Situation" : "Topic"}: <b>{lesson.canonical_suggestion}</b>
     </>
   ) : null;
+
+  if (!audioSrc) return <LoadingAnimation />;
 
   return (
     <LessonPlayerCard
@@ -264,7 +279,7 @@ export function PastLessonPlayer({ lesson, api, userDetails, onLessonCompleted, 
         )
       }
       audioProps={{
-        src: `${api.baseAPIurl}${lesson.audio_url}?session=${api.session}`,
+        src: audioSrc,
         initialProgress: lessonProgressSeconds(lesson),
         language: userDetails?.learned_language,
         title: lesson.title || "Past Audio Lesson",

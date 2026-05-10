@@ -9,6 +9,7 @@ import { LessonCard, HeaderRow, ShareNote, BannerButton } from "./SharedLessonVi
 import LessonPlayerCard from "./LessonPlayerCard";
 import { languageNames } from "../utils/languageDetection";
 import useListeningSession from "../hooks/useListeningSession";
+import { getCachedAudioUrl } from "./audioCache";
 
 // Module-scope so it survives the AppLayout remount that fires when
 // userDetails.learned_language changes (see AppLayout.js — the content tree
@@ -24,6 +25,7 @@ export default function SharedLessonView() {
   const [lessonData, setLessonData] = useState(null);
   const [error, setError] = useState(null);
   const [userLanguages, setUserLanguages] = useState(null);
+  const [audioSrc, setAudioSrc] = useState(null);
 
   const activeLanguage = userDetails?.learned_language;
   const shouldRedirectAfterLanguageSwitch =
@@ -68,6 +70,17 @@ export default function SharedLessonView() {
     isLearningLanguage ? lessonData?.lesson_id : null,
   );
 
+  useEffect(() => {
+    if (!lessonData?.audio_url) return;
+    let cancelled = false;
+    getCachedAudioUrl(lessonData.lesson_id, lessonData.audio_url).then((url) => {
+      if (!cancelled) setAudioSrc(url);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [lessonData?.lesson_id, lessonData?.audio_url]);
+
   if (error) {
     return (
       <LessonWrapper>
@@ -82,7 +95,7 @@ export default function SharedLessonView() {
     );
   }
 
-  if (!lessonData || userLanguages === null) {
+  if (!lessonData || userLanguages === null || !audioSrc) {
     return (
       <LessonWrapper>
         <LoadingAnimation />
@@ -134,7 +147,7 @@ export default function SharedLessonView() {
         metadata={metadata}
         headerAction={<CloseIconButton onClick={handleClose} ariaLabel="Close shared lesson" />}
         audioProps={{
-          src: lessonData.audio_url,
+          src: audioSrc,
           language: lessonLang,
           title: titleText,
           artist: `${lessonLangName} Audio Lesson`,
