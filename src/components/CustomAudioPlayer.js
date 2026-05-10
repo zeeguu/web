@@ -570,7 +570,7 @@ export default function CustomAudioPlayer({
       <audio 
         ref={audioRef} 
         src={src} 
-        preload="metadata"
+        preload="auto"
         playsInline
         controlsList="nodownload"
         crossOrigin="anonymous"
