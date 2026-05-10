@@ -69,6 +69,8 @@
 
   --orange-btn-text: white;
 
+  --player-icon-color: #1a1a2e;
+
   color-scheme: light;
 }
 
@@ -138,6 +140,8 @@
   --exercise-card-bg: #2a2a48;
   --continue-card-bg: #222240;
   --orange-btn-text: #3d2800;
+
+  --player-icon-color: #ffbb54;
 
   --exercise-btn-border: hsl(54, 100%, 95%);
   --exercise-btn-focus: rgba(255, 187, 84, 0.6);
