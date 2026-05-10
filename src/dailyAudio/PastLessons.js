@@ -201,7 +201,7 @@ export default function PastLessons() {
   );
 }
 
-export function PastLessonRow({ lesson, onOpen, leadLabel }) {
+export function PastLessonRow({ lesson, onOpen }) {
   const duration = lesson.duration_seconds || 0;
   const pct = duration > 0
     ? Math.min(100, (lessonProgressSeconds(lesson) / duration) * 100)
@@ -216,19 +216,6 @@ export function PastLessonRow({ lesson, onOpen, leadLabel }) {
       onClick={onOpen}
       style={{ marginBottom: "8px", cursor: "pointer" }}
     >
-      {leadLabel && (
-        <div
-          style={{
-            fontSize: "11px",
-            color: "var(--text-secondary)",
-            textTransform: "uppercase",
-            letterSpacing: "0.05em",
-            marginBottom: "6px",
-          }}
-        >
-          {leadLabel}
-        </div>
-      )}
       <LessonTitle
         $compact
         style={{
