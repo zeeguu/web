@@ -8,9 +8,6 @@ export const LessonWrapper = styled.div`
 export const LessonTitle = styled.h2`
   color: ${zeeguuOrange};
   margin-bottom: ${({ $compact }) => ($compact ? "4px" : "10px")};
-  display: flex;
-  align-items: center;
-  gap: 8px;
 `;
 
 export const LessonMetadata = styled.p`

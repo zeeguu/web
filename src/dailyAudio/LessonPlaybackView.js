@@ -27,8 +27,8 @@ export default function LessonPlaybackView({
   return (
     <LessonWrapper>
       <LessonTitle>
-        {lessonData.is_completed && <CompletionCheck>✓</CompletionCheck>}
         {lessonData.title}
+        {lessonData.is_completed && <> <CompletionCheck>✓</CompletionCheck></>}
       </LessonTitle>
       {lessonData.canonical_suggestion && (
         <LessonMetadata>{lessonData.lesson_type === "situation" ? "Situation" : "Topic"}: <b>{lessonData.canonical_suggestion}</b></LessonMetadata>
@@ -69,7 +69,7 @@ export default function LessonPlaybackView({
                 setLessonData((prev) => ({
                   ...prev,
                   is_completed: true,
-                  completed_at: new Date().toISOString(),
+                  last_completed_at: new Date().toISOString(),
                 }));
                 setUserDetails((prev) => ({ ...prev, daily_audio_status: AUDIO_STATUS.COMPLETED }));
               });

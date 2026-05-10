@@ -2,16 +2,11 @@ import { useContext, useEffect, useState } from "react";
 import { useParams, useHistory } from "react-router-dom";
 import { APIContext } from "../contexts/APIContext";
 import { UserContext } from "../contexts/UserContext";
-import CustomAudioPlayer from "../components/CustomAudioPlayer";
 import CloseIconButton from "../components/CloseIconButton";
 import LoadingAnimation from "../components/LoadingAnimation";
-import { LessonWrapper, LessonTitle, LessonMetadata } from "./LessonView.sc";
-import {
-  LessonCard,
-  HeaderRow,
-  ShareNote,
-  BannerButton,
-} from "./SharedLessonView.sc";
+import { LessonWrapper } from "./LessonView.sc";
+import { LessonCard, HeaderRow, ShareNote, BannerButton } from "./SharedLessonView.sc";
+import LessonPlayerCard from "./LessonPlayerCard";
 import { languageNames } from "../utils/languageDetection";
 import useListeningSession from "../hooks/useListeningSession";
 
@@ -120,38 +115,34 @@ export default function SharedLessonView() {
     };
   }
 
+  const metadata = (
+    <>
+      Language: <b>{lessonLangName}</b>
+      {lessonData.canonical_suggestion && (
+        <>
+          {" · "}
+          {lessonData.lesson_type === "situation" ? "Situation" : "Topic"}: <b>{lessonData.canonical_suggestion}</b>
+        </>
+      )}
+    </>
+  );
+
   return (
     <LessonWrapper>
-      <LessonCard>
-        <HeaderRow>
-          <LessonTitle>{titleText}</LessonTitle>
-          <CloseIconButton onClick={handleClose} ariaLabel="Close shared lesson" />
-        </HeaderRow>
-        <LessonMetadata>
-          Language: <b>{lessonLangName}</b>
-          {lessonData.canonical_suggestion && (
-            <>
-              {" · "}
-              {lessonData.lesson_type === "situation" ? "Situation" : "Topic"}: <b>{lessonData.canonical_suggestion}</b>
-            </>
-          )}
-        </LessonMetadata>
-
-        <CustomAudioPlayer
-          src={lessonData.audio_url}
-          language={lessonLang}
-          title={titleText}
-          artist={`${lessonLangName} Audio Lesson`}
-          onPlay={() => listeningSession.start()}
-          onPause={() => listeningSession.pause()}
-          onEnded={() => listeningSession.end()}
-          style={{
-            width: "100%",
-            maxWidth: "600px",
-            margin: "0 auto",
-          }}
-        />
-      </LessonCard>
+      <LessonPlayerCard
+        title={titleText}
+        metadata={metadata}
+        headerAction={<CloseIconButton onClick={handleClose} ariaLabel="Close shared lesson" />}
+        audioProps={{
+          src: lessonData.audio_url,
+          language: lessonLang,
+          title: titleText,
+          artist: `${lessonLangName} Audio Lesson`,
+          onPlay: () => listeningSession.start(),
+          onPause: () => listeningSession.pause(),
+          onEnded: () => listeningSession.end(),
+        }}
+      />
 
       <ShareNote>
         <div>{banner.message}</div>

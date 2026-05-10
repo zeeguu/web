@@ -1,12 +1,41 @@
 import React, { useState, useContext, useEffect } from "react";
-import { zeeguuOrange } from "../components/colors";
+import { zeeguuOrange, successGreen } from "../components/colors";
 import { APIContext } from "../contexts/APIContext";
 import { UserContext } from "../contexts/UserContext";
 import LoadingAnimation from "../components/LoadingAnimation";
-import CustomAudioPlayer from "../components/CustomAudioPlayer";
 import useListeningSession from "../hooks/useListeningSession";
-import { LessonMetadata, SubtleTextButton } from "./LessonView.sc";
+import { SubtleTextButton, LessonTitle, LessonMetadata } from "./LessonView.sc";
+import { SubtleLessonCard, ProgressBarTrack, ProgressBarFill } from "./SharedLessonView.sc";
+import LessonPlayerCard from "./LessonPlayerCard";
 import { shareLessonLink } from "./shareLessonLink";
+import Modal from "../components/modal_shared/Modal";
+
+const lessonProgressSeconds = (lesson) =>
+  lesson.pause_position_seconds || lesson.position_seconds || lesson.progress_seconds || 0;
+
+const lessonDateLabel = (lesson) =>
+  new Date(lesson.created_at).toLocaleDateString("en-US", {
+    month: "short",
+    day: "numeric",
+  });
+
+const lessonTitleText = (lesson) => lesson.title || "Past Audio Lesson";
+
+const titleWithDate = (lesson) => (
+  <>
+    <small
+      style={{
+        color: "var(--text-secondary)",
+        fontSize: "0.75em",
+        fontWeight: 400,
+        marginRight: "6px",
+      }}
+    >
+      [{lessonDateLabel(lesson)}]
+    </small>
+    {lessonTitleText(lesson)}
+  </>
+);
 
 export default function PastLessons() {
   const api = useContext(APIContext);
@@ -17,6 +46,7 @@ export default function PastLessons() {
   const [error, setError] = useState(null);
   const [hasMore, setHasMore] = useState(true);
   const [offset, setOffset] = useState(0);
+  const [openLessonId, setOpenLessonId] = useState(null);
   const limit = 10;
 
   useEffect(() => {
@@ -75,6 +105,26 @@ export default function PastLessons() {
     }
   };
 
+  const onLessonCompleted = (lessonId) => {
+    setPastLessons((prev) =>
+      prev.map((l) =>
+        l.lesson_id === lessonId
+          ? { ...l, is_completed: true, last_completed_at: new Date().toISOString() }
+          : l,
+      ),
+    );
+  };
+
+  const onProgressUpdate = (lessonId, progressSeconds) => {
+    setPastLessons((prev) => {
+      const current = prev.find((l) => l.lesson_id === lessonId);
+      if (!current || current.pause_position_seconds === progressSeconds) return prev;
+      return prev.map((l) =>
+        l.lesson_id === lessonId ? { ...l, pause_position_seconds: progressSeconds } : l,
+      );
+    });
+  };
+
   if (isLoading && pastLessons.length === 0) {
     return (
       <div style={{ padding: "20px" }}>
@@ -84,6 +134,8 @@ export default function PastLessons() {
       </div>
     );
   }
+
+  const openLesson = pastLessons.find((l) => l.lesson_id === openLessonId);
 
   return (
     <div style={{ padding: "20px" }}>
@@ -98,24 +150,10 @@ export default function PastLessons() {
       {pastLessons.length > 0 && (
         <div>
           {pastLessons.map((lesson) => (
-            <PastLessonItem
+            <PastLessonRow
               key={lesson.lesson_id}
               lesson={lesson}
-              api={api}
-              userDetails={userDetails}
-              onLessonCompleted={(lessonId) => {
-                setPastLessons((prev) =>
-                  prev.map((l) =>
-                    l.lesson_id === lessonId
-                      ? {
-                          ...l,
-                          is_completed: true,
-                          completed_at: new Date().toISOString(),
-                        }
-                      : l,
-                  ),
-                );
-              }}
+              onOpen={() => setOpenLessonId(lesson.lesson_id)}
             />
           ))}
 
@@ -147,114 +185,116 @@ export default function PastLessons() {
           )}
         </div>
       )}
+
+      <Modal open={!!openLesson} onClose={() => setOpenLessonId(null)}>
+        {openLesson && (
+          <PastLessonPlayer
+            lesson={openLesson}
+            api={api}
+            userDetails={userDetails}
+            onLessonCompleted={onLessonCompleted}
+            onProgressUpdate={onProgressUpdate}
+          />
+        )}
+      </Modal>
     </div>
   );
 }
 
-function PastLessonItem({ lesson, api, userDetails, onLessonCompleted }) {
-  const listeningSession = useListeningSession(lesson.lesson_id);
+export function PastLessonRow({ lesson, onOpen }) {
+  const duration = lesson.duration_seconds || 0;
+  const pct = duration > 0
+    ? Math.min(100, (lessonProgressSeconds(lesson) / duration) * 100)
+    : 0;
+  // Show the bar whenever there's meaningful progress and the user isn't
+  // sitting at the very end — covers both first-listen and re-listen.
+  const showBar = pct > 0 && pct < 99;
 
   return (
-    <div
-      style={{
-        border: `1px solid ${lesson.is_completed ? "#28a745" : "var(--border-light)"}`,
-        borderRadius: "8px",
-        padding: "16px",
-        marginBottom: "16px",
-        backgroundColor: "var(--bg-secondary)",
-      }}
+    <SubtleLessonCard
+      $isCompleted={lesson.is_completed}
+      onClick={onOpen}
+      style={{ marginBottom: "8px", cursor: "pointer" }}
     >
-      <div
+      <LessonTitle
+        $compact
         style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          marginBottom: "12px",
+          fontSize: "1rem",
+          color: lesson.is_completed ? successGreen : "var(--text-primary)",
+          fontWeight: 500,
         }}
       >
-        <div>
-          <h3
-            style={{
-              margin: 0,
-              fontSize: "18px",
-              display: "flex",
-              alignItems: "center",
-              gap: "8px",
-              color: lesson.is_completed ? "#009c00" : zeeguuOrange,
-            }}
-          >
-            {lesson.is_completed && <span style={{ color: "#28a745", fontSize: "16px" }}>✓</span>}
-            {new Date(lesson.created_at).toLocaleDateString("en-US", {
-              month: "short",
-              day: "numeric",
-            })}
-            : {lesson.title || "Past Audio Lesson"}
-          </h3>
-          {lesson.canonical_suggestion && (
-            <LessonMetadata>
-              {lesson.lesson_type === "situation" ? "Situation" : "Topic"}: <b>{lesson.canonical_suggestion}</b>
-            </LessonMetadata>
-          )}
-          {lesson.is_completed && lesson.completed_at && (
-            <span
-              style={{
-                fontSize: "12px",
-                color: "#28a745",
-                fontWeight: "500",
-              }}
-            >
-              Completed
-            </span>
-          )}
-        </div>
-        {lesson.lesson_id && (
+        {titleWithDate(lesson)}
+      </LessonTitle>
+      {lesson.canonical_suggestion && (
+        <LessonMetadata style={{ marginBottom: showBar ? "8px" : 0 }}>
+          {lesson.lesson_type === "situation" ? "Situation" : "Topic"}: <b>{lesson.canonical_suggestion}</b>
+        </LessonMetadata>
+      )}
+      {showBar && (
+        <ProgressBarTrack>
+          <ProgressBarFill $pct={pct} $isCompleted={false} />
+        </ProgressBarTrack>
+      )}
+    </SubtleLessonCard>
+  );
+}
+
+// Wrapped (rather than inlined into the Modal) so useListeningSession's
+// start/pause/end lifecycle is scoped to the modal's mount/unmount.
+export function PastLessonPlayer({ lesson, api, userDetails, onLessonCompleted, onProgressUpdate }) {
+  const listeningSession = useListeningSession(lesson.lesson_id);
+
+  const metadata = lesson.canonical_suggestion ? (
+    <>
+      {lesson.lesson_type === "situation" ? "Situation" : "Topic"}: <b>{lesson.canonical_suggestion}</b>
+    </>
+  ) : null;
+
+  return (
+    <LessonPlayerCard
+      title={titleWithDate(lesson)}
+      isCompleted={lesson.is_completed}
+      metadata={metadata}
+      footerAction={
+        lesson.lesson_id && (
           <SubtleTextButton onClick={() => shareLessonLink(lesson.lesson_id, lesson.title)}>
             Share
           </SubtleTextButton>
-        )}
-      </div>
-
-      {lesson.audio_url && (
-        <div style={{ marginBottom: "16px" }}>
-          <CustomAudioPlayer
-            src={`${api.baseAPIurl}${lesson.audio_url}?session=${api.session}`}
-            initialProgress={
-              lesson.pause_position_seconds || lesson.position_seconds || lesson.progress_seconds || 0
-            }
-            language={userDetails?.learned_language}
-            title={lesson.title || "Past Audio Lesson"}
-            artist={`Zeeguu - ${new Date(lesson.created_on).toLocaleDateString()}`}
-            onPlay={() => {
-              if (lesson.lesson_id) {
-                api.updateLessonState(lesson.lesson_id, "resume");
-                listeningSession.start();
-              }
-            }}
-            onPause={() => {
-              listeningSession.pause();
-            }}
-            onProgressUpdate={(progressSeconds) => {
-              if (lesson.lesson_id) {
-                api.updateLessonState(lesson.lesson_id, "pause", progressSeconds);
-              }
-            }}
-            onEnded={() => {
-              listeningSession.end();
-              if (lesson.lesson_id) {
-                api.updateLessonState(lesson.lesson_id, "complete", null, () => {
-                  onLessonCompleted(lesson.lesson_id);
-                });
-              }
-            }}
-            onError={() => {}}
-            style={{
-              width: "100%",
-              maxWidth: "600px",
-              margin: "0 auto",
-            }}
-          />
-        </div>
-      )}
-    </div>
+        )
+      }
+      audioProps={{
+        src: `${api.baseAPIurl}${lesson.audio_url}?session=${api.session}`,
+        autoPlay: true,
+        initialProgress: lessonProgressSeconds(lesson),
+        language: userDetails?.learned_language,
+        title: lesson.title || "Past Audio Lesson",
+        artist: `Zeeguu - ${new Date(lesson.created_at).toLocaleDateString()}`,
+        onPlay: () => {
+          if (lesson.lesson_id) {
+            api.updateLessonState(lesson.lesson_id, "resume");
+            listeningSession.start();
+          }
+        },
+        onPause: () => {
+          listeningSession.pause();
+        },
+        onProgressUpdate: (progressSeconds) => {
+          if (lesson.lesson_id) {
+            api.updateLessonState(lesson.lesson_id, "pause", progressSeconds);
+            onProgressUpdate(lesson.lesson_id, progressSeconds);
+          }
+        },
+        onEnded: () => {
+          listeningSession.end();
+          if (lesson.lesson_id) {
+            api.updateLessonState(lesson.lesson_id, "complete", null, () => {
+              onLessonCompleted(lesson.lesson_id);
+            });
+          }
+        },
+        onError: () => {},
+      }}
+    />
   );
 }
