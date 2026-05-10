@@ -149,6 +149,17 @@ const StyledButton = styled.button`
       color: var(--action-btn-secondary-color-text);
       cursor: not-allowed;
     `}
+
+    //onboarding
+    ${(props) =>
+    props.$onboarding &&
+    css`
+      background-color: var(--onboarding-btn-bg);
+      color: white; 
+      :hover {
+        background-color: ${lightOrange};
+      }
+    `}
 `;
 
 export {

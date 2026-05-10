@@ -39,7 +39,8 @@
   --action-btn-muted-hover-text: #666;
   --action-btn-secondary-color-bg: #DBECFF;
   --action-btn-secondary-color-text: #022161;
-
+  --onboarding-btn-bg: #F88431;
+  
   --badge-bg: #e3f2fd;
   --light-badge-bg: #e3f2fd;
   --badge-text: hsl(216, 100%, 57%);

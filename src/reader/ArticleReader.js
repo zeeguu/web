@@ -23,6 +23,7 @@ import useShadowRef from "../hooks/useShadowRef";
 import useSwipeBack from "../hooks/useSwipeBack";
 import useScrollTracking from "../hooks/useScrollTracking";
 import useReadingSession from "../hooks/useReadingSession";
+import useReviewWordsOnboarding from "../hooks/useReviewWordsOnboarding";
 import strings from "../i18n/definitions";
 import useUserPreferences from "../hooks/useUserPreferences";
 import ArticleStatInfo from "../components/ArticleStatInfo";
@@ -31,6 +32,7 @@ import DevButton from "../components/DevButton";
 import { APIContext } from "../contexts/APIContext";
 import ArticleLanguageModal from "./ArticleLanguageModal";
 import { shouldShowLanguageChoice } from "../utils/misc/cefrHelpers";
+import ReviewWordsPopup from "../pages/onboarding/notifications/ReviewWordsPopup";
 
 // UMR stands for historical reasons for: Unified Multilingual Reader
 export const WEB_READER = "UMR";
@@ -76,6 +78,12 @@ export default function ArticleReader({ teacherArticleID }) {
   const history = useHistory();
   const speech = useContext(SpeechContext);
   const [bookmarks, setBookmarks] = useState([]);
+  const [reviewWordsButtonElement, setReviewWordsButtonElement] = useState(null);
+
+  const {
+    reviewWordsOnboardingOpen,
+    setReviewWordsOnboardingOpen,
+  } = useReviewWordsOnboarding(api, userDetails, articleID, readerReady, reviewWordsButtonElement, 3);
 
   // Reading session hook - starts when articleInfo is loaded
   const {
@@ -468,6 +476,7 @@ export default function ArticleReader({ teacherArticleID }) {
               articleID={articleID}
               clickedOnReviewVocab={clickedOnReviewVocab}
               setClickedOnReviewVocab={setClickedOnReviewVocab}
+              reviewWordsButtonRef={setReviewWordsButtonElement}
               bookmarks={bookmarks}
             />
             <s.CombinedBox>
@@ -480,6 +489,10 @@ export default function ArticleReader({ teacherArticleID }) {
             </s.CombinedBox>
           </div>
         )}
+        <ReviewWordsPopup
+          open={reviewWordsOnboardingOpen}
+          handleCancel={() => setReviewWordsOnboardingOpen(false)}
+        />
         <s.ExtraSpaceAtTheBottom />
       </s.ArticleReader>
     </>

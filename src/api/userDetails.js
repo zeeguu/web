@@ -46,6 +46,24 @@ Zeeguu_API.prototype.modifyCEFRlevel = function (
   );
 };
 
+Zeeguu_API.prototype.markOnboardingMessageShown = function (onboardingMessageId) {
+  return this._post(
+    `mark_onboarding_message_shown`,
+    qs.stringify({ onboarding_message_id: onboardingMessageId })
+  ).then((response) => response.json());
+};
+
+Zeeguu_API.prototype.setOnboardingMessageClickTime = function (onboardingMessageId) {
+  return this._post(
+    `set_onboarding_message_click_time`,
+    qs.stringify({ onboarding_message_id: onboardingMessageId })
+  ).then((response) => response.text());
+};
+
+Zeeguu_API.prototype.getOnboardingMessageStatus = function (onboardingMessageId) {
+  return this._getJSONPromise(`get_onboarding_message_status?onboarding_message_id=${onboardingMessageId}`);
+};
+
 // Topics that can be subscribed to
 Zeeguu_API.prototype.getUserPreferences = function () {
   return this._getJSONPromise("user_preferences");
