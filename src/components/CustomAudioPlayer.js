@@ -585,7 +585,7 @@ export default function CustomAudioPlayer({
       />
 
       {/* Controls Section */}
-      <div style={{ display: "flex", alignItems: "center", marginBottom: "16px", justifyContent: "space-between" }}>
+      <div style={{ display: "flex", alignItems: "center", marginBottom: "16px", justifyContent: "center" }}>
         {/* Playback Controls */}
         <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
           {/* Back 15s Button */}
@@ -705,53 +705,10 @@ export default function CustomAudioPlayer({
             <span style={{ fontSize: "14px", fontWeight: "600" }}>+{SEEK_SECONDS}</span>
           </button>
         </div>
-
-        {/* Speed Control Dropdown */}
-        <div style={{ position: "relative" }}>
-          <select
-            value={playbackRate}
-            onChange={(e) => handleSpeedChange(parseFloat(e.target.value))}
-            disabled={isLoading}
-            style={{
-              padding: "6px 12px",
-              borderRadius: "20px",
-              border: `1px solid ${zeeguuOrange}`,
-              backgroundColor: "var(--card-bg)",
-              color: zeeguuOrange,
-              cursor: isLoading ? "not-allowed" : "pointer",
-              fontSize: "14px",
-              fontWeight: "500",
-              outline: "none",
-              appearance: "none",
-              paddingRight: "28px",
-              minWidth: "80px",
-            }}
-          >
-            <option value="0.8">0.8x</option>
-            <option value="0.85">0.85x</option>
-            <option value="0.9">0.9x</option>
-            <option value="0.95">0.95x</option>
-            <option value="1">1x</option>
-          </select>
-          {/* Custom dropdown arrow */}
-          <div
-            style={{
-              position: "absolute",
-              right: "10px",
-              top: "50%",
-              transform: "translateY(-50%)",
-              pointerEvents: "none",
-              color: zeeguuOrange,
-              fontSize: "12px",
-            }}
-          >
-            ▼
-          </div>
-        </div>
       </div>
 
-      {/* Progress Bar and Time Display */}
-      <div style={{ display: "flex", alignItems: "center", gap: "16px", marginTop: "16px" }}>
+      {/* Progress Bar, Time Display, and Speed */}
+      <div style={{ display: "flex", alignItems: "center", gap: "12px", marginTop: "16px" }}>
         {/* Progress Bar */}
         <div
           onClick={handleProgressClick}
@@ -794,9 +751,49 @@ export default function CustomAudioPlayer({
         </div>
 
         {/* Time Display */}
-        <div style={{ minWidth: "100px", textAlign: "right" }}>
+        <div style={{ minWidth: "90px", textAlign: "right" }}>
           <div style={{ fontSize: "14px", fontWeight: "600", color: "var(--text-muted)" }}>
             {formatTime(currentTime)} / {formatTime(duration, true)}
+          </div>
+        </div>
+
+        {/* Speed Control */}
+        <div style={{ position: "relative" }}>
+          <select
+            value={playbackRate}
+            onChange={(e) => handleSpeedChange(parseFloat(e.target.value))}
+            disabled={isLoading}
+            style={{
+              padding: "4px 22px 4px 8px",
+              borderRadius: "14px",
+              border: `1px solid ${zeeguuOrange}`,
+              backgroundColor: "var(--card-bg)",
+              color: zeeguuOrange,
+              cursor: isLoading ? "not-allowed" : "pointer",
+              fontSize: "12px",
+              fontWeight: "500",
+              outline: "none",
+              appearance: "none",
+            }}
+          >
+            <option value="0.8">0.8x</option>
+            <option value="0.85">0.85x</option>
+            <option value="0.9">0.9x</option>
+            <option value="0.95">0.95x</option>
+            <option value="1">1x</option>
+          </select>
+          <div
+            style={{
+              position: "absolute",
+              right: "6px",
+              top: "50%",
+              transform: "translateY(-50%)",
+              pointerEvents: "none",
+              color: zeeguuOrange,
+              fontSize: "10px",
+            }}
+          >
+            ▼
           </div>
         </div>
       </div>
