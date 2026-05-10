@@ -7,7 +7,7 @@ import { StyledButton } from "../../../components/allButtons.sc";
 import { useContext } from "react";
 import { APIContext } from "../../../contexts/APIContext";
 
-export default function TranslationPopup({ open, handleCancel, onboardingMessageId }) {
+export default function TranslationPopup({ open, handleCancel, onboardingMessageId, onContinue }) {
     const api = useContext(APIContext);
 
     const handleContinue = async () => {
@@ -18,7 +18,8 @@ export default function TranslationPopup({ open, handleCancel, onboardingMessage
                 // ignore click recording failures
             }
         }
-        if (handleCancel) handleCancel();
+        if (onContinue) onContinue();
+        else if (handleCancel) handleCancel();
     };
 
     return (

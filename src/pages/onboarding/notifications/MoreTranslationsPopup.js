@@ -5,9 +5,11 @@ import Footer from "../../../components/modal_shared/Footer.sc";
 import ButtonContainer from "../../../components/modal_shared/ButtonContainer.sc";
 import { StyledButton } from "../../../components/allButtons.sc";
 
-export default function MoreTranslationsPopup({ open, handleCancel, article }) {
+export default function MoreTranslationsPopup({ open, handleCancel }) {
+    if (!open) return null;
+
     return (
-        <Modal open={open} onClose={handleCancel} wrapperBackgroundColor="#fff1d4" >
+        <Modal open={open} onClose={handleCancel} wrapperBackgroundColor="#fff1d4" hideCloseButton>
             <s.MoreTranslationImage src="/static/images/MoreTranslation.png" alt="See more translations illustration" />
             <Main>
                 <p style={{ textAlign: "center", fontWeight: "500" }}>

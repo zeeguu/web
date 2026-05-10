@@ -28,11 +28,13 @@ import useRedirectLink from "./hooks/useRedirectLink";
 import useLocationTracker from "./hooks/useLocationTracker";
 import useDeepLinkHandler from "./hooks/useDeepLinkHandler";
 import useTranslationOnboarding from "./hooks/useTranslationOnboarding";
+import useMoreTranslationsOnboarding from "./hooks/useMoreTranslationsOnboarding";
 import LoadingAnimation from "./components/LoadingAnimation";
 import ServerErrorModal from "./components/ServerErrorModal";
 import useTheme from "./hooks/useTheme";
 import { ThemeContext } from "./contexts/ThemeContext";
 import TranslationPopup from "./pages/onboarding/notifications/TranslationPopup";
+import MoreTranslationsPopup from "./pages/onboarding/notifications/MoreTranslationsPopup";
 
 // Helper to detect if we're in a Capacitor native app
 const isCapacitor = () => {
@@ -81,6 +83,11 @@ function App() {
     setTranslationOnboardingOpen,
     onboardingMessageId,
   } = useTranslationOnboarding(api, userDetails, 1);
+  const {
+    moreTranslationsOnboardingOpen,
+    openMoreTranslationsOnboarding,
+    closeMoreTranslationsOnboarding,
+  } = useMoreTranslationsOnboarding(api, 2);
 
   const [systemLanguages, setSystemLanguages] = useState();
   // Initialize session from native storage (for Capacitor) before doing anything else
@@ -331,6 +338,14 @@ function App() {
                         open={translationOnboardingOpen}
                         handleCancel={() => setTranslationOnboardingOpen(false)}
                         onboardingMessageId={onboardingMessageId}
+                        onContinue={async () => {
+                          setTranslationOnboardingOpen(false);
+                          await openMoreTranslationsOnboarding();
+                        }}
+                      />
+                      <MoreTranslationsPopup
+                        open={moreTranslationsOnboardingOpen}
+                        handleCancel={closeMoreTranslationsOnboarding}
                       />
                       <ToastContainer
                         position="bottom-right"
