@@ -264,7 +264,7 @@ export function PastLessonPlayer({ lesson, api, userDetails, onLessonCompleted, 
         )
       }
       audioProps={{
-        src: `${api.baseAPIurl}${lesson.audio_url}?session=${api.session}`,
+        src: `${api.baseAPIurl}${lesson.audio_url}`,
         initialProgress: lessonProgressSeconds(lesson),
         language: userDetails?.learned_language,
         title: lesson.title || "Past Audio Lesson",
