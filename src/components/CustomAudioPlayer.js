@@ -407,37 +407,34 @@ export default function CustomAudioPlayer({
     };
   }, [isPlaying, duration, playbackRate]);
 
-  // Handle initial seek when audio is ready
+  // Apply initialProgress exactly ONCE per mount. Without the ref guard the
+  // effect re-fires every time the parent re-saves the playhead (every ~10s
+  // during playback `pause_position_seconds` propagates back here via props,
+  // changing initialProgress). Each re-run re-assigns audio.currentTime,
+  // which the audio engine treats as a real seek and briefly pauses output —
+  // audible as a stutter every 10 seconds.
+  const initialSeekAppliedRef = useRef(false);
   useEffect(() => {
+    if (initialSeekAppliedRef.current) return;
     const audio = audioRef.current;
     if (!audio || !initialProgress || initialProgress <= 0) return;
 
-    let hasSeenked = false;
-
     const seekToInitialProgress = () => {
-      if (hasSeenked) return; // Prevent multiple seeks
-
-      console.log(`Audio ready, seeking to initial progress: ${initialProgress}, duration: ${audio.duration}`);
+      if (initialSeekAppliedRef.current) return;
       if (audio.duration > 0 && initialProgress > 0) {
         audio.currentTime = initialProgress;
         setCurrentTime(initialProgress);
-        hasSeenked = true;
-        console.log(`Successfully seeked to ${initialProgress} seconds`);
-
-        // Remove listeners after successful seek
+        initialSeekAppliedRef.current = true;
         audio.removeEventListener("loadedmetadata", seekToInitialProgress);
         audio.removeEventListener("canplay", seekToInitialProgress);
       }
     };
 
-    // If audio is already loaded, seek immediately
     if (audio.readyState >= 2 && audio.duration > 0) {
       seekToInitialProgress();
     } else {
-      // Otherwise, wait for it to be ready
       audio.addEventListener("loadedmetadata", seekToInitialProgress);
       audio.addEventListener("canplay", seekToInitialProgress);
-
       return () => {
         audio.removeEventListener("loadedmetadata", seekToInitialProgress);
         audio.removeEventListener("canplay", seekToInitialProgress);
