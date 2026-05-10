@@ -13,96 +13,41 @@ const SPEED_OPTIONS = [0.8, 0.85, 0.9, 0.95, 1];
 
 const formatSpeed = (s) => `${s}x`;
 
-// Custom dropdown so the menu pops *next to* the label rather than at
-// whatever position iOS WKWebView decides for a hidden <select>.
+// Tap to cycle through SPEED_OPTIONS (like Apple Podcasts' speed pill).
+// Avoids a dropdown overlay that would collide with the title on narrow
+// viewports — the 5-step cycle is short enough that tapping through is
+// faster than scanning a menu anyway.
 function SpeedPicker({ value, onChange, disabled }) {
-  const [open, setOpen] = useState(false);
-  const wrapperRef = useRef(null);
-
-  useEffect(() => {
-    if (!open) return;
-    const onDocClick = (e) => {
-      if (wrapperRef.current && !wrapperRef.current.contains(e.target)) {
-        setOpen(false);
-      }
-    };
-    document.addEventListener("mousedown", onDocClick);
-    document.addEventListener("touchstart", onDocClick);
-    return () => {
-      document.removeEventListener("mousedown", onDocClick);
-      document.removeEventListener("touchstart", onDocClick);
-    };
-  }, [open, setOpen]);
-
+  const cycleNext = () => {
+    const i = SPEED_OPTIONS.indexOf(value);
+    const next = SPEED_OPTIONS[(i + 1) % SPEED_OPTIONS.length];
+    onChange(next);
+  };
   return (
-    <div ref={wrapperRef} style={{ position: "relative", display: "inline-flex", alignItems: "center" }}>
-      <button
-        type="button"
-        onClick={() => !disabled && setOpen((o) => !o)}
-        disabled={disabled}
-        style={{
-          background: "transparent",
-          border: `1.5px solid ${disabled ? "#ccc" : "var(--player-icon-color)"}`,
-          borderRadius: "50%",
-          width: "38px",
-          height: "38px",
-          padding: 0,
-          color: disabled ? "#ccc" : "var(--player-icon-color)",
-          fontSize: "12px",
-          fontWeight: 600,
-          cursor: disabled ? "not-allowed" : "pointer",
-          display: "inline-flex",
-          alignItems: "center",
-          justifyContent: "center",
-          whiteSpace: "nowrap",
-        }}
-      >
-        {formatSpeed(value)}
-      </button>
-      {open && (
-        <ul
-          style={{
-            position: "absolute",
-            bottom: "calc(100% + 4px)",
-            right: 0,
-            margin: 0,
-            padding: "4px 0",
-            listStyle: "none",
-            background: "var(--card-bg)",
-            border: `1px solid ${zeeguuOrange}`,
-            borderRadius: "8px",
-            boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
-            zIndex: 10,
-            minWidth: "90px",
-          }}
-        >
-          {SPEED_OPTIONS.map((opt) => (
-            <li key={opt}>
-              <button
-                type="button"
-                onClick={() => {
-                  onChange(opt);
-                  setOpen(false);
-                }}
-                style={{
-                  background: opt === value ? `${zeeguuOrange}22` : "transparent",
-                  border: "none",
-                  padding: "10px 20px",
-                  color: "var(--text-primary)",
-                  fontSize: "18px",
-                  fontWeight: opt === value ? 600 : 500,
-                  cursor: "pointer",
-                  width: "100%",
-                  textAlign: "left",
-                }}
-              >
-                {formatSpeed(opt)}
-              </button>
-            </li>
-          ))}
-        </ul>
-      )}
-    </div>
+    <button
+      type="button"
+      onClick={() => !disabled && cycleNext()}
+      disabled={disabled}
+      aria-label={`Playback speed (current ${formatSpeed(value)}, tap to cycle)`}
+      style={{
+        background: "transparent",
+        border: `1.5px solid ${disabled ? "#ccc" : "var(--player-icon-color)"}`,
+        borderRadius: "50%",
+        width: "38px",
+        height: "38px",
+        padding: 0,
+        color: disabled ? "#ccc" : "var(--player-icon-color)",
+        fontSize: "12px",
+        fontWeight: 600,
+        cursor: disabled ? "not-allowed" : "pointer",
+        display: "inline-flex",
+        alignItems: "center",
+        justifyContent: "center",
+        whiteSpace: "nowrap",
+      }}
+    >
+      {formatSpeed(value)}
+    </button>
   );
 }
 
