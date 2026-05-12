@@ -21,7 +21,7 @@ export default function useOnboardingModal(api, messageId) {
   }, [api, messageId]);
 
   const show = useCallback(() => {
-    if (alreadyShown) return; // no-op: either unknown or already shown
+    if (alreadyShown) return;
 
     setAlreadyShown(true);
     setOpen(true);
