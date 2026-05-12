@@ -235,6 +235,16 @@ export function updateTokensWithBookmarks(bookmarks, paragraphs) {
       continue;
     }
 
+    // Skip stale single-word bookmark on a token that's now part of an MWE
+    // group (e.g. an old `en` bookmark when the tokenizer now flags `en
+    // kikkert` as MWE). Letting the bookmark paint would block the MWE chip
+    // from rendering. The bookmark stays in the DB but is invisible until
+    // the user re-taps and creates a fresh MWE-aware bookmark.
+    if (!bookmark["is_mwe"] && targetToken.mwe_group_id) {
+      MWE_DEBUG && console.log("[Bookmark] Single-word bookmark on MWE token, skipping:", bookmark["origin"]);
+      continue;
+    }
+
     if (bookmark["is_mwe"]) {
       const validation = validateMweBookmark(bookmark, targetToken, sentenceTokens);
       MWE_DEBUG && console.log("[Bookmark] MWE validation:", validation);
