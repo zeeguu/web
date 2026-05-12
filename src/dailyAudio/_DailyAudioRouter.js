@@ -8,6 +8,8 @@ import TodayAudio from "./TodayAudio";
 import PastLessons from "./PastLessons";
 import { APIContext } from "../contexts/APIContext";
 import { UserContext } from "../contexts/UserContext";
+import useListeningOnboarding from "../hooks/useListeningOnboarding";
+import ListeningOnboardingPopup from "../pages/onboarding/notifications/ListeningOnboardingPopup";
 
 export default function DailyAudioRouter() {
   const api = useContext(APIContext);
@@ -16,6 +18,8 @@ export default function DailyAudioRouter() {
   const location = useLocation();
   const [pastLessonsCount, setPastLessonsCount] = useState(0);
   const [showTabs, setShowTabs] = useState(true);
+
+  const listeningModal = useListeningOnboarding(api, userDetails);
 
   useEffect(() => {
     // Reset immediately so the tab badge doesn't show a stale count from
@@ -45,23 +49,26 @@ export default function DailyAudioRouter() {
   let tabsAndLinks = [
     {
       text: strings.today,
-      link: "/daily-audio"
+      link: "/daily-audio",
     },
     {
       text: strings.pastLessons,
       link: "/daily-audio/past-lessons",
-      counter: pastLessonsCount
-    }
+      counter: pastLessonsCount,
+    },
   ];
 
   return (
-    <Switch>
-      <s.NarrowColumn>
-        {showTabs && <TopTabs title={strings.dailyAudio} tabsAndLinks={tabsAndLinks} />}
+    <>
+      <Switch>
+        <s.NarrowColumn>
+          {showTabs && <TopTabs title={strings.dailyAudio} tabsAndLinks={tabsAndLinks} />}
 
-        <PrivateRoute exact path="/daily-audio" component={TodayAudio} setShowTabs={setShowTabs} />
-        <PrivateRoute exact path="/daily-audio/past-lessons" component={PastLessons} />
-      </s.NarrowColumn>
-    </Switch>
+          <PrivateRoute exact path="/daily-audio" component={TodayAudio} setShowTabs={setShowTabs} />
+          <PrivateRoute exact path="/daily-audio/past-lessons" component={PastLessons} />
+        </s.NarrowColumn>
+      </Switch>
+      <ListeningOnboardingPopup open={listeningModal.open} handleCancel={listeningModal.close} />
+    </>
   );
 }
