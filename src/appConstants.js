@@ -25,6 +25,19 @@ const TopicOriginType = Object.freeze({
   INFERRED: 3,
 });
 
+/*
+ * Onboarding message IDs — server-tracked messages that show at most once per user
+ */
+const ONBOARDING_MESSAGE_IDS = Object.freeze({
+  translation: 1,
+  moreTranslations: 2,
+  reviewWords: 3,
+  practiceTheseWords: 4,
+  dailyExercises: 5,
+  learningLevels: 6,
+  listening: 7,
+});
+
 // Environment variables (Vite uses import.meta.env.VITE_*)
 if (import.meta.env.VITE_API_URL) {
   API_ENDPOINT = import.meta.env.VITE_API_URL;
@@ -33,4 +46,4 @@ if (import.meta.env.VITE_WEB_URL) {
   APP_DOMAIN = import.meta.env.VITE_WEB_URL;
 }
 
-export { APP_DOMAIN, API_ENDPOINT, TopicOriginType };
+export { APP_DOMAIN, API_ENDPOINT, TopicOriginType, ONBOARDING_MESSAGE_IDS };
