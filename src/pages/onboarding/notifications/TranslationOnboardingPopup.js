@@ -23,7 +23,7 @@ export default function TranslationOnboardingPopup({ open, handleCancel }) {
   };
 
   return (
-    <Modal open={open} onClose={handleDismiss} wrapperBackgroundColor="#fff1d4" hideCloseButton>
+    <Modal open={open} onClose={handleDismiss} wrapperBackgroundColor="var(--onboarding-modal-bg)" hideCloseButton>
       <s.TranslationImage src="/static/images/translate.png" alt="Translation illustration" />
       <Main>
         <s.CenteredText>Tap on any word to translate it. Add at least 3 words to start learning them.</s.CenteredText>

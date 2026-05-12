@@ -142,7 +142,7 @@ const StyledButton = styled.button`
     `}
 
     // Disabled
-    ${(props) =>
+  ${(props) =>
     props.$disabled &&
     css`
       background-color: var(--action-btn-secondary-color-bg);
@@ -150,12 +150,12 @@ const StyledButton = styled.button`
       cursor: not-allowed;
     `}
 
-    //onboarding
-    ${(props) =>
+  //onboarding
+  ${(props) =>
     props.$onboarding &&
     css`
       background-color: var(--onboarding-btn-bg);
-      color: white; 
+      color: var(--onboarding-btn-text-color);
       :hover {
         background-color: ${lightOrange};
       }
