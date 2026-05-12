@@ -33,7 +33,6 @@ import ServerErrorModal from "./components/ServerErrorModal";
 import useTheme from "./hooks/useTheme";
 import { ThemeContext } from "./contexts/ThemeContext";
 import TranslationOnboardingPopup from "./pages/onboarding/notifications/TranslationOnboardingPopup";
-import { ONBOARDING_MESSAGE_IDS } from "./appConstants";
 
 // Helper to detect if we're in a Capacitor native app
 const isCapacitor = () => {
@@ -327,7 +326,6 @@ function App() {
                       <TranslationOnboardingPopup
                         open={translationModal.open}
                         handleCancel={translationModal.close}
-                        onboardingMessageId={ONBOARDING_MESSAGE_IDS.translation}
                       />
                       <ToastContainer
                         position="bottom-right"

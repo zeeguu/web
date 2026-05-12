@@ -6,9 +6,11 @@ import ButtonContainer from "../../../components/modal_shared/ButtonContainer.sc
 import { StyledButton } from "../../../components/allButtons.sc";
 import { useContext } from "react";
 import { APIContext } from "../../../contexts/APIContext";
+import { ONBOARDING_MESSAGE_IDS } from "../../../appConstants";
 
-export default function TranslationOnboardingPopup({ open, handleCancel, onboardingMessageId }) {
+export default function TranslationOnboardingPopup({ open, handleCancel }) {
     const api = useContext(APIContext);
+    const onboardingMessageId = ONBOARDING_MESSAGE_IDS.translation;
 
     const handleDismiss = async () => {
         if (onboardingMessageId) {
