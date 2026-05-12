@@ -6,10 +6,21 @@ import * as s from "../components/ColumnWidth.sc";
 import { WEB_READER } from "../reader/ArticleReader";
 import { useContext } from "react";
 import { APIContext } from "../contexts/APIContext";
+import { UserContext } from "../contexts/UserContext";
+import useDailyExercisesOnboarding from "../hooks/useDailyExercisesOnboarding";
+import DailyExercisesOnboardingPopup from "../pages/onboarding/notifications/DailyExercisesOnboardingPopup";
+import useOnboardingModal from "../hooks/useOnboardingModal";
+import { ONBOARDING_MESSAGE_IDS } from "../appConstants";
+import LearningLevelsOnboardingPopup from "../pages/onboarding/notifications/LearningLevelsOnboardingPopup";
 
 export default function ExercisesRouter() {
   const api = useContext(APIContext);
+  const { userDetails } = useContext(UserContext);
   const history = useHistory();
+
+  const dailyExercisesModal = useDailyExercisesOnboarding(api, userDetails);
+  // #1108 — programmatic trigger, no wrapper needed
+  const learningLevelsModal = useOnboardingModal(api, ONBOARDING_MESSAGE_IDS.learningLevels);
 
   const backToReadingAction = () => {
     history.push("/articles");
@@ -27,32 +38,40 @@ export default function ExercisesRouter() {
   };
 
   return (
-    <Switch>
-      <PrivateRoute
-        path="/exercises/summary"
-        component={Congratulations}
-        backButtonAction={backToReadingAction}
-        keepExercisingAction={keepExercisingAction}
-        toScheduledExercises={toScheduledExercises}
+    <>
+      <Switch>
+        <PrivateRoute
+          path="/exercises/summary"
+          component={Congratulations}
+          backButtonAction={backToReadingAction}
+          keepExercisingAction={keepExercisingAction}
+          toScheduledExercises={toScheduledExercises}
+        />
+        <s.NarrowColumn>
+          <PrivateRoute
+            path="/exercises/no-words"
+            component={ExerciseSession}
+            backButtonAction={backToReadingAction}
+            keepExercisingAction={keepExercisingAction}
+            toScheduledExercises={toScheduledExercises}
+            source={WEB_READER}
+          />
+          <PrivateRoute
+            path="/exercises"
+            component={ExerciseSession}
+            backButtonAction={backToReadingAction}
+            keepExercisingAction={keepExercisingAction}
+            toScheduledExercises={toScheduledExercises}
+            source={WEB_READER}
+          />
+        </s.NarrowColumn>
+      </Switch>
+      <DailyExercisesOnboardingPopup
+        open={dailyExercisesModal.open}
+        handleCancel={dailyExercisesModal.close}
+        onContinue={learningLevelsModal.show}
       />
-      <s.NarrowColumn>
-        <PrivateRoute
-          path="/exercises/no-words"
-          component={ExerciseSession}
-          backButtonAction={backToReadingAction}
-          keepExercisingAction={keepExercisingAction}
-          toScheduledExercises={toScheduledExercises}
-          source={WEB_READER}
-        />
-        <PrivateRoute
-          path="/exercises"
-          component={ExerciseSession}
-          backButtonAction={backToReadingAction}
-          keepExercisingAction={keepExercisingAction}
-          toScheduledExercises={toScheduledExercises}
-          source={WEB_READER}
-        />
-      </s.NarrowColumn>
-    </Switch>
+      <LearningLevelsOnboardingPopup open={learningLevelsModal.open} handleCancel={learningLevelsModal.close} />
+    </>
   );
 }
