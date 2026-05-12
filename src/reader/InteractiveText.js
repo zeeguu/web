@@ -22,33 +22,6 @@ function tokenShouldSkipCount(word) {
   return word.token.is_punct || word.token.is_symbol || word.token.is_like_num;
 }
 
-function trimContextToTappedOccurrence(context, word, tapCharStart) {
-  // Drop other occurrences of `word` in `context` so the only `\b<word>\b`
-  // match left is the one at `tapCharStart`. Without this, Azure word-alignment
-  // and python_translators on the backend latch onto the first match in the
-  // string regardless of which one the user tapped — e.g. tapping the 2nd "en"
-  // in "...en kikkert...en del..." returned "binoculars".
-  if (!word || !context || tapCharStart == null) return context;
-  const escaped = word.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-  let pattern;
-  try {
-    pattern = new RegExp(`\\b${escaped}\\b`, "gi");
-  } catch {
-    return context;
-  }
-  const matches = [...context.matchAll(pattern)];
-  if (matches.length < 2) return context;
-  const targetIdx = matches.findIndex((m) => m.index === tapCharStart);
-  if (targetIdx === -1) return context;
-  const left = targetIdx > 0
-    ? matches[targetIdx - 1].index + matches[targetIdx - 1][0].length
-    : 0;
-  const right = targetIdx + 1 < matches.length
-    ? matches[targetIdx + 1].index
-    : context.length;
-  return context.slice(left, right);
-}
-
 export default class InteractiveText {
   constructor(
     tokenizedParagraphs,
@@ -95,10 +68,9 @@ export default class InteractiveText {
 
 
   translate(word, fuseWithNeighbours, onSuccess, onFusionComplete = null) {
-    let context, cParagraph_i, cSent_i, cToken_i, leftEllipsis, rightEllipsis, tapCharStart;
+    let context, cParagraph_i, cSent_i, cToken_i, leftEllipsis, rightEllipsis;
 
-    [context, cParagraph_i, cSent_i, cToken_i, leftEllipsis, rightEllipsis, tapCharStart] = this.getContextAndCoordinates(word);
-    context = trimContextToTappedOccurrence(context, word.word, tapCharStart);
+    [context, cParagraph_i, cSent_i, cToken_i, leftEllipsis, rightEllipsis] = this.getContextAndCoordinates(word);
 
     // MWE-aware fusion: if word is part of an MWE, fuse with partners
     // (disabled MWEs have their metadata cleared by backend, so isMWE() returns false)
@@ -201,9 +173,8 @@ export default class InteractiveText {
   }
 
   alternativeTranslations(word, onUpdate, onComplete) {
-    let context, tapCharStart;
-    [context, , , , , , tapCharStart] = this.getContextAndCoordinates(word);
-    context = trimContextToTappedOccurrence(context, word.word, tapCharStart);
+    let context;
+    [context] = this.getContextAndCoordinates(word);
     // Use mweExpression for MWEs (e.g., "har været" instead of just "har")
     const textToTranslate = word.mweExpression || word.word;
     const isSeparatedMwe = !!word.token?.mwe_is_separated;
@@ -283,11 +254,14 @@ export default class InteractiveText {
       return word.token.is_punct || word.token.is_symbol || word.token.is_like_num;
     }
 
-    function getLeftContextAndStartIndex(word, maxLeftContextLength) {
+    function getLeftContextAndStartIndex(word, maxLeftContextLength, stopAtWord) {
       let currentWord = word;
       let contextBuilder = "";
       let count = 0;
       while (count < maxLeftContextLength && currentWord.prev && !currentWord.token.is_sent_start) {
+        // Stop before pulling in another instance of the tapped word — it
+        // would make Azure's word-alignment latch onto the wrong occurrence.
+        if (stopAtWord && currentWord.prev.word.toLowerCase() === stopAtWord) break;
         currentWord = currentWord.prev;
         // Don't add space after words ending with hyphen (e.g., "l-" + "a" -> "l-a")
         const addSpace = currentWord.token.has_space && !currentWord.word.endsWith("-");
@@ -306,7 +280,7 @@ export default class InteractiveText {
       ];
     }
 
-    function getRightContext(word, maxRightContextLength) {
+    function getRightContext(word, maxRightContextLength, stopAtWord) {
       let currentWord = word;
       let contextBuilder = "";
       let hasRightEllipsis = true;
@@ -315,6 +289,9 @@ export default class InteractiveText {
         if (currentWord.token.is_sent_start && currentWord.token.sent_i !== currentWord.prev.token.sent_i) {
           break;
         }
+        // Stop before pulling in another instance of the tapped word — see
+        // getLeftContextAndStartIndex.
+        if (stopAtWord && currentWord.word.toLowerCase() === stopAtWord) break;
         // Don't add space after words ending with hyphen (e.g., "l-" + "a" -> "l-a")
         const addSpace = currentWord.prev.token.has_space && !currentWord.prev.word.endsWith("-");
         contextBuilder = contextBuilder + (addSpace ? " " : "") + currentWord.word;
@@ -351,21 +328,18 @@ export default class InteractiveText {
       let leftWord = startingWord;
       let rightWord = startingWord.next;
       let context = startingWord.word;
-      // Char offset of `startingWord` within `context`; bumps every time we
-      // prepend on the left, stays put when we append on the right.
-      let tapCharStart = 0;
+      const stopAtWord = startingWord.word.toLowerCase();
 
       while (budget > 0) {
         let rightUpdated = false;
         let leftUpdated = false;
 
-        [leftContext, paragraph_i, sent_i, token_i, leftUpdated] = getLeftContextAndStartIndex(leftWord, 1);
+        [leftContext, paragraph_i, sent_i, token_i, leftUpdated] = getLeftContextAndStartIndex(leftWord, 1, stopAtWord);
         if (leftUpdated && !tokenShouldSkipCount(leftWord)) budget -= 1;
         context = leftContext + context;
-        tapCharStart += leftContext.length;
 
         if (budget > 0 && rightWord) {
-          [rightContext, rightEllipsis, rightUpdated] = getRightContext(rightWord, 1);
+          [rightContext, rightEllipsis, rightUpdated] = getRightContext(rightWord, 1, stopAtWord);
           if (rightUpdated && !tokenShouldSkipCount(rightWord)) budget -= 1;
           context += rightContext;
         }
@@ -381,7 +355,7 @@ export default class InteractiveText {
       // If we are not at the start of the sentence, we need leftEllipsis.
       leftEllipsis = token_i !== 0;
 
-      return [context, paragraph_i, sent_i, token_i, leftEllipsis, rightEllipsis, tapCharStart];
+      return [context, paragraph_i, sent_i, token_i, leftEllipsis, rightEllipsis];
     }
 
     return radialExpansionContext(word);
