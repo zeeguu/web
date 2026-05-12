@@ -2,7 +2,7 @@ import Word from "./Word";
 import { ContentOnRow } from "../reader/ArticleReader.sc";
 import strings from "../i18n/definitions";
 import Infobox from "../components/Infobox";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { tokenize } from "../utils/text/preprocessing";
 import ToggleEditReviewWords from "./ToggleEditReviewWords";
 import { StyledButton } from "../components/allButtons.sc.js";
@@ -17,6 +17,9 @@ import {
   SectionHeading,
   ToggleContainer,
 } from "./WordsToReview.sc";
+import { APIContext } from "../contexts/APIContext";
+import usePracticeTheseWordsOnboarding from "../hooks/usePracticeTheseWordsOnboarding";
+import PracticeTheseWordsPopup from "../pages/onboarding/notifications/PracticeTheseWordsPopup";
 
 export default function WordsToReview({
   words,
@@ -33,6 +36,9 @@ export default function WordsToReview({
   const [wordsForExercises, setWordsForExercises] = useState([]);
   const [wordsExcludedForExercises, setWordsExcludedForExercises] = useState([]);
   const [wordsExpressions, setWordsExpressions] = useState([]);
+  const [practiceButtonElement, setPracticeButtonElement] = useState(null);
+  const api = useContext(APIContext);
+  const practiceWordsModal = usePracticeTheseWordsOnboarding(api, practiceButtonElement);
   useEffect(() => {
     let newWordsForExercises = [];
     let newWordsExcludedExercises = [];
@@ -116,11 +122,13 @@ export default function WordsToReview({
         {!exercisesEnabled ? (
           <Tooltip title="You need to translate words in the article first." arrow>
             <span>
-              <StyledButton $disabled disabled>{strings.toPracticeWords}</StyledButton>
+              <StyledButton $disabled disabled>
+                {strings.toPracticeWords}
+              </StyledButton>
             </span>
           </Tooltip>
         ) : (
-          <StyledButton $navigation onClick={toExercises}>
+          <StyledButton $navigation onClick={toExercises} ref={setPracticeButtonElement}>
             {strings.toPracticeWords}
           </StyledButton>
         )}
@@ -170,6 +178,7 @@ export default function WordsToReview({
           </InfoBoxColumn>
         </WordsSection>
       )}
+      <PracticeTheseWordsPopup open={practiceWordsModal.open} handleCancel={practiceWordsModal.close} />
     </>
   );
 }
