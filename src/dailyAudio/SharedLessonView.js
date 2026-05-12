@@ -4,6 +4,7 @@ import { APIContext } from "../contexts/APIContext";
 import { UserContext } from "../contexts/UserContext";
 import CloseIconButton from "../components/CloseIconButton";
 import LoadingAnimation from "../components/LoadingAnimation";
+import * as s from "../components/ColumnWidth.sc";
 import { LessonWrapper } from "./LessonView.sc";
 import { LessonCard, HeaderRow, ShareNote, BannerButton } from "./SharedLessonView.sc";
 import LessonPlayerCard from "./LessonPlayerCard";
@@ -63,12 +64,8 @@ export default function SharedLessonView() {
   // Pass null when the user isn't learning this lesson's language → useListeningSession
   // short-circuits internally and no session is recorded.
   const lessonLang = lessonData?.language_code;
-  const isLearningLanguage = !!(
-    lessonLang && userLanguages?.some((l) => l.code === lessonLang)
-  );
-  const listeningSession = useListeningSession(
-    isLearningLanguage ? lessonData?.lesson_id : null,
-  );
+  const isLearningLanguage = !!(lessonLang && userLanguages?.some((l) => l.code === lessonLang));
+  const listeningSession = useListeningSession(isLearningLanguage ? lessonData?.lesson_id : null);
 
   useEffect(() => {
     if (!lessonData?.audio_url) return;
@@ -83,23 +80,27 @@ export default function SharedLessonView() {
 
   if (error) {
     return (
-      <LessonWrapper>
-        <LessonCard>
-          <HeaderRow>
-            <h2>Could not open this lesson</h2>
-            <CloseIconButton onClick={handleClose} ariaLabel="Close shared lesson" />
-          </HeaderRow>
-          <p>{error}</p>
-        </LessonCard>
-      </LessonWrapper>
+      <s.NarrowColumn>
+        <LessonWrapper>
+          <LessonCard>
+            <HeaderRow>
+              <h2>Could not open this lesson</h2>
+              <CloseIconButton onClick={handleClose} ariaLabel="Close shared lesson" />
+            </HeaderRow>
+            <p>{error}</p>
+          </LessonCard>
+        </LessonWrapper>
+      </s.NarrowColumn>
     );
   }
 
   if (!lessonData || userLanguages === null || !audioSrc) {
     return (
-      <LessonWrapper>
-        <LoadingAnimation />
-      </LessonWrapper>
+      <s.NarrowColumn>
+        <LessonWrapper>
+          <LoadingAnimation />
+        </LessonWrapper>
+      </s.NarrowColumn>
     );
   }
 
@@ -141,26 +142,28 @@ export default function SharedLessonView() {
   );
 
   return (
-    <LessonWrapper>
-      <LessonPlayerCard
-        title={titleText}
-        metadata={metadata}
-        headerAction={<CloseIconButton onClick={handleClose} ariaLabel="Close shared lesson" />}
-        audioProps={{
-          src: audioSrc,
-          language: lessonLang,
-          title: titleText,
-          artist: `${lessonLangName} Audio Lesson`,
-          onPlay: () => listeningSession.start(),
-          onPause: () => listeningSession.pause(),
-          onEnded: () => listeningSession.end(),
-        }}
-      />
+    <s.NarrowColumn>
+      <LessonWrapper>
+        <LessonPlayerCard
+          title={titleText}
+          metadata={metadata}
+          headerAction={<CloseIconButton onClick={handleClose} ariaLabel="Close shared lesson" />}
+          audioProps={{
+            src: lessonData.audio_url,
+            language: lessonLang,
+            title: titleText,
+            artist: `${lessonLangName} Audio Lesson`,
+            onPlay: () => listeningSession.start(),
+            onPause: () => listeningSession.pause(),
+            onEnded: () => listeningSession.end(),
+          }}
+        />
 
-      <ShareNote>
-        <div>{banner.message}</div>
-        <BannerButton onClick={banner.onAction}>{banner.actionLabel}</BannerButton>
-      </ShareNote>
-    </LessonWrapper>
+        <ShareNote>
+          <div>{banner.message}</div>
+          <BannerButton onClick={banner.onAction}>{banner.actionLabel}</BannerButton>
+        </ShareNote>
+      </LessonWrapper>
+    </s.NarrowColumn>
   );
 }

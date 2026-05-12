@@ -109,9 +109,7 @@ export default function PastLessons() {
   const onLessonCompleted = (lessonId) => {
     setPastLessons((prev) =>
       prev.map((l) =>
-        l.lesson_id === lessonId
-          ? { ...l, is_completed: true, last_completed_at: new Date().toISOString() }
-          : l,
+        l.lesson_id === lessonId ? { ...l, is_completed: true, last_completed_at: new Date().toISOString() } : l,
       ),
     );
   };
@@ -120,9 +118,7 @@ export default function PastLessons() {
     setPastLessons((prev) => {
       const current = prev.find((l) => l.lesson_id === lessonId);
       if (!current || current.pause_position_seconds === progressSeconds) return prev;
-      return prev.map((l) =>
-        l.lesson_id === lessonId ? { ...l, pause_position_seconds: progressSeconds } : l,
-      );
+      return prev.map((l) => (l.lesson_id === lessonId ? { ...l, pause_position_seconds: progressSeconds } : l));
     });
   };
 
@@ -151,11 +147,7 @@ export default function PastLessons() {
       {pastLessons.length > 0 && (
         <div>
           {pastLessons.map((lesson) => (
-            <PastLessonRow
-              key={lesson.lesson_id}
-              lesson={lesson}
-              onOpen={() => setOpenLessonId(lesson.lesson_id)}
-            />
+            <PastLessonRow key={lesson.lesson_id} lesson={lesson} onOpen={() => setOpenLessonId(lesson.lesson_id)} />
           ))}
 
           {hasMore && (
@@ -204,9 +196,7 @@ export default function PastLessons() {
 
 export function PastLessonRow({ lesson, onOpen }) {
   const duration = lesson.duration_seconds || 0;
-  const pct = duration > 0
-    ? Math.min(100, (lessonProgressSeconds(lesson) / duration) * 100)
-    : 0;
+  const pct = duration > 0 ? Math.min(100, (lessonProgressSeconds(lesson) / duration) * 100) : 0;
   // Show the bar whenever there's meaningful progress and the user isn't
   // sitting at the very end — covers both first-listen and re-listen.
   const showBar = pct > 0 && pct < 99;
@@ -273,13 +263,11 @@ export function PastLessonPlayer({ lesson, api, userDetails, onLessonCompleted, 
       metadata={metadata}
       footerAction={
         lesson.lesson_id && (
-          <SubtleTextButton onClick={() => shareLessonLink(lesson.lesson_id, lesson.title)}>
-            Share
-          </SubtleTextButton>
+          <SubtleTextButton onClick={() => shareLessonLink(lesson.lesson_id, lesson.title)}>Share</SubtleTextButton>
         )
       }
       audioProps={{
-        src: audioSrc,
+        src: `${api.baseAPIurl}${lesson.audio_url}`,
         initialProgress: lessonProgressSeconds(lesson),
         language: userDetails?.learned_language,
         title: lesson.title || "Past Audio Lesson",

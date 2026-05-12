@@ -2,10 +2,9 @@ import styled from "styled-components";
 import { zeeguuOrange, successGreen } from "../components/colors";
 
 export const LessonCard = styled.div`
-  padding: 16px;
+  padding: 0;
   background-color: transparent;
-  border: 1px solid ${({ $isCompleted }) => ($isCompleted ? successGreen : zeeguuOrange)};
-  border-radius: 6px;
+  border: none;
 `;
 
 export const SubtleLessonCard = styled.div`
