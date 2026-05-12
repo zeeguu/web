@@ -32,7 +32,8 @@ import LoadingAnimation from "./components/LoadingAnimation";
 import ServerErrorModal from "./components/ServerErrorModal";
 import useTheme from "./hooks/useTheme";
 import { ThemeContext } from "./contexts/ThemeContext";
-import TranslationPopup from "./pages/onboarding/notifications/TranslationPopup";
+import TranslationOnboardingPopup from "./pages/onboarding/notifications/TranslationOnboardingPopup";
+import { ONBOARDING_MESSAGE_IDS } from "./appConstants";
 
 // Helper to detect if we're in a Capacitor native app
 const isCapacitor = () => {
@@ -76,11 +77,7 @@ function App() {
   const [isExtensionAvailable] = useExtensionCommunication();
   const [zeeguuSpeech, setZeeguuSpeech] = useState(false);
   let { handleRedirectLinkOrGoTo } = useRedirectLink();
-  const {
-    translationOnboardingOpen,
-    setTranslationOnboardingOpen,
-    onboardingMessageId,
-  } = useTranslationOnboarding(api, userDetails, 1);
+  const translationModal = useTranslationOnboarding(api, userDetails);
 
   const [systemLanguages, setSystemLanguages] = useState();
   // Initialize session from native storage (for Capacitor) before doing anything else
@@ -327,10 +324,10 @@ function App() {
                         hasExtension={isExtensionAvailable}
                         handleSuccessfulLogIn={handleSuccessfulLogIn}
                       />
-                      <TranslationPopup
-                        open={translationOnboardingOpen}
-                        handleCancel={() => setTranslationOnboardingOpen(false)}
-                        onboardingMessageId={onboardingMessageId}
+                      <TranslationOnboardingPopup
+                        open={translationModal.open}
+                        handleCancel={translationModal.close}
+                        onboardingMessageId={ONBOARDING_MESSAGE_IDS.translation}
                       />
                       <ToastContainer
                         position="bottom-right"

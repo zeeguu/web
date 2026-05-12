@@ -53,15 +53,21 @@ Zeeguu_API.prototype.markOnboardingMessageShown = function (onboardingMessageId)
   ).then((response) => response.json());
 };
 
-Zeeguu_API.prototype.setOnboardingMessageClickTime = function (onboardingMessageId) {
+Zeeguu_API.prototype.markOnboardingMessageDismissed = function (onboardingMessageId) {
   return this._post(
-    `set_onboarding_message_click_time`,
+    `mark_onboarding_message_dismissed`,
     qs.stringify({ onboarding_message_id: onboardingMessageId })
   ).then((response) => response.text());
 };
 
 Zeeguu_API.prototype.getOnboardingMessageStatus = function (onboardingMessageId) {
   return this._getJSONPromise(`get_onboarding_message_status?onboarding_message_id=${onboardingMessageId}`);
+};
+
+Zeeguu_API.prototype.hasSeenOnboardingMessage = function (onboardingMessageId) {
+  return this._getJSONPromise(
+    `get_onboarding_message_status?onboarding_message_id=${onboardingMessageId}`
+  ).then((data) => data.shown === true);
 };
 
 // Topics that can be subscribed to

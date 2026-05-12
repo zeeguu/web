@@ -1,4 +1,4 @@
-import * as s from "./TranslationPopup.sc";
+import * as s from "./TranslationOnboardingPopup.sc";
 import Modal from "../../../components/modal_shared/Modal";
 import Main from "../../../components/modal_shared/Main.sc";
 import Footer from "../../../components/modal_shared/Footer.sc";
@@ -7,22 +7,22 @@ import { StyledButton } from "../../../components/allButtons.sc";
 import { useContext } from "react";
 import { APIContext } from "../../../contexts/APIContext";
 
-export default function TranslationPopup({ open, handleCancel, onboardingMessageId }) {
+export default function TranslationOnboardingPopup({ open, handleCancel, onboardingMessageId }) {
     const api = useContext(APIContext);
 
-    const handleContinue = async () => {
+    const handleDismiss = async () => {
         if (onboardingMessageId) {
             try {
-                await api.setOnboardingMessageClickTime(onboardingMessageId);
+                await api.markOnboardingMessageDismissed(onboardingMessageId);
             } catch (e) {
-                // ignore click recording failures
+                // ignore dismissal recording failures
             }
         }
         if (handleCancel) handleCancel();
     };
 
     return (
-        <Modal open={open} onClose={handleCancel} wrapperBackgroundColor="#fff1d4" hideCloseButton>
+        <Modal open={open} onClose={handleDismiss} wrapperBackgroundColor="#fff1d4" hideCloseButton>
             <s.TranslationImage src="/static/images/translate.png" alt="Translation illustration" />
             <Main>
                 <p style={{ textAlign: "center", fontWeight: "500" }}>
@@ -31,7 +31,7 @@ export default function TranslationPopup({ open, handleCancel, onboardingMessage
             </Main>
             <Footer>
                 <ButtonContainer $buttonCountNum={1}>
-                    <StyledButton $onboarding onClick={handleContinue} style={{ minWidth: "190px", margin: "0 auto"}}>
+                    <StyledButton $onboarding onClick={handleDismiss} style={{ minWidth: "190px", margin: "0 auto"}}>
                         Continue
                     </StyledButton>
                 </ButtonContainer>
