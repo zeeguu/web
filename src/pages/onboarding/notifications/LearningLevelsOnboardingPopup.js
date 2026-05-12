@@ -1,4 +1,4 @@
-import * as s from "./DailyExercisesOnboardingPopup.sc";
+import * as s from "./LearningLevelsOnboardingPopup.sc";
 import Modal from "../../../components/modal_shared/Modal";
 import Main from "../../../components/modal_shared/Main.sc";
 import Footer from "../../../components/modal_shared/Footer.sc";
@@ -7,9 +7,9 @@ import { useContext } from "react";
 import { APIContext } from "../../../contexts/APIContext";
 import { ONBOARDING_MESSAGE_IDS } from "../../../appConstants";
 
-export default function DailyExercisesOnboardingPopup({ open, handleCancel, onContinue }) {
+export default function TranslationOnboardingPopup({ open, handleCancel }) {
   const api = useContext(APIContext);
-  const onboardingMessageId = ONBOARDING_MESSAGE_IDS.dailyExercises;
+  const onboardingMessageId = ONBOARDING_MESSAGE_IDS.learningLevels;
 
   const handleDismiss = async () => {
     if (onboardingMessageId) {
@@ -19,20 +19,15 @@ export default function DailyExercisesOnboardingPopup({ open, handleCancel, onCo
         // ignore dismissal recording failures
       }
     }
-    if (handleCancel) {
-      handleCancel();
-    }
-    if (onContinue) {
-      onContinue();
-    }
+    if (handleCancel) handleCancel();
   };
 
   return (
     <Modal open={open} onClose={handleDismiss} wrapperBackgroundColor="var(--onboarding-modal-bg)" hideCloseButton>
       <Main>
-        <s.CenteredText>Your daily exercises will appear here.</s.CenteredText>
-        <s.DailyExercisesImage src="/static/images/dailyExercisesOnboarding.png" alt="Daily exercises illustration" />
-        <s.CenteredSecondText>P.S. They are based on your translations from the articles.</s.CenteredSecondText>
+        <s.CenteredText>There are 4 levels of learning a word.</s.CenteredText>
+        <s.LearningLevelsImage src="/static/images/learningLevels.png" alt="Learning levels illustration" />
+        <s.CenteredSecondText>You will have different types of exercises on each level.</s.CenteredSecondText>
       </Main>
       <Footer>
         <ButtonContainer $buttonCountNum={1}>

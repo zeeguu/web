@@ -9,6 +9,9 @@ import { APIContext } from "../contexts/APIContext";
 import { UserContext } from "../contexts/UserContext";
 import useDailyExercisesOnboarding from "../hooks/useDailyExercisesOnboarding";
 import DailyExercisesOnboardingPopup from "../pages/onboarding/notifications/DailyExercisesOnboardingPopup";
+import useOnboardingModal from "../hooks/useOnboardingModal";
+import { ONBOARDING_MESSAGE_IDS } from "../appConstants";
+import LearningLevelsOnboardingPopup from "../pages/onboarding/notifications/LearningLevelsOnboardingPopup";
 
 export default function ExercisesRouter() {
   const api = useContext(APIContext);
@@ -16,6 +19,8 @@ export default function ExercisesRouter() {
   const history = useHistory();
 
   const dailyExercisesModal = useDailyExercisesOnboarding(api, userDetails);
+  // #1108 — programmatic trigger, no wrapper needed
+  const learningLevelsModal = useOnboardingModal(api, ONBOARDING_MESSAGE_IDS.learningLevels);
 
   const backToReadingAction = () => {
     history.push("/articles");
@@ -61,7 +66,12 @@ export default function ExercisesRouter() {
           />
         </s.NarrowColumn>
       </Switch>
-      <DailyExercisesOnboardingPopup open={dailyExercisesModal.open} handleCancel={dailyExercisesModal.close} />
+      <DailyExercisesOnboardingPopup
+        open={dailyExercisesModal.open}
+        handleCancel={dailyExercisesModal.close}
+        onContinue={learningLevelsModal.show}
+      />
+      <LearningLevelsOnboardingPopup open={learningLevelsModal.open} handleCancel={learningLevelsModal.close} />
     </>
   );
 }
