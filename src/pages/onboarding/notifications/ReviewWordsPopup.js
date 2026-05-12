@@ -3,26 +3,40 @@ import Modal from "../../../components/modal_shared/Modal";
 import Main from "../../../components/modal_shared/Main.sc";
 import Footer from "../../../components/modal_shared/Footer.sc";
 import ButtonContainer from "../../../components/modal_shared/ButtonContainer.sc";
-import { StyledButton } from "../../../components/allButtons.sc";
+import { useContext } from "react";
+import { APIContext } from "../../../contexts/APIContext";
+import { ONBOARDING_MESSAGE_IDS } from "../../../appConstants";
 
 export default function ReviewWordsPopup({ open, handleCancel }) {
-    if (!open) return null;
+  const api = useContext(APIContext);
+  const onboardingMessageId = ONBOARDING_MESSAGE_IDS.reviewWords;
 
-    return (
-        <Modal open={open} onClose={handleCancel} wrapperBackgroundColor="#fff1d4" hideCloseButton>
-            <s.ReviewWordsImage src="/static/images/ReviewWordsOnboarding.png" alt="Review words illustration" />
-            <Main>
-                <p style={{ textAlign: "center", fontWeight: "500" }}>
-                    Tap <b>Review Words</b> to open your first Word List.
-                </p>
-            </Main>
-            <Footer>
-                <ButtonContainer $buttonCountNum={1}>
-                    <StyledButton $onboarding onClick={handleCancel} style={{ minWidth: "190px", margin: "0 auto"}}>
-                        Continue
-                    </StyledButton>
-                </ButtonContainer>
-            </Footer>
-        </Modal>
-    );
+  const handleDismiss = async () => {
+    if (onboardingMessageId) {
+      try {
+        await api.markOnboardingMessageDismissed(onboardingMessageId);
+      } catch (e) {
+        // ignore dismissal recording failures
+      }
+    }
+    if (handleCancel) handleCancel();
+  };
+
+  return (
+    <Modal open={open} onClose={handleDismiss} wrapperBackgroundColor="var(--onboarding-modal-bg)" hideCloseButton>
+      <s.ReviewWordsImage src="/static/images/ReviewWordsOnboarding.png" alt="Review words illustration" />
+      <Main>
+        <s.CenteredText>
+          Tap <b>Review Words</b> to open your first Word List.
+        </s.CenteredText>
+      </Main>
+      <Footer>
+        <ButtonContainer $buttonCountNum={1}>
+          <s.OnboardingPrimaryButton $onboarding onClick={handleDismiss}>
+            Continue
+          </s.OnboardingPrimaryButton>
+        </ButtonContainer>
+      </Footer>
+    </Modal>
+  );
 }
