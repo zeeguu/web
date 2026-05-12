@@ -142,12 +142,23 @@ const StyledButton = styled.button`
     `}
 
     // Disabled
-    ${(props) =>
+  ${(props) =>
     props.$disabled &&
     css`
       background-color: var(--action-btn-secondary-color-bg);
       color: var(--action-btn-secondary-color-text);
       cursor: not-allowed;
+    `}
+
+  //onboarding
+  ${(props) =>
+    props.$onboarding &&
+    css`
+      background-color: var(--onboarding-btn-bg);
+      color: var(--onboarding-btn-text-color);
+      :hover {
+        background-color: ${lightOrange};
+      }
     `}
 `;
 
