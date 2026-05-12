@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { StyledButton } from "../../../components/allButtons.sc";
 
 const TranslationImage = styled.img`
   width: min(100%, 300px);
@@ -9,9 +10,20 @@ const TranslationImage = styled.img`
   margin-right: auto;
   object-fit: contain;
 
-    @media (max-width: 576px) {
-      width: min(100%, 280px);
-    }
+  @media (max-width: 576px) {
+    width: min(100%, 280px);
+  }
 `;
 
-export { TranslationImage };
+const CenteredText = styled.p`
+  && {
+    text-align: center;
+    font-weight: 500;
+  }
+`;
+const OnboardingPrimaryButton = styled(StyledButton)`
+  min-width: 190px;
+  margin: 0 auto;
+`;
+
+export { TranslationImage, CenteredText, OnboardingPrimaryButton };
