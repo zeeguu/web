@@ -173,13 +173,16 @@ export default class InteractiveText {
   }
 
   alternativeTranslations(word, onUpdate, onComplete) {
-    let context;
-    [context] = this.getContextAndCoordinates(word);
+    let context, cParagraph_i, cSent_i, cToken_i;
+    [context, cParagraph_i, cSent_i, cToken_i] = this.getContextAndCoordinates(word);
     // Use mweExpression for MWEs (e.g., "har været" instead of just "har")
     const textToTranslate = word.mweExpression || word.word;
     const isSeparatedMwe = !!word.token?.mwe_is_separated;
     // Get full sentence for separated MWEs
     const fullSentenceContext = isSeparatedMwe ? this._getSentenceText(word) : null;
+    // Tap position relative to context start — lets the backend disambiguate
+    // when the word occurs multiple times in the context.
+    const wordTokenI = word.token.token_i - cToken_i;
 
     // Initialize alternatives array for streaming
     word.alternatives = [];
@@ -200,6 +203,7 @@ export default class InteractiveText {
       },
       isSeparatedMwe,
       fullSentenceContext,
+      wordTokenI,
     );
   }
 

@@ -120,6 +120,7 @@ Zeeguu_API.prototype.getTranslationsStreaming = function (
   onComplete,
   isSeparatedMwe = false,
   fullSentenceContext = null,
+  wordTokenI = null,
 ) {
   const payload = new FormData();
   payload.append("word", word);
@@ -127,6 +128,9 @@ Zeeguu_API.prototype.getTranslationsStreaming = function (
   payload.append("is_separated_mwe", isSeparatedMwe.toString());
   if (fullSentenceContext) {
     payload.append("full_sentence_context", fullSentenceContext);
+  }
+  if (wordTokenI !== null && wordTokenI !== undefined) {
+    payload.append("w_token_i", wordTokenI);
   }
 
   const url = this._appendSessionToUrl(
