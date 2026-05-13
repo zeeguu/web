@@ -43,7 +43,26 @@ export default function TranslatableWord({
     if (word.translation) setIsTranslationVisible(false);
   }, [word]);
 
+  // Register a "close me" callback on the shared interactiveText while this
+  // word's AlterMenu is open, so a click on any other word can close it
+  // (see clickOnWord's early-return below) instead of triggering a translation.
+  useEffect(() => {
+    if (!showingAlterMenu) return;
+    interactiveText.closeOpenAlterMenu = hideAlterMenu;
+    return () => {
+      if (interactiveText.closeOpenAlterMenu === hideAlterMenu) {
+        interactiveText.closeOpenAlterMenu = null;
+      }
+    };
+  }, [showingAlterMenu, interactiveText]);
+
   function clickOnWord(e, word) {
+    // If any AlterMenu is open elsewhere, the user's first click should
+    // dismiss it — not translate / toggle a new word. Matches modal UX.
+    if (interactiveText.closeOpenAlterMenu) {
+      interactiveText.closeOpenAlterMenu();
+      return;
+    }
     if (word.token.is_like_num || (word.token.is_punct && word.word.length === 1)) return;
 
     // Compute MWE expression BEFORE any fusion happens (for pronunciation)
