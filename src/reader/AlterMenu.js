@@ -1,5 +1,4 @@
-import { useEffect, useLayoutEffect, useState } from "react";
-import { useClickOutside } from "react-click-outside-hook";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { AlterMenuSC } from "./AlterMenu.sc";
 import LoadingAnimation from "../components/LoadingAnimation";
 
@@ -12,7 +11,7 @@ export default function AlterMenu({
   clickedOutsideTranslation,
   alternativesLoaded,
 }) {
-  const [refToAlterMenu, clickedOutsideAlterMenu] = useClickOutside();
+  const refToAlterMenu = useRef(null);
   const [inputValue, setInputValue] = useState("");
 
   useLayoutEffect(() => {
@@ -27,11 +26,31 @@ export default function AlterMenu({
     }
   }, [alternativesLoaded]);
 
+  // Modal-style outside-click handling: a capture-phase document listener
+  // fires before any target's own click handler, so we can stopPropagation
+  // BEFORE the tapped word's clickOnWord runs. This way a tap outside the
+  // menu just closes the menu — it doesn't translate the new word.
   useEffect(() => {
-    if (clickedOutsideAlterMenu && clickedOutsideTranslation) {
-      hideAlterMenu();
+    function handleCapture(e) {
+      const el = refToAlterMenu.current;
+      if (el && !el.contains(e.target)) {
+        // stopPropagation kills React's delegated onClick before it dispatches
+        // (so the tapped word doesn't translate). preventDefault on touchend
+        // also stops the browser from synthesizing the click that would
+        // otherwise slip through after our menu unmounts.
+        e.stopPropagation();
+        e.preventDefault();
+        hideAlterMenu();
+      }
     }
-  }, [clickedOutsideAlterMenu, clickedOutsideTranslation, hideAlterMenu]);
+    const opts = { capture: true, passive: false };
+    document.addEventListener("click", handleCapture, opts);
+    document.addEventListener("touchend", handleCapture, opts);
+    return () => {
+      document.removeEventListener("click", handleCapture, opts);
+      document.removeEventListener("touchend", handleCapture, opts);
+    };
+  }, [hideAlterMenu]);
 
   function handleKeyDown(e) {
     if (e.code === "Enter") {
