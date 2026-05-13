@@ -82,9 +82,10 @@ export default function AlterMenu({
       color: "crimson",
       fontWeight: "bold",
       whiteSpace: "nowrap",
+      backgroundColor: "rgba(220, 20, 60, 0.08)",
       borderBottom: "1px solid rgba(220, 20, 60, 0.25)",
-      paddingBottom: "0.4rem",
-      marginBottom: "0.4rem",
+      padding: "0.4rem 0.6rem",
+      margin: "-0.3em -0.3em 0.4rem -0.3em",
     }}>
       <span style={{ fontSize: "1.4em", verticalAlign: "middle", lineHeight: 1, borderBottom: "none" }}>🤖🥊</span>{" "}
       Bots disagree
