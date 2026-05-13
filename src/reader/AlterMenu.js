@@ -78,7 +78,7 @@ export default function AlterMenu({
   const filteredAlternatives = buildAlternatives(word);
   const hasAlternatives = filteredAlternatives.length > 0;
   const header = word.disagreement ? (
-    <div style={{ color: "orange" }}>
+    <div style={{ color: "crimson", fontWeight: "bold" }}>
       <span style={{ fontSize: "1.6em", verticalAlign: "middle", lineHeight: 1 }}>🤖🥊🤖</span>{" "}
       The bots disagree...
     </div>
