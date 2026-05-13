@@ -78,9 +78,16 @@ export default function AlterMenu({
   const filteredAlternatives = buildAlternatives(word);
   const hasAlternatives = filteredAlternatives.length > 0;
   const header = word.disagreement ? (
-    <div style={{ color: "crimson", fontWeight: "bold", whiteSpace: "nowrap" }}>
+    <div style={{
+      color: "crimson",
+      fontWeight: "bold",
+      whiteSpace: "nowrap",
+      borderBottom: "1px solid rgba(220, 20, 60, 0.25)",
+      paddingBottom: "0.4rem",
+      marginBottom: "0.4rem",
+    }}>
       <span style={{ fontSize: "1.4em", verticalAlign: "middle", lineHeight: 1 }}>🤖🥊</span>{" "}
-      Bots disagree...
+      Bots disagree
     </div>
   ) : (
     <div style={{ color: "orange", fontSize: "small" }}>Choose alternative</div>
