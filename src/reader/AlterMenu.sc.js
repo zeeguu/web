@@ -6,6 +6,10 @@ const AlterMenuSC = styled.div`
   font-size: medium;
   z-index: 1000;
   text-align: left;
+  /* Reset the dashed translation-indicator underline that cascades in
+     from the parent z-orig / z-tag (article word styling). Without this
+     the underline shows under emoji / text inside the menu. */
+  text-decoration: none;
 
   position: absolute;
   min-width: 14em;
