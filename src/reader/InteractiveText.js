@@ -142,12 +142,19 @@ export default class InteractiveText {
       )
       .then((response) => response.data)
       .then((data) => {
+        // Dev/QA hook: localStorage.force_disagreement = "true" forces the
+        // disagreement UI on every tap so the auto-open + bots-disagree
+        // header are testable without waiting for a real provider split.
+        const forceDisagreement = localStorage.getItem("force_disagreement") === "true";
+        const competing = forceDisagreement
+          ? [{ translation: "(forced test alternative)", source: "DeepL - with context" }]
+          : (data.competing_translations || null);
         word.updateTranslation(
           data.translation,
           data.service_name,
           data.bookmark_id,
-          data.competing_translations || null,
-          data.disagreement === true,
+          competing,
+          forceDisagreement || data.disagreement === true,
         );
         // Mark word's translation as visible so the component renders it
         // This is especially important for MWEs where clicking any word
