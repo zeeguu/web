@@ -142,7 +142,13 @@ export default class InteractiveText {
       )
       .then((response) => response.data)
       .then((data) => {
-        word.updateTranslation(data.translation, data.service_name, data.bookmark_id);
+        word.updateTranslation(
+          data.translation,
+          data.service_name,
+          data.bookmark_id,
+          data.competing_translations || null,
+          data.disagreement === true,
+        );
         // Mark word's translation as visible so the component renders it
         // This is especially important for MWEs where clicking any word
         // applies translation to the first word

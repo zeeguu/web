@@ -91,6 +91,11 @@ export default function TranslatableWord({
           if (mweGroupId && setLoadingMWEGroupId) {
             setLoadingMWEGroupId(null);
           }
+          // Backend flagged a 3-way provider disagreement; surface the
+          // alternatives menu so the user can pick the right answer.
+          if (word.disagreement) {
+            openAlterMenu(word);
+          }
         }, onFusionComplete);
       } else {
         // For non-translatable words in exercises, track the click
@@ -105,11 +110,7 @@ export default function TranslatableWord({
     }
   }
 
-  function toggleAlterMenu(e, word) {
-    if (showingAlterMenu) {
-      setShowingAlterMenu(false);
-      return;
-    }
+  function openAlterMenu(word) {
     setShowingAlterMenu(true);
     if (!hasFetchedAlternatives)
       interactiveText.alternativeTranslations(
@@ -117,6 +118,14 @@ export default function TranslatableWord({
         () => wordUpdated(word), // Called for each translation as it arrives
         () => setHasFetchedAlternatives(true), // Called when all done
       );
+  }
+
+  function toggleAlterMenu(e, word) {
+    if (showingAlterMenu) {
+      setShowingAlterMenu(false);
+      return;
+    }
+    openAlterMenu(word);
   }
 
   function unlinkLastWord(e, word) {

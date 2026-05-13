@@ -39,25 +39,43 @@ export default function AlterMenu({
     }
   }
 
-  function shortenSource(word) {
-    if (word.source === "Microsoft - without context") {
-      return "Azure";
-    }
-    if (word.source === "Microsoft - with context") {
-      return "Azure (contextual)";
-    }
+  // Merge competing_translations (known immediately from the bookmark
+  // response, when providers disagree) with word.alternatives (streamed
+  // in lazily by AlterMenu open). Dedupe by normalised translation text
+  // and drop anything equal to the current primary translation.
+  function buildAlternatives(word) {
+    const seen = new Set();
+    const list = [];
+    const normaliseKey = (t) => (t || "").toLowerCase().trim();
+    const primaryKey = normaliseKey(word.translation);
+    if (primaryKey) seen.add(primaryKey);
 
-    if (word.source === "Google - without context") {
-      return "Google";
+    const sources = [word.competing_translations, word.alternatives];
+    for (const src of sources) {
+      if (!src) continue;
+      for (const entry of src) {
+        const key = normaliseKey(entry?.translation);
+        if (!key || seen.has(key)) continue;
+        seen.add(key);
+        list.push(entry);
+      }
     }
-    if (word.source === "Google - with context") {
-      return "Google (contextual)";
-    }
-
-    return word.source;
+    return list;
   }
 
-  const filteredAlternatives = word.alternatives?.filter((each) => each.translation !== word.translation) || [];
+  function shortenSource(word) {
+    const labels = {
+      "Microsoft - without context": "Azure",
+      "Microsoft - with context": "Azure (contextual)",
+      "Microsoft - alignment": "Azure (alignment)",
+      "Google - without context": "Google",
+      "Google - with context": "Google (contextual)",
+      "DeepL - with context": "DeepL",
+    };
+    return labels[word.source] || word.source;
+  }
+
+  const filteredAlternatives = buildAlternatives(word);
   const hasAlternatives = filteredAlternatives.length > 0;
 
   return (
