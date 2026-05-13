@@ -78,12 +78,12 @@ export default function AlterMenu({
   const filteredAlternatives = buildAlternatives(word);
   const hasAlternatives = filteredAlternatives.length > 0;
   const header = word.disagreement ? (
-    <>
-      <span style={{ fontSize: "2em", verticalAlign: "middle", lineHeight: 1 }}>🤖🥊🤖</span>{" "}
+    <div style={{ color: "orange" }}>
+      <span style={{ fontSize: "1.6em", verticalAlign: "middle", lineHeight: 1 }}>🤖🥊🤖</span>{" "}
       The bots disagree...
-    </>
+    </div>
   ) : (
-    "Choose alternative"
+    <div style={{ color: "orange", fontSize: "small" }}>Choose alternative</div>
   );
 
   return (
@@ -91,7 +91,7 @@ export default function AlterMenu({
       {/* Alternatives section - streams as they arrive */}
       {hasAlternatives && (
         <>
-          <div style={{ color: "orange", fontSize: "small" }}>{header}</div>
+          {header}
           {filteredAlternatives.map((each, index) => (
             <div
               key={`${each.translation}-${each.source}-${index}`}
@@ -112,8 +112,10 @@ export default function AlterMenu({
           ))}
         </>
       )}
-      {/* Show spinner while still loading */}
-      {!alternativesLoaded && (
+      {/* Spinner only when we have nothing to show yet — competing_translations
+          from the bookmark response already populate the list immediately, so
+          showing a spinner under them looks like a stray "extra option". */}
+      {!alternativesLoaded && !hasAlternatives && (
         <LoadingAnimation specificStyle={{ transform: "scale(0.4)", height: "2rem", margin: "0.5rem 0 -0.5rem 0" }} delay={0}></LoadingAnimation>
       )}
       {/* Only show "no alternatives" when done loading and none found */}
