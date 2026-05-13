@@ -77,21 +77,20 @@ export default function AlterMenu({
 
   const filteredAlternatives = buildAlternatives(word);
   const hasAlternatives = filteredAlternatives.length > 0;
+  const headerBandStyle = {
+    whiteSpace: "nowrap",
+    backgroundColor: "rgba(139, 90, 43, 0.08)",
+    borderBottom: "1px solid rgba(139, 90, 43, 0.25)",
+    padding: "0.4rem 0.6rem",
+    margin: "-0.3em -0.3em 0.4rem -0.3em",
+  };
   const header = word.disagreement ? (
-    <div style={{
-      color: "crimson",
-      fontWeight: "bold",
-      whiteSpace: "nowrap",
-      backgroundColor: "rgba(220, 20, 60, 0.08)",
-      borderBottom: "1px solid rgba(220, 20, 60, 0.25)",
-      padding: "0.4rem 0.6rem",
-      margin: "-0.3em -0.3em 0.4rem -0.3em",
-    }}>
+    <div style={{ ...headerBandStyle, color: "crimson", fontWeight: "bold" }}>
       <span style={{ fontSize: "1.4em", verticalAlign: "middle", lineHeight: 1, borderBottom: "none" }}>🤖🥊</span>{" "}
       Bots disagree
     </div>
   ) : (
-    <div style={{ color: "orange", fontSize: "small" }}>Choose alternative</div>
+    <div style={{ ...headerBandStyle, color: "orange" }}>Alternatives</div>
   );
 
   return (
