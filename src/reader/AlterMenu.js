@@ -77,7 +77,7 @@ export default function AlterMenu({
 
   const filteredAlternatives = buildAlternatives(word);
   const hasAlternatives = filteredAlternatives.length > 0;
-  const headerText = word.disagreement ? "🤖 The bots disagree" : "Choose alternative";
+  const headerText = word.disagreement ? "🤖🥊🤖 The bots disagree" : "Choose alternative";
 
   return (
     <AlterMenuSC ref={refToAlterMenu}>
