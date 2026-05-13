@@ -1,5 +1,4 @@
-import { useState, useEffect } from "react";
-import { useClickOutside } from "react-click-outside-hook";
+import { useState, useEffect, useRef } from "react";
 import AlterMenu from "./AlterMenu";
 import extractDomain from "../utils/web/extractDomain";
 import addProtocolToLink from "../utils/web/addProtocolToLink";
@@ -27,7 +26,7 @@ export default function TranslatableWord({
   setHighlightSolutionExpression,
 }) {
   const [showingAlterMenu, setShowingAlterMenu] = useState(false);
-  const [refToTranslation, clickedOutsideTranslation] = useClickOutside();
+  const refToTranslation = useRef(null);
   const [isClickedToPronounce, setIsClickedToPronounce] = useState(false);
   const [isWordTranslating, setIsWordTranslating] = useState(false);
   const [prevWord, setPreviousWord] = useState("");
@@ -112,11 +111,16 @@ export default function TranslatableWord({
 
   function openAlterMenu(word) {
     setShowingAlterMenu(true);
-    if (!hasFetchedAlternatives)
+    // Skip the SSE alternatives call when the bookmark response already
+    // carries competing translations (the disagreement auto-open path) —
+    // the menu has enough to show. If the user dismisses and reopens via
+    // the dropdown arrow, the call fires then (hasFetchedAlternatives
+    // is still false, no competing on this re-open).
+    if (!hasFetchedAlternatives && !word.competing_translations?.length)
       interactiveText.alternativeTranslations(
         word,
-        () => wordUpdated(word), // Called for each translation as it arrives
-        () => setHasFetchedAlternatives(true), // Called when all done
+        () => wordUpdated(word),
+        () => setHasFetchedAlternatives(true),
       );
   }
 
@@ -422,7 +426,6 @@ export default function TranslatableWord({
               setShowingAlternatives={setShowingAlterMenu}
               selectAlternative={selectAlternative}
               hideAlterMenu={hideAlterMenu}
-              clickedOutsideTranslation={clickedOutsideTranslation}
               deleteTranslation={deleteTranslation}
               ungroupMwe={ungroupMwe}
               alternativesLoaded={hasFetchedAlternatives}

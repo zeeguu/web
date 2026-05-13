@@ -1,6 +1,53 @@
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { AlterMenuSC } from "./AlterMenu.sc";
 import LoadingAnimation from "../components/LoadingAnimation";
+import { zeeguuLightYellow } from "../components/colors";
+
+const HEADER_BAND_STYLE = {
+  whiteSpace: "nowrap",
+  backgroundColor: zeeguuLightYellow,
+  borderBottom: "1px solid rgba(139, 90, 43, 0.25)",
+  padding: "0.4rem 0.6rem",
+  margin: "-0.3em -0.3em 0.4rem -0.3em",
+  fontWeight: 800,
+};
+
+const PROVIDER_LABELS = {
+  "Microsoft - without context": "Azure",
+  "Microsoft - with context": "Azure (contextual)",
+  "Microsoft - alignment": "Azure (alignment)",
+  "Google - without context": "Google",
+  "Google - with context": "Google (contextual)",
+  "DeepL - with context": "DeepL",
+};
+
+function shortenSource(alt) {
+  return PROVIDER_LABELS[alt.source] || alt.source;
+}
+
+// Merge competing_translations (known immediately from the bookmark
+// response, when providers disagree) with word.alternatives (streamed
+// in lazily by AlterMenu open). Dedupe by normalised translation text
+// and drop anything equal to the current primary translation.
+function buildAlternatives(word) {
+  const seen = new Set();
+  const list = [];
+  const normaliseKey = (t) => (t || "").toLowerCase().trim();
+  const primaryKey = normaliseKey(word.translation);
+  if (primaryKey) seen.add(primaryKey);
+
+  const sources = [word.competing_translations, word.alternatives];
+  for (const src of sources) {
+    if (!src) continue;
+    for (const entry of src) {
+      const key = normaliseKey(entry?.translation);
+      if (!key || seen.has(key)) continue;
+      seen.add(key);
+      list.push(entry);
+    }
+  }
+  return list;
+}
 
 export default function AlterMenu({
   word,
@@ -8,7 +55,6 @@ export default function AlterMenu({
   selectAlternative,
   deleteTranslation,
   ungroupMwe,
-  clickedOutsideTranslation,
   alternativesLoaded,
 }) {
   const refToAlterMenu = useRef(null);
@@ -58,64 +104,19 @@ export default function AlterMenu({
     }
   }
 
-  // Merge competing_translations (known immediately from the bookmark
-  // response, when providers disagree) with word.alternatives (streamed
-  // in lazily by AlterMenu open). Dedupe by normalised translation text
-  // and drop anything equal to the current primary translation.
-  function buildAlternatives(word) {
-    const seen = new Set();
-    const list = [];
-    const normaliseKey = (t) => (t || "").toLowerCase().trim();
-    const primaryKey = normaliseKey(word.translation);
-    if (primaryKey) seen.add(primaryKey);
-
-    const sources = [word.competing_translations, word.alternatives];
-    for (const src of sources) {
-      if (!src) continue;
-      for (const entry of src) {
-        const key = normaliseKey(entry?.translation);
-        if (!key || seen.has(key)) continue;
-        seen.add(key);
-        list.push(entry);
-      }
-    }
-    return list;
-  }
-
-  function shortenSource(word) {
-    const labels = {
-      "Microsoft - without context": "Azure",
-      "Microsoft - with context": "Azure (contextual)",
-      "Microsoft - alignment": "Azure (alignment)",
-      "Google - without context": "Google",
-      "Google - with context": "Google (contextual)",
-      "DeepL - with context": "DeepL",
-    };
-    return labels[word.source] || word.source;
-  }
-
   const filteredAlternatives = buildAlternatives(word);
   const hasAlternatives = filteredAlternatives.length > 0;
-  const headerBandStyle = {
-    whiteSpace: "nowrap",
-    backgroundColor: "#ffe59e",
-    borderBottom: "1px solid rgba(139, 90, 43, 0.25)",
-    padding: "0.4rem 0.6rem",
-    margin: "-0.3em -0.3em 0.4rem -0.3em",
-    fontWeight: 800,
-  };
   const header = word.disagreement ? (
-    <div style={{ ...headerBandStyle, color: "crimson" }}>
+    <div style={{ ...HEADER_BAND_STYLE, color: "crimson" }}>
       <span style={{ fontSize: "1.4em", verticalAlign: "middle", lineHeight: 1, borderBottom: "none" }}>🤖🥊</span>{" "}
       Bots disagree
     </div>
   ) : (
-    <div style={{ ...headerBandStyle, color: "#01345d" }}>Alternatives</div>
+    <div style={{ ...HEADER_BAND_STYLE, color: "#01345d" }}>Alternatives</div>
   );
 
   return (
     <AlterMenuSC ref={refToAlterMenu}>
-      {/* Alternatives section - streams as they arrive */}
       {hasAlternatives && (
         <>
           {header}
@@ -145,7 +146,6 @@ export default function AlterMenu({
       {!alternativesLoaded && !hasAlternatives && (
         <LoadingAnimation specificStyle={{ transform: "scale(0.4)", height: "2rem", margin: "0.5rem 0 -0.5rem 0" }} delay={0}></LoadingAnimation>
       )}
-      {/* Only show "no alternatives" when done loading and none found */}
       {alternativesLoaded && !hasAlternatives && (
         <div className="noAlternatives">No alternative found</div>
       )}

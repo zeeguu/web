@@ -2,6 +2,7 @@ import LinkedWordList from "./LinkedWordListClass";
 import ZeeguuSpeech from "../speech/APIBasedSpeech";
 import { EXERCISE_TYPES } from "../exercises/ExerciseTypeConstants";
 import { updateTokensWithBookmarks } from "./bookmarkRestoration";
+import { isDev } from "../config";
 
 // Set to true to enable verbose MWE/bookmark debugging
 const MWE_DEBUG = false;
@@ -142,10 +143,11 @@ export default class InteractiveText {
       )
       .then((response) => response.data)
       .then((data) => {
-        // Dev/QA hook: localStorage.force_disagreement = "true" forces the
-        // disagreement UI on every tap so the auto-open + bots-disagree
-        // header are testable without waiting for a real provider split.
-        const forceDisagreement = localStorage.getItem("force_disagreement") === "true";
+        // Dev/QA hook: in dev builds, localStorage.force_disagreement = "true"
+        // forces the disagreement UI on every tap so the auto-open + bots-
+        // disagree header are testable without waiting for a real split.
+        // Stripped from prod builds by Vite's import.meta.env.DEV tree-shake.
+        const forceDisagreement = isDev && localStorage.getItem("force_disagreement") === "true";
         const competing = forceDisagreement
           ? [{ translation: "(forced test alternative)", source: "DeepL - with context" }]
           : (data.competing_translations || null);
