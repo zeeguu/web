@@ -417,16 +417,34 @@ export default function TranslatableWord({
             </span>
           )}
           {showingAlterMenu && (
-            <AlterMenu
-              word={word}
-              setShowingAlternatives={setShowingAlterMenu}
-              selectAlternative={selectAlternative}
-              hideAlterMenu={hideAlterMenu}
-              clickedOutsideTranslation={clickedOutsideTranslation}
-              deleteTranslation={deleteTranslation}
-              ungroupMwe={ungroupMwe}
-              alternativesLoaded={hasFetchedAlternatives}
-            />
+            <>
+              {/* Modal backdrop: captures clicks outside the menu so they
+                  close the menu instead of triggering a translation on the
+                  word that happened to be tapped. Sits below the menu
+                  (z-index 999 vs AlterMenuSC's 1000). */}
+              <div
+                onClick={hideAlterMenu}
+                style={{
+                  position: "fixed",
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  bottom: 0,
+                  zIndex: 999,
+                  background: "transparent",
+                }}
+              />
+              <AlterMenu
+                word={word}
+                setShowingAlternatives={setShowingAlterMenu}
+                selectAlternative={selectAlternative}
+                hideAlterMenu={hideAlterMenu}
+                clickedOutsideTranslation={clickedOutsideTranslation}
+                deleteTranslation={deleteTranslation}
+                ungroupMwe={ungroupMwe}
+                alternativesLoaded={hasFetchedAlternatives}
+              />
+            </>
           )}
         </z-orig>
       </z-tag>
