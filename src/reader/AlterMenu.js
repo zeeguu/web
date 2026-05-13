@@ -79,7 +79,7 @@ export default function AlterMenu({
   const hasAlternatives = filteredAlternatives.length > 0;
   const header = word.disagreement ? (
     <div style={{ color: "crimson", fontWeight: "bold", whiteSpace: "nowrap" }}>
-      <span style={{ fontSize: "1.4em", verticalAlign: "middle", lineHeight: 1 }}>🤖🥊🤖</span>{" "}
+      <span style={{ fontSize: "1.4em", verticalAlign: "middle", lineHeight: 1 }}>🤖🥊</span>{" "}
       Bots disagree...
     </div>
   ) : (
