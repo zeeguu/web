@@ -395,7 +395,7 @@ export default function TranslatableWord({
               <span className="arrow" onClick={(e) => toggleAlterMenu(e, word)}>
                 {showingAlterMenu ? "▲" : "▼"}
               </span>
-              {word.mergedTokens.length > 1 && (
+              {word.mergedTokens.length > 1 && !word.mweExpression && (
                 <span className="unlink low-oppacity translation-icon">
                   <LinkOffIcon
                     fontSize="8px"
