@@ -77,14 +77,21 @@ export default function AlterMenu({
 
   const filteredAlternatives = buildAlternatives(word);
   const hasAlternatives = filteredAlternatives.length > 0;
-  const headerText = word.disagreement ? "🤖🥊🤖 The bots disagree" : "Choose alternative";
+  const header = word.disagreement ? (
+    <>
+      <span style={{ fontSize: "1.8em", verticalAlign: "middle" }}>🤖🥊🤖</span>{" "}
+      The bots disagree...
+    </>
+  ) : (
+    "Choose alternative"
+  );
 
   return (
     <AlterMenuSC ref={refToAlterMenu}>
       {/* Alternatives section - streams as they arrive */}
       {hasAlternatives && (
         <>
-          <div style={{ color: "orange", fontSize: "small" }}>{headerText}</div>
+          <div style={{ color: "orange", fontSize: "small" }}>{header}</div>
           {filteredAlternatives.map((each, index) => (
             <div
               key={`${each.translation}-${each.source}-${index}`}
