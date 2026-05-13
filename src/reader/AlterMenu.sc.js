@@ -8,15 +8,6 @@ const AlterMenuSC = styled.div`
   text-align: left;
 
   position: absolute;
-
-  /* Cancel the dashed translation-indicator border-bottom that
-     TranslatableText.sc.js applies to every <span> inside <z-orig>.
-     The menu is rendered inside <z-orig>, so emoji / text spans inside
-     the menu otherwise inherit that orange dashed underline. */
-  span {
-    border-bottom: none;
-  }
-
   min-width: 14em;
   max-width: 30em;
   background-color: ${zeeguuVeryLightYellow};

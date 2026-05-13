@@ -86,7 +86,7 @@ export default function AlterMenu({
       paddingBottom: "0.4rem",
       marginBottom: "0.4rem",
     }}>
-      <span style={{ fontSize: "1.4em", verticalAlign: "middle", lineHeight: 1 }}>🤖🥊</span>{" "}
+      <span style={{ fontSize: "1.4em", verticalAlign: "middle", lineHeight: 1, borderBottom: "none" }}>🤖🥊</span>{" "}
       Bots disagree
     </div>
   ) : (
