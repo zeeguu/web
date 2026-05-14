@@ -77,6 +77,15 @@ export default function ArticleReader({ teacherArticleID }) {
     updateShowReadingTimer,
   } = useUserPreferences(api);
   const [readerReady, setReaderReady] = useState();
+  const [readerFontSize, setReaderFontSizeState] = useState(() => {
+    const saved = parseInt(localStorage.getItem("reader_font_size"), 10);
+    return Number.isFinite(saved) ? saved : 18;
+  });
+  function setReaderFontSize(value) {
+    const clamped = Math.max(14, Math.min(28, value));
+    setReaderFontSizeState(clamped);
+    localStorage.setItem("reader_font_size", String(clamped));
+  }
   const [clickedOnReviewVocab, setClickedOnReviewVocab] = useState(false);
   const [showLanguageModal, setShowLanguageModal] = useState(false);
   const [isProcessingArticle, setIsProcessingArticle] = useState(false);
@@ -395,6 +404,8 @@ export default function ArticleReader({ teacherArticleID }) {
         setShowMweHints={updateShowMweHints}
         showReadingTimer={showReadingTimer}
         setShowReadingTimer={updateShowReadingTimer}
+        readerFontSize={readerFontSize}
+        setReaderFontSize={setReaderFontSize}
         url={articleInfo.url}
         UMR_SOURCE={WEB_READER}
         articleProgress={scrollPosition}
@@ -406,7 +417,7 @@ export default function ArticleReader({ teacherArticleID }) {
         reportBroken={<ReportBroken UMR_SOURCE={WEB_READER} history={history} articleID={articleID} />}
       />
 
-      <s.ArticleReader>
+      <s.ArticleReader style={{ fontSize: `${readerFontSize}px` }}>
         <div id="text">
           <h1>
             <TranslatableText
