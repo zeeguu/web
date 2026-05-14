@@ -13,10 +13,15 @@ import useUILanguage from "./assorted/hooks/uiLanguageHook";
 
 import ZeeguuSpeech from "./speech/APIBasedSpeech";
 import { SpeechContext } from "./contexts/SpeechContext";
-import { API_ENDPOINT, APP_DOMAIN } from "./appConstants";
+import { API_ENDPOINT, APP_DOMAIN, ONBOARDING_MESSAGE_IDS } from "./appConstants";
 import { AUDIO_STATUS, GENERATION_PROGRESS } from "./dailyAudio/AudioLessonConstants";
 
-import { getSharedSession, removeSharedUserInfo, saveSharedUserInfo, initializeSession } from "./utils/cookies/userInfo";
+import {
+  getSharedSession,
+  removeSharedUserInfo,
+  saveSharedUserInfo,
+  initializeSession,
+} from "./utils/cookies/userInfo";
 import { Capacitor } from "@capacitor/core";
 
 import MainAppRouter from "./MainAppRouter";
@@ -28,11 +33,13 @@ import useRedirectLink from "./hooks/useRedirectLink";
 import useLocationTracker from "./hooks/useLocationTracker";
 import useDeepLinkHandler from "./hooks/useDeepLinkHandler";
 import useTranslationOnboarding from "./hooks/useTranslationOnboarding";
+import useOnboardingModal from "./hooks/useOnboardingModal";
 import LoadingAnimation from "./components/LoadingAnimation";
 import ServerErrorModal from "./components/ServerErrorModal";
 import useTheme from "./hooks/useTheme";
 import { ThemeContext } from "./contexts/ThemeContext";
 import TranslationOnboardingPopup from "./pages/onboarding/notifications/TranslationOnboardingPopup";
+import MoreTranslationsPopup from "./pages/onboarding/notifications/MoreTranslationsPopup";
 
 // Helper to detect if we're in a Capacitor native app
 const isCapacitor = () => {
@@ -77,6 +84,7 @@ function App() {
   const [zeeguuSpeech, setZeeguuSpeech] = useState(false);
   let { handleRedirectLinkOrGoTo } = useRedirectLink();
   const translationModal = useTranslationOnboarding(api, userDetails);
+  const moreTranslationsModal = useOnboardingModal(api, ONBOARDING_MESSAGE_IDS.moreTranslations);
 
   const [systemLanguages, setSystemLanguages] = useState();
   // Initialize session from native storage (for Capacitor) before doing anything else
@@ -181,8 +189,12 @@ function App() {
     // Only validate if there is a session.
     if (api.session !== undefined && api.session !== null) {
       api.isValidSession(
-        () => { loadUserDetails(); },
-        () => { logout(); },
+        () => {
+          loadUserDetails();
+        },
+        () => {
+          logout();
+        },
       );
     } else {
       // No session - user is not logged in
@@ -288,7 +300,14 @@ function App() {
   const [returnPath, setReturnPath] = useState("");
 
   if (serverError) {
-    return <ServerErrorModal onRetry={() => { setServerError(false); loadUserDetails(); }} />;
+    return (
+      <ServerErrorModal
+        onRetry={() => {
+          setServerError(false);
+          loadUserDetails();
+        }}
+      />
+    );
   }
 
   // Wait for session initialization and user details loading
@@ -296,58 +315,64 @@ function App() {
     return <LoadingAnimation />;
   }
 
-
   return (
     <ThemeContext.Provider value={themeValue}>
-    <SystemLanguagesContext.Provider value={{ systemLanguages, sortedSystemLanguages }}>
-      <SpeechContext.Provider value={zeeguuSpeech}>
-        <BrowserRouter>
-          <LocationTrackingWrapper>
-            <RoutingContext.Provider value={{ returnPath, setReturnPath }}>
-              <UserContext.Provider
-                value={{
-                  userDetails,
-                  setUserDetails,
-                  userPreferences,
-                  setUserPreferences,
-                  session: getSharedSession(),
-                  logoutMethod: logout,
-                }}
-              >
-                <APIContext.Provider value={api}>
-                  <ProgressProvider>
-                    <FeedbackContextProvider>
-                      {/* Routing*/}
+      <SystemLanguagesContext.Provider value={{ systemLanguages, sortedSystemLanguages }}>
+        <SpeechContext.Provider value={zeeguuSpeech}>
+          <BrowserRouter>
+            <LocationTrackingWrapper>
+              <RoutingContext.Provider value={{ returnPath, setReturnPath }}>
+                <UserContext.Provider
+                  value={{
+                    userDetails,
+                    setUserDetails,
+                    userPreferences,
+                    setUserPreferences,
+                    session: getSharedSession(),
+                    logoutMethod: logout,
+                  }}
+                >
+                  <APIContext.Provider value={api}>
+                    <ProgressProvider>
+                      <FeedbackContextProvider>
+                        {/* Routing*/}
 
-                      <MainAppRouter
-                        hasExtension={isExtensionAvailable}
-                        handleSuccessfulLogIn={handleSuccessfulLogIn}
-                      />
-                      <TranslationOnboardingPopup
-                        open={translationModal.open}
-                        handleCancel={translationModal.close}
-                      />
-                      <ToastContainer
-                        position="bottom-right"
-                        autoClose={2000}
-                        hideProgressBar={true}
-                        newestOnTop={false}
-                        closeOnClick
-                        rtl={false}
-                        pauseOnFocusLoss
-                        draggable
-                        pauseOnHover
-                        theme={themeValue.isDark ? "dark" : "light"}
-                      />
-                    </FeedbackContextProvider>
-                  </ProgressProvider>
-                </APIContext.Provider>
-              </UserContext.Provider>
-            </RoutingContext.Provider>
-          </LocationTrackingWrapper>
-        </BrowserRouter>
-      </SpeechContext.Provider>
-    </SystemLanguagesContext.Provider>
+                        <MainAppRouter
+                          hasExtension={isExtensionAvailable}
+                          handleSuccessfulLogIn={handleSuccessfulLogIn}
+                        />
+                        <TranslationOnboardingPopup
+                          open={translationModal.open}
+                          handleCancel={() => {
+                            translationModal.close();
+                            moreTranslationsModal.show();
+                          }}
+                        />
+                        <MoreTranslationsPopup
+                          open={moreTranslationsModal.open}
+                          handleCancel={moreTranslationsModal.close}
+                        />
+                        <ToastContainer
+                          position="bottom-right"
+                          autoClose={2000}
+                          hideProgressBar={true}
+                          newestOnTop={false}
+                          closeOnClick
+                          rtl={false}
+                          pauseOnFocusLoss
+                          draggable
+                          pauseOnHover
+                          theme={themeValue.isDark ? "dark" : "light"}
+                        />
+                      </FeedbackContextProvider>
+                    </ProgressProvider>
+                  </APIContext.Provider>
+                </UserContext.Provider>
+              </RoutingContext.Provider>
+            </LocationTrackingWrapper>
+          </BrowserRouter>
+        </SpeechContext.Provider>
+      </SystemLanguagesContext.Provider>
     </ThemeContext.Provider>
   );
 }
