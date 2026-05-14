@@ -23,6 +23,7 @@ import useShadowRef from "../hooks/useShadowRef";
 import useSwipeBack from "../hooks/useSwipeBack";
 import useScrollTracking from "../hooks/useScrollTracking";
 import useReadingSession from "../hooks/useReadingSession";
+import useReviewWordsOnboarding from "../hooks/useReviewWordsOnboarding";
 import strings from "../i18n/definitions";
 import useUserPreferences from "../hooks/useUserPreferences";
 import ArticleStatInfo from "../components/ArticleStatInfo";
@@ -31,6 +32,7 @@ import DevButton from "../components/DevButton";
 import { APIContext } from "../contexts/APIContext";
 import ArticleLanguageModal from "./ArticleLanguageModal";
 import { shouldShowLanguageChoice } from "../utils/misc/cefrHelpers";
+import ReviewWordsPopup from "../pages/onboarding/notifications/ReviewWordsPopup";
 
 // UMR stands for historical reasons for: Unified Multilingual Reader
 export const WEB_READER = "UMR";
@@ -64,8 +66,16 @@ export default function ArticleReader({ teacherArticleID }) {
 
   const [interactiveTitle, setInteractiveTitle] = useState();
   const [interactiveFragments, setInteractiveFragments] = useState();
-  const { translateInReader, pronounceInReader, updateTranslateInReader, updatePronounceInReader, showMweHints, updateShowMweHints, showReadingTimer, updateShowReadingTimer } =
-    useUserPreferences(api);
+  const {
+    translateInReader,
+    pronounceInReader,
+    updateTranslateInReader,
+    updatePronounceInReader,
+    showMweHints,
+    updateShowMweHints,
+    showReadingTimer,
+    updateShowReadingTimer,
+  } = useUserPreferences(api);
   const [readerReady, setReaderReady] = useState();
   const [clickedOnReviewVocab, setClickedOnReviewVocab] = useState(false);
   const [showLanguageModal, setShowLanguageModal] = useState(false);
@@ -76,33 +86,27 @@ export default function ArticleReader({ teacherArticleID }) {
   const history = useHistory();
   const speech = useContext(SpeechContext);
   const [bookmarks, setBookmarks] = useState([]);
+  const [reviewWordsButtonElement, setReviewWordsButtonElement] = useState(null);
+
+  const reviewWordsModal = useReviewWordsOnboarding(api, articleID, readerReady, reviewWordsButtonElement);
 
   // Reading session hook - starts when articleInfo is loaded
-  const {
-    getReadingSessionId,
-    sessionDuration,
-    isTimerActive,
-  } = useReadingSession(articleID, "web", !!articleInfo);
+  const { getReadingSessionId, sessionDuration, isTimerActive } = useReadingSession(articleID, "web", !!articleInfo);
 
   const clickedOnReviewVocabRef = useShadowRef(clickedOnReviewVocab);
 
   // Use the shared scroll tracking hook
-  const {
-    scrollPosition,
-    handleScroll,
-    sendFinalScrollEvent,
-    uploadScrollActivity,
-    initializeScrollTracking,
-  } = useScrollTracking({
-    api,
-    articleInfo,
-    getReadingSessionId,
-    sessionDuration,
-    scrollHolderId: "scrollHolder",
-    bottomRowId: "bottomRow",
-    sampleFrequency: 1,
-    source: WEB_READER,
-  });
+  const { scrollPosition, handleScroll, sendFinalScrollEvent, uploadScrollActivity, initializeScrollTracking } =
+    useScrollTracking({
+      api,
+      articleInfo,
+      getReadingSessionId,
+      sessionDuration,
+      scrollHolderId: "scrollHolder",
+      bottomRowId: "bottomRow",
+      sampleFrequency: 1,
+      source: WEB_READER,
+    });
 
   function uploadActivity() {
     // Delegate scroll activity to the hook
@@ -255,9 +259,9 @@ export default function ArticleReader({ teacherArticleID }) {
       (progress) => setLoadingProgress(progress),
       handleArticleLoaded,
       (error) => {
-        console.error('Failed to load article:', error);
-        setLoadingProgress({ message: 'Error loading article', step: 0, total: 1 });
-      }
+        console.error("Failed to load article:", error);
+        setLoadingProgress({ message: "Error loading article", step: 0, total: 1 });
+      },
     );
 
     window.addEventListener("focus", handleFocus);
@@ -284,22 +288,19 @@ export default function ArticleReader({ teacherArticleID }) {
 
   if (!articleInfo || !interactiveFragments) {
     return (
-      <LoadingAnimation
-        showReportIssue={false}
-        specificStyle={{ minHeight: "70vh", justifyContent: "center" }}
-      >
+      <LoadingAnimation showReportIssue={false} specificStyle={{ minHeight: "70vh", justifyContent: "center" }}>
         {loadingProgress && (
-          <div style={{ textAlign: 'center', marginTop: '1em' }}>
+          <div style={{ textAlign: "center", marginTop: "1em" }}>
             <div>{loadingProgress.message}</div>
             {loadingProgress.total > 0 && (
-              <div style={{ marginTop: '0.5em', color: '#666' }}>
+              <div style={{ marginTop: "0.5em", color: "#666" }}>
                 Step {loadingProgress.step} of {loadingProgress.total}
               </div>
             )}
           </div>
         )}
         {showSlowLoadingHint && (
-          <div style={{ textAlign: 'center', marginTop: '1.5em', color: '#888', fontSize: '0.9em' }}>
+          <div style={{ textAlign: "center", marginTop: "1.5em", color: "#888", fontSize: "0.9em" }}>
             This can take a moment for longer articles...
           </div>
         )}
@@ -399,16 +400,10 @@ export default function ArticleReader({ teacherArticleID }) {
         articleProgress={scrollPosition}
         timer={
           showReadingTimer ? (
-            <DigitalTimer
-              sessionDuration={sessionDuration}
-              isTimerActive={isTimerActive}
-              showClock={true}
-            />
+            <DigitalTimer sessionDuration={sessionDuration} isTimerActive={isTimerActive} showClock={true} />
           ) : null
         }
-        reportBroken={
-          <ReportBroken UMR_SOURCE={WEB_READER} history={history} articleID={articleID} />
-        }
+        reportBroken={<ReportBroken UMR_SOURCE={WEB_READER} history={history} articleID={articleID} />}
       />
 
       <s.ArticleReader>
@@ -469,6 +464,7 @@ export default function ArticleReader({ teacherArticleID }) {
               articleID={articleID}
               clickedOnReviewVocab={clickedOnReviewVocab}
               setClickedOnReviewVocab={setClickedOnReviewVocab}
+              reviewWordsButtonRef={setReviewWordsButtonElement}
               bookmarks={bookmarks}
             />
             <s.CombinedBox>
@@ -481,6 +477,7 @@ export default function ArticleReader({ teacherArticleID }) {
             </s.CombinedBox>
           </div>
         )}
+        <ReviewWordsPopup open={reviewWordsModal.open} handleCancel={reviewWordsModal.close} />
         <s.ExtraSpaceAtTheBottom />
       </s.ArticleReader>
     </>

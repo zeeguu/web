@@ -1,1 +1,7 @@
-- Lock-screen player: skip-back and skip-forward buttons now keep working after you pause, and the title and album art stay reliably visible when you switch between apps.
+- New: when the two translation engines disagree on a word, the alternatives menu pops open automatically with a "the bots disagree" header so you can pick the meaning that fits your context.
+- Today view: when there are no lessons for today, the latest unfinished lesson now surfaces so you can keep going.
+- History: cleaner cards with date labels and a sticky completion bar; the past-lesson player matches the shared-lesson layout.
+- Audio player: tap the speed pill to cycle speeds, the file pre-buffers for smoother playback, autoplay is off when revisiting past lessons, and audio is now cacheable across sessions.
+- Reader: tapping a word that's part of a phrase no longer gets stuck on a stale single-word translation, and ambiguous context around repeated words is trimmed before being sent to the translator.
+- Simplify: tapping simplify on an already-simplified article now just opens the existing version instead of failing.
+- Daily exercises: clearer "done for today" message with a short cooldown before the next batch.
