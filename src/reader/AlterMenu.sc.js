@@ -31,7 +31,7 @@ const AlterMenuSC = styled.div`
     --altermenu-header-text-disagreement: #ff7a7a;
   }
 
-  font-size: 1em;
+  font-size: 0.8em;
   z-index: 1000;
   text-align: left;
 
