@@ -106,12 +106,12 @@ const AlterMenuSC = styled.div`
   }
 
   .actionsSection {
-    margin-top: 0.8rem;
+    margin-top: 1em;
   }
 
   .removeLink,
   .neutralLink {
-    margin-top: 0.2rem;
+    margin-top: 0.5em;
     cursor: pointer;
 
     &:hover {
