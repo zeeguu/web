@@ -2,8 +2,8 @@ import styled, { keyframes, css } from "styled-components";
 import { almostBlack, zeeguuOrange, zeeguuTransparentMediumOrange, orange600 } from "../components/colors";
 
 const TranslatableText = styled.div`
-  /* MWE adjacent color - used for contiguous MWEs */
-  --mwe-adjacent-color: rgb(200, 140, 60);
+  /* MWE adjacent color - matches single-word zeeguuOrange */
+  --mwe-adjacent-color: ${zeeguuOrange};
   --mwe-adjacent-bg: rgb(255, 240, 220);
 
   /* ========================================================================
@@ -252,7 +252,7 @@ const TranslatableText = styled.div`
     padding-left: 0.3rem;
     border-radius: 0.3em;
     background-clip: padding-box;
-    background-color: rgb(255 229 158 / 100%);
+    background-color: var(--mwe-adjacent-bg);
     font-size: 14px;
     line-height: 1.1rem;
     max-width: 100%;

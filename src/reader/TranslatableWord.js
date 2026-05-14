@@ -1,5 +1,4 @@
-import { useState, useEffect } from "react";
-import { useClickOutside } from "react-click-outside-hook";
+import { useState, useEffect, useRef } from "react";
 import AlterMenu from "./AlterMenu";
 import extractDomain from "../utils/web/extractDomain";
 import addProtocolToLink from "../utils/web/addProtocolToLink";
@@ -27,7 +26,7 @@ export default function TranslatableWord({
   setHighlightSolutionExpression,
 }) {
   const [showingAlterMenu, setShowingAlterMenu] = useState(false);
-  const [refToTranslation, clickedOutsideTranslation] = useClickOutside();
+  const refToTranslation = useRef(null);
   const [isClickedToPronounce, setIsClickedToPronounce] = useState(false);
   const [isWordTranslating, setIsWordTranslating] = useState(false);
   const [prevWord, setPreviousWord] = useState("");
@@ -91,6 +90,11 @@ export default function TranslatableWord({
           if (mweGroupId && setLoadingMWEGroupId) {
             setLoadingMWEGroupId(null);
           }
+          // Backend flagged a 3-way provider disagreement; surface the
+          // alternatives menu so the user can pick the right answer.
+          if (word.disagreement) {
+            openAlterMenu(word);
+          }
         }, onFusionComplete);
       } else {
         // For non-translatable words in exercises, track the click
@@ -105,18 +109,27 @@ export default function TranslatableWord({
     }
   }
 
+  function openAlterMenu(word) {
+    setShowingAlterMenu(true);
+    // Skip the SSE alternatives call when the bookmark response already
+    // carries competing translations (the disagreement auto-open path) —
+    // the menu has enough to show. If the user dismisses and reopens via
+    // the dropdown arrow, the call fires then (hasFetchedAlternatives
+    // is still false, no competing on this re-open).
+    if (!hasFetchedAlternatives && !word.competing_translations?.length)
+      interactiveText.alternativeTranslations(
+        word,
+        () => wordUpdated(word),
+        () => setHasFetchedAlternatives(true),
+      );
+  }
+
   function toggleAlterMenu(e, word) {
     if (showingAlterMenu) {
       setShowingAlterMenu(false);
       return;
     }
-    setShowingAlterMenu(true);
-    if (!hasFetchedAlternatives)
-      interactiveText.alternativeTranslations(
-        word,
-        () => wordUpdated(word), // Called for each translation as it arrives
-        () => setHasFetchedAlternatives(true), // Called when all done
-      );
+    openAlterMenu(word);
   }
 
   function unlinkLastWord(e, word) {
@@ -386,7 +399,7 @@ export default function TranslatableWord({
               <span className="arrow" onClick={(e) => toggleAlterMenu(e, word)}>
                 {showingAlterMenu ? "▲" : "▼"}
               </span>
-              {word.mergedTokens.length > 1 && (
+              {word.mergedTokens.length > 1 && !word.mweExpression && (
                 <span className="unlink low-oppacity translation-icon">
                   <LinkOffIcon
                     fontSize="8px"
@@ -413,7 +426,6 @@ export default function TranslatableWord({
               setShowingAlternatives={setShowingAlterMenu}
               selectAlternative={selectAlternative}
               hideAlterMenu={hideAlterMenu}
-              clickedOutsideTranslation={clickedOutsideTranslation}
               deleteTranslation={deleteTranslation}
               ungroupMwe={ungroupMwe}
               alternativesLoaded={hasFetchedAlternatives}

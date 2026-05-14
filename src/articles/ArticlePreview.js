@@ -234,7 +234,7 @@ export default function ArticlePreview({
             handleOpenRedirectionModal();
           }}
         >
-          Open Externally <OpenInNewRoundedIcon style={{ fontSize: 16, marginLeft: 4 }} />
+          Open <OpenInNewRoundedIcon style={{ fontSize: 16, marginLeft: 4 }} />
         </ActionButton>
       </>
     );
@@ -249,7 +249,7 @@ export default function ArticlePreview({
         href={externalUrl}
         onClick={handleArticleClick}
       >
-        Open Externally <OpenInNewRoundedIcon style={{ fontSize: 16, marginLeft: 4 }} />
+        Open <OpenInNewRoundedIcon style={{ fontSize: 16, marginLeft: 4 }} />
       </ActionButton>
     );
 
