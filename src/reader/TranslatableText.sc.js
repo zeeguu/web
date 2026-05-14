@@ -360,12 +360,6 @@ const TranslatableText = styled.div`
    * TEXT PARAGRAPH FORMATTING
    * ======================================================================== */
   .textParagraph {
-    /* Avoid orphan punctuation/words on the last line. Each token is its own
-       inline-block <z-tag>, so the browser treats every token boundary as a
-       break opportunity — text-wrap: pretty prevents the single-character
-       orphan that would otherwise drop a "." or "," onto its own line. */
-    text-wrap: pretty;
-
     &.h1 {
       font-size: 2em;
       font-weight: bold;
