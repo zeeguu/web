@@ -12,11 +12,7 @@ export default function useDailyExercisesOnboarding(api, userDetails) {
   const currentUserId = userDetails?.username;
 
   useEffect(() => {
-    // Skip if no logged-in user or modal already shown
     if (!currentUserId || modal.alreadyShown) return;
-
-    // Dispatch event when exercises tab is accessed
-    window.dispatchEvent(new CustomEvent("zeeguu-exercises-opened"));
     modal.show();
   }, [currentUserId, modal.alreadyShown, modal.show]);
 
