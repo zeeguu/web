@@ -50,16 +50,22 @@ export default function ToolbarButtons({
           position: "absolute",
           top: "100%",
           right: "0",
-          backgroundColor: "white",
-          border: "1px solid #ccc",
+          backgroundColor: "var(--card-bg)",
+          color: "var(--text-primary)",
+          border: "1px solid var(--border-color)",
           borderRadius: "4px",
-          boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
+          boxShadow: "0 2px 8px var(--shadow-color)",
           zIndex: 1000,
           padding: "1rem",
           minWidth: "200px"
         }}>
           <ThemeProvider theme={t}>
-            <FormGroup>
+            <FormGroup
+              sx={{
+                "& .MuiFormControlLabel-label": { color: "var(--text-primary)" },
+                "& .MuiFormHelperText-root": { color: "var(--text-secondary)" },
+              }}
+            >
               <FormHelperText>{"Click word(s) to:"}</FormHelperText>
               <FormControlLabel
                 checked={translating}
