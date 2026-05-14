@@ -178,7 +178,7 @@ export default function AlterMenu({
           </div>
         )}
         {word.mweExpression && ungroupMwe && (
-          <div className="removeLink" onClick={(e) => ungroupMwe(e, word)}>
+          <div className="neutralLink" onClick={(e) => ungroupMwe(e, word)}>
             Ungroup expression
           </div>
         )}

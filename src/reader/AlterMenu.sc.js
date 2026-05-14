@@ -110,7 +110,8 @@ const AlterMenuSC = styled.div`
   }
 
   .removeLink,
-  .addOwnLink {
+  .addOwnLink,
+  .neutralLink {
     margin-top: 0.2rem;
     cursor: pointer;
 
@@ -125,6 +126,11 @@ const AlterMenuSC = styled.div`
 
   .addOwnLink {
     color: var(--altermenu-link-text);
+  }
+
+  .neutralLink {
+    color: var(--altermenu-text);
+    opacity: 0.7;
   }
 
   .altermenuSourceLabel {
