@@ -389,9 +389,9 @@ function formatTime(isoString) {
   return date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
 }
 
-function formatDurationShort(ms) {
-  if (!ms) return "0 min";
-  const minutes = Math.round(ms / 60000);
+function formatDurationShort(seconds) {
+  if (!seconds) return "0 min";
+  const minutes = Math.round(seconds / 60);
   if (minutes < 60) return `${minutes} min`;
   const hours = Math.floor(minutes / 60);
   const remainingMins = minutes % 60;

@@ -22,7 +22,7 @@ Zeeguu_API.prototype.exerciseSessionUpdate = function (
 ) {
   let payload = {
     id: exerciseSessionId,
-    duration: currentDuration * 1000, // the API expects ms
+    duration: currentDuration, // the API expects seconds
   };
 
   // Use beacon to prevent "Failed to fetch" errors when user navigates away
@@ -35,7 +35,7 @@ Zeeguu_API.prototype.exerciseSessionEnd = function (
 ) {
   let payload = {
     id: exerciseSessionId,
-    duration: totalTime * 1000,
+    duration: totalTime, // the API expects seconds
   };
 
   // Use beacon to prevent "Failed to fetch" errors when user navigates away
