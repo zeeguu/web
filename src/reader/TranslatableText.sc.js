@@ -258,8 +258,8 @@ const TranslatableText = styled.div`
     border-radius: 0.3em;
     background-clip: padding-box;
     background-color: var(--mwe-adjacent-bg);
-    font-size: 14px;
-    line-height: 1.1rem;
+    font-size: 0.75em;
+    line-height: 1.1em;
     max-width: 100%;
     font-weight: 600;
     color: var(--text-primary);
