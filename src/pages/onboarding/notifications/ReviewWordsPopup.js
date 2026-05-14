@@ -9,17 +9,14 @@ import { ONBOARDING_MESSAGE_IDS } from "../../../appConstants";
 
 export default function ReviewWordsPopup({ open, handleCancel }) {
   const api = useContext(APIContext);
-  const onboardingMessageId = ONBOARDING_MESSAGE_IDS.reviewWords;
 
   const handleDismiss = async () => {
-    if (onboardingMessageId) {
-      try {
-        await api.markOnboardingMessageDismissed(onboardingMessageId);
-      } catch (e) {
-        // ignore dismissal recording failures
-      }
+    try {
+      await api.markOnboardingMessageDismissed(ONBOARDING_MESSAGE_IDS.reviewWords);
+    } catch (e) {
+      // ignore dismissal recording failures
     }
-    if (handleCancel) handleCancel();
+    handleCancel();
   };
 
   return (
