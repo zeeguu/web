@@ -64,15 +64,23 @@ export default function AlterMenu({
     if (showOwnInput && inputRef.current) inputRef.current.focus();
   }, [showOwnInput]);
 
-  // Close the menu as soon as the page scrolls — the menu is fixed to the
-  // viewport, so without this it'd stay floating while the trigger word
-  // moves away under it.
+  // Close the menu as soon as the user starts scrolling — the menu is
+  // viewport-fixed, so without this it'd stay floating while the trigger
+  // word moves away under it. touchmove catches the finger drag before
+  // iOS gets around to firing scroll, so the menu disappears at gesture
+  // start instead of after the page has already moved.
   useEffect(() => {
-    function handleScroll() {
+    function handleScrollIntent(e) {
+      const el = refToAlterMenu.current;
+      if (e?.target && el && el.contains(e.target)) return;
       hideAlterMenu();
     }
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
+    window.addEventListener("scroll", handleScrollIntent, { passive: true });
+    window.addEventListener("touchmove", handleScrollIntent, { passive: true });
+    return () => {
+      window.removeEventListener("scroll", handleScrollIntent);
+      window.removeEventListener("touchmove", handleScrollIntent);
+    };
   }, [hideAlterMenu]);
 
   // Modal-style outside-click handling: a capture-phase document listener
