@@ -64,6 +64,17 @@ export default function AlterMenu({
     if (showOwnInput && inputRef.current) inputRef.current.focus();
   }, [showOwnInput]);
 
+  // Close the menu as soon as the page scrolls — the menu is fixed to the
+  // viewport, so without this it'd stay floating while the trigger word
+  // moves away under it.
+  useEffect(() => {
+    function handleScroll() {
+      hideAlterMenu();
+    }
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [hideAlterMenu]);
+
   // Modal-style outside-click handling: a capture-phase document listener
   // fires before any target's own click handler, so we can stopPropagation
   // BEFORE the tapped word's clickOnWord runs. This way a tap outside the
