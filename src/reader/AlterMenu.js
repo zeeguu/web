@@ -173,7 +173,7 @@ export default function AlterMenu({
       )}
       <div className="actionsSection">
         {!showOwnInput && (
-          <div className="addOwnLink" onClick={() => setShowOwnInput(true)}>
+          <div className="neutralLink" onClick={() => setShowOwnInput(true)}>
             Add own translation
           </div>
         )}

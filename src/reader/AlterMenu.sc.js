@@ -110,7 +110,6 @@ const AlterMenuSC = styled.div`
   }
 
   .removeLink,
-  .addOwnLink,
   .neutralLink {
     margin-top: 0.2rem;
     cursor: pointer;
@@ -122,10 +121,6 @@ const AlterMenuSC = styled.div`
 
   .removeLink {
     color: var(--altermenu-action-text);
-  }
-
-  .addOwnLink {
-    color: var(--altermenu-link-text);
   }
 
   .neutralLink {
