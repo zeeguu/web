@@ -6,6 +6,11 @@ const TranslatableText = styled.div`
   --mwe-adjacent-color: ${zeeguuOrange};
   --mwe-adjacent-bg: rgb(255, 240, 220);
 
+  /* Dark mode: invert the chip — dark bg, light text */
+  :root[data-theme="dark"] & {
+    --mwe-adjacent-bg: rgb(50, 40, 30);
+  }
+
   /* ========================================================================
    * BASE Z-TAG STYLES
    * ======================================================================== */
@@ -257,7 +262,7 @@ const TranslatableText = styled.div`
     line-height: 1.1rem;
     max-width: 100%;
     font-weight: 600;
-    color: ${almostBlack};
+    color: var(--text-primary);
     text-align: left;
     display: flex;
   }
