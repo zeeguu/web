@@ -6,8 +6,11 @@ const TranslatableText = styled.div`
   --mwe-adjacent-color: ${zeeguuOrange};
   --mwe-adjacent-bg: rgb(255, 240, 220);
 
-  /* Dark mode: invert the chip — dark bg, light text */
+  /* Dark mode: softer, less saturated orange for the highlight, and a
+     warm dark-tan chip background. The brand orange (#ffbb54) is too hot
+     against the navy backdrop. */
   :root[data-theme="dark"] & {
+    --mwe-adjacent-color: #d4a05a;
     --mwe-adjacent-bg: rgb(50, 40, 30);
   }
 
