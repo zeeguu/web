@@ -1,94 +1,42 @@
 export const DEFAULT_LANGUAGE_ID = "en";
-export const BETWEEN_CARDS_DELAY_MS = 5000;
+export const BETWEEN_CARDS_DELAY_MS = 3000;
 export const TTS_PLAYBACK_PREROLL_MS = 120;
-export const AFTER_TTS_BEFORE_RECORDING_MS = 80;
-
-const LANGUAGE_LOCALES = {
-  da: "da-DK",
-  de: "de-DE",
-  el: "el-GR",
-  en: "en-US",
-  es: "es-ES",
-  fr: "fr-FR",
-  hu: "hu-HU",
-  it: "it-IT",
-  nl: "nl-NL",
-  no: "nb-NO",
-  pl: "pl-PL",
-  pt: "pt-PT",
-  ro: "ro-RO",
-  ru: "ru-RU",
-  sv: "sv-SE",
-  tr: "tr-TR",
-};
-
-const FALLBACK_LANGUAGE_NAMES = {
-  da: "Danish",
-  de: "German",
-  el: "Greek",
-  en: "English",
-  es: "Spanish",
-  fr: "French",
-  hu: "Hungarian",
-  it: "Italian",
-  nl: "Dutch",
-  no: "Norwegian",
-  pl: "Polish",
-  pt: "Portuguese",
-  ro: "Romanian",
-  ru: "Russian",
-  sv: "Swedish",
-  tr: "Turkish",
-};
 
 const PROMPT_COPY = {
-  da: (targetLanguage) => `På ${targetLanguage}, sig`,
-  en: (targetLanguage) => `In ${targetLanguage}, please say`,
+  da: (promptText) => `Lad os prøve den her. Sig: ${promptText}.`,
+  en: (promptText) => `Let's try this one. Say: ${promptText}.`,
 };
 
 const FEEDBACK_COPY = {
   da: {
-    successIntro: "Godt klaret. Det rigtige svar var:",
-    retryPrompt: "Du er meget tæt på. Prøv igen.",
-    finalIncorrectIntro: "Fangede det ikke. Det rigtige svar var:",
+    successIntro: "Ja, lige præcis. Svaret er:",
+    retryPrompt: "Lad os prøve en gang til.",
+    finalIncorrectIntro: "Lad os høre svaret. Det er:",
+    revealAnswerIntro: "Bare rolig. Svaret er:",
+    finalPracticePrompt: "Prøv nu selv at sige det.",
+    finalPracticeSuccess: "Flot. Vi går videre.",
+    finalPracticeMoveOn: "Okay. Vi går videre.",
+    sessionComplete: "Godt arbejde. Du er færdig for i dag.",
+    finalPracticeSessionComplete: "Godt arbejde. Du er færdig for i dag.",
   },
   en: {
-    successIntro: "Great job. The correct answer was:",
-    retryPrompt: "Almost there. Try again.",
-    finalIncorrectIntro: "Didn't catch that. The correct answer was:",
+    successIntro: "Yes, exactly. The answer is:",
+    retryPrompt: "Let's try that once more.",
+    finalIncorrectIntro: "Let's listen to the answer. It is:",
+    revealAnswerIntro: "No worries. The answer is:",
+    finalPracticePrompt: "Now try saying it yourself.",
+    finalPracticeSuccess: "Nice. Let's keep going.",
+    finalPracticeMoveOn: "Okay. Let's keep going.",
+    sessionComplete: "Good work. You're done for today.",
+    finalPracticeSessionComplete: "Good work. You're done for today.",
   },
 };
-
-function localeForLanguage(languageCode) {
-  return LANGUAGE_LOCALES[languageCode] || languageCode || "en-US";
-}
-
-function localizedLanguageName(languageCode, displayLanguageCode) {
-  if (!languageCode) {
-    return "the target language";
-  }
-
-  if (typeof Intl !== "undefined" && typeof Intl.DisplayNames === "function") {
-    try {
-      const displayNames = new Intl.DisplayNames([localeForLanguage(displayLanguageCode)], { type: "language" });
-      const localizedName = displayNames.of(languageCode);
-      if (localizedName) {
-        return localizedName;
-      }
-    } catch (error) {
-      console.warn("Could not localize language name:", error);
-    }
-  }
-
-  return FALLBACK_LANGUAGE_NAMES[languageCode] || languageCode || "the target language";
-}
 
 export function feedbackCopyForLanguage(languageCode) {
   return FEEDBACK_COPY[languageCode] || FEEDBACK_COPY.en;
 }
 
-export function promptInstructionIntroText(translationLanguageId, learnedLanguageId) {
+export function promptInstructionText(translationLanguageId, promptText) {
   const promptBuilder = PROMPT_COPY[translationLanguageId] || PROMPT_COPY.en;
-  const targetLanguage = localizedLanguageName(learnedLanguageId, translationLanguageId);
-  return promptBuilder(targetLanguage);
+  return promptBuilder(promptText);
 }

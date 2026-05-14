@@ -248,7 +248,12 @@ export const SoundWave = styled.div`
     height: 20px;
     background: ${zeeguuRed};
     border-radius: 2px;
-    animation: wave 0.5s ease infinite alternate;
+    animation: ${(props) => (props.$isActive ? "wave 0.5s ease infinite alternate" : "none")};
+    opacity: ${(props) => (props.$isActive ? 1 : 0.55)};
+    transform: ${(props) => (props.$isActive ? "scaleY(1)" : "scaleY(0.45)")};
+    transition:
+      opacity 120ms ease,
+      transform 120ms ease;
   }
 
   span:nth-child(2) {
@@ -308,52 +313,6 @@ export const FeedbackContainer = styled.div`
   margin: 15px 0;
 `;
 
-export const AccuracyMeter = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin: 15px 0;
-
-  @media screen and (max-width: 520px) {
-    display: grid;
-    grid-template-columns: 1fr auto;
-  }
-`;
-
-export const AccuracyLabel = styled.span`
-  font-size: 14px;
-  color: #666;
-
-  @media screen and (max-width: 520px) {
-    grid-column: 1 / -1;
-  }
-`;
-
-export const ProgressBar = styled.div`
-  flex: 1;
-  min-width: 0;
-  height: 8px;
-  background: #e0e0e0;
-  border-radius: 4px;
-  overflow: hidden;
-`;
-
-export const ProgressFill = styled.div`
-  height: 100%;
-  background: ${(props) => {
-    if (props.$accuracy >= 70) return "#4caf50";
-    if (props.$accuracy >= 40) return "#ff9800";
-    return "#f44336";
-  }};
-  transition: width 0.5s ease;
-  border-radius: 4px;
-`;
-
-export const AccuracyPercentage = styled.span`
-  font-weight: bold;
-  min-width: 45px;
-`;
-
 export const FeedbackMessage = styled.div`
   padding: 12px;
   border-radius: 6px;
@@ -388,10 +347,12 @@ export const CardControls = styled.div`
 
 export const CardNavigation = styled.div`
   display: flex;
+  justify-content: space-between;
+  width: 100%;
   gap: 10px;
 
   & > button {
-    flex: 1 1 0;
+    flex: 0 1 auto;
     margin: 0;
     min-width: 8rem;
   }
@@ -401,23 +362,9 @@ export const CardNavigation = styled.div`
   }
 
   @media screen and (max-width: 520px) {
-    flex-direction: column;
-    width: 100%;
-
     & > button {
-      width: 100%;
+      flex: 1 1 0;
       min-width: 0;
     }
-  }
-`;
-
-export const IconControls = styled.div`
-  display: flex;
-  gap: 10px;
-  justify-content: flex-end;
-
-  @media screen and (max-width: 768px) {
-    width: 100%;
-    justify-content: center;
   }
 `;

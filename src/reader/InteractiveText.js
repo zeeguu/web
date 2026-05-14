@@ -2,6 +2,7 @@ import LinkedWordList from "./LinkedWordListClass";
 import ZeeguuSpeech from "../speech/APIBasedSpeech";
 import { EXERCISE_TYPES } from "../exercises/ExerciseTypeConstants";
 import { updateTokensWithBookmarks } from "./bookmarkRestoration";
+import { isDev } from "../config";
 
 // Set to true to enable verbose MWE/bookmark debugging
 const MWE_DEBUG = false;
@@ -142,7 +143,21 @@ export default class InteractiveText {
       )
       .then((response) => response.data)
       .then((data) => {
-        word.updateTranslation(data.translation, data.service_name, data.bookmark_id);
+        // Dev/QA hook: in dev builds, localStorage.force_disagreement = "true"
+        // forces the disagreement UI on every tap so the auto-open + bots-
+        // disagree header are testable without waiting for a real split.
+        // Stripped from prod builds by Vite's import.meta.env.DEV tree-shake.
+        const forceDisagreement = isDev && localStorage.getItem("force_disagreement") === "true";
+        const competing = forceDisagreement
+          ? [{ translation: "(forced test alternative)", source: "DeepL - with context" }]
+          : (data.competing_translations || null);
+        word.updateTranslation(
+          data.translation,
+          data.service_name,
+          data.bookmark_id,
+          competing,
+          forceDisagreement || data.disagreement === true,
+        );
         // Mark word's translation as visible so the component renders it
         // This is especially important for MWEs where clicking any word
         // applies translation to the first word
@@ -254,11 +269,14 @@ export default class InteractiveText {
       return word.token.is_punct || word.token.is_symbol || word.token.is_like_num;
     }
 
-    function getLeftContextAndStartIndex(word, maxLeftContextLength) {
+    function getLeftContextAndStartIndex(word, maxLeftContextLength, stopAtWord) {
       let currentWord = word;
       let contextBuilder = "";
       let count = 0;
       while (count < maxLeftContextLength && currentWord.prev && !currentWord.token.is_sent_start) {
+        // Stop before pulling in another instance of the tapped word — it
+        // would make Azure's word-alignment latch onto the wrong occurrence.
+        if (stopAtWord && currentWord.prev.word.toLowerCase() === stopAtWord) break;
         currentWord = currentWord.prev;
         // Don't add space after words ending with hyphen (e.g., "l-" + "a" -> "l-a")
         const addSpace = currentWord.token.has_space && !currentWord.word.endsWith("-");
@@ -277,7 +295,7 @@ export default class InteractiveText {
       ];
     }
 
-    function getRightContext(word, maxRightContextLength) {
+    function getRightContext(word, maxRightContextLength, stopAtWord) {
       let currentWord = word;
       let contextBuilder = "";
       let hasRightEllipsis = true;
@@ -286,6 +304,9 @@ export default class InteractiveText {
         if (currentWord.token.is_sent_start && currentWord.token.sent_i !== currentWord.prev.token.sent_i) {
           break;
         }
+        // Stop before pulling in another instance of the tapped word — see
+        // getLeftContextAndStartIndex.
+        if (stopAtWord && currentWord.word.toLowerCase() === stopAtWord) break;
         // Don't add space after words ending with hyphen (e.g., "l-" + "a" -> "l-a")
         const addSpace = currentWord.prev.token.has_space && !currentWord.prev.word.endsWith("-");
         contextBuilder = contextBuilder + (addSpace ? " " : "") + currentWord.word;
@@ -322,17 +343,18 @@ export default class InteractiveText {
       let leftWord = startingWord;
       let rightWord = startingWord.next;
       let context = startingWord.word;
+      const stopAtWord = startingWord.word.toLowerCase();
 
       while (budget > 0) {
         let rightUpdated = false;
         let leftUpdated = false;
 
-        [leftContext, paragraph_i, sent_i, token_i, leftUpdated] = getLeftContextAndStartIndex(leftWord, 1);
+        [leftContext, paragraph_i, sent_i, token_i, leftUpdated] = getLeftContextAndStartIndex(leftWord, 1, stopAtWord);
         if (leftUpdated && !tokenShouldSkipCount(leftWord)) budget -= 1;
         context = leftContext + context;
 
         if (budget > 0 && rightWord) {
-          [rightContext, rightEllipsis, rightUpdated] = getRightContext(rightWord, 1);
+          [rightContext, rightEllipsis, rightUpdated] = getRightContext(rightWord, 1, stopAtWord);
           if (rightUpdated && !tokenShouldSkipCount(rightWord)) budget -= 1;
           context += rightContext;
         }

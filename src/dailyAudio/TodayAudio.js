@@ -1,4 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
+import { useHistory } from "react-router-dom";
 import { Capacitor } from "@capacitor/core";
 import { orange500, zeeguuOrange } from "../components/colors";
 import { APIContext } from "../contexts/APIContext";
@@ -11,6 +12,7 @@ import { AUDIO_STATUS, GENERATION_PROGRESS } from "./AudioLessonConstants";
 import { GenerateView, GenerateButton } from "./GenerateButton.sc";
 import SuggestionSelector, { getSavedSuggestion, getSavedSuggestionType, suggestionKey } from "./SuggestionSelector";
 import LessonPlaybackView from "./LessonPlaybackView";
+import { SubtleTextButton } from "./LessonView.sc";
 import { wordsAsTile, shortDate } from "./audioUtils";
 
 // Shown rotating during the backend phases that don't emit sub-step
@@ -220,6 +222,7 @@ export default function TodayAudio({ setShowTabs }) {
   const [lessonData, setLessonData] = useState(null);
   const [error, setError] = useState(null);
   const [canGenerateLesson, setCanGenerateLesson] = useState(null); // null = checking, true = can generate, false = cannot
+  const history = useHistory();
 
   // Listening session tracking via hook
   const listeningSession = useListeningSession(lessonData?.lesson_id);
@@ -583,6 +586,11 @@ export default function TodayAudio({ setShowTabs }) {
             autoDisabled={autoDisabled}
           />
           {canGenerate ? generateAction : cantGenerateMessage}
+          <div style={{ marginTop: "24px" }}>
+            <SubtleTextButton onClick={() => history.push("/daily-audio/past-lessons")}>
+              See past lessons →
+            </SubtleTextButton>
+          </div>
         </GenerateView>
       );
     }

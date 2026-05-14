@@ -1,7 +1,53 @@
-import { useEffect, useLayoutEffect, useState } from "react";
-import { useClickOutside } from "react-click-outside-hook";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { AlterMenuSC } from "./AlterMenu.sc";
 import LoadingAnimation from "../components/LoadingAnimation";
+import { zeeguuLightYellow } from "../components/colors";
+
+const HEADER_BAND_STYLE = {
+  whiteSpace: "nowrap",
+  backgroundColor: zeeguuLightYellow,
+  borderBottom: "1px solid rgba(139, 90, 43, 0.25)",
+  padding: "0.4rem 0.6rem",
+  margin: "-0.3em -0.3em 0.4rem -0.3em",
+  fontWeight: 800,
+};
+
+const PROVIDER_LABELS = {
+  "Microsoft - without context": "Azure",
+  "Microsoft - with context": "Azure (contextual)",
+  "Microsoft - alignment": "Azure (alignment)",
+  "Google - without context": "Google",
+  "Google - with context": "Google (contextual)",
+  "DeepL - with context": "DeepL",
+};
+
+function shortenSource(alt) {
+  return PROVIDER_LABELS[alt.source] || alt.source;
+}
+
+// Merge competing_translations (known immediately from the bookmark
+// response, when providers disagree) with word.alternatives (streamed
+// in lazily by AlterMenu open). Dedupe by normalised translation text
+// and drop anything equal to the current primary translation.
+function buildAlternatives(word) {
+  const seen = new Set();
+  const list = [];
+  const normaliseKey = (t) => (t || "").toLowerCase().trim();
+  const primaryKey = normaliseKey(word.translation);
+  if (primaryKey) seen.add(primaryKey);
+
+  const sources = [word.competing_translations, word.alternatives];
+  for (const src of sources) {
+    if (!src) continue;
+    for (const entry of src) {
+      const key = normaliseKey(entry?.translation);
+      if (!key || seen.has(key)) continue;
+      seen.add(key);
+      list.push(entry);
+    }
+  }
+  return list;
+}
 
 export default function AlterMenu({
   word,
@@ -9,10 +55,9 @@ export default function AlterMenu({
   selectAlternative,
   deleteTranslation,
   ungroupMwe,
-  clickedOutsideTranslation,
   alternativesLoaded,
 }) {
-  const [refToAlterMenu, clickedOutsideAlterMenu] = useClickOutside();
+  const refToAlterMenu = useRef(null);
   const [inputValue, setInputValue] = useState("");
 
   useLayoutEffect(() => {
@@ -27,11 +72,31 @@ export default function AlterMenu({
     }
   }, [alternativesLoaded]);
 
+  // Modal-style outside-click handling: a capture-phase document listener
+  // fires before any target's own click handler, so we can stopPropagation
+  // BEFORE the tapped word's clickOnWord runs. This way a tap outside the
+  // menu just closes the menu — it doesn't translate the new word.
   useEffect(() => {
-    if (clickedOutsideAlterMenu && clickedOutsideTranslation) {
-      hideAlterMenu();
+    function handleCapture(e) {
+      const el = refToAlterMenu.current;
+      if (el && !el.contains(e.target)) {
+        // stopPropagation kills React's delegated onClick before it dispatches
+        // (so the tapped word doesn't translate). preventDefault on touchend
+        // also stops the browser from synthesizing the click that would
+        // otherwise slip through after our menu unmounts.
+        e.stopPropagation();
+        e.preventDefault();
+        hideAlterMenu();
+      }
     }
-  }, [clickedOutsideAlterMenu, clickedOutsideTranslation, hideAlterMenu]);
+    const opts = { capture: true, passive: false };
+    document.addEventListener("click", handleCapture, opts);
+    document.addEventListener("touchend", handleCapture, opts);
+    return () => {
+      document.removeEventListener("click", handleCapture, opts);
+      document.removeEventListener("touchend", handleCapture, opts);
+    };
+  }, [hideAlterMenu]);
 
   function handleKeyDown(e) {
     if (e.code === "Enter") {
@@ -39,33 +104,22 @@ export default function AlterMenu({
     }
   }
 
-  function shortenSource(word) {
-    if (word.source === "Microsoft - without context") {
-      return "Azure";
-    }
-    if (word.source === "Microsoft - with context") {
-      return "Azure (contextual)";
-    }
-
-    if (word.source === "Google - without context") {
-      return "Google";
-    }
-    if (word.source === "Google - with context") {
-      return "Google (contextual)";
-    }
-
-    return word.source;
-  }
-
-  const filteredAlternatives = word.alternatives?.filter((each) => each.translation !== word.translation) || [];
+  const filteredAlternatives = buildAlternatives(word);
   const hasAlternatives = filteredAlternatives.length > 0;
+  const header = word.disagreement ? (
+    <div style={{ ...HEADER_BAND_STYLE, color: "crimson" }}>
+      <span style={{ fontSize: "1.4em", verticalAlign: "middle", lineHeight: 1, borderBottom: "none" }}>🤖🥊</span>{" "}
+      Bots disagree
+    </div>
+  ) : (
+    <div style={{ ...HEADER_BAND_STYLE, color: "#01345d" }}>Alternatives</div>
+  );
 
   return (
     <AlterMenuSC ref={refToAlterMenu}>
-      {/* Alternatives section - streams as they arrive */}
       {hasAlternatives && (
         <>
-          <div style={{ color: "orange", fontSize: "small" }}>Choose alternative</div>
+          {header}
           {filteredAlternatives.map((each, index) => (
             <div
               key={`${each.translation}-${each.source}-${index}`}
@@ -86,11 +140,12 @@ export default function AlterMenu({
           ))}
         </>
       )}
-      {/* Show spinner while still loading */}
-      {!alternativesLoaded && (
+      {/* Spinner only when we have nothing to show yet — competing_translations
+          from the bookmark response already populate the list immediately, so
+          showing a spinner under them looks like a stray "extra option". */}
+      {!alternativesLoaded && !hasAlternatives && (
         <LoadingAnimation specificStyle={{ transform: "scale(0.4)", height: "2rem", margin: "0.5rem 0 -0.5rem 0" }} delay={0}></LoadingAnimation>
       )}
-      {/* Only show "no alternatives" when done loading and none found */}
       {alternativesLoaded && !hasAlternatives && (
         <div className="noAlternatives">No alternative found</div>
       )}

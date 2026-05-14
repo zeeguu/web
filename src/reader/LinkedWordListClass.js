@@ -63,10 +63,12 @@ export class Word extends Item {
     }
   }
 
-  updateTranslation(translation, service_name, bookmark_id) {
+  updateTranslation(translation, service_name, bookmark_id, competing_translations = null, disagreement = false) {
     this.translation = translation;
     this.service_name = service_name;
     this.bookmark_id = bookmark_id;
+    this.competing_translations = competing_translations;
+    this.disagreement = disagreement;
   }
 
   splitIntoComponents() {

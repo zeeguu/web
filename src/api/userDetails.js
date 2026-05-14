@@ -40,10 +40,6 @@ Zeeguu_API.prototype.markOnboardingMessageDismissed = function (onboardingMessag
   ).then((response) => response.text());
 };
 
-Zeeguu_API.prototype.getOnboardingMessageStatus = function (onboardingMessageId) {
-  return this._getJSONPromise(`get_onboarding_message_status?onboarding_message_id=${onboardingMessageId}`);
-};
-
 Zeeguu_API.prototype.hasSeenOnboardingMessage = function (onboardingMessageId) {
   return this._getJSONPromise(`get_onboarding_message_status?onboarding_message_id=${onboardingMessageId}`).then(
     (data) => data.shown === true,

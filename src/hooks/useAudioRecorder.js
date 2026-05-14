@@ -41,6 +41,7 @@ export default function useAudioRecorder({
   };
 
   const [isRecording, setIsRecording] = useState(false);
+  const [isAudioDetected, setIsAudioDetected] = useState(false);
 
   const mediaRecorderRef = useRef(null);
   const micStreamRef = useRef(null);
@@ -52,6 +53,7 @@ export default function useAudioRecorder({
   const animationFrameRef = useRef(null);
 
   const isRecordingRef = useRef(false);
+  const isAudioDetectedRef = useRef(false);
   const isStartingRecordingRef = useRef(false);
   const shouldProcessRecordingOnStopRef = useRef(false);
   const microphonePreparationPromiseRef = useRef(null);
@@ -61,11 +63,21 @@ export default function useAudioRecorder({
   const voiceStartedAtRef = useRef(0);
   const recordingStartedAtRef = useRef(0);
   const recordingStopEligibleAtRef = useRef(0);
+  const recordingFlowRunIdRef = useRef(null);
   const noiseSensitivityRef = useRef(noiseSensitivity);
 
   useEffect(() => {
     noiseSensitivityRef.current = noiseSensitivity;
   }, [noiseSensitivity]);
+
+  const updateAudioDetected = useCallback((value) => {
+    if (isAudioDetectedRef.current === value) {
+      return;
+    }
+
+    isAudioDetectedRef.current = value;
+    setIsAudioDetected(value);
+  }, []);
 
   const cleanupRecordingResources = useCallback(() => {
     microphonePreparationTokenRef.current += 1;
@@ -104,11 +116,13 @@ export default function useAudioRecorder({
     lastVoiceDetectedAtRef.current = 0;
     recordingStartedAtRef.current = 0;
     recordingStopEligibleAtRef.current = 0;
+    recordingFlowRunIdRef.current = null;
     shouldProcessRecordingOnStopRef.current = false;
     isStartingRecordingRef.current = false;
     isRecordingRef.current = false;
+    updateAudioDetected(false);
     setIsRecording(false);
-  }, []);
+  }, [updateAudioDetected]);
 
   const prepareMicrophone = useCallback(
     async ({ showStatus = false } = {}) => {
@@ -163,6 +177,7 @@ export default function useAudioRecorder({
     }
 
     isRecordingRef.current = false;
+    updateAudioDetected(false);
     setIsRecording(false);
     isStartingRecordingRef.current = false;
 
@@ -172,7 +187,7 @@ export default function useAudioRecorder({
     }
 
     updateStatusWithDebounce(messages.processing, "processing", 0);
-  }, [messages.processing, updateStatusWithDebounce]);
+  }, [messages.processing, updateAudioDetected, updateStatusWithDebounce]);
 
   const setupSilenceDetection = useCallback(() => {
     if (!micStreamRef.current) return;
@@ -214,6 +229,7 @@ export default function useAudioRecorder({
         const isVoiceFrame = maxSample > threshold || rms > threshold;
         const now = Date.now();
         const isPreroll = now < recordingStopEligibleAtRef.current;
+        updateAudioDetected(isVoiceFrame);
 
         if (isVoiceFrame) {
           lastVoiceDetectedAtRef.current = now;
@@ -272,13 +288,14 @@ export default function useAudioRecorder({
     messages.startingMicrophone,
     messages.waitingForSpeech,
     stopRecording,
+    updateAudioDetected,
     updateStatusWithDebounce,
   ]);
 
   const handleRecordingStop = useCallback(() => {
-    const flowRunId = flowRunIdRef.current;
+    const flowRunId = recordingFlowRunIdRef.current;
 
-    if (!canContinueFlow(flowRunId)) {
+    if (flowRunId === null || !canContinueFlow(flowRunId)) {
       cleanupRecordingResources();
       return;
     }
@@ -350,8 +367,10 @@ export default function useAudioRecorder({
 
       recordingStartedAtRef.current = Date.now();
       recordingStopEligibleAtRef.current = recordingStartedAtRef.current + RECORDING_PREROLL_MS;
+      recordingFlowRunIdRef.current = flowRunIdRef.current;
       lastVoiceDetectedAtRef.current = 0;
       voiceStartedAtRef.current = 0;
+      updateAudioDetected(false);
 
       mediaRecorderRef.current.start();
 
@@ -377,11 +396,13 @@ export default function useAudioRecorder({
     messages.preparingMicrophone,
     prepareMicrophone,
     setupSilenceDetection,
+    updateAudioDetected,
     updateStatusWithDebounce,
   ]);
 
   return {
     cleanupRecordingResources,
+    isAudioDetected,
     isRecording,
     isRecordingRef,
     isStartingRecordingRef,

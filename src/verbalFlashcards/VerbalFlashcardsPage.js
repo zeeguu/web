@@ -6,15 +6,16 @@ import strings from "../i18n/definitions";
 import FlashcardsHeader from "./components/FlashcardsHeader";
 import FlashcardStage from "./components/FlashcardStage";
 import useAudioRecorder from "../hooks/useAudioRecorder";
+import useFinalPracticeAttempt from "./hooks/useFinalPracticeAttempt";
 import useFlashcardExerciseSession from "./hooks/useFlashcardExerciseSession";
 import useVerbalFlashcardTTS from "./hooks/useVerbalFlashcardTTS";
+import { isRevealAnswerIntent } from "./verbalFlashcardsIntent";
 import * as s from "./verbalFlashcards_Styled/VerbalFlashcards.sc.js";
 import {
-  AFTER_TTS_BEFORE_RECORDING_MS,
   BETWEEN_CARDS_DELAY_MS,
   DEFAULT_LANGUAGE_ID,
   feedbackCopyForLanguage,
-  promptInstructionIntroText,
+  promptInstructionText,
 } from "./verbalFlashcardsLanguage.js";
 
 export default function VerbalFlashcardsPage() {
@@ -36,6 +37,7 @@ export default function VerbalFlashcardsPage() {
   const [statusType, setStatusType] = useState("idle");
   const [noiseSensitivity, setNoiseSensitivity] = useState("0.08");
   const [noiseSensitivityNoticeVisible, setNoiseSensitivityNoticeVisible] = useState(false);
+  const [nextCardCountdown, setNextCardCountdown] = useState(null);
   const [correctBookmarks, setCorrectBookmarks] = useState([]);
   const [incorrectBookmarks, setIncorrectBookmarks] = useState([]);
   const [totalPracticedBookmarksInSession, setTotalPracticedBookmarksInSession] = useState(0);
@@ -48,12 +50,13 @@ export default function VerbalFlashcardsPage() {
   const flashcardsRef = useRef([]);
   const isCooldownRef = useRef(false);
   const attemptCountsRef = useRef({});
-  const beginCardFlowRef = useRef(() => {});
+  const retrySameCardRecordingRef = useRef(() => {});
   const flowRunIdRef = useRef(0);
   const isResolvingCardRef = useRef(false);
   const lastAutoStartedFlowKeyRef = useRef(null);
   const isPageActiveRef = useRef(true);
   const cleanupRecordingResourcesRef = useRef(() => {});
+  const prepareMicrophoneRef = useRef(() => Promise.resolve(null));
 
   const {
     endExerciseSessionIfNeeded,
@@ -112,6 +115,8 @@ export default function VerbalFlashcardsPage() {
       clearInterval(interCardDelayIntervalRef.current);
       interCardDelayIntervalRef.current = null;
     }
+
+    setNextCardCountdown(null);
   }, []);
 
   const interCardCountdownMessage = useCallback((seconds) => {
@@ -123,11 +128,13 @@ export default function VerbalFlashcardsPage() {
       clearInterCardDelay();
 
       let secondsRemaining = Math.ceil(BETWEEN_CARDS_DELAY_MS / 1000);
+      setNextCardCountdown(secondsRemaining);
       updateStatusWithDebounce(interCardCountdownMessage(secondsRemaining), "cooldown", 0);
 
       interCardDelayIntervalRef.current = window.setInterval(() => {
         secondsRemaining -= 1;
         if (secondsRemaining > 0) {
+          setNextCardCountdown(secondsRemaining);
           updateStatusWithDebounce(interCardCountdownMessage(secondsRemaining), "cooldown", 0);
         }
       }, 1000);
@@ -229,7 +236,7 @@ export default function VerbalFlashcardsPage() {
     [api],
   );
 
-  const { isPlayingTtsRef, speakText, stopTts } = useVerbalFlashcardTTS({
+  const { isPlayingTtsRef, playPreloadedAudio, preloadText, speakText, stopTts } = useVerbalFlashcardTTS({
     api,
     isPageActiveRef,
     updateStatusWithDebounce,
@@ -239,19 +246,17 @@ export default function VerbalFlashcardsPage() {
     (card = null, flowRunId = flowRunIdRef.current) => {
       const cardToSpeak = card || getCurrentCard();
       const promptText = cardToSpeak?.prompt || "";
-      const introText = promptInstructionIntroText(translationLanguageId, learnedLanguageId);
-
-      return speakText(introText, translationLanguageId).then(() => {
+      if (!promptText || !isPageActiveRef.current) {
+        return Promise.resolve();
+      }
+      const fullPromptText = promptInstructionText(translationLanguageId, promptText);
+      return speakText(fullPromptText, translationLanguageId, strings.verbalFlashcardsPlayingPrompt).then(() => {
         if (flowRunId !== flowRunIdRef.current) {
           return;
         }
-        if (!promptText || !isPageActiveRef.current) {
-          return;
-        }
-        return speakText(promptText, translationLanguageId, strings.verbalFlashcardsPlayingPrompt);
       });
     },
-    [getCurrentCard, learnedLanguageId, speakText, translationLanguageId],
+    [getCurrentCard, speakText, translationLanguageId],
   );
 
   const speakFeedback = useCallback(
@@ -261,9 +266,44 @@ export default function VerbalFlashcardsPage() {
     [speakText, translationLanguageId],
   );
 
+  const isLastCard = useCallback((card) => {
+    return flashcardsRef.current.length === 1 && flashcardsRef.current[0]?.id === card?.id;
+  }, []);
+
+  const speakSessionCompleteIfLastCard = useCallback(
+    (card) => {
+      if (!isLastCard(card)) {
+        return Promise.resolve();
+      }
+
+      return speakFeedback(feedbackCopy.sessionComplete);
+    },
+    [feedbackCopy, isLastCard, speakFeedback],
+  );
+
+  const {
+    clearFinalPractice,
+    handleFinalPracticeAnalysis,
+    handleFinalPracticeError,
+    promptFinalPracticeAfterAnswer,
+  } = useFinalPracticeAttempt({
+    canContinueFlow,
+    cleanupRecordingResourcesRef,
+    displayResults,
+    feedbackCopy,
+    getCurrentCard,
+    isLastCard,
+    isResolvingCardRef,
+    prepareMicrophoneRef,
+    removeResolvedCard,
+    speakFeedback,
+    startInterCardCountdown,
+  });
+
   const resolveCardAttempt = useCallback(
-    async (card, userAnswer, isCorrect, feedbackAnalysis, recordingStartedAt) => {
+    async (card, userAnswer, isCorrect, feedbackAnalysis, recordingStartedAt, options = {}) => {
       if (!card || !canContinueFlow()) return;
+      const { practiceAfterAnswer = false } = options;
       const responseTime = recordingStartedAt ? Date.now() - recordingStartedAt : 0;
 
       updateExerciseSessionProgress();
@@ -310,16 +350,24 @@ export default function VerbalFlashcardsPage() {
       isResolvingCardRef.current = true;
       const feedbackMessage = feedbackAnalysis?.feedback;
       const spokenFeedback = feedbackMessage || (wasAccepted ? feedbackCopy.successIntro : feedbackCopy.finalIncorrectIntro);
-      const answerFeedbackIntro = wasAccepted ? feedbackCopy.successIntro : feedbackCopy.finalIncorrectIntro;
+      const answerFeedbackIntro =
+        feedbackAnalysis?.answerFeedbackIntro || (wasAccepted ? feedbackCopy.successIntro : feedbackCopy.finalIncorrectIntro);
       const answerToSpeak = feedbackAnalysis?.matchedExpectedText || card.answer;
       const speakResolvedFeedback = feedbackAnalysis?.speakAnswerAfterFeedback
-        ? () =>
-            speakFeedback(answerFeedbackIntro).then(() => {
+        ? () => {
+            const answerAudioPromise = preloadText(answerToSpeak, learnedLanguageId);
+            return speakFeedback(answerFeedbackIntro).then(() => {
               if (!answerToSpeak || !isPageActiveRef.current) {
                 return;
               }
-              return speakText(answerToSpeak, learnedLanguageId, strings.verbalFlashcardsPlayingAnswer);
-            })
+              return answerAudioPromise.then((audio) => {
+                if (audio) {
+                  return playPreloadedAudio(audio, strings.verbalFlashcardsPlayingAnswer);
+                }
+                return speakText(answerToSpeak, learnedLanguageId, strings.verbalFlashcardsPlayingAnswer);
+              });
+            });
+          }
         : () => speakFeedback(spokenFeedback);
 
       speakResolvedFeedback().finally(() => {
@@ -327,10 +375,32 @@ export default function VerbalFlashcardsPage() {
           isResolvingCardRef.current = false;
           return;
         }
-        startInterCardCountdown(() => {
+
+        if (practiceAfterAnswer) {
           isResolvingCardRef.current = false;
-          if (!canContinueFlow()) return;
-          removeResolvedCard(card, nextCorrectBookmarks, nextIncorrectBookmarks, practicedCount);
+          promptFinalPracticeAfterAnswer(
+            {
+              card,
+              nextCorrectBookmarks,
+              nextIncorrectBookmarks,
+              practicedCount,
+            },
+            (cardId) => retrySameCardRecordingRef.current(cardId),
+          );
+          return;
+        }
+
+        speakSessionCompleteIfLastCard(card).finally(() => {
+          if (!canContinueFlow()) {
+            isResolvingCardRef.current = false;
+            return;
+          }
+
+          startInterCardCountdown(() => {
+            isResolvingCardRef.current = false;
+            if (!canContinueFlow()) return;
+            removeResolvedCard(card, nextCorrectBookmarks, nextIncorrectBookmarks, practicedCount);
+          });
         });
       });
     },
@@ -344,8 +414,12 @@ export default function VerbalFlashcardsPage() {
       getCurrentCard,
       incorrectBookmarks,
       learnedLanguageId,
+      playPreloadedAudio,
+      preloadText,
+      promptFinalPracticeAfterAnswer,
       removeResolvedCard,
       speakFeedback,
+      speakSessionCompleteIfLastCard,
       speakText,
       startInterCardCountdown,
       totalPracticedBookmarksInSession,
@@ -373,15 +447,16 @@ export default function VerbalFlashcardsPage() {
           if (!canContinueFlow()) {
             return;
           }
-          updateStatusWithDebounce(strings.verbalFlashcardsRetryingSameCard, "processing", 0);
           if (getCurrentCard()?.id === card.id) {
-            beginCardFlowRef.current();
+            retrySameCardRecordingRef.current(card.id);
           }
         });
         return;
       }
 
-      resolveCardAttempt(card, userAnswer, false, analysis, recordingStartedAt);
+      resolveCardAttempt(card, userAnswer, false, analysis, recordingStartedAt, {
+        practiceAfterAnswer: true,
+      });
     },
     [canContinueFlow, feedbackCopy, getCurrentCard, resolveCardAttempt, speakFeedback, updateStatusWithDebounce],
   );
@@ -403,7 +478,10 @@ export default function VerbalFlashcardsPage() {
 
       const nextAttemptCount = (attemptCountsRef.current[card.id] || 0) + 1;
       if (nextAttemptCount < 2) {
-        return analysis;
+        return {
+          ...analysis,
+          feedback: feedbackCopy.retryPrompt,
+        };
       }
 
       const answerToShow = analysis.matchedExpectedText || card.answer;
@@ -419,6 +497,7 @@ export default function VerbalFlashcardsPage() {
   const handleRecordingComplete = useCallback(
     ({ audioBlob, flowRunId, recordingStartedAt }) => {
       const currentCard = getCurrentCard();
+      const recordingCardId = currentCard?.id;
 
       if (!currentCard) {
         updateStatusWithDebounce(strings.verbalFlashcardsNoFlashcardLoaded, "error");
@@ -429,13 +508,16 @@ export default function VerbalFlashcardsPage() {
       api.transcribeAudio(
         audioBlob,
         (result) => {
-          if (!canContinueFlow(flowRunId)) {
+          if (!canContinueFlow(flowRunId) || getCurrentCard()?.id !== recordingCardId) {
             cleanupRecordingResourcesRef.current();
             return;
           }
 
           if (result?.error) {
             console.error("Transcription error:", result.error);
+            if (handleFinalPracticeError(currentCard)) {
+              return;
+            }
             updateStatusWithDebounce(`${strings.verbalFlashcardsErrorPrefix}: ${result.error}`, "error");
             cleanupRecordingResourcesRef.current();
             return;
@@ -451,15 +533,40 @@ export default function VerbalFlashcardsPage() {
             expectedText,
             currentCard.id,
             (analysis) => {
-              if (!canContinueFlow(flowRunId)) {
+              if (!canContinueFlow(flowRunId) || getCurrentCard()?.id !== recordingCardId) {
                 cleanupRecordingResourcesRef.current();
                 return;
               }
 
               if (analysis?.error) {
                 console.error("Pronunciation check error:", analysis.error);
+                if (handleFinalPracticeError(currentCard)) {
+                  return;
+                }
                 updateStatusWithDebounce(strings.verbalFlashcardsCouldNotEvaluatePronunciation, "error", 0);
                 cleanupRecordingResourcesRef.current();
+                return;
+              }
+
+              if (!analysis?.isAccepted && isRevealAnswerIntent(transcription)) {
+                const revealFeedback = {
+                  ...analysis,
+                  isAccepted: false,
+                  feedback: `${feedbackCopy.revealAnswerIntro} ${expectedText}`,
+                  matchedExpectedText: analysis?.matchedExpectedText || expectedText,
+                  answerFeedbackIntro: feedbackCopy.revealAnswerIntro,
+                  speakAnswerAfterFeedback: true,
+                };
+
+                displayResults(revealFeedback);
+                cleanupRecordingResourcesRef.current();
+                resolveCardAttempt(currentCard, transcription, false, revealFeedback, recordingStartedAt, {
+                  practiceAfterAnswer: true,
+                });
+                return;
+              }
+
+              if (handleFinalPracticeAnalysis(currentCard, analysis)) {
                 return;
               }
 
@@ -469,12 +576,26 @@ export default function VerbalFlashcardsPage() {
               handleAttemptOutcome(currentCard, transcription, analysisWithAttemptFeedback, recordingStartedAt);
             },
             () => {
+              if (!canContinueFlow(flowRunId) || getCurrentCard()?.id !== recordingCardId) {
+                cleanupRecordingResourcesRef.current();
+                return;
+              }
+              if (handleFinalPracticeError(currentCard)) {
+                return;
+              }
               updateStatusWithDebounce(strings.verbalFlashcardsCouldNotEvaluatePronunciation, "error", 0);
               cleanupRecordingResourcesRef.current();
             },
           );
         },
         () => {
+          if (!canContinueFlow(flowRunId) || getCurrentCard()?.id !== recordingCardId) {
+            cleanupRecordingResourcesRef.current();
+            return;
+          }
+          if (handleFinalPracticeError(currentCard)) {
+            return;
+          }
           updateStatusWithDebounce(strings.verbalFlashcardsCouldNotEvaluatePronunciation, "error", 0);
           cleanupRecordingResourcesRef.current();
         },
@@ -485,14 +606,19 @@ export default function VerbalFlashcardsPage() {
       canContinueFlow,
       displayResults,
       feedbackForAttempt,
+      feedbackCopy,
       getCurrentCard,
+      handleFinalPracticeAnalysis,
+      handleFinalPracticeError,
       handleAttemptOutcome,
+      resolveCardAttempt,
       updateStatusWithDebounce,
     ],
   );
 
   const {
     cleanupRecordingResources,
+    isAudioDetected,
     isRecording,
     isRecordingRef,
     isStartingRecordingRef,
@@ -520,6 +646,7 @@ export default function VerbalFlashcardsPage() {
   });
 
   cleanupRecordingResourcesRef.current = cleanupRecordingResources;
+  prepareMicrophoneRef.current = prepareMicrophone;
 
   const cancelCountdown = useCallback(() => {
     clearInterCardDelay();
@@ -532,13 +659,33 @@ export default function VerbalFlashcardsPage() {
 
   const stopCurrentFlow = useCallback(() => {
     flowRunIdRef.current += 1;
+    clearFinalPractice();
     cancelCountdown();
     stopTts();
 
     if (isRecordingRef.current || isStartingRecordingRef.current || micStreamRef.current) {
       cleanupRecordingResources();
     }
-  }, [cancelCountdown, cleanupRecordingResources, isRecordingRef, isStartingRecordingRef, micStreamRef, stopTts]);
+  }, [cancelCountdown, cleanupRecordingResources, clearFinalPractice, isRecordingRef, isStartingRecordingRef, micStreamRef, stopTts]);
+
+  const retrySameCardRecording = useCallback(
+    async (cardId) => {
+      if (!canContinueFlow()) return;
+      if (isResolvingCardRef.current) return;
+      if (getCurrentCard()?.id !== cardId) return;
+
+      flowRunIdRef.current += 1;
+      setIsCooldown(false);
+      isCooldownRef.current = false;
+      updateStatusWithDebounce(strings.verbalFlashcardsPreparingMicrophone, "processing", 0);
+      await openMicAndStartRecording();
+    },
+    [canContinueFlow, getCurrentCard, openMicAndStartRecording, updateStatusWithDebounce],
+  );
+
+  useEffect(() => {
+    retrySameCardRecordingRef.current = retrySameCardRecording;
+  }, [retrySameCardRecording]);
 
   const beginCardFlow = useCallback(() => {
     if (flashcardsRef.current.length === 0) return;
@@ -561,34 +708,20 @@ export default function VerbalFlashcardsPage() {
     const flowRunId = flowRunIdRef.current;
     const microphoneReady = prepareMicrophone().catch(() => null);
 
-    playCardTts(card, flowRunId).finally(async () => {
+    microphoneReady.then(async () => {
       if (flowRunId !== flowRunIdRef.current) {
         return;
       }
 
       setIsCooldown(false);
       isCooldownRef.current = false;
-      updateStatusWithDebounce(strings.verbalFlashcardsPreparingMicrophone, "processing", 0);
-
-      await new Promise((resolve) => window.setTimeout(resolve, AFTER_TTS_BEFORE_RECORDING_MS));
-      if (flowRunId !== flowRunIdRef.current) {
-        return;
-      }
-
-      await microphoneReady;
-      if (flowRunId !== flowRunIdRef.current) {
-        return;
-      }
-
       setShowResult(false);
       setAccuracyResult(null);
       await openMicAndStartRecording();
     });
-  }, [openMicAndStartRecording, playCardTts, prepareMicrophone, resetCardUi, stopCurrentFlow, updateStatusWithDebounce]);
 
-  useEffect(() => {
-    beginCardFlowRef.current = beginCardFlow;
-  }, [beginCardFlow]);
+    void playCardTts(card, flowRunId);
+  }, [openMicAndStartRecording, playCardTts, prepareMicrophone, resetCardUi, stopCurrentFlow, updateStatusWithDebounce]);
 
   const nextCard = useCallback(() => {
     if (currentCardIndexRef.current < flashcardsRef.current.length - 1) {
@@ -607,19 +740,6 @@ export default function VerbalFlashcardsPage() {
       setCurrentCardIndex(prevIndex);
     }
   }, [stopCurrentFlow]);
-
-  const shuffleCards = useCallback(() => {
-    stopCurrentFlow();
-    const shuffled = [...flashcardsRef.current].sort(() => Math.random() - 0.5);
-    setFlashcards(shuffled);
-    flashcardsRef.current = shuffled;
-    setCurrentCardIndex(0);
-    currentCardIndexRef.current = 0;
-  }, [stopCurrentFlow]);
-
-  const repeatCard = useCallback(() => {
-    beginCardFlow();
-  }, [beginCardFlow]);
 
   useEffect(() => {
     isPageActiveRef.current = true;
@@ -702,13 +822,13 @@ export default function VerbalFlashcardsPage() {
             canGoPrevious={currentCardIndex > 0}
             currentCard={currentCard}
             flashcardsCount={flashcards.length}
+            isAudioDetected={isAudioDetected}
             isRecording={isRecording}
             loading={loading}
+            nextCardCountdown={nextCardCountdown}
             nextCard={nextCard}
             prevCard={prevCard}
-            repeatCard={repeatCard}
             showResult={showResult}
-            shuffleCards={shuffleCards}
             statusMessage={statusMessage}
             statusType={statusType}
           />
