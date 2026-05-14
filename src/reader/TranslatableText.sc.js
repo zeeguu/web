@@ -271,13 +271,13 @@ const TranslatableText = styled.div`
   }
 
   z-orig span {
-    border-bottom: 1px dashed ${zeeguuOrange};
+    border-bottom: 1px dashed var(--mwe-adjacent-color);
     border-radius: 0.35rem;
   }
 
   z-tag z-orig {
     width: 100%;
-    color: ${zeeguuOrange};
+    color: var(--mwe-adjacent-color);
     font-weight: 600;
   }
 
