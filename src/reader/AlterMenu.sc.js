@@ -109,9 +109,9 @@ const AlterMenuSC = styled.div`
     margin-top: 0.8rem;
   }
 
-  .removeLink {
+  .removeLink,
+  .addOwnLink {
     margin-top: 0.2rem;
-    color: var(--altermenu-action-text);
     cursor: pointer;
 
     &:hover {
@@ -119,14 +119,12 @@ const AlterMenuSC = styled.div`
     }
   }
 
-  .addOwnLink {
-    margin-top: 0.2rem;
-    color: var(--altermenu-link-text);
-    cursor: pointer;
+  .removeLink {
+    color: var(--altermenu-action-text);
+  }
 
-    &:hover {
-      filter: brightness(110%);
-    }
+  .addOwnLink {
+    color: var(--altermenu-link-text);
   }
 
   .altermenuSourceLabel {

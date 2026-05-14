@@ -12,18 +12,15 @@ const HEADER_BAND_STYLE = {
   opacity: 0.7,
 };
 
-const PROVIDER_LABELS = {
-  "Microsoft - without context": "Azure",
-  "Microsoft - with context": "Azure",
-  "Microsoft - alignment": "Azure",
-  "Google - without context": "Google",
-  "Google - with context": "Google",
-  "Google - MWE phrase": "Google",
-  "DeepL - with context": "DeepL",
+const PROVIDER_NAME_OVERRIDES = {
+  Microsoft: "Azure",
 };
 
 function shortenSource(alt) {
-  return PROVIDER_LABELS[alt.source] || alt.source;
+  // Source comes in as "Provider - variant" (e.g. "Microsoft - with context",
+  // "Google - MWE phrase"); collapse to just the provider name.
+  const provider = (alt.source || "").split(" - ")[0];
+  return PROVIDER_NAME_OVERRIDES[provider] || provider || alt.source;
 }
 
 // Merge competing_translations (known immediately from the bookmark
@@ -67,26 +64,6 @@ export default function AlterMenu({
     if (showOwnInput && inputRef.current) inputRef.current.focus();
   }, [showOwnInput]);
 
-  useLayoutEffect(() => {
-    const el = refToAlterMenu.current;
-    const trigger = el?.parentElement;
-    if (!el || !trigger) return;
-    const triggerRect = trigger.getBoundingClientRect();
-    const margin = 8;
-    el.style.position = "fixed";
-    el.style.margin = "0";
-    el.style.top = `${triggerRect.bottom + 4}px`;
-    // Measure the menu's intrinsic width once positioned
-    el.style.left = "0";
-    const elWidth = el.offsetWidth;
-    let left = triggerRect.left;
-    if (left + elWidth > window.innerWidth - margin) {
-      left = window.innerWidth - elWidth - margin;
-    }
-    if (left < margin) left = margin;
-    el.style.left = `${left}px`;
-  });
-
   // Modal-style outside-click handling: a capture-phase document listener
   // fires before any target's own click handler, so we can stopPropagation
   // BEFORE the tapped word's clickOnWord runs. This way a tap outside the
@@ -122,6 +99,28 @@ export default function AlterMenu({
   const filteredAlternatives = buildAlternatives(word);
   const hasAlternatives = filteredAlternatives.length > 0;
   const showEmptyHeader = alternativesLoaded && !hasAlternatives;
+
+  // Reposition only when something that can change menu dimensions changes;
+  // otherwise re-runs on every keystroke in the input force a reflow.
+  useLayoutEffect(() => {
+    const el = refToAlterMenu.current;
+    const trigger = el?.parentElement;
+    if (!el || !trigger) return;
+    const triggerRect = trigger.getBoundingClientRect();
+    const margin = 8;
+    el.style.position = "fixed";
+    el.style.margin = "0";
+    el.style.top = `${triggerRect.bottom + 4}px`;
+    el.style.left = "0";
+    const elWidth = el.offsetWidth;
+    let left = triggerRect.left;
+    if (left + elWidth > window.innerWidth - margin) {
+      left = window.innerWidth - elWidth - margin;
+    }
+    if (left < margin) left = margin;
+    el.style.left = `${left}px`;
+  }, [alternativesLoaded, hasAlternatives, showOwnInput, filteredAlternatives.length]);
+
   let header = null;
   if (word.disagreement) {
     header = (
