@@ -5,6 +5,13 @@ const TranslatableText = styled.div`
   /* MWE adjacent color - matches single-word zeeguuOrange */
   --mwe-adjacent-color: ${zeeguuOrange};
   --mwe-adjacent-bg: rgb(255, 240, 220);
+  --translation-chip-text: ${almostBlack};
+
+  /* Dark mode: invert the chip — dark bg, pale text */
+  :root[data-theme="dark"] & {
+    --mwe-adjacent-bg: rgb(50, 40, 30);
+    --translation-chip-text: rgb(255, 240, 220);
+  }
 
   /* ========================================================================
    * BASE Z-TAG STYLES
@@ -257,7 +264,7 @@ const TranslatableText = styled.div`
     line-height: 1.1rem;
     max-width: 100%;
     font-weight: 600;
-    color: ${almostBlack};
+    color: var(--translation-chip-text);
     text-align: left;
     display: flex;
   }

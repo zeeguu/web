@@ -1,23 +1,24 @@
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { AlterMenuSC } from "./AlterMenu.sc";
 import LoadingAnimation from "../components/LoadingAnimation";
-import { zeeguuLightYellow } from "../components/colors";
 
 const HEADER_BAND_STYLE = {
   whiteSpace: "nowrap",
-  backgroundColor: zeeguuLightYellow,
-  borderBottom: "1px solid rgba(139, 90, 43, 0.25)",
-  padding: "0.4rem 0.6rem",
-  margin: "-0.3em -0.3em 0.4rem -0.3em",
-  fontWeight: 800,
+  padding: "0.1rem 0 0.2rem",
+  fontSize: "0.7em",
+  fontWeight: 500,
+  letterSpacing: "0.08em",
+  textTransform: "uppercase",
+  opacity: 0.7,
 };
 
 const PROVIDER_LABELS = {
   "Microsoft - without context": "Azure",
-  "Microsoft - with context": "Azure (contextual)",
-  "Microsoft - alignment": "Azure (alignment)",
+  "Microsoft - with context": "Azure",
+  "Microsoft - alignment": "Azure",
   "Google - without context": "Google",
-  "Google - with context": "Google (contextual)",
+  "Google - with context": "Google",
+  "Google - MWE phrase": "Google",
   "DeepL - with context": "DeepL",
 };
 
@@ -58,19 +59,33 @@ export default function AlterMenu({
   alternativesLoaded,
 }) {
   const refToAlterMenu = useRef(null);
+  const inputRef = useRef(null);
   const [inputValue, setInputValue] = useState("");
+  const [showOwnInput, setShowOwnInput] = useState(false);
+
+  useEffect(() => {
+    if (showOwnInput && inputRef.current) inputRef.current.focus();
+  }, [showOwnInput]);
 
   useLayoutEffect(() => {
     const el = refToAlterMenu.current;
-    if (el) {
-      // Reset to default (left-aligned) to measure natural position
-      el.style.right = "";
-      const rect = el.getBoundingClientRect();
-      if (rect.right > window.innerWidth) {
-        el.style.right = "0";
-      }
+    const trigger = el?.parentElement;
+    if (!el || !trigger) return;
+    const triggerRect = trigger.getBoundingClientRect();
+    const margin = 8;
+    el.style.position = "fixed";
+    el.style.margin = "0";
+    el.style.top = `${triggerRect.bottom + 4}px`;
+    // Measure the menu's intrinsic width once positioned
+    el.style.left = "0";
+    const elWidth = el.offsetWidth;
+    let left = triggerRect.left;
+    if (left + elWidth > window.innerWidth - margin) {
+      left = window.innerWidth - elWidth - margin;
     }
-  }, [alternativesLoaded]);
+    if (left < margin) left = margin;
+    el.style.left = `${left}px`;
+  });
 
   // Modal-style outside-click handling: a capture-phase document listener
   // fires before any target's own click handler, so we can stopPropagation
@@ -106,60 +121,63 @@ export default function AlterMenu({
 
   const filteredAlternatives = buildAlternatives(word);
   const hasAlternatives = filteredAlternatives.length > 0;
-  const header = word.disagreement ? (
-    <div style={{ ...HEADER_BAND_STYLE, color: "crimson" }}>
-      <span style={{ fontSize: "1.4em", verticalAlign: "middle", lineHeight: 1, borderBottom: "none" }}>🤖🥊</span>{" "}
-      Bots disagree
-    </div>
-  ) : (
-    <div style={{ ...HEADER_BAND_STYLE, color: "#01345d" }}>Alternatives</div>
-  );
+  const showEmptyHeader = alternativesLoaded && !hasAlternatives;
+  let header = null;
+  if (word.disagreement) {
+    header = (
+      <div style={{ ...HEADER_BAND_STYLE, color: "var(--altermenu-header-text-disagreement)" }}>
+        <span style={{ fontSize: "1.4em", verticalAlign: "middle", lineHeight: 1, borderBottom: "none" }}>🤖🥊</span>{" "}
+        Bots disagree
+      </div>
+    );
+  } else if (hasAlternatives) {
+    header = (
+      <div style={{ ...HEADER_BAND_STYLE, color: "var(--altermenu-header-text)" }}>Alternatives</div>
+    );
+  } else if (showEmptyHeader) {
+    header = (
+      <div style={{ ...HEADER_BAND_STYLE, color: "var(--altermenu-header-text)" }}>No alternatives found</div>
+    );
+  }
 
   return (
     <AlterMenuSC ref={refToAlterMenu}>
-      {hasAlternatives && (
-        <>
-          {header}
-          {filteredAlternatives.map((each, index) => (
-            <div
-              key={`${each.translation}-${each.source}-${index}`}
-              onClick={(e) => selectAlternative(each.translation, shortenSource(each))}
-              className="additionalTrans"
-            >
-              {each.translation}
-              <div
-                style={{
-                  marginTop: "-4px",
-                  fontSize: 8,
-                  color: "rgb(240,204,160)",
-                }}
-              >
-                {shortenSource(each)}
-              </div>
-            </div>
-          ))}
-        </>
-      )}
+      {header}
+      {hasAlternatives && filteredAlternatives.map((each, index) => (
+        <div
+          key={`${each.translation}-${each.source}-${index}`}
+          onClick={(e) => selectAlternative(each.translation, shortenSource(each))}
+          className="additionalTrans"
+        >
+          {each.translation}
+          <div className="altermenuSourceLabel">{shortenSource(each)}</div>
+        </div>
+      ))}
       {/* Spinner only when we have nothing to show yet — competing_translations
           from the bookmark response already populate the list immediately, so
           showing a spinner under them looks like a stray "extra option". */}
       {!alternativesLoaded && !hasAlternatives && (
         <LoadingAnimation specificStyle={{ transform: "scale(0.4)", height: "2rem", margin: "0.5rem 0 -0.5rem 0" }} delay={0}></LoadingAnimation>
       )}
-      {alternativesLoaded && !hasAlternatives && (
-        <div className="noAlternatives">No alternative found</div>
+      {showOwnInput && (
+        <input
+          ref={inputRef}
+          autoComplete="off"
+          className="ownTranslationInput matchWidth"
+          type="text"
+          id="#userAlternative"
+          value={inputValue}
+          onChange={(e) => setInputValue(e.target.value)}
+          onKeyDown={(e) => handleKeyDown(e)}
+          placeholder="Type your translation and press Enter"
+        />
       )}
-      <input
-        autoComplete="off"
-        className="ownTranslationInput matchWidth"
-        type="text"
-        id="#userAlternative"
-        value={inputValue}
-        onChange={(e) => setInputValue(e.target.value)}
-        onKeyDown={(e) => handleKeyDown(e)}
-        placeholder="Add own translation..."
-      />
       <div className="actionsSection">
+        {!showOwnInput && (
+          <div className="addOwnLink" onClick={() => setShowOwnInput(true)}>
+            Add own translation
+          </div>
+        )}
         {word.mweExpression && ungroupMwe && (
           <div className="removeLink" onClick={(e) => ungroupMwe(e, word)}>
             Ungroup expression
