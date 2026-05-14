@@ -1,7 +1,6 @@
-- New: when the two translation engines disagree on a word, the alternatives menu pops open automatically with a "the bots disagree" header so you can pick the meaning that fits your context.
-- Today view: when there are no lessons for today, the latest unfinished lesson now surfaces so you can keep going.
-- History: cleaner cards with date labels and a sticky completion bar; the past-lesson player matches the shared-lesson layout.
-- Audio player: tap the speed pill to cycle speeds, the file pre-buffers for smoother playback, autoplay is off when revisiting past lessons, and audio is now cacheable across sessions.
-- Reader: tapping a word that's part of a phrase no longer gets stuck on a stale single-word translation, and ambiguous context around repeated words is trimmed before being sent to the translator.
-- Simplify: tapping simplify on an already-simplified article now just opens the existing version instead of failing.
-- Daily exercises: clearer "done for today" message with a short cooldown before the next batch.
+- Dark mode pass on the reader: softer highlight orange, warm chip backgrounds, and a redesigned alternative-translations menu that's calmer and easier to scan.
+- New: A− / A+ text size control in the reader's settings gear — pick the size that's comfortable, and the menus and translation chips scale with it.
+- Reader layout: punctuation no longer wraps to its own line ("." or "," stuck at the start of a line is gone).
+- Translation menu: opens out of the way of the screen edge instead of overflowing, closes the moment you start scrolling, and the "Add own translation" input is hidden behind a link instead of always taking up space.
+- Onboarding: gentle popups guide new users through translating, reviewing words, and daily exercises the first time they're encountered.
+- Article previews on the homepage: cleaner titles, less link-like, and a tidier "Open" button.
