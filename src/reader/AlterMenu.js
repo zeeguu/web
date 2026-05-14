@@ -124,7 +124,7 @@ export default function AlterMenu({
   let header = null;
   if (word.disagreement) {
     header = (
-      <div style={{ ...HEADER_BAND_STYLE, color: "var(--altermenu-header-text-disagreement)" }}>
+      <div style={{ ...HEADER_BAND_STYLE, color: "var(--altermenu-header-text)" }}>
         <span style={{ fontSize: "1.4em", verticalAlign: "middle", lineHeight: 1, borderBottom: "none" }}>🤖🥊</span>{" "}
         Bots disagree
       </div>
