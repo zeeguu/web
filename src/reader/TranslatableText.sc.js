@@ -14,12 +14,11 @@ const TranslatableText = styled.div`
     --mwe-adjacent-bg: rgb(50, 40, 30);
   }
 
-  /* Dark mode: the palette pastel chip backgrounds are too pale to read
-     light text on, so flip them to the same warm dark tan as the
-     single-word chip. The MWE color still comes through via the underline
-     on the source word. */
-  :root[data-theme="dark"] & z-tag[class*="mwe-color-"] {
-    --mwe-tran-bg: rgb(50, 40, 30);
+  /* Dark mode: keep the pastel palette chip backgrounds (they pair partner
+     words), but force dark text inside so the pastel doesn't wash out the
+     light theme text. */
+  :root[data-theme="dark"] & z-tag[class*="mwe-color-"] z-tran {
+    color: ${almostBlack} !important;
   }
 
   /* ========================================================================
