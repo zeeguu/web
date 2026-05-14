@@ -14,7 +14,7 @@ let ArticleReader = styled.div`
   margin-right: auto;
 
   h1 {
-    font-size: 1.6em !important;
+    font-size: 1.6rem !important;
     font-weight: 800;
     line-height: 1.5;
   }
