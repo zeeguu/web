@@ -3,19 +3,33 @@ import { PrivateRoute } from "../PrivateRoute";
 import * as s from "../components/ColumnWidth.sc";
 import TopTabs from "../components/TopTabs";
 import strings from "../i18n/definitions";
-import { Switch, useLocation } from "react-router-dom";
+import { Switch, useLocation, useHistory } from "react-router-dom";
 import TodayAudio from "./TodayAudio";
 import PastLessons from "./PastLessons";
 import { APIContext } from "../contexts/APIContext";
 import { UserContext } from "../contexts/UserContext";
+import useTabSwipe from "../hooks/useTabSwipe";
+
+const TAB_PATHS = ["/daily-audio", "/daily-audio/past-lessons"];
 
 export default function DailyAudioRouter() {
   const api = useContext(APIContext);
   const { userDetails } = useContext(UserContext);
   const learnedLanguage = userDetails?.learned_language;
   const location = useLocation();
+  const history = useHistory();
   const [pastLessonsCount, setPastLessonsCount] = useState(0);
   const [showTabs, setShowTabs] = useState(true);
+
+  const currentTabIndex = TAB_PATHS.indexOf(location.pathname);
+  const canSwipe = (direction) => {
+    const next = currentTabIndex + direction;
+    return currentTabIndex !== -1 && next >= 0 && next < TAB_PATHS.length;
+  };
+  const onSwipe = (direction) => {
+    if (canSwipe(direction)) history.push(TAB_PATHS[currentTabIndex + direction]);
+  };
+  const swipeRef = useTabSwipe(onSwipe, canSwipe);
 
   useEffect(() => {
     // Reset immediately so the tab badge doesn't show a stale count from
@@ -59,8 +73,10 @@ export default function DailyAudioRouter() {
       <s.NarrowColumn>
         {showTabs && <TopTabs title={strings.dailyAudio} tabsAndLinks={tabsAndLinks} />}
 
-        <PrivateRoute exact path="/daily-audio" component={TodayAudio} setShowTabs={setShowTabs} />
-        <PrivateRoute exact path="/daily-audio/past-lessons" component={PastLessons} />
+        <div ref={swipeRef}>
+          <PrivateRoute exact path="/daily-audio" component={TodayAudio} setShowTabs={setShowTabs} />
+          <PrivateRoute exact path="/daily-audio/past-lessons" component={PastLessons} />
+        </div>
       </s.NarrowColumn>
     </Switch>
   );
