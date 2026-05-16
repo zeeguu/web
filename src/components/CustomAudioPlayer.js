@@ -641,13 +641,13 @@ export default function CustomAudioPlayer({
   return (
     <div
       style={{
-        ...style,
         backgroundColor: "var(--card-bg)",
         borderRadius: "12px",
         padding: "20px",
         margin: "0 auto",
         maxWidth: "100%",
         boxSizing: "border-box",
+        ...style,
       }}
     >
       <audio 

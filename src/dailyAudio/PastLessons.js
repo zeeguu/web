@@ -1,14 +1,13 @@
 import React, { useState, useContext, useEffect } from "react";
-import { zeeguuOrange, successGreen } from "../components/colors";
+import { zeeguuOrange } from "../components/colors";
 import { APIContext } from "../contexts/APIContext";
 import { UserContext } from "../contexts/UserContext";
 import LoadingAnimation from "../components/LoadingAnimation";
 import useListeningSession from "../hooks/useListeningSession";
-import { SubtleTextButton, LessonTitle, LessonMetadata } from "./LessonView.sc";
+import CustomAudioPlayer from "../components/CustomAudioPlayer";
+import { SubtleTextButton, LessonTitle, LessonMetadata, CompletionCheck } from "./LessonView.sc";
 import { SubtleLessonCard, ProgressBarTrack, ProgressBarFill } from "./SharedLessonView.sc";
-import LessonPlayerCard from "./LessonPlayerCard";
 import { shareLessonLink } from "./shareLessonLink";
-import Modal from "../components/modal_shared/Modal";
 
 const lessonProgressSeconds = (lesson) =>
   lesson.pause_position_seconds || lesson.position_seconds || lesson.progress_seconds || 0;
@@ -21,21 +20,58 @@ const lessonDateLabel = (lesson) =>
 
 const lessonTitleText = (lesson) => lesson.title || "Past Audio Lesson";
 
-const titleWithDate = (lesson) => (
-  <>
-    <small
-      style={{
-        color: "var(--text-secondary)",
-        fontSize: "0.75em",
-        fontWeight: 400,
-        marginRight: "6px",
-      }}
-    >
-      [{lessonDateLabel(lesson)}]
-    </small>
-    {lessonTitleText(lesson)}
-  </>
-);
+// Render the completion check(s). For replays we draw one ✓ per listen,
+// up to 7; beyond that we use ✓✓✓…✓ so the row doesn't grow without bound.
+const renderChecks = (count) => {
+  if (count <= 7) return "✓".repeat(count);
+  return "✓✓✓…✓";
+};
+
+function CollapsedProgressBar({ lesson }) {
+  const duration = lesson.duration_seconds || 0;
+  const pct = duration > 0
+    ? Math.min(100, (lessonProgressSeconds(lesson) / duration) * 100)
+    : 0;
+  if (pct <= 0 || pct >= 99) return null;
+  return (
+    <ProgressBarTrack style={{ marginTop: "8px" }}>
+      <ProgressBarFill
+        $pct={pct}
+        $isCompleted={false}
+        style={{ backgroundColor: "var(--text-faint)" }}
+      />
+    </ProgressBarTrack>
+  );
+}
+
+const titleWithDate = (lesson) => {
+  const text = lessonTitleText(lesson);
+  // Glue the completion check(s) to the last word so they never widow
+  // onto a line by themselves.
+  const lastSpace = text.lastIndexOf(" ");
+  const head = lastSpace >= 0 ? text.slice(0, lastSpace + 1) : "";
+  const tail = lastSpace >= 0 ? text.slice(lastSpace + 1) : text;
+  const checkCount = lesson.is_completed ? Math.max(1, lesson.listened_count || 1) : 0;
+  return (
+    <>
+      <small
+        style={{
+          color: "var(--text-secondary)",
+          fontSize: "0.75em",
+          fontWeight: 400,
+          marginRight: "6px",
+        }}
+      >
+        [{lessonDateLabel(lesson)}]
+      </small>
+      {head}
+      <span style={{ whiteSpace: "nowrap" }}>
+        {tail}
+        {checkCount > 0 && <> <CompletionCheck>{renderChecks(checkCount)}</CompletionCheck></>}
+      </span>
+    </>
+  );
+};
 
 export default function PastLessons() {
   const api = useContext(APIContext);
@@ -117,11 +153,13 @@ export default function PastLessons() {
 
   const onProgressUpdate = (lessonId, progressSeconds) => {
     setPastLessons((prev) => {
-      const current = prev.find((l) => l.lesson_id === lessonId);
-      if (!current || current.pause_position_seconds === progressSeconds) return prev;
-      return prev.map((l) =>
-        l.lesson_id === lessonId ? { ...l, pause_position_seconds: progressSeconds } : l,
-      );
+      let changed = false;
+      const next = prev.map((l) => {
+        if (l.lesson_id !== lessonId || l.pause_position_seconds === progressSeconds) return l;
+        changed = true;
+        return { ...l, pause_position_seconds: progressSeconds };
+      });
+      return changed ? next : prev;
     });
   };
 
@@ -135,7 +173,8 @@ export default function PastLessons() {
     );
   }
 
-  const openLesson = pastLessons.find((l) => l.lesson_id === openLessonId);
+  const toggleLesson = (lessonId) =>
+    setOpenLessonId((current) => (current === lessonId ? null : lessonId));
 
   return (
     <div style={{ padding: "20px" }}>
@@ -153,7 +192,12 @@ export default function PastLessons() {
             <PastLessonRow
               key={lesson.lesson_id}
               lesson={lesson}
-              onOpen={() => setOpenLessonId(lesson.lesson_id)}
+              isOpen={openLessonId === lesson.lesson_id}
+              onToggle={() => toggleLesson(lesson.lesson_id)}
+              api={api}
+              userDetails={userDetails}
+              onLessonCompleted={onLessonCompleted}
+              onProgressUpdate={onProgressUpdate}
             />
           ))}
 
@@ -185,115 +229,134 @@ export default function PastLessons() {
           )}
         </div>
       )}
-
-      <Modal open={!!openLesson} onClose={() => setOpenLessonId(null)}>
-        {openLesson && (
-          <PastLessonPlayer
-            lesson={openLesson}
-            api={api}
-            userDetails={userDetails}
-            onLessonCompleted={onLessonCompleted}
-            onProgressUpdate={onProgressUpdate}
-          />
-        )}
-      </Modal>
     </div>
   );
 }
 
-export function PastLessonRow({ lesson, onOpen }) {
-  const duration = lesson.duration_seconds || 0;
-  const pct = duration > 0
-    ? Math.min(100, (lessonProgressSeconds(lesson) / duration) * 100)
-    : 0;
-  // Show the bar whenever there's meaningful progress and the user isn't
-  // sitting at the very end — covers both first-listen and re-listen.
-  const showBar = pct > 0 && pct < 99;
+export function PastLessonRow({
+  lesson,
+  isOpen,
+  onToggle,
+  api,
+  userDetails,
+  onLessonCompleted,
+  onProgressUpdate,
+}) {
+  // Keep the player mounted while the close animation plays out, so the
+  // height can smoothly transition back to 0 instead of snapping.
+  const [shouldRender, setShouldRender] = useState(isOpen);
+  useEffect(() => {
+    if (isOpen) setShouldRender(true);
+  }, [isOpen]);
 
   return (
     <SubtleLessonCard
-      $isCompleted={lesson.is_completed}
-      onClick={onOpen}
+      onClick={onToggle}
       style={{ marginBottom: "8px", cursor: "pointer" }}
     >
       <LessonTitle
         $compact
         style={{
-          fontSize: "1rem",
-          color: lesson.is_completed ? successGreen : "var(--text-primary)",
-          fontWeight: 500,
+          fontSize: "1.25rem",
+          color: "var(--text-primary)",
+          fontWeight: 700,
+          marginTop: 0,
         }}
       >
         {titleWithDate(lesson)}
       </LessonTitle>
-      {lesson.canonical_suggestion && (
-        <LessonMetadata style={{ marginBottom: showBar ? "8px" : 0 }}>
-          {lesson.lesson_type === "situation" ? "Situation" : "Topic"}: <b>{lesson.canonical_suggestion}</b>
-        </LessonMetadata>
-      )}
-      {showBar && (
-        <ProgressBarTrack>
-          <ProgressBarFill $pct={pct} $isCompleted={false} />
-        </ProgressBarTrack>
-      )}
+      {!isOpen && !lesson.is_completed && <CollapsedProgressBar lesson={lesson} />}
+      <div
+        style={{
+          display: "grid",
+          gridTemplateRows: isOpen ? "1fr" : "0fr",
+          transition: "grid-template-rows 250ms ease",
+        }}
+        onTransitionEnd={(e) => {
+          // transitionend bubbles — guard against descendant transitions
+          // (player fades, share-button hovers, etc.) firing the unmount.
+          if (e.target !== e.currentTarget || e.propertyName !== "grid-template-rows") return;
+          if (!isOpen) setShouldRender(false);
+        }}
+      >
+        <div style={{ overflow: "hidden", minHeight: 0 }}>
+          {shouldRender && (
+            // Stop clicks inside the expanded area (player controls, share
+            // button) from bubbling up and collapsing the card.
+            <div style={{ paddingTop: "12px" }} onClick={(e) => e.stopPropagation()}>
+              {lesson.canonical_suggestion && (
+                <LessonMetadata>
+                  {lesson.lesson_type === "situation" ? "Situation" : "Topic"}:{" "}
+                  <b>{lesson.canonical_suggestion}</b>
+                </LessonMetadata>
+              )}
+              <InlineLessonPlayer
+                lesson={lesson}
+                api={api}
+                userDetails={userDetails}
+                onLessonCompleted={onLessonCompleted}
+                onProgressUpdate={onProgressUpdate}
+              />
+            </div>
+          )}
+        </div>
+      </div>
     </SubtleLessonCard>
   );
 }
 
-// Wrapped (rather than inlined into the Modal) so useListeningSession's
-// start/pause/end lifecycle is scoped to the modal's mount/unmount.
-export function PastLessonPlayer({ lesson, api, userDetails, onLessonCompleted, onProgressUpdate }) {
+// useListeningSession's start/pause/end lifecycle is scoped to this
+// component's mount/unmount — i.e. to the expanded state of the card.
+function InlineLessonPlayer({ lesson, api, userDetails, onLessonCompleted, onProgressUpdate }) {
   const listeningSession = useListeningSession(lesson.lesson_id);
 
-  const metadata = lesson.canonical_suggestion ? (
-    <>
-      {lesson.lesson_type === "situation" ? "Situation" : "Topic"}: <b>{lesson.canonical_suggestion}</b>
-    </>
-  ) : null;
-
   return (
-    <LessonPlayerCard
-      title={titleWithDate(lesson)}
-      isCompleted={lesson.is_completed}
-      metadata={metadata}
-      footerAction={
-        lesson.lesson_id && (
-          <SubtleTextButton onClick={() => shareLessonLink(lesson.lesson_id, lesson.title)}>
-            Share
-          </SubtleTextButton>
-        )
-      }
-      audioProps={{
-        src: `${api.baseAPIurl}${lesson.audio_url}`,
-        initialProgress: lessonProgressSeconds(lesson),
-        language: userDetails?.learned_language,
-        title: lesson.title || "Past Audio Lesson",
-        artist: `Zeeguu - ${new Date(lesson.created_at).toLocaleDateString()}`,
-        onPlay: () => {
+    <>
+      <CustomAudioPlayer
+        src={`${api.baseAPIurl}${lesson.audio_url}`}
+        initialProgress={lessonProgressSeconds(lesson)}
+        language={userDetails?.learned_language}
+        title={lessonTitleText(lesson)}
+        artist={`Zeeguu - ${new Date(lesson.created_at).toLocaleDateString()}`}
+        style={{
+          width: "100%",
+          maxWidth: "600px",
+          margin: "0 auto",
+          backgroundColor: "transparent",
+          padding: 0,
+        }}
+        onPlay={() => {
           if (lesson.lesson_id) {
             api.updateLessonState(lesson.lesson_id, "resume");
             listeningSession.start();
           }
-        },
-        onPause: () => {
+        }}
+        onPause={() => {
           listeningSession.pause();
-        },
-        onProgressUpdate: (progressSeconds) => {
+        }}
+        onProgressUpdate={(progressSeconds) => {
           if (lesson.lesson_id) {
             api.updateLessonState(lesson.lesson_id, "pause", progressSeconds);
             onProgressUpdate(lesson.lesson_id, progressSeconds);
           }
-        },
-        onEnded: () => {
+        }}
+        onEnded={() => {
           listeningSession.end();
           if (lesson.lesson_id) {
             api.updateLessonState(lesson.lesson_id, "complete", null, () => {
               onLessonCompleted(lesson.lesson_id);
             });
           }
-        },
-        onError: () => {},
-      }}
-    />
+        }}
+        onError={() => {}}
+      />
+      {lesson.lesson_id && (
+        <div style={{ marginTop: "12px", textAlign: "center" }}>
+          <SubtleTextButton onClick={() => shareLessonLink(lesson.lesson_id, lesson.title)}>
+            Share
+          </SubtleTextButton>
+        </div>
+      )}
+    </>
   );
 }
