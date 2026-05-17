@@ -161,16 +161,18 @@ export default function ArticlePreview({
 
   const is_saved = article.has_personal_copy || article.has_uploader || isArticleSaved === true;
   const externalUrl = article.parent_url || article.url;
-  // If the user has already simplified this article, the in-app reader has
-  // a readable version (the child) — open that instead of bouncing externally.
+  // Either flavor of simplification gives us a Zeeguu-readable body —
+  // a simplified article (parent_article_id set) or an original whose
+  // simplified child this user already has (user_simplified_article_id).
+  // The Link target in either case is the simplified id.
+  const hasInAppSimplification = !!(article.parent_article_id || article.user_simplified_article_id);
   const inAppArticleId = article.user_simplified_article_id || article.id;
   const should_open_in_zeeguu = Feature.always_open_externally()
-    ? is_saved
+    ? is_saved || hasInAppSimplification
     : article.video ||
       (!Feature.extension_experiment1() && !hasExtension) ||
       is_saved ||
-      article.parent_article_id || // Simplified articles (with parent_article_id) always open in Zeeguu reader
-      article.user_simplified_article_id; // Original whose simplified child the user already has
+      hasInAppSimplification;
   const should_open_with_modal = doNotShowRedirectionModal_UserPreference === false;
 
   function imageLink() {
