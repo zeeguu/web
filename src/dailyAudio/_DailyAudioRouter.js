@@ -3,12 +3,12 @@ import { PrivateRoute } from "../PrivateRoute";
 import * as s from "../components/ColumnWidth.sc";
 import TopTabs from "../components/TopTabs";
 import strings from "../i18n/definitions";
-import { Switch, useLocation, useHistory } from "react-router-dom";
+import { Switch, useLocation } from "react-router-dom";
 import TodayAudio from "./TodayAudio";
 import PastLessons from "./PastLessons";
 import { APIContext } from "../contexts/APIContext";
 import { UserContext } from "../contexts/UserContext";
-import useTabSwipe from "../hooks/useTabSwipe";
+import useTabbedRoute from "../hooks/useTabbedRoute";
 
 const TAB_PATHS = ["/daily-audio", "/daily-audio/past-lessons"];
 
@@ -17,19 +17,10 @@ export default function DailyAudioRouter() {
   const { userDetails } = useContext(UserContext);
   const learnedLanguage = userDetails?.learned_language;
   const location = useLocation();
-  const history = useHistory();
   const [pastLessonsCount, setPastLessonsCount] = useState(0);
   const [showTabs, setShowTabs] = useState(true);
 
-  const currentTabIndex = TAB_PATHS.indexOf(location.pathname);
-  const canSwipe = (direction) => {
-    const next = currentTabIndex + direction;
-    return currentTabIndex !== -1 && next >= 0 && next < TAB_PATHS.length;
-  };
-  const onSwipe = (direction) => {
-    if (canSwipe(direction)) history.push(TAB_PATHS[currentTabIndex + direction]);
-  };
-  const swipeRef = useTabSwipe(onSwipe, canSwipe);
+  const swipeRef = useTabbedRoute(TAB_PATHS);
 
   useEffect(() => {
     // Reset immediately so the tab badge doesn't show a stale count from

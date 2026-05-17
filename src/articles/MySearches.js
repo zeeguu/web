@@ -7,11 +7,12 @@ import * as d from "./MySearches.sc";
 import ArticlePreview from "./ArticlePreview";
 import { setTitle } from "../assorted/setTitle";
 import useSelectInterest from "../hooks/useSelectInterest";
-import redirect from "../utils/routing/routing.js";
+import { useHistory } from "react-router-dom";
 import SubscribeSearchButton from "./SubscribeSearchButton.js";
 import SearchField from "./SearchField.js";
 export default function MySearches() {
   const api = useContext(APIContext);
+  const history = useHistory();
   const { subscribedSearches } = useSelectInterest(api);
   const [articlesBySearchTerm, setArticlesBySearchTerm] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -84,17 +85,17 @@ export default function MySearches() {
     <>
       <SearchField />
       {articlesBySearchTerm.map(({ searchTerm, articles }) => (
-        <div key={searchTerm}>
+        <d.SavedSearchBlock key={searchTerm}>
           <d.HeadlineSavedSearches>{searchTerm}</d.HeadlineSavedSearches>
           <SubscribeSearchButton query={searchTerm} />
           {articles.length === 0 && <p>No recent articles were found for this keyword.</p>}
           {articles.map((each) => (
             <ArticlePreview key={each.id} article={each} />
           ))}
-          <d.buttonMoreArticles onClick={(e) => redirect(`/search?search=${searchTerm}`)}>
+          <d.buttonMoreArticles onClick={() => history.push(`/search?search=${encodeURIComponent(searchTerm)}`)}>
             {articles.length === 0 ? "Search for Keyword" : "See more articles"}
           </d.buttonMoreArticles>
-        </div>
+        </d.SavedSearchBlock>
       ))}
     </>
   );
