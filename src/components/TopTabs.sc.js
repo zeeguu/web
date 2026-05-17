@@ -89,6 +89,12 @@ const TopTabs = styled.div`
   .is-active {
     font-weight: 600;
   }
+
+  /* Icon-only tabs can't show "bolder when active" — make the active SVG
+     orange so the user gets a visible "you're here" cue. */
+  .headmenuTab.active svg {
+    color: ${zeeguuOrange};
+  }
 `;
 
 export { TopTabs, TopTabsWrapper };
