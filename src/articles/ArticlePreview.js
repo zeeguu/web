@@ -34,11 +34,15 @@ export default function ArticlePreview({
   onArticleHidden,
   onUnhideArticle,
   isHiddenView = false,
+  inSavedView = false,
 }) {
   const api = useContext(APIContext);
   const getBrowsingSessionId = useContext(BrowsingSessionContext);
   const [isRedirectionModalOpen, setIsRedirectionModaOpen] = useState(false);
-  const [isArticleSaved, setIsArticleSaved] = useState(article.has_personal_copy);
+  // In a saved view (My Articles, Classroom, etc.) the article is in the
+  // list precisely because it's saved — treat it as such even if the
+  // article's has_personal_copy flag hasn't propagated correctly.
+  const [isArticleSaved, setIsArticleSaved] = useState(article.has_personal_copy || inSavedView);
   const [showInferredTopic, setShowInferredTopic] = useState(true);
   const [interactiveSummary, setInteractiveSummary] = useState(null);
   const [interactiveTitle, setInteractiveTitle] = useState(null);

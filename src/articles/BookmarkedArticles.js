@@ -28,7 +28,12 @@ export default function BookmarkedArticles() {
   return (
     <>
       {articleList.map((each) => (
-        <ArticlePreview key={each.id} article={each} dontShowPublishingTime={true} />
+        <ArticlePreview
+          key={each.id}
+          article={each}
+          dontShowPublishingTime={true}
+          inSavedView={true}
+        />
       ))}
     </>
   );
