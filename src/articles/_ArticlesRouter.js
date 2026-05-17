@@ -47,14 +47,14 @@ export default function ArticlesRouter({ hasExtension, isChrome }) {
 
   const tabs = [
     !hideRecommendations && { text: "Discover", link: "/articles" },
+    { text: strings.myArticles, link: "/articles/bookmarked" },
+    isStudent && { text: strings.classroomTab, link: "/articles/classroom" },
     !hideRecommendations && {
       text: searchIcon,
       link: "/articles/mySearches",
       // Stay active on /search too — results are conceptually the search tab.
       isActive: (_, loc) => loc.pathname === "/articles/mySearches" || loc.pathname === "/search",
     },
-    { text: strings.myArticles, link: "/articles/bookmarked" },
-    isStudent && { text: strings.classroomTab, link: "/articles/classroom" },
   ].filter(Boolean);
 
   const swipeRef = useTabbedRoute(
