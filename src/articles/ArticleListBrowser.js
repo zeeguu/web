@@ -182,7 +182,7 @@ export default function ArticleListBrowser({ content, searchQuery, searchPublish
       };
     }
     // eslint-disable-next-line
-  }, [searchPublishPriority, searchDifficultyPriority]);
+  }, [searchQuery, searchPublishPriority, searchDifficultyPriority]);
 
   if (articlesAndVideosList == null) {
     return <LoadingAnimation />;
