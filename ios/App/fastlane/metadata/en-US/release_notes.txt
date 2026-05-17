@@ -1,4 +1,4 @@
-- Past Lessons redesigned: tap a lesson to expand it in place — no more modal popping over the list. Smooth open/close animation, multiple ✓ marks for replays.
+- Past Lessons redesigned: tap a lesson to expand it in place — no more modal popping over the list. Smooth open/close animation, with a visible count of how many times you've replayed each.
 - Daily audio + Read tabs now support horizontal swipe between sub-tabs (Today ↔ Past Lessons; Discover ↔ My Articles ↔ Classroom ↔ Search).
 - Read tabs reorganized: Discover, My Articles, Classroom, and a Search icon on the right. Read remembers the last tab you visited.
 - Discover gets a "Topics: …" chip at the top showing what's curating your feed, with a tap-to-customize gear.
