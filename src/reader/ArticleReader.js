@@ -122,6 +122,16 @@ export default function ArticleReader({ teacherArticleID }) {
     uploadScrollActivity();
   }
 
+  // Leaving the reader invalidates the Discover cache. Reading an article
+  // can flip its has_personal_copy state (simplify, save) or the original
+  // can be superseded by a simplified child — and the feed's 5-min cache
+  // would otherwise keep showing the pre-read view until it expires.
+  useEffect(() => {
+    return () => {
+      api.invalidateCache("user_articles/recommended");
+    };
+  }, [api]);
+
   useEffect(() => {
     // Reset state when articleID changes (e.g., deep link to new article)
     setArticleInfo(undefined);
