@@ -4,9 +4,9 @@ import { zeeguuOrange } from "../colors";
 
 const Content = styled.div`
   text-align: center;
-  /* Top+side padding keeps the title clear of the absolutely-positioned
-     close button at top-right. */
-  padding: 2em 2em 0.5em 2em;
+  /* Top padding clears the absolutely-positioned close button; side
+     padding is small because ModalWrapper already adds its own. */
+  padding: 1.5em 0.25em 0.5em 0.25em;
 `;
 
 const HeroImage = styled.img`
@@ -26,10 +26,10 @@ const Title = styled.h3`
   overflow-wrap: break-word;
 `;
 
-const Message = styled.p`
+const Message = styled.div`
   color: var(--text-primary, #222);
-  text-align: center !important;
-  margin: 0 0 2.2em 0 !important;
+  text-align: center;
+  margin: 0 0 2.2em 0;
   font-size: 1.05rem;
   line-height: 1.5;
 `;

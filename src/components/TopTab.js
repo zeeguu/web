@@ -5,7 +5,14 @@ function TopTab({ id, text, link, isActive, addSeparator, hasNotification, notif
   return (
     <>
       <div className="row__tab">
-        <NavLink id={id} className={"headmenuTab"} to={link} exact activeStyle={{ fontWeight: 600 }}>
+        <NavLink
+          id={id}
+          className={"headmenuTab"}
+          to={link}
+          exact
+          activeStyle={{ fontWeight: 600 }}
+          isActive={isActive}
+        >
           {text}
           {counter !== undefined && counter > 0 && (
             <span style={{ color: "#999", fontWeight: 400, fontSize: "small" }}> ({counter})</span>

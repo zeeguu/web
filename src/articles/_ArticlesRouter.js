@@ -1,7 +1,8 @@
+import { useEffect } from "react";
 import ArticleListBrowser from "./ArticleListBrowser";
 import BookmarkedArticles from "./BookmarkedArticles";
 
-import { Redirect } from "react-router-dom";
+import { Redirect, useLocation } from "react-router-dom";
 import { PrivateRoute } from "../PrivateRoute";
 import ClassroomArticles from "./ClassroomArticles";
 import TopTabs from "../components/TopTabs";
@@ -19,20 +20,39 @@ import { BrowsingSessionContext } from "../contexts/BrowsingSessionContext";
 import useBrowsingSession from "../hooks/useBrowsingSession";
 import useTabbedRoute from "../hooks/useTabbedRoute";
 
+const READ_TAB_PATHS = [
+  "/articles",
+  "/articles/mySearches",
+  "/articles/bookmarked",
+  "/articles/classroom",
+];
+
 export default function ArticlesRouter({ hasExtension, isChrome }) {
   const { getBrowsingSessionId } = useBrowsingSession();
+  const location = useLocation();
   const hideRecommendations = LocalStorage.hasFeature("hide_recommendations");
   const isStudent = LocalStorage.isStudent();
 
+  useEffect(() => {
+    if (READ_TAB_PATHS.includes(location.pathname)) {
+      LocalStorage.setLastVisitedReadPath(location.pathname);
+    }
+  }, [location.pathname]);
+
   const searchIcon = (
-    <span style={{ display: "inline-flex", alignItems: "center", padding: "0 0.6em" }}>
+    <span style={{ display: "inline-flex", alignItems: "center", padding: "0 0.25em" }}>
       <SearchRoundedIcon style={{ fontSize: "1.25rem" }} />
     </span>
   );
 
   const tabs = [
     !hideRecommendations && { text: "Discover", link: "/articles" },
-    !hideRecommendations && { text: searchIcon, link: "/articles/mySearches" },
+    !hideRecommendations && {
+      text: searchIcon,
+      link: "/articles/mySearches",
+      // Stay active on /search too — results are conceptually the search tab.
+      isActive: (_, loc) => loc.pathname === "/articles/mySearches" || loc.pathname === "/search",
+    },
     { text: strings.myArticles, link: "/articles/bookmarked" },
     isStudent && { text: strings.classroomTab, link: "/articles/classroom" },
   ].filter(Boolean);

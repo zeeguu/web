@@ -6,7 +6,7 @@ import useQuery from "../hooks/useQuery";
 import useTimedProgressMessage from "../hooks/useTimedProgressMessage";
 import LoadingAnimation from "../components/LoadingAnimation";
 import ArticleLanguageModal from "./ArticleLanguageModal";
-import { shouldShowLanguageChoice } from "../utils/misc/cefrHelpers";
+import { shouldShowLanguageChoice, getUserCefrLevel, numericToCefr } from "../utils/misc/cefrHelpers";
 
 const PROGRESS_STAGES = {
   simplify: [
@@ -208,6 +208,7 @@ export default function SharedArticleHandler() {
         articleCefrLevel={articleDetection.cefr_level}
         articleImage={articleDetection.img_url}
         learnedLanguage={userDetails.learned_language}
+        userCefrLevel={numericToCefr(getUserCefrLevel(userDetails, articleDetection.language))}
         source="share"
         onTranslateAndAdapt={handleTranslateAndAdapt}
         onSimplify={handleSimplify}

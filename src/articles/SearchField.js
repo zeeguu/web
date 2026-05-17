@@ -43,7 +43,7 @@ export default function SearchField({ query }) {
         onBlur={handleBlur}
         hasValue={!!searchTerm}
       />
-      {query && <ClearSearchButton onClick={() => history.push("/articles")} />}
+      {query && <ClearSearchButton onClick={() => history.push("/articles/mySearches")} />}
     </s.SearchField>
   );
 }

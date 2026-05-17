@@ -31,7 +31,7 @@ import DigitalTimer from "../components/DigitalTimer";
 import DevButton from "../components/DevButton";
 import { APIContext } from "../contexts/APIContext";
 import ArticleLanguageModal from "./ArticleLanguageModal";
-import { shouldShowLanguageChoice } from "../utils/misc/cefrHelpers";
+import { shouldShowLanguageChoice, getUserCefrLevel, numericToCefr } from "../utils/misc/cefrHelpers";
 import ReviewWordsPopup from "../pages/onboarding/notifications/ReviewWordsPopup";
 
 // UMR stands for historical reasons for: Unified Multilingual Reader
@@ -384,6 +384,7 @@ export default function ArticleReader({ teacherArticleID }) {
           articleLanguage={articleInfo.language}
           articleCefrLevel={articleInfo.cefr_level}
           learnedLanguage={userDetails.learned_language}
+          userCefrLevel={numericToCefr(getUserCefrLevel(userDetails, articleInfo.language))}
           source={entrySource}
           onTranslateAndAdapt={handleTranslateAndAdapt}
           onSimplify={handleSimplify}

@@ -5,15 +5,11 @@ import strings from "../i18n/definitions";
 
 import ArticlePreview from "./ArticlePreview";
 
-import SortingButtons from "./SortingButtons";
-
 import * as s from "../components/TopMessage.sc";
 import { APIContext } from "../contexts/APIContext";
 export default function BookmarkedArticles() {
   const api = useContext(APIContext);
   const [articleList, setArticleList] = useState(null);
-
-  let originalList = articleList;
 
   if (articleList == null) {
     api.getBookmarkedArticles((articles) => {
@@ -31,9 +27,6 @@ export default function BookmarkedArticles() {
 
   return (
     <>
-      <br />
-      <br />
-      <SortingButtons articleList={articleList} originalList={originalList} setArticleList={setArticleList} />
       {articleList.map((each) => (
         <ArticlePreview key={each.id} article={each} dontShowPublishingTime={true} />
       ))}

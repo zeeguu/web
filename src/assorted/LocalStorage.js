@@ -32,6 +32,7 @@ const LocalStorage = {
     lastExerciseCompleteDate: "last_exercise_complete_date",
     LastVisitedPage: "last_visited_page",
     LastVisitedTeacherPage: "last_visited_teacher_page",
+    LastVisitedReadPath: "last_visited_read_path",
     DailyFeedbackLastShown: "daily_feedback_last_shown",
     InviteCode: "invite_code",
     // Keep in sync with index.html inline theme script
@@ -285,6 +286,14 @@ const LocalStorage = {
 
   setLastVisitedTeacherPage: function (path) {
     localStorage[this.Keys.LastVisitedTeacherPage] = path;
+  },
+
+  getLastVisitedReadPath: function () {
+    return localStorage[this.Keys.LastVisitedReadPath] || "/articles";
+  },
+
+  setLastVisitedReadPath: function (path) {
+    localStorage[this.Keys.LastVisitedReadPath] = path;
   },
 
   // Anonymous user methods
