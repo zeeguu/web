@@ -1,4 +1,5 @@
 import { useContext, useState } from "react";
+import PullToRefresh from "react-simple-pull-to-refresh";
 import LoadingAnimation from "../components/LoadingAnimation";
 import { setTitle } from "../assorted/setTitle";
 import strings from "../i18n/definitions";
@@ -11,30 +12,40 @@ export default function BookmarkedArticles() {
   const api = useContext(APIContext);
   const [articleList, setArticleList] = useState(null);
 
-  if (articleList == null) {
-    api.getBookmarkedArticles((articles) => {
-      setArticleList(articles);
+  const fetchBookmarked = () =>
+    new Promise((resolve) => {
+      api.getBookmarkedArticles((articles) => {
+        setArticleList(articles);
+        resolve();
+      });
     });
 
+  if (articleList == null) {
+    fetchBookmarked();
     setTitle("Bookmarked Articles");
-
     return <LoadingAnimation />;
   }
 
   if (articleList.length === 0) {
-    return <s.YellowMessageBox>{strings.noBookmarksYet}</s.YellowMessageBox>;
+    return (
+      <PullToRefresh onRefresh={fetchBookmarked} pullingContent="">
+        <s.YellowMessageBox>{strings.noBookmarksYet}</s.YellowMessageBox>
+      </PullToRefresh>
+    );
   }
 
   return (
-    <>
-      {articleList.map((each) => (
-        <ArticlePreview
-          key={each.id}
-          article={each}
-          dontShowPublishingTime={true}
-          inSavedView={true}
-        />
-      ))}
-    </>
+    <PullToRefresh onRefresh={fetchBookmarked} pullingContent="">
+      <>
+        {articleList.map((each) => (
+          <ArticlePreview
+            key={each.id}
+            article={each}
+            dontShowPublishingTime={true}
+            inSavedView={true}
+          />
+        ))}
+      </>
+    </PullToRefresh>
   );
 }

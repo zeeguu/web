@@ -40,8 +40,8 @@ export default function ArticlesRouter({ hasExtension, isChrome }) {
   }, [location.pathname]);
 
   const searchIcon = (
-    <span style={{ display: "inline-flex", alignItems: "center", padding: "0 0.25em" }}>
-      <SearchRoundedIcon style={{ fontSize: "1.25rem" }} />
+    <span style={{ display: "inline-block", padding: "0 0.25em", verticalAlign: "middle" }}>
+      <SearchRoundedIcon style={{ fontSize: "1.25rem", verticalAlign: "middle" }} />
     </span>
   );
 
