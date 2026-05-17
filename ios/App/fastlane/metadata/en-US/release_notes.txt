@@ -1,6 +1,9 @@
-- Dark mode pass on the reader: softer highlight orange, warm chip backgrounds, and a redesigned alternative-translations menu that's calmer and easier to scan.
-- New: A− / A+ text size control in the reader's settings gear — pick the size that's comfortable, and the menus and translation chips scale with it.
-- Reader layout: punctuation no longer wraps to its own line ("." or "," stuck at the start of a line is gone).
-- Translation menu: opens out of the way of the screen edge instead of overflowing, closes the moment you start scrolling, and the "Add own translation" input is hidden behind a link instead of always taking up space.
-- Onboarding: gentle popups guide new users through translating, reviewing words, and daily exercises the first time they're encountered.
-- Article previews on the homepage: cleaner titles, less link-like, and a tidier "Open" button.
+- Past Lessons redesigned: tap a lesson to expand it in place — no more modal popping over the list. Smooth open/close animation, multiple ✓ marks for replays.
+- Daily audio + Read tabs now support horizontal swipe between sub-tabs (Today ↔ Past Lessons; Discover ↔ My Articles ↔ Classroom ↔ Search).
+- Read tabs reorganized: Discover, My Articles, Classroom, and a Search icon on the right. Read remembers the last tab you visited.
+- Discover gets a "Topics: …" chip at the top showing what's curating your feed, with a tap-to-customize gear.
+- Simplify dialog now shows the level transition visually (e.g. B2 → A2) and the button names the outcome — "Simplify to A2".
+- Once you simplify an article, the original disappears from Discover and My Articles, and the simplified version is what opens when you tap it.
+- Pull-to-refresh on Discover and My Articles now actually fetches fresh data. Leaving the reader also refreshes the feed automatically.
+- Search now full-width with a cleaner saved-searches page; closing a search returns to the search home; results page no longer reloads the whole app.
+- Bigger, more readable modals on phones (no more cramped titles).
