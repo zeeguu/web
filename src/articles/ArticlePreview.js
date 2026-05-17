@@ -161,19 +161,23 @@ export default function ArticlePreview({
 
   const is_saved = article.has_personal_copy || article.has_uploader || isArticleSaved === true;
   const externalUrl = article.parent_url || article.url;
+  // If the user has already simplified this article, the in-app reader has
+  // a readable version (the child) — open that instead of bouncing externally.
+  const inAppArticleId = article.user_simplified_article_id || article.id;
   const should_open_in_zeeguu = Feature.always_open_externally()
     ? is_saved
     : article.video ||
       (!Feature.extension_experiment1() && !hasExtension) ||
       is_saved ||
-      article.parent_article_id; // Simplified articles (with parent_article_id) always open in Zeeguu reader
+      article.parent_article_id || // Simplified articles (with parent_article_id) always open in Zeeguu reader
+      article.user_simplified_article_id; // Original whose simplified child the user already has
   const should_open_with_modal = doNotShowRedirectionModal_UserPreference === false;
 
   function imageLink() {
     const img = <img alt="" src={article.img_url} style={{ cursor: "pointer" }} />;
     if (should_open_in_zeeguu) {
       return (
-        <Link to={`/read/article?id=${article.id}`} onClick={handleArticleClick}>
+        <Link to={`/read/article?id=${inAppArticleId}`} onClick={handleArticleClick}>
           {img}
         </Link>
       );
@@ -205,7 +209,7 @@ export default function ArticlePreview({
   }
 
   function titleLink(article) {
-    let linkToRedirect = `/read/article?id=${article.id}`;
+    let linkToRedirect = `/read/article?id=${inAppArticleId}`;
 
     let open_in_zeeguu = (
       <ActionButton as={Link} to={linkToRedirect} onClick={handleArticleClick}>

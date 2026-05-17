@@ -345,6 +345,10 @@ export default function ArticleReader({ teacherArticleID }) {
       // "already_done" (existing version at user's level) — handle both.
       const simplified = result.levels?.find((l) => !l.is_original);
       if (simplified) {
+        // Drop the cached Discover feed so the original (now superseded
+        // by the simplified child) doesn't keep appearing for up to 5
+        // minutes after the user simplifies.
+        api.invalidateCache("user_articles/recommended");
         history.replace("/read/article?id=" + simplified.id);
         return;
       }

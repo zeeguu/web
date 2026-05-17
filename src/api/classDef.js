@@ -41,6 +41,21 @@ const Zeeguu_API = class {
     return null;
   }
 
+  // Drop cached responses whose endpoint starts with `endpointPrefix`.
+  // Use after mutations that should make the user see fresh data
+  // immediately (e.g. simplifying an article → feed should drop the
+  // original).
+  invalidateCache(endpointPrefix) {
+    for (const key of this._cache.keys()) {
+      // Keys are `${lang}:${endpoint}` — match against the endpoint half.
+      const colonIdx = key.indexOf(":");
+      const endpoint = colonIdx === -1 ? key : key.slice(colonIdx + 1);
+      if (endpoint.startsWith(endpointPrefix)) {
+        this._cache.delete(key);
+      }
+    }
+  }
+
   apiLog(what) {
     console.log("➡️ " + what);
   }
