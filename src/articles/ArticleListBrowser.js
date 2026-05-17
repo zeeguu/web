@@ -200,8 +200,16 @@ export default function ArticleListBrowser({ content, searchQuery, searchPublish
     );
   }
 
+  // Pull-to-refresh should always hit the network — otherwise a cached
+  // recommendations response (5-min TTL) keeps serving stale data and
+  // the user can't see fresh results without restarting the app.
+  const refreshFromNetwork = async () => {
+    api.invalidateCache("user_articles/recommended");
+    await loadArticles();
+  };
+
   return (
-    <PullToRefresh onRefresh={loadArticles} pullingContent="">
+    <PullToRefresh onRefresh={refreshFromNetwork} pullingContent="">
       <>
       {!searchQuery && (
         <>

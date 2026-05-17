@@ -40,21 +40,21 @@ export default function ArticlesRouter({ hasExtension, isChrome }) {
   }, [location.pathname]);
 
   const searchIcon = (
-    <span style={{ display: "inline-flex", alignItems: "center", padding: "0 0.25em" }}>
-      <SearchRoundedIcon style={{ fontSize: "1.25rem" }} />
+    <span style={{ display: "inline-block", padding: "0 0.25em", verticalAlign: "middle" }}>
+      <SearchRoundedIcon style={{ fontSize: "1.25rem", verticalAlign: "middle" }} />
     </span>
   );
 
   const tabs = [
     !hideRecommendations && { text: "Discover", link: "/articles" },
+    { text: strings.myArticles, link: "/articles/bookmarked" },
+    isStudent && { text: strings.classroomTab, link: "/articles/classroom" },
     !hideRecommendations && {
       text: searchIcon,
       link: "/articles/mySearches",
       // Stay active on /search too — results are conceptually the search tab.
       isActive: (_, loc) => loc.pathname === "/articles/mySearches" || loc.pathname === "/search",
     },
-    { text: strings.myArticles, link: "/articles/bookmarked" },
-    isStudent && { text: strings.classroomTab, link: "/articles/classroom" },
   ].filter(Boolean);
 
   const swipeRef = useTabbedRoute(

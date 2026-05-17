@@ -34,11 +34,15 @@ export default function ArticlePreview({
   onArticleHidden,
   onUnhideArticle,
   isHiddenView = false,
+  inSavedView = false,
 }) {
   const api = useContext(APIContext);
   const getBrowsingSessionId = useContext(BrowsingSessionContext);
   const [isRedirectionModalOpen, setIsRedirectionModaOpen] = useState(false);
-  const [isArticleSaved, setIsArticleSaved] = useState(article.has_personal_copy);
+  // In a saved view (My Articles, Classroom, etc.) the article is in the
+  // list precisely because it's saved — treat it as such even if the
+  // article's has_personal_copy flag hasn't propagated correctly.
+  const [isArticleSaved, setIsArticleSaved] = useState(article.has_personal_copy || inSavedView);
   const [showInferredTopic, setShowInferredTopic] = useState(true);
   const [interactiveSummary, setInteractiveSummary] = useState(null);
   const [interactiveTitle, setInteractiveTitle] = useState(null);
@@ -161,19 +165,25 @@ export default function ArticlePreview({
 
   const is_saved = article.has_personal_copy || article.has_uploader || isArticleSaved === true;
   const externalUrl = article.parent_url || article.url;
+  // Either flavor of simplification gives us a Zeeguu-readable body —
+  // a simplified article (parent_article_id set) or an original whose
+  // simplified child this user already has (user_simplified_article_id).
+  // The Link target in either case is the simplified id.
+  const hasInAppSimplification = !!(article.parent_article_id || article.user_simplified_article_id);
+  const inAppArticleId = article.user_simplified_article_id || article.id;
   const should_open_in_zeeguu = Feature.always_open_externally()
-    ? is_saved
+    ? is_saved || hasInAppSimplification
     : article.video ||
       (!Feature.extension_experiment1() && !hasExtension) ||
       is_saved ||
-      article.parent_article_id; // Simplified articles (with parent_article_id) always open in Zeeguu reader
+      hasInAppSimplification;
   const should_open_with_modal = doNotShowRedirectionModal_UserPreference === false;
 
   function imageLink() {
     const img = <img alt="" src={article.img_url} style={{ cursor: "pointer" }} />;
     if (should_open_in_zeeguu) {
       return (
-        <Link to={`/read/article?id=${article.id}`} onClick={handleArticleClick}>
+        <Link to={`/read/article?id=${inAppArticleId}`} onClick={handleArticleClick}>
           {img}
         </Link>
       );
@@ -205,7 +215,7 @@ export default function ArticlePreview({
   }
 
   function titleLink(article) {
-    let linkToRedirect = `/read/article?id=${article.id}`;
+    let linkToRedirect = `/read/article?id=${inAppArticleId}`;
 
     let open_in_zeeguu = (
       <ActionButton as={Link} to={linkToRedirect} onClick={handleArticleClick}>

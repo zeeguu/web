@@ -122,6 +122,16 @@ export default function ArticleReader({ teacherArticleID }) {
     uploadScrollActivity();
   }
 
+  // Leaving the reader invalidates the Discover cache. Reading an article
+  // can flip its has_personal_copy state (simplify, save) or the original
+  // can be superseded by a simplified child — and the feed's 5-min cache
+  // would otherwise keep showing the pre-read view until it expires.
+  useEffect(() => {
+    return () => {
+      api.invalidateCache("user_articles/recommended");
+    };
+  }, [api]);
+
   useEffect(() => {
     // Reset state when articleID changes (e.g., deep link to new article)
     setArticleInfo(undefined);
@@ -345,6 +355,10 @@ export default function ArticleReader({ teacherArticleID }) {
       // "already_done" (existing version at user's level) — handle both.
       const simplified = result.levels?.find((l) => !l.is_original);
       if (simplified) {
+        // Drop the cached Discover feed so the original (now superseded
+        // by the simplified child) doesn't keep appearing for up to 5
+        // minutes after the user simplifies.
+        api.invalidateCache("user_articles/recommended");
         history.replace("/read/article?id=" + simplified.id);
         return;
       }
