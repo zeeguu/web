@@ -11,18 +11,20 @@ const Content = styled.div`
 
 const HeroImage = styled.img`
   width: 100%;
-  height: 160px;
+  height: ${(props) => (props.$slim ? "110px" : "160px")};
   object-fit: cover;
   border-radius: 0.5em;
   margin-bottom: 1.2em;
 `;
 
 const Title = styled.h3`
-  color: ${zeeguuOrange};
-  margin: 0 0 2.2em 0;
-  font-size: 1.05rem;
+  /* Near-black (light) / near-white (dark) for AA contrast against the
+     modal background. Orange is reserved for the brand accent. */
+  color: var(--text-primary, #1a1a2e);
+  margin: 0 0 1.4em 0;
+  font-size: 1.1rem;
   line-height: 1.35;
-  font-weight: 600;
+  font-weight: 500;
   overflow-wrap: break-word;
 `;
 
@@ -39,6 +41,26 @@ const ButtonStack = styled.div`
   flex-direction: column;
   gap: 0.7em;
   align-items: center;
+`;
+
+const SecondaryLink = styled.button`
+  background: none;
+  border: none;
+  padding: 0.5em 0.75em;
+  color: ${zeeguuOrange};
+  font-size: 0.95rem;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+
+  &:hover {
+    opacity: 0.8;
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
 `;
 
 const ActionButton = styled.button`
@@ -100,11 +122,23 @@ export default function ChoiceModal({
   loadingLabel,
   primaryFirst = true,
   heroImage,
+  slimHero = false,
+  secondaryAsLink = false,
 }) {
+  const secondary = secondaryAsLink ? (
+    <SecondaryLink onClick={onSecondary} disabled={isLoading}>
+      {secondaryLabel}
+    </SecondaryLink>
+  ) : (
+    <ActionButton $primary={!primaryFirst} onClick={onSecondary}>
+      {secondaryLabel}
+    </ActionButton>
+  );
+
   return (
     <Modal open={true} onClose={onSecondary}>
       <Content>
-        {heroImage && <HeroImage src={heroImage} alt="" />}
+        {heroImage && <HeroImage src={heroImage} alt="" $slim={slimHero} />}
         {title && <Title>{title}</Title>}
         <Message>{message}</Message>
         <ButtonStack>
@@ -116,9 +150,7 @@ export default function ChoiceModal({
             {isLoading && <Spinner />}
             {isLoading ? loadingLabel : primaryLabel}
           </ActionButton>
-          <ActionButton $primary={!primaryFirst} onClick={onSecondary}>
-            {secondaryLabel}
-          </ActionButton>
+          {secondary}
         </ButtonStack>
       </Content>
     </Modal>
