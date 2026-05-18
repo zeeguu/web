@@ -217,18 +217,32 @@ export default function PastLessons() {
 
       {pastLessons.length > 0 && (
         <div>
-          {pastLessons.map((lesson) => (
-            <PastLessonRow
-              key={lesson.lesson_id}
-              lesson={lesson}
-              isOpen={openLessonId === lesson.lesson_id}
-              onToggle={() => toggleLesson(lesson.lesson_id)}
-              api={api}
-              userDetails={userDetails}
-              onLessonCompleted={onLessonCompleted}
-              onProgressUpdate={onProgressUpdate}
-            />
-          ))}
+          {pastLessons.map((lesson, idx) => {
+            const prev = idx > 0 ? pastLessons[idx - 1] : null;
+            const categoryChanged =
+              !prev ||
+              prev.lesson_type !== lesson.lesson_type ||
+              prev.canonical_suggestion !== lesson.canonical_suggestion;
+            return (
+              <React.Fragment key={lesson.lesson_id}>
+                {categoryChanged && (lesson.canonical_suggestion || lesson.lesson_type === "three_words_lesson") && (
+                  <LessonTypeChip $type={lesson.lesson_type} style={{ marginTop: idx > 0 ? "18px" : 0, marginLeft: "4px" }}>
+                    {chipLabel(lesson.lesson_type)}
+                    {lesson.canonical_suggestion ? `: ${lesson.canonical_suggestion}` : ""}
+                  </LessonTypeChip>
+                )}
+                <PastLessonRow
+                  lesson={lesson}
+                  isOpen={openLessonId === lesson.lesson_id}
+                  onToggle={() => toggleLesson(lesson.lesson_id)}
+                  api={api}
+                  userDetails={userDetails}
+                  onLessonCompleted={onLessonCompleted}
+                  onProgressUpdate={onProgressUpdate}
+                />
+              </React.Fragment>
+            );
+          })}
 
           {hasMore && (
             <div style={{ textAlign: "center", marginTop: "20px" }}>
@@ -274,12 +288,6 @@ export function PastLessonRow({
       onClick={onToggle}
       style={{ marginBottom: "8px", cursor: "pointer" }}
     >
-      {(lesson.canonical_suggestion || lesson.lesson_type === "three_words_lesson") && (
-        <LessonTypeChip $type={lesson.lesson_type}>
-          {chipLabel(lesson.lesson_type)}
-          {lesson.canonical_suggestion ? `: ${lesson.canonical_suggestion}` : ""}
-        </LessonTypeChip>
-      )}
       <LessonTitle
         $compact
         style={{
