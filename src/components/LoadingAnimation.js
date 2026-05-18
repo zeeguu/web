@@ -7,12 +7,45 @@ import { FEEDBACK_OPTIONS } from "./FeedbackConstants";
 import isInTeacherWebsite from "../utils/misc/isTeacherWebsite";
 import { API_ENDPOINT } from "../appConstants";
 
+/*
+ * Long-wait diagnosis: probe the network and the server in parallel so we
+ * can tell the user *why* a request is slow ("your connection" vs "our
+ * server") instead of just spinning silently.
+ *
+ * Choice of net probe — `1.1.1.1/cdn-cgi/trace`:
+ *   Cloudflare anycast resolves to the *nearest* network edge for every
+ *   user globally. That isolates the user's local-network latency from
+ *   geographic distance — a probe to `mircealungu.com` (or any fixed-DC
+ *   host) would conflate "your wifi is slow" with "you're far from that
+ *   server." We use `mode: "no-cors"` since 1.1.1.1's trace endpoint
+ *   doesn't send permissive CORS headers; we don't need the body, only
+ *   the timing, so an opaque response is fine.
+ *
+ * Choice of server probe — `${API_ENDPOINT}/ping`:
+ *   Returns `"OK"` with zero DB work. That isolates infrastructure
+ *   health (TLS, app server, request handling) from any specific
+ *   endpoint's quirks. We deliberately do NOT probe a heavier endpoint
+ *   like `/stats/monthly_active_users`: every loading screen would
+ *   hammer a real query against prod, and the latency would vary for
+ *   reasons unrelated to the user's actual wait.
+ *
+ * Why tiny payloads are correct:
+ *   On a slow link, latency dominates transfer time. A 200-byte response
+ *   over Slow 3G is ~RTT + a few ms; a 20KB response is ~RTT + a few
+ *   hundred ms. Bigger payload = slower probe with no extra signal.
+ *
+ * What this does NOT catch:
+ *   Endpoint-specific slowness (e.g. a slow simplification, a slow LLM
+ *   call, a query that's slow only for this user's data) — both probes
+ *   come back fast while the actual request drags on. That case falls
+ *   through to the baseline "Still working…" message, which is honest.
+ */
+
 // A probe is "slow" if it takes longer than this, "failed" if it doesn't
 // resolve before the overall probe budget elapses.
 const PROBE_SLOW_THRESHOLD_MS = 1500;
 const PROBE_TIMEOUT_MS = 4000;
 
-// Net probe: Cloudflare anycast endpoint, CORS-permissive, ~200 byte response.
 const NET_PROBE_URL = "https://1.1.1.1/cdn-cgi/trace";
 
 async function timedProbe(url, signal, { noCors = false } = {}) {
