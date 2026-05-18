@@ -17,7 +17,7 @@ import { API_ENDPOINT, APP_DOMAIN } from "./appConstants";
 import { AUDIO_STATUS, GENERATION_PROGRESS } from "./dailyAudio/AudioLessonConstants";
 
 import {
-  getSharedSession,
+  getStoredSession,
   removeSharedUserInfo,
   saveSharedUserInfo,
   initializeSession,
@@ -68,7 +68,18 @@ function LocationTrackingWrapper({ children }) {
 }
 
 function App() {
-  const [api] = useState(new Zeeguu_API(API_ENDPOINT));
+  // Lazy init: set api.session synchronously before any effect runs, so hooks
+  // declared above the main session-loading effect (e.g. useTranslationOnboarding)
+  // don't fire requests with session=undefined on first mount.
+  const [api] = useState(() => {
+    const a = new Zeeguu_API(API_ENDPOINT);
+    a.session = getStoredSession();
+    return a;
+  });
+  // React-state mirror of api.session. Updated via api.onSessionChange below so
+  // every imperative api.setSession call (login, logout, anon restore, polling)
+  // propagates to consumers of UserContext.
+  const [session, setSession] = useState(() => getStoredSession());
   const themeValue = useTheme();
 
   useUILanguage();
@@ -84,12 +95,18 @@ function App() {
   const translationModal = useTranslationOnboarding(api, userDetails);
 
   const [systemLanguages, setSystemLanguages] = useState();
-  // Initialize session from native storage (for Capacitor) before doing anything else
+  // Initialize session from native storage (for Capacitor) before doing anything else.
+  // On Capacitor, getStoredSession() returns null until Preferences resolves — push
+  // the resolved value through api.setSession so it lands in both api and React state.
   useEffect(() => {
-    initializeSession().then(() => {
+    initializeSession().then((storedSession) => {
+      if (storedSession) api.setSession(storedSession);
       setSessionInitialized(true);
     });
-  }, []);
+  }, [api]);
+
+  // Bridge imperative api.session mutations into React state.
+  useEffect(() => api.onSessionChange(setSession), [api]);
 
   useEffect(() => {
     api.getSystemLanguages((languages) => {
@@ -181,7 +198,10 @@ function App() {
     // we get the latest feature flags for this user and save
     // them in the LocalStorage
 
-    api.session = getSharedSession();
+    // api.session was already initialized synchronously (web) or via the
+    // initializeSession effect above (Capacitor). Re-read here as a defensive
+    // sync in case storage changed between mount and this effect.
+    api.setSession(getStoredSession());
 
     // Only validate if there is a session.
     if (api.session !== undefined && api.session !== null) {
@@ -216,7 +236,7 @@ function App() {
           anonCredentials.password,
           (session) => {
             console.log("Anonymous login successful");
-            api.session = session;
+            api.setSession(session);
             saveSharedUserInfo({ name: "Guest", native_language: "en" }, session);
             loadUserDetails();
           },
@@ -237,9 +257,13 @@ function App() {
       }
     }
 
-    // Log out user on zeeguu.org if they log out of the extension
+    // Log out user on zeeguu.org if they log out of the extension.
+    // Detect storage-side session loss and propagate to api + React state so
+    // PrivateRoute redirects to /log_in. Guard on api.session being set so we
+    // don't fire setState every tick after we've already cleared.
     const interval = setInterval(() => {
-      if (!getSharedSession()) {
+      if (!getStoredSession() && api.session) {
+        api.setSession(undefined);
         setUserDetails({});
         setUserPreferences({});
       }
@@ -257,11 +281,12 @@ function App() {
     setUserPreferences({});
 
     removeSharedUserInfo();
+    api.setSession(undefined);
   }
 
   function handleSuccessfulLogIn(userInfo, sessionId, redirectToArticle = true) {
     console.log("HANDLE SUCCESSFUL SIGN IN");
-    api.session = sessionId;
+    api.setSession(sessionId);
     LocalStorage.setUserInfo(userInfo);
     LocalStorage.clearAnonCredentials(); // Clear anonymous credentials on real login
 
@@ -325,7 +350,7 @@ function App() {
                     setUserDetails,
                     userPreferences,
                     setUserPreferences,
-                    session: getSharedSession(),
+                    session,
                     logoutMethod: logout,
                   }}
                 >

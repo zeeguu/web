@@ -34,7 +34,7 @@ Zeeguu_API.prototype.addUser = function (invite_code, password, userInfo, onSucc
     .then((response) => {
       if (response.ok) {
         response.text().then((session) => {
-          this.session = session;
+          this.setSession(session);
           onSuccess(session);
         });
       } else if (response.status === 400) {
@@ -65,7 +65,7 @@ Zeeguu_API.prototype.addBasicUser = function (invite_code, password, userInfo, o
     .then((response) => {
       if (response.ok) {
         response.text().then((session) => {
-          this.session = session;
+          this.setSession(session);
           onSuccess(session);
         });
       } else if (response.status === 400) {
@@ -95,7 +95,7 @@ Zeeguu_API.prototype.logIn = function (email, password, onError, onSuccess) {
       response.json().then((data) => {
         if (response.status === 200) {
           console.log("GOT SESSOIN: " + data);
-          this.session = data.session;
+          this.setSession(data.session);
           onSuccess(data.session);
           return;
         }
@@ -147,7 +147,7 @@ Zeeguu_API.prototype.addAnonUser = function (uuid, password, invite_code, langua
     .then((response) => {
       if (response.ok) {
         response.text().then((session) => {
-          this.session = session;
+          this.setSession(session);
           onSuccess(session);
         });
       } else if (response.status === 400) {
@@ -175,7 +175,7 @@ Zeeguu_API.prototype.logInAnon = function (uuid, password, onSuccess, onError) {
     .then((response) => {
       if (response.ok) {
         response.text().then((session) => {
-          this.session = session;
+          this.setSession(session);
           onSuccess(session);
         });
       } else {

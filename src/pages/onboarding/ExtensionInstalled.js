@@ -1,4 +1,4 @@
-import { getSharedSession } from "../../utils/cookies/userInfo";
+import { getStoredSession } from "../../utils/cookies/userInfo";
 import { useContext, useEffect } from "react";
 import { useHistory } from "react-router-dom/cjs/react-router-dom";
 import PreferencesPage from "../_pages_shared/PreferencesPage";
@@ -37,7 +37,7 @@ export default function ExtensionInstalled() {
       </Main>
       <Footer>
         <ButtonContainer className={"padding-large"}>
-          {getSharedSession() ? (
+          {getStoredSession() ? (
             <Button className={"full-width-btn"} onClick={() => history.push("/articles")}>
               {strings.goToZeeguuApp}
             </Button>

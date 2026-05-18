@@ -26,7 +26,7 @@ import MyArticlesRouter from "./myArticles/_MyArticlesRouter";
 import ArticleReader from "./reader/ArticleReader";
 import SharedArticleHandler from "./reader/SharedArticleHandler";
 import LoadingAnimation from "./components/LoadingAnimation";
-import { getSharedSession } from "./utils/cookies/userInfo";
+import { getStoredSession } from "./utils/cookies/userInfo";
 import LocalStorage from "./assorted/LocalStorage";
 import { Capacitor } from "@capacitor/core";
 import useAnonymousUpgrade from "./hooks/useAnonymousUpgrade";
@@ -66,7 +66,7 @@ const isCapacitor = () => {
 // Component to handle mobile app homepage redirect
 function HomePage() {
   // Check if user is logged in first
-  const session = getSharedSession();
+  const session = getStoredSession();
   if (session) {
     // User is logged in - redirect to articles (or last visited page)
     const lastVisitedPage = LocalStorage.getLastVisitedPage();

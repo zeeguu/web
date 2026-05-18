@@ -22,7 +22,22 @@ const Zeeguu_API = class {
   constructor(baseAPIurl) {
     this.baseAPIurl = baseAPIurl;
     this._cache = new Map();
+    this._sessionListeners = new Set();
     //this.session = currentSession; is instantiated in App when the user logs in (causes error to actually instantiate it here).
+  }
+
+  // Single mutation point for the session. Direct assignment (`api.session = X`)
+  // is the historic pattern but bypasses listeners — App-level React state and
+  // imperative API mutation drift apart, producing `session=undefined` URLs and
+  // stale-session bugs. All new code should go through here.
+  setSession(value) {
+    this.session = value || undefined;
+    this._sessionListeners.forEach((fn) => fn(this.session));
+  }
+
+  onSessionChange(fn) {
+    this._sessionListeners.add(fn);
+    return () => this._sessionListeners.delete(fn);
   }
 
   // Cache keys include the learned language so switching languages
@@ -65,10 +80,14 @@ const Zeeguu_API = class {
   }
 
   _appendSessionToUrl(endpointName) {
-    if (endpointName.includes("?")) {
-      return `${this.baseAPIurl}/${endpointName}&session=${this.session}`;
+    // Without this guard, `this.session` being undefined produced literal
+    // `session=undefined` in the URL — auth endpoints then 401 in a loop
+    // instead of failing cleanly so the caller can route to login.
+    if (!this.session) {
+      return `${this.baseAPIurl}/${endpointName}`;
     }
-    return `${this.baseAPIurl}/${endpointName}?session=${this.session}`;
+    const separator = endpointName.includes("?") ? "&" : "?";
+    return `${this.baseAPIurl}/${endpointName}${separator}session=${this.session}`;
   }
 
   _getPlainText(endpoint, callback, onError) {

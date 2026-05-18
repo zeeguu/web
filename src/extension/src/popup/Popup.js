@@ -34,7 +34,7 @@ export default function Popup({ loggedIn }) {
         setErrorMessage("Session expired. Please close this popup and click the Zeeguu icon again.");
         return;
       }
-      api.session = user.session;
+      api.setSession(user.session);
 
       const [tab] = await BROWSER_API.tabs.query({ active: true, currentWindow: true });
       if (isUnsupportedTab(tab)) {

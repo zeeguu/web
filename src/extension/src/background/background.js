@@ -128,7 +128,7 @@ async function startReader() {
   try {
     const api = new Zeeguu_API(API_URL);
     const userData = await getUserInfoDictFromCookies(WEB_URL);
-    api.session = userData.session;
+    api.setSession(userData.session);
     await api.logUserActivity(api.OPEN_CONTEXT, "", tab.url, EXTENSION_SOURCE);
     const upload = await sendTabToZeeguu(api, tab);
     BROWSER_API.tabs.create({

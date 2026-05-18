@@ -148,7 +148,7 @@ export default function LanguagePreferences() {
 
         // Set the session
         setUserSession(session);
-        api.session = session;
+        api.setSession(session);
 
         saveSharedUserInfo({ name: "Guest", native_language: translationLanguage }, session);
 
