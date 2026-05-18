@@ -74,6 +74,8 @@
 
   --player-icon-color: #1a1a2e;
 
+  --cefr-bar-color: #16a34a;
+
   color-scheme: light;
 }
 
@@ -147,6 +149,8 @@
   --orange-btn-text: #3d2800;
 
   --player-icon-color: #ffbb54;
+
+  --cefr-bar-color: #22c55e;
 
   --exercise-btn-border: hsl(54, 100%, 95%);
   --exercise-btn-focus: rgba(255, 187, 84, 0.6);

@@ -18,18 +18,19 @@ function LevelBars({ level }) {
   const filled = Math.min(CEFR_ORDINAL[level] ?? CEFR_BAR_COUNT, CEFR_BAR_COUNT);
   return (
     <svg
-      width="14"
-      height="14"
+      width="16"
+      height="16"
       viewBox="0 0 16 16"
+      style={{ color: "var(--cefr-bar-color)" }}
       fill="currentColor"
       aria-hidden="true"
     >
       {CEFR_BAR_GEOMETRY.map((bar, i) => (
         <rect
           key={i}
-          x={bar.x}
+          x={bar.x - 0.25}
           y={bar.y}
-          width={2}
+          width={2.5}
           height={bar.h}
           rx={0.5}
           opacity={i < filled ? 1 : 0.3}
