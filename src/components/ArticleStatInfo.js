@@ -22,8 +22,8 @@ const originalLinkWrapStyle = {
 };
 
 const originalLinkStyle = {
-  color: '#0066cc',
-  textDecoration: 'none',
+  color: '#555',
+  textDecoration: 'underline',
 };
 
 export default function ArticleStatInfo({ articleInfo }) {

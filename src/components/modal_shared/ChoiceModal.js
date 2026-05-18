@@ -47,7 +47,7 @@ const SecondaryLink = styled.button`
   background: none;
   border: none;
   padding: 0.5em 0.75em;
-  color: ${zeeguuOrange};
+  color: #555;
   font-size: 0.95rem;
   cursor: pointer;
   text-decoration: underline;

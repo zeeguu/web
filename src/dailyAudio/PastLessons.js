@@ -1,5 +1,4 @@
 import React, { useState, useContext, useEffect } from "react";
-import { zeeguuOrange } from "../components/colors";
 import { APIContext } from "../contexts/APIContext";
 import { UserContext } from "../contexts/UserContext";
 import LoadingAnimation from "../components/LoadingAnimation";
@@ -203,22 +202,13 @@ export default function PastLessons() {
 
           {hasMore && (
             <div style={{ textAlign: "center", marginTop: "20px" }}>
-              <button
+              <SubtleTextButton
                 onClick={handleLoadMore}
                 disabled={isLoading}
-                style={{
-                  backgroundColor: zeeguuOrange,
-                  color: "white",
-                  border: "none",
-                  borderRadius: "4px",
-                  padding: "10px 20px",
-                  cursor: isLoading ? "not-allowed" : "pointer",
-                  fontSize: "14px",
-                  opacity: isLoading ? 0.6 : 1,
-                }}
+                style={{ opacity: isLoading ? 0.6 : 1 }}
               >
-                {isLoading ? "Loading..." : "Load More"}
-              </button>
+                {isLoading ? "Loading..." : "Load more"}
+              </SubtleTextButton>
             </div>
           )}
 
@@ -257,9 +247,11 @@ export function PastLessonRow({
       <LessonTitle
         $compact
         style={{
-          fontSize: "1.25rem",
+          fontSize: "1.15rem",
           color: "var(--text-primary)",
-          fontWeight: 700,
+          fontWeight: 400,
+          lineHeight: 1.4,
+          letterSpacing: "-0.005em",
           marginTop: 0,
         }}
       >
