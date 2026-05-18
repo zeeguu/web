@@ -131,12 +131,15 @@ export default function ArticleLanguageModal({
         <>
           <div style={{ marginBottom: "0.9em" }}>Article is above your level</div>
           <LevelTransition articleLevel={articleCefrLevel} userLevel={userCefrLevel} />
+          <div style={{ marginTop: "1.1em" }}>
+            Do you want to adapt it before saving?
+          </div>
         </>
       );
     } else if (articleCefrLevel) {
-      message = `This article is${levelClause}. Do you want it adapted to your level?`;
+      message = `This article is${levelClause}. Do you want to adapt it before saving?`;
     } else {
-      message = "Do you want it adapted to your level?";
+      message = "Do you want to adapt it before saving?";
     }
     return (
       <ChoiceModal
@@ -144,8 +147,8 @@ export default function ArticleLanguageModal({
         heroImage={articleImage}
         slimHero
         message={message}
-        primaryLabel="Adapt to my level"
-        secondaryLabel="or read the original"
+        primaryLabel="Adapt and save"
+        secondaryLabel="or save original"
         secondaryAsLink
         loadingLabel="Adapting..."
         onPrimary={onSimplify}
@@ -160,9 +163,9 @@ export default function ArticleLanguageModal({
     <ChoiceModal
       title={articleTitle}
       heroImage={articleImage}
-      message={`This article is in ${articleLangName}${levelClause}. Do you want it translated to ${langName(learnedLanguage)} at your level?`}
-      primaryLabel="Translate"
-      secondaryLabel="Read original"
+      message={`This article is in ${articleLangName}${levelClause}. Do you want it translated to ${langName(learnedLanguage)} at your level before saving?`}
+      primaryLabel="Translate and save"
+      secondaryLabel="Save original"
       loadingLabel="Translating..."
       onPrimary={onTranslateAndAdapt}
       onSecondary={onReadOriginal}

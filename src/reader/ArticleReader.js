@@ -447,7 +447,7 @@ export default function ArticleReader({ teacherArticleID }) {
           <ArticleAuthors articleInfo={articleInfo} />
           <s.ArticleInfoContainer>
             <ArticleStatInfo articleInfo={articleInfo}></ArticleStatInfo>
-            {!articleInfo.parent_url && <ArticleSource url={articleInfo.url} />}
+            {!articleInfo.parent_url && !articleInfo.is_simplified && <ArticleSource url={articleInfo.url} />}
           </s.ArticleInfoContainer>
           <hr></hr>
 
