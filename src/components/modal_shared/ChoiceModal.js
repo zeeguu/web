@@ -31,7 +31,7 @@ const Title = styled.h3`
 const Message = styled.div`
   color: var(--text-primary, #222);
   text-align: center;
-  margin: 0 0 2.2em 0;
+  margin: 0 0 1.2em 0;
   font-size: 1.05rem;
   line-height: 1.5;
 `;

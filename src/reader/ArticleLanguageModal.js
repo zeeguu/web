@@ -122,6 +122,7 @@ export default function ArticleLanguageModal({
   const isSameLanguage = articleLanguage === learnedLanguage;
   const articleLangName = langName(articleLanguage);
   const levelClause = articleCefrLevel ? ` at ${articleCefrLevel} level` : "";
+  const targetClause = userCefrLevel ? ` to ${userCefrLevel}` : " to my level";
 
   if (isSameLanguage) {
     const canShowTransition = articleCefrLevel && userCefrLevel;
@@ -147,7 +148,7 @@ export default function ArticleLanguageModal({
         heroImage={articleImage}
         slimHero
         message={message}
-        primaryLabel="Adapt and save"
+        primaryLabel={`Adapt${targetClause}`}
         secondaryLabel="or save original"
         secondaryAsLink
         loadingLabel="Adapting..."
@@ -164,7 +165,7 @@ export default function ArticleLanguageModal({
       title={articleTitle}
       heroImage={articleImage}
       message={`This article is in ${articleLangName}${levelClause}. Do you want it translated to ${langName(learnedLanguage)} at your level before saving?`}
-      primaryLabel="Translate and save"
+      primaryLabel={`Translate${targetClause}`}
       secondaryLabel="Save original"
       loadingLabel="Translating..."
       onPrimary={onTranslateAndAdapt}
