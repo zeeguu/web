@@ -1,9 +1,7 @@
-- Past Lessons redesigned: tap a lesson to expand it in place — no more modal popping over the list. Smooth open/close animation, with a visible count of how many times you've replayed each.
-- Daily audio + Read tabs now support horizontal swipe between sub-tabs (Today ↔ Past Lessons; Discover ↔ My Articles ↔ Classroom ↔ Search).
-- Read tabs reorganized: Discover, My Articles, Classroom, and a Search icon on the right. Read remembers the last tab you visited.
-- Discover gets a "Topics: …" chip at the top showing what's curating your feed, with a tap-to-customize gear.
-- Simplify dialog now shows the level transition visually (e.g. B2 → A2) and the button names the outcome — "Simplify to A2".
-- Once you simplify an article, the original disappears from Discover and My Articles, and the simplified version is what opens when you tap it.
-- Pull-to-refresh on Discover and My Articles now actually fetches fresh data. Leaving the reader also refreshes the feed automatically.
-- Search now full-width with a cleaner saved-searches page; closing a search returns to the search home; results page no longer reloads the whole app.
-- Bigger, more readable modals on phones (no more cramped titles).
+- Past Lessons: clearer cards with colored Topic / Situation / Vocabulary Lesson chips, soft drop shadows, and a warm progress bar showing how far through each lesson you got.
+- Save Article modal redesigned: see your level vs the article's at a glance, with a clear "Adapt to <your level>" call to action.
+- Reader: simplified articles now carry a "simplified" badge, with a link back to the original.
+- My Articles: "Unsave" is now "Remove"; Hidden Articles moved into the My Articles tab (no separate sidebar entry).
+- Light-mode polish: cards finally have a visible background, links are easier to read.
+- Slow load? You'll now see whether it's the network or the server holding things up.
+- Teachers can now join a classroom directly from Settings.
