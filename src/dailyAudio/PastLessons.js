@@ -38,7 +38,7 @@ const LessonTypeChip = styled.span`
 
 const chipLabel = (lessonType) => {
   if (lessonType === "situation") return "Situation";
-  if (lessonType === "three_words_lesson") return "Vocabulary Lesson";
+  if (lessonType === "three_words_lesson") return "Vocabulary";
   return "Topic";
 };
 
