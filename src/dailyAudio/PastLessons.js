@@ -1,12 +1,39 @@
 import React, { useState, useContext, useEffect } from "react";
+import styled from "styled-components";
 import { APIContext } from "../contexts/APIContext";
 import { UserContext } from "../contexts/UserContext";
 import LoadingAnimation from "../components/LoadingAnimation";
 import useListeningSession from "../hooks/useListeningSession";
 import CustomAudioPlayer from "../components/CustomAudioPlayer";
-import { SubtleTextButton, LessonTitle, LessonMetadata, CompletionCheck } from "./LessonView.sc";
+import { SubtleTextButton, LessonTitle, CompletionCheck } from "./LessonView.sc";
 import { SubtleLessonCard, ProgressBarTrack, ProgressBarFill } from "./SharedLessonView.sc";
 import { shareLessonLink } from "./shareLessonLink";
+
+// Small colored pill that surfaces the lesson category in the card preview.
+// Colors mirror SessionHistory's activity chips (Reading/Browsing/Audio)
+// so the visual language is consistent across activity & lessons.
+const chipPalette = {
+  topic:              { bg: "#e3f2fd", color: "#1565c0" },  // blue
+  situation:          { bg: "#e8f5e9", color: "#2e7d32" },  // green
+  three_words_lesson: { bg: "#f3e5f5", color: "#7b1fa2" },  // purple
+};
+
+const LessonTypeChip = styled.span`
+  display: inline-block;
+  padding: 2px 10px;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  margin-bottom: 6px;
+  background: ${({ $type }) => (chipPalette[$type] || chipPalette.topic).bg};
+  color: ${({ $type }) => (chipPalette[$type] || chipPalette.topic).color};
+`;
+
+const chipLabel = (lessonType) => {
+  if (lessonType === "situation") return "Situation";
+  if (lessonType === "three_words_lesson") return "Vocabulary Lesson";
+  return "Topic";
+};
 
 const lessonProgressSeconds = (lesson) =>
   lesson.pause_position_seconds || lesson.position_seconds || lesson.progress_seconds || 0;
@@ -244,12 +271,18 @@ export function PastLessonRow({
       onClick={onToggle}
       style={{ marginBottom: "8px", cursor: "pointer" }}
     >
+      {(lesson.canonical_suggestion || lesson.lesson_type === "three_words_lesson") && (
+        <LessonTypeChip $type={lesson.lesson_type}>
+          {chipLabel(lesson.lesson_type)}
+          {lesson.canonical_suggestion ? `: ${lesson.canonical_suggestion}` : ""}
+        </LessonTypeChip>
+      )}
       <LessonTitle
         $compact
         style={{
           fontSize: "1.15rem",
           color: "var(--text-primary)",
-          fontWeight: 400,
+          fontWeight: 500,
           lineHeight: 1.4,
           letterSpacing: "-0.005em",
           marginTop: 0,
@@ -276,12 +309,6 @@ export function PastLessonRow({
             // Stop clicks inside the expanded area (player controls, share
             // button) from bubbling up and collapsing the card.
             <div style={{ paddingTop: "12px" }} onClick={(e) => e.stopPropagation()}>
-              {lesson.canonical_suggestion && (
-                <LessonMetadata>
-                  {lesson.lesson_type === "situation" ? "Situation" : "Topic"}:{" "}
-                  <b>{lesson.canonical_suggestion}</b>
-                </LessonMetadata>
-              )}
               <InlineLessonPlayer
                 lesson={lesson}
                 api={api}

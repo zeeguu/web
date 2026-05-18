@@ -8,10 +8,11 @@ export const LessonCard = styled.div`
 `;
 
 export const SubtleLessonCard = styled.div`
-  padding: 16px 18px;
+  padding: 10px 14px;
   border-radius: 14px;
   -webkit-tap-highlight-color: transparent;
   background-color: var(--card-bg);
+  box-shadow: 0 1px 3px var(--shadow-color);
 `;
 
 export const ProgressBarTrack = styled.div`
