@@ -60,12 +60,8 @@ function CollapsedProgressBar({ lesson }) {
     : 0;
   if (pct <= 0 || pct >= 99) return null;
   return (
-    <ProgressBarTrack style={{ marginTop: "8px" }}>
-      <ProgressBarFill
-        $pct={pct}
-        $isCompleted={false}
-        style={{ backgroundColor: "var(--text-faint)" }}
-      />
+    <ProgressBarTrack>
+      <ProgressBarFill $pct={pct} $isCompleted={false} />
     </ProgressBarTrack>
   );
 }

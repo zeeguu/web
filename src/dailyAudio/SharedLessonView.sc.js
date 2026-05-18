@@ -16,11 +16,11 @@ export const SubtleLessonCard = styled.div`
 `;
 
 export const ProgressBarTrack = styled.div`
-  height: 4px;
+  height: 3px;
   background-color: var(--border-light);
   border-radius: 2px;
   overflow: hidden;
-  margin-top: 4px;
+  margin-top: 8px;
 `;
 
 export const ProgressBarFill = styled.div`
