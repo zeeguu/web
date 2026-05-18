@@ -1,5 +1,5 @@
 - Past Lessons: clearer cards with colored Topic / Situation / Vocabulary Lesson chips, soft drop shadows, and a warm progress bar showing how far through each lesson you got.
-- Save Article modal redesigned: see your level vs the article's at a glance, with a clear "Adapt to <your level>" call to action.
+- Save Article modal redesigned: see your level vs the article's at a glance, with a clear "Adapt to your level" call to action.
 - Reader: simplified articles now carry a "simplified" badge, with a link back to the original.
 - My Articles: "Unsave" is now "Remove"; Hidden Articles moved into the My Articles tab (no separate sidebar entry).
 - Light-mode polish: cards finally have a visible background, links are easier to read.
