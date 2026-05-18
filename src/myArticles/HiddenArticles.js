@@ -9,10 +9,23 @@ import ArticlePreview from "../articles/ArticlePreview";
 
 import * as s from "../components/TopMessage.sc";
 
+const introStyle = {
+  fontSize: "0.9rem",
+  color: "var(--secondary-text)",
+  margin: "0.5em 0 1em",
+  textAlign: "center",
+};
+
 export default function HiddenArticles() {
   const api = useContext(APIContext);
   const [articleList, setArticleList] = useState(null);
   const [error, setError] = useState(null);
+
+  const intro = (
+    <p style={introStyle}>
+      Articles you've hidden from your feed. You can restore any of them below.
+    </p>
+  );
 
   const handleUnhideArticle = (articleId) => {
     api.unhideArticle(articleId, () => {
@@ -23,7 +36,7 @@ export default function HiddenArticles() {
   };
 
   useEffect(() => {
-    setTitle(strings.hidden + " - " + strings.myArticles);
+    setTitle(strings.hidden + " - " + strings.articles);
     api.getHiddenUserArticles(0, (articles) => {
       setArticleList(articles);
     }, (err) => {
@@ -34,7 +47,12 @@ export default function HiddenArticles() {
   }, []);
 
   if (error) {
-    return <s.YellowMessageBox>{strings.errorLoadingArticles || "Error loading articles. Please try again."}</s.YellowMessageBox>;
+    return (
+      <>
+        {intro}
+        <s.YellowMessageBox>{strings.errorLoadingArticles || "Error loading articles. Please try again."}</s.YellowMessageBox>
+      </>
+    );
   }
 
   if (articleList == null) {
@@ -42,11 +60,17 @@ export default function HiddenArticles() {
   }
 
   if (articleList.length === 0) {
-    return <s.YellowMessageBox>{strings.noHiddenArticles}</s.YellowMessageBox>;
+    return (
+      <>
+        {intro}
+        <s.YellowMessageBox>{strings.noHiddenArticles}</s.YellowMessageBox>
+      </>
+    );
   }
 
   return (
     <>
+      {intro}
       {articleList.map((each) => (
         <ArticlePreview
           key={each.id}

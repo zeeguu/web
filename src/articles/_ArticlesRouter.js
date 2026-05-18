@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import ArticleListBrowser from "./ArticleListBrowser";
 import BookmarkedArticles from "./BookmarkedArticles";
+import HiddenArticles from "../myArticles/HiddenArticles";
 
 import { Redirect, useLocation } from "react-router-dom";
 import { PrivateRoute } from "../PrivateRoute";
@@ -81,8 +82,13 @@ export default function ArticlesRouter({ hasExtension, isChrome }) {
             />
           )}
           <PrivateRoute
+            exact
             path="/articles/bookmarked"
             component={BookmarkedArticles}
+          />
+          <PrivateRoute
+            path="/articles/bookmarked/hidden"
+            component={HiddenArticles}
           />
           <PrivateRoute
             path="/articles/classroom"

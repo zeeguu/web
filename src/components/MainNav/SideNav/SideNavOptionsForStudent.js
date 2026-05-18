@@ -47,8 +47,6 @@ export default function SideNavOptionsForStudent({ screenWidth }) {
 
       <NavOption {...NavigationOptions.translate} currentPath={path} screenWidth={screenWidth} />
 
-      <NavOption {...NavigationOptions.myArticles} currentPath={path} screenWidth={screenWidth} />
-
       <NavOption {...NavigationOptions.myWords} currentPath={path} screenWidth={screenWidth} />
 
       <NavOption {...NavigationOptions.myActivity} currentPath={path} screenWidth={screenWidth} />

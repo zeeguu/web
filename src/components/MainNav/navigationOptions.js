@@ -57,12 +57,6 @@ export default class NavigationOptions {
     text: strings.activity,
   });
 
-  static myArticles = Object.freeze({
-    linkTo: "/my-articles",
-    icon: <NavIcon name="myTexts" />,
-    text: strings.myArticles,
-  });
-
   static myWords = Object.freeze({
     linkTo: "/words",
     icon: <NavIcon name="words" />,

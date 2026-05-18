@@ -22,7 +22,6 @@ import WordsRouter from "./words/_WordsRouter";
 import TranslateRouter from "./translate/_TranslateRouter";
 import ReadingHistory from "./words/WordHistory";
 import ActivityRouter from "./activity/_ActivityRouter";
-import MyArticlesRouter from "./myArticles/_MyArticlesRouter";
 import ArticleReader from "./reader/ArticleReader";
 import SharedArticleHandler from "./reader/SharedArticleHandler";
 import LoadingAnimation from "./components/LoadingAnimation";
@@ -134,7 +133,8 @@ export default function MainAppRouter({ hasExtension, handleSuccessfulLogIn }) {
       <PrivateRouteWithLayout path="/daily-audio" component={DailyAudioRouter} />
       <PrivateRouteWithLayout path="/shared-lesson/:id" component={SharedLessonView} />
       <PrivateRouteWithLayout path="/translate" component={TranslateRouter} />
-      <PrivateRouteWithLayout path="/my-articles" component={MyArticlesRouter} />
+      <Redirect from="/my-articles/hidden" to="/articles/bookmarked/hidden" />
+      <Redirect from="/my-articles" to="/articles/bookmarked" />
       <PrivateRouteWithLayout path="/words" component={WordsRouter} />
       <PrivateRouteWithLayout path="/history" component={ReadingHistory} />
       <PrivateRouteWithLayout path="/activity-history" component={ActivityRouter} />
