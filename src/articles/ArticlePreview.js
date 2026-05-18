@@ -416,9 +416,11 @@ export default function ArticlePreview({
                   Unhide
                 </ActionButton>
               ) : (
-                <ActionButton onClick={handleHideArticle} variant="muted">
-                  Hide
-                </ActionButton>
+                !inSavedView && (
+                  <ActionButton onClick={handleHideArticle} variant="muted">
+                    Hide
+                  </ActionButton>
+                )
               )}
             </div>
           </div>

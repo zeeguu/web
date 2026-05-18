@@ -33,7 +33,7 @@ export default function SaveArticleButton({
     <>
       {isArticleSaved ? (
         <ActionButton onClick={removeArticle} variant={variant}>
-          Unsave
+          Remove
         </ActionButton>
       ) : (
         <ActionButton onClick={saveArticle} variant={variant}>
