@@ -83,8 +83,7 @@ const Zeeguu_API = class {
     // Without this guard, `this.session` being undefined produced literal
     // `session=undefined` in the URL — auth endpoints then 401 in a loop
     // instead of failing cleanly so the caller can route to login.
-    const hasSession = this.session !== undefined && this.session !== null && this.session !== "";
-    if (!hasSession) {
+    if (!this.session) {
       return `${this.baseAPIurl}/${endpointName}`;
     }
     const separator = endpointName.includes("?") ? "&" : "?";
