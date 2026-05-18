@@ -1,11 +1,12 @@
 import ChoiceModal from "../components/modal_shared/ChoiceModal";
 import { LANGUAGE_CODE_TO_NAME } from "../utils/misc/languageCodeToName";
+import { CEFR_ORDINAL } from "../utils/misc/cefrHelpers";
 
 function langName(code) {
   return LANGUAGE_CODE_TO_NAME[code] || code;
 }
 
-const CEFR_BARS_FILLED = { A1: 1, A2: 2, B1: 3, B2: 4, C1: 4, C2: 4 };
+const CEFR_BAR_COUNT = 4;
 const CEFR_BAR_GEOMETRY = [
   { x: 1, y: 12, h: 3 },
   { x: 5, y: 9, h: 6 },
@@ -14,7 +15,7 @@ const CEFR_BAR_GEOMETRY = [
 ];
 
 function LevelBars({ level }) {
-  const filled = CEFR_BARS_FILLED[level] ?? 4;
+  const filled = Math.min(CEFR_ORDINAL[level] ?? CEFR_BAR_COUNT, CEFR_BAR_COUNT);
   return (
     <svg
       width="14"
@@ -123,27 +124,29 @@ export default function ArticleLanguageModal({
 
   if (isSameLanguage) {
     const canShowTransition = articleCefrLevel && userCefrLevel;
-    const message = canShowTransition ? (
-      <>
-        <div style={{ marginBottom: "0.9em" }}>Article is above your level</div>
-        <LevelTransition articleLevel={articleCefrLevel} userLevel={userCefrLevel} />
-      </>
-    ) : articleCefrLevel ? (
-      `This article is${levelClause}. Do you want it simplified to your level?`
-    ) : (
-      "Do you want it simplified to your level?"
-    );
-    const simplifyLabel = "Adapt to my level";
+    let message;
+    if (canShowTransition) {
+      message = (
+        <>
+          <div style={{ marginBottom: "0.9em" }}>Article is above your level</div>
+          <LevelTransition articleLevel={articleCefrLevel} userLevel={userCefrLevel} />
+        </>
+      );
+    } else if (articleCefrLevel) {
+      message = `This article is${levelClause}. Do you want it adapted to your level?`;
+    } else {
+      message = "Do you want it adapted to your level?";
+    }
     return (
       <ChoiceModal
         title={articleTitle}
         heroImage={articleImage}
         slimHero
         message={message}
-        primaryLabel={simplifyLabel}
+        primaryLabel="Adapt to my level"
         secondaryLabel="or read the original"
         secondaryAsLink
-        loadingLabel="Simplifying..."
+        loadingLabel="Adapting..."
         onPrimary={onSimplify}
         onSecondary={onReadAsIs}
         isLoading={isLoading}
