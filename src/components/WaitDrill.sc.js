@@ -42,18 +42,6 @@ export const DrillDismiss = styled.button`
   &:hover { opacity: 0.85; }
 `;
 
-export const DrillPromptText = styled.div`
-  font-size: 0.95em;
-  margin-bottom: 0.75rem;
-  font-family: system-ui, -apple-system, sans-serif;
-`;
-
-export const DrillPromptActions = styled.div`
-  display: flex;
-  gap: 0.75rem;
-  justify-content: center;
-`;
-
 export const DrillModeLink = styled.button`
   margin-top: 0.5rem;
   background: transparent;

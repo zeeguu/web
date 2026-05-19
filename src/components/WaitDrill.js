@@ -105,7 +105,7 @@ export default function WaitDrill() {
         }}
       >
         <DrillDismiss
-          aria-label="Hide the drill for a day"
+          aria-label="Dismiss the drill"
           onClick={dismiss}
         >
           ×

@@ -62,14 +62,17 @@ const DRILL_CONTAINER_STYLE = {
   height: "auto",
 };
 
-function learnedLanguageName() {
-  const code = LocalStorage.getLearnedLanguage();
-  if (!code) return null;
+const LANG_DISPLAY = (() => {
   try {
-    return new Intl.DisplayNames(["en"], { type: "language" }).of(code);
+    return new Intl.DisplayNames(["en"], { type: "language" });
   } catch {
     return null;
   }
+})();
+
+function learnedLanguageName(code) {
+  if (!code || !LANG_DISPLAY) return null;
+  try { return LANG_DISPLAY.of(code); } catch { return null; }
 }
 
 async function timedProbe(url, signal, { noCors = false } = {}) {
@@ -188,11 +191,12 @@ export default function LoadingAnimation({
     const drillDelay = hardOffline ? delay + 200 : delay + 6000;
     const drillTimer = delay > 0 && !LocalStorage.isDrillSnoozed()
       ? setTimeout(() => {
+          // Drill window has elapsed: kill the reassurance rotation either
+          // way (it's been visible long enough; further ticks are wasted
+          // timer wakeups, even though the reducer already bails on render).
+          clearInterval(reassuranceInterval);
           const lang = LocalStorage.getLearnedLanguage();
-          if (!LocalStorage.isDrillVocabEmpty(lang)) {
-            setShowDrill(true);
-            clearInterval(reassuranceInterval);
-          }
+          if (!LocalStorage.isDrillVocabEmpty(lang)) setShowDrill(true);
         }, drillDelay)
       : null;
 
@@ -247,10 +251,14 @@ export default function LoadingAnimation({
     ? "teacher"
     : "student";
   const spinnerStyle = showDrill ? MUTED_SPINNER_STYLE : undefined;
+  // Drill layout intentionally overrides caller-provided alignment so the
+  // dots stay anchored as the column grows with history.
   const containerStyle = showDrill
     ? { ...specificStyle, ...DRILL_CONTAINER_STYLE }
     : specificStyle;
-  const langName = learnedLanguageName();
+  const langName = showDrill
+    ? learnedLanguageName(LocalStorage.getLearnedLanguage())
+    : null;
 
   return (
     <>
