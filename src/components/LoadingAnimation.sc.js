@@ -30,6 +30,10 @@ const LoadingAnimation = styled.div`
     background: ${darkBlue};
   }
 
+  .muted div {
+    background: #888;
+  }
+
   .lds-ellipsis div {
     position: absolute;
     top: 33px;

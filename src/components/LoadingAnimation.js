@@ -6,6 +6,8 @@ import FeedbackModal from "./FeedbackModal";
 import { FEEDBACK_OPTIONS } from "./FeedbackConstants";
 import isInTeacherWebsite from "../utils/misc/isTeacherWebsite";
 import { API_ENDPOINT } from "../appConstants";
+import LocalStorage from "../assorted/LocalStorage";
+import WaitDrill from "./WaitDrill";
 
 /*
  * Long-wait diagnosis: probe the network and the server in parallel so we
@@ -47,6 +49,31 @@ const PROBE_SLOW_THRESHOLD_MS = 1500;
 const PROBE_TIMEOUT_MS = 4000;
 
 const NET_PROBE_URL = "https://1.1.1.1/cdn-cgi/trace";
+
+// When the drill mounts the orange dots become a muted grey heartbeat
+// above it — same size, just toned down.
+const MUTED_SPINNER_STYLE = { opacity: 0.7 };
+
+// When the drill mounts, pin everything to the top so the dots don't drift
+// upward as history fills the column.
+const DRILL_CONTAINER_STYLE = {
+  justifyContent: "flex-start",
+  paddingTop: "10vh",
+  height: "auto",
+};
+
+const LANG_DISPLAY = (() => {
+  try {
+    return new Intl.DisplayNames(["en"], { type: "language" });
+  } catch {
+    return null;
+  }
+})();
+
+function learnedLanguageName(code) {
+  if (!code || !LANG_DISPLAY) return null;
+  try { return LANG_DISPLAY.of(code); } catch { return null; }
+}
 
 async function timedProbe(url, signal, { noCors = false } = {}) {
   const start = performance.now();
@@ -121,6 +148,7 @@ export default function LoadingAnimation({
   const [serverProbe, setServerProbe] = useState(null);
   const [reassuranceTick, setReassuranceTick] = useState(0);
   const [showReportButton, setShowReportButton] = useState(false);
+  const [showDrill, setShowDrill] = useState(false);
   const [showFeedbackModal, setShowFeedbackModal] = useState(false);
   const [isTeacherWebsite] = useState(isInTeacherWebsite());
 
@@ -140,11 +168,37 @@ export default function LoadingAnimation({
     const diagnosticTimer = setTimeout(() => setShowDiagnostic(true), delay + 3000);
 
     // Rotate reassurance suffix every 5s after the diagnostic appears so a
-    // long wait visibly progresses; the message generator caps at the last
-    // entry, so this stops being meaningful past 20s.
+    // long wait visibly progresses. Cap at the last entry — same-value
+    // return short-circuits React's render path, so we stop firing real
+    // updates past 20s even though the interval keeps ticking.
     const reassuranceInterval = setInterval(() => {
-      setReassuranceTick((t) => t + 1);
+      setReassuranceTick((t) =>
+        t >= REASSURANCE_SUFFIXES.length - 1 ? t : t + 1,
+      );
     }, 5000);
+
+    // Wait-time vocab drill (see WaitDrill.js). Two timings:
+    //   - hard-offline: surface the drill almost immediately, since the
+    //     diagnostic will already say "You may be offline" and nothing
+    //     productive is coming back from the network.
+    //   - normal: let the diagnostic line land first, then ~3s later swap
+    //     the spinner for the drill so the wait stops being dead time.
+    // Skipped entirely when delay=0 (inline spinners like pagination) or
+    // when the user has previously declined the drill (Chrome-dino opt-in).
+    // The empty-cache check is deferred to the drill timer so fast loads
+    // (which unmount before the spinner shows) don't pay the JSON parse.
+    const hardOffline = typeof navigator !== "undefined" && navigator.onLine === false;
+    const drillDelay = hardOffline ? delay + 200 : delay + 6000;
+    const drillTimer = delay > 0 && !LocalStorage.isDrillSnoozed()
+      ? setTimeout(() => {
+          // Drill window has elapsed: kill the reassurance rotation either
+          // way (it's been visible long enough; further ticks are wasted
+          // timer wakeups, even though the reducer already bails on render).
+          clearInterval(reassuranceInterval);
+          const lang = LocalStorage.getLearnedLanguage();
+          if (!LocalStorage.isDrillVocabEmpty(lang)) setShowDrill(true);
+        }, drillDelay)
+      : null;
 
     // Probe race — kick off as soon as the spinner appears, so results are
     // ready by the time the diagnostic message displays.
@@ -184,11 +238,27 @@ export default function LoadingAnimation({
       clearTimeout(diagnosticTimer);
       clearTimeout(probeStartTimer);
       clearTimeout(reportIssueTimer);
+      if (drillTimer) clearTimeout(drillTimer);
       clearInterval(reassuranceInterval);
       abortController.abort("unmount");
     };
     // eslint-disable-next-line
   }, []);
+
+  const spinnerVariant = showDrill
+    ? "muted"
+    : isTeacherWebsite
+    ? "teacher"
+    : "student";
+  const spinnerStyle = showDrill ? MUTED_SPINNER_STYLE : undefined;
+  // Drill layout intentionally overrides caller-provided alignment so the
+  // dots stay anchored as the column grows with history.
+  const containerStyle = showDrill
+    ? { ...specificStyle, ...DRILL_CONTAINER_STYLE }
+    : specificStyle;
+  const langName = showDrill
+    ? learnedLanguageName(LocalStorage.getLearnedLanguage())
+    : null;
 
   return (
     <>
@@ -201,13 +271,9 @@ export default function LoadingAnimation({
         componentCategories={FEEDBACK_OPTIONS.ALL}
       />
       {showLoadingScreen && (
-        <s.LoadingContainer style={specificStyle}>
-          <s.LoadingAnimation>
-            <div
-              className={
-                "lds-ellipsis " + (isTeacherWebsite ? "teacher" : "student")
-              }
-            >
+        <s.LoadingContainer style={containerStyle}>
+          <s.LoadingAnimation style={spinnerStyle}>
+            <div className={`lds-ellipsis ${spinnerVariant}`}>
               <div></div>
               <div></div>
               <div></div>
@@ -224,10 +290,13 @@ export default function LoadingAnimation({
                 marginBottom: "0.75rem",
               }}
             >
-              {diagnoseMessage(netProbe, serverProbe, reassuranceTick)}
+              {showDrill
+                ? `While waiting, let's practice some ${langName || "vocabulary"}!`
+                : diagnoseMessage(netProbe, serverProbe, reassuranceTick)}
             </div>
           )}
-          {showReportButton && (
+          {showDrill && <WaitDrill />}
+          {showReportButton && !showDrill && (
             <StyledGreyButton
               style={{
                 marginTop: showDiagnostic ? "0" : "-1.5rem",
