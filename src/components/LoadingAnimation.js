@@ -6,6 +6,8 @@ import FeedbackModal from "./FeedbackModal";
 import { FEEDBACK_OPTIONS } from "./FeedbackConstants";
 import isInTeacherWebsite from "../utils/misc/isTeacherWebsite";
 import { API_ENDPOINT } from "../appConstants";
+import LocalStorage from "../assorted/LocalStorage";
+import WaitDrill from "./WaitDrill";
 
 /*
  * Long-wait diagnosis: probe the network and the server in parallel so we
@@ -121,6 +123,7 @@ export default function LoadingAnimation({
   const [serverProbe, setServerProbe] = useState(null);
   const [reassuranceTick, setReassuranceTick] = useState(0);
   const [showReportButton, setShowReportButton] = useState(false);
+  const [showDrill, setShowDrill] = useState(false);
   const [showFeedbackModal, setShowFeedbackModal] = useState(false);
   const [isTeacherWebsite] = useState(isInTeacherWebsite());
 
@@ -132,6 +135,22 @@ export default function LoadingAnimation({
     if (!showReportIssue) {
       return () => clearTimeout(loadingTimer);
     }
+
+    // Wait-time vocab drill (see WaitDrill.js). Two timings:
+    //   - hard-offline: surface the drill almost immediately, since the
+    //     diagnostic will already say "You may be offline" and nothing
+    //     productive is coming back from the network.
+    //   - normal: let the diagnostic line land first, then ~3s later swap
+    //     the spinner for the drill so the wait stops being dead time.
+    // Skipped entirely when delay=0 (inline spinners like pagination) or
+    // when the local drill cache is empty.
+    const learnedLang = LocalStorage.getLearnedLanguage();
+    const drillCacheReady = delay > 0 && !LocalStorage.isDrillVocabEmpty(learnedLang);
+    const hardOffline = typeof navigator !== "undefined" && navigator.onLine === false;
+    const drillDelay = hardOffline ? delay + 200 : delay + 6000;
+    const drillTimer = drillCacheReady
+      ? setTimeout(() => setShowDrill(true), drillDelay)
+      : null;
 
     const abortController = new AbortController();
     let serverResult = null;
@@ -184,6 +203,7 @@ export default function LoadingAnimation({
       clearTimeout(diagnosticTimer);
       clearTimeout(probeStartTimer);
       clearTimeout(reportIssueTimer);
+      if (drillTimer) clearTimeout(drillTimer);
       clearInterval(reassuranceInterval);
       abortController.abort("unmount");
     };
@@ -202,18 +222,20 @@ export default function LoadingAnimation({
       />
       {showLoadingScreen && (
         <s.LoadingContainer style={specificStyle}>
-          <s.LoadingAnimation>
-            <div
-              className={
-                "lds-ellipsis " + (isTeacherWebsite ? "teacher" : "student")
-              }
-            >
-              <div></div>
-              <div></div>
-              <div></div>
-              <div></div>
-            </div>
-          </s.LoadingAnimation>
+          {!showDrill && (
+            <s.LoadingAnimation>
+              <div
+                className={
+                  "lds-ellipsis " + (isTeacherWebsite ? "teacher" : "student")
+                }
+              >
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+              </div>
+            </s.LoadingAnimation>
+          )}
           {showDiagnostic && (
             <div
               style={{
@@ -227,6 +249,7 @@ export default function LoadingAnimation({
               {diagnoseMessage(netProbe, serverProbe, reassuranceTick)}
             </div>
           )}
+          {showDrill && <WaitDrill />}
           {showReportButton && (
             <StyledGreyButton
               style={{

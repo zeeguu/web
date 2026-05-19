@@ -38,6 +38,66 @@ const LocalStorage = {
     // Keep in sync with index.html inline theme script
     ThemePreference: "zeeguu-theme-preference",
     ReportedTimezone: "reported_timezone",
+    DrillVocab: "drill_vocab_cache",
+  },
+
+  // Drill cache: small per-language ring buffer of {o, t, src, ts} pairs that
+  // feeds the wait-time vocab drill (see WaitDrill.js). Bounded so a chatty
+  // session doesn't bloat localStorage; oldest evicted first. Dedup on the
+  // origin word so a later, higher-signal source (exercise) supersedes an
+  // earlier translation tap.
+  DRILL_MAX_PER_LANG: 500,
+
+  getDrillVocab: function (lang) {
+    if (!lang) return [];
+    try {
+      const raw = localStorage.getItem(this.Keys.DrillVocab);
+      if (!raw) return [];
+      const all = JSON.parse(raw);
+      return Array.isArray(all[lang]) ? all[lang] : [];
+    } catch (e) {
+      return [];
+    }
+  },
+
+  isDrillVocabEmpty: function (lang) {
+    return this.getDrillVocab(lang).length === 0;
+  },
+
+  pushDrillVocab: function (lang, pairs, src) {
+    if (!lang || !Array.isArray(pairs) || pairs.length === 0) return;
+    let all = {};
+    try {
+      const raw = localStorage.getItem(this.Keys.DrillVocab);
+      if (raw) all = JSON.parse(raw);
+    } catch (e) {
+      all = {};
+    }
+    const existing = Array.isArray(all[lang]) ? all[lang] : [];
+    const byOrigin = new Map(existing.map((e) => [e.o, e]));
+    const now = Date.now();
+    for (const p of pairs) {
+      const o = (p?.o ?? "").trim();
+      const t = (p?.t ?? "").trim();
+      if (!o || !t) continue;
+      byOrigin.set(o, { o, t, src, ts: now });
+    }
+    let next = Array.from(byOrigin.values());
+    if (next.length > this.DRILL_MAX_PER_LANG) {
+      next.sort((a, b) => b.ts - a.ts);
+      next = next.slice(0, this.DRILL_MAX_PER_LANG);
+    }
+    all[lang] = next;
+    try {
+      localStorage.setItem(this.Keys.DrillVocab, JSON.stringify(all));
+    } catch (e) {
+      // localStorage quota exceeded — drop the cache rather than throw.
+      try { localStorage.removeItem(this.Keys.DrillVocab); } catch {}
+    }
+  },
+
+  clearDrillVocab: function () {
+    try { localStorage.removeItem(this.Keys.DrillVocab); } catch {}
   },
 
   userInfo: function () {

@@ -180,10 +180,26 @@ function App() {
       setUserDetails(userDetails);
       setUserPreferences(userPreferences);
       setServerError(false);
+      seedDrillCacheIfEmpty(userDetails.learned_language);
     } catch (e) {
       if (e instanceof ServerUnavailableError) setServerError(true);
       else throw e;
     }
+  }
+
+  // Seed the wait-drill cache (see WaitDrill.js) on first login or after a
+  // localStorage wipe so the drill is useful from the first slow wait, even
+  // for users who haven't completed any exercises yet. One-shot per app boot;
+  // exercise completions and in-reader translations refresh it from then on.
+  function seedDrillCacheIfEmpty(learnedLang) {
+    if (!learnedLang || !LocalStorage.isDrillVocabEmpty(learnedLang)) return;
+    api.getAllScheduledUserWords(false, (words) => {
+      if (!Array.isArray(words) || words.length === 0) return;
+      const pairs = words
+        .filter((w) => w?.from && w?.to)
+        .map((w) => ({ o: w.from, t: w.to }));
+      LocalStorage.pushDrillVocab(learnedLang, pairs, "scheduled");
+    });
   }
 
   useEffect(() => {
