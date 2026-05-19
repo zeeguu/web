@@ -1,5 +1,5 @@
 import { useContext, useEffect, useMemo, useRef, useState } from "react";
-import LocalStorage from "../assorted/LocalStorage";
+import LocalStorage, { DRILL_OPT_IN } from "../assorted/LocalStorage";
 import fisherYatesShuffle from "../assorted/fisherYatesShuffle";
 import { ThemeContext } from "../contexts/ThemeContext";
 import {
@@ -48,22 +48,11 @@ export default function WaitDrill() {
   const [index, setIndex] = useState(0);
   const [revealed, setRevealed] = useState(false);
   const timerRef = useRef(null);
-  const cancelledRef = useRef(false);
 
   useEffect(() => {
-    cancelledRef.current = false;
-    return () => {
-      cancelledRef.current = true;
-      if (timerRef.current) clearTimeout(timerRef.current);
-    };
-  }, []);
-
-  useEffect(() => {
-    if (optIn !== "yes" || queue.length === 0) return;
-    if (timerRef.current) clearTimeout(timerRef.current);
+    if (optIn !== DRILL_OPT_IN.YES || queue.length === 0) return;
     const ms = revealed ? TRANSLATION_VISIBLE_MS : ORIGIN_VISIBLE_MS;
     timerRef.current = setTimeout(() => {
-      if (cancelledRef.current) return;
       if (revealed) {
         setRevealed(false);
         setIndex((i) => (i + 1) % queue.length);
@@ -71,23 +60,22 @@ export default function WaitDrill() {
         setRevealed(true);
       }
     }, ms);
-    return () => {
-      if (timerRef.current) clearTimeout(timerRef.current);
-    };
-  }, [optIn, revealed, index, queue]);
+    return () => clearTimeout(timerRef.current);
+  }, [optIn, revealed, queue]);
 
   if (queue.length === 0) return null;
-  if (optIn === "no") return null;
+  if (optIn === DRILL_OPT_IN.NO) return null;
 
-  if (optIn !== "yes") {
-    function accept() {
-      LocalStorage.setDrillOptIn("yes");
-      setOptIn("yes");
-    }
-    function decline() {
-      LocalStorage.setDrillOptIn("no");
-      setOptIn("no");
-    }
+  function accept() {
+    LocalStorage.setDrillOptIn(DRILL_OPT_IN.YES);
+    setOptIn(DRILL_OPT_IN.YES);
+  }
+  function decline() {
+    LocalStorage.setDrillOptIn(DRILL_OPT_IN.NO);
+    setOptIn(DRILL_OPT_IN.NO);
+  }
+
+  if (optIn !== DRILL_OPT_IN.YES) {
     return (
       <DrillBox $isDark={isDark} as="div">
         <DrillPromptText>
@@ -119,8 +107,7 @@ export default function WaitDrill() {
 
   function dismiss(e) {
     e.stopPropagation();
-    LocalStorage.setDrillOptIn("no");
-    setOptIn("no");
+    decline();
   }
 
   return (

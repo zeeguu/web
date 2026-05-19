@@ -1,6 +1,8 @@
 import { removeSharedUserInfo, setUserSession } from "../utils/cookies/userInfo";
 import uiLanguages from "./uiLanguages";
 
+export const DRILL_OPT_IN = { YES: "yes", NO: "no" };
+
 // Note that shared session info is in Cookies (or localStorage for Capacitor)
 const LocalStorage = {
   Keys: {

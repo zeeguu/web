@@ -6,7 +6,7 @@ import FeedbackModal from "./FeedbackModal";
 import { FEEDBACK_OPTIONS } from "./FeedbackConstants";
 import isInTeacherWebsite from "../utils/misc/isTeacherWebsite";
 import { API_ENDPOINT } from "../appConstants";
-import LocalStorage from "../assorted/LocalStorage";
+import LocalStorage, { DRILL_OPT_IN } from "../assorted/LocalStorage";
 import WaitDrill from "./WaitDrill";
 
 /*
@@ -49,6 +49,9 @@ const PROBE_SLOW_THRESHOLD_MS = 1500;
 const PROBE_TIMEOUT_MS = 4000;
 
 const NET_PROBE_URL = "https://1.1.1.1/cdn-cgi/trace";
+
+// When the drill mounts the spinner shrinks to a muted heartbeat above it.
+const MUTED_SPINNER_STYLE = { transform: "scale(0.45)", opacity: 0.7, margin: "-1.5rem 0" };
 
 async function timedProbe(url, signal, { noCors = false } = {}) {
   const start = performance.now();
@@ -143,10 +146,13 @@ export default function LoadingAnimation({
     const diagnosticTimer = setTimeout(() => setShowDiagnostic(true), delay + 3000);
 
     // Rotate reassurance suffix every 5s after the diagnostic appears so a
-    // long wait visibly progresses; the message generator caps at the last
-    // entry, so this stops being meaningful past 20s.
+    // long wait visibly progresses. Cap at the last entry — same-value
+    // return short-circuits React's render path, so we stop firing real
+    // updates past 20s even though the interval keeps ticking.
     const reassuranceInterval = setInterval(() => {
-      setReassuranceTick((t) => t + 1);
+      setReassuranceTick((t) =>
+        t >= REASSURANCE_SUFFIXES.length - 1 ? t : t + 1,
+      );
     }, 5000);
 
     // Wait-time vocab drill (see WaitDrill.js). Two timings:
@@ -161,7 +167,7 @@ export default function LoadingAnimation({
     // (which unmount before the spinner shows) don't pay the JSON parse.
     const hardOffline = typeof navigator !== "undefined" && navigator.onLine === false;
     const drillDelay = hardOffline ? delay + 200 : delay + 6000;
-    const drillTimer = delay > 0 && LocalStorage.getDrillOptIn() !== "no"
+    const drillTimer = delay > 0 && LocalStorage.getDrillOptIn() !== DRILL_OPT_IN.NO
       ? setTimeout(() => {
           const lang = LocalStorage.getLearnedLanguage();
           if (!LocalStorage.isDrillVocabEmpty(lang)) {
@@ -216,6 +222,13 @@ export default function LoadingAnimation({
     // eslint-disable-next-line
   }, []);
 
+  const spinnerVariant = showDrill
+    ? "muted"
+    : isTeacherWebsite
+    ? "teacher"
+    : "student";
+  const spinnerStyle = showDrill ? MUTED_SPINNER_STYLE : undefined;
+
   return (
     <>
       <FeedbackModal
@@ -228,15 +241,8 @@ export default function LoadingAnimation({
       />
       {showLoadingScreen && (
         <s.LoadingContainer style={specificStyle}>
-          <s.LoadingAnimation
-            style={showDrill ? { transform: "scale(0.45)", opacity: 0.7, margin: "-1.5rem 0" } : {}}
-          >
-            <div
-              className={
-                "lds-ellipsis " +
-                (showDrill ? "muted" : isTeacherWebsite ? "teacher" : "student")
-              }
-            >
+          <s.LoadingAnimation style={spinnerStyle}>
+            <div className={`lds-ellipsis ${spinnerVariant}`}>
               <div></div>
               <div></div>
               <div></div>
