@@ -6,6 +6,7 @@ import { UserContext } from "./contexts/UserContext";
 import { RoutingContext } from "./contexts/RoutingContext";
 import { FeedbackContextProvider } from "./contexts/FeedbackContext";
 import LocalStorage from "./assorted/LocalStorage";
+import { isDrillVocabEmpty, pushDrillVocab } from "./assorted/drillCache";
 import { APIContext } from "./contexts/APIContext";
 import Zeeguu_API, { ServerUnavailableError } from "./api/Zeeguu_API";
 import { ProgressProvider } from "./contexts/ProgressContext";
@@ -192,13 +193,13 @@ function App() {
   // for users who haven't completed any exercises yet. One-shot per app boot;
   // exercise completions and in-reader translations refresh it from then on.
   function seedDrillCacheIfEmpty(learnedLang) {
-    if (!learnedLang || !LocalStorage.isDrillVocabEmpty(learnedLang)) return;
+    if (!learnedLang || !isDrillVocabEmpty(learnedLang)) return;
     api.getAllScheduledUserWords(false, (words) => {
       if (!Array.isArray(words) || words.length === 0) return;
       const pairs = words
         .filter((w) => w?.from && w?.to)
         .map((w) => ({ o: w.from, t: w.to }));
-      LocalStorage.pushDrillVocab(learnedLang, pairs, "scheduled");
+      pushDrillVocab(learnedLang, pairs, "scheduled");
     });
   }
 

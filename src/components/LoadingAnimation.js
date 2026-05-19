@@ -7,6 +7,7 @@ import { FEEDBACK_OPTIONS } from "./FeedbackConstants";
 import isInTeacherWebsite from "../utils/misc/isTeacherWebsite";
 import { API_ENDPOINT } from "../appConstants";
 import LocalStorage from "../assorted/LocalStorage";
+import { isDrillVocabEmpty } from "../assorted/drillCache";
 import WaitDrill from "./WaitDrill";
 
 /*
@@ -195,7 +196,7 @@ export default function LoadingAnimation({
           // timer wakeups, even though the reducer already bails on render).
           clearInterval(reassuranceInterval);
           const lang = LocalStorage.getLearnedLanguage();
-          if (!LocalStorage.isDrillVocabEmpty(lang)) setShowDrill(true);
+          if (!isDrillVocabEmpty(lang)) setShowDrill(true);
         }, drillDelay)
       : null;
 

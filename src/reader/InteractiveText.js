@@ -2,7 +2,7 @@ import LinkedWordList from "./LinkedWordListClass";
 import ZeeguuSpeech from "../speech/APIBasedSpeech";
 import { EXERCISE_TYPES } from "../exercises/ExerciseTypeConstants";
 import { updateTokensWithBookmarks } from "./bookmarkRestoration";
-import LocalStorage from "../assorted/LocalStorage";
+import { pushDrillVocab } from "../assorted/drillCache";
 import { isDev } from "../config";
 
 // Set to true to enable verbose MWE/bookmark debugging
@@ -170,7 +170,7 @@ export default class InteractiveText {
         // Tee to the wait-drill cache so the user's own taps feed the
         // loading-screen vocab drill (see WaitDrill.js).
         if (data.translation && textToTranslate) {
-          LocalStorage.pushDrillVocab(
+          pushDrillVocab(
             this.language,
             [{ o: textToTranslate, t: data.translation }],
             "translation",

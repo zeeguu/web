@@ -1,5 +1,6 @@
 import { useContext, useEffect, useMemo, useRef, useState } from "react";
 import LocalStorage from "../assorted/LocalStorage";
+import { getDrillVocab } from "../assorted/drillCache";
 import fisherYatesShuffle from "../assorted/fisherYatesShuffle";
 import { ThemeContext } from "../contexts/ThemeContext";
 import {
@@ -37,7 +38,7 @@ export default function WaitDrill() {
   const isDark = !!themeValue?.isDark;
   const learnedLang = LocalStorage.getLearnedLanguage();
   const queue = useMemo(
-    () => buildQueue(LocalStorage.getDrillVocab(learnedLang)),
+    () => buildQueue(getDrillVocab(learnedLang)),
     [learnedLang],
   );
 
