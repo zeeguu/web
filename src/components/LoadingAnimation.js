@@ -183,13 +183,12 @@ export default function LoadingAnimation({
     //     productive is coming back from the network.
     //   - normal: let the diagnostic line land first, then ~3s later swap
     //     the spinner for the drill so the wait stops being dead time.
-    // Skipped entirely when delay=0 (inline spinners like pagination) or
-    // when the user has previously declined the drill (Chrome-dino opt-in).
+    // Skipped entirely when delay=0 (inline spinners like pagination).
     // The empty-cache check is deferred to the drill timer so fast loads
     // (which unmount before the spinner shows) don't pay the JSON parse.
     const hardOffline = typeof navigator !== "undefined" && navigator.onLine === false;
     const drillDelay = hardOffline ? delay + 200 : delay + 6000;
-    const drillTimer = delay > 0 && !LocalStorage.isDrillSnoozed()
+    const drillTimer = delay > 0
       ? setTimeout(() => {
           // Drill window has elapsed: kill the reassurance rotation either
           // way (it's been visible long enough; further ticks are wasted

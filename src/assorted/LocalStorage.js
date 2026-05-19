@@ -39,10 +39,7 @@ const LocalStorage = {
     ThemePreference: "zeeguu-theme-preference",
     ReportedTimezone: "reported_timezone",
     DrillVocab: "drill_vocab_cache",
-    DrillSnoozedUntil: "drill_snoozed_until",
   },
-
-  DRILL_SNOOZE_MS: 24 * 60 * 60 * 1000,
 
   // Drill cache: small per-language ring buffer of {o, t, src, ts} pairs that
   // feeds the wait-time vocab drill (see WaitDrill.js). Bounded so a chatty
@@ -101,26 +98,6 @@ const LocalStorage = {
 
   clearDrillVocab: function () {
     try { localStorage.removeItem(this.Keys.DrillVocab); } catch {}
-  },
-
-  // × on the drill is a "shut up for now" — drill silently skips for 24h
-  // then returns next time the user hits a long wait.
-  snoozeDrill: function () {
-    try {
-      localStorage.setItem(
-        this.Keys.DrillSnoozedUntil,
-        String(Date.now() + this.DRILL_SNOOZE_MS),
-      );
-    } catch {}
-  },
-
-  isDrillSnoozed: function () {
-    try {
-      const until = Number(localStorage.getItem(this.Keys.DrillSnoozedUntil));
-      return Number.isFinite(until) && until > Date.now();
-    } catch {
-      return false;
-    }
   },
 
   userInfo: function () {

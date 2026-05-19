@@ -5,7 +5,6 @@ import { ThemeContext } from "../contexts/ThemeContext";
 import {
   DrillAnswer,
   DrillBox,
-  DrillDismiss,
   DrillHint,
   DrillHistoryItem,
   DrillHistoryList,
@@ -29,8 +28,7 @@ function buildQueue(entries) {
 // Minimalist text-only vocab drill shown during long loading waits. Two
 // modes: passive (auto-cycles, card is non-interactive) and interactive
 // (timer off, user taps to reveal / advance). Defaults to passive so the
-// drill is ignorable; the link below toggles. The × always snoozes for
-// 24h.
+// drill is ignorable; the link below toggles.
 //
 // Reads {origin, translation} pairs from LocalStorage (filled by completed
 // exercises / scheduled-words seed / in-reader taps) so it works offline.
@@ -43,7 +41,6 @@ export default function WaitDrill() {
     [learnedLang],
   );
 
-  const [snoozed, setSnoozed] = useState(() => LocalStorage.isDrillSnoozed());
   const [interactive, setInteractive] = useState(false);
   const [index, setIndex] = useState(0);
   const [revealed, setRevealed] = useState(false);
@@ -71,7 +68,6 @@ export default function WaitDrill() {
   }, [interactive, revealed, queue]);
 
   if (queue.length === 0) return null;
-  if (snoozed) return null;
 
   const current = queue[index];
 
@@ -86,12 +82,6 @@ export default function WaitDrill() {
     setInteractive((m) => !m);
   }
 
-  function dismiss(e) {
-    e.stopPropagation();
-    LocalStorage.snoozeDrill();
-    setSnoozed(true);
-  }
-
   return (
     <>
       <DrillBox
@@ -104,12 +94,6 @@ export default function WaitDrill() {
           if (interactive && (e.key === "Enter" || e.key === " ")) handleCardTap();
         }}
       >
-        <DrillDismiss
-          aria-label="Dismiss the drill"
-          onClick={dismiss}
-        >
-          ×
-        </DrillDismiss>
         <div>
           <strong>{current.o}</strong>
           {"  →  "}

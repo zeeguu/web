@@ -1,7 +1,6 @@
 import styled from "styled-components";
 
 export const DrillBox = styled.div`
-  position: relative;
   margin: 0.5rem 0;
   padding: 1rem 1.25rem;
   min-width: 16rem;
@@ -25,21 +24,6 @@ export const DrillHint = styled.div`
 
 export const DrillAnswer = styled.span`
   opacity: ${({ $revealed }) => ($revealed ? 1 : 0.35)};
-`;
-
-export const DrillDismiss = styled.button`
-  position: absolute;
-  top: 0.25rem;
-  right: 0.5rem;
-  background: transparent;
-  border: 0;
-  color: inherit;
-  opacity: 0.4;
-  cursor: pointer;
-  font-size: 1.1em;
-  line-height: 1;
-  padding: 0.25rem 0.4rem;
-  &:hover { opacity: 0.85; }
 `;
 
 export const DrillModeLink = styled.button`
