@@ -6,7 +6,7 @@ import FeedbackModal from "./FeedbackModal";
 import { FEEDBACK_OPTIONS } from "./FeedbackConstants";
 import isInTeacherWebsite from "../utils/misc/isTeacherWebsite";
 import { API_ENDPOINT } from "../appConstants";
-import LocalStorage, { DRILL_OPT_IN } from "../assorted/LocalStorage";
+import LocalStorage from "../assorted/LocalStorage";
 import WaitDrill from "./WaitDrill";
 
 /*
@@ -50,8 +50,27 @@ const PROBE_TIMEOUT_MS = 4000;
 
 const NET_PROBE_URL = "https://1.1.1.1/cdn-cgi/trace";
 
-// When the drill mounts the spinner shrinks to a muted heartbeat above it.
-const MUTED_SPINNER_STYLE = { transform: "scale(0.45)", opacity: 0.7, margin: "-1.5rem 0" };
+// When the drill mounts the orange dots become a muted grey heartbeat
+// above it — same size, just toned down.
+const MUTED_SPINNER_STYLE = { opacity: 0.7 };
+
+// When the drill mounts, pin everything to the top so the dots don't drift
+// upward as history fills the column.
+const DRILL_CONTAINER_STYLE = {
+  justifyContent: "flex-start",
+  paddingTop: "10vh",
+  height: "auto",
+};
+
+function learnedLanguageName() {
+  const code = LocalStorage.getLearnedLanguage();
+  if (!code) return null;
+  try {
+    return new Intl.DisplayNames(["en"], { type: "language" }).of(code);
+  } catch {
+    return null;
+  }
+}
 
 async function timedProbe(url, signal, { noCors = false } = {}) {
   const start = performance.now();
@@ -167,7 +186,7 @@ export default function LoadingAnimation({
     // (which unmount before the spinner shows) don't pay the JSON parse.
     const hardOffline = typeof navigator !== "undefined" && navigator.onLine === false;
     const drillDelay = hardOffline ? delay + 200 : delay + 6000;
-    const drillTimer = delay > 0 && LocalStorage.getDrillOptIn() !== DRILL_OPT_IN.NO
+    const drillTimer = delay > 0 && !LocalStorage.isDrillSnoozed()
       ? setTimeout(() => {
           const lang = LocalStorage.getLearnedLanguage();
           if (!LocalStorage.isDrillVocabEmpty(lang)) {
@@ -228,6 +247,10 @@ export default function LoadingAnimation({
     ? "teacher"
     : "student";
   const spinnerStyle = showDrill ? MUTED_SPINNER_STYLE : undefined;
+  const containerStyle = showDrill
+    ? { ...specificStyle, ...DRILL_CONTAINER_STYLE }
+    : specificStyle;
+  const langName = learnedLanguageName();
 
   return (
     <>
@@ -240,7 +263,7 @@ export default function LoadingAnimation({
         componentCategories={FEEDBACK_OPTIONS.ALL}
       />
       {showLoadingScreen && (
-        <s.LoadingContainer style={specificStyle}>
+        <s.LoadingContainer style={containerStyle}>
           <s.LoadingAnimation style={spinnerStyle}>
             <div className={`lds-ellipsis ${spinnerVariant}`}>
               <div></div>
@@ -259,19 +282,13 @@ export default function LoadingAnimation({
                 marginBottom: "0.75rem",
               }}
             >
-              {showDrill ? (
-                <>
-                  App is loading.
-                  <br />
-                  Meanwhile, let's practice your memory a bit.
-                </>
-              ) : (
-                diagnoseMessage(netProbe, serverProbe, reassuranceTick)
-              )}
+              {showDrill
+                ? `While waiting, let's practice some ${langName || "vocabulary"}!`
+                : diagnoseMessage(netProbe, serverProbe, reassuranceTick)}
             </div>
           )}
           {showDrill && <WaitDrill />}
-          {showReportButton && (
+          {showReportButton && !showDrill && (
             <StyledGreyButton
               style={{
                 marginTop: showDiagnostic ? "0" : "-1.5rem",

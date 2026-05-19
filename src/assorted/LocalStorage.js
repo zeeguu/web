@@ -1,8 +1,6 @@
 import { removeSharedUserInfo, setUserSession } from "../utils/cookies/userInfo";
 import uiLanguages from "./uiLanguages";
 
-export const DRILL_OPT_IN = { YES: "yes", NO: "no" };
-
 // Note that shared session info is in Cookies (or localStorage for Capacitor)
 const LocalStorage = {
   Keys: {
@@ -41,8 +39,10 @@ const LocalStorage = {
     ThemePreference: "zeeguu-theme-preference",
     ReportedTimezone: "reported_timezone",
     DrillVocab: "drill_vocab_cache",
-    DrillOptIn: "drill_opt_in",
+    DrillSnoozedUntil: "drill_snoozed_until",
   },
+
+  DRILL_SNOOZE_MS: 24 * 60 * 60 * 1000,
 
   // Drill cache: small per-language ring buffer of {o, t, src, ts} pairs that
   // feeds the wait-time vocab drill (see WaitDrill.js). Bounded so a chatty
@@ -103,15 +103,24 @@ const LocalStorage = {
     try { localStorage.removeItem(this.Keys.DrillVocab); } catch {}
   },
 
-  // Drill opt-in: "yes" / "no" / null (never asked). Chrome-dino UX —
-  // first long wait prompts; the choice is sticky across sessions until
-  // the user reverses it via the drill's dismiss control.
-  getDrillOptIn: function () {
-    try { return localStorage.getItem(this.Keys.DrillOptIn); } catch { return null; }
+  // × on the drill is a "shut up for now" — drill silently skips for 24h
+  // then returns next time the user hits a long wait.
+  snoozeDrill: function () {
+    try {
+      localStorage.setItem(
+        this.Keys.DrillSnoozedUntil,
+        String(Date.now() + this.DRILL_SNOOZE_MS),
+      );
+    } catch {}
   },
 
-  setDrillOptIn: function (value) {
-    try { localStorage.setItem(this.Keys.DrillOptIn, value); } catch {}
+  isDrillSnoozed: function () {
+    try {
+      const until = Number(localStorage.getItem(this.Keys.DrillSnoozedUntil));
+      return Number.isFinite(until) && until > Date.now();
+    } catch {
+      return false;
+    }
   },
 
   userInfo: function () {

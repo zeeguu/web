@@ -13,7 +13,7 @@ export const DrillBox = styled.div`
   color: ${({ $isDark }) => ($isDark ? "#f0f0f0" : "#222")};
   border: 1px solid ${({ $isDark }) => ($isDark ? "rgba(255,255,255,0.25)" : "rgba(0,0,0,0.2)")};
   border-radius: 0.25rem;
-  cursor: pointer;
+  cursor: ${({ $interactive }) => ($interactive ? "pointer" : "default")};
   user-select: none;
 `;
 
@@ -54,16 +54,30 @@ export const DrillPromptActions = styled.div`
   justify-content: center;
 `;
 
-export const DrillPromptButton = styled.button`
-  font-family: inherit;
-  font-size: 0.9em;
-  padding: 0.4rem 1.1rem;
-  border-radius: 0.25rem;
-  cursor: pointer;
-  border: 1px solid ${({ $isDark }) => ($isDark ? "rgba(255,255,255,0.4)" : "rgba(0,0,0,0.3)")};
-  background: ${({ $isDark, $muted }) =>
-    $muted ? "transparent" : $isDark ? "rgba(255,255,255,0.12)" : "rgba(0,0,0,0.05)"};
+export const DrillModeLink = styled.button`
+  margin-top: 0.5rem;
+  background: transparent;
+  border: 0;
   color: inherit;
-  opacity: ${({ $muted }) => ($muted ? 0.65 : 1)};
-  &:hover { opacity: 1; }
+  opacity: 0.55;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 0.8em;
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+  &:hover { opacity: 0.9; }
+`;
+
+export const DrillHistoryList = styled.div`
+  margin: 0.5rem 0 0;
+  min-width: 16rem;
+  max-width: 22rem;
+  text-align: center;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.85em;
+  line-height: 1.5;
+`;
+
+export const DrillHistoryItem = styled.div`
+  opacity: ${({ $age }) => Math.max(0.18, 0.7 - $age * 0.12)};
 `;
