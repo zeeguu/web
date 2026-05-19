@@ -39,6 +39,7 @@ const LocalStorage = {
     ThemePreference: "zeeguu-theme-preference",
     ReportedTimezone: "reported_timezone",
     DrillVocab: "drill_vocab_cache",
+    DrillOptIn: "drill_opt_in",
   },
 
   // Drill cache: small per-language ring buffer of {o, t, src, ts} pairs that
@@ -98,6 +99,17 @@ const LocalStorage = {
 
   clearDrillVocab: function () {
     try { localStorage.removeItem(this.Keys.DrillVocab); } catch {}
+  },
+
+  // Drill opt-in: "yes" / "no" / null (never asked). Chrome-dino UX —
+  // first long wait prompts; the choice is sticky across sessions until
+  // the user reverses it via the drill's dismiss control.
+  getDrillOptIn: function () {
+    try { return localStorage.getItem(this.Keys.DrillOptIn); } catch { return null; }
+  },
+
+  setDrillOptIn: function (value) {
+    try { localStorage.setItem(this.Keys.DrillOptIn, value); } catch {}
   },
 
   userInfo: function () {

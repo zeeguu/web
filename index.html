@@ -48,11 +48,18 @@
     // minimal text drill into #root. React's createRoot replaces it on
     // mount.
     //
+    // Chrome-dino UX: first long wait asks "practice while we wait?"; the
+    // choice is sticky.
+    //
     // Key names below must stay in sync with:
     //   - LocalStorage.Keys.LearnedLanguage ("learned_language")
     //   - LocalStorage.Keys.DrillVocab     ("drill_vocab_cache")
+    //   - LocalStorage.Keys.DrillOptIn     ("drill_opt_in")
     (function () {
         try {
+            var optIn = localStorage.getItem('drill_opt_in');
+            if (optIn === 'no') return;
+
             var lang = localStorage.getItem('learned_language');
             if (!lang) return;
             var raw = localStorage.getItem('drill_vocab_cache');
@@ -73,8 +80,8 @@
             });
             if (!queue.length) return;
 
-            // Brief delay so a cached/fast load doesn't flash the drill before
-            // React renders. On 3G the bundle takes far longer than this.
+            // Brief delay so a fast/cached load doesn't flash the drill
+            // before React renders. On 3G the bundle takes far longer.
             setTimeout(function () {
                 var root = document.getElementById('root');
                 if (!root || root.children.length > 0) return;
@@ -83,49 +90,101 @@
                 var bg = isDark ? '#1a1a2e' : '#ffffff';
                 var fg = isDark ? '#f0f0f0' : '#222';
                 var border = isDark ? 'rgba(255,255,255,0.25)' : 'rgba(0,0,0,0.2)';
+                var btnBg = isDark ? 'rgba(255,255,255,0.12)' : 'rgba(0,0,0,0.05)';
+                var btnBorder = isDark ? 'rgba(255,255,255,0.4)' : 'rgba(0,0,0,0.3)';
 
                 root.innerHTML =
                     '<div id="zg-predrill-shell" style="position:fixed;inset:0;background:' + bg + ';color:' + fg + ';display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:system-ui,-apple-system,sans-serif;padding:1rem;overflow:hidden">' +
-                      '<div style="opacity:.65;font-size:.9em;margin-bottom:1rem;text-align:center;max-width:22rem">App is loading.<br>Meanwhile, let\'s practice your memory a bit.</div>' +
-                      '<div id="zg-predrill-box" style="padding:1rem 1.25rem;min-width:16rem;max-width:22rem;text-align:center;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:1rem;line-height:1.6;border:1px solid ' + border + ';border-radius:.25rem;cursor:pointer;user-select:none">' +
-                        '<div><strong id="zg-predrill-o"></strong>  →  <span id="zg-predrill-t" style="opacity:.35">?</span></div>' +
-                        '<div id="zg-predrill-hint" style="font-size:.75em;opacity:.5;margin-top:.5rem">tap to reveal</div>' +
-                      '</div>' +
+                      '<div style="opacity:.65;font-size:.9em;margin-bottom:.75rem;text-align:center;max-width:22rem">App is loading.<br>Meanwhile, let\'s practice your memory a bit.</div>' +
+                      '<div style="margin-bottom:.5rem;opacity:.6;font-size:.85em;letter-spacing:.3em">• • •</div>' +
+                      '<div id="zg-predrill-area"></div>' +
                     '</div>';
 
+                var area = document.getElementById('zg-predrill-area');
                 var idx = 0;
                 var revealed = false;
-                var oEl = document.getElementById('zg-predrill-o');
-                var tEl = document.getElementById('zg-predrill-t');
-                var hintEl = document.getElementById('zg-predrill-hint');
-                var box = document.getElementById('zg-predrill-box');
+                var timer = null;
 
-                function alive() { return oEl && oEl.isConnected; }
-                function show() {
-                    if (!alive()) return;
-                    oEl.textContent = queue[idx].o;
-                    tEl.textContent = '?';
-                    tEl.style.opacity = '0.35';
-                    hintEl.textContent = 'tap to reveal';
-                    revealed = false;
+                function boxStyle() {
+                    return 'position:relative;padding:1rem 1.25rem;min-width:16rem;max-width:22rem;text-align:center;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:1rem;line-height:1.6;border:1px solid ' + border + ';border-radius:.25rem;user-select:none';
                 }
-                function reveal() {
-                    if (!alive()) return;
-                    tEl.textContent = queue[idx].t;
-                    tEl.style.opacity = '1';
-                    hintEl.textContent = 'tap for next';
-                    revealed = true;
+                function btnStyle(muted) {
+                    return 'font-family:inherit;font-size:.9em;padding:.4rem 1.1rem;border-radius:.25rem;cursor:pointer;color:inherit;border:1px solid ' + btnBorder + ';background:' + (muted ? 'transparent' : btnBg) + ';opacity:' + (muted ? '.65' : '1');
                 }
-                if (box) box.onclick = function () {
-                    if (revealed) {
+
+                function renderPrompt() {
+                    area.innerHTML =
+                        '<div style="' + boxStyle() + '">' +
+                          '<div style="font-family:system-ui,sans-serif;font-size:.95em;margin-bottom:.75rem">Practice a few words while we wait?</div>' +
+                          '<div style="display:flex;gap:.75rem;justify-content:center">' +
+                            '<button id="zg-predrill-yes" style="' + btnStyle(false) + '">yes</button>' +
+                            '<button id="zg-predrill-no" style="' + btnStyle(true) + '">no thanks</button>' +
+                          '</div>' +
+                        '</div>';
+                    document.getElementById('zg-predrill-yes').onclick = function () {
+                        try { localStorage.setItem('drill_opt_in', 'yes'); } catch (e) {}
+                        renderDrill();
+                    };
+                    document.getElementById('zg-predrill-no').onclick = function () {
+                        try { localStorage.setItem('drill_opt_in', 'no'); } catch (e) {}
+                        var shell = document.getElementById('zg-predrill-shell');
+                        if (shell) shell.remove();
+                    };
+                }
+
+                function renderDrill() {
+                    area.innerHTML =
+                        '<div id="zg-predrill-box" style="' + boxStyle() + ';cursor:pointer">' +
+                          '<button id="zg-predrill-x" aria-label="Stop showing the drill" style="position:absolute;top:.25rem;right:.5rem;background:transparent;border:0;color:inherit;opacity:.4;cursor:pointer;font-size:1.1em;line-height:1;padding:.25rem .4rem">×</button>' +
+                          '<div><strong id="zg-predrill-o"></strong>  →  <span id="zg-predrill-t" style="opacity:.35">?</span></div>' +
+                          '<div id="zg-predrill-hint" style="font-size:.75em;opacity:.5;margin-top:.5rem">tap to reveal</div>' +
+                        '</div>';
+                    var box = document.getElementById('zg-predrill-box');
+                    var oEl = document.getElementById('zg-predrill-o');
+                    var tEl = document.getElementById('zg-predrill-t');
+                    var hintEl = document.getElementById('zg-predrill-hint');
+
+                    function alive() { return oEl && oEl.isConnected; }
+                    function show() {
+                        if (!alive()) return;
+                        oEl.textContent = queue[idx].o;
+                        tEl.textContent = '?';
+                        tEl.style.opacity = '0.35';
+                        hintEl.textContent = 'tap to reveal';
+                        revealed = false;
+                        timer = setTimeout(reveal, 5000);
+                    }
+                    function reveal() {
+                        if (!alive()) return;
+                        tEl.textContent = queue[idx].t;
+                        tEl.style.opacity = '1';
+                        hintEl.textContent = 'tap for next';
+                        revealed = true;
+                        timer = setTimeout(next, 2500);
+                    }
+                    function next() {
                         idx = (idx + 1) % queue.length;
                         show();
-                    } else {
-                        reveal();
                     }
-                };
-                show();
-            }, 600);
+                    box.onclick = function (e) {
+                        if (e.target && e.target.id === 'zg-predrill-x') return;
+                        if (timer) clearTimeout(timer);
+                        if (revealed) next();
+                        else reveal();
+                    };
+                    document.getElementById('zg-predrill-x').onclick = function (e) {
+                        e.stopPropagation();
+                        if (timer) clearTimeout(timer);
+                        try { localStorage.setItem('drill_opt_in', 'no'); } catch (err) {}
+                        var shell = document.getElementById('zg-predrill-shell');
+                        if (shell) shell.remove();
+                    };
+                    show();
+                }
+
+                if (optIn === 'yes') renderDrill();
+                else renderPrompt();
+            }, 350);
         } catch (e) {
             // Any parse/storage error — silently let the normal load proceed.
         }

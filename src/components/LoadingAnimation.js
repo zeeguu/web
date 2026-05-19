@@ -136,24 +136,6 @@ export default function LoadingAnimation({
       return () => clearTimeout(loadingTimer);
     }
 
-    // Wait-time vocab drill (see WaitDrill.js). Two timings:
-    //   - hard-offline: surface the drill almost immediately, since the
-    //     diagnostic will already say "You may be offline" and nothing
-    //     productive is coming back from the network.
-    //   - normal: let the diagnostic line land first, then ~3s later swap
-    //     the spinner for the drill so the wait stops being dead time.
-    // Skipped entirely when delay=0 (inline spinners like pagination).
-    // The empty-cache check is deferred to the drill timer so fast loads
-    // (which unmount before the spinner shows) don't pay the JSON parse.
-    const hardOffline = typeof navigator !== "undefined" && navigator.onLine === false;
-    const drillDelay = hardOffline ? delay + 200 : delay + 6000;
-    const drillTimer = delay > 0
-      ? setTimeout(() => {
-          const lang = LocalStorage.getLearnedLanguage();
-          if (!LocalStorage.isDrillVocabEmpty(lang)) setShowDrill(true);
-        }, drillDelay)
-      : null;
-
     const abortController = new AbortController();
     let serverResult = null;
 
@@ -166,6 +148,28 @@ export default function LoadingAnimation({
     const reassuranceInterval = setInterval(() => {
       setReassuranceTick((t) => t + 1);
     }, 5000);
+
+    // Wait-time vocab drill (see WaitDrill.js). Two timings:
+    //   - hard-offline: surface the drill almost immediately, since the
+    //     diagnostic will already say "You may be offline" and nothing
+    //     productive is coming back from the network.
+    //   - normal: let the diagnostic line land first, then ~3s later swap
+    //     the spinner for the drill so the wait stops being dead time.
+    // Skipped entirely when delay=0 (inline spinners like pagination) or
+    // when the user has previously declined the drill (Chrome-dino opt-in).
+    // The empty-cache check is deferred to the drill timer so fast loads
+    // (which unmount before the spinner shows) don't pay the JSON parse.
+    const hardOffline = typeof navigator !== "undefined" && navigator.onLine === false;
+    const drillDelay = hardOffline ? delay + 200 : delay + 6000;
+    const drillTimer = delay > 0 && LocalStorage.getDrillOptIn() !== "no"
+      ? setTimeout(() => {
+          const lang = LocalStorage.getLearnedLanguage();
+          if (!LocalStorage.isDrillVocabEmpty(lang)) {
+            setShowDrill(true);
+            clearInterval(reassuranceInterval);
+          }
+        }, drillDelay)
+      : null;
 
     // Probe race — kick off as soon as the spinner appears, so results are
     // ready by the time the diagnostic message displays.
@@ -224,20 +228,21 @@ export default function LoadingAnimation({
       />
       {showLoadingScreen && (
         <s.LoadingContainer style={specificStyle}>
-          {!showDrill && (
-            <s.LoadingAnimation>
-              <div
-                className={
-                  "lds-ellipsis " + (isTeacherWebsite ? "teacher" : "student")
-                }
-              >
-                <div></div>
-                <div></div>
-                <div></div>
-                <div></div>
-              </div>
-            </s.LoadingAnimation>
-          )}
+          <s.LoadingAnimation
+            style={showDrill ? { transform: "scale(0.45)", opacity: 0.7, margin: "-1.5rem 0" } : {}}
+          >
+            <div
+              className={
+                "lds-ellipsis " +
+                (showDrill ? "muted" : isTeacherWebsite ? "teacher" : "student")
+              }
+            >
+              <div></div>
+              <div></div>
+              <div></div>
+              <div></div>
+            </div>
+          </s.LoadingAnimation>
           {showDiagnostic && (
             <div
               style={{
