@@ -91,7 +91,7 @@ const LocalStorage = {
     try {
       localStorage.setItem(this.Keys.DrillVocab, JSON.stringify(all));
     } catch (e) {
-      // localStorage quota exceeded — drop the cache rather than throw.
+      console.warn("Drill cache write failed, dropping cache:", e);
       try { localStorage.removeItem(this.Keys.DrillVocab); } catch {}
     }
   },
