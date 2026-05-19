@@ -1,11 +1,9 @@
-import { useContext, useEffect, useMemo, useRef, useState } from "react";
+import { useContext, useMemo, useState } from "react";
 import LocalStorage from "../assorted/LocalStorage";
 import fisherYatesShuffle from "../assorted/fisherYatesShuffle";
 import { ThemeContext } from "../contexts/ThemeContext";
-import { DrillAnswer, DrillBox, DrillHint, DrillLabel } from "./WaitDrill.sc";
+import { DrillAnswer, DrillBox, DrillHint } from "./WaitDrill.sc";
 
-const ORIGIN_VISIBLE_MS = 4500;
-const TRANSLATION_VISIBLE_MS = 2200;
 const SRC_PRIORITY = ["exercise", "scheduled", "translation"];
 
 function buildQueue(entries) {
@@ -18,9 +16,9 @@ function buildQueue(entries) {
 
 // Minimalist text-only vocab drill shown during long loading waits. Reads
 // {origin, translation} pairs the app already accumulated in LocalStorage
-// (exercises completed, words scheduled for study, in-reader taps) so it works
-// offline. Renders nothing when the cache is empty — caller's regular spinner
-// + diagnostic line still show.
+// (exercises completed, words scheduled for study, in-reader taps) so it
+// works offline. Tap-driven — no auto-advance, so the user gets to think.
+// Renders nothing when the cache is empty.
 export default function WaitDrill() {
   const themeValue = useContext(ThemeContext);
   const isDark = !!themeValue?.isDark;
@@ -32,46 +30,18 @@ export default function WaitDrill() {
 
   const [index, setIndex] = useState(0);
   const [revealed, setRevealed] = useState(false);
-  const timerRef = useRef(null);
-  const cancelledRef = useRef(false);
-
-  useEffect(() => {
-    cancelledRef.current = false;
-    return () => {
-      cancelledRef.current = true;
-      if (timerRef.current) clearTimeout(timerRef.current);
-    };
-  }, []);
-
-  function advance() {
-    if (cancelledRef.current) return;
-    setRevealed(false);
-    setIndex((i) => (i + 1) % queue.length);
-  }
-
-  function reveal() {
-    if (cancelledRef.current) return;
-    setRevealed(true);
-    timerRef.current = setTimeout(advance, TRANSLATION_VISIBLE_MS);
-  }
-
-  useEffect(() => {
-    if (queue.length === 0) return;
-    timerRef.current = setTimeout(reveal, ORIGIN_VISIBLE_MS);
-    return () => {
-      if (timerRef.current) clearTimeout(timerRef.current);
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [index, queue]);
 
   if (queue.length === 0) return null;
 
   const current = queue[index];
 
   function handleTap() {
-    if (timerRef.current) clearTimeout(timerRef.current);
-    if (revealed) advance();
-    else reveal();
+    if (!revealed) {
+      setRevealed(true);
+    } else {
+      setRevealed(false);
+      setIndex((i) => (i + 1) % queue.length);
+    }
   }
 
   return (
@@ -84,7 +54,6 @@ export default function WaitDrill() {
         if (e.key === "Enter" || e.key === " ") handleTap();
       }}
     >
-      <DrillLabel>a word while we wait…</DrillLabel>
       <div>
         <strong>{current.o}</strong>
         {"  →  "}
@@ -92,7 +61,7 @@ export default function WaitDrill() {
           {revealed ? current.t : "?"}
         </DrillAnswer>
       </div>
-      <DrillHint>tap for next</DrillHint>
+      <DrillHint>{revealed ? "tap for next" : "tap to reveal"}</DrillHint>
     </DrillBox>
   );
 }

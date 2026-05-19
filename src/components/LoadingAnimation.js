@@ -248,7 +248,15 @@ export default function LoadingAnimation({
                 marginBottom: "0.75rem",
               }}
             >
-              {diagnoseMessage(netProbe, serverProbe, reassuranceTick)}
+              {showDrill ? (
+                <>
+                  App is loading.
+                  <br />
+                  Meanwhile, let's practice your memory a bit.
+                </>
+              ) : (
+                diagnoseMessage(netProbe, serverProbe, reassuranceTick)
+              )}
             </div>
           )}
           {showDrill && <WaitDrill />}

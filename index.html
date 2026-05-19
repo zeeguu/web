@@ -40,6 +40,97 @@
 </script>
 <noscript>You need to enable JavaScript to run this app.</noscript>
 <div id="root"></div>
+<script>
+    // Pre-React vocab drill (see src/components/WaitDrill.js). On slow
+    // connections the main bundle can take 20+s to arrive; the screen is
+    // fully white because no JS has executed yet. We read the drill cache
+    // directly from localStorage (populated last session) and paint a
+    // minimal text drill into #root. React's createRoot replaces it on
+    // mount.
+    //
+    // Key names below must stay in sync with:
+    //   - LocalStorage.Keys.LearnedLanguage ("learned_language")
+    //   - LocalStorage.Keys.DrillVocab     ("drill_vocab_cache")
+    (function () {
+        try {
+            var lang = localStorage.getItem('learned_language');
+            if (!lang) return;
+            var raw = localStorage.getItem('drill_vocab_cache');
+            if (!raw) return;
+            var all = JSON.parse(raw);
+            var pool = all && all[lang];
+            if (!Array.isArray(pool) || !pool.length) return;
+
+            var priority = ['exercise', 'scheduled', 'translation'];
+            var queue = [];
+            priority.forEach(function (s) {
+                var bucket = pool.filter(function (e) { return e.src === s; });
+                for (var i = bucket.length - 1; i > 0; i--) {
+                    var j = Math.floor(Math.random() * (i + 1));
+                    var t = bucket[i]; bucket[i] = bucket[j]; bucket[j] = t;
+                }
+                queue = queue.concat(bucket);
+            });
+            if (!queue.length) return;
+
+            // Brief delay so a cached/fast load doesn't flash the drill before
+            // React renders. On 3G the bundle takes far longer than this.
+            setTimeout(function () {
+                var root = document.getElementById('root');
+                if (!root || root.children.length > 0) return;
+
+                var isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+                var bg = isDark ? '#1a1a2e' : '#ffffff';
+                var fg = isDark ? '#f0f0f0' : '#222';
+                var border = isDark ? 'rgba(255,255,255,0.25)' : 'rgba(0,0,0,0.2)';
+
+                root.innerHTML =
+                    '<div id="zg-predrill-shell" style="position:fixed;inset:0;background:' + bg + ';color:' + fg + ';display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:system-ui,-apple-system,sans-serif;padding:1rem;overflow:hidden">' +
+                      '<div style="opacity:.65;font-size:.9em;margin-bottom:1rem;text-align:center;max-width:22rem">App is loading.<br>Meanwhile, let\'s practice your memory a bit.</div>' +
+                      '<div id="zg-predrill-box" style="padding:1rem 1.25rem;min-width:16rem;max-width:22rem;text-align:center;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:1rem;line-height:1.6;border:1px solid ' + border + ';border-radius:.25rem;cursor:pointer;user-select:none">' +
+                        '<div><strong id="zg-predrill-o"></strong>  →  <span id="zg-predrill-t" style="opacity:.35">?</span></div>' +
+                        '<div id="zg-predrill-hint" style="font-size:.75em;opacity:.5;margin-top:.5rem">tap to reveal</div>' +
+                      '</div>' +
+                    '</div>';
+
+                var idx = 0;
+                var revealed = false;
+                var oEl = document.getElementById('zg-predrill-o');
+                var tEl = document.getElementById('zg-predrill-t');
+                var hintEl = document.getElementById('zg-predrill-hint');
+                var box = document.getElementById('zg-predrill-box');
+
+                function alive() { return oEl && oEl.isConnected; }
+                function show() {
+                    if (!alive()) return;
+                    oEl.textContent = queue[idx].o;
+                    tEl.textContent = '?';
+                    tEl.style.opacity = '0.35';
+                    hintEl.textContent = 'tap to reveal';
+                    revealed = false;
+                }
+                function reveal() {
+                    if (!alive()) return;
+                    tEl.textContent = queue[idx].t;
+                    tEl.style.opacity = '1';
+                    hintEl.textContent = 'tap for next';
+                    revealed = true;
+                }
+                if (box) box.onclick = function () {
+                    if (revealed) {
+                        idx = (idx + 1) % queue.length;
+                        show();
+                    } else {
+                        reveal();
+                    }
+                };
+                show();
+            }, 600);
+        } catch (e) {
+            // Any parse/storage error — silently let the normal load proceed.
+        }
+    })();
+</script>
 <script type="module" src="/src/index.js"></script>
 <script>
     function getSessionID() {

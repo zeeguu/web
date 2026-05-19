@@ -16,12 +16,6 @@ export const DrillBox = styled.div`
   user-select: none;
 `;
 
-export const DrillLabel = styled.div`
-  font-size: 0.8em;
-  opacity: 0.65;
-  margin-bottom: 0.5rem;
-`;
-
 export const DrillHint = styled.div`
   font-size: 0.75em;
   opacity: 0.5;
