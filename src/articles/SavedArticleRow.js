@@ -7,7 +7,7 @@ import CheckCircleRoundedIcon from "@mui/icons-material/CheckCircleRounded";
 import { APIContext } from "../contexts/APIContext";
 import { MetaStrip, MetaItem, MetaTag } from "../components/MetaStrip.sc";
 import { isSimplifiedArticle, articleSourceLabel } from "../utils/misc/articleHelpers";
-import { formatRelativeShort } from "../utils/misc/readableTime";
+import { timeAgo } from "../utils/misc/readableTime";
 
 import * as s from "./SavedArticleRow.sc";
 
@@ -22,7 +22,7 @@ export default function SavedArticleRow({ article, onArticleRemoved }) {
   const isSimplified = isSimplifiedArticle(article);
   const sourceDomain = articleSourceLabel(article);
   const savedAgo = article.personal_copy_saved_at
-    ? formatRelativeShort(article.personal_copy_saved_at)
+    ? timeAgo(article.personal_copy_saved_at)
     : null;
 
   // reading_completion is a 0..1 ratio from the backend. Hide the

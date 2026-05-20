@@ -13,7 +13,7 @@ import { BrowsingSessionContext } from "../contexts/BrowsingSessionContext";
 import { TranslatableText } from "../reader/TranslatableText";
 import InteractiveText from "../reader/InteractiveText";
 import ZeeguuSpeech from "../speech/APIBasedSpeech";
-import { estimateReadingTime, formatRelativeShort } from "../utils/misc/readableTime";
+import { estimateReadingTime, timeAgo } from "../utils/misc/readableTime";
 import ActionButton from "../components/ActionButton";
 import { articleSourceLabel } from "../utils/misc/articleHelpers";
 import OpenInNewRoundedIcon from "@mui/icons-material/OpenInNewRounded";
@@ -318,13 +318,13 @@ export default function ArticlePreview({
   let savedTag = null;
   let publishedTimeSlot = null;
   if (inSavedView && article.personal_copy_saved_at) {
-    const savedAgo = formatRelativeShort(article.personal_copy_saved_at);
+    const savedAgo = timeAgo(article.personal_copy_saved_at);
     savedTag = <MetaTag>Saved {savedAgo}</MetaTag>;
   } else if (isArticleSaved && !inSavedView) {
     savedTag = <MetaTag>Saved</MetaTag>;
   }
   if (!inSavedView && !dontShowPublishingTime && article.published) {
-    const publishedAgo = formatRelativeShort(article.published);
+    const publishedAgo = timeAgo(article.published);
     publishedTimeSlot = <MetaItem>{publishedAgo}</MetaItem>;
   }
 
