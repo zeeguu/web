@@ -1,8 +1,17 @@
 import { useEffect } from "react";
 import { useHistory } from "react-router-dom";
+import useShadowRef from "./useShadowRef";
 
-export default function useSwipeBack() {
+// Optional `targetPath` redirects the back gesture to a specific route via
+// history.replace (current entry is swapped — no extra back-stack growth).
+// When not set, falls back to history.goBack() — the natural "previous page".
+// Useful when the natural "previous page" isn't what the user expects: e.g.
+// a simplified article opened via Discover→Simplify→reader should land in
+// My Articles on swipe-back, not back at the now-superseded Discover entry.
+export default function useSwipeBack(options = {}) {
+  const { targetPath = null } = options;
   const history = useHistory();
+  const targetPathRef = useShadowRef(targetPath);
 
   useEffect(() => {
     let startX = 0;
@@ -16,10 +25,11 @@ export default function useSwipeBack() {
 
     function onTouchStart(e) {
       const touch = e.touches[0];
-      // Edge-swipe zone — generous enough that a natural thumb start
-      // catches it. Tightening risks the gesture feeling broken for the
-      // user who doesn't know to press the very edge.
-      if (touch.clientX <= 60) {
+      // The swipe-back gesture is initiable from the entire left half of
+      // the screen. The tighter iOS-style edge-only zone made the gesture
+      // hard to discover and easy to miss; the vertical-dominant check in
+      // onTouchMove still filters out content scrolls.
+      if (touch.clientX <= window.innerWidth / 2) {
         startX = touch.clientX;
         startY = touch.clientY;
         tracking = true;
@@ -60,7 +70,11 @@ export default function useSwipeBack() {
           page.style.transition = "";
           page.style.transform = "";
           page.style.opacity = "";
-          history.goBack();
+          if (targetPathRef.current) {
+            history.replace(targetPathRef.current);
+          } else {
+            history.goBack();
+          }
         }, 200);
       } else {
         // Snap back
