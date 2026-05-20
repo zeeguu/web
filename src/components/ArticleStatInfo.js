@@ -1,6 +1,4 @@
 import * as s from "./ArticleStatInfo.sc";
-import { getStaticPath } from "../utils/misc/staticPath";
-import { getHighestCefrLevel } from "../utils/misc/cefrHelpers";
 import getDomainName from "../utils/misc/getDomainName";
 
 const simplifiedPillStyle = {
@@ -27,31 +25,23 @@ const originalLinkStyle = {
 };
 
 export default function ArticleStatInfo({ articleInfo }) {
-  const cefr_level = articleInfo.metrics?.cefr_level || articleInfo.cefr_level || 'B1';
-
   // Backend marks any AI-simplified article via is_simplified; parent_url
   // is only set when the original article is linkable (some simplifications
   // are produced from uploads and have no parent to point back to).
   const isSimplified = !!articleInfo.is_simplified || !!articleInfo.parent_url;
   const hasOriginalLink = !!articleInfo.parent_url;
   const originalDomain = hasOriginalLink ? getDomainName(articleInfo.parent_url) : null;
-  const originalCefr = articleInfo.parent_cefr_level;
 
-  // Check if we have CEFR assessment details (for teachers)
+  // Teacher-only CEFR assessment details — kept so the dashboard surface
+  // can still debug classifier output. User-facing CEFR level is suppressed
+  // (see feedback_cefr_data_unreliable: classifier collapses too often for
+  // the level alone to be trustworthy).
   const assessments = articleInfo.cefr_assessments;
   const hasAssessments = assessments && (assessments.llm?.level || assessments.ml?.level);
-  const displayCefr = assessments?.display_cefr || cefr_level;
-
-  const iconLevel = getHighestCefrLevel(displayCefr);
 
   return (
     <s.StatContainer>
       <s.Difficulty style={{ flexWrap: 'wrap' }}>
-        <img
-          src={getStaticPath("icons", iconLevel + "-level-icon.png")}
-          alt="difficulty icon"
-        ></img>
-        <span style={{ fontWeight: 'bold' }}>{displayCefr}</span>
         {isSimplified && (
           <>
             <span style={simplifiedPillStyle}>simplified</span>
@@ -66,7 +56,6 @@ export default function ArticleStatInfo({ articleInfo }) {
                   style={originalLinkStyle}
                 >
                   {originalDomain}
-                  {originalCefr ? ` (${originalCefr})` : ''}
                   <span aria-hidden="true" style={{ marginLeft: '0.2em' }}>↗</span>
                 </a>
               </span>
