@@ -12,7 +12,6 @@ import ShowLinkRecommendationsIfNoArticles from "./ShowLinkRecommendationsIfNoAr
 import { APIContext } from "../contexts/APIContext";
 import useExtensionCommunication from "../hooks/useExtensionCommunication";
 import useArticlePagination from "../hooks/useArticlePagination";
-import UnfinishedArticlesList from "./UnfinishedArticleList";
 import { setTitle } from "../assorted/setTitle";
 import strings from "../i18n/definitions";
 import useShadowRef from "../hooks/useShadowRef";
@@ -28,7 +27,6 @@ export default function ArticleListBrowser({ content, searchQuery, searchPublish
   // A '=== "true"' clause has been added to the getters to achieve predictable and desired bool values.
   const doNotShowRedirectionModal_LocalStorage = LocalStorage.getDoNotShowRedirectionModal() === "true";
   const [articlesAndVideosList, setArticlesAndVideosList] = useState();
-  const [unfinishedArticles, setUnfinishedArticles] = useState();
   const [originalList, setOriginalList] = useState(null);
   const [searchError, setSearchError] = useState(false);
 
@@ -110,7 +108,6 @@ export default function ArticleListBrowser({ content, searchQuery, searchPublish
       const updatedOriginalList = originalList.filter((item) => item.id !== articleId);
       setOriginalList(updatedOriginalList);
     }
-    setUnfinishedArticles(prev => prev ? prev.filter((item) => item.id !== articleId) : prev);
   };
 
   useEffect(() => {
@@ -154,20 +151,11 @@ export default function ArticleListBrowser({ content, searchQuery, searchPublish
         );
       } else {
         setTitle(strings.titleHome);
-        api.getUnfinishedUserReadingSessions((unfinished) => {
-          setUnfinishedArticles(unfinished);
-          api.getUserArticles((articles) => {
-            let filteredArticles = [...articles];
-            for (let i = 0; i < unfinished.length; i++) {
-              filteredArticles = filteredArticles.filter(
-                (article) => article.id !== unfinished[i].id,
-              );
-            }
-            setArticlesAndVideosList(filteredArticles);
-            setOriginalList([...filteredArticles]);
-            filteredArticles.some((e) => e.video) ? setAreVideosAvailable(true) : setAreVideosAvailable(false);
-            resolve();
-          });
+        api.getUserArticles((articles) => {
+          setArticlesAndVideosList(articles);
+          setOriginalList([...articles]);
+          setAreVideosAvailable(articles.some((e) => e.video));
+          resolve();
         });
       }
     });
@@ -216,7 +204,6 @@ export default function ArticleListBrowser({ content, searchQuery, searchPublish
           <div style={{ display: "flex", padding: "0.5em 1em 0.25em" }}>
             <CustomizeGear />
           </div>
-          <UnfinishedArticlesList unfinishedArticles={unfinishedArticles} onArticleHidden={handleArticleHidden} />
           {areVideosAvailable && (
             <s.SortHolder
               style={{
