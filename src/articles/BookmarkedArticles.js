@@ -5,7 +5,7 @@ import LoadingAnimation from "../components/LoadingAnimation";
 import { setTitle } from "../assorted/setTitle";
 import strings from "../i18n/definitions";
 
-import ArticlePreview from "./ArticlePreview";
+import SavedArticleRow from "./SavedArticleRow";
 
 import * as s from "../components/TopMessage.sc";
 import { APIContext } from "../contexts/APIContext";
@@ -27,6 +27,10 @@ export default function BookmarkedArticles() {
   function getPage(pageNumber, callback) {
     api.getMoreBookmarkedArticles(PAGE_SIZE, pageNumber, callback);
   }
+
+  const handleArticleRemoved = (articleId) => {
+    setArticleList((prev) => (prev ? prev.filter((a) => a.id !== articleId) : prev));
+  };
 
   const [handleScroll, isWaitingForNewArticles, noMoreArticlesToShow, resetPagination] = useArticlePagination(
     articleList,
@@ -77,11 +81,10 @@ export default function BookmarkedArticles() {
     <PullToRefresh onRefresh={fetchFirstPage} pullingContent="">
       <>
         {articleList.map((each) => (
-          <ArticlePreview
+          <SavedArticleRow
             key={each.id}
             article={each}
-            dontShowPublishingTime={true}
-            inSavedView={true}
+            onArticleRemoved={handleArticleRemoved}
           />
         ))}
         {isWaitingForNewArticles && <LoadingAnimation delay={0} />}
