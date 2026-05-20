@@ -44,9 +44,16 @@ const TopTabs = styled.div`
     color: var(--text-primary);
   }
 
-  .headmenuTab:hover,
-  a:hover {
-    color: ${zeeguuOrange};
+  /* Scoped to devices with a real hover capability. On iOS (and any
+     touch-only device) :hover styles trigger sticky-hover: the first
+     tap paints the hover color and *swallows* the click; a second tap
+     is needed to actually navigate. Gating on (hover: hover) means
+     these styles simply don't exist on touch devices. */
+  @media (hover: hover) {
+    .headmenuTab:hover,
+    a:hover {
+      color: ${zeeguuOrange};
+    }
   }
 
   .row__bar {

@@ -192,6 +192,10 @@ Zeeguu_API.prototype.getBookmarkedArticles = function (callback) {
   this._getJSON("user_articles/my_articles", callback);
 };
 
+Zeeguu_API.prototype.getMoreBookmarkedArticles = function (count, page, callback) {
+  this._getJSON("user_articles/my_articles/" + count + "/" + page, callback);
+};
+
 Zeeguu_API.prototype.getCohortArticles = function (callback) {
   this._getJSON("cohort_articles", callback);
 };
@@ -423,10 +427,6 @@ Zeeguu_API.prototype.submitArticleDifficultyFeedback = function (
   callback,
 ) {
   this._post(`/article_difficulty_feedback`, qs.stringify(feedback), callback);
-};
-
-Zeeguu_API.prototype.getUnfinishedUserReadingSessions = function (callback) {
-  this._getJSON(`/get_unfinished_user_reading_sessions`, callback);
 };
 
 Zeeguu_API.prototype.getArticleSimplificationLevels = function (articleID, callback) {

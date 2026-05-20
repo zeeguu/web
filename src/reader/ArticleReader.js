@@ -13,7 +13,6 @@ import DifficultyFeedbackBox from "./DifficultyFeedbackBox";
 import LikeFeedBackBox from "./LikeFeedbackBox";
 import { extractVideoIDFromURL } from "../utils/misc/youtube";
 
-import ArticleSource from "./ArticleSource";
 import ReportBroken from "./ReportBroken";
 
 import TopToolbar from "./TopToolbar";
@@ -21,6 +20,7 @@ import ReviewVocabularyInfoBox from "./ReviewVocabularyInfoBox";
 import ArticleAuthors from "./ArticleAuthors";
 import useShadowRef from "../hooks/useShadowRef";
 import useSwipeBack from "../hooks/useSwipeBack";
+import { isSimplifiedArticle as isSimplifiedArticleFn } from "../utils/misc/articleHelpers";
 import useScrollTracking from "../hooks/useScrollTracking";
 import useReadingSession from "../hooks/useReadingSession";
 import useReviewWordsOnboarding from "../hooks/useReviewWordsOnboarding";
@@ -52,7 +52,6 @@ export function onBlur(api, articleID, source) {
 }
 
 export default function ArticleReader({ teacherArticleID }) {
-  useSwipeBack();
   const api = useContext(APIContext);
   let articleID = "";
   let query = useQuery();
@@ -61,6 +60,12 @@ export default function ArticleReader({ teacherArticleID }) {
   last_reading_percentage = last_reading_percentage === "undefined" ? null : Number(last_reading_percentage);
 
   const [articleInfo, setArticleInfo] = useState();
+
+  // Simplified articles live in the user's saves — back-gesture them to
+  // My Articles regardless of how they got here (direct, or via
+  // Discover→Simplify where history.replace clobbered the entry point).
+  const isSimplified = articleInfo && isSimplifiedArticleFn(articleInfo);
+  useSwipeBack({ targetPath: isSimplified ? "/articles/bookmarked" : null });
   const [loadingProgress, setLoadingProgress] = useState(null);
   const [showSlowLoadingHint, setShowSlowLoadingHint] = useState(false);
 
@@ -447,9 +452,7 @@ export default function ArticleReader({ teacherArticleID }) {
           <ArticleAuthors articleInfo={articleInfo} />
           <s.ArticleInfoContainer>
             <ArticleStatInfo articleInfo={articleInfo}></ArticleStatInfo>
-            {!articleInfo.parent_url && !articleInfo.is_simplified && <ArticleSource url={articleInfo.url} />}
           </s.ArticleInfoContainer>
-          <hr></hr>
 
           {articleInfo.img_url && (
             <s.ArticleImgContainer>

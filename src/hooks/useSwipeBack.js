@@ -1,8 +1,17 @@
 import { useEffect } from "react";
 import { useHistory } from "react-router-dom";
+import useShadowRef from "./useShadowRef";
 
-export default function useSwipeBack() {
+// Optional `targetPath` redirects the back gesture to a specific route via
+// history.replace (current entry is swapped — no extra back-stack growth).
+// When not set, falls back to history.goBack() — the natural "previous page".
+// Useful when the natural "previous page" isn't what the user expects: e.g.
+// a simplified article opened via Discover→Simplify→reader should land in
+// My Articles on swipe-back, not back at the now-superseded Discover entry.
+export default function useSwipeBack(options = {}) {
+  const { targetPath = null } = options;
   const history = useHistory();
+  const targetPathRef = useShadowRef(targetPath);
 
   useEffect(() => {
     let startX = 0;
@@ -16,7 +25,11 @@ export default function useSwipeBack() {
 
     function onTouchStart(e) {
       const touch = e.touches[0];
-      if (touch.clientX <= 30) {
+      // The swipe-back gesture is initiable from the entire left half of
+      // the screen. The tighter iOS-style edge-only zone made the gesture
+      // hard to discover and easy to miss; the vertical-dominant check in
+      // onTouchMove still filters out content scrolls.
+      if (touch.clientX <= window.innerWidth / 2) {
         startX = touch.clientX;
         startY = touch.clientY;
         tracking = true;
@@ -48,7 +61,7 @@ export default function useSwipeBack() {
       const dx = touch.clientX - startX;
       const dy = Math.abs(touch.clientY - startY);
 
-      if (dx >= 80 && dx > dy) {
+      if (dx >= 60 && dx > dy) {
         // Animate off-screen, then navigate
         page.style.transition = "transform 0.2s ease-out, opacity 0.2s ease-out";
         page.style.transform = `translateX(${window.innerWidth}px)`;
@@ -57,7 +70,11 @@ export default function useSwipeBack() {
           page.style.transition = "";
           page.style.transform = "";
           page.style.opacity = "";
-          history.goBack();
+          if (targetPathRef.current) {
+            history.replace(targetPathRef.current);
+          } else {
+            history.goBack();
+          }
         }, 200);
       } else {
         // Snap back
@@ -70,14 +87,19 @@ export default function useSwipeBack() {
       }
     }
 
-    document.addEventListener("touchstart", onTouchStart);
-    document.addEventListener("touchmove", onTouchMove);
-    document.addEventListener("touchend", onTouchEnd);
+    // Passive: the handlers don't call preventDefault, and the gesture
+    // zone now covers the left half of the screen — letting the
+    // compositor scroll without waiting on this JS keeps the touch path
+    // responsive.
+    const opts = { passive: true };
+    document.addEventListener("touchstart", onTouchStart, opts);
+    document.addEventListener("touchmove", onTouchMove, opts);
+    document.addEventListener("touchend", onTouchEnd, opts);
 
     return () => {
-      document.removeEventListener("touchstart", onTouchStart);
-      document.removeEventListener("touchmove", onTouchMove);
-      document.removeEventListener("touchend", onTouchEnd);
+      document.removeEventListener("touchstart", onTouchStart, opts);
+      document.removeEventListener("touchmove", onTouchMove, opts);
+      document.removeEventListener("touchend", onTouchEnd, opts);
     };
   }, [history]);
 }
