@@ -26,11 +26,13 @@ import { TopicOriginType } from "../appConstants";
 export default function ArticlePreview({
   article,
   dontShowPublishingTime,
+  dontShowSummary = false,
   hasExtension,
   doNotShowRedirectionModal_UserPreference,
   setDoNotShowRedirectionModal_UserPreference,
   notifyArticleClick,
   onArticleHidden,
+  onArticleRemoved,
   onUnhideArticle,
   isHiddenView = false,
   inSavedView = false,
@@ -150,6 +152,21 @@ export default function ArticlePreview({
         }
       }, 300); // Match animation duration
       toast("Article hidden from your feed!");
+    });
+  }
+
+  function handleRemoveFromSaves() {
+    setIsAnimatingOut(true);
+    api.removePersonalCopy(article.id, (data) => {
+      if (data === "OK") {
+        setTimeout(() => {
+          setIsArticleSaved(false);
+          if (onArticleRemoved) onArticleRemoved(article.id);
+        }, 300);
+        toast("Article removed from your Saves!");
+      } else {
+        setIsAnimatingOut(false);
+      }
     });
   }
 
@@ -382,52 +399,105 @@ export default function ArticlePreview({
 
       <s.ArticleContent>
         {article.img_url && imageLink()}
-        <s.Summary>
-          {interactiveSummary ? (
-            <TranslatableText interactiveText={interactiveSummary} translating={true} pronouncing={true} />
-          ) : (
-            article.summary
-          )}
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "space-between",
-              marginTop: "8px",
-            }}
-          >
-            <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-              {titleLink(article)}
-              <span style={{ fontSize: "0.8em", opacity: 0.7 }}>
-                (~{estimateReadingTime(article.metrics?.word_count || article.word_count || 0)
-                  .replace(" minutes", "min")
-                  .replace(" minute", "min")})
-              </span>
-            </div>
-            <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-              {!isHiddenView && (
-                <SaveArticleButton
-                  article={article}
-                  isArticleSaved={isArticleSaved}
-                  setIsArticleSaved={setIsArticleSaved}
-                  variant="muted"
-                />
-              )}
-              {isHiddenView ? (
-                <ActionButton onClick={handleUnhideArticle} variant="muted">
-                  Unhide
-                </ActionButton>
+        {/* Summary block hosts summary text + Discover's action row. On
+            saved-list surfaces we hide both — image-click already opens,
+            the centered Open button below it carries the primary CTA, and
+            "(remove from saves)" lives inline with the Saved tag above. */}
+        {!inSavedView && (
+          <s.Summary>
+            {!dontShowSummary && (
+              interactiveSummary ? (
+                <TranslatableText interactiveText={interactiveSummary} translating={true} pronouncing={true} />
               ) : (
-                !inSavedView && (
+                article.summary
+              )
+            )}
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+                marginTop: "8px",
+              }}
+            >
+              <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                {!isHiddenView && (
+                  <SaveArticleButton
+                    article={article}
+                    isArticleSaved={isArticleSaved}
+                    setIsArticleSaved={setIsArticleSaved}
+                    variant="muted"
+                  />
+                )}
+                {isHiddenView ? (
+                  <ActionButton onClick={handleUnhideArticle} variant="muted">
+                    Unhide
+                  </ActionButton>
+                ) : (
                   <ActionButton onClick={handleHideArticle} variant="muted">
                     Hide
                   </ActionButton>
-                )
-              )}
+                )}
+              </div>
+              <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                <span style={{ fontSize: "0.8em", opacity: 0.7 }}>
+                  (~{estimateReadingTime(article.metrics?.word_count || article.word_count || 0)
+                    .replace(" minutes", "min")
+                    .replace(" minute", "min")})
+                </span>
+                {titleLink(article)}
+              </div>
             </div>
-          </div>
-        </s.Summary>
+          </s.Summary>
+        )}
       </s.ArticleContent>
+
+      {inSavedView && (
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            gap: "0.3em",
+            marginTop: "0.5em",
+          }}
+        >
+          <Link
+            to={`/read/article?id=${inAppArticleId}`}
+            onClick={handleArticleClick}
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              width: "100%",
+              maxWidth: "14em",
+              minHeight: "44px",
+              padding: "10px",
+              borderRadius: "6px",
+              backgroundColor: "var(--action-btn-bg)",
+              color: "var(--badge-text)",
+              textDecoration: "none",
+              fontWeight: 500,
+            }}
+          >
+            Open
+          </Link>
+          <button
+            type="button"
+            onClick={handleRemoveFromSaves}
+            style={{
+              background: "none",
+              border: "none",
+              padding: "4px 8px",
+              color: "var(--text-muted)",
+              cursor: "pointer",
+              fontSize: "0.85em",
+            }}
+          >
+            remove from saves
+          </button>
+        </div>
+      )}
     </s.ArticlePreview>
   );
 }
