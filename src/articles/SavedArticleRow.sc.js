@@ -49,10 +49,15 @@ const Title = styled.div`
   overflow: hidden;
 `;
 
-// Completion marker for finished articles in the meta strip. Green
-// check + "Read" — positive feedback when the user has actually read
-// it. Sits as a sibling of MetaItem/MetaTag inside the MetaStrip and
-// participates in the `·` separator pattern via the strip's selector.
+// Completion indicators in the meta strip. In-progress uses amber so
+// the eye lands on "you left off here"; done uses green for positive
+// closure. Both sit as siblings of MetaItem/MetaTag and participate
+// in the `·` separator pattern via the strip's selector.
+const CompletionInProgress = styled.span`
+  color: #f59e0b;
+  font-weight: 500;
+`;
+
 const CompletionDone = styled.span`
   display: inline-flex;
   align-items: center;
@@ -80,4 +85,13 @@ const RemoveButton = styled.button`
   &:active { color: var(--text-primary); }
 `;
 
-export { Row, ThumbnailWrap, Thumbnail, Content, Title, CompletionDone, RemoveButton };
+export {
+  Row,
+  ThumbnailWrap,
+  Thumbnail,
+  Content,
+  Title,
+  CompletionInProgress,
+  CompletionDone,
+  RemoveButton,
+};

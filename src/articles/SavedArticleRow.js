@@ -52,7 +52,7 @@ export default function SavedArticleRow({ article, onArticleRemoved }) {
       </s.CompletionDone>
     );
   } else if (completionPercent > 0) {
-    completionItem = <MetaItem>{completionPercent}% read</MetaItem>;
+    completionItem = <s.CompletionInProgress>{completionPercent}% read</s.CompletionInProgress>;
   }
 
   function handleRemove(e) {
