@@ -137,7 +137,7 @@ let Toolbar = styled.div`
 
   progress[value] {
     --color: linear-gradient(89.5deg, ${zeeguuOrange}, ${zeeguuLightYellow} 100%); /* the progress color */
-    --background: white; /* invisible until progress fills in */
+    --background: transparent; /* genuinely invisible until progress fills in */
 
     -webkit-appearance: none;
     -moz-appearance: none;
@@ -147,21 +147,20 @@ let Toolbar = styled.div`
     height: 1px;
     border-radius: 10em;
     background: var(--background);
-    transition: all 0.1s linear 0s;
+    /* No transition — scroll updates already fire many times a second;
+       animating each one fights the next and looks like the bar is
+       "waiting for scroll to stop" before catching up. */
   }
 
   progress[value]::-webkit-progress-bar {
-    transition: all 0.1s linear 0s;
     border-radius: 10em;
     background: var(--background);
   }
   progress[value]::-webkit-progress-value {
-    transition: all 0.1s linear 0s;
     border-radius: 10em;
     background: var(--color);
   }
   progress[value]::-moz-progress-bar {
-    transition: all 0.1s linear 0s;
     border-radius: 10em;
     background: var(--color);
   }

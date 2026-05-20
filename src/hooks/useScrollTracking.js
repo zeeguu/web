@@ -88,21 +88,20 @@ export default function useScrollTracking({
   };
 
   /**
-   * Handle scroll events - track position and sample at specified frequency
+   * Handle scroll events - track position and sample at specified frequency.
+   * Kept lean: only the cheap ratio read + setState runs on every scroll.
+   * Viewport settings are recomputed on mount and resize (see below), not
+   * per scroll — viewportRatio depends on clientHeight / scrollHeight, both
+   * stable during a scroll, and the per-scroll JSON.stringify was making
+   * the progress bar feel like it was lagging behind the scroll.
    */
   const handleScroll = () => {
     const ratio = getScrollRatio();
     setScrollPosition(ratio);
-    
-    const percentage = Math.floor(ratio * 100);
+
     const currentTimer = sessionDurationRef.current;
-    
-    // Update viewport settings on each scroll (they might change if window resizes)
-    updateViewPortSettings();
-    
-    // Sample scroll events at the specified frequency
     if (currentTimer - lastSampleTimer.current >= sampleFrequency) {
-      scrollEvents.current.push([currentTimer, percentage]);
+      scrollEvents.current.push([currentTimer, Math.floor(ratio * 100)]);
       lastSampleTimer.current = currentTimer;
     }
   };
@@ -162,9 +161,13 @@ export default function useScrollTracking({
     );
   };
 
-  // Initialize viewport settings on mount
+  // Viewport settings on mount + window resize. Recomputing per scroll
+  // burned a JSON.stringify each frame for no gain — these only change
+  // when the layout does.
   useEffect(() => {
     updateViewPortSettings();
+    window.addEventListener("resize", updateViewPortSettings);
+    return () => window.removeEventListener("resize", updateViewPortSettings);
   }, []);
 
   /**
