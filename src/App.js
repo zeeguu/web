@@ -33,6 +33,7 @@ import useRedirectLink from "./hooks/useRedirectLink";
 import useLocationTracker from "./hooks/useLocationTracker";
 import useDeepLinkHandler from "./hooks/useDeepLinkHandler";
 import useTranslationOnboarding from "./hooks/useTranslationOnboarding";
+import useMoreTranslationsOnboarding from "./hooks/useMoreTranslationsOnboarding";
 import useOnboardingModal from "./hooks/useOnboardingModal";
 import LoadingAnimation from "./components/LoadingAnimation";
 import ServerErrorModal from "./components/ServerErrorModal";
@@ -84,7 +85,7 @@ function App() {
   const [zeeguuSpeech, setZeeguuSpeech] = useState(false);
   let { handleRedirectLinkOrGoTo } = useRedirectLink();
   const translationModal = useTranslationOnboarding(api, userDetails);
-  const moreTranslationsModal = useOnboardingModal(api, ONBOARDING_MESSAGE_IDS.moreTranslations);
+  const moreTranslationsModal = useMoreTranslationsOnboarding(api, userDetails);
 
   const [systemLanguages, setSystemLanguages] = useState();
   // Initialize session from native storage (for Capacitor) before doing anything else
@@ -343,10 +344,7 @@ function App() {
                         />
                         <TranslationOnboardingPopup
                           open={translationModal.open}
-                          handleCancel={() => {
-                            translationModal.close();
-                            moreTranslationsModal.show();
-                          }}
+                          handleCancel={translationModal.close}
                         />
                         <MoreTranslationsPopup
                           open={moreTranslationsModal.open}

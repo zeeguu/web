@@ -11,9 +11,9 @@ const MAX_WORD_EXPANSION_COUNT = 28;
 
 function isExerciseSource(source) {
   if (!source) return false;
-  
-  const exerciseTypeValues = Object.values(EXERCISE_TYPES).filter(value => typeof value === 'string');
-  return exerciseTypeValues.some(exerciseType => source.includes(exerciseType.split('_')[0]));
+
+  const exerciseTypeValues = Object.values(EXERCISE_TYPES).filter((value) => typeof value === "string");
+  return exerciseTypeValues.some((exerciseType) => source.includes(exerciseType.split("_")[0]));
 }
 
 function tokenShouldSkipCount(word) {
@@ -52,9 +52,7 @@ export default class InteractiveText {
     this.previousBookmarks = previousBookmarks;
     this.paragraphs = tokenizedParagraphs;
     updateTokensWithBookmarks(this.previousBookmarks, this.paragraphs);
-    this.paragraphsAsLinkedWordLists = this.paragraphs.map(
-      (sent) => new LinkedWordList(sent),
-    );
+    this.paragraphsAsLinkedWordLists = this.paragraphs.map((sent) => new LinkedWordList(sent));
     if (language !== zeeguuSpeech.language) {
       this.zeeguuSpeech = new ZeeguuSpeech(api, language);
     } else {
@@ -65,7 +63,6 @@ export default class InteractiveText {
   getParagraphs() {
     return this.paragraphsAsLinkedWordLists;
   }
-
 
   translate(word, fuseWithNeighbours, onSuccess, onFusionComplete = null) {
     let context, cParagraph_i, cSent_i, cToken_i, leftEllipsis, rightEllipsis;
@@ -107,11 +104,12 @@ export default class InteractiveText {
       mweSentence = this._getSentenceText(word);
     }
 
-    MWE_DEBUG && console.log("MWE translating:", {
-      text: textToTranslate,
-      isMwe: isMweExpression,
-      separated: isSeparatedMwe,
-    });
+    MWE_DEBUG &&
+      console.log("MWE translating:", {
+        text: textToTranslate,
+        isMwe: isMweExpression,
+        separated: isSeparatedMwe,
+      });
 
     const browsingSessionId = this.getBrowsingSessionId?.();
     const readingSessionId = this.getReadingSessionId?.();
@@ -128,11 +126,7 @@ export default class InteractiveText {
         leftEllipsis,
         rightEllipsis,
         this.contextIdentifier,
-        this.source === "article_preview"
-          ? "article_preview"
-          : isExerciseSource(this.source)
-          ? "exercise"
-          : "reading",
+        this.source === "article_preview" ? "article_preview" : isExerciseSource(this.source) ? "exercise" : "reading",
         browsingSessionId,
         readingSessionId,
         isMweExpression,
@@ -149,7 +143,12 @@ export default class InteractiveText {
         word.isTranslationVisible = true;
 
         // Dispatch event for bookmark creation (used by useAnonymousUpgrade)
-        window.dispatchEvent(new CustomEvent('zeeguu-bookmark-created'));
+        window.dispatchEvent(new CustomEvent("zeeguu-bookmark-created"));
+
+        // Dispatch event when translation has alternatives (for onboarding modal)
+        if (data.alternatives?.length > 0) {
+          window.dispatchEvent(new CustomEvent("zeeguu-translation-with-alternatives"));
+        }
 
         onSuccess();
       })
