@@ -119,16 +119,42 @@ const UrlSource = styled.span`
   font-weight: 500;
 `;
 
-const SimplifiedLabel = styled.span`
-  font-size: 0.75em;
+// Quiet metadata strip under the title: CEFR · Simplified · Saved · source · time.
+// Children are MetaItem (muted) or MetaTag (accent for state). The strip
+// renders `·` separators between consecutive children via ::before so we
+// don't have to thread separator JSX through conditional rendering.
+const MetaStrip = styled.div`
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-top: 8px;
+  font-size: small;
+  column-gap: 0.5em;
+  row-gap: 0.2em;
+
+  > * + *::before {
+    content: "·";
+    margin-right: 0.5em;
+    color: var(--text-muted);
+  }
+`;
+
+const MetaItem = styled.span`
+  color: var(--text-muted);
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+`;
+
+const MetaLink = styled.a`
+  color: var(--link-color, ${blue400});
+  text-decoration: none;
+  &:hover { text-decoration: underline; }
+`;
+
+const MetaTag = styled.span`
   color: var(--badge-text);
-  background-color: var(--badge-bg);
-  padding: 2px 6px;
-  border-radius: 3px;
-  margin-left: 0.3em;
   font-weight: 500;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
 `;
 
 const UnfinishedArticleContainer = styled.div`
@@ -241,7 +267,10 @@ export {
   TitleContainer,
   UrlSource,
   UrlSourceContainer,
-  SimplifiedLabel,
+  MetaStrip,
+  MetaItem,
+  MetaLink,
+  MetaTag,
   ArticlePreview,
   UnfinishedArticleContainer,
   UnfinishedArticleStats,

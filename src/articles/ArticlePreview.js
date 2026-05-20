@@ -15,10 +15,8 @@ import { TranslatableText } from "../reader/TranslatableText";
 import InteractiveText from "../reader/InteractiveText";
 import ZeeguuSpeech from "../speech/APIBasedSpeech";
 import { formatDistanceToNow } from "date-fns";
-import { getStaticPath } from "../utils/misc/staticPath";
 import { estimateReadingTime } from "../utils/misc/readableTime";
 import ActionButton from "../components/ActionButton";
-import { getHighestCefrLevel } from "../utils/misc/cefrHelpers";
 import getDomainName from "../utils/misc/getDomainName";
 import HighlightOffRoundedIcon from "@mui/icons-material/HighlightOffRounded";
 import OpenInNewRoundedIcon from "@mui/icons-material/OpenInNewRounded";
@@ -272,7 +270,24 @@ export default function ArticlePreview({
     return null;
   }
 
-  const cefrLevel = article.metrics?.cefr_level || article.cefr_level;
+  // Meta strip splits time across two slots so its position matches the
+  // sort axis of the surface:
+  //   - In Saved-list contexts the time IS the save time and goes up front
+  //     with the state tags ("Saved 2h ago · ekkofilm.dk").
+  //   - Elsewhere it's publish time and sits at the tail, news-feed style
+  //     ("Simplified · Saved · ekkofilm.dk · 2h ago").
+  let savedTag = null;
+  let publishedTimeSlot = null;
+  if (inSavedView && article.personal_copy_saved_at && !dontShowPublishingTime) {
+    const savedAgo = formatDistanceToNow(new Date(article.personal_copy_saved_at), { addSuffix: true }).replace("about ", "");
+    savedTag = <s.MetaTag>Saved {savedAgo}</s.MetaTag>;
+  } else if (isArticleSaved && !inSavedView) {
+    savedTag = <s.MetaTag>Saved</s.MetaTag>;
+  }
+  if (!inSavedView && !dontShowPublishingTime && article.published) {
+    const publishedAgo = formatDistanceToNow(new Date(article.published), { addSuffix: true }).replace("about ", "");
+    publishedTimeSlot = <s.MetaItem>{publishedAgo}</s.MetaItem>;
+  }
 
   return (
     <s.ArticlePreview
@@ -341,42 +356,25 @@ export default function ArticlePreview({
         <ReadingCompletionProgress last_reading_percentage={article.reading_completion}></ReadingCompletionProgress>
       </s.TitleContainer>
 
-      {/* Metadata row: CEFR level, simplified tag, source */}
-      <div style={{ display: "flex", alignItems: "center", marginTop: "15px" }}>
-        {/* Difficulty (CEFR level) — hidden for the on-demand cohort (feed
-            shows originals; level matters at the simplify-decision modal).
-            Also hidden when we don't actually know the level — better to
-            show nothing than to fake a default. */}
-        {cefrLevel && !Feature.always_open_externally() && (
-          <div style={{ display: "flex", alignItems: "center", gap: "5px" }}>
-            <img
-              src={getStaticPath("icons", `${getHighestCefrLevel(cefrLevel)}-level-icon.png`)}
-              alt="difficulty icon"
-              style={{ width: "16px", height: "16px" }}
-            />
-            <span>{cefrLevel}</span>
-          </div>
-        )}
-
-        {/* Simplified tag */}
+      {/* Single quiet metadata strip under the title: CEFR · Simplified ·
+          Saved · source · time. State badges (Simplified/Saved) get a subtle
+          accent color; source/time stay muted. All on one row, small. */}
+      <s.MetaStrip>
         {article.parent_article_id && (
-          <s.SimplifiedLabel style={{ marginLeft: '8px' }}>Simplified</s.SimplifiedLabel>
+          <s.MetaTag>Simplified</s.MetaTag>
         )}
-
-        {/* Source and time */}
-        <span style={{ fontSize: 'small', marginLeft: '8px', color: 'var(--text-muted)' }}>
-          from{' '}
-          <a
+        {savedTag}
+        <s.MetaItem>
+          <s.MetaLink
             href={article.parent_url || article.url}
             target="_blank"
             rel="noopener noreferrer"
-            style={{ color: 'inherit', textDecoration: 'none' }}
           >
             {article.feed_name || (article.parent_url ? getDomainName(article.parent_url) : extractDomain(article.url))}
-          </a>
-          {!dontShowPublishingTime && article.published && `, ${formatDistanceToNow(new Date(article.published), { addSuffix: true }).replace("about ", "")}`}
-        </span>
-      </div>
+          </s.MetaLink>
+        </s.MetaItem>
+        {publishedTimeSlot}
+      </s.MetaStrip>
 
       <s.ArticleContent>
         {article.img_url && imageLink()}
