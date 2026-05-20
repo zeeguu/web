@@ -49,6 +49,18 @@ const Title = styled.div`
   overflow: hidden;
 `;
 
+// Completion marker for finished articles in the meta strip. Green
+// check + "Read" — positive feedback when the user has actually read
+// it. Sits as a sibling of MetaItem/MetaTag inside the MetaStrip and
+// participates in the `·` separator pattern via the strip's selector.
+const CompletionDone = styled.span`
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: #16a34a;
+  font-weight: 500;
+`;
+
 const RemoveButton = styled.button`
   position: absolute;
   top: 0.4em;
@@ -68,4 +80,4 @@ const RemoveButton = styled.button`
   &:active { color: var(--text-primary); }
 `;
 
-export { Row, ThumbnailWrap, Thumbnail, Content, Title, RemoveButton };
+export { Row, ThumbnailWrap, Thumbnail, Content, Title, CompletionDone, RemoveButton };

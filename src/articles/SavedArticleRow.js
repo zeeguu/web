@@ -3,6 +3,8 @@ import { useHistory } from "react-router-dom";
 import { formatDistanceToNow } from "date-fns";
 import { toast } from "react-toastify";
 
+import CheckCircleRoundedIcon from "@mui/icons-material/CheckCircleRounded";
+
 import { APIContext } from "../contexts/APIContext";
 import { MetaStrip, MetaItem, MetaTag } from "../components/MetaStrip.sc";
 import getDomainName from "../utils/misc/getDomainName";
@@ -36,6 +38,22 @@ export default function SavedArticleRow({ article, onArticleRemoved }) {
         "",
       )
     : null;
+
+  // Reading progress: hide for 0% (saved-but-untouched is the default
+  // state). Show "Read ✓" for 100%, "X% read" otherwise. The backend
+  // stores reading_completion as a 0..1 ratio.
+  const completionRatio = article.reading_completion || 0;
+  const completionPercent = Math.round(completionRatio * 100);
+  let completionItem = null;
+  if (completionPercent >= 100) {
+    completionItem = (
+      <s.CompletionDone>
+        <CheckCircleRoundedIcon style={{ fontSize: 14 }} /> Read
+      </s.CompletionDone>
+    );
+  } else if (completionPercent > 0) {
+    completionItem = <MetaItem>{completionPercent}% read</MetaItem>;
+  }
 
   function handleRemove(e) {
     e.preventDefault();
@@ -90,6 +108,7 @@ export default function SavedArticleRow({ article, onArticleRemoved }) {
         <MetaStrip>
           {isSimplified && <MetaTag>Simplified</MetaTag>}
           {savedAgo && <MetaTag>Saved {savedAgo}</MetaTag>}
+          {completionItem}
           {sourceDomain && <MetaItem>{sourceDomain}</MetaItem>}
         </MetaStrip>
       </s.Content>
