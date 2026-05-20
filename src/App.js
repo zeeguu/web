@@ -109,14 +109,16 @@ function App() {
   // Bridge imperative api.session mutations into React state.
   useEffect(() => api.onSessionChange(setSession), [api]);
 
-  // When connectivity returns, refresh user details. Pairs with the
-  // hydrateFromCache fallback above — we render with cached info while
-  // offline, then quietly catch up when we're back online (fixes the
-  // stale-userDetails problem after recovering from airplane mode).
-  // Swallow rejections: opportunistic retry, no need to surface failures.
+  // When connectivity returns, refresh user details so we catch up on the
+  // stale userDetails left over from hydrateFromCache. If the session has
+  // been revoked while we were offline, the retry surfaces as 401/403 and
+  // we log out cleanly; other errors are swallowed (opportunistic retry).
   useEffect(() => {
     function handleOnline() {
-      if (api.session) loadUserDetails().catch(() => {});
+      if (!api.session) return;
+      loadUserDetails().catch((e) => {
+        if (e?.status === 401 || e?.status === 403) logout();
+      });
     }
     window.addEventListener("online", handleOnline);
     return () => window.removeEventListener("online", handleOnline);
@@ -315,10 +317,8 @@ function App() {
     // eslint-disable-next-line
   }, [sessionInitialized]);
 
-  // Used when we can't reach the server to validate the session. Keeps the
-  // session live and renders the app from whatever LocalStorage remembers
-  // about the user so the drill, anything cached, and any future request
-  // (once connectivity returns) can resume without forcing a re-login.
+  // Renders the app from cached user info when the server is unreachable,
+  // so the drill and cached data still work and we don't force a re-login.
   function hydrateFromCache() {
     const cached = LocalStorage.userInfo();
     setUserDetails(cached.learned_language ? cached : {});

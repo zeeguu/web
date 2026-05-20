@@ -12,13 +12,22 @@
 const STORAGE_KEY = "drill_vocab_cache";
 const MAX_PER_LANG = 500;
 
+// Module-scope mirror of the parsed cache. Translation taps in the reader
+// can fire pushDrillVocab dozens of times in a session; without this each
+// call would JSON.parse + JSON.stringify the full ~60KB blob. Single-tab
+// assumption (no `storage` event listener) is implicit elsewhere in the
+// app already.
+let cached = null;
+
 function readAll() {
+  if (cached) return cached;
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
-    return raw ? JSON.parse(raw) : {};
+    cached = raw ? JSON.parse(raw) : {};
   } catch {
-    return {};
+    cached = {};
   }
+  return cached;
 }
 
 export function getDrillVocab(lang) {
@@ -49,14 +58,17 @@ export function pushDrillVocab(lang, pairs, src) {
     next = next.slice(0, MAX_PER_LANG);
   }
   all[lang] = next;
+  cached = all;
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(all));
   } catch (e) {
     console.warn("Drill cache write failed, dropping cache:", e);
+    cached = {};
     try { localStorage.removeItem(STORAGE_KEY); } catch {}
   }
 }
 
 export function clearDrillVocab() {
+  cached = {};
   try { localStorage.removeItem(STORAGE_KEY); } catch {}
 }
