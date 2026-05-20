@@ -119,44 +119,6 @@ const UrlSource = styled.span`
   font-weight: 500;
 `;
 
-// Quiet metadata strip under the title: CEFR · Simplified · Saved · source · time.
-// Children are MetaItem (muted) or MetaTag (accent for state). The strip
-// renders `·` separators between consecutive children via ::before so we
-// don't have to thread separator JSX through conditional rendering.
-const MetaStrip = styled.div`
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  margin-top: 8px;
-  font-size: small;
-  column-gap: 0.5em;
-  row-gap: 0.2em;
-
-  > * + *::before {
-    content: "·";
-    margin-right: 0.5em;
-    color: var(--text-muted);
-  }
-`;
-
-const MetaItem = styled.span`
-  color: var(--text-muted);
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-`;
-
-const MetaLink = styled.a`
-  color: var(--link-color, ${blue400});
-  text-decoration: none;
-  &:hover { text-decoration: underline; }
-`;
-
-const MetaTag = styled.span`
-  color: var(--badge-text);
-  font-weight: 500;
-`;
-
 const UnfinishedArticleContainer = styled.div`
   margin-top: 0.5em;
   display: flex;
@@ -267,10 +229,6 @@ export {
   TitleContainer,
   UrlSource,
   UrlSourceContainer,
-  MetaStrip,
-  MetaItem,
-  MetaLink,
-  MetaTag,
   ArticlePreview,
   UnfinishedArticleContainer,
   UnfinishedArticleStats,

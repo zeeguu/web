@@ -4,6 +4,7 @@ import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { isMobile } from "../utils/misc/browserDetection";
 import * as s from "./ArticlePreview.sc";
+import { MetaStrip, MetaItem, MetaLink, MetaTag } from "../components/MetaStrip.sc";
 import RedirectionNotificationModal from "../components/redirect_notification/RedirectionNotificationModal";
 import Feature from "../features/Feature";
 import SaveArticleButton from "./SaveArticleButton";
@@ -283,13 +284,13 @@ export default function ArticlePreview({
   let publishedTimeSlot = null;
   if (inSavedView && article.personal_copy_saved_at) {
     const savedAgo = formatDistanceToNow(new Date(article.personal_copy_saved_at), { addSuffix: true }).replace("about ", "");
-    savedTag = <s.MetaTag>Saved {savedAgo}</s.MetaTag>;
+    savedTag = <MetaTag>Saved {savedAgo}</MetaTag>;
   } else if (isArticleSaved && !inSavedView) {
-    savedTag = <s.MetaTag>Saved</s.MetaTag>;
+    savedTag = <MetaTag>Saved</MetaTag>;
   }
   if (!inSavedView && !dontShowPublishingTime && article.published) {
     const publishedAgo = formatDistanceToNow(new Date(article.published), { addSuffix: true }).replace("about ", "");
-    publishedTimeSlot = <s.MetaItem>{publishedAgo}</s.MetaItem>;
+    publishedTimeSlot = <MetaItem>{publishedAgo}</MetaItem>;
   }
 
   return (
@@ -362,22 +363,22 @@ export default function ArticlePreview({
       {/* Single quiet metadata strip under the title: CEFR · Simplified ·
           Saved · source · time. State badges (Simplified/Saved) get a subtle
           accent color; source/time stay muted. All on one row, small. */}
-      <s.MetaStrip>
+      <MetaStrip>
         {article.parent_article_id && (
-          <s.MetaTag>Simplified</s.MetaTag>
+          <MetaTag>Simplified</MetaTag>
         )}
         {savedTag}
-        <s.MetaItem>
-          <s.MetaLink
+        <MetaItem>
+          <MetaLink
             href={article.parent_url || article.url}
             target="_blank"
             rel="noopener noreferrer"
           >
             {article.feed_name || (article.parent_url ? getDomainName(article.parent_url) : extractDomain(article.url))}
-          </s.MetaLink>
-        </s.MetaItem>
+          </MetaLink>
+        </MetaItem>
         {publishedTimeSlot}
-      </s.MetaStrip>
+      </MetaStrip>
 
       <s.ArticleContent>
         {article.img_url && imageLink()}
