@@ -109,6 +109,20 @@ function App() {
   // Bridge imperative api.session mutations into React state.
   useEffect(() => api.onSessionChange(setSession), [api]);
 
+  // When connectivity returns, refresh user details. Pairs with the
+  // hydrateFromCache fallback above — we render with cached info while
+  // offline, then quietly catch up when we're back online (fixes the
+  // stale-userDetails problem after recovering from airplane mode).
+  // Swallow rejections: opportunistic retry, no need to surface failures.
+  useEffect(() => {
+    function handleOnline() {
+      if (api.session) loadUserDetails().catch(() => {});
+    }
+    window.addEventListener("online", handleOnline);
+    return () => window.removeEventListener("online", handleOnline);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [api]);
+
   useEffect(() => {
     api.getSystemLanguages((languages) => {
       setSystemLanguages(languages);
@@ -226,8 +240,19 @@ function App() {
         () => {
           loadUserDetails();
         },
-        () => {
-          logout();
+        (e) => {
+          // Critical: only log out when the server *actively* rejected the
+          // session (401/403). Network errors — airplane mode, dead wifi,
+          // captive portal — have no status code; treating those as "invalid
+          // session" and wiping the user is harmful (and was reported by a
+          // user mid-flight). Keep the session, hydrate from cached user
+          // info so the app can render in offline-tolerant mode (the drill
+          // still works from LocalStorage).
+          if (e?.status === 401 || e?.status === 403) {
+            logout();
+          } else {
+            hydrateFromCache();
+          }
         },
       );
     } else {
@@ -289,6 +314,16 @@ function App() {
 
     // eslint-disable-next-line
   }, [sessionInitialized]);
+
+  // Used when we can't reach the server to validate the session. Keeps the
+  // session live and renders the app from whatever LocalStorage remembers
+  // about the user so the drill, anything cached, and any future request
+  // (once connectivity returns) can resume without forcing a re-login.
+  function hydrateFromCache() {
+    const cached = LocalStorage.userInfo();
+    setUserDetails(cached.learned_language ? cached : {});
+    setUserPreferences({});
+  }
 
   function logout() {
     LocalStorage.deleteUserInfo();
