@@ -276,9 +276,12 @@ export default function ArticlePreview({
   //     with the state tags ("Saved 2h ago · ekkofilm.dk").
   //   - Elsewhere it's publish time and sits at the tail, news-feed style
   //     ("Simplified · Saved · ekkofilm.dk · 2h ago").
+  // dontShowPublishingTime only suppresses *publish* time. The "Saved Xh ago"
+  // pill is the replacement for it on saved-list surfaces (where the prop is
+  // typically true), so the saved-time path isn't gated on the same flag.
   let savedTag = null;
   let publishedTimeSlot = null;
-  if (inSavedView && article.personal_copy_saved_at && !dontShowPublishingTime) {
+  if (inSavedView && article.personal_copy_saved_at) {
     const savedAgo = formatDistanceToNow(new Date(article.personal_copy_saved_at), { addSuffix: true }).replace("about ", "");
     savedTag = <s.MetaTag>Saved {savedAgo}</s.MetaTag>;
   } else if (isArticleSaved && !inSavedView) {
