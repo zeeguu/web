@@ -1,7 +1,9 @@
-- Past Lessons: clearer cards with colored Topic / Situation / Vocabulary Lesson chips, soft drop shadows, and a warm progress bar showing how far through each lesson you got.
-- Save Article modal redesigned: see your level vs the article's at a glance, with a clear "Adapt to your level" call to action.
-- Reader: simplified articles now carry a "simplified" badge, with a link back to the original.
-- My Articles: "Unsave" is now "Remove"; Hidden Articles moved into the My Articles tab (no separate sidebar entry).
-- Light-mode polish: cards finally have a visible background, links are easier to read.
-- Slow load? You'll now see whether it's the network or the server holding things up.
-- Teachers can now join a classroom directly from Settings.
+My Articles redesigned as a compact list. Tap anywhere on a row to open the article. Each row shows when you saved it and how far you got reading it.
+- Discover cards are cleaner: larger images, bookmark icon on the image to save, dismiss icon in the corner to hide, summary that expands on Show more.
+- Vocab drill while you wait. If a screen takes a moment to load, optionally practice a couple of words instead of staring at a spinner.
+- Article reader: header simplified; swipe right from anywhere on the left side to go back where you came from.
+- The app no longer logs you out when you briefly lose network. Airplane mode is now safe.
+- Phone is locked to portrait orientation so the layout no longer flips unexpectedly.
+- Iconography refresh on the article cards: save and remove are now clear icons rather than buttons competing with Open.
+- Small interaction fixes on iOS, including navigation tabs that sometimes needed two taps to register.
+- Smoother reading-progress bar in the article reader.
