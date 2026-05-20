@@ -6,10 +6,10 @@ import { ThemeContext } from "../contexts/ThemeContext";
 import {
   DrillAnswer,
   DrillBox,
+  DrillExitLink,
   DrillHint,
   DrillHistoryItem,
   DrillHistoryList,
-  DrillModeLink,
 } from "./WaitDrill.sc";
 
 const SRC_PRIORITY = ["exercise", "scheduled", "translation"];
@@ -27,9 +27,12 @@ function buildQueue(entries) {
 }
 
 // Minimalist text-only vocab drill shown during long loading waits. Two
-// modes: passive (auto-cycles, card is non-interactive) and interactive
-// (timer off, user taps to reveal / advance). Defaults to passive so the
-// drill is ignorable; the link below toggles.
+// modes: passive (auto-cycles) and interactive (timer off, user-driven).
+// The card is always tappable: in passive the tap enters interactive
+// mode (and reveals the current word — the natural first action). In
+// interactive the tap reveals/advances. The hint line inside the card
+// always describes what tapping does right now. Exit is a small link
+// pinned near the bottom of the viewport, only shown while interactive.
 //
 // Reads {origin, translation} pairs from LocalStorage (filled by completed
 // exercises / scheduled-words seed / in-reader taps) so it works offline.
@@ -73,26 +76,35 @@ export default function WaitDrill() {
   const current = queue[index];
 
   function handleCardTap() {
-    if (!interactive) return;
+    if (!interactive) {
+      setInteractive(true);
+      setRevealed(true);
+      return;
+    }
     if (revealed) advance();
     else setRevealed(true);
   }
 
-  function toggleMode(e) {
+  function exitToAuto(e) {
     e.stopPropagation();
-    setInteractive((m) => !m);
+    setInteractive(false);
   }
+
+  const hintText = interactive
+    ? revealed
+      ? "tap for next"
+      : "tap to reveal"
+    : "tap to take control";
 
   return (
     <>
       <DrillBox
         $isDark={isDark}
-        $interactive={interactive}
         onClick={handleCardTap}
-        role={interactive ? "button" : undefined}
-        tabIndex={interactive ? 0 : undefined}
+        role="button"
+        tabIndex={0}
         onKeyDown={(e) => {
-          if (interactive && (e.key === "Enter" || e.key === " ")) handleCardTap();
+          if (e.key === "Enter" || e.key === " ") handleCardTap();
         }}
       >
         <div>
@@ -102,13 +114,8 @@ export default function WaitDrill() {
             {revealed ? current.t : "?"}
           </DrillAnswer>
         </div>
-        {interactive && (
-          <DrillHint>{revealed ? "tap for next" : "tap to reveal"}</DrillHint>
-        )}
+        <DrillHint>{hintText}</DrillHint>
       </DrillBox>
-      <DrillModeLink onClick={toggleMode}>
-        {interactive ? "back to auto-cycle" : "tap to take control"}
-      </DrillModeLink>
       {history.length > 0 && (
         <DrillHistoryList>
           {history.map((h, i) => (
@@ -117,6 +124,9 @@ export default function WaitDrill() {
             </DrillHistoryItem>
           ))}
         </DrillHistoryList>
+      )}
+      {interactive && (
+        <DrillExitLink onClick={exitToAuto}>back to auto-cycle</DrillExitLink>
       )}
     </>
   );

@@ -30,8 +30,17 @@ const LoadingAnimation = styled.div`
     background: ${darkBlue};
   }
 
+  /* Muted variant: heartbeat above the wait-drill — should read as
+     background motion, not a primary loader. Calibrated separately for
+     each theme so contrast stays low against the page background. */
   .muted div {
-    background: #888;
+    background: #cfcfcf;
+  }
+  html[data-theme="dark"] & .muted div {
+    background: #555;
+  }
+  .lds-ellipsis.muted div {
+    animation-duration: 1.5s;
   }
 
   .lds-ellipsis div {

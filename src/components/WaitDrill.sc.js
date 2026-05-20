@@ -12,7 +12,7 @@ export const DrillBox = styled.div`
   color: ${({ $isDark }) => ($isDark ? "#f0f0f0" : "#222")};
   border: 1px solid ${({ $isDark }) => ($isDark ? "rgba(255,255,255,0.25)" : "rgba(0,0,0,0.2)")};
   border-radius: 0.25rem;
-  cursor: ${({ $interactive }) => ($interactive ? "pointer" : "default")};
+  cursor: pointer;
   user-select: none;
 `;
 
@@ -26,8 +26,12 @@ export const DrillAnswer = styled.span`
   opacity: ${({ $revealed }) => ($revealed ? 1 : 0.35)};
 `;
 
-export const DrillModeLink = styled.button`
-  margin-top: 0.5rem;
+// Peripheral exit: separated from history by an extra margin so it reads
+// as a meta-action, not another history line. Stays in-flow because
+// LoadingAnimation's parent tree includes a transform somewhere that
+// would break position:fixed.
+export const DrillExitLink = styled.button`
+  margin-top: 2rem;
   background: transparent;
   border: 0;
   color: inherit;

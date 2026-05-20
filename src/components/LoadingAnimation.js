@@ -55,14 +55,6 @@ const NET_PROBE_URL = "https://1.1.1.1/cdn-cgi/trace";
 // above it — same size, just toned down.
 const MUTED_SPINNER_STYLE = { opacity: 0.7 };
 
-// When the drill mounts, pin everything to the top so the dots don't drift
-// upward as history fills the column.
-const DRILL_CONTAINER_STYLE = {
-  justifyContent: "flex-start",
-  paddingTop: "10vh",
-  height: "auto",
-};
-
 const LANG_DISPLAY = (() => {
   try {
     return new Intl.DisplayNames(["en"], { type: "language" });
@@ -251,11 +243,6 @@ export default function LoadingAnimation({
     ? "teacher"
     : "student";
   const spinnerStyle = showDrill ? MUTED_SPINNER_STYLE : undefined;
-  // Drill layout intentionally overrides caller-provided alignment so the
-  // dots stay anchored as the column grows with history.
-  const containerStyle = showDrill
-    ? { ...specificStyle, ...DRILL_CONTAINER_STYLE }
-    : specificStyle;
   const langName = showDrill
     ? learnedLanguageName(LocalStorage.getLearnedLanguage())
     : null;
@@ -271,7 +258,7 @@ export default function LoadingAnimation({
         componentCategories={FEEDBACK_OPTIONS.ALL}
       />
       {showLoadingScreen && (
-        <s.LoadingContainer style={containerStyle}>
+        <s.LoadingContainer style={specificStyle}>
           <s.LoadingAnimation style={spinnerStyle}>
             <div className={`lds-ellipsis ${spinnerVariant}`}>
               <div></div>
