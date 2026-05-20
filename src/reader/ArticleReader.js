@@ -25,7 +25,6 @@ import useReadingSession from "../hooks/useReadingSession";
 import useReviewWordsOnboarding from "../hooks/useReviewWordsOnboarding";
 import strings from "../i18n/definitions";
 import useUserPreferences from "../hooks/useUserPreferences";
-import ArticleStatInfo from "../components/ArticleStatInfo";
 import DigitalTimer from "../components/DigitalTimer";
 import DevButton from "../components/DevButton";
 import { APIContext } from "../contexts/APIContext";
@@ -444,10 +443,6 @@ export default function ArticleReader({ teacherArticleID }) {
           </h1>
 
           <ArticleAuthors articleInfo={articleInfo} />
-          <s.ArticleInfoContainer>
-            <ArticleStatInfo articleInfo={articleInfo}></ArticleStatInfo>
-          </s.ArticleInfoContainer>
-          <hr></hr>
 
           {articleInfo.img_url && (
             <s.ArticleImgContainer>
