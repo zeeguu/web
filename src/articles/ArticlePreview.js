@@ -7,7 +7,6 @@ import * as s from "./ArticlePreview.sc";
 import { MetaStrip, MetaItem, MetaLink, MetaTag } from "../components/MetaStrip.sc";
 import RedirectionNotificationModal from "../components/redirect_notification/RedirectionNotificationModal";
 import Feature from "../features/Feature";
-import SaveArticleButton from "./SaveArticleButton";
 import extractDomain from "../utils/web/extractDomain";
 import ReadingCompletionProgress from "./ReadingCompletionProgress";
 import { APIContext } from "../contexts/APIContext";
@@ -19,9 +18,10 @@ import { formatDistanceToNow } from "date-fns";
 import { estimateReadingTime } from "../utils/misc/readableTime";
 import ActionButton from "../components/ActionButton";
 import getDomainName from "../utils/misc/getDomainName";
-import HighlightOffRoundedIcon from "@mui/icons-material/HighlightOffRounded";
 import OpenInNewRoundedIcon from "@mui/icons-material/OpenInNewRounded";
-import { TopicOriginType } from "../appConstants";
+import BookmarkBorderRoundedIcon from "@mui/icons-material/BookmarkBorderRounded";
+import BookmarkRoundedIcon from "@mui/icons-material/BookmarkRounded";
+import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 
 export default function ArticlePreview({
   article,
@@ -44,13 +44,13 @@ export default function ArticlePreview({
   // list precisely because it's saved — treat it as such even if the
   // article's has_personal_copy flag hasn't propagated correctly.
   const [isArticleSaved, setIsArticleSaved] = useState(article.has_personal_copy || inSavedView);
-  const [showInferredTopic, setShowInferredTopic] = useState(true);
   const [interactiveSummary, setInteractiveSummary] = useState(null);
   const [interactiveTitle, setInteractiveTitle] = useState(null);
   const [isTokenizing, setIsTokenizing] = useState(false);
   const [zeeguuSpeech] = useState(() => new ZeeguuSpeech(api, article.language));
   const [isHidden, setIsHidden] = useState(article.hidden || false);
   const [isAnimatingOut, setIsAnimatingOut] = useState(false);
+  const [isSummaryExpanded, setIsSummaryExpanded] = useState(false);
 
   useEffect(() => {
     if ((article.summary || article.title) && !isTokenizing && !interactiveSummary && !interactiveTitle) {
@@ -141,6 +141,26 @@ export default function ArticlePreview({
     setIsRedirectionModaOpen(true);
   }
 
+  function handleToggleSave(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    if (isArticleSaved) {
+      api.removePersonalCopy(article.id, (data) => {
+        if (data === "OK") {
+          setIsArticleSaved(false);
+          toast("Article removed from your Saves!");
+        }
+      });
+    } else {
+      api.makePersonalCopy(article.id, (data) => {
+        if (data === "OK") {
+          setIsArticleSaved(true);
+          toast("Article added to your Saves!");
+        }
+      });
+    }
+  }
+
   function handleHideArticle() {
     setIsAnimatingOut(true);
     api.hideArticle(article.id, () => {
@@ -195,12 +215,28 @@ export default function ArticlePreview({
       hasInAppSimplification;
   const should_open_with_modal = doNotShowRedirectionModal_UserPreference === false;
 
+  // The image-as-Open affordance. Returns just the clickable Link /
+  // button / anchor with the image + Open overlay inside (no
+  // ImageWithOverlay wrapper). Callers wrap this in s.ImageWithOverlay
+  // and stack the Save icon as a sibling so the icon click doesn't
+  // bubble into this link.
   function imageLink() {
-    const img = <img alt="" src={article.img_url} style={{ cursor: "pointer" }} />;
+    const innerLinkStyle = { display: "block", position: "relative", lineHeight: 0 };
+    const imgInner = (
+      <>
+        <img alt="" src={article.img_url} style={{ cursor: "pointer", display: "block" }} />
+        <s.ImageOpenOverlay>
+          Open
+          {!should_open_in_zeeguu && (
+            <OpenInNewRoundedIcon style={{ fontSize: 14, marginLeft: 4 }} />
+          )}
+        </s.ImageOpenOverlay>
+      </>
+    );
     if (should_open_in_zeeguu) {
       return (
-        <Link to={`/read/article?id=${inAppArticleId}`} onClick={handleArticleClick}>
-          {img}
+        <Link to={`/read/article?id=${inAppArticleId}`} onClick={handleArticleClick} style={innerLinkStyle}>
+          {imgInner}
         </Link>
       );
     }
@@ -212,9 +248,9 @@ export default function ArticlePreview({
             handleArticleClick();
             handleOpenRedirectionModal();
           }}
-          style={{ background: "none", border: "none", padding: 0, cursor: "pointer" }}
+          style={{ ...innerLinkStyle, background: "none", border: "none", padding: 0, cursor: "pointer", width: "100%" }}
         >
-          {img}
+          {imgInner}
         </button>
       );
     }
@@ -224,8 +260,9 @@ export default function ArticlePreview({
         rel="noreferrer"
         href={externalUrl}
         onClick={handleArticleClick}
+        style={innerLinkStyle}
       >
-        {img}
+        {imgInner}
       </a>
     );
   }
@@ -320,43 +357,15 @@ export default function ArticlePreview({
         marginBottom: isAnimatingOut ? "0" : undefined,
       }}
     >
-      {/* Topics and search tags */}
-      <s.UrlTopics style={{ display: 'flex', flexWrap: 'wrap', marginTop: 0, marginBottom: '4px' }}>
-        {showInferredTopic && article.topics_list && article.topics_list.map(([topicTitle, topicOrigin]) => (
-          <span
-            key={topicTitle}
-            className={topicOrigin === TopicOriginType.INFERRED ? "inferred" : "gold"}
-          >
-            {topicTitle}
-            {topicOrigin === TopicOriginType.INFERRED && (
-              <HighlightOffRoundedIcon
-                className="cancelButton"
-                sx={{ color: 'var(--text-faint)', fontSize: '1rem', strokeWidth: 0.5 }}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setShowInferredTopic(false);
-                  toast("Thanks for your feedback.");
-                  api.removeMLSuggestion(article.id, topicTitle);
-                }}
-              />
-            )}
-          </span>
-        ))}
-        {article.matched_searches && article.matched_searches.length > 0 && (
-          article.matched_searches.map((search, i) => (
-            <span
-              key={`search-${i}`}
-              style={{
-                backgroundColor: "var(--search-tag-bg)",
-                border: "solid 1px var(--search-tag-border)",
-                color: "var(--search-tag-text)",
-              }}
-            >
-              🔍 <Link to={`/search?search=${encodeURIComponent(search)}`} style={{ color: "inherit", textDecoration: "none" }}>{search}</Link>
-            </span>
-          ))
-        )}
-      </s.UrlTopics>
+      {/* Card-level Hide × in the top-right corner. Dismissal pattern;
+          replaces the Hide button that used to sit at the bottom. Only
+          shown where Hide makes sense (Discover-style surfaces, not in
+          the Hidden view, not in saved-list views). */}
+      {!isHiddenView && !inSavedView && (
+        <s.HideButton onClick={handleHideArticle} aria-label="Hide from feed">
+          <CloseRoundedIcon style={{ fontSize: 18 }} />
+        </s.HideButton>
+      )}
 
       {/* Show teacher name for classroom articles */}
       {article.uploader_name && (
@@ -374,13 +383,30 @@ export default function ArticlePreview({
             article.title
           )}
         </s.Title>
-        <ReadingCompletionProgress last_reading_percentage={article.reading_completion}></ReadingCompletionProgress>
+        {/* Reading-progress only matters on partial-read surfaces. Discover
+            articles are almost always 0% (you haven't opened them yet), and
+            the empty circle just wastes title width. Keep it for saved-list
+            surfaces (teacher OwnArticles uses inSavedView). */}
+        {inSavedView && (
+          <ReadingCompletionProgress last_reading_percentage={article.reading_completion} />
+        )}
       </s.TitleContainer>
 
       {/* Single quiet metadata strip under the title: CEFR · Simplified ·
           Saved · source · time. State badges (Simplified/Saved) get a subtle
           accent color; source/time stay muted. All on one row, small. */}
       <MetaStrip>
+        {article.topics_list && article.topics_list.map(([topicTitle]) => (
+          <MetaTag key={topicTitle}>{topicTitle}</MetaTag>
+        ))}
+        {article.matched_searches && article.matched_searches.map((search) => (
+          <MetaItem key={`search-${search}`}>
+            🔍&nbsp;
+            <MetaLink as={Link} to={`/search?search=${encodeURIComponent(search)}`}>
+              {search}
+            </MetaLink>
+          </MetaItem>
+        ))}
         {article.parent_article_id && (
           <MetaTag>Simplified</MetaTag>
         )}
@@ -395,10 +421,37 @@ export default function ArticlePreview({
           </MetaLink>
         </MetaItem>
         {publishedTimeSlot}
+        {(article.metrics?.word_count || article.word_count) > 0 && (
+          <MetaItem>
+            ~{estimateReadingTime(article.metrics?.word_count || article.word_count || 0)
+              .replace(" minutes", "min")
+              .replace(" minute", "min")}
+          </MetaItem>
+        )}
       </MetaStrip>
 
       <s.ArticleContent>
-        {article.img_url && imageLink()}
+        {article.img_url && (
+          <s.ImageWithOverlay>
+            {imageLink()}
+            {/* Save toggle overlaid on the image — bookmark icon flips
+                between outline and filled. Sibling of the image-link so
+                clicks here don't bubble into navigation. */}
+            {!isHiddenView && (
+              <s.SaveIconButton
+                type="button"
+                onClick={handleToggleSave}
+                aria-label={isArticleSaved ? "Remove from saves" : "Save"}
+              >
+                {isArticleSaved ? (
+                  <BookmarkRoundedIcon style={{ fontSize: 18 }} />
+                ) : (
+                  <BookmarkBorderRoundedIcon style={{ fontSize: 18 }} />
+                )}
+              </s.SaveIconButton>
+            )}
+          </s.ImageWithOverlay>
+        )}
         {/* Summary block hosts summary text + Discover's action row. On
             saved-list surfaces we hide both — image-click already opens,
             the centered Open button below it carries the primary CTA, and
@@ -406,48 +459,57 @@ export default function ArticlePreview({
         {!inSavedView && (
           <s.Summary>
             {!dontShowSummary && (
-              interactiveSummary ? (
-                <TranslatableText interactiveText={interactiveSummary} translating={true} pronouncing={true} />
-              ) : (
-                article.summary
-              )
-            )}
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "space-between",
-                marginTop: "8px",
-              }}
-            >
-              <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                {!isHiddenView && (
-                  <SaveArticleButton
-                    article={article}
-                    isArticleSaved={isArticleSaved}
-                    setIsArticleSaved={setIsArticleSaved}
-                    variant="muted"
-                  />
+              // Summary clamps to 2 lines when collapsed; "more"/"less"
+              // toggles in place. Word-tap translation still works on the
+              // visible lines (DOM is intact, only visually clipped), and
+              // beginners get the full translatable summary on expand.
+              <>
+                {isSummaryExpanded ? (
+                  interactiveSummary ? (
+                    <TranslatableText interactiveText={interactiveSummary} translating={true} pronouncing={true} />
+                  ) : (
+                    article.summary
+                  )
+                ) : (
+                  <s.ClampedSummary>
+                    {interactiveSummary ? (
+                      <TranslatableText interactiveText={interactiveSummary} translating={true} pronouncing={true} />
+                    ) : (
+                      article.summary
+                    )}
+                  </s.ClampedSummary>
                 )}
-                {isHiddenView ? (
+                <s.SummaryToggle
+                  type="button"
+                  onClick={() => setIsSummaryExpanded((v) => !v)}
+                >
+                  {isSummaryExpanded ? "Show less" : "Show more"}
+                  <span aria-hidden="true">{isSummaryExpanded ? "▴" : "▾"}</span>
+                </s.SummaryToggle>
+              </>
+            )}
+            {/* Save lives as a bookmark icon on the image; Hide lives as
+                a × in the card's top-right corner. The only thing that
+                still needs a button at the bottom of the card is the
+                Unhide affordance on the Hidden-articles surface, and a
+                fallback Open for the rare article without an image. */}
+            {(isHiddenView || !article.img_url) && (
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "10px",
+                  marginTop: "8px",
+                }}
+              >
+                {isHiddenView && (
                   <ActionButton onClick={handleUnhideArticle} variant="muted">
                     Unhide
                   </ActionButton>
-                ) : (
-                  <ActionButton onClick={handleHideArticle} variant="muted">
-                    Hide
-                  </ActionButton>
                 )}
+                {!article.img_url && titleLink(article)}
               </div>
-              <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                <span style={{ fontSize: "0.8em", opacity: 0.7 }}>
-                  (~{estimateReadingTime(article.metrics?.word_count || article.word_count || 0)
-                    .replace(" minutes", "min")
-                    .replace(" minute", "min")})
-                </span>
-                {titleLink(article)}
-              </div>
-            </div>
+            )}
           </s.Summary>
         )}
       </s.ArticleContent>
