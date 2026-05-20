@@ -189,7 +189,7 @@ Zeeguu_API.prototype.searchMore = function (
 };
 
 Zeeguu_API.prototype.getBookmarkedArticles = function (callback) {
-  this._getJSON("user_articles/starred_or_liked", callback);
+  this._getJSON("user_articles/my_articles", callback);
 };
 
 Zeeguu_API.prototype.getCohortArticles = function (callback) {
