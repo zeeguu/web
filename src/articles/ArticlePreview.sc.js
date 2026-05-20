@@ -136,6 +136,9 @@ const TitleContainer = styled.div`
   align-items: center;
   gap: 0.5rem;
   position: relative;
+  /* Reserve space for the absolutely-positioned Hide × button at the
+     card's top-right so long titles wrap before reaching it. */
+  padding-right: 2.2em;
 `;
 
 const Title = styled.div`
