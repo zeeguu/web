@@ -29,6 +29,14 @@ const getButtonStyles = (variant) => {
       backgroundColor: "var(--action-btn-muted-bg)",
       border: "1px solid var(--action-btn-muted-border)",
     },
+    // For in-app links (article opens that route to the Zeeguu reader, not
+    // an external site). Same dark chip as `default` but blue text — pairs
+    // visually with the Simplified/Saved MetaStrip tags so the user can tell
+    // internal-vs-external reads by color, not just by the external-link icon.
+    internal: {
+      color: "var(--badge-text)",
+      backgroundColor: "var(--action-btn-bg)",
+    },
   };
 
   return { ...baseStyles, ...variants[variant] };
@@ -54,6 +62,10 @@ export default function ActionButton({ children, onClick, variant = "default", a
       muted: {
         backgroundColor: "var(--action-btn-muted-hover-bg)",
         color: "var(--action-btn-muted-hover-text)",
+      },
+      internal: {
+        backgroundColor: "var(--action-btn-hover-bg)",
+        color: "var(--badge-text)",
       },
     };
     return hoverVariants[variant];

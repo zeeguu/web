@@ -216,7 +216,7 @@ export default function ArticlePreview({
     let linkToRedirect = `/read/article?id=${inAppArticleId}`;
 
     let open_in_zeeguu = (
-      <ActionButton as={Link} to={linkToRedirect} onClick={handleArticleClick}>
+      <ActionButton as={Link} to={linkToRedirect} onClick={handleArticleClick} variant="internal">
         {is_saved ? "Open" : "Read Full"}
       </ActionButton>
     );
