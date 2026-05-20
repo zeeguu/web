@@ -15,6 +15,13 @@ const AppContent = styled.section`
   overflow-y: auto;
   overflow-x: hidden;
   padding: 0;
+  /* Article cards on Discover/Classroom/OwnArticles opt into snap via
+     scroll-snap-align: start on s.ArticlePreview. Mandatory because
+     proximity wasn't firing reliably on iOS WebView. Other surfaces
+     (My Articles' SavedArticleRow, settings pages) have no
+     snap-aligned children, so this has no effect there. */
+  scroll-snap-type: y mandatory;
+  -webkit-overflow-scrolling: touch;
 `;
 
 export { AppLayout, AppContent };
