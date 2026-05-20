@@ -192,6 +192,10 @@ Zeeguu_API.prototype.getBookmarkedArticles = function (callback) {
   this._getJSON("user_articles/my_articles", callback);
 };
 
+Zeeguu_API.prototype.getMoreBookmarkedArticles = function (count, page, callback) {
+  this._getJSON("user_articles/my_articles/" + count + "/" + page, callback);
+};
+
 Zeeguu_API.prototype.getCohortArticles = function (callback) {
   this._getJSON("cohort_articles", callback);
 };
