@@ -76,8 +76,8 @@ const ArticleContent = styled.div`
 
   img {
     margin: 1em 0.5em 0 0.5em;
-    max-width: 10em;
-    max-height: 10em;
+    max-width: 16em;
+    max-height: 12em;
     border-radius: 1em;
     align-self: flex-start;
     object-fit: cover;
@@ -86,9 +86,14 @@ const ArticleContent = styled.div`
       align-content: center;
       justify-content: space-around;
       align-items: center;
-      max-width: 14em;
-      max-height: 10em;
-      margin: 0.5rem;
+      /* Fill the card width with a height cap so portrait photos
+         don't dominate. width: 100% on the img stretches the parent
+         ImageWithOverlay too, keeping the Open + Save overlays
+         aligned to the corners of the visible image. */
+      width: 100%;
+      max-width: 100%;
+      max-height: 13em;
+      margin: 0.5rem 0;
     }
   }
 
@@ -213,6 +218,11 @@ const ImageWithOverlay = styled.div`
   position: relative;
   display: inline-block;
   line-height: 0;
+
+  @media (max-width: 990px) {
+    display: block;
+    width: 100%;
+  }
 `;
 
 // Subtle bottom gradient + "Open" label so the image visibly reads as
