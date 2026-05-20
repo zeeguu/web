@@ -95,7 +95,12 @@ const Zeeguu_API = class {
     fetch(this._appendSessionToUrl(endpoint, this.session))
       .then((response) => {
         if (!response.ok) {
-          throw new Error("Network response was not ok");
+          // HTTP error — server responded, but rejected. Attach the status so
+          // callers can distinguish "session invalid" (401/403) from "network
+          // unreachable" (catch path below, no status).
+          const err = new Error(`Server response not ok (${response.status})`);
+          err.status = response.status;
+          throw err;
         }
         return response.text();
       })

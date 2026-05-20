@@ -9,6 +9,7 @@ import SessionStorage from "../assorted/SessionStorage";
 import { CORRECT, SOLUTION, WRONG } from "./ExerciseConstants";
 import { EXERCISE_TYPES } from "./ExerciseTypeConstants";
 import LocalStorage from "../assorted/LocalStorage";
+import { pushDrillVocab } from "../assorted/drillCache";
 import { assignBookmarksToExercises } from "./assignBookmarksToExercises";
 import NextNavigation from "./exerciseTypes/NextNavigation";
 import { SpeechContext } from "../contexts/SpeechContext";
@@ -310,6 +311,7 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
       correctBookmarksCopy.push(currentBookmark);
       setCorrectBookmarks(correctBookmarksCopy);
     }
+    teeBookmarkToDrillCache(currentBookmark);
     if (endExercise) {
       setIsCorrect(true);
     }
@@ -330,7 +332,17 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
     }
     incorrectBookmarksCopy.push(currentBookmark);
     setIncorrectBookmarks(incorrectBookmarksCopy);
+    teeBookmarkToDrillCache(currentBookmark);
     handleUserAttempt(WRONG, currentBookmark);
+  }
+
+  function teeBookmarkToDrillCache(b) {
+    if (!b || !b.from || !b.to) return;
+    pushDrillVocab(
+      userDetails?.learned_language,
+      [{ o: b.from, t: b.to }],
+      "exercise",
+    );
   }
 
   function showSolution() {
