@@ -1,6 +1,5 @@
 import { useContext, useState } from "react";
 import { useHistory } from "react-router-dom";
-import { formatDistanceToNow } from "date-fns";
 import { toast } from "react-toastify";
 
 import CheckCircleRoundedIcon from "@mui/icons-material/CheckCircleRounded";
@@ -8,16 +7,12 @@ import CheckCircleRoundedIcon from "@mui/icons-material/CheckCircleRounded";
 import { APIContext } from "../contexts/APIContext";
 import { MetaStrip, MetaItem, MetaTag } from "../components/MetaStrip.sc";
 import { isSimplifiedArticle, articleSourceLabel } from "../utils/misc/articleHelpers";
+import { formatRelativeShort } from "../utils/misc/readableTime";
 
 import * as s from "./SavedArticleRow.sc";
 
 const REMOVE_ANIMATION_MS = 300;
 
-// Row-layout card for the My Articles surface. Built separately from
-// ArticlePreview because the scan-list mode is conceptually different:
-// thumbnail + title + meta in one tappable row, no summary, no large
-// CTA button — the image itself is the open affordance (Open overlay
-// labels the thumbnail).
 export default function SavedArticleRow({ article, onArticleRemoved }) {
   const api = useContext(APIContext);
   const history = useHistory();
@@ -27,17 +22,12 @@ export default function SavedArticleRow({ article, onArticleRemoved }) {
   const isSimplified = isSimplifiedArticle(article);
   const sourceDomain = articleSourceLabel(article);
   const savedAgo = article.personal_copy_saved_at
-    ? formatDistanceToNow(new Date(article.personal_copy_saved_at), { addSuffix: true }).replace(
-        "about ",
-        "",
-      )
+    ? formatRelativeShort(article.personal_copy_saved_at)
     : null;
 
-  // Reading progress: hide for 0% (saved-but-untouched is the default
-  // state). Show "Read ✓" for 100%, "X% read" otherwise. The backend
-  // stores reading_completion as a 0..1 ratio.
-  const completionRatio = article.reading_completion || 0;
-  const completionPercent = Math.round(completionRatio * 100);
+  // reading_completion is a 0..1 ratio from the backend. Hide the
+  // indicator at 0 (default state for a fresh save).
+  const completionPercent = Math.round((article.reading_completion || 0) * 100);
   let completionItem = null;
   if (completionPercent >= 100) {
     completionItem = (
@@ -94,7 +84,7 @@ export default function SavedArticleRow({ article, onArticleRemoved }) {
     >
       {article.img_url && (
         <s.ThumbnailWrap>
-          <s.Thumbnail src={article.img_url} alt="" />
+          <s.Thumbnail src={article.img_url} alt="" loading="lazy" decoding="async" />
         </s.ThumbnailWrap>
       )}
       <s.Content>

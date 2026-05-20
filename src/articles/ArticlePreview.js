@@ -13,8 +13,7 @@ import { BrowsingSessionContext } from "../contexts/BrowsingSessionContext";
 import { TranslatableText } from "../reader/TranslatableText";
 import InteractiveText from "../reader/InteractiveText";
 import ZeeguuSpeech from "../speech/APIBasedSpeech";
-import { formatDistanceToNow } from "date-fns";
-import { estimateReadingTime } from "../utils/misc/readableTime";
+import { estimateReadingTime, formatRelativeShort } from "../utils/misc/readableTime";
 import ActionButton from "../components/ActionButton";
 import { articleSourceLabel } from "../utils/misc/articleHelpers";
 import OpenInNewRoundedIcon from "@mui/icons-material/OpenInNewRounded";
@@ -55,7 +54,6 @@ export default function ArticlePreview({
     if ((article.summary || article.title) && !isTokenizing && !interactiveSummary && !interactiveTitle) {
       setIsTokenizing(true);
 
-      // Check if article already has tokenized data (optimization to avoid N+1 API calls)
       const summaryData =
         article.interactiveSummary && article.interactiveTitle
           ? {
@@ -119,9 +117,6 @@ export default function ArticlePreview({
     article.id,
     api,
     zeeguuSpeech,
-    // isTokenizing removed - was causing infinite loop!
-    // interactiveSummary removed - was causing infinite loop!
-    // interactiveTitle removed - was causing infinite loop!
   ]);
 
   const handleArticleClick = () => {
@@ -163,7 +158,6 @@ export default function ArticlePreview({
   function handleHideArticle() {
     setIsAnimatingOut(true);
     api.hideArticle(article.id, () => {
-      // Delay the actual hiding to allow animation to complete
       setTimeout(() => {
         setIsHidden(true);
         if (onArticleHidden) {
@@ -198,7 +192,7 @@ export default function ArticlePreview({
     }
   }
 
-  const is_saved = article.has_personal_copy || article.has_uploader || isArticleSaved === true;
+  const is_saved = article.has_personal_copy || article.has_uploader || isArticleSaved;
   const externalUrl = article.parent_url || article.url;
   // Either flavor of simplification gives us a Zeeguu-readable body —
   // a simplified article (parent_article_id set) or an original whose
@@ -214,16 +208,14 @@ export default function ArticlePreview({
       hasInAppSimplification;
   const should_open_with_modal = doNotShowRedirectionModal_UserPreference === false;
 
-  // The image-as-Open affordance. Returns just the clickable Link /
-  // button / anchor with the image + Open overlay inside (no
-  // ImageWithOverlay wrapper). Callers wrap this in s.ImageWithOverlay
-  // and stack the Save icon as a sibling so the icon click doesn't
-  // bubble into this link.
+  // Returned without the s.ImageWithOverlay wrapper so callers can
+  // stack the Save icon as a sibling — nesting it inside this Link
+  // would let icon clicks bubble into navigation.
   function imageLink() {
     const innerLinkStyle = { display: "block", position: "relative", lineHeight: 0 };
     const imgInner = (
       <>
-        <img alt="" src={article.img_url} style={{ cursor: "pointer", display: "block" }} />
+        <img alt="" src={article.img_url} loading="lazy" decoding="async" style={{ cursor: "pointer", display: "block" }} />
         <s.ImageOpenOverlay>
           Open
           {!should_open_in_zeeguu && (
@@ -276,11 +268,6 @@ export default function ArticlePreview({
     );
 
     let open_externally_with_modal = (
-      //The RedirectionNotificationModal modal informs the user that they are about
-      //to be redirected to the original article's website and guides them on what steps
-      //should be taken to start reading the said article with The Zeeguu Reader extension
-      //The modal is displayed when the user clicks the article's title from the recommendation
-      //list and can be deactivated when they select "Do not show again" and proceed.
       <>
         <RedirectionNotificationModal
           hasExtension={hasExtension}
@@ -301,9 +288,8 @@ export default function ArticlePreview({
       </>
     );
 
+    // target=_self on mobile so the system back button returns to Zeeguu.
     let open_externally_without_modal = (
-      //allow target _self on mobile to easily go back to Zeeguu
-      //using mobile browser navigation
       <ActionButton
         as="a"
         target={isMobile ? "_self" : "_blank"}
@@ -324,25 +310,21 @@ export default function ArticlePreview({
     return null;
   }
 
-  // Meta strip splits time across two slots so its position matches the
-  // sort axis of the surface:
-  //   - In Saved-list contexts the time IS the save time and goes up front
-  //     with the state tags ("Saved 2h ago · ekkofilm.dk").
-  //   - Elsewhere it's publish time and sits at the tail, news-feed style
-  //     ("Simplified · Saved · ekkofilm.dk · 2h ago").
-  // dontShowPublishingTime only suppresses *publish* time. The "Saved Xh ago"
-  // pill is the replacement for it on saved-list surfaces (where the prop is
-  // typically true), so the saved-time path isn't gated on the same flag.
+  // Time slot splits across two MetaStrip positions by sort axis: in
+  // saved-list contexts "Saved Xh ago" goes up front with the state
+  // tags; elsewhere publish time sits at the tail. `dontShowPublishingTime`
+  // suppresses publish time only — the saved-time path is the replacement,
+  // so it isn't gated on the same flag.
   let savedTag = null;
   let publishedTimeSlot = null;
   if (inSavedView && article.personal_copy_saved_at) {
-    const savedAgo = formatDistanceToNow(new Date(article.personal_copy_saved_at), { addSuffix: true }).replace("about ", "");
+    const savedAgo = formatRelativeShort(article.personal_copy_saved_at);
     savedTag = <MetaTag>Saved {savedAgo}</MetaTag>;
   } else if (isArticleSaved && !inSavedView) {
     savedTag = <MetaTag>Saved</MetaTag>;
   }
   if (!inSavedView && !dontShowPublishingTime && article.published) {
-    const publishedAgo = formatDistanceToNow(new Date(article.published), { addSuffix: true }).replace("about ", "");
+    const publishedAgo = formatRelativeShort(article.published);
     publishedTimeSlot = <MetaItem>{publishedAgo}</MetaItem>;
   }
 
@@ -526,20 +508,9 @@ export default function ArticlePreview({
           >
             Open
           </Link>
-          <button
-            type="button"
-            onClick={handleRemoveFromSaves}
-            style={{
-              background: "none",
-              border: "none",
-              padding: "4px 8px",
-              color: "var(--text-muted)",
-              cursor: "pointer",
-              fontSize: "0.85em",
-            }}
-          >
+          <ActionButton onClick={handleRemoveFromSaves} variant="link">
             remove from saves
-          </button>
+          </ActionButton>
         </div>
       )}
     </s.ArticlePreview>

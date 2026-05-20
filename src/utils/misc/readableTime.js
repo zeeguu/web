@@ -1,4 +1,14 @@
 import Pluralize from "../text/pluralize";
+import { formatDistanceToNow } from "date-fns";
+
+// "2 hours ago" / "5 minutes ago" — the date-fns default reads as
+// "about 2 hours ago" which is verbose and inconsistent at small
+// scales. Strip the "about " prefix so the strings are uniformly
+// short across the app.
+export function formatRelativeShort(dateOrIso) {
+  return formatDistanceToNow(new Date(dateOrIso), { addSuffix: true })
+    .replace("about ", "");
+}
 function secondsToMinutes(timeInSeconds) {
   return Math.floor(timeInSeconds / 60);
 }
