@@ -16,7 +16,10 @@ export default function useSwipeBack() {
 
     function onTouchStart(e) {
       const touch = e.touches[0];
-      if (touch.clientX <= 30) {
+      // Edge-swipe zone — generous enough that a natural thumb start
+      // catches it. Tightening risks the gesture feeling broken for the
+      // user who doesn't know to press the very edge.
+      if (touch.clientX <= 60) {
         startX = touch.clientX;
         startY = touch.clientY;
         tracking = true;
@@ -48,7 +51,7 @@ export default function useSwipeBack() {
       const dx = touch.clientX - startX;
       const dy = Math.abs(touch.clientY - startY);
 
-      if (dx >= 80 && dx > dy) {
+      if (dx >= 60 && dx > dy) {
         // Animate off-screen, then navigate
         page.style.transition = "transform 0.2s ease-out, opacity 0.2s ease-out";
         page.style.transform = `translateX(${window.innerWidth}px)`;
