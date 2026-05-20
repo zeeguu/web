@@ -19,7 +19,6 @@ import * as s from "../components/ColumnWidth.sc";
 import LocalStorage from "../assorted/LocalStorage";
 import { BrowsingSessionContext } from "../contexts/BrowsingSessionContext";
 import useBrowsingSession from "../hooks/useBrowsingSession";
-import useTabbedRoute from "../hooks/useTabbedRoute";
 
 const READ_TAB_PATHS = [
   "/articles",
@@ -58,18 +57,13 @@ export default function ArticlesRouter({ hasExtension, isChrome }) {
     },
   ].filter(Boolean);
 
-  const swipeRef = useTabbedRoute(
-    tabs.map((t) => t.link),
-    { pathAliases: { "/search": "/articles/mySearches" } },
-  );
-
   return (
     <BrowsingSessionContext.Provider value={getBrowsingSessionId}>
       {/* Rendering top menu first, then routing to corresponding page */}
       <s.NarrowColumn>
         <TopTabs title={strings.articles} tabsAndLinks={tabs} />
 
-        <div ref={swipeRef} style={{ minHeight: "70vh" }}>
+        <div style={{ minHeight: "70vh" }}>
           {hideRecommendations ? (
             <Redirect from="/articles" exact to="/articles/classroom" />
           ) : (

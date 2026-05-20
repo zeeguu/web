@@ -8,10 +8,6 @@ const ArticlePreview = styled.div`
   padding-left: 0.8em;
   padding-right: 0.8em;
   padding-bottom: 1em;
-  /* Snap to the top of a card when scrolling stops near it. Paired with
-     scroll-snap-type: y proximity on the scroll container. */
-  scroll-snap-align: start;
-  scroll-snap-stop: always;
 `;
 
 // × in the card's top-right corner. Dismissal pattern (Twitter
