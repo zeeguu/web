@@ -1,18 +1,14 @@
 import { MetaStrip, MetaItem, MetaLink, MetaTag } from "./MetaStrip.sc";
 import getDomainName from "../utils/misc/getDomainName";
+import { isSimplifiedArticle } from "../utils/misc/articleHelpers";
 
 export default function ArticleStatInfo({ articleInfo }) {
-  // Backend marks any AI-simplified article via is_simplified; parent_url
-  // is only set when the original article is linkable (some simplifications
-  // are produced from uploads and have no parent to point back to).
-  const isSimplified = !!articleInfo.is_simplified || !!articleInfo.parent_url;
+  const isSimplified = isSimplifiedArticle(articleInfo);
   const sourceUrl = articleInfo.parent_url || articleInfo.url;
   const sourceDomain = sourceUrl ? getDomainName(sourceUrl) : null;
 
-  // Teacher-only CEFR assessment details — kept so the dashboard surface
-  // can still debug classifier output. User-facing CEFR level is suppressed
-  // (see feedback_cefr_data_unreliable: classifier collapses too often for
-  // the level alone to be trustworthy).
+  // User-facing CEFR level is suppressed (see feedback_cefr_data_unreliable);
+  // teacher-only assessments still surface for classifier debugging.
   const assessments = articleInfo.cefr_assessments;
   const hasAssessments = assessments && (assessments.llm?.level || assessments.ml?.level);
 

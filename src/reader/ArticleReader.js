@@ -20,6 +20,7 @@ import ReviewVocabularyInfoBox from "./ReviewVocabularyInfoBox";
 import ArticleAuthors from "./ArticleAuthors";
 import useShadowRef from "../hooks/useShadowRef";
 import useSwipeBack from "../hooks/useSwipeBack";
+import { isSimplifiedArticle as isSimplifiedArticleFn } from "../utils/misc/articleHelpers";
 import useScrollTracking from "../hooks/useScrollTracking";
 import useReadingSession from "../hooks/useReadingSession";
 import useReviewWordsOnboarding from "../hooks/useReviewWordsOnboarding";
@@ -60,12 +61,11 @@ export default function ArticleReader({ teacherArticleID }) {
 
   const [articleInfo, setArticleInfo] = useState();
 
-  // Swipe-back target: a simplified article lives in the user's saves, so
-  // returning to My Articles is what feels right regardless of how the
-  // reader was reached (My Articles directly, or Discover → Simplify, where
-  // the original was replaced by the simplified in the history stack).
-  const isSimplifiedArticle = !!(articleInfo?.parent_article_id || articleInfo?.is_simplified);
-  useSwipeBack({ targetPath: isSimplifiedArticle ? "/articles/bookmarked" : null });
+  // Simplified articles live in the user's saves — back-gesture them to
+  // My Articles regardless of how they got here (direct, or via
+  // Discover→Simplify where history.replace clobbered the entry point).
+  const isSimplified = articleInfo && isSimplifiedArticleFn(articleInfo);
+  useSwipeBack({ targetPath: isSimplified ? "/articles/bookmarked" : null });
   const [loadingProgress, setLoadingProgress] = useState(null);
   const [showSlowLoadingHint, setShowSlowLoadingHint] = useState(false);
 

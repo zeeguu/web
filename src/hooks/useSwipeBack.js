@@ -87,14 +87,19 @@ export default function useSwipeBack(options = {}) {
       }
     }
 
-    document.addEventListener("touchstart", onTouchStart);
-    document.addEventListener("touchmove", onTouchMove);
-    document.addEventListener("touchend", onTouchEnd);
+    // Passive: the handlers don't call preventDefault, and the gesture
+    // zone now covers the left half of the screen — letting the
+    // compositor scroll without waiting on this JS keeps the touch path
+    // responsive.
+    const opts = { passive: true };
+    document.addEventListener("touchstart", onTouchStart, opts);
+    document.addEventListener("touchmove", onTouchMove, opts);
+    document.addEventListener("touchend", onTouchEnd, opts);
 
     return () => {
-      document.removeEventListener("touchstart", onTouchStart);
-      document.removeEventListener("touchmove", onTouchMove);
-      document.removeEventListener("touchend", onTouchEnd);
+      document.removeEventListener("touchstart", onTouchStart, opts);
+      document.removeEventListener("touchmove", onTouchMove, opts);
+      document.removeEventListener("touchend", onTouchEnd, opts);
     };
   }, [history]);
 }

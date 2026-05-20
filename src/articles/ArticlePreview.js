@@ -7,7 +7,6 @@ import * as s from "./ArticlePreview.sc";
 import { MetaStrip, MetaItem, MetaLink, MetaTag } from "../components/MetaStrip.sc";
 import RedirectionNotificationModal from "../components/redirect_notification/RedirectionNotificationModal";
 import Feature from "../features/Feature";
-import extractDomain from "../utils/web/extractDomain";
 import ReadingCompletionProgress from "./ReadingCompletionProgress";
 import { APIContext } from "../contexts/APIContext";
 import { BrowsingSessionContext } from "../contexts/BrowsingSessionContext";
@@ -17,7 +16,7 @@ import ZeeguuSpeech from "../speech/APIBasedSpeech";
 import { formatDistanceToNow } from "date-fns";
 import { estimateReadingTime } from "../utils/misc/readableTime";
 import ActionButton from "../components/ActionButton";
-import getDomainName from "../utils/misc/getDomainName";
+import { articleSourceLabel } from "../utils/misc/articleHelpers";
 import OpenInNewRoundedIcon from "@mui/icons-material/OpenInNewRounded";
 import BookmarkBorderRoundedIcon from "@mui/icons-material/BookmarkBorderRounded";
 import BookmarkRoundedIcon from "@mui/icons-material/BookmarkRounded";
@@ -417,7 +416,7 @@ export default function ArticlePreview({
             target="_blank"
             rel="noopener noreferrer"
           >
-            {article.feed_name || (article.parent_url ? getDomainName(article.parent_url) : extractDomain(article.url))}
+            {articleSourceLabel(article)}
           </MetaLink>
         </MetaItem>
         {publishedTimeSlot}
@@ -452,66 +451,49 @@ export default function ArticlePreview({
             )}
           </s.ImageWithOverlay>
         )}
-        {/* Summary block hosts summary text + Discover's action row. On
-            saved-list surfaces we hide both — image-click already opens,
-            the centered Open button below it carries the primary CTA, and
-            "(remove from saves)" lives inline with the Saved tag above. */}
-        {!inSavedView && (
-          <s.Summary>
-            {!dontShowSummary && (
-              // Summary clamps to 2 lines when collapsed; "more"/"less"
-              // toggles in place. Word-tap translation still works on the
-              // visible lines (DOM is intact, only visually clipped), and
-              // beginners get the full translatable summary on expand.
-              <>
-                {isSummaryExpanded ? (
-                  interactiveSummary ? (
-                    <TranslatableText interactiveText={interactiveSummary} translating={true} pronouncing={true} />
-                  ) : (
-                    article.summary
-                  )
-                ) : (
-                  <s.ClampedSummary>
-                    {interactiveSummary ? (
-                      <TranslatableText interactiveText={interactiveSummary} translating={true} pronouncing={true} />
-                    ) : (
-                      article.summary
-                    )}
-                  </s.ClampedSummary>
-                )}
-                <s.SummaryToggle
-                  type="button"
-                  onClick={() => setIsSummaryExpanded((v) => !v)}
+        {!inSavedView && (() => {
+          const summaryNode = interactiveSummary ? (
+            <TranslatableText interactiveText={interactiveSummary} translating={true} pronouncing={true} />
+          ) : (
+            article.summary
+          );
+          return (
+            <s.Summary>
+              {!dontShowSummary && (
+                <>
+                  {isSummaryExpanded ? summaryNode : <s.ClampedSummary>{summaryNode}</s.ClampedSummary>}
+                  <s.SummaryToggle
+                    type="button"
+                    onClick={() => setIsSummaryExpanded((v) => !v)}
+                  >
+                    {isSummaryExpanded ? "Show less" : "Show more"}
+                    <span aria-hidden="true">{isSummaryExpanded ? "▴" : "▾"}</span>
+                  </s.SummaryToggle>
+                </>
+              )}
+              {/* Bottom action row only used as a fallback: the Hidden
+                  surface needs Unhide, and image-less articles need an
+                  explicit Open since there's no image to overlay it on. */}
+              {(isHiddenView || !article.img_url) && (
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "10px",
+                    marginTop: "8px",
+                  }}
                 >
-                  {isSummaryExpanded ? "Show less" : "Show more"}
-                  <span aria-hidden="true">{isSummaryExpanded ? "▴" : "▾"}</span>
-                </s.SummaryToggle>
-              </>
-            )}
-            {/* Save lives as a bookmark icon on the image; Hide lives as
-                a × in the card's top-right corner. The only thing that
-                still needs a button at the bottom of the card is the
-                Unhide affordance on the Hidden-articles surface, and a
-                fallback Open for the rare article without an image. */}
-            {(isHiddenView || !article.img_url) && (
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "10px",
-                  marginTop: "8px",
-                }}
-              >
-                {isHiddenView && (
-                  <ActionButton onClick={handleUnhideArticle} variant="muted">
-                    Unhide
-                  </ActionButton>
-                )}
-                {!article.img_url && titleLink(article)}
-              </div>
-            )}
-          </s.Summary>
-        )}
+                  {isHiddenView && (
+                    <ActionButton onClick={handleUnhideArticle} variant="muted">
+                      Unhide
+                    </ActionButton>
+                  )}
+                  {!article.img_url && titleLink(article)}
+                </div>
+              )}
+            </s.Summary>
+          );
+        })()}
       </s.ArticleContent>
 
       {inSavedView && (

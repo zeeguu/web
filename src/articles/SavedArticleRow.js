@@ -7,8 +7,7 @@ import CheckCircleRoundedIcon from "@mui/icons-material/CheckCircleRounded";
 
 import { APIContext } from "../contexts/APIContext";
 import { MetaStrip, MetaItem, MetaTag } from "../components/MetaStrip.sc";
-import getDomainName from "../utils/misc/getDomainName";
-import extractDomain from "../utils/web/extractDomain";
+import { isSimplifiedArticle, articleSourceLabel } from "../utils/misc/articleHelpers";
 
 import * as s from "./SavedArticleRow.sc";
 
@@ -24,14 +23,9 @@ export default function SavedArticleRow({ article, onArticleRemoved }) {
   const history = useHistory();
   const [isAnimatingOut, setIsAnimatingOut] = useState(false);
 
-  // The simplified version is what the user wants to read when an
-  // original article also has a simplified child they own.
-  const inAppArticleId = article.user_simplified_article_id || article.id;
-  const articleHref = `/read/article?id=${inAppArticleId}`;
-  const isSimplified = !!(article.parent_article_id || article.is_simplified);
-  const sourceDomain =
-    article.feed_name ||
-    (article.parent_url ? getDomainName(article.parent_url) : extractDomain(article.url));
+  const articleHref = `/read/article?id=${article.user_simplified_article_id || article.id}`;
+  const isSimplified = isSimplifiedArticle(article);
+  const sourceDomain = articleSourceLabel(article);
   const savedAgo = article.personal_copy_saved_at
     ? formatDistanceToNow(new Date(article.personal_copy_saved_at), { addSuffix: true }).replace(
         "about ",
