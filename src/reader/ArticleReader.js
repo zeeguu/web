@@ -25,6 +25,7 @@ import useReadingSession from "../hooks/useReadingSession";
 import useReviewWordsOnboarding from "../hooks/useReviewWordsOnboarding";
 import strings from "../i18n/definitions";
 import useUserPreferences from "../hooks/useUserPreferences";
+import ArticleStatInfo from "../components/ArticleStatInfo";
 import DigitalTimer from "../components/DigitalTimer";
 import DevButton from "../components/DevButton";
 import { APIContext } from "../contexts/APIContext";
@@ -50,7 +51,6 @@ export function onBlur(api, articleID, source) {
 }
 
 export default function ArticleReader({ teacherArticleID }) {
-  useSwipeBack();
   const api = useContext(APIContext);
   let articleID = "";
   let query = useQuery();
@@ -59,6 +59,13 @@ export default function ArticleReader({ teacherArticleID }) {
   last_reading_percentage = last_reading_percentage === "undefined" ? null : Number(last_reading_percentage);
 
   const [articleInfo, setArticleInfo] = useState();
+
+  // Swipe-back target: a simplified article lives in the user's saves, so
+  // returning to My Articles is what feels right regardless of how the
+  // reader was reached (My Articles directly, or Discover → Simplify, where
+  // the original was replaced by the simplified in the history stack).
+  const isSimplifiedArticle = !!(articleInfo?.parent_article_id || articleInfo?.is_simplified);
+  useSwipeBack({ targetPath: isSimplifiedArticle ? "/articles/bookmarked" : null });
   const [loadingProgress, setLoadingProgress] = useState(null);
   const [showSlowLoadingHint, setShowSlowLoadingHint] = useState(false);
 
@@ -443,6 +450,9 @@ export default function ArticleReader({ teacherArticleID }) {
           </h1>
 
           <ArticleAuthors articleInfo={articleInfo} />
+          <s.ArticleInfoContainer>
+            <ArticleStatInfo articleInfo={articleInfo}></ArticleStatInfo>
+          </s.ArticleInfoContainer>
 
           {articleInfo.img_url && (
             <s.ArticleImgContainer>
