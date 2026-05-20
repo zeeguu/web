@@ -37,6 +37,18 @@ const getButtonStyles = (variant) => {
       color: "var(--badge-text)",
       backgroundColor: "var(--action-btn-bg)",
     },
+    // For destructive-or-secondary actions that should de-emphasize next to
+    // a primary CTA — renders as plain underlined text, no button chrome.
+    // Used e.g. for "Remove" once an article is already saved: Open is the
+    // affirmative action, Remove is the rare destructive one, so it shouldn't
+    // carry the same visual weight.
+    link: {
+      color: "var(--text-muted)",
+      backgroundColor: "transparent",
+      border: "none",
+      padding: "2px 6px",
+      fontWeight: 400,
+    },
   };
 
   return { ...baseStyles, ...variants[variant] };
@@ -66,6 +78,10 @@ export default function ActionButton({ children, onClick, variant = "default", a
       internal: {
         backgroundColor: "var(--action-btn-hover-bg)",
         color: "var(--badge-text)",
+      },
+      link: {
+        color: "var(--text-primary)",
+        backgroundColor: "transparent",
       },
     };
     return hoverVariants[variant];
