@@ -25,24 +25,24 @@ function tokenShouldSkipCount(word) {
 }
 
 export default class InteractiveText {
-  constructor(
+  constructor({
     tokenizedParagraphs,
     sourceId,
     api,
-    previousBookmarks,
-    translationEvent = api.TRANSLATE_TEXT,
+    previousBookmarks = [],
+    translationEvent,
     language,
     source = "",
     zeeguuSpeech,
     contextIdentifier,
-    formatting,
+    formatting = null,
     getBrowsingSessionId = () => null,
     getReadingSessionId = () => null,
-  ) {
+  }) {
     this.api = api;
     this.sourceId = sourceId;
     this.language = language;
-    this.translationEvent = translationEvent;
+    this.translationEvent = translationEvent ?? api.TRANSLATE_TEXT;
     this.source = source;
     this.formatting = formatting;
     this.contextIdentifier = contextIdentifier;
@@ -57,11 +57,9 @@ export default class InteractiveText {
     this.paragraphsAsLinkedWordLists = this.paragraphs.map(
       (sent) => new LinkedWordList(sent),
     );
-    if (language !== zeeguuSpeech.language) {
-      this.zeeguuSpeech = new ZeeguuSpeech(api, language);
-    } else {
-      this.zeeguuSpeech = zeeguuSpeech;
-    }
+    this.zeeguuSpeech = language !== zeeguuSpeech.language
+      ? new ZeeguuSpeech(api, language)
+      : zeeguuSpeech;
   }
 
   getParagraphs() {

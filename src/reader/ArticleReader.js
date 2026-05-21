@@ -225,38 +225,33 @@ export default function ArticleReader({ teacherArticleID }) {
       setInteractiveFragments(
         articleInfo.tokenized_fragments.map(
           (each) =>
-            new InteractiveText(
-              each.tokens,
-              articleInfo.source_id,
+            new InteractiveText({
+              tokenizedParagraphs: each.tokens,
+              sourceId: articleInfo.source_id,
               api,
-              each.past_bookmarks,
-              api.TRANSLATE_TEXT,
-              articleInfo.language,
-              WEB_READER,
-              speech,
-              each.context_identifier,
-              each.formatting,
-              null, // getBrowsingSessionId - not used in article reader
+              previousBookmarks: each.past_bookmarks,
+              language: articleInfo.language,
+              source: WEB_READER,
+              zeeguuSpeech: speech,
+              contextIdentifier: each.context_identifier,
+              formatting: each.formatting,
               getReadingSessionId,
-            ),
+            }),
         ),
       );
       const articleTitleData = articleInfo.tokenized_title_new;
       setInteractiveTitle(
-        new InteractiveText(
-          articleTitleData.tokens,
-          articleInfo.source_id,
+        new InteractiveText({
+          tokenizedParagraphs: articleTitleData.tokens,
+          sourceId: articleInfo.source_id,
           api,
-          articleTitleData.past_bookmarks,
-          api.TRANSLATE_TEXT,
-          articleInfo.language,
-          WEB_READER,
-          speech,
-          articleTitleData.context_identifier,
-          null, // formatting
-          null, // getBrowsingSessionId
+          previousBookmarks: articleTitleData.past_bookmarks,
+          language: articleInfo.language,
+          source: WEB_READER,
+          zeeguuSpeech: speech,
+          contextIdentifier: articleTitleData.context_identifier,
           getReadingSessionId,
-        ),
+        }),
       );
       setArticleInfo(articleInfo);
       setTitle(articleInfo.title);

@@ -5,19 +5,19 @@ import SpeakButton from "../SpeakButton.js";
 import strings from "../../../i18n/definitions.js";
 import { EXERCISE_TYPES } from "../../ExerciseTypeConstants.js";
 import SessionStorage from "../../../assorted/SessionStorage.js";
-import InteractiveText from "../../../reader/InteractiveText.js";
 import LoadingAnimation from "../../../components/LoadingAnimation.js";
 import { SpeechContext } from "../../../contexts/SpeechContext.js";
 import { APIContext } from "../../../contexts/APIContext.js";
 import ClozeContextWithExchange from "../../components/ClozeContextWithExchange.js";
 import ExerciseInstructionHeader from "../../components/ExerciseInstructionHeader.js";
-import { adaptExerciseBookmark } from "../../utils/exerciseBookmarkAdapter.js";
-import { useNotifyExerciseLoaded } from "../../utils/useNotifyExerciseLoaded.js";
+import { useExerciseLifecycle } from "../../utils/useExerciseLifecycle.js";
+import { useInteractiveTextForBookmark } from "../../utils/useInteractiveTextForBookmark.js";
 
 // The user has to translate the word they hear into their L1.
 // This tests the user's passive knowledge.
 
 const EXERCISE_TYPE = EXERCISE_TYPES.translateWhatYouHear;
+
 export default function TranslateWhatYouHear({
   bookmarksToStudy,
   notifyOfUserAttempt,
@@ -35,60 +35,34 @@ export default function TranslateWhatYouHear({
   onExerciseLoaded,
 }) {
   const api = useContext(APIContext);
-  const exerciseBookmark = bookmarksToStudy[0];
   const speech = useContext(SpeechContext);
-  const [interactiveText, setInteractiveText] = useState();
-  useNotifyExerciseLoaded(interactiveText, onExerciseLoaded);
+  const exerciseBookmark = bookmarksToStudy[0];
   const [isButtonSpeaking, setIsButtonSpeaking] = useState(false);
 
-  async function handleSpeak() {
-    await speech.speakOut(exerciseBookmark.from, setIsButtonSpeaking);
-  }
+  useExerciseLifecycle({ speech, resetSubSessionTimer, setExerciseType, exerciseType: EXERCISE_TYPE });
 
-  useEffect(() => {
-    speech.stopAudio(); // Stop any pending speech from previous exercise
-    resetSubSessionTimer();
-    setExerciseType(EXERCISE_TYPE);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  const interactiveText = useInteractiveTextForBookmark({
+    bookmark: exerciseBookmark,
+    api,
+    speech,
+    exerciseType: EXERCISE_TYPE,
+    reload,
+    onExerciseLoaded,
+  });
 
   useEffect(() => {
     if (!SessionStorage.isAudioExercisesEnabled()) moveToNextExercise();
-
-    if (!exerciseBookmark.context_tokenized || !Array.isArray(exerciseBookmark.context_tokenized)) {
-      setInteractiveText(null);
-      return;
-    }
-
-    const adaptedBookmark = adaptExerciseBookmark(exerciseBookmark);
-    setInteractiveText(
-      new InteractiveText(
-        exerciseBookmark.context_tokenized,
-        exerciseBookmark.source_id,
-        api,
-        adaptedBookmark ? [adaptedBookmark] : [],
-        "TRANSLATE WORDS IN EXERCISE",
-        exerciseBookmark.from_lang,
-        EXERCISE_TYPE,
-        speech,
-        exerciseBookmark.context_identifier,
-        null,
-        exerciseBookmark.fragment_id,
-      ),
-    );
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [exerciseBookmark, reload]);
+  }, [reload, exerciseBookmark]);
 
   useEffect(() => {
-    if (SessionStorage.isAudioExercisesEnabled()) {
-      setTimeout(() => {
-        handleSpeak();
-      }, 300);
+    if (interactiveText && SessionStorage.isAudioExercisesEnabled()) {
+      setTimeout(() => speech.speakOut(exerciseBookmark.from, setIsButtonSpeaking), 300);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [interactiveText]);
 
-  if (!interactiveText || !exerciseBookmark) {
+  if (!interactiveText) {
     return <LoadingAnimation />;
   }
 
@@ -99,7 +73,6 @@ export default function TranslateWhatYouHear({
         isExerciseOver={isExerciseOver}
       />
 
-      {/* Context with speaker button above the placeholder */}
       <ClozeContextWithExchange
         exerciseBookmark={exerciseBookmark}
         interactiveText={interactiveText}
@@ -124,17 +97,12 @@ export default function TranslateWhatYouHear({
         }
       />
 
-      {/* Solution area - L1 translation now surfaces as a chip above
-          the highlighted bookmark word in the sentence (via bookmark-
-          restoration), so the big headline below is redundant — keep
-          only the progress bar. */}
       {isExerciseOver && bookmarkProgressBar && (
-        <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', marginTop: '1em' }}>
+        <div style={{ display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center", marginTop: "1em" }}>
           {bookmarkProgressBar}
         </div>
       )}
 
-      {/* Bottom input - only during exercise */}
       {!isExerciseOver && (
         <BottomInput
           handleCorrectAnswer={notifyCorrectAnswer}

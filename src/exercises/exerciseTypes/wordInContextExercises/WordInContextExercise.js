@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext } from "react";
 import * as s from "../Exercise.sc.js";
 import BottomInput from "../BottomInput.js";
 import LoadingAnimation from "../../../components/LoadingAnimation.js";
@@ -7,9 +7,8 @@ import { SpeechContext } from "../../../contexts/SpeechContext.js";
 import { APIContext } from "../../../contexts/APIContext.js";
 import ContextWithExchange from "../../components/ContextWithExchange.js";
 import ExerciseInstructionHeader from "../../components/ExerciseInstructionHeader.js";
-import InteractiveExerciseText from "../../../reader/InteractiveExerciseText.js";
-import { adaptExerciseBookmark } from "../../utils/exerciseBookmarkAdapter.js";
-import { useNotifyExerciseLoaded } from "../../utils/useNotifyExerciseLoaded.js";
+import { useExerciseLifecycle } from "../../utils/useExerciseLifecycle.js";
+import { useInteractiveTextForBookmark } from "../../utils/useInteractiveTextForBookmark.js";
 
 //shared code for ClickWordInContext and FindWordInContext exercises
 //The difference between the two is that in FindWordInContext the user can choose to either click on the word or type the word.
@@ -25,7 +24,6 @@ export default function WordInContextExercise({
   notifyCorrectAnswer,
   notifyIncorrectAnswer,
   setExerciseType,
-  isCorrect,
   isExerciseOver,
   setIsCorrect,
   resetSubSessionTimer,
@@ -36,84 +34,45 @@ export default function WordInContextExercise({
   onExerciseLoaded,
 }) {
   const api = useContext(APIContext);
-  const [interactiveText, setInteractiveText] = useState();
-  useNotifyExerciseLoaded(interactiveText, onExerciseLoaded);
   const speech = useContext(SpeechContext);
-
   const exerciseBookmark = bookmarksToStudy[0];
 
-  useEffect(() => {
-    speech.stopAudio(); // Stop any pending speech from previous exercise
-    resetSubSessionTimer();
-    setExerciseType(exerciseType);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  useExerciseLifecycle({ speech, resetSubSessionTimer, setExerciseType, exerciseType });
 
-  useEffect(() => {
-    if (!exerciseBookmark.context_tokenized || !Array.isArray(exerciseBookmark.context_tokenized)) {
-      setInteractiveText(null);
-      return;
+  function onSolutionFound() {
+    if (isExerciseOver) return;
+    const translationCount = (exerciseMessageToAPI || "").split("").filter((c) => c === "T").length;
+    if (translationCount < 1) {
+      notifyCorrectAnswer(exerciseBookmark);
+    } else {
+      notifyShowSolution();
     }
+  }
 
-    const onSolutionFound = () => {
-      if (isExerciseOver) return;
-
-      let translationCount = 0;
-      if (exerciseMessageToAPI && exerciseMessageToAPI.length > 0) {
-        for (let i = 0; i < exerciseMessageToAPI.length; i++) {
-          if (exerciseMessageToAPI[i] === "T") translationCount++;
-        }
-      }
-
-      if (translationCount < 1) {
-        notifyCorrectAnswer(exerciseBookmark);
-      } else {
-        notifyShowSolution();
-      }
-    };
-
-    const expectedPosition = {
+  // Click-word exercises rely on TranslatableWord.clickOnWord routing the
+  // user's tap to trackWordClick — which only happens when the word has no
+  // pre-set translation. Pre-reveal we therefore skip the bookmark preload
+  // (clicks work); post-reveal we re-mount the InteractiveText WITH the
+  // adapted bookmark so bookmark restoration paints the bright-orange +
+  // chip treatment. The `isExerciseOver` extra-dep drives the re-mount.
+  const interactiveText = useInteractiveTextForBookmark({
+    bookmark: exerciseBookmark,
+    api,
+    speech,
+    exerciseType,
+    reload,
+    onExerciseLoaded,
+    expectedSolution: exerciseBookmark.from,
+    expectedPosition: {
       sentenceIndex: exerciseBookmark.t_sentence_i,
       tokenIndex: exerciseBookmark.t_token_i,
       totalTokens: exerciseBookmark.t_total_token || 1,
       contextOffset: exerciseBookmark.context_sent || 0,
-    };
-
-    // Click-word exercises rely on TranslatableWord.clickOnWord routing
-    // the user's tap to trackWordClick — which only happens when the
-    // word has NO pre-set translation. So:
-    //   - Pre-reveal: don't pre-load the bookmark (clicks work).
-    //   - Post-reveal: pre-load via the adapter so bookmark restoration
-    //     paints the bright-orange + chip treatment.
-    // Including isExerciseOver in the deps re-creates InteractiveText
-    // on the reveal transition.
-    const adaptedBookmark = isExerciseOver
-      ? adaptExerciseBookmark(exerciseBookmark)
-      : null;
-    setInteractiveText(
-      new InteractiveExerciseText(
-        exerciseBookmark.context_tokenized,
-        exerciseBookmark.source_id,
-        api,
-        adaptedBookmark ? [adaptedBookmark] : [],
-        "TRANSLATE WORDS IN EXERCISE",
-        exerciseBookmark.from_lang,
-        exerciseType,
-        speech,
-        exerciseBookmark.context_identifier,
-        null, // formatting
-        exerciseBookmark.from, // expectedSolution
-        expectedPosition,
-        onSolutionFound,
-      ),
-    );
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [exerciseBookmark, reload, isExerciseOver]);
-
-  function handleIncorrectAnswer() {
-    notifyIncorrectAnswer(exerciseBookmark);
-  }
+    },
+    onSolutionFound,
+    preloadBookmark: isExerciseOver,
+    extraDeps: [isExerciseOver],
+  });
 
   if (!interactiveText) {
     return <LoadingAnimation />;
@@ -139,7 +98,7 @@ export default function WordInContextExercise({
       {showBottomInput && !isExerciseOver && (
         <BottomInput
           handleCorrectAnswer={notifyCorrectAnswer}
-          handleIncorrectAnswer={handleIncorrectAnswer}
+          handleIncorrectAnswer={() => notifyIncorrectAnswer(exerciseBookmark)}
           handleExerciseCompleted={notifyExerciseCompleted}
           setIsCorrect={setIsCorrect}
           exerciseBookmark={exerciseBookmark}

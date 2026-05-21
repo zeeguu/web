@@ -2,12 +2,11 @@ import { useState, useEffect, useContext, useMemo, useRef } from "react";
 import * as s from "../Exercise.sc.js";
 import strings from "../../../i18n/definitions";
 import LoadingAnimation from "../../../components/LoadingAnimation.js";
-import InteractiveText from "../../../reader/InteractiveText.js";
-import { adaptExerciseBookmark } from "../../utils/exerciseBookmarkAdapter.js";
 import { ClozeTranslatableText } from "../../components/ClozeTranslatableText.js";
 import ExerciseInstructionHeader from "../../components/ExerciseInstructionHeader.js";
 import { findClozeWordIds } from "../../utils/findClozeWordIds.js";
-import { useNotifyExerciseLoaded } from "../../utils/useNotifyExerciseLoaded.js";
+import { useExerciseLifecycle } from "../../utils/useExerciseLifecycle.js";
+import { useInteractiveTextForBookmark } from "../../utils/useInteractiveTextForBookmark.js";
 import { useFlipOnReveal } from "../../utils/useFlipOnReveal.js";
 import { SpeechContext } from "../../../contexts/SpeechContext.js";
 import shuffle from "../../../assorted/fisherYatesShuffle";
@@ -31,11 +30,12 @@ export default function MultipleChoiceContext({
   onExerciseLoaded,
 }) {
   const api = useContext(APIContext);
-  const [exerciseBookmarks, setExerciseBookmarks] = useState(null);
-  const [interactiveText, setInteractiveText] = useState(null);
-  useNotifyExerciseLoaded(interactiveText, onExerciseLoaded);
   const speech = useContext(SpeechContext);
-  const [exerciseBookmark, setExerciseBookmark] = useState({ ...bookmarksToStudy[0], isExercise: true });
+  const exerciseBookmark = useMemo(
+    () => ({ ...bookmarksToStudy[0], isExercise: true }),
+    [bookmarksToStudy],
+  );
+  const [exerciseBookmarks, setExerciseBookmarks] = useState(null);
   const [clickedOption, setClickedOption] = useState(null);
   const isExerciseOverRef = useShadowRef(isExerciseOver);
   // FLIP: slide the correct option from its randomized position up to
@@ -44,40 +44,22 @@ export default function MultipleChoiceContext({
   const correctOptionRef = useRef(null);
   useFlipOnReveal(correctOptionRef, isExerciseOver);
 
+  useExerciseLifecycle({ speech, resetSubSessionTimer, setExerciseType, exerciseType: EXERCISE_TYPE });
+
   useEffect(() => {
-    speech.stopAudio(); // Stop any pending speech from previous exercise
-    resetSubSessionTimer();
-    setExerciseType(EXERCISE_TYPE);
     const initExerciseBookmarks = bookmarksToStudy.map((b, i) => ({ ...b, isExercise: i === 0 }));
     setExerciseBookmarks(shuffle(initExerciseBookmarks));
-    // eslint-disable-next-line
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  useEffect(() => {
-    const newExerciseBookmark = { ...bookmarksToStudy[0], isExercise: true };
-    setExerciseBookmark(newExerciseBookmark);
-
-    if (!newExerciseBookmark.context_tokenized || !Array.isArray(newExerciseBookmark.context_tokenized)) {
-      setInteractiveText(null);
-      return;
-    }
-
-    const adaptedBookmark = adaptExerciseBookmark(newExerciseBookmark);
-    setInteractiveText(
-      new InteractiveText(
-        newExerciseBookmark.context_tokenized,
-        newExerciseBookmark.source_id,
-        api,
-        adaptedBookmark ? [adaptedBookmark] : [],
-        "TRANSLATE WORDS IN EXERCISE",
-        newExerciseBookmark.from_lang,
-        EXERCISE_TYPE,
-        speech,
-        newExerciseBookmark.context_identifier,
-      ),
-    );
-    // eslint-disable-next-line
-  }, [reload, bookmarksToStudy]);
+  const interactiveText = useInteractiveTextForBookmark({
+    bookmark: exerciseBookmark,
+    api,
+    speech,
+    exerciseType: EXERCISE_TYPE,
+    reload,
+    onExerciseLoaded,
+  });
 
   function notifyChoiceSelection(selectedChoiceId, index) {
     if (isExerciseOver) return;
@@ -98,7 +80,7 @@ export default function MultipleChoiceContext({
   // — flips isTranslationVisible on the cloze word post-reveal so the
   // L1 chip surfaces above it.
   const clozeWordIds = useMemo(() => {
-    if (!interactiveText || !exerciseBookmark) return [];
+    if (!interactiveText) return [];
     return findClozeWordIds(interactiveText, exerciseBookmark);
   }, [interactiveText, exerciseBookmark]);
 
@@ -117,9 +99,8 @@ export default function MultipleChoiceContext({
         l2Prompt={removePunctuation(exerciseBookmark.from)}
         isExerciseOver={isExerciseOver}
       />
-      {/* Progress bar moved below the option list — putting it above
-          would squeeze the option cards down at the moment of reveal.
-          Consistent with the other exercises in the flow. */}
+      {/* Progress bar lives below the option list; putting it above
+          would squeeze the option cards down at the moment of reveal. */}
       {exerciseBookmarks
         .filter((option) => !isExerciseOver || option.isExercise)
         .map((option, index) => {

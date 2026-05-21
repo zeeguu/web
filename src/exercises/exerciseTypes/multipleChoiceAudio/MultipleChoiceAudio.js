@@ -3,11 +3,9 @@ import * as s from "../Exercise.sc.js";
 import SpeakButton from "../SpeakButton.js";
 import strings from "../../../i18n/definitions.js";
 import LoadingAnimation from "../../../components/LoadingAnimation.js";
-import InteractiveText from "../../../reader/InteractiveText.js";
-import { adaptExerciseBookmark } from "../../utils/exerciseBookmarkAdapter.js";
-import { useNotifyExerciseLoaded } from "../../utils/useNotifyExerciseLoaded.js";
+import { useExerciseLifecycle } from "../../utils/useExerciseLifecycle.js";
+import { useInteractiveTextForBookmark } from "../../utils/useInteractiveTextForBookmark.js";
 import shuffle from "../../../assorted/fisherYatesShuffle.js";
-import { removePunctuation } from "../../../utils/text/preprocessing.js";
 import ClozeContextWithExchange from "../../components/ClozeContextWithExchange.js";
 import ExerciseInstructionHeader from "../../components/ExerciseInstructionHeader.js";
 import MultipleChoiceAudioBottomInput from "./MultipleChoiceAudioBottomInput.js";
@@ -35,41 +33,23 @@ export default function MultipleChoiceAudio({
   onExerciseLoaded,
 }) {
   const api = useContext(APIContext);
-  const [interactiveText, setInteractiveText] = useState();
-  useNotifyExerciseLoaded(interactiveText, onExerciseLoaded);
+  const speech = useContext(SpeechContext);
+  const exerciseBookmark = bookmarksToStudy[0];
   const [choiceOptions, setChoiceOptions] = useState(null);
   const [currentSelectedChoice, setCurrentSelectedChoice] = useState("");
-  const exerciseBookmark = bookmarksToStudy[0];
-  const speech = useContext(SpeechContext);
+
+  useExerciseLifecycle({ speech, resetSubSessionTimer, setExerciseType, exerciseType: EXERCISE_TYPE });
+
+  const interactiveText = useInteractiveTextForBookmark({
+    bookmark: exerciseBookmark,
+    api,
+    speech,
+    exerciseType: EXERCISE_TYPE,
+    reload,
+    onExerciseLoaded,
+  });
 
   useEffect(() => {
-    speech.stopAudio(); // Stop any pending speech from previous exercise
-    resetSubSessionTimer();
-    setExerciseType(EXERCISE_TYPE);
-    // eslint-disable-next-line
-  }, []);
-
-  useEffect(() => {
-    if (!exerciseBookmark.context_tokenized || !Array.isArray(exerciseBookmark.context_tokenized)) {
-      setInteractiveText(null);
-      return;
-    }
-
-    const adaptedBookmark = adaptExerciseBookmark(exerciseBookmark);
-    setInteractiveText(
-      new InteractiveText(
-        exerciseBookmark.context_tokenized,
-        exerciseBookmark.source_id,
-        api,
-        adaptedBookmark ? [adaptedBookmark] : [],
-        "TRANSLATE WORDS IN EXERCISE",
-        exerciseBookmark.from_lang,
-        EXERCISE_TYPE,
-        speech,
-        exerciseBookmark.context_identifier,
-      ),
-    );
-
     // Index 0 is the correct bookmark; 1 and 2 are distractors.
     setChoiceOptions(shuffle([0, 1, 2]));
     if (!SessionStorage.isAudioExercisesEnabled()) moveToNextExercise();
@@ -87,7 +67,6 @@ export default function MultipleChoiceAudio({
         isExerciseOver={isExerciseOver}
       />
 
-      {/* Context - always at the top, never moves */}
       <ClozeContextWithExchange
         exerciseBookmark={exerciseBookmark}
         interactiveText={interactiveText}
@@ -121,15 +100,12 @@ export default function MultipleChoiceAudio({
         </div>
       )}
 
-      {/* Solution area - L1 chip above the highlighted word replaces
-          the legacy big headline. */}
       {isExerciseOver && bookmarkProgressBar && (
         <div style={{ marginTop: "3em" }}>
           {bookmarkProgressBar}
         </div>
       )}
 
-      {/* Bottom input - only during exercise */}
       {!isExerciseOver && (
         <MultipleChoiceAudioBottomInput
           bookmarksToStudy={bookmarksToStudy}

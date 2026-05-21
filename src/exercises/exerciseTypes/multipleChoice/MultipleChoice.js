@@ -2,7 +2,6 @@ import { useState, useEffect, useContext } from "react";
 import * as s from "../Exercise.sc.js";
 import MultipleChoicesInput from "./MultipleChoicesInput.js";
 import LoadingAnimation from "../../../components/LoadingAnimation";
-import InteractiveExerciseText from "../../../reader/InteractiveExerciseText.js";
 import { EXERCISE_TYPES } from "../../ExerciseTypeConstants.js";
 import strings from "../../../i18n/definitions.js";
 import shuffle from "../../../assorted/fisherYatesShuffle";
@@ -11,38 +10,13 @@ import { SpeechContext } from "../../../contexts/SpeechContext.js";
 import { APIContext } from "../../../contexts/APIContext.js";
 import ClozeContextWithExchange from "../../components/ClozeContextWithExchange.js";
 import ExerciseInstructionHeader from "../../components/ExerciseInstructionHeader.js";
-import { adaptExerciseBookmark } from "../../utils/exerciseBookmarkAdapter.js";
-import { useNotifyExerciseLoaded } from "../../utils/useNotifyExerciseLoaded.js";
+import { useExerciseLifecycle } from "../../utils/useExerciseLifecycle.js";
+import { useInteractiveTextForBookmark } from "../../utils/useInteractiveTextForBookmark.js";
 
 // The user has to select the correct L2 translation of a given L1 word out of three.
 // This tests the user's active knowledge.
 
 const EXERCISE_TYPE = EXERCISE_TYPES.multipleChoice;
-
-function buildInteractiveText(bookmark, api, speech) {
-  const expectedPosition = {
-    sentenceIndex: bookmark.t_sentence_i,
-    tokenIndex: bookmark.t_token_i,
-    totalTokens: bookmark.t_total_token || 1,
-    contextOffset: bookmark.context_sent || 0,
-  };
-  const adapted = adaptExerciseBookmark(bookmark);
-  return new InteractiveExerciseText(
-    bookmark.context_tokenized,
-    bookmark.source_id,
-    api,
-    adapted ? [adapted] : [],
-    "TRANSLATE WORDS IN EXERCISE",
-    bookmark.from_lang,
-    EXERCISE_TYPE,
-    speech,
-    bookmark.context_identifier,
-    null, // formatting
-    bookmark.from, // expectedSolution
-    expectedPosition,
-    null, // onSolutionFound — not needed for multiple choice
-  );
-}
 
 export default function MultipleChoice({
   bookmarksToStudy,
@@ -58,34 +32,35 @@ export default function MultipleChoice({
   onExerciseLoaded,
 }) {
   const api = useContext(APIContext);
-  const [incorrectAnswer, setIncorrectAnswer] = useState("");
-  const [buttonOptions, setButtonOptions] = useState(null);
-  const [interactiveText, setInteractiveText] = useState();
-  useNotifyExerciseLoaded(interactiveText, onExerciseLoaded);
   const speech = useContext(SpeechContext);
   const exerciseBookmark = bookmarksToStudy[0];
+  const [incorrectAnswer, setIncorrectAnswer] = useState("");
+  const [buttonOptions, setButtonOptions] = useState(null);
+
+  useExerciseLifecycle({ speech, resetSubSessionTimer, setExerciseType, exerciseType: EXERCISE_TYPE });
+
+  const interactiveText = useInteractiveTextForBookmark({
+    bookmark: exerciseBookmark,
+    api,
+    speech,
+    exerciseType: EXERCISE_TYPE,
+    reload,
+    onExerciseLoaded,
+    expectedSolution: exerciseBookmark.from,
+    expectedPosition: {
+      sentenceIndex: exerciseBookmark.t_sentence_i,
+      tokenIndex: exerciseBookmark.t_token_i,
+      totalTokens: exerciseBookmark.t_total_token || 1,
+      contextOffset: exerciseBookmark.context_sent || 0,
+    },
+  });
 
   useEffect(() => {
-    speech.stopAudio(); // Stop any pending speech from previous exercise
-    resetSubSessionTimer();
-    setExerciseType(EXERCISE_TYPE);
-
     // Fetch similar words only once on mount — don't re-fetch on context
     // change to avoid giving away the answer.
-    api.wordsSimilarTo(exerciseBookmark.id, (words) => {
-      consolidateChoiceOptions(words);
-    });
+    api.wordsSimilarTo(exerciseBookmark.id, consolidateChoiceOptions);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  useEffect(() => {
-    if (!exerciseBookmark.context_tokenized || !Array.isArray(exerciseBookmark.context_tokenized)) {
-      setInteractiveText(null);
-      return;
-    }
-    setInteractiveText(buildInteractiveText(exerciseBookmark, api, speech));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [exerciseBookmark, reload]);
 
   function notifyChoiceSelection(selectedChoice) {
     if (selectedChoice === removePunctuation(exerciseBookmark.from.toLowerCase())) {
@@ -104,13 +79,12 @@ export default function MultipleChoice({
     do {
       secondRandomInt = Math.floor(Math.random() * similarWords.length);
     } while (firstRandomInt === secondRandomInt);
-    let listOfOptions = [
+    const options = [
       removePunctuation(exerciseBookmark.from.toLowerCase()),
       removePunctuation(similarWords[firstRandomInt].toLowerCase()),
       removePunctuation(similarWords[secondRandomInt].toLowerCase()),
     ];
-    let shuffledListOfOptions = shuffle(listOfOptions);
-    setButtonOptions(shuffledListOfOptions);
+    setButtonOptions(shuffle(options));
   }
 
   if (!interactiveText || !buttonOptions) {
@@ -124,17 +98,13 @@ export default function MultipleChoice({
         isExerciseOver={isExerciseOver}
       />
 
-      {/* Context - always at the top, never moves */}
       <ClozeContextWithExchange
         exerciseBookmark={exerciseBookmark}
         interactiveText={interactiveText}
         translatedWords={null}
         setTranslatedWords={() => {}}
         isExerciseOver={isExerciseOver}
-        onExampleUpdated={(data) => {
-          onExampleUpdated(data);
-          setInteractiveText(buildInteractiveText(data.updatedBookmark, api, speech));
-        }}
+        onExampleUpdated={onExampleUpdated}
         onInputChange={() => {}}
         onInputSubmit={() => {}}
         inputValue={isExerciseOver ? exerciseBookmark.from : ""}
@@ -145,11 +115,8 @@ export default function MultipleChoice({
         canTypeInline={false}
       />
 
-      {/* Solution area - L1 translation now surfaces as a chip above
-          the highlighted bookmark word in the sentence via bookmark-
-          restoration, so the big headline is redundant. */}
       {isExerciseOver && bookmarkProgressBar && (
-        <div style={{ marginTop: '3em' }}>
+        <div style={{ marginTop: "3em" }}>
           {bookmarkProgressBar}
         </div>
       )}

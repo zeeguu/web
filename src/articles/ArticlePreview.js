@@ -74,38 +74,35 @@ export default function ArticlePreview({
       function processSummaryData(summaryData) {
         // Create interactive summary
         if (summaryData.tokenized_summary) {
-          const interactive = new InteractiveText(
-            summaryData.tokenized_summary.tokens,
-            article.source_id,
-            api,
-            summaryData.tokenized_summary.past_bookmarks,
-            api.TRANSLATE_TEXT,
-            article.language,
-            "article_preview",
-            zeeguuSpeech,
-            summaryData.tokenized_summary.context_identifier,
-            null, // formatting
-            getBrowsingSessionId,
+          setInteractiveSummary(
+            new InteractiveText({
+              tokenizedParagraphs: summaryData.tokenized_summary.tokens,
+              sourceId: article.source_id,
+              api,
+              previousBookmarks: summaryData.tokenized_summary.past_bookmarks,
+              language: article.language,
+              source: "article_preview",
+              zeeguuSpeech,
+              contextIdentifier: summaryData.tokenized_summary.context_identifier,
+              getBrowsingSessionId,
+            }),
           );
-          setInteractiveSummary(interactive);
         }
 
-        // Create interactive title
         if (summaryData.tokenized_title && summaryData.tokenized_title.tokens) {
-          const titleInteractive = new InteractiveText(
-            summaryData.tokenized_title.tokens,
-            article.source_id,
-            api,
-            summaryData.tokenized_title.past_bookmarks || [],
-            api.TRANSLATE_TEXT,
-            article.language,
-            "article_preview",
-            zeeguuSpeech,
-            summaryData.tokenized_title.context_identifier,
-            null, // formatting
-            getBrowsingSessionId,
+          setInteractiveTitle(
+            new InteractiveText({
+              tokenizedParagraphs: summaryData.tokenized_title.tokens,
+              sourceId: article.source_id,
+              api,
+              previousBookmarks: summaryData.tokenized_title.past_bookmarks || [],
+              language: article.language,
+              source: "article_preview",
+              zeeguuSpeech,
+              contextIdentifier: summaryData.tokenized_title.context_identifier,
+              getBrowsingSessionId,
+            }),
           );
-          setInteractiveTitle(titleInteractive);
         }
         setIsTokenizing(false);
       }

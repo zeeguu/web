@@ -7,40 +7,17 @@ function normalizeForComparison(str) {
 }
 
 export default class InteractiveExerciseText extends InteractiveText {
-  constructor(
-    tokenizedParagraphs,
-    sourceId,
-    api,
-    previousBookmarks,
-    translationEvent = api.TRANSLATE_TEXT,
-    language,
-    source = "",
-    zeeguuSpeech,
-    contextIdentifier,
-    formatting,
+  constructor({
     expectedSolution = null,
     expectedPosition = null,
     onSolutionFound = null,
-  ) {
-    // Call parent constructor
-    super(
-      tokenizedParagraphs,
-      sourceId,
-      api,
-      previousBookmarks,
-      translationEvent,
-      language,
-      source,
-      zeeguuSpeech,
-      contextIdentifier,
-      formatting,
-    );
-
-    // Exercise-specific properties
-    this.clickedWords = []; // Track clicked words and their positions
-    this.expectedSolution = expectedSolution; // Words that should be clicked for exercises
-    this.expectedPosition = expectedPosition; // Position info for the expected solution
-    this.onSolutionFound = onSolutionFound; // Callback when solution is found
+    ...interactiveTextOptions
+  }) {
+    super(interactiveTextOptions);
+    this.clickedWords = [];
+    this.expectedSolution = expectedSolution;
+    this.expectedPosition = expectedPosition;
+    this.onSolutionFound = onSolutionFound;
   }
 
   // Track a clicked word for exercises
