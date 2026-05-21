@@ -23,6 +23,16 @@ import FeedbackModal from "../../components/FeedbackModal.js";
 import { FEEDBACK_OPTIONS } from "../../components/FeedbackConstants.js";
 import AutoPronounceToggle from "../../components/AutoPronounceToggle.js";
 
+function findBookmarkWord(interactiveText, bookmarkId) {
+  if (!interactiveText?.paragraphsAsLinkedWordLists) return null;
+  for (const par of interactiveText.paragraphsAsLinkedWordLists) {
+    for (let w = par.linkedWords.head; w; w = w.next) {
+      if (w.bookmark_id === bookmarkId) return w;
+    }
+  }
+  return null;
+}
+
 export default function NextNavigation({
   bookmarkMessagesToAPI,
   exerciseBookmarks,
@@ -69,38 +79,15 @@ export default function NextNavigation({
   const isUserAndAnswerCorrect = userIsCorrect && isCorrect;
   const bookmarkLearned = isUserAndAnswerCorrect && exerciseBookmark.is_about_to_be_learned;
 
-  // Find the linked word for this exercise's bookmark so we can route
-  // auto-pronounce through interactiveText.pronounce — same path
-  // TranslatableWord.clickOnWord uses, which means SPEAK_TEXT activity
-  // logging and MWE-partner pronunciation come for free. Without this
-  // auto-pronounce would say "rigole" while a manual tap says "il
-  // rigole" — inconsistent with the chip.
-  function findBookmarkWord() {
-    if (!interactiveText?.paragraphsAsLinkedWordLists) return null;
-    for (const par of interactiveText.paragraphsAsLinkedWordLists) {
-      for (let w = par.linkedWords.head; w; w = w.next) {
-        if (w.bookmark_id === exerciseBookmark.id) return w;
-      }
-    }
-    return null;
-  }
-
-  function computeMweTextToSpeak(word) {
-    if (!word?.token?.mwe_group_id || !word.findMWEPartners) return null;
-    const partners = word.findMWEPartners();
-    if (partners.length <= 1) return null;
-    return partners.reduce((acc, p, i) => {
-      if (i === 0) return p.word;
-      if (partners[i - 1].word.endsWith("-")) return acc + p.word;
-      return acc + " " + p.word;
-    }, "");
-  }
-
   function handleSpeak() {
     setIsAutoPronouncing(true);
-    const word = findBookmarkWord();
+    // Route through interactiveText.pronounce so MWE-aware pronunciation
+    // (via word.mweExpression) and SPEAK_TEXT activity logging come for
+    // free — same path TranslatableWord.clickOnWord uses. Fall back to
+    // bookmark.from if we can't locate the linked word.
+    const word = findBookmarkWord(interactiveText, exerciseBookmark.id);
     if (word) {
-      interactiveText.pronounce(word, null, computeMweTextToSpeak(word));
+      interactiveText.pronounce(word);
     } else {
       speech.speakOut(exerciseBookmark.from);
     }
