@@ -110,14 +110,7 @@ export default function ArticlePreview({
         setIsTokenizing(false);
       }
     }
-  }, [
-    article.summary,
-    article.title,
-    article.language,
-    article.id,
-    api,
-    zeeguuSpeech,
-  ]);
+  }, [article.summary, article.title, article.language, article.id, api, zeeguuSpeech]);
 
   const handleArticleClick = () => {
     if (notifyArticleClick) {
@@ -202,10 +195,7 @@ export default function ArticlePreview({
   const inAppArticleId = article.user_simplified_article_id || article.id;
   const should_open_in_zeeguu = Feature.always_open_externally()
     ? is_saved || hasInAppSimplification
-    : article.video ||
-      (!Feature.extension_experiment1() && !hasExtension) ||
-      is_saved ||
-      hasInAppSimplification;
+    : article.video || (!Feature.extension_experiment1() && !hasExtension) || is_saved || hasInAppSimplification;
   const should_open_with_modal = doNotShowRedirectionModal_UserPreference === false;
 
   // Returned without the s.ImageWithOverlay wrapper so callers can
@@ -215,12 +205,16 @@ export default function ArticlePreview({
     const innerLinkStyle = { display: "block", position: "relative", lineHeight: 0 };
     const imgInner = (
       <>
-        <img alt="" src={article.img_url} loading="lazy" decoding="async" style={{ cursor: "pointer", display: "block" }} />
+        <img
+          alt=""
+          src={article.img_url}
+          loading="lazy"
+          decoding="async"
+          style={{ cursor: "pointer", display: "block" }}
+        />
         <s.ImageOpenOverlay>
           Open
-          {!should_open_in_zeeguu && (
-            <OpenInNewRoundedIcon style={{ fontSize: 14, marginLeft: 4 }} />
-          )}
+          {!should_open_in_zeeguu && <OpenInNewRoundedIcon style={{ fontSize: 14, marginLeft: 4 }} />}
         </s.ImageOpenOverlay>
       </>
     );
@@ -239,7 +233,14 @@ export default function ArticlePreview({
             handleArticleClick();
             handleOpenRedirectionModal();
           }}
-          style={{ ...innerLinkStyle, background: "none", border: "none", padding: 0, cursor: "pointer", width: "100%" }}
+          style={{
+            ...innerLinkStyle,
+            background: "none",
+            border: "none",
+            padding: 0,
+            cursor: "pointer",
+            width: "100%",
+          }}
         >
           {imgInner}
         </button>
@@ -268,24 +269,14 @@ export default function ArticlePreview({
     );
 
     let open_externally_with_modal = (
-      <>
-        <RedirectionNotificationModal
-          hasExtension={hasExtension}
-          article={article}
-          open={isRedirectionModalOpen}
-          handleCloseRedirectionModal={handleCloseRedirectionModal}
-          setDoNotShowRedirectionModal_UserPreference={setDoNotShowRedirectionModal_UserPreference}
-          setIsArticleSaved={setIsArticleSaved}
-        />
-        <ActionButton
-          onClick={() => {
-            handleArticleClick();
-            handleOpenRedirectionModal();
-          }}
-        >
-          Open <OpenInNewRoundedIcon style={{ fontSize: 16, marginLeft: 4 }} />
-        </ActionButton>
-      </>
+      <ActionButton
+        onClick={() => {
+          handleArticleClick();
+          handleOpenRedirectionModal();
+        }}
+      >
+        Open <OpenInNewRoundedIcon style={{ fontSize: 16, marginLeft: 4 }} />
+      </ActionButton>
     );
 
     // target=_self on mobile so the system back button returns to Zeeguu.
@@ -368,43 +359,36 @@ export default function ArticlePreview({
             articles are almost always 0% (you haven't opened them yet), and
             the empty circle just wastes title width. Keep it for saved-list
             surfaces (teacher OwnArticles uses inSavedView). */}
-        {inSavedView && (
-          <ReadingCompletionProgress last_reading_percentage={article.reading_completion} />
-        )}
+        {inSavedView && <ReadingCompletionProgress last_reading_percentage={article.reading_completion} />}
       </s.TitleContainer>
 
       {/* Single quiet metadata strip under the title: CEFR · Simplified ·
           Saved · source · time. State badges (Simplified/Saved) get a subtle
           accent color; source/time stay muted. All on one row, small. */}
       <MetaStrip>
-        {article.topics_list && article.topics_list.map(([topicTitle]) => (
-          <MetaTag key={topicTitle}>{topicTitle}</MetaTag>
-        ))}
-        {article.matched_searches && article.matched_searches.map((search) => (
-          <MetaItem key={`search-${search}`}>
-            🔍&nbsp;
-            <MetaLink as={Link} to={`/search?search=${encodeURIComponent(search)}`}>
-              {search}
-            </MetaLink>
-          </MetaItem>
-        ))}
-        {article.parent_article_id && (
-          <MetaTag>Simplified</MetaTag>
-        )}
+        {article.topics_list &&
+          article.topics_list.map(([topicTitle]) => <MetaTag key={topicTitle}>{topicTitle}</MetaTag>)}
+        {article.matched_searches &&
+          article.matched_searches.map((search) => (
+            <MetaItem key={`search-${search}`}>
+              🔍&nbsp;
+              <MetaLink as={Link} to={`/search?search=${encodeURIComponent(search)}`}>
+                {search}
+              </MetaLink>
+            </MetaItem>
+          ))}
+        {article.parent_article_id && <MetaTag>Simplified</MetaTag>}
         {savedTag}
         <MetaItem>
-          <MetaLink
-            href={article.parent_url || article.url}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
+          <MetaLink href={article.parent_url || article.url} target="_blank" rel="noopener noreferrer">
             {articleSourceLabel(article)}
           </MetaLink>
         </MetaItem>
         {publishedTimeSlot}
         {(article.metrics?.word_count || article.word_count) > 0 && (
           <MetaItem>
-            ~{estimateReadingTime(article.metrics?.word_count || article.word_count || 0)
+            ~
+            {estimateReadingTime(article.metrics?.word_count || article.word_count || 0)
               .replace(" minutes", "min")
               .replace(" minute", "min")}
           </MetaItem>
@@ -433,49 +417,47 @@ export default function ArticlePreview({
             )}
           </s.ImageWithOverlay>
         )}
-        {!inSavedView && (() => {
-          const summaryNode = interactiveSummary ? (
-            <TranslatableText interactiveText={interactiveSummary} translating={true} pronouncing={true} />
-          ) : (
-            article.summary
-          );
-          return (
-            <s.Summary>
-              {!dontShowSummary && (
-                <>
-                  {isSummaryExpanded ? summaryNode : <s.ClampedSummary>{summaryNode}</s.ClampedSummary>}
-                  <s.SummaryToggle
-                    type="button"
-                    onClick={() => setIsSummaryExpanded((v) => !v)}
-                  >
-                    {isSummaryExpanded ? "Show less" : "Show more"}
-                    <span aria-hidden="true">{isSummaryExpanded ? "▴" : "▾"}</span>
-                  </s.SummaryToggle>
-                </>
-              )}
-              {/* Bottom action row only used as a fallback: the Hidden
+        {!inSavedView &&
+          (() => {
+            const summaryNode = interactiveSummary ? (
+              <TranslatableText interactiveText={interactiveSummary} translating={true} pronouncing={true} />
+            ) : (
+              article.summary
+            );
+            return (
+              <s.Summary>
+                {!dontShowSummary && (
+                  <>
+                    {isSummaryExpanded ? summaryNode : <s.ClampedSummary>{summaryNode}</s.ClampedSummary>}
+                    <s.SummaryToggle type="button" onClick={() => setIsSummaryExpanded((v) => !v)}>
+                      {isSummaryExpanded ? "Show less" : "Show more"}
+                      <span aria-hidden="true">{isSummaryExpanded ? "▴" : "▾"}</span>
+                    </s.SummaryToggle>
+                  </>
+                )}
+                {/* Bottom action row only used as a fallback: the Hidden
                   surface needs Unhide, and image-less articles need an
                   explicit Open since there's no image to overlay it on. */}
-              {(isHiddenView || !article.img_url) && (
-                <div
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "10px",
-                    marginTop: "8px",
-                  }}
-                >
-                  {isHiddenView && (
-                    <ActionButton onClick={handleUnhideArticle} variant="muted">
-                      Unhide
-                    </ActionButton>
-                  )}
-                  {!article.img_url && titleLink(article)}
-                </div>
-              )}
-            </s.Summary>
-          );
-        })()}
+                {(isHiddenView || !article.img_url) && (
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "10px",
+                      marginTop: "8px",
+                    }}
+                  >
+                    {isHiddenView && (
+                      <ActionButton onClick={handleUnhideArticle} variant="muted">
+                        Unhide
+                      </ActionButton>
+                    )}
+                    {!article.img_url && titleLink(article)}
+                  </div>
+                )}
+              </s.Summary>
+            );
+          })()}
       </s.ArticleContent>
 
       {inSavedView && (
@@ -513,6 +495,15 @@ export default function ArticlePreview({
           </ActionButton>
         </div>
       )}
+
+      <RedirectionNotificationModal
+        hasExtension={hasExtension}
+        article={article}
+        open={isRedirectionModalOpen}
+        handleCloseRedirectionModal={handleCloseRedirectionModal}
+        setDoNotShowRedirectionModal_UserPreference={setDoNotShowRedirectionModal_UserPreference}
+        setIsArticleSaved={setIsArticleSaved}
+      />
     </s.ArticlePreview>
   );
 }
