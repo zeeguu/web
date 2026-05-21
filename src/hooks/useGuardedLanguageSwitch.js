@@ -8,6 +8,7 @@ import { switchLanguage } from "../utils/languageSwitcher";
 import { LANGUAGE_CODE_TO_NAME } from "../utils/misc/languageCodeToName";
 
 const READER_PATH = "/read/article";
+const EXERCISES_SUMMARY_PATH = "/exercises/summary";
 
 /**
  * Switches the user's learning language, but if the user is currently reading
@@ -40,6 +41,13 @@ export default function useGuardedLanguageSwitch() {
       return;
     }
     if (!willConfirm) {
+      // Navigate before mutating userDetails so the summary page doesn't
+      // re-render with the new language's data layered over the previous
+      // session's stats; ExerciseSession mounts straight into its loading
+      // state and then fetches against the already-switched language.
+      if (location.pathname === EXERCISES_SUMMARY_PATH) {
+        history.push("/exercises");
+      }
       switchLanguage(api, userDetails, setUserDetails, langCode, onDone);
       return;
     }
