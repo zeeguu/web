@@ -4,6 +4,8 @@ import SpeakButton from "../SpeakButton.js";
 import strings from "../../../i18n/definitions.js";
 import LoadingAnimation from "../../../components/LoadingAnimation.js";
 import InteractiveText from "../../../reader/InteractiveText.js";
+import { adaptExerciseBookmark } from "../../utils/exerciseBookmarkAdapter.js";
+import { useNotifyExerciseLoaded } from "../../utils/useNotifyExerciseLoaded.js";
 import shuffle from "../../../assorted/fisherYatesShuffle.js";
 import { removePunctuation } from "../../../utils/text/preprocessing.js";
 import ClozeContextWithExchange from "../../components/ClozeContextWithExchange.js";
@@ -29,9 +31,11 @@ export default function MultipleChoiceAudio({
   reload,
   bookmarkProgressBar,
   onExampleUpdated,
+  onExerciseLoaded,
 }) {
   const api = useContext(APIContext);
   const [interactiveText, setInteractiveText] = useState();
+  useNotifyExerciseLoaded(interactiveText, onExerciseLoaded);
   const [choiceOptions, setChoiceOptions] = useState(null);
   const [currentSelectedChoice, setCurrentSelectedChoice] = useState("");
   const exerciseBookmark = bookmarksToStudy[0];
@@ -51,11 +55,12 @@ export default function MultipleChoiceAudio({
       return;
     }
 
+    const adaptedBookmark = adaptExerciseBookmark(exerciseBookmark);
     const newInteractiveText = new InteractiveText(
       exerciseBookmark.context_tokenized,
       exerciseBookmark.source_id,
       api,
-      [],
+      adaptedBookmark ? [adaptedBookmark] : [],
       "TRANSLATE WORDS IN EXERCISE",
       exerciseBookmark.from_lang,
       EXERCISE_TYPE,
@@ -124,10 +129,10 @@ export default function MultipleChoiceAudio({
         </div>
       )}
 
-      {/* Solution area - appears below context when exercise is over */}
-      {isExerciseOver && (
+      {/* Solution area - L1 chip above the highlighted word replaces
+          the legacy big headline. */}
+      {isExerciseOver && bookmarkProgressBar && (
         <div style={{ marginTop: "3em" }}>
-          <h1 className="wordInContextHeadline">{removePunctuation(exerciseBookmark.to)}</h1>
           {bookmarkProgressBar}
         </div>
       )}

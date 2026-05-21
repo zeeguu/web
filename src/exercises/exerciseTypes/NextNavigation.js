@@ -43,6 +43,9 @@ export default function NextNavigation({
   disableAudio,
   setIsExerciseOver,
   onExampleUpdated,
+  onReportClick,
+  isReported,
+  interactiveText,
 }) {
   const messageForAPI = isEmptyDictionary(bookmarkMessagesToAPI) ? "" : bookmarkMessagesToAPI[exerciseBookmark.id];
   const api = useContext(APIContext);
@@ -74,9 +77,38 @@ export default function NextNavigation({
   const isUserAndAnswerCorrect = userIsCorrect && isCorrect;
   const bookmarkLearned = isUserAndAnswerCorrect && exerciseBookmark.is_about_to_be_learned;
 
+  // Mirror TranslatableWord.clickOnWord's MWE-aware pronunciation: walk
+  // the InteractiveText's linked words to find the bookmark word, then
+  // build the spoken text from its MWE partners (tokenizer-detected).
+  // Without this, auto-pronounce says "rigole" while clicking the word
+  // says "il rigole" — inconsistent with what the chip claims to be.
+  function deriveTextToSpeak() {
+    if (!interactiveText?.paragraphsAsLinkedWordLists) return exerciseBookmark.from;
+    for (const par of interactiveText.paragraphsAsLinkedWordLists) {
+      let w = par.linkedWords.head;
+      while (w) {
+        if (w.bookmark_id && w.bookmark_id === exerciseBookmark.id) {
+          if (w.token?.mwe_group_id && w.findMWEPartners) {
+            const partners = w.findMWEPartners();
+            if (partners.length > 1) {
+              return partners.reduce((acc, p, i) => {
+                if (i === 0) return p.word;
+                if (partners[i - 1].word.endsWith("-")) return acc + p.word;
+                return acc + " " + p.word;
+              }, "");
+            }
+          }
+          return w.mweExpression || w.word || exerciseBookmark.from;
+        }
+        w = w.next;
+      }
+    }
+    return exerciseBookmark.from;
+  }
+
   async function handleSpeak() {
     setIsAutoPronouncing(true);
-    await speech.speakOut(exerciseBookmark.from, setIsButtonSpeaking);
+    await speech.speakOut(deriveTextToSpeak(), setIsButtonSpeaking);
     // Add 200ms delay to ensure speech has fully started before enabling button
     setTimeout(() => {
       setIsAutoPronouncing(false);
@@ -181,27 +213,11 @@ export default function NextNavigation({
 
       {isExerciseOver && (
         <>
+          {/* Speaker button removed — tap-to-pronounce on the highlighted
+              bookmark word (via reading-view's TranslatableWord handler)
+              covers the same need without a dedicated button. Next sits
+              alone here so the BottomRow's space-around centers it. */}
           <s.BottomRowSmallTopMargin className="bottomRow">
-            {!isMatchExercise && (
-              <s.EditSpeakButtonHolder>
-                <SpeakButton
-                  bookmarkToStudy={exerciseBookmark}
-                  api={api}
-                  styling={"next"}
-                  isReadContext={isReadContext}
-                  parentIsSpeakingControl={isButtonSpeaking}
-                />
-                <EditBookmarkButton
-                  bookmark={exerciseBookmark}
-                  api={api}
-                  styling={exercise}
-                  reload={reload}
-                  setReload={setReload}
-                  notifyDelete={() => setIsDeleted(true)}
-                  onWordRemovedFromExercises={onWordRemovedFromExercises}
-                />
-              </s.EditSpeakButtonHolder>
-            )}
             <s.FeedbackButton
               className="next-btn"
               onClick={(e) => !isAutoPronouncing && moveToNextExercise()}
@@ -231,6 +247,8 @@ export default function NextNavigation({
         disableAudio={disableAudio}
         setIsExerciseOver={setIsExerciseOver}
         onWordRemovedFromExercises={onWordRemovedFromExercises}
+        onReportClick={onReportClick}
+        isReported={isReported}
       />
       <FeedbackModal
         open={showFeedbackModal}

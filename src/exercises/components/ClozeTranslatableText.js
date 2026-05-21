@@ -1,20 +1,79 @@
-import { useState, createElement, useMemo } from "react";
+import { useState, createElement, useMemo, useEffect } from "react";
+import styled from "styled-components";
 import TranslatableWord from "../../reader/TranslatableWord";
 import * as s from "../../reader/TranslatableText.sc";
 import { removePunctuation } from "../../utils/text/preprocessing";
 import { orange600 } from "../../components/colors";
 
+// Overrides the reading-view mwe-adjacent styling so the cloze bookmark
+// renders in the same bright-bold orange as the pre-reveal
+// renderHighlightedWord marker — otherwise the post-reveal chip styling
+// drops to the pale `--mwe-adjacent-color` and looks like a step-down.
+// Setting the CSS variable on a parent doesn't work because
+// s.TranslatableText re-declares it, so override color/decoration-color
+// directly. Also hides the chip's "hide translation" eye icon — not
+// useful in an exercise where the translation is the point of the
+// solution view.
+const ExerciseTargetEmphasis = styled.div`
+  /* Three bookmark-shape variants the rules cover:
+     - Contiguous MWE → z-tag.mwe-adjacent
+     - Separated MWE → z-tag[class*="mwe-color-"]
+     - Single-word bookmark → plain z-tag with a z-tran child
+     The :has(z-tran) selector catches the single-word case (and works
+     as a safety net for any future shape). Triple-& bumps specificity
+     above the reading-view !important defaults. */
+  &&& z-tag.mwe-adjacent z-orig,
+  &&& z-tag[class*="mwe-color-"] z-orig,
+  &&& z-tag:has(z-tran) z-orig {
+    color: ${orange600} !important;
+    text-decoration-color: ${orange600} !important;
+    font-weight: 700 !important;
+  }
+  /* Inner-span border-bottom is only needed for single-word bookmarks
+     (which don't get a text-decoration underline on the outer z-orig).
+     MWE-classified bookmarks already get a dotted underline on z-orig
+     itself from TranslatableText.sc.js — adding the inner span border
+     stacks two underlines (the "afslået" double-underline symptom). */
+  &&& z-tag:has(z-tran):not(.mwe-adjacent):not([class*="mwe-color-"]) z-orig span {
+    border-bottom: 2px dotted ${orange600} !important;
+    font-weight: 700 !important;
+  }
+  /* Chip styling — applies to any chip rendered in the exercise
+     context. pointer-events:none + hiding the hide-eye and ▼ keeps
+     the chip a static study annotation. */
+  &&& z-tag z-tran {
+    pointer-events: none;
+    font-size: 0.95em !important;
+    animation: cloze-chip-reveal 280ms ease-out;
+  }
+  &&& z-tag z-tran .hide,
+  &&& z-tag z-tran .arrow {
+    display: none !important;
+  }
+
+  @keyframes cloze-chip-reveal {
+    from {
+      opacity: 0;
+      transform: translateY(4px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+`;
+
 /**
  * Renders translatable text with a "slot" for cloze exercises.
  *
- * This component is intentionally decoupled from input handling.
- * It only knows how to:
- * - Render translatable words
- * - Use provided clozeWordIds to determine slot position
- * - Call renderClozeSlot(wordId) at that position
- *
- * The parent provides the actual cloze input via the render prop,
- * keeping all input-specific logic (hints, keyboards, etc.) separate.
+ * The cloze bookmark itself is pre-loaded onto the underlying
+ * InteractiveText via its `previousBookmarks` argument (same path
+ * ArticleReader uses for `past_bookmarks`), so reading-view's
+ * TranslatableWord renders the revealed cloze with chip + dotted
+ * underline + MWE-partner styling for free. This component only
+ * adds the input slot during the exercise, and flips
+ * `isTranslationVisible` on the cloze word(s) when the exercise
+ * is over so the chip appears automatically post-reveal.
  */
 export function ClozeTranslatableText({
   interactiveText,
@@ -24,27 +83,41 @@ export function ClozeTranslatableText({
   setTranslatedWords,
   leftEllipsis,
   rightEllipsis,
-  // exercise related
   isExerciseOver,
-  clozeWordIds = [], // Word IDs to hide and replace with slot (computed by parent)
-  nonTranslatableWords, // Phrase that should not be clickable anywhere (prevents cheating)
-  // render prop for cloze slot
-  renderClozeSlot = null, // (wordId) => ReactElement
+  clozeWordIds = [],
+  nonTranslatableWords,
+  renderClozeSlot = null,
 }) {
   const [translationCount, setTranslationCount] = useState(0);
 
   const divType = interactiveText.formatting ? interactiveText.formatting : "div";
 
-  // Compute paragraphs once when interactiveText changes
   const paragraphs = useMemo(() => {
     return interactiveText ? interactiveText.getParagraphs() : [];
   }, [interactiveText]);
 
-  // Find ALL instances of the non-translatable phrase (prevents cheating by clicking other instances)
+  // Post-reveal: flip isTranslationVisible on every cloze word so the
+  // chip auto-shows (ArticleReader's past bookmarks would otherwise
+  // require a tap to surface the chip).
+  useEffect(() => {
+    if (!isExerciseOver || !interactiveText || !clozeWordIds.length) return;
+    const clozeIdSet = new Set(clozeWordIds);
+    for (const par of interactiveText.paragraphsAsLinkedWordLists) {
+      let w = par.linkedWords.head;
+      while (w) {
+        if (clozeIdSet.has(w.id) && w.translation) {
+          w.isTranslationVisible = true;
+        }
+        w = w.next;
+      }
+    }
+    setTranslationCount((c) => c + 1);
+  }, [isExerciseOver, interactiveText, clozeWordIds]);
+
   const nonTranslatableWordIds = useMemo(() => {
     if (!nonTranslatableWords || !interactiveText || isExerciseOver) return [];
 
-    const targetWords = nonTranslatableWords.split(" ").map(w => removePunctuation(w).toLowerCase());
+    const targetWords = nonTranslatableWords.split(" ").map((w) => removePunctuation(w).toLowerCase());
     const linkedWordLists = interactiveText.paragraphsAsLinkedWordLists;
     if (!linkedWordLists || !linkedWordLists[0]) return [];
 
@@ -53,7 +126,6 @@ export function ClozeTranslatableText({
 
     while (word) {
       if (removePunctuation(word.word).toLowerCase() === targetWords[0]) {
-        // Check if this starts a match
         let currentWord = word;
         let matchedIds = [];
         let matched = true;
@@ -82,10 +154,6 @@ export function ClozeTranslatableText({
     setTranslationCount(translationCount + 1);
   }
 
-  function renderHighlightedWord(word) {
-    return <span key={word.id} style={{ color: orange600, fontWeight: "bold" }}>{word.word + " "}</span>;
-  }
-
   function renderTranslatableWord(word) {
     return (
       <TranslatableWord
@@ -102,28 +170,42 @@ export function ClozeTranslatableText({
     );
   }
 
+  // Highlight target words for ContextWithExchange-based exercises (no slot,
+  // highlight-only) — e.g. TranslateL2toL1 where the user reads the L2
+  // sentence and needs the target word visually marked.
+  function renderHighlightedWord(word) {
+    return (
+      <span key={word.id} style={{ color: orange600, fontWeight: "bold" }}>
+        {word.word + " "}
+      </span>
+    );
+  }
+
   function renderWordJSX(word) {
     const isPartOfCloze = clozeWordIds.includes(word.id);
 
-    // During exercise with cloze slot: show slot for first cloze word, hide the rest
+    // Cloze exercises with input slot: show slot during exercise; after
+    // reveal the bookmark-restoration path renders the answer.
     if (isPartOfCloze && !isExerciseOver && renderClozeSlot) {
       const isFirstClozeWord = clozeWordIds[0] === word.id;
-      if (isFirstClozeWord) {
-        return renderClozeSlot(word.id);
-      }
-      return ""; // Hide other words in multi-word cloze
+      if (isFirstClozeWord) return renderClozeSlot(word.id);
+      return "";
     }
 
-    // Highlight cloze words (when no renderClozeSlot, or after exercise)
-    if (isPartOfCloze) {
+    // Highlight-only exercises (no slot):
+    // - Pre-reveal: simple bold-orange marker so the target word is
+    //   clearly visible (the bookmark-restoration dotted underline is
+    //   too subtle on its own to read as "this is the word").
+    // - Post-reveal: defer to TranslatableWord so the chip surfaces
+    //   above the highlighted bookmark word via the isTranslationVisible
+    //   flip in the useEffect above.
+    if (isPartOfCloze && !renderClozeSlot && !isExerciseOver) {
       return renderHighlightedWord(word);
     }
 
-    // Everything else is a translatable word
     return renderTranslatableWord(word);
   }
 
-  // Render paragraphs directly - no state storage
   const renderedText = paragraphs.map((par, index) =>
     createElement(
       divType,
@@ -136,5 +218,9 @@ export function ClozeTranslatableText({
     ),
   );
 
-  return <s.TranslatableText>{renderedText}</s.TranslatableText>;
+  return (
+    <ExerciseTargetEmphasis>
+      <s.TranslatableText>{renderedText}</s.TranslatableText>
+    </ExerciseTargetEmphasis>
+  );
 }

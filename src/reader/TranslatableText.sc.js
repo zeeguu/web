@@ -478,11 +478,6 @@ const pulseUnderline = keyframes`
   50% { border-bottom-color: var(--cloze-underline-pulse, #999); }
 `;
 
-const correctAnswerAnimation = keyframes`
-  0% { color: inherit; font-weight: normal; }
-  100% { color: ${orange600}; font-weight: 700; }
-`;
-
 const ClozeWrapper = styled.span`
   position: relative;
   display: inline-flex;
@@ -490,7 +485,7 @@ const ClozeWrapper = styled.span`
   align-items: center;
   gap: 0.25em;
   margin-right: 0.25em;
-  cursor: ${props => props.$isOver ? 'default' : 'text'};
+  cursor: ${props => props.$isOver ? 'pointer' : 'text'};
 `;
 
 const ClozeInputWrapper = styled.span`
@@ -524,13 +519,26 @@ const ClozeInput = styled.input`
   padding: 2px 4px;
   margin: 0;
   color: ${props => props.$isOver ? orange600 : 'inherit'};
-  font-weight: ${props => props.$isOver ? '700' : 'normal'};
   cursor: ${props => props.$isOver ? 'default' : 'text'};
+  transition: color 0.45s ease-out, border-bottom-color 0.45s ease-out;
   animation: ${props => {
-    if (props.$isCorrect) return css`${correctAnswerAnimation} 0.6s ease-out forwards`;
     if (props.$isEmpty) return css`${pulseUnderline} 2s ease-in-out infinite`;
     return 'none';
   }};
+
+  /* iOS Safari renders disabled inputs with reduced opacity and a grey
+     -webkit-text-fill-color override. Without this block, the moment the
+     correct answer disables the input it visibly dims, masking the colour
+     transition with a "freeze" before the orange settles in. */
+  &:disabled {
+    opacity: 1;
+    color: ${props => props.$isOver ? orange600 : 'inherit'};
+    -webkit-text-fill-color: ${props => props.$isOver ? orange600 : 'inherit'};
+    /* Let taps fall through to the wrapper's onClick so the solved
+       cloze can be tapped to pronounce — disabled <input> on iOS would
+       otherwise eat the click silently. */
+    pointer-events: none;
+  }
 `;
 
 const ClozeStaticPlaceholder = styled.span`

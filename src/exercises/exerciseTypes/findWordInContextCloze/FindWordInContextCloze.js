@@ -9,6 +9,8 @@ import { EXERCISE_TYPES } from "../../ExerciseTypeConstants.js";
 import { removePunctuation } from "../../../utils/text/preprocessing";
 import { APIContext } from "../../../contexts/APIContext.js";
 import ClozeContextWithExchange from "../../components/ClozeContextWithExchange.js";
+import { adaptExerciseBookmark } from "../../utils/exerciseBookmarkAdapter.js";
+import { useNotifyExerciseLoaded } from "../../utils/useNotifyExerciseLoaded.js";
 
 // The user has to type the correct translation of a given L1 word in a L2 context. The L2 word is omitted in the context, so the user has to fill in the blank.
 // This tests the user's active knowledge.
@@ -27,6 +29,7 @@ export default function FindWordInContextCloze({
   reload,
   bookmarkProgressBar,
   onExampleUpdated,
+  onExerciseLoaded,
 }) {
   const api = useContext(APIContext);
   const [interactiveText, setInteractiveText] = useState();
@@ -35,6 +38,7 @@ export default function FindWordInContextCloze({
   const speech = useContext(SpeechContext);
   const exerciseBookmark = bookmarksToStudy[0];
   const contextRef = useRef(null);
+  useNotifyExerciseLoaded(interactiveText, onExerciseLoaded);
 
   useEffect(() => {
     speech.stopAudio(); // Stop any pending speech from previous exercise
@@ -44,18 +48,27 @@ export default function FindWordInContextCloze({
     setInputValue("");
     setIsCorrectAnswer(false);
 
-    // Validate that context_tokenized exists and is properly formatted
-    if (!exerciseBookmark.context_tokenized || !Array.isArray(exerciseBookmark.context_tokenized)) {
+    // Validate that context_tokenized exists and is properly formatted.
+    // Skip the placeholder bookmark IndividualExercise renders before the
+    // API call resolves — its context_tokenized is not [para][sent][token]
+    // shape and t_sentence_i/t_token_i are undefined.
+    const looksLikeValidContext =
+      Array.isArray(exerciseBookmark.context_tokenized) &&
+      Array.isArray(exerciseBookmark.context_tokenized[0]) &&
+      Array.isArray(exerciseBookmark.context_tokenized[0][0]);
+    if (!looksLikeValidContext || exerciseBookmark.t_sentence_i == null) {
       setInteractiveText(null);
       return;
     }
+
+    const adaptedBookmark = adaptExerciseBookmark(exerciseBookmark);
 
     setInteractiveText(
       new InteractiveText(
         exerciseBookmark.context_tokenized,
         exerciseBookmark.source_id,
         api,
-        [],
+        adaptedBookmark ? [adaptedBookmark] : [],
         "TRANSLATE WORDS IN EXERCISE",
         exerciseBookmark.from_lang,
         EXERCISE_TYPE,
@@ -110,7 +123,12 @@ export default function FindWordInContextCloze({
       <div className="headlineWithMoreSpace" style={{ visibility: isExerciseOver ? 'hidden' : 'visible' }}>
         {strings.findWordInContextClozeHeadline}
       </div>
-      <h1 className="wordInContextHeadline">{removePunctuation(exerciseBookmark.to)}</h1>
+      <h1
+        className="wordInContextHeadline"
+        style={{ visibility: isExerciseOver ? "hidden" : "visible" }}
+      >
+        {removePunctuation(exerciseBookmark.to)}
+      </h1>
       <div style={{ visibility: isExerciseOver ? 'visible' : 'hidden', minHeight: '60px' }}>
         {bookmarkProgressBar || <div style={{ height: '60px', width: '30%', margin: '0.1em auto 0.5em auto' }}></div>}
       </div>
@@ -120,6 +138,7 @@ export default function FindWordInContextCloze({
         interactiveText={interactiveText}
         translatedWords={null}
         setTranslatedWords={() => {}}
+        pronouncing={true}
         isExerciseOver={isExerciseOver}
         onExampleUpdated={onExampleUpdated}
         onInputChange={handleInputChange}

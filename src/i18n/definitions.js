@@ -563,11 +563,11 @@ let strings = new LocalizedStrings(
       orderTheWordsToMakeTheHighlightedPhrase:
         "Order the words to make the highlighted phrase. Some words can be extra.",
       matchWordWithTranslation: "Match each word with its translation",
-      audioExerciseHeadline: "Write the word your hear. Click to have it repeated!",
+      audioExerciseHeadline: "Write the word you hear",
       multipleChoiceAudioHeadline: "Select the word which fits the context",
       findWordInContextClozeHeadline: "Translate the word to fit the context",
       translateL2toL1Headline: "Translate the highlighted word",
-      translateWhatYouHearHeadline: "Translate the word you hear. Click to have it repeated!",
+      translateWhatYouHearHeadline: "Translate the word you hear",
       multipleChoiceL2toL1Headline: "Select the correct translation of the highlighted word",
       clickWordInContextHeadline: "Click on the translation of the word below in the text",
       multipleChoiceContextHeadline: "Choose the context that fits the word",

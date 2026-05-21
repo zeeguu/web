@@ -10,6 +10,8 @@ import { removePunctuation } from "../../../utils/text/preprocessing";
 import { SpeechContext } from "../../../contexts/SpeechContext.js";
 import { APIContext } from "../../../contexts/APIContext.js";
 import ClozeContextWithExchange from "../../components/ClozeContextWithExchange.js";
+import { adaptExerciseBookmark } from "../../utils/exerciseBookmarkAdapter.js";
+import { useNotifyExerciseLoaded } from "../../utils/useNotifyExerciseLoaded.js";
 
 // The user has to select the correct L2 translation of a given L1 word out of three.
 // This tests the user's active knowledge.
@@ -27,11 +29,13 @@ export default function MultipleChoice({
   resetSubSessionTimer,
   bookmarkProgressBar,
   onExampleUpdated,
+  onExerciseLoaded,
 }) {
   const api = useContext(APIContext);
   const [incorrectAnswer, setIncorrectAnswer] = useState("");
   const [buttonOptions, setButtonOptions] = useState(null);
   const [interactiveText, setInteractiveText] = useState();
+  useNotifyExerciseLoaded(interactiveText, onExerciseLoaded);
   const speech = useContext(SpeechContext);
   const exerciseBookmark = bookmarksToStudy[0];
   const contextRef = useRef(null);
@@ -63,11 +67,12 @@ export default function MultipleChoice({
       contextOffset: exerciseBookmark.context_sent || 0
     };
     
+    const adaptedBookmark = adaptExerciseBookmark(exerciseBookmark);
     const newInteractiveText = new InteractiveExerciseText(
       exerciseBookmark.context_tokenized,
       exerciseBookmark.source_id,
       api,
-      [],
+      adaptedBookmark ? [adaptedBookmark] : [],
       "TRANSLATE WORDS IN EXERCISE",
       exerciseBookmark.from_lang,
       EXERCISE_TYPE,
@@ -78,7 +83,7 @@ export default function MultipleChoice({
       expectedPosition, // expectedPosition
       null, // onSolutionFound - not needed for multiple choice
     );
-    
+
     setInteractiveText(newInteractiveText);
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -140,11 +145,12 @@ export default function MultipleChoice({
             contextOffset: data.updatedBookmark.context_sent || 0
           };
           
+          const adaptedUpdated = adaptExerciseBookmark(data.updatedBookmark);
           const newInteractiveText = new InteractiveExerciseText(
             data.updatedBookmark.context_tokenized,
             data.updatedBookmark.source_id,
             api,
-            [],
+            adaptedUpdated ? [adaptedUpdated] : [],
             "TRANSLATE WORDS IN EXERCISE",
             data.updatedBookmark.from_lang,
             EXERCISE_TYPE,
@@ -155,7 +161,7 @@ export default function MultipleChoice({
             expectedPosition, // expectedPosition
             null, // onSolutionFound - not needed for multiple choice
           );
-          
+
           setInteractiveText(newInteractiveText);
         }}
         onInputChange={() => {}} // No input handling needed for multiple choice
@@ -168,12 +174,11 @@ export default function MultipleChoice({
         canTypeInline={false}
       />
 
-      {/* Solution area - appears below context when exercise is over */}
-      {isExerciseOver && (
+      {/* Solution area - L1 translation now surfaces as a chip above
+          the highlighted bookmark word in the sentence via bookmark-
+          restoration, so the big headline is redundant. */}
+      {isExerciseOver && bookmarkProgressBar && (
         <div style={{ marginTop: '3em' }}>
-          <h1 className="wordInContextHeadline">
-            {removePunctuation(exerciseBookmark.to)}
-          </h1>
           {bookmarkProgressBar}
         </div>
       )}

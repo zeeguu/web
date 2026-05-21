@@ -10,6 +10,8 @@ import WordProgressBar from "../../progressBars/WordProgressBar.js";
 import { removePunctuation } from "../../../utils/text/preprocessing";
 import { APIContext } from "../../../contexts/APIContext.js";
 import ContextWithExchange from "../../components/ContextWithExchange.js";
+import { adaptExerciseBookmark } from "../../utils/exerciseBookmarkAdapter.js";
+import { useNotifyExerciseLoaded } from "../../utils/useNotifyExerciseLoaded.js";
 
 // The user has to translate the L2 word in bold to their L1.
 // This tests the user's active knowledge.
@@ -29,10 +31,12 @@ export default function TranslateL2toL1({
   resetSubSessionTimer,
   bookmarkProgressBar,
   onExampleUpdated,
+  onExerciseLoaded,
 }) {
   const api = useContext(APIContext);
   const [interactiveText, setInteractiveText] = useState();
   const [translatedWords, setTranslatedWords] = useState([]);
+  useNotifyExerciseLoaded(interactiveText, onExerciseLoaded);
   const speech = useContext(SpeechContext);
 
   const exerciseBookmark = bookmarksToStudy[0];
@@ -57,12 +61,14 @@ export default function TranslateL2toL1({
       contextOffset: exerciseBookmark.context_sent || 0
     };
 
+    const adaptedBookmark = adaptExerciseBookmark(exerciseBookmark);
+
     setInteractiveText(
       new InteractiveExerciseText(
         exerciseBookmark.context_tokenized,
         exerciseBookmark.source_id,
         api,
-        [],
+        adaptedBookmark ? [adaptedBookmark] : [],
         "TRANSLATE WORDS IN EXERCISE",
         exerciseBookmark.from_lang,
         EXERCISE_TYPE,
@@ -102,12 +108,11 @@ export default function TranslateL2toL1({
         highlightExpression={exerciseBookmark.from}
       />
 
-      {/* Solution area - appears below context when exercise is over */}
-      {isExerciseOver && (
+      {/* Solution area - progress bar only; the L1 translation now
+          surfaces as a chip above the highlighted word via bookmark
+          restoration, so the big headline below is redundant. */}
+      {isExerciseOver && bookmarkProgressBar && (
         <div style={{ marginTop: '3em' }}>
-          <h1 className="wordInContextHeadline">
-            {removePunctuation(exerciseBookmark.to)}
-          </h1>
           {bookmarkProgressBar}
         </div>
       )}

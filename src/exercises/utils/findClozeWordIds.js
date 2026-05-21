@@ -1,4 +1,5 @@
 import { findWordIdsByPhrase } from "./findWordIdsByPhrase.js";
+import { removePunctuation } from "../../utils/text/preprocessing";
 
 /**
  * Find word IDs for the cloze slot based on bookmark position info.
@@ -92,8 +93,11 @@ export function findClozeWordIds(interactiveText, bookmark, options = {}) {
 
     // Verify the found words match the target phrase
     if (foundIds.length > 0 && targetPhrase) {
-      const foundPhrase = foundWords.join(" ").toLowerCase().replace(/[.,!?;:]/g, "");
-      const expectedPhrase = targetPhrase.toLowerCase().replace(/[.,!?;:]/g, "");
+      // Use removePunctuation so leading/trailing quotes etc. don't break
+      // the match — bookmark-restored tokens can carry a glued apostrophe
+      // ("'Se dig ikke tilbage") while bookmark.from doesn't.
+      const foundPhrase = removePunctuation(foundWords.join(" ").toLowerCase());
+      const expectedPhrase = removePunctuation(targetPhrase.toLowerCase());
 
       if (foundPhrase === expectedPhrase) {
         return foundIds;

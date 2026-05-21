@@ -7,6 +7,8 @@ import { SpeechContext } from "../../../contexts/SpeechContext.js";
 import { APIContext } from "../../../contexts/APIContext.js";
 import ContextWithExchange from "../../components/ContextWithExchange.js";
 import InteractiveExerciseText from "../../../reader/InteractiveExerciseText.js";
+import { adaptExerciseBookmark } from "../../utils/exerciseBookmarkAdapter.js";
+import { useNotifyExerciseLoaded } from "../../utils/useNotifyExerciseLoaded.js";
 
 //shared code for ClickWordInContext and FindWordInContext exercises
 //The difference between the two is that in FindWordInContext the user can choose to either click on the word or type the word.
@@ -30,9 +32,11 @@ export default function WordInContextExercise({
   notifyOfUserAttempt,
   bookmarkProgressBar,
   onExampleUpdated,
+  onExerciseLoaded,
 }) {
   const api = useContext(APIContext);
   const [interactiveText, setInteractiveText] = useState();
+  useNotifyExerciseLoaded(interactiveText, onExerciseLoaded);
   const speech = useContext(SpeechContext);
 
   const exerciseBookmark = bookmarksToStudy[0];
@@ -107,12 +111,23 @@ export default function WordInContextExercise({
       }
     }
 
+    // Click-word exercises rely on TranslatableWord.clickOnWord routing
+    // the user's tap to trackWordClick — which only happens when the
+    // word has NO pre-set translation. So:
+    //   - Pre-reveal: don't pre-load the bookmark (clicks work).
+    //   - Post-reveal: pre-load via the adapter so bookmark restoration
+    //     paints the bright-orange + chip treatment.
+    // Including isExerciseOver in the deps re-creates InteractiveText
+    // on the reveal transition.
+    const adaptedBookmark = isExerciseOver
+      ? adaptExerciseBookmark(exerciseBookmark)
+      : null;
     setInteractiveText(
       new InteractiveExerciseText(
         exerciseBookmark.context_tokenized,
         exerciseBookmark.source_id,
         api,
-        [],
+        adaptedBookmark ? [adaptedBookmark] : [],
         "TRANSLATE WORDS IN EXERCISE",
         exerciseBookmark.from_lang,
         exerciseType,
@@ -126,7 +141,7 @@ export default function WordInContextExercise({
     );
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [exerciseBookmark, reload]);
+  }, [exerciseBookmark, reload, isExerciseOver]);
 
   function handleIncorrectAnswer() {
     //alert("incorrect answer")
@@ -142,7 +157,12 @@ export default function WordInContextExercise({
       <div className="headlineWithMoreSpace" style={{ visibility: isExerciseOver ? "hidden" : "visible" }}>
         {exerciseHeadline}
       </div>
-      <h1 className="wordInContextHeadline">{removePunctuation(exerciseBookmark.to)}</h1>
+      <h1
+        className="wordInContextHeadline"
+        style={{ visibility: isExerciseOver ? "hidden" : "visible" }}
+      >
+        {removePunctuation(exerciseBookmark.to)}
+      </h1>
       <div style={{ visibility: isExerciseOver ? "visible" : "hidden", minHeight: "60px" }}>
         {bookmarkProgressBar || <div style={{ height: "60px", width: "30%", margin: "0.1em auto 0.5em auto" }}></div>}
       </div>

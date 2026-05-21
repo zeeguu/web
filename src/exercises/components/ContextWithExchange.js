@@ -17,7 +17,10 @@ const ContextWithExchange = forwardRef(function ContextWithExchange(
     isExerciseOver,
     onExampleUpdated,
     translating = true,
-    pronouncing = false,
+    // Default to true so tapping the highlighted bookmark word
+    // pronounces it — matches reading-view behavior and is what users
+    // expect post-reveal.
+    pronouncing = true,
     highlightExpression,
     translatedWords,
     setTranslatedWords,
@@ -27,8 +30,12 @@ const ContextWithExchange = forwardRef(function ContextWithExchange(
   // Compute word IDs for highlighting (both during and after exercise when highlightExpression is set)
   const clozeWordIds = useMemo(() => {
     if (!highlightExpression) return [];
-    // Use includeSeparatedMwe for highlighting so all MWE parts are highlighted
-    return findClozeWordIds(interactiveText, exerciseBookmark, { includeSeparatedMwe: true });
+    // Only highlight the actual bookmark word(s). Tokenizer-detected MWE
+    // neighbors used to be pulled in via includeSeparatedMwe but they get
+    // a different visual treatment than the bookmark word (which now
+    // renders through bookmark-restoration), and the mismatch reads as a
+    // bug — better to highlight just what the bookmark covers.
+    return findClozeWordIds(interactiveText, exerciseBookmark);
   }, [interactiveText, exerciseBookmark, highlightExpression]);
 
   return (

@@ -521,10 +521,11 @@ let MultipleChoiceContext = styled.div`
     animation: ${shake} 0.82s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
   }
 
-  &.correct {
-    border: 0.25em solid ${zeeguuOrange};
-    border-radius: 0.5em;
-  }
+  /* No "correct" border — the bookmark word inside the chosen context
+     is already highlighted with bright-orange + dotted underline + the
+     L1 chip above, which carries the "you got it" signal. A 0.25em
+     orange border around the whole card on top of that is visual
+     redundancy. */
 `;
 
 let ReportButton = styled.button`

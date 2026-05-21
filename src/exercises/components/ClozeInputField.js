@@ -1,5 +1,6 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useContext } from "react";
 import * as s from "../../reader/TranslatableText.sc";
+import { SpeechContext } from "../../contexts/SpeechContext.js";
 
 /**
  * Self-contained cloze input field component.
@@ -29,6 +30,7 @@ export default function ClozeInputField({
 }) {
   const [hintVisible, setHintVisible] = useState(true);
   const inputRef = useRef(null);
+  const speech = useContext(SpeechContext);
 
   const isOver = isCorrectAnswer || isExerciseOver;
   const currentValue = isExerciseOver && !isCorrectAnswer ? clozePhrase : inputValue;
@@ -98,7 +100,9 @@ export default function ClozeInputField({
       key={wordId}
       $isOver={isOver}
       onClick={() => {
-        if (!isOver && inputRef.current) {
+        if (isOver) {
+          if (speech && clozePhrase) speech.speakOut(clozePhrase);
+        } else if (inputRef.current) {
           inputRef.current.focus();
         }
       }}

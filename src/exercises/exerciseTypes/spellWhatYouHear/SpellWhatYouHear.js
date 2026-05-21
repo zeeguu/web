@@ -6,6 +6,8 @@ import { EXERCISE_TYPES } from "../../ExerciseTypeConstants.js";
 import SessionStorage from "../../../assorted/SessionStorage.js";
 import ClozeContextWithExchange from "../../components/ClozeContextWithExchange.js";
 import InteractiveText from "../../../reader/InteractiveText.js";
+import { adaptExerciseBookmark } from "../../utils/exerciseBookmarkAdapter.js";
+import { useNotifyExerciseLoaded } from "../../utils/useNotifyExerciseLoaded.js";
 import LoadingAnimation from "../../../components/LoadingAnimation.js";
 import { SpeechContext } from "../../../contexts/SpeechContext.js";
 import { removePunctuation } from "../../../utils/text/preprocessing.js";
@@ -30,10 +32,12 @@ export default function SpellWhatYouHear({
   resetSubSessionTimer,
   bookmarkProgressBar,
   onExampleUpdated,
+  onExerciseLoaded,
 }) {
   const api = useContext(APIContext);
   const speech = useContext(SpeechContext);
   const [interactiveText, setInteractiveText] = useState();
+  useNotifyExerciseLoaded(interactiveText, onExerciseLoaded);
   const [isButtonSpeaking, setIsButtonSpeaking] = useState(false);
   const [inputValue, setInputValue] = useState("");
   const [isCorrectAnswer, setIsCorrectAnswer] = useState(false);
@@ -69,12 +73,14 @@ export default function SpellWhatYouHear({
       return;
     }
 
+    const adaptedBookmark = adaptExerciseBookmark(exerciseBookmark);
+
     setInteractiveText(
       new InteractiveText(
         exerciseBookmark.context_tokenized,
         exerciseBookmark.source_id,
         api,
-        [],
+        adaptedBookmark ? [adaptedBookmark] : [],
         "TRANSLATE WORDS IN EXERCISE",
         exerciseBookmark.from_lang,
         EXERCISE_TYPE,
@@ -109,11 +115,13 @@ export default function SpellWhatYouHear({
     
     setIsCorrectAnswer(isCorrect);
     
-    // Auto-submit when correct
+    // Auto-submit when correct. Wait just long enough for the colour
+    // transition on the typed word to land before swapping the UI to the
+    // exercise-over state.
     if (isCorrect && value.trim().length > 0) {
       setTimeout(() => {
         notifyCorrectAnswer(exerciseBookmark);
-      }, 800); // Delay to show the orange color
+      }, 450);
     }
   }
 
@@ -168,12 +176,11 @@ export default function SpellWhatYouHear({
             />
           </s.CenteredRowTall>
         ) : (
-          <>
-            <h1 className="wordInContextHeadline" style={{ margin: '0.25em 0' }}>
-              {removePunctuation(exerciseBookmark.to)}
-            </h1>
-            {bookmarkProgressBar}
-          </>
+          // L1 translation now surfaces as a chip above the highlighted
+          // bookmark word in the sentence (via bookmark-restoration), so
+          // the big headline below is redundant — keep only the progress
+          // bar in the solution slot.
+          bookmarkProgressBar
         )}
       </div>
     </s.Exercise>

@@ -21,6 +21,8 @@ import MultipleChoiceAudio from "../exercises/exerciseTypes/multipleChoiceAudio/
 import ClickWordInContext from "../exercises/exerciseTypes/wordInContextExercises/ClickWordInContext";
 import FindWordInContext from "../exercises/exerciseTypes/wordInContextExercises/FindWordInContext";
 import NextNavigation from "../exercises/exerciseTypes/NextNavigation";
+import ReportExerciseDialog from "../exercises/exerciseTypes/ReportExerciseDialog";
+import { EXERCISE_TYPES } from "../exercises/ExerciseTypeConstants";
 
 // Mock speech engine
 const mockSpeech = {
@@ -101,6 +103,8 @@ export default function IndividualExercise() {
   const [exerciseMessageToAPI, setExerciseMessageToAPI] = useState({});
   const [bookmarkData, setBookmarkData] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [reportDialogOpen, setReportDialogOpen] = useState(false);
+  const [isReported, setIsReported] = useState(false);
 
   const api = useContext(APIContext);
   const { setContextualInfo } = useFeedbackContext();
@@ -353,6 +357,9 @@ export default function IndividualExercise() {
                   // Handle the updated example in the individual exercise component
                 }}
               />
+              {/* Gate on the bookmark being usably loaded — see note in
+                  ExerciseSession.js for why. */}
+              {bookmark?.context_tokenized && (
               <NextNavigation
                 exerciseType={exerciseType}
                 bookmarkMessagesToAPI={exerciseMessageToAPI}
@@ -367,7 +374,10 @@ export default function IndividualExercise() {
                 isCorrect={isCorrect}
                 isExerciseOver={isExerciseOver}
                 nextButtonText="More"
+                onReportClick={() => setReportDialogOpen(true)}
+                isReported={isReported}
               />
+              )}
             </s.ExForm>
             <div
               style={{
@@ -381,6 +391,26 @@ export default function IndividualExercise() {
               {exerciseType}
             </div>
           </s.ExercisesColumn>
+          <ReportExerciseDialog
+            open={reportDialogOpen}
+            onClose={(reported) => {
+              setReportDialogOpen(false);
+              if (reported) setIsReported(true);
+            }}
+            onSkip={goToMoreExercises}
+            bookmarkId={bookmark?.id}
+            exerciseSource={exerciseType}
+            isExerciseOver={isExerciseOver}
+            isAudioExercise={EXERCISE_TYPES.isAudioExercise(exerciseType)}
+            contextUsed={
+              bookmark?.context_tokenized
+                ? bookmark.context_tokenized
+                    .flat(2)
+                    .map((t) => (typeof t === "string" ? t : t?.text ?? ""))
+                    .join("")
+                : bookmark?.context || ""
+            }
+          />
         </NarrowColumn>
       </SpeechContext.Provider>
     </APIContext.Provider>

@@ -37,7 +37,10 @@ const ClozeContextWithExchange = forwardRef(function ClozeContextWithExchange(
     isExerciseOver,
     onExampleUpdated,
     translating = true,
-    pronouncing = false,
+    // Default to true so tapping the highlighted cloze answer (or any
+    // already-translated word) pronounces it — matches reading-view
+    // behavior and is what users expect post-reveal.
+    pronouncing = true,
     // cloze specific props
     onInputChange,
     onInputSubmit,

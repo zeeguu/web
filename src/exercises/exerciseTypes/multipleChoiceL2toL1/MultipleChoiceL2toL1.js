@@ -3,6 +3,8 @@ import * as s from "../Exercise.sc.js";
 import MultipleChoicesInput from "../multipleChoice/MultipleChoicesInput.js";
 import LoadingAnimation from "../../../components/LoadingAnimation";
 import InteractiveExerciseText from "../../../reader/InteractiveExerciseText.js";
+import { adaptExerciseBookmark } from "../../utils/exerciseBookmarkAdapter.js";
+import { useNotifyExerciseLoaded } from "../../utils/useNotifyExerciseLoaded.js";
 import { EXERCISE_TYPES } from "../../ExerciseTypeConstants.js";
 import strings from "../../../i18n/definitions.js";
 import shuffle from "../../../assorted/fisherYatesShuffle";
@@ -30,11 +32,13 @@ export default function MultipleChoiceL2toL1({
   resetSubSessionTimer,
   bookmarkProgressBar,
   onExampleUpdated,
+  onExerciseLoaded,
 }) {
   const api = useContext(APIContext);
   const [incorrectAnswer, setIncorrectAnswer] = useState("");
   const [buttonOptions, setButtonOptions] = useState(null);
   const [interactiveText, setInteractiveText] = useState();
+  useNotifyExerciseLoaded(interactiveText, onExerciseLoaded);
   const [prevTranslatedWords, setPrevTranslatedWords] = useState(0);
   const [translatedWords, setTranslatedWords] = useState([]);
   const speech = useContext(SpeechContext);
@@ -69,12 +73,13 @@ export default function MultipleChoiceL2toL1({
       contextOffset: exerciseBookmark.context_sent || 0
     };
 
+    const adaptedBookmark = adaptExerciseBookmark(exerciseBookmark);
     setInteractiveText(
       new InteractiveExerciseText(
         exerciseBookmark.context_tokenized,
         exerciseBookmark.source_id,
         api,
-        [],
+        adaptedBookmark ? [adaptedBookmark] : [],
         "TRANSLATE WORDS IN EXERCISE",
         exerciseBookmark.from_lang,
         EXERCISE_TYPE,
@@ -119,7 +124,7 @@ export default function MultipleChoiceL2toL1({
   return (
     <s.Exercise className="multipleChoice">
       {/* Instructions - visible during exercise, invisible when showing solution but still take space */}
-      <div className="headlineWithMoreSpace">
+      <div className="headlineWithMoreSpace" style={{ visibility: isExerciseOver ? 'hidden' : 'visible' }}>
         {strings.multipleChoiceL2toL1Headline}
       </div>
 
@@ -136,12 +141,10 @@ export default function MultipleChoiceL2toL1({
         highlightExpression={exerciseBookmark.from}
       />
 
-      {/* Solution area - appears below context when exercise is over */}
-      {isExerciseOver && (
+      {/* Solution area - L1 chip above the highlighted word replaces
+          the legacy big headline. */}
+      {isExerciseOver && bookmarkProgressBar && (
         <div style={{ marginTop: '3em' }}>
-          <h1 className="wordInContextHeadline">
-            {removePunctuation(exerciseBookmark.to)}
-          </h1>
           {bookmarkProgressBar}
         </div>
       )}

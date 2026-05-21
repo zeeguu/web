@@ -11,6 +11,8 @@ import LoadingAnimation from "../../../components/LoadingAnimation.js";
 import { SpeechContext } from "../../../contexts/SpeechContext.js";
 import { APIContext } from "../../../contexts/APIContext.js";
 import ClozeContextWithExchange from "../../components/ClozeContextWithExchange.js";
+import { adaptExerciseBookmark } from "../../utils/exerciseBookmarkAdapter.js";
+import { useNotifyExerciseLoaded } from "../../utils/useNotifyExerciseLoaded.js";
 
 // The user has to translate the word they hear into their L1.
 // This tests the user's passive knowledge.
@@ -30,11 +32,13 @@ export default function TranslateWhatYouHear({
   resetSubSessionTimer,
   bookmarkProgressBar,
   onExampleUpdated,
+  onExerciseLoaded,
 }) {
   const api = useContext(APIContext);
   const exerciseBookmark = bookmarksToStudy[0];
   const speech = useContext(SpeechContext);
   const [interactiveText, setInteractiveText] = useState();
+  useNotifyExerciseLoaded(interactiveText, onExerciseLoaded);
   const [isButtonSpeaking, setIsButtonSpeaking] = useState(false);
 
   async function handleSpeak() {
@@ -57,12 +61,14 @@ export default function TranslateWhatYouHear({
       return;
     }
 
+    const adaptedBookmark = adaptExerciseBookmark(exerciseBookmark);
+
     setInteractiveText(
       new InteractiveText(
         exerciseBookmark.context_tokenized,
         exerciseBookmark.source_id,
         api,
-        [],
+        adaptedBookmark ? [adaptedBookmark] : [],
         "TRANSLATE WORDS IN EXERCISE",
         exerciseBookmark.from_lang,
         EXERCISE_TYPE,
@@ -120,12 +126,12 @@ export default function TranslateWhatYouHear({
         }
       />
 
-      {/* Solution area - only shown when exercise is over */}
-      {isExerciseOver && (
+      {/* Solution area - L1 translation now surfaces as a chip above
+          the highlighted bookmark word in the sentence (via bookmark-
+          restoration), so the big headline below is redundant — keep
+          only the progress bar. */}
+      {isExerciseOver && bookmarkProgressBar && (
         <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', marginTop: '1em' }}>
-          <h1 className="wordInContextHeadline" style={{ margin: '0.25em 0' }}>
-            {exerciseBookmark.to}
-          </h1>
           {bookmarkProgressBar}
         </div>
       )}
