@@ -92,8 +92,11 @@ export default function TranslateL2toL1({
 
   return (
     <s.Exercise className="translateL2toL1">
-      {/* Instructions - visible during exercise, invisible when showing solution but still take space */}
-      <div className="headlineWithMoreSpace" style={{ visibility: isExerciseOver ? 'hidden' : 'visible' }}>
+      <div
+        className="headlineWithMoreSpace"
+        style={{ visibility: isExerciseOver ? "hidden" : "visible" }}
+        aria-hidden={isExerciseOver}
+      >
         {strings.translateL2toL1Headline}
       </div>
 

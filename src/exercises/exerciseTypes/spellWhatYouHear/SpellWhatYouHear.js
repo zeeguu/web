@@ -143,8 +143,11 @@ export default function SpellWhatYouHear({
 
   return (
     <s.Exercise className="spellWhatYouHear">
-      {/* Instructions - visible during exercise, invisible when showing solution but still take space */}
-      <div className="headlineWithMoreSpace" style={{ visibility: isExerciseOver ? 'hidden' : 'visible' }}>
+      <div
+        className="headlineWithMoreSpace"
+        style={{ visibility: isExerciseOver ? "hidden" : "visible" }}
+        aria-hidden={isExerciseOver}
+      >
         {strings.audioExerciseHeadline}
       </div>
 

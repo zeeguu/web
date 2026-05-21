@@ -98,14 +98,6 @@ export default function ContextNavigationControls({
 
   return (
     <s.SlideContainer>
-      <s.NavArrow
-        onClick={() => navigate("right")}
-        disabled={isAnimating}
-        $hidden={!hasMultipleContexts}
-      >
-        ‹
-      </s.NavArrow>
-
       {children && (
         <s.SlideContent
           {...swipeHandlers}
@@ -121,13 +113,25 @@ export default function ContextNavigationControls({
         </s.SlideContent>
       )}
 
-      <s.NavArrow
-        onClick={() => navigate("left")}
-        disabled={isAnimating}
-        $hidden={!hasMultipleContexts}
-      >
-        ›
-      </s.NavArrow>
+      {/* Nav arrows live below the sentence so the context can use the
+          full width — click-word exercises in particular need that
+          horizontal room so words don't compress onto extra lines. */}
+      <s.NavRow $hidden={!hasMultipleContexts}>
+        <s.NavArrow
+          onClick={() => navigate("right")}
+          disabled={isAnimating}
+          aria-label="Previous context"
+        >
+          ‹
+        </s.NavArrow>
+        <s.NavArrow
+          onClick={() => navigate("left")}
+          disabled={isAnimating}
+          aria-label="Next context"
+        >
+          ›
+        </s.NavArrow>
+      </s.NavRow>
     </s.SlideContainer>
   );
 }

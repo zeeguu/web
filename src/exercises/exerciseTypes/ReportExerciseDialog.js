@@ -83,9 +83,40 @@ export default function ReportExerciseDialog({
         setIsSubmitting(false);
         if (response.already_reported) {
           toast.info("You've already reported this exercise — skipping");
-        } else {
-          toast.success("Thanks — skipped");
+          finishAndSkip();
+          return;
         }
+        // Reporting is a strong signal that this specific word/exercise
+        // isn't working for the user — pull it out of their scheduling
+        // and surface an Undo so the action is reversible.
+        api.userSetNotForExercises(bookmarkId, `reported:${reason}`);
+        toast.success(
+          ({ closeToast }) => (
+            <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
+              <span>Reported. Word removed from practice.</span>
+              <button
+                onClick={() => {
+                  api.userSetForExercises(bookmarkId);
+                  toast.info("Word restored to practice");
+                  closeToast();
+                }}
+                style={{
+                  background: "none",
+                  border: "none",
+                  padding: 0,
+                  color: "inherit",
+                  cursor: "pointer",
+                  fontWeight: 600,
+                  fontSize: "0.85rem",
+                  textDecoration: "underline",
+                }}
+              >
+                Undo
+              </button>
+            </div>
+          ),
+          { autoClose: 5000 },
+        );
         finishAndSkip();
       },
       (_error) => {

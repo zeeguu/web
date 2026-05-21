@@ -2,6 +2,7 @@ import { forwardRef, useContext, useState, useRef, useMemo } from "react";
 import { ClozeTranslatableText } from "./ClozeTranslatableText.js";
 import ClozeInputField from "./ClozeInputField.js";
 import ContextNavigationControls from "./ContextNavigationControls.js";
+import { useFlipOnReveal } from "../utils/useFlipOnReveal.js";
 import VirtualKeyboard from "../../components/VirtualKeyboard/VirtualKeyboard.js";
 import SpecialCharacterBar, { hasSpecialCharacters } from "../../components/VirtualKeyboard/SpecialCharacterBar.js";
 import { needsVirtualKeyboard } from "../../utils/misc/languageScripts.js";
@@ -57,6 +58,13 @@ const ClozeContextWithExchange = forwardRef(function ClozeContextWithExchange(
   const { userDetails } = useContext(UserContext);
   const [isKeyboardCollapsed, setIsKeyboardCollapsed] = useState(getInitialKeyboardCollapsed);
   const clozeInputRef = useRef(null);
+  // Internal FLIP ref so the .contextExample div animates from its
+  // pre-reveal position (below the instruction line) up to its
+  // post-reveal position. External ref forwarding is preserved for
+  // callers that want to pin the same element.
+  const internalRef = useRef(null);
+  const flipRef = ref || internalRef;
+  useFlipOnReveal(flipRef, isExerciseOver);
 
   // Determine the language for the answer (L2 for this exercise type)
   const answerLanguageCode = exerciseBookmark?.from_lang;
@@ -81,7 +89,7 @@ const ClozeContextWithExchange = forwardRef(function ClozeContextWithExchange(
         <div
           className="contextExample"
           style={{ display: "inline-block", position: "relative", textAlign: "left" }}
-          ref={ref}
+          ref={flipRef}
         >
           <ClozeTranslatableText
             isExerciseOver={isExerciseOver}

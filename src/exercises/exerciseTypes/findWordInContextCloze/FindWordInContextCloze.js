@@ -120,15 +120,14 @@ export default function FindWordInContextCloze({
 
   return (
     <s.Exercise className="findWordInContextCloze">
-      <div className="headlineWithMoreSpace" style={{ visibility: isExerciseOver ? 'hidden' : 'visible' }}>
-        {strings.findWordInContextClozeHeadline}
+      <div style={{ visibility: isExerciseOver ? "hidden" : "visible" }} aria-hidden={isExerciseOver}>
+        <div className="headlineWithMoreSpace">
+          {strings.findWordInContextClozeHeadline}
+        </div>
+        <h1 className="wordInContextHeadline">
+          {removePunctuation(exerciseBookmark.to)}
+        </h1>
       </div>
-      <h1
-        className="wordInContextHeadline"
-        style={{ visibility: isExerciseOver ? "hidden" : "visible" }}
-      >
-        {removePunctuation(exerciseBookmark.to)}
-      </h1>
       <div style={{ visibility: isExerciseOver ? 'visible' : 'hidden', minHeight: '60px' }}>
         {bookmarkProgressBar || <div style={{ height: '60px', width: '30%', margin: '0.1em auto 0.5em auto' }}></div>}
       </div>

@@ -87,8 +87,13 @@ export default function MultipleChoiceAudio({
 
   return (
     <s.Exercise>
-      {/* Instructions - visible during exercise, invisible when showing solution but still take space */}
-      <div className="headlineWithMoreSpace">{strings.multipleChoiceAudioHeadline}</div>
+      <div
+        className="headlineWithMoreSpace"
+        style={{ visibility: isExerciseOver ? "hidden" : "visible" }}
+        aria-hidden={isExerciseOver}
+      >
+        {strings.multipleChoiceAudioHeadline}
+      </div>
 
       {/* Context - always at the top, never moves */}
       <ClozeContextWithExchange

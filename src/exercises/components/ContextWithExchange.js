@@ -1,7 +1,8 @@
-import { forwardRef, useMemo } from "react";
+import { forwardRef, useMemo, useRef } from "react";
 import { ClozeTranslatableText } from "./ClozeTranslatableText.js";
 import { findClozeWordIds } from "../utils/findClozeWordIds.js";
 import ContextNavigationControls from "./ContextNavigationControls.js";
+import { useFlipOnReveal } from "../utils/useFlipOnReveal.js";
 
 /**
  * Displays exercise context with word highlighting (no cloze input).
@@ -27,6 +28,14 @@ const ContextWithExchange = forwardRef(function ContextWithExchange(
   },
   ref,
 ) {
+  // Internal FLIP ref so the .contextExample div animates from its
+  // pre-reveal position (below an instruction line + L2 prompt) up to
+  // its post-reveal position (those headers unmount). External ref
+  // forwarding is kept for callers that want to pin the same element.
+  const internalRef = useRef(null);
+  const flipRef = ref || internalRef;
+  useFlipOnReveal(flipRef, isExerciseOver);
+
   // Compute word IDs for highlighting (both during and after exercise when highlightExpression is set)
   const clozeWordIds = useMemo(() => {
     if (!highlightExpression) return [];
@@ -49,7 +58,7 @@ const ContextWithExchange = forwardRef(function ContextWithExchange(
         <div
           className="contextExample"
           style={{ display: "inline-block", position: "relative", textAlign: "left" }}
-          ref={ref}
+          ref={flipRef}
         >
           <ClozeTranslatableText
             isExerciseOver={isExerciseOver}

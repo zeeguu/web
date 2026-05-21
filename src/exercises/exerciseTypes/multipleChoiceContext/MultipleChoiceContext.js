@@ -150,9 +150,12 @@ export default function MultipleChoiceContext({
             key={index}
             ref={option.isExercise ? correctOptionRef : null}
             clicked={index === clickedIndex}
-            className={
-              clickedOption !== null ? (index === clickedOption ? (option.isExercise ? "correct" : "wrong") : "") : ""
-            }
+            className={[
+              clickedOption !== null && index === clickedOption ? (option.isExercise ? "correct" : "wrong") : "",
+              isExerciseOver && option.isExercise ? "revealed" : "",
+            ]
+              .filter(Boolean)
+              .join(" ")}
             onClick={(e) => notifyChoiceSelection(option.id, index, e)}
           >
             {isExerciseOver && option.isExercise && interactiveText ? (

@@ -71,6 +71,15 @@ const Exercise = styled.div`
     min-height: 4.5em; /* Prevent layout jump when example length changes */
   }
 
+  /* Click-word exercises require larger tap targets — bumping line-height
+     gives more vertical breathing room around mid-sentence words so they
+     are easier to hit with a finger. Class names come from EXERCISE_TYPES
+     (clickWordInContext, findWordInContext). */
+  &.Click_L1W_in_L2T .contextExample,
+  &.Recognize_L1W_in_L2T .contextExample {
+    line-height: 2.2em;
+  }
+
   .learningCycleIndicator {
     display: flex;
     flex-direction: row;
@@ -516,6 +525,7 @@ let MultipleChoiceContext = styled.div`
   margin: 0.5em;
   padding: 1em;
   cursor: pointer;
+  transition: font-size 320ms cubic-bezier(0.22, 1, 0.36, 1);
 
   &.wrong {
     animation: ${shake} 0.82s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
@@ -526,6 +536,15 @@ let MultipleChoiceContext = styled.div`
      L1 chip above, which carries the "you got it" signal. A 0.25em
      orange border around the whole card on top of that is visual
      redundancy. */
+
+  /* Post-reveal: the chosen context is the only thing on the card, so
+     bump it up to the normal reading font size (same scale as
+     .contextExample uses elsewhere). During the exercise the smaller
+     size is intentional — it lets all four options fit comfortably. */
+  &.revealed {
+    font-size: 1.2em;
+    cursor: default;
+  }
 `;
 
 let ReportButton = styled.button`
