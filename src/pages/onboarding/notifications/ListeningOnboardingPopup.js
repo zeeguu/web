@@ -7,7 +7,7 @@ import { useContext } from "react";
 import { APIContext } from "../../../contexts/APIContext";
 import { ONBOARDING_MESSAGE_IDS } from "../../../appConstants";
 
-export default function TranslationOnboardingPopup({ open, handleCancel }) {
+export default function ListeningOnboardingPopup({ open, handleCancel }) {
   const api = useContext(APIContext);
   const onboardingMessageId = ONBOARDING_MESSAGE_IDS.listening;
 
