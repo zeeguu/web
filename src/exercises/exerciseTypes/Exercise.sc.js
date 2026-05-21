@@ -71,6 +71,15 @@ const Exercise = styled.div`
     min-height: 4.5em; /* Prevent layout jump when example length changes */
   }
 
+  /* Click-word exercises require larger tap targets — bumping line-height
+     gives more vertical breathing room around mid-sentence words so they
+     are easier to hit with a finger. Class names come from EXERCISE_TYPES
+     (clickWordInContext, findWordInContext). */
+  &.Click_L1W_in_L2T .contextExample,
+  &.Recognize_L1W_in_L2T .contextExample {
+    line-height: 2.2em;
+  }
+
   .learningCycleIndicator {
     display: flex;
     flex-direction: row;
@@ -516,15 +525,64 @@ let MultipleChoiceContext = styled.div`
   margin: 0.5em;
   padding: 1em;
   cursor: pointer;
+  transition: font-size 320ms cubic-bezier(0.22, 1, 0.36, 1);
 
   &.wrong {
     animation: ${shake} 0.82s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
   }
 
-  &.correct {
-    border: 0.25em solid ${zeeguuOrange};
-    border-radius: 0.5em;
+  /* No "correct" border — the bookmark word inside the chosen context
+     is already highlighted with bright-orange + dotted underline + the
+     L1 chip above, which carries the "you got it" signal. A 0.25em
+     orange border around the whole card on top of that is visual
+     redundancy. */
+
+  /* Post-reveal: the chosen context is the only thing on the card, so
+     bump it up to the normal reading font size (same scale as
+     .contextExample uses elsewhere). During the exercise the smaller
+     size is intentional — it lets all four options fit comfortably. */
+  &.revealed {
+    font-size: 1.2em;
+    cursor: default;
   }
+`;
+
+// Wrapper for the BookmarkProgressBar in the reveal state. The pre-reveal
+// space is intentionally not reserved here — most exercises render the
+// progress bar only when isExerciseOver is true, with a small gap above
+// the sentence. The $tight variant is used by MultipleChoiceContext
+// where the wrapper sits directly below the chosen option (already-airy
+// layout) and doesn't need the bigger top margin.
+let RevealedProgressBar = styled.div`
+  margin-top: ${(props) => (props.$tight ? "1em" : "3em")};
+`;
+
+// Audio exercises (SpellWhatYouHear, TranslateWhatYouHear) center the
+// progress bar in a fixed slot below the cloze so the sentence above
+// doesn't shift between the typing and revealed states.
+let CenteredRevealedSlot = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin-top: ${(props) => props.$marginTop || "1em"};
+  min-height: ${(props) => props.$minHeight || "auto"};
+`;
+
+// Used by click-word exercises (WordInContext, FindWordInContextCloze) to
+// reserve the progress-bar's vertical space pre-reveal so the sentence
+// below doesn't jump when the bar appears.
+let ProgressBarReserve = styled.div`
+  visibility: ${(props) => (props.$visible ? "visible" : "hidden")};
+  min-height: 60px;
+`;
+
+// Empty filler shown inside ProgressBarReserve when no progress bar has
+// been wired in yet — keeps the reserved slot's vertical rhythm.
+let ProgressBarPlaceholder = styled.div`
+  height: 60px;
+  width: 30%;
+  margin: 0.1em auto 0.5em auto;
 `;
 
 let ReportButton = styled.button`
@@ -580,6 +638,10 @@ export {
   MultipleChoiceContext,
   ReportButton,
   ReportedBadge,
+  RevealedProgressBar,
+  CenteredRevealedSlot,
+  ProgressBarReserve,
+  ProgressBarPlaceholder,
 };
 
 export default StyledButton;

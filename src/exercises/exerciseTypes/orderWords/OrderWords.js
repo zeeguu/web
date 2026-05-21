@@ -107,17 +107,16 @@ export default function OrderWords({
       }
 
       setInteractiveText(
-        new InteractiveText(
-          exerciseBookmark.context_tokenized,
-          exerciseBookmark.source_id,
+        new InteractiveText({
+          tokenizedParagraphs: exerciseBookmark.context_tokenized,
+          sourceId: exerciseBookmark.source_id,
           api,
-          [],
-          "TRANSLATE WORDS IN EXERCISE",
-          exerciseBookmark.from_lang,
-          EXERCISE_TYPE,
-          speech,
-          exerciseBookmark.context_identifier,
-        ),
+          translationEvent: api.TRANSLATE_WORDS_IN_EXERCISE,
+          language: exerciseBookmark.from_lang,
+          source: EXERCISE_TYPE,
+          zeeguuSpeech: speech,
+          contextIdentifier: exerciseBookmark.context_identifier,
+        }),
       );
     });
     if (IS_DEBUG) console.log("Preparing Context");

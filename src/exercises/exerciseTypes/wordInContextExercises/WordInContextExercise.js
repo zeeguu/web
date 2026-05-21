@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext } from "react";
 import * as s from "../Exercise.sc.js";
 import BottomInput from "../BottomInput.js";
 import LoadingAnimation from "../../../components/LoadingAnimation.js";
@@ -6,7 +6,9 @@ import { removePunctuation } from "../../../utils/text/preprocessing.js";
 import { SpeechContext } from "../../../contexts/SpeechContext.js";
 import { APIContext } from "../../../contexts/APIContext.js";
 import ContextWithExchange from "../../components/ContextWithExchange.js";
-import InteractiveExerciseText from "../../../reader/InteractiveExerciseText.js";
+import ExerciseInstructionHeader from "../../components/ExerciseInstructionHeader.js";
+import { useExerciseLifecycle } from "../../utils/useExerciseLifecycle.js";
+import { useInteractiveTextForBookmark } from "../../utils/useInteractiveTextForBookmark.js";
 
 //shared code for ClickWordInContext and FindWordInContext exercises
 //The difference between the two is that in FindWordInContext the user can choose to either click on the word or type the word.
@@ -22,7 +24,6 @@ export default function WordInContextExercise({
   notifyCorrectAnswer,
   notifyIncorrectAnswer,
   setExerciseType,
-  isCorrect,
   isExerciseOver,
   setIsCorrect,
   resetSubSessionTimer,
@@ -30,108 +31,48 @@ export default function WordInContextExercise({
   notifyOfUserAttempt,
   bookmarkProgressBar,
   onExampleUpdated,
+  onExerciseLoaded,
 }) {
   const api = useContext(APIContext);
-  const [interactiveText, setInteractiveText] = useState();
   const speech = useContext(SpeechContext);
-
   const exerciseBookmark = bookmarksToStudy[0];
 
-  useEffect(() => {
-    speech.stopAudio(); // Stop any pending speech from previous exercise
-    resetSubSessionTimer();
-    setExerciseType(exerciseType);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  useExerciseLifecycle({ speech, resetSubSessionTimer, setExerciseType, exerciseType });
 
-  useEffect(() => {
-    // Validate that context_tokenized exists and is properly formatted
-    if (!exerciseBookmark.context_tokenized || !Array.isArray(exerciseBookmark.context_tokenized)) {
-      setInteractiveText(null);
-      return;
+  function onSolutionFound() {
+    if (isExerciseOver) return;
+    const translationCount = (exerciseMessageToAPI || "").split("").filter((c) => c === "T").length;
+    if (translationCount < 1) {
+      notifyCorrectAnswer(exerciseBookmark);
+    } else {
+      notifyShowSolution();
     }
+  }
 
-    const onSolutionFound = (word) => {
-      console.log("Solution found! Word clicked:", word.word);
-
-      // Check if exercise is already over to prevent duplicate notifications
-      if (isExerciseOver) {
-        console.log("Exercise already over, ignoring click");
-        return;
-      }
-
-      // Check how many translations were made
-      let translationCount = 0;
-      if (exerciseMessageToAPI && exerciseMessageToAPI.length > 0) {
-        for (let i = 0; i < exerciseMessageToAPI.length; i++) {
-          if (exerciseMessageToAPI[i] === "T") translationCount++;
-        }
-      }
-
-      if (translationCount < 1) {
-        console.log("Notifying correct answer");
-        notifyCorrectAnswer(exerciseBookmark);
-      } else {
-        console.log("Showing solution (user made translations)");
-        notifyShowSolution();
-      }
-    };
-
-    const expectedPosition = {
+  // Click-word exercises rely on TranslatableWord.clickOnWord routing the
+  // user's tap to trackWordClick — which only happens when the word has no
+  // pre-set translation. Pre-reveal we therefore skip the bookmark preload
+  // (clicks work); post-reveal we re-mount the InteractiveText WITH the
+  // adapted bookmark so bookmark restoration paints the bright-orange +
+  // chip treatment. The `isExerciseOver` extra-dep drives the re-mount.
+  const interactiveText = useInteractiveTextForBookmark({
+    bookmark: exerciseBookmark,
+    api,
+    speech,
+    exerciseType,
+    reload,
+    onExerciseLoaded,
+    expectedSolution: exerciseBookmark.from,
+    expectedPosition: {
       sentenceIndex: exerciseBookmark.t_sentence_i,
       tokenIndex: exerciseBookmark.t_token_i,
       totalTokens: exerciseBookmark.t_total_token || 1,
       contextOffset: exerciseBookmark.context_sent || 0,
-    };
-
-    console.log("=== WORD IN CONTEXT EXERCISE DEBUG ===");
-    console.log("Exercise bookmark:", exerciseBookmark);
-    console.log("Expected solution:", exerciseBookmark.from);
-    console.log("Expected position:", expectedPosition);
-    console.log("Context tokenized structure:", exerciseBookmark.context_tokenized);
-
-    // Special debugging for multi-word bookmarks
-    if (exerciseBookmark.from && exerciseBookmark.from.includes(" ")) {
-      console.log("=== MULTI-WORD BOOKMARK DEBUG ===");
-      console.log("Multi-word solution detected:", exerciseBookmark.from);
-      console.log("Number of words:", exerciseBookmark.from.split(" ").length);
-      console.log("Total tokens from bookmark:", exerciseBookmark.t_total_token);
-      console.log("Expected position for multi-word:", expectedPosition);
-
-      // Check if total tokens matches word count
-      const wordCount = exerciseBookmark.from.split(" ").length;
-      if (exerciseBookmark.t_total_token !== wordCount) {
-        console.warn(
-          `WARNING: Token count mismatch! Bookmark has ${exerciseBookmark.t_total_token} tokens but phrase has ${wordCount} words`,
-        );
-      }
-    }
-
-    setInteractiveText(
-      new InteractiveExerciseText(
-        exerciseBookmark.context_tokenized,
-        exerciseBookmark.source_id,
-        api,
-        [],
-        "TRANSLATE WORDS IN EXERCISE",
-        exerciseBookmark.from_lang,
-        exerciseType,
-        speech,
-        exerciseBookmark.context_identifier,
-        null, // formatting
-        exerciseBookmark.from, // expectedSolution
-        expectedPosition, // expectedPosition
-        onSolutionFound,
-      ),
-    );
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [exerciseBookmark, reload]);
-
-  function handleIncorrectAnswer() {
-    //alert("incorrect answer")
-    notifyIncorrectAnswer(exerciseBookmark);
-  }
+    },
+    onSolutionFound,
+    preloadBookmark: isExerciseOver,
+    extraDeps: [isExerciseOver],
+  });
 
   if (!interactiveText) {
     return <LoadingAnimation />;
@@ -139,13 +80,14 @@ export default function WordInContextExercise({
 
   return (
     <s.Exercise className={exerciseType}>
-      <div className="headlineWithMoreSpace" style={{ visibility: isExerciseOver ? "hidden" : "visible" }}>
-        {exerciseHeadline}
-      </div>
-      <h1 className="wordInContextHeadline">{removePunctuation(exerciseBookmark.to)}</h1>
-      <div style={{ visibility: isExerciseOver ? "visible" : "hidden", minHeight: "60px" }}>
-        {bookmarkProgressBar || <div style={{ height: "60px", width: "30%", margin: "0.1em auto 0.5em auto" }}></div>}
-      </div>
+      <ExerciseInstructionHeader
+        headline={exerciseHeadline}
+        l2Prompt={removePunctuation(exerciseBookmark.to)}
+        isExerciseOver={isExerciseOver}
+      />
+      <s.ProgressBarReserve $visible={isExerciseOver}>
+        {bookmarkProgressBar || <s.ProgressBarPlaceholder />}
+      </s.ProgressBarReserve>
       <ContextWithExchange
         exerciseBookmark={exerciseBookmark}
         interactiveText={interactiveText}
@@ -156,7 +98,7 @@ export default function WordInContextExercise({
       {showBottomInput && !isExerciseOver && (
         <BottomInput
           handleCorrectAnswer={notifyCorrectAnswer}
-          handleIncorrectAnswer={handleIncorrectAnswer}
+          handleIncorrectAnswer={() => notifyIncorrectAnswer(exerciseBookmark)}
           handleExerciseCompleted={notifyExerciseCompleted}
           setIsCorrect={setIsCorrect}
           exerciseBookmark={exerciseBookmark}

@@ -5,7 +5,9 @@ import strings from "../../../i18n/definitions.js";
 import { EXERCISE_TYPES } from "../../ExerciseTypeConstants.js";
 import SessionStorage from "../../../assorted/SessionStorage.js";
 import ClozeContextWithExchange from "../../components/ClozeContextWithExchange.js";
-import InteractiveText from "../../../reader/InteractiveText.js";
+import ExerciseInstructionHeader from "../../components/ExerciseInstructionHeader.js";
+import { useExerciseLifecycle } from "../../utils/useExerciseLifecycle.js";
+import { useInteractiveTextForBookmark } from "../../utils/useInteractiveTextForBookmark.js";
 import LoadingAnimation from "../../../components/LoadingAnimation.js";
 import { SpeechContext } from "../../../contexts/SpeechContext.js";
 import { removePunctuation } from "../../../utils/text/preprocessing.js";
@@ -30,102 +32,71 @@ export default function SpellWhatYouHear({
   resetSubSessionTimer,
   bookmarkProgressBar,
   onExampleUpdated,
+  onExerciseLoaded,
 }) {
   const api = useContext(APIContext);
   const speech = useContext(SpeechContext);
-  const [interactiveText, setInteractiveText] = useState();
+  const exerciseBookmark = bookmarksToStudy[0];
   const [isButtonSpeaking, setIsButtonSpeaking] = useState(false);
   const [inputValue, setInputValue] = useState("");
   const [isCorrectAnswer, setIsCorrectAnswer] = useState(false);
   const [shouldFocusInput, setShouldFocusInput] = useState(false);
-  const exerciseBookmark = bookmarksToStudy[0];
 
   async function handleSpeak() {
-    setShouldFocusInput(false); // Unfocus during speech
+    setShouldFocusInput(false);
     await speech.speakOut(exerciseBookmark.from, setIsButtonSpeaking);
-    // Focus after speech is done
-    setTimeout(() => {
-      setShouldFocusInput(true);
-    }, 100);
+    setTimeout(() => setShouldFocusInput(true), 100);
   }
 
-  useEffect(() => {
-    speech.stopAudio(); // Stop any pending speech from previous exercise
-    resetSubSessionTimer();
-    setExerciseType(EXERCISE_TYPE);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  useExerciseLifecycle({ speech, resetSubSessionTimer, setExerciseType, exerciseType: EXERCISE_TYPE });
+
+  const interactiveText = useInteractiveTextForBookmark({
+    bookmark: exerciseBookmark,
+    api,
+    speech,
+    exerciseType: EXERCISE_TYPE,
+    reload,
+    onExerciseLoaded,
+  });
 
   useEffect(() => {
     if (!SessionStorage.isAudioExercisesEnabled()) moveToNextExercise();
-
-    // Reset input state when context changes
     setInputValue("");
     setIsCorrectAnswer(false);
-
-    // Validate that context_tokenized exists and is properly formatted
-    if (!exerciseBookmark.context_tokenized || !Array.isArray(exerciseBookmark.context_tokenized)) {
-      setInteractiveText(null);
-      return;
-    }
-
-    setInteractiveText(
-      new InteractiveText(
-        exerciseBookmark.context_tokenized,
-        exerciseBookmark.source_id,
-        api,
-        [],
-        "TRANSLATE WORDS IN EXERCISE",
-        exerciseBookmark.from_lang,
-        EXERCISE_TYPE,
-        speech,
-        exerciseBookmark.context_identifier,
-      ),
-    );
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [exerciseBookmark, reload]);
+  }, [reload, exerciseBookmark]);
 
   useEffect(() => {
-    // Timeout is set so that the page renders before the word is spoken, allowing for the user to gain focus on the page
-    // Changed timeout to be slightly shorter.
-    if (interactiveText && !isButtonSpeaking)
-      setTimeout(() => {
-        handleSpeak();
-      }, 200);
+    // Defer speak so the page renders first and the user can gain focus.
+    if (interactiveText && !isButtonSpeaking) {
+      setTimeout(handleSpeak, 200);
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [interactiveText]);
 
-  function handleIncorrectAnswer() {
-    notifyIncorrectAnswer(exerciseBookmark);
-  }
-
-  function handleInputChange(value, inputElement) {
+  function handleInputChange(value) {
     setInputValue(value);
-    
-    // Constantly check if answer is correct
+
     const userInput = value.trim().toLowerCase();
     const expectedAnswer = removePunctuation(exerciseBookmark.from).toLowerCase();
     const isCorrect = userInput === expectedAnswer;
-    
     setIsCorrectAnswer(isCorrect);
-    
-    // Auto-submit when correct
+
+    // Wait just long enough for the colour transition on the typed word
+    // to land before swapping the UI to the exercise-over state.
     if (isCorrect && value.trim().length > 0) {
-      setTimeout(() => {
-        notifyCorrectAnswer(exerciseBookmark);
-      }, 800); // Delay to show the orange color
+      setTimeout(() => notifyCorrectAnswer(exerciseBookmark), 450);
     }
   }
 
-  function handleInputSubmit(value, inputElement) {
+  function handleInputSubmit(value) {
     const userInput = value.trim().toLowerCase();
     const expectedAnswer = removePunctuation(exerciseBookmark.from).toLowerCase();
-    
     if (userInput === expectedAnswer) {
       notifyCorrectAnswer(exerciseBookmark);
     } else {
       notifyOfUserAttempt(value, exerciseBookmark);
-      handleIncorrectAnswer();
+      notifyIncorrectAnswer(exerciseBookmark);
     }
   }
 
@@ -135,12 +106,11 @@ export default function SpellWhatYouHear({
 
   return (
     <s.Exercise className="spellWhatYouHear">
-      {/* Instructions - visible during exercise, invisible when showing solution but still take space */}
-      <div className="headlineWithMoreSpace" style={{ visibility: isExerciseOver ? 'hidden' : 'visible' }}>
-        {strings.audioExerciseHeadline}
-      </div>
+      <ExerciseInstructionHeader
+        headline={strings.audioExerciseHeadline}
+        isExerciseOver={isExerciseOver}
+      />
 
-      {/* Context - always at the top, never moves */}
       <ClozeContextWithExchange
         exerciseBookmark={exerciseBookmark}
         interactiveText={interactiveText}
@@ -157,8 +127,11 @@ export default function SpellWhatYouHear({
         canTypeInline={true}
       />
 
-      {/* Button/Solution area - maintain consistent height, placed below context */}
-      <div style={{ minHeight: '120px', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', marginTop: '2em' }}>
+      {/* Fixed-height slot below the cloze so the sentence above doesn't
+          shift between exercise and reveal. Post-reveal the L1 chip
+          surfaces above the highlighted word, so only the progress bar
+          lives here. */}
+      <s.CenteredRevealedSlot $marginTop="2em" $minHeight="120px">
         {!isExerciseOver ? (
           <s.CenteredRowTall>
             <SpeakButton
@@ -168,14 +141,9 @@ export default function SpellWhatYouHear({
             />
           </s.CenteredRowTall>
         ) : (
-          <>
-            <h1 className="wordInContextHeadline" style={{ margin: '0.25em 0' }}>
-              {removePunctuation(exerciseBookmark.to)}
-            </h1>
-            {bookmarkProgressBar}
-          </>
+          bookmarkProgressBar
         )}
-      </div>
+      </s.CenteredRevealedSlot>
     </s.Exercise>
   );
 }

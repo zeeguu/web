@@ -2,16 +2,17 @@ import { useState, useEffect, useContext } from "react";
 import * as s from "../Exercise.sc.js";
 import MultipleChoicesInput from "../multipleChoice/MultipleChoicesInput.js";
 import LoadingAnimation from "../../../components/LoadingAnimation";
-import InteractiveExerciseText from "../../../reader/InteractiveExerciseText.js";
+import { useExerciseLifecycle } from "../../utils/useExerciseLifecycle.js";
+import { useInteractiveTextForBookmark } from "../../utils/useInteractiveTextForBookmark.js";
 import { EXERCISE_TYPES } from "../../ExerciseTypeConstants.js";
 import strings from "../../../i18n/definitions.js";
 import shuffle from "../../../assorted/fisherYatesShuffle";
 import { removePunctuation } from "../../../utils/text/preprocessing";
 import { SpeechContext } from "../../../contexts/SpeechContext.js";
-
 import { APIContext } from "../../../contexts/APIContext.js";
 import { TRANSLATE_WORD } from "../../ExerciseConstants.js";
 import ContextWithExchange from "../../components/ContextWithExchange.js";
+import ExerciseInstructionHeader from "../../components/ExerciseInstructionHeader.js";
 
 // The user has to select the correct L1 translation out of three. The L2 word is marked in bold in the context.
 // This tests the user's passive knowledge.
@@ -30,76 +31,52 @@ export default function MultipleChoiceL2toL1({
   resetSubSessionTimer,
   bookmarkProgressBar,
   onExampleUpdated,
+  onExerciseLoaded,
 }) {
   const api = useContext(APIContext);
+  const speech = useContext(SpeechContext);
+  const exerciseBookmark = bookmarksToStudy[0];
   const [incorrectAnswer, setIncorrectAnswer] = useState("");
   const [buttonOptions, setButtonOptions] = useState(null);
-  const [interactiveText, setInteractiveText] = useState();
   const [prevTranslatedWords, setPrevTranslatedWords] = useState(0);
   const [translatedWords, setTranslatedWords] = useState([]);
-  const speech = useContext(SpeechContext);
 
-  const exerciseBookmark = bookmarksToStudy[0];
+  useExerciseLifecycle({ speech, resetSubSessionTimer, setExerciseType, exerciseType: EXERCISE_TYPE });
 
-  useEffect(() => {
-    speech.stopAudio(); // Stop any pending speech from previous exercise
-    resetSubSessionTimer();
-    setExerciseType(EXERCISE_TYPE);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  const interactiveText = useInteractiveTextForBookmark({
+    bookmark: exerciseBookmark,
+    api,
+    speech,
+    exerciseType: EXERCISE_TYPE,
+    reload,
+    onExerciseLoaded,
+    expectedSolution: exerciseBookmark.from,
+    expectedPosition: {
+      sentenceIndex: exerciseBookmark.t_sentence_i,
+      tokenIndex: exerciseBookmark.t_token_i,
+      totalTokens: exerciseBookmark.t_total_token || 1,
+      contextOffset: exerciseBookmark.context_sent || 0,
+    },
+  });
 
   useEffect(() => {
     if (translatedWords.length > prevTranslatedWords) {
       setPrevTranslatedWords(translatedWords.length);
       notifyOfUserAttempt(TRANSLATE_WORD, exerciseBookmark);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [translatedWords]);
 
   useEffect(() => {
-    // Validate that context_tokenized exists and is properly formatted
-    if (!exerciseBookmark.context_tokenized || !Array.isArray(exerciseBookmark.context_tokenized)) {
-      setInteractiveText(null);
-      return;
-    }
-    
-    const expectedPosition = {
-      sentenceIndex: exerciseBookmark.t_sentence_i,
-      tokenIndex: exerciseBookmark.t_token_i,
-      totalTokens: exerciseBookmark.t_total_token || 1,
-      contextOffset: exerciseBookmark.context_sent || 0
-    };
-
-    setInteractiveText(
-      new InteractiveExerciseText(
-        exerciseBookmark.context_tokenized,
-        exerciseBookmark.source_id,
-        api,
-        [],
-        "TRANSLATE WORDS IN EXERCISE",
-        exerciseBookmark.from_lang,
-        EXERCISE_TYPE,
-        speech,
-        exerciseBookmark.context_identifier,
-        null, // formatting
-        exerciseBookmark.from, // expectedSolution
-        expectedPosition, // expectedPosition
-        null, // onSolutionFound - not needed for multiple choice
-      ),
+    if (!interactiveText) return;
+    setButtonOptions(
+      shuffle([
+        removePunctuation(bookmarksToStudy[0].to),
+        removePunctuation(bookmarksToStudy[1].to),
+        removePunctuation(bookmarksToStudy[2].to),
+      ]),
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [exerciseBookmark, reload]);
-
-  useEffect(() => {
-    if (interactiveText) {
-      setButtonOptions(
-        shuffle([
-          removePunctuation(bookmarksToStudy[0].to),
-          removePunctuation(bookmarksToStudy[1].to),
-          removePunctuation(bookmarksToStudy[2].to),
-        ]),
-      );
-    }
-    // eslint-disable-next-line
   }, [interactiveText]);
 
   function notifyChoiceSelection(selectedChoice) {
@@ -118,12 +95,11 @@ export default function MultipleChoiceL2toL1({
 
   return (
     <s.Exercise className="multipleChoice">
-      {/* Instructions - visible during exercise, invisible when showing solution but still take space */}
-      <div className="headlineWithMoreSpace">
-        {strings.multipleChoiceL2toL1Headline}
-      </div>
+      <ExerciseInstructionHeader
+        headline={strings.multipleChoiceL2toL1Headline}
+        isExerciseOver={isExerciseOver}
+      />
 
-      {/* Context - always at the top, never moves */}
       <ContextWithExchange
         exerciseBookmark={exerciseBookmark}
         interactiveText={interactiveText}
@@ -136,18 +112,10 @@ export default function MultipleChoiceL2toL1({
         highlightExpression={exerciseBookmark.from}
       />
 
-      {/* Solution area - appears below context when exercise is over */}
-      {isExerciseOver && (
-        <div style={{ marginTop: '3em' }}>
-          <h1 className="wordInContextHeadline">
-            {removePunctuation(exerciseBookmark.to)}
-          </h1>
-          {bookmarkProgressBar}
-        </div>
+      {isExerciseOver && bookmarkProgressBar && (
+        <s.RevealedProgressBar>{bookmarkProgressBar}</s.RevealedProgressBar>
       )}
 
-      {/* Multiple choice buttons - only during exercise */}
-      {!buttonOptions && <LoadingAnimation />}
       {!isExerciseOver && (
         <MultipleChoicesInput
           buttonOptions={buttonOptions}

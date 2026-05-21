@@ -14,8 +14,18 @@ const slideInFromLeft = keyframes`
 export const SlideContainer = styled.div`
   overflow: hidden;
   display: flex;
-  align-items: center;
+  flex-direction: column;
+  align-items: stretch;
+`;
+
+export const NavRow = styled.div`
+  display: flex;
   justify-content: center;
+  align-items: center;
+  gap: 1.5em;
+  margin-top: 0.4em;
+  visibility: ${(props) => (props.$hidden ? "hidden" : "visible")};
+  pointer-events: ${(props) => (props.$hidden ? "none" : "auto")};
 `;
 
 export const SlideContent = styled.div`
@@ -40,15 +50,12 @@ export const SlideContent = styled.div`
 export const NavArrow = styled.button`
   background: none;
   border: none;
-  padding: 0.5em;
+  padding: 0.5em 0.8em;
   cursor: pointer;
   color: #ccc;
   font-size: 1.5em;
   line-height: 1;
   user-select: none;
-  flex-shrink: 0;
-  visibility: ${props => props.$hidden ? 'hidden' : 'visible'};
-  pointer-events: ${props => props.$hidden ? 'none' : 'auto'};
 
   &:hover:not(:disabled) {
     color: ${darkGrey};

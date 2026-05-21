@@ -28,7 +28,6 @@ import isEmptyDictionary from "../utils/misc/isEmptyDictionary";
 import WordProgressBar from "./progressBars/WordProgressBar";
 import { getExerciseTypeName } from "./exerciseTypes/exerciseTypeNames";
 import { useFeedbackContext } from "../contexts/FeedbackContext";
-import FlagOutlinedIcon from "@mui/icons-material/FlagOutlined";
 import ReportExerciseDialog from "./exerciseTypes/ReportExerciseDialog";
 
 const BOOKMARKS_DUE_REVIEW = false;
@@ -43,6 +42,34 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
   const [hasKeptExercising, setHasKeptExercising] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [currentBookmarksToStudy, setCurrentBookmarksToStudy] = useState();
+  // Gate on this rather than just on currentBookmarksToStudy being set —
+  // gives the exercise's own useEffect one tick to mount and replace the
+  // LoadingAnimation with real content before NextNavigation appears.
+  // Without this gate users see Show solution / Report flash against the
+  // spinner during the bookmark→next-bookmark transition.
+  const [navReady, setNavReady] = useState(false);
+  useEffect(() => {
+    // Reset every time the exercise transitions. The child exercise
+    // component flips this back to true by calling `onExerciseLoaded`
+    // (passed to it below) once it has built its InteractiveText —
+    // so the bottom nav appears exactly when the exercise has real
+    // content, no matter how slow the network/CPU. Fallback timeout
+    // covers the case where a particular exercise component doesn't
+    // wire up the callback (e.g. Match, OrderWords).
+    setNavReady(false);
+    const fallback = setTimeout(() => setNavReady(true), 2000);
+    return () => clearTimeout(fallback);
+  }, [currentBookmarksToStudy]);
+  const [currentInteractiveText, setCurrentInteractiveText] = useState(null);
+  const handleExerciseLoaded = (it) => {
+    setNavReady(true);
+    if (it) setCurrentInteractiveText(it);
+  };
+  // Reset interactiveText reference when bookmarks change so we don't
+  // briefly use a stale one for auto-pronounce on a new exercise.
+  useEffect(() => {
+    setCurrentInteractiveText(null);
+  }, [currentBookmarksToStudy]);
   const [correctBookmarks, setCorrectBookmarks] = useState([]);
   const [incorrectBookmarks, setIncorrectBookmarks] = useState([]);
   const [fullExerciseProgression, setFullExerciseProgression] = useState();
@@ -439,39 +466,10 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
   return (
     <NarrowColumn>
       <s.ExercisesColumn>
-        <div id="exerciseTopbar">
-          <div id="topbarRow">
-            {/* Report exercise issue button */}
-            {isReported ? (
-              <div style={{ display: "flex", alignItems: "center", color: "#999", fontSize: "0.8rem", gap: "0.25rem" }}>
-                <FlagOutlinedIcon fontSize="small" />
-                Reported
-              </div>
-            ) : (
-              <button
-                onClick={() => setReportDialogOpen(true)}
-                title="Report issue with this exercise"
-                style={{
-                  background: "none",
-                  border: "none",
-                  padding: "0.25rem",
-                  cursor: "pointer",
-                  color: "grey",
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "0.25rem",
-                  fontSize: "0.8rem",
-                }}
-                onMouseOver={(e) => e.currentTarget.style.color = "#999"}
-                onMouseOut={(e) => e.currentTarget.style.color = "grey"}
-              >
-                <FlagOutlinedIcon fontSize="small" />
-                Report
-              </button>
-            )}
-
-            <div style={{ display: "flex", alignItems: "center", marginLeft: "auto" }}>
-              {userPreferences?.["show_reading_timer"] === "true" && (
+        {userPreferences?.["show_reading_timer"] === "true" && (
+          <div id="exerciseTopbar">
+            <div id="topbarRow">
+              <div style={{ display: "flex", alignItems: "center", marginLeft: "auto" }}>
                 <DigitalTimer
                   sessionDuration={sessionDuration}
                   isTimerActive={isTimerActive}
@@ -481,15 +479,15 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
                     color: "grey",
                   }}
                 />
-              )}
+              </div>
             </div>
+            <ExerciseSessionProgressBar
+              index={isCorrect ? currentIndex + 1 : currentIndex}
+              total={fullExerciseProgression.length}
+              style={{ display: "none" }}
+            />
           </div>
-          <ExerciseSessionProgressBar
-            index={isCorrect ? currentIndex + 1 : currentIndex}
-            total={fullExerciseProgression.length}
-            style={{ display: "none" }}
-          />
-        </div>
+        )}
         <s.ExForm>
           <CurrentExerciseComponent
             key={currentIndex}
@@ -517,7 +515,17 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
             resetSubSessionTimer={resetSubSessionTimer}
             bookmarkProgressBar={wordProgressBar}
             onExampleUpdated={handleExampleUpdate}
+            onExerciseLoaded={handleExerciseLoaded}
           />
+          {/* Gate the bottom nav (Show solution / Report / Next) on:
+              (a) the bookmark being usably loaded — context_tokenized is
+                  the signal the child exercise has the data it needs;
+              (b) navReady — covers the one-tick gap between
+                  setCurrentBookmarksToStudy firing and the child's
+                  useEffect actually rendering real content. Without
+                  this we get a brief flash of Show solution / Report
+                  against the spinner during the transition. */}
+          {navReady && currentBookmarksToStudy?.[0]?.context_tokenized && (
           <NextNavigation
             exerciseType={currentExerciseType}
             bookmarkMessagesToAPI={exerciseMessageForAPI}
@@ -525,8 +533,6 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
             exerciseBookmark={currentBookmarksToStudy[0]}
             moveToNextExercise={moveToNextExercise}
             onWordRemovedFromExercises={onWordRemovedFromExercises}
-            reload={reload}
-            setReload={setReload}
             handleShowSolution={() => {
               setIsShowSolution(true);
               showSolution();
@@ -537,7 +543,11 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
             disableAudio={disableAudio}
             setIsExerciseOver={setIsExerciseOver}
             onExampleUpdated={handleExampleUpdate}
+            onReportClick={() => setReportDialogOpen(true)}
+            isReported={isReported}
+            interactiveText={currentInteractiveText}
           />
+          )}
         </s.ExForm>
         {articleID && (
           <p>
@@ -550,8 +560,16 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
         open={reportDialogOpen}
         onClose={(reported) => {
           setReportDialogOpen(false);
-          if (reported) setIsReported(true);
+          if (reported) {
+            setIsReported(true);
+            // Reporting removes the word from scheduling, so the
+            // pending-exercise counter has to come down too — matches
+            // the cleanup that runs on "I know this word" via
+            // onWordRemovedFromExercises.
+            if (hasExerciseNotification) decrementExerciseCounter();
+          }
         }}
+        onSkip={moveToNextExercise}
         bookmarkId={selectedExerciseBookmark?.id || currentBookmarksToStudy?.[0]?.id}
         exerciseSource={getExerciseTypeName(currentExerciseType)}
         isExerciseOver={isExerciseOver}

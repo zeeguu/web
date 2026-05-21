@@ -1,15 +1,15 @@
-import { useState, useEffect, useContext } from "react";
+import { useState, useContext } from "react";
 import * as s from "../Exercise.sc.js";
 import { EXERCISE_TYPES } from "../../ExerciseTypeConstants.js";
 import strings from "../../../i18n/definitions.js";
 import LoadingAnimation from "../../../components/LoadingAnimation.js";
-import InteractiveExerciseText from "../../../reader/InteractiveExerciseText.js";
 import { SpeechContext } from "../../../contexts/SpeechContext.js";
 import BottomInput from "../BottomInput.js";
-import WordProgressBar from "../../progressBars/WordProgressBar.js";
-import { removePunctuation } from "../../../utils/text/preprocessing";
 import { APIContext } from "../../../contexts/APIContext.js";
 import ContextWithExchange from "../../components/ContextWithExchange.js";
+import ExerciseInstructionHeader from "../../components/ExerciseInstructionHeader.js";
+import { useExerciseLifecycle } from "../../utils/useExerciseLifecycle.js";
+import { useInteractiveTextForBookmark } from "../../utils/useInteractiveTextForBookmark.js";
 
 // The user has to translate the L2 word in bold to their L1.
 // This tests the user's active knowledge.
@@ -29,56 +29,30 @@ export default function TranslateL2toL1({
   resetSubSessionTimer,
   bookmarkProgressBar,
   onExampleUpdated,
+  onExerciseLoaded,
 }) {
   const api = useContext(APIContext);
-  const [interactiveText, setInteractiveText] = useState();
-  const [translatedWords, setTranslatedWords] = useState([]);
   const speech = useContext(SpeechContext);
-
   const exerciseBookmark = bookmarksToStudy[0];
-  useEffect(() => {
-    speech.stopAudio(); // Stop any pending speech from previous exercise
-    resetSubSessionTimer();
-    setExerciseType(EXERCISE_TYPE);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  const [translatedWords, setTranslatedWords] = useState([]);
 
-  useEffect(() => {
-    // Validate that context_tokenized exists and is properly formatted
-    if (!exerciseBookmark.context_tokenized || !Array.isArray(exerciseBookmark.context_tokenized)) {
-      setInteractiveText(null);
-      return;
-    }
+  useExerciseLifecycle({ speech, resetSubSessionTimer, setExerciseType, exerciseType: EXERCISE_TYPE });
 
-    const expectedPosition = {
+  const interactiveText = useInteractiveTextForBookmark({
+    bookmark: exerciseBookmark,
+    api,
+    speech,
+    exerciseType: EXERCISE_TYPE,
+    reload,
+    onExerciseLoaded,
+    expectedSolution: exerciseBookmark.from,
+    expectedPosition: {
       sentenceIndex: exerciseBookmark.t_sentence_i,
       tokenIndex: exerciseBookmark.t_token_i,
       totalTokens: exerciseBookmark.t_total_token || 1,
-      contextOffset: exerciseBookmark.context_sent || 0
-    };
-
-    setInteractiveText(
-      new InteractiveExerciseText(
-        exerciseBookmark.context_tokenized,
-        exerciseBookmark.source_id,
-        api,
-        [],
-        "TRANSLATE WORDS IN EXERCISE",
-        exerciseBookmark.from_lang,
-        EXERCISE_TYPE,
-        speech,
-        exerciseBookmark.context_identifier,
-        null, // formatting
-        exerciseBookmark.from, // expectedSolution
-        expectedPosition, // expectedPosition
-      ),
-    );
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [exerciseBookmark, reload]);
-
-  function handleIncorrectAnswer() {
-    notifyIncorrectAnswer(exerciseBookmark);
-  }
+      contextOffset: exerciseBookmark.context_sent || 0,
+    },
+  });
 
   if (!interactiveText) {
     return <LoadingAnimation />;
@@ -86,12 +60,11 @@ export default function TranslateL2toL1({
 
   return (
     <s.Exercise className="translateL2toL1">
-      {/* Instructions - visible during exercise, invisible when showing solution but still take space */}
-      <div className="headlineWithMoreSpace" style={{ visibility: isExerciseOver ? 'hidden' : 'visible' }}>
-        {strings.translateL2toL1Headline}
-      </div>
+      <ExerciseInstructionHeader
+        headline={strings.translateL2toL1Headline}
+        isExerciseOver={isExerciseOver}
+      />
 
-      {/* Context - always at the top, never moves */}
       <ContextWithExchange
         exerciseBookmark={exerciseBookmark}
         interactiveText={interactiveText}
@@ -102,21 +75,14 @@ export default function TranslateL2toL1({
         highlightExpression={exerciseBookmark.from}
       />
 
-      {/* Solution area - appears below context when exercise is over */}
-      {isExerciseOver && (
-        <div style={{ marginTop: '3em' }}>
-          <h1 className="wordInContextHeadline">
-            {removePunctuation(exerciseBookmark.to)}
-          </h1>
-          {bookmarkProgressBar}
-        </div>
+      {isExerciseOver && bookmarkProgressBar && (
+        <s.RevealedProgressBar>{bookmarkProgressBar}</s.RevealedProgressBar>
       )}
 
-      {/* Bottom input - only during exercise */}
       {!isExerciseOver && (
         <BottomInput
           handleCorrectAnswer={notifyCorrectAnswer}
-          handleIncorrectAnswer={handleIncorrectAnswer}
+          handleIncorrectAnswer={() => notifyIncorrectAnswer(exerciseBookmark)}
           handleExerciseCompleted={notifyExerciseCompleted}
           setIsCorrect={setIsCorrect}
           exerciseBookmark={exerciseBookmark}

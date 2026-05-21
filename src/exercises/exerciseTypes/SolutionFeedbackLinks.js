@@ -5,6 +5,7 @@ import useScreenWidth from "../../hooks/useScreenWidth";
 import DisableAudioSession from "./DisableAudioSession";
 import { EXERCISE_TYPES } from "../ExerciseTypeConstants";
 import SessionStorage from "../../assorted/SessionStorage";
+import FlagOutlinedIcon from "@mui/icons-material/FlagOutlined";
 
 export default function SolutionFeedbackLinks({
   exerciseBookmarks,
@@ -16,6 +17,8 @@ export default function SolutionFeedbackLinks({
   disableAudio,
   setIsExerciseOver,
   onWordRemovedFromExercises,
+  onReportClick,
+  isReported,
 }) {
   const { isMobile } = useScreenWidth();
 
@@ -73,6 +76,46 @@ export default function SolutionFeedbackLinks({
             >
               Share exercise
             </s.StyledGreyButton>
+          )}
+        </s.CenteredWordRow>
+      )}
+
+      {onReportClick && (
+        <s.CenteredWordRow style={{ marginBottom: isMobile ? "1rem" : "0.5rem" }}>
+          {isReported ? (
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                color: "#999",
+                fontSize: "0.75rem",
+                gap: "0.25rem",
+              }}
+            >
+              <FlagOutlinedIcon fontSize="small" />
+              Reported
+            </div>
+          ) : (
+            <button
+              onClick={onReportClick}
+              title="Report issue with this exercise"
+              aria-label="Report issue with this exercise"
+              style={{
+                background: "none",
+                border: "none",
+                padding: "0.25rem",
+                cursor: "pointer",
+                color: "grey",
+                display: "flex",
+                alignItems: "center",
+                gap: "0.25rem",
+                fontSize: "0.75rem",
+                opacity: 0.7,
+              }}
+            >
+              <FlagOutlinedIcon fontSize="small" />
+              Report
+            </button>
           )}
         </s.CenteredWordRow>
       )}

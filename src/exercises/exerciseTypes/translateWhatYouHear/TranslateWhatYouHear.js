@@ -5,17 +5,19 @@ import SpeakButton from "../SpeakButton.js";
 import strings from "../../../i18n/definitions.js";
 import { EXERCISE_TYPES } from "../../ExerciseTypeConstants.js";
 import SessionStorage from "../../../assorted/SessionStorage.js";
-import { TranslatableText } from "../../../reader/TranslatableText.js";
-import InteractiveText from "../../../reader/InteractiveText.js";
 import LoadingAnimation from "../../../components/LoadingAnimation.js";
 import { SpeechContext } from "../../../contexts/SpeechContext.js";
 import { APIContext } from "../../../contexts/APIContext.js";
 import ClozeContextWithExchange from "../../components/ClozeContextWithExchange.js";
+import ExerciseInstructionHeader from "../../components/ExerciseInstructionHeader.js";
+import { useExerciseLifecycle } from "../../utils/useExerciseLifecycle.js";
+import { useInteractiveTextForBookmark } from "../../utils/useInteractiveTextForBookmark.js";
 
 // The user has to translate the word they hear into their L1.
 // This tests the user's passive knowledge.
 
 const EXERCISE_TYPE = EXERCISE_TYPES.translateWhatYouHear;
+
 export default function TranslateWhatYouHear({
   bookmarksToStudy,
   notifyOfUserAttempt,
@@ -30,72 +32,47 @@ export default function TranslateWhatYouHear({
   resetSubSessionTimer,
   bookmarkProgressBar,
   onExampleUpdated,
+  onExerciseLoaded,
 }) {
   const api = useContext(APIContext);
-  const exerciseBookmark = bookmarksToStudy[0];
   const speech = useContext(SpeechContext);
-  const [interactiveText, setInteractiveText] = useState();
+  const exerciseBookmark = bookmarksToStudy[0];
   const [isButtonSpeaking, setIsButtonSpeaking] = useState(false);
 
-  async function handleSpeak() {
-    await speech.speakOut(exerciseBookmark.from, setIsButtonSpeaking);
-  }
+  useExerciseLifecycle({ speech, resetSubSessionTimer, setExerciseType, exerciseType: EXERCISE_TYPE });
 
-  useEffect(() => {
-    speech.stopAudio(); // Stop any pending speech from previous exercise
-    resetSubSessionTimer();
-    setExerciseType(EXERCISE_TYPE);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  const interactiveText = useInteractiveTextForBookmark({
+    bookmark: exerciseBookmark,
+    api,
+    speech,
+    exerciseType: EXERCISE_TYPE,
+    reload,
+    onExerciseLoaded,
+  });
 
   useEffect(() => {
     if (!SessionStorage.isAudioExercisesEnabled()) moveToNextExercise();
-    
-    // Validate that context_tokenized exists and is properly formatted
-    if (!exerciseBookmark.context_tokenized || !Array.isArray(exerciseBookmark.context_tokenized)) {
-      setInteractiveText(null);
-      return;
-    }
-
-    setInteractiveText(
-      new InteractiveText(
-        exerciseBookmark.context_tokenized,
-        exerciseBookmark.source_id,
-        api,
-        [],
-        "TRANSLATE WORDS IN EXERCISE",
-        exerciseBookmark.from_lang,
-        EXERCISE_TYPE,
-        speech,
-        exerciseBookmark.context_identifier,
-        null,
-        exerciseBookmark.fragment_id,
-      ),
-    );
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [exerciseBookmark, reload]);
+  }, [reload, exerciseBookmark]);
 
   useEffect(() => {
-    if (SessionStorage.isAudioExercisesEnabled()) {
-      setTimeout(() => {
-        handleSpeak();
-      }, 300);
+    if (interactiveText && SessionStorage.isAudioExercisesEnabled()) {
+      setTimeout(() => speech.speakOut(exerciseBookmark.from, setIsButtonSpeaking), 300);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [interactiveText]);
 
-  if (!interactiveText || !exerciseBookmark) {
+  if (!interactiveText) {
     return <LoadingAnimation />;
   }
 
   return (
     <s.Exercise className="translateWhatYouHear">
-      {/* Instructions - visible during exercise, invisible when showing solution but still take space */}
-      <div className="headlineWithMoreSpace" style={{ visibility: isExerciseOver ? 'hidden' : 'visible' }}>
-        {strings.translateWhatYouHearHeadline}
-      </div>
+      <ExerciseInstructionHeader
+        headline={strings.translateWhatYouHearHeadline}
+        isExerciseOver={isExerciseOver}
+      />
 
-      {/* Context with speaker button above the placeholder */}
       <ClozeContextWithExchange
         exerciseBookmark={exerciseBookmark}
         interactiveText={interactiveText}
@@ -103,13 +80,13 @@ export default function TranslateWhatYouHear({
         setTranslatedWords={() => {}}
         isExerciseOver={isExerciseOver}
         onExampleUpdated={onExampleUpdated}
-        onInputChange={() => {}} // No input handling needed - uses bottom input
-        onInputSubmit={() => {}} // No input handling needed - uses bottom input
+        onInputChange={() => {}}
+        onInputSubmit={() => {}}
         inputValue={isExerciseOver ? exerciseBookmark.from : ""}
         placeholder=""
         isCorrectAnswer={isExerciseOver}
-        shouldFocus={false} // Don't focus the hidden input - uses bottom input
-        showHint={false} // Don't show "tap to type" hint - uses bottom input
+        shouldFocus={false}
+        showHint={false}
         canTypeInline={false}
         aboveClozeElement={
           <SpeakButton
@@ -120,17 +97,10 @@ export default function TranslateWhatYouHear({
         }
       />
 
-      {/* Solution area - only shown when exercise is over */}
-      {isExerciseOver && (
-        <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', marginTop: '1em' }}>
-          <h1 className="wordInContextHeadline" style={{ margin: '0.25em 0' }}>
-            {exerciseBookmark.to}
-          </h1>
-          {bookmarkProgressBar}
-        </div>
+      {isExerciseOver && bookmarkProgressBar && (
+        <s.CenteredRevealedSlot>{bookmarkProgressBar}</s.CenteredRevealedSlot>
       )}
 
-      {/* Bottom input - only during exercise */}
       {!isExerciseOver && (
         <BottomInput
           handleCorrectAnswer={notifyCorrectAnswer}

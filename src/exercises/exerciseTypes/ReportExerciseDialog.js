@@ -9,26 +9,38 @@ import CloseIcon from "@mui/icons-material/Close";
 import SendIcon from "@mui/icons-material/Send";
 import { toast } from "react-toastify";
 import { APIContext } from "../../contexts/APIContext";
+import { TextLinkButton, UndoToastRow, SkipSeparator } from "./ReportExerciseDialog.sc";
 
-// Chips shown during exercise (before answering)
-const DURING_EXERCISE_OPTIONS = [
-  { value: "word_not_shown", label: "Word not shown" },
-  { value: "wrong_highlighting", label: "Wrong highlighting" },
-  { value: "context_confusing", label: "Context confusing" },
-  { value: "other", label: "Other..." },
-];
+// Chip definitions. The order here is the order the chips render.
+// Each chip carries the backend `reason` enum value (matching
+// api/zeeguu/core/model/exercise_report.py) and its user-facing label.
+const CHIP_DEFS = {
+  audio_broken: { reason: "audio_broken", label: "Audio is broken / unclear" },
+  word_not_shown: { reason: "word_not_shown", label: "Word not shown" },
+  wrong_highlighting: { reason: "wrong_highlighting", label: "Wrong highlighting" },
+  context_confusing: { reason: "context_confusing", label: "Confusing context" },
+  context_wrong: { reason: "context_wrong", label: "Context wrong" },
+  wrong_translation: { reason: "wrong_translation", label: "Wrong translation" },
+  other: { reason: "other", label: "Something else…" },
+};
 
-// Chips shown after exercise (after answering)
-const AFTER_EXERCISE_OPTIONS = [
-  { value: "wrong_translation", label: "Wrong translation" },
-  { value: "wrong_highlighting", label: "Wrong highlighting" },
-  { value: "context_wrong", label: "Context wrong" },
-  { value: "other", label: "Other..." },
-];
+function chipsFor({ isExerciseOver }) {
+  // Audio-broken applies to every exercise — auto-pronounce-on-reveal
+  // plays the solution out loud in non-audio exercises too, so audio
+  // issues can be reported anywhere.
+  const chips = [CHIP_DEFS.audio_broken];
+  if (!isExerciseOver) chips.push(CHIP_DEFS.word_not_shown);
+  chips.push(CHIP_DEFS.wrong_highlighting);
+  chips.push(isExerciseOver ? CHIP_DEFS.context_wrong : CHIP_DEFS.context_confusing);
+  if (isExerciseOver) chips.push(CHIP_DEFS.wrong_translation);
+  chips.push(CHIP_DEFS.other);
+  return chips;
+}
 
 export default function ReportExerciseDialog({
   open,
   onClose,
+  onSkip,
   bookmarkId,
   exerciseSource,
   isExerciseOver,
@@ -39,13 +51,12 @@ export default function ReportExerciseDialog({
   const [comment, setComment] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const options = isExerciseOver ? AFTER_EXERCISE_OPTIONS : DURING_EXERCISE_OPTIONS;
+  const chips = chipsFor({ isExerciseOver });
 
   function handleChipClick(reason) {
     if (reason === "other") {
       setSelectedReason("other");
     } else {
-      // Submit immediately for non-other options
       submitReport(reason, null);
     }
   }
@@ -70,32 +81,67 @@ export default function ReportExerciseDialog({
       (response) => {
         setIsSubmitting(false);
         if (response.already_reported) {
-          toast.info("You've already reported this exercise");
-        } else {
-          toast.success("Thanks for the feedback!");
+          toast.info("You've already reported this exercise — skipping");
+          finishAndSkip();
+          return;
         }
-        handleClose(true);
+        // Reporting is a strong signal that this specific word/exercise
+        // isn't working for the user — pull it out of their scheduling
+        // and surface an Undo so the action is reversible.
+        api.userSetNotForExercises(bookmarkId, `reported:${reason}`);
+        toast.success(
+          ({ closeToast }) => (
+            <UndoToastRow>
+              <span>Reported. Word removed from practice.</span>
+              <TextLinkButton
+                onClick={() => {
+                  api.userSetForExercises(bookmarkId);
+                  toast.info("Word restored to practice");
+                  closeToast();
+                }}
+              >
+                Undo
+              </TextLinkButton>
+            </UndoToastRow>
+          ),
+          { autoClose: 5000 },
+        );
+        finishAndSkip();
       },
-      (error) => {
+      (_error) => {
         setIsSubmitting(false);
         toast.error("Failed to submit report");
-      }
+      },
     );
   }
 
-  function handleClose(reported = false) {
+  function finishAndSkip() {
     setSelectedReason(null);
     setComment("");
-    onClose(reported);
+    onClose(true);
+    if (onSkip) onSkip();
+  }
+
+  function handleSkipWithoutReporting() {
+    setSelectedReason(null);
+    setComment("");
+    onClose(false);
+    if (onSkip) onSkip();
+  }
+
+  function handleClose() {
+    setSelectedReason(null);
+    setComment("");
+    onClose(false);
   }
 
   return (
-    <Dialog open={open} onClose={() => handleClose(false)} maxWidth="xs" fullWidth>
+    <Dialog open={open} onClose={handleClose} maxWidth="xs" fullWidth>
       <DialogTitle sx={{ pb: 1, pr: 6 }}>
-        Report a problem with the exercise
+        What's wrong?
         <IconButton
           aria-label="close"
-          onClick={() => handleClose(false)}
+          onClick={handleClose}
           sx={{
             position: "absolute",
             right: 8,
@@ -109,11 +155,11 @@ export default function ReportExerciseDialog({
       <DialogContent>
         {selectedReason !== "other" ? (
           <div style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem" }}>
-            {options.map((option) => (
+            {chips.map((chip) => (
               <Chip
-                key={option.value}
-                label={option.label}
-                onClick={() => handleChipClick(option.value)}
+                key={chip.reason}
+                label={chip.label}
+                onClick={() => handleChipClick(chip.reason)}
                 variant="outlined"
                 clickable
                 disabled={isSubmitting}
@@ -133,7 +179,7 @@ export default function ReportExerciseDialog({
               autoFocus
               fullWidth
               size="small"
-              placeholder="Describe the issue..."
+              placeholder="Describe the issue…"
               value={comment}
               onChange={(e) => setComment(e.target.value)}
               disabled={isSubmitting}
@@ -168,6 +214,16 @@ export default function ReportExerciseDialog({
             </IconButton>
           </div>
         )}
+
+        <SkipSeparator>
+          <TextLinkButton
+            $muted
+            onClick={handleSkipWithoutReporting}
+            disabled={isSubmitting}
+          >
+            Skip without reporting
+          </TextLinkButton>
+        </SkipSeparator>
       </DialogContent>
     </Dialog>
   );
