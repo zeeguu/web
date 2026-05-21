@@ -49,7 +49,6 @@ export default function NextNavigation({
   const [showCelebrationModal, setShowCelebrationModal] = useState(false);
   const [autoPronounceBookmark, autoPronounceString, toggleAutoPronounceState] = useBookmarkAutoPronounce();
   const speech = useContext(SpeechContext);
-  const [isButtonSpeaking, setIsButtonSpeaking] = useState(false);
   const [isAutoPronouncing, setIsAutoPronouncing] = useState(false);
   const [matchExerciseProgressionMessage, setMatchExercisesProgressionMessage] = useState();
   const [matchWordsProgressCount, setMatchWordsProgressCount] = useState(0);
@@ -70,43 +69,44 @@ export default function NextNavigation({
   const isUserAndAnswerCorrect = userIsCorrect && isCorrect;
   const bookmarkLearned = isUserAndAnswerCorrect && exerciseBookmark.is_about_to_be_learned;
 
-  // Mirror TranslatableWord.clickOnWord's MWE-aware pronunciation: walk
-  // the InteractiveText's linked words to find the bookmark word, then
-  // build the spoken text from its MWE partners (tokenizer-detected).
-  // Without this, auto-pronounce says "rigole" while clicking the word
-  // says "il rigole" — inconsistent with what the chip claims to be.
-  function deriveTextToSpeak() {
-    if (!interactiveText?.paragraphsAsLinkedWordLists) return exerciseBookmark.from;
+  // Find the linked word for this exercise's bookmark so we can route
+  // auto-pronounce through interactiveText.pronounce — same path
+  // TranslatableWord.clickOnWord uses, which means SPEAK_TEXT activity
+  // logging and MWE-partner pronunciation come for free. Without this
+  // auto-pronounce would say "rigole" while a manual tap says "il
+  // rigole" — inconsistent with the chip.
+  function findBookmarkWord() {
+    if (!interactiveText?.paragraphsAsLinkedWordLists) return null;
     for (const par of interactiveText.paragraphsAsLinkedWordLists) {
-      let w = par.linkedWords.head;
-      while (w) {
-        if (w.bookmark_id && w.bookmark_id === exerciseBookmark.id) {
-          if (w.token?.mwe_group_id && w.findMWEPartners) {
-            const partners = w.findMWEPartners();
-            if (partners.length > 1) {
-              return partners.reduce((acc, p, i) => {
-                if (i === 0) return p.word;
-                if (partners[i - 1].word.endsWith("-")) return acc + p.word;
-                return acc + " " + p.word;
-              }, "");
-            }
-          }
-          return w.mweExpression || w.word || exerciseBookmark.from;
-        }
-        w = w.next;
+      for (let w = par.linkedWords.head; w; w = w.next) {
+        if (w.bookmark_id === exerciseBookmark.id) return w;
       }
     }
-    return exerciseBookmark.from;
+    return null;
   }
 
-  async function handleSpeak() {
+  function computeMweTextToSpeak(word) {
+    if (!word?.token?.mwe_group_id || !word.findMWEPartners) return null;
+    const partners = word.findMWEPartners();
+    if (partners.length <= 1) return null;
+    return partners.reduce((acc, p, i) => {
+      if (i === 0) return p.word;
+      if (partners[i - 1].word.endsWith("-")) return acc + p.word;
+      return acc + " " + p.word;
+    }, "");
+  }
+
+  function handleSpeak() {
     setIsAutoPronouncing(true);
-    await speech.speakOut(deriveTextToSpeak(), setIsButtonSpeaking);
+    const word = findBookmarkWord();
+    if (word) {
+      interactiveText.pronounce(word, null, computeMweTextToSpeak(word));
+    } else {
+      speech.speakOut(exerciseBookmark.from);
+    }
     // Delay re-enabling the Next button so a quick Enter-press during
     // auto-pronounce can't double-skip past the spoken solution.
-    setTimeout(() => {
-      setIsAutoPronouncing(false);
-    }, 500);
+    setTimeout(() => setIsAutoPronouncing(false), 500);
   }
 
   useEffect(() => {
