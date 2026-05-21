@@ -1,17 +1,34 @@
 import styled from "styled-components";
 import { StyledButton } from "../../../components/allButtons.sc";
 
-const LearningLevelsImage = styled.img`
-  width: min(100%, 300px);
-  display: block;
-  margin-top: 0;
-  margin-bottom: 0;
-  margin-left: auto;
-  margin-right: auto;
-  object-fit: contain;
+const LevelIndicatorWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  max-width: 280px;
+  margin: 20px auto;
 
-  @media (max-width: 576px) {
-    width: min(100%, 280px);
+  .progress-bar {
+    height: 10px;
+    border-radius: 8px;
+  }
+
+  .level-circle {
+    width: 20px;
+    height: 20px;
+    font-size: 12px;
+    border: 2px solid var(--progress-circle-border, #c4c4c4);
+  }
+
+  .level-circle.final {
+    width: 24px;
+    height: 24px;
+  }
+
+  .level-circle.filled::before {
+    width: 8px;
+    height: 8px;
   }
 `;
 
@@ -34,4 +51,4 @@ const OnboardingPrimaryButton = styled(StyledButton)`
   margin: 0 auto;
 `;
 
-export { LearningLevelsImage, CenteredText, CenteredSecondText, OnboardingPrimaryButton };
+export { LevelIndicatorWrapper, CenteredText, CenteredSecondText, OnboardingPrimaryButton };

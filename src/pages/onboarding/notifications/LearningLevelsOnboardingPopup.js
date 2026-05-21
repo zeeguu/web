@@ -6,8 +6,9 @@ import ButtonContainer from "../../../components/modal_shared/ButtonContainer.sc
 import { useContext } from "react";
 import { APIContext } from "../../../contexts/APIContext";
 import { ONBOARDING_MESSAGE_IDS } from "../../../appConstants";
+import LevelIndicator from "../../../exercises/progressBars/levelIndicator/LevelIndicator";
 
-export default function TranslationOnboardingPopup({ open, handleCancel }) {
+export default function LearningLevelsOnboardingPopup({ open, handleCancel }) {
   const api = useContext(APIContext);
   const onboardingMessageId = ONBOARDING_MESSAGE_IDS.learningLevels;
 
@@ -26,8 +27,22 @@ export default function TranslationOnboardingPopup({ open, handleCancel }) {
     <Modal open={open} onClose={handleDismiss} wrapperBackgroundColor="var(--onboarding-modal-bg)" hideCloseButton>
       <Main>
         <s.CenteredText>There are 4 levels of learning a word.</s.CenteredText>
-        <s.LearningLevelsImage src="/static/images/learningLevels.png" alt="Learning levels illustration" />
-        <s.CenteredSecondText>You will have different types of exercises on each level.</s.CenteredSecondText>
+        <s.LevelIndicatorWrapper>
+          <LevelIndicator
+            bookmark={{
+              from: "example",
+              level: 1,
+              cooling_interval: 0,
+              is_last_in_cycle: false,
+            }}
+            userIsCorrect={false}
+            userIsWrong={false}
+            isGreyedOutBar={false}
+          />
+        </s.LevelIndicatorWrapper>
+        <s.CenteredSecondText>
+          This bar shows your progress of learning a word. You will have different types of exercises on each level.
+        </s.CenteredSecondText>
       </Main>
       <Footer>
         <ButtonContainer $buttonCountNum={1}>

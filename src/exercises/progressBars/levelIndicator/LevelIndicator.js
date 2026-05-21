@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import * as s from "./LevelIndicator.sc.js";
 import LevelIndicatorBar from "./LevelIndicatorBar.js";
 import LevelIndicatorCircles from "./LevelIndicatorCircles.js";
@@ -94,6 +95,14 @@ export default function LevelIndicator({
   if (userIsWrong && cooling_interval > 0) {
     cooling_interval = cooling_interval - 1;
   }
+
+  // Dispatch event when user first encounters a word with level > 0
+  // This is the natural moment to show the Learning Levels onboarding
+  useEffect(() => {
+    if (level > 0) {
+      window.dispatchEvent(new CustomEvent("zeeguu-word-level-shown"));
+    }
+  }, [level]);
 
   return (
     <s.LevelIndicator isGreyedOutBar={isGreyedOutBar}>
