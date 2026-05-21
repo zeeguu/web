@@ -5,12 +5,12 @@ import SpeakButton from "../SpeakButton.js";
 import strings from "../../../i18n/definitions.js";
 import { EXERCISE_TYPES } from "../../ExerciseTypeConstants.js";
 import SessionStorage from "../../../assorted/SessionStorage.js";
-import { TranslatableText } from "../../../reader/TranslatableText.js";
 import InteractiveText from "../../../reader/InteractiveText.js";
 import LoadingAnimation from "../../../components/LoadingAnimation.js";
 import { SpeechContext } from "../../../contexts/SpeechContext.js";
 import { APIContext } from "../../../contexts/APIContext.js";
 import ClozeContextWithExchange from "../../components/ClozeContextWithExchange.js";
+import ExerciseInstructionHeader from "../../components/ExerciseInstructionHeader.js";
 import { adaptExerciseBookmark } from "../../utils/exerciseBookmarkAdapter.js";
 import { useNotifyExerciseLoaded } from "../../utils/useNotifyExerciseLoaded.js";
 
@@ -54,15 +54,13 @@ export default function TranslateWhatYouHear({
 
   useEffect(() => {
     if (!SessionStorage.isAudioExercisesEnabled()) moveToNextExercise();
-    
-    // Validate that context_tokenized exists and is properly formatted
+
     if (!exerciseBookmark.context_tokenized || !Array.isArray(exerciseBookmark.context_tokenized)) {
       setInteractiveText(null);
       return;
     }
 
     const adaptedBookmark = adaptExerciseBookmark(exerciseBookmark);
-
     setInteractiveText(
       new InteractiveText(
         exerciseBookmark.context_tokenized,
@@ -96,13 +94,10 @@ export default function TranslateWhatYouHear({
 
   return (
     <s.Exercise className="translateWhatYouHear">
-      <div
-        className="headlineWithMoreSpace"
-        style={{ visibility: isExerciseOver ? "hidden" : "visible" }}
-        aria-hidden={isExerciseOver}
-      >
-        {strings.translateWhatYouHearHeadline}
-      </div>
+      <ExerciseInstructionHeader
+        headline={strings.translateWhatYouHearHeadline}
+        isExerciseOver={isExerciseOver}
+      />
 
       {/* Context with speaker button above the placeholder */}
       <ClozeContextWithExchange
@@ -112,13 +107,13 @@ export default function TranslateWhatYouHear({
         setTranslatedWords={() => {}}
         isExerciseOver={isExerciseOver}
         onExampleUpdated={onExampleUpdated}
-        onInputChange={() => {}} // No input handling needed - uses bottom input
-        onInputSubmit={() => {}} // No input handling needed - uses bottom input
+        onInputChange={() => {}}
+        onInputSubmit={() => {}}
         inputValue={isExerciseOver ? exerciseBookmark.from : ""}
         placeholder=""
         isCorrectAnswer={isExerciseOver}
-        shouldFocus={false} // Don't focus the hidden input - uses bottom input
-        showHint={false} // Don't show "tap to type" hint - uses bottom input
+        shouldFocus={false}
+        showHint={false}
         canTypeInline={false}
         aboveClozeElement={
           <SpeakButton

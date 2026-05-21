@@ -54,11 +54,6 @@ export default function AlterMenu({
   deleteTranslation,
   ungroupMwe,
   alternativesLoaded,
-  // When true, hide destructive/structural options ("Ungroup expression"
-  // and "Delete translation"). Used in exercise contexts where the
-  // bookmark is what the exercise is built around and corrupting it
-  // mid-session would leave the exercise in an undefined state.
-  hideDestructive = false,
 }) {
   const refToAlterMenu = useRef(null);
   const inputRef = useRef(null);

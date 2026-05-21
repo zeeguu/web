@@ -1,4 +1,4 @@
-import { useState, useEffect, useContext, useRef } from "react";
+import { useState, useEffect, useContext } from "react";
 import * as s from "../Exercise.sc.js";
 
 import strings from "../../../i18n/definitions.js";
@@ -9,6 +9,7 @@ import { EXERCISE_TYPES } from "../../ExerciseTypeConstants.js";
 import { removePunctuation } from "../../../utils/text/preprocessing";
 import { APIContext } from "../../../contexts/APIContext.js";
 import ClozeContextWithExchange from "../../components/ClozeContextWithExchange.js";
+import ExerciseInstructionHeader from "../../components/ExerciseInstructionHeader.js";
 import { adaptExerciseBookmark } from "../../utils/exerciseBookmarkAdapter.js";
 import { useNotifyExerciseLoaded } from "../../utils/useNotifyExerciseLoaded.js";
 
@@ -37,21 +38,18 @@ export default function FindWordInContextCloze({
   const [isCorrectAnswer, setIsCorrectAnswer] = useState(false);
   const speech = useContext(SpeechContext);
   const exerciseBookmark = bookmarksToStudy[0];
-  const contextRef = useRef(null);
   useNotifyExerciseLoaded(interactiveText, onExerciseLoaded);
 
   useEffect(() => {
     speech.stopAudio(); // Stop any pending speech from previous exercise
     setExerciseType(EXERCISE_TYPE);
 
-    // Reset input state when context changes
     setInputValue("");
     setIsCorrectAnswer(false);
 
-    // Validate that context_tokenized exists and is properly formatted.
-    // Skip the placeholder bookmark IndividualExercise renders before the
-    // API call resolves — its context_tokenized is not [para][sent][token]
-    // shape and t_sentence_i/t_token_i are undefined.
+    // Skip the placeholder bookmark IndividualExercise renders before
+    // the API call resolves — its context_tokenized is not
+    // [para][sent][token] shape and t_sentence_i/t_token_i are undefined.
     const looksLikeValidContext =
       Array.isArray(exerciseBookmark.context_tokenized) &&
       Array.isArray(exerciseBookmark.context_tokenized[0]) &&
@@ -62,7 +60,6 @@ export default function FindWordInContextCloze({
     }
 
     const adaptedBookmark = adaptExerciseBookmark(exerciseBookmark);
-
     setInteractiveText(
       new InteractiveText(
         exerciseBookmark.context_tokenized,
@@ -87,32 +84,29 @@ export default function FindWordInContextCloze({
     notifyIncorrectAnswer(exerciseBookmark);
   }
 
-  function handleInputChange(value, inputElement) {
+  function handleInputChange(value) {
     setInputValue(value);
-    
-    // Constantly check if answer is correct
+
     const userInput = value.trim().toLowerCase();
     const expectedAnswer = removePunctuation(exerciseBookmark.from).toLowerCase();
     const isCorrect = userInput === expectedAnswer;
-    
     setIsCorrectAnswer(isCorrect);
-    
-    // Auto-submit when correct
+
+    // Delay auto-submit so the orange glow on the input lands before the
+    // UI swaps to the exercise-over state.
     if (isCorrect && value.trim().length > 0) {
       setTimeout(() => {
         notifyCorrectAnswer(exerciseBookmark);
-      }, 800); // Delay to show the orange glow
+      }, 800);
     }
   }
 
-  function handleInputSubmit(value, inputElement) {
+  function handleInputSubmit(value) {
     const userInput = value.trim().toLowerCase();
     const expectedAnswer = removePunctuation(exerciseBookmark.from).toLowerCase();
-    
     if (userInput === expectedAnswer) {
       notifyCorrectAnswer(exerciseBookmark);
     } else {
-      // Check for close matches or provide feedback
       notifyOfUserAttempt(value, exerciseBookmark);
       handleIncorrectAnswer();
     }
@@ -120,24 +114,19 @@ export default function FindWordInContextCloze({
 
   return (
     <s.Exercise className="findWordInContextCloze">
-      <div style={{ visibility: isExerciseOver ? "hidden" : "visible" }} aria-hidden={isExerciseOver}>
-        <div className="headlineWithMoreSpace">
-          {strings.findWordInContextClozeHeadline}
-        </div>
-        <h1 className="wordInContextHeadline">
-          {removePunctuation(exerciseBookmark.to)}
-        </h1>
-      </div>
+      <ExerciseInstructionHeader
+        headline={strings.findWordInContextClozeHeadline}
+        l2Prompt={removePunctuation(exerciseBookmark.to)}
+        isExerciseOver={isExerciseOver}
+      />
       <div style={{ visibility: isExerciseOver ? 'visible' : 'hidden', minHeight: '60px' }}>
         {bookmarkProgressBar || <div style={{ height: '60px', width: '30%', margin: '0.1em auto 0.5em auto' }}></div>}
       </div>
       <ClozeContextWithExchange
-        ref={contextRef}
         exerciseBookmark={exerciseBookmark}
         interactiveText={interactiveText}
         translatedWords={null}
         setTranslatedWords={() => {}}
-        pronouncing={true}
         isExerciseOver={isExerciseOver}
         onExampleUpdated={onExampleUpdated}
         onInputChange={handleInputChange}

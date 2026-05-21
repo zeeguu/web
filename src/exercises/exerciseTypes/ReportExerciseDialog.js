@@ -24,11 +24,10 @@ const CHIP_DEFS = {
 };
 
 function chipsFor({ isExerciseOver }) {
-  const chips = [];
   // Audio-broken applies to every exercise — auto-pronounce-on-reveal
   // plays the solution out loud in non-audio exercises too, so audio
   // issues can be reported anywhere.
-  chips.push(CHIP_DEFS.audio_broken);
+  const chips = [CHIP_DEFS.audio_broken];
   if (!isExerciseOver) chips.push(CHIP_DEFS.word_not_shown);
   chips.push(CHIP_DEFS.wrong_highlighting);
   chips.push(isExerciseOver ? CHIP_DEFS.context_wrong : CHIP_DEFS.context_confusing);
@@ -44,7 +43,6 @@ export default function ReportExerciseDialog({
   bookmarkId,
   exerciseSource,
   isExerciseOver,
-  isAudioExercise,
   contextUsed,
 }) {
   const api = useContext(APIContext);
@@ -52,7 +50,7 @@ export default function ReportExerciseDialog({
   const [comment, setComment] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const chips = chipsFor({ isExerciseOver, isAudioExercise });
+  const chips = chipsFor({ isExerciseOver });
 
   function handleChipClick(reason) {
     if (reason === "other") {
@@ -140,19 +138,19 @@ export default function ReportExerciseDialog({
     if (onSkip) onSkip();
   }
 
-  function handleClose(reported = false) {
+  function handleClose() {
     setSelectedReason(null);
     setComment("");
-    onClose(reported);
+    onClose(false);
   }
 
   return (
-    <Dialog open={open} onClose={() => handleClose(false)} maxWidth="xs" fullWidth>
+    <Dialog open={open} onClose={handleClose} maxWidth="xs" fullWidth>
       <DialogTitle sx={{ pb: 1, pr: 6 }}>
         What's wrong?
         <IconButton
           aria-label="close"
-          onClick={() => handleClose(false)}
+          onClick={handleClose}
           sx={{
             position: "absolute",
             right: 8,

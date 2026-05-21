@@ -533,8 +533,6 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
             exerciseBookmark={currentBookmarksToStudy[0]}
             moveToNextExercise={moveToNextExercise}
             onWordRemovedFromExercises={onWordRemovedFromExercises}
-            reload={reload}
-            setReload={setReload}
             handleShowSolution={() => {
               setIsShowSolution(true);
               showSolution();
@@ -562,13 +560,19 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
         open={reportDialogOpen}
         onClose={(reported) => {
           setReportDialogOpen(false);
-          if (reported) setIsReported(true);
+          if (reported) {
+            setIsReported(true);
+            // Reporting removes the word from scheduling, so the
+            // pending-exercise counter has to come down too — matches
+            // the cleanup that runs on "I know this word" via
+            // onWordRemovedFromExercises.
+            if (hasExerciseNotification) decrementExerciseCounter();
+          }
         }}
         onSkip={moveToNextExercise}
         bookmarkId={selectedExerciseBookmark?.id || currentBookmarksToStudy?.[0]?.id}
         exerciseSource={getExerciseTypeName(currentExerciseType)}
         isExerciseOver={isExerciseOver}
-        isAudioExercise={EXERCISE_TYPES.isAudioExercise(currentExerciseType)}
         contextUsed={
           selectedExerciseBookmark?.context_tokenized
             ? selectedExerciseBookmark.context_tokenized.map(t => typeof t === "string" ? t : (t.text ?? "")).join("")

@@ -6,10 +6,9 @@ import LoadingAnimation from "../../../components/LoadingAnimation.js";
 import InteractiveExerciseText from "../../../reader/InteractiveExerciseText.js";
 import { SpeechContext } from "../../../contexts/SpeechContext.js";
 import BottomInput from "../BottomInput.js";
-import WordProgressBar from "../../progressBars/WordProgressBar.js";
-import { removePunctuation } from "../../../utils/text/preprocessing";
 import { APIContext } from "../../../contexts/APIContext.js";
 import ContextWithExchange from "../../components/ContextWithExchange.js";
+import ExerciseInstructionHeader from "../../components/ExerciseInstructionHeader.js";
 import { adaptExerciseBookmark } from "../../utils/exerciseBookmarkAdapter.js";
 import { useNotifyExerciseLoaded } from "../../utils/useNotifyExerciseLoaded.js";
 
@@ -48,7 +47,6 @@ export default function TranslateL2toL1({
   }, []);
 
   useEffect(() => {
-    // Validate that context_tokenized exists and is properly formatted
     if (!exerciseBookmark.context_tokenized || !Array.isArray(exerciseBookmark.context_tokenized)) {
       setInteractiveText(null);
       return;
@@ -58,11 +56,9 @@ export default function TranslateL2toL1({
       sentenceIndex: exerciseBookmark.t_sentence_i,
       tokenIndex: exerciseBookmark.t_token_i,
       totalTokens: exerciseBookmark.t_total_token || 1,
-      contextOffset: exerciseBookmark.context_sent || 0
+      contextOffset: exerciseBookmark.context_sent || 0,
     };
-
     const adaptedBookmark = adaptExerciseBookmark(exerciseBookmark);
-
     setInteractiveText(
       new InteractiveExerciseText(
         exerciseBookmark.context_tokenized,
@@ -76,7 +72,7 @@ export default function TranslateL2toL1({
         exerciseBookmark.context_identifier,
         null, // formatting
         exerciseBookmark.from, // expectedSolution
-        expectedPosition, // expectedPosition
+        expectedPosition,
       ),
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -92,13 +88,10 @@ export default function TranslateL2toL1({
 
   return (
     <s.Exercise className="translateL2toL1">
-      <div
-        className="headlineWithMoreSpace"
-        style={{ visibility: isExerciseOver ? "hidden" : "visible" }}
-        aria-hidden={isExerciseOver}
-      >
-        {strings.translateL2toL1Headline}
-      </div>
+      <ExerciseInstructionHeader
+        headline={strings.translateL2toL1Headline}
+        isExerciseOver={isExerciseOver}
+      />
 
       {/* Context - always at the top, never moves */}
       <ContextWithExchange

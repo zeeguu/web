@@ -22,7 +22,6 @@ import ClickWordInContext from "../exercises/exerciseTypes/wordInContextExercise
 import FindWordInContext from "../exercises/exerciseTypes/wordInContextExercises/FindWordInContext";
 import NextNavigation from "../exercises/exerciseTypes/NextNavigation";
 import ReportExerciseDialog from "../exercises/exerciseTypes/ReportExerciseDialog";
-import { EXERCISE_TYPES } from "../exercises/ExerciseTypeConstants";
 
 // Mock speech engine
 const mockSpeech = {
@@ -367,8 +366,6 @@ export default function IndividualExercise() {
                 exerciseBookmark={bookmark}
                 moveToNextExercise={goToMoreExercises}
                 onWordRemovedFromExercises={onWordRemovedFromExercises}
-                reload={false}
-                setReload={() => {}}
                 handleShowSolution={showSolution}
                 toggleShow={() => {}}
                 isCorrect={isCorrect}
@@ -401,7 +398,6 @@ export default function IndividualExercise() {
             bookmarkId={bookmark?.id}
             exerciseSource={exerciseType}
             isExerciseOver={isExerciseOver}
-            isAudioExercise={EXERCISE_TYPES.isAudioExercise(exerciseType)}
             contextUsed={
               bookmark?.context_tokenized
                 ? bookmark.context_tokenized

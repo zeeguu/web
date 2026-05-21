@@ -5,6 +5,7 @@ import LoadingAnimation from "../../../components/LoadingAnimation.js";
 import InteractiveText from "../../../reader/InteractiveText.js";
 import { adaptExerciseBookmark } from "../../utils/exerciseBookmarkAdapter.js";
 import { ClozeTranslatableText } from "../../components/ClozeTranslatableText.js";
+import ExerciseInstructionHeader from "../../components/ExerciseInstructionHeader.js";
 import { findClozeWordIds } from "../../utils/findClozeWordIds.js";
 import { useNotifyExerciseLoaded } from "../../utils/useNotifyExerciseLoaded.js";
 import { useFlipOnReveal } from "../../utils/useFlipOnReveal.js";
@@ -14,7 +15,7 @@ import { EXERCISE_TYPES } from "../../ExerciseTypeConstants.js";
 import { removePunctuation } from "../../../utils/text/preprocessing";
 import useShadowRef from "../../../hooks/useShadowRef";
 import { APIContext } from "../../../contexts/APIContext.js";
-import { highlightWord, replaceWordWithPlaceholder } from "../../../utils/text/highlightWord";
+import { replaceWordWithPlaceholder } from "../../../utils/text/highlightWord";
 
 const EXERCISE_TYPE = EXERCISE_TYPES.multipleChoiceContext;
 
@@ -35,7 +36,6 @@ export default function MultipleChoiceContext({
   useNotifyExerciseLoaded(interactiveText, onExerciseLoaded);
   const speech = useContext(SpeechContext);
   const [exerciseBookmark, setExerciseBookmark] = useState({ ...bookmarksToStudy[0], isExercise: true });
-  const [clickedIndex, setClickedIndex] = useState(null);
   const [clickedOption, setClickedOption] = useState(null);
   const isExerciseOverRef = useShadowRef(isExerciseOver);
   // FLIP: slide the correct option from its randomized position up to
@@ -54,11 +54,9 @@ export default function MultipleChoiceContext({
   }, []);
 
   useEffect(() => {
-    // Update exerciseBookmark when bookmarksToStudy changes
     const newExerciseBookmark = { ...bookmarksToStudy[0], isExercise: true };
     setExerciseBookmark(newExerciseBookmark);
-    
-    // Validate that context_tokenized exists and is properly formatted
+
     if (!newExerciseBookmark.context_tokenized || !Array.isArray(newExerciseBookmark.context_tokenized)) {
       setInteractiveText(null);
       return;
@@ -81,34 +79,18 @@ export default function MultipleChoiceContext({
     // eslint-disable-next-line
   }, [reload, bookmarksToStudy]);
 
-  function notifyChoiceSelection(selectedChoiceId, index, e) {
+  function notifyChoiceSelection(selectedChoiceId, index) {
     if (isExerciseOver) return;
     setClickedOption(index);
     if (selectedChoiceId === exerciseBookmark.id) {
-      setClickedIndex(index);
       notifyCorrectAnswer(exerciseBookmark);
     } else {
-      setClickedIndex(null);
       notifyIncorrectAnswer(exerciseBookmark);
       setTimeout(() => {
-        // This line is here to avoid the reseting the styling on the
-        // correct box if the user clicks on it shortly after getting the
-        // context wrong.
+        // Don't reset the styling on the correct box if the user clicks
+        // on it shortly after getting the context wrong.
         if (!isExerciseOverRef.current) setClickedOption(null);
       }, 500);
-    }
-  }
-
-  // Get the text to display for an option
-  // When exercise is over: highlight the word
-  // During exercise: replace target with blank placeholder.
-  // Post-reveal the chosen context is rendered via ClozeTranslatableText
-  // for the bookmark-restoration chip-above treatment (see below).
-  function getOptionDisplayText(option) {
-    if (isExerciseOver) {
-      return highlightWord(option.context, option.from);
-    } else {
-      return replaceWordWithPlaceholder(option.context, option.from, "_____");
     }
   }
 
@@ -126,65 +108,65 @@ export default function MultipleChoiceContext({
 
   return (
     <s.Exercise className="findWordInContext">
-      {/* Instruction + L2 prompt are content during exercise; post-reveal
-          we keep them in the layout (visibility:hidden) so the chosen
-          option lands at a stable y-coordinate. Without this, removing
-          the headline lets the chosen option fly all the way to the top
-          of the card — distance varies with which option was clicked,
-          which makes the slide feel disorienting. */}
-      <div style={{ visibility: isExerciseOver ? "hidden" : "visible" }} aria-hidden={isExerciseOver}>
-        <div className="headlineWithMoreSpace">
-          {strings.multipleChoiceContextHeadline}
-        </div>
-        <h1 className="wordInContextHeadline">
-          {removePunctuation(exerciseBookmark.from)}
-        </h1>
-      </div>
+      {/* Header stays in the layout post-reveal (visibility:hidden) so
+          the chosen option lands at a stable y — removing it would let
+          the chosen option fly all the way to the top of the card,
+          with distance varying by which option was clicked. */}
+      <ExerciseInstructionHeader
+        headline={strings.multipleChoiceContextHeadline}
+        l2Prompt={removePunctuation(exerciseBookmark.from)}
+        isExerciseOver={isExerciseOver}
+      />
       {/* Progress bar moved below the option list — putting it above
           would squeeze the option cards down at the moment of reveal.
           Consistent with the other exercises in the flow. */}
       {exerciseBookmarks
         .filter((option) => !isExerciseOver || option.isExercise)
-        .map((option, index) => (
-          <s.MultipleChoiceContext
-            key={index}
-            ref={option.isExercise ? correctOptionRef : null}
-            clicked={index === clickedIndex}
-            className={[
-              clickedOption !== null && index === clickedOption ? (option.isExercise ? "correct" : "wrong") : "",
-              isExerciseOver && option.isExercise ? "revealed" : "",
-            ]
-              .filter(Boolean)
-              .join(" ")}
-            onClick={(e) => notifyChoiceSelection(option.id, index, e)}
-          >
-            {isExerciseOver && option.isExercise && interactiveText ? (
-              // Render the chosen context via the same InteractiveText
-              // path the other exercises use — bookmark restoration
-              // gives us the chip-above-word + bright-orange + dotted
-              // underline + tap-to-pronounce treatment for free.
-              <ClozeTranslatableText
-                interactiveText={interactiveText}
-                isExerciseOver={isExerciseOver}
-                translating={true}
-                pronouncing={true}
-                clozeWordIds={clozeWordIds}
-                leftEllipsis={option.left_ellipsis}
-                rightEllipsis={option.right_ellipsis}
+        .map((option, index) => {
+          const isClicked = clickedOption !== null && index === clickedOption;
+          const clickedClass = isClicked ? (option.isExercise ? "correct" : "wrong") : "";
+          const revealedClass = isExerciseOver && option.isExercise ? "revealed" : "";
+          const className = [clickedClass, revealedClass].filter(Boolean).join(" ");
+
+          // Render the chosen context via the same InteractiveText path
+          // the other exercises use — bookmark restoration gives us the
+          // chip-above-word + bright-orange + dotted underline + tap-to-
+          // pronounce treatment for free.
+          const revealedContent = (
+            <ClozeTranslatableText
+              interactiveText={interactiveText}
+              isExerciseOver={isExerciseOver}
+              translating={true}
+              pronouncing={true}
+              clozeWordIds={clozeWordIds}
+              leftEllipsis={option.left_ellipsis}
+              rightEllipsis={option.right_ellipsis}
+            />
+          );
+          const clozeContent = (
+            <>
+              {option.left_ellipsis && <>...</>}
+              <span
+                dangerouslySetInnerHTML={{
+                  __html: replaceWordWithPlaceholder(option.context, option.from, "_____"),
+                }}
               />
-            ) : (
-              <>
-                {option.left_ellipsis && <>...</>}
-                <span
-                  dangerouslySetInnerHTML={{
-                    __html: getOptionDisplayText(option),
-                  }}
-                />
-                {option.right_ellipsis && <>...</>}
-              </>
-            )}
-          </s.MultipleChoiceContext>
-        ))}
+              {option.right_ellipsis && <>...</>}
+            </>
+          );
+          const showRevealed = isExerciseOver && option.isExercise;
+
+          return (
+            <s.MultipleChoiceContext
+              key={index}
+              ref={option.isExercise ? correctOptionRef : null}
+              className={className}
+              onClick={() => notifyChoiceSelection(option.id, index)}
+            >
+              {showRevealed ? revealedContent : clozeContent}
+            </s.MultipleChoiceContext>
+          );
+        })}
       {isExerciseOver && bookmarkProgressBar && (
         <div style={{ marginTop: "1em" }}>
           {bookmarkProgressBar}

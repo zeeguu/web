@@ -184,21 +184,18 @@ export function ClozeTranslatableText({
   function renderWordJSX(word) {
     const isPartOfCloze = clozeWordIds.includes(word.id);
 
-    // Cloze exercises with input slot: show slot during exercise; after
-    // reveal the bookmark-restoration path renders the answer.
+    // Cloze exercises with input slot: render slot for the first cloze
+    // word, drop the rest. Post-reveal the bookmark-restoration path
+    // (via TranslatableWord) renders the answer.
     if (isPartOfCloze && !isExerciseOver && renderClozeSlot) {
-      const isFirstClozeWord = clozeWordIds[0] === word.id;
-      if (isFirstClozeWord) return renderClozeSlot(word.id);
-      return "";
+      return clozeWordIds[0] === word.id ? renderClozeSlot(word.id) : "";
     }
 
-    // Highlight-only exercises (no slot):
-    // - Pre-reveal: simple bold-orange marker so the target word is
-    //   clearly visible (the bookmark-restoration dotted underline is
-    //   too subtle on its own to read as "this is the word").
-    // - Post-reveal: defer to TranslatableWord so the chip surfaces
-    //   above the highlighted bookmark word via the isTranslationVisible
-    //   flip in the useEffect above.
+    // Highlight-only exercises (no slot): pre-reveal we use a bold-orange
+    // marker because the bookmark-restoration dotted underline alone is
+    // too subtle to read as "this is the target word". Post-reveal we
+    // defer to TranslatableWord so the chip surfaces above the bookmark
+    // word (driven by the isTranslationVisible flip in the useEffect).
     if (isPartOfCloze && !renderClozeSlot && !isExerciseOver) {
       return renderHighlightedWord(word);
     }

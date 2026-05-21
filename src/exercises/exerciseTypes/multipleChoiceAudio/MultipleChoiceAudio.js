@@ -9,6 +9,7 @@ import { useNotifyExerciseLoaded } from "../../utils/useNotifyExerciseLoaded.js"
 import shuffle from "../../../assorted/fisherYatesShuffle.js";
 import { removePunctuation } from "../../../utils/text/preprocessing.js";
 import ClozeContextWithExchange from "../../components/ClozeContextWithExchange.js";
+import ExerciseInstructionHeader from "../../components/ExerciseInstructionHeader.js";
 import MultipleChoiceAudioBottomInput from "./MultipleChoiceAudioBottomInput.js";
 import { EXERCISE_TYPES } from "../../ExerciseTypeConstants.js";
 import SessionStorage from "../../../assorted/SessionStorage.js";
@@ -49,37 +50,31 @@ export default function MultipleChoiceAudio({
   }, []);
 
   useEffect(() => {
-    // Validate that context_tokenized exists and is properly formatted
     if (!exerciseBookmark.context_tokenized || !Array.isArray(exerciseBookmark.context_tokenized)) {
       setInteractiveText(null);
       return;
     }
 
     const adaptedBookmark = adaptExerciseBookmark(exerciseBookmark);
-    const newInteractiveText = new InteractiveText(
-      exerciseBookmark.context_tokenized,
-      exerciseBookmark.source_id,
-      api,
-      adaptedBookmark ? [adaptedBookmark] : [],
-      "TRANSLATE WORDS IN EXERCISE",
-      exerciseBookmark.from_lang,
-      EXERCISE_TYPE,
-      speech,
-      exerciseBookmark.context_identifier,
+    setInteractiveText(
+      new InteractiveText(
+        exerciseBookmark.context_tokenized,
+        exerciseBookmark.source_id,
+        api,
+        adaptedBookmark ? [adaptedBookmark] : [],
+        "TRANSLATE WORDS IN EXERCISE",
+        exerciseBookmark.from_lang,
+        EXERCISE_TYPE,
+        speech,
+        exerciseBookmark.context_identifier,
+      ),
     );
-    setInteractiveText(newInteractiveText);
 
-    consolidateChoice();
+    // Index 0 is the correct bookmark; 1 and 2 are distractors.
+    setChoiceOptions(shuffle([0, 1, 2]));
     if (!SessionStorage.isAudioExercisesEnabled()) moveToNextExercise();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [reload, exerciseBookmark]);
-
-  function consolidateChoice() {
-    // Index 0 is the correct bookmark and index 1 and 2 are incorrect
-    let listOfchoices = [0, 1, 2];
-    let shuffledListOfChoices = shuffle(listOfchoices);
-    setChoiceOptions(shuffledListOfChoices);
-  }
 
   if (!interactiveText || !choiceOptions) {
     return <LoadingAnimation />;
@@ -87,13 +82,10 @@ export default function MultipleChoiceAudio({
 
   return (
     <s.Exercise>
-      <div
-        className="headlineWithMoreSpace"
-        style={{ visibility: isExerciseOver ? "hidden" : "visible" }}
-        aria-hidden={isExerciseOver}
-      >
-        {strings.multipleChoiceAudioHeadline}
-      </div>
+      <ExerciseInstructionHeader
+        headline={strings.multipleChoiceAudioHeadline}
+        isExerciseOver={isExerciseOver}
+      />
 
       {/* Context - always at the top, never moves */}
       <ClozeContextWithExchange
@@ -103,33 +95,28 @@ export default function MultipleChoiceAudio({
         setTranslatedWords={() => {}}
         isExerciseOver={isExerciseOver}
         onExampleUpdated={onExampleUpdated}
-        onInputChange={() => {}} // No input handling needed for multiple choice audio
-        onInputSubmit={() => {}} // No input handling needed for multiple choice audio
+        onInputChange={() => {}}
+        onInputSubmit={() => {}}
         inputValue=""
         placeholder=""
         isCorrectAnswer={false}
-        shouldFocus={false} // Don't focus any hidden input
-        showHint={false} // Don't show "tap to type" hint
+        shouldFocus={false}
+        showHint={false}
         canTypeInline={false}
       />
 
-      {/* Audio buttons - below context during exercise */}
       {!isExerciseOver && (
         <div style={{ marginTop: "2em" }}>
           <s.CenteredWordRow>
-            {/* Mapping bookmarks to the buttons in random order, setting button properties based on bookmark index */}
-            {choiceOptions &&
-              choiceOptions.map((option) => (
-                <SpeakButton
-                  onClickCallback={(e) => {
-                    setCurrentSelectedChoice(option);
-                  }}
-                  isSelected={option === currentSelectedChoice}
-                  bookmarkToStudy={bookmarksToStudy[option]}
-                  id={option}
-                  styling={option === currentSelectedChoice ? "selected" : ""}
-                />
-              ))}
+            {choiceOptions.map((option) => (
+              <SpeakButton
+                onClickCallback={() => setCurrentSelectedChoice(option)}
+                isSelected={option === currentSelectedChoice}
+                bookmarkToStudy={bookmarksToStudy[option]}
+                id={option}
+                styling={option === currentSelectedChoice ? "selected" : ""}
+              />
+            ))}
           </s.CenteredWordRow>
         </div>
       )}

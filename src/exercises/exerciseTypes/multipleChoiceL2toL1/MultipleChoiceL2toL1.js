@@ -14,6 +14,7 @@ import { SpeechContext } from "../../../contexts/SpeechContext.js";
 import { APIContext } from "../../../contexts/APIContext.js";
 import { TRANSLATE_WORD } from "../../ExerciseConstants.js";
 import ContextWithExchange from "../../components/ContextWithExchange.js";
+import ExerciseInstructionHeader from "../../components/ExerciseInstructionHeader.js";
 
 // The user has to select the correct L1 translation out of three. The L2 word is marked in bold in the context.
 // This tests the user's passive knowledge.
@@ -60,19 +61,17 @@ export default function MultipleChoiceL2toL1({
   }, [translatedWords]);
 
   useEffect(() => {
-    // Validate that context_tokenized exists and is properly formatted
     if (!exerciseBookmark.context_tokenized || !Array.isArray(exerciseBookmark.context_tokenized)) {
       setInteractiveText(null);
       return;
     }
-    
+
     const expectedPosition = {
       sentenceIndex: exerciseBookmark.t_sentence_i,
       tokenIndex: exerciseBookmark.t_token_i,
       totalTokens: exerciseBookmark.t_total_token || 1,
-      contextOffset: exerciseBookmark.context_sent || 0
+      contextOffset: exerciseBookmark.context_sent || 0,
     };
-
     const adaptedBookmark = adaptExerciseBookmark(exerciseBookmark);
     setInteractiveText(
       new InteractiveExerciseText(
@@ -87,8 +86,8 @@ export default function MultipleChoiceL2toL1({
         exerciseBookmark.context_identifier,
         null, // formatting
         exerciseBookmark.from, // expectedSolution
-        expectedPosition, // expectedPosition
-        null, // onSolutionFound - not needed for multiple choice
+        expectedPosition,
+        null, // onSolutionFound — not needed for multiple choice
       ),
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -123,13 +122,10 @@ export default function MultipleChoiceL2toL1({
 
   return (
     <s.Exercise className="multipleChoice">
-      <div
-        className="headlineWithMoreSpace"
-        style={{ visibility: isExerciseOver ? "hidden" : "visible" }}
-        aria-hidden={isExerciseOver}
-      >
-        {strings.multipleChoiceL2toL1Headline}
-      </div>
+      <ExerciseInstructionHeader
+        headline={strings.multipleChoiceL2toL1Headline}
+        isExerciseOver={isExerciseOver}
+      />
 
       {/* Context - always at the top, never moves */}
       <ContextWithExchange
@@ -152,8 +148,6 @@ export default function MultipleChoiceL2toL1({
         </div>
       )}
 
-      {/* Multiple choice buttons - only during exercise */}
-      {!buttonOptions && <LoadingAnimation />}
       {!isExerciseOver && (
         <MultipleChoicesInput
           buttonOptions={buttonOptions}

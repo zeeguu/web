@@ -19,27 +19,6 @@
  *   MWEs whose t_total_token is 1).
  */
 export function adaptExerciseBookmark(exerciseBookmark) {
-  // TEMP DIAGNOSTIC — log inputs so we can see when alternative-context
-  // bookmarks (fetched via the chevron navigation) are missing the
-  // fields the adapter needs to restore the highlight.
-  if (exerciseBookmark) {
-    console.log(
-      "[ADAPTER]",
-      JSON.stringify({
-        id: exerciseBookmark.id,
-        from: exerciseBookmark.from,
-        t_sentence_i: exerciseBookmark.t_sentence_i,
-        t_token_i: exerciseBookmark.t_token_i,
-        t_total_token: exerciseBookmark.t_total_token,
-        context_sent: exerciseBookmark.context_sent,
-        hasContextTokenized: Array.isArray(exerciseBookmark.context_tokenized),
-        contextTokenizedShape:
-          Array.isArray(exerciseBookmark.context_tokenized) &&
-          Array.isArray(exerciseBookmark.context_tokenized[0]) &&
-          Array.isArray(exerciseBookmark.context_tokenized[0][0]),
-      }),
-    );
-  }
   if (
     !exerciseBookmark ||
     !Array.isArray(exerciseBookmark.context_tokenized) ||

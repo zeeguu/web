@@ -6,6 +6,7 @@ import { removePunctuation } from "../../../utils/text/preprocessing.js";
 import { SpeechContext } from "../../../contexts/SpeechContext.js";
 import { APIContext } from "../../../contexts/APIContext.js";
 import ContextWithExchange from "../../components/ContextWithExchange.js";
+import ExerciseInstructionHeader from "../../components/ExerciseInstructionHeader.js";
 import InteractiveExerciseText from "../../../reader/InteractiveExerciseText.js";
 import { adaptExerciseBookmark } from "../../utils/exerciseBookmarkAdapter.js";
 import { useNotifyExerciseLoaded } from "../../utils/useNotifyExerciseLoaded.js";
@@ -49,22 +50,14 @@ export default function WordInContextExercise({
   }, []);
 
   useEffect(() => {
-    // Validate that context_tokenized exists and is properly formatted
     if (!exerciseBookmark.context_tokenized || !Array.isArray(exerciseBookmark.context_tokenized)) {
       setInteractiveText(null);
       return;
     }
 
-    const onSolutionFound = (word) => {
-      console.log("Solution found! Word clicked:", word.word);
+    const onSolutionFound = () => {
+      if (isExerciseOver) return;
 
-      // Check if exercise is already over to prevent duplicate notifications
-      if (isExerciseOver) {
-        console.log("Exercise already over, ignoring click");
-        return;
-      }
-
-      // Check how many translations were made
       let translationCount = 0;
       if (exerciseMessageToAPI && exerciseMessageToAPI.length > 0) {
         for (let i = 0; i < exerciseMessageToAPI.length; i++) {
@@ -73,10 +66,8 @@ export default function WordInContextExercise({
       }
 
       if (translationCount < 1) {
-        console.log("Notifying correct answer");
         notifyCorrectAnswer(exerciseBookmark);
       } else {
-        console.log("Showing solution (user made translations)");
         notifyShowSolution();
       }
     };
@@ -87,29 +78,6 @@ export default function WordInContextExercise({
       totalTokens: exerciseBookmark.t_total_token || 1,
       contextOffset: exerciseBookmark.context_sent || 0,
     };
-
-    console.log("=== WORD IN CONTEXT EXERCISE DEBUG ===");
-    console.log("Exercise bookmark:", exerciseBookmark);
-    console.log("Expected solution:", exerciseBookmark.from);
-    console.log("Expected position:", expectedPosition);
-    console.log("Context tokenized structure:", exerciseBookmark.context_tokenized);
-
-    // Special debugging for multi-word bookmarks
-    if (exerciseBookmark.from && exerciseBookmark.from.includes(" ")) {
-      console.log("=== MULTI-WORD BOOKMARK DEBUG ===");
-      console.log("Multi-word solution detected:", exerciseBookmark.from);
-      console.log("Number of words:", exerciseBookmark.from.split(" ").length);
-      console.log("Total tokens from bookmark:", exerciseBookmark.t_total_token);
-      console.log("Expected position for multi-word:", expectedPosition);
-
-      // Check if total tokens matches word count
-      const wordCount = exerciseBookmark.from.split(" ").length;
-      if (exerciseBookmark.t_total_token !== wordCount) {
-        console.warn(
-          `WARNING: Token count mismatch! Bookmark has ${exerciseBookmark.t_total_token} tokens but phrase has ${wordCount} words`,
-        );
-      }
-    }
 
     // Click-word exercises rely on TranslatableWord.clickOnWord routing
     // the user's tap to trackWordClick — which only happens when the
@@ -135,7 +103,7 @@ export default function WordInContextExercise({
         exerciseBookmark.context_identifier,
         null, // formatting
         exerciseBookmark.from, // expectedSolution
-        expectedPosition, // expectedPosition
+        expectedPosition,
         onSolutionFound,
       ),
     );
@@ -144,7 +112,6 @@ export default function WordInContextExercise({
   }, [exerciseBookmark, reload, isExerciseOver]);
 
   function handleIncorrectAnswer() {
-    //alert("incorrect answer")
     notifyIncorrectAnswer(exerciseBookmark);
   }
 
@@ -154,16 +121,11 @@ export default function WordInContextExercise({
 
   return (
     <s.Exercise className={exerciseType}>
-      {/* Instruction + L2 prompt stay in the layout post-reveal as
-          visibility:hidden so the sentence doesn't rise into freed
-          space — the chip appearing above the answer word naturally
-          drifts the sentence slightly down, which feels right. */}
-      <div style={{ visibility: isExerciseOver ? "hidden" : "visible" }} aria-hidden={isExerciseOver}>
-        <div className="headlineWithMoreSpace">{exerciseHeadline}</div>
-        <h1 className="wordInContextHeadline">
-          {removePunctuation(exerciseBookmark.to)}
-        </h1>
-      </div>
+      <ExerciseInstructionHeader
+        headline={exerciseHeadline}
+        l2Prompt={removePunctuation(exerciseBookmark.to)}
+        isExerciseOver={isExerciseOver}
+      />
       <div style={{ visibility: isExerciseOver ? "visible" : "hidden", minHeight: "60px" }}>
         {bookmarkProgressBar || <div style={{ height: "60px", width: "30%", margin: "0.1em auto 0.5em auto" }}></div>}
       </div>

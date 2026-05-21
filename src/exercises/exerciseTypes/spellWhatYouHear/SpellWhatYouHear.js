@@ -5,6 +5,7 @@ import strings from "../../../i18n/definitions.js";
 import { EXERCISE_TYPES } from "../../ExerciseTypeConstants.js";
 import SessionStorage from "../../../assorted/SessionStorage.js";
 import ClozeContextWithExchange from "../../components/ClozeContextWithExchange.js";
+import ExerciseInstructionHeader from "../../components/ExerciseInstructionHeader.js";
 import InteractiveText from "../../../reader/InteractiveText.js";
 import { adaptExerciseBookmark } from "../../utils/exerciseBookmarkAdapter.js";
 import { useNotifyExerciseLoaded } from "../../utils/useNotifyExerciseLoaded.js";
@@ -63,18 +64,15 @@ export default function SpellWhatYouHear({
   useEffect(() => {
     if (!SessionStorage.isAudioExercisesEnabled()) moveToNextExercise();
 
-    // Reset input state when context changes
     setInputValue("");
     setIsCorrectAnswer(false);
 
-    // Validate that context_tokenized exists and is properly formatted
     if (!exerciseBookmark.context_tokenized || !Array.isArray(exerciseBookmark.context_tokenized)) {
       setInteractiveText(null);
       return;
     }
 
     const adaptedBookmark = adaptExerciseBookmark(exerciseBookmark);
-
     setInteractiveText(
       new InteractiveText(
         exerciseBookmark.context_tokenized,
@@ -92,8 +90,7 @@ export default function SpellWhatYouHear({
   }, [exerciseBookmark, reload]);
 
   useEffect(() => {
-    // Timeout is set so that the page renders before the word is spoken, allowing for the user to gain focus on the page
-    // Changed timeout to be slightly shorter.
+    // Defer speak so the page renders first and the user can gain focus.
     if (interactiveText && !isButtonSpeaking)
       setTimeout(() => {
         handleSpeak();
@@ -105,19 +102,16 @@ export default function SpellWhatYouHear({
     notifyIncorrectAnswer(exerciseBookmark);
   }
 
-  function handleInputChange(value, inputElement) {
+  function handleInputChange(value) {
     setInputValue(value);
-    
-    // Constantly check if answer is correct
+
     const userInput = value.trim().toLowerCase();
     const expectedAnswer = removePunctuation(exerciseBookmark.from).toLowerCase();
     const isCorrect = userInput === expectedAnswer;
-    
     setIsCorrectAnswer(isCorrect);
-    
-    // Auto-submit when correct. Wait just long enough for the colour
-    // transition on the typed word to land before swapping the UI to the
-    // exercise-over state.
+
+    // Wait just long enough for the colour transition on the typed word
+    // to land before swapping the UI to the exercise-over state.
     if (isCorrect && value.trim().length > 0) {
       setTimeout(() => {
         notifyCorrectAnswer(exerciseBookmark);
@@ -125,10 +119,9 @@ export default function SpellWhatYouHear({
     }
   }
 
-  function handleInputSubmit(value, inputElement) {
+  function handleInputSubmit(value) {
     const userInput = value.trim().toLowerCase();
     const expectedAnswer = removePunctuation(exerciseBookmark.from).toLowerCase();
-    
     if (userInput === expectedAnswer) {
       notifyCorrectAnswer(exerciseBookmark);
     } else {
@@ -143,13 +136,10 @@ export default function SpellWhatYouHear({
 
   return (
     <s.Exercise className="spellWhatYouHear">
-      <div
-        className="headlineWithMoreSpace"
-        style={{ visibility: isExerciseOver ? "hidden" : "visible" }}
-        aria-hidden={isExerciseOver}
-      >
-        {strings.audioExerciseHeadline}
-      </div>
+      <ExerciseInstructionHeader
+        headline={strings.audioExerciseHeadline}
+        isExerciseOver={isExerciseOver}
+      />
 
       {/* Context - always at the top, never moves */}
       <ClozeContextWithExchange
@@ -168,7 +158,10 @@ export default function SpellWhatYouHear({
         canTypeInline={true}
       />
 
-      {/* Button/Solution area - maintain consistent height, placed below context */}
+      {/* Solution slot below context — fixed height so context doesn't
+          shift between exercise and reveal. Post-reveal the L1 chip
+          surfaces above the highlighted word, so only the progress bar
+          lives here. */}
       <div style={{ minHeight: '120px', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', marginTop: '2em' }}>
         {!isExerciseOver ? (
           <s.CenteredRowTall>
@@ -179,10 +172,6 @@ export default function SpellWhatYouHear({
             />
           </s.CenteredRowTall>
         ) : (
-          // L1 translation now surfaces as a chip above the highlighted
-          // bookmark word in the sentence (via bookmark-restoration), so
-          // the big headline below is redundant — keep only the progress
-          // bar in the solution slot.
           bookmarkProgressBar
         )}
       </div>

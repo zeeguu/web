@@ -1,4 +1,4 @@
-import { useState, useEffect, useContext, useRef } from "react";
+import { useState, useEffect, useContext } from "react";
 import * as s from "../Exercise.sc.js";
 import MultipleChoicesInput from "./MultipleChoicesInput.js";
 import LoadingAnimation from "../../../components/LoadingAnimation";
@@ -10,6 +10,7 @@ import { removePunctuation } from "../../../utils/text/preprocessing";
 import { SpeechContext } from "../../../contexts/SpeechContext.js";
 import { APIContext } from "../../../contexts/APIContext.js";
 import ClozeContextWithExchange from "../../components/ClozeContextWithExchange.js";
+import ExerciseInstructionHeader from "../../components/ExerciseInstructionHeader.js";
 import { adaptExerciseBookmark } from "../../utils/exerciseBookmarkAdapter.js";
 import { useNotifyExerciseLoaded } from "../../utils/useNotifyExerciseLoaded.js";
 
@@ -17,6 +18,31 @@ import { useNotifyExerciseLoaded } from "../../utils/useNotifyExerciseLoaded.js"
 // This tests the user's active knowledge.
 
 const EXERCISE_TYPE = EXERCISE_TYPES.multipleChoice;
+
+function buildInteractiveText(bookmark, api, speech) {
+  const expectedPosition = {
+    sentenceIndex: bookmark.t_sentence_i,
+    tokenIndex: bookmark.t_token_i,
+    totalTokens: bookmark.t_total_token || 1,
+    contextOffset: bookmark.context_sent || 0,
+  };
+  const adapted = adaptExerciseBookmark(bookmark);
+  return new InteractiveExerciseText(
+    bookmark.context_tokenized,
+    bookmark.source_id,
+    api,
+    adapted ? [adapted] : [],
+    "TRANSLATE WORDS IN EXERCISE",
+    bookmark.from_lang,
+    EXERCISE_TYPE,
+    speech,
+    bookmark.context_identifier,
+    null, // formatting
+    bookmark.from, // expectedSolution
+    expectedPosition,
+    null, // onSolutionFound — not needed for multiple choice
+  );
+}
 
 export default function MultipleChoice({
   bookmarksToStudy,
@@ -38,15 +64,14 @@ export default function MultipleChoice({
   useNotifyExerciseLoaded(interactiveText, onExerciseLoaded);
   const speech = useContext(SpeechContext);
   const exerciseBookmark = bookmarksToStudy[0];
-  const contextRef = useRef(null);
 
   useEffect(() => {
     speech.stopAudio(); // Stop any pending speech from previous exercise
     resetSubSessionTimer();
     setExerciseType(EXERCISE_TYPE);
 
-    // Fetch similar words only once on mount - don't re-fetch on context change
-    // to avoid giving away the answer
+    // Fetch similar words only once on mount — don't re-fetch on context
+    // change to avoid giving away the answer.
     api.wordsSimilarTo(exerciseBookmark.id, (words) => {
       consolidateChoiceOptions(words);
     });
@@ -54,38 +79,11 @@ export default function MultipleChoice({
   }, []);
 
   useEffect(() => {
-    // Validate that context_tokenized exists and is properly formatted
     if (!exerciseBookmark.context_tokenized || !Array.isArray(exerciseBookmark.context_tokenized)) {
       setInteractiveText(null);
       return;
     }
-
-    const expectedPosition = {
-      sentenceIndex: exerciseBookmark.t_sentence_i,
-      tokenIndex: exerciseBookmark.t_token_i,
-      totalTokens: exerciseBookmark.t_total_token || 1,
-      contextOffset: exerciseBookmark.context_sent || 0
-    };
-    
-    const adaptedBookmark = adaptExerciseBookmark(exerciseBookmark);
-    const newInteractiveText = new InteractiveExerciseText(
-      exerciseBookmark.context_tokenized,
-      exerciseBookmark.source_id,
-      api,
-      adaptedBookmark ? [adaptedBookmark] : [],
-      "TRANSLATE WORDS IN EXERCISE",
-      exerciseBookmark.from_lang,
-      EXERCISE_TYPE,
-      speech,
-      exerciseBookmark.context_identifier,
-      null, // formatting
-      exerciseBookmark.from, // expectedSolution
-      expectedPosition, // expectedPosition
-      null, // onSolutionFound - not needed for multiple choice
-    );
-
-    setInteractiveText(newInteractiveText);
-
+    setInteractiveText(buildInteractiveText(exerciseBookmark, api, speech));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [exerciseBookmark, reload]);
 
@@ -121,17 +119,13 @@ export default function MultipleChoice({
 
   return (
     <s.Exercise className="multipleChoice">
-      <div
-        className="headlineWithMoreSpace"
-        style={{ visibility: isExerciseOver ? "hidden" : "visible" }}
-        aria-hidden={isExerciseOver}
-      >
-        {strings.chooseTheWordFittingContextHeadline}
-      </div>
+      <ExerciseInstructionHeader
+        headline={strings.chooseTheWordFittingContextHeadline}
+        isExerciseOver={isExerciseOver}
+      />
 
       {/* Context - always at the top, never moves */}
       <ClozeContextWithExchange
-        ref={contextRef}
         exerciseBookmark={exerciseBookmark}
         interactiveText={interactiveText}
         translatedWords={null}
@@ -139,41 +133,15 @@ export default function MultipleChoice({
         isExerciseOver={isExerciseOver}
         onExampleUpdated={(data) => {
           onExampleUpdated(data);
-          // Force refresh of interactive text when example is updated
-          const expectedPosition = {
-            sentenceIndex: data.updatedBookmark.context_sent || 0,
-            startToken: data.updatedBookmark.t_start_token || 0,
-            endToken: data.updatedBookmark.t_end_token || 1,
-            totalTokens: data.updatedBookmark.t_total_token || 1,
-            contextOffset: data.updatedBookmark.context_sent || 0
-          };
-          
-          const adaptedUpdated = adaptExerciseBookmark(data.updatedBookmark);
-          const newInteractiveText = new InteractiveExerciseText(
-            data.updatedBookmark.context_tokenized,
-            data.updatedBookmark.source_id,
-            api,
-            adaptedUpdated ? [adaptedUpdated] : [],
-            "TRANSLATE WORDS IN EXERCISE",
-            data.updatedBookmark.from_lang,
-            EXERCISE_TYPE,
-            speech,
-            data.updatedBookmark.context_identifier,
-            null, // formatting
-            data.updatedBookmark.from, // expectedSolution
-            expectedPosition, // expectedPosition
-            null, // onSolutionFound - not needed for multiple choice
-          );
-
-          setInteractiveText(newInteractiveText);
+          setInteractiveText(buildInteractiveText(data.updatedBookmark, api, speech));
         }}
-        onInputChange={() => {}} // No input handling needed for multiple choice
-        onInputSubmit={() => {}} // No input handling needed for multiple choice
+        onInputChange={() => {}}
+        onInputSubmit={() => {}}
         inputValue={isExerciseOver ? exerciseBookmark.from : ""}
         placeholder=""
         isCorrectAnswer={isExerciseOver}
-        shouldFocus={false} // Don't focus the hidden input
-        showHint={false} // Don't show "tap to type" hint
+        shouldFocus={false}
+        showHint={false}
         canTypeInline={false}
       />
 
@@ -186,8 +154,6 @@ export default function MultipleChoice({
         </div>
       )}
 
-      {/* Multiple choice buttons - only during exercise */}
-      {!buttonOptions && <LoadingAnimation />}
       {!isExerciseOver && (
         <MultipleChoicesInput
           buttonOptions={buttonOptions}
@@ -196,7 +162,6 @@ export default function MultipleChoice({
           setIncorrectAnswer={setIncorrectAnswer}
         />
       )}
-      
     </s.Exercise>
   );
 }

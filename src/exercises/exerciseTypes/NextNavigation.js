@@ -1,6 +1,4 @@
 import strings from "../../i18n/definitions";
-import SpeakButton from "./SpeakButton";
-import EditBookmarkButton from "../../words/EditBookmarkButton";
 import * as s from "./Exercise.sc";
 import SolutionFeedbackLinks from "./SolutionFeedbackLinks";
 import { getExerciseTypeName } from "../exerciseTypes/exerciseTypeNames";
@@ -30,9 +28,6 @@ export default function NextNavigation({
   exerciseBookmarks,
   exerciseBookmark,
   moveToNextExercise,
-  reload,
-  setReload,
-  isReadContext,
   toggleShow,
   isCorrect,
   onWordRemovedFromExercises,
@@ -49,11 +44,9 @@ export default function NextNavigation({
 }) {
   const messageForAPI = isEmptyDictionary(bookmarkMessagesToAPI) ? "" : bookmarkMessagesToAPI[exerciseBookmark.id];
   const api = useContext(APIContext);
-  const exercise = "exercise";
   const [userIsCorrect] = correctnessBasedOnTries(messageForAPI);
   const [learningCycle, setLearningCycle] = useState(null);
   const [showCelebrationModal, setShowCelebrationModal] = useState(false);
-  const [isDeleted, setIsDeleted] = useState(false);
   const [autoPronounceBookmark, autoPronounceString, toggleAutoPronounceState] = useBookmarkAutoPronounce();
   const speech = useContext(SpeechContext);
   const [isButtonSpeaking, setIsButtonSpeaking] = useState(false);
@@ -109,7 +102,8 @@ export default function NextNavigation({
   async function handleSpeak() {
     setIsAutoPronouncing(true);
     await speech.speakOut(deriveTextToSpeak(), setIsButtonSpeaking);
-    // Add 200ms delay to ensure speech has fully started before enabling button
+    // Delay re-enabling the Next button so a quick Enter-press during
+    // auto-pronounce can't double-skip past the spoken solution.
     setTimeout(() => {
       setIsAutoPronouncing(false);
     }, 500);
@@ -141,13 +135,6 @@ export default function NextNavigation({
   }, [isExerciseOver, isAutoPronouncing, moveToNextExercise]);
 
   useEffect(() => {
-    if (isDeleted) {
-      moveToNextExercise();
-    }
-    // eslint-disable-next-line
-  }, [isDeleted]);
-
-  useEffect(() => {
     if (bookmarkLearned && !SessionStorage.isCelebrationModalShown()) {
       setShowCelebrationModal(true);
       SessionStorage.setCelebrationModalShown(true);
@@ -155,21 +142,17 @@ export default function NextNavigation({
   }, [bookmarkLearned]);
   const isExerciseCorrect = (isCorrect && !isMatchExercise) || isCorrectMatch;
 
-  // Create shareable URL for feedback purposes
   // Use WEB_URL instead of window.location.origin to avoid capacitor://localhost in mobile apps
   const createShareableUrl = () => {
     const exerciseTypeName = getExerciseTypeName(exerciseType);
 
-    // For multi-bookmark exercises (Match, MultipleChoice, MultipleChoiceContext), include all bookmark IDs
     if (EXERCISE_TYPES.isMultiBookmarkExercise(exerciseType) && exerciseBookmarks && exerciseBookmarks.length > 1) {
       const bookmarkIds = exerciseBookmarks.map((b) => b.id).join(",");
       return `${WEB_URL}/exercise/${exerciseTypeName}/${bookmarkIds}`;
     }
 
-    // For single bookmark exercises
     if (!exerciseBookmark) return "";
-    const bookmarkId = exerciseBookmark.id;
-    return `${WEB_URL}/exercise/${exerciseTypeName}/${bookmarkId}`;
+    return `${WEB_URL}/exercise/${exerciseTypeName}/${exerciseBookmark.id}`;
   };
 
   const showConffetti = isUserAndAnswerCorrect && (isMatchBookmarkProgression || bookmarkLearned);
