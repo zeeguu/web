@@ -1,4 +1,4 @@
-import { useState, useEffect, useContext, useMemo } from "react";
+import { useState, useEffect, useContext, useMemo, useRef } from "react";
 import * as s from "../Exercise.sc.js";
 import strings from "../../../i18n/definitions";
 import LoadingAnimation from "../../../components/LoadingAnimation.js";
@@ -7,6 +7,7 @@ import { adaptExerciseBookmark } from "../../utils/exerciseBookmarkAdapter.js";
 import { ClozeTranslatableText } from "../../components/ClozeTranslatableText.js";
 import { findClozeWordIds } from "../../utils/findClozeWordIds.js";
 import { useNotifyExerciseLoaded } from "../../utils/useNotifyExerciseLoaded.js";
+import { useFlipOnReveal } from "../../utils/useFlipOnReveal.js";
 import { SpeechContext } from "../../../contexts/SpeechContext.js";
 import shuffle from "../../../assorted/fisherYatesShuffle";
 import { EXERCISE_TYPES } from "../../ExerciseTypeConstants.js";
@@ -37,6 +38,11 @@ export default function MultipleChoiceContext({
   const [clickedIndex, setClickedIndex] = useState(null);
   const [clickedOption, setClickedOption] = useState(null);
   const isExerciseOverRef = useShadowRef(isExerciseOver);
+  // FLIP: slide the correct option from its randomized position up to
+  // the solution slot when reveal kicks in. Ref points to the same
+  // styled.div both pre- and post-reveal (only the children change).
+  const correctOptionRef = useRef(null);
+  useFlipOnReveal(correctOptionRef, isExerciseOver);
 
   useEffect(() => {
     speech.stopAudio(); // Stop any pending speech from previous exercise
@@ -120,19 +126,20 @@ export default function MultipleChoiceContext({
 
   return (
     <s.Exercise className="findWordInContext">
-      {/* Instruction + L2 prompt word only during exercise. Post-reveal
-          we drop both (not visibility:hidden which still reserves space)
-          — the chosen context with its chip-above carries the answer. */}
-      {!isExerciseOver && (
-        <>
-          <div className="headlineWithMoreSpace">
-            {strings.multipleChoiceContextHeadline}
-          </div>
-          <h1 className="wordInContextHeadline">
-            {removePunctuation(exerciseBookmark.from)}
-          </h1>
-        </>
-      )}
+      {/* Instruction + L2 prompt are content during exercise; post-reveal
+          we keep them in the layout (visibility:hidden) so the chosen
+          option lands at a stable y-coordinate. Without this, removing
+          the headline lets the chosen option fly all the way to the top
+          of the card — distance varies with which option was clicked,
+          which makes the slide feel disorienting. */}
+      <div style={{ visibility: isExerciseOver ? "hidden" : "visible" }} aria-hidden={isExerciseOver}>
+        <div className="headlineWithMoreSpace">
+          {strings.multipleChoiceContextHeadline}
+        </div>
+        <h1 className="wordInContextHeadline">
+          {removePunctuation(exerciseBookmark.from)}
+        </h1>
+      </div>
       {/* Progress bar moved below the option list — putting it above
           would squeeze the option cards down at the moment of reveal.
           Consistent with the other exercises in the flow. */}
@@ -141,6 +148,7 @@ export default function MultipleChoiceContext({
         .map((option, index) => (
           <s.MultipleChoiceContext
             key={index}
+            ref={option.isExercise ? correctOptionRef : null}
             clicked={index === clickedIndex}
             className={
               clickedOption !== null ? (index === clickedOption ? (option.isExercise ? "correct" : "wrong") : "") : ""
