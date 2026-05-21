@@ -85,9 +85,9 @@ export default function WordInContextExercise({
         l2Prompt={removePunctuation(exerciseBookmark.to)}
         isExerciseOver={isExerciseOver}
       />
-      <div style={{ visibility: isExerciseOver ? "visible" : "hidden", minHeight: "60px" }}>
-        {bookmarkProgressBar || <div style={{ height: "60px", width: "30%", margin: "0.1em auto 0.5em auto" }}></div>}
-      </div>
+      <s.ProgressBarReserve $visible={isExerciseOver}>
+        {bookmarkProgressBar || <s.ProgressBarPlaceholder />}
+      </s.ProgressBarReserve>
       <ContextWithExchange
         exerciseBookmark={exerciseBookmark}
         interactiveText={interactiveText}

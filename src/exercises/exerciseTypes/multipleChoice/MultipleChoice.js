@@ -116,9 +116,7 @@ export default function MultipleChoice({
       />
 
       {isExerciseOver && bookmarkProgressBar && (
-        <div style={{ marginTop: "3em" }}>
-          {bookmarkProgressBar}
-        </div>
+        <s.RevealedProgressBar>{bookmarkProgressBar}</s.RevealedProgressBar>
       )}
 
       {!isExerciseOver && (

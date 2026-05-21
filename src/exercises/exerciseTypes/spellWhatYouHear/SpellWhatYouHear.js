@@ -127,11 +127,11 @@ export default function SpellWhatYouHear({
         canTypeInline={true}
       />
 
-      {/* Solution slot below context — fixed height so context doesn't
+      {/* Fixed-height slot below the cloze so the sentence above doesn't
           shift between exercise and reveal. Post-reveal the L1 chip
           surfaces above the highlighted word, so only the progress bar
           lives here. */}
-      <div style={{ minHeight: "120px", display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center", marginTop: "2em" }}>
+      <s.CenteredRevealedSlot $marginTop="2em" $minHeight="120px">
         {!isExerciseOver ? (
           <s.CenteredRowTall>
             <SpeakButton
@@ -143,7 +143,7 @@ export default function SpellWhatYouHear({
         ) : (
           bookmarkProgressBar
         )}
-      </div>
+      </s.CenteredRevealedSlot>
     </s.Exercise>
   );
 }

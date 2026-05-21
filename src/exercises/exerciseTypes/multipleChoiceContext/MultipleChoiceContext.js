@@ -149,9 +149,7 @@ export default function MultipleChoiceContext({
           );
         })}
       {isExerciseOver && bookmarkProgressBar && (
-        <div style={{ marginTop: "1em" }}>
-          {bookmarkProgressBar}
-        </div>
+        <s.RevealedProgressBar $tight>{bookmarkProgressBar}</s.RevealedProgressBar>
       )}
     </s.Exercise>
   );

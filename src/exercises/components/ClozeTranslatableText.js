@@ -63,6 +63,13 @@ const ExerciseTargetEmphasis = styled.div`
   }
 `;
 
+// Bold-orange marker for ContextWithExchange-based exercises (no slot;
+// the target word stays visible in the sentence and we just colour it).
+const HighlightedWord = styled.span`
+  color: ${orange600};
+  font-weight: bold;
+`;
+
 /**
  * Renders translatable text with a "slot" for cloze exercises.
  *
@@ -174,11 +181,7 @@ export function ClozeTranslatableText({
   // highlight-only) — e.g. TranslateL2toL1 where the user reads the L2
   // sentence and needs the target word visually marked.
   function renderHighlightedWord(word) {
-    return (
-      <span key={word.id} style={{ color: orange600, fontWeight: "bold" }}>
-        {word.word + " "}
-      </span>
-    );
+    return <HighlightedWord key={word.id}>{word.word + " "}</HighlightedWord>;
   }
 
   function renderWordJSX(word) {

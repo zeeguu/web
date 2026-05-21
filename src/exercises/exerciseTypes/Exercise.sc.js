@@ -547,6 +547,44 @@ let MultipleChoiceContext = styled.div`
   }
 `;
 
+// Wrapper for the BookmarkProgressBar in the reveal state. The pre-reveal
+// space is intentionally not reserved here — most exercises render the
+// progress bar only when isExerciseOver is true, with a small gap above
+// the sentence. The $tight variant is used by MultipleChoiceContext
+// where the wrapper sits directly below the chosen option (already-airy
+// layout) and doesn't need the bigger top margin.
+let RevealedProgressBar = styled.div`
+  margin-top: ${(props) => (props.$tight ? "1em" : "3em")};
+`;
+
+// Audio exercises (SpellWhatYouHear, TranslateWhatYouHear) center the
+// progress bar in a fixed slot below the cloze so the sentence above
+// doesn't shift between the typing and revealed states.
+let CenteredRevealedSlot = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin-top: ${(props) => props.$marginTop || "1em"};
+  min-height: ${(props) => props.$minHeight || "auto"};
+`;
+
+// Used by click-word exercises (WordInContext, FindWordInContextCloze) to
+// reserve the progress-bar's vertical space pre-reveal so the sentence
+// below doesn't jump when the bar appears.
+let ProgressBarReserve = styled.div`
+  visibility: ${(props) => (props.$visible ? "visible" : "hidden")};
+  min-height: 60px;
+`;
+
+// Empty filler shown inside ProgressBarReserve when no progress bar has
+// been wired in yet — keeps the reserved slot's vertical rhythm.
+let ProgressBarPlaceholder = styled.div`
+  height: 60px;
+  width: 30%;
+  margin: 0.1em auto 0.5em auto;
+`;
+
 let ReportButton = styled.button`
   background: none;
   border: none;
@@ -600,6 +638,10 @@ export {
   MultipleChoiceContext,
   ReportButton,
   ReportedBadge,
+  RevealedProgressBar,
+  CenteredRevealedSlot,
+  ProgressBarReserve,
+  ProgressBarPlaceholder,
 };
 
 export default StyledButton;

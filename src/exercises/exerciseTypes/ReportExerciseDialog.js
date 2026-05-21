@@ -9,6 +9,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import SendIcon from "@mui/icons-material/Send";
 import { toast } from "react-toastify";
 import { APIContext } from "../../contexts/APIContext";
+import { TextLinkButton, UndoToastRow, SkipSeparator } from "./ReportExerciseDialog.sc";
 
 // Chip definitions. The order here is the order the chips render.
 // Each chip carries the backend `reason` enum value (matching
@@ -90,28 +91,18 @@ export default function ReportExerciseDialog({
         api.userSetNotForExercises(bookmarkId, `reported:${reason}`);
         toast.success(
           ({ closeToast }) => (
-            <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
+            <UndoToastRow>
               <span>Reported. Word removed from practice.</span>
-              <button
+              <TextLinkButton
                 onClick={() => {
                   api.userSetForExercises(bookmarkId);
                   toast.info("Word restored to practice");
                   closeToast();
                 }}
-                style={{
-                  background: "none",
-                  border: "none",
-                  padding: 0,
-                  color: "inherit",
-                  cursor: "pointer",
-                  fontWeight: 600,
-                  fontSize: "0.85rem",
-                  textDecoration: "underline",
-                }}
               >
                 Undo
-              </button>
-            </div>
+              </TextLinkButton>
+            </UndoToastRow>
           ),
           { autoClose: 5000 },
         );
@@ -224,31 +215,15 @@ export default function ReportExerciseDialog({
           </div>
         )}
 
-        <div
-          style={{
-            marginTop: "1.25rem",
-            paddingTop: "0.75rem",
-            borderTop: "1px solid #eee",
-            display: "flex",
-            justifyContent: "center",
-          }}
-        >
-          <button
+        <SkipSeparator>
+          <TextLinkButton
+            $muted
             onClick={handleSkipWithoutReporting}
             disabled={isSubmitting}
-            style={{
-              background: "none",
-              border: "none",
-              padding: "0.25rem 0.5rem",
-              cursor: isSubmitting ? "default" : "pointer",
-              color: "#888",
-              fontSize: "0.85rem",
-              textDecoration: "underline",
-            }}
           >
             Skip without reporting
-          </button>
-        </div>
+          </TextLinkButton>
+        </SkipSeparator>
       </DialogContent>
     </Dialog>
   );
