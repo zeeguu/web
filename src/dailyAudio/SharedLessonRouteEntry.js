@@ -4,11 +4,8 @@ import AppLayout from "../AppLayout";
 import SharedLessonView from "./SharedLessonView";
 import PublicSharedLessonPage from "./PublicSharedLessonPage";
 
-// Single entry for /shared-lesson/:id.
-// Logged-in users get the rich in-app view (banners, listening sessions);
-// anonymous visitors (friends with a share link) get the standalone public
-// page with install CTAs. Keeping one URL means a friend who happens to be
-// logged in lands in the right place without any redirect dance.
+// Logged-in users get the in-app view; anonymous visitors get the public
+// page with install CTAs. One URL works for both.
 export default function SharedLessonRouteEntry() {
   const { session } = useContext(UserContext);
 

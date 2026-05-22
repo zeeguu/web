@@ -17,7 +17,6 @@ const PageWrapper = styled.div`
   flex-direction: column;
   align-items: center;
   padding: 24px 16px 48px;
-  background-color: var(--page-bg, #fafafa);
 `;
 
 const Brand = styled.a`
@@ -31,9 +30,9 @@ const Brand = styled.a`
 const Card = styled.div`
   width: 100%;
   max-width: 640px;
-  background: var(--card-bg, #fff);
+  background: var(--card-bg);
   border-radius: 16px;
-  box-shadow: 0 2px 12px var(--shadow-color, rgba(0, 0, 0, 0.08));
+  box-shadow: 0 2px 12px var(--shadow-color);
   padding: 24px;
   margin-bottom: 24px;
 `;
@@ -42,16 +41,10 @@ const CTA = styled.div`
   width: 100%;
   max-width: 640px;
   text-align: center;
+  color: var(--text-secondary);
 
-  h2 {
-    font-size: 1.2rem;
-    margin: 0 0 8px;
-  }
-
-  p {
-    color: var(--text-secondary);
-    margin: 0 0 16px;
-  }
+  h2 { font-size: 1.2rem; margin: 0 0 8px; }
+  p { margin: 0 0 16px; }
 `;
 
 const ButtonRow = styled.div`
@@ -59,12 +52,6 @@ const ButtonRow = styled.div`
   gap: 12px;
   justify-content: center;
   flex-wrap: wrap;
-`;
-
-const ErrorBox = styled.div`
-  padding: 24px;
-  text-align: center;
-  color: var(--text-secondary);
 `;
 
 export default function PublicSharedLessonPage() {
@@ -82,88 +69,78 @@ export default function PublicSharedLessonPage() {
     );
   }, [api, shareUuid]);
 
+  let body;
   if (error) {
-    return (
-      <PageWrapper>
-        <Brand href="/">Zeeguu</Brand>
+    body = (
+      <Card>
+        <h2>Could not open this lesson</h2>
+        <p>{error}</p>
+      </Card>
+    );
+  } else if (!lessonData) {
+    body = <LoadingAnimation />;
+  } else {
+    const lessonLang = lessonData.language_code;
+    const lessonLangName = languageNames[lessonLang] || lessonLang;
+    const titleText = lessonData.title || "Shared Audio Lesson";
+    const metadata = (
+      <>
+        Language: <b>{lessonLangName}</b>
+        {lessonData.canonical_suggestion && (
+          <>
+            {" · "}
+            {lessonData.lesson_type === "situation" ? "Situation" : "Topic"}:{" "}
+            <b>{lessonData.canonical_suggestion}</b>
+          </>
+        )}
+      </>
+    );
+    body = (
+      <>
         <Card>
-          <ErrorBox>
-            <h2>Could not open this lesson</h2>
-            <p>{error}</p>
-          </ErrorBox>
+          <LessonPlayerCard
+            title={titleText}
+            metadata={metadata}
+            audioProps={{
+              src: lessonData.audio_url,
+              language: lessonLang,
+              title: titleText,
+              artist: `${lessonLangName} Audio Lesson`,
+            }}
+          />
         </Card>
-      </PageWrapper>
+        <CTA>
+          <h2>Want your own personalized {lessonLangName} lessons?</h2>
+          <p>Install Zeeguu to generate audio lessons tailored to your level and the words you're learning.</p>
+          <ButtonRow>
+            <Button
+              as="a"
+              href="https://apps.apple.com/dk/app/zeeguu-news-for-learners/id6756917355"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <AppleIcon />
+              iOS
+            </Button>
+            <Button
+              as="a"
+              href="https://play.google.com/store/apps/details?id=org.zeeguu.app"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <AndroidIcon />
+              Android
+            </Button>
+          </ButtonRow>
+        </CTA>
+      </>
     );
   }
-
-  if (!lessonData) {
-    return (
-      <PageWrapper>
-        <Brand href="/">Zeeguu</Brand>
-        <LoadingAnimation />
-      </PageWrapper>
-    );
-  }
-
-  const lessonLang = lessonData.language_code;
-  const lessonLangName = languageNames[lessonLang] || lessonLang;
-  const titleText = lessonData.title || "Shared Audio Lesson";
-
-  const metadata = (
-    <>
-      Language: <b>{lessonLangName}</b>
-      {lessonData.canonical_suggestion && (
-        <>
-          {" · "}
-          {lessonData.lesson_type === "situation" ? "Situation" : "Topic"}:{" "}
-          <b>{lessonData.canonical_suggestion}</b>
-        </>
-      )}
-    </>
-  );
 
   return (
     <PageWrapper>
       <Brand href="/">Zeeguu</Brand>
-      <Card>
-        <LessonPlayerCard
-          title={titleText}
-          metadata={metadata}
-          audioProps={{
-            src: lessonData.audio_url,
-            language: lessonLang,
-            title: titleText,
-            artist: `${lessonLangName} Audio Lesson`,
-          }}
-        />
-      </Card>
-      <CTA>
-        <h2>Want your own personalized {lessonLangName} lessons?</h2>
-        <p>
-          Install Zeeguu to generate audio lessons tailored to your level and the
-          words you're learning.
-        </p>
-        <ButtonRow>
-          <Button
-            as="a"
-            href="https://apps.apple.com/dk/app/zeeguu-news-for-learners/id6756917355"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <AppleIcon />
-            iOS
-          </Button>
-          <Button
-            as="a"
-            href="https://play.google.com/store/apps/details?id=org.zeeguu.app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <AndroidIcon />
-            Android
-          </Button>
-        </ButtonRow>
-      </CTA>
+      {body}
     </PageWrapper>
   );
 }

@@ -1,14 +1,10 @@
 import { WEB_URL } from "../config";
 
-export function shareLessonUrlForUuid(shareUuid) {
-  return `${WEB_URL}/shared-lesson/${shareUuid}`;
-}
-
 export async function shareLessonLink(api, lessonId, title) {
   let url;
   try {
     const { share_uuid } = await api.createLessonShareLink(lessonId);
-    url = shareLessonUrlForUuid(share_uuid);
+    url = `${WEB_URL}/shared-lesson/${share_uuid}`;
   } catch (e) {
     alert("Could not create share link. Please try again.");
     return;
