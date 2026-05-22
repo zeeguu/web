@@ -111,21 +111,27 @@ export default function TranslatableWord({
 
   function openAlterMenu(word) {
     setShowingAlterMenu(true);
-    // ADR 022: when the backend returned `alternatives` eagerly with the
-    // bookmark response, the menu is fully populated from the start — no
-    // streaming call. The streaming path is kept for the MWE phrase case
-    // where the voter (and its alternatives list) doesn't apply: there
-    // `alternatives` is unset and the SSE call still seeds the menu.
-    if (word.alternatives?.length) {
+    // ADR 022: for single words the menu renders directly from
+    // word.alternatives (populated eagerly by /translate_word) — no network
+    // call on menu-open, no spinner, no row-shifting under the user's
+    // finger. If the response carried no alternatives (own-past-translation
+    // early-return, or a pre-ADR-022 backend), the menu just opens with
+    // whatever's there; the user can still tap "Ask LLM" or
+    // "Add own translation".
+    //
+    // SSE streaming is kept only for MWE phrases, where the voter doesn't
+    // apply and alternatives have to be fetched lazily.
+    if (!word.mweExpression) {
       setHasFetchedAlternatives(true);
       return;
     }
-    if (!hasFetchedAlternatives && !word.competing_translations?.length)
+    if (!hasFetchedAlternatives) {
       interactiveText.alternativeTranslations(
         word,
         () => wordUpdated(word),
         () => setHasFetchedAlternatives(true),
       );
+    }
   }
 
   function toggleAlterMenu(e, word) {
