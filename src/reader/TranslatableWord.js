@@ -32,7 +32,6 @@ export default function TranslatableWord({
   const [prevWord, setPreviousWord] = useState("");
   const [isTranslationVisible, setIsTranslationVisible] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [hasFetchedAlternatives, setHasFetchedAlternatives] = useState(false);
 
   useEffect(() => {
     if (word.isTranslationVisible) {
@@ -110,28 +109,13 @@ export default function TranslatableWord({
   }
 
   function openAlterMenu(word) {
+    // ADR 022: the menu renders directly from word.alternatives (populated
+    // eagerly by /translate_word). Opening the menu is a pure render — no
+    // network call, no spinner, no row-shifting under the user's finger.
+    // If the response carried no alternatives (own-past-translation early
+    // return, MWE phrases, or a pre-ADR-022 backend) the menu opens with
+    // whatever's there. The user's recovery path is "Ask LLM".
     setShowingAlterMenu(true);
-    // ADR 022: for single words the menu renders directly from
-    // word.alternatives (populated eagerly by /translate_word) — no network
-    // call on menu-open, no spinner, no row-shifting under the user's
-    // finger. If the response carried no alternatives (own-past-translation
-    // early-return, or a pre-ADR-022 backend), the menu just opens with
-    // whatever's there; the user can still tap "Ask LLM" or
-    // "Add own translation".
-    //
-    // SSE streaming is kept only for MWE phrases, where the voter doesn't
-    // apply and alternatives have to be fetched lazily.
-    if (!word.mweExpression) {
-      setHasFetchedAlternatives(true);
-      return;
-    }
-    if (!hasFetchedAlternatives) {
-      interactiveText.alternativeTranslations(
-        word,
-        () => wordUpdated(word),
-        () => setHasFetchedAlternatives(true),
-      );
-    }
   }
 
   function toggleAlterMenu(e, word) {
@@ -438,7 +422,6 @@ export default function TranslatableWord({
               hideAlterMenu={hideAlterMenu}
               deleteTranslation={deleteTranslation}
               ungroupMwe={ungroupMwe}
-              alternativesLoaded={hasFetchedAlternatives}
               askLlmTranslation={(w, onDone, onErr) =>
                 interactiveText.askLlmTranslation(
                   w,

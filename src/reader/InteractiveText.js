@@ -248,37 +248,6 @@ export default class InteractiveText {
       });
   }
 
-  alternativeTranslations(word, onUpdate, onComplete) {
-    let context;
-    [context] = this.getContextAndCoordinates(word);
-    // Use mweExpression for MWEs (e.g., "har været" instead of just "har")
-    const textToTranslate = word.mweExpression || word.word;
-    const isSeparatedMwe = !!word.token?.mwe_is_separated;
-    // Get full sentence for separated MWEs
-    const fullSentenceContext = isSeparatedMwe ? this._getSentenceText(word) : null;
-
-    // Initialize alternatives array for streaming
-    word.alternatives = [];
-
-    this.api.getTranslationsStreaming(
-      this.language,
-      localStorage.native_language,
-      textToTranslate,
-      context,
-      // Called for each translation as it arrives
-      (translation) => {
-        word.alternatives.push(translation);
-        onUpdate && onUpdate();
-      },
-      // Called when all translations are done
-      () => {
-        onComplete && onComplete();
-      },
-      isSeparatedMwe,
-      fullSentenceContext,
-    );
-  }
-
   playAll() {
     this.zeeguuSpeech.playAll(this.sourceId);
   }

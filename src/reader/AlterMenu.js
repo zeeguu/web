@@ -1,6 +1,5 @@
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { AlterMenuSC } from "./AlterMenu.sc";
-import LoadingAnimation from "../components/LoadingAnimation";
 
 const HEADER_BAND_STYLE = {
   whiteSpace: "nowrap",
@@ -58,19 +57,21 @@ export default function AlterMenu({
   selectAlternative,
   deleteTranslation,
   ungroupMwe,
-  alternativesLoaded,
   askLlmTranslation,
 }) {
   const refToAlterMenu = useRef(null);
   const inputRef = useRef(null);
   const [inputValue, setInputValue] = useState("");
   const [showOwnInput, setShowOwnInput] = useState(false);
-  // ADR 022: Ask-LLM is a single-shot action. While the LLM call is in
-  // flight we disable the button and show a small spinner inline so the
-  // user knows their tap was registered. The result is appended to
-  // word.alternatives and rerendered into the regular menu rows.
+  // ADR 022: Ask-LLM is opt-in. While the LLM call is in flight the row
+  // shows "Asking LLM…" and is disabled. On success we hide the button
+  // (the new alternative is now in the list). On failure we leave the
+  // button visible with an inline error so the user can retry — silently
+  // removing it would look like "the option just vanished and nothing
+  // happened," which is exactly what we got bug-reported on.
   const [isAskingLlm, setIsAskingLlm] = useState(false);
-  const [askedLlm, setAskedLlm] = useState(false);
+  const [llmSucceeded, setLlmSucceeded] = useState(false);
+  const [llmError, setLlmError] = useState(false);
 
   useEffect(() => {
     if (showOwnInput && inputRef.current) inputRef.current.focus();
@@ -129,7 +130,6 @@ export default function AlterMenu({
 
   const filteredAlternatives = buildAlternatives(word);
   const hasAlternatives = filteredAlternatives.length > 0;
-  const showEmptyHeader = alternativesLoaded && !hasAlternatives;
 
   // Reposition only when something that can change menu dimensions changes;
   // otherwise re-runs on every keystroke in the input force a reflow.
@@ -150,7 +150,7 @@ export default function AlterMenu({
     }
     if (left < margin) left = margin;
     el.style.left = `${left}px`;
-  }, [alternativesLoaded, hasAlternatives, showOwnInput, filteredAlternatives.length]);
+  }, [hasAlternatives, showOwnInput, filteredAlternatives.length]);
 
   let header = null;
   if (word.disagreement) {
@@ -164,7 +164,7 @@ export default function AlterMenu({
     header = (
       <div style={{ ...HEADER_BAND_STYLE, color: "var(--altermenu-header-text)" }}>Alternatives</div>
     );
-  } else if (showEmptyHeader) {
+  } else {
     header = (
       <div style={{ ...HEADER_BAND_STYLE, color: "var(--altermenu-header-text)" }}>No alternatives found</div>
     );
@@ -183,12 +183,6 @@ export default function AlterMenu({
           <div className="altermenuSourceLabel">{shortenSource(each)}</div>
         </div>
       ))}
-      {/* Spinner only when we have nothing to show yet — competing_translations
-          from the bookmark response already populate the list immediately, so
-          showing a spinner under them looks like a stray "extra option". */}
-      {!alternativesLoaded && !hasAlternatives && (
-        <LoadingAnimation specificStyle={{ transform: "scale(0.4)", height: "2rem", margin: "0.5rem 0 -0.5rem 0" }} delay={0}></LoadingAnimation>
-      )}
       {showOwnInput && (
         <input
           ref={inputRef}
@@ -208,28 +202,33 @@ export default function AlterMenu({
             Add own translation
           </div>
         )}
-        {askLlmTranslation && !askedLlm && (
+        {askLlmTranslation && !llmSucceeded && (
           <div
             className="neutralLink"
             aria-disabled={isAskingLlm}
             style={isAskingLlm ? { opacity: 0.6, pointerEvents: "none" } : undefined}
             onClick={() => {
               if (isAskingLlm) return;
+              setLlmError(false);
               setIsAskingLlm(true);
               askLlmTranslation(
                 word,
                 () => {
                   setIsAskingLlm(false);
-                  setAskedLlm(true);
+                  setLlmSucceeded(true);
                 },
                 () => {
                   setIsAskingLlm(false);
-                  setAskedLlm(true);
+                  setLlmError(true);
                 },
               );
             }}
           >
-            {isAskingLlm ? "Asking LLM…" : "Ask LLM"}
+            {isAskingLlm
+              ? "Asking LLM…"
+              : llmError
+              ? "Ask LLM — try again"
+              : "Ask LLM"}
           </div>
         )}
         {word.mweExpression && ungroupMwe && (
