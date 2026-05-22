@@ -28,10 +28,17 @@ export default function TopTabs({ title, tabsAndLinks }) {
               link={tab.link}
               counter={tab.counter}
               action={tab.action}
+              isActive={tab.isActive}
               addSeparator={true}
             />
           ))}
-          <TopTab text={lastTab.text} link={lastTab.link} counter={lastTab.counter} action={lastTab.action} />
+          <TopTab
+            text={lastTab.text}
+            link={lastTab.link}
+            counter={lastTab.counter}
+            action={lastTab.action}
+            isActive={lastTab.isActive}
+          />
         </div>
       </s.TopTabs>
     </s.TopTabsWrapper>

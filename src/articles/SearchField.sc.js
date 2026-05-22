@@ -3,16 +3,12 @@ import { zeeguuOrange, almostBlack } from "../components/colors";
 
 const SearchField = styled.div`
   margin-bottom: 1em;
-  margin-left: 1em;
+  padding: 0 1em;
   display: flex;
   gap: 0.5rem;
   width: 100%;
+  box-sizing: border-box;
   align-items: center;
-  justify-content: center;
-  @media (max-width: 768px) {
-    width: 100%;
-    justify-content: flex-start;
-  }
 `;
 
 const SearchInput = styled.input`
@@ -20,32 +16,20 @@ const SearchInput = styled.input`
 
   border: 0.15em solid ${zeeguuOrange};
   border-radius: 0.9375em;
-  padding: 0.125em;
-  padding-left: 0.5em;
-  padding-right: 5px;
   font-family: Montserrat;
   font-weight: 300;
-  height: 1.5em;
   box-sizing: border-box;
-  width: 50%;
+  width: 100%;
   font-size: 1rem; /* Must be >= 16px to prevent iOS auto-zoom on focus */
   height: 2.5rem;
   padding: 0 1rem;
   margin: 0;
-  &:focus {
-    border: 0.15em solid ${almostBlack};
-    font-weight: 600 !important;
-    width: 90%;
-  }
+  transition: border-color 0.2s ease;
 
-  @media (max-width: 768px) {
-    width: 70%;
-    &:focus {
-      width: 80%;
-    }
+  &:focus {
+    border-color: ${almostBlack};
+    font-weight: 600;
   }
-  -webkit-transition: all 0.5s;
-  transition: all 0.5s;
 `;
 
 export { SearchField, SearchInput };

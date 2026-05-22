@@ -5,6 +5,7 @@ import { almostBlack, veryLightGrey } from "../components/colors";
 const SortingButtons = styled.div`
   display: flex;
   justify-content: flex-end;
+  padding: 0 1em;
   font-size: medium;
 
   .sort-by {

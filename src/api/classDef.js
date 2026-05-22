@@ -22,7 +22,22 @@ const Zeeguu_API = class {
   constructor(baseAPIurl) {
     this.baseAPIurl = baseAPIurl;
     this._cache = new Map();
+    this._sessionListeners = new Set();
     //this.session = currentSession; is instantiated in App when the user logs in (causes error to actually instantiate it here).
+  }
+
+  // Single mutation point for the session. Direct assignment (`api.session = X`)
+  // is the historic pattern but bypasses listeners — App-level React state and
+  // imperative API mutation drift apart, producing `session=undefined` URLs and
+  // stale-session bugs. All new code should go through here.
+  setSession(value) {
+    this.session = value || undefined;
+    this._sessionListeners.forEach((fn) => fn(this.session));
+  }
+
+  onSessionChange(fn) {
+    this._sessionListeners.add(fn);
+    return () => this._sessionListeners.delete(fn);
   }
 
   // Cache keys include the learned language so switching languages
@@ -41,6 +56,21 @@ const Zeeguu_API = class {
     return null;
   }
 
+  // Drop cached responses whose endpoint starts with `endpointPrefix`.
+  // Use after mutations that should make the user see fresh data
+  // immediately (e.g. simplifying an article → feed should drop the
+  // original).
+  invalidateCache(endpointPrefix) {
+    for (const key of this._cache.keys()) {
+      // Keys are `${lang}:${endpoint}` — match against the endpoint half.
+      const colonIdx = key.indexOf(":");
+      const endpoint = colonIdx === -1 ? key : key.slice(colonIdx + 1);
+      if (endpoint.startsWith(endpointPrefix)) {
+        this._cache.delete(key);
+      }
+    }
+  }
+
   apiLog(what) {
     console.log("➡️ " + what);
   }
@@ -50,10 +80,14 @@ const Zeeguu_API = class {
   }
 
   _appendSessionToUrl(endpointName) {
-    if (endpointName.includes("?")) {
-      return `${this.baseAPIurl}/${endpointName}&session=${this.session}`;
+    // Without this guard, `this.session` being undefined produced literal
+    // `session=undefined` in the URL — auth endpoints then 401 in a loop
+    // instead of failing cleanly so the caller can route to login.
+    if (!this.session) {
+      return `${this.baseAPIurl}/${endpointName}`;
     }
-    return `${this.baseAPIurl}/${endpointName}?session=${this.session}`;
+    const separator = endpointName.includes("?") ? "&" : "?";
+    return `${this.baseAPIurl}/${endpointName}${separator}session=${this.session}`;
   }
 
   _getPlainText(endpoint, callback, onError) {
@@ -61,7 +95,12 @@ const Zeeguu_API = class {
     fetch(this._appendSessionToUrl(endpoint, this.session))
       .then((response) => {
         if (!response.ok) {
-          throw new Error("Network response was not ok");
+          // HTTP error — server responded, but rejected. Attach the status so
+          // callers can distinguish "session invalid" (401/403) from "network
+          // unreachable" (catch path below, no status).
+          const err = new Error(`Server response not ok (${response.status})`);
+          err.status = response.status;
+          throw err;
         }
         return response.text();
       })
@@ -185,6 +224,71 @@ const Zeeguu_API = class {
         );
       });
     }
+  }
+
+  _handlePostError(endpoint, method, error, onError) {
+    console.error(`API error on ${method} ${endpoint}:`, error);
+    Sentry.captureException(error instanceof Error ? error : new Error(error), {
+      tags: { endpoint, method },
+    });
+
+    if (onError) {
+      onError(error);
+    }
+  }
+
+  _parsePostJSONResponse(endpoint, response) {
+    if (response.ok) {
+      return response.json();
+    }
+
+    if (response.status) {
+      check403ForPendingUpgrade(response.status);
+    }
+
+    return response.json().then(
+      (data) => Promise.reject(data.message || data.error || `HTTP ${response.status} on POST ${endpoint}`),
+      () => Promise.reject(`HTTP ${response.status} on POST ${endpoint}`),
+    );
+  }
+
+  _postJSON(endpoint, body, callback, onError) {
+    this.apiLog("POST" + endpoint);
+
+    return fetch(this._appendSessionToUrl(endpoint), {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body),
+    })
+      .then((response) => this._parsePostJSONResponse(endpoint, response))
+      .then((data) => {
+        if (callback) {
+          callback(data);
+        }
+        return data;
+      })
+      .catch((error) => {
+        this._handlePostError(endpoint, "POST", error, onError);
+      });
+  }
+
+  _postFormData(endpoint, formData, callback, onError) {
+    this.apiLog("POST" + endpoint);
+
+    return fetch(this._appendSessionToUrl(endpoint), {
+      method: "POST",
+      body: formData,
+    })
+      .then((response) => this._parsePostJSONResponse(endpoint, response))
+      .then((data) => {
+        if (callback) {
+          callback(data);
+        }
+        return data;
+      })
+      .catch((error) => {
+        this._handlePostError(endpoint, "POST", error, onError);
+      });
   }
 
   /**

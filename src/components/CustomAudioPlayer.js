@@ -3,8 +3,88 @@ import { zeeguuOrange } from "./colors";
 import PlayArrowRoundedIcon from "@mui/icons-material/PlayArrowRounded";
 import PauseRoundedIcon from "@mui/icons-material/PauseRounded";
 import HourglassEmptyRoundedIcon from "@mui/icons-material/HourglassEmptyRounded";
+import SkipPreviousRoundedIcon from "@mui/icons-material/SkipPreviousRounded";
+import Replay10RoundedIcon from "@mui/icons-material/Replay10Rounded";
+import Forward10RoundedIcon from "@mui/icons-material/Forward10Rounded";
 
 const SEEK_SECONDS = 10;
+
+const SPEED_OPTIONS = [0.8, 0.85, 0.9, 0.95, 1];
+
+const formatSpeed = (s) => `${s}x`;
+
+// Tap to cycle through SPEED_OPTIONS (like Apple Podcasts' speed pill).
+// Avoids a dropdown overlay that would collide with the title on narrow
+// viewports — the 5-step cycle is short enough that tapping through is
+// faster than scanning a menu anyway.
+function SpeedPicker({ value, onChange, disabled }) {
+  const cycleNext = () => {
+    const i = SPEED_OPTIONS.indexOf(value);
+    const next = SPEED_OPTIONS[(i + 1) % SPEED_OPTIONS.length];
+    onChange(next);
+  };
+  return (
+    <button
+      type="button"
+      onClick={() => !disabled && cycleNext()}
+      disabled={disabled}
+      aria-label={`Playback speed (current ${formatSpeed(value)}, tap to cycle)`}
+      style={{
+        background: "transparent",
+        border: `1.5px solid ${disabled ? "#ccc" : "var(--player-icon-color)"}`,
+        borderRadius: "50%",
+        width: "38px",
+        height: "38px",
+        padding: 0,
+        color: disabled ? "#ccc" : "var(--player-icon-color)",
+        fontSize: "12px",
+        fontWeight: 600,
+        cursor: disabled ? "not-allowed" : "pointer",
+        display: "inline-flex",
+        alignItems: "center",
+        justifyContent: "center",
+        whiteSpace: "nowrap",
+      }}
+    >
+      {formatSpeed(value)}
+    </button>
+  );
+}
+
+// Minimal icon-only nav button: no circle, no fill — just the icon coloured
+// by the global orange. Used by the rewind / skip-back / skip-forward
+// controls so they read as secondary actions to the centered play button.
+function IconNavButton({ onClick, disabled, ariaLabel, children }) {
+  return (
+    <button
+      onClick={onClick}
+      disabled={disabled}
+      aria-label={ariaLabel}
+      style={{
+        background: "transparent",
+        border: "none",
+        padding: 0,
+        color: disabled ? "#ccc" : "var(--player-icon-color)",
+        cursor: disabled ? "not-allowed" : "pointer",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        transition: "transform 0.2s ease",
+      }}
+      onMouseDown={(e) => {
+        if (!disabled) e.currentTarget.style.transform = "scale(0.9)";
+      }}
+      onMouseUp={(e) => {
+        if (!disabled) e.currentTarget.style.transform = "scale(1)";
+      }}
+      onMouseLeave={(e) => {
+        if (!disabled) e.currentTarget.style.transform = "scale(1)";
+      }}
+    >
+      {children}
+    </button>
+  );
+}
 
 export default function CustomAudioPlayer({
   src,
@@ -18,6 +98,7 @@ export default function CustomAudioPlayer({
   language,
   title = "Audio Lesson",
   artist = "Zeeguu",
+  autoPlay = false,
 }) {
   const getStoredSpeed = () => {
     if (!language) return 1.0;
@@ -44,14 +125,15 @@ export default function CustomAudioPlayer({
     }
   }, [playbackRate]);
 
-  // Set up Media Session API for lock screen controls
+  // Set up Media Session API for lock screen controls.
+  // Only the currently-playing player owns navigator.mediaSession (it's a
+  // singleton), so we gate on isPlaying — otherwise 10 cards in a list each
+  // set metadata on mount and re-fetch the artwork. Position state lives in
+  // its own effect below so currentTime updates don't rebuild the metadata.
   useEffect(() => {
     if (!('mediaSession' in navigator)) return;
+    if (!isPlaying) return;
 
-    // Force clear any existing metadata first
-    navigator.mediaSession.metadata = null;
-    
-    // Set fresh metadata for lock screen
     navigator.mediaSession.metadata = new MediaMetadata({
       title: title,
       artist: artist,
@@ -62,11 +144,7 @@ export default function CustomAudioPlayer({
         { src: '/static/images/zeeguu128.png', sizes: '128x128', type: 'image/png' }
       ]
     });
-    
-    // Force set playback state
-    navigator.mediaSession.playbackState = 'none';
 
-    // Set up action handlers
     navigator.mediaSession.setActionHandler('play', () => {
       const audio = audioRef.current;
       if (audio && audio.paused) {
@@ -149,40 +227,34 @@ export default function CustomAudioPlayer({
       }
     });
 
-    // Update playback state
-    const updatePlaybackState = () => {
-      if (!('mediaSession' in navigator)) return;
-      
-      const audio = audioRef.current;
-      if (!audio) return;
+    navigator.mediaSession.playbackState = 'playing';
 
-      navigator.mediaSession.playbackState = audio.paused ? 'paused' : 'playing';
-      
-      // Set position state for progress bar on lock screen
-      if ('setPositionState' in navigator.mediaSession) {
-        if (duration > 0) {
-          navigator.mediaSession.setPositionState({
-            duration: duration,
-            playbackRate: playbackRate,
-            position: currentTime
-          });
-        }
-      }
-    };
-
-    updatePlaybackState();
-
+    // Cleanup intentionally does NOT null action handlers. iOS only renders
+    // lock-screen seek/play buttons while their handlers are registered, and
+    // routes taps through them. Nulling on every pause meant the buttons went
+    // inert as soon as the user paused once. The next player to start playing
+    // will overwrite handlers on its own play transition; on unmount the
+    // stale handlers reference a null audioRef and no-op safely.
     return () => {
-      // Clean up handlers when component unmounts
       if ('mediaSession' in navigator) {
-        navigator.mediaSession.setActionHandler('play', null);
-        navigator.mediaSession.setActionHandler('pause', null);
-        navigator.mediaSession.setActionHandler('seekbackward', null);
-        navigator.mediaSession.setActionHandler('seekforward', null);
-        navigator.mediaSession.setActionHandler('seekto', null);
+        navigator.mediaSession.playbackState = 'paused';
       }
     };
-  }, [title, artist, language, duration, currentTime, playbackRate, isPlaying]);
+  }, [title, artist, language, isPlaying]);
+
+  // Position state for the lock-screen progress bar. Separate from the
+  // metadata effect so currentTime updates don't trigger an artwork refetch.
+  useEffect(() => {
+    if (!('mediaSession' in navigator)) return;
+    if (!isPlaying) return;
+    if (!('setPositionState' in navigator.mediaSession)) return;
+    if (duration <= 0) return;
+    navigator.mediaSession.setPositionState({
+      duration: duration,
+      playbackRate: playbackRate,
+      position: currentTime,
+    });
+  }, [isPlaying, duration, currentTime, playbackRate]);
 
   // Initialize Audio Context and handle visibility changes
   useEffect(() => {
@@ -280,37 +352,34 @@ export default function CustomAudioPlayer({
     };
   }, [isPlaying, duration, playbackRate]);
 
-  // Handle initial seek when audio is ready
+  // Apply initialProgress exactly ONCE per mount. Without the ref guard the
+  // effect re-fires every time the parent re-saves the playhead (every ~10s
+  // during playback `pause_position_seconds` propagates back here via props,
+  // changing initialProgress). Each re-run re-assigns audio.currentTime,
+  // which the audio engine treats as a real seek and briefly pauses output —
+  // audible as a stutter every 10 seconds.
+  const initialSeekAppliedRef = useRef(false);
   useEffect(() => {
+    if (initialSeekAppliedRef.current) return;
     const audio = audioRef.current;
     if (!audio || !initialProgress || initialProgress <= 0) return;
 
-    let hasSeenked = false;
-
     const seekToInitialProgress = () => {
-      if (hasSeenked) return; // Prevent multiple seeks
-
-      console.log(`Audio ready, seeking to initial progress: ${initialProgress}, duration: ${audio.duration}`);
+      if (initialSeekAppliedRef.current) return;
       if (audio.duration > 0 && initialProgress > 0) {
         audio.currentTime = initialProgress;
         setCurrentTime(initialProgress);
-        hasSeenked = true;
-        console.log(`Successfully seeked to ${initialProgress} seconds`);
-
-        // Remove listeners after successful seek
+        initialSeekAppliedRef.current = true;
         audio.removeEventListener("loadedmetadata", seekToInitialProgress);
         audio.removeEventListener("canplay", seekToInitialProgress);
       }
     };
 
-    // If audio is already loaded, seek immediately
     if (audio.readyState >= 2 && audio.duration > 0) {
       seekToInitialProgress();
     } else {
-      // Otherwise, wait for it to be ready
       audio.addEventListener("loadedmetadata", seekToInitialProgress);
       audio.addEventListener("canplay", seekToInitialProgress);
-
       return () => {
         audio.removeEventListener("loadedmetadata", seekToInitialProgress);
         audio.removeEventListener("canplay", seekToInitialProgress);
@@ -319,12 +388,45 @@ export default function CustomAudioPlayer({
   }, [initialProgress]);
 
   useEffect(() => {
+    if (!autoPlay) return;
+    const audio = audioRef.current;
+    if (!audio) return;
+
+    let started = false;
+    const tryStart = () => {
+      if (started) return;
+      started = true;
+      audio
+        .play()
+        .then(() => {
+          setIsPlaying(true);
+          onPlay && onPlay();
+          startProgressTimer();
+          if ("mediaSession" in navigator) {
+            navigator.mediaSession.playbackState = "playing";
+          }
+        })
+        .catch(() => {
+          // Autoplay blocked — user can still hit play.
+          started = false;
+        });
+    };
+
+    if (audio.readyState >= 3) {
+      tryStart();
+    } else {
+      audio.addEventListener("canplay", tryStart, { once: true });
+      return () => audio.removeEventListener("canplay", tryStart);
+    }
+  }, [autoPlay]);
+
+  useEffect(() => {
     const audio = audioRef.current;
     if (!audio) return;
 
     const updateTime = () => {
       setCurrentTime(audio.currentTime);
-      
+
       // Update media session position for lock screen scrubber
       if ('mediaSession' in navigator && 'setPositionState' in navigator.mediaSession) {
         if (duration > 0 && !audio.paused) {
@@ -407,6 +509,7 @@ export default function CustomAudioPlayer({
     };
   }, [onEnded, onError, onPause, initialProgress]);
 
+
   const saveProgress = (forceSave = false) => {
     const audio = audioRef.current;
     if (!audio || !onProgressUpdate) return;
@@ -451,27 +554,32 @@ export default function CustomAudioPlayer({
       // Note: handlePause will be called by the 'pause' event listener
       // which handles setIsPlaying, clearProgressTimer, saveProgress, and onPause
     } else {
-      // For iOS: Ensure audio context is resumed before playing
-      if (audioContextRef.current && audioContextRef.current.state === 'suspended') {
-        audioContextRef.current.resume().catch(err => {
-          console.log('Could not resume audio context on play:', err);
+      // For iOS: ensure the audio context is resumed before playing.
+      if (audioContextRef.current && audioContextRef.current.state === "suspended") {
+        audioContextRef.current.resume().catch(() => {
+          // Best-effort — fall through to audio.play() regardless.
         });
       }
-      
+
       audio.play().then(() => {
         setIsPlaying(true);
         onPlay && onPlay();
         startProgressTimer();
-        
-        // Force update media session when starting playback
-        if ('mediaSession' in navigator) {
-          navigator.mediaSession.playbackState = 'playing';
+        if ("mediaSession" in navigator) {
+          navigator.mediaSession.playbackState = "playing";
         }
-      }).catch(err => {
-        console.error('Playback failed:', err);
+      }).catch((err) => {
+        console.error("Playback failed:", err);
         setIsPlaying(false);
       });
     }
+  };
+
+  const seekToStart = () => {
+    const audio = audioRef.current;
+    if (!audio) return;
+    audio.currentTime = 0;
+    setCurrentTime(0);
   };
 
   const seekBackward = () => {
@@ -533,19 +641,19 @@ export default function CustomAudioPlayer({
   return (
     <div
       style={{
-        ...style,
         backgroundColor: "var(--card-bg)",
         borderRadius: "12px",
         padding: "20px",
         margin: "0 auto",
         maxWidth: "100%",
         boxSizing: "border-box",
+        ...style,
       }}
     >
       <audio 
         ref={audioRef} 
         src={src} 
-        preload="metadata"
+        preload="auto"
         playsInline
         controlsList="nodownload"
         crossOrigin="anonymous"
@@ -559,179 +667,109 @@ export default function CustomAudioPlayer({
         }}
       />
 
-      {/* Controls Section */}
-      <div style={{ display: "flex", alignItems: "center", marginBottom: "16px", justifyContent: "space-between" }}>
-        {/* Playback Controls */}
-        <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
-          {/* Back 15s Button */}
-          <button
-            onClick={seekBackward}
-            disabled={isLoading}
-            style={{
-              width: "44px",
-              height: "44px",
-              borderRadius: "50%",
-              border: `2px solid ${isLoading ? "#ccc" : zeeguuOrange}`,
-              backgroundColor: "var(--card-bg)",
-              color: isLoading ? "#ccc" : zeeguuOrange,
-              cursor: isLoading ? "not-allowed" : "pointer",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              fontSize: "20px",
-              transition: "all 0.2s ease",
-            }}
-            onMouseDown={(e) => {
-              if (!isLoading) {
-                e.currentTarget.style.transform = "scale(0.95)";
-              }
-            }}
-            onMouseUp={(e) => {
-              if (!isLoading) {
-                e.currentTarget.style.transform = "scale(1)";
-              }
-            }}
-            onMouseLeave={(e) => {
-              if (!isLoading) {
-                e.currentTarget.style.transform = "scale(1)";
-              }
-            }}
-          >
-            <span style={{ fontSize: "14px", fontWeight: "600" }}>-{SEEK_SECONDS}</span>
-          </button>
+      {/* Controls: flex space-between so the outer buttons hug the edges
+          and the play button sits in the middle, using the full width. */}
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          marginBottom: "16px",
+        }}
+      >
+        <IconNavButton onClick={seekToStart} disabled={isLoading} ariaLabel="Rewind to start">
+          <SkipPreviousRoundedIcon sx={{ fontSize: 32 }} />
+        </IconNavButton>
 
-          {/* Play/Pause Button */}
-          <button
-            onClick={togglePlay}
-            disabled={isLoading}
-            style={{
-              width: "60px",
-              height: "60px",
-              borderRadius: "50%",
-              border: "none",
-              backgroundColor: isLoading ? "#ccc" : zeeguuOrange,
-              color: "white",
-              cursor: isLoading ? "not-allowed" : "pointer",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              fontSize: "24px",
-              boxShadow: "0 4px 8px rgba(0,0,0,0.2)",
-              transition: "all 0.2s ease",
-            }}
-            onMouseDown={(e) => {
-              if (!isLoading) {
-                e.currentTarget.style.transform = "scale(0.95)";
-              }
-            }}
-            onMouseUp={(e) => {
-              if (!isLoading) {
-                e.currentTarget.style.transform = "scale(1)";
-              }
-            }}
-            onMouseLeave={(e) => {
-              if (!isLoading) {
-                e.currentTarget.style.transform = "scale(1)";
-              }
-            }}
-          >
-            {isLoading ? (
-              <HourglassEmptyRoundedIcon sx={{ fontSize: 28 }} />
-            ) : isPlaying ? (
-              <PauseRoundedIcon sx={{ fontSize: 32 }} />
-            ) : (
-              <PlayArrowRoundedIcon sx={{ fontSize: 32 }} />
-            )}
-          </button>
+        <IconNavButton onClick={seekBackward} disabled={isLoading} ariaLabel="Back 10 seconds">
+          <Replay10RoundedIcon sx={{ fontSize: 36 }} />
+        </IconNavButton>
 
-          <button
-            onClick={seekForward}
-            disabled={isLoading}
-            style={{
-              width: "44px",
-              height: "44px",
-              borderRadius: "50%",
-              border: `2px solid ${isLoading ? "#ccc" : zeeguuOrange}`,
-              backgroundColor: "var(--card-bg)",
-              color: isLoading ? "#ccc" : zeeguuOrange,
-              cursor: isLoading ? "not-allowed" : "pointer",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              fontSize: "20px",
-              transition: "all 0.2s ease",
-            }}
-            onMouseDown={(e) => {
-              if (!isLoading) {
-                e.currentTarget.style.transform = "scale(0.95)";
-              }
-            }}
-            onMouseUp={(e) => {
-              if (!isLoading) {
-                e.currentTarget.style.transform = "scale(1)";
-              }
-            }}
-            onMouseLeave={(e) => {
-              if (!isLoading) {
-                e.currentTarget.style.transform = "scale(1)";
-              }
-            }}
-          >
-            <span style={{ fontSize: "14px", fontWeight: "600" }}>+{SEEK_SECONDS}</span>
-          </button>
-        </div>
+        {/* Play/Pause: only control that keeps the circle. Always clickable —
+            audio.play() queues internally if audio isn't yet ready, so there's
+            no value in disabling the button during the loading window (and the
+            former hourglass-swap left users staring at an unresponsive UI). */}
+        <button
+          onClick={togglePlay}
+          style={{
+            width: "60px",
+            height: "60px",
+            borderRadius: "50%",
+            border: "none",
+            backgroundColor: zeeguuOrange,
+            color: "white",
+            cursor: "pointer",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            fontSize: "24px",
+            boxShadow: "0 4px 8px rgba(0,0,0,0.2)",
+            transition: "all 0.2s ease",
+          }}
+          onMouseDown={(e) => {
+            e.currentTarget.style.transform = "scale(0.95)";
+          }}
+          onMouseUp={(e) => {
+            e.currentTarget.style.transform = "scale(1)";
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.transform = "scale(1)";
+          }}
+        >
+          {isPlaying ? (
+            <PauseRoundedIcon sx={{ fontSize: 32 }} />
+          ) : (
+            <PlayArrowRoundedIcon sx={{ fontSize: 32 }} />
+          )}
+        </button>
 
-        {/* Speed Control Dropdown */}
-        <div style={{ position: "relative" }}>
-          <select
-            value={playbackRate}
-            onChange={(e) => handleSpeedChange(parseFloat(e.target.value))}
-            disabled={isLoading}
-            style={{
-              padding: "6px 12px",
-              borderRadius: "20px",
-              border: `1px solid ${zeeguuOrange}`,
-              backgroundColor: "var(--card-bg)",
-              color: zeeguuOrange,
-              cursor: isLoading ? "not-allowed" : "pointer",
-              fontSize: "14px",
-              fontWeight: "500",
-              outline: "none",
-              appearance: "none",
-              paddingRight: "28px",
-              minWidth: "80px",
-            }}
-          >
-            <option value="0.8">0.8x</option>
-            <option value="0.85">0.85x</option>
-            <option value="0.9">0.9x</option>
-            <option value="0.95">0.95x</option>
-            <option value="1">1x</option>
-          </select>
-          {/* Custom dropdown arrow */}
-          <div
-            style={{
-              position: "absolute",
-              right: "10px",
-              top: "50%",
-              transform: "translateY(-50%)",
-              pointerEvents: "none",
-              color: zeeguuOrange,
-              fontSize: "12px",
-            }}
-          >
-            ▼
-          </div>
-        </div>
+        <IconNavButton onClick={seekForward} disabled={isLoading} ariaLabel="Forward 10 seconds">
+          <Forward10RoundedIcon sx={{ fontSize: 36 }} />
+        </IconNavButton>
+
+        <SpeedPicker
+          value={playbackRate}
+          onChange={handleSpeedChange}
+          disabled={isLoading}
+        />
       </div>
 
-      {/* Progress Bar and Time Display */}
-      <div style={{ display: "flex", alignItems: "center", gap: "16px", marginTop: "16px" }}>
+      {/* Progress Bar full width, elapsed floats above the playhead, total parks below right */}
+      <div style={{ marginTop: "16px" }}>
+        {/* Elapsed: rides with the playhead above the bar */}
+        <div
+          style={{
+            position: "relative",
+            height: "18px",
+            marginBottom: "4px",
+            fontSize: "13px",
+            fontWeight: "600",
+            color: "var(--text-muted)",
+          }}
+        >
+          {(() => {
+            // Snap to flush-right once we're within a fraction of the end so
+            // the elapsed label aligns exactly with the total below.
+            const labelPct = progressPercentage > 98 ? 100 : progressPercentage;
+            return (
+              <span
+                style={{
+                  position: "absolute",
+                  left: `${labelPct}%`,
+                  transform: `translateX(-${labelPct}%)`,
+                  whiteSpace: "nowrap",
+                }}
+              >
+                {formatTime(currentTime, true)}
+              </span>
+            );
+          })()}
+        </div>
         {/* Progress Bar */}
         <div
           onClick={handleProgressClick}
           style={{
-            flex: 1,
+            width: "100%",
             height: "8px",
             backgroundColor: "var(--border-light)",
             borderRadius: "4px",
@@ -750,29 +788,20 @@ export default function CustomAudioPlayer({
             }}
           />
 
-          {/* Progress Handle */}
-          <div
-            style={{
-              position: "absolute",
-              top: "-6px",
-              left: `${progressPercentage}%`,
-              width: "20px",
-              height: "20px",
-              backgroundColor: zeeguuOrange,
-              borderRadius: "50%",
-              transform: "translateX(-50%)",
-              boxShadow: "0 2px 4px rgba(0,0,0,0.2)",
-              cursor: "pointer",
-              opacity: duration > 0 ? 1 : 0,
-            }}
-          />
         </div>
 
         {/* Time Display */}
-        <div style={{ minWidth: "100px", textAlign: "right" }}>
-          <div style={{ fontSize: "14px", fontWeight: "600", color: "var(--text-muted)" }}>
-            {formatTime(currentTime)} / {formatTime(duration, true)}
-          </div>
+        {/* Total: parked below, right-aligned */}
+        <div
+          style={{
+            marginTop: "6px",
+            textAlign: "right",
+            fontSize: "13px",
+            fontWeight: "600",
+            color: "var(--text-muted)",
+          }}
+        >
+          {formatTime(duration, true)}
         </div>
       </div>
     </div>

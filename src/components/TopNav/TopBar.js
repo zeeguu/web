@@ -4,7 +4,6 @@ import {zeeguuOrange} from "../colors";
 import { useEffect, useState, useContext} from "react";
 import {getTopBarData, DEFAULT_TOPBAR_PREFS} from "../../utils/progressTracking/progressData";
 import ProgressModal from "../progress_tracking/ProgressModal";
-import { getSharedSession } from "../../utils/cookies/userInfo";
 import { APIContext } from "../../contexts/APIContext";
 import { ProgressContext } from "../../contexts/ProgressContext";
 import { calculateWeeklyReadingMinutes } from "../../utils/progressTracking/progressHelpers";
@@ -50,7 +49,6 @@ export default function TopBar() {
     });
   };
 
-  api.session = getSharedSession();
   if (!api.session) return null;
 
   // Only show progress icons on the homepage (articles route)

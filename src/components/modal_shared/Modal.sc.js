@@ -60,8 +60,8 @@ const ModalWrapper = styled(Box)`
   }
 
   @media (max-width: 576px) {
-    padding: 24px 24px;
-    width: 90%;
+    padding: 20px 16px;
+    width: 92%;
   }
 `;
 

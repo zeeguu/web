@@ -33,7 +33,7 @@ function removeSharedUserInfoFromCookies() {
   Cookies.remove("name");
 }
 
-function getSharedSessionFromCookies() {
+function getSessionFromCookies() {
   return Cookies.get("sessionID");
 }
 
@@ -54,7 +54,7 @@ async function removeSharedUserInfoFromPreferences() {
   cachedSession = null; // Clear cache
 }
 
-async function getSharedSessionFromPreferences() {
+async function getSessionFromPreferences() {
   const result = await Preferences.get({ key: "sessionID" });
   return result.value;
 }
@@ -62,7 +62,7 @@ async function getSharedSessionFromPreferences() {
 // Initialize session from Preferences at app startup (call this before rendering)
 async function initializeSession() {
   if (isCapacitor()) {
-    cachedSession = await getSharedSessionFromPreferences();
+    cachedSession = await getSessionFromPreferences();
   }
   sessionLoaded = true;
   return cachedSession;
@@ -89,15 +89,18 @@ function removeSharedUserInfo() {
   }
 }
 
-function getSharedSession() {
+// Read the persisted session from the platform storage layer (cookies on web /
+// extension, Capacitor Preferences on mobile). After App boot this is the slow
+// path — runtime code should read the React session state instead.
+function getStoredSession() {
   if (isCapacitor()) {
     // Return cached session (must call initializeSession first)
     if (!sessionLoaded) {
-      console.warn("getSharedSession called before initializeSession - session may be undefined");
+      console.warn("getStoredSession called before initializeSession - session may be undefined");
     }
     return cachedSession;
   } else {
-    return getSharedSessionFromCookies();
+    return getSessionFromCookies();
   }
 }
 
@@ -115,16 +118,16 @@ export {
   // These handle minimal user info shared between web app and browser extension
   saveSharedUserInfo,
   removeSharedUserInfo,
-  getSharedSession,
+  getStoredSession,
   setUserSession,
-  // Initialization (must be called before getSharedSession on Capacitor)
+  // Initialization (must be called before getStoredSession on Capacitor)
   initializeSession,
   // Cookie-specific functions (for web/extension communication)
   saveSharedUserInfoToCookies,
   removeSharedUserInfoFromCookies,
-  getSharedSessionFromCookies,
+  getSessionFromCookies,
   // Preferences-specific functions (for Capacitor native storage)
   saveSharedUserInfoToPreferences,
   removeSharedUserInfoFromPreferences,
-  getSharedSessionFromPreferences,
+  getSessionFromPreferences,
 };

@@ -55,7 +55,7 @@ export default function Settings() {
         )}
         <SettingsItem path={"/account_settings/language_settings"}>{strings.languageSettings}</SettingsItem>
 
-        {!isAnonymous && !userDetails.is_teacher && (
+        {!isAnonymous && (
           <SettingsItem path={"/account_settings/my_classrooms"}>{strings.myClassrooms}</SettingsItem>
         )}
       </ListOfSettingsItems>

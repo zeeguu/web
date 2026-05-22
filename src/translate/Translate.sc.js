@@ -19,7 +19,7 @@ export const LanguageLabel = styled.span`
 
 export const SwapButton = styled.button`
   background: none;
-  border: 1px solid #ddd;
+  border: 1px solid var(--border-color);
   border-radius: 50%;
   width: 36px;
   height: 36px;
@@ -116,8 +116,8 @@ export const SpeakButton = styled.button`
 `;
 
 export const TranslationCard = styled.div`
-  background: white;
-  border: 1px solid #e0e0e0;
+  background: var(--card-bg);
+  border: 1px solid var(--border-light);
   border-radius: 0.5rem;
   padding: 1rem;
   margin-bottom: 1rem;
@@ -152,7 +152,7 @@ export const TranslationText = styled.div`
 
 export const TranslationSource = styled.div`
   font-size: 0.8rem;
-  color: #888;
+  color: var(--text-muted);
 `;
 
 export const AddButton = styled.button`
@@ -198,12 +198,12 @@ export const CardInfo = styled.div`
 
 export const CardExplanation = styled.div`
   font-size: 0.9rem;
-  color: #555;
+  color: var(--text-secondary);
   line-height: 1.4;
 `;
 
 export const ExamplesLoading = styled.div`
-  color: #888;
+  color: var(--text-muted);
   font-size: 0.9rem;
   font-style: italic;
   padding: 0.5rem 0;
@@ -216,17 +216,17 @@ export const ExampleRow = styled.div`
   padding: 0.5rem;
   margin: 0.25rem 0;
   border-radius: 0.25rem;
-  background: #f9f9f9;
+  background: var(--bg-secondary);
 `;
 
 export const ExampleText = styled.span`
   font-size: 0.95rem;
-  color: #444;
+  color: var(--text-primary);
   line-height: 1.4;
 `;
 
 export const NoExamples = styled.div`
-  color: #888;
+  color: var(--text-muted);
   font-size: 0.9rem;
   font-style: italic;
   padding: 0.5rem 0;
@@ -240,7 +240,7 @@ export const ErrorMessage = styled.div`
 
 export const NoResults = styled.div`
   text-align: center;
-  color: #666;
+  color: var(--text-secondary);
   padding: 2rem;
   font-style: italic;
 `;
@@ -250,18 +250,18 @@ export const ReportButton = styled.button`
   border: none;
   padding: 0.25rem;
   cursor: pointer;
-  color: #ccc;
+  color: var(--text-faint);
   display: flex;
   align-items: center;
   margin-top: 0.5rem;
 
   &:hover {
-    color: #999;
+    color: var(--text-secondary);
   }
 `;
 
 export const ReportedBadge = styled.span`
-  color: #999;
+  color: var(--text-faint);
   font-size: 0.8rem;
   display: flex;
   align-items: center;

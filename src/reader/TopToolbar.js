@@ -25,6 +25,8 @@ export default function TopToolbar({
   setShowMweHints,
   showReadingTimer,
   setShowReadingTimer,
+  readerFontSize,
+  setReaderFontSize,
   articleProgress,
   timer,
   reportBroken,
@@ -116,6 +118,8 @@ export default function TopToolbar({
               setShowMweHints={setShowMweHints}
               showReadingTimer={showReadingTimer}
               setShowReadingTimer={setShowReadingTimer}
+              readerFontSize={readerFontSize}
+              setReaderFontSize={setReaderFontSize}
             />
           </div>
         </s.TopbarButtonsContainer>

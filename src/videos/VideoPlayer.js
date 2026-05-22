@@ -77,17 +77,16 @@ export default function VideoPlayer() {
       console.log("VIDEO INFO: ", video);
 
       setInteractiveTitle(
-        new InteractiveText(
-          video.tokenized_title.tokens,
-          video.source_id,
+        new InteractiveText({
+          tokenizedParagraphs: video.tokenized_title.tokens,
+          sourceId: video.source_id,
           api,
-          video.tokenized_title.past_bookmarks,
-          api.TRANSLATE_TEXT,
-          video.language_code,
-          WEB_READER,
-          speech,
-          video.tokenized_title.context_identifier,
-        ),
+          previousBookmarks: video.tokenized_title.past_bookmarks,
+          language: video.language_code,
+          source: WEB_READER,
+          zeeguuSpeech: speech,
+          contextIdentifier: video.tokenized_title.context_identifier,
+        }),
       );
 
       setVideoInfo(video); // Note videoInfo cannot be accessed from here
@@ -153,17 +152,16 @@ export default function VideoPlayer() {
       if (captionMatch && captionMatch.context_identifier.video_caption_id !== lastCaptionIdRef.current) {
         lastCaptionIdRef.current = captionMatch.context_identifier.video_caption_id;
         setCurrentInteractiveCaption(
-          new InteractiveText(
-            captionMatch.tokenized_text,
-            videoInfo.source_id,
+          new InteractiveText({
+            tokenizedParagraphs: captionMatch.tokenized_text,
+            sourceId: videoInfo.source_id,
             api,
-            captionMatch.past_bookmarks,
-            api.TRANSLATE_TEXT,
-            videoInfo.language_code,
-            "video",
-            speech,
-            captionMatch.context_identifier,
-          ),
+            previousBookmarks: captionMatch.past_bookmarks,
+            language: videoInfo.language_code,
+            source: "video",
+            zeeguuSpeech: speech,
+            contextIdentifier: captionMatch.context_identifier,
+          }),
         );
       } else if (!captionMatch && lastCaptionIdRef.current !== null) {
         // No caption found, clear the current interactive caption

@@ -7,7 +7,6 @@ import { useContext } from "react";
 import { UserContext } from "../../../contexts/UserContext";
 import { ExercisesCounterContext } from "../../../exercises/ExercisesCounterContext";
 
-
 export default function BottomNavOptionsForStudent() {
   const path = useLocation().pathname;
   const { userDetails } = useContext(UserContext);

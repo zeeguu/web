@@ -4,6 +4,7 @@ import ArticlePreview from "./ArticlePreview";
 import SearchField from "./SearchField";
 import * as s from "./ArticleListBrowser.sc";
 import LoadingAnimation from "../components/LoadingAnimation";
+import CustomizeGear from "./CustomizeGear";
 
 import LocalStorage from "../assorted/LocalStorage";
 
@@ -11,7 +12,6 @@ import ShowLinkRecommendationsIfNoArticles from "./ShowLinkRecommendationsIfNoAr
 import { APIContext } from "../contexts/APIContext";
 import useExtensionCommunication from "../hooks/useExtensionCommunication";
 import useArticlePagination from "../hooks/useArticlePagination";
-import UnfinishedArticlesList from "./UnfinishedArticleList";
 import { setTitle } from "../assorted/setTitle";
 import strings from "../i18n/definitions";
 import useShadowRef from "../hooks/useShadowRef";
@@ -27,7 +27,6 @@ export default function ArticleListBrowser({ content, searchQuery, searchPublish
   // A '=== "true"' clause has been added to the getters to achieve predictable and desired bool values.
   const doNotShowRedirectionModal_LocalStorage = LocalStorage.getDoNotShowRedirectionModal() === "true";
   const [articlesAndVideosList, setArticlesAndVideosList] = useState();
-  const [unfinishedArticles, setUnfinishedArticles] = useState();
   const [originalList, setOriginalList] = useState(null);
   const [searchError, setSearchError] = useState(false);
 
@@ -109,7 +108,6 @@ export default function ArticleListBrowser({ content, searchQuery, searchPublish
       const updatedOriginalList = originalList.filter((item) => item.id !== articleId);
       setOriginalList(updatedOriginalList);
     }
-    setUnfinishedArticles(prev => prev ? prev.filter((item) => item.id !== articleId) : prev);
   };
 
   useEffect(() => {
@@ -153,20 +151,11 @@ export default function ArticleListBrowser({ content, searchQuery, searchPublish
         );
       } else {
         setTitle(strings.titleHome);
-        api.getUnfinishedUserReadingSessions((unfinished) => {
-          setUnfinishedArticles(unfinished);
-          api.getUserArticles((articles) => {
-            let filteredArticles = [...articles];
-            for (let i = 0; i < unfinished.length; i++) {
-              filteredArticles = filteredArticles.filter(
-                (article) => article.id !== unfinished[i].id,
-              );
-            }
-            setArticlesAndVideosList(filteredArticles);
-            setOriginalList([...filteredArticles]);
-            filteredArticles.some((e) => e.video) ? setAreVideosAvailable(true) : setAreVideosAvailable(false);
-            resolve();
-          });
+        api.getUserArticles((articles) => {
+          setArticlesAndVideosList(articles);
+          setOriginalList([...articles]);
+          setAreVideosAvailable(articles.some((e) => e.video));
+          resolve();
         });
       }
     });
@@ -181,7 +170,7 @@ export default function ArticleListBrowser({ content, searchQuery, searchPublish
       };
     }
     // eslint-disable-next-line
-  }, [searchPublishPriority, searchDifficultyPriority]);
+  }, [searchQuery, searchPublishPriority, searchDifficultyPriority]);
 
   if (articlesAndVideosList == null) {
     return <LoadingAnimation />;
@@ -199,12 +188,22 @@ export default function ArticleListBrowser({ content, searchQuery, searchPublish
     );
   }
 
+  // Pull-to-refresh should always hit the network — otherwise a cached
+  // recommendations response (5-min TTL) keeps serving stale data and
+  // the user can't see fresh results without restarting the app.
+  const refreshFromNetwork = async () => {
+    api.invalidateCache("user_articles/recommended");
+    await loadArticles();
+  };
+
   return (
-    <PullToRefresh onRefresh={loadArticles} pullingContent="">
+    <PullToRefresh onRefresh={refreshFromNetwork} pullingContent="">
       <>
       {!searchQuery && (
         <>
-          <UnfinishedArticlesList unfinishedArticles={unfinishedArticles} onArticleHidden={handleArticleHidden} />
+          <div style={{ display: "flex", padding: "0.5em 1em 0.25em" }}>
+            <CustomizeGear />
+          </div>
           {areVideosAvailable && (
             <s.SortHolder
               style={{

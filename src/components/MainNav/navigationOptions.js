@@ -3,25 +3,35 @@ import strings from "../../i18n/definitions";
 import LocalStorage from "../../assorted/LocalStorage";
 
 export function isNavOptionActive(linkTo, currentPath) {
-  // Special case: Home should be active for both /articles and /swiper
-  return linkTo === "/articles"
+  // Special case: the Read (articles) button should be active for any
+  // /articles/* sub-tab and /swiper. linkTo varies (last-visited tab) so
+  // match on the /articles prefix instead of equality.
+  return linkTo?.startsWith("/articles")
     ? currentPath?.startsWith("/articles") || currentPath?.startsWith("/swiper")
     : currentPath?.startsWith(linkTo);
 }
 
 export default class NavigationOptions {
   // Student-specific options
-  static articles = Object.freeze({
-    linkTo: "/articles",
-    icon: <NavIcon name="read" />,
-    text: strings.articles,
-  });
+  static get articles() {
+    return Object.freeze({
+      linkTo: LocalStorage.getLastVisitedReadPath(),
+      icon: <NavIcon name="read" />,
+      text: strings.articles,
+    });
+  }
 
   static exercises = Object.freeze({
     linkTo: "/exercises",
     icon: <NavIcon name="exercises" />,
     text: strings.exercises,
   });
+  
+  static verbalFlashcards = Object.freeze({
+    linkTo: "/verbalFlashcards",
+    icon: <NavIcon name="verbalFlashcards" />,
+    text: strings.verbalFlashcards,
+  })
 
   static dailyAudio = Object.freeze({
     linkTo: "/daily-audio",
@@ -45,12 +55,6 @@ export default class NavigationOptions {
     linkTo: "/activity-history",
     icon: <NavIcon name="history" />,
     text: strings.activity,
-  });
-
-  static myArticles = Object.freeze({
-    linkTo: "/my-articles",
-    icon: <NavIcon name="myTexts" />,
-    text: strings.myArticles,
   });
 
   static myWords = Object.freeze({

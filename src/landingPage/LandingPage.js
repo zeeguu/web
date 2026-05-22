@@ -2,7 +2,7 @@ import { useEffect, useContext } from "react";
 import { useHistory } from "react-router-dom/cjs/react-router-dom";
 import { Redirect } from "react-router-dom";
 import { setTitle } from "../assorted/setTitle";
-import { getSharedSession } from "../utils/cookies/userInfo";
+import { getStoredSession } from "../utils/cookies/userInfo";
 import LocalStorage from "../assorted/LocalStorage";
 import { SystemLanguagesContext } from "../contexts/SystemLanguagesContext.js";
 import InstallationInstructions from "./InstallationInstructions.js";
@@ -23,7 +23,7 @@ export default function LandingPage() {
     setTitle(strings.landingPageTitle);
   }, []);
 
-  if (getSharedSession()) {
+  if (getStoredSession()) {
     const lastVisitedPage = LocalStorage.getLastVisitedPage();
     const redirectTo = lastVisitedPage || "/articles";
     return <Redirect to={{ pathname: redirectTo }} />;
@@ -114,6 +114,49 @@ export default function LandingPage() {
                 src="static/images/spaced-repetition-calendar.png"
               />
             </s.ResponsiveRow>
+
+          </s.PageSection>
+        </s.PageSectionWrapper>
+        <s.PageSectionWrapper>
+          <s.PageSection>
+            <h2>What's new in&nbsp;2026?</h2>
+            <s.TripleRow>
+              <s.TripleCell>
+                <img
+                  alt="An Italian news article in the Zeeguu mobile app, with the option to translate it to your level"
+                  src="static/images/mobile-simplification.jpeg"
+                />
+                <h3>Any article, in your language and at your&nbsp;level</h3>
+                <p>
+                  Send any article in any language to Zeeguu — and it will be converted to your learned language
+                  at your&nbsp;level.
+                </p>
+              </s.TripleCell>
+
+              <s.TripleCell>
+                <img
+                  alt="A Zeeguu audio lesson generated for the topic of meeting another Danish learner at the polyglot gathering"
+                  src="static/images/mobile-audio-lesson.jpeg"
+                />
+                <h3>Audio lessons on any topic you&nbsp;choose</h3>
+                <p>
+                  Pick a topic — work, hobbies, travel, anything — and Zeeguu generates a personalized audio lesson
+                  for&nbsp;it. Perfect for a bike ride, a walk, or a&nbsp;commute.
+                </p>
+              </s.TripleCell>
+
+              <s.TripleCell>
+                <img
+                  alt="The Zeeguu mobile app showing a personalized news feed in Italian and the user's streaks across multiple languages"
+                  src="static/images/mobile-feed.jpeg"
+                />
+                <h3>On the go with iOS and&nbsp;Android</h3>
+                <p>
+                  Read, listen, and practice from your phone. Your streaks, vocabulary, and progress sync
+                  across&nbsp;devices, so you can pick up wherever you left&nbsp;off.
+                </p>
+              </s.TripleCell>
+            </s.TripleRow>
           </s.PageSection>
         </s.PageSectionWrapper>
         <s.PageSectionWrapper>

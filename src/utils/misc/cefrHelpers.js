@@ -8,7 +8,7 @@ const NUMERIC_TO_CEFR = {
   6: "C2",
 };
 
-const CEFR_ORDINAL = { A1: 1, A2: 2, B1: 3, B2: 4, C1: 5, C2: 6 };
+export const CEFR_ORDINAL = { A1: 1, A2: 2, B1: 3, B2: 4, C1: 5, C2: 6 };
 
 /**
  * Read the user's CEFR level (1-6) for a given language code from the

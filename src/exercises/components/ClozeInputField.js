@@ -1,5 +1,6 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useContext } from "react";
 import * as s from "../../reader/TranslatableText.sc";
+import { SpeechContext } from "../../contexts/SpeechContext.js";
 
 /**
  * Self-contained cloze input field component.
@@ -29,20 +30,21 @@ export default function ClozeInputField({
 }) {
   const [hintVisible, setHintVisible] = useState(true);
   const inputRef = useRef(null);
+  const speech = useContext(SpeechContext);
 
   const isOver = isCorrectAnswer || isExerciseOver;
   const currentValue = isExerciseOver && !isCorrectAnswer ? clozePhrase : inputValue;
 
-  // With monospace font, 1ch = 1 character, so width is simple
-  // Minimum 8ch to accommodate "tap to type" hint and avoid jumping when typing starts
+  // Monospace font: 1ch = 1 character. Minimum 8ch fits the "tap to type"
+  // hint without the input width jumping once the user starts typing.
   const inputWidth = Math.max(currentValue.length + 1, 8);
 
-  // Expose inputRef to parent for virtual keyboard
   useEffect(() => {
     if (onInputRef) onInputRef(inputRef);
   }, [onInputRef]);
 
-  // Blur input when virtual keyboard is shown to hide native keyboard
+  // Blur the input when the virtual keyboard is shown so the OS keyboard
+  // doesn't fight with it for screen space on mobile.
   useEffect(() => {
     if (suppressOSKeyboard && inputRef.current) {
       inputRef.current.blur();
@@ -59,33 +61,24 @@ export default function ClozeInputField({
   }
 
   function handleChange(e) {
-    // Only hide hint when user actually has typed something
     if (e.target.value.length > 0) {
       setHintVisible(false);
     }
 
     let value = e.target.value;
-
-    // Save cursor position before any modifications
     const cursorPosition = e.target.selectionStart;
 
-    // Match capitalization of the solution
-    if (clozePhrase && value) {
-      if (clozePhrase.length > 0) {
-        // If solution starts with uppercase, capitalize first letter
-        if (clozePhrase[0] === clozePhrase[0].toUpperCase()) {
-          value = value.charAt(0).toUpperCase() + value.slice(1).toLowerCase();
-        } else {
-          // Otherwise make it lowercase
-          value = value.toLowerCase();
-        }
-
-        // Update the input value to match our formatting
-        e.target.value = value;
-
-        // Restore cursor position after setting value
-        e.target.setSelectionRange(cursorPosition, cursorPosition);
+    // Force the input's casing to match the solution so a correct word
+    // typed in the "wrong" case isn't marked wrong by upstream string
+    // comparison.
+    if (clozePhrase && value && clozePhrase.length > 0) {
+      if (clozePhrase[0] === clozePhrase[0].toUpperCase()) {
+        value = value.charAt(0).toUpperCase() + value.slice(1).toLowerCase();
+      } else {
+        value = value.toLowerCase();
       }
+      e.target.value = value;
+      e.target.setSelectionRange(cursorPosition, cursorPosition);
     }
 
     if (onInputChange) {
@@ -93,43 +86,50 @@ export default function ClozeInputField({
     }
   }
 
+  const handleWrapperClick = () => {
+    if (isOver) {
+      if (speech && clozePhrase) speech.speakOut(clozePhrase);
+    } else if (inputRef.current) {
+      inputRef.current.focus();
+    }
+  };
+
+  let clozeBody;
+  if (canTypeInline) {
+    clozeBody = (
+      <s.ClozeInputWrapper>
+        {showHint && hintVisible && inputValue === '' && !isExerciseOver && (
+          <s.ClozeHint>tap to type</s.ClozeHint>
+        )}
+        <s.ClozeInput
+          ref={inputRef}
+          type="text"
+          inputMode={suppressOSKeyboard ? "none" : undefined}
+          value={currentValue}
+          placeholder={placeholder}
+          onChange={handleChange}
+          onKeyPress={handleKeyPress}
+          disabled={isOver}
+          $isOver={isOver}
+          $isCorrect={isCorrectAnswer}
+          $isEmpty={inputValue === ''}
+          $width={inputWidth}
+          autoComplete="off"
+          spellCheck="false"
+        />
+      </s.ClozeInputWrapper>
+    );
+  } else {
+    clozeBody = (
+      <s.ClozeStaticPlaceholder $isOver={isExerciseOver}>
+        {isExerciseOver ? clozePhrase : '\u00A0'}
+      </s.ClozeStaticPlaceholder>
+    );
+  }
+
   return (
-    <s.ClozeWrapper
-      key={wordId}
-      $isOver={isOver}
-      onClick={() => {
-        if (!isOver && inputRef.current) {
-          inputRef.current.focus();
-        }
-      }}
-    >
-      {canTypeInline ? (
-        <s.ClozeInputWrapper>
-          {showHint && hintVisible && inputValue === '' && !isExerciseOver && (
-            <s.ClozeHint>tap to type</s.ClozeHint>
-          )}
-          <s.ClozeInput
-            ref={inputRef}
-            type="text"
-            inputMode={suppressOSKeyboard ? "none" : undefined}
-            value={currentValue}
-            placeholder={placeholder}
-            onChange={handleChange}
-            onKeyPress={handleKeyPress}
-            disabled={isOver}
-            $isOver={isOver}
-            $isCorrect={isCorrectAnswer}
-            $isEmpty={inputValue === ''}
-            $width={inputWidth}
-            autoComplete="off"
-            spellCheck="false"
-          />
-        </s.ClozeInputWrapper>
-      ) : (
-        <s.ClozeStaticPlaceholder $isOver={isExerciseOver}>
-          {isExerciseOver ? clozePhrase : '\u00A0'}
-        </s.ClozeStaticPlaceholder>
-      )}
+    <s.ClozeWrapper key={wordId} $isOver={isOver} onClick={handleWrapperClick}>
+      {clozeBody}
       {aboveClozeElement && !isExerciseOver && aboveClozeElement}
     </s.ClozeWrapper>
   );

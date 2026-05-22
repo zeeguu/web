@@ -1,22 +1,20 @@
 import styled from "styled-components";
-import { almostBlack } from "../components/colors";
 
 const SearchTopBar = styled.div`
   display: flex;
   justify-content: space-between;
-  padding-left: 1em;
+  padding: 0.5em 1em 0.25em;
 
   @media (max-width: 768px) {
     flex-direction: column;
-    gap: 1rem;
+    gap: 0.5rem;
   }
 `;
-const HeadlineSearch = styled.h1`
-  color: ${almostBlack};
-  margin: 0;
-  font-size: 34px;
-  font-weight: bold;
-  margin-right: 1.4em;
+const HeadlineSearch = styled.h2`
+  color: var(--text-primary);
+  margin: 0 1.4em 0 0;
+  font-size: 1.25rem;
+  font-weight: 600;
 `;
 
 const ContainerTitleSubscribe = styled.div`

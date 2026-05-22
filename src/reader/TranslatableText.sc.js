@@ -2,9 +2,24 @@ import styled, { keyframes, css } from "styled-components";
 import { almostBlack, zeeguuOrange, zeeguuTransparentMediumOrange, orange600 } from "../components/colors";
 
 const TranslatableText = styled.div`
-  /* MWE adjacent color - used for contiguous MWEs */
-  --mwe-adjacent-color: rgb(200, 140, 60);
+  /* MWE adjacent color - matches single-word zeeguuOrange */
+  --mwe-adjacent-color: ${zeeguuOrange};
   --mwe-adjacent-bg: rgb(255, 240, 220);
+
+  /* Dark mode: softer, less saturated orange for the highlight, and a
+     warm dark-tan chip background. The brand orange (#ffbb54) is too hot
+     against the navy backdrop. */
+  :root[data-theme="dark"] & {
+    --mwe-adjacent-color: #d4a05a;
+    --mwe-adjacent-bg: rgb(50, 40, 30);
+  }
+
+  /* Dark mode: keep the pastel palette chip backgrounds (they pair partner
+     words), but force dark text inside so the pastel doesn't wash out the
+     light theme text. */
+  :root[data-theme="dark"] & z-tag[class*="mwe-color-"] z-tran {
+    color: ${almostBlack} !important;
+  }
 
   /* ========================================================================
    * BASE Z-TAG STYLES
@@ -252,24 +267,24 @@ const TranslatableText = styled.div`
     padding-left: 0.3rem;
     border-radius: 0.3em;
     background-clip: padding-box;
-    background-color: rgb(255 229 158 / 100%);
-    font-size: 14px;
-    line-height: 1.1rem;
+    background-color: var(--mwe-adjacent-bg);
+    font-size: 0.75em;
+    line-height: 1.1em;
     max-width: 100%;
     font-weight: 600;
-    color: ${almostBlack};
+    color: var(--text-primary);
     text-align: left;
     display: flex;
   }
 
   z-orig span {
-    border-bottom: 1px dashed ${zeeguuOrange};
+    border-bottom: 1px dashed var(--mwe-adjacent-color);
     border-radius: 0.35rem;
   }
 
   z-tag z-orig {
     width: 100%;
-    color: ${zeeguuOrange};
+    color: var(--mwe-adjacent-color);
     font-weight: 600;
   }
 
@@ -463,11 +478,6 @@ const pulseUnderline = keyframes`
   50% { border-bottom-color: var(--cloze-underline-pulse, #999); }
 `;
 
-const correctAnswerAnimation = keyframes`
-  0% { color: inherit; font-weight: normal; }
-  100% { color: ${orange600}; font-weight: 700; }
-`;
-
 const ClozeWrapper = styled.span`
   position: relative;
   display: inline-flex;
@@ -475,7 +485,7 @@ const ClozeWrapper = styled.span`
   align-items: center;
   gap: 0.25em;
   margin-right: 0.25em;
-  cursor: ${props => props.$isOver ? 'default' : 'text'};
+  cursor: ${props => props.$isOver ? 'pointer' : 'text'};
 `;
 
 const ClozeInputWrapper = styled.span`
@@ -509,13 +519,26 @@ const ClozeInput = styled.input`
   padding: 2px 4px;
   margin: 0;
   color: ${props => props.$isOver ? orange600 : 'inherit'};
-  font-weight: ${props => props.$isOver ? '700' : 'normal'};
   cursor: ${props => props.$isOver ? 'default' : 'text'};
+  transition: color 0.45s ease-out, border-bottom-color 0.45s ease-out;
   animation: ${props => {
-    if (props.$isCorrect) return css`${correctAnswerAnimation} 0.6s ease-out forwards`;
     if (props.$isEmpty) return css`${pulseUnderline} 2s ease-in-out infinite`;
     return 'none';
   }};
+
+  /* iOS Safari renders disabled inputs with reduced opacity and a grey
+     -webkit-text-fill-color override. Without this block, the moment the
+     correct answer disables the input it visibly dims, masking the colour
+     transition with a "freeze" before the orange settles in. */
+  &:disabled {
+    opacity: 1;
+    color: ${props => props.$isOver ? orange600 : 'inherit'};
+    -webkit-text-fill-color: ${props => props.$isOver ? orange600 : 'inherit'};
+    /* Let taps fall through to the wrapper's onClick so the solved
+       cloze can be tapped to pronounce — disabled <input> on iOS would
+       otherwise eat the click silently. */
+    pointer-events: none;
+  }
 `;
 
 const ClozeStaticPlaceholder = styled.span`

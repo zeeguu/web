@@ -9,33 +9,36 @@ export const GearWrapper = styled.div`
 `;
 
 export const GearButton = styled.button`
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  justify-content: center;
-  width: 1.5rem;
-  height: 1.5rem;
-  border: none;
-  border-radius: 0.25rem;
-  background: transparent;
-  color: #999;
+  gap: 0.4rem;
+  padding: 0.35rem 0.75rem;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--text-secondary);
+  font-size: 0.85rem;
   cursor: pointer;
-  transition: all 0.2s ease-in-out;
+  -webkit-tap-highlight-color: transparent;
+  transition: color 0.2s ease-in-out, border-color 0.2s ease-in-out;
 
   ${({ $isActive }) =>
     $isActive &&
     css`
       color: ${zeeguuOrange};
+      border-color: ${zeeguuOrange};
     `}
 
   &:hover {
     color: ${zeeguuOrange};
+    border-color: rgba(255, 255, 255, 0.18);
   }
 `;
 
 export const DropdownMenu = styled.div`
   position: absolute;
   top: 100%;
-  left: 0;
+  right: 0;
   margin-top: 0.5rem;
   min-width: 120px;
   background: white;

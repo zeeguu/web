@@ -2,6 +2,25 @@ import { useState, useEffect, useMemo, createElement } from "react";
 import TranslatableWord from "./TranslatableWord";
 import * as s from "./TranslatableText.sc";
 
+// Group each non-punct word with the right-attached punctuation tokens that
+// immediately follow it. Returned groups of >1 token get wrapped in a
+// `white-space: nowrap` span by the renderer so the trailing "." or "," can't
+// orphan onto a new line. Left-attached punct (opening parens/quotes) stays
+// on its own, since it should glue to the next word — that's a separate
+// problem we're not solving here.
+function groupWordsWithTrailingPunct(words) {
+  const groups = [];
+  for (const word of words) {
+    const isRightPunct = word.token?.is_punct && !word.token?.is_left_punct;
+    if (isRightPunct && groups.length > 0) {
+      groups[groups.length - 1].push(word);
+    } else {
+      groups.push([word]);
+    }
+  }
+  return groups;
+}
+
 /**
  * Renders interactive translatable text for the reader.
  * Users can click words to translate them.
@@ -92,7 +111,17 @@ export function TranslatableText({
         { className: `textParagraph ${divType}`, key: index },
         <>
           {index === 0 && leftEllipsis && <>...</>}
-          {par.getWords().map((word) => renderWordJSX(word))}
+          {groupWordsWithTrailingPunct(par.getWords()).map((group, gi) =>
+            group.length === 1 ? (
+              renderWordJSX(group[0])
+            ) : (
+              // white-space: nowrap glues a word to its trailing punctuation
+              // so a period/comma never wraps alone to a new line.
+              <span key={`g${index}-${gi}`} style={{ whiteSpace: "nowrap" }}>
+                {group.map((w) => renderWordJSX(w))}
+              </span>
+            ),
+          )}
           {index === 0 && rightEllipsis && <>...</>}
         </>,
       ),

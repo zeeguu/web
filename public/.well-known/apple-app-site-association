@@ -6,7 +6,8 @@
         "appID": "E9Y43LYCSK.org.zeeguu.app",
         "paths": [
           "/read/article*",
-          "/exercise/*"
+          "/exercise/*",
+          "/shared-lesson/*"
         ]
       }
     ]

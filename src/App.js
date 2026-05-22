@@ -6,6 +6,7 @@ import { UserContext } from "./contexts/UserContext";
 import { RoutingContext } from "./contexts/RoutingContext";
 import { FeedbackContextProvider } from "./contexts/FeedbackContext";
 import LocalStorage from "./assorted/LocalStorage";
+import { isDrillVocabEmpty, pushDrillVocab } from "./assorted/drillCache";
 import { APIContext } from "./contexts/APIContext";
 import Zeeguu_API, { ServerUnavailableError } from "./api/Zeeguu_API";
 import { ProgressProvider } from "./contexts/ProgressContext";
@@ -17,7 +18,7 @@ import { API_ENDPOINT, APP_DOMAIN, ONBOARDING_MESSAGE_IDS } from "./appConstants
 import { AUDIO_STATUS, GENERATION_PROGRESS } from "./dailyAudio/AudioLessonConstants";
 
 import {
-  getSharedSession,
+  getStoredSession,
   removeSharedUserInfo,
   saveSharedUserInfo,
   initializeSession,
@@ -71,7 +72,18 @@ function LocationTrackingWrapper({ children }) {
 }
 
 function App() {
-  const [api] = useState(new Zeeguu_API(API_ENDPOINT));
+  // Lazy init: set api.session synchronously before any effect runs, so hooks
+  // declared above the main session-loading effect (e.g. useTranslationOnboarding)
+  // don't fire requests with session=undefined on first mount.
+  const [api] = useState(() => {
+    const a = new Zeeguu_API(API_ENDPOINT);
+    a.session = getStoredSession();
+    return a;
+  });
+  // React-state mirror of api.session. Updated via api.onSessionChange below so
+  // every imperative api.setSession call (login, logout, anon restore, polling)
+  // propagates to consumers of UserContext.
+  const [session, setSession] = useState(() => getStoredSession());
   const themeValue = useTheme();
 
   useUILanguage();
@@ -88,12 +100,34 @@ function App() {
   const moreTranslationsModal = useMoreTranslationsOnboarding(api, userDetails);
 
   const [systemLanguages, setSystemLanguages] = useState();
-  // Initialize session from native storage (for Capacitor) before doing anything else
+  // Initialize session from native storage (for Capacitor) before doing anything else.
+  // On Capacitor, getStoredSession() returns null until Preferences resolves — push
+  // the resolved value through api.setSession so it lands in both api and React state.
   useEffect(() => {
-    initializeSession().then(() => {
+    initializeSession().then((storedSession) => {
+      if (storedSession) api.setSession(storedSession);
       setSessionInitialized(true);
     });
-  }, []);
+  }, [api]);
+
+  // Bridge imperative api.session mutations into React state.
+  useEffect(() => api.onSessionChange(setSession), [api]);
+
+  // When connectivity returns, refresh user details so we catch up on the
+  // stale userDetails left over from hydrateFromCache. If the session has
+  // been revoked while we were offline, the retry surfaces as 401/403 and
+  // we log out cleanly; other errors are swallowed (opportunistic retry).
+  useEffect(() => {
+    function handleOnline() {
+      if (!api.session) return;
+      loadUserDetails().catch((e) => {
+        if (e?.status === 401 || e?.status === 403) logout();
+      });
+    }
+    window.addEventListener("online", handleOnline);
+    return () => window.removeEventListener("online", handleOnline);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [api]);
 
   useEffect(() => {
     api.getSystemLanguages((languages) => {
@@ -167,10 +201,26 @@ function App() {
       setUserDetails(userDetails);
       setUserPreferences(userPreferences);
       setServerError(false);
+      seedDrillCacheIfEmpty(userDetails.learned_language);
     } catch (e) {
       if (e instanceof ServerUnavailableError) setServerError(true);
       else throw e;
     }
+  }
+
+  // Seed the wait-drill cache (see WaitDrill.js) on first login or after a
+  // localStorage wipe so the drill is useful from the first slow wait, even
+  // for users who haven't completed any exercises yet. One-shot per app boot;
+  // exercise completions and in-reader translations refresh it from then on.
+  function seedDrillCacheIfEmpty(learnedLang) {
+    if (!learnedLang || !isDrillVocabEmpty(learnedLang)) return;
+    api.getAllScheduledUserWords(false, (words) => {
+      if (!Array.isArray(words) || words.length === 0) return;
+      const pairs = words
+        .filter((w) => w?.from && w?.to)
+        .map((w) => ({ o: w.from, t: w.to }));
+      pushDrillVocab(learnedLang, pairs, "scheduled");
+    });
   }
 
   useEffect(() => {
@@ -185,7 +235,10 @@ function App() {
     // we get the latest feature flags for this user and save
     // them in the LocalStorage
 
-    api.session = getSharedSession();
+    // api.session was already initialized synchronously (web) or via the
+    // initializeSession effect above (Capacitor). Re-read here as a defensive
+    // sync in case storage changed between mount and this effect.
+    api.setSession(getStoredSession());
 
     // Only validate if there is a session.
     if (api.session !== undefined && api.session !== null) {
@@ -193,8 +246,19 @@ function App() {
         () => {
           loadUserDetails();
         },
-        () => {
-          logout();
+        (e) => {
+          // Critical: only log out when the server *actively* rejected the
+          // session (401/403). Network errors — airplane mode, dead wifi,
+          // captive portal — have no status code; treating those as "invalid
+          // session" and wiping the user is harmful (and was reported by a
+          // user mid-flight). Keep the session, hydrate from cached user
+          // info so the app can render in offline-tolerant mode (the drill
+          // still works from LocalStorage).
+          if (e?.status === 401 || e?.status === 403) {
+            logout();
+          } else {
+            hydrateFromCache();
+          }
         },
       );
     } else {
@@ -220,7 +284,7 @@ function App() {
           anonCredentials.password,
           (session) => {
             console.log("Anonymous login successful");
-            api.session = session;
+            api.setSession(session);
             saveSharedUserInfo({ name: "Guest", native_language: "en" }, session);
             loadUserDetails();
           },
@@ -241,9 +305,13 @@ function App() {
       }
     }
 
-    // Log out user on zeeguu.org if they log out of the extension
+    // Log out user on zeeguu.org if they log out of the extension.
+    // Detect storage-side session loss and propagate to api + React state so
+    // PrivateRoute redirects to /log_in. Guard on api.session being set so we
+    // don't fire setState every tick after we've already cleared.
     const interval = setInterval(() => {
-      if (!getSharedSession()) {
+      if (!getStoredSession() && api.session) {
+        api.setSession(undefined);
         setUserDetails({});
         setUserPreferences({});
       }
@@ -253,6 +321,14 @@ function App() {
     // eslint-disable-next-line
   }, [sessionInitialized]);
 
+  // Renders the app from cached user info when the server is unreachable,
+  // so the drill and cached data still work and we don't force a re-login.
+  function hydrateFromCache() {
+    const cached = LocalStorage.userInfo();
+    setUserDetails(cached.learned_language ? cached : {});
+    setUserPreferences({});
+  }
+
   function logout() {
     LocalStorage.deleteUserInfo();
     LocalStorage.deleteUserPreferences();
@@ -261,11 +337,12 @@ function App() {
     setUserPreferences({});
 
     removeSharedUserInfo();
+    api.setSession(undefined);
   }
 
   function handleSuccessfulLogIn(userInfo, sessionId, redirectToArticle = true) {
     console.log("HANDLE SUCCESSFUL SIGN IN");
-    api.session = sessionId;
+    api.setSession(sessionId);
     LocalStorage.setUserInfo(userInfo);
     LocalStorage.clearAnonCredentials(); // Clear anonymous credentials on real login
 
@@ -329,7 +406,7 @@ function App() {
                     setUserDetails,
                     userPreferences,
                     setUserPreferences,
-                    session: getSharedSession(),
+                    session,
                     logoutMethod: logout,
                   }}
                 >

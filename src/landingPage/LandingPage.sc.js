@@ -256,6 +256,48 @@ const ResponsiveRow = styled.div`
   }
 `;
 
+const AppStoreButtonRow = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-top: 0.5rem;
+`;
+
+const TripleRow = styled.div`
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 3rem;
+  width: 100%;
+  padding: 3rem 0 0 0;
+  align-items: start;
+
+  @media (max-width: 992px) {
+    grid-template-columns: 1fr;
+    gap: 4rem;
+  }
+`;
+
+const TripleCell = styled.div`
+  ${_sharedFlexColumn}
+  align-items: center;
+  text-align: center;
+  gap: 1.25rem;
+  max-width: 22rem;
+  margin: 0 auto;
+
+  img {
+    max-height: 28rem;
+    height: auto;
+    width: auto;
+    max-width: 100%;
+    border-radius: 1rem;
+  }
+
+  h3 {
+    margin-top: 0.5rem;
+  }
+`;
+
 const ContentText = styled.div`
   flex: 1;
   box-sizing: border-box;
@@ -287,6 +329,13 @@ const ContentImage = styled.img`
   &.square {
     aspect-ratio: 1 / 1;
     max-height: none;
+  }
+  &.phone {
+    aspect-ratio: auto;
+    object-fit: contain;
+    width: auto;
+    max-width: 100%;
+    max-height: 32rem;
   }
 
   @media (max-width: 992px) {
@@ -324,6 +373,9 @@ export {
   ContentText,
   ContentImage,
   ResponsiveRow,
+  TripleRow,
+  TripleCell,
+  AppStoreButtonRow,
   AdaptableColumn,
   PaleAdaptableColumn,
   DescriptionText,

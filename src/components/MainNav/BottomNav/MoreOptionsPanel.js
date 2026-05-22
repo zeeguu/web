@@ -11,6 +11,8 @@ import LanguageModal from "../LanguageModal";
 import navLanguages from "../navLanguages";
 import * as s from "./MoreOptionsPanel.sc";
 import SideNavProfileOption from "../SideNav/SideNavProfileOption";
+import Feature from "../../../features/Feature";
+import { hasSupportedVerbalFlashcardsLearnedLanguage } from "../../../verbalFlashcards/verbalFlashcardsAvailability";
 
 export default function MoreOptionsPanel({
   overlayTransition,
@@ -55,11 +57,17 @@ export default function MoreOptionsPanel({
         <s.MoreOptionsList>
           {isOnStudentSide && (
             <>
-              <NavOption {...NavigationOptions.myArticles} currentPath={currentPath} onClick={handleHideMoreOptions} />
-
               <NavOption {...NavigationOptions.myWords} currentPath={currentPath} onClick={handleHideMoreOptions} />
 
               <NavOption {...NavigationOptions.myActivity} currentPath={currentPath} onClick={handleHideMoreOptions} />
+
+              {Feature.verbal_flashcards() && hasSupportedVerbalFlashcardsLearnedLanguage(userDetails) && (
+                <NavOption
+                  {...NavigationOptions.verbalFlashcards}
+                  currentPath={currentPath}
+                  onClick={handleHideMoreOptions}
+                />
+              )}
 
               {userDetails.is_teacher && (
                 <NavOption

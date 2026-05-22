@@ -1,7 +1,8 @@
-import { forwardRef, useContext, useState, useRef, useMemo } from "react";
+import { useContext, useState, useRef, useMemo } from "react";
 import { ClozeTranslatableText } from "./ClozeTranslatableText.js";
 import ClozeInputField from "./ClozeInputField.js";
 import ContextNavigationControls from "./ContextNavigationControls.js";
+import { useFlipOnReveal } from "../utils/useFlipOnReveal.js";
 import VirtualKeyboard from "../../components/VirtualKeyboard/VirtualKeyboard.js";
 import SpecialCharacterBar, { hasSpecialCharacters } from "../../components/VirtualKeyboard/SpecialCharacterBar.js";
 import { needsVirtualKeyboard } from "../../utils/misc/languageScripts.js";
@@ -18,50 +19,48 @@ import { findClozeWordIds } from "../utils/findClozeWordIds.js";
  * ClozeInputField via the renderClozeSlot render prop pattern.
  */
 
-// Check localStorage for keyboard collapsed state
 const getInitialKeyboardCollapsed = () => {
   try {
     const saved = localStorage.getItem('zeeguu_virtual_keyboard_collapsed');
-    return saved !== null ? JSON.parse(saved) : false; // Default to expanded (false)
+    return saved !== null ? JSON.parse(saved) : false;
   } catch (e) {
     return false;
   }
 };
 
-const ClozeContextWithExchange = forwardRef(function ClozeContextWithExchange(
-  {
-    exerciseBookmark,
-    interactiveText,
-    translatedWords,
-    setTranslatedWords,
-    isExerciseOver,
-    onExampleUpdated,
-    translating = true,
-    pronouncing = false,
-    // cloze specific props
-    onInputChange,
-    onInputSubmit,
-    inputValue,
-    placeholder,
-    isCorrectAnswer,
-    showHint = true,
-    canTypeInline = false,
-    showCloze = true, // Control whether to show a cloze/blank
-    aboveClozeElement = null, // Element to render above the cloze placeholder
-  },
-  ref,
-) {
+export default function ClozeContextWithExchange({
+  exerciseBookmark,
+  interactiveText,
+  translatedWords,
+  setTranslatedWords,
+  isExerciseOver,
+  onExampleUpdated,
+  translating = true,
+  // Default true so tapping the highlighted cloze answer (or any
+  // already-translated word) pronounces it — matches reading-view
+  // behavior post-reveal.
+  pronouncing = true,
+  onInputChange,
+  onInputSubmit,
+  inputValue,
+  placeholder,
+  isCorrectAnswer,
+  showHint = true,
+  canTypeInline = false,
+  showCloze = true,
+  aboveClozeElement = null,
+}) {
   const { userDetails } = useContext(UserContext);
   const [isKeyboardCollapsed, setIsKeyboardCollapsed] = useState(getInitialKeyboardCollapsed);
   const clozeInputRef = useRef(null);
+  const contextRef = useRef(null);
+  useFlipOnReveal(contextRef, isExerciseOver);
 
-  // Determine the language for the answer (L2 for this exercise type)
   const answerLanguageCode = exerciseBookmark?.from_lang;
   const showVirtualKeyboard =
     answerLanguageCode && needsVirtualKeyboard(answerLanguageCode, userDetails?.id) && canTypeInline && !isExerciseOver;
   const suppressOSKeyboard = showVirtualKeyboard && !isKeyboardCollapsed;
 
-  // Compute cloze word IDs from bookmark position (stable reference)
   const clozeWordIds = useMemo(() => {
     if (!showCloze) return [];
     return findClozeWordIds(interactiveText, exerciseBookmark);
@@ -69,7 +68,6 @@ const ClozeContextWithExchange = forwardRef(function ClozeContextWithExchange(
 
   return (
     <div style={{ textAlign: "center" }}>
-      {/* Navigation controls wrap context for swipe support */}
       <ContextNavigationControls
         exerciseBookmark={exerciseBookmark}
         onExampleUpdated={onExampleUpdated}
@@ -78,7 +76,7 @@ const ClozeContextWithExchange = forwardRef(function ClozeContextWithExchange(
         <div
           className="contextExample"
           style={{ display: "inline-block", position: "relative", textAlign: "left" }}
-          ref={ref}
+          ref={contextRef}
         >
           <ClozeTranslatableText
             isExerciseOver={isExerciseOver}
@@ -113,7 +111,6 @@ const ClozeContextWithExchange = forwardRef(function ClozeContextWithExchange(
         </div>
       </ContextNavigationControls>
 
-      {/* Virtual Keyboard - shown below the context for non-Roman alphabets */}
       {showVirtualKeyboard && (
         <div style={{ marginTop: "1em" }}>
           <VirtualKeyboard
@@ -127,7 +124,6 @@ const ClozeContextWithExchange = forwardRef(function ClozeContextWithExchange(
         </div>
       )}
 
-      {/* Special Character Bar - for Roman alphabets with special characters */}
       {!showVirtualKeyboard && canTypeInline && !isExerciseOver &&
        answerLanguageCode && hasSpecialCharacters(answerLanguageCode) && (
         <div style={{ marginTop: "1em" }}>
@@ -141,6 +137,4 @@ const ClozeContextWithExchange = forwardRef(function ClozeContextWithExchange(
       )}
     </div>
   );
-});
-
-export default ClozeContextWithExchange;
+}

@@ -1,7 +1,9 @@
+import { useEffect } from "react";
 import ArticleListBrowser from "./ArticleListBrowser";
 import BookmarkedArticles from "./BookmarkedArticles";
+import HiddenArticles from "../myArticles/HiddenArticles";
 
-import { Redirect } from "react-router-dom";
+import { Redirect, useLocation } from "react-router-dom";
 import { PrivateRoute } from "../PrivateRoute";
 import ClassroomArticles from "./ClassroomArticles";
 import TopTabs from "../components/TopTabs";
@@ -11,60 +13,90 @@ import OwnArticles from "./OwnArticles";
 import ReadingHistory from "../words/WordHistory";
 import MySearches from "./MySearches";
 import Search from "./Search";
+import SearchRoundedIcon from "@mui/icons-material/SearchRounded";
 
 import * as s from "../components/ColumnWidth.sc";
 import LocalStorage from "../assorted/LocalStorage";
 import { BrowsingSessionContext } from "../contexts/BrowsingSessionContext";
 import useBrowsingSession from "../hooks/useBrowsingSession";
-import CustomizeGear from "./CustomizeGear";
+
+const READ_TAB_PATHS = [
+  "/articles",
+  "/articles/mySearches",
+  "/articles/bookmarked",
+  "/articles/classroom",
+];
 
 export default function ArticlesRouter({ hasExtension, isChrome }) {
   const { getBrowsingSessionId } = useBrowsingSession();
+  const location = useLocation();
   const hideRecommendations = LocalStorage.hasFeature("hide_recommendations");
+  const isStudent = LocalStorage.isStudent();
 
-  const tabsAndLinks = [
+  useEffect(() => {
+    if (READ_TAB_PATHS.includes(location.pathname)) {
+      LocalStorage.setLastVisitedReadPath(location.pathname);
+    }
+  }, [location.pathname]);
+
+  const searchIcon = (
+    <span style={{ display: "inline-block", padding: "0 0.25em", verticalAlign: "middle" }}>
+      <SearchRoundedIcon style={{ fontSize: "1.25rem", verticalAlign: "middle" }} />
+    </span>
+  );
+
+  const tabs = [
+    !hideRecommendations && { text: "Discover", link: "/articles" },
+    { text: strings.myArticles, link: "/articles/bookmarked" },
+    isStudent && { text: strings.classroomTab, link: "/articles/classroom" },
     !hideRecommendations && {
-      text: strings.recommended,
-      link: "/articles",
-      action: <CustomizeGear />,
+      text: searchIcon,
+      link: "/articles/mySearches",
+      // Stay active on /search too — results are conceptually the search tab.
+      isActive: (_, loc) => loc.pathname === "/articles/mySearches" || loc.pathname === "/search",
     },
-    !hideRecommendations && { text: strings.search, link: "/articles/mySearches" },
-    LocalStorage.isStudent() && { text: strings.classroomTab, link: "/articles/classroom" },
   ].filter(Boolean);
 
   return (
     <BrowsingSessionContext.Provider value={getBrowsingSessionId}>
       {/* Rendering top menu first, then routing to corresponding page */}
       <s.NarrowColumn>
-        <TopTabs title={strings.articles} tabsAndLinks={tabsAndLinks} />
+        <TopTabs title={strings.articles} tabsAndLinks={tabs} />
 
-        {hideRecommendations ? (
-          <Redirect from="/articles" exact to="/articles/classroom" />
-        ) : (
+        <div style={{ minHeight: "70vh" }}>
+          {hideRecommendations ? (
+            <Redirect from="/articles" exact to="/articles/classroom" />
+          ) : (
+            <PrivateRoute
+              path="/articles"
+              exact
+              component={ArticleListBrowser}
+              hasExtension={hasExtension}
+              isChrome={isChrome}
+            />
+          )}
           <PrivateRoute
-            path="/articles"
             exact
-            component={ArticleListBrowser}
-            hasExtension={hasExtension}
-            isChrome={isChrome}
+            path="/articles/bookmarked"
+            component={BookmarkedArticles}
           />
-        )}
-        <PrivateRoute
-          path="/articles/bookmarked"
-          component={BookmarkedArticles}
-        />
-        <PrivateRoute
-          path="/articles/classroom"
-          component={ClassroomArticles}
-        />
+          <PrivateRoute
+            path="/articles/bookmarked/hidden"
+            component={HiddenArticles}
+          />
+          <PrivateRoute
+            path="/articles/classroom"
+            component={ClassroomArticles}
+          />
 
-        <PrivateRoute path="/articles/ownTexts" component={OwnArticles} />
+          <PrivateRoute path="/articles/ownTexts" component={OwnArticles} />
 
-        <PrivateRoute path="/articles/history" component={ReadingHistory} />
+          <PrivateRoute path="/articles/history" component={ReadingHistory} />
 
-        <PrivateRoute path="/articles/mySearches" component={MySearches} />
+          <PrivateRoute path="/articles/mySearches" component={MySearches} />
 
-        <PrivateRoute path="/search" component={Search} />
+          <PrivateRoute path="/search" component={Search} />
+        </div>
       </s.NarrowColumn>
     </BrowsingSessionContext.Provider>
   );

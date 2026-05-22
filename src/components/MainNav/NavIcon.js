@@ -18,6 +18,7 @@ import ArticleIcon from '@mui/icons-material/Article';
 import SchoolIcon from "@mui/icons-material/School";
 import AbcIcon from "@mui/icons-material/Abc";
 import MenuBookRoundedIcon from "@mui/icons-material/MenuBookRounded";
+import StyleRoundedIcon from "@mui/icons-material/StyleRounded";
 import PeopleAltRoundedIcon from "@mui/icons-material/PeopleAltRounded";
 
 
@@ -34,6 +35,7 @@ const iconProps = {
     home: <HomeRoundedIcon />,
     read: <MenuBookRoundedIcon {...iconProps} />,
     exercises: <FitnessCenterRoundedIcon {...iconProps} />,
+    verbalFlashcards: <StyleRoundedIcon {...iconProps} />,
     dailyAudio: <HeadphonesRoundedIcon />,
     words: <AbcIcon {...iconProps} />,
     history: <HistoryRoundedIcon />,

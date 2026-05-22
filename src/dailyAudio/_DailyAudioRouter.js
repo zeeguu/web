@@ -8,6 +8,9 @@ import TodayAudio from "./TodayAudio";
 import PastLessons from "./PastLessons";
 import { APIContext } from "../contexts/APIContext";
 import { UserContext } from "../contexts/UserContext";
+import useTabbedRoute from "../hooks/useTabbedRoute";
+
+const TAB_PATHS = ["/daily-audio", "/daily-audio/past-lessons"];
 
 export default function DailyAudioRouter() {
   const api = useContext(APIContext);
@@ -16,6 +19,8 @@ export default function DailyAudioRouter() {
   const location = useLocation();
   const [pastLessonsCount, setPastLessonsCount] = useState(0);
   const [showTabs, setShowTabs] = useState(true);
+
+  const swipeRef = useTabbedRoute(TAB_PATHS);
 
   useEffect(() => {
     // Reset immediately so the tab badge doesn't show a stale count from
@@ -59,8 +64,10 @@ export default function DailyAudioRouter() {
       <s.NarrowColumn>
         {showTabs && <TopTabs title={strings.dailyAudio} tabsAndLinks={tabsAndLinks} />}
 
-        <PrivateRoute exact path="/daily-audio" component={TodayAudio} setShowTabs={setShowTabs} />
-        <PrivateRoute exact path="/daily-audio/past-lessons" component={PastLessons} />
+        <div ref={swipeRef}>
+          <PrivateRoute exact path="/daily-audio" component={TodayAudio} setShowTabs={setShowTabs} />
+          <PrivateRoute exact path="/daily-audio/past-lessons" component={PastLessons} />
+        </div>
       </s.NarrowColumn>
     </Switch>
   );

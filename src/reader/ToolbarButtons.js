@@ -8,6 +8,16 @@ import { ThemeProvider } from "@mui/material/styles";
 import { t, Android12Switch } from "../components/MUIToggleThemes";
 import SettingsRoundedIcon from "@mui/icons-material/SettingsRounded";
 
+const fontSizeButtonStyle = {
+  background: "var(--bg-secondary)",
+  color: "var(--text-primary)",
+  border: "1px solid var(--border-color)",
+  borderRadius: "4px",
+  padding: "0.2rem 0.5rem",
+  cursor: "pointer",
+  fontSize: "0.9em",
+};
+
 export default function ToolbarButtons({
   translating,
   setTranslating,
@@ -17,6 +27,8 @@ export default function ToolbarButtons({
   setShowMweHints,
   showReadingTimer,
   setShowReadingTimer,
+  readerFontSize,
+  setReaderFontSize,
 }) {
   const [showOptions, setShowOptions] = useState(false);
   const menuRef = useRef(null);
@@ -50,16 +62,22 @@ export default function ToolbarButtons({
           position: "absolute",
           top: "100%",
           right: "0",
-          backgroundColor: "white",
-          border: "1px solid #ccc",
+          backgroundColor: "var(--card-bg)",
+          color: "var(--text-primary)",
+          border: "1px solid var(--border-color)",
           borderRadius: "4px",
-          boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
+          boxShadow: "0 2px 8px var(--shadow-color)",
           zIndex: 1000,
           padding: "1rem",
           minWidth: "200px"
         }}>
           <ThemeProvider theme={t}>
-            <FormGroup>
+            <FormGroup
+              sx={{
+                "& .MuiFormControlLabel-label": { color: "var(--text-primary)" },
+                "& .MuiFormHelperText-root": { color: "var(--text-secondary)" },
+              }}
+            >
               <FormHelperText>{"Click word(s) to:"}</FormHelperText>
               <FormControlLabel
                 checked={translating}
@@ -91,6 +109,32 @@ export default function ToolbarButtons({
                 className={showReadingTimer ? "selected" : ""}
                 label={"Show reading timer"}
               />
+              {setReaderFontSize && (
+                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginTop: "0.6rem" }}>
+                  <span>Text size</span>
+                  <span style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+                    <button
+                      type="button"
+                      onClick={() => setReaderFontSize(readerFontSize - 2)}
+                      aria-label="Decrease text size"
+                      style={fontSizeButtonStyle}
+                    >
+                      A−
+                    </button>
+                    <span style={{ fontSize: "0.85em", color: "var(--text-secondary)", minWidth: "2.2em", textAlign: "center" }}>
+                      {readerFontSize}
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => setReaderFontSize(readerFontSize + 2)}
+                      aria-label="Increase text size"
+                      style={fontSizeButtonStyle}
+                    >
+                      A+
+                    </button>
+                  </span>
+                </div>
+              )}
               <FormHelperText style={{ marginTop: "0.5rem" }}>{<small>{"Experimental:"}</small>}</FormHelperText>
               <FormControlLabel
                 checked={showMweHints}

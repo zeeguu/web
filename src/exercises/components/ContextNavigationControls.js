@@ -34,9 +34,6 @@ export default function ContextNavigationControls({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [exerciseBookmark?.user_word_id]);
 
-  // ── Switching context ───────────────────────────────────────────────
-
-  /** Update the exercise UI to show a different context's content. */
   function applyContext(context) {
     if (!context.bookmark) return;
     onExampleUpdated({
@@ -45,15 +42,13 @@ export default function ContextNavigationControls({
     });
   }
 
-  /** Tell the server which bookmark the user prefers (fire-and-forget). */
+  // Fire-and-forget — server-side preference; we don't wait or surface errors.
   function persistPreference(context) {
     if (context.isCurrent || !context.bookmark) return;
     api.setPreferredBookmark(exerciseBookmark.user_word_id, context.bookmark.id);
   }
 
-  // ── Navigation ──────────────────────────────────────────────────────
-
-  /** Navigate to a neighbouring card. direction: 'left' (next) or 'right' (previous). */
+  // direction: 'left' (next) or 'right' (previous).
   const navigate = useCallback(
     (direction) => {
       if (isAnimating || contexts.length <= 1) return;
@@ -79,8 +74,6 @@ export default function ContextNavigationControls({
     [isAnimating, currentIndex, contexts],
   );
 
-  if (!onExampleUpdated) return null;
-
   const hasMultipleContexts = contexts.length > 1;
 
   useKeyboardNavigation({
@@ -96,16 +89,10 @@ export default function ContextNavigationControls({
     delta: 50,
   });
 
+  if (!onExampleUpdated) return null;
+
   return (
     <s.SlideContainer>
-      <s.NavArrow
-        onClick={() => navigate("right")}
-        disabled={isAnimating}
-        $hidden={!hasMultipleContexts}
-      >
-        ‹
-      </s.NavArrow>
-
       {children && (
         <s.SlideContent
           {...swipeHandlers}
@@ -121,13 +108,25 @@ export default function ContextNavigationControls({
         </s.SlideContent>
       )}
 
-      <s.NavArrow
-        onClick={() => navigate("left")}
-        disabled={isAnimating}
-        $hidden={!hasMultipleContexts}
-      >
-        ›
-      </s.NavArrow>
+      {/* Nav arrows live below the sentence so the context can use the
+          full width — click-word exercises in particular need that
+          horizontal room so words don't compress onto extra lines. */}
+      <s.NavRow $hidden={!hasMultipleContexts}>
+        <s.NavArrow
+          onClick={() => navigate("right")}
+          disabled={isAnimating}
+          aria-label="Previous context"
+        >
+          ‹
+        </s.NavArrow>
+        <s.NavArrow
+          onClick={() => navigate("left")}
+          disabled={isAnimating}
+          aria-label="Next context"
+        >
+          ›
+        </s.NavArrow>
+      </s.NavRow>
     </s.SlideContainer>
   );
 }

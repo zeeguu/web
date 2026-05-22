@@ -1,39 +1,41 @@
-import { forwardRef, useMemo } from "react";
+import { useMemo, useRef } from "react";
 import { ClozeTranslatableText } from "./ClozeTranslatableText.js";
 import { findClozeWordIds } from "../utils/findClozeWordIds.js";
 import ContextNavigationControls from "./ContextNavigationControls.js";
+import { useFlipOnReveal } from "../utils/useFlipOnReveal.js";
 
 /**
  * Displays exercise context with word highlighting (no cloze input).
- * Used by exercises that don't need a cloze blank (e.g., click-word, multiple-choice).
- *
- * Highlights the target expression when highlightExpression is provided.
- * Uses ClozeTranslatableText without renderClozeSlot for highlighting only.
+ * Used by exercises that don't need a cloze blank (e.g. click-word,
+ * multiple-choice).
  */
-const ContextWithExchange = forwardRef(function ContextWithExchange(
-  {
-    exerciseBookmark,
-    interactiveText,
-    isExerciseOver,
-    onExampleUpdated,
-    translating = true,
-    pronouncing = false,
-    highlightExpression,
-    translatedWords,
-    setTranslatedWords,
-  },
-  ref,
-) {
-  // Compute word IDs for highlighting (both during and after exercise when highlightExpression is set)
+export default function ContextWithExchange({
+  exerciseBookmark,
+  interactiveText,
+  isExerciseOver,
+  onExampleUpdated,
+  translating = true,
+  // Default true so tapping the highlighted bookmark word pronounces it
+  // post-reveal — matches reading-view behavior.
+  pronouncing = true,
+  highlightExpression,
+  translatedWords,
+  setTranslatedWords,
+}) {
+  const contextRef = useRef(null);
+  useFlipOnReveal(contextRef, isExerciseOver);
+
+  // Highlight only what the bookmark covers. Tokenizer-detected MWE
+  // neighbors used to be pulled in too, but they got a different visual
+  // treatment than the bookmark word (which now renders via
+  // bookmark-restoration) and the mismatch read as a bug.
   const clozeWordIds = useMemo(() => {
     if (!highlightExpression) return [];
-    // Use includeSeparatedMwe for highlighting so all MWE parts are highlighted
-    return findClozeWordIds(interactiveText, exerciseBookmark, { includeSeparatedMwe: true });
+    return findClozeWordIds(interactiveText, exerciseBookmark);
   }, [interactiveText, exerciseBookmark, highlightExpression]);
 
   return (
     <div style={{ textAlign: "center" }}>
-      {/* Navigation controls wrap context for swipe support */}
       <ContextNavigationControls
         exerciseBookmark={exerciseBookmark}
         onExampleUpdated={onExampleUpdated}
@@ -42,7 +44,7 @@ const ContextWithExchange = forwardRef(function ContextWithExchange(
         <div
           className="contextExample"
           style={{ display: "inline-block", position: "relative", textAlign: "left" }}
-          ref={ref}
+          ref={contextRef}
         >
           <ClozeTranslatableText
             isExerciseOver={isExerciseOver}
@@ -60,6 +62,4 @@ const ContextWithExchange = forwardRef(function ContextWithExchange(
       </ContextNavigationControls>
     </div>
   );
-});
-
-export default ContextWithExchange;
+}

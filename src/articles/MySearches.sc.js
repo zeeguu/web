@@ -1,10 +1,16 @@
 import styled from "styled-components";
-import { almostBlack, zeeguuOrange } from "../components/colors";
+import { zeeguuOrange } from "../components/colors";
+
+const SavedSearchBlock = styled.div`
+  padding: 0 1em;
+  margin-bottom: 1.5em;
+`;
 
 const HeadlineSavedSearches = styled.div`
-  color: ${almostBlack};
-  font-size: 34px;
-  font-weight: bold;
+  color: var(--text-primary);
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 0.25rem;
 `;
 
 const buttonMoreArticles = styled.button`
@@ -18,4 +24,4 @@ const buttonMoreArticles = styled.button`
   cursor: pointer;
 `;
 
-export { HeadlineSavedSearches, buttonMoreArticles };
+export { SavedSearchBlock, HeadlineSavedSearches, buttonMoreArticles };

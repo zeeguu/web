@@ -1,12 +1,13 @@
 import { useContext, useRef, useState } from "react";
+import { useHistory } from "react-router-dom";
 import strings from "../i18n/definitions";
 import * as s from "./SearchField.sc";
-import { ClearSearchButton, SearchIcon } from "../components/allButtons.sc";
-import redirect from "../utils/routing/routing";
+import { ClearSearchButton } from "../components/allButtons.sc";
 import { APIContext } from "../contexts/APIContext";
 
 export default function SearchField({ query }) {
   const api = useContext(APIContext);
+  const history = useHistory();
   const [searchTerm, setSearchTerm] = useState(query);
   const [isFocused, setIsFocused] = useState(false);
   const inputRef = useRef();
@@ -20,25 +21,18 @@ export default function SearchField({ query }) {
         return;
       } else {
         api.logUserActivity(api.SEARCH_QUERY, "", searchTerm, "");
-        redirect(`/search?search=${searchTerm}`);
+        history.push(`/search?search=${encodeURIComponent(searchTerm)}`);
       }
-    }
-  }
-
-  function handleSearch() {
-    if (inputRef.current.value === "") {
-      return;
-    } else {
-      api.logUserActivity(api.SEARCH_QUERY, "", searchTerm, "");
-      redirect(`/search?search=${searchTerm}`);
     }
   }
 
   return (
     <s.SearchField>
       <s.SearchInput
-        style={{ float: "left", fontWeight: query ? "bold" : "normal" }}
-        type="text"
+        style={{ fontWeight: query ? "bold" : "normal" }}
+        type="search"
+        inputMode="search"
+        enterKeyHint="search"
         placeholder={strings.searchAllArticlesAndVideos}
         value={searchTerm == null ? "" : searchTerm}
         ref={inputRef}
@@ -49,13 +43,7 @@ export default function SearchField({ query }) {
         onBlur={handleBlur}
         hasValue={!!searchTerm}
       />
-      {query && <ClearSearchButton onClick={(e) => redirect("/articles")} />}
-      <SearchIcon
-        className="searchIcon"
-        style={{ cursor: "pointer" }}
-        sx={{ fontSize: "2rem" }}
-        onClick={(e) => handleSearch()}
-      />
+      {query && <ClearSearchButton onClick={() => history.push("/articles/mySearches")} />}
     </s.SearchField>
   );
 }

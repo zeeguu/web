@@ -18,14 +18,14 @@ export default function SupportedNotification({
   open,
 }) {
   const [redirectCheckbox, setRedirectCheckbox] = useState(false);
-  const [gifSrc, setGifSrc] = useState("enable-zeeguu.gif");
+  const [gifSrc, setGifSrc] = useState("send-to-zeeguu.gif");
 
   useEffect(() => {
     // When 'open' is true, the useEffect hook sets the GIF source to a unique URL with a timestamp query parameter.
     // This forces the browser to reload the GIF each time the modal is open,
     // preventing it from using a cached version and ensuring the GIF plays from the start.
     if (open) {
-      setGifSrc(`enable-zeeguu.gif?timestamp=${new Date().getTime()}`);
+      setGifSrc(`send-to-zeeguu.gif?timestamp=${new Date().getTime()}`);
     }
   }, [open]);
 
