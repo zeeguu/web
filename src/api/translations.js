@@ -59,7 +59,10 @@ Zeeguu_API.prototype.getOneTranslation = function (
 
   console.log(`[TRANSLATION] About to call apiPost`, { timestamp: new Date().toISOString(), payloadSize: JSON.stringify(payload).length });
 
-  return this.apiPost(`/get_one_translation/${from_lang}/${to_lang}`, payload);
+  // ADR 022: canonical name. /get_one_translation is still aliased on the
+  // server for the extension's frozen bundle; once that ships its next build,
+  // the alias can go away.
+  return this.apiPost(`/translate_word/${from_lang}/${to_lang}`, payload);
 };
 
 // ADR 022: explicit on-demand LLM translation. Called from the AlterMenu's

@@ -24,10 +24,10 @@ function shortenSource(alt) {
 }
 
 // ADR 022: `word.alternatives` carries the full vote-ordered provider list
-// (winner at index 0) directly from /get_one_translation, plus any
-// LLM-on-demand result appended via askLlmTranslation. The menu shows the
-// non-winner entries — dedupe by normalised translation text and drop
-// anything equal to the current primary translation.
+// (winner at index 0) directly from /translate_word, plus any LLM-on-demand
+// result appended via askLlmTranslation. The menu shows the non-winner
+// entries — dedupe by normalised translation text and drop anything equal
+// to the current primary translation.
 //
 // `word.competing_translations` is the legacy field kept during ADR 022's
 // deprecation window; consulted for clients (extension build) that still
