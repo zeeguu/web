@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { useContext, useEffect, useRef, useState } from "react";
+import useClampedOverflow from "../hooks/useClampedOverflow";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { isMobile } from "../utils/misc/browserDetection";
@@ -49,30 +50,16 @@ export default function ArticlePreview({
   const [isHidden, setIsHidden] = useState(article.hidden || false);
   const [isAnimatingOut, setIsAnimatingOut] = useState(false);
   const [isSummaryExpanded, setIsSummaryExpanded] = useState(false);
-  // Whether the clamped summary actually overflows. Show-more is dead
-  // weight when the summary fits, but the CSS ellipsis stays unconditional
-  // when the box does overflow — so an inaccurate "no overflow" reading
-  // leaves the "…" visible with no button behind it, looking broken.
-  // ResizeObserver re-measures on every layout shift (async interactive-
-  // tokenized summary swapping in, font swap, viewport rotation), so the
-  // measurement stays in sync with what the user actually sees.
-  const [summaryOverflows, setSummaryOverflows] = useState(false);
+  // "Show more" is dead weight when the summary fits in the clamp, but the
+  // CSS `…` stays unconditional when the box does overflow — so we need to
+  // know which case we're in. useClampedOverflow handles measurement +
+  // ResizeObserver so the reading stays in sync with async tokenized
+  // content swaps and viewport changes.
   const clampedSummaryRef = useRef(null);
-
-  useEffect(() => {
-    if (isSummaryExpanded) return;
-    const el = clampedSummaryRef.current;
-    if (!el) return;
-    const measure = () => {
-      const overflowing = el.scrollHeight > el.clientHeight + 1;
-      setSummaryOverflows((prev) => (prev === overflowing ? prev : overflowing));
-    };
-    measure();
-    if (typeof ResizeObserver === "undefined") return;
-    const ro = new ResizeObserver(measure);
-    ro.observe(el);
-    return () => ro.disconnect();
-  }, [isSummaryExpanded, interactiveSummary, article.summary]);
+  const summaryOverflows = useClampedOverflow(clampedSummaryRef, {
+    enabled: !isSummaryExpanded,
+    deps: [interactiveSummary, article.summary],
+  });
 
   useEffect(() => {
     if ((article.summary || article.title) && !isTokenizing && !interactiveSummary && !interactiveTitle) {
