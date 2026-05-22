@@ -64,12 +64,25 @@ Zeeguu_API.prototype.generateDailyLesson = function (callback, onError, suggesti
     });
 };
 
-Zeeguu_API.prototype.getSharedAudioLesson = function (lessonId, callback, onError) {
+Zeeguu_API.prototype.getSharedAudioLesson = function (shareUuid, callback, onError) {
   this._getJSON(
-    `shared_audio_lesson/${lessonId}`,
+    `shared_audio_lesson/${shareUuid}`,
     (data) => callback({ ...data, audio_url: `${this.baseAPIurl}${data.audio_url}` }),
     { onError },
   );
+};
+
+Zeeguu_API.prototype.createLessonShareLink = function (lessonId) {
+  return fetch(this._appendSessionToUrl(`create_lesson_share_link/${lessonId}`), {
+    method: "POST",
+  }).then((response) => {
+    if (!response.ok) {
+      return response.json().then((data) => {
+        throw new Error(data.error || `Failed to create share link (${response.status})`);
+      });
+    }
+    return response.json();
+  });
 };
 
 Zeeguu_API.prototype.deleteTodaysLesson = function (callback, onError) {

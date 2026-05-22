@@ -121,7 +121,7 @@ export default function LessonPlaybackView({
         <LessonActions>
           {lessonData.lesson_id && (
             <SubtleTextButton
-              onClick={() => shareLessonLink(lessonData.lesson_id, lessonData.title)}
+              onClick={() => shareLessonLink(api, lessonData.lesson_id, lessonData.title)}
             >
               Share
             </SubtleTextButton>

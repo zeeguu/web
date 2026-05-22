@@ -382,7 +382,7 @@ function InlineLessonPlayer({ lesson, api, userDetails, onLessonCompleted, onPro
       />
       {lesson.lesson_id && (
         <div style={{ marginTop: "12px", textAlign: "center" }}>
-          <SubtleTextButton onClick={() => shareLessonLink(lesson.lesson_id, lesson.title)}>
+          <SubtleTextButton onClick={() => shareLessonLink(api, lesson.lesson_id, lesson.title)}>
             Share
           </SubtleTextButton>
         </div>
