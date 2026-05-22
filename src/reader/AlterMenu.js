@@ -183,8 +183,9 @@ export default function AlterMenu({
       <div style={{ ...HEADER_BAND_STYLE, color: "var(--altermenu-header-text)" }}>Alternatives</div>
     );
   } else if (allAgreedWithPrimary) {
+    const label = llmAgreedWithPrimary ? "All providers & LLM agree" : "All providers agree";
     header = (
-      <div style={{ ...HEADER_BAND_STYLE, color: "var(--altermenu-header-text)" }}>All providers agree</div>
+      <div style={{ ...HEADER_BAND_STYLE, color: "var(--altermenu-header-text)" }}>{label}</div>
     );
   } else {
     header = (
@@ -219,17 +220,13 @@ export default function AlterMenu({
         />
       )}
       <div className="actionsSection">
-        {askLlmTranslation && !llmSucceeded && (
+        {askLlmTranslation && !llmSucceeded && !llmAgreedWithPrimary && (
           <div
             className="neutralLink"
-            aria-disabled={isAskingLlm || llmAgreedWithPrimary}
-            style={
-              isAskingLlm || llmAgreedWithPrimary
-                ? { opacity: 0.7, pointerEvents: "none" }
-                : undefined
-            }
+            aria-disabled={isAskingLlm}
+            style={isAskingLlm ? { opacity: 0.7, pointerEvents: "none" } : undefined}
             onClick={() => {
-              if (isAskingLlm || llmAgreedWithPrimary) return;
+              if (isAskingLlm) return;
               setLlmError(false);
               setIsAskingLlm(true);
               askLlmTranslation(
@@ -249,13 +246,7 @@ export default function AlterMenu({
               );
             }}
           >
-            {isAskingLlm
-              ? "Asking LLM…"
-              : llmAgreedWithPrimary
-              ? "LLM agrees with your translation"
-              : llmError
-              ? "Ask LLM — try again"
-              : "Ask LLM"}
+            {isAskingLlm ? "Asking LLM…" : llmError ? "Ask LLM — try again" : "Ask LLM"}
           </div>
         )}
         {!showOwnInput && (
