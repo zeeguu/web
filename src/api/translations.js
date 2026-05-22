@@ -75,6 +75,16 @@ Zeeguu_API.prototype.askLlmTranslation = function (from_lang, to_lang, word, con
   }).then((response) => response.data);
 };
 
+// ADR 022 follow-up: lazy alternatives for words whose /translate_word
+// response didn't include them (own-past-translation early-return path).
+// Called from AlterMenu open, not on every word tap.
+Zeeguu_API.prototype.getTranslationAlternatives = function (from_lang, to_lang, word, context) {
+  return this.apiPost(`/translation_alternatives/${from_lang}/${to_lang}`, {
+    word: word,
+    context: context,
+  }).then((response) => response.data);
+};
+
 Zeeguu_API.prototype.getMultipleTranslations = function (
   from_lang,
   to_lang,

@@ -248,6 +248,30 @@ export default class InteractiveText {
       });
   }
 
+  // ADR 022 follow-up: lazy-fetch alternatives for a word whose
+  // /translate_word response didn't include them (own-past-translation
+  // path). Triggered from AlterMenu open; pays the voter cost only on
+  // explicit user interest. Single request, all alternatives back in one
+  // response — no streaming, no row shuffling.
+  fetchAlternatives(word, onComplete, onError) {
+    let context;
+    [context] = this.getContextAndCoordinates(word);
+    const textToTranslate = word.mweExpression || word.word;
+
+    this.api
+      .getTranslationAlternatives(this.language, localStorage.native_language, textToTranslate, context)
+      .then((result) => {
+        if (result?.alternatives?.length) {
+          word.alternatives = result.alternatives;
+        }
+        onComplete && onComplete();
+      })
+      .catch((e) => {
+        console.error("Lazy alternatives fetch failed:", e);
+        onError && onError(e);
+      });
+  }
+
   playAll() {
     this.zeeguuSpeech.playAll(this.sourceId);
   }

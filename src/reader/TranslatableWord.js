@@ -110,12 +110,27 @@ export default function TranslatableWord({
 
   function openAlterMenu(word) {
     // ADR 022: the menu renders directly from word.alternatives (populated
-    // eagerly by /translate_word). Opening the menu is a pure render — no
-    // network call, no spinner, no row-shifting under the user's finger.
-    // If the response carried no alternatives (own-past-translation early
-    // return, MWE phrases, or a pre-ADR-022 backend) the menu opens with
-    // whatever's there. The user's recovery path is "Ask LLM".
+    // eagerly by /translate_word). Opening the menu is normally a pure
+    // render — no network call, no row-shifting under the user's finger.
     setShowingAlterMenu(true);
+
+    // Exception: if /translate_word came back without alternatives — which
+    // happens on the own-past-translation early-return path where the
+    // backend hands the user their prior answer instantly and skips the
+    // voter — lazy-fetch them now that the user has shown interest by
+    // opening the menu. Single request, single update, no streaming.
+    // MWEs are excluded (voter doesn't apply to phrase translations).
+    // word._lazyAlternativesFetched guards against re-firing if the user
+    // closes and reopens the menu.
+    const eligible = !word.mweExpression && !word.alternatives?.length;
+    if (eligible && !word._lazyAlternativesFetched) {
+      word._lazyAlternativesFetched = true;
+      interactiveText.fetchAlternatives(
+        word,
+        () => wordUpdated(word),
+        () => wordUpdated(word),
+      );
+    }
   }
 
   function toggleAlterMenu(e, word) {
