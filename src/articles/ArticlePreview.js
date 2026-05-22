@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
+import useClampedOverflow from "../hooks/useClampedOverflow";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { isMobile } from "../utils/misc/browserDetection";
@@ -49,6 +50,16 @@ export default function ArticlePreview({
   const [isHidden, setIsHidden] = useState(article.hidden || false);
   const [isAnimatingOut, setIsAnimatingOut] = useState(false);
   const [isSummaryExpanded, setIsSummaryExpanded] = useState(false);
+  // "Show more" is dead weight when the summary fits in the clamp, but the
+  // CSS `…` stays unconditional when the box does overflow — so we need to
+  // know which case we're in. useClampedOverflow handles measurement +
+  // ResizeObserver so the reading stays in sync with async tokenized
+  // content swaps and viewport changes.
+  const clampedSummaryRef = useRef(null);
+  const summaryOverflows = useClampedOverflow(clampedSummaryRef, {
+    enabled: !isSummaryExpanded,
+    deps: [interactiveSummary, article.summary],
+  });
 
   useEffect(() => {
     if ((article.summary || article.title) && !isTokenizing && !interactiveSummary && !interactiveTitle) {
@@ -425,11 +436,17 @@ export default function ArticlePreview({
               <s.Summary>
                 {!dontShowSummary && (
                   <>
-                    {isSummaryExpanded ? summaryNode : <s.ClampedSummary>{summaryNode}</s.ClampedSummary>}
-                    <s.SummaryToggle type="button" onClick={() => setIsSummaryExpanded((v) => !v)}>
-                      {isSummaryExpanded ? "Show less" : "Show more"}
-                      <span aria-hidden="true">{isSummaryExpanded ? "▴" : "▾"}</span>
-                    </s.SummaryToggle>
+                    {isSummaryExpanded ? (
+                      summaryNode
+                    ) : (
+                      <s.ClampedSummary ref={clampedSummaryRef}>{summaryNode}</s.ClampedSummary>
+                    )}
+                    {(isSummaryExpanded || summaryOverflows) && (
+                      <s.SummaryToggle type="button" onClick={() => setIsSummaryExpanded((v) => !v)}>
+                        {isSummaryExpanded ? "Show less" : "Show more"}
+                        <span aria-hidden="true">{isSummaryExpanded ? "▴" : "▾"}</span>
+                      </s.SummaryToggle>
+                    )}
                   </>
                 )}
                 {/* Bottom action row only used as a fallback: the Hidden
