@@ -1,5 +1,6 @@
 import { useContext, useEffect } from "react";
 import { useHistory } from "react-router-dom/cjs/react-router-dom";
+import { isSupportedBrowser } from "../../utils/misc/browserDetection";
 import useSelectInterest from "../../hooks/useSelectInterest";
 import PreferencesPage from "../_pages_shared/PreferencesPage";
 import Header from "../_pages_shared/Header";
@@ -16,11 +17,16 @@ import strings from "../../i18n/definitions";
 import { setTitle } from "../../assorted/setTitle";
 import { APIContext } from "../../contexts/APIContext";
 
-export default function SelectInterests() {
+export default function SelectInterests({ hasExtension }) {
   const api = useContext(APIContext);
   const history = useHistory();
-  const { allTopics, toggleTopicSubscription, isSubscribed } =
-    useSelectInterest(api);
+  const { allTopics, toggleTopicSubscription, isSubscribed } = useSelectInterest(api);
+
+  function getLinkToNextPage() {
+    if (isSupportedBrowser() && hasExtension === false) {
+      return "/install_extension";
+    } else return "/articles";
+  }
 
   useEffect(() => {
     setTitle(strings.selectInterests);
@@ -47,10 +53,7 @@ export default function SelectInterests() {
       <Footer>
         <p className="centered">{strings.youCanChangeLater}</p>
         <ButtonContainer className={"padding-large"}>
-          <Button
-            className={"full-width-btn"}
-            onClick={() => history.push("/exclude_words")}
-          >
+          <Button className={"full-width-btn"} onClick={() => history.push(getLinkToNextPage())}>
             {strings.next}
             <RoundedForwardArrow />
           </Button>
