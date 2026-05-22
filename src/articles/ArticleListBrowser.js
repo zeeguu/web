@@ -4,7 +4,6 @@ import ArticlePreview from "./ArticlePreview";
 import SearchField from "./SearchField";
 import * as s from "./ArticleListBrowser.sc";
 import LoadingAnimation from "../components/LoadingAnimation";
-import CustomizeGear from "./CustomizeGear";
 
 import LocalStorage from "../assorted/LocalStorage";
 
@@ -201,9 +200,6 @@ export default function ArticleListBrowser({ content, searchQuery, searchPublish
       <>
       {!searchQuery && (
         <>
-          <div style={{ display: "flex", padding: "0.5em 1em 0.25em" }}>
-            <CustomizeGear />
-          </div>
           {areVideosAvailable && (
             <s.SortHolder
               style={{
