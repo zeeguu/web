@@ -236,7 +236,12 @@ export default class InteractiveText {
         const primaryKey = (word.translation || "").trim().toLowerCase();
         const agreedWithPrimary = !!primaryKey && newKey === primaryKey;
         const existing = (word.alternatives || []).map((a) => (a.translation || "").trim().toLowerCase());
-        if (!existing.includes(newKey)) {
+        // Skip the append when the LLM just confirmed the primary — the
+        // row would be filtered out by AlterMenu's buildAlternatives anyway,
+        // so pushing it would leave word.alternatives growing on repeated
+        // Ask-LLM clicks for no visible effect. The agreedWithPrimary flag
+        // below tells the menu to surface this case in the header.
+        if (!agreedWithPrimary && !existing.includes(newKey)) {
           word.alternatives = [
             ...(word.alternatives || []),
             { translation: result.translation, source: result.source || "LLM", votes: 1 },

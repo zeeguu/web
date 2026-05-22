@@ -80,15 +80,14 @@ export default function AlterMenu({
   // button visible with an inline error so the user can retry — silently
   // removing it would look like "the option just vanished and nothing
   // happened," which is exactly what we got bug-reported on.
+  //
+  // Initial state is seeded from word._llmAsked so closing and reopening
+  // the menu doesn't show the button again (and let the user pay for
+  // another LLM round trip for an answer we already have). Component
+  // state alone would reset on remount.
   const [isAskingLlm, setIsAskingLlm] = useState(false);
-  // The LLM produced a genuinely new alternative; row is now in the list.
-  const [llmSucceeded, setLlmSucceeded] = useState(false);
-  // The LLM just confirmed the existing translation. No new row appears
-  // (it'd be filtered as a duplicate of the primary), so we keep the
-  // button visible and change its label to communicate what happened —
-  // silently hiding it was the "Ask LLM disappeared, no alternative
-  // ever" bug.
-  const [llmAgreedWithPrimary, setLlmAgreedWithPrimary] = useState(false);
+  const [llmSucceeded, setLlmSucceeded] = useState(word._llmAsked === "succeeded");
+  const [llmAgreedWithPrimary, setLlmAgreedWithPrimary] = useState(word._llmAsked === "agreed");
   const [llmError, setLlmError] = useState(false);
 
   useEffect(() => {
@@ -234,8 +233,10 @@ export default function AlterMenu({
                 (info) => {
                   setIsAskingLlm(false);
                   if (info?.agreedWithPrimary) {
+                    word._llmAsked = "agreed";
                     setLlmAgreedWithPrimary(true);
                   } else {
+                    word._llmAsked = "succeeded";
                     setLlmSucceeded(true);
                   }
                 },

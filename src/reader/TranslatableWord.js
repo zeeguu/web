@@ -119,11 +119,11 @@ export default function TranslatableWord({
     // backend hands the user their prior answer instantly and skips the
     // voter — lazy-fetch them now that the user has shown interest by
     // opening the menu. Single request, single update, no streaming.
-    // MWEs are excluded (voter doesn't apply to phrase translations).
-    // word._lazyAlternativesFetched guards against re-firing if the user
-    // closes and reopens the menu.
-    const eligible = !word.mweExpression && !word.alternatives?.length;
-    if (eligible && !word._lazyAlternativesFetched) {
+    //
+    // No need to gate on word.mweExpression: the backend voter accepts
+    // multi-word input too (zeeguu/api#628). word._lazyAlternativesFetched
+    // guards against re-firing if the user closes and reopens the menu.
+    if (!word.alternatives?.length && !word._lazyAlternativesFetched) {
       word._lazyAlternativesFetched = true;
       interactiveText.fetchAlternatives(
         word,

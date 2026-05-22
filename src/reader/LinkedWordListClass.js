@@ -72,9 +72,13 @@ export class Word extends Item {
     // ADR 022: full deduped, vote-ordered provider list from the backend,
     // including the winner at index 0. AlterMenu renders directly from this
     // — no second round of provider calls needed for the stable menu rows.
-    if (alternatives) {
-      this.alternatives = alternatives;
-    }
+    //
+    // Always overwrite (don't gate on truthy) so a re-translation with no
+    // alternatives doesn't leave a stale list next to fresh competing_/
+    // disagreement values. The lazy-fetch path on the own-past-translation
+    // case populates `this.alternatives` directly via fetchAlternatives,
+    // not through updateTranslation, so clearing here is safe.
+    this.alternatives = alternatives;
   }
 
   splitIntoComponents() {
