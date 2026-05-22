@@ -111,11 +111,15 @@ export default function TranslatableWord({
 
   function openAlterMenu(word) {
     setShowingAlterMenu(true);
-    // Skip the SSE alternatives call when the bookmark response already
-    // carries competing translations (the disagreement auto-open path) —
-    // the menu has enough to show. If the user dismisses and reopens via
-    // the dropdown arrow, the call fires then (hasFetchedAlternatives
-    // is still false, no competing on this re-open).
+    // ADR 022: when the backend returned `alternatives` eagerly with the
+    // bookmark response, the menu is fully populated from the start — no
+    // streaming call. The streaming path is kept for the MWE phrase case
+    // where the voter (and its alternatives list) doesn't apply: there
+    // `alternatives` is unset and the SSE call still seeds the menu.
+    if (word.alternatives?.length) {
+      setHasFetchedAlternatives(true);
+      return;
+    }
     if (!hasFetchedAlternatives && !word.competing_translations?.length)
       interactiveText.alternativeTranslations(
         word,
@@ -429,6 +433,16 @@ export default function TranslatableWord({
               deleteTranslation={deleteTranslation}
               ungroupMwe={ungroupMwe}
               alternativesLoaded={hasFetchedAlternatives}
+              askLlmTranslation={(w, onDone, onErr) =>
+                interactiveText.askLlmTranslation(
+                  w,
+                  () => {
+                    wordUpdated(w);
+                    onDone && onDone();
+                  },
+                  onErr,
+                )
+              }
             />
           )}
         </z-orig>

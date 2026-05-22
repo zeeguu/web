@@ -23,10 +23,15 @@ function shortenSource(alt) {
   return PROVIDER_NAME_OVERRIDES[provider] || provider || alt.source;
 }
 
-// Merge competing_translations (known immediately from the bookmark
-// response, when providers disagree) with word.alternatives (streamed
-// in lazily by AlterMenu open). Dedupe by normalised translation text
-// and drop anything equal to the current primary translation.
+// ADR 022: `word.alternatives` carries the full vote-ordered provider list
+// (winner at index 0) directly from /get_one_translation, plus any
+// LLM-on-demand result appended via askLlmTranslation. The menu shows the
+// non-winner entries — dedupe by normalised translation text and drop
+// anything equal to the current primary translation.
+//
+// `word.competing_translations` is the legacy field kept during ADR 022's
+// deprecation window; consulted for clients (extension build) that still
+// only receive it. Safe to drop once the extension reads `alternatives`.
 function buildAlternatives(word) {
   const seen = new Set();
   const list = [];
@@ -54,11 +59,18 @@ export default function AlterMenu({
   deleteTranslation,
   ungroupMwe,
   alternativesLoaded,
+  askLlmTranslation,
 }) {
   const refToAlterMenu = useRef(null);
   const inputRef = useRef(null);
   const [inputValue, setInputValue] = useState("");
   const [showOwnInput, setShowOwnInput] = useState(false);
+  // ADR 022: Ask-LLM is a single-shot action. While the LLM call is in
+  // flight we disable the button and show a small spinner inline so the
+  // user knows their tap was registered. The result is appended to
+  // word.alternatives and rerendered into the regular menu rows.
+  const [isAskingLlm, setIsAskingLlm] = useState(false);
+  const [askedLlm, setAskedLlm] = useState(false);
 
   useEffect(() => {
     if (showOwnInput && inputRef.current) inputRef.current.focus();
@@ -194,6 +206,30 @@ export default function AlterMenu({
         {!showOwnInput && (
           <div className="neutralLink" onClick={() => setShowOwnInput(true)}>
             Add own translation
+          </div>
+        )}
+        {askLlmTranslation && !askedLlm && (
+          <div
+            className="neutralLink"
+            aria-disabled={isAskingLlm}
+            style={isAskingLlm ? { opacity: 0.6, pointerEvents: "none" } : undefined}
+            onClick={() => {
+              if (isAskingLlm) return;
+              setIsAskingLlm(true);
+              askLlmTranslation(
+                word,
+                () => {
+                  setIsAskingLlm(false);
+                  setAskedLlm(true);
+                },
+                () => {
+                  setIsAskingLlm(false);
+                  setAskedLlm(true);
+                },
+              );
+            }}
+          >
+            {isAskingLlm ? "Asking LLM…" : "Ask LLM"}
           </div>
         )}
         {word.mweExpression && ungroupMwe && (

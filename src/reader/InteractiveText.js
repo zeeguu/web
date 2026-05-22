@@ -150,12 +150,23 @@ export default class InteractiveText {
         const competing = forceDisagreement
           ? [{ translation: "(forced test alternative)", source: "DeepL - with context" }]
           : (data.competing_translations || null);
+        // ADR 022: backend now returns the full deduped, vote-ordered
+        // provider list as `alternatives` (winner at index 0). The dev hook
+        // synthesises a 2-entry list so the menu still has something to
+        // show when `force_disagreement` is set.
+        const alternatives = forceDisagreement
+          ? [
+              { translation: data.translation, source: data.source || "winner", votes: 1 },
+              { translation: "(forced test alternative)", source: "DeepL - with context", votes: 1 },
+            ]
+          : (data.alternatives || null);
         word.updateTranslation(
           data.translation,
           data.service_name,
           data.bookmark_id,
           competing,
           forceDisagreement || data.disagreement === true,
+          alternatives,
         );
         // Mark word's translation as visible so the component renders it
         // This is especially important for MWEs where clicking any word
@@ -164,6 +175,14 @@ export default class InteractiveText {
 
         // Dispatch event for bookmark creation (used by useAnonymousUpgrade)
         window.dispatchEvent(new CustomEvent('zeeguu-bookmark-created'));
+
+        // ADR 022: fire the see-more-translations onboarding only when the
+        // user just translated a word that actually has *non-winner*
+        // alternatives to look at. `alternatives` always contains the winner
+        // at index 0, so length > 1 means "there is more for them to see".
+        if ((alternatives?.length ?? 0) > 1) {
+          window.dispatchEvent(new CustomEvent('zeeguu-translation-with-alternatives'));
+        }
 
         // Tee to the wait-drill cache so the user's own taps feed the
         // loading-screen vocab drill (see WaitDrill.js).
@@ -194,6 +213,39 @@ export default class InteractiveText {
     this.api.logUserActivity(this.api.SEND_SUGGESTION, null, alternative_info, this.source, this.sourceId);
 
     onSuccess();
+  }
+
+  // ADR 022: explicit Ask-LLM action, triggered from AlterMenu. Calls
+  // /ask_llm_translation synchronously, appends the result to
+  // word.alternatives (deduped by translation text), and fires onComplete.
+  // The LLM is the most expensive translator in the bag — gating it behind
+  // a user click means we only pay when a learner actually wants it.
+  askLlmTranslation(word, onComplete, onError) {
+    let context;
+    [context] = this.getContextAndCoordinates(word);
+    const textToTranslate = word.mweExpression || word.word;
+
+    this.api
+      .askLlmTranslation(this.language, localStorage.native_language, textToTranslate, context)
+      .then((result) => {
+        if (!result?.translation) {
+          onError && onError();
+          return;
+        }
+        const existing = (word.alternatives || []).map((a) => (a.translation || "").trim().toLowerCase());
+        const newKey = result.translation.trim().toLowerCase();
+        if (!existing.includes(newKey)) {
+          word.alternatives = [
+            ...(word.alternatives || []),
+            { translation: result.translation, source: result.source || "LLM", votes: 1 },
+          ];
+        }
+        onComplete && onComplete();
+      })
+      .catch((e) => {
+        console.error("Ask-LLM translation failed:", e);
+        onError && onError(e);
+      });
   }
 
   alternativeTranslations(word, onUpdate, onComplete) {

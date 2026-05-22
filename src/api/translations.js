@@ -62,6 +62,16 @@ Zeeguu_API.prototype.getOneTranslation = function (
   return this.apiPost(`/get_one_translation/${from_lang}/${to_lang}`, payload);
 };
 
+// ADR 022: explicit on-demand LLM translation. Called from the AlterMenu's
+// "Ask LLM" button so the (slow, paid) LLM round trip only fires when the
+// learner explicitly wants more than the 3-way vote already gave them.
+Zeeguu_API.prototype.askLlmTranslation = function (from_lang, to_lang, word, context) {
+  return this.apiPost(`/ask_llm_translation/${from_lang}/${to_lang}`, {
+    word: word,
+    context: context,
+  }).then((response) => response.data);
+};
+
 Zeeguu_API.prototype.getMultipleTranslations = function (
   from_lang,
   to_lang,
