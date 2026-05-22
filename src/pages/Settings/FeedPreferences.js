@@ -25,7 +25,7 @@ import InputField from "../../components/InputField";
 import strings from "../../i18n/definitions";
 import { Margin } from "@mui/icons-material";
 
-export default function Interests() {
+export default function FeedPreferences() {
   const api = useContext(APIContext);
   const { allTopics, toggleTopicSubscription, isSubscribed } = useSelectInterest(api);
   const isFromArticles = useQuery().get("fromArticles") === "1";

@@ -3,7 +3,7 @@ import { Switch } from "react-router-dom";
 import Settings from "./Settings";
 import ProfileDetails from "./ProfileDetails";
 import LanguageSettings from "./LanguageSettings";
-import FeedPreferences from "./Interests";
+import FeedPreferences from "./FeedPreferences";
 import ExerciseTypePreferences from "./ExerciseTypePreferences";
 import MyClassrooms from "./MyClassrooms/MyClassrooms";
 import DeleteAccount from "./DeleteAccount";
