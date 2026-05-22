@@ -28,12 +28,21 @@ function shortenSource(alt) {
 // entries — dedupe by normalised translation text and drop anything equal
 // to the current primary translation.
 //
+// `allAgreedWithPrimary` is true when the providers ran (alternatives is
+// non-empty in some source) but everything they returned matched the
+// primary. The header turns into an affirmation instead of "no alternatives
+// found", so the user can tell the system did look — it just confirmed
+// the translation they already had. (Especially common for past-translation
+// words: the user previously accepted the providers' consensus, so when we
+// ask the providers again they say the same thing.)
+//
 // `word.competing_translations` is the legacy field kept during ADR 022's
 // deprecation window; consulted for clients (extension build) that still
 // only receive it. Safe to drop once the extension reads `alternatives`.
 function buildAlternatives(word) {
   const seen = new Set();
   const list = [];
+  let hadAnyEntry = false;
   const normaliseKey = (t) => (t || "").toLowerCase().trim();
   const primaryKey = normaliseKey(word.translation);
   if (primaryKey) seen.add(primaryKey);
@@ -43,12 +52,14 @@ function buildAlternatives(word) {
     if (!src) continue;
     for (const entry of src) {
       const key = normaliseKey(entry?.translation);
-      if (!key || seen.has(key)) continue;
+      if (!key) continue;
+      hadAnyEntry = true;
+      if (seen.has(key)) continue;
       seen.add(key);
       list.push(entry);
     }
   }
-  return list;
+  return { list, allAgreedWithPrimary: hadAnyEntry && list.length === 0 };
 }
 
 export default function AlterMenu({
@@ -70,7 +81,14 @@ export default function AlterMenu({
   // removing it would look like "the option just vanished and nothing
   // happened," which is exactly what we got bug-reported on.
   const [isAskingLlm, setIsAskingLlm] = useState(false);
+  // The LLM produced a genuinely new alternative; row is now in the list.
   const [llmSucceeded, setLlmSucceeded] = useState(false);
+  // The LLM just confirmed the existing translation. No new row appears
+  // (it'd be filtered as a duplicate of the primary), so we keep the
+  // button visible and change its label to communicate what happened —
+  // silently hiding it was the "Ask LLM disappeared, no alternative
+  // ever" bug.
+  const [llmAgreedWithPrimary, setLlmAgreedWithPrimary] = useState(false);
   const [llmError, setLlmError] = useState(false);
 
   useEffect(() => {
@@ -128,7 +146,7 @@ export default function AlterMenu({
     }
   }
 
-  const filteredAlternatives = buildAlternatives(word);
+  const { list: filteredAlternatives, allAgreedWithPrimary } = buildAlternatives(word);
   const hasAlternatives = filteredAlternatives.length > 0;
 
   // Reposition only when something that can change menu dimensions changes;
@@ -164,6 +182,10 @@ export default function AlterMenu({
     header = (
       <div style={{ ...HEADER_BAND_STYLE, color: "var(--altermenu-header-text)" }}>Alternatives</div>
     );
+  } else if (allAgreedWithPrimary) {
+    header = (
+      <div style={{ ...HEADER_BAND_STYLE, color: "var(--altermenu-header-text)" }}>All providers agree</div>
+    );
   } else {
     header = (
       <div style={{ ...HEADER_BAND_STYLE, color: "var(--altermenu-header-text)" }}>No alternatives found</div>
@@ -197,25 +219,28 @@ export default function AlterMenu({
         />
       )}
       <div className="actionsSection">
-        {!showOwnInput && (
-          <div className="neutralLink" onClick={() => setShowOwnInput(true)}>
-            Add own translation
-          </div>
-        )}
         {askLlmTranslation && !llmSucceeded && (
           <div
             className="neutralLink"
-            aria-disabled={isAskingLlm}
-            style={isAskingLlm ? { opacity: 0.6, pointerEvents: "none" } : undefined}
+            aria-disabled={isAskingLlm || llmAgreedWithPrimary}
+            style={
+              isAskingLlm || llmAgreedWithPrimary
+                ? { opacity: 0.7, pointerEvents: "none" }
+                : undefined
+            }
             onClick={() => {
-              if (isAskingLlm) return;
+              if (isAskingLlm || llmAgreedWithPrimary) return;
               setLlmError(false);
               setIsAskingLlm(true);
               askLlmTranslation(
                 word,
-                () => {
+                (info) => {
                   setIsAskingLlm(false);
-                  setLlmSucceeded(true);
+                  if (info?.agreedWithPrimary) {
+                    setLlmAgreedWithPrimary(true);
+                  } else {
+                    setLlmSucceeded(true);
+                  }
                 },
                 () => {
                   setIsAskingLlm(false);
@@ -226,9 +251,16 @@ export default function AlterMenu({
           >
             {isAskingLlm
               ? "Asking LLM…"
+              : llmAgreedWithPrimary
+              ? "LLM agrees with your translation"
               : llmError
               ? "Ask LLM — try again"
               : "Ask LLM"}
+          </div>
+        )}
+        {!showOwnInput && (
+          <div className="neutralLink" onClick={() => setShowOwnInput(true)}>
+            Add own translation
           </div>
         )}
         {word.mweExpression && ungroupMwe && (

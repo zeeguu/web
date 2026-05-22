@@ -232,15 +232,22 @@ export default class InteractiveText {
           onError && onError();
           return;
         }
-        const existing = (word.alternatives || []).map((a) => (a.translation || "").trim().toLowerCase());
         const newKey = result.translation.trim().toLowerCase();
+        const primaryKey = (word.translation || "").trim().toLowerCase();
+        const agreedWithPrimary = !!primaryKey && newKey === primaryKey;
+        const existing = (word.alternatives || []).map((a) => (a.translation || "").trim().toLowerCase());
         if (!existing.includes(newKey)) {
           word.alternatives = [
             ...(word.alternatives || []),
             { translation: result.translation, source: result.source || "LLM", votes: 1 },
           ];
         }
-        onComplete && onComplete();
+        // Tell the caller whether the LLM produced a genuinely new answer
+        // or just confirmed what the user already had — the AlterMenu needs
+        // that distinction to avoid the "button disappeared, nothing
+        // happened" failure mode where an LLM agreement gets filtered
+        // out of the alternatives list and the user is left blind.
+        onComplete && onComplete({ agreedWithPrimary });
       })
       .catch((e) => {
         console.error("Ask-LLM translation failed:", e);

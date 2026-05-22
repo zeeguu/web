@@ -440,9 +440,9 @@ export default function TranslatableWord({
               askLlmTranslation={(w, onDone, onErr) =>
                 interactiveText.askLlmTranslation(
                   w,
-                  () => {
+                  (info) => {
                     wordUpdated(w);
-                    onDone && onDone();
+                    onDone && onDone(info);
                   },
                   onErr,
                 )
