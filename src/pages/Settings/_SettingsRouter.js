@@ -3,11 +3,10 @@ import { Switch } from "react-router-dom";
 import Settings from "./Settings";
 import ProfileDetails from "./ProfileDetails";
 import LanguageSettings from "./LanguageSettings";
-import Interests from "./Interests";
+import FeedPreferences from "./Interests";
 import ExerciseTypePreferences from "./ExerciseTypePreferences";
 import MyClassrooms from "./MyClassrooms/MyClassrooms";
 import DeleteAccount from "./DeleteAccount";
-import ExcludedKeywords from "./ExcludedKeywords";
 import TopbarIconPreferences from "./TopbarIconPreferences";
 import ExerciseSchedulingPreferences from "./ExerciseSchedulingPreferences";
 import DisplayPreferences from "./DisplayPreferences";
@@ -21,25 +20,19 @@ export default function SettingsRouter({ setUser }) {
 
       <PrivateRoute path="/account_settings/language_settings" setUser={setUser} component={LanguageSettings} />
 
-      <PrivateRoute
-        path="/account_settings/exercise_types"
-        component={ExerciseTypePreferences}
-      />
+      <PrivateRoute path="/account_settings/exercise_types" component={ExerciseTypePreferences} />
 
       <PrivateRoute path="/account_settings/exercise_scheduling" component={ExerciseSchedulingPreferences} />
 
-      <PrivateRoute path="/account_settings/topbar_progress_display" component={TopbarIconPreferences}/>
+      <PrivateRoute path="/account_settings/topbar_progress_display" component={TopbarIconPreferences} />
 
       <PrivateRoute path="/account_settings/display" component={DisplayPreferences} />
 
       <PrivateRoute path="/account_settings/my_classrooms" component={MyClassrooms} />
 
-      <PrivateRoute path="/account_settings/interests" component={Interests} />
-
-      <PrivateRoute path="/account_settings/filters" component={ExcludedKeywords} />
+      <PrivateRoute path="/account_settings/interests" component={FeedPreferences} />
 
       <PrivateRoute path="/account_settings/delete_account" component={DeleteAccount} />
-
     </Switch>
   );
 }

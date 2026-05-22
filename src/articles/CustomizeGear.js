@@ -1,4 +1,4 @@
-import { useContext, useState, useRef, useEffect } from "react";
+import { useContext, useState, useEffect } from "react";
 import { useHistory } from "react-router-dom";
 import SettingsRoundedIcon from "@mui/icons-material/SettingsRounded";
 import { APIContext } from "../contexts/APIContext";
@@ -17,55 +17,22 @@ function chipLabel(topics) {
 export default function CustomizeGear() {
   const api = useContext(APIContext);
   const history = useHistory();
-  const dropdownRef = useRef(null);
-  const [showDropdown, setShowDropdown] = useState(false);
   const [subscribedTopics, setSubscribedTopics] = useState(null);
 
   useEffect(() => {
     api.getSubscribedTopics((data) => setSubscribedTopics(data || []));
   }, [api]);
 
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-        setShowDropdown(false);
-      }
-    };
-
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, []);
-
-  const handleChipClick = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setShowDropdown(!showDropdown);
-  };
-
-  const handleItemClick = (path) => {
-    history.push(path);
-    setShowDropdown(false);
+  const handleClick = () => {
+    history.push("/account_settings/interests");
   };
 
   return (
-    <s.GearWrapper ref={dropdownRef}>
-      <s.GearButton onClick={handleChipClick} $isActive={showDropdown} title="Customize feed">
+    <s.GearWrapper>
+      <s.GearButton onClick={handleClick} title="Customize feed">
         <span>{chipLabel(subscribedTopics)}</span>
         <SettingsRoundedIcon style={{ fontSize: "0.95rem" }} />
       </s.GearButton>
-
-      {showDropdown && (
-        <s.DropdownMenu>
-          <s.DropdownItem onClick={() => handleItemClick("/account_settings/interests?fromArticles=1")}>
-            Topics of Interest
-          </s.DropdownItem>
-          <s.DropdownItem onClick={() => handleItemClick("/account_settings/filters?fromArticles=1")}>
-            Topics to Avoid
-          </s.DropdownItem>
-        </s.DropdownMenu>
-      )}
     </s.GearWrapper>
   );
 }

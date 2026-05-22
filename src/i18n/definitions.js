@@ -100,7 +100,7 @@ let strings = new LocalizedStrings(
       forgotPassword: "Forgot Password?",
       alreadyHaveAccount: "Already have an account?",
       code: "Code",
-      interest: "interest",
+      feedPrefernces: "Feed Preferences",
       addTexts: "Add Texts",
       delete: "Delete",
       cancel: "Cancel",
@@ -431,8 +431,7 @@ let strings = new LocalizedStrings(
       addPersonalInterest: "Add an interest keyword",
 
       //Learned
-      learnedWordsAreMsg:
-        "Learned words are words that were correct in exercises on all four levels.",
+      learnedWordsAreMsg: "Learned words are words that were correct in exercises on all four levels.",
       numberOfLearnedWordsMsg: "You have learned {0} words so far.",
       correctOn: "Correct on: ",
 
