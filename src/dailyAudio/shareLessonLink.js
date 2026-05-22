@@ -1,11 +1,15 @@
 import { WEB_URL } from "../config";
 
-export function shareLessonUrl(lessonId) {
-  return `${WEB_URL}/shared-lesson/${lessonId}`;
-}
+export async function shareLessonLink(api, lessonId, title) {
+  let url;
+  try {
+    const { share_uuid } = await api.createLessonShareLink(lessonId);
+    url = `${WEB_URL}/shared-lesson/${share_uuid}`;
+  } catch (e) {
+    alert("Could not create share link. Please try again.");
+    return;
+  }
 
-export async function shareLessonLink(lessonId, title) {
-  const url = shareLessonUrl(lessonId);
   const shareTitle = title ? `Zeeguu Audio: ${title}` : "Zeeguu Audio Lesson";
 
   if (navigator.share) {
