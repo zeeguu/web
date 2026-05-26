@@ -4,8 +4,8 @@ import useOnboardingModal from "./useOnboardingModal";
 
 /**
  * Hook for the Learning Levels onboarding modal.
- * Triggered when the user first encounters a word level > 0,
- * which indicates they've completed an exercise and progressed a level.
+ * Triggered when the user first makes any progress on a word,
+ * which indicates they've completed their first exercise.
  */
 export default function useLearningLevelsOnboarding(api, userDetails) {
   const modal = useOnboardingModal(api, ONBOARDING_MESSAGE_IDS.learningLevels);

@@ -96,13 +96,13 @@ export default function LevelIndicator({
     cooling_interval = cooling_interval - 1;
   }
 
-  // Dispatch event when user first encounters a word with level > 0
-  // This is the natural moment to show the Learning Levels onboarding
+  // Dispatch event when user first makes any progress on a word
+  // This shows the Learning Levels onboarding on first exercise completion
   useEffect(() => {
-    if (level > 0) {
+    if (level > 0 || cooling_interval > 0) {
       window.dispatchEvent(new CustomEvent("zeeguu-word-level-shown"));
     }
-  }, [level]);
+  }, [level, cooling_interval]);
 
   return (
     <s.LevelIndicator isGreyedOutBar={isGreyedOutBar}>
