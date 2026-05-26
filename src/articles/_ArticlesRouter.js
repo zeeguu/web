@@ -120,6 +120,7 @@ export default function ArticlesRouter({ hasExtension, isChrome }) {
         <TopTabs
           title={strings.articles}
           tabsAndLinks={tabs}
+          hasBackground={true}
           topicsDropdown={{
             ref: dropdownRef,
             showDropdown: showTopicsDropdown,

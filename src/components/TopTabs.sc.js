@@ -23,11 +23,14 @@ const TopTabs = styled.div`
     display: flex;
     justify-content: center;
     gap: 0.8em;
-    background-color: var(--infobox-bg);
     padding: 0rem 1rem;
     border-radius: 1rem;
     margin: 0 auto;
     margin-top: 0.5em;
+  }
+
+  .all__tabs--with-bg {
+    background-color: var(--infobox-bg);
   }
 
   .headmenuTab {
@@ -82,6 +85,12 @@ const TopTabs = styled.div`
 
   .headmenuTab.icon-active svg {
     color: var(--onboarding-btn-bg);
+  }
+
+  .tab-separator {
+    color: #ccc;
+    font-size: 1.2em;
+    margin: 0 0.3em;
   }
 `;
 
