@@ -7,7 +7,7 @@ export default function useTranslationOnboarding(api, userDetails) {
   const currentUserId = userDetails?.username;
 
   useEffect(() => {
-    if (!currentUserId || modal.alreadyShown) return;
+    if (!currentUserId) return;
 
     window.addEventListener("zeeguu-article-opened", modal.show);
     window.addEventListener("zeeguu-bookmark-created", modal.show);
@@ -15,7 +15,7 @@ export default function useTranslationOnboarding(api, userDetails) {
       window.removeEventListener("zeeguu-article-opened", modal.show);
       window.removeEventListener("zeeguu-bookmark-created", modal.show);
     };
-  }, [currentUserId, modal.alreadyShown, modal.show]);
+  }, [currentUserId, modal.show]);
 
   return modal;
 }
