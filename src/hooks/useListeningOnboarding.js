@@ -9,7 +9,7 @@ export default function useListeningOnboarding(api, userDetails) {
   useEffect(() => {
     // Trigger when user enters the Listening/Daily Audio tab for first time
     // Only call show() once when alreadyShown becomes false
-    if (!currentUserId || !modal.alreadyShown) {
+    if (!currentUserId || modal.alreadyShown) {
       return;
     }
     modal.show();
