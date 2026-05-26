@@ -1,5 +1,6 @@
-- Smoother exercise reveals: the answer slides into the solution slot and the solved word is shown the same way it appears in articles, with the translation above and tap-to-pronounce.
-- Reporting an exercise as broken now also pulls that word from your scheduling, with a 5-second Undo in case it was a misclick.
-- Click-word exercises are easier to tap: more line spacing and wider context.
-- Switching language from the exercises summary screen now takes you straight back to the exercises.
-- Fixed a bug that prevented some articles from opening.
+- Alternative translations now appear instantly when you tap the down arrow next to a translated word. No more shifting rows under your finger.
+- New "Ask LLM" button in the alternatives menu when you want a fresh opinion. Opt-in, so it only runs when you ask for it.
+- Opening the alternatives menu on a word you previously translated now actually shows alternatives.
+- Article cards: summary fits in 3 lines instead of 2, and the "Show more" link only appears when there really is more to read.
+- Share your daily audio lesson with a public link.
+- Cleaner article summaries on the home feed.

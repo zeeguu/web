@@ -46,6 +46,10 @@ Zeeguu_API.prototype.hasSeenOnboardingMessage = function (onboardingMessageId) {
   );
 };
 
+Zeeguu_API.prototype.clearOnboardingMessages = function () {
+  return this._post(`clear_onboarding_messages`, "").then((response) => response.json());
+};
+
 // Topics that can be subscribed to
 Zeeguu_API.prototype.getUserPreferences = function () {
   return this._getJSONPromise("user_preferences");

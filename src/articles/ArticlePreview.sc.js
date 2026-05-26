@@ -256,7 +256,7 @@ const ImageOpenOverlay = styled.span`
 // alive) — only the visual is clipped.
 const ClampedSummary = styled.div`
   display: -webkit-box;
-  -webkit-line-clamp: 2;
+  -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
   overflow: hidden;
 `;
