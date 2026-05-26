@@ -33,12 +33,10 @@ import SessionStorage from "./assorted/SessionStorage";
 import useRedirectLink from "./hooks/useRedirectLink";
 import useLocationTracker from "./hooks/useLocationTracker";
 import useDeepLinkHandler from "./hooks/useDeepLinkHandler";
-import useTranslationOnboarding from "./hooks/useTranslationOnboarding";
 import LoadingAnimation from "./components/LoadingAnimation";
 import ServerErrorModal from "./components/ServerErrorModal";
 import useTheme from "./hooks/useTheme";
 import { ThemeContext } from "./contexts/ThemeContext";
-import TranslationOnboardingPopup from "./pages/onboarding/notifications/TranslationOnboardingPopup";
 
 // Helper to detect if we're in a Capacitor native app
 const isCapacitor = () => {
@@ -93,7 +91,6 @@ function App() {
   const [isExtensionAvailable] = useExtensionCommunication();
   const [zeeguuSpeech, setZeeguuSpeech] = useState(false);
   let { handleRedirectLinkOrGoTo } = useRedirectLink();
-  const translationModal = useTranslationOnboarding(api, userDetails);
 
   const [systemLanguages, setSystemLanguages] = useState();
   // Initialize session from native storage (for Capacitor) before doing anything else.
@@ -414,10 +411,6 @@ function App() {
                         <MainAppRouter
                           hasExtension={isExtensionAvailable}
                           handleSuccessfulLogIn={handleSuccessfulLogIn}
-                        />
-                        <TranslationOnboardingPopup
-                          open={translationModal.open}
-                          handleCancel={translationModal.close}
                         />
                         <ToastContainer
                           position="bottom-right"
