@@ -162,6 +162,14 @@ const StyledButton = styled.button`
     `}
 `;
 
+const HideWhenDisabledButton = styled(StyledButton)`
+  ${(props) =>
+    props.$disabled &&
+    css`
+      display: none;
+    `}
+`;
+
 export {
   RoundButton,
   OrangeRoundButton,
@@ -169,5 +177,6 @@ export {
   BigSquareButton,
   ClearSearchButton,
   StyledButton,
+  HideWhenDisabledButton,
   SearchIcon,
 };
