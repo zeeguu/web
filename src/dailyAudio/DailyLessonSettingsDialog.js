@@ -101,7 +101,7 @@ export default function DailyLessonSettingsDialog({
       }}
     >
       <h2 style={{ margin: "0 0 16px", fontSize: "1.25rem", color: zeeguuOrange }}>
-        Daily lesson type
+        Daily lesson settings
       </h2>
 
       <SuggestionSelector

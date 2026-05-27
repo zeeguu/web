@@ -9,12 +9,9 @@ import { todayDateLabel, completionChecks } from "./audioUtils";
 // Config pill, styled like the Discover screen's "Topics: … ⚙" control but with
 // theme tokens (not hardcoded white) so it renders as a pill in light AND dark.
 const ConfigPill = styled.button`
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 0.4rem;
-  width: min(100%, 320px);
-  margin: 0 auto;
+  gap: 0.5rem;
   padding: 0.5rem 0.95rem;
   border-radius: 999px;
   border: 1px solid var(--border-light);
@@ -95,8 +92,8 @@ export default function TodayEpisodeCard({ onChangeTopic, ...playbackProps }) {
   // stays quiet to keep the screen uncluttered.
   const footer = (
     <div style={{ marginTop: "24px", textAlign: "center" }}>
-      <ConfigPill onClick={onChangeTopic} title="Change your daily lesson type">
-        <span>Daily lesson type</span>
+      <ConfigPill onClick={onChangeTopic} title="Daily lesson settings">
+        <span>Daily lesson settings</span>
         <SettingsRoundedIcon style={{ fontSize: "0.95rem" }} />
       </ConfigPill>
     </div>
