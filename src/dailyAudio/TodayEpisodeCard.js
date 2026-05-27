@@ -29,20 +29,9 @@ const ConfigPill = styled.button`
 `;
 
 // Design-B "episode card" header: a date line, the title (with one ✓ per
-// listen), then a metadata line that leads with the type chip and the subject.
-function EpisodeHeader({ lessonData, words }) {
-  const hasSubject =
-    lessonData.lesson_type === "topic" || lessonData.lesson_type === "situation";
-
-  // Type chip lives on the metadata line now; duration is omitted (the player
-  // already shows total time) and there's no headphones glyph.
-  const metaText = [
-    hasSubject ? lessonData.canonical_suggestion : null,
-    words && words.length > 0 ? `${words.length} words` : null,
-  ]
-    .filter(Boolean)
-    .join(" · ");
-
+// listen), then a single category chip — "Type: subject" — exactly like the
+// past-lessons list, so the subject lives inside the pill (no wrap-under).
+function EpisodeHeader({ lessonData }) {
   return (
     <>
       <span
@@ -64,14 +53,11 @@ function EpisodeHeader({ lessonData, words }) {
         )}
       </LessonTitle>
 
-      <LessonMetadata style={{ display: "flex", alignItems: "baseline", gap: "6px" }}>
-        <LessonTypeChip
-          $type={lessonData.lesson_type}
-          style={{ marginBottom: 0, flexShrink: 0 }}
-        >
+      <LessonMetadata>
+        <LessonTypeChip $type={lessonData.lesson_type} style={{ marginBottom: 0 }}>
           {chipLabel(lessonData.lesson_type)}
+          {lessonData.canonical_suggestion ? `: ${lessonData.canonical_suggestion}` : ""}
         </LessonTypeChip>
-        {metaText && <span style={{ minWidth: 0 }}>{metaText}</span>}
       </LessonMetadata>
     </>
   );
@@ -83,7 +69,7 @@ function EpisodeHeader({ lessonData, words }) {
  * injects the Design-B header + footer.
  */
 export default function TodayEpisodeCard({ onChangeTopic, ...playbackProps }) {
-  const { lessonData, words } = playbackProps;
+  const { lessonData } = playbackProps;
 
   // Just the daily-lesson config pill (styled like the Discover screen's
   // "Topics: … ⚙" control), above the Share/Feedback utility actions. The
@@ -102,7 +88,7 @@ export default function TodayEpisodeCard({ onChangeTopic, ...playbackProps }) {
   return (
     <LessonPlaybackView
       {...playbackProps}
-      header={<EpisodeHeader lessonData={lessonData} words={words} />}
+      header={<EpisodeHeader lessonData={lessonData} />}
       footer={footer}
     />
   );
