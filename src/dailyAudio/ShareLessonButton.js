@@ -8,7 +8,7 @@ import { shareLessonLink } from "./shareLessonLink";
 export default function ShareLessonButton({ api, lessonId, title }) {
   if (!lessonId) return null;
   return (
-    <div style={{ textAlign: "center", marginTop: "2px" }}>
+    <div style={{ textAlign: "center", marginTop: "-2px" }}>
       <SubtleTextButton onClick={() => shareLessonLink(api, lessonId, title)}>
         Share
       </SubtleTextButton>
