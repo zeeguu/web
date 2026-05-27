@@ -1,5 +1,4 @@
 import React, { useState, useContext, useEffect } from "react";
-import styled from "styled-components";
 import { APIContext } from "../contexts/APIContext";
 import { UserContext } from "../contexts/UserContext";
 import LoadingAnimation from "../components/LoadingAnimation";
@@ -7,58 +6,25 @@ import useListeningSession from "../hooks/useListeningSession";
 import CustomAudioPlayer from "../components/CustomAudioPlayer";
 import { SubtleTextButton, LessonTitle, CompletionCheck } from "./LessonView.sc";
 import { SubtleLessonCard, ProgressBarTrack, ProgressBarFill } from "./SharedLessonView.sc";
-import { shareLessonLink } from "./shareLessonLink";
+import { PillRow, SelectablePill } from "./SuggestionSelector.sc";
+import { LessonTypeChip, chipLabel } from "./lessonTypeChip";
+import { completionChecks, formatShortDate } from "./audioUtils";
+import ShareLessonButton from "./ShareLessonButton";
 
-// Small colored pill that surfaces the lesson category in the card preview.
-// Colors mirror SessionHistory's activity chips (Reading/Browsing/Audio)
-// so the visual language is consistent across activity & lessons. Each
-// palette has a dark-mode variant: pale pastels disappear on dark cards,
-// so we swap to a deeper background with brighter text.
-const chipPalette = {
-  topic:              { bg: "#e3f2fd", color: "#1565c0", darkBg: "#1e3a52", darkColor: "#90caf9" },  // blue
-  situation:          { bg: "#e8f5e9", color: "#2e7d32", darkBg: "#1f3d24", darkColor: "#a5d6a7" },  // green
-  three_words_lesson: { bg: "#f3e5f5", color: "#7b1fa2", darkBg: "#3a1f3e", darkColor: "#ce93d8" },  // purple
-};
-
-const LessonTypeChip = styled.span`
-  display: inline-block;
-  padding: 2px 10px;
-  border-radius: 999px;
-  font-size: 0.75rem;
-  font-weight: 500;
-  margin-bottom: 6px;
-  background: ${({ $type }) => (chipPalette[$type] || chipPalette.topic).bg};
-  color: ${({ $type }) => (chipPalette[$type] || chipPalette.topic).color};
-
-  [data-theme="dark"] & {
-    background: ${({ $type }) => (chipPalette[$type] || chipPalette.topic).darkBg};
-    color: ${({ $type }) => (chipPalette[$type] || chipPalette.topic).darkColor};
-  }
-`;
-
-const chipLabel = (lessonType) => {
-  if (lessonType === "situation") return "Situation";
-  if (lessonType === "three_words_lesson") return "Vocabulary";
-  return "Topic";
-};
+// Filter the back catalogue by lesson type. value=null means "All".
+const TYPE_FILTERS = [
+  { label: "All", value: null },
+  { label: "Vocabulary", value: "three_words_lesson" },
+  { label: "Topic", value: "topic" },
+  { label: "Situation", value: "situation" },
+];
 
 const lessonProgressSeconds = (lesson) =>
   lesson.pause_position_seconds || lesson.position_seconds || lesson.progress_seconds || 0;
 
-const lessonDateLabel = (lesson) =>
-  new Date(lesson.created_at).toLocaleDateString("en-US", {
-    month: "short",
-    day: "numeric",
-  });
+const lessonDateLabel = (lesson) => formatShortDate(new Date(lesson.created_at));
 
 const lessonTitleText = (lesson) => lesson.title || "Past Audio Lesson";
-
-// Render the completion check(s). For replays we draw one ✓ per listen,
-// up to 7; beyond that we use ✓✓✓…✓ so the row doesn't grow without bound.
-const renderChecks = (count) => {
-  if (count <= 7) return "✓".repeat(count);
-  return "✓✓✓…✓";
-};
 
 function CollapsedProgressBar({ lesson }) {
   const duration = lesson.duration_seconds || 0;
@@ -96,7 +62,7 @@ const titleWithDate = (lesson) => {
       {head}
       <span style={{ whiteSpace: "nowrap" }}>
         {tail}
-        {checkCount > 0 && <> <CompletionCheck>{renderChecks(checkCount)}</CompletionCheck></>}
+        {checkCount > 0 && <> <CompletionCheck>{completionChecks(checkCount)}</CompletionCheck></>}
       </span>
     </>
   );
@@ -112,6 +78,7 @@ export default function PastLessons() {
   const [hasMore, setHasMore] = useState(true);
   const [offset, setOffset] = useState(0);
   const [openLessonId, setOpenLessonId] = useState(null);
+  const [typeFilter, setTypeFilter] = useState(null);
   const limit = 10;
 
   useEffect(() => {
@@ -174,7 +141,14 @@ export default function PastLessons() {
     setPastLessons((prev) =>
       prev.map((l) =>
         l.lesson_id === lessonId
-          ? { ...l, is_completed: true, last_completed_at: new Date().toISOString() }
+          ? {
+              ...l,
+              is_completed: true,
+              // One ✓ per listen — bump locally so replays add a check live,
+              // matching the today card (LessonPlaybackView does the same).
+              listened_count: (l.listened_count || 0) + 1,
+              last_completed_at: new Date().toISOString(),
+            }
           : l,
       ),
     );
@@ -205,9 +179,34 @@ export default function PastLessons() {
   const toggleLesson = (lessonId) =>
     setOpenLessonId((current) => (current === lessonId ? null : lessonId));
 
+  // Client-side filter over the lessons loaded so far. Note: with pagination
+  // this only filters the pages already fetched, so a rarely-used type may
+  // show fewer than exist until more pages are loaded. (Follow-up: push the
+  // lesson_type filter down to the past_daily_lessons endpoint.)
+  const visibleLessons = typeFilter
+    ? pastLessons.filter((lesson) => lesson.lesson_type === typeFilter)
+    : pastLessons;
+
   return (
     <div style={{ padding: "20px" }}>
       {error && <div style={{ color: "red", marginBottom: "20px" }}>{error}</div>}
+
+      {pastLessons.length > 0 && (
+        <PillRow role="radiogroup" aria-label="Filter lessons by type" style={{ flexWrap: "wrap", justifyContent: "center", marginBottom: "16px" }}>
+          {TYPE_FILTERS.map(({ label, value }) => (
+            <SelectablePill
+              key={label}
+              type="button"
+              role="radio"
+              aria-checked={typeFilter === value}
+              $selected={typeFilter === value}
+              onClick={() => setTypeFilter(value)}
+            >
+              {label}
+            </SelectablePill>
+          ))}
+        </PillRow>
+      )}
 
       {pastLessons.length === 0 && !isLoading && !error && (
         <div style={{ textAlign: "center", color: "var(--text-muted)", marginTop: "40px" }}>
@@ -215,10 +214,16 @@ export default function PastLessons() {
         </div>
       )}
 
-      {pastLessons.length > 0 && (
+      {pastLessons.length > 0 && visibleLessons.length === 0 && (
+        <div style={{ textAlign: "center", color: "var(--text-muted)", marginTop: "40px" }}>
+          <p>No {chipLabel(typeFilter).toLowerCase()} lessons yet.</p>
+        </div>
+      )}
+
+      {visibleLessons.length > 0 && (
         <div>
-          {pastLessons.map((lesson, idx) => {
-            const prev = idx > 0 ? pastLessons[idx - 1] : null;
+          {visibleLessons.map((lesson, idx) => {
+            const prev = idx > 0 ? visibleLessons[idx - 1] : null;
             const categoryChanged =
               !prev ||
               prev.lesson_type !== lesson.lesson_type ||
@@ -380,13 +385,7 @@ function InlineLessonPlayer({ lesson, api, userDetails, onLessonCompleted, onPro
         }}
         onError={() => {}}
       />
-      {lesson.lesson_id && (
-        <div style={{ marginTop: "12px", textAlign: "center" }}>
-          <SubtleTextButton onClick={() => shareLessonLink(api, lesson.lesson_id, lesson.title)}>
-            Share
-          </SubtleTextButton>
-        </div>
-      )}
+      <ShareLessonButton api={api} lessonId={lesson.lesson_id} title={lesson.title} />
     </>
   );
 }

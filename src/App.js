@@ -14,7 +14,7 @@ import useUILanguage from "./assorted/hooks/uiLanguageHook";
 
 import ZeeguuSpeech from "./speech/APIBasedSpeech";
 import { SpeechContext } from "./contexts/SpeechContext";
-import { API_ENDPOINT, APP_DOMAIN } from "./appConstants";
+import { API_ENDPOINT, APP_DOMAIN, ONBOARDING_MESSAGE_IDS } from "./appConstants";
 import { AUDIO_STATUS, GENERATION_PROGRESS } from "./dailyAudio/AudioLessonConstants";
 
 import {
@@ -33,10 +33,13 @@ import SessionStorage from "./assorted/SessionStorage";
 import useRedirectLink from "./hooks/useRedirectLink";
 import useLocationTracker from "./hooks/useLocationTracker";
 import useDeepLinkHandler from "./hooks/useDeepLinkHandler";
+import useMoreTranslationsOnboarding from "./hooks/useMoreTranslationsOnboarding";
+import useOnboardingModal from "./hooks/useOnboardingModal";
 import LoadingAnimation from "./components/LoadingAnimation";
 import ServerErrorModal from "./components/ServerErrorModal";
 import useTheme from "./hooks/useTheme";
 import { ThemeContext } from "./contexts/ThemeContext";
+import MoreTranslationsPopup from "./pages/onboarding/notifications/MoreTranslationsPopup";
 
 // Helper to detect if we're in a Capacitor native app
 const isCapacitor = () => {
@@ -91,6 +94,7 @@ function App() {
   const [isExtensionAvailable] = useExtensionCommunication();
   const [zeeguuSpeech, setZeeguuSpeech] = useState(false);
   let { handleRedirectLinkOrGoTo } = useRedirectLink();
+  const moreTranslationsModal = useMoreTranslationsOnboarding(api, userDetails);
 
   const [systemLanguages, setSystemLanguages] = useState();
   // Initialize session from native storage (for Capacitor) before doing anything else.
@@ -411,6 +415,10 @@ function App() {
                         <MainAppRouter
                           hasExtension={isExtensionAvailable}
                           handleSuccessfulLogIn={handleSuccessfulLogIn}
+                        />
+                        <MoreTranslationsPopup
+                          open={moreTranslationsModal.open}
+                          handleCancel={moreTranslationsModal.close}
                         />
                         <ToastContainer
                           position="bottom-right"

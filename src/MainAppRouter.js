@@ -5,7 +5,6 @@ import ExtensionInstalled from "./pages/onboarding/ExtensionInstalled";
 import InstallExtension from "./pages/onboarding/InstallExtension";
 import SelectInterests from "./pages/onboarding/SelectInterests";
 import VerifyEmail from "./pages/onboarding/VerifyEmail";
-import ExcludeWords from "./pages/onboarding/ExcludeWords";
 import ResetPassword from "./pages/ResetPassword";
 import NoSidebarRouter from "./NoSidebarRouter";
 import LogIn from "./pages/LogIn";
@@ -59,7 +58,7 @@ import Feature from "./features/Feature";
 // Helper to detect if we're in a Capacitor native app
 const isCapacitor = () => {
   const platform = Capacitor.getPlatform();
-  return platform === 'ios' || platform === 'android';
+  return platform === "ios" || platform === "android";
 };
 
 // Component to handle mobile app homepage redirect
@@ -83,12 +82,7 @@ function HomePage() {
 }
 
 export default function MainAppRouter({ hasExtension, handleSuccessfulLogIn }) {
-  const {
-    shouldShowUpgrade,
-    triggerReason,
-    bookmarkCount,
-    dismissUpgrade,
-  } = useAnonymousUpgrade();
+  const { shouldShowUpgrade, triggerReason, bookmarkCount, dismissUpgrade } = useAnonymousUpgrade();
 
   return (
     <>
@@ -99,76 +93,73 @@ export default function MainAppRouter({ hasExtension, handleSuccessfulLogIn }) {
         bookmarkCount={bookmarkCount}
       />
       <Switch>
-      <Route path="/log_in" render={() => <LogIn handleSuccessfulLogIn={handleSuccessfulLogIn} />} />
-      <Route path="/account_details" render={() => <CreateAccount handleSuccessfulLogIn={handleSuccessfulLogIn} />} />
+        <Route path="/log_in" render={() => <LogIn handleSuccessfulLogIn={handleSuccessfulLogIn} />} />
+        <Route path="/account_details" render={() => <CreateAccount handleSuccessfulLogIn={handleSuccessfulLogIn} />} />
 
-      <Route path="/create_account" component={InviteCode} />
+        <Route path="/create_account" component={InviteCode} />
 
-      <Route path="/invite_code" component={InviteCode} />
-      <Route path="/language_preferences" component={LanguagePreferences} />
-      <Route path="/welcome" component={Welcome} />
+        <Route path="/invite_code" component={InviteCode} />
+        <Route path="/language_preferences" component={LanguagePreferences} />
+        <Route path="/welcome" component={Welcome} />
 
+        <Route path="/" exact component={HomePage} />
+        <Route path="/extension_installed" component={ExtensionInstalled} />
+        <Route path="/install_extension" component={InstallExtension} />
+        <Route path="/reset_pass" component={ResetPassword} />
+        <Route path="/privacy" component={PrivacyPolicy} />
+        <Route path="/howto/delete_account" component={HowToDeleteAccount} />
+        <Route path="/render" component={NoSidebarRouter} />
 
-      <Route path="/" exact component={HomePage} />
-      <Route path="/extension_installed" component={ExtensionInstalled} />
-      <Route path="/install_extension" component={InstallExtension} />
-      <Route path="/reset_pass" component={ResetPassword} />
-      <Route path="/privacy" component={PrivacyPolicy} />
-      <Route path="/howto/delete_account" component={HowToDeleteAccount} />
-      <Route path="/render" component={NoSidebarRouter} />
+        <PrivateRoute path="/account_deletion" component={DeleteAccount} />
 
-      <PrivateRoute path="/account_deletion" component={DeleteAccount} />
+        <PrivateRoute path="/verify_email" component={VerifyEmail} />
 
-      <PrivateRoute path="/verify_email" component={VerifyEmail} />
+        <PrivateRoute path="/select_interests" hasExtension={hasExtension} component={SelectInterests} />
 
-      <PrivateRoute path="/select_interests" hasExtension={hasExtension} component={SelectInterests} />
-
-      <PrivateRoute path="/exclude_words" hasExtension={hasExtension} component={ExcludeWords} />
-
-      <PrivateRouteWithLayout path="/articles" component={ArticlesRouter} />
-      <PrivateRouteWithLayout path="/swiper" component={Swiper} />
-      <PrivateRoute path="/watch/video" component={VideoPlayer} />
-      <PrivateRouteWithLayout path="/exercises" component={ExercisesRouter} />
-      <PrivateRouteWithLayout path="/verbalFlashcards" component={VerbalFlashcardsRouter} />    
-      <PrivateRouteWithLayout path="/daily-audio" component={DailyAudioRouter} />
-      <Route path="/shared-lesson/:id" component={SharedLessonRouteEntry} />
-      <PrivateRouteWithLayout path="/translate" component={TranslateRouter} />
-      <Redirect from="/my-articles/hidden" to="/articles/bookmarked/hidden" />
-      <Redirect from="/my-articles" to="/articles/bookmarked" />
-      <PrivateRouteWithLayout path="/words" component={WordsRouter} />
-      <PrivateRouteWithLayout path="/history" component={ReadingHistory} />
-      <PrivateRouteWithLayout path="/activity-history" component={ActivityRouter} />
-      <PrivateRouteWithLayout path="/account_settings" component={SettingsRouter} />
-      {/* Only include profile router if gamification is enabled */}
-      {Feature.has_gamification() ? (
-        <PrivateRouteWithLayout path="/profile" component={ProfileRouter} />
-      ) : (
-        <Route path="/profile" component={NotFound} />
-      )}
-      <PrivateRouteWithLayout path="/teacher" component={TeacherRouter} />
-      <PrivateRouteWithLayout path="/shared-article" component={SharedArticleHandler} />
-      <PrivateRouteWithLayout path="/read/article" component={ArticleReader} />
-      <Redirect from="/user_dashboard" to="/activity-history/statistics" />
-      <PrivateRouteWithLayout path="/search" component={ArticlesRouter} />
-      <PrivateRouteWithLayout
-        path="/articleWordReview/:articleID"
-        component={ExercisesForArticle}
-        source={WEB_READER}
-      />
-      <PrivateRouteWithLayout path="/exercise/:exerciseType/:bookmarkId" component={IndividualExercise} />
-      <PrivateRouteWithLayout path="/exercise-test/:exerciseType/:bookmarkId" component={IndividualExercise} />
-      <PrivateRouteWithLayout
-        path="/exercise-test/:exerciseType/:word/:translation/:context/:tokenized"
-        component={IndividualExercise}
-      />
-      <PrivateRouteWithLayout
-        path="/exercise-test/:exerciseType/:word/:translation/:context"
-        component={IndividualExercise}
-      />
-      <PrivateRouteWithLayout path="/exercise-test" component={IndividualExercise} />
-      <Route path="/keyboard-test" component={KeyboardTest} />
-      <Route path="*" component={NotFound} />
-    </Switch>
+        <PrivateRouteWithLayout path="/articles" component={ArticlesRouter} />
+        <PrivateRouteWithLayout path="/swiper" component={Swiper} />
+        <PrivateRoute path="/watch/video" component={VideoPlayer} />
+        <PrivateRouteWithLayout path="/exercises" component={ExercisesRouter} />
+        <PrivateRouteWithLayout path="/verbalFlashcards" component={VerbalFlashcardsRouter} />
+        <PrivateRouteWithLayout path="/daily-audio" component={DailyAudioRouter} />
+        <Route path="/shared-lesson/:id" component={SharedLessonRouteEntry} />
+        <PrivateRouteWithLayout path="/translate" component={TranslateRouter} />
+        <Redirect from="/my-articles/hidden" to="/articles/bookmarked/hidden" />
+        <Redirect from="/my-articles" to="/articles/bookmarked" />
+        <PrivateRouteWithLayout path="/words" component={WordsRouter} />
+        <PrivateRouteWithLayout path="/history" component={ReadingHistory} />
+        <PrivateRouteWithLayout path="/activity-history" component={ActivityRouter} />
+        <PrivateRouteWithLayout path="/account_settings" component={SettingsRouter} />
+        {/* Only include profile router if gamification is enabled */}
+        {Feature.has_gamification() ? (
+          <PrivateRouteWithLayout path="/profile" component={ProfileRouter} />
+        ) : (
+          <Route path="/profile" component={NotFound} />
+        )}
+        <PrivateRouteWithLayout path="/teacher" component={TeacherRouter} />
+        <PrivateRouteWithLayout path="/shared-article" component={SharedArticleHandler} />
+        <PrivateRouteWithLayout path="/read/article" component={ArticleReader} />
+        <Redirect from="/user_dashboard" to="/activity-history/statistics" />
+        <PrivateRouteWithLayout path="/search" component={ArticlesRouter} />
+        <PrivateRouteWithLayout
+          path="/articleWordReview/:articleID"
+          component={ExercisesForArticle}
+          source={WEB_READER}
+        />
+        <PrivateRouteWithLayout path="/exercise/:exerciseType/:bookmarkId" component={IndividualExercise} />
+        <PrivateRouteWithLayout path="/exercise-test/:exerciseType/:bookmarkId" component={IndividualExercise} />
+        <PrivateRouteWithLayout
+          path="/exercise-test/:exerciseType/:word/:translation/:context/:tokenized"
+          component={IndividualExercise}
+        />
+        <PrivateRouteWithLayout
+          path="/exercise-test/:exerciseType/:word/:translation/:context"
+          component={IndividualExercise}
+        />
+        <PrivateRouteWithLayout path="/exercise-test" component={IndividualExercise} />
+        <Route path="/keyboard-test" component={KeyboardTest} />
+        <Route path="*" component={NotFound} />
+      </Switch>
     </>
   );
 }

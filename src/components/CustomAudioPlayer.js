@@ -99,6 +99,7 @@ export default function CustomAudioPlayer({
   title = "Audio Lesson",
   artist = "Zeeguu",
   autoPlay = false,
+  children,
 }) {
   const getStoredSpeed = () => {
     if (!language) return 1.0;
@@ -804,6 +805,8 @@ export default function CustomAudioPlayer({
           {formatTime(duration, true)}
         </div>
       </div>
+
+      {children}
     </div>
   );
 }
