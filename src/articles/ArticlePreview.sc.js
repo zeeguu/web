@@ -132,7 +132,7 @@ const ReadProgress = styled.span`
 `;
 const TitleContainer = styled.div`
   display: flex;
-  width: 95%;
+  width: calc(100% - 40px);
   align-items: center;
   gap: 0.5rem;
   position: relative;
