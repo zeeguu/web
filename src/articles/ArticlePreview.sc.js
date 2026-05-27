@@ -262,7 +262,7 @@ const ImageOpenOverlay = styled.span`
   padding: 0.4em 0.6em 0.5em;
   text-align: right;
   color: #fff;
-  font-size: 0.85em;
+  font-size: 1em;
   font-weight: 500;
   letter-spacing: 0.02em;
   background: linear-gradient(to top, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0));

@@ -222,7 +222,7 @@ export default function ArticlePreview({
         {visual}
         <s.ImageOpenOverlay>
           Open
-          {!should_open_in_zeeguu && <OpenInNewRoundedIcon style={{ fontSize: 14, marginLeft: 4 }} />}
+          {!should_open_in_zeeguu && <OpenInNewRoundedIcon style={{ fontSize: 18, marginLeft: 4 }} />}
         </s.ImageOpenOverlay>
       </>
     );
