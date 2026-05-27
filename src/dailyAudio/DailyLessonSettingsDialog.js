@@ -1,0 +1,100 @@
+import React, { useEffect, useState } from "react";
+import { Dialog } from "../components/DialogWrapper";
+import SuggestionSelector, { pillToBackend, backendToPill } from "./SuggestionSelector";
+import { SubtleTextButton } from "./LessonView.sc";
+import { BannerButton } from "./SharedLessonView.sc";
+
+/**
+ * Setup / "Change daily topic" dialog. Hosts the lesson-type selector and
+ * persists the per-language daily-lesson preference. The dialog never
+ * generates audio itself — it hands the chosen (type, suggestion) back to the
+ * parent via onSubmit, which owns the generation state machine and progress UI.
+ *
+ * onSubmit(backendType, verbatimSuggestion, regenerate):
+ *   regenerate=true  → apply now (parent regenerates today's lesson)
+ *   regenerate=false → save for tomorrow only (keeps today's existing lesson)
+ */
+export default function DailyLessonSettingsDialog({
+  api,
+  initialType,
+  initialSuggestion,
+  todaysLessonExists,
+  onSubmit,
+  onDismiss,
+}) {
+  const [pillType, setPillType] = useState(initialType ? backendToPill(initialType) : "topic");
+  const [suggestion, setSuggestion] = useState(initialSuggestion || "");
+  const [autoDisabled, setAutoDisabled] = useState(false);
+
+  // Vocabulary needs enough study words; disable the pill when there aren't.
+  useEffect(() => {
+    api.checkDailyLessonFeasibility(
+      (data) => {
+        setAutoDisabled(!data.feasible);
+        if (!data.feasible) setPillType((t) => (t === "auto" ? "topic" : t));
+      },
+      () => setAutoDisabled(false),
+    );
+  }, [api]);
+
+  const needsSubject = pillType === "topic" || pillType === "situation";
+  const canSubmit = !needsSubject || suggestion.trim().length > 0;
+
+  const submit = (regenerate) => {
+    if (!canSubmit) return;
+    // Store the subject exactly as typed; Vocabulary carries no subject.
+    onSubmit(pillToBackend(pillType), needsSubject ? suggestion : "", regenerate);
+  };
+
+  return (
+    <Dialog
+      onDismiss={onDismiss}
+      aria-label="Daily lesson settings"
+      style={{
+        background: "var(--card-bg)",
+        color: "var(--text-primary)",
+        borderRadius: "16px",
+        width: "min(90vw, 360px)",
+        padding: "1.5rem",
+      }}
+    >
+      <h2 style={{ margin: "0 0 4px", fontSize: "1.25rem", color: "var(--text-primary)" }}>
+        Your daily lesson
+      </h2>
+      <p style={{ margin: "0 0 16px", fontSize: "0.9rem", color: "var(--text-secondary)" }}>
+        Every morning we'll have a fresh one ready for you. What kind?
+      </p>
+
+      <SuggestionSelector
+        suggestionType={pillType}
+        setSuggestionType={setPillType}
+        suggestion={suggestion}
+        setSuggestion={setSuggestion}
+        autoDisabled={autoDisabled}
+      />
+
+      <div style={{ marginTop: "20px", display: "flex", flexDirection: "column", alignItems: "center", gap: "10px" }}>
+        <BannerButton
+          onClick={() => submit(true)}
+          disabled={!canSubmit}
+          style={{
+            width: "100%",
+            padding: "12px",
+            fontSize: "1rem",
+            fontWeight: 600,
+            opacity: canSubmit ? 1 : 0.5,
+            cursor: canSubmit ? "pointer" : "not-allowed",
+          }}
+        >
+          {todaysLessonExists ? "Generate today's lesson" : "Start my daily lessons"}
+        </BannerButton>
+
+        {todaysLessonExists && (
+          <SubtleTextButton onClick={() => submit(false)} disabled={!canSubmit}>
+            Save for tomorrow instead
+          </SubtleTextButton>
+        )}
+      </div>
+    </Dialog>
+  );
+}

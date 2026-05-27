@@ -21,11 +21,15 @@ export default function LessonPlaybackView({
   listeningSession,
   currentPlaybackTime,
   setCurrentPlaybackTime,
+  header,
+  footer,
 }) {
   const [openFeedback, setOpenFeedback] = useState(false);
 
-  return (
-    <LessonWrapper>
+  // Callers (e.g. the daily episode card) can replace the default title block
+  // with their own header; otherwise we show the plain title + topic line.
+  const defaultHeader = (
+    <>
       <LessonTitle>
         {lessonData.title}
         {lessonData.is_completed && <> <CompletionCheck>✓</CompletionCheck></>}
@@ -33,6 +37,12 @@ export default function LessonPlaybackView({
       {lessonData.canonical_suggestion && (
         <LessonMetadata>{lessonData.lesson_type === "situation" ? "Situation" : "Topic"}: <b>{lessonData.canonical_suggestion}</b></LessonMetadata>
       )}
+    </>
+  );
+
+  return (
+    <LessonWrapper>
+      {header || defaultHeader}
 
       {error && <div style={{ color: "red", marginBottom: "20px" }}>{error}</div>}
 
@@ -144,6 +154,8 @@ export default function LessonPlaybackView({
             </SubtleTextButton>
           )}
         </LessonActions>
+
+        {footer}
 
         <FeedbackModal
           prefixMsg={lessonData

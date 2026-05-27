@@ -8,66 +8,76 @@ import {
   InputArea,
 } from "./SuggestionSelector.sc";
 
-const MAX_SUGGESTION_LENGTH = 80;
+export const MAX_SUGGESTION_LENGTH = 80;
 
-const SUGGESTION_TYPES = {
+export const SUGGESTION_TYPES = {
   auto: {
     label: "Vocabulary",
-    description: "A listening lesson focused on three words from your study list, each in a short dialogue.",
+    description: "A new lesson built from words on your study list, each in a short dialogue.",
     placeholder: null,
   },
   topic: {
     label: "Topic",
-    description: "A listening lesson with a conversation about a topic of your choice.",
+    description: "A daily conversation about a subject you care about.",
     placeholder: "e.g. cooking, sports",
   },
   situation: {
     label: "Situation",
-    description: "A listening lesson with a conversation simulating a real-world situation of your choice.",
+    description: "A daily conversation that role-plays a real-world situation.",
     placeholder: "e.g. at a restaurant, job interview",
   },
 };
 
-const SELECTED_LESSON_TYPE = "audio_lesson_lesson_type_";
-export const suggestionKey = (type, lang) => `audio_lesson_suggestion_${type}_${lang}`;
+// The UI pills use friendly keys ("auto"); the backend / preference store
+// the canonical lesson_type ("three_words_lesson"). Convert at the boundary.
+const PILL_TO_BACKEND = { auto: "three_words_lesson", topic: "topic", situation: "situation" };
 
-export function getSavedSuggestionType(lang) {
-  return localStorage.getItem(SELECTED_LESSON_TYPE + lang) || "auto";
-}
+export const pillToBackend = (pillKey) => PILL_TO_BACKEND[pillKey] || "three_words_lesson";
 
-export function getSavedSuggestion(lang) {
-  return localStorage.getItem(suggestionKey(getSavedSuggestionType(lang), lang)) || "";
-}
+export const backendToPill = (lessonType) =>
+  lessonType === "topic" || lessonType === "situation" ? lessonType : "auto";
 
-export default function SuggestionSelector({ suggestionType, setSuggestionType, suggestion, setSuggestion, lang, autoDisabled }) {
+/**
+ * Pure controlled selector. The parent owns the (suggestionType, suggestion)
+ * state and is responsible for persistence — this component just renders the
+ * pills + description + input and reports changes upward.
+ */
+export default function SuggestionSelector({
+  suggestionType,
+  setSuggestionType,
+  suggestion,
+  setSuggestion,
+  autoDisabled,
+}) {
+  const selectType = (key) => {
+    if (suggestionType === key) return;
+    if (key === "auto" && autoDisabled) return;
+    setSuggestionType(key);
+    // Switching to Vocabulary clears the (now irrelevant) subject; switching
+    // between Topic/Situation keeps whatever the user already typed.
+    if (key === "auto") setSuggestion("");
+  };
+
   return (
     <SuggestionWrapper>
-
-      <PillRow role="radiogroup" aria-label="Dialogue context">
-        {Object.entries(SUGGESTION_TYPES).map(([key, { label }]) => {
-          return (
+      <PillRow role="radiogroup" aria-label="Daily lesson type">
+        {Object.entries(SUGGESTION_TYPES).map(([key, { label }]) => (
           <SelectablePill
             key={key}
             type="button"
             $selected={suggestionType === key}
             role="radio"
             aria-checked={suggestionType === key}
-            onClick={() => {
-              if (suggestionType === key) return;
-              setSuggestionType(key);
-              localStorage.setItem(SELECTED_LESSON_TYPE + lang, key);
-              setSuggestion(key === "auto" ? "" : localStorage.getItem(suggestionKey(key, lang)) || "");
-            }}
+            disabled={key === "auto" && autoDisabled}
+            style={key === "auto" && autoDisabled ? { opacity: 0.5, cursor: "not-allowed" } : undefined}
+            onClick={() => selectType(key)}
           >
             {label}
           </SelectablePill>
-          );
-        })}
+        ))}
       </PillRow>
 
-      <DescriptionText>
-        {SUGGESTION_TYPES[suggestionType].description}
-      </DescriptionText>
+      <DescriptionText>{SUGGESTION_TYPES[suggestionType].description}</DescriptionText>
 
       <InputArea $hidden={suggestionType === "auto"}>
         <ClearableInput
@@ -75,23 +85,10 @@ export default function SuggestionSelector({ suggestionType, setSuggestionType, 
           maxLength={MAX_SUGGESTION_LENGTH}
           value={suggestion}
           tabIndex={suggestionType === "auto" ? -1 : 0}
-          onChange={(e) => {
-            const val = e.target.value.replace(/\n/g, " ");
-            setSuggestion(val);
-            const key = suggestionKey(suggestionType, lang);
-            if (val.trim()) {
-              localStorage.setItem(key, val);
-            } else {
-              localStorage.removeItem(key);
-            }
-          }}
-          onClear={() => {
-            setSuggestion("");
-            localStorage.removeItem(suggestionKey(suggestionType, lang));
-          }}
+          onChange={(e) => setSuggestion(e.target.value.replace(/\n/g, " "))}
+          onClear={() => setSuggestion("")}
         />
       </InputArea>
-
     </SuggestionWrapper>
   );
 }
