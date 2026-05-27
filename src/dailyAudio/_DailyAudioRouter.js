@@ -3,7 +3,7 @@ import { PrivateRoute } from "../PrivateRoute";
 import * as s from "../components/ColumnWidth.sc";
 import TopTabs from "../components/TopTabs";
 import strings from "../i18n/definitions";
-import { Switch, useLocation } from "react-router-dom";
+import { Switch } from "react-router-dom";
 import TodayAudio from "./TodayAudio";
 import PastLessons from "./PastLessons";
 import { APIContext } from "../contexts/APIContext";
@@ -16,9 +16,7 @@ export default function DailyAudioRouter() {
   const api = useContext(APIContext);
   const { userDetails } = useContext(UserContext);
   const learnedLanguage = userDetails?.learned_language;
-  const location = useLocation();
   const [pastLessonsCount, setPastLessonsCount] = useState(0);
-  const [showTabs, setShowTabs] = useState(true);
 
   const swipeRef = useTabbedRoute(TAB_PATHS);
 
@@ -40,13 +38,6 @@ export default function DailyAudioRouter() {
     );
   }, [api, learnedLanguage]);
 
-  // Always show tabs on past-lessons page
-  useEffect(() => {
-    if (location.pathname === "/daily-audio/past-lessons") {
-      setShowTabs(true);
-    }
-  }, [location.pathname]);
-
   let tabsAndLinks = [
     {
       text: strings.today,
@@ -62,10 +53,10 @@ export default function DailyAudioRouter() {
   return (
     <Switch>
       <s.NarrowColumn>
-        {showTabs && <TopTabs title={strings.dailyAudio} tabsAndLinks={tabsAndLinks} />}
+        <TopTabs title={strings.dailyAudio} tabsAndLinks={tabsAndLinks} />
 
         <div ref={swipeRef}>
-          <PrivateRoute exact path="/daily-audio" component={TodayAudio} setShowTabs={setShowTabs} />
+          <PrivateRoute exact path="/daily-audio" component={TodayAudio} />
           <PrivateRoute exact path="/daily-audio/past-lessons" component={PastLessons} />
         </div>
       </s.NarrowColumn>
