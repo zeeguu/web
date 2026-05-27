@@ -9,10 +9,13 @@ import { todayDateLabel, completionChecks } from "./audioUtils";
 // Config pill, styled like the Discover screen's "Topics: … ⚙" control but with
 // theme tokens (not hardcoded white) so it renders as a pill in light AND dark.
 const ConfigPill = styled.button`
-  display: inline-flex;
+  display: flex;
   align-items: center;
+  justify-content: space-between;
   gap: 0.4rem;
-  padding: 0.4rem 0.9rem;
+  width: min(100%, 320px);
+  margin: 0 auto;
+  padding: 0.5rem 0.95rem;
   border-radius: 999px;
   border: 1px solid var(--border-light);
   background: var(--bg-secondary);
