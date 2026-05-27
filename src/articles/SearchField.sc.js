@@ -2,6 +2,7 @@ import styled from "styled-components";
 import { zeeguuOrange, almostBlack } from "../components/colors";
 
 const SearchField = styled.div`
+  margin-top: 2rem;
   margin-bottom: 1em;
   padding: 0 1em;
   display: flex;

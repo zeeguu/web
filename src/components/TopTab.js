@@ -1,37 +1,56 @@
 import { NavLink } from "react-router-dom";
 import NotificationIcon from "./NotificationIcon";
 
-function TopTab({ id, text, link, isActive, addSeparator, hasNotification, notificationText, counter, action }) {
-  return (
-    <>
-      <div className="row__tab">
-        <NavLink
+function TopTab({
+  id,
+  text,
+  link,
+  isActive,
+  hasNotification,
+  notificationText,
+  action,
+  onClick,
+  isDropdown,
+}) {
+  if (isDropdown) {
+    return (
+      <>
+        <button
           id={id}
-          className={"headmenuTab"}
-          to={link}
-          exact
-          activeStyle={{ fontWeight: 600 }}
-          isActive={isActive}
+          className={isActive ? "headmenuTab icon-active" : "headmenuTab icon-inactive"}
+          onClick={onClick}
+          style={{
+            background: "none",
+            border: "none",
+            cursor: "pointer",
+            padding: 0,
+            font: "inherit",
+            color: "inherit",
+          }}
         >
           {text}
-          {counter !== undefined && counter > 0 && (
-            <span style={{ color: "#999", fontWeight: 400, fontSize: "small" }}> ({counter})</span>
-          )}
           {hasNotification && <NotificationIcon text={notificationText} />}
-        </NavLink>
+        </button>
         {action}
-      </div>
-      {addSeparator && SeparatorBar()}
+      </>
+    );
+  }
+
+  return (
+    <>
+      <NavLink
+        id={id}
+        className={(isActive) => (isActive ? "headmenuTab icon-active" : "headmenuTab icon-inactive")}
+        to={link}
+        exact
+        isActive={isActive}
+      >
+        {text}
+        {hasNotification && <NotificationIcon text={notificationText} />}
+      </NavLink>
+      {action}
     </>
   );
 }
 
-function SeparatorBar() {
-  return (
-    <div className="row__bar">
-      <div className="bar"></div>
-    </div>
-  );
-}
-
-export { TopTab, SeparatorBar };
+export { TopTab };

@@ -1,9 +1,9 @@
-import { useEffect } from "react";
+import { useEffect, useContext, useState, useRef } from "react";
 import ArticleListBrowser from "./ArticleListBrowser";
 import BookmarkedArticles from "./BookmarkedArticles";
 import HiddenArticles from "../myArticles/HiddenArticles";
 
-import { Redirect, useLocation } from "react-router-dom";
+import { useHistory, useLocation } from "react-router-dom";
 import { PrivateRoute } from "../PrivateRoute";
 import ClassroomArticles from "./ClassroomArticles";
 import TopTabs from "../components/TopTabs";
@@ -14,41 +14,97 @@ import ReadingHistory from "../words/WordHistory";
 import MySearches from "./MySearches";
 import Search from "./Search";
 import SearchRoundedIcon from "@mui/icons-material/SearchRounded";
+import HomeRoundedIcon from "@mui/icons-material/HomeRounded";
+import BookmarkRoundedIcon from "@mui/icons-material/BookmarkRounded";
+import SchoolRoundedIcon from "@mui/icons-material/SchoolRounded";
+import SettingsRoundedIcon from "@mui/icons-material/SettingsRounded";
 
-import * as s from "../components/ColumnWidth.sc";
+import * as columnS from "../components/ColumnWidth.sc";
 import LocalStorage from "../assorted/LocalStorage";
+import { APIContext } from "../contexts/APIContext";
 import { BrowsingSessionContext } from "../contexts/BrowsingSessionContext";
 import useBrowsingSession from "../hooks/useBrowsingSession";
 
-const READ_TAB_PATHS = [
-  "/articles",
-  "/articles/mySearches",
-  "/articles/bookmarked",
-  "/articles/classroom",
-];
+const READ_TAB_PATHS = ["/articles", "/articles/mySearches", "/articles/bookmarked", "/articles/classroom"];
 
 export default function ArticlesRouter({ hasExtension, isChrome }) {
+  const api = useContext(APIContext);
+  const history = useHistory();
   const { getBrowsingSessionId } = useBrowsingSession();
   const location = useLocation();
   const hideRecommendations = LocalStorage.hasFeature("hide_recommendations");
   const isStudent = LocalStorage.isStudent();
+  const dropdownRef = useRef(null);
+  const [showTopicsDropdown, setShowTopicsDropdown] = useState(false);
+  const [subscribedTopics, setSubscribedTopics] = useState(null);
 
   useEffect(() => {
-    if (READ_TAB_PATHS.includes(location.pathname)) {
-      LocalStorage.setLastVisitedReadPath(location.pathname);
-    }
-  }, [location.pathname]);
+    api.getSubscribedTopics((data) => setSubscribedTopics(data || []));
+  }, [api]);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setShowTopicsDropdown(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  const handleSettingsClick = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setShowTopicsDropdown(!showTopicsDropdown);
+  };
+
+  const handleTopicMenuClick = (path) => {
+    history.push(path);
+    setShowTopicsDropdown(false);
+  };
+
+  const iconStyle = { display: "inline-flex", alignItems: "center", padding: "0.4em 0.25em", verticalAlign: "middle" };
+  const iconProps = { style: { fontSize: "1.55rem", verticalAlign: "middle" } };
+
+  const homeIcon = (
+    <span style={iconStyle}>
+      <HomeRoundedIcon {...iconProps} />
+    </span>
+  );
+
+  const bookmarkIcon = (
+    <span style={iconStyle}>
+      <BookmarkRoundedIcon {...iconProps} />
+    </span>
+  );
+
+  const classroomIcon = (
+    <span style={iconStyle}>
+      <SchoolRoundedIcon {...iconProps} />
+    </span>
+  );
 
   const searchIcon = (
-    <span style={{ display: "inline-block", padding: "0 0.25em", verticalAlign: "middle" }}>
-      <SearchRoundedIcon style={{ fontSize: "1.25rem", verticalAlign: "middle" }} />
+    <span style={iconStyle}>
+      <SearchRoundedIcon {...iconProps} />
+    </span>
+  );
+
+  const settingsIcon = (
+    <span style={iconStyle}>
+      <SettingsRoundedIcon {...iconProps} />
     </span>
   );
 
   const tabs = [
-    !hideRecommendations && { text: "Discover", link: "/articles" },
-    { text: strings.myArticles, link: "/articles/bookmarked" },
-    isStudent && { text: strings.classroomTab, link: "/articles/classroom" },
+    !hideRecommendations && { text: homeIcon, link: "/articles" },
+    { text: bookmarkIcon, link: "/articles/bookmarked" },
+    isStudent && { text: classroomIcon, link: "/articles/classroom" },
+    !hideRecommendations && {
+      text: settingsIcon,
+      onClick: handleSettingsClick,
+      isDropdown: true,
+    },
     !hideRecommendations && {
       text: searchIcon,
       link: "/articles/mySearches",
@@ -60,8 +116,18 @@ export default function ArticlesRouter({ hasExtension, isChrome }) {
   return (
     <BrowsingSessionContext.Provider value={getBrowsingSessionId}>
       {/* Rendering top menu first, then routing to corresponding page */}
-      <s.NarrowColumn>
-        <TopTabs title={strings.articles} tabsAndLinks={tabs} />
+      <columnS.NarrowColumn>
+        <TopTabs
+          title={strings.articles}
+          tabsAndLinks={tabs}
+          hasBackground={true}
+          topicsDropdown={{
+            ref: dropdownRef,
+            showDropdown: showTopicsDropdown,
+            subscribedTopics,
+            handleTopicMenuClick,
+          }}
+        />
 
         <div style={{ minHeight: "70vh" }}>
           {hideRecommendations ? (
@@ -75,19 +141,9 @@ export default function ArticlesRouter({ hasExtension, isChrome }) {
               isChrome={isChrome}
             />
           )}
-          <PrivateRoute
-            exact
-            path="/articles/bookmarked"
-            component={BookmarkedArticles}
-          />
-          <PrivateRoute
-            path="/articles/bookmarked/hidden"
-            component={HiddenArticles}
-          />
-          <PrivateRoute
-            path="/articles/classroom"
-            component={ClassroomArticles}
-          />
+          <PrivateRoute exact path="/articles/bookmarked" component={BookmarkedArticles} />
+          <PrivateRoute path="/articles/bookmarked/hidden" component={HiddenArticles} />
+          <PrivateRoute path="/articles/classroom" component={ClassroomArticles} />
 
           <PrivateRoute path="/articles/ownTexts" component={OwnArticles} />
 
@@ -97,7 +153,7 @@ export default function ArticlesRouter({ hasExtension, isChrome }) {
 
           <PrivateRoute path="/search" component={Search} />
         </div>
-      </s.NarrowColumn>
+      </columnS.NarrowColumn>
     </BrowsingSessionContext.Provider>
   );
 }

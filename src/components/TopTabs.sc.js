@@ -15,33 +15,30 @@ const TopTabsWrapper = styled.div`
 `;
 
 const TopTabs = styled.div`
-  h1 {
-    font-weight: 300;
-    font-size: 3em;
-    line-height: 1em;
-    letter-spacing: 0.05em; // wider spacing; makes title stand out more
-    text-align: center;
-    margin-top: 2em;
-  }
+  position: relative;
 
   .all__tabs {
-    line-height: 1.4em;
-    width: 100%;
+    width: fit-content;
     align-items: center;
     display: flex;
     justify-content: center;
+    gap: 0.8em;
+    padding: 0rem 1rem;
+    border-radius: 1rem;
+    margin: 0 auto;
+    margin-top: 0.5em;
+  }
+
+  .all__tabs--with-bg {
+    background-color: var(--infobox-bg);
   }
 
   .headmenuTab {
     font-size: 1.2em;
     font-weight: 400;
     letter-spacing: 0;
-  }
-
-  .headmenuTab,
-  a {
-    text-decoration: none;
-    color: var(--text-primary);
+    display: flex;
+    align-items: center;
   }
 
   /* Scoped to devices with a real hover capability. On iOS (and any
@@ -54,18 +51,6 @@ const TopTabs = styled.div`
     a:hover {
       color: ${zeeguuOrange};
     }
-  }
-
-  .row__bar {
-    margin: 0px;
-    padding: 1.5em;
-  }
-
-  .bar {
-    width: 1em;
-    height: 0px;
-    border: 1px solid ${darkGrey};
-    transform: rotate(-90deg);
   }
 
   /*******MEDIA QUERIES **********/
@@ -81,16 +66,6 @@ const TopTabs = styled.div`
       font-weight: 700;
       color: var(--text-primary);
     }
-
-    .row__bar {
-      padding: 0em;
-    }
-
-    .bar {
-      width: 1em;
-      height: 0px;
-      border: 0.5px solid ${darkGrey};
-    }
   }
 
   .is-active {
@@ -102,6 +77,52 @@ const TopTabs = styled.div`
   .headmenuTab.active svg {
     color: ${zeeguuOrange};
   }
+
+  /* Home icon styling - black when inactive, orange fill when active */
+  .headmenuTab.icon-inactive svg {
+    color: gray;
+  }
+
+  .headmenuTab.icon-active svg {
+    color: var(--onboarding-btn-bg);
+  }
+
+  .tab-separator {
+    color: #ccc;
+    font-size: 1.2em;
+    margin: 0 0.3em;
+  }
 `;
 
-export { TopTabs, TopTabsWrapper };
+const TopicsDropdownMenu = styled.div`
+  position: absolute;
+  top: 100%;
+  right: 0;
+  margin-top: 0.5rem;
+  min-width: 180px;
+  background: white;
+  border: 1px solid #e0e0e0;
+  border-radius: 0.5rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+  overflow: hidden;
+`;
+
+const TopicsDropdownItem = styled.button`
+  display: block;
+  width: 100%;
+  padding: 0.6rem 1rem;
+  border: none;
+  background: transparent;
+  color: #333;
+  font-size: 0.9rem;
+  text-align: left;
+  cursor: pointer;
+  transition: background 0.15s ease;
+
+  &:hover {
+    background: #f5f5f5;
+  }
+`;
+
+export { TopTabs, TopTabsWrapper, TopicsDropdownMenu, TopicsDropdownItem };
