@@ -107,7 +107,7 @@ export default function DailyLessonSettingsDialog({
   return (
     <Dialog
       onDismiss={onDismiss}
-      aria-label="Daily lesson settings"
+      aria-label="Configure daily lessons"
       style={{
         background: "var(--card-bg)",
         color: "var(--text-primary)",
@@ -119,7 +119,7 @@ export default function DailyLessonSettingsDialog({
       }}
     >
       <h2 style={{ margin: "0 0 16px", fontSize: "1.25rem", color: zeeguuOrange }}>
-        Daily lesson settings
+        Configure daily lessons
       </h2>
 
       <SuggestionSelector

@@ -83,8 +83,8 @@ export default function TodayEpisodeCard({ onChangeTopic, ...playbackProps }) {
           New daily lessons are paused. Listen to this one and they'll start again tomorrow.
         </p>
       )}
-      <ConfigPill onClick={onChangeTopic} title="Daily lesson settings">
-        <span>Daily lesson settings</span>
+      <ConfigPill onClick={onChangeTopic} title="Configure daily lessons">
+        <span>Configure daily lessons</span>
         <SettingsRoundedIcon style={{ fontSize: "0.95rem" }} />
       </ConfigPill>
     </div>
