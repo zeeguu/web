@@ -43,8 +43,13 @@ const Dot = styled.div`
 `;
 
 export default function DailyAudioNotificationDot({ status, isActive, sidebar }) {
-  // Only show for generating (spinner) or ready (new lesson waiting)
-  if (!status || status === AUDIO_STATUS.COMPLETED || status === AUDIO_STATUS.IN_PROGRESS) return null;
+  // Show the dot only when there's something actionable: a fresh unlistened
+  // lesson waiting (ready) or one being generated (spinner). Everything else —
+  // no lesson yet ("available", the backend default before generation),
+  // already listened (completed), or mid-listen (in_progress) — shows nothing.
+  // Listing the two positive cases (rather than excluding a few) keeps stray
+  // backend statuses like "available" from leaking through the default branch.
+  if (status !== AUDIO_STATUS.GENERATING && status !== AUDIO_STATUS.READY) return null;
 
   return <Dot $status={status} $isActive={isActive} $sidebar={sidebar} />;
 }

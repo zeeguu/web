@@ -79,6 +79,9 @@ export default function LessonPlaybackView({
                 setLessonData((prev) => ({
                   ...prev,
                   is_completed: true,
+                  // One ✓ per listen — bump locally so replays show immediately,
+                  // mirroring the backend's per-completion increment.
+                  listened_count: (prev.listened_count || 0) + 1,
                   last_completed_at: new Date().toISOString(),
                 }));
                 setUserDetails((prev) => ({ ...prev, daily_audio_status: AUDIO_STATUS.COMPLETED }));
@@ -128,6 +131,8 @@ export default function LessonPlaybackView({
           </div>
         )}
 
+        {footer}
+
         <LessonActions>
           {lessonData.lesson_id && (
             <SubtleTextButton
@@ -154,8 +159,6 @@ export default function LessonPlaybackView({
             </SubtleTextButton>
           )}
         </LessonActions>
-
-        {footer}
 
         <FeedbackModal
           prefixMsg={lessonData

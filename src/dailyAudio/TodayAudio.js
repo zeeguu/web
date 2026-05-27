@@ -509,7 +509,6 @@ export default function TodayAudio() {
           currentPlaybackTime={currentPlaybackTime}
           setCurrentPlaybackTime={setCurrentPlaybackTime}
           onChangeTopic={() => setSettingsOpen(true)}
-          onSeePastLessons={() => history.push("/daily-audio/past-lessons")}
         />
         {settingsDialog}
       </>
@@ -544,14 +543,14 @@ export default function TodayAudio() {
       >
         <div style={{ fontSize: "2.5rem" }} aria-hidden>🎧</div>
         <h2 style={{ color: zeeguuOrange, margin: "8px 0" }}>
-          {error ? "Let's try a different topic" : "Your daily listening lesson"}
+          {error ? "Let's try a different topic" : "A new lesson, daily"}
         </h2>
         <p style={{ color: "var(--text-secondary)", maxWidth: "300px", marginBottom: "24px" }}>
           {error ||
-            "Pick a topic you care about and we'll have a fresh lesson ready for you every morning. Just open and listen."}
+            "Choose what you'd like to listen to. We'll make you a fresh lesson on it daily — starting with today's."}
         </p>
         <BannerButton onClick={() => setSettingsOpen(true)} style={{ padding: "12px 24px", fontSize: "1rem" }}>
-          {isConfigured ? "Change daily topic" : "Choose your daily lesson"}
+          {isConfigured ? "Change daily topic" : "Set up my daily lessons"}
         </BannerButton>
         <div style={{ marginTop: "24px" }}>
           <SubtleTextButton onClick={() => history.push("/daily-audio/past-lessons")}>

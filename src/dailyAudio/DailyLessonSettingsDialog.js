@@ -3,6 +3,7 @@ import { Dialog } from "../components/DialogWrapper";
 import SuggestionSelector, { pillToBackend, backendToPill } from "./SuggestionSelector";
 import { SubtleTextButton } from "./LessonView.sc";
 import { BannerButton } from "./SharedLessonView.sc";
+import { zeeguuOrange } from "../components/colors";
 
 /**
  * Setup / "Change daily topic" dialog. Hosts the lesson-type selector and
@@ -54,15 +55,19 @@ export default function DailyLessonSettingsDialog({
         background: "var(--card-bg)",
         color: "var(--text-primary)",
         borderRadius: "16px",
-        width: "min(90vw, 360px)",
+        width: "min(86vw, 330px)",
         padding: "1.5rem",
+        border: "1px solid rgba(255, 255, 255, 0.14)",
+        boxShadow: "0 16px 48px rgba(0, 0, 0, 0.6)",
       }}
     >
-      <h2 style={{ margin: "0 0 4px", fontSize: "1.25rem", color: "var(--text-primary)" }}>
-        Your daily lesson
+      <h2 style={{ margin: "0 0 4px", fontSize: "1.25rem", color: zeeguuOrange }}>
+        {todaysLessonExists ? "Change your daily lesson" : "Set up your daily lessons"}
       </h2>
       <p style={{ margin: "0 0 16px", fontSize: "0.9rem", color: "var(--text-secondary)" }}>
-        Every morning we'll have a fresh one ready for you. What kind?
+        {todaysLessonExists
+          ? "A new lesson, ready for you daily. Pick what you'd like instead — we'll make today's right away."
+          : "A new lesson, ready for you daily. Pick what kind — we'll make your first one right now."}
       </p>
 
       <SuggestionSelector
@@ -86,7 +91,7 @@ export default function DailyLessonSettingsDialog({
             cursor: canSubmit ? "pointer" : "not-allowed",
           }}
         >
-          {todaysLessonExists ? "Generate today's lesson" : "Start my daily lessons"}
+          {todaysLessonExists ? "Generate today's lesson" : "Start today's lesson"}
         </BannerButton>
 
         {todaysLessonExists && (

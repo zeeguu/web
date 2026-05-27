@@ -8,6 +8,7 @@ import { SubtleTextButton, LessonTitle, CompletionCheck } from "./LessonView.sc"
 import { SubtleLessonCard, ProgressBarTrack, ProgressBarFill } from "./SharedLessonView.sc";
 import { PillRow, SelectablePill } from "./SuggestionSelector.sc";
 import { LessonTypeChip, chipLabel } from "./lessonTypeChip";
+import { completionChecks } from "./audioUtils";
 import { shareLessonLink } from "./shareLessonLink";
 
 // Filter the back catalogue by lesson type. value=null means "All".
@@ -28,13 +29,6 @@ const lessonDateLabel = (lesson) =>
   });
 
 const lessonTitleText = (lesson) => lesson.title || "Past Audio Lesson";
-
-// Render the completion check(s). For replays we draw one ✓ per listen,
-// up to 7; beyond that we use ✓✓✓…✓ so the row doesn't grow without bound.
-const renderChecks = (count) => {
-  if (count <= 7) return "✓".repeat(count);
-  return "✓✓✓…✓";
-};
 
 function CollapsedProgressBar({ lesson }) {
   const duration = lesson.duration_seconds || 0;
@@ -72,7 +66,7 @@ const titleWithDate = (lesson) => {
       {head}
       <span style={{ whiteSpace: "nowrap" }}>
         {tail}
-        {checkCount > 0 && <> <CompletionCheck>{renderChecks(checkCount)}</CompletionCheck></>}
+        {checkCount > 0 && <> <CompletionCheck>{completionChecks(checkCount)}</CompletionCheck></>}
       </span>
     </>
   );
