@@ -97,6 +97,14 @@ export default function LessonPlaybackView({
           }}
         />
 
+        {lessonData.lesson_id && (
+          <div style={{ textAlign: "center", marginBottom: "8px" }}>
+            <SubtleTextButton onClick={() => shareLessonLink(api, lessonData.lesson_id, lessonData.title)}>
+              Share
+            </SubtleTextButton>
+          </div>
+        )}
+
         {lessonData.is_completed && (
           <div
             style={{
@@ -134,13 +142,6 @@ export default function LessonPlaybackView({
         {footer}
 
         <LessonActions>
-          {lessonData.lesson_id && (
-            <SubtleTextButton
-              onClick={() => shareLessonLink(api, lessonData.lesson_id, lessonData.title)}
-            >
-              Share
-            </SubtleTextButton>
-          )}
           <SubtleTextButton onClick={() => setOpenFeedback(true)}>
             Feedback
           </SubtleTextButton>

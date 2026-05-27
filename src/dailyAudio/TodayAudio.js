@@ -361,11 +361,14 @@ export default function TodayAudio() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [prefLoaded, noLesson, isGenerating, lessonData, isConfigured, dailyType, dailySuggestion]);
 
+  // Seed the dialog with the saved preference; if none is stored yet (e.g. a
+  // lesson generated before preferences existed), fall back to today's lesson
+  // so the learner always sees their current type/subject pre-selected.
   const settingsDialog = settingsOpen && (
     <DailyLessonSettingsDialog
       api={api}
-      initialType={dailyType}
-      initialSuggestion={dailySuggestion}
+      initialType={dailyType || lessonData?.lesson_type || null}
+      initialSuggestion={(dailyType ? dailySuggestion : lessonData?.canonical_suggestion) || ""}
       todaysLessonExists={!!lessonData}
       onSubmit={handleConfigured}
       onDismiss={() => setSettingsOpen(false)}
