@@ -10,6 +10,7 @@ const Row = styled.div`
   padding: 0.6em 0.8em;
   gap: 0.8em;
   outline: none;
+  margin-bottom: 1.5em;
   &:active { background: var(--row-active-bg, rgba(255, 255, 255, 0.04)); }
 `;
 
@@ -82,14 +83,15 @@ const CompletionDone = styled.span`
 
 const RemoveButton = styled.button`
   position: absolute;
-  top: 0.4em;
   right: 0.4em;
   width: 1.6em;
   height: 1.6em;
+  height: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
   background: none;
+  
   border: none;
   color: var(--text-muted);
   font-size: 1.3em;
