@@ -28,6 +28,20 @@ const Thumbnail = styled.img`
   display: block;
 `;
 
+// Stand-in for articles with no image: fills the same 6.5em square as a
+// real thumbnail so titles stay aligned in one column. A vague,
+// topic-matched glyph (see topicIcon.js) on a muted surface — deliberately
+// understated so it reads as "no photo" rather than competing with the title.
+const Placeholder = styled.div`
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-tertiary);
+  color: var(--text-faint);
+`;
+
 const Content = styled.div`
   flex: 1;
   min-width: 0;
@@ -89,6 +103,7 @@ export {
   Row,
   ThumbnailWrap,
   Thumbnail,
+  Placeholder,
   Content,
   Title,
   CompletionInProgress,
