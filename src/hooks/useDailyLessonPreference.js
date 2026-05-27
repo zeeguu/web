@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
+import * as Sentry from "@sentry/react";
 
 // Per-language daily audio lesson preference. The daily lesson is stored and
 // queried per learned-language on the backend, so the preference is keyed per
@@ -41,10 +42,14 @@ export default function useDailyLessonPreference(api, lang) {
       setDailyType(lessonType);
       const verbatim = lessonType === "three_words_lesson" ? "" : suggestion || "";
       setDailySuggestion(verbatim);
-      api.saveUserPreferences({
-        [typeKeyFor(lang)]: lessonType,
-        [suggestionKeyFor(lang)]: verbatim,
-      });
+      // Optimistic; a failed save silently reverts on next load, so at least
+      // make the failure observable rather than fully silent.
+      api.saveUserPreferences(
+        { [typeKeyFor(lang)]: lessonType, [suggestionKeyFor(lang)]: verbatim },
+        null,
+        (err) =>
+          Sentry.captureException(err, { tags: { feature: "daily_audio_preference" } }),
+      );
     },
     [api, lang],
   );

@@ -13,7 +13,6 @@ import ShareLessonButton from "./ShareLessonButton";
 export default function LessonPlaybackView({
   lessonData,
   setLessonData,
-  words,
   error,
   api,
   userDetails,
@@ -25,6 +24,7 @@ export default function LessonPlaybackView({
   footer,
 }) {
   const [openFeedback, setOpenFeedback] = useState(false);
+  const words = lessonData.words || [];
 
   // Callers (e.g. the daily episode card) can replace the default title block
   // with their own header; otherwise we show the plain title + topic line.

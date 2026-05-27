@@ -33,6 +33,13 @@ export default function DailyLessonSettingsDialog({
   const [autoDisabled, setAutoDisabled] = useState(false);
   const [confirmRegen, setConfirmRegen] = useState(false);
 
+  // Changing the type/subject after the regenerate-or-tomorrow prompt has shown
+  // would leave it describing a stale choice (and could strand the confirm
+  // buttons if the new subject is empty) — so drop back to "Save settings".
+  useEffect(() => {
+    setConfirmRegen(false);
+  }, [pillType, subjectByType]);
+
   // Vocabulary needs enough study words; disable the pill when there aren't.
   useEffect(() => {
     api.checkDailyLessonFeasibility(

@@ -8,7 +8,7 @@ import { SubtleTextButton, LessonTitle, CompletionCheck } from "./LessonView.sc"
 import { SubtleLessonCard, ProgressBarTrack, ProgressBarFill } from "./SharedLessonView.sc";
 import { PillRow, SelectablePill } from "./SuggestionSelector.sc";
 import { LessonTypeChip, chipLabel } from "./lessonTypeChip";
-import { completionChecks } from "./audioUtils";
+import { completionChecks, formatShortDate } from "./audioUtils";
 import ShareLessonButton from "./ShareLessonButton";
 
 // Filter the back catalogue by lesson type. value=null means "All".
@@ -22,11 +22,7 @@ const TYPE_FILTERS = [
 const lessonProgressSeconds = (lesson) =>
   lesson.pause_position_seconds || lesson.position_seconds || lesson.progress_seconds || 0;
 
-const lessonDateLabel = (lesson) =>
-  new Date(lesson.created_at).toLocaleDateString("en-US", {
-    month: "short",
-    day: "numeric",
-  });
+const lessonDateLabel = (lesson) => formatShortDate(new Date(lesson.created_at));
 
 const lessonTitleText = (lesson) => lesson.title || "Past Audio Lesson";
 
@@ -145,7 +141,14 @@ export default function PastLessons() {
     setPastLessons((prev) =>
       prev.map((l) =>
         l.lesson_id === lessonId
-          ? { ...l, is_completed: true, last_completed_at: new Date().toISOString() }
+          ? {
+              ...l,
+              is_completed: true,
+              // One ✓ per listen — bump locally so replays add a check live,
+              // matching the today card (LessonPlaybackView does the same).
+              listened_count: (l.listened_count || 0) + 1,
+              last_completed_at: new Date().toISOString(),
+            }
           : l,
       ),
     );

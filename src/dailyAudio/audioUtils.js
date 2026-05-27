@@ -7,8 +7,14 @@ export function wordsAsTile(words) {
   return capitalized_comma_separated_words;
 }
 
+// "May 27" — the one short-date format for lessons, shared by the episode card
+// header and the past-lessons rows so they can never drift apart.
+export function formatShortDate(date) {
+  return date.toLocaleDateString("en-US", { month: "short", day: "numeric" });
+}
+
 export function shortDate() {
-  return `[${new Date().toLocaleDateString("en-US", { month: "short", day: "numeric" })}]`;
+  return `[${formatShortDate(new Date())}]`;
 }
 
 // Completion check(s): one ✓ per listen, capped so the row can't grow without
@@ -19,11 +25,8 @@ export function completionChecks(count) {
   return "✓✓✓…✓";
 }
 
-// "May 27" — shown on the episode card so the daily lesson reads like a dated
-// episode. Weekday omitted to keep the (busy) header compact.
+// "May 27" for today — shown on the episode card so the daily lesson reads like
+// a dated episode (weekday omitted to keep the header compact).
 export function todayDateLabel() {
-  return new Date().toLocaleDateString("en-US", {
-    month: "short",
-    day: "numeric",
-  });
+  return formatShortDate(new Date());
 }

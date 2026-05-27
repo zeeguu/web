@@ -67,6 +67,11 @@ export default function TodayAudio() {
     setLessonData(null);
     setError(null);
     setNoLesson(false);
+    // Tear down any in-flight generation/polling tied to the previous language
+    // (the poll effect keys its localStorage flag on the old lang and doesn't
+    // depend on lang, so without this it keeps polling for the wrong language).
+    setIsGenerating(false);
+    setGenerationProgress(null);
     autoGenAttemptedRef.current = false;
   }, [lang]);
 
@@ -113,7 +118,15 @@ export default function TodayAudio() {
         setGenerationProgress(null);
         setUserDetails((prev) => ({ ...prev, daily_audio_status: null }));
 
-        const msg = err.message || "Couldn't prepare today's lesson. Please try again.";
+        // "Not enough words" for a vocabulary lesson is actionable — steer to a
+        // Topic/Situation (restores the old proactive feasibility guidance,
+        // which the auto-generate path otherwise lost).
+        let msg;
+        if (err.message && err.message.toLowerCase().includes("not enough words")) {
+          msg = "Not enough words for a vocabulary lesson yet. Try a Topic or Situation instead.";
+        } else {
+          msg = err.message || "Couldn't prepare today's lesson. Please try again.";
+        }
         // Remember the failure for the rest of the day so we don't auto-retry
         // on every refresh; the user can change the topic to try again.
         localStorage.setItem(failedKey, msg);
@@ -136,11 +149,16 @@ export default function TodayAudio() {
     setError(null);
     autoGenAttemptedRef.current = true; // we're driving generation explicitly
     if (lessonData) {
-      const afterDelete = () => {
-        setLessonData(null);
-        startGeneration(backendType, suggestion);
-      };
-      api.deleteTodaysLesson(afterDelete, afterDelete);
+      api.deleteTodaysLesson(
+        () => {
+          setLessonData(null);
+          startGeneration(backendType, suggestion);
+        },
+        // If the delete fails the backend still has today's lesson, so
+        // regenerating would silently hand back the old one — surface an error
+        // rather than pretend the change applied.
+        () => setError("Couldn't refresh today's lesson. Please try again."),
+      );
     } else {
       startGeneration(backendType, suggestion);
     }
@@ -199,6 +217,16 @@ export default function TodayAudio() {
       setError(message);
     };
 
+    // Polling found neither a progress record nor a lesson — generation isn't
+    // actually running. Stop, mark it attempted (so the auto-gen effect won't
+    // relaunch), and show a recoverable error instead of an endless spinner.
+    const handleExhausted = () => {
+      stopPolling();
+      setNoLesson(true);
+      autoGenAttemptedRef.current = true;
+      setError("We couldn't prepare today's lesson. Try again or pick a different topic.");
+    };
+
     const checkForLesson = () => {
       api.getTodaysLesson(handleLessonReady, () => {});
     };
@@ -227,14 +255,10 @@ export default function TodayAudio() {
                 if (data && data.lesson_id) {
                   handleLessonReady(data);
                 } else {
-                  stopPolling();
-                  setNoLesson(true);
+                  handleExhausted();
                 }
               },
-              () => {
-                stopPolling();
-                setNoLesson(true);
-              },
+              handleExhausted,
             );
           }
         },
@@ -503,7 +527,6 @@ export default function TodayAudio() {
         <TodayEpisodeCard
           lessonData={lessonData}
           setLessonData={setLessonData}
-          words={words}
           error={error}
           api={api}
           userDetails={userDetails}
@@ -518,8 +541,10 @@ export default function TodayAudio() {
     );
   }
 
-  // No lesson + configured + no error: auto-generation is about to fire.
-  if (isConfigured && !error) {
+  // No lesson + configured + no error, and auto-gen hasn't fired yet: it's
+  // about to. Once it HAS fired, never sit on this spinner forever — fall
+  // through to the actionable view below (e.g. after a failed/exhausted run).
+  if (isConfigured && !error && !autoGenAttemptedRef.current) {
     return (
       <div style={{ padding: "20px" }}>
         <LoadingAnimation>
