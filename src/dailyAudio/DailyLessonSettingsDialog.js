@@ -100,14 +100,9 @@ export default function DailyLessonSettingsDialog({
         boxShadow: "0 16px 48px rgba(0, 0, 0, 0.6)",
       }}
     >
-      <h2 style={{ margin: "0 0 4px", fontSize: "1.25rem", color: zeeguuOrange }}>
-        {todaysLessonExists ? "Change your daily lesson" : "Set up your daily lessons"}
+      <h2 style={{ margin: "0 0 16px", fontSize: "1.25rem", color: zeeguuOrange }}>
+        Daily lesson type
       </h2>
-      <p style={{ margin: "0 0 16px", fontSize: "0.9rem", color: "var(--text-secondary)" }}>
-        {todaysLessonExists
-          ? "A new lesson, ready for you daily. Pick what you'd like instead."
-          : "A new lesson, ready for you daily. Pick what kind — we'll make your first one right now."}
-      </p>
 
       <SuggestionSelector
         suggestionType={pillType}
