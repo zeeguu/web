@@ -26,6 +26,7 @@ export default function DailyLessonSettingsDialog({
   const [pillType, setPillType] = useState(initialType ? backendToPill(initialType) : "topic");
   const [suggestion, setSuggestion] = useState(initialSuggestion || "");
   const [autoDisabled, setAutoDisabled] = useState(false);
+  const [confirmRegen, setConfirmRegen] = useState(false);
 
   // Vocabulary needs enough study words; disable the pill when there aren't.
   useEffect(() => {
@@ -47,6 +48,44 @@ export default function DailyLessonSettingsDialog({
     onSubmit(pillToBackend(pillType), needsSubject ? suggestion : "", regenerate);
   };
 
+  // Did the user actually pick something different from their current setup?
+  const changed =
+    pillToBackend(pillType) !== initialType ||
+    (needsSubject ? suggestion.trim() : "") !== (initialSuggestion || "").trim();
+
+  // Saving a *changed* setting while today's lesson already exists asks whether
+  // to apply it now or from tomorrow. Otherwise just save — generating right
+  // away when there's no lesson for today yet (first run / cron miss).
+  const handleSaveClick = () => {
+    if (!canSubmit) return;
+    if (todaysLessonExists && changed) setConfirmRegen(true);
+    else submit(!todaysLessonExists);
+  };
+
+  const buttonStyle = { width: "100%", padding: "12px", fontSize: "1rem", fontWeight: 600 };
+
+  const saveButton = (
+    <BannerButton
+      onClick={handleSaveClick}
+      disabled={!canSubmit}
+      style={{ ...buttonStyle, opacity: canSubmit ? 1 : 0.5, cursor: canSubmit ? "pointer" : "not-allowed" }}
+    >
+      Save settings
+    </BannerButton>
+  );
+
+  const confirmStep = (
+    <>
+      <p style={{ margin: 0, fontSize: "0.9rem", color: "var(--text-secondary)", textAlign: "center" }}>
+        Apply this to today's lesson, or start from tomorrow?
+      </p>
+      <BannerButton onClick={() => submit(true)} style={buttonStyle}>
+        Regenerate today's lesson
+      </BannerButton>
+      <SubtleTextButton onClick={() => submit(false)}>Start from tomorrow</SubtleTextButton>
+    </>
+  );
+
   return (
     <Dialog
       onDismiss={onDismiss}
@@ -66,7 +105,7 @@ export default function DailyLessonSettingsDialog({
       </h2>
       <p style={{ margin: "0 0 16px", fontSize: "0.9rem", color: "var(--text-secondary)" }}>
         {todaysLessonExists
-          ? "A new lesson, ready for you daily. Pick what you'd like instead — we'll make today's right away."
+          ? "A new lesson, ready for you daily. Pick what you'd like instead."
           : "A new lesson, ready for you daily. Pick what kind — we'll make your first one right now."}
       </p>
 
@@ -79,26 +118,7 @@ export default function DailyLessonSettingsDialog({
       />
 
       <div style={{ marginTop: "20px", display: "flex", flexDirection: "column", alignItems: "center", gap: "10px" }}>
-        <BannerButton
-          onClick={() => submit(true)}
-          disabled={!canSubmit}
-          style={{
-            width: "100%",
-            padding: "12px",
-            fontSize: "1rem",
-            fontWeight: 600,
-            opacity: canSubmit ? 1 : 0.5,
-            cursor: canSubmit ? "pointer" : "not-allowed",
-          }}
-        >
-          {todaysLessonExists ? "Generate today's lesson" : "Start today's lesson"}
-        </BannerButton>
-
-        {todaysLessonExists && (
-          <SubtleTextButton onClick={() => submit(false)} disabled={!canSubmit}>
-            Save for tomorrow instead
-          </SubtleTextButton>
-        )}
+        {confirmRegen ? confirmStep : saveButton}
       </div>
     </Dialog>
   );
