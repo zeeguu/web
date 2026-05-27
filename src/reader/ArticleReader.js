@@ -504,6 +504,7 @@ export default function ArticleReader({ teacherArticleID }) {
         <ReviewWordsPopup open={reviewWordsModal.open} handleCancel={reviewWordsModal.close} />
         <s.ExtraSpaceAtTheBottom />
       </s.ArticleReader>
+      <s.BottomFade />
     </>
   );
 }

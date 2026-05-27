@@ -61,7 +61,7 @@ export default function TopToolbar({
     <s.ToolbarWrapper>
       <s.Toolbar>
         <s.TopbarButtonsContainer $screenWidth={screenWidth}>
-          <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", marginLeft: "0.25rem" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
             {isMobile && <BackArrow />}
             {timer}
           </div>
