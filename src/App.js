@@ -33,14 +33,12 @@ import SessionStorage from "./assorted/SessionStorage";
 import useRedirectLink from "./hooks/useRedirectLink";
 import useLocationTracker from "./hooks/useLocationTracker";
 import useDeepLinkHandler from "./hooks/useDeepLinkHandler";
-import useTranslationOnboarding from "./hooks/useTranslationOnboarding";
 import useMoreTranslationsOnboarding from "./hooks/useMoreTranslationsOnboarding";
 import useOnboardingModal from "./hooks/useOnboardingModal";
 import LoadingAnimation from "./components/LoadingAnimation";
 import ServerErrorModal from "./components/ServerErrorModal";
 import useTheme from "./hooks/useTheme";
 import { ThemeContext } from "./contexts/ThemeContext";
-import TranslationOnboardingPopup from "./pages/onboarding/notifications/TranslationOnboardingPopup";
 import MoreTranslationsPopup from "./pages/onboarding/notifications/MoreTranslationsPopup";
 
 // Helper to detect if we're in a Capacitor native app
@@ -96,7 +94,6 @@ function App() {
   const [isExtensionAvailable] = useExtensionCommunication();
   const [zeeguuSpeech, setZeeguuSpeech] = useState(false);
   let { handleRedirectLinkOrGoTo } = useRedirectLink();
-  const translationModal = useTranslationOnboarding(api, userDetails);
   const moreTranslationsModal = useMoreTranslationsOnboarding(api, userDetails);
 
   const [systemLanguages, setSystemLanguages] = useState();
@@ -418,10 +415,6 @@ function App() {
                         <MainAppRouter
                           hasExtension={isExtensionAvailable}
                           handleSuccessfulLogIn={handleSuccessfulLogIn}
-                        />
-                        <TranslationOnboardingPopup
-                          open={translationModal.open}
-                          handleCancel={translationModal.close}
                         />
                         <MoreTranslationsPopup
                           open={moreTranslationsModal.open}
