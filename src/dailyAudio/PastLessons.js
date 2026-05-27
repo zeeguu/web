@@ -9,7 +9,7 @@ import { SubtleLessonCard, ProgressBarTrack, ProgressBarFill } from "./SharedLes
 import { PillRow, SelectablePill } from "./SuggestionSelector.sc";
 import { LessonTypeChip, chipLabel } from "./lessonTypeChip";
 import { completionChecks } from "./audioUtils";
-import { shareLessonLink } from "./shareLessonLink";
+import ShareLessonButton from "./ShareLessonButton";
 
 // Filter the back catalogue by lesson type. value=null means "All".
 const TYPE_FILTERS = [
@@ -382,13 +382,7 @@ function InlineLessonPlayer({ lesson, api, userDetails, onLessonCompleted, onPro
         }}
         onError={() => {}}
       />
-      {lesson.lesson_id && (
-        <div style={{ marginTop: "12px", textAlign: "center" }}>
-          <SubtleTextButton onClick={() => shareLessonLink(api, lesson.lesson_id, lesson.title)}>
-            Share
-          </SubtleTextButton>
-        </div>
-      )}
+      <ShareLessonButton api={api} lessonId={lesson.lesson_id} title={lesson.title} />
     </>
   );
 }

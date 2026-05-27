@@ -8,7 +8,7 @@ import { AUDIO_STATUS } from "./AudioLessonConstants";
 import { LessonWrapper, LessonTitle, LessonMetadata, CompletionCheck, SubtleTextButton, LessonActions } from "./LessonView.sc";
 import { wordsAsTile } from "./audioUtils";
 import { languageNames } from "../utils/languageDetection";
-import { shareLessonLink } from "./shareLessonLink";
+import ShareLessonButton from "./ShareLessonButton";
 
 export default function LessonPlaybackView({
   lessonData,
@@ -95,15 +95,9 @@ export default function LessonPlaybackView({
             maxWidth: "600px",
             margin: "0 auto 20px auto",
           }}
-        />
-
-        {lessonData.lesson_id && (
-          <div style={{ textAlign: "center", marginBottom: "8px" }}>
-            <SubtleTextButton onClick={() => shareLessonLink(api, lessonData.lesson_id, lessonData.title)}>
-              Share
-            </SubtleTextButton>
-          </div>
-        )}
+        >
+          <ShareLessonButton api={api} lessonId={lessonData.lesson_id} title={lessonData.title} />
+        </CustomAudioPlayer>
 
         {lessonData.is_completed && (
           <div

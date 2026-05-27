@@ -24,7 +24,12 @@ export default function DailyLessonSettingsDialog({
   onDismiss,
 }) {
   const [pillType, setPillType] = useState(initialType ? backendToPill(initialType) : "topic");
-  const [suggestion, setSuggestion] = useState(initialSuggestion || "");
+  // Per-type subject so switching pills — or to Vocabulary and back — never
+  // clobbers what was typed for Topic vs Situation.
+  const [subjectByType, setSubjectByType] = useState(() => ({
+    topic: initialType === "topic" ? initialSuggestion || "" : "",
+    situation: initialType === "situation" ? initialSuggestion || "" : "",
+  }));
   const [autoDisabled, setAutoDisabled] = useState(false);
   const [confirmRegen, setConfirmRegen] = useState(false);
 
@@ -40,26 +45,32 @@ export default function DailyLessonSettingsDialog({
   }, [api]);
 
   const needsSubject = pillType === "topic" || pillType === "situation";
-  const canSubmit = !needsSubject || suggestion.trim().length > 0;
+  const currentSubject = needsSubject ? subjectByType[pillType] : "";
+  const setCurrentSubject = (val) => setSubjectByType((prev) => ({ ...prev, [pillType]: val }));
+  const canSubmit = !needsSubject || currentSubject.trim().length > 0;
 
   const submit = (regenerate) => {
     if (!canSubmit) return;
     // Store the subject exactly as typed; Vocabulary carries no subject.
-    onSubmit(pillToBackend(pillType), needsSubject ? suggestion : "", regenerate);
+    onSubmit(pillToBackend(pillType), needsSubject ? currentSubject : "", regenerate);
   };
 
   // Did the user actually pick something different from their current setup?
+  // Save stays disabled until they do.
+  const initialSubject =
+    initialType === "topic" || initialType === "situation" ? (initialSuggestion || "").trim() : "";
   const changed =
-    pillToBackend(pillType) !== initialType ||
-    (needsSubject ? suggestion.trim() : "") !== (initialSuggestion || "").trim();
+    pillToBackend(pillType) !== (initialType || null) ||
+    (needsSubject ? currentSubject.trim() : "") !== initialSubject;
+  const canSave = canSubmit && changed;
 
-  // Saving a *changed* setting while today's lesson already exists asks whether
-  // to apply it now or from tomorrow. Otherwise just save — generating right
-  // away when there's no lesson for today yet (first run / cron miss).
+  // Saving a changed setting while today's lesson already exists asks whether to
+  // apply it now or from tomorrow. Otherwise just save — generating right away
+  // when there's no lesson for today yet (first run / cron miss).
   const handleSaveClick = () => {
-    if (!canSubmit) return;
-    if (todaysLessonExists && changed) setConfirmRegen(true);
-    else submit(!todaysLessonExists);
+    if (!canSave) return;
+    if (todaysLessonExists) setConfirmRegen(true);
+    else submit(true);
   };
 
   const buttonStyle = { width: "100%", padding: "12px", fontSize: "1rem", fontWeight: 600 };
@@ -67,8 +78,8 @@ export default function DailyLessonSettingsDialog({
   const saveButton = (
     <BannerButton
       onClick={handleSaveClick}
-      disabled={!canSubmit}
-      style={{ ...buttonStyle, opacity: canSubmit ? 1 : 0.5, cursor: canSubmit ? "pointer" : "not-allowed" }}
+      disabled={!canSave}
+      style={{ ...buttonStyle, opacity: canSave ? 1 : 0.5, cursor: canSave ? "pointer" : "not-allowed" }}
     >
       Save settings
     </BannerButton>
@@ -107,8 +118,8 @@ export default function DailyLessonSettingsDialog({
       <SuggestionSelector
         suggestionType={pillType}
         setSuggestionType={setPillType}
-        suggestion={suggestion}
-        setSuggestion={setSuggestion}
+        suggestion={currentSubject}
+        setSuggestion={setCurrentSubject}
         autoDisabled={autoDisabled}
       />
 
