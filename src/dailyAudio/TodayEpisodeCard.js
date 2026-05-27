@@ -96,7 +96,7 @@ export default function TodayEpisodeCard({ onChangeTopic, ...playbackProps }) {
   const footer = (
     <div style={{ marginTop: "24px", textAlign: "center" }}>
       <ConfigPill onClick={onChangeTopic} title="Change your daily lesson type">
-        <span>Change your daily lesson type</span>
+        <span>Daily lesson type</span>
         <SettingsRoundedIcon style={{ fontSize: "0.95rem" }} />
       </ConfigPill>
     </div>
