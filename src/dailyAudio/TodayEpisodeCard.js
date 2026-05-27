@@ -43,7 +43,7 @@ function EpisodeHeader({ lessonData }) {
           color: "var(--text-secondary)",
         }}
       >
-        {todayDateLabel()}
+        {lessonData.paused ? "⏸ Paused" : todayDateLabel()}
       </span>
 
       <LessonTitle style={{ marginTop: "8px" }}>
@@ -78,6 +78,11 @@ export default function TodayEpisodeCard({ onChangeTopic, ...playbackProps }) {
   // stays quiet to keep the screen uncluttered.
   const footer = (
     <div style={{ marginTop: "24px", textAlign: "center" }}>
+      {lessonData.paused && (
+        <p style={{ color: "var(--text-secondary)", fontSize: "14px", margin: "0 0 12px" }}>
+          New daily lessons are paused. Listen to this one and they'll start again tomorrow.
+        </p>
+      )}
       <ConfigPill onClick={onChangeTopic} title="Daily lesson settings">
         <span>Daily lesson settings</span>
         <SettingsRoundedIcon style={{ fontSize: "0.95rem" }} />
