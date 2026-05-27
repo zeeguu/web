@@ -132,13 +132,10 @@ const ReadProgress = styled.span`
 `;
 const TitleContainer = styled.div`
   display: flex;
-  width: 100%;
+  width: 95%;
   align-items: center;
   gap: 0.5rem;
   position: relative;
-  /* Reserve space for the absolutely-positioned Hide × button at the
-     card's top-right so long titles wrap before reaching it. */
-  padding-right: 2.2em;
 `;
 
 const Title = styled.div`
