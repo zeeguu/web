@@ -67,14 +67,14 @@ function EpisodeHeader({ lessonData, words }) {
         )}
       </LessonTitle>
 
-      <LessonMetadata>
+      <LessonMetadata style={{ display: "flex", alignItems: "baseline", gap: "6px" }}>
         <LessonTypeChip
           $type={lessonData.lesson_type}
-          style={{ marginBottom: 0, marginRight: "6px", verticalAlign: "middle" }}
+          style={{ marginBottom: 0, flexShrink: 0 }}
         >
           {chipLabel(lessonData.lesson_type)}
         </LessonTypeChip>
-        {metaText}
+        {metaText && <span style={{ minWidth: 0 }}>{metaText}</span>}
       </LessonMetadata>
     </>
   );
