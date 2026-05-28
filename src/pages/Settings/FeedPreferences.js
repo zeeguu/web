@@ -11,6 +11,8 @@ import BackArrow from "./settings_pages_shared/BackArrow";
 import { setTitle } from "../../assorted/setTitle";
 import { APIContext } from "../../contexts/APIContext";
 
+import { SectionHeading, SectionDescription } from "./FeedPreferences.sc";
+
 import useUnwantedContentPreferences from "../../hooks/useUnwantedContentPreferences";
 import useFormField from "../../hooks/useFormField";
 
@@ -23,7 +25,6 @@ import { FormControlLabel, Checkbox } from "@mui/material";
 import InputField from "../../components/InputField";
 
 import strings from "../../i18n/definitions";
-import { Margin } from "@mui/icons-material";
 
 export default function FeedPreferences() {
   const api = useContext(APIContext);
@@ -32,13 +33,13 @@ export default function FeedPreferences() {
 
   const { unwantedKeywords, addUnwantedKeyword, removeUnwantedKeyword } = useUnwantedContentPreferences(api);
 
-  const [excludedWord, setExcludedWord, , isExcludedWordValid, , resetExcludedWord] = useFormField("");
+  const [excludedWord, setExcludedWord, resetExcludedWord] = useFormField("");
 
   const [filterDisturbingContent, setFilterDisturbingContent] = useState(false);
   const [preferencesLoaded, setPreferencesLoaded] = useState(false);
 
   useEffect(() => {
-    setTitle("Article Preferences");
+    setTitle("Feed Preferences");
   }, []);
 
   useEffect(() => {
@@ -82,17 +83,8 @@ export default function FeedPreferences() {
         <Heading>Feed Preferences</Heading>
       </Header>
       <Main>
-        <h3 style={{ margin: "0", alignSelf: "flex-start" }}>Topics of Interest:</h3>{" "}
-        <div
-          style={{
-            fontSize: "1rem",
-            marginBottom: 0,
-            textAlign: "left",
-            width: "100%",
-          }}
-        >
-          Show me articles about the following topics:
-        </div>
+        <SectionHeading>Topics of Interest:</SectionHeading>{" "}
+        <SectionDescription>Show me articles about the following topics:</SectionDescription>
         <TagContainer>
           {allTopics.map((topic) => (
             <Tag
@@ -105,17 +97,8 @@ export default function FeedPreferences() {
             </Tag>
           ))}
         </TagContainer>
-        <h3 style={{ margin: "0", alignSelf: "flex-start" }}>Topics to Avoid:</h3>{" "}
-        <div
-          style={{
-            fontSize: "1rem",
-            marginBottom: 0,
-            textAlign: "left",
-            width: "100%",
-          }}
-        >
-          Don't show articles containing the following keywords:
-        </div>
+        <SectionHeading>Topics to Avoid:</SectionHeading>{" "}
+        <SectionDescription>Don't show articles containing the following keywords:</SectionDescription>
         <TagContainer style={{ marginTop: "-1em" }}>
           {unwantedKeywords.map((keyword) => (
             <div key={keyword.id} id={keyword.id}>

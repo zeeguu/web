@@ -59,7 +59,7 @@ export default function Settings() {
       </ListOfSettingsItems>
 
       <ListOfSettingsItems header={"Reading"}>
-        <SettingsItem path={"/account_settings/interests"}>{strings.feedPrefernces}</SettingsItem>
+        <SettingsItem path={"/account_settings/interests"}>{strings.feedPreferences}</SettingsItem>
       </ListOfSettingsItems>
 
       <ListOfSettingsItems header={strings.exercises}>

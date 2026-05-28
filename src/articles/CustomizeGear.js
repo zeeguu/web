@@ -24,7 +24,7 @@ export default function CustomizeGear() {
   }, [api]);
 
   const handleClick = () => {
-    history.push("/account_settings/interests");
+    history.push("/account_settings/interests?fromArticles=1");
   };
 
   return (
