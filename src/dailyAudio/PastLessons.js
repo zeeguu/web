@@ -385,7 +385,7 @@ function InlineLessonPlayer({ lesson, api, userDetails, onLessonCompleted, onPro
         }}
         onError={() => {}}
       />
-      <ShareLessonButton api={api} lessonId={lesson.lesson_id} title={lesson.title} />
+      <ShareLessonButton api={api} lessonId={lesson.lesson_id} title={lesson.title} shareUuid={lesson.share_uuid} />
     </>
   );
 }

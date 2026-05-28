@@ -96,7 +96,7 @@ export default function LessonPlaybackView({
             margin: "0 auto 20px auto",
           }}
         >
-          <ShareLessonButton api={api} lessonId={lessonData.lesson_id} title={lessonData.title} />
+          <ShareLessonButton api={api} lessonId={lessonData.lesson_id} title={lessonData.title} shareUuid={lessonData.share_uuid} />
         </CustomAudioPlayer>
 
         {lessonData.is_completed && (
