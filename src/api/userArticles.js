@@ -407,12 +407,21 @@ Zeeguu_API.prototype.detectArticleLanguage = function (
 };
 
 Zeeguu_API.prototype.translateAndAdaptArticle = function (
-  url,
+  urlOrParams,
   targetLanguage,
   callback,
   onError,
 ) {
-  let params = { url: url };
+  // Accepts either a url string (external share flow) or { url, articleId }.
+  // Prefer articleId when we already have the article — the backend then
+  // translates the stored content instead of re-downloading the URL.
+  let params = {};
+  if (typeof urlOrParams === "string") {
+    params.url = urlOrParams;
+  } else {
+    if (urlOrParams.url) params.url = urlOrParams.url;
+    if (urlOrParams.articleId) params.article_id = urlOrParams.articleId;
+  }
   if (targetLanguage) {
     params.target_language = targetLanguage;
   }
