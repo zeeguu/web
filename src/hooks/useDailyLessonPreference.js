@@ -1,14 +1,11 @@
 import { useCallback, useEffect, useState } from "react";
 import * as Sentry from "@sentry/react";
 
-// Per-language daily audio lesson preference. The daily lesson is stored and
-// queried per learned-language on the backend, so the preference is keyed per
-// language too (e.g. "daily_audio_lesson_type_da"). The suggestion is stored
-// verbatim — exactly what the user typed — and only canonicalized at
+// Per-(user, learned-language) daily audio lesson config, owned by the backend
+// DailyAudioSubscription model and read/written via the dedicated
+// /daily_subscription + /configure_daily_subscription endpoints. The suggestion
+// is stored verbatim — exactly what the user typed — and only canonicalized at
 // generation time.
-const typeKeyFor = (lang) => `daily_audio_lesson_type_${lang}`;
-const suggestionKeyFor = (lang) => `daily_audio_lesson_suggestion_${lang}`;
-
 export default function useDailyLessonPreference(api, lang) {
   // dailyType is the canonical backend value: three_words_lesson | topic | situation,
   // or null when the user hasn't set up a daily lesson for this language.
@@ -20,17 +17,18 @@ export default function useDailyLessonPreference(api, lang) {
     if (!lang) return;
     let cancelled = false;
     setPrefLoaded(false);
-    api
-      .getUserPreferences()
-      .then((prefs) => {
+    api.getDailySubscription(
+      lang,
+      (sub) => {
         if (cancelled) return;
-        setDailyType(prefs[typeKeyFor(lang)] || null);
-        setDailySuggestion(prefs[suggestionKeyFor(lang)] || "");
+        setDailyType(sub?.lesson_type || null);
+        setDailySuggestion(sub?.raw_suggestion || "");
         setPrefLoaded(true);
-      })
-      .catch(() => {
+      },
+      () => {
         if (!cancelled) setPrefLoaded(true);
-      });
+      },
+    );
     return () => {
       cancelled = true;
     };
@@ -42,10 +40,10 @@ export default function useDailyLessonPreference(api, lang) {
       setDailyType(lessonType);
       const verbatim = lessonType === "three_words_lesson" ? "" : suggestion || "";
       setDailySuggestion(verbatim);
-      // Optimistic; a failed save silently reverts on next load, so at least
-      // make the failure observable rather than fully silent.
-      api.saveUserPreferences(
-        { [typeKeyFor(lang)]: lessonType, [suggestionKeyFor(lang)]: verbatim },
+      api.configureDailySubscription(
+        lang,
+        lessonType,
+        verbatim,
         null,
         (err) =>
           Sentry.captureException(err, { tags: { feature: "daily_audio_preference" } }),

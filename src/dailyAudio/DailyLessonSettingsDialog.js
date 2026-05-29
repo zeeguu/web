@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Dialog } from "../components/DialogWrapper";
 import SuggestionSelector, { pillToBackend, backendToPill } from "./SuggestionSelector";
-import { SubtleTextButton } from "./LessonView.sc";
 import { BannerButton } from "./SharedLessonView.sc";
 import { zeeguuOrange } from "../components/colors";
 
@@ -11,15 +10,16 @@ import { zeeguuOrange } from "../components/colors";
  * generates audio itself — it hands the chosen (type, suggestion) back to the
  * parent via onSubmit, which owns the generation state machine and progress UI.
  *
- * onSubmit(backendType, verbatimSuggestion, regenerate):
- *   regenerate=true  → apply now (parent regenerates today's lesson)
- *   regenerate=false → save for tomorrow only (keeps today's existing lesson)
+ * onSubmit(backendType, verbatimSuggestion, generateNow):
+ *   generateNow=true  → first-ever setup: generate today's lesson now
+ *   generateNow=false → reconfigure: save; the change applies from the next
+ *                       scheduled lesson (we never regenerate the same day)
  */
 export default function DailyLessonSettingsDialog({
   api,
   initialType,
   initialSuggestion,
-  todaysLessonExists,
+  alreadySubscribed,
   onSubmit,
   onDismiss,
 }) {
@@ -31,14 +31,6 @@ export default function DailyLessonSettingsDialog({
     situation: initialType === "situation" ? initialSuggestion || "" : "",
   }));
   const [autoDisabled, setAutoDisabled] = useState(false);
-  const [confirmRegen, setConfirmRegen] = useState(false);
-
-  // Changing the type/subject after the regenerate-or-tomorrow prompt has shown
-  // would leave it describing a stale choice (and could strand the confirm
-  // buttons if the new subject is empty) — so drop back to "Save settings".
-  useEffect(() => {
-    setConfirmRegen(false);
-  }, [pillType, subjectByType]);
 
   // Vocabulary needs enough study words; disable the pill when there aren't.
   useEffect(() => {
@@ -71,13 +63,12 @@ export default function DailyLessonSettingsDialog({
     (needsSubject ? currentSubject.trim() : "") !== initialSubject;
   const canSave = canSubmit && changed;
 
-  // Saving a changed setting while today's lesson already exists asks whether to
-  // apply it now or from tomorrow. Otherwise just save — generating right away
-  // when there's no lesson for today yet (first run / cron miss).
+  // First-ever setup generates today's lesson now; reconfiguring an existing
+  // subscription only saves — the change applies from the next scheduled lesson
+  // (we never regenerate the same day).
   const handleSaveClick = () => {
     if (!canSave) return;
-    if (todaysLessonExists) setConfirmRegen(true);
-    else submit(true);
+    submit(!alreadySubscribed);
   };
 
   const buttonStyle = { width: "100%", padding: "12px", fontSize: "1rem", fontWeight: 600 };
@@ -90,18 +81,6 @@ export default function DailyLessonSettingsDialog({
     >
       Save settings
     </BannerButton>
-  );
-
-  const confirmStep = (
-    <>
-      <p style={{ margin: 0, fontSize: "0.9rem", color: "var(--text-secondary)", textAlign: "center" }}>
-        Apply this to today's lesson, or start from tomorrow?
-      </p>
-      <BannerButton onClick={() => submit(true)} style={buttonStyle}>
-        Regenerate today's lesson
-      </BannerButton>
-      <SubtleTextButton onClick={() => submit(false)}>Start from tomorrow</SubtleTextButton>
-    </>
   );
 
   return (
@@ -131,7 +110,12 @@ export default function DailyLessonSettingsDialog({
       />
 
       <div style={{ marginTop: "20px", display: "flex", flexDirection: "column", alignItems: "center", gap: "10px" }}>
-        {confirmRegen ? confirmStep : saveButton}
+        {saveButton}
+        {alreadySubscribed && (
+          <p style={{ margin: 0, fontSize: "0.8rem", color: "var(--text-secondary)", textAlign: "center" }}>
+            Applies from your next lesson.
+          </p>
+        )}
       </div>
     </Dialog>
   );

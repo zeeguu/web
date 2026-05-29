@@ -6,16 +6,79 @@ function getTimezoneOffsetMinutes() {
   return new Date().getTimezoneOffset() * -1;
 }
 
-Zeeguu_API.prototype.getTodaysLesson = function (callback, onError) {
+// Shared POST-with-FormData helper: fetch + 4xx/5xx → throw with the server's
+// `error`, success → JSON to `callback`, failure → Sentry-tagged report + onError.
+// Used by every daily-audio mutation that posts a small form (set-enabled,
+// configure, etc.) so adding another endpoint or changing the error format is
+// one place to touch.
+function postForm(api, path, formData, callback, onError, endpointTag) {
+  fetch(api._appendSessionToUrl(path), { method: "POST", body: formData })
+    .then((response) => {
+      if (!response.ok) {
+        return response.json().then((data) => {
+          throw new Error(data.error || "Network response was not ok");
+        });
+      }
+      return response.json();
+    })
+    .then((data) => {
+      if (callback) callback(data);
+    })
+    .catch((error) => {
+      console.error(`Error in ${endpointTag}:`, error);
+      Sentry.captureException(error, { tags: { endpoint: endpointTag } });
+      if (onError) onError(error);
+    });
+}
+
+// All daily-audio endpoints take `lang` explicitly so a fast language switch in
+// the UI can't race against the server's lagged user.learned_language. Pass the
+// learned-language code the caller is currently displaying.
+
+/**
+ * Today's daily-audio state for the given learned-language.
+ *
+ * `callback` always receives an OBJECT (never `null` — that contract changed
+ * when subscription state started piggybacking on this endpoint). Use
+ * `data.lesson_id` to distinguish:
+ *   - lesson present → has `lesson_id`, `audio_url`, `title`, …, plus
+ *     `subscription_status` / `next_lesson_date` / `paused`.
+ *   - no lesson      → no `lesson_id`; only the subscription fields. Decide
+ *     what to render from `subscription_status` (active | off | not_subscribed).
+ */
+Zeeguu_API.prototype.getTodaysLesson = function (lang, callback, onError) {
+  const langParam = lang ? `&language=${encodeURIComponent(lang)}` : "";
   this._getJSON(
-    `get_todays_lesson?timezone_offset=${getTimezoneOffsetMinutes()}`,
+    `get_todays_lesson?timezone_offset=${getTimezoneOffsetMinutes()}${langParam}`,
     (data) => {
-      if (data.lesson === null) return callback(null);
+      if (data.lesson === null) return callback(data);
       const audioUrl = `${this.baseAPIurl}${data.audio_url}`;
       callback({ ...data, audio_url: audioUrl });
     },
     { onError },
   );
+};
+
+Zeeguu_API.prototype.setDailySubscriptionEnabled = function (lang, enabled, callback, onError) {
+  this.apiLog("POST set_daily_subscription_enabled");
+  const formData = new FormData();
+  formData.append("enabled", enabled ? "true" : "false");
+  if (lang) formData.append("language", lang);
+  postForm(this, "set_daily_subscription_enabled", formData, callback, onError, "set_daily_subscription_enabled");
+};
+
+Zeeguu_API.prototype.getDailySubscription = function (lang, callback, onError) {
+  const url = lang ? `daily_subscription?language=${encodeURIComponent(lang)}` : "daily_subscription";
+  this._getJSON(url, callback, { onError });
+};
+
+Zeeguu_API.prototype.configureDailySubscription = function (lang, lessonType, suggestion, callback, onError) {
+  this.apiLog("POST configure_daily_subscription");
+  const formData = new FormData();
+  formData.append("lesson_type", lessonType);
+  if (suggestion) formData.append("suggestion", suggestion);
+  if (lang) formData.append("language", lang);
+  postForm(this, "configure_daily_subscription", formData, callback, onError, "configure_daily_subscription");
 };
 
 Zeeguu_API.prototype.generateDailyLesson = function (callback, onError, suggestion, suggestionType) {

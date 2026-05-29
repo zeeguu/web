@@ -2,9 +2,9 @@ import React from "react";
 import styled from "styled-components";
 import SettingsRoundedIcon from "@mui/icons-material/SettingsRounded";
 import LessonPlaybackView from "./LessonPlaybackView";
-import { LessonTitle, LessonMetadata, CompletionCheck } from "./LessonView.sc";
+import { LessonTitle, LessonMetadata, CompletionCheck, SubtleTextButton } from "./LessonView.sc";
 import { LessonTypeChip, chipLabel } from "./lessonTypeChip";
-import { todayDateLabel, completionChecks } from "./audioUtils";
+import { todayDateLabel, completionChecks, formatNextLessonDate } from "./audioUtils";
 
 // Config pill, styled like the Discover screen's "Topics: … ⚙" control but with
 // theme tokens (not hardcoded white) so it renders as a pill in light AND dark.
@@ -68,25 +68,38 @@ function EpisodeHeader({ lessonData }) {
  * Reuses LessonPlaybackView for all the player/words/feedback plumbing and
  * injects the Design-B header + footer.
  */
-export default function TodayEpisodeCard({ onChangeTopic, ...playbackProps }) {
+export default function TodayEpisodeCard({ onChangeTopic, onTurnOff, ...playbackProps }) {
   const { lessonData } = playbackProps;
 
-  // Just the daily-lesson config pill (styled like the Discover screen's
-  // "Topics: … ⚙" control), above the Share/Feedback utility actions. The
-  // "new lesson every day" promise now lives in the settings dialog, and
-  // completion is already acknowledged by the player's banner — so the footer
-  // stays quiet to keep the screen uncluttered.
+  // Status line reflects the daily-subscription state. `paused` (from the API's
+  // engagement gate) means this is a waiting lesson the learner hasn't engaged
+  // with — new ones are held until they do. Otherwise show when the next arrives.
+  const nextLabel = formatNextLessonDate(lessonData.next_lesson_date);
+  let statusLine;
+  if (lessonData.paused) {
+    statusLine = "Daily lessons are paused — listen to this one and they'll start again.";
+  } else if (lessonData.is_completed) {
+    statusLine = nextLabel ? `Done for today — next lesson ${nextLabel}.` : "Done for today.";
+  } else {
+    statusLine = nextLabel
+      ? `Finish this to keep them coming — next lesson ${nextLabel}.`
+      : "Finish this and your next daily lesson lines up.";
+  }
+
   const footer = (
     <div style={{ marginTop: "24px", textAlign: "center" }}>
-      {lessonData.paused && (
-        <p style={{ color: "var(--text-secondary)", fontSize: "14px", margin: "0 0 12px" }}>
-          New daily lessons are paused. Listen to this one and they'll start again tomorrow.
-        </p>
-      )}
+      <p style={{ color: "var(--text-secondary)", fontSize: "14px", margin: "0 0 12px" }}>
+        {statusLine}
+      </p>
       <ConfigPill onClick={onChangeTopic} title="Configure daily lessons">
         <span>Configure daily lessons</span>
         <SettingsRoundedIcon style={{ fontSize: "0.95rem" }} />
       </ConfigPill>
+      {onTurnOff && (
+        <div style={{ marginTop: "12px" }}>
+          <SubtleTextButton onClick={onTurnOff}>Turn off daily lessons</SubtleTextButton>
+        </div>
+      )}
     </div>
   );
 

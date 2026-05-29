@@ -48,10 +48,13 @@ export const ShareNote = styled.div`
 
 export const BannerButton = styled.button`
   background-color: ${zeeguuOrange};
-  color: white;
+  /* Brand orange is theme-invariant; white-on-amber failed contrast (~1.9:1).
+     Near-black on amber lands at ~11:1 — readable in light AND dark mode. */
+  color: #1a1a1a;
   border: none;
   border-radius: 4px;
   padding: 8px 16px;
   font-size: 14px;
+  font-weight: 600;
   cursor: pointer;
 `;
