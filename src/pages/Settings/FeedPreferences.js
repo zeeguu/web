@@ -83,8 +83,8 @@ export default function FeedPreferences() {
         <Heading>Feed Preferences</Heading>
       </Header>
       <Main>
-        <SectionHeading>Topics of Interest:</SectionHeading>{" "}
-        <SectionDescription>Show me articles about the following topics:</SectionDescription>
+        <SectionHeading>Topics of Interest</SectionHeading>{" "}
+        {/*<SectionDescription>Show me articles about the following topics:</SectionDescription>*/}
         <TagContainer>
           {allTopics.map((topic) => (
             <Tag
@@ -97,18 +97,10 @@ export default function FeedPreferences() {
             </Tag>
           ))}
         </TagContainer>
-        <SectionHeading>Topics to Avoid:</SectionHeading>{" "}
-        <SectionDescription>Don't show articles containing the following keywords:</SectionDescription>
-        <TagContainer style={{ marginTop: "-1em" }}>
-          {unwantedKeywords.map((keyword) => (
-            <div key={keyword.id} id={keyword.id}>
-              <Tag className={"outlined-blue small"} onClick={() => removeUnwantedKeyword(keyword)}>
-                {keyword.search}
-                <HighlightOffRoundedIcon fontSize="small" />
-              </Tag>
-            </div>
-          ))}
-        </TagContainer>
+        <br/>
+        <SectionHeading>Keywords to Avoid</SectionHeading>{" "}
+
+
         <Form style={{ marginTop: "-1em" }}>
           <InputField
             value={excludedWord}
@@ -123,6 +115,20 @@ export default function FeedPreferences() {
             </Button>
           </InputField>
         </Form>
+
+        <TagContainer style={{ marginTop: "-1em" }}>
+          {unwantedKeywords.map((keyword) => (
+              <div key={keyword.id} id={keyword.id}>
+                <Tag className={"outlined-blue small"} onClick={() => removeUnwantedKeyword(keyword)}>
+                  {keyword.search}
+                  <HighlightOffRoundedIcon fontSize="small" />
+                </Tag>
+              </div>
+          ))}
+        </TagContainer>
+
+
+        <br/>
         <div style={{ marginTop: "0", marginBottom: "0" }}>
           <FormControlLabel
             control={
