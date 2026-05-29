@@ -10,12 +10,43 @@ Zeeguu_API.prototype.getTodaysLesson = function (callback, onError) {
   this._getJSON(
     `get_todays_lesson?timezone_offset=${getTimezoneOffsetMinutes()}`,
     (data) => {
-      if (data.lesson === null) return callback(null);
+      // No lesson today: still forward the payload (subscription_status,
+      // awaiting_engagement, next_lesson_date) so the UI can render the right
+      // empty/off/awaiting state. There's no lesson_id, so callers fall through.
+      if (data.lesson === null) return callback(data);
       const audioUrl = `${this.baseAPIurl}${data.audio_url}`;
       callback({ ...data, audio_url: audioUrl });
     },
     { onError },
   );
+};
+
+Zeeguu_API.prototype.setDailySubscriptionEnabled = function (enabled, callback, onError) {
+  this.apiLog("POST set_daily_subscription_enabled");
+
+  const formData = new FormData();
+  formData.append("enabled", enabled ? "true" : "false");
+
+  fetch(this._appendSessionToUrl("set_daily_subscription_enabled"), {
+    method: "POST",
+    body: formData,
+  })
+    .then((response) => {
+      if (!response.ok) {
+        return response.json().then((data) => {
+          throw new Error(data.error || "Network response was not ok");
+        });
+      }
+      return response.json();
+    })
+    .then((data) => {
+      if (callback) callback(data);
+    })
+    .catch((error) => {
+      console.error("Error setting daily subscription enabled:", error);
+      Sentry.captureException(error, { tags: { endpoint: "set_daily_subscription_enabled" } });
+      if (onError) onError(error);
+    });
 };
 
 Zeeguu_API.prototype.generateDailyLesson = function (callback, onError, suggestion, suggestionType) {

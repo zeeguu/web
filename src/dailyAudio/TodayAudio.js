@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 import { Capacitor } from "@capacitor/core";
 import { orange500, zeeguuOrange } from "../components/colors";
@@ -12,7 +12,7 @@ import TodayEpisodeCard from "./TodayEpisodeCard";
 import DailyLessonSettingsDialog from "./DailyLessonSettingsDialog";
 import { SubtleTextButton } from "./LessonView.sc";
 import { BannerButton } from "./SharedLessonView.sc";
-import { wordsAsTile, shortDate } from "./audioUtils";
+import { wordsAsTile, shortDate, formatNextLessonDate } from "./audioUtils";
 
 // Shown rotating during the backend phases that don't emit sub-step
 // progress (no record yet, "pending", "generating_script",
@@ -51,12 +51,13 @@ export default function TodayAudio() {
   const [currentPlaybackTime, setCurrentPlaybackTime] = useState(0);
   const history = useHistory();
 
-  // Guards against re-triggering auto-generation every render once we've
-  // already kicked it off (or are explicitly driving generation ourselves).
-  const autoGenAttemptedRef = useRef(false);
-
-  const generatingKey = `zeeguu_generating_lesson_${lang}_${new Date().toDateString()}`;
-  const failedKey = `zeeguu_generation_failed_${lang}_${new Date().toDateString()}`;
+  // Daily-subscription state for this language (status / awaiting-engagement /
+  // next-lesson date), carried on the today's-lesson response. Drives the status
+  // box and the empty/off states. The backend subscription + cron are the source
+  // of truth for whether a lesson should exist today — the client never
+  // auto-generates; the only client-initiated generation is first-ever setup via
+  // the settings dialog.
+  const [subscription, setSubscription] = useState(null);
 
   // Listening session tracking via hook
   const listeningSession = useListeningSession(lessonData?.lesson_id);
@@ -65,14 +66,13 @@ export default function TodayAudio() {
   // Re-initialize when the learned language changes
   useEffect(() => {
     setLessonData(null);
+    setSubscription(null);
     setError(null);
     setNoLesson(false);
     // Tear down any in-flight generation/polling tied to the previous language
-    // (the poll effect keys its localStorage flag on the old lang and doesn't
-    // depend on lang, so without this it keeps polling for the wrong language).
+    // so we don't keep polling/showing progress for the wrong language.
     setIsGenerating(false);
     setGenerationProgress(null);
-    autoGenAttemptedRef.current = false;
   }, [lang]);
 
   // Kick off generation for a given (backend lesson type, raw subject). Used by
@@ -89,7 +89,6 @@ export default function TodayAudio() {
     setError(null);
     setGenerationProgress(null);
     setUserDetails((prev) => ({ ...prev, daily_audio_status: AUDIO_STATUS.GENERATING }));
-    localStorage.setItem(generatingKey, "true");
 
     api.generateDailyLesson(
       (data) => {
@@ -98,8 +97,6 @@ export default function TodayAudio() {
           return;
         }
         // Existing lesson returned directly
-        localStorage.removeItem(generatingKey);
-        localStorage.removeItem(failedKey);
         setIsGenerating(false);
         setGenerationProgress(null);
         setLessonData(data);
@@ -109,27 +106,22 @@ export default function TodayAudio() {
         }));
       },
       (err) => {
-        // Generation already running — keep the flag and let polling continue
+        // Generation already running — let polling continue
         if (err.message && err.message.toLowerCase().includes("already being generated")) {
           return;
         }
-        localStorage.removeItem(generatingKey);
         setIsGenerating(false);
         setGenerationProgress(null);
         setUserDetails((prev) => ({ ...prev, daily_audio_status: null }));
 
         // "Not enough words" for a vocabulary lesson is actionable — steer to a
-        // Topic/Situation (restores the old proactive feasibility guidance,
-        // which the auto-generate path otherwise lost).
+        // Topic/Situation (restores the old proactive feasibility guidance).
         let msg;
         if (err.message && err.message.toLowerCase().includes("not enough words")) {
           msg = "Not enough words for a vocabulary lesson yet. Try a Topic or Situation instead.";
         } else {
           msg = err.message || "Couldn't prepare today's lesson. Please try again.";
         }
-        // Remember the failure for the rest of the day so we don't auto-retry
-        // on every refresh; the user can change the topic to try again.
-        localStorage.setItem(failedKey, msg);
         setError(msg);
       },
       trimmedSuggestion,
@@ -145,9 +137,7 @@ export default function TodayAudio() {
     setSettingsOpen(false);
     if (!regenerate) return;
 
-    localStorage.removeItem(failedKey);
     setError(null);
-    autoGenAttemptedRef.current = true; // we're driving generation explicitly
     if (lessonData) {
       api.deleteTodaysLesson(
         () => {
@@ -164,27 +154,51 @@ export default function TodayAudio() {
     }
   }
 
-  // Poll for progress when generating
+  // Refresh today's lesson + subscription state from the backend.
+  function refreshToday() {
+    api.getTodaysLesson(
+      (data) => {
+        setSubscription(data || null);
+        if (data && data.lesson_id) {
+          setLessonData(data);
+          setNoLesson(false);
+        } else {
+          setLessonData(null);
+          setNoLesson(true);
+        }
+      },
+      () => {},
+    );
+  }
+
+  function turnOnDailyLessons() {
+    api.setDailySubscriptionEnabled(
+      true,
+      () => refreshToday(),
+      () => setError("Couldn't turn daily lessons back on. Please try again."),
+    );
+  }
+
+  function turnOffDailyLessons() {
+    api.setDailySubscriptionEnabled(
+      false,
+      () => refreshToday(),
+      () => setError("Couldn't turn daily lessons off. Please try again."),
+    );
+  }
+
+  // Poll for progress while a generation is in flight (started here, or a cron
+  // run we adopted on mount). No localStorage flag — `isGenerating` is the only
+  // trigger now that the backend owns "should there be a lesson today".
   useEffect(() => {
-    const hasLocalStorageFlag = localStorage.getItem(generatingKey);
-
-    // Start polling if either: localStorage flag is set (page reload) or isGenerating is true (button click/409)
-    const shouldPoll = hasLocalStorageFlag || isGenerating;
-    if (!shouldPoll) {
+    if (!isGenerating) {
       return;
-    }
-
-    // Ensure UI shows generating state (for page reload case where isGenerating starts false)
-    if (hasLocalStorageFlag && !isGenerating) {
-      setIsGenerating(true);
-      return; // Effect will re-run with isGenerating=true
     }
 
     let pollInterval;
 
     const stopPolling = () => {
       clearInterval(pollInterval);
-      localStorage.removeItem(generatingKey);
       setIsGenerating(false);
       setGenerationProgress(null);
     };
@@ -198,6 +212,7 @@ export default function TodayAudio() {
       if (data && data.lesson_id) {
         stopPolling();
         setLessonData(data);
+        setSubscription(data);
         setUserDetails((prev) => ({
           ...prev,
           daily_audio_status: data.is_completed ? AUDIO_STATUS.COMPLETED : AUDIO_STATUS.READY,
@@ -218,12 +233,10 @@ export default function TodayAudio() {
     };
 
     // Polling found neither a progress record nor a lesson — generation isn't
-    // actually running. Stop, mark it attempted (so the auto-gen effect won't
-    // relaunch), and show a recoverable error instead of an endless spinner.
+    // actually running. Stop and show a recoverable error instead of spinning.
     const handleExhausted = () => {
       stopPolling();
       setNoLesson(true);
-      autoGenAttemptedRef.current = true;
       setError("We couldn't prepare today's lesson. Try again or pick a different topic.");
     };
 
@@ -237,6 +250,12 @@ export default function TodayAudio() {
           if (progress) {
             noProgressCount = 0;
             setGenerationProgress(progress);
+            // Label the screen from the saved subscription type/subject when we
+            // didn't start this generation ourselves (adopted a cron run). The
+            // cron always generates the subscribed type, so this matches.
+            if (dailyType) {
+              setGeneratingLabel((prev) => prev || { type: dailyType, suggestion: dailySuggestion || "" });
+            }
 
             if (progress.status === GENERATION_PROGRESS.DONE) {
               checkForLesson();
@@ -304,7 +323,7 @@ export default function TodayAudio() {
       appStateListenerCancelled = true;
       if (appStateListenerHandle) appStateListenerHandle.remove();
     };
-  }, [api, isGenerating]);
+  }, [api, isGenerating, dailyType, dailySuggestion]);
 
   // Rotate placeholder messages only during the early/long phases where the
   // backend message sits static with no sub-step progress.
@@ -341,10 +360,12 @@ export default function TodayAudio() {
 
     const onLesson = (data) => {
       setIsLoading(false);
-      if (data) {
+      setSubscription(data || null);
+      if (data && data.lesson_id) {
         setLessonData(data);
         setNoLesson(false);
       } else {
+        setLessonData(null);
         setNoLesson(true);
       }
     };
@@ -361,6 +382,11 @@ export default function TodayAudio() {
           setIsLoading(false);
           setIsGenerating(true);
           setGenerationProgress(progress);
+          // We adopted a cron generation; label it from the saved subscription
+          // (the cron always generates the subscribed type).
+          if (dailyType) {
+            setGeneratingLabel({ type: dailyType, suggestion: dailySuggestion || "" });
+          }
           setUserDetails((prev) => ({ ...prev, daily_audio_status: AUDIO_STATUS.GENERATING }));
           return;
         }
@@ -368,22 +394,8 @@ export default function TodayAudio() {
       },
       () => api.getTodaysLesson(onLesson, onLessonError),
     );
-  }, [api, lang]);
-
-  // No lesson for today yet: if the daily lesson is configured, generate it now
-  // (cron miss / first day / timezone). Otherwise the setup CTA is shown.
-  useEffect(() => {
-    if (!prefLoaded || !noLesson || isGenerating || lessonData) return;
-    if (!isConfigured || autoGenAttemptedRef.current) return;
-    const previousFailure = localStorage.getItem(failedKey);
-    if (previousFailure) {
-      setError(previousFailure);
-      return;
-    }
-    autoGenAttemptedRef.current = true;
-    startGeneration(dailyType, dailySuggestion);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [prefLoaded, noLesson, isGenerating, lessonData, isConfigured, dailyType, dailySuggestion]);
+  }, [api, lang]);
 
   // Seed the dialog with the saved preference; if none is stored yet (e.g. a
   // lesson generated before preferences existed), fall back to today's lesson
@@ -393,7 +405,7 @@ export default function TodayAudio() {
       api={api}
       initialType={dailyType || lessonData?.lesson_type || null}
       initialSuggestion={(dailyType ? dailySuggestion : lessonData?.canonical_suggestion) || ""}
-      todaysLessonExists={!!lessonData}
+      alreadySubscribed={isConfigured || subscription?.subscription_status === "off"}
       onSubmit={handleConfigured}
       onDismiss={() => setSettingsOpen(false)}
     />
@@ -535,27 +547,52 @@ export default function TodayAudio() {
           currentPlaybackTime={currentPlaybackTime}
           setCurrentPlaybackTime={setCurrentPlaybackTime}
           onChangeTopic={() => setSettingsOpen(true)}
+          onTurnOff={turnOffDailyLessons}
         />
         {settingsDialog}
       </>
     );
   }
 
-  // No lesson + configured + no error, and auto-gen hasn't fired yet: it's
-  // about to. Once it HAS fired, never sit on this spinner forever — fall
-  // through to the actionable view below (e.g. after a failed/exhausted run).
-  if (isConfigured && !error && !autoGenAttemptedRef.current) {
-    return (
-      <div style={{ padding: "20px" }}>
-        <LoadingAnimation>
-          <p>Preparing today's lesson...</p>
-        </LoadingAnimation>
-      </div>
-    );
+  // No lesson for today. Render the right subscription state in the shared
+  // centered layout: a recoverable error, turned-off, waiting-for-next-day,
+  // held-until-you-finish-the-previous, or first-run setup.
+  const subStatus = subscription?.subscription_status;
+  const nextLabel = formatNextLessonDate(subscription?.next_lesson_date);
+
+  let heading;
+  let body;
+  let primaryLabel;
+  let primaryAction;
+
+  if (error) {
+    heading = "Let's try a different topic";
+    body = error;
+    primaryLabel = "Change daily topic";
+    primaryAction = () => setSettingsOpen(true);
+  } else if (subStatus === "off") {
+    heading = "Daily lessons are off";
+    body = "Turn them back on and a fresh lesson will be waiting on your next day.";
+    primaryLabel = "Turn on daily lessons";
+    primaryAction = turnOnDailyLessons;
+  } else if (subStatus === "active" && subscription?.awaiting_engagement) {
+    heading = "Finish your last lesson";
+    body = "Your next daily lesson waits until you've listened to the previous one — pick it up to keep them coming.";
+    primaryLabel = "See past lessons →";
+    primaryAction = () => history.push("/daily-audio/past-lessons");
+  } else if (subStatus === "active") {
+    heading = nextLabel ? `Next lesson ${nextLabel}` : "Your next lesson is on its way";
+    body = "A fresh lesson will be waiting for you. Feel free to browse in the meantime.";
+    primaryLabel = "Configure daily lessons";
+    primaryAction = () => setSettingsOpen(true);
+  } else {
+    // not subscribed — first-run setup
+    heading = "A new lesson, daily";
+    body = "Choose what you'd like to listen to. We'll make you a fresh lesson on it daily — starting with today's.";
+    primaryLabel = "Set up my daily lessons";
+    primaryAction = () => setSettingsOpen(true);
   }
 
-  // First-run setup, or a generation error that the user can retry by changing
-  // the topic.
   return (
     <>
       <div
@@ -570,15 +607,12 @@ export default function TodayAudio() {
         }}
       >
         <div style={{ fontSize: "2.5rem" }} aria-hidden>🎧</div>
-        <h2 style={{ color: zeeguuOrange, margin: "8px 0" }}>
-          {error ? "Let's try a different topic" : "A new lesson, daily"}
-        </h2>
+        <h2 style={{ color: zeeguuOrange, margin: "8px 0" }}>{heading}</h2>
         <p style={{ color: "var(--text-secondary)", maxWidth: "300px", marginBottom: "24px" }}>
-          {error ||
-            "Choose what you'd like to listen to. We'll make you a fresh lesson on it daily — starting with today's."}
+          {body}
         </p>
-        <BannerButton onClick={() => setSettingsOpen(true)} style={{ padding: "12px 24px", fontSize: "1rem" }}>
-          {isConfigured ? "Change daily topic" : "Set up my daily lessons"}
+        <BannerButton onClick={primaryAction} style={{ padding: "12px 24px", fontSize: "1rem" }}>
+          {primaryLabel}
         </BannerButton>
         <div style={{ marginTop: "24px" }}>
           <SubtleTextButton onClick={() => history.push("/daily-audio/past-lessons")}>

@@ -30,3 +30,20 @@ export function completionChecks(count) {
 export function todayDateLabel() {
   return formatShortDate(new Date());
 }
+
+// Friendly label for the next daily lesson's date (ISO "YYYY-MM-DD", a user-local
+// date from the backend): "today" / "tomorrow" / the weekday ("Monday"). Returns
+// null when there's no scheduled date (e.g. gated on engagement).
+export function formatNextLessonDate(iso) {
+  if (!iso) return null;
+  const [y, m, d] = iso.split("-").map(Number);
+  if (!y || !m || !d) return null;
+  const target = new Date(y, m - 1, d);
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const diffDays = Math.round((target - today) / 86400000);
+  if (diffDays <= 0) return "today";
+  if (diffDays === 1) return "tomorrow";
+  if (diffDays < 7) return target.toLocaleDateString("en-US", { weekday: "long" });
+  return formatShortDate(target);
+}
