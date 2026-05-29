@@ -625,11 +625,6 @@ export default function TodayAudio() {
         <BannerButton onClick={primaryAction} style={{ padding: "12px 24px", fontSize: "1rem" }}>
           {primaryLabel}
         </BannerButton>
-        <div style={{ marginTop: "24px" }}>
-          <SubtleTextButton onClick={() => history.push("/daily-audio/past-lessons")}>
-            See past lessons →
-          </SubtleTextButton>
-        </div>
       </div>
       {settingsDialog}
     </>
