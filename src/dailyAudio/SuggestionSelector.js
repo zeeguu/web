@@ -1,5 +1,6 @@
 import React from "react";
 import ClearableInput from "../components/ClearableInput";
+import { zeeguuOrange } from "../components/colors";
 import {
   SuggestionWrapper,
   PillRow,
@@ -73,21 +74,23 @@ export default function SuggestionSelector({
         ))}
       </PillRow>
 
+      <DescriptionText>{SUGGESTION_TYPES[suggestionType].description}</DescriptionText>
+
       {autoDisabled && suggestionType === "auto" && (
         <small
           style={{
             display: "block",
             color: "var(--text-secondary)",
             fontSize: "0.85em",
-            fontStyle: "italic",
-            marginTop: "0.25rem",
+            lineHeight: 1.45,
+            marginTop: "0.5rem",
+            paddingLeft: "0.75rem",
+            borderLeft: `3px solid ${zeeguuOrange}`,
           }}
         >
           Vocabulary lessons need three study words — add a few to your list first.
         </small>
       )}
-
-      <DescriptionText>{SUGGESTION_TYPES[suggestionType].description}</DescriptionText>
 
       <InputArea $hidden={suggestionType === "auto"}>
         <ClearableInput
