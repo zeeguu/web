@@ -42,7 +42,11 @@ export function formatNextLessonDate(iso) {
   const today = new Date();
   today.setHours(0, 0, 0, 0);
   const diffDays = Math.round((target - today) / 86400000);
-  if (diffDays <= 0) return "today";
+  // Don't promise a past date as "today" — a backend regression returning
+  // yesterday would otherwise be masked as a "next lesson today" that never
+  // arrives. Let the caller render the no-date fallback instead.
+  if (diffDays < 0) return null;
+  if (diffDays === 0) return "today";
   if (diffDays === 1) return "tomorrow";
   if (diffDays < 7) return target.toLocaleDateString("en-US", { weekday: "long" });
   return formatShortDate(target);

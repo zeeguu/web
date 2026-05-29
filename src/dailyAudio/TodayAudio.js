@@ -1,6 +1,7 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import { useHistory } from "react-router-dom";
 import { Capacitor } from "@capacitor/core";
+import { toast } from "react-toastify";
 import { orange500, zeeguuOrange } from "../components/colors";
 import { APIContext } from "../contexts/APIContext";
 import { UserContext } from "../contexts/UserContext";
@@ -58,6 +59,16 @@ export default function TodayAudio() {
   // auto-generates; the only client-initiated generation is first-ever setup via
   // the settings dialog.
   const [subscription, setSubscription] = useState(null);
+
+  // Capture dailyType/dailySuggestion in refs so the polling effect can read
+  // them without needing them in its deps. Putting them in deps re-runs the
+  // effect mid-generation; its cleanup `stopPolling` sets isGenerating=false,
+  // which in turn makes the next effect run return early — silently killing
+  // an in-flight adopted generation when dailyType resolves a moment after.
+  const dailyTypeRef = useRef(dailyType);
+  const dailySuggestionRef = useRef(dailySuggestion);
+  dailyTypeRef.current = dailyType;
+  dailySuggestionRef.current = dailySuggestion;
 
   // Listening session tracking via hook
   const listeningSession = useListeningSession(lessonData?.lesson_id);
@@ -175,8 +186,11 @@ export default function TodayAudio() {
     api.setDailySubscriptionEnabled(
       lang,
       true,
-      () => refreshToday(),
-      () => setError("Couldn't turn daily lessons back on. Please try again."),
+      () => {
+        toast.success("Daily lessons turned on");
+        refreshToday();
+      },
+      () => toast.error("Couldn't turn daily lessons back on. Please try again."),
     );
   }
 
@@ -184,8 +198,11 @@ export default function TodayAudio() {
     api.setDailySubscriptionEnabled(
       lang,
       false,
-      () => refreshToday(),
-      () => setError("Couldn't turn daily lessons off. Please try again."),
+      () => {
+        toast.success("Daily lessons turned off");
+        refreshToday();
+      },
+      () => toast.error("Couldn't turn daily lessons off. Please try again."),
     );
   }
 
@@ -260,9 +277,11 @@ export default function TodayAudio() {
             setGenerationProgress(progress);
             // Label the screen from the saved subscription type/subject when we
             // didn't start this generation ourselves (adopted a cron run). The
-            // cron always generates the subscribed type, so this matches.
-            if (dailyType) {
-              setGeneratingLabel((prev) => prev || { type: dailyType, suggestion: dailySuggestion || "" });
+            // cron always generates the subscribed type, so this matches. Read
+            // via refs so dailyType resolving later doesn't restart this effect.
+            const dt = dailyTypeRef.current;
+            if (dt) {
+              setGeneratingLabel((prev) => prev || { type: dt, suggestion: dailySuggestionRef.current || "" });
             }
 
             if (progress.status === GENERATION_PROGRESS.DONE) {
@@ -331,7 +350,7 @@ export default function TodayAudio() {
       appStateListenerCancelled = true;
       if (appStateListenerHandle) appStateListenerHandle.remove();
     };
-  }, [api, isGenerating, dailyType, dailySuggestion]);
+  }, [api, isGenerating]);
 
   // Rotate placeholder messages only during the early/long phases where the
   // backend message sits static with no sub-step progress.
@@ -417,7 +436,11 @@ export default function TodayAudio() {
       api={api}
       initialType={dailyType || lessonData?.lesson_type || null}
       initialSuggestion={(dailyType ? dailySuggestion : lessonData?.canonical_suggestion) || ""}
-      alreadySubscribed={isConfigured || subscription?.subscription_status === "off"}
+      alreadySubscribed={
+        isConfigured ||
+        subscription?.subscription_status === "active" ||
+        subscription?.subscription_status === "off"
+      }
       onSubmit={handleConfigured}
       onDismiss={() => setSettingsOpen(false)}
     />

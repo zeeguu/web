@@ -10,14 +10,22 @@ function getTimezoneOffsetMinutes() {
 // the UI can't race against the server's lagged user.learned_language. Pass the
 // learned-language code the caller is currently displaying.
 
+/**
+ * Today's daily-audio state for the given learned-language.
+ *
+ * `callback` always receives an OBJECT (never `null` — that contract changed
+ * when subscription state started piggybacking on this endpoint). Use
+ * `data.lesson_id` to distinguish:
+ *   - lesson present → has `lesson_id`, `audio_url`, `title`, …, plus
+ *     `subscription_status` / `next_lesson_date` / `paused`.
+ *   - no lesson      → no `lesson_id`; only the subscription fields. Decide
+ *     what to render from `subscription_status` (active | off | not_subscribed).
+ */
 Zeeguu_API.prototype.getTodaysLesson = function (lang, callback, onError) {
   const langParam = lang ? `&language=${encodeURIComponent(lang)}` : "";
   this._getJSON(
     `get_todays_lesson?timezone_offset=${getTimezoneOffsetMinutes()}${langParam}`,
     (data) => {
-      // No lesson today: still forward the payload (subscription_status,
-      // next_lesson_date, paused) so the UI can render the right empty/off
-      // state. There's no lesson_id, so callers fall through.
       if (data.lesson === null) return callback(data);
       const audioUrl = `${this.baseAPIurl}${data.audio_url}`;
       callback({ ...data, audio_url: audioUrl });
