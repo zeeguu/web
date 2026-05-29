@@ -12,7 +12,7 @@ import TodayEpisodeCard from "./TodayEpisodeCard";
 import DailyLessonSettingsDialog from "./DailyLessonSettingsDialog";
 import { SubtleTextButton } from "./LessonView.sc";
 import { BannerButton } from "./SharedLessonView.sc";
-import { wordsAsTile, shortDate, formatNextLessonDate } from "./audioUtils";
+import { wordsAsTile, shortDate } from "./audioUtils";
 
 // Shown rotating during the backend phases that don't emit sub-step
 // progress (no record yet, "pending", "generating_script",
@@ -558,7 +558,6 @@ export default function TodayAudio() {
   // centered layout: a recoverable error, turned-off, waiting-for-next-day,
   // held-until-you-finish-the-previous, or first-run setup.
   const subStatus = subscription?.subscription_status;
-  const nextLabel = formatNextLessonDate(subscription?.next_lesson_date);
 
   let heading;
   let body;
@@ -577,12 +576,14 @@ export default function TodayAudio() {
     primaryAction = turnOnDailyLessons;
   } else if (subStatus === "active") {
     // A waiting (engagement-paused) lesson arrives as lessonData with paused=true
-    // and is handled by the episode card, so this no-lesson path is only the
-    // "subscribed, nothing for today yet" case.
-    heading = nextLabel ? `Next lesson ${nextLabel}` : "Your next lesson is on its way";
-    body = "A fresh lesson will be waiting for you. Feel free to browse in the meantime.";
-    primaryLabel = "Configure daily lessons";
-    primaryAction = () => setSettingsOpen(true);
+    // and is handled by the episode card, so this no-lesson path means "subscribed
+    // but nothing for today yet" — a cron miss / first day / timezone gap. The
+    // cron won't necessarily run again today, so offer to make it now rather than
+    // promise a date.
+    heading = "No lesson yet today";
+    body = "Make today's lesson now, or it'll be ready on your next day.";
+    primaryLabel = "Generate today's lesson";
+    primaryAction = () => startGeneration(dailyType, dailySuggestion);
   } else {
     // not subscribed — first-run setup
     heading = "A new lesson, daily";
