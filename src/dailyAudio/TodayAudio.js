@@ -249,6 +249,12 @@ export default function TodayAudio() {
     const pollForProgress = () => {
       api.getAudioLessonGenerationProgress(
         (progress) => {
+          // If the in-flight generation is for a different language than the one
+          // we're showing, stop polling — we're watching the wrong thing.
+          if (progress && progress.language_code && progress.language_code !== lang) {
+            stopPolling();
+            return;
+          }
           if (progress) {
             noProgressCount = 0;
             setGenerationProgress(progress);
@@ -380,21 +386,25 @@ export default function TodayAudio() {
 
     api.getAudioLessonGenerationProgress(
       (progress) => {
-        if (progress && ![GENERATION_PROGRESS.DONE, GENERATION_PROGRESS.ERROR].includes(progress.status)) {
+        const inFlight = progress && ![GENERATION_PROGRESS.DONE, GENERATION_PROGRESS.ERROR].includes(progress.status);
+        // Only adopt when the in-flight progress is for the language we're showing
+        // (a Dutch generation shouldn't be surfaced inside the Danish view).
+        const matchesLang = inFlight && (!progress.language_code || progress.language_code === lang);
+        if (matchesLang) {
           setIsLoading(false);
           setIsGenerating(true);
           setGenerationProgress(progress);
-          // We adopted a cron generation; label it from the saved subscription
-          // (the cron always generates the subscribed type).
+          // Label it from the saved subscription (the cron always generates
+          // the subscribed type).
           if (dailyType) {
             setGeneratingLabel({ type: dailyType, suggestion: dailySuggestion || "" });
           }
           setUserDetails((prev) => ({ ...prev, daily_audio_status: AUDIO_STATUS.GENERATING }));
           return;
         }
-        api.getTodaysLesson(lang,onLesson, onLessonError);
+        api.getTodaysLesson(lang, onLesson, onLessonError);
       },
-      () => api.getTodaysLesson(lang,onLesson, onLessonError),
+      () => api.getTodaysLesson(lang, onLesson, onLessonError),
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [api, lang]);
