@@ -51,7 +51,6 @@ export default function SuggestionSelector({
 }) {
   const selectType = (key) => {
     if (suggestionType === key) return;
-    if (key === "auto" && autoDisabled) return;
     // Only switch the type — the parent keeps a per-type subject, so it supplies
     // the right text for whichever pill is selected (and clears nothing).
     setSuggestionType(key);
@@ -67,10 +66,7 @@ export default function SuggestionSelector({
             $selected={suggestionType === key}
             role="radio"
             aria-checked={suggestionType === key}
-            disabled={key === "auto" && autoDisabled}
-            style={key === "auto" && autoDisabled ? { opacity: 0.5, cursor: "not-allowed" } : undefined}
             onClick={() => selectType(key)}
-            title={key === "auto" && autoDisabled ? "Add a few study words first" : undefined}
           >
             {label}
           </SelectablePill>
