@@ -73,7 +73,7 @@ export default function SuggestionSelector({
         ))}
       </PillRow>
 
-      {autoDisabled && (
+      {autoDisabled && suggestionType === "auto" && (
         <small
           style={{
             display: "block",
