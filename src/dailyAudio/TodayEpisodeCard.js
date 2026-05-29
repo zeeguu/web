@@ -43,7 +43,7 @@ function EpisodeHeader({ lessonData }) {
           color: "var(--text-secondary)",
         }}
       >
-        {todayDateLabel()}
+        {lessonData.paused ? "⏸ Paused" : todayDateLabel()}
       </span>
 
       <LessonTitle style={{ marginTop: "8px" }}>
@@ -71,14 +71,19 @@ function EpisodeHeader({ lessonData }) {
 export default function TodayEpisodeCard({ onChangeTopic, onTurnOff, ...playbackProps }) {
   const { lessonData } = playbackProps;
 
-  // Status line reflects the daily-subscription state: once finished, when the
-  // next one arrives; while unfinished, that finishing it lines up the next.
+  // Status line reflects the daily-subscription state. `paused` (from the API's
+  // engagement gate) means this is a waiting lesson the learner hasn't engaged
+  // with — new ones are held until they do. Otherwise show when the next arrives.
   const nextLabel = formatNextLessonDate(lessonData.next_lesson_date);
   let statusLine;
-  if (lessonData.is_completed) {
+  if (lessonData.paused) {
+    statusLine = "Daily lessons are paused — listen to this one and they'll start again.";
+  } else if (lessonData.is_completed) {
     statusLine = nextLabel ? `Done for today — next lesson ${nextLabel}.` : "Done for today.";
   } else {
-    statusLine = "Finish this and your next daily lesson lines up for the next day.";
+    statusLine = nextLabel
+      ? `Finish this to keep them coming — next lesson ${nextLabel}.`
+      : "Finish this and your next daily lesson lines up.";
   }
 
   const footer = (

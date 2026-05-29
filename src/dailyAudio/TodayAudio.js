@@ -575,12 +575,10 @@ export default function TodayAudio() {
     body = "Turn them back on and a fresh lesson will be waiting on your next day.";
     primaryLabel = "Turn on daily lessons";
     primaryAction = turnOnDailyLessons;
-  } else if (subStatus === "active" && subscription?.awaiting_engagement) {
-    heading = "Finish your last lesson";
-    body = "Your next daily lesson waits until you've listened to the previous one — pick it up to keep them coming.";
-    primaryLabel = "See past lessons →";
-    primaryAction = () => history.push("/daily-audio/past-lessons");
   } else if (subStatus === "active") {
+    // A waiting (engagement-paused) lesson arrives as lessonData with paused=true
+    // and is handled by the episode card, so this no-lesson path is only the
+    // "subscribed, nothing for today yet" case.
     heading = nextLabel ? `Next lesson ${nextLabel}` : "Your next lesson is on its way";
     body = "A fresh lesson will be waiting for you. Feel free to browse in the meantime.";
     primaryLabel = "Configure daily lessons";
