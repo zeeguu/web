@@ -172,11 +172,6 @@ export default class InteractiveText {
         // Dispatch event for bookmark creation (used by useAnonymousUpgrade)
         window.dispatchEvent(new CustomEvent("zeeguu-bookmark-created"));
 
-        // Dispatch event when translation has alternatives (for onboarding modal)
-        if (data.alternatives?.length > 0) {
-          window.dispatchEvent(new CustomEvent("zeeguu-translation-with-alternatives"));
-        }
-
         // ADR 022: fire the see-more-translations onboarding only when the
         // user just translated a word that actually has *non-winner*
         // alternatives to look at. `alternatives` always contains the winner
