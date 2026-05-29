@@ -6,13 +6,18 @@ function getTimezoneOffsetMinutes() {
   return new Date().getTimezoneOffset() * -1;
 }
 
-Zeeguu_API.prototype.getTodaysLesson = function (callback, onError) {
+// All daily-audio endpoints take `lang` explicitly so a fast language switch in
+// the UI can't race against the server's lagged user.learned_language. Pass the
+// learned-language code the caller is currently displaying.
+
+Zeeguu_API.prototype.getTodaysLesson = function (lang, callback, onError) {
+  const langParam = lang ? `&language=${encodeURIComponent(lang)}` : "";
   this._getJSON(
-    `get_todays_lesson?timezone_offset=${getTimezoneOffsetMinutes()}`,
+    `get_todays_lesson?timezone_offset=${getTimezoneOffsetMinutes()}${langParam}`,
     (data) => {
       // No lesson today: still forward the payload (subscription_status,
-      // awaiting_engagement, next_lesson_date) so the UI can render the right
-      // empty/off/awaiting state. There's no lesson_id, so callers fall through.
+      // next_lesson_date, paused) so the UI can render the right empty/off
+      // state. There's no lesson_id, so callers fall through.
       if (data.lesson === null) return callback(data);
       const audioUrl = `${this.baseAPIurl}${data.audio_url}`;
       callback({ ...data, audio_url: audioUrl });
@@ -21,11 +26,12 @@ Zeeguu_API.prototype.getTodaysLesson = function (callback, onError) {
   );
 };
 
-Zeeguu_API.prototype.setDailySubscriptionEnabled = function (enabled, callback, onError) {
+Zeeguu_API.prototype.setDailySubscriptionEnabled = function (lang, enabled, callback, onError) {
   this.apiLog("POST set_daily_subscription_enabled");
 
   const formData = new FormData();
   formData.append("enabled", enabled ? "true" : "false");
+  if (lang) formData.append("language", lang);
 
   fetch(this._appendSessionToUrl("set_daily_subscription_enabled"), {
     method: "POST",
@@ -49,16 +55,18 @@ Zeeguu_API.prototype.setDailySubscriptionEnabled = function (enabled, callback, 
     });
 };
 
-Zeeguu_API.prototype.getDailySubscription = function (callback, onError) {
-  this._getJSON("daily_subscription", callback, { onError });
+Zeeguu_API.prototype.getDailySubscription = function (lang, callback, onError) {
+  const url = lang ? `daily_subscription?language=${encodeURIComponent(lang)}` : "daily_subscription";
+  this._getJSON(url, callback, { onError });
 };
 
-Zeeguu_API.prototype.configureDailySubscription = function (lessonType, suggestion, callback, onError) {
+Zeeguu_API.prototype.configureDailySubscription = function (lang, lessonType, suggestion, callback, onError) {
   this.apiLog("POST configure_daily_subscription");
 
   const formData = new FormData();
   formData.append("lesson_type", lessonType);
   if (suggestion) formData.append("suggestion", suggestion);
+  if (lang) formData.append("language", lang);
 
   fetch(this._appendSessionToUrl("configure_daily_subscription"), {
     method: "POST",

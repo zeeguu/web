@@ -18,6 +18,7 @@ export default function useDailyLessonPreference(api, lang) {
     let cancelled = false;
     setPrefLoaded(false);
     api.getDailySubscription(
+      lang,
       (sub) => {
         if (cancelled) return;
         setDailyType(sub?.lesson_type || null);
@@ -40,6 +41,7 @@ export default function useDailyLessonPreference(api, lang) {
       const verbatim = lessonType === "three_words_lesson" ? "" : suggestion || "";
       setDailySuggestion(verbatim);
       api.configureDailySubscription(
+        lang,
         lessonType,
         verbatim,
         null,
@@ -47,7 +49,7 @@ export default function useDailyLessonPreference(api, lang) {
           Sentry.captureException(err, { tags: { feature: "daily_audio_preference" } }),
       );
     },
-    [api],
+    [api, lang],
   );
 
   return {

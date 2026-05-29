@@ -156,7 +156,7 @@ export default function TodayAudio() {
 
   // Refresh today's lesson + subscription state from the backend.
   function refreshToday() {
-    api.getTodaysLesson(
+    api.getTodaysLesson(lang,
       (data) => {
         setSubscription(data || null);
         if (data && data.lesson_id) {
@@ -173,6 +173,7 @@ export default function TodayAudio() {
 
   function turnOnDailyLessons() {
     api.setDailySubscriptionEnabled(
+      lang,
       true,
       () => refreshToday(),
       () => setError("Couldn't turn daily lessons back on. Please try again."),
@@ -181,6 +182,7 @@ export default function TodayAudio() {
 
   function turnOffDailyLessons() {
     api.setDailySubscriptionEnabled(
+      lang,
       false,
       () => refreshToday(),
       () => setError("Couldn't turn daily lessons off. Please try again."),
@@ -241,7 +243,7 @@ export default function TodayAudio() {
     };
 
     const checkForLesson = () => {
-      api.getTodaysLesson(handleLessonReady, () => {});
+      api.getTodaysLesson(lang,handleLessonReady, () => {});
     };
 
     const pollForProgress = () => {
@@ -269,7 +271,7 @@ export default function TodayAudio() {
               return;
             }
             // Exhausted retries — check if a lesson appeared, otherwise stop
-            api.getTodaysLesson(
+            api.getTodaysLesson(lang,
               (data) => {
                 if (data && data.lesson_id) {
                   handleLessonReady(data);
@@ -390,9 +392,9 @@ export default function TodayAudio() {
           setUserDetails((prev) => ({ ...prev, daily_audio_status: AUDIO_STATUS.GENERATING }));
           return;
         }
-        api.getTodaysLesson(onLesson, onLessonError);
+        api.getTodaysLesson(lang,onLesson, onLessonError);
       },
-      () => api.getTodaysLesson(onLesson, onLessonError),
+      () => api.getTodaysLesson(lang,onLesson, onLessonError),
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [api, lang]);

@@ -171,6 +171,7 @@ function App() {
         },
         () => {
           api.getTodaysLesson(
+            userDetails?.learned_language,
             (data) => {
               if (data?.lesson_id) {
                 setUserDetails((prev) => ({
