@@ -49,6 +49,39 @@ Zeeguu_API.prototype.setDailySubscriptionEnabled = function (enabled, callback, 
     });
 };
 
+Zeeguu_API.prototype.getDailySubscription = function (callback, onError) {
+  this._getJSON("daily_subscription", callback, { onError });
+};
+
+Zeeguu_API.prototype.configureDailySubscription = function (lessonType, suggestion, callback, onError) {
+  this.apiLog("POST configure_daily_subscription");
+
+  const formData = new FormData();
+  formData.append("lesson_type", lessonType);
+  if (suggestion) formData.append("suggestion", suggestion);
+
+  fetch(this._appendSessionToUrl("configure_daily_subscription"), {
+    method: "POST",
+    body: formData,
+  })
+    .then((response) => {
+      if (!response.ok) {
+        return response.json().then((data) => {
+          throw new Error(data.error || "Network response was not ok");
+        });
+      }
+      return response.json();
+    })
+    .then((data) => {
+      if (callback) callback(data);
+    })
+    .catch((error) => {
+      console.error("Error configuring daily subscription:", error);
+      Sentry.captureException(error, { tags: { endpoint: "configure_daily_subscription" } });
+      if (onError) onError(error);
+    });
+};
+
 Zeeguu_API.prototype.generateDailyLesson = function (callback, onError, suggestion, suggestionType) {
   this.apiLog("POST generate_daily_lesson");
 
