@@ -1,5 +1,6 @@
 import { Zeeguu_API } from "./classDef";
 import qs from "qs";
+import LocalStorage from "../assorted/LocalStorage";
 
 // articles
 // articles
@@ -25,6 +26,13 @@ Zeeguu_API.prototype.getUserArticles = function (callback, options = {}) {
   const params = [];
   if (options.excludeSaved) {
     params.push("exclude_saved=true");
+  }
+  // Ask for the language we're showing (matches the cache key), so a language
+  // switch returns the new language immediately instead of whatever the server
+  // still has persisted while the user_settings save is in flight.
+  const learnedLanguage = LocalStorage.getLearnedLanguage();
+  if (learnedLanguage) {
+    params.push("language=" + learnedLanguage);
   }
   const queryString = params.length > 0 ? "?" + params.join("&") : "";
 
@@ -66,6 +74,11 @@ Zeeguu_API.prototype.getMoreUserArticles = function (count, page, callback, opti
   const params = [];
   if (options.excludeSaved) {
     params.push("exclude_saved=true");
+  }
+  // Keep pagination on the same language as the first page (see getUserArticles).
+  const learnedLanguage = LocalStorage.getLearnedLanguage();
+  if (learnedLanguage) {
+    params.push("language=" + learnedLanguage);
   }
   const queryString = params.length > 0 ? "?" + params.join("&") : "";
 
@@ -394,12 +407,21 @@ Zeeguu_API.prototype.detectArticleLanguage = function (
 };
 
 Zeeguu_API.prototype.translateAndAdaptArticle = function (
-  url,
+  urlOrParams,
   targetLanguage,
   callback,
   onError,
 ) {
-  let params = { url: url };
+  // Accepts either a url string (external share flow) or { url, articleId }.
+  // Prefer articleId when we already have the article — the backend then
+  // translates the stored content instead of re-downloading the URL.
+  let params = {};
+  if (typeof urlOrParams === "string") {
+    params.url = urlOrParams;
+  } else {
+    if (urlOrParams.url) params.url = urlOrParams.url;
+    if (urlOrParams.articleId) params.article_id = urlOrParams.articleId;
+  }
   if (targetLanguage) {
     params.target_language = targetLanguage;
   }

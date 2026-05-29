@@ -63,12 +63,22 @@ export class Word extends Item {
     }
   }
 
-  updateTranslation(translation, service_name, bookmark_id, competing_translations = null, disagreement = false) {
+  updateTranslation(translation, service_name, bookmark_id, competing_translations = null, disagreement = false, alternatives = null) {
     this.translation = translation;
     this.service_name = service_name;
     this.bookmark_id = bookmark_id;
     this.competing_translations = competing_translations;
     this.disagreement = disagreement;
+    // ADR 022: full deduped, vote-ordered provider list from the backend,
+    // including the winner at index 0. AlterMenu renders directly from this
+    // — no second round of provider calls needed for the stable menu rows.
+    //
+    // Always overwrite (don't gate on truthy) so a re-translation with no
+    // alternatives doesn't leave a stale list next to fresh competing_/
+    // disagreement values. The lazy-fetch path on the own-past-translation
+    // case populates `this.alternatives` directly via fetchAlternatives,
+    // not through updateTranslation, so clearing here is safe.
+    this.alternatives = alternatives;
   }
 
   splitIntoComponents() {

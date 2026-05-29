@@ -32,7 +32,6 @@ export default function TranslatableWord({
   const [prevWord, setPreviousWord] = useState("");
   const [isTranslationVisible, setIsTranslationVisible] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [hasFetchedAlternatives, setHasFetchedAlternatives] = useState(false);
 
   useEffect(() => {
     if (word.isTranslationVisible) {
@@ -110,18 +109,28 @@ export default function TranslatableWord({
   }
 
   function openAlterMenu(word) {
+    // ADR 022: the menu renders directly from word.alternatives (populated
+    // eagerly by /translate_word). Opening the menu is normally a pure
+    // render — no network call, no row-shifting under the user's finger.
     setShowingAlterMenu(true);
-    // Skip the SSE alternatives call when the bookmark response already
-    // carries competing translations (the disagreement auto-open path) —
-    // the menu has enough to show. If the user dismisses and reopens via
-    // the dropdown arrow, the call fires then (hasFetchedAlternatives
-    // is still false, no competing on this re-open).
-    if (!hasFetchedAlternatives && !word.competing_translations?.length)
-      interactiveText.alternativeTranslations(
+
+    // Exception: if /translate_word came back without alternatives — which
+    // happens on the own-past-translation early-return path where the
+    // backend hands the user their prior answer instantly and skips the
+    // voter — lazy-fetch them now that the user has shown interest by
+    // opening the menu. Single request, single update, no streaming.
+    //
+    // No need to gate on word.mweExpression: the backend voter accepts
+    // multi-word input too (zeeguu/api#628). word._lazyAlternativesFetched
+    // guards against re-firing if the user closes and reopens the menu.
+    if (!word.alternatives?.length && !word._lazyAlternativesFetched) {
+      word._lazyAlternativesFetched = true;
+      interactiveText.fetchAlternatives(
         word,
         () => wordUpdated(word),
-        () => setHasFetchedAlternatives(true),
+        () => wordUpdated(word),
       );
+    }
   }
 
   function toggleAlterMenu(e, word) {
@@ -428,7 +437,16 @@ export default function TranslatableWord({
               hideAlterMenu={hideAlterMenu}
               deleteTranslation={deleteTranslation}
               ungroupMwe={ungroupMwe}
-              alternativesLoaded={hasFetchedAlternatives}
+              askLlmTranslation={(w, onDone, onErr) =>
+                interactiveText.askLlmTranslation(
+                  w,
+                  (info) => {
+                    wordUpdated(w);
+                    onDone && onDone(info);
+                  },
+                  onErr,
+                )
+              }
             />
           )}
         </z-orig>

@@ -1,8 +1,13 @@
 import { toast } from "react-toastify";
 import ShareIcon from "@mui/icons-material/Share";
+import IosShareIcon from "@mui/icons-material/IosShare";
+import { Capacitor } from "@capacitor/core";
 
 export default function ShareArticle({ articleID }) {
   const shareUrl = `https://zeeguu.org/read/article?id=${articleID}`;
+  // iOS users expect the square-with-up-arrow glyph; everywhere else the
+  // Material/Android "share" glyph is the familiar one.
+  const ShareGlyph = Capacitor.getPlatform() === "ios" ? IosShareIcon : ShareIcon;
 
   const handleShare = async () => {
     if (navigator.share) {
@@ -40,7 +45,7 @@ export default function ShareArticle({ articleID }) {
       aria-label="Share article"
       style={{ padding: "0.5rem", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}
     >
-      <ShareIcon style={{ fontSize: "1.4em", color: "#999" }} />
+      <ShareGlyph style={{ fontSize: "1.4em", color: "#999" }} />
     </div>
   );
 }

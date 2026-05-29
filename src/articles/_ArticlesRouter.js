@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useContext, useEffect } from "react";
 import ArticleListBrowser from "./ArticleListBrowser";
 import BookmarkedArticles from "./BookmarkedArticles";
 import HiddenArticles from "../myArticles/HiddenArticles";
@@ -19,6 +19,10 @@ import * as s from "../components/ColumnWidth.sc";
 import LocalStorage from "../assorted/LocalStorage";
 import { BrowsingSessionContext } from "../contexts/BrowsingSessionContext";
 import useBrowsingSession from "../hooks/useBrowsingSession";
+import { APIContext } from "../contexts/APIContext";
+import { UserContext } from "../contexts/UserContext";
+import useTranslationOnboarding from "../hooks/useTranslationOnboarding";
+import TranslationOnboardingPopup from "../pages/onboarding/notifications/TranslationOnboardingPopup";
 
 const READ_TAB_PATHS = [
   "/articles",
@@ -28,10 +32,13 @@ const READ_TAB_PATHS = [
 ];
 
 export default function ArticlesRouter({ hasExtension, isChrome }) {
+  const api = useContext(APIContext);
+  const { userDetails } = useContext(UserContext);
   const { getBrowsingSessionId } = useBrowsingSession();
   const location = useLocation();
   const hideRecommendations = LocalStorage.hasFeature("hide_recommendations");
   const isStudent = LocalStorage.isStudent();
+  const translationModal = useTranslationOnboarding(api, userDetails);
 
   useEffect(() => {
     if (READ_TAB_PATHS.includes(location.pathname)) {
@@ -98,6 +105,7 @@ export default function ArticlesRouter({ hasExtension, isChrome }) {
           <PrivateRoute path="/search" component={Search} />
         </div>
       </s.NarrowColumn>
+      <TranslationOnboardingPopup open={translationModal.open} handleCancel={translationModal.close} />
     </BrowsingSessionContext.Provider>
   );
 }

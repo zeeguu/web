@@ -10,6 +10,7 @@ import DeleteAccount from "./DeleteAccount";
 import TopbarIconPreferences from "./TopbarIconPreferences";
 import ExerciseSchedulingPreferences from "./ExerciseSchedulingPreferences";
 import DisplayPreferences from "./DisplayPreferences";
+import Developer from "./Developer";
 
 export default function SettingsRouter({ setUser }) {
   return (
@@ -33,6 +34,8 @@ export default function SettingsRouter({ setUser }) {
       <PrivateRoute path="/account_settings/interests" component={FeedPreferences} />
 
       <PrivateRoute path="/account_settings/delete_account" component={DeleteAccount} />
+
+      <PrivateRoute path="/account_settings/developer" component={Developer} />
     </Switch>
   );
 }

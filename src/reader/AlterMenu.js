@@ -1,6 +1,5 @@
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { AlterMenuSC } from "./AlterMenu.sc";
-import LoadingAnimation from "../components/LoadingAnimation";
 
 const HEADER_BAND_STYLE = {
   whiteSpace: "nowrap",
@@ -23,13 +22,27 @@ function shortenSource(alt) {
   return PROVIDER_NAME_OVERRIDES[provider] || provider || alt.source;
 }
 
-// Merge competing_translations (known immediately from the bookmark
-// response, when providers disagree) with word.alternatives (streamed
-// in lazily by AlterMenu open). Dedupe by normalised translation text
-// and drop anything equal to the current primary translation.
+// ADR 022: `word.alternatives` carries the full vote-ordered provider list
+// (winner at index 0) directly from /translate_word, plus any LLM-on-demand
+// result appended via askLlmTranslation. The menu shows the non-winner
+// entries — dedupe by normalised translation text and drop anything equal
+// to the current primary translation.
+//
+// `allAgreedWithPrimary` is true when the providers ran (alternatives is
+// non-empty in some source) but everything they returned matched the
+// primary. The header turns into an affirmation instead of "no alternatives
+// found", so the user can tell the system did look — it just confirmed
+// the translation they already had. (Especially common for past-translation
+// words: the user previously accepted the providers' consensus, so when we
+// ask the providers again they say the same thing.)
+//
+// `word.competing_translations` is the legacy field kept during ADR 022's
+// deprecation window; consulted for clients (extension build) that still
+// only receive it. Safe to drop once the extension reads `alternatives`.
 function buildAlternatives(word) {
   const seen = new Set();
   const list = [];
+  let hadAnyEntry = false;
   const normaliseKey = (t) => (t || "").toLowerCase().trim();
   const primaryKey = normaliseKey(word.translation);
   if (primaryKey) seen.add(primaryKey);
@@ -39,12 +52,14 @@ function buildAlternatives(word) {
     if (!src) continue;
     for (const entry of src) {
       const key = normaliseKey(entry?.translation);
-      if (!key || seen.has(key)) continue;
+      if (!key) continue;
+      hadAnyEntry = true;
+      if (seen.has(key)) continue;
       seen.add(key);
       list.push(entry);
     }
   }
-  return list;
+  return { list, allAgreedWithPrimary: hadAnyEntry && list.length === 0 };
 }
 
 export default function AlterMenu({
@@ -53,12 +68,27 @@ export default function AlterMenu({
   selectAlternative,
   deleteTranslation,
   ungroupMwe,
-  alternativesLoaded,
+  askLlmTranslation,
 }) {
   const refToAlterMenu = useRef(null);
   const inputRef = useRef(null);
   const [inputValue, setInputValue] = useState("");
   const [showOwnInput, setShowOwnInput] = useState(false);
+  // ADR 022: Ask-LLM is opt-in. While the LLM call is in flight the row
+  // shows "Asking LLM…" and is disabled. On success we hide the button
+  // (the new alternative is now in the list). On failure we leave the
+  // button visible with an inline error so the user can retry — silently
+  // removing it would look like "the option just vanished and nothing
+  // happened," which is exactly what we got bug-reported on.
+  //
+  // Initial state is seeded from word._llmAsked so closing and reopening
+  // the menu doesn't show the button again (and let the user pay for
+  // another LLM round trip for an answer we already have). Component
+  // state alone would reset on remount.
+  const [isAskingLlm, setIsAskingLlm] = useState(false);
+  const [llmSucceeded, setLlmSucceeded] = useState(word._llmAsked === "succeeded");
+  const [llmAgreedWithPrimary, setLlmAgreedWithPrimary] = useState(word._llmAsked === "agreed");
+  const [llmError, setLlmError] = useState(false);
 
   useEffect(() => {
     if (showOwnInput && inputRef.current) inputRef.current.focus();
@@ -115,9 +145,8 @@ export default function AlterMenu({
     }
   }
 
-  const filteredAlternatives = buildAlternatives(word);
+  const { list: filteredAlternatives, allAgreedWithPrimary } = buildAlternatives(word);
   const hasAlternatives = filteredAlternatives.length > 0;
-  const showEmptyHeader = alternativesLoaded && !hasAlternatives;
 
   // Reposition only when something that can change menu dimensions changes;
   // otherwise re-runs on every keystroke in the input force a reflow.
@@ -138,7 +167,7 @@ export default function AlterMenu({
     }
     if (left < margin) left = margin;
     el.style.left = `${left}px`;
-  }, [alternativesLoaded, hasAlternatives, showOwnInput, filteredAlternatives.length]);
+  }, [hasAlternatives, showOwnInput, filteredAlternatives.length]);
 
   let header = null;
   if (word.disagreement) {
@@ -152,7 +181,12 @@ export default function AlterMenu({
     header = (
       <div style={{ ...HEADER_BAND_STYLE, color: "var(--altermenu-header-text)" }}>Alternatives</div>
     );
-  } else if (showEmptyHeader) {
+  } else if (allAgreedWithPrimary) {
+    const label = llmAgreedWithPrimary ? "All providers & LLM agree" : "All providers agree";
+    header = (
+      <div style={{ ...HEADER_BAND_STYLE, color: "var(--altermenu-header-text)" }}>{label}</div>
+    );
+  } else {
     header = (
       <div style={{ ...HEADER_BAND_STYLE, color: "var(--altermenu-header-text)" }}>No alternatives found</div>
     );
@@ -171,12 +205,6 @@ export default function AlterMenu({
           <div className="altermenuSourceLabel">{shortenSource(each)}</div>
         </div>
       ))}
-      {/* Spinner only when we have nothing to show yet — competing_translations
-          from the bookmark response already populate the list immediately, so
-          showing a spinner under them looks like a stray "extra option". */}
-      {!alternativesLoaded && !hasAlternatives && (
-        <LoadingAnimation specificStyle={{ transform: "scale(0.4)", height: "2rem", margin: "0.5rem 0 -0.5rem 0" }} delay={0}></LoadingAnimation>
-      )}
       {showOwnInput && (
         <input
           ref={inputRef}
@@ -191,6 +219,37 @@ export default function AlterMenu({
         />
       )}
       <div className="actionsSection">
+        {askLlmTranslation && !llmSucceeded && !llmAgreedWithPrimary && (
+          <div
+            className="neutralLink"
+            aria-disabled={isAskingLlm}
+            style={isAskingLlm ? { opacity: 0.7, pointerEvents: "none" } : undefined}
+            onClick={() => {
+              if (isAskingLlm) return;
+              setLlmError(false);
+              setIsAskingLlm(true);
+              askLlmTranslation(
+                word,
+                (info) => {
+                  setIsAskingLlm(false);
+                  if (info?.agreedWithPrimary) {
+                    word._llmAsked = "agreed";
+                    setLlmAgreedWithPrimary(true);
+                  } else {
+                    word._llmAsked = "succeeded";
+                    setLlmSucceeded(true);
+                  }
+                },
+                () => {
+                  setIsAskingLlm(false);
+                  setLlmError(true);
+                },
+              );
+            }}
+          >
+            {isAskingLlm ? "Asking LLM…" : llmError ? "Ask LLM — try again" : "Ask LLM"}
+          </div>
+        )}
         {!showOwnInput && (
           <div className="neutralLink" onClick={() => setShowOwnInput(true)}>
             Add own translation

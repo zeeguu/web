@@ -10,6 +10,7 @@ const Row = styled.div`
   padding: 0.6em 0.8em;
   gap: 0.8em;
   outline: none;
+  margin-bottom: 1.5em;
   &:active { background: var(--row-active-bg, rgba(255, 255, 255, 0.04)); }
 `;
 
@@ -26,6 +27,20 @@ const Thumbnail = styled.img`
   height: 100%;
   object-fit: cover;
   display: block;
+`;
+
+// Stand-in for articles with no image: fills the same 6.5em square as a
+// real thumbnail so titles stay aligned in one column. A vague,
+// topic-matched glyph (see topicIcon.js) on a muted surface — deliberately
+// understated so it reads as "no photo" rather than competing with the title.
+const Placeholder = styled.div`
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-tertiary);
+  color: var(--text-faint);
 `;
 
 const Content = styled.div`
@@ -68,14 +83,15 @@ const CompletionDone = styled.span`
 
 const RemoveButton = styled.button`
   position: absolute;
-  top: 0.4em;
   right: 0.4em;
   width: 1.6em;
   height: 1.6em;
+  height: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
   background: none;
+  
   border: none;
   color: var(--text-muted);
   font-size: 1.3em;
@@ -89,6 +105,7 @@ export {
   Row,
   ThumbnailWrap,
   Thumbnail,
+  Placeholder,
   Content,
   Title,
   CompletionInProgress,

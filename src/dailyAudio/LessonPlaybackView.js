@@ -8,12 +8,11 @@ import { AUDIO_STATUS } from "./AudioLessonConstants";
 import { LessonWrapper, LessonTitle, LessonMetadata, CompletionCheck, SubtleTextButton, LessonActions } from "./LessonView.sc";
 import { wordsAsTile } from "./audioUtils";
 import { languageNames } from "../utils/languageDetection";
-import { shareLessonLink } from "./shareLessonLink";
+import ShareLessonButton from "./ShareLessonButton";
 
 export default function LessonPlaybackView({
   lessonData,
   setLessonData,
-  words,
   error,
   api,
   userDetails,
@@ -21,11 +20,16 @@ export default function LessonPlaybackView({
   listeningSession,
   currentPlaybackTime,
   setCurrentPlaybackTime,
+  header,
+  footer,
 }) {
   const [openFeedback, setOpenFeedback] = useState(false);
+  const words = lessonData.words || [];
 
-  return (
-    <LessonWrapper>
+  // Callers (e.g. the daily episode card) can replace the default title block
+  // with their own header; otherwise we show the plain title + topic line.
+  const defaultHeader = (
+    <>
       <LessonTitle>
         {lessonData.title}
         {lessonData.is_completed && <> <CompletionCheck>✓</CompletionCheck></>}
@@ -33,6 +37,12 @@ export default function LessonPlaybackView({
       {lessonData.canonical_suggestion && (
         <LessonMetadata>{lessonData.lesson_type === "situation" ? "Situation" : "Topic"}: <b>{lessonData.canonical_suggestion}</b></LessonMetadata>
       )}
+    </>
+  );
+
+  return (
+    <LessonWrapper>
+      {header || defaultHeader}
 
       {error && <div style={{ color: "red", marginBottom: "20px" }}>{error}</div>}
 
@@ -69,6 +79,9 @@ export default function LessonPlaybackView({
                 setLessonData((prev) => ({
                   ...prev,
                   is_completed: true,
+                  // One ✓ per listen — bump locally so replays show immediately,
+                  // mirroring the backend's per-completion increment.
+                  listened_count: (prev.listened_count || 0) + 1,
                   last_completed_at: new Date().toISOString(),
                 }));
                 setUserDetails((prev) => ({ ...prev, daily_audio_status: AUDIO_STATUS.COMPLETED }));
@@ -82,7 +95,9 @@ export default function LessonPlaybackView({
             maxWidth: "600px",
             margin: "0 auto 20px auto",
           }}
-        />
+        >
+          <ShareLessonButton api={api} lessonId={lessonData.lesson_id} title={lessonData.title} shareUuid={lessonData.share_uuid} />
+        </CustomAudioPlayer>
 
         {lessonData.is_completed && (
           <div
@@ -118,14 +133,9 @@ export default function LessonPlaybackView({
           </div>
         )}
 
+        {footer}
+
         <LessonActions>
-          {lessonData.lesson_id && (
-            <SubtleTextButton
-              onClick={() => shareLessonLink(lessonData.lesson_id, lessonData.title)}
-            >
-              Share
-            </SubtleTextButton>
-          )}
           <SubtleTextButton onClick={() => setOpenFeedback(true)}>
             Feedback
           </SubtleTextButton>

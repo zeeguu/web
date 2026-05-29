@@ -13,9 +13,9 @@ const MAX_WORD_EXPANSION_COUNT = 28;
 
 function isExerciseSource(source) {
   if (!source) return false;
-  
-  const exerciseTypeValues = Object.values(EXERCISE_TYPES).filter(value => typeof value === 'string');
-  return exerciseTypeValues.some(exerciseType => source.includes(exerciseType.split('_')[0]));
+
+  const exerciseTypeValues = Object.values(EXERCISE_TYPES).filter((value) => typeof value === "string");
+  return exerciseTypeValues.some((exerciseType) => source.includes(exerciseType.split("_")[0]));
 }
 
 function tokenShouldSkipCount(word) {
@@ -66,7 +66,6 @@ export default class InteractiveText {
     return this.paragraphsAsLinkedWordLists;
   }
 
-
   translate(word, fuseWithNeighbours, onSuccess, onFusionComplete = null) {
     let context, cParagraph_i, cSent_i, cToken_i, leftEllipsis, rightEllipsis;
 
@@ -107,11 +106,12 @@ export default class InteractiveText {
       mweSentence = this._getSentenceText(word);
     }
 
-    MWE_DEBUG && console.log("MWE translating:", {
-      text: textToTranslate,
-      isMwe: isMweExpression,
-      separated: isSeparatedMwe,
-    });
+    MWE_DEBUG &&
+      console.log("MWE translating:", {
+        text: textToTranslate,
+        isMwe: isMweExpression,
+        separated: isSeparatedMwe,
+      });
 
     const browsingSessionId = this.getBrowsingSessionId?.();
     const readingSessionId = this.getReadingSessionId?.();
@@ -128,11 +128,7 @@ export default class InteractiveText {
         leftEllipsis,
         rightEllipsis,
         this.contextIdentifier,
-        this.source === "article_preview"
-          ? "article_preview"
-          : isExerciseSource(this.source)
-          ? "exercise"
-          : "reading",
+        this.source === "article_preview" ? "article_preview" : isExerciseSource(this.source) ? "exercise" : "reading",
         browsingSessionId,
         readingSessionId,
         isMweExpression,
@@ -150,12 +146,23 @@ export default class InteractiveText {
         const competing = forceDisagreement
           ? [{ translation: "(forced test alternative)", source: "DeepL - with context" }]
           : (data.competing_translations || null);
+        // ADR 022: backend now returns the full deduped, vote-ordered
+        // provider list as `alternatives` (winner at index 0). The dev hook
+        // synthesises a 2-entry list so the menu still has something to
+        // show when `force_disagreement` is set.
+        const alternatives = forceDisagreement
+          ? [
+              { translation: data.translation, source: data.source || "winner", votes: 1 },
+              { translation: "(forced test alternative)", source: "DeepL - with context", votes: 1 },
+            ]
+          : (data.alternatives || null);
         word.updateTranslation(
           data.translation,
           data.service_name,
           data.bookmark_id,
           competing,
           forceDisagreement || data.disagreement === true,
+          alternatives,
         );
         // Mark word's translation as visible so the component renders it
         // This is especially important for MWEs where clicking any word
@@ -163,7 +170,15 @@ export default class InteractiveText {
         word.isTranslationVisible = true;
 
         // Dispatch event for bookmark creation (used by useAnonymousUpgrade)
-        window.dispatchEvent(new CustomEvent('zeeguu-bookmark-created'));
+        window.dispatchEvent(new CustomEvent("zeeguu-bookmark-created"));
+
+        // ADR 022: fire the see-more-translations onboarding only when the
+        // user just translated a word that actually has *non-winner*
+        // alternatives to look at. `alternatives` always contains the winner
+        // at index 0, so length > 1 means "there is more for them to see".
+        if ((alternatives?.length ?? 0) > 1) {
+          window.dispatchEvent(new CustomEvent('zeeguu-translation-with-alternatives'));
+        }
 
         // Tee to the wait-drill cache so the user's own taps feed the
         // loading-screen vocab drill (see WaitDrill.js).
@@ -196,35 +211,73 @@ export default class InteractiveText {
     onSuccess();
   }
 
-  alternativeTranslations(word, onUpdate, onComplete) {
+  // ADR 022: explicit Ask-LLM action, triggered from AlterMenu. Calls
+  // /ask_llm_translation synchronously, appends the result to
+  // word.alternatives (deduped by translation text), and fires onComplete.
+  // The LLM is the most expensive translator in the bag — gating it behind
+  // a user click means we only pay when a learner actually wants it.
+  askLlmTranslation(word, onComplete, onError) {
     let context;
     [context] = this.getContextAndCoordinates(word);
-    // Use mweExpression for MWEs (e.g., "har været" instead of just "har")
     const textToTranslate = word.mweExpression || word.word;
-    const isSeparatedMwe = !!word.token?.mwe_is_separated;
-    // Get full sentence for separated MWEs
-    const fullSentenceContext = isSeparatedMwe ? this._getSentenceText(word) : null;
 
-    // Initialize alternatives array for streaming
-    word.alternatives = [];
+    this.api
+      .askLlmTranslation(this.language, localStorage.native_language, textToTranslate, context)
+      .then((result) => {
+        if (!result?.translation) {
+          onError && onError();
+          return;
+        }
+        const newKey = result.translation.trim().toLowerCase();
+        const primaryKey = (word.translation || "").trim().toLowerCase();
+        const agreedWithPrimary = !!primaryKey && newKey === primaryKey;
+        const existing = (word.alternatives || []).map((a) => (a.translation || "").trim().toLowerCase());
+        // Skip the append when the LLM just confirmed the primary — the
+        // row would be filtered out by AlterMenu's buildAlternatives anyway,
+        // so pushing it would leave word.alternatives growing on repeated
+        // Ask-LLM clicks for no visible effect. The agreedWithPrimary flag
+        // below tells the menu to surface this case in the header.
+        if (!agreedWithPrimary && !existing.includes(newKey)) {
+          word.alternatives = [
+            ...(word.alternatives || []),
+            { translation: result.translation, source: result.source || "LLM", votes: 1 },
+          ];
+        }
+        // Tell the caller whether the LLM produced a genuinely new answer
+        // or just confirmed what the user already had — the AlterMenu needs
+        // that distinction to avoid the "button disappeared, nothing
+        // happened" failure mode where an LLM agreement gets filtered
+        // out of the alternatives list and the user is left blind.
+        onComplete && onComplete({ agreedWithPrimary });
+      })
+      .catch((e) => {
+        console.error("Ask-LLM translation failed:", e);
+        onError && onError(e);
+      });
+  }
 
-    this.api.getTranslationsStreaming(
-      this.language,
-      localStorage.native_language,
-      textToTranslate,
-      context,
-      // Called for each translation as it arrives
-      (translation) => {
-        word.alternatives.push(translation);
-        onUpdate && onUpdate();
-      },
-      // Called when all translations are done
-      () => {
+  // ADR 022 follow-up: lazy-fetch alternatives for a word whose
+  // /translate_word response didn't include them (own-past-translation
+  // path). Triggered from AlterMenu open; pays the voter cost only on
+  // explicit user interest. Single request, all alternatives back in one
+  // response — no streaming, no row shuffling.
+  fetchAlternatives(word, onComplete, onError) {
+    let context;
+    [context] = this.getContextAndCoordinates(word);
+    const textToTranslate = word.mweExpression || word.word;
+
+    this.api
+      .getTranslationAlternatives(this.language, localStorage.native_language, textToTranslate, context)
+      .then((result) => {
+        if (result?.alternatives?.length) {
+          word.alternatives = result.alternatives;
+        }
         onComplete && onComplete();
-      },
-      isSeparatedMwe,
-      fullSentenceContext,
-    );
+      })
+      .catch((e) => {
+        console.error("Lazy alternatives fetch failed:", e);
+        onError && onError(e);
+      });
   }
 
   playAll() {
