@@ -70,11 +70,26 @@ export default function SuggestionSelector({
             disabled={key === "auto" && autoDisabled}
             style={key === "auto" && autoDisabled ? { opacity: 0.5, cursor: "not-allowed" } : undefined}
             onClick={() => selectType(key)}
+            title={key === "auto" && autoDisabled ? "Add a few study words first" : undefined}
           >
             {label}
           </SelectablePill>
         ))}
       </PillRow>
+
+      {autoDisabled && (
+        <small
+          style={{
+            display: "block",
+            color: "var(--text-secondary)",
+            fontSize: "0.85em",
+            fontStyle: "italic",
+            marginTop: "0.25rem",
+          }}
+        >
+          Vocabulary lessons need three study words — add a few to your list first.
+        </small>
+      )}
 
       <DescriptionText>{SUGGESTION_TYPES[suggestionType].description}</DescriptionText>
 
