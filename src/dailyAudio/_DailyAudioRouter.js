@@ -40,7 +40,7 @@ export default function DailyAudioRouter() {
 
   let tabsAndLinks = [
     {
-      text: strings.today,
+      text: strings.currentLesson,
       link: "/daily-audio"
     },
     {

@@ -65,7 +65,7 @@ let strings = new LocalizedStrings(
         "Verbal flashcards currently work only when your translation language is English or Danish. Change your translation language before using verbal flashcards.",
       dailyAudio: "Listen",
       translate: "Translate",
-      today: "Today",
+      currentLesson: "Current",
       pastLessons: "Past Lessons",
       topbarProgressDisplay: "Topbar Progress Display",
       myClasses: "My Classrooms",
