@@ -504,7 +504,10 @@ export default function TodayAudio() {
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
-          minHeight: "calc(100vh - 10rem)",
+          // dvh + explicit safe-area insets (see empty-state note below) so the
+          // generating screen fills the space between top bar and bottom nav
+          // without spilling into a scrollbar on notch / Dynamic Island phones.
+          minHeight: "calc(100dvh - 3rem - 5.5rem - env(safe-area-inset-top) - env(safe-area-inset-bottom))",
         }}
       >
         <div
@@ -648,7 +651,11 @@ export default function TodayAudio() {
           flexDirection: "column",
           alignItems: "center",
           justifyContent: "center",
-          minHeight: "calc(100vh - 12rem)",
+          // dvh (not vh) + explicit safe-area insets so this centered empty/setup
+          // state fills exactly the space between the top bar and bottom nav
+          // without overflowing into a scrollbar on notch / Dynamic Island phones
+          // (plain 100vh overcounts there). Same chrome offsets as the lesson view.
+          minHeight: "calc(100dvh - 3rem - 5.5rem - env(safe-area-inset-top) - env(safe-area-inset-bottom))",
         }}
       >
         <div style={{ fontSize: "2.5rem" }} aria-hidden>
