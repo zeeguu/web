@@ -38,27 +38,28 @@ export default function DailyAudioRouter() {
     );
   }, [api, learnedLanguage]);
 
-  let tabsAndLinks = [
-    {
-      text: strings.currentLesson,
-      link: "/daily-audio"
-    },
-    {
-      text: strings.pastLessons,
-      link: "/daily-audio/past-lessons",
-      counter: pastLessonsCount
-    }
+  // Self-pruning: with no past lessons there's nothing to switch between, so the
+  // tab bar is just noise — render the current lesson on its own. The tabs
+  // appear once a back catalogue exists. (/past-lessons stays a valid route.)
+  const hasPastLessons = pastLessonsCount > 0;
+
+  const tabsAndLinks = [
+    { text: strings.currentLesson, link: "/daily-audio" },
+    { text: strings.pastLessons, link: "/daily-audio/past-lessons", counter: pastLessonsCount },
   ];
+
+  const routes = (
+    <div ref={swipeRef}>
+      <PrivateRoute exact path="/daily-audio" component={TodayAudio} />
+      <PrivateRoute exact path="/daily-audio/past-lessons" component={PastLessons} />
+    </div>
+  );
 
   return (
     <Switch>
       <s.NarrowColumn>
-        <TopTabs title={strings.dailyAudio} tabsAndLinks={tabsAndLinks} />
-
-        <div ref={swipeRef}>
-          <PrivateRoute exact path="/daily-audio" component={TodayAudio} />
-          <PrivateRoute exact path="/daily-audio/past-lessons" component={PastLessons} />
-        </div>
+        {hasPastLessons && <TopTabs title={strings.dailyAudio} tabsAndLinks={tabsAndLinks} />}
+        {routes}
       </s.NarrowColumn>
     </Switch>
   );
