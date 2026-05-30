@@ -1,13 +1,7 @@
 import React from "react";
 import ClearableInput from "../components/ClearableInput";
 import { zeeguuOrange } from "../components/colors";
-import {
-  SuggestionWrapper,
-  PillRow,
-  SelectablePill,
-  DescriptionText,
-  InputArea,
-} from "./SuggestionSelector.sc";
+import { SuggestionWrapper, PillRow, SelectablePill, DescriptionText, InputArea } from "./SuggestionSelector.sc";
 
 export const MAX_SUGGESTION_LENGTH = 80;
 
@@ -19,13 +13,13 @@ export const SUGGESTION_TYPES = {
   },
   topic: {
     label: "Topic",
-    description: "A daily conversation about a subject you care about.",
-    placeholder: "e.g. cooking, sports",
+    // The description is folded into the input's placeholder so the dialog never
+    // shows two stacked texts — instruction + examples live where you type.
+    placeholder: "A subject you care about — e.g. cooking, climate, football",
   },
   situation: {
     label: "Situation",
-    description: "A daily conversation that role-plays a real-world situation.",
-    placeholder: "e.g. at a restaurant, job interview",
+    placeholder: "A real-world situation to role-play — e.g. at a café, a job interview",
   },
 };
 
@@ -74,34 +68,39 @@ export default function SuggestionSelector({
         ))}
       </PillRow>
 
-      <DescriptionText>{SUGGESTION_TYPES[suggestionType].description}</DescriptionText>
-
-      {autoDisabled && suggestionType === "auto" && (
-        <small
-          style={{
-            display: "block",
-            color: "var(--text-secondary)",
-            fontSize: "0.85em",
-            lineHeight: 1.45,
-            marginTop: "0.5rem",
-            paddingLeft: "0.75rem",
-            borderLeft: `3px solid ${zeeguuOrange}`,
-          }}
-        >
-          Vocabulary lessons need three study words — add a few to your list first.
-        </small>
+      {/* Vocabulary has no subject to type, so it shows the one explanatory
+          line in place of the input. Topic/Situation show only the input — its
+          placeholder carries the explanation, so there's never a second text. */}
+      {suggestionType === "auto" ? (
+        <>
+          <DescriptionText>{SUGGESTION_TYPES.auto.description}</DescriptionText>
+          {autoDisabled && (
+            <small
+              style={{
+                display: "block",
+                color: "var(--text-secondary)",
+                fontSize: "0.85em",
+                lineHeight: 1.45,
+                marginTop: "0.5rem",
+                paddingLeft: "0.75rem",
+                borderLeft: `3px solid ${zeeguuOrange}`,
+              }}
+            >
+              Vocabulary lessons need three study words — add a few to your list first.
+            </small>
+          )}
+        </>
+      ) : (
+        <InputArea>
+          <ClearableInput
+            placeholder={SUGGESTION_TYPES[suggestionType]?.placeholder || ""}
+            maxLength={MAX_SUGGESTION_LENGTH}
+            value={suggestion}
+            onChange={(e) => setSuggestion(e.target.value.replace(/\n/g, " "))}
+            onClear={() => setSuggestion("")}
+          />
+        </InputArea>
       )}
-
-      <InputArea $hidden={suggestionType === "auto"}>
-        <ClearableInput
-          placeholder={SUGGESTION_TYPES[suggestionType]?.placeholder || ""}
-          maxLength={MAX_SUGGESTION_LENGTH}
-          value={suggestion}
-          tabIndex={suggestionType === "auto" ? -1 : 0}
-          onChange={(e) => setSuggestion(e.target.value.replace(/\n/g, " "))}
-          onClear={() => setSuggestion("")}
-        />
-      </InputArea>
     </SuggestionWrapper>
   );
 }

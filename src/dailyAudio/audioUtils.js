@@ -25,29 +25,14 @@ export function completionChecks(count) {
   return "✓✓✓…✓";
 }
 
-// "May 27" for today — shown on the episode card so the daily lesson reads like
-// a dated episode (weekday omitted to keep the header compact).
+// "Today · Fri, May 27" — shown on the episode card. The "Today" word reassures
+// the learner this is the current day (so a stale date can't read as today),
+// the weekday + short date grounds it.
 export function todayDateLabel() {
-  return formatShortDate(new Date());
-}
-
-// Friendly label for the next daily lesson's date (ISO "YYYY-MM-DD", a user-local
-// date from the backend): "today" / "tomorrow" / the weekday ("Monday"). Returns
-// null when there's no scheduled date (e.g. gated on engagement).
-export function formatNextLessonDate(iso) {
-  if (!iso) return null;
-  const [y, m, d] = iso.split("-").map(Number);
-  if (!y || !m || !d) return null;
-  const target = new Date(y, m - 1, d);
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-  const diffDays = Math.round((target - today) / 86400000);
-  // Don't promise a past date as "today" — a backend regression returning
-  // yesterday would otherwise be masked as a "next lesson today" that never
-  // arrives. Let the caller render the no-date fallback instead.
-  if (diffDays < 0) return null;
-  if (diffDays === 0) return "today";
-  if (diffDays === 1) return "tomorrow";
-  if (diffDays < 7) return target.toLocaleDateString("en-US", { weekday: "long" });
-  return formatShortDate(target);
+  const date = new Date().toLocaleDateString("en-US", {
+    weekday: "short",
+    month: "short",
+    day: "numeric",
+  });
+  return `Today · ${date}`;
 }

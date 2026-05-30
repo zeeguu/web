@@ -2,9 +2,10 @@ import React from "react";
 import styled from "styled-components";
 import SettingsRoundedIcon from "@mui/icons-material/SettingsRounded";
 import LessonPlaybackView from "./LessonPlaybackView";
-import { LessonTitle, LessonMetadata, CompletionCheck, SubtleTextButton } from "./LessonView.sc";
+import { LessonTitle, LessonMetadata, CompletionCheck } from "./LessonView.sc";
 import { LessonTypeChip, chipLabel } from "./lessonTypeChip";
-import { todayDateLabel, completionChecks, formatNextLessonDate } from "./audioUtils";
+import { todayDateLabel, completionChecks } from "./audioUtils";
+import { zeeguuRed } from "../components/colors";
 
 // Config pill, styled like the Discover screen's "Topics: … ⚙" control but with
 // theme tokens (not hardcoded white) so it renders as a pill in light AND dark.
@@ -21,35 +22,66 @@ const ConfigPill = styled.button`
   font-size: 0.85rem;
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
-  transition: border-color 0.15s, color 0.15s;
+  transition:
+    border-color 0.15s,
+    color 0.15s;
 
   &:active {
     transform: scale(0.97);
   }
 `;
 
+// Small freshness badge next to the date: shown until today's lesson is
+// completed. Red so it pops against the orange-heavy screen and reads like a
+// "new" notification badge, not just more brand color.
+const NewPill = styled.span`
+  font-size: 0.62rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 2px 7px;
+  border-radius: 999px;
+  color: #fff;
+  background: ${zeeguuRed};
+  line-height: 1.4;
+`;
+
 // Design-B "episode card" header: a date line, the title (with one ✓ per
 // listen), then a single category chip — "Type: subject" — exactly like the
 // past-lessons list, so the subject lives inside the pill (no wrap-under).
-function EpisodeHeader({ lessonData }) {
+function EpisodeHeader({ lessonData, currentPlaybackTime }) {
+  // "NEW" only while today's lesson is untouched — it answers "have I started
+  // this?" and disappears the moment they begin playing. Two signals: the live
+  // playback time hides it instantly on first play this session; the stored
+  // position (same field the player resumes from) makes it stay gone after a
+  // reload. Hidden when paused (the ⏸ label already tells that story).
+  const storedSeconds =
+    lessonData.pause_position_seconds || lessonData.position_seconds || lessonData.progress_seconds || 0;
+  const playedSeconds = Math.max(storedSeconds, currentPlaybackTime || 0);
+  const showNew = !lessonData.paused && !lessonData.is_completed && playedSeconds === 0;
   return (
     <>
-      <span
-        style={{
-          fontSize: "0.8rem",
-          fontWeight: 700,
-          letterSpacing: "0.06em",
-          textTransform: "uppercase",
-          color: "var(--text-secondary)",
-        }}
-      >
-        {lessonData.paused ? "⏸ Paused" : todayDateLabel()}
+      <span style={{ display: "inline-flex", alignItems: "center", gap: "8px" }}>
+        <span
+          style={{
+            fontSize: "0.8rem",
+            fontWeight: 700,
+            letterSpacing: "0.04em",
+            color: "var(--text-secondary)",
+          }}
+        >
+          {lessonData.paused ? "⏸ Paused" : todayDateLabel()}
+        </span>
+        {showNew && <NewPill>New</NewPill>}
       </span>
 
       <LessonTitle style={{ marginTop: "8px" }}>
         {lessonData.title}
         {lessonData.is_completed && (
-          <> <CompletionCheck>{completionChecks(Math.max(1, lessonData.listened_count || 1))}</CompletionCheck></>
+          <>
+            {" "}
+            <CompletionCheck>{completionChecks(Math.max(1, lessonData.listened_count || 1))}</CompletionCheck>
+          </>
         )}
       </LessonTitle>
 
@@ -68,45 +100,30 @@ function EpisodeHeader({ lessonData }) {
  * Reuses LessonPlaybackView for all the player/words/feedback plumbing and
  * injects the Design-B header + footer.
  */
-export default function TodayEpisodeCard({ onChangeTopic, onTurnOff, ...playbackProps }) {
+export default function TodayEpisodeCard({ onChangeTopic, ...playbackProps }) {
   const { lessonData } = playbackProps;
 
-  // Status line reflects the daily-subscription state. `paused` (from the API's
-  // engagement gate) means this is a waiting lesson the learner hasn't engaged
-  // with — new ones are held until they do. Otherwise show when the next arrives.
-  const nextLabel = formatNextLessonDate(lessonData.next_lesson_date);
-  let statusLine;
-  if (lessonData.paused) {
-    statusLine = "Daily lessons are paused — listen to this one and they'll start again.";
-  } else if (lessonData.is_completed) {
-    statusLine = nextLabel ? `Done for today — next lesson ${nextLabel}.` : "Done for today.";
-  } else {
-    statusLine = nextLabel
-      ? `Finish this to keep them coming — next lesson ${nextLabel}.`
-      : "Finish this and your next daily lesson lines up.";
-  }
-
+  // The only status worth showing is "paused" — for daily lessons, a "next
+  // lesson: tomorrow" line is tautological (it's daily, of course it's
+  // tomorrow), so we don't render it. `paused` is the API's engagement gate: a
+  // waiting lesson the learner hasn't engaged with, so new ones are held.
+  // The gear opens lesson-TYPE config (frequency config is future work).
   const footer = (
     <div style={{ marginTop: "24px", textAlign: "center" }}>
-      <p style={{ color: "var(--text-secondary)", fontSize: "14px", margin: "0 0 12px" }}>
-        {statusLine}
-      </p>
-      <ConfigPill onClick={onChangeTopic} title="Configure daily lessons">
-        <span>Configure daily lessons</span>
+      {lessonData.paused && (
+        <p style={{ margin: "0 0 12px", fontSize: "14px", color: "var(--text-secondary)" }}>Daily lessons paused</p>
+      )}
+      <ConfigPill onClick={onChangeTopic} title="Daily lesson settings">
+        <span>Daily lesson settings</span>
         <SettingsRoundedIcon style={{ fontSize: "0.95rem" }} />
       </ConfigPill>
-      {onTurnOff && (
-        <div style={{ marginTop: "12px" }}>
-          <SubtleTextButton onClick={onTurnOff}>Turn off daily lessons</SubtleTextButton>
-        </div>
-      )}
     </div>
   );
 
   return (
     <LessonPlaybackView
       {...playbackProps}
-      header={<EpisodeHeader lessonData={lessonData} />}
+      header={<EpisodeHeader lessonData={lessonData} currentPlaybackTime={playbackProps.currentPlaybackTime} />}
       footer={footer}
     />
   );

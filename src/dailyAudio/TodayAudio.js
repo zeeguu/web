@@ -35,8 +35,7 @@ export default function TodayAudio() {
   const { userDetails, setUserDetails } = useContext(UserContext);
   const lang = userDetails?.learned_language || "";
 
-  const { dailyType, dailySuggestion, prefLoaded, isConfigured, saveDailyLesson } =
-    useDailyLessonPreference(api, lang);
+  const { dailyType, dailySuggestion, prefLoaded, isConfigured, saveDailyLesson } = useDailyLessonPreference(api, lang);
 
   const [isLoading, setIsLoading] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
@@ -167,7 +166,8 @@ export default function TodayAudio() {
 
   // Refresh today's lesson + subscription state from the backend.
   function refreshToday() {
-    api.getTodaysLesson(lang,
+    api.getTodaysLesson(
+      lang,
       (data) => {
         setSubscription(data || null);
         if (data && data.lesson_id) {
@@ -260,7 +260,7 @@ export default function TodayAudio() {
     };
 
     const checkForLesson = () => {
-      api.getTodaysLesson(lang,handleLessonReady, () => {});
+      api.getTodaysLesson(lang, handleLessonReady, () => {});
     };
 
     const pollForProgress = () => {
@@ -296,7 +296,8 @@ export default function TodayAudio() {
               return;
             }
             // Exhausted retries — check if a lesson appeared, otherwise stop
-            api.getTodaysLesson(lang,
+            api.getTodaysLesson(
+              lang,
               (data) => {
                 if (data && data.lesson_id) {
                   handleLessonReady(data);
@@ -437,11 +438,17 @@ export default function TodayAudio() {
       initialType={dailyType || lessonData?.lesson_type || null}
       initialSuggestion={(dailyType ? dailySuggestion : lessonData?.canonical_suggestion) || ""}
       alreadySubscribed={
-        isConfigured ||
-        subscription?.subscription_status === "active" ||
-        subscription?.subscription_status === "off"
+        isConfigured || subscription?.subscription_status === "active" || subscription?.subscription_status === "off"
       }
       onSubmit={handleConfigured}
+      onTurnOff={
+        subscription?.subscription_status === "active"
+          ? () => {
+              turnOffDailyLessons();
+              setSettingsOpen(false);
+            }
+          : null
+      }
       onDismiss={() => setSettingsOpen(false)}
     />
   );
@@ -457,8 +464,7 @@ export default function TodayAudio() {
   }
 
   if (isGenerating) {
-    let progressDetail =
-      PLACEHOLDER_PROGRESS_MESSAGES[placeholderIndex % PLACEHOLDER_PROGRESS_MESSAGES.length];
+    let progressDetail = PLACEHOLDER_PROGRESS_MESSAGES[placeholderIndex % PLACEHOLDER_PROGRESS_MESSAGES.length];
     let progressPercent = 1;
 
     if (generationProgress?.total_segments > 0) {
@@ -501,13 +507,18 @@ export default function TodayAudio() {
           minHeight: "calc(100vh - 10rem)",
         }}
       >
-        <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-start", marginTop: "8%", maxWidth: "320px", width: "100%" }}>
-          <p style={{ fontSize: "14px", color: "var(--text-secondary)", margin: 0, marginBottom: "4px" }}>
-            {subtitle}
-          </p>
-          <h1 style={{ color: zeeguuOrange, margin: 0, marginBottom: "20px", fontSize: "2rem" }}>
-            {bigTitle}
-          </h1>
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "flex-start",
+            marginTop: "8%",
+            maxWidth: "320px",
+            width: "100%",
+          }}
+        >
+          <p style={{ fontSize: "14px", color: "var(--text-secondary)", margin: 0, marginBottom: "4px" }}>{subtitle}</p>
+          <h1 style={{ color: zeeguuOrange, margin: 0, marginBottom: "20px", fontSize: "2rem" }}>{bigTitle}</h1>
 
           <div
             style={{
@@ -558,7 +569,8 @@ export default function TodayAudio() {
           }}
         >
           <p style={{ color: "var(--text-primary)", margin: 0, fontSize: "16px", textAlign: "center" }}>
-            This can take a moment.<br />
+            This can take a moment.
+            <br />
             Feel free to browse — your lesson will be here when it's ready.
           </p>
         </div>
@@ -582,7 +594,6 @@ export default function TodayAudio() {
           currentPlaybackTime={currentPlaybackTime}
           setCurrentPlaybackTime={setCurrentPlaybackTime}
           onChangeTopic={() => setSettingsOpen(true)}
-          onTurnOff={turnOffDailyLessons}
         />
         {settingsDialog}
       </>
@@ -640,11 +651,11 @@ export default function TodayAudio() {
           minHeight: "calc(100vh - 12rem)",
         }}
       >
-        <div style={{ fontSize: "2.5rem" }} aria-hidden>🎧</div>
+        <div style={{ fontSize: "2.5rem" }} aria-hidden>
+          🎧
+        </div>
         <h2 style={{ color: zeeguuOrange, margin: "8px 0" }}>{heading}</h2>
-        <p style={{ color: "var(--text-secondary)", maxWidth: "300px", marginBottom: "24px" }}>
-          {body}
-        </p>
+        <p style={{ color: "var(--text-secondary)", maxWidth: "300px", marginBottom: "24px" }}>{body}</p>
         <BannerButton onClick={primaryAction} style={{ padding: "12px 24px", fontSize: "1rem" }}>
           {primaryLabel}
         </BannerButton>
