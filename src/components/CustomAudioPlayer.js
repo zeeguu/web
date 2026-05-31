@@ -559,9 +559,22 @@ export default function CustomAudioPlayer({
         });
       }
 
+      // iOS resume fix: setting audio.currentTime before playback often does
+      // NOT stick on iOS (the media isn't truly seekable until it starts —
+      // the seekable range is empty), even though React state was updated
+      // optimistically, so the bar shows the resume point while audio is really
+      // at 0. Re-apply the seek once playback has begun, checking the ACTUAL
+      // audio.currentTime (not state). A tiny audible blip from 0, but it
+      // reliably lands at the saved position.
+      const resumeIfNeeded = () => {
+        if (initialProgress > 0 && audio.currentTime < 1 && audio.duration > 0) {
+          audio.currentTime = Math.min(initialProgress, audio.duration);
+        }
+      };
       audio
         .play()
         .then(() => {
+          resumeIfNeeded();
           setIsPlaying(true);
           onPlay && onPlay();
           startProgressTimer();
