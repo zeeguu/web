@@ -5,8 +5,10 @@ import { TranslatableText } from "../reader/TranslatableText";
 import InteractiveText from "../reader/InteractiveText";
 import { APIContext } from "../contexts/APIContext";
 import { SpeechContext } from "../contexts/SpeechContext";
+import { UserContext } from "../contexts/UserContext";
 import { setTitle } from "../assorted/setTitle";
 import BackArrow from "../pages/Settings/settings_pages_shared/BackArrow";
+import TranslateCaptionsControl from "./TranslateCaptionsControl";
 import {
   MainContainer,
   VideoContainer,
@@ -42,6 +44,7 @@ export default function VideoPlayer() {
   videoID = query.get("id");
 
   const speech = useContext(SpeechContext);
+  const { userDetails } = useContext(UserContext);
   const containerRef = useRef(null);
   const lastCaptionIdRef = useRef(null);
 
@@ -122,6 +125,22 @@ export default function VideoPlayer() {
       player.pauseVideo();
     }
   }, [translatedWords, player]);
+
+  // v1.5: swap caption tracks (original ↔ translated). The id space of
+  // context_identifier.video_caption_id is preserved across the translation, so we have to
+  // reset the "last shown caption" ref — otherwise the currently displayed (stale-text)
+  // caption matches the same id and the interval skips re-rendering until the next caption
+  // boundary.
+  function handleCaptionTrackChange(captionSetIdOrNull) {
+    lastCaptionIdRef.current = null;
+    setCurrentInteractiveCaption(null);
+    const onLoaded = (video) => setVideoInfo(video);
+    if (captionSetIdOrNull == null) {
+      api.getVideoInfo(videoID, onLoaded);
+    } else {
+      api.getVideoInfoWithCaptionSet(videoID, captionSetIdOrNull, onLoaded);
+    }
+  }
 
   const onReady = (event) => {
     setPlayer(event.target);
@@ -228,6 +247,18 @@ export default function VideoPlayer() {
           </InfoContainer>
         </>
       )}
+      {!isFullscreen &&
+        videoInfo.language_code &&
+        userDetails?.learned_language &&
+        videoInfo.language_code !== userDetails.learned_language && (
+          <TranslateCaptionsControl
+            videoId={videoID}
+            sourceLanguageCode={videoInfo.language_code}
+            targetLanguageCode={userDetails.learned_language}
+            targetCefr={userDetails.learned_cefr_level || "B1"}
+            onTrackChange={handleCaptionTrackChange}
+          />
+        )}
       <VideoContainer>
         <YouTube
           videoId={videoInfo.video_unique_key}
