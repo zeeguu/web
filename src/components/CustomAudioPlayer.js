@@ -132,21 +132,21 @@ export default function CustomAudioPlayer({
   // set metadata on mount and re-fetch the artwork. Position state lives in
   // its own effect below so currentTime updates don't rebuild the metadata.
   useEffect(() => {
-    if (!('mediaSession' in navigator)) return;
+    if (!("mediaSession" in navigator)) return;
     if (!isPlaying) return;
 
     navigator.mediaSession.metadata = new MediaMetadata({
       title: title,
       artist: artist,
-      album: language ? `${language.toUpperCase()} Lessons` : 'Language Lessons',
+      album: language ? `${language.toUpperCase()} Lessons` : "Language Lessons",
       artwork: [
-        { src: '/logo192.png', sizes: '192x192', type: 'image/png' },
-        { src: '/logo512.png', sizes: '512x512', type: 'image/png' },
-        { src: '/static/images/zeeguu128.png', sizes: '128x128', type: 'image/png' }
-      ]
+        { src: "/logo192.png", sizes: "192x192", type: "image/png" },
+        { src: "/logo512.png", sizes: "512x512", type: "image/png" },
+        { src: "/static/images/zeeguu128.png", sizes: "128x128", type: "image/png" },
+      ],
     });
 
-    navigator.mediaSession.setActionHandler('play', () => {
+    navigator.mediaSession.setActionHandler("play", () => {
       const audio = audioRef.current;
       if (audio && audio.paused) {
         audio.play();
@@ -157,7 +157,7 @@ export default function CustomAudioPlayer({
       if (window.focus) window.focus();
     });
 
-    navigator.mediaSession.setActionHandler('pause', () => {
+    navigator.mediaSession.setActionHandler("pause", () => {
       const audio = audioRef.current;
       if (audio && !audio.paused) {
         audio.pause();
@@ -169,58 +169,58 @@ export default function CustomAudioPlayer({
 
     // Try different action handlers that iOS might recognize
     try {
-      navigator.mediaSession.setActionHandler('previoustrack', () => {
+      navigator.mediaSession.setActionHandler("previoustrack", () => {
         seekBackward();
       });
-      
-      navigator.mediaSession.setActionHandler('nexttrack', () => {
+
+      navigator.mediaSession.setActionHandler("nexttrack", () => {
         seekForward();
       });
     } catch (error) {
-      console.log('Track controls not supported');
+      console.log("Track controls not supported");
     }
-    
-    navigator.mediaSession.setActionHandler('seekbackward', (details) => {
+
+    navigator.mediaSession.setActionHandler("seekbackward", (details) => {
       const audio = audioRef.current;
       if (!audio) return;
-      
+
       // iOS typically uses 10 or 15 second intervals
       const offset = details?.seekOffset || 10;
       const newTime = Math.max(0, audio.currentTime - offset);
       audio.currentTime = newTime;
       setCurrentTime(newTime);
-      
+
       // Update position state immediately
-      if ('setPositionState' in navigator.mediaSession && duration > 0) {
+      if ("setPositionState" in navigator.mediaSession && duration > 0) {
         navigator.mediaSession.setPositionState({
           duration: duration,
           playbackRate: playbackRate,
-          position: newTime
+          position: newTime,
         });
       }
     });
 
-    navigator.mediaSession.setActionHandler('seekforward', (details) => {
+    navigator.mediaSession.setActionHandler("seekforward", (details) => {
       const audio = audioRef.current;
       if (!audio) return;
-      
+
       // iOS typically uses 10 or 15 second intervals
       const offset = details?.seekOffset || 10;
       const newTime = Math.min(duration, audio.currentTime + offset);
       audio.currentTime = newTime;
       setCurrentTime(newTime);
-      
+
       // Update position state immediately
-      if ('setPositionState' in navigator.mediaSession && duration > 0) {
+      if ("setPositionState" in navigator.mediaSession && duration > 0) {
         navigator.mediaSession.setPositionState({
           duration: duration,
           playbackRate: playbackRate,
-          position: newTime
+          position: newTime,
         });
       }
     });
 
-    navigator.mediaSession.setActionHandler('seekto', (details) => {
+    navigator.mediaSession.setActionHandler("seekto", (details) => {
       const audio = audioRef.current;
       if (audio && details.seekTime !== undefined) {
         audio.currentTime = details.seekTime;
@@ -228,7 +228,7 @@ export default function CustomAudioPlayer({
       }
     });
 
-    navigator.mediaSession.playbackState = 'playing';
+    navigator.mediaSession.playbackState = "playing";
 
     // Cleanup intentionally does NOT null action handlers. iOS only renders
     // lock-screen seek/play buttons while their handlers are registered, and
@@ -237,8 +237,8 @@ export default function CustomAudioPlayer({
     // will overwrite handlers on its own play transition; on unmount the
     // stale handlers reference a null audioRef and no-op safely.
     return () => {
-      if ('mediaSession' in navigator) {
-        navigator.mediaSession.playbackState = 'paused';
+      if ("mediaSession" in navigator) {
+        navigator.mediaSession.playbackState = "paused";
       }
     };
   }, [title, artist, language, isPlaying]);
@@ -246,9 +246,9 @@ export default function CustomAudioPlayer({
   // Position state for the lock-screen progress bar. Separate from the
   // metadata effect so currentTime updates don't trigger an artwork refetch.
   useEffect(() => {
-    if (!('mediaSession' in navigator)) return;
+    if (!("mediaSession" in navigator)) return;
     if (!isPlaying) return;
-    if (!('setPositionState' in navigator.mediaSession)) return;
+    if (!("setPositionState" in navigator.mediaSession)) return;
     if (duration <= 0) return;
     navigator.mediaSession.setPositionState({
       duration: duration,
@@ -260,24 +260,24 @@ export default function CustomAudioPlayer({
   // Initialize Audio Context and handle visibility changes
   useEffect(() => {
     // Create Audio Context to maintain audio session
-    if (!audioContextRef.current && 'AudioContext' in window) {
+    if (!audioContextRef.current && "AudioContext" in window) {
       audioContextRef.current = new (window.AudioContext || window.webkitAudioContext)();
-      
+
       // Resume audio context if it's suspended (iOS requirement)
-      if (audioContextRef.current.state === 'suspended') {
+      if (audioContextRef.current.state === "suspended") {
         const resumeAudio = () => {
-          if (audioContextRef.current && audioContextRef.current.state === 'suspended') {
-            audioContextRef.current.resume().catch(err => {
-              console.log('Could not resume audio context:', err);
+          if (audioContextRef.current && audioContextRef.current.state === "suspended") {
+            audioContextRef.current.resume().catch((err) => {
+              console.log("Could not resume audio context:", err);
             });
           }
-          document.removeEventListener('touchstart', resumeAudio);
-          document.removeEventListener('click', resumeAudio);
+          document.removeEventListener("touchstart", resumeAudio);
+          document.removeEventListener("click", resumeAudio);
         };
-        document.addEventListener('touchstart', resumeAudio);
-        document.addEventListener('click', resumeAudio);
+        document.addEventListener("touchstart", resumeAudio);
+        document.addEventListener("click", resumeAudio);
       }
-    } else if (audioContextRef.current && audioContextRef.current.state === 'closed') {
+    } else if (audioContextRef.current && audioContextRef.current.state === "closed") {
       // Recreate if closed
       audioContextRef.current = new (window.AudioContext || window.webkitAudioContext)();
     }
@@ -289,65 +289,65 @@ export default function CustomAudioPlayer({
 
       if (document.hidden) {
         // Page is hidden (locked screen or switched apps)
-        console.log('Page hidden, audio playing:', !audio.paused);
+        console.log("Page hidden, audio playing:", !audio.paused);
       } else {
         // Page is visible again
-        console.log('Page visible, audio playing:', !audio.paused);
-        
+        console.log("Page visible, audio playing:", !audio.paused);
+
         // If audio was playing and got paused, try to resume
         if (isPlaying && audio.paused) {
-          audio.play().catch(err => {
-            console.log('Could not resume audio after visibility change:', err);
+          audio.play().catch((err) => {
+            console.log("Could not resume audio after visibility change:", err);
           });
         }
-        
+
         // Update Media Session position
-        if ('mediaSession' in navigator && 'setPositionState' in navigator.mediaSession && duration > 0) {
+        if ("mediaSession" in navigator && "setPositionState" in navigator.mediaSession && duration > 0) {
           navigator.mediaSession.setPositionState({
             duration: duration,
             playbackRate: playbackRate,
-            position: audio.currentTime
+            position: audio.currentTime,
           });
         }
       }
     };
 
-    document.addEventListener('visibilitychange', handleVisibilityChange);
+    document.addEventListener("visibilitychange", handleVisibilityChange);
 
     // Handle app activation from lock screen
     const handleAppActivation = () => {
-      console.log('App activated, possibly from lock screen tap');
-      
+      console.log("App activated, possibly from lock screen tap");
+
       // Re-establish media session ownership
-      if ('mediaSession' in navigator) {
+      if ("mediaSession" in navigator) {
         // Force update metadata to reclaim session
         const currentMetadata = navigator.mediaSession.metadata;
         navigator.mediaSession.metadata = null;
         setTimeout(() => {
           navigator.mediaSession.metadata = currentMetadata;
-          navigator.mediaSession.playbackState = isPlaying ? 'playing' : 'paused';
+          navigator.mediaSession.playbackState = isPlaying ? "playing" : "paused";
         }, 0);
       }
     };
 
     // Listen for various activation events
-    window.addEventListener('focus', handleAppActivation);
-    window.addEventListener('pageshow', handleAppActivation);
-    
+    window.addEventListener("focus", handleAppActivation);
+    window.addEventListener("pageshow", handleAppActivation);
+
     // For PWAs, also listen to these events
-    if (window.matchMedia('(display-mode: standalone)').matches) {
-      document.addEventListener('resume', handleAppActivation);
+    if (window.matchMedia("(display-mode: standalone)").matches) {
+      document.addEventListener("resume", handleAppActivation);
     }
 
     // Cleanup
     return () => {
-      document.removeEventListener('visibilitychange', handleVisibilityChange);
-      window.removeEventListener('focus', handleAppActivation);
-      window.removeEventListener('pageshow', handleAppActivation);
-      document.removeEventListener('resume', handleAppActivation);
-      if (audioContextRef.current && audioContextRef.current.state !== 'closed') {
-        audioContextRef.current.close().catch(err => {
-          console.log('Could not close audio context:', err);
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+      window.removeEventListener("focus", handleAppActivation);
+      window.removeEventListener("pageshow", handleAppActivation);
+      document.removeEventListener("resume", handleAppActivation);
+      if (audioContextRef.current && audioContextRef.current.state !== "closed") {
+        audioContextRef.current.close().catch((err) => {
+          console.log("Could not close audio context:", err);
         });
       }
     };
@@ -429,13 +429,13 @@ export default function CustomAudioPlayer({
       setCurrentTime(audio.currentTime);
 
       // Update media session position for lock screen scrubber
-      if ('mediaSession' in navigator && 'setPositionState' in navigator.mediaSession) {
+      if ("mediaSession" in navigator && "setPositionState" in navigator.mediaSession) {
         if (duration > 0 && !audio.paused) {
           try {
             navigator.mediaSession.setPositionState({
               duration: duration,
               playbackRate: playbackRate,
-              position: audio.currentTime
+              position: audio.currentTime,
             });
           } catch (error) {
             // Ignore errors from setting position state
@@ -510,16 +510,13 @@ export default function CustomAudioPlayer({
     };
   }, [onEnded, onError, onPause, initialProgress]);
 
-
   const saveProgress = (forceSave = false) => {
     const audio = audioRef.current;
     if (!audio || !onProgressUpdate) return;
 
     const currentProgress = Math.floor(audio.currentTime);
     // Ensure progress doesn't exceed duration (prevents MediaSession API errors)
-    const validProgress = audio.duration > 0
-      ? Math.min(currentProgress, Math.floor(audio.duration))
-      : currentProgress;
+    const validProgress = audio.duration > 0 ? Math.min(currentProgress, Math.floor(audio.duration)) : currentProgress;
 
     console.log(
       `Saving progress: ${validProgress} seconds (last saved: ${lastSavedProgressRef.current}, forced: ${forceSave})`,
@@ -562,17 +559,20 @@ export default function CustomAudioPlayer({
         });
       }
 
-      audio.play().then(() => {
-        setIsPlaying(true);
-        onPlay && onPlay();
-        startProgressTimer();
-        if ("mediaSession" in navigator) {
-          navigator.mediaSession.playbackState = "playing";
-        }
-      }).catch((err) => {
-        console.error("Playback failed:", err);
-        setIsPlaying(false);
-      });
+      audio
+        .play()
+        .then(() => {
+          setIsPlaying(true);
+          onPlay && onPlay();
+          startProgressTimer();
+          if ("mediaSession" in navigator) {
+            navigator.mediaSession.playbackState = "playing";
+          }
+        })
+        .catch((err) => {
+          console.error("Playback failed:", err);
+          setIsPlaying(false);
+        });
     }
   };
 
@@ -651,18 +651,22 @@ export default function CustomAudioPlayer({
         ...style,
       }}
     >
-      <audio 
-        ref={audioRef} 
-        src={src} 
+      <audio
+        ref={audioRef}
+        src={src}
         preload="auto"
         playsInline
         controlsList="nodownload"
         crossOrigin="anonymous"
         onLoadedMetadata={(e) => {
-          // Ensure seekable range is set
+          // Ensure seekable range is set (an old iOS "make it seekable" hack).
+          // CRITICAL: only nudge to 0 when there's NO resume position — this
+          // handler and the initialProgress seek effect both fire on
+          // `loadedmetadata`, and forcing 0 here clobbered the resume seek.
+          // That's why a paused lesson restarted from the beginning on a cold
+          // (phone) load but resumed fine once the audio was warm.
           const audio = e.target;
-          if (audio.duration && isFinite(audio.duration)) {
-            // Force iOS to recognize this as seekable content
+          if (audio.duration && isFinite(audio.duration) && !(initialProgress > 0)) {
             audio.currentTime = 0;
           }
         }}
@@ -717,22 +721,14 @@ export default function CustomAudioPlayer({
             e.currentTarget.style.transform = "scale(1)";
           }}
         >
-          {isPlaying ? (
-            <PauseRoundedIcon sx={{ fontSize: 32 }} />
-          ) : (
-            <PlayArrowRoundedIcon sx={{ fontSize: 32 }} />
-          )}
+          {isPlaying ? <PauseRoundedIcon sx={{ fontSize: 32 }} /> : <PlayArrowRoundedIcon sx={{ fontSize: 32 }} />}
         </button>
 
         <IconNavButton onClick={seekForward} disabled={isLoading} ariaLabel="Forward 10 seconds">
           <Forward10RoundedIcon sx={{ fontSize: 36 }} />
         </IconNavButton>
 
-        <SpeedPicker
-          value={playbackRate}
-          onChange={handleSpeedChange}
-          disabled={isLoading}
-        />
+        <SpeedPicker value={playbackRate} onChange={handleSpeedChange} disabled={isLoading} />
       </div>
 
       {/* Progress Bar full width, elapsed floats above the playhead, total parks below right */}
@@ -788,7 +784,6 @@ export default function CustomAudioPlayer({
               transition: "width 0.1s ease",
             }}
           />
-
         </div>
 
         {/* Time Display */}
