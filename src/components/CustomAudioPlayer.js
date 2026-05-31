@@ -359,33 +359,22 @@ export default function CustomAudioPlayer({
   // changing initialProgress). Each re-run re-assigns audio.currentTime,
   // which the audio engine treats as a real seek and briefly pauses output —
   // audible as a stutter every 10 seconds.
+  // Resume-from-pause, the iOS-safe way: DON'T seek before playback. Seeking a
+  // paused/cold <audio> on iOS updates the currentTime PROPERTY (so it reads
+  // back correctly, fooling any verify check) but the decoder still starts from
+  // 0 — you hear the intro. The only reliable moment to seek is AFTER playback
+  // has actually started (the `playing` event), when iOS honors it for real.
+  //
+  // So here we only (a) capture the desired resume target in a ref and (b) show
+  // it on the progress bar. The actual audio.currentTime seek happens in the
+  // `playing` handler below, once, on first play.
+  const pendingResumeRef = useRef(0);
   const initialSeekAppliedRef = useRef(false);
   useEffect(() => {
     if (initialSeekAppliedRef.current) return;
-    const audio = audioRef.current;
-    if (!audio || !initialProgress || initialProgress <= 0) return;
-
-    const seekToInitialProgress = () => {
-      if (initialSeekAppliedRef.current) return;
-      if (audio.duration > 0 && initialProgress > 0) {
-        audio.currentTime = initialProgress;
-        setCurrentTime(initialProgress);
-        initialSeekAppliedRef.current = true;
-        audio.removeEventListener("loadedmetadata", seekToInitialProgress);
-        audio.removeEventListener("canplay", seekToInitialProgress);
-      }
-    };
-
-    if (audio.readyState >= 2 && audio.duration > 0) {
-      seekToInitialProgress();
-    } else {
-      audio.addEventListener("loadedmetadata", seekToInitialProgress);
-      audio.addEventListener("canplay", seekToInitialProgress);
-      return () => {
-        audio.removeEventListener("loadedmetadata", seekToInitialProgress);
-        audio.removeEventListener("canplay", seekToInitialProgress);
-      };
-    }
+    if (!initialProgress || initialProgress <= 0) return;
+    pendingResumeRef.current = initialProgress;
+    setCurrentTime(initialProgress); // visual only — bar shows the resume point
   }, [initialProgress]);
 
   useEffect(() => {
@@ -465,6 +454,25 @@ export default function CustomAudioPlayer({
       setIsPlaying(true);
       startProgressTimer();
     };
+    // THE actual resume seek. `playing` fires once real playback has begun, the
+    // only point iOS honors a seek on cold/paused media. We briefly mute so the
+    // sliver of intro before the jump isn't heard, seek, then unmute.
+    const handlePlaying = () => {
+      const target = pendingResumeRef.current;
+      if (!target || initialSeekAppliedRef.current) return;
+      initialSeekAppliedRef.current = true;
+      pendingResumeRef.current = 0;
+      if (audio.duration > 0 && Math.abs(audio.currentTime - target) > 1.5) {
+        const wasMuted = audio.muted;
+        audio.muted = true;
+        audio.currentTime = Math.min(target, audio.duration);
+        const unmute = () => {
+          audio.muted = wasMuted;
+          audio.removeEventListener("seeked", unmute);
+        };
+        audio.addEventListener("seeked", unmute);
+      }
+    };
     const handlePause = () => {
       setIsPlaying(false);
       clearProgressTimer();
@@ -479,6 +487,7 @@ export default function CustomAudioPlayer({
     audio.addEventListener("loadstart", handleLoadStart);
     audio.addEventListener("canplay", handleCanPlay);
     audio.addEventListener("play", handlePlay);
+    audio.addEventListener("playing", handlePlaying);
     audio.addEventListener("pause", handlePause);
 
     // Sync state when app becomes visible again
@@ -504,6 +513,7 @@ export default function CustomAudioPlayer({
       audio.removeEventListener("loadstart", handleLoadStart);
       audio.removeEventListener("canplay", handleCanPlay);
       audio.removeEventListener("play", handlePlay);
+      audio.removeEventListener("playing", handlePlaying);
       audio.removeEventListener("pause", handlePause);
       document.removeEventListener("visibilitychange", handleVisibilityChange);
       clearProgressTimer();
@@ -559,22 +569,11 @@ export default function CustomAudioPlayer({
         });
       }
 
-      // iOS resume fix: setting audio.currentTime before playback often does
-      // NOT stick on iOS (the media isn't truly seekable until it starts —
-      // the seekable range is empty), even though React state was updated
-      // optimistically, so the bar shows the resume point while audio is really
-      // at 0. Re-apply the seek once playback has begun, checking the ACTUAL
-      // audio.currentTime (not state). A tiny audible blip from 0, but it
-      // reliably lands at the saved position.
-      const resumeIfNeeded = () => {
-        if (initialProgress > 0 && audio.currentTime < 1 && audio.duration > 0) {
-          audio.currentTime = Math.min(initialProgress, audio.duration);
-        }
-      };
+      // Resume seek is handled by the `playing` event (handlePlaying) — the only
+      // moment iOS honors a seek on cold/paused media. Do NOT seek here.
       audio
         .play()
         .then(() => {
-          resumeIfNeeded();
           setIsPlaying(true);
           onPlay && onPlay();
           startProgressTimer();
@@ -664,26 +663,7 @@ export default function CustomAudioPlayer({
         ...style,
       }}
     >
-      <audio
-        ref={audioRef}
-        src={src}
-        preload="auto"
-        playsInline
-        controlsList="nodownload"
-        crossOrigin="anonymous"
-        onLoadedMetadata={(e) => {
-          // Ensure seekable range is set (an old iOS "make it seekable" hack).
-          // CRITICAL: only nudge to 0 when there's NO resume position — this
-          // handler and the initialProgress seek effect both fire on
-          // `loadedmetadata`, and forcing 0 here clobbered the resume seek.
-          // That's why a paused lesson restarted from the beginning on a cold
-          // (phone) load but resumed fine once the audio was warm.
-          const audio = e.target;
-          if (audio.duration && isFinite(audio.duration) && !(initialProgress > 0)) {
-            audio.currentTime = 0;
-          }
-        }}
-      />
+      <audio ref={audioRef} src={src} preload="auto" playsInline controlsList="nodownload" crossOrigin="anonymous" />
 
       {/* Controls: flex space-between so the outer buttons hug the edges
           and the play button sits in the middle, using the full width. */}
