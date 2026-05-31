@@ -103,6 +103,26 @@ function EpisodeHeader({ lessonData, currentPlaybackTime }) {
 export default function TodayEpisodeCard({ onChangeTopic, ...playbackProps }) {
   const { lessonData } = playbackProps;
 
+  // "Listen halfway to keep daily lessons coming automatically." — shown only
+  // when the learner has STARTED this lesson but hasn't reached the 50%
+  // engagement threshold. That threshold only gates the AUTOMATIC daily delivery
+  // (the nightly cron pauses when the last lesson wasn't engaged with); the
+  // learner can always manually generate a new one, so the copy is about the
+  // auto-cadence, NOT a hard unlock. Uses the furthest position reached
+  // (max_position_seconds — the same monotonic measure the backend gates on),
+  // plus the live playhead, so a rewind doesn't make the hint reappear after
+  // they've already passed halfway.
+  const duration = lessonData.duration_seconds || 0;
+  const furthest = Math.max(
+    lessonData.max_position_seconds || 0,
+    lessonData.pause_position_seconds || 0,
+    playbackProps.currentPlaybackTime || 0,
+  );
+  // Not when `paused` — that state shows its own "Daily lessons paused" line
+  // (and the ⏸ header), so adding this would be a third overlapping message.
+  const showEngagementHint =
+    !lessonData.paused && !lessonData.is_completed && duration > 0 && furthest > 0 && furthest < 0.5 * duration;
+
   // The only status worth showing is "paused" — for daily lessons, a "next
   // lesson: tomorrow" line is tautological (it's daily, of course it's
   // tomorrow), so we don't render it. `paused` is the API's engagement gate: a
@@ -112,6 +132,11 @@ export default function TodayEpisodeCard({ onChangeTopic, ...playbackProps }) {
     <div style={{ marginTop: "24px", textAlign: "center" }}>
       {lessonData.paused && (
         <p style={{ margin: "0 0 12px", fontSize: "14px", color: "var(--text-secondary)" }}>Daily lessons paused</p>
+      )}
+      {showEngagementHint && (
+        <p style={{ margin: "0 0 12px", fontSize: "13px", color: "var(--text-secondary)" }}>
+          Listen halfway to keep daily lessons coming automatically.
+        </p>
       )}
       <ConfigPill onClick={onChangeTopic} title="Daily lesson settings">
         <span>Daily lesson settings</span>
