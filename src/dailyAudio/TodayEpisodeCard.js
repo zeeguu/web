@@ -115,7 +115,10 @@ export default function TodayEpisodeCard({ onChangeTopic, ...playbackProps }) {
     lessonData.pause_position_seconds || 0,
     playbackProps.currentPlaybackTime || 0,
   );
-  const showUnlockHint = !lessonData.is_completed && duration > 0 && furthest > 0 && furthest < 0.5 * duration;
+  // Not when `paused` — that state shows its own "Daily lessons paused" line
+  // (and the ⏸ header), so adding this would be a third overlapping message.
+  const showUnlockHint =
+    !lessonData.paused && !lessonData.is_completed && duration > 0 && furthest > 0 && furthest < 0.5 * duration;
 
   // The only status worth showing is "paused" — for daily lessons, a "next
   // lesson: tomorrow" line is tautological (it's daily, of course it's
