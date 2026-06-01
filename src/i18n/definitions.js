@@ -71,6 +71,9 @@ let strings = new LocalizedStrings(
       myClasses: "My Classrooms",
       myTexts: "My Texts",
       tutorials: "Help",
+      notATeacherAccountTitle: "This isn't a teacher account",
+      notATeacherAccountBody:
+        "You're signed in with an account that doesn't have teacher access, so your classes can't be shown. If you have a separate teacher account, please log out and sign back in with it.",
       login: "Log In",
       register: "Register",
       getStarted: "Get Started",
@@ -1018,6 +1021,9 @@ let strings = new LocalizedStrings(
       myClasses: "Mine klasser",
       myTexts: "Mine tekster",
       tutorials: "Hjælp",
+      notATeacherAccountTitle: "Dette er ikke en lærerkonto",
+      notATeacherAccountBody:
+        "Du er logget ind med en konto, der ikke har læreradgang, så dine klasser kan ikke vises. Hvis du har en separat lærerkonto, så log ud og log ind igen med den.",
       login: "Log ind",
       email: "Email",
       name: "Navn",

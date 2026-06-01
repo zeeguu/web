@@ -66,7 +66,7 @@ Zeeguu_API.prototype.getCohortFromArticle = function (article_id, callback) {
   this._getJSON(`/get_cohorts_for_article/${article_id}`, callback);
 };
 
-Zeeguu_API.prototype.getCohortsInfo = function (callback) {
+Zeeguu_API.prototype.getCohortsInfo = function (callback, onError) {
   /*
   Example return:
   [
@@ -94,7 +94,7 @@ Zeeguu_API.prototype.getCohortsInfo = function (callback) {
     }
   ]
   */
-  this._getJSON(`cohorts_info`, callback);
+  this._getJSON(`cohorts_info`, callback, { onError });
 };
 
 Zeeguu_API.prototype.addArticleToCohort = function (
