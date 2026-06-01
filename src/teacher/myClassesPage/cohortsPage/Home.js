@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useContext } from "react";
 import LoadingAnimation from "../../../components/LoadingAnimation";
 import CohortList from "./CohortList";
-import NotATeacherNotice from "./NotATeacherNotice";
+import NotATeacherNotice from "../../sharedComponents/NotATeacherNotice";
 import strings from "../../../i18n/definitions";
 import { setTitle } from "../../../assorted/setTitle";
 import * as s from "../../../components/ColumnWidth.sc";
