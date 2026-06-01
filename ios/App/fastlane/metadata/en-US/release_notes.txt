@@ -1,8 +1,6 @@
-- A fresh daily audio lesson is now ready and waiting for you each day. Just open and listen.
-- Feed Preferences gets a cleaner single page: pick the topics you want and the keywords to avoid, all in one place.
-- Share articles and audio lessons using the native iOS share sheet.
-- Articles without a photo now show a topic-matched placeholder image in Discover and in My Articles, so cards look consistent.
-- Polished dark-mode reading layout for a more comfortable read at night.
-- Translate-and-adapt is more reliable: when a source can't be adapted, it falls back gracefully instead of getting stuck.
-- A smoother onboarding with clearer tips on translations and learning levels.
-- Various spacing and layout fixes across My Articles, the home feed, and statistics.
+- Your daily audio lesson now resumes right where you paused, instead of jumping back to the start.
+- A clearer daily-lesson home screen with a redesigned footer and settings.
+- Listen past the halfway mark to unlock tomorrow's lesson — now with a friendly hint.
+- The "Today" tab is now called "Current", and past-lesson tabs stay hidden until you actually have past lessons.
+- Fixed a scrollbar glitch on the empty and generating states of the daily audio screen.
+- Various smaller fixes and polish.
