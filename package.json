@@ -74,7 +74,7 @@
     "ext:installDepsWindows": "cd src/extension && cd .\\src\\zeeguu-react && npm install && cd ..\\..\\. && mklink /d .\\node_modules .\\src\\zeeguu-react\\node_modules",
     "ext:installDeps": "cd src/extension && (cd src/zeeguu-react/ && npm install) && ln -s src/zeeguu-react/node_modules .",
     "ext:prebuild": "cd src/extension && rm -rf build",
-    "ext:buildDev": "npm run ext:buildDevUnix:popup && npm run ext:buildDev:bg && npm run ext:buildDev:izo && npm run ext:buildDev:scrape && cd src/extension && rm -f ./build/manifest.* && cp ./manifest.chrome.dev.json ./build/manifest.json",
+    "ext:buildDev": "npm run ext:buildDevUnix:popup && npm run ext:buildDev:bg && npm run ext:buildDev:izo && npm run ext:buildDev:scrape && cd src/extension && mkdir -p ./build && cp ./src/youtube/youtubeContentScript.js ./build/youtubeContentScript.js && cp ./src/youtube/youtubePatch.js ./build/youtubePatch.js && rm -f ./build/manifest.* && cp ./manifest.chrome.dev.json ./build/manifest.json",
     "ext:buildProd": "npm run ext:buildUnix:popup && npm run ext:build:bg && npm run ext:build:izo && npm run ext:build:scrape && cd src/extension && rm -f ./build/manifest.* && cp ./manifest.chrome.json ./build/manifest.json",
     "ext:buildWindows": "cd src/extension && npm-run-all buildWindows:* && npm-run-all build:* && copy .\\public\\manifest.chrome.json .\\build\\manifest.json /Y",
     "ext:buildWindowsDev": "cd src/extension && npm-run-all buildWindows:* && npm-run-all build:* && copy .\\public\\manifest.chrome.dev.json .\\build\\manifest.json /Y",
