@@ -1,18 +1,15 @@
-import { useState, useEffect, useContext } from "react";
+import { useState, useEffect } from "react";
 import { useHistory } from "react-router-dom";
-import { APIContext } from "../contexts/APIContext";
 import useQuery from "../hooks/useQuery";
 import LoadingAnimation from "../components/LoadingAnimation";
 
 export default function SharedVideoHandler() {
-  const api = useContext(APIContext);
   const history = useHistory();
   const query = useQuery();
   const videoId = query.get("video_id");
 
   const [status, setStatus] = useState("loading");
   const [errorMessage, setErrorMessage] = useState("");
-  const [videoTitle, setVideoTitle] = useState(null);
 
   useEffect(() => {
     if (!videoId) {
@@ -20,25 +17,17 @@ export default function SharedVideoHandler() {
       setErrorMessage("No video id provided.");
       return;
     }
-    api.getVideoInfo(
-      videoId,
-      (video) => {
-        if (!video || !video.id) {
-          setStatus("error");
-          setErrorMessage("Video not found.");
-          return;
-        }
-        setVideoTitle(video.title || null);
-        // Hold the "Preparing <title>..." screen long enough to actually be
-        // visible -- without the delay the redirect fires on the same paint
-        // frame as the title set, and the user sees nothing.
-        setTimeout(() => history.replace(`/watch/video?id=${videoId}`), 800);
-      },
-      () => {
-        setStatus("error");
-        setErrorMessage("Could not load the shared video.");
-      },
+    // No upfront getVideoInfo -- VideoPlayer on /watch/video?id= already
+    // fetches it, and the response is ~1 MB for captioned videos (tokenized
+    // captions per segment). Doing it twice cost ~4 seconds. We hold the
+    // "Preparing your video..." screen for a beat so the transition isn't a
+    // jarring flash, then hand off to VideoPlayer which has its own loading
+    // state and surfaces any 404 there.
+    const timer = setTimeout(
+      () => history.replace(`/watch/video?id=${videoId}`),
+      800,
     );
+    return () => clearTimeout(timer);
   }, [videoId]);
 
   if (status === "error") {
@@ -64,16 +53,14 @@ export default function SharedVideoHandler() {
     );
   }
 
-  const message = videoTitle
-    ? `Preparing "${videoTitle}"…`
-    : "Preparing your video…";
-
   return (
     <LoadingAnimation
       reportIssueDelay={30000}
       specificStyle={{ minHeight: "70vh", justifyContent: "center" }}
     >
-      <div style={{ textAlign: "center", marginTop: "1em" }}>{message}</div>
+      <div style={{ textAlign: "center", marginTop: "1em" }}>
+        Preparing your video…
+      </div>
     </LoadingAnimation>
   );
 }
