@@ -8,6 +8,7 @@ import { APIContext } from "../contexts/APIContext";
 import { MetaStrip, MetaItem, MetaTag } from "../components/MetaStrip.sc";
 import { isSimplifiedArticle, articleSourceLabel } from "../utils/misc/articleHelpers";
 import { timeAgo } from "../utils/misc/readableTime";
+import { topicIconFor } from "../utils/misc/topicIcon";
 
 import * as s from "./SavedArticleRow.sc";
 
@@ -24,6 +25,8 @@ export default function SavedArticleRow({ article, onArticleRemoved }) {
   const savedAgo = article.personal_copy_saved_at
     ? timeAgo(article.personal_copy_saved_at)
     : null;
+
+  const PlaceholderIcon = topicIconFor(article.topics_list);
 
   // reading_completion is a 0..1 ratio from the backend. Hide the
   // indicator at 0 (default state for a fresh save).
@@ -82,11 +85,15 @@ export default function SavedArticleRow({ article, onArticleRemoved }) {
       role="button"
       tabIndex={0}
     >
-      {article.img_url && (
-        <s.ThumbnailWrap>
+      <s.ThumbnailWrap>
+        {article.img_url ? (
           <s.Thumbnail src={article.img_url} alt="" loading="lazy" decoding="async" />
-        </s.ThumbnailWrap>
-      )}
+        ) : (
+          <s.Placeholder>
+            <PlaceholderIcon style={{ fontSize: 32 }} />
+          </s.Placeholder>
+        )}
+      </s.ThumbnailWrap>
       <s.Content>
         <s.Title>{article.title}</s.Title>
         <MetaStrip>

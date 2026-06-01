@@ -26,15 +26,23 @@ const StyledInput = styled.textarea`
 const ClearBtn = styled.span`
   position: absolute;
   right: 8px;
-  top: 50%;
-  transform: translateY(-50%);
+  top: 8px;
   cursor: pointer;
   color: var(--text-secondary);
   font-size: 18px;
   display: flex;
 `;
 
-export default function ClearableInput({ value, onChange, onClear, placeholder, maxLength, tabIndex, rows = 1, ...props }) {
+export default function ClearableInput({
+  value,
+  onChange,
+  onClear,
+  placeholder,
+  maxLength,
+  tabIndex,
+  rows = 1,
+  ...props
+}) {
   const inputRef = useRef(null);
 
   // Auto-grow the textarea to fit its content. CSS `field-sizing: content`

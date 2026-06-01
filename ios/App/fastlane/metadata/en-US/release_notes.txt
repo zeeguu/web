@@ -1,5 +1,8 @@
-- Smoother exercise reveals: the answer slides into the solution slot and the solved word is shown the same way it appears in articles, with the translation above and tap-to-pronounce.
-- Reporting an exercise as broken now also pulls that word from your scheduling, with a 5-second Undo in case it was a misclick.
-- Click-word exercises are easier to tap: more line spacing and wider context.
-- Switching language from the exercises summary screen now takes you straight back to the exercises.
-- Fixed a bug that prevented some articles from opening.
+- A fresh daily audio lesson is now ready and waiting for you each day. Just open and listen.
+- Feed Preferences gets a cleaner single page: pick the topics you want and the keywords to avoid, all in one place.
+- Share articles and audio lessons using the native iOS share sheet.
+- Articles without a photo now show a topic-matched placeholder image in Discover and in My Articles, so cards look consistent.
+- Polished dark-mode reading layout for a more comfortable read at night.
+- Translate-and-adapt is more reliable: when a source can't be adapted, it falls back gracefully instead of getting stuck.
+- A smoother onboarding with clearer tips on translations and learning levels.
+- Various spacing and layout fixes across My Articles, the home feed, and statistics.

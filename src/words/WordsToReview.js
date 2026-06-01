@@ -5,7 +5,7 @@ import Infobox from "../components/Infobox";
 import { useState, useEffect, useContext } from "react";
 import { tokenize } from "../utils/text/preprocessing";
 import ToggleEditReviewWords from "./ToggleEditReviewWords";
-import { StyledButton } from "../components/allButtons.sc.js";
+import { StyledButton, HideWhenDisabledButton } from "../components/allButtons.sc.js";
 import Tooltip from "@mui/material/Tooltip";
 import { CenteredContent } from "../components/ColumnWidth.sc";
 import MoreInfoBox from "../components/MoreInfoBox";
@@ -122,9 +122,9 @@ export default function WordsToReview({
         {!exercisesEnabled ? (
           <Tooltip title="You need to translate words in the article first." arrow>
             <span>
-              <StyledButton $disabled disabled>
+              <HideWhenDisabledButton $disabled disabled>
                 {strings.toPracticeWords}
-              </StyledButton>
+              </HideWhenDisabledButton>
             </span>
           </Tooltip>
         ) : (

@@ -138,7 +138,7 @@ export default function SharedArticleHandler() {
     if (uploadId) return runArticleConversion(api.translateAndAdaptArticleUpload.bind(api), "translate");
     beginProcessing("translate");
     api.translateAndAdaptArticle(
-      sharedUrl,
+      { url: sharedUrl, articleId: articleDetection?.id },
       userDetails.learned_language,
       (result) => navigateToArticle(result.id),
       (error) => {

@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
+import useClampedOverflow from "../hooks/useClampedOverflow";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { isMobile } from "../utils/misc/browserDetection";
@@ -16,6 +17,7 @@ import ZeeguuSpeech from "../speech/APIBasedSpeech";
 import { estimateReadingTime, timeAgo } from "../utils/misc/readableTime";
 import ActionButton from "../components/ActionButton";
 import { articleSourceLabel } from "../utils/misc/articleHelpers";
+import { topicIconFor } from "../utils/misc/topicIcon";
 import OpenInNewRoundedIcon from "@mui/icons-material/OpenInNewRounded";
 import BookmarkBorderRoundedIcon from "@mui/icons-material/BookmarkBorderRounded";
 import BookmarkRoundedIcon from "@mui/icons-material/BookmarkRounded";
@@ -49,6 +51,16 @@ export default function ArticlePreview({
   const [isHidden, setIsHidden] = useState(article.hidden || false);
   const [isAnimatingOut, setIsAnimatingOut] = useState(false);
   const [isSummaryExpanded, setIsSummaryExpanded] = useState(false);
+  // "Show more" is dead weight when the summary fits in the clamp, but the
+  // CSS `…` stays unconditional when the box does overflow — so we need to
+  // know which case we're in. useClampedOverflow handles measurement +
+  // ResizeObserver so the reading stays in sync with async tokenized
+  // content swaps and viewport changes.
+  const clampedSummaryRef = useRef(null);
+  const summaryOverflows = useClampedOverflow(clampedSummaryRef, {
+    enabled: !isSummaryExpanded,
+    deps: [interactiveSummary, article.summary],
+  });
 
   useEffect(() => {
     if ((article.summary || article.title) && !isTokenizing && !interactiveSummary && !interactiveTitle) {
@@ -116,6 +128,7 @@ export default function ArticlePreview({
   };
 
   let topics = article.topics_list;
+  const PlaceholderIcon = topicIconFor(article.topics_list);
 
   function handleCloseRedirectionModal() {
     setIsRedirectionModaOpen(false);
@@ -195,30 +208,28 @@ export default function ArticlePreview({
     : article.video || (!Feature.extension_experiment1() && !hasExtension) || is_saved || hasInAppSimplification;
   const should_open_with_modal = doNotShowRedirectionModal_UserPreference === false;
 
-  // Returned without the s.ImageWithOverlay wrapper so callers can
-  // stack the Save icon as a sibling — nesting it inside this Link
-  // would let icon clicks bubble into navigation.
-  function imageLink() {
+  // The clickable media block at the top of the card. `visual` is either
+  // the real <img> or the topic-glyph placeholder; both get the same
+  // "Open" overlay and the same open-in-Zeeguu / modal / external wrapper
+  // so an image-less card opens (and overlays its Save button) exactly
+  // like one with a photo. Returned without the s.ImageWithOverlay wrapper
+  // so callers can stack the Save icon as a sibling — nesting it inside
+  // this Link would let icon clicks bubble into navigation.
+  function mediaLink(visual) {
     const innerLinkStyle = { display: "block", position: "relative", lineHeight: 0 };
-    const imgInner = (
+    const inner = (
       <>
-        <img
-          alt=""
-          src={article.img_url}
-          loading="lazy"
-          decoding="async"
-          style={{ cursor: "pointer", display: "block" }}
-        />
+        {visual}
         <s.ImageOpenOverlay>
           Open
-          {!should_open_in_zeeguu && <OpenInNewRoundedIcon style={{ fontSize: 14, marginLeft: 4 }} />}
+          {!should_open_in_zeeguu && <OpenInNewRoundedIcon style={{ fontSize: 18, marginLeft: 4 }} />}
         </s.ImageOpenOverlay>
       </>
     );
     if (should_open_in_zeeguu) {
       return (
         <Link to={`/read/article?id=${inAppArticleId}`} onClick={handleArticleClick} style={innerLinkStyle}>
-          {imgInner}
+          {inner}
         </Link>
       );
     }
@@ -239,7 +250,7 @@ export default function ArticlePreview({
             width: "100%",
           }}
         >
-          {imgInner}
+          {inner}
         </button>
       );
     }
@@ -251,48 +262,26 @@ export default function ArticlePreview({
         onClick={handleArticleClick}
         style={innerLinkStyle}
       >
-        {imgInner}
+        {inner}
       </a>
     );
   }
 
-  function titleLink(article) {
-    let linkToRedirect = `/read/article?id=${inAppArticleId}`;
+  const imageVisual = (
+    <img
+      alt=""
+      src={article.img_url}
+      loading="lazy"
+      decoding="async"
+      style={{ cursor: "pointer", display: "block" }}
+    />
+  );
 
-    let open_in_zeeguu = (
-      <ActionButton as={Link} to={linkToRedirect} onClick={handleArticleClick} variant="internal">
-        {is_saved ? "Open" : "Read Full"}
-      </ActionButton>
-    );
-
-    let open_externally_with_modal = (
-      <ActionButton
-        onClick={() => {
-          handleArticleClick();
-          handleOpenRedirectionModal();
-        }}
-      >
-        Open <OpenInNewRoundedIcon style={{ fontSize: 16, marginLeft: 4 }} />
-      </ActionButton>
-    );
-
-    // target=_self on mobile so the system back button returns to Zeeguu.
-    let open_externally_without_modal = (
-      <ActionButton
-        as="a"
-        target={isMobile ? "_self" : "_blank"}
-        rel="noreferrer"
-        href={externalUrl}
-        onClick={handleArticleClick}
-      >
-        Open <OpenInNewRoundedIcon style={{ fontSize: 16, marginLeft: 4 }} />
-      </ActionButton>
-    );
-
-    if (should_open_in_zeeguu) return open_in_zeeguu;
-    else if (should_open_with_modal) return open_externally_with_modal;
-    else return open_externally_without_modal;
-  }
+  const placeholderVisual = (
+    <s.PlaceholderImage>
+      <PlaceholderIcon style={{ fontSize: 56 }} />
+    </s.PlaceholderImage>
+  );
 
   if (isHidden && !isHiddenView) {
     return null;
@@ -393,27 +382,25 @@ export default function ArticlePreview({
       </MetaStrip>
 
       <s.ArticleContent>
-        {article.img_url && (
-          <s.ImageWithOverlay>
-            {imageLink()}
-            {/* Save toggle overlaid on the image — bookmark icon flips
-                between outline and filled. Sibling of the image-link so
-                clicks here don't bubble into navigation. */}
-            {!isHiddenView && (
-              <s.SaveIconButton
-                type="button"
-                onClick={handleToggleSave}
-                aria-label={isArticleSaved ? "Remove from saves" : "Save"}
-              >
-                {isArticleSaved ? (
-                  <BookmarkRoundedIcon style={{ fontSize: 18 }} />
-                ) : (
-                  <BookmarkBorderRoundedIcon style={{ fontSize: 18 }} />
-                )}
-              </s.SaveIconButton>
-            )}
-          </s.ImageWithOverlay>
-        )}
+        <s.ImageWithOverlay>
+          {mediaLink(article.img_url ? imageVisual : placeholderVisual)}
+          {/* Save toggle overlaid on the image (or placeholder) — bookmark
+              icon flips between outline and filled. Sibling of the
+              image-link so clicks here don't bubble into navigation. */}
+          {!isHiddenView && (
+            <s.SaveIconButton
+              type="button"
+              onClick={handleToggleSave}
+              aria-label={isArticleSaved ? "Remove from saves" : "Save"}
+            >
+              {isArticleSaved ? (
+                <BookmarkRoundedIcon style={{ fontSize: 18 }} />
+              ) : (
+                <BookmarkBorderRoundedIcon style={{ fontSize: 18 }} />
+              )}
+            </s.SaveIconButton>
+          )}
+        </s.ImageWithOverlay>
         {!inSavedView &&
           (() => {
             const summaryNode = interactiveSummary ? (
@@ -425,17 +412,24 @@ export default function ArticlePreview({
               <s.Summary>
                 {!dontShowSummary && (
                   <>
-                    {isSummaryExpanded ? summaryNode : <s.ClampedSummary>{summaryNode}</s.ClampedSummary>}
-                    <s.SummaryToggle type="button" onClick={() => setIsSummaryExpanded((v) => !v)}>
-                      {isSummaryExpanded ? "Show less" : "Show more"}
-                      <span aria-hidden="true">{isSummaryExpanded ? "▴" : "▾"}</span>
-                    </s.SummaryToggle>
+                    {isSummaryExpanded ? (
+                      summaryNode
+                    ) : (
+                      <s.ClampedSummary ref={clampedSummaryRef}>{summaryNode}</s.ClampedSummary>
+                    )}
+                    {(isSummaryExpanded || summaryOverflows) && (
+                      <s.SummaryToggle type="button" onClick={() => setIsSummaryExpanded((v) => !v)}>
+                        {isSummaryExpanded ? "Show less" : "Show more"}
+                        <span aria-hidden="true">{isSummaryExpanded ? "▴" : "▾"}</span>
+                      </s.SummaryToggle>
+                    )}
                   </>
                 )}
                 {/* Bottom action row only used as a fallback: the Hidden
-                  surface needs Unhide, and image-less articles need an
-                  explicit Open since there's no image to overlay it on. */}
-                {(isHiddenView || !article.img_url) && (
+                  surface needs Unhide. Image-less cards no longer need an
+                  explicit Open here — the placeholder banner carries the
+                  Open overlay just like a real image. */}
+                {isHiddenView && (
                   <div
                     style={{
                       display: "flex",
@@ -444,12 +438,9 @@ export default function ArticlePreview({
                       marginTop: "8px",
                     }}
                   >
-                    {isHiddenView && (
-                      <ActionButton onClick={handleUnhideArticle} variant="muted">
-                        Unhide
-                      </ActionButton>
-                    )}
-                    {!article.img_url && titleLink(article)}
+                    <ActionButton onClick={handleUnhideArticle} variant="muted">
+                      Unhide
+                    </ActionButton>
                   </div>
                 )}
               </s.Summary>

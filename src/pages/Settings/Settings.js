@@ -55,14 +55,11 @@ export default function Settings() {
         )}
         <SettingsItem path={"/account_settings/language_settings"}>{strings.languageSettings}</SettingsItem>
 
-        {!isAnonymous && (
-          <SettingsItem path={"/account_settings/my_classrooms"}>{strings.myClassrooms}</SettingsItem>
-        )}
+        {!isAnonymous && <SettingsItem path={"/account_settings/my_classrooms"}>{strings.myClassrooms}</SettingsItem>}
       </ListOfSettingsItems>
 
       <ListOfSettingsItems header={"Reading"}>
-        <SettingsItem path={"/account_settings/interests"}>{strings.interests}</SettingsItem>
-        <SettingsItem path={"/account_settings/filters"}>Filters</SettingsItem>
+        <SettingsItem path={"/account_settings/interests"}>{strings.feedPreferences}</SettingsItem>
       </ListOfSettingsItems>
 
       <ListOfSettingsItems header={strings.exercises}>
@@ -84,7 +81,11 @@ export default function Settings() {
         </ListOfSettingsItems>
       )}
 
-      <ButtonContainer className={"adaptive-alignment-horizontal"} style={{marginTop: "1em", marginBottom: "1em"}}>
+      <ListOfSettingsItems header={"Developer"}>
+        <SettingsItem path={"/account_settings/developer"}>Developer tools</SettingsItem>
+      </ListOfSettingsItems>
+
+      <ButtonContainer className={"adaptive-alignment-horizontal"} style={{ marginTop: "1em", marginBottom: "1em" }}>
         <LogOutButton />
       </ButtonContainer>
 

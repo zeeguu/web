@@ -16,7 +16,11 @@ let ArticleReader = styled.div`
   h1 {
     font-size: 1.6rem !important;
     font-weight: 800;
-    line-height: 1.5;
+    line-height: 1.25;
+    /* Override the UA's ~0.67em h1 margins: a small gap below the toolbar,
+       and keep the metadata tucked close beneath the title. */
+    margin-top: 0.2rem;
+    margin-bottom: 0.35rem;
   }
 
   h2 {
@@ -57,7 +61,11 @@ let TopbarButtonsContainer = styled.div`
   flex-direction: row;
   justify-content: space-between;
   margin-bottom: 0;
-  padding: 0.5em;
+  /* No horizontal padding here: the back-arrow button carries its own
+     0.5rem padding, which then lands its icon box on the same column edge
+     as the article content (ArticleReader has padding: 0 0.5rem). With the
+     extra 0.5em the chevron floated ~3x deeper than the title beneath it. */
+  padding: 0.5em 0;
 `;
 
 let TopReaderButtonsContainer = styled.div`
@@ -81,14 +89,16 @@ let ArticleTopics = styled.div`
 `;
 
 let ArticleInfoContainer = styled.div`
-  margin-top: 1em;
-  margin-bottom: 1rem;
+  /* Tuck the metadata right under the title — MetaStrip already carries its
+     own 8px top margin, so this container adds none. */
+  margin-top: 0;
+  margin-bottom: 1.25rem;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
   @media (max-width: 990px) {
     flex-direction: column;
-    align-items: left;
+    align-items: flex-start;
     gap: 1.2rem;
   }
 `;
@@ -100,6 +110,13 @@ let ArticleImgContainer = styled.div`
 
 let ArticleImg = styled.img`
   width: 100%;
+  /* Cap the hero to a fraction of the viewport so it never dominates before
+     any text shows, and scales down on small screens (a fixed rem doesn't).
+     Taller sources are center-cropped to this banner; shorter ones keep their
+     natural height. */
+  max-height: 25vh;
+  object-fit: cover;
+  object-position: center;
   border-radius: 1em;
   margin-bottom: 1em;
 `;
@@ -209,8 +226,19 @@ let BookmarkButton = styled.div`
 
 let MainText = styled.div`
   font-size: 1.2em;
-  line-height: 2em;
+  /* 2em leading floated the lines too far apart to track comfortably; 1.7
+     keeps room for the inline translation chips without the airy feel. */
+  line-height: 1.7;
   padding: 0.2em;
+  color: var(--text-primary);
+
+  /* In dark mode the reading text was rendering near-white (~15:1 on the
+     navy backdrop), which haloes and makes lines hard to follow. Settle it
+     a touch below the heading's #e0e0e0 — ~11:1, still well past WCAG AAA
+     but calmer for long-form reading. */
+  :root[data-theme="dark"] & {
+    color: #d2d2da;
+  }
 
   .textParagraph {
     margin-bottom: 1.2em;
@@ -370,6 +398,22 @@ let ExtraSpaceAtTheBottom = styled.div`
   margin-bottom: 8em;
 `;
 
+/* The reader scrolls edge-to-edge, so mid-article the body text runs right
+   into the phone's curved bottom corner / home-indicator zone. This fixed
+   sliver fades the bottom-most line into the page background over exactly
+   that unsafe zone, so text dissolves instead of being hard-clipped by the
+   curvature. (Matches the --safe-area-bottom convention used by BottomNav.) */
+let BottomFade = styled.div`
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: calc(0.5rem + var(--safe-area-bottom, env(safe-area-inset-bottom, 0px)));
+  pointer-events: none;
+  z-index: 999;
+  background: linear-gradient(to bottom, transparent, var(--bg-primary));
+`;
+
 let CombinedBox = styled.div`
   border: 1px solid var(--border-light);
   background-color: var(--bg-primary);
@@ -437,6 +481,7 @@ export {
   Title,
   BookmarkButton,
   MainText,
+  BottomFade,
   OrangeButton,
   InteractiveBox,
   CenteredContent,

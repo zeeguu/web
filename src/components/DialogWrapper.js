@@ -3,7 +3,9 @@ import * as RadixDialog from "@radix-ui/react-dialog";
 import styled from "styled-components";
 
 const Overlay = styled(RadixDialog.Overlay)`
-  background: hsla(0, 0%, 0%, 0.33);
+  background: hsla(0, 0%, 0%, 0.6);
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
   position: fixed;
   top: 0;
   right: 0;

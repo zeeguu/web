@@ -4,8 +4,8 @@ const BaseSectionStyle = css`
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin: 1rem 0;
-  gap: 1.5rem;
+  margin: 0.5rem 0;
+  gap: 0.75rem;
 `;
 
 const Header = styled.header`

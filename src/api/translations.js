@@ -59,7 +59,30 @@ Zeeguu_API.prototype.getOneTranslation = function (
 
   console.log(`[TRANSLATION] About to call apiPost`, { timestamp: new Date().toISOString(), payloadSize: JSON.stringify(payload).length });
 
-  return this.apiPost(`/get_one_translation/${from_lang}/${to_lang}`, payload);
+  // ADR 022: canonical name. /get_one_translation is still aliased on the
+  // server for the extension's frozen bundle; once that ships its next build,
+  // the alias can go away.
+  return this.apiPost(`/translate_word/${from_lang}/${to_lang}`, payload);
+};
+
+// ADR 022: explicit on-demand LLM translation. Called from the AlterMenu's
+// "Ask LLM" button so the (slow, paid) LLM round trip only fires when the
+// learner explicitly wants more than the 3-way vote already gave them.
+Zeeguu_API.prototype.askLlmTranslation = function (from_lang, to_lang, word, context) {
+  return this.apiPost(`/ask_llm_translation/${from_lang}/${to_lang}`, {
+    word: word,
+    context: context,
+  }).then((response) => response.data);
+};
+
+// ADR 022 follow-up: lazy alternatives for words whose /translate_word
+// response didn't include them (own-past-translation early-return path).
+// Called from AlterMenu open, not on every word tap.
+Zeeguu_API.prototype.getTranslationAlternatives = function (from_lang, to_lang, word, context) {
+  return this.apiPost(`/translation_alternatives/${from_lang}/${to_lang}`, {
+    word: word,
+    context: context,
+  }).then((response) => response.data);
 };
 
 Zeeguu_API.prototype.getMultipleTranslations = function (
@@ -96,92 +119,6 @@ Zeeguu_API.prototype.getMultipleTranslations = function (
     `get_multiple_translations/${from_lang}/${to_lang}`,
     qs.stringify(payload),
   );
-};
-
-/**
- * Stream translations as they arrive using Server-Sent Events.
- * Calls onTranslation for each translation as it arrives.
- *
- * @param {string} from_lang - Source language code
- * @param {string} to_lang - Target language code
- * @param {string} word - Word to translate
- * @param {string} context - Sentence context
- * @param {function} onTranslation - Callback called with each translation object
- * @param {function} onComplete - Callback called when all translations received
- * @param {boolean} isSeparatedMwe - Whether this is a separated MWE
- * @param {string} fullSentenceContext - Full sentence for separated MWEs
- */
-Zeeguu_API.prototype.getTranslationsStreaming = function (
-  from_lang,
-  to_lang,
-  word,
-  context,
-  onTranslation,
-  onComplete,
-  isSeparatedMwe = false,
-  fullSentenceContext = null,
-) {
-  const payload = new FormData();
-  payload.append("word", word);
-  payload.append("context", context);
-  payload.append("is_separated_mwe", isSeparatedMwe.toString());
-  if (fullSentenceContext) {
-    payload.append("full_sentence_context", fullSentenceContext);
-  }
-
-  const url = this._appendSessionToUrl(
-    `get_translations_stream/${from_lang}/${to_lang}`
-  );
-
-  // Use fetch with streaming for SSE over POST
-  fetch(url, {
-    method: "POST",
-    body: payload,
-  })
-    .then((response) => {
-      const reader = response.body.getReader();
-      const decoder = new TextDecoder();
-      let buffer = "";
-
-      function processStream() {
-        reader.read().then(({ done, value }) => {
-          if (done) {
-            onComplete && onComplete();
-            return;
-          }
-
-          buffer += decoder.decode(value, { stream: true });
-
-          // Process complete SSE messages
-          const lines = buffer.split("\n");
-          buffer = lines.pop(); // Keep incomplete line in buffer
-
-          for (const line of lines) {
-            if (line.startsWith("data: ")) {
-              const data = line.slice(6);
-              if (data === "[DONE]") {
-                onComplete && onComplete();
-                return;
-              }
-              try {
-                const translation = JSON.parse(data);
-                onTranslation && onTranslation(translation);
-              } catch (e) {
-                console.error("Failed to parse translation:", e);
-              }
-            }
-          }
-
-          processStream();
-        });
-      }
-
-      processStream();
-    })
-    .catch((error) => {
-      console.error("Streaming error:", error);
-      onComplete && onComplete();
-    });
 };
 
 Zeeguu_API.prototype.contributeTranslation = function (

@@ -331,7 +331,7 @@ export default function ArticleReader({ teacherArticleID }) {
   const handleTranslateAndAdapt = () => {
     setIsProcessingArticle(true);
     api.translateAndAdaptArticle(
-      articleInfo.url,
+      { articleId: articleInfo.id, url: articleInfo.url },
       userDetails.learned_language,
       (result) => {
         setIsProcessingArticle(false);
@@ -339,9 +339,12 @@ export default function ArticleReader({ teacherArticleID }) {
         history.replace("/read/article?id=" + result.id);
       },
       (error) => {
+        // Don't leave the user staring at a closed modal with nothing changed:
+        // fall back to reading the original article (translations off, since
+        // it's not in their learned language).
         console.error("Translation failed:", error);
         setIsProcessingArticle(false);
-        setShowLanguageModal(false);
+        handleReadOriginal();
       },
     );
   };
@@ -504,6 +507,7 @@ export default function ArticleReader({ teacherArticleID }) {
         <ReviewWordsPopup open={reviewWordsModal.open} handleCancel={reviewWordsModal.close} />
         <s.ExtraSpaceAtTheBottom />
       </s.ArticleReader>
+      <s.BottomFade />
     </>
   );
 }

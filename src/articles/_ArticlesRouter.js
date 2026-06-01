@@ -24,12 +24,17 @@ import LocalStorage from "../assorted/LocalStorage";
 import { APIContext } from "../contexts/APIContext";
 import { BrowsingSessionContext } from "../contexts/BrowsingSessionContext";
 import useBrowsingSession from "../hooks/useBrowsingSession";
+import { APIContext } from "../contexts/APIContext";
+import { UserContext } from "../contexts/UserContext";
+import useTranslationOnboarding from "../hooks/useTranslationOnboarding";
+import TranslationOnboardingPopup from "../pages/onboarding/notifications/TranslationOnboardingPopup";
 
 const READ_TAB_PATHS = ["/articles", "/articles/mySearches", "/articles/bookmarked", "/articles/classroom"];
 
 export default function ArticlesRouter({ hasExtension, isChrome }) {
   const api = useContext(APIContext);
   const history = useHistory();
+  const { userDetails } = useContext(UserContext);
   const { getBrowsingSessionId } = useBrowsingSession();
   const location = useLocation();
   const hideRecommendations = LocalStorage.hasFeature("hide_recommendations");
@@ -37,6 +42,7 @@ export default function ArticlesRouter({ hasExtension, isChrome }) {
   const dropdownRef = useRef(null);
   const [showTopicsDropdown, setShowTopicsDropdown] = useState(false);
   const [subscribedTopics, setSubscribedTopics] = useState(null);
+  const translationModal = useTranslationOnboarding(api, userDetails);
 
   useEffect(() => {
     api.getSubscribedTopics((data) => setSubscribedTopics(data || []));
@@ -154,6 +160,7 @@ export default function ArticlesRouter({ hasExtension, isChrome }) {
           <PrivateRoute path="/search" component={Search} />
         </div>
       </columnS.NarrowColumn>
+      <TranslationOnboardingPopup open={translationModal.open} handleCancel={translationModal.close} />
     </BrowsingSessionContext.Provider>
   );
 }
