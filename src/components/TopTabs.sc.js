@@ -94,35 +94,4 @@ const TopTabs = styled.div`
   }
 `;
 
-const TopicsDropdownMenu = styled.div`
-  position: absolute;
-  top: 100%;
-  right: 0;
-  margin-top: 0.5rem;
-  min-width: 180px;
-  background: white;
-  border: 1px solid #e0e0e0;
-  border-radius: 0.5rem;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  z-index: 1000;
-  overflow: hidden;
-`;
-
-const TopicsDropdownItem = styled.button`
-  display: block;
-  width: 100%;
-  padding: 0.6rem 1rem;
-  border: none;
-  background: transparent;
-  color: #333;
-  font-size: 0.9rem;
-  text-align: left;
-  cursor: pointer;
-  transition: background 0.15s ease;
-
-  &:hover {
-    background: #f5f5f5;
-  }
-`;
-
-export { TopTabs, TopTabsWrapper, TopicsDropdownMenu, TopicsDropdownItem };
+export { TopTabs, TopTabsWrapper };
