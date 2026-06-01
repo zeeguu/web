@@ -39,6 +39,12 @@ const TopTabs = styled.div`
     letter-spacing: 0;
     display: flex;
     align-items: center;
+    color: var(--text-primary);
+  }
+
+  .headmenuTab.active {
+    color: var(--text-primary);
+    font-weight: 600;
   }
 
   /* Scoped to devices with a real hover capability. On iOS (and any
