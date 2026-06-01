@@ -6,6 +6,8 @@ import { getIsLoggedIn, getUserInfoDictFromCookies } from "../popup/cookies";
 import Zeeguu_API from "../../../api/Zeeguu_API";
 import { EXTENSION_SOURCE } from "../constants";
 import { isUnsupportedTab, sendTabToZeeguu } from "../shared/sendTabToZeeguu";
+import { isYouTubeTab } from "../shared/sendYouTubeTabToZeeguu";
+import { shareYouTubeTab } from "../shared/shareYouTubeTab";
 
 // Montserrat font
 const googleFontUrl =
@@ -130,6 +132,13 @@ async function startReader() {
     const userData = await getUserInfoDictFromCookies(WEB_URL);
     api.setSession(userData.session);
     await api.logUserActivity(api.OPEN_CONTEXT, "", tab.url, EXTENSION_SOURCE);
+
+    if (isYouTubeTab(tab)) {
+      const url = await shareYouTubeTab(api, tab, WEB_URL);
+      BROWSER_API.tabs.create({ url });
+      return;
+    }
+
     const upload = await sendTabToZeeguu(api, tab);
     BROWSER_API.tabs.create({
       url: `${WEB_URL}/shared-article?upload_id=${upload.id}`,

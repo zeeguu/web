@@ -23,6 +23,7 @@ import ReadingHistory from "./words/WordHistory";
 import ActivityRouter from "./activity/_ActivityRouter";
 import ArticleReader from "./reader/ArticleReader";
 import SharedArticleHandler from "./reader/SharedArticleHandler";
+import SharedVideoHandler from "./reader/SharedVideoHandler";
 import LoadingAnimation from "./components/LoadingAnimation";
 import { getStoredSession } from "./utils/cookies/userInfo";
 import LocalStorage from "./assorted/LocalStorage";
@@ -138,6 +139,7 @@ export default function MainAppRouter({ hasExtension, handleSuccessfulLogIn }) {
         )}
         <PrivateRouteWithLayout path="/teacher" component={TeacherRouter} />
         <PrivateRouteWithLayout path="/shared-article" component={SharedArticleHandler} />
+        <PrivateRouteWithLayout path="/shared-video" component={SharedVideoHandler} />
         <PrivateRouteWithLayout path="/read/article" component={ArticleReader} />
         <Redirect from="/user_dashboard" to="/activity-history/statistics" />
         <PrivateRouteWithLayout path="/search" component={ArticlesRouter} />

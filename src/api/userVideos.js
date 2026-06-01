@@ -31,3 +31,12 @@ Zeeguu_API.prototype.updatePlaybackPosition = function (videoID, positionInSecon
 Zeeguu_API.prototype.setVideoOpened = function (videoID) {
   this._post("video_opened", `video_id=${videoID}`);
 };
+
+// **********
+// SHARE-TO-VIDEO: client-side ingestion
+// Captions are extracted in the user's browser (residential IP) because YouTube
+// blocks server-side caption fetches from datacenter IPs.
+// **********
+Zeeguu_API.prototype.createVideoUpload = function (payload, callback, onError) {
+  this._postJSON("video_upload/create", payload, callback, onError);
+};
