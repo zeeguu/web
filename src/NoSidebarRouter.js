@@ -10,18 +10,11 @@ import LoadingAnimation from "./components/LoadingAnimation";
 
 // Lazy load separate parts of the app
 const LazyTeacherRouter = lazy(() => import("./teacher/_routing/_TeacherRouter"));
-const LazyUserDashboard = lazy(() => import("./userDashboard/UserDashboard"));
 
 // Wrapper components to handle Suspense (required for react-router v5)
 const TeacherRouter = (props) => (
   <Suspense fallback={<LoadingAnimation />}>
     <LazyTeacherRouter {...props} />
-  </Suspense>
-);
-
-const UserDashboard = (props) => (
-  <Suspense fallback={<LoadingAnimation />}>
-    <LazyUserDashboard {...props} />
   </Suspense>
 );
 
@@ -36,15 +29,9 @@ export default function NoSidebarRouter({ setUser }) {
 
       <PrivateRoute path="/teacher" component={TeacherRouter} />
 
-      <PrivateRoute
-        path="/render/account_settings"
-        setUser={setUser}
-        component={Settings}
-      />
+      <PrivateRoute path="/render/account_settings" setUser={setUser} component={Settings} />
 
       <PrivateRoute path="/render/read/article" component={StandAloneReader} />
-
-      <PrivateRoute path="/user_dashboard" component={UserDashboard} />
     </>
   );
 }

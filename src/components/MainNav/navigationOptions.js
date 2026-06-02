@@ -26,12 +26,12 @@ export default class NavigationOptions {
     icon: <NavIcon name="exercises" />,
     text: strings.exercises,
   });
-  
+
   static verbalFlashcards = Object.freeze({
     linkTo: "/verbalFlashcards",
     icon: <NavIcon name="verbalFlashcards" />,
     text: strings.verbalFlashcards,
-  })
+  });
 
   static dailyAudio = Object.freeze({
     linkTo: "/daily-audio",
@@ -67,12 +67,6 @@ export default class NavigationOptions {
     linkTo: "/activity-history",
     icon: <NavIcon name="history" />,
     text: strings.myActivity,
-  });
-
-  static statistics = Object.freeze({
-    linkTo: "/user_dashboard",
-    icon: <NavIcon name="statistics" />,
-    text: strings.userDashboard,
   });
 
   static get teacherSite() {
