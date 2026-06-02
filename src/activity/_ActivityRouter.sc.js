@@ -5,8 +5,8 @@ const ActivityNarrowColumn = styled.div`
   padding: 1px;
 
   @media (max-width: 768px) {
-    margin-left: 12px;
-    margin-right: 12px;
+    margin-left: 16px;
+    margin-right: 16px;
   }
 `;
 
