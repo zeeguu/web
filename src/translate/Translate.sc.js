@@ -1,5 +1,13 @@
 import styled from "styled-components";
 import { zeeguuOrange } from "../components/colors";
+import { NarrowColumn } from "../components/ColumnWidth.sc";
+
+export const TranslateNarrowColumn = styled(NarrowColumn)`
+  @media (max-width: 768px) {
+    margin-left: 12px;
+    margin-right: 12px;
+  }
+`;
 
 export const DirectionSelector = styled.div`
   display: flex;
@@ -13,8 +21,8 @@ export const LanguageLabel = styled.span`
   font-weight: 600;
   font-size: 1rem;
   color: var(--text-primary);
-  min-width: 80px;
   text-align: center;
+  white-space: nowrap;
 `;
 
 export const SwapButton = styled.button`
@@ -91,7 +99,6 @@ export const ResultsHeader = styled.h3`
   gap: 0.75rem;
   flex-wrap: wrap;
 `;
-
 
 export const SpeakButton = styled.button`
   background: none;
