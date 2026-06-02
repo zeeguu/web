@@ -4,8 +4,8 @@ import { NarrowColumn } from "../components/ColumnWidth.sc";
 
 export const TranslateNarrowColumn = styled(NarrowColumn)`
   @media (max-width: 768px) {
-    margin-left: 12px;
-    margin-right: 12px;
+    margin-left: 16px;
+    margin-right: 16px;
   }
 `;
 
