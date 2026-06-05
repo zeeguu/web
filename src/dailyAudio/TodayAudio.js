@@ -30,6 +30,23 @@ const PLACEHOLDER_PROGRESS_MESSAGES = [
 ];
 const PLACEHOLDER_ROTATION_MS = 2500;
 
+// Today view's projection from (loading / generating / lesson / subscription
+// status / error) → one of seven UI states. One return per row of the table;
+// the render below is a single switch on the result. Keeping this pure makes
+// "what does the user see for state X?" answerable in one function.
+function selectTodayView({ isLoading, prefLoaded, isGenerating, lessonData, subscription, error }) {
+  if (isLoading || !prefLoaded) return "loading";
+  if (isGenerating)             return "generating";
+  // lessonData covers today's lesson AND the engagement-paused waiting lesson
+  // (returned by the API with paused=true); the episode card renders both.
+  if (lessonData)               return "today_lesson";
+  if (error)                    return "error";
+  const status = subscription?.subscription_status;
+  if (status === "off")         return "off";
+  if (status === "active")      return "empty_today";
+  return "setup"; // not_subscribed (or unknown)
+}
+
 export default function TodayAudio() {
   const api = useContext(APIContext);
   const { userDetails, setUserDetails } = useContext(UserContext);
@@ -453,7 +470,12 @@ export default function TodayAudio() {
     />
   );
 
-  if (isLoading || !prefLoaded) {
+  // Single dispatch on the projection; each `view` value is one row of the
+  // decision table in selectTodayView (above). Bulky JSX states return early;
+  // the four centered-CTA states share the layout via CenteredCta below.
+  const view = selectTodayView({ isLoading, prefLoaded, isGenerating, lessonData, subscription, error });
+
+  if (view === "loading") {
     return (
       <div style={{ padding: "20px" }}>
         <LoadingAnimation>
@@ -463,7 +485,7 @@ export default function TodayAudio() {
     );
   }
 
-  if (isGenerating) {
+  if (view === "generating") {
     let progressDetail = PLACEHOLDER_PROGRESS_MESSAGES[placeholderIndex % PLACEHOLDER_PROGRESS_MESSAGES.length];
     let progressPercent = 1;
 
@@ -583,7 +605,7 @@ export default function TodayAudio() {
     );
   }
 
-  if (lessonData) {
+  if (view === "today_lesson") {
     return (
       <>
         <TodayEpisodeCard
@@ -603,71 +625,71 @@ export default function TodayAudio() {
     );
   }
 
-  // No lesson for today. Render the right subscription state in the shared
-  // centered layout: a recoverable error, turned-off, waiting-for-next-day,
-  // held-until-you-finish-the-previous, or first-run setup.
-  const subStatus = subscription?.subscription_status;
-
-  let heading;
-  let body;
-  let primaryLabel;
-  let primaryAction;
-
-  if (error) {
-    heading = "Let's try a different topic";
-    body = error;
-    primaryLabel = "Change daily topic";
-    primaryAction = () => setSettingsOpen(true);
-  } else if (subStatus === "off") {
-    heading = "Daily lessons are off";
-    body = "Turn them back on and a fresh lesson will be waiting on your next day.";
-    primaryLabel = "Turn on daily lessons";
-    primaryAction = turnOnDailyLessons;
-  } else if (subStatus === "active") {
-    // A waiting (engagement-paused) lesson arrives as lessonData with paused=true
-    // and is handled by the episode card, so this no-lesson path means "subscribed
-    // but nothing for today yet" — a cron miss / first day / timezone gap. The
-    // cron won't necessarily run again today, so offer to make it now rather than
-    // promise a date.
-    heading = "No lesson yet today";
-    body = "Make today's lesson now, or it'll be ready on your next day.";
-    primaryLabel = "Generate today's lesson";
-    primaryAction = () => startGeneration(dailyType, dailySuggestion);
-  } else {
-    // not subscribed — first-run setup
-    heading = "A new lesson, daily";
-    body = "Choose what you'd like to listen to. We'll make you a fresh lesson on it daily — starting with today's.";
-    primaryLabel = "Set up my daily lessons";
-    primaryAction = () => setSettingsOpen(true);
-  }
+  // The four remaining views share the centered-CTA layout; pick copy + action
+  // by view. One row per view — what the user reads matches the decision table.
+  const cta = {
+    error: {
+      heading: "Let's try a different topic",
+      body: error,
+      primaryLabel: "Change daily topic",
+      primaryAction: () => setSettingsOpen(true),
+    },
+    off: {
+      heading: "Daily lessons are off",
+      body: "Turn them back on and a fresh lesson will be waiting on your next day.",
+      primaryLabel: "Turn on daily lessons",
+      primaryAction: turnOnDailyLessons,
+    },
+    empty_today: {
+      // Subscribed but nothing for today yet — a cron miss / first day /
+      // timezone gap. The cron won't necessarily run again today, so offer to
+      // make it now rather than promise a date.
+      heading: "No lesson yet today",
+      body: "Make today's lesson now, or it'll be ready on your next day.",
+      primaryLabel: "Generate today's lesson",
+      primaryAction: () => startGeneration(dailyType, dailySuggestion),
+    },
+    setup: {
+      heading: "A new lesson, daily",
+      body: "Choose what you'd like to listen to. We'll make you a fresh lesson on it daily — starting with today's.",
+      primaryLabel: "Set up my daily lessons",
+      primaryAction: () => setSettingsOpen(true),
+    },
+  }[view];
 
   return (
     <>
-      <div
-        style={{
-          padding: "20px",
-          textAlign: "center",
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          justifyContent: "center",
-          // dvh (not vh) + explicit safe-area insets so this centered empty/setup
-          // state fills exactly the space between the top bar and bottom nav
-          // without overflowing into a scrollbar on notch / Dynamic Island phones
-          // (plain 100vh overcounts there). Same chrome offsets as the lesson view.
-          minHeight: "calc(100dvh - 3rem - 5.5rem - env(safe-area-inset-top) - env(safe-area-inset-bottom))",
-        }}
-      >
-        <div style={{ fontSize: "2.5rem" }} aria-hidden>
-          🎧
-        </div>
-        <h2 style={{ color: zeeguuOrange, margin: "8px 0" }}>{heading}</h2>
-        <p style={{ color: "var(--text-secondary)", maxWidth: "300px", marginBottom: "24px" }}>{body}</p>
-        <BannerButton onClick={primaryAction} style={{ padding: "12px 24px", fontSize: "1rem" }}>
-          {primaryLabel}
-        </BannerButton>
-      </div>
+      <CenteredCta {...cta} />
       {settingsDialog}
     </>
+  );
+}
+
+// Centered-layout empty/setup state — shared by the error / off / empty_today /
+// setup views. Sizing uses dvh + explicit safe-area insets so it fills exactly
+// the space between the top bar and bottom nav without spilling into a
+// scrollbar on notch / Dynamic Island phones.
+function CenteredCta({ heading, body, primaryLabel, primaryAction }) {
+  return (
+    <div
+      style={{
+        padding: "20px",
+        textAlign: "center",
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
+        minHeight: "calc(100dvh - 3rem - 5.5rem - env(safe-area-inset-top) - env(safe-area-inset-bottom))",
+      }}
+    >
+      <div style={{ fontSize: "2.5rem" }} aria-hidden>
+        🎧
+      </div>
+      <h2 style={{ color: zeeguuOrange, margin: "8px 0" }}>{heading}</h2>
+      <p style={{ color: "var(--text-secondary)", maxWidth: "300px", marginBottom: "24px" }}>{body}</p>
+      <BannerButton onClick={primaryAction} style={{ padding: "12px 24px", fontSize: "1rem" }}>
+        {primaryLabel}
+      </BannerButton>
+    </div>
   );
 }
