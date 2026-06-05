@@ -65,14 +65,6 @@ Zeeguu_API.prototype.CLOSE_MODAL = "CLOSE MODAL";
 // Audio Experiment
 Zeeguu_API.prototype.AUDIO_EXP = "AUDIO_EXP";
 
-// User Activity Dashboard
-Zeeguu_API.prototype.USER_DASHBOARD_OPEN = "UD - USER DASHBOARD OPEN";
-Zeeguu_API.prototype.USER_DASHBOARD_USER_FEEDBACK = "UD - USER DASHBOARD FEEDBACK";
-Zeeguu_API.prototype.USER_DASHBOARD_TAB_CHANGE = "UD - USER DASHBOARD TAB CHANGE";
-Zeeguu_API.prototype.USER_DASHBOARD_PERIOD_CHANGE = "UD - USER DASHBOARD PERIOD CHANGE";
-Zeeguu_API.prototype.USER_DASHBOARD_TIME_COUNT_CHANGE = "UD - USER DASHBOARD TIME COUNT CHANGE";
-Zeeguu_API.prototype.USER_DASHBOARD_DATE_CHANGE = "UD - USER DASHBOARD DATE CHANGE";
-
 // Rate limiting state for logUserActivity - prevents spam from buggy clients
 const activityRateLimiter = {
   lastEventKey: null,

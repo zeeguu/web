@@ -141,7 +141,6 @@ export default function MainAppRouter({ hasExtension, handleSuccessfulLogIn }) {
         <PrivateRouteWithLayout path="/shared-article" component={SharedArticleHandler} />
         <PrivateRouteWithLayout path="/shared-video" component={SharedVideoHandler} />
         <PrivateRouteWithLayout path="/read/article" component={ArticleReader} />
-        <Redirect from="/user_dashboard" to="/activity-history/statistics" />
         <PrivateRouteWithLayout path="/search" component={ArticlesRouter} />
         <PrivateRouteWithLayout
           path="/articleWordReview/:articleID"
