@@ -28,7 +28,7 @@ const TopTabs = styled.div`
     /* Row height lives here, NOT in the separator's padding — otherwise
        single-tab pages (no separator) render a visibly shorter bar. */
     min-height: 3em;
-    width: 100%;
+    width: fit-content;
     align-items: center;
     display: flex;
     justify-content: center;
@@ -37,6 +37,13 @@ const TopTabs = styled.div`
     border-radius: 1rem;
     margin: 0 auto;
     margin-top: 0.5em;
+  }
+
+  .all__tabs--compact {
+    min-height: auto;
+    padding: 0 0.75rem;
+    gap: 0.4em;
+    font-size: 0.9em;
   }
 
   .all__tabs--with-bg {
@@ -69,7 +76,7 @@ const TopTabs = styled.div`
     }
   }
 
-  <<<<<<< HEAD ======= .row__bar {
+  .row__bar {
     margin: 0px;
     /* Horizontal spacing only — vertical padding here would set the row
        height for multi-tab pages and desync them from single-tab ones. */
@@ -83,7 +90,6 @@ const TopTabs = styled.div`
     transform: rotate(-90deg);
   }
 
-  >>>>>>> master
   /*******MEDIA QUERIES **********/
   @media screen and (max-width: 768px) {
     .headmenuTab {

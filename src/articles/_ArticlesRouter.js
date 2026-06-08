@@ -5,6 +5,7 @@ import HiddenArticles from "../myArticles/HiddenArticles";
 
 import { useHistory } from "react-router-dom";
 import { PrivateRoute } from "../PrivateRoute";
+import { Redirect } from "react-router-dom";
 import ClassroomArticles from "./ClassroomArticles";
 import TopTabs from "../components/TopTabs";
 import strings from "../i18n/definitions";
@@ -17,9 +18,9 @@ import SearchRoundedIcon from "@mui/icons-material/SearchRounded";
 import HomeRoundedIcon from "@mui/icons-material/HomeRounded";
 import BookmarkRoundedIcon from "@mui/icons-material/BookmarkRounded";
 import SchoolRoundedIcon from "@mui/icons-material/SchoolRounded";
-import SettingsRoundedIcon from "@mui/icons-material/SettingsRounded";
 
 import * as columnS from "../components/ColumnWidth.sc";
+import * as s from "./_ArticlesRouter.sc";
 import LocalStorage from "../assorted/LocalStorage";
 import { APIContext } from "../contexts/APIContext";
 import { BrowsingSessionContext } from "../contexts/BrowsingSessionContext";
@@ -41,40 +42,33 @@ export default function ArticlesRouter({ hasExtension, isChrome }) {
   const iconProps = { style: { fontSize: "1.55rem", verticalAlign: "middle" } };
 
   const homeIcon = (
-    <span style={iconStyle}>
+    <s.IconSpan style={{ verticalAlign: "middle" }}>
       <HomeRoundedIcon {...iconProps} />
-    </span>
+    </s.IconSpan>
   );
 
   const bookmarkIcon = (
-    <span style={iconStyle}>
+    <s.IconSpan style={{ verticalAlign: "middle" }}>
       <BookmarkRoundedIcon {...iconProps} />
-    </span>
+    </s.IconSpan>
   );
 
   const classroomIcon = (
-    <span style={iconStyle}>
+    <s.IconSpan style={{ verticalAlign: "middle" }}>
       <SchoolRoundedIcon {...iconProps} />
-    </span>
+    </s.IconSpan>
   );
 
   const searchIcon = (
-    <span style={iconStyle}>
+    <s.IconSpan style={{ verticalAlign: "middle" }}>
       <SearchRoundedIcon {...iconProps} />
-    </span>
-  );
-
-  const settingsIcon = (
-    <span style={iconStyle}>
-      <SettingsRoundedIcon {...iconProps} />
-    </span>
+    </s.IconSpan>
   );
 
   const tabs = [
     !hideRecommendations && { text: homeIcon, link: "/articles" },
     { text: bookmarkIcon, link: "/articles/bookmarked" },
     isStudent && { text: classroomIcon, link: "/articles/classroom" },
-    !hideRecommendations && { text: settingsIcon, link: "/account_settings/interests" },
     !hideRecommendations && {
       text: searchIcon,
       link: "/articles/mySearches",
@@ -87,9 +81,17 @@ export default function ArticlesRouter({ hasExtension, isChrome }) {
     <BrowsingSessionContext.Provider value={getBrowsingSessionId}>
       {/* Rendering top menu first, then routing to corresponding page */}
       <columnS.NarrowColumn>
-        <TopTabs title={strings.articles} tabsAndLinks={tabs} hasBackground={true} />
+        <TopTabs title={strings.articles} tabsAndLinks={tabs} hasBackground={true} isCompact={true} />
 
-        <div style={{ minHeight: "70vh" }}>
+        <s.FilterButtonContainer>
+          <s.FilterButton onClick={() => history.push("/account_settings/interests")} title="Feed Preferences">
+            <img src="/static/icons/Tune.svg" alt="Filter" />
+          </s.FilterButton>
+        </s.FilterButtonContainer>
+
+        <s.FilterDivider />
+
+        <s.ContentContainer>
           {hideRecommendations ? (
             <Redirect from="/articles" exact to="/articles/classroom" />
           ) : (
@@ -112,7 +114,7 @@ export default function ArticlesRouter({ hasExtension, isChrome }) {
           <PrivateRoute path="/articles/mySearches" component={MySearches} />
 
           <PrivateRoute path="/search" component={Search} />
-        </div>
+        </s.ContentContainer>
       </columnS.NarrowColumn>
       <TranslationOnboardingPopup open={translationModal.open} handleCancel={translationModal.close} />
     </BrowsingSessionContext.Provider>
@@ -122,4 +124,4 @@ export default function ArticlesRouter({ hasExtension, isChrome }) {
 // Having components passed to the Search
 // look for a search, boolean
 // passing a different prop, to make search
-// render either search or no search
+// render s.ContentContainerher search or no search
