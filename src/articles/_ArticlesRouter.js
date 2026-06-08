@@ -3,7 +3,7 @@ import ArticleListBrowser from "./ArticleListBrowser";
 import BookmarkedArticles from "./BookmarkedArticles";
 import HiddenArticles from "../myArticles/HiddenArticles";
 
-import { useHistory } from "react-router-dom";
+import { useHistory, useLocation } from "react-router-dom";
 import { PrivateRoute } from "../PrivateRoute";
 import { Redirect } from "react-router-dom";
 import ClassroomArticles from "./ClassroomArticles";
@@ -32,11 +32,13 @@ import TranslationOnboardingPopup from "../pages/onboarding/notifications/Transl
 export default function ArticlesRouter({ hasExtension, isChrome }) {
   const api = useContext(APIContext);
   const history = useHistory();
+  const location = useLocation();
   const { userDetails } = useContext(UserContext);
   const { getBrowsingSessionId } = useBrowsingSession();
   const hideRecommendations = LocalStorage.hasFeature("hide_recommendations");
   const isStudent = LocalStorage.isStudent();
   const translationModal = useTranslationOnboarding(api, userDetails);
+  const isHomeScreen = location.pathname === "/articles";
 
   const iconStyle = { display: "inline-flex", alignItems: "center", padding: "0.4em 0.25em", verticalAlign: "middle" };
   const iconProps = { style: { fontSize: "1.55rem", verticalAlign: "middle" } };
@@ -83,13 +85,15 @@ export default function ArticlesRouter({ hasExtension, isChrome }) {
       <columnS.NarrowColumn>
         <TopTabs title={strings.articles} tabsAndLinks={tabs} hasBackground={true} isCompact={true} />
 
-        <s.FilterButtonContainer>
-          <s.FilterButton onClick={() => history.push("/account_settings/interests")} title="Feed Preferences">
-            <img src="/static/icons/Tune.svg" alt="Filter" />
-          </s.FilterButton>
-        </s.FilterButtonContainer>
+        {isHomeScreen && (
+          <s.FilterButtonContainer>
+            <s.FilterButton onClick={() => history.push("/account_settings/interests")} title="Feed Preferences">
+              <img src="/static/icons/Tune.svg" alt="Filter" />
+            </s.FilterButton>
+          </s.FilterButtonContainer>
+        )}
 
-        <s.FilterDivider />
+        {isHomeScreen && <s.FilterDivider />}
 
         <s.ContentContainer>
           {hideRecommendations ? (
