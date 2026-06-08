@@ -1,7 +1,7 @@
 import React from "react";
 import { Switch } from "react-router-dom";
 import { PrivateRoute } from "../PrivateRoute";
-import { TranslateNarrowColumn } from "./Translate.sc";
+import { PaddedNarrowColumn } from "../components/ColumnWidth.sc";
 import TopTabs from "../components/TopTabs";
 import strings from "../i18n/definitions";
 import Translate from "./Translate";
@@ -21,12 +21,12 @@ export default function TranslateRouter() {
 
   return (
     <Switch>
-      <TranslateNarrowColumn>
+      <PaddedNarrowColumn>
         <TopTabs tabsAndLinks={tabsAndLinks} />
 
         <PrivateRoute exact path="/translate" component={Translate} />
         <PrivateRoute exact path="/translate/history" component={TranslateHistory} />
-      </TranslateNarrowColumn>
+      </PaddedNarrowColumn>
     </Switch>
   );
 }
