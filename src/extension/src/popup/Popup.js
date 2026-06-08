@@ -6,6 +6,8 @@ import Zeeguu_API from "../../../api/Zeeguu_API";
 import { API_URL, WEB_URL } from "../../../config";
 import { EXTENSION_SOURCE } from "../constants";
 import { isUnsupportedTab, sendTabToZeeguu } from "../shared/sendTabToZeeguu";
+import { isYouTubeTab } from "../shared/sendYouTubeTabToZeeguu";
+import { shareYouTubeTab } from "../shared/shareYouTubeTab";
 import { BROWSER_API } from "../utils/browserApi";
 import { getUserInfoDictFromCookies } from "./cookies";
 import { BottomContainer, HeadingContainer, MiddleContainer, NotifyButton, PopUp } from "./Popup.styles";
@@ -47,6 +49,15 @@ export default function Popup({ loggedIn }) {
       try {
         setState(STATES.SCRAPING);
         setState(STATES.UPLOADING);
+
+        if (isYouTubeTab(tab)) {
+          const url = await shareYouTubeTab(api, tab, WEB_URL);
+          setState(STATES.OPENING);
+          await BROWSER_API.tabs.create({ url });
+          window.close();
+          return;
+        }
+
         const upload = await sendTabToZeeguu(api, tab);
 
         setState(STATES.OPENING);

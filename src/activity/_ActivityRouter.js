@@ -1,11 +1,10 @@
 import React from "react";
 import { PrivateRoute } from "../PrivateRoute";
-import * as s from "../components/ColumnWidth.sc";
+import * as s from "./_ActivityRouter.sc";
 import TopTabs from "../components/TopTabs";
 import strings from "../i18n/definitions";
 import { Switch } from "react-router-dom";
 import SessionHistory from "../words/SessionHistory";
-import UserDashboard from "../userDashboard/UserDashboard";
 
 export default function ActivityRouter() {
   const tabsAndLinks = [
@@ -13,20 +12,15 @@ export default function ActivityRouter() {
       text: strings.historyTab,
       link: "/activity-history",
     },
-    {
-      text: strings.statisticsTab,
-      link: "/activity-history/statistics",
-    }
   ];
 
   return (
     <Switch>
-      <s.NarrowColumn>
+      <s.ActivityNarrowColumn>
         <TopTabs title={strings.activity} tabsAndLinks={tabsAndLinks} />
 
         <PrivateRoute exact path="/activity-history" component={SessionHistory} />
-        <PrivateRoute path="/activity-history/statistics" component={UserDashboard} />
-      </s.NarrowColumn>
+      </s.ActivityNarrowColumn>
     </Switch>
   );
 }

@@ -4,10 +4,16 @@ import { darkGrey, zeeguuOrange } from "./colors";
 const TopTabsWrapper = styled.div`
   position: sticky;
   top: 0;
-  z-index: 100;
   background: var(--bg-primary);
   transition: transform 0.3s ease-in-out;
   padding-top: 0.5em;
+
+  /* On mobile the row gets its air from .headmenuTab's 7ex line-height;
+     desktop has no such line-height, so give the bar room explicitly. */
+  @media (min-width: 769px) {
+    padding-top: 1.5em;
+    padding-bottom: 0.5em;
+  }
 
   &.header--hidden {
     transform: translateY(-100%);
@@ -18,7 +24,11 @@ const TopTabs = styled.div`
   position: relative;
 
   .all__tabs {
-    width: fit-content;
+    line-height: 1.4em;
+    /* Row height lives here, NOT in the separator's padding — otherwise
+       single-tab pages (no separator) render a visibly shorter bar. */
+    min-height: 3em;
+    width: 100%;
     align-items: center;
     display: flex;
     justify-content: center;
@@ -59,6 +69,21 @@ const TopTabs = styled.div`
     }
   }
 
+  <<<<<<< HEAD ======= .row__bar {
+    margin: 0px;
+    /* Horizontal spacing only — vertical padding here would set the row
+       height for multi-tab pages and desync them from single-tab ones. */
+    padding: 0 1.5em;
+  }
+
+  .bar {
+    width: 1em;
+    height: 0px;
+    border: 1px solid ${darkGrey};
+    transform: rotate(-90deg);
+  }
+
+  >>>>>>> master
   /*******MEDIA QUERIES **********/
   @media screen and (max-width: 768px) {
     .headmenuTab {

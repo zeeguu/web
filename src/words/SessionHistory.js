@@ -6,383 +6,14 @@ import strings from "../i18n/definitions";
 import { setTitle } from "../assorted/setTitle";
 import { APIContext } from "../contexts/APIContext";
 import { SpeechContext } from "../contexts/SpeechContext";
-import styled from "styled-components";
 import Box from "@mui/material/Box";
 import Modal from "@mui/material/Modal";
 import WordEditForm from "./WordEditForm";
 import * as editStyles from "./WordEdit.sc";
+import * as s from "./SessionHistory.sc";
 import { toast } from "react-toastify";
 import { isTextInSentence } from "../utils/text/expressions";
 import { validateWordInContext } from "../utils/validation/wordContextValidation";
-
-const SessionCard = styled.div`
-  background: var(--card-bg);
-  border-radius: 8px;
-  padding: 1em;
-  margin: 0.5em 0;
-  box-shadow: 0 1px 3px var(--shadow-color);
-`;
-
-const SessionHeader = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 0.5em;
-`;
-
-const SessionTime = styled.span`
-  font-weight: 600;
-  color: var(--text-primary);
-`;
-
-const SessionDuration = styled.span`
-  font-size: 0.9em;
-  color: var(--text-secondary);
-`;
-
-const SessionType = styled.span`
-  display: inline-block;
-  padding: 0.2em 0.6em;
-  border-radius: 4px;
-  font-size: 0.8em;
-  font-weight: 500;
-  margin-left: 0.5em;
-
-  &.reading {
-    background: #e3f2fd;
-    color: #1565c0;
-  }
-
-  &.exercise {
-    background: #e8f5e9;
-    color: #2e7d32;
-  }
-
-  &.browsing {
-    background: #fff3e0;
-    color: #ef6c00;
-  }
-
-  &.audio {
-    background: #f3e5f5;
-    color: #7b1fa2;
-  }
-`;
-
-const ArticleTitle = styled.div`
-  font-size: 1.1em;
-  margin-bottom: 0.5em;
-  display: flex;
-  align-items: center;
-  gap: 0.5em;
-  color: var(--text-primary);
-
-  a {
-    color: var(--link-color);
-    text-decoration: none;
-    &:hover {
-      text-decoration: underline;
-    }
-  }
-
-  .source-badge {
-    font-size: 0.65em;
-    padding: 0.15em 0.4em;
-    border-radius: 3px;
-    font-weight: 500;
-    text-transform: uppercase;
-
-    &.extension {
-      background: #e8f5e9;
-      color: #2e7d32;
-    }
-
-    &.web {
-      background: #e3f2fd;
-      color: #1565c0;
-    }
-  }
-`;
-
-const WordList = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.6em;
-  margin-top: 0.75em;
-  padding-top: 0.5em;
-  border-top: 1px solid var(--border-light);
-`;
-
-const WordChip = styled.span`
-  background: var(--card-bg);
-  padding: 0.5em 0.8em;
-  border-radius: 6px;
-  font-size: 1em;
-  border: 1px solid var(--border-color);
-  box-shadow: 0 1px 2px var(--shadow-color);
-
-  .origin {
-    font-weight: 600;
-    color: #1565c0;
-
-    &.clickable:hover {
-      text-decoration: underline;
-    }
-  }
-
-  .separator {
-    color: var(--text-faint);
-    margin: 0 0.4em;
-  }
-
-  .translation {
-    color: var(--text-primary);
-    font-weight: 600;
-
-    &.clickable:hover {
-      text-decoration: underline;
-    }
-  }
-
-  .result {
-    margin-left: 0.3em;
-  }
-
-  &.reading {
-    background: #e3f2fd;
-    border-color: #90caf9;
-  }
-
-  &.browsing {
-    background: #fff8e1;
-    border-color: #ffe082;
-    .origin {
-      color: #ef6c00;
-    }
-  }
-
-  &.audio {
-    background: #f3e5f5;
-    border-color: #ce93d8;
-    .origin {
-      color: #7b1fa2;
-    }
-  }
-
-  &.correct {
-    background: #e8f5e9;
-    border-color: #a5d6a7;
-    .origin {
-      color: #2e7d32;
-    }
-  }
-
-  &.incorrect {
-    background: #ffebee;
-    border-color: #ef9a9a;
-    .origin {
-      color: #c62828;
-    }
-  }
-`;
-
-const ExerciseStats = styled.div`
-  font-size: 0.9em;
-  color: var(--text-secondary);
-  margin-bottom: 0.5em;
-`;
-
-const FocusBadge = styled.span`
-  display: inline-block;
-  padding: 0.15em 0.5em;
-  border-radius: 4px;
-  font-size: 0.75em;
-  font-weight: 500;
-  margin-left: 0.5em;
-
-  &.focused {
-    background: #e8f5e9;
-    color: #2e7d32;
-  }
-
-  &.moderate {
-    background: #fff3e0;
-    color: #ef6c00;
-  }
-
-  &.distracted {
-    background: #ffebee;
-    color: #c62828;
-  }
-`;
-
-const InfoNote = styled.div`
-  font-size: 0.85em;
-  color: var(--text-secondary);
-  font-style: italic;
-  text-align: center;
-  padding: 0.5em;
-  margin: 0.5em 0;
-`;
-
-const DateHeader = styled.div`
-  font-size: 0.9em;
-  font-weight: 600;
-  margin-top: 1.5em;
-  margin-bottom: 0.5em;
-  color: var(--text-secondary);
-  border-bottom: 1px solid var(--border-light);
-  padding-bottom: 0.3em;
-`;
-
-const SummaryCard = styled.div`
-  background: var(--card-bg);
-  border-radius: 8px;
-  padding: 1.2em;
-  margin-bottom: 1.5em;
-  box-shadow: 0 1px 3px var(--shadow-color);
-`;
-
-const SummaryTitle = styled.div`
-  font-weight: 600;
-  font-size: 1.1em;
-  margin-bottom: 1em;
-  color: var(--text-primary);
-`;
-
-const StatsRow = styled.div`
-  display: flex;
-  justify-content: space-around;
-  margin-bottom: 1.2em;
-  flex-wrap: wrap;
-  gap: 0.5em;
-`;
-
-const StatItem = styled.div`
-  text-align: center;
-  padding: 0.5em 1em;
-
-  .label {
-    font-size: 0.85em;
-    font-weight: 600;
-    color: ${(props) => props.color || "var(--text-primary)"};
-    margin-bottom: 0.2em;
-  }
-
-  .time {
-    font-size: 1.4em;
-    font-weight: 700;
-    color: ${(props) => props.color || "var(--text-primary)"};
-  }
-
-  .words {
-    font-size: 0.9em;
-    font-weight: 600;
-    color: ${(props) => props.color || "var(--text-primary)"};
-    opacity: 0.7;
-    margin-top: 0.1em;
-  }
-`;
-
-const BarChartContainer = styled.div`
-  margin-top: 0.5em;
-`;
-
-const BarRow = styled.div`
-  display: flex;
-  align-items: center;
-  margin-bottom: 0.6em;
-
-  .label {
-    width: 80px;
-    font-size: 0.85em;
-    color: var(--text-secondary);
-  }
-
-  .bar-wrapper {
-    flex: 1;
-    height: 20px;
-    background: var(--bg-tertiary);
-    border-radius: 4px;
-    overflow: hidden;
-  }
-
-  .bar {
-    height: 100%;
-    border-radius: 4px;
-    transition: width 0.3s ease;
-  }
-
-  .bar.reading {
-    background: #64b5f6;
-  }
-
-  .bar.exercise {
-    background: #81c784;
-  }
-
-  .bar.browsing {
-    background: #ffb74d;
-  }
-
-  .bar.audio {
-    background: #ba68c8;
-  }
-
-  .time {
-    width: 70px;
-    text-align: right;
-    font-size: 0.85em;
-    color: var(--text-secondary);
-    margin-left: 0.5em;
-  }
-`;
-
-const TimeSelector = styled.div`
-  margin-bottom: 1em;
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 0.5em;
-
-  select {
-    padding: 0.4em 0.8em;
-    border-radius: 4px;
-    border: 1px solid #ddd;
-    font-size: 0.95em;
-  }
-
-  .custom-dates {
-    display: flex;
-    align-items: center;
-    gap: 0.5em;
-
-    input[type="date"] {
-      padding: 0.4em;
-      border-radius: 4px;
-      border: 1px solid #ddd;
-      font-size: 0.9em;
-    }
-
-    span {
-      color: #666;
-    }
-
-    button {
-      padding: 0.4em 0.8em;
-      border-radius: 4px;
-      border: 1px solid #1565c0;
-      background: #1565c0;
-      color: white;
-      font-size: 0.9em;
-      cursor: pointer;
-
-      &:hover {
-        background: #1256a0;
-      }
-    }
-  }
-`;
 
 function formatTime(isoString) {
   const date = new Date(isoString);
@@ -427,71 +58,71 @@ function Summary({ sessions, label }) {
 
   return (
     <>
-    <SummaryCard>
-      <SummaryTitle>{label}</SummaryTitle>
+      <s.SummaryCard>
+        <s.SummaryTitle>{label}</s.SummaryTitle>
 
-      <StatsRow>
-        <StatItem color="#1565c0">
-          <div className="label">Reading</div>
-          <div className="time">{formatDurationShort(stats.reading.time)}</div>
-          {stats.reading.words > 0 && <div className="words">{stats.reading.words} words</div>}
-        </StatItem>
-        <StatItem color="#2e7d32">
-          <div className="label">Exercises</div>
-          <div className="time">{formatDurationShort(stats.exercise.time)}</div>
-          {stats.exercise.words > 0 && <div className="words">{stats.exercise.words} words</div>}
-        </StatItem>
-        {stats.audio.time > 0 && (
-          <StatItem color="#7b1fa2">
-            <div className="label">Listening</div>
-            <div className="time">{formatDurationShort(stats.audio.time)}</div>
-            {stats.audio.words > 0 && <div className="words">{stats.audio.words} words</div>}
-          </StatItem>
-        )}
-        {stats.browsing.time > 0 && (
-          <StatItem color="#ff8f00">
-            <div className="label">Browsing</div>
-            <div className="time">{formatDurationShort(stats.browsing.time)}</div>
-            {stats.browsing.words > 0 && <div className="words">{stats.browsing.words} words</div>}
-          </StatItem>
-        )}
-      </StatsRow>
+        <s.StatsRow>
+          <s.StatItem color="#1565c0">
+            <div className="label">Reading</div>
+            <div className="time">{formatDurationShort(stats.reading.time)}</div>
+            {stats.reading.words > 0 && <div className="words">{stats.reading.words} words</div>}
+          </s.StatItem>
+          <s.StatItem color="#2e7d32">
+            <div className="label">Exercises</div>
+            <div className="time">{formatDurationShort(stats.exercise.time)}</div>
+            {stats.exercise.words > 0 && <div className="words">{stats.exercise.words} words</div>}
+          </s.StatItem>
+          {stats.audio.time > 0 && (
+            <s.StatItem color="#7b1fa2">
+              <div className="label">Listening</div>
+              <div className="time">{formatDurationShort(stats.audio.time)}</div>
+              {stats.audio.words > 0 && <div className="words">{stats.audio.words} words</div>}
+            </s.StatItem>
+          )}
+          {stats.browsing.time > 0 && (
+            <s.StatItem color="#ff8f00">
+              <div className="label">Browsing</div>
+              <div className="time">{formatDurationShort(stats.browsing.time)}</div>
+              {stats.browsing.words > 0 && <div className="words">{stats.browsing.words} words</div>}
+            </s.StatItem>
+          )}
+        </s.StatsRow>
 
-      <BarChartContainer>
-        <BarRow>
-          <span className="label">Reading</span>
-          <div className="bar-wrapper">
-            <div className="bar reading" style={{ width: `${(stats.reading.time / maxTime) * 100}%` }} />
-          </div>
-          <span className="time">{formatDurationShort(stats.reading.time)}</span>
-        </BarRow>
-        <BarRow>
-          <span className="label">Exercising</span>
-          <div className="bar-wrapper">
-            <div className="bar exercise" style={{ width: `${(stats.exercise.time / maxTime) * 100}%` }} />
-          </div>
-          <span className="time">{formatDurationShort(stats.exercise.time)}</span>
-        </BarRow>
-        {stats.audio.time > 0 && (
-          <BarRow>
-            <span className="label">Listening</span>
+        <s.BarChartContainer>
+          <s.BarRow>
+            <span className="label">Reading</span>
             <div className="bar-wrapper">
-              <div className="bar audio" style={{ width: `${(stats.audio.time / maxTime) * 100}%` }} />
+              <div className="bar reading" style={{ width: `${(stats.reading.time / maxTime) * 100}%` }} />
             </div>
-            <span className="time">{formatDurationShort(stats.audio.time)}</span>
-          </BarRow>
-        )}
-        {stats.browsing.time > 0 && (
-          <BarRow>
-            <span className="label">Browsing</span>
+            <span className="time">{formatDurationShort(stats.reading.time)}</span>
+          </s.BarRow>
+          <s.BarRow>
+            <span className="label">Exercising</span>
             <div className="bar-wrapper">
-              <div className="bar browsing" style={{ width: `${(stats.browsing.time / maxTime) * 100}%` }} />
+              <div className="bar exercise" style={{ width: `${(stats.exercise.time / maxTime) * 100}%` }} />
             </div>
-            <span className="time">{formatDurationShort(stats.browsing.time)}</span>
-          </BarRow>
-        )}
-      </BarChartContainer>
-    </SummaryCard>
+            <span className="time">{formatDurationShort(stats.exercise.time)}</span>
+          </s.BarRow>
+          {stats.audio.time > 0 && (
+            <s.BarRow>
+              <span className="label">Listening</span>
+              <div className="bar-wrapper">
+                <div className="bar audio" style={{ width: `${(stats.audio.time / maxTime) * 100}%` }} />
+              </div>
+              <span className="time">{formatDurationShort(stats.audio.time)}</span>
+            </s.BarRow>
+          )}
+          {stats.browsing.time > 0 && (
+            <s.BarRow>
+              <span className="label">Browsing</span>
+              <div className="bar-wrapper">
+                <div className="bar browsing" style={{ width: `${(stats.browsing.time / maxTime) * 100}%` }} />
+              </div>
+              <span className="time">{formatDurationShort(stats.browsing.time)}</span>
+            </s.BarRow>
+          )}
+        </s.BarChartContainer>
+      </s.SummaryCard>
     </>
   );
 }
@@ -546,30 +177,20 @@ function InteractiveWordChip({ word, className, showResult, onEditClick }) {
   };
 
   return (
-    <WordChip className={className}>
-      <span
-        className="origin clickable"
-        onClick={handleSpeak}
-        title="Click to pronounce"
-        style={{ cursor: "pointer", textDecoration: isSpeaking ? "underline" : "none" }}
-      >
+    <s.WordChip className={className}>
+      <s.ClickableOrigin onClick={handleSpeak} title="Click to pronounce" isSpeaking={isSpeaking}>
         {word.origin}
-      </span>
+      </s.ClickableOrigin>
       <span className="separator">→</span>
       {word.id ? (
-        <span
-          className="translation clickable"
-          onClick={handleEditClick}
-          title="Click to edit"
-          style={{ cursor: "pointer" }}
-        >
+        <s.ClickableTranslation onClick={handleEditClick} title="Click to edit">
           {word.translation}
-        </span>
+        </s.ClickableTranslation>
       ) : (
         <span className="translation">{word.translation}</span>
       )}
       {showResult && <span className="result">{word.correct ? "✓" : "✗"}</span>}
-    </WordChip>
+    </s.WordChip>
   );
 }
 
@@ -587,7 +208,7 @@ function SessionItem({ session, onEditWord }) {
     };
 
     return (
-      <WordList>
+      <s.WordList>
         {session.words.slice(0, 10).map((word, idx) => (
           <InteractiveWordChip
             key={idx}
@@ -597,67 +218,67 @@ function SessionItem({ session, onEditWord }) {
             onEditClick={onEditWord}
           />
         ))}
-        {session.words.length > 10 && (
-          <WordChip style={{ background: "#f0f0f0", fontStyle: "italic" }}>+{session.words.length - 10} more</WordChip>
-        )}
-      </WordList>
+        {session.words.length > 10 && <s.WordChip className="more">+{session.words.length - 10} more</s.WordChip>}
+      </s.WordList>
     );
   };
 
   return (
-    <SessionCard>
-      <SessionHeader>
+    <s.SessionCard>
+      <s.SessionHeader>
         <div>
-          <SessionTime>{formatTime(session.start_time)}</SessionTime>
-          <SessionType className={session.session_type}>
+          <s.SessionTime>{formatTime(session.start_time)}</s.SessionTime>
+          <s.SessionType className={session.session_type}>
             {session.session_type === "reading" && "Reading"}
             {session.session_type === "exercise" && "Exercising"}
             {session.session_type === "browsing" && "Browsing"}
             {session.session_type === "audio" && "Listening"}
-          </SessionType>
+          </s.SessionType>
           {session.session_type === "reading" && session.reading_source === "extension" && (
-            <span className="source-badge extension" title="Read via browser extension">ext</span>
+            <span className="source-badge extension" title="Read via browser extension">
+              ext
+            </span>
           )}
           {session.session_type === "reading" && session.reading_source === "web" && (
-            <span className="source-badge web" title="Read in Zeeguu">web</span>
+            <span className="source-badge web" title="Read in Zeeguu">
+              web
+            </span>
           )}
         </div>
-        <div style={{ display: "flex", alignItems: "center", gap: "0.5em" }}>
+        <s.HeaderActions>
           {session.focus_level && (
-            <FocusBadge className={session.focus_level}>
+            <s.FocusBadge className={session.focus_level}>
               {session.focus_level === "focused" && "Focused"}
               {session.focus_level === "moderate" && "Moderate"}
               {session.focus_level === "distracted" && "Distracted"}
-            </FocusBadge>
+            </s.FocusBadge>
           )}
-          <SessionDuration>{session.duration_readable}</SessionDuration>
-        </div>
-      </SessionHeader>
+          <s.SessionDuration>{session.duration_readable}</s.SessionDuration>
+        </s.HeaderActions>
+      </s.SessionHeader>
 
       {session.session_type === "reading" && session.article_title && (
-        <ArticleTitle>
+        <s.ArticleTitle>
           <Link to={`/read/article?id=${session.article_id}`}>{session.article_title}</Link>
-        </ArticleTitle>
+        </s.ArticleTitle>
       )}
 
       {session.session_type === "audio" && session.lesson_title && (
-        <ArticleTitle>{session.lesson_title}</ArticleTitle>
+        <s.ArticleTitle>{session.lesson_title}</s.ArticleTitle>
       )}
 
       {session.session_type === "exercise" && (
-        <ExerciseStats>
+        <s.ExerciseStats>
           {session.word_count} words practiced - {session.accuracy}% correct
-        </ExerciseStats>
+        </s.ExerciseStats>
       )}
 
       {session.session_type === "audio" && session.completed && session.word_count > 0 && (
-        <ExerciseStats>
-          {session.word_count} words in lesson ✓
-        </ExerciseStats>
+        <s.ExerciseStats>{session.word_count} words in lesson ✓</s.ExerciseStats>
       )}
 
       {renderWords()}
-    </SessionCard>
+    </s.SessionCard>
   );
 }
 
@@ -756,11 +377,9 @@ export default function SessionHistory() {
           prevSessions.map((session) => ({
             ...session,
             words: session.words.map((word) =>
-              word.id === bookmark.id
-                ? { ...word, origin: newBookmark.from, translation: newBookmark.to }
-                : word
+              word.id === bookmark.id ? { ...word, origin: newBookmark.from, translation: newBookmark.to } : word,
             ),
-          }))
+          })),
         );
 
         if (newFitForStudy) {
@@ -808,7 +427,7 @@ export default function SessionHistory() {
               ...session,
               words: session.words.filter((word) => word.id !== editBookmark.id),
               word_count: session.words.filter((word) => word.id !== editBookmark.id).length,
-            }))
+            })),
           );
           toast.success("Word deleted successfully!");
           handleEditClose();
@@ -817,7 +436,7 @@ export default function SessionHistory() {
       (error) => {
         console.log(error);
         alert("Something went wrong and we could not delete the bookmark; try again later.");
-      }
+      },
     );
   };
 
@@ -917,7 +536,7 @@ export default function SessionHistory() {
 
   return (
     <>
-      <TimeSelector>
+      <s.TimeSelector>
         <select value={timeRange} onChange={(e) => setTimeRange(e.target.value)}>
           <option value="7">Last 7 days</option>
           <option value="14">Last 14 days</option>
@@ -937,15 +556,12 @@ export default function SessionHistory() {
             </button>
           </div>
         )}
-      </TimeSelector>
+      </s.TimeSelector>
 
       {loading && <LoadingAnimation />}
 
       {!loading && sessions && sessions.length === 0 && (
-        <EmptyState
-          message={`No activity recorded for ${getDisplayLabel().toLowerCase()}.`}
-          fillHeight={false}
-        />
+        <EmptyState message={`No activity recorded for ${getDisplayLabel().toLowerCase()}.`} fillHeight={false} />
       )}
 
       {!loading && sessions && sessions.length > 0 && <Summary sessions={sessions} label="Overview" />}
@@ -955,14 +571,14 @@ export default function SessionHistory() {
           let shownBrowsingNote = false;
           return dates.map((date) => (
             <div key={date}>
-              <DateHeader>{formatDate(groupedSessions[date][0].start_time)}</DateHeader>
+              <s.DateHeader>{formatDate(groupedSessions[date][0].start_time)}</s.DateHeader>
               {groupedSessions[date].map((session, idx) => {
                 const showNote = session.session_type === "browsing" && !shownBrowsingNote;
                 if (showNote) shownBrowsingNote = true;
                 return (
                   <div key={idx}>
                     <SessionItem session={session} onEditWord={handleEditWord} />
-                    {showNote && <InfoNote>Browsing sessions are tracked since Dec 11, 2025</InfoNote>}
+                    {showNote && <s.InfoNote>Browsing sessions are tracked since Dec 11, 2025</s.InfoNote>}
                   </div>
                 );
               })}
@@ -972,9 +588,9 @@ export default function SessionHistory() {
 
       {/* Loading indicator when fetching bookmark for edit */}
       {loadingBookmark && (
-        <div style={{ position: "fixed", top: "50%", left: "50%", transform: "translate(-50%, -50%)", zIndex: 1000 }}>
+        <s.OverlayLoader>
           <LoadingAnimation />
-        </div>
+        </s.OverlayLoader>
       )}
 
       {/* Edit Word Modal */}
