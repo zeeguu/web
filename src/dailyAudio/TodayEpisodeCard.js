@@ -1,50 +1,18 @@
 import React from "react";
-import styled from "styled-components";
 import SettingsRoundedIcon from "@mui/icons-material/SettingsRounded";
 import LessonPlaybackView from "./LessonPlaybackView";
 import { LessonTitle, LessonMetadata, CompletionCheck } from "./LessonView.sc";
 import { LessonTypeChip, chipLabel } from "./lessonTypeChip";
 import { todayDateLabel, completionChecks } from "./audioUtils";
-import { zeeguuRed } from "../components/colors";
-
-// Config pill, styled like the Discover screen's "Topics: … ⚙" control but with
-// theme tokens (not hardcoded white) so it renders as a pill in light AND dark.
-const ConfigPill = styled.button`
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.5rem 0.95rem;
-  border-radius: 999px;
-  border: 1px solid var(--border-light);
-  background: var(--bg-secondary);
-  color: var(--text-secondary);
-  font-family: inherit;
-  font-size: 0.85rem;
-  cursor: pointer;
-  -webkit-tap-highlight-color: transparent;
-  transition:
-    border-color 0.15s,
-    color 0.15s;
-
-  &:active {
-    transform: scale(0.97);
-  }
-`;
-
-// Small freshness badge next to the date: shown until today's lesson is
-// completed. Red so it pops against the orange-heavy screen and reads like a
-// "new" notification badge, not just more brand color.
-const NewPill = styled.span`
-  font-size: 0.62rem;
-  font-weight: 800;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  padding: 2px 7px;
-  border-radius: 999px;
-  color: #fff;
-  background: ${zeeguuRed};
-  line-height: 1.4;
-`;
+import {
+  ConfigPill,
+  NewPill,
+  DateLineWrapper,
+  DateText,
+  FooterWrapper,
+  FooterMessage,
+  LessonTitleWrapper,
+} from "./TodayEpisodeCard.sc";
 
 // Design-B "episode card" header: a date line, the title (with one ✓ per
 // listen), then a single category chip — "Type: subject" — exactly like the
@@ -61,29 +29,22 @@ function EpisodeHeader({ lessonData, currentPlaybackTime }) {
   const showNew = !lessonData.paused && !lessonData.is_completed && playedSeconds === 0;
   return (
     <>
-      <span style={{ display: "inline-flex", alignItems: "center", gap: "8px" }}>
-        <span
-          style={{
-            fontSize: "0.8rem",
-            fontWeight: 700,
-            letterSpacing: "0.04em",
-            color: "var(--text-secondary)",
-          }}
-        >
-          {lessonData.paused ? "⏸ Paused" : todayDateLabel()}
-        </span>
+      <DateLineWrapper>
+        <DateText>{todayDateLabel()}</DateText>
         {showNew && <NewPill>New</NewPill>}
-      </span>
+      </DateLineWrapper>
 
-      <LessonTitle style={{ marginTop: "8px" }}>
-        {lessonData.title}
-        {lessonData.is_completed && (
-          <>
-            {" "}
-            <CompletionCheck>{completionChecks(Math.max(1, lessonData.listened_count || 1))}</CompletionCheck>
-          </>
-        )}
-      </LessonTitle>
+      <LessonTitleWrapper>
+        <LessonTitle>
+          {lessonData.title}
+          {lessonData.is_completed && (
+            <>
+              {" "}
+              <CompletionCheck>{completionChecks(Math.max(1, lessonData.listened_count || 1))}</CompletionCheck>
+            </>
+          )}
+        </LessonTitle>
+      </LessonTitleWrapper>
 
       <LessonMetadata>
         <LessonTypeChip $type={lessonData.lesson_type} style={{ marginBottom: 0 }}>
@@ -129,20 +90,16 @@ export default function TodayEpisodeCard({ onChangeTopic, ...playbackProps }) {
   // waiting lesson the learner hasn't engaged with, so new ones are held.
   // The gear opens lesson-TYPE config (frequency config is future work).
   const footer = (
-    <div style={{ marginTop: "24px", textAlign: "center" }}>
-      {lessonData.paused && (
-        <p style={{ margin: "0 0 12px", fontSize: "14px", color: "var(--text-secondary)" }}>Daily lessons paused</p>
-      )}
+    <FooterWrapper>
+      {lessonData.paused && <FooterMessage>Finish this lesson to have a new one tomorrow!</FooterMessage>}
       {showEngagementHint && (
-        <p style={{ margin: "0 0 12px", fontSize: "13px", color: "var(--text-secondary)" }}>
-          Listen halfway to keep daily lessons coming automatically.
-        </p>
+        <FooterMessage $small>Listen halfway to keep daily lessons coming automatically.</FooterMessage>
       )}
       <ConfigPill onClick={onChangeTopic} title="Daily lesson settings">
         <span>Daily lesson settings</span>
         <SettingsRoundedIcon style={{ fontSize: "0.95rem" }} />
       </ConfigPill>
-    </div>
+    </FooterWrapper>
   );
 
   return (
