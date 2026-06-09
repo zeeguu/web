@@ -3,29 +3,29 @@ import { zeeguuWarmYellow } from "../../../components/colors";
 
 const LevelWrapper = styled.div`
   margin-left: auto;
-  display: flex; 
+  display: flex;
   align-items: right;
   padding-right: 1em;
   @media (max-width: 800px) {
     margin-left: 0;
-    width: 100%;          
+    width: 100%;
     margin-top: 0.5em;
-    justify-content: flex-start;     
+    justify-content: flex-start;
     padding-right: 1em;
     margin-right: 2em;
     padding-left: 1em;
   }
 `;
 
-const WordProgressWrapper  = styled.div`
-  display:flex; 
+const WordProgressWrapper = styled.div`
+  display: flex;
   align-items: center;
   justify-content: center;
-  width: 30%;
+  width: 40%;
   margin: 0.1em auto 0.5em auto;
-  
+
   @media (max-width: 768px) {
-    width: 50%;
+    width: 60%;
     margin: 0.05em auto 0.25em auto;
   }
 `;
@@ -39,8 +39,7 @@ const LevelIndicator = styled.div`
   -webkit-user-select: none; /* Safari */
   -ms-user-select: none; /* IE 10 and IE 11 */
   user-select: none; /* Standard */
-  
-  
+
   .level-indicator {
     width: 100%;
     display: flex;
@@ -55,22 +54,16 @@ const LevelIndicator = styled.div`
   .progress-bar {
     position: relative;
     width: 100%;
-    height: 5px;
-    background-color: var(--progress-bar-bg, #e0e0e0);
+    height: 10px;
+    background-color: var(--progress-bar-bg);
     border-radius: 5px;
-    border: 2px solid transparent; /* Transparent border for gradient effect */
-    background-image: var(--progress-bar-gradient, linear-gradient(180deg, #c4c4c4, #f7f7f7)),
-      var(--progress-bar-gradient, linear-gradient(180deg, #c4c4c4, #f7f7f7)); /* Gradient for the border */
     background-origin: border-box;
   }
 
   .progress-fill {
     height: 100%;
-    background: ${({ isGreyedOutBar }) =>
-      isGreyedOutBar
-        ? "transparent"
-        : "linear-gradient(90deg, #74a664, #8bc34a)"};
-    transition: width 0.5s ease-in-out;
+    background: ${({ isGreyedOutBar }) => (isGreyedOutBar ? "transparent" : "#74a664")};
+    transition: width 1s ease-in-out;
     border-radius: 5px;
   }
 
@@ -88,34 +81,32 @@ const LevelIndicator = styled.div`
     justify-content: center;
     top: 50%;
     transform: translate(-50%, -50%);
-    width: 12px;
-    height: 12px;
+    width: 25px;
+    height: 25px;
     font-size: 10px;
     color: white;
-    background-color: var(--progress-circle-bg, #e0e0e0);
+    background-color: var(--progress-circle-bg, #a1a1a1);
     border-radius: 50%;
-    border: 2px solid var(--progress-circle-border, #c4c4c4);
     z-index: 1;
-    box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.2);
+    /* box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.2); */
     transition:
       background-color 0.3s,
       border-color 0.3s;
   }
 
   .level-circle.filled {
-    background-color: ${({ isGreyedOutBar }) =>
-      isGreyedOutBar ? "#e0e0e0" : "#74a664"};
+    background-color: ${({ isGreyedOutBar }) => (isGreyedOutBar ? "#e0e0e0" : "#74a664")};
   }
 
   .level-circle.blink {
-    animation: blink-animation 0.75s 2 alternate;
+    animation: blink-animation 0.7s 3 alternate;
 
     @keyframes blink-animation {
       0% {
         background-color: #74a664;
       }
       100% {
-        background-color: ${zeeguuWarmYellow};
+        background-color: #f88431;
       }
     }
   }
@@ -126,8 +117,8 @@ const LevelIndicator = styled.div`
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    width: 6px;
-    height: 6px;
+    width: 10px;
+    height: 10px;
     background-color: #ffffff; /* Inner circle color */
     border-radius: 50%;
   }
@@ -140,8 +131,8 @@ const LevelIndicator = styled.div`
   }
 
   .level-circle.final {
-    width: 16px;
-    height: 16px;
+    width: 32px;
+    height: 32px;
   }
 
   .level-circle.learned {
@@ -159,23 +150,23 @@ const LevelIndicator = styled.div`
       padding: 2px;
     }
     .progress-bar {
-      height: 4px;
+      height: 9px;
     }
 
     .level-circle {
-      width: 10px;
-      height: 10px;
-      border: 1px solid var(--progress-circle-border, #c4c4c4);
+      width: 25px;
+      height: 25px;
+      /* border: 1px solid var(--progress-circle-border, #c4c4c4); */
     }
 
     .level-circle.filled::before {
-      width: 4px;
-      height: 4px;
+      width: 10px;
+      height: 10px;
     }
 
     .level-circle.final {
-      width: 12px;
-      height: 12px;
+      width: 32px;
+      height: 32px;
     }
 
     .school-icon {
