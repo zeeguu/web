@@ -1,13 +1,5 @@
 import styled from "styled-components";
 import { zeeguuOrange } from "../components/colors";
-import { NarrowColumn } from "../components/ColumnWidth.sc";
-
-export const TranslateNarrowColumn = styled(NarrowColumn)`
-  @media (max-width: 768px) {
-    margin-left: 16px;
-    margin-right: 16px;
-  }
-`;
 
 export const DirectionSelector = styled.div`
   display: flex;

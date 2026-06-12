@@ -7,6 +7,13 @@ const NarrowColumn = styled.div`
   padding: 1px;
 `;
 
+const PaddedNarrowColumn = styled(NarrowColumn)`
+  @media (max-width: 768px) {
+    margin-left: 16px;
+    margin-right: 16px;
+  }
+`;
+
 const CenteredContentContainer = styled.div`
   display: flex;
   flex-direction: column;
@@ -68,6 +75,7 @@ const WidestColumn = styled.div`
 `;
 export {
   NarrowColumn,
+  PaddedNarrowColumn,
   CenteredContentContainer,
   CenteredContent,
   ContentOnRow,

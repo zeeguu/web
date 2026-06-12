@@ -3,7 +3,7 @@ import { zeeguuOrange, zeeguuDarkOrange } from "../colors";
 
 export const KeyboardContainer = styled.div`
   background: var(--card-bg);
-  border: 2px solid var(--border-color);
+  border: 0.1em solid var(--border-color);
   border-radius: 6px;
   padding: 8px;
   margin-top: 1em;
@@ -18,9 +18,7 @@ export const KeyboardContainer = styled.div`
     padding: 6px 0;
     max-width: 100%;
     margin: 0;
-    border-radius: 0;
-    border-left: none;
-    border-right: none;
+    border-radius: 0.3em;
   }
 `;
 
@@ -60,7 +58,7 @@ export const CollapseButton = styled.button`
 
 export const CollapsedKeyboard = styled.div`
   background: var(--card-bg);
-  border: 2px solid var(--border-color);
+  border: 1px solid var(--border-color);
   border-radius: 8px;
   padding: 0.8em 1.5em;
   margin-top: 1em;
@@ -87,7 +85,7 @@ export const KeyboardIcon = styled.span`
 
 export const CollapsedKeyboardWithKeys = styled.div`
   background: var(--card-bg);
-  border: 2px solid var(--border-color);
+  border: 0.1em solid var(--border-color);
   border-radius: 8px;
   padding: 8px;
   margin-top: 1em;
@@ -100,9 +98,7 @@ export const CollapsedKeyboardWithKeys = styled.div`
   @media (max-width: 768px) {
     max-width: 100%;
     margin: 0;
-    border-radius: 0;
-    border-left: none;
-    border-right: none;
+    border-radius: 0.3em;
     padding: 6px;
   }
 `;
