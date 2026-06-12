@@ -158,4 +158,66 @@ BROWSER_API.runtime.onInstalled.addListener(() => {
   BROWSER_API.contextMenus.create(contextMenuReadArticle);
 });
 
+// --- "Viewable in Zeeguu" toolbar badge -------------------------------------
+// A green check on the toolbar icon means: this YouTube video has captions in
+// the user's learning language, so it can be opened in Zeeguu. It's driven by
+// the read-only caption-language probes relayed from youtubeContentScript.js;
+// it never turns the user's captions on.
+const ACTION = BROWSER_API.action || BROWSER_API.browserAction;
+
+// Cached in module memory only (not persisted) so it self-heals if the user
+// changes their learning language -- a service-worker restart re-fetches it.
+// `undefined` = not fetched yet; `null` = logged out / unknown.
+let cachedLearnedLanguage;
+
+async function getLearnedLanguage() {
+  if (cachedLearnedLanguage !== undefined) return cachedLearnedLanguage;
+  try {
+    const loggedIn = await getIsLoggedIn(WEB_URL);
+    const userData = loggedIn ? await getUserInfoDictFromCookies(WEB_URL) : null;
+    if (!userData || !userData.session) {
+      cachedLearnedLanguage = null;
+      return null;
+    }
+    const api = new Zeeguu_API(API_URL);
+    api.setSession(userData.session);
+    const details = await api.getUserDetails();
+    cachedLearnedLanguage = (details && details.learned_language) || null;
+  } catch (e) {
+    cachedLearnedLanguage = null;
+  }
+  return cachedLearnedLanguage;
+}
+
+function setViewableBadge(tabId, on) {
+  if (!ACTION || tabId == null) return;
+  try {
+    ACTION.setBadgeText({ tabId, text: on ? "✓" : "" });
+    if (on && ACTION.setBadgeBackgroundColor) {
+      ACTION.setBadgeBackgroundColor({ tabId, color: "#2e7d32" });
+    }
+  } catch (e) {
+    /* ignore */
+  }
+}
+
+BROWSER_API.runtime.onMessage.addListener((request, sender) => {
+  if (!request || request.type !== "ZEEGUU_YT_CAPTIONS") return;
+  const tabId = sender && sender.tab && sender.tab.id;
+  (async () => {
+    const learned = await getLearnedLanguage();
+    const langs = (request.languages || []).map((l) => String(l).toLowerCase());
+    const match = !!learned && langs.includes(String(learned).toLowerCase());
+    setViewableBadge(tabId, match);
+  })();
+});
+
+// The content script only runs on YouTube, so it can't clear the badge once the
+// tab navigates elsewhere -- do that here.
+BROWSER_API.tabs.onUpdated.addListener((tabId, changeInfo) => {
+  if (changeInfo.url && !isYouTubeTab({ url: changeInfo.url })) {
+    setViewableBadge(tabId, false);
+  }
+});
+
 export { injectFontAndStyles };

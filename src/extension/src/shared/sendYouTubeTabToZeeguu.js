@@ -65,6 +65,7 @@ function extractYouTubeCaptionsInPage(preferredLanguage) {
       const segments = captured[videoId + ":" + lang];
       if (segments && segments.length > 0) {
         return {
+          captured: true,
           video_unique_key: videoId,
           language: lang,
           captions: segments,
@@ -72,12 +73,13 @@ function extractYouTubeCaptionsInPage(preferredLanguage) {
       }
     }
 
-    // No capture yet. Prompt the user to enable CC -- once YouTube's player
-    // fetches the caption track, the patch will store it and the next
-    // share-click will succeed.
+    // A caption track exists in the learning language but YouTube hasn't
+    // fetched it yet. Signal the caller to trigger a load (and restore the
+    // user's caption state afterwards) -- see scrapeYouTubeTab.
     return {
-      error:
-        "Please turn on subtitles in the YouTube player (CC button) for this video, then click Zeeguu again. (YouTube's anti-scraping means we have to catch the captions as the player loads them.)",
+      captured: false,
+      video_unique_key: videoId,
+      language: langsToTry[0],
     };
   } catch (e) {
     return {
@@ -89,13 +91,116 @@ function extractYouTubeCaptionsInPage(preferredLanguage) {
   }
 }
 
-async function scrapeYouTubeTab(tab, preferredLanguage) {
+// Runs in the MAIN world. Forces YouTube's player to load the learning-
+// language caption track so its /api/timedtext fetch fires (and youtubePatch.js
+// captures it). Snapshots the user's current caption state onto `window` first
+// so zeeguuRestoreCaptionState() can put it back -- we don't want to leave
+// captions on if the user didn't have them on. Stays synchronous (see the
+// note atop this file); the caller polls zeeguuReadCaptured for the result.
+function zeeguuTriggerCaptionLoad(langCode) {
+  try {
+    const wantLang = (langCode || "").toLowerCase();
+    const player = document.querySelector("#movie_player");
+    const hasApi =
+      player &&
+      typeof player.getOption === "function" &&
+      typeof player.setOption === "function";
+
+    // Snapshot current track so we can restore it ({} == captions off).
+    let prevTrack = null;
+    if (hasApi) {
+      try {
+        prevTrack = player.getOption("captions", "track");
+      } catch (e) {
+        /* ignore */
+      }
+    }
+    window.__zeeguuPrevTrack =
+      prevTrack && Object.keys(prevTrack).length ? prevTrack : {};
+
+    // Preferred: select the exact learning-language track via the player API,
+    // so we capture the right language even if the user's default caption
+    // language differs.
+    if (hasApi) {
+      try {
+        let list = player.getOption("captions", "tracklist") || [];
+        if (!list.length) {
+          try {
+            player.loadModule("captions");
+          } catch (e) {
+            /* ignore */
+          }
+          list = player.getOption("captions", "tracklist") || [];
+        }
+        const track = list.find(
+          (t) => (t.languageCode || "").toLowerCase() === wantLang,
+        );
+        if (track) {
+          player.setOption("captions", "track", track);
+          window.__zeeguuTriggerMethod = "api";
+          return { ok: true, method: "api" };
+        }
+      } catch (e) {
+        /* fall through to button */
+      }
+    }
+
+    // Fallback: click the CC button (toggles the last-used track on).
+    const btn = document.querySelector(".ytp-subtitles-button");
+    if (btn) {
+      const wasOn = btn.getAttribute("aria-pressed") === "true";
+      window.__zeeguuClickedOn = !wasOn;
+      window.__zeeguuTriggerMethod = "button";
+      if (!wasOn) btn.click();
+      return { ok: true, method: "button" };
+    }
+    return { ok: false, reason: "no-player-controls" };
+  } catch (e) {
+    return { ok: false, reason: String((e && e.message) || e) };
+  }
+}
+
+// MAIN world. Returns captured segments for this video+language, or null.
+function zeeguuReadCaptured(videoId, langCode) {
+  const captured = window.__zeeguuCapturedCaptions || {};
+  const segs = captured[videoId + ":" + (langCode || "").toLowerCase()];
+  return segs && segs.length ? segs : null;
+}
+
+// MAIN world. Undoes whatever zeeguuTriggerCaptionLoad did, so the user's
+// captions end up exactly as they were before the share.
+function zeeguuRestoreCaptionState() {
+  try {
+    if (window.__zeeguuTriggerMethod === "button") {
+      if (window.__zeeguuClickedOn) {
+        const btn = document.querySelector(".ytp-subtitles-button");
+        if (btn && btn.getAttribute("aria-pressed") === "true") btn.click();
+        window.__zeeguuClickedOn = false;
+      }
+    } else if (window.__zeeguuTriggerMethod === "api") {
+      const player = document.querySelector("#movie_player");
+      if (player && typeof player.setOption === "function") {
+        player.setOption("captions", "track", window.__zeeguuPrevTrack || {});
+      }
+    }
+  } catch (e) {
+    /* ignore */
+  } finally {
+    window.__zeeguuTriggerMethod = null;
+  }
+}
+
+function delay(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+async function runInPage(tabId, func, args) {
   let results;
   try {
     results = await BROWSER_API.scripting.executeScript({
-      target: { tabId: tab.id },
-      func: extractYouTubeCaptionsInPage,
-      args: [preferredLanguage || null],
+      target: { tabId },
+      func,
+      args: args || [],
       world: "MAIN",
     });
   } catch (e) {
@@ -107,18 +212,55 @@ async function scrapeYouTubeTab(tab, preferredLanguage) {
   const injection = results[0];
   if (injection.error) {
     throw new Error(
-      "Scraper threw in MAIN world: " +
+      "MAIN world threw: " +
         (injection.error.message || JSON.stringify(injection.error)),
     );
   }
-  const data = injection.result;
-  if (!data) {
-    throw new Error("Scraper returned no data.");
+  return injection.result;
+}
+
+async function scrapeYouTubeTab(tab, preferredLanguage) {
+  const initial = await runInPage(tab.id, extractYouTubeCaptionsInPage, [
+    preferredLanguage || null,
+  ]);
+  if (!initial) throw new Error("Scraper returned no data.");
+  if (initial.error) throw new Error(initial.error);
+  if (initial.captured) {
+    return {
+      video_unique_key: initial.video_unique_key,
+      language: initial.language,
+      captions: initial.captions,
+    };
   }
-  if (data.error) {
-    throw new Error(data.error);
+
+  // Captions exist in the learning language but YouTube hasn't fetched them.
+  // Force the player to load that track, wait for youtubePatch.js to capture
+  // it, then restore the user's caption state regardless of the outcome.
+  const { video_unique_key: videoId, language: lang } = initial;
+  let captions = null;
+  try {
+    const trigger = await runInPage(tab.id, zeeguuTriggerCaptionLoad, [lang]);
+    if (trigger && trigger.ok) {
+      for (let i = 0; i < 24; i++) {
+        await delay(250);
+        captions = await runInPage(tab.id, zeeguuReadCaptured, [videoId, lang]);
+        if (captions) break;
+      }
+    }
+  } finally {
+    try {
+      await runInPage(tab.id, zeeguuRestoreCaptionState, []);
+    } catch (e) {
+      /* best-effort restore */
+    }
   }
-  return data;
+
+  if (!captions) {
+    throw new Error(
+      "Couldn't read this video's subtitles. Turn on the CC button in the YouTube player, then click Zeeguu again.",
+    );
+  }
+  return { video_unique_key: videoId, language: lang, captions };
 }
 
 export async function sendYouTubeTabToZeeguu(api, tab, preferredLanguage) {

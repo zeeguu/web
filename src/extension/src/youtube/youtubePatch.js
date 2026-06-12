@@ -126,4 +126,64 @@
     }
     return origSend.apply(this, arguments);
   };
+
+  // --- Caption-availability probe ---------------------------------------
+  // Reports the video's available caption languages to the ISOLATED-world
+  // content script (which relays them to the background to drive the toolbar
+  // "viewable in Zeeguu" badge). This is a READ-ONLY look at the player's
+  // caption track list -- it never selects or enables a track, so the user
+  // sees nothing.
+  function readCaptionLanguages() {
+    try {
+      let pr = null;
+      const player = document.querySelector("#movie_player");
+      if (player && typeof player.getPlayerResponse === "function") {
+        pr = player.getPlayerResponse();
+      }
+      if (!pr) pr = window.ytInitialPlayerResponse;
+      const videoId = (pr && pr.videoDetails && pr.videoDetails.videoId) || "";
+      const tracks =
+        (pr &&
+          pr.captions &&
+          pr.captions.playerCaptionsTracklistRenderer &&
+          pr.captions.playerCaptionsTracklistRenderer.captionTracks) ||
+        [];
+      const languages = [
+        ...new Set(
+          tracks.map((t) => (t.languageCode || "").toLowerCase()).filter(Boolean),
+        ),
+      ];
+      return { videoId, languages };
+    } catch (e) {
+      return { videoId: "", languages: [] };
+    }
+  }
+
+  // The player response isn't ready the instant a navigation finishes, so we
+  // retry a few times until a videoId shows up (or give up quietly).
+  function probeCaptions() {
+    let attempts = 0;
+    const tick = () => {
+      attempts += 1;
+      const { videoId, languages } = readCaptionLanguages();
+      if (videoId) {
+        window.postMessage(
+          { source: "zeeguu-ext", type: "ZEEGUU_YT_CAPTIONS", videoId, languages },
+          location.origin,
+        );
+        return;
+      }
+      if (attempts < 10) setTimeout(tick, 500);
+    };
+    tick();
+  }
+
+  // YouTube is a SPA: `yt-navigate-finish` fires on every in-app navigation.
+  // Also probe once for the initial (hard) page load.
+  document.addEventListener("yt-navigate-finish", probeCaptions);
+  if (document.readyState === "loading") {
+    window.addEventListener("load", probeCaptions);
+  } else {
+    probeCaptions();
+  }
 })();
