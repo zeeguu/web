@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import * as s from "./LevelIndicator.sc.js";
 import LevelIndicatorBar from "./LevelIndicatorBar.js";
 import LevelIndicatorCircles from "./LevelIndicatorCircles.js";
@@ -55,31 +55,23 @@ const GrayedOutIndicator = (
   <s.LevelIndicator isGreyedOutBar={true}>
     <div className="level-indicator">
       <LevelIndicatorBar isGreyedOutBar={true} />
-      <LevelIndicatorCircles
-        totalLearningStages={TOTAL_CIRCLES}
-        levelInProgress={0}
-      />
+      <LevelIndicatorCircles totalLearningStages={TOTAL_CIRCLES} levelInProgress={0} />
     </div>
   </s.LevelIndicator>
 );
 
-export default function LevelIndicator({
-  bookmark,
-  userIsCorrect,
-  userIsWrong,
-  isGreyedOutBar,
-}) {
+export default function LevelIndicator({ bookmark, userIsCorrect, userIsWrong, isGreyedOutBar }) {
+  const [lostCoolingIntervals, setLostCoolingIntervals] = useState(0);
+
   if (bookmark === undefined || bookmark === null) {
     return GrayedOutIndicator;
   }
 
   // when we create a new bookmark, the level is automatically set to zero
   // (for backwards compatibility we also set all the levels to zero)
-  const isNewBookmark =
-    bookmark.level === 0 && bookmark.cooling_interval === null;
+  const isNewBookmark = bookmark.level === 0 && bookmark.cooling_interval === null;
 
-  let { cooling_interval, level, is_last_in_cycle } =
-    handleBookmarkThatNeedsToBeMigrated(bookmark);
+  let { cooling_interval, level, is_last_in_cycle } = handleBookmarkThatNeedsToBeMigrated(bookmark);
 
   const shouldBlink = cooling_interval === 0 && userIsWrong;
 
@@ -104,6 +96,24 @@ export default function LevelIndicator({
     }
   }, [level, cooling_interval]);
 
+  // Reset lost progress when word/bookmark changes or user interaction occurs
+  useEffect(() => {
+    if (userIsCorrect) {
+      setLostCoolingIntervals(0); // Reset lost progress when correct
+    }
+  }, [userIsCorrect]);
+
+  useEffect(() => {
+    if (userIsWrong) {
+      setLostCoolingIntervals(1); // Show orange when user gets it wrong
+    }
+  }, [userIsWrong]);
+
+  // Reset lost progress when word/bookmark changes
+  useEffect(() => {
+    setLostCoolingIntervals(0);
+  }, [bookmark?.id]);
+
   return (
     <s.LevelIndicator isGreyedOutBar={isGreyedOutBar}>
       <div className="level-indicator">
@@ -111,6 +121,7 @@ export default function LevelIndicator({
           isGreyedOutBar={isGreyedOutBar}
           cooling_interval={cooling_interval}
           level={level}
+          lostCoolingIntervals={lostCoolingIntervals}
         />
         <LevelIndicatorCircles
           totalLearningStages={TOTAL_CIRCLES}
@@ -119,9 +130,7 @@ export default function LevelIndicator({
           showNewNotification={isNewBookmark}
           levelInProgress={level}
           tooltipText={
-            isBookmarkExpression(bookmark)
-              ? strings.newExpressionExercisesTooltip
-              : strings.newWordExercisesTooltip
+            isBookmarkExpression(bookmark) ? strings.newExpressionExercisesTooltip : strings.newWordExercisesTooltip
           }
         />
       </div>

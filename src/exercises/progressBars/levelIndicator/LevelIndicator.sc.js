@@ -55,16 +55,44 @@ const LevelIndicator = styled.div`
     position: relative;
     width: 100%;
     height: 10px;
-    background-color: var(--progress-bar-bg);
     border-radius: 5px;
     background-origin: border-box;
+    overflow: hidden;
+  }
+
+  .progress-bar::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: var(--progress-bar-bg);
+    border-radius: 5px;
+    z-index: 0;
   }
 
   .progress-fill {
+    position: absolute;
+    top: 0;
+    left: 0;
     height: 100%;
     background: ${({ isGreyedOutBar }) => (isGreyedOutBar ? "transparent" : "#74a664")};
     transition: width 1s ease-in-out;
     border-radius: 5px;
+    z-index: 2;
+  }
+
+  .lost-section {
+    position: absolute;
+    top: 0;
+    height: 100%;
+    background: #f88431;
+    transition:
+      width 1s ease-in-out,
+      left 1s ease-in-out;
+    border-radius: 5px;
+    z-index: 1;
   }
 
   .level-circles-wrapper {
@@ -87,8 +115,7 @@ const LevelIndicator = styled.div`
     color: white;
     background-color: var(--progress-circle-bg, #a1a1a1);
     border-radius: 50%;
-    z-index: 1;
-    /* box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.2); */
+    z-index: 2;
     transition:
       background-color 0.3s,
       border-color 0.3s;
@@ -99,7 +126,7 @@ const LevelIndicator = styled.div`
   }
 
   .level-circle.blink {
-    animation: blink-animation 0.7s 3 alternate;
+    animation: blink-animation 1s 3 alternate;
 
     @keyframes blink-animation {
       0% {
@@ -156,7 +183,6 @@ const LevelIndicator = styled.div`
     .level-circle {
       width: 25px;
       height: 25px;
-      /* border: 1px solid var(--progress-circle-border, #c4c4c4); */
     }
 
     .level-circle.filled::before {
