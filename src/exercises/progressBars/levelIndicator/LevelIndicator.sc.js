@@ -78,7 +78,7 @@ const LevelIndicator = styled.div`
     left: 0;
     height: 100%;
     background: ${({ isGreyedOutBar }) => (isGreyedOutBar ? "transparent" : "#74a664")};
-    transition: width 1s ease-in-out;
+    transition: width 1.5s ease-in-out;
     border-radius: 5px;
     z-index: 2;
   }
