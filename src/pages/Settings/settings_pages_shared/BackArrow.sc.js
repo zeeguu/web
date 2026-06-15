@@ -6,10 +6,10 @@ const BackArrow = styled.button`
   justify-content: flex-start;
   align-self: flex-start;
   cursor: pointer;
-  color: var(--text-muted);
+  color: var(--text-secondary);
   background: none;
   border: none;
-  padding: 0.5rem;
+  padding: 0;
   margin: 0;
   &:hover {
     color: var(--text-secondary);
