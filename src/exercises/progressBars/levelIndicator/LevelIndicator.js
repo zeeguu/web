@@ -73,8 +73,6 @@ export default function LevelIndicator({ bookmark, userIsCorrect, userIsWrong, i
 
   let { cooling_interval, level, is_last_in_cycle } = handleBookmarkThatNeedsToBeMigrated(bookmark);
 
-  const shouldBlink = cooling_interval === 0 && userIsWrong;
-
   // update the level and cooling interval based on the user correctness
   // these variables are defined only after the user has attempted a solution
   if (userIsCorrect) {
@@ -87,6 +85,9 @@ export default function LevelIndicator({ bookmark, userIsCorrect, userIsWrong, i
   if (userIsWrong && cooling_interval > 0) {
     cooling_interval = cooling_interval - 1;
   }
+
+  // Calculate blink AFTER cooling_interval updates
+  const shouldBlink = cooling_interval === 0 && userIsWrong;
 
   // Dispatch event when user first makes any progress on a word
   // This shows the Learning Levels onboarding on first exercise completion
