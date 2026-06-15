@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import ArticleListBrowser from "./ArticleListBrowser";
 import BookmarkedArticles from "./BookmarkedArticles";
 import HiddenArticles from "../myArticles/HiddenArticles";
@@ -29,6 +29,8 @@ import { UserContext } from "../contexts/UserContext";
 import useTranslationOnboarding from "../hooks/useTranslationOnboarding";
 import TranslationOnboardingPopup from "../pages/onboarding/notifications/TranslationOnboardingPopup";
 
+const READ_TAB_PATHS = ["/articles", "/articles/mySearches", "/articles/bookmarked", "/articles/classroom"];
+
 export default function ArticlesRouter({ hasExtension, isChrome }) {
   const api = useContext(APIContext);
   const history = useHistory();
@@ -38,6 +40,13 @@ export default function ArticlesRouter({ hasExtension, isChrome }) {
   const hideRecommendations = LocalStorage.hasFeature("hide_recommendations");
   const isStudent = LocalStorage.isStudent();
   const translationModal = useTranslationOnboarding(api, userDetails);
+
+  useEffect(() => {
+    if (READ_TAB_PATHS.includes(location.pathname)) {
+      LocalStorage.setLastVisitedReadPath(location.pathname);
+    }
+  }, [location.pathname]);
+
   const isHomeScreen = location.pathname === "/articles";
 
   const iconStyle = { display: "inline-flex", alignItems: "center", padding: "0.4em 0.25em", verticalAlign: "middle" };
