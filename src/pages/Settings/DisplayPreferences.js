@@ -52,7 +52,7 @@ export default function DisplayPreferences() {
       </HeaderWrapper>
       <Main>
         <Form>
-          <FormSection style={{ marginTop: "2em" }}>
+          <FormSection>
             <Checkbox
               id="show-timer-checkbox"
               label={<>Show activity timer in reader and exercises</>}
