@@ -23,23 +23,20 @@ import { setTitle } from "../../../assorted/setTitle";
 import { APIContext } from "../../../contexts/APIContext";
 import LocalStorage from "../../../assorted/LocalStorage";
 import { saveSharedUserInfo } from "../../../utils/cookies/userInfo";
+import { HeaderWrapper, BackArrowWrapper } from "../Settings.sc";
 
 export default function MyClassrooms() {
   const api = useContext(APIContext);
   const { session, setUserDetails } = useContext(UserContext);
 
   const [isLoading, setIsLoading] = useState(true);
-  const [
-    inviteCode,
-    setInviteCode,
-    validateInviteCode,
-    isInviteCodeValid,
-    inviteCodeErrorMsg,
-  ] = useFormField("", NonEmptyValidator("Please provide an invite code."));
+  const [inviteCode, setInviteCode, validateInviteCode, isInviteCodeValid, inviteCodeErrorMsg] = useFormField(
+    "",
+    NonEmptyValidator("Please provide an invite code."),
+  );
   const [showJoinCohortError, setShowJoinCohortError] = useState(false);
   const [studentCohorts, setStudentCohorts] = useState([]);
-  const [isLeaveClassroomModalOpen, setIsLeaveClassroomModalOpen] =
-    useState(false);
+  const [isLeaveClassroomModalOpen, setIsLeaveClassroomModalOpen] = useState(false);
   const [currentClassroom, setCurrentClassroom] = useState("");
 
   function updateValues() {
@@ -134,10 +131,14 @@ export default function MyClassrooms() {
 
   return (
     <PreferencesPage layoutVariant={"minimalistic-top-aligned"}>
-      <BackArrow />
-      <Header withoutLogo>
-        <Heading>{strings.myClassrooms}</Heading>
-      </Header>
+      <HeaderWrapper>
+        <BackArrowWrapper>
+          <BackArrow />
+        </BackArrowWrapper>
+        <Header withoutLogo>
+          <Heading>{strings.myClassrooms}</Heading>
+        </Header>
+      </HeaderWrapper>
       <Main>
         <FullWidthListContainer>
           {studentIsInCohort ? (
@@ -149,9 +150,7 @@ export default function MyClassrooms() {
               >{`${idx + 1}. ${classroom.name}`}</FullWidthListItem>
             ))
           ) : (
-            <FullWidthListItem>
-              {"Currently, you are not enrolled in any class"}
-            </FullWidthListItem>
+            <FullWidthListItem>{"Currently, you are not enrolled in any class"}</FullWidthListItem>
           )}
           {isLeaveClassroomModalOpen && (
             <LeaveClassroomModal
@@ -166,11 +165,7 @@ export default function MyClassrooms() {
           <FormSection>
             <InputField
               type={"text"}
-              label={
-                studentIsInCohort
-                  ? strings.insertNewInviteCode
-                  : strings.insertInviteCode
-              }
+              label={studentIsInCohort ? strings.insertNewInviteCode : strings.insertInviteCode}
               id={"cohort"}
               name={"cohort"}
               value={inviteCode}
@@ -179,11 +174,7 @@ export default function MyClassrooms() {
               errorMessage={inviteCodeErrorMsg}
             />
 
-            {showJoinCohortError && (
-              <FullWidthErrorMsg>
-                {strings.checkIfInviteCodeIsValid}
-              </FullWidthErrorMsg>
-            )}
+            {showJoinCohortError && <FullWidthErrorMsg>{strings.checkIfInviteCodeIsValid}</FullWidthErrorMsg>}
           </FormSection>
           <ButtonContainer className={"adaptive-alignment-horizontal"}>
             <Button type="submit" onClick={(e) => saveStudentToClassroom(e)}>

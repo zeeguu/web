@@ -68,9 +68,6 @@ export default function Settings() {
       </ListOfSettingsItems>
 
       <ListOfSettingsItems header={"Display"}>
-        <SettingsItem path={"/account_settings/topbar_progress_display"}>
-          {strings.progressIconPreferences}
-        </SettingsItem>
         <SettingsItem path={"/account_settings/display"}>Activity Timer</SettingsItem>
         <DarkModeToggle />
       </ListOfSettingsItems>

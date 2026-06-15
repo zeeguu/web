@@ -23,13 +23,11 @@ import BackArrow from "./settings_pages_shared/BackArrow";
 import Selector from "../../components/Selector";
 import { setTitle } from "../../assorted/setTitle";
 import useFormField from "../../hooks/useFormField";
-import {
-  NonEmptyValidator,
-  Validator,
-} from "../../utils/ValidatorRule/Validator";
+import { NonEmptyValidator, Validator } from "../../utils/ValidatorRule/Validator";
 import useShadowRef from "../../hooks/useShadowRef";
 import { scrollToTop } from "../../utils/misc/scrollToTop";
 import validateRules from "../../assorted/validateRules";
+import { HeaderWrapper, BackArrowWrapper } from "./Settings.sc";
 
 export default function LanguageSettings() {
   const api = useContext(APIContext);
@@ -47,18 +45,13 @@ export default function LanguageSettings() {
   ] = useFormField("", NonEmptyValidator("Please select a language."));
 
   const learnedLanguageRef = useShadowRef(learnedLanguage);
-  const [
-    nativeLanguage,
-    setNativeLanguage,
-    validateNativeLanguage,
-    isNativeLanguageValid,
-    nativeLanguageMsg,
-  ] = useFormField("en", [
-    NonEmptyValidator("Please select a language."),
-    new Validator((v) => {
-      return v !== learnedLanguageRef.current;
-    }, "Your Translation language needs to be different than your learned language."),
-  ]);
+  const [nativeLanguage, setNativeLanguage, validateNativeLanguage, isNativeLanguageValid, nativeLanguageMsg] =
+    useFormField("en", [
+      NonEmptyValidator("Please select a language."),
+      new Validator((v) => {
+        return v !== learnedLanguageRef.current;
+      }, "Your Translation language needs to be different than your learned language."),
+    ]);
   const history = useHistory();
   const isPageMounted = useRef(true);
 
@@ -87,8 +80,7 @@ export default function LanguageSettings() {
 
   function handleSave(e) {
     e.preventDefault();
-    if (!validateRules([validateLearnedLanguage, validateNativeLanguage]))
-      scrollToTop();
+    if (!validateRules([validateLearnedLanguage, validateNativeLanguage])) scrollToTop();
     else {
       const newUserDetails = {
         ...userDetails,
@@ -117,16 +109,18 @@ export default function LanguageSettings() {
 
   return (
     <PreferencesPage layoutVariant={"minimalistic-top-aligned"}>
-      <BackArrow />
-      <Header withoutLogo>
-        <Heading>{strings.languageSettings}</Heading>
-      </Header>
+      <HeaderWrapper>
+        <BackArrowWrapper>
+          <BackArrow />
+        </BackArrowWrapper>
+        <Header withoutLogo>
+          <Heading>{strings.languageSettings}</Heading>
+        </Header>
+      </HeaderWrapper>
       <Main>
         <Form>
           <FormSection>
-            {errorMessage && (
-              <FullWidthErrorMsg>{errorMessage}</FullWidthErrorMsg>
-            )}
+            {errorMessage && <FullWidthErrorMsg>{errorMessage}</FullWidthErrorMsg>}
             <LanguageSelector
               id={"practiced-language-selector"}
               label={strings.learnedLanguage}

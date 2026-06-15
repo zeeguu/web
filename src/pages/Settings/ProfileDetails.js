@@ -35,6 +35,7 @@ import {
 } from "../../profile/avatarOptions";
 import { AvatarBackground, AvatarImage } from "../../profile/UserProfile.sc";
 import Feature from "../../features/Feature";
+import { HeaderWrapper, BackArrowWrapper } from "./Settings.sc";
 import * as s from "./ProfileDetails.sc";
 import EditIcon from "@mui/icons-material/Edit";
 import CheckIcon from "@mui/icons-material/Check";
@@ -136,10 +137,10 @@ export default function ProfileDetails() {
   }
   return (
     <PreferencesPage layoutVariant={"minimalistic-top-aligned"}>
-      <s.HeaderWrapper>
-        <s.BackArrowWrapper>
+      <HeaderWrapper>
+        <BackArrowWrapper>
           <BackArrow redirectLink={redirectPath} />
-        </s.BackArrowWrapper>
+        </BackArrowWrapper>
         <Header withoutLogo>
           <Heading>{strings.profileDetails}</Heading>
           {successfullyChangedPassword && (
@@ -148,7 +149,7 @@ export default function ProfileDetails() {
             </>
           )}
         </Header>
-      </s.HeaderWrapper>
+      </HeaderWrapper>
       <Main>
         <Form>
           {errorMessage && <FullWidthErrorMsg>{errorMessage}</FullWidthErrorMsg>}
@@ -229,10 +230,7 @@ export default function ProfileDetails() {
       </Main>
 
       {isGamificationEnabled && (
-        <Modal
-          open={showAvatarModal}
-          onClose={() => setShowAvatarModal(false)}
-        >
+        <Modal open={showAvatarModal} onClose={() => setShowAvatarModal(false)}>
           <Header withoutLogo>
             <Heading>Choose Your Avatar</Heading>
           </Header>

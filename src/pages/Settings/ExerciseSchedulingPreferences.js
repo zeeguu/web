@@ -18,6 +18,7 @@ import useFormField from "../../hooks/useFormField";
 import { PositiveIntegerValidator } from "../../utils/ValidatorRule/Validator";
 import validateRules from "../../assorted/validateRules";
 import { ExercisesCounterContext } from "../../exercises/ExercisesCounterContext";
+import { HeaderWrapper, BackArrowWrapper } from "./Settings.sc";
 
 const PREF_KEY_MAX_WORDS_TO_SCHEDULE = "max_words_to_schedule";
 
@@ -61,10 +62,14 @@ export default function ExerciseSchedulingPreferences() {
 
   return (
     <PreferencesPage layoutVariant={"minimalistic-top-aligned"}>
-      <BackArrow />
-      <Header withoutLogo>
-        <Heading>Exercise Scheduling</Heading>
-      </Header>
+      <HeaderWrapper>
+        <BackArrowWrapper>
+          <BackArrow />
+        </BackArrowWrapper>
+        <Header withoutLogo>
+          <Heading>Exercise Scheduling</Heading>
+        </Header>
+      </HeaderWrapper>
       <Main>
         <Form>
           <FormSection>

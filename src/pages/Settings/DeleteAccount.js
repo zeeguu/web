@@ -7,6 +7,7 @@ import Heading from "../_pages_shared/Heading.sc";
 import BackArrow from "./settings_pages_shared/BackArrow";
 import strings from "../../i18n/definitions";
 import { setTitle } from "../../assorted/setTitle";
+import { HeaderWrapper, BackArrowWrapper } from "./Settings.sc";
 
 export default function DeleteAccount() {
   useEffect(() => {
@@ -15,10 +16,14 @@ export default function DeleteAccount() {
 
   return (
     <PreferencesPage layoutVariant={"minimalistic-top-aligned"}>
-      <BackArrow />
-      <Header withoutLogo>
-        <Heading>{strings.deleteAccount}</Heading>
-      </Header>
+      <HeaderWrapper>
+        <BackArrowWrapper>
+          <BackArrow />
+        </BackArrowWrapper>
+        <Header withoutLogo>
+          <Heading>{strings.deleteAccount}</Heading>
+        </Header>
+      </HeaderWrapper>
       <Main>
         <DeleteAccountButton />
       </Main>

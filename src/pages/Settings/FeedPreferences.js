@@ -12,6 +12,7 @@ import { setTitle } from "../../assorted/setTitle";
 import { APIContext } from "../../contexts/APIContext";
 
 import { SectionHeading, SectionDescription } from "./FeedPreferences.sc";
+import { HeaderWrapper, BackArrowWrapper } from "./Settings.sc";
 
 import useUnwantedContentPreferences from "../../hooks/useUnwantedContentPreferences";
 import useFormField from "../../hooks/useFormField";
@@ -78,10 +79,14 @@ export default function FeedPreferences() {
 
   return (
     <PreferencesPage layoutVariant={"minimalistic-top-aligned"}>
-      <BackArrow redirectLink={isFromArticles && "/articles"} />
-      <Header withoutLogo>
-        <Heading>Feed Preferences</Heading>
-      </Header>
+      <HeaderWrapper>
+        <BackArrowWrapper>
+          <BackArrow />
+        </BackArrowWrapper>
+        <Header withoutLogo>
+          <Heading>Feed Preferences</Heading>
+        </Header>
+      </HeaderWrapper>
       <Main>
         <SectionHeading>Topics of Interest</SectionHeading>{" "}
         {/*<SectionDescription>Show me articles about the following topics:</SectionDescription>*/}
@@ -97,10 +102,8 @@ export default function FeedPreferences() {
             </Tag>
           ))}
         </TagContainer>
-        <br/>
+        <br />
         <SectionHeading>Keywords to Avoid</SectionHeading>{" "}
-
-
         <Form style={{ marginTop: "-1em" }}>
           <InputField
             value={excludedWord}
@@ -115,20 +118,17 @@ export default function FeedPreferences() {
             </Button>
           </InputField>
         </Form>
-
         <TagContainer style={{ marginTop: "-1em" }}>
           {unwantedKeywords.map((keyword) => (
-              <div key={keyword.id} id={keyword.id}>
-                <Tag className={"outlined-blue small"} onClick={() => removeUnwantedKeyword(keyword)}>
-                  {keyword.search}
-                  <HighlightOffRoundedIcon fontSize="small" />
-                </Tag>
-              </div>
+            <div key={keyword.id} id={keyword.id}>
+              <Tag className={"outlined-blue small"} onClick={() => removeUnwantedKeyword(keyword)}>
+                {keyword.search}
+                <HighlightOffRoundedIcon fontSize="small" />
+              </Tag>
+            </div>
           ))}
         </TagContainer>
-
-
-        <br/>
+        <br />
         <div style={{ marginTop: "0", marginBottom: "0" }}>
           <FormControlLabel
             control={

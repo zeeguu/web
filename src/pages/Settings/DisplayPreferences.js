@@ -14,6 +14,7 @@ import Checkbox from "../../components/modal_shared/Checkbox";
 import strings from "../../i18n/definitions";
 import { setTitle } from "../../assorted/setTitle";
 import { APIContext } from "../../contexts/APIContext";
+import { HeaderWrapper, BackArrowWrapper } from "./Settings.sc";
 
 export default function DisplayPreferences() {
   const api = useContext(APIContext);
@@ -41,13 +42,17 @@ export default function DisplayPreferences() {
 
   return (
     <PreferencesPage layoutVariant={"minimalistic-top-aligned"}>
-      <BackArrow />
-      <Header withoutLogo>
-        <Heading>Activity Timer</Heading>
-      </Header>
+      <HeaderWrapper>
+        <BackArrowWrapper>
+          <BackArrow />
+        </BackArrowWrapper>
+        <Header withoutLogo>
+          <Heading>Activity Timer</Heading>
+        </Header>
+      </HeaderWrapper>
       <Main>
         <Form>
-          <FormSection>
+          <FormSection style={{ marginTop: "2em" }}>
             <Checkbox
               id="show-timer-checkbox"
               label={<>Show activity timer in reader and exercises</>}

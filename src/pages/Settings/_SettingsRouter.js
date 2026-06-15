@@ -7,7 +7,6 @@ import FeedPreferences from "./FeedPreferences";
 import ExerciseTypePreferences from "./ExerciseTypePreferences";
 import MyClassrooms from "./MyClassrooms/MyClassrooms";
 import DeleteAccount from "./DeleteAccount";
-import TopbarIconPreferences from "./TopbarIconPreferences";
 import ExerciseSchedulingPreferences from "./ExerciseSchedulingPreferences";
 import DisplayPreferences from "./DisplayPreferences";
 import Developer from "./Developer";
@@ -24,8 +23,6 @@ export default function SettingsRouter({ setUser }) {
       <PrivateRoute path="/account_settings/exercise_types" component={ExerciseTypePreferences} />
 
       <PrivateRoute path="/account_settings/exercise_scheduling" component={ExerciseSchedulingPreferences} />
-
-      <PrivateRoute path="/account_settings/topbar_progress_display" component={TopbarIconPreferences} />
 
       <PrivateRoute path="/account_settings/display" component={DisplayPreferences} />
 

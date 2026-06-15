@@ -8,6 +8,7 @@ import Button from "../_pages_shared/Button.sc";
 import ButtonContainer from "../_pages_shared/ButtonContainer.sc";
 import BackArrow from "./settings_pages_shared/BackArrow";
 import { setTitle } from "../../assorted/setTitle";
+import { HeaderWrapper, BackArrowWrapper } from "./Settings.sc";
 
 export default function Developer() {
   const api = useContext(APIContext);
@@ -27,15 +28,17 @@ export default function Developer() {
 
   return (
     <PreferencesPage layoutVariant={"minimalistic-top-aligned"}>
-      <BackArrow />
-      <Header withoutLogo>
-        <Heading>Developer</Heading>
-      </Header>
+      <HeaderWrapper>
+        <BackArrowWrapper>
+          <BackArrow />
+        </BackArrowWrapper>
+        <Header withoutLogo>
+          <Heading>Developer</Heading>
+        </Header>
+      </HeaderWrapper>
       <Main>
         <ButtonContainer className={"adaptive-alignment-horizontal"}>
-          <Button onClick={handleClearOnboardingMessages}>
-            Clear onboarding message table
-          </Button>
+          <Button onClick={handleClearOnboardingMessages}>Clear onboarding message table</Button>
         </ButtonContainer>
         {status && <p style={{ marginTop: "1em" }}>{status}</p>}
       </Main>

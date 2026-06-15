@@ -199,12 +199,6 @@ let strings = new LocalizedStrings(
       baseLanguage: "I want translations in",
       baseLanguagePlaceholder: "Select Language",
 
-      //Topbar preferences display
-      progressIconPreferences: "Progress Icon Preferences",
-      exercisesThisWeek: "Exercises this week",
-      articlesReadThisWeek: "Articles read this week",
-      dailyStreak: "Daily streak",
-
       //LanguagePreferences
       languagePreferences: "Language Preferences",
       learnedLanguageIsRequired: "Learned language is required.",
