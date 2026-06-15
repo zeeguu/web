@@ -18,7 +18,7 @@ import strings from "../../i18n/definitions";
 import { setTitle } from "../../assorted/setTitle";
 import { APIContext } from "../../contexts/APIContext";
 import useBookmarkAutoPronounce from "../../hooks/useBookmarkAutoPronounce";
-import { HeaderWrapper, BackArrowWrapper, HeadingWrapper } from "./Settings.sc";
+import { HeaderWrapper, BackArrowWrapper } from "./Settings.sc";
 
 export default function ExerciseTypePreferences() {
   const api = useContext(APIContext);
@@ -77,11 +77,11 @@ export default function ExerciseTypePreferences() {
         <BackArrowWrapper>
           <BackArrow />
         </BackArrowWrapper>
-        <HeadingWrapper>
+
           <Header withoutLogo>
             <Heading>{strings.exerciseTypePreferences}</Heading>
           </Header>
-        </HeadingWrapper>
+
       </HeaderWrapper>
       <Main>
         <Form>

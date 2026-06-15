@@ -404,7 +404,7 @@ let strings = new LocalizedStrings(
       searchAllArticlesAndVideos: "Search all articles and videos",
 
       //Search
-      searching: "Searching...",
+
       youSearchedFor: "You searched for: ",
       NoSavedSearches: "You haven't saved any searches.",
       NoSearchMatch: "No articles found that match your search.",
@@ -675,7 +675,7 @@ let strings = new LocalizedStrings(
       profileDetails: "Profile Details",
       languageSettings: "Language Settings",
       myClassrooms: "My Classrooms",
-      exerciseTypePreferences: "Exercise Audio & Pronunciation",
+      exerciseTypePreferences: "Audio & Pronunciation",
 
       deleteAccount: "Delete Account",
 
@@ -1312,7 +1312,7 @@ let strings = new LocalizedStrings(
       searchAllArticlesAndVideos: "Søg i alle artikler og videoer",
 
       //Search
-      searching: "Søger...",
+
       youSearchedFor: "Du søgte på: ",
 
       //ClassroomArticles
