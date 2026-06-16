@@ -71,7 +71,7 @@ export default function ExerciseTypePreferences() {
   }
 
   return (
-    <PreferencesPage layoutVariant={"minimalistic-top-aligned"}>
+    <PreferencesPage layoutVariant={"minimalistic-top-aligned"} hideBackground reducedPadding>
       <BackArrow />
       <Header withoutLogo>
         <Heading>{strings.exerciseTypePreferences}</Heading>

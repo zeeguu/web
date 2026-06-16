@@ -77,7 +77,7 @@ export default function FeedPreferences() {
   }
 
   return (
-    <PreferencesPage layoutVariant={"minimalistic-top-aligned"}>
+    <PreferencesPage layoutVariant={"minimalistic-top-aligned"} hideBackground reducedPadding>
       <BackArrow redirectLink={isFromArticles && "/articles"} />
       <Header withoutLogo>
         <Heading>Feed Preferences</Heading>

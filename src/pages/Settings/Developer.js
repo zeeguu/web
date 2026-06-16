@@ -26,16 +26,14 @@ export default function Developer() {
   }
 
   return (
-    <PreferencesPage layoutVariant={"minimalistic-top-aligned"}>
+    <PreferencesPage layoutVariant={"minimalistic-top-aligned"} hideBackground reducedPadding>
       <BackArrow />
       <Header withoutLogo>
         <Heading>Developer</Heading>
       </Header>
       <Main>
         <ButtonContainer className={"adaptive-alignment-horizontal"}>
-          <Button onClick={handleClearOnboardingMessages}>
-            Clear onboarding message table
-          </Button>
+          <Button onClick={handleClearOnboardingMessages}>Clear onboarding message table</Button>
         </ButtonContainer>
         {status && <p style={{ marginTop: "1em" }}>{status}</p>}
       </Main>

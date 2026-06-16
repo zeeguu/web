@@ -135,7 +135,7 @@ export default function ProfileDetails() {
     return <LoadingAnimation />;
   }
   return (
-    <PreferencesPage layoutVariant={"minimalistic-top-aligned"}>
+    <PreferencesPage layoutVariant={"minimalistic-top-aligned"} hideBackground reducedPadding>
       <s.HeaderWrapper>
         <s.BackArrowWrapper>
           <BackArrow redirectLink={redirectPath} />
@@ -229,10 +229,7 @@ export default function ProfileDetails() {
       </Main>
 
       {isGamificationEnabled && (
-        <Modal
-          open={showAvatarModal}
-          onClose={() => setShowAvatarModal(false)}
-        >
+        <Modal open={showAvatarModal} onClose={() => setShowAvatarModal(false)}>
           <Header withoutLogo>
             <Heading>Choose Your Avatar</Heading>
           </Header>

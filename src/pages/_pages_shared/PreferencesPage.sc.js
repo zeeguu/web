@@ -12,7 +12,7 @@ const PageBackground = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  background: var(--prefs-page-bg, ${zeeguuOrange});
+  background: ${({ $hideBackground }) => ($hideBackground ? "transparent" : `var(--prefs-page-bg, ${zeeguuOrange})`)};
   overflow: hidden;
   padding-top: env(safe-area-inset-top, 0px);
   padding-bottom: var(--safe-area-bottom, env(safe-area-inset-bottom, 0px));
@@ -46,23 +46,25 @@ const PageContainer = styled.div`
   border-radius: 1em;
 
   width: 47rem;
-  padding: 2rem 6rem;
+  padding: ${({ $reducedPadding }) => ($reducedPadding ? "1rem 2rem" : "2rem 6rem")};
   margin: 1rem;
   overflow-y: auto;
 
+  background-color: ${({ $hideBackground }) => ($hideBackground ? "transparent" : "var(--card-bg)")};
+
   @media (max-width: 1200px) {
-    padding: 2rem 4.25rem;
+    padding: ${({ $reducedPadding }) => ($reducedPadding ? "1rem 1.5rem" : "2rem 4.25rem")};
     margin: 0.5rem;
     max-width: 47rem;
     width: 80%;
   }
 
   @media (max-width: 768px) {
-    padding: 2rem 2rem;
+    padding: ${({ $reducedPadding }) => ($reducedPadding ? "1rem 1rem" : "2rem 2rem")};
   }
 
   @media (max-width: 576px) {
-    padding: 0.5rem;
+    padding: ${({ $reducedPadding }) => ($reducedPadding ? "0.75rem" : "1.5rem")};
     width: 95%;
   }
 
