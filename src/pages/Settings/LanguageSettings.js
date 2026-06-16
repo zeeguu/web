@@ -15,11 +15,9 @@ import ButtonContainer from "../_pages_shared/ButtonContainer.sc";
 import Form from "../_pages_shared/Form.sc";
 import FormSection from "../_pages_shared/FormSection.sc";
 import PreferencesPage from "../_pages_shared/PreferencesPage";
-import Header from "../_pages_shared/Header";
-import Heading from "../_pages_shared/Heading.sc";
 import Main from "../_pages_shared/Main.sc";
 import FullWidthErrorMsg from "../../components/FullWidthErrorMsg.sc";
-import BackArrow from "./settings_pages_shared/BackArrow";
+import SettingsPageHeader from "./settings_pages_shared/SettingsPageHeader";
 import Selector from "../../components/Selector";
 import { setTitle } from "../../assorted/setTitle";
 import useFormField from "../../hooks/useFormField";
@@ -27,7 +25,6 @@ import { NonEmptyValidator, Validator } from "../../utils/ValidatorRule/Validato
 import useShadowRef from "../../hooks/useShadowRef";
 import { scrollToTop } from "../../utils/misc/scrollToTop";
 import validateRules from "../../assorted/validateRules";
-import { HeaderWrapper, BackArrowWrapper } from "./Settings.sc";
 
 export default function LanguageSettings() {
   const api = useContext(APIContext);
@@ -109,14 +106,7 @@ export default function LanguageSettings() {
 
   return (
     <PreferencesPage layoutVariant={"minimalistic-top-aligned"}>
-      <HeaderWrapper>
-        <BackArrowWrapper>
-          <BackArrow />
-        </BackArrowWrapper>
-        <Header withoutLogo>
-          <Heading>{strings.languageSettings}</Heading>
-        </Header>
-      </HeaderWrapper>
+      <SettingsPageHeader title={strings.languageSettings} />
       <Main>
         <Form>
           <FormSection>

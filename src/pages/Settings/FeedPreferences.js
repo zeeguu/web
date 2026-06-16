@@ -5,14 +5,11 @@ import TagContainer from "../_pages_shared/TagContainer.sc";
 import useSelectInterest from "../../hooks/useSelectInterest";
 import PreferencesPage from "../_pages_shared/PreferencesPage";
 import Main from "../_pages_shared/Main.sc";
-import Header from "../_pages_shared/Header";
-import Heading from "../_pages_shared/Heading.sc";
-import BackArrow from "./settings_pages_shared/BackArrow";
+import SettingsPageHeader from "./settings_pages_shared/SettingsPageHeader";
 import { setTitle } from "../../assorted/setTitle";
 import { APIContext } from "../../contexts/APIContext";
 
 import { SectionHeading, SectionDescription } from "./FeedPreferences.sc";
-import { HeaderWrapper, BackArrowWrapper } from "./Settings.sc";
 
 import useUnwantedContentPreferences from "../../hooks/useUnwantedContentPreferences";
 import useFormField from "../../hooks/useFormField";
@@ -79,14 +76,7 @@ export default function FeedPreferences() {
 
   return (
     <PreferencesPage layoutVariant={"minimalistic-top-aligned"}>
-      <HeaderWrapper>
-        <BackArrowWrapper>
-          <BackArrow />
-        </BackArrowWrapper>
-        <Header withoutLogo>
-          <Heading>Feed Preferences</Heading>
-        </Header>
-      </HeaderWrapper>
+      <SettingsPageHeader title="Feed Preferences" />
       <Main>
         <SectionHeading>Topics of Interest</SectionHeading>{" "}
         {/*<SectionDescription>Show me articles about the following topics:</SectionDescription>*/}

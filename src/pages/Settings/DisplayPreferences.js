@@ -7,14 +7,11 @@ import Form from "../_pages_shared/Form.sc";
 import FormSection from "../_pages_shared/FormSection.sc";
 import PreferencesPage from "../_pages_shared/PreferencesPage";
 import Main from "../_pages_shared/Main.sc";
-import Header from "../_pages_shared/Header";
-import Heading from "../_pages_shared/Heading.sc";
-import BackArrow from "./settings_pages_shared/BackArrow";
+import SettingsPageHeader from "./settings_pages_shared/SettingsPageHeader";
 import Checkbox from "../../components/modal_shared/Checkbox";
 import strings from "../../i18n/definitions";
 import { setTitle } from "../../assorted/setTitle";
 import { APIContext } from "../../contexts/APIContext";
-import { HeaderWrapper, BackArrowWrapper } from "./Settings.sc";
 
 export default function DisplayPreferences() {
   const api = useContext(APIContext);
@@ -42,14 +39,7 @@ export default function DisplayPreferences() {
 
   return (
     <PreferencesPage layoutVariant={"minimalistic-top-aligned"}>
-      <HeaderWrapper>
-        <BackArrowWrapper>
-          <BackArrow />
-        </BackArrowWrapper>
-        <Header withoutLogo>
-          <Heading>Activity Timer</Heading>
-        </Header>
-      </HeaderWrapper>
+      <SettingsPageHeader title="Activity Timer" />
       <Main>
         <Form>
           <FormSection>

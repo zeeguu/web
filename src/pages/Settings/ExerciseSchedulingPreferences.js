@@ -7,9 +7,7 @@ import Form from "../_pages_shared/Form.sc";
 import FormSection from "../_pages_shared/FormSection.sc";
 import PreferencesPage from "../_pages_shared/PreferencesPage";
 import Main from "../_pages_shared/Main.sc";
-import Header from "../_pages_shared/Header";
-import Heading from "../_pages_shared/Heading.sc";
-import BackArrow from "./settings_pages_shared/BackArrow";
+import SettingsPageHeader from "./settings_pages_shared/SettingsPageHeader";
 import strings from "../../i18n/definitions";
 import { setTitle } from "../../assorted/setTitle";
 import { APIContext } from "../../contexts/APIContext";
@@ -18,7 +16,6 @@ import useFormField from "../../hooks/useFormField";
 import { PositiveIntegerValidator } from "../../utils/ValidatorRule/Validator";
 import validateRules from "../../assorted/validateRules";
 import { ExercisesCounterContext } from "../../exercises/ExercisesCounterContext";
-import { HeaderWrapper, BackArrowWrapper } from "./Settings.sc";
 
 const PREF_KEY_MAX_WORDS_TO_SCHEDULE = "max_words_to_schedule";
 
@@ -62,14 +59,7 @@ export default function ExerciseSchedulingPreferences() {
 
   return (
     <PreferencesPage layoutVariant={"minimalistic-top-aligned"}>
-      <HeaderWrapper>
-        <BackArrowWrapper>
-          <BackArrow />
-        </BackArrowWrapper>
-        <Header withoutLogo>
-          <Heading>Exercise Scheduling</Heading>
-        </Header>
-      </HeaderWrapper>
+      <SettingsPageHeader title="Exercise Scheduling" />
       <Main>
         <Form>
           <FormSection>
