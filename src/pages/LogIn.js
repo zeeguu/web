@@ -5,14 +5,11 @@ import { scrollToTop } from "../utils/misc/scrollToTop";
 import { setTitle } from "../assorted/setTitle";
 import useFormField from "../hooks/useFormField";
 import LocalStorage from "../assorted/LocalStorage";
-import {
-  NonEmptyValidator,
-  EmailValidator,
-} from "../utils/ValidatorRule/Validator";
+import { NonEmptyValidator, EmailValidator } from "../utils/ValidatorRule/Validator";
 import validateRules from "../assorted/validateRules";
 import strings from "../i18n/definitions";
 
-import PreferencesPage from "./_pages_shared/PreferencesPage";
+import CardPage from "./_pages_shared/CardPage";
 import Header from "./_pages_shared/Header";
 import Heading from "./_pages_shared/Heading.sc";
 import Main from "./_pages_shared/Main.sc";
@@ -27,18 +24,14 @@ import Button from "./_pages_shared/Button.sc";
 export default function LogIn({ handleSuccessfulLogIn }) {
   strings.setLanguage(LocalStorage.getUiLanguage().code);
   const api = useContext(APIContext);
-  const [email, setEmail, validateEmail, isEmailValid, emailErrorMsg] =
-    useFormField("", [
-      NonEmptyValidator("Please provide an email."),
-      EmailValidator,
-    ]);
-  const [
-    password,
-    setPassword,
-    validatePassword,
-    isPasswordValid,
-    passwordErrorMsg,
-  ] = useFormField("", NonEmptyValidator("Please enter your password."));
+  const [email, setEmail, validateEmail, isEmailValid, emailErrorMsg] = useFormField("", [
+    NonEmptyValidator("Please provide an email."),
+    EmailValidator,
+  ]);
+  const [password, setPassword, validatePassword, isPasswordValid, passwordErrorMsg] = useFormField(
+    "",
+    NonEmptyValidator("Please enter your password."),
+  );
   const [errorMessage, setErrorMessage] = useState("");
   const [isLoggingIn, setIsLoggingIn] = useState(false);
 
@@ -70,15 +63,13 @@ export default function LogIn({ handleSuccessfulLogIn }) {
   }
 
   return (
-    <PreferencesPage pageWidth={"narrow"} isBackgroundFixed={true}>
+    <CardPage pageWidth={"narrow"} isBackgroundFixed={true}>
       <Header>
         <Heading>Login</Heading>
       </Header>
       <Main>
         <Form action={""} method={"post"}>
-          {errorMessage && (
-            <FullWidthErrorMsg>{errorMessage}</FullWidthErrorMsg>
-          )}
+          {errorMessage && <FullWidthErrorMsg>{errorMessage}</FullWidthErrorMsg>}
           <FormSection>
             <InputField
               type={"email"}
@@ -107,9 +98,7 @@ export default function LogIn({ handleSuccessfulLogIn }) {
               }}
               isError={!isPasswordValid}
               errorMessage={passwordErrorMsg}
-              helperText={
-                <Link to="/reset_pass">{strings.forgotPassword}</Link>
-              }
+              helperText={<Link to="/reset_pass">{strings.forgotPassword}</Link>}
             />
           </FormSection>
           <ButtonContainer className={"padding-medium"}>
@@ -132,6 +121,6 @@ export default function LogIn({ handleSuccessfulLogIn }) {
           </Link>
         </p>
       </Footer>
-    </PreferencesPage>
+    </CardPage>
   );
 }

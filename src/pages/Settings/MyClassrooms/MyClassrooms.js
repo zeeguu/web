@@ -6,7 +6,7 @@ import ButtonContainer from "../../_pages_shared/ButtonContainer.sc";
 import InputField from "../../../components/InputField";
 import Form from "../../_pages_shared/Form.sc";
 import FormSection from "../../_pages_shared/FormSection.sc";
-import PreferencesPage from "../../_pages_shared/PreferencesPage";
+import CardPage from "../../_pages_shared/CardPage";
 import Header from "../../_pages_shared/Header";
 import Heading from "../../_pages_shared/Heading.sc";
 import Main from "../../_pages_shared/Main.sc";
@@ -29,17 +29,13 @@ export default function MyClassrooms() {
   const { session, setUserDetails } = useContext(UserContext);
 
   const [isLoading, setIsLoading] = useState(true);
-  const [
-    inviteCode,
-    setInviteCode,
-    validateInviteCode,
-    isInviteCodeValid,
-    inviteCodeErrorMsg,
-  ] = useFormField("", NonEmptyValidator("Please provide an invite code."));
+  const [inviteCode, setInviteCode, validateInviteCode, isInviteCodeValid, inviteCodeErrorMsg] = useFormField(
+    "",
+    NonEmptyValidator("Please provide an invite code."),
+  );
   const [showJoinCohortError, setShowJoinCohortError] = useState(false);
   const [studentCohorts, setStudentCohorts] = useState([]);
-  const [isLeaveClassroomModalOpen, setIsLeaveClassroomModalOpen] =
-    useState(false);
+  const [isLeaveClassroomModalOpen, setIsLeaveClassroomModalOpen] = useState(false);
   const [currentClassroom, setCurrentClassroom] = useState("");
 
   function updateValues() {
@@ -133,7 +129,7 @@ export default function MyClassrooms() {
   const studentIsInCohort = studentCohorts && studentCohorts.length > 0;
 
   return (
-    <PreferencesPage layoutVariant={"minimalistic-top-aligned"}>
+    <CardPage layoutVariant={"minimalistic-top-aligned"} isTransparent reducedPadding>
       <BackArrow />
       <Header withoutLogo>
         <Heading>{strings.myClassrooms}</Heading>
@@ -149,9 +145,7 @@ export default function MyClassrooms() {
               >{`${idx + 1}. ${classroom.name}`}</FullWidthListItem>
             ))
           ) : (
-            <FullWidthListItem>
-              {"Currently, you are not enrolled in any class"}
-            </FullWidthListItem>
+            <FullWidthListItem>{"Currently, you are not enrolled in any class"}</FullWidthListItem>
           )}
           {isLeaveClassroomModalOpen && (
             <LeaveClassroomModal
@@ -166,11 +160,7 @@ export default function MyClassrooms() {
           <FormSection>
             <InputField
               type={"text"}
-              label={
-                studentIsInCohort
-                  ? strings.insertNewInviteCode
-                  : strings.insertInviteCode
-              }
+              label={studentIsInCohort ? strings.insertNewInviteCode : strings.insertInviteCode}
               id={"cohort"}
               name={"cohort"}
               value={inviteCode}
@@ -179,11 +169,7 @@ export default function MyClassrooms() {
               errorMessage={inviteCodeErrorMsg}
             />
 
-            {showJoinCohortError && (
-              <FullWidthErrorMsg>
-                {strings.checkIfInviteCodeIsValid}
-              </FullWidthErrorMsg>
-            )}
+            {showJoinCohortError && <FullWidthErrorMsg>{strings.checkIfInviteCodeIsValid}</FullWidthErrorMsg>}
           </FormSection>
           <ButtonContainer className={"adaptive-alignment-horizontal"}>
             <Button type="submit" onClick={(e) => saveStudentToClassroom(e)}>
@@ -192,6 +178,6 @@ export default function MyClassrooms() {
           </ButtonContainer>
         </Form>
       </Main>
-    </PreferencesPage>
+    </CardPage>
   );
 }

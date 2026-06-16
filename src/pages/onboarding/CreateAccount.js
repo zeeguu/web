@@ -17,7 +17,7 @@ import { setTitle } from "../../assorted/setTitle";
 import validateRules from "../../assorted/validateRules";
 import strings from "../../i18n/definitions";
 
-import PreferencesPage from "../_pages_shared/PreferencesPage";
+import CardPage from "../_pages_shared/CardPage";
 import Header from "../_pages_shared/Header";
 import Heading from "../_pages_shared/Heading.sc";
 import Main from "../_pages_shared/Main.sc";
@@ -109,13 +109,7 @@ export default function CreateAccount({ handleSuccessfulLogIn }) {
     // If users have the same error, there wouldn't be a scroll.
     setErrorMessage("");
     if (
-      !validateRules([
-        validateName,
-        validatePassword,
-        validateEmail,
-        validateCheckPrivacyNote,
-        validateConfirmPass,
-      ])
+      !validateRules([validateName, validatePassword, validateEmail, validateCheckPrivacyNote, validateConfirmPass])
     ) {
       scrollToTop();
       return;
@@ -149,7 +143,7 @@ export default function CreateAccount({ handleSuccessfulLogIn }) {
   }
 
   return (
-    <PreferencesPage pageWidth={"narrow"} isBackgroundFixed={true}>
+    <CardPage pageWidth={"narrow"} isBackgroundFixed={true}>
       <Modal
         open={showPrivacyNotice}
         onClose={() => {
@@ -269,6 +263,6 @@ export default function CreateAccount({ handleSuccessfulLogIn }) {
           </Link>
         </p>
       </Footer>
-    </PreferencesPage>
+    </CardPage>
   );
 }

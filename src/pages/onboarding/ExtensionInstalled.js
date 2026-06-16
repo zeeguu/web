@@ -1,7 +1,7 @@
 import { getStoredSession } from "../../utils/cookies/userInfo";
 import { useContext, useEffect } from "react";
 import { useHistory } from "react-router-dom/cjs/react-router-dom";
-import PreferencesPage from "../_pages_shared/PreferencesPage";
+import CardPage from "../_pages_shared/CardPage";
 import Header from "../_pages_shared/Header";
 import Heading from "../_pages_shared/Heading.sc";
 import Main from "../_pages_shared/Main.sc";
@@ -24,7 +24,7 @@ export default function ExtensionInstalled() {
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
-    <PreferencesPage isBackgroundFixed={true}>
+    <CardPage isBackgroundFixed={true}>
       <Header>
         <Heading>
           Right-click to&nbsp; activate the&nbsp;Zeeguu&nbsp;
@@ -53,6 +53,6 @@ export default function ExtensionInstalled() {
           )}
         </ButtonContainer>
       </Footer>
-    </PreferencesPage>
+    </CardPage>
   );
 }

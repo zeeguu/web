@@ -3,7 +3,7 @@ import useQuery from "../../hooks/useQuery";
 import Tag from "../_pages_shared/Tag.sc";
 import TagContainer from "../_pages_shared/TagContainer.sc";
 import useSelectInterest from "../../hooks/useSelectInterest";
-import PreferencesPage from "../_pages_shared/PreferencesPage";
+import CardPage from "../_pages_shared/CardPage";
 import Main from "../_pages_shared/Main.sc";
 import Header from "../_pages_shared/Header";
 import Heading from "../_pages_shared/Heading.sc";
@@ -11,7 +11,7 @@ import BackArrow from "./settings_pages_shared/BackArrow";
 import { setTitle } from "../../assorted/setTitle";
 import { APIContext } from "../../contexts/APIContext";
 
-import { SectionHeading, SectionDescription } from "./FeedPreferences.sc";
+import { SectionHeading, SectionDescription, SectionContainer } from "./FeedPreferences.sc";
 
 import useUnwantedContentPreferences from "../../hooks/useUnwantedContentPreferences";
 import useFormField from "../../hooks/useFormField";
@@ -77,76 +77,73 @@ export default function FeedPreferences() {
   }
 
   return (
-    <PreferencesPage layoutVariant={"minimalistic-top-aligned"}>
+    <CardPage layoutVariant={"minimalistic-top-aligned"} isTransparent reducedPadding>
       <BackArrow redirectLink={isFromArticles && "/articles"} />
       <Header withoutLogo>
         <Heading>Feed Preferences</Heading>
       </Header>
       <Main>
-        <SectionHeading>Topics of Interest</SectionHeading>{" "}
-        {/*<SectionDescription>Show me articles about the following topics:</SectionDescription>*/}
-        <TagContainer>
-          {allTopics.map((topic) => (
-            <Tag
-              key={topic.id}
-              className={isSubscribed(topic) && "selected"}
-              onClick={() => toggleTopicSubscription(topic)}
+        <SectionContainer>
+          <SectionHeading>Topics of Interest</SectionHeading>
+          {/*<SectionDescription>Show me articles about the following topics:</SectionDescription>*/}
+          <TagContainer>
+            {allTopics.map((topic) => (
+              <Tag
+                key={topic.id}
+                className={isSubscribed(topic) && "selected"}
+                onClick={() => toggleTopicSubscription(topic)}
+              >
+                {topic.title}
+              </Tag>
+            ))}
+          </TagContainer>
+        </SectionContainer>
+        <SectionContainer>
+          <SectionHeading>Topics to Avoid</SectionHeading>
+          <Form>
+            <InputField
+              value={excludedWord}
+              onChange={(e) => {
+                setExcludedWord(e.target.value);
+              }}
+              helperText={strings.addUnwantedWordHelperText}
+              placeholder={strings.unwantedWordPlaceholder}
             >
-              {" "}
-              {topic.title}
-            </Tag>
-          ))}
-        </TagContainer>
-        <br/>
-        <SectionHeading>Keywords to Avoid</SectionHeading>{" "}
-
-
-        <Form style={{ marginTop: "-1em" }}>
-          <InputField
-            value={excludedWord}
-            onChange={(e) => {
-              setExcludedWord(e.target.value);
-            }}
-            helperText={strings.addUnwantedWordHelperText}
-            placeholder={strings.unwantedWordPlaceholder}
-          >
-            <Button className="small-square-btn" onClick={handleAddNewSearchFilter}>
-              <AddRoundedIcon />
-            </Button>
-          </InputField>
-        </Form>
-
-        <TagContainer style={{ marginTop: "-1em" }}>
-          {unwantedKeywords.map((keyword) => (
+              <Button className="small-square-btn" onClick={handleAddNewSearchFilter}>
+                <AddRoundedIcon />
+              </Button>
+            </InputField>
+          </Form>
+          <TagContainer>
+            {unwantedKeywords.map((keyword) => (
               <div key={keyword.id} id={keyword.id}>
                 <Tag className={"outlined-blue small"} onClick={() => removeUnwantedKeyword(keyword)}>
                   {keyword.search}
                   <HighlightOffRoundedIcon fontSize="small" />
                 </Tag>
               </div>
-          ))}
-        </TagContainer>
-
-
-        <br/>
-        <div style={{ marginTop: "0", marginBottom: "0" }}>
-          <FormControlLabel
-            control={
-              <Checkbox
-                checked={filterDisturbingContent}
-                onChange={handleToggleDisturbingContent}
-                disabled={!preferencesLoaded}
-              />
-            }
-            label="Avoid disturbing news (violence, death, disasters)"
-            sx={{ "& .MuiTypography-root": { fontFamily: "inherit" } }}
-          />
-          <div style={{ fontSize: "0.9em", color: "var(--text-secondary)", marginLeft: "32px", marginTop: "0.25em" }}>
-            When enabled, articles about violence, war, accidents, and other disturbing topics will be hidden from your
-            recommendations.
+            ))}
+          </TagContainer>
+          <br />
+          <div style={{ marginTop: "0", marginBottom: "0" }}>
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={filterDisturbingContent}
+                  onChange={handleToggleDisturbingContent}
+                  disabled={!preferencesLoaded}
+                />
+              }
+              label="Avoid disturbing news (violence, death, disasters)"
+              sx={{ "& .MuiTypography-root": { fontFamily: "inherit" } }}
+            />
+            <div style={{ fontSize: "0.9em", color: "var(--text-secondary)", marginLeft: "32px", marginTop: "0.25em" }}>
+              When enabled, articles about violence, war, accidents, and other disturbing topics will be hidden from
+              your recommendations.
+            </div>
           </div>
-        </div>
+        </SectionContainer>
       </Main>
-    </PreferencesPage>
+    </CardPage>
   );
 }
