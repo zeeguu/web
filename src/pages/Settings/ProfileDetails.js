@@ -15,7 +15,7 @@ import PreferencesPage from "../_pages_shared/PreferencesPage";
 import Header from "../_pages_shared/Header";
 import Heading from "../_pages_shared/Heading.sc";
 import Main from "../_pages_shared/Main.sc";
-import BackArrow from "./settings_pages_shared/BackArrow";
+import SettingsPageHeader from "./settings_pages_shared/SettingsPageHeader";
 import FullWidthErrorMsg from "../../components/FullWidthErrorMsg.sc";
 import LoadingAnimation from "../../components/LoadingAnimation";
 import useFormField from "../../hooks/useFormField";
@@ -35,7 +35,6 @@ import {
 } from "../../profile/avatarOptions";
 import { AvatarBackground, AvatarImage } from "../../profile/UserProfile.sc";
 import Feature from "../../features/Feature";
-import { HeaderWrapper, BackArrowWrapper } from "./Settings.sc";
 import * as s from "./ProfileDetails.sc";
 import EditIcon from "@mui/icons-material/Edit";
 import CheckIcon from "@mui/icons-material/Check";
@@ -137,19 +136,13 @@ export default function ProfileDetails() {
   }
   return (
     <PreferencesPage layoutVariant={"minimalistic-top-aligned"}>
-      <HeaderWrapper>
-        <BackArrowWrapper>
-          <BackArrow redirectLink={redirectPath} />
-        </BackArrowWrapper>
-        <Header withoutLogo>
-          <Heading>{strings.profileDetails}</Heading>
-          {successfullyChangedPassword && (
-            <>
-              <FullWidthConfirmMsg>Password changed successfully!</FullWidthConfirmMsg>
-            </>
-          )}
-        </Header>
-      </HeaderWrapper>
+      <SettingsPageHeader title={strings.profileDetails} redirectLink={redirectPath}>
+        {successfullyChangedPassword && (
+          <>
+            <FullWidthConfirmMsg>Password changed successfully!</FullWidthConfirmMsg>
+          </>
+        )}
+      </SettingsPageHeader>
       <Main>
         <Form>
           {errorMessage && <FullWidthErrorMsg>{errorMessage}</FullWidthErrorMsg>}
