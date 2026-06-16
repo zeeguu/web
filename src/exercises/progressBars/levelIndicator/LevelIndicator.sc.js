@@ -67,7 +67,7 @@ const LevelIndicator = styled.div`
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: var(--progress-bar-bg);
+    background-color: #c6c6c6;
     border-radius: 5px;
     z-index: 0;
   }
