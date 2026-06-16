@@ -17,7 +17,7 @@ import { setTitle } from "../../../assorted/setTitle";
 import { APIContext } from "../../../contexts/APIContext";
 import useBookmarkAutoPronounce from "../../../hooks/useBookmarkAutoPronounce";
 
-export default function ExerciseTypePreferences() {
+export default function AudioAndPronunciation() {
   const api = useContext(APIContext);
   const { session } = useContext(UserContext);
   const history = useHistory();

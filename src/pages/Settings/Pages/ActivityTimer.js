@@ -13,7 +13,7 @@ import strings from "../../../i18n/definitions";
 import { setTitle } from "../../../assorted/setTitle";
 import { APIContext } from "../../../contexts/APIContext";
 
-export default function DisplayPreferences() {
+export default function ActivityTimer() {
   const api = useContext(APIContext);
   const { userPreferences, setUserPreferences } = useContext(UserContext);
   const history = useHistory();

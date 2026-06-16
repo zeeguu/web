@@ -4,11 +4,11 @@ import Settings from "./Pages/Settings";
 import ProfileDetails from "./Pages/ProfileDetails";
 import LanguageSettings from "./Pages/LanguageSettings";
 import FeedPreferences from "./Pages/FeedPreferences";
-import ExerciseTypePreferences from "./Pages/ExerciseTypePreferences";
+import ExerciseTypePreferences from "./Pages/AudioAndPronunciation";
 import MyClassrooms from "./Pages/MyClassrooms/MyClassrooms";
 import DeleteAccount from "./Pages/DeleteAccount";
 import ExerciseSchedulingPreferences from "./Pages/ExerciseSchedulingPreferences";
-import DisplayPreferences from "./Pages/DisplayPreferences";
+import ActivityTimer from "./Pages/ActivityTimer";
 import Developer from "./Pages/Developer";
 
 export default function SettingsRouter({ setUser }) {
@@ -24,7 +24,7 @@ export default function SettingsRouter({ setUser }) {
 
       <PrivateRoute path="/account_settings/exercise_scheduling" component={ExerciseSchedulingPreferences} />
 
-      <PrivateRoute path="/account_settings/display" component={DisplayPreferences} />
+      <PrivateRoute path="/account_settings/display" component={ActivityTimer} />
 
       <PrivateRoute path="/account_settings/my_classrooms" component={MyClassrooms} />
 
