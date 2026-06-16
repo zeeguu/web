@@ -8,7 +8,7 @@ import Button from "../../_pages_shared/Button.sc";
 import ButtonContainer from "../../_pages_shared/ButtonContainer.sc";
 import Form from "../../_pages_shared/Form.sc";
 import FormSection from "../../_pages_shared/FormSection.sc";
-import PreferencesPage from "../../_pages_shared/PreferencesPage";
+import CardPage from "../../_pages_shared/CardPage";
 import Main from "../../_pages_shared/Main.sc";
 import SettingsPageHeader from "../SharedComponents/SettingsPageHeader";
 import Checkbox from "../../../components/modal_shared/Checkbox";
@@ -69,7 +69,7 @@ export default function AudioAndPronunciation() {
   }
 
   return (
-    <PreferencesPage layoutVariant={"minimalistic-top-aligned"}>
+    <CardPage layoutVariant={"minimalistic-top-aligned"} isTransparent reducedPadding>
       <SettingsPageHeader title={strings.exerciseTypePreferences} />
       <Main>
         <Form>
@@ -100,6 +100,6 @@ export default function AudioAndPronunciation() {
           </ButtonContainer>
         </Form>
       </Main>
-    </PreferencesPage>
+    </CardPage>
   );
 }

@@ -14,7 +14,7 @@ import Button from "../../_pages_shared/Button.sc";
 import ButtonContainer from "../../_pages_shared/ButtonContainer.sc";
 import Form from "../../_pages_shared/Form.sc";
 import FormSection from "../../_pages_shared/FormSection.sc";
-import PreferencesPage from "../../_pages_shared/PreferencesPage";
+import CardPage from "../../_pages_shared/CardPage";
 import Main from "../../_pages_shared/Main.sc";
 import FullWidthErrorMsg from "../../../components/FullWidthErrorMsg.sc";
 import SettingsPageHeader from "../SharedComponents/SettingsPageHeader";
@@ -105,7 +105,7 @@ export default function LanguageSettings() {
   }
 
   return (
-    <PreferencesPage layoutVariant={"minimalistic-top-aligned"}>
+    <CardPage layoutVariant={"minimalistic-top-aligned"} isTransparent reducedPadding>
       <SettingsPageHeader title={strings.languageSettings} />
       <Main>
         <Form>
@@ -160,6 +160,6 @@ export default function LanguageSettings() {
           </ButtonContainer>
         </Form>
       </Main>
-    </PreferencesPage>
+    </CardPage>
   );
 }

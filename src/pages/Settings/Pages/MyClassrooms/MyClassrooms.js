@@ -6,7 +6,7 @@ import ButtonContainer from "../../../_pages_shared/ButtonContainer.sc";
 import InputField from "../../../../components/InputField";
 import Form from "../../../_pages_shared/Form.sc";
 import FormSection from "../../../_pages_shared/FormSection.sc";
-import PreferencesPage from "../../../_pages_shared/PreferencesPage";
+import CardPage from "../../../_pages_shared/CardPage";
 import Main from "../../../_pages_shared/Main.sc";
 import FullWidthListContainer from "../../../../components/FullWidthListContainer.sc";
 import FullWidthErrorMsg from "../../../../components/FullWidthErrorMsg.sc";
@@ -127,7 +127,7 @@ export default function MyClassrooms() {
   const studentIsInCohort = studentCohorts && studentCohorts.length > 0;
 
   return (
-    <PreferencesPage layoutVariant={"minimalistic-top-aligned"}>
+    <CardPage layoutVariant={"minimalistic-top-aligned"} isTransparent reducedPadding>
       <SettingsPageHeader title={strings.myClassrooms} />
       <Main>
         <FullWidthListContainer>
@@ -173,6 +173,6 @@ export default function MyClassrooms() {
           </ButtonContainer>
         </Form>
       </Main>
-    </PreferencesPage>
+    </CardPage>
   );
 }

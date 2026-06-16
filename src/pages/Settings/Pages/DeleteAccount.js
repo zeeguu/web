@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import DeleteAccountButton from "../../DeleteAccount/DeleteAccountButton";
-import PreferencesPage from "../../_pages_shared/PreferencesPage";
+import CardPage from "../../_pages_shared/CardPage";
 import Main from "../../_pages_shared/Main.sc";
 import SettingsPageHeader from "../SharedComponents/SettingsPageHeader";
 import strings from "../../../i18n/definitions";
@@ -12,11 +12,11 @@ export default function DeleteAccount() {
   }, []);
 
   return (
-    <PreferencesPage layoutVariant={"minimalistic-top-aligned"}>
+    <CardPage layoutVariant={"minimalistic-top-aligned"} isTransparent reducedPadding>
       <SettingsPageHeader title={strings.deleteAccount} />
       <Main>
         <DeleteAccountButton />
       </Main>
-    </PreferencesPage>
+    </CardPage>
   );
 }

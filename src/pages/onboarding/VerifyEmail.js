@@ -5,7 +5,7 @@ import { UserContext } from "../../contexts/UserContext";
 import { setTitle } from "../../assorted/setTitle";
 import strings from "../../i18n/definitions";
 
-import PreferencesPage from "../_pages_shared/PreferencesPage";
+import CardPage from "../_pages_shared/CardPage";
 import Header from "../_pages_shared/Header";
 import Heading from "../_pages_shared/Heading.sc";
 import Main from "../_pages_shared/Main.sc";
@@ -55,7 +55,7 @@ export default function VerifyEmail() {
       },
       (error) => {
         setErrorMessage(error || "Invalid or expired code. Please try again.");
-      }
+      },
     );
   }
 
@@ -72,12 +72,12 @@ export default function VerifyEmail() {
       (error) => {
         setErrorMessage(error || "Could not resend code. Please try again.");
         setIsResending(false);
-      }
+      },
     );
   }
 
   return (
-    <PreferencesPage pageWidth={"narrow"} isBackgroundFixed={true}>
+    <CardPage pageWidth={"narrow"} isBackgroundFixed={true}>
       <Header>
         <Heading>Verify Your Email</Heading>
       </Header>
@@ -91,14 +91,16 @@ export default function VerifyEmail() {
         <Form action={""} method={"POST"}>
           {errorMessage && <FullWidthErrorMsg>{errorMessage}</FullWidthErrorMsg>}
           {successMessage && (
-            <div style={{
-              backgroundColor: "#d4edda",
-              color: "#155724",
-              padding: "1rem",
-              borderRadius: "4px",
-              marginBottom: "1rem",
-              textAlign: "center"
-            }}>
+            <div
+              style={{
+                backgroundColor: "#d4edda",
+                color: "#155724",
+                padding: "1rem",
+                borderRadius: "4px",
+                marginBottom: "1rem",
+                textAlign: "center",
+              }}
+            >
               {successMessage}
             </div>
           )}
@@ -138,6 +140,6 @@ export default function VerifyEmail() {
           Check your spam folder if you don't see the email.
         </p>
       </Footer>
-    </PreferencesPage>
+    </CardPage>
   );
 }

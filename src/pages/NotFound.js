@@ -1,11 +1,11 @@
-import PreferencesPage from "./_pages_shared/PreferencesPage";
+import CardPage from "./_pages_shared/CardPage";
 import Header from "./_pages_shared/Header";
 import Heading from "./_pages_shared/Heading.sc";
 import Main from "./_pages_shared/Main.sc";
 import { Link } from "react-router-dom";
 export default function NotFound() {
   return (
-    <PreferencesPage pageWidth={"narrow"} isBackgroundFixed={true}>
+    <CardPage pageWidth={"narrow"} isBackgroundFixed={true}>
       <Header>
         <Heading>Ooops!</Heading>
       </Header>
@@ -15,6 +15,6 @@ export default function NotFound() {
           <Link to={"/"}>Go back to the homepage</Link>
         </p>
       </Main>
-    </PreferencesPage>
+    </CardPage>
   );
 }

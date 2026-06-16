@@ -1,7 +1,7 @@
 import styled, { css } from "styled-components";
 import { zeeguuOrange } from "../../components/colors";
 
-const PageBackground = styled.div`
+const PageBackdrop = styled.div`
   position: ${({ $isBackgroundFixed }) => ($isBackgroundFixed ? "fixed" : "static")};
   top: 0;
   left: 0;
@@ -36,7 +36,7 @@ const PageBackground = styled.div`
     `}
 `;
 
-const PageContainer = styled.div`
+const ContentCard = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -46,25 +46,25 @@ const PageContainer = styled.div`
   border-radius: 1em;
 
   width: 47rem;
-  padding: 2rem 6rem;
+  padding: ${({ $reducedPadding }) => ($reducedPadding ? "1rem 2rem" : "2rem 6rem")};
   margin: 1rem;
   overflow-y: auto;
 
-  background-color: var(--card-bg);
+  background-color: ${({ $isTransparent }) => ($isTransparent ? "transparent" : "var(--card-bg)")};
 
   @media (max-width: 1200px) {
-    padding: 2rem 4.25rem;
+    padding: ${({ $reducedPadding }) => ($reducedPadding ? "1rem 1.5rem" : "2rem 4.25rem")};
     margin: 0.5rem;
     max-width: 47rem;
     width: 80%;
   }
 
   @media (max-width: 768px) {
-    padding: 2rem 2rem;
+    padding: ${({ $reducedPadding }) => ($reducedPadding ? "1rem 1rem" : "2rem 2rem")};
   }
 
   @media (max-width: 576px) {
-    padding: 1.5rem;
+    padding: ${({ $reducedPadding }) => ($reducedPadding ? "0.75rem" : "1.5rem")};
     width: 95%;
   }
 
@@ -77,8 +77,8 @@ const PageContainer = styled.div`
       }
     `}
 
-  ${(props) =>
-    props.layoutVariant === "minimalistic-top-aligned" &&
+  ${({ $layoutVariant }) =>
+    $layoutVariant === "minimalistic-top-aligned" &&
     css`
       @media (max-width: 1200px) {
         margin: 1rem;
@@ -106,4 +106,4 @@ const ContentWrapper = styled.div`
   }
 `;
 
-export { ContentWrapper, PageContainer, PageBackground };
+export { ContentWrapper, ContentCard, PageBackdrop };

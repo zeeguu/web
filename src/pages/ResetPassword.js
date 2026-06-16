@@ -3,7 +3,7 @@ import { Link } from "react-router-dom/cjs/react-router-dom";
 import useFormField from "../hooks/useFormField";
 import { EmailValidator, NonEmptyValidator } from "../utils/ValidatorRule/Validator";
 import strings from "../i18n/definitions";
-import PreferencesPage from "./_pages_shared/PreferencesPage";
+import CardPage from "./_pages_shared/CardPage";
 import Header from "./_pages_shared/Header";
 import Heading from "./_pages_shared/Heading.sc";
 import Main from "./_pages_shared/Main.sc";
@@ -51,7 +51,7 @@ export default function ResetPassword() {
   }, []);
 
   return (
-    <PreferencesPage pageWidth={"narrow"} isBackgroundFixed={true}>
+    <CardPage pageWidth={"narrow"} isBackgroundFixed={true}>
       <Header>
         <Heading>Reset Password</Heading>
       </Header>
@@ -79,6 +79,6 @@ export default function ResetPassword() {
           </p>
         )}
       </Footer>
-    </PreferencesPage>
+    </CardPage>
   );
 }

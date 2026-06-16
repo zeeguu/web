@@ -3,7 +3,7 @@ import { useHistory } from "react-router-dom";
 import { setTitle } from "../../assorted/setTitle";
 import styled from "styled-components";
 
-import PreferencesPage from "../_pages_shared/PreferencesPage";
+import CardPage from "../_pages_shared/CardPage";
 import Header from "../_pages_shared/Header";
 import Heading from "../_pages_shared/Heading.sc";
 import Main from "../_pages_shared/Main.sc";
@@ -51,7 +51,7 @@ export default function Welcome() {
   }
 
   return (
-    <PreferencesPage pageWidth={"narrow"} isBackgroundFixed={true}>
+    <CardPage pageWidth={"narrow"} isBackgroundFixed={true}>
       <Header>
         <Heading>Welcome to Zeeguu</Heading>
       </Header>
@@ -66,6 +66,6 @@ export default function Welcome() {
           </SecondaryButton>
         </ButtonGroup>
       </Main>
-    </PreferencesPage>
+    </CardPage>
   );
 }

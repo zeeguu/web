@@ -1,6 +1,6 @@
 import { useEffect, useState, useContext } from "react";
 import { UserContext } from "../../contexts/UserContext";
-import PreferencesPage from "../_pages_shared/PreferencesPage";
+import CardPage from "../_pages_shared/CardPage";
 import Header from "../_pages_shared/Header";
 import Heading from "../_pages_shared/Heading.sc";
 import Main from "../_pages_shared/Main.sc";
@@ -59,17 +59,14 @@ export default function DeleteAccount() {
   if (currentStatus === DeletionStatus.UNDEFINED) return <LoadingAnimation />;
 
   return (
-    <PreferencesPage isBackgroundFixed={true}>
+    <CardPage isBackgroundFixed={true}>
       <Header>
         <Heading>{headingMsg}</Heading>
       </Header>
       <Main>
         {currentStatus === DeletionStatus.WAITING_API_RESPONSE && (
           <>
-            <p>
-              You may leave this page. In case something goes wrong, the Zeeguu
-              team will be notified.
-            </p>
+            <p>You may leave this page. In case something goes wrong, the Zeeguu team will be notified.</p>
             <p>This process can take a while, please be patient.</p>
             <Footer>
               <LoadingAnimation></LoadingAnimation>
@@ -84,13 +81,10 @@ export default function DeleteAccount() {
         )}
         {currentStatus === DeletionStatus.ERRORED && (
           <>
-            <p>
-              The Zeeguu team has been notified. We will investigate it as soon
-              as possible and contact you.
-            </p>
+            <p>The Zeeguu team has been notified. We will investigate it as soon as possible and contact you.</p>
           </>
         )}
       </Main>
-    </PreferencesPage>
+    </CardPage>
   );
 }

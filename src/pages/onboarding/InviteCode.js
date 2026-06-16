@@ -7,7 +7,7 @@ import LocalStorage from "../../assorted/LocalStorage";
 import strings from "../../i18n/definitions";
 import { APIContext } from "../../contexts/APIContext";
 
-import PreferencesPage from "../_pages_shared/PreferencesPage";
+import CardPage from "../_pages_shared/CardPage";
 import Header from "../_pages_shared/Header";
 import Heading from "../_pages_shared/Heading.sc";
 import Main from "../_pages_shared/Main.sc";
@@ -64,7 +64,7 @@ export default function InviteCode() {
   }
 
   return (
-    <PreferencesPage pageWidth={"narrow"} isBackgroundFixed={true}>
+    <CardPage pageWidth={"narrow"} isBackgroundFixed={true}>
       <Header>
         <Heading>Invite Code</Heading>
       </Header>
@@ -87,11 +87,7 @@ export default function InviteCode() {
             />
           </FormSection>
           <ButtonContainer className={"padding-medium"}>
-            <Button
-              type={"submit"}
-              className={"full-width-btn"}
-              onClick={handleNext}
-            >
+            <Button type={"submit"} className={"full-width-btn"} onClick={handleNext}>
               {inviteCode ? strings.next : "Skip"} <RoundedForwardArrow />
             </Button>
           </ButtonContainer>
@@ -103,6 +99,6 @@ export default function InviteCode() {
           </p>
         </Form>
       </Main>
-    </PreferencesPage>
+    </CardPage>
   );
 }

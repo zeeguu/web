@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState } from "react";
 import { APIContext } from "../../../contexts/APIContext";
-import PreferencesPage from "../../_pages_shared/PreferencesPage";
+import CardPage from "../../_pages_shared/CardPage";
 import Main from "../../_pages_shared/Main.sc";
 import Button from "../../_pages_shared/Button.sc";
 import ButtonContainer from "../../_pages_shared/ButtonContainer.sc";
@@ -24,7 +24,7 @@ export default function Developer() {
   }
 
   return (
-    <PreferencesPage layoutVariant={"minimalistic-top-aligned"}>
+    <CardPage layoutVariant={"minimalistic-top-aligned"} isTransparent reducedPadding>
       <SettingsPageHeader title="Developer" />
       <Main>
         <ButtonContainer className={"adaptive-alignment-horizontal"}>
@@ -32,6 +32,6 @@ export default function Developer() {
         </ButtonContainer>
         {status && <p style={{ marginTop: "1em" }}>{status}</p>}
       </Main>
-    </PreferencesPage>
+    </CardPage>
   );
 }
