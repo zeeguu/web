@@ -1,17 +1,17 @@
 import { useEffect, useContext, useState } from "react";
-import { UserContext } from "../../contexts/UserContext";
-import { setTitle } from "../../assorted/setTitle";
-import strings from "../../i18n/definitions";
-import { PageTitle } from "../../components/PageTitle";
-import SettingsItem from "./settings_pages_shared/SettingsItem";
-import SettingsItemButton from "./settings_pages_shared/SettingsItemButton";
-import ListOfSettingsItems from "./settings_pages_shared/ListOfSettingsItems";
-import LogOutButton from "./LogOutButton";
-import ButtonContainer from "../_pages_shared/ButtonContainer.sc";
-import UpgradeAccountModal from "../../components/UpgradeAccountModal";
-import LocalStorage from "../../assorted/LocalStorage";
-import { APP_VERSION } from "../../appVersion";
-import DarkModeToggle from "./DarkModeToggle";
+import { UserContext } from "../../../contexts/UserContext";
+import { setTitle } from "../../../assorted/setTitle";
+import strings from "../../../i18n/definitions";
+import { PageTitle } from "../../../components/PageTitle";
+import SettingsItem from "../SharedComponents/SettingsItem";
+import SettingsItemButton from "../SharedComponents/SettingsItemButton";
+import ListOfSettingsItems from "../SharedComponents/ListOfSettingsItems";
+import LogOutButton from "../LogOut/LogOutButton";
+import ButtonContainer from "../../_pages_shared/ButtonContainer.sc";
+import UpgradeAccountModal from "../../../components/UpgradeAccountModal";
+import LocalStorage from "../../../assorted/LocalStorage";
+import { APP_VERSION } from "../../../appVersion";
+import DarkModeToggle from "../ThemeToggle/DarkModeToggle";
 
 import * as s from "./Settings.sc";
 

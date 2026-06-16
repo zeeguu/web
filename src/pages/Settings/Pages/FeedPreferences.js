@@ -1,28 +1,28 @@
 import { useContext, useEffect, useState } from "react";
-import useQuery from "../../hooks/useQuery";
-import Tag from "../_pages_shared/Tag.sc";
-import TagContainer from "../_pages_shared/TagContainer.sc";
-import useSelectInterest from "../../hooks/useSelectInterest";
-import PreferencesPage from "../_pages_shared/PreferencesPage";
-import Main from "../_pages_shared/Main.sc";
-import SettingsPageHeader from "./settings_pages_shared/SettingsPageHeader";
-import { setTitle } from "../../assorted/setTitle";
-import { APIContext } from "../../contexts/APIContext";
+import useQuery from "../../../hooks/useQuery";
+import Tag from "../../_pages_shared/Tag.sc";
+import TagContainer from "../../_pages_shared/TagContainer.sc";
+import useSelectInterest from "../../../hooks/useSelectInterest";
+import PreferencesPage from "../../_pages_shared/PreferencesPage";
+import Main from "../../_pages_shared/Main.sc";
+import SettingsPageHeader from "../SharedComponents/SettingsPageHeader";
+import { setTitle } from "../../../assorted/setTitle";
+import { APIContext } from "../../../contexts/APIContext";
 
 import { SectionHeading, SectionDescription } from "./FeedPreferences.sc";
 
-import useUnwantedContentPreferences from "../../hooks/useUnwantedContentPreferences";
-import useFormField from "../../hooks/useFormField";
+import useUnwantedContentPreferences from "../../../hooks/useUnwantedContentPreferences";
+import useFormField from "../../../hooks/useFormField";
 
-import Form from "../_pages_shared/Form.sc";
-import Button from "../_pages_shared/Button.sc";
+import Form from "../../_pages_shared/Form.sc";
+import Button from "../../_pages_shared/Button.sc";
 import AddRoundedIcon from "@mui/icons-material/AddRounded";
 import HighlightOffRoundedIcon from "@mui/icons-material/HighlightOffRounded";
 import { FormControlLabel, Checkbox } from "@mui/material";
 
-import InputField from "../../components/InputField";
+import InputField from "../../../components/InputField";
 
-import strings from "../../i18n/definitions";
+import strings from "../../../i18n/definitions";
 
 export default function FeedPreferences() {
   const api = useContext(APIContext);

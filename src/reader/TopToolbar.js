@@ -8,7 +8,7 @@ import * as s from "./ArticleReader.sc";
 import ToolbarButtons from "./ToolbarButtons";
 import ShareArticle from "./ShareArticle";
 
-import BackArrow from "../pages/Settings/settings_pages_shared/BackArrow";
+import BackArrow from "../pages/Settings/SharedComponents/BackArrow";
 import useScreenWidth from "../hooks/useScreenWidth";
 import { APIContext } from "../contexts/APIContext";
 import { MOBILE_WIDTH } from "../components/MainNav/screenSize";
@@ -124,10 +124,7 @@ export default function TopToolbar({
           </div>
         </s.TopbarButtonsContainer>
 
-        <progress
-          style={{ margin: "0" }}
-          value={articleProgress}
-        />
+        <progress style={{ margin: "0" }} value={articleProgress} />
       </s.Toolbar>
     </s.ToolbarWrapper>
   );

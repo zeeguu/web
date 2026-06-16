@@ -1,11 +1,11 @@
 import { useContext, useEffect, useState } from "react";
-import { APIContext } from "../../contexts/APIContext";
-import PreferencesPage from "../_pages_shared/PreferencesPage";
-import Main from "../_pages_shared/Main.sc";
-import Button from "../_pages_shared/Button.sc";
-import ButtonContainer from "../_pages_shared/ButtonContainer.sc";
-import SettingsPageHeader from "./settings_pages_shared/SettingsPageHeader";
-import { setTitle } from "../../assorted/setTitle";
+import { APIContext } from "../../../contexts/APIContext";
+import PreferencesPage from "../../_pages_shared/PreferencesPage";
+import Main from "../../_pages_shared/Main.sc";
+import Button from "../../_pages_shared/Button.sc";
+import ButtonContainer from "../../_pages_shared/ButtonContainer.sc";
+import SettingsPageHeader from "../SharedComponents/SettingsPageHeader";
+import { setTitle } from "../../../assorted/setTitle";
 
 export default function Developer() {
   const api = useContext(APIContext);

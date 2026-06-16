@@ -1,21 +1,21 @@
 import { useHistory } from "react-router-dom";
 import { useState, useEffect, useContext } from "react";
-import { UserContext } from "../../contexts/UserContext";
-import SessionStorage from "../../assorted/SessionStorage";
-import LocalStorage from "../../assorted/LocalStorage";
-import Feature from "../../features/Feature";
-import Button from "../_pages_shared/Button.sc";
-import ButtonContainer from "../_pages_shared/ButtonContainer.sc";
-import Form from "../_pages_shared/Form.sc";
-import FormSection from "../_pages_shared/FormSection.sc";
-import PreferencesPage from "../_pages_shared/PreferencesPage";
-import Main from "../_pages_shared/Main.sc";
-import SettingsPageHeader from "./settings_pages_shared/SettingsPageHeader";
-import Checkbox from "../../components/modal_shared/Checkbox";
-import strings from "../../i18n/definitions";
-import { setTitle } from "../../assorted/setTitle";
-import { APIContext } from "../../contexts/APIContext";
-import useBookmarkAutoPronounce from "../../hooks/useBookmarkAutoPronounce";
+import { UserContext } from "../../../contexts/UserContext";
+import SessionStorage from "../../../assorted/SessionStorage";
+import LocalStorage from "../../../assorted/LocalStorage";
+import Feature from "../../../features/Feature";
+import Button from "../../_pages_shared/Button.sc";
+import ButtonContainer from "../../_pages_shared/ButtonContainer.sc";
+import Form from "../../_pages_shared/Form.sc";
+import FormSection from "../../_pages_shared/FormSection.sc";
+import PreferencesPage from "../../_pages_shared/PreferencesPage";
+import Main from "../../_pages_shared/Main.sc";
+import SettingsPageHeader from "../SharedComponents/SettingsPageHeader";
+import Checkbox from "../../../components/modal_shared/Checkbox";
+import strings from "../../../i18n/definitions";
+import { setTitle } from "../../../assorted/setTitle";
+import { APIContext } from "../../../contexts/APIContext";
+import useBookmarkAutoPronounce from "../../../hooks/useBookmarkAutoPronounce";
 
 export default function ExerciseTypePreferences() {
   const api = useContext(APIContext);

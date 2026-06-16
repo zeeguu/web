@@ -2,7 +2,7 @@ import { lazy, Suspense } from "react";
 import { PrivateRoute } from "./PrivateRoute";
 import WordsRouter from "./words/_WordsRouter";
 import ExercisesRouter from "./exercises/ExercisesRouter";
-import Settings from "./pages/Settings/Settings";
+import Settings from "./pages/Settings/Pages/Settings";
 import React from "react";
 import ReadingHistory from "./words/WordHistory";
 import StandAloneReader from "./reader/StandAloneReader";

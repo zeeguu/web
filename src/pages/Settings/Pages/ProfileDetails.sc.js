@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { orange500, streakFireOrange } from "../../components/colors";
+import { orange500, streakFireOrange } from "../../../components/colors";
 
 export const AvatarWrapper = styled.div`
   display: flex;
