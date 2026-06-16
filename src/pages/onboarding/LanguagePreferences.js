@@ -18,7 +18,7 @@ import { NonEmptyValidator } from "../../utils/ValidatorRule/Validator";
 import strings from "../../i18n/definitions";
 import { saveSharedUserInfo, setUserSession } from "../../utils/cookies/userInfo";
 
-import PreferencesPage from "../_pages_shared/PreferencesPage";
+import CardPage from "../_pages_shared/CardPage";
 import Header from "../_pages_shared/Header";
 import Heading from "../_pages_shared/Heading.sc";
 import Main from "../_pages_shared/Main.sc";
@@ -169,7 +169,7 @@ export default function LanguagePreferences() {
   }
 
   return (
-    <PreferencesPage pageWidth={"narrow"} isBackgroundFixed={true}>
+    <CardPage pageWidth={"narrow"} isBackgroundFixed={true}>
       <Header>
         <Heading>What language would&nbsp;you&nbsp;like&nbsp;to&nbsp;learn?</Heading>
       </Header>
@@ -234,6 +234,6 @@ export default function LanguagePreferences() {
           </p>
         </Form>
       </Main>
-    </PreferencesPage>
+    </CardPage>
   );
 }

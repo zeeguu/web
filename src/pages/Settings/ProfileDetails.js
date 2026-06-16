@@ -11,7 +11,7 @@ import FormSection from "../_pages_shared/FormSection.sc";
 import Button from "../_pages_shared/Button.sc";
 import ButtonContainer from "../_pages_shared/ButtonContainer.sc";
 import InputField from "../../components/InputField";
-import PreferencesPage from "../_pages_shared/PreferencesPage";
+import CardPage from "../_pages_shared/CardPage";
 import Header from "../_pages_shared/Header";
 import Heading from "../_pages_shared/Heading.sc";
 import Main from "../_pages_shared/Main.sc";
@@ -135,7 +135,7 @@ export default function ProfileDetails() {
     return <LoadingAnimation />;
   }
   return (
-    <PreferencesPage layoutVariant={"minimalistic-top-aligned"} hideBackground reducedPadding>
+    <CardPage layoutVariant={"minimalistic-top-aligned"} isTransparent reducedPadding>
       <s.HeaderWrapper>
         <s.BackArrowWrapper>
           <BackArrow redirectLink={redirectPath} />
@@ -309,6 +309,6 @@ export default function ProfileDetails() {
           </Main>
         </Modal>
       )}
-    </PreferencesPage>
+    </CardPage>
   );
 }

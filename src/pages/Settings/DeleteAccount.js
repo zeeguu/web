@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import DeleteAccountButton from "../DeleteAccount/DeleteAccountButton";
-import PreferencesPage from "../_pages_shared/PreferencesPage";
+import CardPage from "../_pages_shared/CardPage";
 import Main from "../_pages_shared/Main.sc";
 import Header from "../_pages_shared/Header";
 import Heading from "../_pages_shared/Heading.sc";
@@ -14,7 +14,7 @@ export default function DeleteAccount() {
   }, []);
 
   return (
-    <PreferencesPage layoutVariant={"minimalistic-top-aligned"} hideBackground reducedPadding>
+    <CardPage layoutVariant={"minimalistic-top-aligned"} isTransparent reducedPadding>
       <BackArrow />
       <Header withoutLogo>
         <Heading>{strings.deleteAccount}</Heading>
@@ -22,6 +22,6 @@ export default function DeleteAccount() {
       <Main>
         <DeleteAccountButton />
       </Main>
-    </PreferencesPage>
+    </CardPage>
   );
 }

@@ -5,7 +5,7 @@ import Button from "../_pages_shared/Button.sc";
 import ButtonContainer from "../_pages_shared/ButtonContainer.sc";
 import Form from "../_pages_shared/Form.sc";
 import FormSection from "../_pages_shared/FormSection.sc";
-import PreferencesPage from "../_pages_shared/PreferencesPage";
+import CardPage from "../_pages_shared/CardPage";
 import Main from "../_pages_shared/Main.sc";
 import Header from "../_pages_shared/Header";
 import Heading from "../_pages_shared/Heading.sc";
@@ -60,7 +60,7 @@ export default function ExerciseSchedulingPreferences() {
   }
 
   return (
-    <PreferencesPage layoutVariant={"minimalistic-top-aligned"} hideBackground reducedPadding>
+    <CardPage layoutVariant={"minimalistic-top-aligned"} isTransparent reducedPadding>
       <BackArrow />
       <Header withoutLogo>
         <Heading>Exercise Scheduling</Heading>
@@ -97,6 +97,6 @@ export default function ExerciseSchedulingPreferences() {
           </ButtonContainer>
         </Form>
       </Main>
-    </PreferencesPage>
+    </CardPage>
   );
 }

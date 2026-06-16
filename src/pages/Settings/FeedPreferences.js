@@ -3,7 +3,7 @@ import useQuery from "../../hooks/useQuery";
 import Tag from "../_pages_shared/Tag.sc";
 import TagContainer from "../_pages_shared/TagContainer.sc";
 import useSelectInterest from "../../hooks/useSelectInterest";
-import PreferencesPage from "../_pages_shared/PreferencesPage";
+import CardPage from "../_pages_shared/CardPage";
 import Main from "../_pages_shared/Main.sc";
 import Header from "../_pages_shared/Header";
 import Heading from "../_pages_shared/Heading.sc";
@@ -77,7 +77,7 @@ export default function FeedPreferences() {
   }
 
   return (
-    <PreferencesPage layoutVariant={"minimalistic-top-aligned"} hideBackground reducedPadding>
+    <CardPage layoutVariant={"minimalistic-top-aligned"} isTransparent reducedPadding>
       <BackArrow redirectLink={isFromArticles && "/articles"} />
       <Header withoutLogo>
         <Heading>Feed Preferences</Heading>
@@ -144,6 +144,6 @@ export default function FeedPreferences() {
           </div>
         </SectionContainer>
       </Main>
-    </PreferencesPage>
+    </CardPage>
   );
 }

@@ -2,7 +2,7 @@ import { useContext, useEffect } from "react";
 import { useHistory } from "react-router-dom/cjs/react-router-dom";
 import { isSupportedBrowser } from "../../utils/misc/browserDetection";
 import useSelectInterest from "../../hooks/useSelectInterest";
-import PreferencesPage from "../_pages_shared/PreferencesPage";
+import CardPage from "../_pages_shared/CardPage";
 import Header from "../_pages_shared/Header";
 import Heading from "../_pages_shared/Heading.sc";
 import Main from "../_pages_shared/Main.sc";
@@ -33,7 +33,7 @@ export default function SelectInterests({ hasExtension }) {
   }, []);
 
   return (
-    <PreferencesPage isBackgroundFixed={true}>
+    <CardPage isBackgroundFixed={true}>
       <Header>
         <Heading>What would you like to read&nbsp;about?</Heading>
       </Header>
@@ -59,6 +59,6 @@ export default function SelectInterests({ hasExtension }) {
           </Button>
         </ButtonContainer>
       </Footer>
-    </PreferencesPage>
+    </CardPage>
   );
 }

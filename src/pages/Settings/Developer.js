@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState } from "react";
 import { APIContext } from "../../contexts/APIContext";
-import PreferencesPage from "../_pages_shared/PreferencesPage";
+import CardPage from "../_pages_shared/CardPage";
 import Main from "../_pages_shared/Main.sc";
 import Header from "../_pages_shared/Header";
 import Heading from "../_pages_shared/Heading.sc";
@@ -26,7 +26,7 @@ export default function Developer() {
   }
 
   return (
-    <PreferencesPage layoutVariant={"minimalistic-top-aligned"} hideBackground reducedPadding>
+    <CardPage layoutVariant={"minimalistic-top-aligned"} isTransparent reducedPadding>
       <BackArrow />
       <Header withoutLogo>
         <Heading>Developer</Heading>
@@ -37,6 +37,6 @@ export default function Developer() {
         </ButtonContainer>
         {status && <p style={{ marginTop: "1em" }}>{status}</p>}
       </Main>
-    </PreferencesPage>
+    </CardPage>
   );
 }

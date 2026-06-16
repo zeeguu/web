@@ -4,7 +4,7 @@ import { getExtensionInstallationButtonContent } from "../../utils/extension/ext
 import { runningInChromeDesktop } from "../../utils/misc/browserDetection";
 import { Link } from "react-router-dom";
 import { setTitle } from "../../assorted/setTitle";
-import PreferencesPage from "../_pages_shared/PreferencesPage";
+import CardPage from "../_pages_shared/CardPage";
 import Header from "../_pages_shared/Header";
 import Heading from "../_pages_shared/Heading.sc";
 import Main from "../_pages_shared/Main.sc";
@@ -23,7 +23,7 @@ export default function InstallExtension() {
   }, []);
 
   return (
-    <PreferencesPage isBackgroundFixed={true}>
+    <CardPage isBackgroundFixed={true}>
       <Header>
         <Heading>
           Read any article on the web<br></br>
@@ -34,18 +34,14 @@ export default function InstallExtension() {
         <FullWidthImage src={"translations.png"} />
         {runningInChromeDesktop() && (
           <p>
-            The Chrone Web Store extension also works in <b>Edge</b>,{" "}
-            <b>Opera</b>, <b>Arc</b>, <b>Vivaldi</b>, and <b>Brave</b> and other
-            Chromium based browsers.
+            The Chrone Web Store extension also works in <b>Edge</b>, <b>Opera</b>, <b>Arc</b>, <b>Vivaldi</b>, and{" "}
+            <b>Brave</b> and other Chromium based browsers.
           </p>
         )}
       </Main>
       <Footer>
         <ButtonContainer className={"padding-medium"}>
-          <Button
-            className={"full-width-btn"}
-            onClick={() => redirect(getExtensionInstallationLinks())}
-          >
+          <Button className={"full-width-btn"} onClick={() => redirect(getExtensionInstallationLinks())}>
             {getExtensionInstallationButtonContent()}
             <RoundedForwardArrow fontSize="medium" />
           </Button>
@@ -54,6 +50,6 @@ export default function InstallExtension() {
           </Link>
         </ButtonContainer>
       </Footer>
-    </PreferencesPage>
+    </CardPage>
   );
 }
