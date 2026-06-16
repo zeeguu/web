@@ -1,5 +1,4 @@
 import { useHistory } from "react-router-dom";
-import ChevronLeftRoundedIcon from "@mui/icons-material/ChevronLeftRounded";
 import * as s from "./BackArrow.sc";
 
 export default function BackArrow({ redirectLink, func }) {
@@ -16,16 +15,10 @@ export default function BackArrow({ redirectLink, func }) {
   const history = useHistory();
 
   return (
-    <s.BackArrow
-      onClick={() =>
-        func
-          ? func()
-          : redirectLink
-            ? history.push(redirectLink)
-            : history.goBack()
-      }
-    >
-      <ChevronLeftRoundedIcon style={{ fontSize: "2rem" }} />
+    <s.BackArrow onClick={() => (func ? func() : redirectLink ? history.push(redirectLink) : history.goBack())}>
+      <svg width="9" height="15" viewBox="0 0 9 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M0.292893 6.65666C-0.097631 7.04719 -0.097631 7.68035 0.292893 8.07088L6.65685 14.4348C7.04738 14.8254 7.68054 14.8254 8.07107 14.4348C8.46159 14.0443 8.46159 13.4111 8.07107 13.0206L2.41421 7.36377L8.07107 1.70692C8.46159 1.31639 8.46159 0.683226 8.07107 0.292702C7.68054 -0.0978227 7.04738 -0.0978227 6.65685 0.292702L0.292893 6.65666ZM3 7.36377V6.36377H1V7.36377L1 8.36377H3V7.36377Z" fill="var(--text-secondary)"/>
+      </svg>
     </s.BackArrow>
   );
 }

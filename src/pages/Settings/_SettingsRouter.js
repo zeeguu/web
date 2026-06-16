@@ -1,16 +1,15 @@
 import { PrivateRoute } from "../../PrivateRoute";
 import { Switch } from "react-router-dom";
-import Settings from "./Settings";
-import ProfileDetails from "./ProfileDetails";
-import LanguageSettings from "./LanguageSettings";
-import FeedPreferences from "./FeedPreferences";
-import ExerciseTypePreferences from "./ExerciseTypePreferences";
-import MyClassrooms from "./MyClassrooms/MyClassrooms";
-import DeleteAccount from "./DeleteAccount";
-import TopbarIconPreferences from "./TopbarIconPreferences";
-import ExerciseSchedulingPreferences from "./ExerciseSchedulingPreferences";
-import DisplayPreferences from "./DisplayPreferences";
-import Developer from "./Developer";
+import Settings from "./Pages/Settings";
+import ProfileDetails from "./Pages/ProfileDetails";
+import LanguageSettings from "./Pages/LanguageSettings";
+import FeedPreferences from "./Pages/FeedPreferences";
+import ExerciseTypePreferences from "./Pages/AudioAndPronunciation";
+import MyClassrooms from "./Pages/MyClassrooms/MyClassrooms";
+import DeleteAccount from "./Pages/DeleteAccount";
+import ExerciseSchedulingPreferences from "./Pages/ExerciseSchedulingPreferences";
+import ActivityTimer from "./Pages/ActivityTimer";
+import Developer from "./Pages/Developer";
 
 export default function SettingsRouter({ setUser }) {
   return (
@@ -25,9 +24,7 @@ export default function SettingsRouter({ setUser }) {
 
       <PrivateRoute path="/account_settings/exercise_scheduling" component={ExerciseSchedulingPreferences} />
 
-      <PrivateRoute path="/account_settings/topbar_progress_display" component={TopbarIconPreferences} />
-
-      <PrivateRoute path="/account_settings/display" component={DisplayPreferences} />
+      <PrivateRoute path="/account_settings/display" component={ActivityTimer} />
 
       <PrivateRoute path="/account_settings/my_classrooms" component={MyClassrooms} />
 

@@ -4,7 +4,7 @@ import { useState, useEffect, useContext } from "react";
 import LoadingAnimation from "../components/LoadingAnimation";
 import WordsToReview from "./WordsToReview";
 import { setTitle } from "../assorted/setTitle";
-import BackArrow from "../pages/Settings/settings_pages_shared/BackArrow";
+import BackArrow from "../pages/Settings/SharedComponents/BackArrow.js";
 import { APIContext } from "../contexts/APIContext.js";
 import { WordsForArticleContainer, LeftContent } from "./WordsForArticle.sc.js";
 

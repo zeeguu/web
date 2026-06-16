@@ -16,4 +16,18 @@ const Version = styled.div`
   margin-bottom: 2rem;
 `;
 
+export const HeaderWrapper = styled.div`
+  display: flex;
+  justify-content: center;
+  position: relative;
+  margin-bottom: 2rem;
+`;
+
+export const BackArrowWrapper = styled.div`
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+`;
+
 export { StyledWrapper, Version };

@@ -1,13 +1,11 @@
 import { useContext, useEffect, useState } from "react";
-import { APIContext } from "../../contexts/APIContext";
-import CardPage from "../_pages_shared/CardPage";
-import Main from "../_pages_shared/Main.sc";
-import Header from "../_pages_shared/Header";
-import Heading from "../_pages_shared/Heading.sc";
-import Button from "../_pages_shared/Button.sc";
-import ButtonContainer from "../_pages_shared/ButtonContainer.sc";
-import BackArrow from "./settings_pages_shared/BackArrow";
-import { setTitle } from "../../assorted/setTitle";
+import { APIContext } from "../../../contexts/APIContext";
+import CardPage from "../../_pages_shared/CardPage";
+import Main from "../../_pages_shared/Main.sc";
+import Button from "../../_pages_shared/Button.sc";
+import ButtonContainer from "../../_pages_shared/ButtonContainer.sc";
+import SettingsPageHeader from "../SharedComponents/SettingsPageHeader";
+import { setTitle } from "../../../assorted/setTitle";
 
 export default function Developer() {
   const api = useContext(APIContext);
@@ -27,10 +25,7 @@ export default function Developer() {
 
   return (
     <CardPage layoutVariant={"minimalistic-top-aligned"} isTransparent reducedPadding>
-      <BackArrow />
-      <Header withoutLogo>
-        <Heading>Developer</Heading>
-      </Header>
+      <SettingsPageHeader title="Developer" />
       <Main>
         <ButtonContainer className={"adaptive-alignment-horizontal"}>
           <Button onClick={handleClearOnboardingMessages}>Clear onboarding message table</Button>

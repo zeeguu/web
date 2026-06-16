@@ -1,32 +1,30 @@
 import { useHistory } from "react-router-dom";
 import { useState, useEffect, useContext, useRef } from "react";
-import { SystemLanguagesContext } from "../../contexts/SystemLanguagesContext";
-import { APIContext } from "../../contexts/APIContext";
-import { UserContext } from "../../contexts/UserContext";
-import { saveSharedUserInfo } from "../../utils/cookies/userInfo";
-import { CEFR_LEVELS } from "../../assorted/cefrLevels";
-import { getUserCefrLevel } from "../../utils/misc/cefrHelpers";
-import strings from "../../i18n/definitions";
-import LocalStorage from "../../assorted/LocalStorage";
-import LoadingAnimation from "../../components/LoadingAnimation";
-import LanguageSelector from "../../components/LanguageSelector";
-import Button from "../_pages_shared/Button.sc";
-import ButtonContainer from "../_pages_shared/ButtonContainer.sc";
-import Form from "../_pages_shared/Form.sc";
-import FormSection from "../_pages_shared/FormSection.sc";
-import CardPage from "../_pages_shared/CardPage";
-import Header from "../_pages_shared/Header";
-import Heading from "../_pages_shared/Heading.sc";
-import Main from "../_pages_shared/Main.sc";
-import FullWidthErrorMsg from "../../components/FullWidthErrorMsg.sc";
-import BackArrow from "./settings_pages_shared/BackArrow";
-import Selector from "../../components/Selector";
-import { setTitle } from "../../assorted/setTitle";
-import useFormField from "../../hooks/useFormField";
-import { NonEmptyValidator, Validator } from "../../utils/ValidatorRule/Validator";
-import useShadowRef from "../../hooks/useShadowRef";
-import { scrollToTop } from "../../utils/misc/scrollToTop";
-import validateRules from "../../assorted/validateRules";
+import { SystemLanguagesContext } from "../../../contexts/SystemLanguagesContext";
+import { APIContext } from "../../../contexts/APIContext";
+import { UserContext } from "../../../contexts/UserContext";
+import { saveSharedUserInfo } from "../../../utils/cookies/userInfo";
+import { CEFR_LEVELS } from "../../../assorted/cefrLevels";
+import { getUserCefrLevel } from "../../../utils/misc/cefrHelpers";
+import strings from "../../../i18n/definitions";
+import LocalStorage from "../../../assorted/LocalStorage";
+import LoadingAnimation from "../../../components/LoadingAnimation";
+import LanguageSelector from "../../../components/LanguageSelector";
+import Button from "../../_pages_shared/Button.sc";
+import ButtonContainer from "../../_pages_shared/ButtonContainer.sc";
+import Form from "../../_pages_shared/Form.sc";
+import FormSection from "../../_pages_shared/FormSection.sc";
+import CardPage from "../../_pages_shared/CardPage";
+import Main from "../../_pages_shared/Main.sc";
+import FullWidthErrorMsg from "../../../components/FullWidthErrorMsg.sc";
+import SettingsPageHeader from "../SharedComponents/SettingsPageHeader";
+import Selector from "../../../components/Selector";
+import { setTitle } from "../../../assorted/setTitle";
+import useFormField from "../../../hooks/useFormField";
+import { NonEmptyValidator, Validator } from "../../../utils/ValidatorRule/Validator";
+import useShadowRef from "../../../hooks/useShadowRef";
+import { scrollToTop } from "../../../utils/misc/scrollToTop";
+import validateRules from "../../../assorted/validateRules";
 
 export default function LanguageSettings() {
   const api = useContext(APIContext);
@@ -108,10 +106,7 @@ export default function LanguageSettings() {
 
   return (
     <CardPage layoutVariant={"minimalistic-top-aligned"} isTransparent reducedPadding>
-      <BackArrow />
-      <Header withoutLogo>
-        <Heading>{strings.languageSettings}</Heading>
-      </Header>
+      <SettingsPageHeader title={strings.languageSettings} />
       <Main>
         <Form>
           <FormSection>

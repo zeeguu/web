@@ -1,21 +1,19 @@
 import { useHistory } from "react-router-dom";
 import { useState, useEffect, useContext } from "react";
-import { UserContext } from "../../contexts/UserContext";
-import Button from "../_pages_shared/Button.sc";
-import ButtonContainer from "../_pages_shared/ButtonContainer.sc";
-import Form from "../_pages_shared/Form.sc";
-import FormSection from "../_pages_shared/FormSection.sc";
-import CardPage from "../_pages_shared/CardPage";
-import Main from "../_pages_shared/Main.sc";
-import Header from "../_pages_shared/Header";
-import Heading from "../_pages_shared/Heading.sc";
-import BackArrow from "./settings_pages_shared/BackArrow";
-import Checkbox from "../../components/modal_shared/Checkbox";
-import strings from "../../i18n/definitions";
-import { setTitle } from "../../assorted/setTitle";
-import { APIContext } from "../../contexts/APIContext";
+import { UserContext } from "../../../contexts/UserContext";
+import Button from "../../_pages_shared/Button.sc";
+import ButtonContainer from "../../_pages_shared/ButtonContainer.sc";
+import Form from "../../_pages_shared/Form.sc";
+import FormSection from "../../_pages_shared/FormSection.sc";
+import CardPage from "../../_pages_shared/CardPage";
+import Main from "../../_pages_shared/Main.sc";
+import SettingsPageHeader from "../SharedComponents/SettingsPageHeader";
+import Checkbox from "../../../components/modal_shared/Checkbox";
+import strings from "../../../i18n/definitions";
+import { setTitle } from "../../../assorted/setTitle";
+import { APIContext } from "../../../contexts/APIContext";
 
-export default function DisplayPreferences() {
+export default function ActivityTimer() {
   const api = useContext(APIContext);
   const { userPreferences, setUserPreferences } = useContext(UserContext);
   const history = useHistory();
@@ -41,10 +39,7 @@ export default function DisplayPreferences() {
 
   return (
     <CardPage layoutVariant={"minimalistic-top-aligned"} isTransparent reducedPadding>
-      <BackArrow />
-      <Header withoutLogo>
-        <Heading>Activity Timer</Heading>
-      </Header>
+      <SettingsPageHeader title="Activity Timer" />
       <Main>
         <Form>
           <FormSection>

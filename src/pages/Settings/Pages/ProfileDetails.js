@@ -1,29 +1,29 @@
 import { Link, useHistory } from "react-router-dom";
 import React, { Fragment, useContext, useEffect, useRef, useState } from "react";
-import { UserContext } from "../../contexts/UserContext";
-import { saveSharedUserInfo } from "../../utils/cookies/userInfo";
-import { setTitle } from "../../assorted/setTitle";
-import { APIContext } from "../../contexts/APIContext";
-import LocalStorage from "../../assorted/LocalStorage";
-import strings from "../../i18n/definitions";
-import Form from "../_pages_shared/Form.sc";
-import FormSection from "../_pages_shared/FormSection.sc";
-import Button from "../_pages_shared/Button.sc";
-import ButtonContainer from "../_pages_shared/ButtonContainer.sc";
-import InputField from "../../components/InputField";
-import CardPage from "../_pages_shared/CardPage";
-import Header from "../_pages_shared/Header";
-import Heading from "../_pages_shared/Heading.sc";
-import Main from "../_pages_shared/Main.sc";
-import BackArrow from "./settings_pages_shared/BackArrow";
-import FullWidthErrorMsg from "../../components/FullWidthErrorMsg.sc";
-import LoadingAnimation from "../../components/LoadingAnimation";
-import useFormField from "../../hooks/useFormField";
-import { EmailValidator, NonEmptyOrWhitespaceOnlyValidator } from "../../utils/ValidatorRule/Validator";
-import validateRules from "../../assorted/validateRules";
+import { UserContext } from "../../../contexts/UserContext";
+import { saveSharedUserInfo } from "../../../utils/cookies/userInfo";
+import { setTitle } from "../../../assorted/setTitle";
+import { APIContext } from "../../../contexts/APIContext";
+import LocalStorage from "../../../assorted/LocalStorage";
+import strings from "../../../i18n/definitions";
+import Form from "../../_pages_shared/Form.sc";
+import FormSection from "../../_pages_shared/FormSection.sc";
+import Button from "../../_pages_shared/Button.sc";
+import ButtonContainer from "../../_pages_shared/ButtonContainer.sc";
+import InputField from "../../../components/InputField";
+import CardPage from "../../_pages_shared/CardPage";
+import Header from "../../_pages_shared/Header";
+import Heading from "../../_pages_shared/Heading.sc";
+import Main from "../../_pages_shared/Main.sc";
+import SettingsPageHeader from "../SharedComponents/SettingsPageHeader";
+import FullWidthErrorMsg from "../../../components/FullWidthErrorMsg.sc";
+import LoadingAnimation from "../../../components/LoadingAnimation";
+import useFormField from "../../../hooks/useFormField";
+import { EmailValidator, NonEmptyOrWhitespaceOnlyValidator } from "../../../utils/ValidatorRule/Validator";
+import validateRules from "../../../assorted/validateRules";
 import { useLocation } from "react-router-dom/cjs/react-router-dom";
-import FullWidthConfirmMsg from "../../components/FullWidthConfirmMsg.sc";
-import Modal from "../../components/modal_shared/Modal";
+import FullWidthConfirmMsg from "../../../components/FullWidthConfirmMsg.sc";
+import Modal from "../../../components/modal_shared/Modal";
 import {
   AVATAR_BACKGROUND_COLORS,
   AVATAR_CHARACTER_COLORS,
@@ -32,9 +32,9 @@ import {
   validatedAvatarBackgroundColor,
   validatedAvatarCharacterColor,
   validatedAvatarCharacterId,
-} from "../../profile/avatarOptions";
-import { AvatarBackground, AvatarImage } from "../../profile/UserProfile.sc";
-import Feature from "../../features/Feature";
+} from "../../../profile/avatarOptions";
+import { AvatarBackground, AvatarImage } from "../../../profile/UserProfile.sc";
+import Feature from "../../../features/Feature";
 import * as s from "./ProfileDetails.sc";
 import EditIcon from "@mui/icons-material/Edit";
 import CheckIcon from "@mui/icons-material/Check";
@@ -136,19 +136,13 @@ export default function ProfileDetails() {
   }
   return (
     <CardPage layoutVariant={"minimalistic-top-aligned"} isTransparent reducedPadding>
-      <s.HeaderWrapper>
-        <s.BackArrowWrapper>
-          <BackArrow redirectLink={redirectPath} />
-        </s.BackArrowWrapper>
-        <Header withoutLogo>
-          <Heading>{strings.profileDetails}</Heading>
-          {successfullyChangedPassword && (
-            <>
-              <FullWidthConfirmMsg>Password changed successfully!</FullWidthConfirmMsg>
-            </>
-          )}
-        </Header>
-      </s.HeaderWrapper>
+      <SettingsPageHeader title={strings.profileDetails} redirectLink={redirectPath}>
+        {successfullyChangedPassword && (
+          <>
+            <FullWidthConfirmMsg>Password changed successfully!</FullWidthConfirmMsg>
+          </>
+        )}
+      </SettingsPageHeader>
       <Main>
         <Form>
           {errorMessage && <FullWidthErrorMsg>{errorMessage}</FullWidthErrorMsg>}

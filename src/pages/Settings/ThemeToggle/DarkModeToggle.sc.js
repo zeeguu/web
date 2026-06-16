@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { orange500 } from "../../components/colors";
+import { orange500 } from "../../../components/colors";
 
 const ToggleRow = styled.li`
   box-sizing: border-box;

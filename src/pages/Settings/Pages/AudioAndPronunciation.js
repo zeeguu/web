@@ -1,25 +1,23 @@
 import { useHistory } from "react-router-dom";
 import { useState, useEffect, useContext } from "react";
-import { UserContext } from "../../contexts/UserContext";
-import SessionStorage from "../../assorted/SessionStorage";
-import LocalStorage from "../../assorted/LocalStorage";
-import Feature from "../../features/Feature";
-import Button from "../_pages_shared/Button.sc";
-import ButtonContainer from "../_pages_shared/ButtonContainer.sc";
-import Form from "../_pages_shared/Form.sc";
-import FormSection from "../_pages_shared/FormSection.sc";
-import CardPage from "../_pages_shared/CardPage";
-import Main from "../_pages_shared/Main.sc";
-import Header from "../_pages_shared/Header";
-import Heading from "../_pages_shared/Heading.sc";
-import BackArrow from "./settings_pages_shared/BackArrow";
-import Checkbox from "../../components/modal_shared/Checkbox";
-import strings from "../../i18n/definitions";
-import { setTitle } from "../../assorted/setTitle";
-import { APIContext } from "../../contexts/APIContext";
-import useBookmarkAutoPronounce from "../../hooks/useBookmarkAutoPronounce";
+import { UserContext } from "../../../contexts/UserContext";
+import SessionStorage from "../../../assorted/SessionStorage";
+import LocalStorage from "../../../assorted/LocalStorage";
+import Feature from "../../../features/Feature";
+import Button from "../../_pages_shared/Button.sc";
+import ButtonContainer from "../../_pages_shared/ButtonContainer.sc";
+import Form from "../../_pages_shared/Form.sc";
+import FormSection from "../../_pages_shared/FormSection.sc";
+import CardPage from "../../_pages_shared/CardPage";
+import Main from "../../_pages_shared/Main.sc";
+import SettingsPageHeader from "../SharedComponents/SettingsPageHeader";
+import Checkbox from "../../../components/modal_shared/Checkbox";
+import strings from "../../../i18n/definitions";
+import { setTitle } from "../../../assorted/setTitle";
+import { APIContext } from "../../../contexts/APIContext";
+import useBookmarkAutoPronounce from "../../../hooks/useBookmarkAutoPronounce";
 
-export default function ExerciseTypePreferences() {
+export default function AudioAndPronunciation() {
   const api = useContext(APIContext);
   const { session } = useContext(UserContext);
   const history = useHistory();
@@ -72,10 +70,7 @@ export default function ExerciseTypePreferences() {
 
   return (
     <CardPage layoutVariant={"minimalistic-top-aligned"} isTransparent reducedPadding>
-      <BackArrow />
-      <Header withoutLogo>
-        <Heading>{strings.exerciseTypePreferences}</Heading>
-      </Header>
+      <SettingsPageHeader title={strings.exerciseTypePreferences} />
       <Main>
         <Form>
           <FormSection>

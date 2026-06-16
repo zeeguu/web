@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import { ThemeContext } from "../../contexts/ThemeContext";
+import { ThemeContext } from "../../../contexts/ThemeContext";
 import * as s from "./DarkModeToggle.sc";
 
 const OPTIONS = [
@@ -16,11 +16,7 @@ export default function DarkModeToggle() {
       <span>Theme</span>
       <s.SegmentedControl>
         {OPTIONS.map((opt) => (
-          <s.SegmentButton
-            key={opt.value}
-            $active={preference === opt.value}
-            onClick={() => setPreference(opt.value)}
-          >
+          <s.SegmentButton key={opt.value} $active={preference === opt.value} onClick={() => setPreference(opt.value)}>
             {opt.label}
           </s.SegmentButton>
         ))}
