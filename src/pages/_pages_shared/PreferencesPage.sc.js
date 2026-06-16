@@ -50,8 +50,6 @@ const PageContainer = styled.div`
   margin: 1rem;
   overflow-y: auto;
 
-  background-color: var(--card-bg);
-
   @media (max-width: 1200px) {
     padding: 2rem 4.25rem;
     margin: 0.5rem;
@@ -64,7 +62,7 @@ const PageContainer = styled.div`
   }
 
   @media (max-width: 576px) {
-    padding: 1.5rem;
+    padding: 0.5rem;
     width: 95%;
   }
 
