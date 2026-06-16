@@ -4,7 +4,7 @@ const BackArrow = styled.button`
   display: flex;
   align-items: center;
   justify-content: flex-start;
-  align-self: flex-start;
+  align-self: center;
   cursor: pointer;
   color: var(--text-secondary);
   background: none;
