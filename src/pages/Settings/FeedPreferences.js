@@ -99,7 +99,7 @@ export default function FeedPreferences() {
           </TagContainer>
         </SectionContainer>
         <SectionContainer>
-          <SectionHeading>Keywords to Avoid</SectionHeading>
+          <SectionHeading>Topics to Avoid</SectionHeading>
           <Form>
             <InputField
               value={excludedWord}
