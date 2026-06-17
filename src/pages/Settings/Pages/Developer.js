@@ -24,7 +24,7 @@ export default function Developer() {
   }
 
   return (
-    <CardPage layoutVariant={"minimalistic-top-aligned"} isTransparent reducedPadding>
+    <CardPage layoutVariant={"card-under-menu"} isTransparent reducedPadding>
       <SettingsPageHeader title="Developer" />
       <Main>
         <ButtonContainer className={"adaptive-alignment-horizontal"}>

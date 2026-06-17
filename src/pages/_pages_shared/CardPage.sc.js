@@ -26,13 +26,19 @@ const PageBackdrop = styled.div`
   }
 
   ${({ $layoutVariant }) =>
-    $layoutVariant === "minimalistic-top-aligned" &&
+    $layoutVariant === "card-under-menu" &&
     css`
       width: 100%;
       min-height: auto;
       background: none;
       justify-content: flex-start;
       overflow-x: hidden;
+      /* This variant is always position: static, so it flows inside <body>,
+         which already applies padding-top: env(safe-area-inset-top) (index.css).
+         The base PageBackdrop's own safe-area padding-top would double-count it
+         and leave a notch-sized gap on iOS (invisible in browsers where env()=0).
+         The fixed-background variants escape <body> padding and keep theirs. */
+      padding-top: 0;
     `}
 `;
 
@@ -78,7 +84,7 @@ const ContentCard = styled.div`
     `}
 
   ${({ $layoutVariant }) =>
-    $layoutVariant === "minimalistic-top-aligned" &&
+    $layoutVariant === "card-under-menu" &&
     css`
       @media (max-width: 1200px) {
         margin: 1rem;

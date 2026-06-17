@@ -12,7 +12,7 @@ export default function DeleteAccount() {
   }, []);
 
   return (
-    <CardPage layoutVariant={"minimalistic-top-aligned"} isTransparent reducedPadding>
+    <CardPage layoutVariant={"card-under-menu"} isTransparent reducedPadding>
       <SettingsPageHeader title={strings.deleteAccount} />
       <Main>
         <DeleteAccountButton />
