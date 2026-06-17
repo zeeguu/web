@@ -69,7 +69,7 @@ export default function AudioAndPronunciation() {
   }
 
   return (
-    <CardPage layoutVariant={"minimalistic-top-aligned"} isTransparent reducedPadding>
+    <CardPage layoutVariant={"card-under-menu"} isTransparent reducedPadding>
       <SettingsPageHeader title={strings.exerciseTypePreferences} />
       <Main>
         <Form>

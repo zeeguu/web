@@ -127,7 +127,7 @@ export default function MyClassrooms() {
   const studentIsInCohort = studentCohorts && studentCohorts.length > 0;
 
   return (
-    <CardPage layoutVariant={"minimalistic-top-aligned"} isTransparent reducedPadding>
+    <CardPage layoutVariant={"card-under-menu"} isTransparent reducedPadding>
       <SettingsPageHeader title={strings.myClassrooms} />
       <Main>
         <FullWidthListContainer>

@@ -75,7 +75,7 @@ export default function FeedPreferences() {
   }
 
   return (
-    <CardPage layoutVariant={"minimalistic-top-aligned"} isTransparent reducedPadding>
+    <CardPage layoutVariant={"card-under-menu"} isTransparent reducedPadding>
       <SettingsPageHeader title="Feed Preferences" redirectLink={isFromArticles && "/articles"} />
       <Main>
         <SectionContainer>

@@ -135,7 +135,7 @@ export default function ProfileDetails() {
     return <LoadingAnimation />;
   }
   return (
-    <CardPage layoutVariant={"minimalistic-top-aligned"} isTransparent reducedPadding>
+    <CardPage layoutVariant={"card-under-menu"} isTransparent reducedPadding>
       <SettingsPageHeader title={strings.profileDetails} redirectLink={redirectPath}>
         {successfullyChangedPassword && (
           <>

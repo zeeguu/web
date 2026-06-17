@@ -38,7 +38,7 @@ export default function ActivityTimer() {
   }
 
   return (
-    <CardPage layoutVariant={"minimalistic-top-aligned"} isTransparent reducedPadding>
+    <CardPage layoutVariant={"card-under-menu"} isTransparent reducedPadding>
       <SettingsPageHeader title="Activity Timer" />
       <Main>
         <Form>
