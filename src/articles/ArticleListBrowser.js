@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import PullToRefresh from "react-simple-pull-to-refresh";
 import ArticlePreview from "./ArticlePreview";
 import SearchField from "./SearchField";
@@ -45,6 +45,12 @@ export default function ArticleListBrowser({ content, searchQuery, searchPublish
   // the pagination hook and would otherwise see a stale filter.
   const [activeFilter, setActiveFilter] = useState({ type: "all" });
   const activeFilterRef = useShadowRef(activeFilter);
+
+  // Each loadArticles() call claims a token; only the latest applies its
+  // results. Without this, switching pills fast lets a slower earlier response
+  // (e.g. a saved-search query) land last and overwrite the feed the user
+  // actually selected.
+  const loadTokenRef = useRef(0);
 
   // Next three vars required for the "Show Videos Only" toggle button
   const [areVideosAvailable, setAreVideosAvailable] = useState(false);
@@ -145,6 +151,8 @@ export default function ArticleListBrowser({ content, searchQuery, searchPublish
 
   function loadArticles() {
     return new Promise((resolve) => {
+      const myToken = ++loadTokenRef.current;
+      const isStale = () => myToken !== loadTokenRef.current;
       resetPagination();
       setSearchError(false);
       // A saved-search pill loads through the same search endpoint as an
@@ -160,6 +168,7 @@ export default function ArticleListBrowser({ content, searchQuery, searchPublish
           searchPublishPriority,
           searchDifficultyPriority,
           (articles) => {
+            if (isStale()) return resolve();
             setArticlesAndVideosList(articles);
             setOriginalList([...articles]);
             setReloadingSearchArticles(false);
@@ -167,6 +176,7 @@ export default function ArticleListBrowser({ content, searchQuery, searchPublish
             resolve();
           },
           (error) => {
+            if (isStale()) return resolve();
             setArticlesAndVideosList([]);
             setOriginalList([]);
             setReloadingSearchArticles(false);
@@ -176,8 +186,11 @@ export default function ArticleListBrowser({ content, searchQuery, searchPublish
         );
       } else {
         setTitle(strings.titleHome);
+        // Clear any leftover search-loading state when leaving a search pill.
+        setReloadingSearchArticles(false);
         const options = activeFilter.type === "topic" ? { topic: activeFilter.value.title } : {};
         api.getUserArticles((articles) => {
+          if (isStale()) return resolve();
           setArticlesAndVideosList(articles);
           setOriginalList([...articles]);
           setAreVideosAvailable(articles.some((e) => e.video));
