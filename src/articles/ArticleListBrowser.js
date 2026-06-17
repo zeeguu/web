@@ -4,7 +4,7 @@ import ArticlePreview from "./ArticlePreview";
 import SearchField from "./SearchField";
 import * as s from "./ArticleListBrowser.sc";
 import LoadingAnimation from "../components/LoadingAnimation";
-import CustomizeGear from "./CustomizeGear";
+import FeedFilterBar from "./FeedFilterBar";
 
 import LocalStorage from "../assorted/LocalStorage";
 
@@ -39,6 +39,13 @@ export default function ArticleListBrowser({ content, searchQuery, searchPublish
   const searchPublishPriorityRef = useShadowRef(searchPublishPriority);
   const searchDifficultyPriorityRef = useShadowRef(searchDifficultyPriority);
 
+  // Home-feed filter pills (only shown when this isn't an external search).
+  // { type: "all" } | { type: "topic", value } | { type: "search", value }.
+  // A ref mirror is needed because getNewArticlesForPage is captured once by
+  // the pagination hook and would otherwise see a stale filter.
+  const [activeFilter, setActiveFilter] = useState({ type: "all" });
+  const activeFilterRef = useShadowRef(activeFilter);
+
   // Next three vars required for the "Show Videos Only" toggle button
   const [areVideosAvailable, setAreVideosAvailable] = useState(false);
   const [isShowVideosOnlyEnabled, setIsShowVideosOnlyEnabled] = useState(false);
@@ -56,8 +63,21 @@ export default function ArticleListBrowser({ content, searchQuery, searchPublish
         handleArticleInsertion,
         (error) => {},
       );
+      return;
+    }
+    const filter = activeFilterRef.current;
+    if (filter.type === "search") {
+      api.searchMore(
+        filter.value.search,
+        pageNumber,
+        searchPublishPriorityRef.current,
+        searchDifficultyPriorityRef.current,
+        handleArticleInsertion,
+        (error) => {},
+      );
     } else {
-      api.getMoreUserArticles(20, pageNumber, handleArticleInsertion);
+      const options = filter.type === "topic" ? { topic: filter.value.title } : {};
+      api.getMoreUserArticles(20, pageNumber, handleArticleInsertion, options);
     }
   }
 
@@ -127,11 +147,16 @@ export default function ArticleListBrowser({ content, searchQuery, searchPublish
     return new Promise((resolve) => {
       resetPagination();
       setSearchError(false);
-      if (searchQuery) {
-        setTitle(strings.titleSearch + ` '${searchQuery}'`);
+      // A saved-search pill loads through the same search endpoint as an
+      // external (/search route) query. Topic pills and "All" go through the
+      // recommended feed, with topic passed as a filter.
+      const searchTerm =
+        searchQuery || (activeFilter.type === "search" ? activeFilter.value.search : null);
+      if (searchTerm) {
+        setTitle(strings.titleSearch + ` '${searchTerm}'`);
         setReloadingSearchArticles(true);
         api.search(
-          searchQuery,
+          searchTerm,
           searchPublishPriority,
           searchDifficultyPriority,
           (articles) => {
@@ -151,12 +176,13 @@ export default function ArticleListBrowser({ content, searchQuery, searchPublish
         );
       } else {
         setTitle(strings.titleHome);
+        const options = activeFilter.type === "topic" ? { topic: activeFilter.value.title } : {};
         api.getUserArticles((articles) => {
           setArticlesAndVideosList(articles);
           setOriginalList([...articles]);
           setAreVideosAvailable(articles.some((e) => e.video));
           resolve();
-        });
+        }, options);
       }
     });
   }
@@ -170,7 +196,7 @@ export default function ArticleListBrowser({ content, searchQuery, searchPublish
       };
     }
     // eslint-disable-next-line
-  }, [searchQuery, searchPublishPriority, searchDifficultyPriority]);
+  }, [searchQuery, searchPublishPriority, searchDifficultyPriority, activeFilter]);
 
   if (articlesAndVideosList == null) {
     return <LoadingAnimation />;
@@ -201,9 +227,7 @@ export default function ArticleListBrowser({ content, searchQuery, searchPublish
       <>
       {!searchQuery && (
         <>
-          <div style={{ display: "flex", padding: "0.5em 1em 0.25em" }}>
-            <CustomizeGear />
-          </div>
+          <FeedFilterBar activeFilter={activeFilter} onSelectFilter={setActiveFilter} />
           {areVideosAvailable && (
             <s.SortHolder
               style={{

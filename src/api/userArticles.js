@@ -11,6 +11,7 @@ import LocalStorage from "../assorted/LocalStorage";
  * @param {Function} callback - Function to call with the articles
  * @param {Object} options - Optional parameters
  * @param {boolean} options.excludeSaved - If true, exclude articles the user has saved
+ * @param {string} options.topic - If set (a topic title), restrict the feed to that single topic
  *
  * Note: Hidden articles are always excluded from recommendations.
  *
@@ -20,12 +21,18 @@ import LocalStorage from "../assorted/LocalStorage";
  *
  *   // Exclude saved articles
  *   api.getUserArticles(callback, { excludeSaved: true });
+ *
+ *   // Restrict to a single topic
+ *   api.getUserArticles(callback, { topic: "Technology & Science" });
  */
 Zeeguu_API.prototype.getUserArticles = function (callback, options = {}) {
   // Build query string for optional exclusion parameters
   const params = [];
   if (options.excludeSaved) {
     params.push("exclude_saved=true");
+  }
+  if (options.topic) {
+    params.push("topic=" + encodeURIComponent(options.topic));
   }
   // Ask for the language we're showing (matches the cache key), so a language
   // switch returns the new language immediately instead of whatever the server
@@ -74,6 +81,9 @@ Zeeguu_API.prototype.getMoreUserArticles = function (count, page, callback, opti
   const params = [];
   if (options.excludeSaved) {
     params.push("exclude_saved=true");
+  }
+  if (options.topic) {
+    params.push("topic=" + encodeURIComponent(options.topic));
   }
   // Keep pagination on the same language as the first page (see getUserArticles).
   const learnedLanguage = LocalStorage.getLearnedLanguage();
