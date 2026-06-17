@@ -2,18 +2,25 @@ import { useEffect } from "react";
 import { useHistory } from "react-router-dom";
 import useShadowRef from "./useShadowRef";
 
-// Optional `targetPath` redirects the back gesture to a specific route via
-// history.replace (current entry is swapped — no extra back-stack growth).
-// When not set, falls back to history.goBack() — the natural "previous page".
-// Useful when the natural "previous page" isn't what the user expects: e.g.
-// a simplified article opened via Discover→Simplify→reader should land in
-// My Articles on swipe-back, not back at the now-superseded Discover entry.
+// Drives the swipe-right-to-go-back gesture. The navigation action is chosen
+// in this order:
+//   1. `onBack` — run this callback (used by BackArrow so the swipe performs
+//      exactly the same navigation as tapping the arrow).
+//   2. `targetPath` — history.replace to a specific route (current entry is
+//      swapped — no extra back-stack growth). Useful when the natural
+//      "previous page" isn't what the user expects: e.g. a simplified article
+//      opened via Discover→Simplify→reader should land in My Articles on
+//      swipe-back, not back at the now-superseded Discover entry.
+//   3. otherwise history.goBack() — the natural "previous page".
+// `enabled` (default true) lets a caller mount the hook but keep it inert.
 export default function useSwipeBack(options = {}) {
-  const { targetPath = null } = options;
+  const { targetPath = null, enabled = true, onBack = null } = options;
   const history = useHistory();
   const targetPathRef = useShadowRef(targetPath);
+  const onBackRef = useShadowRef(onBack);
 
   useEffect(() => {
+    if (!enabled) return;
     let startX = 0;
     let startY = 0;
     let tracking = false;
@@ -70,7 +77,9 @@ export default function useSwipeBack(options = {}) {
           page.style.transition = "";
           page.style.transform = "";
           page.style.opacity = "";
-          if (targetPathRef.current) {
+          if (onBackRef.current) {
+            onBackRef.current();
+          } else if (targetPathRef.current) {
             history.replace(targetPathRef.current);
           } else {
             history.goBack();
@@ -101,5 +110,5 @@ export default function useSwipeBack(options = {}) {
       document.removeEventListener("touchmove", onTouchMove, opts);
       document.removeEventListener("touchend", onTouchEnd, opts);
     };
-  }, [history]);
+  }, [history, enabled]);
 }
