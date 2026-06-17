@@ -30,6 +30,7 @@ export default function TopToolbar({
   articleProgress,
   timer,
   reportBroken,
+  swipeBackTargetPath,
 }) {
   const api = useContext(APIContext);
   const { screenWidth, isMobile } = useScreenWidth();
@@ -68,7 +69,7 @@ export default function TopToolbar({
               gap: "0.5rem",
             }}
           >
-            {isMobile && <BackArrow />}
+            {isMobile && <BackArrow swipeTargetPath={swipeBackTargetPath} />}
             {timer}
           </div>
           <div style={{ display: "flex", gap: "1rem" }}>
