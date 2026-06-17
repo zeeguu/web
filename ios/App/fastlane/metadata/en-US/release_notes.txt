@@ -1,6 +1,7 @@
-- Your daily audio lesson now resumes right where you paused, instead of jumping back to the start.
-- A clearer daily-lesson home screen with a redesigned footer and settings.
-- Listen past the halfway mark to unlock tomorrow's lesson — now with a friendly hint.
-- The "Today" tab is now called "Current", and past-lesson tabs stay hidden until you actually have past lessons.
-- Fixed a scrollbar glitch on the empty and generating states of the daily audio screen.
+- Swipe right to go back - now works across the settings screens and the article reader.
+- Refreshed settings screens with a cleaner, more consistent layout, and no more empty gap at the top.
+- Share YouTube videos to Zeeguu and turn them into reading-and-listening practice.
+- Tidier spacing and navigation across the Activity section.
+- Improvements to the Translate screen.
+- Clearer messaging when you sign in with a non-teacher account.
 - Various smaller fixes and polish.
