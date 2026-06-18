@@ -46,7 +46,6 @@ export default function AppLayout(props) {
     hideExerciseCounter,
   } = useExercisesCounterNotification();
 
-
   const badgeCounter = useBadgeCounterNotification();
   const friendRequestNotification = useFriendRequestNotification();
 

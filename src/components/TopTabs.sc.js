@@ -21,36 +21,47 @@ const TopTabsWrapper = styled.div`
 `;
 
 const TopTabs = styled.div`
-  h1 {
-    font-weight: 300;
-    font-size: 3em;
-    line-height: 1em;
-    letter-spacing: 0.05em; // wider spacing; makes title stand out more
-    text-align: center;
-    margin-top: 2em;
-  }
+  position: relative;
 
   .all__tabs {
     line-height: 1.4em;
     /* Row height lives here, NOT in the separator's padding — otherwise
        single-tab pages (no separator) render a visibly shorter bar. */
     min-height: 3em;
-    width: 100%;
+    width: fit-content;
     align-items: center;
     display: flex;
     justify-content: center;
+    gap: 0.8em;
+    padding: 0rem 1rem;
+    border-radius: 1rem;
+    margin: 0 auto;
+    margin-top: 0.5em;
+  }
+
+  .all__tabs--compact {
+    min-height: auto;
+    padding: 0 0.75rem;
+    gap: 0.4em;
+    font-size: 0.9em;
+  }
+
+  .all__tabs--with-bg {
+    background-color: var(--infobox-bg);
   }
 
   .headmenuTab {
     font-size: 1.2em;
     font-weight: 400;
     letter-spacing: 0;
+    display: flex;
+    align-items: center;
+    color: var(--text-primary);
   }
 
-  .headmenuTab,
-  a {
-    text-decoration: none;
+  .headmenuTab.active {
     color: var(--text-primary);
+    font-weight: 600;
   }
 
   /* Scoped to devices with a real hover capability. On iOS (and any
@@ -92,16 +103,6 @@ const TopTabs = styled.div`
       font-weight: 700;
       color: var(--text-primary);
     }
-
-    .row__bar {
-      padding: 0em;
-    }
-
-    .bar {
-      width: 1em;
-      height: 0px;
-      border: 0.5px solid ${darkGrey};
-    }
   }
 
   .is-active {
@@ -112,6 +113,21 @@ const TopTabs = styled.div`
      orange so the user gets a visible "you're here" cue. */
   .headmenuTab.active svg {
     color: ${zeeguuOrange};
+  }
+
+  /* Home icon styling - black when inactive, orange fill when active */
+  .headmenuTab.icon-inactive svg {
+    color: gray;
+  }
+
+  .headmenuTab.icon-active svg {
+    color: var(--onboarding-btn-bg);
+  }
+
+  .tab-separator {
+    color: #ccc;
+    font-size: 1.2em;
+    margin: 0 0.3em;
   }
 `;
 
