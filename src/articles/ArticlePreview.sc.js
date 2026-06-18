@@ -235,8 +235,10 @@ const SummaryActionRow = styled.div`
   margin-top: 0.6em;
   /* Fixed action size (the parent Summary is a large 1.3em); both children
      inherit this so Save and Open match instead of falling back to their
-     button/anchor defaults. */
+     button/anchor defaults. line-height: 1 hugs the text box to the glyphs
+     so the flex-centered icons sit level with the text rather than high. */
   font-size: 0.95rem;
+  line-height: 1;
 `;
 
 // Save toggle as a labelled inline action (icon + "Save"/"Saved"), sized
