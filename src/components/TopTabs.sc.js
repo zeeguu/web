@@ -4,6 +4,10 @@ import { darkGrey, zeeguuOrange } from "./colors";
 const TopTabsWrapper = styled.div`
   position: sticky;
   top: 0;
+  /* Above the scrolling feed (incl. the topic-pill row) so content slides
+     cleanly underneath instead of painting over the sticky bar. Below modals
+     (1000+) and the bottom nav's overlays. */
+  z-index: 10;
   background: var(--bg-primary);
   transition: transform 0.3s ease-in-out;
   padding-top: 0.5em;
