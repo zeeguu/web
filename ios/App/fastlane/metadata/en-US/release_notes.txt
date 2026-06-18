@@ -1,7 +1,5 @@
-- Swipe right to go back - now works across the settings screens and the article reader.
-- Refreshed settings screens with a cleaner, more consistent layout, and no more empty gap at the top.
-- Share YouTube videos to Zeeguu and turn them into reading-and-listening practice.
-- Tidier spacing and navigation across the Activity section.
-- Improvements to the Translate screen.
-- Clearer messaging when you sign in with a non-teacher account.
+- Filter your Discover feed by topic: tap a topic pill to focus the feed, and your choice is remembered next time.
+- Switching topics now loads instantly.
+- A cleaner top of the Read screen with simple icons for Discover, Saved, Classroom, and Search.
+- Tidier article cards and a calmer, more readable feed.
 - Various smaller fixes and polish.
