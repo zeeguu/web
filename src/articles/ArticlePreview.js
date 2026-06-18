@@ -17,7 +17,6 @@ import ZeeguuSpeech from "../speech/APIBasedSpeech";
 import { estimateReadingTime, timeAgo } from "../utils/misc/readableTime";
 import ActionButton from "../components/ActionButton";
 import { articleSourceLabel } from "../utils/misc/articleHelpers";
-import { topicIconFor } from "../utils/misc/topicIcon";
 import OpenInNewRoundedIcon from "@mui/icons-material/OpenInNewRounded";
 import BookmarkBorderRoundedIcon from "@mui/icons-material/BookmarkBorderRounded";
 import BookmarkRoundedIcon from "@mui/icons-material/BookmarkRounded";
@@ -51,6 +50,9 @@ export default function ArticlePreview({
   const [isHidden, setIsHidden] = useState(article.hidden || false);
   const [isAnimatingOut, setIsAnimatingOut] = useState(false);
   const [isSummaryExpanded, setIsSummaryExpanded] = useState(false);
+  // No img_url, or the <img> 404'd / failed to load — either way we render
+  // no image region at all rather than an empty box that reads as broken.
+  const [imageFailed, setImageFailed] = useState(false);
   // "Show more" is dead weight when the summary fits in the clamp, but the
   // CSS `…` stays unconditional when the box does overflow — so we need to
   // know which case we're in. useClampedOverflow handles measurement +
@@ -128,7 +130,7 @@ export default function ArticlePreview({
   };
 
   let topics = article.topics_list;
-  const PlaceholderIcon = topicIconFor(article.topics_list);
+  const hasImage = !!article.img_url && !imageFailed;
 
   function handleCloseRedirectionModal() {
     setIsRedirectionModaOpen(false);
@@ -208,28 +210,14 @@ export default function ArticlePreview({
     : article.video || (!Feature.extension_experiment1() && !hasExtension) || is_saved || hasInAppSimplification;
   const should_open_with_modal = doNotShowRedirectionModal_UserPreference === false;
 
-  // The clickable media block at the top of the card. `visual` is either
-  // the real <img> or the topic-glyph placeholder; both get the same
-  // "Open" overlay and the same open-in-Zeeguu / modal / external wrapper
-  // so an image-less card opens (and overlays its Save button) exactly
-  // like one with a photo. Returned without the s.ImageWithOverlay wrapper
-  // so callers can stack the Save icon as a sibling — nesting it inside
-  // this Link would let icon clicks bubble into navigation.
-  function mediaLink(visual) {
-    const innerLinkStyle = { display: "block", position: "relative", lineHeight: 0 };
-    const inner = (
-      <>
-        {visual}
-        <s.ImageOpenOverlay>
-          Open
-          {!should_open_in_zeeguu && <OpenInNewRoundedIcon style={{ fontSize: 18, marginLeft: 4 }} />}
-        </s.ImageOpenOverlay>
-      </>
-    );
+  // Wraps `children` in the right open-in-Zeeguu / modal / external handler
+  // for this article. `buttonExtraStyle` covers the few cases (the image
+  // block) where the modal <button> needs to fill its parent's width.
+  function navWrap(children, style, buttonExtraStyle = {}) {
     if (should_open_in_zeeguu) {
       return (
-        <Link to={`/read/article?id=${inAppArticleId}`} onClick={handleArticleClick} style={innerLinkStyle}>
-          {inner}
+        <Link to={`/read/article?id=${inAppArticleId}`} onClick={handleArticleClick} style={style}>
+          {children}
         </Link>
       );
     }
@@ -241,31 +229,53 @@ export default function ArticlePreview({
             handleArticleClick();
             handleOpenRedirectionModal();
           }}
-          style={{
-            ...innerLinkStyle,
-            background: "none",
-            border: "none",
-            padding: 0,
-            cursor: "pointer",
-            width: "100%",
-          }}
+          style={{ ...style, background: "none", border: "none", padding: 0, cursor: "pointer", ...buttonExtraStyle }}
         >
-          {inner}
+          {children}
         </button>
       );
     }
     return (
-      <a
-        target={isMobile ? "_self" : "_blank"}
-        rel="noreferrer"
-        href={externalUrl}
-        onClick={handleArticleClick}
-        style={innerLinkStyle}
-      >
-        {inner}
+      <a target={isMobile ? "_self" : "_blank"} rel="noreferrer" href={externalUrl} onClick={handleArticleClick} style={style}>
+        {children}
       </a>
     );
   }
+
+  // The clickable media block at the top of the card: the real <img> plus
+  // an "Open" overlay. Returned without the s.ImageWithOverlay wrapper so
+  // callers can stack the Save icon as a sibling — nesting it inside this
+  // Link would let icon clicks bubble into navigation.
+  function mediaLink(visual) {
+    const inner = (
+      <>
+        {visual}
+        <s.ImageOpenOverlay>
+          Open
+          {!should_open_in_zeeguu && <OpenInNewRoundedIcon style={{ fontSize: 18, marginLeft: 4 }} />}
+        </s.ImageOpenOverlay>
+      </>
+    );
+    return navWrap(inner, { display: "block", position: "relative", lineHeight: 0 }, { width: "100%" });
+  }
+
+  // Image-less cards have no Open overlay to tap, so this quiet text link
+  // under the summary carries the same navigation instead.
+  const openTextLink = navWrap(
+    <>
+      Open
+      {!should_open_in_zeeguu && <OpenInNewRoundedIcon style={{ fontSize: 16, marginLeft: 4 }} />}
+    </>,
+    {
+      display: "inline-flex",
+      alignItems: "center",
+      color: "var(--text-muted)",
+      fontSize: "inherit",
+      fontFamily: "inherit",
+      fontWeight: 500,
+      textDecoration: "none",
+    },
+  );
 
   const imageVisual = (
     <img
@@ -273,14 +283,9 @@ export default function ArticlePreview({
       src={article.img_url}
       loading="lazy"
       decoding="async"
+      onError={() => setImageFailed(true)}
       style={{ cursor: "pointer", display: "block" }}
     />
-  );
-
-  const placeholderVisual = (
-    <s.PlaceholderImage>
-      <PlaceholderIcon style={{ fontSize: 56 }} />
-    </s.PlaceholderImage>
   );
 
   if (isHidden && !isHiddenView) {
@@ -382,25 +387,27 @@ export default function ArticlePreview({
       </MetaStrip>
 
       <s.ArticleContent>
-        <s.ImageWithOverlay>
-          {mediaLink(article.img_url ? imageVisual : placeholderVisual)}
-          {/* Save toggle overlaid on the image (or placeholder) — bookmark
-              icon flips between outline and filled. Sibling of the
-              image-link so clicks here don't bubble into navigation. */}
-          {!isHiddenView && (
-            <s.SaveIconButton
-              type="button"
-              onClick={handleToggleSave}
-              aria-label={isArticleSaved ? "Remove from saves" : "Save"}
-            >
-              {isArticleSaved ? (
-                <BookmarkRoundedIcon style={{ fontSize: 18 }} />
-              ) : (
-                <BookmarkBorderRoundedIcon style={{ fontSize: 18 }} />
-              )}
-            </s.SaveIconButton>
-          )}
-        </s.ImageWithOverlay>
+        {hasImage && (
+          <s.ImageWithOverlay>
+            {mediaLink(imageVisual)}
+            {/* Save toggle overlaid on the image — bookmark icon flips
+                between outline and filled. Sibling of the image-link so
+                clicks here don't bubble into navigation. */}
+            {!isHiddenView && (
+              <s.SaveIconButton
+                type="button"
+                onClick={handleToggleSave}
+                aria-label={isArticleSaved ? "Remove from saves" : "Save"}
+              >
+                {isArticleSaved ? (
+                  <BookmarkRoundedIcon style={{ fontSize: 18 }} />
+                ) : (
+                  <BookmarkBorderRoundedIcon style={{ fontSize: 18 }} />
+                )}
+              </s.SaveIconButton>
+            )}
+          </s.ImageWithOverlay>
+        )}
         {!inSavedView &&
           (() => {
             const summaryNode = interactiveSummary ? (
@@ -425,10 +432,29 @@ export default function ArticlePreview({
                     )}
                   </>
                 )}
+                {/* Image-less cards dropped the photo region, so its Save +
+                    Open controls regroup into one action row here. */}
+                {!hasImage && (
+                  <s.SummaryActionRow>
+                    {!isHiddenView && (
+                      <s.SaveActionButton
+                        type="button"
+                        onClick={handleToggleSave}
+                        aria-label={isArticleSaved ? "Remove from saves" : "Save"}
+                      >
+                        {isArticleSaved ? (
+                          <BookmarkRoundedIcon style={{ fontSize: 16 }} />
+                        ) : (
+                          <BookmarkBorderRoundedIcon style={{ fontSize: 16 }} />
+                        )}
+                        {isArticleSaved ? "Saved" : "Save"}
+                      </s.SaveActionButton>
+                    )}
+                    {openTextLink}
+                  </s.SummaryActionRow>
+                )}
                 {/* Bottom action row only used as a fallback: the Hidden
-                  surface needs Unhide. Image-less cards no longer need an
-                  explicit Open here — the placeholder banner carries the
-                  Open overlay just like a real image. */}
+                  surface needs Unhide. */}
                 {isHiddenView && (
                   <div
                     style={{

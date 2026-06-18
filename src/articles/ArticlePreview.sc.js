@@ -225,29 +225,37 @@ const ImageWithOverlay = styled.div`
   }
 `;
 
-// Stand-in banner for image-less articles: occupies the same slot as a
-// real photo so every card keeps its image region — and, crucially, the
-// Open + Save overlays that live on top of it. A vague, topic-matched
-// glyph (see topicIcon.js) on a muted surface, deliberately understated.
-// Dimensions mirror the img rules in ArticleContent so the overlays line
-// up identically.
-const PlaceholderImage = styled.div`
+// Image-less cards drop the photo region entirely (an empty box reads as
+// "broken"). The Open overlay and Save toggle that used to live on the
+// photo regroup into a single left-aligned action row under the summary.
+const SummaryActionRow = styled.div`
   display: flex;
   align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  background: var(--bg-tertiary);
-  color: var(--text-faint);
-  border-radius: 1em;
-  margin: 1em 0.5em 0 0.5em;
-  width: 16em;
-  height: 12em;
-  align-self: flex-start;
+  gap: 1.2em;
+  margin-top: 0.6em;
+  /* Fixed action size (the parent Summary is a large 1.3em); both children
+     inherit this so Save and Open match instead of falling back to their
+     button/anchor defaults. line-height: 1 hugs the text box to the glyphs
+     so the flex-centered icons sit level with the text rather than high. */
+  font-size: 0.95rem;
+  line-height: 1;
+`;
 
-  @media (max-width: 990px) {
-    width: 100%;
-    height: 13em;
-    margin: 0.5rem 0;
+// Save toggle as a labelled inline action (icon + "Save"/"Saved"), sized
+// to match the adjacent "Open" link rather than scrimmed over a photo.
+const SaveActionButton = styled.button`
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3em;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  color: var(--text-muted);
+  font: inherit;
+  font-weight: 500;
+  &:active {
+    color: var(--text-primary);
   }
 `;
 
@@ -344,7 +352,8 @@ export {
   BottomContainer,
   Summary,
   ImageWithOverlay,
-  PlaceholderImage,
+  SummaryActionRow,
+  SaveActionButton,
   ImageOpenOverlay,
   ClampedSummary,
   SummaryToggle,
