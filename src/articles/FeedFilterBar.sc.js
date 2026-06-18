@@ -28,9 +28,9 @@ export const FilterRow = styled.div`
   }
 `;
 
-// Leftmost circular gear that opens the feed-preferences screen, sized to
-// match the pills next to it.
-export const GearButton = styled.button`
+// Circular icon button sized to match the pills — used for the gear (opens
+// Feed Preferences) and the clear-× (resets the selection back to all).
+export const RoundButton = styled.button`
   display: inline-flex;
   align-items: center;
   justify-content: center;

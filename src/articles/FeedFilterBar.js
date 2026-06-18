@@ -1,14 +1,14 @@
 import { useContext, useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 import SettingsRoundedIcon from "@mui/icons-material/SettingsRounded";
+import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import { APIContext } from "../contexts/APIContext";
 import Tag from "../pages/_pages_shared/Tag.sc";
 import * as s from "./FeedFilterBar.sc";
 
-// Spotify-style filter row for the home feed: a gear that opens Feed
-// Preferences, an always-present "All" pill (the default), then one pill per
-// subscribed topic and one per saved search. Single-select — the parent owns
-// the selection and reloads the feed accordingly.
+// Spotify-style feed filter. With nothing selected the full scrollable list of
+// choosable pills IS the "all" state. Picking one collapses the row to just a
+// clear-× and the selected pill; the × (or tapping the pill) goes back to all.
 //
 // activeFilter shape: { type: "all" }
 //                   | { type: "topic", value: <topic {id, title}> }
@@ -24,45 +24,67 @@ export default function FeedFilterBar({ activeFilter, onSelectFilter }) {
     api.getSubscribedSearchers((data) => setSearches(data || []));
   }, [api]);
 
-  const isAll = activeFilter.type === "all";
-  const isTopic = (topic) => activeFilter.type === "topic" && activeFilter.value.id === topic.id;
-  const isSearch = (search) => activeFilter.type === "search" && activeFilter.value.id === search.id;
+  const clearToAll = () => onSelectFilter({ type: "all" });
 
-  const pillClass = (selected) => (selected ? "small selected" : "small");
+  const gearButton = (
+    <s.RoundButton
+      onClick={() => history.push("/account_settings/interests?fromArticles=1")}
+      title="Customize feed"
+      aria-label="Customize feed"
+    >
+      <SettingsRoundedIcon style={{ fontSize: "1.1rem" }} />
+    </s.RoundButton>
+  );
 
-  return (
-    <s.FilterRow>
-      <s.GearButton
-        onClick={() => history.push("/account_settings/interests?fromArticles=1")}
-        title="Customize feed"
-        aria-label="Customize feed"
-      >
-        <SettingsRoundedIcon style={{ fontSize: "1.1rem" }} />
-      </s.GearButton>
-
-      <Tag className={pillClass(isAll)} onClick={() => onSelectFilter({ type: "all" })}>
-        All
-      </Tag>
-
+  // Default: the choosable pills (topics first, then saved searches).
+  const choosablePills = (
+    <>
       {topics.map((topic) => (
         <Tag
           key={`topic-${topic.id}`}
-          className={pillClass(isTopic(topic))}
+          className="small"
           onClick={() => onSelectFilter({ type: "topic", value: topic })}
         >
           {topic.title}
         </Tag>
       ))}
-
       {searches.map((search) => (
         <Tag
           key={`search-${search.id}`}
-          className={pillClass(isSearch(search))}
+          className="small"
           onClick={() => onSelectFilter({ type: "search", value: search })}
         >
           {search.search}
         </Tag>
       ))}
+    </>
+  );
+
+  // Collapsed: clear-× plus the single active pill (tapping either resets).
+  // Guard the value access — in the "all" state there is no `value`.
+  const selectedLabel =
+    activeFilter.type === "topic"
+      ? activeFilter.value.title
+      : activeFilter.type === "search"
+        ? activeFilter.value.search
+        : null;
+  // × sits after the pill so clearing isn't adjacent to the gear (avoids
+  // accidentally opening settings when reaching for "clear").
+  const selectionView = (
+    <>
+      <Tag className="small selected" onClick={clearToAll}>
+        {selectedLabel}
+      </Tag>
+      <s.RoundButton onClick={clearToAll} title="Show all" aria-label="Clear filter">
+        <CloseRoundedIcon style={{ fontSize: "1.1rem" }} />
+      </s.RoundButton>
+    </>
+  );
+
+  return (
+    <s.FilterRow>
+      {gearButton}
+      {activeFilter.type === "all" ? choosablePills : selectionView}
     </s.FilterRow>
   );
 }
