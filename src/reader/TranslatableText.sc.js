@@ -284,10 +284,7 @@ const TranslatableText = styled.div`
 
   z-tag z-orig {
     width: 100%;
-    /* Past translations read in the normal text color — the dashed underline
-       (on z-orig span) is the only cue, so highlighted words don't compete
-       with the text while reading. */
-    color: inherit;
+    color: var(--mwe-adjacent-color);
     font-weight: 600;
   }
 
