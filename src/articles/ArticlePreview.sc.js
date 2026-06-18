@@ -226,30 +226,31 @@ const ImageWithOverlay = styled.div`
 `;
 
 // Image-less cards drop the photo region entirely (an empty box reads as
-// "broken"), so the Save toggle relocates inline to the end of the title
-// row. No photo to scrim against — a plain muted glyph, not a dark circle.
-const SaveInlineButton = styled.button`
-  flex: 0 0 auto;
+// "broken"). The Open overlay and Save toggle that used to live on the
+// photo regroup into a single left-aligned action row under the summary.
+const SummaryActionRow = styled.div`
   display: flex;
   align-items: center;
-  justify-content: center;
-  width: 2em;
-  height: 2em;
+  gap: 1.2em;
+  margin-top: 0.6em;
+`;
+
+// Save toggle as a labelled inline action (icon + "Save"/"Saved"), sized
+// to match the adjacent "Open" link rather than scrimmed over a photo.
+const SaveActionButton = styled.button`
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3em;
   background: none;
   border: none;
-  color: var(--text-muted);
-  cursor: pointer;
   padding: 0;
+  cursor: pointer;
+  color: var(--text-muted);
+  font: inherit;
+  font-weight: 500;
   &:active {
     color: var(--text-primary);
   }
-`;
-
-// The other half of the dropped image region: without a photo there's no
-// "Open" overlay to tap, so a quiet text affordance sits under the summary.
-const SummaryOpenRow = styled.div`
-  margin-top: 0.6em;
-  text-align: right;
 `;
 
 // Subtle bottom gradient + "Open" label so the image visibly reads as
@@ -345,8 +346,8 @@ export {
   BottomContainer,
   Summary,
   ImageWithOverlay,
-  SaveInlineButton,
-  SummaryOpenRow,
+  SummaryActionRow,
+  SaveActionButton,
   ImageOpenOverlay,
   ClampedSummary,
   SummaryToggle,

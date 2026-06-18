@@ -349,21 +349,6 @@ export default function ArticlePreview({
             the empty circle just wastes title width. Keep it for saved-list
             surfaces (teacher OwnArticles uses inSavedView). */}
         {inSavedView && <ReadingCompletionProgress last_reading_percentage={article.reading_completion} />}
-        {/* Image-less cards have no photo to overlay the Save toggle on, so
-            it lives inline at the end of the title row instead. */}
-        {!hasImage && !isHiddenView && (
-          <s.SaveInlineButton
-            type="button"
-            onClick={handleToggleSave}
-            aria-label={isArticleSaved ? "Remove from saves" : "Save"}
-          >
-            {isArticleSaved ? (
-              <BookmarkRoundedIcon style={{ fontSize: 20 }} />
-            ) : (
-              <BookmarkBorderRoundedIcon style={{ fontSize: 20 }} />
-            )}
-          </s.SaveInlineButton>
-        )}
       </s.TitleContainer>
 
       {/* Single quiet metadata strip under the title: CEFR · Simplified ·
@@ -445,9 +430,27 @@ export default function ArticlePreview({
                     )}
                   </>
                 )}
-                {/* Image-less cards dropped the photo region (and its Open
-                    overlay), so carry an explicit Open affordance here. */}
-                {!hasImage && <s.SummaryOpenRow>{openTextLink}</s.SummaryOpenRow>}
+                {/* Image-less cards dropped the photo region, so its Save +
+                    Open controls regroup into one action row here. */}
+                {!hasImage && (
+                  <s.SummaryActionRow>
+                    {!isHiddenView && (
+                      <s.SaveActionButton
+                        type="button"
+                        onClick={handleToggleSave}
+                        aria-label={isArticleSaved ? "Remove from saves" : "Save"}
+                      >
+                        {isArticleSaved ? (
+                          <BookmarkRoundedIcon style={{ fontSize: 18 }} />
+                        ) : (
+                          <BookmarkBorderRoundedIcon style={{ fontSize: 18 }} />
+                        )}
+                        {isArticleSaved ? "Saved" : "Save"}
+                      </s.SaveActionButton>
+                    )}
+                    {openTextLink}
+                  </s.SummaryActionRow>
+                )}
                 {/* Bottom action row only used as a fallback: the Hidden
                   surface needs Unhide. */}
                 {isHiddenView && (
