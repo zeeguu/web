@@ -35,6 +35,10 @@ export default function ArticleListBrowser({ content, searchQuery, searchPublish
     doNotShowRedirectionModal_LocalStorage,
   );
   const [reloadingSearchArticles, setReloadingSearchArticles] = useState(false);
+  // Recommended-feed (re)load in progress — e.g. after tapping a topic pill.
+  // Lets us drop the old articles and show the loader immediately for instant
+  // feedback, rather than leaving the previous topic's list on screen.
+  const [feedLoading, setFeedLoading] = useState(false);
 
   const searchPublishPriorityRef = useShadowRef(searchPublishPriority);
   const searchDifficultyPriorityRef = useShadowRef(searchDifficultyPriority);
@@ -149,6 +153,7 @@ export default function ArticleListBrowser({ content, searchQuery, searchPublish
       // as a filter.
       if (searchQuery) {
         setTitle(strings.titleSearch + ` '${searchQuery}'`);
+        setFeedLoading(false);
         setReloadingSearchArticles(true);
         api.search(
           searchQuery,
@@ -173,14 +178,18 @@ export default function ArticleListBrowser({ content, searchQuery, searchPublish
         );
       } else {
         setTitle(strings.titleHome);
-        // Clear any leftover search-loading state when leaving a search pill.
+        // Clear any leftover search-loading state when leaving a search pill,
+        // and show the loader straight away (dropping the previous list) for
+        // instant feedback on a topic switch.
         setReloadingSearchArticles(false);
+        setFeedLoading(true);
         const options = activeFilter.type === "topic" ? { topic: activeFilter.value.title } : {};
         api.getUserArticles((articles) => {
           if (isStale()) return resolve();
           setArticlesAndVideosList(articles);
           setOriginalList([...articles]);
           setAreVideosAvailable(articles.some((e) => e.video));
+          setFeedLoading(false);
           resolve();
         }, options);
       }
@@ -223,8 +232,10 @@ export default function ArticleListBrowser({ content, searchQuery, searchPublish
   };
 
   return (
-    <PullToRefresh onRefresh={refreshFromNetwork} pullingContent="">
-      <>
+    <>
+      {/* The topic pills stay pinned above the refresh area, so pulling down
+          shows the loading indicator below the pills (near the articles),
+          not above them. */}
       {!searchQuery && (
         <>
           <FeedFilterBar activeFilter={activeFilter} onSelectFilter={setActiveFilter} />
@@ -249,6 +260,8 @@ export default function ArticleListBrowser({ content, searchQuery, searchPublish
         </>
       )}
 
+      <PullToRefresh onRefresh={refreshFromNetwork} pullingContent="">
+        <>
       {searchQuery && (
         <s.SearchHolder>
           <SearchField query={searchQuery} />
@@ -257,8 +270,9 @@ export default function ArticleListBrowser({ content, searchQuery, searchPublish
 
       {/* This is where the content of the Search component will be rendered */}
       {content}
-      {reloadingSearchArticles && <LoadingAnimation></LoadingAnimation>}
+      {(reloadingSearchArticles || feedLoading) && <LoadingAnimation></LoadingAnimation>}
       {!reloadingSearchArticles &&
+        !feedLoading &&
         articlesAndVideosList.map((each, index) =>
           each.video ? (
             <VideoPreview key={each.id} video={each} notifyVideoClick={() => handleVideoClick(each.source_id, index)} />
@@ -274,7 +288,7 @@ export default function ArticleListBrowser({ content, searchQuery, searchPublish
             />
           ),
         )}
-      {!reloadingSearchArticles && articlesAndVideosList.length === 0 && (
+      {!reloadingSearchArticles && !feedLoading && articlesAndVideosList.length === 0 && (
         <div style={{ textAlign: "center", marginTop: "1rem" }}>
           <p>No results were found for this query.</p>
         </div>
@@ -300,7 +314,8 @@ export default function ArticleListBrowser({ content, searchQuery, searchPublish
           There are no more results.
         </div>
       )}
-      </>
-    </PullToRefresh>
+        </>
+      </PullToRefresh>
+    </>
   );
 }
