@@ -47,8 +47,18 @@ export default function ArticleListBrowser({ content, searchQuery, searchPublish
   // { type: "all" } | { type: "topic", value } | { type: "search", value }.
   // A ref mirror is needed because getNewArticlesForPage is captured once by
   // the pagination hook and would otherwise see a stale filter.
-  const [activeFilter, setActiveFilter] = useState({ type: "all" });
+  // Restore the last-picked topic so the choice survives navigating away/back.
+  const [activeFilter, setActiveFilter] = useState(() => {
+    const savedTopic = LocalStorage.getSelectedFeedTopic();
+    return savedTopic ? { type: "topic", value: savedTopic } : { type: "all" };
+  });
   const activeFilterRef = useShadowRef(activeFilter);
+
+  // Persist topic selections (clear on "all") and update state.
+  function selectFilter(filter) {
+    LocalStorage.setSelectedFeedTopic(filter.type === "topic" ? filter.value : null);
+    setActiveFilter(filter);
+  }
 
   // Each loadArticles() call claims a token; only the latest applies its
   // results. Without this, switching pills fast lets a slower earlier response
@@ -238,7 +248,7 @@ export default function ArticleListBrowser({ content, searchQuery, searchPublish
           not above them. */}
       {!searchQuery && (
         <>
-          <FeedFilterBar activeFilter={activeFilter} onSelectFilter={setActiveFilter} />
+          <FeedFilterBar activeFilter={activeFilter} onSelectFilter={selectFilter} />
           {areVideosAvailable && (
             <s.SortHolder
               style={{
