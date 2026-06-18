@@ -49,7 +49,7 @@ export default function ArticlesRouter({ hasExtension, isChrome }) {
   const isHomeScreen = location.pathname === "/articles";
 
   const iconStyle = { display: "inline-flex", alignItems: "center", padding: "0.4em 0.25em", verticalAlign: "middle" };
-  const iconProps = { style: { fontSize: "1.86rem", verticalAlign: "middle" } };
+  const iconProps = { style: { fontSize: "2.1rem", verticalAlign: "middle" } };
 
   const homeIcon = (
     <s.IconSpan style={{ verticalAlign: "middle" }}>

@@ -42,7 +42,7 @@ const TopTabs = styled.div`
   .all__tabs--compact {
     min-height: auto;
     padding: 0 0.75rem;
-    gap: 0.4em;
+    gap: 1.25em;
     font-size: 0.9em;
   }
 
@@ -121,7 +121,7 @@ const TopTabs = styled.div`
   }
 
   .headmenuTab.icon-active svg {
-    color: var(--onboarding-btn-bg);
+    color: ${zeeguuOrange};
   }
 
   .tab-separator {
