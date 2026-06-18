@@ -225,30 +225,31 @@ const ImageWithOverlay = styled.div`
   }
 `;
 
-// Stand-in banner for image-less articles: occupies the same slot as a
-// real photo so every card keeps its image region — and, crucially, the
-// Open + Save overlays that live on top of it. A vague, topic-matched
-// glyph (see topicIcon.js) on a muted surface, deliberately understated.
-// Dimensions mirror the img rules in ArticleContent so the overlays line
-// up identically.
-const PlaceholderImage = styled.div`
+// Image-less cards drop the photo region entirely (an empty box reads as
+// "broken"), so the Save toggle relocates inline to the end of the title
+// row. No photo to scrim against — a plain muted glyph, not a dark circle.
+const SaveInlineButton = styled.button`
+  flex: 0 0 auto;
   display: flex;
   align-items: center;
   justify-content: center;
+  width: 2em;
+  height: 2em;
+  background: none;
+  border: none;
+  color: var(--text-muted);
   cursor: pointer;
-  background: var(--bg-tertiary);
-  color: var(--text-faint);
-  border-radius: 1em;
-  margin: 1em 0.5em 0 0.5em;
-  width: 16em;
-  height: 12em;
-  align-self: flex-start;
-
-  @media (max-width: 990px) {
-    width: 100%;
-    height: 13em;
-    margin: 0.5rem 0;
+  padding: 0;
+  &:active {
+    color: var(--text-primary);
   }
+`;
+
+// The other half of the dropped image region: without a photo there's no
+// "Open" overlay to tap, so a quiet text affordance sits under the summary.
+const SummaryOpenRow = styled.div`
+  margin-top: 0.6em;
+  text-align: right;
 `;
 
 // Subtle bottom gradient + "Open" label so the image visibly reads as
@@ -344,7 +345,8 @@ export {
   BottomContainer,
   Summary,
   ImageWithOverlay,
-  PlaceholderImage,
+  SaveInlineButton,
+  SummaryOpenRow,
   ImageOpenOverlay,
   ClampedSummary,
   SummaryToggle,
