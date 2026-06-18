@@ -72,19 +72,8 @@ export default function ArticleListBrowser({ content, searchQuery, searchPublish
       return;
     }
     const filter = activeFilterRef.current;
-    if (filter.type === "search") {
-      api.searchMore(
-        filter.value.search,
-        pageNumber,
-        searchPublishPriorityRef.current,
-        searchDifficultyPriorityRef.current,
-        handleArticleInsertion,
-        (error) => {},
-      );
-    } else {
-      const options = filter.type === "topic" ? { topic: filter.value.title } : {};
-      api.getMoreUserArticles(20, pageNumber, handleArticleInsertion, options);
-    }
+    const options = filter.type === "topic" ? { topic: filter.value.title } : {};
+    api.getMoreUserArticles(20, pageNumber, handleArticleInsertion, options);
   }
 
   function updateOnPagination(newUpdatedList) {
@@ -155,16 +144,14 @@ export default function ArticleListBrowser({ content, searchQuery, searchPublish
       const isStale = () => myToken !== loadTokenRef.current;
       resetPagination();
       setSearchError(false);
-      // A saved-search pill loads through the same search endpoint as an
-      // external (/search route) query. Topic pills and "All" go through the
-      // recommended feed, with topic passed as a filter.
-      const searchTerm =
-        searchQuery || (activeFilter.type === "search" ? activeFilter.value.search : null);
-      if (searchTerm) {
-        setTitle(strings.titleSearch + ` '${searchTerm}'`);
+      // The external /search route drives the search endpoint; the home-feed
+      // pills (topic / all) go through the recommended feed, with topic passed
+      // as a filter.
+      if (searchQuery) {
+        setTitle(strings.titleSearch + ` '${searchQuery}'`);
         setReloadingSearchArticles(true);
         api.search(
-          searchTerm,
+          searchQuery,
           searchPublishPriority,
           searchDifficultyPriority,
           (articles) => {

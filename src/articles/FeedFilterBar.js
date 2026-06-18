@@ -7,21 +7,18 @@ import Tag from "../pages/_pages_shared/Tag.sc";
 import * as s from "./FeedFilterBar.sc";
 
 // Spotify-style feed filter. With nothing selected the full scrollable list of
-// choosable pills IS the "all" state. Picking one collapses the row to just a
-// clear-× and the selected pill; the × (or tapping the pill) goes back to all.
+// subscribed-topic pills IS the "all" state. Picking one collapses the row to
+// the selected pill plus a clear-×; the × (or tapping the pill) goes back to all.
 //
 // activeFilter shape: { type: "all" }
 //                   | { type: "topic", value: <topic {id, title}> }
-//                   | { type: "search", value: <search {id, search}> }
 export default function FeedFilterBar({ activeFilter, onSelectFilter }) {
   const api = useContext(APIContext);
   const history = useHistory();
   const [topics, setTopics] = useState([]);
-  const [searches, setSearches] = useState([]);
 
   useEffect(() => {
     api.getSubscribedTopics((data) => setTopics(data || []));
-    api.getSubscribedSearchers((data) => setSearches(data || []));
   }, [api]);
 
   const clearToAll = () => onSelectFilter({ type: "all" });
@@ -36,38 +33,20 @@ export default function FeedFilterBar({ activeFilter, onSelectFilter }) {
     </s.RoundButton>
   );
 
-  // Default: the choosable pills (topics first, then saved searches).
-  const choosablePills = (
-    <>
-      {topics.map((topic) => (
-        <Tag
-          key={`topic-${topic.id}`}
-          className="small"
-          onClick={() => onSelectFilter({ type: "topic", value: topic })}
-        >
-          {topic.title}
-        </Tag>
-      ))}
-      {searches.map((search) => (
-        <Tag
-          key={`search-${search.id}`}
-          className="small"
-          onClick={() => onSelectFilter({ type: "search", value: search })}
-        >
-          {search.search}
-        </Tag>
-      ))}
-    </>
-  );
+  // Default: one pill per subscribed topic.
+  const choosablePills = topics.map((topic) => (
+    <Tag
+      key={`topic-${topic.id}`}
+      className="small"
+      onClick={() => onSelectFilter({ type: "topic", value: topic })}
+    >
+      {topic.title}
+    </Tag>
+  ));
 
-  // Collapsed: clear-× plus the single active pill (tapping either resets).
+  // Collapsed: the selected pill plus a clear-× (tapping either resets).
   // Guard the value access — in the "all" state there is no `value`.
-  const selectedLabel =
-    activeFilter.type === "topic"
-      ? activeFilter.value.title
-      : activeFilter.type === "search"
-        ? activeFilter.value.search
-        : null;
+  const selectedLabel = activeFilter.type === "topic" ? activeFilter.value.title : null;
   // × sits after the pill so clearing isn't adjacent to the gear (avoids
   // accidentally opening settings when reaching for "clear").
   const selectionView = (
