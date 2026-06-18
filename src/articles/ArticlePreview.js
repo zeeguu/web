@@ -371,7 +371,12 @@ export default function ArticlePreview({
         {article.parent_article_id && <MetaTag>Simplified</MetaTag>}
         {savedTag}
         <MetaItem>
-          <MetaLink href={article.parent_url || article.url} target="_blank" rel="noopener noreferrer">
+          <MetaLink
+            className="muted"
+            href={article.parent_url || article.url}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
             {articleSourceLabel(article)}
           </MetaLink>
         </MetaItem>
