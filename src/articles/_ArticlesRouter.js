@@ -3,7 +3,7 @@ import ArticleListBrowser from "./ArticleListBrowser";
 import BookmarkedArticles from "./BookmarkedArticles";
 import HiddenArticles from "../myArticles/HiddenArticles";
 
-import { useHistory, useLocation } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import { PrivateRoute } from "../PrivateRoute";
 import { Redirect } from "react-router-dom";
 import ClassroomArticles from "./ClassroomArticles";
@@ -33,7 +33,6 @@ const READ_TAB_PATHS = ["/articles", "/articles/mySearches", "/articles/bookmark
 
 export default function ArticlesRouter({ hasExtension, isChrome }) {
   const api = useContext(APIContext);
-  const history = useHistory();
   const location = useLocation();
   const { userDetails } = useContext(UserContext);
   const { getBrowsingSessionId } = useBrowsingSession();
@@ -50,7 +49,7 @@ export default function ArticlesRouter({ hasExtension, isChrome }) {
   const isHomeScreen = location.pathname === "/articles";
 
   const iconStyle = { display: "inline-flex", alignItems: "center", padding: "0.4em 0.25em", verticalAlign: "middle" };
-  const iconProps = { style: { fontSize: "1.55rem", verticalAlign: "middle" } };
+  const iconProps = { style: { fontSize: "1.86rem", verticalAlign: "middle" } };
 
   const homeIcon = (
     <s.IconSpan style={{ verticalAlign: "middle" }}>
@@ -92,17 +91,7 @@ export default function ArticlesRouter({ hasExtension, isChrome }) {
     <BrowsingSessionContext.Provider value={getBrowsingSessionId}>
       {/* Rendering top menu first, then routing to corresponding page */}
       <columnS.NarrowColumn>
-        <TopTabs title={strings.articles} tabsAndLinks={tabs} hasBackground={true} isCompact={true} />
-
-        {isHomeScreen && (
-          <s.FilterButtonContainer>
-            <s.FilterButton onClick={() => history.push("/account_settings/interests")} title="Feed Preferences">
-              <img src="/static/icons/Tune.svg" alt="Filter" />
-            </s.FilterButton>
-          </s.FilterButtonContainer>
-        )}
-
-        {isHomeScreen && <s.FilterDivider />}
+        <TopTabs title={strings.articles} tabsAndLinks={tabs} hasBackground={false} isCompact={true} />
 
         <s.ContentContainer>
           {hideRecommendations ? (

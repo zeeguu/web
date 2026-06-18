@@ -29,7 +29,11 @@ export default function TopTabs({ title, tabsAndLinks, hasBackground = false, is
                 isActive={tab.isActive}
                 onClick={tab.onClick}
               />
-              {!hasBackground && index < tabsArray.length - 1 && <span className="tab-separator">|</span>}
+              {/* Separators only make sense between text labels — never around
+                  icon tabs (whose `text` is a JSX element, not a string). */}
+              {!hasBackground && typeof tab.text === "string" && index < tabsArray.length - 1 && (
+                <span className="tab-separator">|</span>
+              )}
             </div>
           ))}
         </div>
