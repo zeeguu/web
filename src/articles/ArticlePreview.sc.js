@@ -233,6 +233,10 @@ const SummaryActionRow = styled.div`
   align-items: center;
   gap: 1.2em;
   margin-top: 0.6em;
+  /* Fixed action size (the parent Summary is a large 1.3em); both children
+     inherit this so Save and Open match instead of falling back to their
+     button/anchor defaults. */
+  font-size: 0.95rem;
 `;
 
 // Save toggle as a labelled inline action (icon + "Save"/"Saved"), sized

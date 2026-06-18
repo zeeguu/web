@@ -264,12 +264,14 @@ export default function ArticlePreview({
   const openTextLink = navWrap(
     <>
       Open
-      {!should_open_in_zeeguu && <OpenInNewRoundedIcon style={{ fontSize: 18, marginLeft: 4 }} />}
+      {!should_open_in_zeeguu && <OpenInNewRoundedIcon style={{ fontSize: 16, marginLeft: 4 }} />}
     </>,
     {
       display: "inline-flex",
       alignItems: "center",
       color: "var(--text-muted)",
+      fontSize: "inherit",
+      fontFamily: "inherit",
       fontWeight: 500,
       textDecoration: "none",
     },
@@ -441,9 +443,9 @@ export default function ArticlePreview({
                         aria-label={isArticleSaved ? "Remove from saves" : "Save"}
                       >
                         {isArticleSaved ? (
-                          <BookmarkRoundedIcon style={{ fontSize: 18 }} />
+                          <BookmarkRoundedIcon style={{ fontSize: 16 }} />
                         ) : (
-                          <BookmarkBorderRoundedIcon style={{ fontSize: 18 }} />
+                          <BookmarkBorderRoundedIcon style={{ fontSize: 16 }} />
                         )}
                         {isArticleSaved ? "Saved" : "Save"}
                       </s.SaveActionButton>
