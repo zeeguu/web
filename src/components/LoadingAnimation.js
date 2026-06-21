@@ -128,6 +128,23 @@ function diagnoseMessage(netResult, serverResult, tick) {
   return prefix ? `${prefix} ${suffix}` : suffix;
 }
 
+// Caption above the wait-game. By the time the drill surfaces the probes have
+// resolved (on a hard offline they're set instantly from navigator.onLine), so
+// when we already know the connection is down or slow, say so plainly — the
+// neutral "While waiting…" reads as fake when nothing is actually loading.
+function drillCaption(netResult, serverResult, langName) {
+  const subject = langName || "vocabulary";
+  // Offline state is stated by the primary "You're offline" headline, so the
+  // caption here is just the invitation — no need to repeat "no connection".
+  if (netResult === "failed" && serverResult === "failed") {
+    return `While you wait, let's practice some ${subject}!`;
+  }
+  if (netResult === "failed" || netResult === "slow") {
+    return `Your connection seems slow — while you wait, let's practice some ${subject}!`;
+  }
+  return `While waiting, let's practice some ${subject}!`;
+}
+
 export default function LoadingAnimation({
   specificStyle,
   delay = 1000,
@@ -237,6 +254,11 @@ export default function LoadingAnimation({
     // eslint-disable-next-line
   }, []);
 
+  // Once both probes have failed we've concluded there's no connection, so
+  // nothing is actually loading — a spinning loader would be dishonest. Hide it
+  // and let the offline message + wait-game stand on their own.
+  const knownOffline = netProbe === "failed" && serverProbe === "failed";
+
   const spinnerVariant = showDrill
     ? "muted"
     : isTeacherWebsite
@@ -259,15 +281,29 @@ export default function LoadingAnimation({
       />
       {showLoadingScreen && (
         <s.LoadingContainer style={specificStyle}>
-          <s.LoadingAnimation style={spinnerStyle}>
-            <div className={`lds-ellipsis ${spinnerVariant}`}>
-              <div></div>
-              <div></div>
-              <div></div>
-              <div></div>
-            </div>
-          </s.LoadingAnimation>
-          {showDiagnostic && (
+          {/* Primary status reads first, then the spinner confirms it's
+              working, then the diagnostic line and the wait-game caption it
+              introduces. Once we've concluded we're offline there's nothing to
+              wait for, so state that plainly here instead of the caller's
+              "loading…" message (a lie when nothing is in flight) — and the
+              spinner below is dropped too. */}
+          {knownOffline ? <p>You're offline</p> : children}
+          {!knownOffline && (
+            <s.LoadingAnimation style={spinnerStyle}>
+              <div className={`lds-ellipsis ${spinnerVariant}`}>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+              </div>
+            </s.LoadingAnimation>
+          )}
+          {/* The drill caption must ride with the drill, not the connection
+              diagnostic: hard-offline surfaces the drill at delay+200ms while
+              showDiagnostic only flips at delay+3000ms, so gating the caption on
+              showDiagnostic alone made the game card appear ~3s before its
+              caption. Show the caption as soon as either is up. */}
+          {(showDrill || showDiagnostic) && (
             <div
               style={{
                 color: "#888",
@@ -278,7 +314,7 @@ export default function LoadingAnimation({
               }}
             >
               {showDrill
-                ? `While waiting, let's practice some ${langName || "vocabulary"}!`
+                ? drillCaption(netProbe, serverProbe, langName)
                 : diagnoseMessage(netProbe, serverProbe, reassuranceTick)}
             </div>
           )}
@@ -296,7 +332,6 @@ export default function LoadingAnimation({
               Report Issue
             </StyledGreyButton>
           )}
-          {children}
         </s.LoadingContainer>
       )}
     </>
