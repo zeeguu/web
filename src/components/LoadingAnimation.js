@@ -9,6 +9,7 @@ import { API_ENDPOINT } from "../appConstants";
 import LocalStorage from "../assorted/LocalStorage";
 import { isDrillVocabEmpty } from "../assorted/drillCache";
 import WaitDrill from "./WaitDrill";
+import { useIsOffline } from "../contexts/ConnectivityContext";
 
 /*
  * Long-wait diagnosis: probe the network and the server in parallel so we
@@ -161,6 +162,7 @@ export default function LoadingAnimation({
   const [showDrill, setShowDrill] = useState(false);
   const [showFeedbackModal, setShowFeedbackModal] = useState(false);
   const [isTeacherWebsite] = useState(isInTeacherWebsite());
+  const isOffline = useIsOffline();
 
   useEffect(() => {
     // Code from: https://stackoverflow.com/questions/53090432/react-hooks-right-way-to-clear-timeouts-and-intervals
@@ -254,10 +256,12 @@ export default function LoadingAnimation({
     // eslint-disable-next-line
   }, []);
 
-  // Once both probes have failed we've concluded there's no connection, so
-  // nothing is actually loading — a spinning loader would be dishonest. Hide it
-  // and let the offline message + wait-game stand on their own.
-  const knownOffline = netProbe === "failed" && serverProbe === "failed";
+  // Offline state comes from the shared connectivity source (continuous, so it
+  // often knows before this screen's delayed probes run). When there's no
+  // connection nothing is actually loading, so a spinning loader would be
+  // dishonest — hide it and let the offline message + wait-game stand on their
+  // own. The probes below still run, but only to grade slow vs server-trouble.
+  const knownOffline = isOffline;
 
   const spinnerVariant = showDrill
     ? "muted"

@@ -1,7 +1,7 @@
 import * as s from "./TopTabs.sc";
 import { TopTab } from "./TopTab";
 import useScrollDirection from "../hooks/useScrollDirection";
-import useIsOffline from "../hooks/useIsOffline";
+import { useIsOffline } from "../contexts/ConnectivityContext";
 
 // Renders a title and the corresponding tabs links
 export default function TopTabs({ title, tabsAndLinks, hasBackground = false, isCompact = false }) {

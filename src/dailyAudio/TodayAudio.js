@@ -8,6 +8,7 @@ import { UserContext } from "../contexts/UserContext";
 import LoadingAnimation from "../components/LoadingAnimation";
 import useListeningSession from "../hooks/useListeningSession";
 import useDailyLessonPreference from "../hooks/useDailyLessonPreference";
+import { useIsOffline } from "../contexts/ConnectivityContext";
 import { AUDIO_STATUS, GENERATION_PROGRESS } from "./AudioLessonConstants";
 import TodayEpisodeCard from "./TodayEpisodeCard";
 import DailyLessonSettingsDialog from "./DailyLessonSettingsDialog";
@@ -448,47 +449,16 @@ export default function TodayAudio() {
     loadToday();
   }, [loadToday]);
 
-  // While a connection error is up, the loading screen shows the offline
-  // wait-game. Re-load the moment connectivity returns — browser `online`
-  // event, tab refocus, or native app resume — plus a periodic fallback for
-  // slow/flaky links where `online` never fires. Success clears the error.
+  // Connectivity detection (web events + native OS change + a probe poll +
+  // tab/app resume) lives in useIsOffline — no listeners reimplemented here.
+  // When it flips back online while today's load is still failed, retry it.
+  const isOffline = useIsOffline();
+  const wasOffline = useRef(isOffline);
   useEffect(() => {
-    if (!connectionError) return;
-
-    const retry = () => loadToday();
-
-    window.addEventListener("online", retry);
-    const onVisible = () => {
-      if (!document.hidden) retry();
-    };
-    document.addEventListener("visibilitychange", onVisible);
-    const retryInterval = setInterval(retry, 5000);
-
-    let appStateHandle = null;
-    let cancelled = false;
-    if (Capacitor.getPlatform() !== "web" && Capacitor.isPluginAvailable("App")) {
-      (async () => {
-        try {
-          const { App } = await import("@capacitor/app");
-          const handle = await App.addListener("appStateChange", ({ isActive }) => {
-            if (isActive) retry();
-          });
-          if (cancelled) handle.remove();
-          else appStateHandle = handle;
-        } catch {
-          // Best-effort — the interval fallback still drives retries
-        }
-      })();
-    }
-
-    return () => {
-      window.removeEventListener("online", retry);
-      document.removeEventListener("visibilitychange", onVisible);
-      clearInterval(retryInterval);
-      cancelled = true;
-      if (appStateHandle) appStateHandle.remove();
-    };
-  }, [connectionError, loadToday]);
+    const cameOnline = wasOffline.current && !isOffline;
+    wasOffline.current = isOffline;
+    if (cameOnline && connectionError) loadToday();
+  }, [isOffline, connectionError, loadToday]);
 
   // Seed the dialog with the saved preference; if none is stored yet (e.g. a
   // lesson generated before preferences existed), fall back to today's lesson

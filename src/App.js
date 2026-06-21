@@ -10,6 +10,7 @@ import { isDrillVocabEmpty, pushDrillVocab } from "./assorted/drillCache";
 import { APIContext } from "./contexts/APIContext";
 import Zeeguu_API, { ServerUnavailableError } from "./api/Zeeguu_API";
 import { ProgressProvider } from "./contexts/ProgressContext";
+import { ConnectivityProvider } from "./contexts/ConnectivityContext";
 import useUILanguage from "./assorted/hooks/uiLanguageHook";
 
 import ZeeguuSpeech from "./speech/APIBasedSpeech";
@@ -392,6 +393,7 @@ function App() {
   }
 
   return (
+    <ConnectivityProvider>
     <ThemeContext.Provider value={themeValue}>
       <SystemLanguagesContext.Provider value={{ systemLanguages, sortedSystemLanguages }}>
         <SpeechContext.Provider value={zeeguuSpeech}>
@@ -443,6 +445,7 @@ function App() {
         </SpeechContext.Provider>
       </SystemLanguagesContext.Provider>
     </ThemeContext.Provider>
+    </ConnectivityProvider>
   );
 }
 
