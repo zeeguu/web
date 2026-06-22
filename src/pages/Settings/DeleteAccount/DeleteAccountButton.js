@@ -1,14 +1,14 @@
 import { useState } from "react";
-import Modal from "../../components/modal_shared/Modal";
-import Header from "../../components/modal_shared/Header.sc";
-import Heading from "../../components/modal_shared/Heading.sc";
-import Main from "../../components/modal_shared/Main.sc";
-import Footer from "../../components/modal_shared/Footer.sc";
-import ButtonContainer from "../../components/modal_shared/ButtonContainer.sc";
-import * as s from "../../components/FormPage.sc";
-import redirect from "../../utils/routing/routing";
-import SessionStorage from "../../assorted/SessionStorage.js";
-import Button from "../_pages_shared/Button.sc";
+import Modal from "../../../components/modal_shared/Modal";
+import Header from "../../../components/modal_shared/Header.sc";
+import Heading from "../../../components/modal_shared/Heading.sc";
+import Main from "../../../components/modal_shared/Main.sc";
+import Footer from "../../../components/modal_shared/Footer.sc";
+import ButtonContainer from "../../../components/modal_shared/ButtonContainer.sc";
+import * as s from "../../../components/FormPage.sc";
+import redirect from "../../../utils/routing/routing";
+import SessionStorage from "../../../assorted/SessionStorage.js";
+import Button from "../../_pages_shared/Button.sc";
 
 export default function DeleteAccountButton() {
   const [showConfirmationModal, setShowConfirmationModal] = useState(false);
@@ -41,8 +41,8 @@ export default function DeleteAccountButton() {
         </Header>
         <Main>
           <p>
-            This will delete all the data associated with your account. Texts
-            you might have added will not be associated with your user anymore.
+            This will delete all the data associated with your account. Texts you might have added will not be
+            associated with your user anymore.
           </p>
           <p style={{ textAlign: "center" }}>
             If you need to contact us, please reach us at

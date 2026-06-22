@@ -1,15 +1,15 @@
 import { useEffect, useState, useContext } from "react";
-import { UserContext } from "../../contexts/UserContext";
-import CardPage from "../_pages_shared/CardPage";
-import Header from "../_pages_shared/Header";
-import Heading from "../_pages_shared/Heading.sc";
-import Main from "../_pages_shared/Main.sc";
-import Footer from "../_pages_shared/Footer.sc";
-import LoadingAnimation from "../../components/LoadingAnimation";
-import redirect from "../../utils/routing/routing";
-import SessionStorage from "../../assorted/SessionStorage";
-import { APP_DOMAIN } from "../../appConstants";
-import { APIContext } from "../../contexts/APIContext";
+import { UserContext } from "../../../contexts/UserContext";
+import CardPage from "../../_pages_shared/CardPage";
+import Header from "../../_pages_shared/Header";
+import Heading from "../../_pages_shared/Heading.sc";
+import Main from "../../_pages_shared/Main.sc";
+import Footer from "../../_pages_shared/Footer.sc";
+import LoadingAnimation from "../../../components/LoadingAnimation";
+import redirect from "../../../utils/routing/routing";
+import SessionStorage from "../../../assorted/SessionStorage";
+import { APP_DOMAIN } from "../../../appConstants";
+import { APIContext } from "../../../contexts/APIContext";
 import { Capacitor } from "@capacitor/core";
 
 const isCapacitor = () => {

@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import DeleteAccountButton from "../../DeleteAccount/DeleteAccountButton";
+import DeleteAccountButton from "../DeleteAccount/DeleteAccountButton";
 import CardPage from "../../_pages_shared/CardPage";
 import Main from "../../_pages_shared/Main.sc";
 import SettingsPageHeader from "../SharedComponents/SettingsPageHeader";
