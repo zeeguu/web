@@ -19,7 +19,6 @@ import TopToolbar from "./TopToolbar";
 import ReviewVocabularyInfoBox from "./ReviewVocabularyInfoBox";
 import ArticleAuthors from "./ArticleAuthors";
 import useShadowRef from "../hooks/useShadowRef";
-import useSwipeBack from "../hooks/useSwipeBack";
 import { isSimplifiedArticle as isSimplifiedArticleFn } from "../utils/misc/articleHelpers";
 import useScrollTracking from "../hooks/useScrollTracking";
 import useReadingSession from "../hooks/useReadingSession";
@@ -64,8 +63,9 @@ export default function ArticleReader({ teacherArticleID }) {
   // Simplified articles live in the user's saves — back-gesture them to
   // My Articles regardless of how they got here (direct, or via
   // Discover→Simplify where history.replace clobbered the entry point).
+  // Threaded into TopToolbar's BackArrow, which owns the swipe-back gesture.
   const isSimplified = articleInfo && isSimplifiedArticleFn(articleInfo);
-  useSwipeBack({ targetPath: isSimplified ? "/articles/bookmarked" : null });
+  const swipeBackTargetPath = isSimplified ? "/articles/bookmarked" : null;
   const [loadingProgress, setLoadingProgress] = useState(null);
   const [showSlowLoadingHint, setShowSlowLoadingHint] = useState(false);
 
@@ -433,6 +433,7 @@ export default function ArticleReader({ teacherArticleID }) {
           ) : null
         }
         reportBroken={<ReportBroken UMR_SOURCE={WEB_READER} history={history} articleID={articleID} />}
+        swipeBackTargetPath={swipeBackTargetPath}
       />
 
       <s.ArticleReader style={{ fontSize: `${readerFontSize}px` }}>

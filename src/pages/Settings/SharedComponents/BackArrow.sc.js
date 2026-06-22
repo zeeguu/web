@@ -4,12 +4,12 @@ const BackArrow = styled.button`
   display: flex;
   align-items: center;
   justify-content: flex-start;
-  align-self: flex-start;
+  align-self: center;
   cursor: pointer;
-  color: var(--text-muted);
+  color: var(--text-secondary);
   background: none;
   border: none;
-  padding: 0.5rem;
+  padding: 0;
   margin: 0;
   &:hover {
     color: var(--text-secondary);

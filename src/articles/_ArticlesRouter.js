@@ -3,8 +3,9 @@ import ArticleListBrowser from "./ArticleListBrowser";
 import BookmarkedArticles from "./BookmarkedArticles";
 import HiddenArticles from "../myArticles/HiddenArticles";
 
-import { Redirect, useLocation } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import { PrivateRoute } from "../PrivateRoute";
+import { Redirect } from "react-router-dom";
 import ClassroomArticles from "./ClassroomArticles";
 import TopTabs from "../components/TopTabs";
 import strings from "../i18n/definitions";
@@ -14,28 +15,27 @@ import ReadingHistory from "../words/WordHistory";
 import MySearches from "./MySearches";
 import Search from "./Search";
 import SearchRoundedIcon from "@mui/icons-material/SearchRounded";
+import HomeRoundedIcon from "@mui/icons-material/HomeRounded";
+import BookmarkRoundedIcon from "@mui/icons-material/BookmarkRounded";
+import SchoolRoundedIcon from "@mui/icons-material/SchoolRounded";
 
-import * as s from "../components/ColumnWidth.sc";
+import * as columnS from "../components/ColumnWidth.sc";
+import * as s from "./_ArticlesRouter.sc";
 import LocalStorage from "../assorted/LocalStorage";
+import { APIContext } from "../contexts/APIContext";
 import { BrowsingSessionContext } from "../contexts/BrowsingSessionContext";
 import useBrowsingSession from "../hooks/useBrowsingSession";
-import { APIContext } from "../contexts/APIContext";
 import { UserContext } from "../contexts/UserContext";
 import useTranslationOnboarding from "../hooks/useTranslationOnboarding";
 import TranslationOnboardingPopup from "../pages/onboarding/notifications/TranslationOnboardingPopup";
 
-const READ_TAB_PATHS = [
-  "/articles",
-  "/articles/mySearches",
-  "/articles/bookmarked",
-  "/articles/classroom",
-];
+const READ_TAB_PATHS = ["/articles", "/articles/mySearches", "/articles/bookmarked", "/articles/classroom"];
 
 export default function ArticlesRouter({ hasExtension, isChrome }) {
   const api = useContext(APIContext);
+  const location = useLocation();
   const { userDetails } = useContext(UserContext);
   const { getBrowsingSessionId } = useBrowsingSession();
-  const location = useLocation();
   const hideRecommendations = LocalStorage.hasFeature("hide_recommendations");
   const isStudent = LocalStorage.isStudent();
   const translationModal = useTranslationOnboarding(api, userDetails);
@@ -46,16 +46,39 @@ export default function ArticlesRouter({ hasExtension, isChrome }) {
     }
   }, [location.pathname]);
 
+  const isHomeScreen = location.pathname === "/articles";
+
+  const iconStyle = { display: "inline-flex", alignItems: "center", padding: "0.4em 0.25em", verticalAlign: "middle" };
+  const iconProps = { style: { fontSize: "2.1rem", verticalAlign: "middle" } };
+
+  const homeIcon = (
+    <s.IconSpan style={{ verticalAlign: "middle" }}>
+      <HomeRoundedIcon {...iconProps} />
+    </s.IconSpan>
+  );
+
+  const bookmarkIcon = (
+    <s.IconSpan style={{ verticalAlign: "middle" }}>
+      <BookmarkRoundedIcon {...iconProps} />
+    </s.IconSpan>
+  );
+
+  const classroomIcon = (
+    <s.IconSpan style={{ verticalAlign: "middle" }}>
+      <SchoolRoundedIcon {...iconProps} />
+    </s.IconSpan>
+  );
+
   const searchIcon = (
-    <span style={{ display: "inline-block", padding: "0 0.25em", verticalAlign: "middle" }}>
-      <SearchRoundedIcon style={{ fontSize: "1.25rem", verticalAlign: "middle" }} />
-    </span>
+    <s.IconSpan style={{ verticalAlign: "middle" }}>
+      <SearchRoundedIcon {...iconProps} />
+    </s.IconSpan>
   );
 
   const tabs = [
-    !hideRecommendations && { text: "Discover", link: "/articles" },
-    { text: strings.myArticles, link: "/articles/bookmarked" },
-    isStudent && { text: strings.classroomTab, link: "/articles/classroom" },
+    !hideRecommendations && { text: homeIcon, link: "/articles" },
+    { text: bookmarkIcon, link: "/articles/bookmarked" },
+    isStudent && { text: classroomIcon, link: "/articles/classroom" },
     !hideRecommendations && {
       text: searchIcon,
       link: "/articles/mySearches",
@@ -67,10 +90,10 @@ export default function ArticlesRouter({ hasExtension, isChrome }) {
   return (
     <BrowsingSessionContext.Provider value={getBrowsingSessionId}>
       {/* Rendering top menu first, then routing to corresponding page */}
-      <s.NarrowColumn>
-        <TopTabs title={strings.articles} tabsAndLinks={tabs} />
+      <columnS.NarrowColumn>
+        <TopTabs title={strings.articles} tabsAndLinks={tabs} hasBackground={false} isCompact={true} />
 
-        <div style={{ minHeight: "70vh" }}>
+        <s.ContentContainer>
           {hideRecommendations ? (
             <Redirect from="/articles" exact to="/articles/classroom" />
           ) : (
@@ -82,19 +105,9 @@ export default function ArticlesRouter({ hasExtension, isChrome }) {
               isChrome={isChrome}
             />
           )}
-          <PrivateRoute
-            exact
-            path="/articles/bookmarked"
-            component={BookmarkedArticles}
-          />
-          <PrivateRoute
-            path="/articles/bookmarked/hidden"
-            component={HiddenArticles}
-          />
-          <PrivateRoute
-            path="/articles/classroom"
-            component={ClassroomArticles}
-          />
+          <PrivateRoute exact path="/articles/bookmarked" component={BookmarkedArticles} />
+          <PrivateRoute path="/articles/bookmarked/hidden" component={HiddenArticles} />
+          <PrivateRoute path="/articles/classroom" component={ClassroomArticles} />
 
           <PrivateRoute path="/articles/ownTexts" component={OwnArticles} />
 
@@ -103,8 +116,8 @@ export default function ArticlesRouter({ hasExtension, isChrome }) {
           <PrivateRoute path="/articles/mySearches" component={MySearches} />
 
           <PrivateRoute path="/search" component={Search} />
-        </div>
-      </s.NarrowColumn>
+        </s.ContentContainer>
+      </columnS.NarrowColumn>
       <TranslationOnboardingPopup open={translationModal.open} handleCancel={translationModal.close} />
     </BrowsingSessionContext.Provider>
   );
@@ -113,4 +126,4 @@ export default function ArticlesRouter({ hasExtension, isChrome }) {
 // Having components passed to the Search
 // look for a search, boolean
 // passing a different prop, to make search
-// render either search or no search
+// render s.ContentContainerher search or no search

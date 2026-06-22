@@ -66,6 +66,7 @@ let TopbarButtonsContainer = styled.div`
      as the article content (ArticleReader has padding: 0 0.5rem). With the
      extra 0.5em the chevron floated ~3x deeper than the title beneath it. */
   padding: 0.5em 0;
+  padding-left: 0.8em;
 `;
 
 let TopReaderButtonsContainer = styled.div`

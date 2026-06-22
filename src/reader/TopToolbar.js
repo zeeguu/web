@@ -8,7 +8,7 @@ import * as s from "./ArticleReader.sc";
 import ToolbarButtons from "./ToolbarButtons";
 import ShareArticle from "./ShareArticle";
 
-import BackArrow from "../pages/Settings/settings_pages_shared/BackArrow";
+import BackArrow from "../pages/Settings/SharedComponents/BackArrow";
 import useScreenWidth from "../hooks/useScreenWidth";
 import { APIContext } from "../contexts/APIContext";
 import { MOBILE_WIDTH } from "../components/MainNav/screenSize";
@@ -30,6 +30,7 @@ export default function TopToolbar({
   articleProgress,
   timer,
   reportBroken,
+  swipeBackTargetPath,
 }) {
   const api = useContext(APIContext);
   const { screenWidth, isMobile } = useScreenWidth();
@@ -61,8 +62,14 @@ export default function TopToolbar({
     <s.ToolbarWrapper>
       <s.Toolbar>
         <s.TopbarButtonsContainer $screenWidth={screenWidth}>
-          <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
-            {isMobile && <BackArrow />}
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "0.5rem",
+            }}
+          >
+            {isMobile && <BackArrow swipeTargetPath={swipeBackTargetPath} />}
             {timer}
           </div>
           <div style={{ display: "flex", gap: "1rem" }}>
@@ -124,10 +131,7 @@ export default function TopToolbar({
           </div>
         </s.TopbarButtonsContainer>
 
-        <progress
-          style={{ margin: "0" }}
-          value={articleProgress}
-        />
+        <progress style={{ margin: "0" }} value={articleProgress} />
       </s.Toolbar>
     </s.ToolbarWrapper>
   );

@@ -1,10 +1,10 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import PullToRefresh from "react-simple-pull-to-refresh";
 import ArticlePreview from "./ArticlePreview";
 import SearchField from "./SearchField";
 import * as s from "./ArticleListBrowser.sc";
 import LoadingAnimation from "../components/LoadingAnimation";
-import CustomizeGear from "./CustomizeGear";
+import FeedFilterBar from "./FeedFilterBar";
 
 import LocalStorage from "../assorted/LocalStorage";
 
@@ -35,9 +35,36 @@ export default function ArticleListBrowser({ content, searchQuery, searchPublish
     doNotShowRedirectionModal_LocalStorage,
   );
   const [reloadingSearchArticles, setReloadingSearchArticles] = useState(false);
+  // Recommended-feed (re)load in progress — e.g. after tapping a topic pill.
+  // Lets us drop the old articles and show the loader immediately for instant
+  // feedback, rather than leaving the previous topic's list on screen.
+  const [feedLoading, setFeedLoading] = useState(false);
 
   const searchPublishPriorityRef = useShadowRef(searchPublishPriority);
   const searchDifficultyPriorityRef = useShadowRef(searchDifficultyPriority);
+
+  // Home-feed filter pills (only shown when this isn't an external search).
+  // { type: "all" } | { type: "topic", value } | { type: "search", value }.
+  // A ref mirror is needed because getNewArticlesForPage is captured once by
+  // the pagination hook and would otherwise see a stale filter.
+  // Restore the last-picked topic so the choice survives navigating away/back.
+  const [activeFilter, setActiveFilter] = useState(() => {
+    const savedTopic = LocalStorage.getSelectedFeedTopic();
+    return savedTopic ? { type: "topic", value: savedTopic } : { type: "all" };
+  });
+  const activeFilterRef = useShadowRef(activeFilter);
+
+  // Persist topic selections (clear on "all") and update state.
+  function selectFilter(filter) {
+    LocalStorage.setSelectedFeedTopic(filter.type === "topic" ? filter.value : null);
+    setActiveFilter(filter);
+  }
+
+  // Each loadArticles() call claims a token; only the latest applies its
+  // results. Without this, switching pills fast lets a slower earlier response
+  // (e.g. a saved-search query) land last and overwrite the feed the user
+  // actually selected.
+  const loadTokenRef = useRef(0);
 
   // Next three vars required for the "Show Videos Only" toggle button
   const [areVideosAvailable, setAreVideosAvailable] = useState(false);
@@ -56,9 +83,11 @@ export default function ArticleListBrowser({ content, searchQuery, searchPublish
         handleArticleInsertion,
         (error) => {},
       );
-    } else {
-      api.getMoreUserArticles(20, pageNumber, handleArticleInsertion);
+      return;
     }
+    const filter = activeFilterRef.current;
+    const options = filter.type === "topic" ? { topic: filter.value.title } : {};
+    api.getMoreUserArticles(20, pageNumber, handleArticleInsertion, options);
   }
 
   function updateOnPagination(newUpdatedList) {
@@ -125,16 +154,23 @@ export default function ArticleListBrowser({ content, searchQuery, searchPublish
 
   function loadArticles() {
     return new Promise((resolve) => {
+      const myToken = ++loadTokenRef.current;
+      const isStale = () => myToken !== loadTokenRef.current;
       resetPagination();
       setSearchError(false);
+      // The external /search route drives the search endpoint; the home-feed
+      // pills (topic / all) go through the recommended feed, with topic passed
+      // as a filter.
       if (searchQuery) {
         setTitle(strings.titleSearch + ` '${searchQuery}'`);
+        setFeedLoading(false);
         setReloadingSearchArticles(true);
         api.search(
           searchQuery,
           searchPublishPriority,
           searchDifficultyPriority,
           (articles) => {
+            if (isStale()) return resolve();
             setArticlesAndVideosList(articles);
             setOriginalList([...articles]);
             setReloadingSearchArticles(false);
@@ -142,6 +178,7 @@ export default function ArticleListBrowser({ content, searchQuery, searchPublish
             resolve();
           },
           (error) => {
+            if (isStale()) return resolve();
             setArticlesAndVideosList([]);
             setOriginalList([]);
             setReloadingSearchArticles(false);
@@ -151,12 +188,20 @@ export default function ArticleListBrowser({ content, searchQuery, searchPublish
         );
       } else {
         setTitle(strings.titleHome);
+        // Clear any leftover search-loading state when leaving a search pill,
+        // and show the loader straight away (dropping the previous list) for
+        // instant feedback on a topic switch.
+        setReloadingSearchArticles(false);
+        setFeedLoading(true);
+        const options = activeFilter.type === "topic" ? { topic: activeFilter.value.title } : {};
         api.getUserArticles((articles) => {
+          if (isStale()) return resolve();
           setArticlesAndVideosList(articles);
           setOriginalList([...articles]);
           setAreVideosAvailable(articles.some((e) => e.video));
+          setFeedLoading(false);
           resolve();
-        });
+        }, options);
       }
     });
   }
@@ -170,7 +215,7 @@ export default function ArticleListBrowser({ content, searchQuery, searchPublish
       };
     }
     // eslint-disable-next-line
-  }, [searchQuery, searchPublishPriority, searchDifficultyPriority]);
+  }, [searchQuery, searchPublishPriority, searchDifficultyPriority, activeFilter]);
 
   if (articlesAndVideosList == null) {
     return <LoadingAnimation />;
@@ -197,13 +242,13 @@ export default function ArticleListBrowser({ content, searchQuery, searchPublish
   };
 
   return (
-    <PullToRefresh onRefresh={refreshFromNetwork} pullingContent="">
-      <>
+    <>
+      {/* The topic pills stay pinned above the refresh area, so pulling down
+          shows the loading indicator below the pills (near the articles),
+          not above them. */}
       {!searchQuery && (
         <>
-          <div style={{ display: "flex", padding: "0.5em 1em 0.25em" }}>
-            <CustomizeGear />
-          </div>
+          <FeedFilterBar activeFilter={activeFilter} onSelectFilter={selectFilter} />
           {areVideosAvailable && (
             <s.SortHolder
               style={{
@@ -225,6 +270,8 @@ export default function ArticleListBrowser({ content, searchQuery, searchPublish
         </>
       )}
 
+      <PullToRefresh onRefresh={refreshFromNetwork} pullingContent="">
+        <>
       {searchQuery && (
         <s.SearchHolder>
           <SearchField query={searchQuery} />
@@ -233,8 +280,9 @@ export default function ArticleListBrowser({ content, searchQuery, searchPublish
 
       {/* This is where the content of the Search component will be rendered */}
       {content}
-      {reloadingSearchArticles && <LoadingAnimation></LoadingAnimation>}
+      {(reloadingSearchArticles || feedLoading) && <LoadingAnimation></LoadingAnimation>}
       {!reloadingSearchArticles &&
+        !feedLoading &&
         articlesAndVideosList.map((each, index) =>
           each.video ? (
             <VideoPreview key={each.id} video={each} notifyVideoClick={() => handleVideoClick(each.source_id, index)} />
@@ -250,7 +298,7 @@ export default function ArticleListBrowser({ content, searchQuery, searchPublish
             />
           ),
         )}
-      {!reloadingSearchArticles && articlesAndVideosList.length === 0 && (
+      {!reloadingSearchArticles && !feedLoading && articlesAndVideosList.length === 0 && (
         <div style={{ textAlign: "center", marginTop: "1rem" }}>
           <p>No results were found for this query.</p>
         </div>
@@ -276,7 +324,8 @@ export default function ArticleListBrowser({ content, searchQuery, searchPublish
           There are no more results.
         </div>
       )}
-      </>
-    </PullToRefresh>
+        </>
+      </PullToRefresh>
+    </>
   );
 }

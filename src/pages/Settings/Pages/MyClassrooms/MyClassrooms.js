@@ -1,28 +1,26 @@
 import React from "react";
 import { useState, useEffect, useContext } from "react";
-import { UserContext } from "../../../contexts/UserContext";
-import Button from "../../_pages_shared/Button.sc";
-import ButtonContainer from "../../_pages_shared/ButtonContainer.sc";
-import InputField from "../../../components/InputField";
-import Form from "../../_pages_shared/Form.sc";
-import FormSection from "../../_pages_shared/FormSection.sc";
-import CardPage from "../../_pages_shared/CardPage";
-import Header from "../../_pages_shared/Header";
-import Heading from "../../_pages_shared/Heading.sc";
-import Main from "../../_pages_shared/Main.sc";
-import FullWidthListContainer from "../../../components/FullWidthListContainer.sc";
-import FullWidthErrorMsg from "../../../components/FullWidthErrorMsg.sc";
-import BackArrow from "../settings_pages_shared/BackArrow";
-import strings from "../../../i18n/definitions";
-import LoadingAnimation from "../../../components/LoadingAnimation";
-import FullWidthListItem from "../../../components/FullWidthListItem";
+import { UserContext } from "../../../../contexts/UserContext";
+import Button from "../../../_pages_shared/Button.sc";
+import ButtonContainer from "../../../_pages_shared/ButtonContainer.sc";
+import InputField from "../../../../components/InputField";
+import Form from "../../../_pages_shared/Form.sc";
+import FormSection from "../../../_pages_shared/FormSection.sc";
+import CardPage from "../../../_pages_shared/CardPage";
+import Main from "../../../_pages_shared/Main.sc";
+import FullWidthListContainer from "../../../../components/FullWidthListContainer.sc";
+import FullWidthErrorMsg from "../../../../components/FullWidthErrorMsg.sc";
+import SettingsPageHeader from "../../SharedComponents/SettingsPageHeader";
+import strings from "../../../../i18n/definitions";
+import LoadingAnimation from "../../../../components/LoadingAnimation";
+import FullWidthListItem from "../../../../components/FullWidthListItem";
 import LeaveClassroomModal from "./LeaveClassroomModal";
-import useFormField from "../../../hooks/useFormField";
-import { NonEmptyValidator } from "../../../utils/ValidatorRule/Validator";
-import { setTitle } from "../../../assorted/setTitle";
-import { APIContext } from "../../../contexts/APIContext";
-import LocalStorage from "../../../assorted/LocalStorage";
-import { saveSharedUserInfo } from "../../../utils/cookies/userInfo";
+import useFormField from "../../../../hooks/useFormField";
+import { NonEmptyValidator } from "../../../../utils/ValidatorRule/Validator";
+import { setTitle } from "../../../../assorted/setTitle";
+import { APIContext } from "../../../../contexts/APIContext";
+import LocalStorage from "../../../../assorted/LocalStorage";
+import { saveSharedUserInfo } from "../../../../utils/cookies/userInfo";
 
 export default function MyClassrooms() {
   const api = useContext(APIContext);
@@ -129,11 +127,8 @@ export default function MyClassrooms() {
   const studentIsInCohort = studentCohorts && studentCohorts.length > 0;
 
   return (
-    <CardPage layoutVariant={"minimalistic-top-aligned"} isTransparent reducedPadding>
-      <BackArrow />
-      <Header withoutLogo>
-        <Heading>{strings.myClassrooms}</Heading>
-      </Header>
+    <CardPage layoutVariant={"card-under-menu"} isTransparent reducedPadding>
+      <SettingsPageHeader title={strings.myClassrooms} />
       <Main>
         <FullWidthListContainer>
           {studentIsInCohort ? (

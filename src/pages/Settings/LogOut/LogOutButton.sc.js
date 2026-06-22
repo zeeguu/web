@@ -1,5 +1,5 @@
-import { zeeguuDarkOrange } from "../../components/colors";
-import { WhiteRoundButton } from "../../components/allButtons.sc";
+import { zeeguuDarkOrange } from "../../../components/colors";
+import { WhiteRoundButton } from "../../../components/allButtons.sc";
 import styled from "styled-components";
 
 const LogOutButtonStyle = styled(WhiteRoundButton)`

@@ -33,6 +33,12 @@ const MetaLink = styled.a`
   color: var(--link-color, ${blue400});
   text-decoration: none;
   &:hover { text-decoration: underline; }
+
+  /* For metadata that happens to be a link (e.g. the article source) but
+     isn't navigation — reads as muted info, not an accent-colored action. */
+  &.muted {
+    color: var(--text-muted);
+  }
 `;
 
 const MetaTag = styled.span`

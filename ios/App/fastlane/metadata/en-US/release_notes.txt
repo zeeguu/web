@@ -1,6 +1,5 @@
-- Your daily audio lesson now resumes right where you paused, instead of jumping back to the start.
-- A clearer daily-lesson home screen with a redesigned footer and settings.
-- Listen past the halfway mark to unlock tomorrow's lesson — now with a friendly hint.
-- The "Today" tab is now called "Current", and past-lesson tabs stay hidden until you actually have past lessons.
-- Fixed a scrollbar glitch on the empty and generating states of the daily audio screen.
+- Filter your Discover feed by topic: tap a topic pill to focus the feed, and your choice is remembered next time.
+- Switching topics now loads instantly.
+- A cleaner top of the Read screen with simple icons for Discover, Saved, Classroom, and Search.
+- Tidier article cards and a calmer, more readable feed.
 - Various smaller fixes and polish.

@@ -33,6 +33,7 @@ const LocalStorage = {
     LastVisitedPage: "last_visited_page",
     LastVisitedTeacherPage: "last_visited_teacher_page",
     LastVisitedReadPath: "last_visited_read_path",
+    SelectedFeedTopic: "selected_feed_topic",
     DailyFeedbackLastShown: "daily_feedback_last_shown",
     InviteCode: "invite_code",
     // Keep in sync with index.html inline theme script
@@ -294,6 +295,24 @@ const LocalStorage = {
 
   setLastVisitedReadPath: function (path) {
     localStorage[this.Keys.LastVisitedReadPath] = path;
+  },
+
+  // Home-feed topic pill the user last selected ({id, title}), so the choice
+  // survives navigating away and reopening. null/absent means "All".
+  getSelectedFeedTopic: function () {
+    try {
+      return JSON.parse(localStorage[this.Keys.SelectedFeedTopic]) || null;
+    } catch (e) {
+      return null;
+    }
+  },
+
+  setSelectedFeedTopic: function (topic) {
+    if (topic) {
+      localStorage[this.Keys.SelectedFeedTopic] = JSON.stringify(topic);
+    } else {
+      delete localStorage[this.Keys.SelectedFeedTopic];
+    }
   },
 
   // Anonymous user methods

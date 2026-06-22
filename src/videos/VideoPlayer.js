@@ -6,7 +6,7 @@ import InteractiveText from "../reader/InteractiveText";
 import { APIContext } from "../contexts/APIContext";
 import { SpeechContext } from "../contexts/SpeechContext";
 import { setTitle } from "../assorted/setTitle";
-import BackArrow from "../pages/Settings/settings_pages_shared/BackArrow";
+import BackArrow from "../pages/Settings/SharedComponents/BackArrow";
 import {
   MainContainer,
   VideoContainer,
