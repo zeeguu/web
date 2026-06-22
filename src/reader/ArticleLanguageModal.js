@@ -2,6 +2,10 @@ import ChoiceModal from "../components/modal_shared/ChoiceModal";
 import { LANGUAGE_CODE_TO_NAME } from "../utils/misc/languageCodeToName";
 import { CEFR_ORDINAL } from "../utils/misc/cefrHelpers";
 
+// ArticleLanguageModal renders the popup shown before opening or saving an article.
+// It asks the user whether they want to adapt a same-language article to their
+// level or translate a foreign-language article into their learned language.
+// The modal shows the article title, optional hero image, and action buttons.
 function langName(code) {
   return LANGUAGE_CODE_TO_NAME[code] || code;
 }
@@ -26,15 +30,7 @@ function LevelBars({ level }) {
       aria-hidden="true"
     >
       {CEFR_BAR_GEOMETRY.map((bar, i) => (
-        <rect
-          key={i}
-          x={bar.x - 0.25}
-          y={bar.y}
-          width={2.5}
-          height={bar.h}
-          rx={0.5}
-          opacity={i < filled ? 1 : 0.3}
-        />
+        <rect key={i} x={bar.x - 0.25} y={bar.y} width={2.5} height={bar.h} rx={0.5} opacity={i < filled ? 1 : 0.3} />
       ))}
     </svg>
   );
@@ -132,9 +128,7 @@ export default function ArticleLanguageModal({
         <>
           <div style={{ marginBottom: "0.9em" }}>Article is above your level</div>
           <LevelTransition articleLevel={articleCefrLevel} userLevel={userCefrLevel} />
-          <div style={{ marginTop: "1.1em" }}>
-            Do you want to adapt it before saving?
-          </div>
+          <div style={{ marginTop: "1.1em" }}>Do you want to adapt it before saving?</div>
         </>
       );
     } else if (articleCefrLevel) {

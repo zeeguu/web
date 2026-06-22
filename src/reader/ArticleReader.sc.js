@@ -208,23 +208,6 @@ let Title = styled.div`
   line-height: 2em;
 `;
 
-let BookmarkButton = styled.div`
-  cursor: pointer;
-  float: right;
-  img {
-    height: 1.4em;
-  }
-
-  .tooltiptext {
-    visibility: hidden;
-    color: ${zeeguuOrange};
-  }
-
-  :hover .tooltiptext {
-    visibility: visible;
-  }
-`;
-
 let MainText = styled.div`
   font-size: 1.2em;
   /* 2em leading floated the lines too far apart to track comfortably; 1.7
@@ -480,7 +463,6 @@ export {
   TopReaderButtonsContainer,
   Toolbar,
   Title,
-  BookmarkButton,
   MainText,
   BottomFade,
   OrangeButton,

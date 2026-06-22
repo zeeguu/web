@@ -3,7 +3,7 @@ import { MemoryRouter } from "react-router-dom";
 import "../../index.css";
 
 export default {
-  title: "Settings/SettingsItem",
+  title: "Items/SettingsItem",
   component: SettingsItem,
   decorators: [
     (Story) => (

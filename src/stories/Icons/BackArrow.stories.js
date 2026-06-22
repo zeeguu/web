@@ -2,7 +2,7 @@ import BackArrow from "../../pages/Settings/SharedComponents/BackArrow";
 import "../../index.css";
 
 export default {
-  title: "Settings/BackArrow",
+  title: "Icons/BackArrow",
   component: BackArrow,
 };
 

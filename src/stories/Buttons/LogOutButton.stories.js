@@ -2,7 +2,7 @@ import LogOutButton from "../../pages/Settings/LogOut/LogOutButton";
 import "../../index.css";
 
 export default {
-  title: "Settings/LogOutButton",
+  title: "Buttons/LogOutButton",
   component: LogOutButton,
 };
 

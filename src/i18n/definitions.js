@@ -387,10 +387,6 @@ let strings = new LocalizedStrings(
       backToEditing: "Back to editing",
       saveCopyToShare: "Save Copy to Share",
 
-      //BookmarkButton
-      addToBookmarks: "Add to bookmarks",
-      removeFromBookmarks: "Remove from bookmarks",
-
       //SortingButtons
       sortBy: "Sort by:",
       difficulty: "Difficulty",
@@ -1294,10 +1290,6 @@ let strings = new LocalizedStrings(
         "Gennemse dine oversatte ord nu for at sikre bedre læring. Husk at fortælle Zeeguu hvilke ord, du gerne vil prioritere i din træning.",
       backToEditing: "Tilbage til redigering",
       saveCopyToShare: "Gem kopi til deling",
-
-      //BookmarkButton
-      addToBookmarks: "Tilføj til bogmærker",
-      removeFromBookmarks: "Fjern fra bogmærker",
 
       //SortingButtons
       sortBy: "Sorter efter:",

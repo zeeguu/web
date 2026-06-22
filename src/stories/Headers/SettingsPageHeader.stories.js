@@ -2,7 +2,7 @@ import SettingsPageHeader from "../../pages/Settings/SharedComponents/SettingsPa
 import "../../index.css";
 
 export default {
-  title: "Settings/SettingsPageHeader",
+  title: "Headers/SettingsPageHeader",
   component: SettingsPageHeader,
 };
 

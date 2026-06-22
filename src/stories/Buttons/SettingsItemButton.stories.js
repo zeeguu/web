@@ -2,7 +2,7 @@ import SettingsItemButton from "../../pages/Settings/SharedComponents/SettingsIt
 import "../../index.css";
 
 export default {
-  title: "Settings/SettingsItemButton",
+  title: "Buttons/SettingsItemButton",
   component: SettingsItemButton,
 };
 

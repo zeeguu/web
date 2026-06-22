@@ -13,7 +13,7 @@ const baseWord = {
   _llmAsked: null,
 };
 
-export default { title: "Reader/AlterMenu", component: AlterMenu };
+export default { title: "BigComponents/AlterMenu", component: AlterMenu };
 
 export const NoAlternatives = {
   render: () => <AlterMenu word={{ ...baseWord, alternatives: [], competing_translations: [] }} />,

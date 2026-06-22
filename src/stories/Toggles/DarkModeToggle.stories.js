@@ -9,7 +9,7 @@ const ThemeDecorator = (Story, { args }) => (
 );
 
 export default {
-  title: "Settings/DarkModeToggle",
+  title: "Toggles/DarkModeToggle",
   component: DarkModeToggle,
   decorators: [ThemeDecorator],
 };
