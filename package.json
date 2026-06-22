@@ -124,7 +124,9 @@
     "ios:release-force": "npm run ios:build && cd ios/App && fastlane release_force",
     "ios:copy-screenshots": "node ios/App/appstore-screenshots/copy-to-fastlane.js",
     "ios:render-screenshots": "node ios/App/appstore-screenshots/render.js",
-    "ios:render-live-screenshots": "node ios/App/appstore-screenshots/render-live.js"
+    "ios:render-live-screenshots": "node ios/App/appstore-screenshots/render-live.js",
+    "storybook": "storybook dev -p 6006",
+    "build-storybook": "storybook build"
   },
   "browserslist": {
     "production": [
@@ -152,7 +154,17 @@
     "vite-plugin-svgr": "^4.5.0",
     "vitest": "^3.2.4",
     "webpack": "^5.76.0",
-    "webpack-bundle-analyzer": "^4.10.2"
+    "webpack-bundle-analyzer": "^4.10.2",
+    "storybook": "^10.4.6",
+    "@storybook/react-vite": "^10.4.6",
+    "@chromatic-com/storybook": "^5.2.1",
+    "@storybook/addon-vitest": "^10.4.6",
+    "@storybook/addon-a11y": "^10.4.6",
+    "@storybook/addon-docs": "^10.4.6",
+    "@storybook/addon-mcp": "^0.6.0",
+    "playwright": "^1.61.0",
+    "@vitest/browser": "^3.2.4",
+    "@vitest/coverage-v8": "^3.2.4"
   },
   "overrides": {
     "d3-color": "3.1.0",
