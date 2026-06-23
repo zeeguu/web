@@ -6,7 +6,7 @@ import useQuery from "../hooks/useQuery";
 import useTimedProgressMessage from "../hooks/useTimedProgressMessage";
 import LoadingAnimation from "../components/LoadingAnimation";
 import ArticleLanguageModal from "./ArticleLanguageModal";
-import SharedArticleErrorDialog from "./SharedArticleErrorDialog";
+import ErrorDialog from "../components/ErrorDialog";
 import { shouldShowLanguageChoice, getUserCefrLevel, numericToCefr } from "../utils/misc/cefrHelpers";
 
 const PROGRESS_STAGES = {
@@ -218,10 +218,10 @@ export default function SharedArticleHandler() {
 
   if (status === "error") {
     return (
-      <SharedArticleErrorDialog
-        errorMessage={errorMessage}
-        sharedUrl={sharedUrl}
-        uploadId={uploadId}
+      <ErrorDialog
+        title="Could not open article"
+        message={errorMessage}
+        detail={sharedUrl || (uploadId ? `upload #${uploadId}` : null)}
         onBack={() => history.push("/articles")}
       />
     );
