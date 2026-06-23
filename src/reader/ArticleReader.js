@@ -13,7 +13,7 @@ import DifficultyFeedbackBox from "./DifficultyFeedbackBox";
 import LikeFeedBackBox from "./LikeFeedbackBox";
 import { extractVideoIDFromURL } from "../utils/misc/youtube";
 
-import ReportBroken from "./ReportBroken";
+import ReportBroken from "./ReportBrokenArticle";
 
 import TopToolbar from "./TopToolbar";
 import ReviewVocabularyInfoBox from "./ReviewVocabularyInfoBox";
