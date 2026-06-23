@@ -12,7 +12,7 @@ import BackArrow from "../pages/Settings/SharedComponents/BackArrow";
 import useScreenWidth from "../hooks/useScreenWidth";
 import { APIContext } from "../contexts/APIContext";
 import { MOBILE_WIDTH } from "../components/MainNav/screenSize";
-import { leftGroup, middleGroup, saveButton, rightGroup, progressStyle } from "./TopToolbar.sc";
+import { leftGroup, middleGroup, rightGroup, progressStyle } from "./TopToolbar.sc";
 import SaveAndEditButton from "../components/Buttons/SaveAndEditButton";
 
 export default function TopToolbar({
@@ -80,7 +80,7 @@ export default function TopToolbar({
                 )}
 
                 {!teacherArticleID && screenWidth >= MOBILE_WIDTH && (
-                  <SaveAndEditButton onClick={saveArticleAndEdit} style={saveButton} label={strings.saveAndEdit} />
+                  <SaveAndEditButton onClick={saveArticleAndEdit} label={strings.saveAndEdit} />
                 )}
               </>
             )}
