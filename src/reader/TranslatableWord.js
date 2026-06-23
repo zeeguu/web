@@ -1,11 +1,9 @@
 import { useState, useEffect, useRef } from "react";
 import AlterMenu from "./AlterMenu";
+import TranslationDisplay from "./TranslationDisplay";
 import extractDomain from "../utils/web/extractDomain";
 import addProtocolToLink from "../utils/web/addProtocolToLink";
 import redirect from "../utils/routing/routing";
-import LinkOffIcon from "@mui/icons-material/LinkOff";
-import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
-
 
 export default function TranslatableWord({
   interactiveText,
@@ -76,25 +74,32 @@ export default function TranslatableWord({
         }
         // For MWE words, update prevWord to fused text and trigger re-render
         // This ensures the loading animation shows "suntem prezenți" not just "suntem"
-        const onFusionComplete = mweGroupId ? () => {
-          setPreviousWord(word.word); // word.word is now the fused MWE text
-          wordUpdated();
-        } : null;
-        interactiveText.translate(word, true, () => {
-          wordUpdated();
-          setIsLoading(false);
-          setIsWordTranslating(false);
-          setIsTranslationVisible(true);
-          // Clear MWE loading state
-          if (mweGroupId && setLoadingMWEGroupId) {
-            setLoadingMWEGroupId(null);
-          }
-          // Backend flagged a 3-way provider disagreement; surface the
-          // alternatives menu so the user can pick the right answer.
-          if (word.disagreement) {
-            openAlterMenu(word);
-          }
-        }, onFusionComplete);
+        const onFusionComplete = mweGroupId
+          ? () => {
+              setPreviousWord(word.word); // word.word is now the fused MWE text
+              wordUpdated();
+            }
+          : null;
+        interactiveText.translate(
+          word,
+          true,
+          () => {
+            wordUpdated();
+            setIsLoading(false);
+            setIsWordTranslating(false);
+            setIsTranslationVisible(true);
+            // Clear MWE loading state
+            if (mweGroupId && setLoadingMWEGroupId) {
+              setLoadingMWEGroupId(null);
+            }
+            // Backend flagged a 3-way provider disagreement; surface the
+            // alternatives menu so the user can pick the right answer.
+            if (word.disagreement) {
+              openAlterMenu(word);
+            }
+          },
+          onFusionComplete,
+        );
       } else {
         // For non-translatable words in exercises, track the click
         if (interactiveText.trackWordClick) {
@@ -293,8 +298,10 @@ export default function TranslatableWord({
       if (word.token.is_punct) {
         classes.push("punct", "no-hover");
       }
-      if (word.token.is_left_punct ||
-          (word.token.is_punct && word.prev && [":", ".", ","].includes(word.prev.word.trim()))) {
+      if (
+        word.token.is_left_punct ||
+        (word.token.is_punct && word.prev && [":", ".", ","].includes(word.prev.word.trim()))
+      ) {
         classes.push("left-punct");
       }
       if (["–", "—", "\u201c", "\u2019", '"'].includes(word.word.trim())) {
@@ -339,7 +346,9 @@ export default function TranslatableWord({
   }
 
   function getWordClass(word) {
-    return [...getSpecialTokenClasses(word), ...getMWEClasses(word), ...getSolutionHighlightClasses()].filter(Boolean).join(" ");
+    return [...getSpecialTokenClasses(word), ...getMWEClasses(word), ...getSolutionHighlightClasses()]
+      .filter(Boolean)
+      .join(" ");
   }
 
   const wordClass = getWordClass(word);
@@ -378,7 +387,8 @@ export default function TranslatableWord({
           onMouseEnter={handleMouseEnter}
           onMouseLeave={handleMouseLeave}
         >
-          {word.word + (word.token.has_space === true && !word.word.endsWith("-") && !word.next?.word?.startsWith("-") ? " " : "")}
+          {word.word +
+            (word.token.has_space === true && !word.word.endsWith("-") && !word.next?.word?.startsWith("-") ? " " : "")}
         </z-tag>
       </>
     );
@@ -387,40 +397,21 @@ export default function TranslatableWord({
   return (
     <>
       <z-tag class={wordClass} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
-        {word.translation && (isTranslationVisible || word.isTranslationVisible) && (
-          <z-tran chosen={word.translation} translation0={word.translation} ref={refToTranslation}>
-            <span className="translationContainer">
-              <span className="hide low-oppacity translation-icon">
-                <VisibilityOffIcon
-                  fontSize="8px"
-                  onClick={(e) => {
-                    // Toggle both React state and word object flag
-                    const newVisibility = !(isTranslationVisible || word.isTranslationVisible);
-                    setIsTranslationVisible(newVisibility);
-                    word.isTranslationVisible = newVisibility;
-                    setShowingAlterMenu(false);
-                  }}
-                />
-              </span>
-              <span className="translation" onClick={(e) => toggleAlterMenu(e, word)}>
-                {word.translation}
-              </span>
-              <span className="arrow" onClick={(e) => toggleAlterMenu(e, word)}>
-                {showingAlterMenu ? "▲" : "▼"}
-              </span>
-              {word.mergedTokens.length > 1 && !word.mweExpression && (
-                <span className="unlink low-oppacity translation-icon">
-                  <LinkOffIcon
-                    fontSize="8px"
-                    onClick={(e) => {
-                      unlinkLastWord(e, word);
-                    }}
-                  />
-                </span>
-              )}
-            </span>
-          </z-tran>
-        )}
+        <TranslationDisplay
+          translation={word.translation}
+          isTranslationVisible={isTranslationVisible}
+          word={word}
+          showingAlterMenu={showingAlterMenu}
+          refToTranslation={refToTranslation}
+          toggleAlterMenu={toggleAlterMenu}
+          unlinkLastWord={unlinkLastWord}
+          onTranslationVisibilityToggle={() => {
+            const newVisibility = !(isTranslationVisible || word.isTranslationVisible);
+            setIsTranslationVisible(newVisibility);
+            word.isTranslationVisible = newVisibility;
+            setShowingAlterMenu(false);
+          }}
+        />
         <z-orig>
           {isWordTranslating ? (
             <span className={isLoading ? " loading" : ""}> {prevWord} </span>
