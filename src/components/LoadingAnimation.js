@@ -146,6 +146,22 @@ function drillCaption(netResult, serverResult, langName) {
   return `While waiting, let's practice some ${subject}!`;
 }
 
+// The lds-ellipsis spinner needs four nodes: each visible dot runs its own
+// keyframe (fade-in on the left, two slides, fade-out on the right), so it can't
+// collapse to margins or ::before/::after. Encapsulated here so the layout below
+// reads as a single <Spinner />.
+function Spinner({ variant, style }) {
+  return (
+    <s.LoadingAnimation style={style}>
+      <div className={`lds-ellipsis ${variant}`}>
+        {Array.from({ length: 4 }, (_, i) => (
+          <div key={i} />
+        ))}
+      </div>
+    </s.LoadingAnimation>
+  );
+}
+
 export default function LoadingAnimation({
   specificStyle,
   delay = 1000,
@@ -292,16 +308,7 @@ export default function LoadingAnimation({
               "loading…" message (a lie when nothing is in flight) — and the
               spinner below is dropped too. */}
           {knownOffline ? <p>You're offline</p> : children}
-          {!knownOffline && (
-            <s.LoadingAnimation style={spinnerStyle}>
-              <div className={`lds-ellipsis ${spinnerVariant}`}>
-                <div></div>
-                <div></div>
-                <div></div>
-                <div></div>
-              </div>
-            </s.LoadingAnimation>
-          )}
+          {!knownOffline && <Spinner variant={spinnerVariant} style={spinnerStyle} />}
           {/* The drill caption must ride with the drill, not the connection
               diagnostic: hard-offline surfaces the drill at delay+200ms while
               showDiagnostic only flips at delay+3000ms, so gating the caption on
