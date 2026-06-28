@@ -5,10 +5,12 @@ import { API_ENDPOINT } from "../appConstants";
 const PROBE_TIMEOUT_MS = 4000;
 const POLL_INTERVAL_MS = 20000;
 
-// Single app-wide connectivity signal: `true` when the server can't be reached.
-// One provider does all the probing/listening so consumers (the top tabs, the
-// daily-audio loader, the loading spinner's offline state) share one source
-// instead of each running its own.
+// Single app-wide "is offline" signal: the context value is a boolean that is
+// `true` when the server can't be reached, `false` when it can. One provider
+// does all the probing/listening so consumers (the top tabs, the daily-audio
+// loader, the loading spinner's offline state) share one source instead of each
+// running its own. Default `false` = assume online until a probe proves
+// otherwise, so nothing flashes an offline state before the provider mounts.
 const ConnectivityContext = createContext(false);
 
 // Why probe instead of trusting navigator.onLine: that signal (and the
