@@ -1,10 +1,17 @@
 import * as s from "./TopTabs.sc";
 import { TopTab } from "./TopTab";
 import useScrollDirection from "../hooks/useScrollDirection";
+import { useIsOffline } from "../contexts/ConnectivityContext";
 
 // Renders a title and the corresponding tabs links
 export default function TopTabs({ title, tabsAndLinks, hasBackground = false, isCompact = false }) {
   const scrollDirection = useScrollDirection();
+  const isOffline = useIsOffline();
+
+  // None of the top-tab destinations are usable without a connection, so hide
+  // the whole tab bar while offline. Centralizing it here means every page that
+  // uses TopTabs gets the behavior consistently, with no per-router plumbing.
+  if (isOffline) return null;
 
   // Handle both object and array formats
   let tabsArray;
