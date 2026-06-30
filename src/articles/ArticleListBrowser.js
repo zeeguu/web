@@ -218,7 +218,9 @@ export default function ArticleListBrowser({ content, searchQuery, searchPublish
   }, [searchQuery, searchPublishPriority, searchDifficultyPriority, activeFilter]);
 
   if (articlesAndVideosList == null) {
-    return <LoadingAnimation />;
+    // Shorter delay than the 1s default: swipe navigation slides the old tab
+    // away and leaves a blank panel, so the spinner needs to land sooner.
+    return <LoadingAnimation delay={300} />;
   }
 
   if (searchError) {
@@ -280,7 +282,7 @@ export default function ArticleListBrowser({ content, searchQuery, searchPublish
 
       {/* This is where the content of the Search component will be rendered */}
       {content}
-      {(reloadingSearchArticles || feedLoading) && <LoadingAnimation></LoadingAnimation>}
+      {(reloadingSearchArticles || feedLoading) && <LoadingAnimation delay={300}></LoadingAnimation>}
       {!reloadingSearchArticles &&
         !feedLoading &&
         articlesAndVideosList.map((each, index) =>

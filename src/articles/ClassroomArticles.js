@@ -28,10 +28,19 @@ export default function ClassroomArticles() {
 
     setTitle("Classroom Articles");
 
-    return <LoadingAnimation />;
+    // Shorter delay than the 1s default: swipe navigation slides the old tab
+    // away and leaves a blank panel, so the spinner needs to land sooner.
+    return <LoadingAnimation delay={300} />;
   }
 
   if (articleList.length === 0) {
+    // Cohort membership is fetched separately and may still be in flight.
+    // Don't guess the empty message yet, or we flash "You have not joined a
+    // class" (studentJoinedCohort still null → falsy) before settling on
+    // "no articles in your classroom" once getStudent resolves.
+    if (studentJoinedCohort === null) {
+      return <LoadingAnimation delay={300} />;
+    }
     return (
       <Fragment>
         {!studentJoinedCohort ? (
