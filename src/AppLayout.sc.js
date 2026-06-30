@@ -15,6 +15,17 @@ const AppContent = styled.section`
   overflow-y: auto;
   overflow-x: hidden;
   padding: 0;
+
+  /* On mobile the streak header (TopBar) lives inside this scroller, so the
+     overlay scrollbar gets drawn across the top of the purple bar — ugly and
+     useless on a touch device. Hide it on mobile; desktop keeps its scrollbar. */
+  @media (max-width: ${MOBILE_WIDTH}px) {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    &::-webkit-scrollbar {
+      display: none;
+    }
+  }
 `;
 
 export { AppLayout, AppContent };
