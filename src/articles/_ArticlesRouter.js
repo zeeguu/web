@@ -25,6 +25,7 @@ import LocalStorage from "../assorted/LocalStorage";
 import { APIContext } from "../contexts/APIContext";
 import { BrowsingSessionContext } from "../contexts/BrowsingSessionContext";
 import useBrowsingSession from "../hooks/useBrowsingSession";
+import useTabbedRoute from "../hooks/useTabbedRoute";
 import { UserContext } from "../contexts/UserContext";
 import useTranslationOnboarding from "../hooks/useTranslationOnboarding";
 import TranslationOnboardingPopup from "../pages/onboarding/notifications/TranslationOnboardingPopup";
@@ -87,13 +88,25 @@ export default function ArticlesRouter({ hasExtension, isChrome }) {
     },
   ].filter(Boolean);
 
+  // Swipe left/right between the read tabs. Tuned stiffer than the default
+  // (and than daily-audio) because the feed is a long vertical scroll: a
+  // looser gesture made near-horizontal scrolls feel like accidental tab
+  // switches (see revert 0aa59d31).
+  const swipeRef = useTabbedRoute(
+    tabs.map((t) => t.link),
+    {
+      pathAliases: { "/search": "/articles/mySearches" },
+      swipeOptions: { threshold: 90, deadzone: 12, lockRatio: 1.6, qualifyRatio: 2 },
+    },
+  );
+
   return (
     <BrowsingSessionContext.Provider value={getBrowsingSessionId}>
       {/* Rendering top menu first, then routing to corresponding page */}
       <columnS.NarrowColumn>
         <TopTabs title={strings.articles} tabsAndLinks={tabs} hasBackground={false} isCompact={true} />
 
-        <s.ContentContainer>
+        <s.ContentContainer ref={swipeRef}>
           {hideRecommendations ? (
             <Redirect from="/articles" exact to="/articles/classroom" />
           ) : (

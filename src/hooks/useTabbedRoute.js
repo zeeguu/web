@@ -5,7 +5,8 @@ import useTabSwipe from "./useTabSwipe";
 // `pathAliases` maps non-tab paths to the tab they conceptually belong to
 // (e.g. /search → /articles/mySearches), so swipes from a child route
 // still know where to go next.
-export default function useTabbedRoute(tabPaths, { pathAliases = {} } = {}) {
+// `swipeOptions` is forwarded to useTabSwipe to tune sensitivity per surface.
+export default function useTabbedRoute(tabPaths, { pathAliases = {}, swipeOptions } = {}) {
   const history = useHistory();
   const location = useLocation();
   const effectivePath = pathAliases[location.pathname] || location.pathname;
@@ -19,5 +20,5 @@ export default function useTabbedRoute(tabPaths, { pathAliases = {} } = {}) {
     if (canSwipe(direction)) history.push(tabPaths[currentTabIndex + direction]);
   };
 
-  return useTabSwipe(onSwipe, canSwipe);
+  return useTabSwipe(onSwipe, canSwipe, swipeOptions);
 }

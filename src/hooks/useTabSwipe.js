@@ -16,9 +16,20 @@ const ANIM_MS = 200;
 // `canSwipe(direction)` should return true if a swipe in that direction
 // is actionable. Defaults to allowing both.
 //
+// Sensitivity knobs (raise them on long vertical-scroll surfaces like the
+// article feed so casual scrolling doesn't register as a tab switch):
+//   threshold     — min horizontal travel (px) to count as a swipe
+//   deadzone      — min travel (px) before we commit to an axis
+//   lockRatio     — lock to horizontal only if |dx| >= |dy| * lockRatio
+//   qualifyRatio  — on release, swipe only if |dx| >= |dy| * qualifyRatio
+//
 // Note: the hook mutates `transform` and `transition` on the ref's
 // element directly. Don't set those from the caller.
-export default function useTabSwipe(onSwipe, canSwipe = () => true, { threshold = 60 } = {}) {
+export default function useTabSwipe(
+  onSwipe,
+  canSwipe = () => true,
+  { threshold = 60, deadzone = 8, lockRatio = 1, qualifyRatio = 1.5 } = {},
+) {
   const ref = useRef(null);
   // Stash callbacks in refs so listeners don't tear down on every parent
   // re-render (onSwipe/canSwipe identity changes with location.pathname).
@@ -63,14 +74,18 @@ export default function useTabSwipe(onSwipe, canSwipe = () => true, { threshold 
       const dx = t.clientX - startX;
       const dy = t.clientY - startY;
       if (!axisLocked) {
-        if (Math.abs(dx) < 8 && Math.abs(dy) < 8) return;
-        if (Math.abs(dy) > Math.abs(dx)) {
+        if (Math.abs(dx) < deadzone && Math.abs(dy) < deadzone) return;
+        if (Math.abs(dx) < Math.abs(dy) * lockRatio) {
           dragging = false;
           setTransform(0);
           return;
         }
         axisLocked = true;
       }
+      // Axis is locked to horizontal: stop the page from scrolling
+      // vertically underneath the swipe, so the card slides cleanly
+      // sideways instead of drifting diagonally with the finger.
+      if (e.cancelable) e.preventDefault();
       const direction = dx < 0 ? 1 : -1;
       // Rubber-band when there's nowhere to swipe in this direction.
       const allowed = canSwipeRef.current(direction);
@@ -87,7 +102,7 @@ export default function useTabSwipe(onSwipe, canSwipe = () => true, { threshold 
       const direction = dx < 0 ? 1 : -1;
       const qualifies =
         Math.abs(dx) >= threshold &&
-        Math.abs(dx) >= Math.abs(dy) * 1.5 &&
+        Math.abs(dx) >= Math.abs(dy) * qualifyRatio &&
         canSwipeRef.current(direction);
 
       el.style.transition = `transform ${ANIM_MS}ms ease-out`;
@@ -112,7 +127,9 @@ export default function useTabSwipe(onSwipe, canSwipe = () => true, { threshold 
     }
 
     el.addEventListener("touchstart", onTouchStart, { passive: true });
-    el.addEventListener("touchmove", onTouchMove, { passive: true });
+    // Non-passive so onTouchMove can preventDefault once it locks to the
+    // horizontal axis (passive listeners are forbidden from doing so).
+    el.addEventListener("touchmove", onTouchMove, { passive: false });
     el.addEventListener("touchend", onTouchEnd, { passive: true });
     el.addEventListener("touchcancel", onTouchCancel, { passive: true });
 
@@ -123,7 +140,7 @@ export default function useTabSwipe(onSwipe, canSwipe = () => true, { threshold 
       el.removeEventListener("touchend", onTouchEnd);
       el.removeEventListener("touchcancel", onTouchCancel);
     };
-  }, [threshold]);
+  }, [threshold, deadzone, lockRatio, qualifyRatio]);
 
   return ref;
 }
