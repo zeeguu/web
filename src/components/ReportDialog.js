@@ -14,7 +14,7 @@ import {
   reportDialogSendButtonStyles,
   reportDialogSuccessTextStyles,
   reportDialogSuccessItalicStyles,
-} from "./ReportDialog.sc";
+} from "./ReportDialog.styles";
 
 export default function ReportDialog({
   open,

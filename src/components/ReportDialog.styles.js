@@ -2,7 +2,6 @@ import { gray, darkBlue } from "./colors";
 
 export const reportDialogContentStyles = {
   display: "flex",
-  flexDisplay: "row",
   paddingTop: "0px",
   minWidth: "14em",
 };
