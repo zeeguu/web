@@ -1,5 +1,5 @@
 import React from "react";
-import { errorDialogWrapper, errorDialogDescription, errorDialogButton } from "./ErrorDialog.sc";
+import { ErrorDialogWrapper, ErrorDialogDescription, ErrorDialogButton } from "./ErrorDialog.sc";
 
 export default function ErrorDialog({
   title = "Could not open",
@@ -9,13 +9,11 @@ export default function ErrorDialog({
   backLabel = "Go to Articles",
 }) {
   return (
-    <div style={errorDialogWrapper}>
+    <ErrorDialogWrapper>
       <h2>{title}</h2>
       <p>{message}</p>
-      {detail && <p style={errorDialogDescription}>{detail}</p>}
-      <button onClick={onBack} style={errorDialogButton}>
-        {backLabel}
-      </button>
-    </div>
+      {detail && <ErrorDialogDescription>{detail}</ErrorDialogDescription>}
+      <ErrorDialogButton onClick={onBack}>{backLabel}</ErrorDialogButton>
+    </ErrorDialogWrapper>
   );
 }
