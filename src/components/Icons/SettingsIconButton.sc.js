@@ -1,12 +1,14 @@
-export const settingsButtonRoot = {
-  padding: "0.5rem",
-  cursor: "pointer",
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
-};
+import styled from "styled-components";
 
-export const settingsIcon = {
-  fontSize: "1.4em",
-  color: "#999",
-};
+export const SettingsButtonRoot = styled.div`
+  padding: 0.5rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
+export const SettingsIconStyle = styled.div`
+  font-size: 1.4em;
+  color: #999;
+`;
