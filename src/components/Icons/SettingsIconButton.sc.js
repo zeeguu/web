@@ -9,6 +9,9 @@ export const SettingsButtonRoot = styled.div`
 `;
 
 export const SettingsIconStyle = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
   font-size: 1.4em;
   color: #999;
 `;
