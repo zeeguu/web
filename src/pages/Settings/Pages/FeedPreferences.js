@@ -101,7 +101,6 @@ export default function FeedPreferences() {
               onChange={(e) => {
                 setExcludedWord(e.target.value);
               }}
-              helperText={strings.addUnwantedWordHelperText}
               placeholder={strings.unwantedWordPlaceholder}
             >
               <Button className="small-square-btn" onClick={handleAddNewSearchFilter}>
