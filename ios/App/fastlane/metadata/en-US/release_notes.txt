@@ -1,5 +1,6 @@
-- Filter your Discover feed by topic: tap a topic pill to focus the feed, and your choice is remembered next time.
-- Switching topics now loads instantly.
-- A cleaner top of the Read screen with simple icons for Discover, Saved, Classroom, and Search.
-- Tidier article cards and a calmer, more readable feed.
-- Various smaller fixes and polish.
+- Your feed now updates right away when you add or remove a topic or a word to avoid, instead of waiting a few minutes.
+- A smoother offline experience: daily audio and the reading tabs show a clear "You're offline" state instead of a confusing setup screen, and recover on their own once you're back online.
+- Swipe left and right between Discover, Saved, Classroom, and Search, now steadier during scrolling.
+- Faster loading and fewer flickers on the Read screen.
+- Clearer wording when adding words or phrases to avoid.
+- A few other smaller fixes and polish.
