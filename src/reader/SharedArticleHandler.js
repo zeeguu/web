@@ -112,9 +112,19 @@ export default function SharedArticleHandler() {
     setStatus("loading");
   };
 
-  const onConversionError = () => {
+  const onConversionError = (errorMessage) => {
     setStatus("error");
-    setErrorMessage("Could not process this article.");
+    // Surface the server's message when it's human-readable (the API sends
+    // actionable text like "…too long… try a single chapter" as JSON
+    // `message`). Fall back to a friendly generic for bare "HTTP 4xx" or
+    // network strings, which aren't useful to a reader.
+    const isBareHttpCode =
+      typeof errorMessage === "string" && /^HTTP \d+$/.test(errorMessage.trim());
+    setErrorMessage(
+      errorMessage && !isBareHttpCode
+        ? errorMessage
+        : "Could not process this article. It may be too long, or the source may be blocking us — try a shorter piece or a single chapter.",
+    );
   };
 
   const runArticleConversion = (apiFn, action, noTranslate) => {
