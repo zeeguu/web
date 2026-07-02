@@ -33,6 +33,9 @@ export default function useSelectInterest(api) {
     setSubscribedTopics([...subscribedTopics, topic]);
     setAvailableTopics(availableTopics.filter((each) => each.id !== topic.id));
     api.subscribeToTopic(topic);
+    // Recommendations are cached (5-min TTL); drop the snapshot so the feed
+    // reflects the new subscription instead of the pre-change one.
+    api.invalidateCache("user_articles/recommended");
   }
 
   function unsubscribeFromTopic(topic) {
@@ -41,6 +44,7 @@ export default function useSelectInterest(api) {
     );
     setAvailableTopics([...availableTopics, topic]);
     api.unsubscribeFromTopic(topic);
+    api.invalidateCache("user_articles/recommended");
   }
 
   function toggleTopicSubscription(topic) {
@@ -55,6 +59,7 @@ export default function useSelectInterest(api) {
   function subscribeToSearch(response) {
     api.subscribeToSearch(response, (data) => {
       setSubscribedSearches([...subscribedSearches, data]);
+      api.invalidateCache("user_articles/recommended");
     });
   }
 
@@ -65,6 +70,7 @@ export default function useSelectInterest(api) {
       subscribedSearches.filter((each) => each.id !== search.id),
     );
     api.unsubscribeFromSearch(search);
+    api.invalidateCache("user_articles/recommended");
   }
 
   function isSubscribed(topic) {
