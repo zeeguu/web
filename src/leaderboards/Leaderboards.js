@@ -118,9 +118,10 @@ export default function Leaderboards({
   useEffect(() => {
     if (scope === LEADERBOARD_SCOPES.COHORT) {
       api.getStudent((data) => {
-        if (data?.cohorts?.length) {
-          setCohorts(data.cohorts);
-          setSelectedCohort(data.cohorts[0].id);
+        const leaderboardCohorts = data.cohorts.filter((cohort) => cohort.has_leaderboard === true);
+        if (leaderboardCohorts?.length) {
+          setCohorts(leaderboardCohorts);
+          setSelectedCohort(leaderboardCohorts[0].id);
         }
       });
     }
