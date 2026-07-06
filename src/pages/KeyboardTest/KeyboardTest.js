@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import VirtualKeyboard from "../../components/VirtualKeyboard/VirtualKeyboard";
+import KeyboardTestSection from "./KeyboardTestSection";
 import {
   Container,
   Title,
@@ -22,42 +23,23 @@ export default function KeyboardTest() {
     <Container>
       <Title>Virtual Keyboard Test Page</Title>
 
-      <Section>
-        <SectionTitle>Danish Keyboard (da)</SectionTitle>
-        <Label>Test Input:</Label>
-        <TestInput
-          type="text"
-          value={danishInput}
-          onChange={(e) => setDanishInput(e.target.value)}
-          placeholder="Type or use the virtual keyboard below..."
-          inputMode="none"
-        />
-        <VirtualKeyboard
-          languageCode="da"
-          onInput={setDanishInput}
-          currentValue={danishInput}
-          initialCollapsed={false}
-        />
-        <Label>Current Value:</Label>
-        <InputValue>{danishInput || "(empty)"}</InputValue>
-        <Info>Danish keyboard includes special characters: æ, ø, å</Info>
-      </Section>
+      <KeyboardTestSection
+        title="Danish Keyboard (da)"
+        value={danishInput}
+        onChange={setDanishInput}
+        placeholder="Type or use the virtual keyboard below..."
+        languageCode="da"
+        infoText="Danish keyboard includes special characters: æ, ø, å"
+      />
 
-      <Section>
-        <SectionTitle>Greek Keyboard (el)</SectionTitle>
-        <Label>Test Input:</Label>
-        <TestInput
-          type="text"
-          value={greekInput}
-          onChange={(e) => setGreekInput(e.target.value)}
-          placeholder="Πληκτρολογήστε ή χρησιμοποιήστε το εικονικό πληκτρολόγιο..."
-          inputMode="none"
-        />
-        <VirtualKeyboard languageCode="el" onInput={setGreekInput} currentValue={greekInput} initialCollapsed={false} />
-        <Label>Current Value:</Label>
-        <InputValue>{greekInput || "(empty)"}</InputValue>
-        <Info>Greek keyboard includes all Greek letters and accented characters</Info>
-      </Section>
+      <KeyboardTestSection
+        title="Greek Keyboard (el)"
+        value={greekInput}
+        onChange={setGreekInput}
+        placeholder="Πληκτρολογήστε ή χρησιμοποιήστε το εικονικό πληκτρολόγιο..."
+        languageCode="el"
+        infoText="Greek keyboard includes all Greek letters and accented characters"
+      />
 
       <Section>
         <SectionTitle>Dynamic Language Selector</SectionTitle>
