@@ -52,7 +52,7 @@ import DailyAudioRouter from "./dailyAudio/_DailyAudioRouter";
 import SharedLessonRouteEntry from "./dailyAudio/SharedLessonRouteEntry";
 import IndividualExercise from "./pages/IndividualExercise";
 import Swiper from "./swiper/Swiper";
-import KeyboardTest from "./pages/KeyboardTest";
+import KeyboardTest from "./pages/KeyboardTest/KeyboardTest";
 import VerbalFlashcardsRouter from "@/verbalFlashcards/VerbalFlashcardsRouter";
 import Feature from "./features/Feature";
 
