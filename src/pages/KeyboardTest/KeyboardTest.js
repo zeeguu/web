@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import VirtualKeyboard from '../../components/VirtualKeyboard/VirtualKeyboard';
+import React, { useState } from "react";
+import VirtualKeyboard from "../../components/VirtualKeyboard/VirtualKeyboard";
 import {
   Container,
   Title,
@@ -10,13 +10,13 @@ import {
   Label,
   LanguageSelector,
   Info,
-} from './styles';
+} from "./KeyboardTest.sc";
 
 export default function KeyboardTest() {
-  const [danishInput, setDanishInput] = useState('');
-  const [greekInput, setGreekInput] = useState('');
-  const [selectedLanguage, setSelectedLanguage] = useState('da');
-  const [customInput, setCustomInput] = useState('');
+  const [danishInput, setDanishInput] = useState("");
+  const [greekInput, setGreekInput] = useState("");
+  const [selectedLanguage, setSelectedLanguage] = useState("da");
+  const [customInput, setCustomInput] = useState("");
 
   return (
     <Container>
@@ -39,7 +39,7 @@ export default function KeyboardTest() {
           initialCollapsed={false}
         />
         <Label>Current Value:</Label>
-        <InputValue>{danishInput || '(empty)'}</InputValue>
+        <InputValue>{danishInput || "(empty)"}</InputValue>
         <Info>Danish keyboard includes special characters: æ, ø, å</Info>
       </Section>
 
@@ -53,24 +53,16 @@ export default function KeyboardTest() {
           placeholder="Πληκτρολογήστε ή χρησιμοποιήστε το εικονικό πληκτρολόγιο..."
           inputMode="none"
         />
-        <VirtualKeyboard
-          languageCode="el"
-          onInput={setGreekInput}
-          currentValue={greekInput}
-          initialCollapsed={false}
-        />
+        <VirtualKeyboard languageCode="el" onInput={setGreekInput} currentValue={greekInput} initialCollapsed={false} />
         <Label>Current Value:</Label>
-        <InputValue>{greekInput || '(empty)'}</InputValue>
+        <InputValue>{greekInput || "(empty)"}</InputValue>
         <Info>Greek keyboard includes all Greek letters and accented characters</Info>
       </Section>
 
       <Section>
         <SectionTitle>Dynamic Language Selector</SectionTitle>
         <Label>Select Language:</Label>
-        <LanguageSelector
-          value={selectedLanguage}
-          onChange={(e) => setSelectedLanguage(e.target.value)}
-        >
+        <LanguageSelector value={selectedLanguage} onChange={(e) => setSelectedLanguage(e.target.value)}>
           <option value="da">Danish</option>
           <option value="el">Greek</option>
           <option value="en">English (no keyboard)</option>
@@ -82,7 +74,7 @@ export default function KeyboardTest() {
           value={customInput}
           onChange={(e) => setCustomInput(e.target.value)}
           placeholder="Type or use the virtual keyboard..."
-          inputMode={['da', 'el'].includes(selectedLanguage) ? 'none' : 'text'}
+          inputMode={["da", "el"].includes(selectedLanguage) ? "none" : "text"}
         />
         <VirtualKeyboard
           languageCode={selectedLanguage}
@@ -91,11 +83,11 @@ export default function KeyboardTest() {
           initialCollapsed={false}
         />
         <Label>Current Value:</Label>
-        <InputValue>{customInput || '(empty)'}</InputValue>
+        <InputValue>{customInput || "(empty)"}</InputValue>
         <Info>
-          {['da', 'el'].includes(selectedLanguage)
-            ? 'Virtual keyboard is available for this language'
-            : 'No virtual keyboard available for this language'}
+          {["da", "el"].includes(selectedLanguage)
+            ? "Virtual keyboard is available for this language"
+            : "No virtual keyboard available for this language"}
         </Info>
       </Section>
 
