@@ -65,7 +65,9 @@ export default function BookmarkedArticles() {
   );
 
   if (articleList == null) {
-    return <LoadingAnimation />;
+    // Shorter delay than the 1s default: swipe navigation slides the old tab
+    // away and leaves a blank panel, so the spinner needs to land sooner.
+    return <LoadingAnimation delay={300} />;
   }
 
   if (articleList.length === 0) {

@@ -211,8 +211,7 @@ let strings = new LocalizedStrings(
       //ExcludeWords
       excludeWords: "Exclude Words",
       excludedKeywords: "Excluded Keywords",
-      addUnwantedWordHelperText: "Add one unwanted word or phrase at a time",
-      unwantedWordPlaceholder: "E.g. robbery",
+      unwantedWordPlaceholder: "Add a word or phrase to avoid, e.g. robbery",
 
       //PrivacyNotice
       privacyNotice: "Privacy Notice",
