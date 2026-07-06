@@ -42,6 +42,7 @@ const TeacherRouter = (props) => (
 );
 import { PrivateRouteWithLayout } from "./PrivateRouteWithLayout";
 import { PrivateRoute } from "./PrivateRoute";
+import AppLayout from "./AppLayout";
 import DeleteAccount from "./pages/DeleteAccount/DeleteAccount";
 import SettingsRouter from "./pages/Settings/_SettingsRouter";
 import ProfileRouter from "./profile/_ProfileRouter";
@@ -158,7 +159,14 @@ export default function MainAppRouter({ hasExtension, handleSuccessfulLogIn }) {
           component={IndividualExercise}
         />
         <PrivateRouteWithLayout path="/exercise-test" component={IndividualExercise} />
-        <Route path="/keyboard-test" component={KeyboardTest} />
+        <Route
+          path="/keyboard-test"
+          render={() => (
+            <AppLayout>
+              <KeyboardTest />
+            </AppLayout>
+          )}
+        />
         <Route path="*" component={NotFound} />
       </Switch>
     </>
