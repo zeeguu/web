@@ -9,26 +9,22 @@ export default function ExplainTopicsModal({ infoTopicClick, showInfoTopics, set
       children={
         <>
           <h1>Topics are shown differently!</h1>
-          <div style={{ textAlign: "left", lineHeight: "2em" }}>
-            <s.UrlTopics style={{ cursor: "default" }}>
-              <span className="inferred" style={{ marginRight: "0.5em", cursor: "default" }}>
+          <s.ModalContent>
+            <s.UrlTopics>
+              <s.InferredTopic>
                 {infoTopicClick}
-                <HighlightOffRoundedIcon
-                  className="cancelButton"
-                  style={{ cursor: "default" }}
-                  sx={{ color: darkBlue }}
-                />
-              </span>{" "}
+                <s.CancelButton>
+                  <HighlightOffRoundedIcon sx={{ color: darkBlue }} />
+                </s.CancelButton>
+              </s.InferredTopic>{" "}
               A dashed-line means that similar articles have been labeled with '{infoTopicClick}'. You can choose to
               remove them by clicking the cross.
             </s.UrlTopics>
-            <s.UrlTopics style={{ cursor: "default" }}>
-              <span className="gold" style={{ marginRight: "0.5em", cursor: "default" }}>
-                {infoTopicClick}
-              </span>{" "}
-              The source associated with the article usually publishes '{infoTopicClick}'.
+            <s.UrlTopics>
+              <s.GoldTopic>{infoTopicClick}</s.GoldTopic> The source associated with the article usually publishes '
+              {infoTopicClick}'.
             </s.UrlTopics>
-          </div>
+          </s.ModalContent>
         </>
       }
       open={showInfoTopics}
