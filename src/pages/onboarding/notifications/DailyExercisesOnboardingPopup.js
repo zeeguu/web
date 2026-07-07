@@ -1,4 +1,4 @@
-import * as s from "./DailyExercisesOnboardingPopup.sc";
+import * as s from "./OnboardingModal.sc";
 import Main from "../../../components/modal_shared/Main.sc";
 import OnboardingModal from "./OnboardingModal";
 import { ONBOARDING_MESSAGE_IDS } from "../../../appConstants";
@@ -12,7 +12,11 @@ export default function DailyExercisesOnboardingPopup({ open, handleCancel }) {
     >
       <Main>
         <s.CenteredText>Your daily exercises will appear here.</s.CenteredText>
-        <s.DailyExercisesImage src="/static/images/dailyExercisesOnboarding.png" alt="Daily exercises illustration" />
+        <s.OnboardingImage
+          $tightTop
+          src="/static/images/dailyExercisesOnboarding.png"
+          alt="Daily exercises illustration"
+        />
         <s.CenteredSecondText>P.S. They are based on your translations from the articles.</s.CenteredSecondText>
       </Main>
     </OnboardingModal>

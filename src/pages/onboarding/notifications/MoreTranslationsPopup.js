@@ -10,7 +10,7 @@ export default function MoreTranslationsPopup({ open, handleCancel }) {
       handleCancel={handleCancel}
       onboardingMessageId={ONBOARDING_MESSAGE_IDS.moreTranslations}
     >
-      <s.MoreTranslationImage src="/static/images/MoreTranslation.png" alt="See more translations illustration" />
+      <s.OnboardingImage src="/static/images/MoreTranslation.png" alt="See more translations illustration" />
       <Main>
         <s.CenteredText>
           Press <s.ArrowIcon src="/static/icons/ArrowDown.svg" alt="Arrow icon" /> to see more translation options, to
