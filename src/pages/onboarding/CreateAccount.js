@@ -26,7 +26,7 @@ import FullWidthErrorMsg from "../../components/FullWidthErrorMsg.sc";
 import FormSection from "../_pages_shared/FormSection.sc";
 import InputField from "../../components/InputField";
 import useShadowRef from "../../hooks/useShadowRef";
-import Footer from "../_pages_shared/Footer.sc";
+import Footer from "../_pages_shared/Footer";
 import ButtonContainer from "../_pages_shared/ButtonContainer.sc";
 import Button from "../_pages_shared/Button.sc";
 import Modal from "../../components/modal_shared/Modal";
