@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import Modal from "../modal_shared/Modal";
 import Header from "../modal_shared/Header.sc";
-import Heading from "../modal_shared/Heading.sc";
+import ModalTitle from "../modal_shared/ModalTitle.sc";
 import Main from "../modal_shared/Main.sc";
 import FullWidthImage from "../FullWidthImage";
 import Footer from "../modal_shared/Footer.sc";
@@ -54,9 +54,9 @@ export default function SupportedNotification({
   return (
     <Modal open={open} onClose={handleCancel}>
       <Header>
-        <Heading style={{textAlign:"center"}}>
+        <ModalTitle style={{textAlign:"center"}}>
           You will be redirected to the original article page       
-        </Heading>
+        </ModalTitle>
       </Header>
       <Main>
         <p >

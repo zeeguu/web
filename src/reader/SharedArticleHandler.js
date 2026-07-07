@@ -6,6 +6,7 @@ import useQuery from "../hooks/useQuery";
 import useTimedProgressMessage from "../hooks/useTimedProgressMessage";
 import LoadingAnimation from "../components/LoadingAnimation";
 import ArticleLanguageModal from "./ArticleLanguageModal";
+import ErrorDialog from "../components/ErrorDialog";
 import { shouldShowLanguageChoice, getUserCefrLevel, numericToCefr } from "../utils/misc/cefrHelpers";
 
 const PROGRESS_STAGES = {
@@ -63,7 +64,7 @@ export default function SharedArticleHandler() {
         () => {
           setStatus("error");
           setErrorMessage("Could not load the uploaded article.");
-        }
+        },
       );
       return;
     }
@@ -94,10 +95,8 @@ export default function SharedArticleHandler() {
       },
       (error) => {
         setStatus("error");
-        setErrorMessage(
-          "Failed to load article. It may be behind a paywall or not readable."
-        );
-      }
+        setErrorMessage("Failed to load article. It may be behind a paywall or not readable.");
+      },
     );
   }, [sharedUrl, uploadId]);
 
@@ -112,9 +111,19 @@ export default function SharedArticleHandler() {
     setStatus("loading");
   };
 
-  const onConversionError = () => {
+  const onConversionError = (errorMessage) => {
     setStatus("error");
-    setErrorMessage("Could not process this article.");
+    // Surface the server's message when it's human-readable (the API sends
+    // actionable text like "…too long… try a single chapter" as JSON
+    // `message`). Fall back to a friendly generic for bare "HTTP 4xx" or
+    // network strings, which aren't useful to a reader.
+    const isBareHttpCode =
+      typeof errorMessage === "string" && /^HTTP \d+$/.test(errorMessage.trim());
+    setErrorMessage(
+      errorMessage && !isBareHttpCode
+        ? errorMessage
+        : "Could not process this article. It may be too long, or the source may be blocking us — try a shorter piece or a single chapter.",
+    );
   };
 
   const runArticleConversion = (apiFn, action, noTranslate) => {
@@ -185,9 +194,7 @@ export default function SharedArticleHandler() {
   };
 
   if (status === "loading") {
-    const message = isProcessing
-      ? progressMessage || "Preparing article…"
-      : "Opening article…";
+    const message = isProcessing ? progressMessage || "Preparing article…" : "Opening article…";
     return (
       <LoadingAnimation
         /* Simplification / translation routinely take 15-25s — hold back the
@@ -221,24 +228,12 @@ export default function SharedArticleHandler() {
 
   if (status === "error") {
     return (
-      <div style={{ textAlign: "center", padding: "4em 2em" }}>
-        <h2>Could not open article</h2>
-        <p>{errorMessage}</p>
-        <p style={{ color: "#666", fontSize: "0.9em", wordBreak: "break-all" }}>
-          {sharedUrl || (uploadId ? `upload #${uploadId}` : null)}
-        </p>
-        <button
-          onClick={() => history.push("/articles")}
-          style={{
-            marginTop: "1em",
-            padding: "0.5em 1.5em",
-            fontSize: "1em",
-            cursor: "pointer",
-          }}
-        >
-          Go to Articles
-        </button>
-      </div>
+      <ErrorDialog
+        title="Could not open article"
+        message={errorMessage}
+        detail={sharedUrl || (uploadId ? `upload #${uploadId}` : null)}
+        onBack={() => history.push("/articles")}
+      />
     );
   }
 

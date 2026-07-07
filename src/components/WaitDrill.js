@@ -126,7 +126,7 @@ export default function WaitDrill() {
         </DrillHistoryList>
       )}
       {interactive && (
-        <DrillExitLink onClick={exitToAuto}>back to auto-cycle</DrillExitLink>
+        <DrillExitLink onClick={exitToAuto}>auto-cycle</DrillExitLink>
       )}
     </>
   );

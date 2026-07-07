@@ -1,2 +1,2 @@
 // App version - updated during release process
-export const APP_VERSION = "1.1.41";
+export const APP_VERSION = "1.1.42";

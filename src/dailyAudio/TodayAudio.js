@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useRef, useState } from "react";
+import React, { useCallback, useContext, useEffect, useRef, useState } from "react";
 import { useHistory } from "react-router-dom";
 import { Capacitor } from "@capacitor/core";
 import { toast } from "react-toastify";
@@ -8,6 +8,7 @@ import { UserContext } from "../contexts/UserContext";
 import LoadingAnimation from "../components/LoadingAnimation";
 import useListeningSession from "../hooks/useListeningSession";
 import useDailyLessonPreference from "../hooks/useDailyLessonPreference";
+import { useIsOffline } from "../contexts/ConnectivityContext";
 import { AUDIO_STATUS, GENERATION_PROGRESS } from "./AudioLessonConstants";
 import TodayEpisodeCard from "./TodayEpisodeCard";
 import DailyLessonSettingsDialog from "./DailyLessonSettingsDialog";
@@ -47,6 +48,10 @@ export default function TodayAudio() {
   const [lessonData, setLessonData] = useState(null);
   const [noLesson, setNoLesson] = useState(false); // confirmed: nothing for today yet
   const [error, setError] = useState(null);
+  // Couldn't reach the backend at all (offline / slow network) while loading
+  // today's state. Kept separate from `noLesson` so we don't mistake a network
+  // failure for "you haven't set up daily lessons yet" and show the setup screen.
+  const [connectionError, setConnectionError] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [currentPlaybackTime, setCurrentPlaybackTime] = useState(0);
   const history = useHistory();
@@ -79,6 +84,7 @@ export default function TodayAudio() {
     setSubscription(null);
     setError(null);
     setNoLesson(false);
+    setConnectionError(false);
     // Tear down any in-flight generation/polling tied to the previous language
     // so we don't keep polling/showing progress for the wrong language.
     setIsGenerating(false);
@@ -382,12 +388,20 @@ export default function TodayAudio() {
     }
   }, [lessonData]);
 
-  // On mount: is something generating? else is there a lesson? else nothing yet.
-  useEffect(() => {
+  // Load today's state: is something generating? else is there a lesson? else
+  // nothing yet. A backend that can't be reached (offline / slow network) lands
+  // in onLessonError, which flags a connection error so we keep the loading
+  // screen (it becomes the offline wait-game) up instead of dropping the
+  // subscribed user onto the first-run setup screen.
+  const loadToday = useCallback(() => {
     setIsLoading(true);
+    // Don't clear connectionError here: on a retry it stays true (no message
+    // blink, and the retry effect isn't torn down + rebuilt each attempt) until
+    // a load actually succeeds, which clears it in onLesson / the adopt branch.
 
     const onLesson = (data) => {
       setIsLoading(false);
+      setConnectionError(false);
       setSubscription(data || null);
       if (data && data.lesson_id) {
         setLessonData(data);
@@ -398,10 +412,10 @@ export default function TodayAudio() {
       }
     };
     const onLessonError = () => {
-      setIsLoading(false);
-      setLessonData(null);
-      setUserDetails((prev) => ({ ...prev, daily_audio_status: null }));
-      setNoLesson(true);
+      // Couldn't reach the backend. Keep the loading screen (which morphs into
+      // the wait-game) up — leaving isLoading true — and let the retry effect
+      // re-load once connectivity returns, rather than show the setup screen.
+      setConnectionError(true);
     };
 
     api.getAudioLessonGenerationProgress(
@@ -412,12 +426,14 @@ export default function TodayAudio() {
         const matchesLang = inFlight && (!progress.language_code || progress.language_code === lang);
         if (matchesLang) {
           setIsLoading(false);
+          setConnectionError(false);
           setIsGenerating(true);
           setGenerationProgress(progress);
-          // Label it from the saved subscription (the cron always generates
-          // the subscribed type).
-          if (dailyType) {
-            setGeneratingLabel({ type: dailyType, suggestion: dailySuggestion || "" });
+          // Label it from the saved subscription (the cron always generates the
+          // subscribed type). Read via refs so a late pref resolution doesn't
+          // need to be a dependency of this callback.
+          if (dailyTypeRef.current) {
+            setGeneratingLabel({ type: dailyTypeRef.current, suggestion: dailySuggestionRef.current || "" });
           }
           setUserDetails((prev) => ({ ...prev, daily_audio_status: AUDIO_STATUS.GENERATING }));
           return;
@@ -426,8 +442,23 @@ export default function TodayAudio() {
       },
       () => api.getTodaysLesson(lang, onLesson, onLessonError),
     );
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [api, lang]);
+  }, [api, lang, setUserDetails]);
+
+  // On mount (and whenever api/lang changes) do the initial load.
+  useEffect(() => {
+    loadToday();
+  }, [loadToday]);
+
+  // Connectivity detection (web events + native OS change + a probe poll +
+  // tab/app resume) lives in useIsOffline — no listeners reimplemented here.
+  // When it flips back online while today's load is still failed, retry it.
+  const isOffline = useIsOffline();
+  const wasOffline = useRef(isOffline);
+  useEffect(() => {
+    const cameOnline = wasOffline.current && !isOffline;
+    wasOffline.current = isOffline;
+    if (cameOnline && connectionError) loadToday();
+  }, [isOffline, connectionError, loadToday]);
 
   // Seed the dialog with the saved preference; if none is stored yet (e.g. a
   // lesson generated before preferences existed), fall back to today's lesson
@@ -453,7 +484,10 @@ export default function TodayAudio() {
     />
   );
 
-  if (isLoading || !prefLoaded) {
+  // connectionError keeps us here even if isLoading toggled off: the
+  // LoadingAnimation diagnoses the offline/slow state and turns into the
+  // wait-game, and the retry effect re-loads once we're back online.
+  if (isLoading || !prefLoaded || connectionError) {
     return (
       <div style={{ padding: "20px" }}>
         <LoadingAnimation>

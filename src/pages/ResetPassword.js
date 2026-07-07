@@ -5,7 +5,7 @@ import { EmailValidator, NonEmptyValidator } from "../utils/ValidatorRule/Valida
 import strings from "../i18n/definitions";
 import CardPage from "./_pages_shared/CardPage";
 import Header from "./_pages_shared/Header";
-import Heading from "./_pages_shared/Heading.sc";
+import PageTitle from "./_pages_shared/PageTitle.sc";
 import Main from "./_pages_shared/Main.sc";
 import Footer from "./_pages_shared/Footer.sc";
 
@@ -53,7 +53,7 @@ export default function ResetPassword() {
   return (
     <CardPage pageWidth={"narrow"} isBackgroundFixed={true}>
       <Header>
-        <Heading>Reset Password</Heading>
+        <PageTitle>Reset Password</PageTitle>
       </Header>
       <Main>
         {!codeSent && !isLoggedIn && (
