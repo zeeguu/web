@@ -1,7 +1,7 @@
 import Modal from "../../components/modal_shared/Modal";
 import Header from "../../components/modal_shared/Header.sc";
 import Main from "../../components/modal_shared/Main.sc";
-import Heading from "../../components/modal_shared/Heading.sc";
+import ModalTitle from "../../components/modal_shared/ModalTitle.sc";
 import ButtonContainer from "../../components/modal_shared/ButtonContainer.sc";
 import Button from "../../pages/_pages_shared/Button.sc";
 import TextField from "../../components/TextField";
@@ -80,9 +80,9 @@ export default function RemoveBookmarkModal({
     >
       <Header>
         {exerciseBookmarkForFeedback && (
-          <Heading>
+          <ModalTitle>
             Why remove {exerciseBookmarkForFeedback.from}/{exerciseBookmarkForFeedback.to}?
-          </Heading>
+          </ModalTitle>
         )}
       </Header>
       <Main>

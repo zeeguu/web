@@ -2,7 +2,7 @@ import { useEffect, useState, useContext } from "react";
 import { UserContext } from "../../contexts/UserContext";
 import CardPage from "../_pages_shared/CardPage";
 import Header from "../_pages_shared/Header";
-import Heading from "../_pages_shared/Heading.sc";
+import PageTitle from "../_pages_shared/PageTitle.sc";
 import Main from "../_pages_shared/Main.sc";
 import Footer from "../_pages_shared/Footer.sc";
 import LoadingAnimation from "../../components/LoadingAnimation";
@@ -61,7 +61,7 @@ export default function DeleteAccount() {
   return (
     <CardPage isBackgroundFixed={true}>
       <Header>
-        <Heading>{headingMsg}</Heading>
+        <PageTitle>{headingMsg}</PageTitle>
       </Header>
       <Main>
         {currentStatus === DeletionStatus.WAITING_API_RESPONSE && (
