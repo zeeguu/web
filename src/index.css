@@ -39,6 +39,8 @@
   --action-btn-muted-hover-text: #666;
   --action-btn-secondary-color-bg: #dbecff;
   --action-btn-secondary-color-text: #022161;
+  --save-button-bg: #2f77ad;
+  --save-button-hover-bg: #1f5f91;
   --onboarding-btn-bg: #f88431;
   --onboarding-btn-text-color: white;
   --onboarding-modal-bg: #fff1d4;
@@ -119,6 +121,8 @@
   --action-btn-muted-hover-text: #bbb;
   --action-btn-secondary-color-bg: #aab1de;
   --action-btn-secondary-color-text: #3f3360;
+  --save-button-bg: #3f6f9c;
+  --save-button-hover-bg: #2f5c82;
   --onboarding-btn-text-color: #3d2800;
   --onboarding-modal-bg: #2a2540;
 
