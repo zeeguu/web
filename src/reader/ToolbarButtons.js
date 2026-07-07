@@ -5,7 +5,7 @@ import FormHelperText from "@mui/material/FormHelperText";
 import { ThemeProvider } from "@mui/material/styles";
 import { t } from "../components/MUIToggleThemes";
 import ToggleOption from "../components/Toggles/ToggleOption";
-import { toolbarButtonRoot, toolbarMenu, toolbarFormGroupSx, experimentalHelperText } from "./ToolbarButtons.sc";
+import { ToolbarButtonRoot, ToolbarMenu, toolbarFormGroupSx, experimentalHelperText } from "./ToolbarButtons.sc";
 import SettingsIconButton from "../components/Icons/SettingsIconButton";
 import TextSizeControl from "../components/Controls/TextSizeControl";
 
@@ -39,11 +39,11 @@ export default function ToolbarButtons({
   }, [showOptions]);
 
   return (
-    <div ref={menuRef} style={toolbarButtonRoot}>
+    <ToolbarButtonRoot ref={menuRef}>
       <SettingsIconButton onClick={() => setShowOptions(!showOptions)} title="Click word options" />
 
       {showOptions && (
-        <div style={toolbarMenu}>
+        <ToolbarMenu>
           <ThemeProvider theme={t}>
             <FormGroup sx={toolbarFormGroupSx}>
               <FormHelperText>{"Click word(s) to:"}</FormHelperText>
@@ -81,8 +81,8 @@ export default function ToolbarButtons({
               />
             </FormGroup>
           </ThemeProvider>
-        </div>
+        </ToolbarMenu>
       )}
-    </div>
+    </ToolbarButtonRoot>
   );
 }
