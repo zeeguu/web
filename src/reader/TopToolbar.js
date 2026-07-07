@@ -12,7 +12,7 @@ import BackArrow from "../pages/Settings/SharedComponents/BackArrow";
 import useScreenWidth from "../hooks/useScreenWidth";
 import { APIContext } from "../contexts/APIContext";
 import { MOBILE_WIDTH } from "../components/MainNav/screenSize";
-import { leftGroup, middleGroup, rightGroup, progressStyle } from "./TopToolbar.sc";
+import { LeftGroup, MiddleGroup, RightGroup, ProgressBar } from "./TopToolbar.sc";
 import SaveAndEditButton from "../components/Buttons/SaveAndEditButton";
 
 export default function TopToolbar({
@@ -64,11 +64,11 @@ export default function TopToolbar({
     <s.ToolbarWrapper>
       <s.Toolbar>
         <s.TopbarButtonsContainer $screenWidth={screenWidth}>
-          <div style={leftGroup}>
+          <LeftGroup>
             {isMobile && <BackArrow swipeTargetPath={swipeBackTargetPath} />}
             {timer}
-          </div>
-          <div style={middleGroup}>
+          </LeftGroup>
+          <MiddleGroup>
             {user.is_teacher && (
               <>
                 {teacherArticleID && !isMobile && (
@@ -84,8 +84,8 @@ export default function TopToolbar({
                 )}
               </>
             )}
-          </div>
-          <div style={rightGroup}>
+          </MiddleGroup>
+          <RightGroup>
             {reportBroken}
             <ShareArticle articleID={articleID} />
             <ToolbarButtons
@@ -100,10 +100,10 @@ export default function TopToolbar({
               readerFontSize={readerFontSize}
               setReaderFontSize={setReaderFontSize}
             />
-          </div>
+          </RightGroup>
         </s.TopbarButtonsContainer>
 
-        <progress style={progressStyle} value={articleProgress} />
+        <ProgressBar value={articleProgress} />
       </s.Toolbar>
     </s.ToolbarWrapper>
   );

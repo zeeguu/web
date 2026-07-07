@@ -1,21 +1,23 @@
-export const leftGroup = {
-  display: "flex",
-  alignItems: "center",
-  gap: "0.5rem",
-};
+import styled from "styled-components";
 
-export const middleGroup = {
-  display: "flex",
-  gap: "1rem",
-};
+export const LeftGroup = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+`;
 
-export const rightGroup = {
-  display: "flex",
-  alignItems: "center",
-  gap: "0.25rem",
-  marginRight: "0.5rem",
-};
+export const MiddleGroup = styled.div`
+  display: flex;
+  gap: 1rem;
+`;
 
-export const progressStyle = {
-  margin: "0",
-};
+export const RightGroup = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  margin-right: 0.5rem;
+`;
+
+export const ProgressBar = styled.progress`
+  margin: 0;
+`;
