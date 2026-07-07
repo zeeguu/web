@@ -1,8 +1,8 @@
-import Footer from "../../pages/_pages_shared/Footer";
+import Footer from "../../pages/_pages_shared/Footer.sc";
 import Button from "../../pages/_pages_shared/Button.sc";
 
 export default {
-  title: "Pages/Footer",
+  title: "Footers/Footer",
   component: Footer,
 };
 
