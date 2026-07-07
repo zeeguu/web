@@ -2,8 +2,6 @@ import * as React from "react";
 import { useState, useEffect, useRef } from "react";
 import FormGroup from "@mui/material/FormGroup";
 import FormHelperText from "@mui/material/FormHelperText";
-import { ThemeProvider } from "@mui/material/styles";
-import { t } from "../components/MUIToggleThemes";
 import ToggleOption from "../components/Toggles/ToggleOption";
 import { ToolbarButtonRoot, ToolbarMenu, toolbarFormGroupSx, experimentalHelperText } from "./ToolbarButtons.sc";
 import SettingsIconButton from "../components/Icons/SettingsIconButton";
@@ -44,43 +42,41 @@ export default function ToolbarButtons({
 
       {showOptions && (
         <ToolbarMenu>
-          <ThemeProvider theme={t}>
-            <FormGroup sx={toolbarFormGroupSx}>
-              <FormHelperText>{"Click word(s) to:"}</FormHelperText>
-              <ToggleOption
-                checked={translating}
-                onToggle={setTranslating}
-                className={translating ? "selected" : ""}
-                label="See translation"
+          <FormGroup sx={toolbarFormGroupSx}>
+            <FormHelperText>{"Click word(s) to:"}</FormHelperText>
+            <ToggleOption
+              checked={translating}
+              onToggle={setTranslating}
+              className={translating ? "selected" : ""}
+              label="See translation"
+            />
+            <ToggleOption
+              checked={pronouncing}
+              onToggle={setPronouncing}
+              className={pronouncing ? "selected" : ""}
+              label="Hear pronunciation"
+            />
+            <ToggleOption
+              checked={showReadingTimer}
+              onToggle={setShowReadingTimer}
+              className={showReadingTimer ? "selected" : ""}
+              label="Show reading timer"
+            />
+            {setReaderFontSize && (
+              <TextSizeControl
+                value={readerFontSize}
+                onDecrease={() => setReaderFontSize(readerFontSize - 2)}
+                onIncrease={() => setReaderFontSize(readerFontSize + 2)}
               />
-              <ToggleOption
-                checked={pronouncing}
-                onToggle={setPronouncing}
-                className={pronouncing ? "selected" : ""}
-                label="Hear pronunciation"
-              />
-              <ToggleOption
-                checked={showReadingTimer}
-                onToggle={setShowReadingTimer}
-                className={showReadingTimer ? "selected" : ""}
-                label="Show reading timer"
-              />
-              {setReaderFontSize && (
-                <TextSizeControl
-                  value={readerFontSize}
-                  onDecrease={() => setReaderFontSize(readerFontSize - 2)}
-                  onIncrease={() => setReaderFontSize(readerFontSize + 2)}
-                />
-              )}
-              <FormHelperText style={experimentalHelperText}>{<small>{"Experimental:"}</small>}</FormHelperText>
-              <ToggleOption
-                checked={showMweHints}
-                onToggle={setShowMweHints}
-                className={showMweHints ? "selected" : ""}
-                label="Show multi-word expressions hints"
-              />
-            </FormGroup>
-          </ThemeProvider>
+            )}
+            <FormHelperText style={experimentalHelperText}>{<small>{"Experimental:"}</small>}</FormHelperText>
+            <ToggleOption
+              checked={showMweHints}
+              onToggle={setShowMweHints}
+              className={showMweHints ? "selected" : ""}
+              label="Show multi-word expressions hints"
+            />
+          </FormGroup>
         </ToolbarMenu>
       )}
     </ToolbarButtonRoot>
