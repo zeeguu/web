@@ -1,5 +1,5 @@
 import React from "react";
-import Button from "../../pages/_pages_shared/Button";
+import Button from "../../pages/_pages_shared/Button.sc";
 
 export default {
   title: "Buttons/Button",

@@ -1,5 +1,5 @@
 import Footer from "../../pages/_pages_shared/Footer";
-import Button from "../../pages/_pages_shared/Button";
+import Button from "../../pages/_pages_shared/Button.sc";
 
 export default {
   title: "Pages/Footer",

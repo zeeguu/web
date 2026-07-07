@@ -1,6 +1,6 @@
 import React from "react";
 import ButtonContainer from "../../pages/_pages_shared/ButtonContainer";
-import Button from "../../pages/_pages_shared/Button";
+import Button from "../../pages/_pages_shared/Button.sc";
 
 export default {
   title: "Buttons/ButtonContainer",
