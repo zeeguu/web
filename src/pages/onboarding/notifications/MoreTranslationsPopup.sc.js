@@ -1,5 +1,4 @@
 import styled from "styled-components";
-import { StyledButton } from "../../../components/allButtons.sc";
 
 const MoreTranslationImage = styled.img`
   width: min(100%, 300px);
@@ -34,9 +33,5 @@ const CenteredText = styled.p`
     font-weight: 500;
   }
 `;
-const OnboardingPrimaryButton = styled(StyledButton)`
-  min-width: 190px;
-  margin: 0 auto;
-`;
 
-export { MoreTranslationImage, ArrowIcon, DeleteTranslationText, CenteredText, OnboardingPrimaryButton };
+export { MoreTranslationImage, ArrowIcon, DeleteTranslationText, CenteredText };

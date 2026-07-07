@@ -1,5 +1,4 @@
 import styled from "styled-components";
-import { StyledButton } from "../../../components/allButtons.sc";
 
 const LevelIndicatorWrapper = styled.div`
   display: flex;
@@ -46,9 +45,5 @@ const CenteredSecondText = styled.p`
     font-size: 14px;
   }
 `;
-const OnboardingPrimaryButton = styled(StyledButton)`
-  min-width: 190px;
-  margin: 0 auto;
-`;
 
-export { LevelIndicatorWrapper, CenteredText, CenteredSecondText, OnboardingPrimaryButton };
+export { LevelIndicatorWrapper, CenteredText, CenteredSecondText };

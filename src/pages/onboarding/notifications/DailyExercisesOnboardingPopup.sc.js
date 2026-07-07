@@ -1,5 +1,4 @@
 import styled from "styled-components";
-import { StyledButton } from "../../../components/allButtons.sc";
 
 const DailyExercisesImage = styled.img`
   width: min(100%, 300px);
@@ -29,9 +28,5 @@ const CenteredSecondText = styled.p`
     font-size: 14px;
   }
 `;
-const OnboardingPrimaryButton = styled(StyledButton)`
-  min-width: 190px;
-  margin: 0 auto;
-`;
 
-export { DailyExercisesImage, CenteredText, CenteredSecondText, OnboardingPrimaryButton };
+export { DailyExercisesImage, CenteredText, CenteredSecondText };

@@ -1,29 +1,15 @@
 import * as s from "./MoreTranslationsPopup.sc";
-import Modal from "../../../components/modal_shared/Modal";
 import Main from "../../../components/modal_shared/Main.sc";
-import Footer from "../../../components/modal_shared/Footer.sc";
-import ButtonContainer from "../../../components/modal_shared/ButtonContainer.sc";
-import { useContext } from "react";
-import { APIContext } from "../../../contexts/APIContext";
+import OnboardingModal from "./OnboardingModal";
 import { ONBOARDING_MESSAGE_IDS } from "../../../appConstants";
 
 export default function MoreTranslationsPopup({ open, handleCancel }) {
-  const api = useContext(APIContext);
-  const onboardingMessageId = ONBOARDING_MESSAGE_IDS.moreTranslations;
-
-  const handleDismiss = async () => {
-    if (onboardingMessageId) {
-      try {
-        await api.markOnboardingMessageDismissed(onboardingMessageId);
-      } catch (e) {
-        // ignore dismissal recording failures
-      }
-    }
-    if (handleCancel) handleCancel();
-  };
-
   return (
-    <Modal open={open} onClose={handleDismiss} wrapperBackgroundColor="var(--onboarding-modal-bg)" hideCloseButton>
+    <OnboardingModal
+      open={open}
+      handleCancel={handleCancel}
+      onboardingMessageId={ONBOARDING_MESSAGE_IDS.moreTranslations}
+    >
       <s.MoreTranslationImage src="/static/images/MoreTranslation.png" alt="See more translations illustration" />
       <Main>
         <s.CenteredText>
@@ -31,13 +17,6 @@ export default function MoreTranslationsPopup({ open, handleCancel }) {
           unselect a word press <s.DeleteTranslationText>Delete translation.</s.DeleteTranslationText>
         </s.CenteredText>
       </Main>
-      <Footer>
-        <ButtonContainer $buttonCountNum={1}>
-          <s.OnboardingPrimaryButton $onboarding onClick={handleDismiss}>
-            Continue
-          </s.OnboardingPrimaryButton>
-        </ButtonContainer>
-      </Footer>
-    </Modal>
+    </OnboardingModal>
   );
 }
