@@ -1,6 +1,6 @@
 import Modal from "../components/modal_shared/Modal";
 import Header from "../components/modal_shared/Header.sc";
-import Heading from "../components/modal_shared/Heading.sc";
+import ModalTitle from "../components/modal_shared/ModalTitle.sc";
 import Main from "../components/modal_shared/Main.sc";
 import Button from "../pages/_pages_shared/Button.sc";
 import * as s from "./UnfriendConfirmModal.sc";
@@ -9,7 +9,7 @@ export function UnfriendConfirmModal({ open, onClose, onConfirm, displayName, is
   return (
     <Modal open={open} onClose={onClose}>
       <Header>
-        <Heading>Confirm Unfriend</Heading>
+        <ModalTitle>Confirm Unfriend</ModalTitle>
       </Header>
       <Main>
         <div>

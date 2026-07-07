@@ -1,6 +1,6 @@
 import styled from "styled-components";
 
-const Heading = styled.h1`
+const PageTitle = styled.h1`
   width: 100%;
   font-size: 1.3em;
   line-height: 120%;
@@ -16,4 +16,4 @@ const Heading = styled.h1`
   }
 `;
 
-export default Heading;
+export default PageTitle;

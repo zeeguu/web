@@ -5,7 +5,7 @@ import styled from "styled-components";
 
 import CardPage from "../_pages_shared/CardPage";
 import Header from "../_pages_shared/Header";
-import Heading from "../_pages_shared/Heading.sc";
+import PageTitle from "../_pages_shared/PageTitle.sc";
 import Main from "../_pages_shared/Main.sc";
 import ButtonContainer from "../_pages_shared/ButtonContainer.sc";
 import Button from "../_pages_shared/Button.sc";
@@ -53,7 +53,7 @@ export default function Welcome() {
   return (
     <CardPage pageWidth={"narrow"} isBackgroundFixed={true}>
       <Header>
-        <Heading>Welcome to Zeeguu</Heading>
+        <PageTitle>Welcome to Zeeguu</PageTitle>
       </Header>
       <Main>
         <Subtitle>Do you already have an account?</Subtitle>

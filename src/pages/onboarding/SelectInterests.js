@@ -4,7 +4,7 @@ import { isSupportedBrowser } from "../../utils/misc/browserDetection";
 import useSelectInterest from "../../hooks/useSelectInterest";
 import CardPage from "../_pages_shared/CardPage";
 import Header from "../_pages_shared/Header";
-import Heading from "../_pages_shared/Heading.sc";
+import PageTitle from "../_pages_shared/PageTitle.sc";
 import Main from "../_pages_shared/Main.sc";
 import ButtonContainer from "../_pages_shared/ButtonContainer.sc";
 import Footer from "../_pages_shared/Footer.sc";
@@ -35,7 +35,7 @@ export default function SelectInterests({ hasExtension }) {
   return (
     <CardPage isBackgroundFixed={true}>
       <Header>
-        <Heading>What would you like to read&nbsp;about?</Heading>
+        <PageTitle>What would you like to read&nbsp;about?</PageTitle>
       </Header>
       <Main>
         <TagContainer>

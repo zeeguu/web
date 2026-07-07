@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import Heading from "../modal_shared/Heading.sc.js";
+import ModalTitle from "../modal_shared/ModalTitle.sc.js";
 import { Value } from "../progress_tracking/ProgressItems.sc.js";
 
 
@@ -40,7 +40,7 @@ export const ModalContent = styled.div`
   padding: 1em;
 `;
 
-export const CenteredHeading = styled(Heading)`
+export const CenteredHeading = styled(ModalTitle)`
 text-align: center;
 `;
 

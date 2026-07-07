@@ -11,7 +11,7 @@ import FormSection from "../pages/_pages_shared/FormSection.sc.js";
 import TextField from "./TextField.js";
 import Main from "./modal_shared/Main.sc.js";
 import Header from "./modal_shared/Header.sc.js";
-import Heading from "./modal_shared/Heading.sc.js";
+import ModalTitle from "./modal_shared/ModalTitle.sc.js";
 import { FEEDBACK_CODES, FEEDBACK_CODES_NAME, getCategoryIdForUrl } from "./FeedbackConstants.js";
 import useScreenWidth from "../hooks/useScreenWidth.js";
 
@@ -86,7 +86,7 @@ export default function FeedbackModal({
     >
       <Main>
         <Header withoutLogo>
-          <Heading>Provide Feedback</Heading>
+          <ModalTitle>Provide Feedback</ModalTitle>
         </Header>
         <Form action={onSubmit}>
           <FormSection>
