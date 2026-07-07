@@ -78,6 +78,8 @@
 
   --cefr-bar-color: #16a34a;
 
+  --progress-bar-bg: #ffdda7;
+
   color-scheme: light;
 }
 
@@ -159,9 +161,9 @@
   --exercise-btn-border: hsl(54, 100%, 95%);
   --exercise-btn-focus: rgba(255, 187, 84, 0.6);
 
-  --progress-bar-bg: #3a3a55;
+  --progress-bar-bg: #6565aa;
   --progress-bar-gradient: linear-gradient(180deg, #33334d, #44446a);
-  --progress-circle-bg: #3a3a55;
+  --progress-circle-bg: #5f5f8b;
   --progress-circle-border: #50507a;
 
   --achieved-bg: rgba(53, 193, 55, 0.35);
