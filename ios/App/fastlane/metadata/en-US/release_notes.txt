@@ -1,6 +1,4 @@
-- Your feed now updates right away when you add or remove a topic or a word to avoid, instead of waiting a few minutes.
-- A smoother offline experience: daily audio and the reading tabs show a clear "You're offline" state instead of a confusing setup screen, and recover on their own once you're back online.
-- Swipe left and right between Discover, Saved, Classroom, and Search, now steadier during scrolling.
-- Faster loading and fewer flickers on the Read screen.
-- Clearer wording when adding words or phrases to avoid.
+- Fixed swiping the topic filters at the top of your feed: dragging the topics now scrolls them, instead of accidentally jumping to another tab.
+- Renamed "Ask LLM" to "Ask AI" in the reader menu.
+- Clearer error message when an article can't be opened.
 - A few other smaller fixes and polish.
