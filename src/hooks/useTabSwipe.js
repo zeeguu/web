@@ -59,7 +59,24 @@ export default function useTabSwipe(
       axisLocked = false;
     }
 
+    // A nested horizontally-scrollable region (e.g. the feed's topic-pill
+    // row) marks itself with `data-tab-swipe-ignore` to claim its own
+    // horizontal gestures. Bail if the touch starts anywhere inside one.
+    function startsInIgnoredRegion(target) {
+      let node = target;
+      while (node && node !== el) {
+        if (node.nodeType === 1 && node.hasAttribute("data-tab-swipe-ignore"))
+          return true;
+        node = node.parentNode;
+      }
+      return false;
+    }
+
     function onTouchStart(e) {
+      if (startsInIgnoredRegion(e.target)) {
+        dragging = false;
+        return;
+      }
       const t = e.touches[0];
       startX = t.clientX;
       startY = t.clientY;
