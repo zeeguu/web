@@ -1,6 +1,6 @@
 import React, { useContext, useState } from "react";
 import strings from "../../../i18n/definitions";
-import { FormControl } from "@mui/material";
+import { Checkbox, FormControl, FormControlLabel } from "@mui/material";
 import LoadingAnimation from "../../../components/LoadingAnimation";
 import { Error } from "../../sharedComponents/Error";
 import { toast } from "react-toastify";
@@ -33,6 +33,8 @@ const CohortForm = ({ cohort, setForceUpdate, setShowCohortForm, cohorts }) => {
     invite_code: cohort ? cohort.inv_code : "",
     language_code: cohort ? languageMap[cohort.language_name] : "default",
     max_students: 150, //some teachers create one joint class for all the students of an entire year //TODO modify backend etc. to no longer include this...
+    has_recommendations: cohort ? Boolean(cohort.has_recommendations) : true,
+    has_leaderboard: cohort ? Boolean(cohort.has_leaderboard) : false,
   });
 
   const addCohort = (form) => {
@@ -82,13 +84,17 @@ const CohortForm = ({ cohort, setForceUpdate, setShowCohortForm, cohorts }) => {
   };
 
   function handleChange(event) {
-    let value = event.target.value;
-    if (event.target.name === "invite_code") {
-      value = value.toLowerCase();
+    const { name, value, type, checked } = event.target;
+
+    let newValue = type === "checkbox" ? checked : value;
+
+    if (name === "invite_code") {
+      newValue = value.toLowerCase();
     }
+
     setState({
       ...state,
-      [event.target.name]: value,
+      [name]: newValue,
     });
   }
 
@@ -136,6 +142,9 @@ const CohortForm = ({ cohort, setForceUpdate, setShowCohortForm, cohorts }) => {
     form.append("inv_code", state.invite_code);
     form.append("max_students", state.max_students); //TODO modify backend etc. to no longer include this...
     form.append("language_code", state.language_code);
+
+    form.append("has_recommendations", state.has_recommendations);
+    form.append("has_leaderboard", state.has_leaderboard);
     return form;
   }
 
@@ -173,6 +182,29 @@ const CohortForm = ({ cohort, setForceUpdate, setShowCohortForm, cohorts }) => {
             {invalidInviteCode() && !cohort && (
               <Error message="You already used that invite code for a class" />
             )}
+            <FormControlLabel
+              sx={{ display: "block", marginTop: "12px" }}
+              control={
+                <Checkbox
+                  checked={state.has_recommendations}
+                  onChange={handleChange}
+                  name="has_recommendations"
+                />
+              }
+              label="Enable article recommendations"
+            />
+
+            <FormControlLabel
+              sx={{ display: "block" }}
+              control={
+                <Checkbox
+                  checked={state.has_leaderboard}
+                  onChange={handleChange}
+                  name="has_leaderboard"
+                />
+              }
+              label="Enable classroom leaderboard"
+            />
             <FormControl
               fullWidth
               disabled={!!cohort}
