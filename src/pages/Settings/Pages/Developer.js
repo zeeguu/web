@@ -48,7 +48,7 @@ export default function Developer() {
     <CardPage layoutVariant={"card-under-menu"} isTransparent reducedPadding>
       <SettingsPageHeader title="Developer" />
       <Main>
-        <ButtonContainer className={"adaptive-alignment-horizontal"}>
+        <ButtonContainer>
           <Button onClick={handleClearOnboardingMessages}>Clear onboarding message table</Button>
           <Button onClick={() => openApiPage("/status")}>Server health</Button>
           <Button onClick={() => openApiPage("/user_stats/dashboard")}>Admin dashboard</Button>
