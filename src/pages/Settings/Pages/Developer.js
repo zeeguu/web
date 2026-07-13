@@ -23,10 +23,10 @@ export default function Developer() {
       .catch(() => setStatus("Failed to clear onboarding messages."));
   }
 
-  // These open dev/admin HTML pages served directly by the API. The session
-  // lives on zeeguu.org (not api.zeeguu.org), so we hand it over as a query
-  // param; the API gates each page (is_dev / is_admin) regardless. This also
-  // makes the API's standalone /admin/login password form unnecessary.
+  // These open admin HTML pages served directly by the API. The session lives
+  // on zeeguu.org (not api.zeeguu.org), so we hand it over as a query param; the
+  // API gates each page on is_admin regardless. This also makes the API's
+  // standalone /admin/login password form unnecessary.
   function openApiPage(path) {
     window.open(`${api.baseAPIurl}${path}?session=${api.session}`, "_blank", "noopener,noreferrer");
   }
