@@ -31,6 +31,19 @@ export default function Developer() {
     window.open(`${api.baseAPIurl}${path}?session=${api.session}`, "_blank", "noopener,noreferrer");
   }
 
+  // Copy the session token to the clipboard — for pasting into the Scriptable
+  // home-screen widget (so you don't have to fish it out of the console on a phone).
+  async function handleCopySession() {
+    setStatus(null);
+    try {
+      await navigator.clipboard.writeText(api.session || "");
+      setStatus("Session copied to clipboard.");
+    } catch {
+      // Clipboard API can be blocked; show it so it can be long-pressed to copy.
+      setStatus(`Copy this session manually: ${api.session}`);
+    }
+  }
+
   return (
     <CardPage layoutVariant={"card-under-menu"} isTransparent reducedPadding>
       <SettingsPageHeader title="Developer" />
@@ -39,6 +52,7 @@ export default function Developer() {
           <Button onClick={handleClearOnboardingMessages}>Clear onboarding message table</Button>
           <Button onClick={() => openApiPage("/status")}>Server health</Button>
           <Button onClick={() => openApiPage("/user_stats/dashboard")}>Admin dashboard</Button>
+          <Button onClick={handleCopySession}>Copy session (for widget)</Button>
         </ButtonContainer>
         {status && <p style={{ marginTop: "1em" }}>{status}</p>}
       </Main>
