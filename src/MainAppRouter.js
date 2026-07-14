@@ -56,6 +56,8 @@ import Swiper from "./swiper/Swiper";
 import KeyboardTest from "./pages/KeyboardTest/KeyboardTest";
 import VerbalFlashcardsRouter from "@/verbalFlashcards/VerbalFlashcardsRouter";
 import Feature from "./features/Feature";
+import { isKioskMode } from "./kiosk/kioskMode";
+import KioskRouter from "./kiosk/KioskRouter";
 
 // Helper to detect if we're in a Capacitor native app
 const isCapacitor = () => {
@@ -85,6 +87,14 @@ function HomePage() {
 
 export default function MainAppRouter({ hasExtension, handleSuccessfulLogIn }) {
   const { shouldShowUpgrade, triggerReason, bookmarkCount, dismissUpgrade } = useAnonymousUpgrade();
+
+  // Kiosk mode replaces the whole app with a chrome-less news reader. Gate on
+  // an existing session so we never strip away the login surface a logged-out
+  // device would need — a mis-set flag on a fresh device still falls through
+  // to the normal welcome/login flow.
+  if (isKioskMode() && getStoredSession()) {
+    return <KioskRouter />;
+  }
 
   return (
     <>

@@ -6,6 +6,7 @@ import Button from "../../_pages_shared/Button.sc";
 import ButtonContainer from "../../_pages_shared/ButtonContainer.sc";
 import SettingsPageHeader from "../SharedComponents/SettingsPageHeader";
 import { setTitle } from "../../../assorted/setTitle";
+import { enterKioskMode } from "../../../kiosk/kioskMode";
 
 export default function Developer() {
   const api = useContext(APIContext);
@@ -33,6 +34,21 @@ export default function Developer() {
 
   // Copy the session token to the clipboard — for pasting into the Scriptable
   // home-screen widget (so you don't have to fish it out of the console on a phone).
+  // Turns this device into a locked-down, chrome-less news reader (no
+  // translations, no settings, no navigation) over the learned language's
+  // feed. Exit by tapping the top-left corner 5 times. Meant for a dedicated
+  // device, typically also kept in iOS Assistive Access.
+  function handleEnterKioskMode() {
+    if (
+      window.confirm(
+        "Enter kiosk reader mode? The app becomes a plain news reader with no menus, settings, or translations.\n\n" +
+          "To exit: tap the top-left corner of the screen 5 times.",
+      )
+    ) {
+      enterKioskMode();
+    }
+  }
+
   async function handleCopySession() {
     setStatus(null);
     try {
@@ -53,6 +69,7 @@ export default function Developer() {
           <Button onClick={() => openApiPage("/status")}>Server health</Button>
           <Button onClick={() => openApiPage("/user_stats/dashboard")}>Admin dashboard</Button>
           <Button onClick={handleCopySession}>Copy session (for widget)</Button>
+          <Button onClick={handleEnterKioskMode}>Enter kiosk reader mode</Button>
         </ButtonContainer>
         {status && <p style={{ marginTop: "1em" }}>{status}</p>}
       </Main>

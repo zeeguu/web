@@ -27,6 +27,7 @@ export default function ArticlePreview({
   dontShowPublishingTime,
   dontShowSummary = false,
   hasExtension,
+  kioskMode = false,
   doNotShowRedirectionModal_UserPreference,
   setDoNotShowRedirectionModal_UserPreference,
   notifyArticleClick,
@@ -308,6 +309,48 @@ export default function ArticlePreview({
   if (!inSavedView && !dontShowPublishingTime && article.published) {
     const publishedAgo = timeAgo(article.published);
     publishedTimeSlot = <MetaItem>{publishedAgo}</MetaItem>;
+  }
+
+  // Kiosk mode: a non-interactive summary card. Plain (non-translatable)
+  // title + image + summary, and the ONLY interaction is "Show more" to
+  // expand a clamped summary. No opening, saving, hiding, or meta links.
+  if (kioskMode) {
+    return (
+      <s.ArticlePreview>
+        <s.TitleContainer>
+          <s.Title>{article.title}</s.Title>
+        </s.TitleContainer>
+        <s.ArticleContent>
+          {hasImage && (
+            <s.ImageWithOverlay>
+              <img
+                alt=""
+                src={article.img_url}
+                loading="lazy"
+                decoding="async"
+                onError={() => setImageFailed(true)}
+                style={{ display: "block" }}
+              />
+            </s.ImageWithOverlay>
+          )}
+          {!dontShowSummary && article.summary && (
+            <s.Summary>
+              {isSummaryExpanded ? (
+                article.summary
+              ) : (
+                <s.ClampedSummary ref={clampedSummaryRef}>{article.summary}</s.ClampedSummary>
+              )}
+              {(isSummaryExpanded || summaryOverflows) && (
+                <s.SummaryToggle type="button" onClick={() => setIsSummaryExpanded((v) => !v)}>
+                  {isSummaryExpanded ? "Show less" : "Show more"}
+                  <span aria-hidden="true">{isSummaryExpanded ? "▴" : "▾"}</span>
+                </s.SummaryToggle>
+              )}
+            </s.Summary>
+          )}
+        </s.ArticleContent>
+      </s.ArticlePreview>
+    );
   }
 
   return (
