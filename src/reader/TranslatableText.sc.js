@@ -441,6 +441,10 @@ const TranslatableText = styled.div`
       position: relative;
     }
 
+    :root[data-theme="dark"] &.blockquote {
+      background-color: rgba(255, 255, 255, 0.06);
+    }
+
     &.blockquote::before {
       content: '"';
       font-size: 3em;
