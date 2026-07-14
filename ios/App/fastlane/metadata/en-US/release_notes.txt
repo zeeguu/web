@@ -1,4 +1,5 @@
-- Fixed swiping the topic filters at the top of your feed: dragging the topics now scrolls them, instead of accidentally jumping to another tab.
-- Renamed "Ask LLM" to "Ask AI" in the reader menu.
-- Clearer error message when an article can't be opened.
+- New Reader Mode: turn a device into a simple, locked-down news reader with no menus or settings — great for a dedicated or shared device.
+- New "Also show easier articles" toggle in Feed Preferences: let your feed include articles a bit below your level.
+- Fixed quoted passages in the reader being hard to read in dark mode.
+- Better button layouts on tablets, so longer labels no longer get cut off.
 - A few other smaller fixes and polish.
