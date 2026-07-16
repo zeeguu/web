@@ -36,13 +36,13 @@ export default function Developer() {
   // home-screen widget (so you don't have to fish it out of the console on a phone).
   // Turns this device into a locked-down, chrome-less news reader (no
   // translations, no settings, no navigation) over the learned language's
-  // feed. Exit by tapping the top-left corner 5 times. Meant for a dedicated
+  // feed. Exit by tapping the top-right corner 5 times. Meant for a dedicated
   // device, typically also kept in iOS Assistive Access.
   function handleEnterKioskMode() {
     if (
       window.confirm(
         "Enter kiosk reader mode? The app becomes a plain news reader with no menus, settings, or translations.\n\n" +
-          "To exit: tap the top-left corner of the screen 5 times.",
+          "To exit: tap the top-right corner of the screen 5 times.",
       )
     ) {
       enterKioskMode();

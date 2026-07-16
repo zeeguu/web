@@ -8,6 +8,8 @@ import * as s from "./ArticlePreview.sc";
 import { MetaStrip, MetaItem, MetaLink, MetaTag } from "../components/MetaStrip.sc";
 import RedirectionNotificationModal from "../components/redirect_notification/RedirectionNotificationModal";
 import Feature from "../features/Feature";
+import strings from "../i18n/definitions";
+import { kioskExpandLabel } from "../kiosk/showMoreLabels";
 import ReadingCompletionProgress from "./ReadingCompletionProgress";
 import { APIContext } from "../contexts/APIContext";
 import { BrowsingSessionContext } from "../contexts/BrowsingSessionContext";
@@ -342,7 +344,7 @@ export default function ArticlePreview({
               )}
               {(isSummaryExpanded || summaryOverflows) && (
                 <s.SummaryToggle type="button" onClick={() => setIsSummaryExpanded((v) => !v)}>
-                  {isSummaryExpanded ? "Show less" : "Show more"}
+                  {kioskExpandLabel(article.language, isSummaryExpanded)}
                   <span aria-hidden="true">{isSummaryExpanded ? "▴" : "▾"}</span>
                 </s.SummaryToggle>
               )}
@@ -474,7 +476,7 @@ export default function ArticlePreview({
                     )}
                     {(isSummaryExpanded || summaryOverflows) && (
                       <s.SummaryToggle type="button" onClick={() => setIsSummaryExpanded((v) => !v)}>
-                        {isSummaryExpanded ? "Show less" : "Show more"}
+                        {isSummaryExpanded ? strings.showLess : strings.showMore}
                         <span aria-hidden="true">{isSummaryExpanded ? "▴" : "▾"}</span>
                       </s.SummaryToggle>
                     )}
