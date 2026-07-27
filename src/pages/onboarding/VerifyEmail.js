@@ -7,7 +7,7 @@ import strings from "../../i18n/definitions";
 
 import CardPage from "../_pages_shared/CardPage";
 import Header from "../_pages_shared/Header";
-import Heading from "../_pages_shared/Heading.sc";
+import PageTitle from "../_pages_shared/PageTitle.sc";
 import Main from "../_pages_shared/Main.sc";
 import Form from "../_pages_shared/Form.sc";
 import FullWidthErrorMsg from "../../components/FullWidthErrorMsg.sc";
@@ -79,7 +79,7 @@ export default function VerifyEmail() {
   return (
     <CardPage pageWidth={"narrow"} isBackgroundFixed={true}>
       <Header>
-        <Heading>Verify Your Email</Heading>
+        <PageTitle>Verify Your Email</PageTitle>
       </Header>
       <Main>
         <p style={{ textAlign: "center", marginBottom: "1.5rem" }}>

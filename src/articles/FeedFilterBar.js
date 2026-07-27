@@ -61,7 +61,9 @@ export default function FeedFilterBar({ activeFilter, onSelectFilter }) {
   );
 
   return (
-    <s.FilterRow>
+    // The row scrolls horizontally on its own; opt it out of the parent
+    // tab-swipe so dragging the pills scrolls topics instead of switching tabs.
+    <s.FilterRow data-tab-swipe-ignore>
       {gearButton}
       {activeFilter.type === "all" ? choosablePills : selectionView}
     </s.FilterRow>

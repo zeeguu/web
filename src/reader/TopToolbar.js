@@ -12,6 +12,8 @@ import BackArrow from "../pages/Settings/SharedComponents/BackArrow";
 import useScreenWidth from "../hooks/useScreenWidth";
 import { APIContext } from "../contexts/APIContext";
 import { MOBILE_WIDTH } from "../components/MainNav/screenSize";
+import { LeftGroup, MiddleGroup, RightGroup, ProgressBar } from "./TopToolbar.sc";
+import SaveAndEditButton from "../components/Buttons/SaveAndEditButton";
 
 export default function TopToolbar({
   user,
@@ -62,17 +64,11 @@ export default function TopToolbar({
     <s.ToolbarWrapper>
       <s.Toolbar>
         <s.TopbarButtonsContainer $screenWidth={screenWidth}>
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: "0.5rem",
-            }}
-          >
+          <LeftGroup>
             {isMobile && <BackArrow swipeTargetPath={swipeBackTargetPath} />}
             {timer}
-          </div>
-          <div style={{ display: "flex", gap: "1rem" }}>
+          </LeftGroup>
+          <MiddleGroup>
             {user.is_teacher && (
               <>
                 {teacherArticleID && !isMobile && (
@@ -84,36 +80,12 @@ export default function TopToolbar({
                 )}
 
                 {!teacherArticleID && screenWidth >= MOBILE_WIDTH && (
-                  <button
-                    onClick={saveArticleAndEdit}
-                    style={{
-                      padding: "0.75rem 1.5rem",
-                      fontSize: "1rem",
-                      fontFamily: "Montserrat",
-                      fontWeight: "500",
-                      backgroundColor: "#1565C0",
-                      color: "white",
-                      border: "none",
-                      borderRadius: "1.0625rem",
-                      cursor: "pointer",
-                      display: "flex",
-                      alignItems: "center",
-                      gap: "0.5rem",
-                      whiteSpace: "nowrap",
-                    }}
-                  >
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                      <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z" />
-                      <polyline points="17 21 17 13 7 13 7 21" />
-                      <polyline points="7 3 7 8 15 8" />
-                    </svg>
-                    {strings.saveAndEdit}
-                  </button>
+                  <SaveAndEditButton onClick={saveArticleAndEdit} label={strings.saveAndEdit} />
                 )}
               </>
             )}
-          </div>
-          <div style={{ display: "flex", alignItems: "center", gap: "0.25rem", marginRight: "0.5rem" }}>
+          </MiddleGroup>
+          <RightGroup>
             {reportBroken}
             <ShareArticle articleID={articleID} />
             <ToolbarButtons
@@ -128,10 +100,10 @@ export default function TopToolbar({
               readerFontSize={readerFontSize}
               setReaderFontSize={setReaderFontSize}
             />
-          </div>
+          </RightGroup>
         </s.TopbarButtonsContainer>
 
-        <progress style={{ margin: "0" }} value={articleProgress} />
+        <ProgressBar value={articleProgress} />
       </s.Toolbar>
     </s.ToolbarWrapper>
   );

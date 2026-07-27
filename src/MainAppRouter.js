@@ -42,6 +42,7 @@ const TeacherRouter = (props) => (
 );
 import { PrivateRouteWithLayout } from "./PrivateRouteWithLayout";
 import { PrivateRoute } from "./PrivateRoute";
+import AppLayout from "./AppLayout";
 import DeleteAccount from "./pages/DeleteAccount/DeleteAccount";
 import SettingsRouter from "./pages/Settings/_SettingsRouter";
 import ProfileRouter from "./profile/_ProfileRouter";
@@ -52,9 +53,11 @@ import DailyAudioRouter from "./dailyAudio/_DailyAudioRouter";
 import SharedLessonRouteEntry from "./dailyAudio/SharedLessonRouteEntry";
 import IndividualExercise from "./pages/IndividualExercise";
 import Swiper from "./swiper/Swiper";
-import KeyboardTest from "./pages/KeyboardTest";
+import KeyboardTest from "./pages/KeyboardTest/KeyboardTest";
 import VerbalFlashcardsRouter from "@/verbalFlashcards/VerbalFlashcardsRouter";
 import Feature from "./features/Feature";
+import { isKioskMode } from "./kiosk/kioskMode";
+import KioskRouter from "./kiosk/KioskRouter";
 
 // Helper to detect if we're in a Capacitor native app
 const isCapacitor = () => {
@@ -84,6 +87,14 @@ function HomePage() {
 
 export default function MainAppRouter({ hasExtension, handleSuccessfulLogIn }) {
   const { shouldShowUpgrade, triggerReason, bookmarkCount, dismissUpgrade } = useAnonymousUpgrade();
+
+  // Kiosk mode replaces the whole app with a chrome-less news reader. Gate on
+  // an existing session so we never strip away the login surface a logged-out
+  // device would need — a mis-set flag on a fresh device still falls through
+  // to the normal welcome/login flow.
+  if (isKioskMode() && getStoredSession()) {
+    return <KioskRouter />;
+  }
 
   return (
     <>
@@ -158,7 +169,14 @@ export default function MainAppRouter({ hasExtension, handleSuccessfulLogIn }) {
           component={IndividualExercise}
         />
         <PrivateRouteWithLayout path="/exercise-test" component={IndividualExercise} />
-        <Route path="/keyboard-test" component={KeyboardTest} />
+        <Route
+          path="/keyboard-test"
+          render={() => (
+            <AppLayout>
+              <KeyboardTest />
+            </AppLayout>
+          )}
+        />
         <Route path="*" component={NotFound} />
       </Switch>
     </>

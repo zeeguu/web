@@ -2,7 +2,7 @@ import * as s from "../modal_shared/Modal.sc";
 import { useContext, useState } from "react";
 import Modal from "../modal_shared/Modal";
 import Header from "../modal_shared/Header.sc";
-import Heading from "../modal_shared/Heading.sc";
+import ModalTitle from "../modal_shared/ModalTitle.sc";
 import Main from "../modal_shared/Main.sc";
 import Footer from "../modal_shared/Footer.sc";
 import ButtonContainer from "../modal_shared/ButtonContainer.sc";
@@ -90,10 +90,10 @@ export default function UnsupportedNotification({
   return (
     <Modal open={open} onClose={handleCancel}>
       <Header>
-        <Heading>
+        <ModalTitle>
           Your browser doesn't support <br></br>
           the Zeeguu browser extension
-        </Heading>
+        </ModalTitle>
       </Header>
       <Main>
         <p>

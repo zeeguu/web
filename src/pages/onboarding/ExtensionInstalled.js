@@ -3,7 +3,7 @@ import { useContext, useEffect } from "react";
 import { useHistory } from "react-router-dom/cjs/react-router-dom";
 import CardPage from "../_pages_shared/CardPage";
 import Header from "../_pages_shared/Header";
-import Heading from "../_pages_shared/Heading.sc";
+import PageTitle from "../_pages_shared/PageTitle.sc";
 import Main from "../_pages_shared/Main.sc";
 import FullWidthImage from "../../components/FullWidthImage";
 import ButtonContainer from "../_pages_shared/ButtonContainer.sc";
@@ -26,11 +26,11 @@ export default function ExtensionInstalled() {
   return (
     <CardPage isBackgroundFixed={true}>
       <Header>
-        <Heading>
+        <PageTitle>
           Right-click to&nbsp; activate the&nbsp;Zeeguu&nbsp;
           {runningInChromeDesktop() ? "extension" : "add-on"}
           on any page containing an article.
-        </Heading>
+        </PageTitle>
       </Header>
       <Main>
         <FullWidthImage src={"read-any-article.gif"} />

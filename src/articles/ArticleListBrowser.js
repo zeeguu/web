@@ -16,7 +16,15 @@ import { setTitle } from "../assorted/setTitle";
 import strings from "../i18n/definitions";
 import useShadowRef from "../hooks/useShadowRef";
 import VideoPreview from "../videos/VideoPreview";
-export default function ArticleListBrowser({ content, searchQuery, searchPublishPriority, searchDifficultyPriority }) {
+export default function ArticleListBrowser({
+  content,
+  searchQuery,
+  searchPublishPriority,
+  searchDifficultyPriority,
+  // Kiosk mode: hide the topic filter bar and force articles to open in the
+  // in-app reader (never the external publisher site).
+  kioskMode,
+}) {
   let api = useContext(APIContext);
 
   //The ternary operator below fix the problem with the getOpenArticleExternallyWithoutModal()
@@ -248,7 +256,7 @@ export default function ArticleListBrowser({ content, searchQuery, searchPublish
       {/* The topic pills stay pinned above the refresh area, so pulling down
           shows the loading indicator below the pills (near the articles),
           not above them. */}
-      {!searchQuery && (
+      {!searchQuery && !kioskMode && (
         <>
           <FeedFilterBar activeFilter={activeFilter} onSelectFilter={selectFilter} />
           {areVideosAvailable && (
@@ -287,12 +295,16 @@ export default function ArticleListBrowser({ content, searchQuery, searchPublish
         !feedLoading &&
         articlesAndVideosList.map((each, index) =>
           each.video ? (
-            <VideoPreview key={each.id} video={each} notifyVideoClick={() => handleVideoClick(each.source_id, index)} />
+            // Kiosk mode is a read-only summary feed — skip playable videos.
+            kioskMode ? null : (
+              <VideoPreview key={each.id} video={each} notifyVideoClick={() => handleVideoClick(each.source_id, index)} />
+            )
           ) : (
             <ArticlePreview
               key={each.id}
               article={each}
               hasExtension={isExtensionAvailable}
+              kioskMode={kioskMode}
               doNotShowRedirectionModal_UserPreference={doNotShowRedirectionModal_UserPreference}
               setDoNotShowRedirectionModal_UserPreference={setDoNotShowRedirectionModal_UserPreference}
               onArticleHidden={handleArticleHidden}

@@ -39,6 +39,21 @@ const LocalStorage = {
     // Keep in sync with index.html inline theme script
     ThemePreference: "zeeguu-theme-preference",
     ReportedTimezone: "reported_timezone",
+    // Kiosk reader mode: locks the app to a chrome-less, translation-free
+    // news reader (see src/kiosk/). Activated from Developer settings.
+    KioskReader: "kiosk_reader",
+  },
+
+  getKioskReader: function () {
+    return localStorage.getItem(this.Keys.KioskReader) === "true";
+  },
+
+  setKioskReader: function (on) {
+    if (on) {
+      localStorage.setItem(this.Keys.KioskReader, "true");
+    } else {
+      localStorage.removeItem(this.Keys.KioskReader);
+    }
   },
 
   userInfo: function () {

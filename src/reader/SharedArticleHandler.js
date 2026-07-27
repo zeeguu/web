@@ -6,6 +6,7 @@ import useQuery from "../hooks/useQuery";
 import useTimedProgressMessage from "../hooks/useTimedProgressMessage";
 import LoadingAnimation from "../components/LoadingAnimation";
 import ArticleLanguageModal from "./ArticleLanguageModal";
+import ErrorDialog from "../components/ErrorDialog";
 import { shouldShowLanguageChoice, getUserCefrLevel, numericToCefr } from "../utils/misc/cefrHelpers";
 
 const PROGRESS_STAGES = {
@@ -63,7 +64,7 @@ export default function SharedArticleHandler() {
         () => {
           setStatus("error");
           setErrorMessage("Could not load the uploaded article.");
-        }
+        },
       );
       return;
     }
@@ -94,10 +95,8 @@ export default function SharedArticleHandler() {
       },
       (error) => {
         setStatus("error");
-        setErrorMessage(
-          "Failed to load article. It may be behind a paywall or not readable."
-        );
-      }
+        setErrorMessage("Failed to load article. It may be behind a paywall or not readable.");
+      },
     );
   }, [sharedUrl, uploadId]);
 
@@ -195,9 +194,7 @@ export default function SharedArticleHandler() {
   };
 
   if (status === "loading") {
-    const message = isProcessing
-      ? progressMessage || "Preparing article…"
-      : "Opening article…";
+    const message = isProcessing ? progressMessage || "Preparing article…" : "Opening article…";
     return (
       <LoadingAnimation
         /* Simplification / translation routinely take 15-25s — hold back the
@@ -231,24 +228,12 @@ export default function SharedArticleHandler() {
 
   if (status === "error") {
     return (
-      <div style={{ textAlign: "center", padding: "4em 2em" }}>
-        <h2>Could not open article</h2>
-        <p>{errorMessage}</p>
-        <p style={{ color: "#666", fontSize: "0.9em", wordBreak: "break-all" }}>
-          {sharedUrl || (uploadId ? `upload #${uploadId}` : null)}
-        </p>
-        <button
-          onClick={() => history.push("/articles")}
-          style={{
-            marginTop: "1em",
-            padding: "0.5em 1.5em",
-            fontSize: "1em",
-            cursor: "pointer",
-          }}
-        >
-          Go to Articles
-        </button>
-      </div>
+      <ErrorDialog
+        title="Could not open article"
+        message={errorMessage}
+        detail={sharedUrl || (uploadId ? `upload #${uploadId}` : null)}
+        onBack={() => history.push("/articles")}
+      />
     );
   }
 

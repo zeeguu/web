@@ -1,6 +1,5 @@
-- Your feed now updates right away when you add or remove a topic or a word to avoid, instead of waiting a few minutes.
-- A smoother offline experience: daily audio and the reading tabs show a clear "You're offline" state instead of a confusing setup screen, and recover on their own once you're back online.
-- Swipe left and right between Discover, Saved, Classroom, and Search, now steadier during scrolling.
-- Faster loading and fewer flickers on the Read screen.
-- Clearer wording when adding words or phrases to avoid.
+- New Reader Mode: turn a device into a simple, locked-down news reader with no menus or settings — great for a dedicated or shared device.
+- New "Also show easier articles" toggle in Feed Preferences: let your feed include articles a bit below your level.
+- Fixed quoted passages in the reader being hard to read in dark mode.
+- Better button layouts on tablets, so longer labels no longer get cut off.
 - A few other smaller fixes and polish.

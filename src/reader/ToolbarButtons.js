@@ -1,21 +1,21 @@
-import toggle from "../utils/misc/toggle";
 import * as React from "react";
 import { useState, useEffect, useRef } from "react";
 import FormGroup from "@mui/material/FormGroup";
-import FormControlLabel from "@mui/material/FormControlLabel";
 import FormHelperText from "@mui/material/FormHelperText";
-import { ThemeProvider } from "@mui/material/styles";
-import { t, Android12Switch } from "../components/MUIToggleThemes";
-import SettingsRoundedIcon from "@mui/icons-material/SettingsRounded";
+import ToggleOption from "../components/Toggles/ToggleOption";
+import { ToolbarButtonRoot, ToolbarMenu } from "./ToolbarButtons.sc";
+import SettingsIconButton from "../components/Icons/SettingsIconButton";
+import TextSizeControl from "../components/Controls/TextSizeControl";
 
-const fontSizeButtonStyle = {
-  background: "var(--bg-secondary)",
-  color: "var(--text-primary)",
-  border: "1px solid var(--border-color)",
-  borderRadius: "4px",
-  padding: "0.2rem 0.5rem",
-  cursor: "pointer",
-  fontSize: "0.9em",
+// MUI sx / inline-style overrides (not styled-components, so they live here
+// rather than in ToolbarButtons.sc.js).
+const toolbarFormGroupSx = {
+  "& .MuiFormControlLabel-label": { color: "var(--text-primary)" },
+  "& .MuiFormHelperText-root": { color: "var(--text-secondary)" },
+};
+
+const experimentalHelperText = {
+  marginTop: "0.5rem",
 };
 
 export default function ToolbarButtons({
@@ -48,108 +48,48 @@ export default function ToolbarButtons({
   }, [showOptions]);
 
   return (
-    <div ref={menuRef} style={{ position: "relative", display: "inline-block" }}>
-      <div
-        onClick={() => setShowOptions(!showOptions)}
-        title="Click word options"
-        style={{ padding: "0.5rem", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}
-      >
-        <SettingsRoundedIcon style={{ fontSize: "1.4em", color: "#999" }} />
-      </div>
+    <ToolbarButtonRoot ref={menuRef}>
+      <SettingsIconButton onClick={() => setShowOptions(!showOptions)} title="Click word options" />
 
       {showOptions && (
-        <div style={{
-          position: "absolute",
-          top: "100%",
-          right: "0",
-          backgroundColor: "var(--card-bg)",
-          color: "var(--text-primary)",
-          border: "1px solid var(--border-color)",
-          borderRadius: "4px",
-          boxShadow: "0 2px 8px var(--shadow-color)",
-          zIndex: 1000,
-          padding: "1rem",
-          minWidth: "200px"
-        }}>
-          <ThemeProvider theme={t}>
-            <FormGroup
-              sx={{
-                "& .MuiFormControlLabel-label": { color: "var(--text-primary)" },
-                "& .MuiFormHelperText-root": { color: "var(--text-secondary)" },
-              }}
-            >
-              <FormHelperText>{"Click word(s) to:"}</FormHelperText>
-              <FormControlLabel
-                checked={translating}
-                control={
-                  <Android12Switch
-                    onClick={(e) => toggle(translating, setTranslating)}
-                  />
-                }
-                className={translating ? "selected" : ""}
-                label={"See translation"}
+        <ToolbarMenu>
+          <FormGroup sx={toolbarFormGroupSx}>
+            <FormHelperText>{"Click word(s) to:"}</FormHelperText>
+            <ToggleOption
+              checked={translating}
+              onToggle={setTranslating}
+              className={translating ? "selected" : ""}
+              label="See translation"
+            />
+            <ToggleOption
+              checked={pronouncing}
+              onToggle={setPronouncing}
+              className={pronouncing ? "selected" : ""}
+              label="Hear pronunciation"
+            />
+            <ToggleOption
+              checked={showReadingTimer}
+              onToggle={setShowReadingTimer}
+              className={showReadingTimer ? "selected" : ""}
+              label="Show reading timer"
+            />
+            {setReaderFontSize && (
+              <TextSizeControl
+                value={readerFontSize}
+                onDecrease={() => setReaderFontSize(readerFontSize - 2)}
+                onIncrease={() => setReaderFontSize(readerFontSize + 2)}
               />
-              <FormControlLabel
-                checked={pronouncing}
-                control={
-                  <Android12Switch
-                    onClick={(e) => toggle(pronouncing, setPronouncing)}
-                  />
-                }
-                className={pronouncing ? "selected" : ""}
-                label={"Hear pronunciation"}
-              />
-              <FormControlLabel
-                checked={showReadingTimer}
-                control={
-                  <Android12Switch
-                    onClick={(e) => toggle(showReadingTimer, setShowReadingTimer)}
-                  />
-                }
-                className={showReadingTimer ? "selected" : ""}
-                label={"Show reading timer"}
-              />
-              {setReaderFontSize && (
-                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginTop: "0.6rem" }}>
-                  <span>Text size</span>
-                  <span style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
-                    <button
-                      type="button"
-                      onClick={() => setReaderFontSize(readerFontSize - 2)}
-                      aria-label="Decrease text size"
-                      style={fontSizeButtonStyle}
-                    >
-                      A−
-                    </button>
-                    <span style={{ fontSize: "0.85em", color: "var(--text-secondary)", minWidth: "2.2em", textAlign: "center" }}>
-                      {readerFontSize}
-                    </span>
-                    <button
-                      type="button"
-                      onClick={() => setReaderFontSize(readerFontSize + 2)}
-                      aria-label="Increase text size"
-                      style={fontSizeButtonStyle}
-                    >
-                      A+
-                    </button>
-                  </span>
-                </div>
-              )}
-              <FormHelperText style={{ marginTop: "0.5rem" }}>{<small>{"Experimental:"}</small>}</FormHelperText>
-              <FormControlLabel
-                checked={showMweHints}
-                control={
-                  <Android12Switch
-                    onClick={(e) => toggle(showMweHints, setShowMweHints)}
-                  />
-                }
-                className={showMweHints ? "selected" : ""}
-                label={"Show multi-word expressions hints"}
-              />
-            </FormGroup>
-          </ThemeProvider>
-        </div>
+            )}
+            <FormHelperText style={experimentalHelperText}>{<small>{"Experimental:"}</small>}</FormHelperText>
+            <ToggleOption
+              checked={showMweHints}
+              onToggle={setShowMweHints}
+              className={showMweHints ? "selected" : ""}
+              label="Show multi-word expressions hints"
+            />
+          </FormGroup>
+        </ToolbarMenu>
       )}
-    </div>
+    </ToolbarButtonRoot>
   );
 }

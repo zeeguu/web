@@ -2,7 +2,7 @@ import * as s from "../modal_shared/Modal.sc";
 import { useContext, useState } from "react";
 import Modal from "../modal_shared/Modal";
 import Header from "../modal_shared/Header.sc";
-import Heading from "../modal_shared/Heading.sc";
+import ModalTitle from "../modal_shared/ModalTitle.sc";
 import Main from "../modal_shared/Main.sc";
 import Footer from "../modal_shared/Footer.sc";
 import ButtonContainer from "../modal_shared/ButtonContainer.sc";
@@ -78,7 +78,7 @@ export default function MobileNotification({
   return (
     <Modal open={open} onClose={handleCancel}>
       <Header>
-        <Heading style={{textAlign:"center"}}>You will be redirected to the original article page</Heading>
+        <ModalTitle style={{textAlign:"center"}}>You will be redirected to the original article page</ModalTitle>
       </Header>
       <Main>
         <p style={{textAlign:"center"}}>

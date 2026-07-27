@@ -30,6 +30,9 @@ const VerticalAlignment = css`
 
 const HorizontalAlignment = css`
   flex-direction: row;
+  /* wrap to a new row instead of clipping under overflow:hidden when the
+     buttons don't fit (e.g. several long-labeled buttons on a tablet) */
+  flex-wrap: wrap;
   align-items: center;
   padding: 0;
   @media (max-width: 768px) {
