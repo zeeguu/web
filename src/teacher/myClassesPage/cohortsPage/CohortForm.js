@@ -33,7 +33,6 @@ const CohortForm = ({ cohort, setForceUpdate, setShowCohortForm, cohorts }) => {
     invite_code: cohort ? cohort.inv_code : "",
     language_code: cohort ? languageMap[cohort.language_name] : "default",
     max_students: 150, //some teachers create one joint class for all the students of an entire year //TODO modify backend etc. to no longer include this...
-    has_recommendations: cohort ? Boolean(cohort.has_recommendations) : true,
     has_leaderboard: cohort ? Boolean(cohort.has_leaderboard) : false,
   });
 
@@ -142,8 +141,6 @@ const CohortForm = ({ cohort, setForceUpdate, setShowCohortForm, cohorts }) => {
     form.append("inv_code", state.invite_code);
     form.append("max_students", state.max_students); //TODO modify backend etc. to no longer include this...
     form.append("language_code", state.language_code);
-
-    form.append("has_recommendations", state.has_recommendations);
     form.append("has_leaderboard", state.has_leaderboard);
     return form;
   }
@@ -184,18 +181,6 @@ const CohortForm = ({ cohort, setForceUpdate, setShowCohortForm, cohorts }) => {
             )}
             <FormControlLabel
               sx={{ display: "block", marginTop: "12px" }}
-              control={
-                <Checkbox
-                  checked={state.has_recommendations}
-                  onChange={handleChange}
-                  name="has_recommendations"
-                />
-              }
-              label="Enable article recommendations"
-            />
-
-            <FormControlLabel
-              sx={{ display: "block" }}
               control={
                 <Checkbox
                   checked={state.has_leaderboard}
