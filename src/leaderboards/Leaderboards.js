@@ -54,6 +54,7 @@ export default function Leaderboards({
   scope,
   leaderboardTypes = LEADERBOARD_TYPES,
   navigationHandler,
+  cohorts = [],
 }) {
   const api = useContext(APIContext);
   const { userDetails } = useContext(UserContext);
@@ -63,7 +64,6 @@ export default function Leaderboards({
 
   const [selectedLeaderboardKey, setSelectedLeaderboardKey] = useState(() => leaderboardTypes[0]?.key || "default");
   const setTabRef = useScrollActiveIntoView(selectedLeaderboardKey);
-  const [cohorts, setCohorts] = useState([]);
   const [selectedCohort, setSelectedCohort] = useState(null);
   const [leaderboardData, setLeaderboardData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -111,20 +111,22 @@ export default function Leaderboards({
         setIsLoading(false);
         return;
       }
-      api.getCohortLeaderboard(selectedCohort, selectedLeaderboardKey, period.fromStr, period.toStr, handleData, handleLoadError);
+      api.getCohortLeaderboard(
+        selectedCohort,
+        selectedLeaderboardKey,
+        period.fromStr,
+        period.toStr,
+        handleData,
+        handleLoadError,
+      );
     }
   }, [api, selectedLeaderboardKey, period.fromStr, period.toStr, scope, selectedCohort]);
 
   useEffect(() => {
-    if (scope === LEADERBOARD_SCOPES.COHORT) {
-      api.getStudent((data) => {
-        if (data?.cohorts?.length) {
-          setCohorts(data.cohorts);
-          setSelectedCohort(data.cohorts[0].id);
-        }
-      });
+    if (!selectedCohort && cohorts.length > 0) {
+      setSelectedCohort(cohorts[0].id);
     }
-  }, [api, scope]);
+  }, [cohorts, selectedCohort]);
 
   function assignRanks(data) {
     if (!Array.isArray(data)) return [];

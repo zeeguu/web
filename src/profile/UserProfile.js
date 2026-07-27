@@ -40,6 +40,7 @@ export default function UserProfile() {
   const { unfriend, sendFriendRequest, cancelFriendRequest, acceptFriendRequest, rejectFriendRequest } =
     useFriendActions();
   const [isPendingFriendAction, setIsPendingFriendAction] = useState(false);
+  const [leaderboardCohorts, setLeaderboardCohorts] = useState([]);
 
   useEffect(() => {
     loadProfile();
@@ -54,6 +55,7 @@ export default function UserProfile() {
       setIsOwnProfile(true);
       updateProfileView(userDetails, null, strings.titleOwnProfile);
       api.getMyLanguageStreakHistory(activeLanguagesCallback);
+      fetchCohortDetails();
       return;
     }
 
@@ -75,6 +77,15 @@ export default function UserProfile() {
       }
     });
   };
+
+  const fetchCohortDetails = () => {
+    api.getStudent((data) => {
+        const leaderboardCohorts = data.cohorts.filter((cohort) => cohort.has_leaderboard === true);
+        if (leaderboardCohorts?.length) {
+          setLeaderboardCohorts(leaderboardCohorts);
+        }
+      });
+  }
 
   const resetProfileState = () => {
     setProfileData(null);
@@ -169,7 +180,7 @@ export default function UserProfile() {
     ...(isOwnProfile
       ? [
           { key: "friendLeaderboards", label: "Friend Leaderboards" },
-          ...(profileData?.is_student ? [{ key: "cohortLeaderboards", label: "Classroom Leaderboards" }] : []),
+          ...(profileData?.is_student && leaderboardCohorts.length > 0 ? [{ key: "cohortLeaderboards", label: "Classroom Leaderboards" }] : []),
         ]
       : []),
   ];
@@ -188,7 +199,7 @@ export default function UserProfile() {
     }
 
     if (activeTab === "cohortLeaderboards") {
-      return <Leaderboards navigationHandler={handleUserProfileNavigation} scope={LEADERBOARD_SCOPES.COHORT} />;
+      return <Leaderboards navigationHandler={handleUserProfileNavigation} scope={LEADERBOARD_SCOPES.COHORT} cohorts={leaderboardCohorts} />;
     }
 
     return null;
