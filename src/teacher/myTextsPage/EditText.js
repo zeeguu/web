@@ -14,6 +14,7 @@ import { Error } from "../sharedComponents/Error";
 import ShareWithCollegueDialog from "./ShareWithColleagueDialog";
 import { APIContext } from "../../contexts/APIContext";
 import CefrAssessmentDisplay from "./CefrAssessmentDisplay";
+import AdjustLevelBar from "./AdjustLevelBar";
 import LoadingAnimation from "../../components/LoadingAnimation";
 import { detectLanguageFromText, languageNames } from "../../utils/languageDetection";
 
@@ -28,6 +29,7 @@ export default function EditText() {
   });
   const [originalCEFRLevel, setOriginalCEFRLevel] = useState(""); // Track original to detect manual changes
   const [cefrAssessments, setCefrAssessments] = useState(null); // Store CEFR assessment data
+  const [displayLevel, setDisplayLevel] = useState(null); // Effective level from the CEFR panel (drives Adjust targets)
   const [cohortList, setCohortList] = useState([]);
   const [showAddToCohortDialog, setShowAddToCohortDialog] = useState(false);
   const [showDeleteTextWarning, setShowDeleteTextWarning] = useState(false);
@@ -184,6 +186,34 @@ export default function EditText() {
     });
   }
 
+  // Handle an on-demand "Adjust to level" rewrite from AdjustLevelBar.
+  // Non-destructive until saved: we replace the draft content and mark it
+  // changed, so the teacher reviews and hits Save (or Cancel to restore).
+  function handleContentAdjusted(newTitle, newHtmlContent, targetLevel) {
+    setStateChanged(true);
+    setArticleState({
+      ...articleState,
+      article_title: newTitle,
+      article_content: newHtmlContent,
+      cefr_level: targetLevel,
+      assessment_method: "llm_simplified",
+    });
+  }
+
+  // After saving an adapted text, store its level so students see the right
+  // difficulty. The own-text endpoints ignore cefr_level, so we reuse the
+  // resolve-CEFR path. Scoped to the "Adjust to level" case only.
+  function persistAdaptedLevelIfNeeded(id) {
+    if (articleState.assessment_method === "llm_simplified" && articleState.cefr_level) {
+      api.resolveCEFR(
+        id,
+        articleState.cefr_level,
+        () => {},
+        (error) => console.error("Failed to persist adapted CEFR level:", error),
+      );
+    }
+  }
+
   const uploadArticle = () => {
     // Strip HTML tags to get plain text for content field
     const stripHtml = (html) => {
@@ -204,6 +234,11 @@ export default function EditText() {
       articleState.language_code,
       (newID) => {
         console.log(`article created with id: ${newID}`);
+        // Persist an adapted level so students see the right difficulty. The
+        // upload/update endpoints don't store cefr_level, so we use the existing
+        // resolve-CEFR path. Only for the "Adjust to level" case — a plain save
+        // must not mark an ML-guessed level as teacher-confirmed.
+        persistAdaptedLevelIfNeeded(newID);
         setStateChanged(false);
         history.push(`/teacher/texts/editText/${newID}`);
       },
@@ -234,6 +269,7 @@ export default function EditText() {
       articleState.language_code,
       (result) => {
         if ((result = "OK")) {
+          persistAdaptedLevelIfNeeded(articleID);
           setStateChanged(false);
         } else {
           console.log(result);
@@ -345,7 +381,17 @@ export default function EditText() {
           articleTitle={articleState.article_title}
           languageCode={articleState.language_code}
           onOverrideChange={handleTeacherOverride}
+          onEffectiveLevelChange={setDisplayLevel}
           initialAssessments={cefrAssessments}
+        />
+
+        {/* Adjust to level: rewrite the teacher's text to an easier CEFR level on demand */}
+        <AdjustLevelBar
+          currentLevel={displayLevel}
+          title={articleState.article_title}
+          content={articleState.article_content}
+          language={articleState.language_code}
+          onAdjusted={handleContentAdjusted}
         />
 
         <EditTextInputFields

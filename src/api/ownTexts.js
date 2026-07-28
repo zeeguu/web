@@ -122,6 +122,45 @@ Zeeguu_API.prototype.estimateArticleCEFR = function (
 };
 
 /*
+  Adapt the teacher's own text to an easier CEFR level (on-demand LLM rewrite).
+  Stateless — operates on the content passed in, so it works for a new (unsaved)
+  draft as well as an existing text. Returns { title, content (HTML), summary,
+  cefr_level }. The caller replaces the editor content and lets the teacher save.
+
+  Example:
+    api.simplifyOwnText("Title", "Plain content", "da", "A2",
+      (data) => { console.log(data.content); },
+      (err) => { console.error(err); });
+*/
+Zeeguu_API.prototype.simplifyOwnText = function (
+  title,
+  content,
+  language,
+  targetLevel,
+  onSuccess,
+  onError
+) {
+  let payload = {
+    title: title,
+    content: content,
+    language: language,
+    cefr_level: targetLevel,
+  };
+  this._post(
+    "simplify_own_text",
+    qs.stringify(payload),
+    (response) => {
+      try {
+        onSuccess(JSON.parse(response));
+      } catch (e) {
+        if (onError) onError("Failed to parse simplification response");
+      }
+    },
+    onError
+  );
+};
+
+/*
   Get all CEFR assessments for an article (LLM, ML, Teacher resolution)
 
   Example:
