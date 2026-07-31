@@ -198,7 +198,7 @@ export default function UserProfile() {
           <Button
             type={"button"}
             className={"small"}
-            onClick={() => history.goBack()}
+            onClick={() => (history.length > 1 ? history.goBack() : history.push("/articles"))}
           >
             <ArrowBackIcon sx={{ fontSize: "1.2rem" }} />
             <span>Back</span>
