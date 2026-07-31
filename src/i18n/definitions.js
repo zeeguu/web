@@ -665,6 +665,7 @@ let strings = new LocalizedStrings(
       leaderboardRank: "Rank",
       leaderboardUser: "User",
       selectClassroom: "Select a classroom",
+      leaderboardScopeFriends: "Friends",
 
       //Settings
       //Settings categories
@@ -1789,6 +1790,7 @@ let strings = new LocalizedStrings(
       leaderboardRank: "Placering",
       leaderboardUser: "Bruger",
       selectClassroom: "Vælg en klasse",
+      leaderboardScopeFriends: "Venner",
     },
   },
   {
