@@ -103,9 +103,6 @@ export default function AdjustLevelBar({
       <span className="sep">original:</span>
       {renderButton(originalLevel, true)}
       {languageMissing && <span className="hint">Choose a language first</span>}
-      {!languageMissing && busyLevel && (
-        <span className="hint">Rewriting to {busyLevel}… this can take a moment</span>
-      )}
     </Bar>
   );
 }
