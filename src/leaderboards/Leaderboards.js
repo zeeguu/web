@@ -75,11 +75,11 @@ export default function Leaderboards({
     [leaderboardTypes, selectedLeaderboardKey],
   );
 
-  const scopeOptions = useMemo(() => {
-    const options = [{ value: LEADERBOARD_SCOPES.FRIENDS, label: strings.leaderboardScopeFriends }];
-    cohorts.forEach((cohort) => options.push({ value: String(cohort.id), label: cohort.name }));
-    return options;
-  }, [cohorts]);
+  // Computed inline (not memoized) so the localized "Friends" label follows a runtime language switch.
+  const scopeOptions = [
+    { value: LEADERBOARD_SCOPES.FRIENDS, label: strings.leaderboardScopeFriends },
+    ...cohorts.map((cohort) => ({ value: String(cohort.id), label: cohort.name })),
+  ];
 
   function handleData(data) {
     if (!Array.isArray(data)) {
@@ -178,6 +178,7 @@ export default function Leaderboards({
             onChange={(e) => setSelectedScope(e.target.value)}
             optionLabel={(option) => option.label}
             optionValue={(option) => option.value}
+            ariaLabel={strings.leaderboardScopeAriaLabel}
             showPlaceholder={false}
           />
         </s.ScopeSelectorWrapper>

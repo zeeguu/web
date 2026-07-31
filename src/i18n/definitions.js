@@ -664,8 +664,8 @@ let strings = new LocalizedStrings(
       couldNotLoadLeaderboard: "Could not load leaderboard.",
       leaderboardRank: "Rank",
       leaderboardUser: "User",
-      selectClassroom: "Select a classroom",
       leaderboardScopeFriends: "Friends",
+      leaderboardScopeAriaLabel: "Choose whose leaderboard to view",
 
       //Settings
       //Settings categories
@@ -1789,8 +1789,8 @@ let strings = new LocalizedStrings(
       couldNotLoadLeaderboard: "Kunne ikke indlæse rangliste.",
       leaderboardRank: "Placering",
       leaderboardUser: "Bruger",
-      selectClassroom: "Vælg en klasse",
       leaderboardScopeFriends: "Venner",
+      leaderboardScopeAriaLabel: "Vælg hvis rangliste du vil se",
     },
   },
   {
