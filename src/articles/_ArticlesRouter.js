@@ -18,6 +18,10 @@ import SearchRoundedIcon from "@mui/icons-material/SearchRounded";
 import HomeRoundedIcon from "@mui/icons-material/HomeRounded";
 import BookmarkRoundedIcon from "@mui/icons-material/BookmarkRounded";
 import SchoolRoundedIcon from "@mui/icons-material/SchoolRounded";
+import MoveToInboxRoundedIcon from "@mui/icons-material/MoveToInboxRounded";
+import NotificationIcon from "../components/NotificationIcon";
+import { SharedArticlesContext } from "../contexts/SharedArticlesContext";
+import SharedInbox from "./SharedInbox";
 
 import * as columnS from "../components/ColumnWidth.sc";
 import * as s from "./_ArticlesRouter.sc";
@@ -30,12 +34,19 @@ import { UserContext } from "../contexts/UserContext";
 import useTranslationOnboarding from "../hooks/useTranslationOnboarding";
 import TranslationOnboardingPopup from "../pages/onboarding/notifications/TranslationOnboardingPopup";
 
-const READ_TAB_PATHS = ["/articles", "/articles/mySearches", "/articles/bookmarked", "/articles/classroom"];
+const READ_TAB_PATHS = [
+  "/articles",
+  "/articles/mySearches",
+  "/articles/bookmarked",
+  "/articles/classroom",
+  "/articles/shared",
+];
 
 export default function ArticlesRouter({ hasExtension, isChrome }) {
   const api = useContext(APIContext);
   const location = useLocation();
   const { userDetails } = useContext(UserContext);
+  const { hasSharedNotification, sharedUnreadCount } = useContext(SharedArticlesContext);
   const { getBrowsingSessionId } = useBrowsingSession();
   const hideRecommendations = LocalStorage.hasFeature("hide_recommendations");
   const isStudent = LocalStorage.isStudent();
@@ -76,6 +87,17 @@ export default function ArticlesRouter({ hasExtension, isChrome }) {
     </s.IconSpan>
   );
 
+  // Inbox of articles friends have shared. Always shown (a visible inbox invites
+  // people to share); the badge carries the unread count.
+  const inboxIcon = (
+    <s.IconSpan style={{ verticalAlign: "middle", position: "relative" }}>
+      <MoveToInboxRoundedIcon {...iconProps} />
+      {hasSharedNotification && (
+        <NotificationIcon position={"top-absolute"} style={{ top: 0, right: 0 }} text={sharedUnreadCount} />
+      )}
+    </s.IconSpan>
+  );
+
   const tabs = [
     !hideRecommendations && { text: homeIcon, link: "/articles" },
     { text: bookmarkIcon, link: "/articles/bookmarked" },
@@ -86,6 +108,7 @@ export default function ArticlesRouter({ hasExtension, isChrome }) {
       // Stay active on /search too — results are conceptually the search tab.
       isActive: (_, loc) => loc.pathname === "/articles/mySearches" || loc.pathname === "/search",
     },
+    { text: inboxIcon, link: "/articles/shared" },
   ].filter(Boolean);
 
   // Swipe left/right between the read tabs. Tuned stiffer than the default
@@ -127,6 +150,8 @@ export default function ArticlesRouter({ hasExtension, isChrome }) {
           <PrivateRoute path="/articles/history" component={ReadingHistory} />
 
           <PrivateRoute path="/articles/mySearches" component={MySearches} />
+
+          <PrivateRoute exact path="/articles/shared" component={SharedInbox} />
 
           <PrivateRoute path="/search" component={Search} />
         </s.ContentContainer>

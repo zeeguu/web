@@ -55,3 +55,21 @@ Zeeguu_API.prototype.rejectFriendRequest = function(sender_username) {
 Zeeguu_API.prototype.unfriend = function(receiver_username) {
   return this.apiPost("/unfriend", { receiver_username }, false);
 }
+
+Zeeguu_API.prototype.shareArticleWithFriend = function(friend_username, article_id, note) {
+  return this.apiPost("/share_article_with_friend", { friend_username, article_id, note }, false);
+}
+
+Zeeguu_API.prototype.getArticlesSharedWithMe = function(callback) {
+  this._getJSON(`articles_shared_with_me`, (data) => {
+    callback(data);
+  });
+}
+
+Zeeguu_API.prototype.markSharedArticleRead = function(shared_article_id) {
+  return this.apiPost("/mark_shared_article_read", { shared_article_id }, false);
+}
+
+Zeeguu_API.prototype.dismissSharedArticle = function(shared_article_id) {
+  return this.apiPost("/dismiss_shared_article", { shared_article_id }, false);
+}
