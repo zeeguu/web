@@ -30,6 +30,8 @@ export default function EditText() {
   const [originalCEFRLevel, setOriginalCEFRLevel] = useState(""); // Track original to detect manual changes
   const [cefrAssessments, setCefrAssessments] = useState(null); // Store CEFR assessment data
   const [displayLevel, setDisplayLevel] = useState(null); // Effective level from the CEFR panel (drives Adjust targets)
+  const [adaptedLevel, setAdaptedLevel] = useState(null); // Level the text was adapted to via the bar (null = untouched)
+  const [preAdjustSnapshot, setPreAdjustSnapshot] = useState(null); // Pre-adapt state captured on first adjust, for Reset
   const [cohortList, setCohortList] = useState([]);
   const [showAddToCohortDialog, setShowAddToCohortDialog] = useState(false);
   const [showDeleteTextWarning, setShowDeleteTextWarning] = useState(false);
@@ -188,8 +190,15 @@ export default function EditText() {
 
   // Handle an on-demand "Adjust to level" rewrite from AdjustLevelBar.
   // Non-destructive until saved: we replace the draft content and mark it
-  // changed, so the teacher reviews and hits Save (or Cancel to restore).
+  // changed, so the teacher reviews and hits Save (or Reset/Cancel to restore).
   function handleContentAdjusted(newTitle, newHtmlContent, targetLevel) {
+    // Snapshot the pre-adjust state on the FIRST adjust only, so Reset restores
+    // the teacher's original text (including edits made before adjusting) — not
+    // just the last-saved server copy the way Cancel does.
+    setPreAdjustSnapshot(
+      (prev) => prev || { articleState, cefrAssessments, stateChanged },
+    );
+    setAdaptedLevel(targetLevel);
     setStateChanged(true);
     setArticleState({
       ...articleState,
@@ -198,6 +207,35 @@ export default function EditText() {
       cefr_level: targetLevel,
       assessment_method: "llm_simplified",
     });
+    // Push the adapted level into the CEFR panel as a teacher override so the
+    // Display Level reflects the teacher's choice immediately. Without this the
+    // stale LLM assessment (not recomputed on adjust) dominates the conservative
+    // max, and the panel — and the bar's target list derived from it — keep
+    // showing the old, harder level. Display-only: the level is persisted on
+    // Save via persistAdaptedLevelIfNeeded (resolveCEFR), not here.
+    setCefrAssessments((prev) => ({ ...(prev || {}), teacher: { level: targetLevel } }));
+  }
+
+  // Undo an on-demand adaptation, restoring the pre-adjust original. Distinct
+  // from Cancel, which re-fetches the last-saved server copy and discards every
+  // edit; Reset only unwinds the adaptation, keeping any earlier edits.
+  function handleResetAdjustment() {
+    if (!preAdjustSnapshot) return;
+    setArticleState(preAdjustSnapshot.articleState);
+    // Restore the panel's pre-adjust assessments, clearing the override we
+    // pushed. The panel ignores a null initialAssessments, so when there was
+    // nothing to restore we hand it an explicit teacher-cleared object.
+    setCefrAssessments(preAdjustSnapshot.cefrAssessments || { teacher: null });
+    setStateChanged(preAdjustSnapshot.stateChanged);
+    setPreAdjustSnapshot(null);
+    setAdaptedLevel(null);
+  }
+
+  // Forget the "adapted / can reset" state — used after a Save persists the
+  // adaptation, so the bar returns to its normal "Adjust to level" mode.
+  function clearAdaptationTracking() {
+    setAdaptedLevel(null);
+    setPreAdjustSnapshot(null);
   }
 
   // After saving an adapted text, store its level so students see the right
@@ -240,6 +278,7 @@ export default function EditText() {
         // must not mark an ML-guessed level as teacher-confirmed.
         persistAdaptedLevelIfNeeded(newID);
         setStateChanged(false);
+        clearAdaptationTracking(); // the adaptation is now the saved original
         history.push(`/teacher/texts/editText/${newID}`);
       },
       (error) => {
@@ -271,6 +310,7 @@ export default function EditText() {
         if ((result = "OK")) {
           persistAdaptedLevelIfNeeded(articleID);
           setStateChanged(false);
+          clearAdaptationTracking(); // the adaptation is now the saved original
         } else {
           console.log(result);
         }
@@ -392,6 +432,8 @@ export default function EditText() {
           content={articleState.article_content}
           language={articleState.language_code}
           onAdjusted={handleContentAdjusted}
+          adaptedLevel={adaptedLevel}
+          onReset={handleResetAdjustment}
         />
 
         <EditTextInputFields

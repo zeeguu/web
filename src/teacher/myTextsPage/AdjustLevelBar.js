@@ -65,6 +65,8 @@ export default function AdjustLevelBar({
   language, // language code, or "default"/"" when not chosen yet
   disabled,
   onAdjusted,
+  adaptedLevel, // the level this text has been adapted to, or null if untouched
+  onReset, // restore the pre-adjust original; enables the Reset button when set
 }) {
   const api = useContext(APIContext);
   const [busyLevel, setBusyLevel] = useState(null);
@@ -72,9 +74,11 @@ export default function AdjustLevelBar({
   const targets = easierLevelsThan(currentLevel);
   const languageMissing = !language || language === "default";
   const contentMissing = !stripHtml(content).trim();
+  const canReset = Boolean(adaptedLevel && onReset);
 
-  // Nothing simpler to offer (e.g. the text is already A1): hide the bar.
-  if (targets.length === 0) return null;
+  // Nothing simpler to offer (e.g. the text is already A1) and no pending
+  // adaptation to undo: hide the bar entirely.
+  if (targets.length === 0 && !canReset) return null;
 
   const barDisabled = disabled || languageMissing || contentMissing || busyLevel !== null;
 
@@ -99,7 +103,9 @@ export default function AdjustLevelBar({
 
   return (
     <Bar>
-      <span className="label">Adjust to level:</span>
+      <span className="label">
+        {adaptedLevel ? `Adapted to ${adaptedLevel}:` : "Adjust to level:"}
+      </span>
       {targets.map((level) => (
         <StyledButton
           key={level}
@@ -112,6 +118,17 @@ export default function AdjustLevelBar({
           {busyLevel === level ? "…" : level}
         </StyledButton>
       ))}
+      {canReset && (
+        <StyledButton
+          $secondary
+          onClick={onReset}
+          $disabled={busyLevel !== null}
+          disabled={busyLevel !== null}
+          style={{ marginLeft: "auto" }}
+        >
+          Reset to original
+        </StyledButton>
+      )}
       {languageMissing && <span className="hint">Choose a language first</span>}
       {!languageMissing && busyLevel && (
         <span className="hint">Adapting to {busyLevel}… this can take a moment</span>
