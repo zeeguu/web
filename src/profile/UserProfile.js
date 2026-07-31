@@ -6,7 +6,9 @@ import { UserContext } from "../contexts/UserContext";
 import strings from "../i18n/definitions";
 import { APIContext } from "../contexts/APIContext";
 import Friends from "../friends/Friends";
+import SharedWithMe from "./SharedWithMe";
 import { FriendRequestContext } from "../contexts/FriendRequestContext";
+import { SharedArticlesContext } from "../contexts/SharedArticlesContext";
 import Badges from "../badges/Badges";
 import * as s from "./UserProfile.sc";
 import { BadgeCounterContext } from "../contexts/BadgeCounterContext";
@@ -29,6 +31,7 @@ export default function UserProfile() {
   const [languagesModalOpen, setLanguagesModalOpen] = useState(false);
   const [activeTab, setActiveTab] = useState("badges");
   const { hasFriendRequestNotification, friendRequestCount } = useContext(FriendRequestContext);
+  const { sharedUnreadCount, hasSharedNotification } = useContext(SharedArticlesContext);
   const { hasBadgeNotification, totalNumberOfBadges, updateBadgeCounter } = useContext(BadgeCounterContext);
   const { friendUsername } = useParams();
   const [isOwnProfile, setIsOwnProfile] = useState(!friendUsername);
@@ -168,6 +171,10 @@ export default function UserProfile() {
     },
     ...(isOwnProfile
       ? [
+          {
+            key: "shared",
+            label: `Shared with you${hasSharedNotification ? ` (${sharedUnreadCount})` : ""}`,
+          },
           { key: "friendLeaderboards", label: "Friend Leaderboards" },
           ...(profileData?.is_student ? [{ key: "cohortLeaderboards", label: "Classroom Leaderboards" }] : []),
         ]
@@ -181,6 +188,10 @@ export default function UserProfile() {
 
     if (activeTab === "friends") {
       return <Friends friendUsername={friendUsername} navigationHandler={handleUserProfileNavigation} />;
+    }
+
+    if (activeTab === "shared") {
+      return <SharedWithMe />;
     }
 
     if (activeTab === "friendLeaderboards") {
