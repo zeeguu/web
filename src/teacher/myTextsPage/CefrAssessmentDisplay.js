@@ -12,7 +12,8 @@ export default function CefrAssessmentDisplay({
   languageCode,
   onOverrideChange,
   onEffectiveLevelChange, // Optional: notified whenever the display (effective) level changes
-  initialAssessments // Optional: pre-loaded assessment data from article
+  initialAssessments, // Optional: pre-loaded assessment data from article
+  adaptedLevel // Optional: level the text was adapted to via the "Adjust to level" bar
 }) {
   const api = useContext(APIContext);
 
@@ -306,30 +307,51 @@ export default function CefrAssessmentDisplay({
           )}
         </div>
 
-        {/* Teacher Override Row */}
-        <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
-          <span style={{ fontWeight: "bold", minWidth: "120px" }}>Teacher Override:</span>
-          <select
-            value={teacherOverride || ""}
-            onChange={handleOverrideChange}
-            style={{
-              padding: "0.4rem 0.8rem",
-              fontSize: "1em",
-              borderRadius: "4px",
-              border: "1px solid #ccc",
-              fontFamily: "monospace",
-              fontWeight: teacherOverride ? "bold" : "normal",
-              color: teacherOverride ? "#dc2626" : "#333",
-            }}
-          >
-            <option value="">None (use automatic)</option>
-            {CEFR_LEVELS.map((level) => (
-              <option key={level} value={level}>
-                {level}
-              </option>
-            ))}
-          </select>
-        </div>
+        {/* Teacher Override Row — replaced by an "Adapted (LLM)" line once the
+            teacher adapts the text: the adaptation supersedes (and cancels) any
+            manual override, so we don't show both. */}
+        {adaptedLevel ? (
+          <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
+            <span style={{ fontWeight: "bold", minWidth: "120px" }}>Adapted (LLM):</span>
+            <span
+              style={{
+                fontFamily: "monospace",
+                fontSize: "1.1em",
+                fontWeight: "bold",
+                color: "#7c3aed",
+              }}
+            >
+              {adaptedLevel}
+            </span>
+            <span style={{ fontSize: "0.85em", color: "#666", fontStyle: "italic" }}>
+              (rewritten to this level — Reset to restore the original)
+            </span>
+          </div>
+        ) : (
+          <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
+            <span style={{ fontWeight: "bold", minWidth: "120px" }}>Teacher Override:</span>
+            <select
+              value={teacherOverride || ""}
+              onChange={handleOverrideChange}
+              style={{
+                padding: "0.4rem 0.8rem",
+                fontSize: "1em",
+                borderRadius: "4px",
+                border: "1px solid #ccc",
+                fontFamily: "monospace",
+                fontWeight: teacherOverride ? "bold" : "normal",
+                color: teacherOverride ? "#dc2626" : "#333",
+              }}
+            >
+              <option value="">None (use automatic)</option>
+              {CEFR_LEVELS.map((level) => (
+                <option key={level} value={level}>
+                  {level}
+                </option>
+              ))}
+            </select>
+          </div>
+        )}
 
         {/* Display Level Row - what students will see */}
         <div
@@ -354,7 +376,9 @@ export default function CefrAssessmentDisplay({
             {effectiveLevel || "—"}
           </span>
           <span style={{ fontSize: "0.85em", color: "#666", fontStyle: "italic" }}>
-            {teacherOverride
+            {adaptedLevel
+              ? `(adapted to ${adaptedLevel} via LLM)`
+              : teacherOverride
               ? "(using your override)"
               : "(conservative: max of LLM and ML-1)"
             }

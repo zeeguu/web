@@ -423,6 +423,7 @@ export default function EditText() {
           onOverrideChange={handleTeacherOverride}
           onEffectiveLevelChange={setDisplayLevel}
           initialAssessments={cefrAssessments}
+          adaptedLevel={adaptedLevel}
         />
 
         {/* Adjust to level: rewrite the teacher's text to an easier CEFR level on demand */}
