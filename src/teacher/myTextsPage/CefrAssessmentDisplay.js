@@ -11,6 +11,7 @@ export default function CefrAssessmentDisplay({
   articleTitle,
   languageCode,
   onOverrideChange,
+  onEffectiveLevelChange, // Optional: notified whenever the display (effective) level changes
   initialAssessments // Optional: pre-loaded assessment data from article
 }) {
   const api = useContext(APIContext);
@@ -38,6 +39,14 @@ export default function CefrAssessmentDisplay({
     console.log(`getMaxLevel(${level1}, ${level2}): idx1=${idx1}, idx2=${idx2}, result=${result}`);
     return result;
   };
+
+  // Notify parent whenever the effective (display) level changes, so sibling
+  // UI (e.g. the "Adjust to level" bar) can offer only easier target levels.
+  useEffect(() => {
+    if (onEffectiveLevelChange) {
+      onEffectiveLevelChange(effectiveLevel);
+    }
+  }, [effectiveLevel, onEffectiveLevelChange]);
 
   // Load initial assessments when initialAssessments prop changes
   useEffect(() => {
