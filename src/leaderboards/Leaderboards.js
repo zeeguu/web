@@ -51,7 +51,7 @@ function computeWeeklyPeriod(weekShift = 0) {
 export default function Leaderboards({
   emptyMessage = strings.noLeaderboardData,
   errorMessage = strings.couldNotLoadLeaderboard,
-  scope,
+  isStudent = false,
   leaderboardTypes = LEADERBOARD_TYPES,
   navigationHandler,
 }) {
@@ -64,7 +64,8 @@ export default function Leaderboards({
   const [selectedLeaderboardKey, setSelectedLeaderboardKey] = useState(() => leaderboardTypes[0]?.key || "default");
   const setTabRef = useScrollActiveIntoView(selectedLeaderboardKey);
   const [cohorts, setCohorts] = useState([]);
-  const [selectedCohort, setSelectedCohort] = useState(null);
+  // "friends" (LEADERBOARD_SCOPES.FRIENDS) or a cohort id (as a string, since it comes from a <select>)
+  const [selectedScope, setSelectedScope] = useState(LEADERBOARD_SCOPES.FRIENDS);
   const [leaderboardData, setLeaderboardData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -73,6 +74,12 @@ export default function Leaderboards({
     () => leaderboardTypes.find((item) => item.key === selectedLeaderboardKey) || leaderboardTypes[0],
     [leaderboardTypes, selectedLeaderboardKey],
   );
+
+  const scopeOptions = useMemo(() => {
+    const options = [{ value: LEADERBOARD_SCOPES.FRIENDS, label: strings.leaderboardScopeFriends }];
+    cohorts.forEach((cohort) => options.push({ value: String(cohort.id), label: cohort.name }));
+    return options;
+  }, [cohorts]);
 
   function handleData(data) {
     if (!Array.isArray(data)) {
@@ -103,28 +110,21 @@ export default function Leaderboards({
       setLeaderboardData([]);
       setIsLoading(false);
     };
-    if (scope === LEADERBOARD_SCOPES.FRIENDS) {
+    if (selectedScope === LEADERBOARD_SCOPES.FRIENDS) {
       api.getFriendsLeaderboard(selectedLeaderboardKey, period.fromStr, period.toStr, handleData, handleLoadError);
-    } else if (scope === LEADERBOARD_SCOPES.COHORT) {
-      if (!selectedCohort) {
-        setLeaderboardData([]);
-        setIsLoading(false);
-        return;
-      }
-      api.getCohortLeaderboard(selectedCohort, selectedLeaderboardKey, period.fromStr, period.toStr, handleData, handleLoadError);
+    } else {
+      api.getCohortLeaderboard(Number(selectedScope), selectedLeaderboardKey, period.fromStr, period.toStr, handleData, handleLoadError);
     }
-  }, [api, selectedLeaderboardKey, period.fromStr, period.toStr, scope, selectedCohort]);
+  }, [api, selectedLeaderboardKey, period.fromStr, period.toStr, selectedScope]);
 
   useEffect(() => {
-    if (scope === LEADERBOARD_SCOPES.COHORT) {
-      api.getStudent((data) => {
-        if (data?.cohorts?.length) {
-          setCohorts(data.cohorts);
-          setSelectedCohort(data.cohorts[0].id);
-        }
-      });
-    }
-  }, [api, scope]);
+    if (!isStudent) return;
+    api.getStudent((data) => {
+      if (data?.cohorts?.length) {
+        setCohorts(data.cohorts);
+      }
+    });
+  }, [api, isStudent]);
 
   function assignRanks(data) {
     if (!Array.isArray(data)) return [];
@@ -169,6 +169,20 @@ export default function Leaderboards({
 
   return (
     <s.Container>
+      {cohorts.length > 0 && (
+        <s.ScopeSelectorWrapper>
+          <Selector
+            id="leaderboard-scope-select"
+            options={scopeOptions}
+            selectedValue={selectedScope}
+            onChange={(e) => setSelectedScope(e.target.value)}
+            optionLabel={(option) => option.label}
+            optionValue={(option) => option.value}
+            showPlaceholder={false}
+          />
+        </s.ScopeSelectorWrapper>
+      )}
+
       <div
         style={{
           display: "flex",
@@ -223,20 +237,6 @@ export default function Leaderboards({
             );
           })}
         </s.TabsWrapper>
-      )}
-
-      {scope === LEADERBOARD_SCOPES.COHORT && cohorts.length > 1 && (
-        <div style={{ marginBottom: "1rem", width: "fit-content" }}>
-          <Selector
-            id="cohort-select"
-            options={cohorts.map((c) => ({ value: c.id, label: c.name }))}
-            selectedValue={selectedCohort}
-            onChange={(e) => setSelectedCohort(Number(e.target.value))}
-            optionLabel={(option) => option.label}
-            optionValue={(option) => option.value}
-            placeholder={strings.selectClassroom}
-          />
-        </div>
       )}
 
       {isLoading && <p>{strings.loadingLeaderboard}</p>}
