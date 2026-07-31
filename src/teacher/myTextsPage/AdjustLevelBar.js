@@ -1,5 +1,5 @@
 import React from "react";
-import styled from "styled-components";
+import styled, { keyframes } from "styled-components";
 import { StyledButton } from "../styledComponents/TeacherButtons.sc";
 
 const CEFR_LEVELS = ["A1", "A2", "B1", "B2", "C1", "C2"];
@@ -15,6 +15,22 @@ function easierLevelsThan(level) {
   if (hardestIdx <= 0) return []; // unknown, or already A1 — nothing easier
   return CEFR_LEVELS.slice(0, hardestIdx);
 }
+
+const blink = keyframes`
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.2; }
+`;
+
+// Green dot next to a level. Solid = already generated (instant switch);
+// blinking = generating right now.
+const Dot = styled.span`
+  color: #16a34a;
+  margin-left: 0.25rem;
+`;
+
+const BlinkingDot = styled(Dot)`
+  animation: ${blink} 1s ease-in-out infinite;
+`;
 
 const Bar = styled.div`
   display: flex;
@@ -55,8 +71,9 @@ const Bar = styled.div`
  * generating state, and always regenerates from the original — so any level is
  * reachable at any time, and levels already generated switch instantly.
  *
- * A green dot marks a level that's already been generated (instant switch);
- * "…" marks the level currently generating; the active level is filled.
+ * A solid green dot marks a level that's already been generated (instant
+ * switch); a blinking green dot marks the level currently generating; the active
+ * level is filled. While a rewrite runs the other buttons are visibly dimmed.
  */
 export default function AdjustLevelBar({
   originalLevel, // assessed level of the original text — defines the button range
@@ -80,6 +97,9 @@ export default function AdjustLevelBar({
     const isActive = level === activeLevel;
     const isBusy = busyLevel === level;
     const isCached = !isBusy && !isActive && (isOriginal || cachedLevels.includes(level));
+    // While one level generates, the others are unclickable — dim them so that
+    // reads clearly. The generating button stays full-strength (it's working).
+    const dimmed = barDisabled && !isBusy;
     return (
       <StyledButton
         key={level}
@@ -88,10 +108,17 @@ export default function AdjustLevelBar({
         onClick={() => onPick(level)}
         $disabled={barDisabled}
         disabled={barDisabled}
-        style={{ minWidth: "3.5rem", fontFamily: "monospace", fontWeight: "bold" }}
+        style={{
+          minWidth: "3.5rem",
+          fontFamily: "monospace",
+          fontWeight: "bold",
+          opacity: dimmed ? 0.4 : 1,
+          cursor: barDisabled ? "not-allowed" : "pointer",
+        }}
       >
-        {isBusy ? "…" : level}
-        {isCached && <span style={{ color: "#16a34a" }}> •</span>}
+        {level}
+        {isBusy && <BlinkingDot>•</BlinkingDot>}
+        {isCached && <Dot>•</Dot>}
       </StyledButton>
     );
   };
