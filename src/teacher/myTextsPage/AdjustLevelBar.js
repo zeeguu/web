@@ -1,6 +1,5 @@
 import React from "react";
-import styled, { keyframes } from "styled-components";
-import { StyledButton } from "../styledComponents/TeacherButtons.sc";
+import * as s from "./AdjustLevelBar.sc";
 
 const CEFR_LEVELS = ["A1", "A2", "B1", "B2", "C1", "C2"];
 
@@ -15,52 +14,6 @@ function easierLevelsThan(level) {
   if (hardestIdx <= 0) return []; // unknown, or already A1 — nothing easier
   return CEFR_LEVELS.slice(0, hardestIdx);
 }
-
-const blink = keyframes`
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.2; }
-`;
-
-// Green dot next to a level. Solid = already generated (instant switch);
-// blinking = generating right now.
-const Dot = styled.span`
-  color: #16a34a;
-  margin-left: 0.25rem;
-`;
-
-const BlinkingDot = styled(Dot)`
-  animation: ${blink} 1s ease-in-out infinite;
-`;
-
-const Bar = styled.div`
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 0.6rem;
-  margin-top: 1rem;
-  margin-bottom: 1rem;
-  padding: 0.75rem 1rem;
-  background-color: #fff8ef;
-  border: 1px solid #ffcf99;
-  border-radius: 5px;
-
-  .label {
-    font-weight: bold;
-    white-space: nowrap;
-  }
-
-  .sep {
-    color: #b45309;
-    font-size: 0.9em;
-    margin-left: 0.25rem;
-  }
-
-  .hint {
-    font-size: 0.85em;
-    color: #666;
-    font-style: italic;
-  }
-`;
 
 /**
  * "Rewrite to make easier" bar for the teacher text editor.
@@ -101,35 +54,30 @@ export default function AdjustLevelBar({
     // reads clearly. The generating button stays full-strength (it's working).
     const dimmed = barDisabled && !isBusy;
     return (
-      <StyledButton
+      <s.LevelButton
         key={level}
         $primary={isActive}
         $secondary={!isActive}
-        onClick={() => onPick(level)}
         $disabled={barDisabled}
         disabled={barDisabled}
-        style={{
-          minWidth: "3.5rem",
-          fontFamily: "monospace",
-          fontWeight: "bold",
-          opacity: dimmed ? 0.4 : 1,
-          cursor: barDisabled ? "not-allowed" : "pointer",
-        }}
+        $dimmed={dimmed}
+        $barDisabled={barDisabled}
+        onClick={() => onPick(level)}
       >
         {level}
-        {isBusy && <BlinkingDot>•</BlinkingDot>}
-        {isCached && <Dot>•</Dot>}
-      </StyledButton>
+        {isBusy && <s.BlinkingGreenDot>•</s.BlinkingGreenDot>}
+        {isCached && <s.GreenDot>•</s.GreenDot>}
+      </s.LevelButton>
     );
   };
 
   return (
-    <Bar>
+    <s.Bar>
       <span className="label">Rewrite to make easier:</span>
       {easierTargets.map((level) => renderButton(level, false))}
       <span className="sep">original:</span>
       {renderButton(originalLevel, true)}
       {languageMissing && <span className="hint">Choose a language first</span>}
-    </Bar>
+    </s.Bar>
   );
 }

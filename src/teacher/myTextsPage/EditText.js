@@ -15,6 +15,7 @@ import ShareWithCollegueDialog from "./ShareWithColleagueDialog";
 import { APIContext } from "../../contexts/APIContext";
 import CefrAssessmentDisplay from "./CefrAssessmentDisplay";
 import AdjustLevelBar from "./AdjustLevelBar";
+import RewritingIndicator from "./RewritingIndicator";
 import LoadingAnimation from "../../components/LoadingAnimation";
 import { detectLanguageFromText, languageNames } from "../../utils/languageDetection";
 
@@ -478,28 +479,7 @@ export default function EditText() {
             panel: the text is about to be swapped wholesale, so editing it now
             makes no sense — and the teacher needs to see that work is happening. */}
         {busyLevel ? (
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              justifyContent: "center",
-              minHeight: "18rem",
-              gap: "0.5rem",
-              padding: "2rem",
-              border: "1px solid #ffcf99",
-              borderRadius: "8px",
-              backgroundColor: "#fff8ef",
-              textAlign: "center",
-            }}
-          >
-            <LoadingAnimation delay={0} showReportIssue={false}>
-              <p style={{ fontSize: "1.5em", fontWeight: "bold", margin: 0 }}>Rewriting to {busyLevel}…</p>
-            </LoadingAnimation>
-            <p style={{ color: "#666", margin: 0 }}>
-              This can take a moment — the rewritten text will replace the editor here.
-            </p>
-          </div>
+          <RewritingIndicator level={busyLevel} />
         ) : (
           <EditTextInputFields
             language_code={articleState.language_code}
