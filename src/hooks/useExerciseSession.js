@@ -24,6 +24,7 @@ export default function useExerciseSession(enabled = true) {
     enabled,
     autoStart: true,
     idleTimeout: 30_000,
+    exposeLiveDuration: true, // ExerciseSession shows a DigitalTimer when the reading-timer pref is on
     apiCreate: (cb) => api.exerciseSessionCreate(cb),
     apiUpdate: (id, dur) => api.exerciseSessionUpdate(id, dur),
     apiEnd: (id, dur) => api.exerciseSessionEnd(id, dur),
