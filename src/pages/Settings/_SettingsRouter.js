@@ -9,6 +9,7 @@ import MyClassrooms from "./Pages/MyClassrooms/MyClassrooms";
 import DeleteAccount from "./Pages/DeleteAccount";
 import ExerciseSchedulingPreferences from "./Pages/ExerciseSchedulingPreferences";
 import ActivityTimer from "./Pages/ActivityTimer";
+import NotificationSettings from "./Pages/NotificationSettings";
 import Developer from "./Pages/Developer";
 
 export default function SettingsRouter({ setUser }) {
@@ -29,6 +30,8 @@ export default function SettingsRouter({ setUser }) {
       <PrivateRoute path="/account_settings/my_classrooms" component={MyClassrooms} />
 
       <PrivateRoute path="/account_settings/interests" component={FeedPreferences} />
+
+      <PrivateRoute path="/account_settings/notifications" component={NotificationSettings} />
 
       <PrivateRoute path="/account_settings/delete_account" component={DeleteAccount} />
 
