@@ -44,6 +44,18 @@ export default function SharedArticleRow({ share }) {
       .catch(() => toast.error("Could not dismiss."));
   }
 
+  // The sharer's name links to their profile. stopPropagation so it doesn't
+  // also trigger the row's open-article click.
+  function handleOpenProfile(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    history.push(`/profile/${encodeURIComponent(share.from_user_username)}`);
+  }
+
+  function handleProfileKeyDown(e) {
+    if (e.key === "Enter" || e.key === " ") handleOpenProfile(e);
+  }
+
   return (
     <s.Row
       style={{ cursor: "pointer" }}
@@ -65,7 +77,22 @@ export default function SharedArticleRow({ share }) {
         <s.Title>{article.title || "Untitled article"}</s.Title>
         <MetaStrip>
           {!share.read && <MetaTag>New</MetaTag>}
-          <MetaTag>Shared by {share.from_user_name}</MetaTag>
+          <MetaTag>
+            Shared by{" "}
+            {share.from_user_username ? (
+              <span
+                onClick={handleOpenProfile}
+                onKeyDown={handleProfileKeyDown}
+                role="link"
+                tabIndex={0}
+                style={{ textDecoration: "underline", cursor: "pointer" }}
+              >
+                {share.from_user_name}
+              </span>
+            ) : (
+              share.from_user_name
+            )}
+          </MetaTag>
           {share.note && <MetaItem style={{ fontStyle: "italic" }}>“{share.note}”</MetaItem>}
           {sourceDomain && <MetaItem>{sourceDomain}</MetaItem>}
         </MetaStrip>
