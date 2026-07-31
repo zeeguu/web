@@ -474,13 +474,41 @@ export default function EditText() {
           onPick={handlePickLevel}
         />
 
-        <EditTextInputFields
-          language_code={articleState.language_code}
-          article_title={articleState.article_title}
-          article_content={articleState.article_content}
-          handleLanguageChange={handleLanguageChange}
-          handleChange={handleChange}
-        />
+        {/* While a rewrite is in flight, replace the editor with a clear loading
+            panel: the text is about to be swapped wholesale, so editing it now
+            makes no sense — and the teacher needs to see that work is happening. */}
+        {busyLevel ? (
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              justifyContent: "center",
+              minHeight: "18rem",
+              gap: "0.5rem",
+              padding: "2rem",
+              border: "1px solid #ffcf99",
+              borderRadius: "8px",
+              backgroundColor: "#fff8ef",
+              textAlign: "center",
+            }}
+          >
+            <LoadingAnimation delay={0} showReportIssue={false}>
+              <p style={{ fontSize: "1.5em", fontWeight: "bold", margin: 0 }}>Rewriting to {busyLevel}…</p>
+            </LoadingAnimation>
+            <p style={{ color: "#666", margin: 0 }}>
+              This can take a moment — the rewritten text will replace the editor here.
+            </p>
+          </div>
+        ) : (
+          <EditTextInputFields
+            language_code={articleState.language_code}
+            article_title={articleState.article_title}
+            article_content={articleState.article_content}
+            handleLanguageChange={handleLanguageChange}
+            handleChange={handleChange}
+          />
+        )}
         {inputInvalid && <Error message={strings.errorEmptyInputField} />}
         <div style={{ height: "8em" }} />
       </s.NarrowColumn>
