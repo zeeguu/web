@@ -17,6 +17,7 @@ export default function Selector({
   selectedValue, // current value - state in the parent component
   onChange,
   label, // label above the field
+  ariaLabel, // accessible name for the <select> when there is no visible label
   placeholder,
   showPlaceholder = true,
   isError,
@@ -33,6 +34,7 @@ export default function Selector({
           id={id}
           value={selectedValue}
           onChange={onChange}
+          aria-label={ariaLabel}
           className={`${isError && "error"}`}
         >
           {showPlaceholder && placeholder && (

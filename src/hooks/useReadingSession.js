@@ -23,6 +23,7 @@ export default function useReadingSession(articleId, readingSource = "web", enab
     enabled: enabled && !!articleId,
     autoStart: true,
     idleTimeout: 30_000,
+    exposeLiveDuration: true, // ArticleReader shows a live DigitalTimer
     apiCreate: (cb) => api.readingSessionCreate(articleId, readingSource, cb),
     apiUpdate: (id, dur) => api.readingSessionUpdate(id, dur),
     apiEnd: (id, dur) => api.readingSessionEnd(id, dur),

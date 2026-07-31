@@ -27,6 +27,12 @@ export const Container = styled.section`
   max-width: 760px;
 `;
 
+export const ScopeSelectorWrapper = styled.div`
+  width: fit-content;
+  min-width: 200px;
+  margin-bottom: 1.25em;
+`;
+
 export const PeriodContainer = styled.div`
   display: flex;
   flex-direction: column;

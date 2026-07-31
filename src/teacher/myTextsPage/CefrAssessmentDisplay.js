@@ -11,14 +11,11 @@ export default function CefrAssessmentDisplay({
   articleTitle,
   languageCode,
   onOverrideChange,
-  onEffectiveLevelChange, // Optional: notified whenever the display (effective) level changes
+  onEffectiveLevelChange, // Optional: notified whenever the difficulty (effective level) changes
   initialAssessments, // Optional: pre-loaded assessment data from article
-  adaptedLevel // Optional: level the text was adapted to via the "Adjust to level" bar
+  adaptedLevel // Optional: level the text has been rewritten to via the "Rewrite" bar
 }) {
   const api = useContext(APIContext);
-
-  // Debug logging
-  console.log("CefrAssessmentDisplay initialized with:", initialAssessments);
 
   const [llmAssessment, setLlmAssessment] = useState(initialAssessments?.llm?.level || null);
   const [mlAssessment, setMlAssessment] = useState(initialAssessments?.ml?.level || null);
@@ -29,6 +26,8 @@ export default function CefrAssessmentDisplay({
   const [contentChanged, setContentChanged] = useState(false);
   const [llmLastUpdated, setLlmLastUpdated] = useState(null);
   const [mlLastUpdated, setMlLastUpdated] = useState(null);
+  const [showHow, setShowHow] = useState(false); // "(how?)" disclosure: reveals the two estimators
+  const [showManualPicker, setShowManualPicker] = useState(false); // "set manually" reveals the level picker
 
   // Get maximum (harder) CEFR level
   const getMaxLevel = (level1, level2) => {
@@ -36,13 +35,21 @@ export default function CefrAssessmentDisplay({
     if (!level2) return level1;
     const idx1 = CEFR_LEVELS.indexOf(level1);
     const idx2 = CEFR_LEVELS.indexOf(level2);
-    const result = idx1 > idx2 ? level1 : level2;
-    console.log(`getMaxLevel(${level1}, ${level2}): idx1=${idx1}, idx2=${idx2}, result=${result}`);
-    return result;
+    return idx1 > idx2 ? level1 : level2;
   };
 
-  // Notify parent whenever the effective (display) level changes, so sibling
-  // UI (e.g. the "Adjust to level" bar) can offer only easier target levels.
+  // The difficulty shown to students, derived from its inputs in one place: a
+  // rewrite wins (the teacher asked for exactly that level), then a manual
+  // override, then the conservative max of the two automatic estimators.
+  // Deriving it here (rather than setting it imperatively in each async handler)
+  // keeps a rewritten/overridden level from being clobbered when ML re-runs.
+  useEffect(() => {
+    setEffectiveLevel(adaptedLevel || teacherOverride || getMaxLevel(llmAssessment, mlAssessment) || null);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [adaptedLevel, teacherOverride, llmAssessment, mlAssessment]);
+
+  // Notify parent whenever the difficulty changes, so sibling UI (e.g. the
+  // "Rewrite" bar) knows the original assessed level.
   useEffect(() => {
     if (onEffectiveLevelChange) {
       onEffectiveLevelChange(effectiveLevel);
@@ -52,9 +59,6 @@ export default function CefrAssessmentDisplay({
   // Load initial assessments when initialAssessments prop changes
   useEffect(() => {
     if (initialAssessments) {
-      // Use pre-loaded data from parent component
-      console.log("Loading assessments from initialAssessments:", initialAssessments);
-
       const llm = initialAssessments.llm?.level || null;
       const ml = initialAssessments.ml?.level || null;
       const teacher = initialAssessments.teacher?.level || null;
@@ -66,10 +70,6 @@ export default function CefrAssessmentDisplay({
       // Set initial timestamps if assessments exist
       if (llm) setLlmLastUpdated(new Date());
       if (ml) setMlLastUpdated(new Date());
-
-      const newEffective = getMaxLevel(llm, ml);
-      console.log("Setting effective level:", { llm, ml, teacher, newEffective, final: teacher || newEffective });
-      setEffectiveLevel(teacher || newEffective);
     }
   }, [initialAssessments]);
 
@@ -87,36 +87,18 @@ export default function CefrAssessmentDisplay({
         content,
         languageCode,
         (data) => {
-          console.log("ML assessment response:", data);
-          console.log("CEFR level from response:", data.cefr_level);
-
-          // Log detailed debug info if available
-          if (data.error) {
-            console.warn("ML Assessment Error:", data.error);
-          }
-          if (data.debug) {
-            console.log("ML Assessment Debug Info:", data.debug);
-          }
-
           setMlAssessment(data.cefr_level);
           setMlLastUpdated(new Date());
-          // Recalculate effective level
-          const newEffective = getMaxLevel(llmAssessment, data.cefr_level);
-          setEffectiveLevel(teacherOverride || newEffective);
           setIsComputingML(false);
         },
         (err) => {
           console.error("Failed to recompute ML assessment:", err);
-          console.error("Error details:", JSON.stringify(err, null, 2));
           setMlAssessment(null);
-          // Even if ML fails, compute effective level from LLM only
-          const newEffective = getMaxLevel(llmAssessment, null);
-          setEffectiveLevel(teacherOverride || newEffective);
           setIsComputingML(false);
         }
       );
     }, 1500), // 1.5 second debounce
-    [api, articleTitle, llmAssessment, teacherOverride]
+    [api, articleTitle]
   );
 
   // Detect content changes and trigger ML recomputation
@@ -127,14 +109,12 @@ export default function CefrAssessmentDisplay({
   // Reset when language changes
   useEffect(() => {
     if (languageCode && languageCode !== "default" && languageCode !== lastLanguageCode) {
-      console.log("Language changed from", lastLanguageCode, "to", languageCode);
       setLastLanguageCode(languageCode);
       setMlAssessment(null);
       setInitialContent(null);
       setMlLastUpdated(null);
       // Trigger ML assessment with new language if we have content
       if (articleContent) {
-        console.log("Triggering ML assessment for new language");
         recomputeML(stripHtml(articleContent), languageCode);
         setInitialContent(articleContent);
       }
@@ -147,7 +127,6 @@ export default function CefrAssessmentDisplay({
       setInitialContent(articleContent);
       // Only compute ML if we don't already have it
       if (!mlAssessment) {
-        console.log("Triggering initial ML assessment");
         recomputeML(stripHtml(articleContent), languageCode);
       }
     } else if (articleContent && languageCode && languageCode !== "default" && articleContent !== initialContent) {
@@ -157,7 +136,7 @@ export default function CefrAssessmentDisplay({
     }
   }, [articleContent, languageCode, initialContent, mlAssessment, recomputeML]);
 
-  // Recompute LLM assessment (button click)
+  // Recompute LLM assessment (button click, inside the "how?" details)
   const recomputeLLM = () => {
     if (!articleID || articleID === "new") return;
 
@@ -169,45 +148,30 @@ export default function CefrAssessmentDisplay({
       (data) => {
         setLlmAssessment(data.llm_assessment);
         setLlmLastUpdated(new Date());
-        // Recalculate effective level
-        const newEffective = getMaxLevel(data.llm_assessment, mlAssessment);
-        setEffectiveLevel(teacherOverride || newEffective);
         setIsComputingLLM(false);
         setContentChanged(false);
       },
       (err) => {
         console.error("Failed to recompute LLM assessment:", err);
         setLlmAssessment(null);
-        // Even if LLM fails, compute effective level from ML only
-        const newEffective = getMaxLevel(null, mlAssessment);
-        setEffectiveLevel(teacherOverride || newEffective);
         setIsComputingLLM(false);
       }
     );
   };
 
-  // Handle teacher override selection
-  const handleOverrideChange = (e) => {
-    const value = e.target.value === "" ? null : e.target.value;
+  // Set a manual level (teacher disagrees with the automatic estimate). This
+  // relabels the difficulty; it does not change the text.
+  const applyManualLevel = (value) => {
     setTeacherOverride(value);
-    if (value) {
-      setEffectiveLevel(value);
-      // Only save to database if article exists (not new)
-      if (articleID && articleID !== "new") {
-        api.resolveCEFR(articleID, value, (response) => {
-          console.log("Teacher override saved:", response);
-        }, (error) => {
-          console.error("Failed to save teacher override:", error);
-        });
-      }
-    } else {
-      // No override, use max of LLM and ML
-      const newEffective = getMaxLevel(llmAssessment, mlAssessment);
-      setEffectiveLevel(newEffective);
-      // Note: We can't clear teacher override by passing null, so we skip the API call
-      // The teacher would need to select a different level to change it
+    setShowManualPicker(false);
+    if (value && articleID && articleID !== "new") {
+      api.resolveCEFR(
+        articleID,
+        value,
+        (response) => console.log("Teacher override saved:", response),
+        (error) => console.error("Failed to save teacher override:", error),
+      );
     }
-    // Notify parent component
     if (onOverrideChange) {
       onOverrideChange(value);
     }
@@ -224,10 +188,21 @@ export default function CefrAssessmentDisplay({
   // Format timestamp for display
   const formatTimestamp = (date) => {
     if (!date) return "";
-    return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+    return date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
   };
 
   const isNewArticle = !articleID || articleID === "new";
+
+  // Which state are we in? A rewrite supersedes a manual override supersedes the
+  // automatic estimate.
+  const difficultyLabel = adaptedLevel
+    ? "Difficulty"
+    : teacherOverride
+    ? "Difficulty (set by you)"
+    : "Automatically assessed difficulty";
+  const difficultyColor = adaptedLevel ? "#7c3aed" : teacherOverride ? "#dc2626" : "#2563eb";
+  const difficultySuffix = adaptedLevel ? "(rewritten)" : "";
+  const isAutomatic = !adaptedLevel && !teacherOverride;
 
   return (
     <div
@@ -240,151 +215,137 @@ export default function CefrAssessmentDisplay({
         padding: "1rem",
       }}
     >
-      <h3 style={{ marginTop: 0, marginBottom: "0.75rem", fontSize: "1.1em" }}>CEFR Difficulty Assessment</h3>
-
-      <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
-        {/* LLM Assessment Row - only show for existing articles */}
-        {!isNewArticle && (
-          <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
-            <span style={{ fontWeight: "bold", minWidth: "120px" }}>LLM:</span>
-            {contentChanged && !llmAssessment ? (
-              <span style={{ color: "#888", fontStyle: "italic" }}>Click "Recompute LLM" after editing</span>
-            ) : (
-              <>
-                <span
-                  style={{
-                    fontFamily: "monospace",
-                    fontSize: "1.1em",
-                    fontWeight: "bold",
-                    color: llmAssessment ? "#2563eb" : "#888",
-                  }}
-                >
-                  {llmAssessment || "—"}
-                </span>
-                {llmLastUpdated && (
-                  <span style={{ fontSize: "0.85em", color: "#888", fontStyle: "italic" }}>
-                    (last updated {formatTimestamp(llmLastUpdated)})
-                  </span>
-                )}
-              </>
-            )}
-            <StyledButton
-              $secondary
-              onClick={recomputeLLM}
-              $disabled={isComputingLLM} disabled={isComputingLLM}
-              style={{ marginLeft: "auto", fontSize: "0.9em", padding: "0.4rem 0.8rem" }}
-            >
-              {isComputingLLM ? "Computing..." : "Recompute LLM"}
-            </StyledButton>
-          </div>
+      {/* Difficulty row — the single number the teacher cares about */}
+      <div style={{ display: "flex", alignItems: "baseline", gap: "0.6rem", flexWrap: "wrap" }}>
+        <span style={{ fontWeight: "bold" }}>{difficultyLabel}:</span>
+        <span
+          style={{
+            fontFamily: "monospace",
+            fontSize: "1.4em",
+            fontWeight: "bold",
+            color: effectiveLevel ? difficultyColor : "#888",
+          }}
+        >
+          {effectiveLevel || "—"}
+        </span>
+        {difficultySuffix && (
+          <span style={{ fontSize: "0.85em", color: "#666", fontStyle: "italic" }}>{difficultySuffix}</span>
         )}
-
-        {/* ML Assessment Row */}
-        <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
-          <span style={{ fontWeight: "bold", minWidth: "120px" }}>ML-1:</span>
-          <span
+        {isAutomatic && !isNewArticle && (
+          <button
+            type="button"
+            onClick={() => setShowHow((v) => !v)}
             style={{
-              fontFamily: "monospace",
-              fontSize: "1.1em",
-              fontWeight: "bold",
-              color: mlAssessment ? "#16a34a" : "#888",
+              background: "none",
+              border: "none",
+              padding: 0,
+              color: "#2563eb",
+              cursor: "pointer",
+              fontSize: "0.9em",
+              textDecoration: "underline",
             }}
           >
-            {mlAssessment || "—"}
-          </span>
-          {isComputingML && (
-            <span style={{ color: "#888", fontSize: "0.9em", fontStyle: "italic" }}>updating...</span>
-          )}
-          {!isComputingML && mlLastUpdated && mlAssessment && (
-            <span style={{ fontSize: "0.85em", color: "#888", fontStyle: "italic" }}>
-              (last updated {formatTimestamp(mlLastUpdated)})
-            </span>
-          )}
-          {!isComputingML && !mlAssessment && languageCode && languageCode !== "default" && (
-            <span style={{ fontSize: "0.85em", color: "#888", fontStyle: "italic" }}>
-              (ML model not available for this language)
-            </span>
-          )}
-        </div>
+            {showHow ? "(hide)" : "(how?)"}
+          </button>
+        )}
 
-        {/* Teacher Override Row — replaced by an "Adapted (LLM)" line once the
-            teacher adapts the text: the adaptation supersedes (and cancels) any
-            manual override, so we don't show both. */}
-        {adaptedLevel ? (
-          <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
-            <span style={{ fontWeight: "bold", minWidth: "120px" }}>Adapted (LLM):</span>
-            <span
-              style={{
-                fontFamily: "monospace",
-                fontSize: "1.1em",
-                fontWeight: "bold",
-                color: "#7c3aed",
-              }}
+        {/* Right-hand control depends on the state */}
+        <span style={{ marginLeft: "auto", display: "flex", alignItems: "center", gap: "0.5rem" }}>
+          {isAutomatic && !showManualPicker && (
+            <StyledButton
+              $secondary
+              onClick={() => setShowManualPicker(true)}
+              style={{ fontSize: "0.9em", padding: "0.4rem 0.8rem" }}
             >
-              {adaptedLevel}
-            </span>
-            <span style={{ fontSize: "0.85em", color: "#666", fontStyle: "italic" }}>
-              (rewritten to this level — Reset to restore the original)
-            </span>
-          </div>
-        ) : (
-          <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
-            <span style={{ fontWeight: "bold", minWidth: "120px" }}>Teacher Override:</span>
+              Set manually
+            </StyledButton>
+          )}
+          {isAutomatic && showManualPicker && (
             <select
-              value={teacherOverride || ""}
-              onChange={handleOverrideChange}
+              autoFocus
+              value=""
+              onChange={(e) => applyManualLevel(e.target.value || null)}
               style={{
                 padding: "0.4rem 0.8rem",
                 fontSize: "1em",
                 borderRadius: "4px",
                 border: "1px solid #ccc",
                 fontFamily: "monospace",
-                fontWeight: teacherOverride ? "bold" : "normal",
-                color: teacherOverride ? "#dc2626" : "#333",
               }}
             >
-              <option value="">None (use automatic)</option>
+              <option value="">Choose a level…</option>
               {CEFR_LEVELS.map((level) => (
                 <option key={level} value={level}>
                   {level}
                 </option>
               ))}
             </select>
-          </div>
-        )}
+          )}
+          {teacherOverride && !adaptedLevel && (
+            <StyledButton
+              $secondary
+              onClick={() => applyManualLevel(null)}
+              style={{ fontSize: "0.9em", padding: "0.4rem 0.8rem" }}
+            >
+              Use automatic
+            </StyledButton>
+          )}
+        </span>
+      </div>
 
-        {/* Display Level Row - what students will see */}
+      {/* "how?" disclosure — the only place the two estimators appear */}
+      {showHow && isAutomatic && !isNewArticle && (
         <div
           style={{
-            display: "flex",
-            alignItems: "center",
-            gap: "1rem",
+            marginTop: "0.75rem",
             paddingTop: "0.75rem",
-            marginTop: "0.5rem",
-            borderTop: "2px solid #b8d4f1",
+            borderTop: "1px solid #b8d4f1",
+            fontSize: "0.9em",
+            color: "#444",
           }}
         >
-          <span style={{ fontWeight: "bold", minWidth: "120px" }}>Display Level:</span>
-          <span
-            style={{
-              fontFamily: "monospace",
-              fontSize: "1.3em",
-              fontWeight: "bold",
-              color: "#dc2626",
-            }}
-          >
-            {effectiveLevel || "—"}
-          </span>
-          <span style={{ fontSize: "0.85em", color: "#666", fontStyle: "italic" }}>
-            {adaptedLevel
-              ? `(adapted to ${adaptedLevel} via LLM)`
-              : teacherOverride
-              ? "(using your override)"
-              : "(conservative: max of LLM and ML-1)"
-            }
-          </span>
+          <div style={{ marginBottom: "0.5rem", fontStyle: "italic", color: "#666" }}>
+            Two automatic estimates of this text's level; the harder of the two is used, so students aren't
+            under-pitched.
+          </div>
+          <div style={{ display: "flex", alignItems: "center", gap: "0.75rem", marginBottom: "0.35rem" }}>
+            <span style={{ minWidth: "170px" }}>Language model (LLM):</span>
+            <span style={{ fontFamily: "monospace", fontWeight: "bold", color: llmAssessment ? "#2563eb" : "#888" }}>
+              {llmAssessment || "—"}
+            </span>
+            {llmLastUpdated && (
+              <span style={{ color: "#888", fontStyle: "italic" }}>updated {formatTimestamp(llmLastUpdated)}</span>
+            )}
+            <StyledButton
+              $secondary
+              onClick={recomputeLLM}
+              $disabled={isComputingLLM}
+              disabled={isComputingLLM}
+              style={{ marginLeft: "auto", fontSize: "0.85em", padding: "0.3rem 0.7rem" }}
+            >
+              {isComputingLLM ? "Computing…" : "Recompute"}
+            </StyledButton>
+          </div>
+          <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
+            <span style={{ minWidth: "170px" }}>Trained classifier (ML):</span>
+            <span style={{ fontFamily: "monospace", fontWeight: "bold", color: mlAssessment ? "#16a34a" : "#888" }}>
+              {mlAssessment || "—"}
+            </span>
+            {isComputingML && <span style={{ color: "#888", fontStyle: "italic" }}>updating…</span>}
+            {!isComputingML && mlLastUpdated && mlAssessment && (
+              <span style={{ color: "#888", fontStyle: "italic" }}>updated {formatTimestamp(mlLastUpdated)}</span>
+            )}
+            {!isComputingML && !mlAssessment && languageCode && languageCode !== "default" && (
+              <span style={{ color: "#888", fontStyle: "italic" }}>(not available for this language)</span>
+            )}
+          </div>
+          {contentChanged && (
+            <div style={{ marginTop: "0.5rem", color: "#b45309", fontStyle: "italic" }}>
+              The text changed — recompute for an up-to-date LLM estimate.
+            </div>
+          )}
         </div>
-      </div>
+      )}
     </div>
   );
 }
