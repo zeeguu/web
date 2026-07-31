@@ -1,51 +1,25 @@
-import { toast } from "react-toastify";
+import { useState } from "react";
 import ShareIcon from "@mui/icons-material/Share";
 import IosShareIcon from "@mui/icons-material/IosShare";
 import { Capacitor } from "@capacitor/core";
+import ShareToFriendModal from "./ShareToFriendModal";
 
 export default function ShareArticle({ articleID }) {
-  const shareUrl = `https://zeeguu.org/read/article?id=${articleID}`;
+  const [modalOpen, setModalOpen] = useState(false);
   // iOS users expect the square-with-up-arrow glyph; everywhere else the
   // Material/Android "share" glyph is the familiar one.
   const ShareGlyph = Capacitor.getPlatform() === "ios" ? IosShareIcon : ShareIcon;
 
-  const handleShare = async () => {
-    if (navigator.share) {
-      try {
-        await navigator.share({
-          title: "Check out this article on Zeeguu",
-          url: shareUrl,
-        });
-        return;
-      } catch (err) {
-        // User cancelled or share failed, fall back to clipboard
-      }
-    }
-
-    try {
-      await navigator.clipboard.writeText(shareUrl);
-      toast.success("Link copied!");
-    } catch (err) {
-      // Fallback for HTTP / older browsers
-      const textArea = document.createElement("textarea");
-      textArea.value = shareUrl;
-      textArea.style.position = "fixed";
-      textArea.style.opacity = "0";
-      document.body.appendChild(textArea);
-      textArea.select();
-      document.execCommand("copy");
-      document.body.removeChild(textArea);
-      toast.success("Link copied!");
-    }
-  };
-
   return (
-    <div
-      onClick={handleShare}
-      aria-label="Share article"
-      style={{ padding: "0.5rem", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}
-    >
-      <ShareGlyph style={{ fontSize: "1.4em", color: "#999" }} />
-    </div>
+    <>
+      <div
+        onClick={() => setModalOpen(true)}
+        aria-label="Share article"
+        style={{ padding: "0.5rem", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}
+      >
+        <ShareGlyph style={{ fontSize: "1.4em", color: "#999" }} />
+      </div>
+      <ShareToFriendModal open={modalOpen} onClose={() => setModalOpen(false)} articleID={articleID} />
+    </>
   );
 }
