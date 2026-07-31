@@ -13,7 +13,6 @@ import { BadgeCounterContext } from "../contexts/BadgeCounterContext";
 import LoadingAnimation from "../components/LoadingAnimation";
 import Button from "../pages/_pages_shared/Button.sc";
 import Leaderboards from "../leaderboards/Leaderboards";
-import { LEADERBOARD_SCOPES } from "../leaderboards/leaderboardTypes";
 import useFriendActions from "../hooks/useFriendActions";
 import { ProfileHeaderCard } from "./ProfileHeaderCard";
 import { ProfileTabs } from "./ProfileTabs";
@@ -166,12 +165,7 @@ export default function UserProfile() {
       key: "friends",
       label: `Friends${isOwnProfile && hasFriendRequestNotification ? ` (${friendRequestCount})` : ""}`,
     },
-    ...(isOwnProfile
-      ? [
-          { key: "friendLeaderboards", label: "Friend Leaderboards" },
-          ...(profileData?.is_student ? [{ key: "cohortLeaderboards", label: "Classroom Leaderboards" }] : []),
-        ]
-      : []),
+    ...(isOwnProfile ? [{ key: "leaderboards", label: "Leaderboards" }] : []),
   ];
 
   const renderTabContent = () => {
@@ -183,12 +177,8 @@ export default function UserProfile() {
       return <Friends friendUsername={friendUsername} navigationHandler={handleUserProfileNavigation} />;
     }
 
-    if (activeTab === "friendLeaderboards") {
-      return <Leaderboards navigationHandler={handleUserProfileNavigation} scope={LEADERBOARD_SCOPES.FRIENDS} />;
-    }
-
-    if (activeTab === "cohortLeaderboards") {
-      return <Leaderboards navigationHandler={handleUserProfileNavigation} scope={LEADERBOARD_SCOPES.COHORT} />;
+    if (activeTab === "leaderboards") {
+      return <Leaderboards navigationHandler={handleUserProfileNavigation} isStudent={profileData?.is_student} />;
     }
 
     return null;
@@ -208,12 +198,10 @@ export default function UserProfile() {
           <Button
             type={"button"}
             className={"small"}
-            onClick={() => {
-              handleUserProfileNavigation(null);
-            }}
+            onClick={() => history.goBack()}
           >
             <ArrowBackIcon sx={{ fontSize: "1.2rem" }} />
-            <span>Back to Profile</span>
+            <span>Back</span>
           </Button>
         </s.BackNavigation>
       )}
