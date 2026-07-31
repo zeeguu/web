@@ -29,7 +29,7 @@ export default function SharedWithMe() {
 
   if (!sharedArticles || sharedArticles.length === 0) {
     return (
-      <p style={{ color: "var(--gray-4, #666)" }}>
+      <p style={{ color: "var(--text-secondary)" }}>
         Nothing shared with you yet. When a friend shares an article, it shows up here in the language you're
         learning.
       </p>
@@ -47,9 +47,9 @@ export default function SharedWithMe() {
             alignItems: "flex-start",
             gap: "0.75rem",
             padding: "0.85rem 0.5rem",
-            borderBottom: "1px solid var(--border-color, #eee)",
+            borderBottom: "1px solid var(--border-color)",
             cursor: "pointer",
-            background: share.read ? "transparent" : "var(--bg-accent-subtle, #f0f7ff)",
+            background: share.read ? "transparent" : "var(--bg-secondary)",
           }}
         >
           {!share.read && (
@@ -67,15 +67,17 @@ export default function SharedWithMe() {
           )}
 
           <div style={{ flex: 1, minWidth: 0 }}>
-            <div style={{ fontSize: "0.85em", color: "var(--gray-4, #666)" }}>
+            <div style={{ fontSize: "0.85em", color: "var(--text-secondary)" }}>
               {share.from_user_name} shared an article
             </div>
             {share.note && (
-              <div style={{ fontStyle: "italic", color: "var(--gray-3, #444)", margin: "0.15rem 0" }}>
+              <div style={{ fontStyle: "italic", color: "var(--text-secondary)", margin: "0.15rem 0" }}>
                 “{share.note}”
               </div>
             )}
-            <div style={{ fontWeight: 500 }}>{share.article?.title || "Untitled article"}</div>
+            <div style={{ fontWeight: 500, color: "var(--text-primary)" }}>
+              {share.article?.title || "Untitled article"}
+            </div>
           </div>
 
           <div style={{ display: "flex", alignItems: "center", gap: "0.25rem", flexShrink: 0 }}>
@@ -83,7 +85,7 @@ export default function SharedWithMe() {
             <button
               onClick={(event) => handleDismiss(event, share)}
               aria-label="Dismiss"
-              style={{ background: "transparent", border: "none", cursor: "pointer", color: "var(--gray-4, #999)", padding: "0.2rem", display: "flex" }}
+              style={{ background: "transparent", border: "none", cursor: "pointer", color: "var(--text-muted)", padding: "0.2rem", display: "flex" }}
             >
               <CloseIcon style={{ fontSize: "1.1rem" }} />
             </button>

@@ -71,7 +71,7 @@ export default function ShareToFriendModal({ open, onClose, articleID }) {
   return (
     <Modal open={open} onClose={onClose}>
       <h2 style={{ marginTop: 0, marginBottom: "0.25rem" }}>Send to a friend</h2>
-      <p style={{ color: "var(--gray-4, #666)", marginTop: 0 }}>
+      <p style={{ color: "var(--text-secondary)", marginTop: 0 }}>
         Your friend gets it in the language they're learning, at their level.
       </p>
 
@@ -86,17 +86,19 @@ export default function ShareToFriendModal({ open, onClose, articleID }) {
           boxSizing: "border-box",
           padding: "0.5rem",
           borderRadius: "6px",
-          border: "1px solid #ccc",
+          border: "1px solid var(--border-color)",
+          background: "var(--bg-secondary)",
+          color: "var(--text-primary)",
           resize: "vertical",
           marginBottom: "1rem",
           fontFamily: "inherit",
         }}
       />
 
-      {loading && <p>Loading your friends…</p>}
+      {loading && <p style={{ color: "var(--text-secondary)" }}>Loading your friends…</p>}
 
       {!loading && friends.length === 0 && (
-        <p style={{ color: "var(--gray-4, #666)" }}>
+        <p style={{ color: "var(--text-secondary)" }}>
           You don't have any friends on Zeeguu yet — add some from your profile to share articles.
         </p>
       )}
@@ -114,10 +116,10 @@ export default function ShareToFriendModal({ open, onClose, articleID }) {
                   alignItems: "center",
                   justifyContent: "space-between",
                   padding: "0.5rem 0",
-                  borderBottom: "1px solid var(--border-color, #eee)",
+                  borderBottom: "1px solid var(--border-color)",
                 }}
               >
-                <span>{friend.name || friend.username}</span>
+                <span style={{ color: "var(--text-primary)" }}>{friend.name || friend.username}</span>
                 <button
                   onClick={() => handleSend(friend)}
                   disabled={sending || already}
@@ -127,9 +129,9 @@ export default function ShareToFriendModal({ open, onClose, articleID }) {
                     gap: "0.4rem",
                     padding: "0.35rem 0.8rem",
                     borderRadius: "6px",
-                    border: "1px solid #2481f6",
-                    background: already ? "#eee" : "#2481f6",
-                    color: already ? "#666" : "#fff",
+                    border: already ? "1px solid var(--border-color)" : "1px solid #2481f6",
+                    background: already ? "var(--bg-tertiary)" : "#2481f6",
+                    color: already ? "var(--text-muted)" : "#fff",
                     cursor: already || sending ? "default" : "pointer",
                   }}
                 >
@@ -148,12 +150,14 @@ export default function ShareToFriendModal({ open, onClose, articleID }) {
           display: "flex",
           alignItems: "center",
           gap: "0.4rem",
+          width: "100%",
+          justifyContent: "center",
           marginTop: "1.25rem",
-          padding: "0.4rem 0.8rem",
+          padding: "0.5rem 0.8rem",
           borderRadius: "6px",
-          border: "1px solid #ccc",
+          border: "1px solid var(--border-color)",
           background: "transparent",
-          color: "var(--gray-3, #444)",
+          color: "var(--text-secondary)",
           cursor: "pointer",
         }}
       >
