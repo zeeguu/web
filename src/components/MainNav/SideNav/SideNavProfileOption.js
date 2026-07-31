@@ -16,7 +16,6 @@ import {
 import { BadgeCounterContext } from "../../../contexts/BadgeCounterContext";
 import NotificationIcon from "../../../components/NotificationIcon";
 import { FriendRequestContext } from "../../../contexts/FriendRequestContext";
-import { SharedArticlesContext } from "../../../contexts/SharedArticlesContext";
 import Feature from "../../../features/Feature";
 import UpgradeAccountModal from "../../UpgradeAccountModal";
 
@@ -32,7 +31,6 @@ export default function SideNavProfileOption({ screenWidth, onClick = () => {} }
   const isActive = isNavOptionActive(NavigationOptions.profile.linkTo, path);
   const { hasBadgeNotification, totalNumberOfBadges } = useContext(BadgeCounterContext);
   const { hasFriendRequestNotification, friendRequestCount } = useContext(FriendRequestContext);
-  const { hasSharedNotification, sharedUnreadCount } = useContext(SharedArticlesContext);
   const [avatarCharacterId, setAvatarCharacterId] = useState();
   const [avatarCharacterColor, setAvatarCharacterColor] = useState();
   const [avatarBackgroundColor, setAvatarBackgroundColor] = useState();
@@ -88,11 +86,8 @@ export default function SideNavProfileOption({ screenWidth, onClick = () => {} }
         currentPath={path}
         screenWidth={screenWidth}
         notification={
-          (hasBadgeNotification || hasFriendRequestNotification || hasSharedNotification) && (
-            <NotificationIcon
-              position={"top"}
-              text={totalNumberOfBadges + friendRequestCount + sharedUnreadCount}
-            />
+          (hasBadgeNotification || hasFriendRequestNotification) && (
+            <NotificationIcon position={"top"} text={totalNumberOfBadges + friendRequestCount} />
           )
         }
       />

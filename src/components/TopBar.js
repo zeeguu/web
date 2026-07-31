@@ -13,7 +13,6 @@ import {
 } from "../profile/avatarOptions";
 import { BadgeCounterContext } from "../contexts/BadgeCounterContext";
 import { FriendRequestContext } from "../contexts/FriendRequestContext";
-import { SharedArticlesContext } from "../contexts/SharedArticlesContext";
 import NotificationIcon from "./NotificationIcon";
 import Feature from "../features/Feature";
 import UpgradeAccountModal from "./UpgradeAccountModal";
@@ -28,7 +27,6 @@ export default function TopBar() {
   const [avatarBackgroundColor, setAvatarBackgroundColor] = useState();
   const { hasBadgeNotification, totalNumberOfBadges } = useContext(BadgeCounterContext);
   const { hasFriendRequestNotification, friendRequestCount } = useContext(FriendRequestContext);
-  const { hasSharedNotification, sharedUnreadCount } = useContext(SharedArticlesContext);
 
   useEffect(() => {
     setAvatarCharacterId(validatedAvatarCharacterId(userDetails?.user_avatar?.image_name));
@@ -70,8 +68,8 @@ export default function TopBar() {
             <s.TopBarNavAvatar $backgroundColor={avatarBackgroundColor}>
               <AvatarImage $imageSource={AVATAR_IMAGE_MAP[avatarCharacterId]} $color={avatarCharacterColor} />
             </s.TopBarNavAvatar>
-            {(hasBadgeNotification || hasFriendRequestNotification || hasSharedNotification) && (
-              <NotificationIcon position={"top-absolute"} style={{top: 0, right: 0}} text={totalNumberOfBadges + friendRequestCount + sharedUnreadCount} />
+            {(hasBadgeNotification || hasFriendRequestNotification) && (
+              <NotificationIcon position={"top-absolute"} style={{top: 0, right: 0}} text={totalNumberOfBadges + friendRequestCount} />
             )}
           </s.ProfileAvatarButton>
         )}
