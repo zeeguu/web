@@ -2,6 +2,11 @@ import styled from "styled-components";
 import { orange500 } from "../components/colors";
 import { Row as SavedRow, Title as SavedTitle } from "./SavedArticleRow.sc";
 
+// Top breathing room so the first shared row isn't jammed right under the tab bar.
+export const InboxList = styled.div`
+  padding-top: 1rem;
+`;
+
 // Unread is signalled by the bold title + trailing dot alone — read rows stay
 // at full strength (no dimming), so the list doesn't look half-disabled.
 export const Row = styled(SavedRow)`
