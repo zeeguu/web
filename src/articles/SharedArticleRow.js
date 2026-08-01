@@ -78,7 +78,6 @@ export default function SharedArticleRow({ share }) {
 
   return (
     <Row $read={share.read} onClick={handleOpen} onKeyDown={handleKeyDown} role="button" tabIndex={0}>
-      {unread && <UnreadDot aria-label="Unread" />}
       <s.ThumbnailWrap>
         {article.img_url ? (
           <s.Thumbnail src={article.img_url} alt="" loading="lazy" decoding="async" />
@@ -89,7 +88,10 @@ export default function SharedArticleRow({ share }) {
         )}
       </s.ThumbnailWrap>
       <s.Content>
-        <Title $unread={unread}>{article.title || "Untitled article"}</Title>
+        <Title $unread={unread}>
+          {article.title || "Untitled article"}
+          {unread && <UnreadDot aria-label="Unread" />}
+        </Title>
         <MetaStrip>
           <MetaTag>
             Shared by{" "}
