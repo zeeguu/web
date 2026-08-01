@@ -2,10 +2,10 @@ import styled from "styled-components";
 import { orange500 } from "../components/colors";
 import { Row as SavedRow, Title as SavedTitle } from "./SavedArticleRow.sc";
 
-// Read rows recede so the unread ones pop — the email-inbox convention.
+// Unread is signalled by the bold title + trailing dot alone — read rows stay
+// at full strength (no dimming), so the list doesn't look half-disabled.
 export const Row = styled(SavedRow)`
   cursor: pointer;
-  opacity: ${(p) => (p.$read ? 0.6 : 1)};
 `;
 
 // Bold title = unread. The strongest, most familiar read/unread cue.
@@ -13,16 +13,18 @@ export const Title = styled(SavedTitle)`
   ${(p) => p.$unread && "font-weight: 700;"}
 `;
 
-// Unread marker: a dot pinned to the top-right, in the same column as the ×
-// (which is itself absolutely positioned). Keeping it out of the flex flow means
-// it doesn't shift the row, so thumbnails stay aligned with the Saves list.
-// Same orange as the tab badge, so "orange = unread" reads as one language.
+// Unread marker: a small dot trailing the title, inline on the title's
+// baseline. Reads as "this one's new" right where the eye already is, instead
+// of floating in the top-right corner. Same orange as the tab badge, so
+// "orange = unread" is one visual language. flex-shrink:0 keeps it round if the
+// title is long; the leading margin gives it a little breathing room.
 export const UnreadDot = styled.span`
-  position: absolute;
-  top: 0.9em;
-  right: 0.8em;
-  width: 9px;
-  height: 9px;
+  display: inline-block;
+  flex-shrink: 0;
+  width: 8px;
+  height: 8px;
+  margin-left: 0.45em;
   border-radius: 50%;
   background: ${orange500};
+  vertical-align: middle;
 `;

@@ -4,5 +4,6 @@ export const SharedArticlesContext = createContext({
   sharedArticles: [],
   sharedUnreadCount: 0,
   hasSharedNotification: false,
+  sharedArticlesLoading: true,
   refreshSharedArticles: () => {},
 });

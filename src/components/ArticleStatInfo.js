@@ -2,7 +2,7 @@ import { MetaStrip, MetaItem, MetaLink, MetaTag } from "./MetaStrip.sc";
 import getDomainName from "../utils/misc/getDomainName";
 import { isSimplifiedArticle } from "../utils/misc/articleHelpers";
 
-export default function ArticleStatInfo({ articleInfo }) {
+export default function ArticleStatInfo({ articleInfo, shareContext }) {
   const isSimplified = isSimplifiedArticle(articleInfo);
   const sourceUrl = articleInfo.parent_url || articleInfo.url;
   const sourceDomain = sourceUrl ? getDomainName(sourceUrl) : null;
@@ -17,18 +17,35 @@ export default function ArticleStatInfo({ articleInfo }) {
   const assessments = articleInfo.cefr_assessments;
   const hasAssessments = assessments && (assessments.llm?.level || assessments.ml?.level);
 
+  // Cross-language derivatives are translated AND adapted to a level; same-
+  // language ones are just simplified. The verb comes from the article's own
+  // flags — correct for the user's own translated copies, not only shares.
+  const isTranslated = articleInfo.is_translated;
+  const adaptVerb = isTranslated ? "Translated & simplified" : "Simplified";
+
+  // Opened from a friend's share (SharedArticleRow → router state): credit the
+  // *share*, not authorship, and drop the CEFR letter ("to your level").
+  const sharedByName = shareContext?.sharedByName;
+
+  let levelTag = null;
+  if (sharedByName) {
+    levelTag = <MetaTag>{`${adaptVerb} by ${sharedByName} to your level`}</MetaTag>;
+  } else if (isSimplified || isTranslated) {
+    levelTag = <MetaTag>{targetLevel ? `${adaptVerb} to ${targetLevel}` : adaptVerb}</MetaTag>;
+  }
+
+  // Source-link label: "See original at" for a share, "Original:" for an
+  // adapted copy (simplified or translated), "Source:" for a plain article.
+  let sourcePrefix = <>Source:&nbsp;</>;
+  if (sharedByName) sourcePrefix = <>See original at&nbsp;</>;
+  else if (isSimplified || isTranslated) sourcePrefix = <>Original:&nbsp;</>;
+
   return (
     <MetaStrip>
-      {isSimplified && (
-        <MetaTag>{targetLevel ? `Simplified to ${targetLevel}` : "Simplified"}</MetaTag>
-      )}
+      {levelTag}
       {sourceDomain && (
         <MetaItem>
-          {/* Label the source link so the bare domain reads as metadata rather
-              than a stray link. "Original:" for simplified articles (the text on
-              screen is adapted; the real thing is here); "Source:" otherwise
-              (the domain IS what they're reading, so "Original" would misread). */}
-          {isSimplified ? <>Original:&nbsp;</> : <>Source:&nbsp;</>}
+          {sourcePrefix}
           <MetaLink href={sourceUrl} target="_blank" rel="noopener noreferrer">
             {sourceDomain}
             <span aria-hidden="true" style={{ marginLeft: '0.2em' }}>↗</span>

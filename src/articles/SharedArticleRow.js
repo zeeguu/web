@@ -31,7 +31,21 @@ export default function SharedArticleRow({ share }) {
 
   function handleOpen() {
     api.markSharedArticleRead(share.id);
-    history.push(`/read/article?id=${article.id}`);
+    // Carry who shared it into the reader so the header can attribute it
+    // ("… by <name> to your level"). The verb (Simplified vs Translated &
+    // simplified) comes from the article's own is_translated/is_simplified, not
+    // from here. Only when the personalized derivative actually exists
+    // (delivery_ready) — otherwise the row opens the un-adapted canonical
+    // article and attributing it would mislead. Router state, so it stays off
+    // the URL; a refresh falls back to the article's own header.
+    const shareState = share.delivery_ready
+      ? { sharedByName: share.from_user_name }
+      : undefined;
+    history.push({
+      pathname: "/read/article",
+      search: `?id=${article.id}`,
+      state: shareState,
+    });
   }
 
   function handleKeyDown(e) {
@@ -63,8 +77,7 @@ export default function SharedArticleRow({ share }) {
   }
 
   return (
-    <Row $read={share.read} onClick={handleOpen} onKeyDown={handleKeyDown} role="button" tabIndex={0}>
-      {unread && <UnreadDot aria-label="Unread" />}
+    <Row onClick={handleOpen} onKeyDown={handleKeyDown} role="button" tabIndex={0}>
       <s.ThumbnailWrap>
         {article.img_url ? (
           <s.Thumbnail src={article.img_url} alt="" loading="lazy" decoding="async" />
@@ -75,7 +88,10 @@ export default function SharedArticleRow({ share }) {
         )}
       </s.ThumbnailWrap>
       <s.Content>
-        <Title $unread={unread}>{article.title || "Untitled article"}</Title>
+        <Title $unread={unread}>
+          {article.title || "Untitled article"}
+          {unread && <UnreadDot aria-label="Unread" />}
+        </Title>
         <MetaStrip>
           <MetaTag>
             Shared by{" "}
