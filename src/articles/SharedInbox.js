@@ -1,6 +1,7 @@
 import { useContext } from "react";
 import { SharedArticlesContext } from "../contexts/SharedArticlesContext";
 import SharedArticleRow from "./SharedArticleRow";
+import { InboxList } from "./SharedArticleRow.sc";
 import * as s from "../components/TopMessage.sc";
 
 // "Shared with you" inbox — articles friends have sent, rendered with the
@@ -24,10 +25,10 @@ export default function SharedInbox() {
   }
 
   return (
-    <>
+    <InboxList>
       {sharedArticles.map((share) => (
         <SharedArticleRow key={share.id} share={share} />
       ))}
-    </>
+    </InboxList>
   );
 }
