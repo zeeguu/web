@@ -24,11 +24,11 @@ export default function ArticleStatInfo({ articleInfo }) {
       )}
       {sourceDomain && (
         <MetaItem>
-          {/* "Original:" prefix only when the user is reading a simplified
-              version — without it the link reads as the source of the text
-              on screen, which would mislead. For non-simplified articles
-              the domain IS what they're reading. */}
-          {isSimplified && <>Original:&nbsp;</>}
+          {/* Label the source link so the bare domain reads as metadata rather
+              than a stray link. "Original:" for simplified articles (the text on
+              screen is adapted; the real thing is here); "Source:" otherwise
+              (the domain IS what they're reading, so "Original" would misread). */}
+          {isSimplified ? <>Original:&nbsp;</> : <>Source:&nbsp;</>}
           <MetaLink href={sourceUrl} target="_blank" rel="noopener noreferrer">
             {sourceDomain}
             <span aria-hidden="true" style={{ marginLeft: '0.2em' }}>↗</span>
