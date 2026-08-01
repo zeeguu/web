@@ -28,6 +28,13 @@ export default function useSharedArticlesNotification() {
   const sharedUnreadCount = sharedArticles.filter((s) => !s.read).length;
   const hasSharedNotification = sharedUnreadCount > 0;
 
+  // Shares exist, just not in the language currently being studied — lets the
+  // empty state say "none in this language (others elsewhere)" rather than the
+  // misleading "nothing shared with you yet".
+  const hasSharesInOtherLanguages = allShares.some(
+    (s) => s.delivery_language && s.delivery_language !== activeLanguage,
+  );
+
   // Loading until the first fetch is back AND the active language is known, so
   // the inbox never flashes its "nothing shared yet" empty state before it can
   // actually filter.
@@ -54,6 +61,7 @@ export default function useSharedArticlesNotification() {
     sharedUnreadCount,
     hasSharedNotification,
     sharedArticlesLoading,
+    hasSharesInOtherLanguages,
     refreshSharedArticles,
   };
 }

@@ -8,7 +8,8 @@ import * as s from "../components/TopMessage.sc";
 // saved-article row styling. Lives as its own tab in the reading area; the list
 // comes from SharedArticlesContext (refetched on navigation).
 export default function SharedInbox() {
-  const { sharedArticles, sharedArticlesLoading } = useContext(SharedArticlesContext);
+  const { sharedArticles, sharedArticlesLoading, hasSharesInOtherLanguages } =
+    useContext(SharedArticlesContext);
 
   // Render nothing until we're actually loaded — otherwise the empty-state
   // message flashes for a beat before the shares (or the real empty state)
@@ -16,12 +17,12 @@ export default function SharedInbox() {
   if (sharedArticlesLoading) return null;
 
   if (!sharedArticles || sharedArticles.length === 0) {
-    return (
-      <s.YellowMessageBox>
-        Nothing shared with you yet. When a friend sends you an article, it shows up here — in the language
-        you're learning, at your level.
-      </s.YellowMessageBox>
-    );
+    // The inbox is per-language, so "nothing here" can mean two different
+    // things — say which, so it isn't misleading when shares exist elsewhere.
+    const emptyMessage = hasSharesInOtherLanguages
+      ? "No shared articles in the language you're studying right now. Friends have sent you some in another language — switch languages to see them."
+      : "Nothing shared with you yet. When a friend sends you an article, it shows up here — in the language you're learning, at your level.";
+    return <s.YellowMessageBox>{emptyMessage}</s.YellowMessageBox>;
   }
 
   return (
