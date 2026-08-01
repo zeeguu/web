@@ -62,6 +62,12 @@ export default function Settings() {
         <SettingsItem path={"/account_settings/interests"}>{strings.feedPreferences}</SettingsItem>
       </ListOfSettingsItems>
 
+      {!isAnonymous && (
+        <ListOfSettingsItems header={"Notifications"}>
+          <SettingsItem path={"/account_settings/notifications"}>Email notifications</SettingsItem>
+        </ListOfSettingsItems>
+      )}
+
       <ListOfSettingsItems header={strings.exercises}>
         <SettingsItem path={"/account_settings/exercise_types"}>Audio & Pronunciation</SettingsItem>
         <SettingsItem path={"/account_settings/exercise_scheduling"}>Scheduling</SettingsItem>
