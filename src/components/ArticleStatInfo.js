@@ -7,6 +7,11 @@ export default function ArticleStatInfo({ articleInfo }) {
   const sourceUrl = articleInfo.parent_url || articleInfo.url;
   const sourceDomain = sourceUrl ? getDomainName(sourceUrl) : null;
 
+  // The *target* level the article was simplified to (reliable, unlike the
+  // suppressed effective CEFR level). Only sent by the API for simplified
+  // articles; may be absent for older ones, so the tag degrades to "Simplified".
+  const targetLevel = articleInfo.target_cefr_level;
+
   // User-facing CEFR level is suppressed (see feedback_cefr_data_unreliable);
   // teacher-only assessments still surface for classifier debugging.
   const assessments = articleInfo.cefr_assessments;
@@ -14,7 +19,9 @@ export default function ArticleStatInfo({ articleInfo }) {
 
   return (
     <MetaStrip>
-      {isSimplified && <MetaTag>Simplified</MetaTag>}
+      {isSimplified && (
+        <MetaTag>{targetLevel ? `Simplified to ${targetLevel}` : "Simplified"}</MetaTag>
+      )}
       {sourceDomain && (
         <MetaItem>
           {/* "Original:" prefix only when the user is reading a simplified
