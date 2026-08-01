@@ -52,6 +52,9 @@ export function onBlur(api, articleID, source) {
 
 export default function ArticleReader({ teacherArticleID }) {
   const api = useContext(APIContext);
+  // Share context, when the reader was opened from the "Shared with you" inbox
+  // (SharedArticleRow passes it via router state). Absent on any other entry.
+  const shareContext = useLocation().state;
   let articleID = "";
   let query = useQuery();
   teacherArticleID ? (articleID = teacherArticleID) : (articleID = query.get("id"));
@@ -450,7 +453,7 @@ export default function ArticleReader({ teacherArticleID }) {
 
           <ArticleAuthors articleInfo={articleInfo} />
           <s.ArticleInfoContainer>
-            <ArticleStatInfo articleInfo={articleInfo}></ArticleStatInfo>
+            <ArticleStatInfo articleInfo={articleInfo} shareContext={shareContext}></ArticleStatInfo>
           </s.ArticleInfoContainer>
 
           {articleInfo.img_url && (

@@ -31,7 +31,14 @@ export default function SharedArticleRow({ share }) {
 
   function handleOpen() {
     api.markSharedArticleRead(share.id);
-    history.push(`/read/article?id=${article.id}`);
+    // Carry who shared it (and whether it was translated) into the reader so
+    // the header can say "Simplified by <name> to your level". Router state, so
+    // it stays off the URL; a refresh falls back to the plain simplified header.
+    history.push({
+      pathname: "/read/article",
+      search: `?id=${article.id}`,
+      state: { sharedByName: share.from_user_name, sharedTranslated: !!share.translated },
+    });
   }
 
   function handleKeyDown(e) {
