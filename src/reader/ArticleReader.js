@@ -61,6 +61,16 @@ export default function ArticleReader({ teacherArticleID }) {
   let last_reading_percentage = query.get("percentage");
   last_reading_percentage = last_reading_percentage === "undefined" ? null : Number(last_reading_percentage);
 
+  // Opened from a share-email deep-link (…?id=X&shared=<id>): mark that share
+  // read so the inbox row + badge stay in sync — the in-app row does this on
+  // click, and the email link must too, or the "first unread" email debounce
+  // never resets and later shares stop notifying.
+  const sharedArticleIdFromEmail = query.get("shared");
+  useEffect(() => {
+    if (sharedArticleIdFromEmail) api.markSharedArticleRead(sharedArticleIdFromEmail);
+    // eslint-disable-next-line
+  }, [sharedArticleIdFromEmail]);
+
   const [articleInfo, setArticleInfo] = useState();
 
   // Simplified articles live in the user's saves — back-gesture them to
