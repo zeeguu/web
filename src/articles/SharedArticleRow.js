@@ -9,17 +9,23 @@ import { articleSourceLabel } from "../utils/misc/articleHelpers";
 import { topicIconFor } from "../utils/misc/topicIcon";
 
 import * as s from "./SavedArticleRow.sc";
+import { Row, Title, UnreadGutter, UnreadDot } from "./SharedArticleRow.sc";
 
 // A "Shared with you" row. Reuses the saved-article row styling so shares look
 // native to the reading area, but with share-specific meta (who shared it, the
 // note) and actions: click opens the ORIGINAL article (the reader adapts it to
 // the recipient's language + level), × dismisses it from the inbox.
+//
+// Unread vs read follows the inbox convention: unread = an orange dot (same as
+// the tab badge) + a bold title; read rows recede. Opening an item marks it read
+// (dot + bold clear, the badge count drops) — merely viewing the list does not.
 export default function SharedArticleRow({ share }) {
   const api = useContext(APIContext);
   const history = useHistory();
   const { refreshSharedArticles } = useContext(SharedArticlesContext);
 
   const article = share.article || {};
+  const unread = !share.read;
   const PlaceholderIcon = topicIconFor(article.topics_list);
   const sourceDomain = articleSourceLabel(article);
 
@@ -57,13 +63,8 @@ export default function SharedArticleRow({ share }) {
   }
 
   return (
-    <s.Row
-      style={{ cursor: "pointer" }}
-      onClick={handleOpen}
-      onKeyDown={handleKeyDown}
-      role="button"
-      tabIndex={0}
-    >
+    <Row $read={share.read} onClick={handleOpen} onKeyDown={handleKeyDown} role="button" tabIndex={0}>
+      <UnreadGutter>{unread && <UnreadDot aria-label="Unread" />}</UnreadGutter>
       <s.ThumbnailWrap>
         {article.img_url ? (
           <s.Thumbnail src={article.img_url} alt="" loading="lazy" decoding="async" />
@@ -74,9 +75,8 @@ export default function SharedArticleRow({ share }) {
         )}
       </s.ThumbnailWrap>
       <s.Content>
-        <s.Title>{article.title || "Untitled article"}</s.Title>
+        <Title $unread={unread}>{article.title || "Untitled article"}</Title>
         <MetaStrip>
-          {!share.read && <MetaTag>New</MetaTag>}
           <MetaTag>
             Shared by{" "}
             {share.from_user_username ? (
@@ -100,6 +100,6 @@ export default function SharedArticleRow({ share }) {
       <s.RemoveButton onClick={handleDismiss} aria-label="Dismiss">
         ×
       </s.RemoveButton>
-    </s.Row>
+    </Row>
   );
 }
