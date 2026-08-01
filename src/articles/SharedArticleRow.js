@@ -9,7 +9,7 @@ import { articleSourceLabel } from "../utils/misc/articleHelpers";
 import { topicIconFor } from "../utils/misc/topicIcon";
 
 import * as s from "./SavedArticleRow.sc";
-import { Row, Title, UnreadGutter, UnreadDot } from "./SharedArticleRow.sc";
+import { Row, Title, UnreadDot } from "./SharedArticleRow.sc";
 
 // A "Shared with you" row. Reuses the saved-article row styling so shares look
 // native to the reading area, but with share-specific meta (who shared it, the
@@ -64,7 +64,7 @@ export default function SharedArticleRow({ share }) {
 
   return (
     <Row $read={share.read} onClick={handleOpen} onKeyDown={handleKeyDown} role="button" tabIndex={0}>
-      <UnreadGutter>{unread && <UnreadDot aria-label="Unread" />}</UnreadGutter>
+      {unread && <UnreadDot aria-label="Unread" />}
       <s.ThumbnailWrap>
         {article.img_url ? (
           <s.Thumbnail src={article.img_url} alt="" loading="lazy" decoding="async" />

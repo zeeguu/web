@@ -13,18 +13,14 @@ export const Title = styled(SavedTitle)`
   ${(p) => p.$unread && "font-weight: 700;"}
 `;
 
-// Leading unread marker, aligned in a fixed gutter so read/unread rows stay
-// aligned. Same orange as the nav badge, so "orange = unread" reads as one
-// language across the tab count and the rows.
-export const UnreadGutter = styled.div`
-  flex-shrink: 0;
-  width: 12px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-`;
-
+// Unread marker: a dot pinned to the top-right, in the same column as the ×
+// (which is itself absolutely positioned). Keeping it out of the flex flow means
+// it doesn't shift the row, so thumbnails stay aligned with the Saves list.
+// Same orange as the tab badge, so "orange = unread" reads as one language.
 export const UnreadDot = styled.span`
+  position: absolute;
+  top: 0.9em;
+  right: 0.8em;
   width: 9px;
   height: 9px;
   border-radius: 50%;
