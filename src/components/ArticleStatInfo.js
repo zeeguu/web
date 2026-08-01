@@ -17,24 +17,28 @@ export default function ArticleStatInfo({ articleInfo, shareContext }) {
   const assessments = articleInfo.cefr_assessments;
   const hasAssessments = assessments && (assessments.llm?.level || assessments.ml?.level);
 
+  // Cross-language derivatives are translated AND adapted to a level; same-
+  // language ones are just simplified. The verb comes from the article's own
+  // flags — correct for the user's own translated copies, not only shares.
+  const isTranslated = articleInfo.is_translated;
+  const adaptVerb = isTranslated ? "Translated & simplified" : "Simplified";
+
   // Opened from a friend's share (SharedArticleRow → router state): credit the
-  // *share*, not authorship, and drop the CEFR letter ("to your level"). Verb
-  // flexes same- vs cross-language.
+  // *share*, not authorship, and drop the CEFR letter ("to your level").
   const sharedByName = shareContext?.sharedByName;
-  const sharedVerb = shareContext?.sharedTranslated ? "Translated & simplified" : "Simplified";
 
   let levelTag = null;
   if (sharedByName) {
-    levelTag = <MetaTag>{`${sharedVerb} by ${sharedByName} to your level`}</MetaTag>;
-  } else if (isSimplified) {
-    levelTag = <MetaTag>{targetLevel ? `Simplified to ${targetLevel}` : "Simplified"}</MetaTag>;
+    levelTag = <MetaTag>{`${adaptVerb} by ${sharedByName} to your level`}</MetaTag>;
+  } else if (isSimplified || isTranslated) {
+    levelTag = <MetaTag>{targetLevel ? `${adaptVerb} to ${targetLevel}` : adaptVerb}</MetaTag>;
   }
 
-  // Source-link label: "See original at" for a share, "Original:" for the
-  // user's own simplified copy, "Source:" for a plain article.
+  // Source-link label: "See original at" for a share, "Original:" for an
+  // adapted copy (simplified or translated), "Source:" for a plain article.
   let sourcePrefix = <>Source:&nbsp;</>;
   if (sharedByName) sourcePrefix = <>See original at&nbsp;</>;
-  else if (isSimplified) sourcePrefix = <>Original:&nbsp;</>;
+  else if (isSimplified || isTranslated) sourcePrefix = <>Original:&nbsp;</>;
 
   return (
     <MetaStrip>

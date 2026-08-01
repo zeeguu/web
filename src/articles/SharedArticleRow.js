@@ -31,14 +31,15 @@ export default function SharedArticleRow({ share }) {
 
   function handleOpen() {
     api.markSharedArticleRead(share.id);
-    // Carry who shared it (and whether it was translated) into the reader so the
-    // header can say "Simplified by <name> to your level". Only when the
-    // personalized derivative actually exists (delivery_ready) — otherwise the
-    // row opens the un-adapted canonical article, and claiming "simplified to
-    // your level" would be a lie. Router state, so it stays off the URL; a
-    // refresh falls back to the article's own header.
+    // Carry who shared it into the reader so the header can attribute it
+    // ("… by <name> to your level"). The verb (Simplified vs Translated &
+    // simplified) comes from the article's own is_translated/is_simplified, not
+    // from here. Only when the personalized derivative actually exists
+    // (delivery_ready) — otherwise the row opens the un-adapted canonical
+    // article and attributing it would mislead. Router state, so it stays off
+    // the URL; a refresh falls back to the article's own header.
     const shareState = share.delivery_ready
-      ? { sharedByName: share.from_user_name, sharedTranslated: !!share.translated }
+      ? { sharedByName: share.from_user_name }
       : undefined;
     history.push({
       pathname: "/read/article",
