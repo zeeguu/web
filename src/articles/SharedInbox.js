@@ -7,7 +7,12 @@ import * as s from "../components/TopMessage.sc";
 // saved-article row styling. Lives as its own tab in the reading area; the list
 // comes from SharedArticlesContext (refetched on navigation).
 export default function SharedInbox() {
-  const { sharedArticles } = useContext(SharedArticlesContext);
+  const { sharedArticles, sharedArticlesLoading } = useContext(SharedArticlesContext);
+
+  // Render nothing until we're actually loaded — otherwise the empty-state
+  // message flashes for a beat before the shares (or the real empty state)
+  // resolve.
+  if (sharedArticlesLoading) return null;
 
   if (!sharedArticles || sharedArticles.length === 0) {
     return (

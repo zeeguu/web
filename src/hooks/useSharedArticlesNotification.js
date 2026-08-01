@@ -13,6 +13,7 @@ export default function useSharedArticlesNotification() {
   const activeLanguage = userDetails?.learned_language;
 
   const [allShares, setAllShares] = useState([]);
+  const [loaded, setLoaded] = useState(false);
 
   // A share is a per-language item: the API stamps every share with a
   // delivery_language (the recipient's study language for it), so a Danish
@@ -27,8 +28,16 @@ export default function useSharedArticlesNotification() {
   const sharedUnreadCount = sharedArticles.filter((s) => !s.read).length;
   const hasSharedNotification = sharedUnreadCount > 0;
 
+  // Loading until the first fetch is back AND the active language is known, so
+  // the inbox never flashes its "nothing shared yet" empty state before it can
+  // actually filter.
+  const sharedArticlesLoading = !loaded || activeLanguage === undefined;
+
   useEffect(() => {
-    if (!Feature.has_gamification()) return;
+    if (!Feature.has_gamification()) {
+      setLoaded(true);
+      return;
+    }
     refreshSharedArticles();
     // eslint-disable-next-line
   }, [path]);
@@ -36,6 +45,7 @@ export default function useSharedArticlesNotification() {
   function refreshSharedArticles() {
     api.getArticlesSharedWithMe((data) => {
       setAllShares(data || []);
+      setLoaded(true);
     });
   }
 
@@ -43,6 +53,7 @@ export default function useSharedArticlesNotification() {
     sharedArticles,
     sharedUnreadCount,
     hasSharedNotification,
+    sharedArticlesLoading,
     refreshSharedArticles,
   };
 }

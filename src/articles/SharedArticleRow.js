@@ -77,7 +77,7 @@ export default function SharedArticleRow({ share }) {
   }
 
   return (
-    <Row $read={share.read} onClick={handleOpen} onKeyDown={handleKeyDown} role="button" tabIndex={0}>
+    <Row onClick={handleOpen} onKeyDown={handleKeyDown} role="button" tabIndex={0}>
       <s.ThumbnailWrap>
         {article.img_url ? (
           <s.Thumbnail src={article.img_url} alt="" loading="lazy" decoding="async" />
