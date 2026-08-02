@@ -1,5 +1,5 @@
-import { Link } from "react-router-dom";
-import { useContext, useEffect, useRef, useState } from "react";
+import { Link, useHistory } from "react-router-dom";
+import { useContext, useRef, useState } from "react";
 import useClampedOverflow from "../hooks/useClampedOverflow";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -13,10 +13,8 @@ import { kioskExpandLabel } from "../kiosk/showMoreLabels";
 import ReadingCompletionProgress from "./ReadingCompletionProgress";
 import ArticlePreviewOverlay from "./ArticlePreviewOverlay";
 import { APIContext } from "../contexts/APIContext";
-import { BrowsingSessionContext } from "../contexts/BrowsingSessionContext";
 import { TranslatableText } from "../reader/TranslatableText";
-import InteractiveText from "../reader/InteractiveText";
-import ZeeguuSpeech from "../speech/APIBasedSpeech";
+import useArticlePreviewTokens from "../hooks/useArticlePreviewTokens";
 import { estimateReadingTime, timeAgo } from "../utils/misc/readableTime";
 import ActionButton from "../components/ActionButton";
 import { articleSourceLabel } from "../utils/misc/articleHelpers";
@@ -24,6 +22,7 @@ import OpenInNewRoundedIcon from "@mui/icons-material/OpenInNewRounded";
 import BookmarkBorderRoundedIcon from "@mui/icons-material/BookmarkBorderRounded";
 import BookmarkRoundedIcon from "@mui/icons-material/BookmarkRounded";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
+import VisibilityOffRoundedIcon from "@mui/icons-material/VisibilityOffRounded";
 
 export default function ArticlePreview({
   article,
@@ -49,7 +48,7 @@ export default function ArticlePreview({
   compact = false,
 }) {
   const api = useContext(APIContext);
-  const getBrowsingSessionId = useContext(BrowsingSessionContext);
+  const history = useHistory();
   const [isRedirectionModalOpen, setIsRedirectionModaOpen] = useState(false);
   const [previewOpen, setPreviewOpen] = useState(false);
   // Teaser-card + tap-to-open behavior applies only to the live feed — never
@@ -59,10 +58,9 @@ export default function ArticlePreview({
   // list precisely because it's saved — treat it as such even if the
   // article's has_personal_copy flag hasn't propagated correctly.
   const [isArticleSaved, setIsArticleSaved] = useState(article.has_personal_copy || inSavedView);
-  const [interactiveSummary, setInteractiveSummary] = useState(null);
-  const [interactiveTitle, setInteractiveTitle] = useState(null);
-  const [isTokenizing, setIsTokenizing] = useState(false);
-  const [zeeguuSpeech] = useState(() => new ZeeguuSpeech(api, article.language));
+  // Interactive title/summary — tokenized only for the inline interactive card.
+  // Preview/titles cards are plain teasers; their overlay tokenizes on open.
+  const { interactiveTitle, interactiveSummary } = useArticlePreviewTokens(article, { enabled: !previewMode });
   const [isHidden, setIsHidden] = useState(article.hidden || false);
   const [isAnimatingOut, setIsAnimatingOut] = useState(false);
   const [isSummaryExpanded, setIsSummaryExpanded] = useState(false);
@@ -79,68 +77,6 @@ export default function ArticlePreview({
     enabled: !isSummaryExpanded,
     deps: [interactiveSummary, article.summary],
   });
-
-  useEffect(() => {
-    // In preview mode the card is a plain teaser — the overlay tokenizes
-    // lazily on open, so skip the eager per-card tokenization here.
-    if (previewMode) return;
-    if ((article.summary || article.title) && !isTokenizing && !interactiveSummary && !interactiveTitle) {
-      setIsTokenizing(true);
-
-      const summaryData =
-        article.interactiveSummary && article.interactiveTitle
-          ? {
-              tokenized_summary: article.interactiveSummary,
-              tokenized_title: article.interactiveTitle,
-            }
-          : null;
-
-      if (summaryData) {
-        // Use pre-loaded summary data (already included in article from /user_articles/recommended)
-        processSummaryData(summaryData);
-      } else {
-        // Fall back to fetching summary separately (for backwards compatibility)
-        // Nov '25 - should be removed soon
-        api.getArticleSummaryInfo(article.id, processSummaryData);
-      }
-
-      function processSummaryData(summaryData) {
-        // Create interactive summary
-        if (summaryData.tokenized_summary) {
-          setInteractiveSummary(
-            new InteractiveText({
-              tokenizedParagraphs: summaryData.tokenized_summary.tokens,
-              sourceId: article.source_id,
-              api,
-              previousBookmarks: summaryData.tokenized_summary.past_bookmarks,
-              language: article.language,
-              source: "article_preview",
-              zeeguuSpeech,
-              contextIdentifier: summaryData.tokenized_summary.context_identifier,
-              getBrowsingSessionId,
-            }),
-          );
-        }
-
-        if (summaryData.tokenized_title && summaryData.tokenized_title.tokens) {
-          setInteractiveTitle(
-            new InteractiveText({
-              tokenizedParagraphs: summaryData.tokenized_title.tokens,
-              sourceId: article.source_id,
-              api,
-              previousBookmarks: summaryData.tokenized_title.past_bookmarks || [],
-              language: article.language,
-              source: "article_preview",
-              zeeguuSpeech,
-              contextIdentifier: summaryData.tokenized_title.context_identifier,
-              getBrowsingSessionId,
-            }),
-          );
-        }
-        setIsTokenizing(false);
-      }
-    }
-  }, [article.summary, article.title, article.language, article.id, api, zeeguuSpeech]);
 
   const handleArticleClick = () => {
     if (notifyArticleClick) {
@@ -259,7 +195,7 @@ export default function ArticlePreview({
       );
     }
     return (
-      <a target={isMobile ? "_self" : "_blank"} rel="noreferrer" href={externalUrl} onClick={handleArticleClick} style={style}>
+      <a target={isMobile() ? "_self" : "_blank"} rel="noreferrer" href={externalUrl} onClick={handleArticleClick} style={style}>
         {children}
       </a>
     );
@@ -382,7 +318,14 @@ export default function ArticlePreview({
   if (previewMode) {
     const openPreview = () => {
       handleArticleClick();
-      setPreviewOpen(true);
+      // If we have a Zeeguu-readable copy, tapping opens the full article
+      // directly — the preview overlay is only for articles we can't read
+      // in-app (external-only), so it never needs a "Read full" action.
+      if (should_open_in_zeeguu) {
+        history.push(`/read/article?id=${inAppArticleId}`);
+      } else {
+        setPreviewOpen(true);
+      }
     };
     return (
       <s.ArticlePreview
@@ -394,9 +337,14 @@ export default function ArticlePreview({
           marginBottom: isAnimatingOut ? "0" : undefined,
         }}
       >
-        <s.HideButton onClick={handleHideArticle} aria-label="Hide from feed">
-          <CloseRoundedIcon style={{ fontSize: 18 }} />
-        </s.HideButton>
+        {/* With an image, Hide lives as an eye-off at the image's bottom-right
+            (mirroring Save at top-right) — the top-right × collided with Save on
+            stacked mobile layouts. Image-less cards keep the corner ×. */}
+        {!hasImage && (
+          <s.HideButton onClick={handleHideArticle} aria-label="Hide from feed">
+            <CloseRoundedIcon style={{ fontSize: 18 }} />
+          </s.HideButton>
+        )}
 
         <s.PreviewCardClickable
           role="button"
@@ -409,155 +357,110 @@ export default function ArticlePreview({
             }
           }}
         >
-          {compact ? (
-            // Titles-only: reuse the teaser's image layout (same image size)
-            // with the title — not a summary — to the right of the image.
-            <s.ArticleContent>
-              {hasImage && (
-                <s.ImageWithOverlay>
-                  <img
-                    alt=""
-                    src={article.img_url}
-                    loading="lazy"
-                    decoding="async"
-                    onError={() => setImageFailed(true)}
-                    style={{ display: "block" }}
-                  />
-                  <s.SaveIconButton
-                    type="button"
-                    onClick={handleToggleSave}
-                    aria-label={isArticleSaved ? "Remove from saves" : "Save"}
-                  >
-                    {isArticleSaved ? (
-                      <BookmarkRoundedIcon style={{ fontSize: 18 }} />
-                    ) : (
-                      <BookmarkBorderRoundedIcon style={{ fontSize: 18 }} />
-                    )}
-                  </s.SaveIconButton>
-                </s.ImageWithOverlay>
-              )}
-              <s.CompactText>
-                <s.CompactTitle>{article.title}</s.CompactTitle>
-                <MetaStrip>
-                  {article.parent_article_id && <MetaTag>Simplified</MetaTag>}
-                  {savedTag}
-                  <MetaItem>
-                    <MetaLink
-                      className="muted"
-                      href={article.parent_url || article.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      onClick={(e) => e.stopPropagation()}
-                    >
-                      {articleSourceLabel(article)}
-                    </MetaLink>
-                  </MetaItem>
-                  {publishedTimeSlot}
-                  {(article.metrics?.word_count || article.word_count) > 0 && (
-                    <MetaItem>
-                      ~
-                      {estimateReadingTime(article.metrics?.word_count || article.word_count || 0)
-                        .replace(" minutes", "min")
-                        .replace(" minute", "min")}
-                    </MetaItem>
-                  )}
-                </MetaStrip>
-              </s.CompactText>
-            </s.ArticleContent>
-          ) : (
-            <>
-              <s.TitleContainer>
-                <s.Title>{article.title}</s.Title>
-              </s.TitleContainer>
+          {/* Title first, then meta, then image — consistent across Preview
+              and Titles modes. Titles mode is simply this without the summary. */}
+          <s.TitleContainer>
+            <s.Title>{article.title}</s.Title>
+          </s.TitleContainer>
 
-              <MetaStrip>
-                {article.topics_list &&
-                  article.topics_list.map(([topicTitle]) => <MetaTag key={topicTitle}>{topicTitle}</MetaTag>)}
-                {article.matched_searches &&
-                  article.matched_searches.map((search) => (
-                    <MetaItem key={`search-${search}`}>
-                      🔍&nbsp;
-                      <MetaLink
-                        as={Link}
-                        to={`/search?search=${encodeURIComponent(search)}`}
-                        onClick={(e) => e.stopPropagation()}
-                      >
-                        {search}
-                      </MetaLink>
-                    </MetaItem>
-                  ))}
-                {article.parent_article_id && <MetaTag>Simplified</MetaTag>}
-                {savedTag}
-                <MetaItem>
+          <MetaStrip>
+            {article.topics_list &&
+              article.topics_list.map(([topicTitle]) => <MetaTag key={topicTitle}>{topicTitle}</MetaTag>)}
+            {article.matched_searches &&
+              article.matched_searches.map((search) => (
+                <MetaItem key={`search-${search}`}>
+                  🔍&nbsp;
                   <MetaLink
-                    className="muted"
-                    href={article.parent_url || article.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
+                    as={Link}
+                    to={`/search?search=${encodeURIComponent(search)}`}
                     onClick={(e) => e.stopPropagation()}
                   >
-                    {articleSourceLabel(article)}
+                    {search}
                   </MetaLink>
                 </MetaItem>
-                {publishedTimeSlot}
-                {(article.metrics?.word_count || article.word_count) > 0 && (
-                  <MetaItem>
-                    ~
-                    {estimateReadingTime(article.metrics?.word_count || article.word_count || 0)
-                      .replace(" minutes", "min")
-                      .replace(" minute", "min")}
-                  </MetaItem>
-                )}
-              </MetaStrip>
+              ))}
+            {article.parent_article_id && <MetaTag>Simplified</MetaTag>}
+            {savedTag}
+            <MetaItem>
+              <MetaLink
+                className="muted"
+                href={article.parent_url || article.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={(e) => e.stopPropagation()}
+              >
+                {articleSourceLabel(article)}
+              </MetaLink>
+            </MetaItem>
+            {publishedTimeSlot}
+            {(article.metrics?.word_count || article.word_count) > 0 && (
+              <MetaItem>
+                ~
+                {estimateReadingTime(article.metrics?.word_count || article.word_count || 0)
+                  .replace(" minutes", "min")
+                  .replace(" minute", "min")}
+              </MetaItem>
+            )}
+          </MetaStrip>
 
-              <s.ArticleContent>
-                {hasImage && (
-                  <s.ImageWithOverlay>
-                    <img
-                      alt=""
-                      src={article.img_url}
-                      loading="lazy"
-                      decoding="async"
-                      onError={() => setImageFailed(true)}
-                      style={{ display: "block" }}
-                    />
-                    <s.SaveIconButton
-                      type="button"
-                      onClick={handleToggleSave}
-                      aria-label={isArticleSaved ? "Remove from saves" : "Save"}
-                    >
-                      {isArticleSaved ? (
-                        <BookmarkRoundedIcon style={{ fontSize: 18 }} />
-                      ) : (
-                        <BookmarkBorderRoundedIcon style={{ fontSize: 18 }} />
-                      )}
-                    </s.SaveIconButton>
-                  </s.ImageWithOverlay>
-                )}
-                {article.summary && (
-                  <s.PreviewSummary>
-                    <s.PreviewClampedSummary>{article.summary}</s.PreviewClampedSummary>
-                  </s.PreviewSummary>
-                )}
-              </s.ArticleContent>
-            </>
-          )}
+          <s.ArticleContent>
+            {hasImage && (
+              <s.ImageWithOverlay>
+                <img
+                  alt=""
+                  src={article.img_url}
+                  loading="lazy"
+                  decoding="async"
+                  onError={() => setImageFailed(true)}
+                  style={{ display: "block" }}
+                />
+                <s.SaveIconButton
+                  type="button"
+                  onClick={handleToggleSave}
+                  aria-label={isArticleSaved ? "Remove from saves" : "Save"}
+                >
+                  {isArticleSaved ? (
+                    <BookmarkRoundedIcon style={{ fontSize: 18 }} />
+                  ) : (
+                    <BookmarkBorderRoundedIcon style={{ fontSize: 18 }} />
+                  )}
+                </s.SaveIconButton>
+                <s.HideIconButton
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleHideArticle();
+                  }}
+                  aria-label="Hide from feed"
+                >
+                  <VisibilityOffRoundedIcon style={{ fontSize: 18 }} />
+                </s.HideIconButton>
+              </s.ImageWithOverlay>
+            )}
+            {!compact && article.summary && (
+              <s.PreviewSummary>
+                <s.PreviewClampedSummary>{article.summary}</s.PreviewClampedSummary>
+              </s.PreviewSummary>
+            )}
+          </s.ArticleContent>
         </s.PreviewCardClickable>
 
-        <ArticlePreviewOverlay
-          article={article}
-          open={previewOpen}
-          onClose={() => setPreviewOpen(false)}
-          hasExtension={hasExtension}
-          isArticleSaved={isArticleSaved}
-          onToggleSave={handleToggleSave}
-          setIsArticleSaved={setIsArticleSaved}
-          should_open_in_zeeguu={should_open_in_zeeguu}
-          inAppArticleId={inAppArticleId}
-          externalUrl={externalUrl}
-          should_open_with_modal={should_open_with_modal}
-          setDoNotShowRedirectionModal_UserPreference={setDoNotShowRedirectionModal_UserPreference}
-        />
+        {/* Mounted only while open: each card renders one of these, so mounting
+            eagerly would run the overlay's prefs fetch + tokenization per card. */}
+        {previewOpen && (
+          <ArticlePreviewOverlay
+            article={article}
+            open
+            onClose={() => setPreviewOpen(false)}
+            hasExtension={hasExtension}
+            isArticleSaved={isArticleSaved}
+            onToggleSave={handleToggleSave}
+            setIsArticleSaved={setIsArticleSaved}
+            externalUrl={externalUrl}
+            should_open_with_modal={should_open_with_modal}
+            setDoNotShowRedirectionModal_UserPreference={setDoNotShowRedirectionModal_UserPreference}
+          />
+        )}
       </s.ArticlePreview>
     );
   }

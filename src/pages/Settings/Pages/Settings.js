@@ -58,8 +58,9 @@ export default function Settings() {
         {!isAnonymous && <SettingsItem path={"/account_settings/my_classrooms"}>{strings.myClassrooms}</SettingsItem>}
       </ListOfSettingsItems>
 
-      <ListOfSettingsItems header={"Reading"}>
-        <SettingsItem path={"/account_settings/interests"}>{strings.feedPreferences}</SettingsItem>
+      <ListOfSettingsItems header={"Feed preferences"}>
+        <SettingsItem path={"/account_settings/interests"}>Interests</SettingsItem>
+        <SettingsItem path={"/account_settings/feed_view"}>View</SettingsItem>
       </ListOfSettingsItems>
 
       {!isAnonymous && (

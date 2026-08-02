@@ -1,28 +1,27 @@
-import { useContext, useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { useContext, useRef, useState } from "react";
 import * as s from "./ArticlePreviewOverlay.sc";
 import Modal from "../components/modal_shared/Modal";
 import { MetaStrip, MetaItem, MetaLink, MetaTag } from "../components/MetaStrip.sc";
 import ActionButton from "../components/ActionButton";
+import ToolbarButtons from "../reader/ToolbarButtons";
 import RedirectionNotificationModal from "../components/redirect_notification/RedirectionNotificationModal";
 import { TranslatableText } from "../reader/TranslatableText";
-import InteractiveText from "../reader/InteractiveText";
-import ZeeguuSpeech from "../speech/APIBasedSpeech";
+import useUserPreferences from "../hooks/useUserPreferences";
+import useArticlePreviewTokens from "../hooks/useArticlePreviewTokens";
 import { APIContext } from "../contexts/APIContext";
-import { BrowsingSessionContext } from "../contexts/BrowsingSessionContext";
 import { articleSourceLabel } from "../utils/misc/articleHelpers";
 import { estimateReadingTime, timeAgo } from "../utils/misc/readableTime";
 import { isMobile } from "../utils/misc/browserDetection";
 import OpenInNewRoundedIcon from "@mui/icons-material/OpenInNewRounded";
-import MenuBookRoundedIcon from "@mui/icons-material/MenuBookRounded";
 import BookmarkBorderRoundedIcon from "@mui/icons-material/BookmarkBorderRounded";
 import BookmarkRoundedIcon from "@mui/icons-material/BookmarkRounded";
+import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 
-// The interactive Preview overlay opened when a (non-interactive) feed card is
-// tapped in Preview browsing mode. It carries the interactive title + summary
-// and the article actions (Read full / Open original / Save). Tokenization
-// happens lazily here — only once the overlay is actually opened — which is the
-// whole point of the mode: the feed no longer tokenizes every summary on mount.
+// The interactive Preview overlay opened when a feed card with no in-app copy
+// is tapped in Preview/Titles browsing mode (articles we CAN read in-app open
+// the full reader directly instead, so this overlay never offers "Read full").
+// It carries the interactive title + summary and the actions Open original +
+// Save. Tokenization happens lazily — only once the overlay is opened.
 export default function ArticlePreviewOverlay({
   article,
   open,
@@ -31,102 +30,152 @@ export default function ArticlePreviewOverlay({
   isArticleSaved,
   onToggleSave,
   setIsArticleSaved,
-  should_open_in_zeeguu,
-  inAppArticleId,
   externalUrl,
   should_open_with_modal,
-  onOpenNavigation,
   setDoNotShowRedirectionModal_UserPreference,
 }) {
   const api = useContext(APIContext);
-  const getBrowsingSessionId = useContext(BrowsingSessionContext);
-  const [interactiveSummary, setInteractiveSummary] = useState(null);
-  const [interactiveTitle, setInteractiveTitle] = useState(null);
-  const [isTokenizing, setIsTokenizing] = useState(false);
-  const [zeeguuSpeech] = useState(() => new ZeeguuSpeech(api, article.language));
   const [isRedirectionModalOpen, setIsRedirectionModalOpen] = useState(false);
+  // Interactive title + summary, tokenized lazily once the overlay opens.
+  const { interactiveTitle, interactiveSummary } = useArticlePreviewTokens(article, { enabled: open });
 
-  // Build the interactive title/summary the first time the overlay opens.
-  // Mirrors the data path the old inline card used: prefer the tokenized
-  // payload already bundled with the recommended article, else fetch it.
-  useEffect(() => {
-    if (!open || isTokenizing || interactiveSummary || interactiveTitle) return;
-    if (!article.summary && !article.title) return;
-    setIsTokenizing(true);
-
-    const preloaded =
-      article.interactiveSummary && article.interactiveTitle
-        ? { tokenized_summary: article.interactiveSummary, tokenized_title: article.interactiveTitle }
-        : null;
-
-    if (preloaded) {
-      processSummaryData(preloaded);
-    } else {
-      api.getArticleSummaryInfo(article.id, processSummaryData);
-    }
-
-    function processSummaryData(summaryData) {
-      if (summaryData.tokenized_summary) {
-        setInteractiveSummary(
-          new InteractiveText({
-            tokenizedParagraphs: summaryData.tokenized_summary.tokens,
-            sourceId: article.source_id,
-            api,
-            previousBookmarks: summaryData.tokenized_summary.past_bookmarks,
-            language: article.language,
-            source: "article_preview",
-            zeeguuSpeech,
-            contextIdentifier: summaryData.tokenized_summary.context_identifier,
-            getBrowsingSessionId,
-          }),
-        );
-      }
-      if (summaryData.tokenized_title && summaryData.tokenized_title.tokens) {
-        setInteractiveTitle(
-          new InteractiveText({
-            tokenizedParagraphs: summaryData.tokenized_title.tokens,
-            sourceId: article.source_id,
-            api,
-            previousBookmarks: summaryData.tokenized_title.past_bookmarks || [],
-            language: article.language,
-            source: "article_preview",
-            zeeguuSpeech,
-            contextIdentifier: summaryData.tokenized_title.context_identifier,
-            getBrowsingSessionId,
-          }),
-        );
-      }
-      setIsTokenizing(false);
-    }
-    // eslint-disable-next-line
-  }, [open]);
+  // Same interactive-text preferences as the reader (translation / pronunciation
+  // / MWE hints), shared via the same user-preferences store + settings gear.
+  const {
+    translateInReader,
+    updateTranslateInReader,
+    pronounceInReader,
+    updatePronounceInReader,
+    showMweHints,
+    updateShowMweHints,
+    showReadingTimer,
+    updateShowReadingTimer,
+  } = useUserPreferences(api);
+  // Text size shares the reader's persisted value (localStorage), 14–28px.
+  const [readerFontSize, setReaderFontSizeState] = useState(() => {
+    const saved = parseInt(localStorage.getItem("reader_font_size"), 10);
+    return Number.isFinite(saved) ? saved : 18;
+  });
+  function setReaderFontSize(value) {
+    const clamped = Math.max(14, Math.min(28, value));
+    setReaderFontSizeState(clamped);
+    localStorage.setItem("reader_font_size", String(clamped));
+  }
 
   const hasImage = !!article.img_url;
-  // "Read full" == we can open this article in the Zeeguu interactive reader.
-  // Reuse the same decision the card computed for its single-click behavior.
-  const canReadFull = should_open_in_zeeguu;
 
   function handleOpenOriginal() {
-    if (onOpenNavigation) onOpenNavigation();
     // No-extension users get the usual "you're leaving Zeeguu" prompt (unless
     // they've opted out); everyone else goes straight to the publisher.
     if (should_open_with_modal) {
       setIsRedirectionModalOpen(true);
     } else {
-      window.open(externalUrl, isMobile ? "_self" : "_blank", "noreferrer");
+      window.open(externalUrl, isMobile() ? "_self" : "_blank", "noreferrer");
     }
   }
+
+  // Swipe-right-to-dismiss (touch): the sheet follows the finger and flings off
+  // to the right past the threshold, else snaps back. Plain React onTouch
+  // handlers on the ScrollArea (reliable on iOS), and the transform is applied
+  // to the whole sheet via the Modal's wrapperStyle prop (MUI preserves style,
+  // but clobbers refs). Only on the mobile bottom sheet, where a plain
+  // translateX is correct; desktop keeps its centered layout + Close button.
+  const isSheet = typeof window !== "undefined" && window.innerWidth <= 576;
+  const touchStart = useRef(null);
+  const [dragX, setDragX] = useState(0);
+  const [dragging, setDragging] = useState(false);
+
+  function handleTouchStart(e) {
+    const t = e.touches[0];
+    touchStart.current = { x: t.clientX, y: t.clientY, horiz: false };
+  }
+  function handleTouchMove(e) {
+    const s = touchStart.current;
+    if (!s) return;
+    const t = e.touches[0];
+    const dx = t.clientX - s.x;
+    const dy = t.clientY - s.y;
+    if (!s.horiz) {
+      if (dx > 10 && Math.abs(dx) > Math.abs(dy) * 1.2) {
+        s.horiz = true;
+        setDragging(true);
+      } else if (Math.abs(dy) > 10) {
+        touchStart.current = null; // vertical scroll — let it be
+        return;
+      }
+    }
+    if (s.horiz) setDragX(Math.max(0, dx));
+  }
+  function handleTouchEnd(e) {
+    const s = touchStart.current;
+    touchStart.current = null;
+    setDragging(false);
+    if (!s || !s.horiz) {
+      setDragX(0);
+      return;
+    }
+    const dx = e.changedTouches[0].clientX - s.x;
+    if (dx > 80) {
+      setDragX(window.innerWidth); // fling off, then unmount
+      setTimeout(onClose, 180);
+    } else {
+      setDragX(0); // snap back
+    }
+  }
+
+  const wrapperStyle = isSheet
+    ? {
+        transform: `translateX(${dragX}px)`,
+        transition: dragging ? "none" : "transform 0.2s ease-out, opacity 0.2s ease-out",
+        opacity: dragX > 0 ? Math.max(0.2, 1 - dragX / 500) : 1,
+      }
+    : undefined;
 
   const publishedAgo = article.published ? timeAgo(article.published) : null;
   const wordCount = article.metrics?.word_count || article.word_count || 0;
 
   return (
     <>
-      <Modal open={open} onClose={onClose}>
-        <s.Container>
+      <Modal
+        open={open}
+        onClose={onClose}
+        bottomSheetOnMobile
+        flushBottom
+        hideCloseButton
+        animateIn
+        wrapperStyle={wrapperStyle}
+      >
+        {/* Settings gear (same controls as the reader), pinned top-right,
+            outside the scroll area so its popover isn't clipped. */}
+        <s.Gear>
+          <ToolbarButtons
+            translating={translateInReader}
+            setTranslating={updateTranslateInReader}
+            pronouncing={pronounceInReader}
+            setPronouncing={updatePronounceInReader}
+            showMweHints={showMweHints}
+            setShowMweHints={updateShowMweHints}
+            showReadingTimer={showReadingTimer}
+            setShowReadingTimer={updateShowReadingTimer}
+            readerFontSize={readerFontSize}
+            setReaderFontSize={setReaderFontSize}
+          />
+        </s.Gear>
+
+        <s.ScrollArea
+          style={{ fontSize: `${readerFontSize}px` }}
+          onTouchStart={handleTouchStart}
+          onTouchMove={handleTouchMove}
+          onTouchEnd={handleTouchEnd}
+        >
           <s.Title>
             {interactiveTitle ? (
-              <TranslatableText interactiveText={interactiveTitle} translating={true} pronouncing={true} />
+              <TranslatableText
+                interactiveText={interactiveTitle}
+                translating={translateInReader}
+                pronouncing={pronounceInReader}
+                showMweHints={showMweHints}
+              />
             ) : (
               article.title
             )}
@@ -143,37 +192,10 @@ export default function ArticlePreviewOverlay({
               </MetaLink>
             </MetaItem>
             {publishedAgo && <MetaItem>{publishedAgo}</MetaItem>}
-            {wordCount > 0 && (
-              <MetaItem>
-                ~{estimateReadingTime(wordCount).replace(" minutes", "min").replace(" minute", "min")}
-              </MetaItem>
-            )}
           </MetaStrip>
 
-          {hasImage && <s.Image alt="" src={article.img_url} loading="lazy" decoding="async" />}
-
-          {article.summary && (
-            <s.Summary>
-              {interactiveSummary ? (
-                <TranslatableText interactiveText={interactiveSummary} translating={true} pronouncing={true} />
-              ) : (
-                article.summary
-              )}
-            </s.Summary>
-          )}
-
-          <s.Actions>
-            {canReadFull && (
-              <ActionButton as={Link} to={`/read/article?id=${inAppArticleId}`} variant="internal" onClick={onOpenNavigation}>
-                <MenuBookRoundedIcon style={{ fontSize: 18, marginRight: 4 }} />
-                Read full
-              </ActionButton>
-            )}
-            <ActionButton variant="muted" onClick={handleOpenOriginal}>
-              Open original
-              <OpenInNewRoundedIcon style={{ fontSize: 18, marginLeft: 4 }} />
-            </ActionButton>
-            <ActionButton variant={isArticleSaved ? "muted" : "default"} onClick={onToggleSave}>
+          <s.SaveRow>
+            <ActionButton variant="muted" onClick={onToggleSave}>
               {isArticleSaved ? (
                 <BookmarkRoundedIcon style={{ fontSize: 18, marginRight: 4 }} />
               ) : (
@@ -181,9 +203,51 @@ export default function ArticlePreviewOverlay({
               )}
               {isArticleSaved ? "Saved" : "Save"}
             </ActionButton>
-            {/* Share: intentionally deferred — see project_friend_share_multiplexer. */}
-          </s.Actions>
-        </s.Container>
+          </s.SaveRow>
+
+          {hasImage && <s.Image alt="" src={article.img_url} loading="lazy" decoding="async" />}
+
+          {article.summary && (
+            <>
+              <s.SummaryLabel>Summary</s.SummaryLabel>
+              <s.Summary>
+                {interactiveSummary ? (
+                  <TranslatableText
+                    interactiveText={interactiveSummary}
+                    translating={translateInReader}
+                    pronouncing={pronounceInReader}
+                    showMweHints={showMweHints}
+                  />
+                ) : (
+                  article.summary
+                )}
+              </s.Summary>
+            </>
+          )}
+        </s.ScrollArea>
+
+        {/* Fixed footer. Original is the primary action (this overlay only
+            shows for articles we can't read in-app); Save + Close are secondary. */}
+        <s.Actions>
+          <ActionButton variant="default" onClick={handleOpenOriginal}>
+            Original
+            {wordCount > 0 && (
+              <span style={{ opacity: 0.65, marginLeft: 5, fontWeight: 400 }}>
+                ({estimateReadingTime(wordCount).replace(" minutes", "min").replace(" minute", "min")})
+              </span>
+            )}
+            <OpenInNewRoundedIcon style={{ fontSize: 18, marginLeft: 5 }} />
+          </ActionButton>
+          {/* Save moved into the content above; Share deferred (see
+              project_friend_share_multiplexer). Footer is Original + Close. */}
+          {/* Close pushed to the far right — explicit fallback to swipe-to-close. */}
+          <div style={{ marginLeft: "auto" }}>
+            <ActionButton variant="link" onClick={onClose}>
+              <CloseRoundedIcon style={{ fontSize: 18, marginRight: 4 }} />
+              Close
+            </ActionButton>
+          </div>
+        </s.Actions>
       </Modal>
 
       <RedirectionNotificationModal

@@ -1,5 +1,12 @@
 import Box from "@mui/material/Box";
-import styled from "styled-components";
+import styled, { css, keyframes } from "styled-components";
+
+// Subtle rise-in for the mobile bottom sheet (a gentle nudge up + fade, not a
+// full slide — deliberately understated).
+const sheetRiseIn = keyframes`
+  from { transform: translateY(18px); opacity: 0; }
+  to   { transform: translateY(0);    opacity: 1; }
+`;
 
 //responsible for modal wrapper background, size and scaling
 const ModalWrapper = styled(Box)`
@@ -16,7 +23,7 @@ const ModalWrapper = styled(Box)`
   background-color: ${({ $bg }) => $bg || "var(--card-bg)"};
   border: 0 !important;
   border-radius: 0.65em;
-  padding: 32px 48px 32px 48px;
+  padding: 32px 48px ${({ $flushBottom }) => ($flushBottom ? "0" : "32px")} 48px;
   box-shadow:
     0px 11px 15px -7px rgb(0 0 0 / 20%),
     0px 24px 38px 3px rgb(0 0 0 / 14%),
@@ -60,9 +67,35 @@ const ModalWrapper = styled(Box)`
   }
 
   @media (max-width: 576px) {
-    padding: 20px 16px;
-    width: 92%;
+    ${({ $bottomSheetOnMobile }) =>
+      $bottomSheetOnMobile
+        ? `
+          top: auto;
+          bottom: 0;
+          left: 0;
+          transform: none;
+          width: 100%;
+          max-width: 100%;
+          max-height: 92%;
+          border-radius: 1em 1em 0 0;
+          /* No bottom padding: the sticky footer bleeds flush to the sheet's
+             bottom edge and provides its own safe-area padding. */
+          padding: 20px 16px 0;
+        `
+        : `
+          padding: 20px 16px;
+          width: 92%;
+        `}
   }
+
+  ${({ $bottomSheetOnMobile, $animateIn }) =>
+    $bottomSheetOnMobile &&
+    $animateIn &&
+    css`
+      @media (max-width: 576px) {
+        animation: ${sheetRiseIn} 0.18s ease-out;
+      }
+    `}
 `;
 
 const Strong = styled.span`

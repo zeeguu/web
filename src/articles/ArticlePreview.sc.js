@@ -54,6 +54,28 @@ const SaveIconButton = styled.button`
   z-index: 2;
   &:active { background: rgba(0, 0, 0, 0.65); }
 `;
+
+// Hide/dismiss toggle overlaid on the image (bottom-right), mirroring the Save
+// button at top-right. Used in preview/titles browsing modes where the card's
+// top-right × would collide with the Save icon on stacked mobile layouts.
+const HideIconButton = styled.button`
+  position: absolute;
+  bottom: 0.5em;
+  right: 0.5em;
+  width: 2.8em;
+  height: 2.8em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.45);
+  border: none;
+  border-radius: 50%;
+  color: #fff;
+  cursor: pointer;
+  padding: 0;
+  z-index: 2;
+  &:active { background: rgba(0, 0, 0, 0.65); }
+`;
 /*
   The div contains the article preview contents
   and defines the size of the images relative to the
@@ -332,26 +354,6 @@ const PreviewClampedSummary = styled(ClampedSummary)`
   -webkit-line-clamp: 2;
 `;
 
-// Titles-only variant: reuses the teaser's ArticleContent + ImageWithOverlay
-// (so the image is the SAME size as in Preview mode) with the title, instead
-// of a summary, to the right of the image. This is the right-hand text column.
-const CompactText = styled.div`
-  flex: 1;
-  min-width: 0; /* let the title clamp instead of overflowing the row */
-  align-self: center; /* vertically center the title next to the image */
-`;
-
-// Title clamped to three lines so long headlines don't make rows ragged.
-const CompactTitle = styled.div`
-  font-size: 1.4em;
-  font-weight: 600;
-  line-height: 1.3;
-  color: var(--text-primary);
-  display: -webkit-box;
-  -webkit-line-clamp: 3;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-`;
 
 // Bigger tap target than a bare "more" link: ~44px tall via padding.
 // Negative left margin keeps the visible label flush with the summary
@@ -406,8 +408,6 @@ export {
   PreviewCardClickable,
   PreviewSummary,
   PreviewClampedSummary,
-  CompactText,
-  CompactTitle,
   UrlSource,
   UrlSourceContainer,
   ArticlePreview,
@@ -425,6 +425,7 @@ export {
   SummaryToggle,
   HideButton,
   SaveIconButton,
+  HideIconButton,
   Topics,
   ReadProgress,
 };

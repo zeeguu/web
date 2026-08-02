@@ -38,7 +38,7 @@ export default function FeedPreferences() {
   const [preferencesLoaded, setPreferencesLoaded] = useState(false);
 
   useEffect(() => {
-    setTitle("Feed Preferences");
+    setTitle("Interests");
   }, []);
 
   useEffect(() => {
@@ -95,7 +95,7 @@ export default function FeedPreferences() {
 
   return (
     <CardPage layoutVariant={"card-under-menu"} isTransparent reducedPadding>
-      <SettingsPageHeader title="Feed Preferences" redirectLink={isFromArticles && "/articles"} />
+      <SettingsPageHeader title="Interests" redirectLink={isFromArticles && "/articles"} />
       <Main>
         <SectionContainer>
           <SectionHeading>Topics of Interest</SectionHeading>

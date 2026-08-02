@@ -7,31 +7,14 @@ import ButtonContainer from "../../_pages_shared/ButtonContainer.sc";
 import SettingsPageHeader from "../SharedComponents/SettingsPageHeader";
 import { setTitle } from "../../../assorted/setTitle";
 import { enterKioskMode } from "../../../kiosk/kioskMode";
-import LocalStorage from "../../../assorted/LocalStorage";
 
 export default function Developer() {
   const api = useContext(APIContext);
   const [status, setStatus] = useState(null);
-  const [browsingMode, setBrowsingMode] = useState(LocalStorage.getBrowsingMode());
 
   useEffect(() => {
     setTitle("Developer");
   }, []);
-
-  // Cycle the feed browsing mode. Read by ArticleListBrowser, which maps it to
-  // the ArticlePreview `interactive` / `compact` props for the Home/Search feed.
-  //  interactive → preview (teaser + overlay) → titles (compact row + overlay).
-  const BROWSING_MODES = ["interactive", "preview", "titles"];
-  const BROWSING_MODE_LABELS = {
-    interactive: "Interactive (default)",
-    preview: "Preview (teaser + overlay)",
-    titles: "Titles only (compact rows)",
-  };
-  function handleCycleBrowsingMode() {
-    const next = BROWSING_MODES[(BROWSING_MODES.indexOf(browsingMode) + 1) % BROWSING_MODES.length];
-    LocalStorage.setBrowsingMode(next);
-    setBrowsingMode(next);
-  }
 
   function handleClearOnboardingMessages() {
     setStatus(null);
@@ -86,7 +69,6 @@ export default function Developer() {
           <Button onClick={() => openApiPage("/status")}>Server health</Button>
           <Button onClick={() => openApiPage("/user_stats/dashboard")}>Admin dashboard</Button>
           <Button onClick={handleCopySession}>Copy session (for widget)</Button>
-          <Button onClick={handleCycleBrowsingMode}>Browsing mode: {BROWSING_MODE_LABELS[browsingMode]}</Button>
           <Button onClick={handleEnterKioskMode}>Enter kiosk reader mode</Button>
         </ButtonContainer>
         {status && <p style={{ marginTop: "1em" }}>{status}</p>}
