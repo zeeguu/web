@@ -5,6 +5,7 @@ import { MainNavContext } from "../../../contexts/MainNavContext";
 import SideNavOptionsForStudent from "./SideNavOptionsForStudent";
 import SideNavOptionsForTeacher from "./SideNavOptionsForTeacher";
 import SideNavProfileOption from "./SideNavProfileOption";
+import SideNavFriendsOption from "./SideNavFriendsOption";
 import SideNavProgressStats from "./SideNavProgressStats";
 import NavOption from "../NavOption";
 import FeedbackButton from "../../FeedbackButton";
@@ -44,6 +45,7 @@ export default function SideNav({ screenWidth }) {
           {isOnStudentSide && !path?.includes("/read") && (
             <SideNavLanguageOption screenWidth={screenWidth} />
           )}
+          {isOnStudentSide && <SideNavFriendsOption screenWidth={screenWidth} />}
           <NavOption
             {...NavigationOptions.settings}
             currentPath={path}

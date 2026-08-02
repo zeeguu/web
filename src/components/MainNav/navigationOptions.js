@@ -107,4 +107,10 @@ export default class NavigationOptions {
     linkTo: "/profile",
     text: strings.titleOwnProfile,
   });
+
+  static friends = Object.freeze({
+    linkTo: "/friends",
+    icon: <NavIcon name="friends" />,
+    text: strings.friends,
+  });
 }

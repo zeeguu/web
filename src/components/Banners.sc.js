@@ -95,4 +95,29 @@ const TopBarNavAvatar = styled(AvatarBackground)`
   padding: 2px;
 `;
 
-export { TopBarContainer, StreakValue, StreakLabel, FlagImage, FlagButton, StreakInfo, DailyFeedbackBannerContainer, DailyFeedbackLink, ProfileAvatarButton, TopBarNavAvatar };
+// Right-hand cluster of the top bar: the friend shortcut sits next to the
+// avatar so "my social stuff" and "my profile" read as neighbours.
+const TopBarRight = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  flex-shrink: 0;
+`;
+
+const TopBarIconButton = styled.button`
+  background: none;
+  border: none;
+  padding: 0.2rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  position: relative;
+  flex-shrink: 0;
+  color: var(--streak-banner-text);
+
+  svg {
+    font-size: 1.7rem;
+  }
+`;
+
+export { TopBarContainer, StreakValue, StreakLabel, FlagImage, FlagButton, StreakInfo, DailyFeedbackBannerContainer, DailyFeedbackLink, ProfileAvatarButton, TopBarNavAvatar, TopBarRight, TopBarIconButton };

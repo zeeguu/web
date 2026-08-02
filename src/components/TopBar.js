@@ -16,6 +16,7 @@ import { FriendRequestContext } from "../contexts/FriendRequestContext";
 import NotificationIcon from "./NotificationIcon";
 import Feature from "../features/Feature";
 import UpgradeAccountModal from "./UpgradeAccountModal";
+import NavIcon from "./MainNav/NavIcon";
 
 export default function TopBar() {
   const { userDetails } = useContext(UserContext);
@@ -26,7 +27,14 @@ export default function TopBar() {
   const [avatarCharacterColor, setAvatarCharacterColor] = useState();
   const [avatarBackgroundColor, setAvatarBackgroundColor] = useState();
   const { hasBadgeNotification, totalNumberOfBadges } = useContext(BadgeCounterContext);
-  const { hasFriendRequestNotification, friendRequestCount } = useContext(FriendRequestContext);
+  const { friendRequestCount } = useContext(FriendRequestContext);
+
+  // The friend shortcut's dot is scoped to pending friend requests only.
+  // Shared articles are content and keep their own unread badge on the homepage
+  // reading inbox, so we don't double-surface them here. Keeping this separate
+  // from the avatar's badge dot means: dot on the avatar = "new badge", dot on
+  // the friend icon = "someone wants to connect".
+  const friendNotificationCount = friendRequestCount;
 
   useEffect(() => {
     setAvatarCharacterId(validatedAvatarCharacterId(userDetails?.user_avatar?.image_name));
@@ -48,6 +56,14 @@ export default function TopBar() {
     history.push("/profile");
   };
 
+  const handleFriendsClick = () => {
+    if (isAnonymous) {
+      setShowUpgradeModal(true);
+      return;
+    }
+    history.push("/friends");
+  };
+
   return (
     <>
       <s.TopBarContainer>
@@ -61,17 +77,30 @@ export default function TopBar() {
           onOpenModal={openLanguageModal}
         />
         {Feature.has_gamification() && (
-          <s.ProfileAvatarButton
-            onClick={handleProfileClick}
-            aria-label="Go to profile"
-          >
-            <s.TopBarNavAvatar $backgroundColor={avatarBackgroundColor}>
-              <AvatarImage $imageSource={AVATAR_IMAGE_MAP[avatarCharacterId]} $color={avatarCharacterColor} />
-            </s.TopBarNavAvatar>
-            {(hasBadgeNotification || hasFriendRequestNotification) && (
-              <NotificationIcon position={"top-absolute"} style={{top: 0, right: 0}} text={totalNumberOfBadges + friendRequestCount} />
-            )}
-          </s.ProfileAvatarButton>
+          <s.TopBarRight>
+            <s.TopBarIconButton onClick={handleFriendsClick} aria-label="Go to friends">
+              <NavIcon name="friends" />
+              {friendNotificationCount > 0 && (
+                <NotificationIcon
+                  position={"top-absolute"}
+                  style={{ top: 0, right: 0 }}
+                  text={friendNotificationCount}
+                />
+              )}
+            </s.TopBarIconButton>
+            <s.ProfileAvatarButton onClick={handleProfileClick} aria-label="Go to profile">
+              <s.TopBarNavAvatar $backgroundColor={avatarBackgroundColor}>
+                <AvatarImage $imageSource={AVATAR_IMAGE_MAP[avatarCharacterId]} $color={avatarCharacterColor} />
+              </s.TopBarNavAvatar>
+              {hasBadgeNotification && (
+                <NotificationIcon
+                  position={"top-absolute"}
+                  style={{ top: 0, right: 0 }}
+                  text={totalNumberOfBadges}
+                />
+              )}
+            </s.ProfileAvatarButton>
+          </s.TopBarRight>
         )}
       </s.TopBarContainer>
       <LanguageModal

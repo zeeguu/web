@@ -64,6 +64,19 @@ export const AvatarBackground = styled.div`
   }
 `;
 
+// Own-profile Badges section, styled like the card the tab bar used to sit in
+// so removing the (now single) tab bar doesn't change the surrounding chrome.
+export const SingleTabSection = styled.div`
+  background: var(--card-bg);
+  border-radius: 8px;
+  box-shadow: 0 1px 3px var(--shadow-color);
+  padding: 1rem;
+
+  @media (max-width: 768px) {
+    padding: 0.5rem 1rem;
+  }
+`;
+
 export const AvatarImage = styled.div`
   width: 70%;
   height: 70%;

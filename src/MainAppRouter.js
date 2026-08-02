@@ -46,6 +46,7 @@ import AppLayout from "./AppLayout";
 import DeleteAccount from "./pages/DeleteAccount/DeleteAccount";
 import SettingsRouter from "./pages/Settings/_SettingsRouter";
 import ProfileRouter from "./profile/_ProfileRouter";
+import FriendsRouter from "./friends/_FriendsRouter";
 import ExercisesForArticle from "./exercises/ExercisesForArticle";
 import { WEB_READER } from "./reader/ArticleReader";
 import VideoPlayer from "./videos/VideoPlayer";
@@ -147,6 +148,11 @@ export default function MainAppRouter({ hasExtension, handleSuccessfulLogIn }) {
           <PrivateRouteWithLayout path="/profile" component={ProfileRouter} />
         ) : (
           <Route path="/profile" component={NotFound} />
+        )}
+        {Feature.has_gamification() ? (
+          <PrivateRouteWithLayout path="/friends" component={FriendsRouter} />
+        ) : (
+          <Route path="/friends" component={NotFound} />
         )}
         <PrivateRouteWithLayout path="/teacher" component={TeacherRouter} />
         <PrivateRouteWithLayout path="/shared-article" component={SharedArticleHandler} />

@@ -6,13 +6,11 @@ import { UserContext } from "../contexts/UserContext";
 import strings from "../i18n/definitions";
 import { APIContext } from "../contexts/APIContext";
 import Friends from "../friends/Friends";
-import { FriendRequestContext } from "../contexts/FriendRequestContext";
 import Badges from "../badges/Badges";
 import * as s from "./UserProfile.sc";
 import { BadgeCounterContext } from "../contexts/BadgeCounterContext";
 import LoadingAnimation from "../components/LoadingAnimation";
 import Button from "../pages/_pages_shared/Button.sc";
-import Leaderboards from "../leaderboards/Leaderboards";
 import useFriendActions from "../hooks/useFriendActions";
 import { ProfileHeaderCard } from "./ProfileHeaderCard";
 import { ProfileTabs } from "./ProfileTabs";
@@ -27,8 +25,7 @@ export default function UserProfile() {
   const [activeLanguages, setActiveLanguages] = useState([]);
   const [languagesModalOpen, setLanguagesModalOpen] = useState(false);
   const [activeTab, setActiveTab] = useState("badges");
-  const { hasFriendRequestNotification, friendRequestCount } = useContext(FriendRequestContext);
-  const { hasBadgeNotification, totalNumberOfBadges, updateBadgeCounter } = useContext(BadgeCounterContext);
+  const { hasBadgeNotification, updateBadgeCounter } = useContext(BadgeCounterContext);
   const { friendUsername } = useParams();
   const [isOwnProfile, setIsOwnProfile] = useState(!friendUsername);
   const [loadingProfileDetails, setLoadingProfileDetails] = useState(true);
@@ -156,17 +153,16 @@ export default function UserProfile() {
     onReject: handleRejectFriendRequest,
   };
 
+  // The profile is now about *you*: your identity and your badges. Everything
+  // relational — your friends list, friend requests, leaderboards — moved to
+  // the /friends destination (reachable from the top-bar friend icon). On
+  // someone else's profile we still surface a Friends tab so you can explore
+  // their network from where you're already standing.
   const tabs = [
-    {
-      key: "badges",
-      label: `Badges${isOwnProfile && hasBadgeNotification ? ` (${totalNumberOfBadges})` : ""}`,
-    },
-    {
-      key: "friends",
-      label: `Friends${isOwnProfile && hasFriendRequestNotification ? ` (${friendRequestCount})` : ""}`,
-    },
-    ...(isOwnProfile ? [{ key: "leaderboards", label: "Leaderboards" }] : []),
+    { key: "badges", label: "Badges" },
+    ...(!isOwnProfile ? [{ key: "friends", label: "Friends" }] : []),
   ];
+  const hasMultipleTabs = tabs.length > 1;
 
   const renderTabContent = () => {
     if (activeTab === "badges") {
@@ -175,10 +171,6 @@ export default function UserProfile() {
 
     if (activeTab === "friends") {
       return <Friends friendUsername={friendUsername} navigationHandler={handleUserProfileNavigation} />;
-    }
-
-    if (activeTab === "leaderboards") {
-      return <Leaderboards navigationHandler={handleUserProfileNavigation} isStudent={profileData?.is_student} />;
     }
 
     return null;
@@ -231,11 +223,16 @@ export default function UserProfile() {
             isPendingFriendAction={isPendingFriendAction}
           />
 
-          {(isOwnProfile || isFriendAccepted) && (
-            <ProfileTabs tabs={tabs} activeTab={activeTab} onTabChange={handleTabChange}>
-              {renderTabContent()}
-            </ProfileTabs>
-          )}
+          {(isOwnProfile || isFriendAccepted) &&
+            (hasMultipleTabs ? (
+              <ProfileTabs tabs={tabs} activeTab={activeTab} onTabChange={handleTabChange}>
+                {renderTabContent()}
+              </ProfileTabs>
+            ) : (
+              // Own profile: a single "Badges" section reads better without a
+              // lonely one-item tab bar.
+              <s.SingleTabSection>{renderTabContent()}</s.SingleTabSection>
+            ))}
 
           <UnfriendConfirmModal
             open={unfriendModalOpen}

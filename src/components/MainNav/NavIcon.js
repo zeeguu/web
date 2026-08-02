@@ -20,6 +20,7 @@ import AbcIcon from "@mui/icons-material/Abc";
 import MenuBookRoundedIcon from "@mui/icons-material/MenuBookRounded";
 import StyleRoundedIcon from "@mui/icons-material/StyleRounded";
 import PeopleAltRoundedIcon from "@mui/icons-material/PeopleAltRounded";
+import Diversity3RoundedIcon from "@mui/icons-material/Diversity3Rounded";
 
 
 export default function NavIcon({ name, color, size }) {
@@ -54,6 +55,7 @@ const iconProps = {
     headerStreak: <LocalFireDepartmentIcon {...iconProps}/>,
     school: <SchoolIcon {...iconProps} />,
     profile: <PeopleAltRoundedIcon {...iconProps} />,
+    friends: <Diversity3RoundedIcon {...iconProps} />,
   };
   return navIcons[name] || "";
 }
