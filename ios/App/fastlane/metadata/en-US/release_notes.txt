@@ -1,5 +1,7 @@
-- New Reader Mode: turn a device into a simple, locked-down news reader with no menus or settings — great for a dedicated or shared device.
-- New "Also show easier articles" toggle in Feed Preferences: let your feed include articles a bit below your level.
-- Fixed quoted passages in the reader being hard to read in dark mode.
-- Better button layouts on tablets, so longer labels no longer get cut off.
-- A few other smaller fixes and polish.
+- New Feed View options: choose how your feed looks — Headlines (title + image), Preview (adds a short summary), or Interactive (tappable words right in the feed). Change it in Settings, under Feed preferences, in the View section.
+- Tap any article for an interactive preview: translate and listen to words in the title and summary before you open it.
+- Share articles with friends, and find what others send you in a new "Shared with you" inbox.
+- Leaderboards: friends and classmates now live in one place, with a simple switch between them.
+- Reader: clearer labels for an article's source and its simplified level, plus tidier author lines.
+- Settings: a new page to manage your email notifications.
+- More fixes and polish throughout.
