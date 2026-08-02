@@ -152,6 +152,20 @@ const TitleContainer = styled.div`
   position: relative;
 `;
 
+// Preview browsing mode: the whole card body is one tap target that opens the
+// interactive overlay. Nested controls (Save, meta links) stopPropagation so
+// they don't trigger this. Keyboard-focusable, with a visible focus ring.
+const PreviewCardClickable = styled.div`
+  cursor: pointer;
+  outline: none;
+  border-radius: 0.5em;
+
+  &:focus-visible {
+    outline: 2px solid var(--badge-text);
+    outline-offset: 2px;
+  }
+`;
+
 const Title = styled.div`
   font-size: 1.4em;
   color: var(--text-primary);
@@ -306,6 +320,39 @@ const ClampedSummary = styled.div`
   overflow: hidden;
 `;
 
+// Preview browsing mode teaser variants. The summary reads as "equally large"
+// as the title (matches the 1.4em Title, vs the default 1.3em body) and is
+// clamped to two lines so the teaser stays compact — the full interactive
+// summary lives in the overlay.
+const PreviewSummary = styled(Summary)`
+  font-size: 1.4em;
+`;
+
+const PreviewClampedSummary = styled(ClampedSummary)`
+  -webkit-line-clamp: 2;
+`;
+
+// Titles-only variant: reuses the teaser's ArticleContent + ImageWithOverlay
+// (so the image is the SAME size as in Preview mode) with the title, instead
+// of a summary, to the right of the image. This is the right-hand text column.
+const CompactText = styled.div`
+  flex: 1;
+  min-width: 0; /* let the title clamp instead of overflowing the row */
+  align-self: center; /* vertically center the title next to the image */
+`;
+
+// Title clamped to three lines so long headlines don't make rows ragged.
+const CompactTitle = styled.div`
+  font-size: 1.4em;
+  font-weight: 600;
+  line-height: 1.3;
+  color: var(--text-primary);
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+`;
+
 // Bigger tap target than a bare "more" link: ~44px tall via padding.
 // Negative left margin keeps the visible label flush with the summary
 // left edge while the surrounding hit-area extends outwards. Accent
@@ -356,6 +403,11 @@ let Topics = styled.span`
 export {
   Title,
   TitleContainer,
+  PreviewCardClickable,
+  PreviewSummary,
+  PreviewClampedSummary,
+  CompactText,
+  CompactTitle,
   UrlSource,
   UrlSourceContainer,
   ArticlePreview,

@@ -34,6 +34,10 @@ export default function ArticleListBrowser({
   //in bool values changing on its own on refresh without any other external trigger or preferences change.
   // A '=== "true"' clause has been added to the getters to achieve predictable and desired bool values.
   const doNotShowRedirectionModal_LocalStorage = LocalStorage.getDoNotShowRedirectionModal() === "true";
+  // Feed browsing mode (Developer setting): "interactive" (default inline
+  // card), "preview" (teaser + overlay), or "titles" (compact row + overlay).
+  // Kiosk keeps its own read-only rendering regardless.
+  const browsingMode = kioskMode ? "interactive" : LocalStorage.getBrowsingMode();
   const [articlesAndVideosList, setArticlesAndVideosList] = useState();
   const [originalList, setOriginalList] = useState(null);
   const [searchError, setSearchError] = useState(false);
@@ -305,6 +309,8 @@ export default function ArticleListBrowser({
               article={each}
               hasExtension={isExtensionAvailable}
               kioskMode={kioskMode}
+              interactive={browsingMode === "interactive"}
+              compact={browsingMode === "titles"}
               doNotShowRedirectionModal_UserPreference={doNotShowRedirectionModal_UserPreference}
               setDoNotShowRedirectionModal_UserPreference={setDoNotShowRedirectionModal_UserPreference}
               onArticleHidden={handleArticleHidden}

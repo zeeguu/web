@@ -42,6 +42,11 @@ const LocalStorage = {
     // Kiosk reader mode: locks the app to a chrome-less, translation-free
     // news reader (see src/kiosk/). Activated from Developer settings.
     KioskReader: "kiosk_reader",
+    // Feed browsing mode (Developer setting). One of:
+    //  "interactive" — today's inline interactive title/summary card (default)
+    //  "preview"     — plain teaser (image + 2-line summary) → tap opens overlay
+    //  "titles"      — compact row (image left, title right, no summary) → overlay
+    BrowsingMode: "browsing_mode",
   },
 
   getKioskReader: function () {
@@ -53,6 +58,18 @@ const LocalStorage = {
       localStorage.setItem(this.Keys.KioskReader, "true");
     } else {
       localStorage.removeItem(this.Keys.KioskReader);
+    }
+  },
+
+  getBrowsingMode: function () {
+    return localStorage.getItem(this.Keys.BrowsingMode) || "interactive";
+  },
+
+  setBrowsingMode: function (mode) {
+    if (mode && mode !== "interactive") {
+      localStorage.setItem(this.Keys.BrowsingMode, mode);
+    } else {
+      localStorage.removeItem(this.Keys.BrowsingMode);
     }
   },
 
