@@ -232,7 +232,11 @@ export default function ArticlePreview({
             handleArticleClick();
             handleOpenRedirectionModal();
           }}
-          style={{ ...style, background: "none", border: "none", padding: 0, cursor: "pointer", ...buttonExtraStyle }}
+          // font-size: inherit so the button matches the anchor cascade —
+          // otherwise the UA's non-inheriting button font shrinks any em-based
+          // child (e.g. the image's width: 16em), making modal-opened cards'
+          // thumbnails smaller than saved/open-in-Zeeguu ones.
+          style={{ ...style, background: "none", border: "none", padding: 0, cursor: "pointer", fontSize: "inherit", ...buttonExtraStyle }}
         >
           {children}
         </button>

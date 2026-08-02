@@ -76,8 +76,12 @@ const ArticleContent = styled.div`
 
   img {
     margin: 1em 0.5em 0 0.5em;
-    max-width: 16em;
-    max-height: 12em;
+    /* Side-by-side layout (desktop / tablet landscape): a fixed width +
+       aspect-ratio gives every card an identical thumbnail, so wide and
+       tall source photos no longer make the feed ragged. object-fit: cover
+       crops each photo to fill the 3:2 box. */
+    width: 13em;
+    aspect-ratio: 3 / 2;
     border-radius: 1em;
     align-self: flex-start;
     object-fit: cover;
@@ -89,11 +93,21 @@ const ArticleContent = styled.div`
       /* Fill the card width with a height cap so portrait photos
          don't dominate. width: 100% on the img stretches the parent
          ImageWithOverlay too, keeping the Open + Save overlays
-         aligned to the corners of the visible image. */
+         aligned to the corners of the visible image. aspect-ratio is
+         reset to auto here so the stacked layout keeps letting the photo
+         drive height up to the max-height cap (unchanged from before). */
       width: 100%;
       max-width: 100%;
       max-height: 13em;
+      aspect-ratio: auto;
       margin: 0.5rem 0;
+    }
+
+    /* Tablet portrait (e.g. iPad): full-width photos get a taller crop
+       so they don't read as a thin banner. min-width excludes phones,
+       which keep the shorter 13em cap above. */
+    @media (min-width: 600px) and (max-width: 990px) {
+      max-height: 30em;
     }
   }
 
