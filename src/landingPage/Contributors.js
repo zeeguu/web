@@ -110,11 +110,11 @@ export default function Contributors() {
 
       {member("Johan De Jager", "Translation Multiplexer")}
 
-      {member("Ada Lungu", "UX and Web Design")}
-
       {member("Niels Haan", "Smartwatch Development")}
 
       {member("Vlad Turbureanu", "Language Exercises")}
+
+      {member("Ada Lungu", "UX and Web Design")}
     </>
   );
 }

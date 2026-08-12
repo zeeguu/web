@@ -20,6 +20,14 @@ export default function News() {
       <h3>2026</h3>
 
       {item(
+        strings.sep,
+        <>
+          Zeeguu goes to Northern Ireland 🇬🇧! Mircea gives a talk entitled "The Words They Don't Look Up: Inferring Vocabulary from
+          Reading Behavior" at the EuroCALL conference in Belfast
+        </>,
+      )}
+
+      {item(
         strings.feb,
         <>
           The{" "}
