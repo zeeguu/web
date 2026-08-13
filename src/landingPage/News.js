@@ -22,8 +22,8 @@ export default function News() {
       {item(
         strings.sep,
         <>
-          Zeeguu goes to Northern Ireland 🇬🇧! Mircea gives a talk entitled "The Words They Don't Look Up: Inferring Vocabulary from
-          Reading Behavior" at the EuroCALL conference in Belfast
+          Zeeguu goes to Belfast ☘️🚢! Mircea gives a talk entitled "The Words They Don't Look Up: Inferring Vocabulary from
+          Reading Behavior" at the EuroCALL conference
         </>,
       )}
 
