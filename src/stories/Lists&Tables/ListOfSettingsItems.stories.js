@@ -4,7 +4,7 @@ import { MemoryRouter } from "react-router-dom";
 import "../../index.css";
 
 export default {
-  title: "Lists/ListOfSettingsItems",
+  title: "Lists&Tables/ListOfSettingsItems",
   component: ListOfSettingsItems,
   decorators: [
     (Story) => (
