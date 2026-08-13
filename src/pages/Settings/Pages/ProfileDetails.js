@@ -13,7 +13,7 @@ import ButtonContainer from "../../_pages_shared/ButtonContainer.sc";
 import InputField from "../../../components/InputField";
 import CardPage from "../../_pages_shared/CardPage";
 import Header from "../../_pages_shared/Header";
-import Heading from "../../_pages_shared/Heading.sc";
+import PageTitle from "../../_pages_shared/PageTitle.sc";
 import Main from "../../_pages_shared/Main.sc";
 import SettingsPageHeader from "../SharedComponents/SettingsPageHeader";
 import FullWidthErrorMsg from "../../../components/FullWidthErrorMsg.sc";
@@ -225,7 +225,7 @@ export default function ProfileDetails() {
       {isGamificationEnabled && (
         <Modal open={showAvatarModal} onClose={() => setShowAvatarModal(false)}>
           <Header withoutLogo>
-            <Heading>Choose Your Avatar</Heading>
+            <PageTitle>Choose Your Avatar</PageTitle>
           </Header>
           <Main>
             <s.PickerSection>

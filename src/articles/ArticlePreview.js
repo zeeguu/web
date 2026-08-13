@@ -1,5 +1,5 @@
-import { Link } from "react-router-dom";
-import { useContext, useEffect, useRef, useState } from "react";
+import { Link, useHistory } from "react-router-dom";
+import { useContext, useRef, useState } from "react";
 import useClampedOverflow from "../hooks/useClampedOverflow";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -8,12 +8,13 @@ import * as s from "./ArticlePreview.sc";
 import { MetaStrip, MetaItem, MetaLink, MetaTag } from "../components/MetaStrip.sc";
 import RedirectionNotificationModal from "../components/redirect_notification/RedirectionNotificationModal";
 import Feature from "../features/Feature";
+import strings from "../i18n/definitions";
+import { kioskExpandLabel } from "../kiosk/showMoreLabels";
 import ReadingCompletionProgress from "./ReadingCompletionProgress";
+import ArticlePreviewOverlay from "./ArticlePreviewOverlay";
 import { APIContext } from "../contexts/APIContext";
-import { BrowsingSessionContext } from "../contexts/BrowsingSessionContext";
 import { TranslatableText } from "../reader/TranslatableText";
-import InteractiveText from "../reader/InteractiveText";
-import ZeeguuSpeech from "../speech/APIBasedSpeech";
+import useArticlePreviewTokens from "../hooks/useArticlePreviewTokens";
 import { estimateReadingTime, timeAgo } from "../utils/misc/readableTime";
 import ActionButton from "../components/ActionButton";
 import { articleSourceLabel } from "../utils/misc/articleHelpers";
@@ -21,12 +22,14 @@ import OpenInNewRoundedIcon from "@mui/icons-material/OpenInNewRounded";
 import BookmarkBorderRoundedIcon from "@mui/icons-material/BookmarkBorderRounded";
 import BookmarkRoundedIcon from "@mui/icons-material/BookmarkRounded";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
+import VisibilityOffRoundedIcon from "@mui/icons-material/VisibilityOffRounded";
 
 export default function ArticlePreview({
   article,
   dontShowPublishingTime,
   dontShowSummary = false,
   hasExtension,
+  kioskMode = false,
   doNotShowRedirectionModal_UserPreference,
   setDoNotShowRedirectionModal_UserPreference,
   notifyArticleClick,
@@ -35,18 +38,29 @@ export default function ArticlePreview({
   onUnhideArticle,
   isHiddenView = false,
   inSavedView = false,
+  // Preview browsing mode: when false, the card is a plain (non-interactive)
+  // teaser and a tap opens the interactive ArticlePreviewOverlay instead of
+  // rendering the interactive title/summary inline. Default true keeps today's
+  // inline-interactive card. Only the Discover/search feed passes this false.
+  interactive = true,
+  // Titles-only variant of preview mode: a compact row (image left, title
+  // right, no summary). Implies !interactive; still opens the overlay on tap.
+  compact = false,
 }) {
   const api = useContext(APIContext);
-  const getBrowsingSessionId = useContext(BrowsingSessionContext);
+  const history = useHistory();
   const [isRedirectionModalOpen, setIsRedirectionModaOpen] = useState(false);
+  const [previewOpen, setPreviewOpen] = useState(false);
+  // Teaser-card + tap-to-open behavior applies only to the live feed — never
+  // to saved-list, hidden, or kiosk surfaces, which keep their own rendering.
+  const previewMode = !interactive && !inSavedView && !isHiddenView && !kioskMode;
   // In a saved view (My Articles, Classroom, etc.) the article is in the
   // list precisely because it's saved — treat it as such even if the
   // article's has_personal_copy flag hasn't propagated correctly.
   const [isArticleSaved, setIsArticleSaved] = useState(article.has_personal_copy || inSavedView);
-  const [interactiveSummary, setInteractiveSummary] = useState(null);
-  const [interactiveTitle, setInteractiveTitle] = useState(null);
-  const [isTokenizing, setIsTokenizing] = useState(false);
-  const [zeeguuSpeech] = useState(() => new ZeeguuSpeech(api, article.language));
+  // Interactive title/summary — tokenized only for the inline interactive card.
+  // Preview/titles cards are plain teasers; their overlay tokenizes on open.
+  const { interactiveTitle, interactiveSummary } = useArticlePreviewTokens(article, { enabled: !previewMode });
   const [isHidden, setIsHidden] = useState(article.hidden || false);
   const [isAnimatingOut, setIsAnimatingOut] = useState(false);
   const [isSummaryExpanded, setIsSummaryExpanded] = useState(false);
@@ -63,65 +77,6 @@ export default function ArticlePreview({
     enabled: !isSummaryExpanded,
     deps: [interactiveSummary, article.summary],
   });
-
-  useEffect(() => {
-    if ((article.summary || article.title) && !isTokenizing && !interactiveSummary && !interactiveTitle) {
-      setIsTokenizing(true);
-
-      const summaryData =
-        article.interactiveSummary && article.interactiveTitle
-          ? {
-              tokenized_summary: article.interactiveSummary,
-              tokenized_title: article.interactiveTitle,
-            }
-          : null;
-
-      if (summaryData) {
-        // Use pre-loaded summary data (already included in article from /user_articles/recommended)
-        processSummaryData(summaryData);
-      } else {
-        // Fall back to fetching summary separately (for backwards compatibility)
-        // Nov '25 - should be removed soon
-        api.getArticleSummaryInfo(article.id, processSummaryData);
-      }
-
-      function processSummaryData(summaryData) {
-        // Create interactive summary
-        if (summaryData.tokenized_summary) {
-          setInteractiveSummary(
-            new InteractiveText({
-              tokenizedParagraphs: summaryData.tokenized_summary.tokens,
-              sourceId: article.source_id,
-              api,
-              previousBookmarks: summaryData.tokenized_summary.past_bookmarks,
-              language: article.language,
-              source: "article_preview",
-              zeeguuSpeech,
-              contextIdentifier: summaryData.tokenized_summary.context_identifier,
-              getBrowsingSessionId,
-            }),
-          );
-        }
-
-        if (summaryData.tokenized_title && summaryData.tokenized_title.tokens) {
-          setInteractiveTitle(
-            new InteractiveText({
-              tokenizedParagraphs: summaryData.tokenized_title.tokens,
-              sourceId: article.source_id,
-              api,
-              previousBookmarks: summaryData.tokenized_title.past_bookmarks || [],
-              language: article.language,
-              source: "article_preview",
-              zeeguuSpeech,
-              contextIdentifier: summaryData.tokenized_title.context_identifier,
-              getBrowsingSessionId,
-            }),
-          );
-        }
-        setIsTokenizing(false);
-      }
-    }
-  }, [article.summary, article.title, article.language, article.id, api, zeeguuSpeech]);
 
   const handleArticleClick = () => {
     if (notifyArticleClick) {
@@ -229,14 +184,18 @@ export default function ArticlePreview({
             handleArticleClick();
             handleOpenRedirectionModal();
           }}
-          style={{ ...style, background: "none", border: "none", padding: 0, cursor: "pointer", ...buttonExtraStyle }}
+          // font-size: inherit so the button matches the anchor cascade —
+          // otherwise the UA's non-inheriting button font shrinks any em-based
+          // child (e.g. the image's width: 16em), making modal-opened cards'
+          // thumbnails smaller than saved/open-in-Zeeguu ones.
+          style={{ ...style, background: "none", border: "none", padding: 0, cursor: "pointer", fontSize: "inherit", ...buttonExtraStyle }}
         >
           {children}
         </button>
       );
     }
     return (
-      <a target={isMobile ? "_self" : "_blank"} rel="noreferrer" href={externalUrl} onClick={handleArticleClick} style={style}>
+      <a target={isMobile() ? "_self" : "_blank"} rel="noreferrer" href={externalUrl} onClick={handleArticleClick} style={style}>
         {children}
       </a>
     );
@@ -308,6 +267,202 @@ export default function ArticlePreview({
   if (!inSavedView && !dontShowPublishingTime && article.published) {
     const publishedAgo = timeAgo(article.published);
     publishedTimeSlot = <MetaItem>{publishedAgo}</MetaItem>;
+  }
+
+  // Kiosk mode: a non-interactive summary card. Plain (non-translatable)
+  // title + image + summary, and the ONLY interaction is "Show more" to
+  // expand a clamped summary. No opening, saving, hiding, or meta links.
+  if (kioskMode) {
+    return (
+      <s.ArticlePreview>
+        <s.TitleContainer>
+          <s.Title>{article.title}</s.Title>
+        </s.TitleContainer>
+        <s.ArticleContent>
+          {hasImage && (
+            <s.ImageWithOverlay>
+              <img
+                alt=""
+                src={article.img_url}
+                loading="lazy"
+                decoding="async"
+                onError={() => setImageFailed(true)}
+                style={{ display: "block" }}
+              />
+            </s.ImageWithOverlay>
+          )}
+          {!dontShowSummary && article.summary && (
+            <s.Summary>
+              {isSummaryExpanded ? (
+                article.summary
+              ) : (
+                <s.ClampedSummary ref={clampedSummaryRef}>{article.summary}</s.ClampedSummary>
+              )}
+              {(isSummaryExpanded || summaryOverflows) && (
+                <s.SummaryToggle type="button" onClick={() => setIsSummaryExpanded((v) => !v)}>
+                  {kioskExpandLabel(article.language, isSummaryExpanded)}
+                  <span aria-hidden="true">{isSummaryExpanded ? "▴" : "▾"}</span>
+                </s.SummaryToggle>
+              )}
+            </s.Summary>
+          )}
+        </s.ArticleContent>
+      </s.ArticlePreview>
+    );
+  }
+
+  // Preview browsing mode: a plain teaser (non-interactive title + summary)
+  // whose whole body is one tap target that opens the interactive overlay.
+  // "Open" affordances are gone (the card *is* the open). Save (convenience)
+  // and Hide stay as stopPropagation siblings so they don't open the overlay.
+  if (previewMode) {
+    const openPreview = () => {
+      handleArticleClick();
+      // If we have a Zeeguu-readable copy, tapping opens the full article
+      // directly — the preview overlay is only for articles we can't read
+      // in-app (external-only), so it never needs a "Read full" action.
+      if (should_open_in_zeeguu) {
+        history.push(`/read/article?id=${inAppArticleId}`);
+      } else {
+        setPreviewOpen(true);
+      }
+    };
+    return (
+      <s.ArticlePreview
+        style={{
+          maxHeight: isAnimatingOut ? "0" : "1000px",
+          opacity: isAnimatingOut ? "0" : "1",
+          overflow: isAnimatingOut ? "hidden" : "visible",
+          transition: "max-height 0.3s ease-out, opacity 0.3s ease-out",
+          marginBottom: isAnimatingOut ? "0" : undefined,
+        }}
+      >
+        {/* With an image, Hide lives as an eye-off at the image's bottom-right
+            (mirroring Save at top-right) — the top-right × collided with Save on
+            stacked mobile layouts. Image-less cards keep the corner ×. */}
+        {!hasImage && (
+          <s.HideButton onClick={handleHideArticle} aria-label="Hide from feed">
+            <CloseRoundedIcon style={{ fontSize: 18 }} />
+          </s.HideButton>
+        )}
+
+        <s.PreviewCardClickable
+          role="button"
+          tabIndex={0}
+          onClick={openPreview}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" || e.key === " ") {
+              e.preventDefault();
+              openPreview();
+            }
+          }}
+        >
+          {/* Title first, then meta, then image — consistent across Preview
+              and Titles modes. Titles mode is simply this without the summary. */}
+          <s.TitleContainer>
+            <s.Title>{article.title}</s.Title>
+          </s.TitleContainer>
+
+          <MetaStrip>
+            {article.topics_list &&
+              article.topics_list.map(([topicTitle]) => <MetaTag key={topicTitle}>{topicTitle}</MetaTag>)}
+            {article.matched_searches &&
+              article.matched_searches.map((search) => (
+                <MetaItem key={`search-${search}`}>
+                  🔍&nbsp;
+                  <MetaLink
+                    as={Link}
+                    to={`/search?search=${encodeURIComponent(search)}`}
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    {search}
+                  </MetaLink>
+                </MetaItem>
+              ))}
+            {article.parent_article_id && <MetaTag>Simplified</MetaTag>}
+            {savedTag}
+            <MetaItem>
+              <MetaLink
+                className="muted"
+                href={article.parent_url || article.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={(e) => e.stopPropagation()}
+              >
+                {articleSourceLabel(article)}
+              </MetaLink>
+            </MetaItem>
+            {publishedTimeSlot}
+            {(article.metrics?.word_count || article.word_count) > 0 && (
+              <MetaItem>
+                ~
+                {estimateReadingTime(article.metrics?.word_count || article.word_count || 0)
+                  .replace(" minutes", "min")
+                  .replace(" minute", "min")}
+              </MetaItem>
+            )}
+          </MetaStrip>
+
+          <s.ArticleContent>
+            {hasImage && (
+              <s.ImageWithOverlay>
+                <img
+                  alt=""
+                  src={article.img_url}
+                  loading="lazy"
+                  decoding="async"
+                  onError={() => setImageFailed(true)}
+                  style={{ display: "block" }}
+                />
+                <s.SaveIconButton
+                  type="button"
+                  onClick={handleToggleSave}
+                  aria-label={isArticleSaved ? "Remove from saves" : "Save"}
+                >
+                  {isArticleSaved ? (
+                    <BookmarkRoundedIcon style={{ fontSize: 18 }} />
+                  ) : (
+                    <BookmarkBorderRoundedIcon style={{ fontSize: 18 }} />
+                  )}
+                </s.SaveIconButton>
+                <s.HideIconButton
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleHideArticle();
+                  }}
+                  aria-label="Hide from feed"
+                >
+                  <VisibilityOffRoundedIcon style={{ fontSize: 18 }} />
+                </s.HideIconButton>
+              </s.ImageWithOverlay>
+            )}
+            {!compact && article.summary && (
+              <s.PreviewSummary>
+                <s.PreviewClampedSummary>{article.summary}</s.PreviewClampedSummary>
+              </s.PreviewSummary>
+            )}
+          </s.ArticleContent>
+        </s.PreviewCardClickable>
+
+        {/* Mounted only while open: each card renders one of these, so mounting
+            eagerly would run the overlay's prefs fetch + tokenization per card. */}
+        {previewOpen && (
+          <ArticlePreviewOverlay
+            article={article}
+            open
+            onClose={() => setPreviewOpen(false)}
+            hasExtension={hasExtension}
+            isArticleSaved={isArticleSaved}
+            onToggleSave={handleToggleSave}
+            setIsArticleSaved={setIsArticleSaved}
+            externalUrl={externalUrl}
+            should_open_with_modal={should_open_with_modal}
+            setDoNotShowRedirectionModal_UserPreference={setDoNotShowRedirectionModal_UserPreference}
+          />
+        )}
+      </s.ArticlePreview>
+    );
   }
 
   return (
@@ -431,7 +586,7 @@ export default function ArticlePreview({
                     )}
                     {(isSummaryExpanded || summaryOverflows) && (
                       <s.SummaryToggle type="button" onClick={() => setIsSummaryExpanded((v) => !v)}>
-                        {isSummaryExpanded ? "Show less" : "Show more"}
+                        {isSummaryExpanded ? strings.showLess : strings.showMore}
                         <span aria-hidden="true">{isSummaryExpanded ? "▴" : "▾"}</span>
                       </s.SummaryToggle>
                     )}

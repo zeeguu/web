@@ -8,7 +8,7 @@ import ButtonContainer from "../modal_shared/ButtonContainer.sc.js";
 import FormSection from "../../pages/_pages_shared/FormSection.sc.js";
 import Main from "../modal_shared/Main.sc.js";
 import Header from "../modal_shared/Header.sc.js";
-import Heading from "../modal_shared/Heading.sc.js";
+import ModalTitle from "../modal_shared/ModalTitle.sc.js";
 import RadioGroup from "./RadioGroup.js";
 import ReactLink from "../ReactLink.sc.js";
 import AddRoundedIcon from "@mui/icons-material/AddRounded";
@@ -160,7 +160,7 @@ export default function LanguageModal({ open, setOpen }) {
       {confirmModal}
       <Modal open={open} onClose={() => setOpen(false)}>
         <Header withoutLogo>
-          <Heading>{isSwitching ? "Changing language..." : "Your Active Languages:"}</Heading>
+          <ModalTitle>{isSwitching ? "Changing language..." : "Your Active Languages:"}</ModalTitle>
         </Header>
         <Main>
           <Form>{isSwitching ? switchingBody : languageListBody}</Form>

@@ -11,7 +11,7 @@ import strings from "../i18n/definitions";
 
 import CardPage from "./_pages_shared/CardPage";
 import Header from "./_pages_shared/Header";
-import Heading from "./_pages_shared/Heading.sc";
+import PageTitle from "./_pages_shared/PageTitle.sc";
 import Main from "./_pages_shared/Main.sc";
 import Form from "./_pages_shared/Form.sc";
 import FormSection from "./_pages_shared/FormSection.sc";
@@ -65,7 +65,7 @@ export default function LogIn({ handleSuccessfulLogIn }) {
   return (
     <CardPage pageWidth={"narrow"} isBackgroundFixed={true}>
       <Header>
-        <Heading>Login</Heading>
+        <PageTitle>Login</PageTitle>
       </Header>
       <Main>
         <Form action={""} method={"post"}>

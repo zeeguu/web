@@ -54,6 +54,28 @@ const SaveIconButton = styled.button`
   z-index: 2;
   &:active { background: rgba(0, 0, 0, 0.65); }
 `;
+
+// Hide/dismiss toggle overlaid on the image (bottom-right), mirroring the Save
+// button at top-right. Used in preview/titles browsing modes where the card's
+// top-right × would collide with the Save icon on stacked mobile layouts.
+const HideIconButton = styled.button`
+  position: absolute;
+  bottom: 0.5em;
+  right: 0.5em;
+  width: 2.8em;
+  height: 2.8em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.45);
+  border: none;
+  border-radius: 50%;
+  color: #fff;
+  cursor: pointer;
+  padding: 0;
+  z-index: 2;
+  &:active { background: rgba(0, 0, 0, 0.65); }
+`;
 /*
   The div contains the article preview contents
   and defines the size of the images relative to the
@@ -76,8 +98,12 @@ const ArticleContent = styled.div`
 
   img {
     margin: 1em 0.5em 0 0.5em;
-    max-width: 16em;
-    max-height: 12em;
+    /* Side-by-side layout (desktop / tablet landscape): a fixed width +
+       aspect-ratio gives every card an identical thumbnail, so wide and
+       tall source photos no longer make the feed ragged. object-fit: cover
+       crops each photo to fill the 3:2 box. */
+    width: 13em;
+    aspect-ratio: 3 / 2;
     border-radius: 1em;
     align-self: flex-start;
     object-fit: cover;
@@ -89,11 +115,21 @@ const ArticleContent = styled.div`
       /* Fill the card width with a height cap so portrait photos
          don't dominate. width: 100% on the img stretches the parent
          ImageWithOverlay too, keeping the Open + Save overlays
-         aligned to the corners of the visible image. */
+         aligned to the corners of the visible image. aspect-ratio is
+         reset to auto here so the stacked layout keeps letting the photo
+         drive height up to the max-height cap (unchanged from before). */
       width: 100%;
       max-width: 100%;
       max-height: 13em;
+      aspect-ratio: auto;
       margin: 0.5rem 0;
+    }
+
+    /* Tablet portrait (e.g. iPad): full-width photos get a taller crop
+       so they don't read as a thin banner. min-width excludes phones,
+       which keep the shorter 13em cap above. */
+    @media (min-width: 600px) and (max-width: 990px) {
+      max-height: 30em;
     }
   }
 
@@ -136,6 +172,20 @@ const TitleContainer = styled.div`
   align-items: center;
   gap: 0.5rem;
   position: relative;
+`;
+
+// Preview browsing mode: the whole card body is one tap target that opens the
+// interactive overlay. Nested controls (Save, meta links) stopPropagation so
+// they don't trigger this. Keyboard-focusable, with a visible focus ring.
+const PreviewCardClickable = styled.div`
+  cursor: pointer;
+  outline: none;
+  border-radius: 0.5em;
+
+  &:focus-visible {
+    outline: 2px solid var(--badge-text);
+    outline-offset: 2px;
+  }
 `;
 
 const Title = styled.div`
@@ -292,6 +342,19 @@ const ClampedSummary = styled.div`
   overflow: hidden;
 `;
 
+// Preview browsing mode teaser variants. The summary reads as "equally large"
+// as the title (matches the 1.4em Title, vs the default 1.3em body) and is
+// clamped to two lines so the teaser stays compact — the full interactive
+// summary lives in the overlay.
+const PreviewSummary = styled(Summary)`
+  font-size: 1.4em;
+`;
+
+const PreviewClampedSummary = styled(ClampedSummary)`
+  -webkit-line-clamp: 2;
+`;
+
+
 // Bigger tap target than a bare "more" link: ~44px tall via padding.
 // Negative left margin keeps the visible label flush with the summary
 // left edge while the surrounding hit-area extends outwards. Accent
@@ -342,6 +405,9 @@ let Topics = styled.span`
 export {
   Title,
   TitleContainer,
+  PreviewCardClickable,
+  PreviewSummary,
+  PreviewClampedSummary,
   UrlSource,
   UrlSourceContainer,
   ArticlePreview,
@@ -359,6 +425,7 @@ export {
   SummaryToggle,
   HideButton,
   SaveIconButton,
+  HideIconButton,
   Topics,
   ReadProgress,
 };

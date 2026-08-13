@@ -13,7 +13,7 @@ import DifficultyFeedbackBox from "./DifficultyFeedbackBox";
 import LikeFeedBackBox from "./LikeFeedbackBox";
 import { extractVideoIDFromURL } from "../utils/misc/youtube";
 
-import ReportBroken from "./ReportBroken";
+import ReportBroken from "./ReportBrokenArticle";
 
 import TopToolbar from "./TopToolbar";
 import ReviewVocabularyInfoBox from "./ReviewVocabularyInfoBox";
@@ -52,11 +52,24 @@ export function onBlur(api, articleID, source) {
 
 export default function ArticleReader({ teacherArticleID }) {
   const api = useContext(APIContext);
+  // Share context, when the reader was opened from the "Shared with you" inbox
+  // (SharedArticleRow passes it via router state). Absent on any other entry.
+  const shareContext = useLocation().state;
   let articleID = "";
   let query = useQuery();
   teacherArticleID ? (articleID = teacherArticleID) : (articleID = query.get("id"));
   let last_reading_percentage = query.get("percentage");
   last_reading_percentage = last_reading_percentage === "undefined" ? null : Number(last_reading_percentage);
+
+  // Opened from a share-email deep-link (…?id=X&shared=<id>): mark that share
+  // read so the inbox row + badge stay in sync — the in-app row does this on
+  // click, and the email link must too, or the "first unread" email debounce
+  // never resets and later shares stop notifying.
+  const sharedArticleIdFromEmail = query.get("shared");
+  useEffect(() => {
+    if (sharedArticleIdFromEmail) api.markSharedArticleRead(sharedArticleIdFromEmail);
+    // eslint-disable-next-line
+  }, [sharedArticleIdFromEmail]);
 
   const [articleInfo, setArticleInfo] = useState();
 
@@ -450,7 +463,7 @@ export default function ArticleReader({ teacherArticleID }) {
 
           <ArticleAuthors articleInfo={articleInfo} />
           <s.ArticleInfoContainer>
-            <ArticleStatInfo articleInfo={articleInfo}></ArticleStatInfo>
+            <ArticleStatInfo articleInfo={articleInfo} shareContext={shareContext}></ArticleStatInfo>
           </s.ArticleInfoContainer>
 
           {articleInfo.img_url && (

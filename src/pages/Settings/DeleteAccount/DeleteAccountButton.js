@@ -1,14 +1,14 @@
 import { useState } from "react";
-import Modal from "../../../components/modal_shared/Modal";
-import Header from "../../../components/modal_shared/Header.sc";
-import Heading from "../../../components/modal_shared/Heading.sc";
-import Main from "../../../components/modal_shared/Main.sc";
-import Footer from "../../../components/modal_shared/Footer.sc";
-import ButtonContainer from "../../../components/modal_shared/ButtonContainer.sc";
-import * as s from "../../../components/FormPage.sc";
-import redirect from "../../../utils/routing/routing";
-import SessionStorage from "../../../assorted/SessionStorage.js";
-import Button from "../../_pages_shared/Button.sc";
+import Modal from "../../components/modal_shared/Modal";
+import Header from "../../components/modal_shared/Header.sc";
+import ModalTitle from "../../components/modal_shared/ModalTitle.sc";
+import Main from "../../components/modal_shared/Main.sc";
+import Footer from "../../components/modal_shared/Footer.sc";
+import ButtonContainer from "../../components/modal_shared/ButtonContainer.sc";
+import * as s from "../../components/FormPage.sc";
+import redirect from "../../utils/routing/routing";
+import SessionStorage from "../../assorted/SessionStorage.js";
+import Button from "../_pages_shared/Button.sc";
 
 export default function DeleteAccountButton() {
   const [showConfirmationModal, setShowConfirmationModal] = useState(false);
@@ -37,7 +37,7 @@ export default function DeleteAccountButton() {
       >
         <Header>
           <p style={{ textAlign: "center", fontSize: "40px" }}>❗</p>
-          <Heading>You are deleting your account</Heading>
+          <ModalTitle>You are deleting your account</ModalTitle>
         </Header>
         <Main>
           <p>

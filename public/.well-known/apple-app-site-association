@@ -7,7 +7,9 @@
         "paths": [
           "/read/article*",
           "/exercise/*",
-          "/shared-lesson/*"
+          "/shared-lesson/*",
+          "/articles/shared*",
+          "/account_settings/*"
         ]
       }
     ]

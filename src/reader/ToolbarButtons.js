@@ -3,9 +3,20 @@ import { useState, useEffect, useRef } from "react";
 import FormGroup from "@mui/material/FormGroup";
 import FormHelperText from "@mui/material/FormHelperText";
 import ToggleOption from "../components/Toggles/ToggleOption";
-import { ToolbarButtonRoot, ToolbarMenu, toolbarFormGroupSx, experimentalHelperText } from "./ToolbarButtons.sc";
+import { ToolbarButtonRoot, ToolbarMenu } from "./ToolbarButtons.sc";
 import SettingsIconButton from "../components/Icons/SettingsIconButton";
 import TextSizeControl from "../components/Controls/TextSizeControl";
+
+// MUI sx / inline-style overrides (not styled-components, so they live here
+// rather than in ToolbarButtons.sc.js).
+const toolbarFormGroupSx = {
+  "& .MuiFormControlLabel-label": { color: "var(--text-primary)" },
+  "& .MuiFormHelperText-root": { color: "var(--text-secondary)" },
+};
+
+const experimentalHelperText = {
+  marginTop: "0.5rem",
+};
 
 export default function ToolbarButtons({
   translating,

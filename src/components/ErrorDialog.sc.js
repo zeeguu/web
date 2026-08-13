@@ -1,17 +1,20 @@
-export const errorDialogWrapper = {
-  textAlign: "center",
-  padding: "4em 2em",
-};
+import styled from "styled-components";
+import { darkGrey } from "./colors";
 
-export const errorDialogDescription = {
-  color: "#666",
-  fontSize: "0.9em",
-  wordBreak: "break-all",
-};
+export const ErrorDialogWrapper = styled.div`
+  text-align: center;
+  padding: 4em 2em;
+`;
 
-export const errorDialogButton = {
-  marginTop: "1em",
-  padding: "0.5em 1.5em",
-  fontSize: "1em",
-  cursor: "pointer",
-};
+export const ErrorDialogDescription = styled.p`
+  color: ${darkGrey};
+  font-size: 0.9em;
+  word-break: break-all;
+`;
+
+export const ErrorDialogButton = styled.button`
+  margin-top: 1em;
+  padding: 0.5em 1.5em;
+  font-size: 1em;
+  cursor: pointer;
+`;

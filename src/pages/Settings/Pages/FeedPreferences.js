@@ -34,16 +34,18 @@ export default function FeedPreferences() {
   const [excludedWord, setExcludedWord, resetExcludedWord] = useFormField("");
 
   const [filterDisturbingContent, setFilterDisturbingContent] = useState(false);
+  const [showEasierArticles, setShowEasierArticles] = useState(false);
   const [preferencesLoaded, setPreferencesLoaded] = useState(false);
 
   useEffect(() => {
-    setTitle("Feed Preferences");
+    setTitle("Interests");
   }, []);
 
   useEffect(() => {
     // Load user preferences
     api.getUserPreferences().then((preferences) => {
       setFilterDisturbingContent(preferences.filter_disturbing_content === "true");
+      setShowEasierArticles(preferences.show_easier_articles === "true");
       setPreferencesLoaded(true);
     });
   }, [api]);
@@ -74,9 +76,26 @@ export default function FeedPreferences() {
     );
   }
 
+  function handleToggleShowEasierArticles(e) {
+    const newValue = e.target.checked;
+    setShowEasierArticles(newValue);
+
+    api.saveUserPreferences(
+      { show_easier_articles: newValue ? "true" : "false" },
+      () => {
+        console.log("Show easier articles updated:", newValue);
+      },
+      (error) => {
+        console.error("Failed to update show easier articles:", error);
+        // Revert on error
+        setShowEasierArticles(!newValue);
+      },
+    );
+  }
+
   return (
     <CardPage layoutVariant={"card-under-menu"} isTransparent reducedPadding>
-      <SettingsPageHeader title="Feed Preferences" redirectLink={isFromArticles && "/articles"} />
+      <SettingsPageHeader title="Interests" redirectLink={isFromArticles && "/articles"} />
       <Main>
         <SectionContainer>
           <SectionHeading>Topics of Interest</SectionHeading>
@@ -134,6 +153,26 @@ export default function FeedPreferences() {
             <div style={{ fontSize: "0.9em", color: "var(--text-secondary)", marginLeft: "32px", marginTop: "0.25em" }}>
               When enabled, articles about violence, war, accidents, and other disturbing topics will be hidden from
               your recommendations.
+            </div>
+          </div>
+        </SectionContainer>
+        <SectionContainer>
+          <SectionHeading>Reading level</SectionHeading>
+          <div style={{ marginTop: "0", marginBottom: "0" }}>
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={showEasierArticles}
+                  onChange={handleToggleShowEasierArticles}
+                  disabled={!preferencesLoaded}
+                />
+              }
+              label="Also show easier articles (below my level)"
+              sx={{ "& .MuiTypography-root": { fontFamily: "inherit" } }}
+            />
+            <div style={{ fontSize: "0.9em", color: "var(--text-secondary)", marginLeft: "32px", marginTop: "0.25em" }}>
+              When enabled, your feed also includes articles below your level — useful if your level's feed is sparse,
+              or if you can comfortably read easier texts.
             </div>
           </div>
         </SectionContainer>

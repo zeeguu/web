@@ -26,8 +26,8 @@ export const LEADERBOARD_TYPES = [
 ];
 
 export const LEADERBOARD_SCOPES = {
+  // Sentinel value for the friends scope; any other scope value is a cohort id.
   FRIENDS: "friends",
-  COHORT: "cohort",
 };
 
 function formatDuration(ms) {

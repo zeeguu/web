@@ -6,7 +6,7 @@ import { Link } from "react-router-dom";
 import { setTitle } from "../../assorted/setTitle";
 import CardPage from "../_pages_shared/CardPage";
 import Header from "../_pages_shared/Header";
-import Heading from "../_pages_shared/Heading.sc";
+import PageTitle from "../_pages_shared/PageTitle.sc";
 import Main from "../_pages_shared/Main.sc";
 import ButtonContainer from "../_pages_shared/ButtonContainer.sc";
 import Footer from "../_pages_shared/Footer.sc";
@@ -25,10 +25,10 @@ export default function InstallExtension() {
   return (
     <CardPage isBackgroundFixed={true}>
       <Header>
-        <Heading>
+        <PageTitle>
           Read any article on the web<br></br>
           in&nbsp;your&nbsp;target&nbsp;language
-        </Heading>
+        </PageTitle>
       </Header>
       <Main>
         <FullWidthImage src={"translations.png"} />

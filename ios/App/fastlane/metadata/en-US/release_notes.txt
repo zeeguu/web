@@ -1,6 +1,7 @@
-- Your feed now updates right away when you add or remove a topic or a word to avoid, instead of waiting a few minutes.
-- A smoother offline experience: daily audio and the reading tabs show a clear "You're offline" state instead of a confusing setup screen, and recover on their own once you're back online.
-- Swipe left and right between Discover, Saved, Classroom, and Search, now steadier during scrolling.
-- Faster loading and fewer flickers on the Read screen.
-- Clearer wording when adding words or phrases to avoid.
-- A few other smaller fixes and polish.
+- New Feed View options: choose how your feed looks — Headlines (title + image), Preview (adds a short summary), or Interactive (tappable words right in the feed). Change it in Settings, under Feed preferences, in the View section.
+- Tap any article for an interactive preview: translate and listen to words in the title and summary before you open it.
+- Share articles with friends, and find what others send you in a new "Shared with you" inbox.
+- Leaderboards: friends and classmates now live in one place, with a simple switch between them.
+- Reader: clearer labels for an article's source and its simplified level, plus tidier author lines.
+- Settings: a new page to manage your email notifications.
+- More fixes and polish throughout.

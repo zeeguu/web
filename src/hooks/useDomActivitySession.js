@@ -1,12 +1,20 @@
 import { useEffect, useState, useRef, useCallback } from "react";
 import { useIdleTimer } from "react-idle-timer";
 import useSession from "./useSession";
+import useShadowRef from "./useShadowRef";
 
 // DOM activity strategy on top of useSession: 1Hz tick counter, idle
 // detection via useIdleTimer, focus/blur pause/resume. Used by reading,
 // browsing, exercise, and watching sessions. Listening uses
 // useListeningSession instead because audio playing is its own activity
 // model.
+//
+// exposeLiveDuration: mirror the elapsed seconds into React state so a
+// consumer can render a live-ticking timer. OFF by default: the duration
+// lives in a ref (read via getCurrentDuration, uploaded periodically), so
+// sessions that never display it — browsing, watching — don't re-render
+// their whole subtree once a second. Only reading and exercise (which show
+// a DigitalTimer) opt in.
 export default function useDomActivitySession({
   label,
   apiCreate,
@@ -18,12 +26,12 @@ export default function useDomActivitySession({
   uploadInterval = 10,
   autoStart = false,
   startOnActivity = false,
+  exposeLiveDuration = false,
 } = {}) {
-  const [sessionDuration, setSessionDuration] = useState(0);
+  // The ref is the source of truth for elapsed seconds; the reactive state
+  // is only kept in sync when exposeLiveDuration is set (see the 1Hz tick).
   const sessionDurationRef = useRef(0);
-  useEffect(() => {
-    sessionDurationRef.current = sessionDuration;
-  }, [sessionDuration]);
+  const [sessionDuration, setSessionDuration] = useState(0);
 
   const [hasStarted, setHasStarted] = useState(false);
   const hasStartedRef = useRef(false);
@@ -44,6 +52,11 @@ export default function useDomActivitySession({
     apiEnd,
     getCurrentDuration,
   });
+
+  // Shadow-ref so the 1Hz interval can fire uploads without listing `session`
+  // (a fresh object each render) in its deps, which would tear down and rebuild
+  // the interval every render.
+  const uploadRef = useShadowRef(session.upload);
 
   // Wrap the primitive's start with our local "has started" tracking.
   const start = useCallback(() => {
@@ -96,21 +109,20 @@ export default function useDomActivitySession({
     ],
   });
 
-  // 1Hz tick that increments duration while active.
+  // 1Hz tick: advance the ref while active, and fire the periodic upload off
+  // the ref every uploadInterval seconds. The reactive state is updated only
+  // when a consumer needs a live-ticking display (exposeLiveDuration) — so
+  // browsing/watching sessions advance and upload without re-rendering.
   useEffect(() => {
     if (!hasStarted) return;
     const interval = setInterval(() => {
-      if (isTimerActive) setSessionDuration((prev) => prev + 1);
+      if (!isTimerActive) return;
+      sessionDurationRef.current += 1;
+      if (exposeLiveDuration) setSessionDuration(sessionDurationRef.current);
+      if (sessionDurationRef.current % uploadInterval === 0) uploadRef.current?.();
     }, 1000);
     return () => clearInterval(interval);
-  }, [hasStarted, isTimerActive]);
-
-  // Periodic upload at uploadInterval seconds.
-  useEffect(() => {
-    if (hasStarted && isTimerActive && sessionDuration > 0 && sessionDuration % uploadInterval === 0) {
-      session.upload();
-    }
-  }, [sessionDuration, hasStarted, isTimerActive, session, uploadInterval]);
+  }, [hasStarted, isTimerActive, exposeLiveDuration, uploadInterval, uploadRef]);
 
   // Pause on blur, resume on focus.
   useEffect(() => {

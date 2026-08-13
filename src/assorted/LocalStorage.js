@@ -39,6 +39,38 @@ const LocalStorage = {
     // Keep in sync with index.html inline theme script
     ThemePreference: "zeeguu-theme-preference",
     ReportedTimezone: "reported_timezone",
+    // Kiosk reader mode: locks the app to a chrome-less, translation-free
+    // news reader (see src/kiosk/). Activated from Developer settings.
+    KioskReader: "kiosk_reader",
+    // Feed browsing mode (user preference, per device). One of:
+    //  "titles"      — title + image, no summary → tap opens overlay (DEFAULT)
+    //  "preview"     — title + image + 2-line summary → tap opens overlay
+    //  "interactive" — inline interactive title/summary cards (words tappable in feed)
+    BrowsingMode: "browsing_mode",
+  },
+
+  getKioskReader: function () {
+    return localStorage.getItem(this.Keys.KioskReader) === "true";
+  },
+
+  setKioskReader: function (on) {
+    if (on) {
+      localStorage.setItem(this.Keys.KioskReader, "true");
+    } else {
+      localStorage.removeItem(this.Keys.KioskReader);
+    }
+  },
+
+  getBrowsingMode: function () {
+    return localStorage.getItem(this.Keys.BrowsingMode) || "titles";
+  },
+
+  setBrowsingMode: function (mode) {
+    if (mode && mode !== "titles") {
+      localStorage.setItem(this.Keys.BrowsingMode, mode);
+    } else {
+      localStorage.removeItem(this.Keys.BrowsingMode);
+    }
   },
 
   userInfo: function () {

@@ -11,6 +11,8 @@ let strings = new LocalizedStrings(
       lengthWithCapital: "Length",
       levelWithCapital: "Level",
       articles: "Read",
+      showMore: "Show more",
+      showLess: "Show less",
       text: "Text",
       save: "Save",
       apply: "Apply",
@@ -658,7 +660,8 @@ let strings = new LocalizedStrings(
       couldNotLoadLeaderboard: "Could not load leaderboard.",
       leaderboardRank: "Rank",
       leaderboardUser: "User",
-      selectClassroom: "Select a classroom",
+      leaderboardScopeFriends: "Friends",
+      leaderboardScopeAriaLabel: "Choose whose leaderboard to view",
 
       //Settings
       //Settings categories
@@ -999,6 +1002,8 @@ let strings = new LocalizedStrings(
       lengthWithCapital: "Længde",
       levelWithCapital: "Sværhed",
       articles: "Læs",
+      showMore: "Vis mere",
+      showLess: "Vis mindre",
       text: "tekst",
       save: "Gem",
       settings: "Indstillinger",
@@ -1776,7 +1781,8 @@ let strings = new LocalizedStrings(
       couldNotLoadLeaderboard: "Kunne ikke indlæse rangliste.",
       leaderboardRank: "Placering",
       leaderboardUser: "Bruger",
-      selectClassroom: "Vælg en klasse",
+      leaderboardScopeFriends: "Venner",
+      leaderboardScopeAriaLabel: "Vælg hvis rangliste du vil se",
     },
   },
   {

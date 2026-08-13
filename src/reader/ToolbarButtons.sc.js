@@ -18,12 +18,3 @@ export const ToolbarMenu = styled.div`
   padding: 1rem;
   min-width: 200px;
 `;
-
-export const toolbarFormGroupSx = {
-  "& .MuiFormControlLabel-label": { color: "var(--text-primary)" },
-  "& .MuiFormHelperText-root": { color: "var(--text-secondary)" },
-};
-
-export const experimentalHelperText = {
-  marginTop: "0.5rem",
-};

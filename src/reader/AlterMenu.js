@@ -182,7 +182,7 @@ export default function AlterMenu({
       <div style={{ ...HEADER_BAND_STYLE, color: "var(--altermenu-header-text)" }}>Alternatives</div>
     );
   } else if (allAgreedWithPrimary) {
-    const label = llmAgreedWithPrimary ? "All providers & LLM agree" : "All providers agree";
+    const label = llmAgreedWithPrimary ? "All providers & AI agree" : "All providers agree";
     header = (
       <div style={{ ...HEADER_BAND_STYLE, color: "var(--altermenu-header-text)" }}>{label}</div>
     );
@@ -247,7 +247,7 @@ export default function AlterMenu({
               );
             }}
           >
-            {isAskingLlm ? "Asking LLM…" : llmError ? "Ask LLM — try again" : "Ask LLM"}
+            {isAskingLlm ? "Asking AI…" : llmError ? "Ask AI — try again" : "Ask AI"}
           </div>
         )}
         {!showOwnInput && (

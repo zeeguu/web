@@ -1,10 +1,9 @@
 import { useContext, useState } from "react";
 import ReportIcon from "../components/Icons/ReportIcon";
-import IconButton from "@mui/material/IconButton";
 import { APIContext } from "../contexts/APIContext";
 import ReportDialog from "../components/ReportDialog";
 
-export default function ReportBroken({ articleID, sourceID, UMR_SOURCE }) {
+export default function ReportBrokenArticle({ articleID, sourceID, UMR_SOURCE }) {
   const api = useContext(APIContext);
   const [open, setOpen] = useState(false);
   const [feedback, setFeedback] = useState("");
