@@ -327,6 +327,94 @@ export default function ArticlePreview({
         setPreviewOpen(true);
       }
     };
+
+    // Shared between the Preview (image + summary) and Headlines (compact)
+    // layouts so the meta/image markup isn't duplicated across the two.
+    const metaStrip = (
+      <MetaStrip>
+        {article.topics_list &&
+          article.topics_list.map(([topicTitle]) => <MetaTag key={topicTitle}>{topicTitle}</MetaTag>)}
+        {article.matched_searches &&
+          article.matched_searches.map((search) => (
+            <MetaItem key={`search-${search}`}>
+              🔍&nbsp;
+              <MetaLink
+                as={Link}
+                to={`/search?search=${encodeURIComponent(search)}`}
+                onClick={(e) => e.stopPropagation()}
+              >
+                {search}
+              </MetaLink>
+            </MetaItem>
+          ))}
+        {article.parent_article_id && <MetaTag>Simplified</MetaTag>}
+        {savedTag}
+        <MetaItem>
+          <MetaLink
+            className="muted"
+            href={article.parent_url || article.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {articleSourceLabel(article)}
+          </MetaLink>
+        </MetaItem>
+        {publishedTimeSlot}
+        {(article.metrics?.word_count || article.word_count) > 0 && (
+          <MetaItem>
+            ~
+            {estimateReadingTime(article.metrics?.word_count || article.word_count || 0)
+              .replace(" minutes", "min")
+              .replace(" minute", "min")}
+          </MetaItem>
+        )}
+      </MetaStrip>
+    );
+
+    const imageEl = hasImage ? (
+      <img
+        alt=""
+        src={article.img_url}
+        loading="lazy"
+        decoding="async"
+        onError={() => setImageFailed(true)}
+        style={{ display: "block" }}
+      />
+    ) : null;
+
+    // Save + Hide as quiet icon+text controls, used by BOTH feed layouts at the
+    // end of the card. One consistent placement reads cleaner than image
+    // overlays in one mode and text in the other — and a small Headlines
+    // thumbnail can't carry overlay buttons anyway.
+    const feedActions = (
+      <s.SummaryActionRow>
+        <s.SaveActionButton
+          type="button"
+          onClick={handleToggleSave}
+          aria-label={isArticleSaved ? "Remove from saves" : "Save"}
+        >
+          {isArticleSaved ? (
+            <BookmarkRoundedIcon style={{ fontSize: 16 }} />
+          ) : (
+            <BookmarkBorderRoundedIcon style={{ fontSize: 16 }} />
+          )}
+          {isArticleSaved ? "Saved" : "Save"}
+        </s.SaveActionButton>
+        <s.SaveActionButton
+          type="button"
+          onClick={(e) => {
+            e.stopPropagation();
+            handleHideArticle();
+          }}
+          aria-label="Hide from feed"
+        >
+          <VisibilityOffRoundedIcon style={{ fontSize: 16 }} />
+          Hide
+        </s.SaveActionButton>
+      </s.SummaryActionRow>
+    );
+
     return (
       <s.ArticlePreview
         style={{
@@ -357,92 +445,35 @@ export default function ArticlePreview({
             }
           }}
         >
-          {/* Title first, then meta, then image — consistent across Preview
-              and Titles modes. Titles mode is simply this without the summary. */}
-          <s.TitleContainer>
-            <s.Title>{article.title}</s.Title>
-          </s.TitleContainer>
-
-          <MetaStrip>
-            {article.topics_list &&
-              article.topics_list.map(([topicTitle]) => <MetaTag key={topicTitle}>{topicTitle}</MetaTag>)}
-            {article.matched_searches &&
-              article.matched_searches.map((search) => (
-                <MetaItem key={`search-${search}`}>
-                  🔍&nbsp;
-                  <MetaLink
-                    as={Link}
-                    to={`/search?search=${encodeURIComponent(search)}`}
-                    onClick={(e) => e.stopPropagation()}
-                  >
-                    {search}
-                  </MetaLink>
-                </MetaItem>
-              ))}
-            {article.parent_article_id && <MetaTag>Simplified</MetaTag>}
-            {savedTag}
-            <MetaItem>
-              <MetaLink
-                className="muted"
-                href={article.parent_url || article.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                onClick={(e) => e.stopPropagation()}
-              >
-                {articleSourceLabel(article)}
-              </MetaLink>
-            </MetaItem>
-            {publishedTimeSlot}
-            {(article.metrics?.word_count || article.word_count) > 0 && (
-              <MetaItem>
-                ~
-                {estimateReadingTime(article.metrics?.word_count || article.word_count || 0)
-                  .replace(" minutes", "min")
-                  .replace(" minute", "min")}
-              </MetaItem>
-            )}
-          </MetaStrip>
-
-          <s.ArticleContent>
-            {hasImage && (
-              <s.ImageWithOverlay>
-                <img
-                  alt=""
-                  src={article.img_url}
-                  loading="lazy"
-                  decoding="async"
-                  onError={() => setImageFailed(true)}
-                  style={{ display: "block" }}
-                />
-                <s.SaveIconButton
-                  type="button"
-                  onClick={handleToggleSave}
-                  aria-label={isArticleSaved ? "Remove from saves" : "Save"}
-                >
-                  {isArticleSaved ? (
-                    <BookmarkRoundedIcon style={{ fontSize: 18 }} />
-                  ) : (
-                    <BookmarkBorderRoundedIcon style={{ fontSize: 18 }} />
-                  )}
-                </s.SaveIconButton>
-                <s.HideIconButton
-                  type="button"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleHideArticle();
-                  }}
-                  aria-label="Hide from feed"
-                >
-                  <VisibilityOffRoundedIcon style={{ fontSize: 18 }} />
-                </s.HideIconButton>
-              </s.ImageWithOverlay>
-            )}
-            {!compact && article.summary && (
-              <s.PreviewSummary>
-                <s.PreviewClampedSummary>{article.summary}</s.PreviewClampedSummary>
-              </s.PreviewSummary>
-            )}
-          </s.ArticleContent>
+          {compact ? (
+            // Headlines: title + meta, with the image below (mobile) or as a
+            // small thumbnail to the left (desktop, via CompactCard's reflow).
+            <s.CompactCard>
+              <s.CompactText>
+                <s.Title>{article.title}</s.Title>
+                {metaStrip}
+                {feedActions}
+              </s.CompactText>
+              {imageEl && <s.CompactMedia>{imageEl}</s.CompactMedia>}
+            </s.CompactCard>
+          ) : (
+            // Preview: title, meta, image + short summary, then the actions.
+            <>
+              <s.TitleContainer>
+                <s.Title>{article.title}</s.Title>
+              </s.TitleContainer>
+              {metaStrip}
+              <s.ArticleContent>
+                {imageEl}
+                {article.summary && (
+                  <s.PreviewSummary>
+                    <s.PreviewClampedSummary>{article.summary}</s.PreviewClampedSummary>
+                  </s.PreviewSummary>
+                )}
+              </s.ArticleContent>
+              {feedActions}
+            </>
+          )}
         </s.PreviewCardClickable>
 
         {/* Mounted only while open: each card renders one of these, so mounting
