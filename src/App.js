@@ -389,7 +389,15 @@ function App() {
 
   // Wait for session initialization and user details loading
   if (!sessionInitialized || userDetails === undefined) {
-    return <LoadingAnimation />;
+    // Wrap in ConnectivityProvider so this startup loader is offline-aware.
+    // Outside it, useIsOffline() falls back to the context default (online), so
+    // the spinner would keep spinning on an offline launch instead of yielding
+    // to the honest "You're offline" state (which also drops the spinner).
+    return (
+      <ConnectivityProvider>
+        <LoadingAnimation />
+      </ConnectivityProvider>
+    );
   }
 
   return (
