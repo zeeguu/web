@@ -129,7 +129,10 @@ export default function ArticlePreviewOverlay({
         transition: dragging ? "none" : "transform 0.2s ease-out, opacity 0.2s ease-out",
         opacity: dragX > 0 ? Math.max(0.2, 1 - dragX / 500) : 1,
       }
-    : undefined;
+    : // Desktop: width scales with the reader font (60em relative to the chosen
+      // text size), so bumping the font keeps a comfortable reading line length
+      // instead of squeezing chars into a fixed-px box. Capped at the viewport.
+      { width: `min(${60 * readerFontSize}px, 92vw)`, maxWidth: "none" };
 
   const publishedAgo = article.published ? timeAgo(article.published) : null;
   const wordCount = article.metrics?.word_count || article.word_count || 0;
@@ -143,6 +146,7 @@ export default function ArticlePreviewOverlay({
         flushBottom
         hideCloseButton
         animateIn
+        darkerBackdrop
         wrapperStyle={wrapperStyle}
       >
         {/* Settings gear (same controls as the reader), pinned top-right,
