@@ -117,6 +117,9 @@ export default function ArticleListBrowser({
     updateOnPagination,
     searchQuery ? "Article Search" : strings.titleHome,
     getNewArticlesForPage,
+    // Pause infinite scroll while the feed itself is (re)loading, so the hidden
+    // list / collapsed page doesn't trigger a spurious load-more + 2nd spinner.
+    feedLoading || reloadingSearchArticles,
   );
 
   function handleVideoOnlyClick() {
