@@ -1,7 +1,6 @@
-- New Feed View options: choose how your feed looks — Headlines (title + image), Preview (adds a short summary), or Interactive (tappable words right in the feed). Change it in Settings, under Feed preferences, in the View section.
-- Tap any article for an interactive preview: translate and listen to words in the title and summary before you open it.
-- Share articles with friends, and find what others send you in a new "Shared with you" inbox.
-- Leaderboards: friends and classmates now live in one place, with a simple switch between them.
-- Reader: clearer labels for an article's source and its simplified level, plus tidier author lines.
-- Settings: a new page to manage your email notifications.
-- More fixes and polish throughout.
+- Tidier feed cards: in Headlines view, a small thumbnail sits next to the title on wider screens, and Save and Hide are now clear labelled buttons in the same place in every view.
+- A roomier, calmer article preview: more breathing room, a dimmer backdrop so the feed behind it recedes, and the settings gear where you expect it.
+- Fixed: tapping a word in the article preview on desktop now opens the alternatives menu right next to the word instead of far off to the side.
+- Fixed: no more double spinner when the feed reloads or you switch topics.
+- Fixed: the word game shown while you wait is readable again in dark mode.
+- Fixed: launching the app without a connection now tells you you are offline instead of spinning forever.
