@@ -8,6 +8,12 @@ export default function useArticlePagination(
   setArticleList,
   pageTitle,
   getNewArticlesForPage,
+  // While the whole feed is (re)loading its first page, the list is hidden and
+  // the page collapses to almost nothing — which makes the scroll position read
+  // as "at the bottom" and would trigger a bogus load-more (a second spinner and
+  // a wasted page-2 fetch). Callers pass their feed-loading flag here to pause
+  // infinite scroll until the first page is on screen. Optional: defaults off.
+  isPaginationPaused = false,
 ) {
   const [isWaitingForNewArticles, setIsWaitingForNewArticles] = useState(false);
   const [currentPage, setCurrentPage] = useState(0);
@@ -17,6 +23,7 @@ export default function useArticlePagination(
   const isWaitingForNewArticlesRef = useShadowRef(isWaitingForNewArticles);
   const currentPageRef = useShadowRef(currentPage);
   const articleListRef = useShadowRef(articleList);
+  const isPaginationPausedRef = useShadowRef(isPaginationPaused);
 
   function insertNewArticlesIntoArticleList(
     fetchedArticles,
@@ -47,6 +54,7 @@ export default function useArticlePagination(
       scrollBarPixelDistToPageEnd <= 50 &&
       !isWaitingForNewArticlesRef.current &&
       !noMoreArticlesToShowRef.current &&
+      !isPaginationPausedRef.current &&
       weHaveHadAtLeastOneRenderingOfArticles
     ) {
       setIsWaitingForNewArticles(true);
