@@ -13,7 +13,14 @@ const ScrollArea = styled.div`
   display: flex;
   flex-direction: column;
   margin: 0 -48px;
-  padding: 0 48px 0.4em; /* last line clears the footer's top border */
+  /* Bleed to the wrapper edge (−48 cancels its 48px padding) so the scrollbar
+     rides the modal edge, then re-inset the content generously. The wider
+     desktop overlay needs more breathing room than the wrapper's 48px. */
+  /* top: clearance raised so the title floats as far from the top edge as the
+     footer's band is tall — the header-less card reads balanced end to end.
+     bottom: matches the footer's 1.1em top padding so the divider sits
+     symmetrically between the last line of text and the action buttons. */
+  padding: 2.4em 64px 1.1em;
 
   /* Thin, quiet scrollbar instead of the chunky default. */
   scrollbar-width: thin;
@@ -46,6 +53,17 @@ const Gear = styled.div`
   top: 8px;
   right: 10px;
   z-index: 5;
+
+  /* Desktop: don't jam the gear into the extreme corner (8/10px) where it reads
+     as stranded — mirror the footer's bottom-right button instead. Same 64px
+     right inset as the footer content (so the gear sits directly above Close)
+     and a top inset matching the footer's 1.6em bottom padding, so the two
+     right-hand corners are symmetric. Mobile keeps it top-right on its own line
+     above the full-width title (see Title's mobile margin-top). */
+  @media (min-width: 577px) {
+    top: 1.6em;
+    right: 64px;
+  }
 `;
 
 const Title = styled.div`
@@ -54,6 +72,13 @@ const Title = styled.div`
   line-height: 1.35;
   color: var(--text-primary);
   padding-right: 2.4em; /* clear the top-right settings gear */
+
+  /* On the phone, drop the title down so words are in thumb reach to tap —
+     and so the settings gear gets its own line above it (full-width title). */
+  @media (max-width: 576px) {
+    margin-top: 2rem;
+    padding-right: 0;
+  }
 `;
 
 // Shorter than before so the interactive text (the point of the overlay)
@@ -107,7 +132,7 @@ const Actions = styled.div`
   align-items: center;
   gap: 0.6em;
   margin: 0 -48px 0;
-  padding: 0.9em 48px 1.1em;
+  padding: 1.1em 64px 1.6em;
   background: var(--card-bg);
   border-top: 1px solid var(--border-subtle, rgba(128, 128, 128, 0.25));
   box-shadow: 0 -10px 14px -8px rgba(0, 0, 0, 0.3);

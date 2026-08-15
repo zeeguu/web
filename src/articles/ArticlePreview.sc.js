@@ -354,6 +354,51 @@ const PreviewClampedSummary = styled(ClampedSummary)`
   -webkit-line-clamp: 2;
 `;
 
+// Headlines (compact) card. Mobile: stacks title -> meta -> image (DOM order,
+// title first). Desktop (>=991px): reflows to a dense row — small thumbnail on
+// the LEFT, title + meta on the right — via flex `order`, so the DOM stays
+// title-first for the mobile stack.
+const CompactCard = styled.div`
+  display: flex;
+  flex-direction: column;
+
+  @media (min-width: 991px) {
+    flex-direction: row;
+    align-items: center;
+    gap: 1em;
+  }
+`;
+
+const CompactText = styled.div`
+  min-width: 0;
+
+  @media (min-width: 991px) {
+    order: 2;
+    flex: 1 1 auto;
+  }
+`;
+
+const CompactMedia = styled.div`
+  @media (min-width: 991px) {
+    order: 1;
+    flex: 0 0 auto;
+  }
+
+  img {
+    display: block;
+    width: 100%;
+    max-height: 13em;
+    object-fit: cover;
+    border-radius: 1em;
+
+    @media (min-width: 991px) {
+      width: 12em;
+      height: 8em;
+      max-height: none;
+    }
+  }
+`;
+
 
 // Bigger tap target than a bare "more" link: ~44px tall via padding.
 // Negative left margin keeps the visible label flush with the summary
@@ -408,6 +453,9 @@ export {
   PreviewCardClickable,
   PreviewSummary,
   PreviewClampedSummary,
+  CompactCard,
+  CompactText,
+  CompactMedia,
   UrlSource,
   UrlSourceContainer,
   ArticlePreview,
