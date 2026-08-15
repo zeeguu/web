@@ -1,8 +1,7 @@
-import { useContext, useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import LocalStorage from "../assorted/LocalStorage";
 import { getDrillVocab } from "../assorted/drillCache";
 import fisherYatesShuffle from "../assorted/fisherYatesShuffle";
-import { ThemeContext } from "../contexts/ThemeContext";
 import {
   DrillAnswer,
   DrillBox,
@@ -37,8 +36,6 @@ function buildQueue(entries) {
 // Reads {origin, translation} pairs from LocalStorage (filled by completed
 // exercises / scheduled-words seed / in-reader taps) so it works offline.
 export default function WaitDrill() {
-  const themeValue = useContext(ThemeContext);
-  const isDark = !!themeValue?.isDark;
   const learnedLang = LocalStorage.getLearnedLanguage();
   const queue = useMemo(
     () => buildQueue(getDrillVocab(learnedLang)),
@@ -99,7 +96,6 @@ export default function WaitDrill() {
   return (
     <>
       <DrillBox
-        $isDark={isDark}
         onClick={handleCardTap}
         role="button"
         tabIndex={0}

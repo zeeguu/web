@@ -9,11 +9,21 @@ export const DrillBox = styled.div`
   font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
   font-size: 1rem;
   line-height: 1.6;
-  color: ${({ $isDark }) => ($isDark ? "#f0f0f0" : "#222")};
-  border: 1px solid ${({ $isDark }) => ($isDark ? "rgba(255,255,255,0.25)" : "rgba(0,0,0,0.2)")};
+  /* Theme from the CSS \`data-theme\` attribute (set on <html> by the inline
+     theme script, reliable even on this pre-hydration loading screen), NOT a JS
+     isDark flag: LoadingAnimation renders outside the ThemeContext provider, so
+     the flag came through false on a dark screen and left the card text #222 on
+     navy — unreadable. Same signal the muted dots use in LoadingAnimation.sc. */
+  color: #222;
+  border: 1px solid rgba(0, 0, 0, 0.2);
   border-radius: 0.25rem;
   cursor: pointer;
   user-select: none;
+
+  :root[data-theme="dark"] & {
+    color: #f0f0f0;
+    border-color: rgba(255, 255, 255, 0.25);
+  }
 `;
 
 export const DrillHint = styled.div`
