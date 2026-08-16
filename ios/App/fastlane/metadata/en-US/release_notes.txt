@@ -1,6 +1,5 @@
-- Tidier feed cards: in Headlines view, a small thumbnail sits next to the title on wider screens, and Save and Hide are now clear labelled buttons in the same place in every view.
-- A roomier, calmer article preview: more breathing room, a dimmer backdrop so the feed behind it recedes, and the settings gear where you expect it.
-- Fixed: tapping a word in the article preview on desktop now opens the alternatives menu right next to the word instead of far off to the side.
-- Fixed: no more double spinner when the feed reloads or you switch topics.
-- Fixed: the word game shown while you wait is readable again in dark mode.
-- Fixed: launching the app without a connection now tells you you are offline instead of spinning forever.
+- New in Settings: Reading, then Text and highlighting. Everything about how text behaves when you tap it - translation, pronunciation, the reading timer, multi-word expression hints and text size - now has one clear home, with a line explaining what each option does.
+- The article preview sheet is calmer to read: close it from the top-left corner, and the big "Read the original" button now waits at the end of the summary, right where you have decided whether it is worth your time.
+- Swipe the preview away with a quick flick - no more dragging it halfway across the screen.
+- Fixed: words you translated in a preview stay translated when you close it and open it again.
+- Fixed: preview photos are no longer cropped.
