@@ -63,6 +63,12 @@ export default function Settings() {
         <SettingsItem path={"/account_settings/feed_view"}>View</SettingsItem>
       </ListOfSettingsItems>
 
+      {/* Separate from "Feed preferences" on purpose: these apply to every
+          surface that renders tappable text, not just the feed. */}
+      <ListOfSettingsItems header={"Reading"}>
+        <SettingsItem path={"/account_settings/reading"}>Text & highlighting</SettingsItem>
+      </ListOfSettingsItems>
+
       {!isAnonymous && (
         <ListOfSettingsItems header={"Notifications"}>
           <SettingsItem path={"/account_settings/notifications"}>Email notifications</SettingsItem>

@@ -25,6 +25,7 @@ import useReadingSession from "../hooks/useReadingSession";
 import useReviewWordsOnboarding from "../hooks/useReviewWordsOnboarding";
 import strings from "../i18n/definitions";
 import useUserPreferences from "../hooks/useUserPreferences";
+import useReaderFontSize from "../hooks/useReaderFontSize";
 import ArticleStatInfo from "../components/ArticleStatInfo";
 import DigitalTimer from "../components/DigitalTimer";
 import DevButton from "../components/DevButton";
@@ -95,15 +96,7 @@ export default function ArticleReader({ teacherArticleID }) {
     updateShowReadingTimer,
   } = useUserPreferences(api);
   const [readerReady, setReaderReady] = useState();
-  const [readerFontSize, setReaderFontSizeState] = useState(() => {
-    const saved = parseInt(localStorage.getItem("reader_font_size"), 10);
-    return Number.isFinite(saved) ? saved : 18;
-  });
-  function setReaderFontSize(value) {
-    const clamped = Math.max(14, Math.min(28, value));
-    setReaderFontSizeState(clamped);
-    localStorage.setItem("reader_font_size", String(clamped));
-  }
+  const [readerFontSize, setReaderFontSize] = useReaderFontSize();
   const [clickedOnReviewVocab, setClickedOnReviewVocab] = useState(false);
   const [showLanguageModal, setShowLanguageModal] = useState(false);
   const [isProcessingArticle, setIsProcessingArticle] = useState(false);

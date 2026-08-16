@@ -5,6 +5,7 @@ import ProfileDetails from "./Pages/ProfileDetails";
 import LanguageSettings from "./Pages/LanguageSettings";
 import FeedPreferences from "./Pages/FeedPreferences";
 import FeedView from "./Pages/FeedView";
+import ReadingSettings from "./Pages/ReadingSettings";
 import ExerciseTypePreferences from "./Pages/AudioAndPronunciation";
 import MyClassrooms from "./Pages/MyClassrooms/MyClassrooms";
 import DeleteAccount from "./Pages/DeleteAccount";
@@ -33,6 +34,8 @@ export default function SettingsRouter({ setUser }) {
       <PrivateRoute path="/account_settings/interests" component={FeedPreferences} />
 
       <PrivateRoute path="/account_settings/feed_view" component={FeedView} />
+
+      <PrivateRoute path="/account_settings/reading" component={ReadingSettings} />
 
       <PrivateRoute path="/account_settings/notifications" component={NotificationSettings} />
 
