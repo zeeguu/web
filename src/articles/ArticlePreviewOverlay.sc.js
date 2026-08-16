@@ -81,14 +81,22 @@ const Title = styled.div`
   }
 `;
 
-// Shorter than before so the interactive text (the point of the overlay)
-// starts higher and needs less scrolling. Slight shadow adds depth.
+// Uncropped, unlike the feed card. The card sits in a list, so it crops every
+// photo to one box to keep the feed even; the overlay shows a single article and
+// can honour whatever ratio the publisher shipped. Auto on BOTH axes with a max
+// on each is what makes the browser re-solve the box proportionally against
+// whichever cap binds first — panoramas hit max-width and go short, portraits
+// hit max-height and go narrow, and nothing is ever sliced off. A definite
+// width (100%) would not: max-height then squashes portraits instead of
+// narrowing them. Centred, since a clamped portrait is narrower than the sheet.
 const Image = styled.img`
-  width: 100%;
-  max-height: 11em;
-  object-fit: cover;
+  display: block;
+  width: auto;
+  height: auto;
+  max-width: min(100%, 32em);
+  max-height: 22em;
   border-radius: 0.75em;
-  margin: 0.9em 0 0.3em;
+  margin: 0.9em auto 0.3em;
   box-shadow: 0 4px 14px rgba(0, 0, 0, 0.22);
 `;
 
