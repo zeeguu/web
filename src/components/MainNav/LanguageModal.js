@@ -9,7 +9,7 @@ import FormSection from "../../pages/_pages_shared/FormSection.sc.js";
 import Main from "../modal_shared/Main.sc.js";
 import Header from "../modal_shared/Header.sc.js";
 import ModalTitle from "../modal_shared/ModalTitle.sc.js";
-import RadioGroup from "./RadioGroup.js";
+import RadioGroup from "../RadioGroup/RadioGroup.js";
 import ReactLink from "../ReactLink.sc.js";
 import AddRoundedIcon from "@mui/icons-material/AddRounded";
 import CircularProgress from "@mui/material/CircularProgress";

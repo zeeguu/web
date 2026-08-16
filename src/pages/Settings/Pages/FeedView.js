@@ -4,11 +4,15 @@ import Main from "../../_pages_shared/Main.sc";
 import SettingsPageHeader from "../SharedComponents/SettingsPageHeader";
 import { setTitle } from "../../../assorted/setTitle";
 import LocalStorage from "../../../assorted/LocalStorage";
-import { FormControlLabel, Radio, RadioGroup } from "@mui/material";
+import RadioGroup from "../../../components/RadioGroup/RadioGroup";
 
 // The three feed browsing modes, in recommended order. Stored per-device via
 // LocalStorage.getBrowsingMode / setBrowsingMode (default: "preview"). Read by
 // ArticleListBrowser, which maps the value to ArticlePreview's props.
+//
+// Feed-only on purpose: how text behaves once you are reading it (translation,
+// pronunciation, highlighting, size) is a separate, app-wide preference set —
+// see Pages/ReadingSettings.js.
 const VIEW_OPTIONS = [
   {
     value: "titles",
@@ -44,28 +48,18 @@ export default function FeedView() {
     <CardPage layoutVariant={"card-under-menu"} isTransparent reducedPadding>
       <SettingsPageHeader title="View" />
       <Main>
-        <RadioGroup value={mode} onChange={handleChange}>
-          {VIEW_OPTIONS.map((opt) => (
-            <div key={opt.value} style={{ marginBottom: "0.9em" }}>
-              <FormControlLabel
-                value={opt.value}
-                control={<Radio />}
-                label={opt.label}
-                sx={{ "& .MuiTypography-root": { fontFamily: "inherit", fontWeight: 500 } }}
-              />
-              <div
-                style={{
-                  fontSize: "0.9em",
-                  color: "var(--text-secondary)",
-                  marginLeft: "32px",
-                  marginTop: "-0.15em",
-                }}
-              >
-                {opt.description}
-              </div>
-            </div>
-          ))}
-        </RadioGroup>
+        <RadioGroup
+          variant="card"
+          name="feed-view"
+          ariaLabel="Feed view"
+          options={VIEW_OPTIONS}
+          selectedValue={mode}
+          onChange={handleChange}
+          optionId={(option) => `feed-view-${option.value}`}
+          optionValue={(option) => option.value}
+          optionLabel={(option) => option.label}
+          optionDescription={(option) => option.description}
+        />
       </Main>
     </CardPage>
   );
