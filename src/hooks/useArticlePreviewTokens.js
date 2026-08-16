@@ -12,7 +12,15 @@ import { BrowsingSessionContext } from "../contexts/BrowsingSessionContext";
 // tap-to-open preview overlay (ArticlePreviewOverlay). `enabled` gates the
 // one-time build so callers can defer it — the overlay tokenizes only once it
 // opens; the card only when it's in interactive mode.
-export default function useArticlePreviewTokens(article, { enabled = true } = {}) {
+//
+// `preferFresh` skips the bundled payload and asks the server instead. The
+// bundled tokens carry the `past_bookmarks` as they were when the feed response
+// was built (and that response is client-cached for 5 min), so a word the user
+// translated since then wouldn't come back highlighted. The overlay uses this:
+// it's opened by an explicit tap, so one request is affordable, and it's the
+// surface where losing your own translations is most visible. The inline card
+// stays on the bundled payload — one request per card would undo the batching.
+export default function useArticlePreviewTokens(article, { enabled = true, preferFresh = false } = {}) {
   const api = useContext(APIContext);
   const getBrowsingSessionId = useContext(BrowsingSessionContext);
   const [interactiveTitle, setInteractiveTitle] = useState(null);
@@ -26,7 +34,7 @@ export default function useArticlePreviewTokens(article, { enabled = true } = {}
     setIsTokenizing(true);
 
     const preloaded =
-      article.interactiveSummary && article.interactiveTitle
+      !preferFresh && article.interactiveSummary && article.interactiveTitle
         ? { tokenized_summary: article.interactiveSummary, tokenized_title: article.interactiveTitle }
         : null;
 

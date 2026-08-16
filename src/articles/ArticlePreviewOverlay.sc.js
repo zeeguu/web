@@ -38,7 +38,47 @@ const ScrollArea = styled.div`
 
   @media (max-width: 576px) {
     margin: 0 -16px;
-    padding: 0 16px 0.4em;
+    /* No fixed footer any more, so the scroll area itself owns the bottom
+       breathing room — including the home-indicator inset. */
+    padding: 0 16px calc(1em + env(safe-area-inset-bottom, 0px));
+  }
+`;
+
+// Dismiss control, pinned to the modal's top-LEFT corner: the conventional
+// home for "back out of this", and deliberately away from the forward action
+// at the end of the content. It sits inside the wrapper's side padding (the
+// scroll area insets its content by 64px on desktop, 16px on the phone), so it
+// never collides with the title — no text clearance needed. The wrapper is a
+// positioned ancestor.
+const CloseCorner = styled.button`
+  position: absolute;
+  top: 8px;
+  left: 10px;
+  z-index: 5;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  /* 44px: a real touch target around a 22px glyph. */
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: color 150ms ease-in-out, background-color 150ms ease-in-out;
+
+  @media (hover: hover) {
+    &:hover {
+      color: var(--text-primary);
+      background-color: var(--hover-bg);
+    }
+  }
+
+  @media (min-width: 577px) {
+    top: 1.2em;
+    left: 16px;
   }
 `;
 
@@ -46,38 +86,16 @@ const ScrollArea = styled.div`
 // whole point of the overlay is comfortable per-word tapping, so nothing
 // shrinks vs the card — this matters most on the phone. Weight, not size,
 // distinguishes the title.
-// Settings gear, pinned to the modal's top-right corner (outside the scroll
-// area so its dropdown isn't clipped). The wrapper is a positioned ancestor.
-const Gear = styled.div`
-  position: absolute;
-  top: 8px;
-  right: 10px;
-  z-index: 5;
-
-  /* Desktop: don't jam the gear into the extreme corner (8/10px) where it reads
-     as stranded — mirror the footer's bottom-right button instead. Same 64px
-     right inset as the footer content (so the gear sits directly above Close)
-     and a top inset matching the footer's 1.6em bottom padding, so the two
-     right-hand corners are symmetric. Mobile keeps it top-right on its own line
-     above the full-width title (see Title's mobile margin-top). */
-  @media (min-width: 577px) {
-    top: 1.6em;
-    right: 64px;
-  }
-`;
-
 const Title = styled.div`
   font-size: 1.4em;
   font-weight: 600;
   line-height: 1.35;
   color: var(--text-primary);
-  padding-right: 2.4em; /* clear the top-right settings gear */
 
   /* On the phone, drop the title down so words are in thumb reach to tap —
-     and so the settings gear gets its own line above it (full-width title). */
+     and so the close corner gets its own line above it (full-width title). */
   @media (max-width: 576px) {
     margin-top: 2rem;
-    padding-right: 0;
   }
 `;
 
@@ -127,28 +145,20 @@ const Summary = styled.div`
   margin-top: 0.15em;
 `;
 
-// Fixed action footer: Read full / Open original / Save / Close. As a non-
-// shrinking flex sibling of the scroll region it stays pinned at the bottom
-// while the content scrolls above it — content never crosses it. Negative
-// margins bleed the bar to the wrapper's edges (matching its padding: 48px
-// sides on desktop, 16px on the mobile sheet) so it's a solid full-width strip
-// flush with the bottom; the footer supplies its own bottom (safe-area) room.
-const Actions = styled.div`
-  flex-shrink: 0;
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 0.6em;
-  margin: 0 -48px 0;
-  padding: 1.1em 64px 1.6em;
-  background: var(--card-bg);
-  border-top: 1px solid var(--border-subtle, rgba(128, 128, 128, 0.25));
-  box-shadow: 0 -10px 14px -8px rgba(0, 0, 0, 0.3);
-
-  @media (max-width: 576px) {
-    margin: 0 -16px 0;
-    padding: 0.85em 16px calc(0.85em + env(safe-area-inset-bottom, 0px));
-  }
+// The primary action, in the content flow at the end of the summary rather
+// than in a fixed bar. Sized in rem, not em, so it keeps a constant physical
+// size while the surrounding text scales with the reader's chosen size — the
+// button is chrome, not reading material.
+const PrimaryAction = styled.div`
+  margin-top: 1.4em;
+  font-size: 1rem;
 `;
 
-export { ScrollArea, Gear, Title, SaveRow, Image, SummaryLabel, Summary, Actions };
+// The reading time, carried inside the button as supporting detail: the label
+// says what the button does, this says what it costs.
+const ActionHint = styled.span`
+  font-weight: 400;
+  opacity: 0.8;
+`;
+
+export { ScrollArea, CloseCorner, Title, SaveRow, Image, SummaryLabel, Summary, PrimaryAction, ActionHint };

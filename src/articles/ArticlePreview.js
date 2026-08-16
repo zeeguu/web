@@ -58,9 +58,19 @@ export default function ArticlePreview({
   // list precisely because it's saved — treat it as such even if the
   // article's has_personal_copy flag hasn't propagated correctly.
   const [isArticleSaved, setIsArticleSaved] = useState(article.has_personal_copy || inSavedView);
-  // Interactive title/summary — tokenized only for the inline interactive card.
-  // Preview/titles cards are plain teasers; their overlay tokenizes on open.
-  const { interactiveTitle, interactiveSummary } = useArticlePreviewTokens(article, { enabled: !previewMode });
+  // Interactive title/summary — for the inline interactive card, and (built on
+  // first open, then kept) for the overlay of a preview/titles teaser card.
+  //
+  // The overlay's tokens are held HERE rather than inside the overlay because
+  // the overlay unmounts on close: an InteractiveText carries the translations
+  // the user tapped out on it, so rebuilding one per open would drop them and
+  // reopening would show untranslated text. The card outlives the overlay, so
+  // the same object — translations and all — is handed back on reopen, the way
+  // the reader keeps yours while you're in it.
+  const { interactiveTitle, interactiveSummary } = useArticlePreviewTokens(article, {
+    enabled: !previewMode || previewOpen,
+    preferFresh: previewMode,
+  });
   const [isHidden, setIsHidden] = useState(article.hidden || false);
   const [isAnimatingOut, setIsAnimatingOut] = useState(false);
   const [isSummaryExpanded, setIsSummaryExpanded] = useState(false);
@@ -477,11 +487,15 @@ export default function ArticlePreview({
         </s.PreviewCardClickable>
 
         {/* Mounted only while open: each card renders one of these, so mounting
-            eagerly would run the overlay's prefs fetch + tokenization per card. */}
+            eagerly would run the overlay's prefs fetch per card. Its interactive
+            text is built in the card (see useArticlePreviewTokens above) so it
+            survives this unmount. */}
         {previewOpen && (
           <ArticlePreviewOverlay
             article={article}
             open
+            interactiveTitle={interactiveTitle}
+            interactiveSummary={interactiveSummary}
             onClose={() => setPreviewOpen(false)}
             hasExtension={hasExtension}
             isArticleSaved={isArticleSaved}
