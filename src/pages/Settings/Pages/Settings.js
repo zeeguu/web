@@ -12,6 +12,7 @@ import UpgradeAccountModal from "../../../components/UpgradeAccountModal";
 import LocalStorage from "../../../assorted/LocalStorage";
 import { APP_VERSION } from "../../../appVersion";
 import DarkModeToggle from "../ThemeToggle/DarkModeToggle";
+import ScienceIcon from "@mui/icons-material/ScienceOutlined";
 
 import * as s from "./Settings.sc";
 
@@ -90,6 +91,12 @@ export default function Settings() {
           <SettingsItem path={"/account_settings/delete_account"}>{strings.deleteAccount}</SettingsItem>
         </ListOfSettingsItems>
       )}
+
+      {/* Opt-in experiments, on purpose not behind a feature flag: Labs is
+          itself the gate, and a hidden experiment gathers no feedback. */}
+      <ListOfSettingsItems header={"Labs"} icon={<ScienceIcon fontSize="small" sx={{ color: "var(--text-muted)" }} />}>
+        <SettingsItem path={"/account_settings/labs"}>Experimental features</SettingsItem>
+      </ListOfSettingsItems>
 
       <ListOfSettingsItems header={"Developer"}>
         <SettingsItem path={"/account_settings/developer"}>Developer tools</SettingsItem>

@@ -12,6 +12,7 @@ import DeleteAccount from "./Pages/DeleteAccount";
 import ExerciseSchedulingPreferences from "./Pages/ExerciseSchedulingPreferences";
 import ActivityTimer from "./Pages/ActivityTimer";
 import NotificationSettings from "./Pages/NotificationSettings";
+import Labs from "./Pages/Labs";
 import Developer from "./Pages/Developer";
 
 export default function SettingsRouter({ setUser }) {
@@ -40,6 +41,8 @@ export default function SettingsRouter({ setUser }) {
       <PrivateRoute path="/account_settings/notifications" component={NotificationSettings} />
 
       <PrivateRoute path="/account_settings/delete_account" component={DeleteAccount} />
+
+      <PrivateRoute path="/account_settings/labs" component={Labs} />
 
       <PrivateRoute path="/account_settings/developer" component={Developer} />
     </Switch>
