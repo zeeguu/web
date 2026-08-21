@@ -1,7 +1,7 @@
 import OutOfWordsMessage from "../../exercises/OutOfWordsMessage";
 
 export default {
-  title: "Pages/OutOfWordsMessage",
+  title: "Messages/OutOfWordsMessage",
   component: OutOfWordsMessage,
 };
 
