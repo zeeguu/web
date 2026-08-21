@@ -1,7 +1,7 @@
 import ExerciseSessionProgressBar from "../../exercises/ExerciseSessionProgressBar";
 
 export default {
-  title: "BigComponents/ExerciseSessionProgressBar",
+  title: "Bars/ExerciseSessionProgressBar",
   component: ExerciseSessionProgressBar,
 };
 
