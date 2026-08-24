@@ -154,19 +154,35 @@ export default function AlterMenu({
     const el = refToAlterMenu.current;
     const trigger = el?.parentElement;
     if (!el || !trigger) return;
-    const triggerRect = trigger.getBoundingClientRect();
     const margin = 8;
     el.style.position = "fixed";
     el.style.margin = "0";
-    el.style.top = `${triggerRect.bottom + 4}px`;
-    el.style.left = "0";
+
+    // `position: fixed` is resolved against the nearest ancestor that
+    // establishes a containing block — which is a transformed/filtered
+    // ancestor, NOT always the viewport. The preview overlay's modal wrapper
+    // centers itself with `transform: translate(-50%,-50%)`, so it becomes the
+    // containing block for this fixed menu and our viewport-space math lands
+    // the menu offset by the modal's top-left (far to the right on desktop,
+    // where the modal is centered). Park the menu at (0,0) first and read back
+    // where that corner sits in viewport coordinates; that delta lets us
+    // translate viewport targets into containing-block-relative offsets. When
+    // fixed really is viewport-relative (the reader, the mobile bottom sheet
+    // with `transform: none`) the origin is (0,0) and this is a no-op.
+    el.style.left = "0px";
+    el.style.top = "0px";
+    const origin = el.getBoundingClientRect();
+
+    const triggerRect = trigger.getBoundingClientRect();
     const elWidth = el.offsetWidth;
-    let left = triggerRect.left;
-    if (left + elWidth > window.innerWidth - margin) {
-      left = window.innerWidth - elWidth - margin;
+    let viewportLeft = triggerRect.left;
+    if (viewportLeft + elWidth > window.innerWidth - margin) {
+      viewportLeft = window.innerWidth - elWidth - margin;
     }
-    if (left < margin) left = margin;
-    el.style.left = `${left}px`;
+    if (viewportLeft < margin) viewportLeft = margin;
+
+    el.style.left = `${viewportLeft - origin.left}px`;
+    el.style.top = `${triggerRect.bottom + 4 - origin.top}px`;
   }, [hasAlternatives, showOwnInput, filteredAlternatives.length]);
 
   let header = null;

@@ -20,9 +20,31 @@ export default function Modal({
   // Inline style merged onto the wrapper (e.g. a swipe-to-dismiss transform).
   // Applied via the style prop — which MUI preserves, unlike a forwarded ref.
   wrapperStyle,
+  // Opt-in: a heavier backdrop than MUI's default (0.5) so busy content behind
+  // the modal — e.g. the feed under the article preview overlay on desktop —
+  // recedes instead of competing with the foreground card.
+  darkerBackdrop = false,
 }) {
   return (
-    <ModalMui open={open} onClose={onClose}>
+    <ModalMui
+      open={open}
+      onClose={onClose}
+      slotProps={
+        darkerBackdrop
+          ? {
+              backdrop: {
+                sx: {
+                  backgroundColor: "rgba(0, 0, 0, 0.78)",
+                  // A light blur pushes the busy feed out of focus so it reads
+                  // as "behind," not as a competing second layer — darkening
+                  // alone barely registers on the already-dark theme.
+                  backdropFilter: "blur(2px)",
+                },
+              },
+            }
+          : undefined
+      }
+    >
       <s.ModalWrapper
         style={wrapperStyle}
         $bg={wrapperBackgroundColor}

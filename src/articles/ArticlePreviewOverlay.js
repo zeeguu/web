@@ -3,11 +3,11 @@ import * as s from "./ArticlePreviewOverlay.sc";
 import Modal from "../components/modal_shared/Modal";
 import { MetaStrip, MetaItem, MetaLink, MetaTag } from "../components/MetaStrip.sc";
 import ActionButton from "../components/ActionButton";
-import ToolbarButtons from "../reader/ToolbarButtons";
+import Button from "../pages/_pages_shared/Button.sc";
 import RedirectionNotificationModal from "../components/redirect_notification/RedirectionNotificationModal";
 import { TranslatableText } from "../reader/TranslatableText";
 import useUserPreferences from "../hooks/useUserPreferences";
-import useArticlePreviewTokens from "../hooks/useArticlePreviewTokens";
+import useReaderFontSize from "../hooks/useReaderFontSize";
 import { APIContext } from "../contexts/APIContext";
 import { articleSourceLabel } from "../utils/misc/articleHelpers";
 import { estimateReadingTime, timeAgo } from "../utils/misc/readableTime";
@@ -17,14 +17,26 @@ import BookmarkBorderRoundedIcon from "@mui/icons-material/BookmarkBorderRounded
 import BookmarkRoundedIcon from "@mui/icons-material/BookmarkRounded";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 
+// Swipe-right-to-dismiss thresholds. Distance alone feels sticky, so a quick
+// flick dismisses even when it has barely travelled; a slow drag has to cross a
+// third of the sheet. The minimum fling distance keeps a jittery tap from
+// registering as a flick.
+const DISMISS_FRACTION = 0.35;
+const FLING_VELOCITY = 0.5; // px per ms at release
+const FLING_MIN_DISTANCE = 40; // px
+
 // The interactive Preview overlay opened when a feed card with no in-app copy
 // is tapped in Preview/Titles browsing mode (articles we CAN read in-app open
 // the full reader directly instead, so this overlay never offers "Read full").
 // It carries the interactive title + summary and the actions Open original +
-// Save. Tokenization happens lazily — only once the overlay is opened.
+// Save. The interactive text is built by the card (lazily, on first open) and
+// passed in: it holds the translations tapped out on it, and this overlay
+// unmounts on close — owning it here would lose them on every reopen.
 export default function ArticlePreviewOverlay({
   article,
   open,
+  interactiveTitle,
+  interactiveSummary,
   onClose,
   hasExtension,
   isArticleSaved,
@@ -36,31 +48,14 @@ export default function ArticlePreviewOverlay({
 }) {
   const api = useContext(APIContext);
   const [isRedirectionModalOpen, setIsRedirectionModalOpen] = useState(false);
-  // Interactive title + summary, tokenized lazily once the overlay opens.
-  const { interactiveTitle, interactiveSummary } = useArticlePreviewTokens(article, { enabled: open });
 
-  // Same interactive-text preferences as the reader (translation / pronunciation
-  // / MWE hints), shared via the same user-preferences store + settings gear.
-  const {
-    translateInReader,
-    updateTranslateInReader,
-    pronounceInReader,
-    updatePronounceInReader,
-    showMweHints,
-    updateShowMweHints,
-    showReadingTimer,
-    updateShowReadingTimer,
-  } = useUserPreferences(api);
-  // Text size shares the reader's persisted value (localStorage), 14–28px.
-  const [readerFontSize, setReaderFontSizeState] = useState(() => {
-    const saved = parseInt(localStorage.getItem("reader_font_size"), 10);
-    return Number.isFinite(saved) ? saved : 18;
-  });
-  function setReaderFontSize(value) {
-    const clamped = Math.max(14, Math.min(28, value));
-    setReaderFontSizeState(clamped);
-    localStorage.setItem("reader_font_size", String(clamped));
-  }
+  // Same interactive-text preferences as the reader — read only here. They are
+  // configured in Settings → Reading → Text & highlighting (and in the reader's
+  // own gear, where the toggles act on a full page of text). This overlay shows
+  // three lines of summary, which is too little to judge a highlighting setting
+  // against, and the popover would cover the card it floats over.
+  const { translateInReader, pronounceInReader, showMweHints } = useUserPreferences(api);
+  const [readerFontSize] = useReaderFontSize();
 
   const hasImage = !!article.img_url;
 
@@ -87,7 +82,9 @@ export default function ArticlePreviewOverlay({
 
   function handleTouchStart(e) {
     const t = e.touches[0];
-    touchStart.current = { x: t.clientX, y: t.clientY, horiz: false };
+    // lastX/lastT trail the finger so touchEnd can measure release velocity,
+    // not just total travel.
+    touchStart.current = { x: t.clientX, y: t.clientY, horiz: false, lastX: t.clientX, lastT: e.timeStamp };
   }
   function handleTouchMove(e) {
     const s = touchStart.current;
@@ -104,7 +101,11 @@ export default function ArticlePreviewOverlay({
         return;
       }
     }
-    if (s.horiz) setDragX(Math.max(0, dx));
+    if (s.horiz) {
+      setDragX(Math.max(0, dx));
+      s.lastX = t.clientX;
+      s.lastT = e.timeStamp;
+    }
   }
   function handleTouchEnd(e) {
     const s = touchStart.current;
@@ -114,8 +115,12 @@ export default function ArticlePreviewOverlay({
       setDragX(0);
       return;
     }
-    const dx = e.changedTouches[0].clientX - s.x;
-    if (dx > 80) {
+    const endX = e.changedTouches[0].clientX;
+    const dx = endX - s.x;
+    const velocity = (endX - s.lastX) / Math.max(1, e.timeStamp - s.lastT);
+    const flicked = velocity > FLING_VELOCITY && dx > FLING_MIN_DISTANCE;
+    const dragged = dx > window.innerWidth * DISMISS_FRACTION;
+    if (flicked || dragged) {
       setDragX(window.innerWidth); // fling off, then unmount
       setTimeout(onClose, 180);
     } else {
@@ -129,10 +134,15 @@ export default function ArticlePreviewOverlay({
         transition: dragging ? "none" : "transform 0.2s ease-out, opacity 0.2s ease-out",
         opacity: dragX > 0 ? Math.max(0.2, 1 - dragX / 500) : 1,
       }
-    : undefined;
+    : // Desktop: width scales with the reader font (60em relative to the chosen
+      // text size), so bumping the font keeps a comfortable reading line length
+      // instead of squeezing chars into a fixed-px box. Capped at the viewport.
+      { width: `min(${60 * readerFontSize}px, 92vw)`, maxWidth: "none" };
 
   const publishedAgo = article.published ? timeAgo(article.published) : null;
   const wordCount = article.metrics?.word_count || article.word_count || 0;
+  const readingTime =
+    wordCount > 0 ? estimateReadingTime(wordCount).replace(" minutes", " min").replace(" minute", " min") : null;
 
   return (
     <>
@@ -140,27 +150,18 @@ export default function ArticlePreviewOverlay({
         open={open}
         onClose={onClose}
         bottomSheetOnMobile
-        flushBottom
         hideCloseButton
         animateIn
+        darkerBackdrop
         wrapperStyle={wrapperStyle}
       >
-        {/* Settings gear (same controls as the reader), pinned top-right,
-            outside the scroll area so its popover isn't clipped. */}
-        <s.Gear>
-          <ToolbarButtons
-            translating={translateInReader}
-            setTranslating={updateTranslateInReader}
-            pronouncing={pronounceInReader}
-            setPronouncing={updatePronounceInReader}
-            showMweHints={showMweHints}
-            setShowMweHints={updateShowMweHints}
-            showReadingTimer={showReadingTimer}
-            setShowReadingTimer={updateShowReadingTimer}
-            readerFontSize={readerFontSize}
-            setReaderFontSize={setReaderFontSize}
-          />
-        </s.Gear>
+        {/* Dismissal lives in the top-left corner, where it is conventional and
+            out of the reading path — the forward action (Original) is the
+            primary button at the end of the content instead. Outside the scroll
+            area so it stays put while the summary scrolls. */}
+        <s.CloseCorner type="button" aria-label="Close preview" onClick={onClose}>
+          <CloseRoundedIcon style={{ fontSize: 22 }} />
+        </s.CloseCorner>
 
         <s.ScrollArea
           style={{ fontSize: `${readerFontSize}px` }}
@@ -224,30 +225,20 @@ export default function ArticlePreviewOverlay({
               </s.Summary>
             </>
           )}
-        </s.ScrollArea>
 
-        {/* Fixed footer. Original is the primary action (this overlay only
-            shows for articles we can't read in-app); Save + Close are secondary. */}
-        <s.Actions>
-          <ActionButton variant="default" onClick={handleOpenOriginal}>
-            Original
-            {wordCount > 0 && (
-              <span style={{ opacity: 0.65, marginLeft: 5, fontWeight: 400 }}>
-                ({estimateReadingTime(wordCount).replace(" minutes", "min").replace(" minute", "min")})
-              </span>
-            )}
-            <OpenInNewRoundedIcon style={{ fontSize: 18, marginLeft: 5 }} />
-          </ActionButton>
-          {/* Save moved into the content above; Share deferred (see
-              project_friend_share_multiplexer). Footer is Original + Close. */}
-          {/* Close pushed to the far right — explicit fallback to swipe-to-close. */}
-          <div style={{ marginLeft: "auto" }}>
-            <ActionButton variant="link" onClick={onClose}>
-              <CloseRoundedIcon style={{ fontSize: 18, marginRight: 4 }} />
-              Close
-            </ActionButton>
-          </div>
-        </s.Actions>
+          {/* The primary action sits at the END of the content, not in a fixed
+              bar: "is this worth my minute?" is the question the summary
+              answers, so the button belongs where the reader arrives at the
+              answer. A persistent footer would also show the CTA before there
+              was anything to judge it on, and cost a band of height throughout. */}
+          <s.PrimaryAction>
+            <Button className="full-width-btn" onClick={handleOpenOriginal}>
+              Read the original
+              {readingTime && <s.ActionHint>· {readingTime}</s.ActionHint>}
+              <OpenInNewRoundedIcon style={{ fontSize: 20, marginLeft: 2 }} />
+            </Button>
+          </s.PrimaryAction>
+        </s.ScrollArea>
       </Modal>
 
       <RedirectionNotificationModal

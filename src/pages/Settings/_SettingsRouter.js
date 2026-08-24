@@ -5,12 +5,14 @@ import ProfileDetails from "./Pages/ProfileDetails";
 import LanguageSettings from "./Pages/LanguageSettings";
 import FeedPreferences from "./Pages/FeedPreferences";
 import FeedView from "./Pages/FeedView";
+import ReadingSettings from "./Pages/ReadingSettings";
 import ExerciseTypePreferences from "./Pages/AudioAndPronunciation";
 import MyClassrooms from "./Pages/MyClassrooms/MyClassrooms";
 import DeleteAccount from "./Pages/DeleteAccount";
 import ExerciseSchedulingPreferences from "./Pages/ExerciseSchedulingPreferences";
 import ActivityTimer from "./Pages/ActivityTimer";
 import NotificationSettings from "./Pages/NotificationSettings";
+import Labs from "./Pages/Labs";
 import Developer from "./Pages/Developer";
 
 export default function SettingsRouter({ setUser }) {
@@ -34,9 +36,13 @@ export default function SettingsRouter({ setUser }) {
 
       <PrivateRoute path="/account_settings/feed_view" component={FeedView} />
 
+      <PrivateRoute path="/account_settings/reading" component={ReadingSettings} />
+
       <PrivateRoute path="/account_settings/notifications" component={NotificationSettings} />
 
       <PrivateRoute path="/account_settings/delete_account" component={DeleteAccount} />
+
+      <PrivateRoute path="/account_settings/labs" component={Labs} />
 
       <PrivateRoute path="/account_settings/developer" component={Developer} />
     </Switch>

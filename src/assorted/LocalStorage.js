@@ -40,7 +40,7 @@ const LocalStorage = {
     ThemePreference: "zeeguu-theme-preference",
     ReportedTimezone: "reported_timezone",
     // Kiosk reader mode: locks the app to a chrome-less, translation-free
-    // news reader (see src/kiosk/). Activated from Developer settings.
+    // news reader (see src/kiosk/). Activated from Settings > Labs.
     KioskReader: "kiosk_reader",
     // Feed browsing mode (user preference, per device). One of:
     //  "titles"      — title + image, no summary → tap opens overlay (DEFAULT)

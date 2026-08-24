@@ -1,7 +1,5 @@
-- New Feed View options: choose how your feed looks — Headlines (title + image), Preview (adds a short summary), or Interactive (tappable words right in the feed). Change it in Settings, under Feed preferences, in the View section.
-- Tap any article for an interactive preview: translate and listen to words in the title and summary before you open it.
-- Share articles with friends, and find what others send you in a new "Shared with you" inbox.
-- Leaderboards: friends and classmates now live in one place, with a simple switch between them.
-- Reader: clearer labels for an article's source and its simplified level, plus tidier author lines.
-- Settings: a new page to manage your email notifications.
-- More fixes and polish throughout.
+- New in Settings: Reading, then Text and highlighting. Everything about how text behaves when you tap it - translation, pronunciation, the reading timer, multi-word expression hints and text size - now has one clear home, with a line explaining what each option does.
+- The article preview sheet is calmer to read: close it from the top-left corner, and the big "Read the original" button now waits at the end of the summary, right where you have decided whether it is worth your time.
+- Swipe the preview away with a quick flick - no more dragging it halfway across the screen.
+- Fixed: words you translated in a preview stay translated when you close it and open it again.
+- Fixed: preview photos are no longer cropped.

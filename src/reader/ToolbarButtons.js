@@ -6,6 +6,8 @@ import ToggleOption from "../components/Toggles/ToggleOption";
 import { ToolbarButtonRoot, ToolbarMenu } from "./ToolbarButtons.sc";
 import SettingsIconButton from "../components/Icons/SettingsIconButton";
 import TextSizeControl from "../components/Controls/TextSizeControl";
+import { READING_TOGGLES, EXPERIMENTAL_SECTION } from "./readingPreferences";
+import { FONT_SIZE_STEP } from "../hooks/useReaderFontSize";
 
 // MUI sx / inline-style overrides (not styled-components, so they live here
 // rather than in ToolbarButtons.sc.js).
@@ -33,6 +35,33 @@ export default function ToolbarButtons({
   const [showOptions, setShowOptions] = useState(false);
   const menuRef = useRef(null);
 
+  // The toggles themselves are defined in readingPreferences.js — shared with
+  // the Text & highlighting settings page, which writes the same values. These
+  // two maps bind that shared list to this component's props, keyed by the
+  // list's `key`, so adding a toggle there only needs a prop pair here.
+  const isOn = { translating, pronouncing, showReadingTimer, showMweHints };
+  const setOn = {
+    translating: setTranslating,
+    pronouncing: setPronouncing,
+    showReadingTimer: setShowReadingTimer,
+    showMweHints: setShowMweHints,
+  };
+
+  function renderToggle(option) {
+    return (
+      <ToggleOption
+        key={option.key}
+        checked={isOn[option.key]}
+        onToggle={setOn[option.key]}
+        className={isOn[option.key] ? "selected" : ""}
+        label={option.label}
+      />
+    );
+  }
+
+  const mainToggles = READING_TOGGLES.filter((option) => option.section !== EXPERIMENTAL_SECTION);
+  const experimentalToggles = READING_TOGGLES.filter((option) => option.section === EXPERIMENTAL_SECTION);
+
   // Close menu when clicking outside
   useEffect(() => {
     if (!showOptions) return;
@@ -55,38 +84,16 @@ export default function ToolbarButtons({
         <ToolbarMenu>
           <FormGroup sx={toolbarFormGroupSx}>
             <FormHelperText>{"Click word(s) to:"}</FormHelperText>
-            <ToggleOption
-              checked={translating}
-              onToggle={setTranslating}
-              className={translating ? "selected" : ""}
-              label="See translation"
-            />
-            <ToggleOption
-              checked={pronouncing}
-              onToggle={setPronouncing}
-              className={pronouncing ? "selected" : ""}
-              label="Hear pronunciation"
-            />
-            <ToggleOption
-              checked={showReadingTimer}
-              onToggle={setShowReadingTimer}
-              className={showReadingTimer ? "selected" : ""}
-              label="Show reading timer"
-            />
+            {mainToggles.map(renderToggle)}
             {setReaderFontSize && (
               <TextSizeControl
                 value={readerFontSize}
-                onDecrease={() => setReaderFontSize(readerFontSize - 2)}
-                onIncrease={() => setReaderFontSize(readerFontSize + 2)}
+                onDecrease={() => setReaderFontSize(readerFontSize - FONT_SIZE_STEP)}
+                onIncrease={() => setReaderFontSize(readerFontSize + FONT_SIZE_STEP)}
               />
             )}
             <FormHelperText style={experimentalHelperText}>{<small>{"Experimental:"}</small>}</FormHelperText>
-            <ToggleOption
-              checked={showMweHints}
-              onToggle={setShowMweHints}
-              className={showMweHints ? "selected" : ""}
-              label="Show multi-word expressions hints"
-            />
+            {experimentalToggles.map(renderToggle)}
           </FormGroup>
         </ToolbarMenu>
       )}

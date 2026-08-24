@@ -9,7 +9,6 @@ const ExerciseOW = styled.div`
   transition: all 0.5s;
   padding-bottom: 1em;
 
-
   .headlineOrderWords {
     font-size: small;
     font-weight: 600;
@@ -19,12 +18,12 @@ const ExerciseOW = styled.div`
   }
 
   .next-nav-feedback {
-    margin-top:  1.5em;
+    margin-top: 1.5em;
     display: flex;
     flex-direction: row;
     align-items: center;
     justify-content: center;
-    
+
     img {
       width: 60px;
       mix-blend-mode: multiply;
@@ -38,8 +37,8 @@ const ExerciseOW = styled.div`
   .translatedText {
     font-size: medium !important;
     font-weight: 400;
-    margin-left:8px;
-    margin-right:8px;
+    margin-left: 8px;
+    margin-right: 8px;
     margin-top: 1em !important;
   }
 
@@ -63,7 +62,7 @@ const ExerciseOW = styled.div`
     margin-top: 3em;
     flex-wrap: wrap;
   }
-  
+
   .bottomInput button {
     margin-top: 0.5em;
     margin-bottom: 0.5em;
@@ -79,8 +78,6 @@ const ExerciseOW = styled.div`
     font-weight: 800;
   }
 
-
-
   .cluesRow {
     text-align: center;
     display: inline-block;
@@ -93,7 +90,7 @@ const ExerciseOW = styled.div`
     background-color: #0064001c;
     margin-left: 10px;
     margin-right: 10px;
-    
+
     h4 {
       margin-top: 0px;
       margin-bottom: 4px;
@@ -102,10 +99,9 @@ const ExerciseOW = styled.div`
       margin-bottom: 2px;
       margin-top: 0px;
     }
-
   }
 
-  .orderWordsItem{
+  .orderWordsItem {
     display: flex;
     align-items: left;
     justify-content: left;
@@ -121,10 +117,9 @@ const ExerciseOW = styled.div`
     margin-bottom: 1em;
     @media (max-width: 430px) {
       font-size: 12px;
-      margin-left:10px;
-      margin-right:10px;
+      margin-left: 10px;
+      margin-right: 10px;
     }
-    
   }
 
   .incorrect {
@@ -133,8 +128,8 @@ const ExerciseOW = styled.div`
 
   .correct {
     background-color: ${darkGreen};
-    :hover{ 
-      filter: brightness(1)
+    :hover {
+      filter: brightness(1);
     }
   }
 
@@ -177,16 +172,15 @@ const ExerciseOW = styled.div`
   }
 
   .check {
-      background-color: darkgreen;
-      //outline: 3px darkgreen solid;
+    background-color: darkgreen;
+    //outline: 3px darkgreen solid;
   }
 
   .undo {
-      background-color: ${zeeguuRed};
-
+    background-color: ${zeeguuRed};
   }
-  .OWBottomRow{
-    display:block
+  .OWBottomRow {
+    display: block;
     padding: 0.5em;
     align-items: center;
     justify-content: space-around;
@@ -198,10 +192,9 @@ const ExerciseOW = styled.div`
     @media (max-width: 430px) {
       flex-flow: row wrap;
     }
-  } 
+  }
 
-  .owButton{
-    
+  .owButton {
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -215,8 +208,10 @@ const ExerciseOW = styled.div`
     padding: 0.5em 0.5em;
     border-radius: 100px;
     box-shadow: 0px 2px #595959;
-    height:2em;
-    :hover {filter: brightness(0.8);}
+    height: 2em;
+    :hover {
+      filter: brightness(0.8);
+    }
 
     :active {
       filter: brightness(0.5);
@@ -254,21 +249,24 @@ const ExerciseOW = styled.div`
       padding: 0.5em 0.5em;
       max-height: 28px;
     }
-
   }
-  
+
   .toDragLeft {
-    box-shadow: -7px 0px 0px 2px ${darkBlue}, 0px 0px 0px 0px ${darkBlue};
+    box-shadow:
+      -7px 0px 0px 2px ${darkBlue},
+      0px 0px 0px 0px ${darkBlue};
     outline: 2px ${darkBlue} solid;
-    filter: brightness(0.90);
-    z-index:1;
+    filter: brightness(0.9);
+    z-index: 1;
   }
 
   .toDragRight {
-    box-shadow: 0px 0px 0px 0px ${darkBlue}, 7px 0px 0px 2px ${darkBlue};
+    box-shadow:
+      0px 0px 0px 0px ${darkBlue},
+      7px 0px 0px 2px ${darkBlue};
     outline: 2px ${darkBlue} solid;
-    filter: brightness(0.90);
-    z-index:1;
+    filter: brightness(0.9);
+    z-index: 1;
   }
 
   .renderDisable {
@@ -282,16 +280,16 @@ const ExerciseOW = styled.div`
   .elementHidden {
     cursor: default;
     background-color: rgb(161 161 161);
-    color:rgb(161 161 161);
+    color: rgb(161 161 161);
     :hover {
       filter: brightness(1);
     }
   }
-  
+
   .disable {
     background-color: #595959;
-    
-    :hover{
+
+    :hover {
       filter: brightness(1);
     }
     :active {
@@ -301,21 +299,20 @@ const ExerciseOW = styled.div`
     }
   }
 
-  .tipText{
-    font-size:small
+  .tipText {
+    font-size: small;
   }
-  
+
   .contextExample {
     margin-top: 1em;
     margin-left: 2em;
     margin-right: 2em;
     font-weight: 400;
     line-height: 1.4em;
-    
   }
 
   /* Mobile version */
-  @media screen and (max-width: 768px) {
+  @media (max-width: 768px) {
     .contextExample {
       margin-top: 0.5em;
       margin-left: 0.5em;
