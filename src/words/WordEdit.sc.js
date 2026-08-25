@@ -87,12 +87,15 @@ let CustomTextField = styled(TextField)`
 // (the reader). A disabled TextField would still read as an input the user
 // could type into; this states plainly that the word is the subject of the
 // dialog and only the translation below it is editable.
+//
+// Deliberately paints no color: it inherits from the modal card, same as the
+// Headline above it. The card isn't theme-aware yet (see #1227) — naming a
+// color here would only look like it was, and would have to be undone.
 let ReadOnlyWord = scStyled.div`
   margin: 0.5em 0 1.5em;
   text-align: center;
   font-size: 1.3em;
   font-weight: 500;
-  color: var(--text-primary, inherit);
 `;
 
 let CustomCheckBoxDiv = scStyled.div`
