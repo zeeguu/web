@@ -123,7 +123,9 @@ export default function Learning() {
         </span>
         {level === 1 && (
           <Tooltip label="Words progress through 4 levels with increasingly harder exercises. Answer correctly on two different days to advance to the next level.">
-            <HelpOutlineIcon style={{ fontSize: "1em", marginLeft: "0.3em", color: "#888", cursor: "help", verticalAlign: "middle" }} />
+            <HelpOutlineIcon
+              style={{ fontSize: "1em", marginLeft: "0.3em", color: "#888", cursor: "help", verticalAlign: "middle" }}
+            />
           </Tooltip>
         )}
       </>
@@ -132,11 +134,25 @@ export default function Learning() {
 
   return (
     <>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1em", marginLeft: "1em" }}>
-        <p style={{ margin: "0 1em 0 0", fontSize: "0.9em", color: "#555" }}>
-          Words you translate while reading are automatically scheduled for exercises and shown here. You can also add words manually.
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          marginBottom: "1em",
+          marginLeft: "1em",
+        }}
+      >
+        <p style={{ margin: "0 1em 0 0", fontSize: "0.9em", color: "var(--text-secondary)" }}>
+          Words you translate while reading are automatically scheduled for exercises and shown here. You can also add
+          words manually.
         </p>
-        <StyledButton onClick={() => setShowAddWordModal(true)} style={{ whiteSpace: "nowrap" }}>+ Add</StyledButton>
+        <StyledButton
+          onClick={() => setShowAddWordModal(true)}
+          style={{ whiteSpace: "nowrap", backgroundColor: "var(--btn-bg)" }}
+        >
+          + Add
+        </StyledButton>
       </div>
 
       {showAddWordModal && (
@@ -154,10 +170,7 @@ export default function Learning() {
         {[1, 2, 3, 4].map(
           (level) =>
             inLearning_byLevel[level].length > 0 && (
-              <CollapsablePanel
-                key={level}
-                topMessage={topMessage(level, inLearning_byLevel[level].length)}
-              >
+              <CollapsablePanel key={level} topMessage={topMessage(level, inLearning_byLevel[level].length)}>
                 {inLearning_byLevel[level].map((each) => (
                   <Word
                     key={each.id}
