@@ -39,8 +39,11 @@ const Feature = {
   // The student's class asked that they see only the texts their teacher
   // shares: no recommendation feed, no search, no shared inbox. The server
   // owns the decision (Cohort.only_classroom_texts).
+  // `hide_recommendations` is the same flag under its original name, kept as of
+  // 25 Aug 2026: an API that predates the rename emits only that one. Safe to
+  // drop once every deployed API emits `classroom_only`.
   classroom_only: function () {
-    return this.is_enabled("classroom_only");
+    return this.is_enabled("classroom_only") || this.is_enabled("hide_recommendations");
   },
 };
 
