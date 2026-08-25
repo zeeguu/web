@@ -1,4 +1,8 @@
 import CardPage from "../../pages/_pages_shared/CardPage";
+import { MemoryRouter } from "react-router-dom";
+import LogIn from "../../pages/LogIn";
+import NotFound from "../../pages/NotFound";
+import "../../index.css";
 
 export default {
   title: "Pages/CardPage",
@@ -9,7 +13,16 @@ export default {
     isBackgroundFixed: false,
     isTransparent: false,
     reducedPadding: false,
+    defaultEmail: "user@example.com",
+    defaultPassword: "password",
   },
+  decorators: [
+    (Story) => (
+      <MemoryRouter initialEntries={["/login"]}>
+        <Story />
+      </MemoryRouter>
+    ),
+  ],
 };
 
 export const Default = {
@@ -79,4 +92,11 @@ export const ReducedPadding = {
       <p className="centered">Card uses compact inner spacing.</p>
     </CardPage>
   ),
+};
+export const LoginPage = {
+  render: () => <LogIn handleSuccessfulLogIn={() => {}} />,
+};
+
+export const NotFoundPage = {
+  render: () => <NotFound />,
 };
