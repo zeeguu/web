@@ -156,7 +156,6 @@ let FloatingButton = scStyled.div`
   }
 `;
 
-
 let ButtonContainer = scStyled.div`
   display: flex;
   justify-content: space-between;
