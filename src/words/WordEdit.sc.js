@@ -111,24 +111,15 @@ let CustomTextField = styled(TextField)`
 // (the reader). A disabled TextField would still read as an input the user
 // could type into; this states plainly that the word is the subject of the
 // dialog and only the translation below it is editable.
+//
+// Deliberately paints no color: it inherits from the modal card, which sets
+// var(--text-primary) itself. Naming the same color here would be redundant
+// and would go stale the moment the card's palette changes.
 let ReadOnlyWord = scStyled.div`
   margin: 0.5em 0 1.5em;
   text-align: center;
   font-size: 1.3em;
   font-weight: 500;
-  color: var(--text-primary, inherit);
-`;
-
-// The word shown when a call site opens the form with isWordEditable={false}
-// (the reader). A disabled TextField would still read as an input the user
-// could type into; this states plainly that the word is the subject of the
-// dialog and only the translation below it is editable.
-let ReadOnlyWord = scStyled.div`
-  margin: 0.5em 0 1.5em;
-  text-align: center;
-  font-size: 1.3em;
-  font-weight: 500;
-  color: var(--text-primary, inherit);
 `;
 
 let CustomCheckBoxDiv = scStyled.div`
