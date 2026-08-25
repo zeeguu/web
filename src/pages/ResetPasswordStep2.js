@@ -11,6 +11,7 @@ import InputField from "../components/InputField";
 import ButtonContainer from "../pages/_pages_shared/ButtonContainer.sc";
 import Button from "../pages/_pages_shared/Button.sc";
 import { MinimumLengthValidator, NonEmptyValidator } from "../utils/ValidatorRule/Validator";
+import { MIN_PASSWORD_LENGTH } from "../appConstants";
 import { scrollToTop } from "../utils/misc/scrollToTop";
 import { APIContext } from "../contexts/APIContext";
 import { useHistory } from "react-router-dom";
@@ -31,7 +32,7 @@ export default function ResetPasswordStep2({ email, isLoggedIn }) {
 
   const [newPass, setNewPass, validateNewPass, isNewPassValid, newPassMsg] = useFormField("", [
     NonEmptyValidator("You must provide a new password."),
-    MinimumLengthValidator(3, strings.passwordMustBeMsg),
+    MinimumLengthValidator(MIN_PASSWORD_LENGTH, strings.passwordMustBeMsg),
   ]);
 
   useEffect(() => {

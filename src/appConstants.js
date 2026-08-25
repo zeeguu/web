@@ -26,6 +26,12 @@ const TopicOriginType = Object.freeze({
 });
 
 /*
+ * Minimum password length. Mirrored from the API -> zeeguu/api/endpoints/accounts.py
+ * (password_is_too_short) and zeeguu/core/account_management/user_account_creation.py
+ */
+const MIN_PASSWORD_LENGTH = 4;
+
+/*
  * Onboarding message IDs — server-tracked messages that show at most once per user
  */
 const ONBOARDING_MESSAGE_IDS = Object.freeze({
@@ -46,4 +52,4 @@ if (import.meta.env.VITE_WEB_URL) {
   APP_DOMAIN = import.meta.env.VITE_WEB_URL;
 }
 
-export { APP_DOMAIN, API_ENDPOINT, TopicOriginType, ONBOARDING_MESSAGE_IDS };
+export { APP_DOMAIN, API_ENDPOINT, TopicOriginType, ONBOARDING_MESSAGE_IDS, MIN_PASSWORD_LENGTH };

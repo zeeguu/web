@@ -40,7 +40,7 @@ function PositiveIntegerValidator(msg = "Please provide a positive number") {
 
 function MinimumLengthValidator(n_chars, msg) {
   return new Validator((value) => {
-    return value.length > n_chars;
+    return value.length >= n_chars;
   }, msg);
 }
 

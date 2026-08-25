@@ -3,6 +3,7 @@ import Modal from "./modal_shared/Modal";
 import InputField from "./InputField";
 import useFormField from "../hooks/useFormField";
 import { EmailValidator, MinimumLengthValidator, NonEmptyValidator } from "../utils/ValidatorRule/Validator";
+import { MIN_PASSWORD_LENGTH } from "../appConstants";
 import validateRules from "../assorted/validateRules";
 import { APIContext } from "../contexts/APIContext";
 import { UserContext } from "../contexts/UserContext";
@@ -115,7 +116,7 @@ export default function UpgradeAccountModal({ open, onClose, onSuccess, triggerR
 
   const [password, setPassword, validatePassword, isPasswordValid, passwordMsg] = useFormField("", [
     NonEmptyValidator("Please enter a password"),
-    MinimumLengthValidator(4, "Password must be at least 4 characters"),
+    MinimumLengthValidator(MIN_PASSWORD_LENGTH, `Password must be at least ${MIN_PASSWORD_LENGTH} characters`),
   ]);
 
   const [confirmPassword, setConfirmPassword] = useState("");
