@@ -153,31 +153,10 @@ export default function AddCustomWordModal({ onClose, onSuccess }) {
         {isLoading ? (
           <LoadingAnimation />
         ) : (
-          <form onSubmit={handleSubmit} autoFocus={true} style={{ color: "var(--text-secondary)" }}>
+          <form onSubmit={handleSubmit} autoFocus={true}>
             {errorMessage && <FullWidthErrorMsg>{errorMessage}</FullWidthErrorMsg>}
 
             <s.CustomTextField
-              sx={{
-                "& .MuiInputBase-input": {
-                  color: "var(--text-secondary)",
-                },
-                "& .MuiInputLabel-root": {
-                  color: "var(--text-secondary)",
-                },
-                "& .MuiInputBase-input::placeholder": {
-                  color: "var(--text-secondary)",
-                  opacity: 1,
-                },
-                "& .MuiOutlinedInput-notchedOutline": {
-                  borderColor: "var(--text-secondary)",
-                },
-                "&:hover .MuiOutlinedInput-notchedOutline": {
-                  borderColor: "var(--text-secondary)",
-                },
-                "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                  borderColor: "var(--text-secondary)",
-                },
-              }}
               id="word-input"
               label="Word/Expression"
               placeholder="e.g., jo tidligere, jo bedre"
@@ -189,27 +168,6 @@ export default function AddCustomWordModal({ onClose, onSuccess }) {
             />
 
             <s.CustomTextField
-              sx={{
-                "& .MuiInputBase-input": {
-                  color: "var(--text-secondary)",
-                },
-                "& .MuiInputLabel-root": {
-                  color: "var(--text-secondary)",
-                },
-                "& .MuiInputBase-input::placeholder": {
-                  color: "var(--text-secondary)",
-                  opacity: 1,
-                },
-                "& .MuiOutlinedInput-notchedOutline": {
-                  borderColor: "var(--text-secondary)",
-                },
-                "&:hover .MuiOutlinedInput-notchedOutline": {
-                  borderColor: "var(--text-secondary)",
-                },
-                "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                  borderColor: "var(--text-secondary)",
-                },
-              }}
               id="translation-input"
               label="Translation"
               placeholder="e.g., the sooner, the better"
@@ -221,27 +179,6 @@ export default function AddCustomWordModal({ onClose, onSuccess }) {
 
             <s.ExampleFieldContainer>
               <s.CustomTextField
-                sx={{
-                  "& .MuiInputBase-input": {
-                    color: "var(--text-secondary)",
-                  },
-                  "& .MuiInputLabel-root": {
-                    color: "var(--text-secondary)",
-                  },
-                  "& .MuiInputBase-input::placeholder": {
-                    color: "var(--text-secondary)",
-                    opacity: 1,
-                  },
-                  "& .MuiOutlinedInput-notchedOutline": {
-                    borderColor: "var(--text-secondary)",
-                  },
-                  "&:hover .MuiOutlinedInput-notchedOutline": {
-                    borderColor: "var(--text-secondary)",
-                  },
-                  "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                    borderColor: "var(--text-secondary)",
-                  },
-                }}
                 id="context-input"
                 label="Example sentence"
                 placeholder="Enter an example sentence using this word; it will be used in exercises"
@@ -268,7 +205,7 @@ export default function AddCustomWordModal({ onClose, onSuccess }) {
               </s.ExamplesContainer>
             )}
 
-            <s.HelpText style={{ color: "var(--text-secondary)" }}>
+            <s.HelpText>
               The word will be immediately added to your learning queue and will appear in exercises.
             </s.HelpText>
 
