@@ -66,6 +66,14 @@ Zeeguu_API.prototype.getArticlesSharedWithMe = function(callback) {
   });
 }
 
+// Cheap "did anything change?" token for the inbox — see
+// SharedArticle.inbox_signature_for.
+Zeeguu_API.prototype.getSharedArticlesInboxSignature = function(callback) {
+  this._getJSON(`shared_articles_inbox_signature`, (data) => {
+    callback(data?.signature);
+  });
+}
+
 Zeeguu_API.prototype.markSharedArticleRead = function(shared_article_id) {
   return this.apiPost("/mark_shared_article_read", { shared_article_id }, false);
 }
