@@ -22,7 +22,7 @@ const Message = styled.p`
   margin: 0;
 `;
 
-export default function EmptyState({ message, fillHeight = true }) {
+export default function EmptyMessageState({ message, fillHeight = true }) {
   return (
     <Container $fillHeight={fillHeight}>
       <Message>{message}</Message>
