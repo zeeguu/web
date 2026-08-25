@@ -6,7 +6,7 @@ import * as s from "../components/TopMessage.sc";
 
 // "Shared with you" inbox — articles friends have sent, rendered with the
 // saved-article row styling. Lives as its own tab in the reading area; the list
-// comes from SharedArticlesContext (refetched on navigation).
+// comes from SharedArticlesContext (refetched on navigation and polled while visible).
 export default function SharedInbox() {
   const { sharedArticles, sharedArticlesLoading, hasSharesInOtherLanguages } =
     useContext(SharedArticlesContext);
