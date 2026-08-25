@@ -3,7 +3,7 @@ import ArticleListBrowser from "./ArticleListBrowser";
 import BookmarkedArticles from "./BookmarkedArticles";
 import HiddenArticles from "../myArticles/HiddenArticles";
 
-import { useLocation } from "react-router-dom";
+import { useLocation, Switch } from "react-router-dom";
 import { PrivateRoute } from "../PrivateRoute";
 import { Redirect } from "react-router-dom";
 import ClassroomArticles from "./ClassroomArticles";
@@ -26,6 +26,7 @@ import SharedInbox from "./SharedInbox";
 import * as columnS from "../components/ColumnWidth.sc";
 import * as s from "./_ArticlesRouter.sc";
 import LocalStorage from "../assorted/LocalStorage";
+import Feature from "../features/Feature";
 import { APIContext } from "../contexts/APIContext";
 import { BrowsingSessionContext } from "../contexts/BrowsingSessionContext";
 import useBrowsingSession from "../hooks/useBrowsingSession";
@@ -48,7 +49,7 @@ export default function ArticlesRouter({ hasExtension, isChrome }) {
   const { userDetails } = useContext(UserContext);
   const { hasSharedNotification, sharedUnreadCount } = useContext(SharedArticlesContext);
   const { getBrowsingSessionId } = useBrowsingSession();
-  const hideRecommendations = LocalStorage.hasFeature("hide_recommendations");
+  const classroomOnly = Feature.classroom_only();
   const isStudent = LocalStorage.isStudent();
   const translationModal = useTranslationOnboarding(api, userDetails);
 
@@ -99,10 +100,10 @@ export default function ArticlesRouter({ hasExtension, isChrome }) {
   );
 
   const tabs = [
-    !hideRecommendations && { text: homeIcon, link: "/articles" },
+    { text: homeIcon, link: "/articles" },
     { text: bookmarkIcon, link: "/articles/bookmarked" },
     isStudent && { text: classroomIcon, link: "/articles/classroom" },
-    !hideRecommendations && {
+    {
       text: searchIcon,
       link: "/articles/mySearches",
       // Stay active on /search too — results are conceptually the search tab.
@@ -123,6 +124,28 @@ export default function ArticlesRouter({ hasExtension, isChrome }) {
     },
   );
 
+  // The class asked that its students see only the texts their teacher shares.
+  // Every browsing route in the app is mounted under this router -- /search
+  // included (see MainAppRouter) -- so the catch-all below is what makes a
+  // stale last-visited path, a deep link or the back button land on the class
+  // instead of on a surface this mode is meant to hide. No tab bar: there is
+  // only one place to be.
+  if (classroomOnly) {
+    return (
+      <BrowsingSessionContext.Provider value={getBrowsingSessionId}>
+        <columnS.NarrowColumn>
+          <s.ContentContainer>
+            <Switch>
+              <PrivateRoute path="/articles/classroom" component={ClassroomArticles} />
+              <Redirect to="/articles/classroom" />
+            </Switch>
+          </s.ContentContainer>
+        </columnS.NarrowColumn>
+        <TranslationOnboardingPopup open={translationModal.open} handleCancel={translationModal.close} />
+      </BrowsingSessionContext.Provider>
+    );
+  }
+
   return (
     <BrowsingSessionContext.Provider value={getBrowsingSessionId}>
       {/* Rendering top menu first, then routing to corresponding page */}
@@ -130,17 +153,13 @@ export default function ArticlesRouter({ hasExtension, isChrome }) {
         <TopTabs title={strings.articles} tabsAndLinks={tabs} hasBackground={false} isCompact={true} />
 
         <s.ContentContainer ref={swipeRef}>
-          {hideRecommendations ? (
-            <Redirect from="/articles" exact to="/articles/classroom" />
-          ) : (
-            <PrivateRoute
-              path="/articles"
-              exact
-              component={ArticleListBrowser}
-              hasExtension={hasExtension}
-              isChrome={isChrome}
-            />
-          )}
+          <PrivateRoute
+            path="/articles"
+            exact
+            component={ArticleListBrowser}
+            hasExtension={hasExtension}
+            isChrome={isChrome}
+          />
           <PrivateRoute exact path="/articles/bookmarked" component={BookmarkedArticles} />
           <PrivateRoute path="/articles/bookmarked/hidden" component={HiddenArticles} />
           <PrivateRoute path="/articles/classroom" component={ClassroomArticles} />

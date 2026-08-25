@@ -7,6 +7,7 @@ import * as s from "./ArticleReader.sc";
 
 import ToolbarButtons from "./ToolbarButtons";
 import ShareArticle from "./ShareArticle";
+import Feature from "../features/Feature";
 
 import BackArrow from "../pages/Settings/SharedComponents/BackArrow";
 import useScreenWidth from "../hooks/useScreenWidth";
@@ -87,7 +88,9 @@ export default function TopToolbar({
           </MiddleGroup>
           <RightGroup>
             {reportBroken}
-            <ShareArticle articleID={articleID} />
+            {/* Sharing out has no counterpart in classroom-only mode: the
+                inbox that would receive it is hidden. */}
+            {!Feature.classroom_only() && <ShareArticle articleID={articleID} />}
             <ToolbarButtons
               translating={translating}
               pronouncing={pronouncing}

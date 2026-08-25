@@ -13,17 +13,30 @@ import { articleSourceLabel } from "../utils/misc/articleHelpers";
 import { estimateReadingTime, timeAgo } from "../utils/misc/readableTime";
 import { isMobile } from "../utils/misc/browserDetection";
 import OpenInNewRoundedIcon from "@mui/icons-material/OpenInNewRounded";
+import Feature from "../features/Feature";
 import BookmarkBorderRoundedIcon from "@mui/icons-material/BookmarkBorderRounded";
 import BookmarkRoundedIcon from "@mui/icons-material/BookmarkRounded";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 
-// Swipe-right-to-dismiss thresholds. Distance alone feels sticky, so a quick
-// flick dismisses even when it has barely travelled; a slow drag has to cross a
-// third of the sheet. The minimum fling distance keeps a jittery tap from
-// registering as a flick.
-const DISMISS_FRACTION = 0.35;
+// Swipe-to-dismiss thresholds. Distance alone feels sticky, so a quick flick
+// dismisses even when it has barely travelled; a slow drag has to cross a
+// fraction of the sheet. The minimum fling distance keeps a jittery tap from
+// registering as a flick. Vertically the bar is lower: the sheet is taller than
+// it is wide, and a downward push on a bottom sheet is an unambiguous "away".
+const DISMISS_FRACTION = 0.35; // of the viewport width, horizontally
+const V_DISMISS_FRACTION = 0.2; // of the viewport height, vertically
 const FLING_VELOCITY = 0.5; // px per ms at release
 const FLING_MIN_DISTANCE = 40; // px
+const AXIS_LOCK = 10; // px of travel before the gesture commits to an axis
+// The backdrop is fully gone by this much travel — comfortably less than the
+// narrow side of any phone, so a fling (which sets the travel to a whole
+// viewport) has already cleared it before the sheet is off-screen.
+const BACKDROP_FADE_DISTANCE = 300; // px
+// How long the fling animation runs before the overlay unmounts. One number for
+// both, so the sheet and the backdrop finish leaving at the moment they are
+// removed — a shorter transition would strand a fully lit backdrop on screen
+// for the remaining frames, which is the flicker.
+const EXIT_MS = 200;
 
 // The interactive Preview overlay opened when a feed card with no in-app copy
 // is tapped in Preview/Titles browsing mode (articles we CAN read in-app open
@@ -69,70 +82,133 @@ export default function ArticlePreviewOverlay({
     }
   }
 
-  // Swipe-right-to-dismiss (touch): the sheet follows the finger and flings off
-  // to the right past the threshold, else snaps back. Plain React onTouch
-  // handlers on the ScrollArea (reliable on iOS), and the transform is applied
-  // to the whole sheet via the Modal's wrapperStyle prop (MUI preserves style,
-  // but clobbers refs). Only on the mobile bottom sheet, where a plain
-  // translateX is correct; desktop keeps its centered layout + Close button.
+  // Swipe-to-dismiss (touch): the sheet follows the finger and flings away past
+  // the threshold, else snaps back. Plain React onTouch handlers (reliable on
+  // iOS), and the transform is applied to the whole sheet via the Modal's
+  // wrapperStyle prop (MUI preserves style, but clobbers refs). Only on the
+  // mobile bottom sheet, where a plain translate is correct; desktop keeps its
+  // centered layout and dismisses via the X or the backdrop.
+  //
+  // Three ways in, all landing in the same drag:
+  //   - rightwards, from anywhere (the original gesture);
+  //   - either vertical direction, from the header band — a bar the finger can
+  //     grab without competing with the text it sits above;
+  //   - downwards when the summary is already scrolled to the top, upwards when
+  //     it is scrolled to the bottom. At those two points the scroll has nowhere
+  //     left to go, so the continued push is spare and means "away". A short
+  //     summary that does not scroll at all is at both ends at once, and takes
+  //     either direction.
   const isSheet = typeof window !== "undefined" && window.innerWidth <= 576;
+  const scrollRef = useRef(null);
   const touchStart = useRef(null);
   const [dragX, setDragX] = useState(0);
+  const [dragY, setDragY] = useState(0);
   const [dragging, setDragging] = useState(false);
 
-  function handleTouchStart(e) {
+  function handleTouchStart(e, fromBar = false) {
+    if (!isSheet) return; // desktop card does not drag — X or backdrop only
     const t = e.touches[0];
-    // lastX/lastT trail the finger so touchEnd can measure release velocity,
-    // not just total travel.
-    touchStart.current = { x: t.clientX, y: t.clientY, horiz: false, lastX: t.clientX, lastT: e.timeStamp };
+    const el = scrollRef.current;
+    // Which vertical directions are spare is decided ONCE, at touch-down: the
+    // scroll position mid-gesture is the finger's own doing, and re-reading it
+    // would let a drag turn into a dismiss the moment it reached an edge.
+    const atTop = !el || el.scrollTop <= 0;
+    const atBottom = !el || el.scrollHeight - el.scrollTop - el.clientHeight <= 1;
+    // lastX/lastY/lastT trail the finger so touchEnd can measure release
+    // velocity, not just total travel.
+    touchStart.current = {
+      x: t.clientX,
+      y: t.clientY,
+      axis: null,
+      allowDown: fromBar || atTop,
+      allowUp: fromBar || atBottom,
+      lastX: t.clientX,
+      lastY: t.clientY,
+      lastT: e.timeStamp,
+    };
   }
+
   function handleTouchMove(e) {
     const s = touchStart.current;
     if (!s) return;
     const t = e.touches[0];
     const dx = t.clientX - s.x;
     const dy = t.clientY - s.y;
-    if (!s.horiz) {
-      if (dx > 10 && Math.abs(dx) > Math.abs(dy) * 1.2) {
-        s.horiz = true;
-        setDragging(true);
-      } else if (Math.abs(dy) > 10) {
-        touchStart.current = null; // vertical scroll — let it be
+    if (!s.axis) {
+      if (dx > AXIS_LOCK && Math.abs(dx) > Math.abs(dy) * 1.2) {
+        s.axis = "h";
+      } else if (Math.abs(dy) > AXIS_LOCK && ((dy > 0 && s.allowDown) || (dy < 0 && s.allowUp))) {
+        s.axis = "v";
+      } else if (Math.abs(dx) > AXIS_LOCK || Math.abs(dy) > AXIS_LOCK) {
+        touchStart.current = null; // an ordinary scroll — let it be
+        return;
+      } else {
         return;
       }
+      setDragging(true);
     }
-    if (s.horiz) {
+    if (s.axis === "h") {
       setDragX(Math.max(0, dx));
-      s.lastX = t.clientX;
-      s.lastT = e.timeStamp;
+    } else {
+      // Clamp to the directions this gesture was allowed to take, so reversing
+      // mid-drag pins the sheet at rest instead of pulling it the wrong way.
+      setDragY(dy > 0 ? (s.allowDown ? dy : 0) : s.allowUp ? dy : 0);
     }
+    s.lastX = t.clientX;
+    s.lastY = t.clientY;
+    s.lastT = e.timeStamp;
   }
+
   function handleTouchEnd(e) {
     const s = touchStart.current;
     touchStart.current = null;
     setDragging(false);
-    if (!s || !s.horiz) {
+    if (!s || !s.axis) {
       setDragX(0);
+      setDragY(0);
       return;
     }
-    const endX = e.changedTouches[0].clientX;
-    const dx = endX - s.x;
-    const velocity = (endX - s.lastX) / Math.max(1, e.timeStamp - s.lastT);
-    const flicked = velocity > FLING_VELOCITY && dx > FLING_MIN_DISTANCE;
-    const dragged = dx > window.innerWidth * DISMISS_FRACTION;
-    if (flicked || dragged) {
-      setDragX(window.innerWidth); // fling off, then unmount
-      setTimeout(onClose, 180);
+    const horizontal = s.axis === "h";
+    const end = horizontal ? e.changedTouches[0].clientX : e.changedTouches[0].clientY;
+    const delta = end - (horizontal ? s.x : s.y);
+    const velocity = (end - (horizontal ? s.lastX : s.lastY)) / Math.max(1, e.timeStamp - s.lastT);
+    const setDrag = horizontal ? setDragX : setDragY;
+    const span = horizontal ? window.innerWidth : window.innerHeight;
+    const fraction = horizontal ? DISMISS_FRACTION : V_DISMISS_FRACTION;
+    // Horizontally only rightwards counts; vertically either way does, as long
+    // as this gesture was allowed to go there.
+    const allowed = horizontal ? delta > 0 : delta > 0 ? s.allowDown : s.allowUp;
+    const flicked =
+      Math.abs(velocity) > FLING_VELOCITY &&
+      Math.abs(delta) > FLING_MIN_DISTANCE &&
+      Math.sign(velocity) === Math.sign(delta);
+    if (allowed && (flicked || Math.abs(delta) > span * fraction)) {
+      setDrag(Math.sign(delta) * span); // fling off, then unmount
+      setTimeout(onClose, EXIT_MS);
     } else {
-      setDragX(0); // snap back
+      setDrag(0); // snap back
     }
   }
 
+  const travel = Math.max(dragX, Math.abs(dragY));
+
+  // The backdrop dims and lifts with the drag, so the card and the dark behind
+  // it leave as one thing. Without this the sheet flies off, uncovering a
+  // still-black screen, which then blinks out on unmount — the card looks like
+  // it dismissed twice. It doubles as feedback on a partial drag: the feed
+  // brightens behind the card as you pull it, and dims again if you let go.
+  const backdropStyle = isSheet
+    ? {
+        opacity: Math.max(0, 1 - travel / BACKDROP_FADE_DISTANCE),
+        transition: dragging ? "none" : `opacity ${EXIT_MS}ms ease-out`,
+      }
+    : undefined;
+
   const wrapperStyle = isSheet
     ? {
-        transform: `translateX(${dragX}px)`,
-        transition: dragging ? "none" : "transform 0.2s ease-out, opacity 0.2s ease-out",
-        opacity: dragX > 0 ? Math.max(0.2, 1 - dragX / 500) : 1,
+        transform: `translate(${dragX}px, ${dragY}px)`,
+        transition: dragging ? "none" : `transform ${EXIT_MS}ms ease-out, opacity ${EXIT_MS}ms ease-out`,
+        opacity: travel > 0 ? Math.max(0.2, 1 - travel / 500) : 1,
       }
     : // Desktop: width scales with the reader font (60em relative to the chosen
       // text size), so bumping the font keeps a comfortable reading line length
@@ -154,16 +230,28 @@ export default function ArticlePreviewOverlay({
         animateIn
         darkerBackdrop
         wrapperStyle={wrapperStyle}
+        backdropStyle={backdropStyle}
       >
-        {/* Dismissal lives in the top-left corner, where it is conventional and
-            out of the reading path — the forward action (Original) is the
-            primary button at the end of the content instead. Outside the scroll
-            area so it stays put while the summary scrolls. */}
-        <s.CloseCorner type="button" aria-label="Close preview" onClick={onClose}>
-          <CloseRoundedIcon style={{ fontSize: 22 }} />
-        </s.CloseCorner>
+        {/* A band of its own above the scroll area, not a control floating over
+            it: the summary scrolls in the space BELOW this strip, so no line of
+            text ever runs into the X. Dismissal lives at its left, where it is
+            conventional and out of the reading path — the forward action
+            (Original) is the primary button at the end of the content instead.
+            The band doubles as the drag handle: a grab surface with no words in
+            it, so pulling the sheet away never competes with tapping a word. */}
+        <s.Header
+          onTouchStart={(e) => handleTouchStart(e, true)}
+          onTouchMove={handleTouchMove}
+          onTouchEnd={handleTouchEnd}
+        >
+          <s.CloseCorner type="button" aria-label="Close preview" onClick={onClose}>
+            <CloseRoundedIcon style={{ fontSize: 22 }} />
+          </s.CloseCorner>
+          <s.GrabHandle aria-hidden="true" />
+        </s.Header>
 
         <s.ScrollArea
+          ref={scrollRef}
           style={{ fontSize: `${readerFontSize}px` }}
           onTouchStart={handleTouchStart}
           onTouchMove={handleTouchMove}
@@ -196,14 +284,17 @@ export default function ArticlePreviewOverlay({
           </MetaStrip>
 
           <s.SaveRow>
-            <ActionButton variant="muted" onClick={onToggleSave}>
-              {isArticleSaved ? (
-                <BookmarkRoundedIcon style={{ fontSize: 18, marginRight: 4 }} />
-              ) : (
-                <BookmarkBorderRoundedIcon style={{ fontSize: 18, marginRight: 4 }} />
-              )}
-              {isArticleSaved ? "Saved" : "Save"}
-            </ActionButton>
+            {/* No Saved tab to reach in classroom-only mode. */}
+            {!Feature.classroom_only() && (
+              <ActionButton variant="muted" onClick={onToggleSave}>
+                {isArticleSaved ? (
+                  <BookmarkRoundedIcon style={{ fontSize: 18, marginRight: 4 }} />
+                ) : (
+                  <BookmarkBorderRoundedIcon style={{ fontSize: 18, marginRight: 4 }} />
+                )}
+                {isArticleSaved ? "Saved" : "Save"}
+              </ActionButton>
+            )}
           </s.SaveRow>
 
           {hasImage && <s.Image alt="" src={article.img_url} loading="lazy" decoding="async" />}
