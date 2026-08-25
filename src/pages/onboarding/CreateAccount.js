@@ -54,7 +54,7 @@ export default function CreateAccount({ handleSuccessfulLogIn }) {
   ]);
   const [password, setPassword, validatePassword, isPasswordValid, passwordMsg] = useFormField("", [
     NonEmptyValidator("Please enter a password."),
-    MinimumLengthValidator(MIN_PASSWORD_LENGTH, strings.passwordMustBeMsg),
+    MinimumLengthValidator(MIN_PASSWORD_LENGTH, strings.formatString(strings.passwordMustBeMsg, MIN_PASSWORD_LENGTH)),
   ]);
 
   const passwordRef = useShadowRef(password);

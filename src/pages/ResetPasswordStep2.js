@@ -32,7 +32,7 @@ export default function ResetPasswordStep2({ email, isLoggedIn }) {
 
   const [newPass, setNewPass, validateNewPass, isNewPassValid, newPassMsg] = useFormField("", [
     NonEmptyValidator("You must provide a new password."),
-    MinimumLengthValidator(MIN_PASSWORD_LENGTH, strings.passwordMustBeMsg),
+    MinimumLengthValidator(MIN_PASSWORD_LENGTH, strings.formatString(strings.passwordMustBeMsg, MIN_PASSWORD_LENGTH)),
   ]);
 
   useEffect(() => {

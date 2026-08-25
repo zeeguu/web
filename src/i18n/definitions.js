@@ -190,7 +190,7 @@ let strings = new LocalizedStrings(
 
       //CreateAccount
       nameIsRequired: "Name is required.",
-      passwordMustBeMsg: "Password should be at least 4 characters long.",
+      passwordMustBeMsg: "Password should be at least {0} characters long.",
       plsAcceptPrivacyPolicy: "You need to agree to our privacy notice.",
       thankYouMsgPrefix: "Thanks for being a beta-tester. We really want to hear from you at",
       thankYouMsgSuffix: ". Contact us also if you don't have an invite code.",
@@ -1139,7 +1139,7 @@ let strings = new LocalizedStrings(
       learnedLanguageIsRequired: 'Udfyld feltet "Sprog, du vil lære"',
       languangeLevelIsRequired: "Angiv niveauet af det sprog, du gerne vil lære.",
       plsSelectBaseLanguage: "Angiv, dit base sprog.",
-      passwordMustBeMsg: "Kodeordet skal være mindst fire karakterer",
+      passwordMustBeMsg: "Kodeordet skal være mindst {0} karakterer",
       createAccount: "Opret konto",
       thankYouMsgPrefix: "Tak fordi du vil være beta-tester. Du er altid velkommen til at kontakte os på: ",
       thankYouMsgSuffix: ". Du kan også kontakte os, hvis du mangler en invitationskode.",
