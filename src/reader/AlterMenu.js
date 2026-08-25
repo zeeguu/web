@@ -66,14 +66,12 @@ export default function AlterMenu({
   word,
   hideAlterMenu,
   selectAlternative,
+  editTranslation,
   deleteTranslation,
   ungroupMwe,
   askLlmTranslation,
 }) {
   const refToAlterMenu = useRef(null);
-  const inputRef = useRef(null);
-  const [inputValue, setInputValue] = useState("");
-  const [showOwnInput, setShowOwnInput] = useState(false);
   // ADR 022: Ask-LLM is opt-in. While the LLM call is in flight the row
   // shows "Asking LLM…" and is disabled. On success we hide the button
   // (the new alternative is now in the list). On failure we leave the
@@ -90,15 +88,16 @@ export default function AlterMenu({
   const [llmAgreedWithPrimary, setLlmAgreedWithPrimary] = useState(word._llmAsked === "agreed");
   const [llmError, setLlmError] = useState(false);
 
-  useEffect(() => {
-    if (showOwnInput && inputRef.current) inputRef.current.focus();
-  }, [showOwnInput]);
-
   // Close the menu as soon as the user starts scrolling — the menu is
   // viewport-fixed, so without this it'd stay floating while the trigger
   // word moves away under it. touchmove catches the finger drag before
   // iOS gets around to firing scroll, so the menu disappears at gesture
   // start instead of after the page has already moved.
+  //
+  // This is also why the menu must not host a text input: focusing one
+  // opens the soft keyboard, the browser scrolls to reveal the field, and
+  // this handler tears the menu down mid-typing. Editing the translation
+  // opens a real modal instead (see `editTranslation`).
   useEffect(() => {
     function handleScrollIntent(e) {
       const el = refToAlterMenu.current;
@@ -138,12 +137,6 @@ export default function AlterMenu({
       document.removeEventListener("touchend", handleCapture, opts);
     };
   }, [hideAlterMenu]);
-
-  function handleKeyDown(e) {
-    if (e.code === "Enter") {
-      selectAlternative(inputValue, "User Suggested");
-    }
-  }
 
   const { list: filteredAlternatives, allAgreedWithPrimary } = buildAlternatives(word);
   const hasAlternatives = filteredAlternatives.length > 0;
@@ -189,7 +182,7 @@ export default function AlterMenu({
 
     el.style.left = `${viewportLeft - origin.left}px`;
     el.style.top = `${viewportTop - origin.top}px`;
-  }, [hasAlternatives, showOwnInput, filteredAlternatives.length]);
+  }, [hasAlternatives, filteredAlternatives.length]);
 
   let header = null;
   if (word.disagreement) {
@@ -222,19 +215,6 @@ export default function AlterMenu({
             <div className="altermenuSourceLabel">{shortenSource(each)}</div>
           </div>
         ))}
-      {showOwnInput && (
-        <input
-          ref={inputRef}
-          autoComplete="off"
-          className="ownTranslationInput matchWidth"
-          type="text"
-          id="#userAlternative"
-          value={inputValue}
-          onChange={(e) => setInputValue(e.target.value)}
-          onKeyDown={(e) => handleKeyDown(e)}
-          placeholder="Type your translation and press Enter"
-        />
-      )}
       <div className="actionsSection">
         {askLlmTranslation && !llmSucceeded && !llmAgreedWithPrimary && (
           <div
@@ -267,9 +247,9 @@ export default function AlterMenu({
             {isAskingLlm ? "Asking AI…" : llmError ? "Ask AI — try again" : "Ask AI"}
           </div>
         )}
-        {!showOwnInput && (
-          <div className="neutralLink" onClick={() => setShowOwnInput(true)}>
-            Add own translation
+        {editTranslation && (
+          <div className="neutralLink" onClick={() => editTranslation()}>
+            Edit translation
           </div>
         )}
         {word.mweExpression && ungroupMwe && (
