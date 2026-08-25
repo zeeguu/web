@@ -750,6 +750,9 @@ let strings = new LocalizedStrings(
 
       //CohortForm
       editClass: "Edit Class",
+      onlyClassroomTexts: "Students see only the texts I share",
+      onlyClassroomTextsHint:
+        "No news feed, search, saved articles or inbox. Students can still leave the class to see the rest of Zeeguu.",
       createClass: "Create Class",
       classroomLanguage: "Classroom language",
       errorInviteCode: "Something went wrong. Maybe the invite code is already in use.",

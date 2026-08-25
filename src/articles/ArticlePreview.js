@@ -169,6 +169,11 @@ export default function ArticlePreview({
     }
   }
 
+  // Save and Hide have nowhere to go when the class shows only the teacher's
+  // texts: there is no Saved tab to reach, and hiding would make one of the few
+  // texts the teacher shared disappear from the only screen the student has.
+  const showSaveAndHide = !Feature.classroom_only();
+
   const is_saved = article.has_personal_copy || article.has_uploader || isArticleSaved;
   const externalUrl = article.parent_url || article.url;
   // Either flavor of simplification gives us a Zeeguu-readable body —
@@ -445,29 +450,33 @@ export default function ArticlePreview({
             Open
           </s.SaveActionButton>
         )}
-        <s.SaveActionButton
-          type="button"
-          onClick={handleToggleSave}
-          aria-label={isArticleSaved ? "Remove from saves" : "Save"}
-        >
-          {isArticleSaved ? (
-            <BookmarkRoundedIcon style={{ fontSize: 16 }} />
-          ) : (
-            <BookmarkBorderRoundedIcon style={{ fontSize: 16 }} />
-          )}
-          {isArticleSaved ? "Saved" : "Save"}
-        </s.SaveActionButton>
-        <s.SaveActionButton
-          type="button"
-          onClick={(e) => {
-            e.stopPropagation();
-            handleHideArticle();
-          }}
-          aria-label="Hide from feed"
-        >
-          <VisibilityOffRoundedIcon style={{ fontSize: 16 }} />
-          Hide
-        </s.SaveActionButton>
+        {showSaveAndHide && (
+          <>
+            <s.SaveActionButton
+              type="button"
+              onClick={handleToggleSave}
+              aria-label={isArticleSaved ? "Remove from saves" : "Save"}
+            >
+              {isArticleSaved ? (
+                <BookmarkRoundedIcon style={{ fontSize: 16 }} />
+              ) : (
+                <BookmarkBorderRoundedIcon style={{ fontSize: 16 }} />
+              )}
+              {isArticleSaved ? "Saved" : "Save"}
+            </s.SaveActionButton>
+            <s.SaveActionButton
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                handleHideArticle();
+              }}
+              aria-label="Hide from feed"
+            >
+              <VisibilityOffRoundedIcon style={{ fontSize: 16 }} />
+              Hide
+            </s.SaveActionButton>
+          </>
+        )}
       </s.SummaryActionRow>
     );
 
@@ -484,7 +493,7 @@ export default function ArticlePreview({
         {/* With an image, Hide lives as an eye-off at the image's bottom-right
             (mirroring Save at top-right) — the top-right × collided with Save on
             stacked mobile layouts. Image-less cards keep the corner ×. */}
-        {!hasImage && (
+        {!hasImage && showSaveAndHide && (
           <s.HideButton onClick={handleHideArticle} aria-label="Hide from feed">
             <CloseRoundedIcon style={{ fontSize: 18 }} />
           </s.HideButton>
@@ -570,7 +579,7 @@ export default function ArticlePreview({
           replaces the Hide button that used to sit at the bottom. Only
           shown where Hide makes sense (Discover-style surfaces, not in
           the Hidden view, not in saved-list views). */}
-      {!isHiddenView && !inSavedView && (
+      {!isHiddenView && !inSavedView && showSaveAndHide && (
         <s.HideButton onClick={handleHideArticle} aria-label="Hide from feed">
           <CloseRoundedIcon style={{ fontSize: 18 }} />
         </s.HideButton>
@@ -644,7 +653,7 @@ export default function ArticlePreview({
             {/* Save toggle overlaid on the image — bookmark icon flips
                 between outline and filled. Sibling of the image-link so
                 clicks here don't bubble into navigation. */}
-            {!isHiddenView && (
+            {!isHiddenView && showSaveAndHide && (
               <s.SaveIconButton
                 type="button"
                 onClick={handleToggleSave}
@@ -687,7 +696,7 @@ export default function ArticlePreview({
                     Open controls regroup into one action row here. */}
                 {!hasImage && (
                   <s.SummaryActionRow>
-                    {!isHiddenView && (
+                    {!isHiddenView && showSaveAndHide && (
                       <s.SaveActionButton
                         type="button"
                         onClick={handleToggleSave}

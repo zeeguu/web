@@ -13,6 +13,7 @@ import { articleSourceLabel } from "../utils/misc/articleHelpers";
 import { estimateReadingTime, timeAgo } from "../utils/misc/readableTime";
 import { isMobile } from "../utils/misc/browserDetection";
 import OpenInNewRoundedIcon from "@mui/icons-material/OpenInNewRounded";
+import Feature from "../features/Feature";
 import BookmarkBorderRoundedIcon from "@mui/icons-material/BookmarkBorderRounded";
 import BookmarkRoundedIcon from "@mui/icons-material/BookmarkRounded";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
@@ -283,14 +284,17 @@ export default function ArticlePreviewOverlay({
           </MetaStrip>
 
           <s.SaveRow>
-            <ActionButton variant="muted" onClick={onToggleSave}>
-              {isArticleSaved ? (
-                <BookmarkRoundedIcon style={{ fontSize: 18, marginRight: 4 }} />
-              ) : (
-                <BookmarkBorderRoundedIcon style={{ fontSize: 18, marginRight: 4 }} />
-              )}
-              {isArticleSaved ? "Saved" : "Save"}
-            </ActionButton>
+            {/* No Saved tab to reach in classroom-only mode. */}
+            {!Feature.classroom_only() && (
+              <ActionButton variant="muted" onClick={onToggleSave}>
+                {isArticleSaved ? (
+                  <BookmarkRoundedIcon style={{ fontSize: 18, marginRight: 4 }} />
+                ) : (
+                  <BookmarkBorderRoundedIcon style={{ fontSize: 18, marginRight: 4 }} />
+                )}
+                {isArticleSaved ? "Saved" : "Save"}
+              </ActionButton>
+            )}
           </s.SaveRow>
 
           {hasImage && <s.Image alt="" src={article.img_url} loading="lazy" decoding="async" />}
