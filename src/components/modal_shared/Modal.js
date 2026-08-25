@@ -24,26 +24,34 @@ export default function Modal({
   // the modal — e.g. the feed under the article preview overlay on desktop —
   // recedes instead of competing with the foreground card.
   darkerBackdrop = false,
+  // Inline style merged onto the backdrop (e.g. an opacity that tracks a
+  // swipe-to-dismiss, so the backdrop leaves WITH the card instead of being
+  // left behind for a frame after it has flown off).
+  backdropStyle,
 }) {
   return (
     <ModalMui
       open={open}
       onClose={onClose}
-      slotProps={
-        darkerBackdrop
-          ? {
-              backdrop: {
-                sx: {
-                  backgroundColor: "rgba(0, 0, 0, 0.78)",
-                  // A light blur pushes the busy feed out of focus so it reads
-                  // as "behind," not as a competing second layer — darkening
-                  // alone barely registers on the already-dark theme.
-                  backdropFilter: "blur(2px)",
-                },
-              },
-            }
-          : undefined
-      }
+      slotProps={{
+        backdrop: {
+          style: backdropStyle,
+          sx: darkerBackdrop
+            ? {
+                backgroundColor: "rgba(0, 0, 0, 0.78)",
+                // A light blur pushes the busy feed out of focus so it reads
+                // as "behind," not as a competing second layer — darkening
+                // alone barely registers on the already-dark theme. Desktop
+                // only: behind a bottom sheet that covers 92% of the phone
+                // there is next to nothing left to blur, and compositing a
+                // blur under a dragging sheet costs frames where they are
+                // scarcest.
+                backdropFilter: "blur(2px)",
+                "@media (max-width: 576px)": { backdropFilter: "none" },
+              }
+            : undefined,
+        },
+      }}
     >
       <s.ModalWrapper
         style={wrapperStyle}

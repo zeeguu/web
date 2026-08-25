@@ -16,11 +16,13 @@ const ScrollArea = styled.div`
   /* Bleed to the wrapper edge (−48 cancels its 48px padding) so the scrollbar
      rides the modal edge, then re-inset the content generously. The wider
      desktop overlay needs more breathing room than the wrapper's 48px. */
-  /* top: clearance raised so the title floats as far from the top edge as the
-     footer's band is tall — the header-less card reads balanced end to end.
-     bottom: matches the footer's 1.1em top padding so the divider sits
-     symmetrically between the last line of text and the action buttons. */
-  padding: 2.4em 64px 1.1em;
+  /* top: just breathing room under the header band, which now supplies the
+     clearance the title used to carve out for itself. */
+  padding: 1.2em 64px 1.1em;
+
+  /* Keep an overscroll at the sheet's edges from bouncing the feed behind it —
+     those two edges are where the drag-to-dismiss gesture starts. */
+  overscroll-behavior: contain;
 
   /* Thin, quiet scrollbar instead of the chunky default. */
   scrollbar-width: thin;
@@ -40,34 +42,71 @@ const ScrollArea = styled.div`
     margin: 0 -16px;
     /* No fixed footer any more, so the scroll area itself owns the bottom
        breathing room — including the home-indicator inset. */
-    padding: 0 16px calc(1em + env(safe-area-inset-bottom, 0px));
+    padding: 0.6em 16px calc(1em + env(safe-area-inset-bottom, 0px));
   }
 `;
 
-// Dismiss control, pinned to the modal's top-LEFT corner: the conventional
-// home for "back out of this", and deliberately away from the forward action
-// at the end of the content. It sits inside the wrapper's side padding (the
-// scroll area insets its content by 64px on desktop, 16px on the phone), so it
-// never collides with the title — no text clearance needed. The wrapper is a
-// positioned ancestor.
-const CloseCorner = styled.button`
+// The sheet's own top band: a fixed-height strip above the scroll area holding
+// the dismiss control, and — on the phone — the grab handle. It is a flex
+// SIBLING of the scroll area rather than an overlay on top of it, so scrolling
+// content cannot pass under the X and collide with it: the scroll area's box
+// simply starts below this band. It bleeds to the wrapper's edges (the negative
+// margins cancel the wrapper's padding) so the divider spans the full width.
+const Header = styled.div`
+  flex: 0 0 auto;
+  position: relative;
+  display: flex;
+  align-items: center;
+  height: 52px;
+  margin: -32px -48px 0;
+  border-bottom: 1px solid var(--border-light);
+  /* This band is a drag surface, so no browser panning/zooming on it. */
+  touch-action: none;
+
+  @media (max-width: 576px) {
+    height: 44px;
+    margin: -20px -16px 0;
+  }
+`;
+
+// The bottom-sheet grab handle: the conventional "you can drag this" affordance.
+// Phone only — on desktop the sheet is a centered card that does not drag.
+const GrabHandle = styled.div`
   position: absolute;
-  top: 8px;
-  left: 10px;
-  z-index: 5;
+  left: 50%;
+  top: 10px;
+  transform: translateX(-50%);
+  width: 36px;
+  height: 4px;
+  border-radius: 2px;
+  background: var(--border-color);
+  opacity: 0.7;
+
+  @media (min-width: 577px) {
+    display: none;
+  }
+`;
+
+// Dismiss control, at the header band's LEFT edge: the conventional home for
+// "back out of this", and deliberately away from the forward action at the end
+// of the content.
+const CloseCorner = styled.button`
   display: inline-flex;
   align-items: center;
   justify-content: center;
   /* 44px: a real touch target around a 22px glyph. */
   width: 44px;
   height: 44px;
+  margin-left: 6px;
   padding: 0;
   border: none;
   border-radius: 50%;
   background: transparent;
   color: var(--text-muted);
   cursor: pointer;
-  transition: color 150ms ease-in-out, background-color 150ms ease-in-out;
+  transition:
+    color 150ms ease-in-out,
+    background-color 150ms ease-in-out;
 
   @media (hover: hover) {
     &:hover {
@@ -77,8 +116,7 @@ const CloseCorner = styled.button`
   }
 
   @media (min-width: 577px) {
-    top: 1.2em;
-    left: 16px;
+    margin-left: 10px;
   }
 `;
 
@@ -91,12 +129,6 @@ const Title = styled.div`
   font-weight: 600;
   line-height: 1.35;
   color: var(--text-primary);
-
-  /* On the phone, drop the title down so words are in thumb reach to tap —
-     and so the close corner gets its own line above it (full-width title). */
-  @media (max-width: 576px) {
-    margin-top: 2rem;
-  }
 `;
 
 // Uncropped, unlike the feed card. The card sits in a list, so it crops every
@@ -161,4 +193,16 @@ const ActionHint = styled.span`
   opacity: 0.8;
 `;
 
-export { ScrollArea, CloseCorner, Title, SaveRow, Image, SummaryLabel, Summary, PrimaryAction, ActionHint };
+export {
+  ScrollArea,
+  Header,
+  GrabHandle,
+  CloseCorner,
+  Title,
+  SaveRow,
+  Image,
+  SummaryLabel,
+  Summary,
+  PrimaryAction,
+  ActionHint,
+};
