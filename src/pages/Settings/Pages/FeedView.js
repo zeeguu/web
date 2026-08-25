@@ -17,7 +17,7 @@ const VIEW_OPTIONS = [
   {
     value: "titles",
     label: "Headlines",
-    description: "Title and image only. Tap a card to open an interactive preview.",
+    description: "Title and image only — tap words in the title to translate them, or the card to open.",
   },
   {
     value: "preview",

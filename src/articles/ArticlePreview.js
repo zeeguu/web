@@ -23,6 +23,7 @@ import BookmarkBorderRoundedIcon from "@mui/icons-material/BookmarkBorderRounded
 import BookmarkRoundedIcon from "@mui/icons-material/BookmarkRounded";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import VisibilityOffRoundedIcon from "@mui/icons-material/VisibilityOffRounded";
+import MenuBookRoundedIcon from "@mui/icons-material/MenuBookRounded";
 
 export default function ArticlePreview({
   article,
@@ -44,7 +45,8 @@ export default function ArticlePreview({
   // inline-interactive card. Only the Discover/search feed passes this false.
   interactive = true,
   // Titles-only variant of preview mode: a compact row (image left, title
-  // right, no summary). Implies !interactive; still opens the overlay on tap.
+  // right, no summary). Implies !interactive; still opens on tap — except on
+  // the title itself, whose words translate in place like in the reader.
   compact = false,
 }) {
   const api = useContext(APIContext);
@@ -67,9 +69,14 @@ export default function ArticlePreview({
   // reopening would show untranslated text. The card outlives the overlay, so
   // the same object — translations and all — is handed back on reopen, the way
   // the reader keeps yours while you're in it.
+  //
+  // Headlines cards build their tokens up front — the title is tappable right
+  // in the row — but from the bundled feed payload only (preferFresh would put
+  // one request per card behind the lightest of the three views).
   const { interactiveTitle, interactiveSummary } = useArticlePreviewTokens(article, {
-    enabled: !previewMode || previewOpen,
-    preferFresh: previewMode,
+    enabled: !previewMode || previewOpen || compact,
+    preferFresh: previewMode && !compact,
+    titleOnly: compact && !previewOpen,
   });
   const [isHidden, setIsHidden] = useState(article.hidden || false);
   const [isAnimatingOut, setIsAnimatingOut] = useState(false);
@@ -325,6 +332,8 @@ export default function ArticlePreview({
   // whose whole body is one tap target that opens the interactive overlay.
   // "Open" affordances are gone (the card *is* the open). Save (convenience)
   // and Hide stay as stopPropagation siblings so they don't open the overlay.
+  // Headlines (compact) is the exception: its title IS tappable-to-translate,
+  // so it gets Open back as an explicit action — see titleIsInteractive below.
   if (previewMode) {
     const openPreview = () => {
       handleArticleClick();
@@ -337,6 +346,23 @@ export default function ArticlePreview({
         setPreviewOpen(true);
       }
     };
+
+    // Headlines: the title carries the same tap-to-translate as the reader, so
+    // a word tap must not also open the article. Words render as <z-tag> (and
+    // their translation/alter-menu chrome lives inside one), so only taps that
+    // land on a word are swallowed — the spaces around them, the meta strip and
+    // the thumbnail still open the card, keeping the whole row a tap target.
+    const titleIsInteractive = compact && !!interactiveTitle;
+    const swallowWordTaps = (e) => {
+      if (e.target.closest?.("z-tag")) e.stopPropagation();
+    };
+    const compactTitle = titleIsInteractive ? (
+      <s.Title onClick={swallowWordTaps}>
+        <TranslatableText interactiveText={interactiveTitle} translating={true} pronouncing={true} />
+      </s.Title>
+    ) : (
+      <s.Title>{article.title}</s.Title>
+    );
 
     // Shared between the Preview (image + summary) and Headlines (compact)
     // layouts so the meta/image markup isn't duplicated across the two.
@@ -399,6 +425,26 @@ export default function ArticlePreview({
     // thumbnail can't carry overlay buttons anyway.
     const feedActions = (
       <s.SummaryActionRow>
+        {/* With a tappable title the row no longer has one obvious "open here"
+            spot, so Headlines states it. Preview mode keeps the plain title —
+            there the whole card unambiguously *is* the open. */}
+        {titleIsInteractive && (
+          <s.SaveActionButton
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              openPreview();
+            }}
+            aria-label="Open article"
+          >
+            {should_open_in_zeeguu ? (
+              <MenuBookRoundedIcon style={{ fontSize: 16 }} />
+            ) : (
+              <OpenInNewRoundedIcon style={{ fontSize: 16 }} />
+            )}
+            Open
+          </s.SaveActionButton>
+        )}
         <s.SaveActionButton
           type="button"
           onClick={handleToggleSave}
@@ -460,7 +506,7 @@ export default function ArticlePreview({
             // small thumbnail to the left (desktop, via CompactCard's reflow).
             <s.CompactCard>
               <s.CompactText>
-                <s.Title>{article.title}</s.Title>
+                {compactTitle}
                 {metaStrip}
                 {feedActions}
               </s.CompactText>
