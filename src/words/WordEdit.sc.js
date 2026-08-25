@@ -11,7 +11,15 @@ const style = {
   left: "50%",
   transform: "translate(-50%, -50%)",
   width: "50%",
-  bgcolor: "background.paper",
+  // The app has no MUI theme (nothing calls createTheme), so MUI's stock
+  // light palette is all there is: `background.paper` is hard white in dark
+  // mode too. body sets `color: var(--text-primary)`, which dark mode turns
+  // near-white, so every child that doesn't paint its own color — the
+  // Headline, and anything else added later — landed white-on-white at about
+  // 1.3:1. Use the same theme-aware surface ModalWrapper already uses, and
+  // state the text color on the card rather than inheriting it from body.
+  bgcolor: "var(--card-bg)",
+  color: "var(--text-primary)",
   border: "0 !important",
   borderRadius: "0.65em",
   boxShadow: 24,
