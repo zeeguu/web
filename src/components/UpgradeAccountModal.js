@@ -89,11 +89,11 @@ const ModalContent = styled.div`
     cursor: pointer;
     padding: 0.25rem 0.5rem;
     font-size: 0.85rem;
-    color: #666;
+    color: var(--text-secondary);
   }
 
   .password-toggle:hover {
-    color: #333;
+    color: var(--text-primary);
   }
 `;
 
