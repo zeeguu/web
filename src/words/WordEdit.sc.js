@@ -111,6 +111,18 @@ let ReadOnlyWord = scStyled.div`
   color: var(--text-primary, inherit);
 `;
 
+// The word shown when a call site opens the form with isWordEditable={false}
+// (the reader). A disabled TextField would still read as an input the user
+// could type into; this states plainly that the word is the subject of the
+// dialog and only the translation below it is editable.
+let ReadOnlyWord = scStyled.div`
+  margin: 0.5em 0 1.5em;
+  text-align: center;
+  font-size: 1.3em;
+  font-weight: 500;
+  color: var(--text-primary, inherit);
+`;
+
 let CustomCheckBoxDiv = scStyled.div`
   margin-top: 1em;
   margin-bottom: 1em;

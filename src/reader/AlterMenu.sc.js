@@ -6,8 +6,6 @@ const AlterMenuSC = styled.div`
   --altermenu-bg: ${zeeguuVeryLightYellow};
   --altermenu-text: ${almostBlack};
   --altermenu-border: ${zeeguuLightYellow};
-  --altermenu-input-bg: white;
-  --altermenu-input-focus-border: ${almostBlack};
   --altermenu-source-text: rgb(240, 204, 160);
   --altermenu-action-text: ${zeeguuDarkRed};
   --altermenu-action-border: ${zeeguuDarkRed};
@@ -20,8 +18,6 @@ const AlterMenuSC = styled.div`
     --altermenu-bg: rgb(50, 40, 30);
     --altermenu-text: rgb(255, 240, 220);
     --altermenu-border: rgb(90, 70, 40);
-    --altermenu-input-bg: rgb(35, 28, 20);
-    --altermenu-input-focus-border: rgb(255, 240, 220);
     --altermenu-source-text: rgb(160, 130, 90);
     --altermenu-action-text: #ff7a7a;
     --altermenu-action-border: rgb(120, 60, 60);
@@ -68,31 +64,6 @@ const AlterMenuSC = styled.div`
     font-style: italic;
     margin: 0.3em 0.2em;
     font-size: small;
-  }
-
-  .ownTranslationInput {
-    all: unset;
-    border: 0.17em solid var(--altermenu-border);
-    padding: 0.125em;
-    padding-left: 0.5em;
-    padding-right: 5px;
-    height: 2em;
-    width: 100%;
-    box-sizing: border-box;
-    background: var(--altermenu-input-bg);
-    color: var(--altermenu-text);
-    border-radius: 0.4em;
-    font-weight: 400;
-    font-size: 16px;
-
-    &:hover {
-      filter: brightness(98%);
-    }
-
-    &:focus {
-      border: 0.17em solid var(--altermenu-input-focus-border);
-      font-weight: 500;
-    }
   }
 
   .alterMenuLink {

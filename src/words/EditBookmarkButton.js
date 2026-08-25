@@ -1,10 +1,7 @@
 import * as s from "./WordEdit.sc";
 import * as sc from "./Word.sc";
 import { useContext, useState } from "react";
-import Box from "@mui/material/Box";
-import Modal from "@mui/material/Modal";
-import WordEditForm from "./WordEditForm";
-import { getStaticPath } from "../utils/misc/staticPath.js";
+import EditBookmarkModal from "./EditBookmarkModal";
 import { toast } from "react-toastify";
 
 import { isTextInSentence } from "../utils/text/expressions";
@@ -159,33 +156,27 @@ export default function EditBookmarkButton({
       });
   }
 
-  const isPhoneScreen = window.innerWidth < 800;
+  let trigger;
+  if (styling === "exercise") {
+    trigger = <s.EditButton onClick={handleOpen} />;
+  } else if (styling === "match") {
+    trigger = <sc.EditIconNoPadding onClick={handleOpen} />;
+  } else {
+    trigger = <sc.EditIcon onClick={handleOpen} />;
+  }
+
   return (
     <div>
-      {styling === "exercise" ? (
-        <s.EditButton onClick={handleOpen} />
-      ) : styling === "match" ? (
-        <sc.EditIconNoPadding onClick={handleOpen} />
-      ) : (
-        <sc.EditIcon onClick={handleOpen} />
-      )}
-      <Modal
+      {trigger}
+      <EditBookmarkModal
         open={open}
         onClose={handleClose}
-        aria-labelledby="modal-modal-title"
-        aria-describedby="modal-modal-description"
-      >
-        <Box sx={isPhoneScreen ? s.stylePhone : s.style}>
-          <WordEditForm
-            bookmark={bookmark}
-            errorMessage={errorMessage}
-            handleClose={handleClose}
-            updateBookmark={updateBookmark}
-            deleteAction={deleteBookmark}
-            onWordRemovedFromExercises={onWordRemovedFromExercises}
-          />
-        </Box>
-      </Modal>
+        bookmark={bookmark}
+        errorMessage={errorMessage}
+        updateBookmark={updateBookmark}
+        deleteAction={deleteBookmark}
+        onWordRemovedFromExercises={onWordRemovedFromExercises}
+      />
     </div>
   );
 }

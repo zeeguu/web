@@ -6,10 +6,7 @@ import strings from "../i18n/definitions";
 import { setTitle } from "../assorted/setTitle";
 import { APIContext } from "../contexts/APIContext";
 import { SpeechContext } from "../contexts/SpeechContext";
-import Box from "@mui/material/Box";
-import Modal from "@mui/material/Modal";
-import WordEditForm from "./WordEditForm";
-import * as editStyles from "./WordEdit.sc";
+import EditBookmarkModal from "./EditBookmarkModal";
 import * as s from "./SessionHistory.sc";
 import { toast } from "react-toastify";
 import { isTextInSentence } from "../utils/text/expressions";
@@ -594,24 +591,14 @@ export default function SessionHistory() {
       )}
 
       {/* Edit Word Modal */}
-      <Modal
+      <EditBookmarkModal
         open={editModalOpen}
         onClose={handleEditClose}
-        aria-labelledby="edit-word-modal"
-        aria-describedby="edit-word-form"
-      >
-        <Box sx={window.innerWidth < 800 ? editStyles.stylePhone : editStyles.style}>
-          {editBookmark && editBookmark.from && (
-            <WordEditForm
-              bookmark={editBookmark}
-              errorMessage={editError}
-              handleClose={handleEditClose}
-              updateBookmark={updateBookmark}
-              deleteAction={deleteBookmark}
-            />
-          )}
-        </Box>
-      </Modal>
+        bookmark={editBookmark}
+        errorMessage={editError}
+        updateBookmark={updateBookmark}
+        deleteAction={deleteBookmark}
+      />
     </>
   );
 }
