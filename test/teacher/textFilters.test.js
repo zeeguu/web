@@ -58,13 +58,13 @@ describe("filterTexts", () => {
 });
 
 describe("sharedClassesOf", () => {
-  // The API deploys before the web, but not the other way round: a client can
-  // meet a response that only has the older names-only `cohorts` field.
-  test("falls back to the names-only field", () => {
-    expect(sharedClassesOf({ cohorts: ["nana"] })).toEqual([{ id: "nana", name: "nana" }]);
-  });
-
   test("is empty for a text shared with nobody", () => {
     expect(sharedClassesOf({})).toEqual([]);
+  });
+
+  // The names-only `cohorts` field cannot drive the x on a pill: it carries no
+  // id, so an unshare would post a class name as cohort_id and 401.
+  test("ignores the older names-only field", () => {
+    expect(sharedClassesOf({ cohorts: ["nana"] })).toEqual([]);
   });
 });

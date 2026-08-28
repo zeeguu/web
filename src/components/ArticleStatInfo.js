@@ -3,7 +3,10 @@ import getDomainName from "../utils/misc/getDomainName";
 import { isSimplifiedArticle } from "../utils/misc/articleHelpers";
 import { effectiveCefrLevel } from "../utils/misc/cefrHelpers";
 
-export default function ArticleStatInfo({ articleInfo, shareContext }) {
+// `children` are extra MetaItems appended to the same strip -- the teacher's
+// texts list adds language and word count there. Passing them in rather than
+// building a second strip keeps MetaStrip's "·" separators doing their job.
+export default function ArticleStatInfo({ articleInfo, shareContext, children }) {
   const isSimplified = isSimplifiedArticle(articleInfo);
   const sourceUrl = articleInfo.parent_url || articleInfo.url;
   const sourceDomain = sourceUrl ? getDomainName(sourceUrl) : null;
@@ -62,6 +65,7 @@ export default function ArticleStatInfo({ articleInfo, shareContext }) {
           {isTeacherSet && <>&nbsp;(set by you)</>}
         </MetaItem>
       )}
+      {children}
     </MetaStrip>
   );
 }

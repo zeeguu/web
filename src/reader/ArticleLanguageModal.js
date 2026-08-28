@@ -1,10 +1,6 @@
 import ChoiceModal from "../components/modal_shared/ChoiceModal";
-import { LANGUAGE_CODE_TO_NAME } from "../utils/misc/languageCodeToName";
+import { languageName } from "../utils/misc/languageCodeToName";
 import { CEFR_ORDINAL } from "../utils/misc/cefrHelpers";
-
-function langName(code) {
-  return LANGUAGE_CODE_TO_NAME[code] || code;
-}
 
 const CEFR_BAR_COUNT = 4;
 const CEFR_BAR_GEOMETRY = [
@@ -120,7 +116,7 @@ export default function ArticleLanguageModal({
   isLoading,
 }) {
   const isSameLanguage = articleLanguage === learnedLanguage;
-  const articleLangName = langName(articleLanguage);
+  const articleLangName = languageName(articleLanguage);
   const levelClause = articleCefrLevel ? ` at ${articleCefrLevel} level` : "";
   const targetClause = userCefrLevel ? ` to ${userCefrLevel}` : " to my level";
 
@@ -164,7 +160,7 @@ export default function ArticleLanguageModal({
     <ChoiceModal
       title={articleTitle}
       heroImage={articleImage}
-      message={`This article is in ${articleLangName}${levelClause}. Do you want it translated to ${langName(learnedLanguage)} at your level before saving?`}
+      message={`This article is in ${articleLangName}${levelClause}. Do you want it translated to ${languageName(learnedLanguage)} at your level before saving?`}
       primaryLabel={`Translate${targetClause}`}
       secondaryLabel="Save original"
       loadingLabel="Translating..."

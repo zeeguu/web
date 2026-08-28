@@ -10,12 +10,6 @@ export const Header = styled.header`
   margin-bottom: 1rem;
 `;
 
-export const Heading = styled.h1`
-  margin: 0;
-  font-size: 1.5rem;
-  letter-spacing: -0.02em;
-`;
-
 export const Subtitle = styled.div`
   margin-top: 0.15rem;
   font-size: 0.8rem;

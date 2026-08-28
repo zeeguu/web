@@ -4,16 +4,13 @@ import { APIContext } from "../../../contexts/APIContext";
 import LoadingAnimation from "../../../components/LoadingAnimation";
 import ArticlePreview from "../../../articles/ArticlePreview";
 import { StyledButton } from "../../styledComponents/TeacherButtons.sc";
+import FullWidthErrorMsg from "../../../components/FullWidthErrorMsg.sc";
+import FullWidthInfoMsg from "../../../components/FullWidthInfoMsg.sc";
 import ClassTabs from "./ClassTabs";
-import { LANGUAGE_CODE_TO_NAME } from "../../../utils/misc/languageCodeToName";
+import { languageName } from "../../../utils/misc/languageCodeToName";
 import { setTitle } from "../../../assorted/setTitle";
 import * as c from "../../../components/ColumnWidth.sc";
 import * as s from "./ClassTexts.sc";
-
-function languageName(code) {
-  if (!code) return "no language set";
-  return LANGUAGE_CODE_TO_NAME[code] || code;
-}
 
 function pluralStudents(n) {
   return `${n} ${n === 1 ? "student" : "students"}`;
@@ -53,25 +50,20 @@ export default function ClassTexts() {
     <c.NarrowColumn>
       <ClassTabs cohortID={cohortID} cohortName={cohort.name} textCount={texts.length} />
       <s.Subtitle>
-        {languageName(cohort.language)} · {pluralStudents(student_count)}
+        {cohort.language ? languageName(cohort.language) : "no language set"} · {pluralStudents(student_count)}
       </s.Subtitle>
 
       {emptyForEveryone && (
-        <s.Notice $tone="bad">
-          <span>⚑</span>
+        <FullWidthErrorMsg>
           <span>
-            <strong>This class has no texts, and its students see nothing else.</strong> Until
-            you add one, Zeeguu opens on an empty page for all{" "}
-            {pluralStudents(student_count)}.
+            This class has no texts, and its students see nothing else. Until you add one,
+            Zeeguu opens on an empty page for all {pluralStudents(student_count)}.
           </span>
-        </s.Notice>
+        </FullWidthErrorMsg>
       )}
 
       {nothingShared && !emptyForEveryone && (
-        <s.Notice>
-          <span>⚠</span>
-          <span>No texts shared with this class yet.</span>
-        </s.Notice>
+        <FullWidthInfoMsg>No texts shared with this class yet.</FullWidthInfoMsg>
       )}
 
       <s.Actions>

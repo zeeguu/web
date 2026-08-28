@@ -1,5 +1,6 @@
-import { Link } from "react-router-dom";
+import BackArrow from "../../../pages/Settings/SharedComponents/BackArrow";
 import TopTabs from "../../../components/TopTabs";
+import { TeacherPageHeading } from "../../styledComponents/TeacherPageHeading.sc";
 import * as s from "./ClassTabs.sc";
 
 /**
@@ -7,8 +8,8 @@ import * as s from "./ClassTabs.sc";
  *
  * The page used to put "Add Students" and "Back to Classes" side by side as
  * buttons of equal weight, so navigating away looked exactly like the page's
- * primary action. Navigation is tabs and a back link; buttons are for doing
- * something to the class.
+ * primary action. Navigation is tabs and the shared BackArrow (which also
+ * wires up swipe-back); buttons are for doing something to the class.
  */
 export default function ClassTabs({ cohortID, cohortName, textCount }) {
   const base = `/teacher/classes/viewClass/${cohortID}`;
@@ -23,10 +24,10 @@ export default function ClassTabs({ cohortID, cohortName, textCount }) {
 
   return (
     <s.Wrapper>
-      <s.BackLink>
-        <Link to="/teacher/classes">← All classes</Link>
-      </s.BackLink>
-      <s.ClassName>{cohortName}</s.ClassName>
+      <s.TitleRow>
+        <BackArrow redirectLink="/teacher/classes" />
+        <TeacherPageHeading>{cohortName}</TeacherPageHeading>
+      </s.TitleRow>
       <TopTabs tabsAndLinks={tabs} isCompact={true} />
     </s.Wrapper>
   );

@@ -21,41 +21,11 @@ export const Body = styled.div`
   gap: 0.35rem;
 `;
 
-export const TitleLine = styled.div`
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 0.75rem;
-`;
-
 export const Title = styled.span`
   font-weight: 600;
   font-size: 1rem;
   line-height: 1.3;
   color: var(--text-primary);
-`;
-
-export const Level = styled.span`
-  flex: 0 0 auto;
-  font-size: 0.72rem;
-  font-weight: 700;
-  letter-spacing: 0.02em;
-  white-space: nowrap;
-  padding: 0.15rem 0.4rem;
-  border-radius: 5px;
-  background-color: var(--bg-tertiary);
-  color: ${darkBlue};
-`;
-
-export const LevelSetByYou = styled.span`
-  font-weight: 500;
-  opacity: 0.75;
-`;
-
-export const Meta = styled.div`
-  font-size: 0.76rem;
-  color: var(--text-secondary);
-  font-variant-numeric: tabular-nums;
 `;
 
 export const Pills = styled.div`

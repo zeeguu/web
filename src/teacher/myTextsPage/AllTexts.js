@@ -8,6 +8,7 @@ import { StyledButton } from "../styledComponents/TeacherButtons.sc";
 import * as s from "../../components/ColumnWidth.sc";
 import * as m from "../styledComponents/AllTexts.sc";
 import * as h from "../styledComponents/MyTextsHeader.sc";
+import { TeacherPageHeading } from "../styledComponents/TeacherPageHeading.sc";
 import SortingButtons from "../../articles/SortingButtons";
 import { APIContext } from "../../contexts/APIContext";
 import { ALL, buildClassFilters, filterTexts } from "./textFilters";
@@ -50,7 +51,7 @@ export default function AllTexts() {
         <m.StyledMyTexts>
           <h.Header>
             <div>
-              <h.Heading>{strings.myTexts}</h.Heading>
+              <TeacherPageHeading>{strings.myTexts}</TeacherPageHeading>
               <h.Subtitle>
                 {articleList.length} {articleList.length === 1 ? "text" : "texts"}
                 {notSharedCount > 0 && ` · ${notSharedCount} shared with nobody`}

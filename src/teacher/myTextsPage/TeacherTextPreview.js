@@ -3,8 +3,9 @@ import { Link } from "react-router-dom";
 import { RoutingContext } from "../../contexts/RoutingContext";
 import { APIContext } from "../../contexts/APIContext";
 import DynamicFlagImage from "../../components/DynamicFlagImage";
-import { effectiveCefrLevel } from "../../utils/misc/cefrHelpers";
-import { LANGUAGE_CODE_TO_NAME } from "../../utils/misc/languageCodeToName";
+import ArticleStatInfo from "../../components/ArticleStatInfo";
+import { MetaItem } from "../../components/MetaStrip.sc";
+import { languageName } from "../../utils/misc/languageCodeToName";
 import AddToCohortDialog from "./AddToCohortDialog";
 import * as s from "../styledComponents/TeacherTextRow.sc";
 
@@ -18,15 +19,8 @@ export default function TeacherTextPreview({ article, onSharingChanged }) {
   const [removing, setRemoving] = useState(null);
 
   const editPath = `/teacher/texts/editText/${article.id}`;
-  const level = effectiveCefrLevel(article.cefr_assessments);
-  const isTeacherSet = Boolean(article.cefr_assessments?.teacher?.level);
-  const languageName = LANGUAGE_CODE_TO_NAME[article.language] || article.language;
   const wordCount = article.metrics?.word_count;
-
-  // `shared_with` carries ids; `cohorts` is the older names-only field, kept so
-  // the list still renders against an API that has not been deployed yet.
-  const sharedWith =
-    article.shared_with || (article.cohorts || []).map((name) => ({ id: name, name }));
+  const sharedWith = article.shared_with || [];
 
   function unshare(cohort) {
     setRemoving(cohort.id);
@@ -51,22 +45,17 @@ export default function TeacherTextPreview({ article, onSharingChanged }) {
       </s.Flag>
 
       <s.Body>
-        <s.TitleLine>
-          <Link to={editPath} onClick={() => setReturnPath?.("/teacher/texts")}>
-            <s.Title>{article.title.substring(0, MAX_TITLE_LENGTH)}</s.Title>
-          </Link>
-          {level && (
-            <s.Level title={isTeacherSet ? "You set this level by hand" : "Automatically assessed"}>
-              {level}
-              {isTeacherSet && <s.LevelSetByYou> · yours</s.LevelSetByYou>}
-            </s.Level>
-          )}
-        </s.TitleLine>
+        <Link to={editPath} onClick={() => setReturnPath?.("/teacher/texts")}>
+          <s.Title>{article.title.substring(0, MAX_TITLE_LENGTH)}</s.Title>
+        </Link>
 
-        <s.Meta>
-          {languageName}
-          {wordCount ? ` · ${wordCount} words` : ""}
-        </s.Meta>
+        {/* Same strip as the article list and the reader header, so the source
+            link and the difficulty read identically wherever a teacher meets
+            them; language and word count ride along as extra items. */}
+        <ArticleStatInfo articleInfo={article}>
+          <MetaItem>{languageName(article.language)}</MetaItem>
+          {wordCount ? <MetaItem>{wordCount} words</MetaItem> : null}
+        </ArticleStatInfo>
 
         <s.Pills>
           {sharedWith.length === 0 && <s.NotShared>Not shared with any class</s.NotShared>}

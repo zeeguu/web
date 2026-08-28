@@ -1,9 +1,9 @@
 export const ALL = "all";
 export const NOT_SHARED = "not-shared";
 
-/** Classes a text is shared with, tolerating an API that only sends names. */
+/** Classes a text is shared with, as {id, name}. */
 export function sharedClassesOf(article) {
-  return article.shared_with || (article.cohorts || []).map((name) => ({ id: name, name }));
+  return article.shared_with || [];
 }
 
 /**

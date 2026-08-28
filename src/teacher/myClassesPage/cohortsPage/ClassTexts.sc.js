@@ -7,24 +7,6 @@ export const Subtitle = styled.div`
   color: var(--text-secondary);
 `;
 
-export const Notice = styled.div`
-  display: flex;
-  gap: 0.6rem;
-  align-items: flex-start;
-  padding: 0.8rem 0.95rem;
-  margin-bottom: 1rem;
-  border-radius: 9px;
-  font-size: 0.85rem;
-  line-height: 1.5;
-  border: 1px solid ${({ $tone }) => ($tone === "bad" ? "#d99" : "#dcb")};
-  background-color: ${({ $tone }) => ($tone === "bad" ? "#fbeceb" : "#fdf5e6")};
-  color: ${({ $tone }) => ($tone === "bad" ? "#8c2b22" : "#7a4e00")};
-
-  strong {
-    font-weight: 700;
-  }
-`;
-
 export const Actions = styled.div`
   display: flex;
   gap: 0.5rem;
