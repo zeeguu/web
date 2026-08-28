@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import { darkBlue } from "../../components/colors";
 import Tag from "../../pages/_pages_shared/Tag.sc";
+import { FilterRow } from "../../components/FilterRow.sc";
 
 export const Header = styled.header`
   display: flex;
@@ -11,19 +12,17 @@ export const Header = styled.header`
   margin-bottom: 1rem;
 `;
 
-export const FilterBar = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 0.35rem;
-  flex-wrap: wrap;
+// The same row as the feed's, wrapped rather than scrolling: a teacher on a
+// desktop is better served seeing every class at once than scrolling to find one.
+export const FilterBar = styled(FilterRow).attrs({ $wrap: true })`
+  padding-bottom: 0.8rem;
+  margin-bottom: 0.2rem;
+  border-bottom: 1px solid var(--border-color);
 
   /* The sort control sits at the far end; no spacer element needed. */
   > *:last-child {
     margin-left: auto;
   }
-  padding-bottom: 0.8rem;
-  margin-bottom: 0.2rem;
-  border-bottom: 1px solid var(--border-color);
 `;
 
 // The app's filter pill (feed filter bar, feed preferences, onboarding) in its

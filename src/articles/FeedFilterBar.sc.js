@@ -1,31 +1,11 @@
 import styled from "styled-components";
 import { zeeguuOrange } from "../components/colors";
+import { FilterRow as SharedFilterRow } from "../components/FilterRow.sc";
 
-// A single horizontally-scrolling row of filter pills (Spotify-style).
-// Children don't shrink, so the row scrolls instead of squashing the pills.
-export const FilterRow = styled.div`
-  display: flex;
-  flex-direction: row;
-  flex-wrap: nowrap;
-  align-items: center;
-  gap: 0.25rem;
+// The shared filter row with the feed's own spacing. Scrolling is the shared
+// default, so only the padding is local.
+export const FilterRow = styled(SharedFilterRow)`
   padding: 0.5rem 1rem 0.25rem;
-  overflow-x: auto;
-  overflow-y: hidden;
-  -webkit-overflow-scrolling: touch;
-  scrollbar-width: none; /* Firefox */
-
-  &::-webkit-scrollbar {
-    display: none; /* Chrome / Safari */
-  }
-
-  & > * {
-    flex: 0 0 auto;
-  }
-
-  & button {
-    white-space: nowrap;
-  }
 `;
 
 // Circular icon button sized to match the pills — used for the gear (opens

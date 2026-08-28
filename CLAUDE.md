@@ -18,6 +18,7 @@ original had (a gesture, a theme, a separator).
 | Language name from a code | `languageName()` in `utils/misc/languageCodeToName` | `LANGUAGE_CODE_TO_NAME[c] \|\| c` |
 | Article difficulty for a teacher | `effectiveCefrLevel()` in `utils/misc/cefrHelpers` | re-deriving from `cefr_assessments.llm/ml` |
 | Flag | `DynamicFlagImage` — `size` is interpolated as a CSS length, so pass `"1rem"`, never `16` | — |
+| Row of filter pills | `FilterRow.sc` (`$wrap` for dashboards, scrolls by default) |
 | Empty state | `EmptyState` | — |
 | Switching learned language | `useGuardedLanguageSwitch` | calling `switchLanguage` directly (skips the mid-article confirmation) |
 
