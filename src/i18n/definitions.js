@@ -718,6 +718,8 @@ let strings = new LocalizedStrings(
       //AddToCohortDialog
       chooseClass: "Choose one or more classes",
       saveChanges: "Save Changes",
+      filterClassesByName: "Filter classes by name",
+      noClassesMatchFilter: "No classes match what you typed.",
 
       //AddURLDialog
       addTextFromWebpage: "Add text from a webpage",
@@ -1497,6 +1499,8 @@ let strings = new LocalizedStrings(
       //AddToCohortDialog
       chooseClass: "Vælg en eller flere klasser",
       saveChanges: "Gem ændringer",
+      filterClassesByName: "Filtrér klasser efter navn",
+      noClassesMatchFilter: "Ingen klasser matcher det, du har skrevet.",
 
       //AddURLDialog
       addTextFromWebpage: "Tilføj tekst fra en hjemmeside",
