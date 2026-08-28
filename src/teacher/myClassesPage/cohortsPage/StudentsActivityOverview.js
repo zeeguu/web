@@ -24,6 +24,7 @@ export default function StudentsActivityOverview() {
   const selectedTimePeriod = LocalStorage.selectedTimePeriod();
   const [showAddStudentsInfo, setShowAddStudentsInfo] = useState(false);
 
+
   function updateShownStudents() {
     setStudents(null);
     api.getStudents(cohortID, selectedTimePeriod, (res) => {
@@ -59,9 +60,13 @@ export default function StudentsActivityOverview() {
 
   return (
     <>
-      <s.WidestColumn>
+      <s.NarrowColumn>
         <div>
-          <ClassTabs cohortID={cohortID} cohortName={cohort.name} />
+          <ClassTabs
+            cohortID={cohortID}
+            cohort={cohort}
+            onClassChanged={setForceUpdate}
+          />
           <TopButtonWrapper>
             <StyledButton $primary onClick={() => setShowAddStudentsInfo(true)}>
               {strings.addStudents}
@@ -80,7 +85,7 @@ export default function StudentsActivityOverview() {
             />
           )}
         </div>
-      </s.WidestColumn>
+      </s.NarrowColumn>
       {showAddStudentsInfo && (
         <HowToAddStudentsInfo
           setShowAddStudentInfo={setShowAddStudentsInfo}

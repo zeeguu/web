@@ -1,19 +1,18 @@
 import React, { useState, useEffect } from "react";
-import strings from "../../../i18n/definitions";
 import CohortForm from "./CohortForm";
 import { CohortItemCard } from "./CohortItemCard";
 import LoadingAnimation from "../../../components/LoadingAnimation";
-import {
-  StyledButton,
-  TopButtonWrapper,
-} from "../../styledComponents/TeacherButtons.sc";
-import AddTeacherDialog from "./AddTeacherDialog";
 
-export default function CohortList({ cohorts, setForceUpdate }) {
-  const [showCohortForm, setShowCohortForm] = useState(false);
-  const [showAddTeacherDialog, setShowAddTeacherDialog] = useState(false);
+// The rows carry no actions any more: "Add Class" is the page header's, and
+// editing a class or adding a teacher to it happens inside the class. So all
+// this list still owns is the new-class form the header opens.
+export default function CohortList({
+  cohorts,
+  setForceUpdate,
+  showCohortForm,
+  setShowCohortForm,
+}) {
   const [reversedList, setReversedList] = useState(null);
-  const [cohortToEdit, setCohortToEdit] = useState(null);
 
   //Making sure the latest added class is always on top of the list
   const getReversedList = cohorts.map((cohort) => cohort).reverse();
@@ -23,44 +22,21 @@ export default function CohortList({ cohorts, setForceUpdate }) {
     // eslint-disable-next-line
   }, [cohorts]);
 
-  const handleAddNewCohort = () => {
-    setCohortToEdit(null);
-    setShowCohortForm(true);
-  };
-
   if (reversedList === null) {
     return <LoadingAnimation />;
   }
 
   return (
     <>
-      <TopButtonWrapper>
-        <StyledButton $primary onClick={handleAddNewCohort}>
-          {strings.addClass}
-        </StyledButton>
-      </TopButtonWrapper>
       {reversedList.map((cohort) => (
-        <CohortItemCard
-          key={cohort.id}
-          cohort={cohort}
-          setShowCohortForm={setShowCohortForm}
-          setShowAddTeacherDialog={setShowAddTeacherDialog}
-          setCohortToEdit={setCohortToEdit}
-        />
+        <CohortItemCard key={cohort.id} cohort={cohort} />
       ))}
       {showCohortForm && (
         <CohortForm
           setShowCohortForm={setShowCohortForm}
           setForceUpdate={setForceUpdate}
-          cohort={cohortToEdit}
+          cohort={null}
           cohorts={cohorts}
-        />
-      )}
-      {showAddTeacherDialog && (
-        <AddTeacherDialog
-          cohort={cohortToEdit}
-          setIsOpen={setShowAddTeacherDialog}
-          setForceUpdate={setForceUpdate}
         />
       )}
     </>

@@ -49,7 +49,12 @@ export default function ClassTexts() {
 
   return (
     <c.NarrowColumn>
-      <ClassTabs cohortID={cohortID} cohortName={cohort.name} textCount={texts.length} />
+      <ClassTabs
+        cohortID={cohortID}
+        cohort={{ ...cohort, language_id: undefined }}
+        textCount={texts.length}
+        onClassChanged={() => api.getCohortTextOverview(cohortID, setOverview)}
+      />
       <TeacherPageSubtitle>
         {cohort.language ? languageName(cohort.language) : "no language set"} · {pluralStudents(student_count)}
       </TeacherPageSubtitle>

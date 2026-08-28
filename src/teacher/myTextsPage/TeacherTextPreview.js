@@ -7,7 +7,7 @@ import ArticleStatInfo from "../../components/ArticleStatInfo";
 import { MetaItem } from "../../components/MetaStrip.sc";
 import { languageName } from "../../utils/misc/languageCodeToName";
 import AddToCohortDialog from "./AddToCohortDialog";
-import * as s from "../styledComponents/TeacherTextRow.sc";
+import * as s from "../styledComponents/TeacherListRow.sc";
 
 const MAX_TITLE_LENGTH = 128;
 
