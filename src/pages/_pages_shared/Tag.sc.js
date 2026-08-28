@@ -34,6 +34,18 @@ const Tag = styled.button`
     font-size: 0.9rem;
   }
 
+  /* Dense rows -- filter chips and the class pills on a text -- where the pill
+     is metadata beside other text rather than a control of its own. */
+  &.tiny {
+    padding: 0.25rem 0.6rem;
+    margin: 0;
+    gap: 0.25rem;
+    font-weight: 500;
+    font-size: 0.74rem;
+    border-radius: 999px;
+    border-width: 1px;
+  }
+
   &.outlined-blue {
     align-items: center;
     border: 1.5px solid ${blue500};

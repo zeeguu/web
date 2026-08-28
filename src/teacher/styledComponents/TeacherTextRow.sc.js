@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import { darkBlue, lightBlue } from "../../components/colors";
+import Tag from "../../pages/_pages_shared/Tag.sc";
 
 export const Row = styled.article`
   display: flex;
@@ -35,15 +36,12 @@ export const Pills = styled.div`
   gap: 0.3rem;
 `;
 
-/* A class is state, not an action: filled and small, so it reads differently
-   from the outlined buttons around it. Only the trailing x is clickable. */
-export const Pill = styled.span`
-  display: inline-flex;
-  align-items: center;
-  gap: 0.2rem;
-  font-size: 0.72rem;
-  padding: 0.15rem 0.2rem 0.15rem 0.55rem;
-  border-radius: 999px;
+// Both are the app's pill (Tag) in its small variant. A class is state, not an
+// action: filled, and only the trailing x is clickable -- so it renders as a
+// span. The dashed one is the "share with another class" affordance.
+export const Pill = styled(Tag).attrs({ as: "span", className: "tiny" })`
+  padding-right: 0.2rem;
+  border-color: ${darkBlue};
   background-color: ${darkBlue};
   color: white;
 `;
@@ -70,19 +68,12 @@ export const PillRemove = styled.button`
   }
 `;
 
-export const AddPill = styled.button`
-  font-family: inherit;
-  font-size: 0.72rem;
-  font-weight: 600;
+export const AddPill = styled(Tag).attrs({ className: "tiny" })`
   /* A bare "+" collapses to a circle too small to aim at on a phone. */
   min-width: 2rem;
-  min-height: 1.4rem;
-  padding: 0.15rem 0.55rem;
-  border-radius: 999px;
-  border: 1px dashed ${darkBlue};
-  background: none;
+  border-style: dashed;
+  border-color: ${darkBlue};
   color: ${darkBlue};
-  cursor: pointer;
 
   @media (hover: hover) {
     &:hover {

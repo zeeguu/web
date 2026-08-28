@@ -9,3 +9,11 @@ export const TeacherPageHeading = styled.h1`
   font-size: 1.5rem;
   letter-spacing: -0.02em;
 `;
+
+// The muted line that sits under the heading: which language, how many
+// students, how many texts. Both teacher page headers use it.
+export const TeacherPageSubtitle = styled.div`
+  margin-top: 0.15rem;
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+`;

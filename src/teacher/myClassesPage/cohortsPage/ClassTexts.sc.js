@@ -1,12 +1,6 @@
 import styled from "styled-components";
 import { darkBlue } from "../../../components/colors";
 
-export const Subtitle = styled.div`
-  margin: -0.4rem 0 1rem;
-  font-size: 0.8rem;
-  color: var(--text-secondary);
-`;
-
 export const Actions = styled.div`
   display: flex;
   gap: 0.5rem;

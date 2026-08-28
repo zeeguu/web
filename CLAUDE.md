@@ -25,6 +25,24 @@ original had (a gesture, a theme, a separator).
 is *almost* right, extend that family (as `FullWidthInfoMsg` was added beside
 its two siblings) rather than starting a sixth variant.
 
+## Ask before adding a shared visual component
+
+Layout that belongs to one screen (a row, a body column, a list) is local
+scaffolding — write it. But a **visual primitive** — a pill, badge, banner,
+button, empty state, page header — almost certainly exists already, and a
+second one is a cost the whole app pays. Before writing one:
+
+1. Grep `src/components`, `src/pages/_pages_shared` and the table above.
+2. If the closest match needs *more overrides than it contributes*, that is the
+   base component missing a variant. Add the variant there (`Tag` gained
+   `.tiny` this way) rather than restating its box at the call site.
+3. If nothing fits, say so and get it agreed before building it.
+
+There is no need for another CSS or component library. MUI is already a
+dependency for icons and modals, and styled-components carries the house look.
+A third system would make "where does this live" worse, which is the actual
+cause of duplication here — not a shortage of tools.
+
 ## Name styled components after what they are on this screen
 
 `ClassList`, `ClassRow`, `TextCount`, `SwitchButton` — not `Wrapper`, `Box`,

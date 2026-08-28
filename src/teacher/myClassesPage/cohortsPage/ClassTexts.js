@@ -7,6 +7,7 @@ import { StyledButton } from "../../styledComponents/TeacherButtons.sc";
 import FullWidthErrorMsg from "../../../components/FullWidthErrorMsg.sc";
 import FullWidthInfoMsg from "../../../components/FullWidthInfoMsg.sc";
 import ClassTabs from "./ClassTabs";
+import { TeacherPageSubtitle } from "../../styledComponents/TeacherPageHeading.sc";
 import { languageName } from "../../../utils/misc/languageCodeToName";
 import { setTitle } from "../../../assorted/setTitle";
 import * as c from "../../../components/ColumnWidth.sc";
@@ -49,9 +50,9 @@ export default function ClassTexts() {
   return (
     <c.NarrowColumn>
       <ClassTabs cohortID={cohortID} cohortName={cohort.name} textCount={texts.length} />
-      <s.Subtitle>
+      <TeacherPageSubtitle>
         {cohort.language ? languageName(cohort.language) : "no language set"} · {pluralStudents(student_count)}
-      </s.Subtitle>
+      </TeacherPageSubtitle>
 
       {emptyForEveryone && (
         <FullWidthErrorMsg>

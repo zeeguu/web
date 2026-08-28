@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import { darkBlue } from "../../components/colors";
+import Tag from "../../pages/_pages_shared/Tag.sc";
 
 export const Header = styled.header`
   display: flex;
@@ -9,13 +10,6 @@ export const Header = styled.header`
   flex-wrap: wrap;
   margin-bottom: 1rem;
 `;
-
-export const Subtitle = styled.div`
-  margin-top: 0.15rem;
-  font-size: 0.8rem;
-  color: var(--text-secondary);
-`;
-
 
 export const FilterBar = styled.div`
   display: flex;
@@ -32,18 +26,21 @@ export const FilterBar = styled.div`
   border-bottom: 1px solid var(--border-color);
 `;
 
-export const Chip = styled.button`
-  font-family: inherit;
-  font-size: 0.76rem;
-  font-weight: ${({ $on }) => ($on ? 600 : 500)};
+// The app's filter pill (feed filter bar, feed preferences, onboarding) in its
+// small variant. Only the accent changes: Tag's .selected is orange, and the
+// teacher dashboard is blue. `$dashed` marks the "Not shared" pile, which is a
+// filter over an absence rather than over a class.
+export const Chip = styled(Tag).attrs({ className: "tiny" })`
   white-space: nowrap;
-  padding: 0.3rem 0.65rem;
-  border-radius: 7px;
-  cursor: pointer;
-  border: 1px ${({ $dashed }) => ($dashed ? "dashed" : "solid")}
-    ${({ $on }) => ($on ? darkBlue : "var(--border-color)")};
-  background-color: ${({ $on }) => ($on ? darkBlue : "transparent")};
-  color: ${({ $on }) => ($on ? "white" : "var(--text-secondary)")};
+  border-style: ${({ $dashed }) => ($dashed ? "dashed" : "solid")};
+
+  &,
+  &.small {
+    ${({ $on }) =>
+      $on
+        ? `border-color: ${darkBlue}; background-color: ${darkBlue}; color: white; font-weight: 600;`
+        : `color: var(--text-secondary); font-weight: 500;`}
+  }
 `;
 
 export const ChipCount = styled.span`
