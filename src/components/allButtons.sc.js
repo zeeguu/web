@@ -25,23 +25,29 @@ const WhiteRoundButton = styled(RoundButton)`
   background-color: var(--card-bg);
   color: ${zeeguuOrange} !important;
   border: 2px solid ${zeeguuOrange};
-  &:hover {
-    filter: brightness(95%);
+  @media (hover: hover) {
+    &:hover {
+      filter: brightness(95%);
+    }
   }
 `;
 
 const OrangeRoundButton = styled(RoundButton)`
   background-color: ${zeeguuOrange};
   border: 2px solid ${zeeguuOrange};
-  &:hover {
-    filter: brightness(105%);
+  @media (hover: hover) {
+    &:hover {
+      filter: brightness(105%);
+    }
   }
 `;
 
 const SearchIcon = styled(MUISearchIcon)`
   color: ${zeeguuOrange};
-  &:hover {
-    filter: brightness(120%);
+  @media (hover: hover) {
+    &:hover {
+      filter: brightness(120%);
+    }
   }
 `;
 
@@ -59,8 +65,10 @@ const ClearSearchButton = styled.div`
   border-style: solid;
   border-color: white;
   border-radius: 100%;
-  &:hover {
-    filter: brightness(120%);
+  @media (hover: hover) {
+    &:hover {
+      filter: brightness(120%);
+    }
   }
   background:
     -webkit-linear-gradient(
@@ -108,8 +116,10 @@ const StyledButton = styled.button`
     props.$primary &&
     css`
       background-color: ${zeeguuOrange};
-      :hover {
-        background-color: ${lightOrange};
+      @media (hover: hover) {
+        :hover {
+          background-color: ${lightOrange};
+        }
       }
     `}
 
@@ -118,8 +128,10 @@ const StyledButton = styled.button`
     props.$secondary &&
     css`
       background-color: white;
-      :hover {
-        text-decoration: underline;
+      @media (hover: hover) {
+        :hover {
+          text-decoration: underline;
+        }
       }
       border: 2px solid ${zeeguuOrange};
 
@@ -136,8 +148,10 @@ const StyledButton = styled.button`
     css`
       background-color: var(--action-btn-secondary-color-bg);
       color: var(--action-btn-secondary-color-text);
-      :hover {
-        text-decoration: underline;
+      @media (hover: hover) {
+        :hover {
+          text-decoration: underline;
+        }
       }
     `}
 
@@ -156,8 +170,10 @@ const StyledButton = styled.button`
     css`
       background-color: var(--onboarding-btn-bg);
       color: var(--onboarding-btn-text-color);
-      :hover {
-        background-color: ${lightOrange};
+      @media (hover: hover) {
+        :hover {
+          background-color: ${lightOrange};
+        }
       }
     `}
 `;

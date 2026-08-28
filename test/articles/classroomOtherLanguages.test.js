@@ -46,4 +46,12 @@ describe("otherLanguageOptions", () => {
     expect(otherLanguageOptions(undefined, "el")).toEqual([]);
     expect(otherLanguageOptions([{ id: 4, name: "Old" }], "el")).toEqual([]);
   });
+
+  test("offers every language when the student has not picked one", () => {
+    // learned_language is null for an account that never chose; the screen
+    // then reads as "choose a language" rather than "switch back".
+    expect(otherLanguageOptions([englishClass], null).map((each) => each.key)).toEqual([
+      "1-en",
+    ]);
+  });
 });

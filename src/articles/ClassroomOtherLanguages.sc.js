@@ -1,27 +1,5 @@
 import styled from "styled-components";
-import { zeeguuOrange, lightOrange } from "../components/colors";
-
-export const Wrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  gap: 0.5rem;
-  padding: 2rem 1rem;
-`;
-
-export const Title = styled.h4`
-  margin: 0;
-  font-size: 1.15rem;
-`;
-
-export const Explanation = styled.p`
-  margin: 0 0 0.8rem;
-  max-width: 34ch;
-  font-size: 0.9rem;
-  line-height: 1.55;
-  color: var(--text-secondary);
-`;
+import { StyledButton } from "../components/allButtons.sc";
 
 export const ClassList = styled.ul`
   list-style: none;
@@ -68,24 +46,17 @@ export const TextCount = styled.div`
   color: var(--text-secondary);
 `;
 
-export const SwitchButton = styled.button`
+// The app's primary button, sized down to sit inside a class row. Extending it
+// rather than restating its colours keeps the hover behaviour (and its
+// iOS hover guard) in one place.
+export const SwitchButton = styled(StyledButton).attrs({ $primary: true })`
   flex: 0 0 auto;
   white-space: nowrap;
+  margin: 0;
   padding: 0.5rem 0.9rem;
-  border: none;
   border-radius: 8px;
-  font-family: inherit;
   font-size: 0.82rem;
   font-weight: 600;
-  cursor: pointer;
-  background-color: ${zeeguuOrange};
-  color: black;
-
-  @media (hover: hover) {
-    &:hover {
-      background-color: ${lightOrange};
-    }
-  }
 
   &:disabled {
     opacity: 0.6;

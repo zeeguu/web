@@ -20,16 +20,12 @@ export default function ClassroomArticles() {
   let originalList = articleList;
 
   useEffect(() => {
-    api.getStudent(setStudent); // eslint-disable-next-line
+    setTitle("Classroom Articles");
+    api.getStudent(setStudent);
+    api.getCohortArticles(setArticleList); // eslint-disable-next-line
   }, []);
 
   if (articleList == null) {
-    api.getCohortArticles((articles) => {
-      setArticleList(articles);
-    });
-
-    setTitle("Classroom Articles");
-
     // Shorter delay than the 1s default: swipe navigation slides the old tab
     // away and leaves a blank panel, so the spinner needs to land sooner.
     return <LoadingAnimation delay={300} />;

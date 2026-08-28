@@ -1,5 +1,6 @@
 import { useState } from "react";
 import DynamicFlagImage from "../components/DynamicFlagImage";
+import EmptyState from "../components/EmptyState";
 import useGuardedLanguageSwitch from "../hooks/useGuardedLanguageSwitch";
 import { languageName } from "../utils/misc/languageCodeToName";
 import * as s from "./ClassroomOtherLanguages.sc";
@@ -37,15 +38,21 @@ export default function ClassroomOtherLanguages({ options, learnedLanguage }) {
   const { requestSwitch, confirmModal } = useGuardedLanguageSwitch();
   const [switchingTo, setSwitchingTo] = useState(null);
 
-  return (
-    <s.Wrapper>
-      {confirmModal}
-      <s.Title>Nothing here in {languageName(learnedLanguage)}</s.Title>
-      <s.Explanation>
-        There are texts in your classes, just not in the language you are
-        learning right now. You can switch back any time.
-      </s.Explanation>
+  // An account can reach here with no learned language at all (the API sends
+  // null for it). "Switch back any time" is the wrong promise for someone who
+  // has not chosen a first language yet, so both the heading and the buttons
+  // change verb.
+  const hasLearnedLanguage = Boolean(learnedLanguage);
+  const title = hasLearnedLanguage
+    ? `Nothing here in ${languageName(learnedLanguage)}`
+    : "Choose a language to start reading";
+  const message = hasLearnedLanguage
+    ? "There are texts in your classes, just not in the language you are learning right now. You can switch back any time."
+    : "There are texts in your classes. Pick the language you want to read in.";
 
+  return (
+    <EmptyState title={title} message={message}>
+      {confirmModal}
       <s.ClassList>
         {options.map((option) => (
           <s.ClassRow key={option.key}>
@@ -67,11 +74,13 @@ export default function ClassroomOtherLanguages({ options, learnedLanguage }) {
             >
               {switchingTo === option.key
                 ? "Switching..."
-                : `Switch to ${languageName(option.languageCode)}`}
+                : hasLearnedLanguage
+                  ? `Switch to ${languageName(option.languageCode)}`
+                  : `Read in ${languageName(option.languageCode)}`}
             </s.SwitchButton>
           </s.ClassRow>
         ))}
       </s.ClassList>
-    </s.Wrapper>
+    </EmptyState>
   );
 }
