@@ -1,18 +1,15 @@
 import React, { Fragment, useContext, useEffect, useState } from "react";
 import strings from "../../../i18n/definitions";
-import { useParams, useHistory } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import LocalStorage from "../../../assorted/LocalStorage";
 import { transformStudents } from "./teacherApiHelpers";
 import HowToAddStudentsInfo from "./HowToAddStudentsInfo";
 import NoStudents from "./NoStudents";
-import {
-  StyledButton,
-  TopButtonWrapper,
-} from "../../styledComponents/TeacherButtons.sc";
+import { StyledButton, TopButtonWrapper } from "../../styledComponents/TeacherButtons.sc";
+import ClassTabs from "./ClassTabs";
 import * as s from "../../../components/ColumnWidth.sc";
 import LoadingAnimation from "../../../components/LoadingAnimation";
 import StudentsActivityOverviewContent from "./StudentsActivityOverviewContent";
-import { PageTitle } from "../../../components/PageTitle";
 import { APIContext } from "../../../contexts/APIContext";
 
 export default function StudentsActivityOverview() {
@@ -26,7 +23,6 @@ export default function StudentsActivityOverview() {
   const [forceUpdate, setForceUpdate] = useState(0);
   const selectedTimePeriod = LocalStorage.selectedTimePeriod();
   const [showAddStudentsInfo, setShowAddStudentsInfo] = useState(false);
-  const history = useHistory();
 
   function updateShownStudents() {
     setStudents(null);
@@ -63,18 +59,12 @@ export default function StudentsActivityOverview() {
 
   return (
     <>
-      <PageTitle>Class: {cohort.name}</PageTitle>
       <s.WidestColumn>
         <div>
+          <ClassTabs cohortID={cohortID} cohortName={cohort.name} />
           <TopButtonWrapper>
             <StyledButton $primary onClick={() => setShowAddStudentsInfo(true)}>
               {strings.addStudents}
-            </StyledButton>
-            <StyledButton
-              $secondary
-              onClick={() => history.push("/teacher/classes")}
-            >
-              {strings.backToClasses}
             </StyledButton>
           </TopButtonWrapper>
           {students === null ? (

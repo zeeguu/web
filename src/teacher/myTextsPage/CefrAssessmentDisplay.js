@@ -2,6 +2,7 @@ import React, { useState, useEffect, useContext, useCallback } from "react";
 import { APIContext } from "../../contexts/APIContext";
 import { StyledButton } from "../styledComponents/TeacherButtons.sc";
 import debounce from "lodash-es/debounce";
+import { effectiveCefrLevel } from "../../utils/misc/cefrHelpers";
 
 const CEFR_LEVELS = ["A1", "A2", "B1", "B2", "C1", "C2"];
 
@@ -29,22 +30,23 @@ export default function CefrAssessmentDisplay({
   const [showHow, setShowHow] = useState(false); // "(how?)" disclosure: reveals the two estimators
   const [showManualPicker, setShowManualPicker] = useState(false); // "set manually" reveals the level picker
 
-  // Get maximum (harder) CEFR level
-  const getMaxLevel = (level1, level2) => {
-    if (!level1) return level2;
-    if (!level2) return level1;
-    const idx1 = CEFR_LEVELS.indexOf(level1);
-    const idx2 = CEFR_LEVELS.indexOf(level2);
-    return idx1 > idx2 ? level1 : level2;
-  };
-
-  // The difficulty shown to students, derived from its inputs in one place: a
-  // rewrite wins (the teacher asked for exactly that level), then a manual
-  // override, then the conservative max of the two automatic estimators.
+  // The difficulty shown to students. The rule lives in effectiveCefrLevel so
+  // that the teacher's texts list derives the same number from the same inputs;
+  // this component holds the estimators in state (they re-run as the text is
+  // edited), so it re-derives rather than reading article.cefr_assessments.
   // Deriving it here (rather than setting it imperatively in each async handler)
   // keeps a rewritten/overridden level from being clobbered when ML re-runs.
   useEffect(() => {
-    setEffectiveLevel(adaptedLevel || teacherOverride || getMaxLevel(llmAssessment, mlAssessment) || null);
+    setEffectiveLevel(
+      effectiveCefrLevel(
+        {
+          llm: { level: llmAssessment },
+          ml: { level: mlAssessment },
+          teacher: { level: teacherOverride },
+        },
+        adaptedLevel,
+      ),
+    );
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [adaptedLevel, teacherOverride, llmAssessment, mlAssessment]);
 

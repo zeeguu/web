@@ -1,6 +1,7 @@
 import { MetaStrip, MetaItem, MetaLink, MetaTag } from "./MetaStrip.sc";
 import getDomainName from "../utils/misc/getDomainName";
 import { isSimplifiedArticle } from "../utils/misc/articleHelpers";
+import { effectiveCefrLevel } from "../utils/misc/cefrHelpers";
 
 export default function ArticleStatInfo({ articleInfo, shareContext }) {
   const isSimplified = isSimplifiedArticle(articleInfo);
@@ -13,9 +14,12 @@ export default function ArticleStatInfo({ articleInfo, shareContext }) {
   const targetLevel = articleInfo.target_cefr_level;
 
   // User-facing CEFR level is suppressed (see feedback_cefr_data_unreliable);
-  // teacher-only assessments still surface for classifier debugging.
-  const assessments = articleInfo.cefr_assessments;
-  const hasAssessments = assessments && (assessments.llm?.level || assessments.ml?.level);
+  // teachers still get one. It is the level the server computed and stored
+  // (ArticleCefrAssessment.update_effective_cefr_level), which is also what the
+  // article editor shows under "Automatically assessed difficulty" -- the two
+  // screens must never print different numbers for the same text.
+  const teacherLevel = effectiveCefrLevel(articleInfo.cefr_assessments);
+  const isTeacherSet = Boolean(articleInfo.cefr_assessments?.teacher?.level);
 
   // Cross-language derivatives are translated AND adapted to a level; same-
   // language ones are just simplified. The verb comes from the article's own
@@ -52,28 +56,10 @@ export default function ArticleStatInfo({ articleInfo, shareContext }) {
           </MetaLink>
         </MetaItem>
       )}
-      {hasAssessments && (
+      {teacherLevel && (
         <MetaItem>
-          {assessments.llm?.level && (
-            <span>
-              <span style={{ color: '#888' }}>LLM:</span>{' '}
-              <span style={{ fontWeight: 'bold', color: '#2563eb' }}>{assessments.llm.level}</span>
-            </span>
-          )}
-          {assessments.llm?.level && assessments.ml?.level && (
-            <span style={{ margin: '0 0.25rem' }}>|</span>
-          )}
-          {assessments.ml?.level && (
-            <span>
-              <span style={{ color: '#888' }}>ML-1:</span>{' '}
-              <span style={{ fontWeight: 'bold', color: '#16a34a' }}>{assessments.ml.level}</span>
-            </span>
-          )}
-          {assessments.teacher?.level && (
-            <span style={{ marginLeft: '0.25rem', fontSize: '0.9em', color: '#999', fontStyle: 'italic' }}>
-              (override)
-            </span>
-          )}
+          Difficulty:&nbsp;<b>{teacherLevel}</b>
+          {isTeacherSet && <>&nbsp;(set by you)</>}
         </MetaItem>
       )}
     </MetaStrip>

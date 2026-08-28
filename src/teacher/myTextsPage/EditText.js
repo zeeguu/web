@@ -494,8 +494,10 @@ export default function EditText() {
       </s.NarrowColumn>
       {showAddToCohortDialog && (
         <AddToCohortDialog
+          articleID={articleID}
           setIsOpen={setShowAddToCohortDialog}
-          onCohortsUpdated={(cohorts) => setCohortList(cohorts)}
+          // cohortList is a list of names; the dialog now reports {id, name}
+          onCohortsUpdated={(cohorts) => setCohortList(cohorts.map((each) => each.name))}
         />
       )}
       {showDeleteTextWarning && (
