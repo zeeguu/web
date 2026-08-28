@@ -9,7 +9,7 @@ export const TeacherPageHeader = styled.header`
   justify-content: space-between;
   gap: 1rem;
   flex-wrap: wrap;
-  margin: 2rem 0 1.25rem;
+  margin: 3.5rem 0 1.5rem;
 `;
 
 

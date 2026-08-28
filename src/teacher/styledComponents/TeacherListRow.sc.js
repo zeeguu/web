@@ -8,7 +8,17 @@ import Tag from "../../pages/_pages_shared/Tag.sc";
 export const Row = styled.article`
   display: flex;
   gap: 0.75rem;
-  padding: 0.85rem 0;
+  padding: 0.85rem 0.6rem;
+  margin: 0 -0.6rem;
+  border-radius: 8px;
+
+  /* The title is a link but the whole row reads as one object, so give it a
+     hover. Wrapped, or an iOS tap leaves the row highlighted behind you. */
+  @media (hover: hover) {
+    &:hover {
+      background-color: var(--bg-secondary);
+    }
+  }
 `;
 
 export const Flag = styled.div`

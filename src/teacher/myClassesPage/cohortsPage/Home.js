@@ -18,7 +18,6 @@ function Home() {
   const [cohorts, setCohorts] = useState();
   const [notATeacher, setNotATeacher] = useState(false);
   const [showCohortForm, setShowCohortForm] = useState(false);
-  const [cohortToEdit, setCohortToEdit] = useState(null);
   const [forceUpdate, setForceUpdate] = useState(0);
   setTitle(strings.myClasses);
   useEffect(() => {
@@ -47,8 +46,6 @@ function Home() {
           cohorts={cohorts}
           showCohortForm={showCohortForm}
           setShowCohortForm={setShowCohortForm}
-          cohortToEdit={cohortToEdit}
-          setCohortToEdit={setCohortToEdit}
         />
       </div>
     );
@@ -71,10 +68,7 @@ function Home() {
         {cohorts && (
           <StyledButton
             $primary
-            onClick={() => {
-              setCohortToEdit(null);
-              setShowCohortForm(true);
-            }}
+            onClick={() => setShowCohortForm(true)}
           >
             {strings.addClass}
           </StyledButton>
