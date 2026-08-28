@@ -20,7 +20,7 @@ export const Explanation = styled.p`
   max-width: 34ch;
   font-size: 0.9rem;
   line-height: 1.55;
-  color: var(--text-secondary, #666);
+  color: var(--text-secondary);
 `;
 
 export const ClassList = styled.ul`
@@ -41,7 +41,7 @@ export const ClassRow = styled.li`
   gap: 1rem;
   text-align: left;
   padding: 0.8rem 0.9rem;
-  border: 1px solid var(--border-color, #e0e0e0);
+  border: 1px solid var(--border-color);
   border-radius: 10px;
   background-color: var(--bg-secondary);
 
@@ -65,7 +65,7 @@ export const TextCount = styled.div`
   gap: 0.35rem;
   margin-top: 0.15rem;
   font-size: 0.8rem;
-  color: var(--text-secondary, #666);
+  color: var(--text-secondary);
 `;
 
 export const SwitchButton = styled.button`
