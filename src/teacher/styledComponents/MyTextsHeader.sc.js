@@ -16,19 +16,20 @@ export const Subtitle = styled.div`
   color: var(--text-secondary);
 `;
 
+
 export const FilterBar = styled.div`
   display: flex;
   align-items: center;
   gap: 0.35rem;
   flex-wrap: wrap;
+
+  /* The sort control sits at the far end; no spacer element needed. */
+  > *:last-child {
+    margin-left: auto;
+  }
   padding-bottom: 0.8rem;
   margin-bottom: 0.2rem;
   border-bottom: 1px solid var(--border-color);
-`;
-
-export const FilterSpacer = styled.div`
-  flex: 1;
-  min-width: 0.5rem;
 `;
 
 export const Chip = styled.button`

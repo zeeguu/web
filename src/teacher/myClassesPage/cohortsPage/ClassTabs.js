@@ -23,12 +23,12 @@ export default function ClassTabs({ cohortID, cohortName, textCount }) {
   ];
 
   return (
-    <s.Wrapper>
-      <s.TitleRow>
+    <s.ClassHeader>
+      <div className="title-row">
         <BackArrow redirectLink="/teacher/classes" />
         <TeacherPageHeading>{cohortName}</TeacherPageHeading>
-      </s.TitleRow>
+      </div>
       <TopTabs tabsAndLinks={tabs} isCompact={true} />
-    </s.Wrapper>
+    </s.ClassHeader>
   );
 }

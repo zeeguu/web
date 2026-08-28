@@ -81,7 +81,6 @@ export default function AllTexts() {
                   <h.ChipCount>{filter.count}</h.ChipCount>
                 </h.Chip>
               ))}
-              <h.FilterSpacer />
               <SortingButtons
                 articleList={articleList}
                 originalList={originalList}
