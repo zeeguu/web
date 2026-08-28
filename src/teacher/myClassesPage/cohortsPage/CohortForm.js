@@ -22,7 +22,13 @@ import { StyledDialog } from "../../styledComponents/StyledDialog.sc";
 import * as s from "../../styledComponents/CohortForm.sc";
 import { APIContext } from "../../../contexts/APIContext";
 
-const CohortForm = ({ cohort, setForceUpdate, setShowCohortForm, cohorts }) => {
+const CohortForm = ({
+  cohort,
+  setForceUpdate,
+  setShowCohortForm,
+  cohorts,
+  onDeleted,
+}) => {
   const api = useContext(APIContext);
   const [isLoading, setIsLoading] = useState(false);
   const [showWarning, setShowWarning] = useState(false);
@@ -60,7 +66,13 @@ const CohortForm = ({ cohort, setForceUpdate, setShowCohortForm, cohorts }) => {
       .then((result) => {
         toast.success("Class deleted successfully!");
         setShowCohortForm(false);
-        setForceUpdate((prev) => prev + 1); // reloads the classes to update the UI
+        // A caller that lives inside the deleted class (its own page) has
+        // nowhere to refresh to, so it navigates away instead.
+        if (onDeleted) {
+          onDeleted();
+        } else {
+          setForceUpdate((prev) => prev + 1); // reloads the classes to update the UI
+        }
       })
       .catch((err) => {
         setIsDeleteError(true);

@@ -1,4 +1,5 @@
 import { useContext, useState } from "react";
+import { useHistory } from "react-router-dom";
 import BackArrow from "../../../pages/Settings/SharedComponents/BackArrow";
 import TopTabs from "../../../components/TopTabs";
 import { APIContext } from "../../../contexts/APIContext";
@@ -20,6 +21,7 @@ import * as s from "./ClassTabs.sc";
  */
 export default function ClassTabs({ cohortID, cohort, textCount, onClassChanged }) {
   const api = useContext(APIContext);
+  const history = useHistory();
   const [showCohortForm, setShowCohortForm] = useState(false);
   const [showAddTeacherDialog, setShowAddTeacherDialog] = useState(false);
   // CohortForm checks the new invite code against every class the teacher owns.
@@ -64,6 +66,7 @@ export default function ClassTabs({ cohortID, cohort, textCount, onClassChanged 
           setForceUpdate={onClassChanged}
           cohort={cohort}
           cohorts={allCohorts}
+          onDeleted={() => history.replace("/teacher/classes")}
         />
       )}
       {showAddTeacherDialog && (
