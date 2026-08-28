@@ -17,6 +17,7 @@ export default function ClassPills({
   classLink,
   onRemove,
   removingId,
+  removeDisabled,
   onAdd,
   emptyText = NOT_SHARED,
 }) {
@@ -32,7 +33,7 @@ export default function ClassPills({
           onSelectClass={onSelectClass}
           classLink={classLink}
           onRemove={onRemove}
-          isRemoveDisabled={removingId !== null && removingId !== undefined}
+          isRemoveDisabled={removeDisabled || (removingId !== null && removingId !== undefined)}
         />
       ))}
       {onAdd && (
