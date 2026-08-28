@@ -77,8 +77,13 @@ export default function ClassTexts() {
 
       {texts.length > 0 && (
         <>
+          {/* The teacher's own "Student Site" link cannot show them this: they
+              are exempt from classroom_only, so it hands them the full app.
+              Saying which mode the class is in is the honest substitute. */}
           <s.SectionLabel>
-            As a student in this class sees it
+            {cohort.only_classroom_texts
+              ? "All your students see — there is nothing else in their app"
+              : "As a student in this class sees it"}
           </s.SectionLabel>
           <s.StudentView>
             {texts.map((article) => (
