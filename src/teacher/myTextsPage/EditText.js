@@ -7,6 +7,7 @@ import { RoutingContext } from "../../contexts/RoutingContext";
 import EditTextInputFields from "./EditTextInputFields";
 import AddToCohortDialog from "./AddToCohortDialog";
 import DeleteTextWarning from "./DeleteTextWarning";
+import ClassPills from "../sharedComponents/ClassPills";
 import { StyledButton, TopButtonWrapper } from "../styledComponents/TeacherButtons.sc";
 import * as s from "../../components/ColumnWidth.sc";
 import { ShareWithClassesButton, ViewAsStudentButton } from "./TooltippedButtons";
@@ -56,14 +57,6 @@ export default function EditText() {
   useEffect(() => {
     if (!isNew) {
       setIsLoading(true);
-      let articleLoaded = false;
-      let cohortsLoaded = false;
-
-      const checkIfDone = () => {
-        if (articleLoaded && cohortsLoaded) {
-          setIsLoading(false);
-        }
-      };
 
       api.getArticleInfo(articleID, (article) => {
         const cefrLevel = article.metrics?.cefr_level || "";
@@ -96,14 +89,10 @@ export default function EditText() {
           setCefrAssessments(article.cefr_assessments);
         }
 
-        articleLoaded = true;
-        checkIfDone();
-      });
+        // shared_with is {id, name}; the ids are what the pills link with.
+        setCohortList(article.shared_with || []);
 
-      api.getCohortFromArticle(articleID, (cohorts) => {
-        setCohortList(cohorts || []);
-        cohortsLoaded = true;
-        checkIfDone();
+        setIsLoading(false);
       });
     }
     //eslint-disable-next-line
@@ -144,9 +133,7 @@ export default function EditText() {
         if (article.cefr_assessments) {
           setCefrAssessments(article.cefr_assessments);
         }
-      });
-      api.getCohortFromArticle(articleID, (cohorts) => {
-        setCohortList(cohorts || []);
+        setCohortList(article.shared_with || []);
       });
     } else {
       history.push(returnPath);
@@ -424,25 +411,20 @@ export default function EditText() {
             alignItems: "center",
             gap: "1rem",
             flexWrap: "wrap",
-            backgroundColor: "#f8f9fa",
+            backgroundColor: "var(--bg-secondary)",
             padding: "0.75rem",
             borderRadius: "5px",
           }}
         >
           <span style={{ fontWeight: "bold", whiteSpace: "nowrap" }}>Shared With:</span>
-          {cohortList.map((cohort, index) => (
-            <span
-              key={cohort}
-              style={{
-                whiteSpace: "nowrap",
-                fontSize: "1.15em",
-                letterSpacing: "-0.4px",
-              }}
-            >
-              {cohort}
-              {index < cohortList.length - 1 ? "," : ""}
-            </span>
-          ))}
+          {/* The same pills as the My Texts list; here the name opens the class,
+              since a teacher looking at a shared text is one step from wanting
+              to see who it went to. Sharing itself is edited in the dialog. */}
+          <ClassPills
+            classes={cohortList}
+            classLink={(cohort) => `/teacher/classes/viewClass/${cohort.id}`}
+            emptyText="nobody yet"
+          />
           <div style={{ flexShrink: 0 }}>
             <ShareWithClassesButton
               onclick={() => setShowAddToCohortDialog(true)}
@@ -496,8 +478,7 @@ export default function EditText() {
         <AddToCohortDialog
           articleID={articleID}
           setIsOpen={setShowAddToCohortDialog}
-          // cohortList is a list of names; the dialog now reports {id, name}
-          onCohortsUpdated={(cohorts) => setCohortList(cohorts.map((each) => each.name))}
+          onCohortsUpdated={(cohorts) => setCohortList(cohorts)}
         />
       )}
       {showDeleteTextWarning && (
