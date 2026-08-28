@@ -5,8 +5,7 @@ import Tag from "../../pages/_pages_shared/Tag.sc";
 export const Row = styled.article`
   display: flex;
   gap: 0.75rem;
-  padding: 0.9rem 0.2rem;
-  border-bottom: 1px solid var(--border-color);
+  padding: 0.85rem 0;
 `;
 
 export const Flag = styled.div`
@@ -39,14 +38,14 @@ export const Pills = styled.div`
 // Both are the app's pill (Tag) in its small variant. A class is state, not an
 // action: filled, and only the trailing x is clickable -- so it renders as a
 // span. The dashed one is the "share with another class" affordance.
-export const Pill = styled(Tag).attrs({ as: "span", className: "tiny" })`
+export const Pill = styled(Tag).attrs({
+  as: "span",
+  className: "tiny outlined-blue",
+})`
   /* Tag is a button and says so with the cursor; this one is state, not a
      control, and only its trailing x can be clicked. */
   cursor: default;
   padding-right: 0.2rem;
-  border-color: ${darkBlue};
-  background-color: ${darkBlue};
-  color: white;
 `;
 
 export const PillRemove = styled.button`

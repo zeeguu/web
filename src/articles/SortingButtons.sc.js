@@ -5,28 +5,23 @@ import { almostBlack, veryLightGrey } from "../components/colors";
 const SortingButtons = styled.div`
   display: flex;
   justify-content: flex-end;
-  padding: 0 1em;
   font-size: medium;
 
-  .sort-by {
-    padding-top: 0.3em;
+  /* The select is the control now; SelectWrapper is width:100% by default, so
+     hold it to the width of its longest label rather than the whole row. */
+  > * {
+    width: auto;
+    min-width: 9rem;
   }
 
   ${(props) =>
     props.$isOnTeacherSite &&
     css`
-      margin-right: 13.7em;
+      font-size: small;
     `}
-
-  .descending::after {
-    content: "↑";
-  }
-
-  .ascending::after {
-    content: "↓";
-  }
 `;
 
+// Still extended by ArticleListBrowser's show-videos-only toggle.
 const SortButton = styled(b.RoundButton)`
   padding: 0.3rem 0.5rem;
   cursor: pointer;
@@ -34,16 +29,11 @@ const SortButton = styled(b.RoundButton)`
   background-color: ${veryLightGrey};
   color: ${almostBlack} !important;
 
-  &:hover {
-    filter: brightness(0.98);
+  @media (hover: hover) {
+    &:hover {
+      filter: brightness(0.98);
+    }
   }
-
-  ${(props) =>
-    props.$isOnTeacherSite &&
-    css`
-      margin-left: 2vw;
-      font-size: medium;
-    `}
 `;
 
 export { SortingButtons, SortButton };

@@ -47,7 +47,7 @@ export default function AllTexts() {
 
   return (
     <Fragment>
-      <s.WideColumn>
+      <s.NarrowColumn>
         <m.StyledMyTexts>
           <h.Header>
             <div>
@@ -97,7 +97,7 @@ export default function AllTexts() {
             />
           ))}
         </m.StyledMyTexts>
-      </s.WideColumn>
+      </s.NarrowColumn>
     </Fragment>
   );
 }

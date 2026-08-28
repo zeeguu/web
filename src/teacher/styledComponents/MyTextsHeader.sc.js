@@ -9,15 +9,14 @@ export const Header = styled.header`
   justify-content: space-between;
   gap: 1rem;
   flex-wrap: wrap;
-  margin-bottom: 1rem;
+  margin: 2rem 0 1.25rem;
 `;
 
 // The same row as the feed's, wrapped rather than scrolling: a teacher on a
 // desktop is better served seeing every class at once than scrolling to find one.
 export const FilterBar = styled(FilterRow).attrs({ $wrap: true })`
-  padding-bottom: 0.8rem;
-  margin-bottom: 0.2rem;
-  border-bottom: 1px solid var(--border-color);
+  row-gap: 0.4rem;
+  margin-bottom: 1.75rem;
 
   /* The sort control sits at the far end; no spacer element needed. */
   > *:last-child {
