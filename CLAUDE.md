@@ -25,6 +25,23 @@ original had (a gesture, a theme, a separator).
 is *almost* right, extend that family (as `FullWidthInfoMsg` was added beside
 its two siblings) rather than starting a sixth variant.
 
+## Name styled components after what they are on this screen
+
+`ClassList`, `ClassRow`, `TextCount`, `SwitchButton` — not `Wrapper`, `Box`,
+`Inner`. The whole repo contains three generic layout exports (all `Container`)
+and no `Wrapper` at all, so reaching for one is importing a habit from
+somewhere else.
+
+Two specific traps:
+
+- A `Wrapper` whose only job is layout (centre, pad, gap) usually means the
+  layout belongs to a shared component. Check `EmptyState`, `ColumnWidth.sc`
+  and the page's own column before writing one.
+- `Title` invites picking a heading level for its *size* — `styled.h4` because
+  h2 looked too big — which quietly breaks the document outline. Either the
+  heading belongs to a shared component that owns it, or it is a named part of
+  this one (`ClassName`).
+
 ## Dark mode is not optional
 
 Colours come from CSS custom properties defined twice in `src/index.css`: once
