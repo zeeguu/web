@@ -5,13 +5,20 @@ import NotATeacherNotice from "../../sharedComponents/NotATeacherNotice";
 import strings from "../../../i18n/definitions";
 import { setTitle } from "../../../assorted/setTitle";
 import * as s from "../../../components/ColumnWidth.sc";
-import { PageTitle } from "../../../components/PageTitle";
+import {
+  TeacherPageHeader,
+  TeacherPageHeading,
+  TeacherPageSubtitle,
+} from "../../styledComponents/TeacherPageHeading.sc";
+import { StyledButton } from "../../styledComponents/TeacherButtons.sc";
 import { APIContext } from "../../../contexts/APIContext";
 
 function Home() {
   const api = useContext(APIContext);
   const [cohorts, setCohorts] = useState();
   const [notATeacher, setNotATeacher] = useState(false);
+  const [showCohortForm, setShowCohortForm] = useState(false);
+  const [cohortToEdit, setCohortToEdit] = useState(null);
   const [forceUpdate, setForceUpdate] = useState(0);
   setTitle(strings.myClasses);
   useEffect(() => {
@@ -24,13 +31,25 @@ function Home() {
     // eslint-disable-next-line
   }, [forceUpdate]);
 
+  const studentCount = (cohorts || []).reduce(
+    (total, cohort) => total + (cohort.cur_students || 0),
+    0,
+  );
+
   let content;
   if (notATeacher) {
     content = <NotATeacherNotice />;
   } else if (cohorts) {
     content = (
       <div>
-        <CohortList setForceUpdate={setForceUpdate} cohorts={cohorts} />
+        <CohortList
+          setForceUpdate={setForceUpdate}
+          cohorts={cohorts}
+          showCohortForm={showCohortForm}
+          setShowCohortForm={setShowCohortForm}
+          cohortToEdit={cohortToEdit}
+          setCohortToEdit={setCohortToEdit}
+        />
       </div>
     );
   } else {
@@ -38,10 +57,31 @@ function Home() {
   }
 
   return (
-    <>
-      <PageTitle>{strings.myClasses}</PageTitle>
-      <s.NarrowColumn>{content}</s.NarrowColumn>
-    </>
+    <s.NarrowColumn>
+      <TeacherPageHeader>
+        <div>
+          <TeacherPageHeading>{strings.myClasses}</TeacherPageHeading>
+          {cohorts && (
+            <TeacherPageSubtitle>
+              {cohorts.length} {cohorts.length === 1 ? "class" : "classes"} ·{" "}
+              {studentCount} {studentCount === 1 ? "student" : "students"}
+            </TeacherPageSubtitle>
+          )}
+        </div>
+        {cohorts && (
+          <StyledButton
+            $primary
+            onClick={() => {
+              setCohortToEdit(null);
+              setShowCohortForm(true);
+            }}
+          >
+            {strings.addClass}
+          </StyledButton>
+        )}
+      </TeacherPageHeader>
+      {content}
+    </s.NarrowColumn>
   );
 }
 

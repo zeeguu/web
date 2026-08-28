@@ -1,10 +1,16 @@
-import { Fragment } from "react";
 import { Link } from "react-router-dom";
 import { MdPeople } from "react-icons/md/";
 import { StyledButton } from "../../styledComponents/TeacherButtons.sc";
-import * as s from "../../styledComponents/CohortItemCard.sc";
+import { MetaStrip, MetaItem } from "../../../components/MetaStrip.sc";
+import * as s from "../../styledComponents/TeacherListRow.sc";
 import strings from "../../../i18n/definitions";
 
+/**
+ * One class in the My Classrooms list, in the same shape as a text on My Texts:
+ * title, one metadata strip, actions. It used to be a shadowed card with the
+ * same facts stacked as five paragraphs, which is why the two teacher pages
+ * looked like they came from different products.
+ */
 export const CohortItemCard = ({
   cohort,
   isWarning,
@@ -12,6 +18,9 @@ export const CohortItemCard = ({
   setCohortToEdit,
   setShowAddTeacherDialog,
 }) => {
+  const classPath = `/teacher/classes/viewClass/${cohort.id}`;
+  const teachers = cohort.teachers_for_cohort || [];
+
   function handleEdit() {
     setCohortToEdit(cohort);
     setShowCohortForm(true);
@@ -23,54 +32,43 @@ export const CohortItemCard = ({
   }
 
   return (
-    <Fragment>
-      <s.StyledCohortItemCard>
-        <div className="cohort-card">
-          <div className="cohort-info-column">
-            <Link to={`/teacher/classes/viewClass/${cohort.id}`}>
-              <p className="light-font">
-                {strings[cohort.language_name.toLowerCase()]}
-              </p>
-              <h2 className="cohort-card-headline">
-                {cohort.name} {/*This cannot be localized*/}
-              </h2>
-              <div className="student-count-container">
-                <p className="student-count">{cohort.cur_students}</p>
-                <MdPeople size="22px" />
-              </div>
-              <p>
-                {strings.inviteCode}: {cohort.inv_code}
-              </p>
-              <p className="light-font">
-                {cohort.teachers_for_cohort.length > 1
-                  ? strings.teachers
-                  : strings.teacher}
-              </p>
-              {cohort.teachers_for_cohort.map((each) => (
-                <p className="light-font" id="teacher-name">
-                  {each.name}
-                </p>
-              ))}
-            </Link>
-          </div>
-          {!isWarning && (
-            <div className="button-column">
-              <Link to={`/teacher/classes/viewClass/${cohort.id}`}>
-                <StyledButton $secondary>{strings.seeStudents}</StyledButton>
-              </Link>
-              <div className="lower-buttons">
-                <StyledButton $secondary onClick={handleEdit}>
-                  {strings.editClass}
-                </StyledButton>
-                <StyledButton $secondary onClick={handleAddTeacher}>
-                  {strings.addTeacher}
-                </StyledButton>
-              </div>
-            </div>
+    <s.Row>
+      <s.Body>
+        <Link to={classPath}>
+          <s.Title>{cohort.name}</s.Title>
+        </Link>
+
+        <MetaStrip>
+          <MetaItem>{strings[cohort.language_name.toLowerCase()]}</MetaItem>
+          <MetaItem>
+            {cohort.cur_students} <MdPeople size="16px" />
+          </MetaItem>
+          <MetaItem>
+            {strings.inviteCode}: {cohort.inv_code}
+          </MetaItem>
+          {teachers.length > 0 && (
+            <MetaItem>
+              {teachers.length > 1 ? strings.teachers : strings.teacher}
+              {teachers.map((each) => each.name).join(", ")}
+            </MetaItem>
           )}
-        </div>
-      </s.StyledCohortItemCard>
-    </Fragment>
+        </MetaStrip>
+
+        {!isWarning && (
+          <s.Actions>
+            <Link to={classPath}>
+              <StyledButton $secondary>{strings.seeStudents}</StyledButton>
+            </Link>
+            <StyledButton $secondary onClick={handleEdit}>
+              {strings.editClass}
+            </StyledButton>
+            <StyledButton $secondary onClick={handleAddTeacher}>
+              {strings.addTeacher}
+            </StyledButton>
+          </s.Actions>
+        )}
+      </s.Body>
+    </s.Row>
   );
 };
 export default CohortItemCard;

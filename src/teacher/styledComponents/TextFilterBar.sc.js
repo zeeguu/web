@@ -3,15 +3,6 @@ import { darkBlue } from "../../components/colors";
 import Tag from "../../pages/_pages_shared/Tag.sc";
 import { FilterRow } from "../../components/FilterRow.sc";
 
-export const Header = styled.header`
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 1rem;
-  flex-wrap: wrap;
-  margin: 2rem 0 1.25rem;
-`;
-
 // The same row as the feed's, wrapped rather than scrolling: a teacher on a
 // desktop is better served seeing every class at once than scrolling to find one.
 export const FilterBar = styled(FilterRow).attrs({ $wrap: true })`
