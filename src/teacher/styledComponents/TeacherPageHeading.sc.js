@@ -19,8 +19,9 @@ export const TeacherPageHeader = styled.header`
 // the page's primary action.
 export const TeacherPageHeading = styled.h1`
   margin: 0;
-  font-size: 1.5rem;
-  letter-spacing: -0.02em;
+  font-size: 2rem;
+  line-height: 1.15;
+  letter-spacing: -0.025em;
 `;
 
 // The muted line that sits under the heading: which language, how many
