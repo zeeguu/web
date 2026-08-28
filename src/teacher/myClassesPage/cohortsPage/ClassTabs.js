@@ -28,7 +28,9 @@ export default function ClassTabs({ cohortID, cohort, textCount, onClassChanged 
   const base = `/teacher/classes/viewClass/${cohortID}`;
 
   const tabs = [
-    { text: strings.students, link: base, isActive: (_, loc) => loc.pathname === base },
+    // Literal, like the Texts label below: i18n/definitions has no `students`
+    // key, and looking one up there rendered this tab with no label at all.
+    { text: "Students", link: base, isActive: (_, loc) => loc.pathname === base },
     {
       text: textCount === undefined ? "Texts" : `Texts (${textCount})`,
       link: `${base}/texts`,
