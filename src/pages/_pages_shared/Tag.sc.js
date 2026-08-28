@@ -36,7 +36,10 @@ const Tag = styled.button`
 
   /* Dense rows -- filter chips and the class pills on a text -- where the pill
      is metadata beside other text rather than a control of its own. */
-  &.tiny {
+  &.tiny,
+  &.tiny.selected,
+  &.tiny.outlined-orange,
+  &.tiny.outlined-blue {
     padding: 0.25rem 0.6rem;
     margin: 0;
     gap: 0.25rem;

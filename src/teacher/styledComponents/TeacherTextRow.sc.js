@@ -40,6 +40,9 @@ export const Pills = styled.div`
 // action: filled, and only the trailing x is clickable -- so it renders as a
 // span. The dashed one is the "share with another class" affordance.
 export const Pill = styled(Tag).attrs({ as: "span", className: "tiny" })`
+  /* Tag is a button and says so with the cursor; this one is state, not a
+     control, and only its trailing x can be clicked. */
+  cursor: default;
   padding-right: 0.2rem;
   border-color: ${darkBlue};
   background-color: ${darkBlue};
