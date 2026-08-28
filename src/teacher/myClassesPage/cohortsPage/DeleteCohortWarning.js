@@ -29,7 +29,7 @@ const DeleteCohortWarning = ({
       <div className="centered">
         <h1>{strings.dangerzone}</h1>
       </div>
-      <CohortItemCard cohort={cohort} isWarning={true} />
+      <CohortItemCard cohort={cohort} />
       <p>{strings.deleteCohortEnsurance}</p>
       {isDeleteError && <Error message={strings.cannotDeleteClassWithText} />}
       {cohort.teachers_for_cohort.length > 1 && (

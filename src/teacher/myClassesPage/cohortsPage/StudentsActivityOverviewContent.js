@@ -4,6 +4,7 @@ import TimeSelector from "../../sharedComponents/TimeSelector";
 import LoadingAnimation from "../../../components/LoadingAnimation";
 import strings from "../../../i18n/definitions";
 import { CenteredContentContainer } from "../../../components/ColumnWidth.sc";
+import { ScrollableTable } from "../../styledComponents/ScrollableTable.sc";
 
 const StudentsActivityOverviewContent = ({
   cohortID,
@@ -29,6 +30,7 @@ const StudentsActivityOverviewContent = ({
   return (
     <CenteredContentContainer>
       <TimeSelector setForceUpdate={setForceUpdate} customText={customText} />
+      <ScrollableTable>
       {firstStudent !== null && (
         <StudentInfoLine
           key={firstStudent.id}
@@ -48,6 +50,7 @@ const StudentsActivityOverviewContent = ({
             isFirst={false}
           />
         ))}
+      </ScrollableTable>
     </CenteredContentContainer>
   );
 };
