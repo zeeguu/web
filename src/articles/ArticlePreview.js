@@ -52,6 +52,9 @@ export default function ArticlePreview({
   // right, no summary). Implies !interactive; still opens on tap — except on
   // the title itself, whose words translate in place like in the reader.
   compact = false,
+  // Whether Hide is offered at all. False where the list is not the reader's
+  // own feed to curate — the classroom's texts are what a teacher assigned.
+  allowHiding = true,
 }) {
   const api = useContext(APIContext);
   const history = useHistory();
@@ -107,6 +110,9 @@ export default function ArticlePreview({
 
   let topics = article.topics_list;
   const hasImage = !!article.img_url && !imageFailed;
+  // Empty for a text a teacher typed in: it has no publisher to name, and the
+  // card already says who shared it.
+  const sourceLabel = articleSourceLabel(article);
 
   function handleCloseRedirectionModal() {
     setIsRedirectionModaOpen(false);
@@ -177,6 +183,7 @@ export default function ArticlePreview({
   // texts: there is no Saved tab to reach, and hiding would make one of the few
   // texts the teacher shared disappear from the only screen the student has.
   const showSaveAndHide = !Feature.classroom_only() && !previewOnly;
+  const showHide = showSaveAndHide && allowHiding;
 
   const is_saved = article.has_personal_copy || article.has_uploader || isArticleSaved;
   const externalUrl = article.parent_url || article.url;
@@ -394,17 +401,19 @@ export default function ArticlePreview({
           ))}
         {article.parent_article_id && <MetaTag>Simplified</MetaTag>}
         {savedTag}
-        <MetaItem>
-          <MetaLink
-            className="muted"
-            href={article.parent_url || article.url}
-            target="_blank"
-            rel="noopener noreferrer"
-            onClick={(e) => e.stopPropagation()}
-          >
-            {articleSourceLabel(article)}
-          </MetaLink>
-        </MetaItem>
+        {sourceLabel && (
+          <MetaItem>
+            <MetaLink
+              className="muted"
+              href={article.parent_url || article.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={(e) => e.stopPropagation()}
+            >
+              {sourceLabel}
+            </MetaLink>
+          </MetaItem>
+        )}
         {publishedTimeSlot}
         {(article.metrics?.word_count || article.word_count) > 0 && (
           <MetaItem>
@@ -455,31 +464,31 @@ export default function ArticlePreview({
           </s.SaveActionButton>
         )}
         {showSaveAndHide && (
-          <>
-            <s.SaveActionButton
-              type="button"
-              onClick={handleToggleSave}
-              aria-label={isArticleSaved ? "Remove from saves" : "Save"}
-            >
-              {isArticleSaved ? (
-                <BookmarkRoundedIcon style={{ fontSize: 16 }} />
-              ) : (
-                <BookmarkBorderRoundedIcon style={{ fontSize: 16 }} />
-              )}
-              {isArticleSaved ? "Saved" : "Save"}
-            </s.SaveActionButton>
-            <s.SaveActionButton
-              type="button"
-              onClick={(e) => {
-                e.stopPropagation();
-                handleHideArticle();
-              }}
-              aria-label="Hide from feed"
-            >
-              <VisibilityOffRoundedIcon style={{ fontSize: 16 }} />
-              Hide
-            </s.SaveActionButton>
-          </>
+          <s.SaveActionButton
+            type="button"
+            onClick={handleToggleSave}
+            aria-label={isArticleSaved ? "Remove from saves" : "Save"}
+          >
+            {isArticleSaved ? (
+              <BookmarkRoundedIcon style={{ fontSize: 16 }} />
+            ) : (
+              <BookmarkBorderRoundedIcon style={{ fontSize: 16 }} />
+            )}
+            {isArticleSaved ? "Saved" : "Save"}
+          </s.SaveActionButton>
+        )}
+        {showHide && (
+          <s.SaveActionButton
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              handleHideArticle();
+            }}
+            aria-label="Hide from feed"
+          >
+            <VisibilityOffRoundedIcon style={{ fontSize: 16 }} />
+            Hide
+          </s.SaveActionButton>
         )}
       </s.SummaryActionRow>
     );
@@ -497,7 +506,7 @@ export default function ArticlePreview({
         {/* With an image, Hide lives as an eye-off at the image's bottom-right
             (mirroring Save at top-right) — the top-right × collided with Save on
             stacked mobile layouts. Image-less cards keep the corner ×. */}
-        {!hasImage && showSaveAndHide && (
+        {!hasImage && showHide && (
           <s.HideButton onClick={handleHideArticle} aria-label="Hide from feed">
             <CloseRoundedIcon style={{ fontSize: 18 }} />
           </s.HideButton>
@@ -583,7 +592,7 @@ export default function ArticlePreview({
           replaces the Hide button that used to sit at the bottom. Only
           shown where Hide makes sense (Discover-style surfaces, not in
           the Hidden view, not in saved-list views). */}
-      {!isHiddenView && !inSavedView && showSaveAndHide && (
+      {!isHiddenView && !inSavedView && showHide && (
         <s.HideButton onClick={handleHideArticle} aria-label="Hide from feed">
           <CloseRoundedIcon style={{ fontSize: 18 }} />
         </s.HideButton>
@@ -629,16 +638,13 @@ export default function ArticlePreview({
           ))}
         {article.parent_article_id && <MetaTag>Simplified</MetaTag>}
         {savedTag}
-        <MetaItem>
-          <MetaLink
-            className="muted"
-            href={article.parent_url || article.url}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            {articleSourceLabel(article)}
-          </MetaLink>
-        </MetaItem>
+        {sourceLabel && (
+          <MetaItem>
+            <MetaLink className="muted" href={article.parent_url || article.url} target="_blank" rel="noopener noreferrer">
+              {sourceLabel}
+            </MetaLink>
+          </MetaItem>
+        )}
         {publishedTimeSlot}
         {(article.metrics?.word_count || article.word_count) > 0 && (
           <MetaItem>

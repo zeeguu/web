@@ -216,6 +216,8 @@ export default function ArticlePreviewOverlay({
       { width: `min(${60 * readerFontSize}px, 92vw)`, maxWidth: "none" };
 
   const publishedAgo = article.published ? timeAgo(article.published) : null;
+  // Empty for a teacher's own text: nothing to name as its publisher.
+  const sourceLabel = articleSourceLabel(article);
   const wordCount = article.metrics?.word_count || article.word_count || 0;
   const readingTime =
     wordCount > 0 ? estimateReadingTime(wordCount).replace(" minutes", " min").replace(" minute", " min") : null;
@@ -275,11 +277,13 @@ export default function ArticlePreviewOverlay({
               article.topics_list.map(([topicTitle]) => <MetaTag key={topicTitle}>{topicTitle}</MetaTag>)}
             {article.parent_article_id && <MetaTag>Simplified</MetaTag>}
             {isArticleSaved && <MetaTag>Saved</MetaTag>}
-            <MetaItem>
-              <MetaLink className="muted" href={externalUrl} target="_blank" rel="noopener noreferrer">
-                {articleSourceLabel(article)}
-              </MetaLink>
-            </MetaItem>
+            {sourceLabel && (
+              <MetaItem>
+                <MetaLink className="muted" href={externalUrl} target="_blank" rel="noopener noreferrer">
+                  {sourceLabel}
+                </MetaLink>
+              </MetaItem>
+            )}
             {publishedAgo && <MetaItem>{publishedAgo}</MetaItem>}
           </MetaStrip>
 

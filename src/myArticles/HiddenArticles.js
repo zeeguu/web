@@ -75,7 +75,6 @@ export default function HiddenArticles() {
         <ArticlePreview
           key={each.id}
           article={each}
-          dontShowSourceIcon={false}
           onUnhideArticle={handleUnhideArticle}
           isHiddenView={true}
         />

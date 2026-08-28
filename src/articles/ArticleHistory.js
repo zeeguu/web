@@ -33,7 +33,7 @@ export default function OwnArticles({ api }) {
       <br />
       <SortingButtons articleList={articleList} originalList={originalList} setArticleList={setArticleList} />
       {articleList.map((each) => (
-        <ArticlePreview key={each.id} article={each} dontShowSourceIcon={true} />
+        <ArticlePreview key={each.id} article={each} />
       ))}
     </>
   );

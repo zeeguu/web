@@ -6,6 +6,7 @@ import * as s from "./ArticleListBrowser.sc";
 import LoadingAnimation from "../components/LoadingAnimation";
 import FeedFilterBar from "./FeedFilterBar";
 
+import { browsingModeProps } from "./browsingMode";
 import LocalStorage from "../assorted/LocalStorage";
 
 import ShowLinkRecommendationsIfNoArticles from "./ShowLinkRecommendationsIfNoArticles";
@@ -312,8 +313,7 @@ export default function ArticleListBrowser({
               article={each}
               hasExtension={isExtensionAvailable}
               kioskMode={kioskMode}
-              interactive={browsingMode === "interactive"}
-              compact={browsingMode === "titles"}
+              {...browsingModeProps(browsingMode)}
               doNotShowRedirectionModal_UserPreference={doNotShowRedirectionModal_UserPreference}
               setDoNotShowRedirectionModal_UserPreference={setDoNotShowRedirectionModal_UserPreference}
               onArticleHidden={handleArticleHidden}

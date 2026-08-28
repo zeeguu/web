@@ -4,6 +4,8 @@ import LoadingAnimation from "../components/LoadingAnimation";
 import { setTitle } from "../assorted/setTitle";
 import strings from "../i18n/definitions";
 import ArticlePreview from "./ArticlePreview";
+import { browsingModeProps } from "./browsingMode";
+import LocalStorage from "../assorted/LocalStorage";
 import SortingButtons from "./SortingButtons";
 import { OrangeRoundButton } from "../components/allButtons.sc";
 import * as s from "../components/TopMessage.sc";
@@ -87,7 +89,15 @@ export default function ClassroomArticles() {
       <br />
       <SortingButtons articleList={articleList} originalList={originalList} setArticleList={setArticleList} />
       {articleList.map((each) => (
-        <ArticlePreview key={each.id} article={each} dontShowSourceIcon={true} />
+        <ArticlePreview
+          key={each.id}
+          article={each}
+          {...browsingModeProps(LocalStorage.getBrowsingMode())}
+          // Hiding is "not interested", which a class text is not: the list is
+          // what the teacher assigned, and a student who dismissed one would
+          // have to find it again through the hidden-articles page.
+          allowHiding={false}
+        />
       ))}
     </>
   );
