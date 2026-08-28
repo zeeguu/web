@@ -1,14 +1,11 @@
 import strings from "../../i18n/definitions";
 import { Switch, useParams } from "react-router";
-import { Link, useLocation } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import { PrivateRoute } from "../../PrivateRoute";
 import LocalStorage from "../../assorted/LocalStorage";
-import {
-  StyledButton,
-  TopButtonWrapper,
-} from "../styledComponents/TeacherButtons.sc";
+import StudentTabs from "../myClassesPage/StudentTabs";
+import { TeacherPageSubtitle } from "../styledComponents/TeacherPageHeading.sc";
 import * as s from "../../components/ColumnWidth.sc";
-import * as sc from "../../components/TopTabs.sc";
 import StudentReadingInsights from "../myClassesPage/readingPage/StudentReadingInsights";
 import StudentExercisesInsights from "../myClassesPage/exercisesPage/StudentExercisesInsights";
 import { useContext, useEffect, useState } from "react";
@@ -49,34 +46,14 @@ export default function ActivityInsightsRouter() {
   return (
     <Switch>
       <s.WidestColumn>
-        <sc.TopTabs>
-          <h1>
-            {studentName}
-            {title}
-          </h1>
-        </sc.TopTabs>
-        <TopButtonWrapper>
-          {isOnExercisePage ? (
-            <Link
-              to={`/teacher/classes/viewStudent/${studentID}/class/${cohortID}`}
-            >
-              <StyledButton $primary>{strings.seeReading}</StyledButton>
-            </Link>
-          ) : (
-            <Link
-              to={`/teacher/classes/viewStudent/${studentID}/class/${cohortID}/exercises`}
-            >
-              <StyledButton $primary>{strings.seeExercises}</StyledButton>
-            </Link>
-          )}
-          <Link to={`/teacher/classes/viewClass/${cohortID}`}>
-            <StyledButton $secondary>
-              {strings.backTo}
-              {cohortName}
-            </StyledButton>
-          </Link>
-        </TopButtonWrapper>
-        <br />
+        <StudentTabs
+          studentID={studentID}
+          cohortID={cohortID}
+          title={`${studentName}${title}`}
+        />
+        {/* Which class we came from: the back arrow goes there, but only the
+            old "Back to <class>" button ever said its name. */}
+        <TeacherPageSubtitle>{cohortName}</TeacherPageSubtitle>
         <br />
         <PrivateRoute
           path="/teacher/classes/viewStudent/:studentID/class/:cohortID"

@@ -1,11 +1,8 @@
-import React, { Fragment, useContext, useEffect, useState } from "react";
-import strings from "../../../i18n/definitions";
+import React, { useContext, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import LocalStorage from "../../../assorted/LocalStorage";
 import { transformStudents } from "./teacherApiHelpers";
-import HowToAddStudentsInfo from "./HowToAddStudentsInfo";
 import NoStudents from "./NoStudents";
-import { StyledButton, TopButtonWrapper } from "../../styledComponents/TeacherButtons.sc";
 import ClassTabs from "./ClassTabs";
 import * as s from "../../../components/ColumnWidth.sc";
 import LoadingAnimation from "../../../components/LoadingAnimation";
@@ -22,7 +19,6 @@ export default function StudentsActivityOverview() {
   // eslint-disable-next-line
   const [forceUpdate, setForceUpdate] = useState(0);
   const selectedTimePeriod = LocalStorage.selectedTimePeriod();
-  const [showAddStudentsInfo, setShowAddStudentsInfo] = useState(false);
 
 
   function updateShownStudents() {
@@ -77,28 +73,12 @@ export default function StudentsActivityOverview() {
           <ClassTabs
             cohortID={cohortID}
             cohort={cohort}
+            studentCount={students.length}
             onClassChanged={setForceUpdate}
           />
-          {/* No button on an empty class: the empty state below already gives
-              the invite code and says what to do with it, and the button only
-              opened a dialog repeating it. With students in the list, that
-              dialog is the one place left to find the code. */}
-          {hasStudents && (
-            <TopButtonWrapper>
-              <StyledButton $primary onClick={() => setShowAddStudentsInfo(true)}>
-                {strings.addStudents}
-              </StyledButton>
-            </TopButtonWrapper>
-          )}
           {studentsSection}
         </div>
       </s.NarrowColumn>
-      {showAddStudentsInfo && (
-        <HowToAddStudentsInfo
-          setShowAddStudentInfo={setShowAddStudentsInfo}
-          inviteCode={cohort.inv_code}
-        />
-      )}
     </>
   );
 }

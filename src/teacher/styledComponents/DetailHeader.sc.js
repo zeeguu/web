@@ -1,14 +1,16 @@
 import styled from "styled-components";
 
-// One block: the class's name, the way back out, and the tabs under them.
-// The row is a nested class rather than a second export — `Wrapper` around a
-// single margin was not carrying its weight (and see CLAUDE.md on naming).
-export const ClassHeader = styled.header`
+// One block: the name of the thing being looked at (a class, a student), the
+// way back out, and the tabs under them. The row is a nested class rather than
+// a second export — `Wrapper` around a single margin was not carrying its
+// weight (and see CLAUDE.md on naming).
+export const DetailHeader = styled.header`
   margin: 3.5rem 0 1.25rem;
 
   .title-row {
     display: flex;
     align-items: center;
+    flex-wrap: wrap;
     gap: 0.6rem;
     margin-bottom: 0.3rem;
   }
@@ -17,6 +19,7 @@ export const ClassHeader = styled.header`
      rows, where three outlined buttons per class made a wall of blue. */
   .actions {
     display: flex;
+    flex-wrap: wrap;
     gap: 0.4rem;
     margin-left: auto;
 

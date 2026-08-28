@@ -53,6 +53,7 @@ export default function ClassTexts() {
         cohortID={cohortID}
         cohort={{ ...cohort, language_id: undefined }}
         textCount={texts.length}
+        studentCount={student_count}
         onClassChanged={() => api.getCohortTextOverview(cohortID, setOverview)}
       />
       <TeacherPageSubtitle>
