@@ -1,12 +1,8 @@
 import { useState } from "react";
 import DynamicFlagImage from "../components/DynamicFlagImage";
 import useGuardedLanguageSwitch from "../hooks/useGuardedLanguageSwitch";
-import { LANGUAGE_CODE_TO_NAME } from "../utils/misc/languageCodeToName";
+import { languageName } from "../utils/misc/languageCodeToName";
 import * as s from "./ClassroomOtherLanguages.sc";
-
-function languageName(code) {
-  return LANGUAGE_CODE_TO_NAME[code] || code;
-}
 
 /**
  * Turns the student's classes into one row per (class, language) they could

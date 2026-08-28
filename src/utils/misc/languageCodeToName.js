@@ -30,3 +30,12 @@ export const LANGUAGE_CODE_TO_NAME = {
   bn: "Bengali",
   el: "Greek",
 };
+
+/**
+ * A language's display name, falling back to the code itself for anything the
+ * map does not cover. Lives here so the fallback is decided once: five callers
+ * had each written `LANGUAGE_CODE_TO_NAME[code] || code` for themselves.
+ */
+export function languageName(code) {
+  return LANGUAGE_CODE_TO_NAME[code] || code;
+}
