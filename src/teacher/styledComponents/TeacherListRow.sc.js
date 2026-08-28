@@ -2,6 +2,9 @@ import styled from "styled-components";
 import { darkBlue, lightBlue } from "../../components/colors";
 import Tag from "../../pages/_pages_shared/Tag.sc";
 
+// One item in a teacher list -- a text on My Texts, a class on My Classrooms.
+// Flat, separated by space: the classes used to be shadowed cards, which made
+// the two pages look like different products.
 export const Row = styled.article`
   display: flex;
   gap: 0.75rem;
@@ -11,6 +14,19 @@ export const Row = styled.article`
 export const Flag = styled.div`
   flex: 0 0 auto;
   padding-top: 0.15rem;
+`;
+
+export const Actions = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+
+  button {
+    margin: 0;
+    padding: 0.35rem 0.8rem;
+    font-size: 0.8rem;
+  }
 `;
 
 export const Body = styled.div`

@@ -7,8 +7,12 @@ import strings from "../../i18n/definitions";
 import { StyledButton } from "../styledComponents/TeacherButtons.sc";
 import * as s from "../../components/ColumnWidth.sc";
 import * as m from "../styledComponents/AllTexts.sc";
-import * as h from "../styledComponents/MyTextsHeader.sc";
-import { TeacherPageHeading, TeacherPageSubtitle } from "../styledComponents/TeacherPageHeading.sc";
+import * as h from "../styledComponents/TextFilterBar.sc";
+import {
+  TeacherPageHeader,
+  TeacherPageHeading,
+  TeacherPageSubtitle,
+} from "../styledComponents/TeacherPageHeading.sc";
 import SortingButtons from "../../articles/SortingButtons";
 import { APIContext } from "../../contexts/APIContext";
 import { ALL, buildClassFilters, filterTexts } from "./textFilters";
@@ -49,7 +53,7 @@ export default function AllTexts() {
     <Fragment>
       <s.NarrowColumn>
         <m.StyledMyTexts>
-          <h.Header>
+          <TeacherPageHeader>
             <div>
               <TeacherPageHeading>{strings.myTexts}</TeacherPageHeading>
               <TeacherPageSubtitle>
@@ -60,7 +64,7 @@ export default function AllTexts() {
             <Link to="/teacher/texts/AddTextOptions">
               <StyledButton $primary>{strings.addText}</StyledButton>
             </Link>
-          </h.Header>
+          </TeacherPageHeader>
 
           {articleList.length === 0 ? (
             <s.CenteredContent>
