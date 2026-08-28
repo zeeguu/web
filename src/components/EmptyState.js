@@ -14,18 +14,28 @@ const Container = styled.div`
   }
 `;
 
+const Title = styled.h2`
+  margin: 0 0 0.4rem;
+  font-size: 1.15rem;
+`;
+
 const Message = styled.p`
   max-width: 400px;
-  color: #666;
+  color: var(--text-secondary);
   font-size: 1rem;
   line-height: 1.6;
   margin: 0;
 `;
 
-export default function EmptyState({ message, fillHeight = true }) {
+// `title` and `children` are optional: most callers just want a sentence, but
+// a screen that has something for the reader to *do* about the emptiness puts
+// its controls in as children rather than building a second centred layout.
+export default function EmptyState({ title, message, fillHeight = true, children }) {
   return (
     <Container $fillHeight={fillHeight}>
+      {title && <Title>{title}</Title>}
       <Message>{message}</Message>
+      {children}
     </Container>
   );
 }
