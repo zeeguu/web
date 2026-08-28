@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
 import strings from "../../i18n/definitions";
-import { useParams } from "react-router";
 import SelectButton from "../sharedComponents/SelectButton";
 import { StyledDialog } from "../styledComponents/StyledDialog.sc";
 import {
@@ -9,13 +8,11 @@ import {
 } from "../styledComponents/TeacherButtons.sc";
 import { APIContext } from "../../contexts/APIContext";
 
-export default function AddToCohortDialog({ setIsOpen, onCohortsUpdated }) {
+export default function AddToCohortDialog({ articleID, setIsOpen, onCohortsUpdated }) {
   const api = useContext(APIContext);
   const [cohortsToChoose, setCohortsToChoose] = useState([]);
   const [initiallyChosen, setInitiallyChosen] = useState([]);
   const [chosenCohorts, setChosenCohorts] = useState([]);
-  const params = useParams();
-  const articleID = params.articleID;
 
   useEffect(() => {
     api.getCohortsInfo((cohortsOfTeacher) => {
@@ -48,10 +45,18 @@ export default function AddToCohortDialog({ setIsOpen, onCohortsUpdated }) {
     });
 
     if (onCohortsUpdated) {
-      onCohortsUpdated(chosenCohorts);
+      onCohortsUpdated(asCohortObjects(chosenCohorts));
     }
     setIsOpen(false);
   };
+
+  // The dialog tracks selection by name (that is what SelectButton hands back);
+  // callers get {id, name} because they need the id to unshare.
+  const asCohortObjects = (names) =>
+    names.map((name) => {
+      const cohort = cohortsToChoose.find((each) => each.name === name);
+      return { id: cohort ? cohort.id : name, name };
+    });
 
   const handleChange = (cohort_name) => {
     const cohort = cohortsToChoose.find((c) => c.name === cohort_name);
@@ -64,7 +69,7 @@ export default function AddToCohortDialog({ setIsOpen, onCohortsUpdated }) {
         addArticleToCohort(cohort.id);
       }
       if (onCohortsUpdated) {
-        onCohortsUpdated(temp);
+        onCohortsUpdated(asCohortObjects(temp));
       }
     }
     //taking a cohort off the list
@@ -77,7 +82,7 @@ export default function AddToCohortDialog({ setIsOpen, onCohortsUpdated }) {
         deleteArticleFromCohort(cohort.id);
       }
       if (onCohortsUpdated) {
-        onCohortsUpdated(temp);
+        onCohortsUpdated(asCohortObjects(temp));
       }
     }
   };

@@ -62,6 +62,10 @@ Zeeguu_API.prototype.addColleagueToCohort = function (
   );
 };
 
+Zeeguu_API.prototype.getCohortTextOverview = function (cohortID, callback, onError) {
+  this._getJSON(`cohort_text_overview/${cohortID}`, callback, { onError });
+};
+
 Zeeguu_API.prototype.getCohortFromArticle = function (article_id, callback) {
   this._getJSON(`/get_cohorts_for_article/${article_id}`, callback);
 };

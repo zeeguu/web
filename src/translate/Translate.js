@@ -13,7 +13,7 @@ import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 import VolumeUpIcon from "@mui/icons-material/VolumeUp";
 import FlagOutlinedIcon from "@mui/icons-material/FlagOutlined";
 import SwapHorizIcon from "@mui/icons-material/SwapHoriz";
-import { LANGUAGE_CODE_TO_NAME } from "../utils/misc/languageCodeToName";
+import { languageName } from "../utils/misc/languageCodeToName";
 import { needsVirtualKeyboard } from "../utils/misc/languageScripts";
 import VirtualKeyboard from "../components/VirtualKeyboard/VirtualKeyboard";
 import SpecialCharacterBar, { hasSpecialCharacters } from "../components/VirtualKeyboard/SpecialCharacterBar";
@@ -395,18 +395,18 @@ export default function Translate() {
   return (
     <>
       <s.DirectionSelector>
-        <s.LanguageLabel>{LANGUAGE_CODE_TO_NAME[sourceLang] || sourceLang}</s.LanguageLabel>
+        <s.LanguageLabel>{languageName(sourceLang)}</s.LanguageLabel>
         <s.SwapButton type="button" onClick={swapDirection} title="Swap languages">
           <SwapHorizIcon />
         </s.SwapButton>
-        <s.LanguageLabel>{LANGUAGE_CODE_TO_NAME[targetLang] || targetLang}</s.LanguageLabel>
+        <s.LanguageLabel>{languageName(targetLang)}</s.LanguageLabel>
       </s.DirectionSelector>
 
       <form onSubmit={handleSearch}>
         <s.SearchContainer>
           <InputField
             id="translate-input"
-            placeholder={`Type in ${LANGUAGE_CODE_TO_NAME[sourceLang] || sourceLang}...`}
+            placeholder={`Type in ${languageName(sourceLang)}...`}
             value={searchWord}
             onChange={(e) => setSearchWord(e.target.value)}
             autoFocus

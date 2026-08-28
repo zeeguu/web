@@ -39,6 +39,10 @@ export default function ArticlePreview({
   onUnhideArticle,
   isHiddenView = false,
   inSavedView = false,
+  // Someone is being shown this card rather than browsing it -- a teacher
+  // previewing their class's feed. The card must look the same but do nothing
+  // on the teacher's own account, so the personal controls come off.
+  previewOnly = false,
   // Preview browsing mode: when false, the card is a plain (non-interactive)
   // teaser and a tap opens the interactive ArticlePreviewOverlay instead of
   // rendering the interactive title/summary inline. Default true keeps today's
@@ -172,7 +176,7 @@ export default function ArticlePreview({
   // Save and Hide have nowhere to go when the class shows only the teacher's
   // texts: there is no Saved tab to reach, and hiding would make one of the few
   // texts the teacher shared disappear from the only screen the student has.
-  const showSaveAndHide = !Feature.classroom_only();
+  const showSaveAndHide = !Feature.classroom_only() && !previewOnly;
 
   const is_saved = article.has_personal_copy || article.has_uploader || isArticleSaved;
   const externalUrl = article.parent_url || article.url;
