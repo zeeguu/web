@@ -58,6 +58,18 @@ export default function StudentsActivityOverview() {
     return <LoadingAnimation />;
   }
 
+  const hasStudents = students.length > 0;
+  const studentsSection = hasStudents ? (
+    <StudentsActivityOverviewContent
+      cohortID={cohortID}
+      students={students}
+      setForceUpdate={setForceUpdate}
+      removeStudentFromCohort={removeStudentFromCohort}
+    />
+  ) : (
+    <NoStudents inviteCode={cohort.inv_code} />
+  );
+
   return (
     <>
       <s.NarrowColumn>
@@ -67,23 +79,18 @@ export default function StudentsActivityOverview() {
             cohort={cohort}
             onClassChanged={setForceUpdate}
           />
-          <TopButtonWrapper>
-            <StyledButton $primary onClick={() => setShowAddStudentsInfo(true)}>
-              {strings.addStudents}
-            </StyledButton>
-          </TopButtonWrapper>
-          {students === null ? (
-            <LoadingAnimation />
-          ) : students.length === 0 ? (
-            <NoStudents inviteCode={cohort.inv_code} />
-          ) : (
-            <StudentsActivityOverviewContent
-              cohortID={cohortID}
-              students={students}
-              setForceUpdate={setForceUpdate}
-              removeStudentFromCohort={removeStudentFromCohort}
-            />
+          {/* No button on an empty class: the empty state below already gives
+              the invite code and says what to do with it, and the button only
+              opened a dialog repeating it. With students in the list, that
+              dialog is the one place left to find the code. */}
+          {hasStudents && (
+            <TopButtonWrapper>
+              <StyledButton $primary onClick={() => setShowAddStudentsInfo(true)}>
+                {strings.addStudents}
+              </StyledButton>
+            </TopButtonWrapper>
           )}
+          {studentsSection}
         </div>
       </s.NarrowColumn>
       {showAddStudentsInfo && (
