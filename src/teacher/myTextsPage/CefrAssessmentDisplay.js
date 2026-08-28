@@ -2,7 +2,7 @@ import React, { useState, useEffect, useContext, useCallback } from "react";
 import { APIContext } from "../../contexts/APIContext";
 import { StyledButton } from "../styledComponents/TeacherButtons.sc";
 import debounce from "lodash-es/debounce";
-import { effectiveCefrLevel } from "../../utils/misc/cefrHelpers";
+import { effectiveCefrLevel } from "../../utils/misc/articleDifficulty";
 
 const CEFR_LEVELS = ["A1", "A2", "B1", "B2", "C1", "C2"];
 

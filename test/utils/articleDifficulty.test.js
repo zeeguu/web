@@ -1,4 +1,4 @@
-import { effectiveCefrLevel } from "../../src/utils/misc/cefrHelpers";
+import { effectiveCefrLevel } from "../../src/utils/misc/articleDifficulty";
 
 // One difficulty, two screens: the teacher's texts list and the article editor
 // must never disagree about the same article. The rule lives on the server

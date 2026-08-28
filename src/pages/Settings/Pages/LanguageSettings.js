@@ -5,7 +5,7 @@ import { APIContext } from "../../../contexts/APIContext";
 import { UserContext } from "../../../contexts/UserContext";
 import { saveSharedUserInfo } from "../../../utils/cookies/userInfo";
 import { CEFR_LEVELS } from "../../../assorted/cefrLevels";
-import { getUserCefrLevel } from "../../../utils/misc/cefrHelpers";
+import { getUserCefrLevel } from "../../../utils/misc/userCefrLevel";
 import strings from "../../../i18n/definitions";
 import LocalStorage from "../../../assorted/LocalStorage";
 import LoadingAnimation from "../../../components/LoadingAnimation";
