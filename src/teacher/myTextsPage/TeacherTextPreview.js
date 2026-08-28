@@ -7,11 +7,12 @@ import ArticleStatInfo from "../../components/ArticleStatInfo";
 import { MetaItem } from "../../components/MetaStrip.sc";
 import { languageName } from "../../utils/misc/languageCodeToName";
 import AddToCohortDialog from "./AddToCohortDialog";
+import ClassPills from "../sharedComponents/ClassPills";
 import * as s from "../styledComponents/TeacherListRow.sc";
 
 const MAX_TITLE_LENGTH = 128;
 
-export default function TeacherTextPreview({ article, onSharingChanged }) {
+export default function TeacherTextPreview({ article, onSharingChanged, onSelectClass }) {
   const api = useContext(APIContext);
   // Set so that Cancel inside the editor comes back to the list.
   const { setReturnPath } = useContext(RoutingContext) || {};
@@ -57,25 +58,16 @@ export default function TeacherTextPreview({ article, onSharingChanged }) {
           {wordCount ? <MetaItem>{wordCount} words</MetaItem> : null}
         </ArticleStatInfo>
 
-        <s.Pills>
-          {sharedWith.length === 0 && <s.NotShared>Not shared with any class</s.NotShared>}
-          {sharedWith.map((cohort) => (
-            <s.Pill key={cohort.id}>
-              {cohort.name}
-              <s.PillRemove
-                type="button"
-                aria-label={`Stop sharing with ${cohort.name}`}
-                disabled={removing !== null}
-                onClick={() => unshare(cohort)}
-              >
-                ×
-              </s.PillRemove>
-            </s.Pill>
-          ))}
-          <s.AddPill type="button" onClick={() => setShowAddToCohort(true)}>
-            {sharedWith.length === 0 ? "+ Share" : "+"}
-          </s.AddPill>
-        </s.Pills>
+        {/* The names double as the list's class filter: the chips at the top of
+            My Texts are the same set, so a text tells you where it lives and
+            takes you to the rest of what lives there. */}
+        <ClassPills
+          classes={sharedWith}
+          onSelectClass={onSelectClass}
+          onRemove={unshare}
+          removingId={removing}
+          onAdd={() => setShowAddToCohort(true)}
+        />
       </s.Body>
 
       {showAddToCohort && (

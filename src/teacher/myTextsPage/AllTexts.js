@@ -41,6 +41,12 @@ export default function AllTexts() {
     setOriginalList(apply);
   }
 
+  // A class pill on a text sets the same filter its chip at the top does --
+  // and clicking the one you are already filtered by is the way back out.
+  function selectClassFilter(cohort) {
+    setActiveFilter((current) => (current === cohort.id ? ALL : cohort.id));
+  }
+
   if (articleList === null) {
     return <LoadingAnimation />;
   }
@@ -98,6 +104,7 @@ export default function AllTexts() {
               key={each.id}
               article={each}
               onSharingChanged={handleSharingChanged}
+              onSelectClass={selectClassFilter}
             />
           ))}
         </m.StyledMyTexts>
