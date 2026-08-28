@@ -1,7 +1,7 @@
 import { MetaStrip, MetaItem, MetaLink, MetaTag } from "./MetaStrip.sc";
 import getDomainName from "../utils/misc/getDomainName";
 import { isSimplifiedArticle } from "../utils/misc/articleHelpers";
-import { effectiveCefrLevel } from "../utils/misc/cefrHelpers";
+import { effectiveCefrLevel } from "../utils/misc/articleDifficulty";
 
 // `children` are extra MetaItems appended to the same strip -- the teacher's
 // texts list adds language and word count there. Passing them in rather than

@@ -6,7 +6,7 @@ import NavOption from "../NavOption";
 import NavIcon from "../NavIcon";
 import navLanguages from "../navLanguages";
 import { CEFR_LEVELS } from "../../../assorted/cefrLevels";
-import { getUserCefrLevel } from "../../../utils/misc/cefrHelpers";
+import { getUserCefrLevel } from "../../../utils/misc/userCefrLevel";
 import LocalStorage from "../../../assorted/LocalStorage";
 import { saveSharedUserInfo } from "../../../utils/cookies/userInfo";
 import styled from "styled-components";

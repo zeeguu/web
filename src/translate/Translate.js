@@ -5,7 +5,7 @@ import { APIContext } from "../contexts/APIContext";
 import { UserContext } from "../contexts/UserContext";
 import { ExercisesCounterContext } from "../exercises/ExercisesCounterContext";
 import { setTitle } from "../assorted/setTitle";
-import { numericToCefr } from "../utils/misc/cefrHelpers";
+import { numericToCefr } from "../utils/misc/userCefrLevel";
 import useSpeech from "../hooks/useSpeech";
 import InputField from "../components/InputField";
 import LoadingAnimation from "../components/LoadingAnimation";

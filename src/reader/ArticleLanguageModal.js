@@ -1,6 +1,6 @@
 import ChoiceModal from "../components/modal_shared/ChoiceModal";
 import { languageName } from "../utils/misc/languageCodeToName";
-import { CEFR_ORDINAL } from "../utils/misc/cefrHelpers";
+import { CEFR_ORDINAL } from "../utils/misc/cefrScale";
 
 const CEFR_BAR_COUNT = 4;
 const CEFR_BAR_GEOMETRY = [

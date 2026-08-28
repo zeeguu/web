@@ -16,7 +16,7 @@ import CircularProgress from "@mui/material/CircularProgress";
 import DynamicFlagImage from "../DynamicFlagImage.js";
 import LanguageOptionLabel from "./LanguageOptionLabel.js";
 import LocalStorage from "../../assorted/LocalStorage.js";
-import { getUserCefrLevel } from "../../utils/misc/cefrHelpers.js";
+import { getUserCefrLevel } from "../../utils/misc/userCefrLevel.js";
 import { saveSharedUserInfo } from "../../utils/cookies/userInfo.js";
 
 const MAX_MODAL_LANGUAGES = 7;

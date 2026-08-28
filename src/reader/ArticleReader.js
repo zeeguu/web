@@ -31,7 +31,7 @@ import DigitalTimer from "../components/DigitalTimer";
 import DevButton from "../components/DevButton";
 import { APIContext } from "../contexts/APIContext";
 import ArticleLanguageModal from "./ArticleLanguageModal";
-import { shouldShowLanguageChoice, getUserCefrLevel, numericToCefr } from "../utils/misc/cefrHelpers";
+import { shouldShowLanguageChoice, getUserCefrLevel, numericToCefr } from "../utils/misc/userCefrLevel";
 import ReviewWordsPopup from "../pages/onboarding/notifications/ReviewWordsPopup";
 
 // UMR stands for historical reasons for: Unified Multilingual Reader
