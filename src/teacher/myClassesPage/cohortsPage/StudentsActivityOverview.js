@@ -32,7 +32,11 @@ export default function StudentsActivityOverview() {
   //Extracting the cohort data for the page title - for showing "no students" guidance and for deleting students from the cohort.
   useEffect(() => {
     api.getCohortsInfo((res) => {
-      const currentCohortArray = res.filter((cohort) => cohort.id === cohortID);
+      // cohortID comes from the route, so it is a string; the payload's id is
+      // a number. Compare as strings rather than relying on either shape.
+      const currentCohortArray = res.filter(
+        (cohort) => String(cohort.id) === String(cohortID),
+      );
       setCohort(currentCohortArray[0]);
     });
     //eslint-disable-next-line
