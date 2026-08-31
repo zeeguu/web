@@ -1,3 +1,5 @@
+import { CEFR_ORDINAL } from "./cefrScale";
+
 // Convert numeric level (1-6) to CEFR string (A1-C2)
 const NUMERIC_TO_CEFR = {
   1: "A1",
@@ -7,8 +9,6 @@ const NUMERIC_TO_CEFR = {
   5: "C1",
   6: "C2",
 };
-
-export const CEFR_ORDINAL = { A1: 1, A2: 2, B1: 3, B2: 4, C1: 5, C2: 6 };
 
 /**
  * Read the user's CEFR level (1-6) for a given language code from the
@@ -58,35 +58,4 @@ export function shouldShowLanguageChoice(
  */
 export function numericToCefr(numericLevel) {
   return NUMERIC_TO_CEFR[numericLevel] || "B1";
-}
-
-/**
- * Extract the highest CEFR level from a display string.
- *
- * Examples:
- * - "B1/B2" -> "B2"
- * - "A1/B2 ⚠️" -> "B2"
- * - "C1" -> "C1"
- *
- * @param {string} displayLevel - The CEFR level display string
- * @returns {string} The highest CEFR level
- */
-export function getHighestCefrLevel(displayLevel) {
-  if (!displayLevel) return 'B1';
-
-  // Convert to string in case it's not
-  const levelStr = String(displayLevel);
-
-  // Remove warning emoji if present
-  const cleanLevel = levelStr.replace(/⚠️/g, '').trim();
-
-  // If it contains a slash, split and take the highest (last one after sorting)
-  if (cleanLevel.includes('/')) {
-    const levels = cleanLevel.split('/').map(l => l.trim());
-    const cefrOrder = ['A1', 'A2', 'B1', 'B2', 'C1', 'C2'];
-    levels.sort((a, b) => cefrOrder.indexOf(a) - cefrOrder.indexOf(b));
-    return levels[levels.length - 1]; // Return highest (last after sorting)
-  }
-
-  return cleanLevel;
 }

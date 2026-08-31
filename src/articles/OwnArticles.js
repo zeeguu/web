@@ -53,7 +53,7 @@ export default function OwnArticles() {
     <>
       <SortingButtons articleList={articleList} originalList={originalList} setArticleList={setArticleList} />
       {articleList.map((each) => (
-        <ArticlePreview key={each.id} article={each} dontShowSourceIcon={false} inSavedView={true} />
+        <ArticlePreview key={each.id} article={each} inSavedView={true} />
       ))}
       {isWaitingForNewArticles && <LoadingAnimation delay={0}></LoadingAnimation>}
       {noMoreArticlesToShow && articleList.length > 0 && (

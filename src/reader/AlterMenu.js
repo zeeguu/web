@@ -66,14 +66,12 @@ export default function AlterMenu({
   word,
   hideAlterMenu,
   selectAlternative,
+  editTranslation,
   deleteTranslation,
   ungroupMwe,
   askLlmTranslation,
 }) {
   const refToAlterMenu = useRef(null);
-  const inputRef = useRef(null);
-  const [inputValue, setInputValue] = useState("");
-  const [showOwnInput, setShowOwnInput] = useState(false);
   // ADR 022: Ask-LLM is opt-in. While the LLM call is in flight the row
   // shows "Asking LLM…" and is disabled. On success we hide the button
   // (the new alternative is now in the list). On failure we leave the
@@ -90,15 +88,16 @@ export default function AlterMenu({
   const [llmAgreedWithPrimary, setLlmAgreedWithPrimary] = useState(word._llmAsked === "agreed");
   const [llmError, setLlmError] = useState(false);
 
-  useEffect(() => {
-    if (showOwnInput && inputRef.current) inputRef.current.focus();
-  }, [showOwnInput]);
-
   // Close the menu as soon as the user starts scrolling — the menu is
   // viewport-fixed, so without this it'd stay floating while the trigger
   // word moves away under it. touchmove catches the finger drag before
   // iOS gets around to firing scroll, so the menu disappears at gesture
   // start instead of after the page has already moved.
+  //
+  // This is also why the menu must not host a text input: focusing one
+  // opens the soft keyboard, the browser scrolls to reveal the field, and
+  // this handler tears the menu down mid-typing. Editing the translation
+  // opens a real modal instead (see `editTranslation`).
   useEffect(() => {
     function handleScrollIntent(e) {
       const el = refToAlterMenu.current;
@@ -139,12 +138,6 @@ export default function AlterMenu({
     };
   }, [hideAlterMenu]);
 
-  function handleKeyDown(e) {
-    if (e.code === "Enter") {
-      selectAlternative(inputValue, "User Suggested");
-    }
-  }
-
   const { list: filteredAlternatives, allAgreedWithPrimary } = buildAlternatives(word);
   const hasAlternatives = filteredAlternatives.length > 0;
 
@@ -175,15 +168,21 @@ export default function AlterMenu({
 
     const triggerRect = trigger.getBoundingClientRect();
     const elWidth = el.offsetWidth;
+    const elHeight = el.offsetHeight;
     let viewportLeft = triggerRect.left;
     if (viewportLeft + elWidth > window.innerWidth - margin) {
       viewportLeft = window.innerWidth - elWidth - margin;
     }
     if (viewportLeft < margin) viewportLeft = margin;
 
+    const viewportTop =
+      triggerRect.bottom + 4 + elHeight > window.innerHeight - margin
+        ? Math.max(margin, triggerRect.top - elHeight - 4)
+        : triggerRect.bottom + 4;
+
     el.style.left = `${viewportLeft - origin.left}px`;
-    el.style.top = `${triggerRect.bottom + 4 - origin.top}px`;
-  }, [hasAlternatives, showOwnInput, filteredAlternatives.length]);
+    el.style.top = `${viewportTop - origin.top}px`;
+  }, [hasAlternatives, filteredAlternatives.length]);
 
   let header = null;
   if (word.disagreement) {
@@ -194,46 +193,28 @@ export default function AlterMenu({
       </div>
     );
   } else if (hasAlternatives) {
-    header = (
-      <div style={{ ...HEADER_BAND_STYLE, color: "var(--altermenu-header-text)" }}>Alternatives</div>
-    );
+    header = <div style={{ ...HEADER_BAND_STYLE, color: "var(--altermenu-header-text)" }}>Alternatives</div>;
   } else if (allAgreedWithPrimary) {
     const label = llmAgreedWithPrimary ? "All providers & AI agree" : "All providers agree";
-    header = (
-      <div style={{ ...HEADER_BAND_STYLE, color: "var(--altermenu-header-text)" }}>{label}</div>
-    );
+    header = <div style={{ ...HEADER_BAND_STYLE, color: "var(--altermenu-header-text)" }}>{label}</div>;
   } else {
-    header = (
-      <div style={{ ...HEADER_BAND_STYLE, color: "var(--altermenu-header-text)" }}>No alternatives found</div>
-    );
+    header = <div style={{ ...HEADER_BAND_STYLE, color: "var(--altermenu-header-text)" }}>No alternatives found</div>;
   }
 
   return (
     <AlterMenuSC ref={refToAlterMenu}>
       {header}
-      {hasAlternatives && filteredAlternatives.map((each, index) => (
-        <div
-          key={`${each.translation}-${each.source}-${index}`}
-          onClick={(e) => selectAlternative(each.translation, shortenSource(each))}
-          className="additionalTrans"
-        >
-          {each.translation}
-          <div className="altermenuSourceLabel">{shortenSource(each)}</div>
-        </div>
-      ))}
-      {showOwnInput && (
-        <input
-          ref={inputRef}
-          autoComplete="off"
-          className="ownTranslationInput matchWidth"
-          type="text"
-          id="#userAlternative"
-          value={inputValue}
-          onChange={(e) => setInputValue(e.target.value)}
-          onKeyDown={(e) => handleKeyDown(e)}
-          placeholder="Type your translation and press Enter"
-        />
-      )}
+      {hasAlternatives &&
+        filteredAlternatives.map((each, index) => (
+          <div
+            key={`${each.translation}-${each.source}-${index}`}
+            onClick={(e) => selectAlternative(each.translation, shortenSource(each))}
+            className="additionalTrans"
+          >
+            {each.translation}
+            <div className="altermenuSourceLabel">{shortenSource(each)}</div>
+          </div>
+        ))}
       <div className="actionsSection">
         {askLlmTranslation && !llmSucceeded && !llmAgreedWithPrimary && (
           <div
@@ -266,9 +247,9 @@ export default function AlterMenu({
             {isAskingLlm ? "Asking AI…" : llmError ? "Ask AI — try again" : "Ask AI"}
           </div>
         )}
-        {!showOwnInput && (
-          <div className="neutralLink" onClick={() => setShowOwnInput(true)}>
-            Add own translation
+        {editTranslation && (
+          <div className="neutralLink" onClick={() => editTranslation()}>
+            Edit translation
           </div>
         )}
         {word.mweExpression && ungroupMwe && (

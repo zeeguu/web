@@ -143,11 +143,14 @@ export default function Learning() {
           marginLeft: "1em",
         }}
       >
-        <p style={{ margin: "0 1em 0 0", fontSize: "0.9em", color: "#555" }}>
+        <p style={{ margin: "0 1em 0 0", fontSize: "0.9em", color: "var(--text-secondary)" }}>
           Words you translate while reading are automatically scheduled for exercises and shown here. You can also add
           words manually.
         </p>
-        <StyledButton onClick={() => setShowAddWordModal(true)} style={{ whiteSpace: "nowrap" }}>
+        <StyledButton
+          onClick={() => setShowAddWordModal(true)}
+          style={{ whiteSpace: "nowrap", backgroundColor: "var(--btn-bg)" }}
+        >
           + Add
         </StyledButton>
       </div>

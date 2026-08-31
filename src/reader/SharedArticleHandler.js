@@ -7,7 +7,7 @@ import useTimedProgressMessage from "../hooks/useTimedProgressMessage";
 import LoadingAnimation from "../components/LoadingAnimation";
 import ArticleLanguageModal from "./ArticleLanguageModal";
 import ErrorDialog from "../components/ErrorDialog";
-import { shouldShowLanguageChoice, getUserCefrLevel, numericToCefr } from "../utils/misc/cefrHelpers";
+import { shouldShowLanguageChoice, getUserCefrLevel, numericToCefr } from "../utils/misc/userCefrLevel";
 
 const PROGRESS_STAGES = {
   simplify: [

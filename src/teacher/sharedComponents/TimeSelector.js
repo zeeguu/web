@@ -9,6 +9,9 @@ import * as s from "../../components/ColumnWidth.sc";
 import * as sc from "../styledComponents/TimeSelector.sc";
 import LocalStorage from "../../assorted/LocalStorage";
 
+// Days, in the order they are offered. timePeriodMap holds each one's label.
+const TIME_PERIODS = [7, 14, 30, 182, 365];
+
 const TimeSelector = ({ setForceUpdate, customText }) => {
   const [showTimesToChoose, setShowTimesToChoose] = useState(false);
   const selectedTimePeriod = LocalStorage.selectedTimePeriod();
@@ -17,6 +20,9 @@ const TimeSelector = ({ setForceUpdate, customText }) => {
   const handleChange = (time) => {
     LocalStorage.setSelectedTimePeriod(time);
     setForceUpdate((prev) => prev + 1);
+    // The page behind reloads with the new period, and the teacher asked one
+    // question: leaving the dialog up hid the answer to it.
+    setShowTimesToChoose(false);
   };
 
   return (
@@ -32,7 +38,6 @@ const TimeSelector = ({ setForceUpdate, customText }) => {
           aria-label="Choose a time period."
           onDismiss={() => setShowTimesToChoose(false)}
           max_width="525px"
-          margin="13em 0 0 35vw"
         >
           <StyledButton
             icon
@@ -45,41 +50,16 @@ const TimeSelector = ({ setForceUpdate, customText }) => {
             <p className="change-time"> {strings.changeTimePeriod} </p>
           </div>
           <div className="centered" id="row">
-            <SelectButton
-              keyID={timePeriodMap[7]}
-              btnText={timePeriodMap[7]}
-              value={7}
-              isChosen={isChosen(7)}
-              handleChange={(time) => handleChange(time)}
-            />
-            <SelectButton
-              keyID={timePeriodMap[14]}
-              btnText={timePeriodMap[14]}
-              value={14}
-              isChosen={isChosen(14)}
-              handleChange={(time) => handleChange(time)}
-            />
-            <SelectButton
-              keyID={timePeriodMap[30]}
-              btnText={timePeriodMap[30]}
-              value={30}
-              isChosen={isChosen(30)}
-              handleChange={(time) => handleChange(time)}
-            />
-            <SelectButton
-              keyID={timePeriodMap[182]}
-              btnText={timePeriodMap[182]}
-              value={182}
-              isChosen={isChosen(182)}
-              handleChange={(time) => handleChange(time)}
-            />
-            <SelectButton
-              keyID={timePeriodMap[365]}
-              btnText={timePeriodMap[365]}
-              value={365}
-              isChosen={isChosen(365)}
-              handleChange={(time) => handleChange(time)}
-            />
+            {TIME_PERIODS.map((days) => (
+              <SelectButton
+                key={days}
+                keyID={timePeriodMap[days]}
+                btnText={timePeriodMap[days]}
+                value={days}
+                isChosen={isChosen(days)}
+                handleChange={handleChange}
+              />
+            ))}
           </div>
         </StyledDialog>
       )}

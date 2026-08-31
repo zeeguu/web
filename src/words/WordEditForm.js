@@ -11,6 +11,12 @@ import RemoveBookmarkModal from "../exercises/removeBookmark/RemoveBookmarkModal
 
 import { APIContext } from "../contexts/APIContext";
 
+// `headline`, `isWordEditable`, `showExampleField` and `showRemoveFromExercises`
+// let a call site trim the form down to what makes sense there. The defaults
+// are the full form as shown in the words list and in exercises. The reader's
+// alter menu opens a translation-only version: the word itself is anchored to
+// article token coordinates, so rewriting it there would re-anchor the
+// bookmark while the underlined token on the page stayed put.
 export default function WordEditForm({
   bookmark,
   errorMessage,
@@ -18,6 +24,10 @@ export default function WordEditForm({
   updateBookmark,
   deleteAction,
   onWordRemovedFromExercises,
+  headline,
+  isWordEditable = true,
+  showExampleField = true,
+  showRemoveFromExercises = true,
 }) {
   const api = useContext(APIContext);
   const [translation, setTranslation] = useState(bookmark.to);
@@ -54,6 +64,16 @@ export default function WordEditForm({
     bookmark.from === expression &&
     bookmark.context === context;
 
+  // A field only counts as required when this call site actually shows it;
+  // otherwise a trimmed form could never submit over a field the user can't see.
+  function hasEmptyRequiredField() {
+    return (
+      translation === "" ||
+      (isWordEditable && expression === "") ||
+      (showExampleField && context === "")
+    );
+  }
+
   function prepClose() {
     setTranslation(bookmark.to);
     setExpression(bookmark.from);
@@ -76,19 +96,11 @@ export default function WordEditForm({
 
   function handleSubmit(event) {
     event.preventDefault();
-    if (translation === "" || expression === "" || context === "") {
-      if (translation === "") {
-        setTranslation(bookmark.to);
-        event.preventDefault();
-      }
-      if (expression === "") {
-        setExpression(bookmark.from);
-        event.preventDefault();
-      }
-      if (context === "") {
-        setContext(bookmark.context);
-        event.preventDefault();
-      }
+    if (hasEmptyRequiredField()) {
+      // Restore whatever the user emptied and don't submit.
+      if (translation === "") setTranslation(bookmark.to);
+      if (expression === "") setExpression(bookmark.from);
+      if (context === "") setContext(bookmark.context);
     } else if (isNotEdited) {
       prepClose();
       handleClose();
@@ -97,39 +109,70 @@ export default function WordEditForm({
     }
   }
 
+  const isExpression = isBookmarkExpression(bookmark);
+  const defaultHeadline = isExpression ? strings.editExpression : "Edit Word and Example";
+  const wordFieldLabel = isExpression ? strings.expression : strings.word;
+
+  const wordField = isWordEditable ? (
+    <s.ExampleFieldWrapper>
+      <s.CustomTextField
+        id="outlined-basic"
+        label={wordFieldLabel}
+        variant="outlined"
+        fullWidth
+        value={expression}
+        onChange={typingExpression}
+      />
+    </s.ExampleFieldWrapper>
+  ) : (
+    <s.ReadOnlyWord>{expression}</s.ReadOnlyWord>
+  );
+
+  const exampleField = (
+    <s.ExampleFieldWrapper>
+      <s.CustomTextField
+        id="outlined-basic"
+        label="Preferred Example"
+        variant="outlined"
+        fullWidth
+        multiline
+        value={context}
+        onChange={typingContext}
+      />
+      <s.FloatingButton>
+        <ReplaceExampleModal
+          exerciseBookmark={bookmark}
+          onExampleUpdated={({ updatedBookmark }) => {
+            setContext(updatedBookmark.context);
+          }}
+          renderAs="button"
+          label="Change"
+        />
+      </s.FloatingButton>
+    </s.ExampleFieldWrapper>
+  );
+
+  const canBeRemovedFromExercises =
+    showRemoveFromExercises && bookmark.from.split(" ").length < MAX_WORDS_IN_BOOKMARK_FOR_EXERCISES;
+
+  const actionButtons = isNotEdited ? (
+    <div style={{ display: "flex", justifyContent: "flex-end" }}>
+      <st.FeedbackSubmit type="submit" value={strings.done} style={{ marginTop: "1em" }} />
+    </div>
+  ) : (
+    <div style={{ display: "flex", gap: "1em", justifyContent: "flex-end" }} className="save-cancel-buttons">
+      <st.FeedbackCancel type="button" onClick={prepClose} value={strings.cancel} style={{ marginTop: "1em" }} />
+      <st.FeedbackSubmit type="submit" value={strings.save} style={{ marginTop: "1em" }} />
+    </div>
+  );
+
   return (
     <>
-      {isBookmarkExpression(bookmark) ? (
-        <s.Headline>{strings.editExpression}</s.Headline>
-      ) : (
-        <s.Headline>Edit Word and Example</s.Headline>
-      )}
+      <s.Headline>{headline || defaultHeadline}</s.Headline>
       <form onSubmit={handleSubmit} autoFocus={true}>
         {errorMessage && <FullWidthErrorMsg>{errorMessage}</FullWidthErrorMsg>}
 
-        {isBookmarkExpression(bookmark) ? (
-          <s.ExampleFieldWrapper>
-            <s.CustomTextField
-              id="outlined-basic"
-              label={strings.expression}
-              variant="outlined"
-              fullWidth
-              value={expression}
-              onChange={typingExpression}
-            />
-          </s.ExampleFieldWrapper>
-        ) : (
-          <s.ExampleFieldWrapper>
-            <s.CustomTextField
-              id="outlined-basic"
-              label={strings.word}
-              variant="outlined"
-              fullWidth
-              value={expression}
-              onChange={typingExpression}
-            />
-          </s.ExampleFieldWrapper>
-        )}
+        {wordField}
         <s.CustomTextField
           id="outlined-basic"
           label={strings.translation}
@@ -139,53 +182,18 @@ export default function WordEditForm({
           onChange={typingTranslation}
         />
 
-
-        <s.ExampleFieldWrapper>
-          <s.CustomTextField
-            id="outlined-basic"
-            label="Preferred Example"
-            variant="outlined"
-            fullWidth
-            multiline
-            value={context}
-            onChange={typingContext}
-          />
-          <s.FloatingButton>
-            <ReplaceExampleModal
-              exerciseBookmark={bookmark}
-              onExampleUpdated={({ updatedBookmark }) => {
-                setContext(updatedBookmark.context);
-              }}
-              renderAs="button"
-              label="Change"
-            />
-          </s.FloatingButton>
-        </s.ExampleFieldWrapper>
+        {showExampleField && exampleField}
 
         <s.DoneButtonHolder>
-          {bookmark.from.split(" ").length < MAX_WORDS_IN_BOOKMARK_FOR_EXERCISES && (
+          {canBeRemovedFromExercises && (
             <StyledGreyButton type="button" onClick={() => setShowExcludeModal(true)} style={{ marginTop: "1em" }}>
               Remove from exercises
             </StyledGreyButton>
           )}
-          {isNotEdited ? (
-            <div style={{ display: "flex", justifyContent: "flex-end" }}>
-              <st.FeedbackSubmit type="submit" value={strings.done} style={{ marginTop: "1em" }} />
-            </div>
-          ) : (
-            <div style={{ display: "flex", gap: "1em", justifyContent: "flex-end" }} className="save-cancel-buttons">
-              <st.FeedbackCancel
-                type="button"
-                onClick={prepClose}
-                value={strings.cancel}
-                style={{ marginTop: "1em" }}
-              />
-              <st.FeedbackSubmit type="submit" value={strings.save} style={{ marginTop: "1em" }} />
-            </div>
-          )}
+          {actionButtons}
         </s.DoneButtonHolder>
       </form>
-      {bookmark && (
+      {showRemoveFromExercises && (
         <RemoveBookmarkModal
           exerciseBookmarks={[bookmark]}
           open={showExcludeModal}
@@ -198,9 +206,7 @@ export default function WordEditForm({
         />
       )}
       {window.location.hostname === "localhost" && bookmark?.id && (
-        <div style={{ marginTop: "1em", fontSize: "0.7em", color: "#999", textAlign: "right" }}>
-          id: {bookmark.id}
-        </div>
+        <div style={{ marginTop: "1em", fontSize: "0.7em", color: "#999", textAlign: "right" }}>id: {bookmark.id}</div>
       )}
     </>
   );

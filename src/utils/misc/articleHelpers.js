@@ -13,8 +13,13 @@ export function isSimplifiedArticle(article) {
 // Source label fallback chain: prefer the feed name when known
 // (curated, e.g. "Politiken"); otherwise derive a domain from the
 // parent URL (for simplified articles) or the article URL.
+//
+// Empty when there is no publisher to name: a text a teacher typed in has no
+// url of its own, so the API mints it a synthetic `userarticle/<uuid>` one,
+// whose "domain" used to print on the card as the publisher "userarticle".
+// A host without a dot in it is not a host -- say nothing instead.
 export function articleSourceLabel(article) {
   if (article.feed_name) return article.feed_name;
-  if (article.parent_url) return getDomainName(article.parent_url);
-  return extractDomain(article.url);
+  const domain = article.parent_url ? getDomainName(article.parent_url) : extractDomain(article.url);
+  return domain && domain.includes(".") ? domain : "";
 }

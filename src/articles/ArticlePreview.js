@@ -23,6 +23,7 @@ import BookmarkBorderRoundedIcon from "@mui/icons-material/BookmarkBorderRounded
 import BookmarkRoundedIcon from "@mui/icons-material/BookmarkRounded";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import VisibilityOffRoundedIcon from "@mui/icons-material/VisibilityOffRounded";
+import MenuBookRoundedIcon from "@mui/icons-material/MenuBookRounded";
 
 export default function ArticlePreview({
   article,
@@ -38,14 +39,25 @@ export default function ArticlePreview({
   onUnhideArticle,
   isHiddenView = false,
   inSavedView = false,
+  // A student in several classes gets one merged classroom list, so each text
+  // says which class it belongs to.
+  showClassNames = false,
+  // Someone is being shown this card rather than browsing it -- a teacher
+  // previewing their class's feed. The card must look the same but do nothing
+  // on the teacher's own account, so the personal controls come off.
+  previewOnly = false,
   // Preview browsing mode: when false, the card is a plain (non-interactive)
   // teaser and a tap opens the interactive ArticlePreviewOverlay instead of
   // rendering the interactive title/summary inline. Default true keeps today's
   // inline-interactive card. Only the Discover/search feed passes this false.
   interactive = true,
   // Titles-only variant of preview mode: a compact row (image left, title
-  // right, no summary). Implies !interactive; still opens the overlay on tap.
+  // right, no summary). Implies !interactive; still opens on tap — except on
+  // the title itself, whose words translate in place like in the reader.
   compact = false,
+  // Whether Hide is offered at all. False where the list is not the reader's
+  // own feed to curate — the classroom's texts are what a teacher assigned.
+  allowHiding = true,
 }) {
   const api = useContext(APIContext);
   const history = useHistory();
@@ -67,9 +79,14 @@ export default function ArticlePreview({
   // reopening would show untranslated text. The card outlives the overlay, so
   // the same object — translations and all — is handed back on reopen, the way
   // the reader keeps yours while you're in it.
+  //
+  // Headlines cards build their tokens up front — the title is tappable right
+  // in the row — but from the bundled feed payload only (preferFresh would put
+  // one request per card behind the lightest of the three views).
   const { interactiveTitle, interactiveSummary } = useArticlePreviewTokens(article, {
-    enabled: !previewMode || previewOpen,
-    preferFresh: previewMode,
+    enabled: !previewMode || previewOpen || compact,
+    preferFresh: previewMode && !compact,
+    titleOnly: compact && !previewOpen,
   });
   const [isHidden, setIsHidden] = useState(article.hidden || false);
   const [isAnimatingOut, setIsAnimatingOut] = useState(false);
@@ -96,6 +113,9 @@ export default function ArticlePreview({
 
   let topics = article.topics_list;
   const hasImage = !!article.img_url && !imageFailed;
+  // Empty for a text a teacher typed in: it has no publisher to name, and the
+  // card already says who shared it.
+  const sourceLabel = articleSourceLabel(article);
 
   function handleCloseRedirectionModal() {
     setIsRedirectionModaOpen(false);
@@ -161,6 +181,12 @@ export default function ArticlePreview({
       }, 300);
     }
   }
+
+  // Save and Hide have nowhere to go when the class shows only the teacher's
+  // texts: there is no Saved tab to reach, and hiding would make one of the few
+  // texts the teacher shared disappear from the only screen the student has.
+  const showSaveAndHide = !Feature.classroom_only() && !previewOnly;
+  const showHide = showSaveAndHide && allowHiding;
 
   const is_saved = article.has_personal_copy || article.has_uploader || isArticleSaved;
   const externalUrl = article.parent_url || article.url;
@@ -266,6 +292,15 @@ export default function ArticlePreview({
   // tags; elsewhere publish time sits at the tail. `dontShowPublishingTime`
   // suppresses publish time only — the saved-time path is the replacement,
   // so it isn't gated on the same flag.
+  // Which class a text came from. Only for a student in more than one class:
+  // with a single class it is the same answer on every row, and the tab itself
+  // already says it. Computed here because both layouts below render a strip.
+  const classTags = showClassNames
+    ? (article.from_classes || []).map((each) => (
+        <MetaTag key={`class-${each.id}`}>{each.name}</MetaTag>
+      ))
+    : null;
+
   let savedTag = null;
   let publishedTimeSlot = null;
   if (inSavedView && article.personal_copy_saved_at) {
@@ -325,6 +360,8 @@ export default function ArticlePreview({
   // whose whole body is one tap target that opens the interactive overlay.
   // "Open" affordances are gone (the card *is* the open). Save (convenience)
   // and Hide stay as stopPropagation siblings so they don't open the overlay.
+  // Headlines (compact) is the exception: its title IS tappable-to-translate,
+  // so it gets Open back as an explicit action — see titleIsInteractive below.
   if (previewMode) {
     const openPreview = () => {
       handleArticleClick();
@@ -338,10 +375,28 @@ export default function ArticlePreview({
       }
     };
 
+    // Headlines: the title carries the same tap-to-translate as the reader, so
+    // a word tap must not also open the article. Words render as <z-tag> (and
+    // their translation/alter-menu chrome lives inside one), so only taps that
+    // land on a word are swallowed — the spaces around them, the meta strip and
+    // the thumbnail still open the card, keeping the whole row a tap target.
+    const titleIsInteractive = compact && !!interactiveTitle;
+    const swallowWordTaps = (e) => {
+      if (e.target.closest?.("z-tag")) e.stopPropagation();
+    };
+    const compactTitle = titleIsInteractive ? (
+      <s.Title onClick={swallowWordTaps}>
+        <TranslatableText interactiveText={interactiveTitle} translating={true} pronouncing={true} />
+      </s.Title>
+    ) : (
+      <s.Title>{article.title}</s.Title>
+    );
+
     // Shared between the Preview (image + summary) and Headlines (compact)
     // layouts so the meta/image markup isn't duplicated across the two.
     const metaStrip = (
       <MetaStrip>
+        {classTags}
         {article.topics_list &&
           article.topics_list.map(([topicTitle]) => <MetaTag key={topicTitle}>{topicTitle}</MetaTag>)}
         {article.matched_searches &&
@@ -359,17 +414,19 @@ export default function ArticlePreview({
           ))}
         {article.parent_article_id && <MetaTag>Simplified</MetaTag>}
         {savedTag}
-        <MetaItem>
-          <MetaLink
-            className="muted"
-            href={article.parent_url || article.url}
-            target="_blank"
-            rel="noopener noreferrer"
-            onClick={(e) => e.stopPropagation()}
-          >
-            {articleSourceLabel(article)}
-          </MetaLink>
-        </MetaItem>
+        {sourceLabel && (
+          <MetaItem>
+            <MetaLink
+              className="muted"
+              href={article.parent_url || article.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={(e) => e.stopPropagation()}
+            >
+              {sourceLabel}
+            </MetaLink>
+          </MetaItem>
+        )}
         {publishedTimeSlot}
         {(article.metrics?.word_count || article.word_count) > 0 && (
           <MetaItem>
@@ -399,29 +456,53 @@ export default function ArticlePreview({
     // thumbnail can't carry overlay buttons anyway.
     const feedActions = (
       <s.SummaryActionRow>
-        <s.SaveActionButton
-          type="button"
-          onClick={handleToggleSave}
-          aria-label={isArticleSaved ? "Remove from saves" : "Save"}
-        >
-          {isArticleSaved ? (
-            <BookmarkRoundedIcon style={{ fontSize: 16 }} />
-          ) : (
-            <BookmarkBorderRoundedIcon style={{ fontSize: 16 }} />
-          )}
-          {isArticleSaved ? "Saved" : "Save"}
-        </s.SaveActionButton>
-        <s.SaveActionButton
-          type="button"
-          onClick={(e) => {
-            e.stopPropagation();
-            handleHideArticle();
-          }}
-          aria-label="Hide from feed"
-        >
-          <VisibilityOffRoundedIcon style={{ fontSize: 16 }} />
-          Hide
-        </s.SaveActionButton>
+        {/* With a tappable title the row no longer has one obvious "open here"
+            spot, so Headlines states it. Preview mode keeps the plain title —
+            there the whole card unambiguously *is* the open. */}
+        {titleIsInteractive && (
+          <s.SaveActionButton
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              openPreview();
+            }}
+            aria-label="Open article"
+          >
+            {should_open_in_zeeguu ? (
+              <MenuBookRoundedIcon style={{ fontSize: 16 }} />
+            ) : (
+              <OpenInNewRoundedIcon style={{ fontSize: 16 }} />
+            )}
+            Open
+          </s.SaveActionButton>
+        )}
+        {showSaveAndHide && (
+          <s.SaveActionButton
+            type="button"
+            onClick={handleToggleSave}
+            aria-label={isArticleSaved ? "Remove from saves" : "Save"}
+          >
+            {isArticleSaved ? (
+              <BookmarkRoundedIcon style={{ fontSize: 16 }} />
+            ) : (
+              <BookmarkBorderRoundedIcon style={{ fontSize: 16 }} />
+            )}
+            {isArticleSaved ? "Saved" : "Save"}
+          </s.SaveActionButton>
+        )}
+        {showHide && (
+          <s.SaveActionButton
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              handleHideArticle();
+            }}
+            aria-label="Hide from feed"
+          >
+            <VisibilityOffRoundedIcon style={{ fontSize: 16 }} />
+            Hide
+          </s.SaveActionButton>
+        )}
       </s.SummaryActionRow>
     );
 
@@ -438,7 +519,7 @@ export default function ArticlePreview({
         {/* With an image, Hide lives as an eye-off at the image's bottom-right
             (mirroring Save at top-right) — the top-right × collided with Save on
             stacked mobile layouts. Image-less cards keep the corner ×. */}
-        {!hasImage && (
+        {!hasImage && showHide && (
           <s.HideButton onClick={handleHideArticle} aria-label="Hide from feed">
             <CloseRoundedIcon style={{ fontSize: 18 }} />
           </s.HideButton>
@@ -460,7 +541,7 @@ export default function ArticlePreview({
             // small thumbnail to the left (desktop, via CompactCard's reflow).
             <s.CompactCard>
               <s.CompactText>
-                <s.Title>{article.title}</s.Title>
+                {compactTitle}
                 {metaStrip}
                 {feedActions}
               </s.CompactText>
@@ -524,7 +605,7 @@ export default function ArticlePreview({
           replaces the Hide button that used to sit at the bottom. Only
           shown where Hide makes sense (Discover-style surfaces, not in
           the Hidden view, not in saved-list views). */}
-      {!isHiddenView && !inSavedView && (
+      {!isHiddenView && !inSavedView && showHide && (
         <s.HideButton onClick={handleHideArticle} aria-label="Hide from feed">
           <CloseRoundedIcon style={{ fontSize: 18 }} />
         </s.HideButton>
@@ -557,6 +638,7 @@ export default function ArticlePreview({
           Saved · source · time. State badges (Simplified/Saved) get a subtle
           accent color; source/time stay muted. All on one row, small. */}
       <MetaStrip>
+        {classTags}
         {article.topics_list &&
           article.topics_list.map(([topicTitle]) => <MetaTag key={topicTitle}>{topicTitle}</MetaTag>)}
         {article.matched_searches &&
@@ -570,16 +652,13 @@ export default function ArticlePreview({
           ))}
         {article.parent_article_id && <MetaTag>Simplified</MetaTag>}
         {savedTag}
-        <MetaItem>
-          <MetaLink
-            className="muted"
-            href={article.parent_url || article.url}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            {articleSourceLabel(article)}
-          </MetaLink>
-        </MetaItem>
+        {sourceLabel && (
+          <MetaItem>
+            <MetaLink className="muted" href={article.parent_url || article.url} target="_blank" rel="noopener noreferrer">
+              {sourceLabel}
+            </MetaLink>
+          </MetaItem>
+        )}
         {publishedTimeSlot}
         {(article.metrics?.word_count || article.word_count) > 0 && (
           <MetaItem>
@@ -598,7 +677,7 @@ export default function ArticlePreview({
             {/* Save toggle overlaid on the image — bookmark icon flips
                 between outline and filled. Sibling of the image-link so
                 clicks here don't bubble into navigation. */}
-            {!isHiddenView && (
+            {!isHiddenView && showSaveAndHide && (
               <s.SaveIconButton
                 type="button"
                 onClick={handleToggleSave}
@@ -641,7 +720,7 @@ export default function ArticlePreview({
                     Open controls regroup into one action row here. */}
                 {!hasImage && (
                   <s.SummaryActionRow>
-                    {!isHiddenView && (
+                    {!isHiddenView && showSaveAndHide && (
                       <s.SaveActionButton
                         type="button"
                         onClick={handleToggleSave}

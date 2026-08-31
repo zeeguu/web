@@ -4,6 +4,9 @@ import TranslationDisplay from "./TranslationDisplay";
 import extractDomain from "../utils/web/extractDomain";
 import addProtocolToLink from "../utils/web/addProtocolToLink";
 import redirect from "../utils/routing/routing";
+import LinkOffIcon from "@mui/icons-material/LinkOff";
+import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
+import EditBookmarkModal from "../words/EditBookmarkModal";
 
 export default function TranslatableWord({
   interactiveText,
@@ -30,6 +33,9 @@ export default function TranslatableWord({
   const [prevWord, setPreviousWord] = useState("");
   const [isTranslationVisible, setIsTranslationVisible] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  // Bookmark-shaped snapshot handed to EditBookmarkModal; non-null while the
+  // edit dialog is open.
+  const [bookmarkBeingEdited, setBookmarkBeingEdited] = useState(null);
 
   useEffect(() => {
     if (word.isTranslationVisible) {
@@ -224,6 +230,31 @@ export default function TranslatableWord({
     interactiveText.selectAlternative(word, alternative, preferredSource, () => {
       wordUpdated();
       setShowingAlterMenu(false);
+    });
+  }
+
+  // The alter menu is viewport-fixed and self-closes on scroll, so it can't
+  // host a text field (the soft keyboard's reveal-scroll tears it down). Hand
+  // the word/translation pair to the same modal the words list and the
+  // session history use instead.
+  function openTranslationEditor() {
+    const [context] = interactiveText.getContextAndCoordinates(word);
+    setShowingAlterMenu(false);
+    setBookmarkBeingEdited({
+      id: word.bookmark_id,
+      from: word.mweExpression || word.word,
+      to: word.translation,
+      context: context,
+    });
+  }
+
+  // Only the translation is editable here, so this reuses the same save path
+  // as picking an alternative from the menu: a translation-only bookmark
+  // update that leaves the word's token coordinates in the article intact.
+  function saveEditedTranslation(bookmark, newWord, newTranslation) {
+    interactiveText.selectAlternative(word, newTranslation, "User Suggested", () => {
+      wordUpdated();
+      setBookmarkBeingEdited(null);
     });
   }
 
@@ -425,6 +456,7 @@ export default function TranslatableWord({
               word={word}
               setShowingAlternatives={setShowingAlterMenu}
               selectAlternative={selectAlternative}
+              editTranslation={openTranslationEditor}
               hideAlterMenu={hideAlterMenu}
               deleteTranslation={deleteTranslation}
               ungroupMwe={ungroupMwe}
@@ -442,6 +474,18 @@ export default function TranslatableWord({
           )}
         </z-orig>
       </z-tag>
+      {bookmarkBeingEdited && (
+        <EditBookmarkModal
+          open={true}
+          onClose={() => setBookmarkBeingEdited(null)}
+          bookmark={bookmarkBeingEdited}
+          updateBookmark={saveEditedTranslation}
+          headline="Edit Translation"
+          isWordEditable={false}
+          showExampleField={false}
+          showRemoveFromExercises={false}
+        />
+      )}
     </>
   );
 }

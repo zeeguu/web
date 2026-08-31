@@ -4,30 +4,30 @@ import LoadingAnimation from "../components/LoadingAnimation";
 import { setTitle } from "../assorted/setTitle";
 import strings from "../i18n/definitions";
 import ArticlePreview from "./ArticlePreview";
+import { browsingModeProps } from "./browsingMode";
+import LocalStorage from "../assorted/LocalStorage";
 import SortingButtons from "./SortingButtons";
 import { OrangeRoundButton } from "../components/allButtons.sc";
 import * as s from "../components/TopMessage.sc";
 import { APIContext } from "../contexts/APIContext";
+import ClassroomOtherLanguages, {
+  otherLanguageOptions,
+} from "./ClassroomOtherLanguages";
+
 export default function ClassroomArticles() {
   const api = useContext(APIContext);
   const [articleList, setArticleList] = useState(null);
-  const [studentJoinedCohort, setStudentJoinedCohort] = useState(null);
+  const [student, setStudent] = useState(null);
 
   let originalList = articleList;
 
   useEffect(() => {
-    api.getStudent((student) => {
-      setStudentJoinedCohort(student.cohorts.length > 0);
-    }); // eslint-disable-next-line
+    setTitle("Classroom Articles");
+    api.getStudent(setStudent);
+    api.getCohortArticles(setArticleList); // eslint-disable-next-line
   }, []);
 
   if (articleList == null) {
-    api.getCohortArticles((articles) => {
-      setArticleList(articles);
-    });
-
-    setTitle("Classroom Articles");
-
     // Shorter delay than the 1s default: swipe navigation slides the old tab
     // away and leaves a blank panel, so the spinner needs to land sooner.
     return <LoadingAnimation delay={300} />;
@@ -36,11 +36,30 @@ export default function ClassroomArticles() {
   if (articleList.length === 0) {
     // Cohort membership is fetched separately and may still be in flight.
     // Don't guess the empty message yet, or we flash "You have not joined a
-    // class" (studentJoinedCohort still null → falsy) before settling on
-    // "no articles in your classroom" once getStudent resolves.
-    if (studentJoinedCohort === null) {
+    // class" (no cohorts on a null student) before settling on "no articles in
+    // your classroom" once getStudent resolves.
+    if (student === null) {
       return <LoadingAnimation delay={300} />;
     }
+
+    const studentJoinedCohort = student.cohorts.length > 0;
+
+    // The feed filters cohort texts by the student's learned language, so a
+    // class taught in another language looks indistinguishable from a class
+    // the teacher never filled. Say which language it is, and offer the switch.
+    const otherLanguages = otherLanguageOptions(
+      student.cohorts,
+      student.learned_language,
+    );
+    if (otherLanguages.length > 0) {
+      return (
+        <ClassroomOtherLanguages
+          options={otherLanguages}
+          learnedLanguage={student.learned_language}
+        />
+      );
+    }
+
     return (
       <Fragment>
         {!studentJoinedCohort ? (
@@ -64,13 +83,32 @@ export default function ClassroomArticles() {
     );
   }
 
+  // The class tags need to know how many classes this student has, and that
+  // arrives on a separate request. Waiting is better than rendering the list
+  // untagged and having the tags pop in when getStudent lands -- the empty
+  // path above waits for the same reason.
+  if (student === null) {
+    return <LoadingAnimation delay={300} />;
+  }
+
+  const inMoreThanOneClass = student.cohorts.length > 1;
+
   return (
     <>
       <br />
       <br />
       <SortingButtons articleList={articleList} originalList={originalList} setArticleList={setArticleList} />
       {articleList.map((each) => (
-        <ArticlePreview key={each.id} article={each} dontShowSourceIcon={true} />
+        <ArticlePreview
+          key={each.id}
+          article={each}
+          showClassNames={inMoreThanOneClass}
+          {...browsingModeProps(LocalStorage.getBrowsingMode())}
+          // Hiding is "not interested", which a class text is not: the list is
+          // what the teacher assigned, and a student who dismissed one would
+          // have to find it again through the hidden-articles page.
+          allowHiding={false}
+        />
       ))}
     </>
   );

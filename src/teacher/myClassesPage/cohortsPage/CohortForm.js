@@ -16,12 +16,19 @@ import {
   StyledButton,
   PopupButtonWrapper,
 } from "../../styledComponents/TeacherButtons.sc";
+import ToggleOption from "../../../components/Toggles/ToggleOption";
 import DeleteCohortWarning from "./DeleteCohortWarning";
 import { StyledDialog } from "../../styledComponents/StyledDialog.sc";
 import * as s from "../../styledComponents/CohortForm.sc";
 import { APIContext } from "../../../contexts/APIContext";
 
-const CohortForm = ({ cohort, setForceUpdate, setShowCohortForm, cohorts }) => {
+const CohortForm = ({
+  cohort,
+  setForceUpdate,
+  setShowCohortForm,
+  cohorts,
+  onDeleted,
+}) => {
   const api = useContext(APIContext);
   const [isLoading, setIsLoading] = useState(false);
   const [showWarning, setShowWarning] = useState(false);
@@ -32,6 +39,7 @@ const CohortForm = ({ cohort, setForceUpdate, setShowCohortForm, cohorts }) => {
     cohort_name: cohort ? cohort.name : "",
     invite_code: cohort ? cohort.inv_code : "",
     language_code: cohort ? languageMap[cohort.language_name] : "default",
+    only_classroom_texts: cohort ? !!cohort.only_classroom_texts : false,
     max_students: 150, //some teachers create one joint class for all the students of an entire year //TODO modify backend etc. to no longer include this...
   });
 
@@ -58,7 +66,13 @@ const CohortForm = ({ cohort, setForceUpdate, setShowCohortForm, cohorts }) => {
       .then((result) => {
         toast.success("Class deleted successfully!");
         setShowCohortForm(false);
-        setForceUpdate((prev) => prev + 1); // reloads the classes to update the UI
+        // A caller that lives inside the deleted class (its own page) has
+        // nowhere to refresh to, so it navigates away instead.
+        if (onDeleted) {
+          onDeleted();
+        } else {
+          setForceUpdate((prev) => prev + 1); // reloads the classes to update the UI
+        }
       })
       .catch((err) => {
         setIsDeleteError(true);
@@ -136,6 +150,7 @@ const CohortForm = ({ cohort, setForceUpdate, setShowCohortForm, cohorts }) => {
     form.append("inv_code", state.invite_code);
     form.append("max_students", state.max_students); //TODO modify backend etc. to no longer include this...
     form.append("language_code", state.language_code);
+    form.append("only_classroom_texts", state.only_classroom_texts);
     return form;
   }
 
@@ -186,6 +201,17 @@ const CohortForm = ({ cohort, setForceUpdate, setShowCohortForm, cohorts }) => {
                 {strings.classroomLanguage}
               </LanguageSelector>
             </FormControl>
+
+            {/* Unlike the language, this stays editable on an existing class:
+                a teacher decides how open the class is as the term goes on. */}
+            <s.ClassroomOnlyOption>
+              <ToggleOption
+                checked={state.only_classroom_texts}
+                onToggle={(checked) => setState({ ...state, only_classroom_texts: checked })}
+                label={strings.onlyClassroomTexts}
+              />
+              <s.OptionHint>{strings.onlyClassroomTextsHint}</s.OptionHint>
+            </s.ClassroomOnlyOption>
 
             {isError && <Error message={strings.errorInviteCode} />}
           </form>

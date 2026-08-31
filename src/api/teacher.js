@@ -62,6 +62,10 @@ Zeeguu_API.prototype.addColleagueToCohort = function (
   );
 };
 
+Zeeguu_API.prototype.getCohortTextOverview = function (cohortID, callback, onError) {
+  this._getJSON(`cohort_text_overview/${cohortID}`, callback, { onError });
+};
+
 Zeeguu_API.prototype.getCohortFromArticle = function (article_id, callback) {
   this._getJSON(`/get_cohorts_for_article/${article_id}`, callback);
 };
@@ -78,7 +82,8 @@ Zeeguu_API.prototype.getCohortsInfo = function (callback, onError) {
         "cur_students": 0,
         "language_name": "Spanish",
         "declared_level_min": 0,
-        "declared_level_max": 10
+        "declared_level_max": 10,
+        "last_shared_time": "2026-08-25T12:34:56.000Z",  // null if no text was ever shared with this class
         "teachers_for_cohort": [
           {
             "email": "aristotle@athens.gr",

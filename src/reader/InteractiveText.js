@@ -202,10 +202,11 @@ export default class InteractiveText {
   selectAlternative(word, alternative, preferredSource, onSuccess) {
     // Simple translation-only update - preserves all position data
     this.api.updateBookmarkTranslation(word.bookmark_id, alternative);
+    const previousTranslation = word.translation;
     word.translation = alternative;
     word.service_name = "Own alternative selection";
 
-    let alternative_info = `${word.translation} => ${alternative} (${preferredSource})`;
+    let alternative_info = `${previousTranslation} => ${alternative} (${preferredSource})`;
     this.api.logUserActivity(this.api.SEND_SUGGESTION, null, alternative_info, this.source, this.sourceId);
 
     onSuccess();

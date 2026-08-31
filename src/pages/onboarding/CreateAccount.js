@@ -16,6 +16,7 @@ import {
 import { setTitle } from "../../assorted/setTitle";
 import validateRules from "../../assorted/validateRules";
 import strings from "../../i18n/definitions";
+import { MIN_PASSWORD_LENGTH } from "../../appConstants";
 
 import CardPage from "../_pages_shared/CardPage";
 import Header from "../_pages_shared/Header";
@@ -53,7 +54,7 @@ export default function CreateAccount({ handleSuccessfulLogIn }) {
   ]);
   const [password, setPassword, validatePassword, isPasswordValid, passwordMsg] = useFormField("", [
     NonEmptyValidator("Please enter a password."),
-    MinimumLengthValidator(3, strings.passwordMustBeMsg),
+    MinimumLengthValidator(MIN_PASSWORD_LENGTH, strings.formatString(strings.passwordMustBeMsg, MIN_PASSWORD_LENGTH)),
   ]);
 
   const passwordRef = useShadowRef(password);

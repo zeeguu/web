@@ -190,7 +190,7 @@ let strings = new LocalizedStrings(
 
       //CreateAccount
       nameIsRequired: "Name is required.",
-      passwordMustBeMsg: "Password should be at least 4 characters long.",
+      passwordMustBeMsg: "Password should be at least {0} characters long.",
       plsAcceptPrivacyPolicy: "You need to agree to our privacy notice.",
       thankYouMsgPrefix: "Thanks for being a beta-tester. We really want to hear from you at",
       thankYouMsgSuffix: ". Contact us also if you don't have an invite code.",
@@ -714,6 +714,8 @@ let strings = new LocalizedStrings(
       //AddToCohortDialog
       chooseClass: "Choose one or more classes",
       saveChanges: "Save Changes",
+      filterClassesByName: "Filter classes by name",
+      noClassesMatchFilter: "No classes match what you typed.",
 
       //AddURLDialog
       addTextFromWebpage: "Add text from a webpage",
@@ -746,6 +748,9 @@ let strings = new LocalizedStrings(
 
       //CohortForm
       editClass: "Edit Class",
+      onlyClassroomTexts: "Students see only the texts I share",
+      onlyClassroomTextsHint:
+        "No news feed, search, saved articles or inbox. Students can still leave the class to see the rest of Zeeguu.",
       createClass: "Create Class",
       classroomLanguage: "Classroom language",
       errorInviteCode: "Something went wrong. Maybe the invite code is already in use.",
@@ -1132,7 +1137,7 @@ let strings = new LocalizedStrings(
       learnedLanguageIsRequired: 'Udfyld feltet "Sprog, du vil lære"',
       languangeLevelIsRequired: "Angiv niveauet af det sprog, du gerne vil lære.",
       plsSelectBaseLanguage: "Angiv, dit base sprog.",
-      passwordMustBeMsg: "Kodeordet skal være mindst fire karakterer",
+      passwordMustBeMsg: "Kodeordet skal være mindst {0} karakterer",
       createAccount: "Opret konto",
       thankYouMsgPrefix: "Tak fordi du vil være beta-tester. Du er altid velkommen til at kontakte os på: ",
       thankYouMsgSuffix: ". Du kan også kontakte os, hvis du mangler en invitationskode.",
@@ -1486,6 +1491,8 @@ let strings = new LocalizedStrings(
       //AddToCohortDialog
       chooseClass: "Vælg en eller flere klasser",
       saveChanges: "Gem ændringer",
+      filterClassesByName: "Filtrér klasser efter navn",
+      noClassesMatchFilter: "Ingen klasser matcher det, du har skrevet.",
 
       //AddURLDialog
       addTextFromWebpage: "Tilføj tekst fra en hjemmeside",

@@ -56,7 +56,10 @@ export default function VirtualKeyboard({
     insertAtCursor(inputRef, key, currentValue, onInput);
   };
 
-  // Select the appropriate keyboard component based on script type
+  // Select the appropriate keyboard component based on script type.
+  // When adding one here, also add its script type to SCRIPTS_WITH_KEYBOARD in
+  // languageScripts.js - otherwise needsVirtualKeyboard() stays false and this
+  // never gets rendered.
   const KeyboardComponent = {
     [SCRIPT_TYPES.GREEK]: GreekKeyboard,
     [SCRIPT_TYPES.DANISH]: DanishKeyboard,

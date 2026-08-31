@@ -5,7 +5,7 @@ import { UserContext } from "../contexts/UserContext";
 import ChoiceModal from "../components/modal_shared/ChoiceModal";
 import useQuery from "./useQuery";
 import { switchLanguage } from "../utils/languageSwitcher";
-import { LANGUAGE_CODE_TO_NAME } from "../utils/misc/languageCodeToName";
+import { languageName } from "../utils/misc/languageCodeToName";
 
 const READER_PATH = "/read/article";
 const EXERCISES_SUMMARY_PATH = "/exercises/summary";
@@ -77,7 +77,7 @@ export default function useGuardedLanguageSwitch() {
     setPending(null);
   }
 
-  const targetLanguageName = pending ? LANGUAGE_CODE_TO_NAME[pending.langCode] || pending.langCode : "";
+  const targetLanguageName = pending ? languageName(pending.langCode) : "";
 
   const confirmModal = pending ? (
     <ChoiceModal

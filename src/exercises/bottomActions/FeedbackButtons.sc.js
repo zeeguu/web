@@ -101,9 +101,10 @@ const FeedbackSubmit = styled.input`
 `;
 
 const FeedbackCancel = styled(FeedbackSubmit)`
-  background-color: white;
-  borderColor: ${zeeguuOrange};,
+  background-color: var(--card-bg);
+  border: 0.25em solid var(--btn-bg);
   font-weight: 450;
+  color: var(--text-primary);
 `;
 
 const FeedbackDelete = styled(FeedbackSubmit)`

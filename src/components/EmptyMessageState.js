@@ -14,9 +14,14 @@ const Container = styled.div`
   }
 `;
 
+const Title = styled.h2`
+  margin: 0 0 0.4rem;
+  font-size: 1.15rem;
+`;
+
 const Message = styled.p`
   max-width: 400px;
-  color: #666;
+  color: var(--text-secondary);
   font-size: 1rem;
   line-height: 1.6;
   margin: 0;
@@ -25,7 +30,9 @@ const Message = styled.p`
 export default function EmptyMessageState({ message, fillHeight = true }) {
   return (
     <Container $fillHeight={fillHeight}>
+      {title && <Title>{title}</Title>}
       <Message>{message}</Message>
+      {children}
     </Container>
   );
 }

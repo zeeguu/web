@@ -13,6 +13,10 @@ import { BrowsingSessionContext } from "../contexts/BrowsingSessionContext";
 // one-time build so callers can defer it — the overlay tokenizes only once it
 // opens; the card only when it's in interactive mode.
 //
+// `titleOnly` says the caller renders the title alone (Headlines cards), so a
+// missing bundled summary is no reason to go to the server — the bundled title
+// is enough. Whatever else the payload happens to carry is still built.
+//
 // `preferFresh` skips the bundled payload and asks the server instead. The
 // bundled tokens carry the `past_bookmarks` as they were when the feed response
 // was built (and that response is client-cached for 5 min), so a word the user
@@ -20,7 +24,7 @@ import { BrowsingSessionContext } from "../contexts/BrowsingSessionContext";
 // it's opened by an explicit tap, so one request is affordable, and it's the
 // surface where losing your own translations is most visible. The inline card
 // stays on the bundled payload — one request per card would undo the batching.
-export default function useArticlePreviewTokens(article, { enabled = true, preferFresh = false } = {}) {
+export default function useArticlePreviewTokens(article, { enabled = true, preferFresh = false, titleOnly = false } = {}) {
   const api = useContext(APIContext);
   const getBrowsingSessionId = useContext(BrowsingSessionContext);
   const [interactiveTitle, setInteractiveTitle] = useState(null);
@@ -33,8 +37,13 @@ export default function useArticlePreviewTokens(article, { enabled = true, prefe
     if (!article.summary && !article.title) return;
     setIsTokenizing(true);
 
+    // The feed bundles both payloads per card, so the request below is a
+    // fallback. A bundled title with no bundled summary is complete enough
+    // when there is no summary to tokenize, or when the caller only shows
+    // the title — fetching then would cost one request per card.
+    const summaryBundledOrUnneeded = !!article.interactiveSummary || !article.summary || titleOnly;
     const preloaded =
-      !preferFresh && article.interactiveSummary && article.interactiveTitle
+      !preferFresh && article.interactiveTitle && summaryBundledOrUnneeded
         ? { tokenized_summary: article.interactiveSummary, tokenized_title: article.interactiveTitle }
         : null;
 

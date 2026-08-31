@@ -1,11 +1,24 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { useLocation } from "react-router-dom/cjs/react-router-dom";
 import { APIContext } from "../contexts/APIContext";
 import { UserContext } from "../contexts/UserContext";
-import Feature from "../features/Feature";
+import useForegroundPoll from "./useForegroundPoll";
 
-// Drives the "Shared with you" inbox + its unread badge. Mirrors
-// useFriendRequestNotification: refetches on navigation, gated on gamification.
+// The inbox badge only exists on the article tabs (see _ArticlesRouter), so
+// those are the only routes where arriving-share-becomes-visible is a thing a
+// user can witness. Poll every second there — a share landing while someone
+// watches the screen should show up while they're still watching — and back
+// off to a minute everywhere else, which is only about being up to date by the
+// time they navigate back.
+const BADGE_VISIBLE_INTERVAL_MS = 1000;
+const ELSEWHERE_INTERVAL_MS = 60 * 1000;
+
+function badgeIsOnScreen(path) {
+  return path.startsWith("/articles") || path === "/search";
+}
+
+// Drives the "Shared with you" inbox + its unread badge. Refetches on
+// navigation, and polls so a share arriving mid-session appears on its own.
 export default function useSharedArticlesNotification() {
   const path = useLocation().pathname;
   const api = useContext(APIContext);
@@ -41,13 +54,34 @@ export default function useSharedArticlesNotification() {
   const sharedArticlesLoading = !loaded || activeLanguage === undefined;
 
   useEffect(() => {
-    if (!Feature.has_gamification()) {
-      setLoaded(true);
-      return;
-    }
     refreshSharedArticles();
     // eslint-disable-next-line
   }, [path]);
+
+  // Each tick asks the cheap signature endpoint whether anything moved, and
+  // only then pays for the real inbox. That's what makes a one-second cadence
+  // affordable: a share arriving is rare, so nearly every tick is one aggregate
+  // query and ~30 bytes back.
+  //
+  // A failed tick needs no handling: the next one is a second away, and the
+  // signature it reads is absolute, not a delta, so nothing is lost by missing
+  // one.
+  const lastSignatureRef = useRef(null);
+
+  function pollForInboxChanges() {
+    api.getSharedArticlesInboxSignature((signature) => {
+      if (signature === lastSignatureRef.current) return;
+      lastSignatureRef.current = signature;
+      // Picks up shares that arrive mid-session, and flips a row from "not
+      // ready" to ready once its background-generated derivative lands.
+      refreshSharedArticles();
+    });
+  }
+
+  useForegroundPoll(pollForInboxChanges, {
+    intervalMs: badgeIsOnScreen(path) ? BADGE_VISIBLE_INTERVAL_MS : ELSEWHERE_INTERVAL_MS,
+    hiddenIntervalMs: ELSEWHERE_INTERVAL_MS,
+  });
 
   function refreshSharedArticles() {
     api.getArticlesSharedWithMe((data) => {

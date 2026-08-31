@@ -39,15 +39,21 @@ export const LANGUAGE_TO_SCRIPT = {
   'lv': SCRIPT_TYPES.ROMAN,
 };
 
+// Script types we have actually built a keyboard layout for.
+// Callers suppress the OS keyboard (inputMode="none") when this returns true,
+// so a script listed here without a component in VirtualKeyboard.js leaves the
+// user with no keyboard at all. Keep in sync with the map in VirtualKeyboard.js.
+export const SCRIPTS_WITH_KEYBOARD = [SCRIPT_TYPES.GREEK, SCRIPT_TYPES.DANISH];
+
 /**
- * Determines if a language uses a non-Roman script and needs a virtual keyboard
+ * Determines if we have a virtual keyboard to show for this language
  * @param {string} languageCode - ISO language code (e.g., 'el', 'ru', 'da')
  * @param {number} userId - User ID (optional, for future use)
  * @returns {boolean} - True if virtual keyboard should be shown
  */
 export function needsVirtualKeyboard(languageCode, userId = null) {
   const scriptType = LANGUAGE_TO_SCRIPT[languageCode];
-  return scriptType && scriptType !== SCRIPT_TYPES.ROMAN;
+  return SCRIPTS_WITH_KEYBOARD.includes(scriptType);
 }
 
 /**
