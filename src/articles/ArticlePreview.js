@@ -39,6 +39,9 @@ export default function ArticlePreview({
   onUnhideArticle,
   isHiddenView = false,
   inSavedView = false,
+  // A student in several classes gets one merged classroom list, so each text
+  // says which class it belongs to.
+  showClassNames = false,
   // Someone is being shown this card rather than browsing it -- a teacher
   // previewing their class's feed. The card must look the same but do nothing
   // on the teacher's own account, so the personal controls come off.
@@ -289,6 +292,15 @@ export default function ArticlePreview({
   // tags; elsewhere publish time sits at the tail. `dontShowPublishingTime`
   // suppresses publish time only — the saved-time path is the replacement,
   // so it isn't gated on the same flag.
+  // Which class a text came from. Only for a student in more than one class:
+  // with a single class it is the same answer on every row, and the tab itself
+  // already says it. Computed here because both layouts below render a strip.
+  const classTags = showClassNames
+    ? (article.from_classes || []).map((each) => (
+        <MetaTag key={`class-${each.id}`}>{each.name}</MetaTag>
+      ))
+    : null;
+
   let savedTag = null;
   let publishedTimeSlot = null;
   if (inSavedView && article.personal_copy_saved_at) {
@@ -384,6 +396,7 @@ export default function ArticlePreview({
     // layouts so the meta/image markup isn't duplicated across the two.
     const metaStrip = (
       <MetaStrip>
+        {classTags}
         {article.topics_list &&
           article.topics_list.map(([topicTitle]) => <MetaTag key={topicTitle}>{topicTitle}</MetaTag>)}
         {article.matched_searches &&
@@ -625,6 +638,7 @@ export default function ArticlePreview({
           Saved · source · time. State badges (Simplified/Saved) get a subtle
           accent color; source/time stay muted. All on one row, small. */}
       <MetaStrip>
+        {classTags}
         {article.topics_list &&
           article.topics_list.map(([topicTitle]) => <MetaTag key={topicTitle}>{topicTitle}</MetaTag>)}
         {article.matched_searches &&

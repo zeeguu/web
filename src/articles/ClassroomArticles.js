@@ -83,6 +83,8 @@ export default function ClassroomArticles() {
     );
   }
 
+  const inMoreThanOneClass = (student?.cohorts?.length || 0) > 1;
+
   return (
     <>
       <br />
