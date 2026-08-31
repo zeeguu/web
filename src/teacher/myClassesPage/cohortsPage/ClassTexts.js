@@ -44,6 +44,21 @@ export default function ClassTexts() {
 
   const { cohort, texts, student_count } = overview;
 
+  // A text in another language can be shared with this class, and then no
+  // student ever sees it: they only get the texts in the language they are
+  // learning. Seven classes are in this state today. The teacher is the one
+  // who can fix it, so the count goes to them rather than to the students.
+  //
+  // Only meaningful once the class has a language: without one there is
+  // nothing for a text to be "off", and treating null as a language would
+  // declare every text unreachable -- both alarming and untrue, since the
+  // student filter compares the article's language to the student's own and
+  // never consults the class's.
+  const offLanguage = (cohort.language ? overview.texts_by_language || [] : []).filter(
+    (each) => each.code !== cohort.language,
+  );
+  const offLanguageCount = offLanguage.reduce((total, each) => total + each.count, 0);
+
   const nothingShared = texts.length === 0;
   const emptyForEveryone = nothingShared && cohort.only_classroom_texts;
 
@@ -67,6 +82,21 @@ export default function ClassTexts() {
             Zeeguu opens on an empty page for all {pluralStudents(student_count)}.
           </span>
         </FullWidthErrorMsg>
+      )}
+
+      {offLanguageCount > 0 && (
+        <FullWidthInfoMsg>
+          <span>
+            {offLanguageCount === 1 ? "One text here is" : `${offLanguageCount} texts here are`} not
+            in {languageName(cohort.language)} —{" "}
+            {offLanguage
+              .map((each) => `${each.count} in ${languageName(each.code)}`)
+              .join(", ")}
+            . Your students only ever see the texts in the language they are
+            learning, so nobody in this class can open{" "}
+            {offLanguageCount === 1 ? "it" : "them"}.
+          </span>
+        </FullWidthInfoMsg>
       )}
 
       {nothingShared && !emptyForEveryone && (

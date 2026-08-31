@@ -25,7 +25,10 @@ export default function StudentReadingInsights() {
 
   useEffect(() => {
     api.getCohortsInfo((cohortInfo) => {
-      let currentCohort = cohortInfo.find((each) => each.id === cohortID);
+      // Route params are strings; the payload's cohort id is a number.
+      let currentCohort = cohortInfo.find(
+        (each) => String(each.id) === String(cohortID),
+      );
       setCohortLang(currentCohort.language_name);
     });
     api.getStudentInfo(

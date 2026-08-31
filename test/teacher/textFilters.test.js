@@ -68,3 +68,19 @@ describe("sharedClassesOf", () => {
     expect(sharedClassesOf({ cohorts: ["nana"] })).toEqual([]);
   });
 });
+
+describe("cohort ids arriving from two endpoints", () => {
+  // /teacher_texts sends shared_with with numeric ids; the share dialog builds
+  // its objects from /cohorts_info. Those used to be stringified, so a text
+  // shared in this session and the same text after a reload produced two
+  // different chips for one class.
+  test("a class shared just now and the same class after a reload are one chip", () => {
+    const justShared = { id: 3, shared_with: [{ id: 7, name: "nana" }] };
+    const afterReload = { id: 4, shared_with: [{ id: 7, name: "nana" }] };
+
+    const filters = buildClassFilters([justShared, afterReload]);
+
+    expect(filters.filter((each) => each.name === "nana")).toHaveLength(1);
+    expect(filters.find((each) => each.name === "nana").count).toBe(2);
+  });
+});
