@@ -1,4 +1,5 @@
 import * as s from "./ArticleReader.sc";
+//only visible if the article has authors (like is a teacher has written it), otherwise it is not rendered at all
 
 // Scrapers sometimes store a "published on <date>" fragment as the first
 // author (e.g. "Publiceret D.", "Publié Le Mai À"). The backend now strips

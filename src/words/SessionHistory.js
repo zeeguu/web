@@ -1,7 +1,7 @@
 import { useState, useEffect, useContext } from "react";
 import { Link } from "react-router-dom";
 import LoadingAnimation from "../components/LoadingAnimation";
-import EmptyState from "../components/EmptyState";
+import EmptyMessageState from "../components/EmptyMessageState";
 import strings from "../i18n/definitions";
 import { setTitle } from "../assorted/setTitle";
 import { APIContext } from "../contexts/APIContext";
@@ -558,7 +558,7 @@ export default function SessionHistory() {
       {loading && <LoadingAnimation />}
 
       {!loading && sessions && sessions.length === 0 && (
-        <EmptyState message={`No activity recorded for ${getDisplayLabel().toLowerCase()}.`} fillHeight={false} />
+        <EmptyMessageState message={`No activity recorded for ${getDisplayLabel().toLowerCase()}.`} fillHeight={false} />
       )}
 
       {!loading && sessions && sessions.length > 0 && <Summary sessions={sessions} label="Overview" />}

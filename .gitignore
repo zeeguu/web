@@ -70,3 +70,5 @@ android/.settings/
 android/app/.classpath
 android/app/.project
 android/app/.settings/
+*storybook.log
+storybook-static

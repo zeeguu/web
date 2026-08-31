@@ -22,15 +22,7 @@ function LevelBars({ level }) {
       aria-hidden="true"
     >
       {CEFR_BAR_GEOMETRY.map((bar, i) => (
-        <rect
-          key={i}
-          x={bar.x - 0.25}
-          y={bar.y}
-          width={2.5}
-          height={bar.h}
-          rx={0.5}
-          opacity={i < filled ? 1 : 0.3}
-        />
+        <rect key={i} x={bar.x - 0.25} y={bar.y} width={2.5} height={bar.h} rx={0.5} opacity={i < filled ? 1 : 0.3} />
       ))}
     </svg>
   );
@@ -128,9 +120,7 @@ export default function ArticleLanguageModal({
         <>
           <div style={{ marginBottom: "0.9em" }}>Article is above your level</div>
           <LevelTransition articleLevel={articleCefrLevel} userLevel={userCefrLevel} />
-          <div style={{ marginTop: "1.1em" }}>
-            Do you want to adapt it before saving?
-          </div>
+          <div style={{ marginTop: "1.1em" }}>Do you want to adapt it before saving?</div>
         </>
       );
     } else if (articleCefrLevel) {
