@@ -25,23 +25,6 @@ export const Chip = styled(Tag).attrs({ className: "tiny" })`
   white-space: nowrap;
   border-style: ${({ $dashed }) => ($dashed ? "dashed" : "solid")};
 
-  /* $hue/$wash give a class its own colour, so a chip and the tags on the rows
-     below it read as the same thing. Selected fills with the hue; unselected
-     is a wash of it, which is alpha over the ground and so works in both
-     themes. Chips without a hue (All, Not shared) keep the neutral look. */
-  ${({ $hue, $wash, $on }) =>
-    $hue &&
-    ($on
-      ? `border-color: ${$hue}; background-color: ${$hue}; color: white;`
-      : `border-color: ${$hue}; background-color: ${$wash}; color: ${$hue};`)}
-
-  &,
-  &.small {
-    ${({ $on }) =>
-      $on
-        ? `border-color: ${darkBlue}; background-color: ${darkBlue}; color: white; font-weight: 600;`
-        : `color: var(--text-secondary); font-weight: 500;`}
-  }
 `;
 
 export const ChipCount = styled.span`

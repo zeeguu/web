@@ -14,7 +14,6 @@ import ClassroomOtherLanguages, {
   otherLanguageOptions,
 } from "./ClassroomOtherLanguages";
 import { ALL, buildClassFilters, filterTexts } from "../utils/misc/classFilters";
-import { classColorTint } from "../utils/misc/classColor";
 import * as f from "../teacher/styledComponents/TextFilterBar.sc";
 
 export default function ClassroomArticles() {
@@ -110,23 +109,18 @@ export default function ClassroomArticles() {
       <br />
       {inMoreThanOneClass && (
         <f.FilterBar>
-          {classFilters.map((filter) => {
-            const tint = filter.id === ALL ? {} : classColorTint(filter.id);
-            return (
+          {classFilters.map((filter) => (
             <f.Chip
               key={filter.id}
               type="button"
               $on={activeClass === filter.id}
-              $hue={tint.hue}
-              $wash={tint.wash}
               aria-pressed={activeClass === filter.id}
               onClick={() => setActiveClass(filter.id)}
             >
               {filter.name}
               <f.ChipCount>{filter.count}</f.ChipCount>
             </f.Chip>
-            );
-          })}
+          ))}
         </f.FilterBar>
       )}
       <SortingButtons articleList={articleList} originalList={originalList} setArticleList={setArticleList} />
