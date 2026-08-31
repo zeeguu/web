@@ -83,7 +83,15 @@ export default function ClassroomArticles() {
     );
   }
 
-  const inMoreThanOneClass = (student?.cohorts?.length || 0) > 1;
+  // The class tags need to know how many classes this student has, and that
+  // arrives on a separate request. Waiting is better than rendering the list
+  // untagged and having the tags pop in when getStudent lands -- the empty
+  // path above waits for the same reason.
+  if (student === null) {
+    return <LoadingAnimation delay={300} />;
+  }
+
+  const inMoreThanOneClass = student.cohorts.length > 1;
 
   return (
     <>

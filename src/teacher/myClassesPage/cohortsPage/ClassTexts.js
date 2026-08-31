@@ -48,7 +48,13 @@ export default function ClassTexts() {
   // student ever sees it: they only get the texts in the language they are
   // learning. Seven classes are in this state today. The teacher is the one
   // who can fix it, so the count goes to them rather than to the students.
-  const offLanguage = (overview.texts_by_language || []).filter(
+  //
+  // Only meaningful once the class has a language: without one there is
+  // nothing for a text to be "off", and treating null as a language would
+  // declare every text unreachable -- both alarming and untrue, since the
+  // student filter compares the article's language to the student's own and
+  // never consults the class's.
+  const offLanguage = (cohort.language ? overview.texts_by_language || [] : []).filter(
     (each) => each.code !== cohort.language,
   );
   const offLanguageCount = offLanguage.reduce((total, each) => total + each.count, 0);
