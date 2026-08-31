@@ -4,7 +4,7 @@ import CardPage from "../../_pages_shared/CardPage";
 import Header from "../../_pages_shared/Header";
 import PageTitle from "../../_pages_shared/PageTitle.sc";
 import Main from "../../_pages_shared/Main.sc";
-import Footer from "../../_pages_shared/Footer.sc";
+import Footer from "../../_pages_shared/CardPageFooter.sc";
 import LoadingAnimation from "../../../components/LoadingAnimation";
 import redirect from "../../../utils/routing/routing";
 import SessionStorage from "../../../assorted/SessionStorage";
