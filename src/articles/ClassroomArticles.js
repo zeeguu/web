@@ -102,6 +102,7 @@ export default function ClassroomArticles() {
         <ArticlePreview
           key={each.id}
           article={each}
+          showClassNames={inMoreThanOneClass}
           {...browsingModeProps(LocalStorage.getBrowsingMode())}
           // Hiding is "not interested", which a class text is not: the list is
           // what the teacher assigned, and a student who dismissed one would
