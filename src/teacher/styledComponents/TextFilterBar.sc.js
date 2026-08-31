@@ -9,8 +9,10 @@ export const FilterBar = styled(FilterRow).attrs({ $wrap: true })`
   row-gap: 0.4rem;
   margin-bottom: 1.75rem;
 
-  /* The sort control sits at the far end; no spacer element needed. */
-  > *:last-child {
+  /* A trailing control (My Texts' sort) sits at the far end. Marked explicitly
+     rather than by :last-child, which flung the last chip across the row on
+     any bar that has only chips. */
+  > .trailing {
     margin-left: auto;
   }
 `;
@@ -22,6 +24,16 @@ export const FilterBar = styled(FilterRow).attrs({ $wrap: true })`
 export const Chip = styled(Tag).attrs({ className: "tiny" })`
   white-space: nowrap;
   border-style: ${({ $dashed }) => ($dashed ? "dashed" : "solid")};
+
+  /* $hue/$wash give a class its own colour, so a chip and the tags on the rows
+     below it read as the same thing. Selected fills with the hue; unselected
+     is a wash of it, which is alpha over the ground and so works in both
+     themes. Chips without a hue (All, Not shared) keep the neutral look. */
+  ${({ $hue, $wash, $on }) =>
+    $hue &&
+    ($on
+      ? `border-color: ${$hue}; background-color: ${$hue}; color: white;`
+      : `border-color: ${$hue}; background-color: ${$wash}; color: ${$hue};`)}
 
   &,
   &.small {

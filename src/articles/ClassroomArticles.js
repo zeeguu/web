@@ -13,11 +13,15 @@ import { APIContext } from "../contexts/APIContext";
 import ClassroomOtherLanguages, {
   otherLanguageOptions,
 } from "./ClassroomOtherLanguages";
+import { ALL, buildClassFilters, filterTexts } from "../utils/misc/classFilters";
+import { classColorTint } from "../utils/misc/classColor";
+import * as f from "../teacher/styledComponents/TextFilterBar.sc";
 
 export default function ClassroomArticles() {
   const api = useContext(APIContext);
   const [articleList, setArticleList] = useState(null);
   const [student, setStudent] = useState(null);
+  const [activeClass, setActiveClass] = useState(ALL);
 
   let originalList = articleList;
 
@@ -93,12 +97,40 @@ export default function ClassroomArticles() {
 
   const inMoreThanOneClass = student.cohorts.length > 1;
 
+  // With several classes the list is a merge, and a term's reading from each
+  // adds up: filter by class, the same chips the teacher gets on My Texts.
+  const classFilters = inMoreThanOneClass
+    ? buildClassFilters(articleList, { allLabel: "All classes" })
+    : [];
+  const visible = inMoreThanOneClass ? filterTexts(articleList, activeClass) : articleList;
+
   return (
     <>
       <br />
       <br />
+      {inMoreThanOneClass && (
+        <f.FilterBar>
+          {classFilters.map((filter) => {
+            const tint = filter.id === ALL ? {} : classColorTint(filter.id);
+            return (
+            <f.Chip
+              key={filter.id}
+              type="button"
+              $on={activeClass === filter.id}
+              $hue={tint.hue}
+              $wash={tint.wash}
+              aria-pressed={activeClass === filter.id}
+              onClick={() => setActiveClass(filter.id)}
+            >
+              {filter.name}
+              <f.ChipCount>{filter.count}</f.ChipCount>
+            </f.Chip>
+            );
+          })}
+        </f.FilterBar>
+      )}
       <SortingButtons articleList={articleList} originalList={originalList} setArticleList={setArticleList} />
-      {articleList.map((each) => (
+      {visible.map((each) => (
         <ArticlePreview
           key={each.id}
           article={each}
