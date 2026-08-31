@@ -3,8 +3,8 @@ import {
   NOT_SHARED,
   buildClassFilters,
   filterTexts,
-  sharedClassesOf,
-} from "../../src/teacher/myTextsPage/textFilters";
+  classesOf,
+} from "../../src/utils/misc/classFilters";
 
 const text = (id, ...classes) => ({ id, shared_with: classes });
 const CUT = { id: 1, name: "CUT Language Centre" };
@@ -57,15 +57,15 @@ describe("filterTexts", () => {
   });
 });
 
-describe("sharedClassesOf", () => {
+describe("classesOf", () => {
   test("is empty for a text shared with nobody", () => {
-    expect(sharedClassesOf({})).toEqual([]);
+    expect(classesOf({})).toEqual([]);
   });
 
   // The names-only `cohorts` field cannot drive the x on a pill: it carries no
   // id, so an unshare would post a class name as cohort_id and 401.
   test("ignores the older names-only field", () => {
-    expect(sharedClassesOf({ cohorts: ["nana"] })).toEqual([]);
+    expect(classesOf({ cohorts: ["nana"] })).toEqual([]);
   });
 });
 
@@ -82,5 +82,22 @@ describe("cohort ids arriving from two endpoints", () => {
 
     expect(filters.filter((each) => each.name === "nana")).toHaveLength(1);
     expect(filters.find((each) => each.name === "nana").count).toBe(2);
+  });
+});
+
+describe("a student's classroom uses the same filters", () => {
+  // The teacher's list says which classes a text was shared *with*; the
+  // student's says which classes it reached them *through*. Same relationship.
+  const fromClass = (id, name) => ({ id: 1, from_classes: [{ id, name }] });
+
+  test("chips are built from from_classes too", () => {
+    const filters = buildClassFilters([fromClass(82, "Danish Class"), fromClass(109, "Aiki")]);
+
+    expect(filters.map((f) => f.name)).toEqual(["All", "Aiki", "Danish Class"]);
+  });
+
+  test("no Not-shared chip when every text has a class", () => {
+    const filters = buildClassFilters([fromClass(82, "Danish Class")]);
+    expect(filters.some((f) => f.id === NOT_SHARED)).toBe(false);
   });
 });

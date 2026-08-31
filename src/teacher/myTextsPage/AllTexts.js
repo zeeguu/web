@@ -15,7 +15,7 @@ import {
 } from "../styledComponents/TeacherPageHeading.sc";
 import SortingButtons from "../../articles/SortingButtons";
 import { APIContext } from "../../contexts/APIContext";
-import { ALL, buildClassFilters, filterTexts } from "./textFilters";
+import { ALL, buildClassFilters, filterTexts } from "../../utils/misc/classFilters";
 
 export default function AllTexts() {
   const api = useContext(APIContext);
@@ -91,11 +91,13 @@ export default function AllTexts() {
                   <h.ChipCount>{filter.count}</h.ChipCount>
                 </h.Chip>
               ))}
-              <SortingButtons
-                articleList={articleList}
-                originalList={originalList}
-                setArticleList={setArticleList}
-              />
+              <div className="trailing">
+                <SortingButtons
+                  articleList={articleList}
+                  originalList={originalList}
+                  setArticleList={setArticleList}
+                />
+              </div>
             </h.FilterBar>
           )}
 
