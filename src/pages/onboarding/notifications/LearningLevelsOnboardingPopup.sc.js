@@ -1,5 +1,8 @@
 import styled from "styled-components";
-import { StyledButton } from "../../../components/allButtons.sc";
+
+// Shared onboarding centered text plus the level-indicator wrapper that is
+// unique to this popup.
+export { CenteredText, CenteredSecondText } from "./OnboardingModal.sc";
 
 const LevelIndicatorWrapper = styled.div`
   display: flex;
@@ -32,23 +35,4 @@ const LevelIndicatorWrapper = styled.div`
   }
 `;
 
-const CenteredText = styled.p`
-  && {
-    text-align: center;
-    font-weight: 500;
-  }
-`;
-
-const CenteredSecondText = styled.p`
-  && {
-    text-align: center;
-    font-weight: 500;
-    font-size: 14px;
-  }
-`;
-const OnboardingPrimaryButton = styled(StyledButton)`
-  min-width: 190px;
-  margin: 0 auto;
-`;
-
-export { LevelIndicatorWrapper, CenteredText, CenteredSecondText, OnboardingPrimaryButton };
+export { LevelIndicatorWrapper };
