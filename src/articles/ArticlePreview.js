@@ -42,6 +42,10 @@ export default function ArticlePreview({
   // A student in several classes gets one merged classroom list, so each text
   // says which class it belongs to.
   showClassNames = false,
+  // Who uploaded the text. Only worth saying when the list holds texts from
+  // more than one person -- 78 of 80 classes have a single uploader, so
+  // otherwise it is the same name on every row.
+  showUploader = false,
   // Someone is being shown this card rather than browsing it -- a teacher
   // previewing their class's feed. The card must look the same but do nothing
   // on the teacher's own account, so the personal controls come off.
@@ -301,6 +305,11 @@ export default function ArticlePreview({
       ))
     : null;
 
+  const uploaderItem =
+    showUploader && article.uploader_name ? (
+      <MetaItem>Shared by {article.uploader_name}</MetaItem>
+    ) : null;
+
   let savedTag = null;
   let publishedTimeSlot = null;
   if (inSavedView && article.personal_copy_saved_at) {
@@ -397,6 +406,7 @@ export default function ArticlePreview({
     const metaStrip = (
       <MetaStrip>
         {classTags}
+        {uploaderItem}
         {article.topics_list &&
           article.topics_list.map(([topicTitle]) => <MetaTag key={topicTitle}>{topicTitle}</MetaTag>)}
         {article.matched_searches &&
@@ -611,14 +621,6 @@ export default function ArticlePreview({
         </s.HideButton>
       )}
 
-      {/* Show teacher name for classroom articles */}
-      {article.uploader_name && (
-        <div style={{ marginTop: "8px", marginBottom: "8px", fontSize: "0.9em", color: "var(--text-muted)" }}>
-          <span style={{ fontWeight: "500" }}>Shared by:</span>{" "}
-          <span style={{ color: "var(--text-primary)" }}>{article.uploader_name}</span>
-        </div>
-      )}
-
       <s.TitleContainer>
         <s.Title>
           {interactiveTitle ? (
@@ -639,6 +641,7 @@ export default function ArticlePreview({
           accent color; source/time stay muted. All on one row, small. */}
       <MetaStrip>
         {classTags}
+        {uploaderItem}
         {article.topics_list &&
           article.topics_list.map(([topicTitle]) => <MetaTag key={topicTitle}>{topicTitle}</MetaTag>)}
         {article.matched_searches &&

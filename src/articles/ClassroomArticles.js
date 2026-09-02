@@ -96,6 +96,14 @@ export default function ClassroomArticles() {
 
   const inMoreThanOneClass = student.cohorts.length > 1;
 
+  // "Shared by" is only information when the list holds texts from more than
+  // one person. A class with a single teacher would otherwise repeat the same
+  // name on every row -- 78 of 80 classes are in exactly that position.
+  const uploaders = new Set(
+    articleList.map((each) => each.uploader_name).filter(Boolean),
+  );
+  const uploadersVary = uploaders.size > 1;
+
   // With several classes the list is a merge, and a term's reading from each
   // adds up: filter by class, the same chips the teacher gets on My Texts.
   const classFilters = inMoreThanOneClass
@@ -129,6 +137,7 @@ export default function ClassroomArticles() {
           key={each.id}
           article={each}
           showClassNames={inMoreThanOneClass}
+          showUploader={uploadersVary}
           {...browsingModeProps(LocalStorage.getBrowsingMode())}
           // Hiding is "not interested", which a class text is not: the list is
           // what the teacher assigned, and a student who dismissed one would
