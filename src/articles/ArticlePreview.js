@@ -6,7 +6,6 @@ import "react-toastify/dist/ReactToastify.css";
 import { isMobile } from "../utils/misc/browserDetection";
 import * as s from "./ArticlePreview.sc";
 import { MetaStrip, MetaItem, MetaLink, MetaTag } from "../components/MetaStrip.sc";
-import { classColor } from "../utils/misc/classColor";
 import RedirectionNotificationModal from "../components/redirect_notification/RedirectionNotificationModal";
 import Feature from "../features/Feature";
 import strings from "../i18n/definitions";
@@ -296,14 +295,9 @@ export default function ArticlePreview({
   // Which class a text came from. Only for a student in more than one class:
   // with a single class it is the same answer on every row, and the tab itself
   // already says it. Computed here because both layouts below render a strip.
-  // The class's own colour, matching its chip in the filter bar above -- the
-  // pair is what lets you skim the list for one class instead of reading every
-  // label. Colour supplements the name, never replaces it.
   const classTags = showClassNames
     ? (article.from_classes || []).map((each) => (
-        <MetaItem key={`class-${each.id}`} style={{ color: classColor(each.id) }}>
-          {each.name}
-        </MetaItem>
+        <MetaTag key={`class-${each.id}`}>{each.name}</MetaTag>
       ))
     : null;
 
