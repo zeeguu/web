@@ -3,7 +3,7 @@ import SettingsRoundedIcon from "@mui/icons-material/SettingsRounded";
 import LessonPlaybackView from "./LessonPlaybackView";
 import { LessonTitle, LessonMetadata, CompletionCheck } from "./LessonView.sc";
 import { LessonTypeChip, chipLabel } from "./lessonTypeChip";
-import { todayDateLabel, completionChecks } from "./audioUtils";
+import { lessonDateLabel, completionChecks } from "./audioUtils";
 import {
   ConfigPill,
   NewPill,
@@ -27,10 +27,11 @@ function EpisodeHeader({ lessonData, currentPlaybackTime }) {
     lessonData.pause_position_seconds || lessonData.position_seconds || lessonData.progress_seconds || 0;
   const playedSeconds = Math.max(storedSeconds, currentPlaybackTime || 0);
   const showNew = !lessonData.paused && !lessonData.is_completed && playedSeconds === 0;
+  const dateLabel = lessonDateLabel(lessonData.created_at);
   return (
     <>
       <DateLineWrapper>
-        <DateText>{todayDateLabel()}</DateText>
+        {dateLabel && <DateText>{dateLabel}</DateText>}
         {showNew && <NewPill>New</NewPill>}
       </DateLineWrapper>
 

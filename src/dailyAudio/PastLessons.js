@@ -8,7 +8,7 @@ import { SubtleTextButton, LessonTitle, CompletionCheck } from "./LessonView.sc"
 import { SubtleLessonCard, ProgressBarTrack, ProgressBarFill } from "./SharedLessonView.sc";
 import { PillRow, SelectablePill } from "./SuggestionSelector.sc";
 import { LessonTypeChip, chipLabel } from "./lessonTypeChip";
-import { completionChecks, formatShortDate } from "./audioUtils";
+import { completionChecks, formatShortDate, parseLessonDate } from "./audioUtils";
 import ShareLessonButton from "./ShareLessonButton";
 
 // Filter the back catalogue by lesson type. value=null means "All".
@@ -22,7 +22,10 @@ const TYPE_FILTERS = [
 const lessonProgressSeconds = (lesson) =>
   lesson.pause_position_seconds || lesson.position_seconds || lesson.progress_seconds || 0;
 
-const lessonDateLabel = (lesson) => formatShortDate(new Date(lesson.created_at));
+const lessonDateLabel = (lesson) => {
+  const date = parseLessonDate(lesson.created_at);
+  return date ? formatShortDate(date) : "";
+};
 
 const lessonTitleText = (lesson) => lesson.title || "Past Audio Lesson";
 
