@@ -24,6 +24,9 @@ export default function Contributors() {
 
       {member("Mircea Lungu", "Production, Maintenance")}
 
+      {member("Androulla Athanasiou", "Education Feedback")}
+      {member("Jack Burston", "Education Feedback")}
+
       {member("Anna Semeriuk", "Mobile Onboarding")}
 
       {member("Zalán Kálny", "Gamification and Friendships")}
