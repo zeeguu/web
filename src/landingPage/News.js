@@ -20,10 +20,39 @@ export default function News() {
       <h3>2026</h3>
 
       {item(
+        strings.oct,
+        <>
+          Zeeguu goes to Cyprus 🇨🇾! Mircea gives a talk entitled{" "}
+          <b>"Doubly-Personalised Language Learning: Matching Topic and Difficulty in Reading and Listening"</b> at the IATEFL
+          LTSIS event
+        </>,
+      )}
+
+      {item(
         strings.sep,
         <>
-          Zeeguu goes to Belfast ☘️🚢! Mircea gives a talk entitled "The Words They Don't Look Up: Inferring Vocabulary from
-          Reading Behavior" at the EuroCALL conference
+          📄 The paper <b>"Architectural Patterns for Integrating LLMs into User-Facing Applications"</b> is accepted at PLoP
+          in Canada 🇨🇦 (
+          <a href="https://llm-patterns.mircealungu.com/paper.pdf" target="_blank" rel="noopener noreferrer">
+            read the paper
+          </a>
+          )
+        </>,
+      )}
+
+      {item(
+        `${strings.sep} 9`,
+        <>
+          Mircea speaks at the MALL SIG at EuroCALL about{" "}
+          <b>"Inside a Free Reading App: Eight Years of Learners, One Year of LLMs, and How Neither Behaves as You'd Expect"</b>
+        </>,
+      )}
+
+      {item(
+        `${strings.sep} 8`,
+        <>
+          Zeeguu goes to Belfast ☘️🚢! Mircea gives a talk entitled{" "}
+          <b>"The Words They Don't Look Up: Inferring Vocabulary from Reading Behavior"</b> at the EuroCALL conference
         </>,
       )}
 
