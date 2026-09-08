@@ -18,7 +18,7 @@ export const TabBar = styled.div`
   border-bottom: 2px solid var(--border-light);
   margin-bottom: 1rem;
 
-  button {
+  a {
     padding: 0.6rem 1.2rem;
     font-size: 1rem;
     border: none;
@@ -28,6 +28,8 @@ export const TabBar = styled.div`
     cursor: pointer;
     font-weight: 500;
     margin-bottom: -2px;
+    text-decoration: none;
+    white-space: nowrap;
     transition:
       color 0.3s,
       border-color 0.5s;
@@ -38,12 +40,16 @@ export const TabBar = styled.div`
       font-weight: 600;
     }
 
-    &:hover {
-      color: ${orange500};
-    }
+    /* Unscoped :hover on a tappable element makes iOS need two taps: the first
+       one only previews the hover state. */
+    @media (hover: hover) {
+      &:hover {
+        color: ${orange500};
+      }
 
-    &.active:hover {
-      border-bottom-color: ${orange500};
+      &.active:hover {
+        border-bottom-color: ${orange500};
+      }
     }
 
     @media (max-width: 768px) {

@@ -18,6 +18,7 @@ import { ProfileHeaderCard } from "./ProfileHeaderCard";
 import { ProfileTabs } from "./ProfileTabs";
 import { UnfriendConfirmModal } from "./UnfriendConfirmModal";
 import { LanguagesModal } from "./LanguagesModal";
+import { DEFAULT_PROFILE_TAB, PROFILE_TABS, profileTabPath } from "./profileTabRoutes";
 
 export default function UserProfile() {
   const api = useContext(APIContext);
@@ -26,10 +27,10 @@ export default function UserProfile() {
   const { userDetails } = useContext(UserContext);
   const [activeLanguages, setActiveLanguages] = useState([]);
   const [languagesModalOpen, setLanguagesModalOpen] = useState(false);
-  const [activeTab, setActiveTab] = useState("badges");
   const { hasFriendRequestNotification, friendRequestCount } = useContext(FriendRequestContext);
   const { hasBadgeNotification, totalNumberOfBadges, updateBadgeCounter } = useContext(BadgeCounterContext);
-  const { friendUsername } = useParams();
+  const { friendUsername, profileTab } = useParams();
+  const activeTab = profileTab ?? DEFAULT_PROFILE_TAB;
   const [isOwnProfile, setIsOwnProfile] = useState(!friendUsername);
   const [loadingProfileDetails, setLoadingProfileDetails] = useState(true);
   const [friendDetailsError, setFriendDetailsError] = useState(null);
@@ -78,7 +79,6 @@ export default function UserProfile() {
   const resetProfileState = () => {
     setProfileData(null);
     setActiveLanguages([]);
-    setActiveTab("badges");
     setLoadingProfileDetails(true);
     setFriendDetailsError(null);
   };
@@ -158,34 +158,35 @@ export default function UserProfile() {
 
   const tabs = [
     {
-      key: "badges",
+      key: PROFILE_TABS.BADGES,
       label: `Badges${isOwnProfile && hasBadgeNotification ? ` (${totalNumberOfBadges})` : ""}`,
     },
     {
-      key: "friends",
+      key: PROFILE_TABS.FRIENDS,
       label: `Friends${isOwnProfile && hasFriendRequestNotification ? ` (${friendRequestCount})` : ""}`,
     },
-    ...(isOwnProfile ? [{ key: "leaderboards", label: "Leaderboards" }] : []),
-  ];
+    ...(isOwnProfile ? [{ key: PROFILE_TABS.LEADERBOARDS, label: "Leaderboards" }] : []),
+  ].map((tab) => ({ ...tab, link: profileTabPath(friendUsername, tab.key) }));
 
   const renderTabContent = () => {
-    if (activeTab === "badges") {
+    if (activeTab === PROFILE_TABS.BADGES) {
       return <Badges username={friendUsername} />;
     }
 
-    if (activeTab === "friends") {
+    if (activeTab === PROFILE_TABS.FRIENDS) {
       return <Friends friendUsername={friendUsername} navigationHandler={handleUserProfileNavigation} />;
     }
 
-    if (activeTab === "leaderboards") {
+    if (activeTab === PROFILE_TABS.LEADERBOARDS) {
       return <Leaderboards navigationHandler={handleUserProfileNavigation} isStudent={profileData?.is_student} />;
     }
 
     return null;
   };
 
-  const handleTabChange = (tabKey) => {
-    setActiveTab(tabKey);
+  // The tabs navigate on their own; opening any of them counts as having seen
+  // the new badges.
+  const handleTabClick = () => {
     if (isOwnProfile && hasBadgeNotification) {
       updateBadgeCounter();
     }
@@ -232,7 +233,7 @@ export default function UserProfile() {
           />
 
           {(isOwnProfile || isFriendAccepted) && (
-            <ProfileTabs tabs={tabs} activeTab={activeTab} onTabChange={handleTabChange}>
+            <ProfileTabs tabs={tabs} activeTab={activeTab} onTabClick={handleTabClick}>
               {renderTabContent()}
             </ProfileTabs>
           )}

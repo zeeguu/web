@@ -1,26 +1,27 @@
+import { Link } from "react-router-dom";
 import * as s from "./ProfileTabs.sc";
 import React from "react";
 import { useScrollActiveIntoView } from "../hooks/useScrollActiveIntoView";
 
-export function ProfileTabs({ tabs, activeTab, onTabChange, children }) {
+// Every tab is a page of its own (see profileTabRoutes), so the tabs are links:
+// they land in the browser history, survive a reload, and can be opened in a
+// new tab.
+export function ProfileTabs({ tabs, activeTab, onTabClick, children }) {
   const setTabRef = useScrollActiveIntoView(activeTab);
-
-  const handleTabClick = (tab) => {
-    onTabChange(tab.key);
-  };
 
   return (
     <s.TabsSection>
       <s.TabBar>
         {tabs.map((tab) => (
-          <button
+          <Link
             key={tab.key}
+            to={tab.link}
             ref={setTabRef(tab.key)}
             className={activeTab === tab.key ? "active" : ""}
-            onClick={() => handleTabClick(tab)}
+            onClick={onTabClick}
           >
             {tab.label}
-          </button>
+          </Link>
         ))}
       </s.TabBar>
       <s.TabContent>{children}</s.TabContent>
