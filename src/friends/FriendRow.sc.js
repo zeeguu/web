@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { MetaStrip } from "../components/MetaStrip.sc";
 
 const actionVariantStyles = {
   add: {
@@ -51,6 +52,14 @@ export const FriendRowLi = styled.li`
   @media (max-width: 768px) {
     font-size: 0.85rem;
   }
+`;
+
+// The search row's disambiguation line (flags + last activity). MetaStrip is
+// spaced for sitting under an article title; in a compact list row it only
+// needs to clear the username.
+export const SearchMetaStrip = styled(MetaStrip)`
+  margin-top: 2px;
+  margin-left: 0.5rem;
 `;
 
 export const LanguagesMeta = styled.div`

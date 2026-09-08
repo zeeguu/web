@@ -7,6 +7,16 @@ export const Avatar = styled(AvatarBackground)`
   padding: 3px;
 `;
 
+export const UserIdentity = styled.div`
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+
+  @media (max-width: 768px) {
+    flex: 1;
+  }
+`;
+
 export const UserNameWrapper = styled.div`
   display: flex;
   gap: 0.1rem 1rem;
@@ -15,7 +25,6 @@ export const UserNameWrapper = styled.div`
 
   @media (max-width: 768px) {
     flex-direction: column;
-    flex: 1;
   }
 `;
 
