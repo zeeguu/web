@@ -413,6 +413,7 @@ export default function ArticleReader({ teacherArticleID }) {
           onSimplify={handleSimplify}
           onReadOriginal={handleReadOriginal}
           onReadAsIs={handleReadAsIs}
+          onCancel={() => setShowLanguageModal(false)}
           isLoading={isProcessingArticle}
         />
       )}
