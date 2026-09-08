@@ -1,8 +1,26 @@
-- Shared articles now show up the moment a friend sends them. The inbox badge updates while you are looking at the screen, instead of waiting for you to navigate somewhere else.
-- In Headlines view you can tap a word in the headline to translate it, without opening the article first. Each headline also gets its own Open button.
-- Editing your own translation now happens in a proper dialog with a Save button, so it finally works with a phone keyboard.
-- The translation card opens above the word when there is no room below it.
-- Fixed: learners of Russian, Ukrainian, Arabic, Chinese and Japanese got no keyboard at all when typing a translation. The native keyboard is back.
-- Teachers can now set a class so that students see only the texts the teacher shares.
-- Dark mode fixes: the word editing dialog, the add-your-own-word form and the account upgrade dialog are all readable again.
-- The password rules message now matches the password rules.
+This release is mostly for teachers and their students.
+
+For teachers:
+- My Texts and My Classrooms now look like one product, and read properly in dark mode.
+- Filter your texts by class, with a count on each class and a "Not shared" pile for the ones that never went anywhere.
+- Each text shows its classes as pills. Tap one to see the rest of what went to that class, or remove it with a single tap - no trip through the sharing dialog.
+- The share-with-classes dialog now ranks classes sensibly and gains a search box once you have more than a handful.
+- A class page has Students and Texts tabs, with every action on the class in one header.
+- A class warns you when it holds texts in a language its students are not learning, since nobody in the class can see those.
+- Sorting is a normal dropdown now: it closes when you click away, works with a keyboard, and is readable in dark mode. Added Title A-Z, and Newest and Oldest first.
+- A text's difficulty is shown as one level, instead of our pipeline talking to itself.
+- Deleting a class takes you back to My Classrooms instead of leaving you on a page that no longer exists.
+- The Students tab got its label back, and Add Students no longer appears on a class that has no students yet.
+
+For students:
+- Your Classroom now respects the card style you picked in Settings - headlines, preview or interactive.
+- If you are in more than one class, each text says which class it came from, and you can filter the list by class.
+- Teacher-written texts no longer claim to come from a source called "userarticle".
+
+Everywhere else:
+- Profile tabs are real pages, so Back returns you to the tab you left instead of dumping you on Badges.
+- Coming back from a friend's profile keeps your search, instead of emptying the box.
+- Friend search results show the languages someone is learning and when they were last active, so you can tell apart two people with the same name.
+- A simplified article's byline now says what it was simplified from, as in "Simplified to A1 from B2".
+- When a friend shares an article, the dialog offers the level we will actually adapt to, and closing it now means neither option rather than quietly picking one.
+- Your daily lesson is dated by the day it was made, not the day you happen to open it.
