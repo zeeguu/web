@@ -1,4 +1,5 @@
 import { useContext, useEffect, useState } from "react";
+import { useHistory } from "react-router-dom";
 import { toast } from "react-toastify";
 import SearchBar from "../components/SearchBar";
 import { APIContext } from "../contexts/APIContext";
@@ -6,10 +7,13 @@ import strings from "../i18n/definitions";
 import FriendRow from "./FriendRow";
 import { FriendRequestContext } from "../contexts/FriendRequestContext";
 import useFriendActions from "../hooks/useFriendActions";
+import useQuery from "../hooks/useQuery";
 import * as s from "./Friends.sc";
 
 export default function Friends({ friendUsername, navigationHandler }) {
   const api = useContext(APIContext);
+  const history = useHistory();
+  const searchInUrl = useQuery().get("search") ?? "";
   const [friends, setFriends] = useState([]);
   const [loadingFriends, setLoadingFriends] = useState(true);
   const [friendsError, setFriendsError] = useState(null);
@@ -18,7 +22,7 @@ export default function Friends({ friendUsername, navigationHandler }) {
   const [loadingRequests, setLoadingRequests] = useState(true);
   const [requestsError, setRequestsError] = useState(null);
 
-  const [pendingSearch, setPendingSearch] = useState("");
+  const [pendingSearch, setPendingSearch] = useState(searchInUrl);
   const [searchResults, setSearchResults] = useState([]);
   const [searchResultsError, setSearchResultsError] = useState(null);
   const [isSearching, setIsSearching] = useState(null);
@@ -73,6 +77,15 @@ export default function Friends({ friendUsername, navigationHandler }) {
       setLoadingFriendsFriends(false);
     });
   }, [api, friendUsername]);
+
+  // The search lives in the URL, so that opening someone's profile from the
+  // results and coming back restores what you had typed. Replacing rather than
+  // pushing keeps one history entry for the whole search, instead of one per
+  // keystroke.
+  useEffect(() => {
+    if (friendUsername || pendingSearch === searchInUrl) return;
+    history.replace({ search: pendingSearch ? `?search=${encodeURIComponent(pendingSearch)}` : "" });
+  }, [pendingSearch, searchInUrl, friendUsername, history]);
 
   useEffect(() => {
     if (pendingSearch === "") {
