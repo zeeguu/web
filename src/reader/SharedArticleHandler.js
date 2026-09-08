@@ -188,6 +188,11 @@ export default function SharedArticleHandler() {
     createAndNavigate("promote", true);
   };
 
+  // Backing out of the choice: nothing has been saved yet, so leave for the
+  // feed without creating or adapting anything. Replace rather than push, so
+  // Back doesn't land on the share handler and ask the same question again.
+  const handleCancel = () => history.replace("/articles");
+
   const handleReadAsIs = () => {
     if (uploadId) return runArticleConversion(api.promoteArticleUpload.bind(api), "promote", false);
     createAndNavigate("promote", false);
@@ -215,12 +220,13 @@ export default function SharedArticleHandler() {
         articleCefrLevel={articleDetection.cefr_level}
         articleImage={articleDetection.img_url}
         learnedLanguage={userDetails.learned_language}
-        userCefrLevel={numericToCefr(getUserCefrLevel(userDetails, articleDetection.language))}
+        userCefrLevel={numericToCefr(getUserCefrLevel(userDetails, userDetails.learned_language))}
         source="share"
         onTranslateAndAdapt={handleTranslateAndAdapt}
         onSimplify={handleSimplify}
         onReadOriginal={handleReadOriginal}
         onReadAsIs={handleReadAsIs}
+        onCancel={handleCancel}
         isLoading={isProcessing}
       />
     );

@@ -385,6 +385,17 @@ export default function ArticleReader({ teacherArticleID }) {
     setShowLanguageModal(false);
   };
 
+  // Closing the dialog without answering it. The article is already open, so
+  // there is nothing to undo — except that an article in a language the reader
+  // isn't learning must stop offering translations, or a tapped word gets
+  // filed into a vocabulary it doesn't belong to.
+  const handleDismiss = () => {
+    setShowLanguageModal(false);
+    if (articleInfo.language !== userDetails.learned_language) {
+      updateTranslateInReader(false);
+    }
+  };
+
   const setLikedState = (state) => {
     let newArticleInfo = { ...articleInfo, liked: state };
     api.setArticleInfo(newArticleInfo, () => {
@@ -407,12 +418,13 @@ export default function ArticleReader({ teacherArticleID }) {
           articleLanguage={articleInfo.language}
           articleCefrLevel={articleInfo.cefr_level}
           learnedLanguage={userDetails.learned_language}
-          userCefrLevel={numericToCefr(getUserCefrLevel(userDetails, articleInfo.language))}
+          userCefrLevel={numericToCefr(getUserCefrLevel(userDetails, userDetails.learned_language))}
           source={entrySource}
           onTranslateAndAdapt={handleTranslateAndAdapt}
           onSimplify={handleSimplify}
           onReadOriginal={handleReadOriginal}
           onReadAsIs={handleReadAsIs}
+          onCancel={handleDismiss}
           isLoading={isProcessingArticle}
         />
       )}

@@ -124,7 +124,14 @@ export default function ChoiceModal({
   heroImage,
   slimHero = false,
   secondaryAsLink = false,
+  onCancel,
 }) {
+  // Dismissing the dialog — close button, backdrop, Esc — must not stand in
+  // for either answer. On the share flow the secondary action *saves* the
+  // article, so closing the window used to silently do the very thing the
+  // reader was backing out of. Callers pass onCancel to say what "never mind"
+  // means here; while the primary action runs there is nothing to cancel.
+  const onDismiss = isLoading ? undefined : onCancel || onSecondary;
   const secondary = secondaryAsLink ? (
     <SecondaryLink onClick={onSecondary} disabled={isLoading}>
       {secondaryLabel}
@@ -136,7 +143,7 @@ export default function ChoiceModal({
   );
 
   return (
-    <Modal open={true} onClose={onSecondary}>
+    <Modal open={true} onClose={onDismiss}>
       <Content>
         {heroImage && <HeroImage src={heroImage} alt="" $slim={slimHero} />}
         {title && <Title>{title}</Title>}
