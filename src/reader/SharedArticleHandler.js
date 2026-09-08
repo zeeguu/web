@@ -215,7 +215,7 @@ export default function SharedArticleHandler() {
         articleCefrLevel={articleDetection.cefr_level}
         articleImage={articleDetection.img_url}
         learnedLanguage={userDetails.learned_language}
-        userCefrLevel={numericToCefr(getUserCefrLevel(userDetails, articleDetection.language))}
+        userCefrLevel={numericToCefr(getUserCefrLevel(userDetails, userDetails.learned_language))}
         source="share"
         onTranslateAndAdapt={handleTranslateAndAdapt}
         onSimplify={handleSimplify}

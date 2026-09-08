@@ -407,7 +407,7 @@ export default function ArticleReader({ teacherArticleID }) {
           articleLanguage={articleInfo.language}
           articleCefrLevel={articleInfo.cefr_level}
           learnedLanguage={userDetails.learned_language}
-          userCefrLevel={numericToCefr(getUserCefrLevel(userDetails, articleInfo.language))}
+          userCefrLevel={numericToCefr(getUserCefrLevel(userDetails, userDetails.learned_language))}
           source={entrySource}
           onTranslateAndAdapt={handleTranslateAndAdapt}
           onSimplify={handleSimplify}
