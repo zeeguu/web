@@ -8,7 +8,10 @@ import {
 } from "../profile/avatarOptions";
 import * as s from "./UserBaseInfo.sc";
 
-export default function UserBaseInfo({ user }) {
+// `subtitle` is an optional metadata line rendered under the username — used by
+// friend search, where the auto-generated username and the display name are on
+// their own not enough to tell two people apart.
+export default function UserBaseInfo({ user, subtitle }) {
   const [selectedAvatarCharacterId, setSelectedAvatarCharacterId] = useState();
   const [selectedAvatarCharacterColor, setSelectedAvatarCharacterColor] = useState();
   const [selectedAvatarBackgroundColor, setSelectedAvatarBackgroundColor] = useState();
@@ -26,10 +29,13 @@ export default function UserBaseInfo({ user }) {
       <s.Avatar $backgroundColor={selectedAvatarBackgroundColor}>
         <AvatarImage $imageSource={AVATAR_IMAGE_MAP[selectedAvatarCharacterId]} $color={selectedAvatarCharacterColor} />
       </s.Avatar>
-      <s.UserNameWrapper>
-        <s.Username>{user?.username}</s.Username>
-        {user?.name && <s.Name>({user.name})</s.Name>}
-      </s.UserNameWrapper>
+      <s.UserIdentity>
+        <s.UserNameWrapper>
+          <s.Username>{user?.username}</s.Username>
+          {user?.name && <s.Name>({user.name})</s.Name>}
+        </s.UserNameWrapper>
+        {subtitle}
+      </s.UserIdentity>
     </>
   );
 }

@@ -9,6 +9,8 @@ import ClearIcon from "@mui/icons-material/Clear";
 import DynamicFlagImage from "../components/DynamicFlagImage";
 import { LanguageOverflowBubble } from "../profile/UserProfile.sc";
 import UserBaseInfo from "../components/UserBaseInfo";
+import { MetaItem } from "../components/MetaStrip.sc";
+import { timeAgo } from "../utils/misc/readableTime";
 import * as s from "./FriendRow.sc";
 import useScreenWidth from "../hooks/useScreenWidth";
 import { streakFireOrange } from "../components/colors.js";
@@ -30,6 +32,31 @@ export default function FriendRow({
   const languages = user.languages ?? [];
   const visibleLanguages = languages.slice(0, maxVisibleLanguages);
   const overflowCount = languages.length > maxVisibleLanguages ? languages.length - maxVisibleLanguages : 0;
+
+  // Search results are the one place where rows can look identical: several
+  // accounts share a first name and the usernames are auto-generated. The
+  // languages someone is learning plus their last activity are usually enough
+  // to recognise the person you meant to add.
+  const renderSearchMeta = () => {
+    if (rowType !== "search") return null;
+
+    const lastSeen = user.last_seen ? `active ${timeAgo(user.last_seen)}` : null;
+    if (visibleLanguages.length === 0 && !lastSeen) return null;
+
+    return (
+      <s.SearchMetaStrip>
+        {visibleLanguages.length > 0 && (
+          <MetaItem>
+            {visibleLanguages.map((entry) => (
+              <DynamicFlagImage key={`${user.username}-search-${entry.code}`} languageCode={entry.code} size="1rem" />
+            ))}
+            {overflowCount > 0 && <LanguageOverflowBubble $size="1rem">+{overflowCount}</LanguageOverflowBubble>}
+          </MetaItem>
+        )}
+        {lastSeen && <MetaItem>{lastSeen}</MetaItem>}
+      </s.SearchMetaStrip>
+    );
+  };
 
   const renderActions = () => {
     if (rowType === "view-only" || rowType === "friend") return null;
@@ -126,6 +153,7 @@ export default function FriendRow({
   };
 
   const actions = renderActions();
+  const searchMeta = renderSearchMeta();
 
   return (
     <s.FriendRowLi onClick={() => onViewProfile?.(user.username)} $clickable={Boolean(onViewProfile)}>
@@ -145,7 +173,7 @@ export default function FriendRow({
         </s.StreakContainer>
       )}
 
-      <UserBaseInfo user={user} />
+      <UserBaseInfo user={user} subtitle={searchMeta} />
 
       {(rowType === "friend" || rowType === "view-only") && (
         <s.LanguagesMeta>
