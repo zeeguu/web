@@ -2,6 +2,7 @@ import { MetaStrip, MetaItem, MetaLink, MetaTag } from "./MetaStrip.sc";
 import getDomainName from "../utils/misc/getDomainName";
 import { isSimplifiedArticle } from "../utils/misc/articleHelpers";
 import { effectiveCefrLevel } from "../utils/misc/articleDifficulty";
+import { CEFR_ORDINAL } from "../utils/misc/cefrScale";
 
 // `children` are extra MetaItems appended to the same strip -- the teacher's
 // texts list adds language and word count there. Passing them in rather than
@@ -15,6 +16,17 @@ export default function ArticleStatInfo({ articleInfo, shareContext, children })
   // suppressed effective CEFR level). Only sent by the API for simplified
   // articles; may be absent for older ones, so the tag degrades to "Simplified".
   const targetLevel = articleInfo.target_cefr_level;
+
+  // The original's level, so "Simplified to A1" says how far the text actually
+  // moved. Only rendered when it is strictly above the target: the classifier
+  // collapses to A1 often enough that a parent recorded at (or below) the
+  // target is a real outcome, and "Simplified to A1 from A1" reads as a bug
+  // rather than as information (see feedback_cefr_data_unreliable).
+  const parentLevel = articleInfo.parent_cefr_level;
+  const showsDrop =
+    parentLevel &&
+    targetLevel &&
+    CEFR_ORDINAL[parentLevel] > CEFR_ORDINAL[targetLevel];
 
   // User-facing CEFR level is suppressed (see feedback_cefr_data_unreliable);
   // teachers still get one. It is the level the server computed and stored
@@ -38,7 +50,10 @@ export default function ArticleStatInfo({ articleInfo, shareContext, children })
   if (sharedByName) {
     levelTag = <MetaTag>{`${adaptVerb} by ${sharedByName} to your level`}</MetaTag>;
   } else if (isSimplified || isTranslated) {
-    levelTag = <MetaTag>{targetLevel ? `${adaptVerb} to ${targetLevel}` : adaptVerb}</MetaTag>;
+    let levelText = adaptVerb;
+    if (targetLevel) levelText = `${adaptVerb} to ${targetLevel}`;
+    if (showsDrop) levelText = `${adaptVerb} to ${targetLevel} from ${parentLevel}`;
+    levelTag = <MetaTag>{levelText}</MetaTag>;
   }
 
   // Source-link label: "See original at" for a share, "Original:" for an
