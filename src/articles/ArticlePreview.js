@@ -17,7 +17,7 @@ import { TranslatableText } from "../reader/TranslatableText";
 import useArticlePreviewTokens from "../hooks/useArticlePreviewTokens";
 import { estimateReadingTime, timeAgo } from "../utils/misc/readableTime";
 import ActionButton from "../components/ActionButton";
-import { articleSourceLabel } from "../utils/misc/articleHelpers";
+import { articleSourceLabel, aiProvenanceLabel } from "../utils/misc/articleHelpers";
 import OpenInNewRoundedIcon from "@mui/icons-material/OpenInNewRounded";
 import BookmarkBorderRoundedIcon from "@mui/icons-material/BookmarkBorderRounded";
 import BookmarkRoundedIcon from "@mui/icons-material/BookmarkRounded";
@@ -120,6 +120,8 @@ export default function ArticlePreview({
   // Empty for a text a teacher typed in: it has no publisher to name, and the
   // card already says who shared it.
   const sourceLabel = articleSourceLabel(article);
+  // One card-level mark for machine-written text; see aiProvenanceLabel.
+  const aiLabel = aiProvenanceLabel(article);
 
   function handleCloseRedirectionModal() {
     setIsRedirectionModaOpen(false);
@@ -422,7 +424,7 @@ export default function ArticlePreview({
               </MetaLink>
             </MetaItem>
           ))}
-        {article.parent_article_id && <MetaTag>Simplified</MetaTag>}
+        {aiLabel && <MetaTag>{aiLabel}</MetaTag>}
         {savedTag}
         {sourceLabel && (
           <MetaItem>
@@ -653,7 +655,7 @@ export default function ArticlePreview({
               </MetaLink>
             </MetaItem>
           ))}
-        {article.parent_article_id && <MetaTag>Simplified</MetaTag>}
+        {aiLabel && <MetaTag>{aiLabel}</MetaTag>}
         {savedTag}
         {sourceLabel && (
           <MetaItem>

@@ -3,6 +3,7 @@ import getDomainName from "../utils/misc/getDomainName";
 import { isSimplifiedArticle } from "../utils/misc/articleHelpers";
 import { effectiveCefrLevel } from "../utils/misc/articleDifficulty";
 import { CEFR_ORDINAL } from "../utils/misc/cefrScale";
+import DynamicFlagImage from "./DynamicFlagImage";
 
 // `children` are extra MetaItems appended to the same strip -- the teacher's
 // texts list adds language and word count there. Passing them in rather than
@@ -17,11 +18,12 @@ export default function ArticleStatInfo({ articleInfo, shareContext, children })
   // articles; may be absent for older ones, so the tag degrades to "Simplified".
   const targetLevel = articleInfo.target_cefr_level;
 
-  // The original's level, so "Simplified to A1" says how far the text actually
-  // moved. Only rendered when it is strictly above the target: the classifier
-  // collapses to A1 often enough that a parent recorded at (or below) the
-  // target is a real outcome, and "Simplified to A1 from A1" reads as a bug
-  // rather than as information (see feedback_cefr_data_unreliable).
+  // The original's level, shown ON the "Original:" link rather than trailing the
+  // AI tag as "from B2": it describes the text at the far end of that link, not
+  // the one being read. Only rendered when strictly above the target -- the
+  // classifier collapses to A1 often enough that a parent recorded at (or below)
+  // the target is a real outcome, and "Original A1: dr.dk" under an A1 article
+  // reads as a bug rather than as information (see feedback_cefr_data_unreliable).
   const parentLevel = articleInfo.parent_cefr_level;
   const showsDrop =
     parentLevel &&
@@ -40,27 +42,48 @@ export default function ArticleStatInfo({ articleInfo, shareContext, children })
   // language ones are just simplified. The verb comes from the article's own
   // flags — correct for the user's own translated copies, not only shares.
   const isTranslated = articleInfo.is_translated;
-  const adaptVerb = isTranslated ? "Translated & simplified" : "Simplified";
+  // Named as AI work: the adaptation is model output, and Art. 50(4) asks that
+  // artificially generated text say so. Matches the card tag (aiProvenanceLabel).
+  const adaptVerb = isTranslated ? "AI-translated & simplified" : "AI-simplified";
 
   // Opened from a friend's share (SharedArticleRow → router state): credit the
-  // *share*, not authorship, and drop the CEFR letter ("to your level").
+  // *share* separately from authorship.
   const sharedByName = shareContext?.sharedByName;
+
+  // Name the level the text was written to, never "your level" — the reader can
+  // change their CEFR setting, and from then on "your level" points at the new
+  // one while the text still sits at the old. The letter stays true; the
+  // possessive goes stale.
+  const levelText = targetLevel ? `${adaptVerb} to ${targetLevel}` : adaptVerb;
 
   let levelTag = null;
   if (sharedByName) {
-    levelTag = <MetaTag>{`${adaptVerb} by ${sharedByName} to your level`}</MetaTag>;
+    // Two tags, not one: the adaptation is the model's and the share is the
+    // friend's. "AI-simplified by Anna" would credit one for the other.
+    levelTag = (
+      <>
+        <MetaTag>{levelText}</MetaTag>
+        <MetaTag>{`shared by ${sharedByName}`}</MetaTag>
+      </>
+    );
   } else if (isSimplified || isTranslated) {
-    let levelText = adaptVerb;
-    if (targetLevel) levelText = `${adaptVerb} to ${targetLevel}`;
-    if (showsDrop) levelText = `${adaptVerb} to ${targetLevel} from ${parentLevel}`;
     levelTag = <MetaTag>{levelText}</MetaTag>;
   }
 
-  // Source-link label: "See original at" for a share, "Original:" for an
-  // adapted copy (simplified or translated), "Source:" for a plain article.
-  let sourcePrefix = <>Source:&nbsp;</>;
-  if (sharedByName) sourcePrefix = <>See original at&nbsp;</>;
-  else if (isSimplified || isTranslated) sourcePrefix = <>Original:&nbsp;</>;
+  // Source-link label: "Original B2:" for an adapted copy, "Source:" for a plain
+  // article. The origin's CEFR level joins the word it qualifies, so the strip
+  // reads as a level you are leaving for a level you are at. Shares used to say
+  // "See original at" -- unnecessary now that the credit is its own tag, and it
+  // had nowhere to hang the level.
+  const originLevel = showsDrop ? ` ${parentLevel}` : "";
+  const isAdapted = isSimplified || isTranslated || sharedByName;
+  const sourcePrefix = isAdapted ? <>Original{originLevel}:&nbsp;</> : <>Source:&nbsp;</>;
+
+  // A translated copy's original is in a language the reader may not have been
+  // expecting behind that link. The flag says which in no words at all; the
+  // code is only sent when the origin's language actually differs (article.py
+  // -> parent_language), so this never renders a redundant same-language flag.
+  const originLanguage = articleInfo.parent_language;
 
   return (
     <MetaStrip>
@@ -68,6 +91,13 @@ export default function ArticleStatInfo({ articleInfo, shareContext, children })
       {sourceDomain && (
         <MetaItem>
           {sourcePrefix}
+          {originLanguage && (
+            <DynamicFlagImage
+              languageCode={originLanguage}
+              size={"0.9rem"}
+              style={{ marginRight: "0.3em" }}
+            />
+          )}
           <MetaLink href={sourceUrl} target="_blank" rel="noopener noreferrer">
             {sourceDomain}
             <span aria-hidden="true" style={{ marginLeft: '0.2em' }}>↗</span>
