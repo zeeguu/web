@@ -6,7 +6,7 @@ import CheckCircleRoundedIcon from "@mui/icons-material/CheckCircleRounded";
 
 import { APIContext } from "../contexts/APIContext";
 import { MetaStrip, MetaItem, MetaTag } from "../components/MetaStrip.sc";
-import { isSimplifiedArticle, articleSourceLabel } from "../utils/misc/articleHelpers";
+import { articleSourceLabel, aiProvenanceLabel } from "../utils/misc/articleHelpers";
 import { timeAgo } from "../utils/misc/readableTime";
 import { topicIconFor } from "../utils/misc/topicIcon";
 
@@ -20,7 +20,7 @@ export default function SavedArticleRow({ article, onArticleRemoved }) {
   const [isAnimatingOut, setIsAnimatingOut] = useState(false);
 
   const articleHref = `/read/article?id=${article.user_simplified_article_id || article.id}`;
-  const isSimplified = isSimplifiedArticle(article);
+  const aiLabel = aiProvenanceLabel(article);
   const sourceDomain = articleSourceLabel(article);
   const savedAgo = article.personal_copy_saved_at
     ? timeAgo(article.personal_copy_saved_at)
@@ -97,7 +97,7 @@ export default function SavedArticleRow({ article, onArticleRemoved }) {
       <s.Content>
         <s.Title>{article.title}</s.Title>
         <MetaStrip>
-          {isSimplified && <MetaTag>Simplified</MetaTag>}
+          {aiLabel && <MetaTag>{aiLabel}</MetaTag>}
           {savedAgo && <MetaTag>Saved {savedAgo}</MetaTag>}
           {completionItem}
           {sourceDomain && <MetaItem>{sourceDomain}</MetaItem>}

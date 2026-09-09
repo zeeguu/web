@@ -9,7 +9,7 @@ import { TranslatableText } from "../reader/TranslatableText";
 import useUserPreferences from "../hooks/useUserPreferences";
 import useReaderFontSize from "../hooks/useReaderFontSize";
 import { APIContext } from "../contexts/APIContext";
-import { articleSourceLabel } from "../utils/misc/articleHelpers";
+import { articleSourceLabel, aiProvenanceLabel } from "../utils/misc/articleHelpers";
 import { estimateReadingTime, timeAgo } from "../utils/misc/readableTime";
 import { isMobile } from "../utils/misc/browserDetection";
 import OpenInNewRoundedIcon from "@mui/icons-material/OpenInNewRounded";
@@ -218,6 +218,7 @@ export default function ArticlePreviewOverlay({
   const publishedAgo = article.published ? timeAgo(article.published) : null;
   // Empty for a teacher's own text: nothing to name as its publisher.
   const sourceLabel = articleSourceLabel(article);
+  const aiLabel = aiProvenanceLabel(article);
   const wordCount = article.metrics?.word_count || article.word_count || 0;
   const readingTime =
     wordCount > 0 ? estimateReadingTime(wordCount).replace(" minutes", " min").replace(" minute", " min") : null;
@@ -275,7 +276,7 @@ export default function ArticlePreviewOverlay({
           <MetaStrip>
             {article.topics_list &&
               article.topics_list.map(([topicTitle]) => <MetaTag key={topicTitle}>{topicTitle}</MetaTag>)}
-            {article.parent_article_id && <MetaTag>Simplified</MetaTag>}
+            {aiLabel && <MetaTag>{aiLabel}</MetaTag>}
             {isArticleSaved && <MetaTag>Saved</MetaTag>}
             {sourceLabel && (
               <MetaItem>
@@ -305,7 +306,7 @@ export default function ArticlePreviewOverlay({
 
           {article.summary && (
             <>
-              <s.SummaryLabel>AI-generated summary</s.SummaryLabel>
+              <s.SummaryLabel>Summary</s.SummaryLabel>
               <s.Summary>
                 {interactiveSummary ? (
                   <TranslatableText

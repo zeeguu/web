@@ -5,7 +5,7 @@ import { toast } from "react-toastify";
 import { APIContext } from "../contexts/APIContext";
 import { SharedArticlesContext } from "../contexts/SharedArticlesContext";
 import { MetaStrip, MetaItem, MetaTag } from "../components/MetaStrip.sc";
-import { articleSourceLabel } from "../utils/misc/articleHelpers";
+import { articleSourceLabel, aiProvenanceLabel } from "../utils/misc/articleHelpers";
 import { topicIconFor } from "../utils/misc/topicIcon";
 
 import * as s from "./SavedArticleRow.sc";
@@ -28,13 +28,14 @@ export default function SharedArticleRow({ share }) {
   const unread = !share.read;
   const PlaceholderIcon = topicIconFor(article.topics_list);
   const sourceDomain = articleSourceLabel(article);
+  const aiLabel = aiProvenanceLabel(article);
 
   function handleOpen() {
     api.markSharedArticleRead(share.id);
     // Carry who shared it into the reader so the header can attribute it
-    // ("… by <name> to your level"). The verb (Simplified vs Translated &
-    // simplified) comes from the article's own is_translated/is_simplified, not
-    // from here. Only when the personalized derivative actually exists
+    // ("shared by <name>", alongside its own "AI-simplified to A2" tag). The
+    // verb (AI-simplified vs AI-translated & simplified) comes from the
+    // article's own is_translated/is_simplified, not from here. Only when the personalized derivative actually exists
     // (delivery_ready) — otherwise the row opens the un-adapted canonical
     // article and attributing it would mislead. Router state, so it stays off
     // the URL; a refresh falls back to the article's own header.
@@ -93,6 +94,7 @@ export default function SharedArticleRow({ share }) {
           {unread && <UnreadDot aria-label="Unread" />}
         </Title>
         <MetaStrip>
+          {aiLabel && <MetaTag>{aiLabel}</MetaTag>}
           <MetaTag>
             Shared by{" "}
             {share.from_user_username ? (
