@@ -305,7 +305,7 @@ export default function ArticlePreviewOverlay({
 
           {article.summary && (
             <>
-              <s.SummaryLabel>Summary</s.SummaryLabel>
+              <s.SummaryLabel>AI-generated summary</s.SummaryLabel>
               <s.Summary>
                 {interactiveSummary ? (
                   <TranslatableText
