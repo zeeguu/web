@@ -1,6 +1,5 @@
-import CheckIcon from "@mui/icons-material/Check";
 import NotificationIcon from "../../../components/NotificationIcon.js";
-import SchoolIcon from "@mui/icons-material/School";
+import SchoolIcon from "@mui/icons-material/SchoolRounded";
 
 export default function LevelIndicatorCircles({
   totalLearningStages,
@@ -14,9 +13,7 @@ export default function LevelIndicatorCircles({
 
   function getCircleClass(index, level, levelIsBlinking, levelCompleted) {
     if (index === 0) {
-      return (
-        "level-circle filled" + (level === 1 && levelIsBlinking ? " blink" : "")
-      );
+      return "level-circle filled" + (level === 1 && levelIsBlinking ? " blink" : "");
     } else if (index === level - 1 && levelIsBlinking) {
       return "level-circle passed blink";
     } else if (index === maxLevel && level === maxLevel + 1 && levelCompleted) {
@@ -36,21 +33,16 @@ export default function LevelIndicatorCircles({
     if (index === 0) {
       return null;
     } else if (index === maxLevel) {
-      return <SchoolIcon className="school-icon" />;
+      return <SchoolIcon className="school-icon" style={{ fontSize: "27px" }} />;
     } else {
-      return <CheckIcon style={{ fontSize: "14px" }} />;
+      return <img src="/static/icons/checkIcon.svg" alt="check" style={{ width: "16px", height: "16px" }} />;
     }
   }
 
   return (
     <>
       {Array.from({ length: totalLearningStages }).map((_, index) => {
-        const circleClass = getCircleClass(
-          index,
-          levelInProgress,
-          levelIsBlinking,
-          levelCompleted,
-        );
+        const circleClass = getCircleClass(index, levelInProgress, levelIsBlinking, levelCompleted);
 
         return (
           <div
