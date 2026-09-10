@@ -9,7 +9,7 @@ import Header from "../_pages_shared/Header";
 import PageTitle from "../_pages_shared/PageTitle.sc";
 import Main from "../_pages_shared/Main.sc";
 import ButtonContainer from "../_pages_shared/ButtonContainer.sc";
-import Footer from "../_pages_shared/Footer.sc";
+import Footer from "../_pages_shared/CardPageFooter.sc";
 import Button from "../_pages_shared/Button.sc";
 import FullWidthImage from "../../components/FullWidthImage";
 import RoundedForwardArrow from "@mui/icons-material/ArrowForwardRounded";

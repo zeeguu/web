@@ -27,10 +27,7 @@ const Message = styled.p`
   margin: 0;
 `;
 
-// `title` and `children` are optional: most callers just want a sentence, but
-// a screen that has something for the reader to *do* about the emptiness puts
-// its controls in as children rather than building a second centred layout.
-export default function EmptyState({ title, message, fillHeight = true, children }) {
+export default function EmptyMessageState({ message, fillHeight = true }) {
   return (
     <Container $fillHeight={fillHeight}>
       {title && <Title>{title}</Title>}

@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
 import LoadingAnimation from "../components/LoadingAnimation";
-import EmptyState from "../components/EmptyState";
+import EmptyMessageState from "../components/EmptyMessageState";
 import { setTitle } from "../assorted/setTitle";
 import strings from "../i18n/definitions";
 import Word from "./Word";
@@ -161,7 +161,7 @@ export default function Learning() {
 
       <>
         {inLearning.length === 0 && (
-          <EmptyState
+          <EmptyMessageState
             message="No words in your exercises yet. Translate words while reading to add them."
             fillHeight={false}
           />

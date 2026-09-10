@@ -1,6 +1,6 @@
 import { useState } from "react";
 import DynamicFlagImage from "../components/DynamicFlagImage";
-import EmptyState from "../components/EmptyState";
+import EmptyState from "../components/EmptyMessageState";
 import useGuardedLanguageSwitch from "../hooks/useGuardedLanguageSwitch";
 import { languageName } from "../utils/misc/languageCodeToName";
 import * as s from "./ClassroomOtherLanguages.sc";
@@ -60,8 +60,7 @@ export default function ClassroomOtherLanguages({ options, learnedLanguage }) {
               <s.ClassName>{option.cohortName}</s.ClassName>
               <s.TextCount>
                 <DynamicFlagImage languageCode={option.languageCode} size={"1rem"} />
-                {option.count} {option.count === 1 ? "text" : "texts"} in{" "}
-                {languageName(option.languageCode)}
+                {option.count} {option.count === 1 ? "text" : "texts"} in {languageName(option.languageCode)}
               </s.TextCount>
             </div>
             <s.SwitchButton

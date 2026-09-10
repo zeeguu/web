@@ -43,7 +43,7 @@ const TeacherRouter = (props) => (
 import { PrivateRouteWithLayout } from "./PrivateRouteWithLayout";
 import { PrivateRoute } from "./PrivateRoute";
 import AppLayout from "./AppLayout";
-import DeleteAccount from "./pages/DeleteAccount/DeleteAccount";
+import DeleteAccount from "./pages/Settings/DeleteAccount/DeleteAccount";
 import SettingsRouter from "./pages/Settings/_SettingsRouter";
 import ProfileRouter from "./profile/_ProfileRouter";
 import ExercisesForArticle from "./exercises/ExercisesForArticle";
