@@ -23,6 +23,20 @@ export function getUserCefrLevel(userDetails, languageCode) {
 }
 
 /**
+ * The value the CEFR field should hold for a language: the user's stored level
+ * for *that* language, as a CEFR_LEVELS value (the strings "1".."6"), or "" when
+ * they have no level for it yet.
+ *
+ * Levels are stored per language, so this has to be re-read whenever the chosen
+ * language changes -- otherwise the field keeps showing the previous language's
+ * level and saves it under the new one.
+ */
+export function cefrLevelFieldValue(userDetails, languageCode) {
+  const level = getUserCefrLevel(userDetails, languageCode);
+  return level === undefined || level === null ? "" : String(level);
+}
+
+/**
  * Decide whether the language-choice modal is worth showing for an article
  * the user is about to read.
  *

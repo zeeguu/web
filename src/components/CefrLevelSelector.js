@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { blue100, blue700, blue900, lightGrey, darkGrey } from "./colors";
+import { blue100, blue700, blue900, darkGrey, zeeguuRed } from "./colors";
 
 const Wrapper = styled.div`
   display: flex;
@@ -24,14 +24,16 @@ const Pill = styled.button`
   flex: 1;
   padding: 0.45rem 0;
   border-radius: 2rem;
-  border: 1.5px solid ${({ $selected }) => ($selected ? blue700 : lightGrey)};
-  background: ${({ $selected }) => ($selected ? blue100 : "#fff")};
-  color: ${({ $selected }) => ($selected ? blue900 : "black")};
+  border: 1.5px solid ${({ $selected }) => ($selected ? blue700 : "var(--border-color)")};
+  background: ${({ $selected }) => ($selected ? blue100 : "var(--bg-primary)")};
+  color: ${({ $selected }) => ($selected ? blue900 : "var(--text-primary)")};
   font-family: inherit;
   font-size: 0.8rem;
   font-weight: 700;
   cursor: pointer;
-  transition: border-color 150ms, background-color 150ms;
+  transition:
+    border-color 150ms,
+    background-color 150ms;
 
   &:active {
     transform: scale(0.96);
@@ -59,7 +61,7 @@ const HintDescription = styled.span`
 
 const ErrorMsg = styled.p`
   font-size: 0.8rem;
-  color: #d7263d;
+  color: ${zeeguuRed};
   margin: 0;
 `;
 
