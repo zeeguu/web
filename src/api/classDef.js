@@ -43,9 +43,15 @@ const Zeeguu_API = class {
   // Cache keys include the learned language so switching languages
   // naturally serves fresh data without needing to invalidate
   _cacheKey(endpoint) {
-    // Key must match LocalStorage.Keys.LearnedLanguage in assorted/LocalStorage.js
+    // Keys must match LocalStorage.Keys.LearnedLanguage / LearnedVariety in
+    // assorted/LocalStorage.js
     const lang = localStorage.getItem("learned_language") || "";
-    return `${lang}:${endpoint}`;
+    // The variety narrows the feed server-side, so two responses for the same
+    // language and endpoint are different documents. Without it here, changing
+    // the variety served whatever the previous one had fetched -- for five
+    // minutes, including the empty result that made the setting look broken.
+    const variety = localStorage.getItem("learned_variety") || "";
+    return `${lang}:${variety}:${endpoint}`;
   }
 
   getCached(endpoint) {

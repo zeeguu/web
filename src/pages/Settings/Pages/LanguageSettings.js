@@ -86,6 +86,9 @@ export default function LanguageSettings() {
     api.saveUserDetails(newUserDetailsForAPI, setErrorMessage, () => {
       setUserDetails(newUserDetails);
       LocalStorage.setUserInfo(newUserDetails);
+      // Part of the feed cache key: without this the next feed request would be
+      // answered from the previous variety's cached response.
+      LocalStorage.setLearnedVariety(languageChoice.variety);
       saveSharedUserInfo(newUserDetails);
       history.goBack();
     });
