@@ -198,7 +198,7 @@ let strings = new LocalizedStrings(
       inviteCodePlaceholder: "Enter your invite code",
       levelOfLearnedLanguage: "My current level",
       levelOfLearnedLanguagePlaceholder: "Select level",
-      newsFeedSources: "News in {0} from",
+      newsFeedSources: "News from",
       allNewsFeedSources: "Everywhere",
       nothingHereRightNow: "Nothing here right now",
       noArticlesForVariety:
@@ -1155,7 +1155,7 @@ let strings = new LocalizedStrings(
       thankYouMsgSuffix: ". Du kan også kontakte os, hvis du mangler en invitationskode.",
       inviteCode: "Invitationskode",
       levelOfLearnedLanguage: "Niveau på dit læringssprog",
-      newsFeedSources: "Nyheder på {0} fra",
+      newsFeedSources: "Nyheder fra",
       allNewsFeedSources: "Overalt",
       nothingHereRightNow: "Ikke noget her lige nu",
       noArticlesForVariety:

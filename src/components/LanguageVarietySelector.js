@@ -1,17 +1,21 @@
 import LocalStorage from "../assorted/LocalStorage";
 import strings from "../i18n/definitions";
-import { languageName } from "../utils/misc/languageCodeToName";
 import PillSelector from "./PillSelector";
 
 /**
  * Where a learner wants their news from, as pills: there are only ever a few, and
  * seeing all of them is how someone learns the choice exists.
  *
- * Named for the feed because that is all it does. "All" is a coherent answer to
- * "which sources?" and an incoherent one to "which variety are you learning?" --
- * and the voice and translation target, when they read this preference, will want
- * a control of their own with exactly two options and no "All", since there is no
- * such thing as speaking in no particular accent.
+ * Named for the feed because that is all it does. "Everywhere" is a coherent
+ * answer to "news from where?" and an incoherent one to "which variety are you
+ * learning?" -- and the voice and translation target, when they read this same
+ * preference, will want a control of their own with exactly two options and no
+ * "Everywhere", since there is no speaking in no particular accent.
+ *
+ * The label names no language. The field above it already says which one is
+ * being learned, so repeating it only invites the argument about whether what
+ * Belgium speaks is Dutch or Flemish -- an argument this control has no need to
+ * take a side in.
  *
  * The pill is the country alone -- "Belgium" -- because a row of them has to fit
  * a phone, and the line underneath carries the full name the API gave us
@@ -33,16 +37,6 @@ function flagFor(country) {
   return country.replace(/./g, (letter) => String.fromCodePoint(127397 + letter.charCodeAt(0)));
 }
 
-/**
- * The language's name in the reader's own language. LANGUAGE_CODE_TO_NAME is
- * English only, but its lowercased value is the i18n key for the translated one
- * -- the same route LanguageSelector takes for its options.
- */
-function translatedLanguageName(languageCode) {
-  const english = languageName(languageCode);
-  return strings[english.toLowerCase()] || english;
-}
-
 export function localisedCountryName(country) {
   try {
     // getUiLanguage returns the whole language object, not a code.
@@ -54,7 +48,7 @@ export function localisedCountryName(country) {
   }
 }
 
-export default function LanguageVarietySelector({ varieties, selectedValue, onChange, languageCode }) {
+export default function LanguageVarietySelector({ varieties, selectedValue, onChange }) {
   const options = [
     { value: "", pillLabel: strings.allNewsFeedSources },
     ...varieties.map((variety) => ({
@@ -74,11 +68,7 @@ export default function LanguageVarietySelector({ varieties, selectedValue, onCh
       options={options}
       selectedValue={selectedValue}
       onChange={onChange}
-      // "News in Dutch from Belgium", not "Dutch news from Belgium": in English
-      // the language and the demonym are the same word, so the short form reads
-      // as news OF the Netherlands from Belgium -- and in French, where it would
-      // say news of France from Belgium, the contradiction is louder still.
-      label={strings.formatString(strings.newsFeedSources, translatedLanguageName(languageCode))}
+      label={strings.newsFeedSources}
     />
   );
 }
