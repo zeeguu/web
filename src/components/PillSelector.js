@@ -52,7 +52,8 @@ const Pill = styled.button`
 `;
 
 // Reserved even when nothing is selected, so choosing a pill does not shove the
-// rest of the form down.
+// rest of the form down. Absent entirely when no option has anything to say --
+// a hint that only restates its own pill is worse than no hint.
 const HintBox = styled.div`
   min-height: 2.4rem;
   padding: 0.3rem 0.1rem;
@@ -82,7 +83,7 @@ const ErrorMsg = styled.p`
  * one means. Every option is visible at once, which is the point: the choice is
  * small and worth seeing without opening anything.
  *
- * Options are `{ value, pillLabel, hintLabel, hintDescription }`. Callers map
+ * Options are `{ value, pillLabel, title?, hintLabel?, hintDescription? }`. Callers map
  * their own data into that shape rather than this knowing about levels or
  * countries -- a pill is short by necessity, and only the caller can say which
  * part of its data is short enough to be one.
@@ -98,6 +99,7 @@ export default function PillSelector({
   equalWidth = true,
 }) {
   const selected = options.find((option) => option.value === selectedValue);
+  const hasHints = options.some((option) => option.hintLabel || option.hintDescription);
 
   return (
     <Field>
@@ -114,21 +116,23 @@ export default function PillSelector({
               onClick={() => onChange(option.value)}
               role="radio"
               aria-checked={isSelected}
-              title={option.hintLabel || option.pillLabel}
+              title={option.title || option.hintLabel || option.pillLabel}
             >
               {option.pillLabel}
             </Pill>
           );
         })}
       </PillRow>
-      <HintBox>
-        {selected && (
-          <>
-            {selected.hintLabel && <HintLabel>{selected.hintLabel}</HintLabel>}
-            {selected.hintDescription && <HintDescription>{selected.hintDescription}</HintDescription>}
-          </>
-        )}
-      </HintBox>
+      {hasHints && (
+        <HintBox>
+          {selected && (
+            <>
+              {selected.hintLabel && <HintLabel>{selected.hintLabel}</HintLabel>}
+              {selected.hintDescription && <HintDescription>{selected.hintDescription}</HintDescription>}
+            </>
+          )}
+        </HintBox>
+      )}
       {isError && errorMessage && <ErrorMsg>{errorMessage}</ErrorMsg>}
     </Field>
   );

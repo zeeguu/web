@@ -35,15 +35,14 @@ function countryName(country) {
 
 export default function LanguageVarietySelector({ varieties, selectedValue, onChange }) {
   const options = [
-    {
-      value: "",
-      pillLabel: strings.anyLanguageVariety,
-      hintDescription: strings.anyLanguageVarietyExplained,
-    },
+    { value: "", pillLabel: strings.anyLanguageVariety },
     ...varieties.map((variety) => ({
       value: variety.country,
       pillLabel: `${flagFor(variety.country)} ${countryName(variety.country)}`,
-      hintLabel: variety.name,
+      // variety.name ("Belgian Dutch") is the API's own wording, kept for the
+      // tooltip and for the prompts and voices that will consume it server-side.
+      // On screen it would only restate the pill it sits under.
+      title: variety.name,
     })),
   ];
 

@@ -200,7 +200,6 @@ let strings = new LocalizedStrings(
       levelOfLearnedLanguagePlaceholder: "Select level",
       languageVariety: "Variety",
       anyLanguageVariety: "Any",
-      anyLanguageVarietyExplained: "No preference",
       baseLanguage: "I want translations in",
       baseLanguagePlaceholder: "Select Language",
 
@@ -1152,7 +1151,6 @@ let strings = new LocalizedStrings(
       levelOfLearnedLanguage: "Niveau på dit læringssprog",
       languageVariety: "Variant",
       anyLanguageVariety: "Alle",
-      anyLanguageVarietyExplained: "Ingen præference",
       baseLanguage: "Basesprog",
 
       //PrivacyNotice
