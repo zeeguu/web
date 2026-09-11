@@ -203,6 +203,8 @@ let strings = new LocalizedStrings(
       nothingHereRightNow: "Nothing here right now",
       noArticlesForVariety:
         "You are only reading sources from {0}, and nothing matches at the moment. More arrives as new articles are published.",
+      noArticlesForVarietyAndTopic:
+        "You are only reading sources from {0}, and none of them are about {1} at the moment. Pick another topic above, or widen where your sources come from.",
       goToLanguageSettings: "Language settings",
       baseLanguage: "I want translations in",
       baseLanguagePlaceholder: "Select Language",
@@ -1158,6 +1160,8 @@ let strings = new LocalizedStrings(
       nothingHereRightNow: "Ikke noget her lige nu",
       noArticlesForVariety:
         "Du læser kun kilder fra {0}, og der er ikke noget, der passer lige nu. Der kommer mere, efterhånden som nye artikler udgives.",
+      noArticlesForVarietyAndTopic:
+        "Du læser kun kilder fra {0}, og ingen af dem handler om {1} lige nu. Vælg et andet emne ovenfor, eller udvid hvor dine kilder kommer fra.",
       goToLanguageSettings: "Sprogindstillinger",
       baseLanguage: "Basesprog",
 

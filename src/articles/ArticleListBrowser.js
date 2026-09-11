@@ -347,6 +347,7 @@ export default function ArticleListBrowser({
           <NoArticlesForVariety
             articleList={articlesAndVideosList}
             isLoading={reloadingSearchArticles || feedLoading || isWaitingForNewArticles}
+            topicTitle={activeFilter.type === "topic" ? activeFilter.value.title : null}
           />
           {!hasVarietyPreference && (
             <ShowLinkRecommendationsIfNoArticles

@@ -16,14 +16,20 @@ import { localisedCountryName } from "../components/LanguageVarietySelector";
  * emptiness is then the setting working, which is exactly why it has to say so:
  * an unexplained blank page reads as a broken app.
  *
- * It does not offer to widen the filter here. The preference lives in Language
+ * It does not offer to widen the variety here. The preference lives in Language
  * Settings and belongs in one place; a second control that silently disagrees
  * with the first is how a setting stops meaning anything.
+ *
+ * When a topic is also selected, the country is no longer the only suspect, and
+ * saying so matters more than picking one: a reader sent to Language Settings
+ * over a narrow topic is sent to the wrong screen. The topic needs no button --
+ * its pills are on this page, a tap away -- so it is named, and the button still
+ * goes to the setting that is not visible from here.
  *
  * Renders nothing when there is no preference -- then an empty feed is the
  * ordinary kind, and ShowLinkRecommendationsIfNoArticles speaks to it.
  */
-export default function NoArticlesForVariety({ articleList, isLoading }) {
+export default function NoArticlesForVariety({ articleList, isLoading, topicTitle }) {
   const history = useHistory();
   const { userDetails } = useContext(UserContext);
 
@@ -45,7 +51,11 @@ export default function NoArticlesForVariety({ articleList, isLoading }) {
       title={strings.nothingHereRightNow}
       // Named, because "nothing matches your filter" invites the question the
       // name already answers: which filter?
-      message={strings.formatString(strings.noArticlesForVariety, countryName)}
+      message={
+        topicTitle
+          ? strings.formatString(strings.noArticlesForVarietyAndTopic, countryName, topicTitle)
+          : strings.formatString(strings.noArticlesForVariety, countryName)
+      }
     >
       <StyledButton $secondary onClick={() => history.push("/account_settings/language_settings")}>
         {strings.goToLanguageSettings}
