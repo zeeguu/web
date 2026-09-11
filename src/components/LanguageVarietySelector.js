@@ -33,6 +33,16 @@ function flagFor(country) {
   return country.replace(/./g, (letter) => String.fromCodePoint(127397 + letter.charCodeAt(0)));
 }
 
+/**
+ * The language's name in the reader's own language. LANGUAGE_CODE_TO_NAME is
+ * English only, but its lowercased value is the i18n key for the translated one
+ * -- the same route LanguageSelector takes for its options.
+ */
+function translatedLanguageName(languageCode) {
+  const english = languageName(languageCode);
+  return strings[english.toLowerCase()] || english;
+}
+
 export function localisedCountryName(country) {
   try {
     // getUiLanguage returns the whole language object, not a code.
@@ -64,10 +74,11 @@ export default function LanguageVarietySelector({ varieties, selectedValue, onCh
       options={options}
       selectedValue={selectedValue}
       onChange={onChange}
-      // Naming the language keeps the half of this that we can build: today it
-      // picks sources, and "Dutch news from Belgium" is also what the voice and
-      // the translation target will mean when they read it.
-      label={strings.formatString(strings.newsFeedSources, languageName(languageCode))}
+      // "News in Dutch from Belgium", not "Dutch news from Belgium": in English
+      // the language and the demonym are the same word, so the short form reads
+      // as news OF the Netherlands from Belgium -- and in French, where it would
+      // say news of France from Belgium, the contradiction is louder still.
+      label={strings.formatString(strings.newsFeedSources, translatedLanguageName(languageCode))}
     />
   );
 }
