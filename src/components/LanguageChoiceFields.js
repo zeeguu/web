@@ -6,11 +6,12 @@ import strings from "../i18n/definitions";
 import FormSection from "../pages/_pages_shared/FormSection.sc";
 import CefrLevelSelector from "./CefrLevelSelector";
 import LanguageSelector from "./LanguageSelector";
-import LanguageVarietySelector from "./LanguageVarietySelector";
 
 /**
  * Learned language + level + translation language, asked the same way wherever
- * they are asked. Pair it with useLanguageChoiceFields, which owns the state and
+ * they are asked. The country questions that refine the learned language live in
+ * LanguageCountryFields: onboarding asks them on a step of its own, because five
+ * questions did not fit a phone, and Settings at the foot of the same form. Pair it with useLanguageChoiceFields, which owns the state and
  * the validation; this renders the answers and nothing else, so each screen keeps
  * its own chrome (title, buttons) and its own way of saving.
  */
@@ -24,9 +25,6 @@ export default function LanguageChoiceFields({ fields }) {
     (each) => each.code !== fields.learnedLanguage,
   );
 
-  // Only a handful of languages divide along national lines, so for most people
-  // this control is simply absent rather than a question with one sensible answer.
-  const varieties = sortedSystemLanguages.varieties?.[fields.learnedLanguage] || [];
 
   return (
     <>
@@ -41,13 +39,7 @@ export default function LanguageChoiceFields({ fields }) {
           errorMessage={fields.learnedLanguageError}
         />
 
-        {varieties.length > 0 && (
-          <LanguageVarietySelector
-            varieties={varieties}
-            selectedValue={fields.variety}
-            onChange={(value) => fields.setVariety(value)}
-          />
-        )}
+
 
         <CefrLevelSelector
           levels={CEFR_LEVELS}

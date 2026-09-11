@@ -9,6 +9,7 @@ const LocalStorage = {
     NativeLanguage: "native_language",
     LearnedCefrLevel: "learned_cefr_level",
     LearnedVariety: "learned_variety",
+    LearnedDialect: "learned_dialect",
 
     UiLanguage: "ui_language",
     IsTeacher: "is_teacher",
@@ -110,6 +111,14 @@ const LocalStorage = {
 
   setLearnedVariety: function (learnedVariety) {
     localStorage[this.Keys.LearnedVariety] = learnedVariety;
+  },
+
+  getLearnedDialect: function () {
+    return localStorage[this.Keys.LearnedDialect] || "";
+  },
+
+  setLearnedDialect: function (learnedDialect) {
+    localStorage[this.Keys.LearnedDialect] = learnedDialect;
   },
 
   getNativeLanguage: function () {

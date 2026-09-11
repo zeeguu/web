@@ -15,3 +15,32 @@ export function varietyFieldValue(userDetails, languageCode) {
   if (!userDetails || !languageCode) return "";
   return userDetails[languageCode + "_feed_variety"] || "";
 }
+
+/**
+ * The dialect stored for a language -- which variety of it the learner is
+ * studying -- or "" for no preference.
+ *
+ * A different question from the one above, and a different field: where the news
+ * comes from is not which variety you are learning. "" is by far the common
+ * answer, and means the language is read in whatever it has always been read in.
+ */
+export function dialectFieldValue(userDetails, languageCode) {
+  if (!userDetails || !languageCode) return "";
+  return userDetails[languageCode + "_dialect"] || "";
+}
+
+/**
+ * Which dialect pill should read as selected, given what is stored.
+ *
+ * Not simply the stored value. "" means no preference, and a learner with no
+ * preference is already being read in the first of these -- the one Zeeguu has
+ * served all along -- so showing nothing selected would misdescribe what they
+ * hear today. The API sends the catalogue in that order for exactly this.
+ *
+ * It stays a display rule and never a saved one: a learner who does not touch
+ * the control still saves "", because showing what they get is not the same as
+ * their having chosen it.
+ */
+export function effectiveDialect(dialects, storedDialect) {
+  return storedDialect || dialects?.[0]?.country || "";
+}

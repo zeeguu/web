@@ -148,6 +148,10 @@ function App() {
       // catalogue declares them in -- not alphabetical, because the first entry
       // of each is the variety Zeeguu has served by default until now.
       varieties: systemLanguages.varieties || {},
+      // The dialects a learner may be read in -- a shorter list than the one
+      // above, since it only holds varieties a voice exists for. Same ordering
+      // rule: first is the one served until now.
+      dialects: systemLanguages.dialects || {},
     };
   }, [systemLanguages]);
 

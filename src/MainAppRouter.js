@@ -10,6 +10,7 @@ import NoSidebarRouter from "./NoSidebarRouter";
 import LogIn from "./pages/LogIn";
 import CreateAccount from "./pages/onboarding/CreateAccount";
 import LanguagePreferences from "./pages/onboarding/LanguagePreferences";
+import LanguageVarietyPreferences from "./pages/onboarding/LanguageVarietyPreferences";
 import Welcome from "./pages/onboarding/Welcome";
 import InviteCode from "./pages/onboarding/InviteCode";
 import ArticlesRouter from "./articles/_ArticlesRouter";
@@ -112,6 +113,7 @@ export default function MainAppRouter({ hasExtension, handleSuccessfulLogIn }) {
 
         <Route path="/invite_code" component={InviteCode} />
         <Route path="/language_preferences" component={LanguagePreferences} />
+        <Route path="/language_variety_preferences" component={LanguageVarietyPreferences} />
         <Route path="/welcome" component={Welcome} />
 
         <Route path="/" exact component={HomePage} />

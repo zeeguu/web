@@ -198,8 +198,10 @@ let strings = new LocalizedStrings(
       inviteCodePlaceholder: "Enter your invite code",
       levelOfLearnedLanguage: "My current level",
       levelOfLearnedLanguagePlaceholder: "Select level",
-      newsFeedSources: "News from",
+      newsFeedSources: "I want news from",
       allNewsFeedSources: "Everywhere",
+      audioLessonsSpokenIn: "I want audio lessons spoken in",
+      languageVarietyPreferences: "Regional preferences?",
       nothingHereRightNow: "Nothing here right now",
       noArticlesForVariety:
         "You are only reading sources from {0}, and nothing matches at the moment. More arrives as new articles are published.",
@@ -1155,8 +1157,10 @@ let strings = new LocalizedStrings(
       thankYouMsgSuffix: ". Du kan også kontakte os, hvis du mangler en invitationskode.",
       inviteCode: "Invitationskode",
       levelOfLearnedLanguage: "Niveau på dit læringssprog",
-      newsFeedSources: "Nyheder fra",
+      newsFeedSources: "Jeg vil have nyheder fra",
       allNewsFeedSources: "Overalt",
+      audioLessonsSpokenIn: "Jeg vil have lydlektioner talt på",
+      languageVarietyPreferences: "Regionale præferencer?",
       nothingHereRightNow: "Ikke noget her lige nu",
       noArticlesForVariety:
         "Du læser kun kilder fra {0}, og der er ikke noget, der passer lige nu. Der kommer mere, efterhånden som nye artikler udgives.",
