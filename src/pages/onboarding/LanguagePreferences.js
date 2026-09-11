@@ -12,7 +12,7 @@ import LocalStorage from "../../assorted/LocalStorage";
 import useLanguageChoiceFields from "../../hooks/useLanguageChoiceFields";
 import useAnonymousSignup, { isAnonModeEnabled } from "../../hooks/useAnonymousSignup";
 import LanguageChoiceFields from "../../components/LanguageChoiceFields";
-import { useDialectQuestion } from "../../components/LanguageDialectFields";
+import { useCountryQuestions } from "../../components/LanguageCountryFields";
 import strings from "../../i18n/definitions";
 
 import CardPage from "../_pages_shared/CardPage";
@@ -48,7 +48,7 @@ export default function LanguagePreferences() {
   const { learnedLanguage, cefrLevel, translationLanguage } = languageChoice;
 
   // Whether there is a step after this one at all.
-  const { hasDialectQuestion } = useDialectQuestion(learnedLanguage);
+  const { hasCountryQuestions } = useCountryQuestions(learnedLanguage);
 
   useEffect(() => {
     setTitle(strings.languagePreferences);
@@ -82,9 +82,9 @@ export default function LanguagePreferences() {
       return;
     }
 
-    // A language with more than one voice gets one more step; the rest go
-    // straight on, so most learners never see it.
-    if (hasDialectQuestion) {
+    // A language that divides along national lines gets one more step; the rest
+    // go straight on, so most learners never see it.
+    if (hasCountryQuestions) {
       history.push("/language_variety_preferences");
       return;
     }

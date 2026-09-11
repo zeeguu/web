@@ -10,7 +10,7 @@ import strings from "../../../i18n/definitions";
 import LocalStorage from "../../../assorted/LocalStorage";
 import LoadingAnimation from "../../../components/LoadingAnimation";
 import LanguageChoiceFields from "../../../components/LanguageChoiceFields";
-import LanguageDialectFields from "../../../components/LanguageDialectFields";
+import LanguageCountryFields from "../../../components/LanguageCountryFields";
 import Button from "../../_pages_shared/Button.sc";
 import ButtonContainer from "../../_pages_shared/ButtonContainer.sc";
 import Form from "../../_pages_shared/Form.sc";
@@ -113,10 +113,11 @@ export default function LanguageSettings() {
             </FormSection>
           )}
 
-          <LanguageChoiceFields
-            fields={languageChoice}
-            dialectQuestion={<LanguageDialectFields fields={languageChoice} />}
-          />
+          <LanguageChoiceFields fields={languageChoice} />
+
+          <FormSection>
+            <LanguageCountryFields fields={languageChoice} />
+          </FormSection>
 
           <ButtonContainer className={"adaptive-alignment-horizontal"}>
             <Button type={"submit"} onClick={handleSave}>

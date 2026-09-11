@@ -6,7 +6,7 @@ import { SystemLanguagesContext } from "../../contexts/SystemLanguagesContext";
 import { setTitle } from "../../assorted/setTitle";
 import LocalStorage from "../../assorted/LocalStorage";
 import useAnonymousSignup, { isAnonModeEnabled } from "../../hooks/useAnonymousSignup";
-import LanguageDialectFields, { useDialectQuestion } from "../../components/LanguageDialectFields";
+import LanguageCountryFields, { useCountryQuestions } from "../../components/LanguageCountryFields";
 import FormSection from "../_pages_shared/FormSection.sc";
 import strings from "../../i18n/definitions";
 
@@ -21,17 +21,17 @@ import RoundedForwardArrow from "@mui/icons-material/ArrowForwardRounded";
 import LoadingAnimation from "../../components/LoadingAnimation";
 
 /**
- * Which variety the audio lessons are spoken in, on a step of its own.
+ * The two country questions, on a step of their own.
  *
- * It was briefly asked on the previous step, under the language, its variety,
- * the level and the translation language. A fifth question did not fit a phone:
- * the card scrolled and the button that leaves it fell below the fold, so the
- * step before was left exactly as it was and this one was added after it.
+ * They were briefly asked on the previous step, under the language, the level
+ * and the translation language. Five questions did not fit a phone: the card
+ * scrolled and the button that leaves it fell below the fold. So that step keeps
+ * the three questions every learner answers, and these two -- which most never
+ * see -- moved here.
  *
- * Most learners never see it -- only languages whose varieties have voices ask
- * it at all. The step before skips straight past when there is nothing to ask,
- * and arriving here directly in that case redirects rather than showing an empty
- * card.
+ * Only a handful of languages divide along national lines. The step before skips
+ * straight past when there is nothing to ask, and arriving here directly in that
+ * case redirects rather than showing an empty card.
  */
 export default function LanguageVarietyPreferences() {
   const history = useHistory();
@@ -41,9 +41,10 @@ export default function LanguageVarietyPreferences() {
   // Parked by the step before, which is also where they are read back from if a
   // learner comes back to this one.
   const learnedLanguage = LocalStorage.getLearnedLanguage();
+  const [variety, setVariety] = useState(LocalStorage.getLearnedVariety());
   const [dialect, setDialect] = useState(LocalStorage.getLearnedDialect());
 
-  const { hasDialectQuestion } = useDialectQuestion(learnedLanguage);
+  const { hasCountryQuestions } = useCountryQuestions(learnedLanguage);
   const { isCreatingAccount, createAnonymousAccountAndContinue } = useAnonymousSignup(api, () =>
     history.push("/account_details"),
   );
@@ -53,15 +54,19 @@ export default function LanguageVarietyPreferences() {
   }, []);
 
   useEffect(() => {
+    LocalStorage.setLearnedVariety(variety);
+  }, [variety]);
+
+  useEffect(() => {
     LocalStorage.setLearnedDialect(dialect);
   }, [dialect]);
 
   // Nothing to ask: reached by a back button, a bookmark, or a language that has
   // no varieties. Move on rather than show a card with one sentence and a button.
   useEffect(() => {
-    if (sortedSystemLanguages && !hasDialectQuestion) continueToAccount();
+    if (sortedSystemLanguages && !hasCountryQuestions) continueToAccount();
     // eslint-disable-next-line
-  }, [sortedSystemLanguages, hasDialectQuestion]);
+  }, [sortedSystemLanguages, hasCountryQuestions]);
 
   function continueToAccount() {
     if (isAnonModeEnabled()) {
@@ -83,7 +88,9 @@ export default function LanguageVarietyPreferences() {
       <Main>
         <Form action={""}>
           <FormSection>
-            <LanguageDialectFields fields={{ learnedLanguage, dialect, setDialect }} />
+            <LanguageCountryFields
+              fields={{ learnedLanguage, variety, setVariety, dialect, setDialect }}
+            />
           </FormSection>
           <p className="centered">{strings.youCanChangeLater}</p>
           <ButtonContainer className={"padding-medium"}>
