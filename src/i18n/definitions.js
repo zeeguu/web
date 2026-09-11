@@ -199,7 +199,8 @@ let strings = new LocalizedStrings(
       levelOfLearnedLanguage: "My current level",
       levelOfLearnedLanguagePlaceholder: "Select level",
       languageVariety: "Variety",
-      anyLanguageVariety: "No preference",
+      anyLanguageVariety: "Any",
+      anyLanguageVarietyExplained: "No preference",
       baseLanguage: "I want translations in",
       baseLanguagePlaceholder: "Select Language",
 
@@ -1150,7 +1151,8 @@ let strings = new LocalizedStrings(
       inviteCode: "Invitationskode",
       levelOfLearnedLanguage: "Niveau på dit læringssprog",
       languageVariety: "Variant",
-      anyLanguageVariety: "Ingen præference",
+      anyLanguageVariety: "Alle",
+      anyLanguageVarietyExplained: "Ingen præference",
       baseLanguage: "Basesprog",
 
       //PrivacyNotice

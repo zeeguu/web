@@ -6,7 +6,7 @@ import strings from "../i18n/definitions";
 import FormSection from "../pages/_pages_shared/FormSection.sc";
 import CefrLevelSelector from "./CefrLevelSelector";
 import LanguageSelector from "./LanguageSelector";
-import Selector from "./Selector";
+import LanguageVarietySelector from "./LanguageVarietySelector";
 
 /**
  * Learned language + level + translation language, asked the same way wherever
@@ -42,15 +42,10 @@ export default function LanguageChoiceFields({ fields }) {
         />
 
         {varieties.length > 0 && (
-          <Selector
-            id={"language-variety-selector"}
-            label={strings.languageVariety}
-            options={[{ country: "", name: strings.anyLanguageVariety }, ...varieties]}
-            optionLabel={(each) => each.name}
-            optionValue={(each) => each.country}
+          <LanguageVarietySelector
+            varieties={varieties}
             selectedValue={fields.variety}
-            showPlaceholder={false}
-            onChange={(e) => fields.setVariety(e.target.value)}
+            onChange={(value) => fields.setVariety(value)}
           />
         )}
 
