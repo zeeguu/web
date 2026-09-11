@@ -201,6 +201,7 @@ let strings = new LocalizedStrings(
       newsFeedSources: "I want news from",
       allNewsFeedSources: "Everywhere",
       audioLessonsSpokenIn: "I want audio lessons spoken in",
+      languageVarietyPreferences: "Which variety would you like to hear?",
       nothingHereRightNow: "Nothing here right now",
       noArticlesForVariety:
         "You are only reading sources from {0}, and nothing matches at the moment. More arrives as new articles are published.",
@@ -1159,6 +1160,7 @@ let strings = new LocalizedStrings(
       newsFeedSources: "Jeg vil have nyheder fra",
       allNewsFeedSources: "Overalt",
       audioLessonsSpokenIn: "Jeg vil have lydlektioner talt på",
+      languageVarietyPreferences: "Hvilken variant vil du gerne høre?",
       nothingHereRightNow: "Ikke noget her lige nu",
       noArticlesForVariety:
         "Du læser kun kilder fra {0}, og der er ikke noget, der passer lige nu. Der kommer mere, efterhånden som nye artikler udgives.",
