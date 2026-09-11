@@ -103,7 +103,9 @@ export default function PillSelector({
 
   return (
     <Field>
-      {label && <FieldLabel htmlFor={id}>{label}</FieldLabel>}
+      {/* No htmlFor: the row below is a div, which <label for> cannot bind to.
+          The radiogroup is named by its aria-label instead. */}
+      {label && <FieldLabel>{label}</FieldLabel>}
       <PillRow role="radiogroup" aria-label={label} id={id}>
         {options.map((option) => {
           const isSelected = option.value === selectedValue;

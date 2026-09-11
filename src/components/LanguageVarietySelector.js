@@ -19,6 +19,10 @@ import PillSelector from "./PillSelector";
  * name it precedes.
  */
 function flagFor(country) {
+  // Only two uppercase letters map into the regional-indicator block; anything
+  // else would offset into unrelated code points and render as garbage next to
+  // a perfectly good country name.
+  if (!/^[A-Z]{2}$/.test(country)) return "";
   return country.replace(/./g, (letter) => String.fromCodePoint(127397 + letter.charCodeAt(0)));
 }
 
@@ -38,7 +42,7 @@ export default function LanguageVarietySelector({ varieties, selectedValue, onCh
     { value: "", pillLabel: strings.anyLanguageVariety },
     ...varieties.map((variety) => ({
       value: variety.country,
-      pillLabel: `${flagFor(variety.country)} ${countryName(variety.country)}`,
+      pillLabel: `${flagFor(variety.country)} ${countryName(variety.country)}`.trim(),
       // variety.name ("Belgian Dutch") is the API's own wording, kept for the
       // tooltip and for the prompts and voices that will consume it server-side.
       // On screen it would only restate the pill it sits under.

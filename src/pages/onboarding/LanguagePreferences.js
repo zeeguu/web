@@ -134,17 +134,20 @@ export default function LanguagePreferences() {
         setUserSession(session);
         api.setSession(session);
 
-        // The account exists now, so the variety finally has somewhere to go.
-        saveLearnedVarietyAfterSignup(api);
-
         saveSharedUserInfo({ name: "Guest", native_language: translationLanguage }, session);
 
-        setIsCreatingAccount(false);
+        // The account exists now, so the variety finally has somewhere to go --
+        // and the redirect has to wait for it. This is a full-document
+        // navigation, which cancels a fetch still in flight, and a round trip
+        // here is routinely slower than the delay below.
+        saveLearnedVarietyAfterSignup(api, () => {
+          setIsCreatingAccount(false);
 
-        // Small delay to ensure storage is written before redirect
-        setTimeout(() => {
-          window.location.href = "/select_interests";
-        }, 100);
+          // Small delay to ensure storage is written before redirect
+          setTimeout(() => {
+            window.location.href = "/select_interests";
+          }, 100);
+        });
       },
       (error) => {
         console.error("Failed to create anonymous account:", error);
