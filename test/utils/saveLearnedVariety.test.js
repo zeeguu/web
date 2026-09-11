@@ -39,7 +39,7 @@ describe("saveLearnedVarietyAfterSignup", () => {
     saveLearnedVarietyAfterSignup(api);
 
     expect(api.calls).toHaveLength(1);
-    expect(api.calls[0].details).toEqual({ variety: "BE" });
+    expect(api.calls[0].details).toEqual({ feed_variety: "BE" });
   });
 
   it("does not call the API when nothing was chosen", () => {

@@ -71,7 +71,7 @@ export default function LanguageSettings() {
       learned_language: learnedLanguage,
       native_language: languageChoice.translationLanguage,
       [learnedLanguage + "_cefr_level"]: cefrLevel,
-      [learnedLanguage + "_variety"]: languageChoice.variety || null,
+      [learnedLanguage + "_feed_variety"]: languageChoice.variety || null,
     };
 
     const newUserDetailsForAPI = {
@@ -80,7 +80,7 @@ export default function LanguageSettings() {
       // Always sent, including empty: that is how a learner goes back to no
       // preference. The endpoint only leaves a variety alone when the key is
       // absent altogether.
-      variety: languageChoice.variety,
+      feed_variety: languageChoice.variety,
     };
 
     api.saveUserDetails(newUserDetailsForAPI, setErrorMessage, () => {

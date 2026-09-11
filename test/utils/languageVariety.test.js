@@ -5,10 +5,12 @@ import { varietyFieldValue } from "../../src/utils/misc/languageVariety";
 // The field has to re-read it per language, or it would offer -- and save --
 // Portuguese a variety of Dutch.
 describe("varietyFieldValue", () => {
+  // `_feed_variety`, not `_variety`: the API stores two variety preferences per
+  // language now, and this field reads the one about where the news comes from.
   const userDetails = {
     learned_language: "nl",
-    nl_variety: "BE",
-    pt_variety: null,
+    nl_feed_variety: "BE",
+    pt_feed_variety: null,
   };
 
   it("reads the variety of the language asked about", () => {
