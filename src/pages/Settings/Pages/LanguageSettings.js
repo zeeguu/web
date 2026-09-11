@@ -5,6 +5,7 @@ import { APIContext } from "../../../contexts/APIContext";
 import { UserContext } from "../../../contexts/UserContext";
 import { saveSharedUserInfo } from "../../../utils/cookies/userInfo";
 import { cefrLevelFieldValue } from "../../../utils/misc/userCefrLevel";
+import { varietyFieldValue } from "../../../utils/misc/languageVariety";
 import strings from "../../../i18n/definitions";
 import LocalStorage from "../../../assorted/LocalStorage";
 import LoadingAnimation from "../../../components/LoadingAnimation";
@@ -29,6 +30,7 @@ export default function LanguageSettings() {
 
   const languageChoice = useLanguageChoiceFields({
     cefrLevelForLanguage: (languageCode) => cefrLevelFieldValue(userDetails, languageCode),
+    varietyForLanguage: (languageCode) => varietyFieldValue(userDetails, languageCode),
   });
 
   const history = useHistory();
@@ -42,7 +44,8 @@ export default function LanguageSettings() {
     isPageMounted.current = true;
 
     if (isPageMounted.current) {
-      // Seeds the level too, from the stored level for that same language.
+      // Seeds the level and the variety too, from what is stored for that same
+      // language.
       languageChoice.setLearnedLanguage(userDetails.learned_language);
       languageChoice.setTranslationLanguage(userDetails.native_language);
     }
@@ -68,11 +71,16 @@ export default function LanguageSettings() {
       learned_language: learnedLanguage,
       native_language: languageChoice.translationLanguage,
       [learnedLanguage + "_cefr_level"]: cefrLevel,
+      [learnedLanguage + "_variety"]: languageChoice.variety || null,
     };
 
     const newUserDetailsForAPI = {
       ...newUserDetails,
       cefr_level: cefrLevel,
+      // Always sent, including empty: that is how a learner goes back to no
+      // preference. The endpoint only leaves a variety alone when the key is
+      // absent altogether.
+      variety: languageChoice.variety,
     };
 
     api.saveUserDetails(newUserDetailsForAPI, setErrorMessage, () => {

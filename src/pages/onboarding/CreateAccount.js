@@ -7,6 +7,7 @@ import { UserContext } from "../../contexts/UserContext";
 import { APIContext } from "../../contexts/APIContext";
 import { saveSharedUserInfo } from "../../utils/cookies/userInfo";
 import LocalStorage from "../../assorted/LocalStorage";
+import { saveLearnedVarietyAfterSignup } from "../../utils/misc/saveLearnedVariety";
 import {
   EmailValidator,
   MinimumLengthValidator,
@@ -132,6 +133,9 @@ export default function CreateAccount({ handleSuccessfulLogIn }) {
       async (session) => {
         const user = await api.getUserDetails();
         handleSuccessfulLogIn(user, session, false);
+        // Signup does not carry a variety; it has been waiting in LocalStorage
+        // since the language step.
+        saveLearnedVarietyAfterSignup(api);
         setUserDetails(userInfo);
         saveSharedUserInfo(userInfo);
         // Redirect to email verification instead of select_interests

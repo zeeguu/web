@@ -198,6 +198,8 @@ let strings = new LocalizedStrings(
       inviteCodePlaceholder: "Enter your invite code",
       levelOfLearnedLanguage: "My current level",
       levelOfLearnedLanguagePlaceholder: "Select level",
+      languageVariety: "Variety",
+      anyLanguageVariety: "No preference",
       baseLanguage: "I want translations in",
       baseLanguagePlaceholder: "Select Language",
 
@@ -1147,6 +1149,8 @@ let strings = new LocalizedStrings(
       thankYouMsgSuffix: ". Du kan også kontakte os, hvis du mangler en invitationskode.",
       inviteCode: "Invitationskode",
       levelOfLearnedLanguage: "Niveau på dit læringssprog",
+      languageVariety: "Variant",
+      anyLanguageVariety: "Ingen præference",
       baseLanguage: "Basesprog",
 
       //PrivacyNotice

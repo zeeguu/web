@@ -11,6 +11,7 @@ import { setTitle } from "../../assorted/setTitle";
 import { scrollToTop } from "../../utils/misc/scrollToTop";
 import LocalStorage from "../../assorted/LocalStorage";
 import useLanguageChoiceFields from "../../hooks/useLanguageChoiceFields";
+import { saveLearnedVarietyAfterSignup } from "../../utils/misc/saveLearnedVariety";
 import LanguageChoiceFields from "../../components/LanguageChoiceFields";
 import strings from "../../i18n/definitions";
 import { saveSharedUserInfo, setUserSession } from "../../utils/cookies/userInfo";
@@ -65,7 +66,7 @@ export default function LanguagePreferences() {
   }
 
   const languageChoice = useLanguageChoiceFields({ learnedLanguage: getInitialLearnedLanguage() });
-  const { learnedLanguage, cefrLevel, translationLanguage } = languageChoice;
+  const { learnedLanguage, cefrLevel, variety, translationLanguage } = languageChoice;
 
   useEffect(() => {
     setTitle(strings.languagePreferences);
@@ -85,6 +86,10 @@ export default function LanguagePreferences() {
   useEffect(() => {
     LocalStorage.setNativeLanguage(translationLanguage);
   }, [translationLanguage]);
+
+  useEffect(() => {
+    LocalStorage.setLearnedVariety(variety);
+  }, [variety]);
 
   if (!sortedSystemLanguages) {
     return <LoadingAnimation />;
@@ -128,6 +133,9 @@ export default function LanguagePreferences() {
         // Set the session
         setUserSession(session);
         api.setSession(session);
+
+        // The account exists now, so the variety finally has somewhere to go.
+        saveLearnedVarietyAfterSignup(api);
 
         saveSharedUserInfo({ name: "Guest", native_language: translationLanguage }, session);
 

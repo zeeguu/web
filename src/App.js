@@ -144,6 +144,10 @@ function App() {
       native_languages: [...systemLanguages.native_languages].sort((a, b) =>
         a.name.toLowerCase() > b.name.toLowerCase() ? 1 : -1,
       ),
+      // Regional varieties keep the order the API sends, which is the order the
+      // catalogue declares them in -- not alphabetical, because the first entry
+      // of each is the variety Zeeguu has served by default until now.
+      varieties: systemLanguages.varieties || {},
     };
   }, [systemLanguages]);
 

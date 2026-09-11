@@ -6,6 +6,7 @@ import strings from "../i18n/definitions";
 import FormSection from "../pages/_pages_shared/FormSection.sc";
 import CefrLevelSelector from "./CefrLevelSelector";
 import LanguageSelector from "./LanguageSelector";
+import Selector from "./Selector";
 
 /**
  * Learned language + level + translation language, asked the same way wherever
@@ -23,6 +24,10 @@ export default function LanguageChoiceFields({ fields }) {
     (each) => each.code !== fields.learnedLanguage,
   );
 
+  // Only a handful of languages divide along national lines, so for most people
+  // this control is simply absent rather than a question with one sensible answer.
+  const varieties = sortedSystemLanguages.varieties?.[fields.learnedLanguage] || [];
+
   return (
     <>
       <FormSection>
@@ -35,6 +40,19 @@ export default function LanguageChoiceFields({ fields }) {
           isError={!fields.isLearnedLanguageValid}
           errorMessage={fields.learnedLanguageError}
         />
+
+        {varieties.length > 0 && (
+          <Selector
+            id={"language-variety-selector"}
+            label={strings.languageVariety}
+            options={[{ country: "", name: strings.anyLanguageVariety }, ...varieties]}
+            optionLabel={(each) => each.name}
+            optionValue={(each) => each.country}
+            selectedValue={fields.variety}
+            showPlaceholder={false}
+            onChange={(e) => fields.setVariety(e.target.value)}
+          />
+        )}
 
         <CefrLevelSelector
           levels={CEFR_LEVELS}

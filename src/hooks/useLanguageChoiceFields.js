@@ -1,3 +1,5 @@
+import { useState } from "react";
+
 import useFormField from "./useFormField";
 import useShadowRef from "./useShadowRef";
 import validateRules from "../assorted/validateRules";
@@ -20,7 +22,9 @@ export default function useLanguageChoiceFields({
   learnedLanguage: initialLearnedLanguage = "",
   cefrLevel: initialCefrLevel = "",
   translationLanguage: initialTranslationLanguage = "en",
+  variety: initialVariety = "",
   cefrLevelForLanguage,
+  varietyForLanguage,
 } = {}) {
   const [learnedLanguage, setLearnedLanguage, validateLearnedLanguage, isLearnedLanguageValid, learnedLanguageError] =
     useFormField(initialLearnedLanguage, NonEmptyValidator("Please select a language."));
@@ -29,6 +33,10 @@ export default function useLanguageChoiceFields({
     initialCefrLevel,
     NonEmptyValidator("Please select a level for your learned language."),
   );
+
+  // No preference is a real answer, so the variety needs no validator: "" is
+  // what most learners will save, and what every existing row already holds.
+  const [variety, setVariety] = useState(initialVariety);
 
   // useFormField captures its validators in state on the first render, so a rule
   // about *another* field has to read that field through a ref -- closing over
@@ -56,6 +64,10 @@ export default function useLanguageChoiceFields({
   function selectLearnedLanguage(code) {
     setLearnedLanguage(code);
     if (cefrLevelForLanguage) setCefrLevel(cefrLevelForLanguage(code));
+    // A variety belongs to a language just as a level does: Belgian is an answer
+    // about Dutch, and carrying it over to Portuguese would offer -- and save --
+    // a variety that language does not have.
+    setVariety(varietyForLanguage ? varietyForLanguage(code) : "");
   }
 
   function validate() {
@@ -72,6 +84,9 @@ export default function useLanguageChoiceFields({
     setCefrLevel,
     isCefrLevelValid,
     cefrLevelError,
+
+    variety,
+    setVariety,
 
     translationLanguage,
     setTranslationLanguage,
