@@ -26,7 +26,7 @@ function flagFor(country) {
   return country.replace(/./g, (letter) => String.fromCodePoint(127397 + letter.charCodeAt(0)));
 }
 
-function countryName(country) {
+export function localisedCountryName(country) {
   try {
     // getUiLanguage returns the whole language object, not a code.
     const uiLanguage = LocalStorage.getUiLanguage()?.code || "en";
@@ -42,7 +42,7 @@ export default function LanguageVarietySelector({ varieties, selectedValue, onCh
     { value: "", pillLabel: strings.anyLanguageVariety },
     ...varieties.map((variety) => ({
       value: variety.country,
-      pillLabel: `${flagFor(variety.country)} ${countryName(variety.country)}`.trim(),
+      pillLabel: `${flagFor(variety.country)} ${localisedCountryName(variety.country)}`.trim(),
       // variety.name ("Belgian Dutch") is the API's own wording, kept for the
       // tooltip and for the prompts and voices that will consume it server-side.
       // On screen it would only restate the pill it sits under.

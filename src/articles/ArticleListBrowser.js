@@ -340,7 +340,10 @@ export default function ArticleListBrowser({
           {/* A feed emptied by a variety preference has its own explanation, and
               the generic "here are some news sites" advice would be wrong for it:
               the sources are not the problem, the filter is. */}
-          <NoArticlesForVariety articleList={articlesAndVideosList} />
+          <NoArticlesForVariety
+            articleList={articlesAndVideosList}
+            isLoading={reloadingSearchArticles || feedLoading || isWaitingForNewArticles}
+          />
           {!hasVarietyPreference && (
             <ShowLinkRecommendationsIfNoArticles
               articleList={articlesAndVideosList}
