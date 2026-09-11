@@ -200,6 +200,7 @@ let strings = new LocalizedStrings(
       levelOfLearnedLanguagePlaceholder: "Select level",
       newsFeedSources: "News from",
       allNewsFeedSources: "Everywhere",
+      audioLessonsSpokenIn: "Audio lessons spoken in",
       nothingHereRightNow: "Nothing here right now",
       noArticlesForVariety:
         "You are only reading sources from {0}, and nothing matches at the moment. More arrives as new articles are published.",
@@ -1157,6 +1158,7 @@ let strings = new LocalizedStrings(
       levelOfLearnedLanguage: "Niveau på dit læringssprog",
       newsFeedSources: "Nyheder fra",
       allNewsFeedSources: "Overalt",
+      audioLessonsSpokenIn: "Lydlektioner talt på",
       nothingHereRightNow: "Ikke noget her lige nu",
       noArticlesForVariety:
         "Du læser kun kilder fra {0}, og der er ikke noget, der passer lige nu. Der kommer mere, efterhånden som nye artikler udgives.",

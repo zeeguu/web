@@ -29,7 +29,7 @@ import PillSelector from "./PillSelector";
  * glyphs and falls back to showing the two letters, which sits fine next to the
  * name it precedes.
  */
-function flagFor(country) {
+export function flagFor(country) {
   // Only two uppercase letters map into the regional-indicator block; anything
   // else would offset into unrelated code points and render as garbage next to
   // a perfectly good country name.

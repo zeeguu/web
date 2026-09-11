@@ -23,8 +23,10 @@ export default function useLanguageChoiceFields({
   cefrLevel: initialCefrLevel = "",
   translationLanguage: initialTranslationLanguage = "en",
   variety: initialVariety = "",
+  dialect: initialDialect = "",
   cefrLevelForLanguage,
   varietyForLanguage,
+  dialectForLanguage,
 } = {}) {
   const [learnedLanguage, setLearnedLanguage, validateLearnedLanguage, isLearnedLanguageValid, learnedLanguageError] =
     useFormField(initialLearnedLanguage, NonEmptyValidator("Please select a language."));
@@ -37,6 +39,11 @@ export default function useLanguageChoiceFields({
   // No preference is a real answer, so the variety needs no validator: "" is
   // what most learners will save, and what every existing row already holds.
   const [variety, setVariety] = useState(initialVariety);
+
+  // Same shape, different question: which variety of the language is being
+  // learned, as against which country's news to read. No validator for the same
+  // reason -- "" is a real answer and the commonest one.
+  const [dialect, setDialect] = useState(initialDialect);
 
   // useFormField captures its validators in state on the first render, so a rule
   // about *another* field has to read that field through a ref -- closing over
@@ -68,6 +75,9 @@ export default function useLanguageChoiceFields({
     // about Dutch, and carrying it over to Portuguese would offer -- and save --
     // a variety that language does not have.
     setVariety(varietyForLanguage ? varietyForLanguage(code) : "");
+    // Belongs to a language exactly as the variety does, and for the same
+    // reason: Flemish is an answer about Dutch.
+    setDialect(dialectForLanguage ? dialectForLanguage(code) : "");
   }
 
   function validate() {
@@ -87,6 +97,9 @@ export default function useLanguageChoiceFields({
 
     variety,
     setVariety,
+
+    dialect,
+    setDialect,
 
     translationLanguage,
     setTranslationLanguage,

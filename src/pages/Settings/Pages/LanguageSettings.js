@@ -5,11 +5,12 @@ import { APIContext } from "../../../contexts/APIContext";
 import { UserContext } from "../../../contexts/UserContext";
 import { saveSharedUserInfo } from "../../../utils/cookies/userInfo";
 import { cefrLevelFieldValue } from "../../../utils/misc/userCefrLevel";
-import { varietyFieldValue } from "../../../utils/misc/languageVariety";
+import { varietyFieldValue, dialectFieldValue } from "../../../utils/misc/languageVariety";
 import strings from "../../../i18n/definitions";
 import LocalStorage from "../../../assorted/LocalStorage";
 import LoadingAnimation from "../../../components/LoadingAnimation";
 import LanguageChoiceFields from "../../../components/LanguageChoiceFields";
+import LanguageDialectSelector from "../../../components/LanguageDialectSelector";
 import Button from "../../_pages_shared/Button.sc";
 import ButtonContainer from "../../_pages_shared/ButtonContainer.sc";
 import Form from "../../_pages_shared/Form.sc";
@@ -31,7 +32,12 @@ export default function LanguageSettings() {
   const languageChoice = useLanguageChoiceFields({
     cefrLevelForLanguage: (languageCode) => cefrLevelFieldValue(userDetails, languageCode),
     varietyForLanguage: (languageCode) => varietyFieldValue(userDetails, languageCode),
+    dialectForLanguage: (languageCode) => dialectFieldValue(userDetails, languageCode),
   });
+
+  // Only languages whose varieties have voices offer this, so for most learners
+  // it is absent rather than a question with one answer.
+  const dialects = sortedSystemLanguages.dialects?.[languageChoice.learnedLanguage] || [];
 
   const history = useHistory();
   const isPageMounted = useRef(true);
@@ -72,6 +78,7 @@ export default function LanguageSettings() {
       native_language: languageChoice.translationLanguage,
       [learnedLanguage + "_cefr_level"]: cefrLevel,
       [learnedLanguage + "_feed_variety"]: languageChoice.variety || null,
+      [learnedLanguage + "_dialect"]: languageChoice.dialect || null,
     };
 
     const newUserDetailsForAPI = {
@@ -81,6 +88,7 @@ export default function LanguageSettings() {
       // preference. The endpoint only leaves a variety alone when the key is
       // absent altogether.
       feed_variety: languageChoice.variety,
+      dialect: languageChoice.dialect,
     };
 
     api.saveUserDetails(newUserDetailsForAPI, setErrorMessage, () => {
@@ -110,6 +118,20 @@ export default function LanguageSettings() {
           )}
 
           <LanguageChoiceFields fields={languageChoice} />
+
+          {/* Settings only, not onboarding. Two near-identical pill rows at
+              signup -- "News from" and "Audio lessons spoken in" -- would be
+              asked of someone who has not yet seen a feed or heard a lesson,
+              and the default is right for almost everyone. */}
+          {dialects.length > 0 && (
+            <FormSection>
+              <LanguageDialectSelector
+                dialects={dialects}
+                selectedValue={languageChoice.dialect}
+                onChange={(value) => languageChoice.setDialect(value)}
+              />
+            </FormSection>
+          )}
 
           <ButtonContainer className={"adaptive-alignment-horizontal"}>
             <Button type={"submit"} onClick={handleSave}>
