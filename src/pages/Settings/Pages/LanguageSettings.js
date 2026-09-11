@@ -4,12 +4,11 @@ import { SystemLanguagesContext } from "../../../contexts/SystemLanguagesContext
 import { APIContext } from "../../../contexts/APIContext";
 import { UserContext } from "../../../contexts/UserContext";
 import { saveSharedUserInfo } from "../../../utils/cookies/userInfo";
-import { CEFR_LEVELS } from "../../../assorted/cefrLevels";
-import { getUserCefrLevel } from "../../../utils/misc/userCefrLevel";
+import { cefrLevelFieldValue } from "../../../utils/misc/userCefrLevel";
 import strings from "../../../i18n/definitions";
 import LocalStorage from "../../../assorted/LocalStorage";
 import LoadingAnimation from "../../../components/LoadingAnimation";
-import LanguageSelector from "../../../components/LanguageSelector";
+import LanguageChoiceFields from "../../../components/LanguageChoiceFields";
 import Button from "../../_pages_shared/Button.sc";
 import ButtonContainer from "../../_pages_shared/ButtonContainer.sc";
 import Form from "../../_pages_shared/Form.sc";
@@ -18,43 +17,22 @@ import CardPage from "../../_pages_shared/CardPage";
 import Main from "../../_pages_shared/Main.sc";
 import FullWidthErrorMsg from "../../../components/FullWidthErrorMsg.sc";
 import SettingsPageHeader from "../SharedComponents/SettingsPageHeader";
-import Selector from "../../../components/Selector";
 import { setTitle } from "../../../assorted/setTitle";
-import useFormField from "../../../hooks/useFormField";
-import { NonEmptyValidator, Validator } from "../../../utils/ValidatorRule/Validator";
-import useShadowRef from "../../../hooks/useShadowRef";
+import useLanguageChoiceFields from "../../../hooks/useLanguageChoiceFields";
 import { scrollToTop } from "../../../utils/misc/scrollToTop";
-import validateRules from "../../../assorted/validateRules";
 
 export default function LanguageSettings() {
   const api = useContext(APIContext);
   const { sortedSystemLanguages } = useContext(SystemLanguagesContext);
   const { userDetails, setUserDetails, session } = useContext(UserContext);
   const [errorMessage, setErrorMessage] = useState("");
-  const [CEFR, setCEFR] = useState(null);
 
-  const [
-    learnedLanguage,
-    setLearnedLanguage,
-    validateLearnedLanguage,
-    isLearnedLanguageValid,
-    learnedLanguageErrorMsg,
-  ] = useFormField("", NonEmptyValidator("Please select a language."));
+  const languageChoice = useLanguageChoiceFields({
+    cefrLevelForLanguage: (languageCode) => cefrLevelFieldValue(userDetails, languageCode),
+  });
 
-  const learnedLanguageRef = useShadowRef(learnedLanguage);
-  const [nativeLanguage, setNativeLanguage, validateNativeLanguage, isNativeLanguageValid, nativeLanguageMsg] =
-    useFormField("en", [
-      NonEmptyValidator("Please select a language."),
-      new Validator((v) => {
-        return v !== learnedLanguageRef.current;
-      }, "Your Translation language needs to be different than your learned language."),
-    ]);
   const history = useHistory();
   const isPageMounted = useRef(true);
-
-  function setCEFRLevelFromUserContext(data) {
-    setCEFR(getUserCefrLevel(data, data.learned_language));
-  }
 
   useEffect(() => {
     setTitle(strings.languageSettings);
@@ -64,9 +42,9 @@ export default function LanguageSettings() {
     isPageMounted.current = true;
 
     if (isPageMounted.current) {
-      setCEFRLevelFromUserContext(userDetails);
-      setLearnedLanguage(userDetails.learned_language);
-      setNativeLanguage(userDetails.native_language);
+      // Seeds the level too, from the stored level for that same language.
+      languageChoice.setLearnedLanguage(userDetails.learned_language);
+      languageChoice.setTranslationLanguage(userDetails.native_language);
     }
 
     return () => {
@@ -77,27 +55,32 @@ export default function LanguageSettings() {
 
   function handleSave(e) {
     e.preventDefault();
-    if (!validateRules([validateLearnedLanguage, validateNativeLanguage])) scrollToTop();
-    else {
-      const newUserDetails = {
-        ...userDetails,
-        learned_language: learnedLanguage,
-        native_language: nativeLanguage,
-        [learnedLanguage + "_cefr_level"]: CEFR,
-      };
-
-      const newUserDetailsForAPI = {
-        ...newUserDetails,
-        cefr_level: CEFR,
-      };
-
-      api.saveUserDetails(newUserDetailsForAPI, setErrorMessage, () => {
-        setUserDetails(newUserDetails);
-        LocalStorage.setUserInfo(newUserDetails);
-        saveSharedUserInfo(newUserDetails);
-        history.goBack();
-      });
+    if (!languageChoice.validate()) {
+      scrollToTop();
+      return;
     }
+
+    const learnedLanguage = languageChoice.learnedLanguage;
+    const cefrLevel = parseInt(languageChoice.cefrLevel);
+
+    const newUserDetails = {
+      ...userDetails,
+      learned_language: learnedLanguage,
+      native_language: languageChoice.translationLanguage,
+      [learnedLanguage + "_cefr_level"]: cefrLevel,
+    };
+
+    const newUserDetailsForAPI = {
+      ...newUserDetails,
+      cefr_level: cefrLevel,
+    };
+
+    api.saveUserDetails(newUserDetailsForAPI, setErrorMessage, () => {
+      setUserDetails(newUserDetails);
+      LocalStorage.setUserInfo(newUserDetails);
+      saveSharedUserInfo(newUserDetails);
+      history.goBack();
+    });
   }
 
   if (!userDetails || !sortedSystemLanguages) {
@@ -109,50 +92,14 @@ export default function LanguageSettings() {
       <SettingsPageHeader title={strings.languageSettings} />
       <Main>
         <Form>
-          <FormSection>
-            {errorMessage && <FullWidthErrorMsg>{errorMessage}</FullWidthErrorMsg>}
-            <LanguageSelector
-              id={"practiced-language-selector"}
-              label={strings.learnedLanguage}
-              languages={sortedSystemLanguages.learnable_languages}
-              selected={learnedLanguage}
-              onChange={(e) => {
-                setLearnedLanguage(e.target.value);
-              }}
-              isError={!isLearnedLanguageValid}
-              errorMessage={learnedLanguageErrorMsg}
-            />
+          {errorMessage && (
+            <FormSection>
+              <FullWidthErrorMsg>{errorMessage}</FullWidthErrorMsg>
+            </FormSection>
+          )}
 
-            <Selector
-              id={"cefr-levels-selector"}
-              options={CEFR_LEVELS}
-              optionLabel={(e) => e.label}
-              optionValue={(e) => e.value}
-              onChange={(e) => {
-                setCEFR(parseInt(e.target.value));
-              }}
-              selectedValue={CEFR}
-            />
-            {CEFR_LEVELS.find((l) => l.value === String(CEFR))?.description && (
-              <p style={{ fontSize: "0.85em", color: "#888", margin: "-4px 0 8px" }}>
-                {CEFR_LEVELS.find((l) => l.value === String(CEFR)).description}
-              </p>
-            )}
-          </FormSection>
+          <LanguageChoiceFields fields={languageChoice} />
 
-          <FormSection>
-            <LanguageSelector
-              id={"translation-language-selector"}
-              label={strings.baseLanguage}
-              languages={sortedSystemLanguages.native_languages}
-              selected={nativeLanguage}
-              isError={!isNativeLanguageValid}
-              errorMessage={nativeLanguageMsg}
-              onChange={(e) => {
-                setNativeLanguage(e.target.value);
-              }}
-            />
-          </FormSection>
           <ButtonContainer className={"adaptive-alignment-horizontal"}>
             <Button type={"submit"} onClick={handleSave}>
               {strings.save}

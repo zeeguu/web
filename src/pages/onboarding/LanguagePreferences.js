@@ -6,15 +6,12 @@ import { useHistory } from "react-router-dom/cjs/react-router-dom";
 import { Link } from "react-router-dom";
 import { Capacitor } from "@capacitor/core";
 
-import { CEFR_LEVELS } from "../../assorted/cefrLevels";
-import CefrLevelSelector from "../../components/CefrLevelSelector";
 import { setTitle } from "../../assorted/setTitle";
 
 import { scrollToTop } from "../../utils/misc/scrollToTop";
 import LocalStorage from "../../assorted/LocalStorage";
-import useFormField from "../../hooks/useFormField";
-import validateRules from "../../assorted/validateRules";
-import { NonEmptyValidator } from "../../utils/ValidatorRule/Validator";
+import useLanguageChoiceFields from "../../hooks/useLanguageChoiceFields";
+import LanguageChoiceFields from "../../components/LanguageChoiceFields";
 import strings from "../../i18n/definitions";
 import { saveSharedUserInfo, setUserSession } from "../../utils/cookies/userInfo";
 
@@ -23,8 +20,6 @@ import Header from "../_pages_shared/Header";
 import PageTitle from "../_pages_shared/PageTitle.sc";
 import Main from "../_pages_shared/Main.sc";
 import Form from "../_pages_shared/Form.sc";
-import FormSection from "../_pages_shared/FormSection.sc";
-import Selector from "../../components/Selector";
 import ButtonContainer from "../_pages_shared/ButtonContainer.sc";
 import Button from "../_pages_shared/Button.sc";
 import RoundedForwardArrow from "@mui/icons-material/ArrowForwardRounded";
@@ -69,51 +64,35 @@ export default function LanguagePreferences() {
     return selectedLanguage || "";
   }
 
-  const [nativeLanguage, setNativeLanguage, validateNativeLanguage, isNativeLanguageValid, nativeLanguageMsg] =
-    useFormField("en", NonEmptyValidator("Please select a language."));
-
-  const [learnedLanguage, setLearnedLanguage, validateLearnedLanguage, isLearnedLanguageValid, learnedLanguageMsg] =
-    useFormField(getInitialLearnedLanguage(), NonEmptyValidator("Please select a language."));
-
-  // Hardcode translation language to English - users can change in settings if needed
-  const translationLanguage = nativeLanguage;
-  const [
-    learnedCEFRLevel,
-    setLearnedCEFRLevel,
-    validateLearnedCEFRLevel,
-    isLearnedCEFRLevelValid,
-    learnedCEFRLevelMsg,
-  ] = useFormField("", NonEmptyValidator("Please select a level for your learned language."));
+  const languageChoice = useLanguageChoiceFields({ learnedLanguage: getInitialLearnedLanguage() });
+  const { learnedLanguage, cefrLevel, translationLanguage } = languageChoice;
 
   useEffect(() => {
     setTitle(strings.languagePreferences);
   }, []);
 
-  //The useEffect hooks below take care of updating initial language preferences
-  //in real time
+  // The account does not exist yet, so the answers are parked in LocalStorage as
+  // they are given: on web this page hands off to /account_details, which reads
+  // them back out.
   useEffect(() => {
     LocalStorage.setLearnedLanguage(learnedLanguage);
   }, [learnedLanguage]);
 
   useEffect(() => {
-    LocalStorage.setLearnedCefrLevel(learnedCEFRLevel);
-  }, [learnedCEFRLevel]);
+    LocalStorage.setLearnedCefrLevel(cefrLevel);
+  }, [cefrLevel]);
 
   useEffect(() => {
     LocalStorage.setNativeLanguage(translationLanguage);
-  }, [nativeLanguage]);
+  }, [translationLanguage]);
 
   if (!sortedSystemLanguages) {
     return <LoadingAnimation />;
   }
 
-  const availableNativeLanguages = sortedSystemLanguages.native_languages.filter(
-    (each) => each.code != learnedLanguage,
-  );
-
   function validateAndRedirect(e) {
     e.preventDefault();
-    if (!validateRules([validateLearnedLanguage, validateLearnedCEFRLevel])) {
+    if (!languageChoice.validate()) {
       scrollToTop();
       return;
     }
@@ -140,7 +119,7 @@ export default function LanguagePreferences() {
       {
         learned_language: learnedLanguage,
         native_language: translationLanguage,
-        learned_cefr_level: learnedCEFRLevel,
+        learned_cefr_level: cefrLevel,
       },
       (session) => {
         // Store credentials for future sessions
@@ -175,46 +154,7 @@ export default function LanguagePreferences() {
       </Header>
       <Main>
         <Form action={""}>
-          <FormSection>
-            <Selector
-              selectedValue={learnedLanguage}
-              label={strings.learnedLanguage}
-              placeholder={strings.languageSelectorPlaceholder}
-              optionLabel={(e) => e.name}
-              optionValue={(e) => e.code}
-              id={"practiced-languages"}
-              options={sortedSystemLanguages.learnable_languages}
-              isError={!isLearnedLanguageValid}
-              errorMessage={learnedLanguageMsg}
-              onChange={(e) => {
-                setLearnedLanguage(e.target.value);
-              }}
-            />
-
-            <CefrLevelSelector
-              levels={CEFR_LEVELS}
-              selectedValue={learnedCEFRLevel}
-              label={strings.levelOfLearnedLanguage}
-              isError={!isLearnedCEFRLevelValid}
-              errorMessage={learnedCEFRLevelMsg}
-              onChange={(value) => setLearnedCEFRLevel(value)}
-            />
-
-            <Selector
-              selectedValue={nativeLanguage}
-              label={strings.nativeLanguage}
-              placeholder={strings.languageSelectorPlaceholder}
-              optionLabel={(e) => e.name}
-              optionValue={(e) => e.code}
-              id={"native-languages"}
-              options={availableNativeLanguages}
-              isError={!isLearnedLanguageValid}
-              errorMessage={learnedLanguageMsg}
-              onChange={(e) => {
-                setNativeLanguage(e.target.value);
-              }}
-            />
-          </FormSection>
+          <LanguageChoiceFields fields={languageChoice} />
           <p className="centered">{strings.youCanChangeLater}</p>
           <ButtonContainer className={"padding-medium"}>
             <Button
