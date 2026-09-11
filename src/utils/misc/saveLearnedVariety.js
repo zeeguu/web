@@ -37,6 +37,6 @@ export function saveLearnedVarietyAfterSignup(api, onDone = () => {}) {
     onDone();
   }
 
-  api.saveUserDetails({ variety }, finish, finish);
+  api.saveUserDetails({ feed_variety: variety }, finish, finish);
   setTimeout(finish, GIVE_UP_AFTER_MS);
 }
