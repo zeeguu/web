@@ -12,6 +12,16 @@ import PillSelector from "./PillSelector";
  * browser already knows it, in the reader's own language, and inventing a second
  * list of country names next to the API's would be a list to keep in sync.
  */
+/**
+ * The flag for a country code, built from its letters as regional indicators --
+ * no asset to add for every new country in the catalogue. Windows has no flag
+ * glyphs and falls back to showing the two letters, which sits fine next to the
+ * name it precedes.
+ */
+function flagFor(country) {
+  return country.replace(/./g, (letter) => String.fromCodePoint(127397 + letter.charCodeAt(0)));
+}
+
 function countryName(country) {
   try {
     // getUiLanguage returns the whole language object, not a code.
@@ -32,7 +42,7 @@ export default function LanguageVarietySelector({ varieties, selectedValue, onCh
     },
     ...varieties.map((variety) => ({
       value: variety.country,
-      pillLabel: countryName(variety.country),
+      pillLabel: `${flagFor(variety.country)} ${countryName(variety.country)}`,
       hintLabel: variety.name,
     })),
   ];
@@ -40,6 +50,7 @@ export default function LanguageVarietySelector({ varieties, selectedValue, onCh
   return (
     <PillSelector
       id={"language-variety-selector"}
+      equalWidth={false}
       options={options}
       selectedValue={selectedValue}
       onChange={onChange}

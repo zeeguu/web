@@ -21,9 +21,14 @@ const PillRow = styled.div`
 `;
 
 const Pill = styled.button`
-  flex: 1;
+  /* A uniform scale (A1..C2) reads best as equal columns; a handful of labels of
+     different lengths reads better sized to its own words. */
+  flex: ${({ $equalWidth }) => ($equalWidth ? "1" : "0 1 auto")};
   min-width: 0;
-  padding: 0.45rem 0.2rem;
+  /* A pill sized to its own words needs real padding around them. A stretched
+     one must not have it: six equal pills plus 1.8rem each stopped fitting a
+     375px row, and the CEFR bands ellipsised to "A...". */
+  padding: ${({ $equalWidth }) => ($equalWidth ? "0.45rem 0.2rem" : "0.45rem 0.9rem")};
   border-radius: 2rem;
   border: 1.5px solid ${({ $selected }) => ($selected ? blue700 : "var(--border-color)")};
   background: ${({ $selected }) => ($selected ? blue100 : "var(--bg-primary)")};
@@ -82,7 +87,16 @@ const ErrorMsg = styled.p`
  * countries -- a pill is short by necessity, and only the caller can say which
  * part of its data is short enough to be one.
  */
-export default function PillSelector({ options, selectedValue, onChange, label, isError, errorMessage, id }) {
+export default function PillSelector({
+  options,
+  selectedValue,
+  onChange,
+  label,
+  isError,
+  errorMessage,
+  id,
+  equalWidth = true,
+}) {
   const selected = options.find((option) => option.value === selectedValue);
 
   return (
@@ -96,6 +110,7 @@ export default function PillSelector({ options, selectedValue, onChange, label, 
               key={option.value}
               type="button"
               $selected={isSelected}
+              $equalWidth={equalWidth}
               onClick={() => onChange(option.value)}
               role="radio"
               aria-checked={isSelected}
