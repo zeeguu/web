@@ -1,10 +1,17 @@
 import LocalStorage from "../assorted/LocalStorage";
 import strings from "../i18n/definitions";
+import { languageName } from "../utils/misc/languageCodeToName";
 import PillSelector from "./PillSelector";
 
 /**
- * Which regional variety of a language a learner wants, as pills: there are only
- * ever a few, and seeing all of them is how someone learns the choice exists.
+ * Where a learner wants their news from, as pills: there are only ever a few, and
+ * seeing all of them is how someone learns the choice exists.
+ *
+ * Named for the feed because that is all it does. "All" is a coherent answer to
+ * "which sources?" and an incoherent one to "which variety are you learning?" --
+ * and the voice and translation target, when they read this preference, will want
+ * a control of their own with exactly two options and no "All", since there is no
+ * such thing as speaking in no particular accent.
  *
  * The pill is the country alone -- "Belgium" -- because a row of them has to fit
  * a phone, and the line underneath carries the full name the API gave us
@@ -37,9 +44,9 @@ export function localisedCountryName(country) {
   }
 }
 
-export default function LanguageVarietySelector({ varieties, selectedValue, onChange }) {
+export default function LanguageVarietySelector({ varieties, selectedValue, onChange, languageCode }) {
   const options = [
-    { value: "", pillLabel: strings.anyLanguageVariety },
+    { value: "", pillLabel: strings.allNewsFeedSources },
     ...varieties.map((variety) => ({
       value: variety.country,
       pillLabel: `${flagFor(variety.country)} ${localisedCountryName(variety.country)}`.trim(),
@@ -57,7 +64,10 @@ export default function LanguageVarietySelector({ varieties, selectedValue, onCh
       options={options}
       selectedValue={selectedValue}
       onChange={onChange}
-      label={strings.languageVariety}
+      // Naming the language keeps the half of this that we can build: today it
+      // picks sources, and "Dutch news from Belgium" is also what the voice and
+      // the translation target will mean when they read it.
+      label={strings.formatString(strings.newsFeedSources, languageName(languageCode))}
     />
   );
 }

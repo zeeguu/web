@@ -43,6 +43,7 @@ export default function LanguageChoiceFields({ fields }) {
 
         {varieties.length > 0 && (
           <LanguageVarietySelector
+            languageCode={fields.learnedLanguage}
             varieties={varieties}
             selectedValue={fields.variety}
             onChange={(value) => fields.setVariety(value)}
