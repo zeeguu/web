@@ -1,7 +1,6 @@
 import { useContext } from "react";
 
 import { SystemLanguagesContext } from "../contexts/SystemLanguagesContext";
-import FormSection from "../pages/_pages_shared/FormSection.sc";
 import LanguageDialectSelector from "./LanguageDialectSelector";
 
 /**
@@ -31,12 +30,10 @@ export default function LanguageDialectFields({ fields }) {
   if (!hasDialectQuestion) return null;
 
   return (
-    <FormSection>
-      <LanguageDialectSelector
-        dialects={dialects}
-        selectedValue={fields.dialect}
-        onChange={(value) => fields.setDialect(value)}
-      />
-    </FormSection>
+    <LanguageDialectSelector
+      dialects={dialects}
+      selectedValue={fields.dialect}
+      onChange={(value) => fields.setDialect(value)}
+    />
   );
 }

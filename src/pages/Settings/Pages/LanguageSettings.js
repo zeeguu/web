@@ -113,9 +113,10 @@ export default function LanguageSettings() {
             </FormSection>
           )}
 
-          <LanguageChoiceFields fields={languageChoice} />
-
-          <LanguageDialectFields fields={languageChoice} />
+          <LanguageChoiceFields
+            fields={languageChoice}
+            dialectQuestion={<LanguageDialectFields fields={languageChoice} />}
+          />
 
           <ButtonContainer className={"adaptive-alignment-horizontal"}>
             <Button type={"submit"} onClick={handleSave}>

@@ -7,6 +7,7 @@ import { setTitle } from "../../assorted/setTitle";
 import LocalStorage from "../../assorted/LocalStorage";
 import useAnonymousSignup, { isAnonModeEnabled } from "../../hooks/useAnonymousSignup";
 import LanguageDialectFields, { useDialectQuestion } from "../../components/LanguageDialectFields";
+import FormSection from "../_pages_shared/FormSection.sc";
 import strings from "../../i18n/definitions";
 
 import CardPage from "../_pages_shared/CardPage";
@@ -81,7 +82,9 @@ export default function LanguageVarietyPreferences() {
       </Header>
       <Main>
         <Form action={""}>
-          <LanguageDialectFields fields={{ learnedLanguage, dialect, setDialect }} />
+          <FormSection>
+            <LanguageDialectFields fields={{ learnedLanguage, dialect, setDialect }} />
+          </FormSection>
           <p className="centered">{strings.youCanChangeLater}</p>
           <ButtonContainer className={"padding-medium"}>
             <Button

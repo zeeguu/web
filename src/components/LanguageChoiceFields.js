@@ -14,7 +14,7 @@ import LanguageVarietySelector from "./LanguageVarietySelector";
  * the validation; this renders the answers and nothing else, so each screen keeps
  * its own chrome (title, buttons) and its own way of saving.
  */
-export default function LanguageChoiceFields({ fields }) {
+export default function LanguageChoiceFields({ fields, dialectQuestion = null }) {
   const { sortedSystemLanguages } = useContext(SystemLanguagesContext);
 
   // A translation language that is also the learned language is not a choice
@@ -48,6 +48,14 @@ export default function LanguageChoiceFields({ fields }) {
             onChange={(value) => fields.setVariety(value)}
           />
         )}
+
+        {/* Which variety is read aloud, where a caller asks it here at all.
+            Onboarding does not -- it has a step of its own for it, because five
+            questions did not fit a phone -- and passes nothing. Settings does,
+            and it belongs directly under the question above: apart, two rows of
+            country pills read as the same question asked twice, and one of them
+            stranded below the translation field reads as nothing at all. */}
+        {dialectQuestion}
 
         <CefrLevelSelector
           levels={CEFR_LEVELS}
