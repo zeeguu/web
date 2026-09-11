@@ -200,6 +200,10 @@ let strings = new LocalizedStrings(
       levelOfLearnedLanguagePlaceholder: "Select level",
       languageVariety: "Variety",
       anyLanguageVariety: "Any",
+      nothingHereRightNow: "Nothing here right now",
+      noArticlesForVariety:
+        "You are reading {0} only, and nothing matches at the moment. More arrives as new articles are published.",
+      goToLanguageSettings: "Language settings",
       baseLanguage: "I want translations in",
       baseLanguagePlaceholder: "Select Language",
 
@@ -1151,6 +1155,10 @@ let strings = new LocalizedStrings(
       levelOfLearnedLanguage: "Niveau på dit læringssprog",
       languageVariety: "Variant",
       anyLanguageVariety: "Alle",
+      nothingHereRightNow: "Ikke noget her lige nu",
+      noArticlesForVariety:
+        "Du læser kun {0}, og der er ikke noget, der passer lige nu. Der kommer mere, efterhånden som nye artikler udgives.",
+      goToLanguageSettings: "Sprogindstillinger",
       baseLanguage: "Basesprog",
 
       //PrivacyNotice

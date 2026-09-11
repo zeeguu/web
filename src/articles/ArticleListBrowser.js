@@ -10,7 +10,10 @@ import { browsingModeProps } from "./browsingMode";
 import LocalStorage from "../assorted/LocalStorage";
 
 import ShowLinkRecommendationsIfNoArticles from "./ShowLinkRecommendationsIfNoArticles";
+import NoArticlesForVariety from "./NoArticlesForVariety";
+import { varietyFieldValue } from "../utils/misc/languageVariety";
 import { APIContext } from "../contexts/APIContext";
+import { UserContext } from "../contexts/UserContext";
 import useExtensionCommunication from "../hooks/useExtensionCommunication";
 import useArticlePagination from "../hooks/useArticlePagination";
 import { setTitle } from "../assorted/setTitle";
@@ -27,6 +30,11 @@ export default function ArticleListBrowser({
   kioskMode,
 }) {
   let api = useContext(APIContext);
+  const { userDetails } = useContext(UserContext);
+
+  // A feed narrowed to one country explains its own emptiness; see
+  // NoArticlesForVariety.
+  const hasVarietyPreference = !!varietyFieldValue(userDetails, userDetails?.learned_language);
 
   //The ternary operator below fix the problem with the getOpenArticleExternallyWithoutModal()
   //getter that was outputting undefined string values when they should be false.
@@ -329,9 +337,15 @@ export default function ArticleListBrowser({
 
       {!searchQuery && (
         <>
-          <ShowLinkRecommendationsIfNoArticles
-            articleList={articlesAndVideosList}
-          ></ShowLinkRecommendationsIfNoArticles>
+          {/* A feed emptied by a variety preference has its own explanation, and
+              the generic "here are some news sites" advice would be wrong for it:
+              the sources are not the problem, the filter is. */}
+          <NoArticlesForVariety articleList={articlesAndVideosList} />
+          {!hasVarietyPreference && (
+            <ShowLinkRecommendationsIfNoArticles
+              articleList={articlesAndVideosList}
+            ></ShowLinkRecommendationsIfNoArticles>
+          )}
         </>
       )}
       {isWaitingForNewArticles && <LoadingAnimation delay={0}></LoadingAnimation>}
