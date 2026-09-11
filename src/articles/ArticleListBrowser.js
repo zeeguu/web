@@ -329,7 +329,11 @@ export default function ArticleListBrowser({
             />
           ),
         )}
-      {!reloadingSearchArticles && !feedLoading && articlesAndVideosList.length === 0 && (
+      {/* A feed narrowed by a variety says so below, in a sentence that names the
+          country and offers somewhere to change it. This line would sit above
+          that saying the same thing worse -- and talking about a "query" the
+          reader never typed. */}
+      {!reloadingSearchArticles && !feedLoading && !hasVarietyPreference && articlesAndVideosList.length === 0 && (
         <div style={{ textAlign: "center", marginTop: "1rem" }}>
           <p>No results were found for this query.</p>
         </div>
