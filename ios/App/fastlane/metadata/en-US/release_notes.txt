@@ -1,26 +1,15 @@
-This release is mostly for teachers and their students.
+Pick your variety of a language, and know when a text was written by a machine.
 
-For teachers:
-- My Texts and My Classrooms now look like one product, and read properly in dark mode.
-- Filter your texts by class, with a count on each class and a "Not shared" pile for the ones that never went anywhere.
-- Each text shows its classes as pills. Tap one to see the rest of what went to that class, or remove it with a single tap - no trip through the sharing dialog.
-- The share-with-classes dialog now ranks classes sensibly and gains a search box once you have more than a handful.
-- A class page has Students and Texts tabs, with every action on the class in one header.
-- A class warns you when it holds texts in a language its students are not learning, since nobody in the class can see those.
-- Sorting is a normal dropdown now: it closes when you click away, works with a keyboard, and is readable in dark mode. Added Title A-Z, and Newest and Oldest first.
-- A text's difficulty is shown as one level, instead of our pipeline talking to itself.
-- Deleting a class takes you back to My Classrooms instead of leaving you on a page that no longer exists.
-- The Students tab got its label back, and Add Students no longer appears on a class that has no students yet.
+Language varieties:
+- If you are learning Dutch or Portuguese, you can now say which variety you want - Belgian or Netherlands Dutch, Brazilian or European Portuguese. Pick it while signing up, or later in Language Settings. "Any" stays the default, and is what everyone has today.
+- The choice is a row of pills with a flag on each, right above your level, so you can see every option without opening anything.
+- A variety is a filter, so it can leave you with an empty feed on a quiet day. When that happens the feed now says which country it is filtering for, instead of showing a blank page, and offers a way straight to the setting. If a topic is also selected, it names that too, so you are not sent to the wrong screen.
+- Your level now belongs to the language you chose: switching languages re-seeds it instead of quietly saving your Danish level under Portuguese.
 
-For students:
-- Your Classroom now respects the card style you picked in Settings - headlines, preview or interactive.
-- If you are in more than one class, each text says which class it came from, and you can filter the list by class.
-- Teacher-written texts no longer claim to come from a source called "userarticle".
+Knowing what a machine wrote:
+- Article cards now say when their text is machine-written: "AI summary" for a summary we generated, "AI-simplified" for a text adapted to your level. Texts your teacher or a friend uploaded carry no such mark, because their words are their own.
+- The reader now names the level a text was written to, rather than calling it "your level" - which stopped being true the moment you changed your setting.
+- The link back to the original article carries its level and, for a translated piece, the flag of the language it is in, so you know where following it lands you.
 
-Everywhere else:
-- Profile tabs are real pages, so Back returns you to the tab you left instead of dumping you on Badges.
-- Coming back from a friend's profile keeps your search, instead of emptying the box.
-- Friend search results show the languages someone is learning and when they were last active, so you can tell apart two people with the same name.
-- A simplified article's byline now says what it was simplified from, as in "Simplified to A1 from B2".
-- When a friend shares an article, the dialog offers the level we will actually adapt to, and closing it now means neither option rather than quietly picking one.
-- Your daily lesson is dated by the day it was made, not the day you happen to open it.
+Also:
+- Language Settings and signup now ask the same three questions with the same controls, so the level picker looks and behaves the same on both, and reads properly in dark mode.
