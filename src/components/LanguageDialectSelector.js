@@ -18,6 +18,12 @@ import { effectiveDialect } from "../utils/misc/languageVariety";
  * translator's target and the wording of generated text are meant to read it
  * too, and the label widens when they do. Promising that now would be promising
  * something a learner cannot yet hear.
+ *
+ * It is phrased as the learner speaking -- "I want audio lessons spoken in" --
+ * like every other label on the form. Beyond consistency, the first person is
+ * what separates this from the control above it: "I want news from Belgium" and
+ * "I want audio lessons spoken in Belgium" cannot be read as the same question,
+ * where two impersonal labels over two rows of country pills still can.
  */
 export default function LanguageDialectSelector({ dialects, selectedValue, onChange }) {
   const effectiveValue = effectiveDialect(dialects, selectedValue);
