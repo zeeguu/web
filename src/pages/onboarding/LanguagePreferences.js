@@ -66,7 +66,7 @@ export default function LanguagePreferences() {
   }
 
   const languageChoice = useLanguageChoiceFields({ learnedLanguage: getInitialLearnedLanguage() });
-  const { learnedLanguage, cefrLevel, variety, translationLanguage } = languageChoice;
+  const { learnedLanguage, cefrLevel, variety, dialect, translationLanguage } = languageChoice;
 
   useEffect(() => {
     setTitle(strings.languagePreferences);
@@ -90,6 +90,10 @@ export default function LanguagePreferences() {
   useEffect(() => {
     LocalStorage.setLearnedVariety(variety);
   }, [variety]);
+
+  useEffect(() => {
+    LocalStorage.setLearnedDialect(dialect);
+  }, [dialect]);
 
   if (!sortedSystemLanguages) {
     return <LoadingAnimation />;

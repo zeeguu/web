@@ -6,12 +6,14 @@ import LocalStorage from "../../assorted/LocalStorage";
 const GIVE_UP_AFTER_MS = 2500;
 
 /**
- * Persist the variety chosen during onboarding, once the account exists.
+ * Persist the country choices made during onboarding, once the account exists.
  *
- * The signup endpoints take a learned language and a level but no variety, and
- * a variety is a preference rather than part of an identity -- so rather than
- * widening three account-creation paths, the choice waits in LocalStorage and is
- * saved with the new session. /user_settings accepts a variety on its own.
+ * Two of them now: which country's news to read, and which variety the audio
+ * lessons are spoken in. The signup endpoints take a learned language and a
+ * level but neither of these, and both are preferences rather than part of an
+ * identity -- so rather than widening three account-creation paths, the choices
+ * wait in LocalStorage and are saved with the new session. /user_settings
+ * accepts them on their own.
  *
  * `onDone` runs once the save has settled, succeeded or failed, and callers that
  * are about to leave the page must wait for it: this goes out as a plain fetch,
@@ -25,7 +27,8 @@ const GIVE_UP_AFTER_MS = 2500;
  */
 export function saveLearnedVarietyAfterSignup(api, onDone = () => {}) {
   const variety = LocalStorage.getLearnedVariety();
-  if (!variety) {
+  const dialect = LocalStorage.getLearnedDialect();
+  if (!variety && !dialect) {
     onDone();
     return;
   }
@@ -37,6 +40,13 @@ export function saveLearnedVarietyAfterSignup(api, onDone = () => {}) {
     onDone();
   }
 
-  api.saveUserDetails({ feed_variety: variety }, finish, finish);
+  // Only what was actually answered. An empty string is a real value to this
+  // endpoint -- it clears a preference -- so sending one for a control the
+  // learner never reached would be saving an answer they did not give.
+  const details = {};
+  if (variety) details.feed_variety = variety;
+  if (dialect) details.dialect = dialect;
+
+  api.saveUserDetails(details, finish, finish);
   setTimeout(finish, GIVE_UP_AFTER_MS);
 }

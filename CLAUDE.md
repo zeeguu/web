@@ -104,4 +104,12 @@ iOS an unscoped hover turns into "first tap previews, second tap activates".
 
 Vitest, in `test/`, mirroring `src/`. Prefer extracting logic into a pure
 function and testing that (see `teacher/myTextsPage/textFilters.js`) over
-rendering components.
+rendering components — a rule about *logic*, which is easier to get at and
+faster to run outside a component than inside one.
+
+Rendering is still the right tool when the thing worth asserting only exists
+once rendered: which options a control offers, which one reads as selected,
+what a click reports back. `@testing-library/react` is available for that (see
+`test/components/LanguageDialectSelector.test.jsx`). It does not replace the
+rule above — pull the logic out first, test it directly, and render only for
+what is left.
