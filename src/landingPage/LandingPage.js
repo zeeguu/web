@@ -26,6 +26,22 @@ export default function LandingPage() {
     setTitle(strings.landingPageTitle);
   }, []);
 
+  // The router does not honour #news / #contributors on its own. Scroll once on
+  // mount, then again after load: the images above these sections settle late
+  // and would otherwise drag the target out from under the first scroll.
+  useEffect(() => {
+    const id = window.location.hash.slice(1);
+    if (!id) return;
+
+    function scrollToTarget() {
+      document.getElementById(id)?.scrollIntoView();
+    }
+
+    scrollToTarget();
+    window.addEventListener("load", scrollToTarget);
+    return () => window.removeEventListener("load", scrollToTarget);
+  }, []);
+
   function handleLanguageSelect(selectedLanguage) {
     history.push(`/invite_code?selected_language=${selectedLanguage}`);
   }
@@ -216,13 +232,13 @@ export default function LandingPage() {
           </s.PageSection>
         </s.PageSectionWrapper>
 
-        <s.PageSectionWrapper>
+        <s.PageSectionWrapper id="news">
           <s.AdaptableColumn>
             <News />
           </s.AdaptableColumn>
         </s.PageSectionWrapper>
 
-        <s.PageSectionWrapper>
+        <s.PageSectionWrapper id="contributors">
           <s.AdaptableColumn>
             <Contributors />
           </s.AdaptableColumn>
