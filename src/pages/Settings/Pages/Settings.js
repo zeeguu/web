@@ -102,6 +102,10 @@ export default function Settings() {
         <SettingsItem path={"/account_settings/developer"}>Developer tools</SettingsItem>
       </ListOfSettingsItems>
 
+      <ListOfSettingsItems header={"About"}>
+        <SettingsItem path={"/about"}>About Zeeguu</SettingsItem>
+      </ListOfSettingsItems>
+
       <ButtonContainer className={"adaptive-alignment-horizontal"} style={{ marginTop: "1em", marginBottom: "1em" }}>
         <LogOutButton />
       </ButtonContainer>

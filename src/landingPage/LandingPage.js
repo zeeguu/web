@@ -1,9 +1,7 @@
 import { useEffect, useContext } from "react";
 import { useHistory } from "react-router-dom/cjs/react-router-dom";
-import { Redirect } from "react-router-dom";
 import { setTitle } from "../assorted/setTitle";
 import { getStoredSession } from "../utils/cookies/userInfo";
-import LocalStorage from "../assorted/LocalStorage";
 import { SystemLanguagesContext } from "../contexts/SystemLanguagesContext.js";
 import InstallationInstructions from "./InstallationInstructions.js";
 import strings from "../i18n/definitions";
@@ -18,16 +16,15 @@ import * as s from "./LandingPage.sc.js";
 export default function LandingPage() {
   const history = useHistory();
   const { systemLanguages } = useContext(SystemLanguagesContext);
+  // Reachable while logged in through /about, so that the news and the
+  // contributors stay linkable from inside the app. The redirect for "/" lives
+  // in HomePage (MainAppRouter); here we only swap the sign-up calls to action
+  // for a way back into the app.
+  const isLoggedIn = !!getStoredSession();
 
   useEffect(() => {
     setTitle(strings.landingPageTitle);
   }, []);
-
-  if (getStoredSession()) {
-    const lastVisitedPage = LocalStorage.getLastVisitedPage();
-    const redirectTo = lastVisitedPage || "/articles";
-    return <Redirect to={{ pathname: redirectTo }} />;
-  }
 
   function handleLanguageSelect(selectedLanguage) {
     history.push(`/invite_code?selected_language=${selectedLanguage}`);
@@ -52,25 +49,27 @@ export default function LandingPage() {
             Zeeguu is a&nbsp;<a href="https://mircealungu.com/projects/zeeguu" target="_blank" rel="noopener noreferrer">research project</a> that helps you learn smarter - find interesting articles, translate words
             as&nbsp;you read, and use&nbsp;spaced repetition to&nbsp;remember&nbsp;them.
           </p>
-          <Button onClick={() => handleRegisterClick()}>
-            Start Learning
+          <Button onClick={() => (isLoggedIn ? history.push("/articles") : handleRegisterClick())}>
+            {isLoggedIn ? "Back to Reading" : "Start Learning"}
             <RoundedForwardArrow />
           </Button>
-          <s.LanguageGrid>
-            {systemLanguages &&
-              systemLanguages.learnable_languages
-                .sort((a, b) => a.name.localeCompare(b.name))
-                .map((language) => (
-                  <Button
-                    className="small grey left-aligned"
-                    key={language.code}
-                    onClick={() => handleLanguageSelect(language.code)}
-                  >
-                    <DynamicFlagImage languageCode={language.code} />
-                    {language.name}
-                  </Button>
-                ))}
-          </s.LanguageGrid>
+          {!isLoggedIn && (
+            <s.LanguageGrid>
+              {systemLanguages &&
+                systemLanguages.learnable_languages
+                  .sort((a, b) => a.name.localeCompare(b.name))
+                  .map((language) => (
+                    <Button
+                      className="small grey left-aligned"
+                      key={language.code}
+                      onClick={() => handleLanguageSelect(language.code)}
+                    >
+                      <DynamicFlagImage languageCode={language.code} />
+                      {language.name}
+                    </Button>
+                  ))}
+            </s.LanguageGrid>
+          )}
         </s.HeroSection>
         <s.PageSectionWrapper>
           <s.PageSection>

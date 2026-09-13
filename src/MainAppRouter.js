@@ -117,6 +117,10 @@ export default function MainAppRouter({ hasExtension, handleSuccessfulLogIn }) {
         <Route path="/welcome" component={Welcome} />
 
         <Route path="/" exact component={HomePage} />
+        {/* Same page as "/", but without the redirect that sends a logged-in
+            learner to their feed -- so the news and the contributors stay
+            reachable from inside the app. */}
+        <Route path="/about" component={LandingPage} />
         <Route path="/extension_installed" component={ExtensionInstalled} />
         <Route path="/install_extension" component={InstallExtension} />
         <Route path="/reset_pass" component={ResetPassword} />

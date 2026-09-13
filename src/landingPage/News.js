@@ -24,7 +24,7 @@ export default function News() {
         <>
           Zeeguu goes to Cyprus 🇨🇾! Mircea gives a talk entitled{" "}
           <b>"Doubly-Personalised Language Learning: Matching Topic and Difficulty in Reading and Listening"</b> at the IATEFL
-          LTSIS event
+          LTSIG event
         </>,
       )}
 
