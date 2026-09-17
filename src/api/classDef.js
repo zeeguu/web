@@ -143,8 +143,11 @@ const Zeeguu_API = class {
     fetch(this._appendSessionToUrl(endpoint, this.session))
       .then((response) => {
         if (!response.ok) {
-
-          throw new Error(`HTTP ${response.status} on GET ${endpoint}`);
+          // Attach the status, the way _getPlainText does, so callers can tell
+          // an answered-but-rejected request from an unreachable server.
+          const err = new Error(`HTTP ${response.status} on GET ${endpoint}`);
+          err.status = response.status;
+          throw err;
         }
         return response.json();
       })
@@ -176,7 +179,13 @@ const Zeeguu_API = class {
     return new Promise((resolve, reject) => {
       this._getJSON(endpoint, resolve, {
         useCache,
-        onError: () => reject(new ServerUnavailableError()),
+        // A request the server answered — with any status — is not an
+        // unreachable server. Collapsing both cases into
+        // ServerUnavailableError made a 403 indistinguishable from dead wifi,
+        // so App showed "we couldn't reach the server" to users who were
+        // merely unverified. Only a statusless failure (a real fetch error)
+        // means the server is unavailable.
+        onError: (e) => reject(e?.status ? e : new ServerUnavailableError()),
       });
     });
   }

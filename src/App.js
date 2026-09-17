@@ -8,7 +8,7 @@ import { FeedbackContextProvider } from "./contexts/FeedbackContext";
 import LocalStorage from "./assorted/LocalStorage";
 import { isDrillVocabEmpty, pushDrillVocab } from "./assorted/drillCache";
 import { APIContext } from "./contexts/APIContext";
-import Zeeguu_API, { ServerUnavailableError } from "./api/Zeeguu_API";
+import Zeeguu_API from "./api/Zeeguu_API";
 import { ProgressProvider } from "./contexts/ProgressContext";
 import { ConnectivityProvider } from "./contexts/ConnectivityContext";
 import useUILanguage from "./assorted/hooks/uiLanguageHook";
@@ -202,6 +202,21 @@ function App() {
     try {
       const userDetails = await api.getUserDetails();
       LocalStorage.setUserInfo(userDetails);
+
+      // An unverified account is 403'd on every endpoint that isn't explicitly
+      // exempt server-side, and user_preferences is not one of them. Fetching
+      // it here would reject, land in the catch below and raise the "couldn't
+      // reach the server" modal — which returns before the router mounts, so
+      // the user never sees the /verify_email redirect that PrivateRoute is
+      // waiting to give them. get_user_details *is* exempt, so render with
+      // what it returned and let the redirect happen. (userPreferences stays
+      // undefined, as it is before any load; the verify page doesn't read it.)
+      if (userDetails.requires_email_verification) {
+        setUserDetails(userDetails);
+        setServerError(false);
+        return;
+      }
+
       const userPreferences = await api.getUserPreferences();
       LocalStorage.setUserPreferences(userPreferences);
       setZeeguuSpeech(new ZeeguuSpeech(api, userDetails.learned_language));
@@ -210,8 +225,11 @@ function App() {
       setServerError(false);
       seedDrillCacheIfEmpty(userDetails.learned_language);
     } catch (e) {
-      if (e instanceof ServerUnavailableError) setServerError(true);
-      else throw e;
+      // 401/403 mean the session itself is no longer good — the caller decides
+      // (log out), so let those through. Everything else (unreachable server,
+      // 5xx, a malformed body) is a server problem the retry modal fits.
+      if (e?.status === 401 || e?.status === 403) throw e;
+      setServerError(true);
     }
   }
 
@@ -251,7 +269,11 @@ function App() {
     if (api.session !== undefined && api.session !== null) {
       api.isValidSession(
         () => {
-          loadUserDetails();
+          // loadUserDetails rethrows 401/403 (see its catch) so the same
+          // "session actively rejected" rule as below applies here too.
+          loadUserDetails().catch((e) => {
+            if (e?.status === 401 || e?.status === 403) logout();
+          });
         },
         (e) => {
           // Critical: only log out when the server *actively* rejected the
@@ -293,7 +315,9 @@ function App() {
             console.log("Anonymous login successful");
             api.setSession(session);
             saveSharedUserInfo({ name: "Guest", native_language: "en" }, session);
-            loadUserDetails();
+            loadUserDetails().catch((e) => {
+              if (e?.status === 401 || e?.status === 403) logout();
+            });
           },
           (error) => {
             // Login failed - credentials might be invalid
@@ -389,7 +413,9 @@ function App() {
       <ServerErrorModal
         onRetry={() => {
           setServerError(false);
-          loadUserDetails();
+          loadUserDetails().catch((e) => {
+            if (e?.status === 401 || e?.status === 403) logout();
+          });
         }}
       />
     );
