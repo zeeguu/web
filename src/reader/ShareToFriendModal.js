@@ -25,8 +25,19 @@ export default function ShareToFriendModal({ open, onClose, articleID }) {
   const shareUrl = `https://zeeguu.org/read/article?id=${articleID}` + (shareCode ? `&s=${shareCode}` : "");
 
   useEffect(() => {
+    // Drop the previous article's code first: the reader can swap articles in
+    // place (e.g. to a simplified copy), and a stale code on the new id gives
+    // the recipient no credit — or "not available" for a non-feed text.
+    setShareCode(null);
     if (!open) return;
-    api.getArticleShareCode(articleID).then(setShareCode).catch(() => {});
+    let current = true;
+    api
+      .getArticleShareCode(articleID)
+      .then((code) => current && setShareCode(code))
+      .catch(() => {});
+    return () => {
+      current = false;
+    };
   }, [api, open, articleID]);
 
   useEffect(() => {

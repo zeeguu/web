@@ -4,9 +4,22 @@ import { Zeeguu_API } from "./classDef";
 // these need a session; the share-link mint is the one exception, and it's
 // called by the logged-in sharer.
 
+// Plain fetch rather than _getJSON: a 404 here is an expected answer (a
+// non-public article, a code whose sharer deleted their account), and
+// _getJSON reports every non-2xx to Sentry.
+function getExpectingNotFound(url, callback, onError) {
+  fetch(url)
+    .then((response) => {
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+      return response.json();
+    })
+    .then(callback)
+    .catch((e) => onError && onError(e));
+}
+
 Zeeguu_API.prototype.getPublicArticle = function (articleId, shareCode, callback, onError) {
   const query = shareCode ? `?s=${encodeURIComponent(shareCode)}` : "";
-  this._getJSON(`public_article/${articleId}${query}`, callback, { onError });
+  getExpectingNotFound(`${this.baseAPIurl}/public_article/${articleId}${query}`, callback, onError);
 };
 
 Zeeguu_API.prototype.publicTranslateWord = function (fromLang, toLang, word, context, isSeparatedMwe, fullSentence) {
@@ -38,9 +51,9 @@ Zeeguu_API.prototype.getArticleShareCode = function (articleId) {
 };
 
 Zeeguu_API.prototype.getArticleShareLinkInfo = function (code, articleId, callback) {
-  this._getJSON(
-    `article_share_link_info/${encodeURIComponent(code)}?article_id=${articleId}`,
+  getExpectingNotFound(
+    `${this.baseAPIurl}/article_share_link_info/${encodeURIComponent(code)}?article_id=${articleId}`,
     callback,
-    { onError: () => {} },
+    null,
   );
 };
