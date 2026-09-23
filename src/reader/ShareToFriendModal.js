@@ -22,7 +22,9 @@ export default function ShareToFriendModal({ open, onClose, articleID }) {
   // click: iOS only allows navigator.share straight from the tap, and an await
   // in between would lose it. If it hasn't arrived, the plain link still works.
   const [shareCode, setShareCode] = useState(null);
-  const shareUrl = `https://zeeguu.org/read/article?id=${articleID}` + (shareCode ? `&s=${shareCode}` : "");
+  const shareUrl = shareCode
+    ? `https://zeeguu.org/s/${shareCode}`
+    : `https://zeeguu.org/read/article?id=${articleID}`;
 
   useEffect(() => {
     // Drop the previous article's code first: the reader can swap articles in

@@ -47,10 +47,13 @@ Zeeguu_API.prototype.getArticleShareCode = function (articleId) {
     .then((data) => data?.code || null);
 };
 
-Zeeguu_API.prototype.getArticleShareLinkInfo = function (code, articleId, callback) {
+// { article_id, shared_by_name } for a share code. With articleId, the code
+// must belong to that article (else 404).
+Zeeguu_API.prototype.getArticleShareLinkInfo = function (code, articleId, callback, onError) {
+  const query = articleId ? `?article_id=${articleId}` : "";
   getExpectingNotFound(
-    `${this.baseAPIurl}/article_share_link_info/${encodeURIComponent(code)}?article_id=${articleId}`,
+    `${this.baseAPIurl}/article_share_link_info/${encodeURIComponent(code)}${query}`,
     callback,
-    null,
+    onError,
   );
 };
