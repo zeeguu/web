@@ -311,10 +311,10 @@ export default function PublicSharedArticlePage() {
     </option>
   ));
 
-  const wordsLeft = `${remaining} free ${remaining === 1 ? "word" : "words"} left`;
+  const wordsLeft = `${remaining} ${remaining === 1 ? "word" : "words"} left`;
   let hint;
   if (remaining === 0) {
-    hint = <>Create a free account to keep translating words.</>;
+    hint = <>Create an account to keep translating words.</>;
   } else if (!target) {
     hint = <>Tap any word to see its translation · {wordsLeft}</>;
   } else {
@@ -340,8 +340,8 @@ export default function PublicSharedArticlePage() {
           {targetOptions}
         </select>
       </TargetQuestion>
-      You can translate {FREE_WORDS} words for free. A free account translates every word and keeps the ones you tap
-      for practice.
+      You can translate {FREE_WORDS} words without an account. With one, you can translate every word and practice the
+      ones you tap.
     </>
   );
 
@@ -362,8 +362,8 @@ export default function PublicSharedArticlePage() {
     <>
       {wall === "rate"
         ? "Lots of people are translating right now. "
-        : `Those were your ${FREE_WORDS} free words. `}
-      Create a free Zeeguu account to translate every word, keep the ones you want to learn, and get {articleLanguageName}{" "}
+        : `You have translated ${FREE_WORDS} words. `}
+      Create a Zeeguu account to translate every word, practice the ones you tapped, and get {articleLanguageName}{" "}
       news at your level.
       {storeLinks}
     </>
@@ -389,7 +389,7 @@ export default function PublicSharedArticlePage() {
         <ChoiceModal
           title={sharer ? `${sharer} is learning ${articleLanguageName} with Zeeguu` : "Keep reading with Zeeguu"}
           message={wallMessage}
-          primaryLabel="Create free account"
+          primaryLabel="Create account"
           secondaryLabel="I already have an account"
           secondaryAsLink
           onPrimary={signUp}
@@ -426,7 +426,7 @@ export default function PublicSharedArticlePage() {
         <JoinBarRow>
           <TapHint>{hint}</TapHint>
           <Button className="small" onClick={signUp}>
-            Create free account
+            Create account
           </Button>
         </JoinBarRow>
       </JoinBar>
