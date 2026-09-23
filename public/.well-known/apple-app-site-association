@@ -8,6 +8,7 @@
           "/read/article*",
           "/exercise/*",
           "/shared-lesson/*",
+          "/s/*",
           "/articles/shared*",
           "/account_settings/*"
         ]
