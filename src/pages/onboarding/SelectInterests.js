@@ -16,6 +16,7 @@ import strings from "../../i18n/definitions";
 
 import { setTitle } from "../../assorted/setTitle";
 import { APIContext } from "../../contexts/APIContext";
+import { consumePendingSharedArticle } from "../../reader/publicArticle/publicReaderLogic";
 
 export default function SelectInterests({ hasExtension }) {
   const api = useContext(APIContext);
@@ -23,6 +24,9 @@ export default function SelectInterests({ hasExtension }) {
   const { allTopics, toggleTopicSubscription, isSubscribed } = useSelectInterest(api);
 
   function getLinkToNextPage() {
+    // Signed up from a shared article: that article is where they wanted to be.
+    const pendingArticle = consumePendingSharedArticle(window.localStorage);
+    if (pendingArticle) return pendingArticle;
     if (isSupportedBrowser() && hasExtension === false) {
       return "/install_extension";
     } else return "/articles";
