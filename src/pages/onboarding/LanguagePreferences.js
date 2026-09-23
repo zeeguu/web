@@ -44,7 +44,12 @@ export default function LanguagePreferences() {
     return selectedLanguage || "";
   }
 
-  const languageChoice = useLanguageChoiceFields({ learnedLanguage: getInitialLearnedLanguage() });
+  const languageChoice = useLanguageChoiceFields({
+    learnedLanguage: getInitialLearnedLanguage(),
+    // Set when signing up from a shared article, where the visitor already
+    // picked the language they want translations in.
+    translationLanguage: getQueryParam("translation_language") || undefined,
+  });
   const { learnedLanguage, cefrLevel, translationLanguage } = languageChoice;
 
   // Whether there is a step after this one at all.

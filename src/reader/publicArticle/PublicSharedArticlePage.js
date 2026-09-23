@@ -104,6 +104,20 @@ const StoreLinks = styled.div`
   }
 `;
 
+const TargetQuestion = styled.div`
+  margin-bottom: 1em;
+  font-weight: 600;
+
+  select {
+    font: inherit;
+    color: var(--text-primary);
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    padding: 0.2em 0.4em;
+  }
+`;
+
 const ErrorCard = styled.div`
   max-width: 640px;
   margin: 48px auto;
@@ -134,7 +148,12 @@ export default function PublicSharedArticlePage() {
   const [error, setError] = useState(null);
   const [wall, setWall] = useState(null); // null | "limit" | "rate"
   const [remaining, setRemaining] = useState(FREE_WORDS);
+  // Translation language: null until the visitor picks one. The first tap asks
+  // (askingTarget holds that tap's continuation); the choice is remembered.
   const [target, setTarget] = useState(null);
+  const targetRef = useRef(null);
+  const [askingTarget, setAskingTarget] = useState(null); // { onChosen, onCancelled } | null
+  const [draftTarget, setDraftTarget] = useState("");
 
   const meterRef = useRef(null);
   if (!meterRef.current) meterRef.current = createWordMeter(window.localStorage);
@@ -154,33 +173,41 @@ export default function PublicSharedArticlePage() {
         } catch {
           // storage blocked
         }
-        setTarget(
-          stored && stored !== data.language
-            ? stored
-            : pickTranslationTarget(navigator.languages || [navigator.language], data.language, SUPPORTED_TARGETS),
-        );
+        const remembered = stored && stored !== data.language ? stored : null;
+        targetRef.current = remembered;
+        setTarget(remembered);
       },
       () => setError("This article isn't available."),
     );
     setRemaining(meterRef.current.remaining());
   }, [api, articleId, shareCode]);
 
-  // Rebuilt when the target language changes: already-shown translations were
-  // in the old language, so start the text fresh.
+  // The target is read through a ref at tap time, so choosing or changing it
+  // doesn't rebuild the text and throw away the translations already shown.
   const { interactiveTitle, interactiveFragments } = useMemo(() => {
-    if (!article || !target) return {};
+    if (!article) return {};
     const meter = {
       allow: (text) => {
         const ok = meterRef.current.allow(text);
         setRemaining(meterRef.current.remaining());
         return ok;
       },
+      remaining: () => meterRef.current.remaining(),
       onBlocked: (reason) => setWall(reason),
     };
+    const suggestion = pickTranslationTarget(
+      navigator.languages || [navigator.language],
+      article.language,
+      SUPPORTED_TARGETS,
+    );
     const common = {
       api,
       language: article.language,
-      targetLanguage: target,
+      getTargetLanguage: () => targetRef.current,
+      askTarget: (onChosen, onCancelled) => {
+        setDraftTarget(suggestion || "");
+        setAskingTarget({ onChosen, onCancelled });
+      },
       meter,
       sourceId: article.source_id,
       zeeguuSpeech: { language: article.language },
@@ -201,7 +228,7 @@ export default function PublicSharedArticlePage() {
           }),
       ),
     };
-  }, [api, article, target]);
+  }, [api, article]);
 
   function changeTarget(code) {
     try {
@@ -209,7 +236,22 @@ export default function PublicSharedArticlePage() {
     } catch {
       // storage blocked
     }
+    targetRef.current = code;
     setTarget(code);
+  }
+
+  function startTranslating() {
+    if (!draftTarget) return;
+    changeTarget(draftTarget);
+    const { onChosen } = askingTarget;
+    setAskingTarget(null);
+    onChosen();
+  }
+
+  function notNow() {
+    const { onCancelled } = askingTarget;
+    setAskingTarget(null);
+    onCancelled();
   }
 
   const here = window.location.pathname + window.location.search;
@@ -220,7 +262,9 @@ export default function PublicSharedArticlePage() {
     // teachers' and researchers' codes, so skip straight to languages with
     // the article's language preselected.
     LocalStorage.setInviteCode("");
-    history.push(`/language_preferences?selected_language=${article?.language || ""}`);
+    const params = new URLSearchParams({ selected_language: article?.language || "" });
+    if (target) params.set("translation_language", target);
+    history.push(`/language_preferences?${params}`);
   }
 
   function logIn() {
@@ -261,24 +305,45 @@ export default function PublicSharedArticlePage() {
   const articleLanguageName = languageName(article.language);
   const sharer = article.shared_by_name;
 
-  const targetPicker = (
-    <select value={target} onChange={(e) => changeTarget(e.target.value)} aria-label="Translate to">
-      {SUPPORTED_TARGETS.filter((c) => c !== article.language).map((c) => (
-        <option key={c} value={c}>
-          {languageNames[c]}
-        </option>
-      ))}
-    </select>
-  );
+  const targetOptions = SUPPORTED_TARGETS.filter((c) => c !== article.language).map((c) => (
+    <option key={c} value={c}>
+      {languageNames[c]}
+    </option>
+  ));
 
-  const hint =
-    remaining > 0 ? (
+  const wordsLeft = `${remaining} free ${remaining === 1 ? "word" : "words"} left`;
+  let hint;
+  if (remaining === 0) {
+    hint = <>Create a free account to keep translating words.</>;
+  } else if (!target) {
+    hint = <>Tap any word to see its translation · {wordsLeft}</>;
+  } else {
+    hint = (
       <>
-        Tap any word to translate it into {targetPicker} · {remaining} free {remaining === 1 ? "word" : "words"} left
+        Translating into{" "}
+        <select value={target} onChange={(e) => changeTarget(e.target.value)} aria-label="Translate into">
+          {targetOptions}
+        </select>{" "}
+        · {wordsLeft}
       </>
-    ) : (
-      <>Create a free account to keep translating words.</>
     );
+  }
+
+  const targetQuestion = (
+    <>
+      <TargetQuestion>
+        Translate into{" "}
+        <select value={draftTarget} onChange={(e) => setDraftTarget(e.target.value)} aria-label="Translate into">
+          <option value="" disabled>
+            choose a language
+          </option>
+          {targetOptions}
+        </select>
+      </TargetQuestion>
+      You can translate {FREE_WORDS} words for free. A free account translates every word and keeps the ones you tap
+      for practice.
+    </>
+  );
 
   const storeLinks = !isNativeApp && (
     <StoreLinks>
@@ -309,6 +374,17 @@ export default function PublicSharedArticlePage() {
   return (
     <KioskLayout>
       {topBar}
+      {askingTarget && (
+        <ChoiceModal
+          title="Tap any word to see its translation"
+          message={targetQuestion}
+          primaryLabel="Start translating"
+          secondaryLabel="Not now"
+          secondaryAsLink
+          onPrimary={startTranslating}
+          onSecondary={notNow}
+        />
+      )}
       {wall && (
         <ChoiceModal
           title={sharer ? `${sharer} is learning ${articleLanguageName} with Zeeguu` : "Keep reading with Zeeguu"}

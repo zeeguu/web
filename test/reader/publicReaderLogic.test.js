@@ -46,9 +46,9 @@ describe("pickTranslationTarget", () => {
     expect(pickTranslationTarget(["da-DK", "de"], "da", supported)).toBe("de");
   });
 
-  it("falls back to English, or away from English for English articles", () => {
+  it("falls back to English, and makes no guess for English articles", () => {
     expect(pickTranslationTarget(["xx"], "da", supported)).toBe("en");
-    expect(pickTranslationTarget(["en-GB"], "en", supported)).toBe("da");
+    expect(pickTranslationTarget(["en-GB"], "en", supported)).toBe(null);
   });
 });
 

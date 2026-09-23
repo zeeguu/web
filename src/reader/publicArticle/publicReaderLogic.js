@@ -5,7 +5,7 @@
 // sign up. A conversion nudge, not a security boundary: it lives in the
 // browser and resets with site data. The API's per-IP / global rate limits are
 // what protect the translation bill.
-export const FREE_WORDS = 5;
+export const FREE_WORDS = 10;
 
 const TAPPED_KEY = "public_reader_tapped_words";
 const PENDING_KEY = "pending_shared_article";
@@ -47,14 +47,16 @@ export function createWordMeter(storage, freeWords = FREE_WORDS) {
   };
 }
 
-// A stranger has no native_language, so guess one from the browser. Never
-// translate into the article's own language; fall back to English.
+// A stranger has no native_language, so suggest one from the browser for the
+// "translate into" question. Never the article's own language. English is the
+// fallback — except for an English article, where there is no sensible guess
+// and the visitor has to pick (null).
 export function pickTranslationTarget(browserLanguages, articleLanguage, supported) {
   for (const tag of browserLanguages || []) {
     const code = (tag || "").split("-")[0].toLowerCase();
     if (code && code !== articleLanguage && supported.includes(code)) return code;
   }
-  return articleLanguage === "en" ? supported.find((c) => c !== "en") : "en";
+  return articleLanguage === "en" ? null : "en";
 }
 
 // Sign-up is several screens (and on the web an email round trip) long, and
