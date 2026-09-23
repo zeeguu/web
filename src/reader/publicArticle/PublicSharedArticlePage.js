@@ -202,6 +202,8 @@ export default function PublicSharedArticlePage() {
     );
     const common = {
       api,
+      articleId: article.id,
+      shareCode,
       language: article.language,
       getTargetLanguage: () => targetRef.current,
       askTarget: (onChosen, onCancelled) => {
@@ -228,7 +230,7 @@ export default function PublicSharedArticlePage() {
           }),
       ),
     };
-  }, [api, article]);
+  }, [api, article, shareCode]);
 
   function changeTarget(code) {
     try {
