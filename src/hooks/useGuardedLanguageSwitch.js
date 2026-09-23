@@ -7,7 +7,8 @@ import useQuery from "./useQuery";
 import { switchLanguage } from "../utils/languageSwitcher";
 import { languageName } from "../utils/misc/languageCodeToName";
 
-const READER_PATH = "/read/article";
+// The reader: /read/article?id=… (in-app) and /read/<link> (article links).
+const READER_PATH_PREFIX = "/read/";
 const EXERCISES_SUMMARY_PATH = "/exercises/summary";
 
 /**
@@ -33,7 +34,7 @@ export default function useGuardedLanguageSwitch() {
   const [pending, setPending] = useState(null); // { langCode, onDone }
   const [isProcessing, setIsProcessing] = useState(false);
 
-  const willConfirm = location.pathname === READER_PATH;
+  const willConfirm = location.pathname.startsWith(READER_PATH_PREFIX);
 
   function requestSwitch(langCode, onDone) {
     if (langCode === userDetails.learned_language) {
@@ -58,9 +59,12 @@ export default function useGuardedLanguageSwitch() {
     if (!pending) return;
     setIsProcessing(true);
 
-    // Save the article in parallel — don't block the switch on it.
+    // Save the article in parallel — don't block the switch on it. Opened
+    // through a link (/read/<link>) there's no id in the URL; resolve it.
     const articleId = query.get("id");
+    const link = location.pathname.slice(READER_PATH_PREFIX.length);
     if (articleId) api.makePersonalCopy(articleId, () => {});
+    else if (link) api.getArticleLinkInfo(link, (info) => api.makePersonalCopy(info.article_id, () => {}));
 
     const { langCode, onDone } = pending;
     switchLanguage(api, userDetails, setUserDetails, langCode, () => {

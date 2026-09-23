@@ -31,7 +31,7 @@
                 <data
                     android:scheme="https"
                     android:host="zeeguu.org"
-                    android:pathPrefix="/read/article" />
+                    android:pathPrefix="/read/" />
             </intent-filter>
 
             <intent-filter android:autoVerify="true">
@@ -52,18 +52,6 @@
                     android:scheme="https"
                     android:host="zeeguu.org"
                     android:pathPrefix="/shared-lesson" />
-            </intent-filter>
-
-            <!-- Short share links, zeeguu.org/s/<code>. The trailing slash
-                 matters: "/s" alone would also claim /search, /select_interests… -->
-            <intent-filter android:autoVerify="true">
-                <action android:name="android.intent.action.VIEW" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-                <data
-                    android:scheme="https"
-                    android:host="zeeguu.org"
-                    android:pathPrefix="/s/" />
             </intent-filter>
 
             <intent-filter android:autoVerify="true">

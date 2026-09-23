@@ -41,7 +41,7 @@ const PrivateRoute = ({ component: Component, ...rest }) => {
         <Redirect
           to={{
             pathname: "/log_in",
-            search: "?redirectLink=" + window.location.href,
+            search: "?redirectLink=" + encodeURIComponent(window.location.href),
           }}
         />
       );

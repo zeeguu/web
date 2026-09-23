@@ -14,7 +14,6 @@ import LocalStorage from "../../assorted/LocalStorage";
 import { languageNames } from "../../utils/languageDetection";
 import { languageName } from "../../utils/misc/languageCodeToName";
 import { setTitle } from "../../assorted/setTitle";
-import useQuery from "../../hooks/useQuery";
 import { TranslatableText } from "../TranslatableText";
 import PublicInteractiveText from "../PublicInteractiveText";
 import * as s from "../ArticleReader.sc";
@@ -136,12 +135,9 @@ const SUPPORTED_TARGETS = Object.keys(languageNames);
 // Account-less reading of a shared article: the whole text, a handful of free
 // word translations, then an invitation to sign up or get the app. The article
 // analogue of PublicSharedLessonPage; see the API's endpoints/public_article.py.
-export default function PublicSharedArticlePage() {
+export default function PublicSharedArticlePage({ link }) {
   const api = useContext(APIContext);
   const history = useHistory();
-  const query = useQuery();
-  const articleId = query.get("id");
-  const shareCode = query.get("s");
   const isNativeApp = Capacitor.isNativePlatform();
 
   const [article, setArticle] = useState(null);
@@ -162,8 +158,7 @@ export default function PublicSharedArticlePage() {
     setArticle(null);
     setError(null);
     api.getPublicArticle(
-      articleId,
-      shareCode,
+      link,
       (data) => {
         setArticle(data);
         setTitle(data.title);
@@ -180,7 +175,7 @@ export default function PublicSharedArticlePage() {
       () => setError("This article isn't available."),
     );
     setRemaining(meterRef.current.remaining());
-  }, [api, articleId, shareCode]);
+  }, [api, link]);
 
   // The target is read through a ref at tap time, so choosing or changing it
   // doesn't rebuild the text and throw away the translations already shown.
@@ -202,8 +197,7 @@ export default function PublicSharedArticlePage() {
     );
     const common = {
       api,
-      articleId: article.id,
-      shareCode,
+      link,
       language: article.language,
       getTargetLanguage: () => targetRef.current,
       askTarget: (onChosen, onCancelled) => {
@@ -230,7 +224,7 @@ export default function PublicSharedArticlePage() {
           }),
       ),
     };
-  }, [api, article, shareCode]);
+  }, [api, article, link]);
 
   function changeTarget(code) {
     try {

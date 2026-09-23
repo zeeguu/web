@@ -1,12 +1,11 @@
 import { Zeeguu_API } from "./classDef";
 
-// Account-less reading of a shared article (PublicSharedArticlePage). None of
-// these need a session; the share-link mint is the one exception, and it's
-// called by the logged-in sharer.
+// Article links: zeeguu.org/read/<article code>.<sharer code>. A logged-in
+// reader's address bar shows their own link and the Share button copies the
+// same one; the public page (no account) opens articles only through links.
 
-// Plain fetch rather than _getJSON: a 404 here is an expected answer (a
-// non-public article, a code whose sharer deleted their account), and
-// _getJSON reports every non-2xx to Sentry.
+// Plain fetch rather than _getJSON: a 404 here is an expected answer (an
+// unknown link), and _getJSON reports every non-2xx to Sentry.
 function getExpectingNotFound(url, callback, onError) {
   fetch(url)
     .then((response) => {
@@ -17,15 +16,38 @@ function getExpectingNotFound(url, callback, onError) {
     .catch((e) => onError && onError(e));
 }
 
-Zeeguu_API.prototype.getPublicArticle = function (articleId, shareCode, callback, onError) {
-  const query = shareCode ? `?s=${encodeURIComponent(shareCode)}` : "";
-  getExpectingNotFound(`${this.baseAPIurl}/public_article/${articleId}${query}`, callback, onError);
+// The caller's link to an article ("<article code>.<sharer code>"). Written
+// once per article and once per user on the server, so asking on every open
+// is cheap.
+Zeeguu_API.prototype.getArticleLink = function (articleId) {
+  return fetch(this._appendSessionToUrl(`article_link/${articleId}`), { method: "POST" })
+    .then((response) => (response.ok ? response.json() : null))
+    .then((data) => data?.link || null);
 };
 
-// position: { part, paragraph_i, sent_i, token_i, total_tokens, partner_token_i, s }
+// { article_id, shared_by_name } for a link.
+Zeeguu_API.prototype.getArticleLinkInfo = function (link, callback, onError) {
+  getExpectingNotFound(`${this.baseAPIurl}/article_link_info/${encodeURIComponent(link)}`, callback, onError);
+};
+
+// Links handed out on 2026-09-23 looked like /read/article?id=<id>&s=<code>;
+// this gives today's { link } for one.
+Zeeguu_API.prototype.resolveLegacyShareLink = function (code, articleId, callback, onError) {
+  getExpectingNotFound(
+    `${this.baseAPIurl}/article_share_link_info/${encodeURIComponent(code)}?article_id=${encodeURIComponent(articleId)}`,
+    callback,
+    onError,
+  );
+};
+
+Zeeguu_API.prototype.getPublicArticle = function (link, callback, onError) {
+  getExpectingNotFound(`${this.baseAPIurl}/public_article/${encodeURIComponent(link)}`, callback, onError);
+};
+
+// position: { part, paragraph_i, sent_i, token_i, total_tokens, partner_token_i }
 // — where the word sits in the article; the server reads the word itself.
-Zeeguu_API.prototype.publicTranslateWord = function (articleId, toLang, position) {
-  return fetch(`${this.baseAPIurl}/public_translate/${articleId}/${toLang}`, {
+Zeeguu_API.prototype.publicTranslateWord = function (link, toLang, position) {
+  return fetch(`${this.baseAPIurl}/public_translate/${encodeURIComponent(link)}/${toLang}`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(position),
@@ -37,23 +59,4 @@ Zeeguu_API.prototype.publicTranslateWord = function (articleId, toLang, position
     }
     return response.json();
   });
-};
-
-// The sharer's opaque code for this article, appended to copied links as &s=
-// so recipients see who sent it.
-Zeeguu_API.prototype.getArticleShareCode = function (articleId) {
-  return fetch(this._appendSessionToUrl(`article_share_link/${articleId}`), { method: "POST" })
-    .then((response) => (response.ok ? response.json() : null))
-    .then((data) => data?.code || null);
-};
-
-// { article_id, shared_by_name } for a share code. With articleId, the code
-// must belong to that article (else 404).
-Zeeguu_API.prototype.getArticleShareLinkInfo = function (code, articleId, callback, onError) {
-  const query = articleId ? `?article_id=${articleId}` : "";
-  getExpectingNotFound(
-    `${this.baseAPIurl}/article_share_link_info/${encodeURIComponent(code)}${query}`,
-    callback,
-    onError,
-  );
 };

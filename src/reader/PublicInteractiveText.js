@@ -12,10 +12,9 @@ import InteractiveText from "./InteractiveText";
 // askTarget(onChosen, onCancelled): the visitor hasn't picked a translation
 // language yet; the page asks, then the tap resumes.
 export default class PublicInteractiveText extends InteractiveText {
-  constructor({ articleId, shareCode, getTargetLanguage, askTarget, meter, ...rest }) {
+  constructor({ link, getTargetLanguage, askTarget, meter, ...rest }) {
     super({ ...rest, source: "public_article" });
-    this.articleId = articleId;
-    this.shareCode = shareCode;
+    this.link = link;
     this.getTargetLanguage = getTargetLanguage;
     this.askTarget = askTarget;
     this.meter = meter;
@@ -62,11 +61,10 @@ export default class PublicInteractiveText extends InteractiveText {
       token_i: word.token.token_i,
       total_tokens: word.total_tokens,
       partner_token_i: isSeparatedMwe ? (word.token.mwe_partner_indices?.[0] ?? -1) : -1,
-      s: this.shareCode || undefined,
     };
 
     this.api
-      .publicTranslateWord(this.articleId, this.getTargetLanguage(), position)
+      .publicTranslateWord(this.link, this.getTargetLanguage(), position)
       .then((data) => {
         word.updateTranslation(data.translation, data.source, null, null, false, null);
         word.isTranslationVisible = true;

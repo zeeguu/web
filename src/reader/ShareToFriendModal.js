@@ -17,25 +17,23 @@ export default function ShareToFriendModal({ open, onClose, articleID }) {
   const [sentTo, setSentTo] = useState([]); // usernames already shared with, this session
   const [sendingTo, setSendingTo] = useState(null); // username currently in flight
 
-  // The sharer's code (&s=) lets people without an account see who sent the
-  // link on the public article page. Fetched when the modal opens, not on
-  // click: iOS only allows navigator.share straight from the tap, and an await
-  // in between would lose it. If it hasn't arrived, the plain link still works.
-  const [shareCode, setShareCode] = useState(null);
-  const shareUrl = shareCode
-    ? `https://zeeguu.org/s/${shareCode}`
-    : `https://zeeguu.org/read/article?id=${articleID}`;
+  // The article's link with the sharer's code (zeeguu.org/read/<code>.<you>),
+  // the same URL the reader shows in the address bar. Fetched when the modal
+  // opens, not on click: iOS only allows navigator.share straight from the tap,
+  // and an await in between would lose it. Until it arrives there is nothing
+  // to share -- a numeric ?id= link wouldn't open for anyone without an account.
+  const [link, setLink] = useState(null);
+  const shareUrl = link ? `https://zeeguu.org/read/${link}` : null;
 
   useEffect(() => {
-    // Drop the previous article's code first: the reader can swap articles in
-    // place (e.g. to a simplified copy), and a stale code on the new id gives
-    // the recipient no credit — or "not available" for a non-feed text.
-    setShareCode(null);
+    // Drop the previous article's link first: the reader can swap articles in
+    // place (e.g. to a simplified copy).
+    setLink(null);
     if (!open) return;
     let current = true;
     api
-      .getArticleShareCode(articleID)
-      .then((code) => current && setShareCode(code))
+      .getArticleLink(articleID)
+      .then((fetched) => current && setLink(fetched))
       .catch(() => {});
     return () => {
       current = false;
@@ -67,6 +65,7 @@ export default function ShareToFriendModal({ open, onClose, articleID }) {
   };
 
   const handleExternalShare = async () => {
+    if (!shareUrl) return;
     if (navigator.share) {
       try {
         await navigator.share({ title: "Check out this article on Zeeguu", url: shareUrl });
@@ -169,6 +168,7 @@ export default function ShareToFriendModal({ open, onClose, articleID }) {
 
       <button
         onClick={handleExternalShare}
+        disabled={!shareUrl}
         style={{
           display: "flex",
           alignItems: "center",
@@ -181,7 +181,8 @@ export default function ShareToFriendModal({ open, onClose, articleID }) {
           border: "1px solid var(--border-color)",
           background: "transparent",
           color: "var(--text-secondary)",
-          cursor: "pointer",
+          cursor: shareUrl ? "pointer" : "default",
+          opacity: shareUrl ? 1 : 0.6,
         }}
       >
         <LinkIcon style={{ fontSize: "1.1rem" }} />

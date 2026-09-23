@@ -51,34 +51,27 @@ export function onBlur(api, articleID, source) {
   api.logUserActivity(api.ARTICLE_UNFOCUSED, articleID, "", source);
 }
 
-export default function ArticleReader({ teacherArticleID }) {
+export default function ArticleReader({ teacherArticleID, articleId: linkArticleId, sharerName }) {
   const api = useContext(APIContext);
   // Share context, when the reader was opened from the "Shared with you" inbox
   // (SharedArticleRow passes it via router state). Absent on any other entry.
   const inboxShareContext = useLocation().state;
   let articleID = "";
   let query = useQuery();
-  teacherArticleID ? (articleID = teacherArticleID) : (articleID = query.get("id"));
+  // teacherArticleID: the teacher's preview. linkArticleId: opened through an
+  // article link (/read/<code>.<sharer>). Otherwise in-app ?id= navigation.
+  articleID = teacherArticleID || linkArticleId || query.get("id");
   let last_reading_percentage = query.get("percentage");
   last_reading_percentage = last_reading_percentage === "undefined" ? null : Number(last_reading_percentage);
+
+  // Credit the sharer: from the "Shared with you" inbox (router state), or from
+  // the article link someone sent (/read/<code>.<sharer>).
+  const shareContext = inboxShareContext || (sharerName ? { sharedByName: sharerName } : undefined);
 
   // Opened from a share-email deep-link (…?id=X&shared=<id>): mark that share
   // read so the inbox row + badge stay in sync — the in-app row does this on
   // click, and the email link must too, or the "first unread" email debounce
   // never resets and later shares stop notifying.
-  // Opened from a copied share link (…?id=X&s=<code>): credit the sharer the
-  // way the inbox does. The public page does the same for logged-out readers.
-  const shareLinkCode = query.get("s");
-  const [linkSharerName, setLinkSharerName] = useState(null);
-  useEffect(() => {
-    setLinkSharerName(null);
-    if (shareLinkCode && articleID) {
-      api.getArticleShareLinkInfo(shareLinkCode, articleID, (info) => setLinkSharerName(info.shared_by_name));
-    }
-    // eslint-disable-next-line
-  }, [shareLinkCode, articleID]);
-  const shareContext = inboxShareContext || (linkSharerName ? { sharedByName: linkSharerName } : undefined);
-
   const sharedArticleIdFromEmail = query.get("shared");
   useEffect(() => {
     if (sharedArticleIdFromEmail) api.markSharedArticleRead(sharedArticleIdFromEmail);
@@ -279,6 +272,21 @@ export default function ArticleReader({ teacherArticleID }) {
       api.setArticleOpened(articleInfo.id);
       api.logUserActivity(api.OPEN_ARTICLE, articleID, "", WEB_READER);
       window.dispatchEvent(new CustomEvent("zeeguu-article-opened"));
+
+      // Show the reader's own link to this article in the address bar, so
+      // copying the URL gives the same link the Share button does. Only the
+      // browser's URL changes (replaceState, not the router): the reader stays
+      // mounted, and in-app navigation keeps working off the router location.
+      // Skipped if the reader has moved on (navigated away, or swapped to a
+      // simplified copy) by the time the link arrives.
+      if (!teacherArticleID) {
+        const urlWhenLoaded = window.location.href;
+        api.getArticleLink(articleInfo.id).then((link) => {
+          if (link && window.location.href === urlWhenLoaded) {
+            window.history.replaceState(window.history.state, "", `/read/${link}`);
+          }
+        });
+      }
 
       // Deeplinked articles only — share flow is handled in SharedArticleHandler.
       // Skip modal when simplification wouldn't help — see shouldShowLanguageChoice —
