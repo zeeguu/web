@@ -137,7 +137,12 @@ export default function TranslatableWord({
     }
   }
 
+  // Read-only text (the account-less public reader): translations can be
+  // shown and hidden, but there's no bookmark behind them to edit or delete.
+  const readOnly = !!interactiveText.readOnly;
+
   function toggleAlterMenu(e, word) {
+    if (readOnly) return;
     if (showingAlterMenu) {
       setShowingAlterMenu(false);
       return;
@@ -434,10 +439,12 @@ export default function TranslatableWord({
               <span className="translation" onClick={(e) => toggleAlterMenu(e, word)}>
                 {word.translation}
               </span>
-              <span className="arrow" onClick={(e) => toggleAlterMenu(e, word)}>
-                {showingAlterMenu ? "▲" : "▼"}
-              </span>
-              {word.mergedTokens.length > 1 && !word.mweExpression && (
+              {!readOnly && (
+                <span className="arrow" onClick={(e) => toggleAlterMenu(e, word)}>
+                  {showingAlterMenu ? "▲" : "▼"}
+                </span>
+              )}
+              {!readOnly && word.mergedTokens.length > 1 && !word.mweExpression && (
                 <span className="unlink low-oppacity translation-icon">
                   <LinkOffIcon
                     fontSize="8px"

@@ -23,6 +23,7 @@ import "./nlp";
 import "./userVideos";
 import "./watching_sessions";
 import "./dailyAudio";
+import "./publicArticle";
 import "./sessionHistory";
 import "./verbal_flashcards";
 import "./badges";

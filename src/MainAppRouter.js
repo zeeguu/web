@@ -22,7 +22,6 @@ import WordsRouter from "./words/_WordsRouter";
 import TranslateRouter from "./translate/_TranslateRouter";
 import ReadingHistory from "./words/WordHistory";
 import ActivityRouter from "./activity/_ActivityRouter";
-import ArticleReader from "./reader/ArticleReader";
 import SharedArticleHandler from "./reader/SharedArticleHandler";
 import SharedVideoHandler from "./reader/SharedVideoHandler";
 import LoadingAnimation from "./components/LoadingAnimation";
@@ -52,6 +51,7 @@ import { WEB_READER } from "./reader/ArticleReader";
 import VideoPlayer from "./videos/VideoPlayer";
 import DailyAudioRouter from "./dailyAudio/_DailyAudioRouter";
 import SharedLessonRouteEntry from "./dailyAudio/SharedLessonRouteEntry";
+import ReadArticleRouteEntry from "./reader/publicArticle/ReadArticleRouteEntry";
 import IndividualExercise from "./pages/IndividualExercise";
 import Swiper from "./swiper/Swiper";
 import KeyboardTest from "./pages/KeyboardTest/KeyboardTest";
@@ -157,7 +157,7 @@ export default function MainAppRouter({ hasExtension, handleSuccessfulLogIn }) {
         <PrivateRouteWithLayout path="/teacher" component={TeacherRouter} />
         <PrivateRouteWithLayout path="/shared-article" component={SharedArticleHandler} />
         <PrivateRouteWithLayout path="/shared-video" component={SharedVideoHandler} />
-        <PrivateRouteWithLayout path="/read/article" component={ArticleReader} />
+        <ReadArticleRouteEntry path="/read/article" />
         <PrivateRouteWithLayout path="/search" component={ArticlesRouter} />
         <PrivateRouteWithLayout
           path="/articleWordReview/:articleID"

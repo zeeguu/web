@@ -17,7 +17,17 @@ export default function ShareToFriendModal({ open, onClose, articleID }) {
   const [sentTo, setSentTo] = useState([]); // usernames already shared with, this session
   const [sendingTo, setSendingTo] = useState(null); // username currently in flight
 
-  const shareUrl = `https://zeeguu.org/read/article?id=${articleID}`;
+  // The sharer's code (&s=) lets people without an account see who sent the
+  // link on the public article page. Fetched when the modal opens, not on
+  // click: iOS only allows navigator.share straight from the tap, and an await
+  // in between would lose it. If it hasn't arrived, the plain link still works.
+  const [shareCode, setShareCode] = useState(null);
+  const shareUrl = `https://zeeguu.org/read/article?id=${articleID}` + (shareCode ? `&s=${shareCode}` : "");
+
+  useEffect(() => {
+    if (!open) return;
+    api.getArticleShareCode(articleID).then(setShareCode).catch(() => {});
+  }, [api, open, articleID]);
 
   useEffect(() => {
     if (!open) return;
