@@ -268,10 +268,14 @@ export default function ArticleReader({ teacherArticleID }) {
       window.dispatchEvent(new CustomEvent("zeeguu-article-opened"));
 
       // Deeplinked articles only — share flow is handled in SharedArticleHandler.
-      // Skip modal when simplification wouldn't help — see shouldShowLanguageChoice.
+      // Skip modal when simplification wouldn't help — see shouldShowLanguageChoice —
+      // and for articles that are already an AI adaptation (e.g. a friend shared
+      // their simplified copy): offering to "adapt" those again makes no sense.
       if (
         entrySource === "deeplink" &&
         !articleInfo.url?.includes("#translated-from-") &&
+        !isSimplifiedArticleFn(articleInfo) &&
+        !articleInfo.is_translated &&
         !teacherArticleID &&
         shouldShowLanguageChoice(articleInfo.language, articleInfo.cefr_level, userDetails)
       ) {
