@@ -58,7 +58,7 @@ export default function LandingPage() {
       <s.Main>
         <s.HeroSection>
           <div>
-            <h1>Learn a language by reading what you love and improve your&nbsp;vocabulary</h1>
+            <h1>Learn a language by reading what you love and listening to what you care&nbsp;about</h1>
           </div>
 
           <p className="hero-paragraph">

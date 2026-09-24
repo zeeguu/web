@@ -282,7 +282,7 @@ let strings = new LocalizedStrings(
 
       //LandingPage
       landingPage: "Landing Page",
-      landingPageTitle: "Learn foreign languages while reading what you like",
+      landingPageTitle: "Learn a language by reading what you love and listening to what you care about",
       projectDescription_UltraShort: `Zeeguu is a research project that personalizes the way you learn foreign languages. It lets you read texts based on your interests, translate unfamiliar words, and practice vocabulary. On any device.`,
       betaTester: "Become a Betatester!",
       howDoesItWork: "How Does It Work?",

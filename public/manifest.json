@@ -2,7 +2,7 @@
   "id": "org.zeeguu.pwa.audio",
   "short_name": "Zeeguu",
   "name": "Zeeguu",
-  "description": "Learn languages while reading what you love",
+  "description": "Learn a language by reading what you love and listening to what you care about",
   "start_url": "/?source=pwa&utm_source=homescreen",
   "scope": "/",
   "display": "standalone",
