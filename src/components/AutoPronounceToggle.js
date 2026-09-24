@@ -16,7 +16,7 @@ const ToggleSwitch = styled.div`
   position: relative;
   width: 32px;
   height: 16px;
-  background-color: ${(props) => (props.enabled ? zeeguuOrange : "#ccc")};
+  background-color: ${(props) => (props.$enabled ? zeeguuOrange : "#ccc")};
   border-radius: 16px;
   cursor: pointer;
   transition: background-color 0.2s ease;
@@ -25,7 +25,7 @@ const ToggleSwitch = styled.div`
     content: "";
     position: absolute;
     top: 2px;
-    left: ${(props) => (props.enabled ? "18px" : "2px")};
+    left: ${(props) => (props.$enabled ? "18px" : "2px")};
     width: 12px;
     height: 12px;
     background-color: white;
@@ -43,7 +43,7 @@ const ToggleLabel = styled.span`
 export default function AutoPronounceToggle({ enabled, onToggle }) {
   return (
     <ToggleContainer onClick={onToggle}>
-      <ToggleSwitch enabled={enabled} />
+      <ToggleSwitch $enabled={enabled} />
       <ToggleLabel>Auto-pronounce solution</ToggleLabel>
     </ToggleContainer>
   );
