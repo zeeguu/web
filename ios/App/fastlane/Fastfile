@@ -2,6 +2,19 @@ default_platform(:ios)
 
 platform :ios do
 
+  # Log in to App Store Connect with an API key when one is configured, instead
+  # of the Apple ID. Apple ID login needs 2FA and breaks whenever Apple changes
+  # its sign-in service (Sep 2026: "Service key is empty", then "Access
+  # forbidden"); the API key has neither problem. Set in ~/.zshrc, never in
+  # the repo:
+  #   APP_STORE_CONNECT_API_KEY_KEY_ID, APP_STORE_CONNECT_API_KEY_ISSUER_ID,
+  #   APP_STORE_CONNECT_API_KEY_KEY_FILEPATH (path to the downloaded .p8)
+  # app_store_connect_api_key reads exactly these; every upload action below
+  # then picks the key up from the lane context.
+  before_all do
+    app_store_connect_api_key if ENV["APP_STORE_CONNECT_API_KEY_KEY_ID"]
+  end
+
   desc "Build and upload to TestFlight"
   lane :beta do |options|
     # Increment build number automatically
@@ -87,6 +100,30 @@ platform :ios do
       skip_screenshots: true,
       submit_for_review: true,
       automatic_release: true,
+      # Precheck can't inspect in-app purchases through an API key, and fails
+      # the whole submission if asked to. Zeeguu sells none.
+      precheck_include_in_app_purchases: false,
+      force: true
+    )
+  end
+
+  desc "Upload the already-built App.ipa and submit for review (no rebuild)"
+  lane :upload_and_submit do |options|
+    # For when release_force built fine but the upload failed: reuse the ipa
+    # instead of building (and bumping the build number) again. If the binary
+    # did get uploaded and only the submission failed, pass skip_binary:true --
+    # App Store Connect refuses the same build number twice.
+    upload_to_app_store(
+      ipa: "App.ipa",
+      skip_binary_upload: options[:skip_binary] == true,
+      app_version: get_version_number(xcodeproj: "App.xcodeproj", target: "App"),
+      skip_metadata: false,
+      skip_screenshots: true,
+      submit_for_review: true,
+      automatic_release: true,
+      # Precheck can't inspect in-app purchases through an API key, and fails
+      # the whole submission if asked to. Zeeguu sells none.
+      precheck_include_in_app_purchases: false,
       force: true
     )
   end
