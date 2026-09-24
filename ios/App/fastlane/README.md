@@ -39,6 +39,14 @@ Build and upload to App Store (for review)
 
 Build, upload to App Store, and submit for review
 
+### ios upload_and_submit
+
+```sh
+[bundle exec] fastlane ios upload_and_submit
+```
+
+Upload the already-built App.ipa and submit for review (no rebuild)
+
 ### ios build
 
 ```sh
