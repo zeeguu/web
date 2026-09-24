@@ -22,19 +22,16 @@ Zeeguu_API.prototype.getPublicArticle = function (articleId, shareCode, callback
   getExpectingNotFound(`${this.baseAPIurl}/public_article/${articleId}${query}`, callback, onError);
 };
 
-Zeeguu_API.prototype.publicTranslateWord = function (fromLang, toLang, word, context, isSeparatedMwe, fullSentence) {
-  return fetch(`${this.baseAPIurl}/public_translate_word/${fromLang}/${toLang}`, {
+// position: { part, paragraph_i, sent_i, token_i, total_tokens, partner_token_i, s }
+// — where the word sits in the article; the server reads the word itself.
+Zeeguu_API.prototype.publicTranslateWord = function (articleId, toLang, position) {
+  return fetch(`${this.baseAPIurl}/public_translate/${articleId}/${toLang}`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      word,
-      context,
-      is_separated_mwe: isSeparatedMwe,
-      full_sentence_context: fullSentence,
-    }),
+    body: JSON.stringify(position),
   }).then((response) => {
     if (!response.ok) {
-      const err = new Error(`HTTP ${response.status} on public_translate_word`);
+      const err = new Error(`HTTP ${response.status} on public_translate`);
       err.status = response.status;
       throw err;
     }

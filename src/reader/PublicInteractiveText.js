@@ -1,17 +1,21 @@
 import InteractiveText from "./InteractiveText";
 
 // InteractiveText for the account-less shared-article page. Taps translate
-// through /public_translate_word, which persists nothing — there is no user to
-// own a bookmark — and every tap asks the page's meter first, so after a
-// handful of words the page can swap translation for a sign-up invitation.
+// through /public_translate, which persists nothing for the visitor — there is
+// no user to own a bookmark — and every tap asks the page's meter first, so
+// after a handful of words the page can swap translation for a sign-up
+// invitation. The request carries the word's *position*, never its text: the
+// server reads the word from the article and caches the answer per position.
 //
 // meter: { allow(text) -> bool, remaining() -> n, onBlocked(reason) } where
 // reason is "limit" (the free words are used up) or "rate" (the server said 429).
 // askTarget(onChosen, onCancelled): the visitor hasn't picked a translation
 // language yet; the page asks, then the tap resumes.
 export default class PublicInteractiveText extends InteractiveText {
-  constructor({ getTargetLanguage, askTarget, meter, ...rest }) {
+  constructor({ articleId, shareCode, getTargetLanguage, askTarget, meter, ...rest }) {
     super({ ...rest, source: "public_article" });
+    this.articleId = articleId;
+    this.shareCode = shareCode;
     this.getTargetLanguage = getTargetLanguage;
     this.askTarget = askTarget;
     this.meter = meter;
@@ -32,8 +36,6 @@ export default class PublicInteractiveText extends InteractiveText {
       return;
     }
 
-    const [context] = this.getContextAndCoordinates(word);
-
     if (word.isMWE && word.isMWE()) {
       word = word.fuseMWEPartners(this.api);
       if (word === null) {
@@ -53,10 +55,18 @@ export default class PublicInteractiveText extends InteractiveText {
     }
 
     const isSeparatedMwe = !!word.token?.mwe_is_separated;
-    const fullSentence = isSeparatedMwe ? this._getSentenceText(word) : null;
+    const position = {
+      part: this.contextIdentifier?.context_type === "ArticleTitle" ? "title" : this.contextIdentifier?.article_fragment_id,
+      paragraph_i: word.token.paragraph_i,
+      sent_i: word.token.sent_i,
+      token_i: word.token.token_i,
+      total_tokens: word.total_tokens,
+      partner_token_i: isSeparatedMwe ? (word.token.mwe_partner_indices?.[0] ?? -1) : -1,
+      s: this.shareCode || undefined,
+    };
 
     this.api
-      .publicTranslateWord(this.language, this.getTargetLanguage(), textToTranslate, context, isSeparatedMwe, fullSentence)
+      .publicTranslateWord(this.articleId, this.getTargetLanguage(), position)
       .then((data) => {
         word.updateTranslation(data.translation, data.source, null, null, false, null);
         word.isTranslationVisible = true;
