@@ -51,7 +51,7 @@ import { WEB_READER } from "./reader/ArticleReader";
 import VideoPlayer from "./videos/VideoPlayer";
 import DailyAudioRouter from "./dailyAudio/_DailyAudioRouter";
 import SharedLessonRouteEntry from "./dailyAudio/SharedLessonRouteEntry";
-import ReadArticleRouteEntry from "./reader/publicArticle/ReadArticleRouteEntry";
+import ReadArticleRouteEntry, { ArticleLinkRouteEntry } from "./reader/publicArticle/ReadArticleRouteEntry";
 import IndividualExercise from "./pages/IndividualExercise";
 import Swiper from "./swiper/Swiper";
 import KeyboardTest from "./pages/KeyboardTest/KeyboardTest";
@@ -158,6 +158,8 @@ export default function MainAppRouter({ hasExtension, handleSuccessfulLogIn }) {
         <PrivateRouteWithLayout path="/shared-article" component={SharedArticleHandler} />
         <PrivateRouteWithLayout path="/shared-video" component={SharedVideoHandler} />
         <ReadArticleRouteEntry path="/read/article" />
+        {/* Must follow /read/article, which it would otherwise swallow. */}
+        <Route path="/read/:code" component={ArticleLinkRouteEntry} />
         <PrivateRouteWithLayout path="/search" component={ArticlesRouter} />
         <PrivateRouteWithLayout
           path="/articleWordReview/:articleID"

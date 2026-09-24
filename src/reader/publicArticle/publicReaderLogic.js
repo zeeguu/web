@@ -74,7 +74,7 @@ export function consumePendingSharedArticle(storage, now = Date.now()) {
     // ignore
   }
   if (!pending?.path || now - pending.at > PENDING_TTL_MS) return null;
-  // Only ever an in-app path — never let storage steer to another origin.
-  if (!pending.path.startsWith("/read/article?")) return null;
+  // Only ever an article link — never let storage steer to another origin.
+  if (!/^\/read\/[A-Za-z0-9]+$/.test(pending.path)) return null;
   return pending.path;
 }

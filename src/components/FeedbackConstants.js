@@ -3,7 +3,7 @@
  * These values need to be aligned with the API values in the Database (FeedbackComponent)
  */
 const FEEDBACK_CATEGORIES = [
-  { id: 1, name: "Article Reader", key: "ARTICLE_READER", urlPatterns: ["/read/article"] },
+  { id: 1, name: "Article Reader", key: "ARTICLE_READER", urlPatterns: ["/read/"] }, // /read/article?id= and /read/<link>
   { id: 2, name: "Article Recommendations", key: "ARTICLE_RECOMMENDATION", urlPatterns: ["/articles"] }, 
   { id: 3, name: "Translation", key: "TRANSLATION", urlPatterns: [] },
   { id: 4, name: "Sound", key: "SOUND", urlPatterns: [] },

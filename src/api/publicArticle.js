@@ -1,12 +1,11 @@
 import { Zeeguu_API } from "./classDef";
 
-// Account-less reading of a shared article (PublicSharedArticlePage). None of
-// these need a session; the share-link mint is the one exception, and it's
-// called by the logged-in sharer.
+// Article links: zeeguu.org/read/<code>, one random code per article, the same
+// for everyone. A logged-in reader's address bar shows it and the Share button
+// copies it; the public page (no account) opens articles only through links.
 
-// Plain fetch rather than _getJSON: a 404 here is an expected answer (a
-// non-public article, a code whose sharer deleted their account), and
-// _getJSON reports every non-2xx to Sentry.
+// Plain fetch rather than _getJSON: a 404 here is an expected answer (an
+// unknown link), and _getJSON reports every non-2xx to Sentry.
 function getExpectingNotFound(url, callback, onError) {
   fetch(url)
     .then((response) => {
@@ -17,15 +16,37 @@ function getExpectingNotFound(url, callback, onError) {
     .catch((e) => onError && onError(e));
 }
 
-Zeeguu_API.prototype.getPublicArticle = function (articleId, shareCode, callback, onError) {
-  const query = shareCode ? `?s=${encodeURIComponent(shareCode)}` : "";
-  getExpectingNotFound(`${this.baseAPIurl}/public_article/${articleId}${query}`, callback, onError);
+// The article's public code (its link is /read/<code>). Written once per
+// article on the server, so asking on every open is cheap.
+Zeeguu_API.prototype.getArticleLink = function (articleId) {
+  return fetch(this._appendSessionToUrl(`article_link/${articleId}`), { method: "POST" })
+    .then((response) => (response.ok ? response.json() : null))
+    .then((data) => data?.code || null);
 };
 
-// position: { part, paragraph_i, sent_i, token_i, total_tokens, partner_token_i, s }
+// { article_id } for a code.
+Zeeguu_API.prototype.getArticleLinkInfo = function (link, callback, onError) {
+  getExpectingNotFound(`${this.baseAPIurl}/article_link_info/${encodeURIComponent(link)}`, callback, onError);
+};
+
+// Links handed out on 2026-09-23 looked like /read/article?id=<id>&s=<code>;
+// this gives today's { code } for one.
+Zeeguu_API.prototype.resolveLegacyShareLink = function (code, articleId, callback, onError) {
+  getExpectingNotFound(
+    `${this.baseAPIurl}/article_share_link_info/${encodeURIComponent(code)}?article_id=${encodeURIComponent(articleId)}`,
+    callback,
+    onError,
+  );
+};
+
+Zeeguu_API.prototype.getPublicArticle = function (link, callback, onError) {
+  getExpectingNotFound(`${this.baseAPIurl}/public_article/${encodeURIComponent(link)}`, callback, onError);
+};
+
+// position: { part, paragraph_i, sent_i, token_i, total_tokens, partner_token_i }
 // — where the word sits in the article; the server reads the word itself.
-Zeeguu_API.prototype.publicTranslateWord = function (articleId, toLang, position) {
-  return fetch(`${this.baseAPIurl}/public_translate/${articleId}/${toLang}`, {
+Zeeguu_API.prototype.publicTranslateWord = function (link, toLang, position) {
+  return fetch(`${this.baseAPIurl}/public_translate/${encodeURIComponent(link)}/${toLang}`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(position),
@@ -37,20 +58,4 @@ Zeeguu_API.prototype.publicTranslateWord = function (articleId, toLang, position
     }
     return response.json();
   });
-};
-
-// The sharer's opaque code for this article, appended to copied links as &s=
-// so recipients see who sent it.
-Zeeguu_API.prototype.getArticleShareCode = function (articleId) {
-  return fetch(this._appendSessionToUrl(`article_share_link/${articleId}`), { method: "POST" })
-    .then((response) => (response.ok ? response.json() : null))
-    .then((data) => data?.code || null);
-};
-
-Zeeguu_API.prototype.getArticleShareLinkInfo = function (code, articleId, callback) {
-  getExpectingNotFound(
-    `${this.baseAPIurl}/article_share_link_info/${encodeURIComponent(code)}?article_id=${articleId}`,
-    callback,
-    null,
-  );
 };
