@@ -1,8 +1,8 @@
 import { Zeeguu_API } from "./classDef";
 
-// Article links: zeeguu.org/read/<article code>.<sharer code>. A logged-in
-// reader's address bar shows their own link and the Share button copies the
-// same one; the public page (no account) opens articles only through links.
+// Article links: zeeguu.org/read/<code>, one random code per article, the same
+// for everyone. A logged-in reader's address bar shows it and the Share button
+// copies it; the public page (no account) opens articles only through links.
 
 // Plain fetch rather than _getJSON: a 404 here is an expected answer (an
 // unknown link), and _getJSON reports every non-2xx to Sentry.
@@ -16,22 +16,21 @@ function getExpectingNotFound(url, callback, onError) {
     .catch((e) => onError && onError(e));
 }
 
-// The caller's link to an article ("<article code>.<sharer code>"). Written
-// once per article and once per user on the server, so asking on every open
-// is cheap.
+// The article's public code (its link is /read/<code>). Written once per
+// article on the server, so asking on every open is cheap.
 Zeeguu_API.prototype.getArticleLink = function (articleId) {
   return fetch(this._appendSessionToUrl(`article_link/${articleId}`), { method: "POST" })
     .then((response) => (response.ok ? response.json() : null))
-    .then((data) => data?.link || null);
+    .then((data) => data?.code || null);
 };
 
-// { article_id, shared_by_name } for a link.
+// { article_id } for a code.
 Zeeguu_API.prototype.getArticleLinkInfo = function (link, callback, onError) {
   getExpectingNotFound(`${this.baseAPIurl}/article_link_info/${encodeURIComponent(link)}`, callback, onError);
 };
 
 // Links handed out on 2026-09-23 looked like /read/article?id=<id>&s=<code>;
-// this gives today's { link } for one.
+// this gives today's { code } for one.
 Zeeguu_API.prototype.resolveLegacyShareLink = function (code, articleId, callback, onError) {
   getExpectingNotFound(
     `${this.baseAPIurl}/article_share_link_info/${encodeURIComponent(code)}?article_id=${encodeURIComponent(articleId)}`,

@@ -11,13 +11,13 @@ import PublicSharedArticlePage from "./PublicSharedArticlePage";
 
 const loading = <LoadingAnimation specificStyle={{ minHeight: "70vh", justifyContent: "center" }} />;
 
-// /read/<article code>.<sharer code>: the article's link. The same URL is what
-// a logged-in reader sees in the address bar and what the Share button copies.
-// Logged in: the reader (crediting the sharer). Otherwise: the public page.
+// /read/<code>: the article's link. The same URL is what a logged-in reader
+// sees in the address bar and what the Share button copies. Logged in: the
+// reader. Otherwise: the public page.
 export function ArticleLinkRouteEntry() {
   const api = useContext(APIContext);
   const { session } = useContext(UserContext);
-  const { link } = useParams();
+  const { code } = useParams();
   const [info, setInfo] = useState(null);
   const [failed, setFailed] = useState(false);
 
@@ -25,19 +25,14 @@ export function ArticleLinkRouteEntry() {
     if (!session) return; // the public page resolves the link itself
     setInfo(null);
     setFailed(false);
-    api.getArticleLinkInfo(link, setInfo, () => setFailed(true));
-  }, [api, session, link]);
+    api.getArticleLinkInfo(code, setInfo, () => setFailed(true));
+  }, [api, session, code]);
 
-  if (!session) return <PublicSharedArticlePage link={link} />;
+  if (!session) return <PublicSharedArticlePage link={code} />;
   if (failed) return <UnknownLink />;
   if (!info) return loading;
   return (
-    <PrivateRouteWithLayout
-      path="/read/:link"
-      component={ArticleReader}
-      articleId={String(info.article_id)}
-      sharerName={info.shared_by_name}
-    />
+    <PrivateRouteWithLayout path="/read/:code" component={ArticleReader} articleId={String(info.article_id)} />
   );
 }
 
@@ -57,7 +52,7 @@ function LegacyShareLinkRedirect({ code, articleId }) {
   const [failed, setFailed] = useState(false);
 
   useEffect(() => {
-    api.resolveLegacyShareLink(code, articleId, (data) => setLink(data.link), () => setFailed(true));
+    api.resolveLegacyShareLink(code, articleId, (data) => setLink(data.code), () => setFailed(true));
   }, [api, code, articleId]);
 
   if (failed) return <UnknownLink />;

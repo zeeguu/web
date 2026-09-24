@@ -159,7 +159,7 @@ export default function MainAppRouter({ hasExtension, handleSuccessfulLogIn }) {
         <PrivateRouteWithLayout path="/shared-video" component={SharedVideoHandler} />
         <ReadArticleRouteEntry path="/read/article" />
         {/* Must follow /read/article, which it would otherwise swallow. */}
-        <Route path="/read/:link" component={ArticleLinkRouteEntry} />
+        <Route path="/read/:code" component={ArticleLinkRouteEntry} />
         <PrivateRouteWithLayout path="/search" component={ArticlesRouter} />
         <PrivateRouteWithLayout
           path="/articleWordReview/:articleID"

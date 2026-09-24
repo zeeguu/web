@@ -55,8 +55,8 @@ describe("pickTranslationTarget", () => {
 describe("pending shared article", () => {
   it("round-trips once", () => {
     const storage = memoryStorage();
-    rememberPendingSharedArticle(storage, "/read/k3Xq9pLm2a.mr7Q2z", 0);
-    expect(consumePendingSharedArticle(storage, 1000)).toBe("/read/k3Xq9pLm2a.mr7Q2z");
+    rememberPendingSharedArticle(storage, "/read/k3Xq9pLm2a", 0);
+    expect(consumePendingSharedArticle(storage, 1000)).toBe("/read/k3Xq9pLm2a");
     expect(consumePendingSharedArticle(storage, 1000)).toBe(null);
   });
 

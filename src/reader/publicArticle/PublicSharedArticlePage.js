@@ -297,9 +297,7 @@ export default function PublicSharedArticlePage({ link }) {
     );
   }
 
-  const shareContext = article.shared_by_name ? { sharedByName: article.shared_by_name } : null;
   const articleLanguageName = languageName(article.language);
-  const sharer = article.shared_by_name;
 
   const targetOptions = SUPPORTED_TARGETS.filter((c) => c !== article.language).map((c) => (
     <option key={c} value={c}>
@@ -383,7 +381,7 @@ export default function PublicSharedArticlePage({ link }) {
       )}
       {wall && (
         <ChoiceModal
-          title={sharer ? `${sharer} is learning ${articleLanguageName} with Zeeguu` : "Keep reading with Zeeguu"}
+          title="Keep reading with Zeeguu"
           message={wallMessage}
           primaryLabel="Create account"
           secondaryLabel="I already have an account"
@@ -400,7 +398,7 @@ export default function PublicSharedArticlePage({ link }) {
             <TranslatableText interactiveText={interactiveTitle} translating={true} pronouncing={false} />
           </h1>
           <s.ArticleInfoContainer>
-            <ArticleStatInfo articleInfo={article} shareContext={shareContext} />
+            <ArticleStatInfo articleInfo={article} />
           </s.ArticleInfoContainer>
 
           {article.img_url && (

@@ -51,22 +51,18 @@ export function onBlur(api, articleID, source) {
   api.logUserActivity(api.ARTICLE_UNFOCUSED, articleID, "", source);
 }
 
-export default function ArticleReader({ teacherArticleID, articleId: linkArticleId, sharerName }) {
+export default function ArticleReader({ teacherArticleID, articleId: linkArticleId }) {
   const api = useContext(APIContext);
   // Share context, when the reader was opened from the "Shared with you" inbox
   // (SharedArticleRow passes it via router state). Absent on any other entry.
-  const inboxShareContext = useLocation().state;
+  const shareContext = useLocation().state;
   let articleID = "";
   let query = useQuery();
   // teacherArticleID: the teacher's preview. linkArticleId: opened through an
-  // article link (/read/<code>.<sharer>). Otherwise in-app ?id= navigation.
+  // article link (/read/<code>). Otherwise in-app ?id= navigation.
   articleID = teacherArticleID || linkArticleId || query.get("id");
   let last_reading_percentage = query.get("percentage");
   last_reading_percentage = last_reading_percentage === "undefined" ? null : Number(last_reading_percentage);
-
-  // Credit the sharer: from the "Shared with you" inbox (router state), or from
-  // the article link someone sent (/read/<code>.<sharer>).
-  const shareContext = inboxShareContext || (sharerName ? { sharedByName: sharerName } : undefined);
 
   // Opened from a share-email deep-link (…?id=X&shared=<id>): mark that share
   // read so the inbox row + badge stay in sync — the in-app row does this on
@@ -273,7 +269,7 @@ export default function ArticleReader({ teacherArticleID, articleId: linkArticle
       api.logUserActivity(api.OPEN_ARTICLE, articleID, "", WEB_READER);
       window.dispatchEvent(new CustomEvent("zeeguu-article-opened"));
 
-      // Show the reader's own link to this article in the address bar, so
+      // Show the article's link (/read/<code>) in the address bar, so
       // copying the URL gives the same link the Share button does. Only the
       // browser's URL changes (replaceState, not the router): the reader stays
       // mounted, and in-app navigation keeps working off the router location.
