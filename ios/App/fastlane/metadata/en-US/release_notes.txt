@@ -1,15 +1,11 @@
-Hear the variety of the language you are actually learning.
+Share what you are reading with anyone.
 
-Audio lessons:
-- Language Settings now asks which variety of your language should be read to you. A Brazilian Portuguese learner has until now been hearing European Portuguese; you can say which one you want, and your daily lesson is voiced that way.
-- The question is only asked for languages whose varieties have a voice, so most learners see nothing new.
-- If you have never chosen, the variety you are already hearing is shown as selected - the screen tells you what you get instead of leaving it blank.
-
-Signing up:
-- The two regional questions - which country's news you read, and which variety is spoken to you - are now asked together, on a step of their own. They used to be split across two screens, where one was easily mistaken for the other.
-- That step is skipped entirely when the language you are learning has no varieties to ask about.
-- A variety picked while signing up is now actually saved. Before, you could choose Belgium, finish signing up, and find something else selected in Settings.
+Sharing articles:
+- A shared article now opens for people who don't have Zeeguu. They can read the whole article in their browser, tap up to 10 words for a translation, and then create an account or get the app.
+- Article links are short and look the same whether you copy them from the address bar or press Share.
+- Tapping a shared Zeeguu link opens the article straight in the app.
+- An article that was already simplified no longer asks to be adapted again when it is opened from a shared link.
 
 Also:
-- Every label on the language form is now the learner speaking: "I want news from", "I want audio lessons spoken in".
-- The language forms now put visible space between groups of questions, instead of reading as one long list.
+- New accounts that haven't verified their email yet no longer see a misleading "can't reach the server" message, and the verify-email screen shows up properly again.
+- The About page can now be opened while you are logged in.
