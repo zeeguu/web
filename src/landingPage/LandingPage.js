@@ -62,8 +62,9 @@ export default function LandingPage() {
           </div>
 
           <p className="hero-paragraph">
-            Zeeguu is a&nbsp;<a href="https://mircealungu.com/projects/zeeguu" target="_blank" rel="noopener noreferrer">research project</a> that helps you learn smarter - find interesting articles, translate words
-            as&nbsp;you read, and use&nbsp;spaced repetition to&nbsp;remember&nbsp;them.
+            Zeeguu is a&nbsp;<a href="https://mircealungu.com/projects/zeeguu" target="_blank" rel="noopener noreferrer">research project</a> that helps you learn smarter: read articles at your level and tap any word to
+            translate it, listen to daily audio lessons built around your words, and practice them until
+            they&nbsp;stick.
           </p>
           <Button onClick={() => (isLoggedIn ? history.push("/articles") : handleRegisterClick())}>
             {isLoggedIn ? "Back to Reading" : "Start Learning"}
