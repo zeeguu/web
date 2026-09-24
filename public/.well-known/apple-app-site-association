@@ -5,7 +5,7 @@
       {
         "appID": "E9Y43LYCSK.org.zeeguu.app",
         "paths": [
-          "/read/article*",
+          "/read/*",
           "/exercise/*",
           "/shared-lesson/*",
           "/articles/shared*",

@@ -55,14 +55,14 @@ describe("pickTranslationTarget", () => {
 describe("pending shared article", () => {
   it("round-trips once", () => {
     const storage = memoryStorage();
-    rememberPendingSharedArticle(storage, "/read/article?id=5&s=abc", 0);
-    expect(consumePendingSharedArticle(storage, 1000)).toBe("/read/article?id=5&s=abc");
+    rememberPendingSharedArticle(storage, "/read/k3Xq9pLm2a", 0);
+    expect(consumePendingSharedArticle(storage, 1000)).toBe("/read/k3Xq9pLm2a");
     expect(consumePendingSharedArticle(storage, 1000)).toBe(null);
   });
 
   it("expires after a day", () => {
     const storage = memoryStorage();
-    rememberPendingSharedArticle(storage, "/read/article?id=5", 0);
+    rememberPendingSharedArticle(storage, "/read/k3Xq9pLm2a", 0);
     expect(consumePendingSharedArticle(storage, 25 * 3600 * 1000)).toBe(null);
   });
 
