@@ -83,6 +83,20 @@ const HideIconButton = styled.button`
   publishing time or topics.
 */
 
+// The text half of a feed card: title, meta, summary. Pairing it with the
+// image as ArticleContent's two children is what lets the image lead — stacked
+// above the text on mobile, beside it on desktop — with one DOM order for both.
+const ContentColumn = styled.div`
+  min-width: 0;
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+
+  @media (max-width: 990px) {
+    width: 100%;
+  }
+`;
+
 const ArticleContent = styled.div`
   width: 100%;
   display: flex;
@@ -348,19 +362,30 @@ const ClampedSummary = styled.div`
 // summary lives in the overlay.
 const PreviewSummary = styled(Summary)`
   font-size: 1.4em;
+  /* Summary carries a fixed width: 40em from the days when it sat directly
+     beside the image. Inside the text column that overruns the column and
+     ClampedSummary's overflow: hidden clips the line mid-word, so let it
+     fill the column and keep 40em only as a line-length cap. */
+  width: auto;
+  max-width: 40em;
 `;
 
 const PreviewClampedSummary = styled(ClampedSummary)`
   -webkit-line-clamp: 2;
 `;
 
-// Headlines (compact) card. Mobile: stacks title -> meta -> image (DOM order,
-// title first). Desktop (>=991px): reflows to a dense row — small thumbnail on
-// the LEFT, title + meta on the right — via flex `order`, so the DOM stays
-// title-first for the mobile stack.
+// Headlines (compact) card. Mobile: stacks image -> title -> meta -> actions.
+// The photo leads because it says what the article is about before the reader
+// has to parse a headline in a language they are still learning; it also keeps
+// the image next to the headline it belongs to, instead of stranding it below
+// the actions where it reads as the next card's photo.
+// Desktop (>=991px): the same DOM reflows to a dense row, thumbnail on the LEFT
+// and title + meta on the right — no `order` needed, the DOM is already in that
+// sequence.
 const CompactCard = styled.div`
   display: flex;
   flex-direction: column;
+  gap: 0.7em;
 
   @media (min-width: 991px) {
     flex-direction: row;
@@ -373,14 +398,12 @@ const CompactText = styled.div`
   min-width: 0;
 
   @media (min-width: 991px) {
-    order: 2;
     flex: 1 1 auto;
   }
 `;
 
 const CompactMedia = styled.div`
   @media (min-width: 991px) {
-    order: 1;
     flex: 0 0 auto;
   }
 
@@ -450,6 +473,7 @@ let Topics = styled.span`
 export {
   Title,
   TitleContainer,
+  ContentColumn,
   PreviewCardClickable,
   PreviewSummary,
   PreviewClampedSummary,

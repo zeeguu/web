@@ -549,30 +549,35 @@ export default function ArticlePreview({
           }}
         >
           {compact ? (
-            // Headlines: title + meta, with the image below (mobile) or as a
-            // small thumbnail to the left (desktop, via CompactCard's reflow).
+            // Headlines: the image leads, then title + meta + actions. On
+            // mobile that stacks; on desktop CompactCard reflows the same DOM
+            // into a row with the image as a small thumbnail on the left.
             <s.CompactCard>
+              {imageEl && <s.CompactMedia>{imageEl}</s.CompactMedia>}
               <s.CompactText>
                 {compactTitle}
                 {metaStrip}
                 {feedActions}
               </s.CompactText>
-              {imageEl && <s.CompactMedia>{imageEl}</s.CompactMedia>}
             </s.CompactCard>
           ) : (
-            // Preview: title, meta, image + short summary, then the actions.
+            // Preview: the image leads, then title + meta + short summary,
+            // then the actions. Stacked on mobile, image-left beside the text
+            // on desktop -- the same shape Headlines takes.
             <>
-              <s.TitleContainer>
-                <s.Title>{article.title}</s.Title>
-              </s.TitleContainer>
-              {metaStrip}
               <s.ArticleContent>
                 {imageEl}
-                {article.summary && (
-                  <s.PreviewSummary>
-                    <s.PreviewClampedSummary>{article.summary}</s.PreviewClampedSummary>
-                  </s.PreviewSummary>
-                )}
+                <s.ContentColumn>
+                  <s.TitleContainer>
+                    <s.Title>{article.title}</s.Title>
+                  </s.TitleContainer>
+                  {metaStrip}
+                  {article.summary && (
+                    <s.PreviewSummary>
+                      <s.PreviewClampedSummary>{article.summary}</s.PreviewClampedSummary>
+                    </s.PreviewSummary>
+                  )}
+                </s.ContentColumn>
               </s.ArticleContent>
               {feedActions}
             </>
