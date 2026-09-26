@@ -20,6 +20,7 @@ import ActionButton from "../components/ActionButton";
 import { articleSourceLabel, aiProvenanceLabel } from "../utils/misc/articleHelpers";
 import OpenInNewRoundedIcon from "@mui/icons-material/OpenInNewRounded";
 import MoreHorizRoundedIcon from "@mui/icons-material/MoreHorizRounded";
+import SubjectRoundedIcon from "@mui/icons-material/SubjectRounded";
 import { Menu, MenuItem } from "@mui/material";
 import BookmarkBorderRoundedIcon from "@mui/icons-material/BookmarkBorderRounded";
 import BookmarkRoundedIcon from "@mui/icons-material/BookmarkRounded";
@@ -475,10 +476,11 @@ export default function ArticlePreview({
     const cardImage = imageEl ? (
       <s.ImageWithOverlay>
         {imageEl}
-        <s.ImageOpenOverlay>
-          Open
-          {!should_open_in_zeeguu && <OpenInNewRoundedIcon style={{ fontSize: 18, marginLeft: 4 }} />}
-        </s.ImageOpenOverlay>
+        {/* Say where the tap actually lands. Without a Zeeguu-readable copy it
+            opens the preview overlay -- headed "Summary" -- and leaving for
+            the original is a further, deliberate tap inside it. An external
+            icon here would promise a jump that has not happened yet. */}
+        <s.ImageOpenOverlay>{should_open_in_zeeguu ? "Read" : "Summary"}</s.ImageOpenOverlay>
         {showSaveAndHide && (
           <s.SaveIconButton
             type="button"
@@ -552,9 +554,9 @@ export default function ArticlePreview({
           {should_open_in_zeeguu ? (
             <MenuBookRoundedIcon style={{ fontSize: 16 }} />
           ) : (
-            <OpenInNewRoundedIcon style={{ fontSize: 16 }} />
+            <SubjectRoundedIcon style={{ fontSize: 16 }} />
           )}
-          Open
+          {should_open_in_zeeguu ? "Read" : "Summary"}
         </s.SaveActionButton>
         {showSaveAndHide && (
           <s.SaveActionButton
