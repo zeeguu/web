@@ -374,6 +374,37 @@ const PreviewClampedSummary = styled(ClampedSummary)`
   -webkit-line-clamp: 2;
 `;
 
+// The meta line and, at its end, the overflow that carries Hide. Hiding is
+// rare and one-way, so it does not earn a permanent control next to Save --
+// but it stays one tap away rather than buried in a menu elsewhere.
+const MetaRow = styled.div`
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5em;
+
+  > *:first-child {
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+`;
+
+const OverflowButton = styled.button`
+  flex: 0 0 auto;
+  background: none;
+  border: none;
+  padding: 0.1em 0.2em;
+  margin: 0;
+  cursor: pointer;
+  color: var(--text-muted);
+  display: inline-flex;
+  align-items: center;
+  border-radius: 0.3em;
+
+  &:hover {
+    color: var(--text-primary);
+  }
+`;
+
 // Headlines (compact) card. Mobile: stacks image -> title -> meta -> actions.
 // The photo leads because it says what the article is about before the reader
 // has to parse a headline in a language they are still learning; it also keeps
@@ -391,6 +422,11 @@ const CompactCard = styled.div`
     flex-direction: row;
     align-items: center;
     gap: 1em;
+
+    &:hover ${SaveIconButton},
+    ${SaveIconButton}:focus-visible {
+      opacity: 1;
+    }
   }
 `;
 
@@ -405,6 +441,19 @@ const CompactText = styled.div`
 const CompactMedia = styled.div`
   @media (min-width: 991px) {
     flex: 0 0 auto;
+
+    /* The desktop thumbnail is a third the size of the phone's image: the
+       Open band would cover a quarter of it and a resting Save circle
+       another quarter. Drop the band, and let Save wait for the hover that
+       only this surface has. */
+    ${ImageOpenOverlay} {
+      display: none;
+    }
+
+    ${SaveIconButton} {
+      opacity: 0;
+      transition: opacity 150ms ease;
+    }
   }
 
   img {
@@ -474,6 +523,8 @@ export {
   Title,
   TitleContainer,
   ContentColumn,
+  MetaRow,
+  OverflowButton,
   PreviewCardClickable,
   PreviewSummary,
   PreviewClampedSummary,

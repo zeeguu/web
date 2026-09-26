@@ -19,6 +19,8 @@ import { estimateReadingTime, timeAgo } from "../utils/misc/readableTime";
 import ActionButton from "../components/ActionButton";
 import { articleSourceLabel, aiProvenanceLabel } from "../utils/misc/articleHelpers";
 import OpenInNewRoundedIcon from "@mui/icons-material/OpenInNewRounded";
+import MoreHorizRoundedIcon from "@mui/icons-material/MoreHorizRounded";
+import { Menu, MenuItem } from "@mui/material";
 import BookmarkBorderRoundedIcon from "@mui/icons-material/BookmarkBorderRounded";
 import BookmarkRoundedIcon from "@mui/icons-material/BookmarkRounded";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
@@ -67,6 +69,7 @@ export default function ArticlePreview({
   const history = useHistory();
   const [isRedirectionModalOpen, setIsRedirectionModaOpen] = useState(false);
   const [previewOpen, setPreviewOpen] = useState(false);
+  const [overflowAnchor, setOverflowAnchor] = useState(null);
   // Teaser-card + tap-to-open behavior applies only to the live feed — never
   // to saved-list, hidden, or kiosk surfaces, which keep their own rendering.
   const previewMode = !interactive && !inSavedView && !isHiddenView && !kioskMode;
@@ -466,28 +469,93 @@ export default function ArticlePreview({
     // end of the card. One consistent placement reads cleaner than image
     // overlays in one mode and text in the other — and a small Headlines
     // thumbnail can't carry overlay buttons anyway.
+    // The image carries the two controls that belong on it: the Open band
+    // (the whole card opens -- the band only says so) and Save. Diagonal from
+    // each other, so neither sits on the other.
+    const cardImage = imageEl ? (
+      <s.ImageWithOverlay>
+        {imageEl}
+        <s.ImageOpenOverlay>
+          Open
+          {!should_open_in_zeeguu && <OpenInNewRoundedIcon style={{ fontSize: 18, marginLeft: 4 }} />}
+        </s.ImageOpenOverlay>
+        {showSaveAndHide && (
+          <s.SaveIconButton
+            type="button"
+            onClick={handleToggleSave}
+            aria-label={isArticleSaved ? "Remove from saves" : "Save"}
+          >
+            {isArticleSaved ? (
+              <BookmarkRoundedIcon style={{ fontSize: 18 }} />
+            ) : (
+              <BookmarkBorderRoundedIcon style={{ fontSize: 18 }} />
+            )}
+          </s.SaveIconButton>
+        )}
+      </s.ImageWithOverlay>
+    ) : null;
+
+    // Meta line with the overflow at its end. Hiding is rare and one-way, so
+    // it does not earn standing next to Save on every card.
+    const metaRow = (
+      <s.MetaRow>
+        {metaStrip}
+        {showHide && (
+          <s.OverflowButton
+            type="button"
+            aria-label="More actions"
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              setOverflowAnchor(e.currentTarget);
+            }}
+          >
+            <MoreHorizRoundedIcon style={{ fontSize: 18 }} />
+          </s.OverflowButton>
+        )}
+      </s.MetaRow>
+    );
+
+    // The menu is portalled, so its clicks still bubble through the React
+    // tree into the card's open handler -- hence stopPropagation on both.
+    const overflowMenu = (
+      <Menu
+        anchorEl={overflowAnchor}
+        open={Boolean(overflowAnchor)}
+        onClose={() => setOverflowAnchor(null)}
+        onClick={(e) => e.stopPropagation()}
+      >
+        <MenuItem
+          onClick={(e) => {
+            e.stopPropagation();
+            setOverflowAnchor(null);
+            handleHideArticle();
+          }}
+        >
+          Hide from feed
+        </MenuItem>
+      </Menu>
+    );
+
+    // Image-less cards have no photo to carry Open and Save, so those two keep
+    // a text row. Hide is in the overflow either way.
     const feedActions = (
       <s.SummaryActionRow>
-        {/* With a tappable title the row no longer has one obvious "open here"
-            spot, so Headlines states it. Preview mode keeps the plain title —
-            there the whole card unambiguously *is* the open. */}
-        {titleIsInteractive && (
-          <s.SaveActionButton
-            type="button"
-            onClick={(e) => {
-              e.stopPropagation();
-              openPreview();
-            }}
-            aria-label="Open article"
-          >
-            {should_open_in_zeeguu ? (
-              <MenuBookRoundedIcon style={{ fontSize: 16 }} />
-            ) : (
-              <OpenInNewRoundedIcon style={{ fontSize: 16 }} />
-            )}
-            Open
-          </s.SaveActionButton>
-        )}
+        <s.SaveActionButton
+          type="button"
+          onClick={(e) => {
+            e.stopPropagation();
+            openPreview();
+          }}
+          aria-label="Open article"
+        >
+          {should_open_in_zeeguu ? (
+            <MenuBookRoundedIcon style={{ fontSize: 16 }} />
+          ) : (
+            <OpenInNewRoundedIcon style={{ fontSize: 16 }} />
+          )}
+          Open
+        </s.SaveActionButton>
         {showSaveAndHide && (
           <s.SaveActionButton
             type="button"
@@ -500,19 +568,6 @@ export default function ArticlePreview({
               <BookmarkBorderRoundedIcon style={{ fontSize: 16 }} />
             )}
             {isArticleSaved ? "Saved" : "Save"}
-          </s.SaveActionButton>
-        )}
-        {showHide && (
-          <s.SaveActionButton
-            type="button"
-            onClick={(e) => {
-              e.stopPropagation();
-              handleHideArticle();
-            }}
-            aria-label="Hide from feed"
-          >
-            <VisibilityOffRoundedIcon style={{ fontSize: 16 }} />
-            Hide
           </s.SaveActionButton>
         )}
       </s.SummaryActionRow>
@@ -553,11 +608,11 @@ export default function ArticlePreview({
             // mobile that stacks; on desktop CompactCard reflows the same DOM
             // into a row with the image as a small thumbnail on the left.
             <s.CompactCard>
-              {imageEl && <s.CompactMedia>{imageEl}</s.CompactMedia>}
+              {cardImage && <s.CompactMedia>{cardImage}</s.CompactMedia>}
               <s.CompactText>
                 {compactTitle}
-                {metaStrip}
-                {feedActions}
+                {metaRow}
+                {!hasImage && feedActions}
               </s.CompactText>
             </s.CompactCard>
           ) : (
@@ -566,12 +621,12 @@ export default function ArticlePreview({
             // on desktop -- the same shape Headlines takes.
             <>
               <s.ArticleContent>
-                {imageEl}
+                {cardImage}
                 <s.ContentColumn>
                   <s.TitleContainer>
                     <s.Title>{article.title}</s.Title>
                   </s.TitleContainer>
-                  {metaStrip}
+                  {metaRow}
                   {article.summary && (
                     <s.PreviewSummary>
                       <s.PreviewClampedSummary>{article.summary}</s.PreviewClampedSummary>
@@ -579,10 +634,11 @@ export default function ArticlePreview({
                   )}
                 </s.ContentColumn>
               </s.ArticleContent>
-              {feedActions}
+              {!hasImage && feedActions}
             </>
           )}
         </s.PreviewCardClickable>
+        {overflowMenu}
 
         {/* Mounted only while open: each card renders one of these, so mounting
             eagerly would run the overlay's prefs fetch per card. Its interactive
