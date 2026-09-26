@@ -480,7 +480,7 @@ export default function ArticlePreview({
             opens the preview overlay -- headed "Summary" -- and leaving for
             the original is a further, deliberate tap inside it. An external
             icon here would promise a jump that has not happened yet. */}
-        <s.ImageOpenOverlay>{should_open_in_zeeguu ? "Read" : "Summary"}</s.ImageOpenOverlay>
+        <s.ImageOpenPill>{should_open_in_zeeguu ? "Read" : "Summary"}</s.ImageOpenPill>
         {showSaveAndHide && (
           <s.SaveIconButton
             type="button"

@@ -346,6 +346,27 @@ const ImageOpenOverlay = styled.span`
   line-height: 1.2;
 `;
 
+// Feed cards label the destination with a pill rather than a band across the
+// whole bottom edge: same dark disc as Save, so the two read as a pair sitting
+// on the photo instead of a strip fencing it off. The Interactive card keeps
+// the full-width band (ImageOpenOverlay) -- its overlay carries an icon too.
+const ImageOpenPill = styled.span`
+  position: absolute;
+  right: 0.5em;
+  bottom: 0.5em;
+  padding: 0.35em 0.8em;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.45);
+  color: #fff;
+  font-size: 0.95em;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  line-height: 1.2;
+  display: inline-flex;
+  align-items: center;
+  pointer-events: none;
+`;
+
 // Two-line clamp applied to the summary block when collapsed. Words
 // still exist in the DOM (TranslatableText keeps per-word handlers
 // alive) — only the visual is clipped.
@@ -446,7 +467,7 @@ const CompactMedia = styled.div`
        Open band would cover a quarter of it and a resting Save circle
        another quarter. Drop the band, and let Save wait for the hover that
        only this surface has. */
-    ${ImageOpenOverlay} {
+    ${ImageOpenPill} {
       display: none;
     }
 
@@ -525,6 +546,7 @@ export {
   ContentColumn,
   MetaRow,
   OverflowButton,
+  ImageOpenPill,
   PreviewCardClickable,
   PreviewSummary,
   PreviewClampedSummary,
