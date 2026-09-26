@@ -1,1 +1,1 @@
-language,learning,vocabulary,reading,news,flashcard,translation,study,practice,words,danish,french
+vocabulary,news,articles,audio,podcast,flashcard,translation,german,french,spanish,dutch,danish
