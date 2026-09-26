@@ -83,6 +83,20 @@ const HideIconButton = styled.button`
   publishing time or topics.
 */
 
+// The text half of a feed card: title, meta, summary. Pairing it with the
+// image as ArticleContent's two children is what lets the image lead — stacked
+// above the text on mobile, beside it on desktop — with one DOM order for both.
+const ContentColumn = styled.div`
+  min-width: 0;
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+
+  @media (max-width: 990px) {
+    width: 100%;
+  }
+`;
+
 const ArticleContent = styled.div`
   width: 100%;
   display: flex;
@@ -97,7 +111,9 @@ const ArticleContent = styled.div`
   gap: 0.5em;
 
   img {
-    margin: 1em 0.5em 0 0.5em;
+    /* No margin: the photo has to fill ImageWithOverlay exactly, because Save
+       and the destination pill anchor to that box -- any inset here leaves
+       them floating off the picture's edges. Spacing is the flex gap's job. */
     /* Side-by-side layout (desktop / tablet landscape): a fixed width +
        aspect-ratio gives every card an identical thumbnail, so wide and
        tall source photos no longer make the feed ragged. object-fit: cover
@@ -122,7 +138,6 @@ const ArticleContent = styled.div`
       max-width: 100%;
       max-height: 13em;
       aspect-ratio: auto;
-      margin: 0.5rem 0;
     }
 
     /* Tablet portrait (e.g. iPad): full-width photos get a taller crop
@@ -255,7 +270,11 @@ let Summary = styled.div`
   color: var(--text-primary);
   line-height: 1.5em;
   margin-top: 0.36em;
-  width: 40em;
+  /* A line-length cap, not a fixed width: the summary sits in the card's text
+     column now, and a hard 40em overruns it -- which ClampedSummary's
+     overflow: hidden then clips mid-word rather than wrapping. */
+  width: auto;
+  max-width: 40em;
   @media (max-width: 990px) {
     width: 100%;
   }
@@ -268,6 +287,11 @@ const ImageWithOverlay = styled.div`
   position: relative;
   display: inline-block;
   line-height: 0;
+  /* As a flex child of ArticleContent this box would stretch to the row's full
+     height (align-items defaults to stretch), and the bottom-anchored pill
+     would then hang below the photo. The img carried align-self before the
+     wrapper existed; it belongs on the wrapper now. */
+  align-self: flex-start;
 
   @media (max-width: 990px) {
     display: block;
@@ -309,27 +333,25 @@ const SaveActionButton = styled.button`
   }
 `;
 
-// Subtle bottom gradient + "Open" label so the image visibly reads as
-// tappable. pointer-events: none so clicks pass through to the
-// wrapping Link/button/anchor that owns the navigation.
-const ImageOpenOverlay = styled.span`
+// The destination label: a pill rather than a band across the whole bottom
+// edge, so it reads as an object sitting on the photo -- same dark disc and
+// inset as Save, so the two are a pair -- instead of a strip fencing the image
+// off under every headline.
+const ImageOpenPill = styled.span`
   position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  padding: 0.4em 0.6em 0.5em;
-  text-align: right;
+  right: 0.5em;
+  bottom: 0.5em;
+  padding: 0.35em 0.8em;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.45);
   color: #fff;
-  font-size: 1em;
+  font-size: 0.95em;
   font-weight: 500;
   letter-spacing: 0.02em;
-  background: linear-gradient(to top, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0));
-  pointer-events: none;
-  border-radius: 0 0 1em 1em;
+  line-height: 1.2;
   display: inline-flex;
   align-items: center;
-  justify-content: flex-end;
-  line-height: 1.2;
+  pointer-events: none;
 `;
 
 // Two-line clamp applied to the summary block when collapsed. Words
@@ -354,18 +376,59 @@ const PreviewClampedSummary = styled(ClampedSummary)`
   -webkit-line-clamp: 2;
 `;
 
-// Headlines (compact) card. Mobile: stacks title -> meta -> image (DOM order,
-// title first). Desktop (>=991px): reflows to a dense row — small thumbnail on
-// the LEFT, title + meta on the right — via flex `order`, so the DOM stays
-// title-first for the mobile stack.
+// The meta line and, at its end, the overflow that carries Hide. Hiding is
+// rare and one-way, so it does not earn a permanent control next to Save --
+// but it stays one tap away rather than buried in a menu elsewhere.
+const MetaRow = styled.div`
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5em;
+
+  > *:first-child {
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+`;
+
+const OverflowButton = styled.button`
+  flex: 0 0 auto;
+  background: none;
+  border: none;
+  padding: 0.1em 0.2em;
+  margin: 0;
+  cursor: pointer;
+  color: var(--text-muted);
+  display: inline-flex;
+  align-items: center;
+  border-radius: 0.3em;
+
+  &:hover {
+    color: var(--text-primary);
+  }
+`;
+
+// Headlines (compact) card. Mobile: stacks image -> title -> meta -> actions.
+// The photo leads because it says what the article is about before the reader
+// has to parse a headline in a language they are still learning; it also keeps
+// the image next to the headline it belongs to, instead of stranding it below
+// the actions where it reads as the next card's photo.
+// Desktop (>=991px): the same DOM reflows to a dense row, thumbnail on the LEFT
+// and title + meta on the right — no `order` needed, the DOM is already in that
+// sequence.
 const CompactCard = styled.div`
   display: flex;
   flex-direction: column;
+  gap: 0.7em;
 
   @media (min-width: 991px) {
     flex-direction: row;
     align-items: center;
     gap: 1em;
+
+    &:hover ${SaveIconButton},
+    ${SaveIconButton}:focus-visible {
+      opacity: 1;
+    }
   }
 `;
 
@@ -373,15 +436,26 @@ const CompactText = styled.div`
   min-width: 0;
 
   @media (min-width: 991px) {
-    order: 2;
     flex: 1 1 auto;
   }
 `;
 
 const CompactMedia = styled.div`
   @media (min-width: 991px) {
-    order: 1;
     flex: 0 0 auto;
+
+    /* The desktop thumbnail is a third the size of the phone's image: the
+       Open band would cover a quarter of it and a resting Save circle
+       another quarter. Drop the band, and let Save wait for the hover that
+       only this surface has. */
+    ${ImageOpenPill} {
+      display: none;
+    }
+
+    ${SaveIconButton} {
+      opacity: 0;
+      transition: opacity 150ms ease;
+    }
   }
 
   img {
@@ -450,6 +524,10 @@ let Topics = styled.span`
 export {
   Title,
   TitleContainer,
+  ContentColumn,
+  MetaRow,
+  OverflowButton,
+  ImageOpenPill,
   PreviewCardClickable,
   PreviewSummary,
   PreviewClampedSummary,
@@ -468,7 +546,6 @@ export {
   ImageWithOverlay,
   SummaryActionRow,
   SaveActionButton,
-  ImageOpenOverlay,
   ClampedSummary,
   SummaryToggle,
   HideButton,
