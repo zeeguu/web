@@ -111,7 +111,9 @@ const ArticleContent = styled.div`
   gap: 0.5em;
 
   img {
-    margin: 1em 0.5em 0 0.5em;
+    /* No margin: the photo has to fill ImageWithOverlay exactly, because Save
+       and the destination pill anchor to that box -- any inset here leaves
+       them floating off the picture's edges. Spacing is the flex gap's job. */
     /* Side-by-side layout (desktop / tablet landscape): a fixed width +
        aspect-ratio gives every card an identical thumbnail, so wide and
        tall source photos no longer make the feed ragged. object-fit: cover
@@ -136,7 +138,6 @@ const ArticleContent = styled.div`
       max-width: 100%;
       max-height: 13em;
       aspect-ratio: auto;
-      margin: 0.5rem 0;
     }
 
     /* Tablet portrait (e.g. iPad): full-width photos get a taller crop
@@ -269,7 +270,11 @@ let Summary = styled.div`
   color: var(--text-primary);
   line-height: 1.5em;
   margin-top: 0.36em;
-  width: 40em;
+  /* A line-length cap, not a fixed width: the summary sits in the card's text
+     column now, and a hard 40em overruns it -- which ClampedSummary's
+     overflow: hidden then clips mid-word rather than wrapping. */
+  width: auto;
+  max-width: 40em;
   @media (max-width: 990px) {
     width: 100%;
   }
@@ -282,6 +287,11 @@ const ImageWithOverlay = styled.div`
   position: relative;
   display: inline-block;
   line-height: 0;
+  /* As a flex child of ArticleContent this box would stretch to the row's full
+     height (align-items defaults to stretch), and the bottom-anchored pill
+     would then hang below the photo. The img carried align-self before the
+     wrapper existed; it belongs on the wrapper now. */
+  align-self: flex-start;
 
   @media (max-width: 990px) {
     display: block;
@@ -323,33 +333,10 @@ const SaveActionButton = styled.button`
   }
 `;
 
-// Subtle bottom gradient + "Open" label so the image visibly reads as
-// tappable. pointer-events: none so clicks pass through to the
-// wrapping Link/button/anchor that owns the navigation.
-const ImageOpenOverlay = styled.span`
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  padding: 0.4em 0.6em 0.5em;
-  text-align: right;
-  color: #fff;
-  font-size: 1em;
-  font-weight: 500;
-  letter-spacing: 0.02em;
-  background: linear-gradient(to top, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0));
-  pointer-events: none;
-  border-radius: 0 0 1em 1em;
-  display: inline-flex;
-  align-items: center;
-  justify-content: flex-end;
-  line-height: 1.2;
-`;
-
-// Feed cards label the destination with a pill rather than a band across the
-// whole bottom edge: same dark disc as Save, so the two read as a pair sitting
-// on the photo instead of a strip fencing it off. The Interactive card keeps
-// the full-width band (ImageOpenOverlay) -- its overlay carries an icon too.
+// The destination label: a pill rather than a band across the whole bottom
+// edge, so it reads as an object sitting on the photo -- same dark disc and
+// inset as Save, so the two are a pair -- instead of a strip fencing the image
+// off under every headline.
 const ImageOpenPill = styled.span`
   position: absolute;
   right: 0.5em;
@@ -383,12 +370,6 @@ const ClampedSummary = styled.div`
 // summary lives in the overlay.
 const PreviewSummary = styled(Summary)`
   font-size: 1.4em;
-  /* Summary carries a fixed width: 40em from the days when it sat directly
-     beside the image. Inside the text column that overruns the column and
-     ClampedSummary's overflow: hidden clips the line mid-word, so let it
-     fill the column and keep 40em only as a line-length cap. */
-  width: auto;
-  max-width: 40em;
 `;
 
 const PreviewClampedSummary = styled(ClampedSummary)`
@@ -565,7 +546,6 @@ export {
   ImageWithOverlay,
   SummaryActionRow,
   SaveActionButton,
-  ImageOpenOverlay,
   ClampedSummary,
   SummaryToggle,
   HideButton,

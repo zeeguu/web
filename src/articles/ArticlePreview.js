@@ -192,6 +192,44 @@ export default function ArticlePreview({
     }
   }
 
+  // Hide is rare and one-way, so it lives behind an overflow rather than
+  // standing beside Save on every card. Shared by every card shape.
+  const overflowMenu = (
+    <Menu
+      anchorEl={overflowAnchor}
+      open={Boolean(overflowAnchor)}
+      onClose={() => setOverflowAnchor(null)}
+      onClick={(e) => e.stopPropagation()}
+    >
+      <MenuItem
+        onClick={(e) => {
+          e.stopPropagation();
+          setOverflowAnchor(null);
+          handleHideArticle();
+        }}
+      >
+        Hide from feed
+      </MenuItem>
+    </Menu>
+  );
+
+  function overflowButton(enabled) {
+    if (!enabled) return null;
+    return (
+      <s.OverflowButton
+        type="button"
+        aria-label="More actions"
+        onClick={(e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          setOverflowAnchor(e.currentTarget);
+        }}
+      >
+        <MoreHorizRoundedIcon style={{ fontSize: 18 }} />
+      </s.OverflowButton>
+    );
+  }
+
   // Save and Hide have nowhere to go when the class shows only the teacher's
   // texts: there is no Saved tab to reach, and hiding would make one of the few
   // texts the teacher shared disappear from the only screen the student has.
@@ -255,10 +293,12 @@ export default function ArticlePreview({
     const inner = (
       <>
         {visual}
-        <s.ImageOpenOverlay>
-          Open
-          {!should_open_in_zeeguu && <OpenInNewRoundedIcon style={{ fontSize: 18, marginLeft: 4 }} />}
-        </s.ImageOpenOverlay>
+        {/* A real outbound link, unlike the feed card's tap into the summary
+            overlay -- so this one keeps the arrow when it leaves Zeeguu. */}
+        <s.ImageOpenPill>
+          {should_open_in_zeeguu ? "Read" : "Open"}
+          {!should_open_in_zeeguu && <OpenInNewRoundedIcon style={{ fontSize: 16, marginLeft: 4 }} />}
+        </s.ImageOpenPill>
       </>
     );
     return navWrap(inner, { display: "block", position: "relative", lineHeight: 0 }, { width: "100%" });
@@ -502,41 +542,8 @@ export default function ArticlePreview({
     const metaRow = (
       <s.MetaRow>
         {metaStrip}
-        {showHide && (
-          <s.OverflowButton
-            type="button"
-            aria-label="More actions"
-            onClick={(e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              setOverflowAnchor(e.currentTarget);
-            }}
-          >
-            <MoreHorizRoundedIcon style={{ fontSize: 18 }} />
-          </s.OverflowButton>
-        )}
+        {overflowButton(showHide)}
       </s.MetaRow>
-    );
-
-    // The menu is portalled, so its clicks still bubble through the React
-    // tree into the card's open handler -- hence stopPropagation on both.
-    const overflowMenu = (
-      <Menu
-        anchorEl={overflowAnchor}
-        open={Boolean(overflowAnchor)}
-        onClose={() => setOverflowAnchor(null)}
-        onClick={(e) => e.stopPropagation()}
-      >
-        <MenuItem
-          onClick={(e) => {
-            e.stopPropagation();
-            setOverflowAnchor(null);
-            handleHideArticle();
-          }}
-        >
-          Hide from feed
-        </MenuItem>
-      </Menu>
     );
 
     // Image-less cards have no photo to carry Open and Save, so those two keep
@@ -676,68 +683,6 @@ export default function ArticlePreview({
         marginBottom: isAnimatingOut ? "0" : undefined,
       }}
     >
-      {/* Card-level Hide × in the top-right corner. Dismissal pattern;
-          replaces the Hide button that used to sit at the bottom. Only
-          shown where Hide makes sense (Discover-style surfaces, not in
-          the Hidden view, not in saved-list views). */}
-      {!isHiddenView && !inSavedView && showHide && (
-        <s.HideButton onClick={handleHideArticle} aria-label="Hide from feed">
-          <CloseRoundedIcon style={{ fontSize: 18 }} />
-        </s.HideButton>
-      )}
-
-      <s.TitleContainer>
-        <s.Title>
-          {interactiveTitle ? (
-            <TranslatableText interactiveText={interactiveTitle} translating={true} pronouncing={true} />
-          ) : (
-            article.title
-          )}
-        </s.Title>
-        {/* Reading-progress only matters on partial-read surfaces. Discover
-            articles are almost always 0% (you haven't opened them yet), and
-            the empty circle just wastes title width. Keep it for saved-list
-            surfaces (teacher OwnArticles uses inSavedView). */}
-        {inSavedView && <ReadingCompletionProgress last_reading_percentage={article.reading_completion} />}
-      </s.TitleContainer>
-
-      {/* Single quiet metadata strip under the title: CEFR · Simplified ·
-          Saved · source · time. State badges (Simplified/Saved) get a subtle
-          accent color; source/time stay muted. All on one row, small. */}
-      <MetaStrip>
-        {classTags}
-        {uploaderItem}
-        {article.topics_list &&
-          article.topics_list.map(([topicTitle]) => <MetaTag key={topicTitle}>{topicTitle}</MetaTag>)}
-        {article.matched_searches &&
-          article.matched_searches.map((search) => (
-            <MetaItem key={`search-${search}`}>
-              🔍&nbsp;
-              <MetaLink as={Link} to={`/search?search=${encodeURIComponent(search)}`}>
-                {search}
-              </MetaLink>
-            </MetaItem>
-          ))}
-        {aiLabel && <MetaTag>{aiLabel}</MetaTag>}
-        {savedTag}
-        {sourceLabel && (
-          <MetaItem>
-            <MetaLink className="muted" href={article.parent_url || article.url} target="_blank" rel="noopener noreferrer">
-              {sourceLabel}
-            </MetaLink>
-          </MetaItem>
-        )}
-        {publishedTimeSlot}
-        {(article.metrics?.word_count || article.word_count) > 0 && (
-          <MetaItem>
-            ~
-            {estimateReadingTime(article.metrics?.word_count || article.word_count || 0)
-              .replace(" minutes", "min")
-              .replace(" minute", "min")}
-          </MetaItem>
-        )}
-      </MetaStrip>
-
       <s.ArticleContent>
         {hasImage && (
           <s.ImageWithOverlay>
@@ -760,71 +705,129 @@ export default function ArticlePreview({
             )}
           </s.ImageWithOverlay>
         )}
-        {!inSavedView &&
-          (() => {
-            const summaryNode = interactiveSummary ? (
-              <TranslatableText interactiveText={interactiveSummary} translating={true} pronouncing={true} />
+        <s.ContentColumn>
+        <s.TitleContainer>
+          <s.Title>
+            {interactiveTitle ? (
+              <TranslatableText interactiveText={interactiveTitle} translating={true} pronouncing={true} />
             ) : (
-              article.summary
-            );
-            return (
-              <s.Summary>
-                {!dontShowSummary && (
-                  <>
-                    {isSummaryExpanded ? (
-                      summaryNode
-                    ) : (
-                      <s.ClampedSummary ref={clampedSummaryRef}>{summaryNode}</s.ClampedSummary>
-                    )}
-                    {(isSummaryExpanded || summaryOverflows) && (
-                      <s.SummaryToggle type="button" onClick={() => setIsSummaryExpanded((v) => !v)}>
-                        {isSummaryExpanded ? strings.showLess : strings.showMore}
-                        <span aria-hidden="true">{isSummaryExpanded ? "▴" : "▾"}</span>
-                      </s.SummaryToggle>
-                    )}
-                  </>
-                )}
-                {/* Image-less cards dropped the photo region, so its Save +
-                    Open controls regroup into one action row here. */}
-                {!hasImage && (
-                  <s.SummaryActionRow>
-                    {!isHiddenView && showSaveAndHide && (
-                      <s.SaveActionButton
-                        type="button"
-                        onClick={handleToggleSave}
-                        aria-label={isArticleSaved ? "Remove from saves" : "Save"}
-                      >
-                        {isArticleSaved ? (
-                          <BookmarkRoundedIcon style={{ fontSize: 16 }} />
-                        ) : (
-                          <BookmarkBorderRoundedIcon style={{ fontSize: 16 }} />
-                        )}
-                        {isArticleSaved ? "Saved" : "Save"}
-                      </s.SaveActionButton>
-                    )}
-                    {openTextLink}
-                  </s.SummaryActionRow>
-                )}
-                {/* Bottom action row only used as a fallback: the Hidden
-                  surface needs Unhide. */}
-                {isHiddenView && (
-                  <div
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      gap: "10px",
-                      marginTop: "8px",
-                    }}
-                  >
-                    <ActionButton onClick={handleUnhideArticle} variant="muted">
-                      Unhide
-                    </ActionButton>
-                  </div>
-                )}
-              </s.Summary>
-            );
-          })()}
+              article.title
+            )}
+          </s.Title>
+          {/* Reading-progress only matters on partial-read surfaces. Discover
+              articles are almost always 0% (you haven't opened them yet), and
+              the empty circle just wastes title width. Keep it for saved-list
+              surfaces (teacher OwnArticles uses inSavedView). */}
+          {inSavedView && <ReadingCompletionProgress last_reading_percentage={article.reading_completion} />}
+        </s.TitleContainer>
+
+        {/* Single quiet metadata strip under the title: CEFR · Simplified ·
+            Saved · source · time. State badges (Simplified/Saved) get a subtle
+            accent color; source/time stay muted. All on one row, small. */}
+        <s.MetaRow>
+          <MetaStrip>
+            {classTags}
+            {uploaderItem}
+            {article.topics_list &&
+              article.topics_list.map(([topicTitle]) => <MetaTag key={topicTitle}>{topicTitle}</MetaTag>)}
+            {article.matched_searches &&
+              article.matched_searches.map((search) => (
+                <MetaItem key={`search-${search}`}>
+                  🔍&nbsp;
+                  <MetaLink as={Link} to={`/search?search=${encodeURIComponent(search)}`}>
+                    {search}
+                  </MetaLink>
+                </MetaItem>
+              ))}
+            {aiLabel && <MetaTag>{aiLabel}</MetaTag>}
+            {savedTag}
+            {sourceLabel && (
+              <MetaItem>
+                <MetaLink className="muted" href={article.parent_url || article.url} target="_blank" rel="noopener noreferrer">
+                  {sourceLabel}
+                </MetaLink>
+              </MetaItem>
+            )}
+            {publishedTimeSlot}
+            {(article.metrics?.word_count || article.word_count) > 0 && (
+              <MetaItem>
+                ~
+                {estimateReadingTime(article.metrics?.word_count || article.word_count || 0)
+                  .replace(" minutes", "min")
+                  .replace(" minute", "min")}
+              </MetaItem>
+            )}
+          </MetaStrip>
+          {overflowButton(showHide && !isHiddenView && !inSavedView)}
+        </s.MetaRow>
+
+          {!inSavedView &&
+            (() => {
+              const summaryNode = interactiveSummary ? (
+                <TranslatableText interactiveText={interactiveSummary} translating={true} pronouncing={true} />
+              ) : (
+                article.summary
+              );
+              return (
+                <s.Summary>
+                  {!dontShowSummary && (
+                    <>
+                      {isSummaryExpanded ? (
+                        summaryNode
+                      ) : (
+                        <s.ClampedSummary ref={clampedSummaryRef}>{summaryNode}</s.ClampedSummary>
+                      )}
+                      {(isSummaryExpanded || summaryOverflows) && (
+                        <s.SummaryToggle type="button" onClick={() => setIsSummaryExpanded((v) => !v)}>
+                          {isSummaryExpanded ? strings.showLess : strings.showMore}
+                          <span aria-hidden="true">{isSummaryExpanded ? "▴" : "▾"}</span>
+                        </s.SummaryToggle>
+                      )}
+                    </>
+                  )}
+                  {/* Image-less cards dropped the photo region, so its Save +
+                      Open controls regroup into one action row here. */}
+                  {!hasImage && (
+                    <s.SummaryActionRow>
+                      {!isHiddenView && showSaveAndHide && (
+                        <s.SaveActionButton
+                          type="button"
+                          onClick={handleToggleSave}
+                          aria-label={isArticleSaved ? "Remove from saves" : "Save"}
+                        >
+                          {isArticleSaved ? (
+                            <BookmarkRoundedIcon style={{ fontSize: 16 }} />
+                          ) : (
+                            <BookmarkBorderRoundedIcon style={{ fontSize: 16 }} />
+                          )}
+                          {isArticleSaved ? "Saved" : "Save"}
+                        </s.SaveActionButton>
+                      )}
+                      {openTextLink}
+                    </s.SummaryActionRow>
+                  )}
+                  {/* Bottom action row only used as a fallback: the Hidden
+                    surface needs Unhide. */}
+                  {isHiddenView && (
+                    <div
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "10px",
+                        marginTop: "8px",
+                      }}
+                    >
+                      <ActionButton onClick={handleUnhideArticle} variant="muted">
+                        Unhide
+                      </ActionButton>
+                    </div>
+                  )}
+                </s.Summary>
+              );
+            })()}
+        </s.ContentColumn>
       </s.ArticleContent>
+      {overflowMenu}
 
       {inSavedView && (
         <div
