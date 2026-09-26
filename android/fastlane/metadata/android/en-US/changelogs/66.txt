@@ -1,0 +1,5 @@
+- Article cards now lead with the photo, so a picture tells you what a piece is about before you read a headline in a language you are still learning.
+- The photo says where tapping goes: Read, or Summary.
+- Save sits on the photo; Hide moved into the … menu.
+- Headlines, Preview and Interactive now look and behave the same.
+- Summaries no longer get cut off mid-word on wider screens.
