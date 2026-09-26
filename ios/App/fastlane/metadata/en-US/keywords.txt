@@ -1,1 +1,1 @@
-vocabulary,news,articles,audio,podcast,flashcard,translation,german,french,spanish,dutch,danish
+vocabulary,articles,audio,podcast,flashcard,translation,german,french,spanish,dutch,danish,language
