@@ -53,6 +53,9 @@ export default function ArticlePreview({
   // previewing their class's feed. The card must look the same but do nothing
   // on the teacher's own account, so the personal controls come off.
   previewOnly = false,
+  // Narrow the feed to a topic (by title). Only the home feed can, so only it
+  // passes this; elsewhere the card's topic stays a plain label.
+  onSelectTopic = null,
   // Preview browsing mode: when false, the card is a plain (non-interactive)
   // teaser and a tap opens the interactive ArticlePreviewOverlay instead of
   // rendering the interactive title/summary inline. Default true keeps today's
@@ -447,59 +450,83 @@ export default function ArticlePreview({
       <s.Title>{article.title}</s.Title>
     );
 
-    // Shared between the Preview (image + summary) and Headlines (compact)
-    // layouts so the meta/image markup isn't duplicated across the two.
-    // Two rows on a phone, one line on desktop: what the article is, then
-    // where it came from. See MetaRows for why the split is by meaning rather
-    // than letting a single strip wrap wherever it runs out of width.
+    // The image pill names where a tap lands ("Summary" when there is no
+    // Zeeguu-readable copy). When that summary is the model's, the pill says
+    // "AI summary" and IS the card's one AI mark -- so the kicker does not
+    // repeat it. Otherwise (AI-simplified, or no image) the kicker carries it.
+    const pillLabel = should_open_in_zeeguu ? "Read" : aiLabel === "AI summary" ? "AI summary" : "Summary";
+    const aiMarkInPill = hasImage && pillLabel === "AI summary";
+
+    // Kicker above the title: what the article IS -- topic, class, AI mark,
+    // saved state -- as a quiet uppercase label, the way news sites set the
+    // section above a headline. Grey, not link blue, so nothing competes with
+    // the title for the first glance.
+    const kickerItems = [
+      ...(classTags || []),
+      ...(article.topics_list || []).map(([topicTitle]) =>
+        // Where the feed can filter, the topic IS that filter: a tap narrows
+        // the feed to it, like the pill of the same name, instead of falling
+        // through to the card and opening the article.
+        onSelectTopic ? (
+          <s.KickerTopic
+            key={topicTitle}
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              onSelectTopic(topicTitle);
+            }}
+          >
+            {topicTitle}
+          </s.KickerTopic>
+        ) : (
+          <span key={topicTitle}>{topicTitle}</span>
+        ),
+      ),
+      aiLabel && !aiMarkInPill ? <span key="ai">{aiLabel}</span> : null,
+      savedTag,
+    ].filter(Boolean);
+    const kicker = kickerItems.length > 0 ? <s.Kicker>{kickerItems}</s.Kicker> : null;
+
+    // Under the title: where it CAME FROM, on one line. With the "is" half
+    // moved to the kicker, this fits a phone without the two-row split.
     const metaStrip = (
-      <s.MetaRows>
-        <MetaStrip>
-          {classTags}
-          {article.topics_list &&
-            article.topics_list.map(([topicTitle]) => <MetaTag key={topicTitle}>{topicTitle}</MetaTag>)}
-          {aiLabel && <MetaTag>{aiLabel}</MetaTag>}
-          {savedTag}
-        </MetaStrip>
-        <MetaStrip>
-          {uploaderItem}
-          {article.matched_searches &&
-            article.matched_searches.map((search) => (
-              <MetaItem key={`search-${search}`}>
-                🔍&nbsp;
-                <MetaLink
-                  as={Link}
-                  to={`/search?search=${encodeURIComponent(search)}`}
-                  onClick={(e) => e.stopPropagation()}
-                >
-                  {search}
-                </MetaLink>
-              </MetaItem>
-            ))}
-          {sourceLabel && (
-            <MetaItem>
+      <MetaStrip>
+        {uploaderItem}
+        {article.matched_searches &&
+          article.matched_searches.map((search) => (
+            <MetaItem key={`search-${search}`}>
+              🔍&nbsp;
               <MetaLink
-                className="muted"
-                href={article.parent_url || article.url}
-                target="_blank"
-                rel="noopener noreferrer"
+                as={Link}
+                to={`/search?search=${encodeURIComponent(search)}`}
                 onClick={(e) => e.stopPropagation()}
               >
-                {sourceLabel}
+                {search}
               </MetaLink>
             </MetaItem>
-          )}
-          {publishedTimeSlot}
-          {(article.metrics?.word_count || article.word_count) > 0 && (
-            <MetaItem>
-              ~
-              {estimateReadingTime(article.metrics?.word_count || article.word_count || 0)
-                .replace(" minutes", "min")
-                .replace(" minute", "min")}
-            </MetaItem>
-          )}
-        </MetaStrip>
-      </s.MetaRows>
+          ))}
+        {sourceLabel && (
+          <MetaItem>
+            <MetaLink
+              className="muted"
+              href={article.parent_url || article.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={(e) => e.stopPropagation()}
+            >
+              {sourceLabel}
+            </MetaLink>
+          </MetaItem>
+        )}
+        {publishedTimeSlot}
+        {(article.metrics?.word_count || article.word_count) > 0 && (
+          <MetaItem>
+            {estimateReadingTime(article.metrics?.word_count || article.word_count || 0)
+              .replace(" minutes", " min")
+              .replace(" minute", " min")}
+          </MetaItem>
+        )}
+      </MetaStrip>
     );
 
     const imageEl = hasImage ? (
@@ -527,7 +554,7 @@ export default function ArticlePreview({
             opens the preview overlay -- headed "Summary" -- and leaving for
             the original is a further, deliberate tap inside it. An external
             icon here would promise a jump that has not happened yet. */}
-        <s.ImageOpenPill>{should_open_in_zeeguu ? "Read" : "Summary"}</s.ImageOpenPill>
+        <s.ImageOpenPill>{pillLabel}</s.ImageOpenPill>
         {showSaveAndHide && (
           <s.SaveIconButton
             type="button"
@@ -626,6 +653,7 @@ export default function ArticlePreview({
             <s.CompactCard>
               {cardImage && <s.CompactMedia>{cardImage}</s.CompactMedia>}
               <s.CompactText>
+                {kicker}
                 {compactTitle}
                 {metaRow}
                 {!hasImage && feedActions}
@@ -639,6 +667,7 @@ export default function ArticlePreview({
               <s.ArticleContent>
                 {cardImage}
                 <s.ContentColumn>
+                  {kicker}
                   <s.TitleContainer>
                     <s.Title>{article.title}</s.Title>
                   </s.TitleContainer>

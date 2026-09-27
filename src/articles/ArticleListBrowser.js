@@ -1,5 +1,6 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
 import PullToRefresh from "react-simple-pull-to-refresh";
+import { useHistory, useLocation } from "react-router-dom";
 import ArticlePreview from "./ArticlePreview";
 import SearchField from "./SearchField";
 import * as s from "./ArticleListBrowser.sc";
@@ -65,18 +66,61 @@ export default function ArticleListBrowser({
   const searchDifficultyPriorityRef = useShadowRef(searchDifficultyPriority);
 
   // Home-feed filter pills (only shown when this isn't an external search).
-  // { type: "all" } | { type: "topic", value } | { type: "search", value }.
+  // { type: "all" } | { type: "topic", value }.
   // A ref mirror is needed because getNewArticlesForPage is captured once by
   // the pagination hook and would otherwise see a stale filter.
-  // Restore the last-picked topic so the choice survives navigating away/back.
+  //
+  // On the home feed the topic lives in the URL (/articles?topic=Culture%20%26%20Art),
+  // so Back undoes a filter -- which matters once a topic on any card can set
+  // one -- and a filtered feed can be linked to. LocalStorage still remembers
+  // the last pick, so leaving the tab and coming back restores it.
+  const location = useLocation();
+  const history = useHistory();
+  const filterInUrl = !searchQuery && !kioskMode;
+  const urlTopic = filterInUrl ? new URLSearchParams(location.search).get("topic") : null;
+  const topicFilter = (title) => (title ? { type: "topic", value: { title } } : { type: "all" });
+
   const [activeFilter, setActiveFilter] = useState(() => {
+    if (urlTopic) return topicFilter(urlTopic);
     const savedTopic = LocalStorage.getSelectedFeedTopic();
     return savedTopic ? { type: "topic", value: savedTopic } : { type: "all" };
   });
   const activeFilterRef = useShadowRef(activeFilter);
 
-  // Persist topic selections (clear on "all") and update state.
+  // A remembered topic restored on arrival goes into the URL too, replacing
+  // (not pushing) so Back still leaves the feed rather than un-filtering it.
+  useEffect(() => {
+    if (filterInUrl && !urlTopic && activeFilter.type === "topic") {
+      history.replace({ search: `?topic=${encodeURIComponent(activeFilter.value.title)}` });
+    }
+    // eslint-disable-next-line
+  }, []);
+
+  // The URL drives the filter from here on: a pill, a card's topic, Back and
+  // Forward all land here. The first run is skipped -- it would see the URL
+  // before the restore above has written the remembered topic into it.
+  const urlSyncStarted = useRef(false);
+  useEffect(() => {
+    if (!filterInUrl) return;
+    if (!urlSyncStarted.current) {
+      urlSyncStarted.current = true;
+      return;
+    }
+    const current = activeFilter.type === "topic" ? activeFilter.value.title : null;
+    if (urlTopic === current) return;
+    LocalStorage.setSelectedFeedTopic(urlTopic ? { title: urlTopic } : null);
+    setActiveFilter(topicFilter(urlTopic));
+    // eslint-disable-next-line
+  }, [urlTopic]);
+
+  // Persist topic selections (clear on "all") and update state -- via the URL
+  // on the home feed, so each pick is a history entry Back can undo.
   function selectFilter(filter) {
+    if (filterInUrl) {
+      const title = filter.type === "topic" ? filter.value.title : null;
+      history.push({ search: title ? `?topic=${encodeURIComponent(title)}` : "" });
+      return;
+    }
     LocalStorage.setSelectedFeedTopic(filter.type === "topic" ? filter.value : null);
     setActiveFilter(filter);
   }
@@ -325,6 +369,14 @@ export default function ArticleListBrowser({
               doNotShowRedirectionModal_UserPreference={doNotShowRedirectionModal_UserPreference}
               setDoNotShowRedirectionModal_UserPreference={setDoNotShowRedirectionModal_UserPreference}
               onArticleHidden={handleArticleHidden}
+              onSelectTopic={
+                filterInUrl
+                  ? (topicTitle) => {
+                      selectFilter(topicFilter(topicTitle));
+                      window.scrollTo({ top: 0 });
+                    }
+                  : null
+              }
               notifyArticleClick={() => handleArticleClick(each.id, each.source_id, index)}
             />
           ),

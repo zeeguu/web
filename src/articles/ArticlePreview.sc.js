@@ -341,11 +341,11 @@ const ImageOpenPill = styled.span`
   position: absolute;
   right: 0.5em;
   bottom: 0.5em;
-  padding: 0.35em 0.8em;
+  padding: 0.3em 0.7em;
   border-radius: 999px;
   background: rgba(0, 0, 0, 0.45);
   color: #fff;
-  font-size: 0.95em;
+  font-size: 0.8em;
   font-weight: 500;
   letter-spacing: 0.02em;
   line-height: 1.2;
@@ -376,32 +376,54 @@ const PreviewClampedSummary = styled(ClampedSummary)`
   -webkit-line-clamp: 2;
 `;
 
-// The card's metadata as two rows on a phone: what the article IS (topic,
-// AI provenance, saved) above where it CAME FROM (source, age, length).
-//
-// One wrapping strip put them on one line and let it break wherever it ran
-// out of room, so a phone routinely produced a second line starting with the
-// "·" separator -- "politiken.dk" ending line one and "· 21 hours ago · ~2min"
-// beginning line two. Splitting on meaning rather than on available width
-// means the break lands in the same place every time, and never before a
-// separator.
-//
-// Desktop keeps a single line: there the strip fits, and a second row would
-// cost a line of height on every card in a dense list.
-const MetaRows = styled.div`
-  > * + * {
-    margin-top: 0.15em;
+// What the article IS -- topic, AI provenance, saved -- as a kicker above
+// the headline, the way news sites set the section over a title. Uppercase,
+// letter-spaced and muted so it is read as a label, never as a second title
+// or as a link: the old blue topic tag under the title pulled the eye away
+// from the headline. Items are separated by "·" like MetaStrip, and the
+// accent-coloured MetaTags that land here (class, Saved) are greyed too.
+const Kicker = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  column-gap: 0.5em;
+  margin-bottom: 0.3em;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  line-height: 1.3;
+  row-gap: 0.3em;
+
+  > * {
+    color: inherit;
+    font-weight: inherit;
   }
 
-  @media (min-width: 768px) {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    column-gap: 0.6em;
+  > * + *::before {
+    content: "·";
+    margin-right: 0.5em;
+  }
+`;
 
-    > * + * {
-      margin-top: 8px;
-    }
+// A kicker topic that filters the feed. Reset to look exactly like the label
+// it sits in -- quiet grey, not link blue -- with a taller hit area than the
+// 0.72rem text so a thumb lands it.
+const KickerTopic = styled.button`
+  background: none;
+  border: none;
+  font: inherit;
+  letter-spacing: inherit;
+  text-transform: inherit;
+  color: inherit;
+  padding: 0.5em 0;
+  margin: -0.5em 0;
+  cursor: pointer;
+
+  &:hover,
+  &:active {
+    color: var(--text-primary);
   }
 `;
 
@@ -555,7 +577,8 @@ export {
   TitleContainer,
   ContentColumn,
   MetaRow,
-  MetaRows,
+  Kicker,
+  KickerTopic,
   OverflowButton,
   ImageOpenPill,
   PreviewCardClickable,
