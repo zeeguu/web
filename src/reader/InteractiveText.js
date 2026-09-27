@@ -74,11 +74,19 @@ export default class InteractiveText {
     // MWE-aware fusion: if word is part of an MWE, fuse with partners
     // (disabled MWEs have their metadata cleared by backend, so isMWE() returns false)
     if (word.isMWE && word.isMWE()) {
+      const separated = !!word.token?.mwe_is_separated;
       word = word.fuseMWEPartners(this.api);
       // If null, MWE partner already has translation - don't create duplicate
       if (word === null) {
         onSuccess();
         return;
+      }
+      // A contiguous MWE is not a closed unit: once its partners are fused it
+      // can still take an already-translated neighbour, so tapping the
+      // expression next to a translated word widens it in the same gesture.
+      // Separated MWEs stay closed -- see fuseWithNeighborsIfNeeded.
+      if (!separated && fuseWithNeighbours) {
+        word = word.fuseWithNeighborsIfNeeded(this.api);
       }
       // Trigger re-render after fusion so UI shows fused word immediately
       if (onFusionComplete) onFusionComplete();

@@ -199,16 +199,25 @@ export class Word extends Item {
     // polluting the DB
     let newWord = this;
 
-    // Don't fuse with neighbors that are part of an MWE (e.g., particle verbs)
-    // MWEs should stand alone as their own unit
-    const prevIsMWE = this.prev?.token?.mwe_group_id;
-    const nextIsMWE = this.next?.token?.mwe_group_id;
+    // A contiguous MWE can be extended: fusing onto it widens the unit, which
+    // is how a learner repairs a grouping the detector made too narrow. The
+    // detector deliberately errs narrow because this is cheap and in-flow --
+    // learners fused by hand 13,725 times in 2026 and ungrouped only 130.
+    //
+    // A SEPARATED MWE stays closed. "Extend" is not a coherent operation on a
+    // discontinuous span -- adding a token inside the gap ("rufe dich an" ->
+    // "rufe dich an" + what?) is not a unit -- and the backend refuses to save
+    // a bookmark for a separated MWE at all, because (token_i, total_tokens)
+    // cannot express a gap. Fusing onto one would produce a word with nowhere
+    // to persist. See zeeguu/api#769.
+    const isClosedMWE = (neighbour) =>
+      !!neighbour?.token?.mwe_group_id && !!neighbour?.token?.mwe_is_separated;
 
-    if (this.prev && this.prev.translation && !prevIsMWE) {
+    if (this.prev && this.prev.translation && !isClosedMWE(this.prev)) {
       newWord = this.fuseWithPrevious(api);
     }
 
-    if (this.next && this.next.translation && !nextIsMWE) {
+    if (this.next && this.next.translation && !isClosedMWE(this.next)) {
       newWord = this.fuseWithNext(api);
     }
     return newWord;
