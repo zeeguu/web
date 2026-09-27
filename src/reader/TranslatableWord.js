@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { Fragment, useState, useEffect, useRef } from "react";
 import AlterMenu from "./AlterMenu";
 import extractDomain from "../utils/web/extractDomain";
 import addProtocolToLink from "../utils/web/addProtocolToLink";
@@ -159,28 +159,35 @@ export default function TranslatableWord({
     openAlterMenu(word);
   }
 
-  function unlinkLastWord(e, word) {
+  // Undo one of the learner's joins, at the seam they tapped (#1258). The
+  // fused bookmark goes, each piece gets its own translation, and nothing is
+  // reported as a detector mistake: a piece that was a detector group comes
+  // back as that group.
+  function breakSeam(e, word, seam) {
+    e.stopPropagation();
     setIsLoading(true);
     interactiveText.api.deleteBookmark(
       word.bookmark_id,
       (response) => {
-        if (response === "OK") {
-          // delete was successful; log and close
-          let withoutLastWord = word.unlinkLastWord();
-          interactiveText.translate(withoutLastWord, true, () => {
-            withoutLastWord.isTranslationVisible = true;
-            let unlinkedWord = withoutLastWord.next;
-            interactiveText.translate(unlinkedWord, false, () => {
-              unlinkedWord.isTranslationVisible = true;
-              wordUpdated();
-              setIsLoading(false);
-            });
+        if (response !== "OK") {
+          setIsLoading(false);
+          return;
+        }
+        const pieces = word.breakAtSeam(seam);
+        // Show the break straight away, where it was tapped; translations
+        // fill in as they arrive. No fusing with neighbours, or the pieces
+        // would glue straight back together.
+        wordUpdated();
+        for (const piece of pieces) {
+          interactiveText.translate(piece, false, () => {
+            piece.isTranslationVisible = true;
+            wordUpdated();
           });
         }
       },
       (error) => {
-        // onError
         console.error(error);
+        setIsLoading(false);
       },
     );
   }
@@ -387,6 +394,12 @@ export default function TranslatableWord({
 
   const wordClass = getWordClass(word);
 
+  // Joins the learner made, marked where they are so the one they mean can be
+  // broken. Shown with the translation, as the word's "focused" state, which
+  // keeps them out of the way while reading.
+  const showSeams =
+    !readOnly && !!word.translation && (isTranslationVisible || word.isTranslationVisible) && word.seams().length > 0;
+
   // Don't render words that have been fused into an MWE (marked for skip)
   // This prevents duplication during loading animation when fuseMWEPartners
   // has already run but the component is still mounted
@@ -453,16 +466,6 @@ export default function TranslatableWord({
                   {showingAlterMenu ? "▲" : "▼"}
                 </span>
               )}
-              {!readOnly && word.mergedTokens.length > 1 && !word.mweExpression && (
-                <span className="unlink low-oppacity translation-icon">
-                  <LinkOffIcon
-                    fontSize="8px"
-                    onClick={(e) => {
-                      unlinkLastWord(e, word);
-                    }}
-                  />
-                </span>
-              )}
             </span>
           </z-tran>
         )}
@@ -471,7 +474,24 @@ export default function TranslatableWord({
             <span className={isLoading ? " loading" : ""}> {prevWord} </span>
           ) : (
             <span className={isLoading ? " loading" : ""} onClick={(e) => clickOnWord(e, word)}>
-              {word.word}{" "}
+              {showSeams
+                ? word.pieces().map(({ text, seam }) => (
+                    <Fragment key={seam ?? 0}>
+                      {seam !== null && (
+                        <span
+                          className="seam"
+                          role="button"
+                          aria-label="Unlink here"
+                          title="Unlink here"
+                          onClick={(e) => breakSeam(e, word, seam)}
+                        >
+                          <LinkOffIcon fontSize="inherit" />
+                        </span>
+                      )}
+                      {text}
+                    </Fragment>
+                  ))
+                : word.word}{" "}
             </span>
           )}
           {showingAlterMenu && (
