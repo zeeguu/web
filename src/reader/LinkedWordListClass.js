@@ -169,9 +169,13 @@ export class Word extends Item {
       // To think more about
       api.deleteBookmark(this.prev.bookmark_id);
     }
-    // We keep track of merged tokens in case the user wants to delete the bookmark
-    this.prev.mergedTokens.push({ ...this.token });
-    this.mergedTokens = [...this.prev.mergedTokens];
+    // Keep every token from both sides, in reading order. This used to push
+    // only `this.token`, which silently dropped the rest of a multi-token
+    // word: fusing "et stykke" onto "har fundet" kept "et" and lost "stykke".
+    // Splitting rebuilds the text from this list, so a token missing here
+    // disappears from the page. fuseWithNext has always taken the whole list;
+    // this direction now matches.
+    this.mergedTokens = [...this.prev.mergedTokens, ...this.mergedTokens];
 
     this.token = this.prev.token;
     this.total_tokens += this.prev.total_tokens;
@@ -188,7 +192,7 @@ export class Word extends Item {
       api.deleteBookmark(this.next.bookmark_id);
     }
     this.total_tokens += this.next.total_tokens;
-    this.mergedTokens = this.mergedTokens.concat(...this.next.mergedTokens);
+    this.mergedTokens = [...this.mergedTokens, ...this.next.mergedTokens];
     this.next.detach();
     this.dropMWEIdentity();
     return this;
