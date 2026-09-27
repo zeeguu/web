@@ -1,10 +1,9 @@
-import { useState, useEffect, useRef } from "react";
+import { Fragment, useState, useEffect, useRef } from "react";
 import AlterMenu from "./AlterMenu";
 import extractDomain from "../utils/web/extractDomain";
 import addProtocolToLink from "../utils/web/addProtocolToLink";
 import redirect from "../utils/routing/routing";
 import LinkOffIcon from "@mui/icons-material/LinkOff";
-import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import EditBookmarkModal from "../words/EditBookmarkModal";
 import ExplanationModal from "./ExplanationModal";
 
@@ -37,6 +36,7 @@ export default function TranslatableWord({
   // calls setExplanation and the modal springs back open by itself.
   const explainRequestRef = useRef(0);
   const refToTranslation = useRef(null);
+  const breakingSeamRef = useRef(false);
   const [isClickedToPronounce, setIsClickedToPronounce] = useState(false);
   const [isWordTranslating, setIsWordTranslating] = useState(false);
   const [prevWord, setPreviousWord] = useState("");
@@ -73,8 +73,12 @@ export default function TranslatableWord({
 
     if (word.translation) {
       if (pronouncing) interactiveText.pronounce(word, null, mweTextToSpeak);
-      if ((translating && !isTranslationVisible) || (!translating && isTranslationVisible))
-        setIsTranslationVisible(!isTranslationVisible);
+      // Tapping a translated word shows or hides its translation. This is
+      // the only way to hide one: the eye icon on the chip is gone.
+      const newVisibility = inExercise || !(isTranslationVisible || word.isTranslationVisible);
+      setIsTranslationVisible(newVisibility);
+      word.isTranslationVisible = newVisibility;
+      if (!newVisibility) setShowingAlterMenu(false);
       return;
     }
     if (translating) {
@@ -149,6 +153,9 @@ export default function TranslatableWord({
   // Read-only text (the account-less public reader): translations can be
   // shown and hidden, but there's no bookmark behind them to edit or delete.
   const readOnly = !!interactiveText.readOnly;
+  // In an exercise the revealed answer is the bookmark being practised: it
+  // should not be breakable, and a tap should not hide it.
+  const inExercise = !!interactiveText.isExercise?.();
 
   function toggleAlterMenu(e, word) {
     if (readOnly) return;
@@ -159,28 +166,40 @@ export default function TranslatableWord({
     openAlterMenu(word);
   }
 
-  function unlinkLastWord(e, word) {
+  // Undo one of the learner's joins, at the seam they tapped (#1258). The
+  // fused bookmark goes, each piece gets its own translation, and nothing is
+  // reported as a detector mistake: a piece that was a detector group comes
+  // back as that group.
+  function breakSeam(e, word, seam) {
+    e.stopPropagation();
+    // A double tap would break a word that is already off the page.
+    if (breakingSeamRef.current) return;
+    breakingSeamRef.current = true;
     setIsLoading(true);
     interactiveText.api.deleteBookmark(
       word.bookmark_id,
       (response) => {
-        if (response === "OK") {
-          // delete was successful; log and close
-          let withoutLastWord = word.unlinkLastWord();
-          interactiveText.translate(withoutLastWord, true, () => {
-            withoutLastWord.isTranslationVisible = true;
-            let unlinkedWord = withoutLastWord.next;
-            interactiveText.translate(unlinkedWord, false, () => {
-              unlinkedWord.isTranslationVisible = true;
-              wordUpdated();
-              setIsLoading(false);
-            });
+        if (response !== "OK") {
+          breakingSeamRef.current = false;
+          setIsLoading(false);
+          return;
+        }
+        const pieces = word.breakAtSeam(seam);
+        // Show the break straight away, where it was tapped; translations
+        // fill in as they arrive. No fusing with neighbours, or the pieces
+        // would glue straight back together.
+        wordUpdated();
+        for (const piece of pieces) {
+          interactiveText.translate(piece, false, () => {
+            piece.isTranslationVisible = true;
+            wordUpdated();
           });
         }
       },
       (error) => {
-        // onError
         console.error(error);
+        breakingSeamRef.current = false;
+        setIsLoading(false);
       },
     );
   }
@@ -387,6 +406,12 @@ export default function TranslatableWord({
 
   const wordClass = getWordClass(word);
 
+  // Joins the learner made, marked where they are so the one they mean can be
+  // broken. Shown with the translation, as the word's "focused" state, which
+  // keeps them out of the way while reading.
+  const showSeams =
+    !readOnly && !inExercise && !!word.translation && (isTranslationVisible || word.isTranslationVisible) && word.seams().length > 0;
+
   // Don't render words that have been fused into an MWE (marked for skip)
   // This prevents duplication during loading animation when fuseMWEPartners
   // has already run but the component is still mounted
@@ -433,34 +458,12 @@ export default function TranslatableWord({
         {word.translation && (isTranslationVisible || word.isTranslationVisible) && (
           <z-tran chosen={word.translation} translation0={word.translation} ref={refToTranslation}>
             <span className="translationContainer">
-              <span className="hide low-oppacity translation-icon">
-                <VisibilityOffIcon
-                  fontSize="8px"
-                  onClick={(e) => {
-                    // Toggle both React state and word object flag
-                    const newVisibility = !(isTranslationVisible || word.isTranslationVisible);
-                    setIsTranslationVisible(newVisibility);
-                    word.isTranslationVisible = newVisibility;
-                    setShowingAlterMenu(false);
-                  }}
-                />
-              </span>
               <span className="translation" onClick={(e) => toggleAlterMenu(e, word)}>
                 {word.translation}
               </span>
               {!readOnly && (
                 <span className="arrow" onClick={(e) => toggleAlterMenu(e, word)}>
                   {showingAlterMenu ? "▲" : "▼"}
-                </span>
-              )}
-              {!readOnly && word.mergedTokens.length > 1 && !word.mweExpression && (
-                <span className="unlink low-oppacity translation-icon">
-                  <LinkOffIcon
-                    fontSize="8px"
-                    onClick={(e) => {
-                      unlinkLastWord(e, word);
-                    }}
-                  />
                 </span>
               )}
             </span>
@@ -471,9 +474,30 @@ export default function TranslatableWord({
             <span className={isLoading ? " loading" : ""}> {prevWord} </span>
           ) : (
             <span className={isLoading ? " loading" : ""} onClick={(e) => clickOnWord(e, word)}>
-              {word.word}{" "}
+              {showSeams
+                ? word.pieces().map(({ text, seam }) => (
+                    <Fragment key={seam ?? 0}>
+                      {seam !== null && (
+                        <span
+                          className="seam"
+                          role="button"
+                          aria-label="Unlink here"
+                          title="Unlink here"
+                          onClick={(e) => breakSeam(e, word, seam)}
+                        >
+                          <LinkOffIcon fontSize="inherit" />
+                        </span>
+                      )}
+                      {text}
+                    </Fragment>
+                  ))
+                : word.word}
             </span>
           )}
+          {/* The space between words sits outside the underlined span:
+              z-tag keeps it at full width (break-spaces), so inside the span
+              the underline ran on under the gap towards the next word. */}
+          {!isWordTranslating && " "}
           {showingAlterMenu && (
             <AlterMenu
               word={word}

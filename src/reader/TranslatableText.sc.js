@@ -290,6 +290,31 @@ const TranslatableText = styled.div`
     font-weight: 600;
   }
 
+  /* A join the learner made, breakable where it sits (#1258). Faint until
+   * pointed at, like the other translation controls; the padding widens the
+   * tap target on phones without pushing the words apart. */
+  z-orig span.seam {
+    border-bottom: none;
+    display: inline-flex;
+    align-items: center;
+    vertical-align: middle;
+    margin: 0 0.1em;
+    padding: 0.35em 0.15em;
+    font-size: 0.85em;
+    cursor: pointer;
+    opacity: 0.35;
+  }
+
+  z-orig span.seam:focus-visible {
+    opacity: 1;
+  }
+
+  @media (hover: hover) {
+    z-orig span.seam:hover {
+      opacity: 1;
+    }
+  }
+
   .translationContainer {
     display: flex;
     width: 100%;
@@ -305,31 +330,6 @@ const TranslatableText = styled.div`
         filter: brightness(1.5);
         filter: opacity(100%);
       }
-    }
-
-    .translation-icon {
-      font-size: 17px;
-    }
-
-    .unlink {
-      margin: 0px 0.1rem;
-      margin-left: auto;
-      padding: 0.2rem 0.3rem;
-      padding-left: -0.3rem;
-    }
-
-    .low-oppacity {
-      filter: opacity(20%);
-      :hover {
-        filter: brightness(1.5);
-        filter: opacity(100%);
-      }
-    }
-
-    .hide {
-      margin: 0px 0.1rem;
-      margin-left: -4px;
-      padding: 0.2rem 0.3rem;
     }
   }
 

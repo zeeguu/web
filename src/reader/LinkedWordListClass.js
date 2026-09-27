@@ -142,19 +142,59 @@ export class Word extends Item {
     return wordList;
   }
 
-  unlinkLastWord() {
-    let wordList = this.mergedTokens.map((each) => new Word(each));
-    this.append(wordList[0]);
+  /**
+   * The joins in this word that a learner made, as indices into
+   * `mergedTokens`: a seam at `i` sits between token `i - 1` and token `i`.
+   *
+   * Merged tokens keep the `mwe_group_id` they came with, so the detector's
+   * own joins are exactly those between two tokens of the same group. Every
+   * other join was a fusion: two groups ("har fundet" + "et stykke"), a group
+   * and a plain word, or two plain words. The last case has no group id on
+   * either side, which is why a missing id counts as a seam rather than as a
+   * match -- otherwise hand-fused plain words could never be taken apart.
+   *
+   * Derived rather than recorded, so it survives a reload: restored bookmarks
+   * rebuild `mergedTokens` from the tokenizer's tokens, ids included.
+   */
+  seams() {
+    const out = [];
+    for (let i = 1; i < this.mergedTokens.length; i++) {
+      const a = this.mergedTokens[i - 1].mwe_group_id;
+      const b = this.mergedTokens[i].mwe_group_id;
+      if (!a || a !== b) out.push(i);
+    }
+    return out;
+  }
 
-    for (let i = 0; i < wordList.length - 1; i++) {
-      wordList[i].append(wordList[i + 1]);
-    }
-    for (let i = 0; i < wordList.length - 2; i++) {
-      this.next.fuseWithNext();
-    }
-    let new_word = this.next;
+  /**
+   * The text between seams, for rendering a marker at each join.
+   * `seam` is the index `breakAtSeam` takes to split just before the piece;
+   * the first piece has none.
+   */
+  pieces() {
+    const bounds = [0, ...this.seams(), this.mergedTokens.length];
+    return bounds.slice(0, -1).map((start, k) => ({
+      text: joinTokenTexts(this.mergedTokens.slice(start, bounds[k + 1])),
+      seam: k === 0 ? null : start,
+    }));
+  }
+
+  /**
+   * Undo one learner join, leaving every other grouping as it was.
+   *
+   * This is not `splitAndClearMWE`: that says "the detector was wrong" and
+   * flattens to loose words. Here the learner is changing their mind about
+   * their own fusion, so a piece that is a whole detector group comes back as
+   * that expression, and a piece that still holds other seams stays fused.
+   *
+   * Returns the two new words, already linked in place of this one.
+   */
+  breakAtSeam(i) {
+    const [left, right] = [this.mergedTokens.slice(0, i), this.mergedTokens.slice(i)].map(wordFromTokens);
+    this.append(left);
+    left.append(right);
     this.detach();
-    return new_word;
+    return [left, right];
   }
 
   fuseWithPrevious(api) {
@@ -517,6 +557,47 @@ export default class LinkedWordList {
 }
 
 // Private functions
+
+// Join token texts the way the Word constructor does, so "și-" + "a" stays
+// "și-a" wherever the tokenizer says there was no space.
+function joinTokenTexts(tokens) {
+  return tokens.reduce((acc, t, i) => {
+    if (i === 0) return t.text.trim();
+    const separator = tokens[i - 1].has_space === false ? "" : " ";
+    return acc + separator + t.text.trim();
+  }, "");
+}
+
+// Rebuild an untranslated Word from a run of merged tokens, as breakAtSeam
+// needs for each side.
+function wordFromTokens(tokens) {
+  const clean = tokens.map((t) => {
+    const c = { ...t };
+    // Render and restoration state belongs to the word the tokens came from.
+    delete c.bookmark;
+    delete c.mergedTokens;
+    delete c.skipRender;
+    delete c.mweExpression;
+    delete c.isMwePartner;
+    return c;
+  });
+
+  const piece = new Word({ ...clean[0] });
+  piece.mergedTokens = clean;
+  piece.total_tokens = clean.length;
+  piece.word = joinTokenTexts(clean);
+
+  if (piece.seams().length > 0) {
+    // Still a learner's span, so it is not the detector's expression either.
+    piece.dropMWEIdentity();
+  } else if (clean.length > 1 && clean[0].mwe_group_id) {
+    // Exactly one detector group: give it back its expression, so it is
+    // styled and translated as the MWE it was before the fusion.
+    piece.mweExpression = piece.word;
+  }
+  return piece;
+}
+
 function splitTextIntoWords(sentList) {
   let wordList = [];
   for (let sent_i = 0; sent_i < sentList.length; sent_i++) {

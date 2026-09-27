@@ -1,4 +1,5 @@
 import { describe, it, expect, vi } from "vitest";
+import { List } from "linked-list";
 import { Word } from "./LinkedWordListClass";
 
 /**
@@ -117,5 +118,109 @@ describe("a separated MWE is never widened", () => {
 
     expect(result).toBe(separated);
     expect(result.word).toBe("an");
+  });
+});
+
+/**
+ * Breaking a fusion at the join the learner made (#1258).
+ *
+ * The seams are the joins between tokens that do not share a detector group.
+ * These run on a real linked list, because breaking relinks the pieces in
+ * place and the list is what the reader renders.
+ */
+describe("seams mark the joins the learner made", () => {
+  const g = (id) => ({ mwe_group_id: id });
+
+  /** A word whose mergedTokens carry the given group ids. */
+  const fusion = (texts, groups) => {
+    const w = word(texts[0], 1, g(groups[0]));
+    w.word = texts.join(" ");
+    w.total_tokens = texts.length;
+    w.mergedTokens = texts.map((t, i) => tok(t, 1 + i, groups[i] ? g(groups[i]) : {}));
+    return w;
+  };
+
+  it("finds the join between two detector groups, and only that one", () => {
+    const w = fusion(["har", "fundet", "et", "stykke"], ["g1", "g1", "g2", "g2"]);
+    expect(w.seams()).toEqual([2]);
+  });
+
+  it("finds no seam inside a detector group", () => {
+    const w = fusion(["har", "fundet"], ["g1", "g1"]);
+    expect(w.seams()).toEqual([]);
+  });
+
+  it("treats a join between two plain words as the learner's", () => {
+    // Nothing else could have joined them, and without this a hand fusion of
+    // plain words could never be undone once the chain icon is gone.
+    const w = fusion(["et", "stykke"], [undefined, undefined]);
+    expect(w.seams()).toEqual([1]);
+  });
+
+  it("finds the join where a plain word widened a group", () => {
+    const w = fusion(["at", "finde", "ud", "af"], [undefined, "g1", "g1", "g1"]);
+    expect(w.seams()).toEqual([1]);
+  });
+
+  it("hands the renderer the text between seams", () => {
+    const w = fusion(["har", "fundet", "et", "stykke"], ["g1", "g1", "g2", "g2"]);
+    expect(w.pieces()).toEqual([
+      { text: "har fundet", seam: null },
+      { text: "et stykke", seam: 2 },
+    ]);
+  });
+
+  it("breaks back into both detector groups, as expressions", () => {
+    const w = fusion(["har", "fundet", "et", "stykke"], ["g1", "g1", "g2", "g2"]);
+    const before = word("Forskere", 0);
+    const after = word("om", 5);
+    const list = List.from([before, w, after]);
+
+    const [left, right] = w.breakAtSeam(2);
+
+    expect(list.toArray().map((x) => x.word)).toEqual(["Forskere", "har fundet", "et stykke", "om"]);
+    expect(left.mweExpression).toBe("har fundet");
+    expect(right.mweExpression).toBe("et stykke");
+    expect(left.isMWE()).toBe(true);
+    expect(right.getMWEGroupId()).toBe("g2");
+    expect(left.translation).toBeNull();
+    expect(right.total_tokens).toBe(2);
+  });
+
+  it("breaks the middle join and leaves the others alone", () => {
+    const w = fusion(["a", "b", "c"], [undefined, undefined, undefined]);
+    List.from([w]);
+
+    const [left, right] = w.breakAtSeam(1);
+
+    expect(left.word).toBe("a");
+    expect(right.word).toBe("b c");
+    expect(right.seams()).toEqual([1]);
+  });
+
+  it("keeps a still-fused piece from claiming to be the detector's expression", () => {
+    // "har fundet et | stykke" is no longer the detector's "har fundet".
+    const w = fusion(["har", "fundet", "et", "stykke"], ["g1", "g1", undefined, undefined]);
+    List.from([w]);
+
+    const [left, right] = w.breakAtSeam(3);
+
+    expect(left.word).toBe("har fundet et");
+    expect(left.mweExpression).toBeUndefined();
+    expect(left.isMWE()).toBe(false);
+    // ...but its tokens still know, so its own seam survives.
+    expect(left.seams()).toEqual([2]);
+    expect(right.word).toBe("stykke");
+  });
+
+  it("does not carry the old bookmark into the pieces", () => {
+    const w = fusion(["et", "stykke"], [undefined, undefined]);
+    w.mergedTokens[0].bookmark = { id: 7, translation: "a piece" };
+    List.from([w]);
+
+    const [left] = w.breakAtSeam(1);
+
+    expect(left.bookmark_id).toBeUndefined();
+    expect(left.translation).toBeNull();
   });
 });
