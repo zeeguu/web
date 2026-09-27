@@ -65,13 +65,17 @@ Zeeguu_API.prototype.getOneTranslation = function (
   return this.apiPost(`/translate_word/${from_lang}/${to_lang}`, payload);
 };
 
-// ADR 022: explicit on-demand LLM translation. Called from the AlterMenu's
-// "Ask LLM" button so the (slow, paid) LLM round trip only fires when the
-// learner explicitly wants more than the 3-way vote already gave them.
-Zeeguu_API.prototype.askLlmTranslation = function (from_lang, to_lang, word, context) {
-  return this.apiPost(`/ask_llm_translation/${from_lang}/${to_lang}`, {
-    word: word,
+
+// Explain what a selection means in its sentence, for the Explain option in
+// AlterMenu. Deliberately does NOT send the translation the learner was shown:
+// handing the model an ambiguous gloss made it reason backwards and invent
+// morphology to fit. The server caches on (selection, context, languages,
+// level), so a re-tap is free.
+Zeeguu_API.prototype.explainSelection = function (from_lang, to_lang, selection, context, cefr_level) {
+  return this.apiPost(`/explain_selection/${from_lang}/${to_lang}`, {
+    selection: selection,
     context: context,
+    cefr_level: cefr_level,
   }).then((response) => response.data);
 };
 

@@ -6,6 +6,7 @@ import redirect from "../utils/routing/routing";
 import LinkOffIcon from "@mui/icons-material/LinkOff";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import EditBookmarkModal from "../words/EditBookmarkModal";
+import ExplanationModal from "./ExplanationModal";
 
 
 export default function TranslatableWord({
@@ -27,6 +28,10 @@ export default function TranslatableWord({
   setHighlightSolutionExpression,
 }) {
   const [showingAlterMenu, setShowingAlterMenu] = useState(false);
+  // Null until Explain is tapped. The selection and sentence are kept alongside
+  // the text so the modal can show what was actually asked -- and so they
+  // survive the menu closing underneath it.
+  const [explanation, setExplanation] = useState(null);
   const refToTranslation = useRef(null);
   const [isClickedToPronounce, setIsClickedToPronounce] = useState(false);
   const [isWordTranslating, setIsWordTranslating] = useState(false);
@@ -474,20 +479,32 @@ export default function TranslatableWord({
               hideAlterMenu={hideAlterMenu}
               deleteTranslation={deleteTranslation}
               ungroupMwe={ungroupMwe}
-              askLlmTranslation={(w, onDone, onErr) =>
-                interactiveText.askLlmTranslation(
+              explainSelection={(w) => {
+                const selection = w.mweExpression || w.word;
+                setExplanation({ selection, context: null, text: null, isLoading: true, error: false });
+                hideAlterMenu();
+                interactiveText.explainSelection(
                   w,
-                  (info) => {
-                    wordUpdated(w);
-                    onDone && onDone(info);
-                  },
-                  onErr,
-                )
-              }
+                  ({ selection, context, explanation }) =>
+                    setExplanation({ selection, context, text: explanation, isLoading: false, error: false }),
+                  () => setExplanation((e) => ({ ...(e || { selection }), isLoading: false, error: true })),
+                );
+              }}
             />
           )}
         </z-orig>
       </z-tag>
+      {explanation && (
+        <ExplanationModal
+          open={true}
+          onClose={() => setExplanation(null)}
+          selection={explanation.selection}
+          context={explanation.context}
+          explanation={explanation.text}
+          isLoading={explanation.isLoading}
+          error={explanation.error}
+        />
+      )}
       {bookmarkBeingEdited && (
         <EditBookmarkModal
           open={true}

@@ -23,8 +23,7 @@ function shortenSource(alt) {
 }
 
 // ADR 022: `word.alternatives` carries the full vote-ordered provider list
-// (winner at index 0) directly from /translate_word, plus any LLM-on-demand
-// result appended via askLlmTranslation. The menu shows the non-winner
+// (winner at index 0) directly from /translate_word. The menu shows the non-winner
 // entries — dedupe by normalised translation text and drop anything equal
 // to the current primary translation.
 //
@@ -69,24 +68,9 @@ export default function AlterMenu({
   editTranslation,
   deleteTranslation,
   ungroupMwe,
-  askLlmTranslation,
+  explainSelection,
 }) {
   const refToAlterMenu = useRef(null);
-  // ADR 022: Ask-LLM is opt-in. While the LLM call is in flight the row
-  // shows "Asking LLM…" and is disabled. On success we hide the button
-  // (the new alternative is now in the list). On failure we leave the
-  // button visible with an inline error so the user can retry — silently
-  // removing it would look like "the option just vanished and nothing
-  // happened," which is exactly what we got bug-reported on.
-  //
-  // Initial state is seeded from word._llmAsked so closing and reopening
-  // the menu doesn't show the button again (and let the user pay for
-  // another LLM round trip for an answer we already have). Component
-  // state alone would reset on remount.
-  const [isAskingLlm, setIsAskingLlm] = useState(false);
-  const [llmSucceeded, setLlmSucceeded] = useState(word._llmAsked === "succeeded");
-  const [llmAgreedWithPrimary, setLlmAgreedWithPrimary] = useState(word._llmAsked === "agreed");
-  const [llmError, setLlmError] = useState(false);
 
   // Close the menu as soon as the user starts scrolling — the menu is
   // viewport-fixed, so without this it'd stay floating while the trigger
@@ -195,8 +179,9 @@ export default function AlterMenu({
   } else if (hasAlternatives) {
     header = <div style={{ ...HEADER_BAND_STYLE, color: "var(--altermenu-header-text)" }}>Alternatives</div>;
   } else if (allAgreedWithPrimary) {
-    const label = llmAgreedWithPrimary ? "All providers & AI agree" : "All providers agree";
-    header = <div style={{ ...HEADER_BAND_STYLE, color: "var(--altermenu-header-text)" }}>{label}</div>;
+    header = (
+      <div style={{ ...HEADER_BAND_STYLE, color: "var(--altermenu-header-text)" }}>All providers agree</div>
+    );
   } else {
     header = <div style={{ ...HEADER_BAND_STYLE, color: "var(--altermenu-header-text)" }}>No alternatives found</div>;
   }
@@ -216,35 +201,9 @@ export default function AlterMenu({
           </div>
         ))}
       <div className="actionsSection">
-        {askLlmTranslation && !llmSucceeded && !llmAgreedWithPrimary && (
-          <div
-            className="neutralLink"
-            aria-disabled={isAskingLlm}
-            style={isAskingLlm ? { opacity: 0.7, pointerEvents: "none" } : undefined}
-            onClick={() => {
-              if (isAskingLlm) return;
-              setLlmError(false);
-              setIsAskingLlm(true);
-              askLlmTranslation(
-                word,
-                (info) => {
-                  setIsAskingLlm(false);
-                  if (info?.agreedWithPrimary) {
-                    word._llmAsked = "agreed";
-                    setLlmAgreedWithPrimary(true);
-                  } else {
-                    word._llmAsked = "succeeded";
-                    setLlmSucceeded(true);
-                  }
-                },
-                () => {
-                  setIsAskingLlm(false);
-                  setLlmError(true);
-                },
-              );
-            }}
-          >
-            {isAskingLlm ? "Asking AI…" : llmError ? "Ask AI — try again" : "Ask AI"}
+        {explainSelection && (
+          <div className="neutralLink" onClick={() => explainSelection(word)}>
+            Explain
           </div>
         )}
         {editTranslation && (

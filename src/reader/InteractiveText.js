@@ -212,48 +212,33 @@ export default class InteractiveText {
     onSuccess();
   }
 
-  // ADR 022: explicit Ask-LLM action, triggered from AlterMenu. Calls
-  // /ask_llm_translation synchronously, appends the result to
-  // word.alternatives (deduped by translation text), and fires onComplete.
-  // The LLM is the most expensive translator in the bag — gating it behind
-  // a user click means we only pay when a learner actually wants it.
-  askLlmTranslation(word, onComplete, onError) {
+  // Explain what a selection means in its sentence, for AlterMenu's Explain.
+  // Sends the selection and the surrounding sentence, and deliberately not the
+  // translation: given an ambiguous gloss the model reasons backwards from it
+  // and invents structure to fit (measured on "narrøv" -> "Foolish ass", where
+  // it fabricated a morpheme rather than reading nar + røv).
+  explainSelection(word, onComplete, onError) {
     let context;
     [context] = this.getContextAndCoordinates(word);
-    const textToTranslate = word.mweExpression || word.word;
+    const selection = word.mweExpression || word.word;
 
     this.api
-      .askLlmTranslation(this.language, localStorage.native_language, textToTranslate, context)
+      .explainSelection(
+        this.language,
+        localStorage.native_language,
+        selection,
+        context,
+        localStorage.learned_cefr_level || "A1",
+      )
       .then((result) => {
-        if (!result?.translation) {
+        if (!result?.explanation) {
           onError && onError();
           return;
         }
-        const newKey = result.translation.trim().toLowerCase();
-        const primaryKey = (word.translation || "").trim().toLowerCase();
-        const agreedWithPrimary = !!primaryKey && newKey === primaryKey;
-        const existing = (word.alternatives || []).map((a) => (a.translation || "").trim().toLowerCase());
-        // Skip the append when the LLM just confirmed the primary — the
-        // row would be filtered out by AlterMenu's buildAlternatives anyway,
-        // so pushing it would leave word.alternatives growing on repeated
-        // Ask-LLM clicks for no visible effect. The agreedWithPrimary flag
-        // below tells the menu to surface this case in the header.
-        if (!agreedWithPrimary && !existing.includes(newKey)) {
-          word.alternatives = [
-            ...(word.alternatives || []),
-            { translation: result.translation, source: result.source || "LLM", votes: 1 },
-          ];
-        }
-        // Tell the caller whether the LLM produced a genuinely new answer
-        // or just confirmed what the user already had — the AlterMenu needs
-        // that distinction to avoid the "button disappeared, nothing
-        // happened" failure mode where an LLM agreement gets filtered
-        // out of the alternatives list and the user is left blind.
-        onComplete && onComplete({ agreedWithPrimary });
+        onComplete && onComplete({ selection, context, explanation: result.explanation });
       })
-      .catch((e) => {
-        console.error("Ask-LLM translation failed:", e);
-        onError && onError(e);
+      .catch(() => {
+        onError && onError();
       });
   }
 
