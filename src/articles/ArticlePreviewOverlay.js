@@ -9,7 +9,7 @@ import { TranslatableText } from "../reader/TranslatableText";
 import useUserPreferences from "../hooks/useUserPreferences";
 import useReaderFontSize from "../hooks/useReaderFontSize";
 import { APIContext } from "../contexts/APIContext";
-import { articleSourceLabel, aiProvenanceLabel } from "../utils/misc/articleHelpers";
+import { articleSourceLabel, aiProvenanceLabel, summaryIsAiGenerated } from "../utils/misc/articleHelpers";
 import { estimateReadingTime, timeAgo } from "../utils/misc/readableTime";
 import { isMobile } from "../utils/misc/browserDetection";
 import OpenInNewRoundedIcon from "@mui/icons-material/OpenInNewRounded";
@@ -306,7 +306,7 @@ export default function ArticlePreviewOverlay({
 
           {article.summary && (
             <>
-              <s.SummaryLabel>Summary</s.SummaryLabel>
+              <s.SummaryLabel>{summaryIsAiGenerated(article) ? "AI summary" : "Summary"}</s.SummaryLabel>
               <s.Summary>
                 {interactiveSummary ? (
                   <TranslatableText

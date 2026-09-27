@@ -49,3 +49,20 @@ export function aiProvenanceLabel(article) {
   if (article.has_uploader) return null;
   return article.summary ? "AI summary" : null;
 }
+
+// Whether THIS article's summary is model-written, as opposed to which single
+// mark the card carries. The two differ: aiProvenanceLabel is exclusive and
+// simplification wins, so a simplified article says "AI-simplified" and never
+// discloses that its summary is generated too. The heading sitting directly
+// above the generated text is the disclosure a reader actually sees, so it
+// needs the narrower question answered on its own.
+//
+// Same reasoning as above, same direction of error: a simplified copy is
+// machine-written throughout even where it inherits an uploader, while an
+// uploaded text's summary is the constructor's truncation of the author's own
+// prose and must not be claimed as AI.
+export function summaryIsAiGenerated(article) {
+  if (!article.summary) return false;
+  if (isSimplifiedArticle(article)) return true;
+  return !article.has_uploader;
+}
