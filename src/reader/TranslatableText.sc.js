@@ -1,9 +1,11 @@
 import styled, { keyframes, css } from "styled-components";
-import { almostBlack, zeeguuOrange, zeeguuTransparentMediumOrange, orange600 } from "../components/colors";
+import { almostBlack, zeeguuOrange, zeeguuTransparentMediumOrange, orange600, orange800 } from "../components/colors";
 
 const TranslatableText = styled.div`
-  /* MWE adjacent color - matches single-word zeeguuOrange */
-  --mwe-adjacent-color: ${zeeguuOrange};
+  /* Translated-word color (text + dashed underline). orange800 rather than
+     zeeguuOrange: the brand orange is ~1.6:1 on the cream background and
+     hard to read on phones; orange800 is ~4.7:1 (WCAG AA). */
+  --mwe-adjacent-color: ${orange800};
   --mwe-adjacent-bg: rgb(255, 240, 220);
 
   /* Dark mode: softer, less saturated orange for the highlight, and a
@@ -72,7 +74,7 @@ const TranslatableText = styled.div`
 
   .loading {
     animation: blink 0.75s linear infinite alternate;
-    color: ${zeeguuOrange};
+    color: var(--mwe-adjacent-color);
   }
 
   /* ========================================================================
