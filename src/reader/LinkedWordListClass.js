@@ -177,6 +177,7 @@ export class Word extends Item {
     this.total_tokens += this.prev.total_tokens;
 
     this.prev.detach();
+    this.dropMWEIdentity();
     return this;
   }
 
@@ -189,7 +190,37 @@ export class Word extends Item {
     this.total_tokens += this.next.total_tokens;
     this.mergedTokens = this.mergedTokens.concat(...this.next.mergedTokens);
     this.next.detach();
+    this.dropMWEIdentity();
     return this;
+  }
+
+  /**
+   * After a fusion has widened this word past the detector's grouping, it is
+   * no longer that grouping -- it is a span the learner built.
+   *
+   * This matters beyond tidiness. fuseMWEPartners sets `mweExpression`, and
+   * InteractiveText translates `word.mweExpression || word.word`, so a stale
+   * `mweExpression` means the learner sees "at finde ud af" fused and gets a
+   * translation of "finde ud af". The fused text lives in `this.word`, so the
+   * expression has to go with the grouping.
+   *
+   * The token is copied before its MWE fields are removed: it is shared with
+   * the paragraph structure, and deleting in place would strip the styling
+   * from tokens that are still rendered.
+   */
+  dropMWEIdentity() {
+    if (!this.mweExpression && !this.token?.mwe_group_id) return;
+
+    delete this.mweExpression;
+    delete this.isMwePartner;
+
+    if (this.token?.mwe_group_id) {
+      this.token = { ...this.token };
+      delete this.token.mwe_group_id;
+      delete this.token.mwe_role;
+      delete this.token.mwe_is_separated;
+      delete this.token.mwe_partner_indices;
+    }
   }
 
   fuseWithNeighborsIfNeeded(api) {
@@ -198,6 +229,15 @@ export class Word extends Item {
     // translations to the DB; we used to do that; but it was just
     // polluting the DB
     let newWord = this;
+
+    // A separated MWE cannot be widened from either end: "extend" is not a
+    // coherent operation on a discontinuous span, and the backend saves no
+    // bookmark for one (zeeguu/api#769), so the result would have nowhere to
+    // persist. Enforced here rather than at the call sites, because
+    // PublicInteractiveText reaches this method by its own path.
+    if (this.token?.mwe_group_id && this.token?.mwe_is_separated) {
+      return newWord;
+    }
 
     // A contiguous MWE can be extended: fusing onto it widens the unit, which
     // is how a learner repairs a grouping the detector made too narrow. The

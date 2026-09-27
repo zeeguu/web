@@ -41,6 +41,13 @@ export default class PublicInteractiveText extends InteractiveText {
         onSuccess();
         return;
       }
+      // A contiguous MWE can still take an already-translated neighbour, so
+      // the expression widens in the same gesture. fuseWithNeighborsIfNeeded
+      // refuses separated MWEs itself. Kept in step with InteractiveText: the
+      // two readers should group identically.
+      if (fuseWithNeighbours) {
+        word = word.fuseWithNeighborsIfNeeded(this.api);
+      }
       if (onFusionComplete) onFusionComplete();
     } else if (fuseWithNeighbours) {
       word = word.fuseWithNeighborsIfNeeded(this.api);
