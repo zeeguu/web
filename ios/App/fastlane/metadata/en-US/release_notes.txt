@@ -1,10 +1,9 @@
-Article cards, rebuilt around the photo.
+Explain any word, in the sentence you are reading.
 
-In the feed:
-- The photo now comes first on every card. A picture tells you what an article is about before you have to read a headline in a language you are still learning.
-- The photo also says where tapping will take you: Read for an article you can read inside Zeeguu, Summary for one that opens a summary first.
-- Save sits on the photo, and Hide has moved into the … menu beside the article details, so it stays out of the way until you want it.
-- The three feed views — Headlines, Preview and Interactive — now look and behave the same.
+- Tap a translation and choose Explain. You get what the word means right there: the parts it is built from if it is a compound, the whole meaning if it is an idiom, whether it is formal or rude, and the dictionary form. A Danish word like "narrøv" translated as "foolish ass" now tells you it is "nar" (fool) plus "røv" (arse), rather than leaving you to guess.
+- Explain replaces Ask AI, which fetched another translation rather than explaining anything.
+- Bulgarian is now available to learn, with news, audio lessons and exercises.
 
 Also:
-- Summaries no longer get cut off mid-word on wider screens.
+- The summary on an article now says when it was written by AI, above the text rather than only on the card.
+- Article cards put the topic on one line and the source on the next, so the line no longer breaks in the middle and starts with a dot.

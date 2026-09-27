@@ -1,0 +1,5 @@
+- Tap a translation and choose Explain: what the word means in that sentence, its parts if it is a compound, the whole meaning if it is an idiom, and whether it is formal or rude.
+- Explain replaces Ask AI, which fetched another translation rather than explaining anything.
+- Bulgarian is now available to learn, with news, audio lessons and exercises.
+- Summaries now say when they were written by AI.
+- Article cards keep the topic and the source on separate lines.
