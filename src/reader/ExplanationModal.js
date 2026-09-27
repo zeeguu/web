@@ -2,6 +2,7 @@ import Modal from "../components/modal_shared/Modal";
 import Header from "../components/modal_shared/Header.sc";
 import ModalTitle from "../components/modal_shared/ModalTitle.sc";
 import Main from "../components/modal_shared/Main.sc";
+import CircularProgress from "@mui/material/CircularProgress";
 
 /**
  * What a selected word or phrase means in the sentence it was read in.
@@ -33,7 +34,23 @@ export default function ExplanationModal({ open, onClose, selection, context, ex
         )}
 
         <div id="explanation-body">
-          {isLoading && <p style={{ color: "var(--text-muted)" }}>Working it out…</p>}
+          {/* Two to three seconds of Sonnet. Long enough that a line of text
+              alone reads as a stalled modal, so the spinner carries the
+              waiting and the line says what is being waited for. */}
+          {isLoading && (
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                gap: "0.75rem",
+                padding: "1.5rem 0",
+              }}
+            >
+              <CircularProgress size={24} sx={{ color: "var(--link-color)" }} />
+              <span style={{ color: "var(--text-muted)" }}>Working it out…</span>
+            </div>
+          )}
 
           {error && !isLoading && (
             <p>
