@@ -148,3 +148,15 @@ describe("breaking a seam", () => {
     expect(text.api.deleteBookmark).toHaveBeenCalledTimes(1);
   });
 });
+
+describe("the underline under a translated word", () => {
+  it("stops at the word, leaving the space after it outside", () => {
+    const w = new Word(tok("skib", 7));
+    w.translation = "ship";
+    w.isTranslationVisible = true;
+    const { container } = renderWord(w, interactiveTextFor());
+
+    expect(container.querySelector("z-orig > span").textContent).toBe("skib");
+    expect(container.querySelector("z-orig").textContent).toBe("skib ");
+  });
+});

@@ -491,9 +491,13 @@ export default function TranslatableWord({
                       {text}
                     </Fragment>
                   ))
-                : word.word}{" "}
+                : word.word}
             </span>
           )}
+          {/* The space between words sits outside the underlined span:
+              z-tag keeps it at full width (break-spaces), so inside the span
+              the underline ran on under the gap towards the next word. */}
+          {!isWordTranslating && " "}
           {showingAlterMenu && (
             <AlterMenu
               word={word}
