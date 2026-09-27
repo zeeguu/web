@@ -160,3 +160,55 @@ describe("the underline under a translated word", () => {
     expect(container.querySelector("z-orig").textContent).toBe("skib ");
   });
 });
+
+describe("a piece waiting for its translation after a break", () => {
+  const pending = () => {
+    const w = new Word(tok("stykke", 4));
+    w.isPendingTranslation = true;
+    return w;
+  };
+
+  it("keeps a blinking chip above it, so the row does not jump", () => {
+    const { container } = renderWord(pending(), interactiveTextFor());
+
+    expect(container.querySelector("z-tran.pending")).not.toBeNull();
+    expect(container.querySelector("z-orig").textContent).toBe("stykke ");
+  });
+
+  it("ignores taps, which would fuse it back onto its neighbour", () => {
+    const text = interactiveTextFor();
+    renderWord(pending(), text);
+
+    fireEvent.click(screen.getByText("stykke"));
+
+    expect(text.translate).not.toHaveBeenCalled();
+  });
+
+  it("drops the chip once the translation is in", () => {
+    const w = pending();
+    w.translation = "piece";
+    w.isTranslationVisible = true;
+    const { container } = renderWord(w, interactiveTextFor());
+
+    expect(container.querySelector("z-tran.pending")).toBeNull();
+    expect(screen.getByText("piece")).toBeTruthy();
+  });
+
+  it("marks both pieces as waiting, and lets go of one whose translation fails", () => {
+    const text = interactiveTextFor();
+    const settled = [];
+    text.translate = vi.fn((piece, fuse, onSuccess, onFusion, onError) => {
+      expect(piece.isPendingTranslation).toBe(true);
+      settled.push(piece);
+      piece.word === "har fundet" ? onError() : onSuccess();
+    });
+    renderWord(harFundetEtStykke(), text);
+
+    fireEvent.click(screen.getByRole("button", { name: "Unlink here" }));
+
+    expect(settled.map((p) => [p.word, p.isPendingTranslation])).toEqual([
+      ["har fundet", false],
+      ["et stykke", false],
+    ]);
+  });
+});

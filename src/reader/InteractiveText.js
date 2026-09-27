@@ -72,7 +72,7 @@ export default class InteractiveText {
     return isExerciseSource(this.source);
   }
 
-  translate(word, fuseWithNeighbours, onSuccess, onFusionComplete = null) {
+  translate(word, fuseWithNeighbours, onSuccess, onFusionComplete = null, onError = null) {
     let context, cParagraph_i, cSent_i, cToken_i, leftEllipsis, rightEllipsis;
 
     [context, cParagraph_i, cSent_i, cToken_i, leftEllipsis, rightEllipsis] = this.getContextAndCoordinates(word);
@@ -193,6 +193,7 @@ export default class InteractiveText {
       })
       .catch((e) => {
         console.error("Translation failed:", e);
+        onError && onError();
       });
 
     this.api.logUserActivity(this.translationEvent, null, word.word, this.source, this.sourceId);
