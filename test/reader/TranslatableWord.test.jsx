@@ -113,3 +113,38 @@ describe("tapping a translated word", () => {
     expect(container.querySelector("z-tran .hide")).toBeNull();
   });
 });
+
+describe("in an exercise", () => {
+  const inExercise = () => ({ ...interactiveTextFor(), isExercise: () => true });
+
+  it("shows no seam markers on the revealed answer, which is the bookmark being practised", () => {
+    renderWord(harFundetEtStykke(), inExercise());
+
+    expect(screen.queryByRole("button", { name: "Unlink here" })).toBeNull();
+  });
+
+  it("does not hide the revealed answer when it is tapped", () => {
+    const w = new Word(tok("skib", 7));
+    w.translation = "ship";
+    w.isTranslationVisible = true;
+    renderWord(w, inExercise());
+
+    fireEvent.click(screen.getByText("skib"));
+
+    expect(screen.getByText("ship")).toBeTruthy();
+  });
+});
+
+describe("breaking a seam", () => {
+  it("ignores a second tap while the first is still in flight", () => {
+    const text = interactiveTextFor();
+    text.api.deleteBookmark = vi.fn(); // never answers
+    renderWord(harFundetEtStykke(), text);
+    const marker = screen.getByRole("button", { name: "Unlink here" });
+
+    fireEvent.click(marker);
+    fireEvent.click(marker);
+
+    expect(text.api.deleteBookmark).toHaveBeenCalledTimes(1);
+  });
+});

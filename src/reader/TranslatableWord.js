@@ -36,6 +36,7 @@ export default function TranslatableWord({
   // calls setExplanation and the modal springs back open by itself.
   const explainRequestRef = useRef(0);
   const refToTranslation = useRef(null);
+  const breakingSeamRef = useRef(false);
   const [isClickedToPronounce, setIsClickedToPronounce] = useState(false);
   const [isWordTranslating, setIsWordTranslating] = useState(false);
   const [prevWord, setPreviousWord] = useState("");
@@ -74,7 +75,7 @@ export default function TranslatableWord({
       if (pronouncing) interactiveText.pronounce(word, null, mweTextToSpeak);
       // Tapping a translated word shows or hides its translation. This is
       // the only way to hide one: the eye icon on the chip is gone.
-      const newVisibility = !(isTranslationVisible || word.isTranslationVisible);
+      const newVisibility = inExercise || !(isTranslationVisible || word.isTranslationVisible);
       setIsTranslationVisible(newVisibility);
       word.isTranslationVisible = newVisibility;
       if (!newVisibility) setShowingAlterMenu(false);
@@ -152,6 +153,9 @@ export default function TranslatableWord({
   // Read-only text (the account-less public reader): translations can be
   // shown and hidden, but there's no bookmark behind them to edit or delete.
   const readOnly = !!interactiveText.readOnly;
+  // In an exercise the revealed answer is the bookmark being practised: it
+  // should not be breakable, and a tap should not hide it.
+  const inExercise = !!interactiveText.isExercise?.();
 
   function toggleAlterMenu(e, word) {
     if (readOnly) return;
@@ -168,11 +172,15 @@ export default function TranslatableWord({
   // back as that group.
   function breakSeam(e, word, seam) {
     e.stopPropagation();
+    // A double tap would break a word that is already off the page.
+    if (breakingSeamRef.current) return;
+    breakingSeamRef.current = true;
     setIsLoading(true);
     interactiveText.api.deleteBookmark(
       word.bookmark_id,
       (response) => {
         if (response !== "OK") {
+          breakingSeamRef.current = false;
           setIsLoading(false);
           return;
         }
@@ -190,6 +198,7 @@ export default function TranslatableWord({
       },
       (error) => {
         console.error(error);
+        breakingSeamRef.current = false;
         setIsLoading(false);
       },
     );
@@ -401,7 +410,7 @@ export default function TranslatableWord({
   // broken. Shown with the translation, as the word's "focused" state, which
   // keeps them out of the way while reading.
   const showSeams =
-    !readOnly && !!word.translation && (isTranslationVisible || word.isTranslationVisible) && word.seams().length > 0;
+    !readOnly && !inExercise && !!word.translation && (isTranslationVisible || word.isTranslationVisible) && word.seams().length > 0;
 
   // Don't render words that have been fused into an MWE (marked for skip)
   // This prevents duplication during loading animation when fuseMWEPartners

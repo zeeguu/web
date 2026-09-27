@@ -66,6 +66,12 @@ export default class InteractiveText {
     return this.paragraphsAsLinkedWordLists;
   }
 
+  // Exercises show the learner's own bookmarks as the thing being studied,
+  // so the reader's editing controls stay off there.
+  isExercise() {
+    return isExerciseSource(this.source);
+  }
+
   translate(word, fuseWithNeighbours, onSuccess, onFusionComplete = null) {
     let context, cParagraph_i, cSent_i, cToken_i, leftEllipsis, rightEllipsis;
 
