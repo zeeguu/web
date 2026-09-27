@@ -141,13 +141,17 @@ const TranslatableText = styled.div`
   z-tag.mwe-adjacent z-orig {
     color: var(--mwe-adjacent-color) !important;
     font-weight: 600;
+  }
+  /* On the word, not on z-orig: z-orig also holds the space after it, and
+   * an underline there runs on into the next expression's, so two
+   * expressions side by side read as one. */
+  z-tag.mwe-adjacent z-orig span {
+    border: none !important;
+  }
+  z-tag.mwe-adjacent z-orig > span {
     text-decoration: underline dotted var(--mwe-adjacent-color);
     text-decoration-thickness: 2px;
     text-underline-offset: 3px;
-  }
-  z-tag.mwe-adjacent z-orig span {
-    text-decoration: none !important;
-    border: none !important;
   }
   z-tag.mwe-adjacent z-tran {
     background-color: var(--mwe-adjacent-bg) !important;
@@ -187,13 +191,14 @@ const TranslatableText = styled.div`
   z-tag[class*="mwe-color-"]:not(.mwe-hover-hint) z-orig {
     color: var(--mwe-color) !important;
     font-weight: 600;
+  }
+  z-tag[class*="mwe-color-"]:not(.mwe-hover-hint) z-orig span {
+    border: none !important;
+  }
+  z-tag[class*="mwe-color-"]:not(.mwe-hover-hint) z-orig > span {
     text-decoration: underline dotted var(--mwe-color);
     text-decoration-thickness: 2px;
     text-underline-offset: 3px;
-  }
-  z-tag[class*="mwe-color-"]:not(.mwe-hover-hint) z-orig span {
-    text-decoration: none !important;
-    border: none !important;
   }
   z-tag[class*="mwe-color-"]:not(.mwe-hover-hint) z-tran {
     background-color: var(--mwe-tran-bg) !important;
