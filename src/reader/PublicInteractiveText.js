@@ -35,15 +35,12 @@ export default class PublicInteractiveText extends InteractiveText {
       return;
     }
 
-    if (word.isMWE && word.isMWE()) {
-      word = word.fuseMWEPartners(this.api);
-      if (word === null) {
-        onSuccess();
-        return;
-      }
-      if (onFusionComplete) onFusionComplete();
-    } else if (fuseWithNeighbours) {
-      word = word.fuseWithNeighborsIfNeeded(this.api);
+    // Fusion, including MWE collapsing and widening, lives on Word so both
+    // readers behave identically. Null means a partner already has it.
+    word = word.fuseForTranslation(this.api, fuseWithNeighbours, onFusionComplete);
+    if (word === null) {
+      onSuccess();
+      return;
     }
 
     const textToTranslate = word.mweExpression || word.word;
