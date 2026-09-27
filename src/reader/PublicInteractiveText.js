@@ -35,22 +35,12 @@ export default class PublicInteractiveText extends InteractiveText {
       return;
     }
 
-    if (word.isMWE && word.isMWE()) {
-      word = word.fuseMWEPartners(this.api);
-      if (word === null) {
-        onSuccess();
-        return;
-      }
-      // A contiguous MWE can still take an already-translated neighbour, so
-      // the expression widens in the same gesture. fuseWithNeighborsIfNeeded
-      // refuses separated MWEs itself. Kept in step with InteractiveText: the
-      // two readers should group identically.
-      if (fuseWithNeighbours) {
-        word = word.fuseWithNeighborsIfNeeded(this.api);
-      }
-      if (onFusionComplete) onFusionComplete();
-    } else if (fuseWithNeighbours) {
-      word = word.fuseWithNeighborsIfNeeded(this.api);
+    // Fusion, including MWE collapsing and widening, lives on Word so both
+    // readers behave identically. Null means a partner already has it.
+    word = word.fuseForTranslation(this.api, fuseWithNeighbours, onFusionComplete);
+    if (word === null) {
+      onSuccess();
+      return;
     }
 
     const textToTranslate = word.mweExpression || word.word;

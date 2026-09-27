@@ -195,6 +195,36 @@ export class Word extends Item {
   }
 
   /**
+   * Resolve which word should actually be translated when this one is tapped,
+   * performing whatever fusion that implies.
+   *
+   * Tapping any member of an MWE translates the expression, and a contiguous
+   * expression can still take an already-translated neighbour, so one tap can
+   * both collapse a group and widen it. Everything else fuses with translated
+   * neighbours only.
+   *
+   * Returns the word to translate, or null when a partner already carries the
+   * translation and a second one would duplicate it.
+   *
+   * Lives here rather than in the readers because InteractiveText and
+   * PublicInteractiveText both need it and had drifted apart: the public
+   * reader could fuse onto an MWE but an MWE could not take a neighbour.
+   *
+   * `onMWEFusion` fires only when partners were collapsed, which is when the
+   * caller needs to re-render to show the fused word.
+   */
+  fuseForTranslation(api, fuseWithNeighbours, onMWEFusion = null) {
+    if (this.isMWE()) {
+      const fused = this.fuseMWEPartners(api);
+      if (fused === null) return null;
+      const result = fuseWithNeighbours ? fused.fuseWithNeighborsIfNeeded(api) : fused;
+      if (onMWEFusion) onMWEFusion();
+      return result;
+    }
+    return fuseWithNeighbours ? this.fuseWithNeighborsIfNeeded(api) : this;
+  }
+
+  /**
    * After a fusion has widened this word past the detector's grouping, it is
    * no longer that grouping -- it is a span the learner built.
    *
