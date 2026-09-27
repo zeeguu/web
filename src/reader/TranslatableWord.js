@@ -56,6 +56,9 @@ export default function TranslatableWord({
 
   function clickOnWord(e, word) {
     if (word.token.is_like_num || (word.token.is_punct && word.word.length === 1)) return;
+    // Already on its way, and translating again would fuse it with its
+    // neighbour -- the join the learner just broke.
+    if (word.isPendingTranslation) return;
 
     // Compute MWE expression BEFORE any fusion happens (for pronunciation)
     // Must do this early because translate() will detach partner words
@@ -185,15 +188,28 @@ export default function TranslatableWord({
           return;
         }
         const pieces = word.breakAtSeam(seam);
-        // Show the break straight away, where it was tapped; translations
-        // fill in as they arrive. No fusing with neighbours, or the pieces
+        // Show the break straight away, where it was tapped. Until each
+        // translation arrives the piece keeps its place with a blinking
+        // empty chip, so the row does not jump and the learner can see the
+        // translation is coming. No fusing with neighbours, or the pieces
         // would glue straight back together.
+        for (const piece of pieces) piece.isPendingTranslation = true;
         wordUpdated();
         for (const piece of pieces) {
-          interactiveText.translate(piece, false, () => {
-            piece.isTranslationVisible = true;
+          const settle = () => {
+            piece.isPendingTranslation = false;
             wordUpdated();
-          });
+          };
+          interactiveText.translate(
+            piece,
+            false,
+            () => {
+              piece.isTranslationVisible = true;
+              settle();
+            },
+            null,
+            settle,
+          );
         }
       },
       (error) => {
@@ -437,7 +453,9 @@ export default function TranslatableWord({
     );
 
   // Render simple (non-translated) word: no translation yet, or translation disabled (e.g., in exercises)
-  if ((!isWordTranslating && !word.translation && !isClickedToPronounce) || disableTranslation) {
+  const isPending = !!word.isPendingTranslation && !word.translation;
+
+  if ((!isWordTranslating && !word.translation && !isClickedToPronounce && !isPending) || disableTranslation) {
     return (
       <>
         <z-tag
@@ -455,6 +473,18 @@ export default function TranslatableWord({
   return (
     <>
       <z-tag class={wordClass} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
+        {isPending && (
+          <z-tran class="pending" aria-label="Translating">
+            <span className="translationContainer">
+              <span className="translation">{"\u00a0"}</span>
+              {/* Holds the chip at a real chip's height, so nothing moves
+                  when the translation lands. */}
+              <span className="arrow" aria-hidden="true" style={{ visibility: "hidden" }}>
+                ▼
+              </span>
+            </span>
+          </z-tran>
+        )}
         {word.translation && (isTranslationVisible || word.isTranslationVisible) && (
           <z-tran chosen={word.translation} translation0={word.translation} ref={refToTranslation}>
             <span className="translationContainer">

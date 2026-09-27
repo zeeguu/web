@@ -279,6 +279,11 @@ const TranslatableText = styled.div`
     display: flex;
   }
 
+  /* A piece of a just-broken fusion, waiting for its own translation. */
+  z-tag z-tran.pending {
+    animation: blink 0.75s linear infinite alternate;
+  }
+
   z-orig span {
     border-bottom: 1px dashed var(--mwe-adjacent-color);
     border-radius: 0.35rem;
