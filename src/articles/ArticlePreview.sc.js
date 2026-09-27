@@ -376,6 +376,35 @@ const PreviewClampedSummary = styled(ClampedSummary)`
   -webkit-line-clamp: 2;
 `;
 
+// The card's metadata as two rows on a phone: what the article IS (topic,
+// AI provenance, saved) above where it CAME FROM (source, age, length).
+//
+// One wrapping strip put them on one line and let it break wherever it ran
+// out of room, so a phone routinely produced a second line starting with the
+// "·" separator -- "politiken.dk" ending line one and "· 21 hours ago · ~2min"
+// beginning line two. Splitting on meaning rather than on available width
+// means the break lands in the same place every time, and never before a
+// separator.
+//
+// Desktop keeps a single line: there the strip fits, and a second row would
+// cost a line of height on every card in a dense list.
+const MetaRows = styled.div`
+  > * + * {
+    margin-top: 0.15em;
+  }
+
+  @media (min-width: 768px) {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    column-gap: 0.6em;
+
+    > * + * {
+      margin-top: 8px;
+    }
+  }
+`;
+
 // The meta line and, at its end, the overflow that carries Hide. Hiding is
 // rare and one-way, so it does not earn a permanent control next to Save --
 // but it stays one tap away rather than buried in a menu elsewhere.
@@ -526,6 +555,7 @@ export {
   TitleContainer,
   ContentColumn,
   MetaRow,
+  MetaRows,
   OverflowButton,
   ImageOpenPill,
   PreviewCardClickable,

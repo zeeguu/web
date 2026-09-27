@@ -449,50 +449,57 @@ export default function ArticlePreview({
 
     // Shared between the Preview (image + summary) and Headlines (compact)
     // layouts so the meta/image markup isn't duplicated across the two.
+    // Two rows on a phone, one line on desktop: what the article is, then
+    // where it came from. See MetaRows for why the split is by meaning rather
+    // than letting a single strip wrap wherever it runs out of width.
     const metaStrip = (
-      <MetaStrip>
-        {classTags}
-        {uploaderItem}
-        {article.topics_list &&
-          article.topics_list.map(([topicTitle]) => <MetaTag key={topicTitle}>{topicTitle}</MetaTag>)}
-        {article.matched_searches &&
-          article.matched_searches.map((search) => (
-            <MetaItem key={`search-${search}`}>
-              🔍&nbsp;
+      <s.MetaRows>
+        <MetaStrip>
+          {classTags}
+          {article.topics_list &&
+            article.topics_list.map(([topicTitle]) => <MetaTag key={topicTitle}>{topicTitle}</MetaTag>)}
+          {aiLabel && <MetaTag>{aiLabel}</MetaTag>}
+          {savedTag}
+        </MetaStrip>
+        <MetaStrip>
+          {uploaderItem}
+          {article.matched_searches &&
+            article.matched_searches.map((search) => (
+              <MetaItem key={`search-${search}`}>
+                🔍&nbsp;
+                <MetaLink
+                  as={Link}
+                  to={`/search?search=${encodeURIComponent(search)}`}
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  {search}
+                </MetaLink>
+              </MetaItem>
+            ))}
+          {sourceLabel && (
+            <MetaItem>
               <MetaLink
-                as={Link}
-                to={`/search?search=${encodeURIComponent(search)}`}
+                className="muted"
+                href={article.parent_url || article.url}
+                target="_blank"
+                rel="noopener noreferrer"
                 onClick={(e) => e.stopPropagation()}
               >
-                {search}
+                {sourceLabel}
               </MetaLink>
             </MetaItem>
-          ))}
-        {aiLabel && <MetaTag>{aiLabel}</MetaTag>}
-        {savedTag}
-        {sourceLabel && (
-          <MetaItem>
-            <MetaLink
-              className="muted"
-              href={article.parent_url || article.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              onClick={(e) => e.stopPropagation()}
-            >
-              {sourceLabel}
-            </MetaLink>
-          </MetaItem>
-        )}
-        {publishedTimeSlot}
-        {(article.metrics?.word_count || article.word_count) > 0 && (
-          <MetaItem>
-            ~
-            {estimateReadingTime(article.metrics?.word_count || article.word_count || 0)
-              .replace(" minutes", "min")
-              .replace(" minute", "min")}
-          </MetaItem>
-        )}
-      </MetaStrip>
+          )}
+          {publishedTimeSlot}
+          {(article.metrics?.word_count || article.word_count) > 0 && (
+            <MetaItem>
+              ~
+              {estimateReadingTime(article.metrics?.word_count || article.word_count || 0)
+                .replace(" minutes", "min")
+                .replace(" minute", "min")}
+            </MetaItem>
+          )}
+        </MetaStrip>
+      </s.MetaRows>
     );
 
     const imageEl = hasImage ? (
