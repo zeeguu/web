@@ -4,7 +4,6 @@ import extractDomain from "../utils/web/extractDomain";
 import addProtocolToLink from "../utils/web/addProtocolToLink";
 import redirect from "../utils/routing/routing";
 import LinkOffIcon from "@mui/icons-material/LinkOff";
-import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import EditBookmarkModal from "../words/EditBookmarkModal";
 import ExplanationModal from "./ExplanationModal";
 
@@ -73,8 +72,12 @@ export default function TranslatableWord({
 
     if (word.translation) {
       if (pronouncing) interactiveText.pronounce(word, null, mweTextToSpeak);
-      if ((translating && !isTranslationVisible) || (!translating && isTranslationVisible))
-        setIsTranslationVisible(!isTranslationVisible);
+      // Tapping a translated word shows or hides its translation. This is
+      // the only way to hide one: the eye icon on the chip is gone.
+      const newVisibility = !(isTranslationVisible || word.isTranslationVisible);
+      setIsTranslationVisible(newVisibility);
+      word.isTranslationVisible = newVisibility;
+      if (!newVisibility) setShowingAlterMenu(false);
       return;
     }
     if (translating) {
@@ -446,18 +449,6 @@ export default function TranslatableWord({
         {word.translation && (isTranslationVisible || word.isTranslationVisible) && (
           <z-tran chosen={word.translation} translation0={word.translation} ref={refToTranslation}>
             <span className="translationContainer">
-              <span className="hide low-oppacity translation-icon">
-                <VisibilityOffIcon
-                  fontSize="8px"
-                  onClick={(e) => {
-                    // Toggle both React state and word object flag
-                    const newVisibility = !(isTranslationVisible || word.isTranslationVisible);
-                    setIsTranslationVisible(newVisibility);
-                    word.isTranslationVisible = newVisibility;
-                    setShowingAlterMenu(false);
-                  }}
-                />
-              </span>
               <span className="translation" onClick={(e) => toggleAlterMenu(e, word)}>
                 {word.translation}
               </span>

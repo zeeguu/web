@@ -331,24 +331,6 @@ const TranslatableText = styled.div`
         filter: opacity(100%);
       }
     }
-
-    .translation-icon {
-      font-size: 17px;
-    }
-
-    .low-oppacity {
-      filter: opacity(20%);
-      :hover {
-        filter: brightness(1.5);
-        filter: opacity(100%);
-      }
-    }
-
-    .hide {
-      margin: 0px 0.1rem;
-      margin-left: -4px;
-      padding: 0.2rem 0.3rem;
-    }
   }
 
   /* ========================================================================

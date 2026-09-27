@@ -88,3 +88,28 @@ describe("seam markers", () => {
     expect(screen.queryByRole("button", { name: "Unlink here" })).toBeNull();
   });
 });
+
+describe("tapping a translated word", () => {
+  const translated = () => {
+    const w = new Word(tok("skib", 7));
+    w.translation = "ship";
+    w.isTranslationVisible = true;
+    return w;
+  };
+
+  it("hides its translation, and shows it again on the next tap", () => {
+    renderWord(translated(), interactiveTextFor());
+    expect(screen.getByText("ship")).toBeTruthy();
+
+    fireEvent.click(screen.getByText("skib"));
+    expect(screen.queryByText("ship")).toBeNull();
+
+    fireEvent.click(screen.getByText("skib"));
+    expect(screen.getByText("ship")).toBeTruthy();
+  });
+
+  it("offers no eye icon to do the same", () => {
+    const { container } = renderWord(translated(), interactiveTextFor());
+    expect(container.querySelector("z-tran .hide")).toBeNull();
+  });
+});

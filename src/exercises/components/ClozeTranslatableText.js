@@ -11,9 +11,7 @@ import { orange600 } from "../../components/colors";
 // drops to the pale `--mwe-adjacent-color` and looks like a step-down.
 // Setting the CSS variable on a parent doesn't work because
 // s.TranslatableText re-declares it, so override color/decoration-color
-// directly. Also hides the chip's "hide translation" eye icon — not
-// useful in an exercise where the translation is the point of the
-// solution view.
+// directly.
 const ExerciseTargetEmphasis = styled.div`
   /* Three bookmark-shape variants the rules cover:
      - Contiguous MWE → z-tag.mwe-adjacent
@@ -39,14 +37,13 @@ const ExerciseTargetEmphasis = styled.div`
     font-weight: 700 !important;
   }
   /* Chip styling — applies to any chip rendered in the exercise
-     context. pointer-events:none + hiding the hide-eye and ▼ keeps
-     the chip a static study annotation. */
+     context. pointer-events:none + hiding the ▼ keeps the chip a
+     static study annotation. */
   &&& z-tag z-tran {
     pointer-events: none;
     font-size: 0.95em !important;
     animation: cloze-chip-reveal 280ms ease-out;
   }
-  &&& z-tag z-tran .hide,
   &&& z-tag z-tran .arrow {
     display: none !important;
   }
