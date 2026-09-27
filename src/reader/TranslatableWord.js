@@ -32,6 +32,10 @@ export default function TranslatableWord({
   // the text so the modal can show what was actually asked -- and so they
   // survive the menu closing underneath it.
   const [explanation, setExplanation] = useState(null);
+  // Explain takes a couple of seconds. Closing the modal while it is still
+  // working has to actually close it: without this token the late response
+  // calls setExplanation and the modal springs back open by itself.
+  const explainRequestRef = useRef(0);
   const refToTranslation = useRef(null);
   const [isClickedToPronounce, setIsClickedToPronounce] = useState(false);
   const [isWordTranslating, setIsWordTranslating] = useState(false);
@@ -481,13 +485,20 @@ export default function TranslatableWord({
               ungroupMwe={ungroupMwe}
               explainSelection={(w) => {
                 const selection = w.mweExpression || w.word;
+                const token = ++explainRequestRef.current;
+                const isStale = () => explainRequestRef.current !== token;
                 setExplanation({ selection, context: null, text: null, isLoading: true, error: false });
                 hideAlterMenu();
                 interactiveText.explainSelection(
                   w,
-                  ({ selection, context, explanation }) =>
-                    setExplanation({ selection, context, text: explanation, isLoading: false, error: false }),
-                  () => setExplanation((e) => ({ ...(e || { selection }), isLoading: false, error: true })),
+                  ({ selection, context, explanation }) => {
+                    if (isStale()) return;
+                    setExplanation({ selection, context, text: explanation, isLoading: false, error: false });
+                  },
+                  () => {
+                    if (isStale()) return;
+                    setExplanation((e) => ({ ...(e || { selection }), isLoading: false, error: true }));
+                  },
                 );
               }}
             />
@@ -497,7 +508,10 @@ export default function TranslatableWord({
       {explanation && (
         <ExplanationModal
           open={true}
-          onClose={() => setExplanation(null)}
+          onClose={() => {
+            explainRequestRef.current++; // abandon whatever is still in flight
+            setExplanation(null);
+          }}
           selection={explanation.selection}
           context={explanation.context}
           explanation={explanation.text}
