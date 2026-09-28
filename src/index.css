@@ -73,7 +73,11 @@
 
   --badge-progress-bg: #e5e5e5;
 
-  --orange-btn-text: white;
+  /* Dark ink on the brand orange: white on #ffbb54 is 1.68:1, far below AA.
+     Neutral rather than brown -- #3d2800 clears more (8.31:1 vs 7.51:1) but
+     reads muddy on a saturated fill at pill size. #333333 is --text-primary,
+     so a filled orange control carries the same ink as body text. */
+  --orange-btn-text: #333333;
 
   --player-icon-color: #1a1a2e;
 

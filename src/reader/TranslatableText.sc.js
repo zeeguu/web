@@ -1,5 +1,5 @@
 import styled, { keyframes, css } from "styled-components";
-import { almostBlack, zeeguuOrange, zeeguuTransparentMediumOrange, orange600, orange800 } from "../components/colors";
+import { almostBlack, zeeguuOrange, zeeguuTransparentMediumOrange, orange200, orange600, orange800 } from "../components/colors";
 
 const TranslatableText = styled.div`
   /* Translated-word color (text + dashed underline). orange800 rather than
@@ -8,11 +8,14 @@ const TranslatableText = styled.div`
   --mwe-adjacent-color: ${orange800};
   --mwe-adjacent-bg: rgb(255, 240, 220);
 
-  /* Dark mode: softer, less saturated orange for the highlight, and a
-     warm dark-tan chip background. The brand orange (#ffbb54) is too hot
-     against the navy backdrop. */
+  /* Dark mode: a pale warm tint, not a gold. Measured against the body text
+     the old #d4a05a was already closer than the light theme's pairing
+     (1.77:1 vs 2.59:1), so brightness was never the problem -- chroma was.
+     The same warm hue that reads as muted brown beside near-black ink reads
+     as glowing gold beside near-white on navy, and splits the line in two.
+     orange200 marks the words while keeping the sentence one object. */
   :root[data-theme="dark"] & {
-    --mwe-adjacent-color: #d4a05a;
+    --mwe-adjacent-color: ${orange200};
     --mwe-adjacent-bg: rgb(50, 40, 30);
   }
 
