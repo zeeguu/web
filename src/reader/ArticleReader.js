@@ -294,7 +294,7 @@ export default function ArticleReader({ teacherArticleID, articleId: linkArticle
         !isSimplifiedArticleFn(articleInfo) &&
         !articleInfo.is_translated &&
         !teacherArticleID &&
-        shouldShowLanguageChoice(articleInfo.language, articleInfo.cefr_level, userDetails)
+        shouldShowLanguageChoice(articleInfo.language, articleInfo.metrics?.cefr_level, userDetails)
       ) {
         setShowLanguageModal(true);
       }
@@ -437,7 +437,7 @@ export default function ArticleReader({ teacherArticleID, articleId: linkArticle
       {showLanguageModal && (
         <ArticleLanguageModal
           articleLanguage={articleInfo.language}
-          articleCefrLevel={articleInfo.cefr_level}
+          articleCefrLevel={articleInfo.metrics?.cefr_level}
           learnedLanguage={userDetails.learned_language}
           userCefrLevel={numericToCefr(getUserCefrLevel(userDetails, userDetails.learned_language))}
           source={entrySource}

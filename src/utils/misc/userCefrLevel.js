@@ -1,4 +1,4 @@
-import { CEFR_ORDINAL } from "./cefrScale";
+import { cefrOrdinal } from "./cefrScale";
 
 // Convert numeric level (1-6) to CEFR string (A1-C2)
 const NUMERIC_TO_CEFR = {
@@ -58,7 +58,7 @@ export function shouldShowLanguageChoice(
   if (articleLanguage !== userDetails.learned_language) return true;
 
   const userNumeric = getUserCefrLevel(userDetails, articleLanguage);
-  const articleOrd = CEFR_ORDINAL[articleCefrLevel];
+  const articleOrd = cefrOrdinal(articleCefrLevel);
   if (!articleOrd || userNumeric == null) return true;
   return articleOrd > userNumeric;
 }
