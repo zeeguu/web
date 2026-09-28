@@ -14,7 +14,7 @@ export default function LanguageSelector({
   languages.sort((a, b) => (a.name > b.name ? 1 : -1));
 
   function languageLabel(language) {
-    return strings[language.name.toLowerCase()];
+    return strings[language.name.toLowerCase()] || language.name;
   }
 
   function languageCode(language) {

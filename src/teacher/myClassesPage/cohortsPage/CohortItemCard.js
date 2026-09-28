@@ -33,7 +33,7 @@ export const CohortItemCard = ({ cohort }) => {
         </Link>
 
         <MetaStrip>
-          <MetaItem>{strings[cohort.language_name.toLowerCase()]}</MetaItem>
+          <MetaItem>{strings[cohort.language_name.toLowerCase()] || cohort.language_name}</MetaItem>
           <MetaItem>
             {cohort.cur_students} <MdPeople size="16px" />
           </MetaItem>
