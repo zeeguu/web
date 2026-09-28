@@ -343,15 +343,6 @@ Zeeguu_API.prototype.detectArticleInfo = function (url, callback, onError) {
   }, onError);
 };
 
-Zeeguu_API.prototype.removeMLSuggestion = function (
-  articleId,
-  topic,
-  callback,
-) {
-  let param = qs.stringify({ article_id: articleId, topic: topic });
-  this._post(`/remove_ml_suggestion`, param, callback);
-};
-
 Zeeguu_API.prototype.createArticleUpload = function (payload, callback, onError) {
   this._post(`/article_upload/create`, qs.stringify(payload), callback, onError, true);
 };

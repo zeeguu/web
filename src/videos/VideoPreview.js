@@ -3,21 +3,15 @@ import { Link } from "react-router-dom";
 import { TopicOriginType } from "../appConstants";
 import VideoStatInfo from "./VideoStatInfo";
 import VideoSourceInfo from "./VideoSourceInfo";
-import { toast } from "react-toastify";
 import { FaPlay } from "react-icons/fa";
-import { darkBlue } from "../components/colors";
-import { useState, useContext } from "react";
+import { useState } from "react";
 import ExplainTopicsModal from "../pages/ExplainTopicsModal";
 import { TagsOfInterests } from "../articles/TagsOfInterests.sc";
-import HighlightOffRoundedIcon from "@mui/icons-material/HighlightOffRounded";
-import { APIContext } from "../contexts/APIContext";
 import TruncatedSummary from "../components/TruncatedSummary";
 
 export default function VideoPreview({ video, notifyVideoClick }) {
   const [infoTopicClick, setInfoTopicClick] = useState("");
   const [showInfoTopics, setShowInfoTopics] = useState(false);
-  const [showInferredTopic, setShowInferredTopic] = useState(true);
-  const api = useContext(APIContext);
 
   // Redirect to the video page in the same window
   const handleTitleClick = () => {
@@ -61,7 +55,7 @@ export default function VideoPreview({ video, notifyVideoClick }) {
 
       <s.BottomContainer>
         <div>
-          {showInferredTopic && topics.length > 0 && (
+          {topics.length > 0 && (
             <s.UrlTopics>
               {topics.map(([topicTitle, topicOrigin]) => (
                 <span
@@ -73,18 +67,6 @@ export default function VideoPreview({ video, notifyVideoClick }) {
                   className={topicOrigin === TopicOriginType.INFERRED ? "inferred" : "gold"}
                 >
                   {topicTitle}
-                  {topicOrigin === TopicOriginType.INFERRED && (
-                    <HighlightOffRoundedIcon
-                      className="cancelButton"
-                      sx={{ color: darkBlue }}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setShowInferredTopic(false);
-                        toast("Your preference was saved.");
-                        api.removeMLSuggestion(video.source_id, topicTitle);
-                      }}
-                    />
-                  )}
                 </span>
               ))}
             </s.UrlTopics>
