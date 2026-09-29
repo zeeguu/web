@@ -12,6 +12,8 @@
   --shadow-color: rgba(0, 0, 0, 0.12);
   --modal-overlay: rgba(0, 0, 0, 0.5);
   --card-bg: #fffaea;
+  /* Image-less feed cards: dark enough to read as a tile on --bg-primary. */
+  --feed-tile-bg: #f5efe3;
   --continue-card-bg: hsl(216, 100%, 97%);
   --hover-bg: #f6f6f6;
   --active-bg: #ededed;
@@ -100,6 +102,7 @@
   --shadow-color: rgba(0, 0, 0, 0.3);
   --modal-overlay: rgba(0, 0, 0, 0.7);
   --card-bg: #222240;
+  --feed-tile-bg: #252540;
   --hover-bg: #2e2e4a;
   --active-bg: #353555;
   --infobox-bg: #3f3360;

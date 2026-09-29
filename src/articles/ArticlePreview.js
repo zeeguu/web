@@ -17,7 +17,7 @@ import { TranslatableText } from "../reader/TranslatableText";
 import useArticlePreviewTokens from "../hooks/useArticlePreviewTokens";
 import { estimateReadingTime, timeAgo } from "../utils/misc/readableTime";
 import ActionButton from "../components/ActionButton";
-import { articleSourceLabel, aiProvenanceLabel } from "../utils/misc/articleHelpers";
+import { articleSourceLabel, aiProvenanceLabel, sourceMasthead } from "../utils/misc/articleHelpers";
 import OpenInNewRoundedIcon from "@mui/icons-material/OpenInNewRounded";
 import MoreHorizRoundedIcon from "@mui/icons-material/MoreHorizRounded";
 import SubjectRoundedIcon from "@mui/icons-material/SubjectRounded";
@@ -454,6 +454,9 @@ export default function ArticlePreview({
     // Zeeguu-readable copy). When that summary is the model's, the pill says
     // "AI summary" and IS the card's one AI mark -- so the kicker does not
     // repeat it. Otherwise (AI-simplified, or no image) the kicker carries it.
+    // Photo or source tile: either way the card has a media slot, so it needs
+    // no separate action row or corner ×.
+    const hasMedia = hasImage || !!sourceLabel;
     const pillLabel = should_open_in_zeeguu ? "Read" : aiLabel === "AI summary" ? "AI summary" : "Summary";
     const aiMarkInPill = hasImage && pillLabel === "AI summary";
 
@@ -538,6 +541,13 @@ export default function ArticlePreview({
         onError={() => setImageFailed(true)}
         style={{ display: "block" }}
       />
+    ) : sourceLabel ? (
+      // No photo: the publisher's name fills the photo's slot. The slot is
+      // what marks where each card starts and where its text column begins;
+      // an image-less card without it reads as the tail of the card above.
+      <s.SourceTile aria-hidden="true">
+        <span>{sourceMasthead(sourceLabel)}</span>
+      </s.SourceTile>
     ) : null;
 
     // Save + Hide as quiet icon+text controls, used by BOTH feed layouts at the
@@ -547,6 +557,12 @@ export default function ArticlePreview({
     // The image carries the two controls that belong on it: the Open band
     // (the whole card opens -- the band only says so) and Save. Diagonal from
     // each other, so neither sits on the other.
+    const saveIcon = isArticleSaved ? (
+      <BookmarkRoundedIcon style={{ fontSize: 18 }} />
+    ) : (
+      <BookmarkBorderRoundedIcon style={{ fontSize: 18 }} />
+    );
+
     const cardImage = imageEl ? (
       <s.ImageWithOverlay>
         {imageEl}
@@ -554,18 +570,18 @@ export default function ArticlePreview({
             opens the preview overlay -- headed "Summary" -- and leaving for
             the original is a further, deliberate tap inside it. An external
             icon here would promise a jump that has not happened yet. */}
-        <s.ImageOpenPill>{pillLabel}</s.ImageOpenPill>
-        {showSaveAndHide && (
+        {/* The pill and Save sit on a photo because the photo stands for the
+            article. On the source tile they would read as being about the
+            publisher, so there the AI mark stays in the kicker and Save moves
+            to the meta line with the article's other controls. */}
+        {hasImage && <s.ImageOpenPill>{pillLabel}</s.ImageOpenPill>}
+        {showSaveAndHide && hasImage && (
           <s.SaveIconButton
             type="button"
             onClick={handleToggleSave}
             aria-label={isArticleSaved ? "Remove from saves" : "Save"}
           >
-            {isArticleSaved ? (
-              <BookmarkRoundedIcon style={{ fontSize: 18 }} />
-            ) : (
-              <BookmarkBorderRoundedIcon style={{ fontSize: 18 }} />
-            )}
+            {saveIcon}
           </s.SaveIconButton>
         )}
       </s.ImageWithOverlay>
@@ -576,6 +592,15 @@ export default function ArticlePreview({
     const metaRow = (
       <s.MetaRow>
         {metaStrip}
+        {showSaveAndHide && hasMedia && !hasImage && (
+          <s.MetaSaveButton
+            type="button"
+            onClick={handleToggleSave}
+            aria-label={isArticleSaved ? "Remove from saves" : "Save"}
+          >
+            {saveIcon}
+          </s.MetaSaveButton>
+        )}
         {overflowButton(showHide)}
       </s.MetaRow>
     );
@@ -629,7 +654,7 @@ export default function ArticlePreview({
         {/* With an image, Hide lives as an eye-off at the image's bottom-right
             (mirroring Save at top-right) — the top-right × collided with Save on
             stacked mobile layouts. Image-less cards keep the corner ×. */}
-        {!hasImage && showHide && (
+        {!hasMedia && showHide && (
           <s.HideButton onClick={handleHideArticle} aria-label="Hide from feed">
             <CloseRoundedIcon style={{ fontSize: 18 }} />
           </s.HideButton>
@@ -656,7 +681,7 @@ export default function ArticlePreview({
                 {kicker}
                 {compactTitle}
                 {metaRow}
-                {!hasImage && feedActions}
+                {!hasMedia && feedActions}
               </s.CompactText>
             </s.CompactCard>
           ) : (
@@ -679,7 +704,7 @@ export default function ArticlePreview({
                   )}
                 </s.ContentColumn>
               </s.ArticleContent>
-              {!hasImage && feedActions}
+              {!hasMedia && feedActions}
             </>
           )}
         </s.PreviewCardClickable>

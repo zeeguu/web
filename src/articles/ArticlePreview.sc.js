@@ -10,6 +10,48 @@ const ArticlePreview = styled.div`
   padding-bottom: 1em;
 `;
 
+// Stands in the photo's slot when an article has none: the publisher's name as
+// an oversized, tone-on-tone wordmark bleeding off the bottom-right edges, on a
+// tinted block the size and radius of a photo (the treatment dr.dk gives its
+// own section placeholders). It keeps every card's shape (slot + text column)
+// the same, so the text column stays aligned and the card still has a start
+// the eye can find. Texture, not a label: it must not compete with the
+// headline. It carries nothing but the name -- a pill or Save on it would read
+// as being about the publisher, not the article.
+const SourceTile = styled.div`
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-start;
+  box-sizing: border-box;
+  width: 13em;
+  aspect-ratio: 3 / 2;
+  overflow: hidden;
+  border-radius: 1em;
+  background: var(--feed-tile-bg);
+  color: var(--bg-primary);
+  font-weight: 800;
+  line-height: 0.8;
+  white-space: nowrap;
+  text-transform: capitalize;
+
+  /* On the name, not the tile, so the tile's em sizes match the photo's. The
+     negative margins push the word's left bearing and baseline past the
+     edges, so it reads as cropped rather than placed. */
+  > span {
+    font-size: 4em;
+    letter-spacing: -0.03em;
+    margin: 0 0 -0.06em -0.06em;
+  }
+
+  /* Stacked: shorter than a photo's 13em cap (a name has nothing to crop),
+     but tall enough to hold its place in the photo rhythm. */
+  @media (max-width: 990px) {
+    width: 100%;
+    aspect-ratio: auto;
+    height: 9em;
+  }
+`;
+
 // × in the card's top-right corner. Dismissal pattern (Twitter
 // recommended, Instagram suggestions): small, muted, unmistakable. A
 // generous 36px hit area via padding even though the visible glyph is
@@ -453,10 +495,16 @@ const OverflowButton = styled.button`
   align-items: center;
   border-radius: 0.3em;
 
-  &:hover {
-    color: var(--text-primary);
+  @media (hover: hover) {
+    &:hover {
+      color: var(--text-primary);
+    }
   }
 `;
+
+// Save on the meta line, for cards whose media slot is the source tile. Same
+// quiet icon button as the overflow beside it.
+const MetaSaveButton = styled(OverflowButton)``;
 
 // Headlines (compact) card. Mobile: stacks image -> title -> meta -> actions.
 // The photo leads because it says what the article is about before the reader
@@ -506,6 +554,14 @@ const CompactMedia = styled.div`
     ${SaveIconButton} {
       opacity: 0;
       transition: opacity 150ms ease;
+    }
+  }
+
+  @media (min-width: 991px) {
+    ${SourceTile} {
+      width: 12em;
+      height: 8em;
+      aspect-ratio: auto;
     }
   }
 
@@ -580,6 +636,7 @@ export {
   Kicker,
   KickerTopic,
   OverflowButton,
+  MetaSaveButton,
   ImageOpenPill,
   PreviewCardClickable,
   PreviewSummary,
@@ -602,6 +659,7 @@ export {
   ClampedSummary,
   SummaryToggle,
   HideButton,
+  SourceTile,
   SaveIconButton,
   HideIconButton,
   Topics,

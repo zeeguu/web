@@ -24,6 +24,21 @@ export function articleSourceLabel(article) {
   return domain && domain.includes(".") ? domain : "";
 }
 
+// The source label as a publisher's name, for the tile that stands in for a
+// missing photo: "politiken.dk" -> "politiken", "www.bbc.co.uk" -> "bbc". The
+// meta line under the title already carries the full domain. The name is the
+// label just before the public suffix, so a subdomain does not win
+// ("nyheder.tv2.dk" -> "tv2"). A feed name ("Politiken") has no dot and passes
+// through unchanged.
+const SECOND_LEVEL_SUFFIXES = new Set(["co", "com", "org", "net", "ac", "gov"]);
+
+export function sourceMasthead(label) {
+  if (!label.includes(".")) return label;
+  const parts = label.split(".").slice(0, -1);
+  if (parts.length > 1 && SECOND_LEVEL_SUFFIXES.has(parts[parts.length - 1])) parts.pop();
+  return parts[parts.length - 1];
+}
+
 // Card-level disclosure of what on this article was written by a machine.
 //
 // EU AI Act Art. 50(4) asks deployers to disclose artificially generated text
