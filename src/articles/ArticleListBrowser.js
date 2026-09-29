@@ -21,6 +21,7 @@ import { setTitle } from "../assorted/setTitle";
 import strings from "../i18n/definitions";
 import useShadowRef from "../hooks/useShadowRef";
 import VideoPreview from "../videos/VideoPreview";
+import { getUserCefrLevel, numericToCefr } from "../utils/misc/userCefrLevel";
 export default function ArticleListBrowser({
   content,
   searchQuery,
@@ -61,6 +62,16 @@ export default function ArticleListBrowser({
   // Lets us drop the old articles and show the loader immediately for instant
   // feedback, rather than leaving the previous topic's list on screen.
   const [feedLoading, setFeedLoading] = useState(false);
+  // Level change while on the feed: unlike a topic switch, keep the current
+  // cards on screen (dimmed, under a "loading" pill) and swap them for the
+  // new level's versions when they arrive. The nav's level pickers skip the
+  // page reload on /articles for this; makes the difficulty change visible.
+  const cefrLevel = getUserCefrLevel(userDetails, userDetails?.learned_language);
+  const [levelReloading, setLevelReloading] = useState(false);
+  const lastCefrLevelRef = useRef(cefrLevel);
+  // The level the list on screen was fetched for -- not cefrLevel, which
+  // changes before the new list arrives (see the ArticlePreview key).
+  const [listCefrLevel, setListCefrLevel] = useState(cefrLevel);
 
   const searchPublishPriorityRef = useShadowRef(searchPublishPriority);
   const searchDifficultyPriorityRef = useShadowRef(searchDifficultyPriority);
@@ -172,7 +183,7 @@ export default function ArticleListBrowser({
     getNewArticlesForPage,
     // Pause infinite scroll while the feed itself is (re)loading, so the hidden
     // list / collapsed page doesn't trigger a spurious load-more + 2nd spinner.
-    feedLoading || reloadingSearchArticles,
+    feedLoading || reloadingSearchArticles || levelReloading,
   );
 
   function handleVideoOnlyClick() {
@@ -220,7 +231,7 @@ export default function ArticleListBrowser({
     LocalStorage.setDoNotShowRedirectionModal(doNotShowRedirectionModal_UserPreference);
   }, [doNotShowRedirectionModal_UserPreference]);
 
-  function loadArticles() {
+  function loadArticles({ inPlace = false } = {}) {
     return new Promise((resolve) => {
       const myToken = ++loadTokenRef.current;
       const isStale = () => myToken !== loadTokenRef.current;
@@ -260,16 +271,29 @@ export default function ArticleListBrowser({
         // and show the loader straight away (dropping the previous list) for
         // instant feedback on a topic switch.
         setReloadingSearchArticles(false);
-        setFeedLoading(true);
+        if (inPlace) setLevelReloading(true);
+        else setFeedLoading(true);
         const options = activeFilter.type === "topic" ? { topic: activeFilter.value.title } : {};
+        const requestedCefrLevel = cefrLevel;
         api.getUserArticles((articles) => {
           if (isStale()) return resolve();
+          setListCefrLevel(requestedCefrLevel);
           setArticlesAndVideosList(articles);
           setOriginalList([...articles]);
           setAreVideosAvailable(articles.some((e) => e.video));
           setFeedLoading(false);
+          setLevelReloading(false);
           resolve();
-        }, options);
+        }, {
+          ...options,
+          // A failed level-change refetch would otherwise leave the old cards
+          // dimmed and untappable for good; show them as they were instead.
+          onError: () => {
+            if (isStale()) return resolve();
+            setLevelReloading(false);
+            resolve();
+          },
+        });
       }
     });
   }
@@ -284,6 +308,16 @@ export default function ArticleListBrowser({
     }
     // eslint-disable-next-line
   }, [searchQuery, searchPublishPriority, searchDifficultyPriority, activeFilter]);
+
+  useEffect(() => {
+    if (cefrLevel === lastCefrLevelRef.current) return;
+    lastCefrLevelRef.current = cefrLevel;
+    if (searchQuery) return;
+    // The cached feed was built for the previous level.
+    api.invalidateCache("user_articles/recommended");
+    loadArticles({ inPlace: true });
+    // eslint-disable-next-line
+  }, [cefrLevel]);
 
   if (articlesAndVideosList == null) {
     // Shorter delay than the 1s default: swipe navigation slides the old tab
@@ -351,6 +385,13 @@ export default function ArticleListBrowser({
       {/* This is where the content of the Search component will be rendered */}
       {content}
       {(reloadingSearchArticles || feedLoading) && <LoadingAnimation delay={300}></LoadingAnimation>}
+      <s.FeedArea>
+      {levelReloading && (
+        <s.LevelChangeOverlay>
+          <s.LevelChangePill>Loading {numericToCefr(cefrLevel)} articles…</s.LevelChangePill>
+        </s.LevelChangeOverlay>
+      )}
+      <s.FeedCards $dimmed={levelReloading}>
       {!reloadingSearchArticles &&
         !feedLoading &&
         articlesAndVideosList.map((each, index) =>
@@ -361,7 +402,12 @@ export default function ArticleListBrowser({
             )
           ) : (
             <ArticlePreview
-              key={each.id}
+              // A card keeps its id across a level change (only its title and
+              // summary change), so the key carries the level its data was
+              // fetched for: the card remounts, and rebuilds its tokens, when
+              // the new list lands. Keying on cefrLevel instead remounted it
+              // early, on the old list, and then kept those stale tokens.
+              key={`${each.id}-${listCefrLevel}`}
               article={each}
               hasExtension={isExtensionAvailable}
               kioskMode={kioskMode}
@@ -381,6 +427,8 @@ export default function ArticleListBrowser({
             />
           ),
         )}
+      </s.FeedCards>
+      </s.FeedArea>
       {/* A feed narrowed by a variety says so below, in a sentence that names the
           country and offers somewhere to change it. This line would sit above
           that saying the same thing worse -- and talking about a "query" the

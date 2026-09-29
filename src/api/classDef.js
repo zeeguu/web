@@ -68,9 +68,11 @@ const Zeeguu_API = class {
   // original).
   invalidateCache(endpointPrefix) {
     for (const key of this._cache.keys()) {
-      // Keys are `${lang}:${endpoint}` — match against the endpoint half.
-      const colonIdx = key.indexOf(":");
-      const endpoint = colonIdx === -1 ? key : key.slice(colonIdx + 1);
+      // Keys are `${lang}:${variety}:${endpoint}` (see _cacheKey) — match
+      // against the endpoint part. Slicing after the first colon only (as this
+      // did before the variety was added) left `${variety}:` in front, so no
+      // key ever matched and nothing was invalidated.
+      const endpoint = key.split(":").slice(2).join(":");
       if (endpoint.startsWith(endpointPrefix)) {
         this._cache.delete(key);
       }
