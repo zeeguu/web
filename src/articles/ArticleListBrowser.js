@@ -69,6 +69,9 @@ export default function ArticleListBrowser({
   const cefrLevel = getUserCefrLevel(userDetails, userDetails?.learned_language);
   const [levelReloading, setLevelReloading] = useState(false);
   const lastCefrLevelRef = useRef(cefrLevel);
+  // The level the list on screen was fetched for -- not cefrLevel, which
+  // changes before the new list arrives (see the ArticlePreview key).
+  const [listCefrLevel, setListCefrLevel] = useState(cefrLevel);
 
   const searchPublishPriorityRef = useShadowRef(searchPublishPriority);
   const searchDifficultyPriorityRef = useShadowRef(searchDifficultyPriority);
@@ -271,8 +274,10 @@ export default function ArticleListBrowser({
         if (inPlace) setLevelReloading(true);
         else setFeedLoading(true);
         const options = activeFilter.type === "topic" ? { topic: activeFilter.value.title } : {};
+        const requestedCefrLevel = cefrLevel;
         api.getUserArticles((articles) => {
           if (isStale()) return resolve();
+          setListCefrLevel(requestedCefrLevel);
           setArticlesAndVideosList(articles);
           setOriginalList([...articles]);
           setAreVideosAvailable(articles.some((e) => e.video));
@@ -388,10 +393,12 @@ export default function ArticleListBrowser({
             )
           ) : (
             <ArticlePreview
-              // Level in the key: a card keeps its id across a level change
-              // (only its title/summary change), so it must remount to
-              // rebuild its interactive tokens.
-              key={`${each.id}-${cefrLevel}`}
+              // A card keeps its id across a level change (only its title and
+              // summary change), so the key carries the level its data was
+              // fetched for: the card remounts, and rebuilds its tokens, when
+              // the new list lands. Keying on cefrLevel instead remounted it
+              // early, on the old list, and then kept those stale tokens.
+              key={`${each.id}-${listCefrLevel}`}
               article={each}
               hasExtension={isExtensionAvailable}
               kioskMode={kioskMode}
