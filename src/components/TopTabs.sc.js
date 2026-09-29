@@ -3,7 +3,9 @@ import { darkGrey, zeeguuOrange } from "./colors";
 
 const TopTabsWrapper = styled.div`
   position: sticky;
-  top: 0;
+  /* Parks under the mobile TopBar, which is sticky above it and publishes its
+     own height. Unset on desktop (no TopBar), where the fallback is 0. */
+  top: var(--top-bar-height, 0px);
   /* Above the scrolling feed (incl. the topic-pill row) so content slides
      cleanly underneath instead of painting over the sticky bar. Below modals
      (1000+) and the bottom nav's overlays. */
@@ -20,7 +22,10 @@ const TopTabsWrapper = styled.div`
   }
 
   &.header--hidden {
-    transform: translateY(-100%);
+    /* Its own height *plus* the bar above it — translating only -100% would
+       leave the row peeking out below a hidden TopBar whenever the TopBar is
+       the taller of the two. */
+    transform: translateY(calc(-100% - var(--top-bar-height, 0px)));
   }
 `;
 

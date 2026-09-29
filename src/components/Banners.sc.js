@@ -16,6 +16,19 @@ const TopBarContainer = styled(BaseBanner)`
   border-bottom: 1px solid var(--streak-banner-border);
   cursor: default;
   justify-content: space-between;
+
+  /* Rides the same scroll gesture as the tab row below it, so the language
+     switcher is one pull-down away from anywhere in a feed instead of a scroll
+     back to the top. Above TopTabsWrapper's z-index 10, since TopTabs parks
+     itself directly underneath via --top-bar-height. */
+  position: sticky;
+  top: 0;
+  z-index: 11;
+  transition: transform 0.3s ease-in-out;
+
+  &.header--hidden {
+    transform: translateY(-100%);
+  }
 `;
 
 const FlagButton = styled.button`
