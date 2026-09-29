@@ -1,7 +1,4 @@
-A round of small fixes, mostly about readability.
+Two small improvements to the article feed.
 
-- Text on orange buttons and tags is now dark instead of white, so it is much easier to read: the topic label in the feed, interest tags, the translate button, the keyboard in exercises and more.
-- In dark mode, translated words in the reader are marked in a softer orange, so a sentence still reads as one line instead of being split in two.
-- Opening an article from a link now picks up its level correctly, and the level bars show the right amount instead of always appearing full.
-- Removed the "hide this topic" button from video cards. It never actually saved anything.
-- Bulgarian now shows its name in the language lists instead of a blank entry.
+- Changing your level from the feed no longer reloads the page. The current articles stay on screen while the ones at your new level load in, so you can see the difference right away.
+- The top bar with your language, streak and avatar now comes back as soon as you scroll up, so you can switch language without scrolling all the way to the top.
