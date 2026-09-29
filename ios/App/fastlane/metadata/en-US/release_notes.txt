@@ -1,14 +1,7 @@
-Working with expressions in the reader got a lot better this time.
+A round of small fixes, mostly about readability.
 
-- You can now grow an expression. Tap the word next to one you have already translated and the two join into a single expression, instead of having to ungroup and rebuild it by hand.
-- Every join you make gets its own unlink mark, right where the join is. Tapping it separates just that one, so you can take an expression apart a piece at a time instead of undoing the last join wherever it happened to be.
-- Fixed: unlinking an expression could drop a word from the page entirely. If you fused two expressions and then took them apart, part of the sentence went missing.
-- Fixed: after widening an expression, the translation you got back was for the old, narrower one.
-- While a separated piece waits for its translation, it now holds its place with a blinking chip, so the line no longer jumps and settles.
-- Tap a translated word to hide its translation. The little eye icon on the chip is gone; the word itself is the switch now.
-- Translated words are easier to read. The orange was very light against the cream background, so text and underline are a darker shade that meets the accessibility contrast standard.
-- Underlines stop at the word they belong to. Two expressions side by side used to share one unbroken line and read as a single unit.
-
-In the feed:
-- The topic now sits above the headline as a quiet label, the way a newspaper sets a section over a story, with the source on a single line underneath. The headline is the loudest thing on the card again.
-- Tapping that topic narrows the feed to it, rather than opening the article by accident. Back undoes the filter.
+- Text on orange buttons and tags is now dark instead of white, so it is much easier to read: the topic label in the feed, interest tags, the translate button, the keyboard in exercises and more.
+- In dark mode, translated words in the reader are marked in a softer orange, so a sentence still reads as one line instead of being split in two.
+- Opening an article from a link now picks up its level correctly, and the level bars show the right amount instead of always appearing full.
+- Removed the "hide this topic" button from video cards. It never actually saved anything.
+- Bulgarian now shows its name in the language lists instead of a blank entry.
