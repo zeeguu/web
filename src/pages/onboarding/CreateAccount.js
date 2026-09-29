@@ -136,10 +136,14 @@ export default function CreateAccount({ handleSuccessfulLogIn }) {
         // Signup does not carry a variety; it has been waiting in LocalStorage
         // since the language step.
         saveLearnedVarietyAfterSignup(api);
-        setUserDetails(userInfo);
+        // Keep the server's fields (requires_email_verification in particular):
+        // without them the route guards let an unverified user past /verify_email
+        setUserDetails({ ...userInfo, ...user });
         saveSharedUserInfo(userInfo);
-        // Redirect to email verification instead of select_interests
-        history.push("/verify_email");
+        // A signup with a class invitation code is created verified and gets no
+        // code by mail, so only the others are sent to enter one. replace, not
+        // push: Back should not return to the signup form.
+        history.replace(user.requires_email_verification ? "/verify_email" : "/select_interests");
       },
       (error) => {
         setErrorMessage(error);
