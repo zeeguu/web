@@ -87,7 +87,9 @@ export default function SideNavLanguageOption({ screenWidth }) {
       setUserDetails(newUserDetails);
       LocalStorage.setUserInfo(newUserDetails);
       saveSharedUserInfo(newUserDetails);
-      window.location.reload();
+      // The home feed swaps its cards in place on a level change (see
+      // ArticleListBrowser); elsewhere a reload refreshes level-dependent views.
+      if (window.location.pathname !== "/articles") window.location.reload();
     });
 
     handleLevelMenuClose();

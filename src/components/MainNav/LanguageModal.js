@@ -87,7 +87,10 @@ export default function LanguageModal({ open, setOpen }) {
       LocalStorage.setUserInfo(newUserDetails);
       saveSharedUserInfo(newUserDetails);
       if (languageCode === userDetails.learned_language) {
-        window.location.reload();
+        // The home feed swaps its cards in place on a level change (see
+        // ArticleListBrowser); close the modal so the change is visible.
+        if (window.location.pathname === "/articles") setOpen(false);
+        else window.location.reload();
       }
     });
   };
