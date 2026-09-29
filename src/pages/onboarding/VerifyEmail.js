@@ -111,7 +111,7 @@ export default function VerifyEmail() {
               label={"Verification Code"}
               id={"verification-code"}
               name={"verification-code"}
-              placeholder={"Enter 6-character code"}
+              placeholder={"Enter 4-digit code"}
               value={code}
               onChange={(e) => setCode(e.target.value.toUpperCase())}
               style={{ textAlign: "center", fontSize: "1.5rem", letterSpacing: "0.5rem" }}
