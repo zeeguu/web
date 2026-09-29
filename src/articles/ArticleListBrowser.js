@@ -284,7 +284,16 @@ export default function ArticleListBrowser({
           setFeedLoading(false);
           setLevelReloading(false);
           resolve();
-        }, options);
+        }, {
+          ...options,
+          // A failed level-change refetch would otherwise leave the old cards
+          // dimmed and untappable for good; show them as they were instead.
+          onError: () => {
+            if (isStale()) return resolve();
+            setLevelReloading(false);
+            resolve();
+          },
+        });
       }
     });
   }

@@ -24,6 +24,9 @@ import LocalStorage from "../assorted/LocalStorage";
  *
  *   // Restrict to a single topic
  *   api.getUserArticles(callback, { topic: "Technology & Science" });
+ *
+ *   // Be told when the request fails (the callback is then never called)
+ *   api.getUserArticles(callback, { onError: (e) => ... });
  */
 Zeeguu_API.prototype.getUserArticles = function (callback, options = {}) {
   // Build query string for optional exclusion parameters
@@ -55,7 +58,7 @@ Zeeguu_API.prototype.getUserArticles = function (callback, options = {}) {
     );
     console.log(deduplicated);
     callback(deduplicated);
-  }, true);
+  }, { useCache: true, onError: options.onError });
 };
 
 /**
