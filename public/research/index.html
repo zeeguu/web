@@ -124,6 +124,27 @@
       .item p {
         margin: 4px 0 0;
       }
+      .strip {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(8rem, 1fr));
+        gap: 12px;
+        margin: 0 0 8px;
+      }
+      .strip div {
+        background: var(--orange-soft);
+        border-top: 3px solid var(--orange);
+        border-radius: 4px;
+        padding: 10px 12px;
+      }
+      .strip strong {
+        display: block;
+        font-size: 1.4rem;
+        line-height: 1.2;
+      }
+      .strip span {
+        color: var(--muted);
+        font-size: 0.85rem;
+      }
       iframe.stats {
         display: block;
         width: 100%;
@@ -212,6 +233,14 @@
 
       <section id="numbers">
         <h2>Zeeguu in numbers</h2>
+        <div class="strip">
+          <div><strong>530,000</strong><span>words looked up</span></div>
+          <div><strong>470,000</strong><span>exercises done</span></div>
+          <div><strong>3,400</strong><span>learners</span></div>
+          <div><strong>761,000</strong><span>articles in 15 languages</span></div>
+          <div><strong>107</strong><span>teachers, 237 classes</span></div>
+        </div>
+        <p class="caption">All-time totals as of September 2026.</p>
         <p>Monthly active users over the last year, live from our API:</p>
         <iframe
           class="stats"
@@ -392,20 +421,20 @@
             The iOS app launches in January and the Android app in February. A fresh audio lesson built from each
             learner's own words is now ready every day. Teachers can run a class that sees only the texts they share.
             Learners can choose a language variety (Belgian or Netherlands Dutch, Brazilian or European Portuguese),
-            and Bulgarian becomes available.
+            and Bulgarian becomes available. Word lookups pass half a million.
           </dd>
 
           <dt>2025</dt>
           <dd>
             Romanian, Portuguese and Greek become available. LLMs enter the platform: personalized audio lessons built from
             the words a learner has looked up (July, for everyone from September), simplification of any article to the
-            learner's level (August), and topic classification.
+            learner's level (August), and topic classification. Learners complete their 400,000th exercise.
           </dd>
 
           <dt>2024</dt>
           <dd>
             A multilingual topic classifier goes live, and learners start getting recommendations based on articles
-            they liked before.
+            they liked before. More than 2,000 learners have now used Zeeguu.
           </dd>
 
           <dt>2023</dt>
@@ -415,10 +444,7 @@
           </dd>
 
           <dt>2022</dt>
-          <dd>
-            More than 1,000 users have studied French with Zeeguu, reading over 10,000 articles and translating over
-            250,000 words.
-          </dd>
+          <dd>More than 1,000 learners have used Zeeguu, translating over 250,000 words.</dd>
 
           <dt>2021</dt>
           <dd>
@@ -431,10 +457,13 @@
           </dd>
 
           <dt>2020</dt>
-          <dd>A high school in Rotterdam adopts Zeeguu. Learners reach 40,000 distinct words practiced.</dd>
+          <dd>
+            A high school in Rotterdam adopts Zeeguu. Learners pass 100,000 translations and reach 40,000 distinct
+            words practiced.
+          </dd>
 
           <dt>2019</dt>
-          <dd>A high school in Amsterdam adopts Zeeguu for French. Learners pass 100,000 translations.</dd>
+          <dd>A high school in Amsterdam adopts Zeeguu for French.</dd>
 
           <dt>2018</dt>
           <dd>The University of Groningen Language Centre uses Zeeguu in its Dutch classes.</dd>
