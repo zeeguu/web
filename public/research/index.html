@@ -1,0 +1,483 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Zeeguu Research</title>
+    <meta
+      name="description"
+      content="The research behind Zeeguu: personalized language learning through free reading, listening, and vocabulary practice. Papers, talks, theses, and milestones."
+    />
+    <meta property="og:title" content="Zeeguu Research" />
+    <meta
+      property="og:description"
+      content="Personalized language learning through free reading, listening, and vocabulary practice. Papers, talks, theses, and milestones."
+    />
+    <meta property="og:url" content="https://zeeguu.org/research/" />
+    <meta property="og:type" content="website" />
+    <link rel="canonical" href="https://zeeguu.org/research/" />
+    <link rel="icon" href="/favicon.ico" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --orange: #ffbb54;
+        --orange-soft: #fff9f0;
+        --bg: #ffffff;
+        --text: #1f1f1f;
+        --muted: #5f5f5f;
+        --rule: #ececec;
+        --link: #b36b00;
+      }
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --orange-soft: #2a2218;
+          --bg: #161616;
+          --text: #ececec;
+          --muted: #a8a8a8;
+          --rule: #2e2e2e;
+          --link: #ffbb54;
+        }
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--text);
+        font-family: "Montserrat", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        line-height: 1.6;
+      }
+      a {
+        color: var(--link);
+      }
+      header {
+        background: var(--orange-soft);
+        border-bottom: 3px solid var(--orange);
+      }
+      .wrap {
+        max-width: 46rem;
+        margin: 0 auto;
+        padding: 0 16px;
+      }
+      nav {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 16px 0;
+        font-weight: 600;
+      }
+      nav a {
+        text-decoration: none;
+        color: var(--text);
+      }
+      .hero {
+        padding: 24px 0 40px;
+      }
+      h1 {
+        font-size: 2rem;
+        line-height: 1.2;
+        margin: 0 0 12px;
+      }
+      .lede {
+        font-size: 1.1rem;
+        color: var(--muted);
+        margin: 0;
+      }
+      .toc {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px 16px;
+        margin-top: 24px;
+        font-size: 0.9rem;
+      }
+      section {
+        padding: 32px 0 8px;
+        border-bottom: 1px solid var(--rule);
+      }
+      section:last-of-type {
+        border-bottom: none;
+      }
+      h2 {
+        font-size: 1.35rem;
+        margin: 0 0 16px;
+      }
+      .item {
+        margin: 0 0 20px;
+      }
+      .item .title {
+        font-weight: 600;
+      }
+      .item .meta {
+        color: var(--muted);
+        font-size: 0.9rem;
+      }
+      .item p {
+        margin: 4px 0 0;
+      }
+      iframe.stats {
+        display: block;
+        width: 100%;
+        height: 265px;
+        border: 0;
+        border-radius: 8px;
+      }
+      .caption {
+        color: var(--muted);
+        font-size: 0.9rem;
+      }
+      pre.bibtex {
+        background: var(--orange-soft);
+        border-left: 3px solid var(--orange);
+        padding: 12px 16px;
+        font-size: 0.8rem;
+        line-height: 1.5;
+        overflow-x: auto;
+        user-select: all;
+      }
+      dl.timeline {
+        display: grid;
+        grid-template-columns: 4rem 1fr;
+        gap: 10px 16px;
+        margin: 0;
+      }
+      dl.timeline dt {
+        font-weight: 700;
+      }
+      dl.timeline dd {
+        margin: 0;
+      }
+      footer {
+        padding: 32px 0 48px;
+        color: var(--muted);
+        font-size: 0.9rem;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="wrap">
+        <nav>
+          <a href="/">Zeeguu</a>
+          <a href="/about">About</a>
+        </nav>
+        <div class="hero">
+          <h1>Research behind Zeeguu</h1>
+          <p class="lede">
+            Zeeguu is a free, open-source platform and an ongoing research project on personalized language learning.
+            The question behind it: can learners grow their vocabulary by reading and listening to material they
+            actually care about, at a level that fits them?
+          </p>
+          <div class="toc">
+            <a href="#approach">Approach</a>
+            <a href="#numbers">Numbers</a>
+            <a href="#papers">Papers</a>
+            <a href="#talks">Talks</a>
+            <a href="#theses">Theses</a>
+            <a href="#milestones">Milestones</a>
+            <a href="#people">People &amp; funding</a>
+            <a href="#collaborate">Collaborate</a>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="wrap">
+      <section id="approach">
+        <h2>Approach</h2>
+        <p>Zeeguu helps learners pick up vocabulary in three ways:</p>
+        <ol>
+          <li><strong>Finding</strong> articles on the web that match each learner's interests and level</li>
+          <li><strong>Supporting</strong> reading and listening with in-context translation and pronunciation</li>
+          <li>
+            <strong>Reinforcing</strong> the words a learner looked up with personalized exercises and audio lessons
+          </li>
+        </ol>
+        <p>
+          Zeeguu runs on the <a href="/">web</a>, on
+          <a href="https://apps.apple.com/us/app/zeeguu-news-for-learners/id6756917355">iOS</a> and
+          <a href="https://play.google.com/store/apps/details?id=org.zeeguu.app">Android</a>, and as a browser
+          extension. All the code is on <a href="https://github.com/zeeguu">GitHub</a>.
+        </p>
+      </section>
+
+      <section id="numbers">
+        <h2>Zeeguu in numbers</h2>
+        <p>Monthly active users over the last year, live from our API:</p>
+        <iframe
+          class="stats"
+          src="https://api.zeeguu.org/stats/monthly_active_users?embed=1"
+          title="Zeeguu monthly active users"
+          loading="lazy"
+          scrolling="no"
+        ></iframe>
+        <p class="caption">
+          Usage follows the academic year: classroom use drops over the summer. Most learning time is spent reading;
+          see the <a href="https://api.zeeguu.org/stats/monthly_activity">activity breakdown</a>.
+        </p>
+      </section>
+
+      <section id="papers">
+        <h2>Papers</h2>
+
+        <div class="item">
+          <a class="title" href="https://llm-patterns.mircealungu.com/paper.pdf"
+            >Architectural Patterns for Integrating LLMs into User-Facing Applications</a
+          >
+          <div class="meta">PLoP 2026</div>
+          <p>
+            A catalogue of the patterns that show up when a slow, costly, and non-deterministic LLM becomes part of an
+            interactive app that has to be fast and trustworthy. The patterns come from integrating LLMs into Zeeguu.
+          </p>
+        </div>
+
+        <div class="item">
+          <div class="title">Estimating Receptive Vocabulary from Incidental Reading Behavior</div>
+          <div class="meta">
+            EuroCALL 2026 ·
+            <a href="https://github.com/zeeguu/paper-vocabulary-estimation-eurocall-2026">code &amp; data</a>
+          </div>
+          <p>
+            Learners who read with one-click translation show the words they don't know by looking them up. Over time
+            they also show the words they do know: a word met again and again across articles without ever being
+            looked up is evidence that the learner already knows it. The paper validates this signal and shows how
+            per-word estimates add up to a vocabulary-growth curve.
+          </p>
+        </div>
+
+        <div class="item">
+          <a
+            class="title"
+            href="https://research-publishing.net/manuscript?10.14705/rpnet.2022.61.1453"
+            >Analyzing user interactions to estimate reading time in web-based L2 reader applications</a
+          >
+          <div class="meta">EuroCALL 2022 · with Nora Hollenstein</div>
+          <p>How to estimate reading time when studying free reading in the wild.</p>
+        </div>
+
+        <div class="item">
+          <a class="title" href="https://mircealungu.com/docs/assets/papers/Aiki-CHI21.pdf"
+            >Aiki: Turning Procrastination into Microlearning</a
+          >
+          <div class="meta">CHI 2021</div>
+          <p>Uses Zeeguu to teach vocabulary during moments of online procrastination.</p>
+        </div>
+
+        <div class="item">
+          <a class="title" href="https://mircealungu.com/docs/assets/papers/18-AsWeMayStudy.pdf"
+            >As We May Study: Towards the Web as a Personalized Language Textbook</a
+          >
+          <div class="meta">
+            CHI 2018 · <a href="https://doi.org/10.1145/3173574.3173912">doi:10.1145/3173574.3173912</a>
+          </div>
+          <p>
+            Introduces the project and reports on its use in a high-school French class in the Netherlands. Students
+            liked it and made use of the chance to read about topics they cared about.
+          </p>
+        </div>
+
+        <div class="item">
+          <a class="title" href="https://mircealungu.com/docs/assets/papers/16-Bootstrapping.pdf"
+            >Bootstrapping an Ubiquitous Monitoring Ecosystem for Accelerating Vocabulary Acquisition</a
+          >
+          <div class="meta">2016</div>
+          <p>The general ecosystem architecture that Zeeguu is an instance of.</p>
+        </div>
+      </section>
+
+      <section id="talks">
+        <h2>Talks</h2>
+
+        <div class="item">
+          <div class="title">
+            Doubly-Personalised Language Learning: Matching Topic and Difficulty in Reading and Listening
+          </div>
+          <div class="meta">
+            2026 · <a href="https://ltsig.iatefl.org/">IATEFL LTSIG</a>, <em>Green Intelligence</em>, Limassol
+          </div>
+        </div>
+
+        <div class="item">
+          <div class="title">
+            Inside a Free Reading App: Eight Years of Learners, One Year of LLMs, and How Neither Behaves as You'd
+            Expect
+          </div>
+          <div class="meta">2026 · EuroCALL MALL SIG, Belfast</div>
+        </div>
+
+        <div class="item">
+          <div class="title">The Words They Don't Look Up: Inferring Vocabulary from Reading Behavior</div>
+          <div class="meta">2026 · <a href="https://eurocall-languages.org/">EuroCALL</a>, Belfast</div>
+        </div>
+
+        <div class="item">
+          <a class="title" href="https://mircealungu.com/projects/assets/EuroCALL-2025-Presentation.pdf"
+            >Zeeguu: Personalized Learning Paths Through the Internet</a
+          >
+          <div class="meta">2025 · EuroCALL workshop, Milan</div>
+        </div>
+
+        <div class="item">
+          <div class="title">
+            How Polyglots Can Benefit from a Platform for Multilingual Free Reading and Vocabulary Learning
+          </div>
+          <div class="meta">
+            2025 · <a href="https://www.polyglotgathering.com/2025/en/program/">Polyglot Gathering</a> workshop, Brno
+          </div>
+        </div>
+
+        <div class="item">
+          <a
+            class="title"
+            href="https://mircealungu.com/projects/assets/Can-We-Make-Learning-New-Languages-More-Personalized.pdf"
+            >Can We Make Learning New Languages More Personalized?</a
+          >
+          <div class="meta">2022 · Invited talk, University of Lausanne</div>
+        </div>
+
+        <div class="item">
+          <a class="title" href="https://mircealungu.com/projects/assets/EASEAI-Keynote-Lessons-Learned.pdf"
+            >Lessons Learned Developing a Personalized Language Learning System</a
+          >
+          <div class="meta">2021 · Keynote, <a href="https://easeai.github.io/">EASEAI</a></div>
+        </div>
+
+        <div class="item">
+          <div class="meta">Earlier: EuroCALL workshop (2020) and talk (2019)</div>
+        </div>
+      </section>
+
+      <section id="theses">
+        <h2>Student theses</h2>
+
+        <div class="item">
+          <a class="title" href="https://mircealungu.com/docs/assets/reports/22-thesis-audio-exercises.pdf"
+            >Audio in Digital Learning Environments</a
+          >
+          <div class="meta">2022 · Thesis</div>
+          <p>
+            In a controlled experiment with 22 participants, users found audio-focused exercises more fun and said
+            they were more likely to keep using Zeeguu.
+          </p>
+        </div>
+
+        <div class="item">
+          <a class="title" href="https://mircealungu.com/docs/assets/reports/22-thesis-browser-extension.pdf"
+            >Supporting Foreign Language Learning With a Browser Extension</a
+          >
+          <div class="meta">2022 · Thesis</div>
+          <p>
+            An architecture for the Zeeguu browser extension. Half of 32 participants preferred the extension's
+            cleaned-up article view to the original page. Also discusses what it takes to maintain such an extension.
+          </p>
+        </div>
+      </section>
+
+      <section id="milestones">
+        <h2>Milestones</h2>
+        <dl class="timeline">
+          <dt>2026</dt>
+          <dd>The iOS app launches in January and the Android app in February.</dd>
+
+          <dt>2024</dt>
+          <dd>
+            A multilingual topic classifier goes live, and learners start getting recommendations based on articles
+            they liked before.
+          </dd>
+
+          <dt>2023</dt>
+          <dd>
+            A <strong>Villum Experiment</strong> grant funds infrastructure work and a six-month longitudinal study
+            with 1,000 users. Tiago Ribeiro joins as the first full-time researcher on Zeeguu.
+          </dd>
+
+          <dt>2022</dt>
+          <dd>
+            More than 1,000 users have studied French with Zeeguu, reading over 10,000 articles and translating over
+            250,000 words.
+          </dd>
+
+          <dt>2021</dt>
+          <dd>
+            The Danish Agency for International Recruitment and Integration funds a
+            <a
+              href="https://cip.ku.dk/english/projects-and-collaborations/towards-a-personalised-textbook---new-tools-and-new-methods/"
+              >University of Copenhagen project</a
+            >
+            that uses Zeeguu to study personalization in Danish courses. Learners pass 200,000 translations.
+          </dd>
+
+          <dt>2020</dt>
+          <dd>A high school in Rotterdam adopts Zeeguu. Learners reach 40,000 distinct words practiced.</dd>
+
+          <dt>2019</dt>
+          <dd>A high school in Amsterdam adopts Zeeguu for French. Learners pass 100,000 translations.</dd>
+
+          <dt>2018</dt>
+          <dd>The University of Groningen Language Centre uses Zeeguu in its Dutch classes.</dd>
+
+          <dt>2017</dt>
+          <dd>Gomarus College in the Netherlands starts using Zeeguu in French classes.</dd>
+
+          <dt>2016</dt>
+          <dd>Zeeguu goes online for its first beta testers.</dd>
+        </dl>
+      </section>
+
+      <section id="people">
+        <h2>People &amp; funding</h2>
+        <p>
+          Zeeguu is led by <a href="https://mircealungu.com">Mircea Lungu</a> at the IT University of Copenhagen, with
+          <strong>Tiago Ribeiro</strong> as full-time researcher. Collaborators include
+          <strong>Pernille Hvalsøe</strong> (University of Copenhagen) and
+          <a href="https://norahollenstein.github.io/">Nora Hollenstein</a>. Many students have
+          <a href="/about#contributors">contributed over the years</a>.
+        </p>
+        <p>
+          Funding: the <strong>Villum Foundation</strong> (Villum Experiment, 2023) and the
+          <strong>Danish Agency for International Recruitment and Integration</strong> (2021).
+        </p>
+      </section>
+
+      <section id="collaborate">
+        <h2>Collaborate</h2>
+        <ul>
+          <li>
+            <strong>Teachers and researchers:</strong> we're happy to support classroom studies. Get in touch with
+            <a href="https://mircealungu.com">Mircea</a>.
+          </li>
+          <li>
+            <strong>Students:</strong> see the
+            <a href="https://mircealungu.com/projects/zeeguu.html#student-projects">thesis and project ideas</a>.
+          </li>
+          <li>
+            <strong>Developers:</strong> everything is open source at
+            <a href="https://github.com/zeeguu">github.com/zeeguu</a>.
+          </li>
+        </ul>
+        <p>To cite Zeeguu in general, please use <em>As We May Study</em> (CHI 2018):</p>
+        <pre class="bibtex">@inproceedings{lungu2018aswemaystudy,
+  title     = {As We May Study: Towards the Web as a Personalized Language Textbook},
+  author    = {Lungu, Mircea F. and van den Brand, Luc and Chirtoaca, Dan and Avagyan, Martin},
+  booktitle = {Proceedings of the 2018 CHI Conference on Human Factors in Computing Systems},
+  series    = {CHI '18},
+  year      = {2018},
+  pages     = {1--12},
+  publisher = {ACM},
+  address   = {Montr{\'e}al, QC, Canada},
+  doi       = {10.1145/3173574.3173912}
+}</pre>
+      </section>
+    </main>
+
+    <footer class="wrap">
+      <a href="/">zeeguu.org</a> · <a href="https://github.com/zeeguu">GitHub</a> ·
+      <a href="https://api.zeeguu.org/stats">Live stats</a>
+    </footer>
+  </body>
+</html>

@@ -62,7 +62,7 @@ export default function LandingPage() {
           </div>
 
           <p className="hero-paragraph">
-            Zeeguu is a&nbsp;<a href="https://mircealungu.com/projects/zeeguu" target="_blank" rel="noopener noreferrer">research project</a> that helps you learn smarter: read articles at your level and tap any word to
+            Zeeguu is a&nbsp;<a href="/research/" target="_blank" rel="noopener noreferrer">research project</a> that helps you learn smarter: read articles at your level and tap any word to
             translate it, listen to daily audio lessons built around your words, and practice them until
             they&nbsp;stick.
           </p>
@@ -222,13 +222,7 @@ export default function LandingPage() {
               Our work has been published in peer-reviewed venues and is openly available.
             </p>
             <p>
-              <a
-                href="https://mircealungu.com/projects/zeeguu"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                Learn more about the research behind Zeeguu
-              </a>
+              <a href="/research/">Learn more about the research behind Zeeguu</a>
             </p>
           </s.PageSection>
         </s.PageSectionWrapper>
