@@ -198,9 +198,19 @@ self.addEventListener("fetch", (event) => {
     const modifiedUrl = new URL(requestUrl);
     modifiedUrl.searchParams.set('media_activation', '1');
     event.respondWith(
-      fetch(modifiedUrl.toString()).catch(() => {
-        return handleNavigationRequest(event);
-      })
+      fetch(modifiedUrl.toString())
+        // fetch() follows redirects, and Chrome refuses a redirected response
+        // for a navigation (ERR_FAILED), e.g. nginx's /research -> /research/.
+        // Hand the redirect back to the browser instead.
+        .then((response) => {
+          if (!response.redirected) return response;
+          const target = new URL(response.url);
+          target.searchParams.delete("media_activation");
+          return Response.redirect(target.toString(), 302);
+        })
+        .catch(() => {
+          return handleNavigationRequest(event);
+        })
     );
     return;
   }
