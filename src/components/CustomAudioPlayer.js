@@ -7,6 +7,8 @@ import SkipPreviousRoundedIcon from "@mui/icons-material/SkipPreviousRounded";
 import Replay10RoundedIcon from "@mui/icons-material/Replay10Rounded";
 import Forward10RoundedIcon from "@mui/icons-material/Forward10Rounded";
 import SpeedPicker from "./SpeedPicker";
+import AudioDebugPanel from "./AudioDebugPanel";
+import { audioDebug } from "./audioDebug";
 import { loadSpeed, saveSpeed } from "./audioSpeeds";
 
 const SEEK_SECONDS = 10;
@@ -130,17 +132,28 @@ export default function CustomAudioPlayer({
     // taken as "already playing" and do nothing).
     navigator.mediaSession.setActionHandler("play", () => {
       const audio = audioRef.current;
+      audioDebug(
+        `ACTION play (paused=${audio?.paused} readyState=${audio?.readyState} networkState=${audio?.networkState})`,
+      );
       if (!audio || !audio.paused) return;
       audio
         .play()
-        .then(() => onPlay && onPlay())
-        .catch((err) => console.error("Playback from media controls failed:", err));
+        .then(() => {
+          audioDebug("play() resolved");
+          onPlay && onPlay();
+        })
+        .catch((err) => {
+          audioDebug(`play() REJECTED ${err?.name}: ${err?.message}`);
+          console.error("Playback from media controls failed:", err);
+        });
     });
 
     navigator.mediaSession.setActionHandler("pause", () => {
       const audio = audioRef.current;
+      audioDebug(`ACTION pause (paused=${audio?.paused})`);
       if (audio && !audio.paused) audio.pause(); // handlePause follows from the 'pause' event
     });
+    audioDebug("media session handlers registered");
 
     // Try different action handlers that iOS might recognize
     try {
@@ -404,6 +417,30 @@ export default function CustomAudioPlayer({
       onPause && onPause();
     };
 
+    // TEMPORARY diagnostics (audioDebug.js)
+    const debugEvents = [
+      "play",
+      "playing",
+      "pause",
+      "waiting",
+      "stalled",
+      "suspend",
+      "emptied",
+      "abort",
+      "error",
+      "ended",
+    ];
+    const debugHandlers = debugEvents.map((name) => {
+      const fn = () => audioDebug(`event ${name} (readyState=${audio.readyState} t=${audio.currentTime.toFixed(1)})`);
+      audio.addEventListener(name, fn);
+      return [name, fn];
+    });
+    const pageEvents = ["visibilitychange", "pagehide", "pageshow", "freeze", "resume"];
+    const pageHandler = (e) => audioDebug(`page ${e.type}`);
+    pageEvents.forEach((name) => document.addEventListener(name, pageHandler));
+    window.addEventListener("pagehide", pageHandler);
+    window.addEventListener("pageshow", pageHandler);
+
     audio.addEventListener("timeupdate", updateTime);
     audio.addEventListener("loadedmetadata", updateDuration);
     audio.addEventListener("ended", handleEnded);
@@ -439,6 +476,10 @@ export default function CustomAudioPlayer({
       audio.removeEventListener("play", handlePlay);
       audio.removeEventListener("playing", handlePlaying);
       audio.removeEventListener("pause", handlePause);
+      debugHandlers.forEach(([name, fn]) => audio.removeEventListener(name, fn));
+      pageEvents.forEach((name) => document.removeEventListener(name, pageHandler));
+      window.removeEventListener("pagehide", pageHandler);
+      window.removeEventListener("pageshow", pageHandler);
       document.removeEventListener("visibilitychange", handleVisibilityChange);
       clearProgressTimer();
     };
@@ -572,6 +613,7 @@ export default function CustomAudioPlayer({
       }}
     >
       <audio ref={audioRef} src={src} preload="auto" playsInline controlsList="nodownload" crossOrigin="anonymous" />
+      <AudioDebugPanel />
 
       {/* Controls: flex space-between so the outer buttons hug the edges
           and the play button sits in the middle, using the full width. */}
