@@ -209,13 +209,11 @@ export default function ArticleListBrowser({
     api.logUserActivity(api.CLICKED_VIDEO, null, "", seenListAsString, sourceId);
   };
 
+  // Functional updates: a card reports its hide only once its Undo toast closes,
+  // so this can run with a stale list when several cards were hidden in a row.
   const handleArticleHidden = (articleId) => {
-    const updatedList = articlesAndVideosList.filter((item) => item.id !== articleId);
-    setArticlesAndVideosList(updatedList);
-    if (originalList) {
-      const updatedOriginalList = originalList.filter((item) => item.id !== articleId);
-      setOriginalList(updatedOriginalList);
-    }
+    setArticlesAndVideosList((list) => list.filter((item) => item.id !== articleId));
+    setOriginalList((list) => (list ? list.filter((item) => item.id !== articleId) : list));
   };
 
   useEffect(() => {

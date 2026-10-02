@@ -4,6 +4,7 @@ import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
 import TextField from "@mui/material/TextField";
+import Chip from "@mui/material/Chip";
 import IconButton from "@mui/material/IconButton";
 import SendIcon from "@mui/icons-material/Send";
 import Alert from "@mui/material/Alert";
@@ -23,11 +24,17 @@ export default function ReportDialog({
   error,
   isFeedbackSent,
   reportInfo,
+  // Optional one-tap reasons. With one picked, the text box becomes optional.
+  reasons = [],
+  selectedReason = null,
+  onReasonChange = () => {},
   feedback = "",
   onFeedbackChange = () => {},
   onSubmit = () => {},
   isSubmitting = false,
 }) {
+  const canSubmit = (Boolean(selectedReason) || Boolean(feedback.trim())) && !isSubmitting;
+
   return (
     <Dialog open={open} onClose={onClose}>
       <DialogTitle>
@@ -64,9 +71,24 @@ export default function ReportDialog({
               <CloseSharpIcon />
             </IconButton>
 
+            {reasons.length > 0 && (
+              <div style={{ display: "flex", flexWrap: "wrap", gap: "8px", marginTop: "8px" }}>
+                {reasons.map((reason) => (
+                  <Chip
+                    key={reason}
+                    label={reason}
+                    clickable
+                    color={selectedReason === reason ? "primary" : "default"}
+                    variant={selectedReason === reason ? "filled" : "outlined"}
+                    onClick={() => onReasonChange(selectedReason === reason ? null : reason)}
+                  />
+                ))}
+              </div>
+            )}
+
             <TextField
               id="outlined-multiline-flexible"
-              label="Type problem here"
+              label={reasons.length > 0 ? "Anything else? (optional)" : "Type problem here"}
               multiline={true}
               minRows={2}
               maxRows={3}
@@ -74,6 +96,8 @@ export default function ReportDialog({
               onChange={(e) => onFeedbackChange(e)}
               margin="normal"
               size="small"
+              // The stored reason is 255 chars, and a picked reason is prepended.
+              inputProps={{ maxLength: 200 }}
             />
 
             <DialogActions>
@@ -82,8 +106,8 @@ export default function ReportDialog({
                 onClick={onSubmit}
                 id="feedback-box"
                 aria-label="send"
-                disabled={!feedback.trim() || isSubmitting}
-                sx={reportDialogSendButtonStyles(!feedback.trim() || isSubmitting)}
+                disabled={!canSubmit}
+                sx={reportDialogSendButtonStyles(!canSubmit)}
               >
                 <SendIcon />
               </IconButton>
