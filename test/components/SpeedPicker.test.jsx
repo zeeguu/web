@@ -45,3 +45,16 @@ describe("SpeedPicker", () => {
     expect(pill()).toBeDisabled();
   });
 });
+
+describe("SpeedPicker accessibility", () => {
+  it("says whether its menu is open, and which menu it controls", async () => {
+    render(<SpeedPicker value={1} onChange={() => {}} />);
+    const pill = screen.getByRole("button", { name: /Playback speed/ });
+    expect(pill).toHaveAttribute("aria-expanded", "false");
+
+    await userEvent.click(pill);
+    expect(pill).toHaveAttribute("aria-expanded", "true");
+    expect(screen.getByRole("menu").closest("[id]")).toBeTruthy();
+    expect(document.getElementById(pill.getAttribute("aria-controls"))).toBeInTheDocument();
+  });
+});

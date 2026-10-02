@@ -49,6 +49,16 @@ const LocalStorage = {
     //  "preview"     — title + image + 2-line summary → tap opens overlay
     //  "interactive" — inline interactive title/summary cards (words tappable in feed)
     BrowsingMode: "browsing_mode",
+    // Audio lesson playback speed, per learned language: "audioSpeed_<code>".
+    AudioSpeedPrefix: "audioSpeed_",
+  },
+
+  getAudioSpeed: function (language) {
+    return localStorage.getItem(this.Keys.AudioSpeedPrefix + language);
+  },
+
+  setAudioSpeed: function (language, speed) {
+    localStorage.setItem(this.Keys.AudioSpeedPrefix + language, String(speed));
   },
 
   getKioskReader: function () {

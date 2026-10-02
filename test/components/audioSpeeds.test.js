@@ -1,6 +1,7 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
 
 import { SPEED_OPTIONS, parseStoredSpeed, loadSpeed, saveSpeed } from "../../src/components/audioSpeeds";
+import LocalStorage from "../../src/assorted/LocalStorage";
 
 /**
  * Audio lesson playback speed: what's on offer, and remembering the learner's
@@ -21,17 +22,15 @@ describe("parseStoredSpeed", () => {
 });
 
 describe("loadSpeed / saveSpeed", () => {
-  // An in-memory stand-in: newer Node ships its own global localStorage, which
-  // shadows jsdom's and isn't usable without a backing file.
+  // Through the LocalStorage module, stubbed: newer Node ships its own global
+  // localStorage, which shadows jsdom's.
   let store;
   beforeEach(() => {
     store = new Map();
-    vi.stubGlobal("localStorage", {
-      getItem: (k) => (store.has(k) ? store.get(k) : null),
-      setItem: (k, v) => store.set(k, String(v)),
-    });
+    vi.spyOn(LocalStorage, "getAudioSpeed").mockImplementation((lang) => store.get(lang) ?? null);
+    vi.spyOn(LocalStorage, "setAudioSpeed").mockImplementation((lang, speed) => store.set(lang, String(speed)));
   });
-  afterEach(() => vi.unstubAllGlobals());
+  afterEach(() => vi.restoreAllMocks());
 
   it("remembers a speed per language", () => {
     saveSpeed("es", 1.25);
@@ -42,7 +41,6 @@ describe("loadSpeed / saveSpeed", () => {
   });
 
   it("without a language, uses 1x and saves nothing", () => {
-    // The player can mount before the learner's language is known.
     saveSpeed(undefined, 1.5);
     expect(store.size).toBe(0);
     expect(loadSpeed(undefined)).toBe(1);

@@ -71,10 +71,24 @@ export default function CustomAudioPlayer({
   const lastSavedProgressRef = useRef(0);
   const audioContextRef = useRef(null);
 
-  // The learner's saved speed for this language. `language` can arrive after
-  // mount (it comes from user details), so this can't only be the initial state.
+  // For handlers registered once (lock screen, visibility) that need the
+  // current rate, not the one from when they were registered.
+  const playbackRateRef = useRef(playbackRate);
+  playbackRateRef.current = playbackRate;
+  // A speed picked before `language` was known, so not yet saved.
+  const unsavedPick = useRef(null);
+
+  // `language` can arrive after mount (it comes from user details). Then load
+  // the saved speed -- unless the learner already picked one, which wins and
+  // gets saved now.
   useEffect(() => {
-    setPlaybackRate(loadSpeed(language));
+    if (!language) return;
+    if (unsavedPick.current !== null) {
+      saveSpeed(language, unsavedPick.current);
+      unsavedPick.current = null;
+    } else {
+      setPlaybackRate(loadSpeed(language));
+    }
   }, [language]);
 
   // The one place that writes the rate to the element. defaultPlaybackRate too:
@@ -87,14 +101,20 @@ export default function CustomAudioPlayer({
     }
   }, [playbackRate]);
 
-  // And read it back: if anything else changes the rate (the OS, a WebView
-  // reset), the pill and the speed-adjusted times follow what's actually playing.
+  // Some WebViews reset the rate on load or play regardless; put the chosen
+  // speed back rather than adopting whatever the element reports.
   useEffect(() => {
     const audio = audioRef.current;
     if (!audio) return;
-    const syncRate = () => setPlaybackRate(audio.playbackRate);
-    audio.addEventListener("ratechange", syncRate);
-    return () => audio.removeEventListener("ratechange", syncRate);
+    const reapply = () => {
+      if (audio.playbackRate !== playbackRateRef.current) audio.playbackRate = playbackRateRef.current;
+    };
+    audio.addEventListener("loadedmetadata", reapply);
+    audio.addEventListener("play", reapply);
+    return () => {
+      audio.removeEventListener("loadedmetadata", reapply);
+      audio.removeEventListener("play", reapply);
+    };
   }, []);
 
   // Set up Media Session API for lock screen controls.
@@ -165,7 +185,7 @@ export default function CustomAudioPlayer({
       if ("setPositionState" in navigator.mediaSession && duration > 0) {
         navigator.mediaSession.setPositionState({
           duration: duration,
-          playbackRate: playbackRate,
+          playbackRate: playbackRateRef.current,
           position: newTime,
         });
       }
@@ -185,7 +205,7 @@ export default function CustomAudioPlayer({
       if ("setPositionState" in navigator.mediaSession && duration > 0) {
         navigator.mediaSession.setPositionState({
           duration: duration,
-          playbackRate: playbackRate,
+          playbackRate: playbackRateRef.current,
           position: newTime,
         });
       }
@@ -276,7 +296,7 @@ export default function CustomAudioPlayer({
         if ("mediaSession" in navigator && "setPositionState" in navigator.mediaSession && duration > 0) {
           navigator.mediaSession.setPositionState({
             duration: duration,
-            playbackRate: playbackRate,
+            playbackRate: playbackRateRef.current,
             position: audio.currentTime,
           });
         }
@@ -322,7 +342,9 @@ export default function CustomAudioPlayer({
         });
       }
     };
-  }, [isPlaying, duration, playbackRate]);
+    // playbackRate is read through its ref: a speed change must not run this
+    // effect's cleanup, which closes the AudioContext.
+  }, [isPlaying, duration]);
 
   // Apply initialProgress exactly ONCE per mount. Without the ref guard the
   // effect re-fires every time the parent re-saves the playhead (every ~10s
@@ -394,7 +416,7 @@ export default function CustomAudioPlayer({
           try {
             navigator.mediaSession.setPositionState({
               duration: duration,
-              playbackRate: playbackRate,
+              playbackRate: playbackRateRef.current,
               position: audio.currentTime,
             });
           } catch (error) {
@@ -610,7 +632,8 @@ export default function CustomAudioPlayer({
 
   const handleSpeedChange = (newRate) => {
     setPlaybackRate(newRate);
-    saveSpeed(language, newRate);
+    if (language) saveSpeed(language, newRate);
+    else unsavedPick.current = newRate;
   };
 
   return (
