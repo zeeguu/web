@@ -9,7 +9,8 @@ import CloseIcon from "@mui/icons-material/Close";
 import SendIcon from "@mui/icons-material/Send";
 import { toast } from "react-toastify";
 import { APIContext } from "../../contexts/APIContext";
-import { TextLinkButton, UndoToastRow, SkipSeparator } from "./ReportExerciseDialog.sc";
+import { SkipSeparator } from "./ReportExerciseDialog.sc";
+import { TextLinkButton, UndoToastRow } from "../../components/UndoToast.sc";
 
 // Chip definitions. The order here is the order the chips render.
 // Each chip carries the backend `reason` enum value (matching

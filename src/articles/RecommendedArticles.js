@@ -15,11 +15,13 @@ export default function RecommendedArticles() {
   const [articleList, setArticleList] = useState(cachedArticles);
   const [originalList, setOriginalList] = useState(cachedArticles);
 
-  // Functional updates: a card reports its hide only once its Undo toast closes,
-  // so this can run with a stale list when several cards were hidden in a row.
   const handleArticleHidden = (articleId) => {
-    setArticleList((list) => list.filter((item) => item.id !== articleId));
-    setOriginalList((list) => (list ? list.filter((item) => item.id !== articleId) : list));
+    const updatedList = articleList.filter((item) => item.id !== articleId);
+    setArticleList(updatedList);
+    if (originalList) {
+      const updatedOriginalList = originalList.filter((item) => item.id !== articleId);
+      setOriginalList(updatedOriginalList);
+    }
   };
 
   const fetchArticles = useCallback(() => {

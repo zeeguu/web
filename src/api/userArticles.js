@@ -510,18 +510,34 @@ Zeeguu_API.prototype.simplifyArticle = function (articleID, callback) {
   });
 };
 
-// Both drop the cached feed: otherwise, for up to five minutes, going back to
-// the feed serves the response from before the change.
+// Both drop the cached feed once the server has the change: otherwise, for up
+// to five minutes, going back to the feed serves the response from before it.
+// (After, not before: a feed fetched while the POST is in flight would refill
+// the cache with the old state.)
 Zeeguu_API.prototype.hideArticle = function (articleId, callback, onError) {
   let param = qs.stringify({ article_id: articleId });
-  this.invalidateCache("user_articles/recommended");
-  this._post(`/hide_article`, param, callback, onError);
+  this._post(
+    `/hide_article`,
+    param,
+    (response) => {
+      this.invalidateCache("user_articles/recommended");
+      if (callback) callback(response);
+    },
+    onError,
+  );
 };
 
 Zeeguu_API.prototype.unhideArticle = function (articleId, callback, onError) {
   let param = qs.stringify({ article_id: articleId, hidden: "false" });
-  this.invalidateCache("user_articles/recommended");
-  this._post(`/hide_article`, param, callback, onError);
+  this._post(
+    `/hide_article`,
+    param,
+    (response) => {
+      this.invalidateCache("user_articles/recommended");
+      if (callback) callback(response);
+    },
+    onError,
+  );
 };
 
 Zeeguu_API.prototype.getHiddenUserArticles = function (page, callback, onError) {

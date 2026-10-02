@@ -23,7 +23,7 @@ import MoreHorizRoundedIcon from "@mui/icons-material/MoreHorizRounded";
 import SubjectRoundedIcon from "@mui/icons-material/SubjectRounded";
 import { Menu, MenuItem } from "@mui/material";
 import { ReportBrokenArticleDialog } from "../reader/ReportBrokenArticle";
-import { UndoToastRow, TextLinkButton } from "../exercises/exerciseTypes/ReportExerciseDialog.sc";
+import { UndoToastRow, TextLinkButton } from "../components/UndoToast.sc";
 import { reportDialogPaperStyles } from "../components/ReportDialog.styles";
 import BookmarkBorderRoundedIcon from "@mui/icons-material/BookmarkBorderRounded";
 import BookmarkRoundedIcon from "@mui/icons-material/BookmarkRounded";
@@ -44,6 +44,8 @@ export default function ArticlePreview({
   setDoNotShowRedirectionModal_UserPreference,
   notifyArticleClick,
   onArticleHidden,
+  // With onArticleHidden: the feed's list hides the card, and this brings it back.
+  onArticleUnhidden,
   onArticleRemoved,
   onUnhideArticle,
   isHiddenView = false,
@@ -112,6 +114,9 @@ export default function ArticlePreview({
   const [reportMounted, setReportMounted] = useState(false);
   const hideInFlight = useRef(false);
   const reportSent = useRef(false);
+  // Mirrors reportOpen for the report's callback, which can land after a close.
+  const reportOpenRef = useRef(false);
+  reportOpenRef.current = reportOpen;
   const [isSummaryExpanded, setIsSummaryExpanded] = useState(false);
   // No img_url, or the <img> 404'd / failed to load — either way we render
   // no image region at all rather than an empty box that reads as broken.
@@ -169,16 +174,22 @@ export default function ArticlePreview({
     }
   }
 
-  // The card stays mounted (rendering nothing) while the toast is up, so Undo
-  // can put it back where it was; the list only drops it once the toast closes.
-  //
-  // It also sets `article.hidden` on the article object itself. The feed's
-  // pagination and its videos-only toggle rebuild the list from snapshots that
-  // share these objects, so if one lands while the toast is up, the card
-  // remounts already hidden instead of coming back.
+  // In the feed, the list owns which cards are hidden (see hiddenArticles.js):
+  // the card tells it, and Undo tells it again. Elsewhere the card hides itself.
+  function leaveFeed() {
+    if (onArticleHidden) onArticleHidden(article.id);
+    else setIsHidden(true);
+  }
+
+  function backInFeed() {
+    hideInFlight.current = false;
+    setIsAnimatingOut(false);
+    setIsHidden(false);
+    if (onArticleUnhidden) onArticleUnhidden(article.id);
+  }
+
   function handleHideArticle({ message = "Article hidden from your feed", undoable = true } = {}) {
-    // The × and the menu stay tappable during the collapse; a second hide would
-    // bring a second toast whose close drops the card even after an Undo.
+    // The × and the menu stay tappable during the collapse; don't hide twice.
     if (hideInFlight.current) return;
     hideInFlight.current = true;
     setIsAnimatingOut(true);
@@ -186,46 +197,40 @@ export default function ArticlePreview({
     api.hideArticle(
       article.id,
       () => {
-        article.hidden = true;
         let undone = false;
         setTimeout(() => {
-          if (!undone) setIsHidden(true);
+          if (!undone) leaveFeed();
         }, 300); // Match animation duration
 
-        const undo = (closeToast) => {
+        if (!undoable) {
+          toast(message);
+          return;
+        }
+
+        const undo = () => {
           undone = true;
-          closeToast();
-          api.unhideArticle(
-            article.id,
-            () => {
-              article.hidden = false;
-              hideInFlight.current = false;
-              setIsAnimatingOut(false);
-              setIsHidden(false);
-            },
-            () => {
-              // Still hidden on the server, so let the feed drop it -- and say so.
-              toast.error("Couldn't undo: the article is still hidden");
-              if (onArticleHidden) onArticleHidden(article.id);
-            },
-          );
+          api.unhideArticle(article.id, backInFeed, () => {
+            toast.error("Couldn't undo: the article is still hidden");
+            leaveFeed();
+          });
         };
 
-        const content = undoable
-          ? ({ closeToast }) => (
-              <UndoToastRow>
-                <span>{message}</span>
-                <TextLinkButton onClick={() => undo(closeToast)}>Undo</TextLinkButton>
-              </UndoToastRow>
-            )
-          : message;
-
-        toast(content, {
-          autoClose: undoable ? 5000 : 3000,
-          onClose: () => {
-            if (!undone && onArticleHidden) onArticleHidden(article.id);
-          },
-        });
+        toast(
+          ({ closeToast }) => (
+            <UndoToastRow>
+              <span>{message}</span>
+              <TextLinkButton
+                onClick={() => {
+                  closeToast();
+                  undo();
+                }}
+              >
+                Undo
+              </TextLinkButton>
+            </UndoToastRow>
+          ),
+          { autoClose: 5000 },
+        );
       },
       () => {
         hideInFlight.current = false;
@@ -292,6 +297,11 @@ export default function ArticlePreview({
     </Menu>
   );
 
+  function hideAfterReport() {
+    reportSent.current = false;
+    handleHideArticle({ message: "Thanks! Article reported and hidden", undoable: false });
+  }
+
   // Reporting also hides it: whoever reports a quiz doesn't want to keep seeing it.
   // No Undo here -- the report itself has been sent either way.
   // The dialog renders in a portal, but React still bubbles its clicks up to the
@@ -304,15 +314,16 @@ export default function ArticlePreview({
         sourceID={article.source_id}
         UMR_SOURCE={ARTICLE_LIST_SOURCE}
         open={reportOpen}
-        onReported={() => (reportSent.current = true)}
-        // Hide once the dialog closes, so the card (and the dialog in it)
-        // doesn't vanish under the thank-you.
+        // Hide once the dialog has closed, so the card (and the dialog in it)
+        // doesn't vanish under the thank-you. A report that lands after the
+        // learner closed the dialog hides the card straight away.
+        onReported={() => {
+          reportSent.current = true;
+          if (!reportOpenRef.current) hideAfterReport();
+        }}
         onClose={() => {
           setReportOpen(false);
-          if (reportSent.current) {
-            reportSent.current = false;
-            handleHideArticle({ message: "Thanks! Article reported and hidden", undoable: false });
-          }
+          if (reportSent.current) hideAfterReport();
         }}
       />
     </span>

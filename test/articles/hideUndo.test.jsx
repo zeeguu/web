@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from "vitest";
-import { render, screen, waitFor, fireEvent } from "@testing-library/react";
+import { render, screen, waitFor, fireEvent, act } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
@@ -7,28 +7,21 @@ import { ToastContainer } from "react-toastify";
 import { APIContext } from "../../src/contexts/APIContext";
 import ArticlePreview from "../../src/articles/ArticlePreview";
 
-// react-toastify closes a toast when its CSS animations end, and jsdom never ends
-// one: this plays them out -- the timer bar running down, then the exit.
-function finishToastAnimations() {
-  document.querySelectorAll(".Toastify__progress-bar").forEach((bar) => fireEvent.animationEnd(bar));
-  document.querySelectorAll(".Toastify__toast").forEach((t) => fireEvent.animationEnd(t));
-}
-
 /**
- * Hide from feed, with Undo.
+ * Hide from feed, with Undo, and Report, from an article card.
  *
- * The card stays mounted while its toast is up, so Undo can put it back where it
- * was; the feed is only told to drop it once the toast closes without Undo.
+ * In the feed, the list owns which cards are hidden: the card reports a hide
+ * (onArticleHidden) and an Undo (onArticleUnhidden). Without those callbacks,
+ * e.g. on a page that isn't the feed, the card hides and restores itself.
  */
-describe("Hide from feed", () => {
+describe("Article card: Hide and Report", () => {
   const ARTICLE = { id: 7, title: "Quiz: which capital is this?", summary: "", topics_list: [], source_id: 70 };
   const title = ARTICLE.title;
 
-  function setup({ unhideFails = false, cardProps = {} } = {}) {
+  function setup({ inFeed = true, unhideFails = false, holdReport = false } = {}) {
     const calls = [];
-    // A fresh object per test: hiding marks the article object itself.
-    const article = { ...ARTICLE };
-    // Anything the card asks for that this test doesn't care about is a no-op.
+    let releaseReport;
+    // Anything the card asks for that these tests don't care about is a no-op.
     const api = new Proxy(
       {
         hideArticle: vi.fn((id, cb) => {
@@ -41,103 +34,101 @@ describe("Hide from feed", () => {
         }),
         reportBrokenArticle: vi.fn((id, reason, cb) => {
           calls.push(["report", id, reason]);
-          cb({ status: "success" });
+          releaseReport = () => cb({ status: "success" });
+          if (!holdReport) releaseReport();
         }),
       },
       { get: (target, key) => (key in target ? target[key] : () => {}) },
     );
-    const onArticleHidden = vi.fn();
-    const card = <ArticlePreview article={article} onArticleHidden={onArticleHidden} interactive {...cardProps} />;
-    const ui = (children) => (
+    const feed = inFeed ? { onArticleHidden: vi.fn(), onArticleUnhidden: vi.fn() } : {};
+    render(
       <MemoryRouter>
         <APIContext.Provider value={api}>
-          {children}
+          <ArticlePreview article={{ ...ARTICLE }} interactive {...feed} />
           <ToastContainer pauseOnFocusLoss={false} pauseOnHover={false} />
         </APIContext.Provider>
-      </MemoryRouter>
+      </MemoryRouter>,
     );
-    const view = render(ui(card));
-    // Unmount and mount the card again on the same article object, as a list
-    // rebuilt from a snapshot does.
-    const remount = () => {
-      view.rerender(ui(null));
-      view.rerender(ui(<ArticlePreview article={article} onArticleHidden={onArticleHidden} interactive />));
-    };
-    return { calls, onArticleHidden, remount };
+    return { calls, ...feed, releaseReport: () => act(() => releaseReport()) };
+  }
+
+  async function openMenu() {
+    await userEvent.click(screen.getByRole("button", { name: "More actions" }));
   }
 
   async function hideViaMenu() {
-    await userEvent.click(screen.getByRole("button", { name: "More actions" }));
+    await openMenu();
     await userEvent.click(screen.getByText("Hide from feed"));
   }
 
-  it("Undo brings the card back and unhides it on the server", async () => {
-    const { calls, onArticleHidden } = setup();
+  async function reportNotAnArticle() {
+    await openMenu();
+    await userEvent.click(screen.getByText("Report…"));
+    await userEvent.click(await screen.findByText(/Not an article/));
+    await userEvent.click(screen.getByRole("button", { name: "send" }));
+  }
+
+  const undoButton = () => screen.findByRole("button", { name: "Undo" });
+
+  it("in the feed: hiding tells the list, and Undo tells it again", async () => {
+    const { calls, onArticleHidden, onArticleUnhidden } = setup();
     await hideViaMenu();
-    await waitFor(() => expect(screen.queryByText(title)).not.toBeInTheDocument());
+    await waitFor(() => expect(onArticleHidden).toHaveBeenCalledWith(7));
 
-    await userEvent.click(await screen.findByRole("button", { name: "Undo" }));
-
+    await userEvent.click(await undoButton());
     expect(calls).toEqual([
       ["hide", 7],
       ["unhide", 7],
     ]);
-    await waitFor(() => expect(screen.getByText(title)).toBeInTheDocument());
-    // The toast closing after an Undo must not drop the card from the feed.
-    finishToastAnimations();
-    await waitFor(() => expect(screen.queryByRole("button", { name: "Undo" })).not.toBeInTheDocument());
-    expect(onArticleHidden).not.toHaveBeenCalled();
+    expect(onArticleUnhidden).toHaveBeenCalledWith(7);
   });
 
-  it("without Undo, the feed drops the card once the toast closes", async () => {
-    const { onArticleHidden } = setup();
+  it("outside the feed: the card hides itself, and Undo brings it back", async () => {
+    setup({ inFeed: false });
     await hideViaMenu();
-    await screen.findByRole("button", { name: "Undo" });
-    expect(onArticleHidden).not.toHaveBeenCalled();
+    await waitFor(() => expect(screen.queryByText(title)).not.toBeInTheDocument());
 
-    finishToastAnimations();
-    await waitFor(() => expect(onArticleHidden).toHaveBeenCalledWith(7));
+    await userEvent.click(await undoButton());
+    await waitFor(() => expect(screen.getByText(title)).toBeInTheDocument());
   });
 
   it("a second tap while hiding doesn't hide twice", async () => {
-    const { calls } = setup();
+    const { calls } = setup({ inFeed: false });
     await hideViaMenu();
     await hideViaMenu().catch(() => {}); // the menu may already be gone
     expect(calls.filter(([what]) => what === "hide")).toHaveLength(1);
     expect(screen.getAllByRole("button", { name: "Undo" })).toHaveLength(1);
   });
 
-  it("stays hidden if the list remounts the card while the toast is up", async () => {
-    const { remount } = setup();
+  it("if Undo fails, it says so and the article stays hidden", async () => {
+    const { onArticleUnhidden } = setup({ unhideFails: true });
     await hideViaMenu();
-    await screen.findByRole("button", { name: "Undo" });
-    remount();
-    expect(screen.queryByText(title)).not.toBeInTheDocument();
-  });
-
-  it("if Undo fails, says so and lets the feed drop the card", async () => {
-    const { onArticleHidden } = setup({ unhideFails: true });
-    await hideViaMenu();
-    await userEvent.click(await screen.findByRole("button", { name: "Undo" }));
+    await userEvent.click(await undoButton());
     expect(await screen.findByText(/Couldn't undo/)).toBeInTheDocument();
-    expect(onArticleHidden).toHaveBeenCalledWith(7);
+    expect(onArticleUnhidden).not.toHaveBeenCalled();
   });
 
-  it("Report sends the reason, then hides the card once the dialog closes", async () => {
+  it("Report sends the reason, and hides the card once the thank-you closes", async () => {
     const { calls, onArticleHidden } = setup();
-    await userEvent.click(screen.getByRole("button", { name: "More actions" }));
-    await userEvent.click(screen.getByText("Report…"));
-    await userEvent.click(await screen.findByText(/Not an article/));
-    await userEvent.click(screen.getByRole("button", { name: "send" }));
+    await reportNotAnArticle();
 
     expect(calls).toEqual([["report", 7, "Not an article (quiz, ad, list…)"]]);
-    // The thank-you is still up, and the card is still there under it.
+    // The thank-you is up, and the card is still there under it.
     expect(screen.getByText(/Thank you for your report/)).toBeInTheDocument();
-    expect(screen.getByText(title)).toBeInTheDocument();
+    expect(onArticleHidden).not.toHaveBeenCalled();
 
-    await waitFor(() => expect(calls.map(([what]) => what)).toEqual(["report", "hide"]), { timeout: 3000 });
+    await waitFor(() => expect(onArticleHidden).toHaveBeenCalledWith(7), { timeout: 3000 });
+    expect(calls.map(([what]) => what)).toEqual(["report", "hide"]);
     expect(await screen.findByText(/reported and hidden/)).toBeInTheDocument();
-    finishToastAnimations();
+  });
+
+  it("a report that lands after the dialog was closed still hides the card", async () => {
+    const { calls, onArticleHidden, releaseReport } = setup({ holdReport: true });
+    await reportNotAnArticle();
+    act(() => fireEvent.keyDown(screen.getByRole("dialog"), { key: "Escape" }));
+    expect(calls.map(([what]) => what)).toEqual(["report"]);
+
+    releaseReport();
     await waitFor(() => expect(onArticleHidden).toHaveBeenCalledWith(7));
   });
 });

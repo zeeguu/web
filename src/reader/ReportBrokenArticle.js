@@ -11,9 +11,15 @@ export const ARTICLE_REPORT_REASONS = [
   "Wrong language",
 ];
 
+// What reaches the API: the picked reason, then whatever the learner typed.
+// The column is 255 chars; the text box is capped at 200 to leave room.
+export function composeReportText(reason, feedback) {
+  return [reason, feedback.trim()].filter(Boolean).join(": ");
+}
+
 // The dialog on its own, so it can be opened from anywhere (the reader's toolbar
 // icon, an article card's overflow menu). `onReported` runs as soon as the
-// report is in, even if the learner closes the thank-you early.
+// report is in, even if the learner has already closed the dialog.
 export function ReportBrokenArticleDialog({ articleID, sourceID, UMR_SOURCE, open, onClose, onReported }) {
   const api = useContext(APIContext);
   const [feedback, setFeedback] = useState("");
@@ -22,18 +28,29 @@ export function ReportBrokenArticleDialog({ articleID, sourceID, UMR_SOURCE, ope
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [reportInfo, setReportInfo] = useState(null);
   const [error, setError] = useState(null);
-  // The thank-you closes itself after 2s; if the dialog was closed (and maybe
-  // reopened) in the meantime, that timer must not close the new one.
+  // The thank-you closes itself after 2s. That timer, and a response that
+  // arrives after the learner closed the dialog, must not touch a dialog that
+  // has since been closed (or reopened).
   const closeTimer = useRef(null);
+  const openRef = useRef(open);
+  openRef.current = open;
   useEffect(() => () => clearTimeout(closeTimer.current), []);
+
+  // Start from an empty form on every open. Resetting on close instead would
+  // flash the empty form in place of the thank-you during the fade-out.
+  useEffect(() => {
+    if (open) {
+      setFeedback("");
+      setReason(null);
+      setIsFeedbackSent(false);
+      setIsSubmitting(false);
+      setError(null);
+      setReportInfo(null);
+    }
+  }, [open]);
 
   const handleClose = () => {
     clearTimeout(closeTimer.current);
-    setFeedback("");
-    setReason(null);
-    setIsFeedbackSent(false);
-    setError(null);
-    setReportInfo(null);
     onClose();
   };
 
@@ -41,7 +58,7 @@ export function ReportBrokenArticleDialog({ articleID, sourceID, UMR_SOURCE, ope
     setIsSubmitting(true);
     setError(null);
 
-    const text = [reason, feedback.trim()].filter(Boolean).join(": ");
+    const text = composeReportText(reason, feedback);
 
     api.reportBrokenArticle(
       articleID,
@@ -49,13 +66,13 @@ export function ReportBrokenArticleDialog({ articleID, sourceID, UMR_SOURCE, ope
       (response) => {
         setIsSubmitting(false);
         if (response.status === "success") {
-          setIsFeedbackSent(true);
-          setReportInfo(response);
-
           // Also log for analytics
           api.logUserActivity(api.USER_FEEDBACK, articleID, text, UMR_SOURCE, sourceID);
-
           if (onReported) onReported(response);
+
+          if (!openRef.current) return;
+          setIsFeedbackSent(true);
+          setReportInfo(response);
           closeTimer.current = setTimeout(handleClose, 2000);
         } else {
           setError("Failed to submit report. Please try again.");

@@ -6,6 +6,7 @@ import SearchField from "./SearchField";
 import * as s from "./ArticleListBrowser.sc";
 import LoadingAnimation from "../components/LoadingAnimation";
 import FeedFilterBar from "./FeedFilterBar";
+import { addHidden, removeHidden, visibleFeedItems } from "./hiddenArticles";
 
 import { browsingModeProps } from "./browsingMode";
 import LocalStorage from "../assorted/LocalStorage";
@@ -51,6 +52,7 @@ export default function ArticleListBrowser({
   const browsingMode = kioskMode ? "interactive" : LocalStorage.getBrowsingMode();
   const [articlesAndVideosList, setArticlesAndVideosList] = useState();
   const [originalList, setOriginalList] = useState(null);
+  const [hiddenIds, setHiddenIds] = useState(() => new Set());
   const [searchError, setSearchError] = useState(false);
 
   const [isExtensionAvailable] = useExtensionCommunication();
@@ -197,24 +199,23 @@ export default function ArticleListBrowser({
     }
   }
 
+  // `index` is the position in the rendered feed, i.e. among the visible items.
   const handleArticleClick = (articleId, sourceId, index) => {
-    const seenList = articlesAndVideosList.slice(0, index).map((each) => each.source_id);
+    const seenList = visibleFeedItems(articlesAndVideosList, hiddenIds).slice(0, index).map((each) => each.source_id);
     const seenListAsString = JSON.stringify(seenList, null, 0);
     api.logUserActivity(api.CLICKED_ARTICLE, articleId, "", seenListAsString, sourceId);
   };
 
   const handleVideoClick = (sourceId, index) => {
-    const seenList = articlesAndVideosList.slice(0, index).map((each) => each.source_id);
+    const seenList = visibleFeedItems(articlesAndVideosList, hiddenIds).slice(0, index).map((each) => each.source_id);
     const seenListAsString = JSON.stringify(seenList, null, 0);
     api.logUserActivity(api.CLICKED_VIDEO, null, "", seenListAsString, sourceId);
   };
 
-  // Functional updates: a card reports its hide only once its Undo toast closes,
-  // so this can run with a stale list when several cards were hidden in a row.
-  const handleArticleHidden = (articleId) => {
-    setArticlesAndVideosList((list) => list.filter((item) => item.id !== articleId));
-    setOriginalList((list) => (list ? list.filter((item) => item.id !== articleId) : list));
-  };
+  // See hiddenArticles.js. Functional updates: a card's Undo runs from its toast,
+  // seconds after the render that created it.
+  const handleArticleHidden = (articleId) => setHiddenIds((ids) => addHidden(ids, articleId));
+  const handleArticleUnhidden = (articleId) => setHiddenIds((ids) => removeHidden(ids, articleId));
 
   useEffect(() => {
     window.addEventListener("scroll", handleScroll, true);
@@ -323,6 +324,8 @@ export default function ArticleListBrowser({
     return <LoadingAnimation delay={300} />;
   }
 
+  const visibleList = visibleFeedItems(articlesAndVideosList, hiddenIds);
+
   if (searchError) {
     return (
       <>
@@ -392,7 +395,7 @@ export default function ArticleListBrowser({
       <s.FeedCards $dimmed={levelReloading}>
       {!reloadingSearchArticles &&
         !feedLoading &&
-        articlesAndVideosList.map((each, index) =>
+        visibleList.map((each, index) =>
           each.video ? (
             // Kiosk mode is a read-only summary feed — skip playable videos.
             kioskMode ? null : (
@@ -413,6 +416,7 @@ export default function ArticleListBrowser({
               doNotShowRedirectionModal_UserPreference={doNotShowRedirectionModal_UserPreference}
               setDoNotShowRedirectionModal_UserPreference={setDoNotShowRedirectionModal_UserPreference}
               onArticleHidden={handleArticleHidden}
+              onArticleUnhidden={handleArticleUnhidden}
               onSelectTopic={
                 filterInUrl
                   ? (topicTitle) => {
@@ -431,7 +435,7 @@ export default function ArticleListBrowser({
           country and offers somewhere to change it. This line would sit above
           that saying the same thing worse -- and talking about a "query" the
           reader never typed. */}
-      {!reloadingSearchArticles && !feedLoading && !hasVarietyPreference && articlesAndVideosList.length === 0 && (
+      {!reloadingSearchArticles && !feedLoading && !hasVarietyPreference && visibleList.length === 0 && (
         <div style={{ textAlign: "center", marginTop: "1rem" }}>
           <p>No results were found for this query.</p>
         </div>
@@ -443,19 +447,19 @@ export default function ArticleListBrowser({
               the generic "here are some news sites" advice would be wrong for it:
               the sources are not the problem, the filter is. */}
           <NoArticlesForVariety
-            articleList={articlesAndVideosList}
+            articleList={visibleList}
             isLoading={reloadingSearchArticles || feedLoading || isWaitingForNewArticles}
             topicTitle={activeFilter.type === "topic" ? activeFilter.value.title : null}
           />
           {!hasVarietyPreference && (
             <ShowLinkRecommendationsIfNoArticles
-              articleList={articlesAndVideosList}
+              articleList={visibleList}
             ></ShowLinkRecommendationsIfNoArticles>
           )}
         </>
       )}
       {isWaitingForNewArticles && <LoadingAnimation delay={0}></LoadingAnimation>}
-      {noMoreArticlesToShow && articlesAndVideosList.length > 0 && (
+      {noMoreArticlesToShow && visibleList.length > 0 && (
         <div
           style={{
             display: "flex",
