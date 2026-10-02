@@ -26,7 +26,7 @@ describe("Article card: Hide and Report", () => {
       {
         hideArticle: vi.fn((id, cb) => {
           calls.push(["hide", id]);
-          cb("OK");
+          if (cb) cb("OK");
         }),
         unhideArticle: vi.fn((id, cb, onError) => {
           calls.push(["unhide", id]);
@@ -108,17 +108,20 @@ describe("Article card: Hide and Report", () => {
     expect(onArticleUnhidden).not.toHaveBeenCalled();
   });
 
-  it("Report sends the reason, and hides the card once the thank-you closes", async () => {
+  it("Report hides on the server at once, and takes the card away once the thank-you closes", async () => {
     const { calls, onArticleHidden } = setup();
     await reportNotAnArticle();
 
-    expect(calls).toEqual([["report", 7, "Not an article (quiz, ad, list…)"]]);
-    // The thank-you is up, and the card is still there under it.
+    // Server-side straight away, so a reload can't bring it back...
+    expect(calls).toEqual([
+      ["report", 7, "Not an article (quiz, ad, list…)"],
+      ["hide", 7],
+    ]);
+    // ...but the card stays under the thank-you.
     expect(screen.getByText(/Thank you for your report/)).toBeInTheDocument();
     expect(onArticleHidden).not.toHaveBeenCalled();
 
     await waitFor(() => expect(onArticleHidden).toHaveBeenCalledWith(7), { timeout: 3000 });
-    expect(calls.map(([what]) => what)).toEqual(["report", "hide"]);
     expect(await screen.findByText(/reported and hidden/)).toBeInTheDocument();
   });
 
@@ -129,6 +132,20 @@ describe("Article card: Hide and Report", () => {
     expect(calls.map(([what]) => what)).toEqual(["report"]);
 
     releaseReport();
+    expect(calls.map(([what]) => what)).toEqual(["report", "hide"]);
     await waitFor(() => expect(onArticleHidden).toHaveBeenCalledWith(7));
+  });
+
+  it("a late report doesn't take over a dialog that was reopened", async () => {
+    const { releaseReport } = setup({ holdReport: true });
+    await reportNotAnArticle();
+    act(() => fireEvent.keyDown(screen.getByRole("dialog"), { key: "Escape" }));
+    await waitFor(() => expect(screen.queryByRole("dialog")).not.toBeInTheDocument());
+
+    await openMenu();
+    await userEvent.click(screen.getByText("Report…"));
+    await screen.findByText(/Not an article/);
+    releaseReport();
+    expect(screen.queryByText(/Thank you for your report/)).not.toBeInTheDocument();
   });
 });

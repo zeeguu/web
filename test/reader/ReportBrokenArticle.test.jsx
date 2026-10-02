@@ -77,9 +77,17 @@ describe("ReportBrokenArticleDialog", () => {
       expect(onClose).not.toHaveBeenCalled();
       act(() => vi.advanceTimersByTime(2000));
       expect(onClose).toHaveBeenCalledTimes(1);
+      expect(onClose).toHaveBeenCalledWith({ reported: true });
     } finally {
       vi.useRealTimers();
     }
+  });
+
+  it("closing without sending says nothing was reported", () => {
+    const onClose = vi.fn();
+    setup({ onClose });
+    act(() => fireEvent.keyDown(screen.getByRole("dialog"), { key: "Escape" }));
+    expect(onClose).toHaveBeenCalledWith({ reported: false });
   });
 
   it("closing early cancels the thank-you's own close", async () => {

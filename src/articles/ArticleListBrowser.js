@@ -199,15 +199,17 @@ export default function ArticleListBrowser({
     }
   }
 
-  // `index` is the position in the rendered feed, i.e. among the visible items.
+  // What the feed renders, and what a click's `index` counts in.
+  const visibleList = articlesAndVideosList ? visibleFeedItems(articlesAndVideosList, hiddenIds) : [];
+
   const handleArticleClick = (articleId, sourceId, index) => {
-    const seenList = visibleFeedItems(articlesAndVideosList, hiddenIds).slice(0, index).map((each) => each.source_id);
+    const seenList = visibleList.slice(0, index).map((each) => each.source_id);
     const seenListAsString = JSON.stringify(seenList, null, 0);
     api.logUserActivity(api.CLICKED_ARTICLE, articleId, "", seenListAsString, sourceId);
   };
 
   const handleVideoClick = (sourceId, index) => {
-    const seenList = visibleFeedItems(articlesAndVideosList, hiddenIds).slice(0, index).map((each) => each.source_id);
+    const seenList = visibleList.slice(0, index).map((each) => each.source_id);
     const seenListAsString = JSON.stringify(seenList, null, 0);
     api.logUserActivity(api.CLICKED_VIDEO, null, "", seenListAsString, sourceId);
   };
@@ -323,8 +325,6 @@ export default function ArticleListBrowser({
     // away and leaves a blank panel, so the spinner needs to land sooner.
     return <LoadingAnimation delay={300} />;
   }
-
-  const visibleList = visibleFeedItems(articlesAndVideosList, hiddenIds);
 
   if (searchError) {
     return (
