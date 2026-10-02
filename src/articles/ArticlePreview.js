@@ -113,6 +113,8 @@ export default function ArticlePreview({
   // Mounted from the first open on, so closing still gets the dialog's fade-out.
   const [reportMounted, setReportMounted] = useState(false);
   const hideInFlight = useRef(false);
+  // The server-side hide started when a report goes in: resolves to whether it worked.
+  const reportHide = useRef(null);
   const [isSummaryExpanded, setIsSummaryExpanded] = useState(false);
   // No img_url, or the <img> 404'd / failed to load — either way we render
   // no image region at all rather than an empty box that reads as broken.
@@ -184,7 +186,11 @@ export default function ArticlePreview({
     if (onArticleUnhidden) onArticleUnhidden(article.id);
   }
 
-  function handleHideArticle(message = "Article hidden from your feed") {
+  // Undo needs a way back: in a list, the onArticleUnhidden that pairs with
+  // onArticleHidden; on its own, the card's own state.
+  const canUndoHide = !onArticleHidden || Boolean(onArticleUnhidden);
+
+  function handleHideArticle() {
     // The × and the menu stay tappable during the collapse; don't hide twice.
     if (hideInFlight.current) return;
     hideInFlight.current = true;
@@ -198,6 +204,11 @@ export default function ArticlePreview({
           if (!undone) leaveFeed();
         }, 300); // Match animation duration
 
+        const message = "Article hidden from your feed";
+        if (!canUndoHide) {
+          toast(message);
+          return;
+        }
         showUndoToast(message, () => {
           undone = true;
           api.unhideArticle(article.id, backInFeed, () => {
@@ -276,12 +287,31 @@ export default function ArticlePreview({
   // can't bring it back; on screen once the dialog has closed, so the card
   // (and the dialog in it) doesn't vanish under the thank-you. No Undo: the
   // report has been sent either way.
+  function hideOnServerAfterReport() {
+    reportHide.current = new Promise((resolve) =>
+      api.hideArticle(
+        article.id,
+        () => resolve(true),
+        () => resolve(false),
+      ),
+    );
+  }
+
   function leaveAfterReport() {
-    if (hideInFlight.current) return;
-    hideInFlight.current = true;
-    setIsAnimatingOut(true);
-    setTimeout(leaveFeed, 300); // Match animation duration
-    toast("Thanks! Article reported and hidden");
+    const hidden = reportHide.current;
+    reportHide.current = null;
+    if (!hidden) return;
+    hidden.then((ok) => {
+      if (!ok) {
+        toast.error("Reported, thanks. But we couldn't hide it from your feed.");
+        return;
+      }
+      if (hideInFlight.current) return;
+      hideInFlight.current = true;
+      setIsAnimatingOut(true);
+      setTimeout(leaveFeed, 300); // Match animation duration
+      toast("Thanks! Article reported and hidden");
+    });
   }
 
   // The dialog renders in a portal, but React still bubbles its clicks up to the
@@ -294,10 +324,7 @@ export default function ArticlePreview({
         sourceID={article.source_id}
         UMR_SOURCE={ARTICLE_LIST_SOURCE}
         open={reportOpen}
-        onReported={(response, { afterClose }) => {
-          api.hideArticle(article.id);
-          if (afterClose) leaveAfterReport();
-        }}
+        onReported={hideOnServerAfterReport}
         onClose={({ reported }) => {
           setReportOpen(false);
           if (reported) leaveAfterReport();

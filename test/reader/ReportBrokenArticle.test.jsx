@@ -90,7 +90,7 @@ describe("ReportBrokenArticleDialog", () => {
     expect(onClose).toHaveBeenCalledWith({ reported: false });
   });
 
-  it("closing early cancels the thank-you's own close", async () => {
+  it("closing during the thank-you cancels its own close", async () => {
     // Otherwise the stale timer would close the dialog again if it was reopened.
     const onClose = vi.fn();
     setup({ onClose });
@@ -102,8 +102,20 @@ describe("ReportBrokenArticleDialog", () => {
       act(() => fireEvent.keyDown(screen.getByRole("dialog"), { key: "Escape" }));
       act(() => vi.advanceTimersByTime(2000));
       expect(onClose).toHaveBeenCalledTimes(1);
+      expect(onClose).toHaveBeenCalledWith({ reported: true });
     } finally {
       vi.useRealTimers();
     }
+  });
+
+  it("can't be closed while the report is being sent", async () => {
+    const onClose = vi.fn();
+    const { reply } = setup({ onClose, respond: false });
+    await userEvent.click(screen.getByText(/Wrong language/));
+    await userEvent.click(send());
+    act(() => fireEvent.keyDown(screen.getByRole("dialog"), { key: "Escape" }));
+    expect(onClose).not.toHaveBeenCalled();
+    reply();
+    expect(screen.getByText(/Thank you for your report/)).toBeInTheDocument();
   });
 });

@@ -18,12 +18,11 @@ export function composeReportText(reason, feedback) {
 }
 
 // The dialog on its own, so it can be opened from anywhere (the reader's toolbar
-// icon, an article card's overflow menu).
+// icon, an article card's overflow menu). `onReported(response)` runs as soon
+// as a report is in; `onClose({ reported })` says whether this open sent one.
 //
-// `onReported(response, { afterClose })` runs as soon as a report is in.
-// `afterClose` is true when the learner had already closed (or closed and
-// reopened) the dialog by then. `onClose({ reported })` says whether this open
-// produced a report.
+// It can't be closed while a report is being sent (a fraction of a second), so
+// a response always lands in the open that sent it.
 export function ReportBrokenArticleDialog({ articleID, sourceID, UMR_SOURCE, open, onClose, onReported }) {
   const api = useContext(APIContext);
   const [feedback, setFeedback] = useState("");
@@ -32,36 +31,28 @@ export function ReportBrokenArticleDialog({ articleID, sourceID, UMR_SOURCE, ope
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [reportInfo, setReportInfo] = useState(null);
   const [error, setError] = useState(null);
-  // The thank-you closes itself after 2s. That timer, and a response that
-  // arrives late, must not touch a dialog that has since been closed or
-  // reopened: each open gets a number, and a response only updates the open
-  // it was sent from.
+  // The thank-you closes itself after 2s; closing earlier cancels that.
   const closeTimer = useRef(null);
-  const openNumber = useRef(0);
-  const isOpen = useRef(open);
-  const reportedThisOpen = useRef(false);
+  const reported = useRef(false);
   useEffect(() => () => clearTimeout(closeTimer.current), []);
 
   // Start from an empty form on every open. Resetting on close instead would
   // flash the empty form in place of the thank-you during the fade-out.
   useEffect(() => {
-    isOpen.current = open;
     if (open) {
-      openNumber.current += 1;
-      reportedThisOpen.current = false;
+      reported.current = false;
       setFeedback("");
       setReason(null);
       setIsFeedbackSent(false);
-      setIsSubmitting(false);
       setError(null);
       setReportInfo(null);
     }
   }, [open]);
 
   const handleClose = () => {
+    if (isSubmitting) return;
     clearTimeout(closeTimer.current);
-    isOpen.current = false;
-    onClose({ reported: reportedThisOpen.current });
+    onClose({ reported: reported.current });
   };
 
   function reportBroken() {
@@ -69,7 +60,6 @@ export function ReportBrokenArticleDialog({ articleID, sourceID, UMR_SOURCE, ope
     setError(null);
 
     const text = composeReportText(reason, feedback);
-    const sentFrom = openNumber.current;
 
     api.reportBrokenArticle(
       articleID,
@@ -79,20 +69,16 @@ export function ReportBrokenArticleDialog({ articleID, sourceID, UMR_SOURCE, ope
         if (response.status === "success") {
           // Also log for analytics
           api.logUserActivity(api.USER_FEEDBACK, articleID, text, UMR_SOURCE, sourceID);
-          const afterClose = !isOpen.current || sentFrom !== openNumber.current;
-          if (onReported) onReported(response, { afterClose });
-          if (afterClose) return;
-
-          reportedThisOpen.current = true;
+          reported.current = true;
           setIsFeedbackSent(true);
           setReportInfo(response);
-          closeTimer.current = setTimeout(handleClose, 2000);
+          if (onReported) onReported(response);
+          closeTimer.current = setTimeout(() => onClose({ reported: true }), 2000);
         } else {
           setError("Failed to submit report. Please try again.");
         }
       },
       (error) => {
-        if (!isOpen.current || sentFrom !== openNumber.current) return;
         setIsSubmitting(false);
         setError("Network error. Please check your connection and try again.");
       },

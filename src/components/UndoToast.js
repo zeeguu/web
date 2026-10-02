@@ -1,5 +1,6 @@
 import { toast } from "react-toastify";
 import { UndoToastRow, TextLinkButton } from "./UndoToast.sc";
+import strings from "../i18n/definitions";
 
 // A toast saying what just happened, with an Undo. The toast closes first, then
 // `onUndo` runs. `type` picks react-toastify's variant ("success", "info", ...).
@@ -14,7 +15,7 @@ export function showUndoToast(message, onUndo, { type = "default", autoClose = 5
             onUndo();
           }}
         >
-          Undo
+          {strings.undo}
         </TextLinkButton>
       </UndoToastRow>
     ),

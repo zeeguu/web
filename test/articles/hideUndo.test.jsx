@@ -18,15 +18,16 @@ describe("Article card: Hide and Report", () => {
   const ARTICLE = { id: 7, title: "Quiz: which capital is this?", summary: "", topics_list: [], source_id: 70 };
   const title = ARTICLE.title;
 
-  function setup({ inFeed = true, unhideFails = false, holdReport = false } = {}) {
+  function setup({ inFeed = true, unhideFails = false, hideFails = false, holdReport = false, noUnhide = false } = {}) {
     const calls = [];
     let releaseReport;
     // Anything the card asks for that these tests don't care about is a no-op.
     const api = new Proxy(
       {
-        hideArticle: vi.fn((id, cb) => {
+        hideArticle: vi.fn((id, cb, onError) => {
           calls.push(["hide", id]);
-          if (cb) cb("OK");
+          if (hideFails) onError && onError("network");
+          else if (cb) cb("OK");
         }),
         unhideArticle: vi.fn((id, cb, onError) => {
           calls.push(["unhide", id]);
@@ -41,6 +42,7 @@ describe("Article card: Hide and Report", () => {
       { get: (target, key) => (key in target ? target[key] : () => {}) },
     );
     const feed = inFeed ? { onArticleHidden: vi.fn(), onArticleUnhidden: vi.fn() } : {};
+    if (noUnhide) delete feed.onArticleUnhidden;
     render(
       <MemoryRouter>
         <APIContext.Provider value={api}>
@@ -125,27 +127,32 @@ describe("Article card: Hide and Report", () => {
     expect(await screen.findByText(/reported and hidden/)).toBeInTheDocument();
   });
 
-  it("a report that lands after the dialog was closed still hides the card", async () => {
-    const { calls, onArticleHidden, releaseReport } = setup({ holdReport: true });
+  it("the report dialog can't be closed while a report is being sent", async () => {
+    const { releaseReport, onArticleHidden } = setup({ holdReport: true });
     await reportNotAnArticle();
     act(() => fireEvent.keyDown(screen.getByRole("dialog"), { key: "Escape" }));
-    expect(calls.map(([what]) => what)).toEqual(["report"]);
+    expect(screen.getByRole("dialog")).toBeInTheDocument();
 
     releaseReport();
-    expect(calls.map(([what]) => what)).toEqual(["report", "hide"]);
+    expect(screen.getByText(/Thank you for your report/)).toBeInTheDocument();
+    act(() => fireEvent.keyDown(screen.getByRole("dialog"), { key: "Escape" }));
     await waitFor(() => expect(onArticleHidden).toHaveBeenCalledWith(7));
   });
 
-  it("a late report doesn't take over a dialog that was reopened", async () => {
-    const { releaseReport } = setup({ holdReport: true });
+  it("if the server-side hide after a report fails, says so and keeps the card", async () => {
+    const { onArticleHidden } = setup({ hideFails: true });
     await reportNotAnArticle();
     act(() => fireEvent.keyDown(screen.getByRole("dialog"), { key: "Escape" }));
-    await waitFor(() => expect(screen.queryByRole("dialog")).not.toBeInTheDocument());
+    expect(await screen.findByText(/couldn't hide it/)).toBeInTheDocument();
+    expect(onArticleHidden).not.toHaveBeenCalled();
+  });
 
-    await openMenu();
-    await userEvent.click(screen.getByText("Report…"));
-    await screen.findByText(/Not an article/);
-    releaseReport();
-    expect(screen.queryByText(/Thank you for your report/)).not.toBeInTheDocument();
+  it("offers no Undo where the page can't bring the card back", async () => {
+    // A list that hides cards but doesn't pass onArticleUnhidden.
+    const { onArticleHidden } = setup({ noUnhide: true });
+    await hideViaMenu();
+    expect(await screen.findByText(/Article hidden from your feed/)).toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: "Undo" })).not.toBeInTheDocument();
+    await waitFor(() => expect(onArticleHidden).toHaveBeenCalledWith(7));
   });
 });

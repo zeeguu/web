@@ -512,8 +512,9 @@ Zeeguu_API.prototype.simplifyArticle = function (articleID, callback) {
 
 // Drops the cached feed once the server has the change: otherwise, for up to
 // five minutes, going back to the feed serves the response from before it.
-// (After, not before: a feed fetched while the POST is in flight would refill
-// the cache with the old state.)
+// (After rather than before the POST, so a feed fetched while it's in flight
+// doesn't re-cache the old state. A fetch that started even earlier and lands
+// later still can; that window is small and predates this.)
 Zeeguu_API.prototype._setArticleHidden = function (articleId, hidden, callback, onError) {
   const param = qs.stringify(hidden ? { article_id: articleId } : { article_id: articleId, hidden: "false" });
   this._post(
