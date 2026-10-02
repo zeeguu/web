@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from "vitest";
-import { render, screen, act } from "@testing-library/react";
+import { render, screen, act, fireEvent } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
 import { APIContext } from "../../src/contexts/APIContext";
@@ -59,20 +59,66 @@ describe("ReportBrokenArticleDialog", () => {
     expect(send()).toBeDisabled();
   });
 
-  it("tells the caller once the report is in, after the thank-you", async () => {
+  it("tells the caller as soon as the report is in, then closes after the thank-you", async () => {
     const onReported = vi.fn();
-    setup({ onReported });
+    const onClose = vi.fn();
+    const api = {
+      USER_FEEDBACK: "USER_FEEDBACK",
+      logUserActivity: vi.fn(),
+      reportBrokenArticle: vi.fn((id, reason, callback) => callback({ status: "success" })),
+    };
+    render(
+      <APIContext.Provider value={api}>
+        <ReportBrokenArticleDialog articleID={42} open onClose={onClose} onReported={onReported} />
+      </APIContext.Provider>,
+    );
     await userEvent.click(screen.getByText(/Wrong language/));
 
     vi.useFakeTimers();
     try {
       act(() => send().click());
       expect(screen.getByText(/Thank you for your report/)).toBeInTheDocument();
-      expect(onReported).not.toHaveBeenCalled();
-      act(() => vi.advanceTimersByTime(2000));
       expect(onReported).toHaveBeenCalledTimes(1);
+      expect(onClose).not.toHaveBeenCalled();
+      act(() => vi.advanceTimersByTime(2000));
+      expect(onClose).toHaveBeenCalledTimes(1);
     } finally {
       vi.useRealTimers();
     }
+  });
+
+  it("closing early cancels the thank-you's own close", async () => {
+    // Otherwise the stale timer closes the dialog again if it was reopened.
+    const onClose = vi.fn();
+    const api = {
+      USER_FEEDBACK: "USER_FEEDBACK",
+      logUserActivity: vi.fn(),
+      reportBrokenArticle: vi.fn((id, reason, callback) => callback({ status: "success" })),
+    };
+    render(
+      <APIContext.Provider value={api}>
+        <ReportBrokenArticleDialog articleID={42} open onClose={onClose} />
+      </APIContext.Provider>,
+    );
+    await userEvent.click(screen.getByText(/Wrong language/));
+
+    vi.useFakeTimers();
+    try {
+      act(() => send().click());
+      act(() => fireEvent.keyDown(screen.getByRole("dialog"), { key: "Escape" }));
+      expect(onClose).toHaveBeenCalledTimes(1);
+      act(() => vi.advanceTimersByTime(2000));
+      expect(onClose).toHaveBeenCalledTimes(1);
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
+  it("shows a picked reason as selected", async () => {
+    setup();
+    const pill = screen.getByText(/Behind a paywall/);
+    expect(pill).toHaveAttribute("aria-pressed", "false");
+    await userEvent.click(pill);
+    expect(pill).toHaveAttribute("aria-pressed", "true");
   });
 });

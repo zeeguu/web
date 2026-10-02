@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import ReportIcon from "../components/Icons/ReportIcon";
 import { APIContext } from "../contexts/APIContext";
 import ReportDialog from "../components/ReportDialog";
@@ -12,7 +12,8 @@ export const ARTICLE_REPORT_REASONS = [
 ];
 
 // The dialog on its own, so it can be opened from anywhere (the reader's toolbar
-// icon, an article card's overflow menu). `onReported` runs once the report is in.
+// icon, an article card's overflow menu). `onReported` runs as soon as the
+// report is in, even if the learner closes the thank-you early.
 export function ReportBrokenArticleDialog({ articleID, sourceID, UMR_SOURCE, open, onClose, onReported }) {
   const api = useContext(APIContext);
   const [feedback, setFeedback] = useState("");
@@ -21,8 +22,13 @@ export function ReportBrokenArticleDialog({ articleID, sourceID, UMR_SOURCE, ope
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [reportInfo, setReportInfo] = useState(null);
   const [error, setError] = useState(null);
+  // The thank-you closes itself after 2s; if the dialog was closed (and maybe
+  // reopened) in the meantime, that timer must not close the new one.
+  const closeTimer = useRef(null);
+  useEffect(() => () => clearTimeout(closeTimer.current), []);
 
   const handleClose = () => {
+    clearTimeout(closeTimer.current);
     setFeedback("");
     setReason(null);
     setIsFeedbackSent(false);
@@ -49,10 +55,8 @@ export function ReportBrokenArticleDialog({ articleID, sourceID, UMR_SOURCE, ope
           // Also log for analytics
           api.logUserActivity(api.USER_FEEDBACK, articleID, text, UMR_SOURCE, sourceID);
 
-          setTimeout(() => {
-            handleClose();
-            if (onReported) onReported(response);
-          }, 2000);
+          if (onReported) onReported(response);
+          closeTimer.current = setTimeout(handleClose, 2000);
         } else {
           setError("Failed to submit report. Please try again.");
         }

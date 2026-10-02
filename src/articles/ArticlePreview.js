@@ -23,7 +23,8 @@ import MoreHorizRoundedIcon from "@mui/icons-material/MoreHorizRounded";
 import SubjectRoundedIcon from "@mui/icons-material/SubjectRounded";
 import { Menu, MenuItem } from "@mui/material";
 import { ReportBrokenArticleDialog } from "../reader/ReportBrokenArticle";
-import { zeeguuOrange } from "../components/colors";
+import { UndoToastRow, TextLinkButton } from "../exercises/exerciseTypes/ReportExerciseDialog.sc";
+import { reportDialogPaperStyles } from "../components/ReportDialog.styles";
 import BookmarkBorderRoundedIcon from "@mui/icons-material/BookmarkBorderRounded";
 import BookmarkRoundedIcon from "@mui/icons-material/BookmarkRounded";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
@@ -32,28 +33,6 @@ import MenuBookRoundedIcon from "@mui/icons-material/MenuBookRounded";
 
 // Logged with a report made from a card, as the reader logs WEB_READER.
 const ARTICLE_LIST_SOURCE = "ARTICLE_LIST";
-
-function UndoToast({ message, onUndo }) {
-  return (
-    <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "12px" }}>
-      <span>{message}</span>
-      <button
-        type="button"
-        onClick={onUndo}
-        style={{
-          background: "transparent",
-          border: "none",
-          padding: "4px 8px",
-          color: zeeguuOrange,
-          fontWeight: 700,
-          cursor: "pointer",
-        }}
-      >
-        Undo
-      </button>
-    </div>
-  );
-}
 
 export default function ArticlePreview({
   article,
@@ -129,6 +108,10 @@ export default function ArticlePreview({
   const [isHidden, setIsHidden] = useState(article.hidden || false);
   const [isAnimatingOut, setIsAnimatingOut] = useState(false);
   const [reportOpen, setReportOpen] = useState(false);
+  // Mounted from the first open on, so closing still gets the dialog's fade-out.
+  const [reportMounted, setReportMounted] = useState(false);
+  const hideInFlight = useRef(false);
+  const reportSent = useRef(false);
   const [isSummaryExpanded, setIsSummaryExpanded] = useState(false);
   // No img_url, or the <img> 404'd / failed to load — either way we render
   // no image region at all rather than an empty box that reads as broken.
@@ -188,31 +171,68 @@ export default function ArticlePreview({
 
   // The card stays mounted (rendering nothing) while the toast is up, so Undo
   // can put it back where it was; the list only drops it once the toast closes.
+  //
+  // It also sets `article.hidden` on the article object itself. The feed's
+  // pagination and its videos-only toggle rebuild the list from snapshots that
+  // share these objects, so if one lands while the toast is up, the card
+  // remounts already hidden instead of coming back.
   function handleHideArticle({ message = "Article hidden from your feed", undoable = true } = {}) {
+    // The × and the menu stay tappable during the collapse; a second hide would
+    // bring a second toast whose close drops the card even after an Undo.
+    if (hideInFlight.current) return;
+    hideInFlight.current = true;
     setIsAnimatingOut(true);
-    api.hideArticle(article.id, () => {
-      let undone = false;
-      setTimeout(() => {
-        if (!undone) setIsHidden(true);
-      }, 300); // Match animation duration
 
-      let toastId;
-      const undo = () => {
-        undone = true;
-        toast.dismiss(toastId);
-        api.unhideArticle(article.id, () => {
-          setIsAnimatingOut(false);
-          setIsHidden(false);
+    api.hideArticle(
+      article.id,
+      () => {
+        article.hidden = true;
+        let undone = false;
+        setTimeout(() => {
+          if (!undone) setIsHidden(true);
+        }, 300); // Match animation duration
+
+        const undo = (closeToast) => {
+          undone = true;
+          closeToast();
+          api.unhideArticle(
+            article.id,
+            () => {
+              article.hidden = false;
+              hideInFlight.current = false;
+              setIsAnimatingOut(false);
+              setIsHidden(false);
+            },
+            () => {
+              // Still hidden on the server, so let the feed drop it -- and say so.
+              toast.error("Couldn't undo: the article is still hidden");
+              if (onArticleHidden) onArticleHidden(article.id);
+            },
+          );
+        };
+
+        const content = undoable
+          ? ({ closeToast }) => (
+              <UndoToastRow>
+                <span>{message}</span>
+                <TextLinkButton onClick={() => undo(closeToast)}>Undo</TextLinkButton>
+              </UndoToastRow>
+            )
+          : message;
+
+        toast(content, {
+          autoClose: undoable ? 5000 : 3000,
+          onClose: () => {
+            if (!undone && onArticleHidden) onArticleHidden(article.id);
+          },
         });
-      };
-
-      toastId = toast(undoable ? <UndoToast message={message} onUndo={undo} /> : message, {
-        autoClose: undoable ? 5000 : 3000,
-        onClose: () => {
-          if (!undone && onArticleHidden) onArticleHidden(article.id);
-        },
-      });
-    });
+      },
+      () => {
+        hideInFlight.current = false;
+        setIsAnimatingOut(false);
+        toast.error("Couldn't hide the article. Please try again.");
+      },
+    );
   }
 
   function handleRemoveFromSaves() {
@@ -247,6 +267,8 @@ export default function ArticlePreview({
       open={Boolean(overflowAnchor)}
       onClose={() => setOverflowAnchor(null)}
       onClick={(e) => e.stopPropagation()}
+      // Same app surface as the report dialog it opens; MUI's own is white.
+      slotProps={{ paper: { sx: reportDialogPaperStyles } }}
     >
       <MenuItem
         onClick={(e) => {
@@ -261,6 +283,7 @@ export default function ArticlePreview({
         onClick={(e) => {
           e.stopPropagation();
           setOverflowAnchor(null);
+          setReportMounted(true);
           setReportOpen(true);
         }}
       >
@@ -273,15 +296,24 @@ export default function ArticlePreview({
   // No Undo here -- the report itself has been sent either way.
   // The dialog renders in a portal, but React still bubbles its clicks up to the
   // card, which would open the article -- hence the stopPropagation wrapper.
-  // Mounted only while open: every card has one.
-  const reportDialog = reportOpen && (
+  // Not mounted until first opened: every card has one.
+  const reportDialog = reportMounted && (
     <span onClick={(e) => e.stopPropagation()}>
       <ReportBrokenArticleDialog
         articleID={article.id}
+        sourceID={article.source_id}
         UMR_SOURCE={ARTICLE_LIST_SOURCE}
         open={reportOpen}
-        onClose={() => setReportOpen(false)}
-        onReported={() => handleHideArticle({ message: "Thanks! Article reported and hidden", undoable: false })}
+        onReported={() => (reportSent.current = true)}
+        // Hide once the dialog closes, so the card (and the dialog in it)
+        // doesn't vanish under the thank-you.
+        onClose={() => {
+          setReportOpen(false);
+          if (reportSent.current) {
+            reportSent.current = false;
+            handleHideArticle({ message: "Thanks! Article reported and hidden", undoable: false });
+          }
+        }}
       />
     </span>
   );
