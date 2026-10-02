@@ -1,54 +1,77 @@
 import React, { useEffect, useRef, useState } from "react";
-import { zeeguuOrange } from "./colors";
+import { zeeguuOrange, zeeguuTransparentMediumOrange } from "./colors";
 import PlayArrowRoundedIcon from "@mui/icons-material/PlayArrowRounded";
 import PauseRoundedIcon from "@mui/icons-material/PauseRounded";
 import HourglassEmptyRoundedIcon from "@mui/icons-material/HourglassEmptyRounded";
 import SkipPreviousRoundedIcon from "@mui/icons-material/SkipPreviousRounded";
 import Replay10RoundedIcon from "@mui/icons-material/Replay10Rounded";
 import Forward10RoundedIcon from "@mui/icons-material/Forward10Rounded";
+import { Menu, MenuItem } from "@mui/material";
+import { SPEED_OPTIONS, DEFAULT_SPEED, formatSpeed, parseStoredSpeed } from "./audioSpeeds";
 
 const SEEK_SECONDS = 10;
 
-// Above 1x for advanced learners who want to train their ear on faster speech.
-const SPEED_OPTIONS = [0.8, 0.85, 0.9, 0.95, 1, 1.1, 1.25, 1.5];
-
-const formatSpeed = (s) => `${s}x`;
-
-// Tap to cycle through SPEED_OPTIONS (like Apple Podcasts' speed pill).
-// Avoids a dropdown overlay that would collide with the title on narrow
-// viewports — the cycle is short enough that tapping through is faster than
-// scanning a menu anyway.
-function SpeedPicker({ value, onChange, disabled }) {
-  const cycleNext = () => {
-    const i = SPEED_OPTIONS.indexOf(value);
-    const next = SPEED_OPTIONS[(i + 1) % SPEED_OPTIONS.length];
-    onChange(next);
+// Tap the pill, pick a speed. With speeds on both sides of 1x, a tap-to-cycle
+// pill made the common move (1x -> slower) four taps through 1.1-1.5x.
+export function SpeedPicker({ value, onChange, disabled }) {
+  const [anchor, setAnchor] = useState(null);
+  const pick = (speed) => {
+    setAnchor(null);
+    onChange(speed);
   };
   return (
-    <button
-      type="button"
-      onClick={() => !disabled && cycleNext()}
-      disabled={disabled}
-      aria-label={`Playback speed (current ${formatSpeed(value)}, tap to cycle)`}
-      style={{
-        background: "transparent",
-        border: `1.5px solid ${disabled ? "#ccc" : "var(--player-icon-color)"}`,
-        borderRadius: "50%",
-        width: "38px",
-        height: "38px",
-        padding: 0,
-        color: disabled ? "#ccc" : "var(--player-icon-color)",
-        fontSize: "12px",
-        fontWeight: 600,
-        cursor: disabled ? "not-allowed" : "pointer",
-        display: "inline-flex",
-        alignItems: "center",
-        justifyContent: "center",
-        whiteSpace: "nowrap",
-      }}
-    >
-      {formatSpeed(value)}
-    </button>
+    <>
+      <button
+        type="button"
+        onClick={(e) => !disabled && setAnchor(e.currentTarget)}
+        disabled={disabled}
+        aria-haspopup="menu"
+        aria-label={`Playback speed (current ${formatSpeed(value)})`}
+        style={{
+          background: "transparent",
+          border: `1.5px solid ${disabled ? "#ccc" : "var(--player-icon-color)"}`,
+          // A stadium rather than a circle: "0.85x" and "1.25x" touched a 38px
+          // circle's edge. Fixed width, so the row doesn't shift between speeds.
+          borderRadius: "19px",
+          width: "46px",
+          height: "38px",
+          padding: 0,
+          color: disabled ? "#ccc" : "var(--player-icon-color)",
+          fontSize: "12px",
+          fontWeight: 600,
+          cursor: disabled ? "not-allowed" : "pointer",
+          display: "inline-flex",
+          alignItems: "center",
+          justifyContent: "center",
+          whiteSpace: "nowrap",
+        }}
+      >
+        {formatSpeed(value)}
+      </button>
+      <Menu
+        anchorEl={anchor}
+        open={Boolean(anchor)}
+        onClose={() => setAnchor(null)}
+        // MUI has no theme here, so its default white menu ignores dark mode.
+        slotProps={{
+          paper: {
+            sx: {
+              backgroundColor: "var(--bg-secondary)",
+              color: "var(--text-primary)",
+              "& .MuiMenuItem-root.Mui-selected, & .MuiMenuItem-root.Mui-selected:hover": {
+                backgroundColor: zeeguuTransparentMediumOrange,
+              },
+            },
+          },
+        }}
+      >
+        {SPEED_OPTIONS.map((speed) => (
+          <MenuItem key={speed} selected={speed === value} onClick={() => pick(speed)}>
+            {formatSpeed(speed)}
+          </MenuItem>
+        ))}
+      </Menu>
+    </>
   );
 }
 
@@ -103,10 +126,8 @@ export default function CustomAudioPlayer({
   children,
 }) {
   const getStoredSpeed = () => {
-    if (!language) return 1.0;
-    const key = `audioSpeed_${language}`;
-    const stored = localStorage.getItem(key);
-    return stored ? parseFloat(stored) : 1.0;
+    if (!language) return DEFAULT_SPEED;
+    return parseStoredSpeed(localStorage.getItem(`audioSpeed_${language}`));
   };
 
   const [isPlaying, setIsPlaying] = useState(false);
@@ -119,13 +140,15 @@ export default function CustomAudioPlayer({
   const lastSavedProgressRef = useRef(0);
   const audioContextRef = useRef(null);
 
-  // Apply stored playback rate when audio is ready
+  // Apply the chosen rate. defaultPlaybackRate too: loading a new src resets
+  // playbackRate to it, which would leave the pill saying 1.5x over 1x audio.
   useEffect(() => {
     const audio = audioRef.current;
-    if (audio && playbackRate !== 1.0) {
+    if (audio) {
+      audio.defaultPlaybackRate = playbackRate;
       audio.playbackRate = playbackRate;
     }
-  }, [playbackRate]);
+  }, [playbackRate, src]);
 
   // Set up Media Session API for lock screen controls.
   // Only the currently-playing player owns navigator.mediaSession (it's a
@@ -643,6 +666,7 @@ export default function CustomAudioPlayer({
     if (!audio) return;
 
     setPlaybackRate(newRate);
+    audio.defaultPlaybackRate = newRate;
     audio.playbackRate = newRate;
 
     // Save to localStorage if language is provided
