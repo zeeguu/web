@@ -65,6 +65,10 @@ export default function SpeedPicker({ value, onChange, disabled }) {
               "& .MuiMenuItem-root.Mui-selected, & .MuiMenuItem-root.Mui-selected.Mui-focusVisible": {
                 backgroundColor: zeeguuTransparentMediumOrange,
               },
+              // MUI's own touch-device rule tints a tapped selected item blue.
+              "@media (hover: none)": {
+                "& .MuiMenuItem-root.Mui-selected:hover": { backgroundColor: zeeguuTransparentMediumOrange },
+              },
               "@media (hover: hover)": {
                 "& .MuiMenuItem-root:hover": { backgroundColor: "var(--bg-tertiary)" },
                 "& .MuiMenuItem-root.Mui-selected:hover": { backgroundColor: zeeguuTransparentMediumOrange },

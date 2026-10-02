@@ -65,6 +65,8 @@ export default function CustomAudioPlayer({
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
+  // AppLayout keys the page on the learned language, so a language that
+  // arrives or changes remounts the player: the initial load is enough.
   const [playbackRate, setPlaybackRate] = useState(() => loadSpeed(language));
   const audioRef = useRef(null);
   const progressTimerRef = useRef(null);
@@ -75,22 +77,6 @@ export default function CustomAudioPlayer({
   // current rate, not the one from when they were registered.
   const playbackRateRef = useRef(playbackRate);
   playbackRateRef.current = playbackRate;
-  // A speed picked before `language` was known, so not yet saved.
-  const unsavedPick = useRef(null);
-
-  // `language` can arrive after mount (it comes from user details). Then load
-  // the saved speed -- unless the learner already picked one, which wins and
-  // gets saved now.
-  useEffect(() => {
-    if (!language) return;
-    if (unsavedPick.current !== null) {
-      saveSpeed(language, unsavedPick.current);
-      unsavedPick.current = null;
-    } else {
-      setPlaybackRate(loadSpeed(language));
-    }
-  }, [language]);
-
   // The one place that writes the rate to the element. defaultPlaybackRate too:
   // loading a new src resets playbackRate to it.
   useEffect(() => {
@@ -107,7 +93,9 @@ export default function CustomAudioPlayer({
     const audio = audioRef.current;
     if (!audio) return;
     const reapply = () => {
-      if (audio.playbackRate !== playbackRateRef.current) audio.playbackRate = playbackRateRef.current;
+      const rate = playbackRateRef.current;
+      if (audio.defaultPlaybackRate !== rate) audio.defaultPlaybackRate = rate;
+      if (audio.playbackRate !== rate) audio.playbackRate = rate;
     };
     audio.addEventListener("loadedmetadata", reapply);
     audio.addEventListener("play", reapply);
@@ -342,8 +330,7 @@ export default function CustomAudioPlayer({
         });
       }
     };
-    // playbackRate is read through its ref: a speed change must not run this
-    // effect's cleanup, which closes the AudioContext.
+    // playbackRate is read through its ref, so a speed change doesn't re-run this.
   }, [isPlaying, duration]);
 
   // Apply initialProgress exactly ONCE per mount. Without the ref guard the
@@ -632,8 +619,7 @@ export default function CustomAudioPlayer({
 
   const handleSpeedChange = (newRate) => {
     setPlaybackRate(newRate);
-    if (language) saveSpeed(language, newRate);
-    else unsavedPick.current = newRate;
+    saveSpeed(language, newRate);
   };
 
   return (
