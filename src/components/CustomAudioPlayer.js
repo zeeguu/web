@@ -9,14 +9,15 @@ import Forward10RoundedIcon from "@mui/icons-material/Forward10Rounded";
 
 const SEEK_SECONDS = 10;
 
-const SPEED_OPTIONS = [0.8, 0.85, 0.9, 0.95, 1];
+// Above 1x for advanced learners who want to train their ear on faster speech.
+const SPEED_OPTIONS = [0.8, 0.85, 0.9, 0.95, 1, 1.1, 1.25, 1.5];
 
 const formatSpeed = (s) => `${s}x`;
 
 // Tap to cycle through SPEED_OPTIONS (like Apple Podcasts' speed pill).
 // Avoids a dropdown overlay that would collide with the title on narrow
-// viewports — the 5-step cycle is short enough that tapping through is
-// faster than scanning a menu anyway.
+// viewports — the cycle is short enough that tapping through is faster than
+// scanning a menu anyway.
 function SpeedPicker({ value, onChange, disabled }) {
   const cycleNext = () => {
     const i = SPEED_OPTIONS.indexOf(value);
