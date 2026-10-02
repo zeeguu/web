@@ -1,79 +1,15 @@
 import React, { useEffect, useRef, useState } from "react";
-import { zeeguuOrange, zeeguuTransparentMediumOrange } from "./colors";
+import { zeeguuOrange } from "./colors";
 import PlayArrowRoundedIcon from "@mui/icons-material/PlayArrowRounded";
 import PauseRoundedIcon from "@mui/icons-material/PauseRounded";
 import HourglassEmptyRoundedIcon from "@mui/icons-material/HourglassEmptyRounded";
 import SkipPreviousRoundedIcon from "@mui/icons-material/SkipPreviousRounded";
 import Replay10RoundedIcon from "@mui/icons-material/Replay10Rounded";
 import Forward10RoundedIcon from "@mui/icons-material/Forward10Rounded";
-import { Menu, MenuItem } from "@mui/material";
-import { SPEED_OPTIONS, DEFAULT_SPEED, formatSpeed, parseStoredSpeed } from "./audioSpeeds";
+import SpeedPicker from "./SpeedPicker";
+import { loadSpeed, saveSpeed } from "./audioSpeeds";
 
 const SEEK_SECONDS = 10;
-
-// Tap the pill, pick a speed. With speeds on both sides of 1x, a tap-to-cycle
-// pill made the common move (1x -> slower) four taps through 1.1-1.5x.
-export function SpeedPicker({ value, onChange, disabled }) {
-  const [anchor, setAnchor] = useState(null);
-  const pick = (speed) => {
-    setAnchor(null);
-    onChange(speed);
-  };
-  return (
-    <>
-      <button
-        type="button"
-        onClick={(e) => !disabled && setAnchor(e.currentTarget)}
-        disabled={disabled}
-        aria-haspopup="menu"
-        aria-label={`Playback speed (current ${formatSpeed(value)})`}
-        style={{
-          background: "transparent",
-          border: `1.5px solid ${disabled ? "#ccc" : "var(--player-icon-color)"}`,
-          // A stadium rather than a circle: "0.85x" and "1.25x" touched a 38px
-          // circle's edge. Fixed width, so the row doesn't shift between speeds.
-          borderRadius: "19px",
-          width: "46px",
-          height: "38px",
-          padding: 0,
-          color: disabled ? "#ccc" : "var(--player-icon-color)",
-          fontSize: "12px",
-          fontWeight: 600,
-          cursor: disabled ? "not-allowed" : "pointer",
-          display: "inline-flex",
-          alignItems: "center",
-          justifyContent: "center",
-          whiteSpace: "nowrap",
-        }}
-      >
-        {formatSpeed(value)}
-      </button>
-      <Menu
-        anchorEl={anchor}
-        open={Boolean(anchor)}
-        onClose={() => setAnchor(null)}
-        // MUI has no theme here, so its default white menu ignores dark mode.
-        slotProps={{
-          paper: {
-            sx: {
-              backgroundColor: "var(--bg-secondary)",
-              color: "var(--text-primary)",
-              "& .MuiMenuItem-root.Mui-selected, & .MuiMenuItem-root.Mui-selected:hover": {
-                backgroundColor: zeeguuTransparentMediumOrange,
-              },
-            },
-          },
-        }}
-      >
-        {SPEED_OPTIONS.map((speed) => (
-          <MenuItem key={speed} selected={speed === value} onClick={() => pick(speed)}>
-            {formatSpeed(speed)}
-          </MenuItem>
-        ))}
-      </Menu>
-    </>
-  );
-}
 
 // Minimal icon-only nav button: no circle, no fill — just the icon coloured
 // by the global orange. Used by the rewind / skip-back / skip-forward
@@ -125,30 +61,41 @@ export default function CustomAudioPlayer({
   autoPlay = false,
   children,
 }) {
-  const getStoredSpeed = () => {
-    if (!language) return DEFAULT_SPEED;
-    return parseStoredSpeed(localStorage.getItem(`audioSpeed_${language}`));
-  };
-
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
-  const [playbackRate, setPlaybackRate] = useState(getStoredSpeed());
+  const [playbackRate, setPlaybackRate] = useState(() => loadSpeed(language));
   const audioRef = useRef(null);
   const progressTimerRef = useRef(null);
   const lastSavedProgressRef = useRef(0);
   const audioContextRef = useRef(null);
 
-  // Apply the chosen rate. defaultPlaybackRate too: loading a new src resets
-  // playbackRate to it, which would leave the pill saying 1.5x over 1x audio.
+  // The learner's saved speed for this language. `language` can arrive after
+  // mount (it comes from user details), so this can't only be the initial state.
+  useEffect(() => {
+    setPlaybackRate(loadSpeed(language));
+  }, [language]);
+
+  // The one place that writes the rate to the element. defaultPlaybackRate too:
+  // loading a new src resets playbackRate to it.
   useEffect(() => {
     const audio = audioRef.current;
     if (audio) {
       audio.defaultPlaybackRate = playbackRate;
       audio.playbackRate = playbackRate;
     }
-  }, [playbackRate, src]);
+  }, [playbackRate]);
+
+  // And read it back: if anything else changes the rate (the OS, a WebView
+  // reset), the pill and the speed-adjusted times follow what's actually playing.
+  useEffect(() => {
+    const audio = audioRef.current;
+    if (!audio) return;
+    const syncRate = () => setPlaybackRate(audio.playbackRate);
+    audio.addEventListener("ratechange", syncRate);
+    return () => audio.removeEventListener("ratechange", syncRate);
+  }, []);
 
   // Set up Media Session API for lock screen controls.
   // Only the currently-playing player owns navigator.mediaSession (it's a
@@ -662,18 +609,8 @@ export default function CustomAudioPlayer({
   const progressPercentage = duration > 0 ? (currentTime / duration) * 100 : 0;
 
   const handleSpeedChange = (newRate) => {
-    const audio = audioRef.current;
-    if (!audio) return;
-
     setPlaybackRate(newRate);
-    audio.defaultPlaybackRate = newRate;
-    audio.playbackRate = newRate;
-
-    // Save to localStorage if language is provided
-    if (language) {
-      const key = `audioSpeed_${language}`;
-      localStorage.setItem(key, newRate.toString());
-    }
+    saveSpeed(language, newRate);
   };
 
   return (
