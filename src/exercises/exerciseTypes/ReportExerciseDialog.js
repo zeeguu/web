@@ -9,7 +9,9 @@ import CloseIcon from "@mui/icons-material/Close";
 import SendIcon from "@mui/icons-material/Send";
 import { toast } from "react-toastify";
 import { APIContext } from "../../contexts/APIContext";
-import { TextLinkButton, UndoToastRow, SkipSeparator } from "./ReportExerciseDialog.sc";
+import { SkipSeparator } from "./ReportExerciseDialog.sc";
+import { TextLinkButton } from "../../components/UndoToast.sc";
+import { showUndoToast } from "../../components/UndoToast";
 
 // Chip definitions. The order here is the order the chips render.
 // Each chip carries the backend `reason` enum value (matching
@@ -89,22 +91,13 @@ export default function ReportExerciseDialog({
         // isn't working for the user — pull it out of their scheduling
         // and surface an Undo so the action is reversible.
         api.userSetNotForExercises(bookmarkId, `reported:${reason}`);
-        toast.success(
-          ({ closeToast }) => (
-            <UndoToastRow>
-              <span>Reported. Word removed from practice.</span>
-              <TextLinkButton
-                onClick={() => {
-                  api.userSetForExercises(bookmarkId);
-                  toast.info("Word restored to practice");
-                  closeToast();
-                }}
-              >
-                Undo
-              </TextLinkButton>
-            </UndoToastRow>
-          ),
-          { autoClose: 5000 },
+        showUndoToast(
+          "Reported. Word removed from practice.",
+          () => {
+            api.userSetForExercises(bookmarkId);
+            toast.info("Word restored to practice");
+          },
+          { type: "success" },
         );
         finishAndSkip();
       },

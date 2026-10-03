@@ -22,11 +22,17 @@ import OpenInNewRoundedIcon from "@mui/icons-material/OpenInNewRounded";
 import MoreHorizRoundedIcon from "@mui/icons-material/MoreHorizRounded";
 import SubjectRoundedIcon from "@mui/icons-material/SubjectRounded";
 import { Menu, MenuItem } from "@mui/material";
+import { ReportBrokenArticleDialog } from "../reader/ReportBrokenArticle";
+import { showUndoToast } from "../components/UndoToast";
+import { reportDialogPaperStyles } from "../components/ReportDialog.styles";
 import BookmarkBorderRoundedIcon from "@mui/icons-material/BookmarkBorderRounded";
 import BookmarkRoundedIcon from "@mui/icons-material/BookmarkRounded";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import VisibilityOffRoundedIcon from "@mui/icons-material/VisibilityOffRounded";
 import MenuBookRoundedIcon from "@mui/icons-material/MenuBookRounded";
+
+// Logged with a report made from a card, as the reader logs WEB_READER.
+const ARTICLE_LIST_SOURCE = "ARTICLE_LIST";
 
 export default function ArticlePreview({
   article,
@@ -38,6 +44,8 @@ export default function ArticlePreview({
   setDoNotShowRedirectionModal_UserPreference,
   notifyArticleClick,
   onArticleHidden,
+  // With onArticleHidden: the feed's list hides the card, and this brings it back.
+  onArticleUnhidden,
   onArticleRemoved,
   onUnhideArticle,
   isHiddenView = false,
@@ -101,6 +109,9 @@ export default function ArticlePreview({
   });
   const [isHidden, setIsHidden] = useState(article.hidden || false);
   const [isAnimatingOut, setIsAnimatingOut] = useState(false);
+  const [reportOpen, setReportOpen] = useState(false);
+  // Mounted from the first open on, so closing still gets the dialog's fade-out.
+  const [reportMounted, setReportMounted] = useState(false);
   const [isSummaryExpanded, setIsSummaryExpanded] = useState(false);
   // No img_url, or the <img> 404'd / failed to load — either way we render
   // no image region at all rather than an empty box that reads as broken.
@@ -158,17 +169,45 @@ export default function ArticlePreview({
     }
   }
 
+  // In the feed, the list owns which cards are hidden: the card tells it, and
+  // Undo tells it again. Elsewhere the card hides itself.
+  function leaveFeed() {
+    if (onArticleHidden) onArticleHidden(article.id);
+    else setIsHidden(true);
+  }
+
+  function backInFeed() {
+    setIsAnimatingOut(false);
+    setIsHidden(false);
+    if (onArticleUnhidden) onArticleUnhidden(article.id);
+  }
+
   function handleHideArticle() {
+    // The × stays tappable during the collapse; don't hide twice.
+    if (isAnimatingOut) return;
     setIsAnimatingOut(true);
-    api.hideArticle(article.id, () => {
-      setTimeout(() => {
-        setIsHidden(true);
-        if (onArticleHidden) {
-          onArticleHidden(article.id);
-        }
-      }, 300); // Match animation duration
-      toast("Article hidden from your feed!");
-    });
+
+    api.hideArticle(
+      article.id,
+      () => {
+        let undone = false;
+        setTimeout(() => {
+          if (!undone) leaveFeed();
+        }, 300); // Match animation duration
+
+        showUndoToast("Article hidden from your feed", () => {
+          undone = true;
+          api.unhideArticle(article.id, backInFeed, () => {
+            toast.error("Couldn't undo: the article is still hidden");
+            leaveFeed();
+          });
+        });
+      },
+      () => {
+        setIsAnimatingOut(false);
+        toast.error("Couldn't hide the article. Please try again.");
+      },
+    );
   }
 
   function handleRemoveFromSaves() {
@@ -195,7 +234,7 @@ export default function ArticlePreview({
     }
   }
 
-  // Hide is rare and one-way, so it lives behind an overflow rather than
+  // Hide and Report are rare, so they live behind an overflow rather than
   // standing beside Save on every card. Shared by every card shape.
   const overflowMenu = (
     <Menu
@@ -203,6 +242,8 @@ export default function ArticlePreview({
       open={Boolean(overflowAnchor)}
       onClose={() => setOverflowAnchor(null)}
       onClick={(e) => e.stopPropagation()}
+      // Same app surface as the report dialog it opens; MUI's own is white.
+      slotProps={{ paper: { sx: reportDialogPaperStyles } }}
     >
       <MenuItem
         onClick={(e) => {
@@ -213,7 +254,43 @@ export default function ArticlePreview({
       >
         Hide from feed
       </MenuItem>
+      <MenuItem
+        onClick={(e) => {
+          e.stopPropagation();
+          setOverflowAnchor(null);
+          setReportMounted(true);
+          setReportOpen(true);
+        }}
+      >
+        Report…
+      </MenuItem>
     </Menu>
+  );
+
+  // The server already leaves reported articles out of this learner's feed;
+  // the card leaves once the dialog has closed, not under the thank-you.
+  function leaveAfterReport() {
+    setIsAnimatingOut(true);
+    setTimeout(leaveFeed, 300); // Match animation duration
+    toast("Thanks! Article reported and hidden");
+  }
+
+  // The dialog renders in a portal, but React still bubbles its clicks up to the
+  // card, which would open the article -- hence the stopPropagation wrapper.
+  // Not mounted until first opened: every card has one.
+  const reportDialog = reportMounted && (
+    <span onClick={(e) => e.stopPropagation()}>
+      <ReportBrokenArticleDialog
+        articleID={article.id}
+        sourceID={article.source_id}
+        UMR_SOURCE={ARTICLE_LIST_SOURCE}
+        open={reportOpen}
+        onClose={({ reported }) => {
+          setReportOpen(false);
+          if (reported) leaveAfterReport();
+        }}
+      />
+    </span>
   );
 
   function overflowButton(enabled) {
@@ -655,7 +732,7 @@ export default function ArticlePreview({
             (mirroring Save at top-right) — the top-right × collided with Save on
             stacked mobile layouts. Image-less cards keep the corner ×. */}
         {!hasMedia && showHide && (
-          <s.HideButton onClick={handleHideArticle} aria-label="Hide from feed">
+          <s.HideButton onClick={() => handleHideArticle()} aria-label="Hide from feed">
             <CloseRoundedIcon style={{ fontSize: 18 }} />
           </s.HideButton>
         )}
@@ -709,6 +786,7 @@ export default function ArticlePreview({
           )}
         </s.PreviewCardClickable>
         {overflowMenu}
+        {reportDialog}
 
         {/* Mounted only while open: each card renders one of these, so mounting
             eagerly would run the overlay's prefs fetch per card. Its interactive
@@ -889,6 +967,7 @@ export default function ArticlePreview({
         </s.ContentColumn>
       </s.ArticleContent>
       {overflowMenu}
+      {reportDialog}
 
       {inSavedView && (
         <div

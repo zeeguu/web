@@ -510,14 +510,30 @@ Zeeguu_API.prototype.simplifyArticle = function (articleID, callback) {
   });
 };
 
-Zeeguu_API.prototype.hideArticle = function (articleId, callback) {
-  let param = qs.stringify({ article_id: articleId });
-  this._post(`/hide_article`, param, callback);
+// Drops the cached feed once the server has the change: otherwise, for up to
+// five minutes, going back to the feed serves the response from before it.
+// (After rather than before the POST, so a feed fetched while it's in flight
+// doesn't re-cache the old state. A fetch that started even earlier and lands
+// later still can; that window is small and predates this.)
+Zeeguu_API.prototype._setArticleHidden = function (articleId, hidden, callback, onError) {
+  const param = qs.stringify(hidden ? { article_id: articleId } : { article_id: articleId, hidden: "false" });
+  this._post(
+    `/hide_article`,
+    param,
+    (response) => {
+      this.invalidateCache("user_articles/recommended");
+      if (callback) callback(response);
+    },
+    onError,
+  );
 };
 
-Zeeguu_API.prototype.unhideArticle = function (articleId, callback) {
-  let param = qs.stringify({ article_id: articleId, hidden: "false" });
-  this._post(`/hide_article`, param, callback);
+Zeeguu_API.prototype.hideArticle = function (articleId, callback, onError) {
+  this._setArticleHidden(articleId, true, callback, onError);
+};
+
+Zeeguu_API.prototype.unhideArticle = function (articleId, callback, onError) {
+  this._setArticleHidden(articleId, false, callback, onError);
 };
 
 Zeeguu_API.prototype.getHiddenUserArticles = function (page, callback, onError) {
@@ -533,6 +549,8 @@ Zeeguu_API.prototype.getHiddenUserArticles = function (page, callback, onError) 
 Zeeguu_API.prototype.reportBrokenArticle = function (articleId, reason, callback, onError) {
   let param = qs.stringify({ article_id: articleId, reason: reason });
   this._post(`/report_broken_article`, param, (response) => {
+    // The feed excludes reported articles; drop the cached one (see _setArticleHidden).
+    this.invalidateCache("user_articles/recommended");
     try {
       callback(JSON.parse(response));
     } catch (e) {

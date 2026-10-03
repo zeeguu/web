@@ -4,12 +4,17 @@ import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
 import TextField from "@mui/material/TextField";
+import Tag from "../pages/_pages_shared/Tag.sc";
+import { FilterRow } from "./FilterRow.sc";
 import IconButton from "@mui/material/IconButton";
 import SendIcon from "@mui/icons-material/Send";
 import Alert from "@mui/material/Alert";
 import CloseSharpIcon from "@mui/icons-material/CloseSharp";
 import {
   reportDialogContentStyles,
+  reportDialogInputRowStyles,
+  reportDialogPaperStyles,
+  reportDialogTextFieldStyles,
   reportDialogCloseButtonStyles,
   reportDialogSendButtonStyles,
   reportDialogSuccessTextStyles,
@@ -23,13 +28,19 @@ export default function ReportDialog({
   error,
   isFeedbackSent,
   reportInfo,
+  // Optional one-tap reasons. With one picked, the text box becomes optional.
+  reasons = [],
+  selectedReason = null,
+  onReasonChange = () => {},
   feedback = "",
   onFeedbackChange = () => {},
   onSubmit = () => {},
   isSubmitting = false,
 }) {
+  const canSubmit = (Boolean(selectedReason) || Boolean(feedback.trim())) && !isSubmitting;
+
   return (
-    <Dialog open={open} onClose={onClose}>
+    <Dialog open={open} onClose={onClose} PaperProps={{ sx: reportDialogPaperStyles }}>
       <DialogTitle>
         <b>{title}</b>
       </DialogTitle>
@@ -64,30 +75,51 @@ export default function ReportDialog({
               <CloseSharpIcon />
             </IconButton>
 
-            <TextField
-              id="outlined-multiline-flexible"
-              label="Type problem here"
-              multiline={true}
-              minRows={2}
-              maxRows={3}
-              value={feedback}
-              onChange={(e) => onFeedbackChange(e)}
-              margin="normal"
-              size="small"
-            />
+            {reasons.length > 0 && (
+              <FilterRow $wrap>
+                {reasons.map((reason) => (
+                  <Tag
+                    key={reason}
+                    type="button"
+                    className={selectedReason === reason ? "small selected" : "small"}
+                    aria-pressed={selectedReason === reason}
+                    onClick={() => onReasonChange(selectedReason === reason ? null : reason)}
+                  >
+                    {reason}
+                  </Tag>
+                ))}
+              </FilterRow>
+            )}
 
-            <DialogActions>
-              <IconButton
-                type="submit"
-                onClick={onSubmit}
-                id="feedback-box"
-                aria-label="send"
-                disabled={!feedback.trim() || isSubmitting}
-                sx={reportDialogSendButtonStyles(!feedback.trim() || isSubmitting)}
-              >
-                <SendIcon />
-              </IconButton>
-            </DialogActions>
+            <div style={reportDialogInputRowStyles}>
+              <TextField
+                id="outlined-multiline-flexible"
+                label={reasons.length > 0 ? "Anything else? (optional)" : "Type problem here"}
+                multiline={true}
+                minRows={2}
+                maxRows={3}
+                value={feedback}
+                onChange={(e) => onFeedbackChange(e)}
+                margin="normal"
+                size="small"
+                sx={reportDialogTextFieldStyles}
+                // The stored reason is 255 chars, and a picked reason is prepended.
+                inputProps={{ maxLength: 200 }}
+              />
+
+              <DialogActions>
+                <IconButton
+                  type="submit"
+                  onClick={onSubmit}
+                  id="feedback-box"
+                  aria-label="send"
+                  disabled={!canSubmit}
+                  sx={reportDialogSendButtonStyles(!canSubmit)}
+                >
+                  <SendIcon />
+                </IconButton>
+              </DialogActions>
+            </div>
           </>
         )}
       </DialogContent>
