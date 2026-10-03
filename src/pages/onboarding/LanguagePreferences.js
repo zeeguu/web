@@ -11,6 +11,7 @@ import { scrollToTop } from "../../utils/misc/scrollToTop";
 import LocalStorage from "../../assorted/LocalStorage";
 import useLanguageChoiceFields from "../../hooks/useLanguageChoiceFields";
 import useAnonymousSignup, { isAnonModeEnabled } from "../../hooks/useAnonymousSignup";
+import useFunnelStep from "../../hooks/useFunnelStep";
 import LanguageChoiceFields from "../../components/LanguageChoiceFields";
 import { useCountryQuestions } from "../../components/LanguageCountryFields";
 import strings from "../../i18n/definitions";
@@ -51,6 +52,7 @@ export default function LanguagePreferences() {
     translationLanguage: getQueryParam("translation_language") || undefined,
   });
   const { learnedLanguage, cefrLevel, translationLanguage } = languageChoice;
+  useFunnelStep("language_preferences");
 
   // Whether there is a step after this one at all.
   const { hasCountryQuestions } = useCountryQuestions(learnedLanguage);
@@ -83,9 +85,16 @@ export default function LanguagePreferences() {
   function validateAndRedirect(e) {
     e.preventDefault();
     if (!languageChoice.validate()) {
+      api.funnelEvent("language_preferences_invalid", {
+        missing: [!learnedLanguage && "learned", !cefrLevel && "level", !translationLanguage && "translation"].filter(
+          Boolean,
+        ),
+        same_language: !!learnedLanguage && learnedLanguage === translationLanguage,
+      });
       scrollToTop();
       return;
     }
+    api.funnelEvent("language_chosen", { learned: learnedLanguage, level: cefrLevel, translation: translationLanguage });
 
     // A language that divides along national lines gets one more step; the rest
     // go straight on, so most learners never see it.

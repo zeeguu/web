@@ -15,6 +15,7 @@ import "./listening_sessions";
 import "./userStats";
 import "./speech";
 import "./activityLogging";
+import "./onboardingFunnel";
 import "./ownTexts";
 import "./student";
 import "./teacher";

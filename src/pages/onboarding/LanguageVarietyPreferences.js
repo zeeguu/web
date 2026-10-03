@@ -6,6 +6,7 @@ import { SystemLanguagesContext } from "../../contexts/SystemLanguagesContext";
 import { setTitle } from "../../assorted/setTitle";
 import LocalStorage from "../../assorted/LocalStorage";
 import useAnonymousSignup, { isAnonModeEnabled } from "../../hooks/useAnonymousSignup";
+import useFunnelStep from "../../hooks/useFunnelStep";
 import LanguageCountryFields, { useCountryQuestions } from "../../components/LanguageCountryFields";
 import FormSection from "../_pages_shared/FormSection.sc";
 import strings from "../../i18n/definitions";
@@ -45,6 +46,8 @@ export default function LanguageVarietyPreferences() {
   const [dialect, setDialect] = useState(LocalStorage.getLearnedDialect());
 
   const { hasCountryQuestions } = useCountryQuestions(learnedLanguage);
+  // Only once the page is really shown: it skips itself for most languages.
+  useFunnelStep(sortedSystemLanguages && hasCountryQuestions ? "language_variety" : null);
   const { isCreatingAccount, createAnonymousAccountAndContinue } = useAnonymousSignup(api, () =>
     history.push("/account_details"),
   );
@@ -99,6 +102,7 @@ export default function LanguageVarietyPreferences() {
               className={"full-width-btn"}
               onClick={(e) => {
                 e.preventDefault();
+                api.funnelEvent("language_variety_chosen", { variety, dialect });
                 continueToAccount();
               }}
               disabled={isCreatingAccount}

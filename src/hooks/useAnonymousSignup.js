@@ -4,6 +4,7 @@ import { Capacitor } from "@capacitor/core";
 import LocalStorage from "../assorted/LocalStorage";
 import { saveLearnedVarietyAfterSignup } from "../utils/misc/saveLearnedVariety";
 import { saveSharedUserInfo, setUserSession } from "../utils/cookies/userInfo";
+import { funnelError } from "../api/onboardingFunnel";
 
 // Helper to detect if we're in a Capacitor native app
 const isCapacitor = () => {
@@ -66,6 +67,9 @@ export default function useAnonymousSignup(api, onFallback) {
         // Set the session
         setUserSession(session);
         api.setSession(session);
+        // After setSession: the session is what ties the funnel so far to
+        // the new account.
+        api.funnelEvent("anon_account_created");
 
         saveSharedUserInfo({ name: "Guest", native_language: translationLanguage }, session);
 
@@ -84,6 +88,7 @@ export default function useAnonymousSignup(api, onFallback) {
       },
       (error) => {
         console.error("Failed to create anonymous account:", error);
+        api.funnelEvent("anon_account_failed", { error: funnelError(error) });
         setIsCreatingAccount(false);
         // Fall back to regular account creation
         onFallback();
