@@ -2,8 +2,10 @@ import { androidAppUrl, iosAppUrl } from "../../src/utils/misc/appStoreLinks";
 
 test("the App Store link names the page it was clicked on", () => {
   const url = new URL(iosAppUrl("shared_article"));
-  expect(url.pathname).toBe("/app/zeeguu-news-for-learners/id6756917355");
+  expect(url.pathname).toBe("/app/apple-store/id6756917355");
   expect(url.searchParams.get("ct")).toBe("shared_article");
+  // Without the provider token Apple ignores ct.
+  expect(url.searchParams.get("pt")).toBe("1928065");
 });
 
 test("the Play link carries the campaign inside a single encoded referrer", () => {

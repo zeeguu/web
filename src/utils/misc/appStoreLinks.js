@@ -9,15 +9,15 @@
 // provider token (pt) of the account that owns the app: App Store Connect >
 // App Analytics > Campaigns > Generate a campaign link. It is not a secret;
 // it appears in every campaign link the account hands out.
-const APPLE_PROVIDER_TOKEN = "";
+const APPLE_PROVIDER_TOKEN = "1928065";
 
-const IOS_APP = "https://apps.apple.com/app/zeeguu-news-for-learners/id6756917355";
+// The shape App Store Connect generates for campaign links; mt=8 means "app".
+const IOS_APP = "https://apps.apple.com/app/apple-store/id6756917355";
 const ANDROID_APP = "https://play.google.com/store/apps/details?id=org.zeeguu.app";
 
 /** campaign: where the link is, e.g. "landing", "shared_article". */
 export function iosAppUrl(campaign) {
-  const params = new URLSearchParams({ ct: campaign });
-  if (APPLE_PROVIDER_TOKEN) params.set("pt", APPLE_PROVIDER_TOKEN);
+  const params = new URLSearchParams({ pt: APPLE_PROVIDER_TOKEN, ct: campaign, mt: "8" });
   return `${IOS_APP}?${params}`;
 }
 
