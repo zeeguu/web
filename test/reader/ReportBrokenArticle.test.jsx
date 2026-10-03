@@ -21,7 +21,7 @@ describe("composeReportText", () => {
 });
 
 describe("ReportBrokenArticleDialog", () => {
-  function setup({ onReported = () => {}, onClose = () => {}, respond = true } = {}) {
+  function setup({ onClose = () => {}, respond = true } = {}) {
     let reply;
     const api = {
       USER_FEEDBACK: "USER_FEEDBACK",
@@ -33,7 +33,7 @@ describe("ReportBrokenArticleDialog", () => {
     };
     render(
       <APIContext.Provider value={api}>
-        <ReportBrokenArticleDialog articleID={42} open onClose={onClose} onReported={onReported} />
+        <ReportBrokenArticleDialog articleID={42} open onClose={onClose} />
       </APIContext.Provider>,
     );
     return { api, reply: () => act(() => reply()) };
@@ -63,17 +63,15 @@ describe("ReportBrokenArticleDialog", () => {
     expect(send()).toBeDisabled();
   });
 
-  it("tells the caller as soon as the report is in, then closes after the thank-you", async () => {
-    const onReported = vi.fn();
+  it("shows the thank-you, then closes by itself", async () => {
     const onClose = vi.fn();
-    setup({ onReported, onClose });
+    setup({ onClose });
     await userEvent.click(screen.getByText(/Wrong language/));
 
     vi.useFakeTimers();
     try {
       act(() => send().click());
       expect(screen.getByText(/Thank you for your report/)).toBeInTheDocument();
-      expect(onReported).toHaveBeenCalledTimes(1);
       expect(onClose).not.toHaveBeenCalled();
       act(() => vi.advanceTimersByTime(2000));
       expect(onClose).toHaveBeenCalledTimes(1);

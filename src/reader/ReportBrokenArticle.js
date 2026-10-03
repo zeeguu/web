@@ -18,12 +18,12 @@ export function composeReportText(reason, feedback) {
 }
 
 // The dialog on its own, so it can be opened from anywhere (the reader's toolbar
-// icon, an article card's overflow menu). `onReported(response)` runs as soon
-// as a report is in; `onClose({ reported })` says whether this open sent one.
+// icon, an article card's overflow menu). `onClose({ reported })` says whether
+// this open sent one.
 //
 // It can't be closed while a report is being sent (a fraction of a second), so
 // a response always lands in the open that sent it.
-export function ReportBrokenArticleDialog({ articleID, sourceID, UMR_SOURCE, open, onClose, onReported }) {
+export function ReportBrokenArticleDialog({ articleID, sourceID, UMR_SOURCE, open, onClose }) {
   const api = useContext(APIContext);
   const [feedback, setFeedback] = useState("");
   const [reason, setReason] = useState(null);
@@ -72,7 +72,6 @@ export function ReportBrokenArticleDialog({ articleID, sourceID, UMR_SOURCE, ope
           reported.current = true;
           setIsFeedbackSent(true);
           setReportInfo(response);
-          if (onReported) onReported(response);
           closeTimer.current = setTimeout(() => onClose({ reported: true }), 2000);
         } else {
           setError("Failed to submit report. Please try again.");

@@ -18,7 +18,7 @@ describe("Article card: Hide and Report", () => {
   const ARTICLE = { id: 7, title: "Quiz: which capital is this?", summary: "", topics_list: [], source_id: 70 };
   const title = ARTICLE.title;
 
-  function setup({ inFeed = true, unhideFails = false, hideFails = false, holdReport = false } = {}) {
+  function setup({ inFeed = true, unhideFails = false, holdReport = false } = {}) {
     const calls = [];
     let releaseReport;
     // Anything the card asks for that these tests don't care about is a no-op.
@@ -26,8 +26,7 @@ describe("Article card: Hide and Report", () => {
       {
         hideArticle: vi.fn((id, cb, onError) => {
           calls.push(["hide", id]);
-          if (hideFails) onError && onError("network");
-          else if (cb) cb("OK");
+          cb("OK");
         }),
         unhideArticle: vi.fn((id, cb, onError) => {
           calls.push(["unhide", id]);
@@ -109,16 +108,13 @@ describe("Article card: Hide and Report", () => {
     expect(onArticleUnhidden).not.toHaveBeenCalled();
   });
 
-  it("Report hides on the server at once, and takes the card away once the thank-you closes", async () => {
+  it("Report takes the card away once the thank-you closes", async () => {
     const { calls, onArticleHidden } = setup();
     await reportNotAnArticle();
 
-    // Server-side straight away, so a reload can't bring it back...
-    expect(calls).toEqual([
-      ["report", 7, "Not an article (quiz, ad, list…)"],
-      ["hide", 7],
-    ]);
-    // ...but the card stays under the thank-you.
+    // The server leaves reported articles out of the feed; no separate hide.
+    expect(calls).toEqual([["report", 7, "Not an article (quiz, ad, list…)"]]);
+    // The card stays under the thank-you.
     expect(screen.getByText(/Thank you for your report/)).toBeInTheDocument();
     expect(onArticleHidden).not.toHaveBeenCalled();
 
@@ -136,13 +132,5 @@ describe("Article card: Hide and Report", () => {
     expect(screen.getByText(/Thank you for your report/)).toBeInTheDocument();
     act(() => fireEvent.keyDown(screen.getByRole("dialog"), { key: "Escape" }));
     await waitFor(() => expect(onArticleHidden).toHaveBeenCalledWith(7));
-  });
-
-  it("if the server-side hide after a report fails, says so and keeps the card", async () => {
-    const { onArticleHidden } = setup({ hideFails: true });
-    await reportNotAnArticle();
-    act(() => fireEvent.keyDown(screen.getByRole("dialog"), { key: "Escape" }));
-    expect(await screen.findByText(/couldn't hide it/)).toBeInTheDocument();
-    expect(onArticleHidden).not.toHaveBeenCalled();
   });
 });

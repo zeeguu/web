@@ -112,9 +112,6 @@ export default function ArticlePreview({
   const [reportOpen, setReportOpen] = useState(false);
   // Mounted from the first open on, so closing still gets the dialog's fade-out.
   const [reportMounted, setReportMounted] = useState(false);
-  const hideInFlight = useRef(false);
-  // The server-side hide started when a report goes in: resolves to whether it worked.
-  const reportHide = useRef(null);
   const [isSummaryExpanded, setIsSummaryExpanded] = useState(false);
   // No img_url, or the <img> 404'd / failed to load — either way we render
   // no image region at all rather than an empty box that reads as broken.
@@ -180,16 +177,14 @@ export default function ArticlePreview({
   }
 
   function backInFeed() {
-    hideInFlight.current = false;
     setIsAnimatingOut(false);
     setIsHidden(false);
     if (onArticleUnhidden) onArticleUnhidden(article.id);
   }
 
   function handleHideArticle() {
-    // The × and the menu stay tappable during the collapse; don't hide twice.
-    if (hideInFlight.current) return;
-    hideInFlight.current = true;
+    // The × stays tappable during the collapse; don't hide twice.
+    if (isAnimatingOut) return;
     setIsAnimatingOut(true);
 
     api.hideArticle(
@@ -209,7 +204,6 @@ export default function ArticlePreview({
         });
       },
       () => {
-        hideInFlight.current = false;
         setIsAnimatingOut(false);
         toast.error("Couldn't hide the article. Please try again.");
       },
@@ -273,36 +267,12 @@ export default function ArticlePreview({
     </Menu>
   );
 
-  // Reporting also hides the article: whoever reports a quiz doesn't want to
-  // keep seeing it. On the server as soon as the report is in, so a reload
-  // can't bring it back; on screen once the dialog has closed, so the card
-  // (and the dialog in it) doesn't vanish under the thank-you. No Undo: the
-  // report has been sent either way.
-  function hideOnServerAfterReport() {
-    reportHide.current = new Promise((resolve) =>
-      api.hideArticle(
-        article.id,
-        () => resolve(true),
-        () => resolve(false),
-      ),
-    );
-  }
-
+  // The server already leaves reported articles out of this learner's feed;
+  // the card leaves once the dialog has closed, not under the thank-you.
   function leaveAfterReport() {
-    const hidden = reportHide.current;
-    reportHide.current = null;
-    if (!hidden) return;
-    hidden.then((ok) => {
-      if (!ok) {
-        toast.error("Reported, thanks. But we couldn't hide it from your feed.");
-        return;
-      }
-      if (hideInFlight.current) return;
-      hideInFlight.current = true;
-      setIsAnimatingOut(true);
-      setTimeout(leaveFeed, 300); // Match animation duration
-      toast("Thanks! Article reported and hidden");
-    });
+    setIsAnimatingOut(true);
+    setTimeout(leaveFeed, 300); // Match animation duration
+    toast("Thanks! Article reported and hidden");
   }
 
   // The dialog renders in a portal, but React still bubbles its clicks up to the
@@ -315,7 +285,6 @@ export default function ArticlePreview({
         sourceID={article.source_id}
         UMR_SOURCE={ARTICLE_LIST_SOURCE}
         open={reportOpen}
-        onReported={hideOnServerAfterReport}
         onClose={({ reported }) => {
           setReportOpen(false);
           if (reported) leaveAfterReport();
