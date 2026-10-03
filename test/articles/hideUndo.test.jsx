@@ -18,7 +18,7 @@ describe("Article card: Hide and Report", () => {
   const ARTICLE = { id: 7, title: "Quiz: which capital is this?", summary: "", topics_list: [], source_id: 70 };
   const title = ARTICLE.title;
 
-  function setup({ inFeed = true, unhideFails = false, hideFails = false, holdReport = false, noUnhide = false } = {}) {
+  function setup({ inFeed = true, unhideFails = false, hideFails = false, holdReport = false } = {}) {
     const calls = [];
     let releaseReport;
     // Anything the card asks for that these tests don't care about is a no-op.
@@ -42,7 +42,6 @@ describe("Article card: Hide and Report", () => {
       { get: (target, key) => (key in target ? target[key] : () => {}) },
     );
     const feed = inFeed ? { onArticleHidden: vi.fn(), onArticleUnhidden: vi.fn() } : {};
-    if (noUnhide) delete feed.onArticleUnhidden;
     render(
       <MemoryRouter>
         <APIContext.Provider value={api}>
@@ -145,14 +144,5 @@ describe("Article card: Hide and Report", () => {
     act(() => fireEvent.keyDown(screen.getByRole("dialog"), { key: "Escape" }));
     expect(await screen.findByText(/couldn't hide it/)).toBeInTheDocument();
     expect(onArticleHidden).not.toHaveBeenCalled();
-  });
-
-  it("offers no Undo where the page can't bring the card back", async () => {
-    // A list that hides cards but doesn't pass onArticleUnhidden.
-    const { onArticleHidden } = setup({ noUnhide: true });
-    await hideViaMenu();
-    expect(await screen.findByText(/Article hidden from your feed/)).toBeInTheDocument();
-    expect(screen.queryByRole("button", { name: "Undo" })).not.toBeInTheDocument();
-    await waitFor(() => expect(onArticleHidden).toHaveBeenCalledWith(7));
   });
 });

@@ -6,7 +6,6 @@ import SearchField from "./SearchField";
 import * as s from "./ArticleListBrowser.sc";
 import LoadingAnimation from "../components/LoadingAnimation";
 import FeedFilterBar from "./FeedFilterBar";
-import { addHidden, removeHidden, visibleFeedItems } from "./hiddenArticles";
 
 import { browsingModeProps } from "./browsingMode";
 import LocalStorage from "../assorted/LocalStorage";
@@ -199,8 +198,13 @@ export default function ArticleListBrowser({
     }
   }
 
-  // What the feed renders, and what a click's `index` counts in.
-  const visibleList = articlesAndVideosList ? visibleFeedItems(articlesAndVideosList, hiddenIds) : [];
+  // What the feed renders, and what a click's `index` counts in. Hidden articles
+  // are filtered here rather than removed from the list: pagination and the
+  // videos-only toggle rebuild it from snapshots, which would bring them back.
+  // Videos share the id space with articles but can't be hidden.
+  const visibleList = articlesAndVideosList
+    ? articlesAndVideosList.filter((each) => each.video || !hiddenIds.has(each.id))
+    : [];
 
   const handleArticleClick = (articleId, sourceId, index) => {
     const seenList = visibleList.slice(0, index).map((each) => each.source_id);
@@ -214,10 +218,15 @@ export default function ArticleListBrowser({
     api.logUserActivity(api.CLICKED_VIDEO, null, "", seenListAsString, sourceId);
   };
 
-  // See hiddenArticles.js. Functional updates: a card's Undo runs from its toast,
-  // seconds after the render that created it.
-  const handleArticleHidden = (articleId) => setHiddenIds((ids) => addHidden(ids, articleId));
-  const handleArticleUnhidden = (articleId) => setHiddenIds((ids) => removeHidden(ids, articleId));
+  // Functional updates: a card's Undo runs from its toast, seconds after the
+  // render that created it.
+  const handleArticleHidden = (articleId) => setHiddenIds((ids) => new Set(ids).add(articleId));
+  const handleArticleUnhidden = (articleId) =>
+    setHiddenIds((ids) => {
+      const next = new Set(ids);
+      next.delete(articleId);
+      return next;
+    });
 
   useEffect(() => {
     window.addEventListener("scroll", handleScroll, true);

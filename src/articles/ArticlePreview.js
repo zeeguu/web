@@ -172,8 +172,8 @@ export default function ArticlePreview({
     }
   }
 
-  // In the feed, the list owns which cards are hidden (see hiddenArticles.js):
-  // the card tells it, and Undo tells it again. Elsewhere the card hides itself.
+  // In the feed, the list owns which cards are hidden: the card tells it, and
+  // Undo tells it again. Elsewhere the card hides itself.
   function leaveFeed() {
     if (onArticleHidden) onArticleHidden(article.id);
     else setIsHidden(true);
@@ -185,10 +185,6 @@ export default function ArticlePreview({
     setIsHidden(false);
     if (onArticleUnhidden) onArticleUnhidden(article.id);
   }
-
-  // Undo needs a way back: in a list, the onArticleUnhidden that pairs with
-  // onArticleHidden; on its own, the card's own state.
-  const canUndoHide = !onArticleHidden || Boolean(onArticleUnhidden);
 
   function handleHideArticle() {
     // The × and the menu stay tappable during the collapse; don't hide twice.
@@ -204,12 +200,7 @@ export default function ArticlePreview({
           if (!undone) leaveFeed();
         }, 300); // Match animation duration
 
-        const message = "Article hidden from your feed";
-        if (!canUndoHide) {
-          toast(message);
-          return;
-        }
-        showUndoToast(message, () => {
+        showUndoToast("Article hidden from your feed", () => {
           undone = true;
           api.unhideArticle(article.id, backInFeed, () => {
             toast.error("Couldn't undo: the article is still hidden");
