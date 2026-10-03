@@ -6,50 +6,10 @@ import HourglassEmptyRoundedIcon from "@mui/icons-material/HourglassEmptyRounded
 import SkipPreviousRoundedIcon from "@mui/icons-material/SkipPreviousRounded";
 import Replay10RoundedIcon from "@mui/icons-material/Replay10Rounded";
 import Forward10RoundedIcon from "@mui/icons-material/Forward10Rounded";
+import SpeedPicker from "./SpeedPicker";
+import { loadSpeed, saveSpeed } from "./audioSpeeds";
 
 const SEEK_SECONDS = 10;
-
-const SPEED_OPTIONS = [0.8, 0.85, 0.9, 0.95, 1];
-
-const formatSpeed = (s) => `${s}x`;
-
-// Tap to cycle through SPEED_OPTIONS (like Apple Podcasts' speed pill).
-// Avoids a dropdown overlay that would collide with the title on narrow
-// viewports — the 5-step cycle is short enough that tapping through is
-// faster than scanning a menu anyway.
-function SpeedPicker({ value, onChange, disabled }) {
-  const cycleNext = () => {
-    const i = SPEED_OPTIONS.indexOf(value);
-    const next = SPEED_OPTIONS[(i + 1) % SPEED_OPTIONS.length];
-    onChange(next);
-  };
-  return (
-    <button
-      type="button"
-      onClick={() => !disabled && cycleNext()}
-      disabled={disabled}
-      aria-label={`Playback speed (current ${formatSpeed(value)}, tap to cycle)`}
-      style={{
-        background: "transparent",
-        border: `1.5px solid ${disabled ? "#ccc" : "var(--player-icon-color)"}`,
-        borderRadius: "50%",
-        width: "38px",
-        height: "38px",
-        padding: 0,
-        color: disabled ? "#ccc" : "var(--player-icon-color)",
-        fontSize: "12px",
-        fontWeight: 600,
-        cursor: disabled ? "not-allowed" : "pointer",
-        display: "inline-flex",
-        alignItems: "center",
-        justifyContent: "center",
-        whiteSpace: "nowrap",
-      }}
-    >
-      {formatSpeed(value)}
-    </button>
-  );
-}
 
 // Minimal icon-only nav button: no circle, no fill — just the icon coloured
 // by the global orange. Used by the rewind / skip-back / skip-forward
@@ -101,30 +61,49 @@ export default function CustomAudioPlayer({
   autoPlay = false,
   children,
 }) {
-  const getStoredSpeed = () => {
-    if (!language) return 1.0;
-    const key = `audioSpeed_${language}`;
-    const stored = localStorage.getItem(key);
-    return stored ? parseFloat(stored) : 1.0;
-  };
-
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
-  const [playbackRate, setPlaybackRate] = useState(getStoredSpeed());
+  // AppLayout keys the page on the learned language, so a language that
+  // arrives or changes remounts the player: the initial load is enough.
+  const [playbackRate, setPlaybackRate] = useState(() => loadSpeed(language));
   const audioRef = useRef(null);
   const progressTimerRef = useRef(null);
   const lastSavedProgressRef = useRef(0);
   const audioContextRef = useRef(null);
 
-  // Apply stored playback rate when audio is ready
+  // For handlers registered once (lock screen, visibility) that need the
+  // current rate, not the one from when they were registered.
+  const playbackRateRef = useRef(playbackRate);
+  playbackRateRef.current = playbackRate;
+  // The one place that writes the rate to the element. defaultPlaybackRate too:
+  // loading a new src resets playbackRate to it.
   useEffect(() => {
     const audio = audioRef.current;
-    if (audio && playbackRate !== 1.0) {
+    if (audio) {
+      audio.defaultPlaybackRate = playbackRate;
       audio.playbackRate = playbackRate;
     }
   }, [playbackRate]);
+
+  // Some WebViews reset the rate on load or play regardless; put the chosen
+  // speed back rather than adopting whatever the element reports.
+  useEffect(() => {
+    const audio = audioRef.current;
+    if (!audio) return;
+    const reapply = () => {
+      const rate = playbackRateRef.current;
+      if (audio.defaultPlaybackRate !== rate) audio.defaultPlaybackRate = rate;
+      if (audio.playbackRate !== rate) audio.playbackRate = rate;
+    };
+    audio.addEventListener("loadedmetadata", reapply);
+    audio.addEventListener("play", reapply);
+    return () => {
+      audio.removeEventListener("loadedmetadata", reapply);
+      audio.removeEventListener("play", reapply);
+    };
+  }, []);
 
   // Set up Media Session API for lock screen controls.
   // Only the currently-playing player owns navigator.mediaSession (it's a
@@ -194,7 +173,7 @@ export default function CustomAudioPlayer({
       if ("setPositionState" in navigator.mediaSession && duration > 0) {
         navigator.mediaSession.setPositionState({
           duration: duration,
-          playbackRate: playbackRate,
+          playbackRate: playbackRateRef.current,
           position: newTime,
         });
       }
@@ -214,7 +193,7 @@ export default function CustomAudioPlayer({
       if ("setPositionState" in navigator.mediaSession && duration > 0) {
         navigator.mediaSession.setPositionState({
           duration: duration,
-          playbackRate: playbackRate,
+          playbackRate: playbackRateRef.current,
           position: newTime,
         });
       }
@@ -305,7 +284,7 @@ export default function CustomAudioPlayer({
         if ("mediaSession" in navigator && "setPositionState" in navigator.mediaSession && duration > 0) {
           navigator.mediaSession.setPositionState({
             duration: duration,
-            playbackRate: playbackRate,
+            playbackRate: playbackRateRef.current,
             position: audio.currentTime,
           });
         }
@@ -351,7 +330,8 @@ export default function CustomAudioPlayer({
         });
       }
     };
-  }, [isPlaying, duration, playbackRate]);
+    // playbackRate is read through its ref, so a speed change doesn't re-run this.
+  }, [isPlaying, duration]);
 
   // Apply initialProgress exactly ONCE per mount. Without the ref guard the
   // effect re-fires every time the parent re-saves the playhead (every ~10s
@@ -423,7 +403,7 @@ export default function CustomAudioPlayer({
           try {
             navigator.mediaSession.setPositionState({
               duration: duration,
-              playbackRate: playbackRate,
+              playbackRate: playbackRateRef.current,
               position: audio.currentTime,
             });
           } catch (error) {
@@ -638,17 +618,8 @@ export default function CustomAudioPlayer({
   const progressPercentage = duration > 0 ? (currentTime / duration) * 100 : 0;
 
   const handleSpeedChange = (newRate) => {
-    const audio = audioRef.current;
-    if (!audio) return;
-
     setPlaybackRate(newRate);
-    audio.playbackRate = newRate;
-
-    // Save to localStorage if language is provided
-    if (language) {
-      const key = `audioSpeed_${language}`;
-      localStorage.setItem(key, newRate.toString());
-    }
+    saveSpeed(language, newRate);
   };
 
   return (
