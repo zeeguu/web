@@ -1,0 +1,15 @@
+Hurtigere lyd, et venligere feed og et par rettelser.
+
+Lyd
+- Lyt hurtigere: hastighedsknappen åbner nu en menu med 1,1x, 1,25x og 1,5x ved siden af de langsommere hastigheder.
+- Afspilning fra høretelefoner eller låseskærmen virker igen, efter du har sat på pause derfra.
+
+Feed
+- Når du skifter niveau fra feedet, genindlæses siden ikke længere. Artiklerne bliver på skærmen, mens dem på dit nye niveau indlæses, så du straks kan se forskellen.
+- Topbaren med dit sprog, din stime og din avatar kommer tilbage, så snart du scroller op, så du kan skifte sprog uden at scrolle helt til toppen.
+- Skjulte du en artikel ved en fejl? Tryk på Fortryd for at få den tilbage.
+- Rapportér en defekt artikel, eller noget der ikke rigtig er en artikel, direkte fra kortets menu.
+- Artikler uden billede viser nu udgiverens navn i stedet, så alle kort er lette at skelne fra hinanden.
+
+Tilmelding
+- Elever, der tilmelder sig med en klassekode, bliver ikke længere bedt om en e-mailkode, der aldrig kommer.
