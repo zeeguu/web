@@ -2,59 +2,73 @@ import { describe, it, expect, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
-import { SPEED_OPTIONS } from "../../src/components/audioSpeeds";
+import { SPEED_PRESETS } from "../../src/components/audioSpeeds";
 import SpeedPicker from "../../src/components/SpeedPicker";
 
-/** The speed pill in the audio player, and the menu it opens. */
+/** The speed pill in the audio player, and the panel it opens. */
 describe("SpeedPicker", () => {
-  const pill = () => screen.getByRole("button", { name: /Playback speed/ });
+  // hidden: an open popover aria-hides the rest of the page, the pill included.
+  const pill = () => screen.getByRole("button", { name: /Playback speed/, hidden: true });
+  const open = (props) => {
+    render(<SpeedPicker value={1} onChange={() => {}} {...props} />);
+    return userEvent.click(pill());
+  };
 
-  it("offers speeds both below and above 1x, with the current one selected", async () => {
-    render(<SpeedPicker value={1} onChange={() => {}} />);
-    await userEvent.click(pill());
-
-    const items = screen.getAllByRole("menuitem");
-    expect(items.map((i) => i.textContent)).toEqual(SPEED_OPTIONS.map((s) => `${s}x`));
-    expect(screen.getByRole("menuitem", { name: "1x" })).toHaveClass("Mui-selected");
+  it("shows the exact speed and offers presets both below and above 1x", async () => {
+    await open({ value: 0.85 });
+    expect(screen.getByText("0.85x", { selector: "div" })).toBeInTheDocument();
+    for (const speed of SPEED_PRESETS) {
+      expect(screen.getByRole("button", { name: `${speed}x` })).toBeInTheDocument();
+    }
   });
 
-  it("any speed is one pick away from 1x, slower or faster", async () => {
-    // The tap-to-cycle pill this replaced needed four taps (through 1.1-1.5x)
-    // to get from 1x to anything slower.
+  it("marks the current preset as selected", async () => {
+    await open({ value: 1.25 });
+    expect(screen.getByRole("button", { name: "1.25x" })).toHaveAttribute("aria-pressed", "true");
+    expect(screen.getByRole("button", { name: "1x" })).toHaveAttribute("aria-pressed", "false");
+  });
+
+  it("any preset is one tap away, slower or faster", async () => {
     const onChange = vi.fn();
-    render(<SpeedPicker value={1} onChange={onChange} />);
-
-    await userEvent.click(pill());
-    await userEvent.click(screen.getByRole("menuitem", { name: "0.8x" }));
+    await open({ onChange });
+    await userEvent.click(screen.getByRole("button", { name: "0.8x" }));
     expect(onChange).toHaveBeenLastCalledWith(0.8);
-
-    await userEvent.click(pill());
-    await userEvent.click(screen.getByRole("menuitem", { name: "1.5x" }));
+    await userEvent.click(screen.getByRole("button", { name: "1.5x" }));
     expect(onChange).toHaveBeenLastCalledWith(1.5);
   });
 
-  it("closes once a speed is picked", async () => {
-    render(<SpeedPicker value={1} onChange={() => {}} />);
-    await userEvent.click(pill());
-    await userEvent.click(screen.getByRole("menuitem", { name: "0.9x" }));
-    await vi.waitFor(() => expect(screen.queryByRole("menu")).not.toBeInTheDocument());
+  it("- and + move by 0.05 without float noise", async () => {
+    const onChange = vi.fn();
+    await open({ value: 0.85, onChange });
+    await userEvent.click(screen.getByRole("button", { name: "Slower" }));
+    expect(onChange).toHaveBeenLastCalledWith(0.8);
+    await userEvent.click(screen.getByRole("button", { name: "Faster" }));
+    expect(onChange).toHaveBeenLastCalledWith(0.9);
+  });
+
+  it("disables - at the slowest and + at the fastest", async () => {
+    await open({ value: 0.8 });
+    expect(screen.getByRole("button", { name: "Slower" })).toBeDisabled();
+    expect(screen.getByRole("button", { name: "Faster" })).toBeEnabled();
+  });
+
+  it("stays open after a change, so the learner can keep adjusting", async () => {
+    await open();
+    await userEvent.click(screen.getByRole("button", { name: "0.9x" }));
+    expect(screen.getByRole("button", { name: "Slower" })).toBeInTheDocument();
   });
 
   it("is disabled while the audio loads", () => {
     render(<SpeedPicker value={1} onChange={() => {}} disabled />);
     expect(pill()).toBeDisabled();
   });
-});
 
-describe("SpeedPicker accessibility", () => {
-  it("says whether its menu is open, and which menu it controls", async () => {
+  it("says whether its panel is open, and which one it controls", async () => {
     render(<SpeedPicker value={1} onChange={() => {}} />);
-    const pill = screen.getByRole("button", { name: /Playback speed/ });
-    expect(pill).toHaveAttribute("aria-expanded", "false");
-
-    await userEvent.click(pill);
-    expect(pill).toHaveAttribute("aria-expanded", "true");
-    expect(screen.getByRole("menu").closest("[id]")).toBeTruthy();
-    expect(document.getElementById(pill.getAttribute("aria-controls"))).toBeInTheDocument();
+    expect(pill()).toHaveAttribute("aria-expanded", "false");
+    await userEvent.click(pill());
+    expect(pill()).toHaveAttribute("aria-expanded", "true");
+    expect(document.getElementById(pill().getAttribute("aria-controls"))).toBeInTheDocument();
+    expect(screen.getByRole("dialog", { name: "Playback speed" })).toBeInTheDocument();
   });
 });

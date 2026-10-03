@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
 
-import { SPEED_OPTIONS, parseStoredSpeed, loadSpeed, saveSpeed } from "../../src/components/audioSpeeds";
+import { SPEED_PRESETS, parseStoredSpeed, snapSpeed, loadSpeed, saveSpeed } from "../../src/components/audioSpeeds";
 import LocalStorage from "../../src/assorted/LocalStorage";
 
 /**
@@ -8,16 +8,26 @@ import LocalStorage from "../../src/assorted/LocalStorage";
  * choice per learned language.
  */
 describe("parseStoredSpeed", () => {
-  it("reads back every speed on offer, including the ones above 1x", () => {
-    for (const speed of SPEED_OPTIONS) {
+  it("reads back the presets and any 0.05 step in range", () => {
+    for (const speed of [...SPEED_PRESETS, 0.85, 1.05, 1.35]) {
       expect(parseStoredSpeed(String(speed))).toBe(speed);
     }
   });
 
-  it("falls back to 1x for nothing stored, junk, or a speed no longer offered", () => {
+  it("falls back to 1x for nothing stored, junk, or a speed out of range", () => {
     expect(parseStoredSpeed(null)).toBe(1);
     expect(parseStoredSpeed("abc")).toBe(1);
     expect(parseStoredSpeed("3")).toBe(1);
+    expect(parseStoredSpeed("0.5")).toBe(1);
+  });
+});
+
+describe("snapSpeed", () => {
+  it("rounds to the 0.05 grid without float noise, and clamps", () => {
+    expect(snapSpeed(0.8 + 0.05)).toBe(0.85);
+    expect(snapSpeed(1.123)).toBe(1.1);
+    expect(snapSpeed(0.7)).toBe(0.8);
+    expect(snapSpeed(2)).toBe(1.5);
   });
 });
 
