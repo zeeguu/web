@@ -347,7 +347,11 @@ export default function UpgradeAccountModal({ open, onClose, onSuccess, triggerR
             </div>
 
             <div className="buttons">
-              <Button type="submit" disabled={isSubmitting}>
+              <Button
+                type="submit"
+                disabled={isSubmitting}
+                className={isSubmitting ? "loading" : ""}
+              >
                 {isSubmitting ? "Logging in..." : "Log In"}
               </Button>
             </div>

@@ -104,7 +104,7 @@ export default function LogIn({ handleSuccessfulLogIn }) {
           <ButtonContainer className={"padding-medium"}>
             <Button
               type={"submit"}
-              className={`full-width-btn${isLoggingIn ? " pressed" : ""}`}
+              className={`full-width-btn${isLoggingIn ? " pressed loading" : ""}`}
               onClick={handleLogIn}
               disabled={isLoggingIn}
             >

@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled, { keyframes } from "styled-components";
 import {
   blue600,
   blue700,
@@ -6,10 +6,16 @@ import {
   zeeguuDarkOrange,
   zeeguuOrange,
   zeeguuRed,
+  orange300,
   orange600,
   orange500,
   orange800,
 } from "../../components/colors";
+
+const gradientDance = keyframes`
+  0% { background-position: 100% 0; }
+  100% { background-position: -100% 0; }
+`;
 
 const Button = styled.button`
   cursor: pointer;
@@ -71,6 +77,23 @@ const Button = styled.button`
     box-shadow: none;
     transform: translateY(0.2em);
     transition: all ease-in 0.08s;
+  }
+
+  // in-flight request: a lighter band sweeps across the button
+  &.loading {
+    cursor: progress;
+    background-image: linear-gradient(
+      100deg,
+      ${orange500} 30%,
+      ${orange300} 50%,
+      ${orange500} 70%
+    );
+    background-size: 200% 100%;
+    animation: ${gradientDance} 1.4s linear infinite;
+
+    @media (prefers-reduced-motion: reduce) {
+      animation: none;
+    }
   }
 
   //span the full width of a parent
