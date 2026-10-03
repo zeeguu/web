@@ -6,6 +6,7 @@ import { setTitle } from "../../assorted/setTitle";
 import LocalStorage from "../../assorted/LocalStorage";
 import strings from "../../i18n/definitions";
 import { APIContext } from "../../contexts/APIContext";
+import useFunnelStep from "../../hooks/useFunnelStep";
 
 import CardPage from "../_pages_shared/CardPage";
 import Header from "../_pages_shared/Header";
@@ -24,6 +25,7 @@ export default function InviteCode() {
   const api = useContext(APIContext);
   const [inviteCode, setInviteCode] = useState("");
   const [error, setError] = useState("");
+  useFunnelStep("invite_code");
 
   useEffect(() => {
     setTitle("Invite Code");
@@ -43,6 +45,7 @@ export default function InviteCode() {
 
     // Empty = skip, no validation needed
     if (!inviteCode.trim()) {
+      api.funnelEvent("invite_code_skipped");
       LocalStorage.setInviteCode("");
       goToNext();
       return;
@@ -54,10 +57,14 @@ export default function InviteCode() {
         if (cohortName) {
           toast.success(`Welcome to "${cohortName}"!`);
         }
+        api.funnelEvent("invite_code_accepted");
         LocalStorage.setInviteCode(inviteCode.trim());
         goToNext();
       },
       () => {
+        // Also reached when the request fails; the event's online flag tells
+        // a wrong code from a dropped connection.
+        api.funnelEvent("invite_code_rejected");
         setError("This invite code is not recognized. Please check and try again.");
       },
     );

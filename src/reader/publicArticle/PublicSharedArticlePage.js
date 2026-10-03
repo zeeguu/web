@@ -4,6 +4,7 @@ import styled from "styled-components";
 import { Capacitor } from "@capacitor/core";
 
 import { APIContext } from "../../contexts/APIContext";
+import useFunnelStep from "../../hooks/useFunnelStep";
 import LoadingAnimation from "../../components/LoadingAnimation";
 import KioskLayout from "../../kiosk/KioskLayout";
 import ArticleStatInfo from "../../components/ArticleStatInfo";
@@ -139,6 +140,7 @@ export default function PublicSharedArticlePage({ link }) {
   const api = useContext(APIContext);
   const history = useHistory();
   const isNativeApp = Capacitor.isNativePlatform();
+  useFunnelStep("shared_article");
 
   const [article, setArticle] = useState(null);
   const [error, setError] = useState(null);
@@ -253,6 +255,7 @@ export default function PublicSharedArticlePage({ link }) {
   const here = window.location.pathname + window.location.search;
 
   function signUp() {
+    api.funnelEvent("shared_article_signup_clicked", { language: article?.language });
     rememberPendingSharedArticle(window.localStorage, here);
     // A friend's link is the invitation; the invite-code screen is for
     // teachers' and researchers' codes, so skip straight to languages with
@@ -264,6 +267,7 @@ export default function PublicSharedArticlePage({ link }) {
   }
 
   function logIn() {
+    api.funnelEvent("shared_article_login_clicked");
     rememberPendingSharedArticle(window.localStorage, here);
     history.push(`/log_in?redirectLink=${encodeURIComponent(window.location.href)}`);
   }

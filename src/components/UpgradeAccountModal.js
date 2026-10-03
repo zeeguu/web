@@ -1,4 +1,4 @@
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect } from "react";
 import Modal from "./modal_shared/Modal";
 import InputField from "./InputField";
 import useFormField from "../hooks/useFormField";
@@ -11,6 +11,7 @@ import LocalStorage from "../assorted/LocalStorage";
 import { toast } from "react-toastify";
 import styled from "styled-components";
 import Button from "../pages/_pages_shared/Button.sc";
+import { funnelError } from "../api/onboardingFunnel";
 
 const ModalContent = styled.div`
   h2 {
@@ -77,6 +78,12 @@ const ModalContent = styled.div`
     color: hsl(36, 100%, 32%);
   }
 
+  .reasons {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75em;
+  }
+
   .password-field-wrapper {
     position: relative;
   }
@@ -134,6 +141,10 @@ export default function UpgradeAccountModal({ open, onClose, onSuccess, triggerR
 
   const [confirmCode, setConfirmCode] = useState("");
 
+  useEffect(() => {
+    if (open) api.funnelEvent("upgrade_prompt_shown", { trigger: triggerReason, bookmarks: bookmarkCount });
+  }, [open]);
+
   async function finishUpgrade(toastMessage) {
     LocalStorage.clearAnonCredentials();
     const user = await api.getUserDetails();
@@ -150,6 +161,7 @@ export default function UpgradeAccountModal({ open, onClose, onSuccess, triggerR
     setErrorMessage("");
 
     if (!validateRules([validateEmail])) {
+      api.funnelEvent("upgrade_email_invalid");
       return;
     }
 
@@ -159,11 +171,13 @@ export default function UpgradeAccountModal({ open, onClose, onSuccess, triggerR
     api.requestEmailVerification(
       email,
       () => {
+        api.funnelEvent("upgrade_code_requested");
         setIsSubmitting(false);
         setUserEmail(email);
         setStep("confirm");
       },
       (error) => {
+        api.funnelEvent("upgrade_code_request_failed", { error: funnelError(error) });
         setIsSubmitting(false);
         setErrorMessage(error || "Could not send confirmation. Please try again.");
       },
@@ -175,11 +189,13 @@ export default function UpgradeAccountModal({ open, onClose, onSuccess, triggerR
     setErrorMessage("");
 
     if (!confirmCode || confirmCode.length < 3) {
+      api.funnelEvent("upgrade_code_empty");
       setErrorMessage("Please enter the code from your email");
       return;
     }
 
     // Just store the code and move to password step — no backend call yet
+    api.funnelEvent("upgrade_code_entered");
     setPendingCode(confirmCode);
     setStep("password");
   }
@@ -189,10 +205,12 @@ export default function UpgradeAccountModal({ open, onClose, onSuccess, triggerR
     setErrorMessage("");
 
     if (!validateRules([validatePassword])) {
+      api.funnelEvent("upgrade_password_invalid", { rule: "length" });
       return;
     }
 
     if (password !== confirmPassword) {
+      api.funnelEvent("upgrade_password_invalid", { rule: "mismatch" });
       setErrorMessage("Passwords do not match");
       return;
     }
@@ -207,9 +225,11 @@ export default function UpgradeAccountModal({ open, onClose, onSuccess, triggerR
       codeToUse,
       password,
       () => {
+        api.funnelEvent("upgrade_completed");
         finishUpgrade("Account set up!");
       },
       (error) => {
+        api.funnelEvent("upgrade_failed", { error: funnelError(error) });
         setIsSubmitting(false);
         // If code is expired or invalid, go back to email step so they can get a new code
         if (error && (error.includes("expired") || error.includes("No verification"))) {
@@ -236,16 +256,18 @@ export default function UpgradeAccountModal({ open, onClose, onSuccess, triggerR
       loginEmail,
       loginPassword,
       (error) => {
+        api.funnelEvent("upgrade_login_failed");
         setIsSubmitting(false);
         setErrorMessage(error || "Could not log in. Please check your credentials.");
       },
       (sessionId) => {
+        api.funnelEvent("upgrade_logged_in_instead");
         finishUpgrade("Welcome back!");
       },
     );
   }
 
-  function handleClose() {
+  function closeForGood() {
     setStep("email");
     setConfirmCode("");
     setConfirmPassword("");
@@ -253,10 +275,34 @@ export default function UpgradeAccountModal({ open, onClose, onSuccess, triggerR
     onClose();
   }
 
+  // Closing the prompt from its first screen, the first time, asks why --
+  // the one moment someone who decided against an account can still be asked.
+  // One tap, and closing again skips it.
+  function handleClose() {
+    if (step === "why_not") {
+      chooseReason("skipped");
+      return;
+    }
+    api.funnelEvent("upgrade_dismissed", { at_step: step });
+    if (step === "email" && !LocalStorage.hasDismissedAnonUpgrade()) {
+      LocalStorage.setAnonUpgradeDismissed();
+      setErrorMessage("");
+      setStep("why_not");
+      return;
+    }
+    closeForGood();
+  }
+
+  function chooseReason(reason) {
+    api.funnelEvent("upgrade_declined_reason", { reason });
+    closeForGood();
+  }
+
   const getTitle = () => {
     if (step === "confirm") return "Check your email";
     if (step === "password") return "Choose a password";
     if (step === "login") return "Log In";
+    if (step === "why_not") return "Before you go";
     // Email step - show trigger-based titles
     if (triggerReason === "bookmarks") return `You've saved ${bookmarkCount} words!`;
     if (triggerReason === "days") return "Welcome back!";
@@ -270,6 +316,7 @@ export default function UpgradeAccountModal({ open, onClose, onSuccess, triggerR
     if (step === "confirm") return `We sent a confirmation code to ${userEmail}`;
     if (step === "password") return "Set a password so you can log in on other devices.";
     if (step === "login") return "Log in to your existing Zeeguu account.";
+    if (step === "why_not") return "What's holding you back from saving your progress?";
     return "Please confirm your email to continue.";
   };
 
@@ -503,6 +550,23 @@ export default function UpgradeAccountModal({ open, onClose, onSuccess, triggerR
               </a>
             </div>
           </form>
+        )}
+
+        {step === "why_not" && (
+          <div className="reasons">
+            <Button className="grey" onClick={() => chooseReason("not_now")}>
+              Just not right now
+            </Button>
+            <Button className="grey" onClick={() => chooseReason("no_email")}>
+              I'd rather not give my email
+            </Button>
+            <Button className="grey" onClick={() => chooseReason("unsure_will_continue")}>
+              Not sure I'll keep using Zeeguu
+            </Button>
+            <Button className="grey" onClick={() => chooseReason("other")}>
+              Something else
+            </Button>
+          </div>
         )}
       </ModalContent>
     </Modal>

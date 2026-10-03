@@ -1,6 +1,8 @@
-import { useEffect } from "react";
+import { useContext, useEffect } from "react";
 import { useHistory } from "react-router-dom";
 import { setTitle } from "../../assorted/setTitle";
+import { APIContext } from "../../contexts/APIContext";
+import useFunnelStep from "../../hooks/useFunnelStep";
 import styled from "styled-components";
 
 import CardPage from "../_pages_shared/CardPage";
@@ -37,16 +39,20 @@ const SecondaryButton = styled(Button)`
 
 export default function Welcome() {
   const history = useHistory();
+  const api = useContext(APIContext);
+  useFunnelStep("welcome");
 
   useEffect(() => {
     setTitle("Welcome to Zeeguu");
   }, []);
 
   function handleHasAccount() {
+    api.funnelEvent("welcome_login_chosen");
     history.push("/log_in");
   }
 
   function handleNewUser() {
+    api.funnelEvent("welcome_new_user_chosen");
     history.push("/invite_code");
   }
 

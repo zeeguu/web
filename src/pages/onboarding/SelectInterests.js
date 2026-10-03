@@ -16,12 +16,23 @@ import strings from "../../i18n/definitions";
 
 import { setTitle } from "../../assorted/setTitle";
 import { APIContext } from "../../contexts/APIContext";
+import useFunnelStep from "../../hooks/useFunnelStep";
 import { consumePendingSharedArticle } from "../../reader/publicArticle/publicReaderLogic";
 
 export default function SelectInterests({ hasExtension }) {
   const api = useContext(APIContext);
   const history = useHistory();
   const { allTopics, toggleTopicSubscription, isSubscribed } = useSelectInterest(api);
+  useFunnelStep("select_interests");
+
+  function finish() {
+    const next = getLinkToNextPage();
+    api.funnelEvent("onboarding_completed", {
+      topics: (allTopics || []).filter((topic) => isSubscribed(topic)).length,
+      next: next.startsWith("/read") ? "shared_article" : next,
+    });
+    history.push(next);
+  }
 
   function getLinkToNextPage() {
     // Signed up from a shared article: that article is where they wanted to be.
@@ -57,7 +68,7 @@ export default function SelectInterests({ hasExtension }) {
       <Footer>
         <p className="centered">{strings.youCanChangeLater}</p>
         <ButtonContainer className={"padding-large"}>
-          <Button className={"full-width-btn"} onClick={() => history.push(getLinkToNextPage())}>
+          <Button className={"full-width-btn"} onClick={finish}>
             {strings.next}
             <RoundedForwardArrow />
           </Button>

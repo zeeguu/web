@@ -369,6 +369,7 @@ function App() {
 
     removeSharedUserInfo();
     api.setSession(undefined);
+    api.resetFunnel();
   }
 
   function handleSuccessfulLogIn(userInfo, sessionId, redirectToArticle = true) {

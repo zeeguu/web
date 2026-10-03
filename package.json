@@ -8,6 +8,7 @@
     "@capacitor/app": "^7.1.1",
     "@capacitor/cli": "^7.4.3",
     "@capacitor/core": "^7.4.3",
+    "@capacitor/device": "^7.0.5",
     "@capacitor/ios": "^7.4.3",
     "@capacitor/network": "^7.0.4",
     "@capacitor/preferences": "^7.0.3",

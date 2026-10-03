@@ -393,6 +393,16 @@ const LocalStorage = {
     }
   },
 
+  // Set the first time the upgrade prompt is closed, so that only that first
+  // time asks why.
+  hasDismissedAnonUpgrade: function () {
+    return !!localStorage[this.Keys.AnonUpgradeDismissed];
+  },
+
+  setAnonUpgradeDismissed: function () {
+    localStorage[this.Keys.AnonUpgradeDismissed] = "true";
+  },
+
   clearAnonCredentials: function () {
     localStorage.removeItem(this.Keys.AnonUUID);
     localStorage.removeItem(this.Keys.AnonPassword);

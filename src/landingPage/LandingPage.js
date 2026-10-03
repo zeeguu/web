@@ -3,6 +3,8 @@ import { useHistory } from "react-router-dom/cjs/react-router-dom";
 import { setTitle } from "../assorted/setTitle";
 import { getStoredSession } from "../utils/cookies/userInfo";
 import { SystemLanguagesContext } from "../contexts/SystemLanguagesContext.js";
+import { APIContext } from "../contexts/APIContext";
+import useFunnelStep from "../hooks/useFunnelStep";
 import InstallationInstructions from "./InstallationInstructions.js";
 import strings from "../i18n/definitions";
 import News from "./News";
@@ -21,6 +23,8 @@ export default function LandingPage() {
   // in HomePage (MainAppRouter); here we only swap the sign-up calls to action
   // for a way back into the app.
   const isLoggedIn = !!getStoredSession();
+  const api = useContext(APIContext);
+  useFunnelStep(isLoggedIn ? null : "landing");
 
   useEffect(() => {
     setTitle(strings.landingPageTitle);
@@ -43,10 +47,12 @@ export default function LandingPage() {
   }, []);
 
   function handleLanguageSelect(selectedLanguage) {
+    api.funnelEvent("landing_language_chosen", { language: selectedLanguage });
     history.push(`/invite_code?selected_language=${selectedLanguage}`);
   }
 
   function handleRegisterClick() {
+    api.funnelEvent("landing_signup_clicked");
     history.push(`/invite_code`);
   }
 

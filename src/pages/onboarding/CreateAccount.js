@@ -5,6 +5,8 @@ import { scrollToTop } from "../../utils/misc/scrollToTop";
 import useFormField from "../../hooks/useFormField";
 import { UserContext } from "../../contexts/UserContext";
 import { APIContext } from "../../contexts/APIContext";
+import useFunnelStep from "../../hooks/useFunnelStep";
+import { funnelError } from "../../api/onboardingFunnel";
 import { saveSharedUserInfo } from "../../utils/cookies/userInfo";
 import LocalStorage from "../../assorted/LocalStorage";
 import { saveLearnedVarietyAfterSignup } from "../../utils/misc/saveLearnedVariety";
@@ -15,7 +17,6 @@ import {
   Validator,
 } from "../../utils/ValidatorRule/Validator";
 import { setTitle } from "../../assorted/setTitle";
-import validateRules from "../../assorted/validateRules";
 import strings from "../../i18n/definitions";
 import { MIN_PASSWORD_LENGTH } from "../../appConstants";
 
@@ -40,6 +41,7 @@ export default function CreateAccount({ handleSuccessfulLogIn }) {
   const api = useContext(APIContext);
   const history = useHistory();
   const { userDetails, setUserDetails } = useContext(UserContext);
+  useFunnelStep("account_form");
 
   const learnedLanguage = LocalStorage.getLearnedLanguage();
   const nativeLanguage = LocalStorage.getNativeLanguage();
@@ -110,9 +112,18 @@ export default function CreateAccount({ handleSuccessfulLogIn }) {
     e.preventDefault();
     // If users have the same error, there wouldn't be a scroll.
     setErrorMessage("");
-    if (
-      !validateRules([validateName, validatePassword, validateEmail, validateCheckPrivacyNote, validateConfirmPass])
-    ) {
+    // Each rule runs (so every field shows its message), and the ones that
+    // failed go into the funnel: which fields, never what was typed in them.
+    const fieldIsValid = {
+      name: validateName(),
+      password: validatePassword(),
+      email: validateEmail(),
+      privacy: validateCheckPrivacyNote(),
+      confirm_password: validateConfirmPass(),
+    };
+    const invalidFields = Object.keys(fieldIsValid).filter((field) => !fieldIsValid[field]);
+    if (invalidFields.length > 0) {
+      api.funnelEvent("account_form_invalid", { fields: invalidFields });
       scrollToTop();
       return;
     }
@@ -143,9 +154,11 @@ export default function CreateAccount({ handleSuccessfulLogIn }) {
         // A signup with a class invitation code is created verified and gets no
         // code by mail, so only the others are sent to enter one. replace, not
         // push: Back should not return to the signup form.
+        api.funnelEvent("account_created", { verification_required: !!user.requires_email_verification });
         history.replace(user.requires_email_verification ? "/verify_email" : "/select_interests");
       },
       (error) => {
+        api.funnelEvent("account_create_failed", { error: funnelError(error) });
         setErrorMessage(error);
       },
     );

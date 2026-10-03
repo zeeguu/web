@@ -1,6 +1,8 @@
 import { useState, useContext, useEffect } from "react";
 import { useHistory } from "react-router-dom";
 import { APIContext } from "../../contexts/APIContext";
+import useFunnelStep from "../../hooks/useFunnelStep";
+import { funnelError } from "../../api/onboardingFunnel";
 import { UserContext } from "../../contexts/UserContext";
 import { setTitle } from "../../assorted/setTitle";
 import strings from "../../i18n/definitions";
@@ -27,6 +29,7 @@ export default function VerifyEmail() {
   const [code, setCode] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
+  useFunnelStep("verify_email");
   const [isResending, setIsResending] = useState(false);
 
   useEffect(() => {
@@ -39,6 +42,7 @@ export default function VerifyEmail() {
     setSuccessMessage("");
 
     if (!code.trim()) {
+      api.funnelEvent("verify_code_empty");
       setErrorMessage("Please enter the verification code");
       return;
     }
@@ -46,6 +50,7 @@ export default function VerifyEmail() {
     api.confirmEmail(
       code.trim(),
       async () => {
+        api.funnelEvent("email_verified");
         // Success - redirect to select interests
         const user = await api.getUserDetails();
         setUserDetails(user);
@@ -54,12 +59,14 @@ export default function VerifyEmail() {
         history.push("/select_interests");
       },
       (error) => {
+        api.funnelEvent("verify_code_rejected", { error: funnelError(error) });
         setErrorMessage(error || "Invalid or expired code. Please try again.");
       },
     );
   }
 
   function handleResend() {
+    api.funnelEvent("verify_code_resent");
     setIsResending(true);
     setErrorMessage("");
     setSuccessMessage("");
@@ -70,6 +77,7 @@ export default function VerifyEmail() {
         setIsResending(false);
       },
       (error) => {
+        api.funnelEvent("verify_code_resend_failed", { error: funnelError(error) });
         setErrorMessage(error || "Could not resend code. Please try again.");
         setIsResending(false);
       },
