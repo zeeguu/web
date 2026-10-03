@@ -549,6 +549,8 @@ Zeeguu_API.prototype.getHiddenUserArticles = function (page, callback, onError) 
 Zeeguu_API.prototype.reportBrokenArticle = function (articleId, reason, callback, onError) {
   let param = qs.stringify({ article_id: articleId, reason: reason });
   this._post(`/report_broken_article`, param, (response) => {
+    // The feed excludes reported articles; drop the cached one (see _setArticleHidden).
+    this.invalidateCache("user_articles/recommended");
     try {
       callback(JSON.parse(response));
     } catch (e) {
