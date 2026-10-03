@@ -24,11 +24,18 @@ export default function usePreviewActivityLog(article, isArticleSaved) {
 
   useEffect(() => {
     const articleId = article.id;
-    const browsingSessionId = getBrowsingSessionId?.();
     const timer = createVisibleTimer(undefined, !document.hidden);
     let closed = false;
 
-    api.logUserActivity(api.PREVIEW_OPENED, articleId, "", previewOpenedExtraData({ articleId, browsingSessionId }));
+    // The tap that opens a preview can be the first interaction on the page,
+    // which is what starts the browsing session -- and its id arrives
+    // asynchronously. So OPENED may carry null; CLOSED reads it again.
+    api.logUserActivity(
+      api.PREVIEW_OPENED,
+      articleId,
+      "",
+      previewOpenedExtraData({ articleId, browsingSessionId: getBrowsingSessionId?.() }),
+    );
 
     function logClosed() {
       if (closed) return;
@@ -41,7 +48,7 @@ export default function usePreviewActivityLog(article, isArticleSaved) {
         String(Math.round(visibleMs / 1000)),
         previewClosedExtraData({
           articleId,
-          browsingSessionId,
+          browsingSessionId: getBrowsingSessionId?.(),
           outcome: outcomeRef.current,
           visibleMs,
           saved: savedRef.current,
