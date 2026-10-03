@@ -422,6 +422,7 @@ export default function UpgradeAccountModal({ open, onClose, onSuccess, triggerR
               <InputField
                 type="text"
                 inputMode="numeric"
+                autoComplete="one-time-code"
                 pattern="[0-9]*"
                 label="Confirmation Code"
                 id="confirm-code"

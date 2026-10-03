@@ -120,8 +120,10 @@ export default function VerifyEmail() {
               id={"verification-code"}
               name={"verification-code"}
               placeholder={"Enter 4-digit code"}
+              inputMode={"numeric"}
+              autoComplete={"one-time-code"}
               value={code}
-              onChange={(e) => setCode(e.target.value.toUpperCase())}
+              onChange={(e) => setCode(e.target.value)}
               style={{ textAlign: "center", fontSize: "1.5rem", letterSpacing: "0.5rem" }}
             />
           </FormSection>

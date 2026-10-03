@@ -17,6 +17,7 @@ export default function InputField({
   spellCheck,
   inputRef,
   inputMode,
+  autoComplete,
 }) {
   return (
     <s.FieldLabelContainer>
@@ -35,6 +36,7 @@ export default function InputField({
           spellCheck={spellCheck}
           ref={inputRef}
           inputMode={inputMode}
+          autoComplete={autoComplete}
         />
         {children}
       </s.InputWrapper>

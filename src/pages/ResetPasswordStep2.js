@@ -111,6 +111,8 @@ export default function ResetPasswordStep2({ email, isLoggedIn }) {
           label={strings.codeReceived}
           name={"received-code"}
           placeholder={strings.codeReceivedPlaceholder}
+          inputMode={"numeric"}
+          autoComplete={"one-time-code"}
           value={sentCode}
           isError={!issentCodeValid}
           errorMessage={sentCodeMsg}
