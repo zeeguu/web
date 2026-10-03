@@ -15,6 +15,12 @@ Zeeguu_API.prototype.OPEN_EXTENSION_INSTALLED = "OPEN EXTENSION INSTALLED";
 Zeeguu_API.prototype.SEARCH_QUERY = "SEARCH QUERY";
 Zeeguu_API.prototype.VIEWPORT_READER_SETTINGS = "VIEWPORT_READER_SETTINGS ";
 
+// Preview overlay (Preview/Titles browsing modes). Time spent here also counts
+// toward the surrounding browsing session; these events say which article it
+// was spent on and how the preview ended.
+Zeeguu_API.prototype.PREVIEW_OPENED = "PREVIEW OPENED";
+Zeeguu_API.prototype.PREVIEW_CLOSED = "PREVIEW CLOSED";
+
 // Reader Interaction Actions
 Zeeguu_API.prototype.TRANSLATE_TEXT = "TRANSLATE TEXT";
 Zeeguu_API.prototype.TRANSLATE_WORDS_IN_EXERCISE = "TRANSLATE WORDS IN EXERCISE";

@@ -8,6 +8,7 @@ import RedirectionNotificationModal from "../components/redirect_notification/Re
 import { TranslatableText } from "../reader/TranslatableText";
 import useUserPreferences from "../hooks/useUserPreferences";
 import useReaderFontSize from "../hooks/useReaderFontSize";
+import usePreviewActivityLog from "../hooks/usePreviewActivityLog";
 import { APIContext } from "../contexts/APIContext";
 import { articleSourceLabel, aiProvenanceLabel, summaryIsAiGenerated } from "../utils/misc/articleHelpers";
 import { estimateReadingTime, timeAgo } from "../utils/misc/readableTime";
@@ -69,10 +70,12 @@ export default function ArticlePreviewOverlay({
   // against, and the popover would cover the card it floats over.
   const { translateInReader, pronounceInReader, showMweHints } = useUserPreferences(api);
   const [readerFontSize] = useReaderFontSize();
+  const { markOpenedOriginal } = usePreviewActivityLog(article, isArticleSaved);
 
   const hasImage = !!article.img_url;
 
   function handleOpenOriginal() {
+    markOpenedOriginal();
     // No-extension users get the usual "you're leaving Zeeguu" prompt (unless
     // they've opted out); everyone else goes straight to the publisher.
     if (should_open_with_modal) {
@@ -280,7 +283,13 @@ export default function ArticlePreviewOverlay({
             {isArticleSaved && <MetaTag>Saved</MetaTag>}
             {sourceLabel && (
               <MetaItem>
-                <MetaLink className="muted" href={externalUrl} target="_blank" rel="noopener noreferrer">
+                <MetaLink
+                  className="muted"
+                  href={externalUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={markOpenedOriginal}
+                >
                   {sourceLabel}
                 </MetaLink>
               </MetaItem>
