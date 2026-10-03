@@ -71,7 +71,6 @@ export default function CustomAudioPlayer({
   const audioRef = useRef(null);
   const progressTimerRef = useRef(null);
   const lastSavedProgressRef = useRef(0);
-  const audioContextRef = useRef(null);
 
   // For handlers registered once (lock screen, visibility) that need the
   // current rate, not the one from when they were registered.
@@ -125,25 +124,22 @@ export default function CustomAudioPlayer({
       ],
     });
 
+    // Headset / lock-screen play and pause. The player's state follows the
+    // element's own play/pause events, so a play() that iOS refuses doesn't
+    // leave the player believing it's playing (the next press would then be
+    // taken as "already playing" and do nothing).
     navigator.mediaSession.setActionHandler("play", () => {
       const audio = audioRef.current;
-      if (audio && audio.paused) {
-        audio.play();
-        setIsPlaying(true);
-        onPlay && onPlay();
-      }
-      // Try to focus the window when interacting from lock screen
-      if (window.focus) window.focus();
+      if (!audio || !audio.paused) return;
+      audio
+        .play()
+        .then(() => onPlay && onPlay())
+        .catch((err) => console.error("Playback from media controls failed:", err));
     });
 
     navigator.mediaSession.setActionHandler("pause", () => {
       const audio = audioRef.current;
-      if (audio && !audio.paused) {
-        audio.pause();
-        // Note: handlePause will be called by the 'pause' event listener
-      }
-      // Try to focus the window when interacting from lock screen
-      if (window.focus) window.focus();
+      if (audio && !audio.paused) audio.pause(); // handlePause follows from the 'pause' event
     });
 
     // Try different action handlers that iOS might recognize
@@ -236,31 +232,10 @@ export default function CustomAudioPlayer({
     });
   }, [isPlaying, duration, currentTime, playbackRate]);
 
-  // Initialize Audio Context and handle visibility changes
+  // Handle visibility changes to keep playback going. No AudioContext here: an
+  // idle one holds no audio session, and closing it on pause (as this once
+  // did) broke headset play after a headset pause on iOS.
   useEffect(() => {
-    // Create Audio Context to maintain audio session
-    if (!audioContextRef.current && "AudioContext" in window) {
-      audioContextRef.current = new (window.AudioContext || window.webkitAudioContext)();
-
-      // Resume audio context if it's suspended (iOS requirement)
-      if (audioContextRef.current.state === "suspended") {
-        const resumeAudio = () => {
-          if (audioContextRef.current && audioContextRef.current.state === "suspended") {
-            audioContextRef.current.resume().catch((err) => {
-              console.log("Could not resume audio context:", err);
-            });
-          }
-          document.removeEventListener("touchstart", resumeAudio);
-          document.removeEventListener("click", resumeAudio);
-        };
-        document.addEventListener("touchstart", resumeAudio);
-        document.addEventListener("click", resumeAudio);
-      }
-    } else if (audioContextRef.current && audioContextRef.current.state === "closed") {
-      // Recreate if closed
-      audioContextRef.current = new (window.AudioContext || window.webkitAudioContext)();
-    }
-
     // Handle visibility changes to maintain audio playback
     const handleVisibilityChange = () => {
       const audio = audioRef.current;
@@ -293,42 +268,9 @@ export default function CustomAudioPlayer({
 
     document.addEventListener("visibilitychange", handleVisibilityChange);
 
-    // Handle app activation from lock screen
-    const handleAppActivation = () => {
-      console.log("App activated, possibly from lock screen tap");
-
-      // Re-establish media session ownership
-      if ("mediaSession" in navigator) {
-        // Force update metadata to reclaim session
-        const currentMetadata = navigator.mediaSession.metadata;
-        navigator.mediaSession.metadata = null;
-        setTimeout(() => {
-          navigator.mediaSession.metadata = currentMetadata;
-          navigator.mediaSession.playbackState = isPlaying ? "playing" : "paused";
-        }, 0);
-      }
-    };
-
-    // Listen for various activation events
-    window.addEventListener("focus", handleAppActivation);
-    window.addEventListener("pageshow", handleAppActivation);
-
-    // For PWAs, also listen to these events
-    if (window.matchMedia("(display-mode: standalone)").matches) {
-      document.addEventListener("resume", handleAppActivation);
-    }
-
     // Cleanup
     return () => {
       document.removeEventListener("visibilitychange", handleVisibilityChange);
-      window.removeEventListener("focus", handleAppActivation);
-      window.removeEventListener("pageshow", handleAppActivation);
-      document.removeEventListener("resume", handleAppActivation);
-      if (audioContextRef.current && audioContextRef.current.state !== "closed") {
-        audioContextRef.current.close().catch((err) => {
-          console.log("Could not close audio context:", err);
-        });
-      }
     };
     // playbackRate is read through its ref, so a speed change doesn't re-run this.
   }, [isPlaying, duration]);
@@ -433,6 +375,7 @@ export default function CustomAudioPlayer({
     const handlePlay = () => {
       setIsPlaying(true);
       startProgressTimer();
+      if ("mediaSession" in navigator) navigator.mediaSession.playbackState = "playing";
     };
     // THE actual resume seek. `playing` fires once real playback has begun, the
     // only point iOS honors a seek on cold/paused media. We briefly mute so the
@@ -455,6 +398,7 @@ export default function CustomAudioPlayer({
     };
     const handlePause = () => {
       setIsPlaying(false);
+      if ("mediaSession" in navigator) navigator.mediaSession.playbackState = "paused";
       clearProgressTimer();
       saveProgress(true);
       onPause && onPause();
@@ -542,13 +486,6 @@ export default function CustomAudioPlayer({
       // Note: handlePause will be called by the 'pause' event listener
       // which handles setIsPlaying, clearProgressTimer, saveProgress, and onPause
     } else {
-      // For iOS: ensure the audio context is resumed before playing.
-      if (audioContextRef.current && audioContextRef.current.state === "suspended") {
-        audioContextRef.current.resume().catch(() => {
-          // Best-effort — fall through to audio.play() regardless.
-        });
-      }
-
       // Resume seek is handled by the `playing` event (handlePlaying) — the only
       // moment iOS honors a seek on cold/paused media. Do NOT seek here.
       audio
