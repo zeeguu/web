@@ -1,5 +1,4 @@
 import { Capacitor } from "@capacitor/core";
-import { Device } from "@capacitor/device";
 import { Zeeguu_API } from "./classDef";
 import { getPlatform } from "../utils/misc/browserDetection";
 import { APP_VERSION } from "../appVersion";
@@ -24,9 +23,12 @@ const ENTRY_POINTS = {
 const PLATFORM = getPlatform();
 
 // Read once: the native lookup is async and the model does not change.
+// Imported lazily and only on native: the browser extension's service worker
+// shares this module and has no use for a native plugin.
 let deviceModel = null;
 if (Capacitor.isNativePlatform()) {
-  Device.getInfo()
+  import("@capacitor/device")
+    .then(({ Device }) => Device.getInfo())
     .then((info) => (deviceModel = info.model))
     .catch(() => {});
 }
