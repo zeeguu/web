@@ -10,13 +10,6 @@ import Main from "../_pages_shared/Main.sc";
 import ButtonContainer from "../_pages_shared/ButtonContainer.sc";
 import Button from "../_pages_shared/Button.sc";
 
-const Subtitle = styled.p`
-  text-align: center;
-  color: #666;
-  font-size: 1.1rem;
-  margin-bottom: 2em;
-`;
-
 const ButtonGroup = styled.div`
   display: flex;
   flex-direction: column;
@@ -56,13 +49,12 @@ export default function Welcome() {
         <PageTitle>Welcome to Zeeguu</PageTitle>
       </Header>
       <Main>
-        <Subtitle>Do you already have an account?</Subtitle>
         <ButtonGroup>
           <Button onClick={handleHasAccount} className="full-width-btn">
-            Yes, log me in
+            Log in
           </Button>
           <SecondaryButton onClick={handleNewUser} className="full-width-btn">
-            No, I'm new here
+            Create account
           </SecondaryButton>
         </ButtonGroup>
       </Main>
