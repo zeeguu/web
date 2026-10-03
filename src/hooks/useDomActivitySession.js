@@ -59,8 +59,15 @@ export default function useDomActivitySession({
   const uploadRef = useShadowRef(session.upload);
 
   // Wrap the primitive's start with our local "has started" tracking.
+  //
+  // The ref is set here, synchronously, not only by the effect above: on the
+  // first touch after the idle timer has gone idle, react-idle-timer fires
+  // onActive AND onAction for the same event, and both call start() before
+  // any re-render. Guarded only by the effect, both got through and created
+  // two browsing sessions, one left at 0s (~18% of browsing sessions, Oct 2026).
   const start = useCallback(() => {
     if (hasStartedRef.current) return;
+    hasStartedRef.current = true;
     setHasStarted(true);
     setIsTimerActive(true);
     setSessionDuration(0);
@@ -70,6 +77,7 @@ export default function useDomActivitySession({
 
   const end = useCallback(() => {
     session.end();
+    hasStartedRef.current = false;
     setHasStarted(false);
     setIsTimerActive(false);
   }, [session]);
