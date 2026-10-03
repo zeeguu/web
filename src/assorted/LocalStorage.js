@@ -415,12 +415,17 @@ const LocalStorage = {
     return dateStr ? new Date(dateStr) : null;
   },
 
+  // Calendar days, not 24-hour periods: someone who starts in the evening and
+  // comes back the next morning has come back the next day.
   getDaysSinceFirstUse: function () {
     const firstUse = this.getAnonFirstUseDate();
     if (!firstUse) return 0;
-    const now = new Date();
-    const diffMs = now - firstUse;
-    return Math.floor(diffMs / (1000 * 60 * 60 * 24));
+    const firstDay = new Date(firstUse);
+    firstDay.setHours(0, 0, 0, 0);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    // round, not floor: a daylight-saving change makes a day 23 or 25 hours long
+    return Math.round((today - firstDay) / (1000 * 60 * 60 * 24));
   },
 
   getThemePreference: function () {

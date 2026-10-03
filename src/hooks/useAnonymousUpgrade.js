@@ -3,8 +3,12 @@ import { useHistory, useLocation } from "react-router-dom";
 import { UserContext } from "../contexts/UserContext";
 import LocalStorage from "../assorted/LocalStorage";
 
-const BOOKMARK_THRESHOLD = 50;
-const DAYS_THRESHOLD = 3;
+// Of the anonymous users who never upgraded (Feb-Oct 2026), 3 of 194 ever
+// reached 50 saved words and 39 came back after 3+ days; 76 reached 10 words
+// or came back on a later day. Lower than that and the prompt arrives before
+// there is any progress to save.
+const BOOKMARK_THRESHOLD = 10;
+const DAYS_THRESHOLD = 1;
 
 // Settings paths that should trigger upgrade prompt for anonymous users
 const SETTINGS_PATHS_THAT_TRIGGER = [
@@ -24,8 +28,8 @@ const PROFILE_PATHS_THAT_TRIGGER = [
  * Hook to manage anonymous user upgrade prompts.
  *
  * Triggers upgrade prompt when:
- * - User has saved 50+ bookmarks, OR
- * - User returns after 3+ days, OR
+ * - User has saved BOOKMARK_THRESHOLD+ bookmarks, OR
+ * - User comes back on a later calendar day, OR
  * - User visits settings pages (they want to customize = invested)
  * - User visits profile page
  *
