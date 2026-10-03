@@ -1,4 +1,5 @@
 import { useContext, useEffect, useState } from "react";
+import { androidAppUrl, iosAppUrl } from "../utils/misc/appStoreLinks";
 import { useParams } from "react-router-dom";
 import styled from "styled-components";
 import AppleIcon from "@mui/icons-material/Apple";
@@ -115,7 +116,7 @@ export default function PublicSharedLessonPage() {
           <ButtonRow>
             <Button
               as="a"
-              href="https://apps.apple.com/dk/app/zeeguu-news-for-learners/id6756917355"
+              href={iosAppUrl("shared_lesson")}
               target="_blank"
               rel="noopener noreferrer"
             >
@@ -124,7 +125,7 @@ export default function PublicSharedLessonPage() {
             </Button>
             <Button
               as="a"
-              href="https://play.google.com/store/apps/details?id=org.zeeguu.app"
+              href={androidAppUrl("shared_lesson")}
               target="_blank"
               rel="noopener noreferrer"
             >

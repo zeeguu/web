@@ -1,4 +1,5 @@
 import strings from "../i18n/definitions";
+import { androidAppUrl, iosAppUrl } from "../utils/misc/appStoreLinks";
 
 export default function News() {
   function item(month, text) {
@@ -60,7 +61,7 @@ export default function News() {
         strings.feb,
         <>
           The{" "}
-          <a href="https://play.google.com/store/apps/details?id=org.zeeguu.app" target="_blank" rel="noopener noreferrer">
+          <a href={androidAppUrl("landing_news")} target="_blank" rel="noopener noreferrer">
             Zeeguu Android app
           </a>{" "}
           is released on Google Play!
@@ -71,7 +72,7 @@ export default function News() {
         strings.jan,
         <>
           The{" "}
-          <a href="https://apps.apple.com/us/app/zeeguu-news-for-learners/id6756917355" target="_blank" rel="noopener noreferrer">
+          <a href={iosAppUrl("landing_news")} target="_blank" rel="noopener noreferrer">
             Zeeguu iOS app
           </a>{" "}
           is released in the App Store!
