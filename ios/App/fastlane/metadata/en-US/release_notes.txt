@@ -1,4 +1,15 @@
-Two small improvements to the article feed.
+Faster audio, a friendlier feed, and a few fixes.
 
+Audio
+- Listen faster: the speed button now opens a menu with 1.1x, 1.25x and 1.5x alongside the slower speeds.
+- Play from your headphones or the lock screen works again after pausing from there.
+
+Feed
 - Changing your level from the feed no longer reloads the page. The current articles stay on screen while the ones at your new level load in, so you can see the difference right away.
-- The top bar with your language, streak and avatar now comes back as soon as you scroll up, so you can switch language without scrolling all the way to the top.
+- The top bar with your language, streak and avatar comes back as soon as you scroll up, so you can switch language without scrolling all the way to the top.
+- Hid an article by mistake? Tap Undo to bring it back.
+- Report a broken article, or something that is not really an article, straight from the card's menu.
+- Articles without a photo now show the publisher's name in its place, so every card is easy to tell apart.
+
+Sign-up
+- Students joining with a class code are no longer asked for an email code that never arrives.
