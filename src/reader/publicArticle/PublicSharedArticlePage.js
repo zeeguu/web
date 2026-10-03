@@ -23,9 +23,8 @@ import {
   pickTranslationTarget,
   rememberPendingSharedArticle,
 } from "./publicReaderLogic";
+import { androidAppUrl, iosAppUrl } from "../../utils/misc/appStoreLinks";
 
-const IOS_APP_URL = "https://apps.apple.com/dk/app/zeeguu-news-for-learners/id6756917355";
-const ANDROID_APP_URL = "https://play.google.com/store/apps/details?id=org.zeeguu.app";
 const TARGET_KEY = "public_reader_translate_to";
 
 const TopBar = styled.header`
@@ -342,11 +341,11 @@ export default function PublicSharedArticlePage({ link }) {
   const storeLinks = !isNativeApp && (
     <StoreLinks>
       Or get the app for{" "}
-      <a href={IOS_APP_URL} target="_blank" rel="noopener noreferrer">
+      <a href={iosAppUrl("shared_article")} target="_blank" rel="noopener noreferrer">
         iPhone
       </a>{" "}
       ·{" "}
-      <a href={ANDROID_APP_URL} target="_blank" rel="noopener noreferrer">
+      <a href={androidAppUrl("shared_article")} target="_blank" rel="noopener noreferrer">
         Android
       </a>
     </StoreLinks>

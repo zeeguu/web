@@ -1,4 +1,5 @@
 import AndroidIcon from "@mui/icons-material/Android";
+import { androidAppUrl, iosAppUrl } from "../utils/misc/appStoreLinks";
 import AppleIcon from "@mui/icons-material/Apple";
 import Button from "../pages/_pages_shared/Button.sc";
 import * as s from "./LandingPage.sc.js";
@@ -12,7 +13,7 @@ export default function InstallationInstructions() {
         <s.AppStoreButtonRow>
           <Button
             as="a"
-            href="https://apps.apple.com/dk/app/zeeguu-news-for-learners/id6756917355"
+            href={iosAppUrl("landing")}
             target="_blank"
             rel="noopener noreferrer"
           >
@@ -21,7 +22,7 @@ export default function InstallationInstructions() {
           </Button>
           <Button
             as="a"
-            href="https://play.google.com/store/apps/details?id=org.zeeguu.app"
+            href={androidAppUrl("landing")}
             target="_blank"
             rel="noopener noreferrer"
           >
