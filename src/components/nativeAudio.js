@@ -11,6 +11,39 @@ import onAppResume from "../utils/misc/onAppResume";
 
 const ZeeguuAudio = registerPlugin("ZeeguuAudio");
 
+// TEMPORARY diagnostics: page-side events, shown next to the native log under
+// the player (NativeAudioDebug) to find out why headset play stops working
+// after a long pause.
+const JS_LOG_KEY = "zeeguuAudioJsLog";
+export function audioLog(message) {
+  try {
+    const time = new Date().toTimeString().slice(0, 8);
+    const entries = JSON.parse(localStorage.getItem(JS_LOG_KEY) || "[]");
+    entries.push(`${time} [js] ${message}`);
+    localStorage.setItem(JS_LOG_KEY, JSON.stringify(entries.slice(-300)));
+  } catch {
+    // diagnostics only
+  }
+}
+export async function readAudioLogs() {
+  let native = [];
+  try {
+    native = (await ZeeguuAudio.getLog()).entries || [];
+  } catch {
+    native = ["(native log unavailable)"];
+  }
+  const js = JSON.parse(localStorage.getItem(JS_LOG_KEY) || "[]");
+  return { native, js };
+}
+export async function clearAudioLogs() {
+  localStorage.removeItem(JS_LOG_KEY);
+  try {
+    await ZeeguuAudio.clearLog();
+  } catch {
+    // diagnostics only
+  }
+}
+
 export function nativeAudioAvailable() {
   return Capacitor.getPlatform() === "ios" && Capacitor.isPluginAvailable("ZeeguuAudio");
 }
@@ -27,6 +60,7 @@ function installListeners() {
 
   for (const name of NATIVE_EVENTS) {
     ZeeguuAudio.addListener(name, (data) => {
+      if (name !== "timeupdate") audioLog(`native event ${name} at ${Math.round(data?.position || 0)}s${owner ? "" : " (no owner)"}`);
       if (owner && data && data.url === owner.src) owner._onNative(name, data);
     });
   }
@@ -34,7 +68,9 @@ function installListeners() {
   // Events sent while the webview was suspended can be lost; ask the native
   // player where things stand whenever we come back.
   const resync = () => {
-    if (!document.hidden && owner) owner._sync();
+    if (document.hidden) return;
+    audioLog(`resume: re-sync (${owner ? "owner" : "no owner"})`);
+    if (owner) owner._sync();
   };
   document.addEventListener("visibilitychange", resync);
   onAppResume(resync); // for the app's lifetime, like the native player
@@ -74,6 +110,8 @@ export class NativeAudioElement extends EventTarget {
     if (!url) return;
 
     this._dispatch("loadstart");
+    audioLog(`mount ${url.split("/").pop()}`);
+    this._adoptIfLoaded(url);
     ZeeguuAudio.probe({ url })
       .then(({ duration }) => {
         if (this._src !== url) return;
@@ -144,6 +182,7 @@ export class NativeAudioElement extends EventTarget {
 
   async play() {
     if (!this._src) throw new Error("No source");
+    audioLog(`play() ${owner === this ? "" : "(prepare first)"}`);
     if (owner !== this) {
       if (owner) owner._setPaused(true);
       owner = this;
@@ -170,22 +209,44 @@ export class NativeAudioElement extends EventTarget {
   }
 
   pause() {
+    audioLog("pause()");
     if (owner !== this) return;
     ZeeguuAudio.pause();
     this._setPaused(true);
   }
 
-  // Stop and release the native player (the <audio> equivalent of leaving the page).
+  // Leaving the page pauses the lesson, as removing an <audio> element does,
+  // but keeps it loaded in the native player: the lock screen and headset keep
+  // working, and if the page comes back (the Listen page swaps the player for
+  // a loading screen on reloads) the new player picks up where this one was.
   destroy() {
+    audioLog(`unmount${owner === this ? " (owner, pausing)" : ""}`);
     if (owner !== this) return;
     owner = null;
-    ZeeguuAudio.unload();
+    ZeeguuAudio.pause();
     this._setPaused(true);
+  }
+
+  // If the native player already holds this lesson (headset play while no
+  // page was showing it, or a remount), take it over instead of starting over.
+  async _adoptIfLoaded(url) {
+    try {
+      const state = await ZeeguuAudio.getState();
+      if (this._src !== url || state.url !== url || (owner && owner !== this)) return;
+      audioLog(`adopt native player at ${Math.round(state.position)}s, ${state.isPlaying ? "playing" : "paused"}`);
+      owner = this;
+      this._applyState(state);
+      this._dispatch("timeupdate");
+      this._setPaused(!state.isPlaying);
+    } catch {
+      // Nothing to adopt
+    }
   }
 
   async _sync() {
     try {
       const state = await ZeeguuAudio.getState();
+      audioLog(`sync: native ${state.isPlaying ? "playing" : "paused"} at ${Math.round(state.position)}s${state.ended ? ", ended" : ""}`);
       if (owner !== this) return;
       if (state.url !== this._src) {
         this._setPaused(true);

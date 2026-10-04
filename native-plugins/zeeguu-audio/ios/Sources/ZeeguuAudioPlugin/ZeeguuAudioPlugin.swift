@@ -29,7 +29,10 @@ public class ZeeguuAudioPlugin: CAPPlugin, CAPBridgedPlugin {
         CAPPluginMethod(name: "setMuted", returnType: CAPPluginReturnPromise),
         CAPPluginMethod(name: "setMetadata", returnType: CAPPluginReturnPromise),
         CAPPluginMethod(name: "getState", returnType: CAPPluginReturnPromise),
-        CAPPluginMethod(name: "unload", returnType: CAPPluginReturnPromise)
+        CAPPluginMethod(name: "unload", returnType: CAPPluginReturnPromise),
+        // TEMPORARY diagnostics
+        CAPPluginMethod(name: "getLog", returnType: CAPPluginReturnPromise),
+        CAPPluginMethod(name: "clearLog", returnType: CAPPluginReturnPromise)
     ]
 
     private static let skipSeconds: Double = 10
@@ -64,12 +67,42 @@ public class ZeeguuAudioPlugin: CAPPlugin, CAPBridgedPlugin {
     private var lastBackgroundTimeUpdate = Date.distantPast
 
     override public func load() {
+        log("plugin loaded (app \(Self.appStateName()))")
+        let center = NotificationCenter.default
+        let lifecycle: [(Notification.Name, String)] = [
+            (UIApplication.didEnterBackgroundNotification, "app → background"),
+            (UIApplication.willEnterForegroundNotification, "app → foreground"),
+            (UIApplication.willTerminateNotification, "app will terminate"),
+            (UIApplication.didReceiveMemoryWarningNotification, "memory warning"),
+            (AVAudioSession.mediaServicesWereLostNotification, "media services lost"),
+            (AVAudioSession.mediaServicesWereResetNotification, "media services reset")
+        ]
+        for (name, label) in lifecycle {
+            _ = center.addObserver(forName: name, object: nil, queue: .main) { [weak self] _ in
+                self?.log(label)
+            }
+        }
+        _ = center.addObserver(forName: AVAudioSession.routeChangeNotification, object: nil, queue: .main) { [weak self] note in
+            let raw = note.userInfo?[AVAudioSessionRouteChangeReasonKey] as? UInt ?? 0
+            let output = AVAudioSession.sharedInstance().currentRoute.outputs.first?.portType.rawValue ?? "none"
+            self?.log("route change reason=\(raw) output=\(output)")
+        }
         rateObservation = player.observe(\.rate, options: [.new]) { [weak self] _, _ in
             DispatchQueue.main.async { self?.playbackStateMayHaveChanged() }
         }
         timeControlObservation = player.observe(\.timeControlStatus, options: [.new]) { [weak self] player, _ in
             DispatchQueue.main.async {
-                if player.timeControlStatus == .playing { self?.emit("playing") }
+                let status = player.timeControlStatus
+                let name: String
+                switch status {
+                case .paused: name = "paused"
+                case .playing: name = "playing"
+                case .waitingToPlayAtSpecifiedRate: name = "waiting"
+                @unknown default: name = "?"
+                }
+                let reason = player.reasonForWaitingToPlay.map { " (\($0.rawValue))" } ?? ""
+                self?.log("timeControlStatus \(name)\(reason)")
+                if status == .playing { self?.emit("playing") }
             }
         }
         timeObserver = player.addPeriodicTimeObserver(
@@ -138,6 +171,7 @@ public class ZeeguuAudioPlugin: CAPPlugin, CAPBridgedPlugin {
             self.artist = call.getString("artist") ?? self.artist
             self.album = call.getString("album") ?? self.album
             self.player.isMuted = call.getBool("muted") ?? false
+            self.log("prepare \(assetURL.lastPathComponent) at \(Int(call.getDouble("position") ?? 0))s")
             self.loadItem(assetURL, startingAt: call.getDouble("position") ?? 0)
             call.resolve()
         }
@@ -219,7 +253,10 @@ public class ZeeguuAudioPlugin: CAPPlugin, CAPBridgedPlugin {
             self.url = nil
             self.reportedPlaying = false
             MPNowPlayingInfoCenter.default().nowPlayingInfo = nil
-            try? AVAudioSession.sharedInstance().setActive(false, options: .notifyOthersOnDeactivation)
+            // No setActive(false, .notifyOthersOnDeactivation): that tells the
+            // previous app (e.g. Music) it may resume, and gives up our claim on
+            // the headset buttons.
+            self.log("unload")
             call.resolve()
         }
     }
@@ -238,7 +275,11 @@ public class ZeeguuAudioPlugin: CAPPlugin, CAPBridgedPlugin {
     }
 
     private func startPlayback() {
-        guard var item = player.currentItem else { return }
+        guard var item = player.currentItem else {
+            log("startPlayback: nothing loaded")
+            return
+        }
+        log("startPlayback (item \(Self.itemStatusName(item)), app \(Self.appStateName()), \(Self.sessionDescription()))")
         activateSession()
         wantsToPlay = true
         didEnd = false
@@ -264,6 +305,7 @@ public class ZeeguuAudioPlugin: CAPPlugin, CAPBridgedPlugin {
     }
 
     private func pausePlayback() {
+        log("pausePlayback")
         wantsToPlay = false
         resumeAfterInterruption = false
         playWhenReady = false
@@ -302,6 +344,7 @@ public class ZeeguuAudioPlugin: CAPPlugin, CAPBridgedPlugin {
             queue: .main
         ) { [weak self] _ in
             guard let self = self else { return }
+            self.log("ended")
             self.wantsToPlay = false
             self.didEnd = true
             self.reportPlaying(false)
@@ -341,6 +384,7 @@ public class ZeeguuAudioPlugin: CAPPlugin, CAPBridgedPlugin {
                         begin()
                     }
                 case .failed:
+                    self.log("item failed: \(item.error?.localizedDescription ?? "?")")
                     self.playWhenReady = false
                     self.wantsToPlay = false
                     self.reportPlaying(false)
@@ -375,7 +419,7 @@ public class ZeeguuAudioPlugin: CAPPlugin, CAPBridgedPlugin {
             try session.setCategory(.playback, mode: .spokenAudio, options: [])
             try session.setActive(true)
         } catch {
-            CAPLog.print("ZeeguuAudio: could not activate audio session: \(error)")
+            log("could not activate audio session: \(error)")
         }
     }
 
@@ -386,6 +430,7 @@ public class ZeeguuAudioPlugin: CAPPlugin, CAPBridgedPlugin {
         DispatchQueue.main.async {
             switch type {
             case .began:
+                self.log("interruption began")
                 self.resumeAfterInterruption = self.wantsToPlay
                 // Don't let an item that becomes ready mid-call start playing.
                 self.playWhenReady = false
@@ -393,6 +438,7 @@ public class ZeeguuAudioPlugin: CAPPlugin, CAPBridgedPlugin {
                 self.updateNowPlaying()
             case .ended:
                 let optionsValue = info[AVAudioSessionInterruptionOptionKey] as? UInt ?? 0
+                self.log("interruption ended (options \(optionsValue), resume \(self.resumeAfterInterruption))")
                 let options = AVAudioSession.InterruptionOptions(rawValue: optionsValue)
                 if self.resumeAfterInterruption && options.contains(.shouldResume) {
                     self.startPlayback()
@@ -410,16 +456,19 @@ public class ZeeguuAudioPlugin: CAPPlugin, CAPBridgedPlugin {
         let center = MPRemoteCommandCenter.shared()
 
         center.playCommand.addTarget { [weak self] _ in
+            self?.log("remote: play (\(Self.sessionDescription()))")
             guard let self = self, self.player.currentItem != nil else { return .noActionableNowPlayingItem }
             self.startPlayback()
             return .success
         }
         center.pauseCommand.addTarget { [weak self] _ in
+            self?.log("remote: pause")
             guard let self = self, self.player.currentItem != nil else { return .noActionableNowPlayingItem }
             self.pausePlayback()
             return .success
         }
         center.togglePlayPauseCommand.addTarget { [weak self] _ in
+            self?.log("remote: toggle (\(Self.sessionDescription()))")
             guard let self = self, self.player.currentItem != nil else { return .noActionableNowPlayingItem }
             if self.player.rate != 0 || self.playWhenReady {
                 self.pausePlayback()
@@ -512,6 +561,61 @@ public class ZeeguuAudioPlugin: CAPPlugin, CAPBridgedPlugin {
     private func position() -> Double {
         guard let item = player.currentItem, item.status == .readyToPlay, !startSeekInFlight else { return pendingStart }
         return Self.seconds(player.currentTime())
+    }
+
+    // MARK: - TEMPORARY diagnostics
+    //
+    // A log that survives the app being killed, shown under the player, to
+    // find out why headset play stops working after a long pause.
+
+    private static let logKey = "ZeeguuAudioLog"
+    private static let logFormatter: DateFormatter = {
+        let f = DateFormatter()
+        f.dateFormat = "HH:mm:ss.SSS"
+        return f
+    }()
+
+    private func log(_ message: String) {
+        let line = "\(Self.logFormatter.string(from: Date())) \(message)"
+        CAPLog.print("ZeeguuAudio: \(message)")
+        var entries = UserDefaults.standard.stringArray(forKey: Self.logKey) ?? []
+        entries.append(line)
+        if entries.count > 400 { entries.removeFirst(entries.count - 400) }
+        UserDefaults.standard.set(entries, forKey: Self.logKey)
+    }
+
+    @objc func getLog(_ call: CAPPluginCall) {
+        call.resolve(["entries": UserDefaults.standard.stringArray(forKey: Self.logKey) ?? []])
+    }
+
+    @objc func clearLog(_ call: CAPPluginCall) {
+        UserDefaults.standard.removeObject(forKey: Self.logKey)
+        call.resolve()
+    }
+
+    private static func sessionDescription() -> String {
+        let session = AVAudioSession.sharedInstance()
+        let category = session.category.rawValue.replacingOccurrences(of: "AVAudioSessionCategory", with: "")
+        let mode = session.mode.rawValue.replacingOccurrences(of: "AVAudioSessionMode", with: "")
+        return "session \(category)/\(mode), otherAudio \(session.isOtherAudioPlaying)"
+    }
+
+    private static func appStateName() -> String {
+        switch UIApplication.shared.applicationState {
+        case .active: return "active"
+        case .inactive: return "inactive"
+        case .background: return "background"
+        @unknown default: return "?"
+        }
+    }
+
+    private static func itemStatusName(_ item: AVPlayerItem) -> String {
+        switch item.status {
+        case .readyToPlay: return "ready"
+        case .failed: return "failed"
+        case .unknown: return "loading"
+        @unknown default: return "?"
+        }
     }
 
     private static func seconds(_ time: CMTime) -> Double {

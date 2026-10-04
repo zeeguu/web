@@ -10,6 +10,7 @@ import SpeedPicker from "./SpeedPicker";
 import { loadSpeed, saveSpeed } from "./audioSpeeds";
 import { NativeAudioElement, nativeAudioAvailable } from "./nativeAudio";
 import onAppResume from "../utils/misc/onAppResume";
+import NativeAudioDebug from "./NativeAudioDebug"; // TEMPORARY diagnostics
 
 const SEEK_SECONDS = 10;
 
@@ -721,6 +722,9 @@ function AudioPlayer({
       </div>
 
       {children}
+
+      {/* TEMPORARY diagnostics (revert before merge) */}
+      {nativeAudio && <NativeAudioDebug />}
     </div>
   );
 }

@@ -65,6 +65,7 @@ async function pressPlay(container) {
 
 describe("CustomAudioPlayer on the native iOS player", () => {
   beforeEach(() => {
+    Object.assign(native.state, { url: "", isPlaying: false, position: 0, ended: false });
     vi.spyOn(LocalStorage, "getAudioSpeed").mockReturnValue(null);
     vi.spyOn(native.plugin, "prepare");
   });
@@ -193,6 +194,23 @@ describe("CustomAudioPlayer on the native iOS player", () => {
     await pressPlay(container);
     expect(native.plugin.prepare).toHaveBeenLastCalledWith(expect.objectContaining({ position: 44 }));
     probe.mockRestore();
+  });
+
+  it("a player that comes back for the same lesson picks up the native player", async () => {
+    // The Listen page swaps the player for a loading screen on reloads; the
+    // lesson (and its lock-screen / headset controls) must survive that.
+    const first = await renderPlayer({ initialProgress: 34 });
+    await pressPlay(first.container);
+    first.unmount();
+    expect(native.state.url).toBe("lesson.mp3"); // still loaded natively
+
+    native.state.isPlaying = true; // resumed from the headset meanwhile
+    native.state.position = 200;
+    native.plugin.prepare.mockClear();
+    const { container, getByText } = await renderPlayer({ initialProgress: 34 });
+    expect(showsPlayButton(container)).toBe(false);
+    expect(getByText("3:20")).toBeTruthy();
+    expect(native.plugin.prepare).not.toHaveBeenCalled();
   });
 
   it("leaving the page stops the lesson", async () => {
