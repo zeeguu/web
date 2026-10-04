@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
+import { Capacitor } from "@capacitor/core";
 import { zeeguuOrange } from "./colors";
 import PlayArrowRoundedIcon from "@mui/icons-material/PlayArrowRounded";
 import PauseRoundedIcon from "@mui/icons-material/PauseRounded";
@@ -435,20 +436,46 @@ export default function CustomAudioPlayer({
     audio.addEventListener("playing", handlePlaying);
     audio.addEventListener("pause", handlePause);
 
-    // Sync state when app becomes visible again
-    const handleVisibilityChange = () => {
-      if (!document.hidden && audio) {
-        // Update UI state to match actual audio state when app becomes visible
-        setIsPlaying(!audio.paused);
-        if (audio.paused) {
-          clearProgressTimer();
-        } else {
-          startProgressTimer();
-        }
+    // Sync the UI with the element when the app comes back. iOS suspends the
+    // page while it's in the background, so a pause that happened there may
+    // never have reached handlePause — the player would reopen showing
+    // "pause" over silent audio.
+    const syncWithAudio = () => {
+      if (document.hidden) return;
+      setIsPlaying(!audio.paused);
+      setCurrentTime(audio.currentTime);
+      if (useWebMediaSession) {
+        navigator.mediaSession.playbackState = audio.paused ? "paused" : "playing";
+      }
+      if (audio.paused) {
+        clearProgressTimer();
+      } else {
+        startProgressTimer();
       }
     };
 
-    document.addEventListener("visibilitychange", handleVisibilityChange);
+    document.addEventListener("visibilitychange", syncWithAudio);
+    window.addEventListener("pageshow", syncWithAudio);
+
+    // Capacitor doesn't fire visibilitychange reliably on resume — also
+    // listen for the native lifecycle event (as TodayAudio does). The native
+    // player re-syncs itself (nativeAudio.js) and then fires play/pause.
+    let appStateListenerHandle = null;
+    let appStateListenerCancelled = false;
+    if (!nativeAudio && Capacitor.getPlatform() !== "web" && Capacitor.isPluginAvailable("App")) {
+      (async () => {
+        try {
+          const { App } = await import("@capacitor/app");
+          const handle = await App.addListener("appStateChange", ({ isActive }) => {
+            if (isActive) syncWithAudio();
+          });
+          if (appStateListenerCancelled) handle.remove();
+          else appStateListenerHandle = handle;
+        } catch {
+          // Best-effort — visibilitychange still covers most resumes
+        }
+      })();
+    }
 
     return () => {
       audio.removeEventListener("timeupdate", updateTime);
@@ -460,7 +487,10 @@ export default function CustomAudioPlayer({
       audio.removeEventListener("play", handlePlay);
       audio.removeEventListener("playing", handlePlaying);
       audio.removeEventListener("pause", handlePause);
-      document.removeEventListener("visibilitychange", handleVisibilityChange);
+      document.removeEventListener("visibilitychange", syncWithAudio);
+      window.removeEventListener("pageshow", syncWithAudio);
+      appStateListenerCancelled = true;
+      if (appStateListenerHandle) appStateListenerHandle.remove();
       clearProgressTimer();
     };
   }, [onEnded, onError, onPause, initialProgress]);

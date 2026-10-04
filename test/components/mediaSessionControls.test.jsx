@@ -90,6 +90,22 @@ describe("CustomAudioPlayer media controls", () => {
     expect(session.playbackState).toBe("playing");
   });
 
+  it("reopening after a pause the page never saw shows the player as paused", async () => {
+    // iOS suspends the page in the background; a pause there can happen
+    // without a 'pause' event reaching us. Reopening the app used to show
+    // "pause" over silent audio (and try to auto-resume).
+    const { container } = render(<CustomAudioPlayer src="a.mp3" language="es" />);
+    const audio = await startPlaying(container);
+    expect(session.playbackState).toBe("playing");
+
+    Object.defineProperty(audio, "paused", { get: () => true, configurable: true });
+    audio.play.mockClear();
+    act(() => document.dispatchEvent(new Event("visibilitychange")));
+
+    expect(session.playbackState).toBe("paused");
+    expect(audio.play).not.toHaveBeenCalled();
+  });
+
   it("focusing the window doesn't wipe the lock-screen info", async () => {
     const { container } = render(<CustomAudioPlayer src="a.mp3" language="es" title="Lesson 3" />);
     await startPlaying(container);
