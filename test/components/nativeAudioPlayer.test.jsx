@@ -115,6 +115,47 @@ describe("CustomAudioPlayer on the native iOS player", () => {
     expect(showsPlayButton(container)).toBe(false);
   });
 
+  it("a headset play counts as a play (listening time, lesson state)", async () => {
+    const onPlay = vi.fn();
+    const { container } = await renderPlayer({ onPlay });
+    await pressPlay(container);
+    expect(onPlay).toHaveBeenCalledTimes(1);
+
+    native.state.isPlaying = false;
+    act(() => native.emit("pause"));
+    native.state.isPlaying = true;
+    act(() => native.emit("play"));
+    expect(onPlay).toHaveBeenCalledTimes(2);
+    expect(showsPlayButton(container)).toBe(false);
+  });
+
+  it("a lesson started while another is still loading doesn't leave both 'playing'", async () => {
+    const { container } = render(
+      <>
+        <CustomAudioPlayer src="a.mp3" language="da" />
+        <CustomAudioPlayer src="b.mp3" language="da" />
+      </>,
+    );
+    await act(async () => {});
+    const [a, b] = container.querySelectorAll('[data-testid="PlayArrowRoundedIcon"]');
+
+    let finishPreparingA;
+    native.plugin.prepare.mockImplementationOnce(
+      (args) =>
+        new Promise((resolve) => {
+          finishPreparingA = () => resolve(Object.assign(native.state, { url: args.url }));
+        }),
+    );
+    vi.spyOn(console, "error").mockImplementation(() => {});
+    await act(async () => fireEvent.click(a.closest("button")));
+    await act(async () => fireEvent.click(b.closest("button")));
+    await act(async () => finishPreparingA());
+
+    const players = container.querySelectorAll("button > svg");
+    const playing = [...players].filter((svg) => svg.dataset.testid === "PauseRoundedIcon");
+    expect(playing).toHaveLength(1);
+  });
+
   it("leaving the page stops the lesson", async () => {
     const { container, unmount } = await renderPlayer();
     await pressPlay(container);

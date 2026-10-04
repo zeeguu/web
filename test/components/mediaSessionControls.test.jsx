@@ -106,6 +106,44 @@ describe("CustomAudioPlayer media controls", () => {
     expect(audio.play).not.toHaveBeenCalled();
   });
 
+  it("a headset play counts as a play", async () => {
+    const onPlay = vi.fn();
+    const { container } = render(<CustomAudioPlayer src="a.mp3" language="es" onPlay={onPlay} />);
+    await startPlaying(container);
+    act(() => handlers.pause());
+    onPlay.mockClear();
+
+    await act(async () => handlers.play());
+    expect(onPlay).toHaveBeenCalledTimes(1);
+  });
+
+  it("keeps saving progress when the parent re-renders with new callbacks", async () => {
+    // Parents pass inline callbacks; re-subscribing on each render used to
+    // clear the 10s progress timer after the first save.
+    vi.useFakeTimers();
+    try {
+      const saves = [];
+      const props = (n) => ({ src: "a.mp3", language: "es", onProgressUpdate: (s) => saves.push([n, s]) });
+      const { container, rerender } = render(<CustomAudioPlayer {...props(1)} />);
+      const audio = await startPlaying(container);
+
+      let t = 0;
+      Object.defineProperty(audio, "currentTime", { get: () => t, set: (v) => (t = v), configurable: true });
+      t = 10;
+      act(() => vi.advanceTimersByTime(10000));
+      rerender(<CustomAudioPlayer {...props(2)} />);
+      t = 20;
+      act(() => vi.advanceTimersByTime(10000));
+
+      expect(saves).toEqual([
+        [1, 10],
+        [2, 20],
+      ]);
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
   it("focusing the window doesn't wipe the lock-screen info", async () => {
     const { container } = render(<CustomAudioPlayer src="a.mp3" language="es" title="Lesson 3" />);
     await startPlaying(container);

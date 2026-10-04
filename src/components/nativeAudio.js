@@ -1,4 +1,5 @@
 import { Capacitor, registerPlugin } from "@capacitor/core";
+import onAppResume from "../utils/misc/onAppResume";
 
 // iOS plays lessons natively (native-plugins/zeeguu-audio). In the webview's
 // <audio>, headset / lock-screen play stopped working a few minutes after a
@@ -36,17 +37,7 @@ function installListeners() {
     if (!document.hidden && owner) owner._sync();
   };
   document.addEventListener("visibilitychange", resync);
-  if (Capacitor.isPluginAvailable("App")) {
-    import("@capacitor/app")
-      .then(({ App }) =>
-        App.addListener("appStateChange", ({ isActive }) => {
-          if (isActive) resync();
-        }),
-      )
-      .catch(() => {
-        // visibilitychange still covers most resumes
-      });
-  }
+  onAppResume(resync); // for the app's lifetime, like the native player
 }
 
 export class NativeAudioElement extends EventTarget {
@@ -151,16 +142,26 @@ export class NativeAudioElement extends EventTarget {
     if (owner !== this) {
       if (owner) owner._setPaused(true);
       owner = this;
-      await ZeeguuAudio.prepare({
-        url: this._src,
-        position: this._currentTime,
-        rate: this._rate,
-        muted: this._muted,
-        ...this._metadata,
-      });
+      try {
+        await ZeeguuAudio.prepare({
+          url: this._src,
+          position: this._currentTime,
+          rate: this._rate,
+          muted: this._muted,
+          ...this._metadata,
+        });
+      } catch (err) {
+        // Not loaded, so not ours: the next play() prepares again.
+        if (owner === this) owner = null;
+        throw err;
+      }
     }
+    // Another lesson was started while this one was being prepared. Reject,
+    // as <audio> does when pause() interrupts play(), so callers don't treat
+    // this one as playing.
+    if (owner !== this) throw new DOMException("Another lesson started", "AbortError");
     await ZeeguuAudio.play();
-    this._setPaused(false);
+    if (owner === this) this._setPaused(false);
   }
 
   pause() {

@@ -57,6 +57,7 @@ public class ZeeguuAudioPlugin: CAPPlugin, CAPBridgedPlugin {
     private var itemStatusObservation: NSKeyValueObservation?
     private var endObserver: NSObjectProtocol?
     private var timeObserver: Any?
+    private var lastBackgroundTimeUpdate = Date.distantPast
 
     override public func load() {
         rateObservation = player.observe(\.rate, options: [.new]) { [weak self] _, _ in
@@ -72,10 +73,14 @@ public class ZeeguuAudioPlugin: CAPPlugin, CAPBridgedPlugin {
             queue: .main
         ) { [weak self] _ in
             guard let self = self, self.player.rate != 0 else { return }
-            // While the app is in the background the page can't render progress
-            // anyway, and each event would queue a JS evaluation in a possibly
-            // suspended webview. It re-syncs with getState() on return.
-            guard UIApplication.shared.applicationState == .active else { return }
+            // In the background, every 10s rather than every 0.5s: enough for
+            // the page to keep saving progress if it's running, without piling
+            // up JS evaluations in a suspended webview. It also re-syncs with
+            // getState() on return.
+            if UIApplication.shared.applicationState != .active {
+                guard Date().timeIntervalSince(self.lastBackgroundTimeUpdate) >= 10 else { return }
+                self.lastBackgroundTimeUpdate = Date()
+            }
             self.emit("timeupdate")
         }
         NotificationCenter.default.addObserver(
@@ -127,14 +132,8 @@ public class ZeeguuAudioPlugin: CAPPlugin, CAPBridgedPlugin {
             self.title = call.getString("title") ?? self.title
             self.artist = call.getString("artist") ?? self.artist
             self.album = call.getString("album") ?? self.album
-            self.pendingStart = call.getDouble("position") ?? 0
             self.player.isMuted = call.getBool("muted") ?? false
-
-            let item = AVPlayerItem(url: assetURL)
-            item.audioTimePitchAlgorithm = .timeDomain // made for speech at non-1x rates
-            self.observe(item)
-            self.player.replaceCurrentItem(with: item)
-            self.updateNowPlaying()
+            self.loadItem(assetURL, startingAt: call.getDouble("position") ?? 0)
             call.resolve()
         }
     }
@@ -222,10 +221,26 @@ public class ZeeguuAudioPlugin: CAPPlugin, CAPBridgedPlugin {
 
     // MARK: - Playback
 
+    private func loadItem(_ assetURL: URL, startingAt position: Double) {
+        pendingStart = position
+        let item = AVPlayerItem(url: assetURL)
+        item.audioTimePitchAlgorithm = .timeDomain // made for speech at non-1x rates
+        observe(item)
+        player.replaceCurrentItem(with: item)
+        updateNowPlaying()
+    }
+
     private func startPlayback() {
-        guard let item = player.currentItem else { return }
+        guard var item = player.currentItem else { return }
         activateSession()
         wantsToPlay = true
+        if item.status == .failed, let urlString = url, let assetURL = URL(string: urlString) {
+            // A failed item never becomes ready (e.g. after a network drop);
+            // try again with a fresh one from where it stopped.
+            loadItem(assetURL, startingAt: Self.seconds(player.currentTime()))
+            guard let fresh = player.currentItem else { return }
+            item = fresh
+        }
         if item.status != .readyToPlay {
             playWhenReady = true
             // Show "playing" right away, as <audio> does; the sound follows
@@ -250,7 +265,13 @@ public class ZeeguuAudioPlugin: CAPPlugin, CAPBridgedPlugin {
     }
 
     private func seek(to position: Double) {
-        guard player.currentItem != nil else { return }
+        guard let item = player.currentItem else { return }
+        if item.status != .readyToPlay {
+            // Seeking a not-yet-ready item isn't reliable; start there instead.
+            pendingStart = max(0, position)
+            emit("seeked", extra: ["position": pendingStart])
+            return
+        }
         let target = CMTime(seconds: max(0, position), preferredTimescale: 600)
         player.seek(to: target, toleranceBefore: .zero, toleranceAfter: .zero) { [weak self] _ in
             DispatchQueue.main.async {
@@ -347,6 +368,8 @@ public class ZeeguuAudioPlugin: CAPPlugin, CAPBridgedPlugin {
             switch type {
             case .began:
                 self.resumeAfterInterruption = self.wantsToPlay
+                // Don't let an item that becomes ready mid-call start playing.
+                self.playWhenReady = false
                 self.reportPlaying(false)
                 self.updateNowPlaying()
             case .ended:

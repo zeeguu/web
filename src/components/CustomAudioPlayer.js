@@ -1,5 +1,4 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Capacitor } from "@capacitor/core";
 import { zeeguuOrange } from "./colors";
 import PlayArrowRoundedIcon from "@mui/icons-material/PlayArrowRounded";
 import PauseRoundedIcon from "@mui/icons-material/PauseRounded";
@@ -10,6 +9,7 @@ import Forward10RoundedIcon from "@mui/icons-material/Forward10Rounded";
 import SpeedPicker from "./SpeedPicker";
 import { loadSpeed, saveSpeed } from "./audioSpeeds";
 import { NativeAudioElement, nativeAudioAvailable } from "./nativeAudio";
+import onAppResume from "../utils/misc/onAppResume";
 
 const SEEK_SECONDS = 10;
 
@@ -78,6 +78,13 @@ export default function CustomAudioPlayer({
   const useWebMediaSession = !nativeAudio && "mediaSession" in navigator;
   const progressTimerRef = useRef(null);
   const lastSavedProgressRef = useRef(0);
+
+  // Parents pass inline callbacks, so these change on every render. Handlers
+  // registered once (element events, the progress timer) read them through
+  // this ref; listing them as effect deps tore the listeners and the progress
+  // timer down on every parent re-render.
+  const callbacksRef = useRef({});
+  callbacksRef.current = { onPlay, onPause, onEnded, onError, onProgressUpdate };
 
   // For handlers registered once (lock screen, visibility) that need the
   // current rate, not the one from when they were registered.
@@ -154,10 +161,7 @@ export default function CustomAudioPlayer({
     navigator.mediaSession.setActionHandler("play", () => {
       const audio = audioRef.current;
       if (!audio || !audio.paused) return;
-      audio
-        .play()
-        .then(() => onPlay && onPlay())
-        .catch((err) => console.error("Playback from media controls failed:", err));
+      audio.play().catch((err) => console.error("Playback from media controls failed:", err));
     });
 
     navigator.mediaSession.setActionHandler("pause", () => {
@@ -334,7 +338,6 @@ export default function CustomAudioPlayer({
         .play()
         .then(() => {
           setIsPlaying(true);
-          onPlay && onPlay();
           startProgressTimer();
           if (useWebMediaSession) {
             navigator.mediaSession.playbackState = "playing";
@@ -363,10 +366,12 @@ export default function CustomAudioPlayer({
 
       // Update media session position for lock screen scrubber
       if (useWebMediaSession && "setPositionState" in navigator.mediaSession) {
-        if (duration > 0 && !audio.paused) {
+        // The element's duration: this handler is registered once, so the
+        // duration state here would be the first render's.
+        if (audio.duration > 0 && !audio.paused) {
           try {
             navigator.mediaSession.setPositionState({
-              duration: duration,
+              duration: audio.duration,
               playbackRate: playbackRateRef.current,
               position: audio.currentTime,
             });
@@ -384,19 +389,22 @@ export default function CustomAudioPlayer({
       setIsPlaying(false);
       clearProgressTimer();
       saveProgress(true); // Force save final progress
-      onEnded && onEnded();
+      callbacksRef.current.onEnded && callbacksRef.current.onEnded();
     };
     const handleError = () => {
       setIsLoading(false);
-      onError && onError();
+      callbacksRef.current.onError && callbacksRef.current.onError();
     };
     const handleLoadStart = () => setIsLoading(true);
     const handleCanPlay = () => setIsLoading(false);
 
-    // Sync UI state with actual audio state
+    // Sync UI state with actual audio state. onPlay lives here rather than
+    // after play() so that every start counts — including the headset, the
+    // lock screen and the native player resuming after a phone call.
     const handlePlay = () => {
       setIsPlaying(true);
       startProgressTimer();
+      callbacksRef.current.onPlay && callbacksRef.current.onPlay();
       if (useWebMediaSession) navigator.mediaSession.playbackState = "playing";
     };
     // THE actual resume seek. `playing` fires once real playback has begun, the
@@ -423,7 +431,7 @@ export default function CustomAudioPlayer({
       if (useWebMediaSession) navigator.mediaSession.playbackState = "paused";
       clearProgressTimer();
       saveProgress(true);
-      onPause && onPause();
+      callbacksRef.current.onPause && callbacksRef.current.onPause();
     };
 
     audio.addEventListener("timeupdate", updateTime);
@@ -457,25 +465,8 @@ export default function CustomAudioPlayer({
     document.addEventListener("visibilitychange", syncWithAudio);
     window.addEventListener("pageshow", syncWithAudio);
 
-    // Capacitor doesn't fire visibilitychange reliably on resume — also
-    // listen for the native lifecycle event (as TodayAudio does). The native
-    // player re-syncs itself (nativeAudio.js) and then fires play/pause.
-    let appStateListenerHandle = null;
-    let appStateListenerCancelled = false;
-    if (!nativeAudio && Capacitor.getPlatform() !== "web" && Capacitor.isPluginAvailable("App")) {
-      (async () => {
-        try {
-          const { App } = await import("@capacitor/app");
-          const handle = await App.addListener("appStateChange", ({ isActive }) => {
-            if (isActive) syncWithAudio();
-          });
-          if (appStateListenerCancelled) handle.remove();
-          else appStateListenerHandle = handle;
-        } catch {
-          // Best-effort — visibilitychange still covers most resumes
-        }
-      })();
-    }
+    // The native player re-syncs itself (nativeAudio.js) and then fires play/pause.
+    const stopResumeListener = nativeAudio ? () => {} : onAppResume(syncWithAudio);
 
     return () => {
       audio.removeEventListener("timeupdate", updateTime);
@@ -489,14 +480,14 @@ export default function CustomAudioPlayer({
       audio.removeEventListener("pause", handlePause);
       document.removeEventListener("visibilitychange", syncWithAudio);
       window.removeEventListener("pageshow", syncWithAudio);
-      appStateListenerCancelled = true;
-      if (appStateListenerHandle) appStateListenerHandle.remove();
+      stopResumeListener();
       clearProgressTimer();
     };
-  }, [onEnded, onError, onPause, initialProgress]);
+  }, []);
 
   const saveProgress = (forceSave = false) => {
     const audio = audioRef.current;
+    const { onProgressUpdate } = callbacksRef.current;
     if (!audio || !onProgressUpdate) return;
 
     const currentProgress = Math.floor(audio.currentTime);
@@ -515,7 +506,7 @@ export default function CustomAudioPlayer({
   };
 
   const startProgressTimer = () => {
-    if (!onProgressUpdate) return;
+    if (!callbacksRef.current.onProgressUpdate) return;
     // Called from both the 'play' event and play().then(); don't stack intervals.
     clearProgressTimer();
 
@@ -545,7 +536,6 @@ export default function CustomAudioPlayer({
         .play()
         .then(() => {
           setIsPlaying(true);
-          onPlay && onPlay();
           startProgressTimer();
           if (useWebMediaSession) {
             navigator.mediaSession.playbackState = "playing";
