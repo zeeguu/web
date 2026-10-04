@@ -51,6 +51,10 @@ public class ZeeguuAudioPlugin: CAPPlugin, CAPBridgedPlugin {
     private var wantsToPlay = false
     private var resumeAfterInterruption = false
     private var reportedPlaying = false
+    // Reached the end since the last start/seek; getState reports it so the
+    // page can catch an 'ended' it missed while suspended.
+    private var didEnd = false
+    private var startSeekInFlight = false
 
     private var rateObservation: NSKeyValueObservation?
     private var timeControlObservation: NSKeyValueObservation?
@@ -125,6 +129,7 @@ public class ZeeguuAudioPlugin: CAPPlugin, CAPBridgedPlugin {
             }
             self.wantsToPlay = false
             self.playWhenReady = false
+            self.resumeAfterInterruption = false
             self.player.pause()
 
             self.url = urlString
@@ -222,6 +227,8 @@ public class ZeeguuAudioPlugin: CAPPlugin, CAPBridgedPlugin {
     // MARK: - Playback
 
     private func loadItem(_ assetURL: URL, startingAt position: Double) {
+        didEnd = false
+        startSeekInFlight = false
         pendingStart = position
         let item = AVPlayerItem(url: assetURL)
         item.audioTimePitchAlgorithm = .timeDomain // made for speech at non-1x rates
@@ -234,10 +241,11 @@ public class ZeeguuAudioPlugin: CAPPlugin, CAPBridgedPlugin {
         guard var item = player.currentItem else { return }
         activateSession()
         wantsToPlay = true
+        didEnd = false
         if item.status == .failed, let urlString = url, let assetURL = URL(string: urlString) {
             // A failed item never becomes ready (e.g. after a network drop);
             // try again with a fresh one from where it stopped.
-            loadItem(assetURL, startingAt: Self.seconds(player.currentTime()))
+            loadItem(assetURL, startingAt: position())
             guard let fresh = player.currentItem else { return }
             item = fresh
         }
@@ -249,7 +257,7 @@ public class ZeeguuAudioPlugin: CAPPlugin, CAPBridgedPlugin {
             return
         }
         let duration = Self.seconds(item.duration)
-        if duration > 0 && Self.seconds(player.currentTime()) >= duration - 0.5 {
+        if duration > 0 && position() >= duration - 0.5 {
             player.seek(to: .zero)
         }
         player.rate = rate
@@ -257,6 +265,7 @@ public class ZeeguuAudioPlugin: CAPPlugin, CAPBridgedPlugin {
 
     private func pausePlayback() {
         wantsToPlay = false
+        resumeAfterInterruption = false
         playWhenReady = false
         player.pause()
         // If nothing was audible yet the rate never changed, so report it here.
@@ -266,6 +275,8 @@ public class ZeeguuAudioPlugin: CAPPlugin, CAPBridgedPlugin {
 
     private func seek(to position: Double) {
         guard let item = player.currentItem else { return }
+        didEnd = false
+        if startSeekInFlight { pendingStart = max(0, position) } // keep position() truthful until it lands
         if item.status != .readyToPlay {
             // Seeking a not-yet-ready item isn't reliable; start there instead.
             pendingStart = max(0, position)
@@ -292,6 +303,7 @@ public class ZeeguuAudioPlugin: CAPPlugin, CAPBridgedPlugin {
         ) { [weak self] _ in
             guard let self = self else { return }
             self.wantsToPlay = false
+            self.didEnd = true
             self.reportPlaying(false)
             self.emit("ended")
             self.updateNowPlaying()
@@ -302,11 +314,17 @@ public class ZeeguuAudioPlugin: CAPPlugin, CAPBridgedPlugin {
                 guard let self = self, item == self.player.currentItem else { return }
                 switch item.status {
                 case .readyToPlay:
-                    self.emit("loadedmetadata")
-                    self.emit("canplay")
+                    // A start point at the end means start over, as <audio> does after 'ended'.
+                    let duration = Self.seconds(item.duration)
+                    if duration > 0 && self.pendingStart >= duration - 0.5 { self.pendingStart = 0 }
                     let start = self.pendingStart
-                    self.pendingStart = 0
+                    // Announce readiness only once positioned, so the events
+                    // carry the start point rather than 0.
                     let begin = {
+                        self.startSeekInFlight = false
+                        self.pendingStart = 0
+                        self.emit("loadedmetadata")
+                        self.emit("canplay")
                         self.updateNowPlaying()
                         if self.playWhenReady {
                             self.playWhenReady = false
@@ -314,6 +332,7 @@ public class ZeeguuAudioPlugin: CAPPlugin, CAPBridgedPlugin {
                         }
                     }
                     if start > 0 {
+                        self.startSeekInFlight = true
                         let target = CMTime(seconds: start, preferredTimescale: 600)
                         self.player.seek(to: target, toleranceBefore: .zero, toleranceAfter: .zero) { _ in
                             DispatchQueue.main.async { begin() }
@@ -414,7 +433,7 @@ public class ZeeguuAudioPlugin: CAPPlugin, CAPBridgedPlugin {
         center.skipBackwardCommand.addTarget { [weak self] event in
             guard let self = self, self.player.currentItem != nil else { return .noActionableNowPlayingItem }
             let interval = (event as? MPSkipIntervalCommandEvent)?.interval ?? Self.skipSeconds
-            self.seek(to: Self.seconds(self.player.currentTime()) - interval)
+            self.seek(to: self.position() - interval)
             return .success
         }
         center.skipForwardCommand.preferredIntervals = [NSNumber(value: Self.skipSeconds)]
@@ -422,7 +441,7 @@ public class ZeeguuAudioPlugin: CAPPlugin, CAPBridgedPlugin {
             guard let self = self, let item = self.player.currentItem else { return .noActionableNowPlayingItem }
             let interval = (event as? MPSkipIntervalCommandEvent)?.interval ?? Self.skipSeconds
             let duration = Self.seconds(item.duration)
-            var target = Self.seconds(self.player.currentTime()) + interval
+            var target = self.position() + interval
             if duration > 0 { target = min(target, duration) }
             self.seek(to: target)
             return .success
@@ -444,7 +463,7 @@ public class ZeeguuAudioPlugin: CAPPlugin, CAPBridgedPlugin {
         var info: [String: Any] = [
             MPMediaItemPropertyTitle: title,
             MPMediaItemPropertyArtist: artist,
-            MPNowPlayingInfoPropertyElapsedPlaybackTime: Self.seconds(player.currentTime()),
+            MPNowPlayingInfoPropertyElapsedPlaybackTime: position(),
             MPNowPlayingInfoPropertyPlaybackRate: player.rate,
             MPNowPlayingInfoPropertyDefaultPlaybackRate: rate,
             MPNowPlayingInfoPropertyMediaType: MPNowPlayingInfoMediaType.audio.rawValue
@@ -463,8 +482,9 @@ public class ZeeguuAudioPlugin: CAPPlugin, CAPBridgedPlugin {
     private func stateData() -> [String: Any] {
         var data: [String: Any] = [
             "url": url ?? "",
-            "position": Self.seconds(player.currentTime()),
-            "rate": rate
+            "position": position(),
+            "rate": rate,
+            "ended": didEnd
         ]
         if let item = player.currentItem {
             data["duration"] = Self.seconds(item.duration)
@@ -485,6 +505,14 @@ public class ZeeguuAudioPlugin: CAPPlugin, CAPBridgedPlugin {
               let image = UIImage(contentsOfFile: path) else { return nil }
         return MPMediaItemArtwork(boundsSize: image.size) { _ in image }
     }()
+
+    /// Until the item is ready its currentTime is 0, but the lesson really is
+    /// at pendingStart: report and compute from that, or a pause or skip while
+    /// loading would wipe the resume point.
+    private func position() -> Double {
+        guard let item = player.currentItem, item.status == .readyToPlay, !startSeekInFlight else { return pendingStart }
+        return Self.seconds(player.currentTime())
+    }
 
     private static func seconds(_ time: CMTime) -> Double {
         let value = CMTimeGetSeconds(time)

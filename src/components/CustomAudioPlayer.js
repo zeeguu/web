@@ -48,7 +48,13 @@ function IconNavButton({ onClick, disabled, ariaLabel, children }) {
   );
 }
 
-export default function CustomAudioPlayer({
+// A new src is a different lesson: remount, so nothing (resume point,
+// duration, play state, the native player) carries over from the last one.
+export default function CustomAudioPlayer(props) {
+  return <AudioPlayer key={props.src} {...props} />;
+}
+
+function AudioPlayer({
   src,
   onPlay,
   onPause,
@@ -104,14 +110,10 @@ export default function CustomAudioPlayer({
     if (nativeAudio) nativeAudio.src = src || "";
   }, [nativeAudio, src]);
 
+  const album = language ? `${language.toUpperCase()} Lessons` : "Language Lessons";
   useEffect(() => {
-    if (!nativeAudio) return;
-    nativeAudio.setMetadata({
-      title,
-      artist,
-      album: language ? `${language.toUpperCase()} Lessons` : "Language Lessons",
-    });
-  }, [nativeAudio, title, artist, language]);
+    if (nativeAudio) nativeAudio.setMetadata({ title, artist, album });
+  }, [nativeAudio, title, artist, album]);
 
   // Leaving the page stops the lesson, as removing an <audio> element does.
   useEffect(() => () => nativeAudio && nativeAudio.destroy(), [nativeAudio]);
@@ -146,7 +148,7 @@ export default function CustomAudioPlayer({
     navigator.mediaSession.metadata = new MediaMetadata({
       title: title,
       artist: artist,
-      album: language ? `${language.toUpperCase()} Lessons` : "Language Lessons",
+      album,
       artwork: [
         { src: "/logo192.png", sizes: "192x192", type: "image/png" },
         { src: "/logo512.png", sizes: "512x512", type: "image/png" },
@@ -243,7 +245,7 @@ export default function CustomAudioPlayer({
         navigator.mediaSession.playbackState = "paused";
       }
     };
-  }, [title, artist, language, isPlaying]);
+  }, [title, artist, album, isPlaying]);
 
   // Position state for the lock-screen progress bar. Separate from the
   // metadata effect so currentTime updates don't trigger an artwork refetch.
@@ -258,42 +260,6 @@ export default function CustomAudioPlayer({
       position: currentTime,
     });
   }, [isPlaying, duration, currentTime, playbackRate]);
-
-  // Handle visibility changes to keep playback going. No AudioContext here: an
-  // idle one holds no audio session, and closing it on pause (as this once
-  // did) broke headset play after a headset pause on iOS.
-  useEffect(() => {
-    // Handle visibility changes to maintain audio playback
-    const handleVisibilityChange = () => {
-      const audio = audioRef.current;
-      if (!audio) return;
-
-      if (document.hidden) {
-        // Page is hidden (locked screen or switched apps)
-        console.log("Page hidden, audio playing:", !audio.paused);
-      } else {
-        // Page is visible again
-        console.log("Page visible, audio playing:", !audio.paused);
-
-        // Update Media Session position
-        if (useWebMediaSession && "setPositionState" in navigator.mediaSession && duration > 0) {
-          navigator.mediaSession.setPositionState({
-            duration: duration,
-            playbackRate: playbackRateRef.current,
-            position: audio.currentTime,
-          });
-        }
-      }
-    };
-
-    document.addEventListener("visibilitychange", handleVisibilityChange);
-
-    // Cleanup
-    return () => {
-      document.removeEventListener("visibilitychange", handleVisibilityChange);
-    };
-    // playbackRate is read through its ref, so a speed change doesn't re-run this.
-  }, [isPlaying, duration]);
 
   // Apply initialProgress exactly ONCE per mount. Without the ref guard the
   // effect re-fires every time the parent re-saves the playhead (every ~10s
@@ -454,6 +420,13 @@ export default function CustomAudioPlayer({
       setCurrentTime(audio.currentTime);
       if (useWebMediaSession) {
         navigator.mediaSession.playbackState = audio.paused ? "paused" : "playing";
+        if ("setPositionState" in navigator.mediaSession && audio.duration > 0) {
+          navigator.mediaSession.setPositionState({
+            duration: audio.duration,
+            playbackRate: playbackRateRef.current,
+            position: audio.currentTime,
+          });
+        }
       }
       if (audio.paused) {
         clearProgressTimer();
@@ -568,7 +541,9 @@ export default function CustomAudioPlayer({
     const audio = audioRef.current;
     if (!audio) return;
 
-    const newTime = Math.min(duration, audio.currentTime + SEEK_SECONDS);
+    // The element's duration: the state stays 0 if the native probe failed.
+    const end = audio.duration > 0 ? audio.duration : Infinity;
+    const newTime = Math.min(end, audio.currentTime + SEEK_SECONDS);
     audio.currentTime = newTime;
     setCurrentTime(newTime);
   };

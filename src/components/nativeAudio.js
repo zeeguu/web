@@ -60,7 +60,12 @@ export class NativeAudioElement extends EventTarget {
 
   set src(url) {
     if (url === this._src) return;
-    if (owner === this) this.destroy();
+    if (owner === this) {
+      // Like <audio> on a new src: stop without a 'pause' event, which would
+      // save the old lesson's position under the new one.
+      owner = null;
+      ZeeguuAudio.unload();
+    }
     this._src = url;
     this._paused = true;
     this._currentTime = 0;
@@ -188,6 +193,12 @@ export class NativeAudioElement extends EventTarget {
       }
       this._applyState(state);
       this._dispatch("timeupdate");
+      if (state.ended && !this._paused) {
+        // The 'ended' event was lost while the page was suspended.
+        this._setPaused(true);
+        this._dispatch("ended");
+        return;
+      }
       this._setPaused(!state.isPlaying);
     } catch {
       // Keep the last known state
@@ -201,6 +212,10 @@ export class NativeAudioElement extends EventTarget {
     else if (name === "ended") {
       this._setPaused(true);
       this._dispatch("ended");
+    } else if (name === "seeked") {
+      // <audio> follows a seek with timeupdate; the progress bar listens for that.
+      this._dispatch("seeked");
+      this._dispatch("timeupdate");
     } else this._dispatch(name);
   }
 

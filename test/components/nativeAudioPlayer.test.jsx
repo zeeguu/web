@@ -156,6 +156,45 @@ describe("CustomAudioPlayer on the native iOS player", () => {
     expect(playing).toHaveLength(1);
   });
 
+  it("an end the page missed while suspended still counts as finished", async () => {
+    const onEnded = vi.fn();
+    const { container } = await renderPlayer({ onEnded });
+    await pressPlay(container);
+
+    Object.assign(native.state, { isPlaying: false, position: 363, ended: true });
+    await act(async () => document.dispatchEvent(new Event("visibilitychange")));
+    expect(onEnded).toHaveBeenCalledTimes(1);
+    expect(showsPlayButton(container)).toBe(true);
+    native.state.ended = false;
+  });
+
+  it("a lock-screen scrub moves the progress bar while paused", async () => {
+    const { container, getByText } = await renderPlayer();
+    await pressPlay(container);
+    native.state.isPlaying = false;
+    act(() => native.emit("pause"));
+
+    act(() => native.emit("seeked", { position: 300 }));
+    expect(getByText("5:00")).toBeTruthy();
+  });
+
+  it("a new lesson in the same spot starts from its own resume point", async () => {
+    const { container, rerender } = await renderPlayer({ initialProgress: 34 });
+    rerender(<CustomAudioPlayer src="other.mp3" language="da" initialProgress={100} />);
+    await act(async () => {});
+    await pressPlay(container);
+    expect(native.plugin.prepare).toHaveBeenLastCalledWith(expect.objectContaining({ url: "other.mp3", position: 100 }));
+  });
+
+  it("forward 10s works even if the duration couldn't be read", async () => {
+    const probe = vi.spyOn(native.plugin, "probe").mockRejectedValueOnce(new Error("no duration"));
+    const { container } = await renderPlayer({ initialProgress: 34 });
+    await act(async () => fireEvent.click(container.querySelector('[aria-label="Forward 10 seconds"]')));
+    await pressPlay(container);
+    expect(native.plugin.prepare).toHaveBeenLastCalledWith(expect.objectContaining({ position: 44 }));
+    probe.mockRestore();
+  });
+
   it("leaving the page stops the lesson", async () => {
     const { container, unmount } = await renderPlayer();
     await pressPlay(container);
