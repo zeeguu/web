@@ -1,0 +1,16 @@
+{
+  "name": "zeeguu-audio",
+  "version": "1.0.0",
+  "description": "Native iOS lesson playback (AVPlayer + lock-screen/headset controls) for the Zeeguu app",
+  "license": "MIT",
+  "author": "Zeeguu",
+  "private": true,
+  "capacitor": {
+    "ios": {
+      "src": "ios"
+    }
+  },
+  "peerDependencies": {
+    "@capacitor/core": ">=7.0.0"
+  }
+}

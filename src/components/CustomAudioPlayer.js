@@ -8,6 +8,7 @@ import Replay10RoundedIcon from "@mui/icons-material/Replay10Rounded";
 import Forward10RoundedIcon from "@mui/icons-material/Forward10Rounded";
 import SpeedPicker from "./SpeedPicker";
 import { loadSpeed, saveSpeed } from "./audioSpeeds";
+import { NativeAudioElement, nativeAudioAvailable } from "./nativeAudio";
 
 const SEEK_SECONDS = 10;
 
@@ -69,6 +70,11 @@ export default function CustomAudioPlayer({
   // arrives or changes remounts the player: the initial load is enough.
   const [playbackRate, setPlaybackRate] = useState(() => loadSpeed(language));
   const audioRef = useRef(null);
+  // On iOS the native player stands in for <audio> (see nativeAudio.js); it
+  // also owns the lock screen, so the web MediaSession stays out of the way.
+  const [nativeAudio] = useState(() => (nativeAudioAvailable() ? new NativeAudioElement() : null));
+  if (nativeAudio) audioRef.current = nativeAudio;
+  const useWebMediaSession = !nativeAudio && "mediaSession" in navigator;
   const progressTimerRef = useRef(null);
   const lastSavedProgressRef = useRef(0);
 
@@ -85,6 +91,22 @@ export default function CustomAudioPlayer({
       audio.playbackRate = playbackRate;
     }
   }, [playbackRate]);
+
+  useEffect(() => {
+    if (nativeAudio) nativeAudio.src = src || "";
+  }, [nativeAudio, src]);
+
+  useEffect(() => {
+    if (!nativeAudio) return;
+    nativeAudio.setMetadata({
+      title,
+      artist,
+      album: language ? `${language.toUpperCase()} Lessons` : "Language Lessons",
+    });
+  }, [nativeAudio, title, artist, language]);
+
+  // Leaving the page stops the lesson, as removing an <audio> element does.
+  useEffect(() => () => nativeAudio && nativeAudio.destroy(), [nativeAudio]);
 
   // Some WebViews reset the rate on load or play regardless; put the chosen
   // speed back rather than adopting whatever the element reports.
@@ -110,7 +132,7 @@ export default function CustomAudioPlayer({
   // set metadata on mount and re-fetch the artwork. Position state lives in
   // its own effect below so currentTime updates don't rebuild the metadata.
   useEffect(() => {
-    if (!("mediaSession" in navigator)) return;
+    if (!useWebMediaSession) return;
     if (!isPlaying) return;
 
     navigator.mediaSession.metadata = new MediaMetadata({
@@ -212,7 +234,7 @@ export default function CustomAudioPlayer({
     // will overwrite handlers on its own play transition; on unmount the
     // stale handlers reference a null audioRef and no-op safely.
     return () => {
-      if ("mediaSession" in navigator) {
+      if (useWebMediaSession && navigator.mediaSession) {
         navigator.mediaSession.playbackState = "paused";
       }
     };
@@ -221,7 +243,7 @@ export default function CustomAudioPlayer({
   // Position state for the lock-screen progress bar. Separate from the
   // metadata effect so currentTime updates don't trigger an artwork refetch.
   useEffect(() => {
-    if (!("mediaSession" in navigator)) return;
+    if (!useWebMediaSession) return;
     if (!isPlaying) return;
     if (!("setPositionState" in navigator.mediaSession)) return;
     if (duration <= 0) return;
@@ -248,15 +270,8 @@ export default function CustomAudioPlayer({
         // Page is visible again
         console.log("Page visible, audio playing:", !audio.paused);
 
-        // If audio was playing and got paused, try to resume
-        if (isPlaying && audio.paused) {
-          audio.play().catch((err) => {
-            console.log("Could not resume audio after visibility change:", err);
-          });
-        }
-
         // Update Media Session position
-        if ("mediaSession" in navigator && "setPositionState" in navigator.mediaSession && duration > 0) {
+        if (useWebMediaSession && "setPositionState" in navigator.mediaSession && duration > 0) {
           navigator.mediaSession.setPositionState({
             duration: duration,
             playbackRate: playbackRateRef.current,
@@ -295,8 +310,14 @@ export default function CustomAudioPlayer({
   useEffect(() => {
     if (initialSeekAppliedRef.current) return;
     if (!initialProgress || initialProgress <= 0) return;
+    setCurrentTime(initialProgress); // the bar shows the resume point
+    if (nativeAudio) {
+      // The native player seeks before it starts, so no muted jump is needed.
+      nativeAudio.currentTime = initialProgress;
+      initialSeekAppliedRef.current = true;
+      return;
+    }
     pendingResumeRef.current = initialProgress;
-    setCurrentTime(initialProgress); // visual only — bar shows the resume point
   }, [initialProgress]);
 
   useEffect(() => {
@@ -314,7 +335,7 @@ export default function CustomAudioPlayer({
           setIsPlaying(true);
           onPlay && onPlay();
           startProgressTimer();
-          if ("mediaSession" in navigator) {
+          if (useWebMediaSession) {
             navigator.mediaSession.playbackState = "playing";
           }
         })
@@ -340,7 +361,7 @@ export default function CustomAudioPlayer({
       setCurrentTime(audio.currentTime);
 
       // Update media session position for lock screen scrubber
-      if ("mediaSession" in navigator && "setPositionState" in navigator.mediaSession) {
+      if (useWebMediaSession && "setPositionState" in navigator.mediaSession) {
         if (duration > 0 && !audio.paused) {
           try {
             navigator.mediaSession.setPositionState({
@@ -375,7 +396,7 @@ export default function CustomAudioPlayer({
     const handlePlay = () => {
       setIsPlaying(true);
       startProgressTimer();
-      if ("mediaSession" in navigator) navigator.mediaSession.playbackState = "playing";
+      if (useWebMediaSession) navigator.mediaSession.playbackState = "playing";
     };
     // THE actual resume seek. `playing` fires once real playback has begun, the
     // only point iOS honors a seek on cold/paused media. We briefly mute so the
@@ -398,7 +419,7 @@ export default function CustomAudioPlayer({
     };
     const handlePause = () => {
       setIsPlaying(false);
-      if ("mediaSession" in navigator) navigator.mediaSession.playbackState = "paused";
+      if (useWebMediaSession) navigator.mediaSession.playbackState = "paused";
       clearProgressTimer();
       saveProgress(true);
       onPause && onPause();
@@ -465,6 +486,8 @@ export default function CustomAudioPlayer({
 
   const startProgressTimer = () => {
     if (!onProgressUpdate) return;
+    // Called from both the 'play' event and play().then(); don't stack intervals.
+    clearProgressTimer();
 
     // Save progress every 10 seconds
     progressTimerRef.current = setInterval(saveProgress, 10000);
@@ -494,7 +517,7 @@ export default function CustomAudioPlayer({
           setIsPlaying(true);
           onPlay && onPlay();
           startProgressTimer();
-          if ("mediaSession" in navigator) {
+          if (useWebMediaSession) {
             navigator.mediaSession.playbackState = "playing";
           }
         })
@@ -571,7 +594,7 @@ export default function CustomAudioPlayer({
         ...style,
       }}
     >
-      <audio ref={audioRef} src={src} preload="auto" playsInline controlsList="nodownload" crossOrigin="anonymous" />
+      {!nativeAudio && <audio ref={audioRef} src={src} preload="auto" playsInline controlsList="nodownload" crossOrigin="anonymous" />}
 
       {/* Controls: flex space-between so the outer buttons hug the edges
           and the play button sits in the middle, using the full width. */}
