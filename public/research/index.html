@@ -129,6 +129,10 @@
       .item p {
         margin: 4px 0 0;
       }
+      /* Hidden, not removed, while the totals load, so the chart below does not jump. */
+      .totals-pending {
+        visibility: hidden;
+      }
       .strip {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(8rem, 1fr));
@@ -238,24 +242,26 @@
 
       <section id="numbers">
         <h2>Zeeguu in numbers</h2>
-        <div class="strip">
-          <div><strong data-total="lookups">510,000+</strong><span>words looked up</span></div>
-          <div><strong data-total="exercises">440,000+</strong><span>exercises done</span></div>
-          <div><strong data-total="learners">3,300+</strong><span>learners</span></div>
-          <div>
-            <strong data-total="articles_read">30,000+</strong
-            ><span>articles read, in <span data-total="languages">12</span> languages</span>
+        <div id="totals" class="totals-pending">
+          <div class="strip">
+            <div><strong data-total="lookups">&nbsp;</strong><span>words looked up</span></div>
+            <div><strong data-total="exercises">&nbsp;</strong><span>exercises done</span></div>
+            <div><strong data-total="learners">&nbsp;</strong><span>learners</span></div>
+            <div>
+              <strong data-total="articles_read">&nbsp;</strong
+              ><span>articles read, in <span data-total="languages"></span> languages</span>
+            </div>
+            <div>
+              <strong data-total="teachers">&nbsp;</strong
+              ><span>teachers, <span data-total="classes"></span> active classes</span>
+            </div>
           </div>
-          <div>
-            <strong data-total="teachers">30</strong
-            ><span>teachers, <span data-total="classes">45+</span> active classes</span>
-          </div>
+          <p class="caption">
+            All-time totals, rounded down, as of <span id="totals-date"></span>. Team and test accounts are not
+            counted, and a teacher counts once at least five students in one of their classes have read regularly.
+            <a href="https://api.zeeguu.org/stats/totals">Exact figures</a>.
+          </p>
         </div>
-        <p class="caption">
-          All-time totals, rounded down, as of <span id="totals-date">October 2026</span>. Team and test accounts are
-          not counted, and a teacher counts once at least five students in one of their classes have read regularly.
-          <a href="https://api.zeeguu.org/stats/totals">Exact figures</a>.
-        </p>
         <p>Monthly active users over the last year, live from our API:</p>
         <iframe
           class="stats"
@@ -545,7 +551,8 @@
     </footer>
 
     <script>
-      // Fill the numbers strip from the API; the figures written above stay if it is unreachable.
+      // Fill the numbers strip from the API. It shows nothing until the figures arrive, and stays
+      // gone if they do not: placeholder numbers that then change look wrong.
       // Always round down, so a figure never claims more than the data: 517,363 -> "510,000+".
       function roundDown(n) {
         if (n < 100) return Math.floor(n / 5) * 5
@@ -553,12 +560,17 @@
         return Math.floor(n / step) * step
       }
 
+      const totalsBox = document.getElementById('totals')
       fetch('https://api.zeeguu.org/stats/totals')
-        .then((r) => r.json())
+        .then((r) => {
+          if (!r.ok) throw new Error(r.status)
+          return r.json()
+        })
         .then((totals) => {
-          document.querySelectorAll('[data-total]').forEach((el) => {
+          const fields = totalsBox.querySelectorAll('[data-total]')
+          if (![...fields].every((el) => typeof totals[el.dataset.total] === 'number')) throw new Error('incomplete')
+          fields.forEach((el) => {
             const exact = totals[el.dataset.total]
-            if (typeof exact !== 'number') return
             const shown = el.dataset.total === 'languages' ? exact : roundDown(exact)
             el.textContent = shown.toLocaleString('en-US') + (shown < exact ? '+' : '')
             el.title = exact.toLocaleString('en-US')
@@ -568,8 +580,9 @@
             month: 'long',
             year: 'numeric',
           })
+          totalsBox.classList.remove('totals-pending')
         })
-        .catch(() => {})
+        .catch(() => totalsBox.remove())
     </script>
   </body>
 </html>
