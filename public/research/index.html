@@ -150,9 +150,18 @@
         font-size: 1.4rem;
         line-height: 1.2;
       }
-      .strip span {
+      .strip div > span {
         color: var(--muted);
         font-size: 0.85rem;
+        display: block;
+        line-height: 1.4;
+      }
+      /* On wide screens the strip spills past the text column, so each label fits in two lines. */
+      @media (min-width: 60rem) {
+        .strip {
+          margin-left: -3rem;
+          margin-right: -3rem;
+        }
       }
       iframe.stats {
         display: block;
