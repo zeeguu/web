@@ -140,19 +140,6 @@ export default function useAnonymousUpgrade() {
     }
   }, [location.pathname, isAnonymous]);
 
-  // Listen for 403 errors when upgrade is pending (email not verified)
-  useEffect(() => {
-    const handleEmailNotVerified = () => {
-      setShouldShowUpgrade(true);
-      setTriggerReason("pending");
-    };
-
-    window.addEventListener("zeeguu-email-not-verified", handleEmailNotVerified);
-    return () => {
-      window.removeEventListener("zeeguu-email-not-verified", handleEmailNotVerified);
-    };
-  }, []);
-
   // Listen for bookmark creation events
   useEffect(() => {
     if (!isAnonymous) return;
