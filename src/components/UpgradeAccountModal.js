@@ -544,7 +544,6 @@ export default function UpgradeAccountModal({ open, onClose, onSuccess, triggerR
                   setConfirmCode("");
                   setConfirmPassword("");
                   setErrorMessage("");
-                  LocalStorage.clearAnonUpgradePending();
                 }}
               >
                 Change email

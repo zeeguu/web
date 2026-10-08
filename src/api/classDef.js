@@ -1,18 +1,11 @@
 import fetch from "cross-fetch";
 import axios from "axios";
 import * as Sentry from "@sentry/react";
-import LocalStorage from "../assorted/LocalStorage";
 
 export class ServerUnavailableError extends Error {
   constructor() {
     super("Server returned no data");
     this.name = "ServerUnavailableError";
-  }
-}
-
-function check403ForPendingUpgrade(status) {
-  if (status === 403 && LocalStorage.getAnonUpgradePending()) {
-    window.dispatchEvent(new CustomEvent("zeeguu-email-not-verified"));
   }
 }
 
@@ -259,10 +252,6 @@ const Zeeguu_API = class {
       return response.json();
     }
 
-    if (response.status) {
-      check403ForPendingUpgrade(response.status);
-    }
-
     return response.json().then(
       (data) => Promise.reject(data.message || data.error || `HTTP ${response.status} on POST ${endpoint}`),
       () => Promise.reject(`HTTP ${response.status} on POST ${endpoint}`),
@@ -371,9 +360,6 @@ const Zeeguu_API = class {
         code: error.code,
         response: error.response?.status,
       });
-      if (error.response?.status) {
-        check403ForPendingUpgrade(error.response.status);
-      }
       throw error;
     }
   }
