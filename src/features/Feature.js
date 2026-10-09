@@ -31,6 +31,11 @@ const Feature = {
   verbal_flashcards: function () {
     return this.is_enabled("verbal_flashcards");
   },
+
+  // A clean answer moves a word up a level (api: four_levels_per_word.py).
+  fast_progression: function () {
+    return this.is_enabled("fast_progression");
+  },
   
   always_open_externally: function () {
     return this.is_enabled("always_open_externally");

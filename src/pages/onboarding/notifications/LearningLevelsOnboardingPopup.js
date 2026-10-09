@@ -35,7 +35,6 @@ export default function LearningLevelsOnboardingPopup({ open, handleCancel }) {
               cooling_interval: 0,
               is_last_in_cycle: false,
             }}
-            userIsCorrect={false}
             userIsWrong={false}
             isGreyedOutBar={false}
           />
