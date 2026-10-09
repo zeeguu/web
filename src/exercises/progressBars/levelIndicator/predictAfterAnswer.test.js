@@ -26,15 +26,15 @@ describe("predictAfterAnswer", () => {
     });
   });
 
-  it("with fast progression, moves a clean answer up a level at once", () => {
+  it("on the fast track, moves a clean answer up a level at once", () => {
     expect(
-      predictAfterAnswer({ level: 1, cooling_interval: 0, message: "C", fastProgression: true }),
+      predictAfterAnswer({ level: 1, cooling_interval: 0, message: "C", fastTrack: true }),
     ).toEqual({ level: 2, cooling_interval: 0 });
   });
 
-  it("with fast progression, an answer with a hint is still one step", () => {
+  it("on the fast track, an answer with a hint is still one step", () => {
     expect(
-      predictAfterAnswer({ level: 1, cooling_interval: 0, message: "HC", fastProgression: true }),
+      predictAfterAnswer({ level: 1, cooling_interval: 0, message: "HC", fastTrack: true }),
     ).toEqual({ level: 1, cooling_interval: 1 });
   });
 

@@ -4,7 +4,6 @@ import LevelIndicatorBar from "./LevelIndicatorBar.js";
 import LevelIndicatorCircles from "./LevelIndicatorCircles.js";
 import isBookmarkExpression from "../../../utils/misc/isBookmarkExpression";
 import strings from "../../../i18n/definitions";
-import Feature from "../../../features/Feature.js";
 import { predictAfterAnswer } from "./predictAfterAnswer";
 
 export { COOLING_INTERVALS_PER_LEVEL } from "./predictAfterAnswer";
@@ -90,7 +89,7 @@ export default function LevelIndicator({
     level: before.level,
     cooling_interval: before.cooling_interval,
     message,
-    fastProgression: Feature.fast_progression(),
+    fastTrack: bookmark.fast_track === true,
   });
   const levelCompleted = level > before.level;
 
