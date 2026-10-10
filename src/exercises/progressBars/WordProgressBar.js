@@ -5,17 +5,13 @@ import LevelIndicator from "./levelIndicator/LevelIndicator.js";
 import { WordProgressWrapper } from "./levelIndicator/LevelIndicator.sc.js";
 
 export default function WordProgressBar({ bookmark, message, isGreyedOutBar }) {
-  // Note that the userIsCorrect and userIsWrong states are needed both
-  // for the logic of this component to work.
-  // When message changes, the correctness changes but the two can still be
-  // both false if the user is still in the process.
-  // Probably would be nice to refactor but till then, beware.
-  const [userIsCorrect, setUserIsCorrect] = useState(false);
+  // The level indicator predicts the new level from the message itself;
+  // userIsWrong is only for the blinking. Both stay unset while the learner
+  // is still in the middle of an answer.
   const [userIsWrong, setUserIsWrong] = useState(false);
 
   useEffect(() => {
-    const [userIsCorrect, userIsWrong] = correctnessBasedOnTries(message);
-    setUserIsCorrect(userIsCorrect);
+    const [, userIsWrong] = correctnessBasedOnTries(message);
     setUserIsWrong(userIsWrong);
   }, [message]);
 
@@ -24,7 +20,7 @@ export default function WordProgressBar({ bookmark, message, isGreyedOutBar }) {
       <WordProgressWrapper>
         <LevelIndicator
           bookmark={bookmark}
-          userIsCorrect={userIsCorrect}
+          message={message}
           userIsWrong={userIsWrong}
           isGreyedOutBar={isGreyedOutBar}
         />
