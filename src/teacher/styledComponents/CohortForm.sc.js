@@ -6,7 +6,7 @@ export const StyledCohortForm = styled.div`
   }
 `;
 
-export const ClassroomOnlyOption = styled.div`
+export const ClassOption = styled.div`
   margin-top: 1em;
 `;
 
