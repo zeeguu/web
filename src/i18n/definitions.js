@@ -765,6 +765,9 @@ let strings = new LocalizedStrings(
       onlyClassroomTexts: "Students see only the texts I share",
       onlyClassroomTextsHint:
         "No news feed, search, saved articles or inbox. Students can still leave the class to see the rest of Zeeguu.",
+      studentsSeeEachOther: "Students see each other",
+      studentsSeeEachOtherHint:
+        "The class appears as a leaderboard for its students. When off, only you see how the students compare.",
       createClass: "Create Class",
       classroomLanguage: "Classroom language",
       errorInviteCode: "Something went wrong. Maybe the invite code is already in use.",

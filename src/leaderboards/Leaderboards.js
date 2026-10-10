@@ -120,8 +120,11 @@ export default function Leaderboards({
   useEffect(() => {
     if (!isStudent) return;
     api.getStudent((data) => {
-      if (data?.cohorts?.length) {
-        setCohorts(data.cohorts);
+      // A class whose teacher chose that its students do not see each other
+      // has no leaderboard for them. Absent on older APIs, where every class has one.
+      const visibleCohorts = (data?.cohorts || []).filter((c) => c.students_see_each_other !== false);
+      if (visibleCohorts.length) {
+        setCohorts(visibleCohorts);
       }
     });
   }, [api, isStudent]);

@@ -40,6 +40,9 @@ const CohortForm = ({
     invite_code: cohort ? cohort.inv_code : "",
     language_code: cohort ? languageMap[cohort.language_name] : "default",
     only_classroom_texts: cohort ? !!cohort.only_classroom_texts : false,
+    // Absent on classes fetched from an API that predates the field: those
+    // classes behave as if it were on.
+    students_see_each_other: cohort ? cohort.students_see_each_other !== false : true,
     max_students: 150, //some teachers create one joint class for all the students of an entire year //TODO modify backend etc. to no longer include this...
   });
 
@@ -151,6 +154,7 @@ const CohortForm = ({
     form.append("max_students", state.max_students); //TODO modify backend etc. to no longer include this...
     form.append("language_code", state.language_code);
     form.append("only_classroom_texts", state.only_classroom_texts);
+    form.append("students_see_each_other", state.students_see_each_other);
     return form;
   }
 
@@ -204,14 +208,23 @@ const CohortForm = ({
 
             {/* Unlike the language, this stays editable on an existing class:
                 a teacher decides how open the class is as the term goes on. */}
-            <s.ClassroomOnlyOption>
+            <s.ClassOption>
               <ToggleOption
                 checked={state.only_classroom_texts}
                 onToggle={(checked) => setState({ ...state, only_classroom_texts: checked })}
                 label={strings.onlyClassroomTexts}
               />
               <s.OptionHint>{strings.onlyClassroomTextsHint}</s.OptionHint>
-            </s.ClassroomOnlyOption>
+            </s.ClassOption>
+
+            <s.ClassOption>
+              <ToggleOption
+                checked={state.students_see_each_other}
+                onToggle={(checked) => setState({ ...state, students_see_each_other: checked })}
+                label={strings.studentsSeeEachOther}
+              />
+              <s.OptionHint>{strings.studentsSeeEachOtherHint}</s.OptionHint>
+            </s.ClassOption>
 
             {isError && <Error message={strings.errorInviteCode} />}
           </form>
