@@ -2,7 +2,12 @@ import React from "react";
 import * as RadixDialog from "@radix-ui/react-dialog";
 import styled from "styled-components";
 
+// Same layer as MUI's Modal (1300), so sticky page chrome (TopTabs, banners,
+// bottom nav) stays underneath the dialog instead of painting over it.
+const DIALOG_Z_INDEX = 1300;
+
 const Overlay = styled(RadixDialog.Overlay)`
+  z-index: ${DIALOG_Z_INDEX};
   background: hsla(0, 0%, 0%, 0.6);
   backdrop-filter: blur(2px);
   -webkit-backdrop-filter: blur(2px);
@@ -14,6 +19,7 @@ const Overlay = styled(RadixDialog.Overlay)`
 `;
 
 const Content = styled(RadixDialog.Content)`
+  z-index: ${DIALOG_Z_INDEX};
   background: white;
   padding: 2rem;
   position: fixed;
