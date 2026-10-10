@@ -46,6 +46,10 @@
           --rule: #2e2e2e;
           --link: #ffbb54;
         }
+        /* The engraving is black on white; inverted it sits on the dark page instead of glaring. */
+        .platform img {
+          filter: invert(0.9);
+        }
       }
       * {
         box-sizing: border-box;
@@ -110,6 +114,28 @@
       h2 {
         font-size: 1.35rem;
         margin: 0 0 16px;
+      }
+      .platform {
+        display: grid;
+        gap: 8px 32px;
+        align-items: center;
+      }
+      @media (min-width: 40rem) {
+        .platform {
+          grid-template-columns: 1fr 1fr;
+        }
+      }
+      .platform figure {
+        margin: 0 0 16px;
+      }
+      .platform img {
+        width: 100%;
+        display: block;
+      }
+      .platform figcaption {
+        color: var(--muted);
+        font-size: 0.8rem;
+        margin-top: 6px;
       }
       .section-note {
         color: var(--muted);
@@ -288,12 +314,24 @@
 
       <section id="platform">
         <h2>The platform</h2>
-        <ul>
-          <li><strong>10 years</strong> online, since 2016</li>
-          <li><strong>11,000+</strong> commits</li>
-          <li><strong>100,000+</strong> lines of code</li>
-          <li><strong>50+</strong> <a href="/about#contributors">contributors</a></li>
-        </ul>
+        <div class="platform">
+          <div>
+            <ul>
+              <li><strong>10 years</strong> online, since 2016</li>
+              <li><strong>11,000+</strong> commits</li>
+              <li><strong>100,000+</strong> lines of code</li>
+              <li><strong>50+</strong> <a href="/about#contributors">contributors</a></li>
+            </ul>
+            <p>
+              Like Theseus's ship, Zeeguu has had most of its planks replaced along the way: new apps, new languages,
+              new models. It has kept sailing the whole time.
+            </p>
+          </div>
+          <figure>
+            <img src="theseus.jpg" alt="Engraving of Theseus's ship under sail, with rowers and passengers" loading="lazy" />
+            <figcaption>Theseus's ship leaving Crete, engraving after a Roman mosaic</figcaption>
+          </figure>
+        </div>
       </section>
 
       <section id="papers">
