@@ -163,7 +163,9 @@ Zeeguu_API.prototype.deleteTodaysLesson = function (callback, onError, lessonId)
     .then((response) => {
       if (response.status === 429) {
         // The rate limiter answers in HTML, not JSON.
-        throw new Error("You've deleted several lessons recently. Please try again in a few hours.");
+        const error = new Error("You've deleted several lessons recently. Please try again in a few hours.");
+        error.rateLimited = true;
+        throw error;
       }
       if (!response.ok) {
         return response.json().then(data => {

@@ -163,7 +163,7 @@ export default function TodayAudio() {
         // If the delete fails the backend still has today's lesson, so
         // regenerating would silently hand back the old one — surface an error
         // rather than pretend the change applied.
-        (err) => setError(err.message.includes("try again")
+        (err) => setError(err.rateLimited
           ? err.message
           : "Couldn't refresh today's lesson. Please try again."),
         lessonData.lesson_id,
