@@ -139,20 +139,19 @@ export default function LessonPlaybackView({
           <SubtleTextButton onClick={() => setOpenFeedback(true)}>
             Feedback
           </SubtleTextButton>
-          {userDetails?.name === "Mircea" && (
-            <SubtleTextButton
-              onClick={() => {
-                if (window.confirm("Delete today's lesson?")) {
-                  api.deleteTodaysLesson(
-                    () => window.location.reload(),
-                    (err) => alert("Failed to delete: " + err.message),
-                  );
-                }
-              }}
-            >
-              Delete lesson
-            </SubtleTextButton>
-          )}
+          <SubtleTextButton
+            onClick={() => {
+              if (window.confirm("Delete this lesson?")) {
+                api.deleteTodaysLesson(
+                  () => window.location.reload(),
+                  (err) => alert("Failed to delete: " + err.message),
+                  lessonData.lesson_id,
+                );
+              }
+            }}
+          >
+            Delete lesson
+          </SubtleTextButton>
         </LessonActions>
 
         <FeedbackModal

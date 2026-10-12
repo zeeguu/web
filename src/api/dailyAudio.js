@@ -148,15 +148,23 @@ Zeeguu_API.prototype.createLessonShareLink = function (lessonId) {
   });
 };
 
-Zeeguu_API.prototype.deleteTodaysLesson = function (callback, onError) {
+// lessonId: the lesson on screen. Send it — that lesson can be a paused one from
+// an earlier day, which the backend's today-only fallback would not find.
+Zeeguu_API.prototype.deleteTodaysLesson = function (callback, onError, lessonId) {
   this.apiLog("DELETE delete_todays_lesson");
-  
-  const timezoneOffset = getTimezoneOffsetMinutes();
-  
-  fetch(this._appendSessionToUrl(`delete_todays_lesson?timezone_offset=${timezoneOffset}`), {
+
+  const params = new URLSearchParams();
+  params.set("timezone_offset", getTimezoneOffsetMinutes());
+  if (lessonId) params.set("lesson_id", lessonId);
+
+  fetch(this._appendSessionToUrl(`delete_todays_lesson?${params}`), {
     method: "DELETE",
   })
     .then((response) => {
+      if (response.status === 429) {
+        // The rate limiter answers in HTML, not JSON.
+        throw new Error("You've deleted several lessons recently. Please try again in a few hours.");
+      }
       if (!response.ok) {
         return response.json().then(data => {
           throw new Error(data.error || "Network response was not ok");
