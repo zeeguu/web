@@ -1,13 +1,17 @@
 import styled from "styled-components";
 import { StyledButton } from "../../../components/allButtons.sc";
 
-const DailyExercisesImage = styled.img`
+const OnboardingPrimaryButton = styled(StyledButton)`
+  min-width: 190px;
+  margin: 0 auto;
+`;
+
+// Illustration shown in the onboarding popups. Pass $tightTop when the image
+// sits between two text lines and shouldn't add extra space above it.
+const OnboardingImage = styled.img`
   width: min(100%, 300px);
   display: block;
-  margin-top: 0;
-  margin-bottom: 0;
-  margin-left: auto;
-  margin-right: auto;
+  margin: ${(props) => (props.$tightTop ? "0" : "20px")} auto 0;
   object-fit: contain;
 
   @media (max-width: 576px) {
@@ -29,9 +33,5 @@ const CenteredSecondText = styled.p`
     font-size: 14px;
   }
 `;
-const OnboardingPrimaryButton = styled(StyledButton)`
-  min-width: 190px;
-  margin: 0 auto;
-`;
 
-export { DailyExercisesImage, CenteredText, CenteredSecondText, OnboardingPrimaryButton };
+export { OnboardingPrimaryButton, OnboardingImage, CenteredText, CenteredSecondText };
