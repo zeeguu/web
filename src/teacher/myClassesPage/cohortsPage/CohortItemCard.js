@@ -5,6 +5,7 @@ import DynamicFlagImage from "../../../components/DynamicFlagImage";
 import { languageCodeFromName } from "../../../utils/misc/languageCodeToName";
 import * as s from "../../styledComponents/TeacherListRow.sc";
 import strings from "../../../i18n/definitions";
+import { lastActivityLabel } from "./cohortSort";
 
 /**
  * One class in the My Classrooms list, in the same shape as a text on My Texts:
@@ -40,6 +41,7 @@ export const CohortItemCard = ({ cohort }) => {
           <MetaItem>
             {strings.inviteCode}: {cohort.inv_code}
           </MetaItem>
+          <MetaItem>{lastActivityLabel(cohort.last_activity)}</MetaItem>
           {teachers.length > 0 && (
             <MetaItem>
               {teachers.length > 1 ? strings.teachers : strings.teacher}
@@ -47,7 +49,6 @@ export const CohortItemCard = ({ cohort }) => {
             </MetaItem>
           )}
         </MetaStrip>
-
       </s.Body>
     </s.Row>
   );
