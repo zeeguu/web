@@ -106,9 +106,9 @@ describe("summaryLevelPills", () => {
     { level: "B2", original: true },
   ];
 
-  it("labels the article's own summary as the original", () => {
+  it("labels every summary by its level, the article's own included", () => {
     const { options } = summaryLevelPills(levels, "summary", "B2");
-    expect(options.map((o) => o.pillLabel)).toEqual(["A2", "B1", "B2 · Original"]);
+    expect(options.map((o) => o.pillLabel)).toEqual(["A2", "B1", "B2"]);
     expect(options.map((o) => o.level)).toEqual(["A2", "B1", "B2"]);
   });
 
@@ -117,8 +117,8 @@ describe("summaryLevelPills", () => {
     expect(summaryLevelPills(levels, "summary", "B2").selected).toBe("original");
   });
 
-  it("names an original without a level plainly", () => {
+  it("calls the summary of an article without a level Standard", () => {
     const { options } = summaryLevelPills([{ level: null, original: true }], "summary", null);
-    expect(options[0].pillLabel).toBe("Original");
+    expect(options[0].pillLabel).toBe("Standard");
   });
 });

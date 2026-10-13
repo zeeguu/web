@@ -94,7 +94,8 @@ export function summaryShareUrl(code, level) {
 export function summaryLevelPills(levels, summaryPart, shownLevel) {
   const options = (levels || []).map(({ level, original }) => ({
     value: original ? "original" : level,
-    pillLabel: original ? (level ? `${level} · Original` : "Original") : level,
+    // The article's own summary is a summary too, not the article: plain level.
+    pillLabel: level || "Standard",
     level,
   }));
   const selected = summaryPart === "summary" ? "original" : shownLevel;
