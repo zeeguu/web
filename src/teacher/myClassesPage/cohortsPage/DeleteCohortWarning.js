@@ -1,18 +1,31 @@
 import React from "react";
 import strings from "../../../i18n/definitions";
-import { StyledButton, PopupButtonWrapper } from "../../styledComponents/TeacherButtons.sc";
+import {
+  StyledButton,
+  PopupButtonWrapper,
+} from "../../styledComponents/TeacherButtons.sc";
 import { StyledDialog } from "../../styledComponents/StyledDialog.sc";
 import CohortItemCard from "./CohortItemCard";
 import { Error } from "../../sharedComponents/Error";
 
-const DeleteCohortWarning = ({ cohort, setShowWarning, deleteCohort, isDeleteError, setIsDeleteError }) => {
+const DeleteCohortWarning = ({
+  cohort,
+  setShowWarning,
+  deleteCohort,
+  isDeleteError,
+  setIsDeleteError,
+}) => {
   const handleCancel = () => {
     setIsDeleteError(false);
     setShowWarning(false);
   };
 
   return (
-    <StyledDialog aria-label="Delete a class warning" onDismiss={handleCancel} max_width="530px">
+    <StyledDialog
+      aria-label="Delete a class warning"
+      onDismiss={handleCancel}
+      max_width="530px"
+    >
       <div className="centered">
         <h1>{strings.dangerzone}</h1>
       </div>

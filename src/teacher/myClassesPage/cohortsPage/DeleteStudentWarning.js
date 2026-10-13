@@ -3,7 +3,11 @@ import strings from "../../../i18n/definitions";
 import { StyledButton, PopupButtonWrapper } from "../../styledComponents/TeacherButtons.sc";
 import { StyledDialog } from "../../styledComponents/StyledDialog.sc";
 
-const DeleteStudentWarning = ({ studentName, setShowDeleteStudentWarning, removeStudent }) => {
+const DeleteStudentWarning = ({
+  studentName,
+  setShowDeleteStudentWarning,
+  removeStudent,
+}) => {
   return (
     <StyledDialog
       aria-label="Delete student warning"
@@ -13,7 +17,8 @@ const DeleteStudentWarning = ({ studentName, setShowDeleteStudentWarning, remove
       <div className="centered">
         <h1>{strings.dangerzone}</h1>
         <p>
-          {strings.wishToDeleteStudent} <b>{studentName}</b> {strings.fromTheClass}
+          {strings.wishToDeleteStudent} <b>{studentName}</b>{" "}
+          {strings.fromTheClass}
         </p>
         <p>{strings.howStudentsRejoinClass}</p>
       </div>
@@ -21,7 +26,10 @@ const DeleteStudentWarning = ({ studentName, setShowDeleteStudentWarning, remove
         <StyledButton $secondary onClick={removeStudent}>
           {strings.remove}
         </StyledButton>
-        <StyledButton $primary onClick={() => setShowDeleteStudentWarning(false)}>
+        <StyledButton
+          $primary
+          onClick={() => setShowDeleteStudentWarning(false)}
+        >
           {strings.cancel}
         </StyledButton>
       </PopupButtonWrapper>
