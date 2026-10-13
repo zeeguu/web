@@ -105,3 +105,15 @@ export function groupBrowsingWords(words) {
   });
   return [...byArticle.values()];
 }
+
+// A reading session's time away from the page, as stretches of a strip that
+// spans the session from start to last action: { left, width } in percent.
+// Each stretch is drawn at least a few pixels wide (see FocusStrip), so a
+// two-second departure still shows as a tick.
+export function awayStretches(session) {
+  const start = new Date(session.start_time).getTime();
+  const span = new Date(session.end_time).getTime() - start;
+  if (!(span > 0)) return [];
+  const percent = (time) => Math.min(100, Math.max(0, ((new Date(time).getTime() - start) / span) * 100));
+  return (session.away || []).map(([from, to]) => ({ left: percent(from), width: percent(to) - percent(from) }));
+}

@@ -187,3 +187,22 @@ export const ArticleGroup = styled.div`
     margin-top: 0.3em;
   }
 `;
+
+// A reading session along its length: on the page in the reading colour,
+// away in grey. A departure is at least 2px, so a two-second one still shows.
+export const FocusStrip = styled.div`
+  position: relative;
+  height: 6px;
+  margin-top: 0.6em;
+  border-radius: 3px;
+  overflow: hidden;
+  background: ${activityReading};
+`;
+
+export const Away = styled.span`
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  min-width: 2px;
+  background: var(--text-muted);
+`;

@@ -8,6 +8,7 @@ import * as w from "./WordsInContext.sc";
 import { excerptParts } from "./excerpt";
 import { formatDate, groupByDate } from "./sessionStats";
 import {
+  awayStretches,
   durationLabel,
   groupBrowsingWords,
   groupExerciseWords,
@@ -178,6 +179,24 @@ function SessionWords({ session, onEditWord, forTeacher, linkArticles }) {
   ));
 }
 
+// For a teacher: the reading session from start to last action, the page in
+// focus in the reading colour and every departure in grey, so twenty short
+// trips elsewhere look different from twenty minutes of reading.
+function FocusStrip({ session }) {
+  const stretches = awayStretches(session);
+  return (
+    <r.FocusStrip
+      role="img"
+      aria-label={`On the page, away ${stretches.length} times`}
+      title={`From ${new Date(session.start_time).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })} to ${new Date(session.end_time).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}: grey is away from the page`}
+    >
+      {stretches.map((stretch, idx) => (
+        <r.Away key={idx} style={{ left: `${stretch.left}%`, width: `${stretch.width}%` }} />
+      ))}
+    </r.FocusStrip>
+  );
+}
+
 function SessionItem({ session, onEditWord, linkArticles, forTeacher, studentArticlePath }) {
   const kind = session.session_type;
   const duration = durationLabel(session.duration);
@@ -223,6 +242,7 @@ function SessionItem({ session, onEditWord, linkArticles, forTeacher, studentArt
           </r.Practised>
         )}
       </r.Details>
+      {forTeacher && kind === "reading" && session.away?.length > 0 && <FocusStrip session={session} />}
       <SessionWords session={session} onEditWord={onEditWord} forTeacher={forTeacher} linkArticles={linkArticles} />
     </r.SessionRow>
   );

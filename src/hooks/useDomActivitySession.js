@@ -99,6 +99,8 @@ export default function useDomActivitySession({
     },
     onAction: () => {
       if (!hasStartedRef.current && startOnActivity) start();
+      // back on the page: counting resumes here, not on the focus itself
+      else if (hasStartedRef.current && isFocused) setIsTimerActive(true);
     },
     timeout: idleTimeout,
     eventsThrottle: 500,
@@ -132,14 +134,14 @@ export default function useDomActivitySession({
     return () => clearInterval(interval);
   }, [hasStarted, isTimerActive, exposeLiveDuration, uploadInterval, uploadRef]);
 
-  // Pause on blur, resume on focus.
+  // Pause on blur; on focus, resume at the first action (onAction above).
+  // Resuming on the focus itself counted up to idleTimeout for every quick
+  // look back at the page: a student who left an article 39 times in 48
+  // minutes got credit for each return (Oct 2026).
   useEffect(() => {
     const handleFocus = () => {
       setIsFocused(true);
-      if (hasStartedRef.current) {
-        setIsTimerActive(true);
-        resetIdleTimer();
-      }
+      if (hasStartedRef.current) resetIdleTimer();
     };
     const handleBlur = () => {
       if (isTimerActive) session.upload();

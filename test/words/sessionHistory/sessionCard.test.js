@@ -9,6 +9,7 @@ import {
   leftThePage,
   practisedCount,
   groupBrowsingWords,
+  awayStretches,
 } from "../../../src/words/sessionHistory/sessionCard";
 
 describe("durationLabel", () => {
@@ -108,5 +109,27 @@ describe("practisedCount", () => {
 
   it("is 0 for an exercise session: its words are the practice", () => {
     expect(practisedCount({ session_type: "exercise", words: [{ practised: true }] })).toBe(0);
+  });
+});
+
+describe("awayStretches", () => {
+  it("places the time away along the session", () => {
+    const session = {
+      start_time: "2026-10-04T17:00:00Z",
+      end_time: "2026-10-04T17:40:00Z",
+      away: [
+        ["2026-10-04T17:10:00Z", "2026-10-04T17:20:00Z"],
+        ["2026-10-04T17:39:00Z", "2026-10-04T17:45:00Z"],
+      ],
+    };
+    expect(awayStretches(session)).toEqual([
+      { left: 25, width: 25 },
+      { left: 97.5, width: 2.5 },
+    ]);
+  });
+
+  it("has nothing to place without a span or away times", () => {
+    expect(awayStretches({ start_time: "2026-10-04T17:00:00Z", end_time: "2026-10-04T17:00:00Z", away: [] })).toEqual([]);
+    expect(awayStretches({ start_time: "2026-10-04T17:00:00Z", end_time: "2026-10-04T17:40:00Z" })).toEqual([]);
   });
 });
