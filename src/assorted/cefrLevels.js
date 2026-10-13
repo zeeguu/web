@@ -8,3 +8,9 @@ export const CEFR_LEVELS = [
   { value: "5", label: "C1 | " + strings.advanced, description: strings.advancedDescription },
   { value: "6", label: "C2 | " + strings.proficiency, description: strings.proficiencyDescription },
 ];
+
+// "A2" -> "2", the CEFR_LEVELS value; "" for anything else.
+export function levelValueFromCefr(code) {
+  const index = ["A1", "A2", "B1", "B2", "C1", "C2"].indexOf(code);
+  return index === -1 ? "" : String(index + 1);
+}

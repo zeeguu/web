@@ -25,6 +25,7 @@ import ButtonContainer from "../_pages_shared/ButtonContainer.sc";
 import Button from "../_pages_shared/Button.sc";
 import RoundedForwardArrow from "@mui/icons-material/ArrowForwardRounded";
 import LoadingAnimation from "../../components/LoadingAnimation";
+import { levelValueFromCefr } from "../../assorted/cefrLevels";
 
 export default function LanguagePreferences() {
   const history = useHistory();
@@ -50,6 +51,8 @@ export default function LanguagePreferences() {
     // Set when signing up from a shared article, where the visitor already
     // picked the language they want translations in.
     translationLanguage: getQueryParam("translation_language") || undefined,
+    // ...and the level they settled on in a shared summary ("A2" -> "2").
+    cefrLevel: levelValueFromCefr(getQueryParam("cefr_level")),
   });
   const { learnedLanguage, cefrLevel, translationLanguage } = languageChoice;
   useFunnelStep("language_preferences");
@@ -76,8 +79,6 @@ export default function LanguagePreferences() {
     LocalStorage.setNativeLanguage(translationLanguage);
   }, [translationLanguage]);
 
-
-
   if (!sortedSystemLanguages) {
     return <LoadingAnimation />;
   }
@@ -94,7 +95,11 @@ export default function LanguagePreferences() {
       scrollToTop();
       return;
     }
-    api.funnelEvent("language_chosen", { learned: learnedLanguage, level: cefrLevel, translation: translationLanguage });
+    api.funnelEvent("language_chosen", {
+      learned: learnedLanguage,
+      level: cefrLevel,
+      translation: translationLanguage,
+    });
 
     // A language that divides along national lines gets one more step; the rest
     // go straight on, so most learners never see it.
@@ -111,7 +116,6 @@ export default function LanguagePreferences() {
       history.push("/account_details");
     }
   }
-
 
   return (
     <CardPage pageWidth={"narrow"} isBackgroundFixed={true}>

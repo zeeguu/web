@@ -5,6 +5,7 @@ import {
   rememberPendingSharedArticle,
   consumePendingSharedArticle,
   summaryShareUrl,
+  summaryLevelPills,
 } from "../../src/reader/publicArticle/publicReaderLogic";
 
 function memoryStorage() {
@@ -95,5 +96,29 @@ describe("consumePendingSharedArticle after signing up from a summary", () => {
     const storage = memoryStorage();
     rememberPendingSharedArticle(storage, "/read/aB3dE5gH7j/summary?next=//evil.example");
     expect(consumePendingSharedArticle(storage)).toBe(null);
+  });
+});
+
+describe("summaryLevelPills", () => {
+  const levels = [
+    { level: "A2", original: false },
+    { level: "B1", original: false },
+    { level: "B2", original: true },
+  ];
+
+  it("labels the article's own summary as the original", () => {
+    const { options } = summaryLevelPills(levels, "summary", "B2");
+    expect(options.map((o) => o.pillLabel)).toEqual(["A2", "B1", "B2 · Original"]);
+    expect(options.map((o) => o.level)).toEqual(["A2", "B1", "B2"]);
+  });
+
+  it("selects the level on screen", () => {
+    expect(summaryLevelPills(levels, "summary:17", "A2").selected).toBe("A2");
+    expect(summaryLevelPills(levels, "summary", "B2").selected).toBe("original");
+  });
+
+  it("names an original without a level plainly", () => {
+    const { options } = summaryLevelPills([{ level: null, original: true }], "summary", null);
+    expect(options[0].pillLabel).toBe("Original");
   });
 });
