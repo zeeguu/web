@@ -1,283 +1,16 @@
 import { useState, useEffect, useContext } from "react";
-import { Link } from "react-router-dom";
 import LoadingAnimation from "../components/LoadingAnimation";
 import EmptyState from "../components/EmptyState";
 import strings from "../i18n/definitions";
 import { setTitle } from "../assorted/setTitle";
 import { APIContext } from "../contexts/APIContext";
-import { SpeechContext } from "../contexts/SpeechContext";
 import EditBookmarkModal from "./EditBookmarkModal";
+import ActivitySummary from "./sessionHistory/ActivitySummary";
+import SessionTimeline from "./sessionHistory/SessionTimeline";
 import * as s from "./SessionHistory.sc";
 import { toast } from "react-toastify";
 import { isTextInSentence } from "../utils/text/expressions";
 import { validateWordInContext } from "../utils/validation/wordContextValidation";
-
-function formatTime(isoString) {
-  const date = new Date(isoString);
-  return date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
-}
-
-function formatDurationShort(ms) {
-  if (!ms) return "0 min";
-  const minutes = Math.round(ms / 60000);
-  if (minutes < 60) return `${minutes} min`;
-  const hours = Math.floor(minutes / 60);
-  const remainingMins = minutes % 60;
-  return remainingMins > 0 ? `${hours}h ${remainingMins} min` : `${hours}h`;
-}
-
-function calculateStats(sessions) {
-  const stats = {
-    reading: { time: 0, words: 0, sessions: 0 },
-    exercise: { time: 0, words: 0, correct: 0, sessions: 0 },
-    browsing: { time: 0, words: 0, sessions: 0 },
-    audio: { time: 0, words: 0, sessions: 0 },
-  };
-
-  sessions.forEach((s) => {
-    const type = s.session_type;
-    if (stats[type]) {
-      stats[type].time += s.duration || 0;
-      stats[type].words += s.word_count || 0;
-      stats[type].sessions += 1;
-      if (type === "exercise") {
-        stats[type].correct += s.correct_count || 0;
-      }
-    }
-  });
-
-  return stats;
-}
-
-function Summary({ sessions, label }) {
-  const stats = calculateStats(sessions);
-  const maxTime = Math.max(stats.reading.time, stats.exercise.time, stats.browsing.time, stats.audio.time, 1);
-
-  return (
-    <>
-      <s.SummaryCard>
-        <s.SummaryTitle>{label}</s.SummaryTitle>
-
-        <s.StatsRow>
-          <s.StatItem color="#1565c0">
-            <div className="label">Reading</div>
-            <div className="time">{formatDurationShort(stats.reading.time)}</div>
-            {stats.reading.words > 0 && <div className="words">{stats.reading.words} words</div>}
-          </s.StatItem>
-          <s.StatItem color="#2e7d32">
-            <div className="label">Exercises</div>
-            <div className="time">{formatDurationShort(stats.exercise.time)}</div>
-            {stats.exercise.words > 0 && <div className="words">{stats.exercise.words} words</div>}
-          </s.StatItem>
-          {stats.audio.time > 0 && (
-            <s.StatItem color="#7b1fa2">
-              <div className="label">Listening</div>
-              <div className="time">{formatDurationShort(stats.audio.time)}</div>
-              {stats.audio.words > 0 && <div className="words">{stats.audio.words} words</div>}
-            </s.StatItem>
-          )}
-          {stats.browsing.time > 0 && (
-            <s.StatItem color="#ff8f00">
-              <div className="label">Browsing</div>
-              <div className="time">{formatDurationShort(stats.browsing.time)}</div>
-              {stats.browsing.words > 0 && <div className="words">{stats.browsing.words} words</div>}
-            </s.StatItem>
-          )}
-        </s.StatsRow>
-
-        <s.BarChartContainer>
-          <s.BarRow>
-            <span className="label">Reading</span>
-            <div className="bar-wrapper">
-              <div className="bar reading" style={{ width: `${(stats.reading.time / maxTime) * 100}%` }} />
-            </div>
-            <span className="time">{formatDurationShort(stats.reading.time)}</span>
-          </s.BarRow>
-          <s.BarRow>
-            <span className="label">Exercising</span>
-            <div className="bar-wrapper">
-              <div className="bar exercise" style={{ width: `${(stats.exercise.time / maxTime) * 100}%` }} />
-            </div>
-            <span className="time">{formatDurationShort(stats.exercise.time)}</span>
-          </s.BarRow>
-          {stats.audio.time > 0 && (
-            <s.BarRow>
-              <span className="label">Listening</span>
-              <div className="bar-wrapper">
-                <div className="bar audio" style={{ width: `${(stats.audio.time / maxTime) * 100}%` }} />
-              </div>
-              <span className="time">{formatDurationShort(stats.audio.time)}</span>
-            </s.BarRow>
-          )}
-          {stats.browsing.time > 0 && (
-            <s.BarRow>
-              <span className="label">Browsing</span>
-              <div className="bar-wrapper">
-                <div className="bar browsing" style={{ width: `${(stats.browsing.time / maxTime) * 100}%` }} />
-              </div>
-              <span className="time">{formatDurationShort(stats.browsing.time)}</span>
-            </s.BarRow>
-          )}
-        </s.BarChartContainer>
-      </s.SummaryCard>
-    </>
-  );
-}
-
-function formatDate(isoString) {
-  const date = new Date(isoString);
-  const today = new Date();
-  const yesterday = new Date(today);
-  yesterday.setDate(yesterday.getDate() - 1);
-
-  if (date.toDateString() === today.toDateString()) {
-    return "Today";
-  } else if (date.toDateString() === yesterday.toDateString()) {
-    return "Yesterday";
-  } else {
-    return date.toLocaleDateString([], { weekday: "long", month: "short", day: "numeric" });
-  }
-}
-
-function groupByDate(sessions) {
-  const groups = {};
-  sessions.forEach((session) => {
-    const date = new Date(session.start_time).toDateString();
-    if (!groups[date]) {
-      groups[date] = [];
-    }
-    groups[date].push(session);
-  });
-  return groups;
-}
-
-function InteractiveWordChip({ word, className, showResult, onEditClick }) {
-  const speech = useContext(SpeechContext);
-  const [isSpeaking, setIsSpeaking] = useState(false);
-
-  const handleSpeak = async (e) => {
-    e.preventDefault();
-    if (!isSpeaking) {
-      try {
-        await speech.speakOut(word.origin, setIsSpeaking);
-      } catch (err) {
-        console.log("Speech error:", err);
-      }
-    }
-  };
-
-  const handleEditClick = (e) => {
-    e.preventDefault();
-    if (word.id && onEditClick) {
-      onEditClick(word.id);
-    }
-  };
-
-  return (
-    <s.WordChip className={className}>
-      <s.ClickableOrigin onClick={handleSpeak} title="Click to pronounce" isSpeaking={isSpeaking}>
-        {word.origin}
-      </s.ClickableOrigin>
-      <span className="separator">→</span>
-      {word.id ? (
-        <s.ClickableTranslation onClick={handleEditClick} title="Click to edit">
-          {word.translation}
-        </s.ClickableTranslation>
-      ) : (
-        <span className="translation">{word.translation}</span>
-      )}
-      {showResult && <span className="result">{word.correct ? "✓" : "✗"}</span>}
-    </s.WordChip>
-  );
-}
-
-function SessionItem({ session, onEditWord }) {
-  const renderWords = () => {
-    if (!session.words || session.words.length === 0) {
-      return null;
-    }
-
-    const getChipClass = (word) => {
-      if (session.session_type === "exercise") {
-        return word.correct ? "correct" : "incorrect";
-      }
-      return session.session_type; // 'reading', 'browsing', or 'audio'
-    };
-
-    return (
-      <s.WordList>
-        {session.words.slice(0, 10).map((word, idx) => (
-          <InteractiveWordChip
-            key={idx}
-            word={word}
-            className={getChipClass(word)}
-            showResult={session.session_type === "exercise"}
-            onEditClick={onEditWord}
-          />
-        ))}
-        {session.words.length > 10 && <s.WordChip className="more">+{session.words.length - 10} more</s.WordChip>}
-      </s.WordList>
-    );
-  };
-
-  return (
-    <s.SessionCard>
-      <s.SessionHeader>
-        <div>
-          <s.SessionTime>{formatTime(session.start_time)}</s.SessionTime>
-          <s.SessionType className={session.session_type}>
-            {session.session_type === "reading" && "Reading"}
-            {session.session_type === "exercise" && "Exercising"}
-            {session.session_type === "browsing" && "Browsing"}
-            {session.session_type === "audio" && "Listening"}
-          </s.SessionType>
-          {session.session_type === "reading" && session.reading_source === "extension" && (
-            <span className="source-badge extension" title="Read via browser extension">
-              ext
-            </span>
-          )}
-          {session.session_type === "reading" && session.reading_source === "web" && (
-            <span className="source-badge web" title="Read in Zeeguu">
-              web
-            </span>
-          )}
-        </div>
-        <s.HeaderActions>
-          {session.focus_level && (
-            <s.FocusBadge className={session.focus_level}>
-              {session.focus_level === "focused" && "Focused"}
-              {session.focus_level === "moderate" && "Moderate"}
-              {session.focus_level === "distracted" && "Distracted"}
-            </s.FocusBadge>
-          )}
-          <s.SessionDuration>{session.duration_readable}</s.SessionDuration>
-        </s.HeaderActions>
-      </s.SessionHeader>
-
-      {session.session_type === "reading" && session.article_title && (
-        <s.ArticleTitle>
-          <Link to={`/read/article?id=${session.article_id}`}>{session.article_title}</Link>
-        </s.ArticleTitle>
-      )}
-
-      {session.session_type === "audio" && session.lesson_title && (
-        <s.ArticleTitle>{session.lesson_title}</s.ArticleTitle>
-      )}
-
-      {session.session_type === "exercise" && (
-        <s.ExerciseStats>
-          {session.word_count} words practiced - {session.accuracy}% correct
-        </s.ExerciseStats>
-      )}
-
-      {session.session_type === "audio" && session.completed && session.word_count > 0 && (
-        <s.ExerciseStats>{session.word_count} words in lesson ✓</s.ExerciseStats>
-      )}
-
-      {renderWords()}
-    </s.SessionCard>
-  );
-}
 
 function getStartOfWeek() {
   const now = new Date();
@@ -528,9 +261,6 @@ export default function SessionHistory() {
     return <LoadingAnimation />;
   }
 
-  const groupedSessions = sessions ? groupByDate(sessions) : {};
-  const dates = Object.keys(groupedSessions);
-
   return (
     <>
       <s.TimeSelector>
@@ -561,27 +291,9 @@ export default function SessionHistory() {
         <EmptyState message={`No activity recorded for ${getDisplayLabel().toLowerCase()}.`} fillHeight={false} />
       )}
 
-      {!loading && sessions && sessions.length > 0 && <Summary sessions={sessions} label="Overview" />}
+      {!loading && sessions && sessions.length > 0 && <ActivitySummary sessions={sessions} label="Overview" />}
 
-      {!loading &&
-        (() => {
-          let shownBrowsingNote = false;
-          return dates.map((date) => (
-            <div key={date}>
-              <s.DateHeader>{formatDate(groupedSessions[date][0].start_time)}</s.DateHeader>
-              {groupedSessions[date].map((session, idx) => {
-                const showNote = session.session_type === "browsing" && !shownBrowsingNote;
-                if (showNote) shownBrowsingNote = true;
-                return (
-                  <div key={idx}>
-                    <SessionItem session={session} onEditWord={handleEditWord} />
-                    {showNote && <s.InfoNote>Browsing sessions are tracked since Dec 11, 2025</s.InfoNote>}
-                  </div>
-                );
-              })}
-            </div>
-          ));
-        })()}
+      {!loading && sessions && <SessionTimeline sessions={sessions} onEditWord={handleEditWord} />}
 
       {/* Loading indicator when fetching bookmark for edit */}
       {loadingBookmark && (
