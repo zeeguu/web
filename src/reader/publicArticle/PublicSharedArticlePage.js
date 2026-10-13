@@ -27,7 +27,6 @@ import {
 } from "./publicReaderLogic";
 import PillSelector from "../../components/PillSelector";
 import { androidAppUrl, iosAppUrl } from "../../utils/misc/appStoreLinks";
-import { articleSourceLabel } from "../../utils/misc/articleHelpers";
 import { SummaryLabel } from "../../articles/ArticlePreviewOverlay.sc";
 
 const TARGET_KEY = "public_reader_translate_to";
@@ -129,10 +128,6 @@ const ErrorCard = styled.div`
   color: var(--text-secondary);
 `;
 
-const FullArticleAction = styled.div`
-  margin-top: 1.5em;
-`;
-
 // Room for the fixed JoinBar so it never covers the last paragraph.
 const JoinBarSpacer = styled.div`
   height: 140px;
@@ -149,7 +144,8 @@ const SUPPORTED_TARGETS = Object.keys(languageNames);
 // analogue of PublicSharedLessonPage; see the API's endpoints/public_article.py.
 //
 // view="summary": the article's AI summary instead of its text, at `level`,
-// with the way out to the full article at its source (/read/<code>/summary).
+// (/read/<code>/summary). The way out to the full article is the Source link
+// at the top: opening it isn't what the page is for.
 // Pills switch between the levels the summary is stored at; the one chosen is
 // the level suggested at sign-up.
 export default function PublicSharedArticlePage({ link, view = "article", level = null }) {
@@ -410,15 +406,6 @@ export default function PublicSharedArticlePage({ link, view = "article", level 
     ? translatable(interactiveFragments[0], article.summary)
     : interactiveFragments.map((interactiveText, index) => translatable(interactiveText, null, index));
 
-  const source = articleSourceLabel(article);
-  const fullArticleAction = isSummary && article.url && (
-    <FullArticleAction>
-      <Button className="full-width-btn" onClick={() => window.open(article.url, "_blank", "noopener,noreferrer")}>
-        {source ? `Read the full article at ${source}` : "Read the full article"}
-      </Button>
-    </FullArticleAction>
-  );
-
   const { options: levelOptions, selected: selectedLevel } = summaryLevelPills(
     article.levels,
     article.summary_part,
@@ -488,7 +475,6 @@ export default function PublicSharedArticlePage({ link, view = "article", level 
           {isSummary && <SummaryLabel>AI summary</SummaryLabel>}
           {levelPills}
           <s.MainText>{bodyText}</s.MainText>
-          {fullArticleAction}
         </div>
         <JoinBarSpacer />
       </s.ArticleReader>
