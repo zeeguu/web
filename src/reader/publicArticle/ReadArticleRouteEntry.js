@@ -7,6 +7,7 @@ import LoadingAnimation from "../../components/LoadingAnimation";
 import ErrorDialog from "../../components/ErrorDialog";
 import useQuery from "../../hooks/useQuery";
 import ArticleReader from "../ArticleReader";
+import SummaryLinkPage from "../../articles/SummaryLinkPage";
 import PublicSharedArticlePage from "./PublicSharedArticlePage";
 
 const loading = <LoadingAnimation specificStyle={{ minHeight: "70vh", justifyContent: "center" }} />;
@@ -35,15 +36,31 @@ export function ArticleLinkRouteEntry() {
 }
 
 // /read/<code>/summary: a shared AI summary. Logged out: the summary on a page
-// of its own, at the level in the link (the sharer's). Logged in: the article
-// in the reader, as /read/<code> -- with an account, the words a reader taps
-// belong in their vocabulary, which the account-less page cannot do.
+// of its own, at the level in the link (the sharer's). Logged in: the summary
+// in the feed's preview overlay, at the reader's own level -- with an account,
+// the words a reader taps belong in their vocabulary, which the account-less
+// page cannot do. From there "Read the article" opens /read/<code>.
 export function SummaryLinkRouteEntry() {
+  const api = useContext(APIContext);
   const { session } = useContext(UserContext);
   const { code } = useParams();
   const query = useQuery();
-  if (session) return <ArticleLinkRouteEntry />;
-  return <PublicSharedArticlePage link={code} view="summary" level={query.get("level")} />;
+  const [article, setArticle] = useState(null);
+  const [failed, setFailed] = useState(false);
+
+  useEffect(() => {
+    if (!session) return; // the public page resolves the link itself
+    setArticle(null);
+    setFailed(false);
+    api.getArticleLinkCard(code, setArticle, () => setFailed(true));
+  }, [api, session, code]);
+
+  if (!session) return <PublicSharedArticlePage link={code} view="summary" level={query.get("level")} />;
+  if (failed) return <UnknownLink />;
+  if (!article) return loading;
+  return (
+    <PrivateRouteWithLayout path="/read/:code/summary" component={SummaryLinkPage} article={article} code={code} />
+  );
 }
 
 // /read/article?id=<id>: in-app navigation and older links. Logged in: the

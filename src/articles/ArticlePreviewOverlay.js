@@ -1,5 +1,6 @@
 import { useContext, useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
+import { useHistory } from "react-router-dom";
 import IosShareRoundedIcon from "@mui/icons-material/IosShareRounded";
 import LocalStorage from "../assorted/LocalStorage";
 import { summaryShareUrl } from "../reader/publicArticle/publicReaderLogic";
@@ -45,9 +46,10 @@ const EXIT_MS = 200;
 
 // The interactive Preview overlay opened when a feed card with no in-app copy
 // is tapped in Preview/Titles browsing mode (articles we CAN read in-app open
-// the full reader directly instead, so this overlay never offers "Read full").
+// the full reader directly instead, so there it never offers "Read full").
 // It carries the interactive title + summary and the actions Open original +
-// Save. The interactive text is built by the card (lazily, on first open) and
+// Save. A summary link (/read/<code>/summary) opens it on its own, with
+// `readInZeeguuPath`: the primary action is then the reader, not the original. The interactive text is built by the card (lazily, on first open) and
 // passed in: it holds the translations tapped out on it, and this overlay
 // unmounts on close — owning it here would lose them on every reopen.
 export default function ArticlePreviewOverlay({
@@ -63,8 +65,10 @@ export default function ArticlePreviewOverlay({
   externalUrl,
   should_open_with_modal,
   setDoNotShowRedirectionModal_UserPreference,
+  readInZeeguuPath = null,
 }) {
   const api = useContext(APIContext);
+  const history = useHistory();
   const [isRedirectionModalOpen, setIsRedirectionModalOpen] = useState(false);
 
   // Same interactive-text preferences as the reader — read only here. They are
@@ -263,6 +267,20 @@ export default function ArticlePreviewOverlay({
   const wordCount = article.metrics?.word_count || article.word_count || 0;
   const readingTime =
     wordCount > 0 ? estimateReadingTime(wordCount).replace(" minutes", " min").replace(" minute", " min") : null;
+  const readingTimeHint = readingTime && <s.ActionHint>· {readingTime}</s.ActionHint>;
+
+  const primaryButton = readInZeeguuPath ? (
+    <Button className="full-width-btn" onClick={() => history.push(readInZeeguuPath)}>
+      Read the article
+      {readingTimeHint}
+    </Button>
+  ) : (
+    <Button className="full-width-btn" onClick={handleOpenOriginal}>
+      Read the original
+      {readingTimeHint}
+      <OpenInNewRoundedIcon style={{ fontSize: 20, marginLeft: 2 }} />
+    </Button>
+  );
 
   return (
     <>
@@ -380,13 +398,7 @@ export default function ArticlePreviewOverlay({
               answers, so the button belongs where the reader arrives at the
               answer. A persistent footer would also show the CTA before there
               was anything to judge it on, and cost a band of height throughout. */}
-          <s.PrimaryAction>
-            <Button className="full-width-btn" onClick={handleOpenOriginal}>
-              Read the original
-              {readingTime && <s.ActionHint>· {readingTime}</s.ActionHint>}
-              <OpenInNewRoundedIcon style={{ fontSize: 20, marginLeft: 2 }} />
-            </Button>
-          </s.PrimaryAction>
+          <s.PrimaryAction>{primaryButton}</s.PrimaryAction>
         </s.ScrollArea>
       </Modal>
 

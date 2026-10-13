@@ -29,6 +29,12 @@ Zeeguu_API.prototype.getArticleLinkInfo = function (link, callback, onError) {
   getExpectingNotFound(`${this.baseAPIurl}/article_link_info/${encodeURIComponent(link)}`, callback, onError);
 };
 
+// A summary link opened with an account: the article as a feed card carries it
+// (summary at the reader's level, with their past translations).
+Zeeguu_API.prototype.getArticleLinkCard = function (link, callback, onError) {
+  getExpectingNotFound(this._appendSessionToUrl(`article_link_card/${encodeURIComponent(link)}`), callback, onError);
+};
+
 // Links handed out on 2026-09-23 looked like /read/article?id=<id>&s=<code>;
 // this gives today's { code } for one.
 Zeeguu_API.prototype.resolveLegacyShareLink = function (code, articleId, callback, onError) {
