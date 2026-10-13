@@ -9,6 +9,8 @@ import { excerptParts } from "./excerpt";
 import { formatDate, groupByDate } from "./sessionStats";
 import {
   awayStretches,
+  openSpan,
+  stripLabel,
   stripWidthPercent,
   durationLabel,
   groupBrowsingWords,
@@ -184,7 +186,11 @@ function SessionWords({ session, onEditWord, forTeacher, linkArticles }) {
 // focus in the reading colour, every trip to another tab or app in red, the
 // article closed (between two readings) in grey -- so twenty short trips
 // elsewhere look different from twenty minutes of reading.
-function FocusStrip({ session, duration }) {
+// Reading sessions a teacher sees with a focus strip: the ones with time away.
+const hasFocusStrip = (session, forTeacher) =>
+  forTeacher && session.session_type === "reading" && session.away?.length > 0;
+
+function FocusStrip({ session, longestSpan }) {
   const stretches = awayStretches(session);
   const time = (iso) => new Date(iso).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
   return (
@@ -193,24 +199,24 @@ function FocusStrip({ session, duration }) {
         role="img"
         aria-label={`On the page, away ${stretches.length} times`}
         title={`From ${time(session.start_time)} to ${time(session.end_time)}: red is away in another tab or app, grey is the article closed`}
-        style={{ flexBasis: `${stripWidthPercent(session)}%` }}
+        style={{ flexBasis: `${stripWidthPercent(session, longestSpan)}%` }}
       >
         {stretches.map((stretch, idx) => (
           <r.Away key={idx} $closed={stretch.closed} style={{ left: `${stretch.left}%`, width: `${stretch.width}%` }} />
         ))}
       </r.FocusStrip>
-      <r.StripMinutes>{duration}</r.StripMinutes>
+      <r.StripMinutes>{stripLabel(session)}</r.StripMinutes>
     </r.FocusRow>
   );
 }
 
-function SessionItem({ session, onEditWord, linkArticles, forTeacher, studentArticlePath }) {
+function SessionItem({ session, onEditWord, linkArticles, forTeacher, studentArticlePath, longestSpan }) {
   const kind = session.session_type;
   const duration = durationLabel(session.duration);
   const details = sessionDetails(session);
   const practised = practisedCount(session);
   // the minutes then stand at the end of the strip instead
-  const withStrip = forTeacher && kind === "reading" && session.away?.length > 0;
+  const withStrip = hasFocusStrip(session, forTeacher);
 
   if (isSlim(session)) {
     return (
@@ -251,7 +257,7 @@ function SessionItem({ session, onEditWord, linkArticles, forTeacher, studentArt
           </r.Practised>
         )}
       </r.Details>
-      {withStrip && <FocusStrip session={session} duration={duration} />}
+      {withStrip && <FocusStrip session={session} longestSpan={longestSpan} />}
       <SessionWords session={session} onEditWord={onEditWord} forTeacher={forTeacher} linkArticles={linkArticles} />
     </r.SessionRow>
   );
@@ -277,8 +283,17 @@ export default function SessionTimeline({
   studentArticlePath = null,
 }) {
   const groupedSessions = groupByDate(sessions);
+  // every strip on the page to one scale: the longest open session fills it
+  const strips = sessions.filter((session) => hasFocusStrip(session, forTeacher));
+  const longestSpan = Math.max(0, ...strips.map(openSpan));
   return (
     <>
+      {strips.length > 0 && (
+        <r.StripLegend>
+          Under a reading: <span className="on">■</span> on the page, <span className="away">■</span> in another tab
+          or app, <span className="closed">■</span> article closed
+        </r.StripLegend>
+      )}
       {Object.keys(groupedSessions).map((date) => (
         <r.Day key={date}>
           <s.DateHeader>{formatDate(groupedSessions[date][0].start_time)}</s.DateHeader>
@@ -291,6 +306,7 @@ export default function SessionTimeline({
               linkArticles={linkArticles}
               forTeacher={forTeacher}
               studentArticlePath={studentArticlePath}
+              longestSpan={longestSpan}
             />
           ))}
         </r.Day>

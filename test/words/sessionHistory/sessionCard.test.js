@@ -11,6 +11,7 @@ import {
   groupBrowsingWords,
   awayStretches,
   stripWidthPercent,
+  stripLabel,
 } from "../../../src/words/sessionHistory/sessionCard";
 
 describe("durationLabel", () => {
@@ -140,9 +141,22 @@ describe("stripWidthPercent", () => {
     start_time: "2026-10-04T17:00:00Z",
     end_time: new Date(Date.parse("2026-10-04T17:00:00Z") + minutes * 60000).toISOString(),
   });
-  it("fills the card at an hour, less for shorter sessions", () => {
-    expect(stripWidthPercent(lasting(30))).toBe(50);
-    expect(stripWidthPercent(lasting(90))).toBe(100);
-    expect(stripWidthPercent(lasting(0.5))).toBe(5);
+  it("fills the card for the longest session, less for shorter ones", () => {
+    const longest = 80 * 60000;
+    expect(stripWidthPercent(lasting(80), longest)).toBe(100);
+    expect(stripWidthPercent(lasting(40), longest)).toBe(50);
+    expect(stripWidthPercent(lasting(1), longest)).toBe(5);
+  });
+});
+
+describe("stripLabel", () => {
+  const session = (countedMinutes, openMinutes) => ({
+    start_time: "2026-10-04T17:00:00Z",
+    end_time: new Date(Date.parse("2026-10-04T17:00:00Z") + openMinutes * 60000).toISOString(),
+    duration: countedMinutes * 60000,
+  });
+  it("says how long the article was open when that was much longer", () => {
+    expect(stripLabel(session(1.3, 79))).toBe("1 min · open 1 h 19 min");
+    expect(stripLabel(session(33, 36))).toBe("33 min");
   });
 });

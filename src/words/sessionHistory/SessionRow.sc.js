@@ -223,3 +223,20 @@ export const StripMinutes = styled.span`
   color: var(--text-primary);
   font-variant-numeric: tabular-nums;
 `;
+
+// What the focus strips' colours mean, once above the sessions.
+export const StripLegend = styled.div`
+  margin-top: 1em;
+  font-size: 0.85em;
+  color: var(--text-secondary);
+
+  .on {
+    color: ${activityReading};
+  }
+  .away {
+    color: ${errorRed};
+  }
+  .closed {
+    color: var(--text-muted);
+  }
+`;

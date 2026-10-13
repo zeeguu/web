@@ -124,11 +124,24 @@ export function awayStretches(session) {
   }));
 }
 
-// How wide a session's focus strip is, in percent of the card: an hour fills
-// it, so a five-minute session reads as short at a glance. Never thinner than
-// a sliver.
-const FULL_STRIP_MS = 60 * 60 * 1000;
-export function stripWidthPercent(session) {
-  const span = new Date(session.end_time) - new Date(session.start_time);
-  return Math.min(100, Math.max(5, (span / FULL_STRIP_MS) * 100));
+// How long a session was open, from start to last action, in ms.
+export function openSpan(session) {
+  return Math.max(0, new Date(session.end_time) - new Date(session.start_time));
+}
+
+// How wide a session's focus strip is, in percent of the card: the longest
+// strip on the page fills it, so a five-minute session reads as short next
+// to an hour. Never thinner than a sliver.
+export function stripWidthPercent(session, longestSpan) {
+  if (!(longestSpan > 0)) return 100;
+  return Math.min(100, Math.max(5, (openSpan(session) / longestSpan) * 100));
+}
+
+// The strip's label: the minutes counted, and how long the article was open
+// when that was much longer ("1 min · open 1 h 19 min").
+export function stripLabel(session) {
+  const counted = durationLabel(session.duration);
+  const open = openSpan(session);
+  if (open - (session.duration || 0) < 5 * 60 * 1000) return counted;
+  return `${counted} · open ${durationLabel(open)}`;
 }
