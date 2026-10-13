@@ -129,19 +129,18 @@ export function openSpan(session) {
   return Math.max(0, new Date(session.end_time) - new Date(session.start_time));
 }
 
-// How wide a session's focus strip is, in percent of the card: the longest
-// strip on the page fills it, so a five-minute session reads as short next
-// to an hour. Never thinner than a sliver.
-export function stripWidthPercent(session, longestSpan) {
-  if (!(longestSpan > 0)) return 100;
-  return Math.min(100, Math.max(5, (openSpan(session) / longestSpan) * 100));
+// A length in percent of the card, on the same scale as the summary bar
+// above the sessions (scale: its total, in ms). Longer than that, e.g. an
+// article left open overnight, stops at the full width.
+export function scaledPercent(ms, scale) {
+  if (!(scale > 0)) return 100;
+  return Math.min(100, Math.max(0, (ms / scale) * 100));
 }
 
-// The strip's label: the minutes counted, and how long the article was open
-// when that was much longer ("1 min · open 1 h 19 min").
-export function stripLabel(session) {
-  const counted = durationLabel(session.duration);
-  const open = openSpan(session);
-  if (open - (session.duration || 0) < 5 * 60 * 1000) return counted;
-  return `${counted} · open ${durationLabel(open)}`;
+// How long a reading's page was open but out of focus (in another tab or
+// app), in ms; the article closed between two readings does not count.
+export function outOfFocusMs(session) {
+  return (session.away || [])
+    .filter(([, , why]) => why !== "closed")
+    .reduce((sum, [from, to]) => sum + Math.max(0, new Date(to) - new Date(from)), 0);
 }

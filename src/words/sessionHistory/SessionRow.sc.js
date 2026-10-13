@@ -191,16 +191,15 @@ export const ArticleGroup = styled.div`
 // A reading session along its length: on the page in the reading colour,
 // away in red, the article closed in grey. A departure is at least 2px, so a
 // two-second one still shows.
-export const FocusRow = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 0.6em;
+// The figures, then the strip under them.
+export const FocusBlock = styled.div`
   margin-top: 0.6em;
 `;
 
 export const FocusStrip = styled.div`
   position: relative;
-  flex: 0 1 auto;
+  min-width: 2px;
+  margin-top: 0.3em;
   height: 8px;
   border-radius: 3px;
   overflow: hidden;
@@ -215,13 +214,17 @@ export const Away = styled.span`
   background: ${({ $closed }) => ($closed ? "var(--text-muted)" : errorRed)};
 `;
 
-// The session's minutes, at the end of its focus strip.
-export const StripMinutes = styled.span`
-  flex: none;
-  font-weight: 700;
+// "44 min active reading · 10 min out of focus", over the strip.
+export const BarLabel = styled.div`
+  font-size: 0.85em;
   white-space: nowrap;
-  color: var(--text-primary);
+  color: var(--text-secondary);
   font-variant-numeric: tabular-nums;
+
+  .away {
+    color: ${errorRed};
+    font-weight: 600;
+  }
 `;
 
 // What the focus strips' colours mean, once above the sessions.

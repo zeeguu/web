@@ -10,8 +10,8 @@ import {
   practisedCount,
   groupBrowsingWords,
   awayStretches,
-  stripWidthPercent,
-  stripLabel,
+  scaledPercent,
+  outOfFocusMs,
 } from "../../../src/words/sessionHistory/sessionCard";
 
 describe("durationLabel", () => {
@@ -136,27 +136,25 @@ describe("awayStretches", () => {
   });
 });
 
-describe("stripWidthPercent", () => {
-  const lasting = (minutes) => ({
-    start_time: "2026-10-04T17:00:00Z",
-    end_time: new Date(Date.parse("2026-10-04T17:00:00Z") + minutes * 60000).toISOString(),
-  });
-  it("fills the card for the longest session, less for shorter ones", () => {
-    const longest = 80 * 60000;
-    expect(stripWidthPercent(lasting(80), longest)).toBe(100);
-    expect(stripWidthPercent(lasting(40), longest)).toBe(50);
-    expect(stripWidthPercent(lasting(1), longest)).toBe(5);
+describe("scaledPercent", () => {
+  it("draws lengths to the summary's scale, full width at most", () => {
+    const total = 4 * 60 * 60000;
+    expect(scaledPercent(60 * 60000, total)).toBe(25);
+    expect(scaledPercent(12 * 60 * 60000, total)).toBe(100);
+    expect(scaledPercent(60000, 0)).toBe(100);
   });
 });
 
-describe("stripLabel", () => {
-  const session = (countedMinutes, openMinutes) => ({
-    start_time: "2026-10-04T17:00:00Z",
-    end_time: new Date(Date.parse("2026-10-04T17:00:00Z") + openMinutes * 60000).toISOString(),
-    duration: countedMinutes * 60000,
-  });
-  it("says how long the article was open when that was much longer", () => {
-    expect(stripLabel(session(1.3, 79))).toBe("1 min · open 1 h 19 min");
-    expect(stripLabel(session(33, 36))).toBe("33 min");
+describe("outOfFocusMs", () => {
+  it("adds up the time in another tab or app, not the article closed", () => {
+    const session = {
+      away: [
+        ["2026-10-04T17:10:00Z", "2026-10-04T17:20:00Z"],
+        ["2026-10-04T17:30:00Z", "2026-10-04T17:31:00Z"],
+        ["2026-10-04T17:40:00Z", "2026-10-04T18:40:00Z", "closed"],
+      ],
+    };
+    expect(outOfFocusMs(session)).toBe(11 * 60000);
+    expect(outOfFocusMs({})).toBe(0);
   });
 });

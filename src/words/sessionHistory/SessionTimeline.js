@@ -10,8 +10,8 @@ import { formatDate, groupByDate } from "./sessionStats";
 import {
   awayStretches,
   openSpan,
-  stripLabel,
-  stripWidthPercent,
+  outOfFocusMs,
+  scaledPercent,
   durationLabel,
   groupBrowsingWords,
   groupExerciseWords,
@@ -190,27 +190,33 @@ function SessionWords({ session, onEditWord, forTeacher, linkArticles }) {
 const hasFocusStrip = (session, forTeacher) =>
   forTeacher && session.session_type === "reading" && session.away?.length > 0;
 
-function FocusStrip({ session, longestSpan }) {
+function FocusStrip({ session, scale }) {
   const stretches = awayStretches(session);
   const time = (iso) => new Date(iso).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
   return (
-    <r.FocusRow>
+    <r.FocusBlock>
+      <r.BarLabel>
+        {durationLabel(session.duration)} active reading ·{" "}
+        <span className="away">
+          {durationLabel(outOfFocusMs(session))} out of focus
+          {session.interruptions > 0 && `, left ${session.interruptions}×`}
+        </span>
+      </r.BarLabel>
       <r.FocusStrip
         role="img"
-        aria-label={`On the page, away ${stretches.length} times`}
+        aria-label={`Open ${durationLabel(openSpan(session))}, away ${stretches.length} times`}
         title={`From ${time(session.start_time)} to ${time(session.end_time)}: red is away in another tab or app, grey is the article closed`}
-        style={{ flexBasis: `${stripWidthPercent(session, longestSpan)}%` }}
+        style={{ width: `${scaledPercent(openSpan(session), scale)}%` }}
       >
         {stretches.map((stretch, idx) => (
           <r.Away key={idx} $closed={stretch.closed} style={{ left: `${stretch.left}%`, width: `${stretch.width}%` }} />
         ))}
       </r.FocusStrip>
-      <r.StripMinutes>{stripLabel(session)}</r.StripMinutes>
-    </r.FocusRow>
+    </r.FocusBlock>
   );
 }
 
-function SessionItem({ session, onEditWord, linkArticles, forTeacher, studentArticlePath, longestSpan }) {
+function SessionItem({ session, onEditWord, linkArticles, forTeacher, studentArticlePath, scale }) {
   const kind = session.session_type;
   const duration = durationLabel(session.duration);
   const details = sessionDetails(session);
@@ -245,7 +251,7 @@ function SessionItem({ session, onEditWord, linkArticles, forTeacher, studentArt
       </r.Head>
       <r.Details>
         {details.join(" · ")}
-        {leftThePage(session) && (
+        {!withStrip && leftThePage(session) && (
           <r.Distracted title="Switched to another tab or app this many times during the session">
             {leftThePage(session)}
           </r.Distracted>
@@ -257,7 +263,7 @@ function SessionItem({ session, onEditWord, linkArticles, forTeacher, studentArt
           </r.Practised>
         )}
       </r.Details>
-      {withStrip && <FocusStrip session={session} longestSpan={longestSpan} />}
+      {withStrip && <FocusStrip session={session} scale={scale} />}
       <SessionWords session={session} onEditWord={onEditWord} forTeacher={forTeacher} linkArticles={linkArticles} />
     </r.SessionRow>
   );
@@ -283,15 +289,15 @@ export default function SessionTimeline({
   studentArticlePath = null,
 }) {
   const groupedSessions = groupByDate(sessions);
-  // every strip on the page to one scale: the longest open session fills it
+  // the strips drawn to the summary bar's scale: its total fills the width
   const strips = sessions.filter((session) => hasFocusStrip(session, forTeacher));
-  const longestSpan = Math.max(0, ...strips.map(openSpan));
+  const scale = sessions.reduce((sum, session) => sum + (session.duration || 0), 0);
   return (
     <>
       {strips.length > 0 && (
         <r.StripLegend>
-          Under a reading: <span className="on">■</span> on the page, <span className="away">■</span> in another tab
-          or app, <span className="closed">■</span> article closed
+          Under a reading, to the scale of the bar above: <span className="on">■</span> on the page,{" "}
+          <span className="away">■</span> in another tab or app, <span className="closed">■</span> article closed
         </r.StripLegend>
       )}
       {Object.keys(groupedSessions).map((date) => (
@@ -306,7 +312,7 @@ export default function SessionTimeline({
               linkArticles={linkArticles}
               forTeacher={forTeacher}
               studentArticlePath={studentArticlePath}
-              longestSpan={longestSpan}
+              scale={scale}
             />
           ))}
         </r.Day>
