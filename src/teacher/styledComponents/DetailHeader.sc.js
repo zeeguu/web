@@ -7,6 +7,16 @@ import styled from "styled-components";
 export const DetailHeader = styled.header`
   margin: 3.5rem 0 1.25rem;
 
+  /* A student's page: name and breadcrumb over the centred tabs. A class's
+     page keeps its title left, sharing the row with Add/Edit buttons. */
+  ${({ $centered }) =>
+    $centered &&
+    `
+    text-align: center;
+    .back > button { margin: 0 auto; }
+    .title-row { justify-content: center; }
+  `}
+
   /* The way back, named: a breadcrumb above the title. */
   .back {
     margin-bottom: 0.5rem;

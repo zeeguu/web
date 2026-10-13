@@ -4,7 +4,17 @@ import useScrollDirection from "../hooks/useScrollDirection";
 import { useIsOffline } from "../contexts/ConnectivityContext";
 
 // Renders a title and the corresponding tabs links
-export default function TopTabs({ title, tabsAndLinks, hasBackground = false, isCompact = false }) {
+//
+// stickyOnScroll: the row sticks to the top and slides away while scrolling
+// down (the learner's feed and Words). Off where the tabs sit under a page
+// header (teacher pages): sliding up, the row covered the header's back arrow.
+export default function TopTabs({
+  title,
+  tabsAndLinks,
+  hasBackground = false,
+  isCompact = false,
+  stickyOnScroll = true,
+}) {
   const scrollDirection = useScrollDirection();
   const isOffline = useIsOffline();
 
@@ -22,7 +32,7 @@ export default function TopTabs({ title, tabsAndLinks, hasBackground = false, is
   }
 
   return (
-    <s.TopTabsWrapper className={scrollDirection === "down" ? "header--hidden" : ""}>
+    <s.TopTabsWrapper className={stickyOnScroll ? (scrollDirection === "down" ? "header--hidden" : "") : "in-flow"}>
       <s.TopTabs>
         <div
           className={`all__tabs${hasBackground ? " all__tabs--with-bg" : ""}${isCompact ? " all__tabs--compact" : ""}`}
