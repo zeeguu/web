@@ -12,9 +12,7 @@ export const convertTime = (accumulatedTime, setTime) => {
   if (accumulatedTime < 60) {
     setTime(seconds + "s");
   } else {
-    hours < 1
-      ? setTime(minutes + "m" + seconds + "s")
-      : setTime(hours + strings.hours + minutes + "m");
+    hours < 1 ? setTime(minutes + "m" + seconds + "s") : setTime(hours + strings.hours + minutes + "m");
   }
 };
 
@@ -26,17 +24,19 @@ export const convertExactTimeString = (accumulatedTime) => {
 };
 
 //This should be localised STRINGS
-export const timeExplanation = (student) => {
-  const readingTime = convertExactTimeString(student.reading_time);
-  const exerciseTime = convertExactTimeString(student.exercise_time);
-  return (
-    <div>
-      <p>
-        {strings.exactReadingTime} {readingTime}
-      </p>
-      <p>
-        {strings.exactExerciseTime} {exerciseTime}
-      </p>
-    </div>
-  );
-};
+export const timeExplanation = (student) => (
+  <div>
+    <p>
+      {strings.exactReadingTime} {convertExactTimeString(student.reading_time)}
+    </p>
+    <p>
+      {strings.exactExerciseTime} {convertExactTimeString(student.exercise_time)}
+    </p>
+    <p>
+      {strings.exactBrowsingTime} {convertExactTimeString(student.browsing_time || 0)}
+    </p>
+    <p>
+      {strings.exactListeningTime} {convertExactTimeString(student.audio_time || 0)}
+    </p>
+  </div>
+);

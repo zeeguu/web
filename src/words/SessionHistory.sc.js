@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { activityReading, activityExercise, activityBrowsing, activityListening } from "../components/colors";
 
 export const SessionCard = styled.div`
   background: var(--card-bg);
@@ -304,19 +305,19 @@ export const BarRow = styled.div`
   }
 
   .bar.reading {
-    background: #64b5f6;
+    background: ${activityReading};
   }
 
   .bar.exercise {
-    background: #81c784;
+    background: ${activityExercise};
   }
 
   .bar.browsing {
-    background: #ffb74d;
+    background: ${activityBrowsing};
   }
 
   .bar.audio {
-    background: #ba68c8;
+    background: ${activityListening};
   }
 
   .time {

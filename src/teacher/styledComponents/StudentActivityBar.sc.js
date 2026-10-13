@@ -1,38 +1,20 @@
 import styled, { css } from "styled-components";
-import { darkBlue, zeeguuWarmYellow } from "../../components/colors";
+import { activityReading, activityExercise, activityBrowsing, activityListening } from "../../components/colors";
+
+const SEGMENT_COLORS = {
+  reading_time: activityReading,
+  exercise_time: activityExercise,
+  browsing_time: activityBrowsing,
+  audio_time: activityListening,
+};
 
 export const StudentActivityBar = styled.div`
   .activity-bar {
     height: 20px;
     display: flex;
-    color: black;
-    display: flex;
-    justify-content: center;
     margin-top: 2em;
-  }
-
-  ${(props) =>
-    props.isFirst &&
-    css`
-      .activity-bar {
-        margin-top: 2.3em;
-      }
-    `}
-
-  .activity-bar#reading {
-    border-radius: ${(props) => props.readingCorners};
-    background-color: ${darkBlue};
-  }
-
-  .activity-bar#exercises {
-    border-radius: ${(props) => props.exerciseCorners};
-    background-color: ${zeeguuWarmYellow};
-  }
-
-  .activtybar-hours-minutes {
-    color: black;
-    font-size: x-small;
-    margin-top: 30px;
+    border-radius: 25px;
+    overflow: hidden;
   }
 
   ${(props) =>
@@ -42,4 +24,15 @@ export const StudentActivityBar = styled.div`
         margin-top: 2em;
       }
     `}
+
+  .activtybar-hours-minutes {
+    color: var(--text-primary);
+    font-size: x-small;
+    margin-top: 30px;
+  }
+`;
+
+export const Segment = styled.div`
+  height: 100%;
+  background-color: ${({ $kind }) => SEGMENT_COLORS[$kind]};
 `;
