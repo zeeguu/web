@@ -22,6 +22,7 @@ export default function StudentTabs({ studentID, cohortID, cohortName, title }) 
     { text: "Activity", link: base, isActive: (_, loc) => loc.pathname === base },
     { text: "Reading", link: `${base}/reading` },
     { text: "Exercises", link: `${base}/exercises` },
+    { text: "Words", link: `${base}/words` },
   ];
 
   return (

@@ -2,6 +2,7 @@ import { useState, useContext } from "react";
 import { Link } from "react-router-dom";
 import { SpeechContext } from "../../contexts/SpeechContext";
 import * as s from "../SessionHistory.sc";
+import * as w from "./WordsInContext.sc";
 import { formatTime, formatDate, groupByDate } from "./sessionStats";
 
 function InteractiveWordChip({ word, className, showResult, onEditClick, showContext }) {
@@ -54,6 +55,24 @@ function SessionItem({ session, onEditWord, linkArticles, forTeacher }) {
   const renderWords = () => {
     if (!session.words || session.words.length === 0) {
       return null;
+    }
+
+    // For a teacher: every word in its sentence, as the old Reading tab showed
+    // them -- a hover tooltip doesn't exist on a tablet.
+    if (forTeacher && session.words.some((word) => word.context)) {
+      return (
+        <w.WordsInContext>
+          {session.words.map((word, idx) => (
+            <w.WordInContext key={idx}>
+              <span className="pair">
+                {word.origin} → {word.translation}
+              </span>
+              {word.practised && <span title="Practised in exercises since"> ★</span>}
+              {word.context && <div className="sentence">{word.context}</div>}
+            </w.WordInContext>
+          ))}
+        </w.WordsInContext>
+      );
     }
 
     const getChipClass = (word) => {
@@ -157,9 +176,9 @@ function SessionItem({ session, onEditWord, linkArticles, forTeacher }) {
 // out where the words aren't the viewer's own.
 // linkArticles: reading sessions link to the article in the reader. Off for a
 // teacher, whose opening it would count as their own reading.
-// forTeacher: also the text's length and difficulty on reading sessions, a
-// word's sentence on hover and a star on words practised since (the teacher
-// variant of the API sends those).
+// forTeacher: also the text's length and difficulty on reading sessions, and
+// translated words listed in their sentence with a star on those practised
+// since (the teacher variant of the API sends those).
 export default function SessionTimeline({ sessions, onEditWord = null, linkArticles = true, forTeacher = false }) {
   const groupedSessions = groupByDate(sessions);
   let shownBrowsingNote = false;

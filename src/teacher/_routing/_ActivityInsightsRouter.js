@@ -8,6 +8,7 @@ import * as s from "../../components/ColumnWidth.sc";
 import StudentReadingInsights from "../myClassesPage/readingPage/StudentReadingInsights";
 import StudentExercisesInsights from "../myClassesPage/exercisesPage/StudentExercisesInsights";
 import StudentActivity from "../myClassesPage/activityPage/StudentActivity";
+import StudentWords from "../myClassesPage/wordsPage/StudentWords";
 import { useContext, useEffect, useState } from "react";
 import LoadingAnimation from "../../components/LoadingAnimation";
 import { APIContext } from "../../contexts/APIContext";
@@ -28,6 +29,7 @@ export default function ActivityInsightsRouter() {
   let title = strings.s_activity;
   if (path.endsWith("/exercises")) title = strings.s_exercises;
   else if (path.endsWith("/reading")) title = strings.s_reading;
+  else if (path.includes("/words")) title = strings.s_words;
 
   useEffect(() => {
     api.getCohortName(cohortID, (cohort) => setCohortName(cohort.name));
@@ -58,6 +60,8 @@ export default function ActivityInsightsRouter() {
           exact
           component={StudentActivity}
         />
+
+        <PrivateRoute path="/teacher/classes/viewStudent/:studentID/class/:cohortID/words" component={StudentWords} />
 
         <PrivateRoute
           path="/teacher/classes/viewStudent/:studentID/class/:cohortID/reading"
