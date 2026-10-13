@@ -46,7 +46,14 @@ export default function StudentActivity() {
   let timeline = (
     <>
       <ActivitySummary sessions={sessions} />
-      <SessionTimeline sessions={sessions} linkArticles={false} forTeacher={true} />
+      <SessionTimeline
+        sessions={sessions}
+        linkArticles={false}
+        forTeacher={true}
+        studentArticlePath={(articleId) =>
+          `/teacher/classes/viewStudent/${studentID}/class/${cohortID}/read/${articleId}`
+        }
+      />
     </>
   );
   if (sessions === undefined) timeline = <LoadingAnimation />;

@@ -105,13 +105,7 @@ function ExerciseWords({ words, onEditWord, forTeacher }) {
         <r.GroupLabel>{label}</r.GroupLabel>
         <r.Pairs>
           {list.map((word, idx) => (
-            <WordPair
-              key={idx}
-              word={word}
-              results={word.results}
-              onEditClick={onEditWord}
-              forTeacher={forTeacher}
-            />
+            <WordPair key={idx} word={word} results={word.results} onEditClick={onEditWord} forTeacher={forTeacher} />
           ))}
         </r.Pairs>
       </r.ExerciseGroup>
@@ -165,7 +159,7 @@ function SessionWords({ session, onEditWord, forTeacher }) {
   );
 }
 
-function SessionItem({ session, onEditWord, linkArticles, forTeacher }) {
+function SessionItem({ session, onEditWord, linkArticles, forTeacher, studentArticlePath }) {
   const kind = session.session_type;
   const duration = durationLabel(session.duration);
   const details = sessionDetails(session);
@@ -184,13 +178,9 @@ function SessionItem({ session, onEditWord, linkArticles, forTeacher }) {
   let title = sessionTitle(session);
   if (kind === "reading" && linkArticles && session.article_id) {
     title = <Link to={`/read/article?id=${session.article_id}`}>{title}</Link>;
-  } else if (kind === "reading" && forTeacher && session.article_url) {
-    // the original at its publisher: the reader would log a session for the teacher
-    title = (
-      <a href={session.article_url} target="_blank" rel="noopener noreferrer">
-        {title} ↗
-      </a>
-    );
+  } else if (kind === "reading" && forTeacher && studentArticlePath && session.article_id) {
+    // the text as the student left it, their translations in place
+    title = <Link to={studentArticlePath(session.article_id)}>{title}</Link>;
   }
 
   return (
@@ -222,7 +212,15 @@ function SessionItem({ session, onEditWord, linkArticles, forTeacher }) {
 // forTeacher: every word shown without its translation, each opening the
 // sentence it was translated in (the teacher variant of the API sends the
 // sentences).
-export default function SessionTimeline({ sessions, onEditWord = null, linkArticles = true, forTeacher = false }) {
+// studentArticlePath(articleId): for a teacher, where a reading session's
+// title leads -- the text with the student's translations in place.
+export default function SessionTimeline({
+  sessions,
+  onEditWord = null,
+  linkArticles = true,
+  forTeacher = false,
+  studentArticlePath = null,
+}) {
   const groupedSessions = groupByDate(sessions);
   return (
     <>
@@ -237,6 +235,7 @@ export default function SessionTimeline({ sessions, onEditWord = null, linkArtic
               onEditWord={onEditWord}
               linkArticles={linkArticles}
               forTeacher={forTeacher}
+              studentArticlePath={studentArticlePath}
             />
           ))}
         </r.Day>
