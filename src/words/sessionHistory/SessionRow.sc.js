@@ -155,3 +155,20 @@ export const GroupLabel = styled.div`
   letter-spacing: 0.04em;
   color: var(--text-secondary);
 `;
+
+// The article a browsing session's words were translated in, above them.
+export const ArticleLabel = styled.div`
+  margin-top: 0.8em;
+  font-size: 0.85em;
+  color: var(--text-secondary);
+
+  a {
+    color: inherit;
+  }
+`;
+
+export const ArticleGroup = styled.div`
+  ${ArticleLabel} + ${Pairs} {
+    margin-top: 0.3em;
+  }
+`;
