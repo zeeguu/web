@@ -49,7 +49,7 @@ export default function StudentRow({ student, cohortID, classMaxTime, duplicates
               className="duplicate"
               title="Two accounts with the same name or the same email before the @. Look at both; the account-merge tool can join them."
             >
-              Same student? Also here as {duplicates.map((other) => other.email).join(", ")}
+              Could be a duplicate account of {duplicates.map((other) => other.email).join(" or ")}
             </t.Sub>
           )}
         </td>
