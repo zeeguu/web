@@ -9,6 +9,7 @@ import { excerptParts } from "./excerpt";
 import { formatDate, groupByDate } from "./sessionStats";
 import {
   awayStretches,
+  stripWidthPercent,
   durationLabel,
   groupBrowsingWords,
   groupExerciseWords,
@@ -183,18 +184,23 @@ function SessionWords({ session, onEditWord, forTeacher, linkArticles }) {
 // focus in the reading colour, every trip to another tab or app in red, the
 // article closed (between two readings) in grey -- so twenty short trips
 // elsewhere look different from twenty minutes of reading.
-function FocusStrip({ session }) {
+function FocusStrip({ session, duration }) {
   const stretches = awayStretches(session);
+  const time = (iso) => new Date(iso).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
   return (
-    <r.FocusStrip
-      role="img"
-      aria-label={`On the page, away ${stretches.length} times`}
-      title={`From ${new Date(session.start_time).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })} to ${new Date(session.end_time).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}: red is away in another tab or app, grey is the article closed`}
-    >
-      {stretches.map((stretch, idx) => (
-        <r.Away key={idx} $closed={stretch.closed} style={{ left: `${stretch.left}%`, width: `${stretch.width}%` }} />
-      ))}
-    </r.FocusStrip>
+    <r.FocusRow>
+      <r.FocusStrip
+        role="img"
+        aria-label={`On the page, away ${stretches.length} times`}
+        title={`From ${time(session.start_time)} to ${time(session.end_time)}: red is away in another tab or app, grey is the article closed`}
+        style={{ flexBasis: `${stripWidthPercent(session)}%` }}
+      >
+        {stretches.map((stretch, idx) => (
+          <r.Away key={idx} $closed={stretch.closed} style={{ left: `${stretch.left}%`, width: `${stretch.width}%` }} />
+        ))}
+      </r.FocusStrip>
+      <r.StripMinutes>{duration}</r.StripMinutes>
+    </r.FocusRow>
   );
 }
 
@@ -203,6 +209,8 @@ function SessionItem({ session, onEditWord, linkArticles, forTeacher, studentArt
   const duration = durationLabel(session.duration);
   const details = sessionDetails(session);
   const practised = practisedCount(session);
+  // the minutes then stand at the end of the strip instead
+  const withStrip = forTeacher && kind === "reading" && session.away?.length > 0;
 
   if (isSlim(session)) {
     return (
@@ -227,7 +235,7 @@ function SessionItem({ session, onEditWord, linkArticles, forTeacher, studentArt
     <r.SessionRow $kind={kind}>
       <r.Head>
         <r.Title>{title}</r.Title>
-        <r.Duration>{duration}</r.Duration>
+        {!withStrip && <r.Duration>{duration}</r.Duration>}
       </r.Head>
       <r.Details>
         {details.join(" · ")}
@@ -243,7 +251,7 @@ function SessionItem({ session, onEditWord, linkArticles, forTeacher, studentArt
           </r.Practised>
         )}
       </r.Details>
-      {forTeacher && kind === "reading" && session.away?.length > 0 && <FocusStrip session={session} />}
+      {withStrip && <FocusStrip session={session} duration={duration} />}
       <SessionWords session={session} onEditWord={onEditWord} forTeacher={forTeacher} linkArticles={linkArticles} />
     </r.SessionRow>
   );

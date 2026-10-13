@@ -123,3 +123,12 @@ export function awayStretches(session) {
     closed: why === "closed",
   }));
 }
+
+// How wide a session's focus strip is, in percent of the card: an hour fills
+// it, so a five-minute session reads as short at a glance. Never thinner than
+// a sliver.
+const FULL_STRIP_MS = 60 * 60 * 1000;
+export function stripWidthPercent(session) {
+  const span = new Date(session.end_time) - new Date(session.start_time);
+  return Math.min(100, Math.max(5, (span / FULL_STRIP_MS) * 100));
+}

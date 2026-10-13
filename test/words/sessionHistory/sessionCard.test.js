@@ -10,6 +10,7 @@ import {
   practisedCount,
   groupBrowsingWords,
   awayStretches,
+  stripWidthPercent,
 } from "../../../src/words/sessionHistory/sessionCard";
 
 describe("durationLabel", () => {
@@ -131,5 +132,17 @@ describe("awayStretches", () => {
   it("has nothing to place without a span or away times", () => {
     expect(awayStretches({ start_time: "2026-10-04T17:00:00Z", end_time: "2026-10-04T17:00:00Z", away: [] })).toEqual([]);
     expect(awayStretches({ start_time: "2026-10-04T17:00:00Z", end_time: "2026-10-04T17:40:00Z" })).toEqual([]);
+  });
+});
+
+describe("stripWidthPercent", () => {
+  const lasting = (minutes) => ({
+    start_time: "2026-10-04T17:00:00Z",
+    end_time: new Date(Date.parse("2026-10-04T17:00:00Z") + minutes * 60000).toISOString(),
+  });
+  it("fills the card at an hour, less for shorter sessions", () => {
+    expect(stripWidthPercent(lasting(30))).toBe(50);
+    expect(stripWidthPercent(lasting(90))).toBe(100);
+    expect(stripWidthPercent(lasting(0.5))).toBe(5);
   });
 });
