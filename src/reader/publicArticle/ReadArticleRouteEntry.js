@@ -7,6 +7,7 @@ import LoadingAnimation from "../../components/LoadingAnimation";
 import ErrorDialog from "../../components/ErrorDialog";
 import useQuery from "../../hooks/useQuery";
 import ArticleReader from "../ArticleReader";
+import LocalStorage from "../../assorted/LocalStorage";
 import PublicSharedArticlePage from "./PublicSharedArticlePage";
 
 const loading = <LoadingAnimation specificStyle={{ minHeight: "70vh", justifyContent: "center" }} />;
@@ -31,9 +32,19 @@ export function ArticleLinkRouteEntry() {
   if (!session) return <PublicSharedArticlePage link={code} />;
   if (failed) return <UnknownLink />;
   if (!info) return loading;
-  return (
-    <PrivateRouteWithLayout path="/read/:code" component={ArticleReader} articleId={String(info.article_id)} />
-  );
+  return <PrivateRouteWithLayout path="/read/:code" component={ArticleReader} articleId={String(info.article_id)} />;
+}
+
+// /read/<code>/summary: the article's AI summary on a page of its own, for
+// everyone -- the shared-summary link, and History's way back to a preview.
+// Logged out, the level comes from the link (the sharer's); logged in, it is
+// the reader's own and translation is not metered.
+export function SummaryLinkRouteEntry() {
+  const { session } = useContext(UserContext);
+  const { code } = useParams();
+  const query = useQuery();
+  const level = session ? LocalStorage.getLearnedCefrLevel() : query.get("level");
+  return <PublicSharedArticlePage link={code} view="summary" level={level} isLoggedIn={!!session} />;
 }
 
 // /read/article?id=<id>: in-app navigation and older links. Logged in: the
@@ -42,7 +53,8 @@ export function ArticleLinkRouteEntry() {
 // ?id=…&s=<code> links handed out on 2026-09-23, which redirect to today's link.
 export default function ReadArticleRouteEntry(props) {
   const query = useQuery();
-  if (query.get("s") && query.get("id")) return <LegacyShareLinkRedirect code={query.get("s")} articleId={query.get("id")} />;
+  if (query.get("s") && query.get("id"))
+    return <LegacyShareLinkRedirect code={query.get("s")} articleId={query.get("id")} />;
   return <PrivateRouteWithLayout {...props} component={ArticleReader} />;
 }
 
@@ -52,7 +64,12 @@ function LegacyShareLinkRedirect({ code, articleId }) {
   const [failed, setFailed] = useState(false);
 
   useEffect(() => {
-    api.resolveLegacyShareLink(code, articleId, (data) => setLink(data.code), () => setFailed(true));
+    api.resolveLegacyShareLink(
+      code,
+      articleId,
+      (data) => setLink(data.code),
+      () => setFailed(true),
+    );
   }, [api, code, articleId]);
 
   if (failed) return <UnknownLink />;

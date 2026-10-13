@@ -18,13 +18,11 @@ import { setTitle } from "../../assorted/setTitle";
 import { TranslatableText } from "../TranslatableText";
 import PublicInteractiveText from "../PublicInteractiveText";
 import * as s from "../ArticleReader.sc";
-import {
-  FREE_WORDS,
-  createWordMeter,
-  pickTranslationTarget,
-  rememberPendingSharedArticle,
-} from "./publicReaderLogic";
+import { FREE_WORDS, createWordMeter, pickTranslationTarget, rememberPendingSharedArticle } from "./publicReaderLogic";
 import { androidAppUrl, iosAppUrl } from "../../utils/misc/appStoreLinks";
+import { articleSourceLabel } from "../../utils/misc/articleHelpers";
+import BackArrow from "../../pages/Settings/SharedComponents/BackArrow";
+import { SummaryLabel } from "../../articles/ArticlePreviewOverlay.sc";
 
 const TARGET_KEY = "public_reader_translate_to";
 
@@ -125,6 +123,10 @@ const ErrorCard = styled.div`
   color: var(--text-secondary);
 `;
 
+const FullArticleAction = styled.div`
+  margin-top: 1.5em;
+`;
+
 // Room for the fixed JoinBar so it never covers the last paragraph.
 const JoinBarSpacer = styled.div`
   height: 140px;
@@ -135,7 +137,13 @@ const SUPPORTED_TARGETS = Object.keys(languageNames);
 // Account-less reading of a shared article: the whole text, a handful of free
 // word translations, then an invitation to sign up or get the app. The article
 // analogue of PublicSharedLessonPage; see the API's endpoints/public_article.py.
-export default function PublicSharedArticlePage({ link }) {
+//
+// view="summary": the article's AI summary instead of its text, at `level`,
+// with the way out to the full article at its source (/read/<code>/summary).
+// isLoggedIn: a reader with an account -- translation isn't metered and there
+// is nothing to sign up for.
+export default function PublicSharedArticlePage({ link, view = "article", level = null, isLoggedIn = false }) {
+  const isSummary = view === "summary";
   const api = useContext(APIContext);
   const history = useHistory();
   const isNativeApp = Capacitor.isNativePlatform();
@@ -158,8 +166,10 @@ export default function PublicSharedArticlePage({ link }) {
   useEffect(() => {
     setArticle(null);
     setError(null);
-    api.getPublicArticle(
-      link,
+    const load = isSummary
+      ? (onLoaded, onError) => api.getPublicArticleSummary(link, level, onLoaded, onError)
+      : (onLoaded, onError) => api.getPublicArticle(link, onLoaded, onError);
+    load(
       (data) => {
         setArticle(data);
         setTitle(data.title);
@@ -176,21 +186,23 @@ export default function PublicSharedArticlePage({ link }) {
       () => setError("This article isn't available."),
     );
     setRemaining(meterRef.current.remaining());
-  }, [api, link]);
+  }, [api, link, isSummary, level]);
 
   // The target is read through a ref at tap time, so choosing or changing it
   // doesn't rebuild the text and throw away the translations already shown.
   const { interactiveTitle, interactiveFragments } = useMemo(() => {
     if (!article) return {};
-    const meter = {
-      allow: (text) => {
-        const ok = meterRef.current.allow(text);
-        setRemaining(meterRef.current.remaining());
-        return ok;
-      },
-      remaining: () => meterRef.current.remaining(),
-      onBlocked: (reason) => setWall(reason),
-    };
+    const meter = isLoggedIn
+      ? { allow: () => true, remaining: () => Infinity, onBlocked: (reason) => setWall(reason) }
+      : {
+          allow: (text) => {
+            const ok = meterRef.current.allow(text);
+            setRemaining(meterRef.current.remaining());
+            return ok;
+          },
+          remaining: () => meterRef.current.remaining(),
+          onBlocked: (reason) => setWall(reason),
+        };
     const suggestion = pickTranslationTarget(
       navigator.languages || [navigator.language],
       article.language,
@@ -209,6 +221,14 @@ export default function PublicSharedArticlePage({ link }) {
       sourceId: article.source_id,
       zeeguuSpeech: { language: article.language },
     };
+    if (isSummary) {
+      const summaryText = (tokens, part) =>
+        tokens && new PublicInteractiveText({ ...common, part, tokenizedParagraphs: tokens });
+      return {
+        interactiveTitle: summaryText(article.interactiveTitle?.tokens, article.title_part),
+        interactiveFragments: [summaryText(article.interactiveSummary?.tokens, article.summary_part)],
+      };
+    }
     return {
       interactiveTitle: new PublicInteractiveText({
         ...common,
@@ -225,7 +245,7 @@ export default function PublicSharedArticlePage({ link }) {
           }),
       ),
     };
-  }, [api, article, link]);
+  }, [api, article, link, isSummary, isLoggedIn]);
 
   function changeTarget(code) {
     try {
@@ -271,7 +291,11 @@ export default function PublicSharedArticlePage({ link }) {
     history.push(`/log_in?redirectLink=${encodeURIComponent(window.location.href)}`);
   }
 
-  const topBar = (
+  const topBar = isLoggedIn ? (
+    <TopBar>
+      <BackArrow />
+    </TopBar>
+  ) : (
     <TopBar>
       <Brand href="/">Zeeguu</Brand>
       <LogInLink onClick={logIn}>Log in</LogInLink>
@@ -357,13 +381,32 @@ export default function PublicSharedArticlePage({ link }) {
 
   const wallMessage = (
     <>
-      {wall === "rate"
-        ? "Lots of people are translating right now. "
-        : `You have translated ${FREE_WORDS} words. `}
-      Create a Zeeguu account to translate every word, practice the ones you tapped, and get {articleLanguageName}{" "}
-      news at your level.
+      {wall === "rate" ? "Lots of people are translating right now. " : `You have translated ${FREE_WORDS} words. `}
+      Create a Zeeguu account to translate every word, practice the ones you tapped, and get {articleLanguageName} news
+      at your level.
       {storeLinks}
     </>
+  );
+
+  // A summary text may come without tokens (an old row): show it plain.
+  const translatable = (interactiveText, plain, key) =>
+    interactiveText ? (
+      <TranslatableText key={key} interactiveText={interactiveText} translating={true} pronouncing={false} />
+    ) : (
+      plain
+    );
+  const titleText = translatable(interactiveTitle, article.title);
+  const bodyText = isSummary
+    ? translatable(interactiveFragments[0], article.summary)
+    : interactiveFragments.map((interactiveText, index) => translatable(interactiveText, null, index));
+
+  const source = articleSourceLabel(article);
+  const fullArticleAction = isSummary && article.url && (
+    <FullArticleAction>
+      <Button className="full-width-btn" onClick={() => window.open(article.url, "_blank", "noopener,noreferrer")}>
+        {source ? `Read the full article at ${source}` : "Read the full article"}
+      </Button>
+    </FullArticleAction>
   );
 
   // KioskLayout: the app's scroll container without its navigation — the
@@ -397,9 +440,7 @@ export default function PublicSharedArticlePage({ link }) {
 
       <s.ArticleReader>
         <div id="text">
-          <h1>
-            <TranslatableText interactiveText={interactiveTitle} translating={true} pronouncing={false} />
-          </h1>
+          <h1>{titleText}</h1>
           <s.ArticleInfoContainer>
             <ArticleStatInfo articleInfo={article} />
           </s.ArticleInfoContainer>
@@ -410,23 +451,23 @@ export default function PublicSharedArticlePage({ link }) {
             </s.ArticleImgContainer>
           )}
 
-          <s.MainText>
-            {interactiveFragments.map((interactiveText, index) => (
-              <TranslatableText key={index} interactiveText={interactiveText} translating={true} pronouncing={false} />
-            ))}
-          </s.MainText>
+          {isSummary && <SummaryLabel>AI summary</SummaryLabel>}
+          <s.MainText>{bodyText}</s.MainText>
+          {fullArticleAction}
         </div>
-        <JoinBarSpacer />
+        {!isLoggedIn && <JoinBarSpacer />}
       </s.ArticleReader>
 
-      <JoinBar>
-        <JoinBarRow>
-          <TapHint>{hint}</TapHint>
-          <Button className="small" onClick={signUp}>
-            Create account
-          </Button>
-        </JoinBarRow>
-      </JoinBar>
+      {!isLoggedIn && (
+        <JoinBar>
+          <JoinBarRow>
+            <TapHint>{hint}</TapHint>
+            <Button className="small" onClick={signUp}>
+              Create account
+            </Button>
+          </JoinBarRow>
+        </JoinBar>
+      )}
     </KioskLayout>
   );
 }

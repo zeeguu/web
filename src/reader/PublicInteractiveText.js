@@ -11,10 +11,13 @@ import InteractiveText from "./InteractiveText";
 // reason is "limit" (the free words are used up) or "rate" (the server said 429).
 // askTarget(onChosen, onCancelled): the visitor hasn't picked a translation
 // language yet; the page asks, then the tap resumes.
+// part: how /public_translate addresses this text, when it is not the article's
+// title or a fragment (the summary page's texts; the API names them).
 export default class PublicInteractiveText extends InteractiveText {
-  constructor({ link, getTargetLanguage, askTarget, meter, ...rest }) {
+  constructor({ link, getTargetLanguage, askTarget, meter, part, ...rest }) {
     super({ ...rest, source: "public_article" });
     this.link = link;
+    this.part = part;
     this.getTargetLanguage = getTargetLanguage;
     this.askTarget = askTarget;
     this.meter = meter;
@@ -52,12 +55,13 @@ export default class PublicInteractiveText extends InteractiveText {
 
     const isSeparatedMwe = !!word.token?.mwe_is_separated;
     const position = {
-      part: this.contextIdentifier?.context_type === "ArticleTitle" ? "title" : this.contextIdentifier?.article_fragment_id,
-      paragraph_i: word.token.paragraph_i,
+      part: this.part ?? this.articlePart(),
+      // Article fragments name it paragraph_i; stored summary tokens, par_i.
+      paragraph_i: word.token.paragraph_i ?? word.token.par_i,
       sent_i: word.token.sent_i,
       token_i: word.token.token_i,
       total_tokens: word.total_tokens,
-      partner_token_i: isSeparatedMwe ? (word.token.mwe_partner_indices?.[0] ?? -1) : -1,
+      partner_token_i: isSeparatedMwe ? word.token.mwe_partner_indices?.[0] ?? -1 : -1,
     };
 
     this.api
@@ -72,6 +76,12 @@ export default class PublicInteractiveText extends InteractiveText {
         else console.error("Public translation failed:", e);
         onSuccess();
       });
+  }
+
+  articlePart() {
+    return this.contextIdentifier?.context_type === "ArticleTitle"
+      ? "title"
+      : this.contextIdentifier?.article_fragment_id;
   }
 
   // No account: nothing to log, no alternatives menu, no audio.

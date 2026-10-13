@@ -78,3 +78,11 @@ export function consumePendingSharedArticle(storage, now = Date.now()) {
   if (!/^\/read\/[A-Za-z0-9]+$/.test(pending.path)) return null;
   return pending.path;
 }
+
+// The link a "Share summary" button hands out: the article's public code, plus
+// the level the sharer reads it at so the friend sees the same summary. The
+// level says nothing about who shared it.
+export function summaryShareUrl(code, level) {
+  const url = `https://zeeguu.org/read/${code}/summary`;
+  return level ? `${url}?level=${encodeURIComponent(level)}` : url;
+}
