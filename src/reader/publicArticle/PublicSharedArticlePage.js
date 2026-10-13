@@ -21,7 +21,6 @@ import * as s from "../ArticleReader.sc";
 import { FREE_WORDS, createWordMeter, pickTranslationTarget, rememberPendingSharedArticle } from "./publicReaderLogic";
 import { androidAppUrl, iosAppUrl } from "../../utils/misc/appStoreLinks";
 import { articleSourceLabel } from "../../utils/misc/articleHelpers";
-import BackArrow from "../../pages/Settings/SharedComponents/BackArrow";
 import { SummaryLabel } from "../../articles/ArticlePreviewOverlay.sc";
 
 const TARGET_KEY = "public_reader_translate_to";
@@ -140,14 +139,12 @@ const SUPPORTED_TARGETS = Object.keys(languageNames);
 //
 // view="summary": the article's AI summary instead of its text, at `level`,
 // with the way out to the full article at its source (/read/<code>/summary).
-// isLoggedIn: a reader with an account -- translation isn't metered and there
-// is nothing to sign up for.
-export default function PublicSharedArticlePage({ link, view = "article", level = null, isLoggedIn = false }) {
+export default function PublicSharedArticlePage({ link, view = "article", level = null }) {
   const isSummary = view === "summary";
   const api = useContext(APIContext);
   const history = useHistory();
   const isNativeApp = Capacitor.isNativePlatform();
-  useFunnelStep("shared_article");
+  useFunnelStep(isSummary ? "shared_summary" : "shared_article");
 
   const [article, setArticle] = useState(null);
   const [error, setError] = useState(null);
@@ -192,17 +189,15 @@ export default function PublicSharedArticlePage({ link, view = "article", level 
   // doesn't rebuild the text and throw away the translations already shown.
   const { interactiveTitle, interactiveFragments } = useMemo(() => {
     if (!article) return {};
-    const meter = isLoggedIn
-      ? { allow: () => true, remaining: () => Infinity, onBlocked: (reason) => setWall(reason) }
-      : {
-          allow: (text) => {
-            const ok = meterRef.current.allow(text);
-            setRemaining(meterRef.current.remaining());
-            return ok;
-          },
-          remaining: () => meterRef.current.remaining(),
-          onBlocked: (reason) => setWall(reason),
-        };
+    const meter = {
+      allow: (text) => {
+        const ok = meterRef.current.allow(text);
+        setRemaining(meterRef.current.remaining());
+        return ok;
+      },
+      remaining: () => meterRef.current.remaining(),
+      onBlocked: (reason) => setWall(reason),
+    };
     const suggestion = pickTranslationTarget(
       navigator.languages || [navigator.language],
       article.language,
@@ -245,7 +240,7 @@ export default function PublicSharedArticlePage({ link, view = "article", level 
           }),
       ),
     };
-  }, [api, article, link, isSummary, isLoggedIn]);
+  }, [api, article, link, isSummary]);
 
   function changeTarget(code) {
     try {
@@ -291,11 +286,7 @@ export default function PublicSharedArticlePage({ link, view = "article", level 
     history.push(`/log_in?redirectLink=${encodeURIComponent(window.location.href)}`);
   }
 
-  const topBar = isLoggedIn ? (
-    <TopBar>
-      <BackArrow />
-    </TopBar>
-  ) : (
+  const topBar = (
     <TopBar>
       <Brand href="/">Zeeguu</Brand>
       <LogInLink onClick={logIn}>Log in</LogInLink>
@@ -455,19 +446,17 @@ export default function PublicSharedArticlePage({ link, view = "article", level 
           <s.MainText>{bodyText}</s.MainText>
           {fullArticleAction}
         </div>
-        {!isLoggedIn && <JoinBarSpacer />}
+        <JoinBarSpacer />
       </s.ArticleReader>
 
-      {!isLoggedIn && (
-        <JoinBar>
-          <JoinBarRow>
-            <TapHint>{hint}</TapHint>
-            <Button className="small" onClick={signUp}>
-              Create account
-            </Button>
-          </JoinBarRow>
-        </JoinBar>
-      )}
+      <JoinBar>
+        <JoinBarRow>
+          <TapHint>{hint}</TapHint>
+          <Button className="small" onClick={signUp}>
+            Create account
+          </Button>
+        </JoinBarRow>
+      </JoinBar>
     </KioskLayout>
   );
 }

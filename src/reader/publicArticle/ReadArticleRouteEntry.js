@@ -7,7 +7,6 @@ import LoadingAnimation from "../../components/LoadingAnimation";
 import ErrorDialog from "../../components/ErrorDialog";
 import useQuery from "../../hooks/useQuery";
 import ArticleReader from "../ArticleReader";
-import LocalStorage from "../../assorted/LocalStorage";
 import PublicSharedArticlePage from "./PublicSharedArticlePage";
 
 const loading = <LoadingAnimation specificStyle={{ minHeight: "70vh", justifyContent: "center" }} />;
@@ -35,16 +34,16 @@ export function ArticleLinkRouteEntry() {
   return <PrivateRouteWithLayout path="/read/:code" component={ArticleReader} articleId={String(info.article_id)} />;
 }
 
-// /read/<code>/summary: the article's AI summary on a page of its own, for
-// everyone -- the shared-summary link, and History's way back to a preview.
-// Logged out, the level comes from the link (the sharer's); logged in, it is
-// the reader's own and translation is not metered.
+// /read/<code>/summary: a shared AI summary. Logged out: the summary on a page
+// of its own, at the level in the link (the sharer's). Logged in: the article
+// in the reader, as /read/<code> -- with an account, the words a reader taps
+// belong in their vocabulary, which the account-less page cannot do.
 export function SummaryLinkRouteEntry() {
   const { session } = useContext(UserContext);
   const { code } = useParams();
   const query = useQuery();
-  const level = session ? LocalStorage.getLearnedCefrLevel() : query.get("level");
-  return <PublicSharedArticlePage link={code} view="summary" level={level} isLoggedIn={!!session} />;
+  if (session) return <ArticleLinkRouteEntry />;
+  return <PublicSharedArticlePage link={code} view="summary" level={query.get("level")} />;
 }
 
 // /read/article?id=<id>: in-app navigation and older links. Logged in: the
