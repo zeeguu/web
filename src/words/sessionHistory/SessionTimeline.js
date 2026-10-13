@@ -8,6 +8,7 @@ import { excerptParts } from "./excerpt";
 import { formatDate, groupByDate } from "./sessionStats";
 import {
   durationLabel,
+  groupBrowsingWords,
   groupExerciseWords,
   isSlim,
   leftThePage,
@@ -120,8 +121,10 @@ function ExerciseWords({ words, onEditWord, forTeacher }) {
 
 // A session's words. The learner sees the first few and can show the rest; a
 // teacher sees them all and opens one at a time in its sentence (the word
-// highlighted, "…" where the stored excerpt was cut).
-function SessionWords({ session, onEditWord, forTeacher }) {
+// highlighted, "…" where the stored excerpt was cut). A browsing session's
+// words stand under the title of the article they were translated in on the
+// article list; the learner's title opens the article.
+function SessionWords({ session, onEditWord, forTeacher, linkArticles }) {
   const [open, setOpen] = useState(null);
   const [showAll, setShowAll] = useState(false);
   const words = session.words || [];
@@ -131,32 +134,44 @@ function SessionWords({ session, onEditWord, forTeacher }) {
     return <ExerciseWords words={words} onEditWord={onEditWord} forTeacher={forTeacher} />;
   }
 
-  const shown = forTeacher || showAll ? words : words.slice(0, LEARNER_WORDS_SHOWN);
+  const browsing = session.session_type === "browsing";
+  const shown = forTeacher || showAll || browsing ? words : words.slice(0, LEARNER_WORDS_SHOWN);
   const hidden = words.length - shown.length;
   const opened = open !== null ? words[open] : null;
+  const groups = browsing ? groupBrowsingWords(shown) : [{ articleId: null, title: null, words: shown }];
 
-  return (
-    <>
+  return groups.map((group, groupIdx) => (
+    <r.ArticleGroup key={group.articleId ?? "none"}>
+      {group.title && (
+        <r.ArticleLabel>
+          {linkArticles ? <Link to={`/read/article?id=${group.articleId}`}>{group.title}</Link> : group.title}
+        </r.ArticleLabel>
+      )}
       <r.Pairs>
-        {shown.map((word, idx) => (
-          <WordPair
-            key={idx}
-            word={word}
-            onEditClick={onEditWord}
-            onToggle={forTeacher ? () => setOpen(open === idx ? null : idx) : null}
-            isOpen={open === idx}
-            forTeacher={forTeacher}
-          />
-        ))}
-        {hidden > 0 && <r.More onClick={() => setShowAll(true)}>+{hidden} more</r.More>}
+        {group.words.map((word) => {
+          const idx = words.indexOf(word);
+          return (
+            <WordPair
+              key={idx}
+              word={word}
+              onEditClick={onEditWord}
+              onToggle={forTeacher ? () => setOpen(open === idx ? null : idx) : null}
+              isOpen={open === idx}
+              forTeacher={forTeacher}
+            />
+          );
+        })}
+        {hidden > 0 && groupIdx === groups.length - 1 && (
+          <r.More onClick={() => setShowAll(true)}>+{hidden} more</r.More>
+        )}
       </r.Pairs>
-      {opened?.context && (
+      {opened?.context && group.words.includes(opened) && (
         <w.Excerpt>
           {excerptParts(opened).map((part, idx) => (part.isWord ? <mark key={idx}>{part.text}</mark> : part.text))}
         </w.Excerpt>
       )}
-    </>
-  );
+    </r.ArticleGroup>
+  ));
 }
 
 function SessionItem({ session, onEditWord, linkArticles, forTeacher, studentArticlePath }) {
@@ -197,7 +212,7 @@ function SessionItem({ session, onEditWord, linkArticles, forTeacher, studentArt
           </r.Distracted>
         )}
       </r.Details>
-      <SessionWords session={session} onEditWord={onEditWord} forTeacher={forTeacher} />
+      <SessionWords session={session} onEditWord={onEditWord} forTeacher={forTeacher} linkArticles={linkArticles} />
     </r.SessionRow>
   );
 }

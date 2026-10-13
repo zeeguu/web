@@ -85,3 +85,16 @@ export function leftThePage(session) {
   if (session.focus_level !== "distracted" || !(session.interruptions > 0)) return null;
   return `left the page ${session.interruptions}×`;
 }
+
+// A browsing session's words under the article whose title or summary they
+// were translated in, articles in the order first translated in. Words with
+// no article (older sessions, search) form a group with no title.
+export function groupBrowsingWords(words) {
+  const byArticle = new Map();
+  (words || []).forEach((word) => {
+    const key = word.article_id ?? null;
+    if (!byArticle.has(key)) byArticle.set(key, { articleId: key, title: word.article_title ?? null, words: [] });
+    byArticle.get(key).words.push(word);
+  });
+  return [...byArticle.values()];
+}
