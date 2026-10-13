@@ -254,6 +254,9 @@ export const StripLegend = styled.div`
   .exercise {
     color: ${activityExercise};
   }
+  .browsing {
+    color: ${activityBrowsing};
+  }
   .away {
     color: ${errorRed};
   }

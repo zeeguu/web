@@ -189,9 +189,11 @@ function SessionWords({ session, onEditWord, forTeacher, linkArticles }) {
 // Every reading and exercise session shown as a card gets a focus strip (a
 // slim one is a single line) -- for the teacher, and for the learners
 // themselves, so their own minutes explain themselves.
+// Browsing logs no focus or idle events: its bar is just the time counted.
 const STRIP_KINDS = {
   reading: { doing: "reading", left: "the article" },
   exercise: { doing: "exercises", left: "the page" },
+  browsing: { doing: "browsing", countedOnly: true },
 };
 // (end_time: exercise sessions have one since Oct 2026)
 const hasFocusStrip = (session) => !!STRIP_KINDS[session.session_type] && !!session.end_time && !isSlim(session);
@@ -204,13 +206,14 @@ const hasFocusStrip = (session) => !!STRIP_KINDS[session.session_type] && !!sess
 // far longer than they were used, show only what is known, from the start:
 // nobody knows when in those hours the work happened.
 function FocusStrip({ session, scale, duration }) {
-  const { doing, left } = STRIP_KINDS[session.session_type];
+  const { doing, left, countedOnly } = STRIP_KINDS[session.session_type];
   const kind = session.session_type;
-  const outOfFocus = outOfFocusMs(session);
-  const idle = idleMs(session);
-  const summary = idleUnplaced(session) ? summaryStrip(session) : null;
-  const stretches = summary ? summary.stretches : awayStretches(session);
-  const length = summary ? summary.length : openSpan(session);
+  const outOfFocus = countedOnly ? 0 : outOfFocusMs(session);
+  const idle = countedOnly ? 0 : idleMs(session);
+  const summary = !countedOnly && idleUnplaced(session) ? summaryStrip(session) : null;
+  let stretches = summary ? summary.stretches : awayStretches(session);
+  let length = summary ? summary.length : openSpan(session);
+  if (countedOnly) [stretches, length] = [[], session.duration || 0];
   const time = (iso) => new Date(iso).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
   const showIdle = idle >= 60 * 1000;
   return (
@@ -221,9 +224,11 @@ function FocusStrip({ session, scale, duration }) {
           role="img"
           aria-label={`Open ${durationLabel(openSpan(session))}: ${durationLabel(session.duration)} ${doing}, ${durationLabel(outOfFocus)} away, ${durationLabel(idle)} idle`}
           title={
-            summary
-              ? `The ${doing} and the time away; when in the session they happened was not recorded`
-              : `From ${time(session.start_time)} to ${time(session.end_time)}: red is away in another tab or app, pale is idle on the page, grey is the article closed`
+            countedOnly
+              ? `The time ${doing}`
+              : summary
+                ? `The ${doing} and the time away; when in the session they happened was not recorded`
+                : `From ${time(session.start_time)} to ${time(session.end_time)}: red is away in another tab or app, pale is idle on the page, grey is the article closed`
           }
           style={{ flexBasis: `${scaledPercent(length, scale)}%` }}
         >
@@ -280,8 +285,8 @@ function SessionItem({ session, onEditWord, linkArticles, forTeacher, studentArt
 
   return (
     <r.SessionRow $kind={kind}>
-      {/* with a strip, "10 min exercises" already says what the title would */}
-      {!(withStrip && kind === "exercise") && (
+      {/* with a strip, "10 min exercises" / "2 min browsing" already says what the title would */}
+      {!(withStrip && kind !== "reading") && (
         <r.Head>
           <r.Title>{title}</r.Title>
           {!withStrip && <r.Duration>{duration}</r.Duration>}
@@ -334,9 +339,10 @@ export default function SessionTimeline({
     <>
       {strips.length > 0 && (
         <r.StripLegend>
-          Under a session, to the scale of the bar above: <span className="reading">■</span> reading or{" "}
-          <span className="exercise">■</span> exercises, <span className="away">■</span> in another tab or app,{" "}
-          <span className="idle">■</span> idle on the page, <span className="closed">■</span> article closed
+          Under a session, to the scale of the bar above: <span className="reading">■</span> reading,{" "}
+          <span className="exercise">■</span> exercises or <span className="browsing">■</span> browsing,{" "}
+          <span className="away">■</span> in another tab or app, <span className="idle">■</span> idle on the page,{" "}
+          <span className="closed">■</span> article closed
         </r.StripLegend>
       )}
       {Object.keys(groupedSessions).map((date) => (
