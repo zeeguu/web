@@ -6,7 +6,7 @@ import { ScrollableTable } from "../../styledComponents/ScrollableTable.sc";
 import * as t from "./ClassTable.sc";
 import StudentRow from "./StudentRow";
 import { likelyDuplicates } from "./duplicateStudents";
-import { DEFAULT_STUDENT_SORT, STUDENT_SORTS, matchesSearch, sortStudents } from "./studentSort";
+import { DEFAULT_STUDENT_SORT, SORT_COLUMNS, matchesSearch, nextSort, sortStudents } from "./studentSort";
 import { CLASS_PERIODS } from "./studentRowText";
 
 // One order for every class: a teacher who wants the idle students on top
@@ -15,9 +15,10 @@ const SORT_KEY = "teacher_student_sort";
 
 function rememberedSort() {
   try {
-    return window.localStorage.getItem(SORT_KEY) || DEFAULT_STUDENT_SORT;
+    const sort = JSON.parse(window.localStorage.getItem(SORT_KEY));
+    return SORT_COLUMNS[sort?.key] ? sort : DEFAULT_STUDENT_SORT;
   } catch {
-    return DEFAULT_STUDENT_SORT; // storage blocked
+    return DEFAULT_STUDENT_SORT; // storage blocked, or an older string value
   }
 }
 
@@ -46,14 +47,28 @@ export default function StudentsActivityOverviewContent({
   const [sort, setSort] = useState(rememberedSort);
   const [search, setSearch] = useState("");
 
-  function chooseSort(value) {
-    setSort(value);
+  function sortBy(key) {
+    const next = nextSort(sort, key);
+    setSort(next);
     try {
-      window.localStorage.setItem(SORT_KEY, value);
+      window.localStorage.setItem(SORT_KEY, JSON.stringify(next));
     } catch {
       // storage blocked: the choice lasts for this visit
     }
   }
+
+  // A column header that sorts: the arrow shows the current order.
+  const header = (key, label, className) => {
+    const active = sort.key === key;
+    return (
+      <th className={className} aria-sort={active ? (sort.dir === "asc" ? "ascending" : "descending") : "none"}>
+        <t.SortButton onClick={() => sortBy(key)} $active={active}>
+          {label}
+          <span className="arrow">{active ? (sort.dir === "asc" ? "▲" : "▼") : ""}</span>
+        </t.SortButton>
+      </th>
+    );
+  };
 
   const duplicates = likelyDuplicates(students);
   const shown = sortStudents(
@@ -67,12 +82,12 @@ export default function StudentsActivityOverviewContent({
       <t.Table>
         <thead>
           <tr>
-            <th>Student</th>
-            <th>Last active</th>
-            <th>Time</th>
-            <th className="num">Texts</th>
-            <th className="num">Exercises</th>
-            <th className="num">Correct</th>
+            {header("name", "Student")}
+            {header("last_active", "Last active")}
+            {header("time", "Time")}
+            {header("texts", "Texts", "num")}
+            {header("exercises", "Exercises", "num")}
+            {header("correct", "Correct", "num")}
             <th aria-label="Remove" />
           </tr>
         </thead>
@@ -97,7 +112,6 @@ export default function StudentsActivityOverviewContent({
     <>
       <t.Toolbar>
         <FilterInput value={search} onChange={setSearch} placeholder="Find a student" ariaLabel="Find a student" />
-        {selector(STUDENT_SORTS, sort, chooseSort, "Sort the students")}
         <div className="period">{selector(CLASS_PERIODS, String(period), onPeriodChange, "Period")}</div>
       </t.Toolbar>
       {table}

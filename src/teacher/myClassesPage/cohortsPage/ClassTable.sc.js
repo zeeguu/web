@@ -121,3 +121,28 @@ export const Remove = styled.button`
     }
   }
 `;
+
+// A header that sorts its column: the label, and an arrow when it is the
+// column the table is sorted by.
+export const SortButton = styled.button`
+  border: none;
+  background: none;
+  padding: 0;
+  font: inherit;
+  text-transform: inherit;
+  letter-spacing: inherit;
+  color: ${({ $active }) => ($active ? "var(--text-primary)" : "inherit")};
+  cursor: pointer;
+
+  .arrow {
+    display: inline-block;
+    width: 1em;
+    margin-left: 0.2em;
+    font-size: 0.8em;
+  }
+  @media (hover: hover) {
+    &:hover {
+      color: var(--text-primary);
+    }
+  }
+`;
