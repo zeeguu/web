@@ -56,6 +56,13 @@ export const Table = styled.table`
      name and last active; the time bar across the full width; the counts as
      a sentence. The headers stay, as a row of sort buttons. */
   @media (max-width: ${PHONE_WIDTH}) {
+    /* as a table it would size itself to the one-line header row and run
+       off the screen */
+    &,
+    thead,
+    tbody {
+      display: block;
+    }
     thead tr {
       display: flex;
       flex-wrap: wrap;
@@ -126,7 +133,10 @@ export const Table = styled.table`
     td.correct::before {
       content: "· ";
     }
-    .email {
+    .email,
+    tr.idle td.texts,
+    tr.idle td.exercises,
+    tr.idle td.correct {
       display: none;
     }
   }

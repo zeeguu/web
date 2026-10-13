@@ -40,7 +40,7 @@ export default function StudentRow({ student, cohortID, classMaxTime, duplicates
 
   return (
     <>
-      <t.Row onClick={open}>
+      <t.Row onClick={open} className={student.total_time > 0 ? undefined : "idle"}>
         <td className="name">
           <t.Name>{student.name}</t.Name>
           <t.Sub className="email">{student.email}</t.Sub>

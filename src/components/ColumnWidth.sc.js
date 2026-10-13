@@ -68,10 +68,16 @@ const WideColumn = styled.div`
   margin-right: auto;
 `;
 
+// The teacher dashboard's column. Once the screen is narrower than the
+// column, keep a gutter so the content does not touch the screen's edge.
 const WidestColumn = styled.div`
   max-width: 1150px;
   margin-left: auto;
   margin-right: auto;
+  @media (max-width: 1182px) {
+    margin-left: 16px;
+    margin-right: 16px;
+  }
 `;
 export {
   NarrowColumn,
