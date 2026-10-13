@@ -5,15 +5,16 @@ import LoadingAnimation from "../../../components/LoadingAnimation";
 import strings from "../../../i18n/definitions";
 import { CenteredContentContainer } from "../../../components/ColumnWidth.sc";
 import { ScrollableTable } from "../../styledComponents/ScrollableTable.sc";
-import { likelyDuplicates } from "./duplicateStudents";
+import { likelyDuplicates, classListOrder } from "./duplicateStudents";
 
 const StudentsActivityOverviewContent = ({ cohortID, students, setForceUpdate, removeStudentFromCohort }) => {
   const [firstStudent, setFirstStudent] = useState(null);
   const [restOfStudents, setRestOfStudents] = useState(null);
 
   useEffect(() => {
-    setFirstStudent(students[0]);
-    setRestOfStudents(students.slice(1, students.length));
+    const ordered = classListOrder(students);
+    setFirstStudent(ordered[0]);
+    setRestOfStudents(ordered.slice(1));
     //eslint-disable-next-line
   }, [students]);
 

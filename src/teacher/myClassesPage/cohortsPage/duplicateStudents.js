@@ -21,3 +21,26 @@ export function likelyDuplicates(students) {
   }
   return result;
 }
+
+// The class list's order: by name, with each likely duplicate right after the
+// first account of its group, so a teacher sees the pair side by side even
+// when the two names differ (same email before the @).
+export function classListOrder(students, duplicates = likelyDuplicates(students)) {
+  const byName = [...students].sort(
+    (a, b) => normalizedName(a).localeCompare(normalizedName(b)) || (a.id ?? 0) - (b.id ?? 0),
+  );
+  const placed = new Set();
+  const ordered = [];
+  for (const student of byName) {
+    if (placed.has(student.id)) continue;
+    ordered.push(student);
+    placed.add(student.id);
+    for (const other of byName) {
+      if (!placed.has(other.id) && (duplicates[student.id] || []).some((d) => d.id === other.id)) {
+        ordered.push(other);
+        placed.add(other.id);
+      }
+    }
+  }
+  return ordered;
+}
