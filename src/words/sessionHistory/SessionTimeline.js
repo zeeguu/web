@@ -11,6 +11,9 @@ import {
   awayStretches,
   openSpan,
   outOfFocusMs,
+  idleMs,
+  idleUnplaced,
+  summaryStrip,
   scaledPercent,
   durationLabel,
   groupBrowsingWords,
@@ -183,38 +186,58 @@ function SessionWords({ session, onEditWord, forTeacher, linkArticles }) {
   ));
 }
 
-// For a teacher: the reading session from start to last action, the page in
-// focus in the reading colour, every trip to another tab or app in red, the
-// article closed (between two readings) in grey -- so twenty short trips
-// elsewhere look different from twenty minutes of reading.
 // Every reading a teacher sees as a card gets a focus strip (a slim one is a
 // single line).
 const hasFocusStrip = (session, forTeacher) =>
   forTeacher && session.session_type === "reading" && !isSlim(session);
 
-function FocusStrip({ session, scale }) {
-  const stretches = awayStretches(session);
+// For a teacher: a reading session on the scale of the summary bar above.
+// Its timeline from start to last action -- the page being read in the
+// reading colour, away (another tab or app) red, idle in focus pale, the
+// article closed grey -- so twenty short trips elsewhere look different from
+// twenty minutes of reading. Sessions from before idle was logged, left open
+// far longer than they were read, show only what is known, from the start:
+// nobody knows when in those hours the reading happened.
+function FocusStrip({ session, scale, duration }) {
   const outOfFocus = outOfFocusMs(session);
+  const idle = idleMs(session);
+  const summary = idleUnplaced(session) ? summaryStrip(session) : null;
+  const stretches = summary ? summary.stretches : awayStretches(session);
+  const length = summary ? summary.length : openSpan(session);
   const time = (iso) => new Date(iso).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+  const showIdle = idle >= 60 * 1000;
   return (
     <r.FocusBlock>
-      {outOfFocus > 0 && (
-        <r.BarLabel className="away">
-          {durationLabel(outOfFocus)} away
-          {session.interruptions > 0 &&
-            `, left the article ${session.interruptions} ${session.interruptions === 1 ? "time" : "times"}`}
+      {(outOfFocus > 0 || showIdle) && (
+        <r.BarLabel>
+          {outOfFocus > 0 && (
+            <span className="away">
+              {durationLabel(outOfFocus)} away
+              {session.interruptions > 0 &&
+                `, left the article ${session.interruptions} ${session.interruptions === 1 ? "time" : "times"}`}
+            </span>
+          )}
+          {outOfFocus > 0 && showIdle && " · "}
+          {showIdle && `${durationLabel(idle)} idle`}
         </r.BarLabel>
       )}
-      <r.FocusStrip
-        role="img"
-        aria-label={`Open ${durationLabel(openSpan(session))}, away ${stretches.length} times`}
-        title={`From ${time(session.start_time)} to ${time(session.end_time)}: red is away in another tab or app, grey is the article closed`}
-        style={{ width: `${scaledPercent(openSpan(session), scale)}%` }}
-      >
-        {stretches.map((stretch, idx) => (
-          <r.Away key={idx} $closed={stretch.closed} style={{ left: `${stretch.left}%`, width: `${stretch.width}%` }} />
-        ))}
-      </r.FocusStrip>
+      <r.FocusRow>
+        <r.FocusStrip
+          role="img"
+          aria-label={`Open ${durationLabel(openSpan(session))}: ${durationLabel(session.duration)} reading, ${durationLabel(outOfFocus)} away, ${durationLabel(idle)} idle`}
+          title={
+            summary
+              ? "The reading and the time away; when in the session they happened was not recorded"
+              : `From ${time(session.start_time)} to ${time(session.end_time)}: red is away in another tab or app, pale is idle on the page, grey is the article closed`
+          }
+          style={{ flexBasis: `${scaledPercent(length, scale)}%` }}
+        >
+          {stretches.map((stretch, idx) => (
+            <r.Away key={idx} $kind={stretch.kind} style={{ left: `${stretch.left}%`, width: `${stretch.width}%` }} />
+          ))}
+        </r.FocusStrip>
+        <r.StripMinutes>{duration} reading</r.StripMinutes>
+      </r.FocusRow>
     </r.FocusBlock>
   );
 }
@@ -249,7 +272,7 @@ function SessionItem({ session, onEditWord, linkArticles, forTeacher, studentArt
     <r.SessionRow $kind={kind}>
       <r.Head>
         <r.Title>{title}</r.Title>
-        <r.Duration>{duration}</r.Duration>
+        {!withStrip && <r.Duration>{duration}</r.Duration>}
       </r.Head>
       <r.Details>
         {details.join(" · ")}
@@ -265,7 +288,7 @@ function SessionItem({ session, onEditWord, linkArticles, forTeacher, studentArt
           </r.Practised>
         )}
       </r.Details>
-      {withStrip && <FocusStrip session={session} scale={scale} />}
+      {withStrip && <FocusStrip session={session} scale={scale} duration={duration} />}
       <SessionWords session={session} onEditWord={onEditWord} forTeacher={forTeacher} linkArticles={linkArticles} />
     </r.SessionRow>
   );
@@ -298,8 +321,9 @@ export default function SessionTimeline({
     <>
       {strips.length > 0 && (
         <r.StripLegend>
-          Under a reading, to the scale of the bar above: <span className="on">■</span> on the page,{" "}
-          <span className="away">■</span> in another tab or app, <span className="closed">■</span> article closed
+          Under a reading, to the scale of the bar above: <span className="on">■</span> reading,{" "}
+          <span className="away">■</span> in another tab or app, <span className="idle">■</span> idle on the page,{" "}
+          <span className="closed">■</span> article closed
         </r.StripLegend>
       )}
       {Object.keys(groupedSessions).map((date) => (

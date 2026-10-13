@@ -13,6 +13,9 @@ import {
   awayStretches,
   scaledPercent,
   outOfFocusMs,
+  idleMs,
+  idleUnplaced,
+  summaryStrip,
 } from "../../../src/words/sessionHistory/sessionCard";
 
 describe("durationLabel", () => {
@@ -128,8 +131,8 @@ describe("awayStretches", () => {
       ],
     };
     expect(awayStretches(session)).toEqual([
-      { left: 25, width: 25, closed: false },
-      { left: 97.5, width: 2.5, closed: true },
+      { left: 25, width: 25, kind: "away" },
+      { left: 97.5, width: 2.5, kind: "closed" },
     ]);
   });
 
@@ -168,5 +171,36 @@ describe("isBlip", () => {
     expect(isBlip({ session_type: "browsing", word_count: 0, duration: 29000 })).toBe(true);
     expect(isBlip({ session_type: "browsing", word_count: 0, duration: 33000 })).toBe(false);
     expect(isBlip({ session_type: "reading", word_count: 1, duration: 7000 })).toBe(false);
+  });
+});
+
+describe("idle time", () => {
+  const base = {
+    start_time: "2026-10-07T07:07:00Z",
+    end_time: "2026-10-07T12:07:00Z", // open 5 h
+    duration: 10 * 60000,
+    away: [["2026-10-07T08:00:00Z", "2026-10-07T08:20:00Z"]],
+  };
+
+  it("is the logged idle stretches when the reader logged them", () => {
+    const tracked = {
+      ...base,
+      idle_tracked: true,
+      away: [...base.away, ["2026-10-07T09:00:00Z", "2026-10-07T10:00:00Z", "idle"]],
+    };
+    expect(idleMs(tracked)).toBe(60 * 60000);
+    expect(idleUnplaced(tracked)).toBe(false);
+  });
+
+  it("is what nothing accounts for when it was not logged", () => {
+    expect(idleMs(base)).toBe((300 - 10 - 20) * 60000);
+    expect(idleUnplaced(base)).toBe(true);
+  });
+
+  it("leaves such a session a strip of what is known, from the start", () => {
+    expect(summaryStrip(base)).toEqual({
+      length: 30 * 60000,
+      stretches: [{ left: (10 / 30) * 100, width: (20 / 30) * 100, kind: "away" }],
+    });
   });
 });

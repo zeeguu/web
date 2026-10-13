@@ -46,6 +46,10 @@ Zeeguu_API.prototype.AUDIO_DISABLE = "AUDIO_DISABLE";
 // Reader Closing Actions
 Zeeguu_API.prototype.ARTICLE_CLOSED = "ARTICLE CLOSED";
 Zeeguu_API.prototype.ARTICLE_UNFOCUSED = "ARTICLE LOST FOCUS";
+// The reading clock stopping while the page has focus, and starting again
+// (see useReadingSession): the teacher's focus strip tells idle from reading.
+Zeeguu_API.prototype.ARTICLE_IDLE = "ARTICLE IDLE";
+Zeeguu_API.prototype.ARTICLE_ACTIVE = "ARTICLE ACTIVE";
 Zeeguu_API.prototype.ARTICLE_LIST_REQUESTED = "ARTICLES REQUESTED FROM ZEEGUU";
 Zeeguu_API.prototype.TO_EXERCISES_AFTER_REVIEW = "TO EXERCISES AFTER REVIEW";
 
