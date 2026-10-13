@@ -86,3 +86,17 @@ export function summaryShareUrl(code, level) {
   const url = `https://zeeguu.org/read/${code}/summary`;
   return level ? `${url}?level=${encodeURIComponent(level)}` : url;
 }
+
+// The summary page's level pills, from the API's `levels` (easiest first, the
+// article's own last) and the summary on screen: its own summary is addressed
+// as "summary", a level's as "summary:<row id>". `level` is what ?level= takes
+// for that pill; the original's is null when the article has no single level.
+export function summaryLevelPills(levels, summaryPart, shownLevel) {
+  const options = (levels || []).map(({ level, original }) => ({
+    value: original ? "original" : level,
+    pillLabel: original ? (level ? `${level} · Original` : "Original") : level,
+    level,
+  }));
+  const selected = summaryPart === "summary" ? "original" : shownLevel;
+  return { options, selected };
+}

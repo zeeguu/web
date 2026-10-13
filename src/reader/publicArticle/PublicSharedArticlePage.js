@@ -18,7 +18,14 @@ import { setTitle } from "../../assorted/setTitle";
 import { TranslatableText } from "../TranslatableText";
 import PublicInteractiveText from "../PublicInteractiveText";
 import * as s from "../ArticleReader.sc";
-import { FREE_WORDS, createWordMeter, pickTranslationTarget, rememberPendingSharedArticle } from "./publicReaderLogic";
+import {
+  FREE_WORDS,
+  createWordMeter,
+  pickTranslationTarget,
+  rememberPendingSharedArticle,
+  summaryLevelPills,
+} from "./publicReaderLogic";
+import PillSelector from "../../components/PillSelector";
 import { androidAppUrl, iosAppUrl } from "../../utils/misc/appStoreLinks";
 import { articleSourceLabel } from "../../utils/misc/articleHelpers";
 import { SummaryLabel } from "../../articles/ArticlePreviewOverlay.sc";
@@ -131,6 +138,10 @@ const JoinBarSpacer = styled.div`
   height: 140px;
 `;
 
+const LevelPills = styled.div`
+  margin: 0.4rem 0 1rem;
+`;
+
 const SUPPORTED_TARGETS = Object.keys(languageNames);
 
 // Account-less reading of a shared article: the whole text, a handful of free
@@ -139,6 +150,8 @@ const SUPPORTED_TARGETS = Object.keys(languageNames);
 //
 // view="summary": the article's AI summary instead of its text, at `level`,
 // with the way out to the full article at its source (/read/<code>/summary).
+// Pills switch between the levels the summary is stored at; the one chosen is
+// the level suggested at sign-up.
 export default function PublicSharedArticlePage({ link, view = "article", level = null }) {
   const isSummary = view === "summary";
   const api = useContext(APIContext);
@@ -160,8 +173,13 @@ export default function PublicSharedArticlePage({ link, view = "article", level 
   const meterRef = useRef(null);
   if (!meterRef.current) meterRef.current = createWordMeter(window.localStorage);
 
+  // A new link starts blank; a new level keeps the page up until its summary
+  // arrives, so switching levels doesn't flash the loading screen.
   useEffect(() => {
     setArticle(null);
+  }, [link, isSummary]);
+
+  useEffect(() => {
     setError(null);
     const load = isSummary
       ? (onLoaded, onError) => api.getPublicArticleSummary(link, level, onLoaded, onError)
@@ -277,6 +295,7 @@ export default function PublicSharedArticlePage({ link, view = "article", level 
     LocalStorage.setInviteCode("");
     const params = new URLSearchParams({ selected_language: article?.language || "" });
     if (target) params.set("translation_language", target);
+    if (isSummary && article?.shown_level) params.set("cefr_level", article.shown_level);
     history.push(`/language_preferences?${params}`);
   }
 
@@ -400,6 +419,30 @@ export default function PublicSharedArticlePage({ link, view = "article", level 
     </FullArticleAction>
   );
 
+  const { options: levelOptions, selected: selectedLevel } = summaryLevelPills(
+    article.levels,
+    article.summary_part,
+    article.shown_level,
+  );
+  function changeLevel(value) {
+    const { level: chosen } = levelOptions.find((option) => option.value === value);
+    api.funnelEvent("shared_summary_level_changed", { from: article.shown_level, to: chosen });
+    const query = chosen ? `?level=${encodeURIComponent(chosen)}` : "";
+    history.replace(`/read/${link}/summary${query}`);
+  }
+  // Only worth showing with something to switch to.
+  const levelPills = isSummary && levelOptions.length > 1 && (
+    <LevelPills>
+      <PillSelector
+        options={levelOptions}
+        selectedValue={selectedLevel}
+        onChange={changeLevel}
+        label="Level"
+        equalWidth={false}
+      />
+    </LevelPills>
+  );
+
   // KioskLayout: the app's scroll container without its navigation — the
   // document itself doesn't scroll (index.css sets #root overflow: hidden).
   return (
@@ -443,6 +486,7 @@ export default function PublicSharedArticlePage({ link, view = "article", level 
           )}
 
           {isSummary && <SummaryLabel>AI summary</SummaryLabel>}
+          {levelPills}
           <s.MainText>{bodyText}</s.MainText>
           {fullArticleAction}
         </div>
