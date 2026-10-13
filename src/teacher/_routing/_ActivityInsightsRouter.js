@@ -7,6 +7,7 @@ import StudentTabs from "../myClassesPage/StudentTabs";
 import * as s from "../../components/ColumnWidth.sc";
 import StudentActivity from "../myClassesPage/activityPage/StudentActivity";
 import StudentWords from "../myClassesPage/wordsPage/StudentWords";
+import StudentArticle from "../myClassesPage/activityPage/StudentArticle";
 import { useContext, useEffect, useState } from "react";
 import LoadingAnimation from "../../components/LoadingAnimation";
 import { APIContext } from "../../contexts/APIContext";
@@ -57,6 +58,10 @@ export default function ActivityInsightsRouter() {
         />
 
         <PrivateRoute path="/teacher/classes/viewStudent/:studentID/class/:cohortID/words" component={StudentWords} />
+        <PrivateRoute
+          path="/teacher/classes/viewStudent/:studentID/class/:cohortID/read/:articleID"
+          component={StudentArticle}
+        />
 
         {/* The Reading and Exercises tabs became Activity and Words; old
             links (bookmarks, emails) land on their successors. */}

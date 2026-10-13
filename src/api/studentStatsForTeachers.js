@@ -85,3 +85,10 @@ Zeeguu_API.prototype.getStudentWordLists = function (studentID, cohortID, onSucc
   const params = new URLSearchParams({ student_id: studentID, cohort_id: cohortID });
   this._getJSON(`student_word_lists?${params}`, onSuccess, { onError });
 };
+
+// An article as a student left it: its text, with their translations as
+// past bookmarks (shown in place on the teacher's side).
+Zeeguu_API.prototype.getStudentArticle = function (studentID, cohortID, articleID, onSuccess, onError) {
+  const params = new URLSearchParams({ student_id: studentID, cohort_id: cohortID });
+  this._getJSON(`student_article/${articleID}?${params}`, onSuccess, { onError });
+};
