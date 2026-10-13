@@ -48,3 +48,13 @@ export function calculateMedianRank(words) {
   const mid = Math.floor(ranks.length / 2);
   return ranks.length % 2 === 0 ? Math.round((ranks[mid - 1] + ranks[mid]) / 2) : ranks[mid];
 }
+
+// A learned word whose last exercise was "too easy": the student said they
+// knew it, rather than proving it in every level (the old teacher list's
+// "self-reported").
+const TOO_EASY_OUTCOMES = ["Too easy", "too_easy"];
+
+export function isSelfReported(word) {
+  const attempts = word.exercise_attempts || [];
+  return attempts.length > 0 && TOO_EASY_OUTCOMES.includes(attempts[attempts.length - 1].outcome);
+}

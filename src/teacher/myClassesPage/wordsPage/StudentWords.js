@@ -42,7 +42,14 @@ export default function StudentWords() {
     />
   );
   if (path.endsWith("/learned")) {
-    content = <LearnedList learnedWords={lists.learned} totalWordsLearned={lists.total_learned} forTeacher={true} />;
+    content = (
+      <LearnedList
+        learnedWords={lists.learned}
+        totalWordsLearned={lists.total_learned}
+        forTeacher={true}
+        wordExtras={(word) => <WordAttempts attempts={word.exercise_attempts} />}
+      />
+    );
   }
 
   return (

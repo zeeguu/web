@@ -1,11 +1,13 @@
 import CompactWord from "../CompactWord";
 import * as s from "../../components/TopMessage.sc";
+import * as l from "./LearnedList.sc";
 import CollapsablePanel from "../../components/CollapsablePanel";
-import { calculateMedianRank, groupByMonth } from "./wordListLogic";
+import { calculateMedianRank, groupByMonth, isSelfReported } from "./wordListLogic";
 
 // The Words > Learned list by month. Shared by the learner's own page and the
-// teacher's view of a student (forTeacher: worded about the student).
-export default function LearnedList({ learnedWords, totalWordsLearned, forTeacher = false }) {
+// teacher's view of a student (forTeacher: worded about the student, each word
+// with wordExtras under it and marked when self-reported).
+export default function LearnedList({ learnedWords, totalWordsLearned, forTeacher = false, wordExtras = null }) {
   const months = groupByMonth(learnedWords);
 
   function topMessage(monthKey, count, medianRank) {
@@ -32,6 +34,27 @@ export default function LearnedList({ learnedWords, totalWordsLearned, forTeache
     </>
   );
 
+  // The learner's page: a compact cloud. The teacher's: one word per line,
+  // with its attempts under it.
+  function monthWords(words) {
+    if (!wordExtras) {
+      return (
+        <l.WordsOfMonth>
+          {words.map((each) => (
+            <CompactWord key={each.id} bookmark={each} />
+          ))}
+        </l.WordsOfMonth>
+      );
+    }
+    return words.map((each) => (
+      <div key={each.id}>
+        <CompactWord bookmark={each} />
+        {isSelfReported(each) && <l.SelfReported>self-reported: last marked "too easy"</l.SelfReported>}
+        {wordExtras(each)}
+      </div>
+    ));
+  }
+
   return (
     <>
       <s.YellowMessageBox>
@@ -50,11 +73,7 @@ export default function LearnedList({ learnedWords, totalWordsLearned, forTeache
             key={`month-${monthGroup.monthKey}`}
             topMessage={topMessage(monthGroup.monthKey, monthGroup.words.length, medianRank)}
           >
-            <div style={{ display: "flex", flexWrap: "wrap", alignItems: "flex-start" }}>
-              {monthGroup.words.map((each) => (
-                <CompactWord key={each.id} bookmark={each} />
-              ))}
-            </div>
+            {monthWords(monthGroup.words)}
           </CollapsablePanel>
         );
       })}

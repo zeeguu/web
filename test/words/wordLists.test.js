@@ -1,5 +1,10 @@
 import { describe, it, expect } from "vitest";
-import { groupByLevel, groupByMonth, calculateMedianRank } from "../../src/words/wordLists/wordListLogic";
+import {
+  groupByLevel,
+  groupByMonth,
+  calculateMedianRank,
+  isSelfReported,
+} from "../../src/words/wordLists/wordListLogic";
 
 describe("groupByLevel", () => {
   it("puts words in their level, most frequent first", () => {
@@ -31,5 +36,13 @@ describe("calculateMedianRank", () => {
   it("ignores unranked words", () => {
     expect(calculateMedianRank([{ origin_rank: "10" }, { origin_rank: "" }, { origin_rank: "30" }])).toBe(20);
     expect(calculateMedianRank([{ origin_rank: "" }])).toBe(null);
+  });
+});
+
+describe("isSelfReported", () => {
+  it("is when the last attempt was 'too easy'", () => {
+    expect(isSelfReported({ exercise_attempts: [{ outcome: "C" }, { outcome: "Too easy" }] })).toBe(true);
+    expect(isSelfReported({ exercise_attempts: [{ outcome: "Too easy" }, { outcome: "C" }] })).toBe(false);
+    expect(isSelfReported({})).toBe(false);
   });
 });
