@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { SpeechContext } from "../../contexts/SpeechContext";
 import * as s from "../SessionHistory.sc";
 import * as w from "./WordsInContext.sc";
+import { excerptParts } from "./excerpt";
 import { formatTime, formatDate, groupByDate } from "./sessionStats";
 
 function InteractiveWordChip({ word, className, showResult, onEditClick, showContext }) {
@@ -51,28 +52,46 @@ function InteractiveWordChip({ word, className, showResult, onEditClick, showCon
   );
 }
 
+// A teacher's view of a session's translated words: chips that open the
+// sentence each was translated in (one at a time), the word highlighted and
+// "…" where the stored excerpt was cut.
+function TeacherWords({ words, className }) {
+  const [open, setOpen] = useState(null);
+  const opened = open !== null ? words[open] : null;
+  return (
+    <>
+      <s.WordList>
+        {words.map((word, idx) => (
+          <w.WordToggle
+            key={idx}
+            className={className}
+            aria-expanded={open === idx}
+            onClick={() => setOpen(open === idx ? null : idx)}
+          >
+            <span className="origin">{word.origin}</span>
+            <span className="separator">→</span>
+            <span className="translation">{word.translation}</span>
+            {word.practised && (
+              <span className="result" title="Practised in exercises since">
+                ★
+              </span>
+            )}
+          </w.WordToggle>
+        ))}
+      </s.WordList>
+      {opened?.context && (
+        <w.Excerpt>
+          {excerptParts(opened).map((part, idx) => (part.isWord ? <mark key={idx}>{part.text}</mark> : part.text))}
+        </w.Excerpt>
+      )}
+    </>
+  );
+}
+
 function SessionItem({ session, onEditWord, linkArticles, forTeacher }) {
   const renderWords = () => {
     if (!session.words || session.words.length === 0) {
       return null;
-    }
-
-    // For a teacher: every word in its sentence, as the old Reading tab showed
-    // them -- a hover tooltip doesn't exist on a tablet.
-    if (forTeacher && session.words.some((word) => word.context)) {
-      return (
-        <w.WordsInContext>
-          {session.words.map((word, idx) => (
-            <w.WordInContext key={idx}>
-              <span className="pair">
-                {word.origin} → {word.translation}
-              </span>
-              {word.practised && <span title="Practised in exercises since"> ★</span>}
-              {word.context && <div className="sentence">{word.context}</div>}
-            </w.WordInContext>
-          ))}
-        </w.WordsInContext>
-      );
     }
 
     const getChipClass = (word) => {
@@ -81,6 +100,12 @@ function SessionItem({ session, onEditWord, linkArticles, forTeacher }) {
       }
       return session.session_type; // 'reading', 'browsing', or 'audio'
     };
+
+    // For a teacher: the translated words as chips; a click shows the
+    // sentence a word was translated in.
+    if (forTeacher) {
+      return <TeacherWords words={session.words} className={getChipClass({})} />;
+    }
 
     return (
       <s.WordList>
