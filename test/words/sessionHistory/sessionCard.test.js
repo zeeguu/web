@@ -6,6 +6,7 @@ import {
   isSlim,
   showsBrowsingNote,
   groupExerciseWords,
+  leftThePage,
 } from "../../../src/words/sessionHistory/sessionCard";
 
 describe("durationLabel", () => {
@@ -69,5 +70,13 @@ describe("groupExerciseWords", () => {
     ]);
     expect(neededHelp.map((w) => [w.origin, w.results])).toEqual([["chaque", [true, false]]]);
     expect(right.map((w) => w.origin)).toEqual(["aucun"]);
+  });
+});
+
+describe("leftThePage", () => {
+  it("says how often, only when the session was distracted", () => {
+    expect(leftThePage({ focus_level: "distracted", interruptions: 9 })).toBe("left the page 9×");
+    expect(leftThePage({ focus_level: "moderate", interruptions: 3 })).toBe(null);
+    expect(leftThePage({ focus_level: "focused", interruptions: 0 })).toBe(null);
   });
 });

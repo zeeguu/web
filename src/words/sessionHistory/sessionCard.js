@@ -78,3 +78,10 @@ export function groupExerciseWords(words) {
     right: all.filter((w) => !w.results.includes(false)),
   };
 }
+
+// What used to say "Distracted": the fact behind it. Shown when the API judges
+// the session distracted (several departures, often): "left the page 9×".
+export function leftThePage(session) {
+  if (session.focus_level !== "distracted" || !(session.interruptions > 0)) return null;
+  return `left the page ${session.interruptions}×`;
+}
