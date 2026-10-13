@@ -2,83 +2,109 @@ import { useState, useContext } from "react";
 import { Link } from "react-router-dom";
 import { SpeechContext } from "../../contexts/SpeechContext";
 import * as s from "../SessionHistory.sc";
+import * as r from "./SessionRow.sc";
 import * as w from "./WordsInContext.sc";
 import { excerptParts } from "./excerpt";
-import { formatTime, formatDate, groupByDate } from "./sessionStats";
+import { formatDate, groupByDate } from "./sessionStats";
+import { durationLabel, isSlim, sessionDetails, sessionTitle, showsBrowsingNote } from "./sessionCard";
 
-function InteractiveWordChip({ word, className, showResult, onEditClick, showContext }) {
+const LEARNER_WORDS_SHOWN = 10;
+
+// A word over its translation. For the learner: tap the word to hear it, the
+// translation to edit it. For a teacher (onToggle): the pair opens the
+// sentence it was translated in.
+function WordPair({ word, isExercise, onEditClick, onToggle = null, isOpen = false }) {
   const speech = useContext(SpeechContext);
   const [isSpeaking, setIsSpeaking] = useState(false);
 
-  const handleSpeak = async (e) => {
+  async function speak(e) {
     e.preventDefault();
-    if (!isSpeaking) {
-      try {
-        await speech.speakOut(word.origin, setIsSpeaking);
-      } catch (err) {
-        console.log("Speech error:", err);
-      }
+    if (isSpeaking) return;
+    try {
+      await speech.speakOut(word.origin, setIsSpeaking);
+    } catch (err) {
+      console.log("Speech error:", err);
     }
-  };
+  }
 
-  const handleEditClick = (e) => {
-    e.preventDefault();
-    if (word.id && onEditClick) {
-      onEditClick(word.id);
-    }
-  };
+  const canEdit = !onToggle && word.id && onEditClick;
+  const marks = (
+    <>
+      {isExercise && <span className="mark">{word.correct ? "✓" : "✗"}</span>}
+      {word.practised && (
+        <span className="mark" title="Practised in exercises since">
+          ★
+        </span>
+      )}
+    </>
+  );
+
+  if (onToggle) {
+    return (
+      <r.Pair type="button" $clickable aria-expanded={isOpen} onClick={onToggle}>
+        <span className="origin">
+          {word.origin}
+          {marks}
+        </span>
+        <span className="translation">{word.translation}</span>
+      </r.Pair>
+    );
+  }
 
   return (
-    // A teacher's words carry their whole sentence: shown on hover.
-    <s.WordChip className={className} title={(showContext && word.context) || undefined}>
-      <s.ClickableOrigin onClick={handleSpeak} title="Click to pronounce" isSpeaking={isSpeaking}>
-        {word.origin}
-      </s.ClickableOrigin>
-      <span className="separator">→</span>
-      {word.id && onEditClick ? (
-        <s.ClickableTranslation onClick={handleEditClick} title="Click to edit">
+    <r.Pair as="div">
+      <span className="origin">
+        <s.ClickableOrigin onClick={speak} title="Click to pronounce" $isSpeaking={isSpeaking}>
+          {word.origin}
+        </s.ClickableOrigin>
+        {marks}
+      </span>
+      {canEdit ? (
+        <s.ClickableTranslation
+          className="translation"
+          onClick={(e) => {
+            e.preventDefault();
+            onEditClick(word.id);
+          }}
+          title="Click to edit"
+        >
           {word.translation}
         </s.ClickableTranslation>
       ) : (
         <span className="translation">{word.translation}</span>
       )}
-      {showResult && <span className="result">{word.correct ? "✓" : "✗"}</span>}
-      {word.practised && (
-        <span className="result" title="Practised in exercises since">
-          ★
-        </span>
-      )}
-    </s.WordChip>
+    </r.Pair>
   );
 }
 
-// A teacher's view of a session's translated words: chips that open the
-// sentence each was translated in (one at a time), the word highlighted and
-// "…" where the stored excerpt was cut.
-function TeacherWords({ words, className }) {
+// A session's words. The learner sees the first few and can show the rest; a
+// teacher sees them all and opens one at a time in its sentence (the word
+// highlighted, "…" where the stored excerpt was cut).
+function SessionWords({ session, onEditWord, forTeacher }) {
   const [open, setOpen] = useState(null);
+  const [showAll, setShowAll] = useState(false);
+  const words = session.words || [];
+  if (words.length === 0) return null;
+
+  const shown = forTeacher || showAll ? words : words.slice(0, LEARNER_WORDS_SHOWN);
+  const hidden = words.length - shown.length;
   const opened = open !== null ? words[open] : null;
+
   return (
     <>
-      <s.WordList>
-        {words.map((word, idx) => (
-          <w.WordToggle
+      <r.Pairs>
+        {shown.map((word, idx) => (
+          <WordPair
             key={idx}
-            className={className}
-            aria-expanded={open === idx}
-            onClick={() => setOpen(open === idx ? null : idx)}
-          >
-            <span className="origin">{word.origin}</span>
-            <span className="separator">→</span>
-            <span className="translation">{word.translation}</span>
-            {word.practised && (
-              <span className="result" title="Practised in exercises since">
-                ★
-              </span>
-            )}
-          </w.WordToggle>
+            word={word}
+            isExercise={session.session_type === "exercise"}
+            onEditClick={onEditWord}
+            onToggle={forTeacher ? () => setOpen(open === idx ? null : idx) : null}
+            isOpen={open === idx}
+          />
         ))}
-      </s.WordList>
+        {hidden > 0 && <r.More onClick={() => setShowAll(true)}>+{hidden} more</r.More>}
+      </r.Pairs>
       {opened?.context && (
         <w.Excerpt>
           {excerptParts(opened).map((part, idx) => (part.isWord ? <mark key={idx}>{part.text}</mark> : part.text))}
@@ -89,108 +115,40 @@ function TeacherWords({ words, className }) {
 }
 
 function SessionItem({ session, onEditWord, linkArticles, forTeacher }) {
-  const renderWords = () => {
-    if (!session.words || session.words.length === 0) {
-      return null;
-    }
+  const kind = session.session_type;
+  const duration = durationLabel(session.duration);
+  const details = sessionDetails(session);
 
-    const getChipClass = (word) => {
-      if (session.session_type === "exercise") {
-        return word.correct ? "correct" : "incorrect";
-      }
-      return session.session_type; // 'reading', 'browsing', or 'audio'
-    };
-
-    // For a teacher: the translated words as chips; a click shows the
-    // sentence a word was translated in.
-    if (forTeacher) {
-      return <TeacherWords words={session.words} className={getChipClass({})} />;
-    }
-
+  if (isSlim(session)) {
     return (
-      <s.WordList>
-        {session.words.slice(0, 10).map((word, idx) => (
-          <InteractiveWordChip
-            key={idx}
-            word={word}
-            className={getChipClass(word)}
-            showResult={session.session_type === "exercise"}
-            onEditClick={onEditWord}
-            showContext={forTeacher}
-          />
-        ))}
-        {session.words.length > 10 && <s.WordChip className="more">+{session.words.length - 10} more</s.WordChip>}
-      </s.WordList>
+      <r.SlimRow $kind={kind}>
+        <span>
+          {details[0]} · {sessionTitle(session)}
+        </span>
+        <span>{duration}</span>
+      </r.SlimRow>
     );
-  };
+  }
+
+  let title = sessionTitle(session);
+  if (kind === "reading" && linkArticles && session.article_id) {
+    title = <Link to={`/read/article?id=${session.article_id}`}>{title}</Link>;
+  }
 
   return (
-    <s.SessionCard>
-      <s.SessionHeader>
-        <div>
-          <s.SessionTime>{formatTime(session.start_time)}</s.SessionTime>
-          <s.SessionType className={session.session_type}>
-            {session.session_type === "reading" && "Reading"}
-            {session.session_type === "exercise" && "Exercising"}
-            {session.session_type === "browsing" && "Browsing"}
-            {session.session_type === "audio" && "Listening"}
-          </s.SessionType>
-          {session.session_type === "reading" && session.reading_source === "extension" && (
-            <span className="source-badge extension" title="Read via browser extension">
-              ext
-            </span>
-          )}
-          {session.session_type === "reading" && session.reading_source === "web" && (
-            <span className="source-badge web" title="Read in Zeeguu">
-              web
-            </span>
-          )}
-        </div>
-        <s.HeaderActions>
-          {session.focus_level && (
-            <s.FocusBadge className={session.focus_level}>
-              {session.focus_level === "focused" && "Focused"}
-              {session.focus_level === "moderate" && "Moderate"}
-              {session.focus_level === "distracted" && "Distracted"}
-            </s.FocusBadge>
-          )}
-          <s.SessionDuration>{session.duration_readable}</s.SessionDuration>
-        </s.HeaderActions>
-      </s.SessionHeader>
-
-      {session.session_type === "reading" && session.article_title && (
-        <s.ArticleTitle>
-          {linkArticles ? (
-            <Link to={`/read/article?id=${session.article_id}`}>{session.article_title}</Link>
-          ) : (
-            session.article_title
-          )}
-        </s.ArticleTitle>
-      )}
-
-      {forTeacher && session.session_type === "reading" && session.article_word_count > 0 && (
-        <s.ExerciseStats>
-          {session.article_word_count} words
-          {session.article_difficulty > 0 && ` · difficulty ${(session.article_difficulty / 10).toFixed(1)}/10`}
-        </s.ExerciseStats>
-      )}
-
-      {session.session_type === "audio" && session.lesson_title && (
-        <s.ArticleTitle>{session.lesson_title}</s.ArticleTitle>
-      )}
-
-      {session.session_type === "exercise" && (
-        <s.ExerciseStats>
-          {session.word_count} words practiced - {session.accuracy}% correct
-        </s.ExerciseStats>
-      )}
-
-      {session.session_type === "audio" && session.completed && session.word_count > 0 && (
-        <s.ExerciseStats>{session.word_count} words in lesson ✓</s.ExerciseStats>
-      )}
-
-      {renderWords()}
-    </s.SessionCard>
+    <r.SessionRow $kind={kind}>
+      <r.Head>
+        <r.Title>{title}</r.Title>
+        <r.Duration>{duration}</r.Duration>
+      </r.Head>
+      <r.Details>
+        {details.join(" · ")}
+        {session.focus_level === "distracted" && (
+          <r.Distracted title="Left the page often during this session">Distracted</r.Distracted>
+        )}
+      </r.Details>
+      <SessionWords session={session} onEditWord={onEditWord} forTeacher={forTeacher} />
+    </r.SessionRow>
   );
 }
 
@@ -201,30 +159,27 @@ function SessionItem({ session, onEditWord, linkArticles, forTeacher }) {
 // out where the words aren't the viewer's own.
 // linkArticles: reading sessions link to the article in the reader. Off for a
 // teacher, whose opening it would count as their own reading.
-// forTeacher: also the text's length and difficulty on reading sessions, and
-// translated words listed in their sentence with a star on those practised
-// since (the teacher variant of the API sends those).
+// forTeacher: every word shown, each opening the sentence it was translated
+// in (the teacher variant of the API sends the sentences).
 export default function SessionTimeline({ sessions, onEditWord = null, linkArticles = true, forTeacher = false }) {
   const groupedSessions = groupByDate(sessions);
-  let shownBrowsingNote = false;
-  return Object.keys(groupedSessions).map((date) => (
-    <div key={date}>
-      <s.DateHeader>{formatDate(groupedSessions[date][0].start_time)}</s.DateHeader>
-      {groupedSessions[date].map((session, idx) => {
-        const showNote = session.session_type === "browsing" && !shownBrowsingNote;
-        if (showNote) shownBrowsingNote = true;
-        return (
-          <div key={idx}>
+  return (
+    <>
+      {Object.keys(groupedSessions).map((date) => (
+        <div key={date}>
+          <s.DateHeader>{formatDate(groupedSessions[date][0].start_time)}</s.DateHeader>
+          {groupedSessions[date].map((session, idx) => (
             <SessionItem
+              key={idx}
               session={session}
               onEditWord={onEditWord}
               linkArticles={linkArticles}
               forTeacher={forTeacher}
             />
-            {showNote && <s.InfoNote>Browsing sessions are tracked since Dec 11, 2025</s.InfoNote>}
-          </div>
-        );
-      })}
-    </div>
-  ));
+          ))}
+        </div>
+      ))}
+      {showsBrowsingNote(sessions) && <s.InfoNote>Browsing sessions are tracked since Dec 11, 2025</s.InfoNote>}
+    </>
+  );
 }

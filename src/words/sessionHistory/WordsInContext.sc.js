@@ -1,17 +1,4 @@
 import styled from "styled-components";
-import { WordChip } from "../SessionHistory.sc";
-
-// A teacher's chip: the History chip as a button; the whole chip toggles the
-// sentence the word was translated in.
-export const WordToggle = styled(WordChip).attrs({ as: "button", type: "button" })`
-  font: inherit;
-  color: inherit;
-  cursor: pointer;
-
-  &[aria-expanded="true"] {
-    border-color: var(--text-secondary);
-  }
-`;
 
 export const Excerpt = styled.p`
   margin: 0.6em 0 0;
