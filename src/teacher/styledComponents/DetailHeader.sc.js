@@ -7,6 +7,11 @@ import styled from "styled-components";
 export const DetailHeader = styled.header`
   margin: 3.5rem 0 1.25rem;
 
+  /* The way back, named: a breadcrumb above the title. */
+  .back {
+    margin-bottom: 0.5rem;
+  }
+
   .title-row {
     display: flex;
     align-items: center;

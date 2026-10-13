@@ -4,7 +4,6 @@ import { useLocation } from "react-router-dom";
 import { PrivateRoute } from "../../PrivateRoute";
 import LocalStorage from "../../assorted/LocalStorage";
 import StudentTabs from "../myClassesPage/StudentTabs";
-import { TeacherPageSubtitle } from "../styledComponents/TeacherPageHeading.sc";
 import * as s from "../../components/ColumnWidth.sc";
 import StudentReadingInsights from "../myClassesPage/readingPage/StudentReadingInsights";
 import StudentExercisesInsights from "../myClassesPage/exercisesPage/StudentExercisesInsights";
@@ -47,10 +46,12 @@ export default function ActivityInsightsRouter() {
   return (
     <Switch>
       <s.WidestColumn>
-        <StudentTabs studentID={studentID} cohortID={cohortID} title={`${studentName}${title}`} />
-        {/* Which class we came from: the back arrow goes there, but only the
-            old "Back to <class>" button ever said its name. */}
-        <TeacherPageSubtitle>{cohortName}</TeacherPageSubtitle>
+        <StudentTabs
+          studentID={studentID}
+          cohortID={cohortID}
+          cohortName={cohortName}
+          title={`${studentName}${title}`}
+        />
         <br />
         <PrivateRoute
           path="/teacher/classes/viewStudent/:studentID/class/:cohortID"
