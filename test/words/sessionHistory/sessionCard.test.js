@@ -7,6 +7,7 @@ import {
   showsBrowsingNote,
   groupExerciseWords,
   leftThePage,
+  groupBrowsingWords,
 } from "../../../src/words/sessionHistory/sessionCard";
 
 describe("durationLabel", () => {
@@ -78,5 +79,21 @@ describe("leftThePage", () => {
     expect(leftThePage({ focus_level: "distracted", interruptions: 9 })).toBe("left the page 9×");
     expect(leftThePage({ focus_level: "moderate", interruptions: 3 })).toBe(null);
     expect(leftThePage({ focus_level: "focused", interruptions: 0 })).toBe(null);
+  });
+});
+
+describe("groupBrowsingWords", () => {
+  it("puts the words under the article they were translated in", () => {
+    const words = [
+      { origin: "sikahjorte", article_id: 7, article_title: "Hjorte i skoven" },
+      { origin: "ønske", article_id: 9, article_title: "Jul" },
+      { origin: "skov", article_id: 7, article_title: "Hjorte i skoven" },
+      { origin: "gammel" },
+    ];
+    expect(groupBrowsingWords(words).map((g) => [g.title, g.words.map((w) => w.origin)])).toEqual([
+      ["Hjorte i skoven", ["sikahjorte", "skov"]],
+      ["Jul", ["ønske"]],
+      [null, ["gammel"]],
+    ]);
   });
 });
