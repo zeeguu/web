@@ -61,3 +61,20 @@ export function isSlim(session) {
 export function showsBrowsingNote(sessions) {
   return sessions.some((s) => new Date(s.start_time) < new Date(BROWSING_TRACKED_SINCE));
 }
+
+// An exercise session's words, each once, with its results in order, split
+// into the ones that needed help (any wrong answer) and the ones right every
+// time. A word practised twice used to show twice: "chaque ✓ … chaque ✗".
+export function groupExerciseWords(words) {
+  const byWord = new Map();
+  (words || []).forEach((word) => {
+    const key = `${word.origin}\u0000${word.translation}`;
+    if (!byWord.has(key)) byWord.set(key, { ...word, results: [] });
+    byWord.get(key).results.push(!!word.correct);
+  });
+  const all = [...byWord.values()];
+  return {
+    neededHelp: all.filter((w) => w.results.includes(false)),
+    right: all.filter((w) => !w.results.includes(false)),
+  };
+}

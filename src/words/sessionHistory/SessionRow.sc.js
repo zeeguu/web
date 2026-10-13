@@ -1,5 +1,12 @@
 import styled from "styled-components";
-import { activityReading, activityExercise, activityBrowsing, activityListening } from "../../components/colors";
+import {
+  activityReading,
+  activityExercise,
+  activityBrowsing,
+  activityListening,
+  successGreen,
+  errorRed,
+} from "../../components/colors";
 
 const KIND_COLOR = {
   reading: activityReading,
@@ -10,10 +17,17 @@ const KIND_COLOR = {
 
 // One session: no card, a line between sessions, and a bar on the left in
 // its kind's colour (the overview's and the class list's colours).
+// A day's sessions take the whole width, however short its rows.
+export const Day = styled.section`
+  width: 100%;
+  margin-bottom: 1.5em;
+`;
+
 export const SessionRow = styled.article`
   border-left: 4px solid ${({ $kind }) => KIND_COLOR[$kind]};
   padding: 0.9em 0 0.9em 1em;
-  border-bottom: 1px solid var(--border-light);
+  margin-bottom: 0.75em;
+  border-bottom: 1px solid var(--border-color);
 `;
 
 export const Head = styled.div`
@@ -68,7 +82,9 @@ export const SlimRow = styled.div`
   justify-content: space-between;
   border-left: 4px solid ${({ $kind }) => KIND_COLOR[$kind]};
   padding: 0.5em 0 0.5em 1em;
-  border-bottom: 1px solid var(--border-light);
+  margin-bottom: 0.75em;
+  border-bottom: 1px solid var(--border-color);
+  gap: 1em;
   font-size: 0.9rem;
   color: var(--text-secondary);
 `;
@@ -98,6 +114,10 @@ export const Pair = styled.button`
   .translation {
     font-size: 0.85em;
     color: var(--text-secondary);
+    max-width: 14em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
   .mark {
     margin-left: 0.25em;
@@ -117,4 +137,21 @@ export const More = styled.button`
   color: var(--text-secondary);
   cursor: pointer;
   text-decoration: underline;
+`;
+
+export const Result = styled.span`
+  margin-left: 0.2em;
+  font-weight: 700;
+  color: ${({ $ok }) => ($ok ? successGreen : errorRed)};
+`;
+
+export const ExerciseGroup = styled.div`
+  margin-top: 0.6em;
+`;
+
+export const GroupLabel = styled.div`
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--text-secondary);
 `;

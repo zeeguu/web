@@ -5,6 +5,7 @@ import {
   sessionTitle,
   isSlim,
   showsBrowsingNote,
+  groupExerciseWords,
 } from "../../../src/words/sessionHistory/sessionCard";
 
 describe("durationLabel", () => {
@@ -56,5 +57,17 @@ describe("rows", () => {
   it("explains missing browsing only for periods before it was tracked", () => {
     expect(showsBrowsingNote([{ start_time: "2026-10-08T07:37:00Z" }])).toBe(false);
     expect(showsBrowsingNote([{ start_time: "2025-11-30T07:37:00Z" }])).toBe(true);
+  });
+});
+
+describe("groupExerciseWords", () => {
+  it("shows each word once and separates the ones that needed help", () => {
+    const { neededHelp, right } = groupExerciseWords([
+      { origin: "chaque", translation: "elk", correct: true },
+      { origin: "aucun", translation: "niets", correct: true },
+      { origin: "chaque", translation: "elk", correct: false },
+    ]);
+    expect(neededHelp.map((w) => [w.origin, w.results])).toEqual([["chaque", [true, false]]]);
+    expect(right.map((w) => w.origin)).toEqual(["aucun"]);
   });
 });
