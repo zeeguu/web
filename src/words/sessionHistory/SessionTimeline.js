@@ -186,17 +186,17 @@ function SessionWords({ session, onEditWord, forTeacher, linkArticles }) {
   ));
 }
 
-// Every reading and exercise session a teacher sees as a card gets a focus
-// strip (a slim one is a single line).
+// Every reading and exercise session shown as a card gets a focus strip (a
+// slim one is a single line) -- for the teacher, and for the learners
+// themselves, so their own minutes explain themselves.
 const STRIP_KINDS = {
   reading: { doing: "reading", left: "the article" },
   exercise: { doing: "exercises", left: "the page" },
 };
 // (end_time: exercise sessions have one since Oct 2026)
-const hasFocusStrip = (session, forTeacher) =>
-  forTeacher && !!STRIP_KINDS[session.session_type] && !!session.end_time && !isSlim(session);
+const hasFocusStrip = (session) => !!STRIP_KINDS[session.session_type] && !!session.end_time && !isSlim(session);
 
-// For a teacher: a reading or exercise session on the scale of the summary
+// A reading or exercise session on the scale of the summary
 // bar above. Its timeline from start to last action -- the time counted in
 // the session's colour, away (another tab or app) red, idle in focus pale, the
 // article closed grey -- so twenty short trips elsewhere look different from
@@ -257,7 +257,7 @@ function SessionItem({ session, onEditWord, linkArticles, forTeacher, studentArt
   const duration = durationLabel(session.duration);
   const details = sessionDetails(session);
   const practised = practisedCount(session);
-  const withStrip = hasFocusStrip(session, forTeacher);
+  const withStrip = hasFocusStrip(session);
 
   if (isSlim(session)) {
     return (
@@ -328,7 +328,7 @@ export default function SessionTimeline({
 }) {
   const groupedSessions = groupByDate(sessions.filter((session) => !isBlip(session)));
   // the strips drawn to the summary bar's scale: its total fills the width
-  const strips = sessions.filter((session) => hasFocusStrip(session, forTeacher));
+  const strips = sessions.filter(hasFocusStrip);
   const scale = sessions.reduce((sum, session) => sum + (session.duration || 0), 0);
   return (
     <>
