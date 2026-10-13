@@ -1,15 +1,21 @@
-Faster audio, a friendlier feed, and a few fixes.
+Share a summary, smoother audio, and a lot more for teachers.
+
+Sharing
+- Share the summary of an article, straight from the article preview.
 
 Audio
-- Listen faster: the speed button now opens a menu with 1.1x, 1.25x and 1.5x alongside the slower speeds.
-- Play from your headphones or the lock screen works again after pausing from there.
+- Play from your headphones works again after the lesson has been paused for a long time.
+- The player stays in sync when you come back to the app.
 
-Feed
-- Changing your level from the feed no longer reloads the page. The current articles stay on screen while the ones at your new level load in, so you can see the difference right away.
-- The top bar with your language, streak and avatar comes back as soon as you scroll up, so you can switch language without scrolling all the way to the top.
-- Hid an article by mistake? Tap Undo to bring it back.
-- Report a broken article, or something that is not really an article, straight from the card's menu.
-- Articles without a photo now show the publisher's name in its place, so every card is easy to tell apart.
+History
+- Pick the period you want to look at, from one date to another.
+- Clearer history cards: what you did and for how long come first, then the details.
 
-Sign-up
-- Students joining with a class code are no longer asked for an email code that never arrives.
+For teachers
+- A new Activity tab for each student: what they read and practised, the words they looked up, and the original article.
+- Open a text from a student's activity and see their translations in place.
+- A student's Words tab now shows their words the way they see them.
+- Sort the class list by name or by how active students are, and search for a student.
+- Students who likely have two accounts in the same class are flagged and shown side by side.
+- Each class card shows when the class was last active.
+- Decide whether the students of a class can see each other.
