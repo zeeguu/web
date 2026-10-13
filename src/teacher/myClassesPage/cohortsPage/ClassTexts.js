@@ -78,8 +78,8 @@ export default function ClassTexts() {
       {emptyForEveryone && (
         <FullWidthErrorMsg>
           <span>
-            This class has no texts, and its students see nothing else. Until you add one,
-            Zeeguu opens on an empty page for all {pluralStudents(student_count)}.
+            This class has no texts, and its students see nothing else. Until you add one, Zeeguu opens on an empty page
+            for all {pluralStudents(student_count)}.
           </span>
         </FullWidthErrorMsg>
       )}
@@ -87,21 +87,16 @@ export default function ClassTexts() {
       {offLanguageCount > 0 && (
         <FullWidthInfoMsg>
           <span>
-            {offLanguageCount === 1 ? "One text here is" : `${offLanguageCount} texts here are`} not
-            in {languageName(cohort.language)} —{" "}
-            {offLanguage
-              .map((each) => `${each.count} in ${languageName(each.code)}`)
-              .join(", ")}
-            . Your students only ever see the texts in the language they are
-            learning, so nobody in this class can open{" "}
+            {offLanguageCount === 1 ? "One text here is" : `${offLanguageCount} texts here are`} not in{" "}
+            {languageName(cohort.language)} —{" "}
+            {offLanguage.map((each) => `${each.count} in ${languageName(each.code)}`).join(", ")}. Your students only
+            ever see the texts in the language they are learning, so nobody in this class can open{" "}
             {offLanguageCount === 1 ? "it" : "them"}.
           </span>
         </FullWidthInfoMsg>
       )}
 
-      {nothingShared && !emptyForEveryone && (
-        <FullWidthInfoMsg>No texts shared with this class yet.</FullWidthInfoMsg>
-      )}
+      {nothingShared && !emptyForEveryone && <FullWidthInfoMsg>No texts shared with this class yet.</FullWidthInfoMsg>}
 
       <s.Actions>
         <Link to="/teacher/texts/AddTextOptions">

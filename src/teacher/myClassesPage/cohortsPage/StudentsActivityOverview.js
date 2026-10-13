@@ -15,11 +15,15 @@ export default function StudentsActivityOverview() {
   const [cohort, setCohort] = useState("");
   const [students, setStudents] = useState(null);
 
-  // ML: when we'll find the time, we should fix this forceUpdate business...
   // eslint-disable-next-line
   const [forceUpdate, setForceUpdate] = useState(0);
-  const selectedTimePeriod = LocalStorage.selectedTimePeriod();
+  // days; shared with the student pages through LocalStorage
+  const [selectedTimePeriod, setSelectedTimePeriod] = useState(() => String(LocalStorage.selectedTimePeriod()));
 
+  function changePeriod(days) {
+    LocalStorage.setSelectedTimePeriod(days);
+    setSelectedTimePeriod(days);
+  }
 
   function updateShownStudents() {
     setStudents(null);
@@ -34,9 +38,7 @@ export default function StudentsActivityOverview() {
     api.getCohortsInfo((res) => {
       // cohortID comes from the route, so it is a string; the payload's id is
       // a number. Compare as strings rather than relying on either shape.
-      const currentCohortArray = res.filter(
-        (cohort) => String(cohort.id) === String(cohortID),
-      );
+      const currentCohortArray = res.filter((cohort) => String(cohort.id) === String(cohortID));
       setCohort(currentCohortArray[0]);
     });
     //eslint-disable-next-line
@@ -63,7 +65,8 @@ export default function StudentsActivityOverview() {
     <StudentsActivityOverviewContent
       cohortID={cohortID}
       students={students}
-      setForceUpdate={setForceUpdate}
+      period={selectedTimePeriod}
+      onPeriodChange={changePeriod}
       removeStudentFromCohort={removeStudentFromCohort}
     />
   ) : (
@@ -72,7 +75,7 @@ export default function StudentsActivityOverview() {
 
   return (
     <>
-      <s.NarrowColumn>
+      <s.WidestColumn>
         <div>
           <ClassTabs
             cohortID={cohortID}
@@ -82,7 +85,7 @@ export default function StudentsActivityOverview() {
           />
           {studentsSection}
         </div>
-      </s.NarrowColumn>
+      </s.WidestColumn>
     </>
   );
 }

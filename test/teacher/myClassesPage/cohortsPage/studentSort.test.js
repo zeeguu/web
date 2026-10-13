@@ -15,8 +15,13 @@ describe("sortStudents", () => {
     expect(names(sortStudents(students, "bogus"))).toEqual(["Anna", "Bram", "Cleo", "Dirk"]);
   });
 
-  it("puts the students who did nothing first, by name among them", () => {
-    expect(names(sortStudents(students, "least_active"))).toEqual(["Anna", "Dirk", "Cleo", "Bram"]);
+  it("puts the longest inactive first, never-active at the top", () => {
+    const withActivity = [
+      { name: "Anna", total_time: 0, last_active: null },
+      { name: "Bram", total_time: 1200, last_active: "2026-10-12T10:00:00Z" },
+      { name: "Cleo", total_time: 300, last_active: "2026-09-01T10:00:00Z" },
+    ];
+    expect(names(sortStudents(withActivity, "needs_attention"))).toEqual(["Anna", "Cleo", "Bram"]);
   });
 
   it("puts the busiest first", () => {

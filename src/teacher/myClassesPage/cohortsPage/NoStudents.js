@@ -10,8 +10,7 @@ const NoStudents = ({ inviteCode }) => {
         <p>
           {strings.noStudentsInClass}
           <br />
-          {strings.shareTheInviteCode} <b>{inviteCode}</b>{" "}
-          {strings.shareInviteCodeContinued}
+          {strings.shareTheInviteCode} <b>{inviteCode}</b> {strings.shareInviteCodeContinued}
           <br />
           {strings.soTheStudentCanJoinClass}
         </p>

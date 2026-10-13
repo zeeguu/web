@@ -4,31 +4,16 @@ import { FormControl } from "@mui/material";
 import LoadingAnimation from "../../../components/LoadingAnimation";
 import { Error } from "../../sharedComponents/Error";
 import { toast } from "react-toastify";
-import {
-  CohortNameTextField,
-  InviteCodeTextField,
-} from "./CohortFormInputFields";
-import {
-  languageMap,
-  LanguageSelector,
-} from "../../sharedComponents/LanguageSelector";
-import {
-  StyledButton,
-  PopupButtonWrapper,
-} from "../../styledComponents/TeacherButtons.sc";
+import { CohortNameTextField, InviteCodeTextField } from "./CohortFormInputFields";
+import { languageMap, LanguageSelector } from "../../sharedComponents/LanguageSelector";
+import { StyledButton, PopupButtonWrapper } from "../../styledComponents/TeacherButtons.sc";
 import ToggleOption from "../../../components/Toggles/ToggleOption";
 import DeleteCohortWarning from "./DeleteCohortWarning";
 import { StyledDialog } from "../../styledComponents/StyledDialog.sc";
 import * as s from "../../styledComponents/CohortForm.sc";
 import { APIContext } from "../../../contexts/APIContext";
 
-const CohortForm = ({
-  cohort,
-  setForceUpdate,
-  setShowCohortForm,
-  cohorts,
-  onDeleted,
-}) => {
+const CohortForm = ({ cohort, setForceUpdate, setShowCohortForm, cohorts, onDeleted }) => {
   const api = useContext(APIContext);
   const [isLoading, setIsLoading] = useState(false);
   const [showWarning, setShowWarning] = useState(false);
@@ -117,30 +102,21 @@ const CohortForm = ({
     });
   }
 
-  const inputIsEmpty =
-    state.cohort_name === "" ||
-    state.invite_code === "" ||
-    state.language_code === "default";
+  const inputIsEmpty = state.cohort_name === "" || state.invite_code === "" || state.language_code === "default";
 
   const invalidClassName = () => {
-    const invalid = cohorts.filter(
-      (cohort) => cohort.name === state.cohort_name,
-    );
+    const invalid = cohorts.filter((cohort) => cohort.name === state.cohort_name);
     return invalid.length > 0;
   };
 
   const invalidInviteCode = () => {
-    const invalid = cohorts.filter(
-      (cohort) => cohort.inv_code.toLowerCase() === state.invite_code.toLowerCase(),
-    );
+    const invalid = cohorts.filter((cohort) => cohort.inv_code.toLowerCase() === state.invite_code.toLowerCase());
     return invalid.length > 0;
   };
 
   //the submit button is disabled until the input is valid
   const isValid = cohort
-    ? !inputIsEmpty &&
-      state.cohort_name.length <= 20 &&
-      state.invite_code.length <= 20
+    ? !inputIsEmpty && state.cohort_name.length <= 20 && state.invite_code.length <= 20
     : !inputIsEmpty &&
       state.cohort_name.length <= 20 &&
       !invalidClassName() &&
@@ -168,40 +144,18 @@ const CohortForm = ({
 
   return (
     <s.StyledCohortForm>
-      <StyledDialog
-        onDismiss={() => setShowCohortForm(false)}
-        aria-label="Create class"
-        max_width="525px"
-      >
+      <StyledDialog onDismiss={() => setShowCohortForm(false)} aria-label="Create class" max_width="525px">
         {cohort ? <h1>{strings.editClass}</h1> : <h1>{strings.createClass}</h1>}
         {isLoading ? (
           <LoadingAnimation />
         ) : (
           <form>
-            <CohortNameTextField
-              value={state.cohort_name}
-              onChange={handleChange}
-            />
-            {invalidClassName() && !cohort && (
-              <Error message="You already have a class with that name" />
-            )}
-            <InviteCodeTextField
-              value={state.invite_code}
-              onChange={handleChange}
-            />
-            {invalidInviteCode() && !cohort && (
-              <Error message="You already used that invite code for a class" />
-            )}
-            <FormControl
-              fullWidth
-              disabled={!!cohort}
-              required
-              className="form-control"
-            >
-              <LanguageSelector
-                value={state.language_code}
-                onChange={handleLanguageChange}
-              >
+            <CohortNameTextField value={state.cohort_name} onChange={handleChange} />
+            {invalidClassName() && !cohort && <Error message="You already have a class with that name" />}
+            <InviteCodeTextField value={state.invite_code} onChange={handleChange} />
+            {invalidInviteCode() && !cohort && <Error message="You already used that invite code for a class" />}
+            <FormControl fullWidth disabled={!!cohort} required className="form-control">
+              <LanguageSelector value={state.language_code} onChange={handleLanguageChange}>
                 {strings.classroomLanguage}
               </LanguageSelector>
             </FormControl>
@@ -232,20 +186,11 @@ const CohortForm = ({
         {inputIsEmpty && <Error message={strings.errorEmptyInputField} />}
         <PopupButtonWrapper style={{ justifyContent: cohort ? "space-between" : "flex-end" }}>
           {cohort && (
-            <StyledButton
-              $secondary
-              onClick={() => setShowWarning(true)}
-              style={{ opacity: 0.6 }}
-            >
+            <StyledButton $secondary onClick={() => setShowWarning(true)} style={{ opacity: 0.6 }}>
               {strings.delete}
             </StyledButton>
           )}
-          <StyledButton
-            $primary
-            onClick={submitForm}
-            className="form-control"
-            $disabled={!isValid} disabled={!isValid}
-          >
+          <StyledButton $primary onClick={submitForm} className="form-control" $disabled={!isValid} disabled={!isValid}>
             {cohort ? strings.saveChanges : strings.createClass}
           </StyledButton>
         </PopupButtonWrapper>

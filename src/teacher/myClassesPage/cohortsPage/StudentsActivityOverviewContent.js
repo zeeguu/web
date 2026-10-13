@@ -1,16 +1,13 @@
 import React, { useState } from "react";
-import StudentInfoLine from "./StudentInfoLine";
-import TimeSelector from "../../sharedComponents/TimeSelector";
 import FilterInput from "../../sharedComponents/FilterInput";
 import Selector from "../../../components/Selector";
-import LoadingAnimation from "../../../components/LoadingAnimation";
 import EmptyState from "../../../components/EmptyState";
-import strings from "../../../i18n/definitions";
-import { CenteredContentContainer } from "../../../components/ColumnWidth.sc";
 import { ScrollableTable } from "../../styledComponents/ScrollableTable.sc";
-import { FilterBar } from "../../styledComponents/TextFilterBar.sc";
+import * as t from "./ClassTable.sc";
+import StudentRow from "./StudentRow";
 import { likelyDuplicates } from "./duplicateStudents";
 import { DEFAULT_STUDENT_SORT, STUDENT_SORTS, matchesSearch, sortStudents } from "./studentSort";
+import { CLASS_PERIODS } from "./studentRowText";
 
 // One order for every class: a teacher who wants the idle students on top
 // wants them on top in all of their classes.
@@ -24,13 +21,30 @@ function rememberedSort() {
   }
 }
 
-const StudentsActivityOverviewContent = ({ cohortID, students, setForceUpdate, removeStudentFromCohort }) => {
+const selector = (options, value, onChange, ariaLabel) => (
+  <Selector
+    options={options}
+    optionLabel={(option) => option.label}
+    optionValue={(option) => option.value}
+    selectedValue={value}
+    onChange={(event) => onChange(event.target.value)}
+    ariaLabel={ariaLabel}
+    showPlaceholder={false}
+  />
+);
+
+// A class's students as a table: who they are, when they were last active,
+// how much time they spent in the period (by kind of activity), what they
+// read and practised. A row opens the student.
+export default function StudentsActivityOverviewContent({
+  cohortID,
+  students,
+  period,
+  onPeriodChange,
+  removeStudentFromCohort,
+}) {
   const [sort, setSort] = useState(rememberedSort);
   const [search, setSearch] = useState("");
-
-  if (students === null) {
-    return <LoadingAnimation />;
-  }
 
   function chooseSort(value) {
     setSort(value);
@@ -41,52 +55,52 @@ const StudentsActivityOverviewContent = ({ cohortID, students, setForceUpdate, r
     }
   }
 
-  const customText = [strings.customTextInTimeSelector];
   const duplicates = likelyDuplicates(students);
   const shown = sortStudents(
     students.filter((student) => matchesSearch(student, search)),
     sort,
   );
+  const classMaxTime = Math.max(0, ...students.map((student) => student.total_time || 0));
 
-  const controls = students.length > 1 && (
-    <FilterBar>
-      <FilterInput value={search} onChange={setSearch} placeholder="Find a student" ariaLabel="Find a student" />
-      <div className="trailing">
-        <Selector
-          options={STUDENT_SORTS}
-          optionLabel={(option) => option.label}
-          optionValue={(option) => option.value}
-          selectedValue={sort}
-          onChange={(event) => chooseSort(event.target.value)}
-          ariaLabel="Sort the students"
-          showPlaceholder={false}
-        />
-      </div>
-    </FilterBar>
-  );
-
-  let rows = (
+  let table = (
     <ScrollableTable>
-      {shown.map((student, index) => (
-        <StudentInfoLine
-          key={student.id}
-          cohortID={cohortID}
-          student={student}
-          duplicates={duplicates[student.id]}
-          removeStudentFromCohort={removeStudentFromCohort}
-          isFirst={index === 0}
-        />
-      ))}
+      <t.Table>
+        <thead>
+          <tr>
+            <th>Student</th>
+            <th>Last active</th>
+            <th>Time</th>
+            <th className="num">Texts</th>
+            <th className="num">Exercises</th>
+            <th className="num">Correct</th>
+            <th aria-label="Remove" />
+          </tr>
+        </thead>
+        <tbody>
+          {shown.map((student) => (
+            <StudentRow
+              key={student.id}
+              student={student}
+              cohortID={cohortID}
+              classMaxTime={classMaxTime}
+              duplicates={duplicates[student.id]}
+              removeStudentFromCohort={removeStudentFromCohort}
+            />
+          ))}
+        </tbody>
+      </t.Table>
     </ScrollableTable>
   );
-  if (shown.length === 0) rows = <EmptyState message={`No student matches "${search}".`} fillHeight={false} />;
+  if (shown.length === 0) table = <EmptyState message={`No student matches "${search}".`} fillHeight={false} />;
 
   return (
-    <CenteredContentContainer>
-      <TimeSelector setForceUpdate={setForceUpdate} customText={customText} />
-      {controls}
-      {rows}
-    </CenteredContentContainer>
+    <>
+      <t.Toolbar>
+        <FilterInput value={search} onChange={setSearch} placeholder="Find a student" ariaLabel="Find a student" />
+        {selector(STUDENT_SORTS, sort, chooseSort, "Sort the students")}
+        <div className="period">{selector(CLASS_PERIODS, String(period), onPeriodChange, "Period")}</div>
+      </t.Toolbar>
+      {table}
+    </>
   );
-};
-export default StudentsActivityOverviewContent;
+}

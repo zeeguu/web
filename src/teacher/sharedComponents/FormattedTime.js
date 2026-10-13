@@ -24,19 +24,3 @@ export const convertExactTimeString = (accumulatedTime) => {
 };
 
 //This should be localised STRINGS
-export const timeExplanation = (student) => (
-  <div>
-    <p>
-      {strings.exactReadingTime} {convertExactTimeString(student.reading_time)}
-    </p>
-    <p>
-      {strings.exactExerciseTime} {convertExactTimeString(student.exercise_time)}
-    </p>
-    <p>
-      {strings.exactBrowsingTime} {convertExactTimeString(student.browsing_time || 0)}
-    </p>
-    <p>
-      {strings.exactListeningTime} {convertExactTimeString(student.audio_time || 0)}
-    </p>
-  </div>
-);

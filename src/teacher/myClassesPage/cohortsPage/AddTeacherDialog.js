@@ -2,19 +2,12 @@ import React, { useContext, useEffect, useState } from "react";
 import strings from "../../../i18n/definitions";
 import { TitleInput } from "../../sharedComponents/TitleInput";
 import * as s from "../../styledComponents/AddURLDialog.sc";
-import {
-  PopupButtonWrapper,
-  StyledButton,
-} from "../../styledComponents/TeacherButtons.sc";
+import { PopupButtonWrapper, StyledButton } from "../../styledComponents/TeacherButtons.sc";
 import { Error } from "../../sharedComponents/Error";
 import { StyledDialog } from "../../styledComponents/StyledDialog.sc";
 import { APIContext } from "../../../contexts/APIContext";
 
-export default function AddTeacherDialog({
-  cohort,
-  setIsOpen,
-  setForceUpdate,
-}) {
+export default function AddTeacherDialog({ cohort, setIsOpen, setForceUpdate }) {
   const api = useContext(APIContext);
   const [showGuidance, setShowGuidance] = useState(false);
   const [showError, setShowError] = useState(false);
@@ -57,15 +50,9 @@ export default function AddTeacherDialog({
   };
 
   return (
-    <StyledDialog
-      aria-label={strings.addTextFromWebpage}
-      onDismiss={() => setIsOpen(false)}
-      max_width="525px"
-    >
+    <StyledDialog aria-label={strings.addTextFromWebpage} onDismiss={() => setIsOpen(false)} max_width="525px">
       <s.StyledURLDialog>
-        <h1 className="add-text-headline">
-          {strings.addAnotherTeacherToTheClass}
-        </h1>
+        <h1 className="add-text-headline">{strings.addAnotherTeacherToTheClass}</h1>
       </s.StyledURLDialog>
       <TitleInput
         value={colleagueEmail}
