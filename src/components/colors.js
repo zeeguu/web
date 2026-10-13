@@ -14,6 +14,14 @@ let darkBlue = "#2f77ad";
 let transparentDarkGreen = "rgb(0 80 20 / 50%)";
 let lightPurple = "#aab1de";
 
+// One colour per kind of activity, wherever activity is broken down by kind
+// (History's bars, the teacher's class list). Mid-tones: they read on both
+// themes.
+let activityReading = "#64b5f6";
+let activityExercise = "#81c784";
+let activityBrowsing = "#ffb74d";
+let activityListening = "#ba68c8";
+
 /* 
   A NEW APPROACH TO DEFINING AND NAMING COLORS:
 
@@ -168,4 +176,8 @@ export {
   setColors,
   lightPurple,
   streakFireOrange,
+  activityReading,
+  activityExercise,
+  activityBrowsing,
+  activityListening,
 };

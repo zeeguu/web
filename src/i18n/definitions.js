@@ -866,6 +866,8 @@ let strings = new LocalizedStrings(
       //FormatedTime
       exactReadingTime: "Exact reading time:",
       exactExerciseTime: "Exact exercise time:",
+      exactBrowsingTime: "Exact browsing time:",
+      exactListeningTime: "Exact listening time:",
       hours: "h ",
 
       //HowToAddStudentsInfo
@@ -948,7 +950,7 @@ let strings = new LocalizedStrings(
       //StudentInfoLineHeader
       textLevel: "level",
       studentName: "Student name",
-      readingExerciseTime: "Reading/Exercise time",
+      readingExerciseTime: "Time spent",
       lengthOfText: "text length",
       levelOfText: "text level",
       exercisesCorrect: "Exercises correct ",
@@ -1641,6 +1643,8 @@ let strings = new LocalizedStrings(
       //FormatedTime
       exactReadingTime: "Nøjagtig læsetid:",
       exactExerciseTime: "Nøjagtig øvelsestid:",
+      exactBrowsingTime: "Nøjagtig browsetid:",
+      exactListeningTime: "Nøjagtig lyttetid:",
       hours: "t ",
 
       //HowToAddStudentsInfo
@@ -1727,7 +1731,7 @@ let strings = new LocalizedStrings(
       //StudentInfoLineHeader
       textLevel: "grad",
       studentName: "Elevens navn",
-      readingExerciseTime: "Læse/Øvelsestid",
+      readingExerciseTime: "Tidsforbrug",
       lengthOfText: "tekst længde",
       levelOfText: "sværheds",
       exercisesCorrect: "Korrekt ",

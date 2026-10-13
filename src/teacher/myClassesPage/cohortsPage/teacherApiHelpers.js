@@ -1,49 +1,37 @@
 //This function is used to set each students data relative to the other students' data for the studentActivityBar to be rendered correctly.
+// The kinds of activity a student's bar is made of, in the order they appear.
+// Seconds; browsing_time and audio_time are absent from older API responses.
+export const ACTIVITY_KINDS = ["reading_time", "exercise_time", "browsing_time", "audio_time"];
+
+// [{ kind, seconds, percent }] for the kinds a student spent time on, percent
+// being the share of the student's own total.
+export function activitySegments(student) {
+  const total = ACTIVITY_KINDS.reduce((sum, kind) => sum + (student[kind] || 0), 0);
+  if (total === 0) return [];
+  return ACTIVITY_KINDS.filter((kind) => student[kind] > 0).map((kind) => ({
+    kind,
+    seconds: student[kind],
+    percent: (100 * student[kind]) / total,
+  }));
+}
+
 export function transformStudents(students) {
   let maxActivity = 0;
 
   let transformedStudents = students.map((student) => {
-    const { reading_time, exercise_time } = student;
-    const reading_percentage = getReadingPercentage(
-      reading_time,
-      exercise_time
-    );
-    const total_time = reading_time + exercise_time;
+    const total_time = ACTIVITY_KINDS.reduce((sum, kind) => sum + (student[kind] || 0), 0);
 
     maxActivity = maxActivity > total_time ? maxActivity : total_time;
     return {
       ...student,
-      reading_percentage,
+      activity_segments: activitySegments(student),
       total_time,
     };
   });
   if (maxActivity > 240) {
-    transformedStudents = transformedStudents.map((student) =>
-      addTotalAndNormalizedTime(student, maxActivity)
-    );
+    transformedStudents = transformedStudents.map((student) => addTotalAndNormalizedTime(student, maxActivity));
   }
   return transformedStudents;
-}
-
-/**
- * Computes the proportion between two numbers
- * @param {number} a the total amount of reading time
- * @param {number} b the total amount of exercises time
- */
-export function getReadingPercentage(a, b) {
-  //student has done both reading and exercises -> return % of reading time
-  if (!(a === 0 && b === 0)) {
-    return (100 * a) / (b + a);
-    //student has done no reading and no exercises:
-  } else if (a === 0 && b === 0) {
-    return 0;
-    //student has done no reading:
-  } else if (a === 0) {
-    return 0;
-    //student has done reading only (no exercises)
-  } else {
-    return 100;
-  }
 }
 
 /**
