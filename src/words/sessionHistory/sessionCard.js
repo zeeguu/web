@@ -98,10 +98,11 @@ export function groupExerciseWords(words) {
 }
 
 // What used to say "Distracted": the fact behind it. Shown when the API judges
-// the session distracted (several departures, often): "left the page 9×".
+// the session distracted (several departures, often): "left the page 9 times".
 export function leftThePage(session) {
   if (session.focus_level !== "distracted" || !(session.interruptions > 0)) return null;
-  return `left the page ${session.interruptions}×`;
+  const n = session.interruptions;
+  return `left the page ${n} ${n === 1 ? "time" : "times"}`;
 }
 
 // A browsing session's words under the article whose title or summary they

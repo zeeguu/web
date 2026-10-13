@@ -70,10 +70,11 @@ export const Details = styled.div`
   color: var(--text-secondary);
 `;
 
+// In red, like the time away over a reading's focus strip.
 export const Distracted = styled.span`
   margin-left: 0.6em;
   font-weight: 600;
-  color: var(--text-primary);
+  color: ${errorRed};
 `;
 
 // A session with nothing but its time and length: one quiet line.

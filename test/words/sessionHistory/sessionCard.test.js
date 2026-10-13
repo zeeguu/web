@@ -83,7 +83,7 @@ describe("groupExerciseWords", () => {
 
 describe("leftThePage", () => {
   it("says how often, only when the session was distracted", () => {
-    expect(leftThePage({ focus_level: "distracted", interruptions: 9 })).toBe("left the page 9×");
+    expect(leftThePage({ focus_level: "distracted", interruptions: 9 })).toBe("left the page 9 times");
     expect(leftThePage({ focus_level: "moderate", interruptions: 3 })).toBe(null);
     expect(leftThePage({ focus_level: "focused", interruptions: 0 })).toBe(null);
   });
