@@ -333,7 +333,7 @@ export const ClickableOrigin = styled.span`
   font-weight: 600;
   color: #1565c0;
   cursor: pointer;
-  text-decoration: ${(props) => (props.isSpeaking ? "underline" : "none")};
+  text-decoration: ${(props) => (props.$isSpeaking ? "underline" : "none")};
 
   &:hover {
     text-decoration: underline;
