@@ -8,6 +8,8 @@ const KIND_COLOR = {
   audio_time: activityListening,
 };
 
+const PHONE_WIDTH = "640px";
+
 // The toolbar over the table: find and sort on the left, the period right.
 export const Toolbar = styled.div`
   display: flex;
@@ -48,6 +50,85 @@ export const Table = styled.table`
   td.num {
     text-align: right;
     font-variant-numeric: tabular-nums;
+  }
+
+  /* On a phone the six columns do not fit. Each student becomes three lines:
+     name and last active; the time bar across the full width; the counts as
+     a sentence. The headers stay, as a row of sort buttons. */
+  @media (max-width: ${PHONE_WIDTH}) {
+    thead tr {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.2em 0.9em;
+      padding-bottom: 0.5em;
+      border-bottom: 1px solid var(--border-color);
+    }
+    th {
+      padding: 0;
+      border: none;
+    }
+    th:last-child {
+      display: none;
+    }
+
+    tbody tr {
+      display: grid;
+      grid-template-columns: auto auto 1fr auto;
+      grid-template-areas:
+        "name name last-active remove"
+        "time time time time"
+        "texts exercises correct correct";
+      align-items: center;
+      column-gap: 0.4em;
+      padding: 0.6em 0;
+      border-bottom: 1px solid var(--border-light);
+    }
+    td {
+      padding: 0.15em 0;
+      border: none;
+    }
+    td.name {
+      grid-area: name;
+    }
+    td.last-active {
+      grid-area: last-active;
+      text-align: right;
+      font-size: 0.85rem;
+    }
+    td.remove {
+      grid-area: remove;
+    }
+    td.time {
+      grid-area: time;
+    }
+    td.texts {
+      grid-area: texts;
+    }
+    td.exercises {
+      grid-area: exercises;
+    }
+    td.correct {
+      grid-area: correct;
+    }
+    td.texts,
+    td.exercises,
+    td.correct {
+      text-align: left;
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+    }
+    td.texts::after,
+    td.exercises::after,
+    td.correct::after {
+      content: " " attr(data-label);
+    }
+    td.exercises::before,
+    td.correct::before {
+      content: "· ";
+    }
+    .email {
+      display: none;
+    }
   }
 `;
 

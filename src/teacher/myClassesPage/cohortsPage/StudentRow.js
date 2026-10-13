@@ -41,9 +41,9 @@ export default function StudentRow({ student, cohortID, classMaxTime, duplicates
   return (
     <>
       <t.Row onClick={open}>
-        <td>
+        <td className="name">
           <t.Name>{student.name}</t.Name>
-          <t.Sub>{student.email}</t.Sub>
+          <t.Sub className="email">{student.email}</t.Sub>
           {duplicates.length > 0 && (
             <t.Sub
               className="duplicate"
@@ -53,16 +53,20 @@ export default function StudentRow({ student, cohortID, classMaxTime, duplicates
             </t.Sub>
           )}
         </td>
-        <td>
+        <td className="last-active">
           <t.Muted>{lastActiveText(student.last_active)}</t.Muted>
         </td>
-        <td>{timeCell}</td>
-        <td className="num">{student.number_of_texts || "–"}</td>
-        <td className="num">{student.number_of_exercises || "–"}</td>
-        <td className="num" title="Correct on the first try (shown from 10 exercises on)">
+        <td className="time">{timeCell}</td>
+        <td className="num texts" data-label="texts">
+          {student.number_of_texts || "–"}
+        </td>
+        <td className="num exercises" data-label="exercises">
+          {student.number_of_exercises || "–"}
+        </td>
+        <td className="num correct" data-label="correct" title="Correct on the first try (shown from 10 exercises on)">
           {correctText(student)}
         </td>
-        <td className="num">
+        <td className="num remove">
           <t.Remove
             aria-label={`Remove ${student.name} from the class`}
             title="Remove from the class"
