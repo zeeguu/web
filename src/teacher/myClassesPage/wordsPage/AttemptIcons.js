@@ -86,9 +86,7 @@ export const AttemptIcons = ({ attemptString }) => {
   const attemptChars = attemptString.split("");
   return (
     <s.StyledAttemptIcons>
-      <div className="used-attempt-icon">
-        {attemptChars.map((char) => setIcon(char))}
-      </div>
+      <div className="used-attempt-icon">{attemptChars.map((char) => setIcon(char))}</div>
     </s.StyledAttemptIcons>
   );
 };
@@ -99,38 +97,26 @@ export const IconExplanation = () => {
       <div>
         <div className="icon-explained-row">
           <WrongAttempt />
-          <p className="info-attempt-string">
-            {strings.incorrectAttemptIconExplanation}
-          </p>
+          <p className="info-attempt-string">{strings.incorrectAttemptIconExplanation}</p>
         </div>
         <div className="icon-explained-row">
           <CorrectAttempt />
-          <p className="info-attempt-string">
-            {strings.correctExerciseIconExplanation}
-          </p>
+          <p className="info-attempt-string">{strings.correctExerciseIconExplanation}</p>
         </div>
         <div className="icon-explained-row">
           <HintUsed />
-          <p className="info-attempt-string">
-            {strings.hintInExerciseIconExplanation}
-          </p>
+          <p className="info-attempt-string">{strings.hintInExerciseIconExplanation}</p>
         </div>
         <div className="icon-explained-row">
           <SolutionShown />
-          <p className="info-attempt-string">
-            {strings.askedForSolutionInExercise}
-          </p>
+          <p className="info-attempt-string">{strings.askedForSolutionInExercise}</p>
         </div>
         <div className="icon-explained-row">
-          <p className="student-feedback-string">
-            {strings.studentExerciseFeedback}
-          </p>
+          <p className="student-feedback-string">{strings.studentExerciseFeedback}</p>
           <p> {strings.exerciseFeedbackFromStudent}</p>
         </div>
         <div className="icon-explained-row">
-          <p className="exercise-type-string">
-            {strings.pickTheWordOrMatchThreePairs}
-          </p>
+          <p className="exercise-type-string">{strings.pickTheWordOrMatchThreePairs}</p>
           <p> {strings.typeOfExerciseIconExplanation}</p>
         </div>
       </div>

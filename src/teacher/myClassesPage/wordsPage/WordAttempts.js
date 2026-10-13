@@ -1,6 +1,6 @@
 import { shortFormattedDate } from "../../sharedComponents/FormattedDate";
-import ExerciseType from "../exercisesPage/ExerciseType";
-import { AttemptIcons } from "../exercisesPage/AttemptIcons";
+import ExerciseType from "./ExerciseType";
+import { AttemptIcons } from "./AttemptIcons";
 import * as s from "./WordAttempts.sc";
 
 // A word's exercise attempts, as the old Exercises tab listed them: when,

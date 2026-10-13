@@ -1,12 +1,10 @@
 import strings from "../../i18n/definitions";
-import { Switch, useParams } from "react-router";
+import { Redirect, Route, Switch, useParams } from "react-router";
 import { useLocation } from "react-router-dom";
 import { PrivateRoute } from "../../PrivateRoute";
 import LocalStorage from "../../assorted/LocalStorage";
 import StudentTabs from "../myClassesPage/StudentTabs";
 import * as s from "../../components/ColumnWidth.sc";
-import StudentReadingInsights from "../myClassesPage/readingPage/StudentReadingInsights";
-import StudentExercisesInsights from "../myClassesPage/exercisesPage/StudentExercisesInsights";
 import StudentActivity from "../myClassesPage/activityPage/StudentActivity";
 import StudentWords from "../myClassesPage/wordsPage/StudentWords";
 import { useContext, useEffect, useState } from "react";
@@ -26,10 +24,7 @@ export default function ActivityInsightsRouter() {
     const fullName = name.split(" ");
     return fullName[0];
   };
-  let title = strings.s_activity;
-  if (path.endsWith("/exercises")) title = strings.s_exercises;
-  else if (path.endsWith("/reading")) title = strings.s_reading;
-  else if (path.includes("/words")) title = strings.s_words;
+  const title = path.includes("/words") ? strings.s_words : strings.s_activity;
 
   useEffect(() => {
     api.getCohortName(cohortID, (cohort) => setCohortName(cohort.name));
@@ -63,14 +58,21 @@ export default function ActivityInsightsRouter() {
 
         <PrivateRoute path="/teacher/classes/viewStudent/:studentID/class/:cohortID/words" component={StudentWords} />
 
-        <PrivateRoute
+        {/* The Reading and Exercises tabs became Activity and Words; old
+            links (bookmarks, emails) land on their successors. */}
+        <Route
           path="/teacher/classes/viewStudent/:studentID/class/:cohortID/reading"
-          component={StudentReadingInsights}
+          render={({ match }) => (
+            <Redirect to={`/teacher/classes/viewStudent/${match.params.studentID}/class/${match.params.cohortID}`} />
+          )}
         />
-
-        <PrivateRoute
+        <Route
           path="/teacher/classes/viewStudent/:studentID/class/:cohortID/exercises"
-          component={StudentExercisesInsights}
+          render={({ match }) => (
+            <Redirect
+              to={`/teacher/classes/viewStudent/${match.params.studentID}/class/${match.params.cohortID}/words`}
+            />
+          )}
         />
       </s.WidestColumn>
     </Switch>

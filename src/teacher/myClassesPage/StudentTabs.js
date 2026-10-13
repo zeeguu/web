@@ -12,16 +12,16 @@ import * as s from "../styledComponents/DetailHeader.sc";
  * action, and made two views of one student read as two separate errands. They
  * are tabs now, like Students and Texts on the class itself.
  *
- * Activity comes first: everything the student did (reading, exercises,
- * browsing, listening), as they see it in their own History.
+ * Activity: everything the student did (reading, exercises, browsing,
+ * listening), as they see it in their own History. Words: their own Words
+ * pages. Together they replaced the Reading and Exercises tabs (Oct 2026),
+ * after checking that nothing those showed was lost.
  */
 export default function StudentTabs({ studentID, cohortID, cohortName, title }) {
   const base = `/teacher/classes/viewStudent/${studentID}/class/${cohortID}`;
 
   const tabs = [
     { text: "Activity", link: base, isActive: (_, loc) => loc.pathname === base },
-    { text: "Reading", link: `${base}/reading` },
-    { text: "Exercises", link: `${base}/exercises` },
     { text: "Words", link: `${base}/words` },
   ];
 
