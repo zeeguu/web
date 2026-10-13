@@ -118,10 +118,10 @@ export function groupBrowsingWords(words) {
   return [...byArticle.values()];
 }
 
-// A reading session's time away from the page, as stretches of a strip that
-// spans the session from start to last action: { left, width } in percent,
-// closed when the article was closed in between (two readings in one entry)
-// rather than left open for another tab or app.
+// A reading session's time off the clock, as stretches of a strip that spans
+// the session from start to last action: { left, width } in percent and its
+// kind -- "away" (the page open behind another tab or app), "idle" (in focus,
+// no scroll, tap or key), "closed" (between two readings in one entry).
 // Each stretch is drawn at least a few pixels wide (see FocusStrip), so a
 // two-second departure still shows as a tick.
 export function awayStretches(session) {
@@ -132,9 +132,13 @@ export function awayStretches(session) {
   return (session.away || []).map(([from, to, why]) => ({
     left: percent(from),
     width: percent(to) - percent(from),
-    closed: why === "closed",
+    kind: why || "away",
   }));
 }
+
+const lengthOf = ([from, to]) => Math.max(0, new Date(to) - new Date(from));
+const awayOfKind = (session, kind) =>
+  (session.away || []).filter(([, , why]) => (why || "away") === kind).reduce((sum, i) => sum + lengthOf(i), 0);
 
 // How long a session was open, from start to last action, in ms.
 export function openSpan(session) {
@@ -150,9 +154,40 @@ export function scaledPercent(ms, scale) {
 }
 
 // How long a reading's page was open but out of focus (in another tab or
-// app), in ms; the article closed between two readings does not count.
+// app), in ms; idle in focus and the article closed do not count.
 export function outOfFocusMs(session) {
-  return (session.away || [])
-    .filter(([, , why]) => why !== "closed")
-    .reduce((sum, [from, to]) => sum + Math.max(0, new Date(to) - new Date(from)), 0);
+  return awayOfKind(session, "away");
+}
+
+// How long a reading's page was open in focus but idle, in ms. Readers before
+// Oct 2026 did not log idle: for their sessions it is whatever time the
+// article was open that the clock, the time away and the closed stretches
+// do not account for -- idle somewhere on the strip, but nobody knows where.
+export function idleMs(session) {
+  if (session.idle_tracked) return awayOfKind(session, "idle");
+  const accounted = (session.duration || 0) + (session.away || []).reduce((sum, i) => sum + lengthOf(i), 0);
+  return Math.max(0, openSpan(session) - accounted);
+}
+
+// A session whose idle time is unknown and too long to draw as if it were
+// reading (an article left open for hours): its strip shows only what is
+// known, in proportion, instead of the open time.
+const PLACELESS_IDLE_MS = 5 * 60 * 1000;
+export function idleUnplaced(session) {
+  return !session.idle_tracked && idleMs(session) > PLACELESS_IDLE_MS;
+}
+
+// For such a session: active, then away, then closed, as parts of a strip as
+// long as their sum (ms). { length, stretches }.
+export function summaryStrip(session) {
+  const active = session.duration || 0;
+  const away = outOfFocusMs(session);
+  const closed = awayOfKind(session, "closed");
+  const length = active + away + closed;
+  if (!(length > 0)) return { length: 0, stretches: [] };
+  const pct = (ms) => (ms / length) * 100;
+  const stretches = [];
+  if (away > 0) stretches.push({ left: pct(active), width: pct(away), kind: "away" });
+  if (closed > 0) stretches.push({ left: pct(active + away), width: pct(closed), kind: "closed" });
+  return { length, stretches };
 }

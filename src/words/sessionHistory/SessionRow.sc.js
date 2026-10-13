@@ -197,22 +197,36 @@ export const FocusBlock = styled.div`
   margin-top: 0.6em;
 `;
 
+// The strip, and the session's minutes large at its end.
+export const FocusRow = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 0.6em;
+  margin-top: 0.3em;
+`;
+
 export const FocusStrip = styled.div`
   position: relative;
+  flex: 0 1 auto;
   min-width: 2px;
-  margin-top: 0.3em;
   height: 8px;
   border-radius: 3px;
   overflow: hidden;
   background: ${activityReading};
 `;
 
+const STRETCH_COLOR = {
+  away: errorRed,
+  idle: "var(--border-color)",
+  closed: "var(--text-muted)",
+};
+
 export const Away = styled.span`
   position: absolute;
   top: 0;
   bottom: 0;
   min-width: 2px;
-  background: ${({ $closed }) => ($closed ? "var(--text-muted)" : errorRed)};
+  background: ${({ $kind }) => STRETCH_COLOR[$kind]};
 `;
 
 // "10 min away, left the article 32 times", over the strip.
@@ -222,7 +236,7 @@ export const BarLabel = styled.div`
   color: var(--text-secondary);
   font-variant-numeric: tabular-nums;
 
-  &.away {
+  .away {
     color: ${errorRed};
     font-weight: 600;
   }
@@ -240,7 +254,27 @@ export const StripLegend = styled.div`
   .away {
     color: ${errorRed};
   }
+  .idle {
+    color: var(--border-color);
+  }
   .closed {
     color: var(--text-muted);
+  }
+`;
+
+// A reading's minutes, large at the end of its focus strip (as in the corner
+// of the other cards), in the reading colour: they are its blue part.
+export const StripMinutes = styled.span`
+  flex: none;
+  font-size: 1.25rem;
+  font-weight: 700;
+  white-space: nowrap;
+  color: ${activityReading};
+  font-variant-numeric: tabular-nums;
+
+  .what {
+    font-size: 0.85rem;
+    font-weight: 400;
+    color: var(--text-secondary);
   }
 `;
