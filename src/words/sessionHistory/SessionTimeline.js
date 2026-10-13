@@ -19,9 +19,10 @@ import {
 const LEARNER_WORDS_SHOWN = 10;
 
 // A word over its translation. For the learner: tap the word to hear it, the
-// translation to edit it. For a teacher (onToggle): the pair opens the
-// sentence it was translated in.
-function WordPair({ word, results = null, onEditClick, onToggle = null, isOpen = false }) {
+// translation to edit it. For a teacher (forTeacher): the word alone -- what
+// matters is which words the student looked up, not what they mean; onToggle
+// opens the sentence it was translated in.
+function WordPair({ word, results = null, onEditClick, onToggle = null, isOpen = false, forTeacher = false }) {
   const speech = useContext(SpeechContext);
   const [isSpeaking, setIsSpeaking] = useState(false);
 
@@ -52,17 +53,19 @@ function WordPair({ word, results = null, onEditClick, onToggle = null, isOpen =
     </>
   );
 
-  if (onToggle) {
-    return (
+  if (forTeacher) {
+    const origin = (
+      <span className="origin">
+        {word.origin}
+        {marks}
+      </span>
+    );
+    return onToggle ? (
       <r.Pair type="button" $clickable aria-expanded={isOpen} onClick={onToggle}>
-        <span className="origin">
-          {word.origin}
-          {marks}
-        </span>
-        <span className="translation" title={word.translation}>
-          {word.translation}
-        </span>
+        {origin}
       </r.Pair>
+    ) : (
+      <r.Pair as="div">{origin}</r.Pair>
     );
   }
 
@@ -94,7 +97,7 @@ function WordPair({ word, results = null, onEditClick, onToggle = null, isOpen =
 
 // An exercise session's words, each once with its results (✓ green, ✗ red),
 // the ones that needed help first.
-function ExerciseWords({ words, onEditWord }) {
+function ExerciseWords({ words, onEditWord, forTeacher }) {
   const { neededHelp, right } = groupExerciseWords(words);
   const group = (label, list) =>
     list.length > 0 && (
@@ -102,7 +105,13 @@ function ExerciseWords({ words, onEditWord }) {
         <r.GroupLabel>{label}</r.GroupLabel>
         <r.Pairs>
           {list.map((word, idx) => (
-            <WordPair key={idx} word={word} results={word.results} onEditClick={onEditWord} />
+            <WordPair
+              key={idx}
+              word={word}
+              results={word.results}
+              onEditClick={onEditWord}
+              forTeacher={forTeacher}
+            />
           ))}
         </r.Pairs>
       </r.ExerciseGroup>
@@ -125,7 +134,7 @@ function SessionWords({ session, onEditWord, forTeacher }) {
   if (words.length === 0) return null;
 
   if (session.session_type === "exercise") {
-    return <ExerciseWords words={words} onEditWord={onEditWord} />;
+    return <ExerciseWords words={words} onEditWord={onEditWord} forTeacher={forTeacher} />;
   }
 
   const shown = forTeacher || showAll ? words : words.slice(0, LEARNER_WORDS_SHOWN);
@@ -142,6 +151,7 @@ function SessionWords({ session, onEditWord, forTeacher }) {
             onEditClick={onEditWord}
             onToggle={forTeacher ? () => setOpen(open === idx ? null : idx) : null}
             isOpen={open === idx}
+            forTeacher={forTeacher}
           />
         ))}
         {hidden > 0 && <r.More onClick={() => setShowAll(true)}>+{hidden} more</r.More>}
@@ -209,8 +219,9 @@ function SessionItem({ session, onEditWord, linkArticles, forTeacher }) {
 // out where the words aren't the viewer's own.
 // linkArticles: reading sessions link to the article in the reader. Off for a
 // teacher, whose opening it would count as their own reading.
-// forTeacher: every word shown, each opening the sentence it was translated
-// in (the teacher variant of the API sends the sentences).
+// forTeacher: every word shown without its translation, each opening the
+// sentence it was translated in (the teacher variant of the API sends the
+// sentences).
 export default function SessionTimeline({ sessions, onEditWord = null, linkArticles = true, forTeacher = false }) {
   const groupedSessions = groupByDate(sessions);
   return (
