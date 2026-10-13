@@ -8,6 +8,7 @@ import { TeacherPageSubtitle } from "../styledComponents/TeacherPageHeading.sc";
 import * as s from "../../components/ColumnWidth.sc";
 import StudentReadingInsights from "../myClassesPage/readingPage/StudentReadingInsights";
 import StudentExercisesInsights from "../myClassesPage/exercisesPage/StudentExercisesInsights";
+import StudentActivity from "../myClassesPage/activityPage/StudentActivity";
 import { useContext, useEffect, useState } from "react";
 import LoadingAnimation from "../../components/LoadingAnimation";
 import { APIContext } from "../../contexts/APIContext";
@@ -25,9 +26,9 @@ export default function ActivityInsightsRouter() {
     const fullName = name.split(" ");
     return fullName[0];
   };
-  const isOnExercisePage = path.includes("exercises");
-
-  const title = isOnExercisePage ? strings.s_exercises : strings.s_reading;
+  let title = strings.s_activity;
+  if (path.endsWith("/exercises")) title = strings.s_exercises;
+  else if (path.endsWith("/reading")) title = strings.s_reading;
 
   useEffect(() => {
     api.getCohortName(cohortID, (cohort) => setCohortName(cohort.name));
@@ -46,11 +47,7 @@ export default function ActivityInsightsRouter() {
   return (
     <Switch>
       <s.WidestColumn>
-        <StudentTabs
-          studentID={studentID}
-          cohortID={cohortID}
-          title={`${studentName}${title}`}
-        />
+        <StudentTabs studentID={studentID} cohortID={cohortID} title={`${studentName}${title}`} />
         {/* Which class we came from: the back arrow goes there, but only the
             old "Back to <class>" button ever said its name. */}
         <TeacherPageSubtitle>{cohortName}</TeacherPageSubtitle>
@@ -58,6 +55,11 @@ export default function ActivityInsightsRouter() {
         <PrivateRoute
           path="/teacher/classes/viewStudent/:studentID/class/:cohortID"
           exact
+          component={StudentActivity}
+        />
+
+        <PrivateRoute
+          path="/teacher/classes/viewStudent/:studentID/class/:cohortID/reading"
           component={StudentReadingInsights}
         />
 
