@@ -102,8 +102,10 @@ export default function ArticlePreview({
   // Headlines cards build their tokens up front — the title is tappable right
   // in the row — but from the bundled feed payload only (preferFresh would put
   // one request per card behind the lightest of the three views).
+  // A preview is plain text: a word tapped there would translate on the
+  // teacher's own account, saving the word to their list.
   const { interactiveTitle, interactiveSummary } = useArticlePreviewTokens(article, {
-    enabled: !previewMode || previewOpen || compact,
+    enabled: !previewOnly && (!previewMode || previewOpen || compact),
     preferFresh: previewMode && !compact,
     titleOnly: compact && !previewOpen,
   });
