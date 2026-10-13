@@ -11,12 +11,16 @@ import * as s from "../styledComponents/DetailHeader.sc";
  * "Back to <class>" — which made navigating away look like the page's primary
  * action, and made two views of one student read as two separate errands. They
  * are tabs now, like Students and Texts on the class itself.
+ *
+ * Activity comes first: everything the student did (reading, exercises,
+ * browsing, listening), as they see it in their own History.
  */
 export default function StudentTabs({ studentID, cohortID, title }) {
   const base = `/teacher/classes/viewStudent/${studentID}/class/${cohortID}`;
 
   const tabs = [
-    { text: "Reading", link: base, isActive: (_, loc) => loc.pathname === base },
+    { text: "Activity", link: base, isActive: (_, loc) => loc.pathname === base },
+    { text: "Reading", link: `${base}/reading` },
     { text: "Exercises", link: `${base}/exercises` },
   ];
 

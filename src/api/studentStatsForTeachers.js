@@ -11,13 +11,7 @@ Zeeguu_API.prototype.loadUserInfo = function (userID, duration, callback) {
   this._getJSON(`/user_info/${userID}/${duration}`, callback);
 };
 
-Zeeguu_API.prototype.getStudentInfo = function (
-  studentID,
-  cohortID,
-  duration,
-  onSuccess,
-  onError
-) {
+Zeeguu_API.prototype.getStudentInfo = function (studentID, cohortID, duration, onSuccess, onError) {
   let payload = {
     student_id: studentID,
     number_of_days: duration,
@@ -26,107 +20,55 @@ Zeeguu_API.prototype.getStudentInfo = function (
   this._post(`/user_info`, qs.stringify(payload), onSuccess, onError, true);
 };
 
-Zeeguu_API.prototype.getReadingSessions = function (
-  studentID,
-  cohortID,
-  duration,
-  onSuccess,
-  onError
-) {
+Zeeguu_API.prototype.getReadingSessions = function (studentID, cohortID, duration, onSuccess, onError) {
   let payload = {
     student_id: studentID,
     number_of_days: duration,
     cohort_id: cohortID,
   };
-  this._post(
-    `/student_reading_sessions`,
-    qs.stringify(payload),
-    onSuccess,
-    onError,
-    true
-  );
+  this._post(`/student_reading_sessions`, qs.stringify(payload), onSuccess, onError, true);
 };
 
-Zeeguu_API.prototype.getExerciseHistory = function (
-  studentID,
-  duration,
-  cohortID,
-  onSuccess,
-  onError
-) {
+Zeeguu_API.prototype.getExerciseHistory = function (studentID, duration, cohortID, onSuccess, onError) {
   let payload = {
     student_id: studentID,
     number_of_days: duration,
     cohort_id: cohortID,
   };
-  this._post(
-    `/student_exercise_history`,
-    qs.stringify(payload),
-    onSuccess,
-    onError,
-    true
-  );
+  this._post(`/student_exercise_history`, qs.stringify(payload), onSuccess, onError, true);
 };
 
-Zeeguu_API.prototype.getLearnedWords = function (
-  studentID,
-  duration,
-  cohortID,
-  onSuccess,
-  onError
-) {
+Zeeguu_API.prototype.getLearnedWords = function (studentID, duration, cohortID, onSuccess, onError) {
   let payload = {
     student_id: studentID,
     number_of_days: duration,
     cohort_id: cohortID,
   };
-  this._post(
-    `/student_learned_words`,
-    qs.stringify(payload),
-    onSuccess,
-    onError,
-    true
-  );
+  this._post(`/student_learned_words`, qs.stringify(payload), onSuccess, onError, true);
 };
 
-Zeeguu_API.prototype.getNonStudiedWords = function (
-  studentID,
-  duration,
-  cohortID,
-  onSuccess,
-  onError
-) {
+Zeeguu_API.prototype.getNonStudiedWords = function (studentID, duration, cohortID, onSuccess, onError) {
   let payload = {
     student_id: studentID,
     number_of_days: duration,
     cohort_id: cohortID,
   };
-  this._post(
-    `/student_words_not_studied`,
-    qs.stringify(payload),
-    onSuccess,
-    onError,
-    true
-  );
+  this._post(`/student_words_not_studied`, qs.stringify(payload), onSuccess, onError, true);
 };
 
-Zeeguu_API.prototype.getStudentActivityOverview = function (
-  studentID,
-  duration,
-  cohortID,
-  onSuccess,
-  onError
-) {
+Zeeguu_API.prototype.getStudentActivityOverview = function (studentID, duration, cohortID, onSuccess, onError) {
   let payload = {
     student_id: studentID,
     number_of_days: duration,
     cohort_id: cohortID,
   };
-  this._post(
-    `/student_activity_overview`,
-    qs.stringify(payload),
-    onSuccess,
-    onError,
-    true
-  );
+  this._post(`/student_activity_overview`, qs.stringify(payload), onSuccess, onError, true);
+};
+
+// A student's Activity -> History as their teacher sees it: sessions of every
+// kind in the class's language, words with their sentence and whether the
+// student practised them. Times are UTC ("Z").
+Zeeguu_API.prototype.getStudentSessionHistory = function (studentID, cohortID, days, onSuccess, onError) {
+  const params = new URLSearchParams({ student_id: studentID, cohort_id: cohortID, days });
+  this._getJSON(`student_session_history?${params}`, onSuccess, { onError });
 };
