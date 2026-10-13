@@ -43,6 +43,17 @@ Zeeguu_API.prototype.getPublicArticle = function (link, callback, onError) {
   getExpectingNotFound(`${this.baseAPIurl}/public_article/${encodeURIComponent(link)}`, callback, onError);
 };
 
+// The article's AI summary for its own page (/read/<code>/summary). level: the
+// CEFR level to pick the summary for, as the feed does; omitted, the article's own.
+Zeeguu_API.prototype.getPublicArticleSummary = function (link, level, callback, onError) {
+  const query = level ? `?level=${encodeURIComponent(level)}` : "";
+  getExpectingNotFound(
+    `${this.baseAPIurl}/public_article_summary/${encodeURIComponent(link)}${query}`,
+    callback,
+    onError,
+  );
+};
+
 // position: { part, paragraph_i, sent_i, token_i, total_tokens, partner_token_i }
 // — where the word sits in the article; the server reads the word itself.
 Zeeguu_API.prototype.publicTranslateWord = function (link, toLang, position) {

@@ -4,6 +4,7 @@ import {
   pickTranslationTarget,
   rememberPendingSharedArticle,
   consumePendingSharedArticle,
+  summaryShareUrl,
 } from "../../src/reader/publicArticle/publicReaderLogic";
 
 function memoryStorage() {
@@ -70,5 +71,29 @@ describe("pending shared article", () => {
     const storage = memoryStorage();
     rememberPendingSharedArticle(storage, "https://evil.example/", 0);
     expect(consumePendingSharedArticle(storage, 1)).toBe(null);
+  });
+});
+
+describe("summaryShareUrl", () => {
+  it("links the summary page with the sharer's level", () => {
+    expect(summaryShareUrl("aB3dE5gH7j", "A2")).toBe("https://zeeguu.org/read/aB3dE5gH7j/summary?level=A2");
+  });
+
+  it("leaves the level out when there is none", () => {
+    expect(summaryShareUrl("aB3dE5gH7j", undefined)).toBe("https://zeeguu.org/read/aB3dE5gH7j/summary");
+  });
+});
+
+describe("consumePendingSharedArticle after signing up from a summary", () => {
+  it("returns to the summary page, level included", () => {
+    const storage = memoryStorage();
+    rememberPendingSharedArticle(storage, "/read/aB3dE5gH7j/summary?level=A2");
+    expect(consumePendingSharedArticle(storage)).toBe("/read/aB3dE5gH7j/summary?level=A2");
+  });
+
+  it("still refuses anything else", () => {
+    const storage = memoryStorage();
+    rememberPendingSharedArticle(storage, "/read/aB3dE5gH7j/summary?next=//evil.example");
+    expect(consumePendingSharedArticle(storage)).toBe(null);
   });
 });

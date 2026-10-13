@@ -150,10 +150,11 @@ const Image = styled.img`
   box-shadow: 0 4px 14px rgba(0, 0, 0, 0.22);
 `;
 
-// Save action inside the content (not the bottom bar): a labeled button just
+// Save and Share actions inside the content (not the bottom bar): a labeled button just
 // under the header, so the footer stays "Original + Close" only.
 const SaveRow = styled.div`
   display: flex;
+  gap: 0.5em;
   margin: 0.7em 0 0.2em;
 `;
 

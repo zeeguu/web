@@ -1,4 +1,8 @@
-import { useContext, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
+import { toast } from "react-toastify";
+import IosShareRoundedIcon from "@mui/icons-material/IosShareRounded";
+import LocalStorage from "../assorted/LocalStorage";
+import { summaryShareUrl } from "../reader/publicArticle/publicReaderLogic";
 import * as s from "./ArticlePreviewOverlay.sc";
 import Modal from "../components/modal_shared/Modal";
 import { MetaStrip, MetaItem, MetaLink, MetaTag } from "../components/MetaStrip.sc";
@@ -73,6 +77,40 @@ export default function ArticlePreviewOverlay({
   const { markOpenedOriginal } = usePreviewActivityLog(article, isArticleSaved);
 
   const hasImage = !!article.img_url;
+
+  // The summary's link (zeeguu.org/read/<code>/summary?level=…), fetched when
+  // the preview opens, not on tap: iOS only allows navigator.share straight
+  // from the tap, and an await in between would lose it.
+  const [shareUrl, setShareUrl] = useState(null);
+  useEffect(() => {
+    setShareUrl(null);
+    if (!open) return;
+    let current = true;
+    api
+      .getArticleLink(article.id)
+      .then((code) => current && code && setShareUrl(summaryShareUrl(code, LocalStorage.getLearnedCefrLevel())))
+      .catch(() => {});
+    return () => {
+      current = false;
+    };
+  }, [api, open, article.id]);
+
+  async function handleShareSummary() {
+    if (navigator.share) {
+      try {
+        await navigator.share({ title: article.title, url: shareUrl });
+        return;
+      } catch (err) {
+        // cancelled or unsupported: fall through to the clipboard
+      }
+    }
+    try {
+      await navigator.clipboard.writeText(shareUrl);
+      toast.success("Link copied!");
+    } catch (err) {
+      toast.error("Could not copy the link.");
+    }
+  }
 
   function handleOpenOriginal() {
     markOpenedOriginal();
@@ -307,6 +345,12 @@ export default function ArticlePreviewOverlay({
                   <BookmarkBorderRoundedIcon style={{ fontSize: 18, marginRight: 4 }} />
                 )}
                 {isArticleSaved ? "Saved" : "Save"}
+              </ActionButton>
+            )}
+            {shareUrl && (
+              <ActionButton variant="muted" onClick={handleShareSummary}>
+                <IosShareRoundedIcon style={{ fontSize: 18, marginRight: 4 }} />
+                Share
               </ActionButton>
             )}
           </s.SaveRow>

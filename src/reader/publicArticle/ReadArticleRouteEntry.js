@@ -31,9 +31,19 @@ export function ArticleLinkRouteEntry() {
   if (!session) return <PublicSharedArticlePage link={code} />;
   if (failed) return <UnknownLink />;
   if (!info) return loading;
-  return (
-    <PrivateRouteWithLayout path="/read/:code" component={ArticleReader} articleId={String(info.article_id)} />
-  );
+  return <PrivateRouteWithLayout path="/read/:code" component={ArticleReader} articleId={String(info.article_id)} />;
+}
+
+// /read/<code>/summary: a shared AI summary. Logged out: the summary on a page
+// of its own, at the level in the link (the sharer's). Logged in: the article
+// in the reader, as /read/<code> -- with an account, the words a reader taps
+// belong in their vocabulary, which the account-less page cannot do.
+export function SummaryLinkRouteEntry() {
+  const { session } = useContext(UserContext);
+  const { code } = useParams();
+  const query = useQuery();
+  if (session) return <ArticleLinkRouteEntry />;
+  return <PublicSharedArticlePage link={code} view="summary" level={query.get("level")} />;
 }
 
 // /read/article?id=<id>: in-app navigation and older links. Logged in: the
@@ -42,7 +52,8 @@ export function ArticleLinkRouteEntry() {
 // ?id=…&s=<code> links handed out on 2026-09-23, which redirect to today's link.
 export default function ReadArticleRouteEntry(props) {
   const query = useQuery();
-  if (query.get("s") && query.get("id")) return <LegacyShareLinkRedirect code={query.get("s")} articleId={query.get("id")} />;
+  if (query.get("s") && query.get("id"))
+    return <LegacyShareLinkRedirect code={query.get("s")} articleId={query.get("id")} />;
   return <PrivateRouteWithLayout {...props} component={ArticleReader} />;
 }
 
@@ -52,7 +63,12 @@ function LegacyShareLinkRedirect({ code, articleId }) {
   const [failed, setFailed] = useState(false);
 
   useEffect(() => {
-    api.resolveLegacyShareLink(code, articleId, (data) => setLink(data.code), () => setFailed(true));
+    api.resolveLegacyShareLink(
+      code,
+      articleId,
+      (data) => setLink(data.code),
+      () => setFailed(true),
+    );
   }, [api, code, articleId]);
 
   if (failed) return <UnknownLink />;
