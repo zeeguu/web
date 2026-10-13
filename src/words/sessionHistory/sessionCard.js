@@ -69,6 +69,13 @@ export function isSlim(session) {
   return session.session_type === "reading" && session.duration < 60 * 1000;
 }
 
+// Too short to mean anything: under 30 s with no word looked up (an
+// accidental tap, an article opened and backed out of). Left out of the list;
+// the summary above still counts its seconds.
+export function isBlip(session) {
+  return !(session.word_count > 0) && session.duration < 30 * 1000;
+}
+
 export function showsBrowsingNote(sessions) {
   return sessions.some((s) => new Date(s.start_time) < new Date(BROWSING_TRACKED_SINCE));
 }

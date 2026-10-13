@@ -4,6 +4,7 @@ import {
   sessionDetails,
   sessionTitle,
   isSlim,
+  isBlip,
   showsBrowsingNote,
   groupExerciseWords,
   leftThePage,
@@ -158,5 +159,14 @@ describe("outOfFocusMs", () => {
     };
     expect(outOfFocusMs(session)).toBe(11 * 60000);
     expect(outOfFocusMs({})).toBe(0);
+  });
+});
+
+describe("isBlip", () => {
+  it("is under 30 seconds with no word looked up", () => {
+    expect(isBlip({ session_type: "reading", word_count: 0, duration: 7000 })).toBe(true);
+    expect(isBlip({ session_type: "browsing", word_count: 0, duration: 29000 })).toBe(true);
+    expect(isBlip({ session_type: "browsing", word_count: 0, duration: 33000 })).toBe(false);
+    expect(isBlip({ session_type: "reading", word_count: 1, duration: 7000 })).toBe(false);
   });
 });

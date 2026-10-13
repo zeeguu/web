@@ -15,6 +15,7 @@ import {
   durationLabel,
   groupBrowsingWords,
   groupExerciseWords,
+  isBlip,
   isSlim,
   leftThePage,
   practisedCount,
@@ -289,7 +290,7 @@ export default function SessionTimeline({
   forTeacher = false,
   studentArticlePath = null,
 }) {
-  const groupedSessions = groupByDate(sessions);
+  const groupedSessions = groupByDate(sessions.filter((session) => !isBlip(session)));
   // the strips drawn to the summary bar's scale: its total fills the width
   const strips = sessions.filter((session) => hasFocusStrip(session, forTeacher));
   const scale = sessions.reduce((sum, session) => sum + (session.duration || 0), 0);
