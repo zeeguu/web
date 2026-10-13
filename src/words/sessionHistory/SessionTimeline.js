@@ -6,14 +6,21 @@ import * as r from "./SessionRow.sc";
 import * as w from "./WordsInContext.sc";
 import { excerptParts } from "./excerpt";
 import { formatDate, groupByDate } from "./sessionStats";
-import { durationLabel, isSlim, sessionDetails, sessionTitle, showsBrowsingNote } from "./sessionCard";
+import {
+  durationLabel,
+  groupExerciseWords,
+  isSlim,
+  sessionDetails,
+  sessionTitle,
+  showsBrowsingNote,
+} from "./sessionCard";
 
 const LEARNER_WORDS_SHOWN = 10;
 
 // A word over its translation. For the learner: tap the word to hear it, the
 // translation to edit it. For a teacher (onToggle): the pair opens the
 // sentence it was translated in.
-function WordPair({ word, isExercise, onEditClick, onToggle = null, isOpen = false }) {
+function WordPair({ word, results = null, onEditClick, onToggle = null, isOpen = false }) {
   const speech = useContext(SpeechContext);
   const [isSpeaking, setIsSpeaking] = useState(false);
 
@@ -30,7 +37,12 @@ function WordPair({ word, isExercise, onEditClick, onToggle = null, isOpen = fal
   const canEdit = !onToggle && word.id && onEditClick;
   const marks = (
     <>
-      {isExercise && <span className="mark">{word.correct ? "✓" : "✗"}</span>}
+      {results &&
+        results.map((ok, idx) => (
+          <r.Result key={idx} $ok={ok} title={ok ? "right" : "wrong"}>
+            {ok ? "✓" : "✗"}
+          </r.Result>
+        ))}
       {word.practised && (
         <span className="mark" title="Practised in exercises since">
           ★
@@ -46,7 +58,9 @@ function WordPair({ word, isExercise, onEditClick, onToggle = null, isOpen = fal
           {word.origin}
           {marks}
         </span>
-        <span className="translation">{word.translation}</span>
+        <span className="translation" title={word.translation}>
+          {word.translation}
+        </span>
       </r.Pair>
     );
   }
@@ -77,6 +91,29 @@ function WordPair({ word, isExercise, onEditClick, onToggle = null, isOpen = fal
   );
 }
 
+// An exercise session's words, each once with its results (✓ green, ✗ red),
+// the ones that needed help first.
+function ExerciseWords({ words, onEditWord }) {
+  const { neededHelp, right } = groupExerciseWords(words);
+  const group = (label, list) =>
+    list.length > 0 && (
+      <r.ExerciseGroup>
+        <r.GroupLabel>{label}</r.GroupLabel>
+        <r.Pairs>
+          {list.map((word, idx) => (
+            <WordPair key={idx} word={word} results={word.results} onEditClick={onEditWord} />
+          ))}
+        </r.Pairs>
+      </r.ExerciseGroup>
+    );
+  return (
+    <>
+      {group("Needed help", neededHelp)}
+      {group("Right every time", right)}
+    </>
+  );
+}
+
 // A session's words. The learner sees the first few and can show the rest; a
 // teacher sees them all and opens one at a time in its sentence (the word
 // highlighted, "…" where the stored excerpt was cut).
@@ -85,6 +122,10 @@ function SessionWords({ session, onEditWord, forTeacher }) {
   const [showAll, setShowAll] = useState(false);
   const words = session.words || [];
   if (words.length === 0) return null;
+
+  if (session.session_type === "exercise") {
+    return <ExerciseWords words={words} onEditWord={onEditWord} />;
+  }
 
   const shown = forTeacher || showAll ? words : words.slice(0, LEARNER_WORDS_SHOWN);
   const hidden = words.length - shown.length;
@@ -97,7 +138,6 @@ function SessionWords({ session, onEditWord, forTeacher }) {
           <WordPair
             key={idx}
             word={word}
-            isExercise={session.session_type === "exercise"}
             onEditClick={onEditWord}
             onToggle={forTeacher ? () => setOpen(open === idx ? null : idx) : null}
             isOpen={open === idx}
@@ -133,6 +173,13 @@ function SessionItem({ session, onEditWord, linkArticles, forTeacher }) {
   let title = sessionTitle(session);
   if (kind === "reading" && linkArticles && session.article_id) {
     title = <Link to={`/read/article?id=${session.article_id}`}>{title}</Link>;
+  } else if (kind === "reading" && forTeacher && session.article_url) {
+    // the original at its publisher: the reader would log a session for the teacher
+    title = (
+      <a href={session.article_url} target="_blank" rel="noopener noreferrer">
+        {title} ↗
+      </a>
+    );
   }
 
   return (
@@ -166,9 +213,10 @@ export default function SessionTimeline({ sessions, onEditWord = null, linkArtic
   return (
     <>
       {Object.keys(groupedSessions).map((date) => (
-        <div key={date}>
+        <r.Day key={date}>
           <s.DateHeader>{formatDate(groupedSessions[date][0].start_time)}</s.DateHeader>
-          {groupedSessions[date].map((session, idx) => (
+          {/* Days newest first; within a day, the way it went: earliest first. */}
+          {[...groupedSessions[date]].reverse().map((session, idx) => (
             <SessionItem
               key={idx}
               session={session}
@@ -177,7 +225,7 @@ export default function SessionTimeline({ sessions, onEditWord = null, linkArtic
               forTeacher={forTeacher}
             />
           ))}
-        </div>
+        </r.Day>
       ))}
       {showsBrowsingNote(sessions) && <s.InfoNote>Browsing sessions are tracked since Dec 11, 2025</s.InfoNote>}
     </>

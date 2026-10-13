@@ -45,7 +45,7 @@ export default function StudentActivity() {
 
   let timeline = (
     <>
-      <ActivitySummary sessions={sessions} label="Overview" />
+      <ActivitySummary sessions={sessions} />
       <SessionTimeline sessions={sessions} linkArticles={false} forTeacher={true} />
     </>
   );

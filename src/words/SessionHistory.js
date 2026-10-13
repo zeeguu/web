@@ -196,7 +196,7 @@ export default function SessionHistory() {
         />
       )}
 
-      {!loading && sessions && sessions.length > 0 && <ActivitySummary sessions={sessions} label="Overview" />}
+      {!loading && sessions && sessions.length > 0 && <ActivitySummary sessions={sessions} />}
 
       {!loading && sessions && <SessionTimeline sessions={sessions} onEditWord={handleEditWord} />}
 

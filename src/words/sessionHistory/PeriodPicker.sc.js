@@ -1,8 +1,10 @@
 import styled from "styled-components";
 
 export const PeriodPicker = styled.div`
+  width: 100%;
   margin-bottom: 1em;
   display: flex;
+  justify-content: flex-end;
   align-items: center;
   flex-wrap: wrap;
   gap: 0.5em;
