@@ -68,7 +68,12 @@ Zeeguu_API.prototype.getStudentActivityOverview = function (studentID, duration,
 // A student's Activity -> History as their teacher sees it: sessions of every
 // kind in the class's language, words with their sentence and whether the
 // student practised them. Times are UTC ("Z").
-Zeeguu_API.prototype.getStudentSessionHistory = function (studentID, cohortID, days, onSuccess, onError) {
-  const params = new URLSearchParams({ student_id: studentID, cohort_id: cohortID, days });
+Zeeguu_API.prototype.getStudentSessionHistory = function (studentID, cohortID, fromDate, toDate, onSuccess, onError) {
+  const params = new URLSearchParams({
+    student_id: studentID,
+    cohort_id: cohortID,
+    from_date: fromDate.toISOString(),
+    to_date: toDate.toISOString(),
+  });
   this._getJSON(`student_session_history?${params}`, onSuccess, { onError });
 };

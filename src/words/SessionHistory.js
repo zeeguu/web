@@ -7,42 +7,19 @@ import { APIContext } from "../contexts/APIContext";
 import EditBookmarkModal from "./EditBookmarkModal";
 import ActivitySummary from "./sessionHistory/ActivitySummary";
 import SessionTimeline from "./sessionHistory/SessionTimeline";
+import PeriodPicker from "./sessionHistory/PeriodPicker";
+import { periodRange, periodLabel } from "./sessionHistory/periodRange";
 import * as s from "./SessionHistory.sc";
 import { toast } from "react-toastify";
 import { isTextInSentence } from "../utils/text/expressions";
 import { validateWordInContext } from "../utils/validation/wordContextValidation";
 
-function getStartOfWeek() {
-  const now = new Date();
-  const day = now.getDay();
-  const diff = now.getDate() - day + (day === 0 ? -6 : 1); // Monday
-  const monday = new Date(now.setDate(diff));
-  monday.setHours(0, 0, 0, 0);
-  return monday;
-}
-
-function getStartOfMonth() {
-  const now = new Date();
-  return new Date(now.getFullYear(), now.getMonth(), 1);
-}
-
-function formatDateForInput(date) {
-  return date.toISOString().split("T")[0];
-}
-
 export default function SessionHistory() {
   const api = useContext(APIContext);
   const [sessions, setSessions] = useState();
   const [loading, setLoading] = useState(false);
-  const [timeRange, setTimeRange] = useState("7");
-
-  // Pending values for custom date inputs (not yet applied)
-  const [pendingFrom, setPendingFrom] = useState(formatDateForInput(new Date(Date.now() - 30 * 24 * 60 * 60 * 1000)));
-  const [pendingTo, setPendingTo] = useState(formatDateForInput(new Date()));
-
-  // Applied custom dates (used for fetching)
-  const [appliedFrom, setAppliedFrom] = useState(null);
-  const [appliedTo, setAppliedTo] = useState(null);
+  const [period, setPeriod] = useState("7");
+  const [custom, setCustom] = useState(null); // { from, to } once applied
 
   // Edit modal state
   const [editModalOpen, setEditModalOpen] = useState(false);
@@ -170,76 +147,13 @@ export default function SessionHistory() {
     );
   };
 
-  const applyCustomRange = () => {
-    setAppliedFrom(pendingFrom);
-    setAppliedTo(pendingTo);
-  };
-
-  const getDateRange = () => {
-    const now = new Date();
-    let fromDate,
-      toDate = now;
-
-    switch (timeRange) {
-      case "7":
-        fromDate = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
-        break;
-      case "14":
-        fromDate = new Date(Date.now() - 14 * 24 * 60 * 60 * 1000);
-        break;
-      case "30":
-        fromDate = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
-        break;
-      case "week":
-        fromDate = getStartOfWeek();
-        break;
-      case "month":
-        fromDate = getStartOfMonth();
-        break;
-      case "custom":
-        if (appliedFrom && appliedTo) {
-          fromDate = new Date(appliedFrom);
-          toDate = new Date(appliedTo);
-          toDate.setHours(23, 59, 59, 999);
-        } else {
-          // Default to last 30 days if custom not yet applied
-          fromDate = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
-        }
-        break;
-      default:
-        fromDate = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
-    }
-
-    return { fromDate, toDate };
-  };
-
-  const getDisplayLabel = () => {
-    switch (timeRange) {
-      case "7":
-        return "Last 7 days";
-      case "14":
-        return "Last 14 days";
-      case "30":
-        return "Last 30 days";
-      case "week":
-        return "This week";
-      case "month":
-        return "This month";
-      case "custom":
-        return appliedFrom && appliedTo ? `${appliedFrom} to ${appliedTo}` : "Custom range";
-      default:
-        return "Last 7 days";
-    }
-  };
-
   useEffect(() => {
-    // Don't fetch if custom is selected but not yet applied
-    if (timeRange === "custom" && (!appliedFrom || !appliedTo)) {
-      return;
-    }
+    const range = periodRange(period, custom);
+    // a custom range is fetched once applied
+    if (!range) return;
 
     setLoading(true);
-    const { fromDate, toDate } = getDateRange();
+    const { fromDate, toDate } = range;
     api.getSessionHistoryByRange(
       fromDate.toISOString(),
       toDate.toISOString(),
@@ -253,9 +167,9 @@ export default function SessionHistory() {
       },
     );
     setTitle("My Activity");
-  }, [api, timeRange, appliedFrom, appliedTo]);
+  }, [api, period, custom]);
 
-  const isCustomNotApplied = timeRange === "custom" && (!appliedFrom || !appliedTo);
+  const isCustomNotApplied = period === "custom" && !custom;
 
   if (sessions === undefined && !isCustomNotApplied) {
     return <LoadingAnimation />;
@@ -263,32 +177,23 @@ export default function SessionHistory() {
 
   return (
     <>
-      <s.TimeSelector>
-        <select value={timeRange} onChange={(e) => setTimeRange(e.target.value)}>
-          <option value="7">Last 7 days</option>
-          <option value="14">Last 14 days</option>
-          <option value="30">Last 30 days</option>
-          <option value="week">This week</option>
-          <option value="month">This month</option>
-          <option value="custom">Custom range</option>
-        </select>
-
-        {timeRange === "custom" && (
-          <div className="custom-dates">
-            <input type="date" value={pendingFrom} onChange={(e) => setPendingFrom(e.target.value)} />
-            <span>to</span>
-            <input type="date" value={pendingTo} onChange={(e) => setPendingTo(e.target.value)} />
-            <button onClick={applyCustomRange} disabled={loading}>
-              {loading ? "Loading..." : "Apply"}
-            </button>
-          </div>
-        )}
-      </s.TimeSelector>
+      <PeriodPicker
+        period={period}
+        custom={custom}
+        busy={loading}
+        onChange={(newPeriod, newCustom) => {
+          setPeriod(newPeriod);
+          setCustom(newCustom);
+        }}
+      />
 
       {loading && <LoadingAnimation />}
 
       {!loading && sessions && sessions.length === 0 && (
-        <EmptyState message={`No activity recorded for ${getDisplayLabel().toLowerCase()}.`} fillHeight={false} />
+        <EmptyState
+          message={`No activity recorded for ${periodLabel(period, custom).toLowerCase()}.`}
+          fillHeight={false}
+        />
       )}
 
       {!loading && sessions && sessions.length > 0 && <ActivitySummary sessions={sessions} label="Overview" />}

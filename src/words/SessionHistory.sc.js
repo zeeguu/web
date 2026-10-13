@@ -328,52 +328,6 @@ export const BarRow = styled.div`
   }
 `;
 
-export const TimeSelector = styled.div`
-  margin-bottom: 1em;
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 0.5em;
-
-  select {
-    padding: 0.4em 0.8em;
-    border-radius: 4px;
-    border: 1px solid #ddd;
-    font-size: 0.95em;
-  }
-
-  .custom-dates {
-    display: flex;
-    align-items: center;
-    gap: 0.5em;
-
-    input[type="date"] {
-      padding: 0.4em;
-      border-radius: 4px;
-      border: 1px solid #ddd;
-      font-size: 0.9em;
-    }
-
-    span {
-      color: #666;
-    }
-
-    button {
-      padding: 0.4em 0.8em;
-      border-radius: 4px;
-      border: 1px solid #1565c0;
-      background: #1565c0;
-      color: white;
-      font-size: 0.9em;
-      cursor: pointer;
-
-      &:hover {
-        background: #1256a0;
-      }
-    }
-  }
-`;
-
 export const ClickableOrigin = styled.span`
   font-weight: 600;
   color: #1565c0;
