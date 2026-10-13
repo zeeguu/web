@@ -5,13 +5,9 @@ import LoadingAnimation from "../../../components/LoadingAnimation";
 import strings from "../../../i18n/definitions";
 import { CenteredContentContainer } from "../../../components/ColumnWidth.sc";
 import { ScrollableTable } from "../../styledComponents/ScrollableTable.sc";
+import { likelyDuplicates } from "./duplicateStudents";
 
-const StudentsActivityOverviewContent = ({
-  cohortID,
-  students,
-  setForceUpdate,
-  removeStudentFromCohort,
-}) => {
+const StudentsActivityOverviewContent = ({ cohortID, students, setForceUpdate, removeStudentFromCohort }) => {
   const [firstStudent, setFirstStudent] = useState(null);
   const [restOfStudents, setRestOfStudents] = useState(null);
 
@@ -26,30 +22,33 @@ const StudentsActivityOverviewContent = ({
   }
 
   const customText = [strings.customTextInTimeSelector];
+  const duplicates = likelyDuplicates(students);
 
   return (
     <CenteredContentContainer>
       <TimeSelector setForceUpdate={setForceUpdate} customText={customText} />
       <ScrollableTable>
-      {firstStudent !== null && (
-        <StudentInfoLine
-          key={firstStudent.id}
-          cohortID={cohortID}
-          student={firstStudent}
-          removeStudentFromCohort={removeStudentFromCohort}
-          isFirst={true}
-        />
-      )}
-      {restOfStudents !== null &&
-        restOfStudents.map((student) => (
+        {firstStudent !== null && (
           <StudentInfoLine
-            key={student.id}
+            key={firstStudent.id}
             cohortID={cohortID}
-            student={student}
+            student={firstStudent}
+            duplicates={duplicates[firstStudent.id]}
             removeStudentFromCohort={removeStudentFromCohort}
-            isFirst={false}
+            isFirst={true}
           />
-        ))}
+        )}
+        {restOfStudents !== null &&
+          restOfStudents.map((student) => (
+            <StudentInfoLine
+              key={student.id}
+              cohortID={cohortID}
+              student={student}
+              duplicates={duplicates[student.id]}
+              removeStudentFromCohort={removeStudentFromCohort}
+              isFirst={false}
+            />
+          ))}
       </ScrollableTable>
     </CenteredContentContainer>
   );

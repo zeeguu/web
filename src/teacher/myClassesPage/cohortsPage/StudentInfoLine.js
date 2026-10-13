@@ -11,15 +11,9 @@ import { StyledTooltip } from "../../styledComponents/StyledTooltip.sc";
 import LoadingAnimation from "../../../components/LoadingAnimation";
 import { APIContext } from "../../../contexts/APIContext";
 
-export default function StudentInfoLine({
-  cohortID,
-  student,
-  removeStudentFromCohort,
-  isFirst,
-}) {
+export default function StudentInfoLine({ cohortID, student, removeStudentFromCohort, isFirst, duplicates = [] }) {
   const api = useContext(APIContext);
-  const [showDeleteStudentWarning, setShowDeleteStudentWarning] =
-    useState(false);
+  const [showDeleteStudentWarning, setShowDeleteStudentWarning] = useState(false);
   const selectedTimePeriod = LocalStorage.selectedTimePeriod();
   const [activity, setActivity] = useState(null);
 
@@ -46,9 +40,7 @@ export default function StudentInfoLine({
   return (
     <s.StudentInfoLine isFirst={isFirst}>
       <div className="wrapper">
-        <Link
-          to={`/teacher/classes/viewStudent/${student.id}/class/${cohortID}`}
-        >
+        <Link to={`/teacher/classes/viewStudent/${student.id}/class/${cohortID}`}>
           <div className="sideline">
             <div className="text-box">
               {isFirst && (
@@ -59,11 +51,17 @@ export default function StudentInfoLine({
               <div className="left-line">
                 <div className="name-activity-wrapper">
                   <div className="student-name">
-                    {student.name.length > 20
-                      ? student.name.substring(0, 20) + "..."
-                      : student.name}
+                    {student.name.length > 20 ? student.name.substring(0, 20) + "..." : student.name}
                   </div>
                   <div className="student-email">{student.email}</div>
+                  {duplicates.length > 0 && (
+                    <div
+                      className="student-duplicate"
+                      title="Two accounts with the same name or the same email before the @. Look at both; the account-merge tool can join them."
+                    >
+                      Same student? Also here as {duplicates.map((other) => other.email).join(", ")}
+                    </div>
+                  )}
                   <div className="activity-count">
                     {activity.number_of_texts} {strings.textsRead}
                   </div>
@@ -92,9 +90,7 @@ export default function StudentInfoLine({
                   </p>
                 )}
                 <StyledTooltip label={strings.textLengthExplanation}>
-                  <div className="number-display">
-                    {activity.average_text_length}
-                  </div>
+                  <div className="number-display">{activity.average_text_length}</div>
                 </StyledTooltip>
               </div>
 
@@ -107,9 +103,7 @@ export default function StudentInfoLine({
                   </p>
                 )}
                 <StyledTooltip label={strings.difficultyExplanation}>
-                  <div className="number-display">
-                    {activity.average_text_difficulty / 10}
-                  </div>
+                  <div className="number-display">{activity.average_text_difficulty / 10}</div>
                 </StyledTooltip>
               </div>
 
@@ -120,9 +114,7 @@ export default function StudentInfoLine({
                   </p>
                 )}
                 <StyledTooltip label={strings.exercisesExplaination}>
-                  <div className="number-display">
-                    {Math.round(activity.correct_on_1st_try * 100) + "%"}
-                  </div>
+                  <div className="number-display">{Math.round(activity.correct_on_1st_try * 100) + "%"}</div>
                 </StyledTooltip>
               </div>
             </div>

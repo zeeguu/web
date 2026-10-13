@@ -120,6 +120,13 @@ export const StudentInfoLine = styled.div`
     margin-bottom: 0.3em;
   }
 
+  .student-duplicate {
+    color: var(--text-secondary);
+    font-size: 14px;
+    font-style: italic;
+    margin-bottom: 0.2em;
+  }
+
   .student-email {
     color: ${darkGrey};
     font-size: 16px;
