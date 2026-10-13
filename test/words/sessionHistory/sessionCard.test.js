@@ -57,7 +57,9 @@ describe("rows", () => {
     expect(sessionTitle({ session_type: "browsing" })).toBe("Browsed the article list");
     expect(isSlim({ session_type: "browsing", word_count: 0 })).toBe(true);
     expect(isSlim({ session_type: "browsing", word_count: 2 })).toBe(false);
-    expect(isSlim({ session_type: "reading", word_count: 0 })).toBe(false);
+    expect(isSlim({ session_type: "reading", word_count: 0, duration: 5 * 60000 })).toBe(false);
+    expect(isSlim({ session_type: "reading", word_count: 0, duration: 7000 })).toBe(true);
+    expect(isSlim({ session_type: "reading", word_count: 1, duration: 7000 })).toBe(false);
   });
 
   it("explains missing browsing only for periods before it was tracked", () => {

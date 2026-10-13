@@ -61,8 +61,12 @@ export function practisedCount(session) {
 }
 
 // A session with nothing to show but its time: one line, not a card.
+// Browsing without translations, and an article opened for under a minute
+// without a word looked up (still worth knowing: a text given up on).
 export function isSlim(session) {
-  return session.session_type === "browsing" && !(session.word_count > 0);
+  if (session.word_count > 0) return false;
+  if (session.session_type === "browsing") return true;
+  return session.session_type === "reading" && session.duration < 60 * 1000;
 }
 
 export function showsBrowsingNote(sessions) {

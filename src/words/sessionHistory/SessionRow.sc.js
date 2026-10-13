@@ -214,7 +214,7 @@ export const Away = styled.span`
   background: ${({ $closed }) => ($closed ? "var(--text-muted)" : errorRed)};
 `;
 
-// "44 min active reading · 10 min out of focus", over the strip.
+// "44 min active reading · 10 min away, left the article 32 times", over the strip.
 export const BarLabel = styled.div`
   font-size: 0.85em;
   white-space: nowrap;

@@ -186,21 +186,29 @@ function SessionWords({ session, onEditWord, forTeacher, linkArticles }) {
 // focus in the reading colour, every trip to another tab or app in red, the
 // article closed (between two readings) in grey -- so twenty short trips
 // elsewhere look different from twenty minutes of reading.
-// Reading sessions a teacher sees with a focus strip: the ones with time away.
+// Every reading a teacher sees as a card gets a focus strip (a slim one is a
+// single line).
 const hasFocusStrip = (session, forTeacher) =>
-  forTeacher && session.session_type === "reading" && session.away?.length > 0;
+  forTeacher && session.session_type === "reading" && !isSlim(session);
 
 function FocusStrip({ session, scale }) {
   const stretches = awayStretches(session);
+  const outOfFocus = outOfFocusMs(session);
   const time = (iso) => new Date(iso).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
   return (
     <r.FocusBlock>
       <r.BarLabel>
-        {durationLabel(session.duration)} active reading ·{" "}
-        <span className="away">
-          {durationLabel(outOfFocusMs(session))} out of focus
-          {session.interruptions > 0 && `, left ${session.interruptions}×`}
-        </span>
+        {durationLabel(session.duration)} active reading
+        {outOfFocus > 0 && (
+          <>
+            {" · "}
+            <span className="away">
+              {durationLabel(outOfFocus)} away
+              {session.interruptions > 0 &&
+                `, left the article ${session.interruptions} ${session.interruptions === 1 ? "time" : "times"}`}
+            </span>
+          </>
+        )}
       </r.BarLabel>
       <r.FocusStrip
         role="img"
