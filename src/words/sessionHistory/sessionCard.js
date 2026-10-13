@@ -61,8 +61,19 @@ export function practisedCount(session) {
 }
 
 // A session with nothing to show but its time: one line, not a card.
+// Browsing without translations, and an article opened for under a minute
+// without a word looked up (still worth knowing: a text given up on).
 export function isSlim(session) {
-  return session.session_type === "browsing" && !(session.word_count > 0);
+  if (session.word_count > 0) return false;
+  if (session.session_type === "browsing") return true;
+  return session.session_type === "reading" && session.duration < 60 * 1000;
+}
+
+// Too short to mean anything: under 30 s with no word looked up (an
+// accidental tap, an article opened and backed out of). Left out of the list;
+// the summary above still counts its seconds.
+export function isBlip(session) {
+  return !(session.word_count > 0) && session.duration < 30 * 1000;
 }
 
 export function showsBrowsingNote(sessions) {
@@ -87,10 +98,11 @@ export function groupExerciseWords(words) {
 }
 
 // What used to say "Distracted": the fact behind it. Shown when the API judges
-// the session distracted (several departures, often): "left the page 9×".
+// the session distracted (several departures, often): "left the page 9 times".
 export function leftThePage(session) {
   if (session.focus_level !== "distracted" || !(session.interruptions > 0)) return null;
-  return `left the page ${session.interruptions}×`;
+  const n = session.interruptions;
+  return `left the page ${n} ${n === 1 ? "time" : "times"}`;
 }
 
 // A browsing session's words under the article whose title or summary they
@@ -104,4 +116,43 @@ export function groupBrowsingWords(words) {
     byArticle.get(key).words.push(word);
   });
   return [...byArticle.values()];
+}
+
+// A reading session's time away from the page, as stretches of a strip that
+// spans the session from start to last action: { left, width } in percent,
+// closed when the article was closed in between (two readings in one entry)
+// rather than left open for another tab or app.
+// Each stretch is drawn at least a few pixels wide (see FocusStrip), so a
+// two-second departure still shows as a tick.
+export function awayStretches(session) {
+  const start = new Date(session.start_time).getTime();
+  const span = new Date(session.end_time).getTime() - start;
+  if (!(span > 0)) return [];
+  const percent = (time) => Math.min(100, Math.max(0, ((new Date(time).getTime() - start) / span) * 100));
+  return (session.away || []).map(([from, to, why]) => ({
+    left: percent(from),
+    width: percent(to) - percent(from),
+    closed: why === "closed",
+  }));
+}
+
+// How long a session was open, from start to last action, in ms.
+export function openSpan(session) {
+  return Math.max(0, new Date(session.end_time) - new Date(session.start_time));
+}
+
+// A length in percent of the card, on the same scale as the summary bar
+// above the sessions (scale: its total, in ms). Longer than that, e.g. an
+// article left open overnight, stops at the full width.
+export function scaledPercent(ms, scale) {
+  if (!(scale > 0)) return 100;
+  return Math.min(100, Math.max(0, (ms / scale) * 100));
+}
+
+// How long a reading's page was open but out of focus (in another tab or
+// app), in ms; the article closed between two readings does not count.
+export function outOfFocusMs(session) {
+  return (session.away || [])
+    .filter(([, , why]) => why !== "closed")
+    .reduce((sum, [from, to]) => sum + Math.max(0, new Date(to) - new Date(from)), 0);
 }

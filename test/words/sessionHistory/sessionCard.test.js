@@ -4,11 +4,15 @@ import {
   sessionDetails,
   sessionTitle,
   isSlim,
+  isBlip,
   showsBrowsingNote,
   groupExerciseWords,
   leftThePage,
   practisedCount,
   groupBrowsingWords,
+  awayStretches,
+  scaledPercent,
+  outOfFocusMs,
 } from "../../../src/words/sessionHistory/sessionCard";
 
 describe("durationLabel", () => {
@@ -54,7 +58,9 @@ describe("rows", () => {
     expect(sessionTitle({ session_type: "browsing" })).toBe("Browsed the article list");
     expect(isSlim({ session_type: "browsing", word_count: 0 })).toBe(true);
     expect(isSlim({ session_type: "browsing", word_count: 2 })).toBe(false);
-    expect(isSlim({ session_type: "reading", word_count: 0 })).toBe(false);
+    expect(isSlim({ session_type: "reading", word_count: 0, duration: 5 * 60000 })).toBe(false);
+    expect(isSlim({ session_type: "reading", word_count: 0, duration: 7000 })).toBe(true);
+    expect(isSlim({ session_type: "reading", word_count: 1, duration: 7000 })).toBe(false);
   });
 
   it("explains missing browsing only for periods before it was tracked", () => {
@@ -77,7 +83,7 @@ describe("groupExerciseWords", () => {
 
 describe("leftThePage", () => {
   it("says how often, only when the session was distracted", () => {
-    expect(leftThePage({ focus_level: "distracted", interruptions: 9 })).toBe("left the page 9×");
+    expect(leftThePage({ focus_level: "distracted", interruptions: 9 })).toBe("left the page 9 times");
     expect(leftThePage({ focus_level: "moderate", interruptions: 3 })).toBe(null);
     expect(leftThePage({ focus_level: "focused", interruptions: 0 })).toBe(null);
   });
@@ -108,5 +114,59 @@ describe("practisedCount", () => {
 
   it("is 0 for an exercise session: its words are the practice", () => {
     expect(practisedCount({ session_type: "exercise", words: [{ practised: true }] })).toBe(0);
+  });
+});
+
+describe("awayStretches", () => {
+  it("places the time away along the session", () => {
+    const session = {
+      start_time: "2026-10-04T17:00:00Z",
+      end_time: "2026-10-04T17:40:00Z",
+      away: [
+        ["2026-10-04T17:10:00Z", "2026-10-04T17:20:00Z"],
+        ["2026-10-04T17:39:00Z", "2026-10-04T17:45:00Z", "closed"],
+      ],
+    };
+    expect(awayStretches(session)).toEqual([
+      { left: 25, width: 25, closed: false },
+      { left: 97.5, width: 2.5, closed: true },
+    ]);
+  });
+
+  it("has nothing to place without a span or away times", () => {
+    expect(awayStretches({ start_time: "2026-10-04T17:00:00Z", end_time: "2026-10-04T17:00:00Z", away: [] })).toEqual([]);
+    expect(awayStretches({ start_time: "2026-10-04T17:00:00Z", end_time: "2026-10-04T17:40:00Z" })).toEqual([]);
+  });
+});
+
+describe("scaledPercent", () => {
+  it("draws lengths to the summary's scale, full width at most", () => {
+    const total = 4 * 60 * 60000;
+    expect(scaledPercent(60 * 60000, total)).toBe(25);
+    expect(scaledPercent(12 * 60 * 60000, total)).toBe(100);
+    expect(scaledPercent(60000, 0)).toBe(100);
+  });
+});
+
+describe("outOfFocusMs", () => {
+  it("adds up the time in another tab or app, not the article closed", () => {
+    const session = {
+      away: [
+        ["2026-10-04T17:10:00Z", "2026-10-04T17:20:00Z"],
+        ["2026-10-04T17:30:00Z", "2026-10-04T17:31:00Z"],
+        ["2026-10-04T17:40:00Z", "2026-10-04T18:40:00Z", "closed"],
+      ],
+    };
+    expect(outOfFocusMs(session)).toBe(11 * 60000);
+    expect(outOfFocusMs({})).toBe(0);
+  });
+});
+
+describe("isBlip", () => {
+  it("is under 30 seconds with no word looked up", () => {
+    expect(isBlip({ session_type: "reading", word_count: 0, duration: 7000 })).toBe(true);
+    expect(isBlip({ session_type: "browsing", word_count: 0, duration: 29000 })).toBe(true);
+    expect(isBlip({ session_type: "browsing", word_count: 0, duration: 33000 })).toBe(false);
+    expect(isBlip({ session_type: "reading", word_count: 1, duration: 7000 })).toBe(false);
   });
 });

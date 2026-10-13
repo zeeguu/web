@@ -8,9 +8,14 @@ import * as w from "./WordsInContext.sc";
 import { excerptParts } from "./excerpt";
 import { formatDate, groupByDate } from "./sessionStats";
 import {
+  awayStretches,
+  openSpan,
+  outOfFocusMs,
+  scaledPercent,
   durationLabel,
   groupBrowsingWords,
   groupExerciseWords,
+  isBlip,
   isSlim,
   leftThePage,
   practisedCount,
@@ -178,11 +183,48 @@ function SessionWords({ session, onEditWord, forTeacher, linkArticles }) {
   ));
 }
 
-function SessionItem({ session, onEditWord, linkArticles, forTeacher, studentArticlePath }) {
+// For a teacher: the reading session from start to last action, the page in
+// focus in the reading colour, every trip to another tab or app in red, the
+// article closed (between two readings) in grey -- so twenty short trips
+// elsewhere look different from twenty minutes of reading.
+// Every reading a teacher sees as a card gets a focus strip (a slim one is a
+// single line).
+const hasFocusStrip = (session, forTeacher) =>
+  forTeacher && session.session_type === "reading" && !isSlim(session);
+
+function FocusStrip({ session, scale }) {
+  const stretches = awayStretches(session);
+  const outOfFocus = outOfFocusMs(session);
+  const time = (iso) => new Date(iso).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+  return (
+    <r.FocusBlock>
+      {outOfFocus > 0 && (
+        <r.BarLabel className="away">
+          {durationLabel(outOfFocus)} away
+          {session.interruptions > 0 &&
+            `, left the article ${session.interruptions} ${session.interruptions === 1 ? "time" : "times"}`}
+        </r.BarLabel>
+      )}
+      <r.FocusStrip
+        role="img"
+        aria-label={`Open ${durationLabel(openSpan(session))}, away ${stretches.length} times`}
+        title={`From ${time(session.start_time)} to ${time(session.end_time)}: red is away in another tab or app, grey is the article closed`}
+        style={{ width: `${scaledPercent(openSpan(session), scale)}%` }}
+      >
+        {stretches.map((stretch, idx) => (
+          <r.Away key={idx} $closed={stretch.closed} style={{ left: `${stretch.left}%`, width: `${stretch.width}%` }} />
+        ))}
+      </r.FocusStrip>
+    </r.FocusBlock>
+  );
+}
+
+function SessionItem({ session, onEditWord, linkArticles, forTeacher, studentArticlePath, scale }) {
   const kind = session.session_type;
   const duration = durationLabel(session.duration);
   const details = sessionDetails(session);
   const practised = practisedCount(session);
+  const withStrip = hasFocusStrip(session, forTeacher);
 
   if (isSlim(session)) {
     return (
@@ -211,7 +253,7 @@ function SessionItem({ session, onEditWord, linkArticles, forTeacher, studentArt
       </r.Head>
       <r.Details>
         {details.join(" · ")}
-        {leftThePage(session) && (
+        {!withStrip && leftThePage(session) && (
           <r.Distracted title="Switched to another tab or app this many times during the session">
             {leftThePage(session)}
           </r.Distracted>
@@ -223,6 +265,7 @@ function SessionItem({ session, onEditWord, linkArticles, forTeacher, studentArt
           </r.Practised>
         )}
       </r.Details>
+      {withStrip && <FocusStrip session={session} scale={scale} />}
       <SessionWords session={session} onEditWord={onEditWord} forTeacher={forTeacher} linkArticles={linkArticles} />
     </r.SessionRow>
   );
@@ -247,9 +290,18 @@ export default function SessionTimeline({
   forTeacher = false,
   studentArticlePath = null,
 }) {
-  const groupedSessions = groupByDate(sessions);
+  const groupedSessions = groupByDate(sessions.filter((session) => !isBlip(session)));
+  // the strips drawn to the summary bar's scale: its total fills the width
+  const strips = sessions.filter((session) => hasFocusStrip(session, forTeacher));
+  const scale = sessions.reduce((sum, session) => sum + (session.duration || 0), 0);
   return (
     <>
+      {strips.length > 0 && (
+        <r.StripLegend>
+          Under a reading, to the scale of the bar above: <span className="on">■</span> on the page,{" "}
+          <span className="away">■</span> in another tab or app, <span className="closed">■</span> article closed
+        </r.StripLegend>
+      )}
       {Object.keys(groupedSessions).map((date) => (
         <r.Day key={date}>
           <s.DateHeader>{formatDate(groupedSessions[date][0].start_time)}</s.DateHeader>
@@ -262,6 +314,7 @@ export default function SessionTimeline({
               linkArticles={linkArticles}
               forTeacher={forTeacher}
               studentArticlePath={studentArticlePath}
+              scale={scale}
             />
           ))}
         </r.Day>

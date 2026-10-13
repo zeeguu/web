@@ -70,10 +70,11 @@ export const Details = styled.div`
   color: var(--text-secondary);
 `;
 
+// In red, like the time away over a reading's focus strip.
 export const Distracted = styled.span`
   margin-left: 0.6em;
   font-weight: 600;
-  color: var(--text-primary);
+  color: ${errorRed};
 `;
 
 // A session with nothing but its time and length: one quiet line.
@@ -185,5 +186,61 @@ export const ArticleLabel = styled.div`
 export const ArticleGroup = styled.div`
   ${ArticleLabel} + ${Pairs} {
     margin-top: 0.3em;
+  }
+`;
+
+// A reading session along its length: on the page in the reading colour,
+// away in red, the article closed in grey. A departure is at least 2px, so a
+// two-second one still shows.
+// The figures, then the strip under them.
+export const FocusBlock = styled.div`
+  margin-top: 0.6em;
+`;
+
+export const FocusStrip = styled.div`
+  position: relative;
+  min-width: 2px;
+  margin-top: 0.3em;
+  height: 8px;
+  border-radius: 3px;
+  overflow: hidden;
+  background: ${activityReading};
+`;
+
+export const Away = styled.span`
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  min-width: 2px;
+  background: ${({ $closed }) => ($closed ? "var(--text-muted)" : errorRed)};
+`;
+
+// "10 min away, left the article 32 times", over the strip.
+export const BarLabel = styled.div`
+  font-size: 0.85em;
+  white-space: nowrap;
+  color: var(--text-secondary);
+  font-variant-numeric: tabular-nums;
+
+  &.away {
+    color: ${errorRed};
+    font-weight: 600;
+  }
+`;
+
+// What the focus strips' colours mean, once above the sessions.
+export const StripLegend = styled.div`
+  margin-top: 1em;
+  font-size: 0.85em;
+  color: var(--text-secondary);
+
+  .on {
+    color: ${activityReading};
+  }
+  .away {
+    color: ${errorRed};
+  }
+  .closed {
+    color: var(--text-muted);
   }
 `;

@@ -26,3 +26,32 @@ describe("useDomActivitySession with startOnActivity", () => {
     expect(apiCreate).toHaveBeenCalledTimes(1);
   });
 });
+
+describe("useDomActivitySession after leaving the page", () => {
+  // Coming back used to restart the clock at once, crediting up to the idle
+  // timeout for every quick look at the page.
+  it("counts again only from the first action back on the page", () => {
+    const { result } = renderHook(() =>
+      useDomActivitySession({
+        label: "test",
+        sessionKey: "da-focus",
+        autoStart: true,
+        apiCreate: vi.fn(),
+        apiUpdate: vi.fn(),
+        apiEnd: vi.fn(),
+      }),
+    );
+    expect(result.current.isTimerActive).toBe(true);
+
+    act(() => window.dispatchEvent(new Event("blur")));
+    expect(result.current.isTimerActive).toBe(false);
+
+    act(() => window.dispatchEvent(new Event("focus")));
+    expect(result.current.isTimerActive).toBe(false);
+
+    act(() => {
+      document.dispatchEvent(new MouseEvent("mousedown", { bubbles: true }));
+    });
+    expect(result.current.isTimerActive).toBe(true);
+  });
+});
