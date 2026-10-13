@@ -197,6 +197,17 @@ describe("idle time", () => {
     expect(idleUnplaced(base)).toBe(true);
   });
 
+  it("keeps the timeline when the unknown idle is a small part of it", () => {
+    const mostlyKnown = {
+      start_time: "2026-10-04T17:55:00Z",
+      end_time: "2026-10-04T18:56:00Z", // open 61 min
+      duration: 44 * 60000,
+      away: [["2026-10-04T18:00:00Z", "2026-10-04T18:10:00Z"]],
+    };
+    expect(idleMs(mostlyKnown)).toBe(7 * 60000);
+    expect(idleUnplaced(mostlyKnown)).toBe(false);
+  });
+
   it("leaves such a session a strip of what is known, from the start", () => {
     expect(summaryStrip(base)).toEqual({
       length: 30 * 60000,

@@ -169,12 +169,15 @@ export function idleMs(session) {
   return Math.max(0, openSpan(session) - accounted);
 }
 
-// A session whose idle time is unknown and too long to draw as if it were
-// reading (an article left open for hours): its strip shows only what is
-// known, in proportion, instead of the open time.
+// A session whose idle time is unknown and too much of it to draw as if it
+// were reading (an article left open for hours): its strip shows only what
+// is known, in proportion, instead of the open time. A few unknown minutes in
+// an hour leave the timeline mostly true, so it stays.
 const PLACELESS_IDLE_MS = 5 * 60 * 1000;
 export function idleUnplaced(session) {
-  return !session.idle_tracked && idleMs(session) > PLACELESS_IDLE_MS;
+  if (session.idle_tracked) return false;
+  const idle = idleMs(session);
+  return idle > PLACELESS_IDLE_MS && idle > openSpan(session) / 3;
 }
 
 // For such a session: active, then away, then closed, as parts of a strip as
