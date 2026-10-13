@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { sortCohorts } from "../../../../src/teacher/myClassesPage/cohortsPage/cohortSort";
+import { sortCohorts, lastActivityLabel } from "../../../../src/teacher/myClassesPage/cohortsPage/cohortSort";
 
 const cohorts = [
   { id: 1, name: "Old French", last_activity: "2026-10-12T08:00:00Z" },
@@ -26,5 +26,21 @@ describe("sortCohorts", () => {
     const copy = [...cohorts];
     expect(names(sortCohorts(cohorts, "bogus"))[0]).toBe("Active German");
     expect(cohorts).toEqual(copy);
+  });
+});
+
+describe("lastActivityLabel", () => {
+  const now = new Date(2026, 9, 13, 20, 0); // 13 Oct 2026, 20:00 local
+
+  it("speaks in days", () => {
+    expect(lastActivityLabel("2026-10-13T08:00:00", now)).toBe("Active today");
+    expect(lastActivityLabel("2026-10-12T08:00:00", now)).toBe("Active yesterday");
+    expect(lastActivityLabel("2026-09-29T15:04:48", now)).toBe("Active 14 days ago");
+    expect(lastActivityLabel("2026-05-12T10:00:00", now)).toBe("Active 5 months ago");
+    expect(lastActivityLabel("2024-10-01T10:00:00", now)).toBe("Active 2 years ago");
+  });
+
+  it("says when a class never had any", () => {
+    expect(lastActivityLabel(null, now)).toBe("No activity yet");
   });
 });
