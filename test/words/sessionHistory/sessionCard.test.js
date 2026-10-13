@@ -7,6 +7,7 @@ import {
   showsBrowsingNote,
   groupExerciseWords,
   leftThePage,
+  practisedCount,
   groupBrowsingWords,
 } from "../../../src/words/sessionHistory/sessionCard";
 
@@ -95,5 +96,17 @@ describe("groupBrowsingWords", () => {
       ["Jul", ["ønske"]],
       [null, ["gammel"]],
     ]);
+  });
+});
+
+describe("practisedCount", () => {
+  it("counts the looked-up words practised since", () => {
+    const words = [{ practised: true }, { practised: false }, { practised: true }];
+    expect(practisedCount({ session_type: "reading", words })).toBe(2);
+    expect(practisedCount({ session_type: "browsing" })).toBe(0);
+  });
+
+  it("is 0 for an exercise session: its words are the practice", () => {
+    expect(practisedCount({ session_type: "exercise", words: [{ practised: true }] })).toBe(0);
   });
 });

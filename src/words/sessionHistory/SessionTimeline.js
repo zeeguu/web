@@ -1,5 +1,6 @@
 import { useState, useContext } from "react";
 import { Link } from "react-router-dom";
+import FitnessCenterRoundedIcon from "@mui/icons-material/FitnessCenterRounded";
 import { SpeechContext } from "../../contexts/SpeechContext";
 import * as s from "../SessionHistory.sc";
 import * as r from "./SessionRow.sc";
@@ -12,12 +13,19 @@ import {
   groupExerciseWords,
   isSlim,
   leftThePage,
+  practisedCount,
   sessionDetails,
   sessionTitle,
   showsBrowsingNote,
 } from "./sessionCard";
 
 const LEARNER_WORDS_SHOWN = 10;
+
+// The dumbbell of the Exercises tab: on a word, "practised in exercises since".
+// The card's details line says so in words, so it needs no hover to explain.
+function PractisedIcon({ className }) {
+  return <FitnessCenterRoundedIcon className={className} titleAccess="Practised in exercises since" />;
+}
 
 // A word over its translation. For the learner: tap the word to hear it, the
 // translation to edit it. For a teacher (forTeacher): the word alone -- what
@@ -46,11 +54,7 @@ function WordPair({ word, results = null, onEditClick, onToggle = null, isOpen =
             {ok ? "✓" : "✗"}
           </r.Result>
         ))}
-      {word.practised && (
-        <span className="mark" title="Practised in exercises since">
-          ★
-        </span>
-      )}
+      {word.practised && <PractisedIcon className="mark" />}
     </>
   );
 
@@ -178,6 +182,7 @@ function SessionItem({ session, onEditWord, linkArticles, forTeacher, studentArt
   const kind = session.session_type;
   const duration = durationLabel(session.duration);
   const details = sessionDetails(session);
+  const practised = practisedCount(session);
 
   if (isSlim(session)) {
     return (
@@ -210,6 +215,12 @@ function SessionItem({ session, onEditWord, linkArticles, forTeacher, studentArt
           <r.Distracted title="Switched to another tab or app this many times during the session">
             {leftThePage(session)}
           </r.Distracted>
+        )}
+        {practised > 0 && (
+          <r.Practised>
+            <PractisedIcon className="icon" />
+            {practised} practised since
+          </r.Practised>
         )}
       </r.Details>
       <SessionWords session={session} onEditWord={onEditWord} forTeacher={forTeacher} linkArticles={linkArticles} />

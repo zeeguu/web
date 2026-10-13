@@ -53,6 +53,13 @@ export function sessionDetails(session) {
   return details.filter(Boolean);
 }
 
+// How many of the words looked up in a session were practised in exercises
+// afterwards. An exercise session's words are the practice itself: 0.
+export function practisedCount(session) {
+  if (session.session_type === "exercise") return 0;
+  return (session.words || []).filter((word) => word.practised).length;
+}
+
 // A session with nothing to show but its time: one line, not a card.
 export function isSlim(session) {
   return session.session_type === "browsing" && !(session.word_count > 0);
