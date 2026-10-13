@@ -21,6 +21,11 @@ const TopTabsWrapper = styled.div`
     padding-bottom: 0.5em;
   }
 
+  &.in-flow {
+    position: static;
+    transform: none;
+  }
+
   &.header--hidden {
     /* Its own height *plus* the bar above it — translating only -100% would
        leave the row peeking out below a hidden TopBar whenever the TopBar is

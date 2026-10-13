@@ -54,7 +54,7 @@ export default function StudentWords() {
 
   return (
     <CenteredContentContainer>
-      <TopTabs tabsAndLinks={views} isCompact={true} />
+      <TopTabs tabsAndLinks={views} isCompact={true} stickyOnScroll={false} />
       {content}
     </CenteredContentContainer>
   );

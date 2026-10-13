@@ -71,7 +71,7 @@ export default function ClassTabs({ cohortID, cohort, textCount, studentCount, o
           </StyledButton>
         </div>
       </div>
-      <TopTabs tabsAndLinks={tabs} isCompact={true} />
+      <TopTabs tabsAndLinks={tabs} isCompact={true} stickyOnScroll={false} />
 
       {showCohortForm && (
         <CohortForm
