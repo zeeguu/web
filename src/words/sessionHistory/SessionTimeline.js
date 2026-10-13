@@ -186,19 +186,26 @@ function SessionWords({ session, onEditWord, forTeacher, linkArticles }) {
   ));
 }
 
-// Every reading a teacher sees as a card gets a focus strip (a slim one is a
-// single line).
+// Every reading and exercise session a teacher sees as a card gets a focus
+// strip (a slim one is a single line).
+const STRIP_KINDS = {
+  reading: { doing: "reading", left: "the article" },
+  exercise: { doing: "exercises", left: "the page" },
+};
+// (end_time: exercise sessions have one since Oct 2026)
 const hasFocusStrip = (session, forTeacher) =>
-  forTeacher && session.session_type === "reading" && !isSlim(session);
+  forTeacher && !!STRIP_KINDS[session.session_type] && !!session.end_time && !isSlim(session);
 
-// For a teacher: a reading session on the scale of the summary bar above.
-// Its timeline from start to last action -- the page being read in the
-// reading colour, away (another tab or app) red, idle in focus pale, the
+// For a teacher: a reading or exercise session on the scale of the summary
+// bar above. Its timeline from start to last action -- the time counted in
+// the session's colour, away (another tab or app) red, idle in focus pale, the
 // article closed grey -- so twenty short trips elsewhere look different from
 // twenty minutes of reading. Sessions from before idle was logged, left open
-// far longer than they were read, show only what is known, from the start:
-// nobody knows when in those hours the reading happened.
+// far longer than they were used, show only what is known, from the start:
+// nobody knows when in those hours the work happened.
 function FocusStrip({ session, scale, duration }) {
+  const { doing, left } = STRIP_KINDS[session.session_type];
+  const kind = session.session_type;
   const outOfFocus = outOfFocusMs(session);
   const idle = idleMs(session);
   const summary = idleUnplaced(session) ? summaryStrip(session) : null;
@@ -214,7 +221,7 @@ function FocusStrip({ session, scale, duration }) {
             <span className="away">
               {durationLabel(outOfFocus)} away
               {session.interruptions > 0 &&
-                `, left the article ${session.interruptions} ${session.interruptions === 1 ? "time" : "times"}`}
+                `, left ${left} ${session.interruptions} ${session.interruptions === 1 ? "time" : "times"}`}
             </span>
           )}
           {outOfFocus > 0 && showIdle && " · "}
@@ -223,11 +230,12 @@ function FocusStrip({ session, scale, duration }) {
       )}
       <r.FocusRow>
         <r.FocusStrip
+          $kind={kind}
           role="img"
-          aria-label={`Open ${durationLabel(openSpan(session))}: ${durationLabel(session.duration)} reading, ${durationLabel(outOfFocus)} away, ${durationLabel(idle)} idle`}
+          aria-label={`Open ${durationLabel(openSpan(session))}: ${durationLabel(session.duration)} ${doing}, ${durationLabel(outOfFocus)} away, ${durationLabel(idle)} idle`}
           title={
             summary
-              ? "The reading and the time away; when in the session they happened was not recorded"
+              ? `The ${doing} and the time away; when in the session they happened was not recorded`
               : `From ${time(session.start_time)} to ${time(session.end_time)}: red is away in another tab or app, pale is idle on the page, grey is the article closed`
           }
           style={{ flexBasis: `${scaledPercent(length, scale)}%` }}
@@ -236,7 +244,9 @@ function FocusStrip({ session, scale, duration }) {
             <r.Away key={idx} $kind={stretch.kind} style={{ left: `${stretch.left}%`, width: `${stretch.width}%` }} />
           ))}
         </r.FocusStrip>
-        <r.StripMinutes>{duration} reading</r.StripMinutes>
+        <r.StripMinutes $kind={kind}>
+          {duration} {doing}
+        </r.StripMinutes>
       </r.FocusRow>
     </r.FocusBlock>
   );
@@ -321,9 +331,9 @@ export default function SessionTimeline({
     <>
       {strips.length > 0 && (
         <r.StripLegend>
-          Under a reading, to the scale of the bar above: <span className="on">■</span> reading,{" "}
-          <span className="away">■</span> in another tab or app, <span className="idle">■</span> idle on the page,{" "}
-          <span className="closed">■</span> article closed
+          Under a session, to the scale of the bar above: <span className="reading">■</span> reading or{" "}
+          <span className="exercise">■</span> exercises, <span className="away">■</span> in another tab or app,{" "}
+          <span className="idle">■</span> idle on the page, <span className="closed">■</span> article closed
         </r.StripLegend>
       )}
       {Object.keys(groupedSessions).map((date) => (

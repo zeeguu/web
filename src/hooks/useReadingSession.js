@@ -1,5 +1,6 @@
-import { useCallback, useContext, useEffect, useRef } from "react";
+import { useCallback, useContext } from "react";
 import useDomActivitySession from "./useDomActivitySession";
+import useIdleLogging from "./useIdleLogging";
 import { APIContext } from "../contexts/APIContext";
 
 /**
@@ -29,24 +30,11 @@ export default function useReadingSession(articleId, readingSource = "web", enab
     apiEnd: (id, dur) => api.readingSessionEnd(id, dur),
   });
 
-  // Log the clock stopping while the page still has focus (idle) and
-  // starting again (active, also the first action back after leaving), so
-  // the teacher's focus strip can tell a page left open from one being read.
-  // Stopping on blur is logged as lost focus by the reader.
-  const wasActive = useRef(null);
-  const { isTimerActive } = session;
-  useEffect(() => {
-    if (wasActive.current === null) {
-      wasActive.current = isTimerActive;
-      return;
-    }
-    if (wasActive.current && !isTimerActive && document.hasFocus()) {
-      api.logUserActivity(api.ARTICLE_IDLE, articleId);
-    } else if (!wasActive.current && isTimerActive) {
-      api.logUserActivity(api.ARTICLE_ACTIVE, articleId);
-    }
-    wasActive.current = isTimerActive;
-  }, [api, articleId, isTimerActive]);
+  useIdleLogging(
+    session.isTimerActive,
+    () => api.logUserActivity(api.ARTICLE_IDLE, articleId),
+    () => api.logUserActivity(api.ARTICLE_ACTIVE, articleId),
+  );
 
   // Getter (not a value) so consumers can read the *current* sessionId at
   // interaction time, not a stale capture from when they were rendered.

@@ -1,5 +1,6 @@
 import { useCallback, useContext } from "react";
 import useDomActivitySession from "./useDomActivitySession";
+import useIdleLogging from "./useIdleLogging";
 import { UserContext } from "../contexts/UserContext";
 import { APIContext } from "../contexts/APIContext";
 
@@ -29,6 +30,12 @@ export default function useExerciseSession(enabled = true) {
     apiUpdate: (id, dur) => api.exerciseSessionUpdate(id, dur),
     apiEnd: (id, dur) => api.exerciseSessionEnd(id, dur),
   });
+
+  useIdleLogging(
+    session.isTimerActive,
+    () => api.logUserActivity(api.EXERCISE_IDLE),
+    () => api.logUserActivity(api.EXERCISE_ACTIVE),
+  );
 
   // Getter (not a value) so consumers can read the *current* sessionId at
   // interaction time, not a stale capture from when they were rendered.

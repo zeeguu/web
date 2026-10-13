@@ -212,7 +212,7 @@ export const FocusStrip = styled.div`
   height: 8px;
   border-radius: 3px;
   overflow: hidden;
-  background: ${activityReading};
+  background: ${({ $kind }) => KIND_COLOR[$kind]};
 `;
 
 const STRETCH_COLOR = {
@@ -248,8 +248,11 @@ export const StripLegend = styled.div`
   font-size: 0.85em;
   color: var(--text-secondary);
 
-  .on {
+  .reading {
     color: ${activityReading};
+  }
+  .exercise {
+    color: ${activityExercise};
   }
   .away {
     color: ${errorRed};
@@ -262,13 +265,13 @@ export const StripLegend = styled.div`
   }
 `;
 
-// A reading's minutes, large at the end of its focus strip (as in the corner
-// of the other cards), in the reading colour: they are its blue part.
+// A session's minutes, large at the end of its focus strip (as in the corner
+// of the other cards), in its colour: they are the strip's coloured part.
 export const StripMinutes = styled.span`
   flex: none;
   font-size: 1.25rem;
   font-weight: 700;
   white-space: nowrap;
-  color: ${activityReading};
+  color: ${({ $kind }) => KIND_COLOR[$kind]};
   font-variant-numeric: tabular-nums;
 `;
