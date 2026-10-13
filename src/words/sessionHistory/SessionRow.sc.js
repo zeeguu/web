@@ -271,10 +271,4 @@ export const StripMinutes = styled.span`
   white-space: nowrap;
   color: ${activityReading};
   font-variant-numeric: tabular-nums;
-
-  .what {
-    font-size: 0.85rem;
-    font-weight: 400;
-    color: var(--text-secondary);
-  }
 `;

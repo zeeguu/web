@@ -236,9 +236,7 @@ function FocusStrip({ session, scale, duration }) {
             <r.Away key={idx} $kind={stretch.kind} style={{ left: `${stretch.left}%`, width: `${stretch.width}%` }} />
           ))}
         </r.FocusStrip>
-        <r.StripMinutes>
-          {duration} <span className="what">reading</span>
-        </r.StripMinutes>
+        <r.StripMinutes>{duration} reading</r.StripMinutes>
       </r.FocusRow>
     </r.FocusBlock>
   );
