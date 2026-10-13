@@ -10,6 +10,7 @@ import {
   durationLabel,
   groupExerciseWords,
   isSlim,
+  leftThePage,
   sessionDetails,
   sessionTitle,
   showsBrowsingNote,
@@ -190,8 +191,10 @@ function SessionItem({ session, onEditWord, linkArticles, forTeacher }) {
       </r.Head>
       <r.Details>
         {details.join(" · ")}
-        {session.focus_level === "distracted" && (
-          <r.Distracted title="Left the page often during this session">Distracted</r.Distracted>
+        {leftThePage(session) && (
+          <r.Distracted title="Switched to another tab or app this many times during the session">
+            {leftThePage(session)}
+          </r.Distracted>
         )}
       </r.Details>
       <SessionWords session={session} onEditWord={onEditWord} forTeacher={forTeacher} />
