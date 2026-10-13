@@ -8,6 +8,8 @@ import * as s from "../../components/ColumnWidth.sc";
 import StudentActivity from "../myClassesPage/activityPage/StudentActivity";
 import StudentWords from "../myClassesPage/wordsPage/StudentWords";
 import StudentArticle from "../myClassesPage/activityPage/StudentArticle";
+import BackArrow from "../../pages/Settings/SharedComponents/BackArrow";
+import { DetailHeader } from "../styledComponents/DetailHeader.sc";
 import { useContext, useEffect, useState } from "react";
 import LoadingAnimation from "../../components/LoadingAnimation";
 import { APIContext } from "../../contexts/APIContext";
@@ -41,6 +43,28 @@ export default function ActivityInsightsRouter() {
 
   if (studentName === "") return <LoadingAnimation />;
 
+  // A text the student read: one way back, to where it was opened from. The
+  // student's heading and tabs would put a second back arrow (to the class)
+  // above the article's own title.
+  if (path.includes("/read/")) {
+    return (
+      <s.WidestColumn>
+        <DetailHeader>
+          <div className="back">
+            <BackArrow
+              redirectLink={`/teacher/classes/viewStudent/${studentID}/class/${cohortID}`}
+              label={`${studentName}${strings.s_activity}`}
+            />
+          </div>
+        </DetailHeader>
+        <PrivateRoute
+          path="/teacher/classes/viewStudent/:studentID/class/:cohortID/read/:articleID"
+          component={StudentArticle}
+        />
+      </s.WidestColumn>
+    );
+  }
+
   return (
     <Switch>
       <s.WidestColumn>
@@ -58,11 +82,6 @@ export default function ActivityInsightsRouter() {
         />
 
         <PrivateRoute path="/teacher/classes/viewStudent/:studentID/class/:cohortID/words" component={StudentWords} />
-        <PrivateRoute
-          path="/teacher/classes/viewStudent/:studentID/class/:cohortID/read/:articleID"
-          component={StudentArticle}
-        />
-
         {/* The Reading and Exercises tabs became Activity and Words; old
             links (bookmarks, emails) land on their successors. */}
         <Route

@@ -5,7 +5,6 @@ import { SpeechContext } from "../../../contexts/SpeechContext";
 import LoadingAnimation from "../../../components/LoadingAnimation";
 import EmptyState from "../../../components/EmptyState";
 import ArticleStatInfo from "../../../components/ArticleStatInfo";
-import BackArrow from "../../../pages/Settings/SharedComponents/BackArrow";
 import { TranslatableText } from "../../../reader/TranslatableText";
 import * as s from "../../../reader/ArticleReader.sc";
 import ReadOnlyInteractiveText from "./ReadOnlyInteractiveText";
@@ -52,18 +51,12 @@ export default function StudentArticle() {
   );
 
   if (failed) {
-    return (
-      <>
-        {back}
-        <EmptyState message="This text could not be opened." fillHeight={false} />
-      </>
-    );
+    return <EmptyState message="This text could not be opened." fillHeight={false} />;
   }
   if (!fragments) return <LoadingAnimation />;
 
   return (
     <s.ArticleReader>
-      {back}
       <div id="text">
         <h1>
           <TranslatableText interactiveText={title} translating={false} pronouncing={false} />
