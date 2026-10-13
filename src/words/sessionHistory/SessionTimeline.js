@@ -180,18 +180,19 @@ function SessionWords({ session, onEditWord, forTeacher, linkArticles }) {
 }
 
 // For a teacher: the reading session from start to last action, the page in
-// focus in the reading colour and every departure in grey, so twenty short
-// trips elsewhere look different from twenty minutes of reading.
+// focus in the reading colour, every trip to another tab or app in red, the
+// article closed (between two readings) in grey -- so twenty short trips
+// elsewhere look different from twenty minutes of reading.
 function FocusStrip({ session }) {
   const stretches = awayStretches(session);
   return (
     <r.FocusStrip
       role="img"
       aria-label={`On the page, away ${stretches.length} times`}
-      title={`From ${new Date(session.start_time).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })} to ${new Date(session.end_time).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}: grey is away from the page`}
+      title={`From ${new Date(session.start_time).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })} to ${new Date(session.end_time).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}: red is away in another tab or app, grey is the article closed`}
     >
       {stretches.map((stretch, idx) => (
-        <r.Away key={idx} style={{ left: `${stretch.left}%`, width: `${stretch.width}%` }} />
+        <r.Away key={idx} $closed={stretch.closed} style={{ left: `${stretch.left}%`, width: `${stretch.width}%` }} />
       ))}
     </r.FocusStrip>
   );

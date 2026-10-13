@@ -119,12 +119,12 @@ describe("awayStretches", () => {
       end_time: "2026-10-04T17:40:00Z",
       away: [
         ["2026-10-04T17:10:00Z", "2026-10-04T17:20:00Z"],
-        ["2026-10-04T17:39:00Z", "2026-10-04T17:45:00Z"],
+        ["2026-10-04T17:39:00Z", "2026-10-04T17:45:00Z", "closed"],
       ],
     };
     expect(awayStretches(session)).toEqual([
-      { left: 25, width: 25 },
-      { left: 97.5, width: 2.5 },
+      { left: 25, width: 25, closed: false },
+      { left: 97.5, width: 2.5, closed: true },
     ]);
   });
 

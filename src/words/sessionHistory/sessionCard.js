@@ -107,7 +107,9 @@ export function groupBrowsingWords(words) {
 }
 
 // A reading session's time away from the page, as stretches of a strip that
-// spans the session from start to last action: { left, width } in percent.
+// spans the session from start to last action: { left, width } in percent,
+// closed when the article was closed in between (two readings in one entry)
+// rather than left open for another tab or app.
 // Each stretch is drawn at least a few pixels wide (see FocusStrip), so a
 // two-second departure still shows as a tick.
 export function awayStretches(session) {
@@ -115,5 +117,9 @@ export function awayStretches(session) {
   const span = new Date(session.end_time).getTime() - start;
   if (!(span > 0)) return [];
   const percent = (time) => Math.min(100, Math.max(0, ((new Date(time).getTime() - start) / span) * 100));
-  return (session.away || []).map(([from, to]) => ({ left: percent(from), width: percent(to) - percent(from) }));
+  return (session.away || []).map(([from, to, why]) => ({
+    left: percent(from),
+    width: percent(to) - percent(from),
+    closed: why === "closed",
+  }));
 }

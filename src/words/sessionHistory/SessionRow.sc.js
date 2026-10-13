@@ -189,10 +189,11 @@ export const ArticleGroup = styled.div`
 `;
 
 // A reading session along its length: on the page in the reading colour,
-// away in grey. A departure is at least 2px, so a two-second one still shows.
+// away in red, the article closed in grey. A departure is at least 2px, so a
+// two-second one still shows.
 export const FocusStrip = styled.div`
   position: relative;
-  height: 6px;
+  height: 8px;
   margin-top: 0.6em;
   border-radius: 3px;
   overflow: hidden;
@@ -204,5 +205,5 @@ export const Away = styled.span`
   top: 0;
   bottom: 0;
   min-width: 2px;
-  background: var(--text-muted);
+  background: ${({ $closed }) => ($closed ? "var(--text-muted)" : errorRed)};
 `;
