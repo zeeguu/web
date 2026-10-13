@@ -77,6 +77,19 @@ export const Distracted = styled.span`
 `;
 
 // A session with nothing but its time and length: one quiet line.
+// "🏋 5 practised since" on the details line: the dumbbell on the words, said
+// once in words.
+export const Practised = styled.span`
+  margin-left: 0.6em;
+  white-space: nowrap;
+
+  .icon {
+    font-size: 1em;
+    vertical-align: -0.15em;
+    margin-right: 0.2em;
+  }
+`;
+
 export const SlimRow = styled.div`
   display: flex;
   justify-content: space-between;
@@ -122,6 +135,8 @@ export const Pair = styled.button`
   .mark {
     margin-left: 0.25em;
     font-size: 0.85em;
+    vertical-align: -0.1em;
+    color: var(--text-secondary);
   }
   &[aria-expanded="true"] .origin {
     text-decoration: underline;
