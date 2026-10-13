@@ -77,3 +77,11 @@ Zeeguu_API.prototype.getStudentSessionHistory = function (studentID, cohortID, f
   });
   this._getJSON(`student_session_history?${params}`, onSuccess, { onError });
 };
+
+// What a student sees on their own Words pages, in the class's language, with
+// each word's exercise attempts: { scheduled, next_in_learning, excluded,
+// learned, total_learned }.
+Zeeguu_API.prototype.getStudentWordLists = function (studentID, cohortID, onSuccess, onError) {
+  const params = new URLSearchParams({ student_id: studentID, cohort_id: cohortID });
+  this._getJSON(`student_word_lists?${params}`, onSuccess, { onError });
+};

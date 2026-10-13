@@ -716,6 +716,7 @@ let strings = new LocalizedStrings(
       //_ActivityInsightsRouter
       backTo: "Back to ",
       s_activity: "'s Activity",
+      s_words: "'s Words",
       s_reading: "'s Reading",
       s_exercises: "'s Exercises",
       seeReading: "See Reading",
@@ -1514,6 +1515,7 @@ let strings = new LocalizedStrings(
       //_ActivityInsightsRouter
       backTo: "Tilbage til ",
       s_activity: "s aktivitet",
+      s_words: "s ord",
       s_reading: "s læsning",
       s_exercises: "s øvelser",
       seeReading: "Se læsning",
