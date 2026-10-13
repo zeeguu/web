@@ -215,19 +215,6 @@ function FocusStrip({ session, scale, duration }) {
   const showIdle = idle >= 60 * 1000;
   return (
     <r.FocusBlock>
-      {(outOfFocus > 0 || showIdle) && (
-        <r.BarLabel>
-          {outOfFocus > 0 && (
-            <span className="away">
-              {durationLabel(outOfFocus)} away
-              {session.interruptions > 0 &&
-                `, left ${left} ${session.interruptions} ${session.interruptions === 1 ? "time" : "times"}`}
-            </span>
-          )}
-          {outOfFocus > 0 && showIdle && " · "}
-          {showIdle && `${durationLabel(idle)} idle`}
-        </r.BarLabel>
-      )}
       <r.FocusRow>
         <r.FocusStrip
           $kind={kind}
@@ -248,6 +235,19 @@ function FocusStrip({ session, scale, duration }) {
           {duration} {doing}
         </r.StripMinutes>
       </r.FocusRow>
+      {(outOfFocus > 0 || showIdle) && (
+        <r.BarLabel>
+          {outOfFocus > 0 && (
+            <span className="away">
+              {durationLabel(outOfFocus)} away
+              {session.interruptions > 0 &&
+                `, left ${left} ${session.interruptions} ${session.interruptions === 1 ? "time" : "times"}`}
+            </span>
+          )}
+          {outOfFocus > 0 && showIdle && " · "}
+          {showIdle && `${durationLabel(idle)} idle`}
+        </r.BarLabel>
+      )}
     </r.FocusBlock>
   );
 }
@@ -280,10 +280,13 @@ function SessionItem({ session, onEditWord, linkArticles, forTeacher, studentArt
 
   return (
     <r.SessionRow $kind={kind}>
-      <r.Head>
-        <r.Title>{title}</r.Title>
-        {!withStrip && <r.Duration>{duration}</r.Duration>}
-      </r.Head>
+      {/* with a strip, "10 min exercises" already says what the title would */}
+      {!(withStrip && kind === "exercise") && (
+        <r.Head>
+          <r.Title>{title}</r.Title>
+          {!withStrip && <r.Duration>{duration}</r.Duration>}
+        </r.Head>
+      )}
       <r.Details>
         {details.join(" · ")}
         {!withStrip && leftThePage(session) && (

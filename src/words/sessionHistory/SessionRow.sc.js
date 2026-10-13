@@ -202,7 +202,6 @@ export const FocusRow = styled.div`
   display: flex;
   align-items: center;
   gap: 0.6em;
-  margin-top: 0.3em;
 `;
 
 export const FocusStrip = styled.div`
@@ -229,8 +228,9 @@ export const Away = styled.span`
   background: ${({ $kind }) => STRETCH_COLOR[$kind]};
 `;
 
-// "10 min away, left the article 32 times", over the strip.
+// "10 min away, left the article 32 times", under the strip.
 export const BarLabel = styled.div`
+  margin-top: 0.3em;
   font-size: 0.85em;
   white-space: nowrap;
   color: var(--text-secondary);
