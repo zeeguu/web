@@ -8,11 +8,13 @@ import ArticleStatInfo from "../../../components/ArticleStatInfo";
 import { TranslatableText } from "../../../reader/TranslatableText";
 import * as s from "../../../reader/ArticleReader.sc";
 import ReadOnlyInteractiveText from "./ReadOnlyInteractiveText";
+import { studentArticleHeader } from "./studentArticleHeader";
+import * as h from "./StudentArticle.sc";
 
 // The text a student read, as they left it: every word they translated shown
 // with its translation, in place. Opened from a reading session in the
 // student's Activity. Read-only: no translating, nothing logged.
-export default function StudentArticle() {
+export default function StudentArticle({ studentName }) {
   const api = useContext(APIContext);
   const speech = useContext(SpeechContext);
   const { studentID, cohortID, articleID } = useParams();
@@ -51,8 +53,14 @@ export default function StudentArticle() {
   }
   if (!fragments) return <LoadingAnimation />;
 
+  const header = studentArticleHeader(studentName, article);
+
   return (
-    <s.ArticleReader>
+    <h.ReadOnlyReader>
+      <h.ReadingHeader>
+        <div>{header.lead}</div>
+        {header.details && <div className="details">{header.details}</div>}
+      </h.ReadingHeader>
       <div id="text">
         <h1>
           <TranslatableText interactiveText={title} translating={false} pronouncing={false} />
@@ -66,6 +74,6 @@ export default function StudentArticle() {
           ))}
         </s.MainText>
       </div>
-    </s.ArticleReader>
+    </h.ReadOnlyReader>
   );
 }
