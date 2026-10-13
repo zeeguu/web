@@ -60,6 +60,7 @@ export default function ActivityInsightsRouter() {
         <PrivateRoute
           path="/teacher/classes/viewStudent/:studentID/class/:cohortID/read/:articleID"
           component={StudentArticle}
+          studentName={studentName}
         />
       </s.WidestColumn>
     );
