@@ -197,19 +197,13 @@ function FocusStrip({ session, scale }) {
   const time = (iso) => new Date(iso).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
   return (
     <r.FocusBlock>
-      <r.BarLabel>
-        {durationLabel(session.duration)} active reading
-        {outOfFocus > 0 && (
-          <>
-            {" · "}
-            <span className="away">
-              {durationLabel(outOfFocus)} away
-              {session.interruptions > 0 &&
-                `, left the article ${session.interruptions} ${session.interruptions === 1 ? "time" : "times"}`}
-            </span>
-          </>
-        )}
-      </r.BarLabel>
+      {outOfFocus > 0 && (
+        <r.BarLabel className="away">
+          {durationLabel(outOfFocus)} away
+          {session.interruptions > 0 &&
+            `, left the article ${session.interruptions} ${session.interruptions === 1 ? "time" : "times"}`}
+        </r.BarLabel>
+      )}
       <r.FocusStrip
         role="img"
         aria-label={`Open ${durationLabel(openSpan(session))}, away ${stretches.length} times`}
@@ -229,7 +223,6 @@ function SessionItem({ session, onEditWord, linkArticles, forTeacher, studentArt
   const duration = durationLabel(session.duration);
   const details = sessionDetails(session);
   const practised = practisedCount(session);
-  // the minutes then stand at the end of the strip instead
   const withStrip = hasFocusStrip(session, forTeacher);
 
   if (isSlim(session)) {
@@ -255,7 +248,7 @@ function SessionItem({ session, onEditWord, linkArticles, forTeacher, studentArt
     <r.SessionRow $kind={kind}>
       <r.Head>
         <r.Title>{title}</r.Title>
-        {!withStrip && <r.Duration>{duration}</r.Duration>}
+        <r.Duration>{duration}</r.Duration>
       </r.Head>
       <r.Details>
         {details.join(" · ")}
