@@ -46,10 +46,6 @@ export default function StudentArticle() {
     };
   }, [api, speech, article]);
 
-  const back = (
-    <BackArrow redirectLink={`/teacher/classes/viewStudent/${studentID}/class/${cohortID}`} label="Activity" />
-  );
-
   if (failed) {
     return <EmptyState message="This text could not be opened." fillHeight={false} />;
   }
