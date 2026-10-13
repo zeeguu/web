@@ -15,7 +15,7 @@ import * as s from "../styledComponents/DetailHeader.sc";
  * Activity comes first: everything the student did (reading, exercises,
  * browsing, listening), as they see it in their own History.
  */
-export default function StudentTabs({ studentID, cohortID, title }) {
+export default function StudentTabs({ studentID, cohortID, cohortName, title }) {
   const base = `/teacher/classes/viewStudent/${studentID}/class/${cohortID}`;
 
   const tabs = [
@@ -26,8 +26,10 @@ export default function StudentTabs({ studentID, cohortID, title }) {
 
   return (
     <s.DetailHeader>
+      <div className="back">
+        <BackArrow redirectLink={`/teacher/classes/viewClass/${cohortID}`} label={cohortName} />
+      </div>
       <div className="title-row">
-        <BackArrow redirectLink={`/teacher/classes/viewClass/${cohortID}`} />
         <TeacherPageHeading>{title}</TeacherPageHeading>
       </div>
       <TopTabs tabsAndLinks={tabs} isCompact={true} />

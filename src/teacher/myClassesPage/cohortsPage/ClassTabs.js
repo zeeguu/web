@@ -52,8 +52,10 @@ export default function ClassTabs({ cohortID, cohort, textCount, studentCount, o
 
   return (
     <s.DetailHeader>
+      <div className="back">
+        <BackArrow redirectLink="/teacher/classes" label={strings.myClasses} />
+      </div>
       <div className="title-row">
-        <BackArrow redirectLink="/teacher/classes" />
         <TeacherPageHeading>{cohort?.name}</TeacherPageHeading>
         <div className="actions">
           {studentCount > 0 && (
@@ -81,17 +83,10 @@ export default function ClassTabs({ cohortID, cohort, textCount, studentCount, o
         />
       )}
       {showAddTeacherDialog && (
-        <AddTeacherDialog
-          cohort={cohort}
-          setIsOpen={setShowAddTeacherDialog}
-          setForceUpdate={onClassChanged}
-        />
+        <AddTeacherDialog cohort={cohort} setIsOpen={setShowAddTeacherDialog} setForceUpdate={onClassChanged} />
       )}
       {showAddStudentsInfo && (
-        <HowToAddStudentsInfo
-          setShowAddStudentInfo={setShowAddStudentsInfo}
-          inviteCode={cohort?.inv_code}
-        />
+        <HowToAddStudentsInfo setShowAddStudentInfo={setShowAddStudentsInfo} inviteCode={cohort?.inv_code} />
       )}
     </s.DetailHeader>
   );
