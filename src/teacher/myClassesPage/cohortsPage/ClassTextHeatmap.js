@@ -1,6 +1,6 @@
 import { Tooltip } from "@mui/material";
 import * as h from "../../styledComponents/TextFilterBar.sc";
-import { heatColor, lookupsByToken, studentsLabel, thresholdOptions } from "./classTextLines";
+import { heatColor, studentsByToken, studentsLabel, thresholdOptions } from "./classTextLines";
 import * as s from "./ClassText.sc";
 
 // The block tags a fragment may carry (ArticleFragment.formatting); anything
@@ -17,8 +17,10 @@ const BLOCK_TAGS = ["p", "h1", "h2", "h3", "h4", "h5", "h6", "li", "blockquote"]
  */
 export default function ClassTextHeatmap({ info, threshold, setThreshold }) {
   const names = Object.fromEntries(info.readers.map((r) => [r.id, r.name]));
-  const parts = [info.tokenized_title_new, ...info.tokenized_fragments].filter((part) => part?.tokens);
-  const maxStudents = Math.max(1, ...parts.flatMap((part) => (part.lookups || []).map((l) => l.students.length)));
+  const parts = [{ ...info.tokenized_title_new, isTitle: true }, ...info.tokenized_fragments]
+    .filter((part) => part.tokens)
+    .map((part) => ({ ...part, byToken: studentsByToken(part) }));
+  const maxStudents = Math.max(1, ...parts.flatMap((part) => [...part.byToken.values()].map((s) => s.length)));
 
   return (
     <>
@@ -41,7 +43,6 @@ export default function ClassTextHeatmap({ info, threshold, setThreshold }) {
           <HeatPart
             key={i}
             part={part}
-            isTitle={part === info.tokenized_title_new}
             threshold={threshold}
             maxStudents={maxStudents}
             names={names}
@@ -52,9 +53,9 @@ export default function ClassTextHeatmap({ info, threshold, setThreshold }) {
   );
 }
 
-function HeatPart({ part, isTitle, threshold, maxStudents, names }) {
-  const byToken = lookupsByToken(part.lookups);
-  const Tag = isTitle ? "h2" : BLOCK_TAGS.includes(part.formatting) ? part.formatting : "p";
+function HeatPart({ part, threshold, maxStudents, names }) {
+  const { byToken } = part;
+  const Tag = part.isTitle ? "h2" : BLOCK_TAGS.includes(part.formatting) ? part.formatting : "p";
 
   return part.tokens.map((paragraph, p) => (
     <Tag key={p}>

@@ -1,4 +1,5 @@
 import { durationLabel } from "../../../words/sessionHistory/sessionCard";
+import { tokensCoveredByBookmarks } from "../../../reader/bookmarkRestoration";
 
 export const studentsLabel = (n) => `${n} ${n === 1 ? "student" : "students"}`;
 
@@ -51,7 +52,23 @@ export function heatColor(count, maxStudents) {
   return `hsla(${hue}, 85%, 50%, ${alpha})`;
 }
 
-// "sent_i:token_i" -> [student ids], for one part of the text.
-export function lookupsByToken(lookups) {
-  return new Map((lookups || []).map((l) => [`${l.sent_i}:${l.token_i}`, l.students]));
+// For one part of the text: "sent_i:token_i" -> [{id, translation}], the
+// students who looked that token up. The bookmarks are placed by the reader's
+// own restoration, so a word is coloured exactly where the student saw their
+// translation. A student counts once per token; their first translation stands.
+export function studentsByToken(part) {
+  const byToken = new Map();
+  const covered = tokensCoveredByBookmarks(part.class_bookmarks, part.tokens || []);
+  covered.forEach((tokens, i) => {
+    const bookmark = part.class_bookmarks[i];
+    for (const token of tokens || []) {
+      const key = `${token.sent_i}:${token.token_i}`;
+      const students = byToken.get(key) || [];
+      if (!students.some((s) => s.id === bookmark.student_id)) {
+        students.push({ id: bookmark.student_id, translation: bookmark.translation });
+      }
+      byToken.set(key, students);
+    }
+  });
+  return byToken;
 }

@@ -5,7 +5,7 @@ import {
   readingTimeSummary,
   thresholdOptions,
   heatColor,
-  lookupsByToken,
+  studentsByToken,
 } from "../../../../src/teacher/myClassesPage/cohortsPage/classTextLines";
 
 describe("classTextSubtitle", () => {
@@ -44,10 +44,24 @@ describe("heatmap helpers", () => {
     expect(heatColor(1, 1)).toBe("hsla(120, 85%, 50%, 0.25)");
   });
 
-  it("indexes lookups by token", () => {
-    const map = lookupsByToken([{ sent_i: 0, token_i: 2, students: [7, 9] }]);
-    expect(map.get("0:2")).toEqual([7, 9]);
-    expect(lookupsByToken(undefined).size).toBe(0);
+  it("places each student's bookmark on its tokens, a student counting once", () => {
+    const words = ["stellt", "sich", "hinter", "Präsident"];
+    const part = {
+      tokens: [[words.map((text, token_i) => ({ text, sent_i: 0, token_i }))]],
+      class_bookmarks: [
+        { student_id: 7, origin: "hinter", translation: "behind", context_sent: 0, context_token: 0, t_sentence_i: 0, t_token_i: 2, t_total_token: 1 },
+        { student_id: 7, origin: "hinter", translation: "after", context_sent: 0, context_token: 0, t_sentence_i: 0, t_token_i: 2, t_total_token: 1 },
+        { student_id: 9, origin: "hinter Präsident", translation: "behind the president", context_sent: 0, context_token: 0, t_sentence_i: 0, t_token_i: 2, t_total_token: 2 },
+        { student_id: 9, origin: "gone", translation: "weg", context_sent: 0, context_token: 0, t_sentence_i: 0, t_token_i: 9, t_total_token: 1 },
+      ],
+    };
+    const byToken = studentsByToken(part);
+    expect(byToken.get("0:2")).toEqual([
+      { id: 7, translation: "behind" },
+      { id: 9, translation: "behind the president" },
+    ]);
+    expect(byToken.get("0:3")).toEqual([{ id: 9, translation: "behind the president" }]);
+    expect(byToken.size).toBe(2);
   });
 });
 
