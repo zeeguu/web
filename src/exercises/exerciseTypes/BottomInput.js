@@ -53,7 +53,9 @@ export default function BottomInput({
   // Forms of one word are listed only in translations ("твій/твоя" for "your").
   const answers = isL1Answer ? acceptedAnswers(solutionText) : [normalizeAnswer(solutionText)];
 
-  const solutionWordCount = getExpressionlength(solutionText);
+  // Words in the answer form the learner is closest to ("he did" of
+  // "he did / he made"); set on each check.
+  const [solutionWordCount, setSolutionWordCount] = useState(getExpressionlength(solutionText));
   const isWrongOrder = isIncorrect && correctWordCountInInput === solutionWordCount;
 
   const isPartOfExpressionCorrect = correctWordCountInInput >= 1 && solutionWordCount > 1 && isIncorrect;
@@ -157,6 +159,8 @@ export default function BottomInput({
       return;
     }
     let totalWordsCorrect = countCommonWords(normalizedInput, normalizedAnswer);
+    let answerWordCount = getExpressionlength(normalizedAnswer);
+    setSolutionWordCount(answerWordCount);
 
     setCorrectWordCountInInput(totalWordsCorrect);
     setDistanceToCorrect(levDistance);
@@ -172,7 +176,7 @@ export default function BottomInput({
       // we give them a Hint, mainly for audio exercises.
       updatedMessageToAPI = HINT;
       setDistanceToCorrect();
-    } else if (totalWordsCorrect >= 1 && solutionWordCount > 1) {
+    } else if (totalWordsCorrect >= 1 && answerWordCount > 1) {
       updatedMessageToAPI = HINT;
     } else if (levDistance === 1) {
       // The user almost got it correct
