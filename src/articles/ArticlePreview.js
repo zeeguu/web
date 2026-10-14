@@ -6,6 +6,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { isMobile } from "../utils/misc/browserDetection";
 import * as s from "./ArticlePreview.sc";
 import { MetaStrip, MetaItem, MetaLink, MetaTag } from "../components/MetaStrip.sc";
+import SourceItem from "./SourceItem";
 import RedirectionNotificationModal from "../components/redirect_notification/RedirectionNotificationModal";
 import Feature from "../features/Feature";
 import strings from "../i18n/definitions";
@@ -587,19 +588,7 @@ export default function ArticlePreview({
               </MetaLink>
             </MetaItem>
           ))}
-        {sourceLabel && (
-          <MetaItem>
-            <MetaLink
-              className="muted"
-              href={article.parent_url || article.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              onClick={(e) => e.stopPropagation()}
-            >
-              {sourceLabel}
-            </MetaLink>
-          </MetaItem>
-        )}
+        <SourceItem article={article} sourceLabel={sourceLabel} />
         {publishedTimeSlot}
         {(article.metrics?.word_count || article.word_count) > 0 && (
           <MetaItem>
@@ -882,13 +871,7 @@ export default function ArticlePreview({
               ))}
             {aiLabel && <MetaTag>{aiLabel}</MetaTag>}
             {savedTag}
-            {sourceLabel && (
-              <MetaItem>
-                <MetaLink className="muted" href={article.parent_url || article.url} target="_blank" rel="noopener noreferrer">
-                  {sourceLabel}
-                </MetaLink>
-              </MetaItem>
-            )}
+            <SourceItem article={article} sourceLabel={sourceLabel} />
             {publishedTimeSlot}
             {(article.metrics?.word_count || article.word_count) > 0 && (
               <MetaItem>

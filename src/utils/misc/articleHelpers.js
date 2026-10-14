@@ -81,3 +81,13 @@ export function summaryIsAiGenerated(article) {
   if (isSimplifiedArticle(article)) return true;
   return !article.has_uploader;
 }
+
+// Every outlet that ran the card's story, as equals, or null for a story only
+// one outlet ran. The API groups articles reporting the same story and sends
+// one live article per outlet, the card's own included, earliest first
+// (api: zeeguu/core/story_clustering.py -> story_outlets).
+export function storyOutlets(article) {
+  const outlets = article.story_outlets;
+  if (!outlets || outlets.length < 2) return null;
+  return outlets.map((outlet) => ({ id: outlet.id, url: outlet.url, label: extractDomain(outlet.url) }));
+}

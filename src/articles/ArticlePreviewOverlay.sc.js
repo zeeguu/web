@@ -187,6 +187,22 @@ const PrimaryAction = styled.div`
   font-size: 1rem;
 `;
 
+// "Read the original" with its outlet pills, at the end of the summary,
+// right-aligned and only as wide as the pills: a way out, not the main action.
+const OriginalLinks = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.4em;
+`;
+
+const OutletPills = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 0.5em;
+`;
+
 // The reading time, carried inside the button as supporting detail: the label
 // says what the button does, this says what it costs.
 const ActionHint = styled.span`
@@ -205,5 +221,7 @@ export {
   SummaryLabel,
   Summary,
   PrimaryAction,
+  OriginalLinks,
+  OutletPills,
   ActionHint,
 };
