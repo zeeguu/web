@@ -85,6 +85,19 @@ export function lookupsByToken(part) {
   return byToken;
 }
 
+// On each text in the class Texts tab, from cohort_text_overview's
+// class_reading: "Read by 14 of 22 students · 37 words looked up", and the
+// words most students needed, or null when nobody looked anything up.
+export function classReadingSummary({ readers, words, top_words }, studentCount) {
+  const read = readers === 0 ? "Nobody has read it yet" : `Read by ${readers} of ${studentsLabel(studentCount)}`;
+  const lookedUp = words > 0 ? `${words} ${words === 1 ? "word" : "words"} looked up` : null;
+  return {
+    line: [read, lookedUp].filter(Boolean).join(" · "),
+    share: studentCount > 0 ? readers / studentCount : 0,
+    topWords: top_words.length > 0 ? top_words.join(", ") : null,
+  };
+}
+
 // A paragraph's tokens cut into runs to draw: [{ tokens, lookup }], lookup
 // null for plain text. Consecutive tokens of one sentence covered by exactly
 // the same lookups make one run, so a phrase is one coloured box. Tokens

@@ -8,12 +8,17 @@ import { useIsOffline } from "../contexts/ConnectivityContext";
 // stickyOnScroll: the row sticks to the top and slides away while scrolling
 // down (the learner's feed and Words). Off where the tabs sit under a page
 // header (teacher pages): sliding up, the row covered the header's back arrow.
+//
+// underlined: grey labels, the active one dark with a line under it, and no
+// `|` between them. For tabs that close off a page header (the teacher's class
+// and student pages), where the bold-vs-regular pair read as two links.
 export default function TopTabs({
   title,
   tabsAndLinks,
   hasBackground = false,
   isCompact = false,
   stickyOnScroll = true,
+  underlined = false,
 }) {
   const scrollDirection = useScrollDirection();
   const isOffline = useIsOffline();
@@ -35,7 +40,9 @@ export default function TopTabs({
     <s.TopTabsWrapper className={stickyOnScroll ? (scrollDirection === "down" ? "header--hidden" : "") : "in-flow"}>
       <s.TopTabs>
         <div
-          className={`all__tabs${hasBackground ? " all__tabs--with-bg" : ""}${isCompact ? " all__tabs--compact" : ""}`}
+          className={`all__tabs${hasBackground ? " all__tabs--with-bg" : ""}${isCompact ? " all__tabs--compact" : ""}${
+            underlined ? " all__tabs--underlined" : ""
+          }`}
         >
           {tabsArray.map((tab, index) => (
             <div key={tab.link} style={{ display: "flex", alignItems: "center", gap: "0.8em" }}>
@@ -48,7 +55,7 @@ export default function TopTabs({
               />
               {/* Separators only make sense between text labels — never around
                   icon tabs (whose `text` is a JSX element, not a string). */}
-              {!hasBackground && typeof tab.text === "string" && index < tabsArray.length - 1 && (
+              {!hasBackground && !underlined && typeof tab.text === "string" && index < tabsArray.length - 1 && (
                 <span className="tab-separator">|</span>
               )}
             </div>

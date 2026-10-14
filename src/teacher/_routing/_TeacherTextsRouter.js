@@ -1,7 +1,6 @@
-import { Switch } from "react-router";
+import { Redirect, Switch } from "react-router";
 import { PrivateRoute } from "../../PrivateRoute";
 import AllTexts from "../myTextsPage/AllTexts";
-import AddTextOptions from "../myTextsPage/AddTextOptions";
 import EditText from "../myTextsPage/EditText";
 import StudentsTextView from "../myTextsPage/StudentTextView";
 
@@ -19,10 +18,9 @@ export default function TeacherTextsRouter() {
         component={StudentsTextView}
       />
 
-      <PrivateRoute
-        path="/teacher/texts/AddTextOptions"
-        component={AddTextOptions}
-      />
+      {/* Add Text used to land on a page of three options; it now opens the
+          editor directly. Kept for bookmarks to the old page. */}
+      <Redirect from="/teacher/texts/AddTextOptions" to="/teacher/texts/editText/new" />
     </Switch>
   );
 }

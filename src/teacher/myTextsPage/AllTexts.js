@@ -1,10 +1,9 @@
 import React, { useState, Fragment, useEffect, useContext } from "react";
-import { Link } from "react-router-dom";
 import TeacherTextPreview from "./TeacherTextPreview";
 import LoadingAnimation from "../../components/LoadingAnimation";
 import { setTitle } from "../../assorted/setTitle";
 import strings from "../../i18n/definitions";
-import { StyledButton } from "../styledComponents/TeacherButtons.sc";
+import AddTextButton from "./AddTextButton";
 import * as s from "../../components/ColumnWidth.sc";
 import * as m from "../styledComponents/AllTexts.sc";
 import * as h from "../styledComponents/TextFilterBar.sc";
@@ -67,9 +66,7 @@ export default function AllTexts() {
                 {notSharedCount > 0 && ` · ${notSharedCount} shared with nobody`}
               </TeacherPageSubtitle>
             </div>
-            <Link to="/teacher/texts/AddTextOptions">
-              <StyledButton $primary>{strings.addText}</StyledButton>
-            </Link>
+            <AddTextButton returnPath="/teacher/texts" />
           </TeacherPageHeader>
 
           {articleList.length === 0 ? (

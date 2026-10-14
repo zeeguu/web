@@ -171,7 +171,7 @@ Zeeguu_API.prototype.parseArticleFromUrl = function (url, callback, onError) {
          "language_code": art.meta_lang,
       }
     )*/
-  this._post(`parse_url`, `url=${url}`, callback, onError, true);
+  this._post(`parse_url`, `url=${encodeURIComponent(url)}`, callback, onError, true);
 };
 
 Zeeguu_API.prototype.removeStudentFromCohort = function (
