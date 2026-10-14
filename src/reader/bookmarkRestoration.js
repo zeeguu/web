@@ -263,3 +263,34 @@ export function updateTokensWithBookmarks(bookmarks, paragraphs) {
     MWE_DEBUG && console.log("[Bookmark] Contiguous restore result:", success, "mergedTokens:", targetToken.mergedTokens?.length);
   }
 }
+
+/**
+ * The tokens each bookmark covers, found exactly as the reader finds them, but
+ * without touching the tokens: one entry per bookmark, in order, null for a
+ * bookmark that no longer matches the text.
+ *
+ * For views that put many people's bookmarks on one text (the teacher's class
+ * heatmap), where the reader's one-bookmark-per-token restoration doesn't fit.
+ */
+export function tokensCoveredByBookmarks(bookmarks, paragraphs) {
+  const tokenMap = buildTokenMap(paragraphs);
+
+  return (bookmarks || []).map((bookmark) => {
+    const found = findTokenForBookmark(bookmark, tokenMap, paragraphs);
+    if (!found) return null;
+    const { token, sentenceTokens } = found;
+
+    if (bookmark["is_mwe"]) {
+      const validation = validateMweBookmark(bookmark, token, sentenceTokens);
+      if (!validation.isValid) return null;
+      if (validation.isSeparated) {
+        const partners = validation.partnerTokens || [validation.partnerToken];
+        return [token, ...partners.filter(Boolean)];
+      }
+    }
+
+    const start = sentenceTokens.indexOf(token);
+    if (start === -1 || !validateBookmarkTokens(bookmark, start, sentenceTokens)) return null;
+    return sentenceTokens.slice(start, start + (bookmark["t_total_token"] || 1));
+  });
+}

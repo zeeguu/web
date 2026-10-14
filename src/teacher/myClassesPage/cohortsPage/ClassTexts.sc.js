@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { Link } from "react-router-dom";
 import { darkBlue } from "../../../components/colors";
 
 export const Actions = styled.div`
@@ -20,4 +21,11 @@ export const StudentView = styled.div`
   border: 1px solid ${darkBlue}33;
   border-radius: 10px;
   padding: 0.5rem 1rem 1rem;
+`;
+
+// Under each text: the way into how the class read it.
+export const ClassTextLink = styled(Link)`
+  display: inline-block;
+  margin: -0.3rem 0 1rem;
+  font-size: 0.85rem;
 `;

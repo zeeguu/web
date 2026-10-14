@@ -66,6 +66,11 @@ Zeeguu_API.prototype.getCohortTextOverview = function (cohortID, callback, onErr
   this._getJSON(`cohort_text_overview/${cohortID}`, callback, { onError });
 };
 
+// One text as a whole class read it: who opened it and the words they looked up.
+Zeeguu_API.prototype.getClassText = function (cohortID, articleID, callback, onError) {
+  this._getJSON(`class_text/${cohortID}/${articleID}`, callback, { onError });
+};
+
 Zeeguu_API.prototype.getCohortFromArticle = function (article_id, callback) {
   this._getJSON(`/get_cohorts_for_article/${article_id}`, callback);
 };
