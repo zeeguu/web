@@ -1,13 +1,10 @@
-import { useContext, useMemo, useState } from "react";
+import { useContext } from "react";
 import { UserContext } from "../../../contexts/UserContext";
 import { MainNavContext } from "../../../contexts/MainNavContext";
 import NavigationOptions from "../navigationOptions";
 import FeedbackButton from "../../FeedbackButton";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import NavOption from "../NavOption";
-import NavIcon from "../NavIcon";
-import LanguageModal from "../LanguageModal";
-import navLanguages from "../navLanguages";
 import * as s from "./MoreOptionsPanel.sc";
 import AccountNavOption from "../AccountNavOption";
 import Feature from "../../../features/Feature";
@@ -21,16 +18,9 @@ export default function MoreOptionsPanel({
   renderMoreOptions,
 }) {
   const { userDetails } = useContext(UserContext);
-  const [showLanguageModal, setShowLanguageModal] = useState(false);
 
   const { mainNavProperties } = useContext(MainNavContext);
   const { isOnStudentSide } = mainNavProperties;
-
-  const currentLearnedLanguage = useMemo(() => {
-    const languageCode = userDetails.learned_language;
-    const languageName = navLanguages[languageCode];
-    return languageName || "Language";
-  }, [userDetails.learned_language]);
 
   return (
     <s.MoreOptionsWrapper
@@ -81,25 +71,15 @@ export default function MoreOptionsPanel({
             <NavOption {...NavigationOptions.studentSite} currentPath={currentPath} onClick={handleHideMoreOptions} />
           )}
 
-          {isOnStudentSide && (
-            <NavOption
-              icon={<NavIcon name="language" />}
-              text={currentLearnedLanguage}
-              ariaLabel={`Change language (currently: ${currentLearnedLanguage})`}
-              onClick={() => setShowLanguageModal(true)}
-            />
-          )}
-
           <FeedbackButton />
-          <AccountNavOption onNavigate={handleHideMoreOptions} />
+
+          {/* The TopBar already shows the language flag and, with gamification,
+              the avatar -- so the panel only repeats the account row when the
+              TopBar has no avatar to reach the profile from. */}
+          {!Feature.has_gamification() && <AccountNavOption onNavigate={handleHideMoreOptions} />}
         </s.MoreOptionsList>
       </s.MoreOptionsPanel>
 
-      <LanguageModal
-        prefixMsg={"MoreOptions"}
-        open={showLanguageModal}
-        setOpen={() => setShowLanguageModal(!showLanguageModal)}
-      />
     </s.MoreOptionsWrapper>
   );
 }
