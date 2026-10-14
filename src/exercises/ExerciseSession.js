@@ -6,7 +6,7 @@ import LoadingAnimation from "../components/LoadingAnimation";
 import { setTitle } from "../assorted/setTitle";
 import OutOfWordsMessage from "./OutOfWordsMessage";
 import SessionStorage from "../assorted/SessionStorage";
-import { CORRECT, SOLUTION, WRONG } from "./ExerciseConstants";
+import { ALTERNATIVE, CORRECT, SOLUTION, WRONG } from "./ExerciseConstants";
 import { EXERCISE_TYPES } from "./ExerciseTypeConstants";
 import LocalStorage from "../assorted/LocalStorage";
 import { pushDrillVocab } from "../assorted/drillCache";
@@ -316,7 +316,7 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
 
   let correctBookmarksCopy = [...correctBookmarks];
 
-  function correctAnswerNotification(currentBookmark, endExercise = true) {
+  function correctAnswerNotification(currentBookmark, endExercise = true, outcome = CORRECT) {
     if (!incorrectBookmarks.includes(currentBookmark)) {
       setTotalPracticedBookmarksInSession(totalPracticedBookmarksInSession + 1);
       let correctBookmarksIds = correctBookmarksCopy.map((b) => b.id);
@@ -333,7 +333,11 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
     if (endExercise) {
       setIsCorrect(true);
     }
-    updateAPIWithExerciseComplete(CORRECT, currentBookmark, endExercise);
+    updateAPIWithExerciseComplete(outcome, currentBookmark, endExercise);
+  }
+
+  function alternativeAnswerNotification(currentBookmark) {
+    correctAnswerNotification(currentBookmark, true, ALTERNATIVE);
   }
 
   let incorrectBookmarksCopy = [...incorrectBookmarks];
@@ -488,6 +492,7 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
             exerciseMessageToAPI={currentMessageToAPI}
             notifyOfUserAttempt={handleUserAttempt}
             notifyCorrectAnswer={correctAnswerNotification}
+            notifyAlternativeAnswer={alternativeAnswerNotification}
             notifyIncorrectAnswer={updateAPIWithIncorrectAnswer}
             setExerciseType={setCurrentExerciseType}
             notifyExerciseCompleted={updateAPIWithExerciseComplete}

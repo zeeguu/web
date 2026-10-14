@@ -29,6 +29,7 @@ export default function ClozeInputField({
   onInputSubmit,
   onInputRef = null,
   correction = null,
+  isChecking = false,
 }) {
   const [hintVisible, setHintVisible] = useState(true);
   const inputRef = useRef(null);
@@ -113,7 +114,7 @@ export default function ClozeInputField({
           placeholder={placeholder}
           onChange={handleChange}
           onKeyPress={handleKeyPress}
-          disabled={isOver}
+          disabled={isOver || isChecking}
           $isOver={isOver}
           $isCorrect={isCorrectAnswer}
           $isEmpty={inputValue === ''}
