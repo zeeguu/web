@@ -24,7 +24,14 @@ export default function Match({
   reload,
   setReload,
   resetSubSessionTimer,
+  onExerciseLoaded,
 }) {
+  // Match renders its content straight away — nothing to wait for.
+  useEffect(() => {
+    onExerciseLoaded?.();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   const RIGHT = true;
   const LEFT = !RIGHT;
 

@@ -16,6 +16,7 @@ export default function OrderWordsL2({
   setReload,
   exerciseSessionId,
   activeSessionDuration,
+  onExerciseLoaded,
 }) {
   return (
     <>
@@ -32,6 +33,7 @@ export default function OrderWordsL2({
         setReload={setReload}
         exerciseSessionId={exerciseSessionId}
         activeSessionDuration={activeSessionDuration}
+        onExerciseLoaded={onExerciseLoaded}
         exerciseType={EXERCISE_TYPE}
       />
     </>

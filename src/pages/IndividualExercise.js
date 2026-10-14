@@ -99,6 +99,7 @@ export default function IndividualExercise() {
   const [isCorrect, setIsCorrect] = useState(null);
   const [isShowSolution, setIsShowSolution] = useState(false);
   const [message, setMessage] = useState("");
+  const [exerciseLoaded, setExerciseLoaded] = useState(false);
   const [exerciseMessageToAPI, setExerciseMessageToAPI] = useState({});
   const [bookmarkData, setBookmarkData] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -351,14 +352,15 @@ export default function IndividualExercise() {
                     <WordProgressBar bookmark={bookmark} message={message} isGreyedOutBar={false} />
                   ) : null
                 }
+                onExerciseLoaded={() => setExerciseLoaded(true)}
                 onExampleUpdated={(data) => {
                   console.log("Example updated:", data);
                   // Handle the updated example in the individual exercise component
                 }}
               />
-              {/* Gate on the bookmark being usably loaded — see note in
+              {/* Gate on the exercise having real content — see note in
                   ExerciseSession.js for why. */}
-              {bookmark?.context_tokenized && (
+              {exerciseLoaded && bookmark?.context_tokenized && (
               <NextNavigation
                 exerciseType={exerciseType}
                 bookmarkMessagesToAPI={exerciseMessageToAPI}
@@ -376,6 +378,7 @@ export default function IndividualExercise() {
               />
               )}
             </s.ExForm>
+            {exerciseLoaded && (
             <div
               style={{
                 marginTop: "2rem",
@@ -387,6 +390,7 @@ export default function IndividualExercise() {
             >
               {exerciseType}
             </div>
+            )}
           </s.ExercisesColumn>
           <ReportExerciseDialog
             open={reportDialogOpen}

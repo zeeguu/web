@@ -42,23 +42,14 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
   const [hasKeptExercising, setHasKeptExercising] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [currentBookmarksToStudy, setCurrentBookmarksToStudy] = useState();
-  // Gate on this rather than just on currentBookmarksToStudy being set —
-  // gives the exercise's own useEffect one tick to mount and replace the
-  // LoadingAnimation with real content before NextNavigation appears.
-  // Without this gate users see Show solution / Report flash against the
-  // spinner during the bookmark→next-bookmark transition.
+  // Gate on this rather than just on currentBookmarksToStudy being set, so
+  // Show solution / Report never show against the loading screen (or the
+  // wait-drill on a slow connection). Reset every time the exercise
+  // transitions; every exercise component flips it back by calling
+  // `onExerciseLoaded` (passed to it below) once it has real content.
   const [navReady, setNavReady] = useState(false);
   useEffect(() => {
-    // Reset every time the exercise transitions. The child exercise
-    // component flips this back to true by calling `onExerciseLoaded`
-    // (passed to it below) once it has built its InteractiveText —
-    // so the bottom nav appears exactly when the exercise has real
-    // content, no matter how slow the network/CPU. Fallback timeout
-    // covers the case where a particular exercise component doesn't
-    // wire up the callback (e.g. Match, OrderWords).
     setNavReady(false);
-    const fallback = setTimeout(() => setNavReady(true), 2000);
-    return () => clearTimeout(fallback);
   }, [currentBookmarksToStudy]);
   const [currentInteractiveText, setCurrentInteractiveText] = useState(null);
   const handleExerciseLoaded = (it) => {
