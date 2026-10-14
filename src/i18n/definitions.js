@@ -575,6 +575,8 @@ let strings = new LocalizedStrings(
       checkingAnswer: "Not what I expected. Let me think…",
       alsoRightPractising: "Also right! The word you're practising here is",
       understoodButPractising: "Understandable, but here it's",
+      alsoRightTranslation: "Also right! We had it as",
+      closeButTranslation: "Close, but here it means",
       translateL2toL1Headline: "Translate the highlighted word",
       translateWhatYouHearHeadline: "Translate the word you hear",
       multipleChoiceL2toL1Headline: "Select the correct translation of the highlighted word",
