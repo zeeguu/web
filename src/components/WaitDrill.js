@@ -1,21 +1,13 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import LocalStorage from "../assorted/LocalStorage";
 import { getDrillVocab } from "../assorted/drillCache";
 import fisherYatesShuffle from "../assorted/fisherYatesShuffle";
-import {
-  DrillAnswer,
-  DrillBox,
-  DrillExitLink,
-  DrillHint,
-  DrillHistoryItem,
-  DrillHistoryList,
-} from "./WaitDrill.sc";
+import { DrillAnswer, DrillPair } from "./WaitDrill.sc";
 
 const SRC_PRIORITY = ["exercise", "scheduled", "translation"];
 
 const ORIGIN_VISIBLE_MS = 5000;
 const TRANSLATION_VISIBLE_MS = 2500;
-const HISTORY_MAX = 5;
 
 function buildQueue(entries) {
   const buckets = SRC_PRIORITY.map((src) =>
@@ -25,13 +17,10 @@ function buildQueue(entries) {
   return [...buckets.flat(), ...tail];
 }
 
-// Minimalist text-only vocab drill shown during long loading waits. Two
-// modes: passive (auto-cycles) and interactive (timer off, user-driven).
-// The card is always tappable: in passive the tap enters interactive
-// mode (and reveals the current word — the natural first action). In
-// interactive the tap reveals/advances. The hint line inside the card
-// always describes what tapping does right now. Exit is a small link
-// pinned near the bottom of the viewport, only shown while interactive.
+// Minimalist vocab drill shown during long loading waits: one word pair that
+// auto-cycles (word, then its translation, then the next word). Tapping skips
+// ahead — reveals the translation, or moves on if it's already shown — and
+// restarts the timer, so a user who wants to go faster just keeps tapping.
 //
 // Reads {origin, translation} pairs from LocalStorage (filled by completed
 // exercises / scheduled-words seed / in-reader taps) so it works offline.
@@ -42,88 +31,45 @@ export default function WaitDrill() {
     [learnedLang],
   );
 
-  const [interactive, setInteractive] = useState(false);
   const [index, setIndex] = useState(0);
   const [revealed, setRevealed] = useState(false);
-  const [history, setHistory] = useState([]);
-  const seqRef = useRef(0);
-  const timerRef = useRef(null);
 
-  function advance() {
-    const w = queue[index];
-    seqRef.current += 1;
-    setHistory((prev) => [{ o: w.o, t: w.t, id: seqRef.current }, ...prev].slice(0, HISTORY_MAX));
+  function step() {
+    if (!revealed) {
+      setRevealed(true);
+      return;
+    }
     setRevealed(false);
     setIndex((i) => (i + 1) % queue.length);
   }
 
+  // Re-armed on every step, so a tap also resets the countdown.
   useEffect(() => {
-    if (interactive || queue.length === 0) return;
+    if (queue.length === 0) return;
     const ms = revealed ? TRANSLATION_VISIBLE_MS : ORIGIN_VISIBLE_MS;
-    timerRef.current = setTimeout(() => {
-      if (revealed) advance();
-      else setRevealed(true);
-    }, ms);
-    return () => clearTimeout(timerRef.current);
+    const timer = setTimeout(step, ms);
+    return () => clearTimeout(timer);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [interactive, revealed, queue]);
+  }, [index, revealed, queue]);
 
   if (queue.length === 0) return null;
 
   const current = queue[index];
 
-  function handleCardTap() {
-    if (!interactive) {
-      setInteractive(true);
-      setRevealed(true);
-      return;
-    }
-    if (revealed) advance();
-    else setRevealed(true);
-  }
-
-  function exitToAuto(e) {
-    e.stopPropagation();
-    setInteractive(false);
-  }
-
-  const hintText = interactive
-    ? revealed
-      ? "tap for next"
-      : "tap to reveal"
-    : "tap to take control";
-
   return (
-    <>
-      <DrillBox
-        onClick={handleCardTap}
-        role="button"
-        tabIndex={0}
-        onKeyDown={(e) => {
-          if (e.key === "Enter" || e.key === " ") handleCardTap();
-        }}
-      >
-        <div>
-          <strong>{current.o}</strong>
-          {"  →  "}
-          <DrillAnswer $revealed={revealed}>
-            {revealed ? current.t : "?"}
-          </DrillAnswer>
-        </div>
-        <DrillHint>{hintText}</DrillHint>
-      </DrillBox>
-      {history.length > 0 && (
-        <DrillHistoryList>
-          {history.map((h, i) => (
-            <DrillHistoryItem key={h.id} $age={i}>
-              {h.o} → {h.t}
-            </DrillHistoryItem>
-          ))}
-        </DrillHistoryList>
-      )}
-      {interactive && (
-        <DrillExitLink onClick={exitToAuto}>auto-cycle</DrillExitLink>
-      )}
-    </>
+    <DrillPair
+      onClick={step}
+      role="button"
+      tabIndex={0}
+      onKeyDown={(e) => {
+        if (e.key === "Enter" || e.key === " ") step();
+      }}
+    >
+      <strong>{current.o}</strong>
+      {"  →  "}
+      <DrillAnswer $revealed={revealed}>
+        {revealed ? current.t : "?"}
+      </DrillAnswer>
+    </DrillPair>
   );
 }

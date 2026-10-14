@@ -52,10 +52,6 @@ const PROBE_TIMEOUT_MS = 4000;
 
 const NET_PROBE_URL = "https://1.1.1.1/cdn-cgi/trace";
 
-// When the drill mounts the orange dots become a muted grey heartbeat
-// above it — same size, just toned down.
-const MUTED_SPINNER_STYLE = { opacity: 0.7 };
-
 const LANG_DISPLAY = (() => {
   try {
     return new Intl.DisplayNames(["en"], { type: "language" });
@@ -138,21 +134,21 @@ function drillCaption(netResult, serverResult, langName) {
   // Offline state is stated by the primary "You're offline" headline, so the
   // caption here is just the invitation — no need to repeat "no connection".
   if (netResult === "failed" && serverResult === "failed") {
-    return `While you wait, let's practice some ${subject}!`;
+    return `Practice some ${subject} while you wait`;
   }
   if (netResult === "failed" || netResult === "slow") {
-    return `Your connection seems slow — while you wait, let's practice some ${subject}!`;
+    return `Slow connection — practice some ${subject} while you wait`;
   }
-  return `While waiting, let's practice some ${subject}!`;
+  return `Practice some ${subject} while you wait`;
 }
 
 // The lds-ellipsis spinner needs four nodes: each visible dot runs its own
 // keyframe (fade-in on the left, two slides, fade-out on the right), so it can't
 // collapse to margins or ::before/::after. Encapsulated here so the layout below
 // reads as a single <Spinner />.
-function Spinner({ variant, style }) {
+function Spinner({ variant }) {
   return (
-    <s.LoadingAnimation style={style}>
+    <s.LoadingAnimation>
       <div className={`lds-ellipsis ${variant}`}>
         {Array.from({ length: 4 }, (_, i) => (
           <div key={i} />
@@ -279,12 +275,7 @@ export default function LoadingAnimation({
   // own. The probes below still run, but only to grade slow vs server-trouble.
   const knownOffline = isOffline;
 
-  const spinnerVariant = showDrill
-    ? "muted"
-    : isTeacherWebsite
-    ? "teacher"
-    : "student";
-  const spinnerStyle = showDrill ? MUTED_SPINNER_STYLE : undefined;
+  const spinnerVariant = isTeacherWebsite ? "teacher" : "student";
   const langName = showDrill
     ? learnedLanguageName(LocalStorage.getLearnedLanguage())
     : null;
@@ -308,7 +299,9 @@ export default function LoadingAnimation({
               "loading…" message (a lie when nothing is in flight) — and the
               spinner below is dropped too. */}
           {knownOffline ? <p>You're offline</p> : children}
-          {!knownOffline && <Spinner variant={spinnerVariant} style={spinnerStyle} />}
+          {/* The drill is its own sign of waiting; the dots on top of it only
+              add noise. */}
+          {!knownOffline && !showDrill && <Spinner variant={spinnerVariant} />}
           {/* The drill caption must ride with the drill, not the connection
               diagnostic: hard-offline surfaces the drill at delay+200ms while
               showDiagnostic only flips at delay+3000ms, so gating the caption on

@@ -29,6 +29,7 @@ export default function OrderWords({
   exerciseSessionId,
   exerciseType,
   activeSessionDuration,
+  onExerciseLoaded,
 }) {
   const api = useContext(APIContext);
   // Constants for Exercise
@@ -958,8 +959,14 @@ export default function OrderWords({
     // Handle the case of long sentences, this relies on activating the functionality.
   }
 
+  const isLoading = (wordsReferenceStatus.length === 0 || exerciseText === "") && !isCorrect;
+  useEffect(() => {
+    if (!isLoading) onExerciseLoaded?.();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isLoading]);
+
   // Handle the Loading screen while getting the text.
-  if ((wordsReferenceStatus.length === 0) | (exerciseText === "") && !isCorrect) {
+  if (isLoading) {
     if (IS_DEBUG) console.log("Running load animation.");
     console.log(exerciseText);
     console.log(wordsReferenceStatus);
