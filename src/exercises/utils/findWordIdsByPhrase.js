@@ -17,9 +17,15 @@ export function findWordIdsByPhrase(interactiveText, phrase) {
   if (!paragraphs || !paragraphs[0]) return [];
 
   const targetWords = phrase.split(" ").map(w => removePunctuation(w).toLowerCase());
+  const targetPhrase = targetWords.join(" ");
   let word = paragraphs[0].linkedWords.head;
 
   while (word) {
+    // Bookmark restoration fuses a multi-word bookmark into one word
+    // ("en del"), so the whole phrase can sit in a single word.
+    if (removePunctuation(word.word).toLowerCase() === targetPhrase) {
+      return [word.id];
+    }
     if (removePunctuation(word.word).toLowerCase() === targetWords[0]) {
       let matchedIds = [];
       let currentWord = word;
