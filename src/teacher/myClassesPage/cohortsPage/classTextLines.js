@@ -61,22 +61,25 @@ export function heatColor(count, maxStudents) {
   return `hsla(${hue}, 85%, 50%, ${alpha})`;
 }
 
-// For one part of the text: "sent_i:token_i" -> [{id, translation}], the
-// students who looked that token up. The bookmarks are placed by the reader's
-// own restoration, so a word is coloured exactly where the student saw their
-// translation. A student counts once per token; their first translation stands.
-export function studentsByToken(part) {
+// For one part of the text: "sent_i:token_i" -> { students, covers }.
+// students: [{id, translation}], who looked that token up, once each, their
+// first translation standing. covers: which lookups cover the token, so that
+// neighbours covered by the same ones ("chow down") draw as one box.
+// The bookmarks are placed by the reader's own restoration, so a word is
+// coloured exactly where the student saw their translation.
+export function lookupsByToken(part) {
   const byToken = new Map();
   const covered = tokensCoveredByBookmarks(part.class_bookmarks, part.tokens || []);
   covered.forEach((tokens, i) => {
     const bookmark = part.class_bookmarks[i];
     for (const token of tokens || []) {
       const key = `${token.sent_i}:${token.token_i}`;
-      const students = byToken.get(key) || [];
-      if (!students.some((s) => s.id === bookmark.student_id)) {
-        students.push({ id: bookmark.student_id, translation: bookmark.translation });
+      const lookup = byToken.get(key) || { students: [], covers: [] };
+      if (!lookup.students.some((s) => s.id === bookmark.student_id)) {
+        lookup.students.push({ id: bookmark.student_id, translation: bookmark.translation });
       }
-      byToken.set(key, students);
+      lookup.covers.push(i);
+      byToken.set(key, lookup);
     }
   });
   return byToken;
@@ -93,4 +96,33 @@ export function classReadingSummary({ readers, words, top_words }, studentCount)
     share: studentCount > 0 ? readers / studentCount : 0,
     topWords: top_words.length > 0 ? top_words.join(", ") : null,
   };
+}
+
+// A paragraph's tokens cut into runs to draw: [{ tokens, lookup }], lookup
+// null for plain text. Consecutive tokens of one sentence covered by exactly
+// the same lookups make one run, so a phrase is one coloured box. Tokens
+// looked up by fewer than `threshold` students are plain.
+export function heatRuns(tokens, byToken, threshold) {
+  const runs = [];
+  for (const token of tokens) {
+    const found = byToken.get(`${token.sent_i}:${token.token_i}`);
+    const lookup = found && found.students.length >= threshold ? found : null;
+    const last = runs[runs.length - 1];
+    const sameRun =
+      last &&
+      (lookup === null
+        ? last.lookup === null
+        : last.lookup !== null &&
+          last.tokens[last.tokens.length - 1].sent_i === token.sent_i &&
+          last.lookup.covers.join() === lookup.covers.join());
+    if (sameRun) last.tokens.push(token);
+    else runs.push({ tokens: [token], lookup });
+  }
+  return runs;
+}
+
+// A run's text, spaced as in the original, and whether a space follows it.
+export function runText(tokens) {
+  const text = tokens.map((t, i) => t.text + (i < tokens.length - 1 && t.has_space ? " " : "")).join("");
+  return { text, spaceAfter: !!tokens[tokens.length - 1].has_space };
 }

@@ -1,6 +1,6 @@
 import { Tooltip } from "@mui/material";
 import * as h from "../../styledComponents/TextFilterBar.sc";
-import { heatColor, studentsByToken, studentsLabel, thresholdOptions } from "./classTextLines";
+import { heatColor, heatRuns, lookupsByToken, runText, studentsLabel, thresholdOptions } from "./classTextLines";
 import * as s from "./ClassText.sc";
 
 // The block tags a fragment may carry (ArticleFragment.formatting); anything
@@ -19,8 +19,8 @@ export default function ClassTextHeatmap({ info, threshold, setThreshold }) {
   const names = Object.fromEntries(info.readers.map((r) => [r.id, r.name]));
   const parts = [{ ...info.text.title, isTitle: true }, ...info.text.fragments]
     .filter((part) => part.tokens)
-    .map((part) => ({ ...part, byToken: studentsByToken(part) }));
-  const maxStudents = Math.max(1, ...parts.flatMap((part) => [...part.byToken.values()].map((s) => s.length)));
+    .map((part) => ({ ...part, byToken: lookupsByToken(part) }));
+  const maxStudents = Math.max(1, ...parts.flatMap((part) => [...part.byToken.values()].map((l) => l.students.length)));
 
   return (
     <>
@@ -54,20 +54,20 @@ export default function ClassTextHeatmap({ info, threshold, setThreshold }) {
 }
 
 function HeatPart({ part, threshold, maxStudents, names }) {
-  const { byToken } = part;
   const Tag = part.isTitle ? "h2" : BLOCK_TAGS.includes(part.formatting) ? part.formatting : "p";
 
   return part.tokens.map((paragraph, p) => (
     <Tag key={p}>
-      {paragraph.flat().map((token) => {
-        const students = byToken.get(`${token.sent_i}:${token.token_i}`);
-        const space = token.has_space ? " " : "";
-        if (!students || students.length < threshold) return token.text + space;
+      {heatRuns(paragraph.flat(), part.byToken, threshold).map((run, r) => {
+        const { text, spaceAfter } = runText(run.tokens);
+        const space = spaceAfter ? " " : "";
+        if (!run.lookup) return <span key={r}>{text + space}</span>;
+        const { students } = run.lookup;
         return (
-          <span key={`${token.sent_i}:${token.token_i}`}>
+          <span key={r}>
             <Tooltip arrow enterTouchDelay={0} leaveTouchDelay={4000} title={<WhoLookedUp students={students} names={names} />}>
               <s.HeatWord type="button" style={{ background: heatColor(students.length, maxStudents) }}>
-                {token.text}
+                {text}
               </s.HeatWord>
             </Tooltip>
             {space}
