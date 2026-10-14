@@ -274,23 +274,36 @@ export default function ArticlePreviewOverlay({
     wordCount > 0 ? estimateReadingTime(wordCount).replace(" minutes", " min").replace(" minute", " min") : null;
   const readingTimeHint = readingTime && <s.ActionHint>· {readingTime}</s.ActionHint>;
 
-  // A story several outlets ran: one button per outlet, as equals, in place of
-  // the single "Read the original". No reading time -- it is per article, and
-  // the card's own would only describe one of them.
-  const outlets = storyOutlets(article);
-  const outletButtons = outlets && (
-    <s.OutletActions>
-      {outlets.map((outlet) => (
-        <Button
-          key={outlet.id}
-          className="full-width-btn"
-          onClick={() => handleOpenOriginal({ ...article, id: outlet.id, url: outlet.url, parent_url: null })}
-        >
-          Read at {outlet.label}
-          <OpenInNewRoundedIcon style={{ fontSize: 20, marginLeft: 2 }} />
-        </Button>
-      ))}
-    </s.OutletActions>
+  // The way out to the publisher: a quiet pill per outlet, right-aligned under a
+  // caption, not a full-width call to action -- the summary is what the learner
+  // reads here, and the original is elsewhere. A story several outlets ran
+  // lists them all as equals; the reading time only when there is one article
+  // for it to describe.
+  const outlets = storyOutlets(article) || [
+    { id: article.id, url: externalUrl, label: sourceLabel || "Original" },
+  ];
+  const originalLinks = (
+    <s.OriginalLinks>
+      <s.SummaryLabel>
+        Read the original{outlets.length === 1 && readingTime && ` · ${readingTime}`}
+      </s.SummaryLabel>
+      <s.OutletPills>
+        {outlets.map((outlet) => (
+          <ActionButton
+            key={outlet.id}
+            variant="muted"
+            onClick={() =>
+              handleOpenOriginal(
+                outlet.id === article.id ? article : { ...article, id: outlet.id, url: outlet.url, parent_url: null },
+              )
+            }
+          >
+            {outlet.label}
+            <OpenInNewRoundedIcon style={{ fontSize: 16, marginLeft: 4 }} />
+          </ActionButton>
+        ))}
+      </s.OutletPills>
+    </s.OriginalLinks>
   );
 
   const primaryButton = readInZeeguuPath ? (
@@ -298,14 +311,8 @@ export default function ArticlePreviewOverlay({
       Read the article
       {readingTimeHint}
     </Button>
-  ) : outletButtons ? (
-    outletButtons
   ) : (
-    <Button className="full-width-btn" onClick={() => handleOpenOriginal()}>
-      Read the original
-      {readingTimeHint}
-      <OpenInNewRoundedIcon style={{ fontSize: 20, marginLeft: 2 }} />
-    </Button>
+    originalLinks
   );
 
   return (

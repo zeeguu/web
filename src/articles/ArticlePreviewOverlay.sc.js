@@ -187,11 +187,20 @@ const PrimaryAction = styled.div`
   font-size: 1rem;
 `;
 
-// One "Read at <outlet>" button per outlet of a multi-outlet story, stacked.
-const OutletActions = styled.div`
+// "Read the original" with its outlet pills, at the end of the summary,
+// right-aligned and only as wide as the pills: a way out, not the main action.
+const OriginalLinks = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 0.6em;
+  align-items: flex-end;
+  gap: 0.4em;
+`;
+
+const OutletPills = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 0.5em;
 `;
 
 // The reading time, carried inside the button as supporting detail: the label
@@ -212,6 +221,7 @@ export {
   SummaryLabel,
   Summary,
   PrimaryAction,
-  OutletActions,
+  OriginalLinks,
+  OutletPills,
   ActionHint,
 };
