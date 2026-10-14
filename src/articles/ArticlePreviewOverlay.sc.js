@@ -16,8 +16,8 @@ const ScrollArea = styled.div`
   /* Bleed to the wrapper edge (−48 cancels its 48px padding) so the scrollbar
      rides the modal edge, then re-inset the content generously. The wider
      desktop overlay needs more breathing room than the wrapper's 48px. */
-  /* top: just breathing room under the header band, which now supplies the
-     clearance the title used to carve out for itself. */
+  /* top: just breathing room under the desktop header band, which supplies
+     the clearance the title used to carve out for itself. */
   padding: 1.2em 64px 1.1em;
 
   /* Keep an overscroll at the sheet's edges from bouncing the feed behind it —
@@ -46,43 +46,23 @@ const ScrollArea = styled.div`
   }
 `;
 
-// The sheet's own top band: a fixed-height strip above the scroll area holding
-// the dismiss control, and — on the phone — the grab handle. It is a flex
-// SIBLING of the scroll area rather than an overlay on top of it, so scrolling
-// content cannot pass under the X and collide with it: the scroll area's box
-// simply starts below this band. It bleeds to the wrapper's edges (the negative
-// margins cancel the wrapper's padding) so the divider spans the full width.
+// The card's own top band: a fixed-height strip above the scroll area holding
+// the dismiss control. It is a flex SIBLING of the scroll area rather than an
+// overlay on top of it, so scrolling content cannot pass under the X and
+// collide with it: the scroll area's box simply starts below this band. The
+// negative margins cancel the wrapper's top/side padding so the X sits in the
+// corner. No divider: the band reads as part of the card, not a toolbar.
+//
+// Desktop only. The phone sheet is dismissed by swiping it away (or tapping the
+// backdrop), so a band there would only push the title down.
 const Header = styled.div`
   flex: 0 0 auto;
-  position: relative;
   display: flex;
   align-items: center;
   height: 52px;
   margin: -32px -48px 0;
-  border-bottom: 1px solid var(--border-light);
-  /* This band is a drag surface, so no browser panning/zooming on it. */
-  touch-action: none;
 
   @media (max-width: 576px) {
-    height: 44px;
-    margin: -20px -16px 0;
-  }
-`;
-
-// The bottom-sheet grab handle: the conventional "you can drag this" affordance.
-// Phone only — on desktop the sheet is a centered card that does not drag.
-const GrabHandle = styled.div`
-  position: absolute;
-  left: 50%;
-  top: 10px;
-  transform: translateX(-50%);
-  width: 36px;
-  height: 4px;
-  border-radius: 2px;
-  background: var(--border-color);
-  opacity: 0.7;
-
-  @media (min-width: 577px) {
     display: none;
   }
 `;
@@ -97,7 +77,7 @@ const CloseCorner = styled.button`
   /* 44px: a real touch target around a 22px glyph. */
   width: 44px;
   height: 44px;
-  margin-left: 6px;
+  margin-left: 10px;
   padding: 0;
   border: none;
   border-radius: 50%;
@@ -113,10 +93,6 @@ const CloseCorner = styled.button`
       color: var(--text-primary);
       background-color: var(--hover-bg);
     }
-  }
-
-  @media (min-width: 577px) {
-    margin-left: 10px;
   }
 `;
 
@@ -213,7 +189,6 @@ const ActionHint = styled.span`
 export {
   ScrollArea,
   Header,
-  GrabHandle,
   CloseCorner,
   Title,
   SaveRow,

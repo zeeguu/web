@@ -139,10 +139,8 @@ export default function ArticlePreviewOverlay({
   // mobile bottom sheet, where a plain translate is correct; desktop keeps its
   // centered layout and dismisses via the X or the backdrop.
   //
-  // Three ways in, all landing in the same drag:
+  // Two ways in, both landing in the same drag:
   //   - rightwards, from anywhere (the original gesture);
-  //   - either vertical direction, from the header band — a bar the finger can
-  //     grab without competing with the text it sits above;
   //   - downwards when the summary is already scrolled to the top, upwards when
   //     it is scrolled to the bottom. At those two points the scroll has nowhere
   //     left to go, so the continued push is spare and means "away". A short
@@ -155,7 +153,7 @@ export default function ArticlePreviewOverlay({
   const [dragY, setDragY] = useState(0);
   const [dragging, setDragging] = useState(false);
 
-  function handleTouchStart(e, fromBar = false) {
+  function handleTouchStart(e) {
     if (!isSheet) return; // desktop card does not drag — X or backdrop only
     const t = e.touches[0];
     const el = scrollRef.current;
@@ -170,8 +168,8 @@ export default function ArticlePreviewOverlay({
       x: t.clientX,
       y: t.clientY,
       axis: null,
-      allowDown: fromBar || atTop,
-      allowUp: fromBar || atBottom,
+      allowDown: atTop,
+      allowUp: atBottom,
       lastX: t.clientX,
       lastY: t.clientY,
       lastT: e.timeStamp,
@@ -327,22 +325,15 @@ export default function ArticlePreviewOverlay({
         wrapperStyle={wrapperStyle}
         backdropStyle={backdropStyle}
       >
-        {/* A band of its own above the scroll area, not a control floating over
-            it: the summary scrolls in the space BELOW this strip, so no line of
-            text ever runs into the X. Dismissal lives at its left, where it is
-            conventional and out of the reading path — the forward action
-            (Original) is the primary button at the end of the content instead.
-            The band doubles as the drag handle: a grab surface with no words in
-            it, so pulling the sheet away never competes with tapping a word. */}
-        <s.Header
-          onTouchStart={(e) => handleTouchStart(e, true)}
-          onTouchMove={handleTouchMove}
-          onTouchEnd={handleTouchEnd}
-        >
+        {/* Desktop only (hidden on the phone, where the sheet is swiped away):
+            a band of its own above the scroll area, not a control floating
+            over it, so no line of text ever runs into the X. Dismissal lives
+            at its left, where it is conventional and out of the reading path —
+            the forward action (Original) is at the end of the content. */}
+        <s.Header>
           <s.CloseCorner type="button" aria-label="Close preview" onClick={onClose}>
             <CloseRoundedIcon style={{ fontSize: 22 }} />
           </s.CloseCorner>
-          <s.GrabHandle aria-hidden="true" />
         </s.Header>
 
         <s.ScrollArea
