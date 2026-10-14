@@ -3,9 +3,17 @@ import { useSwipeable } from "react-swipeable";
 import { APIContext } from "../../contexts/APIContext";
 import * as s from "./ContextNavigationControls.sc";
 import useKeyboardNavigation from "../../hooks/useKeyboardNavigation";
+import LocalStorage from "../../assorted/LocalStorage";
 
 // Must match the exit transition duration in ContextNavigationControls.sc.js
 const EXIT_ANIMATION_MS = 200;
+
+// The swipe hint plays on the first few exercises that have more than one
+// example, then never again.
+const SWIPE_HINT_TIMES = 3;
+
+// Above this, dots stop being countable at a glance; show "3 / 9" instead.
+const MAX_DOTS = 7;
 
 export default function ContextNavigationControls({
   exerciseBookmark,
@@ -21,6 +29,7 @@ export default function ContextNavigationControls({
   const [slideDirection, setSlideDirection] = useState(null);
   const [isExiting, setIsExiting] = useState(false);
   const [isEntering, setIsEntering] = useState(false);
+  const [showSwipeHint, setShowSwipeHint] = useState(false);
 
   useEffect(() => {
     if (hasFetched || !exerciseBookmark?.user_word_id) return;
@@ -29,6 +38,13 @@ export default function ContextNavigationControls({
       .then((allContexts) => {
         setContexts(allContexts);
         setHasFetched(true);
+        // Swiping is touch-only (trackMouse: false), so on desktop the hint
+        // would show a gesture that doesn't work there.
+        const isTouch = window.matchMedia("(hover: none)").matches;
+        if (isTouch && allContexts.length > 1 && LocalStorage.getContextSwipeHintCount() < SWIPE_HINT_TIMES) {
+          LocalStorage.incrementContextSwipeHintCount();
+          setShowSwipeHint(true);
+        }
       })
       .catch((error) => console.error("Failed to fetch contexts:", error));
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -48,16 +64,14 @@ export default function ContextNavigationControls({
     api.setPreferredBookmark(exerciseBookmark.user_word_id, context.bookmark.id);
   }
 
-  // direction: 'left' (next) or 'right' (previous).
-  const navigate = useCallback(
-    (direction) => {
-      if (isAnimating || contexts.length <= 1) return;
+  // direction: 'left' (the new card comes in from the right) or 'right'.
+  const goTo = useCallback(
+    (newIndex, direction) => {
+      if (isAnimating || contexts.length <= 1 || newIndex === currentIndex) return;
 
-      const delta = direction === "left" ? 1 : -1;
-      const newIndex =
-        (currentIndex + delta + contexts.length) % contexts.length;
       const target = contexts[newIndex];
 
+      setShowSwipeHint(false);
       setIsAnimating(true);
       setSlideDirection(direction);
       setIsExiting(true);
@@ -72,6 +86,14 @@ export default function ContextNavigationControls({
       }, EXIT_ANIMATION_MS);
     },
     [isAnimating, currentIndex, contexts],
+  );
+
+  const navigate = useCallback(
+    (direction) => {
+      const delta = direction === "left" ? 1 : -1;
+      goTo((currentIndex + delta + contexts.length) % contexts.length, direction);
+    },
+    [goTo, currentIndex, contexts],
   );
 
   const hasMultipleContexts = contexts.length > 1;
@@ -91,42 +113,68 @@ export default function ContextNavigationControls({
 
   if (!onExampleUpdated) return null;
 
+  const dots = contexts.map((_, index) => (
+    <s.Dot
+      key={index}
+      $current={index === currentIndex}
+      onClick={() => goTo(index, index > currentIndex ? "left" : "right")}
+      aria-label={`Example ${index + 1} of ${contexts.length}`}
+      aria-current={index === currentIndex}
+    />
+  ));
+
+  const position =
+    contexts.length > MAX_DOTS ? (
+      <s.Counter>
+        {currentIndex + 1} / {contexts.length}
+      </s.Counter>
+    ) : (
+      dots
+    );
+
   return (
     <s.SlideContainer>
       {children && (
-        <s.SlideContent
+        <s.SwipeArea
           {...swipeHandlers}
-          $exiting={isExiting}
-          $entering={isEntering}
-          $direction={slideDirection}
-          onAnimationEnd={() => {
-            setIsEntering(false);
-            setIsAnimating(false);
+          $peek={showSwipeHint}
+          onAnimationEnd={(e) => {
+            if (e.target.parentElement === e.currentTarget) setShowSwipeHint(false);
           }}
         >
-          {children}
-        </s.SlideContent>
+          <s.SlideContent
+            $exiting={isExiting}
+            $entering={isEntering}
+            $direction={slideDirection}
+            onAnimationEnd={() => {
+              setIsEntering(false);
+              setIsAnimating(false);
+            }}
+          >
+            {children}
+          </s.SlideContent>
+        </s.SwipeArea>
       )}
 
-      {/* Nav arrows live below the sentence so the context can use the
-          full width — click-word exercises in particular need that
-          horizontal room so words don't compress onto extra lines. */}
-      <s.NavRow $hidden={!hasMultipleContexts}>
-        <s.NavArrow
-          onClick={() => navigate("right")}
-          disabled={isAnimating}
-          aria-label="Previous context"
-        >
-          ‹
-        </s.NavArrow>
-        <s.NavArrow
-          onClick={() => navigate("left")}
-          disabled={isAnimating}
-          aria-label="Next context"
-        >
-          ›
-        </s.NavArrow>
-      </s.NavRow>
+      {hasMultipleContexts && (
+        <s.Dots>
+          <s.NavArrow
+            onClick={() => navigate("right")}
+            disabled={isAnimating}
+            aria-label="Previous example"
+          >
+            ‹
+          </s.NavArrow>
+          {position}
+          <s.NavArrow
+            onClick={() => navigate("left")}
+            disabled={isAnimating}
+            aria-label="Next example"
+          >
+            ›
+          </s.NavArrow>
+        </s.Dots>
+      )}
     </s.SlideContainer>
   );
 }
