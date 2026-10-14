@@ -6,6 +6,10 @@ export const MINUTES_TO_RE_ENABLE_AUDIO_AFTER_DISABLE = 15;
 export const MAX_COOLDOWN_INTERVAL = 11520;
 export const HINT = "H";
 export const CORRECT = "C";
+// Another word that fits the blank as well as the expected one (the API's
+// judge_cloze_alternative said SYNONYM). Moves the word forward like "HC";
+// not a clean answer.
+export const ALTERNATIVE = "A";
 export const WRONG = "W";
 export const TRANSLATE_WORD = "T";
 export const SOLUTION = "S";

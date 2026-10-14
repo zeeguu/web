@@ -51,6 +51,8 @@ export default function ClozeContextWithExchange({
   aboveClozeElement = null,
   // Wrong typed answer whose correction is playing in the cloze slot.
   correction = null,
+  // An answer is being judged by the API: the input waits.
+  isChecking = false,
 }) {
   const { userDetails } = useContext(UserContext);
   const [isKeyboardCollapsed, setIsKeyboardCollapsed] = useState(getInitialKeyboardCollapsed);
@@ -108,6 +110,7 @@ export default function ClozeContextWithExchange({
                 onInputSubmit={onInputSubmit}
                 onInputRef={(ref) => { clozeInputRef.current = ref; }}
                 correction={correction}
+                isChecking={isChecking}
               />
             )}
           />

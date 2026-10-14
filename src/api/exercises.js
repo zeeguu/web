@@ -132,6 +132,31 @@ Zeeguu_API.prototype.fetchAndSortContexts = async function (exerciseBookmark) {
   ];
 };
 
+// Whether a word typed into a cloze, other than the expected one, also fits.
+// Resolves to {relation, explanation}; relation is SYNONYM,
+// NEAR_SYNONYM_NOT_IDIOMATIC, NOT_SYNONYM, or UNKNOWN when the API could not
+// tell in time (the server gives up after 6s; we stop waiting a bit later).
+// `signal` lets the caller abandon the request (the exercise ended meanwhile).
+Zeeguu_API.prototype.judgeClozeAlternative = async function (bookmarkId, typed, signal, timeoutMs = 8000) {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), timeoutMs);
+  signal?.addEventListener("abort", () => controller.abort());
+  try {
+    const response = await fetch(this._appendSessionToUrl("judge_cloze_alternative"), {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ bookmark_id: bookmarkId, typed }),
+      signal: controller.signal,
+    });
+    if (!response.ok) return { relation: "UNKNOWN", explanation: "" };
+    return await response.json();
+  } catch (e) {
+    return { relation: "UNKNOWN", explanation: "" };
+  } finally {
+    clearTimeout(timer);
+  }
+};
+
 Zeeguu_API.prototype.setPreferredBookmark = function (userWordId, bookmarkId) {
   fetch(this._appendSessionToUrl(`set_preferred_bookmark/${userWordId}`), {
     method: "POST",

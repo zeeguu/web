@@ -316,7 +316,7 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
 
   let correctBookmarksCopy = [...correctBookmarks];
 
-  function correctAnswerNotification(currentBookmark, endExercise = true) {
+  function correctAnswerNotification(currentBookmark, endExercise = true, outcome = CORRECT) {
     if (!incorrectBookmarks.includes(currentBookmark)) {
       setTotalPracticedBookmarksInSession(totalPracticedBookmarksInSession + 1);
       let correctBookmarksIds = correctBookmarksCopy.map((b) => b.id);
@@ -333,7 +333,7 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
     if (endExercise) {
       setIsCorrect(true);
     }
-    updateAPIWithExerciseComplete(CORRECT, currentBookmark, endExercise);
+    updateAPIWithExerciseComplete(outcome, currentBookmark, endExercise);
   }
 
   let incorrectBookmarksCopy = [...incorrectBookmarks];
