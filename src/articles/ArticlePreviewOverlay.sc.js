@@ -46,23 +46,43 @@ const ScrollArea = styled.div`
   }
 `;
 
-// The card's own top band: a fixed-height strip above the scroll area holding
-// the dismiss control. It is a flex SIBLING of the scroll area rather than an
-// overlay on top of it, so scrolling content cannot pass under the X and
-// collide with it: the scroll area's box simply starts below this band. The
-// negative margins cancel the wrapper's top/side padding so the X sits in the
-// corner. No divider: the band reads as part of the card, not a toolbar.
+// The sheet's own top band: a strip above the scroll area. It is a flex
+// SIBLING of the scroll area rather than an overlay on top of it, so scrolling
+// content cannot pass under its controls: the scroll area's box simply starts
+// below this band. The negative margins cancel the wrapper's top/side padding.
+// No divider: the band reads as part of the sheet, not a toolbar.
 //
-// Desktop only. The phone sheet is dismissed by swiping it away (or tapping the
-// backdrop), so a band there would only push the title down.
+// Desktop: holds the X (the centered card does not drag). Phone: a slim grab
+// strip with only the handle, as on Instagram's sheets — dismissal is the swipe.
 const Header = styled.div`
   flex: 0 0 auto;
+  position: relative;
   display: flex;
   align-items: center;
   height: 52px;
   margin: -32px -48px 0;
 
   @media (max-width: 576px) {
+    height: 24px;
+    margin: -20px -16px 0;
+    /* This strip is a drag surface, so no browser panning/zooming on it. */
+    touch-action: none;
+  }
+`;
+
+// The bottom-sheet grab handle: the conventional "you can drag this" affordance.
+// Phone only — on desktop the sheet is a centered card that does not drag.
+const GrabHandle = styled.div`
+  position: absolute;
+  left: 50%;
+  top: 10px;
+  transform: translateX(-50%);
+  width: 36px;
+  height: 4px;
+  border-radius: 2px;
+  background: var(--border-color);
+
+  @media (min-width: 577px) {
     display: none;
   }
 `;
@@ -93,6 +113,10 @@ const CloseCorner = styled.button`
       color: var(--text-primary);
       background-color: var(--hover-bg);
     }
+  }
+
+  @media (max-width: 576px) {
+    display: none;
   }
 `;
 
@@ -189,6 +213,7 @@ const ActionHint = styled.span`
 export {
   ScrollArea,
   Header,
+  GrabHandle,
   CloseCorner,
   Title,
   SaveRow,
