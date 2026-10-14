@@ -83,7 +83,7 @@ export const HeaderCard = styled.div`
   }
 `;
 
-export const EditProfileButton = styled.button`
+export const SettingsButton = styled.button`
   position: absolute;
   top: 1rem;
   right: 1rem;

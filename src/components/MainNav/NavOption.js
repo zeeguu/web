@@ -16,9 +16,11 @@ export default function NavOption({
   ariaHasPopup,
   ariaLabel,
   overflowEnabled = false,
+  isActive: isActiveOverride,
 }) {
   const Component = linkTo ? s.RouterLink : s.OptionButton;
-  const isActive = isNavOptionActive(linkTo, currentPath);
+  // Lets an option be active beyond its own link: the account row stays lit in Settings too.
+  const isActive = isActiveOverride ?? isNavOptionActive(linkTo, currentPath);
   const isCollapsed = isMediumScreenWidth(screenWidth);
   const elementTitle = isCollapsed ? (title ? title : text) : "";
 

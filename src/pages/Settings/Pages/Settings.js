@@ -2,7 +2,8 @@ import { useEffect, useContext, useState } from "react";
 import { UserContext } from "../../../contexts/UserContext";
 import { setTitle } from "../../../assorted/setTitle";
 import strings from "../../../i18n/definitions";
-import { PageTitle } from "../../../components/PageTitle";
+import SettingsPageHeader from "../SharedComponents/SettingsPageHeader";
+import CardPage from "../../_pages_shared/CardPage";
 import SettingsItem from "../SharedComponents/SettingsItem";
 import SettingsItemButton from "../SharedComponents/SettingsItemButton";
 import ListOfSettingsItems from "../SharedComponents/ListOfSettingsItems";
@@ -29,88 +30,97 @@ export default function Settings() {
   function handleUpgradeSuccess() {}
 
   return (
-    <s.StyledWrapper>
-      <PageTitle>{strings.settings}</PageTitle>
+    // The same page frame as every Settings subpage, so the header and its
+    // back arrow sit in the same place when you move between them.
+    <CardPage layoutVariant={"card-under-menu"} isTransparent reducedPadding>
+      <s.StyledWrapper>
+        {/* Settings is opened from the profile page, so back leads there. A
+            guest has no profile, so for them it is the previous page. */}
+        <SettingsPageHeader title={strings.settings} redirectLink={isAnonymous ? undefined : "/profile"} />
 
-      {isAnonymous && (
-        <ListOfSettingsItems header="Guest Account">
-          <SettingsItemButton onClick={() => setShowUpgradeModal(true)}>
-            Create Account to Save Progress
-          </SettingsItemButton>
-        </ListOfSettingsItems>
-      )}
-
-      <UpgradeAccountModal
-        open={showUpgradeModal}
-        onClose={() => setShowUpgradeModal(false)}
-        onSuccess={handleUpgradeSuccess}
-        triggerReason="settings"
-        bookmarkCount={userDetails?.bookmark_count || 0}
-      />
-
-      <ListOfSettingsItems header={isAnonymous ? "Language" : strings.myAccount}>
-        {!isAnonymous && (
-          <SettingsItem path={"/account_settings/profile_details"} state={{ from: "/account_settings" }}>
-            {strings.profileDetails}
-          </SettingsItem>
+        {isAnonymous && (
+          <ListOfSettingsItems header="Guest Account">
+            <SettingsItemButton onClick={() => setShowUpgradeModal(true)}>
+              Create Account to Save Progress
+            </SettingsItemButton>
+          </ListOfSettingsItems>
         )}
-        <SettingsItem path={"/account_settings/language_settings"}>{strings.languageSettings}</SettingsItem>
 
-        {!isAnonymous && <SettingsItem path={"/account_settings/my_classrooms"}>{strings.myClassrooms}</SettingsItem>}
-      </ListOfSettingsItems>
+        <UpgradeAccountModal
+          open={showUpgradeModal}
+          onClose={() => setShowUpgradeModal(false)}
+          onSuccess={handleUpgradeSuccess}
+          triggerReason="settings"
+          bookmarkCount={userDetails?.bookmark_count || 0}
+        />
 
-      <ListOfSettingsItems header={"Feed preferences"}>
-        <SettingsItem path={"/account_settings/interests"}>Interests</SettingsItem>
-        <SettingsItem path={"/account_settings/feed_view"}>View</SettingsItem>
-      </ListOfSettingsItems>
+        <ListOfSettingsItems header={isAnonymous ? "Language" : strings.myAccount}>
+          {!isAnonymous && (
+            <SettingsItem path={"/account_settings/profile_details"} state={{ from: "/account_settings" }}>
+              {strings.profileDetails}
+            </SettingsItem>
+          )}
+          <SettingsItem path={"/account_settings/language_settings"}>{strings.languageSettings}</SettingsItem>
 
-      {/* Separate from "Feed preferences" on purpose: these apply to every
+          {!isAnonymous && <SettingsItem path={"/account_settings/my_classrooms"}>{strings.myClassrooms}</SettingsItem>}
+        </ListOfSettingsItems>
+
+        <ListOfSettingsItems header={"Feed preferences"}>
+          <SettingsItem path={"/account_settings/interests"}>Interests</SettingsItem>
+          <SettingsItem path={"/account_settings/feed_view"}>View</SettingsItem>
+        </ListOfSettingsItems>
+
+        {/* Separate from "Feed preferences" on purpose: these apply to every
           surface that renders tappable text, not just the feed. */}
-      <ListOfSettingsItems header={"Reading"}>
-        <SettingsItem path={"/account_settings/reading"}>Text & highlighting</SettingsItem>
-      </ListOfSettingsItems>
-
-      {!isAnonymous && (
-        <ListOfSettingsItems header={"Notifications"}>
-          <SettingsItem path={"/account_settings/notifications"}>Email notifications</SettingsItem>
+        <ListOfSettingsItems header={"Reading"}>
+          <SettingsItem path={"/account_settings/reading"}>Text & highlighting</SettingsItem>
         </ListOfSettingsItems>
-      )}
 
-      <ListOfSettingsItems header={strings.exercises}>
-        <SettingsItem path={"/account_settings/exercise_types"}>Audio & Pronunciation</SettingsItem>
-        <SettingsItem path={"/account_settings/exercise_scheduling"}>Scheduling</SettingsItem>
-      </ListOfSettingsItems>
+        {!isAnonymous && (
+          <ListOfSettingsItems header={"Notifications"}>
+            <SettingsItem path={"/account_settings/notifications"}>Email notifications</SettingsItem>
+          </ListOfSettingsItems>
+        )}
 
-      <ListOfSettingsItems header={"Display"}>
-        <SettingsItem path={"/account_settings/display"}>Activity Timer</SettingsItem>
-        <DarkModeToggle />
-      </ListOfSettingsItems>
-
-      {!isAnonymous && (
-        <ListOfSettingsItems header={strings.accountManagement}>
-          <SettingsItem path={"/account_settings/delete_account"}>{strings.deleteAccount}</SettingsItem>
+        <ListOfSettingsItems header={strings.exercises}>
+          <SettingsItem path={"/account_settings/exercise_types"}>Audio & Pronunciation</SettingsItem>
+          <SettingsItem path={"/account_settings/exercise_scheduling"}>Scheduling</SettingsItem>
         </ListOfSettingsItems>
-      )}
 
-      {/* Opt-in experiments, on purpose not behind a feature flag: Labs is
+        <ListOfSettingsItems header={"Display"}>
+          <SettingsItem path={"/account_settings/display"}>Activity Timer</SettingsItem>
+          <DarkModeToggle />
+        </ListOfSettingsItems>
+
+        {!isAnonymous && (
+          <ListOfSettingsItems header={strings.accountManagement}>
+            <SettingsItem path={"/account_settings/delete_account"}>{strings.deleteAccount}</SettingsItem>
+          </ListOfSettingsItems>
+        )}
+
+        {/* Opt-in experiments, on purpose not behind a feature flag: Labs is
           itself the gate, and a hidden experiment gathers no feedback. */}
-      <ListOfSettingsItems header={"Labs"} icon={<ScienceIcon fontSize="small" sx={{ color: "var(--text-muted)" }} />}>
-        <SettingsItem path={"/account_settings/labs"}>Experimental features</SettingsItem>
-      </ListOfSettingsItems>
+        <ListOfSettingsItems
+          header={"Labs"}
+          icon={<ScienceIcon fontSize="small" sx={{ color: "var(--text-muted)" }} />}
+        >
+          <SettingsItem path={"/account_settings/labs"}>Experimental features</SettingsItem>
+        </ListOfSettingsItems>
 
-      <ListOfSettingsItems header={"Developer"}>
-        <SettingsItem path={"/account_settings/developer"}>Developer tools</SettingsItem>
-      </ListOfSettingsItems>
+        <ListOfSettingsItems header={"Developer"}>
+          <SettingsItem path={"/account_settings/developer"}>Developer tools</SettingsItem>
+        </ListOfSettingsItems>
 
-      <ListOfSettingsItems header={"About"}>
-        <SettingsItem path={"/about"}>About Zeeguu</SettingsItem>
-      </ListOfSettingsItems>
+        <ListOfSettingsItems header={"About"}>
+          <SettingsItem path={"/about"}>About Zeeguu</SettingsItem>
+        </ListOfSettingsItems>
 
-      <ButtonContainer className={"adaptive-alignment-horizontal"} style={{ marginTop: "1em", marginBottom: "1em" }}>
-        <LogOutButton />
-      </ButtonContainer>
+        <ButtonContainer className={"adaptive-alignment-horizontal"} style={{ marginTop: "1em", marginBottom: "1em" }}>
+          <LogOutButton />
+        </ButtonContainer>
 
-      <s.Version>v{APP_VERSION}</s.Version>
-    </s.StyledWrapper>
+        <s.Version>v{APP_VERSION}</s.Version>
+      </s.StyledWrapper>
+    </CardPage>
   );
 }
