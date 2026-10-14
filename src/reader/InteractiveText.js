@@ -221,6 +221,7 @@ export default class InteractiveText {
     let context;
     [context] = this.getContextAndCoordinates(word);
     const selection = word.mweExpression || word.word;
+    this.api.logUserActivity(this.api.EXPLAIN_SELECTION, null, selection, this.source, this.sourceId);
 
     this.api
       .explainSelection(
