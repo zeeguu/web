@@ -10,6 +10,7 @@ import SortingButtons from "./SortingButtons";
 import { OrangeRoundButton } from "../components/allButtons.sc";
 import * as s from "../components/TopMessage.sc";
 import { APIContext } from "../contexts/APIContext";
+import { UserContext } from "../contexts/UserContext";
 import ClassroomOtherLanguages, {
   otherLanguageOptions,
 } from "./ClassroomOtherLanguages";
@@ -18,6 +19,7 @@ import * as f from "../teacher/styledComponents/TextFilterBar.sc";
 
 export default function ClassroomArticles() {
   const api = useContext(APIContext);
+  const { userDetails } = useContext(UserContext);
   const [articleList, setArticleList] = useState(null);
   const [student, setStudent] = useState(null);
   const [activeClass, setActiveClass] = useState(ALL);
@@ -26,9 +28,23 @@ export default function ClassroomArticles() {
 
   useEffect(() => {
     setTitle("Classroom Articles");
-    api.getStudent(setStudent);
-    api.getCohortArticles(setArticleList); // eslint-disable-next-line
   }, []);
+
+  // The feed is filtered by learned language, so switching language (from the
+  // sidebar, or the "Switch to …" buttons in the empty state) must refetch.
+  // Keyed on the whole userDetails, not learned_language: switchLanguage sets
+  // the new language optimistically before the server has saved it, and only
+  // the later fresh userDetails is safe to fetch against. The ignore flag
+  // drops a response from an earlier run that lands after a later one.
+  useEffect(() => {
+    let ignore = false;
+    setArticleList(null);
+    api.getStudent((fetched) => !ignore && setStudent(fetched));
+    api.getCohortArticles((list) => !ignore && setArticleList(list));
+    return () => {
+      ignore = true;
+    }; // eslint-disable-next-line
+  }, [userDetails]);
 
   if (articleList == null) {
     // Shorter delay than the 1s default: swipe navigation slides the old tab
