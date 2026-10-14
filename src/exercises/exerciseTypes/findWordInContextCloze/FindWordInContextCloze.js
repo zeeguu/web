@@ -1,5 +1,6 @@
 import { useState, useEffect, useContext, useRef } from "react";
 import styled from "styled-components";
+import CircularProgress from "@mui/material/CircularProgress";
 import * as s from "../Exercise.sc.js";
 
 import strings from "../../../i18n/definitions.js";
@@ -175,7 +176,14 @@ export default function FindWordInContextCloze({
 }
 
 function AnswerNote({ isChecking, note, expected }) {
-  if (isChecking) return <AnswerLine>{strings.checkingAnswer}</AnswerLine>;
+  if (isChecking) {
+    return (
+      <AnswerLine>
+        <CircularProgress size={14} sx={{ color: "var(--text-secondary)", verticalAlign: "-2px", marginRight: "0.5em" }} />
+        {strings.checkingAnswer}
+      </AnswerLine>
+    );
+  }
   if (!note) return null;
 
   const lead = note.kind === "alternative" ? strings.alsoRightPractising : strings.understoodButPractising;

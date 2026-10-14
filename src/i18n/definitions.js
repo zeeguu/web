@@ -572,7 +572,7 @@ let strings = new LocalizedStrings(
       audioExerciseHeadline: "Write the word you hear",
       multipleChoiceAudioHeadline: "Select the word which fits the context",
       findWordInContextClozeHeadline: "Translate the word to fit the context",
-      checkingAnswer: "Checking…",
+      checkingAnswer: "Not what I expected. Let me think…",
       alsoRightPractising: "Also right! The word you're practising here is",
       understoodButPractising: "Understandable, but here it's",
       translateL2toL1Headline: "Translate the highlighted word",
