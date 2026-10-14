@@ -1,6 +1,5 @@
 import * as s from "../Exercise.sc";
 import strings from "../../../i18n/definitions";
-import { useState } from "react";
 
 export default function MultipleChoiceAudioBottomInput({
   notifyCorrectAnswer,
@@ -9,15 +8,9 @@ export default function MultipleChoiceAudioBottomInput({
   targetBookmark,
   bookmarksToStudy,
 }) {
-  const [isIncorrect, setIsIncorrect] = useState(false);
+  const bookmarkSelected = bookmarksToStudy[currentChoice];
 
   function checkResult() {
-    let bookmarkSelected = bookmarksToStudy[currentChoice];
-    if (!bookmarkSelected) {
-      // User clicked Check without selecting any option
-      setIsIncorrect(true);
-      return;
-    }
     if (bookmarkSelected.id === targetBookmark.id) {
       notifyCorrectAnswer(targetBookmark);
     } else {
@@ -25,18 +18,11 @@ export default function MultipleChoiceAudioBottomInput({
     }
   }
 
-  const OrangeButton = isIncorrect ? s.AnimatedOrangeButton : s.OrangeButton;
-
   return (
     <s.BottomRow>
-      <>
-        <OrangeButton
-          onClick={checkResult}
-          onAnimationEnd={() => setIsIncorrect(false)}
-        >
-          {strings.check}
-        </OrangeButton>
-      </>
+      <s.PickFirstCheckButton onClick={checkResult} disabled={!bookmarkSelected}>
+        {strings.check}
+      </s.PickFirstCheckButton>
     </s.BottomRow>
   );
 }

@@ -298,6 +298,20 @@ let RightFeedbackButton = styled(FeedbackButton)`
   }
 `;
 
+// Check button for exercises where an answer must be picked first: an
+// outlined, unfilled look while disabled so it doesn't read as one more
+// answer before one has been picked.
+let PickFirstCheckButton = styled(FeedbackButton)`
+  transition: background-color 0.15s ease-out;
+
+  &:disabled {
+    text-decoration: none;
+    background-color: transparent;
+    color: var(--text-muted);
+    box-shadow: inset 0 0 0 2px ${zeeguuOrange};
+  }
+`;
+
 const shake = keyframes`
 10%, 90% {
     transform: translate3d(-1px, 0, 0);
@@ -633,6 +647,7 @@ export {
   CenteredWordRow,
   LeftFeedbackButton,
   RightFeedbackButton,
+  PickFirstCheckButton,
   EditSpeakButtonHolder,
   OrangeButtonMessage,
   MultipleChoiceContext,
