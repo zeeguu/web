@@ -3,20 +3,39 @@ import {
   classTextSubtitle,
   readerDetails,
   readingTimeSummary,
+  readingTimes,
   thresholdOptions,
   heatColor,
   studentsByToken,
 } from "../../../../src/teacher/myClassesPage/cohortsPage/classTextLines";
 
 describe("classTextSubtitle", () => {
-  it("says how much of the class read it and how many words they needed", () => {
-    expect(classTextSubtitle({ readers: [{}, {}], words: [{}, {}, {}], student_count: 12 })).toBe(
-      "Read by 2 of 12 students · 3 words looked up",
-    );
+  it("says how much of the class read it, for how long, and how many words they needed", () => {
+    const readers = [{ reading_seconds: 120 }, { reading_seconds: 360 }];
+    expect(classTextSubtitle({ readers, words: [{}, {}, {}], student_count: 12 })).toEqual({
+      readers: "Read by 2 of 12 students",
+      time: "median 4 min (2 min – 6 min)",
+      words: "3 words looked up",
+    });
   });
 
-  it("leaves out the words when nobody looked any up", () => {
-    expect(classTextSubtitle({ readers: [], words: [], student_count: 1 })).toBe("Read by 0 of 1 student");
+  it("leaves out the time and the words when there are none", () => {
+    expect(classTextSubtitle({ readers: [], words: [], student_count: 1 })).toEqual({
+      readers: "Read by 0 of 1 student",
+      time: null,
+      words: null,
+    });
+  });
+});
+
+describe("readingTimes", () => {
+  it("lists the students who spent any time, longest first", () => {
+    const readers = [
+      { id: 1, name: "Ana", reading_seconds: 60 },
+      { id: 2, name: "Max", reading_seconds: 0 },
+      { id: 3, name: "Sofie", reading_seconds: 300 },
+    ];
+    expect(readingTimes(readers).map((r) => r.name)).toEqual(["Sofie", "Ana"]);
   });
 });
 

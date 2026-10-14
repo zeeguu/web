@@ -137,3 +137,43 @@ export const Legend = styled.div`
     border-radius: 3px;
   }
 `;
+
+// The median in the subtitle: dotted, to say it opens something.
+export const TimeSummary = styled.span`
+  text-decoration: underline dotted;
+  text-underline-offset: 3px;
+  cursor: help;
+`;
+
+// Inside the median's tooltip (MUI's dark bubble in either theme): name, bar,
+// time per student. The bar takes the tooltip's own text colour.
+export const ReadingTimesChart = styled.ul`
+  list-style: none;
+  margin: 0.2rem 0;
+  padding: 0;
+  font-size: 0.75rem;
+  width: 15rem;
+
+  li {
+    display: grid;
+    grid-template-columns: 5.5rem 1fr 3.2rem;
+    align-items: center;
+    gap: 0.4rem;
+    line-height: 1.5;
+  }
+  .name {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .bar {
+    height: 0.5rem;
+    border-radius: 2px;
+    background: currentColor;
+    opacity: 0.7;
+  }
+  .time {
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+  }
+`;

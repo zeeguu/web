@@ -1,4 +1,5 @@
 import { useContext, useEffect, useState } from "react";
+import { Tooltip } from "@mui/material";
 import { Link, useParams } from "react-router-dom";
 import { APIContext } from "../../../contexts/APIContext";
 import LoadingAnimation from "../../../components/LoadingAnimation";
@@ -8,7 +9,8 @@ import { TeacherPageHeading, TeacherPageSubtitle } from "../../styledComponents/
 import { DetailHeader } from "../../styledComponents/DetailHeader.sc";
 import { setTitle } from "../../../assorted/setTitle";
 import * as c from "../../../components/ColumnWidth.sc";
-import { classTextSubtitle, readerDetails, studentsLabel } from "./classTextLines";
+import { classTextSubtitle, readerDetails, readingTimes, studentsLabel } from "./classTextLines";
+import { durationLabel } from "../../../words/sessionHistory/sessionCard";
 import { SectionLabel } from "./ClassTexts.sc";
 import ClassTextHeatmap from "./ClassTextHeatmap";
 import * as s from "./ClassText.sc";
@@ -48,7 +50,7 @@ export default function ClassText() {
           <BackArrow redirectLink={`/teacher/classes/viewClass/${cohortID}/texts`} label="Texts" />
         </div>
         <TeacherPageHeading>{info.article.title}</TeacherPageHeading>
-        <TeacherPageSubtitle>{classTextSubtitle(info)}</TeacherPageSubtitle>
+        <Subtitle info={info} />
       </DetailHeader>
 
       {nobodyRead && <EmptyState message="No student in this class has opened this text yet." fillHeight={false} />}
@@ -102,5 +104,42 @@ function WordRow({ word }) {
         </div>
       </details>
     </li>
+  );
+}
+
+// "Read by 7 of 12 students · median 6 min (…) · 23 words looked up", the
+// median opening a chart of every student's time on hover (tap, on a phone).
+function Subtitle({ info }) {
+  const { readers, time, words } = classTextSubtitle(info);
+  return (
+    <TeacherPageSubtitle>
+      {readers}
+      {time && (
+        <>
+          {" · "}
+          <Tooltip arrow enterTouchDelay={0} leaveTouchDelay={6000} title={<ReadingTimesChart readers={info.readers} />}>
+            <s.TimeSummary>{time}</s.TimeSummary>
+          </Tooltip>
+        </>
+      )}
+      {words && ` · ${words}`}
+    </TeacherPageSubtitle>
+  );
+}
+
+// One bar per student, longest first, scaled to the longest.
+function ReadingTimesChart({ readers }) {
+  const times = readingTimes(readers);
+  const longest = times[0]?.ms || 1;
+  return (
+    <s.ReadingTimesChart>
+      {times.map((each) => (
+        <li key={each.id}>
+          <span className="name">{each.name}</span>
+          <span className="bar" style={{ width: `${(each.ms / longest) * 100}%` }} />
+          <span className="time">{durationLabel(each.ms)}</span>
+        </li>
+      ))}
+    </s.ReadingTimesChart>
   );
 }

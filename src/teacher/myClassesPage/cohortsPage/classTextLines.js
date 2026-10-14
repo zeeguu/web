@@ -3,14 +3,23 @@ import { tokensCoveredByBookmarks } from "../../../reader/bookmarkRestoration";
 
 export const studentsLabel = (n) => `${n} ${n === 1 ? "student" : "students"}`;
 
-// Under the text's title:
-//   "Read by 7 of 12 students · median 6 min (2 min – 15 min) · 23 words looked up"
+// The three pieces of the line under the text's title, so the page can make
+// the time hoverable: { readers, time, words }, time and words null when empty.
+//   "Read by 7 of 12 students" · "median 6 min (2 min – 15 min)" · "23 words looked up"
 export function classTextSubtitle({ readers, words, student_count }) {
-  const parts = [`Read by ${readers.length} of ${studentsLabel(student_count)}`];
-  const time = readingTimeSummary(readers);
-  if (time) parts.push(time);
-  if (words.length > 0) parts.push(`${words.length} ${words.length === 1 ? "word" : "words"} looked up`);
-  return parts.join(" · ");
+  return {
+    readers: `Read by ${readers.length} of ${studentsLabel(student_count)}`,
+    time: readingTimeSummary(readers),
+    words: words.length > 0 ? `${words.length} ${words.length === 1 ? "word" : "words"} looked up` : null,
+  };
+}
+
+// For the reading-time chart: the students who spent any time, longest first.
+export function readingTimes(readers) {
+  return readers
+    .filter((r) => r.reading_seconds > 0)
+    .map((r) => ({ id: r.id, name: r.name, ms: r.reading_seconds * 1000 }))
+    .sort((a, b) => b.ms - a.ms);
 }
 
 // How long the class spent on the text, over the students who spent any:
