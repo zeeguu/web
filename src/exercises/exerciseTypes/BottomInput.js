@@ -2,7 +2,7 @@ import { useEffect, useState, useContext, useRef } from "react";
 import levenshtein from "fast-levenshtein";
 import strings from "../../i18n/definitions";
 import * as s from "./Exercise.sc";
-import { normalizeAnswer } from "../inputNormalization";
+import { normalizeAnswer, acceptedAnswers } from "../inputNormalization";
 import Pluralize from "../../utils/text/pluralize";
 import { LANGUAGE_CODE_TO_NAME } from "../../utils/misc/languageCodeToName";
 import { needsVirtualKeyboard } from "../../utils/misc/languageScripts";
@@ -50,6 +50,8 @@ export default function BottomInput({
   const normalizedLearningWord = normalizeAnswer(exerciseBookmark.from);
 
   const solutionText = isL1Answer ? exerciseBookmark.to : exerciseBookmark.from;
+  // Forms of one word are listed only in translations ("твій/твоя" for "your").
+  const answers = isL1Answer ? acceptedAnswers(solutionText) : [normalizeAnswer(solutionText)];
 
   const solutionWordCount = getExpressionlength(solutionText);
   const isWrongOrder = isIncorrect && correctWordCountInInput === solutionWordCount;
@@ -125,11 +127,16 @@ export default function BottomInput({
   function checkIfCorrect(input) {
     if (input === "") return false;
 
-    let normalizedInput = normalizeAnswer(input);
-    let normalizedAnswer = normalizeAnswer(solutionText);
-
     // Auto-submit only for perfect matches - no typo tolerance
-    return normalizedInput === normalizedAnswer;
+    return answers.includes(normalizeAnswer(input));
+  }
+
+  // The accepted answer nearest to what was typed, so that the feedback
+  // ("change 1 letter") is about the form the learner was going for.
+  function closestAnswer(normalizedInput) {
+    const distances = answers.map((answer) => levenshtein.get(normalizedInput, answer));
+    const best = distances.indexOf(Math.min(...distances));
+    return [answers[best], distances[best]];
   }
 
   function checkResult() {
@@ -139,8 +146,7 @@ export default function BottomInput({
     }
 
     let normalizedInput = normalizeAnswer(currentInput);
-    let normalizedAnswer = normalizeAnswer(solutionText);
-    let levDistance = levenshtein.get(normalizedInput, normalizedAnswer);
+    let [normalizedAnswer, levDistance] = closestAnswer(normalizedInput);
 
     let userHasTypoInNativeLanguage = isL1Answer && levDistance === 1;
     if (normalizedInput === normalizedAnswer || userHasTypoInNativeLanguage) {
