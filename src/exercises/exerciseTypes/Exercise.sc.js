@@ -583,16 +583,6 @@ let CenteredRevealedSlot = styled.div`
   min-height: ${(props) => props.$minHeight || "auto"};
 `;
 
-// One line under a cloze about the learner's answer when it was another word
-// than the expected one: "Checking…", "Also right! ..." or why it isn't quite.
-let AnswerNote = styled.p`
-  text-align: center;
-  color: var(--text-secondary);
-  font-size: 0.95em;
-  max-width: 32em;
-  margin: 1em auto 0 auto;
-`;
-
 // Used by click-word exercises (WordInContext, FindWordInContextCloze) to
 // reserve the progress-bar's vertical space pre-reveal so the sentence
 // below doesn't jump when the bar appears.
@@ -665,7 +655,6 @@ export {
   ReportedBadge,
   RevealedProgressBar,
   CenteredRevealedSlot,
-  AnswerNote,
   ProgressBarReserve,
   ProgressBarPlaceholder,
 };

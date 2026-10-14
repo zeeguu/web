@@ -21,8 +21,13 @@ describe("classifyTypedAnswer", () => {
 });
 
 describe("classifyTypedAnswer on short words", () => {
-  it("allows one slip even in a short word, but not two", () => {
+  it("allows one slip in a five-letter word, but not two", () => {
     expect(classifyTypedAnswer("synse", "synes")).toBe(OTHER_WORD); // two edits
     expect(classifyTypedAnswer("synnes", "synes")).toBe(MISSPELLING);
+  });
+
+  it("never calls an answer to a word of four letters or fewer a misspelling", () => {
+    expect(classifyTypedAnswer("tro", "tror")).toBe(OTHER_WORD);
+    expect(classifyTypedAnswer("hun", "han")).toBe(OTHER_WORD);
   });
 });

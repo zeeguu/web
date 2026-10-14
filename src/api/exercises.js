@@ -136,9 +136,11 @@ Zeeguu_API.prototype.fetchAndSortContexts = async function (exerciseBookmark) {
 // Resolves to {relation, explanation}; relation is SYNONYM,
 // NEAR_SYNONYM_NOT_IDIOMATIC, NOT_SYNONYM, or UNKNOWN when the API could not
 // tell in time (the server gives up after 6s; we stop waiting a bit later).
-Zeeguu_API.prototype.judgeClozeAlternative = async function (bookmarkId, typed, timeoutMs = 8000) {
+// `signal` lets the caller abandon the request (the exercise ended meanwhile).
+Zeeguu_API.prototype.judgeClozeAlternative = async function (bookmarkId, typed, signal, timeoutMs = 8000) {
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), timeoutMs);
+  signal?.addEventListener("abort", () => controller.abort());
   try {
     const response = await fetch(this._appendSessionToUrl("judge_cloze_alternative"), {
       method: "POST",

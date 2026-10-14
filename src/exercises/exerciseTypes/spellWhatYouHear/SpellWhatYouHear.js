@@ -21,7 +21,6 @@ const EXERCISE_TYPE = EXERCISE_TYPES.spellWhatYouHear;
 
 export default function SpellWhatYouHear({
   bookmarksToStudy,
-  notifyOfUserAttempt,
   notifyCorrectAnswer,
   notifyIncorrectAnswer,
   notifyExerciseCompleted,
@@ -97,7 +96,6 @@ export default function SpellWhatYouHear({
     if (userInput === expectedAnswer) {
       notifyCorrectAnswer(exerciseBookmark);
     } else {
-      notifyOfUserAttempt(value, exerciseBookmark);
       correctThenReveal(value, () => notifyIncorrectAnswer(exerciseBookmark));
     }
   }
