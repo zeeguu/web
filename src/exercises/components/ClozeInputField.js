@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect, useContext } from "react";
 import * as s from "../../reader/TranslatableText.sc";
 import { SpeechContext } from "../../contexts/SpeechContext.js";
+import ClozeCorrection from "./ClozeCorrection.js";
 
 /**
  * Self-contained cloze input field component.
@@ -27,6 +28,7 @@ export default function ClozeInputField({
   onInputChange,
   onInputSubmit,
   onInputRef = null,
+  correction = null,
 }) {
   const [hintVisible, setHintVisible] = useState(true);
   const inputRef = useRef(null);
@@ -95,7 +97,9 @@ export default function ClozeInputField({
   };
 
   let clozeBody;
-  if (canTypeInline) {
+  if (correction) {
+    clozeBody = <ClozeCorrection typed={correction} expected={clozePhrase} />;
+  } else if (canTypeInline) {
     clozeBody = (
       <s.ClozeInputWrapper>
         {showHint && hintVisible && inputValue === '' && !isExerciseOver && (

@@ -9,6 +9,7 @@ import { removePunctuation } from "../../../utils/text/preprocessing";
 import { APIContext } from "../../../contexts/APIContext.js";
 import ClozeContextWithExchange from "../../components/ClozeContextWithExchange.js";
 import ExerciseInstructionHeader from "../../components/ExerciseInstructionHeader.js";
+import { useCorrectionBeforeReveal } from "../../utils/useCorrectionBeforeReveal.js";
 import { useExerciseLifecycle } from "../../utils/useExerciseLifecycle.js";
 import { useInteractiveTextForBookmark } from "../../utils/useInteractiveTextForBookmark.js";
 
@@ -37,6 +38,7 @@ export default function FindWordInContextCloze({
   const exerciseBookmark = bookmarksToStudy[0];
   const [inputValue, setInputValue] = useState("");
   const [isCorrectAnswer, setIsCorrectAnswer] = useState(false);
+  const [correction, correctThenReveal] = useCorrectionBeforeReveal([reload, exerciseBookmark, isExerciseOver]);
 
   useExerciseLifecycle({ speech, resetSubSessionTimer, setExerciseType, exerciseType: EXERCISE_TYPE });
 
@@ -82,7 +84,7 @@ export default function FindWordInContextCloze({
       notifyCorrectAnswer(exerciseBookmark);
     } else {
       notifyOfUserAttempt(value, exerciseBookmark);
-      notifyIncorrectAnswer(exerciseBookmark);
+      correctThenReveal(value, () => notifyIncorrectAnswer(exerciseBookmark));
     }
   }
 
@@ -108,6 +110,7 @@ export default function FindWordInContextCloze({
         inputValue={inputValue}
         placeholder=""
         isCorrectAnswer={isCorrectAnswer}
+        correction={correction}
         shouldFocus={true}
         canTypeInline={true}
       />
