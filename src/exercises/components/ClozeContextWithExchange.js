@@ -49,6 +49,8 @@ export default function ClozeContextWithExchange({
   canTypeInline = false,
   showCloze = true,
   aboveClozeElement = null,
+  // Wrong typed answer whose correction is playing in the cloze slot.
+  correction = null,
 }) {
   const { userDetails } = useContext(UserContext);
   const [isKeyboardCollapsed, setIsKeyboardCollapsed] = useState(getInitialKeyboardCollapsed);
@@ -58,7 +60,7 @@ export default function ClozeContextWithExchange({
 
   const answerLanguageCode = exerciseBookmark?.from_lang;
   const showVirtualKeyboard =
-    answerLanguageCode && needsVirtualKeyboard(answerLanguageCode, userDetails?.id) && canTypeInline && !isExerciseOver;
+    answerLanguageCode && needsVirtualKeyboard(answerLanguageCode, userDetails?.id) && canTypeInline && !isExerciseOver && !correction;
   const suppressOSKeyboard = showVirtualKeyboard && !isKeyboardCollapsed;
 
   const clozeWordIds = useMemo(() => {
@@ -105,6 +107,7 @@ export default function ClozeContextWithExchange({
                 onInputChange={onInputChange}
                 onInputSubmit={onInputSubmit}
                 onInputRef={(ref) => { clozeInputRef.current = ref; }}
+                correction={correction}
               />
             )}
           />
@@ -124,7 +127,7 @@ export default function ClozeContextWithExchange({
         </div>
       )}
 
-      {!showVirtualKeyboard && canTypeInline && !isExerciseOver &&
+      {!showVirtualKeyboard && canTypeInline && !isExerciseOver && !correction &&
        answerLanguageCode && hasSpecialCharacters(answerLanguageCode) && (
         <div style={{ marginTop: "1em" }}>
           <SpecialCharacterBar

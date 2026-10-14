@@ -6,6 +6,7 @@ import { EXERCISE_TYPES } from "../../ExerciseTypeConstants.js";
 import SessionStorage from "../../../assorted/SessionStorage.js";
 import ClozeContextWithExchange from "../../components/ClozeContextWithExchange.js";
 import ExerciseInstructionHeader from "../../components/ExerciseInstructionHeader.js";
+import { useCorrectionBeforeReveal } from "../../utils/useCorrectionBeforeReveal.js";
 import { useExerciseLifecycle } from "../../utils/useExerciseLifecycle.js";
 import { useInteractiveTextForBookmark } from "../../utils/useInteractiveTextForBookmark.js";
 import LoadingAnimation from "../../../components/LoadingAnimation.js";
@@ -40,6 +41,7 @@ export default function SpellWhatYouHear({
   const [isButtonSpeaking, setIsButtonSpeaking] = useState(false);
   const [inputValue, setInputValue] = useState("");
   const [isCorrectAnswer, setIsCorrectAnswer] = useState(false);
+  const [correction, correctThenReveal] = useCorrectionBeforeReveal([reload, exerciseBookmark, isExerciseOver]);
   const [shouldFocusInput, setShouldFocusInput] = useState(false);
 
   async function handleSpeak() {
@@ -96,7 +98,7 @@ export default function SpellWhatYouHear({
       notifyCorrectAnswer(exerciseBookmark);
     } else {
       notifyOfUserAttempt(value, exerciseBookmark);
-      notifyIncorrectAnswer(exerciseBookmark);
+      correctThenReveal(value, () => notifyIncorrectAnswer(exerciseBookmark));
     }
   }
 
@@ -123,6 +125,7 @@ export default function SpellWhatYouHear({
         inputValue={inputValue}
         placeholder=""
         isCorrectAnswer={isCorrectAnswer}
+        correction={correction}
         shouldFocus={shouldFocusInput}
         canTypeInline={true}
       />
