@@ -9,3 +9,8 @@ export function correctnessBasedOnTries(message) {
 
   return [userIsCorrect, userIsWrong];
 }
+
+// First try, no hint, no translation: the only answer fast progression counts.
+export function isCleanAnswer(message) {
+  return message === "C";
+}

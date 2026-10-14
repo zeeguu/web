@@ -12,6 +12,7 @@ import { WEB_URL } from "../../config";
 import CelebrationModal from "../CelebrationModal";
 import { getStaticPath } from "../../utils/misc/staticPath.js";
 import { correctnessBasedOnTries } from "../CorrectnessBasedOnTries.js";
+import { isWordLearned } from "../progressBars/levelIndicator/predictAfterAnswer.js";
 import LocalStorage from "../../assorted/LocalStorage.js";
 import useBookmarkAutoPronounce from "../../hooks/useBookmarkAutoPronounce.js";
 import Pluralize from "../../utils/text/pluralize.js";
@@ -77,7 +78,13 @@ export default function NextNavigation({
   // TODO: Let's make sure that these two are named as clearly as possible;
   // if one is about actual answer correctness and the other is about correct answer being on screen, this should be clearer
   const isUserAndAnswerCorrect = userIsCorrect && isCorrect;
-  const bookmarkLearned = isUserAndAnswerCorrect && exerciseBookmark.is_about_to_be_learned;
+  const bookmarkLearned =
+    isCorrect &&
+    isWordLearned({
+      message: messageForAPI,
+      is_about_to_be_learned: exerciseBookmark.is_about_to_be_learned,
+      is_last_in_cycle: exerciseBookmark.is_last_in_cycle,
+    });
 
   function handleSpeak() {
     setIsAutoPronouncing(true);

@@ -4,9 +4,10 @@ import LevelIndicatorBar from "./LevelIndicatorBar.js";
 import LevelIndicatorCircles from "./LevelIndicatorCircles.js";
 import isBookmarkExpression from "../../../utils/misc/isBookmarkExpression";
 import strings from "../../../i18n/definitions";
+import { predictAfterAnswer } from "./predictAfterAnswer";
 
+export { COOLING_INTERVALS_PER_LEVEL } from "./predictAfterAnswer";
 export const LEVELS = 4;
-export const COOLING_INTERVALS_PER_LEVEL = 3; // cooling intervals 0, 1, and 2
 export const LEVELS_IN_PERCENT = 100 / LEVELS;
 const TOTAL_CIRCLES = LEVELS + 1;
 
@@ -65,7 +66,7 @@ const GrayedOutIndicator = (
 
 export default function LevelIndicator({
   bookmark,
-  userIsCorrect,
+  message,
   userIsWrong,
   isGreyedOutBar,
 }) {
@@ -78,23 +79,19 @@ export default function LevelIndicator({
   const isNewBookmark =
     bookmark.level === 0 && bookmark.cooling_interval === null;
 
-  let { cooling_interval, level, is_last_in_cycle } =
-    handleBookmarkThatNeedsToBeMigrated(bookmark);
+  const before = handleBookmarkThatNeedsToBeMigrated(bookmark);
 
-  const shouldBlink = cooling_interval === 0 && userIsWrong;
+  const shouldBlink = before.cooling_interval === 0 && userIsWrong;
 
-  // update the level and cooling interval based on the user correctness
-  // these variables are defined only after the user has attempted a solution
-  if (userIsCorrect) {
-    cooling_interval = cooling_interval + 1;
-    if (cooling_interval === COOLING_INTERVALS_PER_LEVEL) {
-      level += 1;
-      cooling_interval = 0;
-    }
-  }
-  if (userIsWrong && cooling_interval > 0) {
-    cooling_interval = cooling_interval - 1;
-  }
+  // the level and step once the api has scheduled this answer (no change
+  // before the learner has answered)
+  const { cooling_interval, level } = predictAfterAnswer({
+    level: before.level,
+    cooling_interval: before.cooling_interval,
+    message,
+    fastTrack: bookmark.fast_track === true,
+  });
+  const levelCompleted = level > before.level;
 
   // Dispatch event when user first makes any progress on a word
   // This shows the Learning Levels onboarding on first exercise completion
@@ -114,7 +111,7 @@ export default function LevelIndicator({
         />
         <LevelIndicatorCircles
           totalLearningStages={TOTAL_CIRCLES}
-          levelCompleted={is_last_in_cycle && userIsCorrect}
+          levelCompleted={levelCompleted}
           levelIsBlinking={shouldBlink}
           showNewNotification={isNewBookmark}
           levelInProgress={level}
