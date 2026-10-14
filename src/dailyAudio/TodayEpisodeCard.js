@@ -1,11 +1,10 @@
 import React from "react";
-import SettingsRoundedIcon from "@mui/icons-material/SettingsRounded";
 import LessonPlaybackView from "./LessonPlaybackView";
+import DailyLessonSettingsPill from "./DailyLessonSettingsPill";
 import { LessonTitle, LessonMetadata, CompletionCheck } from "./LessonView.sc";
 import { LessonTypeChip, chipLabel } from "./lessonTypeChip";
 import { lessonDateLabel, completionChecks } from "./audioUtils";
 import {
-  ConfigPill,
   NewPill,
   DateLineWrapper,
   DateText,
@@ -96,10 +95,7 @@ export default function TodayEpisodeCard({ onChangeTopic, ...playbackProps }) {
       {showEngagementHint && (
         <FooterMessage $small>Listen halfway to keep daily lessons coming automatically.</FooterMessage>
       )}
-      <ConfigPill onClick={onChangeTopic} title="Daily lesson settings">
-        <span>Daily lesson settings</span>
-        <SettingsRoundedIcon style={{ fontSize: "0.95rem" }} />
-      </ConfigPill>
+      <DailyLessonSettingsPill onClick={onChangeTopic} />
     </FooterWrapper>
   );
 

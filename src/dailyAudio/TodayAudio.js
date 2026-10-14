@@ -12,6 +12,7 @@ import { useIsOffline } from "../contexts/ConnectivityContext";
 import { AUDIO_STATUS, GENERATION_PROGRESS } from "./AudioLessonConstants";
 import TodayEpisodeCard from "./TodayEpisodeCard";
 import DailyLessonSettingsDialog from "./DailyLessonSettingsDialog";
+import DailyLessonSettingsPill from "./DailyLessonSettingsPill";
 import { SubtleTextButton } from "./LessonView.sc";
 import { BannerButton } from "./SharedLessonView.sc";
 import { wordsAsTile, shortDate } from "./audioUtils";
@@ -649,6 +650,9 @@ export default function TodayAudio() {
   let body;
   let primaryLabel;
   let primaryAction;
+  // Only the "active" state's button generates directly; the others already
+  // open the settings dialog (or turn lessons back on), so they need no pill.
+  let showSettingsPill = false;
 
   if (error) {
     heading = "Let's try a different topic";
@@ -670,6 +674,7 @@ export default function TodayAudio() {
     body = "Make today's lesson now, or it'll be ready on your next day.";
     primaryLabel = "Generate today's lesson";
     primaryAction = () => startGeneration(dailyType, dailySuggestion);
+    showSettingsPill = true;
   } else {
     // not subscribed — first-run setup
     heading = "A new lesson, daily";
@@ -703,6 +708,9 @@ export default function TodayAudio() {
         <BannerButton onClick={primaryAction} style={{ padding: "12px 24px", fontSize: "1rem" }}>
           {primaryLabel}
         </BannerButton>
+        {showSettingsPill && (
+          <DailyLessonSettingsPill onClick={() => setSettingsOpen(true)} style={{ marginTop: "16px" }} />
+        )}
       </div>
       {settingsDialog}
     </>
