@@ -26,6 +26,10 @@ export function findClozeWordIds(interactiveText, bookmark) {
   const targetTokenIndex = bookmark.t_token_i;
   const totalTokens = bookmark.t_total_token || 1;
   const contextOffset = bookmark.context_sent || 0;
+  // Token positions are relative to the context too, which can start
+  // mid-sentence ("...håndkikkert kan du se"); same arithmetic as
+  // findTokenForBookmark in reader/bookmarkRestoration.js.
+  const contextTokenOffset = bookmark.context_token || 0;
 
   // Try position-based lookup first
   if (targetSentenceIndex !== null && targetSentenceIndex !== undefined &&
@@ -38,7 +42,7 @@ export function findClozeWordIds(interactiveText, bookmark) {
     while (word) {
       if (word.token) {
         const adjustedSentIndex = word.token.sent_i - contextOffset;
-        const tokenIndex = word.token.token_i;
+        const tokenIndex = word.token.token_i - contextTokenOffset;
         if (adjustedSentIndex === targetSentenceIndex &&
             tokenIndex >= targetTokenIndex &&
             tokenIndex < targetTokenIndex + totalTokens) {

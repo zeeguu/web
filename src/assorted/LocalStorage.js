@@ -38,6 +38,7 @@ const LocalStorage = {
     SelectedFeedTopic: "selected_feed_topic",
     DailyFeedbackLastShown: "daily_feedback_last_shown",
     InviteCode: "invite_code",
+    ContextSwipeHintCount: "context_swipe_hint_count",
     // Keep in sync with index.html inline theme script
     ThemePreference: "zeeguu-theme-preference",
     ReportedTimezone: "reported_timezone",
@@ -447,6 +448,14 @@ const LocalStorage = {
 
   setDailyFeedbackShown: function () {
     localStorage[this.Keys.DailyFeedbackLastShown] = new Date().toDateString();
+  },
+
+  getContextSwipeHintCount: function () {
+    return parseInt(localStorage[this.Keys.ContextSwipeHintCount] || "0", 10);
+  },
+
+  incrementContextSwipeHintCount: function () {
+    localStorage[this.Keys.ContextSwipeHintCount] = this.getContextSwipeHintCount() + 1;
   },
 };
 
