@@ -6,7 +6,9 @@ import {
   readingTimes,
   thresholdOptions,
   heatColor,
-  studentsByToken,
+  lookupsByToken,
+  heatRuns,
+  runText,
 } from "../../../../src/teacher/myClassesPage/cohortsPage/classTextLines";
 
 describe("classTextSubtitle", () => {
@@ -74,13 +76,37 @@ describe("heatmap helpers", () => {
         { student_id: 9, origin: "gone", translation: "weg", context_sent: 0, context_token: 0, t_sentence_i: 0, t_token_i: 9, t_total_token: 1 },
       ],
     };
-    const byToken = studentsByToken(part);
-    expect(byToken.get("0:2")).toEqual([
+    const byToken = lookupsByToken(part);
+    expect(byToken.get("0:2").students).toEqual([
       { id: 7, translation: "behind" },
       { id: 9, translation: "behind the president" },
     ]);
-    expect(byToken.get("0:3")).toEqual([{ id: 9, translation: "behind the president" }]);
+    expect(byToken.get("0:3").students).toEqual([{ id: 9, translation: "behind the president" }]);
     expect(byToken.size).toBe(2);
+  });
+
+  it("draws a phrase as one box, and words covered by different lookups apart", () => {
+    const tok = (text, token_i, sent_i = 0) => ({ text, token_i, sent_i, has_space: true });
+    const tokens = [tok("people", 0), tok("could", 1), tok("chow", 2), tok("down", 3), tok("on", 4)];
+    const byToken = new Map([
+      ["0:1", { students: [{ id: 1 }], covers: [0] }],
+      ["0:2", { students: [{ id: 2 }], covers: [1] }],
+      ["0:3", { students: [{ id: 2 }], covers: [1] }],
+    ]);
+    const runs = heatRuns(tokens, byToken, 1).map((run) => [runText(run.tokens).text, !!run.lookup]);
+    expect(runs).toEqual([
+      ["people", false],
+      ["could", true],
+      ["chow down", true],
+      ["on", false],
+    ]);
+  });
+
+  it("leaves words under the threshold plain, merged with the text around them", () => {
+    const tok = (text, token_i) => ({ text, token_i, sent_i: 0, has_space: true });
+    const byToken = new Map([["0:1", { students: [{ id: 1 }], covers: [0] }]]);
+    const runs = heatRuns([tok("a", 0), tok("b", 1), tok("c", 2)], byToken, 2);
+    expect(runs.map((run) => runText(run.tokens).text)).toEqual(["a b c"]);
   });
 });
 
