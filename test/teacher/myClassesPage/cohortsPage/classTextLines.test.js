@@ -7,6 +7,7 @@ import {
   thresholdOptions,
   heatColor,
   studentsByToken,
+  classReadingSummary,
 } from "../../../../src/teacher/myClassesPage/cohortsPage/classTextLines";
 
 describe("classTextSubtitle", () => {
@@ -95,5 +96,24 @@ describe("readingTimeSummary", () => {
   it("leaves out students who spent no time, and says nothing when nobody did", () => {
     expect(readingTimeSummary(read(0, 5))).toBe("5 min");
     expect(readingTimeSummary(read(0))).toBe(null);
+  });
+});
+
+describe("classReadingSummary", () => {
+  it("says how many read it and how many words they looked up", () => {
+    const summary = classReadingSummary({ readers: 14, words: 37, top_words: ["amply", "chow down"] }, 22);
+    expect(summary.line).toBe("Read by 14 of 22 students · 37 words looked up");
+    expect(summary.share).toBeCloseTo(14 / 22);
+    expect(summary.topWords).toBe("amply, chow down");
+  });
+
+  it("says nobody has read it, and leaves out the lookups, before anyone has", () => {
+    const summary = classReadingSummary({ readers: 0, words: 0, top_words: [] }, 22);
+    expect(summary.line).toBe("Nobody has read it yet");
+    expect(summary.topWords).toBeNull();
+  });
+
+  it("does not divide by an empty class", () => {
+    expect(classReadingSummary({ readers: 0, words: 0, top_words: [] }, 0).share).toBe(0);
   });
 });

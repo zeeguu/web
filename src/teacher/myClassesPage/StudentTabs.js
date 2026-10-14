@@ -26,14 +26,12 @@ export default function StudentTabs({ studentID, cohortID, cohortName, title }) 
   ];
 
   return (
-    <s.DetailHeader $centered>
-      <div className="back">
+    <s.DetailHeader>
+      <div className="top-row">
         <BackArrow redirectLink={`/teacher/classes/viewClass/${cohortID}`} label={cohortName} />
       </div>
-      <div className="title-row">
-        <TeacherPageHeading>{title}</TeacherPageHeading>
-      </div>
-      <TopTabs tabsAndLinks={tabs} isCompact={true} stickyOnScroll={false} />
+      <TeacherPageHeading>{title}</TeacherPageHeading>
+      <TopTabs tabsAndLinks={tabs} isCompact={true} stickyOnScroll={false} underlined={true} />
     </s.DetailHeader>
   );
 }

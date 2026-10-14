@@ -46,7 +46,7 @@ export default function ClassText() {
   return (
     <c.NarrowColumn>
       <DetailHeader>
-        <div className="back">
+        <div className="top-row">
           <BackArrow redirectLink={`/teacher/classes/viewClass/${cohortID}/texts`} label="Texts" />
         </div>
         <TeacherPageHeading>{info.article.title}</TeacherPageHeading>

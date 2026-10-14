@@ -17,6 +17,7 @@ import { APIContext } from "../../contexts/APIContext";
 import CefrAssessmentDisplay from "./CefrAssessmentDisplay";
 import AdjustLevelBar from "./AdjustLevelBar";
 import RewritingIndicator from "./RewritingIndicator";
+import ImportFromLink from "./ImportFromLink";
 import LoadingAnimation from "../../components/LoadingAnimation";
 import { detectLanguageFromText, languageNames } from "../../utils/languageDetection";
 
@@ -43,6 +44,7 @@ export default function EditText() {
   const [showDeleteTextWarning, setShowDeleteTextWarning] = useState(false);
   const [showShareWithColleagueDialog, setShowShareWithColleagueDialog] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [importedImageUrl, setImportedImageUrl] = useState(null); // top_image of an article imported from a link
 
   const [stateChanged, setStateChanged] = useState(false);
   const articleID = useParams().articleID;
@@ -155,6 +157,26 @@ export default function EditText() {
       },
       () => setRemovingCohortID(null),
     );
+  };
+
+  // An article fetched by ImportFromLink: into the editor, unsaved, so the
+  // teacher sees and fixes it before it exists anywhere.
+  const fillFromImportedArticle = (info) => {
+    const content =
+      info.htmlContent ||
+      (info.text || "")
+        .split(/\n\n+/)
+        .filter((para) => para.trim())
+        .map((para) => `<p>${para.trim()}</p>`)
+        .join("");
+    setArticleState({
+      ...articleState,
+      article_title: info.title || "",
+      article_content: content,
+      language_code: info.language_code || articleState.language_code,
+    });
+    setImportedImageUrl(info.top_image || null);
+    setStateChanged(true);
   };
 
   const handleChange = (event) => {
@@ -328,7 +350,7 @@ export default function EditText() {
       },
       articleState.cefr_level || null,
       articleState.assessment_method || null,
-      null, // img_url
+      importedImageUrl, // img_url
       articleState.article_content, // HTML content
     );
   };
@@ -363,8 +385,10 @@ export default function EditText() {
     );
   };
 
+  // An untouched new text goes back to where Add Text was pressed: My Texts,
+  // or the class it was meant for.
   const handleBack = () => {
-    history.push("/teacher/texts");
+    history.push(isNew && returnPath ? returnPath : "/teacher/texts");
   };
 
   const deleteText = () => {
@@ -453,6 +477,10 @@ export default function EditText() {
             />
           </div>
         </div>
+
+        {isNew && !articleState.article_title && !stripHtmlContent(articleState.article_content).trim() && (
+          <ImportFromLink onImported={fillFromImportedArticle} />
+        )}
 
         {/* CEFR Assessment Display - shows ML assessment (and LLM for existing articles) */}
         <CefrAssessmentDisplay

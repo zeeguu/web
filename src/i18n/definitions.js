@@ -107,7 +107,6 @@ let strings = new LocalizedStrings(
       code: "Code",
       interest: "interest",
       feedPreferences: "Feed Preferences",
-      addTexts: "Add Texts",
       delete: "Delete",
       cancel: "Cancel",
       joinClass: "Join Classroom",
@@ -722,11 +721,6 @@ let strings = new LocalizedStrings(
       seeReading: "See Reading",
       seeExercises: "See Exercises",
 
-      //AddTextOptionTypes
-      articleFromZeeguuToClass: "Find an article in Zeeguu",
-      copyPasteArticleToClass: "Copy/paste content or type your own text",
-      urlUploadToClass: "Use a URL-address",
-
       //AddToCohortDialog
       chooseClass: "Choose one or more classes",
       saveChanges: "Save Changes",
@@ -735,13 +729,8 @@ let strings = new LocalizedStrings(
 
       //AddURLDialog
       addTextFromWebpage: "Add text from a webpage",
-      insertUrl: "Insert the url address of the text you wish to add",
       pleaseNote: "Please note: ",
-      textNotExtracted: "Texts cannot be extracted from all webpages.",
-      editTheSavedText: "So you might have to edit or delete the text, we save for you.",
-      nothingInInputField: "You haven't typed in an URL-address in the input field.",
       saveAndEdit: "Save and edit",
-      invalidUrl: "Something went wrong. The URL might be invalid.",
 
       //AllTexts
       addText: "Add Text",
@@ -763,7 +752,7 @@ let strings = new LocalizedStrings(
       starExplanation: "The asterisk next to the word indicates that the student has exercised the word at least once.",
 
       //CohortForm
-      editClass: "Edit Class",
+      editClass: "Class settings",
       onlyClassroomTexts: "Students see only the texts I share",
       onlyClassroomTextsHint:
         "No news feed, search, saved articles or inbox. Students can still leave the class to see the rest of Zeeguu.",
@@ -1097,7 +1086,6 @@ let strings = new LocalizedStrings(
         "Udtale flashcards virker lige nu kun, når dit oversættelsessprog er engelsk eller dansk. Skift oversættelsessprog, før du bruger udtale flashcards.",
       code: "Kode",
       interest: "interesse",
-      addTexts: "Tilføj tekster",
       delete: "Slet",
       cancel: "Annuller",
       joinClass: "Deltag i klasse",
@@ -1521,11 +1509,6 @@ let strings = new LocalizedStrings(
       seeReading: "Se læsning",
       seeExercises: "Se øvelser",
 
-      //AddTextOptionTypes
-      articleFromZeeguuToClass: "Find en artikel på Zeeguu",
-      copyPasteArticleToClass: "Kopier/indsæt tekst, eller skriv din egen",
-      urlUploadToClass: "Brug en URL-addresse",
-
       //AddToCohortDialog
       chooseClass: "Vælg en eller flere klasser",
       saveChanges: "Gem ændringer",
@@ -1534,13 +1517,8 @@ let strings = new LocalizedStrings(
 
       //AddURLDialog
       addTextFromWebpage: "Tilføj tekst fra en hjemmeside",
-      insertUrl: "Indsæt url-adressen på den tekst, du ønsker at tilføje",
       pleaseNote: "Bemærk venligst: ",
-      textNotExtracted: "Det er ikke alle hjemmesider, hvorfra teksten kan udvindes.",
-      editTheSavedText: "Så du bliver muligvis nødt til at redigere eller slette den tekst, vi gemmer til dig.",
-      nothingInInputField: "Du mangler at indsætte en URL-adresse i feltet ovenfor.",
       saveAndEdit: "Gem og rediger",
-      invalidUrl: "Noget gik galt. URL addressen er muligvis ugyldig.",
 
       //AllTexts
       addText: "Tilføj tekst",
@@ -1562,7 +1540,7 @@ let strings = new LocalizedStrings(
       starExplanation: "Stjernen ved siden af ordet indikerer, at eleven har lavet mindst én øvelse med ordet.",
 
       //CohortForm
-      editClass: "Rediger klasse",
+      editClass: "Klasseindstillinger",
       createClass: "Opret en klasse",
       classroomLanguage: "Sprog i klasse",
       errorInviteCode:

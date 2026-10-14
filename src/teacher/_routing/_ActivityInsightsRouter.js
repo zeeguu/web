@@ -50,7 +50,7 @@ export default function ActivityInsightsRouter() {
     return (
       <s.WidestColumn>
         <DetailHeader>
-          <div className="back">
+          <div className="top-row">
             <BackArrow
               redirectLink={`/teacher/classes/viewStudent/${studentID}/class/${cohortID}`}
               label={`${studentName}${strings.s_activity}`}

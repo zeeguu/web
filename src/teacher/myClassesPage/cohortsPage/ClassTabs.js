@@ -4,32 +4,29 @@ import BackArrow from "../../../pages/Settings/SharedComponents/BackArrow";
 import TopTabs from "../../../components/TopTabs";
 import { APIContext } from "../../../contexts/APIContext";
 import { StyledButton } from "../../styledComponents/TeacherButtons.sc";
-import { TeacherPageHeading } from "../../styledComponents/TeacherPageHeading.sc";
+import { TeacherPageHeading, TeacherPageSubtitle } from "../../styledComponents/TeacherPageHeading.sc";
+import { languageName } from "../../../utils/misc/languageCodeToName";
 import strings from "../../../i18n/definitions";
 import CohortForm from "./CohortForm";
 import AddTeacherDialog from "./AddTeacherDialog";
-import HowToAddStudentsInfo from "./HowToAddStudentsInfo";
 import * as s from "../../styledComponents/DetailHeader.sc";
 
 /**
- * The class's own header: name, way back, tabs, and the two things you can do
- * to the class itself.
+ * The class's own header: the way back, the name, what the class is, and its
+ * tabs, the same on Students and Texts.
  *
- * Editing the class and adding people to it used to be buttons on every row of
- * My Classrooms, which turned that page into a wall of blue. They belong to one
- * class, so they live here — and they live in the shared header rather than in
- * either tab, so the header does not change between Students and Texts.
+ * The invite code is in the line under the name. It used to sit behind an
+ * "Add Students" button whose dialog said nothing else; a code the teacher
+ * reads out in class should not take a click to find.
  *
- * Add Students is absent from a class that has none: the Students tab's empty
- * state already gives the invite code and says what to do with it, which is all
- * this button's dialog says.
+ * Editing the class and adding a teacher are rare, so they sit at the top
+ * right, on the breadcrumb's row, out of the way of the title and tabs.
  */
 export default function ClassTabs({ cohortID, cohort, textCount, studentCount, onClassChanged }) {
   const api = useContext(APIContext);
   const history = useHistory();
   const [showCohortForm, setShowCohortForm] = useState(false);
   const [showAddTeacherDialog, setShowAddTeacherDialog] = useState(false);
-  const [showAddStudentsInfo, setShowAddStudentsInfo] = useState(false);
   // CohortForm checks the new invite code against every class the teacher owns.
   const [allCohorts, setAllCohorts] = useState([]);
 
@@ -38,12 +35,20 @@ export default function ClassTabs({ cohortID, cohort, textCount, studentCount, o
   const tabs = [
     // Literal, like the Texts label below: i18n/definitions has no `students`
     // key, and looking one up there rendered this tab with no label at all.
-    { text: "Students", link: base, isActive: (_, loc) => loc.pathname === base },
+    {
+      text: studentCount === undefined ? "Students" : `Students (${studentCount})`,
+      link: base,
+      isActive: (_, loc) => loc.pathname === base,
+    },
     {
       text: textCount === undefined ? "Texts" : `Texts (${textCount})`,
       link: `${base}/texts`,
     },
   ];
+
+  // The Texts tab's payload has the language as a code, the Students tab's
+  // (getCohortsInfo) as a name.
+  const language = cohort?.language ? languageName(cohort.language) : cohort?.language_name;
 
   function openEdit() {
     api.getCohortsInfo(setAllCohorts);
@@ -52,17 +57,9 @@ export default function ClassTabs({ cohortID, cohort, textCount, studentCount, o
 
   return (
     <s.DetailHeader>
-      <div className="back">
+      <div className="top-row">
         <BackArrow redirectLink="/teacher/classes" label={strings.myClasses} />
-      </div>
-      <div className="title-row">
-        <TeacherPageHeading>{cohort?.name}</TeacherPageHeading>
         <div className="actions">
-          {studentCount > 0 && (
-            <StyledButton $secondary onClick={() => setShowAddStudentsInfo(true)}>
-              {strings.addStudents}
-            </StyledButton>
-          )}
           <StyledButton $secondary onClick={() => setShowAddTeacherDialog(true)}>
             {strings.addTeacher}
           </StyledButton>
@@ -71,7 +68,11 @@ export default function ClassTabs({ cohortID, cohort, textCount, studentCount, o
           </StyledButton>
         </div>
       </div>
-      <TopTabs tabsAndLinks={tabs} isCompact={true} stickyOnScroll={false} />
+      <TeacherPageHeading>{cohort?.name}</TeacherPageHeading>
+      <TeacherPageSubtitle>
+        {[language, cohort?.inv_code && `invite code ${cohort.inv_code}`].filter(Boolean).join(" · ")}
+      </TeacherPageSubtitle>
+      <TopTabs tabsAndLinks={tabs} isCompact={true} stickyOnScroll={false} underlined={true} />
 
       {showCohortForm && (
         <CohortForm
@@ -84,9 +85,6 @@ export default function ClassTabs({ cohortID, cohort, textCount, studentCount, o
       )}
       {showAddTeacherDialog && (
         <AddTeacherDialog cohort={cohort} setIsOpen={setShowAddTeacherDialog} setForceUpdate={onClassChanged} />
-      )}
-      {showAddStudentsInfo && (
-        <HowToAddStudentsInfo setShowAddStudentInfo={setShowAddStudentsInfo} inviteCode={cohort?.inv_code} />
       )}
     </s.DetailHeader>
   );

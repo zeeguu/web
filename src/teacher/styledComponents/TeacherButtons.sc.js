@@ -10,18 +10,22 @@ const StyledButton = styled.button`
   user-select: none;
   display: inline-block;
   color: ${darkBlue};
-  background-color: white;
+  /* Buttons, not pills: a small radius, a thin outline in the text's own
+     colour, and the page showing through. The old 17px radius and 3px light
+     blue ring made every action look like a tag. */
+  background-color: transparent;
   margin-right: 0.5em;
-  border-radius: 1.0625em;
-  padding: 0.3125em 1.1875em;
+  border: 1.5px solid transparent;
+  border-radius: 8px;
+  padding: 0.4em 1em;
   font-family: Montserrat;
-  font-weight: 500;
+  font-weight: 600;
   text-align: center;
   cursor: pointer;
 
   :disabled {
     background-color: ${lightGrey};
-    border: 3px solid ${lightGrey};
+    border-color: ${lightGrey};
     color: white;
   }
 
@@ -31,13 +35,13 @@ const StyledButton = styled.button`
     css`
       color: white;
       background-color: ${darkBlue};
-      border: 3px solid ${darkBlue};
+      border-color: ${darkBlue};
     `}
   //Secondary
   ${(props) =>
     props.$secondary &&
     css`
-      border: 3px solid ${lightBlue};
+      border-color: ${darkBlue};
     `}
 
 
@@ -100,7 +104,7 @@ const StyledButton = styled.button`
     ${(props) =>
     props.choiceNotSelected &&
     css`
-      border: 3px solid ${lightBlue};
+      border: 1.5px solid ${lightBlue};
     `}
 
     //ChoiceSelected
@@ -109,7 +113,7 @@ const StyledButton = styled.button`
     css`
       color: white;
       background: ${lightBlue};
-      border: 3px solid ${lightBlue};
+      border: 1.5px solid ${lightBlue};
     `}
 `;
 

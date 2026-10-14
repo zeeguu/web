@@ -2,12 +2,12 @@ import { useContext, useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { APIContext } from "../../../contexts/APIContext";
 import LoadingAnimation from "../../../components/LoadingAnimation";
-import ArticlePreview from "../../../articles/ArticlePreview";
+import ClassTextCard from "./ClassTextCard";
+import AddTextButton from "../../myTextsPage/AddTextButton";
 import { StyledButton } from "../../styledComponents/TeacherButtons.sc";
 import FullWidthErrorMsg from "../../../components/FullWidthErrorMsg.sc";
 import FullWidthInfoMsg from "../../../components/FullWidthInfoMsg.sc";
 import ClassTabs from "./ClassTabs";
-import { TeacherPageSubtitle } from "../../styledComponents/TeacherPageHeading.sc";
 import { languageName } from "../../../utils/misc/languageCodeToName";
 import { setTitle } from "../../../assorted/setTitle";
 import * as c from "../../../components/ColumnWidth.sc";
@@ -20,9 +20,8 @@ function pluralStudents(n) {
 /**
  * What this class's students see, from the class's side.
  *
- * Deliberately renders the student's own ArticlePreview rather than the
- * teacher-side row: the point is to show the real thing, not a teacher's
- * approximation of it.
+ * Each text shows how the class read it rather than a preview of it: the
+ * teacher chose the text and knows what it says.
  *
  * A student whose learned language differs from the class's sees none of these
  * texts, but the empty classroom now tells them so and offers the switch, so
@@ -63,7 +62,7 @@ export default function ClassTexts() {
   const emptyForEveryone = nothingShared && cohort.only_classroom_texts;
 
   return (
-    <c.NarrowColumn>
+    <c.WidestColumn>
       <ClassTabs
         cohortID={cohortID}
         cohort={{ ...cohort, language_id: undefined }}
@@ -71,9 +70,6 @@ export default function ClassTexts() {
         studentCount={student_count}
         onClassChanged={() => api.getCohortTextOverview(cohortID, setOverview)}
       />
-      <TeacherPageSubtitle>
-        {cohort.language ? languageName(cohort.language) : "no language set"} · {pluralStudents(student_count)}
-      </TeacherPageSubtitle>
 
       {emptyForEveryone && (
         <FullWidthErrorMsg>
@@ -104,9 +100,7 @@ export default function ClassTexts() {
       )}
 
       <s.Actions>
-        <Link to="/teacher/texts/AddTextOptions">
-          <StyledButton $primary>Add a text</StyledButton>
-        </Link>
+        <AddTextButton returnPath={`/teacher/classes/viewClass/${cohortID}/texts`} />
         <Link to="/teacher/texts">
           <StyledButton $secondary>Share from My Texts</StyledButton>
         </Link>
@@ -114,26 +108,12 @@ export default function ClassTexts() {
 
       {texts.length > 0 && (
         <>
-          {/* The teacher's own "Student Site" link cannot show them this: they
-              are exempt from classroom_only, so it hands them the full app.
-              Saying which mode the class is in is the honest substitute. */}
-          <s.SectionLabel>
-            {cohort.only_classroom_texts
-              ? "All your students see — there is nothing else in their app"
-              : "As a student in this class sees it"}
-          </s.SectionLabel>
-          <s.StudentView>
-            {texts.map((article) => (
-              <div key={article.id}>
-                <ArticlePreview article={article} previewOnly={true} />
-                <s.ClassTextLink to={`/teacher/classes/viewClass/${cohortID}/texts/${article.id}`}>
-                  Who read it, and the words they looked up →
-                </s.ClassTextLink>
-              </div>
-            ))}
-          </s.StudentView>
+          {cohort.only_classroom_texts && <s.SectionNote>Your students see only these texts.</s.SectionNote>}
+          {texts.map((article) => (
+            <ClassTextCard key={article.id} article={article} cohortID={cohortID} studentCount={student_count} />
+          ))}
         </>
       )}
-    </c.NarrowColumn>
+    </c.WidestColumn>
   );
 }

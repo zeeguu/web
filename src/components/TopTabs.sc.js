@@ -138,6 +138,26 @@ const TopTabs = styled.div`
     color: ${zeeguuOrange};
   }
 
+  /* Declared last so it wins over the mobile rules above. The line sits on
+     whatever border the page header draws under the row. */
+  .all__tabs--underlined {
+    gap: 1.75em;
+  }
+
+  .all__tabs--underlined .headmenuTab {
+    line-height: 1.4em;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid transparent;
+    color: var(--text-secondary);
+    font-weight: 500;
+  }
+
+  .all__tabs--underlined .headmenuTab.active {
+    color: var(--text-primary);
+    font-weight: 600;
+    border-bottom-color: currentColor;
+  }
+
   .tab-separator {
     color: #ccc;
     font-size: 1.2em;
