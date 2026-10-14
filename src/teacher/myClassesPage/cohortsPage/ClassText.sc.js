@@ -110,15 +110,18 @@ export const HeatWord = styled.button`
   cursor: pointer;
 `;
 
-export const PickedWord = styled.div`
-  position: sticky;
-  top: 0;
-  z-index: 1;
-  padding: 0.5rem 0.75rem;
-  margin-bottom: 0.75rem;
-  border-radius: 6px;
-  background: var(--infobox-bg);
-  font-size: 0.85rem;
+// Inside the word's tooltip, which is MUI's dark bubble in either theme.
+export const WhoLookedUp = styled.div`
+  font-size: 0.8rem;
+  line-height: 1.5;
+
+  .count {
+    font-weight: 600;
+    margin-bottom: 0.15rem;
+  }
+  .translation {
+    opacity: 0.75;
+  }
 `;
 
 export const Legend = styled.div`

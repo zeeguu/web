@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { Tooltip } from "@mui/material";
 import * as h from "../../styledComponents/TextFilterBar.sc";
 import { heatColor, lookupsByToken, studentsLabel, thresholdOptions } from "./classTextLines";
 import * as s from "./ClassText.sc";
@@ -10,12 +10,12 @@ const BLOCK_TAGS = ["p", "h1", "h2", "h3", "h4", "h5", "h6", "li", "blockquote"]
 /**
  * The text, each word coloured by how many of the class looked it up: light
  * green for one student, red for the most. A filter hides the colour below
- * "looked up by at least N"; tapping a coloured word names the students.
+ * "looked up by at least N". Hovering a coloured word (tapping, on a phone)
+ * lists who looked it up and the translation each of them got.
  *
  * `threshold` is owned by the page, which filters the word list by it too.
  */
 export default function ClassTextHeatmap({ info, threshold, setThreshold }) {
-  const [picked, setPicked] = useState(null);
   const names = Object.fromEntries(info.readers.map((r) => [r.id, r.name]));
   const parts = [info.tokenized_title_new, ...info.tokenized_fragments].filter((part) => part?.tokens);
   const maxStudents = Math.max(1, ...parts.flatMap((part) => (part.lookups || []).map((l) => l.students.length)));
@@ -36,13 +36,6 @@ export default function ClassTextHeatmap({ info, threshold, setThreshold }) {
         </s.Legend>
       </h.FilterBar>
 
-      {picked && (
-        <s.PickedWord>
-          <strong>{picked.word}</strong> — {studentsLabel(picked.students.length)}:{" "}
-          {picked.students.map((id) => names[id] || "a student").join(", ")}
-        </s.PickedWord>
-      )}
-
       <s.HeatText>
         {parts.map((part, i) => (
           <HeatPart
@@ -51,7 +44,7 @@ export default function ClassTextHeatmap({ info, threshold, setThreshold }) {
             isTitle={part === info.tokenized_title_new}
             threshold={threshold}
             maxStudents={maxStudents}
-            onPick={setPicked}
+            names={names}
           />
         ))}
       </s.HeatText>
@@ -59,7 +52,7 @@ export default function ClassTextHeatmap({ info, threshold, setThreshold }) {
   );
 }
 
-function HeatPart({ part, isTitle, threshold, maxStudents, onPick }) {
+function HeatPart({ part, isTitle, threshold, maxStudents, names }) {
   const byToken = lookupsByToken(part.lookups);
   const Tag = isTitle ? "h2" : BLOCK_TAGS.includes(part.formatting) ? part.formatting : "p";
 
@@ -71,20 +64,31 @@ function HeatPart({ part, isTitle, threshold, maxStudents, onPick }) {
         if (!students || students.length < threshold) return token.text + space;
         return (
           <span key={`${token.sent_i}:${token.token_i}`}>
-            <s.HeatWord
-              type="button"
-              style={{ background: heatColor(students.length, maxStudents) }}
-              title={studentsLabel(students.length)}
-              onClick={() => onPick({ word: token.text, students })}
-            >
-              {token.text}
-            </s.HeatWord>
+            <Tooltip arrow enterTouchDelay={0} leaveTouchDelay={4000} title={<WhoLookedUp students={students} names={names} />}>
+              <s.HeatWord type="button" style={{ background: heatColor(students.length, maxStudents) }}>
+                {token.text}
+              </s.HeatWord>
+            </Tooltip>
             {space}
           </span>
         );
       })}
     </Tag>
   ));
+}
+
+// The tooltip: "3 students", then each with the translation they got.
+function WhoLookedUp({ students, names }) {
+  return (
+    <s.WhoLookedUp>
+      <div className="count">{studentsLabel(students.length)}</div>
+      {students.map((student) => (
+        <div key={student.id}>
+          {names[student.id] || "a student"} <span className="translation">→ {student.translation}</span>
+        </div>
+      ))}
+    </s.WhoLookedUp>
+  );
 }
 
 function scaleGradient(maxStudents) {
