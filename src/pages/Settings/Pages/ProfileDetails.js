@@ -12,8 +12,6 @@ import Button from "../../_pages_shared/Button.sc";
 import ButtonContainer from "../../_pages_shared/ButtonContainer.sc";
 import InputField from "../../../components/InputField";
 import CardPage from "../../_pages_shared/CardPage";
-import Header from "../../_pages_shared/Header";
-import PageTitle from "../../_pages_shared/PageTitle.sc";
 import Main from "../../_pages_shared/Main.sc";
 import SettingsPageHeader from "../SharedComponents/SettingsPageHeader";
 import FullWidthErrorMsg from "../../../components/FullWidthErrorMsg.sc";
@@ -23,21 +21,7 @@ import { EmailValidator, NonEmptyOrWhitespaceOnlyValidator } from "../../../util
 import validateRules from "../../../assorted/validateRules";
 import { useLocation } from "react-router-dom/cjs/react-router-dom";
 import FullWidthConfirmMsg from "../../../components/FullWidthConfirmMsg.sc";
-import Modal from "../../../components/modal_shared/Modal";
-import {
-  AVATAR_BACKGROUND_COLORS,
-  AVATAR_CHARACTER_COLORS,
-  AVATAR_CHARACTER_IDS,
-  AVATAR_IMAGE_MAP,
-  validatedAvatarBackgroundColor,
-  validatedAvatarCharacterColor,
-  validatedAvatarCharacterId,
-} from "../../../profile/avatarOptions";
-import { AvatarBackground, AvatarImage } from "../../../profile/UserProfile.sc";
 import Feature from "../../../features/Feature";
-import * as s from "./ProfileDetails.sc";
-import EditIcon from "@mui/icons-material/Edit";
-import CheckIcon from "@mui/icons-material/Check";
 
 export default function ProfileDetails() {
   const api = useContext(APIContext);
@@ -50,10 +34,6 @@ export default function ProfileDetails() {
   const { userDetails, setUserDetails } = useContext(UserContext);
   const history = useHistory();
   const isPageMounted = useRef(true);
-  const [showAvatarModal, setShowAvatarModal] = useState(false);
-  const [selectedAvatarCharacterId, setSelectedAvatarCharacterId] = useState();
-  const [selectedAvatarCharacterColor, setSelectedAvatarCharacterColor] = useState();
-  const [selectedAvatarBackgroundColor, setSelectedAvatarBackgroundColor] = useState();
 
   const default_error_message = "Unable to save profile details. Please try again.";
 
@@ -80,10 +60,6 @@ export default function ProfileDetails() {
       setDisplayName(userDetails.name);
       setUsername(userDetails.username);
       setEmail(userDetails.email);
-
-      setSelectedAvatarCharacterId(validatedAvatarCharacterId(userDetails.user_avatar?.image_name));
-      setSelectedAvatarCharacterColor(validatedAvatarCharacterColor(userDetails.user_avatar?.character_color));
-      setSelectedAvatarBackgroundColor(validatedAvatarBackgroundColor(userDetails.user_avatar?.background_color));
     }
 
     return () => {
@@ -102,17 +78,9 @@ export default function ProfileDetails() {
       username: username.trim(),
       email: email.trim(),
     };
-    const updatedAvatarValues = {
-      image_name: selectedAvatarCharacterId,
-      character_color: selectedAvatarCharacterColor,
-      background_color: selectedAvatarBackgroundColor,
-    };
     const payload = {
       ...userDetails,
       ...updatedFormValues,
-      ...(isGamificationEnabled
-        ? Object.fromEntries(Object.entries(updatedAvatarValues).map(([key, value]) => [`avatar_${key}`, value]))
-        : {}),
     };
     api.saveUserDetails(
       payload,
@@ -121,7 +89,6 @@ export default function ProfileDetails() {
         const newUserDetails = {
           ...userDetails,
           ...updatedFormValues,
-          ...(isGamificationEnabled ? { user_avatar: updatedAvatarValues } : {}),
         };
         setUserDetails(newUserDetails);
         LocalStorage.setUserInfo(newUserDetails);
@@ -147,24 +114,6 @@ export default function ProfileDetails() {
         <Form>
           {errorMessage && <FullWidthErrorMsg>{errorMessage}</FullWidthErrorMsg>}
           <FormSection>
-            {isGamificationEnabled && (
-              <s.AvatarWrapper>
-                <AvatarBackground
-                  className="clickable"
-                  onClick={() => setShowAvatarModal(true)}
-                  $backgroundColor={selectedAvatarBackgroundColor}
-                  style={{ width: "6rem", height: "6rem" }}
-                >
-                  <AvatarImage
-                    $imageSource={AVATAR_IMAGE_MAP[selectedAvatarCharacterId]}
-                    $color={selectedAvatarCharacterColor}
-                  />
-                  <s.EditAvatarButton type="button" onClick={() => setShowAvatarModal(true)}>
-                    <EditIcon sx={{ fontSize: "1rem" }} />
-                  </s.EditAvatarButton>
-                </AvatarBackground>
-              </s.AvatarWrapper>
-            )}
             <InputField
               type={"text"}
               label={strings.displayName}
@@ -222,87 +171,6 @@ export default function ProfileDetails() {
         </Form>
       </Main>
 
-      {isGamificationEnabled && (
-        <Modal open={showAvatarModal} onClose={() => setShowAvatarModal(false)}>
-          <Header withoutLogo>
-            <PageTitle>Choose Your Avatar</PageTitle>
-          </Header>
-          <Main>
-            <s.PickerSection>
-              <span className="picker-label">Character</span>
-              <s.PickerGrid>
-                {AVATAR_CHARACTER_IDS.map((id) => (
-                  <s.AvatarOption
-                    key={id}
-                    $selected={selectedAvatarCharacterId === id}
-                    $backgroundColor={selectedAvatarBackgroundColor}
-                    onClick={() => {
-                      setSelectedAvatarCharacterId(id);
-                    }}
-                  >
-                    <AvatarImage $imageSource={AVATAR_IMAGE_MAP[id]} $color={selectedAvatarCharacterColor} />
-                    {selectedAvatarCharacterId === id && (
-                      <s.SelectionCheckmark $mini={false}>
-                        <CheckIcon sx={{ fontSize: "inherit" }} />
-                      </s.SelectionCheckmark>
-                    )}
-                  </s.AvatarOption>
-                ))}
-              </s.PickerGrid>
-            </s.PickerSection>
-
-            <s.PickerSection>
-              <span className="picker-label">Character Color</span>
-              <s.PickerGrid>
-                {AVATAR_CHARACTER_COLORS.map((color) => (
-                  <s.ColorOption
-                    key={color}
-                    $backgroundColor={color}
-                    $selected={selectedAvatarCharacterColor === color}
-                    onClick={() => {
-                      setSelectedAvatarCharacterColor(color);
-                    }}
-                  >
-                    {selectedAvatarCharacterColor === color && (
-                      <s.SelectionCheckmark $mini={true}>
-                        <CheckIcon sx={{ fontSize: "inherit" }} />
-                      </s.SelectionCheckmark>
-                    )}
-                  </s.ColorOption>
-                ))}
-              </s.PickerGrid>
-            </s.PickerSection>
-
-            <s.PickerSection>
-              <span className="picker-label">Background Color</span>
-              <s.PickerGrid>
-                {AVATAR_BACKGROUND_COLORS.map((color) => (
-                  <s.ColorOption
-                    key={color}
-                    $backgroundColor={color}
-                    $selected={selectedAvatarBackgroundColor === color}
-                    onClick={() => {
-                      setSelectedAvatarBackgroundColor(color);
-                    }}
-                  >
-                    {selectedAvatarBackgroundColor === color && (
-                      <s.SelectionCheckmark $mini={true}>
-                        <CheckIcon sx={{ fontSize: "inherit" }} />
-                      </s.SelectionCheckmark>
-                    )}
-                  </s.ColorOption>
-                ))}
-              </s.PickerGrid>
-            </s.PickerSection>
-
-            <s.ConfirmButtonWrapper>
-              <Button type={"button"} className={"small"} onClick={() => setShowAvatarModal(false)}>
-                Set
-              </Button>
-            </s.ConfirmButtonWrapper>
-          </Main>
-        </Modal>
-      )}
     </CardPage>
   );
 }

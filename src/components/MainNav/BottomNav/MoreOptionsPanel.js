@@ -1,7 +1,6 @@
 import { useContext, useMemo, useState } from "react";
 import { UserContext } from "../../../contexts/UserContext";
 import { MainNavContext } from "../../../contexts/MainNavContext";
-import { useLocation } from "react-router-dom/cjs/react-router-dom";
 import NavigationOptions from "../navigationOptions";
 import FeedbackButton from "../../FeedbackButton";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
@@ -10,7 +9,7 @@ import NavIcon from "../NavIcon";
 import LanguageModal from "../LanguageModal";
 import navLanguages from "../navLanguages";
 import * as s from "./MoreOptionsPanel.sc";
-import SideNavProfileOption from "../SideNav/SideNavProfileOption";
+import AccountNavOption from "../AccountNavOption";
 import Feature from "../../../features/Feature";
 import { hasSupportedVerbalFlashcardsLearnedLanguage } from "../../../verbalFlashcards/verbalFlashcardsAvailability";
 
@@ -26,7 +25,6 @@ export default function MoreOptionsPanel({
 
   const { mainNavProperties } = useContext(MainNavContext);
   const { isOnStudentSide } = mainNavProperties;
-  const path = useLocation().pathname;
 
   const currentLearnedLanguage = useMemo(() => {
     const languageCode = userDetails.learned_language;
@@ -92,10 +90,8 @@ export default function MoreOptionsPanel({
             />
           )}
 
-          <NavOption {...NavigationOptions.settings} currentPath={path} onClick={handleHideMoreOptions} />
-
           <FeedbackButton />
-          {isOnStudentSide && <SideNavProfileOption onClick={handleHideMoreOptions}/>}
+          <AccountNavOption onNavigate={handleHideMoreOptions} />
         </s.MoreOptionsList>
       </s.MoreOptionsPanel>
 

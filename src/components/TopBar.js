@@ -16,7 +16,6 @@ import { BadgeCounterContext } from "../contexts/BadgeCounterContext";
 import { FriendRequestContext } from "../contexts/FriendRequestContext";
 import NotificationIcon from "./NotificationIcon";
 import Feature from "../features/Feature";
-import UpgradeAccountModal from "./UpgradeAccountModal";
 
 export default function TopBar() {
   const { userDetails } = useContext(UserContext);
@@ -70,15 +69,11 @@ export default function TopBar() {
   const closeLanguageModal = useCallback(() => setShowLanguageModal(false), []);
   const openLanguageModal = useCallback(() => setShowLanguageModal(true), []);
 
-  const isAnonymous = userDetails?.is_anonymous;
-  const [showUpgradeModal, setShowUpgradeModal] = useState(false);
-
+  // A guest has no profile yet, and the Settings page is where they can
+  // create the account (and the only way there now that the nav has no
+  // Settings entry).
   const handleProfileClick = () => {
-    if (isAnonymous) {
-      setShowUpgradeModal(true);
-      return;
-    }
-    history.push("/profile");
+    history.push(userDetails?.is_anonymous ? "/account_settings" : "/profile");
   };
 
   return (
@@ -113,13 +108,6 @@ export default function TopBar() {
       <LanguageModal
         open={showLanguageModal}
         setOpen={closeLanguageModal}
-      />
-      <UpgradeAccountModal
-        open={showUpgradeModal}
-        onClose={() => setShowUpgradeModal(false)}
-        onSuccess={() => {}}
-        triggerReason="profile"
-        bookmarkCount={userDetails?.bookmark_count || 0}
       />
     </>
   );

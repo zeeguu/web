@@ -1,31 +1,5 @@
 import styled from "styled-components";
-import { orange500, streakFireOrange } from "../../../components/colors";
-
-export const AvatarWrapper = styled.div`
-  display: flex;
-  justify-content: center;
-`;
-
-export const EditAvatarButton = styled.button`
-  position: absolute;
-  top: 0;
-  right: 0;
-  width: 2rem;
-  height: 2rem;
-  border-radius: 50%;
-  border: none;
-  background: var(--streak-banner-border);
-  color: var(--text-secondary);
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  &:hover {
-    background: var(--streak-banner-hover);
-    color: ${orange500};
-  }
-`;
+import { streakFireOrange } from "../components/colors";
 
 export const PickerSection = styled.div`
   margin-bottom: 1.5rem;
@@ -108,9 +82,4 @@ export const SelectionCheckmark = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-`;
-
-export const ConfirmButtonWrapper = styled.div`
-  display: flex;
-  justify-content: center;
 `;

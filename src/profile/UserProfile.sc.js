@@ -77,3 +77,25 @@ export const AvatarImage = styled.div`
   -webkit-mask-repeat: no-repeat;
   -webkit-mask-position: center;
 `;
+
+// The pencil badge on an avatar that opens the avatar picker.
+export const EditAvatarButton = styled.button`
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  border: none;
+  background: var(--streak-banner-border);
+  color: var(--text-secondary);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &:hover {
+    background: var(--streak-banner-hover);
+    color: ${orange500};
+  }
+`;

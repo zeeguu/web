@@ -18,6 +18,7 @@ import { ProfileHeaderCard } from "./ProfileHeaderCard";
 import { ProfileTabs } from "./ProfileTabs";
 import { UnfriendConfirmModal } from "./UnfriendConfirmModal";
 import { LanguagesModal } from "./LanguagesModal";
+import AvatarPickerModal from "./AvatarPickerModal";
 import { DEFAULT_PROFILE_TAB, PROFILE_TABS, profileTabPath } from "./profileTabRoutes";
 
 export default function UserProfile() {
@@ -27,6 +28,7 @@ export default function UserProfile() {
   const { userDetails } = useContext(UserContext);
   const [activeLanguages, setActiveLanguages] = useState([]);
   const [languagesModalOpen, setLanguagesModalOpen] = useState(false);
+  const [avatarPickerOpen, setAvatarPickerOpen] = useState(false);
   const { hasFriendRequestNotification, friendRequestCount } = useContext(FriendRequestContext);
   const { hasBadgeNotification, totalNumberOfBadges, updateBadgeCounter } = useContext(BadgeCounterContext);
   const { friendUsername, profileTab } = useParams();
@@ -222,12 +224,8 @@ export default function UserProfile() {
             profileData={profileData}
             activeLanguages={activeLanguages}
             onOpenLanguagesModal={() => setLanguagesModalOpen(true)}
-            onEditProfile={() =>
-              history.push({
-                pathname: "/account_settings/profile_details",
-                state: { from: "/profile" },
-              })
-            }
+            onEditAvatar={() => setAvatarPickerOpen(true)}
+            onOpenSettings={() => history.push("/account_settings")}
             friendActionHandlers={friendActionHandlers}
             isPendingFriendAction={isPendingFriendAction}
           />
@@ -253,6 +251,8 @@ export default function UserProfile() {
             profileData={profileData}
             activeLanguages={activeLanguages}
           />
+
+          {isOwnProfile && <AvatarPickerModal open={avatarPickerOpen} onClose={() => setAvatarPickerOpen(false)} />}
         </>
       )}
     </s.ProfileWrapper>

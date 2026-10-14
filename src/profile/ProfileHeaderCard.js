@@ -1,4 +1,6 @@
 import EditIcon from "@mui/icons-material/Edit";
+import SettingsRoundedIcon from "@mui/icons-material/SettingsRounded";
+import strings from "../i18n/definitions";
 import {
   AVATAR_IMAGE_MAP,
   validatedAvatarBackgroundColor,
@@ -10,7 +12,7 @@ import DynamicFlagImage from "../components/DynamicFlagImage";
 import * as s from "./ProfileHeaderCard.sc";
 import LocalFireDepartmentIcon from "@mui/icons-material/LocalFireDepartment";
 import { streakFireOrange } from "../components/colors";
-import { AvatarBackground, AvatarImage, LanguageOverflowBubble } from "./UserProfile.sc";
+import { AvatarBackground, AvatarImage, EditAvatarButton, LanguageOverflowBubble } from "./UserProfile.sc";
 import { FriendActionButtons } from "./FriendActionButtons";
 
 function formatDate(date) {
@@ -22,7 +24,8 @@ export function ProfileHeaderCard({
   profileData,
   activeLanguages,
   onOpenLanguagesModal,
-  onEditProfile,
+  onEditAvatar,
+  onOpenSettings,
   friendActionHandlers,
   isPendingFriendAction,
 }) {
@@ -38,14 +41,25 @@ export function ProfileHeaderCard({
 
   return (
     <s.HeaderCard>
+      {/* Name, username and email are edited from Settings, so the corner
+          button leads there; only the avatar is edited from this card. */}
       {isOwnProfile && (
-        <s.EditProfileButton onClick={onEditProfile}>
-          <EditIcon sx={{ fontSize: "1rem" }} />
-        </s.EditProfileButton>
+        <s.SettingsButton onClick={onOpenSettings} aria-label={strings.settings} title={strings.settings}>
+          <SettingsRoundedIcon sx={{ fontSize: "1.1rem" }} />
+        </s.SettingsButton>
       )}
 
-      <AvatarBackground $backgroundColor={avatarBackgroundColor}>
+      <AvatarBackground
+        className={isOwnProfile ? "clickable" : undefined}
+        onClick={isOwnProfile ? onEditAvatar : undefined}
+        $backgroundColor={avatarBackgroundColor}
+      >
         <AvatarImage $imageSource={AVATAR_IMAGE_MAP[avatarCharacterId]} $color={avatarCharacterColor} />
+        {isOwnProfile && (
+          <EditAvatarButton type="button" aria-label="Change avatar">
+            <EditIcon sx={{ fontSize: "1rem" }} />
+          </EditAvatarButton>
+        )}
       </AvatarBackground>
 
       <div>
