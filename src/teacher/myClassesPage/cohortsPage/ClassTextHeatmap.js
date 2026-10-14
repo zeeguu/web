@@ -17,7 +17,7 @@ const BLOCK_TAGS = ["p", "h1", "h2", "h3", "h4", "h5", "h6", "li", "blockquote"]
  */
 export default function ClassTextHeatmap({ info, threshold, setThreshold }) {
   const names = Object.fromEntries(info.readers.map((r) => [r.id, r.name]));
-  const parts = [{ ...info.tokenized_title_new, isTitle: true }, ...info.tokenized_fragments]
+  const parts = [{ ...info.text.title, isTitle: true }, ...info.text.fragments]
     .filter((part) => part.tokens)
     .map((part) => ({ ...part, byToken: studentsByToken(part) }));
   const maxStudents = Math.max(1, ...parts.flatMap((part) => [...part.byToken.values()].map((s) => s.length)));
