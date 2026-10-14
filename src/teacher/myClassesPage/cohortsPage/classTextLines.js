@@ -2,11 +2,28 @@ import { durationLabel } from "../../../words/sessionHistory/sessionCard";
 
 export const studentsLabel = (n) => `${n} ${n === 1 ? "student" : "students"}`;
 
-// Under the text's title: "Read by 7 of 12 students · 23 words looked up"
+// Under the text's title:
+//   "Read by 7 of 12 students · median 6 min (2 min – 15 min) · 23 words looked up"
 export function classTextSubtitle({ readers, words, student_count }) {
   const parts = [`Read by ${readers.length} of ${studentsLabel(student_count)}`];
+  const time = readingTimeSummary(readers);
+  if (time) parts.push(time);
   if (words.length > 0) parts.push(`${words.length} ${words.length === 1 ? "word" : "words"} looked up`);
   return parts.join(" · ");
+}
+
+// How long the class spent on the text, over the students who spent any:
+// one student's time alone, or the median and the range.
+export function readingTimeSummary(readers) {
+  const ms = readers
+    .map((r) => r.reading_seconds * 1000)
+    .filter((each) => each > 0)
+    .sort((a, b) => a - b);
+  if (ms.length === 0) return null;
+  if (ms.length === 1) return durationLabel(ms[0]);
+  const middle = Math.floor(ms.length / 2);
+  const median = ms.length % 2 ? ms[middle] : (ms[middle - 1] + ms[middle]) / 2;
+  return `median ${durationLabel(median)} (${durationLabel(ms[0])} – ${durationLabel(ms[ms.length - 1])})`;
 }
 
 // One reader's row: "read 80% · 5 min · 12 words"

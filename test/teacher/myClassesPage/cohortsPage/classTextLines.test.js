@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
   classTextSubtitle,
   readerDetails,
+  readingTimeSummary,
   thresholdOptions,
   heatColor,
   lookupsByToken,
@@ -47,5 +48,19 @@ describe("heatmap helpers", () => {
     const map = lookupsByToken([{ sent_i: 0, token_i: 2, students: [7, 9] }]);
     expect(map.get("0:2")).toEqual([7, 9]);
     expect(lookupsByToken(undefined).size).toBe(0);
+  });
+});
+
+describe("readingTimeSummary", () => {
+  const read = (...minutes) => minutes.map((m) => ({ reading_seconds: m * 60 }));
+
+  it("gives the median and the range", () => {
+    expect(readingTimeSummary(read(2, 6, 15))).toBe("median 6 min (2 min – 15 min)");
+    expect(readingTimeSummary(read(2, 4, 8, 15))).toBe("median 6 min (2 min – 15 min)");
+  });
+
+  it("leaves out students who spent no time, and says nothing when nobody did", () => {
+    expect(readingTimeSummary(read(0, 5))).toBe("5 min");
+    expect(readingTimeSummary(read(0))).toBe(null);
   });
 });
