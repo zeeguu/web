@@ -6,6 +6,7 @@ import DisableAudioSession from "./DisableAudioSession";
 import { EXERCISE_TYPES } from "../ExerciseTypeConstants";
 import SessionStorage from "../../assorted/SessionStorage";
 import FlagOutlinedIcon from "@mui/icons-material/FlagOutlined";
+import ExplainWordButton from "./ExplainWordButton";
 
 export default function SolutionFeedbackLinks({
   exerciseBookmarks,
@@ -60,6 +61,7 @@ export default function SolutionFeedbackLinks({
               {strings.iKnowThisWord}
             </s.StyledGreyButton>
           )}
+          {exerciseType !== EXERCISE_TYPES.match && <ExplainWordButton bookmark={exerciseBookmark} />}
           {shareableUrl && (
             <s.StyledGreyButton
               className="styledGreyButton"
