@@ -89,5 +89,5 @@ export function summaryIsAiGenerated(article) {
 export function storyOutlets(article) {
   const outlets = article.story_outlets;
   if (!outlets || outlets.length < 2) return null;
-  return outlets.map((outlet) => ({ id: outlet.id, label: extractDomain(outlet.url) }));
+  return outlets.map((outlet) => ({ id: outlet.id, url: outlet.url, label: extractDomain(outlet.url) }));
 }

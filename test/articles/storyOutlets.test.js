@@ -11,8 +11,8 @@ describe("storyOutlets", () => {
       ],
     };
     expect(storyOutlets(article)).toEqual([
-      { id: 1, label: "huffingtonpost.fr" },
-      { id: 2, label: "lefigaro.fr" },
+      { id: 1, url: "https://www.huffingtonpost.fr/culture/renaud", label: "huffingtonpost.fr" },
+      { id: 2, url: "https://www.lefigaro.fr/actualite/renaud", label: "lefigaro.fr" },
     ]);
   });
 

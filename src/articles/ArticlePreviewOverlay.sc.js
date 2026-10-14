@@ -187,6 +187,13 @@ const PrimaryAction = styled.div`
   font-size: 1rem;
 `;
 
+// One "Read at <outlet>" button per outlet of a multi-outlet story, stacked.
+const OutletActions = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 0.6em;
+`;
+
 // The reading time, carried inside the button as supporting detail: the label
 // says what the button does, this says what it costs.
 const ActionHint = styled.span`
@@ -205,5 +212,6 @@ export {
   SummaryLabel,
   Summary,
   PrimaryAction,
+  OutletActions,
   ActionHint,
 };

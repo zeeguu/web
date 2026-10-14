@@ -6,7 +6,7 @@ import LocalStorage from "../assorted/LocalStorage";
 import { summaryShareUrl } from "../reader/publicArticle/publicReaderLogic";
 import * as s from "./ArticlePreviewOverlay.sc";
 import Modal from "../components/modal_shared/Modal";
-import { MetaStrip, MetaItem, MetaLink, MetaTag } from "../components/MetaStrip.sc";
+import { MetaStrip, MetaItem, MetaTag } from "../components/MetaStrip.sc";
 import ActionButton from "../components/ActionButton";
 import Button from "../pages/_pages_shared/Button.sc";
 import RedirectionNotificationModal from "../components/redirect_notification/RedirectionNotificationModal";
@@ -15,7 +15,8 @@ import useUserPreferences from "../hooks/useUserPreferences";
 import useReaderFontSize from "../hooks/useReaderFontSize";
 import usePreviewActivityLog from "../hooks/usePreviewActivityLog";
 import { APIContext } from "../contexts/APIContext";
-import { articleSourceLabel, aiProvenanceLabel, summaryIsAiGenerated } from "../utils/misc/articleHelpers";
+import { articleSourceLabel, aiProvenanceLabel, storyOutlets, summaryIsAiGenerated } from "../utils/misc/articleHelpers";
+import SourceItem from "./SourceItem";
 import { estimateReadingTime, timeAgo } from "../utils/misc/readableTime";
 import { isMobile } from "../utils/misc/browserDetection";
 import OpenInNewRoundedIcon from "@mui/icons-material/OpenInNewRounded";
@@ -70,6 +71,9 @@ export default function ArticlePreviewOverlay({
   const api = useContext(APIContext);
   const history = useHistory();
   const [isRedirectionModalOpen, setIsRedirectionModalOpen] = useState(false);
+  // What the "you're leaving Zeeguu" prompt opens (and offers to save): the
+  // card's article, or the outlet picked when the story has several.
+  const [redirectArticle, setRedirectArticle] = useState(article);
 
   // Same interactive-text preferences as the reader — read only here. They are
   // configured in Settings → Reading → Text & highlighting (and in the reader's
@@ -116,14 +120,15 @@ export default function ArticlePreviewOverlay({
     }
   }
 
-  function handleOpenOriginal() {
+  function handleOpenOriginal(target = article) {
     markOpenedOriginal();
     // No-extension users get the usual "you're leaving Zeeguu" prompt (unless
     // they've opted out); everyone else goes straight to the publisher.
     if (should_open_with_modal) {
+      setRedirectArticle(target);
       setIsRedirectionModalOpen(true);
     } else {
-      window.open(externalUrl, isMobile() ? "_self" : "_blank", "noreferrer");
+      window.open(target === article ? externalUrl : target.url, isMobile() ? "_self" : "_blank", "noreferrer");
     }
   }
 
@@ -269,13 +274,34 @@ export default function ArticlePreviewOverlay({
     wordCount > 0 ? estimateReadingTime(wordCount).replace(" minutes", " min").replace(" minute", " min") : null;
   const readingTimeHint = readingTime && <s.ActionHint>· {readingTime}</s.ActionHint>;
 
+  // A story several outlets ran: one button per outlet, as equals, in place of
+  // the single "Read the original". No reading time -- it is per article, and
+  // the card's own would only describe one of them.
+  const outlets = storyOutlets(article);
+  const outletButtons = outlets && (
+    <s.OutletActions>
+      {outlets.map((outlet) => (
+        <Button
+          key={outlet.id}
+          className="full-width-btn"
+          onClick={() => handleOpenOriginal({ ...article, id: outlet.id, url: outlet.url, parent_url: null })}
+        >
+          Read at {outlet.label}
+          <OpenInNewRoundedIcon style={{ fontSize: 20, marginLeft: 2 }} />
+        </Button>
+      ))}
+    </s.OutletActions>
+  );
+
   const primaryButton = readInZeeguuPath ? (
     <Button className="full-width-btn" onClick={() => history.push(readInZeeguuPath)}>
       Read the article
       {readingTimeHint}
     </Button>
+  ) : outletButtons ? (
+    outletButtons
   ) : (
-    <Button className="full-width-btn" onClick={handleOpenOriginal}>
+    <Button className="full-width-btn" onClick={() => handleOpenOriginal()}>
       Read the original
       {readingTimeHint}
       <OpenInNewRoundedIcon style={{ fontSize: 20, marginLeft: 2 }} />
@@ -337,19 +363,7 @@ export default function ArticlePreviewOverlay({
               article.topics_list.map(([topicTitle]) => <MetaTag key={topicTitle}>{topicTitle}</MetaTag>)}
             {aiLabel && <MetaTag>{aiLabel}</MetaTag>}
             {isArticleSaved && <MetaTag>Saved</MetaTag>}
-            {sourceLabel && (
-              <MetaItem>
-                <MetaLink
-                  className="muted"
-                  href={externalUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  onClick={markOpenedOriginal}
-                >
-                  {sourceLabel}
-                </MetaLink>
-              </MetaItem>
-            )}
+            <SourceItem article={article} sourceLabel={sourceLabel} onOpen={markOpenedOriginal} />
             {publishedAgo && <MetaItem>{publishedAgo}</MetaItem>}
           </MetaStrip>
 
@@ -404,7 +418,7 @@ export default function ArticlePreviewOverlay({
 
       <RedirectionNotificationModal
         hasExtension={hasExtension}
-        article={article}
+        article={redirectArticle}
         open={isRedirectionModalOpen}
         handleCloseRedirectionModal={() => setIsRedirectionModalOpen(false)}
         setDoNotShowRedirectionModal_UserPreference={setDoNotShowRedirectionModal_UserPreference}
