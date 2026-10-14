@@ -175,8 +175,25 @@ export default function FindWordInContextCloze({
   );
 }
 
+// A verdict already stored for this meaning comes back in a database round
+// trip; only an actual LLM call (1-3 s) outlasts this, so only that shows the
+// spinner instead of flashing it on every other word.
+const SHOW_THINKING_AFTER_MS = 400;
+
 function AnswerNote({ isChecking, note, expected }) {
+  const [showThinking, setShowThinking] = useState(false);
+
+  useEffect(() => {
+    if (!isChecking) return;
+    const timer = setTimeout(() => setShowThinking(true), SHOW_THINKING_AFTER_MS);
+    return () => {
+      clearTimeout(timer);
+      setShowThinking(false);
+    };
+  }, [isChecking]);
+
   if (isChecking) {
+    if (!showThinking) return null;
     return (
       <AnswerLine>
         <CircularProgress size={14} sx={{ color: "var(--text-secondary)", verticalAlign: "-2px", marginRight: "0.5em" }} />
