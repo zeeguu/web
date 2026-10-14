@@ -30,20 +30,24 @@ export default function AvatarPickerModal({ open, onClose }) {
   const [characterColor, setCharacterColor] = useState();
   const [backgroundColor, setBackgroundColor] = useState();
   const [errorMessage, setErrorMessage] = useState("");
-  // The last avatar the server accepted. It reaches UserContext only when the
-  // modal closes: updating it on every pick makes the profile page reload
-  // underneath, which would close the modal.
-  const savedAvatar = useRef(null);
+  // The latest pick. It reaches UserContext only when the modal closes:
+  // updating it on every pick makes the profile page reload underneath, which
+  // would close the modal. Taken from the pick, not from a save's response, so
+  // a save still in flight at close, or responses arriving out of order, do
+  // not leave the old avatar showing.
+  const lastPick = useRef(null);
 
-  // Start from the user's current avatar each time the modal opens.
+  // Start from the user's current avatar each time the modal opens -- only
+  // then, so a UserContext update while it is open cannot undo the picks.
   useEffect(() => {
     if (!open) return;
     setCharacterId(validatedAvatarCharacterId(userDetails.user_avatar?.image_name));
     setCharacterColor(validatedAvatarCharacterColor(userDetails.user_avatar?.character_color));
     setBackgroundColor(validatedAvatarBackgroundColor(userDetails.user_avatar?.background_color));
     setErrorMessage("");
-    savedAvatar.current = null;
-  }, [open, userDetails]);
+    lastPick.current = null;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [open]);
 
   function pick(change) {
     const userAvatar = {
@@ -55,23 +59,24 @@ export default function AvatarPickerModal({ open, onClose }) {
     setCharacterColor(userAvatar.character_color);
     setBackgroundColor(userAvatar.background_color);
     setErrorMessage("");
+    lastPick.current = userAvatar;
+    // Only the avatar: /user_settings writes every field it is sent, so the
+    // whole userDetails would also re-save languages and levels on each tap,
+    // reverting any changed elsewhere since this page loaded.
     api.saveUserDetails(
       {
-        ...userDetails,
         avatar_image_name: userAvatar.image_name,
         avatar_character_color: userAvatar.character_color,
         avatar_background_color: userAvatar.background_color,
       },
       (error) => setErrorMessage(error ?? "Unable to save your avatar. Please try again."),
-      () => {
-        savedAvatar.current = userAvatar;
-      },
+      () => {},
     );
   }
 
   function handleClose() {
-    if (savedAvatar.current) {
-      const newUserDetails = { ...userDetails, user_avatar: savedAvatar.current };
+    if (lastPick.current) {
+      const newUserDetails = { ...userDetails, user_avatar: lastPick.current };
       setUserDetails(newUserDetails);
       LocalStorage.setUserInfo(newUserDetails);
       saveSharedUserInfo(newUserDetails);
