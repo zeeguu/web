@@ -124,7 +124,12 @@ export default function ClassTexts() {
           </s.SectionLabel>
           <s.StudentView>
             {texts.map((article) => (
-              <ArticlePreview key={article.id} article={article} previewOnly={true} />
+              <div key={article.id}>
+                <ArticlePreview article={article} previewOnly={true} />
+                <s.ClassTextLink to={`/teacher/classes/viewClass/${cohortID}/texts/${article.id}`}>
+                  Who read it, and the words they looked up →
+                </s.ClassTextLink>
+              </div>
             ))}
           </s.StudentView>
         </>
