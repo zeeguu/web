@@ -1,21 +1,29 @@
-Share a summary, smoother audio, and a lot more for teachers.
+Smarter exercises, a new profile page, and more for teachers.
 
-Sharing
-- Share the summary of an article, straight from the article preview.
+Exercises
+- Explain is now available in exercises too.
+- When typing a translation, any listed form of the word counts as right.
+- In typed cloze exercises, a wrong answer is followed by its correction read aloud.
+- Multi-word answers are blanked correctly in sentences that start mid-way.
+- Example sentences show when there are more to see, with a swipe hint on touch screens.
+- Words you already know well move faster through the level bar, with a celebration when they are learned.
 
-Audio
-- Play from your headphones works again after the lesson has been paused for a long time.
-- The player stays in sync when you come back to the app.
+Feed and reading
+- A story covered by several outlets now lists them all as equals.
+- Shared summaries let you switch level and sign up at the level you chose.
+
+Profile and settings
+- Settings now sit behind your profile, and you edit your avatar on the profile page.
+- Daily lesson settings are shown even before your first lesson arrives.
+- Every learner can now delete a daily lesson.
 
 History
-- Pick the period you want to look at, from one date to another.
-- Clearer history cards: what you did and for how long come first, then the details.
+- Words from a browsing session appear under the article they came from.
+- Words you have practised since are marked.
 
 For teachers
-- A new Activity tab for each student: what they read and practised, the words they looked up, and the original article.
-- Open a text from a student's activity and see their translations in place.
-- A student's Words tab now shows their words the way they see them.
-- Sort the class list by name or by how active students are, and search for a student.
-- Students who likely have two accounts in the same class are flagged and shown side by side.
-- Each class card shows when the class was last active.
-- Decide whether the students of a class can see each other.
+- A new page for each class text shows the words the class looked up in it.
+- Reading sessions show a focus strip of when the student was active.
+- A compact student table and a cleaner class page.
+- Add Text opens the editor straight away.
+- Opening a student's text no longer shows a blank page.
